@@ -1,0 +1,4 @@
+discord.py
+python-dotenv
+sentry-sdk
+tortoise-orm[asyncpg]

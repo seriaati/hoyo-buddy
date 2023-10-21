@@ -71,7 +71,6 @@ async def main():
         session=session,
         allowed_mentions=allowed_mentions,
         help_command=None,
-        # activity=discord.Activity(type=discord.ActivityType.listening, name=f"/help"),
         chunk_guilds_at_startup=False,
         max_messages=None,
     ) as bot:

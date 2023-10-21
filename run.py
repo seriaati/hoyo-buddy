@@ -1,6 +1,5 @@
 import asyncio
 import contextlib
-import json
 import logging
 import logging.handlers
 import os

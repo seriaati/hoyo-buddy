@@ -23,6 +23,7 @@ else:
 
 load_dotenv()
 
+log = logging.getLogger("run")
 prod = os.getenv("PROD", "0") == "1"
 
 if prod:
@@ -61,10 +62,8 @@ async def main():
         roles=False,
         replied_user=False,
     )
-
-    async with aiohttp.ClientSession() as session, Database(
-        os.getenv("DB_URL") or "sqlite://db.sqlite3"
-    ), HoyoBuddy(
+    session = aiohttp.ClientSession()
+    bot = HoyoBuddy(
         command_prefix=commands.when_mentioned,
         intents=intents,
         case_insensitive=True,
@@ -73,8 +72,14 @@ async def main():
         help_command=None,
         chunk_guilds_at_startup=False,
         max_messages=None,
-    ) as bot:
-        await bot.start(os.environ["TOKEN"], reconnect=True)
+    )
+    db = Database(os.getenv("DB_URL") or "sqlite://db.sqlite3")
+
+    async with session, db:
+        try:
+            await bot.start(os.environ["DISCORD_TOKEN"])
+        except (KeyboardInterrupt, asyncio.CancelledError):
+            log.info("Shutting down...")
 
 
 @contextlib.contextmanager

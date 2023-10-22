@@ -1,6 +1,6 @@
 import asyncio
 import os
-from typing import Optional, Set
+from typing import Set
 
 from discord import app_commands
 from discord.app_commands.translator import TranslationContextTypes, locale_str
@@ -31,15 +31,15 @@ class Translator:
 
     async def translate(
         self,
-        string: locale_str,
+        string: str,
         locale: Locale,
-        _: Optional[TranslationContextTypes] = None,
-    ) -> Optional[str]:
+        **kwargs,
+    ) -> str:
         lang = locale.value.replace("-", "_")
-        message = string.message
-        translation = tx.translate(message, lang, params=string.extras)
+        translation = tx.translate(string, lang, params=None if kwargs else kwargs)
         if translation is None:
-            self.not_translated.add(message)
+            self.not_translated.add(string)
+            return string
         return translation
 
     async def unload(self) -> None:
@@ -55,6 +55,6 @@ class AppCommandTranslator(app_commands.Translator):
         self.translator = translator
 
     async def translate(
-        self, string: locale_str, locale: Locale, context: TranslationContextTypes
-    ) -> Optional[str]:
-        return await self.translator.translate(string, locale, context)
+        self, string: locale_str, locale: Locale, _: TranslationContextTypes
+    ) -> str:
+        return await self.translator.translate(string.message, locale, **string.extras)

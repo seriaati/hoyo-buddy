@@ -28,7 +28,7 @@ class Database:
         }
 
         await Tortoise.init(config=DB_CONFIG)
-        log.info("Connected to database.")
+        log.info("Connected to database")
         await Tortoise.generate_schemas()
 
     async def __aexit__(

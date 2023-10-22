@@ -30,7 +30,10 @@ class Translator:
         await asyncio.to_thread(tx.fetch_translations)
 
     async def translate(
-        self, string: locale_str, locale: Locale, _: TranslationContextTypes
+        self,
+        string: locale_str,
+        locale: Locale,
+        _: Optional[TranslationContextTypes] = None,
     ) -> Optional[str]:
         lang = locale.value.replace("-", "_")
         message = string.message

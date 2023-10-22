@@ -5,7 +5,6 @@ import aiohttp
 import genshin
 from aiohttp import web
 from discord import Locale
-from discord.app_commands import locale_str
 from dotenv import load_dotenv
 from genshin.errors import GenshinException, raise_for_retcode
 from genshin.utility import geetest

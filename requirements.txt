@@ -2,3 +2,8 @@ discord.py
 python-dotenv
 sentry-sdk
 tortoise-orm[asyncpg]
+transifex-python
+genshin
+orjson
+rsa
+jishaku

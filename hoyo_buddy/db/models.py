@@ -7,9 +7,8 @@ from tortoise.models import Model
 
 class Game(StrEnum):
     GENSHIN = "genshin"  # Genshin Impact
-    STARRAIL = "starrail"  # Honkai: Star Rail
-    HONKAI = "honkai"  # Honkai Impact 3rd
-    ZZZ = "zzz"  # Zenless Zone Zero
+    STARRAIL = "hkrpg"  # Honkai: Star Rail
+    HONKAI = "honkai3rd"  # Honkai Impact 3rd
 
 
 class User(Model):

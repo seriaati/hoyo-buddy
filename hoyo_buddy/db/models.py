@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from tortoise import fields
 from tortoise.models import Model
@@ -17,6 +17,7 @@ class User(Model):
     settings: fields.OneToOneRelation["Settings"] = fields.OneToOneField(
         "models.Settings", related_name="user"
     )
+    temp_data: Dict[str, Any] = fields.JSONField()  # type: ignore
 
 
 class HoyoAccount(Model):
@@ -24,7 +25,7 @@ class HoyoAccount(Model):
     username = fields.CharField(max_length=32)
     nickname: Optional[str] = fields.CharField(max_length=32, null=True)  # type: ignore
     game = fields.CharEnumField(Game)
-    cookie = fields.JSONField()
+    cookies: Dict[str, Any] = fields.JSONField()  # type: ignore
     users: fields.ManyToManyRelation[User]
 
     class Meta:

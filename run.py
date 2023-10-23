@@ -22,8 +22,6 @@ else:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 load_dotenv()
-
-log = logging.getLogger("run")
 prod = os.getenv("PROD", "0") == "1"
 
 if prod:
@@ -75,11 +73,11 @@ async def main():
     )
     db = Database(os.getenv("DB_URL") or "sqlite://db.sqlite3")
 
-    async with session, db:
+    async with session, db, bot:
         try:
             await bot.start(os.environ["DISCORD_TOKEN"])
         except (KeyboardInterrupt, asyncio.CancelledError):
-            log.info("Shutting down...")
+            pass
 
 
 @contextlib.contextmanager

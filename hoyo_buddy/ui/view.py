@@ -3,6 +3,7 @@ from typing import Any, Optional, Union
 import discord
 
 from ..bot import HoyoBuddy
+from ..bot.command_tree import get_error_embed
 from ..db.models import User
 from ..exceptions import HoyoBuddyError
 from .embeds import ErrorEmbed
@@ -30,14 +31,7 @@ class View(discord.ui.View):
         error: Exception,
         _: discord.ui.Item[Any],
     ) -> None:
-        embed = ErrorEmbed(title="An error occurred", description=str(error))
-        if isinstance(error, HoyoBuddyError):
-            user = await User.get(id=i.user.id).prefetch_related("settings")
-            await embed.translate(
-                user.settings.locale or i.locale,
-                i.client.translator,
-                **error.kwargs,
-            )
+        embed = await get_error_embed(i, error)
         await self.send_or_followup(i, embed=embed, ephemeral=True)
 
     async def interaction_check(self, i: discord.Interaction[HoyoBuddy]) -> bool:

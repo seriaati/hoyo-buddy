@@ -5,8 +5,21 @@ from discord.app_commands.errors import AppCommandError
 from discord.interactions import Interaction
 
 from ..db.models import Settings, User
+from ..exceptions import HoyoBuddyError
 from ..ui.embeds import ErrorEmbed
 from . import HoyoBuddy
+
+
+async def get_error_embed(i: Interaction[HoyoBuddy], error: Exception) -> ErrorEmbed:
+    embed = ErrorEmbed(title="An error occurred", description=str(error))
+    if isinstance(error, HoyoBuddyError):
+        user = await User.get(id=i.user.id).prefetch_related("settings")
+        await embed.translate(
+            user.settings.locale or i.locale,
+            i.client.translator,
+            **error.kwargs,
+        )
+    return embed
 
 
 class CommandTree(app_commands.CommandTree):
@@ -16,8 +29,8 @@ class CommandTree(app_commands.CommandTree):
             await Settings.create(user=user)
         return True
 
-    async def on_error(self, i: Interaction[HoyoBuddy], error: AppCommandError) -> None:
-        embed = ErrorEmbed(title="An error occurred", description=str(error))
+    async def on_error(self, i: Interaction[HoyoBuddy], error: Exception) -> None:
+        embed = await get_error_embed(i, error)
         user = await User.get(id=i.user.id).prefetch_related("settings")
         locale = user.settings.locale or i.locale
         await embed.translate(locale, i.client.translator)

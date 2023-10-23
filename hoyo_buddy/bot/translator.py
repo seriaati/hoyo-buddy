@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import os
 from typing import Set
 
@@ -8,6 +9,8 @@ from discord.enums import Locale
 from transifex.native import init, tx
 from transifex.native.parsing import SourceString
 from transifex.native.rendering import AbstractRenderingPolicy
+
+log = logging.getLogger(__name__)
 
 
 class CustomRenderingPolicy(AbstractRenderingPolicy):
@@ -58,10 +61,13 @@ class Translator:
         return translation
 
     async def unload(self) -> None:
-        await asyncio.to_thread(
-            tx.push_source_strings,
-            [SourceString(string) for string in self.not_translated],
-        )
+        if self.not_translated:
+            log.info("Pushing source strings to Transifex...")
+            log.info("Strings not translated: %s", self.not_translated)
+            await asyncio.to_thread(
+                tx.push_source_strings,
+                [SourceString(string) for string in self.not_translated],
+            )
 
 
 class AppCommandTranslator(app_commands.Translator):

@@ -41,6 +41,9 @@ class HoyoAccount(Model):
         unique_together = ("uid", "game")
         ordering = ["uid"]
 
+    def __str__(self) -> str:
+        return f"[{self.uid}] {self.username}"
+
     @property
     def client(self) -> genshin.Client:
         return genshin.Client(

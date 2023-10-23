@@ -54,6 +54,8 @@ class Translator:
         **kwargs,
     ) -> str:
         lang = locale.value.replace("-", "_")
+        if "<NO_TRANSLATE>" in string:
+            return string.replace("<NO_TRANSLATE>", "")
         translation = tx.translate(string, lang, params=None if kwargs else kwargs)
         if translation is None:
             self.not_translated.add(string)

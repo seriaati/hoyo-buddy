@@ -32,7 +32,7 @@ class View(discord.ui.View):
         _: discord.ui.Item[Any],
     ) -> None:
         embed = await get_error_embed(i, error)
-        await self.send_or_followup(i, embed=embed, ephemeral=True)
+        await self.absolute_send(i, embed=embed, ephemeral=True)
 
     async def interaction_check(self, i: discord.Interaction[HoyoBuddy]) -> bool:
         if i.user.id != self.author.id:
@@ -56,7 +56,7 @@ class View(discord.ui.View):
             if isinstance(child, (discord.ui.Button, discord.ui.Select)):
                 child.disabled = False
 
-    async def send_or_followup(self, i: discord.Interaction, **kwargs) -> None:
+    async def absolute_send(self, i: discord.Interaction, **kwargs) -> None:
         try:
             await i.response.send_message(**kwargs)
         except discord.InteractionResponded:

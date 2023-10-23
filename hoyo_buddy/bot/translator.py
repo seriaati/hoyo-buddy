@@ -24,7 +24,22 @@ class Translator:
         init(
             token=os.environ["TRANSIFEX_TOKEN"],
             secret=os.environ["TRANSIFEX_SECRET"],
-            languages=["en", "zh_CN", "zh_TW", "ja"],
+            languages=(
+                "en_US",
+                "en_GB",
+                "zh_CN",
+                "zh_TW",
+                "ja",
+                "ko",
+                "fr",
+                "de",
+                "pt_BR",
+                "vi",
+                "ru",
+                "th",
+                "id",
+                "es_ES",
+            ),
             missing_policy=CustomRenderingPolicy(),
         )
         await asyncio.to_thread(tx.fetch_translations)

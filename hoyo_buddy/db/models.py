@@ -25,9 +25,7 @@ class User(Model):
     accounts: fields.ManyToManyRelation["HoyoAccount"] = fields.ManyToManyField(
         "models.HoyoAccount", related_name="users"
     )
-    settings: fields.OneToOneRelation["Settings"] = fields.OneToOneField(
-        "models.Settings", related_name="user"
-    )
+    settings: fields.BackwardOneToOneRelation["Settings"]
     temp_data: Dict[str, Any] = fields.JSONField(default=dict)  # type: ignore
 
 
@@ -51,7 +49,9 @@ class HoyoAccount(Model):
 
 class Settings(Model):
     lang: Optional[str] = fields.CharField(max_length=5, null=True)  # type: ignore
-    user: fields.BackwardOneToOneRelation[User]
+    user: fields.OneToOneRelation[User] = fields.OneToOneField(
+        "models.User", related_name="settings"
+    )
 
     @property
     def locale(self) -> Optional[Locale]:

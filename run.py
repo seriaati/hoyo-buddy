@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 from hoyo_buddy.bot import HoyoBuddy
+from hoyo_buddy.bot.command_tree import CommandTree
 from hoyo_buddy.db import Database
 
 try:
@@ -70,6 +71,7 @@ async def main():
         help_command=None,
         chunk_guilds_at_startup=False,
         max_messages=None,
+        tree_cls=CommandTree,
     )
     db = Database(os.getenv("DB_URL") or "sqlite://db.sqlite3")
 

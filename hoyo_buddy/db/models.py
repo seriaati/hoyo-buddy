@@ -39,6 +39,7 @@ class HoyoAccount(Model):
 
     class Meta:
         unique_together = ("uid", "game")
+        ordering = ["uid"]
 
     @property
     def client(self) -> genshin.Client:

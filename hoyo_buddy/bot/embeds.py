@@ -65,7 +65,11 @@ class DefaultEmbed(Embed):
         description: Optional[str] = None,
     ):
         super().__init__(
-            color=0x15576945,
+            color=15576945,
+            title=title,
+            url=url,
+            description=description,
+        )
             title=title,
             url=url,
             description=description,

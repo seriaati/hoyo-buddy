@@ -1,0 +1,1 @@
+LOADING = "<a:loading_emoji:1106388708862738463>"

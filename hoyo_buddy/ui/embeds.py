@@ -3,7 +3,7 @@ from typing import Optional
 from discord import Embed as E
 from discord import Locale
 
-from .translator import Translator
+from ..bot.translator import Translator
 
 
 class Embed(E):

@@ -5,8 +5,8 @@ from discord.app_commands.errors import AppCommandError
 from discord.interactions import Interaction
 
 from ..db.models import Settings, User
+from ..ui.embeds import ErrorEmbed
 from . import HoyoBuddy
-from .embeds import ErrorEmbed
 
 
 class CommandTree(app_commands.CommandTree):

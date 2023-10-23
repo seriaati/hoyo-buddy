@@ -3,9 +3,9 @@ from typing import Any, Optional, Union
 import discord
 
 from ..bot import HoyoBuddy
-from ..bot.embeds import ErrorEmbed
 from ..db.models import User
 from ..exceptions import HoyoBuddyError
+from .embeds import ErrorEmbed
 
 
 class View(discord.ui.View):

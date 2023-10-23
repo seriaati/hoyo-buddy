@@ -70,6 +70,18 @@ class DefaultEmbed(Embed):
             url=url,
             description=description,
         )
+
+
+class ErrorEmbed(Embed):
+    def __init__(
+        self,
+        *,
+        title: Optional[str] = None,
+        url: Optional[str] = None,
+        description: Optional[str] = None,
+    ):
+        super().__init__(
+            color=15169131,
             title=title,
             url=url,
             description=description,

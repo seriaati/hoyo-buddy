@@ -4,9 +4,11 @@ import discord
 
 from ..bot import HoyoBuddy
 from ..bot.command_tree import get_error_embed
+from ..bot.translator import Translator
 from ..db.models import User
-from ..exceptions import HoyoBuddyError
+from .button import Button
 from .embeds import ErrorEmbed
+from .select import Select
 
 
 class View(discord.ui.View):
@@ -19,6 +21,29 @@ class View(discord.ui.View):
         super().__init__(timeout=timeout)
         self.author = author
         self.message: Optional[discord.Message] = None
+
+    async def translate(
+        self,
+        locale: discord.Locale,
+        translator: Translator,
+        *,
+        translate_label: bool = True,
+        translate_placeholder: bool = True,
+        translate_option_labels: bool = True,
+        translate_option_descriptions: bool = True,
+        **kwargs
+    ) -> None:
+        for child in self.children:
+            if isinstance(child, (Button, Select)):
+                await child.translate(
+                    locale,
+                    translator,
+                    translate_label=translate_label,
+                    translate_placeholder=translate_placeholder,
+                    translate_option_labels=translate_option_labels,
+                    translate_option_descriptions=translate_option_descriptions,
+                    **kwargs
+                )
 
     async def on_timeout(self) -> None:
         if self.message:

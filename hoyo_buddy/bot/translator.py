@@ -47,7 +47,7 @@ class Translator:
         )
         await asyncio.to_thread(tx.fetch_translations)
 
-    async def translate(
+    def translate(
         self,
         string: str,
         locale: Locale,
@@ -80,4 +80,4 @@ class AppCommandTranslator(app_commands.Translator):
     async def translate(
         self, string: locale_str, locale: Locale, _: TranslationContextTypes
     ) -> str:
-        return await self.translator.translate(string.message, locale, **string.extras)
+        return self.translator.translate(string.message, locale, **string.extras)

@@ -43,16 +43,12 @@ class Select(discord.ui.Select):
         **kwargs
     ) -> None:
         if self.placeholder and translate_placeholder:
-            self.placeholder = await translator.translate(
-                self.placeholder, locale, **kwargs
-            )
+            self.placeholder = translator.translate(self.placeholder, locale, **kwargs)
         for option in self.options:
             if translate_optoin_labels:
-                option.label = await translator.translate(
-                    option.label, locale, **kwargs
-                )
+                option.label = translator.translate(option.label, locale, **kwargs)
             if option.description and translate_option_descriptions:
-                option.description = await translator.translate(
+                option.description = translator.translate(
                     option.description, locale, **kwargs
                 )
 

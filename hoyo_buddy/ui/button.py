@@ -42,7 +42,7 @@ class Button(discord.ui.Button):
         **kwargs
     ):
         if self.label and translate_label:
-            self.label = await translator.translate(self.label, locale, **kwargs)
+            self.label = translator.translate(self.label, locale, **kwargs)
 
     async def set_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
         self.disabled = True

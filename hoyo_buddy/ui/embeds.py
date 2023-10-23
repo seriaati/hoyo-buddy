@@ -36,24 +36,18 @@ class Embed(E):
         **kwargs,
     ) -> None:
         if self.title and translate_title:
-            self.title = await translator.translate(self.title, locale, **kwargs)
+            self.title = translator.translate(self.title, locale, **kwargs)
         if self.description and translate_description:
-            self.description = await translator.translate(
-                self.description, locale, **kwargs
-            )
+            self.description = translator.translate(self.description, locale, **kwargs)
         if self.footer.text and translate_footer_text:
-            self.footer.text = await translator.translate(
-                self.footer.text, locale, **kwargs
-            )
+            self.footer.text = translator.translate(self.footer.text, locale, **kwargs)
         if self.author.name and translate_author_name:
-            self.author.name = await translator.translate(
-                self.author.name, locale, **kwargs
-            )
+            self.author.name = translator.translate(self.author.name, locale, **kwargs)
         for field in self.fields:
             if field.name and translate_field_names:
-                field.name = await translator.translate(field.name, locale, **kwargs)
+                field.name = translator.translate(field.name, locale, **kwargs)
             if field.value and translate_field_values:
-                field.value = await translator.translate(field.value, locale, **kwargs)
+                field.value = translator.translate(field.value, locale, **kwargs)
 
 
 class DefaultEmbed(Embed):

@@ -76,10 +76,8 @@ class GeetestWebServer:
         if user_id is None:
             return web.Response(status=400, reason="Missing user_id")
         locale = Locale(request.query.get("locale", "en-US"))
-        button_label = await self.translator.translate("Login", locale)
-        close_tab = await self.translator.translate(
-            "You may now close this tab.", locale
-        )
+        button_label = self.translator.translate("Login", locale)
+        close_tab = self.translator.translate("You may now close this tab.", locale)
         return web.Response(
             body=INDEX.format(
                 user_id=user_id, button_label=button_label, close_tab=close_tab

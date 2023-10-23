@@ -34,15 +34,13 @@ class Modal(discord.ui.Modal):
         **kwargs
     ) -> None:
         if translate_title:
-            self.title = await translator.translate(self.title, locale, **kwargs)
+            self.title = translator.translate(self.title, locale, **kwargs)
         for item in self.children:
             if isinstance(item, discord.ui.TextInput):
                 if translate_input_labels:
-                    item.label = await translator.translate(
-                        item.label, locale, **kwargs
-                    )
+                    item.label = translator.translate(item.label, locale, **kwargs)
                 if item.placeholder and translate_input_placeholders:
-                    item.placeholder = await translator.translate(
+                    item.placeholder = translator.translate(
                         item.placeholder, locale, **kwargs
                     )
 

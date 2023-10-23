@@ -61,3 +61,9 @@ class View(discord.ui.View):
             await i.response.send_message(**kwargs)
         except discord.InteractionResponded:
             await i.followup.send(**kwargs)
+
+    async def absolute_edit(self, i: discord.Interaction, **kwargs) -> None:
+        try:
+            await i.response.edit_message(**kwargs)
+        except discord.InteractionResponded:
+            await i.edit_original_response(**kwargs)

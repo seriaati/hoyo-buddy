@@ -26,7 +26,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         await self.translator.load()
         await self.tree.set_translator(AppCommandTranslator(self.translator))
 
-        for filepath in Path("../cogs").glob("**/*.py"):
+        for filepath in Path("hoyo_buddy/cogs").glob("**/*.py"):
             cog_name = Path(filepath).stem
             try:
                 await self.load_extension(f"hoyo_buddy.cogs.{cog_name}")

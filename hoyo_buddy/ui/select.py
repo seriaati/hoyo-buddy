@@ -4,8 +4,7 @@ import discord
 from discord.components import SelectOption
 from discord.utils import MISSING
 
-from ..bot import HoyoBuddy
-from ..bot.emojis import LOADING
+from ..bot import HoyoBuddy, emojis
 from ..bot.translator import Translator
 from ..db.models import User
 
@@ -60,7 +59,7 @@ class Select(discord.ui.Select):
         user = await User.get(id=i.user.id).prefetch_related("settings")
         self.options = [
             SelectOption(
-                label="Loading...", value="loading", default=True, emoji=LOADING
+                label="Loading...", value="loading", default=True, emoji=emojis.LOADING
             )
         ]
         self.disabled = True

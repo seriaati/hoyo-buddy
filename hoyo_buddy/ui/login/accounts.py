@@ -90,7 +90,8 @@ class AccountSelector(Select):
         selected_account = discord.utils.get(
             await self.view.user.accounts.all(), uid=int(uid), game__value=game
         )
-        assert selected_account
+        if selected_account is None:
+            raise ValueError("Invalid account selected")
         self.view.selected_account = selected_account
         embed = self.view.get_account_embed()
         await i.response.edit_message(embed=embed)
@@ -107,7 +108,8 @@ class DeleteAccount(Button):
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         self.view: AccountManager
         account = self.view.selected_account
-        assert account
+        if account is None:
+            raise ValueError("No account selected")
         await self.view.user.accounts.remove(account)
         await self.view.user.save()
         embed = DefaultEmbed(
@@ -161,7 +163,8 @@ class EditNickname(Button):
         await modal.wait()
         if modal.nickname.value:
             account = self.view.selected_account
-            assert account
+            if account is None:
+                raise ValueError("No account selected")
             account.nickname = modal.nickname.value
             await account.save()
 
@@ -204,7 +207,8 @@ class SelectAccountsToAdd(Select):
         for value in self.values:
             uid, game = value.split("_")
             account = discord.utils.get(self.accounts, uid=int(uid), game__value=game)
-            assert account
+            if account is None:
+                raise ValueError("Invalid account selected")
             hoyo_account, _ = await HoyoAccount.get_or_create(
                 uid=account.uid,
                 username=account.nickname,

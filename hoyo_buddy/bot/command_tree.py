@@ -11,13 +11,22 @@ from . import HoyoBuddy
 
 
 async def get_error_embed(i: Interaction[HoyoBuddy], error: Exception) -> ErrorEmbed:
-    embed = ErrorEmbed(title="An error occurred", description=str(error))
+    user = await User.get(id=i.user.id).prefetch_related("settings")
+
     if isinstance(error, HoyoBuddyError):
-        user = await User.get(id=i.user.id).prefetch_related("settings")
-        await embed.translate(
+        embed = ErrorEmbed(
             user.settings.locale or i.locale,
             i.client.translator,
+            title="An error occurred",
+            description=str(error),
             **error.kwargs,
+        )
+    else:
+        embed = ErrorEmbed(
+            user.settings.locale or i.locale,
+            i.client.translator,
+            title="An error occurred",
+            description=str(error),
         )
     return embed
 

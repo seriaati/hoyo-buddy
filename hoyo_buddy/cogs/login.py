@@ -7,7 +7,7 @@ from discord.ext import commands
 
 from ..bot import HoyoBuddy
 from ..db.models import User
-from ..ui.login.account_manager import AccountManager
+from ..ui.login.accounts import AccountManager
 
 
 class Login(commands.Cog):

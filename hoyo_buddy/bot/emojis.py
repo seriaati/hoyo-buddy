@@ -17,9 +17,8 @@ HONKAI_IMPACT_3RD = "<:honkai_impact:1106034318666637415>"
 def get_game_emoji(game: Union[genshin.Game, Game]) -> str:
     if game is genshin.Game.GENSHIN or game is Game.GENSHIN:
         return GENSHIN_IMPACT
-    elif game is genshin.Game.HONKAI or game is Game.HONKAI:
+    if game is genshin.Game.HONKAI or game is Game.HONKAI:
         return HONKAI_IMPACT_3RD
-    elif game is genshin.Game.STARRAIL or game is Game.STARRAIL:
+    if game is genshin.Game.STARRAIL or game is Game.STARRAIL:
         return HONKAI_STAR_RAIL
-    else:
-        raise ValueError(f"Invalid game: {game}")
+    raise ValueError(f"Invalid game: {game}")

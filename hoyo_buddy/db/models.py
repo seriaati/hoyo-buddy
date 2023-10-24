@@ -44,8 +44,8 @@ class HoyoAccount(Model):
     uid = fields.IntField(index=True)
     username = fields.CharField(max_length=32)
     nickname: Optional[str] = fields.CharField(max_length=32, null=True)  # type: ignore
-    game = fields.CharEnumField(Game)
-    cookies: Dict[str, Any] = fields.JSONField()  # type: ignore
+    game = fields.CharEnumField(Game, max_length=32)
+    cookies = fields.TextField()
     users: fields.ManyToManyRelation[User]
 
     class Meta:

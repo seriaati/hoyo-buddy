@@ -15,12 +15,14 @@ class HoyoBuddy(commands.AutoShardedBot):
         self,
         *args,
         session: ClientSession,
+        prod: bool,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.session = session
         self.uptime = discord.utils.utcnow()
-        self.translator = Translator()
+        self.translator = Translator(prod)
+        self.prod = prod
 
     async def setup_hook(self):
         await self.translator.load()

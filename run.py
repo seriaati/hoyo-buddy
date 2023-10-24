@@ -72,6 +72,7 @@ async def main():
         chunk_guilds_at_startup=False,
         max_messages=None,
         tree_cls=CommandTree,
+        prod=prod,
     )
     db = Database(os.getenv("DB_URL") or "sqlite://db.sqlite3")
 

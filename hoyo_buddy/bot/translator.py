@@ -19,9 +19,10 @@ class CustomRenderingPolicy(AbstractRenderingPolicy):
 
 
 class Translator:
-    def __init__(self) -> None:
+    def __init__(self, prod: bool) -> None:
         super().__init__()
         self.not_translated: Set[str] = set()
+        self.prod = prod
 
     async def load(self) -> None:
         init(
@@ -45,8 +46,16 @@ class Translator:
             ),
             missing_policy=CustomRenderingPolicy(),
         )
-        await asyncio.to_thread(tx.fetch_translations)
         log.info("Translator loaded")
+
+        if self.prod:
+            log.info("Fetching translations...")
+            start = asyncio.get_running_loop().time()
+            await asyncio.to_thread(tx.fetch_translations)
+            log.info(
+                "Fetched translations in %.2f seconds",
+                asyncio.get_running_loop().time() - start,
+            )
 
     def translate(
         self,
@@ -64,7 +73,7 @@ class Translator:
         return translation
 
     async def unload(self) -> None:
-        if self.not_translated:
+        if self.not_translated and self.prod:
             log.info("Pushing source strings to Transifex...")
             log.info("Strings not translated: %s", self.not_translated)
             await asyncio.to_thread(

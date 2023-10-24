@@ -30,8 +30,11 @@ class Select(discord.ui.Select):
             disabled=disabled,
             row=row,
         )
+        if placeholder:
+            self.original_placeholder = placeholder
+        self.original_options = self.options.copy()
 
-    async def translate(
+    def translate(
         self,
         locale: discord.Locale,
         translator: Translator,
@@ -52,7 +55,6 @@ class Select(discord.ui.Select):
                 )
 
     async def set_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
-        user = await User.get(id=i.user.id).prefetch_related("settings")
         self.options = [
             SelectOption(
                 label="Loading...", value="loading", default=True, emoji=emojis.LOADING
@@ -60,5 +62,12 @@ class Select(discord.ui.Select):
         ]
         self.disabled = True
         self.placeholder = "Loading..."
-        await self.translate(user.settings.locale or i.locale, i.client.translator)
+        self.translate(self.view.locale, self.view.translator)  # type: ignore
+        await self.view.absolute_edit(i, view=self.view)  # type: ignore
+
+    async def unset_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
+        self.options = self.original_options.copy()
+        self.disabled = False
+        self.placeholder = self.original_placeholder
+        self.translate(self.view.locale, self.view.translator)  # type: ignore
         await self.view.absolute_edit(i, view=self.view)  # type: ignore

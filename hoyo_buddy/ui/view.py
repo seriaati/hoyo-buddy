@@ -1,11 +1,11 @@
-from typing import Any, Optional, Union
+import logging
+from typing import Any, Optional, Self, Union
 
 import discord
 
 from ..bot import HoyoBuddy
 from ..bot.command_tree import get_error_embed
 from ..bot.translator import Translator
-from ..db.models import User
 from .button import Button
 from .embeds import ErrorEmbed
 from .select import Select
@@ -16,36 +16,17 @@ log = logging.getLogger(__name__)
 class View(discord.ui.View):
     def __init__(
         self,
-        author: Union[discord.Member, discord.User],
         *,
+        author: Union[discord.Member, discord.User],
+        locale: discord.Locale,
+        translator: Translator,
         timeout: Optional[float] = 180
     ):
         super().__init__(timeout=timeout)
         self.author = author
+        self.locale = locale
+        self.translator = translator
         self.message: Optional[discord.Message] = None
-
-    async def translate(
-        self,
-        locale: discord.Locale,
-        translator: Translator,
-        *,
-        translate_label: bool = True,
-        translate_placeholder: bool = True,
-        translate_option_labels: bool = True,
-        translate_option_descriptions: bool = True,
-        **kwargs
-    ) -> None:
-        for child in self.children:
-            if isinstance(child, (Button, Select)):
-                await child.translate(
-                    locale,
-                    translator,
-                    translate_label=translate_label,
-                    translate_placeholder=translate_placeholder,
-                    translate_option_labels=translate_option_labels,
-                    translate_option_descriptions=translate_option_descriptions,
-                    **kwargs
-                )
 
     async def on_timeout(self) -> None:
         if self.message:
@@ -65,11 +46,11 @@ class View(discord.ui.View):
     async def interaction_check(self, i: discord.Interaction[HoyoBuddy]) -> bool:
         if i.user.id != self.author.id:
             embed = ErrorEmbed(
+                self.locale,
+                self.translator,
                 title="Interaction failed",
                 description="This view is not initiated by you, therefore you cannot use it.",
             )
-            user = await User.get(id=i.user.id).prefetch_related("settings")
-            await embed.translate(user.settings.locale or i.locale, i.client.translator)
             await i.response.send_message(embed, ephemeral=True)
             return False
         return True

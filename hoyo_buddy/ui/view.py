@@ -10,6 +10,8 @@ from .button import Button
 from .embeds import ErrorEmbed
 from .select import Select
 
+log = logging.getLogger(__name__)
+
 
 class View(discord.ui.View):
     def __init__(
@@ -56,6 +58,7 @@ class View(discord.ui.View):
         error: Exception,
         _: discord.ui.Item[Any],
     ) -> None:
+        log.exception(error)
         embed = await get_error_embed(i, error)
         await self.absolute_send(i, embed=embed, ephemeral=True)
 

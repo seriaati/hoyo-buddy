@@ -1,3 +1,9 @@
+from typing import Union
+
+import genshin
+
+from ..db.models import Game
+
 LOADING = "<a:loading_emoji:1106388708862738463>"
 DELETE = "<:DELETE:1166012141833310248>"
 EDIT = "<:EDIT:1166020688927260702>"
@@ -6,3 +12,14 @@ BACK = "<:BACK:1166306958337396766>"
 GENSHIN_IMPACT = "<:genshin_impact:1025630733068423169>"
 HONKAI_STAR_RAIL = "<:honkai_star_rail:1105806784117088336>"
 HONKAI_IMPACT_3RD = "<:honkai_impact:1106034318666637415>"
+
+
+def get_game_emoji(game: Union[genshin.Game, Game]) -> str:
+    if game is genshin.Game.GENSHIN or game is Game.GENSHIN:
+        return GENSHIN_IMPACT
+    elif game is genshin.Game.HONKAI or game is Game.HONKAI:
+        return HONKAI_IMPACT_3RD
+    elif game is genshin.Game.STARRAIL or game is Game.STARRAIL:
+        return HONKAI_STAR_RAIL
+    else:
+        raise ValueError(f"Invalid game: {game}")

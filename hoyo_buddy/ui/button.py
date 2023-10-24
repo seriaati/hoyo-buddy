@@ -50,3 +50,22 @@ class Button(discord.ui.Button):
         user = await User.get(id=i.user.id).prefetch_related("settings")
         await self.translate(user.settings.locale or i.locale, i.client.translator)
         await self.view.absolute_edit(i, view=self.view)  # type: ignore
+class GoBackButton(Button):
+    def __init__(
+        self,
+        original_children: List[discord.ui.Item],
+        embed: Optional[discord.Embed] = None,
+    ):
+        super().__init__(emoji=emojis.BACK, row=4)
+        self.original_children = original_children.copy()
+        self.embed = embed
+
+    async def callback(self, i: discord.Interaction) -> Any:
+        self.view.clear_items()  # type: ignore
+        for item in self.original_children:
+            self.view.add_item(item)  # type: ignore
+
+        if self.embed:
+            await i.response.edit_message(embed=self.embed, view=self.view)
+        else:
+            await i.response.edit_message(view=self.view)

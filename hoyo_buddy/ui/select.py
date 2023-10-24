@@ -7,7 +7,6 @@ from discord.utils import MISSING
 from ..bot import HoyoBuddy, emojis
 from ..bot.translator import Translator
 from ..db.models import User
-from .view import View
 
 
 class Select(discord.ui.Select):
@@ -62,5 +61,4 @@ class Select(discord.ui.Select):
         self.disabled = True
         self.placeholder = "Loading..."
         await self.translate(user.settings.locale or i.locale, i.client.translator)
-        self.view: View
-        await self.view.absolute_edit(i, view=self.view)
+        await self.view.absolute_edit(i, view=self.view)  # type: ignore

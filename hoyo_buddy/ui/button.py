@@ -8,7 +8,6 @@ from discord.partial_emoji import PartialEmoji
 from ..bot import HoyoBuddy, emojis
 from ..bot.translator import Translator
 from ..db.models import User
-from .view import View
 
 
 class Button(discord.ui.Button):
@@ -50,5 +49,4 @@ class Button(discord.ui.Button):
         self.label = "Loading..."
         user = await User.get(id=i.user.id).prefetch_related("settings")
         await self.translate(user.settings.locale or i.locale, i.client.translator)
-        self.view: View
-        await self.view.absolute_edit(i, view=self.view)
+        await self.view.absolute_edit(i, view=self.view)  # type: ignore

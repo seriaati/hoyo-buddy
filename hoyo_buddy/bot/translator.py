@@ -46,6 +46,7 @@ class Translator:
             missing_policy=CustomRenderingPolicy(),
         )
         await asyncio.to_thread(tx.fetch_translations)
+        log.info("Translator loaded")
 
     def translate(
         self,
@@ -54,8 +55,8 @@ class Translator:
         **kwargs,
     ) -> str:
         lang = locale.value.replace("-", "_")
-        if "<NO_TRANSLATE>" in string:
-            return string.replace("<NO_TRANSLATE>", "")
+        if "<NO_TRANS>" in string or kwargs.get("no_trans", False):
+            return string.replace("<NO_TRANS>", "")
         translation = tx.translate(string, lang, params=None if kwargs else kwargs)
         if translation is None:
             self.not_translated.add(string)
@@ -70,6 +71,7 @@ class Translator:
                 tx.push_source_strings,
                 [SourceString(string) for string in self.not_translated],
             )
+        log.info("Translator unloaded")
 
 
 class AppCommandTranslator(app_commands.Translator):

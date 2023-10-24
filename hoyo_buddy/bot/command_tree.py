@@ -1,13 +1,15 @@
+import logging
 from typing import Literal
 
 from discord import InteractionResponded, app_commands
-from discord.app_commands.errors import AppCommandError
 from discord.interactions import Interaction
 
 from ..db.models import Settings, User
 from ..exceptions import HoyoBuddyError
 from ..ui.embeds import ErrorEmbed
 from . import HoyoBuddy
+
+log = logging.getLogger(__name__)
 
 
 async def get_error_embed(i: Interaction[HoyoBuddy], error: Exception) -> ErrorEmbed:
@@ -39,10 +41,8 @@ class CommandTree(app_commands.CommandTree):
         return True
 
     async def on_error(self, i: Interaction[HoyoBuddy], error: Exception) -> None:
+        log.exception(error)
         embed = await get_error_embed(i, error)
-        user = await User.get(id=i.user.id).prefetch_related("settings")
-        locale = user.settings.locale or i.locale
-        await embed.translate(locale, i.client.translator)
         try:
             await i.response.send_message(embed=embed, ephemeral=True)
         except InteractionResponded:

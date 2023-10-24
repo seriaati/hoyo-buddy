@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "hoyo-buddy"
+version = "0.1.0"
+description = "Your best buddy in all Hoyoverse games."
+authors = ["seriaati <seria.ati@gmail.com>"]
+license = "GPL-3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+discord-py = "^2.3.2"
+python-dotenv = "^1.0.0"
+sentry-sdk = "^1.32.0"
+tortoise-orm = "^0.20.0"
+asyncpg = "^0.28.0"
+transifex-python = "^3.4.0"
+genshin = "^1.6.1"
+orjson = "^3.9.9"
+rsa = "^4.9"
+jishaku = "^2.5.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

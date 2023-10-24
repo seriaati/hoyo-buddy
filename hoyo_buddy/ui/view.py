@@ -84,6 +84,13 @@ class View(discord.ui.View):
             if isinstance(child, (discord.ui.Button, discord.ui.Select)):
                 child.disabled = False
 
+    def add_item(
+        self, item: Union[Button, Select], *, translate: bool = True, **kwargs
+    ) -> Self:
+        if translate:
+            item.translate(self.locale, self.translator, **kwargs)
+        return super().add_item(item)
+
     async def absolute_send(self, i: discord.Interaction, **kwargs) -> None:
         try:
             await i.response.send_message(**kwargs)

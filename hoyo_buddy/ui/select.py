@@ -6,7 +6,6 @@ from discord.utils import MISSING
 
 from ..bot import HoyoBuddy, emojis
 from ..bot.translator import Translator
-from ..db.models import User
 
 
 class Select(discord.ui.Select):

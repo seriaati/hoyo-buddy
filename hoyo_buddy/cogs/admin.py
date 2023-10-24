@@ -1,5 +1,3 @@
-import asyncio
-import os
 from typing import Any
 
 from discord.app_commands import locale_str as _T

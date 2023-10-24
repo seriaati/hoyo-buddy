@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Optional
 
 import discord
@@ -6,6 +7,8 @@ from discord.utils import MISSING
 from ..bot import HoyoBuddy
 from ..bot.command_tree import get_error_embed
 from ..bot.translator import Translator
+
+log = logging.getLogger(__name__)
 
 
 class Modal(discord.ui.Modal):
@@ -20,6 +23,7 @@ class Modal(discord.ui.Modal):
         error: Exception,
         _: discord.ui.Item[Any],
     ) -> None:
+        log.exception(error)
         embed = await get_error_embed(i, error)
         await self.absolute_send(i, embed=embed, ephemeral=True)
 

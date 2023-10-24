@@ -92,3 +92,8 @@ class View(discord.ui.View):
             await i.response.edit_message(**kwargs)
         except discord.InteractionResponded:
             await i.edit_original_response(**kwargs)
+
+    def get_embed(self, i: discord.Interaction) -> Optional[discord.Embed]:
+        if i.message and i.message.embeds:
+            return i.message.embeds[0]
+        return None

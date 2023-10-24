@@ -17,7 +17,18 @@ GAME_CONVERTER = {
     Game.GENSHIN: genshin.Game.GENSHIN,
     Game.STARRAIL: genshin.Game.STARRAIL,
     Game.HONKAI: genshin.Game.HONKAI,
-}
+class GenshinClient(genshin.Client):
+    def __init__(
+        self,
+        cookies: str,
+        *,
+        uid: Optional[int] = None,
+        game: genshin.Game = genshin.Game.GENSHIN,
+    ) -> None:
+        super().__init__(cookies, game=game, uid=uid)
+
+    def set_lang(self, locale: Locale) -> None:
+        self.lang = LOCALE_CONVERTER[locale]
 
 
 class User(Model):
@@ -45,10 +56,8 @@ class HoyoAccount(Model):
         return f"[{self.uid}] {self.username}"
 
     @property
-    def client(self) -> genshin.Client:
-        return genshin.Client(
-            self.cookies, game=GAME_CONVERTER[self.game], uid=self.uid
-        )
+    def client(self) -> GenshinClient:
+        return GenshinClient(self.cookies, game=GAME_CONVERTER[self.game], uid=self.uid)
 
 
 class Settings(Model):

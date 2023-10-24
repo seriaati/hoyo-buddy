@@ -1,25 +1,21 @@
-from typing import Optional, Union
+from typing import Any, List, Optional
 
 import discord
-from discord.emoji import Emoji
-from discord.enums import ButtonStyle
-from discord.partial_emoji import PartialEmoji
 
 from ..bot import HoyoBuddy, emojis
 from ..bot.translator import Translator
-from ..db.models import User
 
 
 class Button(discord.ui.Button):
     def __init__(
         self,
         *,
-        style: ButtonStyle = ButtonStyle.secondary,
+        style: discord.ButtonStyle = discord.ButtonStyle.secondary,
         label: Optional[str] = None,
         disabled: bool = False,
         custom_id: Optional[str] = None,
         url: Optional[str] = None,
-        emoji: Optional[Union[Emoji, PartialEmoji, str]] = None,
+        emoji: Optional[str] = None,
         row: Optional[int] = None
     ):
         super().__init__(
@@ -31,8 +27,10 @@ class Button(discord.ui.Button):
             emoji=emoji,
             row=row,
         )
+        self.original_label = label
+        self.original_emoji = emoji
 
-    async def translate(
+    def translate(
         self,
         locale: discord.Locale,
         translator: Translator,
@@ -47,9 +45,17 @@ class Button(discord.ui.Button):
         self.disabled = True
         self.emoji = emojis.LOADING
         self.label = "Loading..."
-        user = await User.get(id=i.user.id).prefetch_related("settings")
-        await self.translate(user.settings.locale or i.locale, i.client.translator)
+        self.translate(self.view.locale, self.view.translator)  # type: ignore
         await self.view.absolute_edit(i, view=self.view)  # type: ignore
+
+    async def unset_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
+        self.disabled = False
+        self.emoji = self.original_emoji
+        self.label = self.original_label
+        self.translate(self.view.locale, self.view.translator)  # type: ignore
+        await self.view.absolute_edit(i, view=self.view)  # type: ignore
+
+
 class GoBackButton(Button):
     def __init__(
         self,

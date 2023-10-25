@@ -61,8 +61,9 @@ class GoBackButton(Button):
         self,
         original_children: List[discord.ui.Item],
         embed: Optional[discord.Embed] = None,
+        row: int = 4,
     ):
-        super().__init__(emoji=emojis.BACK, row=4)
+        super().__init__(emoji=emojis.BACK, row=row)
         self.original_children = original_children.copy()
         self.embed = embed
 

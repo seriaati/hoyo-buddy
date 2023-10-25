@@ -50,23 +50,24 @@ class AccountManager(View):
         if account is None:
             return embed
 
-        embed.description = None
-        embed.add_field(name="Game", value=account.game.value)
-        embed.add_field(
-            name="Username",
-            value=account.username,
-            translate_value=False,
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=str(account),
+            translate_title=False,
         )
+        embed.add_field(name="Game", value=account.game.value, inline=False)
         embed.add_field(
-            name="UID",
-            value=str(account.uid),
-            translate_value=False,
+            name="Server",
+            value=account.server,
+            inline=False,
         )
         if account.nickname:
             embed.add_field(
-                name="Nickname",
-                value=account.nickname,
+                name="Username",
+                value=account.username,
                 translate_value=False,
+                inline=False,
             )
         return embed
 

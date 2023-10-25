@@ -301,6 +301,32 @@ class WithDevTools(Button):
     def __init__(self):
         super().__init__(label="With DevTools (Desktop Only)")
 
+    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+        self.view: AccountManager
+        embed = DefaultEmbed(
+            self.view.locale,
+            self.view.translator,
+            title="Instructions",
+            description=(
+                "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (if your account is in the CN server)\n"
+                "2. Open the DevTools by pressing F12 or Ctrl+Shift+I\n"
+                "3. Press the >> icon on the top navigation bar\n"
+                "4. Click on the `Application` tab\n"
+                "5. Click on `Cookies` on the left sidebar\n"
+                "6. Click on the website you're on (e.g. `https://www.hoyolab.com`)\n"
+                "7. Type `ltoken` in the `Filter` box\n"
+                "8. Copy the `Value` of `ltoken_v2`\n"
+                "9. Type `ltuid` in the `Filter` box\n"
+                "10. Copy the `Value` of `ltuid_v2`\n"
+                "11. Click the button below and paste the values you copied in the corresponding boxes\n"
+            ),
+        )
+        embed.set_image(url="https://i.imgur.com/oSljaFQ.gif")
+        go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))
+        self.view.clear_items()
+        self.view.add_item(EnterCookies(dev_tools=True))
+        self.view.add_item(go_back_button)
+        await i.response.edit_message(embed=embed, view=self.view)
 
 class WithEmailPassword(Button):
     def __init__(self):

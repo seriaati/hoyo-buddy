@@ -38,16 +38,6 @@ if prod:
 discord.VoiceClient.warn_nacl = False
 
 
-class RemoveNoise(logging.Filter):
-    def __init__(self):
-        super().__init__(name="discord.state")
-
-    def filter(self, record: logging.LogRecord) -> bool:
-        if record.levelname == "WARNING" and "referencing an unknown" in record.msg:
-            return False
-        return True
-
-
 async def main():
     intents = discord.Intents(
         guilds=True,
@@ -93,7 +83,6 @@ def setup_logging():
         max_bytes = 32 * 1024 * 1024  # 32 MiB
         logging.getLogger("discord").setLevel(logging.INFO)
         logging.getLogger("discord.http").setLevel(logging.WARNING)
-        logging.getLogger("discord.state").addFilter(RemoveNoise())
 
         log.setLevel(logging.INFO)
         handler = logging.handlers.RotatingFileHandler(

@@ -280,18 +280,19 @@ class WithJavaScript(Button):
             self.view.translator,
             title="Instructions",
             description=(
-                "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (if your account is in the CN server)\n"
+                "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n"
                 "2. Copy the code below\n"
                 "3. Click on the address bar and type `java`\n"
                 "4. Paste the code and press enter\n"
                 "5. Select all and copy the text that appears\n"
-                "6. Press the button below and paste the text in the box\n"
+                "6. Click the button below and paste the text in the box\n"
             ),
         )
+        embed.set_image(url="https://i.imgur.com/PxO0Wr6.gif")
         code = "script:document.write(document.cookie)"
         go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))
         self.view.clear_items()
-        self.view.add_item(SubmitCookies())
+        self.view.add_item(EnterCookies())
         self.view.add_item(go_back_button)
         await i.response.edit_message(embed=embed, view=self.view)
         await i.followup.send(code)

@@ -426,14 +426,13 @@ class EmailPasswordContinueButton(Button):
                 )
                 self.view.remove_item(self)
                 return await i.response.edit_message(embed=embed, view=self.view)
-            else:
-                embed = ErrorEmbed(
-                    self.view.locale,
-                    self.view.translator,
-                    title="Unknown error",
-                    description=f"Error code: {retcode}\nMessage: {cookies.get('message')}",
-                )
-                return await i.response.edit_message(embed=embed, view=self.view)
+            embed = ErrorEmbed(
+                self.view.locale,
+                self.view.translator,
+                title="Unknown error",
+                description=f"Error code: {retcode}\nMessage: {cookies.get('message')}",
+            )
+            return await i.response.edit_message(embed=embed, view=self.view)
 
         await self.set_loading_state(i)
         str_cookies = "; ".join(f"{key}={value}" for key, value in cookies.items())

@@ -23,8 +23,10 @@ class Login(commands.Cog):
         view = AccountManager(
             author=i.user, locale=locale, translator=i.client.translator, user=user
         )
+        await view.start()
         embed = view.get_account_embed()
         await i.response.send_message(embed=embed, view=view)
+        view.message = await i.original_response()
 
 
 async def setup(bot: HoyoBuddy):

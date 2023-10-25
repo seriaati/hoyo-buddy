@@ -25,9 +25,13 @@ class AccountManager(View):
     ):
         super().__init__(author=author, locale=locale, translator=translator)
         self.user = user
-        if user.accounts:
-            self.selected_account = user.accounts[0]
-            self.add_item(AccountSelector(self.get_account_options()))
+        self.locale = locale
+
+    async def start(self) -> None:
+        if self.user.accounts:
+            self.selected_account = self.user.accounts[0]
+            self.add_item(AccountSelector(await self.get_account_options()))
+            self.add_item(AddAccount())
             self.add_item(EditNickname())
             self.add_item(DeleteAccount())
         else:

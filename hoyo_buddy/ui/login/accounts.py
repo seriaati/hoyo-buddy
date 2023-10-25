@@ -328,9 +328,152 @@ class WithDevTools(Button):
         self.view.add_item(go_back_button)
         await i.response.edit_message(embed=embed, view=self.view)
 
+
+class EmailPasswordContinueButton(Button):
+    def __init__(self):
+        super().__init__(
+            custom_id="email_password_continue",
+            label="Continue",
+            emoji=emojis.FORWARD,
+            style=discord.ButtonStyle.primary,
+        )
+
+    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+        self.view: AccountManager
+        user = self.view.user
+        await user.refresh_from_db()
+        cookies: Optional[Dict[str, Any]] = user.temp_data.get("cookies")
+        if cookies is None:
+            embed = ErrorEmbed(
+                self.view.locale,
+                self.view.translator,
+                title="Cookies not found",
+                description="Please complete the CAPTCHA before continuing.",
+            )
+            self.label = "Refresh"
+            self.emoji = emojis.REFRESH
+            return await i.response.edit_message(embed=embed, view=self.view)
+
+        if retcode := cookies.get("retcode"):
+            if str(retcode) == "-3208":
+                embed = ErrorEmbed(
+                    self.view.locale,
+                    self.view.translator,
+                    title="Invalid email or password",
+                    description="Either your email or password is incorrect, please try again by pressing the back button.",
+                )
+                self.view.remove_item(self)
+                return await i.response.edit_message(embed=embed, view=self.view)
+            else:
+                embed = ErrorEmbed(
+                    self.view.locale,
+                    self.view.translator,
+                    title="Unknown error",
+                    description=f"Error code: {retcode}\nMessage: {cookies.get('message')}",
+                )
+                return await i.response.edit_message(embed=embed, view=self.view)
+
+        await self.set_loading_state(i)
+        str_cookies = "; ".join(f"{key}={value}" for key, value in cookies.items())
+        client = GenshinClient(str_cookies)
+        client.set_lang(self.view.locale)
+        game_accounts = await client.get_game_accounts()
+
+        go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))
+        self.view.clear_items()
+        self.view.add_item(
+            SelectAccountsToAdd(
+                self.view.locale,
+                self.view.translator,
+                accounts=game_accounts,
+                cookies=str_cookies,
+            ),
+            translate=False,
+        )
+        self.view.add_item(go_back_button)
+        await i.edit_original_response(embed=None, view=self.view)
+
+
+class EmailPasswordModal(Modal):
+    email = discord.ui.TextInput(label="email or username", placeholder="a@gmail.com")
+    password = discord.ui.TextInput(label="password", placeholder="12345678")
+
+
+class EnterEmailPassword(Button):
+    def __init__(self):
+        super().__init__(
+            label="Enter Email and Password",
+            style=discord.ButtonStyle.primary,
+            emoji=emojis.PASSWORD,
+        )
+
+    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+        self.view: AccountManager
+
+        modal = EmailPasswordModal(title="Enter Email and Password")
+        modal.translate(
+            self.view.locale, i.client.translator, translate_input_placeholders=False
+        )
+        await i.response.send_modal(modal)
+        await modal.wait()
+
+        if modal.email.value is None or modal.password.value is None:
+            return
+        email = modal.email.value
+        password = modal.password.value
+        self.view.user.temp_data["email"] = email
+        self.view.user.temp_data["password"] = password
+        await self.view.user.save()
+
+        go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))
+        self.view.clear_items()
+        web_server_url = (
+            "https://geetest-server.seriaati.xyz"
+            if i.client.prod
+            else "http://localhost:5000"
+        )
+        self.view.add_item(
+            Button(
+                label="Complete CAPTCHA", url=f"{web_server_url}/?user_id={i.user.id}"
+            )
+        )
+        self.view.add_item(EmailPasswordContinueButton())
+        self.view.add_item(go_back_button)
+        embed = DefaultEmbed(
+            self.view.locale,
+            self.view.translator,
+            title="Instructions",
+            description=(
+                f"{emojis.INFO} Note: If you don't see the `Login` button after going to the website, it's either because the Mihoyo servers are busy or you entered the wrong email or password.\n\n"
+                "1. Click the `Complete CAPTCHA` button below\n"
+                "2. You will be redirected to a website, click `Login`\n"
+                "3. Complete the CAPTCHA\n"
+                "4. After completing, click on the `Continue` button below\n"
+            ),
+        )
+        await i.edit_original_response(embed=embed, view=self.view)
+
+
 class WithEmailPassword(Button):
     def __init__(self):
         super().__init__(label="With Email and Password")
+
+    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+        self.view: AccountManager
+        embed = DefaultEmbed(
+            self.view.locale,
+            self.view.translator,
+            title="Instructions",
+            description=(
+                f"{emojis.INFO} Note: This method is not recommended as it requires you to enter your private information, it only serves as a last resort when the other 2 methods don't work. Your email and password are not saved permanently in the database, you can refer to the [source code](https://github.com/seriaati/hoyo-buddy/blob/3bbd8a9fb42d2bb8db4426fda7d7d3ba6d86e75c/hoyo_buddy/ui/login/accounts.py#L386) if you feel unsafe.\n\n"
+                "Click the button below to enter your email and password.\n"
+            ),
+        )
+        go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))
+        self.view.clear_items()
+        self.view.add_item(EnterEmailPassword())
+        self.view.add_item(go_back_button)
+        await i.response.edit_message(embed=embed, view=self.view)
 
 
 class AddAccount(Button):

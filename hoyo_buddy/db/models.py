@@ -59,11 +59,9 @@ class GenshinClient(genshin.Client):
 
 class User(Model):
     id = fields.BigIntField(pk=True, index=True, generated=False)
-    accounts: fields.ManyToManyRelation["HoyoAccount"] = fields.ManyToManyField(
-        "models.HoyoAccount", related_name="users"
-    )
     settings: fields.BackwardOneToOneRelation["Settings"]
     temp_data: Dict[str, Any] = fields.JSONField(default=dict)  # type: ignore
+    accounts: fields.ReverseRelation["HoyoAccount"]
 
 
 class HoyoAccount(Model):
@@ -72,14 +70,19 @@ class HoyoAccount(Model):
     nickname: Optional[str] = fields.CharField(max_length=32, null=True)  # type: ignore
     game = fields.CharEnumField(Game, max_length=32)
     cookies = fields.TextField()
-    users: fields.ManyToManyRelation[User]
+    server = fields.CharField(max_length=32)
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
+        "models.User", related_name="accounts"
+    )
 
     class Meta:
         unique_together = ("uid", "game")
         ordering = ["uid"]
 
     def __str__(self) -> str:
-        return f"[{self.uid}] {self.username}"
+        if self.nickname:
+            return f"{self.nickname} ({self.uid})"
+        return f"{self.username} ({self.uid})"
 
     @property
     def client(self) -> GenshinClient:

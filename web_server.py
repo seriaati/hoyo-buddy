@@ -7,10 +7,12 @@ import genshin
 from aiohttp import web
 from discord import Locale
 from dotenv import load_dotenv
-from genshin.errors import GenshinException, raise_for_retcode
+from genshin.errors import GenshinException
 from genshin.utility import geetest
+from tortoise.exceptions import DoesNotExist
 
 from hoyo_buddy.bot.translator import Translator
+from hoyo_buddy.db import Database
 from hoyo_buddy.db.models import User
 
 load_dotenv()
@@ -19,7 +21,7 @@ INDEX = """
 <!DOCTYPE html>
 <html>
   <body>
-	<button hidden type="button" id="login">{button_label}</button>
+  <button hidden type="button" id="login">{button_label}</button>
   </body>
   <script src="./gt.js"></script>
   <script>
@@ -27,7 +29,7 @@ INDEX = """
 	  .then((response) => response.json())
 	  .then((mmt) =>
 		window.initGeetest(
-		  {
+		  {{
 			gt: mmt.data.gt,
 			challenge: mmt.data.challenge,
 			new_captcha: mmt.data.new_captcha,
@@ -35,30 +37,31 @@ INDEX = """
 			lang: "en",
 			product: "bind",
 			https: false,
-		  },
-		  (captcha) => {
+		  }},
+		  (captcha) => {{
 			captcha.appendTo("login");
 			document.getElementById("login").hidden = false;
-			captcha.onSuccess(() => {
-			  fetch("/login", {
+			captcha.onSuccess(() => {{
+			  fetch("/login", {{
 				method: "POST",
-				body: JSON.stringify({
+				body: JSON.stringify({{
 				  sid: mmt.session_id,
 				  gt: captcha.getValidate(),
-				  user_id: {user_id}
-				}),
-			  });
+				  user_id: '{user_id}'
+				}}),
+			  }});
 			  document.body.innerHTML = "{close_tab}";
-			});
-			document.getElementById("login").onclick = () => {
+			}});
+			document.getElementById("login").onclick = () => {{
 			  return captcha.verify();
-			};
-		  }
+			}};
+		  }}
 		)
 	  );
   </script>
 </html>
 """
+
 
 GT_URL = "https://raw.githubusercontent.com/GeeTeam/gt3-node-sdk/master/demo/static/libs/gt.js"
 
@@ -70,8 +73,16 @@ class GeetestWebServer:
 
     @staticmethod
     async def _get_account_and_password(user_id: int) -> Tuple[str, str, User]:
-        user = await User.get(id=user_id)
-        return user.temp_data["account"], user.temp_data["password"], user
+        try:
+            user = await User.get(id=user_id)
+        except DoesNotExist:
+            raise web.HTTPNotFound(reason="User not found")
+
+        email = user.temp_data.get("email")
+        password = user.temp_data.get("password")
+        if email is None or password is None:
+            raise web.HTTPBadRequest(reason="Missing email or password")
+        return email, password, user
 
     async def index(self, request: web.Request) -> web.StreamResponse:
         user_id = request.query.get("user_id")
@@ -79,11 +90,16 @@ class GeetestWebServer:
             return web.Response(status=400, reason="Missing user_id")
         locale = Locale(request.query.get("locale", "en-US"))
         button_label = self.translator.translate("Login", locale)
-        close_tab = self.translator.translate("You may now close this tab.", locale)
+        close_tab = self.translator.translate(
+            "You may now close this tab and go back to Discord.", locale
+        )
+
+        body = INDEX.format(
+            user_id=user_id, button_label=button_label, close_tab=close_tab
+        )
+
         return web.Response(
-            body=INDEX.format(
-                user_id=user_id, button_label=button_label, close_tab=close_tab
-            ),
+            body=body,
             content_type="text/html",
         )
 
@@ -96,22 +112,26 @@ class GeetestWebServer:
         return web.Response(body=content, content_type="text/javascript")
 
     async def mmt_endpoint(self, request: web.Request) -> web.Response:
-        account, password, _ = await self._get_account_and_password(
-            int(request.query["user_id"])
-        )
+        user_id = request.query.get("user_id")
+        if user_id is None:
+            return web.Response(status=400, reason="Missing user_id")
+        account, password, _ = await self._get_account_and_password(int(user_id))
+
         mmt = await geetest.create_mmt(account, password)
-        if mmt["data"] is None:
-            raise_for_retcode(mmt)  # type: ignore
+        if mmt.get("data") is None:
+            return web.Response(status=400, reason="Failed to create mmt")
 
         return web.json_response(mmt)
 
     async def login(self, request: web.Request) -> web.Response:
         body = await request.json()
-        user_id = body["user_id"]
+        user_id = body.get("user_id")
+        if user_id is None:
+            return web.Response(status=400, reason="Missing user_id")
         account, password, user = await self._get_account_and_password(int(user_id))
 
         try:
-            data = genshin.Client().login_with_geetest(
+            data = await genshin.Client().login_with_geetest(
                 account, password, body["sid"], body["gt"]
             )
         except GenshinException as e:
@@ -139,20 +159,23 @@ class GeetestWebServer:
         await runner.setup()
         site = web.TCPSite(runner, "localhost", port)
         await site.start()
+
         try:
-            await asyncio.sleep(1)
+            while True:
+                await asyncio.sleep(1)
         except asyncio.CancelledError:
             await self.translator.unload()
             await site.stop()
-            await runner.shutdown()
-            await runner.cleanup()
             await app.shutdown()
             await app.cleanup()
+            await runner.shutdown()
+            await runner.cleanup()
 
 
 async def main():
-    server = GeetestWebServer()
-    await server.run()
+    async with Database(os.getenv("DATABASE_URL") or "sqlite://db.sqlite3"):
+        server = GeetestWebServer()
+        await server.run()
 
 
 asyncio.run(main())

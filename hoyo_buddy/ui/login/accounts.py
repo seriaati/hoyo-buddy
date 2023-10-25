@@ -27,6 +27,7 @@ class AccountManager(View):
         super().__init__(author=author, locale=locale, translator=translator)
         self.user = user
         self.locale = locale
+        self.selected_account: Optional[HoyoAccount] = None
 
     async def start(self) -> None:
         if self.user.accounts:
@@ -36,7 +37,6 @@ class AccountManager(View):
             self.add_item(EditNickname())
             self.add_item(DeleteAccount())
         else:
-            self.selected_account = None
             self.add_item(AddAccount())
 
     def get_account_embed(self) -> DefaultEmbed:

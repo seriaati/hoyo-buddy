@@ -72,6 +72,12 @@ class View(discord.ui.View):
             item.translate(self.locale, self.translator, **kwargs)
         return super().add_item(item)
 
+    def get_item(self, custom_id: str) -> Optional[Union[Button, Select]]:
+        for item in self.children:
+            if isinstance(item, (Button, Select)) and item.custom_id == custom_id:
+                return item
+        return None
+
     @staticmethod
     async def absolute_send(i: discord.Interaction, **kwargs) -> None:
         try:

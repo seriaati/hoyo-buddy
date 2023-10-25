@@ -34,17 +34,13 @@ async def get_error_embed(i: Interaction[HoyoBuddy], error: Exception) -> ErrorE
 
 
 class CommandTree(app_commands.CommandTree):
-    async def interaction_check(
-        self, i: Interaction
-    ) -> Literal[True]:  # skipcq: PYL-W0221
+    async def interaction_check(self, i: Interaction) -> Literal[True]:
         user, created = await User.get_or_create(id=i.user.id)
         if created:
             await Settings.create(user=user)
         return True
 
-    async def on_error(
-        self, i: Interaction[HoyoBuddy], error: Exception
-    ) -> None:  # skipcq: PYL-W0221
+    async def on_error(self, i: Interaction[HoyoBuddy], error: Exception) -> None:
         log.exception(error)
         embed = await get_error_embed(i, error)
         try:

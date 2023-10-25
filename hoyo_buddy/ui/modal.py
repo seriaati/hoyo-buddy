@@ -22,12 +22,12 @@ class Modal(discord.ui.Modal):
         i: discord.Interaction[HoyoBuddy],
         error: Exception,
         _: discord.ui.Item[Any],
-    ) -> None:  # skipcq: PYL-W0221
+    ) -> None:
         log.exception(error)
         embed = await get_error_embed(i, error)
         await self.absolute_send(i, embed=embed, ephemeral=True)
 
-    async def on_submit(self, i: discord.Interaction) -> None:  # skipcq: PYL-W0221
+    async def on_submit(self, i: discord.Interaction) -> None:
         return await super().on_submit(i)
 
     async def translate(

@@ -38,14 +38,12 @@ class View(discord.ui.View):
         i: discord.Interaction[HoyoBuddy],
         error: Exception,
         _: discord.ui.Item[Any],
-    ) -> None:  # skipcq: PYL-W0221
+    ) -> None:
         log.exception(error)
         embed = await get_error_embed(i, error)
         await self.absolute_send(i, embed=embed, ephemeral=True)
 
-    async def interaction_check(
-        self, i: discord.Interaction[HoyoBuddy]
-    ) -> bool:  # skipcq: PYL-W0221
+    async def interaction_check(self, i: discord.Interaction[HoyoBuddy]) -> bool:
         if i.user.id != self.author.id:
             embed = ErrorEmbed(
                 self.locale,

@@ -71,14 +71,34 @@ class AccountManager(View):
             )
         return embed
 
-    def get_account_options(self) -> List[discord.SelectOption]:
+    async def get_account_options(self) -> List[discord.SelectOption]:
         return [
             discord.SelectOption(
-                label=account.game.name,
+                label=str(account),
                 value=f"{account.uid}_{account.game.value}",
+                emoji=emojis.get_game_emoji(account.game),
+                default=account == self.selected_account,
             )
-            for account in self.user.accounts
+            for account in await self.user.accounts.all()
         ]
+
+    async def refresh(self, i: discord.Interaction[HoyoBuddy], *, soft: bool) -> Any:
+        if not soft:
+            user = await User.get(id=self.user.id).prefetch_related("accounts")
+            view = AccountManager(
+                author=self.author,
+                locale=self.locale,
+                translator=self.translator,
+                user=user,
+            )
+            await view.start()
+            await self.absolute_edit(i, embed=view.get_account_embed(), view=view)
+            view.message = await i.original_response()
+        else:
+            account_selector = self.get_item("account_selector")
+            if isinstance(account_selector, Select):
+                account_selector.options = await self.get_account_options()
+            await self.absolute_edit(i, embed=self.get_account_embed(), view=self)
 
 
 class AccountSelector(Select):
@@ -97,9 +117,23 @@ class AccountSelector(Select):
         )
         if selected_account is None:
             raise ValueError("Invalid account selected")
+
         self.view.selected_account = selected_account
-        embed = self.view.get_account_embed()
-        await i.response.edit_message(embed=embed)
+        await self.view.refresh(i, soft=True)
+
+
+class DeleteAccountContinue(Button):
+    def __init__(self):
+        super().__init__(
+            custom_id="delete_account_continue",
+            label="Continue",
+            emoji=emojis.FORWARD,
+            style=discord.ButtonStyle.primary,
+        )
+
+    async def callback(self, i: Interaction[HoyoBuddy]) -> Any:
+        self.view: AccountManager
+        await self.view.refresh(i, soft=False)
 
 
 class DeleteAccount(Button):
@@ -108,6 +142,8 @@ class DeleteAccount(Button):
             custom_id="delete_account",
             style=discord.ButtonStyle.danger,
             emoji=emojis.DELETE,
+            label="Delete selected account",
+            row=2,
         )
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
@@ -115,40 +151,32 @@ class DeleteAccount(Button):
         account = self.view.selected_account
         if account is None:
             raise ValueError("No account selected")
-        await self.view.user.accounts.remove(account)
-        await self.view.user.save()
+        await account.delete()
+
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
             title="Account deleted",
-            description="The account {account} has been deleted.",
+            description="{account} has been deleted.",
             account=str(account),
         )
-        await i.response.edit_message(embed=embed, view=None)
-
-        await self.view.user.refresh_from_db()
-        view = AccountManager(
-            author=self.view.author,
-            user=self.view.user,
-            locale=self.view.locale,
-            translator=self.view.translator,
-        )
-        embed = view.get_account_embed()
-        await i.followup.send(embed=embed, view=view)
+        self.view.clear_items()
+        self.view.add_item(DeleteAccountContinue())
+        await i.response.edit_message(embed=embed, view=self.view)
 
 
 class NicknameModal(Modal):
     nickname = discord.ui.TextInput(
-        label="Nickname", placeholder="Main account, Asia account..."
+        label="Nickname",
+        placeholder="Main account, Asia account...",
+        required=False,
+        style=discord.TextStyle.short,
+        max_length=32,
     )
 
     def __init__(self, current_nickname: Optional[str] = None):
         super().__init__(title="Edit nickname")
         self.nickname.default = current_nickname
-
-    async def on_submit(self, i: discord.Interaction) -> None:
-        await i.response.defer()
-        self.stop()
 
 
 class EditNickname(Button):
@@ -156,25 +184,23 @@ class EditNickname(Button):
         super().__init__(
             custom_id="edit_nickname",
             emoji=emojis.EDIT,
+            label="Edit nickname",
         )
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         self.view: AccountManager
-        modal = NicknameModal()
-        await modal.translate(
-            self.view.user.settings.locale or i.locale, i.client.translator
-        )
+        account = self.view.selected_account
+        if account is None:
+            raise ValueError("No account selected")
+
+        modal = NicknameModal(account.nickname)
+        modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()
-        if modal.nickname.value:
-            account = self.view.selected_account
-            if account is None:
-                raise ValueError("No account selected")
-            account.nickname = modal.nickname.value
-            await account.save()
 
-            embed = self.view.get_account_embed()
-            await i.edit_original_response(embed=embed)
+        account.nickname = modal.nickname.value
+        await account.save()
+        await self.view.refresh(i, soft=True)
 
 
 class CookiesModal(Modal):
@@ -222,16 +248,7 @@ class SelectAccountsToAdd(Select):
             )
             await self.view.user.accounts.add(hoyo_account)
         await self.view.user.save()
-
-        await self.view.user.refresh_from_db()
-        view = AccountManager(
-            author=self.view.author,
-            locale=self.view.locale,
-            user=self.view.user,
-            translator=self.view.translator,
-        )
-        embed = view.get_account_embed()
-        await i.response.edit_message(embed=embed, view=view)
+        await self.view.refresh(i, soft=False)
 
 
 class SubmitCookies(Button):

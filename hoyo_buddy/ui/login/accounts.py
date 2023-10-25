@@ -482,6 +482,7 @@ class AddAccount(Button):
             custom_id="add_account",
             emoji=emojis.ADD,
             label="Add accounts",
+            style=discord.ButtonStyle.primary,
         )
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
@@ -489,7 +490,7 @@ class AddAccount(Button):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title="Methods to add",
+            title="Adding accounts",
             description="Below are 3 ways you can add accounts; however, it is recommended to try the first one, then work your way through the others if it doesn't work.",
         )
         go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))

@@ -33,7 +33,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             try:
                 await self.load_extension(f"hoyo_buddy.cogs.{cog_name}")
                 log.info("Loaded cog '%s'", cog_name)
-            except Exception as e:  # skipcq: PYL-W0703
+            except Exception:  # skipcq: PYL-W0703
                 log.error("Failed to load cog '%s'", cog_name, exc_info=True)
 
         await self.load_extension("jishaku")

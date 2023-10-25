@@ -51,7 +51,8 @@ class Modal(discord.ui.Modal):
                         item.placeholder, locale, **kwargs
                     )
 
-    async def absolute_send(self, i: discord.Interaction, **kwargs) -> None:
+    @staticmethod
+    async def absolute_send(i: discord.Interaction, **kwargs) -> None:
         try:
             await i.response.send_message(**kwargs)
         except discord.InteractionResponded:

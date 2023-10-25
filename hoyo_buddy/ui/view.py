@@ -74,19 +74,22 @@ class View(discord.ui.View):
             item.translate(self.locale, self.translator, **kwargs)
         return super().add_item(item)
 
-    async def absolute_send(self, i: discord.Interaction, **kwargs) -> None:
+    @staticmethod
+    async def absolute_send(i: discord.Interaction, **kwargs) -> None:
         try:
             await i.response.send_message(**kwargs)
         except discord.InteractionResponded:
             await i.followup.send(**kwargs)
 
-    async def absolute_edit(self, i: discord.Interaction, **kwargs) -> None:
+    @staticmethod
+    async def absolute_edit(i: discord.Interaction, **kwargs) -> None:
         try:
             await i.response.edit_message(**kwargs)
         except discord.InteractionResponded:
             await i.edit_original_response(**kwargs)
 
-    def get_embed(self, i: discord.Interaction) -> Optional[discord.Embed]:
+    @staticmethod
+    def get_embed(i: discord.Interaction) -> Optional[discord.Embed]:
         if i.message and i.message.embeds:
             return i.message.embeds[0]
         return None

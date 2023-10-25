@@ -87,7 +87,8 @@ class GeetestWebServer:
             content_type="text/html",
         )
 
-    async def gt(self, _: web.Request) -> web.StreamResponse:
+    @staticmethod
+    async def gt(_: web.Request) -> web.StreamResponse:
         async with aiohttp.ClientSession() as session:
             r = await session.get(GT_URL)
             content = await r.read()

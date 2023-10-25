@@ -28,9 +28,10 @@ class Modal(discord.ui.Modal):
         await self.absolute_send(i, embed=embed, ephemeral=True)
 
     async def on_submit(self, i: discord.Interaction) -> None:
-        return await super().on_submit(i)
+        await i.response.defer()
+        self.stop()
 
-    async def translate(
+    def translate(
         self,
         locale: discord.Locale,
         translator: Translator,

@@ -14,7 +14,8 @@ log = logging.getLogger(__name__)
 
 
 class CustomRenderingPolicy(AbstractRenderingPolicy):
-    def get(self, _: str) -> None:
+    @staticmethod
+    def get(_: str) -> None:
         return None
 
 

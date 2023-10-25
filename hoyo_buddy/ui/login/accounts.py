@@ -1,8 +1,9 @@
-from typing import Any, List, Optional, Sequence, Union
+from typing import Any, Dict, List, Optional, Sequence, Union
 
 import discord
 import genshin
 from discord.interactions import Interaction
+from tortoise.exceptions import IntegrityError
 
 from ...bot import HoyoBuddy, emojis
 from ...bot.translator import Translator
@@ -37,7 +38,6 @@ class AccountManager(View):
         else:
             self.selected_account = None
             self.add_item(AddAccount())
-        self.locale = locale
 
     def get_account_embed(self) -> DefaultEmbed:
         account = self.selected_account
@@ -210,26 +210,38 @@ class CookiesModal(Modal):
         style=discord.TextStyle.paragraph,
     )
 
-    async def on_submit(self, i: Interaction) -> None:
-        await i.response.defer()
-        self.stop()
+
+class DevToolCookiesModal(Modal):
+    ltuid_v2 = discord.ui.TextInput(label="ltuid_v2")
+    ltoken_v2 = discord.ui.TextInput(label="ltoken_v2")
 
 
 class SelectAccountsToAdd(Select):
-    def __init__(self, accounts: Sequence[genshin.models.GenshinAccount], cookies: str):
+    def __init__(
+        self,
+        locale: discord.Locale,
+        translator: Translator,
+        *,
+        accounts: Sequence[genshin.models.GenshinAccount],
+        cookies: str,
+    ):
+        options = [
+            discord.SelectOption(
+                label=f"[{account.uid}] {account.nickname}",
+                description=f"Lv. {account.level} | {translator.translate(account.server_name, locale)}",
+                value=f"{account.uid}_{account.game.value}",
+                emoji=emojis.get_game_emoji(account.game),
+            )
+            for account in accounts
+            if isinstance(account.game, genshin.Game)
+        ]
         super().__init__(
             custom_id="select_accounts_to_add",
-            options=[
-                discord.SelectOption(
-                    label=f"[{account.uid}] {account.nickname}",
-                    value=f"{account.uid}_{account.game.value}",
-                    emoji=emojis.get_game_emoji(account.game),
-                )
-                for account in accounts
-            ],
-            max_values=len(accounts),
+            options=options,
+            max_values=len(options),
             placeholder="Select the accounts you want to add...",
         )
+
         self.accounts = accounts
         self.cookies = cookies
 
@@ -240,36 +252,55 @@ class SelectAccountsToAdd(Select):
             account = discord.utils.get(self.accounts, uid=int(uid), game__value=game)
             if account is None:
                 raise ValueError("Invalid account selected")
-            hoyo_account, _ = await HoyoAccount.get_or_create(
-                uid=account.uid,
-                username=account.nickname,
-                game=GAME_CONVERTER[account.game],
-                cookies=self.cookies,
-            )
-            await self.view.user.accounts.add(hoyo_account)
+            try:
+                await HoyoAccount.create(
+                    uid=account.uid,
+                    username=account.nickname,
+                    game=GAME_CONVERTER[account.game],
+                    cookies=self.cookies,
+                    user=self.view.user,
+                    server=account.server_name,
+                )
+            except IntegrityError:
+                pass
+
+        self.view.user.temp_data.pop("cookies", None)
         await self.view.user.save()
         await self.view.refresh(i, soft=False)
 
 
-class SubmitCookies(Button):
-    def __init__(self):
-        super().__init__(label="Submit Cookies", style=discord.ButtonStyle.primary)
+class EnterCookies(Button):
+    def __init__(self, *, dev_tools: bool = False):
+        super().__init__(
+            label="Enter Cookies",
+            style=discord.ButtonStyle.primary,
+            emoji=emojis.COOKIE,
+        )
+        self.dev_tools = dev_tools
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         self.view: AccountManager
 
-        modal = CookiesModal(title="Submit Cookies")
-        await modal.translate(
-            self.view.user.settings.locale or i.locale, i.client.translator
-        )
+        if self.dev_tools:
+            modal = DevToolCookiesModal(title="Enter Cookies")
+        else:
+            modal = CookiesModal(title="Enter Cookies")
+        modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
         await modal.wait()
-        if modal.cookies.value is None:
-            return
+
+        if isinstance(modal, DevToolCookiesModal):
+            if not all((modal.ltuid_v2.value, modal.ltoken_v2.value)):
+                return
+            cookies = f"ltuid_v2={modal.ltuid_v2.value.strip()}; ltoken_v2={modal.ltoken_v2.value.strip()}"
+        else:
+            if modal.cookies.value is None:
+                return
+            cookies = modal.cookies.value
 
         await self.set_loading_state(i)
-        client = GenshinClient(modal.cookies.value)
-        client.set_lang(self.view.user.settings.locale or i.locale)
+        client = GenshinClient(cookies)
+        client.set_lang(self.view.locale)
         try:
             game_accounts = await client.get_game_accounts()
         except genshin.InvalidCookies:
@@ -278,13 +309,21 @@ class SubmitCookies(Button):
                 self.view.locale,
                 self.view.translator,
                 title="Invalid Cookies",
-                description="Try logging out and log back in again. If that doesn't work, try the other 2 methods.",
+                description="Try again with other methods, if none of them work, contact [Support](https://discord.gg/ryfamUykRw)",
             )
             await i.edit_original_response(embed=embed)
         else:
             go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))
             self.view.clear_items()
-            self.view.add_item(SelectAccountsToAdd(game_accounts, modal.cookies.value))
+            self.view.add_item(
+                SelectAccountsToAdd(
+                    self.view.locale,
+                    self.view.translator,
+                    accounts=game_accounts,
+                    cookies=cookies,
+                ),
+                translate=False,
+            )
             self.view.add_item(go_back_button)
             await i.edit_original_response(embed=None, view=self.view)
 

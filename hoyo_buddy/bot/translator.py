@@ -67,10 +67,10 @@ class Translator:
         lang = locale.value.replace("-", "_")
         if "<NO_TRANS>" in string or kwargs.get("no_trans", False):
             return string.replace("<NO_TRANS>", "")
-        translation = tx.translate(string, lang, params=None if kwargs else kwargs)
+        translation = tx.translate(string, lang, params=kwargs)
         if translation is None:
             self.not_translated.add(string)
-            return string
+            return string.format(**kwargs)
         return translation
 
     async def unload(self) -> None:

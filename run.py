@@ -23,9 +23,9 @@ else:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 load_dotenv()
-prod = os.getenv("PROD", "0") == "1"
+env = os.environ["ENV"]
 
-if prod:
+if env == "prod":
     sentry_sdk.init(
         dsn=os.getenv("SENTRY_DSN"),
         integrations=[
@@ -62,9 +62,9 @@ async def main():
         chunk_guilds_at_startup=False,
         max_messages=None,
         tree_cls=CommandTree,
-        prod=prod,
+        env=env,
     )
-    db = Database(os.getenv("DB_URL") or "sqlite://db.sqlite3")
+    db = Database(os.getenv("DB_URL"))
 
     async with session, db, bot:
         try:

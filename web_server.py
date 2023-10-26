@@ -68,8 +68,8 @@ GT_URL = "https://raw.githubusercontent.com/GeeTeam/gt3-node-sdk/master/demo/sta
 
 class GeetestWebServer:
     def __init__(self):
-        prod = os.getenv("PROD", "0") == "1"
-        self.translator = Translator(prod)
+        env = os.environ["ENV"]
+        self.translator = Translator(env)
 
     @staticmethod
     async def _get_account_and_password(user_id: int) -> Tuple[str, str, User]:
@@ -173,7 +173,7 @@ class GeetestWebServer:
 
 
 async def main():
-    async with Database(os.getenv("DATABASE_URL") or "sqlite://db.sqlite3"):
+    async with Database(os.getenv("DATABASE_URL")):
         server = GeetestWebServer()
         await server.run()
 

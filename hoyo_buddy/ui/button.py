@@ -70,7 +70,7 @@ class GoBackButton(Button):
     async def callback(self, i: discord.Interaction) -> Any:
         self.view.clear_items()  # type: ignore
         for item in self.original_children:
-            self.view.add_item(item)  # type: ignore
+            self.view.add_item(item, translate=False)  # type: ignore
 
         if self.embed:
             await i.response.edit_message(embed=self.embed, view=self.view)

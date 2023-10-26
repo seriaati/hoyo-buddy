@@ -21,7 +21,11 @@ class Login(commands.Cog):
         user = await User.get(id=i.user.id).prefetch_related("accounts", "settings")
         locale = user.settings.locale or i.locale
         view = AccountManager(
-            author=i.user, locale=locale, translator=i.client.translator, user=user
+            author=i.user,
+            locale=locale,
+            translator=i.client.translator,
+            user=user,
+            accounts=await user.accounts.all(),
         )
         await view.start()
         embed = view.get_account_embed()

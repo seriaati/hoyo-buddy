@@ -29,16 +29,18 @@ class AccountManager(View):
         locale: discord.Locale,
         translator: Translator,
         user: User,
+        accounts: List[HoyoAccount],
     ):
         super().__init__(author=author, locale=locale, translator=translator)
         self.user = user
         self.locale = locale
+        self.accounts = accounts
         self.selected_account: Optional[HoyoAccount] = None
 
     async def start(self) -> None:
         if self.user.accounts:
             self.selected_account = self.user.accounts[0]
-            self.add_item(AccountSelector(await self.get_account_options()))
+            self.add_item(AccountSelector(self.get_account_options()), translate=False)
             self.add_item(AddAccount())
             self.add_item(EditNickname())
             self.add_item(DeleteAccount())
@@ -77,7 +79,7 @@ class AccountManager(View):
             )
         return embed
 
-    async def get_account_options(self) -> List[discord.SelectOption]:
+    def get_account_options(self) -> List[discord.SelectOption]:
         return [
             discord.SelectOption(
                 label=str(account),
@@ -85,7 +87,7 @@ class AccountManager(View):
                 emoji=emojis.get_game_emoji(account.game),
                 default=account == self.selected_account,
             )
-            for account in await self.user.accounts.all()
+            for account in self.accounts
         ]
 
     async def refresh(self, i: discord.Interaction[HoyoBuddy], *, soft: bool) -> Any:
@@ -96,6 +98,7 @@ class AccountManager(View):
                 locale=self.locale,
                 translator=self.translator,
                 user=user,
+                accounts=await user.accounts.all(),
             )
             await view.start()
             await self.absolute_edit(i, embed=view.get_account_embed(), view=view)
@@ -103,17 +106,13 @@ class AccountManager(View):
         else:
             account_selector = self.get_item("account_selector")
             if isinstance(account_selector, Select):
-                account_selector.options = await self.get_account_options()
+                account_selector.options = self.get_account_options()
             await self.absolute_edit(i, embed=self.get_account_embed(), view=self)
 
 
 class AccountSelector(Select):
     def __init__(self, options: List[discord.SelectOption]):
-        options[0].default = True
-        super().__init__(
-            custom_id="account_selector",
-            options=options,
-        )
+        super().__init__(custom_id="account_selector", options=options)
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         self.view: AccountManager

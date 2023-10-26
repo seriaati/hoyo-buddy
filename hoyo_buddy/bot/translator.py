@@ -70,17 +70,23 @@ class Translator:
         translation = tx.translate(string, lang, params=kwargs)
         if translation is None:
             self.not_translated.add(string)
+            if self.env == "dev":
+                return f"<MT> {string.format(**kwargs)}"
             return string.format(**kwargs)
         return translation
 
-    async def unload(self) -> None:
+    async def push_source_strings(self) -> None:
+        log.info("Pushing source strings to Transifex...")
         if self.not_translated and self.env in ("prod", "test"):
-            log.info("Pushing source strings to Transifex...")
             log.info("Strings not translated: %s", self.not_translated)
             await asyncio.to_thread(
                 tx.push_source_strings,
                 [SourceString(string) for string in self.not_translated],
             )
+            self.not_translated.clear()
+
+    async def unload(self) -> None:
+        await self.push_source_strings()
         log.info("Translator unloaded")
 
 

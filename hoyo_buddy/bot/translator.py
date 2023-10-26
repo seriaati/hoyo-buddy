@@ -10,6 +10,8 @@ from transifex.native import init, tx
 from transifex.native.parsing import SourceString
 from transifex.native.rendering import AbstractRenderingPolicy
 
+from ..utils import split_list
+
 log = logging.getLogger(__name__)
 
 
@@ -79,10 +81,13 @@ class Translator:
         if self.not_translated and self.env in ("prod", "test"):
             start = asyncio.get_running_loop().time()
             log.info("Pushing %d source strings to Transifex", len(self.not_translated))
-            await asyncio.to_thread(
-                tx.push_source_strings,
-                [SourceString(string) for string in self.not_translated],
+
+            split_source_strings = split_list(
+                [SourceString(string) for string in self.not_translated], 5
             )
+            for source_strings in split_source_strings:
+                await asyncio.to_thread(tx.push_source_strings, source_strings)
+
             self.not_translated.clear()
             log.info(
                 "Pushed source strings in %.2f seconds",

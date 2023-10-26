@@ -20,6 +20,50 @@ load_dotenv()
 INDEX = """
 <!DOCTYPE html>
 <html>
+  <head>
+  <meta charset="UTF-8">
+  <title>Geetest Web Server</title>
+  
+  <style>
+    body {{
+        background-color: #36393f;
+        color: #dcddde;
+        font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+    }}
+    button {{
+        background-color: #7289da;
+        border: none;
+        border-radius: 3px;
+        color: #fff;
+        cursor: pointer;
+        display: block;
+        font-size: 16px;
+        font-weight: 500;
+        height: 40px;
+        margin: 0 auto;
+        padding: 0;
+        position: relative;
+        text-align: center;
+        transition: background-color .17s ease,border-color .17s ease,color .17s ease,box-shadow .17s ease;
+        user-select: none;
+        width: 200px;
+    }}
+    button:hover {{
+        background-color: #677bc4;
+    }}
+    button:active {{
+        background-color: #5b6eae;
+    }}
+  </style>
+  </head>
   <body>
   <button hidden type="button" id="login">{button_label}</button>
   </body>
@@ -141,6 +185,8 @@ class GeetestWebServer:
         else:
             user.temp_data["cookies"] = data
 
+        user.temp_data.pop("email", None)
+        user.temp_data.pop("password", None)
         await user.save()
         return web.json_response({})
 

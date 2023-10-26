@@ -1,0 +1,14 @@
+{
+    "apps": [
+        {
+            "name": "hoyo-buddy-test",
+            "script": "./run.py",
+            "interpreter": "./.venv/bin/python"
+        },
+        {
+            "name": "hoyo-buddy-test-web-server",
+            "script": "./web_server.py",
+            "interpreter": "./.venv/bin/python"
+        }
+    ]
+}

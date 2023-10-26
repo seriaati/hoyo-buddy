@@ -14,6 +14,12 @@ from ..modal import Modal
 from ..select import Select
 from ..view import View
 
+GEETEST_SERVER_URL = {
+    "prod": "https://geetest-server.seriaati.xyz",
+    "test": "http://geetest-server-test.seriaati.xyz",
+    "dev": "http://localhost:5000",
+}
+
 
 class AccountManager(View):
     def __init__(
@@ -309,7 +315,7 @@ class EnterCookies(Button):
                 self.view.locale,
                 self.view.translator,
                 title="Invalid Cookies",
-                description="Try again with other methods, if none of them work, contact [Support](https://discord.gg/ryfamUykRw)",
+                description="Try the other methods, if none of them work, contact [Support](https://discord.gg/ryfamUykRw)",
             )
             await i.edit_original_response(embed=embed)
         else:
@@ -488,14 +494,11 @@ class EnterEmailPassword(Button):
 
         go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))
         self.view.clear_items()
-        web_server_url = (
-            "https://geetest-server.seriaati.xyz"
-            if i.client.prod
-            else "http://localhost:5000"
-        )
+        web_server_url = GEETEST_SERVER_URL[i.client.env]
         self.view.add_item(
             Button(
-                label="Complete CAPTCHA", url=f"{web_server_url}/?user_id={i.user.id}"
+                label="Complete CAPTCHA",
+                url=f"{web_server_url}/?user_id={i.user.id}&locale={self.view.locale.value}",
             )
         )
         self.view.add_item(EmailPasswordContinueButton())

@@ -32,8 +32,6 @@ class Translator:
             token=os.environ["TRANSIFEX_TOKEN"],
             secret=os.environ["TRANSIFEX_SECRET"],
             languages=(
-                "en_US",
-                "en_GB",
                 "zh_CN",
                 "zh_TW",
                 "ja",
@@ -79,9 +77,12 @@ class Translator:
             )
 
         lang = locale.value.replace("-", "_")
-        if lang in ("en_US", "en_GB"):
-            return generated_translation
-        translation = tx.translate(message, lang, params=extras, _key=string_key)
+        translation = tx.translate(
+            message,
+            lang,
+            params=extras,
+            _key=string_key,
+        )
         if translation is None and string_key is not None:
             existing = self.not_translated.get(string_key)
             if existing is not None and existing != message:
@@ -119,7 +120,9 @@ class Translator:
             5,
         )
         for source_strings in split_source_strings:
-            await asyncio.to_thread(tx.push_source_strings, source_strings)
+            await asyncio.to_thread(
+                tx.push_source_strings, source_strings, do_not_keep_translations=True
+            )
 
         self.not_translated.clear()
         log.info(

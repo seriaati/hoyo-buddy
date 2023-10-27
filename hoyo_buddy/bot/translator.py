@@ -79,6 +79,8 @@ class Translator:
             string_key = message.replace(" ", "_")
 
         lang = locale.value.replace("-", "_")
+        if lang in ("en_US", "en_GB"):
+            return generated_translation
         translation = tx.translate(message, lang, params=extras, _key=string_key)
         if translation is None and string_key is not None:
             existing = self.not_translated.get(string_key)

@@ -76,7 +76,13 @@ class Translator:
         if string_key is None:
             if extras.get("warn_no_key", True):
                 log.warning("Missing key for string %r, using generated key", message)
-            string_key = message.replace(" ", "_")
+            string_key = (
+                message.replace(" ", "_")
+                .replace(",", "")
+                .replace(".", "")
+                .replace("-", "_")
+                .lower()
+            )
 
         lang = locale.value.replace("-", "_")
         if lang in ("en_US", "en_GB"):

@@ -24,7 +24,6 @@ INDEX = """
   <head>
   <meta charset="UTF-8">
   <title>Geetest Web Server</title>
-  
   <style>
     body {{
         background-color: #36393f;

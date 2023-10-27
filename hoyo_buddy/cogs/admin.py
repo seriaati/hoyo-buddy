@@ -26,6 +26,12 @@ class Admin(commands.Cog):
         await self.bot.translator.push_source_strings()
         await message.edit(content="Pushed source strings.")
 
+    @commands.command(name="fetch-source-strings", aliases=["fss"])
+    async def fetch_source_strings_command(self, ctx: commands.Context) -> Any:
+        message = await ctx.send("Fetching source strings...")
+        await self.bot.translator.fetch_source_strings()
+        await message.edit(content="Fetched source strings.")
+
 
 async def setup(bot: HoyoBuddy):
     await bot.add_cog(Admin(bot))

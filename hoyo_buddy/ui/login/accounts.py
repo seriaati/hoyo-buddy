@@ -517,15 +517,16 @@ class EmailPasswordContinueButton(Button):
                 )
                 self.view.remove_item(self)
                 return await i.response.edit_message(embed=embed, view=self.view)
+
             embed = ErrorEmbed(
                 self.view.locale,
                 self.view.translator,
                 title=_T("Unknown error", key="unknown_error_title"),
                 description=_T(
-                    "Error code: {retcode}\nMessage: {message}",
+                    "Error code: {retcode}\nMessage: {msg}",
                     key="unknown_error_description",
                     retcode=retcode,
-                    message=cookies.get("message"),
+                    msg=cookies.get("message"),
                 ),
             )
             return await i.response.edit_message(embed=embed, view=self.view)

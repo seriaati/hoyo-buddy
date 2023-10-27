@@ -2,17 +2,15 @@ from typing import Any, Dict, List, Optional, Sequence, Union
 
 import discord
 import genshin
+from discord.app_commands import locale_str as _T
 from discord.interactions import Interaction
 from tortoise.exceptions import IntegrityError
 
 from ...bot import HoyoBuddy, emojis
 from ...bot.translator import Translator
 from ...db.models import GAME_CONVERTER, GenshinClient, HoyoAccount, User
-from ..button import Button, GoBackButton
+from .. import Button, GoBackButton, Modal, Select, SelectOption, TextInput, View
 from ..embeds import DefaultEmbed, ErrorEmbed
-from ..modal import Modal
-from ..select import Select
-from ..view import View
 
 GEETEST_SERVER_URL = {
     "prod": "https://geetest-server.seriaati.xyz",
@@ -52,8 +50,11 @@ class AccountManager(View):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title="Account Manager",
-            description="You don't have any accounts yet.",
+            title=_T("Account Manager", key="account_manager_title"),
+            description=_T(
+                "You don't have any accounts yet.",
+                key="account_manager_no_accounts_description",
+            ),
         )
         if account is None:
             return embed
@@ -61,28 +62,30 @@ class AccountManager(View):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=str(account),
-            translate_title=False,
+            title=_T(str(account), translate=False),
         )
-        embed.add_field(name="Game", value=account.game.value, inline=False)
         embed.add_field(
-            name="Server",
-            value=account.server,
+            name=_T("Game", key="account_game"),
+            value=_T(account.game.value, warn_no_key=False),
+            inline=False,
+        )
+        embed.add_field(
+            name=_T("Server", key="account_server"),
+            value=_T(account.server, warn_no_key=False),
             inline=False,
         )
         if account.nickname:
             embed.add_field(
-                name="Username",
-                value=account.username,
-                translate_value=False,
+                name=_T("Username", key="account_username"),
+                value=_T(account.username, translate=False),
                 inline=False,
             )
         return embed
 
-    def get_account_options(self) -> List[discord.SelectOption]:
+    def get_account_options(self) -> List[SelectOption]:
         return [
-            discord.SelectOption(
-                label=str(account),
+            SelectOption(
+                label=_T(str(account), translate=False),
                 value=f"{account.uid}_{account.game.value}",
                 emoji=emojis.get_game_emoji(account.game),
                 default=account == self.selected_account,
@@ -111,7 +114,7 @@ class AccountManager(View):
 
 
 class AccountSelector(Select):
-    def __init__(self, options: List[discord.SelectOption]):
+    def __init__(self, options: List[SelectOption]):
         super().__init__(custom_id="account_selector", options=options)
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
@@ -131,7 +134,7 @@ class DeleteAccountContinue(Button):
     def __init__(self):
         super().__init__(
             custom_id="delete_account_continue",
-            label="Continue",
+            label=_T("Continue", key="continue_button_label"),
             emoji=emojis.FORWARD,
             style=discord.ButtonStyle.primary,
         )
@@ -147,7 +150,7 @@ class DeleteAccount(Button):
             custom_id="delete_account",
             style=discord.ButtonStyle.danger,
             emoji=emojis.DELETE,
-            label="Delete selected account",
+            label=_T("Delete selected account", key="delete_account_button_label"),
             row=2,
         )
 
@@ -161,9 +164,12 @@ class DeleteAccount(Button):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title="Account deleted",
-            description="{account} has been deleted.",
-            account=str(account),
+            title=_T("Account deleted", key="account_deleted_title"),
+            description=_T(
+                "{account} has been deleted.",
+                key="account_deleted_description",
+                account=str(account),
+            ),
         )
         self.view.clear_items()
         self.view.add_item(DeleteAccountContinue())
@@ -171,16 +177,18 @@ class DeleteAccount(Button):
 
 
 class NicknameModal(Modal):
-    nickname = discord.ui.TextInput(
-        label="Nickname",
-        placeholder="Main account, Asia account...",
+    nickname = TextInput(
+        label=_T("Nickname", key="nickname_modal_label"),
+        placeholder=_T(
+            "Main account, Asia account...", key="nickname_modal_placeholder"
+        ),
         required=False,
         style=discord.TextStyle.short,
         max_length=32,
     )
 
     def __init__(self, current_nickname: Optional[str] = None):
-        super().__init__(title="Edit nickname")
+        super().__init__(title=_T("Edit nickname", key="edit_nickname_modal_title"))
         self.nickname.default = current_nickname
 
 
@@ -189,7 +197,7 @@ class EditNickname(Button):
         super().__init__(
             custom_id="edit_nickname",
             emoji=emojis.EDIT,
-            label="Edit nickname",
+            label=_T("Edit nickname", key="edit_nickname_button_label"),
         )
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
@@ -209,16 +217,21 @@ class EditNickname(Button):
 
 
 class CookiesModal(Modal):
-    cookies = discord.ui.TextInput(
-        label="Cookies",
-        placeholder="Paste your cookies here...",
+    cookies = TextInput(
+        label=_T("Cookies", translate=False),
+        placeholder=_T("Paste your cookies here...", key="cookies_modal_placeholder"),
         style=discord.TextStyle.paragraph,
     )
 
 
+class DevToolCookiesModalV2(Modal):
+    ltuid_v2 = TextInput(label=_T("ltuid_v2", translate=False))
+    ltoken_v2 = TextInput(label=_T("ltoken_v2", translate=False))
+
+
 class DevToolCookiesModal(Modal):
-    ltuid_v2 = discord.ui.TextInput(label="ltuid_v2")
-    ltoken_v2 = discord.ui.TextInput(label="ltoken_v2")
+    ltuid = TextInput(label=_T("ltuid", translate=False))
+    ltoken = TextInput(label=_T("ltoken", translate=False))
 
 
 class SelectAccountsToAdd(Select):
@@ -230,25 +243,37 @@ class SelectAccountsToAdd(Select):
         accounts: Sequence[genshin.models.GenshinAccount],
         cookies: str,
     ):
-        options = [
-            discord.SelectOption(
-                label=f"[{account.uid}] {account.nickname}",
-                description=f"Lv. {account.level} | {translator.translate(account.server_name, locale)}",
-                value=f"{account.uid}_{account.game.value}",
-                emoji=emojis.get_game_emoji(account.game),
-            )
-            for account in accounts
-            if isinstance(account.game, genshin.Game)
-        ]
+        self.accounts = accounts
+        self.cookies = cookies
+        self.translator = translator
+        self.locale = locale
+        options = list(self.get_account_options())
+
         super().__init__(
             custom_id="select_accounts_to_add",
             options=options,
             max_values=len(options),
-            placeholder="Select the accounts you want to add...",
+            placeholder=_T(
+                "Select the accounts you want to add...",
+                key="select_accounts_to_add_placeholder",
+            ),
         )
 
-        self.accounts = accounts
-        self.cookies = cookies
+    def get_account_options(self):
+        for account in self.accounts:
+            if isinstance(account.game, genshin.Game):
+                server_name = self.translator.translate(
+                    _T(account.server_name, warn_no_key=False),
+                    self.locale,
+                )
+                yield SelectOption(
+                    label=_T(f"[{account.uid}] {account.nickname}", translate=False),
+                    description=_T(
+                        f"Lv. {account.level} | {server_name}", translate=False
+                    ),
+                    value=f"{account.uid}_{account.game.value}",
+                    emoji=emojis.get_game_emoji(account.game),
+                )
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         self.view: AccountManager
@@ -275,26 +300,53 @@ class SelectAccountsToAdd(Select):
 
 
 class EnterCookies(Button):
-    def __init__(self, *, dev_tools: bool = False):
+    def __init__(self, *, v2: bool, dev_tools: bool = False):
+        if dev_tools:
+            if v2:
+                label = _T(
+                    "I have ltuid_v2 and ltoken_v2",
+                    key="devtools_v2_cookies_button_label",
+                )
+            else:
+                label = _T(
+                    "I have ltuid and ltoken", key="devtools_v1_cookies_button_label"
+                )
+        else:
+            label = _T("Enter Cookies", key="cookies_button_label")
+
         super().__init__(
-            label="Enter Cookies",
+            label=label,
             style=discord.ButtonStyle.primary,
             emoji=emojis.COOKIE,
         )
+        self.v2 = v2
         self.dev_tools = dev_tools
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         self.view: AccountManager
 
         if self.dev_tools:
-            modal = DevToolCookiesModal(title="Enter Cookies")
+            if self.v2:
+                modal = DevToolCookiesModalV2(
+                    title=_T("Enter Cookies", key="enter_cookies_modal_title")
+                )
+            else:
+                modal = DevToolCookiesModal(
+                    title=_T("Enter Cookies", key="enter_cookies_modal_title")
+                )
         else:
-            modal = CookiesModal(title="Enter Cookies")
+            modal = CookiesModal(
+                title=_T("Enter Cookies", key="enter_cookies_modal_title")
+            )
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
         await modal.wait()
 
         if isinstance(modal, DevToolCookiesModal):
+            if not all((modal.ltuid.value, modal.ltoken.value)):
+                return
+            cookies = f"ltuid={modal.ltuid.value.strip()}; ltoken={modal.ltoken.value.strip()}"
+        elif isinstance(modal, DevToolCookiesModalV2):
             if not all((modal.ltuid_v2.value, modal.ltoken_v2.value)):
                 return
             cookies = f"ltuid_v2={modal.ltuid_v2.value.strip()}; ltoken_v2={modal.ltoken_v2.value.strip()}"
@@ -310,12 +362,30 @@ class EnterCookies(Button):
             game_accounts = await client.get_game_accounts()
         except genshin.InvalidCookies:
             await self.unset_loading_state(i)
-            embed = ErrorEmbed(
-                self.view.locale,
-                self.view.translator,
-                title="Invalid Cookies",
-                description="Try the other methods, if none of them work, contact [Support](https://discord.gg/ryfamUykRw)",
-            )
+            if isinstance(modal, CookiesModal):
+                embed = ErrorEmbed(
+                    self.view.locale,
+                    self.view.translator,
+                    title=_T("Invalid cookies", key="invalid_cookies_title"),
+                    description=_T(
+                        (
+                            "It is likely that your account has the new security feature enabled.\n"
+                            "Part of the cookies is encrypted and cannot be obtained by JavaScript.\n"
+                            "Please try the other methods to add your accounts."
+                        ),
+                        key="invalid_cookies_description",
+                    ),
+                )
+            else:
+                embed = ErrorEmbed(
+                    self.view.locale,
+                    self.view.translator,
+                    title=_T("Invalid cookies", key="invalid_cookies_title"),
+                    description=_T(
+                        "Please check that you copied the values of ltuid and ltoken correctly",
+                        key="invalid_ltuid_ltoken_description",
+                    ),
+                )
             await i.edit_original_response(embed=embed)
         else:
             go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))
@@ -335,63 +405,69 @@ class EnterCookies(Button):
 
 class WithJavaScript(Button):
     def __init__(self):
-        super().__init__(
-            label="With JavaScript (Recommended)", style=discord.ButtonStyle.primary
-        )
+        super().__init__(label=_T("With JavaScript", key="javascript_button_label"))
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         self.view: AccountManager
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title="Instructions",
-            description=(
-                "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n"
-                "2. Copy the code below\n"
-                "3. Click on the address bar and type `java`\n"
-                "4. Paste the code and press enter\n"
-                "5. Select all and copy the text that appears\n"
-                "6. Click the button below and paste the text in the box\n"
+            title=_T("Instructions", key="instructions_title"),
+            description=_T(
+                (
+                    f"{emojis.INFO} Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n"
+                    "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n"
+                    "2. Copy the code below\n"
+                    "3. Click on the address bar and type `java`\n"
+                    "4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n"
+                    "5. Select all and copy the text that appears\n"
+                    "6. Click the button below and paste the text in the box\n"
+                ),
+                key="javascript_instructions_description",
             ),
         )
         embed.set_image(url="https://i.imgur.com/PxO0Wr6.gif")
         code = "script:document.write(document.cookie)"
         go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))
         self.view.clear_items()
-        self.view.add_item(EnterCookies())
+        self.view.add_item(EnterCookies(v2=False))
         self.view.add_item(go_back_button)
         await i.response.edit_message(embed=embed, view=self.view)
-        await i.followup.send(code)
+        await i.followup.send(code, ephemeral=True)
 
 
 class WithDevTools(Button):
     def __init__(self):
-        super().__init__(label="With DevTools (Desktop Only)")
+        super().__init__(
+            label=_T("With DevTools (Desktop Only)", key="devtools_button_label")
+        )
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         self.view: AccountManager
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title="Instructions",
-            description=(
-                "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (if your account is in the CN server)\n"
-                "2. Open the DevTools by pressing F12 or Ctrl+Shift+I\n"
-                "3. Press the >> icon on the top navigation bar\n"
-                "4. Click on the `Application` tab\n"
-                "5. Click on `Cookies` on the left sidebar\n"
-                "6. Click on the website you're on (e.g. `https://www.hoyolab.com`)\n"
-                "7. Type `ltoken` in the `Filter` box\n"
-                "8. Copy the `Value` of `ltoken_v2`\n"
-                "9. Type `ltuid` in the `Filter` box\n"
-                "10. Copy the `Value` of `ltuid_v2`\n"
-                "11. Click the button below and paste the values you copied in the corresponding boxes\n"
+            title=_T("Instructions", key="instructions_title"),
+            description=_T(
+                (
+                    "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (if your account is in the CN server)\n"
+                    "2. Open the DevTools by pressing F12 or Ctrl+Shift+I\n"
+                    "3. Press the >> icon on the top navigation bar\n"
+                    "4. Click on the `Application` tab\n"
+                    "5. Click on `Cookies` on the left sidebar\n"
+                    "6. Click on the website you're on (e.g. `https://www.hoyolab.com`)\n"
+                    "7. Type `ltoken` in the `Filter` box and copy the `Value` of `ltoken` or `ltoken_v2`\n"
+                    "8. Type `ltuid` in the `Filter` box and copy the `Value` of `ltuid` or `ltuid_v2`\n"
+                    "9. Click the button below and paste the values you copied in the corresponding boxes\n"
+                ),
+                key="devtools_instructions_description",
             ),
         )
         embed.set_image(url="https://i.imgur.com/oSljaFQ.gif")
         go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))
         self.view.clear_items()
-        self.view.add_item(EnterCookies(dev_tools=True))
+        self.view.add_item(EnterCookies(v2=True, dev_tools=True))
+        self.view.add_item(EnterCookies(v2=False, dev_tools=True))
         self.view.add_item(go_back_button)
         await i.response.edit_message(embed=embed, view=self.view)
 
@@ -400,7 +476,7 @@ class EmailPasswordContinueButton(Button):
     def __init__(self):
         super().__init__(
             custom_id="email_password_continue",
-            label="Continue",
+            label=_T("Continue", key="continue_button_label"),
             emoji=emojis.FORWARD,
             style=discord.ButtonStyle.primary,
         )
@@ -414,10 +490,15 @@ class EmailPasswordContinueButton(Button):
             embed = ErrorEmbed(
                 self.view.locale,
                 self.view.translator,
-                title="Cookies not found",
-                description="Please complete the CAPTCHA before continuing.",
+                title=_T("Cookies not found", key="cookies_not_found_title"),
+                description=_T(
+                    "Please complete the CAPTCHA before continuing.",
+                    key="cookies_not_found_description",
+                ),
             )
-            self.label = "Refresh"
+            self.label = self.view.translator.translate(
+                _T("Refresh", key="refresh_button_label"), self.view.locale
+            )
             self.emoji = emojis.REFRESH
             return await i.response.edit_message(embed=embed, view=self.view)
 
@@ -426,16 +507,26 @@ class EmailPasswordContinueButton(Button):
                 embed = ErrorEmbed(
                     self.view.locale,
                     self.view.translator,
-                    title="Invalid email or password",
-                    description="Either your email or password is incorrect, please try again by pressing the back button.",
+                    title=_T(
+                        "Invalid email or password", key="invalid_email_password_title"
+                    ),
+                    description=_T(
+                        "Either your email or password is incorrect, please try again by pressing the back button.",
+                        key="invalid_email_password_description",
+                    ),
                 )
                 self.view.remove_item(self)
                 return await i.response.edit_message(embed=embed, view=self.view)
             embed = ErrorEmbed(
                 self.view.locale,
                 self.view.translator,
-                title="Unknown error",
-                description=f"Error code: {retcode}\nMessage: {cookies.get('message')}",
+                title=_T("Unknown error", key="unknown_error_title"),
+                description=_T(
+                    "Error code: {retcode}\nMessage: {message}",
+                    key="unknown_error_description",
+                    retcode=retcode,
+                    message=cookies.get("message"),
+                ),
             )
             return await i.response.edit_message(embed=embed, view=self.view)
 
@@ -461,14 +552,22 @@ class EmailPasswordContinueButton(Button):
 
 
 class EmailPasswordModal(Modal):
-    email = discord.ui.TextInput(label="email or username", placeholder="a@gmail.com")
-    password = discord.ui.TextInput(label="password", placeholder="12345678")
+    email = TextInput(
+        label=_T("email or username", key="email_password_modal_email_input_label"),
+        placeholder=_T("a@gmail.com", translate=False),
+    )
+    password = TextInput(
+        label=_T("password", key="email_password_modal_password_input_label"),
+        placeholder=_T("12345678", translate=False),
+    )
 
 
 class EnterEmailPassword(Button):
     def __init__(self):
         super().__init__(
-            label="Enter Email and Password",
+            label=_T(
+                "Enter Email and Password", key="enter_email_password_button_label"
+            ),
             style=discord.ButtonStyle.primary,
             emoji=emojis.PASSWORD,
         )
@@ -476,10 +575,10 @@ class EnterEmailPassword(Button):
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         self.view: AccountManager
 
-        modal = EmailPasswordModal(title="Enter Email and Password")
-        modal.translate(
-            self.view.locale, i.client.translator, translate_input_placeholders=False
+        modal = EmailPasswordModal(
+            title=_T("Enter Email and Password", key="enter_email_password_modal_title")
         )
+        modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
         await modal.wait()
 
@@ -496,7 +595,7 @@ class EnterEmailPassword(Button):
         web_server_url = GEETEST_SERVER_URL[i.client.env]
         self.view.add_item(
             Button(
-                label="Complete CAPTCHA",
+                label=_T("Complete CAPTCHA", key="complete_captcha_button_label"),
                 url=f"{web_server_url}/?user_id={i.user.id}&locale={self.view.locale.value}",
             )
         )
@@ -505,31 +604,40 @@ class EnterEmailPassword(Button):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title="Instructions",
-            description=(
-                f"{emojis.INFO} Note: If you don't see the `Login` button after going to the website, it's either because the Mihoyo servers are busy or you entered the wrong email or password.\n\n"
-                "1. Click the `Complete CAPTCHA` button below\n"
-                "2. You will be redirected to a website, click `Login`\n"
-                "3. Complete the CAPTCHA\n"
-                "4. After completing, click on the `Continue` button below\n"
+            title=_T("Instructions", key="instructions_title"),
+            description=_T(
+                (
+                    f"{emojis.INFO} Note: If you don't see the `Login` button after going to the website, it's either because the Mihoyo servers are busy or you entered the wrong email or password.\n"
+                    "**DOESN'T WORK** for Miyoushe, only Hoyolab users can use this method.\n\n"
+                    "1. Click the `Complete CAPTCHA` button below\n"
+                    "2. You will be redirected to a website, click the button and complete the CAPTCHA\n"
+                    "3. After completing, click on the `Continue` button below\n"
+                ),
+                key="email_password_instructions_description",
             ),
         )
+        embed.set_image(url="https://i.imgur.com/Q9cR2Sf.gif")
         await i.edit_original_response(embed=embed, view=self.view)
 
 
 class WithEmailPassword(Button):
     def __init__(self):
-        super().__init__(label="With Email and Password")
+        super().__init__(
+            label=_T("With Email and Password", key="email_password_button_label")
+        )
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         self.view: AccountManager
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title="Instructions",
-            description=(
-                f"{emojis.INFO} Note: This method is not recommended as it requires you to enter your private information, it only serves as a last resort when the other 2 methods don't work. Your email and password are not saved permanently in the database, you can refer to the [source code](https://github.com/seriaati/hoyo-buddy/blob/3bbd8a9fb42d2bb8db4426fda7d7d3ba6d86e75c/hoyo_buddy/ui/login/accounts.py#L386) if you feel unsafe.\n\n"
-                "Click the button below to enter your email and password.\n"
+            title=_T("Instructions", key="instructions_title"),
+            description=_T(
+                (
+                    f"{emojis.INFO} Note: This method is not recommended as it requires you to enter your private information, it only serves as a last resort when the other 2 methods don't work. Your email and password are not saved permanently in the database, you can refer to the [source code](https://github.com/seriaati/hoyo-buddy/blob/3bbd8a9fb42d2bb8db4426fda7d7d3ba6d86e75c/hoyo_buddy/ui/login/accounts.py#L386) if you feel unsafe.\n\n"
+                    "Click the button below to enter your email and password.\n"
+                ),
+                key="enter_email_password_instructions_description",
             ),
         )
         go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))
@@ -544,7 +652,7 @@ class AddAccount(Button):
         super().__init__(
             custom_id="add_account",
             emoji=emojis.ADD,
-            label="Add accounts",
+            label=_T("Add accounts", key="add_account_button_label"),
             style=discord.ButtonStyle.primary,
         )
 
@@ -553,8 +661,11 @@ class AddAccount(Button):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title="Adding accounts",
-            description="Below are 3 ways you can add accounts; however, it is recommended to try the first one, then work your way through the others if it doesn't work.",
+            title=_T("Adding accounts", key="adding_accounts_title"),
+            description=_T(
+                "Below are 3 ways you can add accounts; however, it is recommended to try the first one, then work your way through the others if it doesn't work.",
+                key="adding_accounts_description",
+            ),
         )
         go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))
         self.view.clear_items()

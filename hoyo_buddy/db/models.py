@@ -3,6 +3,7 @@ from typing import Any, Dict, Optional
 
 import genshin
 from discord import Locale
+from discord.app_commands import locale_str as _T
 from tortoise import fields
 from tortoise.models import Model
 
@@ -89,7 +90,7 @@ class HoyoAccount(Model):
         return GenshinClient(self.cookies, game=GAME_CONVERTER[self.game], uid=self.uid)
 
     def get_game_name(self, locale: Locale, translator: Translator) -> str:
-        return translator.translate(self.game.value, locale)
+        return translator.translate(_T(self.game.value, warn_no_key=False), locale)
 
 
 class Settings(Model):

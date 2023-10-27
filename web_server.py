@@ -6,6 +6,7 @@ import aiohttp
 import genshin
 from aiohttp import web
 from discord import Locale
+from discord.app_commands import locale_str as _T
 from dotenv import load_dotenv
 from genshin.errors import GenshinException
 from genshin.utility import geetest
@@ -133,9 +134,15 @@ class GeetestWebServer:
         if user_id is None:
             return web.Response(status=400, reason="Missing user_id")
         locale = Locale(request.query.get("locale", "en-US"))
-        button_label = self.translator.translate("Login", locale)
+        button_label = self.translator.translate(
+            _T("Click me to complete CAPTCHA", key="geetest_button_label"), locale
+        )
         close_tab = self.translator.translate(
-            "You may now close this tab and go back to Discord.", locale
+            _T(
+                "You may now close this tab and go back to Discord.",
+                key="geetest_finish_label",
+            ),
+            locale,
         )
 
         body = INDEX.format(

@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import os
-from typing import Set
+from typing import Dict
 
 from discord import app_commands
 from discord.app_commands.translator import TranslationContextTypes, locale_str
@@ -24,7 +24,7 @@ class CustomRenderingPolicy(AbstractRenderingPolicy):
 class Translator:
     def __init__(self, env: str) -> None:
         super().__init__()
-        self.not_translated: Set[str] = set()
+        self.not_translated: Dict[str, str] = {}
         self.env = env
 
     async def load(self) -> None:
@@ -62,19 +62,39 @@ class Translator:
 
     def translate(
         self,
-        string: str,
+        string: locale_str,
         locale: Locale,
-        **kwargs,
     ) -> str:
+        extras = string.extras
+        message = string.message
+
+        generated_translation = message.format(**extras)
+        if not extras.get("translate", True):
+            return generated_translation
+
+        string_key = extras.pop("key", None)
+        if string_key is None:
+            if extras.get("warn_no_key", True):
+                log.warning("Missing key for string %r, using generated key", message)
+            string_key = message.replace(" ", "_")
+
         lang = locale.value.replace("-", "_")
-        if "<NO_TRANS>" in string or kwargs.get("no_trans", False):
-            return string.replace("<NO_TRANS>", "")
-        translation = tx.translate(string, lang, params=kwargs)
-        if translation is None:
-            self.not_translated.add(string)
+        translation = tx.translate(message, lang, params=extras, _key=string_key)
+        if translation is None and string_key is not None:
+            existing = self.not_translated.get(string_key)
+            if existing is not None and existing != message:
+                log.warning(
+                    "String %r has different values: %r and %r",
+                    string_key,
+                    existing,
+                    message,
+                )
+
+            self.not_translated[string_key] = message
             if self.env == "dev":
-                return f"<MT> {string.format(**kwargs)}"
-            return string.format(**kwargs)
+                return f"<MT> {generated_translation}"
+
+            return generated_translation
         return translation
 
     async def push_source_strings(self) -> None:
@@ -83,7 +103,11 @@ class Translator:
             log.info("Pushing %d source strings to Transifex", len(self.not_translated))
 
             split_source_strings = split_list(
-                [SourceString(string) for string in self.not_translated], 5
+                [
+                    SourceString(string, _key=key)
+                    for key, string in self.not_translated.items()
+                ],
+                5,
             )
             for source_strings in split_source_strings:
                 await asyncio.to_thread(tx.push_source_strings, source_strings)
@@ -107,4 +131,4 @@ class AppCommandTranslator(app_commands.Translator):
     async def translate(
         self, string: locale_str, locale: Locale, _: TranslationContextTypes
     ) -> str:
-        return self.translator.translate(string.message, locale, **string.extras)
+        return self.translator.translate(string, locale)

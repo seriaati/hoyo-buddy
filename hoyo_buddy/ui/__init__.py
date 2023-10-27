@@ -113,9 +113,9 @@ class Button(discord.ui.Button):
         emoji: Optional[str] = None,
         row: Optional[int] = None,
     ):
-        self.original_label = label
-        self.original_emoji = emoji
         self.locale_str_label = label
+        self.original_label: Optional[str] = None
+        self.original_emoji = emoji
 
         super().__init__(
             style=style,
@@ -134,6 +134,7 @@ class Button(discord.ui.Button):
     ):
         if self.locale_str_label:
             self.label = translator.translate(self.locale_str_label, locale)
+            self.original_label = self.label[:]
 
     async def set_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
         self.view: View
@@ -148,8 +149,7 @@ class Button(discord.ui.Button):
         self.view: View
         self.disabled = False
         self.emoji = self.original_emoji
-        self.label = self.original_label.message if self.original_label else None
-        self.translate(self.view.locale, self.view.translator)
+        self.label = self.original_label
         await self.view.absolute_edit(i, view=self.view)
 
 

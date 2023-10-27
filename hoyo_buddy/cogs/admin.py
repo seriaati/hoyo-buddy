@@ -11,7 +11,7 @@ class Admin(commands.Cog):
     def __init__(self, bot: HoyoBuddy):
         self.bot = bot
 
-    async def cog_check(self, ctx: Context) -> bool:
+    async def cog_check(self, ctx: Context) -> bool:  # skipcq: PYL-W0236
         return await self.bot.is_owner(ctx.author)
 
     @commands.command(name="sync")

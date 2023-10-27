@@ -29,7 +29,7 @@ INDEX = """
         background-color: #36393f;
         color: #dcddde;
         font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
-        font-size: 16px;
+        font-size: 64px;
         line-height: 1.5;
         margin: 0;
         padding: 0;
@@ -45,16 +45,16 @@ INDEX = """
         color: #fff;
         cursor: pointer;
         display: block;
-        font-size: 16px;
+        font-size: 64px;
         font-weight: 500;
-        height: 40px;
+        height: 400px;
         margin: 0 auto;
         padding: 0;
         position: relative;
         text-align: center;
         transition: background-color .17s ease,border-color .17s ease,color .17s ease,box-shadow .17s ease;
         user-select: none;
-        width: 200px;
+        width: 800px;
     }}
     button:hover {{
         background-color: #677bc4;

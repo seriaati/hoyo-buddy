@@ -29,7 +29,7 @@ class Login(commands.Cog):
         )
         await view.start()
         embed = view.get_account_embed()
-        await i.response.send_message(embed=embed, view=view)
+        await i.response.send_message(embed=embed, view=view, ephemeral=True)
         view.message = await i.original_response()
 
 

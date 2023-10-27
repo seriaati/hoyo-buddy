@@ -52,13 +52,7 @@ class Translator:
         log.info("Translator loaded")
 
         if self.env in ("prod", "test"):
-            log.info("Fetching translations...")
-            start = asyncio.get_running_loop().time()
-            await asyncio.to_thread(tx.fetch_translations)
-            log.info(
-                "Fetched translations in %.2f seconds",
-                asyncio.get_running_loop().time() - start,
-            )
+            await self.fetch_source_strings()
 
     def translate(
         self,
@@ -105,29 +99,37 @@ class Translator:
             return generated_translation
         return translation
 
+    async def fetch_source_strings(self) -> None:
+        log.info("Fetching translations...")
+        start = asyncio.get_running_loop().time()
+        await asyncio.to_thread(tx.fetch_translations)
+        log.info(
+            "Fetched translations in %.2f seconds",
+            asyncio.get_running_loop().time() - start,
+        )
+
     async def push_source_strings(self) -> None:
-        if self.not_translated and self.env in ("prod", "test"):
-            start = asyncio.get_running_loop().time()
-            log.info("Pushing %d source strings to Transifex", len(self.not_translated))
+        start = asyncio.get_running_loop().time()
+        log.info("Pushing %d source strings to Transifex", len(self.not_translated))
+        split_source_strings = split_list(
+            [
+                SourceString(string, _key=key)
+                for key, string in self.not_translated.items()
+            ],
+            5,
+        )
+        for source_strings in split_source_strings:
+            await asyncio.to_thread(tx.push_source_strings, source_strings)
 
-            split_source_strings = split_list(
-                [
-                    SourceString(string, _key=key)
-                    for key, string in self.not_translated.items()
-                ],
-                5,
-            )
-            for source_strings in split_source_strings:
-                await asyncio.to_thread(tx.push_source_strings, source_strings)
-
-            self.not_translated.clear()
-            log.info(
-                "Pushed source strings in %.2f seconds",
-                asyncio.get_running_loop().time() - start,
-            )
+        self.not_translated.clear()
+        log.info(
+            "Pushed source strings in %.2f seconds",
+            asyncio.get_running_loop().time() - start,
+        )
 
     async def unload(self) -> None:
-        await self.push_source_strings()
+        if self.not_translated and self.env in ("prod", "test"):
+            await self.push_source_strings()
         log.info("Translator unloaded")
 
 

@@ -2,6 +2,7 @@ from typing import Any
 
 from discord.app_commands import locale_str as _T
 from discord.ext import commands
+from discord.ext.commands.context import Context
 
 from ..bot import HoyoBuddy
 
@@ -9,6 +10,9 @@ from ..bot import HoyoBuddy
 class Admin(commands.Cog):
     def __init__(self, bot: HoyoBuddy):
         self.bot = bot
+
+    async def cog_check(self, ctx: Context) -> bool:
+        return await self.bot.is_owner(ctx.author)
 
     @commands.command(name="sync")
     async def sync_command(self, ctx: commands.Context) -> Any:

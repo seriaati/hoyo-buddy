@@ -5,32 +5,10 @@ from discord import InteractionResponded, app_commands
 from discord.interactions import Interaction
 
 from ..db.models import Settings, User
-from ..exceptions import HoyoBuddyError
-from ..ui.embeds import ErrorEmbed
+from ..ui.embeds import get_error_embed
 from . import HoyoBuddy
 
 log = logging.getLogger(__name__)
-
-
-async def get_error_embed(i: Interaction[HoyoBuddy], error: Exception) -> ErrorEmbed:
-    user = await User.get(id=i.user.id).prefetch_related("settings")
-
-    if isinstance(error, HoyoBuddyError):
-        embed = ErrorEmbed(
-            user.settings.locale or i.locale,
-            i.client.translator,
-            title="An error occurred",
-            description=str(error),
-            **error.kwargs,
-        )
-    else:
-        embed = ErrorEmbed(
-            user.settings.locale or i.locale,
-            i.client.translator,
-            title="An error occurred",
-            description=str(error),
-        )
-    return embed
 
 
 class CommandTree(app_commands.CommandTree):

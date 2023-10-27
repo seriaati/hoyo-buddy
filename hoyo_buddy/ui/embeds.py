@@ -1,35 +1,35 @@
-from typing import Any, Optional, Self
+from typing import Optional, Self
 
-from discord import Embed as E
-from discord import Locale
+import discord
+from discord.app_commands import locale_str
 
+from ..bot import HoyoBuddy
 from ..bot.translator import Translator
+from ..db.models import User
+from ..exceptions import HoyoBuddyError
 
 
-class Embed(E):
+class Embed(discord.Embed):
     def __init__(
         self,
-        locale: Locale,
+        locale: discord.Locale,
         translator: Translator,
         *,
         color: Optional[int] = None,
-        title: Optional[str] = None,
+        title: Optional[locale_str] = None,
         url: Optional[str] = None,
-        description: Optional[str] = None,
-        translate_title: bool = True,
-        translate_description: bool = True,
-        **kwargs,
+        description: Optional[locale_str] = None,
     ):
-        if title and translate_title:
-            title = translator.translate(title, locale, **kwargs)
-        if description and translate_description:
-            description = translator.translate(description, locale, **kwargs)
+        translated_title = translator.translate(title, locale) if title else None
+        translated_description = (
+            translator.translate(description, locale) if description else None
+        )
 
         super().__init__(
             color=color,
-            title=title,
+            title=translated_title,
             url=url,
-            description=description,
+            description=translated_description,
         )
         self.locale = locale
         self.translator = translator
@@ -37,56 +37,45 @@ class Embed(E):
     def add_field(
         self,
         *,
-        name: str,
-        value: str,
+        name: locale_str,
+        value: locale_str,
         inline: bool = True,
-        translate_name: bool = True,
-        translate_value: bool = True,
-        **kwargs,
     ) -> Self:
-        if translate_name:
-            name = self.translator.translate(name, self.locale, **kwargs)
-        if translate_value:
-            value = self.translator.translate(value, self.locale, **kwargs)
-        return super().add_field(name=name, value=value, inline=inline)
+        translated_name = self.translator.translate(name, self.locale)
+        translated_value = self.translator.translate(value, self.locale)
+        return super().add_field(
+            name=translated_name, value=translated_value, inline=inline
+        )
 
     def set_author(
         self,
         *,
-        name: str,
+        name: locale_str,
         url: Optional[str] = None,
         icon_url: Optional[str] = None,
-        translate: bool = True,
-        **kwargs,
     ) -> Self:
-        if translate:
-            name = self.translator.translate(name, self.locale, **kwargs)
-        return super().set_author(name=name, url=url, icon_url=icon_url)
+        translated_name = self.translator.translate(name, self.locale)
+        return super().set_author(name=translated_name, url=url, icon_url=icon_url)
 
     def set_footer(
         self,
         *,
-        text: Optional[str] = None,
+        text: Optional[locale_str] = None,
         icon_url: Optional[str] = None,
-        translate: bool = True,
-        **kwargs,
     ) -> Self:
-        if text and translate:
-            text = self.translator.translate(text, self.locale, **kwargs)
-        return super().set_footer(text=text, icon_url=icon_url)
+        translated_text = self.translator.translate(text, self.locale) if text else None
+        return super().set_footer(text=translated_text, icon_url=icon_url)
 
 
 class DefaultEmbed(Embed):
     def __init__(
         self,
-        locale: Locale,
+        locale: discord.Locale,
         translator: Translator,
         *,
-        title: Optional[str] = None,
+        title: Optional[locale_str] = None,
         url: Optional[str] = None,
-        description: Optional[str] = None,
-        translate: bool = True,
-        **kwargs,
+        description: Optional[locale_str] = None,
     ):
         super().__init__(
             locale,
@@ -95,22 +84,18 @@ class DefaultEmbed(Embed):
             title=title,
             url=url,
             description=description,
-            translate=translate,
-            **kwargs,
         )
 
 
 class ErrorEmbed(Embed):
     def __init__(
         self,
-        locale: Locale,
+        locale: discord.Locale,
         translator: Translator,
         *,
-        title: Optional[str] = None,
+        title: Optional[locale_str] = None,
         url: Optional[str] = None,
-        description: Optional[str] = None,
-        translate: bool = True,
-        **kwargs,
+        description: Optional[locale_str] = None,
     ):
         super().__init__(
             locale,
@@ -119,6 +104,26 @@ class ErrorEmbed(Embed):
             title=title,
             url=url,
             description=description,
-            translate=translate,
-            **kwargs,
         )
+
+
+async def get_error_embed(
+    i: discord.Interaction[HoyoBuddy], error: Exception
+) -> ErrorEmbed:
+    user = await User.get(id=i.user.id).prefetch_related("settings")
+
+    if isinstance(error, HoyoBuddyError):
+        embed = ErrorEmbed(
+            user.settings.locale or i.locale,
+            i.client.translator,
+            title=locale_str("An error occurred", key="error_title", **error.kwargs),
+            description=locale_str(str(error), key=error.key, **error.kwargs),
+        )
+    else:
+        embed = ErrorEmbed(
+            user.settings.locale or i.locale,
+            i.client.translator,
+            title=locale_str("An error occurred", key="error_title"),
+            description=locale_str(str(error), translate=False),
+        )
+    return embed

@@ -38,7 +38,7 @@ INDEX = """
         display: flex;
         justify-content: center;
     }}
-    button {{
+    .styled-button {{
         background-color: #7289da;
         border: none;
         border-radius: 3px;
@@ -56,16 +56,16 @@ INDEX = """
         user-select: none;
         width: 800px;
     }}
-    button:hover {{
+    .styled-button:hover {{
         background-color: #677bc4;
     }}
-    button:active {{
+    .styled-button:active {{
         background-color: #5b6eae;
     }}
   </style>
   </head>
   <body>
-  <button hidden type="button" id="login">{button_label}</button>
+  <button hidden type="button" id="login" class="styled-button">{button_label}</button>
   </body>
   <script src="./gt.js"></script>
   <script>

@@ -536,6 +536,7 @@ class EmailPasswordContinueButton(Button):
         client = GenshinClient(str_cookies)
         client.set_lang(self.view.locale)
         game_accounts = await client.get_game_accounts()
+        await self.unset_loading_state(i)
 
         go_back_button = GoBackButton(self.view.children, self.view.get_embed(i))
         self.view.clear_items()

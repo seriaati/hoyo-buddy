@@ -8,7 +8,8 @@ from tortoise.exceptions import IntegrityError
 
 from ...bot import HoyoBuddy, emojis
 from ...bot.translator import Translator
-from ...db.models import GAME_CONVERTER, GenshinClient, HoyoAccount, User
+from ...db.models import GAME_CONVERTER, HoyoAccount, User
+from ...hoyo.client import GenshinClient
 from .. import Button, GoBackButton, Modal, Select, SelectOption, TextInput, View
 from ..embeds import DefaultEmbed, ErrorEmbed
 

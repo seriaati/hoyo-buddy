@@ -450,12 +450,12 @@ class WithDevTools(Button):
             title=_T("Instructions", key="instructions_title"),
             description=_T(
                 (
-                    "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (if your account is in the CN server)\n"
+                    "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n"
                     "2. Open the DevTools by pressing F12 or Ctrl+Shift+I\n"
                     "3. Press the >> icon on the top navigation bar\n"
                     "4. Click on the `Application` tab\n"
                     "5. Click on `Cookies` on the left sidebar\n"
-                    "6. Click on the website you're on (e.g. `https://www.hoyolab.com`)\n"
+                    "6. Click on the website you're on (e.g. https://www.hoyolab.com)\n"
                     "7. Type `ltoken` in the `Filter` box and copy the `Value` of `ltoken` or `ltoken_v2`\n"
                     "8. Type `ltuid` in the `Filter` box and copy the `Value` of `ltuid` or `ltuid_v2`\n"
                     "9. Click the button below and paste the values you copied in the corresponding boxes\n"
@@ -609,8 +609,7 @@ class EnterEmailPassword(Button):
             title=_T("Instructions", key="instructions_title"),
             description=_T(
                 (
-                    f"{emojis.INFO} Note: If you don't see the `Login` button after going to the website, it's either because the Mihoyo servers are busy or you entered the wrong email or password.\n"
-                    "**DOESN'T WORK** for Miyoushe, only Hoyolab users can use this method.\n\n"
+                    f"{emojis.INFO} Note: This method **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.\n\n"
                     "1. Click the `Complete CAPTCHA` button below\n"
                     "2. You will be redirected to a website, click the button and complete the CAPTCHA\n"
                     "3. After completing, click on the `Continue` button below\n"

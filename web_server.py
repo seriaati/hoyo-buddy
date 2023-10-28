@@ -40,6 +40,7 @@ INDEX = """
         align-items: center;
         display: flex;
         justify-content: center;
+        text-align: center;
     }}
     .styled-button {{
         background-color: #7289da;
@@ -58,6 +59,7 @@ INDEX = """
         transition: background-color .17s ease,border-color .17s ease,color .17s ease,box-shadow .17s ease;
         user-select: none;
         width: 800px;
+        text-align: center;
     }}
     .styled-button:hover {{
         background-color: #677bc4;

@@ -32,6 +32,7 @@ class Translator:
             token=os.environ["TRANSIFEX_TOKEN"],
             secret=os.environ["TRANSIFEX_SECRET"],
             languages=(
+                "en_US",
                 "zh_CN",
                 "zh_TW",
                 "ja",
@@ -82,6 +83,8 @@ class Translator:
             lang,
             params=extras,
             _key=string_key,
+            escape=False,
+            is_source="en" in lang,
         )
         if translation is None and string_key is not None:
             existing = self.not_translated.get(string_key)

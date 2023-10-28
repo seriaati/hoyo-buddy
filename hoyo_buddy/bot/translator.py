@@ -86,7 +86,7 @@ class Translator:
             escape=False,
             is_source="en" in lang,
         )
-        if translation is None and string_key is not None:
+        if translation is None:
             existing = self.not_translated.get(string_key)
             if existing is not None and existing != message:
                 log.warning(
@@ -101,6 +101,15 @@ class Translator:
                 return f"<MT> {generated_translation}"
 
             return generated_translation
+
+        if "en" in lang and translation != message:
+            log.info(
+                "Local and CDS strings with key %r do not match, adding to not_translated",
+                string_key,
+            )
+            self.not_translated[string_key] = message
+            return message
+
         return translation
 
     @staticmethod

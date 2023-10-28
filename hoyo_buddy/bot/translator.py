@@ -103,7 +103,8 @@ class Translator:
             return generated_translation
         return translation
 
-    async def fetch_source_strings(self) -> None:
+    @staticmethod
+    async def fetch_source_strings() -> None:
         log.info("Fetching translations...")
         start = asyncio.get_running_loop().time()
         await asyncio.to_thread(tx.fetch_translations)

@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import os
 from typing import Tuple
 
@@ -12,10 +13,12 @@ from genshin.errors import GenshinException
 from genshin.utility import geetest
 from tortoise.exceptions import DoesNotExist
 
+from hoyo_buddy.bot.logging import setup_logging
 from hoyo_buddy.bot.translator import Translator
 from hoyo_buddy.db import Database
 from hoyo_buddy.db.models import User
 
+log = logging.getLogger("web_server")
 load_dotenv()
 
 INDEX = """
@@ -205,6 +208,7 @@ class GeetestWebServer:
         return web.json_response({})
 
     async def run(self, port: int = 5000) -> None:
+        log.info("Starting web server... (port=%d)", port)
         await self.translator.load()
         app = web.Application()
         app.add_routes(
@@ -219,11 +223,13 @@ class GeetestWebServer:
         await runner.setup()
         site = web.TCPSite(runner, "localhost", port)
         await site.start()
+        log.info("Web server started")
 
         try:
             while True:
                 await asyncio.sleep(1)
         except asyncio.CancelledError:
+            log.info("Shutting down...")
             await self.translator.unload()
             await site.stop()
             await app.shutdown()
@@ -233,9 +239,10 @@ class GeetestWebServer:
 
 
 async def main():
-    async with Database(os.getenv("DATABASE_URL")):
-        server = GeetestWebServer()
-        await server.run()
+    with setup_logging():
+        async with Database():
+            server = GeetestWebServer()
+            await server.run()
 
 
 asyncio.run(main())

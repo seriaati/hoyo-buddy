@@ -13,6 +13,7 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 
 from hoyo_buddy.bot import HoyoBuddy
 from hoyo_buddy.bot.command_tree import CommandTree
+from hoyo_buddy.bot.logging import setup_logging
 from hoyo_buddy.db import Database
 
 try:
@@ -64,48 +65,13 @@ async def main():
         tree_cls=CommandTree,
         env=env,
     )
-    db = Database(os.getenv("DB_URL"))
+    db = Database()
 
     async with session, db, bot:
         try:
             await bot.start(os.environ["DISCORD_TOKEN"])
         except (KeyboardInterrupt, asyncio.CancelledError):
             pass
-
-
-@contextlib.contextmanager
-def setup_logging():
-    log = logging.getLogger()
-
-    try:
-        discord.utils.setup_logging()
-        # __enter__
-        max_bytes = 32 * 1024 * 1024  # 32 MiB
-        logging.getLogger("discord").setLevel(logging.INFO)
-        logging.getLogger("discord.http").setLevel(logging.WARNING)
-
-        log.setLevel(logging.INFO)
-        handler = logging.handlers.RotatingFileHandler(
-            filename="hoyo_buddy.log",
-            encoding="utf-8",
-            mode="w",
-            maxBytes=max_bytes,
-            backupCount=5,
-        )
-        dt_fmt = "%Y-%m-%d %H:%M:%S"
-        fmt = logging.Formatter(
-            "[{asctime}] [{levelname:<7}] {name}: {message}", dt_fmt, style="{"
-        )
-        handler.setFormatter(fmt)
-        log.addHandler(handler)
-
-        yield
-    finally:
-        # __exit__
-        handlers = log.handlers[:]
-        for handler in handlers:
-            handler.close()
-            log.removeHandler(handler)
 
 
 with setup_logging():

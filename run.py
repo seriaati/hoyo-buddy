@@ -1,7 +1,5 @@
 import asyncio
-import contextlib
 import logging
-import logging.handlers
 import os
 
 import aiohttp

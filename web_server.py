@@ -65,7 +65,8 @@ INDEX = """
   </style>
   </head>
   <body>
-  <button hidden type="button" id="login" class="styled-button">{button_label}</button>
+  <span id="loading" style="display: block;">{loading_text}</span>
+  <button style="display: none;" type="button" id="login" class="styled-button">{button_label}</button>
   </body>
   <script src="./gt.js"></script>
   <script>
@@ -84,7 +85,8 @@ INDEX = """
 		  }},
 		  (captcha) => {{
 			captcha.appendTo("login");
-			document.getElementById("login").hidden = false;
+            document.getElementById("loading").style.display = "none";
+			document.getElementById("login").style.display = "block";
 			captcha.onSuccess(() => {{
 			  fetch("/login", {{
 				method: "POST",
@@ -133,6 +135,9 @@ class GeetestWebServer:
         if user_id is None:
             return web.Response(status=400, reason="Missing user_id")
         locale = Locale(request.query.get("locale", "en-US"))
+        loading_text = self.translator.translate(
+            _T("Loading...", key="loading_text"), locale
+        )
         button_label = self.translator.translate(
             _T("Click me to complete CAPTCHA", key="geetest_button_label"), locale
         )
@@ -145,7 +150,10 @@ class GeetestWebServer:
         )
 
         body = INDEX.format(
-            user_id=user_id, button_label=button_label, close_tab=close_tab
+            user_id=user_id,
+            button_label=button_label,
+            close_tab=close_tab,
+            loading_text=loading_text,
         )
 
         return web.Response(

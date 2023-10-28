@@ -139,7 +139,11 @@ class GeetestWebServer:
             return web.Response(status=400, reason="Missing user_id")
         locale = Locale(request.query.get("locale", "en-US"))
         loading_text = self.translator.translate(
-            _T("Loading...", key="loading_text"), locale
+            _T(
+                "Loading CAPTCHA...<br>If the button doesn't show, either the email or password you entered was incorrect.",
+                key="loading_captcha_text",
+            ),
+            locale,
         )
         button_label = self.translator.translate(
             _T("Click me to complete CAPTCHA", key="geetest_button_label"), locale

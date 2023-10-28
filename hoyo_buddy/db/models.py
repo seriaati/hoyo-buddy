@@ -75,7 +75,7 @@ class HoyoAccount(Model):
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
         "models.User", related_name="accounts"
     )
-    daily_check_in = fields.BooleanField(default=True)
+    daily_checkin = fields.BooleanField(default=True)
 
     class Meta:
         unique_together = ("uid", "game")

@@ -283,6 +283,7 @@ class SelectAccountsToAdd(Select):
             account = discord.utils.get(self.accounts, uid=int(uid), game__value=game)
             if account is None:
                 raise ValueError("Invalid account selected")
+
             try:
                 await HoyoAccount.create(
                     uid=account.uid,
@@ -293,7 +294,11 @@ class SelectAccountsToAdd(Select):
                     server=account.server_name,
                 )
             except IntegrityError:
-                pass
+                await HoyoAccount.filter(
+                    uid=account.uid,
+                    game=GAME_CONVERTER[account.game],
+                    user=self.view.user,
+                ).update(cookies=self.cookies, username=account.nickname)
 
         self.view.user.temp_data.pop("cookies", None)
         await self.view.user.save()

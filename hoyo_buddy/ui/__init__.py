@@ -38,7 +38,7 @@ class View(discord.ui.View):
         error: Exception,
         _: discord.ui.Item[Any],
     ) -> None:
-        log.exception(error)
+        i.client.capture_exception(error)
         embed = await get_error_embed(i, error)
         await self.absolute_send(i, embed=embed, ephemeral=True)
 
@@ -321,7 +321,7 @@ class Modal(discord.ui.Modal):
         error: Exception,
         _: discord.ui.Item[Any],
     ) -> None:
-        log.exception(error)
+        i.client.capture_exception(error)
         embed = await get_error_embed(i, error)
         try:
             await i.response.send_message(embed=embed, ephemeral=True)

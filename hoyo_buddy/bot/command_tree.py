@@ -19,7 +19,7 @@ class CommandTree(app_commands.CommandTree):
         return True
 
     async def on_error(self, i: Interaction[HoyoBuddy], error: Exception) -> None:
-        log.exception(error)
+        i.client.capture_exception(error)
         embed = await get_error_embed(i, error)
         try:
             await i.response.send_message(embed=embed, ephemeral=True)

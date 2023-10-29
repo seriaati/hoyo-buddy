@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 
 import discord
+import sentry_sdk
 from aiohttp import ClientSession
 from discord.ext import commands
 
@@ -37,6 +38,11 @@ class HoyoBuddy(commands.AutoShardedBot):
                 log.error("Failed to load cog %r", cog_name, exc_info=True)
 
         await self.load_extension("jishaku")
+
+    def capture_exception(self, e: Exception) -> None:
+        if self.env == "prod":
+            sentry_sdk.capture_exception(e)
+        logging.exception(e)
 
     async def close(self):
         log.info("Shutting down...")

@@ -77,6 +77,9 @@ class Translator:
                 .lower()
             )
 
+        if self.env == "dev":
+            return f"<MT> {generated_translation}"
+
         lang = locale.value.replace("-", "_")
         translation = tx.translate(
             message,
@@ -97,9 +100,6 @@ class Translator:
                 )
 
             self.not_translated[string_key] = message
-            if self.env == "dev":
-                return f"<MT> {generated_translation}"
-
             return generated_translation
 
         if "en" in lang and translation != message:

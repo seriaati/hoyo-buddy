@@ -42,7 +42,8 @@ class HoyoBuddy(commands.AutoShardedBot):
     def capture_exception(self, e: Exception) -> None:
         if self.env == "prod":
             sentry_sdk.capture_exception(e)
-        logging.exception(e)
+        else:
+            log.exception(e)
 
     async def close(self):
         log.info("Shutting down...")

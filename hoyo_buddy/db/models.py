@@ -47,7 +47,7 @@ class HoyoAccount(Model):
     daily_checkin = fields.BooleanField(default=True)
 
     class Meta:
-        unique_together = ("uid", "game")
+        unique_together = ("uid", "game", "user")
         ordering = ["uid"]
 
     def __str__(self) -> str:

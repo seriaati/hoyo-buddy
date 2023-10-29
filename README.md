@@ -1,5 +1,5 @@
 # Hoyo Buddy
-![Frame 2](https://github.com/seriaati/hoyo-buddy/assets/61446626/739d91f2-f560-4c48-a404-25135d11035d)
+![Hoyo Buddy](https://i.imgur.com/x3UBpUa.png)
 
 ## Useful Links
 [Support Server](https://dsc.gg/hoyo-buddy)  

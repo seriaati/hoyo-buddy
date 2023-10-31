@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from typing import Optional
 
 import discord
 import sentry_sdk
@@ -44,6 +45,18 @@ class HoyoBuddy(commands.AutoShardedBot):
             sentry_sdk.capture_exception(e)
         else:
             log.exception(e)
+
+    async def get_or_fetch_user(self, user_id: int) -> Optional[discord.User]:
+        user = self.get_user(user_id)
+        if user:
+            return user
+
+        try:
+            user = await self.fetch_user(user_id)
+        except discord.HTTPException:
+            return None
+        else:
+            return user
 
     async def close(self):
         log.info("Shutting down...")

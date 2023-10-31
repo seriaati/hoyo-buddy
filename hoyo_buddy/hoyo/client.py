@@ -40,8 +40,8 @@ class GenshinClient(genshin.Client):
     def set_lang(self, locale: Locale) -> None:
         self.lang = LOCALE_CONVERTER[locale]
 
+    @staticmethod
     def get_daily_reward_embed(
-        self,
         daily_reward: genshin.models.DailyReward,
         game: genshin.Game,
         locale: Locale,

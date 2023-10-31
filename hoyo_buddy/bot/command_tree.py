@@ -5,8 +5,8 @@ from discord import InteractionResponded, app_commands
 from discord.interactions import Interaction
 
 from ..db.models import Settings, User
-from ..ui.embeds import get_error_embed
 from . import HoyoBuddy
+from .error_handler import get_error_embed
 
 log = logging.getLogger(__name__)
 
@@ -20,7 +20,10 @@ class CommandTree(app_commands.CommandTree):
 
     async def on_error(self, i: Interaction[HoyoBuddy], error: Exception) -> None:
         i.client.capture_exception(error)
-        embed = await get_error_embed(i, error)
+
+        user = await User.get(id=i.user.id).prefetch_related("settings")
+        locale = user.settings.locale or i.locale
+        embed = get_error_embed(error, locale, i.client.translator)
         try:
             await i.response.send_message(embed=embed, ephemeral=True)
         except InteractionResponded:

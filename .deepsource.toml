@@ -1,5 +1,9 @@
 version = 1
 
+exclude_patterns = [
+  "models/migrations/*",
+]
+
 [[analyzers]]
 name = "python"
 

@@ -1,12 +1,8 @@
 from typing import Optional, Self
 
 import discord
-from discord.app_commands import locale_str
 
-from ..bot import HoyoBuddy
-from ..bot.translator import Translator
-from ..db.models import User
-from ..exceptions import HoyoBuddyError
+from .translator import Translator, locale_str
 
 
 class Embed(discord.Embed):
@@ -105,25 +101,3 @@ class ErrorEmbed(Embed):
             url=url,
             description=description,
         )
-
-
-async def get_error_embed(
-    i: discord.Interaction[HoyoBuddy], error: Exception
-) -> ErrorEmbed:
-    user = await User.get(id=i.user.id).prefetch_related("settings")
-
-    if isinstance(error, HoyoBuddyError):
-        embed = ErrorEmbed(
-            user.settings.locale or i.locale,
-            i.client.translator,
-            title=locale_str("An error occurred", key="error_title", **error.kwargs),
-            description=locale_str(str(error), key=error.key, **error.kwargs),
-        )
-    else:
-        embed = ErrorEmbed(
-            user.settings.locale or i.locale,
-            i.client.translator,
-            title=locale_str("An error occurred", key="error_title"),
-            description=locale_str(str(error), translate=False),
-        )
-    return embed

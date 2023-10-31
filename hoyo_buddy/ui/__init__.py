@@ -7,7 +7,7 @@ from discord.utils import MISSING
 
 from ..bot import HoyoBuddy, emojis
 from ..bot.translator import Translator
-from .embeds import ErrorEmbed, get_error_embed
+from ..bot.embeds import ErrorEmbed
 
 log = logging.getLogger(__name__)
 

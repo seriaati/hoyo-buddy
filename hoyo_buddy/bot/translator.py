@@ -1,10 +1,12 @@
 import asyncio
+import json
 import logging
 import os
-from typing import Dict
+import re
+from typing import Any, Dict, List, Optional
 
 from discord import app_commands
-from discord.app_commands.translator import TranslationContextTypes, locale_str
+from discord.app_commands.translator import TranslationContextTypes
 from discord.enums import Locale
 from transifex.native import init, tx
 from transifex.native.parsing import SourceString
@@ -13,6 +15,22 @@ from transifex.native.rendering import AbstractRenderingPolicy
 from ..utils import split_list
 
 log = logging.getLogger(__name__)
+COMMAND_REGEX = r"</[a-z]+>"
+
+
+class locale_str:
+    def __init__(
+        self,
+        message: str,
+        *,
+        key: Optional[str] = None,
+        warn_no_key: bool = True,
+        **kwargs,
+    ):
+        self.message = message
+        self.key = key
+        self.warn_no_key = warn_no_key
+        self.extras: Dict[str, Any] = kwargs
 
 
 class CustomRenderingPolicy(AbstractRenderingPolicy):
@@ -26,6 +44,8 @@ class Translator:
         super().__init__()
         self.not_translated: Dict[str, str] = {}
         self.env = env
+        self.synced_commands: Dict[str, int] = {}
+        self.load_synced_commands_json()
 
     async def load(self) -> None:
         init(
@@ -53,6 +73,18 @@ class Translator:
         if self.env in ("prod", "test"):
             await self.fetch_source_strings()
 
+    def replace_command_with_mentions(self, message: str) -> str:
+        command_occurences: List[str] = re.findall(COMMAND_REGEX, message)
+        for command_occurence in command_occurences:
+            command_id = self.synced_commands.get(command_occurence[2:-1])
+            if command_id is None:
+                message = message.replace(command_occurence, f"<{command_occurence}:0>")
+            else:
+                message = message.replace(
+                    command_occurence, f"<{command_occurence}:{command_id}>"
+                )
+        return message
+
     def translate(
         self,
         string: locale_str,
@@ -61,13 +93,14 @@ class Translator:
         extras = string.extras
         message = string.message
 
+        message = self.replace_command_with_mentions(message)
         generated_translation = message.format(**extras)
         if not extras.get("translate", True):
             return generated_translation
 
-        string_key = extras.pop("key", None)
+        string_key = string.key
         if string_key is None:
-            if extras.get("warn_no_key", True):
+            if string.warn_no_key:
                 log.warning("Missing key for string %r, using generated key", message)
             string_key = (
                 message.replace(" ", "_")
@@ -122,6 +155,13 @@ class Translator:
             asyncio.get_running_loop().time() - start,
         )
 
+    def load_synced_commands_json(self) -> None:
+        try:
+            with open("synced_commands.json") as f:
+                self.synced_commands = json.load(f)
+        except FileNotFoundError:
+            pass
+
     async def push_source_strings(self) -> None:
         start = asyncio.get_running_loop().time()
         log.info("Pushing %d source strings to Transifex", len(self.not_translated))
@@ -155,6 +195,10 @@ class AppCommandTranslator(app_commands.Translator):
         self.translator = translator
 
     async def translate(
-        self, string: locale_str, locale: Locale, _: TranslationContextTypes
+        self,
+        string: app_commands.locale_str,
+        locale: Locale,
+        _: TranslationContextTypes,
     ) -> str:
-        return self.translator.translate(string, locale)
+        locale_str_ = locale_str(string.message, **string.extras)
+        return self.translator.translate(locale_str_, locale)

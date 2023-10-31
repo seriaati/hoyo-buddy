@@ -2,14 +2,15 @@ from typing import Any, Dict, List, Optional, Sequence, Union
 
 import discord
 import genshin
-from discord.app_commands import locale_str as _T
 from discord.interactions import Interaction
 from tortoise.exceptions import IntegrityError
 
 from ...bot import HoyoBuddy, emojis
 from ...bot.embeds import DefaultEmbed, ErrorEmbed
 from ...bot.translator import Translator
-from ...db.models import GAME_CONVERTER, HoyoAccount, User
+from ...bot.translator import locale_str as _T
+from ...db.enums import GAME_CONVERTER
+from ...db.models import HoyoAccount, User
 from ...hoyo.client import GenshinClient
 from .. import Button, GoBackButton, Modal, Select, SelectOption, TextInput, View
 

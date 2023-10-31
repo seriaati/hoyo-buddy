@@ -2,12 +2,13 @@ import logging
 from typing import Any, List, Optional, Self, Sequence, Union
 
 import discord
-from discord.app_commands import locale_str
 from discord.utils import MISSING
 
 from ..bot import HoyoBuddy, emojis
-from ..bot.translator import Translator
 from ..bot.embeds import ErrorEmbed
+from ..bot.error_handler import get_error_embed
+from ..bot.translator import Translator, locale_str
+from ..db.models import User
 
 log = logging.getLogger(__name__)
 
@@ -39,7 +40,10 @@ class View(discord.ui.View):
         _: discord.ui.Item[Any],
     ) -> None:
         i.client.capture_exception(error)
-        embed = await get_error_embed(i, error)
+
+        user = await User.get(id=i.user.id).prefetch_related("settings")
+        locale = user.settings.locale or i.locale
+        embed = get_error_embed(error, locale, i.client.translator)
         await self.absolute_send(i, embed=embed, ephemeral=True)
 
     async def interaction_check(self, i: discord.Interaction[HoyoBuddy]) -> bool:
@@ -322,7 +326,10 @@ class Modal(discord.ui.Modal):
         _: discord.ui.Item[Any],
     ) -> None:
         i.client.capture_exception(error)
-        embed = await get_error_embed(i, error)
+
+        user = await User.get(id=i.user.id).prefetch_related("settings")
+        locale = user.settings.locale or i.locale
+        embed = get_error_embed(error, locale, i.client.translator)
         try:
             await i.response.send_message(embed=embed, ephemeral=True)
         except discord.InteractionResponded:

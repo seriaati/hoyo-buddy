@@ -7,7 +7,6 @@ import aiohttp
 import genshin
 from aiohttp import web
 from discord import Locale
-from discord.app_commands import locale_str as _T
 from dotenv import load_dotenv
 from genshin.errors import GenshinException
 from genshin.utility import geetest
@@ -15,6 +14,7 @@ from tortoise.exceptions import DoesNotExist
 
 from hoyo_buddy.bot.logging import setup_logging
 from hoyo_buddy.bot.translator import Translator
+from hoyo_buddy.bot.translator import locale_str as _T
 from hoyo_buddy.db import Database
 from hoyo_buddy.db.models import User
 

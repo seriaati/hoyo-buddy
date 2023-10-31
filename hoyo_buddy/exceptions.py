@@ -1,8 +1,7 @@
-class HoyoBuddyError(Exception):
-    def __init__(self, message: str, key: str, **kwargs) -> None:
-        self.message = message
-        self.kwargs = kwargs
-        self.key = key
+from .bot.translator import locale_str
 
-    def __str__(self) -> str:
-        return self.message
+
+class HoyoBuddyError(Exception):
+    def __init__(self, title: locale_str, message: locale_str) -> None:
+        self.title = title
+        self.message = message

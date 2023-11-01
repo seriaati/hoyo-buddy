@@ -25,11 +25,13 @@ class locale_str:
         *,
         key: Optional[str] = None,
         warn_no_key: bool = True,
+        translate: bool = True,
         **kwargs,
     ):
         self.message = message
         self.key = key
         self.warn_no_key = warn_no_key
+        self.translate = translate
         self.extras: Dict[str, Any] = kwargs
 
 
@@ -94,8 +96,12 @@ class Translator:
         message = string.message
 
         message = self.replace_command_with_mentions(message)
-        generated_translation = message.format(**extras)
-        if not extras.get("translate", True):
+        try:
+            generated_translation = message.format(**extras)
+        except ValueError:
+            generated_translation = message
+
+        if not string.translate:
             return generated_translation
 
         string_key = string.key
@@ -114,13 +120,14 @@ class Translator:
             return f"<MT> {generated_translation}"
 
         lang = locale.value.replace("-", "_")
-        translation = tx.translate(
+        is_source = "en" in lang
+        translation: Optional[str] = tx.translate(
             message,
             lang,
             params=extras,
             _key=string_key,
             escape=False,
-            is_source="en" in lang,
+            is_source=is_source,
         )
         if translation is None:
             existing = self.not_translated.get(string_key)
@@ -135,10 +142,12 @@ class Translator:
             self.not_translated[string_key] = message
             return generated_translation
 
-        if "en" in lang and translation != message:
+        if is_source and translation != message and not extras:
             log.info(
-                "Local and CDS strings with key %r do not match, adding to not_translated",
+                "Local and CDS strings with key %r do not match: %r != %r",
                 string_key,
+                translation,
+                message,
             )
             self.not_translated[string_key] = message
             return message

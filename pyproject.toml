@@ -21,6 +21,7 @@ jishaku = "^2.5.1"
 aerich = "^0.7.2"
 pillow = "^10.1.0"
 cachetools = "^5.3.2"
+aiofiles = "^23.2.1"
 
 
 

@@ -23,6 +23,17 @@ asyncmy = ["asyncmy (>=0.2.8rc1,<0.3.0)"]
 asyncpg = ["asyncpg"]
 
 [[package]]
+name = "aiofiles"
+version = "23.2.1"
+description = "File support for asyncio."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "aiofiles-23.2.1-py3-none-any.whl", hash = "sha256:19297512c647d4b27a2cf7c34caa7e405c0d60b5560618a29a9fe027b18b0107"},
+    {file = "aiofiles-23.2.1.tar.gz", hash = "sha256:84ec2218d8419404abcb9f0c02df3f34c6e0a68ed41072acfb1cef5cbc29051a"},
+]
+
+[[package]]
 name = "aiohttp"
 version = "3.8.6"
 description = "Async http client/server framework (asyncio)"
@@ -1505,4 +1516,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "3db615ec84ec2c931bf2bfd04186f91a4d4f071a78968edde74ffe727d2338d2"
+content-hash = "1269bde55992284d8b173f47c6a9cc681df1931eaa9ca9f93d7d5832d519a4ff"

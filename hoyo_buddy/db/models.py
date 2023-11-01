@@ -22,7 +22,7 @@ class User(Model):
 class HoyoAccount(Model):
     uid = fields.IntField(index=True)
     username = fields.CharField(max_length=32)
-    nickname: Optional[str] = fields.CharField(max_length=32, null=True)  # type: ignore
+    nickname: fields.Field[Optional[str]] = fields.CharField(max_length=32, null=True)  # type: ignore
     game = fields.CharEnumField(Game, max_length=32)
     cookies = fields.TextField()
     server = fields.CharField(max_length=32)
@@ -50,7 +50,8 @@ class HoyoAccount(Model):
 
 
 class Settings(Model):
-    lang: Optional[str] = fields.CharField(max_length=5, null=True)  # type: ignore
+    lang: fields.Field[Optional[str]] = fields.CharField(max_length=5, null=True)  # type: ignore
+    dark_mode = fields.BooleanField(default=True)
     user: fields.OneToOneRelation[User] = fields.OneToOneField(
         "models.User", related_name="settings"
     )

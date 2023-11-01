@@ -166,7 +166,7 @@ class Translator:
 
     def load_synced_commands_json(self) -> None:
         try:
-            with open("synced_commands.json") as f:
+            with open("hoyo_buddy/bot/data/synced_commands.json") as f:
                 self.synced_commands = json.load(f)
         except FileNotFoundError:
             pass

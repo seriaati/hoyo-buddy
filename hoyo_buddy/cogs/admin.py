@@ -31,7 +31,7 @@ class Admin(commands.Cog):
     async def sync_command(self, ctx: commands.Context) -> Any:
         message = await ctx.send("Syncing commands...")
         synced_commands = await self.bot.tree.sync()
-        with open("synced_commands.json", "w") as f:
+        with open("hoyo_buddy/bot/data/synced_commands.json", "w") as f:
             json.dump({c.name: c.id for c in synced_commands}, f)
         await message.edit(content=f"Synced {len(synced_commands)} commands.")
 

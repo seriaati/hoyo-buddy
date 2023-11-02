@@ -2,7 +2,7 @@ from typing import Optional, Self
 
 import discord
 
-from . import Translator, locale_str
+from .bot import Translator, locale_str
 
 __all__ = ("Embed", "DefaultEmbed", "ErrorEmbed")
 

@@ -28,12 +28,14 @@ class locale_str:
         key: Optional[str] = None,
         warn_no_key: bool = True,
         translate: bool = True,
+        replace_command_mentions: bool = True,
         **kwargs,
     ):
         self.message = message
         self.key = key
         self.warn_no_key = warn_no_key
         self.translate = translate
+        self.replace_command_mentions = replace_command_mentions
         self.extras: Dict[str, Any] = kwargs
 
 
@@ -98,7 +100,8 @@ class Translator:
         extras = string.extras
         message = string.message
 
-        message = self.replace_command_with_mentions(message)
+        if string.replace_command_mentions:
+            message = self.replace_command_with_mentions(message)
         try:
             generated_translation = message.format(**extras)
         except ValueError:

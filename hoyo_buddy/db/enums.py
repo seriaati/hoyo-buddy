@@ -3,6 +3,8 @@ from typing import Dict, Union
 
 import genshin
 
+__all__ = ("Game", "GAME_CONVERTER", "GAME_THUMBNAILS")
+
 
 class Game(StrEnum):
     GENSHIN = "Genshin Impact"

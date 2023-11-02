@@ -4,6 +4,8 @@ import logging.handlers
 
 import discord
 
+__all__ = ("setup_logging",)
+
 
 @contextlib.contextmanager
 def setup_logging():

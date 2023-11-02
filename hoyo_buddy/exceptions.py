@@ -1,4 +1,4 @@
-from .bot.translator import locale_str
+from .bot import locale_str
 
 
 class HoyoBuddyError(Exception):

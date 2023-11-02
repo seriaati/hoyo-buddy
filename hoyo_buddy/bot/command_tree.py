@@ -4,9 +4,10 @@ from typing import Literal
 from discord import InteractionResponded, app_commands
 from discord.interactions import Interaction
 
-from ..db.models import Settings, User
-from . import HoyoBuddy
-from .error_handler import get_error_embed
+from ..db import Settings, User
+from . import HoyoBuddy, get_error_embed
+
+__all__ = ("CommandTree",)
 
 log = logging.getLogger(__name__)
 

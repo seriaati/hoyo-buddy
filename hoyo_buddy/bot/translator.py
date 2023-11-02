@@ -14,6 +14,8 @@ from transifex.native.rendering import AbstractRenderingPolicy
 
 from ..utils import split_list
 
+__all__ = ("Translator", "AppCommandTranslator", "locale_str")
+
 log = logging.getLogger(__name__)
 COMMAND_REGEX = r"</[a-z]+>"
 

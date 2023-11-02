@@ -5,11 +5,16 @@ from discord import Locale
 from tortoise import fields
 from tortoise.models import Model
 
-from ..bot.translator import Translator
-from ..bot.translator import locale_str as _T
-from ..db.enums import GAME_CONVERTER
+from ..db import GAME_CONVERTER
 from ..hoyo.client import GenshinClient
-from .enums import Game
+from . import Game
+
+__all__ = (
+    "User",
+    "HoyoAccount",
+    "AccountNotifSettings",
+    "Settings",
+)
 
 
 class User(Model):

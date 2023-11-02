@@ -2,7 +2,9 @@ from typing import Optional, Self
 
 import discord
 
-from .translator import Translator, locale_str
+from . import Translator, locale_str
+
+__all__ = ("Embed", "DefaultEmbed", "ErrorEmbed")
 
 
 class Embed(discord.Embed):

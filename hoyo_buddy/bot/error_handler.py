@@ -4,9 +4,10 @@ import discord
 import genshin.errors as errors
 
 from ..exceptions import HoyoBuddyError
-from .embeds import ErrorEmbed
-from .translator import Translator
-from .translator import locale_str as _T
+from . import ErrorEmbed, Translator
+from . import locale_str as _T
+
+__all__ = ("get_error_embed",)
 
 ERROR_CONVERTER: Dict[
     Type[errors.GenshinException],

@@ -7,12 +7,12 @@ import discord
 import genshin
 
 from ..bot import HoyoBuddy
-from ..bot.embeds import Embed
 from ..bot.error_handler import get_error_embed
 from ..bot.translator import Translator
 from ..bot.translator import locale_str as _T
 from ..db.enums import GAME_THUMBNAILS
 from ..db.models import HoyoAccount, User
+from ..embeds import Embed, ErrorEmbed
 
 log = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class DailyCheckin:
 
             queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
             accounts = await HoyoAccount.filter(daily_checkin=True).prefetch_related(
-                "user"
+                "user", "notif_settings"
             )
             for account in accounts:
                 await queue.put(account)
@@ -52,7 +52,7 @@ class DailyCheckin:
 
             await asyncio.gather(*tasks, return_exceptions=True)
         except Exception as e:  # skipcq: PYL-W0703
-            log.error("Daily check-in failed: %s", e)
+            bot.capture_exception(e)
 
     @classmethod
     async def _daily_checkin_task(
@@ -76,13 +76,19 @@ class DailyCheckin:
             except Exception as e:  # skipcq: PYL-W0703
                 await queue.put(account)
                 api_error_count += 1
-                log.error("Daily check-in failed for %s", account, exc_info=e)
+                log.exception("Daily check-in failed for %s", account)
                 if api_error_count >= MAX_API_ERROR_COUNT:
                     raise RuntimeError(
                         f"Daily check-in API {api} failed for {api_error_count} accounts"
                     )
             else:
-                await cls._notify_user(bot, account.user, embed)
+                if (
+                    isinstance(embed, ErrorEmbed)
+                    and account.notif_settings.notify_on_checkin_failure
+                ):
+                    await cls._notify_user(bot, account.user, embed)
+                elif account.notif_settings.notify_on_checkin_success:
+                    await cls._notify_user(bot, account.user, embed)
             finally:
                 await asyncio.sleep(2.0)
                 queue.task_done()

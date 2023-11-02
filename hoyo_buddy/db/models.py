@@ -35,6 +35,7 @@ class HoyoAccount(Model):
         "models.User", related_name="accounts"
     )
     daily_checkin = fields.BooleanField(default=True)
+    notif_settings: fields.BackwardOneToOneRelation["AccountNotifSettings"]
 
     class Meta:
         unique_together = ("uid", "game", "user")
@@ -50,8 +51,13 @@ class HoyoAccount(Model):
         game: genshin.Game = GAME_CONVERTER[self.game]  # type: ignore
         return GenshinClient(self.cookies, game=game, uid=self.uid)
 
-    def get_game_name(self, locale: Locale, translator: Translator) -> str:
-        return translator.translate(_T(self.game.value, warn_no_key=False), locale)
+
+class AccountNotifSettings(Model):
+    notify_on_checkin_failure = fields.BooleanField(default=True)
+    notify_on_checkin_success = fields.BooleanField(default=True)
+    account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
+        "models.HoyoAccount", related_name="notif_settings"
+    )
 
 
 class Settings(Model):

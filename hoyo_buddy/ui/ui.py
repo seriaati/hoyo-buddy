@@ -1,11 +1,13 @@
 import logging
-from typing import Any, List, Optional, Self, Sequence, Union
+from typing import Any, Dict, List, Optional, Self, Sequence, Union
 
 import discord
 from discord.utils import MISSING
 
-from ..bot import ErrorEmbed, HoyoBuddy, Translator, emojis, get_error_embed, locale_str
+from ..bot import HoyoBuddy, Translator, emojis, locale_str
+from ..bot.error_handler import get_error_embed
 from ..db import User
+from ..embeds import ErrorEmbed
 
 log = logging.getLogger(__name__)
 
@@ -106,9 +108,17 @@ class View(discord.ui.View):
             await i.edit_original_response(**kwargs)
 
     @staticmethod
-    def get_embed(i: discord.Interaction) -> Optional[discord.Embed]:
-        if i.message and i.message.embeds:
-            return i.message.embeds[0]
+    def get_embeds(message: Optional[discord.Message]) -> Optional[List[discord.Embed]]:
+        if message:
+            return message.embeds
+        return None
+
+    @staticmethod
+    def get_attachments(
+        message: Optional[discord.Message],
+    ) -> Optional[List[discord.Attachment]]:
+        if message:
+            return message.attachments
         return None
 
 
@@ -168,12 +178,14 @@ class GoBackButton(Button):
     def __init__(
         self,
         original_children: List[discord.ui.Item[Any]],
-        embed: Optional[discord.Embed] = None,
+        embeds: Optional[Sequence[discord.Embed]] = None,
+        attachments: Optional[Sequence[discord.Attachment]] = None,
         row: int = 4,
     ):
         super().__init__(emoji=emojis.BACK, row=row)
         self.original_children = original_children.copy()
-        self.embed = embed
+        self.embeds = embeds
+        self.attachments = attachments
 
     async def callback(self, i: discord.Interaction) -> Any:
         self.view.clear_items()
@@ -181,10 +193,12 @@ class GoBackButton(Button):
             if isinstance(item, (Button, Select)):
                 self.view.add_item(item, translate=False)
 
-        if self.embed:
-            await i.response.edit_message(embed=self.embed, view=self.view)
-        else:
-            await i.response.edit_message(view=self.view)
+        kwargs: Dict[str, Any] = {"view": self.view}
+        if self.embeds:
+            kwargs["embeds"] = self.embeds
+        kwargs["attachments"] = self.attachments or []
+
+        await i.response.edit_message(**kwargs)
 
 
 class SelectOption(discord.SelectOption):

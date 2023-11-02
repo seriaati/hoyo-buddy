@@ -80,12 +80,13 @@ class Translator:
     def replace_command_with_mentions(self, message: str) -> str:
         command_occurences: List[str] = re.findall(COMMAND_REGEX, message)
         for command_occurence in command_occurences:
-            command_id = self.synced_commands.get(command_occurence[2:-1])
+            command_name = command_occurence[2:-1]
+            command_id = self.synced_commands.get(command_name)
             if command_id is None:
-                message = message.replace(command_occurence, f"<{command_occurence}:0>")
+                message = message.replace(command_occurence, f"</{command_name}:0>")
             else:
                 message = message.replace(
-                    command_occurence, f"<{command_occurence}:{command_id}>"
+                    command_occurence, f"</{command_name}:{command_id}>"
                 )
         return message
 

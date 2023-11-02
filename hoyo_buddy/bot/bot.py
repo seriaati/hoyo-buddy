@@ -1,15 +1,13 @@
 import logging
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import discord
 import sentry_sdk
 from aiohttp import ClientSession
 from discord.ext import commands
 
-from ..db import HoyoAccount
-from . import AppCommandTranslator, Translator
-from . import locale_str as _T
+from .translator import AppCommandTranslator, Translator
 
 log = logging.getLogger(__name__)
 
@@ -61,31 +59,6 @@ class HoyoBuddy(commands.AutoShardedBot):
             return None
         else:
             return user
-
-    @staticmethod
-    async def account_autocomplete(
-        user_id: int, current: str, locale: discord.Locale, translator: Translator
-    ) -> List[discord.app_commands.Choice]:
-        accounts = await HoyoAccount.filter(user__id=user_id).all()
-        if not accounts:
-            return [
-                discord.app_commands.Choice(
-                    name=discord.app_commands.locale_str(
-                        "You don't have any accounts yet. Add one with /accounts",
-                        key="no_accounts_autocomplete_choice",
-                    ),
-                    value="none",
-                )
-            ]
-
-        return [
-            discord.app_commands.Choice(
-                name=f"{account} | {translator.translate(_T(account.game, warn_no_key=False), locale)}",
-                value=f"{account.uid}_{account.game}",
-            )
-            for account in accounts
-            if current in str(account)
-        ]
 
     async def close(self):
         log.info("Shutting down...")

@@ -3,9 +3,10 @@ from typing import Dict, Optional, Tuple, Type
 import discord
 import genshin.errors as errors
 
+from ..embeds import ErrorEmbed
 from ..exceptions import HoyoBuddyError
-from . import ErrorEmbed, Translator
-from . import locale_str as _T
+from .translator import Translator
+from .translator import locale_str as _T
 
 __all__ = ("get_error_embed",)
 
@@ -14,13 +15,13 @@ ERROR_CONVERTER: Dict[
     Tuple[Optional[Tuple[str, str]], Optional[Tuple[str, str]]],
 ] = {
     errors.AlreadyClaimed: (
-        ("Daily reward already claimed", "already_claimed_title"),
-        None,
+        ("Daily check-in reward already claimed", "already_claimed_title"),
+        ("Come back tomorrow!", "already_claimed_description"),
     ),
     errors.InvalidCookies: (
         ("Invalid Cookies", "invalid_cookies_title"),
         (
-            "Refresh your Cookies by adding your accounts again using the </accounts> command.",
+            "Refresh your Cookies by adding your accounts again using </accounts>",
             "invalid_cookies_description",
         ),
     ),

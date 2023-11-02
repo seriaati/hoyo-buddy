@@ -100,6 +100,10 @@ class Translator:
         extras = string.extras
         message = string.message
 
+        for k, v in extras.items():
+            if isinstance(v, locale_str):
+                extras[k] = self.translate(v, locale)
+
         if string.replace_command_mentions:
             message = self.replace_command_with_mentions(message)
         try:

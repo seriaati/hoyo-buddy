@@ -20,9 +20,16 @@ CREATE TABLE IF NOT EXISTS "hoyoaccount" (
     CONSTRAINT "uid_hoyoaccount_uid_caad37" UNIQUE ("uid", "game", "user_id")
 );
 CREATE INDEX IF NOT EXISTS "idx_hoyoaccount_uid_e838aa" ON "hoyoaccount" ("uid");
+CREATE TABLE IF NOT EXISTS "accountnotifsettings" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "notify_on_checkin_failure" INT NOT NULL  DEFAULT 1,
+    "notify_on_checkin_success" INT NOT NULL  DEFAULT 1,
+    "account_id" INT NOT NULL UNIQUE REFERENCES "hoyoaccount" ("id") ON DELETE CASCADE
+);
 CREATE TABLE IF NOT EXISTS "settings" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "lang" VARCHAR(5),
+    "dark_mode" INT NOT NULL  DEFAULT 1,
     "user_id" BIGINT NOT NULL UNIQUE REFERENCES "user" ("id") ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS "aerich" (

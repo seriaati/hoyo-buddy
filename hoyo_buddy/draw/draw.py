@@ -101,8 +101,7 @@ class Drawer:
             else:
                 raise ValueError(f"Invalid font style: {style}")
 
-        font.size = size
-        return font
+        return ImageFont.truetype(font, size)
 
     def get_static_image(
         self, url: str, *, folder: Optional[str] = None

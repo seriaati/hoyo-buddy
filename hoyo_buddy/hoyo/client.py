@@ -3,10 +3,10 @@ from typing import Optional
 import genshin
 from discord import Locale
 
-from ..bot.embeds import DefaultEmbed
 from ..bot.translator import Translator
 from ..bot.translator import locale_str as _T
-from ..db.enums import GAME_THUMBNAILS
+from ..db.enums import GAME_CONVERTER, GAME_THUMBNAILS
+from ..embeds import DefaultEmbed
 
 LOCALE_CONVERTER = {
     Locale.british_english: "en-us",
@@ -50,13 +50,15 @@ class GenshinClient(genshin.Client):
         embed = DefaultEmbed(
             locale,
             translator,
-            title=_T("Reward claimed", key="reward_claimed_title"),
+            title=_T("Daily check-in reward claimed", key="reward_claimed_title"),
             description=_T(
                 f"{daily_reward.name} x{daily_reward.amount}", translate=False
             ),
         )
         embed.set_thumbnail(url=daily_reward.icon)
+        converted_game = GAME_CONVERTER[game]
         embed.set_author(
-            name=_T(game.value, warn_no_key=False), icon_url=GAME_THUMBNAILS[game]
+            name=_T(converted_game.value, warn_no_key=False),
+            icon_url=GAME_THUMBNAILS[game],
         )
         return embed

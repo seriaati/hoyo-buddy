@@ -15,7 +15,9 @@ class Login(commands.Cog):
 
     @app_commands.command(
         name=app_commands.locale_str("accounts", translate=False),
-        description=app_commands.locale_str("Manage your accounts", warn_no_key=False),
+        description=app_commands.locale_str(
+            "Manage your accounts", key="accounts_command_description"
+        ),
     )
     async def accounts(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         user = await User.get(id=i.user.id).prefetch_related("accounts", "settings")

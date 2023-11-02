@@ -397,7 +397,9 @@ class EnterCookies(Button):
                 )
             await i.edit_original_response(embed=embed)
         else:
-            go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+            go_back_button = GoBackButton(
+                self.view.children, self.view.get_embeds(i.message)
+            )
             self.view.clear_items()
             self.view.add_item(
                 SelectAccountsToAdd(
@@ -437,7 +439,9 @@ class WithJavaScript(Button):
         )
         embed.set_image(url="https://i.imgur.com/PxO0Wr6.gif")
         code = "script:document.write(document.cookie)"
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(
+            self.view.children, self.view.get_embeds(i.message)
+        )
         self.view.clear_items()
         self.view.add_item(EnterCookies(v2=False))
         self.view.add_item(go_back_button)
@@ -473,7 +477,9 @@ class WithDevTools(Button):
             ),
         )
         embed.set_image(url="https://i.imgur.com/oSljaFQ.gif")
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(
+            self.view.children, self.view.get_embeds(i.message)
+        )
         self.view.clear_items()
         self.view.add_item(EnterCookies(v2=True, dev_tools=True))
         self.view.add_item(EnterCookies(v2=False, dev_tools=True))
@@ -547,7 +553,9 @@ class EmailPasswordContinueButton(Button):
         game_accounts = await client.get_game_accounts()
         await self.unset_loading_state(i)
 
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(
+            self.view.children, self.view.get_embeds(i.message)
+        )
         self.view.clear_items()
         self.view.add_item(
             SelectAccountsToAdd(
@@ -601,7 +609,9 @@ class EnterEmailPassword(Button):
         self.view.user.temp_data["password"] = password
         await self.view.user.save()
 
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(
+            self.view.children, self.view.get_embeds(i.message)
+        )
         self.view.clear_items()
         web_server_url = GEETEST_SERVER_URL[i.client.env]
         self.view.add_item(
@@ -650,7 +660,9 @@ class WithEmailPassword(Button):
                 key="enter_email_password_instructions_description",
             ),
         )
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(
+            self.view.children, self.view.get_embeds(i.message)
+        )
         self.view.clear_items()
         self.view.add_item(EnterEmailPassword())
         self.view.add_item(go_back_button)

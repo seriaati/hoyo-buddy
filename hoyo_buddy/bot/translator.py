@@ -122,9 +122,6 @@ class Translator:
                 .lower()
             )
 
-        if self.env == "dev":
-            return f"<MT> {generated_translation}"
-
         lang = locale.value.replace("-", "_")
         is_source = "en" in lang
         translation: Optional[str] = tx.translate(

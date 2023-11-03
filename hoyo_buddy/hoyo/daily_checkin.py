@@ -73,7 +73,7 @@ class DailyCheckin:
                 embed = await cls._daily_checkin(
                     api, account, bot.translator, bot.session
                 )
-            except Exception as e:  # skipcq: PYL-W0703
+            except Exception:  # skipcq: PYL-W0703
                 await queue.put(account)
                 api_error_count += 1
                 log.exception("Daily check-in failed for %s", account)

@@ -18,7 +18,7 @@ def cache_key(
 
 
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
-def draw(
+def draw_card(
     daily_rewards: Tuple[genshin.models.DailyReward, ...],
     dark_mode: bool,
 ) -> io.BytesIO:

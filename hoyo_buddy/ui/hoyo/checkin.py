@@ -189,7 +189,7 @@ class CheckInUI(View):
         await download_and_save_static_images(
             [r.icon for r in rewards], "check-in", session
         )
-        return await asyncio.to_thread(checkin.draw, rewards, dark_mode)
+        return await asyncio.to_thread(checkin.draw_card, rewards, dark_mode)
 
     def _calc_valuable_amount(
         self, claimed_rewards: Sequence[ClaimedDailyReward]

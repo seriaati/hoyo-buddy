@@ -84,7 +84,8 @@ class Hoyo(commands.Cog):
         )
         await view.start(i)
 
-    async def _no_account_response(self, i, locale):
+    @staticmethod
+    async def _no_account_response(i, locale):
         return await i.response.send_message(
             i.client.translator.translate(
                 _T(

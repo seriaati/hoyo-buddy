@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List, Optional
 
 import discord
 from discord import app_commands
@@ -52,23 +52,27 @@ class Hoyo(commands.Cog):
     )
     @app_commands.describe(
         acc_value=app_commands.locale_str(
-            "Account to run this command with",
+            "Account to run this command with, defaults to the first one",
             key="account_autocomplete_param_description",
         )
     )
     async def checkin_command(
-        self, i: discord.Interaction[HoyoBuddy], acc_value: str
+        self, i: discord.Interaction[HoyoBuddy], acc_value: Optional[str] = None
     ) -> Any:
         user = await User.get(id=i.user.id).prefetch_related("settings")
         locale = user.settings.locale or i.locale
-
-        if acc_value == "none":
-            return await self._no_account_response(i, locale)
-
-        uid, game = acc_value.split("_")
-        account = await user.accounts.filter(uid=uid, game=game).first()
-        if account is None:
-            raise AssertionError("Account not found")
+        if acc_value is None:
+            accounts = await user.accounts.all()
+            if not accounts:
+                return await self._no_account_response(i, locale)
+            account = accounts[0]
+        else:
+            if acc_value == "none":
+                return await self._no_account_response(i, locale)
+            uid, game = acc_value.split("_")
+            account = await user.accounts.filter(uid=uid, game=game).first()
+            if account is None:
+                raise AssertionError("Account not found")
 
         dark_mode = user.settings.dark_mode
         view = CheckInUI(

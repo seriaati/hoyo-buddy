@@ -192,9 +192,7 @@ class CheckInUI(View):
         return await asyncio.to_thread(checkin.draw, rewards, dark_mode)
 
     @staticmethod
-    def _calc_valuable_amount(
-        claimed_rewards: Sequence[ClaimedDailyReward]
-    ) -> int:
+    def _calc_valuable_amount(claimed_rewards: Sequence[ClaimedDailyReward]) -> int:
         return sum(
             (
                 r.amount

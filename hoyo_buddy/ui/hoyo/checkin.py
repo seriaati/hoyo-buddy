@@ -180,8 +180,8 @@ class CheckInUI(View):
         self.add_item(AutoCheckInToggle(self.account.daily_checkin))
         self.add_item(NotificationSettingsButton())
 
+    @staticmethod
     async def _draw_checkin_image(
-        self,
         rewards: Tuple[DailyReward, ...],
         dark_mode: bool,
         session: aiohttp.ClientSession,
@@ -191,8 +191,9 @@ class CheckInUI(View):
         )
         return await asyncio.to_thread(checkin.draw, rewards, dark_mode)
 
+    @staticmethod
     def _calc_valuable_amount(
-        self, claimed_rewards: Sequence[ClaimedDailyReward]
+        claimed_rewards: Sequence[ClaimedDailyReward]
     ) -> int:
         return sum(
             (
@@ -202,7 +203,8 @@ class CheckInUI(View):
             )
         )
 
-    def _calc_missed_days(self, claimed_rewards: Sequence[ClaimedDailyReward]) -> int:
+    @staticmethod
+    def _calc_missed_days(claimed_rewards: Sequence[ClaimedDailyReward]) -> int:
         now = get_now()
         missed = now.day - len(claimed_rewards)
         return missed

@@ -1,8 +1,8 @@
 import asyncio
 import calendar
 import io
-from datetime import datetime, timedelta
-from typing import Any, ClassVar, List, Optional, Sequence, Tuple, Union
+from datetime import timedelta
+from typing import Any, List, Optional, Sequence, Tuple, Union
 
 import aiohttp
 import discord
@@ -28,115 +28,121 @@ CHECK_IN_URLS = {
 
 
 class RewardCalculator:
-    _now: ClassVar[datetime]
-    _claimed_rewards: ClassVar[Sequence[ClaimedDailyReward]]
-    _mora: ClassVar[DailyReward]
-    _last_month: ClassVar[int]
+    def __init__(
+        self,
+        claimed_rewards: Sequence[ClaimedDailyReward],
+        monthly_rewards: Sequence[DailyReward],
+    ):
+        self._claimed_rewards = claimed_rewards
+        self._monthly_rewards = monthly_rewards
+        self._today = get_now().date()
 
-    @classmethod
+    @property
+    def _last_month(self) -> int:
+        return (self._today - timedelta(days=self._today.day)).month
+
+    @property
+    def _last_month_days(self) -> int:
+        return calendar.monthrange(self._today.year, self._last_month)[1]
+
+    @property
+    def _next_month(self) -> int:
+        return self._today.month + 1
+
+    @property
+    def _this_month_claimed_rewards(self) -> List[ClaimedDailyReward]:
+        return [r for r in self._claimed_rewards if r.time.month == self._today.month]
+
+    @property
+    def claimed_amount(self) -> int:
+        return min(self._today.day, len(self._this_month_claimed_rewards))
+
+    def _get_claim_status(self, date: Tuple[int, int], name: str) -> str:
+        return (
+            "claimed"
+            if any(
+                (
+                    r.time.day >= date[1] and r.time.month == date[0] and r.name == name
+                    for r in self._this_month_claimed_rewards
+                )
+            )
+            else "unclaimed"
+        )
+
+    @staticmethod
     def _change_reward_name(
-        cls, name: str, reward: Union[ClaimedDailyReward, DailyReward]
+        name: str, reward: Union[ClaimedDailyReward, DailyReward]
     ) -> DailyReward:
         return DailyReward(name=name, amount=reward.amount, icon=reward.icon)
 
-    @classmethod
-    def _get_claim_status(
-        cls,
-        day: int,
-        rewards: Sequence[ClaimedDailyReward],
-    ) -> str:
-        return "claimed" if any((r.time.day == day for r in rewards)) else "unclaimed"
+    def _get_renamed_monthly_rewards(self) -> List[DailyReward]:
+        result: List[DailyReward] = []
+        for i, r in enumerate(self._monthly_rewards):
+            claim_status = self._get_claim_status((self._today.month, i + 1), r.name)
+            result.append(
+                self._change_reward_name(f"{claim_status}_{self._today.month}/{i+1}", r)
+            )
+        return result
 
-    @classmethod
-    def _get_last_month_data(cls) -> Tuple[int, int]:
-        last_month = cls._now - timedelta(days=cls._now.day)
-        return (
-            last_month.month,
-            calendar.monthrange(last_month.year, last_month.month)[1],
-        )
-
-    @classmethod
-    def _get_mora_with_claim_status(
-        cls,
-        day: int,
-    ) -> DailyReward:
-        return cls._change_reward_name(
-            f"{cls._get_claim_status(day, cls._claimed_rewards)}_{cls._last_month}/{day}",
-            cls._mora,
-        )
-
-    @classmethod
-    def exec(
-        cls,
-        monthly_rewards: Sequence[DailyReward],
-        claimed_rewards: Sequence[ClaimedDailyReward],
-    ) -> Tuple[DailyReward, ...]:
-        # initialization
-        cls._now = get_now()
-        cls._claimed_rewards = claimed_rewards
-        cls._mora = monthly_rewards[2]
-        now_month = cls._now.month
-        last_month, last_month_days = cls._get_last_month_data()
-        cls._last_month = last_month
-        this_month_claimed_rewards = [
-            r for r in claimed_rewards if r.time.month == cls._now.month
-        ][::-1]
-
-        if not this_month_claimed_rewards:
+    def exec(self) -> Tuple[DailyReward, ...]:
+        renamed_monthly_rewards = self._get_renamed_monthly_rewards()
+        if self.claimed_amount == 0:
             return (
-                cls._get_mora_with_claim_status(last_month_days - 1),
-                cls._get_mora_with_claim_status(last_month_days),
-                cls._change_reward_name(f"{now_month}/1", monthly_rewards[0]),
-                cls._change_reward_name(f"{now_month}/2", monthly_rewards[1]),
+                self._change_reward_name(
+                    f"{self._last_month}/{self._last_month_days}",
+                    renamed_monthly_rewards[-2],
+                ),
+                self._change_reward_name(
+                    f"{self._last_month}/{self._last_month_days}",
+                    renamed_monthly_rewards[-1],
+                ),
+                renamed_monthly_rewards[0],
+                renamed_monthly_rewards[1],
             )
 
-        last_claimed = this_month_claimed_rewards[-1]
-        claim_index = last_claimed.time.day - 1
-        last_claimed_daily_reward = cls._change_reward_name(
-            f"{cls._get_claim_status(cls._now.day, this_month_claimed_rewards)}_{last_claimed.time.month}/{last_claimed.time.day}",
-            last_claimed,
+        today_claimed = any(
+            r.time.day == self._today.day for r in self._claimed_rewards
         )
+        today_reward_index = self.claimed_amount - int(today_claimed)
+        today_reward = renamed_monthly_rewards[today_reward_index]
 
-        if claim_index < 2:
-            if claim_index == 0:  # claimed reward on first day of month
-                return (
-                    cls._get_mora_with_claim_status(last_month_days - 1),
-                    cls._get_mora_with_claim_status(last_month_days),
-                    last_claimed_daily_reward,
-                    cls._change_reward_name("2", monthly_rewards[1]),
-                )
-            # claimed reward on second day of month
+        if today_reward_index == 0:
             return (
-                cls._get_mora_with_claim_status(last_month_days),
-                cls._change_reward_name(f"claimed_{now_month}/1", monthly_rewards[0]),
-                last_claimed_daily_reward,
-                cls._change_reward_name(f"{now_month}/3", monthly_rewards[2]),
+                self._change_reward_name(
+                    f"{self._last_month}/{self._last_month_days}",
+                    renamed_monthly_rewards[-2],
+                ),
+                self._change_reward_name(
+                    f"{self._last_month}/{self._last_month_days}",
+                    renamed_monthly_rewards[-1],
+                ),
+                today_reward,
+                renamed_monthly_rewards[2],
             )
-
-        if (
-            claim_index == len(monthly_rewards) - 1
-        ):  # claimed reward on last day of month
+        if today_reward_index == 1:
             return (
-                cls._change_reward_name(
-                    f"{now_month}/{claim_index - 1}", monthly_rewards[claim_index - 2]
+                self._change_reward_name(
+                    f"{self._last_month}/{self._last_month_days}",
+                    renamed_monthly_rewards[-1],
                 ),
-                cls._change_reward_name(
-                    f"{now_month}/{claim_index}", monthly_rewards[claim_index - 1]
+                renamed_monthly_rewards[0],
+                today_reward,
+                renamed_monthly_rewards[2],
+            )
+        if today_reward_index == len(renamed_monthly_rewards) - 1:
+            return (
+                renamed_monthly_rewards[today_reward_index - 2],
+                renamed_monthly_rewards[today_reward_index - 1],
+                today_reward,
+                self._change_reward_name(
+                    f"{self._next_month}/1", renamed_monthly_rewards[0]
                 ),
-                last_claimed_daily_reward,
-                cls._change_reward_name(f"{now_month+1}/1", monthly_rewards[0]),
             )
         return (
-            cls._change_reward_name(
-                f"{now_month}/{claim_index - 1}", monthly_rewards[claim_index - 2]
-            ),
-            cls._change_reward_name(
-                f"{now_month}/{claim_index}", monthly_rewards[claim_index - 1]
-            ),
-            last_claimed_daily_reward,
-            cls._change_reward_name(
-                f"{now_month}/{claim_index + 2}", monthly_rewards[claim_index + 1]
-            ),
+            renamed_monthly_rewards[today_reward_index - 2],
+            renamed_monthly_rewards[today_reward_index - 1],
+            today_reward,
+            renamed_monthly_rewards[today_reward_index + 1],
         )
 
 
@@ -206,9 +212,8 @@ class CheckInUI(View):
     ) -> Tuple[DefaultEmbed, discord.File]:
         monthly_rewards = await self.client.get_monthly_rewards()
         claimed_rewards = await self.client.claimed_rewards()
-        rewards = RewardCalculator.exec(monthly_rewards, claimed_rewards)
-        now = get_now()
-        claimed_rewards = [c for c in claimed_rewards if c.time.month == now.month]
+        reward_calculator = RewardCalculator(claimed_rewards, monthly_rewards)
+        rewards = reward_calculator.exec()
 
         fp = await self._draw_checkin_image(rewards, self.dark_mode, session)
         fp.seek(0)
@@ -234,8 +239,8 @@ class CheckInUI(View):
                 key="daily_checkin_embed_description",
                 amount=self._calc_valuable_amount(claimed_rewards),
                 valuable_name=valuable_name,
-                day=len(claimed_rewards),
-                missed=self._calc_missed_days(claimed_rewards),
+                day=reward_calculator.claimed_amount,
+                missed=get_now().day - reward_calculator.claimed_amount,
             ),
         )
         embed.set_image(url="attachment://check-in.png")

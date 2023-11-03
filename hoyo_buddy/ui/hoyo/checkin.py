@@ -163,9 +163,9 @@ class CheckInUI(View):
         self.account = account
         self.client = account.client
         self.dark_mode = dark_mode
-        self._add_items()
+        self.add_items()
 
-    def _add_items(self) -> None:
+    def add_items(self) -> None:
         if self.client.game is None:
             raise AssertionError("Client game is None")
         self.add_item(CheckInButton())
@@ -207,7 +207,7 @@ class CheckInUI(View):
         missed = now.day - len(claimed_rewards)
         return missed
 
-    async def _get_image_embed_and_file(
+    async def get_image_embed_and_file(
         self, session: aiohttp.ClientSession
     ) -> Tuple[DefaultEmbed, discord.File]:
         monthly_rewards = await self.client.get_monthly_rewards()
@@ -248,7 +248,7 @@ class CheckInUI(View):
 
     async def start(self, i: discord.Interaction[HoyoBuddy]):
         await i.response.defer()
-        embed, file_ = await self._get_image_embed_and_file(i.client.session)
+        embed, file_ = await self.get_image_embed_and_file(i.client.session)
         await i.followup.send(embed=embed, file=file_, view=self)
         self.message = await i.original_response()
 
@@ -261,9 +261,9 @@ class BackButton(Button):
         self.view: CheckInUI
 
         await self.set_loading_state(i)
-        embed, file_ = await self.view._get_image_embed_and_file(i.client.session)
+        embed, file_ = await self.view.get_image_embed_and_file(i.client.session)
         self.view.clear_items()
-        self.view._add_items()
+        self.view.add_items()
         await i.edit_original_response(embed=embed, attachments=[file_], view=self.view)
 
 

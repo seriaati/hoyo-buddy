@@ -75,7 +75,7 @@ class Drawer:
             elif style == "medium":
                 font = GENSENROUNDEDTW_MEDIUM
             elif style == "bold":
-                font = GENSENROUNDEDTW_MEDIUM
+                font = GENSENROUNDEDTW_BOLD
             else:
                 raise ValueError(f"Invalid font style: {style}")
         elif self.locale == discord.Locale.japanese:

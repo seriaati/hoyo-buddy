@@ -86,7 +86,7 @@ class Hoyo(commands.Cog):
     ) -> Optional[HoyoAccount]:
         if account_value is None:
             return await self._get_first_account(user, i, locale)
-        elif account_value == "none":
+        if account_value == "none":
             await self._no_account_response(i, locale)
         else:
             return await self._get_specific_account(account_value, user)

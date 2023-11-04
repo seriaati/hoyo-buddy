@@ -39,6 +39,58 @@ class Hoyo(commands.Cog):
             if current in str(account)
         ]
 
+    @staticmethod
+    async def _no_account_response(i, locale):
+        return await i.response.send_message(
+            i.client.translator.translate(
+                _T(
+                    "You don't have any accounts yet. Add one with </accounts>",
+                    key="no_accounts_autocomplete_selected",
+                ),
+                locale,
+            ),
+            ephemeral=True,
+        )
+
+    @staticmethod
+    async def _get_user(user_id: int) -> User:
+        return await User.get(id=user_id).prefetch_related("settings")
+
+    @staticmethod
+    def _get_locale(user: User, interaction_locale: discord.Locale) -> discord.Locale:
+        return user.settings.locale or interaction_locale
+
+    async def _get_first_account(
+        self, user: User, i: discord.Interaction, locale: discord.Locale
+    ) -> Optional[HoyoAccount]:
+        accounts = await user.accounts.all()
+        if not accounts:
+            await self._no_account_response(i, locale)
+        else:
+            return accounts[0]
+
+    @staticmethod
+    async def _get_specific_account(account_value: str, user: User) -> HoyoAccount:
+        uid, game = account_value.split("_")
+        account = await user.accounts.filter(uid=uid, game=game).first()
+        if account is None:
+            raise AssertionError("Account not found")
+        return account
+
+    async def _get_account(
+        self,
+        user: User,
+        account_value: Optional[str],
+        i: discord.Interaction,
+        locale: discord.Locale,
+    ) -> Optional[HoyoAccount]:
+        if account_value is None:
+            return await self._get_first_account(user, i, locale)
+        elif account_value == "none":
+            await self._no_account_response(i, locale)
+        else:
+            return await self._get_specific_account(account_value, user)
+
     @app_commands.command(
         name=app_commands.locale_str("check-in", translate=False),
         description=app_commands.locale_str(
@@ -59,20 +111,11 @@ class Hoyo(commands.Cog):
     async def checkin_command(
         self, i: discord.Interaction[HoyoBuddy], acc_value: Optional[str] = None
     ) -> Any:
-        user = await User.get(id=i.user.id).prefetch_related("settings")
-        locale = user.settings.locale or i.locale
-        if acc_value is None:
-            accounts = await user.accounts.all()
-            if not accounts:
-                return await self._no_account_response(i, locale)
-            account = accounts[0]
-        else:
-            if acc_value == "none":
-                return await self._no_account_response(i, locale)
-            uid, game = acc_value.split("_")
-            account = await user.accounts.filter(uid=uid, game=game).first()
-            if account is None:
-                raise AssertionError("Account not found")
+        user = await self._get_user(i.user.id)
+        locale = self._get_locale(user, i.locale)
+        account = await self._get_account(user, acc_value, i, locale)
+        if account is None:
+            return
 
         dark_mode = user.settings.dark_mode
         view = CheckInUI(
@@ -83,19 +126,6 @@ class Hoyo(commands.Cog):
             translator=self.bot.translator,
         )
         await view.start(i)
-
-    @staticmethod
-    async def _no_account_response(i, locale):
-        return await i.response.send_message(
-            i.client.translator.translate(
-                _T(
-                    "You don't have any accounts yet. Add one with </accounts>",
-                    key="no_accounts_autocomplete_selected",
-                ),
-                locale,
-            ),
-            ephemeral=True,
-        )
 
     @checkin_command.autocomplete("acc_value")
     async def check_in_command_autocomplete(

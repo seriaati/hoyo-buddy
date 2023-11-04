@@ -22,6 +22,11 @@ def draw_card(
     daily_rewards: Tuple[genshin.models.DailyReward, ...],
     dark_mode: bool,
 ) -> io.BytesIO:
+    def get_color(dark_mode: bool, i: int, first_set: bool) -> str:
+        if i in (2, 3):
+            return "#FFFFFF" if dark_mode else "#282B3C"
+        return "#BEBEBE" if dark_mode else ("#8A8B97" if first_set else "#6A6C7C")
+
     if dark_mode:
         im = Image.open("hoyo-buddy-assets/assets/check-in/DARK_1.png")
         check = Image.open("hoyo-buddy-assets/assets/check-in/DARK_CHECK.png")
@@ -49,9 +54,7 @@ def draw_card(
             im.paste(mask, (x - 19, y - 11), mask)
             im.paste(check, (x + 1, y + 1), check)
 
-        color = "#BEBEBE" if dark_mode else "#8A8B97"
-        if i in (2, 3):
-            color = "#FFFFFF" if dark_mode else "#282B3C"
+        color = get_color(dark_mode, i, True)
         drawer.plain_write(
             text=f"x{daily_reward.amount}",
             size=36,
@@ -61,9 +64,7 @@ def draw_card(
             anchor="mm",
         )
 
-        color = "#BEBEBE" if dark_mode else "#6A6C7C"
-        if i in (2, 3):
-            color = "#FFFFFF" if dark_mode else "#282B3C"
+        color = get_color(dark_mode, i, False)
         drawer.plain_write(
             text=index,
             size=18,

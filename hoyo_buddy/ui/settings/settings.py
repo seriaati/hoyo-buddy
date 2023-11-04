@@ -52,12 +52,9 @@ class SettingsUI(View):
         embed.set_image(url="attachment://brand.png")
         return embed
 
-    def get_brand_image_file(self) -> discord.File:
+    def get_brand_image_file(self, interaction_locale: discord.Locale) -> discord.File:
         theme = "DARK" if self.settings.dark_mode else "LIGHT"
-        if self.settings.locale is None:
-            locale = self.locale
-        else:
-            locale = self.settings.locale
+        locale = self.settings.locale or interaction_locale
         try:
             return discord.File(
                 f"hoyo_buddy/draw/static/brand/{theme}-{locale.value.replace('-','_')}.png",
@@ -107,7 +104,7 @@ class LanguageSelector(Select):
 
         await i.response.edit_message(
             embed=self.view.get_embed(),
-            attachments=[self.view.get_brand_image_file()],
+            attachments=[self.view.get_brand_image_file(i.locale)],
             view=self.view,
         )
         await self.view.settings.save()
@@ -125,6 +122,7 @@ class DarkModeToggle(ToggleButton):
         await super().callback(i)
         self.view.settings.dark_mode = self.current_toggle
         await i.edit_original_response(
-            embed=self.view.get_embed(), attachments=[self.view.get_brand_image_file()]
+            embed=self.view.get_embed(),
+            attachments=[self.view.get_brand_image_file(i.locale)],
         )
         await self.view.settings.save()

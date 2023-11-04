@@ -28,7 +28,7 @@ class Settings(commands.Cog):
             settings=settings,
         )
         await i.response.send_message(
-            embed=view.get_embed(), file=view.get_brand_image_file(), view=view
+            embed=view.get_embed(), file=view.get_brand_image_file(i.locale), view=view
         )
         view.message = await i.original_response()
 

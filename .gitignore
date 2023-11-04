@@ -155,4 +155,5 @@ db.sqlite3-shm
 db.sqlite3-wal
 hoyo_buddy/bot/data/*
 hoyo_buddy/draw/static/*/*
+!hoyo_buddy/draw/static/brand/*.png
 !.gitkeep

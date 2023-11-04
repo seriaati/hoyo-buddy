@@ -17,7 +17,7 @@ from ...draw.static import download_and_save_static_images
 from ...embeds import DefaultEmbed
 from ...hoyo.reward_calc import RewardCalculator
 from ...utils import get_now
-from ..ui import Button, GoBackButton, View
+from ..ui import Button, GoBackButton, ToggleButton, View
 
 CHECK_IN_URLS = {
     Game.GENSHIN: "https://act.hoyolab.com/ys/event/signin-sea-v3/index.html?act_id=e202102251931481",
@@ -180,42 +180,6 @@ class CheckInButton(Button):
         await i.edit_original_response(embed=embed, attachments=[], view=self.view)
 
 
-class ToggleButton(Button):
-    def __init__(self, current_toggle: bool, toggle_label: _T, **kwargs):
-        self.current_toggle = current_toggle
-        self.toggle_label = toggle_label
-        super().__init__(
-            style=self._get_style(), label=self._get_label(), row=1, **kwargs
-        )
-
-    def _get_style(self) -> discord.ButtonStyle:
-        return (
-            discord.ButtonStyle.success
-            if self.current_toggle
-            else discord.ButtonStyle.secondary
-        )
-
-    def _get_label(self) -> _T:
-        return _T(
-            "{toggle_label}: {toggle}",
-            key="auto_checkin_button_label",
-            toggle_label=self.toggle_label,
-            toggle=(
-                _T("On", key="toggle_on_text")
-                if self.current_toggle
-                else _T("Off", key="toggle_off_text")
-            ),
-            translate=False,
-        )
-
-    async def callback(self, i: Interaction[HoyoBuddy]) -> Any:
-        self.view: CheckInUI
-        self.current_toggle = not self.current_toggle
-        self.style = self._get_style()
-        self.label = self.view.translator.translate(self._get_label(), self.view.locale)
-        await i.response.edit_message(view=self.view)
-
-
 class AutoCheckInToggle(ToggleButton):
     def __init__(self, current_toggle: bool):
         super().__init__(
@@ -225,6 +189,7 @@ class AutoCheckInToggle(ToggleButton):
         )
 
     async def callback(self, i: Interaction[HoyoBuddy]) -> Any:
+        self.view: CheckInUI
         await super().callback(i)
         self.view.account.daily_checkin = self.current_toggle
         await self.view.account.save()
@@ -269,6 +234,7 @@ class NotifyOnFailureToggle(ToggleButton):
         )
 
     async def callback(self, i: Interaction[HoyoBuddy]) -> Any:
+        self.view: CheckInUI
         await super().callback(i)
         self.view.account.notif_settings.notify_on_checkin_failure = self.current_toggle
         await self.view.account.notif_settings.save()
@@ -282,6 +248,7 @@ class NotifyOnSuccessToggle(ToggleButton):
         )
 
     async def callback(self, i: Interaction[HoyoBuddy]) -> Any:
+        self.view: CheckInUI
         await super().callback(i)
         self.view.account.notif_settings.notify_on_checkin_success = self.current_toggle
         await self.view.account.notif_settings.save()

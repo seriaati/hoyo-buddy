@@ -15,6 +15,7 @@ __all__ = (
     "View",
     "Button",
     "GoBackButton",
+    "ToggleButton",
     "SelectOption",
     "Select",
     "TextInput",
@@ -199,6 +200,42 @@ class GoBackButton(Button):
         kwargs["attachments"] = self.attachments or []
 
         await i.response.edit_message(**kwargs)
+
+
+class ToggleButton(Button):
+    def __init__(self, current_toggle: bool, toggle_label: locale_str, **kwargs):
+        self.current_toggle = current_toggle
+        self.toggle_label = toggle_label
+        super().__init__(
+            style=self._get_style(), label=self._get_label(), row=1, **kwargs
+        )
+
+    def _get_style(self) -> discord.ButtonStyle:
+        return (
+            discord.ButtonStyle.success
+            if self.current_toggle
+            else discord.ButtonStyle.secondary
+        )
+
+    def _get_label(self) -> locale_str:
+        return locale_str(
+            "{toggle_label}: {toggle}",
+            key="auto_checkin_button_label",
+            toggle_label=self.toggle_label,
+            toggle=(
+                locale_str("On", key="toggle_on_text")
+                if self.current_toggle
+                else locale_str("Off", key="toggle_off_text")
+            ),
+            translate=False,
+        )
+
+    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+        self.view: View
+        self.current_toggle = not self.current_toggle
+        self.style = self._get_style()
+        self.label = self.view.translator.translate(self._get_label(), self.view.locale)
+        await i.response.edit_message(view=self.view)
 
 
 class SelectOption(discord.SelectOption):

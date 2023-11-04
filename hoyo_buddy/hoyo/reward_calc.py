@@ -75,10 +75,9 @@ class RewardCalculator:
             return self._change_reward_name(
                 f"{self._last_month}/{self._last_month_days}", reward
             )
-        elif index == TODAY_REWARD:
+        if index == TODAY_REWARD:
             return self._change_reward_name(f"{self._next_month}/1", reward)
-        else:
-            return reward
+        return reward
 
     def get_rewards(self) -> Tuple[DailyReward, ...]:
         renamed_monthly_rewards = self._get_renamed_monthly_rewards()

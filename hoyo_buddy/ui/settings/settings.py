@@ -37,6 +37,13 @@ class SettingsUI(View):
         self.add_item(LanguageSelector(self.settings.locale))
         self.add_item(DarkModeToggle(self.settings.dark_mode))
 
+    @staticmethod
+    def _get_filename(theme: str, locale: discord.Locale) -> str:
+        try:
+            return f"hoyo_buddy/draw/static/brand/{theme}-{locale.value.replace('-','_')}.png"
+        except FileNotFoundError:
+            return f"hoyo_buddy/draw/static/brand/{theme}-en_US.png"
+
     def get_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale, self.translator)
         embed.set_image(url="attachment://brand.png")
@@ -48,13 +55,7 @@ class SettingsUI(View):
         filename = self._get_filename(theme, locale)
         return discord.File(filename, filename="brand.png")
 
-    def _get_filename(self, theme: str, locale: discord.Locale) -> str:
-        try:
-            return f"hoyo_buddy/draw/static/brand/{theme}-{locale.value.replace('-','_')}.png"
-        except FileNotFoundError:
-            return f"hoyo_buddy/draw/static/brand/{theme}-en_US.png"
-
-    async def _update_and_save(self, i: Interaction[HoyoBuddy]):
+    async def update_and_save(self, i: Interaction[HoyoBuddy]):
         await i.edit_original_response(
             embed=self.get_embed(),
             attachments=[self.get_brand_image_file(i.locale)],
@@ -96,7 +97,7 @@ class LanguageSelector(Select):
         self.view.settings.lang = None if selected == "auto" else self.values[0]
         self.options = self._get_options(self.view.settings.locale)
 
-        await self.view._update_and_save(i)
+        await self.view.update_and_save(i)
 
 
 class DarkModeToggle(ToggleButton):
@@ -111,4 +112,4 @@ class DarkModeToggle(ToggleButton):
         await super().callback(i)
         self.view.settings.dark_mode = self.current_toggle
 
-        await self.view._update_and_save(i)
+        await self.view.update_and_save(i)

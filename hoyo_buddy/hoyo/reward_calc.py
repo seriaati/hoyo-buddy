@@ -43,12 +43,12 @@ class RewardCalculator:
     def claimed_amount(self) -> int:
         return min(self._today.day, len(self._this_month_claimed_rewards))
 
-    def _get_claim_status(self, date: Tuple[int, int], name: str) -> str:
+    def _get_claim_status(self, date: Tuple[int, int]) -> str:
         return (
             "claimed"
             if any(
                 (
-                    r.time.day >= date[1] and r.time.month == date[0] and r.name == name
+                    r.time.day >= date[1] and r.time.month == date[0]
                     for r in self._this_month_claimed_rewards
                 )
             )
@@ -64,7 +64,7 @@ class RewardCalculator:
     def _get_renamed_monthly_rewards(self) -> List[DailyReward]:
         result: List[DailyReward] = []
         for i, r in enumerate(self._monthly_rewards):
-            claim_status = self._get_claim_status((self._today.month, i + 1), r.name)
+            claim_status = self._get_claim_status((self._today.month, i + 1))
             result.append(
                 self._change_reward_name(f"{claim_status}_{self._today.month}/{i+1}", r)
             )

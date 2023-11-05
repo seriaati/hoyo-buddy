@@ -67,9 +67,8 @@ class LanguageSelector(Select):
         options = self._get_options(current_locale)
         super().__init__(options=options)
 
-    def _get_options(
-        self, current_locale: Optional[discord.Locale]
-    ) -> List[SelectOption]:
+    @staticmethod
+    def _get_options(current_locale: Optional[discord.Locale]) -> List[SelectOption]:
         options: List[SelectOption] = [
             SelectOption(
                 label=_T("Follow client language", key="auto_locale_option_label"),

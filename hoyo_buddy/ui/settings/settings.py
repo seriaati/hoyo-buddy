@@ -72,8 +72,9 @@ class LanguageSelector(Select):
         options = self._get_options(current_locale)
         super().__init__(options=options)
 
+    @staticmethod
     def _get_options(
-        self, current_locale: Optional[discord.Locale]
+        current_locale: Optional[discord.Locale]
     ) -> List[SelectOption]:
         options: List[SelectOption] = [
             SelectOption(

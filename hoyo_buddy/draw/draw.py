@@ -9,6 +9,12 @@ from .static import STATIC_FOLDER
 
 __all__ = ("Drawer",)
 
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+HIGH_EMPHASIS_OPACITY = 221
+MEDIUM_EMPHASIS_OPACITY = 153
+LOW_EMPHASIS_OPACITY = 96
+
 
 class Drawer:
     def __init__(
@@ -16,53 +22,38 @@ class Drawer:
         draw: ImageDraw.ImageDraw,
         *,
         folder: str,
+        dark_mode: bool,
         locale: discord.Locale = discord.Locale.american_english,
         translator: Optional[Translator] = None,
     ):
         self.draw = draw
         self.folder = folder
+        self.dark_mode = dark_mode
         self.locale = locale
         self.translator = translator
 
-    def write(
+    def _get_text_color(
         self,
-        *,
-        text: locale_str,
-        size: int,
-        color: str,
-        position: Tuple[int, int],
-        style: Literal["light", "regular", "medium", "bold"] = "regular",
-        anchor: Optional[str] = None,
-    ) -> None:
-        if self.translator is None:
-            raise RuntimeError("Translator is not set")
+        color: Optional[Tuple[int, int, int, int]],
+        emphasis: Literal["high", "medium", "low"],
+    ) -> Tuple[int, int, int, int]:
+        if color is not None:
+            return color
 
-        translated_text = self.translator.translate(text, self.locale)
-        self.draw.text(
-            position,
-            translated_text,
-            font=self._get_font(size, style),
-            fill=color,
-            anchor=anchor,
-        )
-
-    def plain_write(
-        self,
-        *,
-        text: str,
-        size: int,
-        color: str,
-        position: Tuple[int, int],
-        style: Literal["light", "regular", "medium", "bold"] = "regular",
-        anchor: Optional[str] = None,
-    ) -> None:
-        self.draw.text(
-            position,
-            text,
-            font=self._get_font(size, style),
-            fill=color,
-            anchor=anchor,
-        )
+        if emphasis == "high":
+            if self.dark_mode:
+                return WHITE + (HIGH_EMPHASIS_OPACITY,)
+            return BLACK + (HIGH_EMPHASIS_OPACITY,)
+        elif emphasis == "medium":
+            if self.dark_mode:
+                return WHITE + (MEDIUM_EMPHASIS_OPACITY,)
+            return BLACK + (MEDIUM_EMPHASIS_OPACITY,)
+        elif emphasis == "low":
+            if self.dark_mode:
+                return WHITE + (LOW_EMPHASIS_OPACITY,)
+            return BLACK + (LOW_EMPHASIS_OPACITY,)
+        else:
+            raise ValueError(f"Invalid emphasis: {emphasis}")
 
     def _get_font(
         self, size: int, style: Literal["light", "regular", "medium", "bold"]
@@ -102,6 +93,48 @@ class Drawer:
                 raise ValueError(f"Invalid font style: {style}")
 
         return ImageFont.truetype(font, size)
+
+    def write(
+        self,
+        *,
+        text: locale_str,
+        size: int,
+        position: Tuple[int, int],
+        color: Optional[Tuple[int, int, int, int]] = None,
+        style: Literal["light", "regular", "medium", "bold"] = "regular",
+        emphasis: Literal["high", "medium", "low"] = "high",
+        anchor: Optional[str] = None,
+    ) -> None:
+        if self.translator is None:
+            raise RuntimeError("Translator is not set")
+
+        translated_text = self.translator.translate(text, self.locale)
+        self.draw.text(
+            position,
+            translated_text,
+            font=self._get_font(size, style),
+            fill=self._get_text_color(color, emphasis),
+            anchor=anchor,
+        )
+
+    def plain_write(
+        self,
+        *,
+        text: str,
+        size: int,
+        position: Tuple[int, int],
+        color: Optional[Tuple[int, int, int, int]] = None,
+        style: Literal["light", "regular", "medium", "bold"] = "regular",
+        emphasis: Literal["high", "medium", "low"] = "high",
+        anchor: Optional[str] = None,
+    ) -> None:
+        self.draw.text(
+            position,
+            text,
+            font=self._get_font(size, style),
+            fill=self._get_text_color(color, emphasis),
+            anchor=anchor,
+        )
 
     def get_static_image(
         self, url: str, *, folder: Optional[str] = None

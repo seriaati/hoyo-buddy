@@ -22,11 +22,6 @@ def draw_card(
     daily_rewards: Tuple[genshin.models.DailyReward, ...],
     dark_mode: bool,
 ) -> io.BytesIO:
-    def get_color(dark_mode: bool, i: int, first_set: bool) -> str:
-        if i in (2, 3):
-            return "#FFFFFF" if dark_mode else "#282B3C"
-        return "#BEBEBE" if dark_mode else ("#8A8B97" if first_set else "#6A6C7C")
-
     if dark_mode:
         im = Image.open("hoyo-buddy-assets/assets/check-in/DARK_1.png")
         check = Image.open("hoyo-buddy-assets/assets/check-in/DARK_CHECK.png")
@@ -36,8 +31,9 @@ def draw_card(
         check = Image.open("hoyo-buddy-assets/assets/check-in/LIGHT_CHECK.png")
         mask = Image.open("hoyo-buddy-assets/assets/check-in/LIGHT_MASK.png")
 
-    draw = ImageDraw.Draw(im)
-    drawer = Drawer(draw, folder="check-in")
+    text = Image.new("RGBA", im.size, (255, 255, 255, 0))
+    draw = ImageDraw.Draw(text)
+    drawer = Drawer(draw, folder="check-in", dark_mode=dark_mode)
 
     x, y = (44, 36)
     for i, daily_reward in enumerate(daily_rewards):
@@ -54,23 +50,20 @@ def draw_card(
             im.paste(mask, (x - 19, y - 11), mask)
             im.paste(check, (x + 1, y + 1), check)
 
-        color = get_color(dark_mode, i, True)
         drawer.plain_write(
             text=f"x{daily_reward.amount}",
             size=36,
-            color=color,
             position=(x + 56, y + 153),
-            style="medium" if i in (2, 3) else "regular",
+            style="medium",
+            emphasis="high" if i in (2, 3) else "medium",
             anchor="mm",
         )
-
-        color = get_color(dark_mode, i, False)
         drawer.plain_write(
             text=index,
             size=18,
-            color=color,
             position=(x + 55, y + 195),
-            style="regular" if i in (2, 3) else "light",
+            style="regular",
+            emphasis="high" if i in (2, 3) else "medium",
             anchor="mm",
         )
 
@@ -79,7 +72,9 @@ def draw_card(
         else:
             x += 64 + icon.width
 
+    combined = Image.alpha_composite(im, text)
+
     bytes_io = io.BytesIO()
-    im.save(bytes_io, format="PNG")
+    combined.save(bytes_io, format="PNG")
 
     return bytes_io

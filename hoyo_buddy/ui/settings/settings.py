@@ -11,24 +11,14 @@ from ...db.models import Settings
 from ...embeds import DefaultEmbed
 from ..ui import Select, SelectOption, ToggleButton, View
 
-LOCALE_NAMES: Dict[discord.Locale, str] = {
-    discord.Locale.american_english: "English (US)",
-    discord.Locale.chinese: "简体中文",
-    discord.Locale.taiwan_chinese: "繁體中文",
-    discord.Locale.french: "Français",
-    discord.Locale.japanese: "日本語",
-    discord.Locale.brazil_portuguese: "Português (BR)",
-    discord.Locale.indonesian: "Bahasa Indonesia",
-}
-
-LOCALE_FLAG_EMOJIS: Dict[discord.Locale, str] = {
-    discord.Locale.american_english: "🇺🇸",
-    discord.Locale.chinese: "🇨🇳",
-    discord.Locale.taiwan_chinese: "🇹🇼",
-    discord.Locale.french: "🇫🇷",
-    discord.Locale.japanese: "🇯🇵",
-    discord.Locale.brazil_portuguese: "🇧🇷",
-    discord.Locale.indonesian: "🇮🇩",
+LOCALES: Dict[discord.Locale, Dict[str, str]] = {
+    discord.Locale.american_english: {"name": "English (US)", "emoji": "🇺🇸"},
+    discord.Locale.chinese: {"name": "简体中文", "emoji": "🇨🇳"},
+    discord.Locale.taiwan_chinese: {"name": "繁體中文", "emoji": "🇹🇼"},
+    discord.Locale.french: {"name": "Français", "emoji": "🇫🇷"},
+    discord.Locale.japanese: {"name": "日本語", "emoji": "🇯🇵"},
+    discord.Locale.brazil_portuguese: {"name": "Português (BR)", "emoji": "🇧🇷"},
+    discord.Locale.indonesian: {"name": "Bahasa Indonesia", "emoji": "🇮🇩"},
 }
 
 
@@ -55,16 +45,21 @@ class SettingsUI(View):
     def get_brand_image_file(self, interaction_locale: discord.Locale) -> discord.File:
         theme = "DARK" if self.settings.dark_mode else "LIGHT"
         locale = self.settings.locale or interaction_locale
+        filename = self._get_filename(theme, locale)
+        return discord.File(filename, filename="brand.png")
+
+    def _get_filename(self, theme: str, locale: discord.Locale) -> str:
         try:
-            return discord.File(
-                f"hoyo_buddy/draw/static/brand/{theme}-{locale.value.replace('-','_')}.png",
-                filename="brand.png",
-            )
+            return f"hoyo_buddy/draw/static/brand/{theme}-{locale.value.replace('-','_')}.png"
         except FileNotFoundError:
-            return discord.File(
-                f"hoyo_buddy/draw/static/brand/{theme}-en_US.png",
-                filename="brand.png",
-            )
+            return f"hoyo_buddy/draw/static/brand/{theme}-en_US.png"
+
+    async def _update_and_save(self, i: Interaction[HoyoBuddy]):
+        await i.edit_original_response(
+            embed=self.get_embed(),
+            attachments=[self.get_brand_image_file(i.locale)],
+        )
+        await self.settings.save()
 
 
 class LanguageSelector(Select):
@@ -86,12 +81,12 @@ class LanguageSelector(Select):
         options.extend(
             [
                 SelectOption(
-                    label=_T(LOCALE_NAMES[locale], translate=False),
+                    label=_T(LOCALES[locale]["name"], translate=False),
                     value=locale.value,
-                    emoji=LOCALE_FLAG_EMOJIS[locale],
+                    emoji=LOCALES[locale]["emoji"],
                     default=locale == current_locale,
                 )
-                for locale in LOCALE_NAMES
+                for locale in LOCALES
             ]
         )
         return options
@@ -102,12 +97,7 @@ class LanguageSelector(Select):
         self.view.settings.lang = None if selected == "auto" else self.values[0]
         self.options = self._get_options(self.view.settings.locale)
 
-        await i.response.edit_message(
-            embed=self.view.get_embed(),
-            attachments=[self.view.get_brand_image_file(i.locale)],
-            view=self.view,
-        )
-        await self.view.settings.save()
+        await self.view._update_and_save(i)
 
 
 class DarkModeToggle(ToggleButton):
@@ -121,8 +111,5 @@ class DarkModeToggle(ToggleButton):
         self.view: SettingsUI
         await super().callback(i)
         self.view.settings.dark_mode = self.current_toggle
-        await i.edit_original_response(
-            embed=self.view.get_embed(),
-            attachments=[self.view.get_brand_image_file(i.locale)],
-        )
-        await self.view.settings.save()
+
+        await self.view._update_and_save(i)

@@ -44,16 +44,15 @@ class Drawer:
             if self.dark_mode:
                 return WHITE + (HIGH_EMPHASIS_OPACITY,)
             return BLACK + (HIGH_EMPHASIS_OPACITY,)
-        elif emphasis == "medium":
+        if emphasis == "medium":
             if self.dark_mode:
                 return WHITE + (MEDIUM_EMPHASIS_OPACITY,)
             return BLACK + (MEDIUM_EMPHASIS_OPACITY,)
-        elif emphasis == "low":
+        if emphasis == "low":
             if self.dark_mode:
                 return WHITE + (LOW_EMPHASIS_OPACITY,)
             return BLACK + (LOW_EMPHASIS_OPACITY,)
-        else:
-            raise ValueError(f"Invalid emphasis: {emphasis}")
+        raise ValueError(f"Invalid emphasis: {emphasis}")
 
     def _get_font(
         self, size: int, style: Literal["light", "regular", "medium", "bold"]

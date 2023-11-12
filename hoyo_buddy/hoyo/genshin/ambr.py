@@ -165,7 +165,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=_T(character.name, translate=False),
+            title=character.name,
             description=_T(
                 (
                     "{rarity}★ {element}\n"
@@ -187,12 +187,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
                 key="character_embed_stats_field_name",
                 level=level,
             ),
-            value=_T(
-                "\n".join(f"{k}: {v}" for k, v in named_stat_values.items()),
-                translate=False,
-            ),
+            value="\n".join(f"{k}: {v}" for k, v in named_stat_values.items()),
         )
-        embed.set_footer(text=_T(character.info.detail, translate=False))
+        embed.set_footer(text=character.info.detail)
         embed.set_thumbnail(url=character.icon)
         return embed
 
@@ -202,8 +199,8 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=_T(talent.name, translate=False),
-            description=_T(talent.description, translate=False),
+            title=talent.name,
+            description=talent.description,
         )
         if talent.upgrades:
             level_upgrade = talent.upgrades[level - 1]
@@ -213,13 +210,10 @@ class AmbrAPIClient(ambr.AmbrAPI):
                     key="skill_attributes_embed_field_name",
                     level=level,
                 ),
-                value=_T(
-                    "\n".join(
-                        self._replace_talent_params(
-                            level_upgrade.description, level_upgrade.params
-                        )
-                    ),
-                    translate=False,
+                value="\n".join(
+                    self._replace_talent_params(
+                        level_upgrade.description, level_upgrade.params
+                    )
                 ),
             )
         embed.set_thumbnail(url=talent.icon)
@@ -231,8 +225,8 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=_T(constellation.name, translate=False),
-            description=_T(constellation.description, translate=False),
+            title=constellation.name,
+            description=constellation.description,
         )
         embed.set_thumbnail(url=constellation.icon)
         return embed
@@ -265,14 +259,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
             self.locale,
             self.translator,
             title=_T("{weapon_name} (Lv. {lv})", weapon_name=weapon.name, lv=level),
-            description=_T(
-                ("{rarity}★ {weapon_type}\n{main_stat_name}: {main_stat_value}"),
-                translate=False,
-                rarity=weapon.rarity,
-                weapon_type=weapon.type,
-                main_stat_name=main_stat_name,
-                main_stat_value=main_stat_value,
-            ),
+            description=f"{weapon.rarity}★ {weapon.type}\n{main_stat_name}: {main_stat_value}",
         )
 
         if sub_stat_name and sub_stat_value:
@@ -283,20 +270,18 @@ class AmbrAPIClient(ambr.AmbrAPI):
         if weapon.affix:
             embed.add_field(
                 name=_T("Refinement {r}", r=refinement),
-                value=_T(
-                    weapon.affix.upgrades[refinement - 1].description, translate=False
-                ),
+                value=weapon.affix.upgrades[refinement - 1].description,
             )
         embed.set_thumbnail(url=weapon.icon)
-        embed.set_footer(text=_T(weapon.description, translate=False))
+        embed.set_footer(text=weapon.description)
         return embed
 
     def get_namecard_embed(self, namecard: ambr.NamecardDetail) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=_T(namecard.name, translate=False),
-            description=_T(namecard.description, translate=False),
+            title=namecard.name,
+            description=namecard.description,
         )
         embed.set_image(url=namecard.icon)
         return embed
@@ -307,7 +292,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=_T(artifact_set.name, translate=False),
+            title=artifact_set.name,
             description=_T(
                 "2-Pieces: {bonus_2}\n4-Pieces: {bonus_4}",
                 bonus_2=artifact_set.affix_list[0].effect,
@@ -321,8 +306,8 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=_T(artifact.name, translate=False),
-            description=_T(artifact.description, translate=False),
+            title=artifact.name,
+            description=artifact.description,
         )
         embed.set_thumbnail(url=artifact.icon)
         return embed

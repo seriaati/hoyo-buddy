@@ -1,4 +1,4 @@
-from typing import Optional, Self
+from typing import Optional, Self, Union
 
 import discord
 
@@ -14,9 +14,9 @@ class Embed(discord.Embed):
         translator: Translator,
         *,
         color: Optional[int] = None,
-        title: Optional[locale_str] = None,
+        title: Optional[Union[locale_str, str]] = None,
         url: Optional[str] = None,
-        description: Optional[locale_str] = None,
+        description: Optional[Union[locale_str, str]] = None,
     ):
         translated_title = translator.translate(title, locale) if title else None
         translated_description = (
@@ -35,8 +35,8 @@ class Embed(discord.Embed):
     def add_field(
         self,
         *,
-        name: locale_str,
-        value: locale_str,
+        name: Union[locale_str, str],
+        value: Union[locale_str, str],
         inline: bool = True,
     ) -> Self:
         translated_name = self.translator.translate(name, self.locale)
@@ -48,7 +48,7 @@ class Embed(discord.Embed):
     def set_author(
         self,
         *,
-        name: locale_str,
+        name: Union[locale_str, str],
         url: Optional[str] = None,
         icon_url: Optional[str] = None,
     ) -> Self:
@@ -58,7 +58,7 @@ class Embed(discord.Embed):
     def set_footer(
         self,
         *,
-        text: Optional[locale_str] = None,
+        text: Optional[Union[locale_str, str]] = None,
         icon_url: Optional[str] = None,
     ) -> Self:
         translated_text = self.translator.translate(text, self.locale) if text else None
@@ -71,9 +71,9 @@ class DefaultEmbed(Embed):
         locale: discord.Locale,
         translator: Translator,
         *,
-        title: Optional[locale_str] = None,
+        title: Optional[Union[locale_str, str]] = None,
         url: Optional[str] = None,
-        description: Optional[locale_str] = None,
+        description: Optional[Union[locale_str, str]] = None,
     ):
         super().__init__(
             locale,
@@ -91,9 +91,9 @@ class ErrorEmbed(Embed):
         locale: discord.Locale,
         translator: Translator,
         *,
-        title: Optional[locale_str] = None,
+        title: Optional[Union[locale_str, str]] = None,
         url: Optional[str] = None,
-        description: Optional[locale_str] = None,
+        description: Optional[Union[locale_str, str]] = None,
     ):
         super().__init__(
             locale,

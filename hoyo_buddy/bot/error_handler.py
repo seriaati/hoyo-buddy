@@ -48,13 +48,13 @@ def get_error_embed(
             else _T("An error occurred", key="error_title"),
             description=_T(description[0], key=description[1])
             if description
-            else _T(str(error), translate=False),
+            else str(error),
         )
     else:
         embed = ErrorEmbed(
             locale,
             translator,
             title=_T("An error occurred", key="error_title"),
-            description=_T(str(error), translate=False),
+            description=str(error),
         )
     return embed

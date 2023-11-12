@@ -51,9 +51,7 @@ class GenshinClient(genshin.Client):
             locale,
             translator,
             title=_T("Daily check-in reward claimed", key="reward_claimed_title"),
-            description=_T(
-                f"{daily_reward.name} x{daily_reward.amount}", translate=False
-            ),
+            description=f"{daily_reward.name} x{daily_reward.amount}",
         )
         embed.set_thumbnail(url=daily_reward.icon)
         converted_game = GAME_CONVERTER[game]

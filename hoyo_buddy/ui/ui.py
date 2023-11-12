@@ -9,6 +9,7 @@ from ..bot import locale_str as _T
 from ..bot.error_handler import get_error_embed
 from ..db import User
 from ..embeds import ErrorEmbed
+from ..exceptions import InvalidInput
 
 log = logging.getLogger(__name__)
 
@@ -239,6 +240,25 @@ class ToggleButton(Button):
         await i.response.edit_message(view=self.view)
 
 
+class LevelModalButton(Button):
+    def __init__(self, *, min: int, max: int, default: Optional[int] = None):
+        super().__init__(
+            label=_T("Enter level", key="enter_level_button_label"),
+            style=discord.ButtonStyle.primary,
+        )
+        self.min = min
+        self.max = max
+        self.default = default
+
+    async def callback(self, i: discord.Interaction) -> Any:
+        modal = LevelModal(min=self.min, max=self.max, default=self.default)
+        await i.response.send_modal(modal)
+        await modal.wait()
+        if modal.level is None:
+            return
+        self.view.level = modal.level  # type: ignore
+
+
 class SelectOption(discord.SelectOption):
     def __init__(
         self,
@@ -416,3 +436,33 @@ class Modal(discord.ui.Modal):
                     )
                 if item.locale_str_default:
                     item.default = translator.translate(item.locale_str_default, locale)
+
+
+class LevelModal(Modal):
+    level_input = TextInput(label=_T("Level", key="level_input_label"))
+
+    def __init__(self, *, min: int, max: int, default: Optional[int] = None):
+        super().__init__(title=_T("Enter level", key="enter_level_modal_title"))
+        self.min = min
+        self.max = max
+        self.level_input.default = str(default) if default else None
+        self.level_input.placeholder = f"{min} ~ {max}"
+        self.level: Optional[int] = None
+
+    async def on_submit(self, i: discord.Interaction) -> None:
+        try:
+            self.level = int(self.level_input.value)
+        except ValueError:
+            raise InvalidInput(_T("Level need to be an integer"))
+
+        if self.level < self.min or self.level > self.max:
+            raise InvalidInput(
+                _T(
+                    "Level needs to be between {min} and {max}",
+                    min=self.min,
+                    max=self.max,
+                )
+            )
+
+        await i.response.defer()
+        self.stop()

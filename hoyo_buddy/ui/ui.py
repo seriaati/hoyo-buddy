@@ -4,7 +4,8 @@ from typing import Any, Dict, List, Optional, Self, Sequence, Union
 import discord
 from discord.utils import MISSING
 
-from ..bot import HoyoBuddy, Translator, emojis, locale_str
+from ..bot import HoyoBuddy, Translator, emojis
+from ..bot import locale_str as _T
 from ..bot.error_handler import get_error_embed
 from ..db import User
 from ..embeds import ErrorEmbed
@@ -61,8 +62,8 @@ class View(discord.ui.View):
             embed = ErrorEmbed(
                 self.locale,
                 self.translator,
-                title=locale_str("Interaction failed", key="interaction_failed_title"),
-                description=locale_str(
+                title=_T("Interaction failed", key="interaction_failed_title"),
+                description=_T(
                     "This view is not initiated by you, therefore you cannot use it.",
                     key="interaction_failed_description",
                 ),
@@ -128,7 +129,7 @@ class Button(discord.ui.Button):
         self,
         *,
         style: discord.ButtonStyle = discord.ButtonStyle.secondary,
-        label: Optional[locale_str] = None,
+        label: Optional[_T] = None,
         disabled: bool = False,
         custom_id: Optional[str] = None,
         url: Optional[str] = None,
@@ -163,7 +164,7 @@ class Button(discord.ui.Button):
         self.disabled = True
         self.emoji = emojis.LOADING
         self.label = self.view.translator.translate(
-            locale_str("Loading...", key="loading_text"), self.view.locale
+            _T("Loading...", key="loading_text"), self.view.locale
         )
         await self.view.absolute_edit(i, view=self.view)
 
@@ -203,7 +204,7 @@ class GoBackButton(Button):
 
 
 class ToggleButton(Button):
-    def __init__(self, current_toggle: bool, toggle_label: locale_str, **kwargs):
+    def __init__(self, current_toggle: bool, toggle_label: _T, **kwargs):
         self.current_toggle = current_toggle
         self.toggle_label = toggle_label
         super().__init__(
@@ -217,15 +218,15 @@ class ToggleButton(Button):
             else discord.ButtonStyle.secondary
         )
 
-    def _get_label(self) -> locale_str:
-        return locale_str(
+    def _get_label(self) -> _T:
+        return _T(
             "{toggle_label}: {toggle}",
             key="auto_checkin_button_label",
             toggle_label=self.toggle_label,
             toggle=(
-                locale_str("On", key="toggle_on_text")
+                _T("On", key="toggle_on_text")
                 if self.current_toggle
-                else locale_str("Off", key="toggle_off_text")
+                else _T("Off", key="toggle_off_text")
             ),
             translate=False,
         )
@@ -242,9 +243,9 @@ class SelectOption(discord.SelectOption):
     def __init__(
         self,
         *,
-        label: locale_str,
+        label: _T,
         value: str,
-        description: Optional[locale_str] = None,
+        description: Optional[_T] = None,
         emoji: Optional[str] = None,
         default: bool = False,
     ) -> None:
@@ -264,7 +265,7 @@ class Select(discord.ui.Select):
         self,
         *,
         custom_id: str = MISSING,
-        placeholder: Optional[locale_str] = None,
+        placeholder: Optional[_T] = None,
         min_values: int = 1,
         max_values: int = 1,
         options: List[SelectOption] = MISSING,
@@ -316,7 +317,7 @@ class Select(discord.ui.Select):
         self.view: View
         self.options = [
             SelectOption(
-                label=locale_str("Loading...", key="loading_text"),
+                label=_T("Loading...", key="loading_text"),
                 value="loading",
                 default=True,
                 emoji=emojis.LOADING,
@@ -340,11 +341,11 @@ class TextInput(discord.ui.TextInput):
     def __init__(
         self,
         *,
-        label: locale_str,
+        label: _T,
         style: discord.TextStyle = discord.TextStyle.short,
         custom_id: str = MISSING,
-        placeholder: Optional[locale_str] = None,
-        default: Optional[locale_str] = None,
+        placeholder: Optional[_T] = None,
+        default: Optional[_T] = None,
         required: bool = True,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
@@ -370,7 +371,7 @@ class Modal(discord.ui.Modal):
     def __init__(
         self,
         *,
-        title: locale_str,
+        title: _T,
         timeout: Optional[float] = None,
         custom_id: str = MISSING,
     ) -> None:

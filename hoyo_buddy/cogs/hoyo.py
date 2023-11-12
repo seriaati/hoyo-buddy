@@ -6,8 +6,10 @@ from discord.ext import commands
 
 from ..bot import HoyoBuddy, Translator
 from ..bot import locale_str as _T
-from ..db import HoyoAccount, Settings, User
+from ..db import Game, HoyoAccount, Settings, User
+from ..hoyo.genshin import ambr
 from ..ui.hoyo.checkin import CheckInUI
+from ..ui.hoyo.search.character import CharacterUI
 
 
 class Hoyo(commands.Cog):
@@ -60,6 +62,24 @@ class Hoyo(commands.Cog):
     def _get_locale(user: User, interaction_locale: discord.Locale) -> discord.Locale:
         return user.settings.locale or interaction_locale
 
+    @staticmethod
+    async def _get_specific_account(account_value: str, user: User) -> HoyoAccount:
+        uid, game = account_value.split("_")
+        account = await user.accounts.filter(uid=uid, game=game).first()
+        if account is None:
+            raise AssertionError("Account not found")
+        return account
+
+    @staticmethod
+    def _get_game_choices() -> List[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(
+                name=app_commands.locale_str(game.value, warn_no_key=False),
+                value=game.value,
+            )
+            for game in Game
+        ]
+
     async def _get_first_account(
         self, user: User, i: discord.Interaction, locale: discord.Locale
     ) -> Optional[HoyoAccount]:
@@ -68,14 +88,6 @@ class Hoyo(commands.Cog):
             await self._no_account_response(i, locale)
         else:
             return accounts[0]
-
-    @staticmethod
-    async def _get_specific_account(account_value: str, user: User) -> HoyoAccount:
-        uid, game = account_value.split("_")
-        account = await user.accounts.filter(uid=uid, game=game).first()
-        if account is None:
-            raise AssertionError("Account not found")
-        return account
 
     async def _get_account(
         self,
@@ -135,6 +147,68 @@ class Hoyo(commands.Cog):
         return await self._account_autocomplete(
             i.user.id, current, locale, self.bot.translator
         )
+
+    @app_commands.command(
+        name=app_commands.locale_str("search", translate=False),
+        description=app_commands.locale_str(
+            "Search anything game related", key="search_command_description"
+        ),
+    )
+    @app_commands.choices(game_value=_get_game_choices())
+    async def search_command(
+        self,
+        i: discord.Interaction[HoyoBuddy],
+        game_value: str,
+        category_value: str,
+        query: str,
+    ) -> Any:
+        locale = (await Settings.get(user__id=i.user.id)).locale or i.locale
+        game = Game(game_value)
+        if game is Game.GENSHIN:
+            category = ambr.ItemCategory(category_value)
+            async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+                if category is ambr.ItemCategory.CHARACTERS:
+                    character_ui = CharacterUI(api, query)
+                    await character_ui.update(i)
+                elif category is ambr.ItemCategory.WEAPONS:
+                    weapon_detail = await api.fetch_weapon_detail(int(query))
+                    weapon_curve = await api.fetch_weapon_curve()
+                    manual_weapon = await api.fetch_manual_weapon()
+                    embed = api.get_weapon_embed(
+                        weapon_detail,
+                        weapon_detail.upgrade.promotes[-1].unlock_max_level,
+                        len(weapon_detail.upgrade.awaken_cost) + 1,
+                        True,
+                        weapon_curve,
+                        manual_weapon,
+                    )
+                elif category is ambr.ItemCategory.NAMECARDS:
+                    namecard_detail = await api.fetch_namecard_detail(int(query))
+                    embed = api.get_namecard_embed(namecard_detail)
+                elif category is ambr.ItemCategory.ARTIFACT_SETS:
+                    artifact_set_detail = await api.fetch_artifact_set_detail(
+                        int(query)
+                    )
+                    embed = api.get_artifact_set_embed(artifact_set_detail)
+                else:
+                    raise NotImplementedError
+                await i.response.send_message(embed=embed)
+
+    @search_command.autocomplete("category_value")
+    async def search_command_category_autocomplete(
+        self, i: discord.Interaction, current: str
+    ) -> List[app_commands.Choice]:
+        game = Game(i.namespace.game_value)
+        if game is Game.GENSHIN:
+            return [
+                app_commands.Choice(
+                    name=app_commands.locale_str(c.value, warn_no_key=False),
+                    value=c.value,
+                )
+                for c in ambr.ItemCategory
+                if current in c.value
+            ]
+        raise NotImplementedError
 
 
 async def setup(bot: HoyoBuddy) -> None:

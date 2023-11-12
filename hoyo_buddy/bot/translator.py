@@ -3,7 +3,7 @@ import json
 import logging
 import os
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from discord import app_commands
 from discord.app_commands.translator import TranslationContextTypes
@@ -94,12 +94,14 @@ class Translator:
 
     def translate(
         self,
-        string: locale_str,
+        string: Union[locale_str, str],
         locale: Locale,
     ) -> str:
+        if isinstance(string, str):
+            return string
+
         extras = string.extras
         message = string.message
-
         for k, v in extras.items():
             if isinstance(v, locale_str):
                 extras[k] = self.translate(v, locale)

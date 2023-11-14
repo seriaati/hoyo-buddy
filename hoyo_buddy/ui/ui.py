@@ -130,26 +130,26 @@ class Button(discord.ui.Button):
         self,
         *,
         style: discord.ButtonStyle = discord.ButtonStyle.secondary,
-        label: Optional[_T] = None,
+        label: Optional[Union[_T, str]] = None,
         disabled: bool = False,
         custom_id: Optional[str] = None,
         url: Optional[str] = None,
         emoji: Optional[str] = None,
         row: Optional[int] = None,
     ):
-        self.locale_str_label = label
-        self.original_label: Optional[str] = None
-        self.original_emoji = emoji
-
         super().__init__(
             style=style,
-            label=label.message if label else None,
             disabled=disabled,
             custom_id=custom_id,
             url=url,
             emoji=emoji,
             row=row,
         )
+
+        self.locale_str_label = label
+        self.original_label: Optional[str] = None
+        self.original_emoji: Optional[str] = None
+        self.original_disabled: Optional[bool] = None
 
     def translate(
         self,
@@ -158,10 +158,13 @@ class Button(discord.ui.Button):
     ):
         if self.locale_str_label:
             self.label = translator.translate(self.locale_str_label, locale)
-            self.original_label = self.label[:]
 
     async def set_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
         self.view: View
+        self.original_label = self.label[:] if self.label else None
+        self.original_emoji = str(self.emoji) if self.emoji else None
+        self.original_disabled = self.disabled
+
         self.disabled = True
         self.emoji = emojis.LOADING
         self.label = self.view.translator.translate(
@@ -171,7 +174,10 @@ class Button(discord.ui.Button):
 
     async def unset_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
         self.view: View
-        self.disabled = False
+        if self.original_disabled is None:
+            raise RuntimeError("unset_loading_state called before set_loading_state")
+
+        self.disabled = self.original_disabled
         self.emoji = self.original_emoji
         self.label = self.original_label
         await self.view.absolute_edit(i, view=self.view)
@@ -263,16 +269,15 @@ class SelectOption(discord.SelectOption):
     def __init__(
         self,
         *,
-        label: _T,
+        label: Union[_T, str],
         value: str,
-        description: Optional[_T] = None,
+        description: Optional[Union[_T, str]] = None,
         emoji: Optional[str] = None,
         default: bool = False,
     ) -> None:
         super().__init__(
-            label=label.message,
+            label=label if isinstance(label, str) else "#NoTrans",
             value=value,
-            description=description.message if description else None,
             emoji=emoji,
             default=default,
         )
@@ -285,38 +290,34 @@ class Select(discord.ui.Select):
         self,
         *,
         custom_id: str = MISSING,
-        placeholder: Optional[_T] = None,
+        placeholder: Optional[Union[_T, str]] = None,
         min_values: int = 1,
         max_values: int = 1,
-        options: List[SelectOption] = MISSING,
+        options: List[SelectOption],
         disabled: bool = False,
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
             custom_id=custom_id,
-            placeholder=placeholder.message if placeholder else None,
             min_values=min_values,
             max_values=max_values,
             options=options,  # type: ignore
             disabled=disabled,
             row=row,
         )
-        self.original_placeholder = placeholder
-        self.original_options = self.options.copy()
         self.locale_str_placeholder = placeholder
         self.locale_str_options = options
 
+        self.original_placeholder: Optional[str] = None
+        self.original_options: Optional[List[SelectOption]] = None
+        self.original_disabled: Optional[bool] = None
+
     @property
-    def options(self) -> List[discord.SelectOption]:
-        return self._underlying.options
+    def options(self) -> List[SelectOption]:
+        return self._underlying.options  # type: ignore
 
     @options.setter
-    def options(self, value: Sequence[discord.SelectOption]) -> None:
-        if not isinstance(value, list):
-            raise TypeError("options must be a list of SelectOption")
-        if not all(isinstance(obj, SelectOption) for obj in value):
-            raise TypeError("all list items must subclass SelectOption")
-
+    def options(self, value: List[SelectOption]) -> None:
         self._underlying.options = value  # type: ignore
 
     def translate(
@@ -335,25 +336,29 @@ class Select(discord.ui.Select):
 
     async def set_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
         self.view: View
+        self.original_options = self.options.copy()
+        self.original_placeholder = self.placeholder[:] if self.placeholder else None
+
         self.options = [
             SelectOption(
-                label=_T("Loading...", key="loading_text"),
+                label=self.view.translator.translate(
+                    _T("Loading...", key="loading_text"), self.view.locale
+                ),
                 value="loading",
                 default=True,
                 emoji=emojis.LOADING,
             )
         ]
         self.disabled = True
-        self.translate(self.view.locale, self.view.translator)
         await self.view.absolute_edit(i, view=self.view)
 
     async def unset_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
-        self.options = self.original_options.copy()
-        self.disabled = False
-        self.placeholder = (
-            self.original_placeholder.message if self.original_placeholder else None
-        )
-        self.translate(self.view.locale, self.view.translator)
+        if not self.original_options or self.original_disabled is None:
+            raise RuntimeError("unset_loading_state called before set_loading_state")
+
+        self.options = self.original_options
+        self.disabled = self.original_disabled
+        self.placeholder = self.original_placeholder
         await self.view.absolute_edit(i, view=self.view)
 
 
@@ -361,22 +366,20 @@ class TextInput(discord.ui.TextInput):
     def __init__(
         self,
         *,
-        label: _T,
+        label: Union[_T, str],
         style: discord.TextStyle = discord.TextStyle.short,
         custom_id: str = MISSING,
-        placeholder: Optional[_T] = None,
-        default: Optional[_T] = None,
+        placeholder: Optional[Union[_T, str]] = None,
+        default: Optional[Union[_T, str]] = None,
         required: bool = True,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-            label=label.message,
+            label=label if isinstance(label, str) else "#NoTrans",
             style=style,
             custom_id=custom_id,
-            placeholder=placeholder.message if placeholder else None,
-            default=default.message if default else None,
             required=required,
             min_length=min_length,
             max_length=max_length,
@@ -391,11 +394,15 @@ class Modal(discord.ui.Modal):
     def __init__(
         self,
         *,
-        title: _T,
+        title: Union[_T, str],
         timeout: Optional[float] = None,
         custom_id: str = MISSING,
     ) -> None:
-        super().__init__(title=title.message, timeout=timeout, custom_id=custom_id)
+        super().__init__(
+            title=title if isinstance(title, str) else "#NoTrans",
+            timeout=timeout,
+            custom_id=custom_id,
+        )
         self.locale_str_title = title
 
     async def on_error(

@@ -81,7 +81,7 @@ class LanguageSelector(Select):
         options.extend(
             [
                 SelectOption(
-                    label=_T(LOCALES[locale]["name"], translate=False),
+                    label=LOCALES[locale]["name"],
                     value=locale.value,
                     emoji=LOCALES[locale]["emoji"],
                     default=locale == current_locale,

@@ -68,9 +68,7 @@ class CharacterUI(View):
                 self.add_item(
                     TalentConstSelector(
                         [
-                            SelectOption(
-                                label=_T(t.name, translate=False), value=str(i)
-                            )
+                            SelectOption(label=t.name, value=str(i))
                             for i, t in enumerate(talents)
                         ],
                         is_const=False,
@@ -81,7 +79,7 @@ class CharacterUI(View):
             self.add_item(
                 TalentConstSelector(
                     [
-                        SelectOption(label=_T(c.name, translate=False), value=str(i))
+                        SelectOption(label=c.name, value=str(i))
                         for i, c in enumerate(consts)
                     ],
                     is_const=True,

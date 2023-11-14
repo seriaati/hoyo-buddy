@@ -40,7 +40,7 @@ class AccountManager(View):
     async def start(self) -> None:
         if self.user.accounts:
             self.selected_account = self.user.accounts[0]
-            self.add_item(AccountSelector(self.get_account_options()), translate=False)
+            self.add_item(AccountSelector(self.get_account_options()))
             self.add_item(AddAccount())
             self.add_item(EditNickname())
             self.add_item(DeleteAccount())
@@ -64,7 +64,7 @@ class AccountManager(View):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=_T(str(account), translate=False),
+            title=str(account),
         )
         embed.add_field(
             name=_T("Game", key="account_game"),
@@ -79,7 +79,7 @@ class AccountManager(View):
         if account.nickname:
             embed.add_field(
                 name=_T("Username", key="account_username"),
-                value=_T(account.username, translate=False),
+                value=account.username,
                 inline=False,
             )
         return embed
@@ -87,7 +87,7 @@ class AccountManager(View):
     def get_account_options(self) -> List[SelectOption]:
         return [
             SelectOption(
-                label=_T(str(account), translate=False),
+                label=str(account),
                 value=f"{account.uid}_{account.game.value}",
                 emoji=emojis.get_game_emoji(account.game),
                 default=account == self.selected_account,
@@ -220,20 +220,20 @@ class EditNickname(Button):
 
 class CookiesModal(Modal):
     cookies = TextInput(
-        label=_T("Cookies", translate=False),
+        label="Cookies",
         placeholder=_T("Paste your cookies here...", key="cookies_modal_placeholder"),
         style=discord.TextStyle.paragraph,
     )
 
 
 class DevToolCookiesModalV2(Modal):
-    ltuid_v2 = TextInput(label=_T("ltuid_v2", translate=False))
-    ltoken_v2 = TextInput(label=_T("ltoken_v2", translate=False))
+    ltuid_v2 = TextInput(label="ltuid_v2")
+    ltoken_v2 = TextInput(label="ltoken_v2")
 
 
 class DevToolCookiesModal(Modal):
-    ltuid = TextInput(label=_T("ltuid", translate=False))
-    ltoken = TextInput(label=_T("ltoken", translate=False))
+    ltuid = TextInput(label="ltuid")
+    ltoken = TextInput(label="ltoken")
 
 
 class SelectAccountsToAdd(Select):
@@ -269,10 +269,8 @@ class SelectAccountsToAdd(Select):
                     self.locale,
                 )
                 yield SelectOption(
-                    label=_T(f"[{account.uid}] {account.nickname}", translate=False),
-                    description=_T(
-                        f"Lv. {account.level} | {server_name}", translate=False
-                    ),
+                    label=f"[{account.uid}] {account.nickname}",
+                    description=f"Lv. {account.level} | {server_name}",
                     value=f"{account.uid}_{account.game.value}",
                     emoji=emojis.get_game_emoji(account.game),
                 )
@@ -397,7 +395,9 @@ class EnterCookies(Button):
                 )
             await i.edit_original_response(embed=embed)
         else:
-            go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+            go_back_button = GoBackButton(
+                self.view.children, self.view.get_embeds(i.message)
+            )
             self.view.clear_items()
             self.view.add_item(
                 SelectAccountsToAdd(
@@ -405,8 +405,7 @@ class EnterCookies(Button):
                     self.view.translator,
                     accounts=game_accounts,
                     cookies=cookies,
-                ),
-                translate=False,
+                )
             )
             self.view.add_item(go_back_button)
             await i.edit_original_response(embed=None, view=self.view)
@@ -437,7 +436,9 @@ class WithJavaScript(Button):
         )
         embed.set_image(url="https://i.imgur.com/PxO0Wr6.gif")
         code = "script:document.write(document.cookie)"
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(
+            self.view.children, self.view.get_embeds(i.message)
+        )
         self.view.clear_items()
         self.view.add_item(EnterCookies(v2=False))
         self.view.add_item(go_back_button)
@@ -473,7 +474,9 @@ class WithDevTools(Button):
             ),
         )
         embed.set_image(url="https://i.imgur.com/oSljaFQ.gif")
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(
+            self.view.children, self.view.get_embeds(i.message)
+        )
         self.view.clear_items()
         self.view.add_item(EnterCookies(v2=True, dev_tools=True))
         self.view.add_item(EnterCookies(v2=False, dev_tools=True))
@@ -547,7 +550,9 @@ class EmailPasswordContinueButton(Button):
         game_accounts = await client.get_game_accounts()
         await self.unset_loading_state(i)
 
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(
+            self.view.children, self.view.get_embeds(i.message)
+        )
         self.view.clear_items()
         self.view.add_item(
             SelectAccountsToAdd(
@@ -555,8 +560,7 @@ class EmailPasswordContinueButton(Button):
                 self.view.translator,
                 accounts=game_accounts,
                 cookies=str_cookies,
-            ),
-            translate=False,
+            )
         )
         self.view.add_item(go_back_button)
         await i.edit_original_response(embed=None, view=self.view)
@@ -565,11 +569,11 @@ class EmailPasswordContinueButton(Button):
 class EmailPasswordModal(Modal):
     email = TextInput(
         label=_T("email or username", key="email_password_modal_email_input_label"),
-        placeholder=_T("a@gmail.com", translate=False),
+        placeholder="a@gmail.com",
     )
     password = TextInput(
         label=_T("password", key="email_password_modal_password_input_label"),
-        placeholder=_T("12345678", translate=False),
+        placeholder="12345678",
     )
 
 
@@ -601,7 +605,9 @@ class EnterEmailPassword(Button):
         self.view.user.temp_data["password"] = password
         await self.view.user.save()
 
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(
+            self.view.children, self.view.get_embeds(i.message)
+        )
         self.view.clear_items()
         web_server_url = GEETEST_SERVER_URL[i.client.env]
         self.view.add_item(
@@ -650,7 +656,9 @@ class WithEmailPassword(Button):
                 key="enter_email_password_instructions_description",
             ),
         )
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(
+            self.view.children, self.view.get_embeds(i.message)
+        )
         self.view.clear_items()
         self.view.add_item(EnterEmailPassword())
         self.view.add_item(go_back_button)

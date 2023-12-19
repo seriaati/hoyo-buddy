@@ -17,6 +17,8 @@ def setup_logging(env: str):
         max_bytes = 32 * 1024 * 1024
         logging.getLogger("discord").setLevel(logging.INFO)
         logging.getLogger("discord.http").setLevel(logging.WARNING)
+        logging.getLogger("aiosqlite").setLevel(logging.WARNING)
+        logging.getLogger("tortoise.db_client").setLevel(logging.WARNING)
 
         if env == "prod":
             log.setLevel(logging.INFO)

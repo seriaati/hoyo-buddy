@@ -2,15 +2,16 @@ from typing import Dict, Optional, Tuple, Type
 
 import discord
 import genshin.errors as errors
+from ambr.exceptions import DataNotFound
 
 from ..embeds import ErrorEmbed
-from ..exceptions import HoyoBuddyError
+from ..exceptions import HoyoBuddyError, InvalidQuery
 from .translator import Translator
 from .translator import locale_str as _T
 
 __all__ = ("get_error_embed",)
 
-ERROR_CONVERTER: Dict[
+GENSHIN_ERROR_CONVERTER: Dict[
     Type[errors.GenshinException],
     Tuple[Optional[Tuple[str, str]], Optional[Tuple[str, str]]],
 ] = {
@@ -30,7 +31,10 @@ ERROR_CONVERTER: Dict[
 
 def get_error_embed(
     error: Exception, locale: discord.Locale, translator: Translator
-) -> ErrorEmbed:
+) -> Tuple[ErrorEmbed, bool]:
+    recognized = True
+    if isinstance(error, DataNotFound):
+        error = InvalidQuery()
     if isinstance(error, HoyoBuddyError):
         embed = ErrorEmbed(
             locale,
@@ -39,22 +43,21 @@ def get_error_embed(
             description=error.message,
         )
     elif isinstance(error, errors.GenshinException):
-        title, description = ERROR_CONVERTER.get(type(error), (None, None))
+        title, description = GENSHIN_ERROR_CONVERTER.get(type(error), (None, None))
         embed = ErrorEmbed(
             locale,
             translator,
             title=_T(title[0], key=title[1])
             if title
             else _T("An error occurred", key="error_title"),
-            description=_T(description[0], key=description[1])
-            if description
-            else str(error),
+            description=_T(description[0], key=description[1]) if description else str(error),
         )
     else:
+        recognized = False
         embed = ErrorEmbed(
             locale,
             translator,
             title=_T("An error occurred", key="error_title"),
             description=str(error),
         )
-    return embed
+    return embed, recognized

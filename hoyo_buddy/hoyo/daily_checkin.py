@@ -114,7 +114,7 @@ class DailyCheckin:
             try:
                 reward = await account.client.claim_daily_reward()
             except Exception as e:  # skipcq: PYL-W0703
-                embed = get_error_embed(e, locale, translator)
+                embed, _ = get_error_embed(e, locale, translator)
                 embed.set_author(
                     name=_T(account.game.value, warn_no_key=False),
                     icon_url=GAME_THUMBNAILS[account.game],
@@ -142,7 +142,7 @@ class DailyCheckin:
                 try:
                     genshin.raise_for_retcode(data)
                 except genshin.GenshinException as e:
-                    embed = get_error_embed(e, locale, translator)
+                    embed, _ = get_error_embed(e, locale, translator)
                     embed.set_author(
                         name=_T(account.game.value, warn_no_key=False),
                         icon_url=GAME_THUMBNAILS[account.game],

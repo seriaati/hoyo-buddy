@@ -20,12 +20,16 @@ class CommandTree(app_commands.CommandTree):
             await Settings.create(user=user)
         return True
 
-    async def on_error(self, i: Interaction[HoyoBuddy], error: Exception) -> None:
-        i.client.capture_exception(error)
-
+    async def on_error(
+        self, i: Interaction[HoyoBuddy], e: app_commands.AppCommandError
+    ) -> None:
+        error = e.original if isinstance(e, app_commands.CommandInvokeError) else e
         user = await User.get(id=i.user.id).prefetch_related("settings")
         locale = user.settings.locale or i.locale
-        embed = get_error_embed(error, locale, i.client.translator)
+        embed, recognized = get_error_embed(error, locale, i.client.translator)
+        if not recognized:
+            i.client.capture_exception(e)
+
         try:
             await i.response.send_message(embed=embed, ephemeral=True)
         except InteractionResponded:

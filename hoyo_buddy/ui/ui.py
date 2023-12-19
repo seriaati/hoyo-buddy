@@ -411,11 +411,12 @@ class Modal(discord.ui.Modal):
         error: Exception,
         _: discord.ui.Item[Any],
     ) -> None:
-        i.client.capture_exception(error)
-
         user = await User.get(id=i.user.id).prefetch_related("settings")
         locale = user.settings.locale or i.locale
-        embed = get_error_embed(error, locale, i.client.translator)
+        embed, recognized = get_error_embed(error, locale, i.client.translator)
+        if not recognized:
+            i.client.capture_exception(error)
+
         try:
             await i.response.send_message(embed=embed, ephemeral=True)
         except discord.InteractionResponded:

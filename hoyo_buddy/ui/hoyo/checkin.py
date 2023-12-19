@@ -169,7 +169,7 @@ class CheckInButton(Button):
         try:
             daily_reward = await client.claim_daily_reward()
         except GenshinException as e:
-            embed = get_error_embed(e, self.view.locale, self.view.translator)
+            embed, _ = get_error_embed(e, self.view.locale, self.view.translator)
             return await i.edit_original_response(
                 embed=embed, attachments=[], view=self.view
             )

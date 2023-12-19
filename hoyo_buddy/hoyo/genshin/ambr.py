@@ -86,7 +86,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
 
     @staticmethod
     def _format_num(digits: int, calculation: Union[int, float]) -> str:
-        return "{:.{}f}".format(calculation, digits)
+        return f"{calculation:.{digits}f}"
 
     @staticmethod
     def _calculate_upgrade_stat_values(

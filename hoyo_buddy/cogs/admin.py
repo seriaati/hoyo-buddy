@@ -2,20 +2,20 @@ import asyncio
 import json
 from typing import Any
 
-from discord import ButtonStyle, Interaction, ui
+from discord import ButtonStyle, ui
 from discord.ext import commands
 from discord.ext.commands.context import Context
 
-from ..bot import HoyoBuddy
+from ..bot import INTERACTION, HoyoBuddy
 from ..hoyo.daily_checkin import DailyCheckin
 
 
 class TaskView(ui.View):
-    async def interaction_check(self, i: Interaction[HoyoBuddy]) -> bool:
+    async def interaction_check(self, i: INTERACTION) -> bool:
         return await i.client.is_owner(i.user)
 
     @ui.button(label="Daily Check-in", style=ButtonStyle.blurple)
-    async def daily_checkin(self, i: Interaction[HoyoBuddy], _: ui.Button) -> None:
+    async def daily_checkin(self, i: INTERACTION, _: ui.Button) -> None:
         await i.response.send_message("Daily check-in task started.")
         asyncio.create_task(DailyCheckin.exec(i.client))
 

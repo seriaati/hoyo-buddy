@@ -2,10 +2,9 @@ import contextlib
 from typing import Any, List, Optional, Tuple, Union
 
 import ambr
-from discord import Interaction, InteractionResponded, Locale, Member, User
+from discord import InteractionResponded, Locale, Member, User
 
-from ....bot.bot import HoyoBuddy
-from ....bot.translator import Translator
+from ....bot import INTERACTION, Translator
 from ....bot.translator import locale_str as _T
 from ....embeds import DefaultEmbed
 from ....hoyo.genshin.ambr import AmbrAPIClient
@@ -82,7 +81,7 @@ class CharacterUI(View):
                 character_fetter.quotes,
             )
 
-    async def update(self, i: Interaction) -> None:
+    async def update(self, i: INTERACTION) -> None:
         with contextlib.suppress(InteractionResponded):
             await i.response.defer()
 
@@ -190,7 +189,7 @@ class LevelModalButton(LMB):
         )
         self.is_character_level = is_character_level
 
-    async def callback(self, i: Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: CharacterUI
         await super().callback(i)
         if self.is_character_level:
@@ -233,7 +232,7 @@ class PageSelector(Select):
             row=4,
         )
 
-    async def callback(self, i: Interaction) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: CharacterUI
         self.view.selected = int(self.values[0])
         await self.view.update(i)
@@ -244,14 +243,14 @@ class ItemSelector(Select):
         super().__init__(options=options)
         self.index_name = index_name
 
-    async def callback(self, i: Interaction) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: CharacterUI
         self.view.__setattr__(self.index_name, int(self.values[0]))
         await self.view.update(i)
 
 
 class QuoteSelector(PaginatorSelect):
-    async def callback(self, i: Interaction) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         await super().callback()
         self.view: CharacterUI
         try:

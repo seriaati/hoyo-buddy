@@ -1,11 +1,10 @@
 from typing import Any
 
-import discord
 from discord import app_commands
 from discord.app_commands import locale_str as _T
 from discord.ext import commands
 
-from ..bot import HoyoBuddy
+from ..bot import INTERACTION, HoyoBuddy
 from ..db import User
 from ..ui.login.accounts import AccountManager
 
@@ -18,7 +17,7 @@ class Login(commands.Cog):
         name=_T("accounts", translate=False),
         description=_T("Manage your accounts", key="accounts_command_description"),
     )
-    async def accounts(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def accounts(self, i: INTERACTION) -> Any:
         user = await User.get(id=i.user.id).prefetch_related("accounts", "settings")
         locale = user.settings.locale or i.locale
         view = AccountManager(

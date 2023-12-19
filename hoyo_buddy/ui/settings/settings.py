@@ -1,12 +1,9 @@
 from typing import Any, Dict, List, Optional, Union
 
 import discord
-from discord import Interaction
 
-from hoyo_buddy.bot import Translator
-from hoyo_buddy.bot import locale_str as _T
-
-from ...bot.bot import HoyoBuddy
+from ...bot import INTERACTION, Translator
+from ...bot import locale_str as _T
 from ...db.models import Settings
 from ...embeds import DefaultEmbed
 from ..ui import Select, SelectOption, ToggleButton, View
@@ -55,7 +52,7 @@ class SettingsUI(View):
         filename = self._get_filename(theme, locale)
         return discord.File(filename, filename="brand.png")
 
-    async def update_and_save(self, i: Interaction[HoyoBuddy]):
+    async def update_and_save(self, i: INTERACTION):
         await self.absolute_edit(
             i, embed=self.get_embed(), attachments=[self.get_brand_image_file(i.locale)], view=self
         )
@@ -90,7 +87,7 @@ class LanguageSelector(Select):
         )
         return options
 
-    async def callback(self, i: Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: SettingsUI
         selected = self.values[0]
         self.view.settings.lang = None if selected == "auto" else self.values[0]
@@ -106,7 +103,7 @@ class DarkModeToggle(ToggleButton):
             _T("Dark mode", key="dark_mode_button_label"),
         )
 
-    async def callback(self, i: Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: SettingsUI
         await super().callback(i)
         self.view.settings.dark_mode = self.current_toggle

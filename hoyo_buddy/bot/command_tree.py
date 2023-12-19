@@ -2,10 +2,9 @@ import logging
 from typing import Literal
 
 from discord import InteractionResponded, app_commands
-from discord.interactions import Interaction
 
 from ..db import Settings, User
-from .bot import INTERACTION, HoyoBuddy
+from .bot import INTERACTION
 from .error_handler import get_error_embed
 
 __all__ = ("CommandTree",)
@@ -20,7 +19,7 @@ class CommandTree(app_commands.CommandTree):
             await Settings.create(i.client.redis_pool, user=user)
         return True
 
-    async def on_error(self, i: Interaction[HoyoBuddy], e: app_commands.AppCommandError) -> None:
+    async def on_error(self, i: INTERACTION, e: app_commands.AppCommandError) -> None:
         error = e.original if isinstance(e, app_commands.CommandInvokeError) else e
         user = await User.get(id=i.user.id).prefetch_related("settings")
         locale = user.settings.locale or i.locale

@@ -12,7 +12,7 @@ from .translator import AppCommandTranslator, Translator
 
 log = logging.getLogger(__name__)
 
-__all__ = ("HoyoBuddy",)
+__all__ = ("HoyoBuddy", "INTERACTION")
 
 INTERACTION: TypeAlias = discord.Interaction["HoyoBuddy"]
 

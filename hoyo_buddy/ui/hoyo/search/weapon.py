@@ -1,10 +1,9 @@
 import contextlib
 from typing import Any, Optional, Tuple, Union
 
-from discord import Interaction, InteractionResponded, Locale, Member, User
+from discord import InteractionResponded, Locale, Member, User
 
-from ....bot.bot import HoyoBuddy
-from ....bot.translator import Translator
+from ....bot import INTERACTION, Translator
 from ....bot.translator import locale_str as _T
 from ....embeds import DefaultEmbed
 from ....exceptions import InvalidQuery
@@ -46,7 +45,7 @@ class WeaponUI(View):
             )
             return embed, len(weapon_detail.upgrade.awaken_cost) + 1
 
-    async def update(self, i: Interaction) -> None:
+    async def update(self, i: INTERACTION) -> None:
         with contextlib.suppress(InteractionResponded):
             await i.response.defer()
 
@@ -87,7 +86,7 @@ class LevelModalButton(LMB):
         )
         self.is_character_level = is_character_level
 
-    async def callback(self, i: Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: WeaponUI
         await super().callback(i)
         self.view.weapon_level = self.level
@@ -107,7 +106,7 @@ class RefinementSelector(Select):
             ]
         )
 
-    async def callback(self, i: Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: WeaponUI
         self.view.refinement = int(self.values[0])
         await self.view.update(i)

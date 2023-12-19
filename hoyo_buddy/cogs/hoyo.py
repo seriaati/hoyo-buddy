@@ -4,9 +4,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from ..bot import HoyoBuddy, Translator
+from ..bot import INTERACTION, HoyoBuddy, Translator
 from ..bot import locale_str as _T
-from ..bot.bot import INTERACTION
 from ..db import Game, HoyoAccount, Settings, User
 from ..exceptions import InvalidQuery
 from ..hoyo.genshin import ambr
@@ -91,7 +90,7 @@ class Hoyo(commands.Cog):
         )
 
     async def _get_first_account(
-        self, user: User, i: discord.Interaction, locale: discord.Locale
+        self, user: User, i: INTERACTION, locale: discord.Locale
     ) -> Optional[HoyoAccount]:
         accounts = await user.accounts.all()
         if not accounts:
@@ -103,7 +102,7 @@ class Hoyo(commands.Cog):
         self,
         user: User,
         account_value: Optional[str],
-        i: discord.Interaction,
+        i: INTERACTION,
         locale: discord.Locale,
     ) -> Optional[HoyoAccount]:
         if account_value is None:
@@ -128,9 +127,7 @@ class Hoyo(commands.Cog):
             key="account_autocomplete_param_description",
         )
     )
-    async def checkin_command(
-        self, i: discord.Interaction[HoyoBuddy], acc_value: Optional[str] = None
-    ) -> Any:
+    async def checkin_command(self, i: INTERACTION, acc_value: Optional[str] = None) -> Any:
         user = await self._get_user(i.user.id)
         locale = self._get_locale(user, i.locale)
         account = await self._get_account(user, acc_value, i, locale)
@@ -192,7 +189,7 @@ class Hoyo(commands.Cog):
     )
     async def search_command(
         self,
-        i: discord.Interaction[HoyoBuddy],
+        i: INTERACTION,
         game_value: str,
         category_value: str,
         query: str,
@@ -234,7 +231,7 @@ class Hoyo(commands.Cog):
 
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
-        self, i: discord.Interaction, current: str
+        self, i: INTERACTION, current: str
     ) -> List[app_commands.Choice]:
         try:
             game = Game(i.namespace.game)
@@ -255,7 +252,7 @@ class Hoyo(commands.Cog):
 
     @search_command.autocomplete("query")
     async def search_command_query_autocomplete(
-        self, i: discord.Interaction[HoyoBuddy], current: str
+        self, i: INTERACTION, current: str
     ) -> List[app_commands.Choice]:
         try:
             game = Game(i.namespace.game)

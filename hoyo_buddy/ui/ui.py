@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Self, Sequence, Union
 import discord
 from discord.utils import MISSING
 
-from ..bot import HoyoBuddy, Translator, emojis
+from ..bot import INTERACTION, Translator, emojis
 from ..bot import locale_str as _T
 from ..bot.error_handler import get_error_embed
 from ..db import User
@@ -48,7 +48,7 @@ class View(discord.ui.View):
 
     async def on_error(
         self,
-        i: discord.Interaction[HoyoBuddy],
+        i: INTERACTION,
         error: Exception,
         _: discord.ui.Item[Any],
     ) -> None:
@@ -59,12 +59,12 @@ class View(discord.ui.View):
         embed = get_error_embed(error, locale, i.client.translator)
         await self.absolute_send(i, embed=embed, ephemeral=True)
 
-    async def interaction_check(self, i: discord.Interaction[HoyoBuddy]) -> bool:
+    async def interaction_check(self, i: INTERACTION) -> bool:
         if i.user.id != self.author.id:
             embed = ErrorEmbed(
                 self.locale,
                 self.translator,
-                title=_T("Interaction failed", key="interaction_failed_title"),
+                title=_T("INTERACTION failed", key="interaction_failed_title"),
                 description=_T(
                     "This view is not initiated by you, therefore you cannot use it.",
                     key="interaction_failed_description",
@@ -96,14 +96,14 @@ class View(discord.ui.View):
         return None
 
     @staticmethod
-    async def absolute_send(i: discord.Interaction, **kwargs) -> None:
+    async def absolute_send(i: INTERACTION, **kwargs) -> None:
         try:
             await i.response.send_message(**kwargs)
         except discord.InteractionResponded:
             await i.followup.send(**kwargs)
 
     @staticmethod
-    async def absolute_edit(i: discord.Interaction, **kwargs) -> None:
+    async def absolute_edit(i: INTERACTION, **kwargs) -> None:
         try:
             await i.response.edit_message(**kwargs)
         except discord.InteractionResponded:
@@ -158,7 +158,7 @@ class Button(discord.ui.Button):
         if self.locale_str_label:
             self.label = translator.translate(self.locale_str_label, locale)
 
-    async def set_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
+    async def set_loading_state(self, i: INTERACTION) -> None:
         self.view: View
         self.original_label = self.label[:] if self.label else None
         self.original_emoji = str(self.emoji) if self.emoji else None
@@ -171,7 +171,7 @@ class Button(discord.ui.Button):
         )
         await self.view.absolute_edit(i, view=self.view)
 
-    async def unset_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
+    async def unset_loading_state(self, i: INTERACTION) -> None:
         self.view: View
         if self.original_disabled is None:
             raise RuntimeError("unset_loading_state called before set_loading_state")
@@ -195,7 +195,7 @@ class GoBackButton(Button):
         self.embeds = embeds
         self.attachments = attachments
 
-    async def callback(self, i: discord.Interaction) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view.clear_items()
         for item in self.original_children:
             if isinstance(item, (Button, Select)):
@@ -231,7 +231,7 @@ class ToggleButton(Button):
             translate=False,
         )
 
-    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: View
         self.current_toggle = not self.current_toggle
         self.style = self._get_style()
@@ -259,7 +259,7 @@ class LevelModalButton(Button):
         self.max_level = max_level
         self.default = default_level
 
-    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         modal = LevelModal(
             min_level=self.min_level, max_level=self.max_level, default_level=self.default
         )
@@ -337,7 +337,7 @@ class Select(discord.ui.Select):
             if option.locale_str_description:
                 option.description = translator.translate(option.locale_str_description, locale)
 
-    async def set_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
+    async def set_loading_state(self, i: INTERACTION) -> None:
         self.view: View
         self.original_options = self.options.copy()
         self.original_placeholder = self.placeholder[:] if self.placeholder else None
@@ -355,7 +355,7 @@ class Select(discord.ui.Select):
         self.disabled = True
         await self.view.absolute_edit(i, view=self.view)
 
-    async def unset_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
+    async def unset_loading_state(self, i: INTERACTION) -> None:
         if not self.original_options or self.original_disabled is None:
             raise RuntimeError("unset_loading_state called before set_loading_state")
 
@@ -450,7 +450,7 @@ class Modal(discord.ui.Modal):
 
     async def on_error(
         self,
-        i: discord.Interaction[HoyoBuddy],
+        i: INTERACTION,
         error: Exception,
         _: discord.ui.Item[Any],
     ) -> None:
@@ -465,7 +465,7 @@ class Modal(discord.ui.Modal):
         except discord.InteractionResponded:
             await i.followup.send(embed=embed, ephemeral=True)
 
-    async def on_submit(self, i: discord.Interaction) -> None:
+    async def on_submit(self, i: INTERACTION) -> None:
         await i.response.defer()
         self.stop()
 
@@ -498,7 +498,7 @@ class LevelModal(Modal):
         self.level_input.placeholder = f"{min_level} ~ {max_level}"
         self.level: Optional[int] = None
 
-    async def on_submit(self, i: discord.Interaction) -> None:
+    async def on_submit(self, i: INTERACTION) -> None:
         try:
             self.level = int(self.level_input.value)
         except ValueError:

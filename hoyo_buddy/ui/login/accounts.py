@@ -2,10 +2,9 @@ from typing import Any, Dict, List, Optional, Sequence, Union
 
 import discord
 import genshin
-from discord.interactions import Interaction
 from tortoise.exceptions import IntegrityError
 
-from ...bot import HoyoBuddy, emojis
+from ...bot import INTERACTION, emojis
 from ...bot.translator import Translator
 from ...bot.translator import locale_str as _T
 from ...db.enums import GAME_CONVERTER
@@ -95,7 +94,7 @@ class AccountManager(View):
             for account in self.accounts
         ]
 
-    async def refresh(self, i: discord.Interaction[HoyoBuddy], *, soft: bool) -> Any:
+    async def refresh(self, i: INTERACTION, *, soft: bool) -> Any:
         if not soft:
             user = await User.get(id=self.user.id).prefetch_related("accounts")
             view = AccountManager(
@@ -119,7 +118,7 @@ class AccountSelector(Select):
     def __init__(self, options: List[SelectOption]):
         super().__init__(custom_id="account_selector", options=options)
 
-    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: AccountManager
         uid, game = self.values[0].split("_")
         selected_account = discord.utils.get(
@@ -141,7 +140,7 @@ class DeleteAccountContinue(Button):
             style=discord.ButtonStyle.primary,
         )
 
-    async def callback(self, i: Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: AccountManager
         await self.view.refresh(i, soft=False)
 
@@ -156,7 +155,7 @@ class DeleteAccount(Button):
             row=2,
         )
 
-    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: AccountManager
         account = self.view.selected_account
         if account is None:
@@ -200,7 +199,7 @@ class EditNickname(Button):
             label=_T("Edit nickname", key="edit_nickname_button_label"),
         )
 
-    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: AccountManager
         account = self.view.selected_account
         if account is None:
@@ -273,7 +272,7 @@ class SelectAccountsToAdd(Select):
                     emoji=emojis.get_game_emoji(account.game),
                 )
 
-    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: AccountManager
         for value in self.values:
             uid, game = value.split("_")
@@ -325,7 +324,7 @@ class EnterCookies(Button):
         self.v2 = v2
         self.dev_tools = dev_tools
 
-    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: AccountManager
 
         if self.dev_tools:
@@ -407,7 +406,7 @@ class WithJavaScript(Button):
     def __init__(self):
         super().__init__(label=_T("With JavaScript", key="javascript_button_label"))
 
-    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: AccountManager
         embed = DefaultEmbed(
             self.view.locale,
@@ -440,7 +439,7 @@ class WithDevTools(Button):
     def __init__(self):
         super().__init__(label=_T("With DevTools (Desktop Only)", key="devtools_button_label"))
 
-    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: AccountManager
         embed = DefaultEmbed(
             self.view.locale,
@@ -479,7 +478,7 @@ class EmailPasswordContinueButton(Button):
             style=discord.ButtonStyle.primary,
         )
 
-    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: AccountManager
         user = self.view.user
         await user.refresh_from_db()
@@ -567,7 +566,7 @@ class EnterEmailPassword(Button):
             emoji=emojis.PASSWORD,
         )
 
-    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: AccountManager
 
         modal = EmailPasswordModal(
@@ -618,7 +617,7 @@ class WithEmailPassword(Button):
     def __init__(self):
         super().__init__(label=_T("With Email and Password", key="email_password_button_label"))
 
-    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: AccountManager
         embed = DefaultEmbed(
             self.view.locale,
@@ -648,7 +647,7 @@ class AddAccount(Button):
             style=discord.ButtonStyle.primary,
         )
 
-    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view: AccountManager
         embed = DefaultEmbed(
             self.view.locale,

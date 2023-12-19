@@ -13,3 +13,14 @@ class InvalidInput(HoyoBuddyError):
             title=_T("Invalid input", key="invalid_input_error_title"),
             message=reason,
         )
+
+
+class InvalidQuery(HoyoBuddyError):
+    def __init__(self):
+        super().__init__(
+            title=_T("Invalid query", key="invalid_query_error_title"),
+            message=_T(
+                "Unable to find anything with the provided query, please select choices from the autocomplete instead of typing your own query.",  # noqa: E501
+                key="invalid_query_error_message",
+            ),
+        )

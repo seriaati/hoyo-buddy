@@ -243,9 +243,9 @@ class LevelModalButton(Button):
     def __init__(
         self,
         *,
-        min: int,
-        max: int,
-        default: Optional[int] = None,
+        min_level: int,
+        max_level: int,
+        default_level: Optional[int] = None,
         label: Optional[Union[_T, str]] = None,
         **kwargs,
     ):
@@ -255,12 +255,14 @@ class LevelModalButton(Button):
             **kwargs,
         )
         self.level: int
-        self.min = min
-        self.max = max
-        self.default = default
+        self.min_level = min_level
+        self.max_level = max_level
+        self.default = default_level
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
-        modal = LevelModal(min=self.min, max=self.max, default=self.default)
+        modal = LevelModal(
+            min_level=self.min_level, max_level=self.max_level, default_level=self.default
+        )
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
         await modal.wait()
@@ -488,12 +490,12 @@ class Modal(discord.ui.Modal):
 class LevelModal(Modal):
     level_input = TextInput(label=_T("Level", key="level_input_label"))
 
-    def __init__(self, *, min: int, max: int, default: Optional[int] = None):
+    def __init__(self, *, min_level: int, max_level: int, default_level: Optional[int] = None):
         super().__init__(title=_T("Enter level", key="enter_level_modal_title"))
-        self.min = min
-        self.max = max
-        self.level_input.default = str(default) if default else None
-        self.level_input.placeholder = f"{min} ~ {max}"
+        self.min_level = min_level
+        self.max_level = max_level
+        self.level_input.default = str(default_level) if default_level else None
+        self.level_input.placeholder = f"{min_level} ~ {max_level}"
         self.level: Optional[int] = None
 
     async def on_submit(self, i: discord.Interaction) -> None:
@@ -502,12 +504,12 @@ class LevelModal(Modal):
         except ValueError:
             raise InvalidInput(_T("Level need to be an integer")) from None
 
-        if self.level < self.min or self.level > self.max:
+        if self.level < self.min_level or self.level > self.max_level:
             raise InvalidInput(
                 _T(
-                    "Level needs to be between {min} and {max}",
-                    min=self.min,
-                    max=self.max,
+                    "Level needs to be between {min_level} and {max_level}",
+                    min_level=self.min_level,
+                    max_level=self.max_level,
                 )
             )
 

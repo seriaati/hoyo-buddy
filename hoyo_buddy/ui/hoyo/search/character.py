@@ -94,8 +94,8 @@ class CharacterUI(View):
             self.add_item(
                 LevelModalButton(
                     True,
-                    min=1,
-                    max=90,
+                    min_level=1,
+                    max_level=90,
                     default=self.character_level,
                     label=_T("Change character level", key="change_character_level_label"),
                 )
@@ -106,8 +106,8 @@ class CharacterUI(View):
                 self.add_item(
                     LevelModalButton(
                         False,
-                        min=1,
-                        max=10,
+                        min_level=1,
+                        max_level=10,
                         default=self.talent_level,
                         label=_T("Change talent level", key="change_talent_level_label"),
                     )
@@ -180,12 +180,14 @@ class LevelModalButton(LMB):
         self,
         is_character_level: bool,
         *,
-        min: int,
-        max: int,
+        min_level: int,
+        max_level: int,
         default: Optional[int] = None,
         label: _T,
     ):
-        super().__init__(min=min, max=max, default=default, label=label)
+        super().__init__(
+            min_level=min_level, max_level=max_level, default_level=default, label=label
+        )
         self.is_character_level = is_character_level
 
     async def callback(self, i: Interaction[HoyoBuddy]) -> Any:

@@ -56,17 +56,17 @@ class WeaponUI(View):
         self.add_item(
             LevelModalButton(
                 True,
-                min=1,
-                max=90,
-                default=self.weapon_level,
+                min_level=1,
+                max_level=90,
+                default_level=self.weapon_level,
                 label=_T("Change weapon level", key="change_weapon_level_label"),
             )
         )
         self.add_item(
             RefinementSelector(
-                min=1,
-                max=max_refinement,
-                current=self.refinement,
+                min_refinement=1,
+                max_refinement=max_refinement,
+                current_refinement=self.refinement,
             )
         )
         await i.edit_original_response(embed=embed, view=self)
@@ -77,12 +77,14 @@ class LevelModalButton(LMB):
         self,
         is_character_level: bool,
         *,
-        min: int,
-        max: int,
-        default: Optional[int] = None,
+        min_level: int,
+        max_level: int,
+        default_level: Optional[int] = None,
         label: _T,
     ):
-        super().__init__(min=min, max=max, default=default, label=label)
+        super().__init__(
+            min_level=min_level, max_level=max_level, default_level=default_level, label=label
+        )
         self.is_character_level = is_character_level
 
     async def callback(self, i: Interaction[HoyoBuddy]) -> Any:
@@ -93,15 +95,15 @@ class LevelModalButton(LMB):
 
 
 class RefinementSelector(Select):
-    def __init__(self, *, min: int, max: int, current: int):
+    def __init__(self, *, min_refinement: int, max_refinement: int, current_refinement: int):
         super().__init__(
             options=[
                 SelectOption(
                     label=_T("Refinement {r}", r=i, key="refinement_indicator"),
                     value=str(i),
-                    default=current == i,
+                    default=current_refinement == i,
                 )
-                for i in range(min, max + 1)
+                for i in range(min_refinement, max_refinement + 1)
             ]
         )
 

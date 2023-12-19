@@ -247,22 +247,33 @@ class ToggleButton(Button):
 
 
 class LevelModalButton(Button):
-    def __init__(self, *, min: int, max: int, default: Optional[int] = None):
+    def __init__(
+        self,
+        *,
+        min: int,
+        max: int,
+        default: Optional[int] = None,
+        label: Optional[Union[_T, str]] = None,
+        **kwargs,
+    ):
         super().__init__(
-            label=_T("Enter level", key="enter_level_button_label"),
+            label=label or _T("Enter level", key="enter_level_button_label"),
             style=discord.ButtonStyle.primary,
+            **kwargs,
         )
+        self.level: int
         self.min = min
         self.max = max
         self.default = default
 
-    async def callback(self, i: discord.Interaction) -> Any:
+    async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         modal = LevelModal(min=self.min, max=self.max, default=self.default)
+        modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
         await modal.wait()
         if modal.level is None:
             return
-        self.view.level = modal.level  # type: ignore
+        self.level = modal.level
 
 
 class SelectOption(discord.SelectOption):

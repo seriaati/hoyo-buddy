@@ -20,9 +20,8 @@ class CommandTree(app_commands.CommandTree):
         return True
 
     async def on_error(self, i: INTERACTION, e: app_commands.AppCommandError) -> None:
-        error = e.original if isinstance(e, app_commands.CommandInvokeError) else e
-        user = await User.get(id=i.user.id).prefetch_related("settings")
-        locale = user.settings.locale or i.locale
+        error = e.original if isinstance(e, app_commands.errors.CommandInvokeError) else e
+        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
         embed, recognized = get_error_embed(error, locale, i.client.translator)
         if not recognized:
             i.client.capture_exception(e)

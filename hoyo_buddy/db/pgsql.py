@@ -1,10 +1,10 @@
 import logging
 from types import TracebackType
-from typing import Optional, Type
+from typing import Type
 
 from tortoise import Tortoise
 
-from .configs import DB_CONFIG
+from .config import DB_CONFIG
 
 log = logging.getLogger(__name__)
 
@@ -19,8 +19,8 @@ class Database:
 
     async def __aexit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc_value: Optional[BaseException],
-        traceback: Optional[TracebackType],
+        exc_type: Type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
     ):
         await Tortoise.close_connections()

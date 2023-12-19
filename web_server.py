@@ -10,7 +10,6 @@ from discord import Locale
 from dotenv import load_dotenv
 from genshin.errors import GenshinException
 from genshin.utility import geetest
-from tortoise.exceptions import DoesNotExist
 
 from hoyo_buddy.bot.logging import setup_logging
 from hoyo_buddy.bot.translator import Translator
@@ -124,10 +123,9 @@ class GeetestWebServer:
 
     @staticmethod
     async def _get_account_and_password(user_id: int) -> Tuple[str, str, User]:
-        try:
-            user = await User.get(id=user_id)
-        except DoesNotExist:
-            raise web.HTTPNotFound(reason="User not found") from None
+        user = await User.get_or_none(id=user_id)
+        if user is None:
+            raise web.HTTPNotFound(reason="User not found")
 
         email = user.temp_data.get("email")
         password = user.temp_data.get("password")

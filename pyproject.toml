@@ -24,12 +24,83 @@ cachetools = "^5.3.2"
 aiofiles = "^23.2.1"
 ambr-py = {git = "https://github.com/seriaati/ambr"}
 
-
+[tool.poetry.group.dev.dependencies]
+git-cliff = "^1.4.0"
+ruff = "^0.1.8"
+pre-commit = "^3.6.0"
 
 [tool.aerich]
 tortoise_orm = "hoyo_buddy.db.configs.DB_CONFIG"
 location = "./migrations"
 src_folder = "./."
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E","F","UP","B","SIM","I"]
+
+[tool.ruff.per-file-ignores]
+"**/__init__.py" = ["F403"]
+
+[tool.git-cliff.changelog]
+body = """
+---
+{% if version %}\
+    {% if previous.version %}\
+        # [{{ version | trim_start_matches(pat="v") }}]($REPO/compare/{{ previous.version }}..{{ version }}) - {{ timestamp | date(format="%Y-%m-%d") }}
+    {% else %}\
+        # [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+    {% endif %}\
+{% else %}\
+    # [unreleased]
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+    ## {{ group | striptags | trim | upper_first }}
+    {% for commit in commits
+    | filter(attribute="scope")
+    | sort(attribute="scope") %}
+        - **({{commit.scope}})**{% if commit.breaking %} [**breaking**]{% endif %} \
+            {{ commit.message }} - ([{{ commit.id | truncate(length=7, end="") }}]($REPO/commit/{{ commit.id }}))
+    {%- endfor -%}
+    {% raw %}\n{% endraw %}\
+    {%- for commit in commits %}
+        {%- if commit.scope -%}
+        {% else -%}
+            - {% if commit.breaking %} [**breaking**]{% endif %}\
+                {{ commit.message }} - ([{{ commit.id | truncate(length=7, end="") }}]($REPO/commit/{{ commit.id }}))
+        {% endif -%}
+    {% endfor -%}
+{% endfor %}\n
+"""
+trim = true
+postprocessors = [
+    { pattern = '\$REPO', replace = "https://github.com/seriaati/hoyo-buddy" },
+]
+
+[tool.git-cliff.git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+commit_parsers = [
+    { message = "^feat", group = "Features" },
+    { message = "^fix", group = "Bug Fixes" },
+    { message = "^doc", group = "Documentation" },
+    { message = "^perf", group = "Performance" },
+    { message = "^refactor", group = "Refactoring" },
+    { message = "^style", group = "Style" },
+    { message = "^revert", group = "Revert" },
+    { message = "^test", group = "Tests" },
+    { message = "^chore\\(ver\\):", skip = true },
+    { message = "^chore", group = "Miscellaneous Chores" },
+    { body = ".*security", group = "Security" },
+]
+protect_breaking_commits = false
+filter_commits = false
+tag_pattern = "v[0-9].*"
+topo_order = false
+sort_commits = "oldest"

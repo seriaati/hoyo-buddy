@@ -6,7 +6,6 @@ import discord
 import redis.asyncio as redis
 import sentry_sdk
 from aiohttp import ClientSession
-from ambr import AmbrAPI
 from discord.ext import commands
 
 from .translator import AppCommandTranslator, Translator
@@ -31,7 +30,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.session = session
         self.uptime = discord.utils.utcnow()
         self.translator = Translator(env)
-        self.ambr_api = AmbrAPI()
         self.env = env
         self.redis_pool = redis_pool
 
@@ -70,5 +68,4 @@ class HoyoBuddy(commands.AutoShardedBot):
     async def close(self):
         log.info("Shutting down...")
         await self.translator.unload()
-        await self.ambr_api.close()
         await super().close()

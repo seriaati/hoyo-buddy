@@ -35,7 +35,7 @@ class CacheModel(Model):
         return cls(**orjson.loads(data))
 
     @classmethod
-    async def get(cls, pool: redis.ConnectionPool, **kwargs: Any) -> Self:
+    async def get(cls, pool: redis.ConnectionPool, **kwargs: Any) -> Self:  # skipcq: PYL-W0236
         instance = cls(**kwargs)
         cached = await instance.get_cache(pool)
         if cached:

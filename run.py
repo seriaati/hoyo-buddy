@@ -72,5 +72,5 @@ async def main():
             pass
 
 
-with setup_logging():
+with setup_logging(env):
     asyncio.run(main())

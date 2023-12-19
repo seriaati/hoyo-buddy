@@ -115,11 +115,11 @@ INDEX = """
 
 
 GT_URL = "https://raw.githubusercontent.com/GeeTeam/gt3-node-sdk/master/demo/static/libs/gt.js"
+env = os.environ["ENV"]
 
 
 class GeetestWebServer:
     def __init__(self):
-        env = os.environ["ENV"]
         self.translator = Translator(env)
 
     @staticmethod
@@ -245,7 +245,7 @@ class GeetestWebServer:
 
 
 async def main():
-    with setup_logging():
+    with setup_logging(env):
         async with Database():
             server = GeetestWebServer()
             await server.run()

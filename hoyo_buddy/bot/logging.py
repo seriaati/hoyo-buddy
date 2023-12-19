@@ -8,17 +8,21 @@ __all__ = ("setup_logging",)
 
 
 @contextlib.contextmanager
-def setup_logging():
+def setup_logging(env: str):
     log = logging.getLogger()
 
     try:
         discord.utils.setup_logging()
-        # __enter__
-        max_bytes = 32 * 1024 * 1024  # 32 MiB
+
+        max_bytes = 32 * 1024 * 1024
         logging.getLogger("discord").setLevel(logging.INFO)
         logging.getLogger("discord.http").setLevel(logging.WARNING)
 
-        log.setLevel(logging.INFO)
+        if env == "prod":
+            log.setLevel(logging.INFO)
+        else:
+            log.setLevel(logging.DEBUG)
+
         handler = logging.handlers.RotatingFileHandler(
             filename="hoyo_buddy.log",
             encoding="utf-8",
@@ -35,7 +39,6 @@ def setup_logging():
 
         yield
     finally:
-        # __exit__
         handlers = log.handlers[:]
         for handler in handlers:
             handler.close()

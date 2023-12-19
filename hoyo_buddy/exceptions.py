@@ -20,7 +20,7 @@ class InvalidQuery(HoyoBuddyError):
         super().__init__(
             title=_T("Invalid query", key="invalid_query_error_title"),
             message=_T(
-                "Unable to find anything with the provided query, please select choices from the autocomplete instead of typing your own query.",  # noqa: E501
+                "Unable to find anything with the provided query, please select choices from the autocomplete instead of typing your own query.",
                 key="invalid_query_error_message",
             ),
         )

@@ -20,9 +20,7 @@ class CommandTree(app_commands.CommandTree):
             await Settings.create(user=user)
         return True
 
-    async def on_error(
-        self, i: Interaction[HoyoBuddy], e: app_commands.AppCommandError
-    ) -> None:
+    async def on_error(self, i: Interaction[HoyoBuddy], e: app_commands.AppCommandError) -> None:
         error = e.original if isinstance(e, app_commands.CommandInvokeError) else e
         user = await User.get(id=i.user.id).prefetch_related("settings")
         locale = user.settings.locale or i.locale

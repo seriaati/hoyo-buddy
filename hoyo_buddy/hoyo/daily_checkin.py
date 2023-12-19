@@ -12,7 +12,7 @@ from ..bot.translator import Translator
 from ..bot.translator import locale_str as _T
 from ..db.enums import GAME_THUMBNAILS
 from ..db.models import HoyoAccount, User
-from ..embeds import Embed, ErrorEmbed
+from ..embeds import DefaultEmbed, Embed, ErrorEmbed
 
 log = logging.getLogger(__name__)
 
@@ -42,9 +42,7 @@ class DailyCheckin:
                 asyncio.create_task(cls._daily_checkin_task(queue, api, bot))
                 for api in CHECKIN_APIS
             ]
-            tasks.append(
-                asyncio.create_task(cls._daily_checkin_task(queue, "LOCAL", bot))
-            )
+            tasks.append(asyncio.create_task(cls._daily_checkin_task(queue, "LOCAL", bot)))
 
             await queue.join()
             for task in tasks:
@@ -70,9 +68,7 @@ class DailyCheckin:
         while True:
             account = await queue.get()
             try:
-                embed = await cls._daily_checkin(
-                    api, account, bot.translator, bot.session
-                )
+                embed = await cls._daily_checkin(api, account, bot.translator, bot.session)
             except Exception:  # skipcq: PYL-W0703
                 await queue.put(account)
                 api_error_count += 1
@@ -80,14 +76,15 @@ class DailyCheckin:
                 if api_error_count >= MAX_API_ERROR_COUNT:
                     raise RuntimeError(
                         f"Daily check-in API {api} failed for {api_error_count} accounts"
-                    )
+                    ) from None
             else:
                 if (
                     isinstance(embed, ErrorEmbed)
                     and account.notif_settings.notify_on_checkin_failure
+                ) or (
+                    not isinstance(embed, DefaultEmbed)
+                    and account.notif_settings.notify_on_checkin_success
                 ):
-                    await cls._notify_user(bot, account.user, embed)
-                elif account.notif_settings.notify_on_checkin_success:
                     await cls._notify_user(bot, account.user, embed)
             finally:
                 await asyncio.sleep(2.0)
@@ -120,9 +117,7 @@ class DailyCheckin:
                     icon_url=GAME_THUMBNAILS[account.game],
                 )
             else:
-                embed = client.get_daily_reward_embed(
-                    reward, client.game, locale, translator
-                )
+                embed = client.get_daily_reward_embed(reward, client.game, locale, translator)
             return embed
 
         payload = {
@@ -135,9 +130,7 @@ class DailyCheckin:
             data = await resp.json()
             if resp.status == 200:
                 reward = genshin.models.DailyReward(**data["data"])
-                embed = client.get_daily_reward_embed(
-                    reward, client.game, locale, translator
-                )
+                embed = client.get_daily_reward_embed(reward, client.game, locale, translator)
             elif resp.status == 400:
                 try:
                     genshin.raise_for_retcode(data)

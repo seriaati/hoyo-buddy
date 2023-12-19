@@ -19,9 +19,7 @@ class Embed(discord.Embed):
         description: Optional[Union[locale_str, str]] = None,
     ):
         translated_title = translator.translate(title, locale) if title else None
-        translated_description = (
-            translator.translate(description, locale) if description else None
-        )
+        translated_description = translator.translate(description, locale) if description else None
 
         super().__init__(
             color=color,
@@ -41,9 +39,7 @@ class Embed(discord.Embed):
     ) -> Self:
         translated_name = self.translator.translate(name, self.locale)
         translated_value = self.translator.translate(value, self.locale)
-        return super().add_field(
-            name=translated_name, value=translated_value, inline=inline
-        )
+        return super().add_field(name=translated_name, value=translated_value, inline=inline)
 
     def set_author(
         self,

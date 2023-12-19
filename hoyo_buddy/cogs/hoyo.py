@@ -119,9 +119,7 @@ class Hoyo(commands.Cog):
         ),
     )
     @app_commands.rename(
-        acc_value=app_commands.locale_str(
-            "account", key="account_autocomplete_param_name"
-        )
+        acc_value=app_commands.locale_str("account", key="account_autocomplete_param_name")
     )
     @app_commands.describe(
         acc_value=app_commands.locale_str(
@@ -153,9 +151,7 @@ class Hoyo(commands.Cog):
         self, i: discord.Interaction, current: str
     ) -> List[app_commands.Choice]:
         locale = (await Settings.get(user__id=i.user.id)).locale or i.locale
-        return await self._account_autocomplete(
-            i.user.id, current, locale, self.bot.translator
-        )
+        return await self._account_autocomplete(i.user.id, current, locale, self.bot.translator)
 
     @app_commands.command(
         name=app_commands.locale_str("search", translate=False),
@@ -164,9 +160,7 @@ class Hoyo(commands.Cog):
         ),
     )
     @app_commands.rename(
-        game_value=app_commands.locale_str(
-            "game", key="search_command_game_param_name"
-        ),
+        game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
         category_value=app_commands.locale_str(
             "category", key="search_command_category_param_name"
         ),
@@ -231,9 +225,7 @@ class Hoyo(commands.Cog):
                     namecard_detail = await api.fetch_namecard_detail(int(query))
                     embed = api.get_namecard_embed(namecard_detail)
                 elif category is ambr.ItemCategory.ARTIFACT_SETS:
-                    artifact_set_detail = await api.fetch_artifact_set_detail(
-                        int(query)
-                    )
+                    artifact_set_detail = await api.fetch_artifact_set_detail(int(query))
                     embed = api.get_artifact_set_embed(artifact_set_detail)
                 else:
                     raise NotImplementedError

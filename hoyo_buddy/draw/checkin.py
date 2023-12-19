@@ -8,9 +8,7 @@ from PIL import Image, ImageDraw
 from . import Drawer
 
 
-def cache_key(
-    daily_rewards: Tuple[genshin.models.DailyReward, ...], dark_mode: bool
-) -> str:
+def cache_key(daily_rewards: Tuple[genshin.models.DailyReward, ...], dark_mode: bool) -> str:
     rewards_key = "_".join(
         f"{daily_reward.name}_{daily_reward.amount}" for daily_reward in daily_rewards
     )

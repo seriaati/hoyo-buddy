@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 import logging
 import os
 
@@ -27,9 +28,7 @@ env = os.environ["ENV"]
 if env == "prod":
     sentry_sdk.init(
         dsn=os.getenv("SENTRY_DSN"),
-        integrations=[
-            LoggingIntegration(level=logging.INFO, event_level=logging.ERROR)
-        ],
+        integrations=[LoggingIntegration(level=logging.INFO, event_level=logging.ERROR)],
         traces_sample_rate=1.0,
     )
 
@@ -66,10 +65,8 @@ async def main():
     db = Database()
 
     async with session, db, bot:
-        try:
+        with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
             await bot.start(os.environ["DISCORD_TOKEN"])
-        except (KeyboardInterrupt, asyncio.CancelledError):
-            pass
 
 
 with setup_logging(env):

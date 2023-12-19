@@ -76,10 +76,10 @@ INDEX = """
   <script src="./gt.js"></script>
   <script>
 	fetch("/mmt?user_id={user_id}")
-	  .then((response) => response.json())
-	  .then((mmt) =>
+      .then((response) => response.json())
+      .then((mmt) =>
 		window.initGeetest(
-		  {{
+          {{
 			gt: mmt.data.gt,
 			challenge: mmt.data.challenge,
 			new_captcha: mmt.data.new_captcha,
@@ -87,28 +87,28 @@ INDEX = """
 			lang: "en",
 			product: "bind",
 			https: false,
-		  }},
-		  (captcha) => {{
+          }},
+          (captcha) => {{
 			captcha.appendTo("login");
             document.getElementById("loading").style.display = "none";
 			document.getElementById("login").style.display = "block";
 			captcha.onSuccess(() => {{
-			  fetch("/login", {{
+              fetch("/login", {{
 				method: "POST",
 				body: JSON.stringify({{
-				  sid: mmt.session_id,
-				  gt: captcha.getValidate(),
-				  user_id: '{user_id}'
+                  sid: mmt.session_id,
+                  gt: captcha.getValidate(),
+                  user_id: '{user_id}'
 				}}),
-			  }});
-			  document.body.innerHTML = "{close_tab}";
+              }});
+              document.body.innerHTML = "{close_tab}";
 			}});
 			document.getElementById("login").onclick = () => {{
-			  return captcha.verify();
+              return captcha.verify();
 			}};
-		  }}
+          }}
 		)
-	  );
+      );
   </script>
 </html>
 """
@@ -127,7 +127,7 @@ class GeetestWebServer:
         try:
             user = await User.get(id=user_id)
         except DoesNotExist:
-            raise web.HTTPNotFound(reason="User not found")
+            raise web.HTTPNotFound(reason="User not found") from None
 
         email = user.temp_data.get("email")
         password = user.temp_data.get("password")

@@ -1,3 +1,4 @@
+import contextlib
 from typing import Any, List, Optional, Tuple, Union
 
 import ambr
@@ -82,10 +83,9 @@ class CharacterUI(View):
             )
 
     async def update(self, i: Interaction) -> None:
-        try:
+        with contextlib.suppress(InteractionResponded):
             await i.response.defer()
-        except InteractionResponded:
-            pass
+
         self.clear_items()
         self.add_item(PageSelector(self.selected))
 

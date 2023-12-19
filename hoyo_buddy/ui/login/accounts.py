@@ -181,9 +181,7 @@ class DeleteAccount(Button):
 class NicknameModal(Modal):
     nickname = TextInput(
         label=_T("Nickname", key="nickname_modal_label"),
-        placeholder=_T(
-            "Main account, Asia account...", key="nickname_modal_placeholder"
-        ),
+        placeholder=_T("Main account, Asia account...", key="nickname_modal_placeholder"),
         required=False,
         style=discord.TextStyle.short,
         max_length=32,
@@ -315,9 +313,7 @@ class EnterCookies(Button):
                     key="devtools_v2_cookies_button_label",
                 )
             else:
-                label = _T(
-                    "I have ltuid and ltoken", key="devtools_v1_cookies_button_label"
-                )
+                label = _T("I have ltuid and ltoken", key="devtools_v1_cookies_button_label")
         else:
             label = _T("Enter Cookies", key="cookies_button_label")
 
@@ -342,9 +338,7 @@ class EnterCookies(Button):
                     title=_T("Enter Cookies", key="enter_cookies_modal_title")
                 )
         else:
-            modal = CookiesModal(
-                title=_T("Enter Cookies", key="enter_cookies_modal_title")
-            )
+            modal = CookiesModal(title=_T("Enter Cookies", key="enter_cookies_modal_title"))
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
         await modal.wait()
@@ -395,9 +389,7 @@ class EnterCookies(Button):
                 )
             await i.edit_original_response(embed=embed)
         else:
-            go_back_button = GoBackButton(
-                self.view.children, self.view.get_embeds(i.message)
-            )
+            go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
             self.view.clear_items()
             self.view.add_item(
                 SelectAccountsToAdd(
@@ -436,9 +428,7 @@ class WithJavaScript(Button):
         )
         embed.set_image(url="https://i.imgur.com/PxO0Wr6.gif")
         code = "script:document.write(document.cookie)"
-        go_back_button = GoBackButton(
-            self.view.children, self.view.get_embeds(i.message)
-        )
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
         self.view.add_item(EnterCookies(v2=False))
         self.view.add_item(go_back_button)
@@ -448,9 +438,7 @@ class WithJavaScript(Button):
 
 class WithDevTools(Button):
     def __init__(self):
-        super().__init__(
-            label=_T("With DevTools (Desktop Only)", key="devtools_button_label")
-        )
+        super().__init__(label=_T("With DevTools (Desktop Only)", key="devtools_button_label"))
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         self.view: AccountManager
@@ -474,9 +462,7 @@ class WithDevTools(Button):
             ),
         )
         embed.set_image(url="https://i.imgur.com/oSljaFQ.gif")
-        go_back_button = GoBackButton(
-            self.view.children, self.view.get_embeds(i.message)
-        )
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
         self.view.add_item(EnterCookies(v2=True, dev_tools=True))
         self.view.add_item(EnterCookies(v2=False, dev_tools=True))
@@ -519,9 +505,7 @@ class EmailPasswordContinueButton(Button):
                 embed = ErrorEmbed(
                     self.view.locale,
                     self.view.translator,
-                    title=_T(
-                        "Invalid email or password", key="invalid_email_password_title"
-                    ),
+                    title=_T("Invalid email or password", key="invalid_email_password_title"),
                     description=_T(
                         "Either your email or password is incorrect, please try again by pressing the back button.",
                         key="invalid_email_password_description",
@@ -550,9 +534,7 @@ class EmailPasswordContinueButton(Button):
         game_accounts = await client.get_game_accounts()
         await self.unset_loading_state(i)
 
-        go_back_button = GoBackButton(
-            self.view.children, self.view.get_embeds(i.message)
-        )
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
         self.view.add_item(
             SelectAccountsToAdd(
@@ -580,9 +562,7 @@ class EmailPasswordModal(Modal):
 class EnterEmailPassword(Button):
     def __init__(self):
         super().__init__(
-            label=_T(
-                "Enter Email and Password", key="enter_email_password_button_label"
-            ),
+            label=_T("Enter Email and Password", key="enter_email_password_button_label"),
             style=discord.ButtonStyle.primary,
             emoji=emojis.PASSWORD,
         )
@@ -605,9 +585,7 @@ class EnterEmailPassword(Button):
         self.view.user.temp_data["password"] = password
         await self.view.user.save()
 
-        go_back_button = GoBackButton(
-            self.view.children, self.view.get_embeds(i.message)
-        )
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
         web_server_url = GEETEST_SERVER_URL[i.client.env]
         self.view.add_item(
@@ -638,9 +616,7 @@ class EnterEmailPassword(Button):
 
 class WithEmailPassword(Button):
     def __init__(self):
-        super().__init__(
-            label=_T("With Email and Password", key="email_password_button_label")
-        )
+        super().__init__(label=_T("With Email and Password", key="email_password_button_label"))
 
     async def callback(self, i: discord.Interaction[HoyoBuddy]) -> Any:
         self.view: AccountManager
@@ -656,9 +632,7 @@ class WithEmailPassword(Button):
                 key="enter_email_password_instructions_description",
             ),
         )
-        go_back_button = GoBackButton(
-            self.view.children, self.view.get_embeds(i.message)
-        )
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
         self.view.add_item(EnterEmailPassword())
         self.view.add_item(go_back_button)
@@ -685,9 +659,7 @@ class AddAccount(Button):
                 key="adding_accounts_description",
             ),
         )
-        go_back_button = GoBackButton(
-            self.view.children, self.view.get_embeds(i.message)
-        )
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
         self.view.add_item(WithJavaScript())
         self.view.add_item(WithDevTools())

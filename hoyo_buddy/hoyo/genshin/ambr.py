@@ -1,7 +1,7 @@
 import re
 from collections import defaultdict
 from enum import StrEnum
-from typing import Any, DefaultDict, Dict, List, Tuple, Union
+from typing import Any, DefaultDict, Dict, List, Union
 
 import ambr
 from ambr.client import Language
@@ -282,8 +282,8 @@ class AmbrAPIClient(ambr.AmbrAPI):
             title=quote.title,
             description=f"{quote.text}\n\n"
             + " ".join(
-                f"[{l}](https://api.ambr.top/assets/Audio/{l}/{character_id}/{quote.audio_id}.ogg)"
-                for l in AUDIO_LANGUAGES
+                f"[{lang}](https://api.ambr.top/assets/Audio/{lang}/{character_id}/{quote.audio_id}.ogg)"
+                for lang in AUDIO_LANGUAGES
             ),
         )
         if quote.tips:

@@ -1,3 +1,4 @@
+import contextlib
 from typing import Any, Optional, Tuple, Union
 
 from discord import Interaction, InteractionResponded, Locale, Member, User
@@ -31,7 +32,7 @@ class WeaponUI(View):
             try:
                 weapon_id = int(self.weapon_id)
             except ValueError:
-                raise InvalidQuery
+                raise InvalidQuery from None
 
             weapon_detail = await api.fetch_weapon_detail(weapon_id)
             weapon_curve = await api.fetch_weapon_curve()
@@ -46,10 +47,8 @@ class WeaponUI(View):
             return embed, len(weapon_detail.upgrade.awaken_cost) + 1
 
     async def update(self, i: Interaction) -> None:
-        try:
+        with contextlib.suppress(InteractionResponded):
             await i.response.defer()
-        except InteractionResponded:
-            pass
 
         embed, max_refinement = await self.fetch_weapon_embed()
 

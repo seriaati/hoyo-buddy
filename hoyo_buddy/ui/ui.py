@@ -500,7 +500,7 @@ class LevelModal(Modal):
         try:
             self.level = int(self.level_input.value)
         except ValueError:
-            raise InvalidInput(_T("Level need to be an integer"))
+            raise InvalidInput(_T("Level need to be an integer")) from None
 
         if self.level < self.min or self.level > self.max:
             raise InvalidInput(

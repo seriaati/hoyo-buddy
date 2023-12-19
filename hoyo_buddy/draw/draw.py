@@ -4,7 +4,20 @@ import discord
 from PIL import Image, ImageDraw, ImageFont
 
 from ..bot.translator import Translator, locale_str
-from .fonts import *
+from .fonts import (
+    GENSENROUNDEDTW_BOLD,
+    GENSENROUNDEDTW_LIGHT,
+    GENSENROUNDEDTW_MEDIUM,
+    GENSENROUNDEDTW_REGULAR,
+    MPLUSROUNDED1C_BOLD,
+    MPLUSROUNDED1C_LIGHT,
+    MPLUSROUNDED1C_MEDIUM,
+    MPLUSROUNDED1C_REGULAR,
+    NUNITO_BOLD,
+    NUNITO_LIGHT,
+    NUNITO_MEDIUM,
+    NUNITO_REGULAR,
+)
 from .static import STATIC_FOLDER
 
 __all__ = ("Drawer",)
@@ -135,9 +148,7 @@ class Drawer:
             anchor=anchor,
         )
 
-    def get_static_image(
-        self, url: str, *, folder: Optional[str] = None
-    ) -> Image.Image:
+    def get_static_image(self, url: str, *, folder: Optional[str] = None) -> Image.Image:
         filename = url.split("/")[-1]
         folder = folder or self.folder
         image = Image.open(f"{STATIC_FOLDER}/{folder}/{filename}")

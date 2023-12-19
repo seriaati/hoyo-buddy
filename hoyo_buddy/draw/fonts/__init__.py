@@ -4,9 +4,7 @@ NUNITO_MEDIUM = "hoyo_buddy/draw/fonts/Nunito/Nunito-SemiBold.ttf"
 NUNITO_BOLD = "hoyo_buddy/draw/fonts/Nunito/Nunito-Bold.ttf"
 
 MPLUSROUNDED1C_LIGHT = "hoyo_buddy/draw/fonts/MPLUSRounded1c/MPLUSRounded1c-Light.ttf"
-MPLUSROUNDED1C_REGULAR = (
-    "hoyo_buddy/draw/fonts/MPLUSRounded1c/MPLUSRounded1c-Regular.ttf"
-)
+MPLUSROUNDED1C_REGULAR = "hoyo_buddy/draw/fonts/MPLUSRounded1c/MPLUSRounded1c-Regular.ttf"
 MPLUSROUNDED1C_MEDIUM = "hoyo_buddy/draw/fonts/MPLUSRounded1c/MPLUSRounded1c-Medium.ttf"
 MPLUSROUNDED1C_BOLD = "hoyo_buddy/draw/fonts/MPLUSRounded1c/MPLUSRounded1c-Bold.ttf"
 

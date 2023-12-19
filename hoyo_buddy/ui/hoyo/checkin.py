@@ -37,9 +37,7 @@ class CheckInUI(View):
         translator: Translator,
         timeout: Optional[float] = 180,
     ):
-        super().__init__(
-            author=author, locale=locale, translator=translator, timeout=timeout
-        )
+        super().__init__(author=author, locale=locale, translator=translator, timeout=timeout)
         self.account = account
         self.client = account.client
         self.dark_mode = dark_mode
@@ -52,9 +50,7 @@ class CheckInUI(View):
         self.add_item(
             Button(
                 url=CHECK_IN_URLS[self.client.game],
-                label=_T(
-                    "Make up for check-in", key="make_up_for_checkin_button_label"
-                ),
+                label=_T("Make up for check-in", key="make_up_for_checkin_button_label"),
             )
         )
         self.add_item(AutoCheckInToggle(self.account.daily_checkin))
@@ -66,19 +62,13 @@ class CheckInUI(View):
         dark_mode: bool,
         session: aiohttp.ClientSession,
     ) -> io.BytesIO:
-        await download_and_save_static_images(
-            [r.icon for r in rewards], "check-in", session
-        )
+        await download_and_save_static_images([r.icon for r in rewards], "check-in", session)
         return await asyncio.to_thread(checkin.draw_card, rewards, dark_mode)
 
     @staticmethod
     def _calc_valuable_amount(claimed_rewards: Sequence[ClaimedDailyReward]) -> int:
         return sum(
-            (
-                r.amount
-                for r in claimed_rewards
-                if r.name in ("Primogem", "Crystal", "Stellar Jade")
-            )
+            r.amount for r in claimed_rewards if r.name in ("Primogem", "Crystal", "Stellar Jade")
         )
 
     @staticmethod
@@ -170,9 +160,7 @@ class CheckInButton(Button):
             daily_reward = await client.claim_daily_reward()
         except GenshinException as e:
             embed, _ = get_error_embed(e, self.view.locale, self.view.translator)
-            return await i.edit_original_response(
-                embed=embed, attachments=[], view=self.view
-            )
+            return await i.edit_original_response(embed=embed, attachments=[], view=self.view)
 
         embed = client.get_daily_reward_embed(
             daily_reward, client.game, self.view.locale, self.view.translator
@@ -214,14 +202,10 @@ class NotificationSettingsButton(Button):
         self.view.clear_items()
         self.view.add_item(go_back_button)
         self.view.add_item(
-            NotifyOnFailureToggle(
-                self.view.account.notif_settings.notify_on_checkin_failure
-            )
+            NotifyOnFailureToggle(self.view.account.notif_settings.notify_on_checkin_failure)
         )
         self.view.add_item(
-            NotifyOnSuccessToggle(
-                self.view.account.notif_settings.notify_on_checkin_success
-            )
+            NotifyOnSuccessToggle(self.view.account.notif_settings.notify_on_checkin_success)
         )
         await i.response.edit_message(view=self.view)
 

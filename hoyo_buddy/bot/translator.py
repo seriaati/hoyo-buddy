@@ -90,9 +90,7 @@ class Translator:
             if command_id is None:
                 message = message.replace(command_occurence, f"</{command_name}:0>")
             else:
-                message = message.replace(
-                    command_occurence, f"</{command_name}:{command_id}>"
-                )
+                message = message.replace(command_occurence, f"</{command_name}:{command_id}>")
         return message
 
     def translate(
@@ -188,10 +186,7 @@ class Translator:
         start = asyncio.get_running_loop().time()
         log.info("Pushing %d source strings to Transifex", len(self.not_translated))
         split_source_strings = split_list(
-            [
-                SourceString(string, _key=key)
-                for key, string in self.not_translated.items()
-            ],
+            [SourceString(string, _key=key) for key, string in self.not_translated.items()],
             5,
         )
         for source_strings in split_source_strings:

@@ -15,9 +15,7 @@ class Settings(commands.Cog):
 
     @app_commands.command(
         name=_T("settings", translate=False),
-        description=_T(
-            "Configure your user settings", key="settings_command_description"
-        ),
+        description=_T("Configure your user settings", key="settings_command_description"),
     )
     async def settings_command(self, i: Interaction) -> Any:
         settings = await UserSettings.get(user__id=i.user.id)

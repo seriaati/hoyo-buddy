@@ -9,9 +9,7 @@ __all__ = ("download_and_save_static_images", "STATIC_FOLDER")
 STATIC_FOLDER = "hoyo_buddy/draw/static"
 
 
-async def download_static_image(
-    image_url: str, session: aiohttp.ClientSession
-) -> bytes:
+async def download_static_image(image_url: str, session: aiohttp.ClientSession) -> bytes:
     async with session.get(image_url) as resp:
         if resp.status != 200:
             raise ValueError(f"Failed to download image: {image_url}")

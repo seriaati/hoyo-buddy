@@ -24,12 +24,13 @@ class HoyoBuddy(commands.AutoShardedBot):
         session: ClientSession,
         env: str,
         redis_pool: redis.ConnectionPool,
+        translator: Translator,
         **kwargs,
     ):
         super().__init__(**kwargs)
         self.session = session
         self.uptime = discord.utils.utcnow()
-        self.translator = Translator(env)
+        self.translator = translator
         self.env = env
         self.redis_pool = redis_pool
 

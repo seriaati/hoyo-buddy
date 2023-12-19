@@ -13,9 +13,9 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from hoyo_buddy.bot import HoyoBuddy
 from hoyo_buddy.bot.command_tree import CommandTree
 from hoyo_buddy.bot.logging import setup_logging
+from hoyo_buddy.bot.translator import Translator
 from hoyo_buddy.db import Database
-
-from .hoyo_buddy.db.redis import RedisPool
+from hoyo_buddy.db.redis import RedisPool
 
 try:
     import uvloop  # type: ignore
@@ -53,11 +53,12 @@ async def main():
     )
 
     async with aiohttp.ClientSession() as session, Database(), RedisPool(
-        os.environ["REDIS_URL"]
-    ) as redis_pool, HoyoBuddy(
+        os.environ["REDIS_URI"]
+    ) as redis_pool, Translator(env) as translator, HoyoBuddy(
         session=session,
         env=env,
         redis_pool=redis_pool,
+        translator=translator,
         command_prefix=commands.when_mentioned,
         intents=intents,
         case_insensitive=True,

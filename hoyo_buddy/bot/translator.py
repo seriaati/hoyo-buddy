@@ -54,7 +54,13 @@ class Translator:
         self.not_translated: Dict[str, str] = {}
         self.env = env
         self.synced_commands: Dict[str, int] = {}
-        self.load_synced_commands_json()
+
+    async def __aenter__(self) -> "Translator":
+        await self.load()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+        await self.unload()
 
     async def load(self) -> None:
         init(
@@ -77,6 +83,7 @@ class Translator:
             ),
             missing_policy=CustomRenderingPolicy(),
         )
+        self.load_synced_commands_json()
         log.info("Translator loaded")
 
         if self.env in ("prod", "test"):

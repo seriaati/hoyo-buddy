@@ -213,7 +213,7 @@ class Hoyo(commands.Cog):
                         translator=i.client.translator,
                     )
                     return await character_ui.update(i)
-                elif category is ambr.ItemCategory.WEAPONS:
+                if category is ambr.ItemCategory.WEAPONS:
                     weapon_ui = WeaponUI(
                         query,
                         author=i.user,
@@ -221,7 +221,7 @@ class Hoyo(commands.Cog):
                         translator=i.client.translator,
                     )
                     return await weapon_ui.update(i)
-                elif category is ambr.ItemCategory.NAMECARDS:
+                if category is ambr.ItemCategory.NAMECARDS:
                     namecard_detail = await api.fetch_namecard_detail(int(query))
                     embed = api.get_namecard_embed(namecard_detail)
                 elif category is ambr.ItemCategory.ARTIFACT_SETS:

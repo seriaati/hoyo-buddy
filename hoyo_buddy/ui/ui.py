@@ -390,7 +390,7 @@ class PaginatorSelect(Select):
             if len(self.split_options) == 1:
                 return self.split_options[0]
             return self.split_options[0] + [NEXT_PAGE]
-        elif self.page_index == len(self.split_options) - 1:
+        if self.page_index == len(self.split_options) - 1:
             return [PREV_PAGE] + self.split_options[-1]
         return [PREV_PAGE] + self.split_options[self.page_index] + [NEXT_PAGE]
 

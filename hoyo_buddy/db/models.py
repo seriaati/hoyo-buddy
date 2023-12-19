@@ -1,9 +1,12 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Self, Tuple
 
 import genshin
+import orjson
+import redis.asyncio as redis
 from discord import Locale
 from tortoise import fields
-from tortoise.models import Model
+from tortoise.exceptions import DoesNotExist
+from tortoise.models import Model as TortoiseModel
 
 from ..db import GAME_CONVERTER
 from ..hoyo.client import GenshinClient
@@ -15,6 +18,64 @@ __all__ = (
     "AccountNotifSettings",
     "Settings",
 )
+
+
+class Model(TortoiseModel):
+    @classmethod
+    async def get_or_create(cls, **kwargs: Any) -> Tuple[Self, bool]:
+        try:
+            return await cls.get(**kwargs), False
+        except DoesNotExist:
+            return await cls.create(**kwargs), True
+
+
+class CacheModel(Model):
+    @classmethod
+    def from_json(cls, data: bytes) -> Self:
+        return cls(**orjson.loads(data))
+
+    @classmethod
+    async def get(cls, pool: redis.ConnectionPool, **kwargs: Any) -> Self:
+        instance = cls(**kwargs)
+        cached = await instance.get_cache(pool)
+        if cached:
+            return cached
+        instance = await super().get(**kwargs)
+        await instance.set_cache(pool)
+        return instance
+
+    @classmethod
+    async def create(cls, pool: redis.ConnectionPool, **kwargs: Any) -> Self:
+        instance = await super().create(**kwargs)
+        await instance.set_cache(pool)
+        return instance
+
+    def to_json(self) -> bytes:
+        return orjson.dumps(
+            {
+                key: value
+                for key, value in self.__dict__.items()
+                if key in self._meta.db_fields and value is not None  # skipcq: PYL-W0212
+            }
+        )
+
+    def get_cache_key(self) -> str:
+        return f"{self.__class__.__name__}:{self.pk}"
+
+    async def set_cache(self, pool: redis.ConnectionPool) -> None:
+        async with redis.Redis.from_pool(pool) as r:
+            await r.set(self.get_cache_key(), self.to_json(), ex=60 * 60)
+
+    async def get_cache(self, pool: redis.ConnectionPool) -> Optional[Self]:
+        async with redis.Redis.from_pool(pool) as r:
+            data = await r.get(self.get_cache_key())
+        if data:
+            return self.from_json(data)
+        return None
+
+    async def save(self, pool: redis.ConnectionPool, **kwargs: Any) -> None:
+        await super().save(**kwargs)
+        await self.set_cache(pool)
 
 
 class User(Model):
@@ -60,7 +121,7 @@ class AccountNotifSettings(Model):
     )
 
 
-class Settings(Model):
+class Settings(CacheModel):
     lang: fields.Field[Optional[str]] = fields.CharField(max_length=5, null=True)  # type: ignore
     dark_mode = fields.BooleanField(default=True)
     user: fields.OneToOneRelation[User] = fields.OneToOneField(
@@ -70,3 +131,7 @@ class Settings(Model):
     @property
     def locale(self) -> Optional[Locale]:
         return Locale(self.lang) if self.lang else None
+
+    @classmethod
+    async def get_locale(cls, user_id: int, pool: redis.ConnectionPool) -> Optional[Locale]:
+        return (await cls.get(pool, user_id=user_id)).locale

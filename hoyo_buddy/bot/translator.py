@@ -38,6 +38,9 @@ class locale_str:
         self.replace_command_mentions = replace_command_mentions
         self.extras: Dict[str, Any] = kwargs
 
+    def __repr__(self) -> str:
+        return f"locale_str({self.message!r}, key={self.key!r}, extras={self.extras!r})"
+
 
 class CustomRenderingPolicy(AbstractRenderingPolicy):
     @staticmethod
@@ -99,6 +102,7 @@ class Translator:
     ) -> str:
         if isinstance(string, str):
             return string
+        log.debug("Translating %r to %r", string, locale)
 
         extras = string.extras
         message = string.message

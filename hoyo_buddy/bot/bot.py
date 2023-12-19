@@ -1,8 +1,9 @@
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Optional, TypeAlias
 
 import discord
+import redis.asyncio as redis
 import sentry_sdk
 from aiohttp import ClientSession
 from ambr import AmbrAPI
@@ -14,21 +15,25 @@ log = logging.getLogger(__name__)
 
 __all__ = ("HoyoBuddy",)
 
+INTERACTION: TypeAlias = discord.Interaction["HoyoBuddy"]
+
 
 class HoyoBuddy(commands.AutoShardedBot):
     def __init__(
         self,
-        *args,
+        *,
         session: ClientSession,
         env: str,
+        redis_pool: redis.ConnectionPool,
         **kwargs,
     ):
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
         self.session = session
         self.uptime = discord.utils.utcnow()
         self.translator = Translator(env)
         self.ambr_api = AmbrAPI()
         self.env = env
+        self.redis_pool = redis_pool
 
     async def setup_hook(self):
         await self.translator.load()

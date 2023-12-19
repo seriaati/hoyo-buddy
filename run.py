@@ -15,6 +15,8 @@ from hoyo_buddy.bot.command_tree import CommandTree
 from hoyo_buddy.bot.logging import setup_logging
 from hoyo_buddy.db import Database
 
+from .hoyo_buddy.db.redis import RedisPool
+
 try:
     import uvloop  # type: ignore
 except ImportError:
@@ -49,22 +51,22 @@ async def main():
         roles=False,
         replied_user=False,
     )
-    session = aiohttp.ClientSession()
-    bot = HoyoBuddy(
+
+    async with aiohttp.ClientSession() as session, Database(), RedisPool(
+        os.environ["REDIS_URL"]
+    ) as redis_pool, HoyoBuddy(
+        session=session,
+        env=env,
+        redis_pool=redis_pool,
         command_prefix=commands.when_mentioned,
         intents=intents,
         case_insensitive=True,
-        session=session,
         allowed_mentions=allowed_mentions,
         help_command=None,
         chunk_guilds_at_startup=False,
         max_messages=None,
         tree_cls=CommandTree,
-        env=env,
-    )
-    db = Database()
-
-    async with session, db, bot:
+    ) as bot:
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
             await bot.start(os.environ["DISCORD_TOKEN"])
 

@@ -23,6 +23,7 @@ pillow = "^10.1.0"
 cachetools = "^5.3.2"
 aiofiles = "^23.2.1"
 ambr-py = {git = "https://github.com/seriaati/ambr"}
+redis = {extras = ["hiredis"], version = "^5.0.1"}
 
 [tool.poetry.group.dev.dependencies]
 git-cliff = "^1.4.0"

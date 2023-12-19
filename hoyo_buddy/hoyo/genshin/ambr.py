@@ -1,6 +1,7 @@
 import re
+from collections import defaultdict
 from enum import StrEnum
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, DefaultDict, Dict, List, Tuple, Union
 
 import ambr
 from ambr.client import Language
@@ -28,7 +29,7 @@ LOCALE_TO_LANG: Dict[Locale, Language] = {
     Locale.turkish: Language.TR,
 }
 
-PERCENTAGE_FIGHT_PROPS: Tuple[str, ...] = (
+PERCENTAGE_FIGHT_PROPS = (
     "FIGHT_PROP_HP_PERCENT",
     "FIGHT_PROP_ATTACK_PERCENT",
     "FIGHT_PROP_DEFENSE_PERCENT",
@@ -52,6 +53,8 @@ PERCENTAGE_FIGHT_PROPS: Tuple[str, ...] = (
     "FIGHT_PROP_DEFENSE_PERCENT_A",
     "FIGHT_PROP_HP_PERCENT_A",
 )
+
+AUDIO_LANGUAGES = ("EN", "CHS", "JP", "KR")
 
 
 class ItemCategory(StrEnum):
@@ -82,18 +85,8 @@ class AmbrAPIClient(ambr.AmbrAPI):
         return await super().close()
 
     @staticmethod
-    def _replace_talent_params(
-        description: List[str], params: List[Union[int, float]]
-    ) -> List[str]:
-        def repl(match: re.Match[str]) -> str:
-            index = int(match.group(1)) - 1  # Convert to zero-based index
-            format_spec = match.group(2)
-            value = params[index]
-            if format_spec == "F1P":
-                value *= 100  # Multiply by 100 if format specifier is 'F1P'
-            return str(value)
-
-        return [re.sub(r"\{param(\d+):F1(P)?\}", repl, s) for s in description]
+    def _format_num(digits: int, calculation: Union[int, float]) -> str:
+        return "{:.{}f}".format(calculation, digits)
 
     @staticmethod
     def _calculate_upgrade_stat_values(
@@ -102,7 +95,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         level: int,
         ascended: bool,
     ) -> Dict[str, float]:
-        result: Dict[str, float] = {}
+        result: DefaultDict[str, float] = defaultdict(float)
 
         for stat in upgrade_data.base_stats:
             if stat.prop_type is None:
@@ -111,17 +104,19 @@ class AmbrAPIClient(ambr.AmbrAPI):
                 stat.init_value * curve_data[str(level)]["curveInfos"][stat.growth_type]
             )
 
-        for promote in upgrade_data.promotes:
+        for promote in reversed(upgrade_data.promotes):
             if promote.add_stats is None:
                 continue
-            if level >= promote.unlock_max_level:
-                if level == promote.unlock_max_level and ascended:
-                    for stat in promote.add_stats:
+            if (level == promote.unlock_max_level and ascended) or level > promote.unlock_max_level:
+                for stat in promote.add_stats:
+                    if stat.value != 0:
                         result[stat.id] += stat.value
-                elif level > promote.unlock_max_level:
-                    for stat in promote.add_stats:
-                        if stat.value != 0:
-                            result[stat.id] += stat.value
+                        if stat.id in (
+                            "FIGHT_PROP_CRITICAL_HURT",
+                            "FIGHT_PROP_CRITICAL",
+                        ):
+                            result[stat.id] += 0.5
+                break
 
         return result
 
@@ -130,6 +125,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         result: Dict[str, str] = {}
         for fight_prop, value in stat_values.items():
             if fight_prop in PERCENTAGE_FIGHT_PROPS:
+                value *= 100
                 value = round(value, 1)
                 result[fight_prop] = f"{value}%"
             else:
@@ -147,6 +143,49 @@ class AmbrAPIClient(ambr.AmbrAPI):
             result[fight_prop_name] = value
         return result
 
+    def _get_params(self, text: str, param_list: List[Union[int, float]]) -> List[str]:
+        params: List[str] = re.findall(r"{[^}]*}", text)
+
+        for item in params:
+            if "param" not in item:
+                continue
+
+            param_text = re.findall(r"{param(\d+):([^}]*)}", item)[0]
+            param, value = param_text
+
+            if value in ("F1P", "F2P"):
+                result = self._format_num(int(value[1]), param_list[int(param) - 1] * 100)
+                text = re.sub(re.escape(item), f"{result}%", text)
+            elif value in ("F1", "F2"):
+                result = self._format_num(int(value[1]), param_list[int(param) - 1])
+                text = re.sub(re.escape(item), result, text)
+            elif value == "P":
+                result = self._format_num(0, param_list[int(param) - 1] * 100)
+                text = re.sub(re.escape(item), f"{result}%", text)
+            elif value == "I":
+                result = int(param_list[int(param) - 1])
+                text = re.sub(re.escape(item), str(round(result)), text)
+
+        if "LAYOUT" in text:
+            brackets = re.findall(r"{LAYOUT.*?}", text)
+            word_to_replace = re.findall(r"{LAYOUT.*?#(.*?)}", brackets[0])[0]
+            text = text.replace("".join(brackets), word_to_replace)
+
+        text = text.replace("{NON_BREAK_SPACE}", "")
+        return text.split("|")
+
+    def _get_skill_attributes(
+        self, descriptions: List[str], params: List[Union[int, float]]
+    ) -> str:
+        result = ""
+        for desc in descriptions:
+            try:
+                k, v = self._get_params(desc, params)
+            except ValueError:
+                continue
+            result += f"{k}: {v}\n"
+        return result
+
     def get_character_embed(
         self,
         character: ambr.CharacterDetail,
@@ -158,9 +197,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
             character.upgrade, avatar_curve, level, True
         )
         formatted_stat_values = self._format_stat_values(stat_values)
-        named_stat_values = self._replace_fight_prop_with_name(
-            formatted_stat_values, manual_weapon
-        )
+        named_stat_values = self._replace_fight_prop_with_name(formatted_stat_values, manual_weapon)
 
         embed = DefaultEmbed(
             self.locale,
@@ -193,9 +230,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed.set_thumbnail(url=character.icon)
         return embed
 
-    def get_character_talent_embed(
-        self, talent: ambr.Talent, level: int
-    ) -> DefaultEmbed:
+    def get_character_talent_embed(self, talent: ambr.Talent, level: int) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -203,25 +238,23 @@ class AmbrAPIClient(ambr.AmbrAPI):
             description=talent.description,
         )
         if talent.upgrades:
-            level_upgrade = talent.upgrades[level - 1]
+            try:
+                level_upgrade = talent.upgrades[level - 1]
+            except IndexError:
+                level_upgrade = talent.upgrades[-1]
+                level = level_upgrade.level
             embed.add_field(
                 name=_T(
                     "Skill Attributes (Lv. {level})",
                     key="skill_attributes_embed_field_name",
                     level=level,
                 ),
-                value="\n".join(
-                    self._replace_talent_params(
-                        level_upgrade.description, level_upgrade.params
-                    )
-                ),
+                value=self._get_skill_attributes(level_upgrade.description, level_upgrade.params),
             )
         embed.set_thumbnail(url=talent.icon)
         return embed
 
-    def get_character_constellation_embed(
-        self, constellation: ambr.Constellation
-    ) -> DefaultEmbed:
+    def get_character_constellation_embed(self, constellation: ambr.Constellation) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -231,35 +264,68 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed.set_thumbnail(url=constellation.icon)
         return embed
 
+    def get_character_story_embed(self, story: ambr.Story) -> DefaultEmbed:
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=story.title,
+            description=story.text,
+        )
+        if story.tips:
+            embed.set_footer(text=story.tips)
+        return embed
+
+    def get_character_quote_embed(self, quote: ambr.Quote, character_id: str) -> DefaultEmbed:
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=quote.title,
+            description=f"{quote.text}\n\n"
+            + " ".join(
+                f"[{l}](https://api.ambr.top/assets/Audio/{l}/{character_id}/{quote.audio_id}.ogg)"
+                for l in AUDIO_LANGUAGES
+            ),
+        )
+        if quote.tips:
+            embed.set_footer(text=quote.tips)
+        return embed
+
     def get_weapon_embed(
         self,
         weapon: ambr.WeaponDetail,
         level: int,
         refinement: int,
-        ascended: bool,
         weapon_curve: Dict[str, Dict[str, Dict[str, float]]],
         manual_weapon: Dict[str, str],
     ) -> DefaultEmbed:
-        stat_values = self._calculate_upgrade_stat_values(
-            weapon.upgrade, weapon_curve, level, ascended
-        )
+        stat_values = self._calculate_upgrade_stat_values(weapon.upgrade, weapon_curve, level, True)
         main_stat = weapon.upgrade.base_stats[0]
         if main_stat.prop_type is None:
             raise AssertionError("Weapon has no main stat")
+
         main_stat_name = manual_weapon[main_stat.prop_type]
         main_stat_value = stat_values[main_stat.prop_type]
 
         sub_stat = weapon.upgrade.base_stats[1]
-        sub_stat_name = (
-            manual_weapon[sub_stat.prop_type] if sub_stat.prop_type else None
-        )
+        sub_stat_name = manual_weapon[sub_stat.prop_type] if sub_stat.prop_type else None
         sub_stat_value = stat_values[sub_stat.prop_type] if sub_stat.prop_type else None
+        if sub_stat_value is not None and sub_stat.prop_type in PERCENTAGE_FIGHT_PROPS:
+            sub_stat_value *= 100
+            sub_stat_value = round(sub_stat_value, 1)
+            sub_stat_value = f"{sub_stat_value}%"
 
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=_T("{weapon_name} (Lv. {lv})", weapon_name=weapon.name, lv=level),
-            description=f"{weapon.rarity}★ {weapon.type}\n{main_stat_name}: {main_stat_value}",
+            title=_T(
+                "{weapon_name} (Lv. {lv})",
+                weapon_name=weapon.name,
+                lv=level,
+                key="weapon_embed_title",
+            ),
+            description=(
+                f"{weapon.rarity}★ {weapon.type}\n" f"{main_stat_name}: {round(main_stat_value)}"
+            ),
         )
 
         if sub_stat_name and sub_stat_value:
@@ -269,7 +335,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
 
         if weapon.affix:
             embed.add_field(
-                name=_T("Refinement {r}", r=refinement),
+                name=_T("Refinement {r}", r=refinement, key="refinement_indicator"),
                 value=weapon.affix.upgrades[refinement - 1].description,
             )
         embed.set_thumbnail(url=weapon.icon)
@@ -286,9 +352,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed.set_image(url=namecard.icon)
         return embed
 
-    def get_artifact_set_embed(
-        self, artifact_set: ambr.ArtifactSetDetail
-    ) -> DefaultEmbed:
+    def get_artifact_set_embed(self, artifact_set: ambr.ArtifactSetDetail) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
             self.translator,

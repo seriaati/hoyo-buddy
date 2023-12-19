@@ -7,9 +7,11 @@ from discord.ext import commands
 from ..bot import HoyoBuddy, Translator
 from ..bot import locale_str as _T
 from ..db import Game, HoyoAccount, Settings, User
+from ..exceptions import InvalidQuery
 from ..hoyo.genshin import ambr
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.search.character import CharacterUI
+from ..ui.hoyo.search.weapon import WeaponUI
 
 
 class Hoyo(commands.Cog):
@@ -79,6 +81,13 @@ class Hoyo(commands.Cog):
             )
             for game in Game
         ]
+
+    @staticmethod
+    def _get_error_app_command_choice(error_message: str) -> app_commands.Choice[str]:
+        return app_commands.Choice(
+            name=app_commands.locale_str(error_message, warn_no_key=False),
+            value="none",
+        )
 
     async def _get_first_account(
         self, user: User, i: discord.Interaction, locale: discord.Locale
@@ -154,7 +163,38 @@ class Hoyo(commands.Cog):
             "Search anything game related", key="search_command_description"
         ),
     )
-    @app_commands.choices(game_value=_get_game_choices())
+    @app_commands.rename(
+        game_value=app_commands.locale_str(
+            "game", key="search_command_game_param_name"
+        ),
+        category_value=app_commands.locale_str(
+            "category", key="search_command_category_param_name"
+        ),
+        query=app_commands.locale_str("query", key="search_command_query_param_name"),
+    )
+    @app_commands.describe(
+        game_value=app_commands.locale_str(
+            "Game to search in", key="search_command_game_param_description"
+        ),
+        category_value=app_commands.locale_str(
+            "Category to search in", key="search_command_category_param_description"
+        ),
+        query=app_commands.locale_str(
+            "Query to search for", key="search_command_query_param_description"
+        ),
+    )
+    @app_commands.choices(
+        game_value=[
+            app_commands.Choice(
+                name=app_commands.locale_str(Game.GENSHIN.value, warn_no_key=False),
+                value=Game.GENSHIN.value,
+            ),
+            app_commands.Choice(
+                name=app_commands.locale_str(Game.STARRAIL.value, warn_no_key=False),
+                value=Game.STARRAIL.value,
+            ),
+        ]
+    )
     async def search_command(
         self,
         i: discord.Interaction[HoyoBuddy],
@@ -162,26 +202,31 @@ class Hoyo(commands.Cog):
         category_value: str,
         query: str,
     ) -> Any:
+        if category_value == "none" or query == "none":
+            raise InvalidQuery
+
         locale = (await Settings.get(user__id=i.user.id)).locale or i.locale
         game = Game(game_value)
+
         if game is Game.GENSHIN:
             category = ambr.ItemCategory(category_value)
             async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
                 if category is ambr.ItemCategory.CHARACTERS:
-                    character_ui = CharacterUI(api, query)
-                    await character_ui.update(i)
-                elif category is ambr.ItemCategory.WEAPONS:
-                    weapon_detail = await api.fetch_weapon_detail(int(query))
-                    weapon_curve = await api.fetch_weapon_curve()
-                    manual_weapon = await api.fetch_manual_weapon()
-                    embed = api.get_weapon_embed(
-                        weapon_detail,
-                        weapon_detail.upgrade.promotes[-1].unlock_max_level,
-                        len(weapon_detail.upgrade.awaken_cost) + 1,
-                        True,
-                        weapon_curve,
-                        manual_weapon,
+                    character_ui = CharacterUI(
+                        query,
+                        author=i.user,
+                        locale=locale,
+                        translator=i.client.translator,
                     )
+                    return await character_ui.update(i)
+                elif category is ambr.ItemCategory.WEAPONS:
+                    weapon_ui = WeaponUI(
+                        query,
+                        author=i.user,
+                        locale=locale,
+                        translator=i.client.translator,
+                    )
+                    return await weapon_ui.update(i)
                 elif category is ambr.ItemCategory.NAMECARDS:
                     namecard_detail = await api.fetch_namecard_detail(int(query))
                     embed = api.get_namecard_embed(namecard_detail)
@@ -198,7 +243,11 @@ class Hoyo(commands.Cog):
     async def search_command_category_autocomplete(
         self, i: discord.Interaction, current: str
     ) -> List[app_commands.Choice]:
-        game = Game(i.namespace.game_value)
+        try:
+            game = Game(i.namespace.game)
+        except ValueError:
+            return [self._get_error_app_command_choice("Invalid game selected")]
+
         if game is Game.GENSHIN:
             return [
                 app_commands.Choice(
@@ -208,7 +257,42 @@ class Hoyo(commands.Cog):
                 for c in ambr.ItemCategory
                 if current in c.value
             ]
-        raise NotImplementedError
+
+        return [self._get_error_app_command_choice("Invalid game selected")]
+
+    @search_command.autocomplete("query")
+    async def search_command_query_autocomplete(
+        self, i: discord.Interaction[HoyoBuddy], current: str
+    ) -> List[app_commands.Choice]:
+        try:
+            game = Game(i.namespace.game)
+        except ValueError:
+            return [self._get_error_app_command_choice("Invalid game selected")]
+        if game is Game.GENSHIN:
+            try:
+                category = ambr.ItemCategory(i.namespace.category)
+            except ValueError:
+                return [self._get_error_app_command_choice("Invalid category selected")]
+        else:
+            return [self._get_error_app_command_choice("Invalid game selected")]
+
+        locale = (await Settings.get(user__id=i.user.id)).locale or i.locale
+        async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+            if category is ambr.ItemCategory.CHARACTERS:
+                items = await api.fetch_characters()
+            elif category is ambr.ItemCategory.WEAPONS:
+                items = await api.fetch_weapons()
+            elif category is ambr.ItemCategory.NAMECARDS:
+                items = await api.fetch_namecards()
+            elif category is ambr.ItemCategory.ARTIFACT_SETS:
+                items = await api.fetch_artifact_sets()
+            else:
+                return [self._get_error_app_command_choice("Invalid category selected")]
+            return [
+                app_commands.Choice(name=item.name, value=str(item.id))
+                for item in items
+                if current in item.name
+            ][:25]
 
 
 async def setup(bot: HoyoBuddy) -> None:

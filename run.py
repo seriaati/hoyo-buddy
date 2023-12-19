@@ -66,6 +66,7 @@ async def main():
         help_command=None,
         chunk_guilds_at_startup=False,
         max_messages=None,
+        member_cache_flags=discord.MemberCacheFlags.none(),
         tree_cls=CommandTree,
     ) as bot:
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):

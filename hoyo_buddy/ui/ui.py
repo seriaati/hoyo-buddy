@@ -362,6 +362,46 @@ class Select(discord.ui.Select):
         await self.view.absolute_edit(i, view=self.view)
 
 
+NEXT_PAGE = SelectOption(
+    label=_T("Next page", key="next_page_option_label"),
+    value="next_page",
+    emoji=emojis.FORWARD,
+)
+PREV_PAGE = SelectOption(
+    label=_T("Previous page", key="prev_page_option_label"),
+    value="prev_page",
+    emoji=emojis.BACK,
+)
+
+
+class PaginatorSelect(Select):
+    def __init__(
+        self,
+        options: List[SelectOption],
+        **kwargs,
+    ) -> None:
+        self.split_options = split_list(options, 23)
+        self.page_index = 0
+        super().__init__(options=self._process_options(), **kwargs)
+
+    def _process_options(self) -> List[SelectOption]:
+        if self.page_index == 0:
+            if len(self.split_options) == 1:
+                return self.split_options[0]
+            return self.split_options[0] + [NEXT_PAGE]
+        elif self.page_index == len(self.split_options) - 1:
+            return [PREV_PAGE] + self.split_options[-1]
+        return [PREV_PAGE] + self.split_options[self.page_index] + [NEXT_PAGE]
+
+    async def callback(self) -> Any:
+        if self.values[0] == "next_page":
+            self.page_index += 1
+            self.options = self._process_options()
+        elif self.values[0] == "prev_page":
+            self.page_index -= 1
+            self.options = self._process_options()
+
+
 class TextInput(discord.ui.TextInput):
     def __init__(
         self,

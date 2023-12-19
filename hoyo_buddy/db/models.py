@@ -46,7 +46,8 @@ class CacheModel(Model):
 
     @classmethod
     async def create(cls, pool: redis.ConnectionPool, **kwargs: Any) -> Self:
-        instance = await super().create(**kwargs)
+        instance = cls(**kwargs)
+        await instance.save(pool)
         await instance.set_cache(pool)
         return instance
 

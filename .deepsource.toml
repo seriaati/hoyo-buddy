@@ -9,6 +9,3 @@ name = "python"
 
   [analyzers.meta]
   runtime_version = "3.x.x"
-
-[[transformers]]
-name = "black"

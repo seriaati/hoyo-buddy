@@ -10,6 +10,7 @@ from ..bot.error_handler import get_error_embed
 from ..db import User
 from ..embeds import ErrorEmbed
 from ..exceptions import InvalidInput
+from ..utils import split_list
 
 log = logging.getLogger(__name__)
 
@@ -83,9 +84,7 @@ class View(discord.ui.View):
             if isinstance(child, (discord.ui.Button, discord.ui.Select)):
                 child.disabled = False
 
-    def add_item(
-        self, item: Union["Button", "Select"], *, translate: bool = True
-    ) -> Self:
+    def add_item(self, item: Union["Button", "Select"], *, translate: bool = True) -> Self:
         if translate:
             item.translate(self.locale, self.translator)
         return super().add_item(item)
@@ -214,16 +213,10 @@ class ToggleButton(Button):
     def __init__(self, current_toggle: bool, toggle_label: _T, **kwargs):
         self.current_toggle = current_toggle
         self.toggle_label = toggle_label
-        super().__init__(
-            style=self._get_style(), label=self._get_label(), row=1, **kwargs
-        )
+        super().__init__(style=self._get_style(), label=self._get_label(), row=1, **kwargs)
 
     def _get_style(self) -> discord.ButtonStyle:
-        return (
-            discord.ButtonStyle.success
-            if self.current_toggle
-            else discord.ButtonStyle.secondary
-        )
+        return discord.ButtonStyle.success if self.current_toggle else discord.ButtonStyle.secondary
 
     def _get_label(self) -> _T:
         return _T(
@@ -287,7 +280,7 @@ class SelectOption(discord.SelectOption):
         default: bool = False,
     ) -> None:
         super().__init__(
-            label=label if isinstance(label, str) else "#NoTrans",
+            label=label if isinstance(label, str) else label.message,
             value=value,
             emoji=emoji,
             default=default,
@@ -317,7 +310,6 @@ class Select(discord.ui.Select):
             row=row,
         )
         self.locale_str_placeholder = placeholder
-        self.locale_str_options = options
 
         self.original_placeholder: Optional[str] = None
         self.original_options: Optional[List[SelectOption]] = None
@@ -338,12 +330,10 @@ class Select(discord.ui.Select):
     ) -> None:
         if self.locale_str_placeholder:
             self.placeholder = translator.translate(self.locale_str_placeholder, locale)
-        for option in self.locale_str_options:
+        for option in self.options:
             option.label = translator.translate(option.locale_str_label, locale)
             if option.locale_str_description:
-                option.description = translator.translate(
-                    option.locale_str_description, locale
-                )
+                option.description = translator.translate(option.locale_str_description, locale)
 
     async def set_loading_state(self, i: discord.Interaction[HoyoBuddy]) -> None:
         self.view: View
@@ -490,9 +480,7 @@ class Modal(discord.ui.Modal):
             if isinstance(item, TextInput):
                 item.label = translator.translate(item.locale_str_label, locale)
                 if item.locale_str_placeholder:
-                    item.placeholder = translator.translate(
-                        item.locale_str_placeholder, locale
-                    )
+                    item.placeholder = translator.translate(item.locale_str_placeholder, locale)
                 if item.locale_str_default:
                     item.default = translator.translate(item.locale_str_default, locale)
 

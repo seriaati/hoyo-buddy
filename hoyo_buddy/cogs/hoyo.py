@@ -6,6 +6,7 @@ from discord.ext import commands
 
 from ..bot import HoyoBuddy, Translator
 from ..bot import locale_str as _T
+from ..bot.bot import INTERACTION
 from ..db import Game, HoyoAccount, Settings, User
 from ..exceptions import InvalidQuery
 from ..hoyo.genshin import ambr
@@ -148,9 +149,9 @@ class Hoyo(commands.Cog):
 
     @checkin_command.autocomplete("acc_value")
     async def check_in_command_autocomplete(
-        self, i: discord.Interaction, current: str
+        self, i: INTERACTION, current: str
     ) -> List[app_commands.Choice]:
-        locale = (await Settings.get(user__id=i.user.id)).locale or i.locale
+        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
         return await self._account_autocomplete(i.user.id, current, locale, self.bot.translator)
 
     @app_commands.command(
@@ -199,7 +200,7 @@ class Hoyo(commands.Cog):
         if category_value == "none" or query == "none":
             raise InvalidQuery
 
-        locale = (await Settings.get(user__id=i.user.id)).locale or i.locale
+        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
         game = Game(game_value)
 
         if game is Game.GENSHIN:
@@ -268,7 +269,7 @@ class Hoyo(commands.Cog):
         else:
             return [self._get_error_app_command_choice("Invalid game selected")]
 
-        locale = (await Settings.get(user__id=i.user.id)).locale or i.locale
+        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
         async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
             if category is ambr.ItemCategory.CHARACTERS:
                 items = await api.fetch_characters()

@@ -5,7 +5,7 @@ from discord import InteractionResponded, app_commands
 from discord.interactions import Interaction
 
 from ..db import Settings, User
-from .bot import HoyoBuddy
+from .bot import INTERACTION, HoyoBuddy
 from .error_handler import get_error_embed
 
 __all__ = ("CommandTree",)
@@ -14,10 +14,10 @@ log = logging.getLogger(__name__)
 
 
 class CommandTree(app_commands.CommandTree):
-    async def interaction_check(self, i: Interaction) -> Literal[True]:
+    async def interaction_check(self, i: INTERACTION) -> Literal[True]:
         user, created = await User.get_or_create(id=i.user.id)
         if created:
-            await Settings.create(user=user)
+            await Settings.create(i.client.redis_pool, user=user)
         return True
 
     async def on_error(self, i: Interaction[HoyoBuddy], e: app_commands.AppCommandError) -> None:

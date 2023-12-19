@@ -35,7 +35,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.redis_pool = redis_pool
 
     async def setup_hook(self):
-        await self.translator.load()
         await self.tree.set_translator(AppCommandTranslator(self.translator))
 
         for filepath in Path("hoyo_buddy/cogs").glob("**/*.py"):
@@ -68,5 +67,4 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     async def close(self):
         log.info("Shutting down...")
-        await self.translator.unload()
         await super().close()

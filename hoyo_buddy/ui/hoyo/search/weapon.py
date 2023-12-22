@@ -1,5 +1,5 @@
 import contextlib
-from typing import Any, Optional, Tuple, Union
+from typing import Any, Tuple
 
 from discord import InteractionResponded, Locale, Member, User
 
@@ -17,7 +17,7 @@ class WeaponUI(View):
         self,
         weapon_id: str,
         *,
-        author: Union[User, Member],
+        author: User | Member,
         locale: Locale,
         translator: Translator,
     ):
@@ -78,7 +78,7 @@ class LevelModalButton(LMB):
         *,
         min_level: int,
         max_level: int,
-        default_level: Optional[int] = None,
+        default_level: int | None = None,
         label: _T,
     ):
         super().__init__(

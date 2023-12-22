@@ -1,10 +1,10 @@
 import datetime
-from typing import List, TypeVar
+from typing import TypeVar
 
 T = TypeVar("T")
 
 
-def split_list(input_list: List[T], n: int) -> List[List[T]]:
+def split_list(input_list: list[T], n: int) -> list[list[T]]:
     """
     Split a list into sublists of length n
 

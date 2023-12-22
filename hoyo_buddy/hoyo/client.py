@@ -1,5 +1,3 @@
-from typing import Optional
-
 import genshin
 from discord import Locale
 
@@ -32,7 +30,7 @@ class GenshinClient(genshin.Client):
         self,
         cookies: str,
         *,
-        uid: Optional[int] = None,
+        uid: int | None = None,
         game: genshin.Game = genshin.Game.GENSHIN,
     ) -> None:
         super().__init__(cookies, game=game, uid=uid)

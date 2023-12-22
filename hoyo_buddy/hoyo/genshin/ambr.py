@@ -1,7 +1,7 @@
 import re
 from collections import defaultdict
 from enum import StrEnum
-from typing import Any, DefaultDict, Dict, List, Union
+from typing import Any, DefaultDict
 
 import ambr
 from ambr.client import Language
@@ -11,7 +11,7 @@ from ...bot.translator import Translator
 from ...bot.translator import locale_str as _T
 from ...embeds import DefaultEmbed
 
-LOCALE_TO_LANG: Dict[Locale, Language] = {
+LOCALE_TO_LANG: dict[Locale, Language] = {
     Locale.taiwan_chinese: Language.CHT,
     Locale.chinese: Language.CHS,
     Locale.german: Language.DE,
@@ -85,16 +85,16 @@ class AmbrAPIClient(ambr.AmbrAPI):
         return await super().close()
 
     @staticmethod
-    def _format_num(digits: int, calculation: Union[int, float]) -> str:
+    def _format_num(digits: int, calculation: int | float) -> str:
         return f"{calculation:.{digits}f}"
 
     @staticmethod
     def _calculate_upgrade_stat_values(
-        upgrade_data: Union[ambr.CharacterUpgrade, ambr.WeaponUpgrade],
-        curve_data: Dict[str, Dict[str, Dict[str, float]]],
+        upgrade_data: ambr.CharacterUpgrade | ambr.WeaponUpgrade,
+        curve_data: dict[str, dict[str, dict[str, float]]],
         level: int,
         ascended: bool,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         result: DefaultDict[str, float] = defaultdict(float)
 
         for stat in upgrade_data.base_stats:
@@ -121,8 +121,8 @@ class AmbrAPIClient(ambr.AmbrAPI):
         return result
 
     @staticmethod
-    def _format_stat_values(stat_values: Dict[str, float]) -> Dict[str, str]:
-        result: Dict[str, str] = {}
+    def _format_stat_values(stat_values: dict[str, float]) -> dict[str, str]:
+        result: dict[str, str] = {}
         for fight_prop, value in stat_values.items():
             if fight_prop in PERCENTAGE_FIGHT_PROPS:
                 value *= 100
@@ -135,16 +135,16 @@ class AmbrAPIClient(ambr.AmbrAPI):
 
     @staticmethod
     def _replace_fight_prop_with_name(
-        stat_values: Dict[str, Any], manual_weapon: Dict[str, str]
-    ) -> Dict[str, Any]:
-        result: Dict[str, Any] = {}
+        stat_values: dict[str, Any], manual_weapon: dict[str, str]
+    ) -> dict[str, Any]:
+        result: dict[str, Any] = {}
         for fight_prop, value in stat_values.items():
             fight_prop_name = manual_weapon.get(fight_prop, fight_prop)
             result[fight_prop_name] = value
         return result
 
-    def _get_params(self, text: str, param_list: List[Union[int, float]]) -> List[str]:
-        params: List[str] = re.findall(r"{[^}]*}", text)
+    def _get_params(self, text: str, param_list: list[int | float]) -> list[str]:
+        params: list[str] = re.findall(r"{[^}]*}", text)
 
         for item in params:
             if "param" not in item:
@@ -174,9 +174,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         text = text.replace("{NON_BREAK_SPACE}", "")
         return text.split("|")
 
-    def _get_skill_attributes(
-        self, descriptions: List[str], params: List[Union[int, float]]
-    ) -> str:
+    def _get_skill_attributes(self, descriptions: list[str], params: list[int | float]) -> str:
         result = ""
         for desc in descriptions:
             try:
@@ -190,8 +188,8 @@ class AmbrAPIClient(ambr.AmbrAPI):
         self,
         character: ambr.CharacterDetail,
         level: int,
-        avatar_curve: Dict[str, Dict[str, Dict[str, float]]],
-        manual_weapon: Dict[str, str],
+        avatar_curve: dict[str, dict[str, dict[str, float]]],
+        manual_weapon: dict[str, str],
     ) -> DefaultEmbed:
         stat_values = self._calculate_upgrade_stat_values(
             character.upgrade, avatar_curve, level, True
@@ -295,8 +293,8 @@ class AmbrAPIClient(ambr.AmbrAPI):
         weapon: ambr.WeaponDetail,
         level: int,
         refinement: int,
-        weapon_curve: Dict[str, Dict[str, Dict[str, float]]],
-        manual_weapon: Dict[str, str],
+        weapon_curve: dict[str, dict[str, dict[str, float]]],
+        manual_weapon: dict[str, str],
     ) -> DefaultEmbed:
         stat_values = self._calculate_upgrade_stat_values(weapon.upgrade, weapon_curve, level, True)
         main_stat = weapon.upgrade.base_stats[0]

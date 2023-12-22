@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Self, Tuple
+from typing import Any, Self, Tuple
 
 import genshin
 import orjson
@@ -97,7 +97,7 @@ class CacheModel(Model):
         async with redis.Redis.from_pool(pool) as r:
             await r.set(self.get_cache_key(), self.to_json(), ex=60 * 60)
 
-    async def get_cache(self, pool: redis.ConnectionPool) -> Optional[Self]:
+    async def get_cache(self, pool: redis.ConnectionPool) -> Self | None:
         async with redis.Redis.from_pool(pool) as r:
             data = await r.get(self.get_cache_key())
         if data:
@@ -112,7 +112,7 @@ class CacheModel(Model):
 class User(CacheModel):
     id = fields.BigIntField(pk=True, index=True, generated=False)
     settings: fields.BackwardOneToOneRelation["Settings"]
-    temp_data: Dict[str, Any] = fields.JSONField(default=dict)  # type: ignore
+    temp_data: dict[str, Any] = fields.JSONField(default=dict)  # type: ignore
     accounts: fields.ReverseRelation["HoyoAccount"]
 
     @property
@@ -123,7 +123,7 @@ class User(CacheModel):
 class HoyoAccount(Model):
     uid = fields.IntField(index=True)
     username = fields.CharField(max_length=32)
-    nickname: fields.Field[Optional[str]] = fields.CharField(max_length=32, null=True)  # type: ignore
+    nickname: fields.Field[str | None] = fields.CharField(max_length=32, null=True)  # type: ignore
     game = fields.CharEnumField(Game, max_length=32)
     cookies = fields.TextField()
     server = fields.CharField(max_length=32)
@@ -157,7 +157,7 @@ class AccountNotifSettings(Model):
 
 
 class Settings(CacheModel):
-    lang: fields.Field[Optional[str]] = fields.CharField(max_length=5, null=True)  # type: ignore
+    lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)  # type: ignore
     dark_mode = fields.BooleanField(default=True)
     user: fields.OneToOneRelation[User] = fields.OneToOneField(
         "models.User", related_name="settings"
@@ -168,9 +168,9 @@ class Settings(CacheModel):
         return str(self.__dict__["user_id"])
 
     @property
-    def locale(self) -> Optional[Locale]:
+    def locale(self) -> Locale | None:
         return Locale(self.lang) if self.lang else None
 
     @classmethod
-    async def get_locale(cls, user_id: int, pool: redis.ConnectionPool) -> Optional[Locale]:
+    async def get_locale(cls, user_id: int, pool: redis.ConnectionPool) -> Locale | None:
         return (await cls.get(pool, user_id=user_id)).locale

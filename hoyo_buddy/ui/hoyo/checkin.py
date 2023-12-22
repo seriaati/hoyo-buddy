@@ -1,6 +1,6 @@
 import asyncio
 import io
-from typing import Any, Optional, Sequence, Tuple, Union
+from typing import Any, Sequence, Tuple
 
 import aiohttp
 import discord
@@ -31,10 +31,10 @@ class CheckInUI(View):
         account: HoyoAccount,
         dark_mode: bool,
         *,
-        author: Union[discord.User, discord.Member],
+        author: discord.User | discord.Member,
         locale: discord.Locale,
         translator: Translator,
-        timeout: Optional[float] = 180,
+        timeout: float | None = 180,
     ):
         super().__init__(author=author, locale=locale, translator=translator, timeout=timeout)
         self.account = account

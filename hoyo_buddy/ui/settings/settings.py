@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import discord
 
@@ -8,7 +8,7 @@ from ...db.models import Settings
 from ...embeds import DefaultEmbed
 from ..ui import Select, SelectOption, ToggleButton, View
 
-LOCALES: Dict[discord.Locale, Dict[str, str]] = {
+LOCALES: dict[discord.Locale, dict[str, str]] = {
     discord.Locale.american_english: {"name": "English (US)", "emoji": "🇺🇸"},
     discord.Locale.chinese: {"name": "简体中文", "emoji": "🇨🇳"},
     discord.Locale.taiwan_chinese: {"name": "繁體中文", "emoji": "🇹🇼"},
@@ -23,7 +23,7 @@ class SettingsUI(View):
     def __init__(
         self,
         *,
-        author: Union[discord.User, discord.Member],
+        author: discord.User | discord.Member,
         locale: discord.Locale,
         translator: Translator,
         settings: Settings,
@@ -60,13 +60,13 @@ class SettingsUI(View):
 
 
 class LanguageSelector(Select):
-    def __init__(self, current_locale: Optional[discord.Locale]):
+    def __init__(self, current_locale: discord.Locale | None):
         options = self._get_options(current_locale)
         super().__init__(options=options)
 
     @staticmethod
-    def _get_options(current_locale: Optional[discord.Locale]) -> List[SelectOption]:
-        options: List[SelectOption] = [
+    def _get_options(current_locale: discord.Locale | None) -> list[SelectOption]:
+        options: list[SelectOption] = [
             SelectOption(
                 label=_T("Follow client language", key="auto_locale_option_label"),
                 value="auto",

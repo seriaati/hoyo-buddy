@@ -1,4 +1,4 @@
-from typing import Optional, Self, Union
+from typing import Self
 
 import discord
 
@@ -13,10 +13,10 @@ class Embed(discord.Embed):
         locale: discord.Locale,
         translator: Translator,
         *,
-        color: Optional[int] = None,
-        title: Optional[Union[locale_str, str]] = None,
-        url: Optional[str] = None,
-        description: Optional[Union[locale_str, str]] = None,
+        color: int | None = None,
+        title: locale_str | str | None = None,
+        url: str | None = None,
+        description: locale_str | str | None = None,
     ):
         translated_title = translator.translate(title, locale) if title else None
         translated_description = translator.translate(description, locale) if description else None
@@ -33,8 +33,8 @@ class Embed(discord.Embed):
     def add_field(
         self,
         *,
-        name: Union[locale_str, str],
-        value: Union[locale_str, str],
+        name: locale_str | str,
+        value: locale_str | str,
         inline: bool = True,
     ) -> Self:
         translated_name = self.translator.translate(name, self.locale)
@@ -44,9 +44,9 @@ class Embed(discord.Embed):
     def set_author(
         self,
         *,
-        name: Union[locale_str, str],
-        url: Optional[str] = None,
-        icon_url: Optional[str] = None,
+        name: locale_str | str,
+        url: str | None = None,
+        icon_url: str | None = None,
     ) -> Self:
         translated_name = self.translator.translate(name, self.locale)
         return super().set_author(name=translated_name, url=url, icon_url=icon_url)
@@ -54,8 +54,8 @@ class Embed(discord.Embed):
     def set_footer(
         self,
         *,
-        text: Optional[Union[locale_str, str]] = None,
-        icon_url: Optional[str] = None,
+        text: locale_str | str | None = None,
+        icon_url: str | None = None,
     ) -> Self:
         translated_text = self.translator.translate(text, self.locale) if text else None
         return super().set_footer(text=translated_text, icon_url=icon_url)
@@ -67,9 +67,9 @@ class DefaultEmbed(Embed):
         locale: discord.Locale,
         translator: Translator,
         *,
-        title: Optional[Union[locale_str, str]] = None,
-        url: Optional[str] = None,
-        description: Optional[Union[locale_str, str]] = None,
+        title: locale_str | str | None = None,
+        url: str | None = None,
+        description: locale_str | str | None = None,
     ):
         super().__init__(
             locale,
@@ -87,9 +87,9 @@ class ErrorEmbed(Embed):
         locale: discord.Locale,
         translator: Translator,
         *,
-        title: Optional[Union[locale_str, str]] = None,
-        url: Optional[str] = None,
-        description: Optional[Union[locale_str, str]] = None,
+        title: locale_str | str | None = None,
+        url: str | None = None,
+        description: locale_str | str | None = None,
     ):
         super().__init__(
             locale,

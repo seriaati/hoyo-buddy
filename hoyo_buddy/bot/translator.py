@@ -3,7 +3,7 @@ import json
 import logging
 import os
 import re
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from discord import app_commands
 from discord.app_commands.translator import TranslationContextTypes
@@ -25,7 +25,7 @@ class locale_str:
         self,
         message: str,
         *,
-        key: Optional[str] = None,
+        key: str | None = None,
         warn_no_key: bool = True,
         translate: bool = True,
         replace_command_mentions: bool = True,
@@ -36,7 +36,7 @@ class locale_str:
         self.warn_no_key = warn_no_key
         self.translate = translate
         self.replace_command_mentions = replace_command_mentions
-        self.extras: Dict[str, Any] = kwargs
+        self.extras: dict[str, Any] = kwargs
 
     def __repr__(self) -> str:
         return f"locale_str({self.message!r}, key={self.key!r}, extras={self.extras!r})"
@@ -51,9 +51,9 @@ class CustomRenderingPolicy(AbstractRenderingPolicy):
 class Translator:
     def __init__(self, env: str) -> None:
         super().__init__()
-        self.not_translated: Dict[str, str] = {}
+        self.not_translated: dict[str, str] = {}
         self.env = env
-        self.synced_commands: Dict[str, int] = {}
+        self.synced_commands: dict[str, int] = {}
 
     async def __aenter__(self) -> "Translator":
         await self.load()
@@ -90,7 +90,7 @@ class Translator:
             await self.fetch_source_strings()
 
     def replace_command_with_mentions(self, message: str) -> str:
-        command_occurences: List[str] = re.findall(COMMAND_REGEX, message)
+        command_occurences: list[str] = re.findall(COMMAND_REGEX, message)
         for command_occurence in command_occurences:
             command_name = command_occurence[2:-1]
             command_id = self.synced_commands.get(command_name)
@@ -102,7 +102,7 @@ class Translator:
 
     def translate(
         self,
-        string: Union[locale_str, str],
+        string: locale_str | str,
         locale: Locale,
     ) -> str:
         if isinstance(string, str):
@@ -139,7 +139,7 @@ class Translator:
 
         lang = locale.value.replace("-", "_")
         is_source = "en" in lang
-        translation: Optional[str] = tx.translate(
+        translation: str | None = tx.translate(
             message,
             lang,
             params=extras,

@@ -1,6 +1,6 @@
 import calendar
 from datetime import timedelta
-from typing import List, Sequence, Tuple, Union
+from typing import Sequence, Tuple
 
 from genshin.models import ClaimedDailyReward, DailyReward
 
@@ -36,7 +36,7 @@ class RewardCalculator:
         return self._today.month + 1
 
     @property
-    def _this_month_claimed_rewards(self) -> List[ClaimedDailyReward]:
+    def _this_month_claimed_rewards(self) -> list[ClaimedDailyReward]:
         return [r for r in self._claimed_rewards if r.time.month == self._today.month]
 
     @property
@@ -54,13 +54,11 @@ class RewardCalculator:
         )
 
     @staticmethod
-    def _change_reward_name(
-        name: str, reward: Union[ClaimedDailyReward, DailyReward]
-    ) -> DailyReward:
+    def _change_reward_name(name: str, reward: ClaimedDailyReward | DailyReward) -> DailyReward:
         return DailyReward(name=name, amount=reward.amount, icon=reward.icon)
 
-    def _get_renamed_monthly_rewards(self) -> List[DailyReward]:
-        result: List[DailyReward] = []
+    def _get_renamed_monthly_rewards(self) -> list[DailyReward]:
+        result: list[DailyReward] = []
         for i, r in enumerate(self._monthly_rewards):
             claim_status = self._get_claim_status((self._today.month, i + 1))
             result.append(self._change_reward_name(f"{claim_status}_{self._today.month}/{i+1}", r))

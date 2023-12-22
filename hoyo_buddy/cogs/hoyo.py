@@ -1,4 +1,4 @@
-from typing import Any, List, Optional
+from typing import Any
 
 import discord
 from discord import app_commands
@@ -21,7 +21,7 @@ class Hoyo(commands.Cog):
     @staticmethod
     async def _account_autocomplete(
         user_id: int, current: str, locale: discord.Locale, translator: Translator
-    ) -> List[discord.app_commands.Choice]:
+    ) -> list[discord.app_commands.Choice]:
         accounts = await HoyoAccount.filter(user__id=user_id).all()
         if not accounts:
             return [
@@ -65,7 +65,7 @@ class Hoyo(commands.Cog):
         return account
 
     @staticmethod
-    def _get_game_choices() -> List[app_commands.Choice[str]]:
+    def _get_game_choices() -> list[app_commands.Choice[str]]:
         return [
             app_commands.Choice(
                 name=app_commands.locale_str(game.value, warn_no_key=False),
@@ -83,7 +83,7 @@ class Hoyo(commands.Cog):
 
     async def _get_first_account(
         self, user: User, i: INTERACTION, locale: discord.Locale
-    ) -> Optional[HoyoAccount]:
+    ) -> HoyoAccount | None:
         accounts = await user.accounts.all()
         if not accounts:
             await self._no_account_response(i, locale)
@@ -93,10 +93,10 @@ class Hoyo(commands.Cog):
     async def _get_account(
         self,
         user: User,
-        account_value: Optional[str],
+        account_value: str | None,
         i: INTERACTION,
         locale: discord.Locale,
-    ) -> Optional[HoyoAccount]:
+    ) -> HoyoAccount | None:
         if account_value is None:
             return await self._get_first_account(user, i, locale)
         if account_value == "none":
@@ -119,7 +119,7 @@ class Hoyo(commands.Cog):
             key="account_autocomplete_param_description",
         )
     )
-    async def checkin_command(self, i: INTERACTION, acc_value: Optional[str] = None) -> Any:
+    async def checkin_command(self, i: INTERACTION, acc_value: str | None = None) -> Any:
         user = await User.get(i.client.redis_pool, id=i.user.id)
         locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
         account = await self._get_account(user, acc_value, i, locale)
@@ -139,7 +139,7 @@ class Hoyo(commands.Cog):
     @checkin_command.autocomplete("acc_value")
     async def check_in_command_autocomplete(
         self, i: INTERACTION, current: str
-    ) -> List[app_commands.Choice]:
+    ) -> list[app_commands.Choice]:
         locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
         return await self._account_autocomplete(i.user.id, current, locale, self.bot.translator)
 
@@ -224,7 +224,7 @@ class Hoyo(commands.Cog):
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
         self, i: INTERACTION, current: str
-    ) -> List[app_commands.Choice]:
+    ) -> list[app_commands.Choice]:
         try:
             game = Game(i.namespace.game)
         except ValueError:
@@ -245,7 +245,7 @@ class Hoyo(commands.Cog):
     @search_command.autocomplete("query")
     async def search_command_query_autocomplete(
         self, i: INTERACTION, current: str
-    ) -> List[app_commands.Choice]:
+    ) -> list[app_commands.Choice]:
         try:
             game = Game(i.namespace.game)
         except ValueError:

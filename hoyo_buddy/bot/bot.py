@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Optional, TypeAlias
+from typing import TypeAlias
 
 import discord
 import redis.asyncio as redis
@@ -53,7 +53,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         else:
             log.exception(e)
 
-    async def get_or_fetch_user(self, user_id: int) -> Optional[discord.User]:
+    async def get_or_fetch_user(self, user_id: int) -> discord.User | None:
         user = self.get_user(user_id)
         if user:
             return user

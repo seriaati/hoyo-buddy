@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Sequence, Union
+from typing import Any, Sequence
 
 import discord
 import genshin
@@ -24,7 +24,7 @@ class AccountManager(View):
     def __init__(
         self,
         *,
-        author: Union[discord.Member, discord.User],
+        author: discord.User | discord.Member,
         locale: discord.Locale,
         translator: Translator,
         user: User,
@@ -34,7 +34,7 @@ class AccountManager(View):
         self.user = user
         self.locale = locale
         self.accounts = accounts
-        self.selected_account: Optional[HoyoAccount] = None
+        self.selected_account: HoyoAccount | None = None
 
     async def init(self) -> None:
         if self.accounts:
@@ -83,7 +83,7 @@ class AccountManager(View):
             )
         return embed
 
-    def get_account_options(self) -> List[SelectOption]:
+    def get_account_options(self) -> list[SelectOption]:
         return [
             SelectOption(
                 label=str(account),
@@ -115,7 +115,7 @@ class AccountManager(View):
 
 
 class AccountSelector(Select):
-    def __init__(self, options: List[SelectOption]):
+    def __init__(self, options: list[SelectOption]):
         super().__init__(custom_id="account_selector", options=options)
 
     async def callback(self, i: INTERACTION) -> Any:
@@ -184,7 +184,7 @@ class NicknameModal(Modal):
         max_length=32,
     )
 
-    def __init__(self, current_nickname: Optional[str] = None):
+    def __init__(self, current_nickname: str | None = None):
         super().__init__(title=_T("Edit nickname", key="edit_nickname_modal_title"))
         self.nickname.default = current_nickname
 
@@ -480,7 +480,7 @@ class EmailPasswordContinueButton(Button):
         self.view: AccountManager
         user = self.view.user
         await user.refresh_from_db()
-        cookies: Optional[Dict[str, Any]] = user.temp_data.get("cookies")
+        cookies: dict[str, Any] | None = user.temp_data.get("cookies")
         if cookies is None:
             embed = ErrorEmbed(
                 self.view.locale,

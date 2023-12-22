@@ -1,5 +1,5 @@
 import contextlib
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, Tuple
 
 import ambr
 from discord import InteractionResponded, Locale, Member, User
@@ -17,7 +17,7 @@ class CharacterUI(View):
         self,
         character_id: str,
         *,
-        author: Union[User, Member],
+        author: User | Member,
         locale: Locale,
         translator: Translator,
     ):
@@ -43,7 +43,7 @@ class CharacterUI(View):
                 manual_weapon,
             )
 
-    async def fetch_talent_embed(self) -> Tuple[DefaultEmbed, bool, List[ambr.Talent]]:
+    async def fetch_talent_embed(self) -> Tuple[DefaultEmbed, bool, list[ambr.Talent]]:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             talent = character_detail.talents[self.talent_index]
@@ -54,7 +54,7 @@ class CharacterUI(View):
                 character_detail.talents,
             )
 
-    async def fetch_const_embed(self) -> Tuple[DefaultEmbed, List[ambr.Constellation]]:
+    async def fetch_const_embed(self) -> Tuple[DefaultEmbed, list[ambr.Constellation]]:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             const = character_detail.constellations[self.const_index]
@@ -63,7 +63,7 @@ class CharacterUI(View):
                 character_detail.constellations,
             )
 
-    async def fetch_story_embed(self) -> Tuple[DefaultEmbed, List[ambr.Story]]:
+    async def fetch_story_embed(self) -> Tuple[DefaultEmbed, list[ambr.Story]]:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_fetter = await api.fetch_character_fetter(self.character_id)
             story = character_fetter.stories[self.story_index]
@@ -72,7 +72,7 @@ class CharacterUI(View):
                 character_fetter.stories,
             )
 
-    async def fetch_quote_embed(self) -> Tuple[DefaultEmbed, List[ambr.Quote]]:
+    async def fetch_quote_embed(self) -> Tuple[DefaultEmbed, list[ambr.Quote]]:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_fetter = await api.fetch_character_fetter(self.character_id)
             quote = character_fetter.quotes[self.quote_index]
@@ -181,7 +181,7 @@ class LevelModalButton(LMB):
         *,
         min_level: int,
         max_level: int,
-        default: Optional[int] = None,
+        default: int | None = None,
         label: _T,
     ):
         super().__init__(
@@ -239,7 +239,7 @@ class PageSelector(Select):
 
 
 class ItemSelector(Select):
-    def __init__(self, options: List[SelectOption], index_name: str):
+    def __init__(self, options: list[SelectOption], index_name: str):
         super().__init__(options=options)
         self.index_name = index_name
 

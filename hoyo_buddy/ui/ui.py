@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, List, Optional, Self, Sequence, Union
+from typing import Any, Self, Sequence
 
 import discord
 from discord.utils import MISSING
@@ -30,16 +30,16 @@ class View(discord.ui.View):
     def __init__(
         self,
         *,
-        author: Union[discord.Member, discord.User],
+        author: discord.User | discord.Member,
         locale: discord.Locale,
         translator: Translator,
-        timeout: Optional[float] = 180,
+        timeout: float | None = 180,
     ):
         super().__init__(timeout=timeout)
         self.author = author
         self.locale = locale
         self.translator = translator
-        self.message: Optional[discord.Message] = None
+        self.message: discord.Message | None = None
 
     async def on_timeout(self) -> None:
         if self.message:
@@ -85,12 +85,12 @@ class View(discord.ui.View):
             if isinstance(child, (discord.ui.Button, discord.ui.Select)):
                 child.disabled = False
 
-    def add_item(self, item: Union["Button", "Select"], *, translate: bool = True) -> Self:
+    def add_item(self, item: "Button | Select", *, translate: bool = True) -> Self:
         if translate:
             item.translate(self.locale, self.translator)
         return super().add_item(item)
 
-    def get_item(self, custom_id: str) -> Optional[Union["Button", "Select"]]:
+    def get_item(self, custom_id: str) -> "Button | Select | None":
         for item in self.children:
             if isinstance(item, (Button, Select)) and item.custom_id == custom_id:
                 return item
@@ -111,15 +111,15 @@ class View(discord.ui.View):
             await i.edit_original_response(**kwargs)
 
     @staticmethod
-    def get_embeds(message: Optional[discord.Message]) -> Optional[List[discord.Embed]]:
+    def get_embeds(message: discord.Message | None) -> list[discord.Embed] | None:
         if message:
             return message.embeds
         return None
 
     @staticmethod
     def get_attachments(
-        message: Optional[discord.Message],
-    ) -> Optional[List[discord.Attachment]]:
+        message: discord.Message | None,
+    ) -> list[discord.Attachment] | None:
         if message:
             return message.attachments
         return None
@@ -130,12 +130,12 @@ class Button(discord.ui.Button):
         self,
         *,
         style: discord.ButtonStyle = discord.ButtonStyle.secondary,
-        label: Optional[Union[_T, str]] = None,
+        label: _T | str | None = None,
         disabled: bool = False,
-        custom_id: Optional[str] = None,
-        url: Optional[str] = None,
-        emoji: Optional[str] = None,
-        row: Optional[int] = None,
+        custom_id: str | None = None,
+        url: str | None = None,
+        emoji: str | None = None,
+        row: int | None = None,
     ):
         super().__init__(
             style=style,
@@ -147,9 +147,9 @@ class Button(discord.ui.Button):
         )
 
         self.locale_str_label = label
-        self.original_label: Optional[str] = None
-        self.original_emoji: Optional[str] = None
-        self.original_disabled: Optional[bool] = None
+        self.original_label: str | None = None
+        self.original_emoji: str | None = None
+        self.original_disabled: bool | None = None
 
     def translate(
         self,
@@ -186,9 +186,9 @@ class Button(discord.ui.Button):
 class GoBackButton(Button):
     def __init__(
         self,
-        original_children: List[discord.ui.Item[Any]],
-        embeds: Optional[Sequence[discord.Embed]] = None,
-        attachments: Optional[Sequence[discord.Attachment]] = None,
+        original_children: list[discord.ui.Item[Any]],
+        embeds: Sequence[discord.Embed] | None = None,
+        attachments: Sequence[discord.Attachment] | None = None,
         row: int = 4,
     ):
         super().__init__(emoji=emojis.BACK, row=row)
@@ -202,7 +202,7 @@ class GoBackButton(Button):
             if isinstance(item, (Button, Select)):
                 self.view.add_item(item, translate=False)
 
-        kwargs: Dict[str, Any] = {"view": self.view}
+        kwargs: dict[str, Any] = {"view": self.view}
         if self.embeds:
             kwargs["embeds"] = self.embeds
         kwargs["attachments"] = self.attachments or []
@@ -246,8 +246,8 @@ class LevelModalButton(Button):
         *,
         min_level: int,
         max_level: int,
-        default_level: Optional[int] = None,
-        label: Optional[Union[_T, str]] = None,
+        default_level: int | None = None,
+        label: _T | str | None = None,
         **kwargs,
     ):
         super().__init__(
@@ -276,10 +276,10 @@ class SelectOption(discord.SelectOption):
     def __init__(
         self,
         *,
-        label: Union[_T, str],
+        label: _T | str,
         value: str,
-        description: Optional[Union[_T, str]] = None,
-        emoji: Optional[str] = None,
+        description: _T | str | None = None,
+        emoji: str | None = None,
         default: bool = False,
     ) -> None:
         super().__init__(
@@ -297,12 +297,12 @@ class Select(discord.ui.Select):
         self,
         *,
         custom_id: str = MISSING,
-        placeholder: Optional[Union[_T, str]] = None,
+        placeholder: _T | str | None = None,
         min_values: int = 1,
         max_values: int = 1,
-        options: List[SelectOption],
+        options: list[SelectOption],
         disabled: bool = False,
-        row: Optional[int] = None,
+        row: int | None = None,
     ) -> None:
         super().__init__(
             custom_id=custom_id,
@@ -314,16 +314,16 @@ class Select(discord.ui.Select):
         )
         self.locale_str_placeholder = placeholder
 
-        self.original_placeholder: Optional[str] = None
-        self.original_options: Optional[List[SelectOption]] = None
-        self.original_disabled: Optional[bool] = None
+        self.original_placeholder: str | None = None
+        self.original_options: list[SelectOption] | None = None
+        self.original_disabled: bool | None = None
 
     @property
-    def options(self) -> List[SelectOption]:
+    def options(self) -> list[SelectOption]:
         return self._underlying.options  # type: ignore
 
     @options.setter
-    def options(self, value: List[SelectOption]) -> None:
+    def options(self, value: list[SelectOption]) -> None:
         self._underlying.options = value  # type: ignore
 
     def translate(
@@ -381,14 +381,14 @@ PREV_PAGE = SelectOption(
 class PaginatorSelect(Select):
     def __init__(
         self,
-        options: List[SelectOption],
+        options: list[SelectOption],
         **kwargs,
     ) -> None:
         self.split_options = split_list(options, 23)
         self.page_index = 0
         super().__init__(options=self._process_options(), **kwargs)
 
-    def _process_options(self) -> List[SelectOption]:
+    def _process_options(self) -> list[SelectOption]:
         if self.page_index == 0:
             if len(self.split_options) == 1:
                 return self.split_options[0]
@@ -410,15 +410,15 @@ class TextInput(discord.ui.TextInput):
     def __init__(
         self,
         *,
-        label: Union[_T, str],
+        label: _T | str,
         style: discord.TextStyle = discord.TextStyle.short,
         custom_id: str = MISSING,
-        placeholder: Optional[Union[_T, str]] = None,
-        default: Optional[Union[_T, str]] = None,
+        placeholder: _T | str | None = None,
+        default: _T | str | None = None,
         required: bool = True,
-        min_length: Optional[int] = None,
-        max_length: Optional[int] = None,
-        row: Optional[int] = None,
+        min_length: int | None = None,
+        max_length: int | None = None,
+        row: int | None = None,
     ) -> None:
         super().__init__(
             label=label if isinstance(label, str) else "#NoTrans",
@@ -438,8 +438,8 @@ class Modal(discord.ui.Modal):
     def __init__(
         self,
         *,
-        title: Union[_T, str],
-        timeout: Optional[float] = None,
+        title: _T | str,
+        timeout: float | None = None,
         custom_id: str = MISSING,
     ) -> None:
         super().__init__(
@@ -490,13 +490,13 @@ class Modal(discord.ui.Modal):
 class LevelModal(Modal):
     level_input = TextInput(label=_T("Level", key="level_input_label"))
 
-    def __init__(self, *, min_level: int, max_level: int, default_level: Optional[int] = None):
+    def __init__(self, *, min_level: int, max_level: int, default_level: int | None = None):
         super().__init__(title=_T("Enter level", key="enter_level_modal_title"))
         self.min_level = min_level
         self.max_level = max_level
         self.level_input.default = str(default_level) if default_level else None
         self.level_input.placeholder = f"{min_level} ~ {max_level}"
-        self.level: Optional[int] = None
+        self.level: int | None = None
 
     async def on_submit(self, i: INTERACTION) -> None:
         try:

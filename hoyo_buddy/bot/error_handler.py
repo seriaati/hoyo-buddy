@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Tuple, Type
+from typing import Tuple, Type
 
 import discord
 import genshin.errors as errors
@@ -11,9 +11,9 @@ from .translator import locale_str as _T
 
 __all__ = ("get_error_embed",)
 
-GENSHIN_ERROR_CONVERTER: Dict[
+GENSHIN_ERROR_CONVERTER: dict[
     Type[errors.GenshinException],
-    Tuple[Optional[Tuple[str, str]], Optional[Tuple[str, str]]],
+    Tuple[Tuple[str, str] | None, Tuple[str, str] | None],
 ] = {
     errors.AlreadyClaimed: (
         ("Daily check-in reward already claimed", "already_claimed_title"),

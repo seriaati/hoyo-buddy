@@ -1,5 +1,3 @@
-from typing import Union
-
 import genshin
 
 from ..db.enums import Game
@@ -23,7 +21,7 @@ HONKAI_STAR_RAIL = "<:honkai_star_rail:1105806784117088336>"
 HONKAI_IMPACT_3RD = "<:honkai_impact:1106034318666637415>"
 
 
-def get_game_emoji(game: Union[genshin.Game, Game]) -> str:
+def get_game_emoji(game: genshin.Game | Game) -> str:
     if game is genshin.Game.GENSHIN or game is Game.GENSHIN:
         return GENSHIN_IMPACT
     if game is genshin.Game.HONKAI or game is Game.HONKAI:

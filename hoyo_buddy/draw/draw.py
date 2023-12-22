@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Tuple
+from typing import Literal, Tuple
 
 import discord
 from PIL import Image, ImageDraw, ImageFont
@@ -37,7 +37,7 @@ class Drawer:
         folder: str,
         dark_mode: bool,
         locale: discord.Locale = discord.Locale.american_english,
-        translator: Optional[Translator] = None,
+        translator: Translator | None = None,
     ):
         self.draw = draw
         self.folder = folder
@@ -47,7 +47,7 @@ class Drawer:
 
     def _get_text_color(
         self,
-        color: Optional[Tuple[int, int, int, int]],
+        color: Tuple[int, int, int, int] | None,
         emphasis: Literal["high", "medium", "low"],
     ) -> Tuple[int, int, int, int]:
         if color is not None:
@@ -112,10 +112,10 @@ class Drawer:
         text: locale_str,
         size: int,
         position: Tuple[int, int],
-        color: Optional[Tuple[int, int, int, int]] = None,
+        color: Tuple[int, int, int, int] | None = None,
         style: Literal["light", "regular", "medium", "bold"] = "regular",
         emphasis: Literal["high", "medium", "low"] = "high",
-        anchor: Optional[str] = None,
+        anchor: str | None = None,
     ) -> None:
         if self.translator is None:
             raise RuntimeError("Translator is not set")
@@ -135,10 +135,10 @@ class Drawer:
         text: str,
         size: int,
         position: Tuple[int, int],
-        color: Optional[Tuple[int, int, int, int]] = None,
+        color: Tuple[int, int, int, int] | None = None,
         style: Literal["light", "regular", "medium", "bold"] = "regular",
         emphasis: Literal["high", "medium", "low"] = "high",
-        anchor: Optional[str] = None,
+        anchor: str | None = None,
     ) -> None:
         self.draw.text(
             position,
@@ -148,7 +148,7 @@ class Drawer:
             anchor=anchor,
         )
 
-    def get_static_image(self, url: str, *, folder: Optional[str] = None) -> Image.Image:
+    def get_static_image(self, url: str, *, folder: str | None = None) -> Image.Image:
         filename = url.split("/")[-1]
         folder = folder or self.folder
         image = Image.open(f"{STATIC_FOLDER}/{folder}/{filename}")

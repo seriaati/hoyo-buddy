@@ -14,8 +14,8 @@ log = logging.getLogger(__name__)
 
 class CommandTree(app_commands.CommandTree):
     async def interaction_check(self, i: INTERACTION) -> Literal[True]:
-        user, created = await User.get_or_create(id=i.user.id)
-        if created:
+        user = await User.silent_create(i.client.redis_pool, id=i.user.id)
+        if user:
             await Settings.create(i.client.redis_pool, user=user)
         return True
 

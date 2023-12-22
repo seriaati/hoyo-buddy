@@ -28,7 +28,7 @@ class AccountManager(View):
         locale: discord.Locale,
         translator: Translator,
         user: User,
-        accounts: List[HoyoAccount],
+        accounts: Sequence[HoyoAccount],
     ):
         super().__init__(author=author, locale=locale, translator=translator)
         self.user = user
@@ -36,9 +36,9 @@ class AccountManager(View):
         self.accounts = accounts
         self.selected_account: Optional[HoyoAccount] = None
 
-    async def start(self) -> None:
-        if self.user.accounts:
-            self.selected_account = self.user.accounts[0]
+    async def init(self) -> None:
+        if self.accounts:
+            self.selected_account = self.accounts[0]
             self.add_item(AccountSelector(self.get_account_options()))
             self.add_item(AddAccount())
             self.add_item(EditNickname())
@@ -96,15 +96,15 @@ class AccountManager(View):
 
     async def refresh(self, i: INTERACTION, *, soft: bool) -> Any:
         if not soft:
-            user = await User.get(id=self.user.id).prefetch_related("accounts")
+            accounts = await HoyoAccount.filter(user=self.user).all()
             view = AccountManager(
                 author=self.author,
                 locale=self.locale,
                 translator=self.translator,
-                user=user,
-                accounts=await user.accounts.all(),
+                user=self.user,
+                accounts=accounts,
             )
-            await view.start()
+            await view.init()
             await self.absolute_edit(i, embed=view.get_account_embed(), view=view)
             view.message = await i.original_response()
         else:
@@ -121,9 +121,7 @@ class AccountSelector(Select):
     async def callback(self, i: INTERACTION) -> Any:
         self.view: AccountManager
         uid, game = self.values[0].split("_")
-        selected_account = discord.utils.get(
-            await self.view.user.accounts.all(), uid=int(uid), game__value=game
-        )
+        selected_account = discord.utils.get(self.view.accounts, uid=int(uid), game__value=game)
         if selected_account is None:
             raise ValueError("Invalid account selected")
 
@@ -299,7 +297,7 @@ class SelectAccountsToAdd(Select):
                 await AccountNotifSettings.create(account=hoyo_account)
 
         self.view.user.temp_data.pop("cookies", None)
-        await self.view.user.save()
+        await self.view.user.save(i.client.redis_pool)
         await self.view.refresh(i, soft=False)
 
 
@@ -582,7 +580,7 @@ class EnterEmailPassword(Button):
         password = modal.password.value
         self.view.user.temp_data["email"] = email
         self.view.user.temp_data["password"] = password
-        await self.view.user.save()
+        await self.view.user.save(i.client.redis_pool)
 
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()

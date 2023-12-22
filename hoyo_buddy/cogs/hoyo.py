@@ -57,14 +57,6 @@ class Hoyo(commands.Cog):
         )
 
     @staticmethod
-    async def _get_user(user_id: int) -> User:
-        return await User.get(id=user_id).prefetch_related("settings")
-
-    @staticmethod
-    def _get_locale(user: User, interaction_locale: discord.Locale) -> discord.Locale:
-        return user.settings.locale or interaction_locale
-
-    @staticmethod
     async def _get_specific_account(account_value: str, user: User) -> HoyoAccount:
         uid, game = account_value.split("_")
         account = await user.accounts.filter(uid=uid, game=game).first()
@@ -128,8 +120,8 @@ class Hoyo(commands.Cog):
         )
     )
     async def checkin_command(self, i: INTERACTION, acc_value: Optional[str] = None) -> Any:
-        user = await self._get_user(i.user.id)
-        locale = self._get_locale(user, i.locale)
+        user = await User.get(i.client.redis_pool, id=i.user.id)
+        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
         account = await self._get_account(user, acc_value, i, locale)
         if account is None:
             return

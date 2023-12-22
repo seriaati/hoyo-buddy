@@ -7,7 +7,7 @@ from discord.utils import MISSING
 from ..bot import INTERACTION, Translator, emojis
 from ..bot import locale_str as _T
 from ..bot.error_handler import get_error_embed
-from ..db import User
+from ..db.models import Settings
 from ..embeds import ErrorEmbed
 from ..exceptions import InvalidInput
 from ..utils import split_list
@@ -54,9 +54,10 @@ class View(discord.ui.View):
     ) -> None:
         i.client.capture_exception(error)
 
-        user = await User.get(id=i.user.id).prefetch_related("settings")
-        locale = user.settings.locale or i.locale
-        embed = get_error_embed(error, locale, i.client.translator)
+        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
+        embed, recognized = get_error_embed(error, locale, i.client.translator)
+        if not recognized:
+            i.client.capture_exception(error)
         await self.absolute_send(i, embed=embed, ephemeral=True)
 
     async def interaction_check(self, i: INTERACTION) -> bool:
@@ -454,8 +455,7 @@ class Modal(discord.ui.Modal):
         error: Exception,
         _: discord.ui.Item[Any],
     ) -> None:
-        user = await User.get(id=i.user.id).prefetch_related("settings")
-        locale = user.settings.locale or i.locale
+        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
         embed, recognized = get_error_embed(error, locale, i.client.translator)
         if not recognized:
             i.client.capture_exception(error)

@@ -107,7 +107,7 @@ class Translator:
     ) -> str:
         if isinstance(string, str):
             return string
-        log.debug("Translating %r to %r", string, locale)
+        log.debug("Translating %r to %s", string, locale.value)
 
         extras = string.extras
         message = string.message

@@ -5,7 +5,7 @@ from discord.app_commands import locale_str as _T
 from discord.ext import commands
 
 from ..bot import INTERACTION, HoyoBuddy
-from ..db import User
+from ..db.models import HoyoAccount, Settings, User
 from ..ui.login.accounts import AccountManager
 
 
@@ -18,16 +18,19 @@ class Login(commands.Cog):
         description=_T("Manage your accounts", key="accounts_command_description"),
     )
     async def accounts(self, i: INTERACTION) -> Any:
-        user = await User.get(id=i.user.id).prefetch_related("accounts", "settings")
-        locale = user.settings.locale or i.locale
+        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
+        user = await User.get(i.client.redis_pool, id=i.user.id)
+        accounts = await HoyoAccount.filter(user=user).all()
+
         view = AccountManager(
             author=i.user,
             locale=locale,
             translator=i.client.translator,
             user=user,
-            accounts=await user.accounts.all(),
+            accounts=accounts,
         )
-        await view.start()
+        await view.init()
+
         embed = view.get_account_embed()
         await i.response.send_message(embed=embed, view=view, ephemeral=True)
         view.message = await i.original_response()

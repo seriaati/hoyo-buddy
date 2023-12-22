@@ -5,7 +5,7 @@ import orjson
 import redis.asyncio as redis
 from discord import Locale
 from tortoise import fields
-from tortoise.exceptions import DoesNotExist
+from tortoise.exceptions import DoesNotExist, IntegrityError
 from tortoise.models import Model as TortoiseModel
 
 from ..db import GAME_CONVERTER
@@ -28,6 +28,13 @@ class Model(TortoiseModel):
         except DoesNotExist:
             return await cls.create(**kwargs), True
 
+    @classmethod
+    async def silent_create(cls, **kwargs: Any) -> Self | None:
+        try:
+            return await cls.create(find_from_cache_first=True, **kwargs)
+        except IntegrityError:
+            return None
+
 
 class CacheModel(Model):
     @classmethod
@@ -39,7 +46,9 @@ class CacheModel(Model):
         instance = cls(**kwargs)
         cached = await instance.get_cache(pool)
         if cached:
+            cached._saved_in_db = True  # skipcq: PYL-W0212
             return cached
+
         instance = await super().get(**kwargs)
         await instance.set_cache(pool)
         return instance
@@ -47,9 +56,30 @@ class CacheModel(Model):
     @classmethod
     async def create(cls, pool: redis.ConnectionPool, **kwargs: Any) -> Self:
         instance = cls(**kwargs)
+        for key, value in kwargs.items():
+            setattr(instance, key, value)
+
         await instance.save(pool)
         await instance.set_cache(pool)
         return instance
+
+    @classmethod
+    async def get_or_create(cls, pool: redis.ConnectionPool, **kwargs: Any) -> Tuple[Self, bool]:
+        try:
+            return await cls.get(pool, **kwargs), False
+        except DoesNotExist:
+            return await cls.create(pool, **kwargs), True
+
+    @classmethod
+    async def silent_create(cls, pool: redis.ConnectionPool, **kwargs: Any) -> Self | None:
+        try:
+            return await cls.create(pool, **kwargs)
+        except IntegrityError:
+            return None
+
+    @property
+    def _key(self) -> str:
+        raise NotImplementedError
 
     def to_json(self) -> bytes:
         return orjson.dumps(
@@ -61,7 +91,7 @@ class CacheModel(Model):
         )
 
     def get_cache_key(self) -> str:
-        return f"{self.__class__.__name__}:{self.pk}"
+        return f"{self.__class__.__name__}:{self._key}"
 
     async def set_cache(self, pool: redis.ConnectionPool) -> None:
         async with redis.Redis.from_pool(pool) as r:
@@ -74,16 +104,20 @@ class CacheModel(Model):
             return self.from_json(data)
         return None
 
-    async def save(self, pool: redis.ConnectionPool, **kwargs: Any) -> None:
-        await super().save(**kwargs)
+    async def save(self, pool: redis.ConnectionPool) -> None:
+        await super().save()
         await self.set_cache(pool)
 
 
-class User(Model):
+class User(CacheModel):
     id = fields.BigIntField(pk=True, index=True, generated=False)
     settings: fields.BackwardOneToOneRelation["Settings"]
     temp_data: Dict[str, Any] = fields.JSONField(default=dict)  # type: ignore
     accounts: fields.ReverseRelation["HoyoAccount"]
+
+    @property
+    def _key(self) -> str:
+        return str(self.id)
 
 
 class HoyoAccount(Model):
@@ -128,6 +162,10 @@ class Settings(CacheModel):
     user: fields.OneToOneRelation[User] = fields.OneToOneField(
         "models.User", related_name="settings"
     )
+
+    @property
+    def _key(self) -> str:
+        return str(self.__dict__["user_id"])
 
     @property
     def locale(self) -> Optional[Locale]:

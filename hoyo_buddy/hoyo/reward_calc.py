@@ -70,7 +70,7 @@ class RewardCalculator:
         return result
 
     def _get_reward_name(self, index: int, reward: DailyReward) -> DailyReward:
-        if index in (LAST_REWARD, PREVIOUS_REWARD):
+        if index in {LAST_REWARD, PREVIOUS_REWARD}:
             return self._change_reward_name(f"{self._last_month}/{self._last_month_days}", reward)
         if index == TODAY_REWARD:
             return self._change_reward_name(f"{self._next_month}/1", reward)

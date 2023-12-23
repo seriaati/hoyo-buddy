@@ -55,7 +55,7 @@ def draw_card(
             size=36,
             position=(x + 56, y + 153),
             style="medium",
-            emphasis="high" if i in (2, 3) else "medium",
+            emphasis="high" if i in {2, 3} else "medium",
             anchor="mm",
         )
         drawer.plain_write(
@@ -63,7 +63,7 @@ def draw_card(
             size=18,
             position=(x + 55, y + 195),
             style="regular",
-            emphasis="high" if i in (2, 3) else "medium",
+            emphasis="high" if i in {2, 3} else "medium",
             anchor="mm",
         )
 

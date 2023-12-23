@@ -95,7 +95,7 @@ class Translator:
         self.load_synced_commands_json()
         log.info("Translator loaded")
 
-        if self.env in ("prod", "test"):
+        if self.env in {"prod", "test"}:
             await self.fetch_source_strings()
 
     def replace_command_with_mentions(self, message: str) -> str:
@@ -221,7 +221,7 @@ class Translator:
 
     def load_synced_commands_json(self) -> None:
         try:
-            with open("hoyo_buddy/bot/data/synced_commands.json") as f:
+            with open("hoyo_buddy/bot/data/synced_commands.json", encoding="utf-8") as f:
                 self.synced_commands = json.load(f)
         except FileNotFoundError:
             pass
@@ -245,7 +245,7 @@ class Translator:
         )
 
     async def unload(self) -> None:
-        if self.not_translated and self.env in ("prod", "test"):
+        if self.not_translated and self.env in {"prod", "test"}:
             await self.push_source_strings()
         log.info("Translator unloaded")
 

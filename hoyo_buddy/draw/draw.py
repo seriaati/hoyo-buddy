@@ -60,6 +60,15 @@ FONT_MAPPING: dict[
     },
 }
 
+EMPHASIS_COLOR_MAPPING = {
+    ("high", True): WHITE + (HIGH_EMPHASIS_OPACITY,),
+    ("medium", True): WHITE + (MEDIUM_EMPHASIS_OPACITY,),
+    ("low", True): WHITE + (LOW_EMPHASIS_OPACITY,),
+    ("high", False): BLACK + (HIGH_EMPHASIS_OPACITY,),
+    ("medium", False): BLACK + (MEDIUM_EMPHASIS_OPACITY,),
+    ("low", False): BLACK + (LOW_EMPHASIS_OPACITY,),
+}
+
 
 class Drawer:
     def __init__(
@@ -85,18 +94,10 @@ class Drawer:
         if color is not None:
             return color
 
-        if emphasis == "high":
-            if self.dark_mode:
-                return WHITE + (HIGH_EMPHASIS_OPACITY,)
-            return BLACK + (HIGH_EMPHASIS_OPACITY,)
-        if emphasis == "medium":
-            if self.dark_mode:
-                return WHITE + (MEDIUM_EMPHASIS_OPACITY,)
-            return BLACK + (MEDIUM_EMPHASIS_OPACITY,)
-        if emphasis == "low":
-            if self.dark_mode:
-                return WHITE + (LOW_EMPHASIS_OPACITY,)
-            return BLACK + (LOW_EMPHASIS_OPACITY,)
+        key = (emphasis, self.dark_mode)
+        if key in EMPHASIS_COLOR_MAPPING:
+            return EMPHASIS_COLOR_MAPPING[key]
+
         msg = f"Invalid emphasis: {emphasis}"
         raise ValueError(msg)
 

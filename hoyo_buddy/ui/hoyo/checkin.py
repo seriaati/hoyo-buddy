@@ -72,7 +72,7 @@ class CheckInUI(View):
     @staticmethod
     def _calc_valuable_amount(claimed_rewards: "Sequence[ClaimedDailyReward]") -> int:
         return sum(
-            r.amount for r in claimed_rewards if r.name in ("Primogem", "Crystal", "Stellar Jade")
+            r.amount for r in claimed_rewards if r.name in {"Primogem", "Crystal", "Stellar Jade"}
         )
 
     @staticmethod

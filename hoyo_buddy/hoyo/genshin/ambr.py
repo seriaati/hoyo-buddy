@@ -118,10 +118,10 @@ class AmbrAPIClient(ambr.AmbrAPI):
                 for stat in promote.add_stats:
                     if stat.value != 0:
                         result[stat.id] += stat.value
-                        if stat.id in (
+                        if stat.id in {
                             "FIGHT_PROP_CRITICAL_HURT",
                             "FIGHT_PROP_CRITICAL",
-                        ):
+                        }:
                             result[stat.id] += 0.5
                 break
 
@@ -132,12 +132,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
         result: dict[str, str] = {}
         for fight_prop, value in stat_values.items():
             if fight_prop in PERCENTAGE_FIGHT_PROPS:
-                value *= 100
-                value = round(value, 1)
-                result[fight_prop] = f"{value}%"
+                result[fight_prop] = f"{round(value * 100, 1)}%"
             else:
-                value = round(value)
-                result[fight_prop] = str(value)
+                result[fight_prop] = str(round(value))
         return result
 
     @staticmethod
@@ -160,10 +157,10 @@ class AmbrAPIClient(ambr.AmbrAPI):
             param_text = re.findall(r"{param(\d+):([^}]*)}", item)[0]
             param, value = param_text
 
-            if value in ("F1P", "F2P"):
+            if value in {"F1P", "F2P"}:
                 result = self._format_num(int(value[1]), param_list[int(param) - 1] * 100)
                 text = re.sub(re.escape(item), f"{result}%", text)
-            elif value in ("F1", "F2"):
+            elif value in {"F1", "F2"}:
                 result = self._format_num(int(value[1]), param_list[int(param) - 1])
                 text = re.sub(re.escape(item), result, text)
             elif value == "P":

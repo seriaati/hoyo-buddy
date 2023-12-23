@@ -1,3 +1,6 @@
+[project]
+requires-python = ">=3.11"
+
 [tool.poetry]
 name = "hoyo-buddy"
 version = "0.1.0"
@@ -43,11 +46,18 @@ build-backend = "poetry.core.masonry.api"
 line-length = 100
 
 [tool.ruff.lint]
-select = ["E","F","UP","B","SIM","I"]
-ignore = ["E501"]
+select = [
+    "E","W","C90","F","UP","B","SIM","I","N","TCH",
+    "ANN","ASYNC","A","C4","EM","FA","ISC","ICN","G",
+    "PIE","T20","ARG","ERA","LOG"
+]
+ignore = ["E501","ANN401","ANN101","ANN102","ANN003"]
 
 [tool.ruff.per-file-ignores]
 "**/__init__.py" = ["F403"]
+
+[tool.ruff.lint.flake8-type-checking]
+quote-annotations = true
 
 [tool.git-cliff.changelog]
 body = """

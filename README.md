@@ -9,6 +9,7 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/seriaati/hoyo-buddy)
 ![GitHub](https://img.shields.io/github/license/seriaati/hoyo-buddy)
 ![Discord](https://img.shields.io/discord/1000727526194298910?label=Discord%20Server&color=5865F2)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 
 ## Useful Links

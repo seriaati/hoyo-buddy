@@ -2,8 +2,7 @@ from typing import TYPE_CHECKING, Any
 
 import discord
 
-from ...bot import INTERACTION, Translator
-from ...bot import LocaleStr as LocaleStr
+from ...bot import INTERACTION, LocaleStr, Translator
 from ...embeds import DefaultEmbed
 from ..ui import Select, SelectOption, ToggleButton, View
 

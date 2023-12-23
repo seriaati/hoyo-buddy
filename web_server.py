@@ -12,8 +12,7 @@ from genshin.errors import GenshinException
 from genshin.utility import geetest
 
 from hoyo_buddy.bot.logging import setup_logging
-from hoyo_buddy.bot.translator import LocaleStr as LocaleStr
-from hoyo_buddy.bot.translator import Translator
+from hoyo_buddy.bot.translator import LocaleStr, Translator
 from hoyo_buddy.db import Database
 from hoyo_buddy.db.models import User
 from hoyo_buddy.db.redis import RedisPool

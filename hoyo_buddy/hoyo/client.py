@@ -1,8 +1,7 @@
 import genshin
 from discord import Locale
 
-from ..bot.translator import LocaleStr as LocaleStr
-from ..bot.translator import Translator
+from ..bot.translator import LocaleStr, Translator
 from ..db.enums import GAME_CONVERTER, GAME_THUMBNAILS
 from ..embeds import DefaultEmbed
 

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any
 
 from discord import InteractionResponded, Locale, Member, User
 
-from ....bot.translator import LocaleStr as LocaleStr
+from ....bot.translator import LocaleStr
 from ....exceptions import InvalidQueryError
 from ....hoyo.genshin.ambr import AmbrAPIClient
 from ...ui import LevelModalButton, Select, SelectOption, View

@@ -150,14 +150,16 @@ class Translator:
                 translated_extras[k] = v
         return translated_extras
 
-    def _generate_translation(self, message: str, extras: dict) -> str:
+    @staticmethod
+    def _generate_translation(message: str, extras: dict) -> str:
         try:
             generated_translation = message.format(**extras)
         except ValueError:
             generated_translation = message
         return generated_translation
 
-    def _get_string_key(self, string: LocaleStr) -> str:
+    @staticmethod
+    def _get_string_key(string: LocaleStr) -> str:
         if string.key is None:
             if string.warn_no_key:
                 log.warning("Missing key for string %r, using generated key", string.message)

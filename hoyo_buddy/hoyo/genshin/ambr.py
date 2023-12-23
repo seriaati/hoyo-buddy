@@ -7,8 +7,7 @@ import ambr
 from ambr.client import Language
 from discord import Locale
 
-from ...bot.translator import LocaleStr as LocaleStr
-from ...bot.translator import Translator
+from ...bot.translator import LocaleStr, Translator
 from ...embeds import DefaultEmbed
 
 if TYPE_CHECKING:

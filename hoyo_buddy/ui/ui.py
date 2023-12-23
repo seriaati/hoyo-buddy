@@ -4,8 +4,7 @@ from typing import TYPE_CHECKING, Any, Self
 import discord
 from discord.utils import MISSING
 
-from ..bot import INTERACTION, Translator, emojis
-from ..bot import LocaleStr as LocaleStr
+from ..bot import INTERACTION, LocaleStr, Translator, emojis
 from ..bot.error_handler import get_error_embed
 from ..db.models import Settings
 from ..embeds import ErrorEmbed

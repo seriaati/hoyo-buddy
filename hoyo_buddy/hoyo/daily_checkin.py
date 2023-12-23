@@ -7,8 +7,7 @@ import discord
 import genshin
 
 from ..bot.error_handler import get_error_embed
-from ..bot.translator import LocaleStr as LocaleStr
-from ..bot.translator import Translator
+from ..bot.translator import LocaleStr, Translator
 from ..db.enums import GAME_THUMBNAILS
 from ..db.models import HoyoAccount, User
 from ..embeds import DefaultEmbed, Embed, ErrorEmbed

@@ -4,8 +4,7 @@ from typing import TYPE_CHECKING, Any
 import discord
 from genshin import Game, GenshinException
 
-from ...bot import INTERACTION, Translator, emojis
-from ...bot import LocaleStr as LocaleStr
+from ...bot import INTERACTION, LocaleStr, Translator, emojis
 from ...bot.error_handler import get_error_embed
 from ...draw import checkin
 from ...draw.static import download_and_save_static_images

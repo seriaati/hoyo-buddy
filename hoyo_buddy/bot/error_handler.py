@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
-import genshin.errors as errors
 from ambr.exceptions import DataNotFound
+from genshin import errors
 
 from ..embeds import ErrorEmbed
 from ..exceptions import HoyoBuddyError, InvalidQueryError

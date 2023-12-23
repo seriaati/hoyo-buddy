@@ -5,8 +5,7 @@ import genshin
 from tortoise.exceptions import IntegrityError
 
 from ...bot import INTERACTION, emojis
-from ...bot.translator import LocaleStr as LocaleStr
-from ...bot.translator import Translator
+from ...bot.translator import LocaleStr, Translator
 from ...db.enums import GAME_CONVERTER
 from ...db.models import AccountNotifSettings, HoyoAccount, User
 from ...embeds import DefaultEmbed, ErrorEmbed
@@ -371,28 +370,28 @@ class EnterCookies(Button):
                 return DevToolCookiesModalV2(
                     title=LocaleStr("Enter Cookies", key="enter_cookies_modal_title")
                 )
-            else:
-                return DevToolCookiesModal(
-                    title=LocaleStr("Enter Cookies", key="enter_cookies_modal_title")
-                )
-        else:
-            return CookiesModal(title=LocaleStr("Enter Cookies", key="enter_cookies_modal_title"))
+            return DevToolCookiesModal(
+                title=LocaleStr("Enter Cookies", key="enter_cookies_modal_title")
+            )
+        return CookiesModal(title=LocaleStr("Enter Cookies", key="enter_cookies_modal_title"))
 
+    @staticmethod
     def get_cookies(
-        self, modal: DevToolCookiesModal | DevToolCookiesModalV2 | CookiesModal
+        modal: DevToolCookiesModal | DevToolCookiesModalV2 | CookiesModal,
     ) -> str | None:
         if isinstance(modal, DevToolCookiesModal):
             if not all((modal.ltuid.value, modal.ltoken.value)):
                 return None
             return f"ltuid={modal.ltuid.value.strip()}; ltoken={modal.ltoken.value.strip()}"
-        elif isinstance(modal, DevToolCookiesModalV2):
+
+        if isinstance(modal, DevToolCookiesModalV2):
             if not all((modal.ltuid_v2.value, modal.ltoken_v2.value)):
                 return None
             return f"ltuid_v2={modal.ltuid_v2.value.strip()}; ltoken_v2={modal.ltoken_v2.value.strip()}"
-        else:
-            if modal.cookies.value is None:
-                return None
-            return modal.cookies.value
+
+        if modal.cookies.value is None:
+            return None
+        return modal.cookies.value
 
     def get_invalid_cookies_embed(self, modal: Modal) -> ErrorEmbed:
         if isinstance(modal, CookiesModal):

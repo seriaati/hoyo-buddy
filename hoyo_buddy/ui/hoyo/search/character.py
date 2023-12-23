@@ -1,15 +1,17 @@
 import contextlib
-from typing import Any, Tuple
+from typing import TYPE_CHECKING, Any
 
-import ambr
 from discord import InteractionResponded, Locale, Member, User
 
-from ....bot import INTERACTION, Translator
-from ....bot.translator import locale_str as _T
-from ....embeds import DefaultEmbed
+from ....bot.translator import LocaleStr as LocaleStr
 from ....hoyo.genshin.ambr import AmbrAPIClient
-from ...ui import LevelModalButton as LMB
-from ...ui import PaginatorSelect, Select, SelectOption, View
+from ...ui import LevelModalButton, PaginatorSelect, Select, SelectOption, View
+
+if TYPE_CHECKING:
+    import ambr
+
+    from ....bot import INTERACTION, Translator
+    from ....embeds import DefaultEmbed
 
 
 class CharacterUI(View):
@@ -19,8 +21,8 @@ class CharacterUI(View):
         *,
         author: User | Member,
         locale: Locale,
-        translator: Translator,
-    ):
+        translator: "Translator",
+    ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.character_id = character_id
         self.character_level = 90
@@ -31,7 +33,7 @@ class CharacterUI(View):
         self.quote_index = 0
         self.selected = 0
 
-    async def fetch_character_embed(self) -> DefaultEmbed:
+    async def fetch_character_embed(self) -> "DefaultEmbed":
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             avatar_curve = await api.fetch_avatar_curve()
@@ -43,7 +45,7 @@ class CharacterUI(View):
                 manual_weapon,
             )
 
-    async def fetch_talent_embed(self) -> Tuple[DefaultEmbed, bool, list[ambr.Talent]]:
+    async def fetch_talent_embed(self) -> tuple["DefaultEmbed", bool, list["ambr.Talent"]]:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             talent = character_detail.talents[self.talent_index]
@@ -54,7 +56,7 @@ class CharacterUI(View):
                 character_detail.talents,
             )
 
-    async def fetch_const_embed(self) -> Tuple[DefaultEmbed, list[ambr.Constellation]]:
+    async def fetch_const_embed(self) -> tuple["DefaultEmbed", list["ambr.Constellation"]]:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             const = character_detail.constellations[self.const_index]
@@ -63,7 +65,7 @@ class CharacterUI(View):
                 character_detail.constellations,
             )
 
-    async def fetch_story_embed(self) -> Tuple[DefaultEmbed, list[ambr.Story]]:
+    async def fetch_story_embed(self) -> tuple["DefaultEmbed", list["ambr.Story"]]:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_fetter = await api.fetch_character_fetter(self.character_id)
             story = character_fetter.stories[self.story_index]
@@ -72,7 +74,7 @@ class CharacterUI(View):
                 character_fetter.stories,
             )
 
-    async def fetch_quote_embed(self) -> Tuple[DefaultEmbed, list[ambr.Quote]]:
+    async def fetch_quote_embed(self) -> tuple["DefaultEmbed", list["ambr.Quote"]]:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_fetter = await api.fetch_character_fetter(self.character_id)
             quote = character_fetter.quotes[self.quote_index]
@@ -81,7 +83,7 @@ class CharacterUI(View):
                 character_fetter.quotes,
             )
 
-    async def update(self, i: INTERACTION) -> None:
+    async def update(self, i: "INTERACTION") -> None:
         with contextlib.suppress(InteractionResponded):
             await i.response.defer()
 
@@ -91,24 +93,24 @@ class CharacterUI(View):
         if self.selected == 0:
             embed = await self.fetch_character_embed()
             self.add_item(
-                LevelModalButton(
+                CharacterLevelModalButton(
                     True,
                     min_level=1,
                     max_level=90,
                     default=self.character_level,
-                    label=_T("Change character level", key="change_character_level_label"),
+                    label=LocaleStr("Change character level", key="change_character_level_label"),
                 )
             )
         elif self.selected == 1:
             embed, upgradeable, talents = await self.fetch_talent_embed()
             if upgradeable:
                 self.add_item(
-                    LevelModalButton(
+                    CharacterLevelModalButton(
                         False,
                         min_level=1,
                         max_level=10,
                         default=self.talent_level,
-                        label=_T("Change talent level", key="change_talent_level_label"),
+                        label=LocaleStr("Change talent level", key="change_talent_level_label"),
                     )
                 )
             self.add_item(
@@ -130,7 +132,7 @@ class CharacterUI(View):
                 ItemSelector(
                     [
                         SelectOption(
-                            label=f"{i+1}. {c.name}",
+                            label=f"{i + 1}. {c.name}",
                             value=str(i),
                             default=i == self.const_index,
                         )
@@ -174,7 +176,7 @@ class CharacterUI(View):
         await i.edit_original_response(embed=embed, view=self)
 
 
-class LevelModalButton(LMB):
+class CharacterLevelModalButton(LevelModalButton):
     def __init__(
         self,
         is_character_level: bool,
@@ -182,14 +184,14 @@ class LevelModalButton(LMB):
         min_level: int,
         max_level: int,
         default: int | None = None,
-        label: _T,
-    ):
+        label: LocaleStr,
+    ) -> None:
         super().__init__(
             min_level=min_level, max_level=max_level, default_level=default, label=label
         )
         self.is_character_level = is_character_level
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         self.view: CharacterUI
         await super().callback(i)
         if self.is_character_level:
@@ -200,31 +202,31 @@ class LevelModalButton(LMB):
 
 
 class PageSelector(Select):
-    def __init__(self, current: int):
+    def __init__(self, current: int) -> None:
         super().__init__(
             options=[
                 SelectOption(
-                    label=_T("Profile", key="character_profile_page_label"),
+                    label=LocaleStr("Profile", key="character_profile_page_label"),
                     value="0",
                     default=current == 0,
                 ),
                 SelectOption(
-                    label=_T("Talents", key="character_talents_page_label"),
+                    label=LocaleStr("Talents", key="character_talents_page_label"),
                     value="1",
                     default=current == 1,
                 ),
                 SelectOption(
-                    label=_T("Constellations", key="character_const_page_label"),
+                    label=LocaleStr("Constellations", key="character_const_page_label"),
                     value="2",
                     default=current == 2,
                 ),
                 SelectOption(
-                    label=_T("Stories", key="character_stories_page_label"),
+                    label=LocaleStr("Stories", key="character_stories_page_label"),
                     value="3",
                     default=current == 3,
                 ),
                 SelectOption(
-                    label=_T("Quotes", key="character_quotes_page_label"),
+                    label=LocaleStr("Quotes", key="character_quotes_page_label"),
                     value="4",
                     default=current == 4,
                 ),
@@ -232,25 +234,25 @@ class PageSelector(Select):
             row=4,
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         self.view: CharacterUI
         self.view.selected = int(self.values[0])
         await self.view.update(i)
 
 
 class ItemSelector(Select):
-    def __init__(self, options: list[SelectOption], index_name: str):
+    def __init__(self, options: list[SelectOption], index_name: str) -> None:
         super().__init__(options=options)
         self.index_name = index_name
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         self.view: CharacterUI
         self.view.__setattr__(self.index_name, int(self.values[0]))
         await self.view.update(i)
 
 
 class QuoteSelector(PaginatorSelect):
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         await super().callback()
         self.view: CharacterUI
         try:

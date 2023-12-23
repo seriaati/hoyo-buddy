@@ -1,15 +1,18 @@
 import re
 from collections import defaultdict
 from enum import StrEnum
-from typing import Any, DefaultDict
+from typing import TYPE_CHECKING, Any
 
 import ambr
 from ambr.client import Language
 from discord import Locale
 
+from ...bot.translator import LocaleStr as LocaleStr
 from ...bot.translator import Translator
-from ...bot.translator import locale_str as _T
 from ...embeds import DefaultEmbed
+
+if TYPE_CHECKING:
+    from types import TracebackType
 
 LOCALE_TO_LANG: dict[Locale, Language] = {
     Locale.taiwan_chinese: Language.CHT,
@@ -81,7 +84,12 @@ class AmbrAPIClient(ambr.AmbrAPI):
     async def __aenter__(self) -> "AmbrAPIClient":
         return self
 
-    async def __aexit__(self, exc_type, exc, tb) -> None:
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: "TracebackType | None",
+    ) -> None:
         return await super().close()
 
     @staticmethod
@@ -95,7 +103,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         level: int,
         ascended: bool,
     ) -> dict[str, float]:
-        result: DefaultDict[str, float] = defaultdict(float)
+        result: defaultdict[str, float] = defaultdict(float)
 
         for stat in upgrade_data.base_stats:
             if stat.prop_type is None:
@@ -201,7 +209,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
             self.locale,
             self.translator,
             title=character.name,
-            description=_T(
+            description=LocaleStr(
                 (
                     "{rarity}★ {element}\n"
                     "Birthday: {birthday}\n"
@@ -210,14 +218,14 @@ class AmbrAPIClient(ambr.AmbrAPI):
                 ),
                 key="character_embed_description",
                 rarity=character.rarity,
-                element=_T(character.element.name, warn_no_key=False),
+                element=LocaleStr(character.element.name, warn_no_key=False),
                 birthday=f"{character.birthday.month}/{character.birthday.day}",
                 constellation=character.info.constellation,
                 affiliation=character.info.native,
             ),
         )
         embed.add_field(
-            name=_T(
+            name=LocaleStr(
                 "Stats (Lv. {level})",
                 key="character_embed_stats_field_name",
                 level=level,
@@ -242,7 +250,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
                 level_upgrade = talent.upgrades[-1]
                 level = level_upgrade.level
             embed.add_field(
-                name=_T(
+                name=LocaleStr(
                     "Skill Attributes (Lv. {level})",
                     key="skill_attributes_embed_field_name",
                     level=level,
@@ -299,7 +307,8 @@ class AmbrAPIClient(ambr.AmbrAPI):
         stat_values = self._calculate_upgrade_stat_values(weapon.upgrade, weapon_curve, level, True)
         main_stat = weapon.upgrade.base_stats[0]
         if main_stat.prop_type is None:
-            raise AssertionError("Weapon has no main stat")
+            msg = "Weapon has no main stat"
+            raise AssertionError(msg)
 
         main_stat_name = manual_weapon[main_stat.prop_type]
         main_stat_value = stat_values[main_stat.prop_type]
@@ -315,25 +324,26 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=_T(
+            title=LocaleStr(
                 "{weapon_name} (Lv. {lv})",
                 weapon_name=weapon.name,
                 lv=level,
                 key="weapon_embed_title",
             ),
             description=(
-                f"{weapon.rarity}★ {weapon.type}\n" f"{main_stat_name}: {round(main_stat_value)}"
+                f"{weapon.rarity}★ {weapon.type}\n{main_stat_name}: {round(main_stat_value)}"
             ),
         )
 
         if sub_stat_name and sub_stat_value:
             if embed.description is None:
-                raise AssertionError("Embed description is None")
+                msg = "Embed description is None"
+                raise AssertionError(msg)
             embed.description += f"\n{sub_stat_name}: {sub_stat_value}"
 
         if weapon.affix:
             embed.add_field(
-                name=_T("Refinement {r}", r=refinement, key="refinement_indicator"),
+                name=LocaleStr("Refinement {r}", r=refinement, key="refinement_indicator"),
                 value=weapon.affix.upgrades[refinement - 1].description,
             )
         embed.set_thumbnail(url=weapon.icon)
@@ -355,7 +365,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
             self.locale,
             self.translator,
             title=artifact_set.name,
-            description=_T(
+            description=LocaleStr(
                 "2-Pieces: {bonus_2}\n4-Pieces: {bonus_4}",
                 bonus_2=artifact_set.affix_list[0].effect,
                 bonus_4=artifact_set.affix_list[1].effect,

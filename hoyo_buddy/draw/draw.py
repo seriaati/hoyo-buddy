@@ -1,9 +1,8 @@
-from typing import Literal, Tuple
+from typing import TYPE_CHECKING, Literal
 
 import discord
 from PIL import Image, ImageDraw, ImageFont
 
-from ..bot.translator import Translator, locale_str
 from .fonts import (
     GENSENROUNDEDTW_BOLD,
     GENSENROUNDEDTW_LIGHT,
@@ -20,6 +19,9 @@ from .fonts import (
 )
 from .static import STATIC_FOLDER
 
+if TYPE_CHECKING:
+    from ..bot.translator import LocaleStr, Translator
+
 __all__ = ("Drawer",)
 
 BLACK = (0, 0, 0)
@@ -27,6 +29,36 @@ WHITE = (255, 255, 255)
 HIGH_EMPHASIS_OPACITY = 221
 MEDIUM_EMPHASIS_OPACITY = 153
 LOW_EMPHASIS_OPACITY = 96
+
+FONT_MAPPING: dict[
+    discord.Locale | None,
+    dict[str, str],
+] = {
+    discord.Locale.chinese: {
+        "light": GENSENROUNDEDTW_LIGHT,
+        "regular": GENSENROUNDEDTW_REGULAR,
+        "medium": GENSENROUNDEDTW_MEDIUM,
+        "bold": GENSENROUNDEDTW_BOLD,
+    },
+    discord.Locale.taiwan_chinese: {
+        "light": GENSENROUNDEDTW_LIGHT,
+        "regular": GENSENROUNDEDTW_REGULAR,
+        "medium": GENSENROUNDEDTW_MEDIUM,
+        "bold": GENSENROUNDEDTW_BOLD,
+    },
+    discord.Locale.japanese: {
+        "light": MPLUSROUNDED1C_LIGHT,
+        "regular": MPLUSROUNDED1C_REGULAR,
+        "medium": MPLUSROUNDED1C_MEDIUM,
+        "bold": MPLUSROUNDED1C_BOLD,
+    },
+    None: {
+        "light": NUNITO_LIGHT,
+        "regular": NUNITO_REGULAR,
+        "medium": NUNITO_MEDIUM,
+        "bold": NUNITO_BOLD,
+    },
+}
 
 
 class Drawer:
@@ -37,8 +69,8 @@ class Drawer:
         folder: str,
         dark_mode: bool,
         locale: discord.Locale = discord.Locale.american_english,
-        translator: Translator | None = None,
-    ):
+        translator: "Translator | None" = None,
+    ) -> None:
         self.draw = draw
         self.folder = folder
         self.dark_mode = dark_mode
@@ -47,9 +79,9 @@ class Drawer:
 
     def _get_text_color(
         self,
-        color: Tuple[int, int, int, int] | None,
+        color: tuple[int, int, int, int] | None,
         emphasis: Literal["high", "medium", "low"],
-    ) -> Tuple[int, int, int, int]:
+    ) -> tuple[int, int, int, int]:
         if color is not None:
             return color
 
@@ -65,60 +97,34 @@ class Drawer:
             if self.dark_mode:
                 return WHITE + (LOW_EMPHASIS_OPACITY,)
             return BLACK + (LOW_EMPHASIS_OPACITY,)
-        raise ValueError(f"Invalid emphasis: {emphasis}")
+        msg = f"Invalid emphasis: {emphasis}"
+        raise ValueError(msg)
 
     def _get_font(
         self, size: int, style: Literal["light", "regular", "medium", "bold"]
     ) -> ImageFont.FreeTypeFont:
-        if self.locale in (discord.Locale.taiwan_chinese, discord.Locale.chinese):
-            if style == "light":
-                font = GENSENROUNDEDTW_LIGHT
-            elif style == "regular":
-                font = GENSENROUNDEDTW_REGULAR
-            elif style == "medium":
-                font = GENSENROUNDEDTW_MEDIUM
-            elif style == "bold":
-                font = GENSENROUNDEDTW_BOLD
-            else:
-                raise ValueError(f"Invalid font style: {style}")
-        elif self.locale == discord.Locale.japanese:
-            if style == "light":
-                font = MPLUSROUNDED1C_LIGHT
-            elif style == "regular":
-                font = MPLUSROUNDED1C_REGULAR
-            elif style == "medium":
-                font = MPLUSROUNDED1C_MEDIUM
-            elif style == "bold":
-                font = MPLUSROUNDED1C_BOLD
-            else:
-                raise ValueError(f"Invalid font style: {style}")
-        else:
-            if style == "light":
-                font = NUNITO_LIGHT
-            elif style == "regular":
-                font = NUNITO_REGULAR
-            elif style == "medium":
-                font = NUNITO_MEDIUM
-            elif style == "bold":
-                font = NUNITO_BOLD
-            else:
-                raise ValueError(f"Invalid font style: {style}")
+        font = FONT_MAPPING.get(self.locale, FONT_MAPPING[None]).get(style)
+
+        if font is None:
+            msg = f"Invalid font style: {style}"
+            raise ValueError(msg)
 
         return ImageFont.truetype(font, size)
 
     def write(
         self,
         *,
-        text: locale_str,
+        text: "LocaleStr",
         size: int,
-        position: Tuple[int, int],
-        color: Tuple[int, int, int, int] | None = None,
+        position: tuple[int, int],
+        color: tuple[int, int, int, int] | None = None,
         style: Literal["light", "regular", "medium", "bold"] = "regular",
         emphasis: Literal["high", "medium", "low"] = "high",
         anchor: str | None = None,
     ) -> None:
         if self.translator is None:
-            raise RuntimeError("Translator is not set")
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
 
         translated_text = self.translator.translate(text, self.locale)
         self.draw.text(
@@ -134,8 +140,8 @@ class Drawer:
         *,
         text: str,
         size: int,
-        position: Tuple[int, int],
-        color: Tuple[int, int, int, int] | None = None,
+        position: tuple[int, int],
+        color: tuple[int, int, int, int] | None = None,
         style: Literal["light", "regular", "medium", "bold"] = "regular",
         emphasis: Literal["high", "medium", "low"] = "high",
         anchor: str | None = None,

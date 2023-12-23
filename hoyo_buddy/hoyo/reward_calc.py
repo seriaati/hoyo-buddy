@@ -1,10 +1,13 @@
 import calendar
 from datetime import timedelta
-from typing import Sequence, Tuple
+from typing import TYPE_CHECKING
 
 from genshin.models import ClaimedDailyReward, DailyReward
 
 from ..utils import get_now
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 LAST_REWARD = -2
 PREVIOUS_REWARD = -1
@@ -16,9 +19,9 @@ AFTER_NEXT_REWARD = 2
 class RewardCalculator:
     def __init__(
         self,
-        claimed_rewards: Sequence[ClaimedDailyReward],
-        monthly_rewards: Sequence[DailyReward],
-    ):
+        claimed_rewards: "Sequence[ClaimedDailyReward]",
+        monthly_rewards: "Sequence[DailyReward]",
+    ) -> None:
         self._claimed_rewards = claimed_rewards
         self._monthly_rewards = monthly_rewards
         self._today = get_now().date()
@@ -43,7 +46,7 @@ class RewardCalculator:
     def claimed_amount(self) -> int:
         return min(self._today.day, len(self._this_month_claimed_rewards))
 
-    def _get_claim_status(self, date: Tuple[int, int]) -> str:
+    def _get_claim_status(self, date: tuple[int, int]) -> str:
         return (
             "claimed"
             if any(
@@ -61,17 +64,19 @@ class RewardCalculator:
         result: list[DailyReward] = []
         for i, r in enumerate(self._monthly_rewards):
             claim_status = self._get_claim_status((self._today.month, i + 1))
-            result.append(self._change_reward_name(f"{claim_status}_{self._today.month}/{i+1}", r))
+            result.append(
+                self._change_reward_name(f"{claim_status}_{self._today.month}/{i + 1}", r)
+            )
         return result
 
-    def _get_reward_name(self, index: int, reward: DailyReward):
+    def _get_reward_name(self, index: int, reward: DailyReward) -> DailyReward:
         if index in (LAST_REWARD, PREVIOUS_REWARD):
             return self._change_reward_name(f"{self._last_month}/{self._last_month_days}", reward)
         if index == TODAY_REWARD:
             return self._change_reward_name(f"{self._next_month}/1", reward)
         return reward
 
-    def get_rewards(self) -> Tuple[DailyReward, ...]:
+    def get_rewards(self) -> tuple[DailyReward, ...]:
         renamed_monthly_rewards = self._get_renamed_monthly_rewards()
         if self.claimed_amount == 0:
             return (

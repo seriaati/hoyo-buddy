@@ -38,7 +38,7 @@ if env == "prod":
 discord.VoiceClient.warn_nacl = False
 
 
-async def main():
+async def main() -> None:
     intents = discord.Intents(
         guilds=True,
         members=True,

@@ -1,6 +1,5 @@
-from typing import Any, Self, Tuple
+from typing import TYPE_CHECKING, Any, Self
 
-import genshin
 import orjson
 import redis.asyncio as redis
 from discord import Locale
@@ -12,6 +11,9 @@ from ..db import GAME_CONVERTER
 from ..hoyo.client import GenshinClient
 from . import Game
 
+if TYPE_CHECKING:
+    import genshin
+
 __all__ = (
     "User",
     "HoyoAccount",
@@ -22,7 +24,7 @@ __all__ = (
 
 class Model(TortoiseModel):
     @classmethod
-    async def get_or_create(cls, **kwargs: Any) -> Tuple[Self, bool]:
+    async def get_or_create(cls, **kwargs: Any) -> tuple[Self, bool]:
         try:
             return await cls.get(**kwargs), False
         except DoesNotExist:
@@ -64,7 +66,7 @@ class CacheModel(Model):
         return instance
 
     @classmethod
-    async def get_or_create(cls, pool: redis.ConnectionPool, **kwargs: Any) -> Tuple[Self, bool]:
+    async def get_or_create(cls, pool: redis.ConnectionPool, **kwargs: Any) -> tuple[Self, bool]:
         try:
             return await cls.get(pool, **kwargs), False
         except DoesNotExist:
@@ -110,7 +112,7 @@ class CacheModel(Model):
 
 
 class User(CacheModel):
-    id = fields.BigIntField(pk=True, index=True, generated=False)
+    id = fields.BigIntField(pk=True, index=True, generated=False)  # noqa: A003
     settings: fields.BackwardOneToOneRelation["Settings"]
     temp_data: dict[str, Any] = fields.JSONField(default=dict)  # type: ignore
     accounts: fields.ReverseRelation["HoyoAccount"]

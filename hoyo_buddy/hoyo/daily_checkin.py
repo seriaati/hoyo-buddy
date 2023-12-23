@@ -1,18 +1,22 @@
 import asyncio
 import logging
 import os
+from typing import TYPE_CHECKING
 
-import aiohttp
 import discord
 import genshin
 
-from ..bot import HoyoBuddy
 from ..bot.error_handler import get_error_embed
+from ..bot.translator import LocaleStr as LocaleStr
 from ..bot.translator import Translator
-from ..bot.translator import locale_str as _T
 from ..db.enums import GAME_THUMBNAILS
 from ..db.models import HoyoAccount, User
 from ..embeds import DefaultEmbed, Embed, ErrorEmbed
+
+if TYPE_CHECKING:
+    import aiohttp
+
+    from ..bot import HoyoBuddy
 
 log = logging.getLogger(__name__)
 
@@ -27,7 +31,7 @@ MAX_API_ERROR_COUNT = 10
 
 class DailyCheckin:
     @classmethod
-    async def exec(cls, bot: HoyoBuddy) -> None:
+    async def execute(cls, bot: "HoyoBuddy") -> None:
         try:
             log.info("Daily check-in started")
 
@@ -54,14 +58,15 @@ class DailyCheckin:
 
     @classmethod
     async def _daily_checkin_task(
-        cls, queue: asyncio.Queue[HoyoAccount], api: str, bot: HoyoBuddy
+        cls, queue: asyncio.Queue[HoyoAccount], api: str, bot: "HoyoBuddy"
     ) -> None:
         log.info("Daily check-in task started for %s", api)
         if api != "LOCAL":
             # test if the api is working
             async with bot.session.get(api) as resp:
                 if resp.status != 200:
-                    raise RuntimeError(f"API {api} returned {resp.status}")
+                    msg = f"API {api} returned {resp.status}"
+                    raise RuntimeError(msg)
 
         api_error_count = 0
 
@@ -74,9 +79,8 @@ class DailyCheckin:
                 api_error_count += 1
                 log.exception("Daily check-in failed for %s", account)
                 if api_error_count >= MAX_API_ERROR_COUNT:
-                    raise RuntimeError(
-                        f"Daily check-in API {api} failed for {api_error_count} accounts"
-                    ) from None
+                    msg = f"Daily check-in API {api} failed for {api_error_count} accounts"
+                    raise RuntimeError(msg) from None
             else:
                 if (
                     isinstance(embed, ErrorEmbed)
@@ -96,7 +100,7 @@ class DailyCheckin:
         api: str,
         account: HoyoAccount,
         translator: Translator,
-        session: aiohttp.ClientSession,
+        session: "aiohttp.ClientSession",
     ) -> Embed:
         await account.fetch_related("user")
         await account.user.fetch_related("settings")
@@ -105,7 +109,8 @@ class DailyCheckin:
         client = account.client
         client.set_lang(locale)
         if client.game is None:
-            raise AssertionError("Client game is None")
+            msg = "Client game is None"
+            raise AssertionError(msg)
 
         if api == "LOCAL":
             try:
@@ -113,7 +118,7 @@ class DailyCheckin:
             except Exception as e:  # skipcq: PYL-W0703
                 embed, _ = get_error_embed(e, locale, translator)
                 embed.set_author(
-                    name=_T(account.game.value, warn_no_key=False),
+                    name=LocaleStr(account.game.value, warn_no_key=False),
                     icon_url=GAME_THUMBNAILS[account.game],
                 )
             else:
@@ -137,15 +142,16 @@ class DailyCheckin:
                 except genshin.GenshinException as e:
                     embed, _ = get_error_embed(e, locale, translator)
                     embed.set_author(
-                        name=_T(account.game.value, warn_no_key=False),
+                        name=LocaleStr(account.game.value, warn_no_key=False),
                         icon_url=GAME_THUMBNAILS[account.game],
                     )
             else:
-                raise RuntimeError(f"API {api} returned {resp.status}")
+                msg = f"API {api} returned {resp.status}"
+                raise RuntimeError(msg)
         return embed
 
     @classmethod
-    async def _notify_user(cls, bot: HoyoBuddy, user: User, embed: Embed) -> None:
+    async def _notify_user(cls, bot: "HoyoBuddy", user: User, embed: Embed) -> None:
         try:
             discord_user = await bot.get_or_fetch_user(user.id)
             if discord_user:

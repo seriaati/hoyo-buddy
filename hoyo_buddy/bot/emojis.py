@@ -28,4 +28,5 @@ def get_game_emoji(game: genshin.Game | Game) -> str:
         return HONKAI_IMPACT_3RD
     if game is genshin.Game.STARRAIL or game is Game.STARRAIL:
         return HONKAI_STAR_RAIL
-    raise ValueError(f"Invalid game: {game}")
+    msg = f"Invalid game: {game}"
+    raise ValueError(msg)

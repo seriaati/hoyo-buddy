@@ -4,10 +4,9 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from ..bot import INTERACTION, HoyoBuddy, Translator
-from ..bot import locale_str as _T
+from ..bot import INTERACTION, HoyoBuddy, LocaleStr, Translator
 from ..db import Game, HoyoAccount, Settings, User
-from ..exceptions import InvalidQuery
+from ..exceptions import InvalidQueryError
 from ..hoyo.genshin import ambr
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.search.character import CharacterUI
@@ -15,7 +14,7 @@ from ..ui.hoyo.search.weapon import WeaponUI
 
 
 class Hoyo(commands.Cog):
-    def __init__(self, bot: HoyoBuddy):
+    def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
     @staticmethod
@@ -36,7 +35,7 @@ class Hoyo(commands.Cog):
 
         return [
             discord.app_commands.Choice(
-                name=f"{account} | {translator.translate(_T(account.game, warn_no_key=False), locale)}",
+                name=f"{account} | {translator.translate(LocaleStr(account.game, warn_no_key=False), locale)}",
                 value=f"{account.uid}_{account.game}",
             )
             for account in accounts
@@ -44,10 +43,10 @@ class Hoyo(commands.Cog):
         ]
 
     @staticmethod
-    async def _no_account_response(i, locale):
+    async def _no_account_response(i: INTERACTION, locale: discord.Locale) -> Any:
         return await i.response.send_message(
             i.client.translator.translate(
-                _T(
+                LocaleStr(
                     "You don't have any accounts yet. Add one with </accounts>",
                     key="no_accounts_autocomplete_selected",
                 ),
@@ -61,7 +60,8 @@ class Hoyo(commands.Cog):
         uid, game = account_value.split("_")
         account = await user.accounts.filter(uid=uid, game=game).first()
         if account is None:
-            raise AssertionError("Account not found")
+            msg = "Account not found"
+            raise AssertionError(msg)
         return account
 
     @staticmethod
@@ -187,7 +187,7 @@ class Hoyo(commands.Cog):
         query: str,
     ) -> Any:
         if category_value == "none" or query == "none":
-            raise InvalidQuery
+            raise InvalidQueryError
 
         locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
         game = Game(game_value)

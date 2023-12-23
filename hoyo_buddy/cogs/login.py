@@ -1,23 +1,25 @@
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from discord import app_commands
-from discord.app_commands import locale_str as _T
+from discord.app_commands import locale_str
 from discord.ext import commands
 
-from ..bot import INTERACTION, HoyoBuddy
 from ..db.models import HoyoAccount, Settings, User
 from ..ui.login.accounts import AccountManager
 
+if TYPE_CHECKING:
+    from ..bot import INTERACTION, HoyoBuddy
+
 
 class Login(commands.Cog):
-    def __init__(self, bot: HoyoBuddy):
+    def __init__(self, bot: "HoyoBuddy") -> None:
         self.bot = bot
 
     @app_commands.command(
-        name=_T("accounts", translate=False),
-        description=_T("Manage your accounts", key="accounts_command_description"),
+        name=locale_str("accounts", translate=False),
+        description=locale_str("Manage your accounts", key="accounts_command_description"),
     )
-    async def accounts(self, i: INTERACTION) -> Any:
+    async def accounts(self, i: "INTERACTION") -> Any:
         locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
         user = await User.get(i.client.redis_pool, id=i.user.id)
         accounts = await HoyoAccount.filter(user=user).all()
@@ -36,5 +38,5 @@ class Login(commands.Cog):
         view.message = await i.original_response()
 
 
-async def setup(bot: HoyoBuddy):
+async def setup(bot: "HoyoBuddy") -> None:
     await bot.add_cog(Login(bot))

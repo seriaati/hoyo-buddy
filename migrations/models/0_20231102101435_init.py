@@ -1,7 +1,10 @@
-from tortoise.backends.base.client import BaseDBAsyncClient
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from tortoise.backends.base.client import BaseDBAsyncClient
 
 
-async def upgrade(db: BaseDBAsyncClient) -> str:
+async def upgrade(_: "BaseDBAsyncClient") -> str:
     return """
         CREATE TABLE IF NOT EXISTS "user" (
     "id" BIGINT NOT NULL  PRIMARY KEY,
@@ -40,6 +43,6 @@ CREATE TABLE IF NOT EXISTS "aerich" (
 );"""
 
 
-async def downgrade(db: BaseDBAsyncClient) -> str:
+async def downgrade(_: "BaseDBAsyncClient") -> str:
     return """
         """

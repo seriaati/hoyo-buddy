@@ -3,24 +3,28 @@ import json
 import logging
 import os
 import re
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from discord import app_commands
-from discord.app_commands.translator import TranslationContextTypes
-from discord.enums import Locale
 from transifex.native import init, tx
 from transifex.native.parsing import SourceString
 from transifex.native.rendering import AbstractRenderingPolicy
 
 from ..utils import split_list
 
-__all__ = ("Translator", "AppCommandTranslator", "locale_str")
+if TYPE_CHECKING:
+    from types import TracebackType
+
+    from discord.app_commands.translator import TranslationContextTypes
+    from discord.enums import Locale
+
+__all__ = ("Translator", "AppCommandTranslator", "LocaleStr")
 
 log = logging.getLogger(__name__)
 COMMAND_REGEX = r"</[a-z]+>"
 
 
-class locale_str:
+class LocaleStr:
     def __init__(
         self,
         message: str,
@@ -30,7 +34,7 @@ class locale_str:
         translate: bool = True,
         replace_command_mentions: bool = True,
         **kwargs,
-    ):
+    ) -> None:
         self.message = message
         self.key = key
         self.warn_no_key = warn_no_key
@@ -59,7 +63,12 @@ class Translator:
         await self.load()
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: "TracebackType | None",
+    ) -> None:
         await self.unload()
 
     async def load(self) -> None:
@@ -100,46 +109,73 @@ class Translator:
                 message = message.replace(command_occurence, f"</{command_name}:{command_id}>")
         return message
 
-    def translate(
-        self,
-        string: locale_str | str,
-        locale: Locale,
-    ) -> str:
+    def translate(self, string: LocaleStr | str, locale: "Locale") -> str:
         if isinstance(string, str):
             return string
+
         log.debug("Translating %r to %s", string, locale.value)
 
-        extras = string.extras
+        extras = self._translate_extras(string.extras, locale)
         message = string.message
-        for k, v in extras.items():
-            if isinstance(v, locale_str):
-                extras[k] = self.translate(v, locale)
 
         if string.replace_command_mentions:
             message = self.replace_command_with_mentions(message)
-        try:
-            generated_translation = message.format(**extras)
-        except ValueError:
-            generated_translation = message
+
+        generated_translation = self._generate_translation(message, extras)
 
         if not string.translate:
             return generated_translation
 
-        string_key = string.key
-        if string_key is None:
+        string_key = self._get_string_key(string)
+        lang = locale.value.replace("-", "_")
+        is_source = "en" in lang
+        translation = self._get_translation(message, lang, extras, string_key, is_source)
+
+        if translation is None:
+            self._handle_missing_translation(string_key, message)
+            return generated_translation
+
+        if is_source and translation != message and not extras:
+            self._handle_mismatched_strings(string_key, translation, message)
+            return message
+
+        return translation
+
+    def _translate_extras(self, extras: dict, locale: "Locale") -> dict:
+        translated_extras = {}
+        for k, v in extras.items():
+            if isinstance(v, LocaleStr):
+                translated_extras[k] = self.translate(v, locale)
+            else:
+                translated_extras[k] = v
+        return translated_extras
+
+    def _generate_translation(self, message: str, extras: dict) -> str:
+        try:
+            generated_translation = message.format(**extras)
+        except ValueError:
+            generated_translation = message
+        return generated_translation
+
+    def _get_string_key(self, string: LocaleStr) -> str:
+        if string.key is None:
             if string.warn_no_key:
-                log.warning("Missing key for string %r, using generated key", message)
+                log.warning("Missing key for string %r, using generated key", string.message)
             string_key = (
-                message.replace(" ", "_")
+                string.message.replace(" ", "_")
                 .replace(",", "")
                 .replace(".", "")
                 .replace("-", "_")
                 .lower()
             )
+        else:
+            string_key = string.key
+        return string_key
 
-        lang = locale.value.replace("-", "_")
-        is_source = "en" in lang
-        translation: str | None = tx.translate(
+    def _get_translation(
+        self, message: str, lang: str, extras: dict, string_key: str, is_source: bool
+    ) -> str | None:
+        translation = tx.translate(
             message,
             lang,
             params=extras,
@@ -156,21 +192,20 @@ class Translator:
                     existing,
                     message,
                 )
-
             self.not_translated[string_key] = message
-            return generated_translation
-
-        if is_source and translation != message and not extras:
-            log.info(
-                "Local and CDS strings with key %r do not match: %r != %r",
-                string_key,
-                translation,
-                message,
-            )
-            self.not_translated[string_key] = message
-            return message
-
         return translation
+
+    def _handle_missing_translation(self, string_key: str, message: str) -> None:
+        self.not_translated[string_key] = message
+
+    def _handle_mismatched_strings(self, string_key: str, translation: str, message: str) -> None:
+        log.info(
+            "Local and CDS strings with key %r do not match: %r != %r",
+            string_key,
+            translation,
+            message,
+        )
+        self.not_translated[string_key] = message
 
     @staticmethod
     async def fetch_source_strings() -> None:
@@ -221,8 +256,8 @@ class AppCommandTranslator(app_commands.Translator):
     async def translate(
         self,
         string: app_commands.locale_str,
-        locale: Locale,
-        _: TranslationContextTypes,
+        locale: "Locale",
+        _: "TranslationContextTypes",
     ) -> str:
-        locale_str_ = locale_str(string.message, **string.extras)
+        locale_str_ = LocaleStr(string.message, **string.extras)
         return self.translator.translate(locale_str_, locale)

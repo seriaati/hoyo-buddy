@@ -1,19 +1,20 @@
-from typing import Tuple, Type
+from typing import TYPE_CHECKING
 
-import discord
 import genshin.errors as errors
 from ambr.exceptions import DataNotFound
 
 from ..embeds import ErrorEmbed
-from ..exceptions import HoyoBuddyError, InvalidQuery
-from .translator import Translator
-from .translator import locale_str as _T
+from ..exceptions import HoyoBuddyError, InvalidQueryError
+from .translator import LocaleStr, Translator
+
+if TYPE_CHECKING:
+    import discord
 
 __all__ = ("get_error_embed",)
 
 GENSHIN_ERROR_CONVERTER: dict[
-    Type[errors.GenshinException],
-    Tuple[Tuple[str, str] | None, Tuple[str, str] | None],
+    type[errors.GenshinException],
+    tuple[tuple[str, str] | None, tuple[str, str] | None],
 ] = {
     errors.AlreadyClaimed: (
         ("Daily check-in reward already claimed", "already_claimed_title"),
@@ -30,11 +31,11 @@ GENSHIN_ERROR_CONVERTER: dict[
 
 
 def get_error_embed(
-    error: Exception, locale: discord.Locale, translator: Translator
-) -> Tuple[ErrorEmbed, bool]:
+    error: Exception, locale: "discord.Locale", translator: Translator
+) -> tuple[ErrorEmbed, bool]:
     recognized = True
     if isinstance(error, DataNotFound):
-        error = InvalidQuery()
+        error = InvalidQueryError()
     if isinstance(error, HoyoBuddyError):
         embed = ErrorEmbed(
             locale,
@@ -47,17 +48,19 @@ def get_error_embed(
         embed = ErrorEmbed(
             locale,
             translator,
-            title=_T(title[0], key=title[1])
+            title=LocaleStr(title[0], key=title[1])
             if title
-            else _T("An error occurred", key="error_title"),
-            description=_T(description[0], key=description[1]) if description else str(error),
+            else LocaleStr("An error occurred", key="error_title"),
+            description=LocaleStr(description[0], key=description[1])
+            if description
+            else str(error),
         )
     else:
         recognized = False
         embed = ErrorEmbed(
             locale,
             translator,
-            title=_T("An error occurred", key="error_title"),
+            title=LocaleStr("An error occurred", key="error_title"),
             description=str(error),
         )
     return embed, recognized

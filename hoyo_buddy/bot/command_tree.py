@@ -1,11 +1,13 @@
 import logging
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from discord import InteractionResponded, app_commands
 
 from ..db import Settings, User
-from .bot import INTERACTION
 from .error_handler import get_error_embed
+
+if TYPE_CHECKING:
+    from .bot import INTERACTION
 
 __all__ = ("CommandTree",)
 
@@ -13,13 +15,13 @@ log = logging.getLogger(__name__)
 
 
 class CommandTree(app_commands.CommandTree):
-    async def interaction_check(self, i: INTERACTION) -> Literal[True]:
+    async def interaction_check(self, i: "INTERACTION") -> Literal[True]:
         user = await User.silent_create(i.client.redis_pool, id=i.user.id)
         if user:
             await Settings.create(i.client.redis_pool, user=user)
         return True
 
-    async def on_error(self, i: INTERACTION, e: app_commands.AppCommandError) -> None:
+    async def on_error(self, i: "INTERACTION", e: app_commands.AppCommandError) -> None:
         error = e.original if isinstance(e, app_commands.errors.CommandInvokeError) else e
         locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
         embed, recognized = get_error_embed(error, locale, i.client.translator)

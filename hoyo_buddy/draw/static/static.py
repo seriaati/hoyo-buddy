@@ -1,18 +1,23 @@
 import os
-from typing import Sequence
+from typing import TYPE_CHECKING
 
 import aiofiles
-import aiohttp
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    import aiohttp
 
 __all__ = ("download_and_save_static_images", "STATIC_FOLDER")
 
 STATIC_FOLDER = "hoyo_buddy/draw/static"
 
 
-async def download_static_image(image_url: str, session: aiohttp.ClientSession) -> bytes:
+async def download_static_image(image_url: str, session: "aiohttp.ClientSession") -> bytes:
     async with session.get(image_url) as resp:
         if resp.status != 200:
-            raise ValueError(f"Failed to download image: {image_url}")
+            msg = f"Failed to download image: {image_url}"
+            raise ValueError(msg)
         image = await resp.read()
         return image
 
@@ -23,7 +28,7 @@ async def save_static_image(folder: str, filename: str, image: bytes) -> None:
 
 
 async def download_and_save_static_images(
-    image_urls: Sequence[str], folder: str, session: aiohttp.ClientSession
+    image_urls: "Sequence[str]", folder: str, session: "aiohttp.ClientSession"
 ) -> None:
     for image_url in image_urls:
         filename = image_url.split("/")[-1]

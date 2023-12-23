@@ -1,12 +1,14 @@
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import discord
 
 from ...bot import INTERACTION, Translator
-from ...bot import locale_str as _T
-from ...db.models import Settings
+from ...bot import LocaleStr as LocaleStr
 from ...embeds import DefaultEmbed
 from ..ui import Select, SelectOption, ToggleButton, View
+
+if TYPE_CHECKING:
+    from ...db.models import Settings
 
 LOCALES: dict[discord.Locale, dict[str, str]] = {
     discord.Locale.american_english: {"name": "English (US)", "emoji": "🇺🇸"},
@@ -26,8 +28,8 @@ class SettingsUI(View):
         author: discord.User | discord.Member,
         locale: discord.Locale,
         translator: Translator,
-        settings: Settings,
-    ):
+        settings: "Settings",
+    ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.settings = settings
 
@@ -37,7 +39,7 @@ class SettingsUI(View):
     @staticmethod
     def _get_filename(theme: str, locale: discord.Locale) -> str:
         try:
-            return f"hoyo_buddy/draw/static/brand/{theme}-{locale.value.replace('-','_')}.png"
+            return f"hoyo_buddy/draw/static/brand/{theme}-{locale.value.replace('-', '_')}.png"
         except FileNotFoundError:
             return f"hoyo_buddy/draw/static/brand/{theme}-en_US.png"
 
@@ -52,7 +54,7 @@ class SettingsUI(View):
         filename = self._get_filename(theme, locale)
         return discord.File(filename, filename="brand.png")
 
-    async def update_and_save(self, i: INTERACTION):
+    async def update_and_save(self, i: INTERACTION) -> None:
         await self.absolute_edit(
             i, embed=self.get_embed(), attachments=[self.get_brand_image_file(i.locale)], view=self
         )
@@ -60,7 +62,7 @@ class SettingsUI(View):
 
 
 class LanguageSelector(Select):
-    def __init__(self, current_locale: discord.Locale | None):
+    def __init__(self, current_locale: discord.Locale | None) -> None:
         options = self._get_options(current_locale)
         super().__init__(options=options)
 
@@ -68,7 +70,7 @@ class LanguageSelector(Select):
     def _get_options(current_locale: discord.Locale | None) -> list[SelectOption]:
         options: list[SelectOption] = [
             SelectOption(
-                label=_T("Follow client language", key="auto_locale_option_label"),
+                label=LocaleStr("Follow client language", key="auto_locale_option_label"),
                 value="auto",
                 emoji="🏳️",
                 default=not current_locale,
@@ -97,10 +99,10 @@ class LanguageSelector(Select):
 
 
 class DarkModeToggle(ToggleButton):
-    def __init__(self, current_toggle: bool):
+    def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            _T("Dark mode", key="dark_mode_button_label"),
+            LocaleStr("Dark mode", key="dark_mode_button_label"),
         )
 
     async def callback(self, i: INTERACTION) -> Any:

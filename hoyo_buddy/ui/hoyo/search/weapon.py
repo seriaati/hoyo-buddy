@@ -1,15 +1,16 @@
 import contextlib
-from typing import Any, Tuple
+from typing import TYPE_CHECKING, Any
 
 from discord import InteractionResponded, Locale, Member, User
 
-from ....bot import INTERACTION, Translator
-from ....bot.translator import locale_str as _T
-from ....embeds import DefaultEmbed
-from ....exceptions import InvalidQuery
+from ....bot.translator import LocaleStr as LocaleStr
+from ....exceptions import InvalidQueryError
 from ....hoyo.genshin.ambr import AmbrAPIClient
-from ...ui import LevelModalButton as LMB
-from ...ui import Select, SelectOption, View
+from ...ui import LevelModalButton, Select, SelectOption, View
+
+if TYPE_CHECKING:
+    from ....bot import INTERACTION, Translator
+    from ....embeds import DefaultEmbed
 
 
 class WeaponUI(View):
@@ -19,19 +20,19 @@ class WeaponUI(View):
         *,
         author: User | Member,
         locale: Locale,
-        translator: Translator,
-    ):
+        translator: "Translator",
+    ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.weapon_id = weapon_id
         self.weapon_level = 90
         self.refinement = 1
 
-    async def fetch_weapon_embed(self) -> Tuple[DefaultEmbed, int]:
+    async def fetch_weapon_embed(self) -> tuple["DefaultEmbed", int]:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             try:
                 weapon_id = int(self.weapon_id)
             except ValueError:
-                raise InvalidQuery from None
+                raise InvalidQueryError from None
 
             weapon_detail = await api.fetch_weapon_detail(weapon_id)
             weapon_curve = await api.fetch_weapon_curve()
@@ -45,7 +46,7 @@ class WeaponUI(View):
             )
             return embed, len(weapon_detail.upgrade.awaken_cost) + 1
 
-    async def update(self, i: INTERACTION) -> None:
+    async def update(self, i: "INTERACTION") -> None:
         with contextlib.suppress(InteractionResponded):
             await i.response.defer()
 
@@ -53,12 +54,12 @@ class WeaponUI(View):
 
         self.clear_items()
         self.add_item(
-            LevelModalButton(
+            WeaponLevelModalButton(
                 True,
                 min_level=1,
                 max_level=90,
                 default_level=self.weapon_level,
-                label=_T("Change weapon level", key="change_weapon_level_label"),
+                label=LocaleStr("Change weapon level", key="change_weapon_level_label"),
             )
         )
         self.add_item(
@@ -71,7 +72,7 @@ class WeaponUI(View):
         await i.edit_original_response(embed=embed, view=self)
 
 
-class LevelModalButton(LMB):
+class WeaponLevelModalButton(LevelModalButton):
     def __init__(
         self,
         is_character_level: bool,
@@ -79,14 +80,14 @@ class LevelModalButton(LMB):
         min_level: int,
         max_level: int,
         default_level: int | None = None,
-        label: _T,
-    ):
+        label: LocaleStr,
+    ) -> None:
         super().__init__(
             min_level=min_level, max_level=max_level, default_level=default_level, label=label
         )
         self.is_character_level = is_character_level
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         self.view: WeaponUI
         await super().callback(i)
         self.view.weapon_level = self.level
@@ -94,11 +95,13 @@ class LevelModalButton(LMB):
 
 
 class RefinementSelector(Select):
-    def __init__(self, *, min_refinement: int, max_refinement: int, current_refinement: int):
+    def __init__(
+        self, *, min_refinement: int, max_refinement: int, current_refinement: int
+    ) -> None:
         super().__init__(
             options=[
                 SelectOption(
-                    label=_T("Refinement {r}", r=i, key="refinement_indicator"),
+                    label=LocaleStr("Refinement {r}", r=i, key="refinement_indicator"),
                     value=str(i),
                     default=current_refinement == i,
                 )
@@ -106,7 +109,7 @@ class RefinementSelector(Select):
             ]
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         self.view: WeaponUI
         self.view.refinement = int(self.values[0])
         await self.view.update(i)

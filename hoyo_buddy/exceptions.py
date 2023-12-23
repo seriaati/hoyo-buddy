@@ -1,25 +1,25 @@
-from .bot.translator import locale_str as _T
+from .bot.translator import LocaleStr as LocaleStr
 
 
 class HoyoBuddyError(Exception):
-    def __init__(self, title: _T, message: _T):
+    def __init__(self, title: LocaleStr, message: LocaleStr) -> None:
         self.title = title
         self.message = message
 
 
-class InvalidInput(HoyoBuddyError):
-    def __init__(self, reason: _T):
+class InvalidInputError(HoyoBuddyError):
+    def __init__(self, reason: LocaleStr) -> None:
         super().__init__(
-            title=_T("Invalid input", key="invalid_input_error_title"),
+            title=LocaleStr("Invalid input", key="invalid_input_error_title"),
             message=reason,
         )
 
 
-class InvalidQuery(HoyoBuddyError):
-    def __init__(self):
+class InvalidQueryError(HoyoBuddyError):
+    def __init__(self) -> None:
         super().__init__(
-            title=_T("Invalid query", key="invalid_query_error_title"),
-            message=_T(
+            title=LocaleStr("Invalid query", key="invalid_query_error_title"),
+            message=LocaleStr(
                 "Unable to find anything with the provided query, please select choices from the autocomplete instead of typing your own query.",
                 key="invalid_query_error_message",
             ),

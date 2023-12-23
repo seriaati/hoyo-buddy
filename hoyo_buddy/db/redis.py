@@ -1,10 +1,12 @@
 import logging
 import sys
-from types import TracebackType
-from typing import Type
+from typing import TYPE_CHECKING
 
 from redis import asyncio as aioredis
 from yarl import URL
+
+if TYPE_CHECKING:
+    from types import TracebackType
 
 log = logging.getLogger(__name__)
 
@@ -20,10 +22,10 @@ class RedisPool:
 
     async def __aexit__(
         self,
-        exc_type: Type[BaseException] | None,
+        exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
-        traceback: TracebackType | None,
-    ):
+        traceback: "TracebackType | None",
+    ) -> None:
         if self.pool is not None:
             await self.pool.disconnect()
             log.info("Disconnected from redis successfully.")

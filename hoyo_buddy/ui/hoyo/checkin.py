@@ -1,22 +1,27 @@
 import asyncio
-import io
-from typing import Any, Sequence, Tuple
+from typing import TYPE_CHECKING, Any
 
-import aiohttp
 import discord
 from genshin import Game, GenshinException
-from genshin.models import ClaimedDailyReward, DailyReward
 
 from ...bot import INTERACTION, Translator, emojis
-from ...bot import locale_str as _T
+from ...bot import LocaleStr as LocaleStr
 from ...bot.error_handler import get_error_embed
-from ...db.models import HoyoAccount
 from ...draw import checkin
 from ...draw.static import download_and_save_static_images
 from ...embeds import DefaultEmbed
 from ...hoyo.reward_calc import RewardCalculator
 from ...utils import get_now
 from ..ui import Button, GoBackButton, ToggleButton, View
+
+if TYPE_CHECKING:
+    import io
+    from collections.abc import Sequence
+
+    import aiohttp
+    from genshin.models import ClaimedDailyReward, DailyReward
+
+    from ...db.models import HoyoAccount
 
 CHECK_IN_URLS = {
     Game.GENSHIN: "https://act.hoyolab.com/ys/event/signin-sea-v3/index.html?act_id=e202102251931481",
@@ -28,14 +33,14 @@ CHECK_IN_URLS = {
 class CheckInUI(View):
     def __init__(
         self,
-        account: HoyoAccount,
+        account: "HoyoAccount",
         dark_mode: bool,
         *,
         author: discord.User | discord.Member,
         locale: discord.Locale,
         translator: Translator,
         timeout: float | None = 180,
-    ):
+    ) -> None:
         super().__init__(author=author, locale=locale, translator=translator, timeout=timeout)
         self.account = account
         self.client = account.client
@@ -44,12 +49,13 @@ class CheckInUI(View):
 
     def add_items(self) -> None:
         if self.client.game is None:
-            raise AssertionError("Client game is None")
+            msg = "Client game is None"
+            raise AssertionError(msg)
         self.add_item(CheckInButton())
         self.add_item(
             Button(
                 url=CHECK_IN_URLS[self.client.game],
-                label=_T("Make up for check-in", key="make_up_for_checkin_button_label"),
+                label=LocaleStr("Make up for check-in", key="make_up_for_checkin_button_label"),
             )
         )
         self.add_item(AutoCheckInToggle(self.account.daily_checkin))
@@ -57,28 +63,28 @@ class CheckInUI(View):
 
     @staticmethod
     async def _draw_checkin_image(
-        rewards: Tuple[DailyReward, ...],
+        rewards: tuple["DailyReward", ...],
         dark_mode: bool,
-        session: aiohttp.ClientSession,
-    ) -> io.BytesIO:
+        session: "aiohttp.ClientSession",
+    ) -> "io.BytesIO":
         await download_and_save_static_images([r.icon for r in rewards], "check-in", session)
         return await asyncio.to_thread(checkin.draw_card, rewards, dark_mode)
 
     @staticmethod
-    def _calc_valuable_amount(claimed_rewards: Sequence[ClaimedDailyReward]) -> int:
+    def _calc_valuable_amount(claimed_rewards: "Sequence[ClaimedDailyReward]") -> int:
         return sum(
             r.amount for r in claimed_rewards if r.name in ("Primogem", "Crystal", "Stellar Jade")
         )
 
     @staticmethod
-    def _calc_missed_days(claimed_rewards: Sequence[ClaimedDailyReward]) -> int:
+    def _calc_missed_days(claimed_rewards: "Sequence[ClaimedDailyReward]") -> int:
         now = get_now()
         missed = now.day - len(claimed_rewards)
         return missed
 
     async def get_image_embed_and_file(
-        self, session: aiohttp.ClientSession
-    ) -> Tuple[DefaultEmbed, discord.File]:
+        self, session: "aiohttp.ClientSession"
+    ) -> tuple[DefaultEmbed, discord.File]:
         monthly_rewards = await self.client.get_monthly_rewards()
         claimed_rewards = await self.client.claimed_rewards()
         reward_calculator = RewardCalculator(claimed_rewards, monthly_rewards)
@@ -89,17 +95,17 @@ class CheckInUI(View):
         file_ = discord.File(fp, filename="check-in.png")
 
         if self.client.game == Game.GENSHIN:
-            valuable_name = _T("primogems", warn_no_key=False)
+            valuable_name = LocaleStr("primogems", warn_no_key=False)
         elif self.client.game == Game.HONKAI:
-            valuable_name = _T("crystals", warn_no_key=False)
+            valuable_name = LocaleStr("crystals", warn_no_key=False)
         else:  # Game.STARRAIL
-            valuable_name = _T("stellar jades", warn_no_key=False)
+            valuable_name = LocaleStr("stellar jades", warn_no_key=False)
 
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=_T("Daily Check-in", key="daily_checkin_embed_title"),
-            description=_T(
+            title=LocaleStr("Daily Check-in", key="daily_checkin_embed_title"),
+            description=LocaleStr(
                 (
                     "Claimed {amount} {valuable_name} so far\n"
                     "Checked in {day} day(s) this month\n"
@@ -115,7 +121,7 @@ class CheckInUI(View):
         embed.set_image(url="attachment://check-in.png")
         return embed, file_
 
-    async def start(self, i: INTERACTION):
+    async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
         embed, file_ = await self.get_image_embed_and_file(i.client.session)
         await i.followup.send(embed=embed, file=file_, view=self)
@@ -123,7 +129,7 @@ class CheckInUI(View):
 
 
 class BackButton(Button):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(emoji=emojis.BACK, row=4)
 
     async def callback(self, i: INTERACTION) -> Any:
@@ -137,10 +143,10 @@ class BackButton(Button):
 
 
 class CheckInButton(Button):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             style=discord.ButtonStyle.primary,
-            label=_T("Check-in", key="checkin_button_label"),
+            label=LocaleStr("Check-in", key="checkin_button_label"),
             emoji=emojis.FREE_CANCELLATION,
         )
 
@@ -150,7 +156,8 @@ class CheckInButton(Button):
         await self.set_loading_state(i)
         client = self.view.client
         if client.game is None:
-            raise AssertionError("Client game is None")
+            msg = "Client game is None"
+            raise AssertionError(msg)
 
         self.view.clear_items()
         self.view.add_item(BackButton())
@@ -168,10 +175,10 @@ class CheckInButton(Button):
 
 
 class AutoCheckInToggle(ToggleButton):
-    def __init__(self, current_toggle: bool):
+    def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            _T("Auto check-in", key="auto_checkin_button_label"),
+            LocaleStr("Auto check-in", key="auto_checkin_button_label"),
             emoji=emojis.SMART_TOY,
         )
 
@@ -183,9 +190,9 @@ class AutoCheckInToggle(ToggleButton):
 
 
 class NotificationSettingsButton(Button):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
-            label=_T("Notification settings", key="notification_settings_button_label"),
+            label=LocaleStr("Notification settings", key="notification_settings_button_label"),
             emoji=emojis.SETTINGS,
             row=1,
         )
@@ -210,10 +217,10 @@ class NotificationSettingsButton(Button):
 
 
 class NotifyOnFailureToggle(ToggleButton):
-    def __init__(self, current_toggle: bool):
+    def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            _T("Notify on check-in failure", key="notify_on_failure_button_label"),
+            LocaleStr("Notify on check-in failure", key="notify_on_failure_button_label"),
         )
 
     async def callback(self, i: INTERACTION) -> Any:
@@ -224,10 +231,10 @@ class NotifyOnFailureToggle(ToggleButton):
 
 
 class NotifyOnSuccessToggle(ToggleButton):
-    def __init__(self, current_toggle: bool):
+    def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            _T("Notify on check-in success", key="notify_on_success_button_label"),
+            LocaleStr("Notify on check-in success", key="notify_on_success_button_label"),
         )
 
     async def callback(self, i: INTERACTION) -> Any:

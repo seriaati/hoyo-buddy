@@ -1,8 +1,8 @@
 import genshin
 from discord import Locale
 
+from ..bot.translator import LocaleStr as LocaleStr
 from ..bot.translator import Translator
-from ..bot.translator import locale_str as _T
 from ..db.enums import GAME_CONVERTER, GAME_THUMBNAILS
 from ..embeds import DefaultEmbed
 
@@ -48,13 +48,13 @@ class GenshinClient(genshin.Client):
         embed = DefaultEmbed(
             locale,
             translator,
-            title=_T("Daily check-in reward claimed", key="reward_claimed_title"),
+            title=LocaleStr("Daily check-in reward claimed", key="reward_claimed_title"),
             description=f"{daily_reward.name} x{daily_reward.amount}",
         )
         embed.set_thumbnail(url=daily_reward.icon)
         converted_game = GAME_CONVERTER[game]
         embed.set_author(
-            name=_T(converted_game.value, warn_no_key=False),
+            name=LocaleStr(converted_game.value, warn_no_key=False),
             icon_url=GAME_THUMBNAILS[game],
         )
         return embed

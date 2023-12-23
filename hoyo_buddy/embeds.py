@@ -1,8 +1,9 @@
-from typing import Self
+from typing import TYPE_CHECKING, Self
 
 import discord
 
-from .bot import Translator, locale_str
+if TYPE_CHECKING:
+    from .bot import LocaleStr, Translator
 
 __all__ = ("Embed", "DefaultEmbed", "ErrorEmbed")
 
@@ -11,13 +12,13 @@ class Embed(discord.Embed):
     def __init__(
         self,
         locale: discord.Locale,
-        translator: Translator,
+        translator: "Translator",
         *,
         color: int | None = None,
-        title: locale_str | str | None = None,
+        title: "LocaleStr | str | None" = None,
         url: str | None = None,
-        description: locale_str | str | None = None,
-    ):
+        description: "LocaleStr | str | None" = None,
+    ) -> None:
         translated_title = translator.translate(title, locale) if title else None
         translated_description = translator.translate(description, locale) if description else None
 
@@ -33,8 +34,8 @@ class Embed(discord.Embed):
     def add_field(
         self,
         *,
-        name: locale_str | str,
-        value: locale_str | str,
+        name: "LocaleStr | str",
+        value: "LocaleStr | str",
         inline: bool = True,
     ) -> Self:
         translated_name = self.translator.translate(name, self.locale)
@@ -44,7 +45,7 @@ class Embed(discord.Embed):
     def set_author(
         self,
         *,
-        name: locale_str | str,
+        name: "LocaleStr | str",
         url: str | None = None,
         icon_url: str | None = None,
     ) -> Self:
@@ -54,7 +55,7 @@ class Embed(discord.Embed):
     def set_footer(
         self,
         *,
-        text: locale_str | str | None = None,
+        text: "LocaleStr | str | None" = None,
         icon_url: str | None = None,
     ) -> Self:
         translated_text = self.translator.translate(text, self.locale) if text else None
@@ -65,12 +66,12 @@ class DefaultEmbed(Embed):
     def __init__(
         self,
         locale: discord.Locale,
-        translator: Translator,
+        translator: "Translator",
         *,
-        title: locale_str | str | None = None,
+        title: "LocaleStr | str | None" = None,
         url: str | None = None,
-        description: locale_str | str | None = None,
-    ):
+        description: "LocaleStr | str | None" = None,
+    ) -> None:
         super().__init__(
             locale,
             translator,
@@ -85,12 +86,12 @@ class ErrorEmbed(Embed):
     def __init__(
         self,
         locale: discord.Locale,
-        translator: Translator,
+        translator: "Translator",
         *,
-        title: locale_str | str | None = None,
+        title: "LocaleStr | str | None" = None,
         url: str | None = None,
-        description: locale_str | str | None = None,
-    ):
+        description: "LocaleStr | str | None" = None,
+    ) -> None:
         super().__init__(
             locale,
             translator,

@@ -1,16 +1,19 @@
 import logging
-from typing import Any, Self, Sequence
+from typing import TYPE_CHECKING, Any, Self
 
 import discord
 from discord.utils import MISSING
 
 from ..bot import INTERACTION, Translator, emojis
-from ..bot import locale_str as _T
+from ..bot import LocaleStr as LocaleStr
 from ..bot.error_handler import get_error_embed
 from ..db.models import Settings
 from ..embeds import ErrorEmbed
-from ..exceptions import InvalidInput
+from ..exceptions import InvalidInputError
 from ..utils import split_list
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 log = logging.getLogger(__name__)
 
@@ -34,7 +37,7 @@ class View(discord.ui.View):
         locale: discord.Locale,
         translator: Translator,
         timeout: float | None = 180,
-    ):
+    ) -> None:
         super().__init__(timeout=timeout)
         self.author = author
         self.locale = locale
@@ -65,8 +68,8 @@ class View(discord.ui.View):
             embed = ErrorEmbed(
                 self.locale,
                 self.translator,
-                title=_T("INTERACTION failed", key="interaction_failed_title"),
-                description=_T(
+                title=LocaleStr("INTERACTION failed", key="interaction_failed_title"),
+                description=LocaleStr(
                     "This view is not initiated by you, therefore you cannot use it.",
                     key="interaction_failed_description",
                 ),
@@ -77,12 +80,12 @@ class View(discord.ui.View):
 
     def disable_items(self) -> None:
         for child in self.children:
-            if isinstance(child, (discord.ui.Button, discord.ui.Select)):
+            if isinstance(child, discord.ui.Button | discord.ui.Select):
                 child.disabled = True
 
     def enable_items(self) -> None:
         for child in self.children:
-            if isinstance(child, (discord.ui.Button, discord.ui.Select)):
+            if isinstance(child, discord.ui.Button | discord.ui.Select):
                 child.disabled = False
 
     def add_item(self, item: "Button | Select", *, translate: bool = True) -> Self:
@@ -92,7 +95,7 @@ class View(discord.ui.View):
 
     def get_item(self, custom_id: str) -> "Button | Select | None":
         for item in self.children:
-            if isinstance(item, (Button, Select)) and item.custom_id == custom_id:
+            if isinstance(item, Button | Select) and item.custom_id == custom_id:
                 return item
         return None
 
@@ -130,13 +133,13 @@ class Button(discord.ui.Button):
         self,
         *,
         style: discord.ButtonStyle = discord.ButtonStyle.secondary,
-        label: _T | str | None = None,
+        label: LocaleStr | str | None = None,
         disabled: bool = False,
         custom_id: str | None = None,
         url: str | None = None,
         emoji: str | None = None,
         row: int | None = None,
-    ):
+    ) -> None:
         super().__init__(
             style=style,
             disabled=disabled,
@@ -155,7 +158,7 @@ class Button(discord.ui.Button):
         self,
         locale: discord.Locale,
         translator: Translator,
-    ):
+    ) -> None:
         if self.locale_str_label:
             self.label = translator.translate(self.locale_str_label, locale)
 
@@ -168,14 +171,15 @@ class Button(discord.ui.Button):
         self.disabled = True
         self.emoji = emojis.LOADING
         self.label = self.view.translator.translate(
-            _T("Loading...", key="loading_text"), self.view.locale
+            LocaleStr("Loading...", key="loading_text"), self.view.locale
         )
         await self.view.absolute_edit(i, view=self.view)
 
     async def unset_loading_state(self, i: INTERACTION) -> None:
         self.view: View
         if self.original_disabled is None:
-            raise RuntimeError("unset_loading_state called before set_loading_state")
+            msg = "unset_loading_state called before set_loading_state"
+            raise RuntimeError(msg)
 
         self.disabled = self.original_disabled
         self.emoji = self.original_emoji
@@ -187,10 +191,10 @@ class GoBackButton(Button):
     def __init__(
         self,
         original_children: list[discord.ui.Item[Any]],
-        embeds: Sequence[discord.Embed] | None = None,
-        attachments: Sequence[discord.Attachment] | None = None,
+        embeds: "Sequence[discord.Embed] | None" = None,
+        attachments: "Sequence[discord.Attachment] | None" = None,
         row: int = 4,
-    ):
+    ) -> None:
         super().__init__(emoji=emojis.BACK, row=row)
         self.original_children = original_children.copy()
         self.embeds = embeds
@@ -199,7 +203,7 @@ class GoBackButton(Button):
     async def callback(self, i: INTERACTION) -> Any:
         self.view.clear_items()
         for item in self.original_children:
-            if isinstance(item, (Button, Select)):
+            if isinstance(item, Button | Select):
                 self.view.add_item(item, translate=False)
 
         kwargs: dict[str, Any] = {"view": self.view}
@@ -211,7 +215,7 @@ class GoBackButton(Button):
 
 
 class ToggleButton(Button):
-    def __init__(self, current_toggle: bool, toggle_label: _T, **kwargs):
+    def __init__(self, current_toggle: bool, toggle_label: LocaleStr, **kwargs) -> None:
         self.current_toggle = current_toggle
         self.toggle_label = toggle_label
         super().__init__(style=self._get_style(), label=self._get_label(), row=1, **kwargs)
@@ -219,15 +223,15 @@ class ToggleButton(Button):
     def _get_style(self) -> discord.ButtonStyle:
         return discord.ButtonStyle.success if self.current_toggle else discord.ButtonStyle.secondary
 
-    def _get_label(self) -> _T:
-        return _T(
+    def _get_label(self) -> LocaleStr:
+        return LocaleStr(
             "{toggle_label}: {toggle}",
             key="auto_checkin_button_label",
             toggle_label=self.toggle_label,
             toggle=(
-                _T("On", key="toggle_on_text")
+                LocaleStr("On", key="toggle_on_text")
                 if self.current_toggle
-                else _T("Off", key="toggle_off_text")
+                else LocaleStr("Off", key="toggle_off_text")
             ),
             translate=False,
         )
@@ -247,11 +251,11 @@ class LevelModalButton(Button):
         min_level: int,
         max_level: int,
         default_level: int | None = None,
-        label: _T | str | None = None,
+        label: LocaleStr | str | None = None,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(
-            label=label or _T("Enter level", key="enter_level_button_label"),
+            label=label or LocaleStr("Enter level", key="enter_level_button_label"),
             style=discord.ButtonStyle.primary,
             **kwargs,
         )
@@ -276,9 +280,9 @@ class SelectOption(discord.SelectOption):
     def __init__(
         self,
         *,
-        label: _T | str,
+        label: LocaleStr | str,
         value: str,
-        description: _T | str | None = None,
+        description: LocaleStr | str | None = None,
         emoji: str | None = None,
         default: bool = False,
     ) -> None:
@@ -297,7 +301,7 @@ class Select(discord.ui.Select):
         self,
         *,
         custom_id: str = MISSING,
-        placeholder: _T | str | None = None,
+        placeholder: LocaleStr | str | None = None,
         min_values: int = 1,
         max_values: int = 1,
         options: list[SelectOption],
@@ -346,7 +350,7 @@ class Select(discord.ui.Select):
         self.options = [
             SelectOption(
                 label=self.view.translator.translate(
-                    _T("Loading...", key="loading_text"), self.view.locale
+                    LocaleStr("Loading...", key="loading_text"), self.view.locale
                 ),
                 value="loading",
                 default=True,
@@ -358,7 +362,8 @@ class Select(discord.ui.Select):
 
     async def unset_loading_state(self, i: INTERACTION) -> None:
         if not self.original_options or self.original_disabled is None:
-            raise RuntimeError("unset_loading_state called before set_loading_state")
+            msg = "unset_loading_state called before set_loading_state"
+            raise RuntimeError(msg)
 
         self.options = self.original_options
         self.disabled = self.original_disabled
@@ -367,12 +372,12 @@ class Select(discord.ui.Select):
 
 
 NEXT_PAGE = SelectOption(
-    label=_T("Next page", key="next_page_option_label"),
+    label=LocaleStr("Next page", key="next_page_option_label"),
     value="next_page",
     emoji=emojis.FORWARD,
 )
 PREV_PAGE = SelectOption(
-    label=_T("Previous page", key="prev_page_option_label"),
+    label=LocaleStr("Previous page", key="prev_page_option_label"),
     value="prev_page",
     emoji=emojis.BACK,
 )
@@ -410,11 +415,11 @@ class TextInput(discord.ui.TextInput):
     def __init__(
         self,
         *,
-        label: _T | str,
+        label: LocaleStr | str,
         style: discord.TextStyle = discord.TextStyle.short,
         custom_id: str = MISSING,
-        placeholder: _T | str | None = None,
-        default: _T | str | None = None,
+        placeholder: LocaleStr | str | None = None,
+        default: LocaleStr | str | None = None,
         required: bool = True,
         min_length: int | None = None,
         max_length: int | None = None,
@@ -438,7 +443,7 @@ class Modal(discord.ui.Modal):
     def __init__(
         self,
         *,
-        title: _T | str,
+        title: LocaleStr | str,
         timeout: float | None = None,
         custom_id: str = MISSING,
     ) -> None:
@@ -488,10 +493,10 @@ class Modal(discord.ui.Modal):
 
 
 class LevelModal(Modal):
-    level_input = TextInput(label=_T("Level", key="level_input_label"))
+    level_input = TextInput(label=LocaleStr("Level", key="level_input_label"))
 
-    def __init__(self, *, min_level: int, max_level: int, default_level: int | None = None):
-        super().__init__(title=_T("Enter level", key="enter_level_modal_title"))
+    def __init__(self, *, min_level: int, max_level: int, default_level: int | None = None) -> None:
+        super().__init__(title=LocaleStr("Enter level", key="enter_level_modal_title"))
         self.min_level = min_level
         self.max_level = max_level
         self.level_input.default = str(default_level) if default_level else None
@@ -502,11 +507,11 @@ class LevelModal(Modal):
         try:
             self.level = int(self.level_input.value)
         except ValueError:
-            raise InvalidInput(_T("Level need to be an integer")) from None
+            raise InvalidInputError(LocaleStr("Level need to be an integer")) from None
 
         if self.level < self.min_level or self.level > self.max_level:
-            raise InvalidInput(
-                _T(
+            raise InvalidInputError(
+                LocaleStr(
                     "Level needs to be between {min_level} and {max_level}",
                     min_level=self.min_level,
                     max_level=self.max_level,

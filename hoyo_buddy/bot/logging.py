@@ -1,14 +1,18 @@
 import contextlib
 import logging
 import logging.handlers
+from typing import TYPE_CHECKING
 
 import discord
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 __all__ = ("setup_logging",)
 
 
 @contextlib.contextmanager
-def setup_logging(env: str):
+def setup_logging(env: str) -> "Generator[None, None, None]":
     log = logging.getLogger()
 
     try:

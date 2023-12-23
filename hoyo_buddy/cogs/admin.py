@@ -1,37 +1,41 @@
 import asyncio
 import json
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
+import aiofiles
 from discord import ButtonStyle, ui
 from discord.ext import commands
-from discord.ext.commands.context import Context
 
-from ..bot import INTERACTION, HoyoBuddy
 from ..hoyo.daily_checkin import DailyCheckin
+
+if TYPE_CHECKING:
+    from discord.ext.commands.context import Context
+
+    from ..bot import INTERACTION, HoyoBuddy
 
 
 class TaskView(ui.View):
-    async def interaction_check(self, i: INTERACTION) -> bool:
+    async def interaction_check(self, i: "INTERACTION") -> bool:
         return await i.client.is_owner(i.user)
 
     @ui.button(label="Daily Check-in", style=ButtonStyle.blurple)
-    async def daily_checkin(self, i: INTERACTION, _: ui.Button) -> None:
+    async def daily_checkin(self, i: "INTERACTION", _: ui.Button) -> None:
         await i.response.send_message("Daily check-in task started.")
-        asyncio.create_task(DailyCheckin.exec(i.client))
+        asyncio.create_task(DailyCheckin.execute(i.client))
 
 
 class Admin(commands.Cog):
-    def __init__(self, bot: HoyoBuddy):
+    def __init__(self, bot: "HoyoBuddy") -> None:
         self.bot = bot
 
-    async def cog_check(self, ctx: Context) -> bool:  # skipcq: PYL-W0236
+    async def cog_check(self, ctx: "Context") -> bool:  # skipcq: PYL-W0236
         return await self.bot.is_owner(ctx.author)
 
     @commands.command(name="sync")
     async def sync_command(self, ctx: commands.Context) -> Any:
         message = await ctx.send("Syncing commands...")
         synced_commands = await self.bot.tree.sync()
-        with open("hoyo_buddy/bot/data/synced_commands.json", "w") as f:
+        async with aiofiles.open("hoyo_buddy/bot/data/synced_commands.json", "w") as f:
             json.dump({c.name: c.id for c in synced_commands}, f)
         await message.edit(content=f"Synced {len(synced_commands)} commands.")
 
@@ -58,5 +62,5 @@ class Admin(commands.Cog):
         await ctx.send("Select a task to run.", view=view)
 
 
-async def setup(bot: HoyoBuddy):
+async def setup(bot: "HoyoBuddy") -> None:
     await bot.add_cog(Admin(bot))

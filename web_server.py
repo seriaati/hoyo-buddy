@@ -1,11 +1,10 @@
 import asyncio
 import logging
 import os
-from typing import Tuple
+from typing import TYPE_CHECKING
 
 import aiohttp
 import genshin
-import redis.asyncio as redis
 from aiohttp import web
 from discord import Locale
 from dotenv import load_dotenv
@@ -13,11 +12,14 @@ from genshin.errors import GenshinException
 from genshin.utility import geetest
 
 from hoyo_buddy.bot.logging import setup_logging
+from hoyo_buddy.bot.translator import LocaleStr as LocaleStr
 from hoyo_buddy.bot.translator import Translator
-from hoyo_buddy.bot.translator import locale_str as _T
 from hoyo_buddy.db import Database
 from hoyo_buddy.db.models import User
 from hoyo_buddy.db.redis import RedisPool
+
+if TYPE_CHECKING:
+    import redis.asyncio as redis
 
 log = logging.getLogger("web_server")
 load_dotenv()
@@ -120,12 +122,12 @@ env = os.environ["ENV"]
 
 
 class GeetestWebServer:
-    def __init__(self, translator: Translator, redis_pool: redis.ConnectionPool):
+    def __init__(self, translator: Translator, redis_pool: "redis.ConnectionPool") -> None:
         self.translator = translator
         self.redis_pool = redis_pool
 
     @staticmethod
-    async def _get_account_and_password(user_id: int) -> Tuple[str, str, User]:
+    async def _get_account_and_password(user_id: int) -> tuple[str, str, User]:
         user = await User.get_or_none(id=user_id)
         if user is None:
             raise web.HTTPNotFound(reason="User not found")
@@ -142,17 +144,17 @@ class GeetestWebServer:
             return web.Response(status=400, reason="Missing user_id")
         locale = Locale(request.query.get("locale", "en-US"))
         loading_text = self.translator.translate(
-            _T(
+            LocaleStr(
                 "Loading CAPTCHA...<br>If the button doesn't show, either the email or password you entered was incorrect.",
                 key="loading_captcha_text",
             ),
             locale,
         )
         button_label = self.translator.translate(
-            _T("Click me to complete CAPTCHA", key="geetest_button_label"), locale
+            LocaleStr("Click me to complete CAPTCHA", key="geetest_button_label"), locale
         )
         close_tab = self.translator.translate(
-            _T(
+            LocaleStr(
                 "You may now close this tab and go back to Discord.",
                 key="geetest_finish_label",
             ),
@@ -245,7 +247,7 @@ class GeetestWebServer:
             await runner.cleanup()
 
 
-async def main():
+async def main() -> None:
     with setup_logging(env):
         async with Database(), Translator(env) as translator, RedisPool(
             os.environ["REDIS_URI"]

@@ -1,14 +1,16 @@
 import logging
 from pathlib import Path
-from typing import TypeAlias
+from typing import TYPE_CHECKING, TypeAlias
 
 import discord
-import redis.asyncio as redis
 import sentry_sdk
-from aiohttp import ClientSession
 from discord.ext import commands
 
 from .translator import AppCommandTranslator, Translator
+
+if TYPE_CHECKING:
+    import redis.asyncio as redis
+    from aiohttp import ClientSession
 
 log = logging.getLogger(__name__)
 
@@ -21,12 +23,12 @@ class HoyoBuddy(commands.AutoShardedBot):
     def __init__(
         self,
         *,
-        session: ClientSession,
+        session: "ClientSession",
         env: str,
-        redis_pool: redis.ConnectionPool,
+        redis_pool: "redis.ConnectionPool",
         translator: Translator,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(**kwargs)
         self.session = session
         self.uptime = discord.utils.utcnow()
@@ -34,7 +36,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.env = env
         self.redis_pool = redis_pool
 
-    async def setup_hook(self):
+    async def setup_hook(self) -> None:
         await self.tree.set_translator(AppCommandTranslator(self.translator))
 
         for filepath in Path("hoyo_buddy/cogs").glob("**/*.py"):
@@ -43,7 +45,7 @@ class HoyoBuddy(commands.AutoShardedBot):
                 await self.load_extension(f"hoyo_buddy.cogs.{cog_name}")
                 log.info("Loaded cog %r", cog_name)
             except Exception:  # skipcq: PYL-W0703
-                log.error("Failed to load cog %r", cog_name, exc_info=True)
+                log.exception("Failed to load cog %r", cog_name)
 
         await self.load_extension("jishaku")
 
@@ -65,6 +67,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         else:
             return user
 
-    async def close(self):
+    async def close(self) -> None:
         log.info("Shutting down...")
         await super().close()

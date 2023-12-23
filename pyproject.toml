@@ -52,6 +52,7 @@ select = [
     "PIE","T20","ARG","ERA","LOG"
 ]
 ignore = ["E501","ANN401","ANN101","ANN102","ANN003"]
+preview = true
 
 [tool.ruff.per-file-ignores]
 "**/__init__.py" = ["F403"]

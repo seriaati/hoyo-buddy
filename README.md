@@ -1,7 +1,6 @@
 # Hoyo Buddy
 ![Hoyo Buddy](https://i.imgur.com/x3UBpUa.png)  
-  
-[![DeepSource](https://app.deepsource.com/gh/seriaati/hoyo-buddy.svg/?label=active+issues&show_trend=false&token=4Ts26PMgmh_8kb1ZdqYuPVZf)](https://app.deepsource.com/gh/seriaati/hoyo-buddy/)
+
 ![GitHub issues](https://img.shields.io/github/issues/seriaati/hoyo-buddy)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/seriaati/hoyo-buddy)
 ![GitHub Repo stars](https://img.shields.io/github/stars/seriaati/hoyo-buddy)

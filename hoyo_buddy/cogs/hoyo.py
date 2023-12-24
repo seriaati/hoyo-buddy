@@ -121,15 +121,15 @@ class Hoyo(commands.Cog):
     )
     async def checkin_command(self, i: INTERACTION, acc_value: str | None = None) -> Any:
         user = await User.get(i.client.redis_pool, id=i.user.id)
-        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
+        settings = await Settings.get(i.client.redis_pool, user=user)
+        locale = settings.locale or i.locale
         account = await self._get_account(user, acc_value, i, locale)
         if account is None:
             return
 
-        dark_mode = user.settings.dark_mode
         view = CheckInUI(
             account,
-            dark_mode=dark_mode,
+            dark_mode=settings.dark_mode,
             author=i.user,
             locale=locale,
             translator=self.bot.translator,

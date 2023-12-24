@@ -644,13 +644,11 @@ files = [
 [[package]]
 name = "genshin"
 version = "1.6.1"
-description = "An API wrapper for Genshin Impact."
+description = ""
 optional = false
 python-versions = ">=3.8"
-files = [
-    {file = "genshin-1.6.1-py3-none-any.whl", hash = "sha256:39404af42147c1aa257a3f37bcfcf8e7d43aa6b1e2c3de7fcf1a44814b064c52"},
-    {file = "genshin-1.6.1.tar.gz", hash = "sha256:66577ab35c90069bbaf9819f50472e3d503384f0a467ee18cc2f28f21a06a71d"},
-]
+files = []
+develop = false
 
 [package.dependencies]
 aiohttp = "*"
@@ -661,6 +659,12 @@ all = ["browser-cookie3", "click", "rsa"]
 cli = ["click"]
 cookies = ["browser-cookie3"]
 geetest = ["rsa"]
+
+[package.source]
+type = "git"
+url = "https://github.com/seriaati/genshin.py"
+reference = "HEAD"
+resolved_reference = "1d870eb32ba7c953df4d4e1b2baf2cb35bc50b95"
 
 [[package]]
 name = "git-cliff"
@@ -1883,4 +1887,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "563ff31667c4e7b47ef324639b226b6f372db9084811d563def98dfddf5d56b1"
+content-hash = "86d849cc12712ae8ed54062d6b051bcae270b1f8e258380050f0efb7352e1dc3"

@@ -17,7 +17,6 @@ sentry-sdk = "^1.32.0"
 tortoise-orm = "^0.20.0"
 asyncpg = "^0.28.0"
 transifex-python = "^3.4.0"
-genshin = "^1.6.1"
 orjson = "^3.9.9"
 rsa = "^4.9"
 jishaku = "^2.5.1"
@@ -27,6 +26,7 @@ cachetools = "^5.3.2"
 aiofiles = "^23.2.1"
 ambr-py = {git = "https://github.com/seriaati/ambr"}
 redis = {extras = ["hiredis"], version = "^5.0.1"}
+genshin = {git = "https://github.com/seriaati/genshin.py"}
 
 [tool.poetry.group.dev.dependencies]
 git-cliff = "^1.4.0"

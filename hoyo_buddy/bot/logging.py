@@ -25,10 +25,10 @@ def setup_logging(env: str) -> "Generator[None, None, None]":
         for logger in loggers_to_disable:
             logging.getLogger(logger).setLevel(logging.WARNING)
 
-        if env == "prod":
-            log.setLevel(logging.INFO)
-        else:
+        if env == "dev":
             log.setLevel(logging.DEBUG)
+        else:
+            log.setLevel(logging.INFO)
 
         handler = logging.handlers.RotatingFileHandler(
             filename="hoyo_buddy.log",

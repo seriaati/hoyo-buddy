@@ -56,7 +56,7 @@ class View(discord.ui.View):
     ) -> None:
         i.client.capture_exception(error)
 
-        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         embed, recognized = get_error_embed(error, locale, i.client.translator)
         if not recognized:
             i.client.capture_exception(error)
@@ -459,7 +459,7 @@ class Modal(discord.ui.Modal):
         error: Exception,
         _: discord.ui.Item[Any],
     ) -> None:
-        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         embed, recognized = get_error_embed(error, locale, i.client.translator)
         if not recognized:
             i.client.capture_exception(error)

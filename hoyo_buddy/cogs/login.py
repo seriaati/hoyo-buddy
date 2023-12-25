@@ -20,8 +20,8 @@ class Login(commands.Cog):
         description=locale_str("Manage your accounts", key="accounts_command_description"),
     )
     async def accounts(self, i: "INTERACTION") -> Any:
-        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
-        user = await User.get(i.client.redis_pool, id=i.user.id)
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        user = await User.get(id=i.user.id)
         accounts = await HoyoAccount.filter(user=user).all()
 
         view = AccountManager(

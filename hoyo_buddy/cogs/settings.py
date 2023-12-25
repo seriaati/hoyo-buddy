@@ -21,7 +21,7 @@ class Settings(commands.Cog):
         description=locale_str("Configure your user settings", key="settings_command_description"),
     )
     async def settings_command(self, i: "INTERACTION") -> Any:
-        settings = await UserSettings.get(i.client.redis_pool, user_id=i.user.id)
+        settings = await UserSettings.get(user_id=i.user.id)
         view = SettingsUI(
             author=i.user,
             locale=settings.locale or i.locale,

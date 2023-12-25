@@ -9,7 +9,6 @@ from discord.ext import commands
 from .translator import AppCommandTranslator, Translator
 
 if TYPE_CHECKING:
-    import redis.asyncio as redis
     from aiohttp import ClientSession
 
 log = logging.getLogger(__name__)
@@ -25,7 +24,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         *,
         session: "ClientSession",
         env: str,
-        redis_pool: "redis.ConnectionPool",
         translator: Translator,
         **kwargs,
     ) -> None:
@@ -34,7 +32,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.uptime = discord.utils.utcnow()
         self.translator = translator
         self.env = env
-        self.redis_pool = redis_pool
 
     async def setup_hook(self) -> None:
         await self.tree.set_translator(AppCommandTranslator(self.translator))

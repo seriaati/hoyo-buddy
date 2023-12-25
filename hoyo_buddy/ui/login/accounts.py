@@ -303,7 +303,7 @@ class SelectAccountsToAdd(Select):
                 await AccountNotifSettings.create(account=hoyo_account)
 
         self.view.user.temp_data.pop("cookies", None)
-        await self.view.user.save(i.client.redis_pool)
+        await self.view.user.save()
         await self.view.refresh(i, soft=False)
 
 
@@ -604,7 +604,7 @@ class EnterEmailPassword(Button):
         password = modal.password.value
         self.view.user.temp_data["email"] = email
         self.view.user.temp_data["password"] = password
-        await self.view.user.save(i.client.redis_pool)
+        await self.view.user.save()
 
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()

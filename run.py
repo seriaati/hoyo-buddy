@@ -15,7 +15,6 @@ from hoyo_buddy.bot.command_tree import CommandTree
 from hoyo_buddy.bot.logging import setup_logging
 from hoyo_buddy.bot.translator import Translator
 from hoyo_buddy.db import Database
-from hoyo_buddy.db.redis import RedisPool
 
 try:
     import uvloop  # type: ignore
@@ -52,12 +51,11 @@ async def main() -> None:
         replied_user=False,
     )
 
-    async with aiohttp.ClientSession() as session, Database(), RedisPool(
-        os.environ["REDIS_URI"]
-    ) as redis_pool, Translator(env) as translator, HoyoBuddy(
+    async with aiohttp.ClientSession() as session, Database(), Translator(
+        env
+    ) as translator, HoyoBuddy(
         session=session,
         env=env,
-        redis_pool=redis_pool,
         translator=translator,
         command_prefix=commands.when_mentioned,
         intents=intents,

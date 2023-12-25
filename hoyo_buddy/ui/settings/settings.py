@@ -57,7 +57,7 @@ class SettingsUI(View):
         await self.absolute_edit(
             i, embed=self.get_embed(), attachments=[self.get_brand_image_file(i.locale)], view=self
         )
-        await self.settings.save(i.client.redis_pool)
+        await self.settings.save()
 
 
 class LanguageSelector(Select):

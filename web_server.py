@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import os
-from typing import TYPE_CHECKING
 
 import aiohttp
 import genshin
@@ -15,10 +14,6 @@ from hoyo_buddy.bot.logging import setup_logging
 from hoyo_buddy.bot.translator import LocaleStr, Translator
 from hoyo_buddy.db import Database
 from hoyo_buddy.db.models import User
-from hoyo_buddy.db.redis import RedisPool
-
-if TYPE_CHECKING:
-    import redis.asyncio as redis
 
 log = logging.getLogger("web_server")
 load_dotenv()
@@ -121,9 +116,8 @@ env = os.environ["ENV"]
 
 
 class GeetestWebServer:
-    def __init__(self, translator: Translator, redis_pool: "redis.ConnectionPool") -> None:
+    def __init__(self, translator: Translator) -> None:
         self.translator = translator
-        self.redis_pool = redis_pool
 
     @staticmethod
     async def _get_account_and_password(user_id: int) -> tuple[str, str, User]:
@@ -212,7 +206,7 @@ class GeetestWebServer:
 
         user.temp_data.pop("email", None)
         user.temp_data.pop("password", None)
-        await user.save(self.redis_pool)
+        await user.save()
         return web.json_response({})
 
     async def run(self, port: int = 5000) -> None:
@@ -248,10 +242,8 @@ class GeetestWebServer:
 
 async def main() -> None:
     with setup_logging(env):
-        async with Database(), Translator(env) as translator, RedisPool(
-            os.environ["REDIS_URI"]
-        ) as redis_pool:
-            server = GeetestWebServer(translator=translator, redis_pool=redis_pool)
+        async with Database(), Translator(env) as translator:
+            server = GeetestWebServer(translator=translator)
             await server.run()
 
 

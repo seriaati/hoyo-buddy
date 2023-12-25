@@ -10,6 +10,7 @@ from ...draw import checkin
 from ...draw.static import download_and_save_static_images
 from ...embeds import DefaultEmbed
 from ...hoyo.dataclasses import Reward
+from ...utils import get_now
 from ..ui import Button, GoBackButton, ToggleButton, View
 
 if TYPE_CHECKING:
@@ -120,7 +121,7 @@ class CheckInUI(View):
                 "Checked in {day} day(s) this month\n" "Missed check-in for {missed} day(s)\n",
                 key="daily_checkin_embed_description",
                 day=checked_in_day_num,
-                missed=discord.utils.utcnow().day - checked_in_day_num,
+                missed=get_now().day - checked_in_day_num,
             ),
         )
         embed.set_image(url="attachment://check-in.png")

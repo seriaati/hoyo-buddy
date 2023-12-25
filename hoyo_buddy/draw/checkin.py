@@ -1,5 +1,4 @@
 import io
-from textwrap import shorten
 from typing import TYPE_CHECKING
 
 from cachetools import LRUCache, cached
@@ -57,7 +56,7 @@ def draw_card(
             anchor="mm",
         )
         drawer.plain_write(
-            text=shorten(daily_reward.name, 14, placeholder="..."),
+            text=f"#{daily_reward.index}",
             size=18,
             position=(x + 55, y + 195),
             style="regular",

@@ -1,10 +1,11 @@
 import asyncio
-import json
 import logging
 import os
 import re
 from typing import TYPE_CHECKING, Any
 
+import aiofiles
+import orjson
 from discord import app_commands
 from transifex.native import init, tx
 from transifex.native.parsing import SourceString
@@ -92,7 +93,7 @@ class Translator:
             ),
             missing_policy=CustomRenderingPolicy(),
         )
-        self.load_synced_commands_json()
+        await self.load_synced_commands_json()
         log.info("Translator loaded")
 
         if self.env in {"prod", "test"}:
@@ -219,10 +220,12 @@ class Translator:
             asyncio.get_running_loop().time() - start,
         )
 
-    def load_synced_commands_json(self) -> None:
+    async def load_synced_commands_json(self) -> None:
         try:
-            with open("hoyo_buddy/bot/data/synced_commands.json", encoding="utf-8") as f:
-                self.synced_commands = json.load(f)
+            async with aiofiles.open(
+                "hoyo_buddy/bot/data/synced_commands.json", encoding="utf-8"
+            ) as f:
+                self.synced_commands = orjson.loads(await f.read())
         except FileNotFoundError:
             pass
 

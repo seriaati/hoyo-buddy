@@ -1,8 +1,8 @@
 import asyncio
-import json
 from typing import TYPE_CHECKING, Any
 
 import aiofiles
+import orjson
 from discord import ButtonStyle, ui
 from discord.ext import commands
 
@@ -36,7 +36,7 @@ class Admin(commands.Cog):
         message = await ctx.send("Syncing commands...")
         synced_commands = await self.bot.tree.sync()
         async with aiofiles.open("hoyo_buddy/bot/data/synced_commands.json", "w") as f:
-            json.dump({c.name: c.id for c in synced_commands}, f)
+            await f.write(orjson.dumps({c.name: c.id for c in synced_commands}).decode())
         await message.edit(content=f"Synced {len(synced_commands)} commands.")
 
     @commands.command(name="push-source-strings", aliases=["pss"])
@@ -53,7 +53,7 @@ class Admin(commands.Cog):
 
     @commands.command(name="reload-synced-commands", aliases=["rsc"])
     async def reload_sync_commands_command(self, ctx: commands.Context) -> Any:
-        self.bot.translator.load_synced_commands_json()
+        await self.bot.translator.load_synced_commands_json()
         await ctx.send("Reloaded synced commands JSON.")
 
     @commands.command(name="run-tasks", aliases=["rt"])

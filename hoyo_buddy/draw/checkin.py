@@ -1,4 +1,5 @@
 import io
+from textwrap import shorten
 from typing import TYPE_CHECKING
 
 from cachetools import LRUCache, cached
@@ -8,6 +9,8 @@ from . import Drawer
 
 if TYPE_CHECKING:
     import genshin
+
+    from ..hoyo.dataclasses import Reward
 
 
 def cache_key(daily_rewards: tuple["genshin.models.DailyReward", ...], dark_mode: bool) -> str:
@@ -19,7 +22,7 @@ def cache_key(daily_rewards: tuple["genshin.models.DailyReward", ...], dark_mode
 
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
 def draw_card(
-    daily_rewards: tuple["genshin.models.DailyReward", ...],
+    daily_rewards: list["Reward"],
     dark_mode: bool,
 ) -> io.BytesIO:
     if dark_mode:
@@ -40,13 +43,8 @@ def draw_card(
         icon = drawer.get_static_image(daily_reward.icon)
         icon = icon.resize((110, 110))
         im.paste(icon, (x, y), icon)
-        try:
-            status, index = daily_reward.name.split("_")
-        except ValueError:
-            status = "unclaimed"
-            index = daily_reward.name
 
-        if status == "claimed":
+        if daily_reward.claimed:
             im.paste(mask, (x - 19, y - 11), mask)
             im.paste(check, (x + 1, y + 1), check)
 
@@ -59,7 +57,7 @@ def draw_card(
             anchor="mm",
         )
         drawer.plain_write(
-            text=index,
+            text=shorten(daily_reward.name, 14, placeholder="..."),
             size=18,
             position=(x + 55, y + 195),
             style="regular",

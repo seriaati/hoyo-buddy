@@ -9,16 +9,13 @@ from ...bot.error_handler import get_error_embed
 from ...draw import checkin
 from ...draw.static import download_and_save_static_images
 from ...embeds import DefaultEmbed
-from ...hoyo.reward_calc import RewardCalculator
-from ...utils import get_now
+from ...hoyo.dataclasses import Reward
 from ..ui import Button, GoBackButton, ToggleButton, View
 
 if TYPE_CHECKING:
     import io
-    from collections.abc import Sequence
 
     import aiohttp
-    from genshin.models import ClaimedDailyReward, DailyReward
 
     from ...db.models import HoyoAccount
 
@@ -62,59 +59,68 @@ class CheckInUI(View):
 
     @staticmethod
     async def _draw_checkin_image(
-        rewards: tuple["DailyReward", ...],
+        rewards: list[Reward],
         dark_mode: bool,
         session: "aiohttp.ClientSession",
     ) -> "io.BytesIO":
         await download_and_save_static_images([r.icon for r in rewards], "check-in", session)
         return await asyncio.to_thread(checkin.draw_card, rewards, dark_mode)
 
-    @staticmethod
-    def _calc_valuable_amount(claimed_rewards: "Sequence[ClaimedDailyReward]") -> int:
-        return sum(
-            r.amount for r in claimed_rewards if r.name in {"Primogem", "Crystal", "Stellar Jade"}
-        )
+    async def _get_rewards(self) -> list[Reward]:
+        client = self.client
 
-    @staticmethod
-    def _calc_missed_days(claimed_rewards: "Sequence[ClaimedDailyReward]") -> int:
-        now = get_now()
-        missed = now.day - len(claimed_rewards)
-        return missed
+        monthly_rewards = await client.get_monthly_rewards()
+        monthly_rewards = [
+            Reward(name=r.name, amount=r.amount, index=i, claimed=False, icon=r.icon)
+            for i, r in enumerate(monthly_rewards, 1)
+        ]
+
+        claimed_rewards = await client.claimed_rewards(limit=31)
+        claimed_rewards = claimed_rewards[::-1]
+        claimed_rewards = [
+            r for r in claimed_rewards if r.time.month == discord.utils.utcnow().month
+        ]
+        claimed_rewards = [
+            Reward(name=r.name, amount=r.amount, index=i, claimed=True, icon=r.icon)
+            for i, r in enumerate(claimed_rewards, 1)
+        ]
+
+        this_month_claim_num = len(claimed_rewards)
+        rewards_to_return = 3
+
+        if this_month_claim_num < rewards_to_return:
+            result = monthly_rewards[:rewards_to_return]
+            next_reward = monthly_rewards[rewards_to_return]
+        else:
+            result = claimed_rewards[-rewards_to_return:]
+
+            try:
+                next_reward = monthly_rewards[this_month_claim_num]
+            except IndexError:
+                next_reward = monthly_rewards[0]
+
+        result.append(next_reward)
+        return result
 
     async def get_image_embed_and_file(
         self, session: "aiohttp.ClientSession"
     ) -> tuple[DefaultEmbed, discord.File]:
-        monthly_rewards = await self.client.get_monthly_rewards()
-        claimed_rewards = await self.client.claimed_rewards()
-        reward_calculator = RewardCalculator(claimed_rewards, monthly_rewards)
-        rewards = reward_calculator.get_rewards()
+        rewards = await self._get_rewards()
+        checked_in_day_num = rewards[-2].index
 
         fp = await self._draw_checkin_image(rewards, self.dark_mode, session)
         fp.seek(0)
         file_ = discord.File(fp, filename="check-in.png")
-
-        if self.client.game == Game.GENSHIN:
-            valuable_name = LocaleStr("primogems", warn_no_key=False)
-        elif self.client.game == Game.HONKAI:
-            valuable_name = LocaleStr("crystals", warn_no_key=False)
-        else:  # Game.STARRAIL
-            valuable_name = LocaleStr("stellar jades", warn_no_key=False)
 
         embed = DefaultEmbed(
             self.locale,
             self.translator,
             title=LocaleStr("Daily Check-in", key="daily_checkin_embed_title"),
             description=LocaleStr(
-                (
-                    "Claimed {amount} {valuable_name} so far\n"
-                    "Checked in {day} day(s) this month\n"
-                    "Missed check-in for {missed} day(s)\n"
-                ),
+                "Checked in {day} day(s) this month\n" "Missed check-in for {missed} day(s)\n",
                 key="daily_checkin_embed_description",
-                amount=self._calc_valuable_amount(claimed_rewards),
-                valuable_name=valuable_name,
-                day=reward_calculator.claimed_amount,
-                missed=get_now().day - reward_calculator.claimed_amount,
+                day=checked_in_day_num,
+                missed=discord.utils.utcnow().day - checked_in_day_num,
             ),
         )
         embed.set_image(url="attachment://check-in.png")

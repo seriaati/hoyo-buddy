@@ -16,14 +16,14 @@ log = logging.getLogger(__name__)
 
 class CommandTree(app_commands.CommandTree):
     async def interaction_check(self, i: "INTERACTION") -> Literal[True]:
-        user = await User.silent_create(i.client.redis_pool, id=i.user.id)
+        user = await User.silent_create(id=i.user.id)
         if user:
-            await Settings.create(i.client.redis_pool, user=user)
+            await Settings.create(user=user)
         return True
 
     async def on_error(self, i: "INTERACTION", e: app_commands.AppCommandError) -> None:
         error = e.original if isinstance(e, app_commands.errors.CommandInvokeError) else e
-        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         embed, recognized = get_error_embed(error, locale, i.client.translator)
         if not recognized:
             i.client.capture_exception(e)

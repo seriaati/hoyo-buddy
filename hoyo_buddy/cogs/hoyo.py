@@ -5,9 +5,10 @@ from discord import app_commands
 from discord.ext import commands
 
 from ..bot import INTERACTION, HoyoBuddy, LocaleStr, Translator
-from ..db import Game, HoyoAccount, Settings, User
+from ..db import Game, HoyoAccount, Settings
 from ..exceptions import InvalidQueryError
 from ..hoyo.genshin import ambr
+from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.search.character import CharacterUI
 from ..ui.hoyo.search.weapon import WeaponUI
@@ -19,9 +20,12 @@ class Hoyo(commands.Cog):
 
     @staticmethod
     async def _account_autocomplete(
-        user_id: int, current: str, locale: discord.Locale, translator: Translator
+        user_id: int,
+        current: str,
+        locale: discord.Locale,
+        translator: Translator,
     ) -> list[discord.app_commands.Choice]:
-        accounts = await HoyoAccount.filter(user__id=user_id).all()
+        accounts = await HoyoAccount.filter(user_id=user_id).all()
         if not accounts:
             return [
                 discord.app_commands.Choice(
@@ -43,66 +47,11 @@ class Hoyo(commands.Cog):
         ]
 
     @staticmethod
-    async def _no_account_response(i: INTERACTION, locale: discord.Locale) -> Any:
-        return await i.response.send_message(
-            i.client.translator.translate(
-                LocaleStr(
-                    "You don't have any accounts yet. Add one with </accounts>",
-                    key="no_accounts_autocomplete_selected",
-                ),
-                locale,
-            ),
-            ephemeral=True,
-        )
-
-    @staticmethod
-    async def _get_specific_account(account_value: str, user: User) -> HoyoAccount:
-        uid, game = account_value.split("_")
-        account = await user.accounts.filter(uid=uid, game=game).first()
-        if account is None:
-            msg = "Account not found"
-            raise AssertionError(msg)
-        return account
-
-    @staticmethod
-    def _get_game_choices() -> list[app_commands.Choice[str]]:
-        return [
-            app_commands.Choice(
-                name=app_commands.locale_str(game.value, warn_no_key=False),
-                value=game.value,
-            )
-            for game in Game
-        ]
-
-    @staticmethod
     def _get_error_app_command_choice(error_message: str) -> app_commands.Choice[str]:
         return app_commands.Choice(
             name=app_commands.locale_str(error_message, warn_no_key=False),
             value="none",
         )
-
-    async def _get_first_account(
-        self, user: User, i: INTERACTION, locale: discord.Locale
-    ) -> HoyoAccount | None:
-        accounts = await user.accounts.all()
-        if not accounts:
-            await self._no_account_response(i, locale)
-        else:
-            return accounts[0]
-
-    async def _get_account(
-        self,
-        user: User,
-        account_value: str | None,
-        i: INTERACTION,
-        locale: discord.Locale,
-    ) -> HoyoAccount | None:
-        if account_value is None:
-            return await self._get_first_account(user, i, locale)
-        if account_value == "none":
-            await self._no_account_response(i, locale)
-        else:
-            return await self._get_specific_account(account_value, user)
 
     @app_commands.command(
         name=app_commands.locale_str("check-in", translate=False),
@@ -111,36 +60,33 @@ class Hoyo(commands.Cog):
         ),
     )
     @app_commands.rename(
-        acc_value=app_commands.locale_str("account", key="account_autocomplete_param_name")
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
     )
     @app_commands.describe(
-        acc_value=app_commands.locale_str(
+        account=app_commands.locale_str(
             "Account to run this command with, defaults to the first one",
             key="account_autocomplete_param_description",
         )
     )
-    async def checkin_command(self, i: INTERACTION, acc_value: str | None = None) -> Any:
-        user = await User.get(i.client.redis_pool, id=i.user.id)
-        settings = await Settings.get(i.client.redis_pool, user=user)
-        locale = settings.locale or i.locale
-        account = await self._get_account(user, acc_value, i, locale)
-        if account is None:
-            return
+    async def checkin_command(
+        self, i: INTERACTION, account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer]
+    ) -> Any:
+        settings = await Settings.get(user_id=i.user.id)
 
         view = CheckInUI(
             account,
             dark_mode=settings.dark_mode,
             author=i.user,
-            locale=locale,
+            locale=settings.locale or i.locale,
             translator=self.bot.translator,
         )
         await view.start(i)
 
-    @checkin_command.autocomplete("acc_value")
+    @checkin_command.autocomplete("account")
     async def check_in_command_autocomplete(
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
-        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         return await self._account_autocomplete(i.user.id, current, locale, self.bot.translator)
 
     @app_commands.command(
@@ -189,7 +135,7 @@ class Hoyo(commands.Cog):
         if category_value == "none" or query == "none":
             raise InvalidQueryError
 
-        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         game = Game(game_value)
 
         if game is Game.GENSHIN:
@@ -258,7 +204,7 @@ class Hoyo(commands.Cog):
         else:
             return [self._get_error_app_command_choice("Invalid game selected")]
 
-        locale = await Settings.get_locale(i.user.id, i.client.redis_pool) or i.locale
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
             if category is ambr.ItemCategory.CHARACTERS:
                 items = await api.fetch_characters()

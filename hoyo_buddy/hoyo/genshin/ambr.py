@@ -147,6 +147,14 @@ class AmbrAPIClient(ambr.AmbrAPI):
             result[fight_prop_name] = value
         return result
 
+    @staticmethod
+    def _format_layout(text: str) -> str:
+        if "LAYOUT" in text:
+            brackets = re.findall(r"{LAYOUT.*?}", text)
+            word_to_replace = re.findall(r"{LAYOUT.*?#(.*?)}", brackets[0])[0]
+            text = text.replace("".join(brackets), word_to_replace)
+        return text
+
     def _get_params(self, text: str, param_list: list[int | float]) -> list[str]:
         params: list[str] = re.findall(r"{[^}]*}", text)
 
@@ -170,12 +178,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
                 result = int(param_list[int(param) - 1])
                 text = re.sub(re.escape(item), str(round(result)), text)
 
-        if "LAYOUT" in text:
-            brackets = re.findall(r"{LAYOUT.*?}", text)
-            word_to_replace = re.findall(r"{LAYOUT.*?#(.*?)}", brackets[0])[0]
-            text = text.replace("".join(brackets), word_to_replace)
-
+        text = self._format_layout(text)
         text = text.replace("{NON_BREAK_SPACE}", "")
+        text = text.replace("#", "")
         return text.split("|")
 
     def _get_skill_attributes(self, descriptions: list[str], params: list[int | float]) -> str:
@@ -237,7 +242,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
             self.locale,
             self.translator,
             title=talent.name,
-            description=talent.description,
+            description=self._format_layout(talent.description).replace("#", ""),
         )
         if talent.upgrades:
             try:

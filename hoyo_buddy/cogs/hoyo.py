@@ -164,8 +164,10 @@ class Hoyo(commands.Cog):
                     )
                     return await weapon_ui.update(i)
                 if category is ambr.ItemCategory.NAMECARDS:
+                    await i.response.defer()
                     namecard_detail = await api.fetch_namecard_detail(int(query))
                     embed = api.get_namecard_embed(namecard_detail)
+                    return await i.followup.send(embed=embed)
                 elif category is ambr.ItemCategory.ARTIFACT_SETS:
                     artifact_set_detail = await api.fetch_artifact_set_detail(int(query))
                     embed = api.get_artifact_set_embed(artifact_set_detail)

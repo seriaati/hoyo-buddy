@@ -360,7 +360,10 @@ class AmbrAPIClient(ambr.AmbrAPI):
             title=namecard.name,
             description=namecard.description,
         )
-        embed.set_image(url=namecard.icon)
+        embed.set_thumbnail(url=namecard.icon)
+        embed.set_image(url=namecard.picture)
+        if namecard.source:
+            embed.set_footer(text=namecard.source)
         return embed
 
     def get_artifact_set_embed(self, artifact_set: ambr.ArtifactSetDetail) -> DefaultEmbed:

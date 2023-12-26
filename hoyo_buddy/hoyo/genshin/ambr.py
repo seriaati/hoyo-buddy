@@ -7,6 +7,7 @@ import ambr
 from ambr.client import Language
 from discord import Locale
 
+from ...bot.emojis import get_element_emoji
 from ...bot.translator import LocaleStr, Translator
 from ...embeds import DefaultEmbed
 
@@ -219,7 +220,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
                 ),
                 key="character_embed_description",
                 rarity=character.rarity,
-                element=LocaleStr(character.element.name, warn_no_key=False),
+                element=get_element_emoji(character.element.name),
                 birthday=f"{character.birthday.month}/{character.birthday.day}",
                 constellation=character.info.constellation,
                 affiliation=character.info.native,

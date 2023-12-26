@@ -20,6 +20,16 @@ GENSHIN_IMPACT = "<:genshin_impact:1025630733068423169>"
 HONKAI_STAR_RAIL = "<:honkai_star_rail:1105806784117088336>"
 HONKAI_IMPACT_3RD = "<:honkai_impact:1106034318666637415>"
 
+ELEMENT_EMOJIS: dict[str, str] = {
+    "pyro": "<:pyro:1189150911428317275>",
+    "hydro": "<:hydro:1189150893875142726>",
+    "cryo": "<:cryo:1189150960413573141>",
+    "anemo": "<:anemo:1189150874916888636>",
+    "dendro": "<:dendro:1189150946878562354>",
+    "geo": "<:geo:1189150979657044012>",
+    "electro": "<:electro:1189150927190495232>",
+}
+
 
 def get_game_emoji(game: genshin.Game | Game) -> str:
     if game is genshin.Game.GENSHIN or game is Game.GENSHIN:
@@ -30,3 +40,7 @@ def get_game_emoji(game: genshin.Game | Game) -> str:
         return HONKAI_STAR_RAIL
     msg = f"Invalid game: {game}"
     raise ValueError(msg)
+
+
+def get_element_emoji(element: str) -> str:
+    return ELEMENT_EMOJIS[element.lower()]

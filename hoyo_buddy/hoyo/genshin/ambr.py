@@ -235,6 +235,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         )
         embed.set_footer(text=character.info.detail)
         embed.set_thumbnail(url=character.icon)
+        embed.set_image(url=character.gacha)
         return embed
 
     def get_character_talent_embed(self, talent: ambr.Talent, level: int) -> DefaultEmbed:

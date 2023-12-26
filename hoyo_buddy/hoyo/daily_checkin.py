@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 import logging
 import os
 from typing import TYPE_CHECKING
@@ -151,9 +152,7 @@ class DailyCheckin:
 
     @classmethod
     async def _notify_user(cls, bot: "HoyoBuddy", user: User, embed: Embed) -> None:
-        try:
+        with contextlib.suppress(discord.HTTPException):
             discord_user = await bot.get_or_fetch_user(user.id)
             if discord_user:
                 await discord_user.send(embed=embed)
-        except discord.HTTPException:
-            pass

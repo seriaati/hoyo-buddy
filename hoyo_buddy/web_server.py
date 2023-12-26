@@ -13,7 +13,7 @@ from genshin.utility import geetest
 from hoyo_buddy.bot.translator import LocaleStr, Translator
 from hoyo_buddy.db.models import User
 
-log = logging.getLogger("web_server")
+log = logging.getLogger(__name__)
 load_dotenv()
 
 INDEX = """

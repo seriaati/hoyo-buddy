@@ -457,7 +457,6 @@ class Modal(discord.ui.Modal):
         self,
         i: INTERACTION,
         error: Exception,
-        _: discord.ui.Item[Any],
     ) -> None:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         embed, recognized = get_error_embed(error, locale, i.client.translator)
@@ -512,6 +511,7 @@ class LevelModal(Modal):
             raise InvalidInputError(
                 LocaleStr(
                     "Level needs to be between {min_level} and {max_level}",
+                    key="level_out_of_range",
                     min_level=self.min_level,
                     max_level=self.max_level,
                 )

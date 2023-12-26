@@ -43,7 +43,7 @@ class Hoyo(commands.Cog):
                 value=f"{account.uid}_{account.game}",
             )
             for account in accounts
-            if current in str(account)
+            if current.lower() in str(account).lower()
         ]
 
     @staticmethod
@@ -191,7 +191,7 @@ class Hoyo(commands.Cog):
                     value=c.value,
                 )
                 for c in ambr.ItemCategory
-                if current in c.value
+                if current.lower() in c.value.lower()
             ]
 
         return [self._get_error_app_command_choice("Invalid game selected")]
@@ -227,7 +227,7 @@ class Hoyo(commands.Cog):
             return [
                 app_commands.Choice(name=item.name, value=str(item.id))
                 for item in items
-                if current in item.name
+                if current.lower() in item.name.lower()
             ][:25]
 
 

@@ -27,6 +27,7 @@ aiofiles = "^23.2.1"
 ambr-py = {git = "https://github.com/seriaati/ambr"}
 genshin = {git = "https://github.com/seriaati/genshin.py"}
 psutil = "^5.9.7"
+asyncache = "^0.3.1"
 
 [tool.poetry.group.dev]
 optional = true

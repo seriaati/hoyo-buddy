@@ -10,9 +10,7 @@ from dotenv import load_dotenv
 from genshin.errors import GenshinException
 from genshin.utility import geetest
 
-from hoyo_buddy.bot.logging import setup_logging
 from hoyo_buddy.bot.translator import LocaleStr, Translator
-from hoyo_buddy.db import Database
 from hoyo_buddy.db.models import User
 
 log = logging.getLogger("web_server")
@@ -231,20 +229,9 @@ class GeetestWebServer:
             while True:
                 await asyncio.sleep(1)
         except asyncio.CancelledError:
-            log.info("Shutting down...")
-            await self.translator.unload()
+            log.info("Web server shutting down...")
             await site.stop()
             await app.shutdown()
             await app.cleanup()
             await runner.shutdown()
             await runner.cleanup()
-
-
-async def main() -> None:
-    with setup_logging(env):
-        async with Database(), Translator(env) as translator:
-            server = GeetestWebServer(translator=translator)
-            await server.run()
-
-
-asyncio.run(main())

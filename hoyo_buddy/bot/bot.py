@@ -6,6 +6,7 @@ import discord
 import sentry_sdk
 from discord.ext import commands
 
+from .command_tree import CommandTree
 from .translator import AppCommandTranslator, Translator
 
 if TYPE_CHECKING:
@@ -17,6 +18,19 @@ __all__ = ("HoyoBuddy", "INTERACTION")
 
 INTERACTION: TypeAlias = discord.Interaction["HoyoBuddy"]
 
+intents = discord.Intents(
+    guilds=True,
+    members=True,
+    emojis=True,
+    guild_messages=True,
+)
+allowed_mentions = discord.AllowedMentions(
+    users=True,
+    everyone=False,
+    roles=False,
+    replied_user=False,
+)
+
 
 class HoyoBuddy(commands.AutoShardedBot):
     def __init__(
@@ -25,9 +39,18 @@ class HoyoBuddy(commands.AutoShardedBot):
         session: "ClientSession",
         env: str,
         translator: Translator,
-        **kwargs,
     ) -> None:
-        super().__init__(**kwargs)
+        super().__init__(
+            command_prefix=commands.when_mentioned,
+            intents=intents,
+            case_insensitive=True,
+            allowed_mentions=allowed_mentions,
+            help_command=None,
+            chunk_guilds_at_startup=False,
+            max_messages=None,
+            member_cache_flags=discord.MemberCacheFlags.none(),
+            tree_cls=CommandTree,
+        )
         self.session = session
         self.uptime = discord.utils.utcnow()
         self.translator = translator
@@ -65,5 +88,5 @@ class HoyoBuddy(commands.AutoShardedBot):
             return user
 
     async def close(self) -> None:
-        log.info("Shutting down...")
+        log.info("Bot shutting down...")
         await super().close()

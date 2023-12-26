@@ -67,7 +67,7 @@ class View(discord.ui.View):
             embed = ErrorEmbed(
                 self.locale,
                 self.translator,
-                title=LocaleStr("INTERACTION failed", key="interaction_failed_title"),
+                title=LocaleStr("Interaction failed", key="interaction_failed_title"),
                 description=LocaleStr(
                     "This view is not initiated by you, therefore you cannot use it.",
                     key="interaction_failed_description",

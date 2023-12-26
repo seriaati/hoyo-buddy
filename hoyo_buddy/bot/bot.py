@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, TypeAlias
 
 import discord
 import sentry_sdk
+from asyncache import cached
+from cachetools import TTLCache
 from discord.ext import commands
 
 from .command_tree import CommandTree
@@ -75,6 +77,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         else:
             log.exception(e)
 
+    @cached(cache=TTLCache(maxsize=1024, ttl=360))
     async def get_or_fetch_user(self, user_id: int) -> discord.User | None:
         user = self.get_user(user_id)
         if user:

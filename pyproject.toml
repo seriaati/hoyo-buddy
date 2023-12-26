@@ -27,10 +27,19 @@ aiofiles = "^23.2.1"
 ambr-py = {git = "https://github.com/seriaati/ambr"}
 genshin = {git = "https://github.com/seriaati/genshin.py"}
 
+[tool.poetry.group.dev]
+optional = true
+
 [tool.poetry.group.dev.dependencies]
 git-cliff = "^1.4.0"
 ruff = "^0.1.8"
 pre-commit = "^3.6.0"
+
+[tool.poetry.group.linux]
+optional = true
+
+[tool.poetry.group.linux.dependencies]
+uvloop = "^0.19.0"
 
 [tool.aerich]
 tortoise_orm = "hoyo_buddy.db.configs.DB_CONFIG"

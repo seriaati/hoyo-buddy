@@ -6,7 +6,7 @@ from discord.ext import commands
 
 from ..bot import INTERACTION, HoyoBuddy, LocaleStr, Translator
 from ..db import Game, HoyoAccount, Settings
-from ..exceptions import InvalidQueryError
+from ..exceptions import InvalidQueryError, NoAccountFoundError
 from ..hoyo.genshin import ambr
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui.hoyo.checkin import CheckInUI
@@ -69,9 +69,15 @@ class Hoyo(commands.Cog):
         )
     )
     async def checkin_command(
-        self, i: INTERACTION, account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer]
+        self,
+        i: INTERACTION,
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> Any:
         settings = await Settings.get(user_id=i.user.id)
+        if account is None:
+            account = await HoyoAccount.filter(user_id=i.user.id).first()
+            if account is None:
+                raise NoAccountFoundError
 
         view = CheckInUI(
             account,

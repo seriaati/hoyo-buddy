@@ -37,3 +37,14 @@ class AccountNotFoundError(HoyoBuddyError, AppCommandError):
                 key="account_not_found_error_message",
             ),
         )
+
+
+class NoAccountFoundError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr("No account found", key="no_account_found_error_title"),
+            message=LocaleStr(
+                "You don't have any accounts yet. Add one with </accounts>",
+                key="no_account_found_error_message",
+            ),
+        )

@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 import logging
 import os
 import re
@@ -130,7 +131,9 @@ class Translator:
         string_key = self._get_string_key(string)
         lang = locale.value.replace("-", "_")
         is_source = "en" in lang
-        translation = self._get_translation(message, lang, extras, string_key, is_source)
+        translation = None
+        with contextlib.suppress(KeyError):
+            translation = self._get_translation(message, lang, extras, string_key, is_source)
 
         if translation is None:
             self._handle_missing_translation(string_key, message)

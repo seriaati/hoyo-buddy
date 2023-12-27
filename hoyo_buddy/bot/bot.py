@@ -24,7 +24,7 @@ intents = discord.Intents(
     guilds=True,
     members=True,
     emojis=True,
-    guild_messages=True,
+    messages=True,
 )
 allowed_mentions = discord.AllowedMentions(
     users=True,

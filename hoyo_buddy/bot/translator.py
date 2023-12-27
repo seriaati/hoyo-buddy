@@ -95,10 +95,11 @@ class Translator:
             missing_policy=CustomRenderingPolicy(),
         )
         await self.load_synced_commands_json()
-        log.info("Translator loaded")
 
         if self.env in {"prod", "test"}:
             await self.fetch_source_strings()
+
+        log.info("Translator loaded")
 
     def replace_command_with_mentions(self, message: str) -> str:
         command_occurences: list[str] = re.findall(COMMAND_REGEX, message)

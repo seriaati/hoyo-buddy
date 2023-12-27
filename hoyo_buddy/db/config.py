@@ -1,5 +1,9 @@
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 DB_CONFIG = {
     "connections": {
         "default": os.getenv("DB_URL") or "sqlite://db.sqlite3",

@@ -31,7 +31,7 @@ class Model(TortoiseModel):
     @classmethod
     async def silent_create(cls, **kwargs: Any) -> Self | None:
         try:
-            return await cls.create(find_from_cache_first=True, **kwargs)
+            return await cls.create(**kwargs)
         except IntegrityError:
             return None
 
@@ -39,7 +39,7 @@ class Model(TortoiseModel):
 class User(Model):
     id = fields.BigIntField(pk=True, index=True, generated=False)  # noqa: A003
     settings: fields.BackwardOneToOneRelation["Settings"]
-    temp_data: dict[str, Any] = fields.JSONField()  # type: ignore
+    temp_data: dict[str, Any] = fields.JSONField(default=dict)  # type: ignore
     accounts: fields.ReverseRelation["HoyoAccount"]
 
     @property

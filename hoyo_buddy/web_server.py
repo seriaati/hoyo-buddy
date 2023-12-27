@@ -209,7 +209,6 @@ class GeetestWebServer:
 
     async def run(self, port: int = 5000) -> None:
         log.info("Starting web server... (port=%d)", port)
-        await self.translator.load()
         app = web.Application()
         app.add_routes(
             [

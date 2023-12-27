@@ -55,6 +55,8 @@ class DailyCheckin:
             await asyncio.gather(*tasks, return_exceptions=True)
         except Exception as e:  # skipcq: PYL-W0703
             bot.capture_exception(e)
+        finally:
+            log.info("Daily check-in finished")
 
     @classmethod
     async def _daily_checkin_task(
@@ -102,6 +104,8 @@ class DailyCheckin:
         translator: Translator,
         session: "aiohttp.ClientSession",
     ) -> Embed:
+        log.debug("Daily check-in with %s for %s", api, account)
+
         await account.fetch_related("user")
         await account.user.fetch_related("settings")
 

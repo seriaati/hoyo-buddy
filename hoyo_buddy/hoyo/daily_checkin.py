@@ -156,7 +156,7 @@ class DailyCheckin:
 
     @classmethod
     async def _notify_user(cls, bot: "HoyoBuddy", user: User, embed: Embed) -> None:
-        with contextlib.suppress(discord.HTTPException):
+        with contextlib.suppress(discord.HTTPException, discord.Forbidden):
             discord_user = await bot.get_or_fetch_user(user.id)
             if discord_user:
                 await discord_user.send(embed=embed)

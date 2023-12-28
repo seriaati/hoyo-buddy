@@ -29,6 +29,13 @@ ELEMENT_EMOJIS: dict[str, str] = {
     "geo": "<:geo:1189150979657044012>",
     "electro": "<:electro:1189150927190495232>",
 }
+ARTIFACT_POS_EMOJIS: dict[str, str] = {
+    "flower": "<:Flower_of_Life:982167959717945374>",
+    "plume": "<:Plume_of_Death:982167959915077643>",
+    "circlet": "<:Circlet_of_Logos:982167959692787802>",
+    "sands": "<:Sands_of_Eon:982167959881547877>",
+    "goblet": "<:Goblet_of_Eonothem:982167959835402240>",
+}
 
 
 def get_game_emoji(game: genshin.Game | Game) -> str:
@@ -44,3 +51,7 @@ def get_game_emoji(game: genshin.Game | Game) -> str:
 
 def get_element_emoji(element: str) -> str:
     return ELEMENT_EMOJIS[element.lower()]
+
+
+def get_artifact_pos_emoji(artifact_post: str) -> str:
+    return ARTIFACT_POS_EMOJIS[artifact_post.lower()]

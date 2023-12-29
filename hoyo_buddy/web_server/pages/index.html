@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hoyo Buddy geetest login web server</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <span id="loading" style="display: block;"><!-- LOADING_TEXT --></span>
+    <button style="display: none;" type="button" id="login" class="styled-button"><!-- BUTTON_LABEL --></button>
+</body>
+<script src="./gt.js"></script>
+<script>
+    fetch("/mmt?user_id=<!-- USER_ID -->")
+        .then((response) => {
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                document.body.innerHTML = "<!-- NO_GEETEST_CLOSE_TAB -->";
+            }
+        })
+        .then((mmt) =>
+            window.initGeetest(
+                {
+                    gt: mmt.data.gt,
+                    challenge: mmt.data.challenge,
+                    new_captcha: mmt.data.new_captcha,
+                    api_server: "api-na.geetest.com",
+                    lang: "en",
+                    product: "bind",
+                    https: false,
+                },
+                (captcha) => {
+                    captcha.appendTo("login");
+                    document.getElementById("loading").style.display = "none";
+                    document.getElementById("login").style.display = "block";
+                    captcha.onSuccess(() => {
+                        fetch("/login", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                sid: mmt.session_id,
+                                gt: captcha.getValidate(),
+                                user_id: '<!-- USER_ID -->'
+                            }),
+                        });
+                        document.body.innerHTML = "<!-- CLOSE_TAB -->";
+                    });
+                    document.getElementById("login").onclick = () => {
+                        return captcha.verify();
+                    };
+                }
+            )
+        );
+</script>
+
+</html>

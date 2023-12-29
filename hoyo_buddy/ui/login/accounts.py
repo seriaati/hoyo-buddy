@@ -50,16 +50,17 @@ class AccountManager(View):
 
     def get_account_embed(self) -> DefaultEmbed:
         account = self.selected_account
-        embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=LocaleStr("Account Manager", key="account_manager_title"),
-            description=LocaleStr(
-                "You don't have any accounts yet.",
-                key="account_manager_no_accounts_description",
-            ),
-        )
+
         if account is None:
+            embed = DefaultEmbed(
+                self.locale,
+                self.translator,
+                title=LocaleStr("Account Manager", key="account_manager_title"),
+                description=LocaleStr(
+                    "You don't have any accounts yet.",
+                    key="account_manager_no_accounts_description",
+                ),
+            )
             return embed
 
         embed = DefaultEmbed(

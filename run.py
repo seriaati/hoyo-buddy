@@ -13,7 +13,7 @@ from hoyo_buddy.bot import HoyoBuddy
 from hoyo_buddy.bot.logging import setup_logging
 from hoyo_buddy.bot.translator import Translator
 from hoyo_buddy.db import Database
-from hoyo_buddy.web_server import GeetestWebServer
+from hoyo_buddy.web_server.web_server import GeetestWebServer
 
 try:
     import uvloop  # type: ignore

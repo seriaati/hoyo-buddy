@@ -1,12 +1,11 @@
 import asyncio
 import logging
-import os
 
+import aiofiles
 import aiohttp
 import genshin
 from aiohttp import web
 from discord import Locale
-from dotenv import load_dotenv
 from genshin.errors import GenshinException
 from genshin.utility import geetest
 
@@ -14,103 +13,9 @@ from hoyo_buddy.bot.translator import LocaleStr, Translator
 from hoyo_buddy.db.models import User
 
 log = logging.getLogger(__name__)
-load_dotenv()
-
-INDEX = """
-<!DOCTYPE html>
-<html>
-  <head>
-  <meta charset="UTF-8">
-  <title>Geetest Web Server</title>
-  <style>
-    body {{
-        background-color: #36393f;
-        color: #dcddde;
-        font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
-        font-size: 64px;
-        line-height: 1.5;
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        align-items: center;
-        display: flex;
-        justify-content: center;
-        text-align: center;
-    }}
-    .styled-button {{
-        background-color: #7289da;
-        border: none;
-        border-radius: 3px;
-        color: #fff;
-        cursor: pointer;
-        display: block;
-        font-size: 64px;
-        font-weight: 500;
-        height: 400px;
-        margin: 0 auto;
-        padding: 0;
-        position: relative;
-        text-align: center;
-        transition: background-color .17s ease,border-color .17s ease,color .17s ease,box-shadow .17s ease;
-        user-select: none;
-        width: 800px;
-        text-align: center;
-    }}
-    .styled-button:hover {{
-        background-color: #677bc4;
-    }}
-    .styled-button:active {{
-        background-color: #5b6eae;
-    }}
-  </style>
-  </head>
-  <body>
-  <span id="loading" style="display: block;">{loading_text}</span>
-  <button style="display: none;" type="button" id="login" class="styled-button">{button_label}</button>
-  </body>
-  <script src="./gt.js"></script>
-  <script>
-	fetch("/mmt?user_id={user_id}")
-      .then((response) => response.json())
-      .then((mmt) =>
-		window.initGeetest(
-          {{
-			gt: mmt.data.gt,
-			challenge: mmt.data.challenge,
-			new_captcha: mmt.data.new_captcha,
-			api_server: "api-na.geetest.com",
-			lang: "en",
-			product: "bind",
-			https: false,
-          }},
-          (captcha) => {{
-			captcha.appendTo("login");
-            document.getElementById("loading").style.display = "none";
-			document.getElementById("login").style.display = "block";
-			captcha.onSuccess(() => {{
-              fetch("/login", {{
-				method: "POST",
-				body: JSON.stringify({{
-                  sid: mmt.session_id,
-                  gt: captcha.getValidate(),
-                  user_id: '{user_id}'
-				}}),
-              }});
-              document.body.innerHTML = "{close_tab}";
-			}});
-			document.getElementById("login").onclick = () => {{
-              return captcha.verify();
-			}};
-          }}
-		)
-      );
-  </script>
-</html>
-"""
 
 
 GT_URL = "https://raw.githubusercontent.com/GeeTeam/gt3-node-sdk/master/demo/static/libs/gt.js"
-env = os.environ["ENV"]
 
 
 class GeetestWebServer:
@@ -136,7 +41,7 @@ class GeetestWebServer:
         locale = Locale(request.query.get("locale", "en-US"))
         loading_text = self.translator.translate(
             LocaleStr(
-                "Loading CAPTCHA...<br>If the button doesn't show, either the email or password you entered was incorrect.",
+                "Loading CAPTCHA...",
                 key="loading_captcha_text",
             ),
             locale,
@@ -151,12 +56,23 @@ class GeetestWebServer:
             ),
             locale,
         )
+        no_geetest_close_tab = self.translator.translate(
+            LocaleStr(
+                "You're lucky!<br>No CAPTCHA is needed, you may now close this tab and go back to Discord.",
+                key="no_geetest_finish_label",
+            ),
+            locale,
+        )
 
-        body = INDEX.format(
-            user_id=user_id,
-            button_label=button_label,
-            close_tab=close_tab,
-            loading_text=loading_text,
+        async with aiofiles.open("hoyo_buddy/web_server/pages/index.html", encoding="utf-8") as f:
+            index = await f.read()
+
+        body = (
+            index.replace("<!-- LOADING_TEXT -->", loading_text)
+            .replace("<!-- BUTTON_LABEL -->", button_label)
+            .replace("<!-- CLOSE_TAB -->", close_tab)
+            .replace("<!-- USER_ID -->", user_id)
+            .replace("<!-- NO_GEETEST_CLOSE_TAB -->", no_geetest_close_tab)
         )
 
         return web.Response(
@@ -180,6 +96,10 @@ class GeetestWebServer:
 
         mmt = await geetest.create_mmt(account, password)
         if mmt.get("data") is None:
+            user = await User.get(id=int(user_id))
+            user.temp_data["cookies"] = mmt
+            user.temp_data.pop("email", None)
+            user.temp_data.pop("password", None)
             return web.Response(status=400, reason="Failed to create mmt")
 
         return web.json_response(mmt)
@@ -207,6 +127,15 @@ class GeetestWebServer:
         await user.save()
         return web.json_response({})
 
+    async def style_css(self, _: web.Request) -> web.StreamResponse:
+        async with aiofiles.open("hoyo_buddy/web_server/pages/style.css", encoding="utf-8") as f:
+            css = await f.read()
+
+        return web.Response(
+            body=css,
+            content_type="text/css",
+        )
+
     async def run(self, port: int = 5000) -> None:
         log.info("Starting web server... (port=%d)", port)
         app = web.Application()
@@ -216,6 +145,7 @@ class GeetestWebServer:
                 web.get("/gt.js", self.gt),
                 web.get("/mmt", self.mmt_endpoint),
                 web.post("/login", self.login),
+                web.get("/style.css", self.style_css),
             ]
         )
         runner = web.AppRunner(app)

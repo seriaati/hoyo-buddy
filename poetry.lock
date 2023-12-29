@@ -667,7 +667,7 @@ geetest = ["rsa"]
 type = "git"
 url = "https://github.com/seriaati/genshin.py"
 reference = "HEAD"
-resolved_reference = "1d870eb32ba7c953df4d4e1b2baf2cb35bc50b95"
+resolved_reference = "03d1aeb427340858d154bcfbf57fabd6d2800fdc"
 
 [[package]]
 name = "git-cliff"

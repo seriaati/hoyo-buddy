@@ -53,7 +53,7 @@ class DailyCheckin:
                 task.cancel()
 
             await asyncio.gather(*tasks, return_exceptions=True)
-        except Exception as e:  # skipcq: PYL-W0703
+        except Exception as e:
             bot.capture_exception(e)
         finally:
             log.info("Daily check-in finished")
@@ -76,7 +76,7 @@ class DailyCheckin:
             account = await queue.get()
             try:
                 embed = await cls._daily_checkin(api, account, bot.translator, bot.session)
-            except Exception:  # skipcq: PYL-W0703
+            except Exception:
                 await queue.put(account)
                 api_error_count += 1
                 log.exception("Daily check-in failed for %s", account)
@@ -119,7 +119,7 @@ class DailyCheckin:
         if api == "LOCAL":
             try:
                 reward = await account.client.claim_daily_reward()
-            except Exception as e:  # skipcq: PYL-W0703
+            except Exception as e:
                 embed, _ = get_error_embed(e, locale, translator)
                 embed.set_author(
                     name=LocaleStr(account.game.value, warn_no_key=False),

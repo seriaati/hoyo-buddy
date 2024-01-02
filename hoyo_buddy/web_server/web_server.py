@@ -118,7 +118,7 @@ class GeetestWebServer:
             )
         except GenshinException as e:
             user.temp_data["cookies"] = {"retcode": e.retcode, "message": e.msg}
-        except Exception as e:  # skipcq: PYL-W0703
+        except Exception as e:
             user.temp_data["cookies"] = {"retcode": -1, "message": str(e)}
         else:
             user.temp_data["cookies"] = data

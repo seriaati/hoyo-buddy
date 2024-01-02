@@ -129,6 +129,24 @@ class View(discord.ui.View):
         return None
 
 
+class URLButtonView(discord.ui.View):
+    def __init__(
+        self,
+        translator: Translator,
+        locale: discord.Locale,
+        *,
+        url: str,
+        label: str | LocaleStr | None = None,
+        emoji: str | None = None,
+    ) -> None:
+        super().__init__()
+        self.add_item(
+            discord.ui.Button(
+                label=translator.translate(label, locale) if label else None, url=url, emoji=emoji
+            )
+        )
+
+
 class Button(discord.ui.Button, Generic[V_co]):
     def __init__(
         self,

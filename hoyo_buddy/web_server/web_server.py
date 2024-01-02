@@ -51,14 +51,14 @@ class GeetestWebServer:
         )
         close_tab = self.translator.translate(
             LocaleStr(
-                "You may now close this tab and go back to Discord.",
+                "You may now close this tab and click 'Continue' in Discord.",
                 key="geetest_finish_label",
             ),
             locale,
         )
         no_geetest_close_tab = self.translator.translate(
             LocaleStr(
-                "You're lucky!<br>No CAPTCHA is needed, you may now close this tab and go back to Discord.",
+                "You're lucky!<br>No CAPTCHA is needed, you may now close this tab and click 'Continue' in Discord.",
                 key="no_geetest_finish_label",
             ),
             locale,
@@ -100,6 +100,7 @@ class GeetestWebServer:
             user.temp_data["cookies"] = mmt
             user.temp_data.pop("email", None)
             user.temp_data.pop("password", None)
+            await user.save()
             return web.Response(status=400, reason="Failed to create mmt")
 
         return web.json_response(mmt)

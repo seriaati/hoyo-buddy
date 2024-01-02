@@ -37,12 +37,6 @@ git-cliff = "^1.4.0"
 ruff = "^0.1.8"
 pre-commit = "^3.6.0"
 
-[tool.poetry.group.linux]
-optional = true
-
-[tool.poetry.group.linux.dependencies]
-uvloop = "^0.19.0"
-
 [tool.aerich]
 tortoise_orm = "hoyo_buddy.db.configs.DB_CONFIG"
 location = "./migrations"

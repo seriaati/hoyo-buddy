@@ -141,7 +141,7 @@ class Translator:
             return generated_translation
 
         if is_source and translation != message and not extras:
-            self._handle_mismatched_strings(string_key, translation, message)
+            self._handle_mismatched_strings(string_key, message)
             return message
 
         return translation
@@ -205,13 +205,8 @@ class Translator:
     def _handle_missing_translation(self, string_key: str, message: str) -> None:
         self.not_translated[string_key] = message
 
-    def _handle_mismatched_strings(self, string_key: str, translation: str, message: str) -> None:
-        log.info(
-            "Local and CDS strings with key %r do not match: %r != %r",
-            string_key,
-            translation,
-            message,
-        )
+    def _handle_mismatched_strings(self, string_key: str, message: str) -> None:
+        log.info("Local and CDS strings with key %r do not match", string_key)
         self.not_translated[string_key] = message
 
     @staticmethod

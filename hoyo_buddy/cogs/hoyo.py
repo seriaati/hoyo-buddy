@@ -189,6 +189,13 @@ class Hoyo(commands.Cog):
                     embed = api.get_food_embed(food_detail)
                     return await i.followup.send(embed=embed)
 
+            if category is ambr.ItemCategory.MATERIALS:
+                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+                    await i.response.defer()
+                    material_detail = await api.fetch_material_detail(int(query))
+                    embed = api.get_material_embed(material_detail)
+                    return await i.followup.send(embed=embed)
+
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
         self, i: INTERACTION, current: str
@@ -242,6 +249,8 @@ class Hoyo(commands.Cog):
                 items = await api.fetch_artifact_sets()
             elif category is ambr.ItemCategory.FOOD:
                 items = await api.fetch_foods()
+            elif category is ambr.ItemCategory.MATERIALS:
+                items = await api.fetch_materials()
             else:
                 return [self._get_error_app_command_choice("Invalid category selected")]
             return [

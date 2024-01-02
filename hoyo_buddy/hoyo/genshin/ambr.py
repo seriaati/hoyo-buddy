@@ -7,6 +7,7 @@ import ambr
 from ambr.client import Language
 from discord import Locale
 
+from ...bot.constants import WEEKDAYS
 from ...bot.emojis import get_element_emoji
 from ...bot.translator import LocaleStr, Translator
 from ...embeds import DefaultEmbed
@@ -399,4 +400,35 @@ class AmbrAPIClient(ambr.AmbrAPI):
         )
         embed.set_thumbnail(url=food.icon)
         embed.set_footer(text=food.description)
+        return embed
+
+    def get_material_embed(self, material: ambr.MaterialDetail) -> DefaultEmbed:
+        if material.sources:
+            names: list[str] = []
+
+            for source in material.sources:
+                if source.days:
+                    days_str = ", ".join(
+                        [self.translator.translate(WEEKDAYS[d], self.locale) for d in source.days]
+                    )
+                    names.append(f"{source.name} ({days_str})")
+                else:
+                    names.append(source.name)
+
+            description = create_bullet_list(names)
+        else:
+            description = material.description
+
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=f"{material.name}\n{'★' * material.rarity}",
+            description=description,
+        )
+        embed.set_thumbnail(url=material.icon)
+        embed.set_author(name=material.type)
+
+        if material.sources:
+            embed.set_footer(text=material.description)
+
         return embed

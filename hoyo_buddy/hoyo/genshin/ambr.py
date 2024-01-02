@@ -366,11 +366,13 @@ class AmbrAPIClient(ambr.AmbrAPI):
             embed.set_footer(text=namecard.source)
         return embed
 
-    def get_artifact_set_embed(self, artifact_set: ambr.ArtifactSetDetail) -> DefaultEmbed:
+    def get_artifact_embed(
+        self, artifact_set: ambr.ArtifactSetDetail, artifact: ambr.Artifact
+    ) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=artifact_set.name,
+            title=artifact.name,
             description=LocaleStr(
                 "2-Pieces: {bonus_2}\n4-Pieces: {bonus_4}",
                 bonus_2=artifact_set.affix_list[0].effect,
@@ -378,14 +380,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
                 key="artifact_set_embed_description",
             ),
         )
-        return embed
-
-    def get_artifact_embed(self, artifact: ambr.Artifact) -> DefaultEmbed:
-        embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=artifact.name,
-            description=artifact.description,
-        )
+        embed.set_author(name=artifact_set.name, icon_url=artifact_set.icon)
+        embed.set_footer(text=artifact.description)
         embed.set_thumbnail(url=artifact.icon)
         return embed

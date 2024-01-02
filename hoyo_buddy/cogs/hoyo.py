@@ -10,6 +10,7 @@ from ..exceptions import InvalidQueryError, NoAccountFoundError
 from ..hoyo.genshin import ambr
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui.hoyo.checkin import CheckInUI
+from ..ui.hoyo.search.artifact_set import ArtifactSetUI
 from ..ui.hoyo.search.character import CharacterUI
 from ..ui.hoyo.search.weapon import WeaponUI
 
@@ -169,8 +170,13 @@ class Hoyo(commands.Cog):
                     embed = api.get_namecard_embed(namecard_detail)
                     return await i.followup.send(embed=embed)
                 elif category is ambr.ItemCategory.ARTIFACT_SETS:
-                    artifact_set_detail = await api.fetch_artifact_set_detail(int(query))
-                    embed = api.get_artifact_set_embed(artifact_set_detail)
+                    artifact_set_ui = ArtifactSetUI(
+                        query,
+                        author=i.user,
+                        locale=locale,
+                        translator=i.client.translator,
+                    )
+                    return await artifact_set_ui.update(i)
                 else:
                     raise NotImplementedError
                 await i.response.send_message(embed=embed)

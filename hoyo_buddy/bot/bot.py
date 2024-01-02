@@ -78,14 +78,10 @@ class HoyoBuddy(commands.AutoShardedBot):
             log.exception(e)
 
     @cached(cache=TTLCache(maxsize=1024, ttl=360))
-    async def get_or_fetch_user(self, user_id: int) -> discord.User | None:
-        user = self.get_user(user_id)
-        if user:
-            return user
-
+    async def fetch_user(self, user_id: int) -> discord.User | None:
         try:
-            user = await self.fetch_user(user_id)
-        except discord.HTTPException:
+            user = await super().fetch_user(user_id)
+        except (discord.NotFound, discord.HTTPException):
             return None
         else:
             return user

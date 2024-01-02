@@ -147,44 +147,54 @@ class Hoyo(commands.Cog):
 
         if game is Game.GENSHIN:
             category = ambr.ItemCategory(category_value)
-            async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                if category is ambr.ItemCategory.CHARACTERS:
-                    character_ui = CharacterUI(
-                        query,
-                        author=i.user,
-                        locale=locale,
-                        translator=i.client.translator,
-                    )
-                    return await character_ui.update(i)
-                if category is ambr.ItemCategory.WEAPONS:
-                    weapon_ui = WeaponUI(
-                        query,
-                        author=i.user,
-                        locale=locale,
-                        translator=i.client.translator,
-                    )
-                    return await weapon_ui.update(i)
-                if category is ambr.ItemCategory.NAMECARDS:
+
+            if category is ambr.ItemCategory.CHARACTERS:
+                character_ui = CharacterUI(
+                    query,
+                    author=i.user,
+                    locale=locale,
+                    translator=i.client.translator,
+                )
+                return await character_ui.update(i)
+
+            if category is ambr.ItemCategory.WEAPONS:
+                weapon_ui = WeaponUI(
+                    query,
+                    author=i.user,
+                    locale=locale,
+                    translator=i.client.translator,
+                )
+                return await weapon_ui.update(i)
+
+            if category is ambr.ItemCategory.NAMECARDS:
+                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
                     await i.response.defer()
                     namecard_detail = await api.fetch_namecard_detail(int(query))
                     embed = api.get_namecard_embed(namecard_detail)
                     return await i.followup.send(embed=embed)
-                elif category is ambr.ItemCategory.ARTIFACT_SETS:
-                    artifact_set_ui = ArtifactSetUI(
-                        query,
-                        author=i.user,
-                        locale=locale,
-                        translator=i.client.translator,
-                    )
-                    return await artifact_set_ui.update(i)
-                else:
-                    raise NotImplementedError
-                await i.response.send_message(embed=embed)
+
+            if category is ambr.ItemCategory.ARTIFACT_SETS:
+                artifact_set_ui = ArtifactSetUI(
+                    query,
+                    author=i.user,
+                    locale=locale,
+                    translator=i.client.translator,
+                )
+                return await artifact_set_ui.update(i)
+
+            if category is ambr.ItemCategory.FOOD:
+                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+                    await i.response.defer()
+                    food_detail = await api.fetch_food_detail(int(query))
+                    embed = api.get_food_embed(food_detail)
+                    return await i.followup.send(embed=embed)
 
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
+        await i.response.defer()
+
         try:
             game = Game(i.namespace.game)
         except ValueError:
@@ -206,6 +216,8 @@ class Hoyo(commands.Cog):
     async def search_command_query_autocomplete(
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
+        await i.response.defer()
+
         try:
             game = Game(i.namespace.game)
         except ValueError:
@@ -228,6 +240,8 @@ class Hoyo(commands.Cog):
                 items = await api.fetch_namecards()
             elif category is ambr.ItemCategory.ARTIFACT_SETS:
                 items = await api.fetch_artifact_sets()
+            elif category is ambr.ItemCategory.FOOD:
+                items = await api.fetch_foods()
             else:
                 return [self._get_error_app_command_choice("Invalid category selected")]
             return [

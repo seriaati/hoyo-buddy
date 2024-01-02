@@ -10,6 +10,7 @@ from discord import Locale
 from ...bot.emojis import get_element_emoji
 from ...bot.translator import LocaleStr, Translator
 from ...embeds import DefaultEmbed
+from ...utils import create_bullet_list
 
 if TYPE_CHECKING:
     from types import TracebackType
@@ -383,4 +384,19 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed.set_author(name=artifact_set.name, icon_url=artifact_set.icon)
         embed.set_footer(text=artifact.description)
         embed.set_thumbnail(url=artifact.icon)
+        return embed
+
+    def get_food_embed(self, food: ambr.FoodDetail) -> DefaultEmbed:
+        description = create_bullet_list([s.name for s in food.sources])
+        if isinstance(food.recipe, ambr.FoodRecipe):
+            description += f"\n{create_bullet_list([e.description for e in food.recipe.effects])}"
+
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=food.name,
+            description=description,
+        )
+        embed.set_thumbnail(url=food.icon)
+        embed.set_footer(text=food.description)
         return embed

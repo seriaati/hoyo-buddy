@@ -24,3 +24,10 @@ def get_now() -> datetime.datetime:
     Get the current time in UTC+8
     """
     return datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
+
+
+def create_bullet_list(input_list: list[str]) -> str:
+    """
+    Create a bullet list from a list of strings
+    """
+    return "\n".join(["* " + item for item in input_list])

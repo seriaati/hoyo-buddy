@@ -134,13 +134,11 @@ class CheckInUI(View):
         self.message = await i.original_response()
 
 
-class BackButton(Button):
+class BackButton(Button["CheckInUI"]):
     def __init__(self) -> None:
         super().__init__(emoji=emojis.BACK, row=4)
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: CheckInUI
-
         await self.set_loading_state(i)
         embed, file_ = await self.view.get_image_embed_and_file(i.client.session)
         self.view.clear_items()
@@ -148,7 +146,7 @@ class BackButton(Button):
         await i.edit_original_response(embed=embed, attachments=[file_], view=self.view)
 
 
-class CheckInButton(Button):
+class CheckInButton(Button["CheckInUI"]):
     def __init__(self) -> None:
         super().__init__(
             style=discord.ButtonStyle.primary,
@@ -157,8 +155,6 @@ class CheckInButton(Button):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: CheckInUI
-
         await self.set_loading_state(i)
         client = self.view.client
         if client.game is None:
@@ -180,7 +176,7 @@ class CheckInButton(Button):
         await i.edit_original_response(embed=embed, attachments=[], view=self.view)
 
 
-class AutoCheckInToggle(ToggleButton):
+class AutoCheckInToggle(ToggleButton["CheckInUI"]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
@@ -189,13 +185,12 @@ class AutoCheckInToggle(ToggleButton):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: CheckInUI
         await super().callback(i)
         self.view.account.daily_checkin = self.current_toggle
         await self.view.account.save()
 
 
-class NotificationSettingsButton(Button):
+class NotificationSettingsButton(Button["CheckInUI"]):
     def __init__(self) -> None:
         super().__init__(
             label=LocaleStr("Notification settings", key="notification_settings_button_label"),
@@ -204,7 +199,6 @@ class NotificationSettingsButton(Button):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: CheckInUI
         await self.view.account.fetch_related("notif_settings")
         go_back_button = GoBackButton(
             self.view.children,
@@ -222,7 +216,7 @@ class NotificationSettingsButton(Button):
         await i.response.edit_message(view=self.view)
 
 
-class NotifyOnFailureToggle(ToggleButton):
+class NotifyOnFailureToggle(ToggleButton["CheckInUI"]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
@@ -230,13 +224,12 @@ class NotifyOnFailureToggle(ToggleButton):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: CheckInUI
         await super().callback(i)
         self.view.account.notif_settings.notify_on_checkin_failure = self.current_toggle
         await self.view.account.notif_settings.save()
 
 
-class NotifyOnSuccessToggle(ToggleButton):
+class NotifyOnSuccessToggle(ToggleButton["CheckInUI"]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
@@ -244,7 +237,6 @@ class NotifyOnSuccessToggle(ToggleButton):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: CheckInUI
         await super().callback(i)
         self.view.account.notif_settings.notify_on_checkin_success = self.current_toggle
         await self.view.account.notif_settings.save()

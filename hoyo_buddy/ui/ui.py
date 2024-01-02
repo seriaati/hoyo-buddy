@@ -154,6 +154,7 @@ class Button(discord.ui.Button, Generic[V_co]):
         self.original_label: str | None = None
         self.original_emoji: str | None = None
         self.original_disabled: bool | None = None
+
         self.view: V_co
 
     def translate(
@@ -187,7 +188,7 @@ class Button(discord.ui.Button, Generic[V_co]):
         await self.view.absolute_edit(i, view=self.view)
 
 
-class GoBackButton(Button["View"]):
+class GoBackButton(Button, Generic[V_co]):
     def __init__(
         self,
         original_children: list[discord.ui.Item[Any]],
@@ -199,6 +200,8 @@ class GoBackButton(Button["View"]):
         self.original_children = original_children.copy()
         self.embeds = embeds
         self.attachments = attachments
+
+        self.view: V_co
 
     async def callback(self, i: INTERACTION) -> Any:
         self.view.clear_items()
@@ -214,11 +217,13 @@ class GoBackButton(Button["View"]):
         await i.response.edit_message(**kwargs)
 
 
-class ToggleButton(Button["View"]):
+class ToggleButton(Button, Generic[V_co]):
     def __init__(self, current_toggle: bool, toggle_label: LocaleStr, **kwargs) -> None:
         self.current_toggle = current_toggle
         self.toggle_label = toggle_label
         super().__init__(style=self._get_style(), label=self._get_label(), row=1, **kwargs)
+
+        self.view: V_co
 
     def _get_style(self) -> discord.ButtonStyle:
         return discord.ButtonStyle.success if self.current_toggle else discord.ButtonStyle.secondary
@@ -243,7 +248,7 @@ class ToggleButton(Button["View"]):
         await i.response.edit_message(view=self.view)
 
 
-class LevelModalButton(Button["View"]):
+class LevelModalButton(Button, Generic[V_co]):
     def __init__(
         self,
         *,
@@ -262,6 +267,8 @@ class LevelModalButton(Button["View"]):
         self.min_level = min_level
         self.max_level = max_level
         self.default = default_level
+
+        self.view: V_co
 
     async def callback(self, i: INTERACTION) -> Any:
         modal = LevelModal(
@@ -383,7 +390,7 @@ PREV_PAGE = SelectOption(
 )
 
 
-class PaginatorSelect(Select["View"]):
+class PaginatorSelect(Select, Generic[V_co]):
     def __init__(
         self,
         options: list[SelectOption],
@@ -392,6 +399,8 @@ class PaginatorSelect(Select["View"]):
         self.split_options = split_list(options, 23)
         self.page_index = 0
         super().__init__(options=self._process_options(), **kwargs)
+
+        self.view: V_co
 
     def _process_options(self) -> list[SelectOption]:
         if self.page_index == 0:

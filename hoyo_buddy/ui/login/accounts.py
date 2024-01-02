@@ -117,12 +117,11 @@ class AccountManager(View):
             await self.absolute_edit(i, embed=self.get_account_embed(), view=self)
 
 
-class AccountSelector(Select):
+class AccountSelector(Select["AccountManager"]):
     def __init__(self, options: list[SelectOption]) -> None:
         super().__init__(custom_id="account_selector", options=options)
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: AccountManager
         uid, game = self.values[0].split("_")
         selected_account = discord.utils.get(self.view.accounts, uid=int(uid), game__value=game)
         if selected_account is None:
@@ -133,7 +132,7 @@ class AccountSelector(Select):
         await self.view.refresh(i, soft=True)
 
 
-class DeleteAccountContinue(Button):
+class DeleteAccountContinue(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="delete_account_continue",
@@ -143,11 +142,10 @@ class DeleteAccountContinue(Button):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: AccountManager
         await self.view.refresh(i, soft=False)
 
 
-class DeleteAccount(Button):
+class DeleteAccount(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="delete_account",
@@ -158,7 +156,6 @@ class DeleteAccount(Button):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: AccountManager
         account = self.view.selected_account
         if account is None:
             msg = "No account selected"
@@ -194,7 +191,7 @@ class NicknameModal(Modal):
         self.nickname.default = current_nickname
 
 
-class EditNickname(Button):
+class EditNickname(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="edit_nickname",
@@ -203,7 +200,6 @@ class EditNickname(Button):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: AccountManager
         account = self.view.selected_account
         if account is None:
             msg = "No account selected"
@@ -237,7 +233,7 @@ class DevToolCookiesModal(Modal):
     ltoken = TextInput(label="ltoken")
 
 
-class SelectAccountsToAdd(Select):
+class SelectAccountsToAdd(Select["AccountManager"]):
     def __init__(
         self,
         locale: discord.Locale,
@@ -277,7 +273,6 @@ class SelectAccountsToAdd(Select):
                 )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: AccountManager
         for value in self.values:
             uid, game = value.split("_")
             account = discord.utils.get(self.accounts, uid=int(uid), game__value=game)
@@ -308,7 +303,7 @@ class SelectAccountsToAdd(Select):
         await self.view.refresh(i, soft=False)
 
 
-class EnterCookies(Button):
+class EnterCookies(Button["AccountManager"]):
     def __init__(self, *, v2: bool, dev_tools: bool = False) -> None:
         if dev_tools:
             if v2:
@@ -330,8 +325,6 @@ class EnterCookies(Button):
         self.dev_tools = dev_tools
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: AccountManager
-
         modal = self.get_cookies_modal()
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
@@ -421,12 +414,11 @@ class EnterCookies(Button):
             )
 
 
-class WithJavaScript(Button):
+class WithJavaScript(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(label=LocaleStr("With JavaScript", key="javascript_button_label"))
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: AccountManager
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -454,14 +446,13 @@ class WithJavaScript(Button):
         await i.followup.send(code, ephemeral=True)
 
 
-class WithDevTools(Button):
+class WithDevTools(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             label=LocaleStr("With DevTools (Desktop Only)", key="devtools_button_label")
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: AccountManager
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -490,7 +481,7 @@ class WithDevTools(Button):
         await i.response.edit_message(embed=embed, view=self.view)
 
 
-class EmailPasswordContinueButton(Button):
+class EmailPasswordContinueButton(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="email_password_continue",
@@ -500,7 +491,6 @@ class EmailPasswordContinueButton(Button):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: AccountManager
         user = self.view.user
         await user.refresh_from_db()
         cookies: dict[str, Any] | None = user.temp_data.get("cookies")
@@ -581,7 +571,7 @@ class EmailPasswordModal(Modal):
     )
 
 
-class EnterEmailPassword(Button):
+class EnterEmailPassword(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             label=LocaleStr("Enter Email and Password", key="enter_email_password_button_label"),
@@ -590,8 +580,6 @@ class EnterEmailPassword(Button):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: AccountManager
-
         modal = EmailPasswordModal(
             title=LocaleStr("Enter Email and Password", key="enter_email_password_modal_title")
         )
@@ -636,14 +624,13 @@ class EnterEmailPassword(Button):
         await i.edit_original_response(embed=embed, view=self.view)
 
 
-class WithEmailPassword(Button):
+class WithEmailPassword(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             label=LocaleStr("With Email and Password", key="email_password_button_label")
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: AccountManager
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -663,7 +650,7 @@ class WithEmailPassword(Button):
         await i.response.edit_message(embed=embed, view=self.view)
 
 
-class AddAccount(Button):
+class AddAccount(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="add_account",
@@ -673,7 +660,6 @@ class AddAccount(Button):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: AccountManager
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,

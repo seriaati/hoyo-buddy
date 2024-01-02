@@ -60,7 +60,7 @@ class SettingsUI(View):
         await self.settings.save()
 
 
-class LanguageSelector(Select):
+class LanguageSelector(Select["SettingsUI"]):
     def __init__(self, current_locale: discord.Locale | None) -> None:
         options = self._get_options(current_locale)
         super().__init__(options=options)
@@ -89,7 +89,6 @@ class LanguageSelector(Select):
         return options
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: SettingsUI
         selected = self.values[0]
         self.view.settings.lang = None if selected == "auto" else self.values[0]
         self.options = self._get_options(self.view.settings.locale)
@@ -97,7 +96,7 @@ class LanguageSelector(Select):
         await self.view.update_and_save(i)
 
 
-class DarkModeToggle(ToggleButton):
+class DarkModeToggle(ToggleButton["SettingsUI"]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
@@ -105,7 +104,6 @@ class DarkModeToggle(ToggleButton):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: SettingsUI
         await super().callback(i)
         self.view.settings.dark_mode = self.current_toggle
 

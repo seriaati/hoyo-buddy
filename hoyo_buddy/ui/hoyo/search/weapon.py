@@ -72,7 +72,7 @@ class WeaponUI(View):
         await i.edit_original_response(embed=embed, view=self)
 
 
-class WeaponLevelModalButton(LevelModalButton):
+class WeaponLevelModalButton(LevelModalButton["WeaponUI"]):
     def __init__(
         self,
         is_character_level: bool,
@@ -88,13 +88,12 @@ class WeaponLevelModalButton(LevelModalButton):
         self.is_character_level = is_character_level
 
     async def callback(self, i: "INTERACTION") -> Any:
-        self.view: WeaponUI
         await super().callback(i)
         self.view.weapon_level = self.level
         await self.view.update(i)
 
 
-class RefinementSelector(Select):
+class RefinementSelector(Select["WeaponUI"]):
     def __init__(
         self, *, min_refinement: int, max_refinement: int, current_refinement: int
     ) -> None:
@@ -110,6 +109,5 @@ class RefinementSelector(Select):
         )
 
     async def callback(self, i: "INTERACTION") -> Any:
-        self.view: WeaponUI
         self.view.refinement = int(self.values[0])
         await self.view.update(i)

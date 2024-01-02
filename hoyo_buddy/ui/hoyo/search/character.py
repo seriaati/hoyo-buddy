@@ -176,7 +176,7 @@ class CharacterUI(View):
         await i.edit_original_response(embed=embed, view=self)
 
 
-class CharacterLevelModalButton(LevelModalButton):
+class CharacterLevelModalButton(LevelModalButton["CharacterUI"]):
     def __init__(
         self,
         is_character_level: bool,
@@ -192,7 +192,6 @@ class CharacterLevelModalButton(LevelModalButton):
         self.is_character_level = is_character_level
 
     async def callback(self, i: "INTERACTION") -> Any:
-        self.view: CharacterUI
         await super().callback(i)
         if self.is_character_level:
             self.view.character_level = self.level
@@ -201,7 +200,7 @@ class CharacterLevelModalButton(LevelModalButton):
         await self.view.update(i)
 
 
-class PageSelector(Select):
+class PageSelector(Select["CharacterUI"]):
     def __init__(self, current: int) -> None:
         super().__init__(
             options=[
@@ -235,26 +234,23 @@ class PageSelector(Select):
         )
 
     async def callback(self, i: "INTERACTION") -> Any:
-        self.view: CharacterUI
         self.view.selected = int(self.values[0])
         await self.view.update(i)
 
 
-class ItemSelector(Select):
+class ItemSelector(Select["CharacterUI"]):
     def __init__(self, options: list[SelectOption], index_name: str) -> None:
         super().__init__(options=options)
         self.index_name = index_name
 
     async def callback(self, i: "INTERACTION") -> Any:
-        self.view: CharacterUI
         self.view.__setattr__(self.index_name, int(self.values[0]))
         await self.view.update(i)
 
 
-class QuoteSelector(PaginatorSelect):
+class QuoteSelector(PaginatorSelect["CharacterUI"]):
     async def callback(self, i: "INTERACTION") -> Any:
         await super().callback()
-        self.view: CharacterUI
         try:
             self.view.quote_index = int(self.values[0])
         except ValueError:

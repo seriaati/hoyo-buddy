@@ -8,7 +8,7 @@ from ambr.client import Language
 from discord import Locale
 
 from ...bot.constants import WEEKDAYS
-from ...bot.emojis import get_element_emoji
+from ...bot.emojis import COMFORT_ICON, LOAD_ICON, get_element_emoji
 from ...bot.translator import LocaleStr, Translator
 from ...embeds import DefaultEmbed
 from ...utils import create_bullet_list
@@ -431,4 +431,30 @@ class AmbrAPIClient(ambr.AmbrAPI):
         if material.sources:
             embed.set_footer(text=material.description)
 
+        return embed
+
+    def get_furniture_embed(self, furniture: ambr.FurnitureDetail) -> DefaultEmbed:
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=f"{furniture.name}\n{'★' * furniture.rarity}",
+            description=LocaleStr(
+                "{comfort_icon} Comfort: {comfort}\n"
+                "{load_icon} Load: {load}\n"
+                "Trust: {trust}\n"
+                "Creation Time: {hour}h",
+                key="furniture_embed_description",
+                comfort_icon=COMFORT_ICON,
+                load_icon=LOAD_ICON,
+                comfort=furniture.comfort or 0,
+                load=furniture.cost or 0,
+                trust=furniture.recipe.exp if furniture.recipe else 0,
+                hour=furniture.recipe.time // 3600 if furniture.recipe else 0,
+            ),
+        )
+
+        # TODO: Add furniture ingredients
+        embed.set_footer(text=furniture.description)
+        embed.set_author(name=f"{furniture.types[-1]}/{furniture.categories[-1]}")
+        embed.set_thumbnail(url=furniture.icon)
         return embed

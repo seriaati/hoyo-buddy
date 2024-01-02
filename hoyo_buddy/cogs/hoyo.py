@@ -5,6 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from ..bot import INTERACTION, HoyoBuddy, LocaleStr, Translator
+from ..bot.emojis import PROJECT_AMBER
 from ..db import Game, HoyoAccount, Settings
 from ..exceptions import InvalidQueryError, NoAccountFoundError
 from ..hoyo.genshin import ambr
@@ -13,6 +14,7 @@ from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.search.artifact_set import ArtifactSetUI
 from ..ui.hoyo.search.character import CharacterUI
 from ..ui.hoyo.search.weapon import WeaponUI
+from ..ui.ui import URLButtonView
 
 
 class Hoyo(commands.Cog):
@@ -132,7 +134,7 @@ class Hoyo(commands.Cog):
             ),
         ]
     )
-    async def search_command(
+    async def search_command(  # noqa: PLR0911
         self,
         i: INTERACTION,
         game_value: str,
@@ -196,6 +198,22 @@ class Hoyo(commands.Cog):
                     embed = api.get_material_embed(material_detail)
                     return await i.followup.send(embed=embed)
 
+            if category is ambr.ItemCategory.FURNISHINGS:
+                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+                    await i.response.defer()
+                    furniture_detail = await api.fetch_furniture_detail(int(query))
+                    embed = api.get_furniture_embed(furniture_detail)
+                    return await i.followup.send(
+                        embed=embed,
+                        view=URLButtonView(
+                            i.client.translator,
+                            locale,
+                            url=f"https://ambr.top/{api.lang.value}/archive/furniture/{query}/",
+                            label="ambr.top",
+                            emoji=PROJECT_AMBER,
+                        ),
+                    )
+
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
         self, i: INTERACTION, current: str
@@ -220,7 +238,7 @@ class Hoyo(commands.Cog):
         return [self._get_error_app_command_choice("Invalid game selected")]
 
     @search_command.autocomplete("query")
-    async def search_command_query_autocomplete(
+    async def search_command_query_autocomplete(  # noqa: C901
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
         await i.response.defer()
@@ -251,6 +269,8 @@ class Hoyo(commands.Cog):
                 items = await api.fetch_foods()
             elif category is ambr.ItemCategory.MATERIALS:
                 items = await api.fetch_materials()
+            elif category is ambr.ItemCategory.FURNISHINGS:
+                items = await api.fetch_furnitures()
             else:
                 return [self._get_error_app_command_choice("Invalid category selected")]
             return [

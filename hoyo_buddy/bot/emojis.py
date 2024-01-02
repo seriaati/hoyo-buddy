@@ -37,6 +37,10 @@ ARTIFACT_POS_EMOJIS: dict[str, str] = {
     "circlet": "<:Circlet_of_Logos:982167959692787802>",
 }
 
+COMFORT_ICON = "<:comfort_icon:1045528772222394378>"
+LOAD_ICON = "<:load_icon:1045528773992386650>"
+PROJECT_AMBER = "<:PROJECT_AMBER:1191752455998930955>"
+
 
 def get_game_emoji(game: genshin.Game | Game) -> str:
     if game is genshin.Game.GENSHIN or game is Game.GENSHIN:

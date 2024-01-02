@@ -1,5 +1,5 @@
 import logging
-from typing import TYPE_CHECKING, Any, Self
+from typing import TYPE_CHECKING, Any, Generic, Self, TypeVar
 
 import discord
 from discord.utils import MISSING
@@ -26,6 +26,8 @@ __all__ = (
     "TextInput",
     "Modal",
 )
+
+V_co = TypeVar("V_co", bound="View", covariant=True)
 
 
 class View(discord.ui.View):
@@ -127,7 +129,7 @@ class View(discord.ui.View):
         return None
 
 
-class Button(discord.ui.Button):
+class Button(discord.ui.Button, Generic[V_co]):
     def __init__(
         self,
         *,
@@ -152,6 +154,7 @@ class Button(discord.ui.Button):
         self.original_label: str | None = None
         self.original_emoji: str | None = None
         self.original_disabled: bool | None = None
+        self.view: V_co
 
     def translate(
         self,
@@ -162,7 +165,6 @@ class Button(discord.ui.Button):
             self.label = translator.translate(self.locale_str_label, locale)
 
     async def set_loading_state(self, i: INTERACTION) -> None:
-        self.view: View
         self.original_label = self.label[:] if self.label else None
         self.original_emoji = str(self.emoji) if self.emoji else None
         self.original_disabled = self.disabled
@@ -175,7 +177,6 @@ class Button(discord.ui.Button):
         await self.view.absolute_edit(i, view=self.view)
 
     async def unset_loading_state(self, i: INTERACTION) -> None:
-        self.view: View
         if self.original_disabled is None:
             msg = "unset_loading_state called before set_loading_state"
             raise RuntimeError(msg)
@@ -186,7 +187,7 @@ class Button(discord.ui.Button):
         await self.view.absolute_edit(i, view=self.view)
 
 
-class GoBackButton(Button):
+class GoBackButton(Button["View"]):
     def __init__(
         self,
         original_children: list[discord.ui.Item[Any]],
@@ -213,7 +214,7 @@ class GoBackButton(Button):
         await i.response.edit_message(**kwargs)
 
 
-class ToggleButton(Button):
+class ToggleButton(Button["View"]):
     def __init__(self, current_toggle: bool, toggle_label: LocaleStr, **kwargs) -> None:
         self.current_toggle = current_toggle
         self.toggle_label = toggle_label
@@ -236,14 +237,13 @@ class ToggleButton(Button):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view: View
         self.current_toggle = not self.current_toggle
         self.style = self._get_style()
         self.label = self.view.translator.translate(self._get_label(), self.view.locale)
         await i.response.edit_message(view=self.view)
 
 
-class LevelModalButton(Button):
+class LevelModalButton(Button["View"]):
     def __init__(
         self,
         *,
@@ -295,7 +295,7 @@ class SelectOption(discord.SelectOption):
         self.locale_str_description = description
 
 
-class Select(discord.ui.Select):
+class Select(discord.ui.Select, Generic[V_co]):
     def __init__(
         self,
         *,
@@ -321,6 +321,8 @@ class Select(discord.ui.Select):
         self.original_options: list[SelectOption] | None = None
         self.original_disabled: bool | None = None
 
+        self.view: V_co
+
     @property
     def options(self) -> list[SelectOption]:
         return self._underlying.options  # type: ignore
@@ -342,7 +344,6 @@ class Select(discord.ui.Select):
                 option.description = translator.translate(option.locale_str_description, locale)
 
     async def set_loading_state(self, i: INTERACTION) -> None:
-        self.view: View
         self.original_options = self.options.copy()
         self.original_placeholder = self.placeholder[:] if self.placeholder else None
 
@@ -382,7 +383,7 @@ PREV_PAGE = SelectOption(
 )
 
 
-class PaginatorSelect(Select):
+class PaginatorSelect(Select["View"]):
     def __init__(
         self,
         options: list[SelectOption],

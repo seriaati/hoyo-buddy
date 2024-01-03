@@ -21,7 +21,7 @@ def setup_logging(env: str) -> "Generator[None, None, None]":
         max_bytes = 32 * 1024 * 1024
         logging.getLogger("discord").setLevel(logging.INFO)
 
-        loggers_to_disable = ("discord.http", "aiosqlite", "tortoise.db_client", "PIL")
+        loggers_to_disable = ("aiosqlite", "tortoise.db_client", "PIL")
         for logger in loggers_to_disable:
             logging.getLogger(logger).setLevel(logging.WARNING)
 

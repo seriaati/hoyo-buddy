@@ -1,8 +1,7 @@
 import asyncio
-import contextlib
 import logging
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 import discord
 import genshin
@@ -20,25 +19,26 @@ if TYPE_CHECKING:
 
 log = logging.getLogger(__name__)
 
-CHECKIN_APIS = (
-    "https://daily-checkin-api.vercel.app/",
-    "https://dailycheckin-1-e3972598.deta.app/",
-    "https://daily-checkin-api.onrender.com/",
-)
+CHECKIN_APIS: dict[str, str] = {
+    "VERCEL": "https://daily-checkin-api.vercel.app",
+    "DETA": "https://dailycheckin-1-e3972598.deta.app",
+    "RENDER": "https://daily-checkin-api.onrender.com",
+}
 API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
 MAX_API_ERROR_COUNT = 10
 
 
 class DailyCheckin:
+    _total_checkin_count: ClassVar[int]
+
     @classmethod
     async def execute(cls, bot: "HoyoBuddy") -> None:
         try:
             log.info("Daily check-in started")
 
+            cls._total_checkin_count = 0
             queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
-            accounts = await HoyoAccount.filter(daily_checkin=True).prefetch_related(
-                "user", "notif_settings"
-            )
+            accounts = await HoyoAccount.filter(daily_checkin=True)
             for account in accounts:
                 await queue.put(account)
 
@@ -51,23 +51,22 @@ class DailyCheckin:
             await queue.join()
             for task in tasks:
                 task.cancel()
-
             await asyncio.gather(*tasks, return_exceptions=True)
         except Exception as e:
             bot.capture_exception(e)
         finally:
-            log.info("Daily check-in finished")
+            log.info("Daily check-in finished, total check-in count: %d", cls._total_checkin_count)
 
     @classmethod
     async def _daily_checkin_task(
-        cls, queue: asyncio.Queue[HoyoAccount], api: str, bot: "HoyoBuddy"
+        cls, queue: asyncio.Queue[HoyoAccount], api_name: str, bot: "HoyoBuddy"
     ) -> None:
-        log.info("Daily check-in task started for %s", api)
-        if api != "LOCAL":
+        log.info("Daily check-in task started for api: %s", api_name)
+        if api_name != "LOCAL":
             # test if the api is working
-            async with bot.session.get(api) as resp:
+            async with bot.session.get(CHECKIN_APIS[api_name]) as resp:
                 if resp.status != 200:
-                    msg = f"API {api} returned {resp.status}"
+                    msg = f"API {api_name} returned {resp.status}"
                     raise RuntimeError(msg)
 
         api_error_count = 0
@@ -75,15 +74,18 @@ class DailyCheckin:
         while True:
             account = await queue.get()
             try:
-                embed = await cls._daily_checkin(api, account, bot.translator, bot.session)
+                await account.fetch_related("user")
+                embed = await cls._daily_checkin(api_name, account, bot.translator, bot.session)
             except Exception:
                 await queue.put(account)
                 api_error_count += 1
                 log.exception("Daily check-in failed for %s", account)
                 if api_error_count >= MAX_API_ERROR_COUNT:
-                    msg = f"Daily check-in API {api} failed for {api_error_count} accounts"
+                    msg = f"Daily check-in API {api_name} failed for {api_error_count} accounts"
                     raise RuntimeError(msg) from None
             else:
+                cls._total_checkin_count += 1
+                await account.fetch_related("notif_settings")
                 if (
                     isinstance(embed, ErrorEmbed)
                     and account.notif_settings.notify_on_checkin_failure
@@ -99,14 +101,13 @@ class DailyCheckin:
     @classmethod
     async def _daily_checkin(
         cls,
-        api: str,
+        api_name: str,
         account: HoyoAccount,
         translator: Translator,
         session: "aiohttp.ClientSession",
     ) -> Embed:
-        log.debug("Daily check-in with %s for %s", api, account)
+        log.debug("Daily check-in with %s for %s", api_name, account)
 
-        await account.fetch_related("user")
         await account.user.fetch_related("settings")
 
         locale = account.user.settings.locale or discord.Locale.american_english
@@ -116,7 +117,7 @@ class DailyCheckin:
             msg = "Client game is None"
             raise AssertionError(msg)
 
-        if api == "LOCAL":
+        if api_name == "LOCAL":
             try:
                 reward = await account.client.claim_daily_reward()
             except Exception as e:
@@ -135,7 +136,8 @@ class DailyCheckin:
             "lang": client.lang,
             "game": client.game.value,
         }
-        async with session.post(f"{api}checkin/", json=payload) as resp:
+        api_url = CHECKIN_APIS[api_name]
+        async with session.post(f"{api_url}/checkin/", json=payload) as resp:
             data = await resp.json()
             if resp.status == 200:
                 reward = genshin.models.DailyReward(**data["data"])
@@ -150,13 +152,21 @@ class DailyCheckin:
                         icon_url=GAME_THUMBNAILS[account.game],
                     )
             else:
-                msg = f"API {api} returned {resp.status}"
+                msg = f"API {api_name} returned {resp.status}"
                 raise RuntimeError(msg)
+
         return embed
 
     @classmethod
     async def _notify_user(cls, bot: "HoyoBuddy", user: User, embed: Embed) -> None:
-        with contextlib.suppress(discord.HTTPException, discord.Forbidden):
+        log.debug("Notifying user %s", user)
+        try:
             discord_user = await bot.fetch_user(user.id)
+        except (discord.NotFound, discord.HTTPException):
+            log.exception("Failed to fetch user %s", user)
+        else:
             if discord_user:
                 await discord_user.send(embed=embed)
+                log.debug("User %s notified", user)
+            else:
+                log.warning("User %s not found", user)

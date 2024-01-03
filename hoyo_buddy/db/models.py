@@ -42,6 +42,9 @@ class User(Model):
     temp_data: dict[str, Any] = fields.JSONField(default=dict)  # type: ignore
     accounts: fields.ReverseRelation["HoyoAccount"]
 
+    def __str__(self) -> str:
+        return str(self.id)
+
     @property
     def _key(self) -> str:
         return str(self.id)

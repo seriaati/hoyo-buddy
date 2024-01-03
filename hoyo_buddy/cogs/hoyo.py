@@ -1,3 +1,4 @@
+import random
 from typing import Any
 
 import discord
@@ -273,11 +274,14 @@ class Hoyo(commands.Cog):
                 items = await api.fetch_furnitures()
             else:
                 return [self._get_error_app_command_choice("Invalid category selected")]
-            return [
+
+            result = [
                 app_commands.Choice(name=item.name, value=str(item.id))
                 for item in items
                 if current.lower() in item.name.lower()
-            ][:25]
+            ]
+            random.shuffle(result)
+            return result[:25]
 
 
 async def setup(bot: HoyoBuddy) -> None:

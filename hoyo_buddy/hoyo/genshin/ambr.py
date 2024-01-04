@@ -458,3 +458,16 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed.set_author(name=f"{furniture.types[-1]}/{furniture.categories[-1]}")
         embed.set_thumbnail(url=furniture.icon)
         return embed
+
+    def get_furniture_set_embed(self, furniture_set: ambr.FurnitureSetDetail) -> DefaultEmbed:
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=furniture_set.name,
+            description=furniture_set.description,
+        )
+
+        # TODO: Add furniture set furnitures
+        embed.set_author(name=f"{furniture_set.types[-1]}/{furniture_set.categories[-1]}")
+        embed.set_image(url=furniture_set.icon)
+        return embed

@@ -135,7 +135,7 @@ class Hoyo(commands.Cog):
             ),
         ]
     )
-    async def search_command(  # noqa: PLR0911
+    async def search_command(  # noqa: C901, PLR0911
         self,
         i: INTERACTION,
         game_value: str,
@@ -215,6 +215,22 @@ class Hoyo(commands.Cog):
                         ),
                     )
 
+            if category is ambr.ItemCategory.FURNISHING_SETS:
+                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+                    await i.response.defer()
+                    furniture_set_detail = await api.fetch_furniture_set_detail(int(query))
+                    embed = api.get_furniture_set_embed(furniture_set_detail)
+                    return await i.followup.send(
+                        embed=embed,
+                        view=URLButtonView(
+                            i.client.translator,
+                            locale,
+                            url=f"https://ambr.top/{api.lang.value}/archive/furnitureSuite/{query}/",
+                            label="ambr.top",
+                            emoji=PROJECT_AMBER,
+                        ),
+                    )
+
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
         self, i: INTERACTION, current: str
@@ -272,6 +288,8 @@ class Hoyo(commands.Cog):
                 items = await api.fetch_materials()
             elif category is ambr.ItemCategory.FURNISHINGS:
                 items = await api.fetch_furnitures()
+            elif category is ambr.ItemCategory.FURNISHING_SETS:
+                items = await api.fetch_furniture_sets()
             else:
                 return [self._get_error_app_command_choice("Invalid category selected")]
 

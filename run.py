@@ -15,13 +15,6 @@ from hoyo_buddy.bot.translator import Translator
 from hoyo_buddy.db import Database
 from hoyo_buddy.web_server.web_server import GeetestWebServer
 
-try:
-    import uvloop  # type: ignore
-except ImportError:
-    pass
-else:
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
 load_dotenv()
 env = os.environ["ENV"]
 
@@ -47,4 +40,9 @@ async def main() -> None:
 
 
 with setup_logging(env):
-    asyncio.run(main())
+    try:
+        import uvloop  # type: ignore
+    except ImportError:
+        asyncio.run(main())
+    else:
+        uvloop.run(main())

@@ -73,7 +73,6 @@ class ItemCategory(StrEnum):
     NAMECARDS = "Namecards"
     LIVING_BEINGS = "Living Beings"
     BOOKS = "Books"
-    ACHIEVEMENTS = "Achievements"
     TCG = "TCG"
 
 

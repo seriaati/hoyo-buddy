@@ -231,6 +231,22 @@ class Hoyo(commands.Cog):
                         ),
                     )
 
+            if category is ambr.ItemCategory.LIVING_BEINGS:
+                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+                    await i.response.defer()
+                    monster_detail = await api.fetch_monster_detail(int(query))
+                    embed = api.get_monster_embed(monster_detail)
+                    return await i.followup.send(
+                        embed=embed,
+                        view=URLButtonView(
+                            i.client.translator,
+                            locale,
+                            url=f"https://ambr.top/{api.lang.value}/archive/monster/{query}/",
+                            label="ambr.top",
+                            emoji=PROJECT_AMBER,
+                        ),
+                    )
+
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
         self, i: INTERACTION, current: str
@@ -290,6 +306,8 @@ class Hoyo(commands.Cog):
                 items = await api.fetch_furnitures()
             elif category is ambr.ItemCategory.FURNISHING_SETS:
                 items = await api.fetch_furniture_sets()
+            elif category is ambr.ItemCategory.LIVING_BEINGS:
+                items = await api.fetch_monsters()
             else:
                 return [self._get_error_app_command_choice("Invalid category selected")]
 

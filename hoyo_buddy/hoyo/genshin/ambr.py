@@ -471,3 +471,14 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed.set_author(name=f"{furniture_set.types[-1]}/{furniture_set.categories[-1]}")
         embed.set_image(url=furniture_set.icon)
         return embed
+
+    def get_monster_embed(self, monster: ambr.MonsterDetail) -> DefaultEmbed:
+        embed = DefaultEmbed(
+            self.locale, self.translator, title=monster.name, description=monster.description
+        )
+        if monster.special_name:
+            embed.set_author(name=f"{monster.type}/{monster.special_name}")
+        else:
+            embed.set_author(name=monster.type)
+        embed.set_thumbnail(url=monster.icon)
+        return embed

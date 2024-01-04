@@ -31,3 +31,12 @@ def create_bullet_list(input_list: list[str]) -> str:
     Create a bullet list from a list of strings
     """
     return "\n".join(["* " + item for item in input_list])
+
+
+def shorten(text: str, length: int) -> str:
+    """
+    Shorten a string to the specified length
+    """
+    if len(text) <= length:
+        return text
+    return text[: length - 3] + "..."

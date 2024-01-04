@@ -13,6 +13,7 @@ from ..hoyo.genshin import ambr
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.search.artifact_set import ArtifactSetUI
+from ..ui.hoyo.search.book import BookVolumeUI
 from ..ui.hoyo.search.character import CharacterUI
 from ..ui.hoyo.search.weapon import WeaponUI
 from ..ui.ui import URLButtonView
@@ -247,6 +248,19 @@ class Hoyo(commands.Cog):
                         ),
                     )
 
+            if category is ambr.ItemCategory.BOOKS:
+                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+                    await i.response.defer()
+                    book = await api.fetch_book_detail(int(query))
+                    book_volume_ui = BookVolumeUI(
+                        book,
+                        api.lang.value,
+                        author=i.user,
+                        locale=locale,
+                        translator=i.client.translator,
+                    )
+                    return await book_volume_ui.update(i)
+
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
         self, i: INTERACTION, current: str
@@ -308,6 +322,8 @@ class Hoyo(commands.Cog):
                 items = await api.fetch_furniture_sets()
             elif category is ambr.ItemCategory.LIVING_BEINGS:
                 items = await api.fetch_monsters()
+            elif category is ambr.ItemCategory.BOOKS:
+                items = await api.fetch_books()
             else:
                 return [self._get_error_app_command_choice("Invalid category selected")]
 

@@ -11,7 +11,7 @@ from ...bot.constants import WEEKDAYS
 from ...bot.emojis import COMFORT_ICON, LOAD_ICON, get_element_emoji
 from ...bot.translator import LocaleStr, Translator
 from ...embeds import DefaultEmbed
-from ...utils import create_bullet_list
+from ...utils import create_bullet_list, shorten
 
 if TYPE_CHECKING:
     from types import TracebackType
@@ -481,4 +481,18 @@ class AmbrAPIClient(ambr.AmbrAPI):
         else:
             embed.set_author(name=monster.type)
         embed.set_thumbnail(url=monster.icon)
+        return embed
+
+    def get_volume_embed(
+        self, book: ambr.BookDetail, volume: ambr.BookVolume, readable: str
+    ) -> DefaultEmbed:
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=volume.name,
+            description=shorten(readable, 4096),
+        )
+        embed.set_author(name=book.name)
+        embed.set_thumbnail(url=book.icon)
+        embed.set_footer(text=volume.description)
         return embed

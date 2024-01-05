@@ -31,7 +31,7 @@ class CharacterUI(View):
         self.const_index = 0
         self.story_index = 0
         self.quote_index = 0
-        self.selected = 0
+        self.selected_page = 0
 
     async def fetch_character_embed(self) -> "DefaultEmbed":
         async with AmbrAPIClient(self.locale, self.translator) as api:
@@ -88,9 +88,9 @@ class CharacterUI(View):
             await i.response.defer()
 
         self.clear_items()
-        self.add_item(PageSelector(self.selected))
+        self.add_item(PageSelector(self.selected_page))
 
-        if self.selected == 0:
+        if self.selected_page == 0:
             embed = await self.fetch_character_embed()
             self.add_item(
                 CharacterLevelModalButton(
@@ -101,7 +101,7 @@ class CharacterUI(View):
                     label=LocaleStr("Change character level", key="change_character_level_label"),
                 )
             )
-        elif self.selected == 1:
+        elif self.selected_page == 1:
             embed, upgradeable, talents = await self.fetch_talent_embed()
             if upgradeable:
                 self.add_item(
@@ -126,7 +126,7 @@ class CharacterUI(View):
                     "talent_index",
                 )
             )
-        elif self.selected == 2:
+        elif self.selected_page == 2:
             embed, consts = await self.fetch_const_embed()
             self.add_item(
                 ItemSelector(
@@ -141,7 +141,7 @@ class CharacterUI(View):
                     "const_index",
                 )
             )
-        elif self.selected == 3:
+        elif self.selected_page == 3:
             embed, stories = await self.fetch_story_embed()
             self.add_item(
                 ItemSelector(
@@ -156,7 +156,7 @@ class CharacterUI(View):
                     "story_index",
                 )
             )
-        elif self.selected == 4:
+        elif self.selected_page == 4:
             embed, quotes = await self.fetch_quote_embed()
             self.add_item(
                 QuoteSelector(
@@ -234,7 +234,7 @@ class PageSelector(Select["CharacterUI"]):
         )
 
     async def callback(self, i: "INTERACTION") -> Any:
-        self.view.selected = int(self.values[0])
+        self.view.selected_page = int(self.values[0])
         await self.view.update(i)
 
 

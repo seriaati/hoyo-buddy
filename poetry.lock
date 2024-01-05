@@ -188,7 +188,7 @@ pydantic = "^2.4.2"
 type = "git"
 url = "https://github.com/seriaati/ambr"
 reference = "HEAD"
-resolved_reference = "ef6ab2c58ef300e3d881fc73f9920e45c94e7e98"
+resolved_reference = "7f50666df45cb3a042d6cafb6512df1b822d8ff3"
 
 [[package]]
 name = "annotated-types"

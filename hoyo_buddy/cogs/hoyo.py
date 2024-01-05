@@ -169,7 +169,7 @@ class Hoyo(commands.Cog):
                     locale=locale,
                     translator=i.client.translator,
                 )
-                return await weapon_ui.update(i)
+                return await weapon_ui.start(i)
 
             if category is ambr.ItemCategory.NAMECARDS:
                 async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
@@ -185,7 +185,7 @@ class Hoyo(commands.Cog):
                     locale=locale,
                     translator=i.client.translator,
                 )
-                return await artifact_set_ui.update(i)
+                return await artifact_set_ui.start(i)
 
             if category is ambr.ItemCategory.FOOD:
                 async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
@@ -260,7 +260,7 @@ class Hoyo(commands.Cog):
                         locale=locale,
                         translator=i.client.translator,
                     )
-                    return await book_volume_ui.update(i)
+                    return await book_volume_ui.start(i)
 
             if category is ambr.ItemCategory.TCG:
                 tcg_card_ui = TCGCardUI(

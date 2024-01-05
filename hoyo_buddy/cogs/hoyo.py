@@ -15,6 +15,7 @@ from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.search.artifact_set import ArtifactSetUI
 from ..ui.hoyo.search.book import BookVolumeUI
 from ..ui.hoyo.search.character import CharacterUI
+from ..ui.hoyo.search.tcg import TCGCardUI
 from ..ui.hoyo.search.weapon import WeaponUI
 from ..ui.ui import URLButtonView
 
@@ -136,7 +137,7 @@ class Hoyo(commands.Cog):
             ),
         ]
     )
-    async def search_command(  # noqa: C901, PLR0911
+    async def search_command(  # noqa: C901, PLR0911, PLR0912, PLR0914
         self,
         i: INTERACTION,
         game_value: str,
@@ -261,6 +262,12 @@ class Hoyo(commands.Cog):
                     )
                     return await book_volume_ui.update(i)
 
+            if category is ambr.ItemCategory.TCG:
+                tcg_card_ui = TCGCardUI(
+                    int(query), author=i.user, locale=locale, translator=i.client.translator
+                )
+                return await tcg_card_ui.start(i)
+
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
         self, i: INTERACTION, current: str
@@ -324,6 +331,8 @@ class Hoyo(commands.Cog):
                 items = await api.fetch_monsters()
             elif category is ambr.ItemCategory.BOOKS:
                 items = await api.fetch_books()
+            elif category is ambr.ItemCategory.TCG:
+                items = await api.fetch_tcg_cards()
             else:
                 return [self._get_error_app_command_choice("Invalid category selected")]
 

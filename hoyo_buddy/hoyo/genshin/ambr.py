@@ -4,11 +4,12 @@ from enum import StrEnum
 from typing import TYPE_CHECKING, Any
 
 import ambr
+import discord.utils as dutils
 from ambr.client import Language
 from discord import Locale
 
 from ...bot.constants import WEEKDAYS
-from ...bot.emojis import COMFORT_ICON, LOAD_ICON, get_element_emoji
+from ...bot.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_element_emoji
 from ...bot.translator import LocaleStr, Translator
 from ...embeds import DefaultEmbed
 from ...utils import create_bullet_list, shorten
@@ -494,4 +495,56 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed.set_author(name=book.name)
         embed.set_thumbnail(url=book.icon)
         embed.set_footer(text=volume.description)
+        return embed
+
+    def get_tcg_card_embed(self, card: ambr.TCGCardDetail) -> DefaultEmbed:
+        energy = card.props.get("GCG_PROP_ENERGY", 0) if card.props else 0
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=card.name,
+            description=DICE_EMOJIS["GCG_COST_ENERGY"] * energy,
+        )
+        embed.add_field(name=card.story_title, value=card.story_detail, inline=False)
+        embed.set_author(name="/".join([t.name for t in card.tags]))
+        embed.set_footer(text=card.source)
+        embed.set_image(url=card.small_icon)
+        return embed
+
+    def get_tcg_card_dictionaries_embed(
+        self, dictionaries: list[ambr.CardDictionary]
+    ) -> DefaultEmbed:
+        embed = DefaultEmbed(self.locale, self.translator)
+        for d in dictionaries:
+            # skip talent related dictionaries
+            if d.id[0] == "C":
+                continue
+            embed.add_field(name=d.name, value=d.description, inline=False)
+        return embed
+
+    def get_tcg_card_talent_embed(
+        self, talent: ambr.CardTalent, dictionaries: list[ambr.CardDictionary]
+    ) -> DefaultEmbed:
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=talent.name,
+            description=talent.description,
+        )
+        dice_str = "\n".join([f"{DICE_EMOJIS[d.type] * d.amount}" for d in talent.cost])
+
+        if talent.sub_skills:
+            for k in talent.sub_skills:
+                dictionary = dutils.get(dictionaries, id=k)
+                if dictionary:
+                    embed.add_field(
+                        name=dictionary.name, value=dictionary.description, inline=False
+                    )
+
+        embed.add_field(
+            name=LocaleStr("Dice Cost", key="dice_cost_embed_field_name"), value=dice_str
+        )
+
+        embed.set_author(name="/".join([t.name for t in talent.tags]))
+        embed.set_thumbnail(url=talent.icon)
         return embed

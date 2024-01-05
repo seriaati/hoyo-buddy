@@ -90,7 +90,7 @@ class DailyCheckin:
                     isinstance(embed, ErrorEmbed)
                     and account.notif_settings.notify_on_checkin_failure
                 ) or (
-                    not isinstance(embed, DefaultEmbed)
+                    isinstance(embed, DefaultEmbed)
                     and account.notif_settings.notify_on_checkin_success
                 ):
                     await cls._notify_user(bot, account.user, embed)

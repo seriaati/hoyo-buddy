@@ -1,15 +1,15 @@
 from typing import TYPE_CHECKING, Any
 
-from ....bot.translator import LocaleStr
-from ....exceptions import InvalidQueryError
-from ....hoyo.genshin.ambr import AmbrAPIClient
-from ...ui import LevelModalButton, Select, SelectOption, View
+from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.exceptions import InvalidQueryError
+from hoyo_buddy.hoyo.genshin.ambr import AmbrAPIClient
+from hoyo_buddy.ui import LevelModalButton, Select, SelectOption, View
 
 if TYPE_CHECKING:
     from discord import Locale, Member, User
 
-    from ....bot import INTERACTION, Translator
-    from ....embeds import DefaultEmbed
+    from hoyo_buddy.bot import INTERACTION, Translator
+    from hoyo_buddy.embeds import DefaultEmbed
 
 
 class WeaponUI(View):

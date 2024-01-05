@@ -2,14 +2,14 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, User
 
-from ....bot.emojis import ARTIFACT_POS_EMOJIS
-from ....exceptions import InvalidQueryError
-from ....hoyo.genshin.ambr import AmbrAPIClient
-from ...ui import Button, View
+from hoyo_buddy.bot.emojis import ARTIFACT_POS_EMOJIS
+from hoyo_buddy.exceptions import InvalidQueryError
+from hoyo_buddy.hoyo.genshin.ambr import AmbrAPIClient
+from hoyo_buddy.ui import Button, View
 
 if TYPE_CHECKING:
-    from ....bot import INTERACTION, Translator
-    from ....embeds import DefaultEmbed
+    from hoyo_buddy.bot import INTERACTION, Translator
+    from hoyo_buddy.embeds import DefaultEmbed
 
 
 class ArtifactSetUI(View):

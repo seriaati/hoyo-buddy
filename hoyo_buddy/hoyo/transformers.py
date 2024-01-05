@@ -6,7 +6,7 @@ from ..db.models import HoyoAccount
 from ..exceptions import AccountNotFoundError
 
 if TYPE_CHECKING:
-    from ..bot.bot import INTERACTION
+    from ..bot import INTERACTION
 
 
 class HoyoAccountTransformer(app_commands.Transformer):

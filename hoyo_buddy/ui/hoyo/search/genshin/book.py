@@ -3,18 +3,18 @@ from typing import TYPE_CHECKING
 import discord.utils as dutils
 from discord import Locale, Member, User
 
-from ....bot.emojis import PROJECT_AMBER
-from ....bot.translator import LocaleStr
-from ....hoyo.genshin.ambr import AmbrAPIClient
-from ....utils import shorten
-from ...ui import Button, Select, SelectOption, View
+from hoyo_buddy.bot.emojis import PROJECT_AMBER
+from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.hoyo.genshin.ambr import AmbrAPIClient
+from hoyo_buddy.ui import Button, Select, SelectOption, View
+from hoyo_buddy.utils import shorten
 
 if TYPE_CHECKING:
     from ambr.models import BookDetail, BookVolume
 
-    from ....bot.bot import INTERACTION
-    from ....bot.translator import Translator
-    from ....embeds import DefaultEmbed
+    from hoyo_buddy.bot import INTERACTION
+    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.embeds import DefaultEmbed
 
 
 class BookVolumeUI(View):

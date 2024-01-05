@@ -3,15 +3,15 @@ from typing import TYPE_CHECKING, Any
 
 from discord import InteractionResponded, Locale, Member, User
 
-from ....bot.translator import LocaleStr
-from ....hoyo.genshin.ambr import AmbrAPIClient
-from ...ui import LevelModalButton, PaginatorSelect, Select, SelectOption, View
+from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.hoyo.genshin.ambr import AmbrAPIClient
+from hoyo_buddy.ui import LevelModalButton, PaginatorSelect, Select, SelectOption, View
 
 if TYPE_CHECKING:
     import ambr
 
-    from ....bot import INTERACTION, Translator
-    from ....embeds import DefaultEmbed
+    from hoyo_buddy.bot import INTERACTION, Translator
+    from hoyo_buddy.embeds import DefaultEmbed
 
 
 class CharacterUI(View):

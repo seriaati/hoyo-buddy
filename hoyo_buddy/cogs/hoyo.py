@@ -11,13 +11,13 @@ from ..db import Game, HoyoAccount, Settings
 from ..exceptions import InvalidQueryError, NoAccountFoundError
 from ..hoyo.genshin import ambr
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
+from ..ui import URLButtonView
 from ..ui.hoyo.checkin import CheckInUI
-from ..ui.hoyo.search.artifact_set import ArtifactSetUI
-from ..ui.hoyo.search.book import BookVolumeUI
-from ..ui.hoyo.search.character import CharacterUI
-from ..ui.hoyo.search.tcg import TCGCardUI
-from ..ui.hoyo.search.weapon import WeaponUI
-from ..ui.ui import URLButtonView
+from ..ui.hoyo.search.genshin.artifact_set import ArtifactSetUI
+from ..ui.hoyo.search.genshin.book import BookVolumeUI
+from ..ui.hoyo.search.genshin.character import CharacterUI
+from ..ui.hoyo.search.genshin.tcg import TCGCardUI
+from ..ui.hoyo.search.genshin.weapon import WeaponUI
 
 
 class Hoyo(commands.Cog):

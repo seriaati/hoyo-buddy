@@ -2,17 +2,17 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
 
-from ....bot.translator import LocaleStr
-from ....hoyo.genshin.ambr import AmbrAPIClient
-from ...ui import Button, Select, SelectOption, View
+from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.hoyo.genshin.ambr import AmbrAPIClient
+from hoyo_buddy.ui import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:
     from ambr.models import CardTalent, TCGCardDetail
     from discord import Locale, Member, User
 
-    from ....bot.bot import INTERACTION
-    from ....bot.translator import Translator
-    from ....embeds import DefaultEmbed
+    from hoyo_buddy.bot import INTERACTION
+    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.embeds import DefaultEmbed
 
 
 class TCGCardUI(View):

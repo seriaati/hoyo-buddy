@@ -25,6 +25,10 @@ __all__ = (
     "Select",
     "TextInput",
     "Modal",
+    "LevelModal",
+    "LevelModalButton",
+    "PaginatorSelect",
+    "URLButtonView",
 )
 
 V_co = TypeVar("V_co", bound="View", covariant=True)

@@ -159,14 +159,9 @@ class DailyCheckin:
 
     @classmethod
     async def _notify_user(cls, bot: "HoyoBuddy", user: User, embed: Embed) -> None:
-        log.debug("Notifying user %s", user)
-        try:
-            discord_user = await bot.fetch_user(user.id)
-        except (discord.NotFound, discord.HTTPException):
-            log.exception("Failed to fetch user %s", user)
-        else:
-            if discord_user:
+        discord_user = await bot.fetch_user(user.id)
+        if discord_user:
+            try:
                 await discord_user.send(embed=embed)
-                log.debug("User %s notified", user)
-            else:
-                log.warning("User %s not found", user)
+            except discord.DiscordException:
+                log.exception("Failed to send daily check-in notification to %s", discord_user)

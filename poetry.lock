@@ -2096,7 +2096,27 @@ files = [
 idna = ">=2.0"
 multidict = ">=4.0"
 
+[[package]]
+name = "yatta"
+version = "1.0.0"
+description = "Python async API wrapper for hsr.yatta.top"
+optional = false
+python-versions = "^3.11"
+files = []
+develop = false
+
+[package.dependencies]
+aiohttp = "^3.9.1"
+diskcache = "^5.6.3"
+pydantic = "^2.5.2"
+
+[package.source]
+type = "git"
+url = "https://github.com/seriaati/yatta"
+reference = "HEAD"
+resolved_reference = "0449d6242ce167263238c90952279167650a62ea"
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "6e17a535ee449778ef0b9206296c8c63cf44e2a29df2bf29dc343aa8a6818752"
+content-hash = "3442a63b398cbb1616e5c2b71fcf398c93fe8dfcf9a9c86e33bd0e02afa634df"

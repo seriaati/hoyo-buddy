@@ -441,6 +441,8 @@ class PaginatorSelect(Select, Generic[V_co]):
             self.page_index -= 1
             self.options = self._process_options()
 
+        self.translate(self.view.locale, self.view.translator)
+
 
 class TextInput(discord.ui.TextInput):
     def __init__(

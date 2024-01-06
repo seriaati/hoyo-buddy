@@ -378,7 +378,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
             description=LocaleStr(
                 "2-Pieces: {bonus_2}\n4-Pieces: {bonus_4}",
                 bonus_2=artifact_set.affix_list[0].effect,
-                bonus_4=artifact_set.affix_list[1].effect or "❌",
+                bonus_4=artifact_set.affix_list[1].effect
+                if len(artifact_set.affix_list) == 2
+                else "❌",
                 key="artifact_set_embed_description",
             ),
         )

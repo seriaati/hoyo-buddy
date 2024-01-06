@@ -371,18 +371,24 @@ class AmbrAPIClient(ambr.AmbrAPI):
     def get_artifact_embed(
         self, artifact_set: ambr.ArtifactSetDetail, artifact: ambr.Artifact
     ) -> DefaultEmbed:
-        embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=artifact.name,
-            description=LocaleStr(
-                "2-Pieces: {bonus_2}\n4-Pieces: {bonus_4}",
+        description = self.translator.translate(
+            LocaleStr(
+                "2-Pieces: {bonus_2}",
                 bonus_2=artifact_set.affix_list[0].effect,
-                bonus_4=artifact_set.affix_list[1].effect
-                if len(artifact_set.affix_list) == 2
-                else "❌",
-                key="artifact_set_embed_description",
+                key="artifact_set_two_piece_embed_description",
             ),
+            self.locale,
+        )
+        if len(artifact_set.affix_list) == 2:
+            four_piece = LocaleStr(
+                "4-Pieces: {bonus_4}",
+                bonus_4=artifact_set.affix_list[1].effect,
+                key="artifact_set_four_piece_embed_description",
+            )
+            description += "\n" + self.translator.translate(four_piece, self.locale)
+
+        embed = DefaultEmbed(
+            self.locale, self.translator, title=artifact.name, description=description
         )
         embed.set_author(name=artifact_set.name, icon_url=artifact_set.icon)
         embed.set_footer(text=artifact.description)

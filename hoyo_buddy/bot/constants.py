@@ -7,3 +7,11 @@ WEEKDAYS: dict[int, str] = {
     5: "Saturday",
     6: "Sunday",
 }
+
+EQUIP_ID_TO_ARTIFACT_POS: dict[str, str] = {
+    "EQUIP_BRACER": "flower",
+    "EQUIP_NECKLACE": "plume",
+    "EQUIP_SHOES": "sands",
+    "EQUIP_RING": "goblet",
+    "EQUIP_DRESS": "circlet",
+}

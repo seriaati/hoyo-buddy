@@ -278,8 +278,6 @@ class Hoyo(commands.Cog):
     async def search_command_category_autocomplete(
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
-        await i.response.defer()
-
         try:
             game = Game(i.namespace.game)
         except ValueError:
@@ -301,8 +299,6 @@ class Hoyo(commands.Cog):
     async def search_command_query_autocomplete(  # noqa: C901
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
-        await i.response.defer()
-
         try:
             game = Game(i.namespace.game)
         except ValueError:

@@ -137,7 +137,7 @@ class Hoyo(commands.Cog):
             ),
         ]
     )
-    async def search_command(  # noqa: C901, PLR0911, PLR0912, PLR0914
+    async def search_command(  # noqa: C901, PLR0911, PLR0912, PLR0914, PLR0915
         self,
         i: INTERACTION,
         game_value: str,
@@ -146,12 +146,18 @@ class Hoyo(commands.Cog):
     ) -> Any:
         if category_value == "none" or query == "none":
             raise InvalidQueryError
+        try:
+            game = Game(game_value)
+        except ValueError as e:
+            raise InvalidQueryError from e
 
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        game = Game(game_value)
 
         if game is Game.GENSHIN:
-            category = ambr.ItemCategory(category_value)
+            try:
+                category = ambr.ItemCategory(category_value)
+            except ValueError as e:
+                raise InvalidQueryError from e
 
             if category is ambr.ItemCategory.CHARACTERS:
                 character_ui = CharacterUI(

@@ -8,6 +8,7 @@ from asyncache import cached
 from cachetools import TTLCache
 from discord.ext import commands
 
+from ..utils import get_now
 from .command_tree import CommandTree
 from .translator import AppCommandTranslator, Translator
 
@@ -54,7 +55,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             tree_cls=CommandTree,
         )
         self.session = session
-        self.uptime = discord.utils.utcnow()
+        self.uptime = get_now()
         self.translator = translator
         self.env = env
 

@@ -64,7 +64,8 @@ select = [
 ]
 ignore = [
     "E501","ANN401","ANN101","ANN102","ANN003",
-    "PLR0913","PLR2004","PLR0917","PLR6301"
+    "PLR0913","PLR2004","PLR0917","PLR6301",
+    "ANN002"
 ]
 preview = true
 

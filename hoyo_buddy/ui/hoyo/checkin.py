@@ -76,11 +76,9 @@ class CheckInUI(View):
             for i, r in enumerate(monthly_rewards, 1)
         ]
 
-        claimed_rewards = await client.claimed_rewards(limit=31)
+        claimed_rewards = await client.claimed_rewards(limit=get_now().day)
         claimed_rewards = claimed_rewards[::-1]
-        claimed_rewards = [
-            r for r in claimed_rewards if r.time.month == discord.utils.utcnow().month
-        ]
+        claimed_rewards = [r for r in claimed_rewards if r.time.month == get_now().month]
         claimed_rewards = [
             Reward(name=r.name, amount=r.amount, index=i, claimed=True, icon=r.icon)
             for i, r in enumerate(claimed_rewards, 1)

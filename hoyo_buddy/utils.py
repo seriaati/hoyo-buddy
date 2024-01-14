@@ -1,7 +1,14 @@
 import datetime
-from typing import TypeVar
+import logging
+import time
+from typing import TYPE_CHECKING, Any, TypeVar
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 T = TypeVar("T")
+
+log = logging.getLogger(__name__)
 
 
 def split_list(input_list: list[T], n: int) -> list[list[T]]:
@@ -40,3 +47,15 @@ def shorten(text: str, length: int) -> str:
     if len(text) <= length:
         return text
     return text[: length - 3] + "..."
+
+
+def timer(func: "Callable[..., Any]") -> "Callable[..., Any]":
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        start = time.time()
+        result = func(*args, **kwargs)
+
+        log.debug("%s took %.6f seconds", func.__name__, time.time() - start)
+
+        return result
+
+    return wrapper

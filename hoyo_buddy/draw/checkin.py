@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
 
+from ..utils import timer
 from . import Drawer
 
 if TYPE_CHECKING:
@@ -19,6 +20,7 @@ def cache_key(daily_rewards: tuple["genshin.models.DailyReward", ...], dark_mode
     return f"{rewards_key}_{dark_mode}"
 
 
+@timer
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
 def draw_card(
     daily_rewards: list["Reward"],

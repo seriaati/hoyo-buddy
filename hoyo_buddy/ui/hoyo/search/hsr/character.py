@@ -96,7 +96,7 @@ class CharacterUI(View):
                     ItemSelector(
                         [
                             SelectOption(
-                                label=e.name,
+                                label=f"{index + 1}. {e.name}",
                                 value=str(index),
                                 default=index == self._eidolon_index,
                             )

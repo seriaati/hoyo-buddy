@@ -29,6 +29,7 @@ genshin = {git = "https://github.com/seriaati/genshin.py"}
 psutil = "^5.9.7"
 asyncache = "^0.3.1"
 yatta = {git = "https://github.com/seriaati/yatta"}
+diskcache = "^5.6.3"
 
 [tool.poetry.group.dev]
 optional = true

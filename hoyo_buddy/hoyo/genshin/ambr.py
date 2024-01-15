@@ -14,8 +14,11 @@ from ...bot.translator import LocaleStr, Translator
 from ...embeds import DefaultEmbed
 from ...utils import create_bullet_list, shorten
 
+__all__ = ("LOCALE_TO_LANG", "AmbrAPIClient", "ItemCategory", "AUDIO_LANGUAGES")
+
 if TYPE_CHECKING:
     from types import TracebackType
+
 
 LOCALE_TO_LANG: dict[Locale, Language] = {
     Locale.taiwan_chinese: Language.CHT,
@@ -77,7 +80,7 @@ class ItemCategory(StrEnum):
     TCG = "TCG"
 
 
-class AmbrAPIClient(ambr.AmbrAPI):
+class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
     def __init__(self, locale: Locale, translator: Translator) -> None:
         super().__init__(LOCALE_TO_LANG.get(locale, Language.EN))
         self.locale = locale
@@ -195,6 +198,31 @@ class AmbrAPIClient(ambr.AmbrAPI):
                 continue
             result += f"{k}: {v}\n"
         return result
+
+    async def fetch_items(self, item_category: ItemCategory) -> list[Any]:  # noqa: PLR0911
+        match item_category:
+            case ItemCategory.CHARACTERS:
+                return await self.fetch_characters()
+            case ItemCategory.WEAPONS:
+                return await self.fetch_weapons()
+            case ItemCategory.ARTIFACT_SETS:
+                return await self.fetch_artifact_sets()
+            case ItemCategory.FOOD:
+                return await self.fetch_foods()
+            case ItemCategory.MATERIALS:
+                return await self.fetch_materials()
+            case ItemCategory.FURNISHINGS:
+                return await self.fetch_furnitures()
+            case ItemCategory.FURNISHING_SETS:
+                return await self.fetch_furniture_sets()
+            case ItemCategory.NAMECARDS:
+                return await self.fetch_namecards()
+            case ItemCategory.LIVING_BEINGS:
+                return await self.fetch_monsters()
+            case ItemCategory.BOOKS:
+                return await self.fetch_books()
+            case ItemCategory.TCG:
+                return await self.fetch_tcg_cards()
 
     def get_character_embed(
         self,

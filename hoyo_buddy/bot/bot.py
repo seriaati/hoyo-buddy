@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, TypeAlias
 
 import discord
+import diskcache
 import sentry_sdk
 from asyncache import cached
 from cachetools import TTLCache
@@ -58,6 +59,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.uptime = get_now()
         self.translator = translator
         self.env = env
+        self.diskcache = diskcache.Cache("./.cache/hoyo_buddy")
 
     async def setup_hook(self) -> None:
         await self.tree.set_translator(AppCommandTranslator(self.translator))
@@ -89,4 +91,5 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     async def close(self) -> None:
         log.info("Bot shutting down...")
+        self.diskcache.close()
         await super().close()

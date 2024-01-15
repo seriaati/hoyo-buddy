@@ -1,6 +1,6 @@
 import re
 from enum import StrEnum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import discord.utils as dutils
 import yatta
@@ -10,6 +10,8 @@ from yatta import Language
 from ...bot.translator import LocaleStr
 from ...embeds import DefaultEmbed
 from ...utils import create_bullet_list
+
+__all__ = ("LOCALE_TO_LANG", "ItemCategory", "YattaAPIClient")
 
 if TYPE_CHECKING:
     from types import TracebackType
@@ -89,6 +91,19 @@ class YattaAPIClient(yatta.YattaAPI):
             description = re.sub(rf"#{num}(?:\[{modifier}\])", replacement, description)
 
         return description
+
+    async def fetch_items_(self, item_category: ItemCategory) -> list[Any]:
+        match item_category:
+            case ItemCategory.CHARACTERS:
+                return await self.fetch_characters()
+            case ItemCategory.LIGHT_CONES:
+                return await self.fetch_light_cones()
+            case ItemCategory.ITEMS:
+                return await self.fetch_items()
+            case ItemCategory.RELICS:
+                return await self.fetch_relic_sets()
+            case ItemCategory.BOOKS:
+                return await self.fetch_books()
 
     def get_character_embed(self, character: yatta.CharacterDetail) -> DefaultEmbed:
         embed = DefaultEmbed(

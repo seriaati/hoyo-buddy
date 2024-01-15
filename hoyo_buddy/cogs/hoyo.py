@@ -3,7 +3,7 @@ from typing import Any
 
 import discord
 from discord import app_commands
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from ..bot import INTERACTION, HoyoBuddy, LocaleStr, Translator
 from ..bot.emojis import PROJECT_AMBER
@@ -22,6 +22,52 @@ from ..ui.hoyo.search.hsr.character import CharacterUI as HSRCharacterUI
 class Hoyo(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
+
+        # [game][category][lang] -> choices
+        self._search_autocomplete_choices: dict[
+            Game,
+            dict[
+                ambr.ItemCategory | yatta.ItemCategory,
+                list[app_commands.Choice[str]],
+            ],
+        ] = {}
+
+    async def cog_load(self) -> None:
+        self._update_search_autocomplete_choices.start()
+
+    async def cog_unload(self) -> None:
+        self._update_search_autocomplete_choices.cancel()
+
+    async def _setup_search_autocomplete_choices(self) -> None:
+        for item_category in ambr.ItemCategory:
+            for locale in ambr.LOCALE_TO_LANG:
+                async with ambr.AmbrAPIClient(locale, self.bot.translator) as api:
+                    items = await api.fetch_items(item_category)
+                    self._search_autocomplete_choices.setdefault(Game.GENSHIN, {}).setdefault(
+                        item_category, []
+                    ).extend(
+                        [app_commands.Choice(name=item.name, value=str(item.id)) for item in items]
+                    )
+
+        for item_category in yatta.ItemCategory:
+            for locale in yatta.LOCALE_TO_LANG:
+                async with yatta.YattaAPIClient(locale, self.bot.translator) as api:
+                    items = await api.fetch_items_(item_category)
+                    self._search_autocomplete_choices.setdefault(Game.STARRAIL, {}).setdefault(
+                        item_category, []
+                    ).extend(
+                        [app_commands.Choice(name=item.name, value=str(item.id)) for item in items]
+                    )
+
+        self.bot.diskcache["search_autocomplete_choices"] = self._search_autocomplete_choices
+
+    @tasks.loop(hours=24)
+    async def _update_search_autocomplete_choices(self) -> None:
+        await self._setup_search_autocomplete_choices()
+
+    @_update_search_autocomplete_choices.before_loop
+    async def _before_update_search_autocomplete_choices(self) -> None:
+        await self.bot.wait_until_ready()
 
     @staticmethod
     async def _account_autocomplete(
@@ -349,7 +395,7 @@ class Hoyo(commands.Cog):
         return [self._get_error_app_command_choice("Invalid game selected")]
 
     @search_command.autocomplete("query")
-    async def search_command_query_autocomplete(  # noqa: C901, PLR0915, PLR0911
+    async def search_command_query_autocomplete(
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
         try:
@@ -367,58 +413,15 @@ class Hoyo(commands.Cog):
         except ValueError:
             return [self._get_error_app_command_choice("Invalid category selected")]
 
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-
-        if game is Game.GENSHIN:
-            async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                if category is ambr.ItemCategory.CHARACTERS:
-                    items = await api.fetch_characters()
-                elif category is ambr.ItemCategory.WEAPONS:
-                    items = await api.fetch_weapons()
-                elif category is ambr.ItemCategory.NAMECARDS:
-                    items = await api.fetch_namecards()
-                elif category is ambr.ItemCategory.ARTIFACT_SETS:
-                    items = await api.fetch_artifact_sets()
-                elif category is ambr.ItemCategory.FOOD:
-                    items = await api.fetch_foods()
-                elif category is ambr.ItemCategory.MATERIALS:
-                    items = await api.fetch_materials()
-                elif category is ambr.ItemCategory.FURNISHINGS:
-                    items = await api.fetch_furnitures()
-                elif category is ambr.ItemCategory.FURNISHING_SETS:
-                    items = await api.fetch_furniture_sets()
-                elif category is ambr.ItemCategory.LIVING_BEINGS:
-                    items = await api.fetch_monsters()
-                elif category is ambr.ItemCategory.BOOKS:
-                    items = await api.fetch_books()
-                elif category is ambr.ItemCategory.TCG:
-                    items = await api.fetch_tcg_cards()
-                else:
-                    return [self._get_error_app_command_choice("Invalid category selected")]
-        elif game is Game.STARRAIL:
-            async with yatta.YattaAPIClient(locale, i.client.translator) as api:
-                if category is yatta.ItemCategory.CHARACTERS:
-                    items = await api.fetch_characters()
-                elif category is yatta.ItemCategory.LIGHT_CONES:
-                    items = await api.fetch_light_cones()
-                elif category is yatta.ItemCategory.ITEMS:
-                    items = await api.fetch_items()
-                elif category is yatta.ItemCategory.RELICS:
-                    items = await api.fetch_relic_sets()
-                elif category is yatta.ItemCategory.BOOKS:
-                    items = await api.fetch_books()
-                else:
-                    return [self._get_error_app_command_choice("Invalid category selected")]
-        else:
-            return [self._get_error_app_command_choice("Invalid game selected")]
-
-        result = [
-            app_commands.Choice(name=item.name, value=str(item.id))
-            for item in items
-            if current.lower() in item.name.lower()
+        all_locale_autocomplete_choices = self._search_autocomplete_choices[game][category]
+        choices = [
+            choice
+            for choice in all_locale_autocomplete_choices
+            if current.lower() in choice.name.lower()
         ]
-        random.shuffle(result)
-        return result[:25]
+
+        random.shuffle(choices)
+        return choices[:25]
 
 
 async def setup(bot: HoyoBuddy) -> None:

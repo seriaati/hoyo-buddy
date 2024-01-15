@@ -23,12 +23,12 @@ class Hoyo(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
-        # [game][category][lang] -> choices
+        # [game][category][locale][item_name] -> item_id
         self._search_autocomplete_choices: dict[
             Game,
             dict[
                 ambr.ItemCategory | yatta.ItemCategory,
-                dict[str, str],
+                dict[str, dict[str, str]],
             ],
         ] = {}
 
@@ -39,31 +39,29 @@ class Hoyo(commands.Cog):
         self._update_search_autocomplete_choices.cancel()
 
     async def _setup_search_autocomplete_choices(self) -> None:
-        if self.bot.diskcache.get("search_autocomplete_choices") is not None:
-            self._search_autocomplete_choices = self.bot.diskcache["search_autocomplete_choices"]  # type: ignore
-            return
-
         for item_category in ambr.ItemCategory:
             for locale in ambr.LOCALE_TO_LANG:
                 async with ambr.AmbrAPIClient(locale, self.bot.translator) as api:
                     items = await api.fetch_items(item_category)
-                    item_category_choices = self._search_autocomplete_choices.setdefault(
-                        Game.GENSHIN, {}
-                    ).setdefault(item_category, {})
+                    category_locale_choices = (
+                        self._search_autocomplete_choices.setdefault(Game.GENSHIN, {})
+                        .setdefault(item_category, {})
+                        .setdefault(locale.value, {})
+                    )
                     for item in items:
-                        item_category_choices[item.name] = str(item.id)
+                        category_locale_choices[item.name] = str(item.id)
 
         for item_category in yatta.ItemCategory:
             for locale in yatta.LOCALE_TO_LANG:
                 async with yatta.YattaAPIClient(locale, self.bot.translator) as api:
                     items = await api.fetch_items_(item_category)
+                    category_locale_choices = (
+                        self._search_autocomplete_choices.setdefault(Game.STARRAIL, {})
+                        .setdefault(item_category, {})
+                        .setdefault(locale.value, {})
+                    )
                     for item in items:
-                        item_category_choices = self._search_autocomplete_choices.setdefault(
-                            Game.STARRAIL, {}
-                        ).setdefault(item_category, {})
-                        item_category_choices[item.name] = str(item.id)
-
-        self.bot.diskcache["search_autocomplete_choices"] = self._search_autocomplete_choices
+                        category_locale_choices[item.name] = str(item.id)
 
     @tasks.loop(hours=24)
     async def _update_search_autocomplete_choices(self) -> None:
@@ -417,7 +415,16 @@ class Hoyo(commands.Cog):
         except ValueError:
             return [self._get_error_app_command_choice("Invalid category selected")]
 
-        autocomplete_choices = self._search_autocomplete_choices[game][category]
+        if not current:
+            locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+            autocomplete_choices = self._search_autocomplete_choices[game][category][locale.value]
+        else:
+            autocomplete_choices = {
+                k: v
+                for c in self._search_autocomplete_choices[game][category].values()
+                for k, v in c.items()
+            }
+
         choices = [
             app_commands.Choice(name=choice, value=item_id)
             for choice, item_id in autocomplete_choices.items()

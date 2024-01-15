@@ -7,7 +7,7 @@ from hoyo_buddy.ui import Select, SelectOption, View
 if TYPE_CHECKING:
     from discord import Locale, Member, User
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot import INTERACTION
     from hoyo_buddy.bot.translator import LocaleStr, Translator
     from hoyo_buddy.embeds import DefaultEmbed
 

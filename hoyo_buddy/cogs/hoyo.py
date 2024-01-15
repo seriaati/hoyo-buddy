@@ -14,14 +14,9 @@ from ..hoyo.hsr import yatta
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui import URLButtonView
 from ..ui.hoyo.checkin import CheckInUI
-from ..ui.hoyo.search.genshin.artifact_set import ArtifactSetUI
-from ..ui.hoyo.search.genshin.book import BookVolumeUI
-from ..ui.hoyo.search.genshin.character import CharacterUI
-from ..ui.hoyo.search.genshin.tcg import TCGCardUI
-from ..ui.hoyo.search.genshin.weapon import WeaponUI
-from ..ui.hoyo.search.hsr.book import BookUI
+from ..ui.hoyo.search.genshin import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
+from ..ui.hoyo.search.hsr import BookUI, RelicSetUI
 from ..ui.hoyo.search.hsr.character import CharacterUI as HSRCharacterUI
-from ..ui.hoyo.search.hsr.relic import RelicSetUI
 
 
 class Hoyo(commands.Cog):

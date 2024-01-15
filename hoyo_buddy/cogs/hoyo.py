@@ -39,6 +39,10 @@ class Hoyo(commands.Cog):
         self._update_search_autocomplete_choices.cancel()
 
     async def _setup_search_autocomplete_choices(self) -> None:
+        if self.bot.diskcache.get("search_autocomplete_choices") is not None:
+            self._search_autocomplete_choices = self.bot.diskcache["search_autocomplete_choices"]  # type: ignore
+            return
+
         for item_category in ambr.ItemCategory:
             for locale in ambr.LOCALE_TO_LANG:
                 async with ambr.AmbrAPIClient(locale, self.bot.translator) as api:

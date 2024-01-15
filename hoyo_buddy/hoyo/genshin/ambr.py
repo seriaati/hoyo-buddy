@@ -256,12 +256,17 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
                 affiliation=character.info.native,
             ),
         )
-        embed.add_field(
-            name=LocaleStr(
-                "Stats (Lv. {level})",
-                key="character_embed_stats_field_name",
+
+        level_str = self.translator.translate(
+            LocaleStr(
+                "Lv. {level}",
+                key="level_str",
                 level=level,
             ),
+            self.locale,
+        )
+        embed.add_field(
+            name=f"Stats ({level_str})",
             value="\n".join(f"{k}: {v}" for k, v in named_stat_values.items()),
         )
         embed.set_footer(text=character.info.detail)
@@ -282,12 +287,17 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             except IndexError:
                 level_upgrade = talent.upgrades[-1]
                 level = level_upgrade.level
-            embed.add_field(
-                name=LocaleStr(
-                    "Skill Attributes (Lv. {level})",
-                    key="skill_attributes_embed_field_name",
+
+            level_str = self.translator.translate(
+                LocaleStr(
+                    "Lv. {level}",
+                    key="level_str",
                     level=level,
                 ),
+                self.locale,
+            )
+            embed.add_field(
+                name=f"Skill Attributes ({level_str})",
                 value=self._get_skill_attributes(level_upgrade.description, level_upgrade.params),
             )
         embed.set_thumbnail(url=talent.icon)
@@ -358,9 +368,13 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             self.locale,
             self.translator,
             title=LocaleStr(
-                "{weapon_name} (Lv. {lv})",
+                "{weapon_name} ({level_str})",
                 weapon_name=weapon.name,
-                lv=level,
+                level_str=LocaleStr(
+                    "Lv. {level}",
+                    key="level_str",
+                    level=level,
+                ),
                 key="weapon_embed_title",
             ),
             description=(

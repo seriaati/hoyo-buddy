@@ -133,11 +133,19 @@ class YattaAPIClient(yatta.YattaAPI):
 
     def get_character_main_skill_embed(self, base_skill: yatta.BaseSkill) -> DefaultEmbed:
         skill = base_skill.skill_list[0]
+        level_str = self.translator.translate(
+            LocaleStr(
+                "Lv. {level}",
+                key="level_str",
+                level=base_skill.max_level,
+            ),
+            self.locale,
+        )
 
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=skill.name,
+            title=f"{skill.name} ({level_str})",
             description=self._process_description_params(
                 skill.description, skill.params, param_index=base_skill.max_level - 1
             )

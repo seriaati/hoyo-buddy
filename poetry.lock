@@ -2114,7 +2114,7 @@ pydantic = "^2.5.2"
 type = "git"
 url = "https://github.com/seriaati/yatta"
 reference = "HEAD"
-resolved_reference = "eb01f46f95491043d274a90bd2208ced5867b92a"
+resolved_reference = "9c7521de7740262917b19821b1a234702634652c"
 
 [metadata]
 lock-version = "2.0"

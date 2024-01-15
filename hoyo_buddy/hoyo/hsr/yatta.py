@@ -172,7 +172,7 @@ class YattaAPIClient(yatta.YattaAPI):
             energy_value_strs.append(
                 self.translator.translate(
                     LocaleStr(
-                        " / Cost: {energy_need}",
+                        "Cost: {energy_need}",
                         key="yatta_character_skill_energy_need_field_value",
                         energy_need=energy_need.value,
                     ),
@@ -205,7 +205,7 @@ class YattaAPIClient(yatta.YattaAPI):
             weakness_break_value_strs.append(
                 self.translator.translate(
                     LocaleStr(
-                        " / Spread: {spread_weakness_break}",
+                        "Spread: {spread_weakness_break}",
                         key="yatta_character_skill_spread_weakness_break_field_value",
                         spread_weakness_break=spread_weakness_break.value,
                     ),
@@ -216,7 +216,7 @@ class YattaAPIClient(yatta.YattaAPI):
             weakness_break_value_strs.append(
                 self.translator.translate(
                     LocaleStr(
-                        " / AoE: {aoe_weakness_break}",
+                        "AoE: {aoe_weakness_break}",
                         key="yatta_character_skill_aoe_weakness_break_field_value",
                         aoe_weakness_break=aoe_weakness_break.value,
                     ),

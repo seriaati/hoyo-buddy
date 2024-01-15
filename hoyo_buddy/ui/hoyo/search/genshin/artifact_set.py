@@ -2,12 +2,11 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, User
 
-from hoyo_buddy.bot.emojis import ARTIFACT_POS_EMOJIS
+from hoyo_buddy.bot.constants import EQUIP_ID_TO_ARTIFACT_POS
+from hoyo_buddy.bot.emojis import get_artifact_pos_emoji
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.genshin.ambr import AmbrAPIClient
 from hoyo_buddy.ui import Button, View
-
-from .....bot.constants import EQUIP_ID_TO_ARTIFACT_POS
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import INTERACTION, Translator
@@ -54,7 +53,7 @@ class ArtifactSetUI(View):
 class ArtifactPosButton(Button["ArtifactSetUI"]):
     def __init__(self, pos: str) -> None:
         super().__init__(
-            style=ButtonStyle.blurple, emoji=ARTIFACT_POS_EMOJIS[EQUIP_ID_TO_ARTIFACT_POS[pos]]
+            style=ButtonStyle.blurple, emoji=get_artifact_pos_emoji(EQUIP_ID_TO_ARTIFACT_POS[pos])
         )
         self.pos = pos
 

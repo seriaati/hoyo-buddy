@@ -10,6 +10,7 @@ from ..bot.emojis import PROJECT_AMBER
 from ..db import Game, HoyoAccount, Settings
 from ..exceptions import InvalidQueryError, NoAccountFoundError
 from ..hoyo.genshin import ambr
+from ..hoyo.hsr import yatta
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui import URLButtonView
 from ..ui.hoyo.checkin import CheckInUI
@@ -18,6 +19,9 @@ from ..ui.hoyo.search.genshin.book import BookVolumeUI
 from ..ui.hoyo.search.genshin.character import CharacterUI
 from ..ui.hoyo.search.genshin.tcg import TCGCardUI
 from ..ui.hoyo.search.genshin.weapon import WeaponUI
+from ..ui.hoyo.search.hsr.book import BookUI
+from ..ui.hoyo.search.hsr.character import CharacterUI as HSRCharacterUI
+from ..ui.hoyo.search.hsr.relic import RelicSetUI
 
 
 class Hoyo(commands.Cog):
@@ -273,6 +277,51 @@ class Hoyo(commands.Cog):
                     int(query), author=i.user, locale=locale, translator=i.client.translator
                 )
                 return await tcg_card_ui.start(i)
+        elif game is Game.STARRAIL:
+            try:
+                category = yatta.ItemCategory(category_value)
+            except ValueError as e:
+                raise InvalidQueryError from e
+
+            if category is yatta.ItemCategory.ITEMS:
+                async with yatta.YattaAPIClient(locale, i.client.translator) as api:
+                    await i.response.defer()
+                    item = await api.fetch_item_detail(int(query))
+                    embed = api.get_item_embed(item)
+                    return await i.followup.send(embed=embed)
+
+            if category is yatta.ItemCategory.LIGHT_CONES:
+                async with yatta.YattaAPIClient(locale, i.client.translator) as api:
+                    await i.response.defer()
+                    light_cone = await api.fetch_light_cone_detail(int(query))
+                    embed = api.get_light_cone_embed(light_cone)
+                    return await i.followup.send(embed=embed)
+
+            if category is yatta.ItemCategory.BOOKS:
+                book_ui = BookUI(
+                    query, author=i.user, locale=locale, translator=i.client.translator
+                )
+                return await book_ui.start(i)
+
+            if category is yatta.ItemCategory.RELICS:
+                relic_set_ui = RelicSetUI(
+                    query, author=i.user, locale=locale, translator=i.client.translator
+                )
+                return await relic_set_ui.start(i)
+
+            if category is yatta.ItemCategory.CHARACTERS:
+                try:
+                    character_id = int(query)
+                except ValueError as e:
+                    raise InvalidQueryError from e
+
+                character_ui = HSRCharacterUI(
+                    character_id,
+                    author=i.user,
+                    locale=locale,
+                    translator=i.client.translator,
+                )
+                return await character_ui.start(i)
 
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
@@ -292,59 +341,89 @@ class Hoyo(commands.Cog):
                 for c in ambr.ItemCategory
                 if current.lower() in c.value.lower()
             ]
+        if game is Game.STARRAIL:
+            return [
+                app_commands.Choice(
+                    name=app_commands.locale_str(c.value, warn_no_key=False),
+                    value=c.value,
+                )
+                for c in yatta.ItemCategory
+                if current.lower() in c.value.lower()
+            ]
 
         return [self._get_error_app_command_choice("Invalid game selected")]
 
     @search_command.autocomplete("query")
-    async def search_command_query_autocomplete(  # noqa: C901
+    async def search_command_query_autocomplete(  # noqa: C901, PLR0915, PLR0911
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
         try:
             game = Game(i.namespace.game)
         except ValueError:
             return [self._get_error_app_command_choice("Invalid game selected")]
-        if game is Game.GENSHIN:
-            try:
+
+        try:
+            if game is Game.GENSHIN:
                 category = ambr.ItemCategory(i.namespace.category)
-            except ValueError:
-                return [self._get_error_app_command_choice("Invalid category selected")]
+            elif game is Game.STARRAIL:
+                category = yatta.ItemCategory(i.namespace.category)
+            else:
+                return [self._get_error_app_command_choice("Invalid game selected")]
+        except ValueError:
+            return [self._get_error_app_command_choice("Invalid category selected")]
+
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+
+        if game is Game.GENSHIN:
+            async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+                if category is ambr.ItemCategory.CHARACTERS:
+                    items = await api.fetch_characters()
+                elif category is ambr.ItemCategory.WEAPONS:
+                    items = await api.fetch_weapons()
+                elif category is ambr.ItemCategory.NAMECARDS:
+                    items = await api.fetch_namecards()
+                elif category is ambr.ItemCategory.ARTIFACT_SETS:
+                    items = await api.fetch_artifact_sets()
+                elif category is ambr.ItemCategory.FOOD:
+                    items = await api.fetch_foods()
+                elif category is ambr.ItemCategory.MATERIALS:
+                    items = await api.fetch_materials()
+                elif category is ambr.ItemCategory.FURNISHINGS:
+                    items = await api.fetch_furnitures()
+                elif category is ambr.ItemCategory.FURNISHING_SETS:
+                    items = await api.fetch_furniture_sets()
+                elif category is ambr.ItemCategory.LIVING_BEINGS:
+                    items = await api.fetch_monsters()
+                elif category is ambr.ItemCategory.BOOKS:
+                    items = await api.fetch_books()
+                elif category is ambr.ItemCategory.TCG:
+                    items = await api.fetch_tcg_cards()
+                else:
+                    return [self._get_error_app_command_choice("Invalid category selected")]
+        elif game is Game.STARRAIL:
+            async with yatta.YattaAPIClient(locale, i.client.translator) as api:
+                if category is yatta.ItemCategory.CHARACTERS:
+                    items = await api.fetch_characters()
+                elif category is yatta.ItemCategory.LIGHT_CONES:
+                    items = await api.fetch_light_cones()
+                elif category is yatta.ItemCategory.ITEMS:
+                    items = await api.fetch_items()
+                elif category is yatta.ItemCategory.RELICS:
+                    items = await api.fetch_relic_sets()
+                elif category is yatta.ItemCategory.BOOKS:
+                    items = await api.fetch_books()
+                else:
+                    return [self._get_error_app_command_choice("Invalid category selected")]
         else:
             return [self._get_error_app_command_choice("Invalid game selected")]
 
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-            if category is ambr.ItemCategory.CHARACTERS:
-                items = await api.fetch_characters()
-            elif category is ambr.ItemCategory.WEAPONS:
-                items = await api.fetch_weapons()
-            elif category is ambr.ItemCategory.NAMECARDS:
-                items = await api.fetch_namecards()
-            elif category is ambr.ItemCategory.ARTIFACT_SETS:
-                items = await api.fetch_artifact_sets()
-            elif category is ambr.ItemCategory.FOOD:
-                items = await api.fetch_foods()
-            elif category is ambr.ItemCategory.MATERIALS:
-                items = await api.fetch_materials()
-            elif category is ambr.ItemCategory.FURNISHINGS:
-                items = await api.fetch_furnitures()
-            elif category is ambr.ItemCategory.FURNISHING_SETS:
-                items = await api.fetch_furniture_sets()
-            elif category is ambr.ItemCategory.LIVING_BEINGS:
-                items = await api.fetch_monsters()
-            elif category is ambr.ItemCategory.BOOKS:
-                items = await api.fetch_books()
-            elif category is ambr.ItemCategory.TCG:
-                items = await api.fetch_tcg_cards()
-            else:
-                return [self._get_error_app_command_choice("Invalid category selected")]
-
-            result = [
-                app_commands.Choice(name=item.name, value=str(item.id))
-                for item in items
-                if current.lower() in item.name.lower()
-            ]
-            random.shuffle(result)
-            return result[:25]
+        result = [
+            app_commands.Choice(name=item.name, value=str(item.id))
+            for item in items
+            if current.lower() in item.name.lower()
+        ]
+        random.shuffle(result)
+        return result[:25]
 
 
 async def setup(bot: HoyoBuddy) -> None:

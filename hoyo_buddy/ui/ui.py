@@ -399,6 +399,13 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.placeholder = self.original_placeholder
         await self.view.absolute_edit(i, view=self.view)
 
+    def set_current_options(self) -> None:
+        for option in self.options:
+            if option.value in self.values:
+                option.default = True
+            else:
+                option.default = False
+
 
 NEXT_PAGE = SelectOption(
     label=LocaleStr("Next page", key="next_page_option_label"),

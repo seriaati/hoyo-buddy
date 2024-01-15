@@ -90,88 +90,92 @@ class CharacterUI(View):
         self.clear_items()
         self.add_item(PageSelector(self.selected_page))
 
-        if self.selected_page == 0:
-            embed = await self.fetch_character_embed()
-            self.add_item(
-                CharacterLevelModalButton(
-                    True,
-                    min_level=1,
-                    max_level=90,
-                    default=self.character_level,
-                    label=LocaleStr("Change character level", key="change_character_level_label"),
-                )
-            )
-        elif self.selected_page == 1:
-            embed, upgradeable, talents = await self.fetch_talent_embed()
-            if upgradeable:
+        match self.selected_page:
+            case 0:
+                embed = await self.fetch_character_embed()
                 self.add_item(
                     CharacterLevelModalButton(
-                        False,
+                        True,
                         min_level=1,
-                        max_level=10,
-                        default=self.talent_level,
-                        label=LocaleStr("Change talent level", key="change_talent_level_label"),
+                        max_level=90,
+                        default=self.character_level,
+                        label=LocaleStr(
+                            "Change character level", key="change_character_level_label"
+                        ),
                     )
                 )
-            self.add_item(
-                ItemSelector(
-                    [
-                        SelectOption(
-                            label=t.name,
-                            value=str(i),
-                            default=i == self.talent_index,
+            case 1:
+                embed, upgradeable, talents = await self.fetch_talent_embed()
+                if upgradeable:
+                    self.add_item(
+                        CharacterLevelModalButton(
+                            False,
+                            min_level=1,
+                            max_level=10,
+                            default=self.talent_level,
+                            label=LocaleStr("Change talent level", key="change_talent_level_label"),
                         )
-                        for i, t in enumerate(talents)
-                    ],
-                    "talent_index",
+                    )
+                self.add_item(
+                    ItemSelector(
+                        [
+                            SelectOption(
+                                label=t.name,
+                                value=str(i),
+                                default=i == self.talent_index,
+                            )
+                            for i, t in enumerate(talents)
+                        ],
+                        "talent_index",
+                    )
                 )
-            )
-        elif self.selected_page == 2:
-            embed, consts = await self.fetch_const_embed()
-            self.add_item(
-                ItemSelector(
-                    [
-                        SelectOption(
-                            label=f"{i + 1}. {c.name}",
-                            value=str(i),
-                            default=i == self.const_index,
-                        )
-                        for i, c in enumerate(consts)
-                    ],
-                    "const_index",
+            case 2:
+                embed, consts = await self.fetch_const_embed()
+                self.add_item(
+                    ItemSelector(
+                        [
+                            SelectOption(
+                                label=f"{i + 1}. {c.name}",
+                                value=str(i),
+                                default=i == self.const_index,
+                            )
+                            for i, c in enumerate(consts)
+                        ],
+                        "const_index",
+                    )
                 )
-            )
-        elif self.selected_page == 3:
-            embed, stories = await self.fetch_story_embed()
-            self.add_item(
-                ItemSelector(
-                    [
-                        SelectOption(
-                            label=s.title,
-                            value=str(i),
-                            default=i == self.story_index,
-                        )
-                        for i, s in enumerate(stories)
-                    ],
-                    "story_index",
+            case 3:
+                embed, stories = await self.fetch_story_embed()
+                self.add_item(
+                    ItemSelector(
+                        [
+                            SelectOption(
+                                label=s.title,
+                                value=str(i),
+                                default=i == self.story_index,
+                            )
+                            for i, s in enumerate(stories)
+                        ],
+                        "story_index",
+                    )
                 )
-            )
-        elif self.selected_page == 4:
-            embed, quotes = await self.fetch_quote_embed()
-            self.add_item(
-                QuoteSelector(
-                    [
-                        SelectOption(
-                            label=q.title,
-                            value=str(i),
-                            default=i == self.quote_index,
-                        )
-                        for i, q in enumerate(quotes)
-                    ]
+            case 4:
+                embed, quotes = await self.fetch_quote_embed()
+                self.add_item(
+                    QuoteSelector(
+                        [
+                            SelectOption(
+                                label=q.title,
+                                value=str(i),
+                                default=i == self.quote_index,
+                            )
+                            for i, q in enumerate(quotes)
+                        ]
+                    )
                 )
-            )
-        else:
-            raise NotImplementedError
+            case _:
+                msg = f"Invalid page index: {self.selected_page}"
+                raise ValueError(msg)
 
         await i.edit_original_response(embed=embed, view=self)
 

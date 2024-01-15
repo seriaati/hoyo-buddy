@@ -48,6 +48,14 @@ DICE_EMOJIS: dict[str, str] = {
     "GCG_COST_DICE_GEO": "<:UI_Gcg_DiceL_Rock_Glow:1054218244656992286>",
     "GCG_COST_DICE_DENDRO": "<:UI_Gcg_DiceL_Grass_Glow:1054218248477999135>",
 }
+RELIC_POS_EMOJIS: dict[str, str] = {
+    "neck": "<:IconRelicNeck:1196077198155718766>",
+    "head": "<:IconRelicHead:1196077193902690344>",
+    "hand": "<:IconRelicHands:1196077192136884334>",
+    "object": "<:IconRelicGoods:1196077188907274422>",
+    "foot": "<:IconRelicFoot:1196077185933508709>",
+    "body": "<:IconRelicBody:1196077184394219600>",
+}
 
 COMFORT_ICON = "<:comfort_icon:1045528772222394378>"
 LOAD_ICON = "<:load_icon:1045528773992386650>"
@@ -71,3 +79,7 @@ def get_element_emoji(element: str) -> str:
 
 def get_artifact_pos_emoji(artifact_pos: str) -> str:
     return ARTIFACT_POS_EMOJIS[artifact_pos.lower()]
+
+
+def get_relic_pos_emoji(relic_pos: str) -> str:
+    return RELIC_POS_EMOJIS[relic_pos.lower()]

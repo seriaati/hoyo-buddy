@@ -28,7 +28,7 @@ class Hoyo(commands.Cog):
             Game,
             dict[
                 ambr.ItemCategory | yatta.ItemCategory,
-                list[app_commands.Choice[str]],
+                dict[str, str],
             ],
         ] = {}
 
@@ -47,21 +47,21 @@ class Hoyo(commands.Cog):
             for locale in ambr.LOCALE_TO_LANG:
                 async with ambr.AmbrAPIClient(locale, self.bot.translator) as api:
                     items = await api.fetch_items(item_category)
-                    self._search_autocomplete_choices.setdefault(Game.GENSHIN, {}).setdefault(
-                        item_category, []
-                    ).extend(
-                        [app_commands.Choice(name=item.name, value=str(item.id)) for item in items]
-                    )
+                    item_category_choices = self._search_autocomplete_choices.setdefault(
+                        Game.GENSHIN, {}
+                    ).setdefault(item_category, {})
+                    for item in items:
+                        item_category_choices[item.name] = str(item.id)
 
         for item_category in yatta.ItemCategory:
             for locale in yatta.LOCALE_TO_LANG:
                 async with yatta.YattaAPIClient(locale, self.bot.translator) as api:
                     items = await api.fetch_items_(item_category)
-                    self._search_autocomplete_choices.setdefault(Game.STARRAIL, {}).setdefault(
-                        item_category, []
-                    ).extend(
-                        [app_commands.Choice(name=item.name, value=str(item.id)) for item in items]
-                    )
+                    for item in items:
+                        item_category_choices = self._search_autocomplete_choices.setdefault(
+                            Game.STARRAIL, {}
+                        ).setdefault(item_category, {})
+                        item_category_choices[item.name] = str(item.id)
 
         self.bot.diskcache["search_autocomplete_choices"] = self._search_autocomplete_choices
 
@@ -417,11 +417,11 @@ class Hoyo(commands.Cog):
         except ValueError:
             return [self._get_error_app_command_choice("Invalid category selected")]
 
-        all_locale_autocomplete_choices = self._search_autocomplete_choices[game][category]
+        autocomplete_choices = self._search_autocomplete_choices[game][category]
         choices = [
-            choice
-            for choice in all_locale_autocomplete_choices
-            if current.lower() in choice.name.lower()
+            app_commands.Choice(name=choice, value=item_id)
+            for choice, item_id in autocomplete_choices.items()
+            if current.lower() in choice.lower()
         ]
 
         random.shuffle(choices)

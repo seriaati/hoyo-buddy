@@ -23,6 +23,11 @@ class Hoyo(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
+        self._search_categories: dict[Game, list[str]] = {
+            Game.GENSHIN: [c.value for c in ambr.ItemCategory],
+            Game.STARRAIL: [c.value for c in yatta.ItemCategory],
+        }
+
         # [game][category][locale][item_name] -> item_id
         self._search_autocomplete_choices: dict[
             Game,
@@ -375,26 +380,14 @@ class Hoyo(commands.Cog):
         except ValueError:
             return [self._get_error_app_command_choice("Invalid game selected")]
 
-        if game is Game.GENSHIN:
-            return [
-                app_commands.Choice(
-                    name=app_commands.locale_str(c.value, warn_no_key=False),
-                    value=c.value,
-                )
-                for c in ambr.ItemCategory
-                if current.lower() in c.value.lower()
-            ]
-        if game is Game.STARRAIL:
-            return [
-                app_commands.Choice(
-                    name=app_commands.locale_str(c.value, warn_no_key=False),
-                    value=c.value,
-                )
-                for c in yatta.ItemCategory
-                if current.lower() in c.value.lower()
-            ]
-
-        return [self._get_error_app_command_choice("Invalid game selected")]
+        return [
+            app_commands.Choice(
+                name=app_commands.locale_str(c, warn_no_key=False),
+                value=c,
+            )
+            for c in self._search_categories[game]
+            if current.lower() in c.lower()
+        ]
 
     @search_command.autocomplete("query")
     async def search_command_query_autocomplete(

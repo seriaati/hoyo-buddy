@@ -61,7 +61,11 @@ class YattaAPIClient(yatta.YattaAPI):
         return await super().close()
 
     def _process_description_params(
-        self, description: str, params: dict[str, list[float | int]] | list[int | float] | None
+        self,
+        description: str,
+        params: dict[str, list[float | int]] | list[int | float] | None,
+        *,
+        param_index: int | None = None,
     ) -> str:
         if params is None:
             return description
@@ -69,6 +73,8 @@ class YattaAPIClient(yatta.YattaAPI):
             params_ = {str(i): [p] for i, p in enumerate(params, start=1)}
         else:
             params_ = params
+            if param_index:
+                params_ = {k: [v[param_index]] for k, v in params_.items()}
 
         pattern = r"#(\d+)(?:\[(i|f\d+)\])(%?)"
         matches = re.findall(pattern, description)
@@ -132,7 +138,9 @@ class YattaAPIClient(yatta.YattaAPI):
             self.locale,
             self.translator,
             title=skill.name,
-            description=self._process_description_params(skill.description, skill.params)
+            description=self._process_description_params(
+                skill.description, skill.params, param_index=base_skill.max_level - 1
+            )
             if skill.description
             else None,
         )
@@ -140,69 +148,79 @@ class YattaAPIClient(yatta.YattaAPI):
         energy_generation = dutils.get(skill.skill_points, type="base")
         energy_need = dutils.get(skill.skill_points, type="need")
 
-        energy_value_str = ""
-        if energy_generation:
-            energy_value_str += self.translator.translate(
-                LocaleStr(
-                    "Generation: {energy_generation}",
-                    key="yatta_character_skill_energy_generation_field_value",
-                    energy_generation=energy_generation.value,
-                ),
-                self.locale,
+        energy_value_strs: list[str] = []
+        if energy_generation and energy_generation.value:
+            energy_value_strs.append(
+                self.translator.translate(
+                    LocaleStr(
+                        "Generation: {energy_generation}",
+                        key="yatta_character_skill_energy_generation_field_value",
+                        energy_generation=energy_generation.value,
+                    ),
+                    self.locale,
+                )
             )
-        if energy_need:
-            energy_value_str += self.translator.translate(
-                LocaleStr(
-                    " / Cost: {energy_need}",
-                    key="yatta_character_skill_energy_need_field_value",
-                    energy_need=energy_need.value,
-                ),
-                self.locale,
+        if energy_need and energy_need.value:
+            energy_value_strs.append(
+                self.translator.translate(
+                    LocaleStr(
+                        " / Cost: {energy_need}",
+                        key="yatta_character_skill_energy_need_field_value",
+                        energy_need=energy_need.value,
+                    ),
+                    self.locale,
+                )
             )
-        if energy_value_str:
+        if energy_value_strs:
             embed.add_field(
                 name=LocaleStr("Energy", key="yatta_character_skill_energy_field_name"),
-                value=energy_value_str,
+                value="/".join(energy_value_strs),
             )
 
         single_weakness_break = dutils.get(skill.weakness_break, type="one")
         spread_weakness_break = dutils.get(skill.weakness_break, type="spread")
         aoe_weakness_break = dutils.get(skill.weakness_break, type="all")
 
-        weakness_break_value_str = ""
-        if single_weakness_break:
-            weakness_break_value_str += self.translator.translate(
-                LocaleStr(
-                    "Single: {single_weakness_break}",
-                    key="yatta_character_skill_single_weakness_break_field_value",
-                    single_weakness_break=single_weakness_break.value,
-                ),
-                self.locale,
+        weakness_break_value_strs: list[str] = []
+        if single_weakness_break and single_weakness_break.value:
+            weakness_break_value_strs.append(
+                self.translator.translate(
+                    LocaleStr(
+                        "Single: {single_weakness_break}",
+                        key="yatta_character_skill_single_weakness_break_field_value",
+                        single_weakness_break=single_weakness_break.value,
+                    ),
+                    self.locale,
+                )
             )
-        if spread_weakness_break:
-            weakness_break_value_str += self.translator.translate(
-                LocaleStr(
-                    " / Spread: {spread_weakness_break}",
-                    key="yatta_character_skill_spread_weakness_break_field_value",
-                    spread_weakness_break=spread_weakness_break.value,
-                ),
-                self.locale,
+        if spread_weakness_break and spread_weakness_break.value:
+            weakness_break_value_strs.append(
+                self.translator.translate(
+                    LocaleStr(
+                        " / Spread: {spread_weakness_break}",
+                        key="yatta_character_skill_spread_weakness_break_field_value",
+                        spread_weakness_break=spread_weakness_break.value,
+                    ),
+                    self.locale,
+                )
             )
-        if aoe_weakness_break:
-            weakness_break_value_str += self.translator.translate(
-                LocaleStr(
-                    " / AoE: {aoe_weakness_break}",
-                    key="yatta_character_skill_aoe_weakness_break_field_value",
-                    aoe_weakness_break=aoe_weakness_break.value,
-                ),
-                self.locale,
+        if aoe_weakness_break and aoe_weakness_break.value:
+            weakness_break_value_strs.append(
+                self.translator.translate(
+                    LocaleStr(
+                        " / AoE: {aoe_weakness_break}",
+                        key="yatta_character_skill_aoe_weakness_break_field_value",
+                        aoe_weakness_break=aoe_weakness_break.value,
+                    ),
+                    self.locale,
+                )
             )
-        if weakness_break_value_str:
+        if weakness_break_value_strs:
             embed.add_field(
                 name=LocaleStr(
                     "Weakness Break", key="yatta_character_skill_weakness_break_field_name"
                 ),
-                value=weakness_break_value_str,
+                value="/".join(weakness_break_value_strs),
             )
 
         embed.set_thumbnail(url=skill.icon)

@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 T = TypeVar("T")
 
-log = logging.getLogger(__name__)
+LOGGER_ = logging.getLogger(__name__)
 
 
 def split_list(input_list: list[T], n: int) -> list[list[T]]:

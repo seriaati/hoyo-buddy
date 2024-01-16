@@ -12,9 +12,7 @@ from genshin.utility import geetest
 from hoyo_buddy.bot.translator import LocaleStr, Translator
 from hoyo_buddy.db.models import User
 
-log = logging.getLogger(__name__)
-
-
+LOGGER_ = logging.getLogger(__name__)
 GT_URL = "https://raw.githubusercontent.com/GeeTeam/gt3-node-sdk/master/demo/static/libs/gt.js"
 
 
@@ -134,7 +132,7 @@ class GeetestWebServer:
         )
 
     async def run(self, port: int = 5000) -> None:
-        log.info("Starting web server... (port=%d)", port)
+        LOGGER_.info("Starting web server... (port=%d)", port)
         app = web.Application()
         app.add_routes(
             [
@@ -149,13 +147,13 @@ class GeetestWebServer:
         await runner.setup()
         site = web.TCPSite(runner, "localhost", port)
         await site.start()
-        log.info("Web server started")
+        LOGGER_.info("Web server started")
 
         try:
             while True:
                 await asyncio.sleep(1)
         except asyncio.CancelledError:
-            log.info("Web server shutting down...")
+            LOGGER_.info("Web server shutting down...")
             await site.stop()
             await app.shutdown()
             await app.cleanup()

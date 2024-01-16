@@ -8,7 +8,7 @@ from .config import DB_CONFIG
 if TYPE_CHECKING:
     from types import TracebackType
 
-log = logging.getLogger(__name__)
+LOGGER_ = logging.getLogger(__name__)
 
 __all__ = ("Database",)
 
@@ -16,7 +16,7 @@ __all__ = ("Database",)
 class Database:
     async def __aenter__(self) -> None:
         await Tortoise.init(config=DB_CONFIG)
-        log.info("Connected to database")
+        LOGGER_.info("Connected to database")
         await Tortoise.generate_schemas()
 
     async def __aexit__(

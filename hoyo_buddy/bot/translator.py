@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 __all__ = ("Translator", "AppCommandTranslator", "LocaleStr")
 
-log = logging.getLogger(__name__)
+LOGGER_ = logging.getLogger(__name__)
 COMMAND_REGEX = r"</[a-z]+>"
 
 
@@ -99,7 +99,7 @@ class Translator:
         if self.env in {"prod", "test"}:
             await self.fetch_source_strings()
 
-        log.info("Translator loaded")
+        LOGGER_.info("Translator loaded")
 
     def replace_command_with_mentions(self, message: str) -> str:
         command_occurences: list[str] = re.findall(COMMAND_REGEX, message)
@@ -116,7 +116,7 @@ class Translator:
         if isinstance(string, str):
             return string
 
-        log.debug("Translating %r to %s", string, locale.value)
+        LOGGER_.debug("Translating %r to %s", string, locale.value)
 
         extras = self._translate_extras(string.extras, locale)
         message = string.message
@@ -167,7 +167,7 @@ class Translator:
     def _get_string_key(string: LocaleStr) -> str:
         if string.key is None:
             if string.warn_no_key:
-                log.warning("Missing key for string %r, using generated key", string.message)
+                LOGGER_.warning("Missing key for string %r, using generated key", string.message)
             string_key = (
                 string.message.replace(" ", "_")
                 .replace(",", "")
@@ -193,7 +193,7 @@ class Translator:
         if translation is None:
             existing = self.not_translated.get(string_key)
             if existing is not None and existing != message:
-                log.warning(
+                LOGGER_.warning(
                     "String %r has different values: %r and %r",
                     string_key,
                     existing,
@@ -206,18 +206,13 @@ class Translator:
         self.not_translated[string_key] = message
 
     def _handle_mismatched_strings(self, string_key: str, message: str) -> None:
-        log.info("Local and CDS strings with key %r do not match", string_key)
+        LOGGER_.info("Local and CDS strings with key %r do not match", string_key)
         self.not_translated[string_key] = message
 
     @staticmethod
     async def fetch_source_strings() -> None:
-        log.info("Fetching translations...")
-        start = asyncio.get_running_loop().time()
+        LOGGER_.info("Fetching translations...")
         await asyncio.to_thread(tx.fetch_translations)
-        log.info(
-            "Fetched translations in %.2f seconds",
-            asyncio.get_running_loop().time() - start,
-        )
 
     async def load_synced_commands_json(self) -> None:
         try:
@@ -230,7 +225,7 @@ class Translator:
 
     async def push_source_strings(self) -> None:
         start = asyncio.get_running_loop().time()
-        log.info("Pushing %d source strings to Transifex", len(self.not_translated))
+        LOGGER_.info("Pushing %d source strings to Transifex", len(self.not_translated))
         split_source_strings = split_list(
             [SourceString(string, _key=key) for key, string in self.not_translated.items()],
             5,
@@ -241,15 +236,11 @@ class Translator:
             )
 
         self.not_translated.clear()
-        log.info(
-            "Pushed source strings in %.2f seconds",
-            asyncio.get_running_loop().time() - start,
-        )
 
     async def unload(self) -> None:
         if self.not_translated and self.env in {"prod", "test"}:
             await self.push_source_strings()
-        log.info("Translator unloaded")
+        LOGGER_.info("Translator unloaded")
 
 
 class AppCommandTranslator(app_commands.Translator):

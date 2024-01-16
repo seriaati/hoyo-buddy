@@ -1,4 +1,3 @@
-import logging
 from typing import TYPE_CHECKING, Any, Generic, Self, TypeVar
 
 import discord
@@ -14,7 +13,6 @@ from ..utils import split_list
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-log = logging.getLogger(__name__)
 
 __all__ = (
     "View",

@@ -1,4 +1,3 @@
-import logging
 from typing import TYPE_CHECKING, Literal
 
 from discord import InteractionResponded, app_commands
@@ -10,8 +9,6 @@ if TYPE_CHECKING:
     from .bot import INTERACTION
 
 __all__ = ("CommandTree",)
-
-log = logging.getLogger(__name__)
 
 
 class CommandTree(app_commands.CommandTree):

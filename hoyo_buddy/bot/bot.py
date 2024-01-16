@@ -16,7 +16,7 @@ from .translator import AppCommandTranslator, Translator
 if TYPE_CHECKING:
     from aiohttp import ClientSession
 
-log = logging.getLogger(__name__)
+LOGGER_ = logging.getLogger(__name__)
 
 __all__ = ("HoyoBuddy", "INTERACTION")
 
@@ -68,9 +68,9 @@ class HoyoBuddy(commands.AutoShardedBot):
             cog_name = Path(filepath).stem
             try:
                 await self.load_extension(f"hoyo_buddy.cogs.{cog_name}")
-                log.info("Loaded cog %r", cog_name)
+                LOGGER_.info("Loaded cog %r", cog_name)
             except Exception:
-                log.exception("Failed to load cog %r", cog_name)
+                LOGGER_.exception("Failed to load cog %r", cog_name)
 
         await self.load_extension("jishaku")
 
@@ -78,7 +78,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         if self.env == "prod":
             sentry_sdk.capture_exception(e)
         else:
-            log.exception(e)
+            LOGGER_.exception(e)
 
     @cached(cache=TTLCache(maxsize=1024, ttl=360))
     async def fetch_user(self, user_id: int) -> discord.User | None:
@@ -90,6 +90,6 @@ class HoyoBuddy(commands.AutoShardedBot):
             return user
 
     async def close(self) -> None:
-        log.info("Bot shutting down...")
+        LOGGER_.info("Bot shutting down...")
         self.diskcache.close()
         await super().close()

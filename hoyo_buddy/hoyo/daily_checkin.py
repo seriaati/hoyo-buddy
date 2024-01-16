@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
     from ..bot import HoyoBuddy
 
-log = logging.getLogger(__name__)
+LOGGER_ = logging.getLogger(__name__)
 
 CHECKIN_APIS: dict[str, str] = {
     "VERCEL": "https://daily-checkin-api.vercel.app",
@@ -34,7 +34,7 @@ class DailyCheckin:
     @classmethod
     async def execute(cls, bot: "HoyoBuddy") -> None:
         try:
-            log.info("Daily check-in started")
+            LOGGER_.info("Daily check-in started")
 
             cls._total_checkin_count = 0
             queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
@@ -55,13 +55,15 @@ class DailyCheckin:
         except Exception as e:
             bot.capture_exception(e)
         finally:
-            log.info("Daily check-in finished, total check-in count: %d", cls._total_checkin_count)
+            LOGGER_.info(
+                "Daily check-in finished, total check-in count: %d", cls._total_checkin_count
+            )
 
     @classmethod
     async def _daily_checkin_task(
         cls, queue: asyncio.Queue[HoyoAccount], api_name: str, bot: "HoyoBuddy"
     ) -> None:
-        log.info("Daily check-in task started for api: %s", api_name)
+        LOGGER_.info("Daily check-in task started for api: %s", api_name)
         if api_name != "LOCAL":
             # test if the api is working
             async with bot.session.get(CHECKIN_APIS[api_name]) as resp:
@@ -79,7 +81,7 @@ class DailyCheckin:
             except Exception:
                 await queue.put(account)
                 api_error_count += 1
-                log.exception("Daily check-in failed for %s", account)
+                LOGGER_.exception("Daily check-in failed for %s", account)
                 if api_error_count >= MAX_API_ERROR_COUNT:
                     msg = f"Daily check-in API {api_name} failed for {api_error_count} accounts"
                     raise RuntimeError(msg) from None
@@ -106,7 +108,7 @@ class DailyCheckin:
         translator: Translator,
         session: "aiohttp.ClientSession",
     ) -> Embed:
-        log.debug("Daily check-in with %s for %s", api_name, account)
+        LOGGER_.debug("Daily check-in with %s for %s", api_name, account)
 
         await account.user.fetch_related("settings")
 
@@ -164,4 +166,4 @@ class DailyCheckin:
             try:
                 await discord_user.send(embed=embed)
             except discord.DiscordException:
-                log.exception("Failed to send daily check-in notification to %s", discord_user)
+                LOGGER_.exception("Failed to send daily check-in notification to %s", discord_user)

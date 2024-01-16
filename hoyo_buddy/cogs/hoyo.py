@@ -1,3 +1,4 @@
+import logging
 import random
 from typing import Any
 
@@ -17,6 +18,9 @@ from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.search.genshin import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
 from ..ui.hoyo.search.hsr import BookUI, RelicSetUI
 from ..ui.hoyo.search.hsr.character import CharacterUI as HSRCharacterUI
+from ..utils import timer, try_except
+
+LOGGER_ = logging.getLogger(__name__)
 
 
 class Hoyo(commands.Cog):
@@ -43,7 +47,10 @@ class Hoyo(commands.Cog):
     async def cog_unload(self) -> None:
         self._update_search_autocomplete_choices.cancel()
 
+    @timer
     async def _setup_search_autocomplete_choices(self) -> None:
+        LOGGER_.info("Setting up search autocomplete choices")
+
         for item_category in ambr.ItemCategory:
             for locale in ambr.LOCALE_TO_LANG:
                 async with ambr.AmbrAPIClient(locale, self.bot.translator) as api:
@@ -146,6 +153,7 @@ class Hoyo(commands.Cog):
         )
         await view.start(i)
 
+    @try_except
     @checkin_command.autocomplete("account")
     async def check_in_command_autocomplete(
         self, i: INTERACTION, current: str
@@ -371,6 +379,7 @@ class Hoyo(commands.Cog):
                 )
                 return await character_ui.start(i)
 
+    @try_except
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
         self, i: INTERACTION, current: str
@@ -389,6 +398,7 @@ class Hoyo(commands.Cog):
             if current.lower() in c.lower()
         ]
 
+    @try_except
     @search_command.autocomplete("query")
     async def search_command_query_autocomplete(
         self, i: INTERACTION, current: str

@@ -3,6 +3,7 @@ import contextlib
 import logging
 import os
 import re
+import time
 from typing import TYPE_CHECKING, Any
 
 import aiofiles
@@ -12,7 +13,7 @@ from transifex.native import init, tx
 from transifex.native.parsing import SourceString
 from transifex.native.rendering import AbstractRenderingPolicy
 
-from ..utils import split_list, timer
+from ..utils import split_list
 
 if TYPE_CHECKING:
     from types import TracebackType
@@ -209,11 +210,12 @@ class Translator:
         LOGGER_.info("Local and CDS strings with key %r do not match", string_key)
         self.not_translated[string_key] = message
 
-    @timer
     @staticmethod
     async def fetch_source_strings() -> None:
         LOGGER_.info("Fetching translations...")
+        start = time.time()
         await asyncio.to_thread(tx.fetch_translations)
+        LOGGER_.info("Fetched translations in %.2f seconds", time.time() - start)
 
     async def load_synced_commands_json(self) -> None:
         try:

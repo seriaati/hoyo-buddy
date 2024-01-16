@@ -18,7 +18,7 @@ from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.search.genshin import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
 from ..ui.hoyo.search.hsr import BookUI, RelicSetUI
 from ..ui.hoyo.search.hsr.character import CharacterUI as HSRCharacterUI
-from ..utils import timer, try_except
+from ..utils import try_except
 
 LOGGER_ = logging.getLogger(__name__)
 
@@ -47,9 +47,9 @@ class Hoyo(commands.Cog):
     async def cog_unload(self) -> None:
         self._update_search_autocomplete_choices.cancel()
 
-    @timer
     async def _setup_search_autocomplete_choices(self) -> None:
         LOGGER_.info("Setting up search autocomplete choices")
+        start = self.bot.loop.time()
 
         for item_category in ambr.ItemCategory:
             for locale in ambr.LOCALE_TO_LANG:
@@ -74,6 +74,11 @@ class Hoyo(commands.Cog):
                     )
                     for item in items:
                         category_locale_choices[item.name] = str(item.id)
+
+        LOGGER_.info(
+            "Finished setting up search autocomplete choices, took %.2f seconds",
+            self.bot.loop.time() - start,
+        )
 
     @tasks.loop(hours=24)
     async def _update_search_autocomplete_choices(self) -> None:

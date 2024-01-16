@@ -225,7 +225,6 @@ class Translator:
             pass
 
     async def push_source_strings(self) -> None:
-        start = asyncio.get_running_loop().time()
         LOGGER_.info("Pushing %d source strings to Transifex", len(self.not_translated))
         split_source_strings = split_list(
             [SourceString(string, _key=key) for key, string in self.not_translated.items()],

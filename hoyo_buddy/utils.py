@@ -1,6 +1,7 @@
 import datetime
 import logging
 import time
+from functools import wraps
 from typing import TYPE_CHECKING, Any, TypeVar
 
 if TYPE_CHECKING:
@@ -50,12 +51,16 @@ def shorten(text: str, length: int) -> str:
 
 
 def timer(func: "Callable[..., Any]") -> "Callable[..., Any]":
-    def wrapper(*args: Any, **kwargs: Any) -> Any:
+    @wraps(func)
+    async def wrapper(*args: Any, **kwargs: Any) -> Any:
         start = time.time()
-        result = func(*args, **kwargs)
 
-        log.debug("%s took %.6f seconds", func.__name__, time.time() - start)
+        if inspect.iscoroutinefunction(func):
+            result = await func(*args, **kwargs)
+        else:
+            result = func(*args, **kwargs)
 
+        LOGGER_.debug("%s took %.6f seconds to run", func.__name__, time.time() - start)
         return result
 
     return wrapper

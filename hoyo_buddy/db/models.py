@@ -45,10 +45,6 @@ class User(Model):
     def __str__(self) -> str:
         return str(self.id)
 
-    @property
-    def _key(self) -> str:
-        return str(self.id)
-
 
 class HoyoAccount(Model):
     uid = fields.IntField(index=True)
@@ -82,7 +78,7 @@ class AccountNotifSettings(Model):
     notify_on_checkin_failure = fields.BooleanField(default=True)
     notify_on_checkin_success = fields.BooleanField(default=True)
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
-        "models.HoyoAccount", related_name="notif_settings"
+        "models.HoyoAccount", related_name="notif_settings", pk=True
     )
 
 
@@ -90,7 +86,7 @@ class Settings(Model):
     lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)  # type: ignore
     dark_mode = fields.BooleanField(default=True)
     user: fields.OneToOneRelation[User] = fields.OneToOneField(
-        "models.User", related_name="settings"
+        "models.User", related_name="settings", pk=True
     )
 
     @property

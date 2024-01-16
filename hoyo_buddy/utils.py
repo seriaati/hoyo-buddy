@@ -65,17 +65,3 @@ def timer(func: "Callable[..., Any]") -> "Callable[..., Any]":
         return result
 
     return wrapper
-
-
-def try_except(func: "Callable") -> "Callable":
-    @wraps(func)
-    async def wrapper(*args, **kwargs) -> Any:
-        try:
-            if inspect.iscoroutinefunction(func):
-                return await func(*args, **kwargs)
-            return func(*args, **kwargs)
-        except Exception as e:
-            LOGGER_.exception("Error in %s", func.__name__)
-            raise e from None
-
-    return wrapper

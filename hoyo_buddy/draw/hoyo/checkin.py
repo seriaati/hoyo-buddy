@@ -4,13 +4,13 @@ from typing import TYPE_CHECKING
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
 
-from ..utils import timer
-from . import Drawer
+from ...utils import timer
+from .. import Drawer
 
 if TYPE_CHECKING:
     import genshin
 
-    from ..hoyo.dataclasses import Reward
+    from ...hoyo.dataclasses import Reward
 
 
 def cache_key(daily_rewards: tuple["genshin.models.DailyReward", ...], dark_mode: bool) -> str:

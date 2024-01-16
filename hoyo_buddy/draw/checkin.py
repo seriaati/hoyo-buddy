@@ -49,7 +49,7 @@ def draw_card(
             im.paste(mask, (x - 19, y - 11), mask)
             im.paste(check, (x + 1, y + 1), check)
 
-        drawer.plain_write(
+        drawer.write(
             text=f"x{daily_reward.amount}",
             size=36,
             position=(x + 56, y + 153),
@@ -57,7 +57,7 @@ def draw_card(
             emphasis="high" if i in {2, 3} else "medium",
             anchor="mm",
         )
-        drawer.plain_write(
+        drawer.write(
             text=f"#{daily_reward.index}",
             size=18,
             position=(x + 55, y + 195),

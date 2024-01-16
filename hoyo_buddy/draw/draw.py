@@ -115,7 +115,7 @@ class Drawer:
     def write(
         self,
         *,
-        text: "LocaleStr",
+        text: "LocaleStr | str",
         size: int,
         position: tuple[int, int],
         color: tuple[int, int, int, int] | None = None,
@@ -131,25 +131,6 @@ class Drawer:
         self.draw.text(
             position,
             translated_text,
-            font=self._get_font(size, style),
-            fill=self._get_text_color(color, emphasis),
-            anchor=anchor,
-        )
-
-    def plain_write(
-        self,
-        *,
-        text: str,
-        size: int,
-        position: tuple[int, int],
-        color: tuple[int, int, int, int] | None = None,
-        style: Literal["light", "regular", "medium", "bold"] = "regular",
-        emphasis: Literal["high", "medium", "low"] = "high",
-        anchor: str | None = None,
-    ) -> None:
-        self.draw.text(
-            position,
-            text,
             font=self._get_font(size, style),
             fill=self._get_text_color(color, emphasis),
             anchor=anchor,

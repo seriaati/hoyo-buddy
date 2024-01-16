@@ -1,4 +1,5 @@
 import datetime
+import inspect
 import logging
 import time
 from functools import wraps
@@ -62,5 +63,19 @@ def timer(func: "Callable[..., Any]") -> "Callable[..., Any]":
 
         LOGGER_.debug("%s took %.6f seconds to run", func.__name__, time.time() - start)
         return result
+
+    return wrapper
+
+
+def try_except(func: "Callable") -> "Callable":
+    @wraps(func)
+    async def wrapper(*args, **kwargs) -> Any:
+        try:
+            if inspect.iscoroutinefunction(func):
+                return await func(*args, **kwargs)
+            return func(*args, **kwargs)
+        except Exception as e:
+            LOGGER_.exception("Error in %s", func.__name__)
+            raise e from None
 
     return wrapper

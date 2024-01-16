@@ -223,14 +223,12 @@ class CookiesModal(Modal):
     )
 
 
-class DevToolCookiesModalV2(Modal):
-    ltuid_v2 = TextInput(label="ltuid_v2")
-    ltoken_v2 = TextInput(label="ltoken_v2")
-
-
 class DevToolCookiesModal(Modal):
-    ltuid = TextInput(label="ltuid")
-    ltoken = TextInput(label="ltoken")
+    ltuid_v2 = TextInput(label="ltuid_v2", placeholder="1234567")
+    ltoken_v2 = TextInput(label="ltoken_v2", placeholder="v2_ABCDe5678...")
+    ltmid_v2 = TextInput(label="ltmid_v2", placeholder="1k922_hy")
+    account_mid_v2 = TextInput(label="account_mid_v2", placeholder="1k922_hy")
+    account_id_v2 = TextInput(label="account_id_v2", placeholder="1234567")
 
 
 class SelectAccountsToAdd(Select["AccountManager"]):
@@ -265,12 +263,15 @@ class SelectAccountsToAdd(Select["AccountManager"]):
                     LocaleStr(account.server_name, warn_no_key=False),
                     self.locale,
                 )
-
-                level_str = LocaleStr(
-                    "Lv. {level}",
-                    key="level_str",
-                    level=account.level,
+                level_str = self.translator.translate(
+                    LocaleStr(
+                        "Lv. {level}",
+                        key="level_str",
+                        level=account.level,
+                    ),
+                    self.locale,
                 )
+
                 yield SelectOption(
                     label=f"[{account.uid}] {account.nickname}",
                     description=f"{level_str} | {server_name}",
@@ -305,29 +306,19 @@ class SelectAccountsToAdd(Select["AccountManager"]):
                 await AccountNotifSettings.create(account=hoyo_account)
 
         self.view.user.temp_data.pop("cookies", None)
+        self.view.user.temp_data.pop("email", None)
+        self.view.user.temp_data.pop("password", None)
         await self.view.user.save()
         await self.view.refresh(i, soft=False)
 
 
 class EnterCookies(Button["AccountManager"]):
-    def __init__(self, *, v2: bool, dev_tools: bool = False) -> None:
-        if dev_tools:
-            if v2:
-                label = LocaleStr(
-                    "I have ltuid_v2 and ltoken_v2",
-                    key="devtools_v2_cookies_button_label",
-                )
-            else:
-                label = LocaleStr("I have ltuid and ltoken", key="devtools_v1_cookies_button_label")
-        else:
-            label = LocaleStr("Enter Cookies", key="cookies_button_label")
-
+    def __init__(self, *, dev_tools: bool = False) -> None:
         super().__init__(
-            label=label,
+            label=LocaleStr("Enter Cookies", key="cookies_button_label"),
             style=discord.ButtonStyle.primary,
             emoji=emojis.COOKIE,
         )
-        self.v2 = v2
         self.dev_tools = dev_tools
 
     async def callback(self, i: INTERACTION) -> Any:
@@ -336,7 +327,7 @@ class EnterCookies(Button["AccountManager"]):
         await i.response.send_modal(modal)
         await modal.wait()
 
-        cookies = self.get_cookies(modal)
+        cookies = self._get_cookies(modal)
         if not cookies:
             return
 
@@ -364,30 +355,18 @@ class EnterCookies(Button["AccountManager"]):
             self.view.add_item(go_back_button)
             await i.edit_original_response(embed=None, view=self.view)
 
-    def get_cookies_modal(self) -> DevToolCookiesModal | DevToolCookiesModalV2 | CookiesModal:
+    def get_cookies_modal(self) -> DevToolCookiesModal | CookiesModal:
         if self.dev_tools:
-            if self.v2:
-                return DevToolCookiesModalV2(
-                    title=LocaleStr("Enter Cookies", key="enter_cookies_modal_title")
-                )
-            return DevToolCookiesModal(
-                title=LocaleStr("Enter Cookies", key="enter_cookies_modal_title")
-            )
-        return CookiesModal(title=LocaleStr("Enter Cookies", key="enter_cookies_modal_title"))
+            return DevToolCookiesModal(title=LocaleStr("Enter Cookies", key="cookies_button_label"))
+        return CookiesModal(title=LocaleStr("Enter Cookies", key="cookies_button_label"))
 
     @staticmethod
-    def get_cookies(
-        modal: DevToolCookiesModal | DevToolCookiesModalV2 | CookiesModal,
+    def _get_cookies(
+        modal: DevToolCookiesModal | CookiesModal,
     ) -> str | None:
         if isinstance(modal, DevToolCookiesModal):
-            if not all((modal.ltuid.value, modal.ltoken.value)):
-                return None
-            return f"ltuid={modal.ltuid.value.strip()}; ltoken={modal.ltoken.value.strip()}"
-
-        if isinstance(modal, DevToolCookiesModalV2):
-            if not all((modal.ltuid_v2.value, modal.ltoken_v2.value)):
-                return None
-            return f"ltuid_v2={modal.ltuid_v2.value.strip()}; ltoken_v2={modal.ltoken_v2.value.strip()}"
+            cookies = "; ".join(f"{child.label}={child.value.strip()}" for child in modal.children)  # type: ignore
+            return cookies
 
         if modal.cookies.value is None:
             return None
@@ -414,7 +393,7 @@ class EnterCookies(Button["AccountManager"]):
                 self.view.translator,
                 title=LocaleStr("Invalid cookies", key="invalid_cookies_title"),
                 description=LocaleStr(
-                    "Please check that you copied the values of ltuid and ltoken correctly",
+                    "Please check that you copied the values of the cookies correctly",
                     key="invalid_ltuid_ltoken_description",
                 ),
             )
@@ -445,8 +424,9 @@ class WithJavaScript(Button["AccountManager"]):
         embed.set_image(url="https://i.imgur.com/PxO0Wr6.gif")
         code = "script:document.write(document.cookie)"
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+
         self.view.clear_items()
-        self.view.add_item(EnterCookies(v2=False))
+        self.view.add_item(EnterCookies())
         self.view.add_item(go_back_button)
         await i.response.edit_message(embed=embed, view=self.view)
         await i.followup.send(code, ephemeral=True)
@@ -471,19 +451,20 @@ class WithDevTools(Button["AccountManager"]):
                     "4. Click on the `Application` tab\n"
                     "5. Click on `Cookies` on the left sidebar\n"
                     "6. Click on the website you're on (e.g. https://www.hoyolab.com)\n"
-                    "7. Type `ltoken` in the `Filter` box and copy the `Value` of `ltoken` or `ltoken_v2`\n"
-                    "8. Type `ltuid` in the `Filter` box and copy the `Value` of `ltuid` or `ltuid_v2`\n"
-                    "9. Click the button below and paste the values you copied in the corresponding boxes\n"
+                    "7. Type `v2` in the `Filter` box\n"
+                    "8. Click the button below\n"
+                    "9. Copy the `Value` of each cookie and paste them in the boxes\n"
                 ),
                 key="devtools_instructions_description",
             ),
         )
-        embed.set_image(url="https://i.imgur.com/oSljaFQ.gif")
+        embed.set_image(url="https://i.imgur.com/HWMZhVe.gif")
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+
         self.view.clear_items()
-        self.view.add_item(EnterCookies(v2=True, dev_tools=True))
-        self.view.add_item(EnterCookies(v2=False, dev_tools=True))
+        self.view.add_item(EnterCookies(dev_tools=True))
         self.view.add_item(go_back_button)
+
         await i.response.edit_message(embed=embed, view=self.view)
 
 

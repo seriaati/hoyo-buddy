@@ -98,8 +98,6 @@ class GeetestWebServer:
         if mmt.get("data") is None:
             user = await User.get(id=int(user_id))
             user.temp_data["cookies"] = mmt
-            user.temp_data.pop("email", None)
-            user.temp_data.pop("password", None)
             await user.save()
             return web.Response(status=400, reason="Failed to create mmt")
 
@@ -123,8 +121,6 @@ class GeetestWebServer:
         else:
             user.temp_data["cookies"] = data
 
-        user.temp_data.pop("email", None)
-        user.temp_data.pop("password", None)
         await user.save()
         return web.json_response({})
 

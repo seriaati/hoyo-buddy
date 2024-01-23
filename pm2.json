@@ -7,7 +7,7 @@
         },
         {
             "name": "hoyo-buddy-test-web-server",
-            "script": "./web_server.py",
+            "script": "./web_server/web_server.py",
             "interpreter": "./.venv/bin/python"
         }
     ]

@@ -123,11 +123,15 @@ class Drawer:
         emphasis: Literal["high", "medium", "low"] = "high",
         anchor: str | None = None,
     ) -> None:
-        if self.translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
+        if isinstance(text, str):
+            translated_text = text
+        else:
+            if self.translator is None:
+                msg = "Translator is not set"
+                raise RuntimeError(msg)
 
-        translated_text = self.translator.translate(text, self.locale)
+            translated_text = self.translator.translate(text, self.locale)
+
         self.draw.text(
             position,
             translated_text,
@@ -141,4 +145,27 @@ class Drawer:
         folder = folder or self.folder
         image = Image.open(f"{STATIC_FOLDER}/{folder}/{filename}")
         image = image.convert("RGBA")
+        return image
+
+    def modify_image(
+        self, image: Image.Image, target_width: int, border_radius: int = 15
+    ) -> Image.Image:
+        # Calculate the target height to maintain the aspect ratio
+        aspect_ratio = image.height / image.width
+        target_height = int(target_width * aspect_ratio)
+
+        # Crop the image to the targeted width, focusing on the center
+        image = image.resize((target_width, target_height), Image.LANCZOS)
+
+        # Apply a dark layer if dark_layer is True
+        if self.dark_mode:
+            overlay = Image.new("RGBA", image.size, (0, 0, 0, int(255 * 0.2)))  # 20% opacity
+            image = Image.alpha_composite(image.convert("RGBA"), overlay)
+
+        # Apply a border radius
+        mask = Image.new("L", image.size, 0)
+        draw = ImageDraw.Draw(mask)
+        draw.rounded_rectangle(((0, 0), image.size), radius=border_radius, fill=255)
+        image.putalpha(mask)
+
         return image

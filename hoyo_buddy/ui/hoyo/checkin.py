@@ -6,7 +6,7 @@ from genshin import Game, GenshinException
 
 from ...bot import INTERACTION, LocaleStr, Translator, emojis
 from ...bot.error_handler import get_error_embed
-from ...draw import checkin
+from ...draw.hoyo import checkin
 from ...draw.static import download_and_save_static_images
 from ...embeds import DefaultEmbed
 from ...hoyo.dataclasses import Reward

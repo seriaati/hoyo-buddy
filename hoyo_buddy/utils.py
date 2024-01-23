@@ -3,6 +3,9 @@ import logging
 import time
 from typing import TYPE_CHECKING, Any, TypeVar
 
+import aiofiles
+import orjson
+
 if TYPE_CHECKING:
     from collections.abc import Callable
 
@@ -50,6 +53,10 @@ def shorten(text: str, length: int) -> str:
 
 
 def timer(func: "Callable[..., Any]") -> "Callable[..., Any]":
+    """
+    A decorator that prints the runtime of the decorated function
+    """
+
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         start = time.time()
         result = func(*args, **kwargs)
@@ -57,3 +64,19 @@ def timer(func: "Callable[..., Any]") -> "Callable[..., Any]":
         return result
 
     return wrapper
+
+
+async def read_json(path: str) -> Any:
+    """
+    Read a JSON file
+    """
+    async with aiofiles.open(path, "r") as f:
+        return orjson.loads(await f.read())
+
+
+async def write_json(path: str, data: Any, *, encoding: str = "utf-8") -> None:
+    """
+    Write data to a JSON file
+    """
+    async with aiofiles.open(path, "w") as f:
+        await f.write(orjson.dumps(data).decode(encoding=encoding))

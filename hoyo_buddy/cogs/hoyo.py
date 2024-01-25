@@ -46,33 +46,45 @@ class Hoyo(commands.Cog):
     async def cog_unload(self) -> None:
         self._update_search_autocomplete_choices.cancel()
 
+    async def _fetch_item_task(
+        self,
+        api: ambr.AmbrAPIClient | yatta.YattaAPIClient,
+        item_category: ambr.ItemCategory | yatta.ItemCategory,
+        locale: discord.Locale,
+    ) -> None:
+        if isinstance(api, ambr.AmbrAPIClient) and isinstance(item_category, ambr.ItemCategory):
+            game = Game.GENSHIN
+            items = await api.fetch_items(item_category)
+        elif isinstance(api, yatta.YattaAPIClient) and isinstance(
+            item_category, yatta.ItemCategory
+        ):
+            game = Game.STARRAIL
+            items = await api.fetch_items_(item_category)
+        else:
+            msg = f"Invalid item category: {item_category!r}"
+            raise TypeError(msg)
+
+        category_locale_choices = (
+            self._search_autocomplete_choices.setdefault(game, {})
+            .setdefault(item_category, {})
+            .setdefault(locale.value, {})
+        )
+        for item in items:
+            category_locale_choices[item.name] = str(item.id)
+
     async def _setup_search_autocomplete_choices(self) -> None:
         LOGGER_.info("Setting up search autocomplete choices")
         start = self.bot.loop.time()
 
-        for item_category in ambr.ItemCategory:
-            for locale in ambr.LOCALE_TO_LANG:
-                async with ambr.AmbrAPIClient(locale, self.bot.translator) as api:
-                    items = await api.fetch_items(item_category)
-                    category_locale_choices = (
-                        self._search_autocomplete_choices.setdefault(Game.GENSHIN, {})
-                        .setdefault(item_category, {})
-                        .setdefault(locale.value, {})
-                    )
-                    for item in items:
-                        category_locale_choices[item.name] = str(item.id)
+        for locale in ambr.LOCALE_TO_LANG:
+            async with ambr.AmbrAPIClient(locale, self.bot.translator) as api:
+                for item_category in ambr.ItemCategory:
+                    await self._fetch_item_task(api, item_category, locale)
 
-        for item_category in yatta.ItemCategory:
-            for locale in yatta.LOCALE_TO_LANG:
-                async with yatta.YattaAPIClient(locale, self.bot.translator) as api:
-                    items = await api.fetch_items_(item_category)
-                    category_locale_choices = (
-                        self._search_autocomplete_choices.setdefault(Game.STARRAIL, {})
-                        .setdefault(item_category, {})
-                        .setdefault(locale.value, {})
-                    )
-                    for item in items:
-                        category_locale_choices[item.name] = str(item.id)
+        for locale in yatta.LOCALE_TO_LANG:
+            async with yatta.YattaAPIClient(locale, self.bot.translator) as api:
+                for item_category in yatta.ItemCategory:
+                    await self._fetch_item_task(api, item_category, locale)
 
         LOGGER_.info(
             "Finished setting up search autocomplete choices, took %.2f seconds",

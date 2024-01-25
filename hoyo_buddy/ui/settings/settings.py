@@ -1,13 +1,11 @@
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 import discord
 
 from ...bot import INTERACTION, LocaleStr, Translator
+from ...db.models import Settings
 from ...embeds import DefaultEmbed
 from ..ui import Select, SelectOption, ToggleButton, View
-
-if TYPE_CHECKING:
-    from ...db.models import Settings
 
 LOCALES: dict[discord.Locale, dict[str, str]] = {
     discord.Locale.american_english: {"name": "English (US)", "emoji": "🇺🇸"},
@@ -53,11 +51,15 @@ class SettingsUI(View):
         filename = self._get_filename(theme, locale)
         return discord.File(filename, filename="brand.png")
 
-    async def update_and_save(self, i: INTERACTION) -> None:
+    async def update_ui_and_save_settings(self, i: INTERACTION) -> None:
         await self.absolute_edit(
             i, embed=self.get_embed(), attachments=[self.get_brand_image_file(i.locale)], view=self
         )
-        await self.settings.save()
+
+        # NOTE: This is a workaround for a bug in tortoise ORM
+        await Settings.filter(user_id=i.user.id).update(
+            lang=self.settings.lang, dark_mode=self.settings.dark_mode
+        )
 
 
 class LanguageSelector(Select["SettingsUI"]):
@@ -93,7 +95,7 @@ class LanguageSelector(Select["SettingsUI"]):
         self.view.settings.lang = None if selected == "auto" else self.values[0]
         self.options = self._get_options(self.view.settings.locale)
 
-        await self.view.update_and_save(i)
+        await self.view.update_ui_and_save_settings(i)
 
 
 class DarkModeToggle(ToggleButton["SettingsUI"]):
@@ -107,4 +109,4 @@ class DarkModeToggle(ToggleButton["SettingsUI"]):
         await super().callback(i)
         self.view.settings.dark_mode = self.current_toggle
 
-        await self.view.update_and_save(i)
+        await self.view.update_ui_and_save_settings(i)

@@ -26,9 +26,7 @@ __all__ = ("Drawer",)
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-HIGH_EMPHASIS_OPACITY = 221
-MEDIUM_EMPHASIS_OPACITY = 153
-LOW_EMPHASIS_OPACITY = 96
+EMPHASIS_OPACITY: dict[str, float] = {"high": 0.86, "medium": 0.6, "low": 0.37}
 
 FONT_MAPPING: dict[
     discord.Locale | None,
@@ -60,15 +58,6 @@ FONT_MAPPING: dict[
     },
 }
 
-EMPHASIS_COLOR_MAPPING = {
-    ("high", True): WHITE + (HIGH_EMPHASIS_OPACITY,),
-    ("medium", True): WHITE + (MEDIUM_EMPHASIS_OPACITY,),
-    ("low", True): WHITE + (LOW_EMPHASIS_OPACITY,),
-    ("high", False): BLACK + (HIGH_EMPHASIS_OPACITY,),
-    ("medium", False): BLACK + (MEDIUM_EMPHASIS_OPACITY,),
-    ("low", False): BLACK + (LOW_EMPHASIS_OPACITY,),
-}
-
 
 class Drawer:
     def __init__(
@@ -86,20 +75,23 @@ class Drawer:
         self.locale = locale
         self.translator = translator
 
+    @staticmethod
+    def apply_color_opacity(
+        color: tuple[int, int, int], opacity: float
+    ) -> tuple[int, int, int, int]:
+        return color + (int(255 * opacity),)
+
     def _get_text_color(
         self,
-        color: tuple[int, int, int, int] | None,
+        color: tuple[int, int, int] | None,
         emphasis: Literal["high", "medium", "low"],
     ) -> tuple[int, int, int, int]:
         if color is not None:
-            return color
+            return self.apply_color_opacity(color, EMPHASIS_OPACITY[emphasis])
 
-        key = (emphasis, self.dark_mode)
-        if key in EMPHASIS_COLOR_MAPPING:
-            return EMPHASIS_COLOR_MAPPING[key]
-
-        msg = f"Invalid emphasis: {emphasis}"
-        raise ValueError(msg)
+        return self.apply_color_opacity(
+            WHITE if self.dark_mode else BLACK, EMPHASIS_OPACITY[emphasis]
+        )
 
     def _get_font(
         self, size: int, style: Literal["light", "regular", "medium", "bold"]
@@ -118,7 +110,7 @@ class Drawer:
         text: "LocaleStr | str",
         size: int,
         position: tuple[int, int],
-        color: tuple[int, int, int, int] | None = None,
+        color: tuple[int, int, int] | None = None,
         style: Literal["light", "regular", "medium", "bold"] = "regular",
         emphasis: Literal["high", "medium", "low"] = "high",
         anchor: str | None = None,
@@ -147,7 +139,7 @@ class Drawer:
         image = image.convert("RGBA")
         return image
 
-    def modify_image(
+    def modify_image_for_build_card(
         self, image: Image.Image, target_width: int, border_radius: int = 15
     ) -> Image.Image:
         # Calculate the target height to maintain the aspect ratio
@@ -159,7 +151,7 @@ class Drawer:
 
         # Apply a dark layer if dark_layer is True
         if self.dark_mode:
-            overlay = Image.new("RGBA", image.size, (0, 0, 0, int(255 * 0.2)))  # 20% opacity
+            overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.2))
             image = Image.alpha_composite(image.convert("RGBA"), overlay)
 
         # Apply a border radius

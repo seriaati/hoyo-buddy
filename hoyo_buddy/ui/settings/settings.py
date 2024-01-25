@@ -52,6 +52,7 @@ class SettingsUI(View):
         return discord.File(filename, filename="brand.png")
 
     async def update_ui_and_save_settings(self, i: INTERACTION) -> None:
+        self.translate_items()
         await self.absolute_edit(
             i, embed=self.get_embed(), attachments=[self.get_brand_image_file(i.locale)], view=self
         )
@@ -92,7 +93,8 @@ class LanguageSelector(Select["SettingsUI"]):
 
     async def callback(self, i: INTERACTION) -> Any:
         selected = self.values[0]
-        self.view.settings.lang = None if selected == "auto" else self.values[0]
+        self.view.locale = discord.Locale(selected) if selected != "auto" else i.locale
+        self.view.settings.lang = self.values[0] if selected != "auto" else None
         self.options = self._get_options(self.view.settings.locale)
 
         await self.view.update_ui_and_save_settings(i)

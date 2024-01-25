@@ -102,6 +102,11 @@ class View(discord.ui.View):
                 return item
         return None
 
+    def translate_items(self) -> None:
+        for item in self.children:
+            if isinstance(item, Button | Select):
+                item.translate(self.locale, self.translator)
+
     @staticmethod
     async def absolute_send(i: INTERACTION, **kwargs) -> None:
         try:

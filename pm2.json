@@ -4,11 +4,6 @@
             "name": "hoyo-buddy-test",
             "script": "./run.py",
             "interpreter": "./.venv/bin/python"
-        },
-        {
-            "name": "hoyo-buddy-test-web-server",
-            "script": "./hoyo_buddy/web_server/web_server.py",
-            "interpreter": "./.venv/bin/python"
         }
     ]
 }

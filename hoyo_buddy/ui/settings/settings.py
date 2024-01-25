@@ -38,9 +38,9 @@ class SettingsUI(View):
     @staticmethod
     def _get_filename(theme: str, locale: discord.Locale) -> str:
         try:
-            return f"hoyo_buddy/draw/static/brand/{theme}-{locale.value.replace('-', '_')}.png"
+            return f"hoyo-buddy-assets/assets/brand/{theme}-{locale.value.replace('-', '_')}.png"
         except FileNotFoundError:
-            return f"hoyo_buddy/draw/static/brand/{theme}-en_US.png"
+            return f"hoyo-buddy-assets/assets/brand/{theme}-en_US.png"
 
     def get_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale, self.translator)

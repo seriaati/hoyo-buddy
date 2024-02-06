@@ -1,5 +1,5 @@
 # Hoyo Buddy
-![Hoyo Buddy](https://i.imgur.com/x3UBpUa.png)  
+![Hoyo Buddy](https://iili.io/J1JqMSR.png)  
 
 ![GitHub issues](https://img.shields.io/github/issues/seriaati/hoyo-buddy)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/seriaati/hoyo-buddy)

@@ -75,11 +75,65 @@ class Drawer:
         self.locale = locale
         self.translator = translator
 
+    @classmethod
+    def blend_color(
+        cls, foreground: tuple[int, int, int], background: tuple[int, int, int], opactity: float
+    ) -> tuple[int, int, int]:
+        opactity = 1 - opactity
+        return (
+            round((1 - opactity) * foreground[0] + opactity * background[0]),
+            round((1 - opactity) * foreground[1] + opactity * background[1]),
+            round((1 - opactity) * foreground[2] + opactity * background[2]),
+        )
+
+    @classmethod
+    def hex_to_rgb(cls, hex_color_code: str) -> tuple[int, int, int]:
+        hex_color_code = hex_color_code.lstrip("#")
+        return tuple(int(hex_color_code[i : i + 2], 16) for i in (0, 2, 4))  # type: ignore
+
     @staticmethod
     def apply_color_opacity(
         color: tuple[int, int, int], opacity: float
     ) -> tuple[int, int, int, int]:
-        return color + (int(255 * opacity),)
+        return color + (round(255 * opacity),)
+
+    @staticmethod
+    def round_image(image: Image.Image, radius: int) -> Image.Image:
+        mask = Image.new("L", image.size, 0)
+        draw = ImageDraw.Draw(mask)
+        draw.rounded_rectangle(((0, 0), image.size), radius=radius, fill=255)
+        image.putalpha(mask)
+        return image
+
+    @staticmethod
+    def _mask_image_with_color(image: Image.Image, color: tuple[int, int, int]) -> Image.Image:
+        color_bk = Image.new("RGBA", image.size, color)
+        return Image.composite(color_bk, image, image)
+
+    @staticmethod
+    def _shorten_text(text: str, max_width: int, font: ImageFont.FreeTypeFont) -> str:
+        if font.getlength(text) <= max_width:
+            return text
+        shortened = text[: max_width - 3] + "..."
+        while font.getlength(shortened) > max_width and len(shortened) > 3:
+            shortened = shortened[:-4] + "..."
+        return shortened
+
+    def _wrap_text(
+        self, text: str, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont
+    ) -> str:
+        lines: list[str] = [""]
+        for word in text.split():
+            line = f"{lines[-1]} {word}".strip()
+            if font.getlength(line) <= max_width:
+                lines[-1] = line
+            else:
+                lines.append(word)
+                if len(lines) > max_lines:
+                    del lines[-1]
+                    lines[-1] = self._shorten_text(lines[-1], max_width, font)
+                    break
+        return "\n".join(lines)
 
     def _get_text_color(
         self,
@@ -104,17 +158,26 @@ class Drawer:
 
         return ImageFont.truetype(font, size)
 
+    def _open_image(self, path: str, size: tuple[int, int] | None = None) -> Image.Image:
+        image = Image.open(path)
+        image = image.convert("RGBA")
+        if size:
+            image = image.resize(size, Image.LANCZOS)
+        return image
+
     def write(
         self,
-        *,
         text: "LocaleStr | str",
+        *,
         size: int,
         position: tuple[int, int],
         color: tuple[int, int, int] | None = None,
         style: Literal["light", "regular", "medium", "bold"] = "regular",
         emphasis: Literal["high", "medium", "low"] = "high",
         anchor: str | None = None,
-    ) -> None:
+        max_width: int | None = None,
+        max_lines: int = 1,
+    ) -> tuple[int, int, int, int]:
         if isinstance(text, str):
             translated_text = text
         else:
@@ -124,40 +187,77 @@ class Drawer:
 
             translated_text = self.translator.translate(text, self.locale)
 
+        font = self._get_font(size, style)
+
+        if max_width is not None:
+            translated_text = self._wrap_text(translated_text, max_width, max_lines, font)
+
         self.draw.text(
             position,
             translated_text,
-            font=self._get_font(size, style),
+            font=font,
             fill=self._get_text_color(color, emphasis),
             anchor=anchor,
         )
 
-    def get_static_image(self, url: str, *, folder: str | None = None) -> Image.Image:
+        textbbox = self.draw.textbbox(
+            position, translated_text, font=font, anchor=anchor, font_size=size
+        )
+        return tuple(round(bbox) for bbox in textbbox)  # type: ignore
+
+    def open_static(
+        self,
+        url: str,
+        *,
+        folder: str | None = None,
+        size: tuple[int, int] | None = None,
+        mask_color: tuple[int, int, int] | None = None,
+    ) -> Image.Image:
         filename = url.split("/")[-1]
         folder = folder or self.folder
-        image = Image.open(f"{STATIC_FOLDER}/{folder}/{filename}")
-        image = image.convert("RGBA")
+        path = f"{STATIC_FOLDER}/{folder}/{filename}"
+        image = self._open_image(path, size)
+        if mask_color:
+            image = self._mask_image_with_color(image, mask_color)
+        return image
+
+    def open_asset(
+        self,
+        filename: str,
+        *,
+        folder: str | None = None,
+        size: tuple[int, int] | None = None,
+        mask_color: tuple[int, int, int] | None = None,
+    ) -> Image.Image:
+        folder = folder or self.folder
+        path = f"hoyo-buddy-assets/assets/{folder}/{filename}"
+        image = self._open_image(path, size)
+        if mask_color:
+            image = self._mask_image_with_color(image, mask_color)
         return image
 
     def modify_image_for_build_card(
-        self, image: Image.Image, target_width: int, border_radius: int = 15
+        self, image: Image.Image, target_width: int, target_height: int, border_radius: int = 15
     ) -> Image.Image:
         # Calculate the target height to maintain the aspect ratio
-        aspect_ratio = image.height / image.width
-        target_height = int(target_width * aspect_ratio)
+        width, height = image.size
+        ratio = min(width / target_width, height / target_height)
 
-        # Crop the image to the targeted width, focusing on the center
-        image = image.resize((target_width, target_height), Image.LANCZOS)
+        # Calculate the new size and left/top coordinates for cropping
+        new_width = round(width / ratio)
+        new_height = round(height / ratio)
+        left = round((new_width - target_width) / 2)
+        top = round((new_height - target_height) / 2)
+        right = round(left + target_width)
+        bottom = round(top + target_height)
 
-        # Apply a dark layer if dark_layer is True
+        image = image.resize((new_width, new_height), resample=Image.LANCZOS)
+        image = image.crop((left, top, right, bottom))
+
         if self.dark_mode:
             overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.2))
             image = Image.alpha_composite(image.convert("RGBA"), overlay)
 
-        # Apply a border radius
-        mask = Image.new("L", image.size, 0)
-        draw = ImageDraw.Draw(mask)
-        draw.rounded_rectangle(((0, 0), image.size), radius=border_radius, fill=255)
-        image.putalpha(mask)
+        image = self.round_image(image, border_radius)
 
         return image

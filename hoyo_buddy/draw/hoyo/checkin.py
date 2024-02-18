@@ -26,22 +26,26 @@ def draw_card(
     daily_rewards: list["Reward"],
     dark_mode: bool,
 ) -> io.BytesIO:
-    if dark_mode:
-        im = Image.open("hoyo-buddy-assets/assets/check-in/DARK_1.png")
-        check = Image.open("hoyo-buddy-assets/assets/check-in/DARK_CHECK.png")
-        mask = Image.open("hoyo-buddy-assets/assets/check-in/DARK_MASK.png")
-    else:
-        im = Image.open("hoyo-buddy-assets/assets/check-in/LIGHT_1.png")
-        check = Image.open("hoyo-buddy-assets/assets/check-in/LIGHT_CHECK.png")
-        mask = Image.open("hoyo-buddy-assets/assets/check-in/LIGHT_MASK.png")
+    im = (
+        Image.open("hoyo-buddy-assets/assets/check-in/DARK_1.png")
+        if dark_mode
+        else Image.open("hoyo-buddy-assets/assets/check-in/LIGHT_1.png")
+    )
 
     text = Image.new("RGBA", im.size, (255, 255, 255, 0))
     draw = ImageDraw.Draw(text)
     drawer = Drawer(draw, folder="check-in", dark_mode=dark_mode)
 
+    if dark_mode:
+        mask = drawer.open_asset("check-in/DARK_MASK.png")
+        check = drawer.open_asset("check-in/DARK_CHECK.png")
+    else:
+        mask = drawer.open_asset("check-in/LIGHT_MASK.png")
+        check = drawer.open_asset("check-in/LIGHT_CHECK.png")
+
     x, y = (44, 36)
     for i, daily_reward in enumerate(daily_rewards):
-        icon = drawer.get_static_image(daily_reward.icon)
+        icon = drawer.open_static(daily_reward.icon)
         icon = icon.resize((110, 110))
         im.paste(icon, (x, y), icon)
 

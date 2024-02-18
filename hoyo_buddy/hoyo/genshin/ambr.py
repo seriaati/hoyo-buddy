@@ -7,12 +7,12 @@ import ambr
 import discord.utils as dutils
 from ambr.client import Language
 from discord import Locale
+from seria.utils import create_bullet_list, shorten
 
 from ...bot.constants import WEEKDAYS
 from ...bot.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_element_emoji
 from ...bot.translator import LocaleStr, Translator
 from ...embeds import DefaultEmbed
-from ...utils import create_bullet_list, shorten
 
 __all__ = ("LOCALE_TO_LANG", "AmbrAPIClient", "ItemCategory", "AUDIO_LANGUAGES")
 

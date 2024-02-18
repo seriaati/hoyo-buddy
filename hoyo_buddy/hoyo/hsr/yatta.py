@@ -5,11 +5,11 @@ from typing import TYPE_CHECKING, Any
 import discord.utils as dutils
 import yatta
 from discord import Locale
+from seria.utils import create_bullet_list
 from yatta import Language
 
 from ...bot.translator import LocaleStr
 from ...embeds import DefaultEmbed
-from ...utils import create_bullet_list
 
 __all__ = ("LOCALE_TO_LANG", "ItemCategory", "YattaAPIClient")
 

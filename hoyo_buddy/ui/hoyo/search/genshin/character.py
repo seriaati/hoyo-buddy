@@ -248,7 +248,7 @@ class ItemSelector(Select["CharacterUI"]):
         self.index_name = index_name
 
     async def callback(self, i: "INTERACTION") -> Any:
-        self.view.__setattr__(self.index_name, int(self.values[0]))
+        self.view.__setattr__(self.index_name, int(self.values[0]))  # noqa: PLC2801
         await self.view.update(i)
 
 

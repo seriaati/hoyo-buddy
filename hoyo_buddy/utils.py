@@ -3,30 +3,13 @@ import logging
 import time
 from typing import TYPE_CHECKING, Any, TypeVar
 
-import aiofiles
-import orjson
-
 if TYPE_CHECKING:
     from collections.abc import Callable
+
 
 T = TypeVar("T")
 
 LOGGER_ = logging.getLogger(__name__)
-
-
-def split_list(input_list: list[T], n: int) -> list[list[T]]:
-    """
-    Split a list into sublists of length n
-
-    Parameters:
-        input_list: The input list
-        n: The length of each sublist
-    """
-    if n <= 0:
-        msg = "Parameter n must be a positive integer"
-        raise ValueError(msg)
-
-    return [input_list[i : i + n] for i in range(0, len(input_list), n)]
 
 
 def get_now() -> datetime.datetime:
@@ -34,22 +17,6 @@ def get_now() -> datetime.datetime:
     Get the current time in UTC+8
     """
     return datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
-
-
-def create_bullet_list(input_list: list[str]) -> str:
-    """
-    Create a bullet list from a list of strings
-    """
-    return "\n".join(["* " + item for item in input_list])
-
-
-def shorten(text: str, length: int) -> str:
-    """
-    Shorten a string to the specified length
-    """
-    if len(text) <= length:
-        return text
-    return text[: length - 3] + "..."
 
 
 def timer(func: "Callable[..., Any]") -> "Callable[..., Any]":
@@ -64,19 +31,3 @@ def timer(func: "Callable[..., Any]") -> "Callable[..., Any]":
         return result
 
     return wrapper
-
-
-async def read_json(path: str) -> Any:
-    """
-    Read a JSON file
-    """
-    async with aiofiles.open(path, "r") as f:
-        return orjson.loads(await f.read())
-
-
-async def write_json(path: str, data: Any, *, encoding: str = "utf-8") -> None:
-    """
-    Write data to a JSON file
-    """
-    async with aiofiles.open(path, "w") as f:
-        await f.write(orjson.dumps(data).decode(encoding=encoding))

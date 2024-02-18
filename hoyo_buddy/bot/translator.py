@@ -9,11 +9,10 @@ from typing import TYPE_CHECKING, Any
 import aiofiles
 import orjson
 from discord import app_commands
+from seria.utils import split_list_to_chunks
 from transifex.native import init, tx
 from transifex.native.parsing import SourceString
 from transifex.native.rendering import AbstractRenderingPolicy
-
-from ..utils import split_list
 
 if TYPE_CHECKING:
     from types import TracebackType
@@ -228,7 +227,7 @@ class Translator:
 
     async def push_source_strings(self) -> None:
         LOGGER_.info("Pushing %d source strings to Transifex", len(self.not_translated))
-        split_source_strings = split_list(
+        split_source_strings = split_list_to_chunks(
             [SourceString(string, _key=key) for key, string in self.not_translated.items()],
             5,
         )

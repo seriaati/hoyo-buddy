@@ -2,13 +2,13 @@ from typing import TYPE_CHECKING, Any, Generic, Self, TypeVar
 
 import discord
 from discord.utils import MISSING
+from seria.utils import split_list_to_chunks
 
 from ..bot import INTERACTION, LocaleStr, Translator, emojis
 from ..bot.error_handler import get_error_embed
 from ..db.models import Settings
 from ..embeds import ErrorEmbed
 from ..exceptions import InvalidInputError
-from ..utils import split_list
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -428,7 +428,7 @@ class PaginatorSelect(Select, Generic[V_co]):
         options: list[SelectOption],
         **kwargs,
     ) -> None:
-        self.split_options = split_list(options, 23)
+        self.split_options = split_list_to_chunks(options, 23)
         self.page_index = 0
         super().__init__(options=self._process_options(), **kwargs)
 

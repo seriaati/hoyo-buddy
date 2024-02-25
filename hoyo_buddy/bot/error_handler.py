@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from ambr.exceptions import DataNotFound
+from ambr.exceptions import DataNotFoundError
 from genshin import errors
 
 from ..embeds import ErrorEmbed
@@ -34,7 +34,7 @@ def get_error_embed(
     error: Exception, locale: "discord.Locale", translator: Translator
 ) -> tuple[ErrorEmbed, bool]:
     recognized = True
-    if isinstance(error, DataNotFound):
+    if isinstance(error, DataNotFoundError):
         error = InvalidQueryError()
     if isinstance(error, HoyoBuddyError):
         embed = ErrorEmbed(

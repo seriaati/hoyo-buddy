@@ -45,7 +45,7 @@ class ItemCategory(StrEnum):
 
 class YattaAPIClient(yatta.YattaAPI):
     def __init__(self, locale: Locale, translator: "Translator") -> None:
-        super().__init__(LOCALE_TO_LANG.get(locale, Language.EN))
+        super().__init__(lang=LOCALE_TO_LANG.get(locale, Language.EN))
         self.locale = locale
         self.translator = translator
 

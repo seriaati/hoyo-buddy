@@ -8,9 +8,9 @@ import discord
 import sentry_sdk
 from dotenv import load_dotenv
 from sentry_sdk.integrations.logging import LoggingIntegration
+from seria.logging import setup_logging
 
-from hoyo_buddy.bot import HoyoBuddy
-from hoyo_buddy.bot.logging import setup_logging
+from hoyo_buddy.bot.bot import HoyoBuddy
 from hoyo_buddy.bot.translator import Translator
 from hoyo_buddy.db import Database
 from hoyo_buddy.web_server.web_server import GeetestWebServer
@@ -39,7 +39,11 @@ async def main() -> None:
             await bot.start(os.environ["DISCORD_TOKEN"])
 
 
-with setup_logging(env):
+with setup_logging(
+    logging.DEBUG if env == "dev" else logging.INFO,
+    loggers_to_suppress=("aiosqlite", "tortoise.db_client", "PIL"),
+    log_filename="hoyo_buddy.log",
+):
     try:
         import uvloop  # type: ignore
     except ImportError:

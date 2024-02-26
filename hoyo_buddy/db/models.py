@@ -1,13 +1,11 @@
-from typing import TYPE_CHECKING, Any, Self
+from typing import TYPE_CHECKING, Any
 
 from discord import Locale
+from seria.tortoise.model import Model
 from tortoise import fields
-from tortoise.exceptions import DoesNotExist, IntegrityError
-from tortoise.models import Model as TortoiseModel
 
-from ..db import GAME_CONVERTER
 from ..hoyo.client import GenshinClient
-from . import Game
+from .enums import GAME_CONVERTER, Game
 
 if TYPE_CHECKING:
     import genshin
@@ -18,22 +16,6 @@ __all__ = (
     "AccountNotifSettings",
     "Settings",
 )
-
-
-class Model(TortoiseModel):
-    @classmethod
-    async def get_or_create(cls, **kwargs: Any) -> tuple[Self, bool]:
-        try:
-            return await cls.get(**kwargs), False
-        except DoesNotExist:
-            return await cls.create(**kwargs), True
-
-    @classmethod
-    async def silent_create(cls, **kwargs: Any) -> Self | None:
-        try:
-            return await cls.create(**kwargs)
-        except IntegrityError:
-            return None
 
 
 class User(Model):
@@ -92,3 +74,18 @@ class Settings(Model):
     @property
     def locale(self) -> Locale | None:
         return Locale(self.lang) if self.lang else None
+
+
+class CardSettings(Model):
+    character_id = fields.CharField(max_length=8)
+    user: fields.OneToOneRelation[User] = fields.OneToOneField(
+        "models.User", related_name="card_settings"
+    )
+    dark_mode = fields.BooleanField()
+    custom_images: list[str] = fields.JSONField(default=[])  # type: ignore
+    """URLs of custom images."""
+    custom_primary_color: str | None = fields.CharField(max_length=7, null=True)  # type: ignore
+
+    class Meta:
+        unique_together = ("character_id", "user")
+        ordering = ["character_id"]

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Literal
 
 from discord import InteractionResponded, app_commands
 
-from ..db import Settings, User
+from ..db.models import Settings, User
 from .error_handler import get_error_embed
 
 if TYPE_CHECKING:

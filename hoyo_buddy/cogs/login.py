@@ -8,7 +8,7 @@ from ..db.models import HoyoAccount, Settings, User
 from ..ui.login.accounts import AccountManager
 
 if TYPE_CHECKING:
-    from ..bot import INTERACTION, HoyoBuddy
+    from ..bot.bot import INTERACTION, HoyoBuddy
 
 
 class Login(commands.Cog):

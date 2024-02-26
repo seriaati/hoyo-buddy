@@ -48,3 +48,15 @@ class NoAccountFoundError(HoyoBuddyError):
                 key="no_account_found_error_message",
             ),
         )
+
+
+class CardNotReadyError(HoyoBuddyError):
+    def __init__(self, character_name: str) -> None:
+        super().__init__(
+            title=LocaleStr("Card Not Ready", key="exceptions.card_not_ready_error.title"),
+            message=LocaleStr(
+                "Card data for {character_name} is not ready yet. However, you can contribute by clicking the the button below.",
+                key="exceptions.card_not_ready_error.message",
+                character_name=character_name,
+            ),
+        )

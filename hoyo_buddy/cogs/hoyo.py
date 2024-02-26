@@ -1,29 +1,37 @@
 import logging
 import random
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import discord
 from discord import app_commands
 from discord.ext import commands, tasks
+from mihomo import Language as MihomoLanguage
+from mihomo import MihomoAPI
 
-from ..bot import INTERACTION, HoyoBuddy, LocaleStr, Translator
+from ..bot.constants import LOCALE_TO_MIHOMO_LANG
 from ..bot.emojis import PROJECT_AMBER
-from ..db import Game, HoyoAccount, Settings
+from ..bot.translator import LocaleStr, Translator
+from ..db.enums import Game
+from ..db.models import HoyoAccount, Settings
 from ..exceptions import InvalidQueryError, NoAccountFoundError
 from ..hoyo.genshin import ambr
 from ..hoyo.hsr import yatta
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui import URLButtonView
 from ..ui.hoyo.checkin import CheckInUI
+from ..ui.hoyo.enka import EnkaView
 from ..ui.hoyo.search.genshin import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
 from ..ui.hoyo.search.hsr import BookUI, RelicSetUI
 from ..ui.hoyo.search.hsr.character import CharacterUI as HSRCharacterUI
+
+if TYPE_CHECKING:
+    from ..bot.bot import INTERACTION, HoyoBuddy
 
 LOGGER_ = logging.getLogger(__name__)
 
 
 class Hoyo(commands.Cog):
-    def __init__(self, bot: HoyoBuddy) -> None:
+    def __init__(self, bot: "HoyoBuddy") -> None:
         self.bot = bot
 
         self._search_categories: dict[Game, list[str]] = {
@@ -93,6 +101,8 @@ class Hoyo(commands.Cog):
 
     @tasks.loop(hours=24)
     async def _update_search_autocomplete_choices(self) -> None:
+        if self.bot.env == "dev":
+            return
         await self._setup_search_autocomplete_choices()
 
     @_update_search_autocomplete_choices.before_loop
@@ -151,7 +161,7 @@ class Hoyo(commands.Cog):
     )
     async def checkin_command(
         self,
-        i: INTERACTION,
+        i: "INTERACTION",
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> Any:
         settings = await Settings.get(user_id=i.user.id)
@@ -171,7 +181,7 @@ class Hoyo(commands.Cog):
 
     @checkin_command.autocomplete("account")
     async def check_in_command_autocomplete(
-        self, i: INTERACTION, current: str
+        self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         return await self._account_autocomplete(i.user.id, current, locale, self.bot.translator)
@@ -214,7 +224,7 @@ class Hoyo(commands.Cog):
     )
     async def search_command(  # noqa: C901, PLR0911, PLR0912, PLR0914, PLR0915
         self,
-        i: INTERACTION,
+        i: "INTERACTION",
         game_value: str,
         category_value: str,
         query: str,
@@ -396,7 +406,7 @@ class Hoyo(commands.Cog):
 
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
-        self, i: INTERACTION, current: str
+        self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         try:
             game = Game(i.namespace.game)
@@ -414,7 +424,7 @@ class Hoyo(commands.Cog):
 
     @search_command.autocomplete("query")
     async def search_command_query_autocomplete(
-        self, i: INTERACTION, current: str
+        self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         try:
             game = Game(i.namespace.game)
@@ -450,6 +460,22 @@ class Hoyo(commands.Cog):
         random.shuffle(choices)
         return choices[:25]
 
+    @app_commands.command(
+        name=app_commands.locale_str("enka", translate=False),
+        description=app_commands.locale_str(
+            "Generate character build cards with Enka.network", key="enka_command_description"
+        ),
+    )
+    async def enka_command(self, i: "INTERACTION", uid: int) -> None:
+        await i.response.defer()
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
 
-async def setup(bot: HoyoBuddy) -> None:
+        client = MihomoAPI(language=LOCALE_TO_MIHOMO_LANG.get(locale, MihomoLanguage.EN))
+        data = await client.fetch_user(uid, replace_icon_name_with_url=True)
+
+        view = EnkaView(data, author=i.user, locale=locale, translator=self.bot.translator)
+        await view.start(i)
+
+
+async def setup(bot: "HoyoBuddy") -> None:
     await bot.add_cog(Hoyo(bot))

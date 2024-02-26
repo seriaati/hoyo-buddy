@@ -4,7 +4,7 @@ import discord
 import genshin
 from tortoise.exceptions import IntegrityError
 
-from ...bot import INTERACTION, emojis
+from ...bot import emojis
 from ...bot.translator import LocaleStr, Translator
 from ...db.enums import GAME_CONVERTER
 from ...db.models import AccountNotifSettings, HoyoAccount, User
@@ -14,6 +14,8 @@ from .. import Button, GoBackButton, Modal, Select, SelectOption, TextInput, Vie
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Sequence
+
+    from ...bot.bot import INTERACTION
 
 GEETEST_SERVER_URL = {
     "prod": "https://geetest-server.seriaati.xyz",
@@ -97,7 +99,7 @@ class AccountManager(View):
             for account in self.accounts
         ]
 
-    async def refresh(self, i: INTERACTION, *, soft: bool) -> Any:
+    async def refresh(self, i: "INTERACTION", *, soft: bool) -> Any:
         if not soft:
             accounts = await HoyoAccount.filter(user=self.user).all()
             view = AccountManager(
@@ -121,7 +123,7 @@ class AccountSelector(Select["AccountManager"]):
     def __init__(self, options: list[SelectOption]) -> None:
         super().__init__(custom_id="account_selector", options=options)
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         uid, game = self.values[0].split("_")
         selected_account = discord.utils.get(self.view.accounts, uid=int(uid), game__value=game)
         if selected_account is None:
@@ -141,7 +143,7 @@ class DeleteAccountContinue(Button["AccountManager"]):
             style=discord.ButtonStyle.primary,
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         await self.view.refresh(i, soft=False)
 
 
@@ -155,7 +157,7 @@ class DeleteAccount(Button["AccountManager"]):
             row=2,
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         account = self.view.selected_account
         if account is None:
             msg = "No account selected"
@@ -199,7 +201,7 @@ class EditNickname(Button["AccountManager"]):
             label=LocaleStr("Edit nickname", key="edit_nickname_button_label"),
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         account = self.view.selected_account
         if account is None:
             msg = "No account selected"
@@ -279,7 +281,7 @@ class SelectAccountsToAdd(Select["AccountManager"]):
                     emoji=emojis.get_game_emoji(account.game),
                 )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         for value in self.values:
             uid, game = value.split("_")
             account = discord.utils.get(self.accounts, uid=int(uid), game__value=game)
@@ -321,7 +323,7 @@ class EnterCookies(Button["AccountManager"]):
         )
         self.dev_tools = dev_tools
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         modal = self.get_cookies_modal()
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
@@ -403,7 +405,7 @@ class WithJavaScript(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(label=LocaleStr("With JavaScript", key="javascript_button_label"))
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -438,7 +440,7 @@ class WithDevTools(Button["AccountManager"]):
             label=LocaleStr("With DevTools (Desktop Only)", key="devtools_button_label")
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -477,7 +479,7 @@ class EmailPasswordContinueButton(Button["AccountManager"]):
             style=discord.ButtonStyle.primary,
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         user = self.view.user
         await user.refresh_from_db()
         cookies: dict[str, Any] | None = user.temp_data.get("cookies")
@@ -566,7 +568,7 @@ class EnterEmailPassword(Button["AccountManager"]):
             emoji=emojis.PASSWORD,
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         modal = EmailPasswordModal(
             title=LocaleStr("Enter Email and Password", key="enter_email_password_modal_title")
         )
@@ -617,7 +619,7 @@ class WithEmailPassword(Button["AccountManager"]):
             label=LocaleStr("With Email and Password", key="email_password_button_label")
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -646,7 +648,7 @@ class AddAccount(Button["AccountManager"]):
             style=discord.ButtonStyle.primary,
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,

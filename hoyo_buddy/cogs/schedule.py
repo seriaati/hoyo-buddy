@@ -7,7 +7,7 @@ from ..hoyo.daily_checkin import DailyCheckin
 from ..utils import get_now
 
 if TYPE_CHECKING:
-    from ..bot import HoyoBuddy
+    from ..bot.bot import HoyoBuddy
 
 
 class Schedule(commands.Cog):

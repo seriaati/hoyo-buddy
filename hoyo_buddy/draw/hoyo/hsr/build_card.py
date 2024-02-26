@@ -65,17 +65,22 @@ def draw_build_card(  # noqa: C901, PLR0914, PLR0915, PLR0912
 
     # character name
     name_textbbox = drawer.write(
-        character.name.upper(), size=128, position=(770, 52), color=primary, style="bold"
+        character.name.upper(),
+        size=128,
+        position=(770, (252 - real_pos[1]) // 2 + real_pos[1]),
+        color=primary,
+        style="bold",
+        anchor="lm",
     )
 
     # character level
     padding = 50
     width = 337
-    height = 110
+    height = name_textbbox[3] - name_textbbox[1]
     radius = 30
 
     box_x = name_textbbox[2] + padding
-    box_y = name_textbbox[1] - 10
+    box_y = name_textbbox[1]
     draw.rounded_rectangle(
         (box_x, box_y, box_x + width, box_y + height),
         radius,
@@ -339,7 +344,7 @@ def draw_build_card(  # noqa: C901, PLR0914, PLR0915, PLR0912
         # light cone icon
         icon = drawer.open_static(cone.portrait, size=(221, 314))
         im.paste(icon, (box_x + 27, box_y + 25), icon)
-        relic_icon_right_pos = box_x + 27 + icon.width
+        light_cone_icon_right_pos = box_x + 27 + icon.width
         icon_top_pos = box_y + 25
 
         # light cone name
@@ -347,7 +352,7 @@ def draw_build_card(  # noqa: C901, PLR0914, PLR0915, PLR0912
         textbbox = drawer.write(
             cone.name,
             size=48,
-            position=(relic_icon_right_pos + 28, icon_top_pos + 50),
+            position=(light_cone_icon_right_pos + 28, icon_top_pos + 45),
             color=primary,
             style="bold",
             max_width=max_width,
@@ -530,5 +535,4 @@ def draw_build_card(  # noqa: C901, PLR0914, PLR0915, PLR0912
 
     bytes_obj = io.BytesIO()
     im.save(bytes_obj, "WEBP", loseless=True)
-    im.show()
     return bytes_obj

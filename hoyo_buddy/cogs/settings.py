@@ -8,7 +8,7 @@ from ..db.models import Settings as UserSettings
 from ..ui.settings.settings import SettingsUI
 
 if TYPE_CHECKING:
-    from ..bot import INTERACTION, HoyoBuddy
+    from ..bot.bot import INTERACTION, HoyoBuddy
 
 
 class Settings(commands.Cog):

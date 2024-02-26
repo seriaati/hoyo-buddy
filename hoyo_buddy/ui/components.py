@@ -4,14 +4,17 @@ import discord
 from discord.utils import MISSING
 from seria.utils import split_list_to_chunks
 
-from ..bot import INTERACTION, LocaleStr, Translator, emojis
+from ..bot import emojis
 from ..bot.error_handler import get_error_embed
+from ..bot.translator import LocaleStr, Translator
 from ..db.models import Settings
 from ..embeds import ErrorEmbed
 from ..exceptions import InvalidInputError
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+
+    from ..bot.bot import INTERACTION
 
 
 __all__ = (
@@ -54,7 +57,7 @@ class View(discord.ui.View):
 
     async def on_error(
         self,
-        i: INTERACTION,
+        i: "INTERACTION",
         error: Exception,
         _: discord.ui.Item[Any],
     ) -> None:
@@ -66,7 +69,7 @@ class View(discord.ui.View):
             i.client.capture_exception(error)
         await self.absolute_send(i, embed=embed, ephemeral=True)
 
-    async def interaction_check(self, i: INTERACTION) -> bool:
+    async def interaction_check(self, i: "INTERACTION") -> bool:
         if i.user.id != self.author.id:
             embed = ErrorEmbed(
                 self.locale,
@@ -108,14 +111,14 @@ class View(discord.ui.View):
                 item.translate(self.locale, self.translator)
 
     @staticmethod
-    async def absolute_send(i: INTERACTION, **kwargs) -> None:
+    async def absolute_send(i: "INTERACTION", **kwargs) -> None:
         try:
             await i.response.send_message(**kwargs)
         except discord.InteractionResponded:
             await i.followup.send(**kwargs)
 
     @staticmethod
-    async def absolute_edit(i: INTERACTION, **kwargs) -> None:
+    async def absolute_edit(i: "INTERACTION", **kwargs: Any) -> None:
         try:
             await i.response.edit_message(**kwargs)
         except discord.InteractionResponded:
@@ -190,7 +193,7 @@ class Button(discord.ui.Button, Generic[V_co]):
         if self.locale_str_label:
             self.label = translator.translate(self.locale_str_label, locale)
 
-    async def set_loading_state(self, i: INTERACTION) -> None:
+    async def set_loading_state(self, i: "INTERACTION") -> None:
         self.original_label = self.label[:] if self.label else None
         self.original_emoji = str(self.emoji) if self.emoji else None
         self.original_disabled = self.disabled
@@ -202,7 +205,7 @@ class Button(discord.ui.Button, Generic[V_co]):
         )
         await self.view.absolute_edit(i, view=self.view)
 
-    async def unset_loading_state(self, i: INTERACTION) -> None:
+    async def unset_loading_state(self, i: "INTERACTION") -> None:
         if self.original_disabled is None:
             msg = "unset_loading_state called before set_loading_state"
             raise RuntimeError(msg)
@@ -228,7 +231,7 @@ class GoBackButton(Button, Generic[V_co]):
 
         self.view: V_co
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         self.view.clear_items()
         for item in self.original_children:
             if isinstance(item, Button | Select):
@@ -266,7 +269,7 @@ class ToggleButton(Button, Generic[V_co]):
             translate=False,
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         self.current_toggle = not self.current_toggle
         self.style = self._get_style()
         self.label = self.view.translator.translate(self._get_label(), self.view.locale)
@@ -295,7 +298,7 @@ class LevelModalButton(Button, Generic[V_co]):
 
         self.view: V_co
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         modal = LevelModal(
             min_level=self.min_level, max_level=self.max_level, default_level=self.default
         )
@@ -371,12 +374,16 @@ class Select(discord.ui.Select, Generic[V_co]):
         if self.locale_str_placeholder:
             self.placeholder = translator.translate(self.locale_str_placeholder, locale)
         for option in self.options:
+            # NOTE: This is a workaround for a bug(?) in discord.py where options somehow get converted to discord.components.SelectOption internally
+            if not isinstance(option, SelectOption):
+                continue
             option.label = translator.translate(option.locale_str_label, locale)
             if option.locale_str_description:
                 option.description = translator.translate(option.locale_str_description, locale)
 
-    async def set_loading_state(self, i: INTERACTION) -> None:
+    async def set_loading_state(self, i: "INTERACTION") -> None:
         self.original_options = self.options.copy()
+        self.original_disabled = self.disabled
         self.original_placeholder = self.placeholder[:] if self.placeholder else None
 
         self.options = [
@@ -392,7 +399,7 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.disabled = True
         await self.view.absolute_edit(i, view=self.view)
 
-    async def unset_loading_state(self, i: INTERACTION) -> None:
+    async def unset_loading_state(self, i: "INTERACTION", **kwargs: Any) -> None:
         if not self.original_options or self.original_disabled is None:
             msg = "unset_loading_state called before set_loading_state"
             raise RuntimeError(msg)
@@ -400,7 +407,7 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.options = self.original_options
         self.disabled = self.original_disabled
         self.placeholder = self.original_placeholder
-        await self.view.absolute_edit(i, view=self.view)
+        await self.view.absolute_edit(i, view=self.view, **kwargs)
 
     def set_current_options(self) -> None:
         for option in self.options:
@@ -443,15 +450,19 @@ class PaginatorSelect(Select, Generic[V_co]):
             return [PREV_PAGE] + self.split_options[-1]
         return [PREV_PAGE] + self.split_options[self.page_index] + [NEXT_PAGE]
 
-    async def callback(self) -> Any:
+    async def callback(self) -> bool:
+        changed = False
         if self.values[0] == "next_page":
+            changed = True
             self.page_index += 1
             self.options = self._process_options()
         elif self.values[0] == "prev_page":
+            changed = True
             self.page_index -= 1
             self.options = self._process_options()
 
         self.translate(self.view.locale, self.view.translator)
+        return changed
 
 
 class TextInput(discord.ui.TextInput):
@@ -499,7 +510,7 @@ class Modal(discord.ui.Modal):
 
     async def on_error(
         self,
-        i: INTERACTION,
+        i: "INTERACTION",
         error: Exception,
     ) -> None:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
@@ -512,7 +523,7 @@ class Modal(discord.ui.Modal):
         except discord.InteractionResponded:
             await i.followup.send(embed=embed, ephemeral=True)
 
-    async def on_submit(self, i: INTERACTION) -> None:
+    async def on_submit(self, i: "INTERACTION") -> None:
         await i.response.defer()
         self.stop()
 
@@ -545,7 +556,7 @@ class LevelModal(Modal):
         self.level_input.placeholder = f"{min_level} ~ {max_level}"
         self.level: int | None = None
 
-    async def on_submit(self, i: INTERACTION) -> None:
+    async def on_submit(self, i: "INTERACTION") -> None:
         try:
             self.level = int(self.level_input.value)
         except ValueError:

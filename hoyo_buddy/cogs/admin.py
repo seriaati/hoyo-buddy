@@ -11,7 +11,7 @@ from ..hoyo.daily_checkin import DailyCheckin
 if TYPE_CHECKING:
     from discord.ext.commands.context import Context
 
-    from ..bot import INTERACTION, HoyoBuddy
+    from ..bot.bot import INTERACTION, HoyoBuddy
 
 
 class TaskView(ui.View):

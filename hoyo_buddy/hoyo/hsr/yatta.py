@@ -50,6 +50,7 @@ class YattaAPIClient(yatta.YattaAPI):
         self.translator = translator
 
     async def __aenter__(self) -> "YattaAPIClient":
+        await super().start()
         return self
 
     async def __aexit__(

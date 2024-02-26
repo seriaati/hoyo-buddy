@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Self
 import discord
 
 if TYPE_CHECKING:
-    from .bot import LocaleStr, Translator
+    from .bot.translator import LocaleStr, Translator
 
 __all__ = ("Embed", "DefaultEmbed", "ErrorEmbed")
 

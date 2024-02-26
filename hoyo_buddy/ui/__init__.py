@@ -1,1 +1,1 @@
-from .ui import *
+from .components import *

@@ -4,20 +4,22 @@ from typing import TYPE_CHECKING, Any
 import discord
 from genshin import Game, GenshinException
 
-from ...bot import INTERACTION, LocaleStr, Translator, emojis
+from ...bot import emojis
 from ...bot.error_handler import get_error_embed
+from ...bot.translator import LocaleStr, Translator
 from ...draw.hoyo import checkin
 from ...draw.static import download_and_save_static_images
 from ...embeds import DefaultEmbed
 from ...hoyo.dataclasses import Reward
 from ...utils import get_now
-from ..ui import Button, GoBackButton, ToggleButton, View
+from ..components import Button, GoBackButton, ToggleButton, View
 
 if TYPE_CHECKING:
     import io
 
     import aiohttp
 
+    from ...bot.bot import INTERACTION
     from ...db.models import HoyoAccount
 
 CHECK_IN_URLS = {
@@ -125,7 +127,7 @@ class CheckInUI(View):
         embed.set_image(url="attachment://check-in.png")
         return embed, file_
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: "INTERACTION") -> None:
         await i.response.defer()
         embed, file_ = await self.get_image_embed_and_file(i.client.session)
         await i.followup.send(embed=embed, file=file_, view=self)
@@ -136,7 +138,7 @@ class BackButton(Button["CheckInUI"]):
     def __init__(self) -> None:
         super().__init__(emoji=emojis.BACK, row=4)
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         await self.set_loading_state(i)
         embed, file_ = await self.view.get_image_embed_and_file(i.client.session)
         self.view.clear_items()
@@ -152,7 +154,7 @@ class CheckInButton(Button["CheckInUI"]):
             emoji=emojis.FREE_CANCELLATION,
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         await self.set_loading_state(i)
         client = self.view.client
         if client.game is None:
@@ -182,7 +184,7 @@ class AutoCheckInToggle(ToggleButton["CheckInUI"]):
             emoji=emojis.SMART_TOY,
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         await super().callback(i)
         self.view.account.daily_checkin = self.current_toggle
         await self.view.account.save()
@@ -196,7 +198,7 @@ class NotificationSettingsButton(Button["CheckInUI"]):
             row=1,
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         await self.view.account.fetch_related("notif_settings")
         go_back_button = GoBackButton(
             self.view.children,
@@ -221,7 +223,7 @@ class NotifyOnFailureToggle(ToggleButton["CheckInUI"]):
             LocaleStr("Notify on check-in failure", key="notify_on_failure_button_label"),
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         await super().callback(i)
         self.view.account.notif_settings.notify_on_checkin_failure = self.current_toggle
         await self.view.account.notif_settings.save()
@@ -234,7 +236,7 @@ class NotifyOnSuccessToggle(ToggleButton["CheckInUI"]):
             LocaleStr("Notify on check-in success", key="notify_on_success_button_label"),
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: "INTERACTION") -> Any:
         await super().callback(i)
         self.view.account.notif_settings.notify_on_checkin_success = self.current_toggle
         await self.view.account.notif_settings.save()

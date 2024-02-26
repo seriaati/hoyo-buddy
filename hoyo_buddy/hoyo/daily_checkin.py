@@ -15,7 +15,7 @@ from ..embeds import DefaultEmbed, Embed, ErrorEmbed
 if TYPE_CHECKING:
     import aiohttp
 
-    from ..bot import HoyoBuddy
+    from ..bot.bot import HoyoBuddy
 
 LOGGER_ = logging.getLogger(__name__)
 

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from ambr.models import CardTalent, TCGCardDetail
     from discord import Locale, Member, User
 
-    from hoyo_buddy.bot import INTERACTION
+    from hoyo_buddy.bot.bot import INTERACTION
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
 

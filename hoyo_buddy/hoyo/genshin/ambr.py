@@ -87,6 +87,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         self.translator = translator
 
     async def __aenter__(self) -> "AmbrAPIClient":
+        await super().start()
         return self
 
     async def __aexit__(

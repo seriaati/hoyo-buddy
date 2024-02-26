@@ -10,7 +10,8 @@ from hoyo_buddy.ui import LevelModalButton, PaginatorSelect, Select, SelectOptio
 if TYPE_CHECKING:
     import ambr
 
-    from hoyo_buddy.bot import INTERACTION, Translator
+    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
 
 

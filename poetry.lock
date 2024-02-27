@@ -199,7 +199,7 @@ typing_extensions = ">=3.7.2"
 
 [[package]]
 name = "ambr-py"
-version = "1.6.1"
+version = "1.7.0"
 description = "API wrapper for ambr.top written in Python"
 optional = false
 python-versions = "^3.11"
@@ -215,7 +215,7 @@ pydantic = "^2.4.2"
 type = "git"
 url = "https://github.com/seriaati/ambr"
 reference = "HEAD"
-resolved_reference = "dedfb8f6b30c72cb1ca32d6f2eda64e8279efbfc"
+resolved_reference = "67c43a27b338a8fb396b1a8d06e758af3d01c281"
 
 [[package]]
 name = "annotated-types"
@@ -1883,7 +1883,7 @@ tortoise-orm = {version = "^0.20.0", extras = ["asyncpg"]}
 type = "git"
 url = "https://github.com/seriaati/seria-library"
 reference = "HEAD"
-resolved_reference = "79b82eb1f0f2e51ea39734702fe623795abdaf31"
+resolved_reference = "bf559ccc995c25e9b34ae5bdb2107b85eaf9baa6"
 
 [[package]]
 name = "setuptools"
@@ -1978,13 +1978,13 @@ requests = "*"
 
 [[package]]
 name = "typing-extensions"
-version = "4.9.0"
+version = "4.10.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "typing_extensions-4.9.0-py3-none-any.whl", hash = "sha256:af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd"},
-    {file = "typing_extensions-4.9.0.tar.gz", hash = "sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783"},
+    {file = "typing_extensions-4.10.0-py3-none-any.whl", hash = "sha256:69b1a937c3a517342112fb4c6df7e72fc39a38e7891a5730ed4985b5214b5475"},
+    {file = "typing_extensions-4.10.0.tar.gz", hash = "sha256:b0abd7c89e8fb96f98db18d86106ff1d90ab692004eb746cf6eda2682f91b3cb"},
 ]
 
 [[package]]
@@ -2217,7 +2217,7 @@ pydantic = "^2.5.2"
 type = "git"
 url = "https://github.com/seriaati/yatta"
 reference = "HEAD"
-resolved_reference = "31a3916b16d2acaccd74b81e37dbda99ad725f9b"
+resolved_reference = "517099337cf9c817b66a3ca5a756fbcb7fcd1fae"
 
 [metadata]
 lock-version = "2.0"

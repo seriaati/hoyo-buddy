@@ -55,8 +55,30 @@ class CardNotReadyError(HoyoBuddyError):
         super().__init__(
             title=LocaleStr("Card Not Ready", key="exceptions.card_not_ready_error.title"),
             message=LocaleStr(
-                "Card data for {character_name} is not ready yet. However, you can contribute by clicking the the button below.",
+                "Card data for {character_name} is not ready yet.",
                 key="exceptions.card_not_ready_error.message",
                 character_name=character_name,
+            ),
+        )
+
+
+class InvalidImageURLError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr("Invalid image URL", key="invalid_image_url_error_title"),
+            message=LocaleStr(
+                "A valid image URL needs to be a direct URL to an image file that contains an image extension, and is publicly accessible.",
+                key="invalid_image_url_error_message",
+            ),
+        )
+
+
+class InvalidColorError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr("Invalid color", key="invalid_color_error_title"),
+            message=LocaleStr(
+                "A valid color needs to be a hexadecimal color code, e.g. #FF0000",
+                key="invalid_color_error_message",
             ),
         )

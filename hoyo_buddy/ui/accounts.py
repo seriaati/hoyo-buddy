@@ -4,18 +4,18 @@ import discord
 import genshin
 from tortoise.exceptions import IntegrityError
 
-from ...bot import emojis
-from ...bot.translator import LocaleStr, Translator
-from ...db.enums import GAME_CONVERTER
-from ...db.models import AccountNotifSettings, HoyoAccount, User
-from ...embeds import DefaultEmbed, ErrorEmbed
-from ...hoyo.client import GenshinClient
-from .. import Button, GoBackButton, Modal, Select, SelectOption, TextInput, View
+from ..bot import emojis
+from ..bot.translator import LocaleStr, Translator
+from ..db.enums import GAME_CONVERTER
+from ..db.models import AccountNotifSettings, HoyoAccount, User
+from ..embeds import DefaultEmbed, ErrorEmbed
+from ..hoyo.client import GenshinClient
+from . import Button, GoBackButton, Modal, Select, SelectOption, TextInput, View
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Sequence
 
-    from ...bot.bot import INTERACTION
+    from ..bot.bot import INTERACTION
 
 GEETEST_SERVER_URL = {
     "prod": "https://geetest-server.seriaati.xyz",

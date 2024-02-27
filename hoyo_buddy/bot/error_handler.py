@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
 
 from ambr.exceptions import DataNotFoundError
-from genshin import errors
+from genshin import errors as genshin_errors
+from mihomo import errors as mihomo_errors
 
 from ..embeds import ErrorEmbed
 from ..exceptions import HoyoBuddyError, InvalidQueryError
@@ -13,19 +14,37 @@ if TYPE_CHECKING:
 __all__ = ("get_error_embed",)
 
 GENSHIN_ERROR_CONVERTER: dict[
-    type[errors.GenshinException],
+    type[genshin_errors.GenshinException],
     tuple[tuple[str, str] | None, tuple[str, str] | None],
 ] = {
-    errors.AlreadyClaimed: (
+    genshin_errors.AlreadyClaimed: (
         ("Daily check-in reward already claimed", "already_claimed_title"),
         ("Come back tomorrow!", "already_claimed_description"),
     ),
-    errors.InvalidCookies: (
+    genshin_errors.InvalidCookies: (
         ("Invalid Cookies", "invalid_cookies_title"),
         (
             "Refresh your Cookies by adding your accounts again using </accounts>",
             "invalid_cookies_description",
         ),
+    ),
+}
+
+MIHOMO_ERROR_CONVERTER: dict[
+    type[mihomo_errors.BaseException],
+    tuple[tuple[str, str] | None, tuple[str, str] | None],
+] = {
+    mihomo_errors.HttpRequestError: (
+        ("Failed to fetch data", "http_request_error_title"),
+        ("Please try again later.", "http_request_error_description"),
+    ),
+    mihomo_errors.UserNotFound: (
+        ("User not found", "user_not_found_title"),
+        ("Please check the provided UID.", "user_not_found_description"),
+    ),
+    mihomo_errors.InvalidParams: (
+        ("Invalid parameters", "invalid_params_title"),
+        ("Please check the provided parameters.", "invalid_params_description"),
     ),
 }
 
@@ -43,8 +62,11 @@ def get_error_embed(
             title=error.title,
             description=error.message,
         )
-    elif isinstance(error, errors.GenshinException):
-        title, description = GENSHIN_ERROR_CONVERTER.get(type(error), (None, None))
+    elif isinstance(error, genshin_errors.GenshinException | mihomo_errors.BaseException):
+        if isinstance(error, genshin_errors.GenshinException):
+            title, description = GENSHIN_ERROR_CONVERTER.get(type(error), (None, None))
+        else:
+            title, description = MIHOMO_ERROR_CONVERTER.get(type(error), (None, None))
         embed = ErrorEmbed(
             locale,
             translator,

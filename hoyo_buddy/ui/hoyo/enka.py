@@ -7,7 +7,7 @@ from seria.utils import read_yaml
 
 from hoyo_buddy.ui.components import SelectOption
 
-from ...bot.emojis import ADD, DELETE, HSR_ELEMENT_EMOJIS, INFO, SETTINGS
+from ...bot.emojis import ADD, BOOK_MULTIPLE, DELETE, HSR_ELEMENT_EMOJIS, INFO, SETTINGS
 from ...bot.translator import LocaleStr
 from ...db.models import CardSettings
 from ...draw.hoyo.hsr.build_card import draw_build_card
@@ -30,7 +30,7 @@ if TYPE_CHECKING:
     from ...bot.bot import INTERACTION
 
 
-class EnkaView(View):
+class HSRProfileView(View):
     def __init__(
         self,
         data: "StarrailInfoParsed",
@@ -60,7 +60,7 @@ class EnkaView(View):
                 "Light Cones: {light_cones}\n"
                 "Characters: {characters}\n"
                 "Achievements: {achievements}\n",
-                key="enka.player_info.embed.description",
+                key="profile.player_info.embed.description",
                 level=player.level,
                 world_level=player.world_level,
                 friend_count=player.friend_count,
@@ -76,8 +76,9 @@ class EnkaView(View):
 
     def _add_items(self) -> None:
         self.add_item(PlayerButton())
-        self.add_item(CharacterSelect(self._data.characters))
         self.add_item(CardSettingsButton())
+        self.add_item(CardInfoButton())
+        self.add_item(CharacterSelect(self._data.characters))
 
     async def _draw_character_card(
         self,
@@ -170,22 +171,45 @@ class EnkaView(View):
         self.message = await i.original_response()
 
 
-class PlayerButton(Button[EnkaView]):
+class PlayerButton(Button[HSRProfileView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Player Info", key="enka.player_info.button.label"),
+            label=LocaleStr("Player Info", key="profile.player_info.button.label"),
             style=ButtonStyle.blurple,
+            emoji=BOOK_MULTIPLE,
         )
 
     async def callback(self, i: "INTERACTION") -> None:
-        card_settings_btn = self.view.get_item("enka_card_settings")
+        card_settings_btn = self.view.get_item("profile_card_settings")
         if card_settings_btn is not None:
             card_settings_btn.disabled = True
 
         await i.response.edit_message(embed=self.view.player_embed, attachments=[], view=self.view)
 
 
-class CharacterSelect(PaginatorSelect[EnkaView]):
+class CardInfoButton(Button[HSRProfileView]):
+    def __init__(self) -> None:
+        super().__init__(emoji=INFO, row=0)
+
+    async def callback(self, i: "INTERACTION") -> None:
+        embed = DefaultEmbed(
+            self.view.locale,
+            self.view.translator,
+            title=LocaleStr("About Star Rail Cards", key="profile.card_info.embed.title"),
+            description=LocaleStr(
+                "- Star Rail cards are a way to show off your character builds.\n"
+                "- All assets used in the cards belong to Hoyoverse, I do not own them.\n"
+                "- All fanarts used in the cards are credited to their respective artists.\n"
+                "- This design is original, you are not allowed to use it without permission.\n"
+                "- Game data is provided by the [mihomo API](https://api.mihomo.me/).\n"
+                "- Suggestions are welcome, you can contribute to the card data (adding fanarts, fixing colors, etc.) by reaching me in the [Discord Server](https://dsc.gg/hoyo-buddy).",
+                key="profile.card_info.embed.description",
+            ),
+        )
+        await i.response.send_message(embed=embed, ephemeral=True)
+
+
+class CharacterSelect(PaginatorSelect[HSRProfileView]):
     def __init__(self, characters: list["Character"]) -> None:
         options = [
             SelectOption(
@@ -197,7 +221,7 @@ class CharacterSelect(PaginatorSelect[EnkaView]):
         ]
         super().__init__(
             options,
-            placeholder=LocaleStr("Select a character", key="enka.character_select.placeholder"),
+            placeholder=LocaleStr("Select a character", key="profile.character_select.placeholder"),
         )
 
     async def callback(self, i: "INTERACTION") -> None:
@@ -210,7 +234,7 @@ class CharacterSelect(PaginatorSelect[EnkaView]):
         bytes_obj = await self.view.draw_card(i)
         bytes_obj.seek(0)
 
-        card_settings_btn = self.view.get_item("enka_card_settings")
+        card_settings_btn = self.view.get_item("profile_card_settings")
         if card_settings_btn is not None:
             card_settings_btn.disabled = False
 
@@ -219,12 +243,12 @@ class CharacterSelect(PaginatorSelect[EnkaView]):
         )
 
 
-class CardSettingsButton(Button[EnkaView]):
+class CardSettingsButton(Button[HSRProfileView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Card Settings", key="enka.card_settings.button.label"),
+            label=LocaleStr("Card Settings", key="profile.card_settings.button.label"),
             disabled=True,
-            custom_id="enka_card_settings",
+            custom_id="profile_card_settings",
             emoji=SETTINGS,
         )
 
@@ -258,15 +282,15 @@ class CardSettingsButton(Button[EnkaView]):
         self.view.add_item(
             RemoveImageButton(self.view._card_settings.current_image in default_arts)
         )
-        self.view.add_item(InfoButton())
+        self.view.add_item(CardSettingsInfoButton())
 
         await i.response.edit_message(view=self.view)
 
 
-class PrimaryColorButton(Button[EnkaView]):
+class PrimaryColorButton(Button[HSRProfileView]):
     def __init__(self, current_color: str | None) -> None:
         super().__init__(
-            label=LocaleStr("Change Color", key="enka.primary_color.button.label"),
+            label=LocaleStr("Change Color", key="profile.primary_color.button.label"),
             style=ButtonStyle.blurple,
         )
         self.current_color = current_color
@@ -301,7 +325,7 @@ class PrimaryColorButton(Button[EnkaView]):
 
 class PrimaryColorModal(Modal):
     color = TextInput(
-        label=LocaleStr("Color (hex code)", key="enka.primary_color_modal.color.label"),
+        label=LocaleStr("Color (hex code)", key="profile.primary_color_modal.color.label"),
         placeholder="#000000",
         style=TextStyle.short,
         min_length=7,
@@ -309,15 +333,17 @@ class PrimaryColorModal(Modal):
     )
 
     def __init__(self, current_color: str | None) -> None:
-        super().__init__(title=LocaleStr("Change Card Color", key="enka.primary_color_modal.title"))
+        super().__init__(
+            title=LocaleStr("Change Card Color", key="profile.primary_color_modal.title")
+        )
         self.color.default = current_color
 
 
-class DarkModeButton(ToggleButton[EnkaView]):
+class DarkModeButton(ToggleButton[HSRProfileView]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            LocaleStr("Dark Mode", key="enka.dark_mode.button.label"),
+            LocaleStr("Dark Mode", key="profile.dark_mode.button.label"),
         )
 
     async def callback(self, i: "INTERACTION") -> None:
@@ -335,7 +361,7 @@ class DarkModeButton(ToggleButton[EnkaView]):
         )
 
 
-class ImageSelect(PaginatorSelect[EnkaView]):
+class ImageSelect(PaginatorSelect[HSRProfileView]):
     def __init__(
         self, current_image_url: str | None, default_collection: list[str], custom_images: list[str]
     ) -> None:
@@ -345,8 +371,8 @@ class ImageSelect(PaginatorSelect[EnkaView]):
 
         super().__init__(
             self.generate_options(),
-            placeholder=LocaleStr("Select an image", key="enka.image_select.placeholder"),
-            custom_id="enka_image_select",
+            placeholder=LocaleStr("Select an image", key="profile.image_select.placeholder"),
+            custom_id="profile_image_select",
         )
 
     def generate_options(self) -> list[SelectOption]:
@@ -365,13 +391,13 @@ class ImageSelect(PaginatorSelect[EnkaView]):
         option = SelectOption(
             label=LocaleStr(
                 "Hoyo Buddy Collection ({num})",
-                key="enka.image_select.default_collection.label",
+                key="profile.image_select.default_collection.label",
                 num=num,
             )
             if image_url in self.default_collection
             else LocaleStr(
                 "Custom Image ({num})",
-                key="enka.image_select.custom_image.label",
+                key="profile.image_select.custom_image.label",
                 num=num,
             ),
             value=image_url,
@@ -395,7 +421,7 @@ class ImageSelect(PaginatorSelect[EnkaView]):
         await self.view._card_settings.save()
 
         # Enable the remove image button if the image is custom
-        remove_image_button: RemoveImageButton = self.view.get_item("enka_remove_image")
+        remove_image_button: RemoveImageButton = self.view.get_item("profile_remove_image")
         remove_image_button.disabled = self.values[0] in self.default_collection
 
         # Redraw the card
@@ -406,10 +432,10 @@ class ImageSelect(PaginatorSelect[EnkaView]):
         )
 
 
-class AddImageButton(Button[EnkaView]):
+class AddImageButton(Button[HSRProfileView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Add Custom Image", key="enka.add_image.button.label"),
+            label=LocaleStr("Add Custom Image", key="profile.add_image.button.label"),
             style=ButtonStyle.green,
             row=2,
             emoji=ADD,
@@ -443,14 +469,14 @@ class AddImageButton(Button[EnkaView]):
         await self.view._card_settings.save()
 
         # Update the image select options.
-        image_select: ImageSelect = self.view.get_item("enka_image_select")
+        image_select: ImageSelect = self.view.get_item("profile_image_select")
         image_select.options_before_split = image_select.generate_options()
         image_select.options = image_select.process_options()
         image_select.update_options_defaults(values=[image_url])
         image_select.translate(self.view.locale, self.view.translator)
 
         # Enable the remove image button
-        remove_img_btn: RemoveImageButton = self.view.get_item("enka_remove_image")
+        remove_img_btn: RemoveImageButton = self.view.get_item("profile_remove_image")
         remove_img_btn.disabled = False
 
         # Redraw the card
@@ -463,23 +489,23 @@ class AddImageButton(Button[EnkaView]):
 
 class AddImageModal(Modal):
     image_url = TextInput(
-        label=LocaleStr("Image URL", key="enka.add_image_modal.image_url.label"),
+        label=LocaleStr("Image URL", key="profile.add_image_modal.image_url.label"),
         placeholder="https://example.com/image.png",
         style=TextStyle.short,
         max_length=100,
     )
 
     def __init__(self) -> None:
-        super().__init__(title=LocaleStr("Add Custom Image", key="enka.add_image_modal.title"))
+        super().__init__(title=LocaleStr("Add Custom Image", key="profile.add_image_modal.title"))
 
 
-class RemoveImageButton(Button[EnkaView]):
+class RemoveImageButton(Button[HSRProfileView]):
     def __init__(self, disabled: bool) -> None:
         super().__init__(
-            label=LocaleStr("Remove Custom Image", key="enka.remove_image.button.label"),
+            label=LocaleStr("Remove Custom Image", key="profile.remove_image.button.label"),
             style=ButtonStyle.red,
             disabled=disabled,
-            custom_id="enka_remove_image",
+            custom_id="profile_remove_image",
             row=2,
             emoji=DELETE,
         )
@@ -500,7 +526,7 @@ class RemoveImageButton(Button[EnkaView]):
         await self.view._card_settings.save()
 
         # Update the image select options.
-        image_select: ImageSelect = self.view.get_item("enka_image_select")
+        image_select: ImageSelect = self.view.get_item("profile_image_select")
         image_select.options_before_split = image_select.generate_options()
         image_select.options = image_select.process_options()
         image_select.update_options_defaults(values=[new_image_url])
@@ -514,7 +540,7 @@ class RemoveImageButton(Button[EnkaView]):
         )
 
 
-class InfoButton(Button[EnkaView]):
+class CardSettingsInfoButton(Button[HSRProfileView]):
     def __init__(self) -> None:
         super().__init__(emoji=INFO, row=1)
 
@@ -522,36 +548,36 @@ class InfoButton(Button[EnkaView]):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr("About Card Settings", key="enka.info.embed.title"),
+            title=LocaleStr("About Card Settings", key="profile.info.embed.title"),
         )
         embed.add_field(
-            name=LocaleStr("Primary Color", key="enka.info.embed.primary_color.name"),
+            name=LocaleStr("Primary Color", key="profile.info.embed.primary_color.name"),
             value=LocaleStr(
                 "- Primary color used in the card.\n- Only hex color codes are supported.",
-                key="enka.info.embed.primary_color.value",
+                key="profile.info.embed.primary_color.value",
             ),
             inline=False,
         )
         embed.add_field(
-            name=LocaleStr("Dark Mode", key="enka.info.embed.dark_mode.name"),
+            name=LocaleStr("Dark Mode", key="profile.info.embed.dark_mode.name"),
             value=LocaleStr(
                 "- Switch between light and dark mode.\n"
                 "- This setting is independent from the one in </settings>, defaults to light mode.\n"
                 "- Light mode cards tend to look better because the colors are not optimized for dark mode.\n"
                 "- Suggestions for dark mode colors are welcome!",
-                key="enka.info.embed.dark_mode.value",
+                key="profile.info.embed.dark_mode.value",
             ),
             inline=False,
         )
         embed.add_field(
-            name=LocaleStr("Custom Images", key="enka.info.embed.custom_images.name"),
+            name=LocaleStr("Custom Images", key="profile.info.embed.custom_images.name"),
             value=LocaleStr(
                 "- Hoyo Buddy comes with some preset arts that I liked, but you can add your own images too.\n"
                 "- Only direct image URLs are supported, and they must be publicly accessible; GIFs are not supported.\n"
                 "- Vertical images are recommended, the exact size is 640x1138 pixels, crop your image if the position is not right.\n"
                 "- For server owners, I am not responsible for any NSFW images that you or your members add.\n"
                 "- The red button removes the current custom image and selects a random default image.",
-                key="enka.info.embed.custom_images.value",
+                key="profile.info.embed.custom_images.value",
             ),
             inline=False,
         )

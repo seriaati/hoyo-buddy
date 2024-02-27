@@ -379,8 +379,8 @@ class ImageSelect(PaginatorSelect[HSRProfileView]):
         options: list[SelectOption] = []
         added_values: set[str] = set()
 
-        for index, collection in enumerate([self.default_collection, self.custom_images], start=1):
-            for url in collection:
+        for collection in [self.default_collection, self.custom_images]:
+            for index, url in enumerate(collection, start=1):
                 if url not in added_values:
                     options.append(self.get_image_url_option(url, index))
                     added_values.add(url)

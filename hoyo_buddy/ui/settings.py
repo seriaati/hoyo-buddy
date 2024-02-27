@@ -2,13 +2,13 @@ from typing import TYPE_CHECKING, Any
 
 import discord
 
-from ...bot.translator import LocaleStr, Translator
-from ...db.models import Settings
-from ...embeds import DefaultEmbed
-from ..components import Select, SelectOption, ToggleButton, View
+from ..bot.translator import LocaleStr, Translator
+from ..db.models import Settings
+from ..embeds import DefaultEmbed
+from .components import Select, SelectOption, ToggleButton, View
 
 if TYPE_CHECKING:
-    from ...bot.bot import INTERACTION
+    from ..bot.bot import INTERACTION
 
 LOCALES: dict[discord.Locale, dict[str, str]] = {
     discord.Locale.american_english: {"name": "English (US)", "emoji": "🇺🇸"},

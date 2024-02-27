@@ -19,7 +19,7 @@ from ..hoyo.hsr import yatta
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui import URLButtonView
 from ..ui.hoyo.checkin import CheckInUI
-from ..ui.hoyo.enka import HSRProfileView
+from ..ui.hoyo.hsr_profile import HSRProfileView
 from ..ui.hoyo.search.genshin import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
 from ..ui.hoyo.search.hsr import BookUI, RelicSetUI
 from ..ui.hoyo.search.hsr.character import CharacterUI as HSRCharacterUI

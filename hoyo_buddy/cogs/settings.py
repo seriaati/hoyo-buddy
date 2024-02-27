@@ -5,7 +5,7 @@ from discord.app_commands import locale_str
 from discord.ext import commands
 
 from ..db.models import Settings as UserSettings
-from ..ui.settings.settings import SettingsUI
+from ..ui.settings import SettingsUI
 
 if TYPE_CHECKING:
     from ..bot.bot import INTERACTION, HoyoBuddy

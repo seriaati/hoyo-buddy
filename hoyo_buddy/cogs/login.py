@@ -5,7 +5,7 @@ from discord.app_commands import locale_str
 from discord.ext import commands
 
 from ..db.models import HoyoAccount, Settings, User
-from ..ui.login.accounts import AccountManager
+from ..ui.accounts import AccountManager
 
 if TYPE_CHECKING:
     from ..bot.bot import INTERACTION, HoyoBuddy

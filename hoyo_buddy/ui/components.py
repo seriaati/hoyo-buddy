@@ -99,11 +99,12 @@ class View(discord.ui.View):
             item.translate(self.locale, self.translator)
         return super().add_item(item)
 
-    def get_item(self, custom_id: str) -> "Button | Select | None":
+    def get_item(self, custom_id: str) -> Any:
         for item in self.children:
             if isinstance(item, Button | Select) and item.custom_id == custom_id:
                 return item
-        return None
+        msg = f"No item found with custom_id {custom_id}"
+        raise ValueError(msg)
 
     def translate_items(self) -> None:
         for item in self.children:
@@ -205,7 +206,7 @@ class Button(discord.ui.Button, Generic[V_co]):
         )
         await self.view.absolute_edit(i, view=self.view)
 
-    async def unset_loading_state(self, i: "INTERACTION") -> None:
+    async def unset_loading_state(self, i: "INTERACTION", **kwargs: Any) -> None:
         if self.original_disabled is None:
             msg = "unset_loading_state called before set_loading_state"
             raise RuntimeError(msg)
@@ -213,7 +214,7 @@ class Button(discord.ui.Button, Generic[V_co]):
         self.disabled = self.original_disabled
         self.emoji = self.original_emoji
         self.label = self.original_label
-        await self.view.absolute_edit(i, view=self.view)
+        await self.view.absolute_edit(i, view=self.view, **kwargs)
 
 
 class GoBackButton(Button, Generic[V_co]):
@@ -269,11 +270,12 @@ class ToggleButton(Button, Generic[V_co]):
             translate=False,
         )
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: "INTERACTION", *, edit: bool = True, **kwargs: Any) -> Any:
         self.current_toggle = not self.current_toggle
         self.style = self._get_style()
         self.label = self.view.translator.translate(self._get_label(), self.view.locale)
-        await i.response.edit_message(view=self.view)
+        if edit:
+            await i.response.edit_message(view=self.view, **kwargs)
 
 
 class LevelModalButton(Button, Generic[V_co]):
@@ -409,12 +411,10 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.placeholder = self.original_placeholder
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 
-    def set_current_options(self) -> None:
+    def update_options_defaults(self, *, values: list[str] | None = None) -> None:
+        values = values or self.values
         for option in self.options:
-            if option.value in self.values:
-                option.default = True
-            else:
-                option.default = False
+            option.default = option.value in values
 
 
 NEXT_PAGE = SelectOption(
@@ -435,31 +435,32 @@ class PaginatorSelect(Select, Generic[V_co]):
         options: list[SelectOption],
         **kwargs,
     ) -> None:
-        self.split_options = split_list_to_chunks(options, 23)
+        self.options_before_split = options
         self.page_index = 0
-        super().__init__(options=self._process_options(), **kwargs)
+        super().__init__(options=self.process_options(), **kwargs)
 
         self.view: V_co
 
-    def _process_options(self) -> list[SelectOption]:
+    def process_options(self) -> list[SelectOption]:
+        split_options = split_list_to_chunks(self.options_before_split, 23)
         if self.page_index == 0:
-            if len(self.split_options) == 1:
-                return self.split_options[0]
-            return self.split_options[0] + [NEXT_PAGE]
-        if self.page_index == len(self.split_options) - 1:
-            return [PREV_PAGE] + self.split_options[-1]
-        return [PREV_PAGE] + self.split_options[self.page_index] + [NEXT_PAGE]
+            if len(split_options) == 1:
+                return split_options[0]
+            return split_options[0] + [NEXT_PAGE]
+        if self.page_index == len(split_options) - 1:
+            return [PREV_PAGE] + split_options[-1]
+        return [PREV_PAGE] + split_options[self.page_index] + [NEXT_PAGE]
 
     async def callback(self) -> bool:
         changed = False
         if self.values[0] == "next_page":
             changed = True
             self.page_index += 1
-            self.options = self._process_options()
+            self.options = self.process_options()
         elif self.values[0] == "prev_page":
             changed = True
             self.page_index -= 1
-            self.options = self._process_options()
+            self.options = self.process_options()
 
         self.translate(self.view.locale, self.view.translator)
         return changed

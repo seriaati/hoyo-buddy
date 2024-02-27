@@ -229,7 +229,9 @@ class CharacterSelect(PaginatorSelect[HSRProfileView]):
         if changed:
             return await i.response.edit_message(view=self.view)
 
+        self.update_options_defaults()
         await self.set_loading_state(i)
+
         self.view._character_id = self.values[0]
         bytes_obj = await self.view.draw_card(i)
         bytes_obj.seek(0)

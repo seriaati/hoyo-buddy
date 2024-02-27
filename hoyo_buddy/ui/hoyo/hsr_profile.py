@@ -151,15 +151,14 @@ class HSRProfileView(View):
             raise ValueError(msg)
 
         # Initialize card settings
-        if self._card_settings is None:
-            card_settings = await CardSettings.get_or_none(
-                user_id=i.user.id, character_id=self._character_id
+        card_settings = await CardSettings.get_or_none(
+            user_id=i.user.id, character_id=self._character_id
+        )
+        if card_settings is None:
+            card_settings = await CardSettings.create(
+                user_id=i.user.id, character_id=self._character_id, dark_mode=False
             )
-            if card_settings is None:
-                card_settings = await CardSettings.create(
-                    user_id=i.user.id, character_id=self._character_id, dark_mode=False
-                )
-            self._card_settings = card_settings
+        self._card_settings = card_settings
 
         bytes_obj = await self._draw_character_card(character, i.client.session)
         return bytes_obj
@@ -229,10 +228,11 @@ class CharacterSelect(PaginatorSelect[HSRProfileView]):
         if changed:
             return await i.response.edit_message(view=self.view)
 
+        self.view._character_id = self.values[0]
+
         self.update_options_defaults()
         await self.set_loading_state(i)
 
-        self.view._character_id = self.values[0]
         bytes_obj = await self.view.draw_card(i)
         bytes_obj.seek(0)
 

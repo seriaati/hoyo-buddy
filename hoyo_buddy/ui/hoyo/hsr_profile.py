@@ -259,11 +259,7 @@ class CardSettingsButton(Button[HSRProfileView]):
         assert self.view._card_data is not None
         assert self.view._character_id is not None
 
-        go_back_button = GoBackButton(
-            self.view.children,
-            self.view.get_embeds(i.message),
-            self.view.get_attachments(i.message),
-        )
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
         self.view.add_item(go_back_button)
 

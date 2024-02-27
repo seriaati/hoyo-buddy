@@ -241,7 +241,8 @@ class GoBackButton(Button, Generic[V_co]):
         kwargs: dict[str, Any] = {"view": self.view}
         if self.embeds:
             kwargs["embeds"] = self.embeds
-        kwargs["attachments"] = self.attachments or []
+        if self.attachments:
+            kwargs["attachments"] = self.attachments
 
         await i.response.edit_message(**kwargs)
 

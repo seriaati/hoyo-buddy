@@ -78,13 +78,14 @@ class Settings(Model):
 
 class CardSettings(Model):
     character_id = fields.CharField(max_length=8)
-    user: fields.OneToOneRelation[User] = fields.OneToOneField(
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
         "models.User", related_name="card_settings"
     )
     dark_mode = fields.BooleanField()
     custom_images: list[str] = fields.JSONField(default=[])  # type: ignore
     """URLs of custom images."""
     custom_primary_color: str | None = fields.CharField(max_length=7, null=True)  # type: ignore
+    current_image: str | None = fields.CharField(max_length=100, null=True)  # type: ignore
 
     class Meta:
         unique_together = ("character_id", "user")

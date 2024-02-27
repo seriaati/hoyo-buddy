@@ -63,5 +63,5 @@ class SeriesSelector(Select["BookUI"]):
         super().__init__(placeholder=placeholder, options=options)
 
     async def callback(self, i: "INTERACTION") -> Any:
-        self.set_current_options()
+        self.update_options_defaults()
         await i.response.edit_message(embed=self.view.series_embeds[self.values[0]], view=self.view)

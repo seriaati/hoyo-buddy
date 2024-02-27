@@ -6,7 +6,7 @@ load_dotenv()
 
 DB_CONFIG = {
     "connections": {
-        "default": os.getenv("DB_URL") or "sqlite://db.sqlite3",
+        "default": os.environ["DB_URL"],
     },
     "apps": {
         "models": {

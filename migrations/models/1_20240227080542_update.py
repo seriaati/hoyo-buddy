@@ -6,7 +6,8 @@ async def upgrade(db) -> str:
     "dark_mode" INT NOT NULL,
     "custom_images" JSON NOT NULL,
     "custom_primary_color" VARCHAR(7),
-    "user_id" BIGINT NOT NULL UNIQUE REFERENCES "user" ("id") ON DELETE CASCADE,
+    "current_image" VARCHAR(100),
+    "user_id" BIGINT NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
     CONSTRAINT "uid_cardsetting_charact_fa558c" UNIQUE ("character_id", "user_id")
 );"""
 

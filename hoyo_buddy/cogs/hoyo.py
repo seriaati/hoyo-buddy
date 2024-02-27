@@ -19,7 +19,7 @@ from ..hoyo.hsr import yatta
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui import URLButtonView
 from ..ui.hoyo.checkin import CheckInUI
-from ..ui.hoyo.enka import EnkaView
+from ..ui.hoyo.enka import HSRProfileView
 from ..ui.hoyo.search.genshin import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
 from ..ui.hoyo.search.hsr import BookUI, RelicSetUI
 from ..ui.hoyo.search.hsr.character import CharacterUI as HSRCharacterUI
@@ -180,7 +180,7 @@ class Hoyo(commands.Cog):
         await view.start(i)
 
     @checkin_command.autocomplete("account")
-    async def check_in_command_autocomplete(
+    async def checkin_command_autocomplete(
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
@@ -461,20 +461,57 @@ class Hoyo(commands.Cog):
         return choices[:25]
 
     @app_commands.command(
-        name=app_commands.locale_str("enka", translate=False),
+        name=app_commands.locale_str("profile", translate=False),
         description=app_commands.locale_str(
-            "Generate character build cards with Enka.network", key="enka_command_description"
+            "View your in-game profile and generate character build cards",
+            key="profile_command_description",
         ),
     )
-    async def enka_command(self, i: "INTERACTION", uid: int) -> None:
+    @app_commands.rename(
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
+        uid=app_commands.locale_str("uid", translate=False),
+    )
+    @app_commands.describe(
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the first one",
+            key="account_autocomplete_param_description",
+        ),
+        uid=app_commands.locale_str(
+            "UID of the player, this overrides the account parameter if provided",
+            key="profile_command_uid_param_description",
+        ),
+    )
+    async def profile_command(
+        self,
+        i: "INTERACTION",
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        uid: app_commands.Range[str, 9, 10] | None = None,
+    ) -> None:
         await i.response.defer()
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
 
-        client = MihomoAPI(language=LOCALE_TO_MIHOMO_LANG.get(locale, MihomoLanguage.EN))
-        data = await client.fetch_user(uid, replace_icon_name_with_url=True)
+        if uid is not None:
+            uid_ = int(uid)
+        elif account is None:
+            account = await HoyoAccount.filter(user_id=i.user.id).first()
+            if account is None:
+                raise NoAccountFoundError
+            uid_ = account.uid
+        else:
+            uid_ = account.uid
 
-        view = EnkaView(data, author=i.user, locale=locale, translator=self.bot.translator)
+        client = MihomoAPI(language=LOCALE_TO_MIHOMO_LANG.get(locale, MihomoLanguage.EN))
+        data = await client.fetch_user(uid_, replace_icon_name_with_url=True)
+
+        view = HSRProfileView(data, author=i.user, locale=locale, translator=self.bot.translator)
         await view.start(i)
+
+    @profile_command.autocomplete("account")
+    async def profile_command_autocomplete(
+        self, i: "INTERACTION", current: str
+    ) -> list[app_commands.Choice]:
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        return await self._account_autocomplete(i.user.id, current, locale, self.bot.translator)
 
 
 async def setup(bot: "HoyoBuddy") -> None:

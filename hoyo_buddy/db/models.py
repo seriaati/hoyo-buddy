@@ -10,13 +10,6 @@ from .enums import GAME_CONVERTER, Game
 if TYPE_CHECKING:
     import genshin
 
-__all__ = (
-    "User",
-    "HoyoAccount",
-    "AccountNotifSettings",
-    "Settings",
-)
-
 
 class User(Model):
     id = fields.BigIntField(pk=True, index=True, generated=False)  # noqa: A003
@@ -90,3 +83,12 @@ class CardSettings(Model):
     class Meta:
         unique_together = ("character_id", "user")
         ordering = ["character_id"]
+
+
+class EnkaCache(Model):
+    uid = fields.IntField(pk=True, index=True)
+    hsr: dict[str, Any] = fields.JSONField(default={})  # type: ignore
+    genshin: dict[str, Any] = fields.JSONField(default={})  # type: ignore
+
+    class Meta:
+        ordering = ["uid"]

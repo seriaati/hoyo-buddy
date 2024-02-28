@@ -114,14 +114,12 @@ class DailyCheckin:
 
         locale = account.user.settings.locale or discord.Locale.american_english
         client = account.client
+        assert client.game is not None
         client.set_lang(locale)
-        if client.game is None:
-            msg = "Client game is None"
-            raise AssertionError(msg)
 
         if api_name == "LOCAL":
             try:
-                reward = await account.client.claim_daily_reward()
+                reward = await client.claim_daily_reward()
             except Exception as e:
                 embed, _ = get_error_embed(e, locale, translator)
                 embed.set_author(

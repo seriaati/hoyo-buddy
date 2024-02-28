@@ -111,7 +111,7 @@ class CheckInUI(View):
 
         fp = await self._draw_checkin_image(rewards, self.dark_mode, session)
         fp.seek(0)
-        file_ = discord.File(fp, filename="check-in.png")
+        file_ = discord.File(fp, filename="check-in.webp")
 
         embed = DefaultEmbed(
             self.locale,
@@ -124,7 +124,7 @@ class CheckInUI(View):
                 missed=get_now().day - checked_in_day_num,
             ),
         )
-        embed.set_image(url="attachment://check-in.png")
+        embed.set_image(url="attachment://check-in.webp")
         return embed, file_
 
     async def start(self, i: "INTERACTION") -> None:

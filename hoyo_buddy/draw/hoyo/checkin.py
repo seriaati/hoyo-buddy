@@ -78,6 +78,6 @@ def draw_card(
     combined = Image.alpha_composite(im, text)
 
     bytes_io = io.BytesIO()
-    combined.save(bytes_io, format="PNG")
+    combined.save(bytes_io, format="WEBP", loseless=True)
 
     return bytes_io

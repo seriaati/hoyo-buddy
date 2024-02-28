@@ -37,11 +37,11 @@ def draw_card(
     drawer = Drawer(draw, folder="check-in", dark_mode=dark_mode)
 
     if dark_mode:
-        mask = drawer.open_asset("check-in/DARK_MASK.png")
-        check = drawer.open_asset("check-in/DARK_CHECK.png")
+        mask = drawer.open_asset("DARK_MASK.png")
+        check = drawer.open_asset("DARK_CHECK.png")
     else:
-        mask = drawer.open_asset("check-in/LIGHT_MASK.png")
-        check = drawer.open_asset("check-in/LIGHT_CHECK.png")
+        mask = drawer.open_asset("LIGHT_MASK.png")
+        check = drawer.open_asset("LIGHT_CHECK.png")
 
     x, y = (44, 36)
     for i, daily_reward in enumerate(daily_rewards):

@@ -5,17 +5,15 @@ from typing import TYPE_CHECKING, Any
 import discord
 from discord import app_commands
 from discord.ext import commands, tasks
-from mihomo import Language as MihomoLanguage
-from mihomo import MihomoAPI, StarrailInfoParsed
 
-from ..bot.constants import LOCALE_TO_MIHOMO_LANG
 from ..bot.emojis import PROJECT_AMBER
 from ..bot.translator import LocaleStr, Translator
 from ..db.enums import Game
-from ..db.models import EnkaCache, HoyoAccount, Settings
+from ..db.models import HoyoAccount, Settings
 from ..exceptions import InvalidQueryError, NoAccountFoundError
 from ..hoyo.genshin import ambr
 from ..hoyo.hsr import yatta
+from ..hoyo.mihomo_client import MihomoAPI
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui import URLButtonView
 from ..ui.hoyo.checkin import CheckInUI
@@ -489,42 +487,10 @@ class Hoyo(commands.Cog):
     ) -> None:
         await i.response.defer()
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        uid_ = await self.get_uid(i.user.id, account, uid)
 
-        if uid is not None:
-            uid_ = int(uid)
-        elif account is None:
-            account = await HoyoAccount.filter(user_id=i.user.id).first()
-            if account is None:
-                raise NoAccountFoundError
-            uid_ = account.uid
-        else:
-            uid_ = account.uid
-
-        client = MihomoAPI(language=LOCALE_TO_MIHOMO_LANG.get(locale, MihomoLanguage.EN))
-        data = await client.fetch_user(uid_, replace_icon_name_with_url=True)
-        live_data_character_ids = [c.id for c in data.characters]
-
-        cache, _ = await EnkaCache.get_or_create(uid=uid_)
-        cache_player = cache.hsr.get("player", {})
-        cache_player.update(data.player.model_dump(by_alias=True))
-        cache.hsr["player"] = cache_player
-
-        cache_characters = cache.hsr.get("characters", [])
-        for character in data.characters:
-            for c in cache_characters:
-                if c["id"] == character.id:
-                    c.update(character.model_dump(by_alias=True))
-                    break
-            else:
-                cache_characters.append(character.model_dump(by_alias=True))
-        cache.hsr["characters"] = cache_characters
-
-        await cache.save()
-
-        try:
-            data = StarrailInfoParsed(**cache.hsr)
-        except Exception:
-            LOGGER_.warning("Error parsing StarrailInfoParsed from cache, falling back to API")
+        client = MihomoAPI(locale)
+        data, live_data_character_ids = await client.fetch_user(uid_)
 
         view = HSRProfileView(
             data,
@@ -534,6 +500,18 @@ class Hoyo(commands.Cog):
             translator=self.bot.translator,
         )
         await view.start(i)
+
+    async def get_uid(self, user_id: int, account: HoyoAccount | None, uid: str | None) -> int:
+        if uid is not None:
+            uid_ = int(uid)
+        elif account is None:
+            account_ = await HoyoAccount.filter(user_id=user_id).first()
+            if account_ is None:
+                raise NoAccountFoundError
+            uid_ = account_.uid
+        else:
+            uid_ = account.uid
+        return uid_
 
     @profile_command.autocomplete("account")
     async def profile_command_autocomplete(

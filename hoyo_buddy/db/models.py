@@ -4,7 +4,7 @@ from discord import Locale
 from seria.tortoise.model import Model
 from tortoise import fields
 
-from ..hoyo.client import GenshinClient
+from ..hoyo.gpy_client import GenshinClient
 from .enums import GAME_CONVERTER, Game
 
 if TYPE_CHECKING:

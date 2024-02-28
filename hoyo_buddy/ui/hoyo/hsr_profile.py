@@ -1,4 +1,3 @@
-import random
 from typing import TYPE_CHECKING, Any
 
 from discord import ButtonStyle, File, TextStyle
@@ -94,7 +93,7 @@ class HSRProfileView(View):
 
         if self._card_settings.current_image is None:
             character_arts: list[str] = character_data["arts"]
-            self._card_settings.current_image = random.choice(character_arts)
+            self._card_settings.current_image = character_arts[0]
 
         urls = await self._retrieve_image_urls(character)
         await download_and_save_static_images(list(urls), "hsr-build-card", session)
@@ -516,7 +515,7 @@ class RemoveImageButton(Button[HSRProfileView]):
 
         await self.set_loading_state(i)
 
-        new_image_url = random.choice(self.view._card_data[self.view._character_id]["arts"])
+        new_image_url = self.view._card_data[self.view._character_id]["arts"][0]
 
         # Remove the current image URL from db.
         self.view._card_settings.custom_images.remove(self.view._card_settings.current_image)
@@ -574,7 +573,7 @@ class CardSettingsInfoButton(Button[HSRProfileView]):
                 "- Only direct image URLs are supported, and they must be publicly accessible; GIFs are not supported.\n"
                 "- Vertical images are recommended, the exact size is 640x1138 pixels, crop your image if the position is not right.\n"
                 "- For server owners, I am not responsible for any NSFW images that you or your members add.\n"
-                "- The red button removes the current custom image and selects a random default image.",
+                "- The red button removes the current custom image and reverts to the default one.",
                 key="profile.info.embed.custom_images.value",
             ),
             inline=False,

@@ -33,6 +33,7 @@ class HSRProfileView(View):
     def __init__(
         self,
         data: "StarrailInfoParsed",
+        live_data_character_ids: list[str],
         *,
         author: "User | Member",
         locale: "Locale",
@@ -41,6 +42,7 @@ class HSRProfileView(View):
         super().__init__(author=author, locale=locale, translator=translator)
 
         self._data = data
+        self._live_data_character_ids = live_data_character_ids
         self._character_id: str | None = None
         self._card_settings: CardSettings | None = None
         self._card_data: dict[str, dict[str, Any]] | None = None
@@ -77,7 +79,7 @@ class HSRProfileView(View):
         self.add_item(PlayerButton())
         self.add_item(CardSettingsButton())
         self.add_item(CardInfoButton())
-        self.add_item(CharacterSelect(self._data.characters))
+        self.add_item(CharacterSelect(self._data.characters, self._live_data_character_ids))
 
     async def _draw_character_card(
         self,
@@ -208,15 +210,34 @@ class CardInfoButton(Button[HSRProfileView]):
 
 
 class CharacterSelect(PaginatorSelect[HSRProfileView]):
-    def __init__(self, characters: list["Character"]) -> None:
-        options = [
-            SelectOption(
-                label=character.name,
-                value=character.id,
-                emoji=HSR_ELEMENT_EMOJIS[character.element.id.lower()],
+    def __init__(self, characters: list["Character"], live_data_character_ids: list[str]) -> None:
+        options: list[SelectOption] = []
+
+        for character in characters:
+            data_type = (
+                LocaleStr("Real-time data", key="profile.character_select.live_data.description")
+                if character.id in live_data_character_ids
+                else LocaleStr(
+                    "Cached data", key="profile.character_select.cached_data.description"
+                )
             )
-            for character in characters
-        ]
+            description = LocaleStr(
+                "Lv. {level} | E{eidolons}S{superposition} | {data_type}",
+                key="profile.character_select.description",
+                level=character.level,
+                superposition=character.light_cone.superimpose if character.light_cone else 0,
+                eidolons=character.eidolon,
+                data_type=data_type,
+            )
+            options.append(
+                SelectOption(
+                    label=character.name,
+                    description=description,
+                    value=character.id,
+                    emoji=HSR_ELEMENT_EMOJIS[character.element.id.lower()],
+                )
+            )
+
         super().__init__(
             options,
             placeholder=LocaleStr("Select a character", key="profile.character_select.placeholder"),

@@ -6,13 +6,13 @@ import discord
 from discord import app_commands
 from discord.ext import commands, tasks
 from mihomo import Language as MihomoLanguage
-from mihomo import MihomoAPI
+from mihomo import MihomoAPI, StarrailInfoParsed
 
 from ..bot.constants import LOCALE_TO_MIHOMO_LANG
 from ..bot.emojis import PROJECT_AMBER
 from ..bot.translator import LocaleStr, Translator
 from ..db.enums import Game
-from ..db.models import HoyoAccount, Settings
+from ..db.models import EnkaCache, HoyoAccount, Settings
 from ..exceptions import InvalidQueryError, NoAccountFoundError
 from ..hoyo.genshin import ambr
 from ..hoyo.hsr import yatta
@@ -502,8 +502,37 @@ class Hoyo(commands.Cog):
 
         client = MihomoAPI(language=LOCALE_TO_MIHOMO_LANG.get(locale, MihomoLanguage.EN))
         data = await client.fetch_user(uid_, replace_icon_name_with_url=True)
+        live_data_character_ids = [c.id for c in data.characters]
 
-        view = HSRProfileView(data, author=i.user, locale=locale, translator=self.bot.translator)
+        cache, _ = await EnkaCache.get_or_create(uid=uid_)
+        cache_player = cache.hsr.get("player", {})
+        cache_player.update(data.player.model_dump(by_alias=True))
+        cache.hsr["player"] = cache_player
+
+        cache_characters = cache.hsr.get("characters", [])
+        for character in data.characters:
+            for c in cache_characters:
+                if c["id"] == character.id:
+                    c.update(character.model_dump(by_alias=True))
+                    break
+            else:
+                cache_characters.append(character.model_dump(by_alias=True))
+        cache.hsr["characters"] = cache_characters
+
+        await cache.save()
+
+        try:
+            data = StarrailInfoParsed(**cache.hsr)
+        except Exception:
+            LOGGER_.warning("Error parsing StarrailInfoParsed from cache, falling back to API")
+
+        view = HSRProfileView(
+            data,
+            live_data_character_ids,
+            author=i.user,
+            locale=locale,
+            translator=self.bot.translator,
+        )
         await view.start(i)
 
     @profile_command.autocomplete("account")

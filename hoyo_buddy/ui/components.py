@@ -239,9 +239,9 @@ class GoBackButton(Button, Generic[V_co]):
                 self.view.add_item(item, translate=False)
 
         kwargs: dict[str, Any] = {"view": self.view}
-        if self.embeds:
+        if self.embeds is not None:
             kwargs["embeds"] = self.embeds
-        if self.attachments:
+        if self.attachments is not None:
             kwargs["attachments"] = self.attachments
 
         await i.response.edit_message(**kwargs)

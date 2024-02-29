@@ -7,6 +7,7 @@ from genshin import Game, GenshinException
 from ...bot import emojis
 from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr, Translator
+from ...db.models import AccountNotifSettings
 from ...draw.hoyo import checkin
 from ...draw.static import download_and_save_static_images
 from ...embeds import DefaultEmbed
@@ -204,7 +205,11 @@ class NotificationSettingsButton(Button[CheckInUI]):
 
     async def callback(self, i: "INTERACTION") -> Any:
         await self.view.account.fetch_related("notif_settings")
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(
+            self.view.children,
+            self.view.get_embeds(i.message),
+            self.view.get_attachments(i.message),
+        )
         self.view.clear_items()
         self.view.add_item(go_back_button)
         self.view.add_item(
@@ -225,8 +230,9 @@ class NotifyOnFailureToggle(ToggleButton[CheckInUI]):
 
     async def callback(self, i: "INTERACTION") -> Any:
         await super().callback(i)
-        self.view.account.notif_settings.notify_on_checkin_failure = self.current_toggle
-        await self.view.account.notif_settings.save()
+        await AccountNotifSettings.filter(account=self.view.account).update(
+            notify_on_checkin_failure=self.current_toggle
+        )
 
 
 class NotifyOnSuccessToggle(ToggleButton[CheckInUI]):
@@ -238,5 +244,6 @@ class NotifyOnSuccessToggle(ToggleButton[CheckInUI]):
 
     async def callback(self, i: "INTERACTION") -> Any:
         await super().callback(i)
-        self.view.account.notif_settings.notify_on_checkin_success = self.current_toggle
-        await self.view.account.notif_settings.save()
+        await AccountNotifSettings.filter(account=self.view.account).update(
+            notify_on_checkin_success=self.current_toggle
+        )

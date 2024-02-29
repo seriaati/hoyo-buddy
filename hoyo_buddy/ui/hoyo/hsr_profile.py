@@ -9,7 +9,7 @@ from hoyo_buddy.ui.components import SelectOption
 
 from ...bot.emojis import ADD, BOOK_MULTIPLE, DELETE, HSR_ELEMENT_EMOJIS, INFO, SETTINGS
 from ...bot.translator import LocaleStr
-from ...db.models import CardSettings
+from ...db.models import CardSettings, EnkaCache
 from ...draw.hoyo.hsr.build_card import draw_build_card
 from ...draw.static import download_and_save_static_images
 from ...embeds import DefaultEmbed
@@ -359,6 +359,43 @@ class CardSettingsButton(Button[HSRProfileView]):
         )
 
         await i.response.edit_message(view=self.view)
+
+
+class RemoveFromCacheButton(Button[HSRProfileView]):
+    def __init__(self) -> None:
+        super().__init__(
+            label=LocaleStr("Remove from Cache", key="profile.remove_from_cache.button.label"),
+            style=ButtonStyle.red,
+            emoji=DELETE,
+            row=3,
+            disabled=True,
+            custom_id="profile_remove_from_cache",
+        )
+
+    async def callback(self, i: "INTERACTION") -> None:
+        cache = await EnkaCache.get(uid=self.view.uid)
+        for char in cache.hsr["characters"]:
+            if char["id"] == self.view.character_id:
+                cache.hsr["characters"].remove(char)
+                break
+        await cache.save()
+
+        character_select: CharacterSelect = self.view.get_item("profile_character_select")
+        for option in character_select.options_before_split:
+            if option.value == self.view.character_id:
+                character_select.options_before_split.remove(option)
+                break
+        character_select.options = character_select.process_options()
+        self.view.character_id = self.view.data.characters[0].id
+        character_select.update_options_defaults(values=[self.view.character_id])
+        character_select.translate(self.view.locale, self.view.translator)
+
+        await self.set_loading_state(i)
+        bytes_obj = await self.view.draw_card(i)
+        bytes_obj.seek(0)
+        await self.unset_loading_state(
+            i, attachments=[File(bytes_obj, filename="card.webp")], embed=None
+        )
 
 
 class PrimaryColorButton(Button[HSRProfileView]):

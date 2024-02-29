@@ -251,7 +251,8 @@ class ToggleButton(Button, Generic[V_co]):
     def __init__(self, current_toggle: bool, toggle_label: LocaleStr, **kwargs) -> None:
         self.current_toggle = current_toggle
         self.toggle_label = toggle_label
-        super().__init__(style=self._get_style(), label=self._get_label(), row=1, **kwargs)
+        kwargs["row"] = kwargs.get("row", 1)
+        super().__init__(style=self._get_style(), label=self._get_label(), **kwargs)
 
         self.view: V_co
 

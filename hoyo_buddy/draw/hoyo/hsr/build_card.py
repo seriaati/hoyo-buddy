@@ -71,6 +71,7 @@ def draw_build_card(  # noqa: C901, PLR0914, PLR0915, PLR0912
         color=primary,
         style="bold",
         anchor="lm",
+        max_width=740,
     )
 
     # character level

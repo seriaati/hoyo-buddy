@@ -134,7 +134,7 @@ class CheckInUI(View):
         self.message = await i.original_response()
 
 
-class BackButton(Button["CheckInUI"]):
+class BackButton(Button[CheckInUI]):
     def __init__(self) -> None:
         super().__init__(emoji=emojis.BACK, row=4)
 
@@ -146,7 +146,7 @@ class BackButton(Button["CheckInUI"]):
         await i.edit_original_response(embed=embed, attachments=[file_], view=self.view)
 
 
-class CheckInButton(Button["CheckInUI"]):
+class CheckInButton(Button[CheckInUI]):
     def __init__(self) -> None:
         super().__init__(
             style=discord.ButtonStyle.primary,
@@ -155,28 +155,32 @@ class CheckInButton(Button["CheckInUI"]):
         )
 
     async def callback(self, i: "INTERACTION") -> Any:
-        await self.set_loading_state(i)
         client = self.view.client
-        if client.game is None:
-            msg = "Client game is None"
-            raise AssertionError(msg)
+        assert client.game is not None
 
-        self.view.clear_items()
-        self.view.add_item(BackButton())
+        await self.set_loading_state(i)
 
         try:
             daily_reward = await client.claim_daily_reward()
         except GenshinException as e:
+            go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+            self.view.clear_items()
+            self.view.add_item(go_back_button)
+
             embed, _ = get_error_embed(e, self.view.locale, self.view.translator)
-            return await i.edit_original_response(embed=embed, attachments=[], view=self.view)
+            return await self.unset_loading_state(i, embed=embed, attachments=[])
+
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        self.view.clear_items()
+        self.view.add_item(go_back_button)
 
         embed = client.get_daily_reward_embed(
             daily_reward, client.game, self.view.locale, self.view.translator
         )
-        await i.edit_original_response(embed=embed, attachments=[], view=self.view)
+        await self.unset_loading_state(i, embed=embed, attachments=[])
 
 
-class AutoCheckInToggle(ToggleButton["CheckInUI"]):
+class AutoCheckInToggle(ToggleButton[CheckInUI]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
@@ -190,7 +194,7 @@ class AutoCheckInToggle(ToggleButton["CheckInUI"]):
         await self.view.account.save()
 
 
-class NotificationSettingsButton(Button["CheckInUI"]):
+class NotificationSettingsButton(Button[CheckInUI]):
     def __init__(self) -> None:
         super().__init__(
             label=LocaleStr("Notification settings", key="notification_settings_button_label"),
@@ -200,11 +204,7 @@ class NotificationSettingsButton(Button["CheckInUI"]):
 
     async def callback(self, i: "INTERACTION") -> Any:
         await self.view.account.fetch_related("notif_settings")
-        go_back_button = GoBackButton(
-            self.view.children,
-            self.view.get_embeds(i.message),
-            self.view.get_attachments(i.message),
-        )
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
         self.view.add_item(go_back_button)
         self.view.add_item(
@@ -216,7 +216,7 @@ class NotificationSettingsButton(Button["CheckInUI"]):
         await i.response.edit_message(view=self.view)
 
 
-class NotifyOnFailureToggle(ToggleButton["CheckInUI"]):
+class NotifyOnFailureToggle(ToggleButton[CheckInUI]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
@@ -229,7 +229,7 @@ class NotifyOnFailureToggle(ToggleButton["CheckInUI"]):
         await self.view.account.notif_settings.save()
 
 
-class NotifyOnSuccessToggle(ToggleButton["CheckInUI"]):
+class NotifyOnSuccessToggle(ToggleButton[CheckInUI]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,

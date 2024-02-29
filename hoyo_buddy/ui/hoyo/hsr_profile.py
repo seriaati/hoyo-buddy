@@ -31,20 +31,17 @@ if TYPE_CHECKING:
 
     import aiohttp
     from discord import Locale, Member, User
-    from mihomo import Language as MihomoLanguage
-    from mihomo.models import Character, StarrailInfoParsed
 
     from hoyo_buddy.bot.translator import Translator
 
     from ...bot.bot import INTERACTION
+    from ...hoyo.dataclasses import ExtendedCharacter, ExtendedStarRailInfoParsed
 
 
 class HSRProfileView(View):
     def __init__(
         self,
-        data: "StarrailInfoParsed",
-        live_data_character_ids: list[str],
-        lang: "MihomoLanguage",
+        data: "ExtendedStarRailInfoParsed",
         uid: int,
         *,
         author: "User | Member",
@@ -53,18 +50,17 @@ class HSRProfileView(View):
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
-        self._data = data
-        self._live_data_character_ids = live_data_character_ids
-        self._lang = lang
-        self._uid = uid
+        self.data = data
+        self.live_data_character_ids = [char.id for char in data.characters if char.live]
+        self.uid = uid
+        self.character_id: str | None = None
 
-        self._character_id: str | None = None
         self._card_settings: CardSettings | None = None
         self._card_data: dict[str, dict[str, Any]] | None = None
 
     @property
     def player_embed(self) -> DefaultEmbed:
-        player = self._data.player
+        player = self.data.player
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -93,13 +89,14 @@ class HSRProfileView(View):
     def _add_items(self) -> None:
         self.add_item(PlayerButton())
         self.add_item(CardSettingsButton())
+        self.add_item(RemoveFromCacheButton())
         self.add_item(CardInfoButton())
-        self.add_item(CharacterSelect(self._data.characters, self._live_data_character_ids))
+        self.add_item(CharacterSelect(self.data.characters))
 
     async def _draw_src_character_card(
         self,
         uid: int,
-        character: "Character",
+        character: "ExtendedCharacter",
         template: int,
         session: "aiohttp.ClientSession",
     ) -> BytesIO:
@@ -108,7 +105,7 @@ class HSRProfileView(View):
 
         payload = {
             "uid": uid,
-            "lang": self._lang.value,
+            "lang": character.lang,
             "template": template,
             "character_name": character.name,
             "character_art": self._card_settings.current_image,
@@ -122,7 +119,7 @@ class HSRProfileView(View):
 
     async def _draw_hb_character_card(
         self,
-        character: "Character",
+        character: "ExtendedCharacter",
         session: "aiohttp.ClientSession",
     ) -> BytesIO:
         """Draw character card in Hoyo Buddy template."""
@@ -148,13 +145,13 @@ class HSRProfileView(View):
 
         return draw_build_card(
             character,
-            self.locale,
+            character.locale,
             self._card_settings.dark_mode,
             self._card_settings.current_image,
             self._card_settings.custom_primary_color,
         )
 
-    async def _retrieve_image_urls(self, character: "Character") -> set[str]:
+    async def _retrieve_image_urls(self, character: "ExtendedCharacter") -> set[str]:
         """Retrieve all image URLs needed to draw the card."""
         assert self._card_settings is not None
 
@@ -186,18 +183,18 @@ class HSRProfileView(View):
 
     async def draw_card(self, i: "INTERACTION") -> "io.BytesIO":
         """Draw the character card and return the bytes object."""
-        character = dget(self._data.characters, id=self._character_id)
+        character = dget(self.data.characters, id=self.character_id)
         if character is None:
-            msg = f"Character not found: {self._character_id}"
+            msg = f"Character not found: {self.character_id}"
             raise ValueError(msg)
 
         # Initialize card settings
         card_settings = await CardSettings.get_or_none(
-            user_id=i.user.id, character_id=self._character_id
+            user_id=i.user.id, character_id=self.character_id
         )
         if card_settings is None:
             card_settings = await CardSettings.create(
-                user_id=i.user.id, character_id=self._character_id, dark_mode=False
+                user_id=i.user.id, character_id=self.character_id, dark_mode=False
             )
         self._card_settings = card_settings
 
@@ -206,7 +203,7 @@ class HSRProfileView(View):
         else:
             template_num = int(self._card_settings.template[-1])
             bytes_obj = await self._draw_src_character_card(
-                self._uid, character, template_num, i.client.session
+                self.uid, character, template_num, i.client.session
             )
         return bytes_obj
 
@@ -256,13 +253,13 @@ class CardInfoButton(Button[HSRProfileView]):
 
 
 class CharacterSelect(PaginatorSelect[HSRProfileView]):
-    def __init__(self, characters: list["Character"], live_data_character_ids: list[str]) -> None:
+    def __init__(self, characters: list["ExtendedCharacter"]) -> None:
         options: list[SelectOption] = []
 
         for character in characters:
             data_type = (
                 LocaleStr("Real-time data", key="profile.character_select.live_data.description")
-                if character.id in live_data_character_ids
+                if character.live
                 else LocaleStr(
                     "Cached data", key="profile.character_select.cached_data.description"
                 )
@@ -287,6 +284,7 @@ class CharacterSelect(PaginatorSelect[HSRProfileView]):
         super().__init__(
             options,
             placeholder=LocaleStr("Select a character", key="profile.character_select.placeholder"),
+            custom_id="profile_character_select",
         )
 
     async def callback(self, i: "INTERACTION") -> None:
@@ -294,17 +292,19 @@ class CharacterSelect(PaginatorSelect[HSRProfileView]):
         if changed:
             return await i.response.edit_message(view=self.view)
 
-        self.view._character_id = self.values[0]
+        self.view.character_id = self.values[0]
+
+        card_settings_btn = self.view.get_item("profile_card_settings")
+        card_settings_btn.disabled = False
+
+        remove_from_cache_btn = self.view.get_item("profile_remove_from_cache")
+        remove_from_cache_btn.disabled = self.view.character_id in self.view.live_data_character_ids
 
         self.update_options_defaults()
         await self.set_loading_state(i)
 
         bytes_obj = await self.view.draw_card(i)
         bytes_obj.seek(0)
-
-        card_settings_btn = self.view.get_item("profile_card_settings")
-        if card_settings_btn is not None:
-            card_settings_btn.disabled = False
 
         await self.unset_loading_state(
             i, attachments=[File(bytes_obj, filename="card.webp")], embed=None
@@ -323,13 +323,13 @@ class CardSettingsButton(Button[HSRProfileView]):
     async def callback(self, i: "INTERACTION") -> None:
         assert self.view._card_settings is not None
         assert self.view._card_data is not None
-        assert self.view._character_id is not None
+        assert self.view.character_id is not None
 
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
         self.view.add_item(go_back_button)
 
-        default_arts: list[str] = self.view._card_data.get(self.view._character_id, {}).get(
+        default_arts: list[str] = self.view._card_data.get(self.view.character_id, {}).get(
             "arts", []
         )
 
@@ -630,13 +630,13 @@ class RemoveImageButton(Button[HSRProfileView]):
 
     async def callback(self, i: "INTERACTION") -> None:
         assert self.view._card_data is not None
-        assert self.view._character_id is not None
+        assert self.view.character_id is not None
         assert self.view._card_settings is not None
         assert self.view._card_settings.current_image is not None
 
         await self.set_loading_state(i)
 
-        new_image_url = self.view._card_data[self.view._character_id]["arts"][0]
+        new_image_url = self.view._card_data[self.view.character_id]["arts"][0]
 
         # Remove the current image URL from db.
         self.view._card_settings.custom_images.remove(self.view._card_settings.current_image)

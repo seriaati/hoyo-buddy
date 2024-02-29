@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, User
 
-from hoyo_buddy.bot.constants import EQUIP_ID_TO_ARTIFACT_POS
 from hoyo_buddy.bot.emojis import get_artifact_pos_emoji
+from hoyo_buddy.constants import EQUIP_ID_TO_ARTIFACT_POS
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.genshin.ambr import AmbrAPIClient
 from hoyo_buddy.ui import Button, View

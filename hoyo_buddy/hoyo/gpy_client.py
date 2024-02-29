@@ -1,27 +1,14 @@
+from typing import TYPE_CHECKING
+
 import genshin
-from discord import Locale
 
 from ..bot.translator import LocaleStr, Translator
+from ..constants import LOCALE_TO_GPY_LANG
 from ..db.enums import GAME_CONVERTER, GAME_THUMBNAILS
 from ..embeds import DefaultEmbed
 
-LOCALE_CONVERTER = {
-    Locale.british_english: "en-us",
-    Locale.american_english: "en-us",
-    Locale.taiwan_chinese: "zh-tw",
-    Locale.chinese: "zh-cn",
-    Locale.german: "de-de",
-    Locale.spain_spanish: "es-es",
-    Locale.french: "fr-fr",
-    Locale.indonesian: "id-id",
-    Locale.italian: "it-it",
-    Locale.japanese: "ja-jp",
-    Locale.korean: "ko-kr",
-    Locale.brazil_portuguese: "pt-pt",
-    Locale.thai: "th-th",
-    Locale.vietnamese: "vi-vn",
-    Locale.turkish: "tr-tr",
-}
+if TYPE_CHECKING:
+    from discord import Locale
 
 
 class GenshinClient(genshin.Client):
@@ -34,14 +21,14 @@ class GenshinClient(genshin.Client):
     ) -> None:
         super().__init__(cookies, game=game, uid=uid)
 
-    def set_lang(self, locale: Locale) -> None:
-        self.lang = LOCALE_CONVERTER[locale]
+    def set_lang(self, locale: "Locale") -> None:
+        self.lang = LOCALE_TO_GPY_LANG[locale]
 
     @staticmethod
     def get_daily_reward_embed(
         daily_reward: genshin.models.DailyReward,
         game: genshin.Game,
-        locale: Locale,
+        locale: "Locale",
         translator: Translator,
     ) -> DefaultEmbed:
         embed = DefaultEmbed(

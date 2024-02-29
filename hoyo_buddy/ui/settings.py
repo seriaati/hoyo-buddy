@@ -3,22 +3,13 @@ from typing import TYPE_CHECKING, Any
 import discord
 
 from ..bot.translator import LocaleStr, Translator
+from ..constants import HOYO_BUDDY_LOCALES
 from ..db.models import Settings
 from ..embeds import DefaultEmbed
 from .components import Select, SelectOption, ToggleButton, View
 
 if TYPE_CHECKING:
     from ..bot.bot import INTERACTION
-
-LOCALES: dict[discord.Locale, dict[str, str]] = {
-    discord.Locale.american_english: {"name": "English (US)", "emoji": "🇺🇸"},
-    discord.Locale.chinese: {"name": "简体中文", "emoji": "🇨🇳"},
-    discord.Locale.taiwan_chinese: {"name": "繁體中文", "emoji": "🇹🇼"},
-    discord.Locale.french: {"name": "Français", "emoji": "🇫🇷"},
-    discord.Locale.japanese: {"name": "日本語", "emoji": "🇯🇵"},
-    discord.Locale.brazil_portuguese: {"name": "Português (BR)", "emoji": "🇧🇷"},
-    discord.Locale.indonesian: {"name": "Bahasa Indonesia", "emoji": "🇮🇩"},
-}
 
 
 class SettingsUI(View):
@@ -84,12 +75,12 @@ class LanguageSelector(Select["SettingsUI"]):
         options.extend(
             [
                 SelectOption(
-                    label=LOCALES[locale]["name"],
+                    label=HOYO_BUDDY_LOCALES[locale]["name"],
                     value=locale.value,
-                    emoji=LOCALES[locale]["emoji"],
+                    emoji=HOYO_BUDDY_LOCALES[locale]["emoji"],
                     default=locale == current_locale,
                 )
-                for locale in LOCALES
+                for locale in HOYO_BUDDY_LOCALES
             ]
         )
         return options

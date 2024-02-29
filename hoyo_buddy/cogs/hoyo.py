@@ -82,12 +82,12 @@ class Hoyo(commands.Cog):
         LOGGER_.info("Setting up search autocomplete choices")
         start = self.bot.loop.time()
 
-        for locale in ambr.LOCALE_TO_LANG:
+        for locale in ambr.LOCALE_TO_AMBR_LANG:
             async with ambr.AmbrAPIClient(locale, self.bot.translator) as api:
                 for item_category in ambr.ItemCategory:
                     await self._fetch_item_task(api, item_category, locale)
 
-        for locale in yatta.LOCALE_TO_LANG:
+        for locale in yatta.LOCALE_TO_YATTA_LANG:
             async with yatta.YattaAPIClient(locale, self.bot.translator) as api:
                 for item_category in yatta.ItemCategory:
                     await self._fetch_item_task(api, item_category, locale)
@@ -490,12 +490,10 @@ class Hoyo(commands.Cog):
         uid_ = await self.get_uid(i.user.id, account, uid)
 
         client = MihomoAPI(locale)
-        data, live_data_character_ids = await client.fetch_user(uid_)
+        data = await client.fetch_user(uid_)
 
         view = HSRProfileView(
             data,
-            live_data_character_ids,
-            client.lang,
             uid_,
             author=i.user,
             locale=locale,

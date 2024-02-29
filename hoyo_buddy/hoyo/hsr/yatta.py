@@ -9,30 +9,15 @@ from seria.utils import create_bullet_list
 from yatta import Language
 
 from ...bot.translator import LocaleStr
+from ...constants import LOCALE_TO_YATTA_LANG
 from ...embeds import DefaultEmbed
 
-__all__ = ("LOCALE_TO_LANG", "ItemCategory", "YattaAPIClient")
+__all__ = ("ItemCategory", "YattaAPIClient")
 
 if TYPE_CHECKING:
     from types import TracebackType
 
     from ...bot.translator import Translator
-
-LOCALE_TO_LANG: dict[Locale, Language] = {
-    Locale.taiwan_chinese: Language.CHT,
-    Locale.chinese: Language.CN,
-    Locale.german: Language.DE,
-    Locale.american_english: Language.EN,
-    Locale.spain_spanish: Language.ES,
-    Locale.french: Language.FR,
-    Locale.indonesian: Language.ID,
-    Locale.japanese: Language.JP,
-    Locale.korean: Language.KR,
-    Locale.brazil_portuguese: Language.PT,
-    Locale.russian: Language.RU,
-    Locale.thai: Language.TH,
-    Locale.vietnamese: Language.VI,
-}
 
 
 class ItemCategory(StrEnum):
@@ -45,7 +30,7 @@ class ItemCategory(StrEnum):
 
 class YattaAPIClient(yatta.YattaAPI):
     def __init__(self, locale: Locale, translator: "Translator") -> None:
-        super().__init__(lang=LOCALE_TO_LANG.get(locale, Language.EN))
+        super().__init__(lang=LOCALE_TO_YATTA_LANG.get(locale, Language.EN))
         self.locale = locale
         self.translator = translator
 

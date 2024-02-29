@@ -9,34 +9,16 @@ from ambr.client import Language
 from discord import Locale
 from seria.utils import create_bullet_list, shorten
 
-from ...bot.constants import WEEKDAYS
 from ...bot.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_element_emoji
 from ...bot.translator import LocaleStr, Translator
+from ...constants import LOCALE_TO_AMBR_LANG, WEEKDAYS
 from ...embeds import DefaultEmbed
 
-__all__ = ("LOCALE_TO_LANG", "AmbrAPIClient", "ItemCategory", "AUDIO_LANGUAGES")
+__all__ = ("AmbrAPIClient", "ItemCategory", "AUDIO_LANGUAGES")
 
 if TYPE_CHECKING:
     from types import TracebackType
 
-
-LOCALE_TO_LANG: dict[Locale, Language] = {
-    Locale.taiwan_chinese: Language.CHT,
-    Locale.chinese: Language.CHS,
-    Locale.german: Language.DE,
-    Locale.american_english: Language.EN,
-    Locale.spain_spanish: Language.ES,
-    Locale.french: Language.FR,
-    Locale.indonesian: Language.ID,
-    Locale.japanese: Language.JP,
-    Locale.korean: Language.KR,
-    Locale.brazil_portuguese: Language.PT,
-    Locale.russian: Language.RU,
-    Locale.thai: Language.TH,
-    Locale.vietnamese: Language.VI,
-    Locale.italian: Language.IT,
-    Locale.turkish: Language.TR,
-}
 
 PERCENTAGE_FIGHT_PROPS = (
     "FIGHT_PROP_HP_PERCENT",
@@ -82,7 +64,7 @@ class ItemCategory(StrEnum):
 
 class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
     def __init__(self, locale: Locale, translator: Translator) -> None:
-        super().__init__(lang=LOCALE_TO_LANG.get(locale, Language.EN))
+        super().__init__(lang=LOCALE_TO_AMBR_LANG.get(locale, Language.EN))
         self.locale = locale
         self.translator = translator
 

@@ -1,31 +1,20 @@
 import logging
+from typing import TYPE_CHECKING
 
-import discord
 import mihomo
 
+from ..constants import LOCALE_TO_MIHOMO_LANG
 from ..db.models import EnkaCache
+from .dataclasses import ExtendedStarRailInfoParsed
 
-LOCALE_TO_MIHOMO_LANG: dict[discord.Locale, mihomo.Language] = {
-    discord.Locale.taiwan_chinese: mihomo.Language.CHT,
-    discord.Locale.chinese: mihomo.Language.CHS,
-    discord.Locale.german: mihomo.Language.DE,
-    discord.Locale.american_english: mihomo.Language.EN,
-    discord.Locale.spain_spanish: mihomo.Language.ES,
-    discord.Locale.french: mihomo.Language.FR,
-    discord.Locale.indonesian: mihomo.Language.ID,
-    discord.Locale.japanese: mihomo.Language.JP,
-    discord.Locale.korean: mihomo.Language.KR,
-    discord.Locale.brazil_portuguese: mihomo.Language.PT,
-    discord.Locale.russian: mihomo.Language.RU,
-    discord.Locale.thai: mihomo.Language.TH,
-    discord.Locale.vietnamese: mihomo.Language.VI,
-}
+if TYPE_CHECKING:
+    import discord
 
 LOGGER_ = logging.getLogger(__name__)
 
 
 class MihomoAPI(mihomo.MihomoAPI):
-    def __init__(self, language: discord.Locale) -> None:
+    def __init__(self, language: "discord.Locale") -> None:
         super().__init__(LOCALE_TO_MIHOMO_LANG.get(language, mihomo.Language.EN))
 
     def _update_cache_with_live_data(
@@ -37,15 +26,18 @@ class MihomoAPI(mihomo.MihomoAPI):
 
         cache_characters = cache.hsr.get("characters", [])
         for character in live_data.characters:
+            model_dump = character.model_dump(by_alias=True)
+            model_dump["lang"] = self.lang.value
+
             for c in cache_characters:
                 if c["id"] == character.id:
-                    c.update(character.model_dump(by_alias=True))
+                    c.update(model_dump)
                     break
             else:
-                cache_characters.append(character.model_dump(by_alias=True))
+                cache_characters.append(model_dump)
         cache.hsr["characters"] = cache_characters
 
-    async def fetch_user(self, uid: int) -> tuple[mihomo.StarrailInfoParsed, list[str]]:
+    async def fetch_user(self, uid: int) -> ExtendedStarRailInfoParsed:
         cache, _ = await EnkaCache.get_or_create(uid=uid)
         live_data_character_ids: list[str] = []
 
@@ -54,16 +46,19 @@ class MihomoAPI(mihomo.MihomoAPI):
         except mihomo.UserNotFound:
             if not cache.hsr:
                 raise
-            cache_data = mihomo.StarrailInfoParsed(**cache.hsr)
+            cache_data = ExtendedStarRailInfoParsed(**cache.hsr)
         else:
             live_data_character_ids.extend([char.id for char in live_data.characters])
             self._update_cache_with_live_data(cache, live_data)
             await cache.save()
 
-            try:
-                cache_data = mihomo.StarrailInfoParsed(**cache.hsr)
-            except Exception:
-                LOGGER_.exception("Failed to parse cache data")
-                cache_data = live_data
+            cache_data = ExtendedStarRailInfoParsed(**cache.hsr)
 
-        return cache_data, live_data_character_ids
+        for character in cache_data.characters:
+            character.live = character.id in live_data_character_ids
+            character.lang = next(
+                (c["lang"] for c in cache.hsr["characters"] if c["id"] == character.id),
+                self.lang.value,
+            )
+
+        return cache_data

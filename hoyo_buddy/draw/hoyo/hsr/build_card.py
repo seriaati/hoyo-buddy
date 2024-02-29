@@ -6,7 +6,7 @@ import mihomo
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
 
-from ....utils import timer
+from ....utils import round_down, timer
 from ...draw import BLACK, WHITE, Drawer
 
 
@@ -304,11 +304,10 @@ def draw_build_card(  # noqa: C901, PLR0914, PLR0915, PLR0912
         icon = drawer.open_static(attr.icon, size=(80, 80), mask_color=dark_primary)
         im.paste(icon, (x, y), icon)
 
-        corrected_value = value * (100 if attr.is_percent else 1) // 0.1 * 0.1
         display_value = (
-            f"{round(corrected_value, 1)}%"
+            f"{round_down(value * 100, 1)}%"
             if attr.is_percent
-            else str(round(corrected_value, 2 if attr.field == "spd" else None))
+            else str(round_down(value, 2 if attr.field == "spd" else 0))
         )
         drawer.write(
             display_value,

@@ -529,9 +529,9 @@ def draw_build_card(  # noqa: C901, PLR0914, PLR0915, PLR0912
             y = 653
 
     # logo
-    filename = "dark_logo.png" if dark_mode else "light_logo.png"
-    logo = drawer.open_asset(f"img/{filename}")
-    im.paste(logo, (2075, 84), logo)
+    # filename = "dark_logo.png" if dark_mode else "light_logo.png"
+    # logo = drawer.open_asset(f"img/{filename}")
+    # im.paste(logo, (2075, 84), logo)
 
     bytes_obj = io.BytesIO()
     im.save(bytes_obj, "WEBP", loseless=True)

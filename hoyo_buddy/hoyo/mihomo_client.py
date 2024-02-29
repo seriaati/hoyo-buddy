@@ -26,7 +26,7 @@ LOGGER_ = logging.getLogger(__name__)
 
 class MihomoAPI(mihomo.MihomoAPI):
     def __init__(self, language: discord.Locale) -> None:
-        super().__init__(LOCALE_TO_MIHOMO_LANG[language])
+        super().__init__(LOCALE_TO_MIHOMO_LANG.get(language, mihomo.Language.EN))
 
     def _update_cache_with_live_data(
         self, cache: EnkaCache, live_data: mihomo.StarrailInfoParsed

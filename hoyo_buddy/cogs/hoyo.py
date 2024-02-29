@@ -495,6 +495,8 @@ class Hoyo(commands.Cog):
         view = HSRProfileView(
             data,
             live_data_character_ids,
+            client.lang,
+            uid_,
             author=i.user,
             locale=locale,
             translator=self.bot.translator,

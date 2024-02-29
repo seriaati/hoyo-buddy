@@ -79,6 +79,7 @@ class CardSettings(Model):
     """URLs of custom images."""
     custom_primary_color: str | None = fields.CharField(max_length=7, null=True)  # type: ignore
     current_image: str | None = fields.CharField(max_length=100, null=True)  # type: ignore
+    template = fields.CharField(max_length=32, default="hb1")
 
     class Meta:
         unique_together = ("character_id", "user")

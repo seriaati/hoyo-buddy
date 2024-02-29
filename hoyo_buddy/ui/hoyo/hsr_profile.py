@@ -1,3 +1,4 @@
+from io import BytesIO
 from typing import TYPE_CHECKING, Any
 
 from discord import ButtonStyle, File, TextStyle
@@ -14,14 +15,23 @@ from ...draw.static import download_and_save_static_images
 from ...embeds import DefaultEmbed
 from ...exceptions import CardNotReadyError, InvalidColorError, InvalidImageURLError
 from ...utils import is_image_url, is_valid_hex_color, test_url_validity
-from ..components import Button, GoBackButton, Modal, PaginatorSelect, TextInput, ToggleButton, View
+from ..components import (
+    Button,
+    GoBackButton,
+    Modal,
+    PaginatorSelect,
+    Select,
+    TextInput,
+    ToggleButton,
+    View,
+)
 
 if TYPE_CHECKING:
     import io
-    from io import BytesIO
 
     import aiohttp
     from discord import Locale, Member, User
+    from mihomo import Language as MihomoLanguage
     from mihomo.models import Character, StarrailInfoParsed
 
     from hoyo_buddy.bot.translator import Translator
@@ -34,6 +44,8 @@ class HSRProfileView(View):
         self,
         data: "StarrailInfoParsed",
         live_data_character_ids: list[str],
+        lang: "MihomoLanguage",
+        uid: int,
         *,
         author: "User | Member",
         locale: "Locale",
@@ -43,6 +55,9 @@ class HSRProfileView(View):
 
         self._data = data
         self._live_data_character_ids = live_data_character_ids
+        self._lang = lang
+        self._uid = uid
+
         self._character_id: str | None = None
         self._card_settings: CardSettings | None = None
         self._card_data: dict[str, dict[str, Any]] | None = None
@@ -81,11 +96,35 @@ class HSRProfileView(View):
         self.add_item(CardInfoButton())
         self.add_item(CharacterSelect(self._data.characters, self._live_data_character_ids))
 
-    async def _draw_character_card(
+    async def _draw_src_character_card(
+        self,
+        uid: int,
+        character: "Character",
+        template: int,
+        session: "aiohttp.ClientSession",
+    ) -> BytesIO:
+        """Draw character card in StarRailCard template."""
+        assert self._card_settings is not None
+
+        payload = {
+            "uid": uid,
+            "lang": self._lang.value,
+            "template": template,
+            "character_name": character.name,
+            "character_art": self._card_settings.current_image,
+        }
+        endpoint = "http://localhost:7652/star-rail-card"
+
+        async with session.post(endpoint, json=payload) as resp:
+            # API returns a WebP image
+            return BytesIO(await resp.read())
+
+    async def _draw_hb_character_card(
         self,
         character: "Character",
         session: "aiohttp.ClientSession",
-    ) -> "BytesIO":
+    ) -> BytesIO:
+        """Draw character card in Hoyo Buddy template."""
         assert self._card_data is not None
         assert self._card_settings is not None
 
@@ -161,7 +200,13 @@ class HSRProfileView(View):
             )
         self._card_settings = card_settings
 
-        bytes_obj = await self._draw_character_card(character, i.client.session)
+        if "hb" in self._card_settings.template:
+            bytes_obj = await self._draw_hb_character_card(character, i.client.session)
+        else:
+            template_num = int(self._card_settings.template[-1])
+            bytes_obj = await self._draw_src_character_card(
+                self._uid, character, template_num, i.client.session
+            )
         return bytes_obj
 
     async def start(self, i: "INTERACTION") -> None:
@@ -200,7 +245,7 @@ class CardInfoButton(Button[HSRProfileView]):
                 "- Star Rail cards are a way to show off your character builds.\n"
                 "- All assets used in the cards belong to Hoyoverse, I do not own them.\n"
                 "- All fanarts used in the cards are credited to their respective artists.\n"
-                "- This design is original, you are not allowed to use it without permission.\n"
+                "- This Hoyo Buddy template's design is original, you are not allowed to use it without permission.\n"
                 "- Game data is provided by the [mihomo API](https://api.mihomo.me/).\n"
                 "- Suggestions are welcome, you can contribute to the card data (adding fanarts, fixing colors, etc.) by reaching me in the [Discord Server](https://dsc.gg/hoyo-buddy).",
                 key="profile.card_info.embed.description",
@@ -294,22 +339,35 @@ class CardSettingsButton(Button[HSRProfileView]):
                 self.view._card_settings.custom_images,
             )
         )
-        self.view.add_item(PrimaryColorButton(self.view._card_settings.custom_primary_color))
-        self.view.add_item(DarkModeButton(self.view._card_settings.dark_mode))
+        self.view.add_item(CardTemplateSelect(self.view._card_settings.template))
+        self.view.add_item(
+            PrimaryColorButton(
+                self.view._card_settings.custom_primary_color,
+                "hb" not in self.view._card_settings.template,
+            )
+        )
+        self.view.add_item(
+            DarkModeButton(
+                self.view._card_settings.dark_mode, "hb" not in self.view._card_settings.template
+            )
+        )
+        self.view.add_item(CardSettingsInfoButton())
         self.view.add_item(AddImageButton())
         self.view.add_item(
             RemoveImageButton(self.view._card_settings.current_image in default_arts)
         )
-        self.view.add_item(CardSettingsInfoButton())
 
         await i.response.edit_message(view=self.view)
 
 
 class PrimaryColorButton(Button[HSRProfileView]):
-    def __init__(self, current_color: str | None) -> None:
+    def __init__(self, current_color: str | None, disabled: bool) -> None:
         super().__init__(
             label=LocaleStr("Change Color", key="profile.primary_color.button.label"),
             style=ButtonStyle.blurple,
+            row=2,
+            custom_id="profile_primary_color",
+            disabled=disabled,
         )
         self.current_color = current_color
 
@@ -358,10 +416,13 @@ class PrimaryColorModal(Modal):
 
 
 class DarkModeButton(ToggleButton[HSRProfileView]):
-    def __init__(self, current_toggle: bool) -> None:
+    def __init__(self, current_toggle: bool, disabled: bool) -> None:
         super().__init__(
             current_toggle,
             LocaleStr("Dark Mode", key="profile.dark_mode.button.label"),
+            row=2,
+            custom_id="profile_dark_mode",
+            disabled=disabled,
         )
 
     async def callback(self, i: "INTERACTION") -> None:
@@ -391,6 +452,7 @@ class ImageSelect(PaginatorSelect[HSRProfileView]):
             self.generate_options(),
             placeholder=LocaleStr("Select an image", key="profile.image_select.placeholder"),
             custom_id="profile_image_select",
+            row=0,
         )
 
     def generate_options(self) -> list[SelectOption]:
@@ -455,8 +517,8 @@ class AddImageButton(Button[HSRProfileView]):
         super().__init__(
             label=LocaleStr("Add Custom Image", key="profile.add_image.button.label"),
             style=ButtonStyle.green,
-            row=2,
             emoji=ADD,
+            row=3,
         )
 
     async def callback(self, i: "INTERACTION") -> None:
@@ -524,8 +586,8 @@ class RemoveImageButton(Button[HSRProfileView]):
             style=ButtonStyle.red,
             disabled=disabled,
             custom_id="profile_remove_image",
-            row=2,
             emoji=DELETE,
+            row=3,
         )
 
     async def callback(self, i: "INTERACTION") -> None:
@@ -558,9 +620,80 @@ class RemoveImageButton(Button[HSRProfileView]):
         )
 
 
+class CardTemplateSelect(Select[HSRProfileView]):
+    def __init__(self, current_template: str) -> None:
+        hb_templates = (1,)
+        src_templates = (1, 2, 3)
+
+        options: list[SelectOption] = []
+
+        for template_num in hb_templates:
+            value = f"hb{template_num}"
+            options.append(
+                SelectOption(
+                    label=LocaleStr(
+                        "Hoyo Buddy Template {num}",
+                        key="profile.card_template_select.hb.label",
+                        num=template_num,
+                    ),
+                    description=LocaleStr(
+                        "Designed and programmed by @seria_ati",
+                        key="profile.card_template_select.hb.description",
+                    ),
+                    value=value,
+                    default=value == current_template,
+                ),
+            )
+        for template_num in src_templates:
+            value = f"src{template_num}"
+            options.append(
+                SelectOption(
+                    label=LocaleStr(
+                        "StarRailCard Template {num}",
+                        key="profile.card_template_select.src.label",
+                        num=template_num,
+                    ),
+                    description=LocaleStr(
+                        "Designed and programmed by @korzzex",
+                        key="profile.card_template_select.src.description",
+                    ),
+                    value=value,
+                    default=value == current_template,
+                ),
+            )
+
+        super().__init__(
+            options=options,
+            placeholder=LocaleStr(
+                "Select a template", key="profile.card_template_select.placeholder"
+            ),
+            row=1,
+        )
+
+    async def callback(self, i: "INTERACTION") -> None:
+        assert self.view._card_settings is not None
+        self.view._card_settings.template = self.values[0]
+        await self.view._card_settings.save()
+
+        self.update_options_defaults()
+        await self.set_loading_state(i)
+
+        change_color_btn: PrimaryColorButton = self.view.get_item("profile_primary_color")
+        change_color_btn.disabled = "hb" not in self.values[0]
+
+        dark_mode_btn: DarkModeButton = self.view.get_item("profile_dark_mode")
+        dark_mode_btn.disabled = "hb" not in self.values[0]
+
+        bytes_obj = await self.view.draw_card(i)
+        bytes_obj.seek(0)
+        await self.unset_loading_state(
+            i, attachments=[File(bytes_obj, filename="card.webp")], embed=None
+        )
+
+
 class CardSettingsInfoButton(Button[HSRProfileView]):
     def __init__(self) -> None:
-        super().__init__(emoji=INFO, row=1)
+        super().__init__(emoji=INFO, row=2)
 
     async def callback(self, i: "INTERACTION") -> None:
         embed = DefaultEmbed(
@@ -571,7 +704,7 @@ class CardSettingsInfoButton(Button[HSRProfileView]):
         embed.add_field(
             name=LocaleStr("Primary Color", key="profile.info.embed.primary_color.name"),
             value=LocaleStr(
-                "- Primary color used in the card.\n- Only hex color codes are supported.",
+                "- Only hex color codes are supported.",
                 key="profile.info.embed.primary_color.value",
             ),
             inline=False,
@@ -579,7 +712,6 @@ class CardSettingsInfoButton(Button[HSRProfileView]):
         embed.add_field(
             name=LocaleStr("Dark Mode", key="profile.info.embed.dark_mode.name"),
             value=LocaleStr(
-                "- Switch between light and dark mode.\n"
                 "- This setting is independent from the one in </settings>, defaults to light mode.\n"
                 "- Light mode cards tend to look better because the colors are not optimized for dark mode.\n"
                 "- Suggestions for dark mode colors are welcome!",
@@ -592,10 +724,20 @@ class CardSettingsInfoButton(Button[HSRProfileView]):
             value=LocaleStr(
                 "- Hoyo Buddy comes with some preset arts that I liked, but you can add your own images too.\n"
                 "- Only direct image URLs are supported, and they must be publicly accessible; GIFs are not supported.\n"
-                "- Vertical images are recommended, the exact size is 640x1138 pixels, crop your image if the position is not right.\n"
+                "- For Hoyo Buddy's template, vertical images are recommended, the exact size is 640x1138 pixels, crop your image if the position is not right.\n"
                 "- For server owners, I am not responsible for any NSFW images that you or your members add.\n"
                 "- The red button removes the current custom image and reverts to the default one.",
                 key="profile.info.embed.custom_images.value",
+            ),
+            inline=False,
+        )
+        embed.add_field(
+            name=LocaleStr("Templates", key="profile.info.embed.templates.name"),
+            value=LocaleStr(
+                "- Hoyo Buddy has its own template made by me, but I also added templates made by other developers.\n"
+                "- Code of 3rd party templates are not maintained by me, so I cannot guarantee their quality; I am also not responsible for any issues with them.\n"
+                "- 3rd party templates may have feature limitations compared to Hoyo Buddy's.\n",
+                key="profile.info.embed.templates.value",
             ),
             inline=False,
         )

@@ -117,6 +117,7 @@ class HSRProfileView(View):
 
         async with session.post(endpoint, json=payload) as resp:
             # API returns a WebP image
+            resp.raise_for_status()
             return BytesIO(await resp.read())
 
     async def _draw_hb_character_card(

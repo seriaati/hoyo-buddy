@@ -57,7 +57,11 @@ class MihomoAPI(mihomo.MihomoAPI):
         for character in cache_data.characters:
             character.live = character.id in live_data_character_ids
             character.lang = next(
-                (c["lang"] for c in cache.hsr["characters"] if c["id"] == character.id),
+                (
+                    c.get("lang", self.lang.value)
+                    for c in cache.hsr["characters"]
+                    if c["id"] == character.id
+                ),
                 self.lang.value,
             )
 

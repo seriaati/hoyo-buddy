@@ -14,7 +14,7 @@ from ...draw.hoyo.hsr.build_card import draw_build_card
 from ...draw.static import download_and_save_static_images
 from ...embeds import DefaultEmbed
 from ...exceptions import CardNotReadyError, InvalidColorError, InvalidImageURLError
-from ...utils import is_image_url, is_valid_hex_color, test_url_validity
+from ...utils import is_image_url, is_valid_hex_color, test_url_validity, upload_image
 from ..components import (
     Button,
     GoBackButton,
@@ -581,16 +581,21 @@ class AddImageButton(Button[HSRProfileView]):
         if not passed:
             raise InvalidImageURLError
 
+        try:
+            url = await upload_image(image_url, i.client.session)
+        except Exception as e:
+            raise InvalidImageURLError from e
+
         # Add the image URL to db.
-        self.view._card_settings.custom_images.append(image_url)
-        self.view._card_settings.current_image = image_url
+        self.view._card_settings.custom_images.append(url)
+        self.view._card_settings.current_image = url
         await self.view._card_settings.save()
 
         # Update the image select options.
         image_select: ImageSelect = self.view.get_item("profile_image_select")
         image_select.options_before_split = image_select.generate_options()
         image_select.options = image_select.process_options()
-        image_select.update_options_defaults(values=[image_url])
+        image_select.update_options_defaults(values=[url])
         image_select.translate(self.view.locale, self.view.translator)
 
         # Enable the remove image button

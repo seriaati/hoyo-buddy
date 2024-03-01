@@ -70,3 +70,17 @@ def round_down(number: float, decimals: int) -> float:
     if decimals == 0:
         return int(result)
     return result
+
+
+async def upload_image(image_url: str, session: aiohttp.ClientSession) -> str:
+    api = "https://freeimage.host/api/1/upload"
+    data = {
+        "key": "6d207e02198a847aa98d0a2a901485a5",
+        "source": image_url,
+        "format": "json",
+    }
+    async with session.post(api, data=data) as resp:
+        resp.raise_for_status()
+
+        data = await resp.json()
+        return data["image"]["url"]

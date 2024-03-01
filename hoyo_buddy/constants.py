@@ -39,7 +39,7 @@ MIHOMO_LANG_TO_LOCALE: dict[MihomoLanguage, discord.Locale] = {
 
 LOCALE_TO_MIHOMO_LANG: dict[discord.Locale, MihomoLanguage] = {
     discord.Locale.taiwan_chinese: MihomoLanguage.CHT,
-    discord.Locale.chinese: MihomoLanguage.CHS,
+    discord.Locale.chinese: MihomoLanguage.CHS,  # .CN
     discord.Locale.german: MihomoLanguage.DE,
     discord.Locale.american_english: MihomoLanguage.EN,
     discord.Locale.spain_spanish: MihomoLanguage.ES,

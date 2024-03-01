@@ -36,7 +36,6 @@ seria-library = {git = "https://github.com/seriaati/seria-library"}
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-git-cliff = "^1.4.0"
 ruff = "^0.1.8"
 pre-commit = "^3.6.0"
 

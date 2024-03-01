@@ -198,6 +198,11 @@ class HSRProfileView(View):
             )
         self._card_settings = card_settings
 
+        # Force change the template to hb1 if is cached data
+        if not character.live:
+            self._card_settings.template = "hb1"
+            await self._card_settings.save()
+
         if "hb" in self._card_settings.template:
             bytes_obj = await self._draw_hb_character_card(character, i.client.session)
         else:
@@ -340,7 +345,12 @@ class CardSettingsButton(Button[HSRProfileView]):
                 self.view._card_settings.custom_images,
             )
         )
-        self.view.add_item(CardTemplateSelect(self.view._card_settings.template))
+        self.view.add_item(
+            CardTemplateSelect(
+                self.view._card_settings.template,
+                self.view.character_id in self.view.live_data_character_ids,
+            )
+        )
         self.view.add_item(
             PrimaryColorButton(
                 self.view._card_settings.custom_primary_color,
@@ -664,7 +674,7 @@ class RemoveImageButton(Button[HSRProfileView]):
 
 
 class CardTemplateSelect(Select[HSRProfileView]):
-    def __init__(self, current_template: str) -> None:
+    def __init__(self, current_template: str, is_live: bool) -> None:
         hb_templates = (1,)
         src_templates = (1, 2, 3)
 
@@ -687,23 +697,24 @@ class CardTemplateSelect(Select[HSRProfileView]):
                     default=value == current_template,
                 ),
             )
-        for template_num in src_templates:
-            value = f"src{template_num}"
-            options.append(
-                SelectOption(
-                    label=LocaleStr(
-                        "StarRailCard Template {num}",
-                        key="profile.card_template_select.src.label",
-                        num=template_num,
+        if is_live:
+            for template_num in src_templates:
+                value = f"src{template_num}"
+                options.append(
+                    SelectOption(
+                        label=LocaleStr(
+                            "StarRailCard Template {num}",
+                            key="profile.card_template_select.src.label",
+                            num=template_num,
+                        ),
+                        description=LocaleStr(
+                            "Designed and programmed by @korzzex",
+                            key="profile.card_template_select.src.description",
+                        ),
+                        value=value,
+                        default=value == current_template,
                     ),
-                    description=LocaleStr(
-                        "Designed and programmed by @korzzex",
-                        key="profile.card_template_select.src.description",
-                    ),
-                    value=value,
-                    default=value == current_template,
-                ),
-            )
+                )
 
         super().__init__(
             options=options,
@@ -779,7 +790,8 @@ class CardSettingsInfoButton(Button[HSRProfileView]):
             value=LocaleStr(
                 "- Hoyo Buddy has its own template made by me, but I also added templates made by other developers.\n"
                 "- Code of 3rd party templates are not maintained by me, so I cannot guarantee their quality; I am also not responsible for any issues with them.\n"
-                "- 3rd party templates may have feature limitations compared to Hoyo Buddy's.\n",
+                "- 3rd party templates may have feature limitations compared to Hoyo Buddy's.\n"
+                "- Cached data characters can only use Hoyo Buddy's template.",
                 key="profile.info.embed.templates.value",
             ),
             inline=False,

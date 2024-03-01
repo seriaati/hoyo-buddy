@@ -258,6 +258,7 @@ class Drawer:
             overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.2))
             image = Image.alpha_composite(image.convert("RGBA"), overlay)
 
-        image = self.round_image(image, border_radius)
+        if border_radius > 0:
+            image = self.round_image(image, border_radius)
 
         return image

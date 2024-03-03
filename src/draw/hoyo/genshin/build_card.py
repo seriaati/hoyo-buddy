@@ -6,7 +6,8 @@ from discord import Locale
 from enka.enums import FightPropType
 from PIL import Image, ImageDraw
 
-from ....utils import timer
+from src.utils import timer
+
 from ...draw import Drawer
 
 if TYPE_CHECKING:

@@ -6,15 +6,16 @@ from discord.utils import get as dget
 from enka import Language as EnkaLang
 from mihomo.models import Character as HSRCharacter
 
-from ....bot.translator import LocaleStr
-from ....constants import ENKA_LANG_TO_CARD_API_LANG, ENKA_LANG_TO_LOCALE, MIHOMO_LANG_TO_LOCALE
-from ....db.models import CardSettings
-from ....draw.hoyo.genshin.build_card import draw_genshin_card
-from ....draw.hoyo.hsr.build_card import draw_build_card
-from ....draw.static import download_and_save_static_images
-from ....embeds import DefaultEmbed
-from ....enums import Game
-from ....exceptions import CardNotReadyError
+from src.bot.translator import LocaleStr
+from src.constants import ENKA_LANG_TO_CARD_API_LANG, ENKA_LANG_TO_LOCALE, MIHOMO_LANG_TO_LOCALE
+from src.db.models import CardSettings
+from src.draw.hoyo.genshin.build_card import draw_genshin_card
+from src.draw.hoyo.hsr.build_card import draw_build_card
+from src.draw.static import download_and_save_static_images
+from src.embeds import DefaultEmbed
+from src.enums import Game
+from src.exceptions import CardNotReadyError
+
 from ...components import (
     View,
 )
@@ -33,9 +34,8 @@ if TYPE_CHECKING:
     from enka.models import ShowcaseResponse
     from mihomo.models import StarrailInfoParsed
 
+    from src.bot.bot import INTERACTION
     from src.bot.translator import Translator
-
-    from ....bot.bot import INTERACTION
 
 
 class ProfileView(View):

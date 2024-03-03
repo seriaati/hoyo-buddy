@@ -6,7 +6,8 @@ import mihomo
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
 
-from ....utils import round_down, timer
+from src.utils import round_down, timer
+
 from ...draw import BLACK, WHITE, Drawer
 
 

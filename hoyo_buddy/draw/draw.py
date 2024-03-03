@@ -97,14 +97,6 @@ class Drawer:
     ) -> tuple[int, int, int, int]:
         return color + (round(255 * opacity),)
 
-    @staticmethod
-    def round_image(image: Image.Image, radius: int) -> Image.Image:
-        mask = Image.new("L", image.size, 0)
-        draw = ImageDraw.Draw(mask)
-        draw.rounded_rectangle(((0, 0), image.size), radius=radius, fill=255)
-        image.putalpha(mask)
-        return image
-
     def _mask_image_with_color(
         self, image: Image.Image, color: tuple[int, int, int], opacity: float
     ) -> Image.Image:
@@ -241,7 +233,7 @@ class Drawer:
         return image
 
     def modify_image_for_build_card(
-        self, image: Image.Image, target_width: int, target_height: int, border_radius: int = 15
+        self, image: Image.Image, target_width: int, target_height: int
     ) -> Image.Image:
         # Calculate the target height to maintain the aspect ratio
         width, height = image.size
@@ -261,8 +253,5 @@ class Drawer:
         if self.dark_mode:
             overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.2))
             image = Image.alpha_composite(image.convert("RGBA"), overlay)
-
-        if border_radius > 0:
-            image = self.round_image(image, border_radius)
 
         return image

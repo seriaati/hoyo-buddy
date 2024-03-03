@@ -44,10 +44,11 @@ def draw_genshin_card(
 
     # character image
     character_im = drawer.open_static(image_url)
+    mask = drawer.open_asset("mask.png")
     character_im = drawer.modify_image_for_build_card(
-        character_im, target_width=472, target_height=839, border_radius=25
+        character_im, target_width=472, target_height=839
     )
-    im.paste(character_im, (51, 34), character_im)
+    im.paste(character_im, (51, 34), mask)
 
     # stats
     fight_props_to_draw = [

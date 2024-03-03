@@ -5,19 +5,21 @@ from typing import TYPE_CHECKING, Any
 import discord
 from discord import app_commands
 from discord.ext import commands, tasks
+from seria.utils import read_yaml
 
 from ..bot.emojis import PROJECT_AMBER
 from ..bot.translator import LocaleStr, Translator
-from ..db.enums import Game
-from ..db.models import HoyoAccount, Settings
-from ..exceptions import InvalidQueryError, NoAccountFoundError
+from ..db.models import EnkaCache, HoyoAccount, Settings
+from ..enums import Game
+from ..exceptions import IncompleteParamError, InvalidQueryError, NoAccountFoundError
+from ..hoyo.enka_client import EnkaAPI
 from ..hoyo.genshin import ambr
 from ..hoyo.hsr import yatta
 from ..hoyo.mihomo_client import MihomoAPI
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui import URLButtonView
 from ..ui.hoyo.checkin import CheckInUI
-from ..ui.hoyo.hsr_profile import HSRProfileView
+from ..ui.hoyo.profile.view import ProfileView
 from ..ui.hoyo.search.genshin import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
 from ..ui.hoyo.search.hsr import BookUI, RelicSetUI
 from ..ui.hoyo.search.hsr.character import CharacterUI as HSRCharacterUI
@@ -467,7 +469,7 @@ class Hoyo(commands.Cog):
     )
     @app_commands.rename(
         account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
-        uid=app_commands.locale_str("uid", translate=False),
+        game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
     )
     @app_commands.describe(
         account=app_commands.locale_str(
@@ -478,40 +480,91 @@ class Hoyo(commands.Cog):
             "UID of the player, this overrides the account parameter if provided",
             key="profile_command_uid_param_description",
         ),
+        game_value=app_commands.locale_str(
+            "Game of the UID", key="profile_command_game_value_description"
+        ),
+    )
+    @app_commands.choices(
+        game_value=[
+            app_commands.Choice(
+                name=app_commands.locale_str(Game.GENSHIN.value, warn_no_key=False),
+                value=Game.GENSHIN.value,
+            ),
+            app_commands.Choice(
+                name=app_commands.locale_str(Game.STARRAIL.value, warn_no_key=False),
+                value=Game.STARRAIL.value,
+            ),
+        ]
     )
     async def profile_command(
         self,
         i: "INTERACTION",
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
         uid: app_commands.Range[str, 9, 10] | None = None,
+        game_value: str | None = None,
     ) -> None:
         await i.response.defer()
+
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        uid_ = await self.get_uid(i.user.id, account, uid)
+        uid_, game = await self.get_uid_and_game(i.user.id, account, uid, game_value)
 
-        client = MihomoAPI(locale)
-        data = await client.fetch_user(uid_)
+        if game is Game.GENSHIN:
+            async with EnkaAPI(locale) as client:
+                data = await client.fetch_showcase(uid_)
 
-        view = HSRProfileView(
-            data,
-            uid_,
-            author=i.user,
-            locale=locale,
-            translator=self.bot.translator,
-        )
+            cache = await EnkaCache.get(uid=uid_)
+            view = ProfileView(
+                uid_,
+                game,
+                cache.extras,
+                await read_yaml("hoyo-buddy-assets/assets/gi-build-card/data.yaml"),
+                genshin_data=data,
+                author=i.user,
+                locale=locale,
+                translator=self.bot.translator,
+            )
+        else:
+            client = MihomoAPI(locale)
+            data = await client.fetch_user(uid_)
+
+            cache = await EnkaCache.get(uid=uid_)
+            view = ProfileView(
+                uid_,
+                game,
+                cache.extras,
+                await read_yaml("hoyo-buddy-assets/assets/hsr-build-card/data.yaml"),
+                star_rail_data=data,
+                author=i.user,
+                locale=locale,
+                translator=self.bot.translator,
+            )
+
         await view.start(i)
 
-    async def get_uid(self, user_id: int, account: HoyoAccount | None, uid: str | None) -> int:
+    async def get_uid_and_game(
+        self, user_id: int, account: HoyoAccount | None, uid: str | None, game_value: str | None
+    ) -> tuple[int, Game]:
         if uid is not None:
             uid_ = int(uid)
+            if game_value is None:
+                raise IncompleteParamError(
+                    LocaleStr(
+                        "You must specify the game of the UID",
+                        key="game_value_incomplete_param_error_message",
+                    )
+                )
+            game = Game(game_value)
         elif account is None:
             account_ = await HoyoAccount.filter(user_id=user_id).first()
             if account_ is None:
                 raise NoAccountFoundError
             uid_ = account_.uid
+            game = account_.game
         else:
             uid_ = account.uid
-        return uid_
+            game = account.game
+
+        return uid_, game
 
     @profile_command.autocomplete("account")
     async def profile_command_autocomplete(

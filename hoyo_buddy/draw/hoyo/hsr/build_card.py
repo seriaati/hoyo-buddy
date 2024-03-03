@@ -45,10 +45,7 @@ def draw_build_card(
     # character image
     character_im = drawer.open_static(image_url)
     character_im = drawer.modify_image_for_build_card(
-        character_im,
-        target_width=640,
-        target_height=1138,
-        border_radius=0,
+        character_im, target_width=640, target_height=1138
     )
     mask = drawer.open_asset("img/mask.png")
     im.paste(character_im, (0, 159), mask)

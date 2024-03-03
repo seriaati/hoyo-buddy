@@ -6,9 +6,9 @@ from tortoise.exceptions import IntegrityError
 
 from ..bot import emojis
 from ..bot.translator import LocaleStr, Translator
-from ..db.enums import GAME_CONVERTER
 from ..db.models import AccountNotifSettings, HoyoAccount, User
 from ..embeds import DefaultEmbed, ErrorEmbed
+from ..enums import GAME_CONVERTER
 from ..hoyo.gpy_client import GenshinClient
 from . import Button, GoBackButton, Modal, Select, SelectOption, TextInput, View
 

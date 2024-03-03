@@ -4,8 +4,8 @@ import genshin
 
 from ..bot.translator import LocaleStr, Translator
 from ..constants import LOCALE_TO_GPY_LANG
-from ..db.enums import GAME_CONVERTER, GAME_THUMBNAILS
 from ..embeds import DefaultEmbed
+from ..enums import GAME_CONVERTER, GAME_THUMBNAILS
 
 if TYPE_CHECKING:
     from discord import Locale

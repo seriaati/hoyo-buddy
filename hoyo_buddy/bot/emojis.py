@@ -1,6 +1,6 @@
 import genshin
 
-from ..db.enums import Game
+from ..enums import Game
 
 LOADING = "<a:loading_emoji:1106388708862738463>"
 DELETE = "<:DELETE:1166012141833310248>"

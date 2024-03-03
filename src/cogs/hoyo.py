@@ -7,9 +7,9 @@ from discord import app_commands
 from discord.ext import commands, tasks
 from seria.utils import read_yaml
 
-from ..bot.emojis import PROJECT_AMBER
 from ..bot.translator import LocaleStr, Translator
 from ..db.models import EnkaCache, HoyoAccount, Settings
+from ..emojis import PROJECT_AMBER
 from ..enums import Game
 from ..exceptions import IncompleteParamError, InvalidQueryError, NoAccountFoundError
 from ..hoyo.enka_client import EnkaAPI

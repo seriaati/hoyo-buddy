@@ -62,7 +62,7 @@ class GeetestWebServer:
             locale,
         )
 
-        async with aiofiles.open("hoyo_buddy/web_server/pages/index.html", encoding="utf-8") as f:
+        async with aiofiles.open("src/web_server/pages/index.html", encoding="utf-8") as f:
             index = await f.read()
 
         body = (
@@ -123,7 +123,7 @@ class GeetestWebServer:
         return web.json_response({})
 
     async def style_css(self, _: web.Request) -> web.StreamResponse:
-        async with aiofiles.open("hoyo_buddy/web_server/pages/style.css", encoding="utf-8") as f:
+        async with aiofiles.open("src/web_server/pages/style.css", encoding="utf-8") as f:
             css = await f.read()
 
         return web.Response(

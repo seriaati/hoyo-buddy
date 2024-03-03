@@ -10,7 +10,7 @@ DB_CONFIG = {
     },
     "apps": {
         "models": {
-            "models": ["hoyo_buddy.db.models", "aerich.models"],
+            "models": ["src.db.models", "aerich.models"],
             "default_connection": "default",
         }
     },

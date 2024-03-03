@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
-from src.bot.emojis import SETTINGS
 from src.bot.translator import LocaleStr
+from src.emojis import SETTINGS
 from src.enums import Game
 from src.ui.components import Button, GoBackButton
 

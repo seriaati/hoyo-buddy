@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, Any
 from discord import File
 from mihomo.models import Character as HSRCharacter
 
-from src.bot.emojis import GENSHIN_ELEMENT_EMOJIS, HSR_ELEMENT_EMOJIS
 from src.bot.translator import LocaleStr
+from src.emojis import GENSHIN_ELEMENT_EMOJIS, HSR_ELEMENT_EMOJIS
 from src.ui.components import PaginatorSelect, SelectOption
 
 if TYPE_CHECKING:

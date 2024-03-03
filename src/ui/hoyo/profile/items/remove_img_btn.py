@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, File
 
-from src.bot.emojis import DELETE
 from src.bot.translator import LocaleStr
+from src.emojis import DELETE
 from src.ui.components import Button
 
 if TYPE_CHECKING:

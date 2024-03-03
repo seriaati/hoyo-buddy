@@ -4,10 +4,20 @@ import discord
 import genshin
 from tortoise.exceptions import IntegrityError
 
-from ..bot import emojis
 from ..bot.translator import LocaleStr, Translator
 from ..db.models import AccountNotifSettings, HoyoAccount, User
 from ..embeds import DefaultEmbed, ErrorEmbed
+from ..emojis import (
+    ADD,
+    COOKIE,
+    DELETE,
+    EDIT,
+    FORWARD,
+    INFO,
+    PASSWORD,
+    REFRESH,
+    get_game_emoji,
+)
 from ..enums import GAME_CONVERTER
 from ..hoyo.gpy_client import GenshinClient
 from . import Button, GoBackButton, Modal, Select, SelectOption, TextInput, View
@@ -93,7 +103,7 @@ class AccountManager(View):
             SelectOption(
                 label=str(account),
                 value=f"{account.uid}_{account.game.value}",
-                emoji=emojis.get_game_emoji(account.game),
+                emoji=get_game_emoji(account.game),
                 default=account == self.selected_account,
             )
             for account in self.accounts
@@ -139,7 +149,7 @@ class DeleteAccountContinue(Button["AccountManager"]):
         super().__init__(
             custom_id="delete_account_continue",
             label=LocaleStr("Continue", key="continue_button_label"),
-            emoji=emojis.FORWARD,
+            emoji=FORWARD,
             style=discord.ButtonStyle.primary,
         )
 
@@ -152,7 +162,7 @@ class DeleteAccount(Button["AccountManager"]):
         super().__init__(
             custom_id="delete_account",
             style=discord.ButtonStyle.danger,
-            emoji=emojis.DELETE,
+            emoji=DELETE,
             label=LocaleStr("Delete selected account", key="delete_account_button_label"),
             row=2,
         )
@@ -197,7 +207,7 @@ class EditNickname(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="edit_nickname",
-            emoji=emojis.EDIT,
+            emoji=EDIT,
             label=LocaleStr("Edit nickname", key="edit_nickname_button_label"),
         )
 
@@ -278,7 +288,7 @@ class SelectAccountsToAdd(Select["AccountManager"]):
                     label=f"[{account.uid}] {account.nickname}",
                     description=f"{level_str} | {server_name}",
                     value=f"{account.uid}_{account.game.value}",
-                    emoji=emojis.get_game_emoji(account.game),
+                    emoji=get_game_emoji(account.game),
                 )
 
     async def callback(self, i: "INTERACTION") -> Any:
@@ -319,7 +329,7 @@ class EnterCookies(Button["AccountManager"]):
         super().__init__(
             label=LocaleStr("Enter Cookies", key="cookies_button_label"),
             style=discord.ButtonStyle.primary,
-            emoji=emojis.COOKIE,
+            emoji=COOKIE,
         )
         self.dev_tools = dev_tools
 
@@ -412,7 +422,7 @@ class WithJavaScript(Button["AccountManager"]):
             title=LocaleStr("Instructions", key="instructions_title"),
             description=LocaleStr(
                 (
-                    f"{emojis.INFO} Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n"
+                    f"{INFO} Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n"
                     "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n"
                     "2. Copy the code below\n"
                     "3. Click on the address bar and type `java`\n"
@@ -475,7 +485,7 @@ class EmailPasswordContinueButton(Button["AccountManager"]):
         super().__init__(
             custom_id="email_password_continue",
             label=LocaleStr("Continue", key="continue_button_label"),
-            emoji=emojis.FORWARD,
+            emoji=FORWARD,
             style=discord.ButtonStyle.primary,
         )
 
@@ -496,7 +506,7 @@ class EmailPasswordContinueButton(Button["AccountManager"]):
             self.label = self.view.translator.translate(
                 LocaleStr("Refresh", key="refresh_button_label"), self.view.locale
             )
-            self.emoji = emojis.REFRESH
+            self.emoji = REFRESH
             return await i.response.edit_message(embed=embed, view=self.view)
 
         if retcode := cookies.get("retcode"):
@@ -565,7 +575,7 @@ class EnterEmailPassword(Button["AccountManager"]):
         super().__init__(
             label=LocaleStr("Enter Email and Password", key="enter_email_password_button_label"),
             style=discord.ButtonStyle.primary,
-            emoji=emojis.PASSWORD,
+            emoji=PASSWORD,
         )
 
     async def callback(self, i: "INTERACTION") -> Any:
@@ -601,7 +611,7 @@ class EnterEmailPassword(Button["AccountManager"]):
             title=LocaleStr("Instructions", key="instructions_title"),
             description=LocaleStr(
                 (
-                    f"{emojis.INFO} Note: This method **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.\n\n"
+                    f"{INFO} Note: This method **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.\n\n"
                     "1. Click the `Complete CAPTCHA` button below\n"
                     "2. You will be redirected to a website, click the button and complete the CAPTCHA\n"
                     "3. After completing, click on the `Continue` button below\n"
@@ -626,7 +636,7 @@ class WithEmailPassword(Button["AccountManager"]):
             title=LocaleStr("Instructions", key="instructions_title"),
             description=LocaleStr(
                 (
-                    f"{emojis.INFO} Note: This method is not recommended as it requires you to enter your private information, it only serves as a last resort when the other 2 methods don't work. Your email and password are not saved permanently in the database, you can refer to the [source code](https://github.com/seriaati/hoyo-buddy/blob/3bbd8a9fb42d2bb8db4426fda7d7d3ba6d86e75c/hoyo_buddy/ui/login/accounts.py#L386) if you feel unsafe.\n\n"
+                    f"{INFO} Note: This method is not recommended as it requires you to enter your private information, it only serves as a last resort when the other 2 methods don't work. Your email and password are not saved permanently in the database, you can refer to the [source code](https://github.com/seriaati/hoyo-buddy/blob/3bbd8a9fb42d2bb8db4426fda7d7d3ba6d86e75c/hoyo_buddy/ui/login/accounts.py#L386) if you feel unsafe.\n\n"
                     "Click the button below to enter your email and password.\n"
                 ),
                 key="enter_email_password_instructions_description",
@@ -643,7 +653,7 @@ class AddAccount(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="add_account",
-            emoji=emojis.ADD,
+            emoji=ADD,
             label=LocaleStr("Add accounts", key="add_account_button_label"),
             style=discord.ButtonStyle.primary,
         )

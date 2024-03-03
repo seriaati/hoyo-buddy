@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any
 import discord
 from genshin import Game, GenshinException
 
-from ...bot import emojis
+from ... import emojis
 from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr, Translator
 from ...db.models import AccountNotifSettings

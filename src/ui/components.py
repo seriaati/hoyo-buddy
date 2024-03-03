@@ -4,7 +4,7 @@ import discord
 from discord.utils import MISSING
 from seria.utils import split_list_to_chunks
 
-from ..bot import emojis
+from .. import emojis
 from ..bot.error_handler import get_error_embed
 from ..bot.translator import LocaleStr, Translator
 from ..db.models import Settings

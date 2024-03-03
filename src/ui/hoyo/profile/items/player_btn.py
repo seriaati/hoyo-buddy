@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
 
-from src.bot.emojis import BOOK_MULTIPLE
 from src.bot.translator import LocaleStr
+from src.emojis import BOOK_MULTIPLE
 from src.ui.components import Button
 
 if TYPE_CHECKING:

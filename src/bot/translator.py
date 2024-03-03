@@ -218,9 +218,7 @@ class Translator:
 
     async def load_synced_commands_json(self) -> None:
         try:
-            async with aiofiles.open(
-                "hoyo_buddy/bot/data/synced_commands.json", encoding="utf-8"
-            ) as f:
+            async with aiofiles.open("src/bot/data/synced_commands.json", encoding="utf-8") as f:
                 self.synced_commands = orjson.loads(await f.read())
         except FileNotFoundError:
             pass

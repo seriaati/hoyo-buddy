@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 from discord import ButtonStyle, TextStyle
 from discord.file import File
 
-from src.bot.emojis import ADD
 from src.bot.translator import LocaleStr
+from src.emojis import ADD
 from src.exceptions import InvalidImageURLError
 from src.ui.components import Button, Modal, TextInput
 from src.utils import is_image_url, test_url_validity, upload_image

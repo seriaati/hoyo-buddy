@@ -9,7 +9,8 @@ from ambr.client import Language
 from discord import Locale
 from seria.utils import create_bullet_list, shorten
 
-from ...bot.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_element_emoji
+from src.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_element_emoji
+
 from ...bot.translator import LocaleStr, Translator
 from ...constants import LOCALE_TO_AMBR_LANG, WEEKDAYS
 from ...embeds import DefaultEmbed

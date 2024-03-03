@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 
-from src.bot.emojis import INFO
 from src.bot.translator import LocaleStr
 from src.embeds import DefaultEmbed
+from src.emojis import INFO
 from src.ui.components import Button
 
 if TYPE_CHECKING:

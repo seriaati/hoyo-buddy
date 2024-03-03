@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, User
 
-from src.bot.emojis import get_relic_pos_emoji
+from src.emojis import get_relic_pos_emoji
 from src.exceptions import InvalidQueryError
 from src.hoyo.hsr.yatta import YattaAPIClient
 from src.ui import Button, View

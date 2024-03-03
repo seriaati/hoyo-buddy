@@ -105,9 +105,10 @@ class Drawer:
         image.putalpha(mask)
         return image
 
-    @staticmethod
-    def _mask_image_with_color(image: Image.Image, color: tuple[int, int, int]) -> Image.Image:
-        color_bk = Image.new("RGBA", image.size, color)
+    def _mask_image_with_color(
+        self, image: Image.Image, color: tuple[int, int, int], opacity: float
+    ) -> Image.Image:
+        color_bk = Image.new("RGBA", image.size, self.apply_color_opacity(color, opacity))
         return Image.composite(color_bk, image, image)
 
     @staticmethod
@@ -178,6 +179,7 @@ class Drawer:
         max_width: int | None = None,
         max_lines: int = 1,
     ) -> tuple[int, int, int, int]:
+        """Returns (left, top, right, bottom) of the text bounding box."""
         if isinstance(text, str):
             translated_text = text
         else:
@@ -212,13 +214,14 @@ class Drawer:
         folder: str | None = None,
         size: tuple[int, int] | None = None,
         mask_color: tuple[int, int, int] | None = None,
+        opacity: float = 1.0,
     ) -> Image.Image:
         filename = url.split("/")[-1]
         folder = folder or self.folder
         path = f"{STATIC_FOLDER}/{folder}/{filename}"
         image = self._open_image(path, size)
         if mask_color:
-            image = self._mask_image_with_color(image, mask_color)
+            image = self._mask_image_with_color(image, mask_color, opacity)
         return image
 
     def open_asset(
@@ -228,12 +231,13 @@ class Drawer:
         folder: str | None = None,
         size: tuple[int, int] | None = None,
         mask_color: tuple[int, int, int] | None = None,
+        opacity: float = 1.0,
     ) -> Image.Image:
         folder = folder or self.folder
         path = f"hoyo-buddy-assets/assets/{folder}/{filename}"
         image = self._open_image(path, size)
         if mask_color:
-            image = self._mask_image_with_color(image, mask_color)
+            image = self._mask_image_with_color(image, mask_color, opacity)
         return image
 
     def modify_image_for_build_card(

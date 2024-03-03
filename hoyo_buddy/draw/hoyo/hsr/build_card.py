@@ -22,7 +22,7 @@ def cache_key(
 
 @timer
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
-def draw_build_card(  # noqa: C901, PLR0914, PLR0915, PLR0912
+def draw_build_card(
     character: "mihomo.models.Character",
     locale: discord.Locale,
     dark_mode: bool,

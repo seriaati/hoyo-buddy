@@ -1,18 +1,32 @@
+import asyncio
+import pickle
 from io import BytesIO
 from typing import TYPE_CHECKING, Any
 
 from discord import ButtonStyle, File, TextStyle
 from discord.utils import get as dget
-from seria.utils import read_yaml
+from enka import Language as EnkaLang
+from mihomo.models import Character as HSRCharacter
 
 from hoyo_buddy.ui.components import SelectOption
 
-from ...bot.emojis import ADD, BOOK_MULTIPLE, DELETE, HSR_ELEMENT_EMOJIS, INFO, SETTINGS
+from ...bot.emojis import (
+    ADD,
+    BOOK_MULTIPLE,
+    DELETE,
+    GENSHIN_ELEMENT_EMOJIS,
+    HSR_ELEMENT_EMOJIS,
+    INFO,
+    SETTINGS,
+)
 from ...bot.translator import LocaleStr
+from ...constants import ENKA_LANG_TO_CARD_API_LANG, ENKA_LANG_TO_LOCALE, MIHOMO_LANG_TO_LOCALE
 from ...db.models import CardSettings, EnkaCache
+from ...draw.hoyo.genshin.build_card import draw_genshin_card
 from ...draw.hoyo.hsr.build_card import draw_build_card
 from ...draw.static import download_and_save_static_images
 from ...embeds import DefaultEmbed
+from ...enums import Game
 from ...exceptions import CardNotReadyError, InvalidColorError, InvalidImageURLError
 from ...utils import is_image_url, is_valid_hex_color, test_url_validity, upload_image
 from ..components import (
@@ -31,18 +45,24 @@ if TYPE_CHECKING:
 
     import aiohttp
     from discord import Locale, Member, User
+    from enka.models import Character as GICharacter
+    from enka.models import ShowcaseResponse
+    from mihomo.models import StarrailInfoParsed
 
     from hoyo_buddy.bot.translator import Translator
 
     from ...bot.bot import INTERACTION
-    from ...hoyo.dataclasses import ExtendedCharacter, ExtendedStarRailInfoParsed
 
 
-class HSRProfileView(View):
+class ProfileView(View):
     def __init__(
         self,
-        data: "ExtendedStarRailInfoParsed",
         uid: int,
+        game: "Game",
+        cache_extras: dict[str, dict[str, Any]],
+        card_data: dict[str, Any],
+        star_rail_data: "StarrailInfoParsed" = None,  # type: ignore
+        genshin_data: "ShowcaseResponse" = None,  # type: ignore
         *,
         author: "User | Member",
         locale: "Locale",
@@ -50,40 +70,78 @@ class HSRProfileView(View):
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
-        self.data = data
-        self.live_data_character_ids = [char.id for char in data.characters if char.live]
+        self.star_rail_data = star_rail_data
+        self.genshin_data = genshin_data
+
+        if game is Game.STARRAIL:
+            self.live_data_character_ids = [
+                char.id for char in star_rail_data.characters if cache_extras[char.id]["live"]
+            ]
+        else:
+            self.live_data_character_ids = [
+                str(char.id)
+                for char in genshin_data.characters
+                if cache_extras[str(char.id)]["live"]
+            ]
+
         self.uid = uid
+        self.game = game
+        self.cache_extras = cache_extras
+
         self.character_id: str | None = None
 
         self._card_settings: CardSettings | None = None
-        self._card_data: dict[str, dict[str, Any]] | None = None
+        self._card_data = card_data
 
     @property
     def player_embed(self) -> DefaultEmbed:
-        player = self.data.player
-        embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=player.name,
-            description=LocaleStr(
-                "Trailblaze Level: {level}\n"
-                "Equilibrium Level: {world_level}\n"
-                "Friend Count: {friend_count}\n"
-                "Light Cones: {light_cones}\n"
-                "Characters: {characters}\n"
-                "Achievements: {achievements}\n",
-                key="profile.player_info.embed.description",
-                level=player.level,
-                world_level=player.world_level,
-                friend_count=player.friend_count,
-                light_cones=player.light_cones,
-                characters=player.characters,
-                achievements=player.achievements,
-            ),
-        )
-        embed.set_thumbnail(url=player.avatar.icon)
-        if player.signature:
-            embed.set_footer(text=player.signature)
+        if self.game is Game.STARRAIL:
+            player = self.star_rail_data.player
+            embed = DefaultEmbed(
+                self.locale,
+                self.translator,
+                title=player.name,
+                description=LocaleStr(
+                    "Trailblaze Level: {level}\n"
+                    "Equilibrium Level: {world_level}\n"
+                    "Friend Count: {friend_count}\n"
+                    "Light Cones: {light_cones}\n"
+                    "Characters: {characters}\n"
+                    "Achievements: {achievements}\n",
+                    key="profile.player_info.embed.description",
+                    level=player.level,
+                    world_level=player.world_level,
+                    friend_count=player.friend_count,
+                    light_cones=player.light_cones,
+                    characters=player.characters,
+                    achievements=player.achievements,
+                ),
+            )
+            embed.set_thumbnail(url=player.avatar.icon)
+            if player.signature:
+                embed.set_footer(text=player.signature)
+        else:
+            player = self.genshin_data.player
+            embed = DefaultEmbed(
+                self.locale,
+                self.translator,
+                title=player.nickname,
+                description=LocaleStr(
+                    "Adventure Rank: {adventure_rank}\n"
+                    "Characters: {characters}\n"
+                    "Spiral Abyss: {spiral_abyss}\n"
+                    "Achievements: {achievements}\n",
+                    key="profile.player_info.embed.description",
+                    adventure_rank=player.level,
+                    characters=len(player.showcase_characters),
+                    spiral_abyss=f"{player.abyss_level}-{player.abyss_floor}",
+                    achievements=player.achievements,
+                ),
+            )
+            embed.set_thumbnail(url=player.profile_picture_icon.circle)
+            embed.set_image(url=player.namecard.full)
+            if player.signature:
+                embed.set_footer(text=player.signature)
         return embed
 
     def _add_items(self) -> None:
@@ -91,22 +149,30 @@ class HSRProfileView(View):
         self.add_item(CardSettingsButton())
         self.add_item(RemoveFromCacheButton())
         self.add_item(CardInfoButton())
-        self.add_item(CharacterSelect(self.data.characters))
+        self.add_item(
+            CharacterSelect(
+                self.star_rail_data.characters
+                if self.game is Game.STARRAIL
+                else self.genshin_data.characters,
+                self.cache_extras,
+            )
+        )
 
     async def _draw_src_character_card(
         self,
         uid: int,
-        character: "ExtendedCharacter",
-        template: int,
+        character: "HSRCharacter",
+        template: str,
         session: "aiohttp.ClientSession",
     ) -> BytesIO:
         """Draw character card in StarRailCard template."""
         assert self._card_settings is not None
 
+        template_num = int(template[-1])
         payload = {
             "uid": uid,
-            "lang": character.lang,
-            "template": template,
+            "lang": self.cache_extras[character.id]["lang"],
+            "template": template_num,
             "character_name": character.name,
             "character_art": self._card_settings.current_image,
         }
@@ -117,24 +183,58 @@ class HSRProfileView(View):
             resp.raise_for_status()
             return BytesIO(await resp.read())
 
-    async def _draw_hb_character_card(
+    async def _draw_enka_card(
         self,
-        character: "ExtendedCharacter",
+        uid: int,
+        character: "GICharacter",
+        session: "aiohttp.ClientSession",
+        template: str,
+    ) -> BytesIO:
+        """Draw character card in StarRailCard template."""
+        assert self._card_settings is not None
+
+        payload = {
+            "uid": uid,
+            "lang": ENKA_LANG_TO_CARD_API_LANG[
+                EnkaLang(self.cache_extras[str(character.id)]["lang"])
+            ],
+            "character_id": str(character.id),
+            "character_art": self._card_settings.current_image,
+        }
+        if template == "hattvr1":
+            del payload["character_art"]
+            endpoint = "http://localhost:7652/hattvr-enka-card"
+        elif "enkacard" in template:
+            payload["template"] = int(template[-1])
+            endpoint = "http://localhost:7652/enka-card"
+        elif template == "encard1":
+            del payload["character_id"]
+            payload["character_name"] = character.name
+            endpoint = "http://localhost:7652/en-card"
+        else:
+            msg = f"Invalid template: {template}"
+            raise NotImplementedError(msg)
+
+        async with session.post(endpoint, json=payload) as resp:
+            # API returns a WebP image
+            resp.raise_for_status()
+            return BytesIO(await resp.read())
+
+    async def _draw_hb_hsr_character_card(
+        self,
+        character: "HSRCharacter",
         session: "aiohttp.ClientSession",
     ) -> BytesIO:
-        """Draw character card in Hoyo Buddy template."""
-        assert self._card_data is not None
+        """Draw Star Rail character card in Hoyo Buddy template."""
         assert self._card_settings is not None
 
         character_data = self._card_data.get(character.id)
         if character_data is None:
             raise CardNotReadyError(character.name)
 
-        if self._card_settings.current_image is None:
-            character_arts: list[str] = character_data["arts"]
-            self._card_settings.current_image = character_arts[0]
+        art = self._card_settings.current_image or character_data["arts"][0]
 
-        urls = await self._retrieve_image_urls(character)
+        urls = await self._retrieve_hsr_image_urls(character, art)
         await download_and_save_static_images(list(urls), "hsr-build-card", session)
 
         if self._card_settings.custom_primary_color is None:
@@ -143,21 +243,44 @@ class HSRProfileView(View):
                 primary = character_data["primary-dark"]
             self._card_settings.custom_primary_color = primary
 
-        return draw_build_card(
+        return await asyncio.to_thread(
+            draw_build_card,
             character,
-            character.locale,
+            MIHOMO_LANG_TO_LOCALE[self.cache_extras[character.id]["lang"]],
             self._card_settings.dark_mode,
-            self._card_settings.current_image,
+            art,
             self._card_settings.custom_primary_color,
         )
 
-    async def _retrieve_image_urls(self, character: "ExtendedCharacter") -> set[str]:
-        """Retrieve all image URLs needed to draw the card."""
+    async def _draw_hb_gi_character_card(
+        self,
+        character: "GICharacter",
+        session: "aiohttp.ClientSession",
+    ) -> BytesIO:
+        """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert self._card_settings is not None
 
+        character_data = self._card_data.get(str(character.id))
+        if character_data is None:
+            raise CardNotReadyError(character.name)
+
+        art = self._card_settings.current_image or character_data["arts"][0]
+
+        urls = await self._retrieve_genshin_image_urls(character, art)
+        await download_and_save_static_images(list(urls), "gi-build-card", session)
+
+        return await asyncio.to_thread(
+            draw_genshin_card,
+            ENKA_LANG_TO_LOCALE[EnkaLang(self.cache_extras[str(character.id)]["lang"])],
+            self._card_settings.dark_mode,
+            character,
+            art,
+        )
+
+    async def _retrieve_hsr_image_urls(self, character: "HSRCharacter", art: str) -> set[str]:
+        """Retrieve all image URLs needed to draw the HSR card."""
         urls: set[str] = set()
-        if self._card_settings.current_image is not None:
-            urls.add(self._card_settings.current_image)
+        urls.add(art)
         for trace in character.traces:
             urls.add(trace.icon)
         for trace in character.trace_tree:
@@ -181,9 +304,29 @@ class HSRProfileView(View):
 
         return urls
 
+    async def _retrieve_genshin_image_urls(self, character: "GICharacter", art: str) -> set[str]:
+        urls: set[str] = set()
+        urls.add(art)
+        urls.add(character.weapon.icon)
+        urls.add(character.icon.gacha)
+        for artifact in character.artifacts:
+            urls.add(artifact.icon)
+        for talent in character.talents:
+            urls.add(talent.icon)
+        for constellation in character.constellations:
+            urls.add(constellation.icon)
+
+        return urls
+
     async def draw_card(self, i: "INTERACTION") -> "io.BytesIO":
         """Draw the character card and return the bytes object."""
-        character = dget(self.data.characters, id=self.character_id)
+        assert self.character_id is not None
+
+        if self.game is Game.STARRAIL:
+            character = dget(self.star_rail_data.characters, id=self.character_id)
+        else:
+            character = dget(self.genshin_data.characters, id=int(self.character_id))
+
         if character is None:
             msg = f"Character not found: {self.character_id}"
             raise ValueError(msg)
@@ -199,27 +342,36 @@ class HSRProfileView(View):
         self._card_settings = card_settings
 
         # Force change the template to hb1 if is cached data
-        if not character.live:
+        if (
+            not self.cache_extras[self.character_id]["live"]
+            and "hb" not in self._card_settings.template
+        ):
             self._card_settings.template = "hb1"
             await self._card_settings.save()
 
-        if "hb" in self._card_settings.template:
-            bytes_obj = await self._draw_hb_character_card(character, i.client.session)
+        template = self._card_settings.template
+
+        if isinstance(character, HSRCharacter):
+            if "hb" in template:
+                bytes_obj = await self._draw_hb_hsr_character_card(character, i.client.session)
+            else:
+                bytes_obj = await self._draw_src_character_card(
+                    self.uid, character, template, i.client.session
+                )
+        elif "hb" in template:
+            bytes_obj = await self._draw_hb_gi_character_card(character, i.client.session)
         else:
-            template_num = int(self._card_settings.template[-1])
-            bytes_obj = await self._draw_src_character_card(
-                self.uid, character, template_num, i.client.session
-            )
+            bytes_obj = await self._draw_enka_card(self.uid, character, i.client.session, template)
+
         return bytes_obj
 
     async def start(self, i: "INTERACTION") -> None:
-        self._card_data = await read_yaml("hoyo-buddy-assets/assets/hsr-build-card/data.yaml")
         self._add_items()
         await i.followup.send(embed=self.player_embed, view=self)
         self.message = await i.original_response()
 
 
-class PlayerButton(Button[HSRProfileView]):
+class PlayerButton(Button[ProfileView]):
     def __init__(self) -> None:
         super().__init__(
             label=LocaleStr("Player Info", key="profile.player_info.button.label"),
@@ -235,7 +387,7 @@ class PlayerButton(Button[HSRProfileView]):
         await i.response.edit_message(embed=self.view.player_embed, attachments=[], view=self.view)
 
 
-class CardInfoButton(Button[HSRProfileView]):
+class CardInfoButton(Button[ProfileView]):
     def __init__(self) -> None:
         super().__init__(emoji=INFO, row=0)
 
@@ -257,32 +409,49 @@ class CardInfoButton(Button[HSRProfileView]):
         await i.response.send_message(embed=embed, ephemeral=True)
 
 
-class CharacterSelect(PaginatorSelect[HSRProfileView]):
-    def __init__(self, characters: list["ExtendedCharacter"]) -> None:
+class CharacterSelect(PaginatorSelect[ProfileView]):
+    def __init__(
+        self,
+        characters: list["HSRCharacter"] | list["GICharacter"],
+        cache_extras: dict[str, dict[str, Any]],
+    ) -> None:
         options: list[SelectOption] = []
 
         for character in characters:
             data_type = (
                 LocaleStr("Real-time data", key="profile.character_select.live_data.description")
-                if character.live
+                if cache_extras[str(character.id)]["live"]
                 else LocaleStr(
                     "Cached data", key="profile.character_select.cached_data.description"
                 )
             )
-            description = LocaleStr(
-                "Lv. {level} | E{eidolons}S{superposition} | {data_type}",
-                key="profile.character_select.description",
-                level=character.level,
-                superposition=character.light_cone.superimpose if character.light_cone else 0,
-                eidolons=character.eidolon,
-                data_type=data_type,
-            )
+            if isinstance(character, HSRCharacter):
+                description = LocaleStr(
+                    "Lv. {level} | E{eidolons}S{superposition} | {data_type}",
+                    key="profile.character_select.description",
+                    level=character.level,
+                    superposition=character.light_cone.superimpose if character.light_cone else 0,
+                    eidolons=character.eidolon,
+                    data_type=data_type,
+                )
+                emoji = HSR_ELEMENT_EMOJIS[character.element.id.lower()]
+            else:
+                description = LocaleStr(
+                    "Lv. {level} | C{const}R{refine} | {data_type}",
+                    key="profile.genshin.character_select.description",
+                    level=character.level,
+                    const=character.constellations_unlocked,
+                    refine=character.weapon.refinement,
+                    data_type=data_type,
+                )
+                emoji = GENSHIN_ELEMENT_EMOJIS[character.element.name.lower()]
+
             options.append(
                 SelectOption(
                     label=character.name,
                     description=description,
-                    value=character.id,
-                    emoji=HSR_ELEMENT_EMOJIS[character.element.id.lower()],
+                    value=str(character.id),
+                    emoji=emoji,
                 )
             )
 
@@ -316,7 +485,7 @@ class CharacterSelect(PaginatorSelect[HSRProfileView]):
         )
 
 
-class CardSettingsButton(Button[HSRProfileView]):
+class CardSettingsButton(Button[ProfileView]):
     def __init__(self) -> None:
         super().__init__(
             label=LocaleStr("Card Settings", key="profile.card_settings.button.label"),
@@ -327,28 +496,27 @@ class CardSettingsButton(Button[HSRProfileView]):
 
     async def callback(self, i: "INTERACTION") -> None:
         assert self.view._card_settings is not None
-        assert self.view._card_data is not None
         assert self.view.character_id is not None
 
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
         self.view.add_item(go_back_button)
 
-        default_arts: list[str] = self.view._card_data.get(self.view.character_id, {}).get(
-            "arts", []
-        )
+        default_arts: list[str] = self.view._card_data[self.view.character_id]["arts"]
 
         self.view.add_item(
             ImageSelect(
                 self.view._card_settings.current_image,
                 default_arts,
                 self.view._card_settings.custom_images,
+                self.view._card_settings.template == "hattvr1",
             )
         )
         self.view.add_item(
             CardTemplateSelect(
                 self.view._card_settings.template,
                 self.view.character_id in self.view.live_data_character_ids,
+                self.view.game,
             )
         )
         self.view.add_item(
@@ -371,7 +539,7 @@ class CardSettingsButton(Button[HSRProfileView]):
         await i.response.edit_message(view=self.view)
 
 
-class RemoveFromCacheButton(Button[HSRProfileView]):
+class RemoveFromCacheButton(Button[ProfileView]):
     def __init__(self) -> None:
         super().__init__(
             label=LocaleStr("Remove from Cache", key="profile.remove_from_cache.button.label"),
@@ -384,10 +552,19 @@ class RemoveFromCacheButton(Button[HSRProfileView]):
 
     async def callback(self, i: "INTERACTION") -> None:
         cache = await EnkaCache.get(uid=self.view.uid)
-        for char in cache.hsr["characters"]:
-            if char["id"] == self.view.character_id:
-                cache.hsr["characters"].remove(char)
-                break
+
+        if self.view.game is Game.STARRAIL and cache.hsr is not None:
+            hsr_cache: StarrailInfoParsed = pickle.loads(cache.hsr)
+            for character in hsr_cache.characters:
+                if character.id == self.view.character_id:
+                    hsr_cache.characters.remove(character)
+                    break
+        elif self.view.game is Game.GENSHIN and cache.genshin is not None:
+            gi_cache: ShowcaseResponse = pickle.loads(cache.genshin)
+            for character in gi_cache.characters:
+                if character.id == self.view.character_id:
+                    gi_cache.characters.remove(character)
+                    break
         await cache.save()
 
         character_select: CharacterSelect = self.view.get_item("profile_character_select")
@@ -396,7 +573,7 @@ class RemoveFromCacheButton(Button[HSRProfileView]):
                 character_select.options_before_split.remove(option)
                 break
         character_select.options = character_select.process_options()
-        self.view.character_id = self.view.data.characters[0].id
+        self.view.character_id = self.view.star_rail_data.characters[0].id
         character_select.update_options_defaults(values=[self.view.character_id])
         character_select.translate(self.view.locale, self.view.translator)
 
@@ -408,7 +585,7 @@ class RemoveFromCacheButton(Button[HSRProfileView]):
         )
 
 
-class PrimaryColorButton(Button[HSRProfileView]):
+class PrimaryColorButton(Button[ProfileView]):
     def __init__(self, current_color: str | None, disabled: bool) -> None:
         super().__init__(
             label=LocaleStr("Change Color", key="profile.primary_color.button.label"),
@@ -463,7 +640,7 @@ class PrimaryColorModal(Modal):
         self.color.default = current_color
 
 
-class DarkModeButton(ToggleButton[HSRProfileView]):
+class DarkModeButton(ToggleButton[ProfileView]):
     def __init__(self, current_toggle: bool, disabled: bool) -> None:
         super().__init__(
             current_toggle,
@@ -488,9 +665,13 @@ class DarkModeButton(ToggleButton[HSRProfileView]):
         )
 
 
-class ImageSelect(PaginatorSelect[HSRProfileView]):
+class ImageSelect(PaginatorSelect[ProfileView]):
     def __init__(
-        self, current_image_url: str | None, default_collection: list[str], custom_images: list[str]
+        self,
+        current_image_url: str | None,
+        default_collection: list[str],
+        custom_images: list[str],
+        disabled: bool,
     ) -> None:
         self.current_image_url = current_image_url
         self.default_collection = default_collection
@@ -501,10 +682,21 @@ class ImageSelect(PaginatorSelect[HSRProfileView]):
             placeholder=LocaleStr("Select an image", key="profile.image_select.placeholder"),
             custom_id="profile_image_select",
             row=0,
+            disabled=disabled,
         )
 
     def generate_options(self) -> list[SelectOption]:
-        options: list[SelectOption] = []
+        options: list[SelectOption] = [
+            SelectOption(
+                label=LocaleStr("Official Art", key="profile.image_select.none.label"),
+                description=LocaleStr(
+                    "Doesn't work with Hoyo Buddy's template",
+                    key="profile.image_select.none.description",
+                ),
+                value="none",
+                default=self.current_image_url is None,
+            )
+        ]
         added_values: set[str] = set()
 
         for collection in [self.default_collection, self.custom_images]:
@@ -545,7 +737,9 @@ class ImageSelect(PaginatorSelect[HSRProfileView]):
         await self.set_loading_state(i)
 
         # Update the current image URL in db.
-        self.view._card_settings.current_image = self.values[0]
+        self.view._card_settings.current_image = (
+            None if self.values[0] == "none" else self.values[0]
+        )
         await self.view._card_settings.save()
 
         # Enable the remove image button if the image is custom
@@ -560,7 +754,7 @@ class ImageSelect(PaginatorSelect[HSRProfileView]):
         )
 
 
-class AddImageButton(Button[HSRProfileView]):
+class AddImageButton(Button[ProfileView]):
     def __init__(self) -> None:
         super().__init__(
             label=LocaleStr("Add Custom Image", key="profile.add_image.button.label"),
@@ -632,7 +826,7 @@ class AddImageModal(Modal):
         super().__init__(title=LocaleStr("Add Custom Image", key="profile.add_image_modal.title"))
 
 
-class RemoveImageButton(Button[HSRProfileView]):
+class RemoveImageButton(Button[ProfileView]):
     def __init__(self, disabled: bool) -> None:
         super().__init__(
             label=LocaleStr("Remove Custom Image", key="profile.remove_image.button.label"),
@@ -644,7 +838,6 @@ class RemoveImageButton(Button[HSRProfileView]):
         )
 
     async def callback(self, i: "INTERACTION") -> None:
-        assert self.view._card_data is not None
         assert self.view.character_id is not None
         assert self.view._card_settings is not None
         assert self.view._card_settings.current_image is not None
@@ -673,10 +866,11 @@ class RemoveImageButton(Button[HSRProfileView]):
         )
 
 
-class CardTemplateSelect(Select[HSRProfileView]):
-    def __init__(self, current_template: str, is_live: bool) -> None:
+class CardTemplateSelect(Select[ProfileView]):
+    def __init__(self, current_template: str, is_live: bool, game: Game) -> None:
         hb_templates = (1,)
         src_templates = (1, 2, 3)
+        enkac_templates = (1, 2, 3, 5, 7)  # EnkaCard2 templates
 
         options: list[SelectOption] = []
 
@@ -694,27 +888,75 @@ class CardTemplateSelect(Select[HSRProfileView]):
                         key="profile.card_template_select.hb.description",
                     ),
                     value=value,
-                    default=value == current_template,
+                    default=current_template == value,
                 ),
             )
         if is_live:
-            for template_num in src_templates:
-                value = f"src{template_num}"
-                options.append(
-                    SelectOption(
-                        label=LocaleStr(
-                            "StarRailCard Template {num}",
-                            key="profile.card_template_select.src.label",
-                            num=template_num,
+            if game is Game.STARRAIL:
+                for template_num in src_templates:
+                    value = f"src{template_num}"
+                    options.append(
+                        SelectOption(
+                            label=LocaleStr(
+                                "StarRailCard Template {num}",
+                                key="profile.card_template_select.src.label",
+                                num=template_num,
+                            ),
+                            description=LocaleStr(
+                                "Designed and programmed by @korzzex",
+                                key="profile.card_template_select.src.description",
+                            ),
+                            value=value,
+                            default=current_template == value,
                         ),
-                        description=LocaleStr(
-                            "Designed and programmed by @korzzex",
-                            key="profile.card_template_select.src.description",
+                    )
+            else:
+                options.extend(
+                    [
+                        SelectOption(
+                            label=LocaleStr(
+                                "Classic Enka Template",
+                                key="profile.card_template_select.enka_classic.label",
+                            ),
+                            description=LocaleStr(
+                                "Designed and programmed by @hattvr",
+                                key="profile.card_template_select.enka_classic.description",
+                            ),
+                            value="hattvr1",
+                            default=current_template == "hattvr1",
                         ),
-                        value=value,
-                        default=value == current_template,
-                    ),
+                        SelectOption(
+                            label=LocaleStr(
+                                "ENCard Template {num}",
+                                key="profile.card_template_select.encard.label",
+                                num=1,
+                            ),
+                            description=LocaleStr(
+                                "Designed and programmed by @korzzex",
+                                key="profile.card_template_select.encard.description",
+                            ),
+                            value="encard1",
+                            default=current_template == "encard1",
+                        ),
+                    ]
                 )
+                for template_num in enkac_templates:
+                    value = f"enkacard{template_num}"
+                    options.append(
+                        SelectOption(
+                            label=LocaleStr(
+                                "EnkaCard Template {num}",
+                                key="profile.card_template_select.enkacard.label",
+                                num=template_num,
+                            ),
+                            description=LocaleStr(
+                                "Designed and programmed by @korzzex",
+                                key="profile.card_template_select.enkacard.description",
+                            ),
+                            value=value,
+                            default=current_template == value,
+                        ),
+                    )
 
         super().__init__(
             options=options,
@@ -733,10 +975,15 @@ class CardTemplateSelect(Select[HSRProfileView]):
         await self.set_loading_state(i)
 
         change_color_btn: PrimaryColorButton = self.view.get_item("profile_primary_color")
-        change_color_btn.disabled = "hb" not in self.values[0]
+        change_color_btn.disabled = (
+            "hb" not in self.values[0] and self.view.game is not Game.STARRAIL
+        )
 
         dark_mode_btn: DarkModeButton = self.view.get_item("profile_dark_mode")
         dark_mode_btn.disabled = "hb" not in self.values[0]
+
+        image_select: ImageSelect = self.view.get_item("profile_image_select")
+        image_select.disabled = self.values[0] == "hattvr1"
 
         bytes_obj = await self.view.draw_card(i)
         bytes_obj.seek(0)
@@ -745,7 +992,7 @@ class CardTemplateSelect(Select[HSRProfileView]):
         )
 
 
-class CardSettingsInfoButton(Button[HSRProfileView]):
+class CardSettingsInfoButton(Button[ProfileView]):
     def __init__(self) -> None:
         super().__init__(emoji=INFO, row=2)
 

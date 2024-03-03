@@ -35,7 +35,10 @@ class EnkaAPI(enka.EnkaAPI):
         live_character_ids: list[int] = []
         for character in live_data.characters:
             live_character_ids.append(character.id)
-            cache.extras.get(str(character.id), {}).update(live_chara_data)
+            if str(character.id) not in cache.extras:
+                cache.extras[str(character.id)] = live_chara_data
+            else:
+                cache.extras[str(character.id)].update(live_chara_data)
 
         cache_characters_not_in_live: list["Character"] = []
 

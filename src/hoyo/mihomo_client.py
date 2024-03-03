@@ -33,7 +33,10 @@ class MihomoAPI(mihomo.MihomoAPI):
         live_character_ids: list[str] = []
         for character in live_data.characters:
             live_character_ids.append(character.id)
-            cache.extras.get(character.id, {}).update(live_chara_data)
+            if character.id not in cache.extras:
+                cache.extras[character.id] = live_chara_data
+            else:
+                cache.extras[character.id].update(live_chara_data)
 
         cache_characters_not_in_live: list["Character"] = []
 

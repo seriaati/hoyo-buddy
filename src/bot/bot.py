@@ -7,7 +7,7 @@ import diskcache
 import sentry_sdk
 from asyncache import cached
 from cachetools import TTLCache
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from ..utils import get_now
 from .command_tree import CommandTree
@@ -88,6 +88,11 @@ class HoyoBuddy(commands.AutoShardedBot):
             return None
         else:
             return user
+
+    @tasks.loop(minutes=30)
+    async def push_source_strings(self) -> None:
+        if self.env in {"prod", "test"}:
+            await self.translator.push_source_strings()
 
     async def close(self) -> None:
         LOGGER_.info("Bot shutting down...")

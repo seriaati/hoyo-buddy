@@ -4,8 +4,8 @@ from discord import Locale
 from seria.tortoise.model import Model
 from tortoise import fields
 
+from ..enums import GAME_CONVERTER, Game
 from ..hoyo.gpy_client import GenshinClient
-from .enums import GAME_CONVERTER, Game
 
 if TYPE_CHECKING:
     import genshin
@@ -88,8 +88,9 @@ class CardSettings(Model):
 
 class EnkaCache(Model):
     uid = fields.IntField(pk=True, index=True)
-    hsr: dict[str, Any] = fields.JSONField(default={})  # type: ignore
-    genshin: dict[str, Any] = fields.JSONField(default={})  # type: ignore
+    hsr: fields.Field[bytes | None] = fields.BinaryField(null=True)  # type: ignore
+    genshin: fields.Field[bytes | None] = fields.BinaryField(null=True)  # type: ignore
+    extras: fields.Field[dict[str, dict[str, Any]]] = fields.JSONField(default={})  # type: ignore
 
     class Meta:
         ordering = ["uid"]

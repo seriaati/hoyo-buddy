@@ -116,10 +116,10 @@ class ProfileView(View):
                     "Characters: {characters}\n"
                     "Spiral Abyss: {spiral_abyss}\n"
                     "Achievements: {achievements}\n",
-                    key="profile.player_info.embed.description",
+                    key="profile.player_info.gi.embed.description",
                     adventure_rank=player.level,
                     characters=len(player.showcase_characters),
-                    spiral_abyss=f"{player.abyss_level}-{player.abyss_floor}",
+                    spiral_abyss=f"{player.abyss_floor}-{player.abyss_level}",
                     achievements=player.achievements,
                 ),
             )

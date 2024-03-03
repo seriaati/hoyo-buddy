@@ -749,6 +749,27 @@ files = [
 ]
 
 [[package]]
+name = "enka-py"
+version = "1.7.0"
+description = "An async API wrapper for enka.network written in Python."
+optional = false
+python-versions = "^3.10"
+files = []
+develop = false
+
+[package.dependencies]
+aiofiles = "^23.2.1"
+aiohttp-client-cache = {version = "^0.11.0", extras = ["sqlite"]}
+orjson = "^3.9.10"
+pydantic = "^2.5.3"
+
+[package.source]
+type = "git"
+url = "https://github.com/seriaati/enka-py"
+reference = "HEAD"
+resolved_reference = "ef1098fd795148b5a28c259eb90c0ea22b5980c6"
+
+[[package]]
 name = "filelock"
 version = "3.13.1"
 description = "A platform independent file lock."
@@ -977,7 +998,7 @@ voice = ["yt-dlp (>=2022.3.8)"]
 
 [[package]]
 name = "mihomo"
-version = "2.0.1"
+version = "2.0.2"
 description = "A simple Python Pydantic model for Honkai: Star Rail parsed data from the Mihomo API."
 optional = false
 python-versions = ">=3.10"
@@ -992,7 +1013,7 @@ pydantic = "==2.*"
 type = "git"
 url = "https://github.com/KT-Yeh/mihomo.git"
 reference = "HEAD"
-resolved_reference = "ad59c124ea7fac743db870b59bb3afef65792e2a"
+resolved_reference = "d7440e749da024987795d2d1d0a5a619a7b1daf6"
 
 [[package]]
 name = "multidict"
@@ -1416,13 +1437,13 @@ files = [
 
 [[package]]
 name = "pydantic"
-version = "2.6.2"
+version = "2.6.3"
 description = "Data validation using Python type hints"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pydantic-2.6.2-py3-none-any.whl", hash = "sha256:37a5432e54b12fecaa1049c5195f3d860a10e01bdfd24f1840ef14bd0d3aeab3"},
-    {file = "pydantic-2.6.2.tar.gz", hash = "sha256:a09be1c3d28f3abe37f8a78af58284b236a92ce520105ddc91a6d29ea1176ba7"},
+    {file = "pydantic-2.6.3-py3-none-any.whl", hash = "sha256:72c6034df47f46ccdf81869fddb81aade68056003900a8724a4f160700016a2a"},
+    {file = "pydantic-2.6.3.tar.gz", hash = "sha256:e07805c4c7f5c6826e33a1d4c9d47950d7eaf34868e2690f8594d2e30241f11f"},
 ]
 
 [package.dependencies]
@@ -2203,4 +2224,4 @@ resolved_reference = "517099337cf9c817b66a3ca5a756fbcb7fcd1fae"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "b635b1aae8d2461c9bf1b013f18552d14e80c7920b70825fa293de82f354ce8e"
+content-hash = "c891713d181d77a4a2909b9341d03d9299df13370301cf93564c75de3bd008ca"

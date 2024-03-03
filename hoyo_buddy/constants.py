@@ -1,5 +1,6 @@
 import discord
 from ambr import Language as AmbrLanguage
+from enka import Language as EnkaLanguage
 from mihomo import Language as MihomoLanguage
 from yatta import Language as YattaLanguage
 
@@ -113,4 +114,58 @@ LOCALE_TO_YATTA_LANG: dict[discord.Locale, YattaLanguage] = {
     discord.Locale.russian: YattaLanguage.RU,
     discord.Locale.thai: YattaLanguage.TH,
     discord.Locale.vietnamese: YattaLanguage.VI,
+}
+
+LOCALE_TO_ENKA_LANG: dict[discord.Locale, EnkaLanguage] = {
+    discord.Locale.taiwan_chinese: EnkaLanguage.TRADITIONAL_CHINESE,
+    discord.Locale.chinese: EnkaLanguage.SIMPLIFIED_CHINESE,
+    discord.Locale.german: EnkaLanguage.GERMAN,
+    discord.Locale.american_english: EnkaLanguage.ENGLISH,
+    discord.Locale.spain_spanish: EnkaLanguage.SPANISH,
+    discord.Locale.french: EnkaLanguage.FRENCH,
+    discord.Locale.indonesian: EnkaLanguage.INDONESIAN,
+    discord.Locale.japanese: EnkaLanguage.JAPANESE,
+    discord.Locale.korean: EnkaLanguage.KOREAN,
+    discord.Locale.brazil_portuguese: EnkaLanguage.PORTUGUESE,
+    discord.Locale.russian: EnkaLanguage.RUSSIAN,
+    discord.Locale.thai: EnkaLanguage.THAI,
+    discord.Locale.vietnamese: EnkaLanguage.VIETNAMESE,
+    discord.Locale.italian: EnkaLanguage.ITALIAN,
+    discord.Locale.turkish: EnkaLanguage.TURKISH,
+}
+
+ENKA_LANG_TO_LOCALE: dict[EnkaLanguage, discord.Locale] = {
+    EnkaLanguage.TRADITIONAL_CHINESE: discord.Locale.taiwan_chinese,
+    EnkaLanguage.SIMPLIFIED_CHINESE: discord.Locale.chinese,
+    EnkaLanguage.GERMAN: discord.Locale.german,
+    EnkaLanguage.ENGLISH: discord.Locale.american_english,
+    EnkaLanguage.SPANISH: discord.Locale.spain_spanish,
+    EnkaLanguage.FRENCH: discord.Locale.french,
+    EnkaLanguage.INDONESIAN: discord.Locale.indonesian,
+    EnkaLanguage.JAPANESE: discord.Locale.japanese,
+    EnkaLanguage.KOREAN: discord.Locale.korean,
+    EnkaLanguage.PORTUGUESE: discord.Locale.brazil_portuguese,
+    EnkaLanguage.RUSSIAN: discord.Locale.russian,
+    EnkaLanguage.THAI: discord.Locale.thai,
+    EnkaLanguage.VIETNAMESE: discord.Locale.vietnamese,
+    EnkaLanguage.ITALIAN: discord.Locale.italian,
+    EnkaLanguage.TURKISH: discord.Locale.turkish,
+}
+
+ENKA_LANG_TO_CARD_API_LANG: dict[EnkaLanguage, str] = {
+    EnkaLanguage.TRADITIONAL_CHINESE: "cht",
+    EnkaLanguage.SIMPLIFIED_CHINESE: "chs",
+    EnkaLanguage.GERMAN: "de",
+    EnkaLanguage.ENGLISH: "en",
+    EnkaLanguage.SPANISH: "es",
+    EnkaLanguage.FRENCH: "fr",
+    EnkaLanguage.INDONESIAN: "id",
+    EnkaLanguage.JAPANESE: "jp",
+    EnkaLanguage.KOREAN: "kr",
+    EnkaLanguage.PORTUGUESE: "pt",
+    EnkaLanguage.RUSSIAN: "ru",
+    EnkaLanguage.THAI: "th",
+    EnkaLanguage.VIETNAMESE: "vi",
+    EnkaLanguage.ITALIAN: "it",
+    EnkaLanguage.TURKISH: "tr",
 }

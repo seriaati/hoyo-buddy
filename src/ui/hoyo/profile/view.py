@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any
 
 from discord.utils import get as dget
 from enka import Language as EnkaLang
+from mihomo import Language as MihomoLang
 from mihomo.models import Character as HSRCharacter
 
 from src.bot.translator import LocaleStr
@@ -232,7 +233,7 @@ class ProfileView(View):
         return await asyncio.to_thread(
             draw_build_card,
             character,
-            MIHOMO_LANG_TO_LOCALE[self.cache_extras[character.id]["lang"]],
+            MIHOMO_LANG_TO_LOCALE[MihomoLang(self.cache_extras[character.id]["lang"])],
             self._card_settings.dark_mode,
             art,
             self._card_settings.custom_primary_color,

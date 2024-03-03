@@ -68,7 +68,7 @@ class CardTemplateSelect(Select["ProfileView"]):
                                 key="profile.card_template_select.enka_classic.label",
                             ),
                             description=LocaleStr(
-                                "Designed and programmed by @hattvr",
+                                "Designed by @algoinde and programmed by @hattvr",
                                 key="profile.card_template_select.enka_classic.description",
                             ),
                             value="hattvr1",
@@ -99,6 +99,11 @@ class CardTemplateSelect(Select["ProfileView"]):
                                 num=template_num,
                             ),
                             description=LocaleStr(
+                                "Designed by @algoinde and programmed by @korzzex",
+                                key="profile.card_template_select.enkacard3.description",
+                            )
+                            if template_num == 3
+                            else LocaleStr(
                                 "Designed and programmed by @korzzex",
                                 key="profile.card_template_select.enkacard.description",
                             ),

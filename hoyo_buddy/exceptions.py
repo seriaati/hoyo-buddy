@@ -82,3 +82,13 @@ class InvalidColorError(HoyoBuddyError):
                 key="invalid_color_error_message",
             ),
         )
+
+
+class IncompleteParamError(HoyoBuddyError):
+    def __init__(self, reason: LocaleStr) -> None:
+        super().__init__(
+            title=LocaleStr(
+                "The given command parameters are incomplete", key="incomplete_param_error_title"
+            ),
+            message=reason,
+        )

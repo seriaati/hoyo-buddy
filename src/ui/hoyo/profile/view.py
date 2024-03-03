@@ -176,7 +176,7 @@ class ProfileView(View):
         session: "aiohttp.ClientSession",
         template: str,
     ) -> BytesIO:
-        """Draw character card in StarRailCard template."""
+        """Draw GI character card in EnkaCard2, ENCard, enka-card templates."""
         assert self._card_settings is not None
 
         payload = {
@@ -291,6 +291,7 @@ class ProfileView(View):
         return urls
 
     async def _retrieve_genshin_image_urls(self, character: "GICharacter", art: str) -> set[str]:
+        """Retrieve all image URLs needed to draw the Genshin card."""
         urls: set[str] = set()
         urls.add(art)
         urls.add(character.weapon.icon)

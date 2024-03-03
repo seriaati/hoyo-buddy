@@ -75,7 +75,7 @@ preview = true
 "**/__init__.py" = ["F403"]
 "playground.*.py" = ["ALL"]
 "./migrations/*.py" = ["ALL"]
-"hoyo_buddy/draw/**/*.py" = ["PLR", "C"]
+"src/draw/**/*.py" = ["PLR", "C"]
 
 [tool.ruff.lint.flake8-type-checking]
 quote-annotations = true

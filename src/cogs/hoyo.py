@@ -19,10 +19,10 @@ from ..hoyo.mihomo_client import MihomoAPI
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui import URLButtonView
 from ..ui.hoyo.checkin import CheckInUI
+from ..ui.hoyo.genshin.search import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
+from ..ui.hoyo.hsr.search import BookUI, RelicSetUI
+from ..ui.hoyo.hsr.search import CharacterUI as HSRCharacterUI
 from ..ui.hoyo.profile.view import ProfileView
-from ..ui.hoyo.search.genshin import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
-from ..ui.hoyo.search.hsr import BookUI, RelicSetUI
-from ..ui.hoyo.search.hsr.character import CharacterUI as HSRCharacterUI
 
 if TYPE_CHECKING:
     from ..bot.bot import INTERACTION, HoyoBuddy

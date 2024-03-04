@@ -174,7 +174,7 @@ class EnterEmailPassword(Button["AccountManager"]):
             assert self.__email is not None and self.__password is not None
 
             client = genshin.Client()
-            result = await client.app_login(self.__email, self.__password, geetest=user.temp_data)
+            result = await client._app_login(self.__email, self.__password, geetest=user.temp_data)
             await self._finish_cookie_setup(self._interaction, result)
 
         elif self._condition is Condition.GEETEST_TRIGGERED_FOR_EMAIL:
@@ -183,7 +183,7 @@ class EnterEmailPassword(Button["AccountManager"]):
 
         elif self._condition is Condition.AFTER_GEETEST_TRIGGERED_FOR_EMAIL:
             assert self._ticket is not None
-            await self._client.send_verification_email(self._ticket, geetest=user.temp_data)
+            await self._client._send_verification_email(self._ticket, geetest=user.temp_data)
             await self._prompt_user_to_verify_email(self._interaction)
             self._condition = Condition.NEED_EMAIL_VERIFICATION
 
@@ -206,7 +206,7 @@ class EnterEmailPassword(Button["AccountManager"]):
 
         client = genshin.Client()
         try:
-            result = await client.app_login(email, password)
+            result = await client._app_login(email, password)
         except genshin.GenshinException as e:
             if e.retcode == -3208:
                 embed = ErrorEmbed(
@@ -244,7 +244,7 @@ class EnterEmailPassword(Button["AccountManager"]):
             await self.view.user.save()
             await self._prompt_user_to_solve_geetest(i)
         elif "risk_ticket" in result:
-            mmt = await client.send_verification_email(result)
+            mmt = await client._send_verification_email(result)
             if mmt is not None:
                 self._condition = Condition.GEETEST_TRIGGERED_FOR_EMAIL
                 self._ticket = result
@@ -253,7 +253,7 @@ class EnterEmailPassword(Button["AccountManager"]):
                 await self._prompt_user_to_solve_geetest(i)
             else:
                 self._condition = Condition.NEED_EMAIL_VERIFICATION
-                await self._client.send_verification_email(result)
+                await self._client._send_verification_email(result)
                 await self._prompt_user_to_verify_email(self._interaction)
         else:
             await self._finish_cookie_setup(i, result)

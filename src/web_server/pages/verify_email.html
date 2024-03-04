@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hoyo Buddy | login web server</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <h1><!-- INPUT_CODE --></h1>
+    <input id="code" type="number">
+    <button id="verify"><!-- SEND --></button>
+</body>
+<script>
+    document.getElementById("verify").onclick = () => {
+        fetch("/send-data", {
+            method: "POST",
+            body: JSON.stringify({
+                code: document.getElementById("code").value,
+                user_id: "<!-- USER_ID -->"
+            }),
+        }).then(() => {
+            window.location.href = "/redirect?channel_id=<!-- CHANNEL_ID -->&guild_id=<!-- GUILD_ID -->&message_id=<!-- MESSAGE_ID -->";
+        });
+    };
+</script>
+
+</html>

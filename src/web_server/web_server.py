@@ -1,16 +1,17 @@
 import asyncio
 import logging
+from typing import Any, Literal
 
 import aiofiles
 import aiohttp
-import genshin
 from aiohttp import web
 from discord import Locale
-from genshin.errors import GenshinException
-from genshin.utility import geetest
+from tortoise import Tortoise
 
 from src.bot.translator import LocaleStr, Translator
 from src.db.models import User
+
+from ..hoyo.dataclasses import LoginNotifPayload
 
 LOGGER_ = logging.getLogger(__name__)
 GT_URL = "https://raw.githubusercontent.com/GeeTeam/gt3-node-sdk/master/demo/static/libs/gt.js"
@@ -21,65 +22,59 @@ class GeetestWebServer:
         self.translator = translator
 
     @staticmethod
-    async def _get_account_and_password(user_id: int) -> tuple[str, str, User]:
-        user = await User.get_or_none(id=user_id)
-        if user is None:
-            raise web.HTTPNotFound(reason="User not found")
+    async def _get_mmt(user_id: int) -> dict[str, Any]:
+        user = await User.get(id=user_id)
+        return user.temp_data
 
-        email = user.temp_data.get("email")
-        password = user.temp_data.get("password")
-        if email is None or password is None:
-            raise web.HTTPBadRequest(reason="Missing email or password")
-        return email, password, user
+    async def _get_page(
+        self, page: Literal["captcha", "verify-email"], payload: LoginNotifPayload
+    ) -> str:
+        locale = Locale(payload.locale)
 
-    async def index(self, request: web.Request) -> web.StreamResponse:
-        user_id = request.query.get("user_id")
-        if user_id is None:
-            return web.Response(status=400, reason="Missing user_id")
-        locale = Locale(request.query.get("locale", "en-US"))
-        loading_text = self.translator.translate(
-            LocaleStr(
-                "Loading CAPTCHA...",
-                key="loading_captcha_text",
-            ),
-            locale,
-        )
-        button_label = self.translator.translate(
-            LocaleStr("Click me to complete CAPTCHA", key="geetest_button_label"), locale
-        )
-        close_tab = self.translator.translate(
-            LocaleStr(
-                "You may now close this tab and click 'Continue' in Discord.",
-                key="geetest_finish_label",
-            ),
-            locale,
-        )
-        no_geetest_close_tab = self.translator.translate(
-            LocaleStr(
-                "You're lucky!<br>No CAPTCHA is needed, you may now close this tab and click 'Continue' in Discord.",
-                key="no_geetest_finish_label",
-            ),
-            locale,
-        )
+        async with aiofiles.open(f"src/web_server/pages/{page}.html", encoding="utf-8") as f:
+            content = await f.read()
 
-        async with aiofiles.open("src/web_server/pages/index.html", encoding="utf-8") as f:
-            index = await f.read()
-
-        body = (
-            index.replace("<!-- LOADING_TEXT -->", loading_text)
-            .replace("<!-- BUTTON_LABEL -->", button_label)
-            .replace("<!-- CLOSE_TAB -->", close_tab)
-            .replace("<!-- USER_ID -->", user_id)
-            .replace("<!-- NO_GEETEST_CLOSE_TAB -->", no_geetest_close_tab)
+        content = (
+            content.replace(
+                "<!-- SEND -->",
+                self.translator.translate(
+                    LocaleStr(
+                        "Send",
+                        key="web_server.send_button_label",
+                    ),
+                    locale,
+                ),
+            )
+            .replace(
+                "<!-- INPUT_CODE -->",
+                self.translator.translate(
+                    LocaleStr(
+                        "Input the verification code you received in your email:",
+                        key="web_server.input_code_label",
+                    ),
+                    locale,
+                ),
+            )
+            .replace("<!-- USER_ID -->", str(payload.user_id))
+            .replace("<!-- GUILD_ID -->", str(payload.guild_id) if payload.guild_id else "null")
+            .replace("<!-- CHANNEL_ID -->", str(payload.channel_id))
+            .replace("<!-- MESSAGE_ID -->", str(payload.message_id))
+            .replace("<!-- LOCALE -->", locale.value)
         )
 
-        return web.Response(
-            body=body,
-            content_type="text/html",
-        )
+        return content
 
-    @staticmethod
-    async def gt(_: web.Request) -> web.StreamResponse:
+    async def captcha(self, request: web.Request) -> web.StreamResponse:
+        payload = LoginNotifPayload.parse_from_request(request)
+        body = await self._get_page("captcha", payload)
+        return web.Response(body=body, content_type="text/html")
+
+    async def verify_email(self, request: web.Request) -> web.StreamResponse:
+        payload = LoginNotifPayload.parse_from_request(request)
+        body = await self._get_page("verify-email", payload)
+        return web.Response(body=body, content_type="text/html")
+
+    async def gt(self, _: web.Request) -> web.StreamResponse:
         async with aiohttp.ClientSession() as session:
             r = await session.get(GT_URL)
             content = await r.read()
@@ -87,43 +82,34 @@ class GeetestWebServer:
         return web.Response(body=content, content_type="text/javascript")
 
     async def mmt_endpoint(self, request: web.Request) -> web.Response:
-        user_id = request.query.get("user_id")
-        if user_id is None:
-            return web.Response(status=400, reason="Missing user_id")
-        account, password, _ = await self._get_account_and_password(int(user_id))
-
-        mmt = await geetest.create_mmt(account, password)
-        if mmt.get("data") is None:
-            user = await User.get(id=int(user_id))
-            user.temp_data["cookies"] = mmt
-            await user.save()
-            return web.Response(status=400, reason="Failed to create mmt")
-
+        user_id = request.query["user_id"]
+        mmt = await self._get_mmt(int(user_id))
         return web.json_response(mmt)
 
-    async def login(self, request: web.Request) -> web.Response:
-        body = await request.json()
-        user_id = body.get("user_id")
-        if user_id is None:
-            return web.Response(status=400, reason="Missing user_id")
-        account, password, user = await self._get_account_and_password(int(user_id))
+    async def send_data_endpoint(self, request: web.Request) -> web.Response:
+        data: dict[str, Any] = await request.json()
 
-        try:
-            data = await genshin.Client().login_with_geetest(
-                account, password, body["sid"], body["gt"]
-            )
-        except GenshinException as e:
-            user.temp_data["cookies"] = {"retcode": e.retcode, "message": e.msg}
-        except Exception as e:
-            user.temp_data["cookies"] = {"retcode": -1, "message": str(e)}
-        else:
-            user.temp_data["cookies"] = data
+        user_id = data.pop("user_id")
+        await User.filter(id=int(user_id)).update(temp_data=data)
+        conn = Tortoise.get_connection("default")
+        await conn.execute_query(f"NOTIFY login, '{user_id}'")
 
-        await user.save()
-        return web.json_response({})
+        return web.Response(status=204)
+
+    async def redirect(self, request: web.Request) -> web.Response:
+        channel_id = request.query["channel_id"]
+        guild_id = request.query["guild_id"]
+        message_id = request.query["message_id"]
+
+        protocol = (
+            f"discord://-/channels/@me/{channel_id}/{message_id}"
+            if guild_id == "null"
+            else f"discord://-/channels/{guild_id}/{channel_id}/{message_id}"
+        )
+        return web.Response(status=302, headers={"Location": protocol})
 
     async def style_css(self, _: web.Request) -> web.StreamResponse:
-        async with aiofiles.open("src/web_server/pages/style.css", encoding="utf-8") as f:
+        async with aiofiles.open("src/web_server/style.css", encoding="utf-8") as f:
             css = await f.read()
 
         return web.Response(
@@ -133,18 +119,23 @@ class GeetestWebServer:
 
     async def run(self, port: int = 5000) -> None:
         LOGGER_.info("Starting web server... (port=%d)", port)
+
         app = web.Application()
         app.add_routes(
             [
-                web.get("/", self.index),
+                web.get("/captcha", self.captcha),
+                web.get("/verify-email", self.verify_email),
                 web.get("/gt.js", self.gt),
                 web.get("/mmt", self.mmt_endpoint),
-                web.post("/login", self.login),
+                web.post("/send-data", self.send_data_endpoint),
                 web.get("/style.css", self.style_css),
+                web.get("/redirect", self.redirect),
             ]
         )
+
         runner = web.AppRunner(app)
         await runner.setup()
+
         site = web.TCPSite(runner, "localhost", port)
         await site.start()
         LOGGER_.info("Web server started")

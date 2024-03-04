@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hoyo Buddy | login web server</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body></body>
+<script src="./gt.js"></script>
+<script>
+    fetch("/mmt?user_id=<!-- USER_ID -->")
+        .then((response) => response.json())
+        .then((mmt) =>
+            window.initGeetest(
+                {
+                    gt: mmt.data.gt,
+                    challenge: mmt.data.challenge,
+                    new_captcha: mmt.data.new_captcha,
+                    api_server: "api-na.geetest.com",
+                    product: "bind",
+                    https: false,
+                    lang: "en",
+                },
+                (captcha) => {
+                    captcha.onReady(() => {
+                        captcha.verify();
+                    });
+                    captcha.onSuccess(() => {
+                        fetch("/send-data", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                session_id: mmt.session_id,
+                                user_id: "<!-- USER_ID -->",
+                                data: captcha.getValidate()
+                            }),
+                        }).then(() => {
+                            window.location.href = "/redirect?channel_id=<!-- CHANNEL_ID -->&guild_id=<!-- GUILD_ID -->&message_id=<!-- MESSAGE_ID -->";
+                        });
+                    });
+                }
+            )
+        );
+
+</script>
+
+</html>

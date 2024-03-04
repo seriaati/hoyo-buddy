@@ -344,6 +344,20 @@ docs = ["Sphinx (>=5.3.0,<5.4.0)", "sphinx-rtd-theme (>=1.2.2)", "sphinxcontrib-
 test = ["flake8 (>=6.1,<7.0)", "uvloop (>=0.15.3)"]
 
 [[package]]
+name = "asyncpg-listen"
+version = "0.0.6"
+description = "Helps to use PostgreSQL listen/notify with asyncpg"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "asyncpg-listen-0.0.6.tar.gz", hash = "sha256:f3a889a3848903e4710705e785fd95940b3a5939a89a660827cdaaa113e1959e"},
+    {file = "asyncpg_listen-0.0.6-py3-none-any.whl", hash = "sha256:9fe21be4399f4c511a3f9a9b064306b13183487524a02f14166b33afe17ba401"},
+]
+
+[package.dependencies]
+asyncpg = ">=0.27.0"
+
+[[package]]
 name = "attrs"
 version = "23.2.0"
 description = "Classes Without Boilerplate"
@@ -903,9 +917,9 @@ geetest = ["rsa"]
 
 [package.source]
 type = "git"
-url = "https://github.com/seriaati/genshin.py"
+url = "https://github.com/thesadru/genshin.py"
 reference = "HEAD"
-resolved_reference = "b9ddfd1082c3060609b1c56c26552969b3a84fe9"
+resolved_reference = "a424187d1a085980cf9a4f0142c3a0d099be4c94"
 
 [[package]]
 name = "identify"
@@ -2224,4 +2238,4 @@ resolved_reference = "517099337cf9c817b66a3ca5a756fbcb7fcd1fae"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "c891713d181d77a4a2909b9341d03d9299df13370301cf93564c75de3bd008ca"
+content-hash = "37c411b9750af6d2e9e9bca6836c802534a72be833d7cc84aa44843d825106b4"

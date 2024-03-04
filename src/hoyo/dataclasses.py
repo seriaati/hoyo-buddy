@@ -44,3 +44,17 @@ class LoginNotifPayload:
 
     def to_query_string(self) -> str:
         return "&".join(f"{k}={v}" for k, v in self.to_dict().items() if v is not None)
+
+
+@dataclass
+class ItemWithDescription:
+    icon: str
+    title: str
+    description: str
+
+
+@dataclass
+class ItemWithTrailing:
+    icon: str
+    title: str
+    trailing: str

@@ -215,7 +215,7 @@ pydantic = "^2.4.2"
 type = "git"
 url = "https://github.com/seriaati/ambr"
 reference = "HEAD"
-resolved_reference = "67c43a27b338a8fb396b1a8d06e758af3d01c281"
+resolved_reference = "dca5bfa7114dc9f6ba0c386e39d5c921d53a2136"
 
 [[package]]
 name = "annotated-types"
@@ -781,7 +781,7 @@ pydantic = "^2.5.3"
 type = "git"
 url = "https://github.com/seriaati/enka-py"
 reference = "HEAD"
-resolved_reference = "ef1098fd795148b5a28c259eb90c0ea22b5980c6"
+resolved_reference = "6fca056920c66cce0c3f52a9674734424b75644c"
 
 [[package]]
 name = "filelock"
@@ -898,7 +898,7 @@ files = [
 
 [[package]]
 name = "genshin"
-version = "1.6.1"
+version = "1.6.2"
 description = "An API wrapper for Genshin Impact."
 optional = false
 python-versions = ">=3.8"
@@ -919,7 +919,7 @@ geetest = ["rsa"]
 type = "git"
 url = "https://github.com/thesadru/genshin.py"
 reference = "HEAD"
-resolved_reference = "a424187d1a085980cf9a4f0142c3a0d099be4c94"
+resolved_reference = "5a4a840b656c5bbf6999a3135046b6f1b9e5fc6e"
 
 [[package]]
 name = "identify"
@@ -1899,7 +1899,7 @@ tortoise-orm = {version = "^0.20.0", extras = ["asyncpg"]}
 type = "git"
 url = "https://github.com/seriaati/seria-library"
 reference = "HEAD"
-resolved_reference = "bf559ccc995c25e9b34ae5bdb2107b85eaf9baa6"
+resolved_reference = "6ba0beca60915eeb434d7baf363ee6bc60791b59"
 
 [[package]]
 name = "setuptools"
@@ -2233,7 +2233,7 @@ pydantic = "^2.5.2"
 type = "git"
 url = "https://github.com/seriaati/yatta"
 reference = "HEAD"
-resolved_reference = "517099337cf9c817b66a3ca5a756fbcb7fcd1fae"
+resolved_reference = "0dfda631c242f6a193f9880b4814b47ecbce28e5"
 
 [metadata]
 lock-version = "2.0"

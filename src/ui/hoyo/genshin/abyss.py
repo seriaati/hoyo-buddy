@@ -3,10 +3,11 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, File, Locale, Member, User
 
-from ....bot.translator import LocaleStr
-from ....draw.item_list import draw_item_list
-from ....draw.static import download_and_save_static_images
-from ....hoyo.genshin.ambr import AmbrAPIClient
+from src.bot.translator import LocaleStr
+from src.draw.item_list import draw_item_list
+from src.draw.static import download_and_save_static_images
+from src.hoyo.genshin.ambr import AmbrAPIClient
+
 from ...components import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:

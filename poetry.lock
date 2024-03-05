@@ -781,7 +781,7 @@ pydantic = "^2.5.3"
 type = "git"
 url = "https://github.com/seriaati/enka-py"
 reference = "HEAD"
-resolved_reference = "7c69e485382b333c8d16f41f570f523d6a9ce449"
+resolved_reference = "90a5df8534a13c96d98ecc60e8c4537bf923063f"
 
 [[package]]
 name = "filelock"

@@ -508,7 +508,7 @@ class Hoyo(commands.Cog):
         await i.response.defer()
 
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        uid_, game = await self.get_uid_and_game(i.user.id, account, uid, game_value)
+        uid_, game = await self._get_uid_and_game(i.user.id, account, uid, game_value)
 
         if game is Game.GENSHIN:
             async with EnkaAPI(locale) as client:
@@ -525,7 +525,7 @@ class Hoyo(commands.Cog):
                 locale=locale,
                 translator=self.bot.translator,
             )
-        else:
+        elif game is Game.STARRAIL:
             client = MihomoAPI(locale)
             data = await client.fetch_user(uid_)
 
@@ -540,10 +540,12 @@ class Hoyo(commands.Cog):
                 locale=locale,
                 translator=self.bot.translator,
             )
+        else:
+            raise NotImplementedError
 
         await view.start(i)
 
-    async def get_uid_and_game(
+    async def _get_uid_and_game(
         self, user_id: int, account: HoyoAccount | None, uid: str | None, game_value: str | None
     ) -> tuple[int, Game]:
         if uid is not None:

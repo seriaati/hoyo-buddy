@@ -1,3 +1,4 @@
+import os
 from typing import TYPE_CHECKING, Any
 
 import discord
@@ -29,10 +30,10 @@ class SettingsUI(View):
 
     @staticmethod
     def _get_filename(theme: str, locale: discord.Locale) -> str:
-        try:
-            return f"hoyo-buddy-assets/assets/brand/{theme}-{locale.value.replace('-', '_')}.png"
-        except FileNotFoundError:
+        filename = f"hoyo-buddy-assets/assets/brand/{theme}-{locale.value.replace('-', '_')}.png"
+        if not os.path.exists(filename):
             return f"hoyo-buddy-assets/assets/brand/{theme}-en_US.png"
+        return filename
 
     def get_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale, self.translator)

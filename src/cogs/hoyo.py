@@ -156,8 +156,9 @@ class Hoyo(commands.Cog):
     )
     @app_commands.describe(
         account=app_commands.locale_str(
-            "Account to run this command with, defaults to the first one",
+            "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
+            replace_command_mentions=False,
         )
     )
     async def checkin_command(
@@ -166,10 +167,13 @@ class Hoyo(commands.Cog):
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> Any:
         settings = await Settings.get(user_id=i.user.id)
+        account = (
+            account
+            or await HoyoAccount.filter(user_id=i.user.id, current=True).first()
+            or await HoyoAccount.filter(user_id=i.user.id).first()
+        )
         if account is None:
-            account = await HoyoAccount.filter(user_id=i.user.id).first()
-            if account is None:
-                raise NoAccountFoundError
+            raise NoAccountFoundError
 
         view = CheckInUI(
             account,
@@ -475,8 +479,9 @@ class Hoyo(commands.Cog):
     )
     @app_commands.describe(
         account=app_commands.locale_str(
-            "Account to run this command with, defaults to the first one",
+            "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
+            replace_command_mentions=False,
         ),
         uid=app_commands.locale_str(
             "UID of the player, this overrides the account parameter if provided",
@@ -559,7 +564,10 @@ class Hoyo(commands.Cog):
                 )
             game = Game(game_value)
         elif account is None:
-            account_ = await HoyoAccount.filter(user_id=user_id).first()
+            account_ = (
+                await HoyoAccount.filter(user_id=user_id, current=True).first()
+                or await HoyoAccount.filter(user_id=user_id).first()
+            )
             if account_ is None:
                 raise NoAccountFoundError
             uid_ = account_.uid

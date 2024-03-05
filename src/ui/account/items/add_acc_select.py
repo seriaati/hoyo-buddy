@@ -5,10 +5,10 @@ from genshin import Game as GenshinGame
 from tortoise.exceptions import IntegrityError
 
 from src.bot.translator import LocaleStr
+from src.db.models import AccountNotifSettings, HoyoAccount
 from src.emojis import get_game_emoji
+from src.enums import GAME_CONVERTER
 
-from ....db.models import AccountNotifSettings, HoyoAccount
-from ....enums import GAME_CONVERTER
 from ...components import Select, SelectOption
 
 if TYPE_CHECKING:

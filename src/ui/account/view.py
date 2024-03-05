@@ -38,7 +38,9 @@ class AccountManager(View):
 
     async def init(self) -> None:
         if self.accounts:
-            self.selected_account = self.accounts[0]
+            self.selected_account = (
+                next((a for a in self.accounts if a.current), None) or self.accounts[0]
+            )
             self.add_item(AccountSelect(self.get_account_options()))
             self.add_item(AddAccountButton())
             self.add_item(EditNicknameButton())
@@ -69,19 +71,22 @@ class AccountManager(View):
         embed.add_field(
             name=LocaleStr("Game", key="account_game"),
             value=LocaleStr(account.game.value, warn_no_key=False),
-            inline=False,
         )
         embed.add_field(
             name=LocaleStr("Server", key="account_server"),
             value=LocaleStr(account.server, warn_no_key=False),
-            inline=False,
         )
         if account.nickname:
             embed.add_field(
                 name=LocaleStr("Username", key="account_username"),
                 value=account.username,
-                inline=False,
             )
+        embed.set_footer(
+            text=LocaleStr(
+                "Selected account will be the default one used for all commands",
+                key="account_manager_footer",
+            )
+        )
         return embed
 
     def get_account_options(self) -> list[SelectOption]:

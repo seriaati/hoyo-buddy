@@ -8,11 +8,11 @@ import genshin
 from discord import ButtonStyle
 
 from src.bot.translator import LocaleStr
+from src.db.models import User
 from src.embeds import DefaultEmbed, ErrorEmbed
 from src.emojis import PASSWORD
+from src.hoyo.dataclasses import LoginNotifPayload
 
-from ....db.models import User
-from ....hoyo.dataclasses import LoginNotifPayload
 from ...components import Button, GoBackButton, Modal, TextInput
 from .add_acc_select import AddAccountSelect
 

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class User(Model):
     id = fields.BigIntField(pk=True, index=True, generated=False)  # noqa: A003
     settings: fields.BackwardOneToOneRelation["Settings"]
-    temp_data: dict[str, Any] = fields.JSONField(default=dict)  # type: ignore
+    temp_data: fields.Field[dict[str, Any]] = fields.JSONField(default=dict)  # type: ignore
     accounts: fields.ReverseRelation["HoyoAccount"]
 
     def __str__(self) -> str:
@@ -32,6 +32,7 @@ class HoyoAccount(Model):
         "models.User", related_name="accounts"
     )
     daily_checkin = fields.BooleanField(default=True)
+    current = fields.BooleanField(default=False)
     notif_settings: fields.BackwardOneToOneRelation["AccountNotifSettings"]
 
     class Meta:
@@ -75,10 +76,10 @@ class CardSettings(Model):
         "models.User", related_name="card_settings"
     )
     dark_mode = fields.BooleanField()
-    custom_images: list[str] = fields.JSONField(default=[])  # type: ignore
+    custom_images: fields.Field[list[str]] = fields.JSONField(default=[])  # type: ignore
     """URLs of custom images."""
-    custom_primary_color: str | None = fields.CharField(max_length=7, null=True)  # type: ignore
-    current_image: str | None = fields.CharField(max_length=100, null=True)  # type: ignore
+    custom_primary_color: fields.Field[str | None] = fields.CharField(max_length=7, null=True)  # type: ignore
+    current_image: fields.Field[str | None] = fields.CharField(max_length=100, null=True)  # type: ignore
     template = fields.CharField(max_length=32, default="hb1")
 
     class Meta:

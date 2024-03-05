@@ -84,3 +84,9 @@ async def upload_image(image_url: str, session: aiohttp.ClientSession) -> str:
 
         data = await resp.json()
         return data["image"]["url"]
+
+
+def format_timedelta(td: datetime.timedelta) -> str:
+    hours, remainder = divmod(td.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return f"{hours:02}:{minutes:02}:{seconds:02}"

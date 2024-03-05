@@ -19,7 +19,7 @@ def draw_genshin_notes_card(
     filename = f"{'dark' if dark_mode else 'light'}-gi"
     im = Image.open(f"hoyo-buddy-assets/assets/notes/{filename}.png")
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(draw, folder="notes", dark_mode=dark_mode, translator=translator)
+    drawer = Drawer(draw, folder="gi-notes", dark_mode=dark_mode, translator=translator)
 
     drawer.write(
         LocaleStr("Real-Time Notes", key="notes-card.gi.realtime-notes"),

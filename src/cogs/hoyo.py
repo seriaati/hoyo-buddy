@@ -12,6 +12,7 @@ from ..bot.translator import LocaleStr, Translator
 from ..db.models import EnkaCache, HoyoAccount, Settings
 from ..draw.hoyo.genshin.notes import draw_genshin_notes_card
 from ..draw.hoyo.hsr.notes import draw_hsr_notes_card
+from ..draw.static import download_and_save_static_images
 from ..emojis import PROJECT_AMBER
 from ..enums import Game
 from ..exceptions import IncompleteParamError, InvalidQueryError, NoAccountFoundError
@@ -644,6 +645,9 @@ class Hoyo(commands.Cog):
 
         if account.game is Game.GENSHIN:
             notes = await client.get_genshin_notes()
+            await download_and_save_static_images(
+                [exped.character_icon for exped in notes.expeditions], "gi-notes", self.bot.session
+            )
             buffer = await asyncio.to_thread(
                 draw_genshin_notes_card,
                 notes,
@@ -653,6 +657,9 @@ class Hoyo(commands.Cog):
             )
         elif account.game is Game.STARRAIL:
             notes = await client.get_starrail_notes()
+            await download_and_save_static_images(
+                [exped.item_url for exped in notes.expeditions], "hsr-notes", self.bot.session
+            )
             buffer = await asyncio.to_thread(
                 draw_hsr_notes_card,
                 notes,

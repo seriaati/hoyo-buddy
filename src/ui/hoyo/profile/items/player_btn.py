@@ -10,6 +10,8 @@ if TYPE_CHECKING:
     from src.bot.bot import INTERACTION
 
     from ..view import ProfileView  # noqa: F401
+    from .card_settings_btn import CardSettingsButton
+    from .chara_select import CharacterSelect
 
 
 class PlayerButton(Button["ProfileView"]):
@@ -21,8 +23,10 @@ class PlayerButton(Button["ProfileView"]):
         )
 
     async def callback(self, i: "INTERACTION") -> None:
-        card_settings_btn = self.view.get_item("profile_card_settings")
-        if card_settings_btn is not None:
-            card_settings_btn.disabled = True
+        card_settings_btn: CardSettingsButton = self.view.get_item("profile_card_settings")
+        card_settings_btn.disabled = True
+
+        chara_select: CharacterSelect = self.view.get_item("profile_character_select")
+        chara_select.update_options_defaults(values=["none"])
 
         await i.response.edit_message(embed=self.view.player_embed, attachments=[], view=self.view)

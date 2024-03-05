@@ -224,6 +224,9 @@ class Translator:
             pass
 
     async def push_source_strings(self) -> None:
+        if not self.not_translated:
+            return
+
         LOGGER_.info("Pushing %d source strings to Transifex", len(self.not_translated))
         split_source_strings = split_list_to_chunks(
             [SourceString(string, _key=key) for key, string in self.not_translated.items()],

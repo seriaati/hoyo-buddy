@@ -154,7 +154,11 @@ def draw_genshin_card(
     # start pos (1025, 636)
     # 3x1 grid, x offset between each item is 137
     # text is 92 below the icon
-    for index, talent in enumerate(character.talents):
+    talent_order = character.talent_order
+    talents = [
+        next(t for t in character.talents if t.id == talent_id) for talent_id in talent_order
+    ]
+    for index, talent in enumerate(talents):
         x_pos = 1025 + 137 * index
         icon_color = (255, 255, 255) if dark_mode else (67, 67, 67)
         talent_icon = drawer.open_static(talent.icon, size=(80, 80), mask_color=icon_color)

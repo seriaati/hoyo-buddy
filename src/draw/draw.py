@@ -241,6 +241,13 @@ class Drawer:
             image = self._mask_image_with_color(image, mask_color, opacity)
         return image
 
+    def circular_crop(self, image: Image.Image) -> Image.Image:
+        """Crop an image into a circle."""
+        mask = self._open_image("hoyo-buddy-assets/assets/circular_mask.png", image.size)
+        empty = Image.new("RGBA", image.size, 0)
+        image = Image.composite(image, empty, mask)
+        return image
+
     def modify_image_for_build_card(
         self, image: Image.Image, target_width: int, target_height: int
     ) -> Image.Image:

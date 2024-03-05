@@ -14,6 +14,7 @@ from src.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_element_emoji
 from ...bot.translator import LocaleStr, Translator
 from ...constants import LOCALE_TO_AMBR_LANG, WEEKDAYS
 from ...embeds import DefaultEmbed
+from ..dataclasses import ItemWithDescription
 
 __all__ = ("AmbrAPIClient", "ItemCategory", "AUDIO_LANGUAGES")
 
@@ -582,3 +583,99 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         embed.set_author(name="/".join([t.name for t in talent.tags]))
         embed.set_thumbnail(url=talent.icon)
         return embed
+
+    def get_abyss_chamber_embed_with_floor_info(
+        self, floor: ambr.Floor, floor_index: int, chamber: ambr.Chamber, chamber_index: int
+    ) -> DefaultEmbed:
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=LocaleStr(
+                "Floor {floor_index} - Chamber {chamber_index}",
+                floor_index=floor_index + 1,
+                chamber_index=chamber_index + 1,
+                key="abyss_chamber.embed.title",
+            ),
+        )
+
+        embed.add_field(
+            name=LocaleStr("Enemy Level", key="abyss_chamber.enemy_level.embed.field.name"),
+            value=str(floor.override_enemy_level),
+            inline=False,
+        )
+        embed.add_field(
+            name=LocaleStr(
+                "Challenge Target", key="abyss_chamber.challenge_target.embed.field.name"
+            ),
+            value=chamber.challenge_target.formatted,
+            inline=False,
+        )
+        embed.add_field(
+            name=LocaleStr(
+                "Ley Line Disorder", key="abyss_chamber.ley_line_disorder.embed.field.name"
+            ),
+            value=create_bullet_list(
+                [lld.description for lld in floor.ley_line_disorders if lld.visible]
+            ),
+            inline=False,
+        )
+
+        return embed
+
+    def _get_abyss_enemy_item(
+        self,
+        enemy: ambr.AbyssEnemy,
+        level: int,
+        monster_curve: dict[str, dict[str, dict[str, float]]],
+    ) -> ItemWithDescription:
+        prop_values: dict[str, float] = {
+            prop.type: prop.initial_value
+            * monster_curve[str(level)]["curveInfos"][prop.growth_type]
+            for prop in enemy.properties
+        }
+        title_locale_str = LocaleStr(
+            "HP {HP} | DEF {DEF}",
+            key="abyss_enemy.item_description",
+            HP=f"{round(prop_values['FIGHT_PROP_BASE_HP']):,}",
+            # ATK=f"{round(prop_values['FIGHT_PROP_BASE_ATTACK']):,}",
+            DEF=f"{round(prop_values['FIGHT_PROP_BASE_DEFENSE']):,}",
+        )
+        title_str = self.translator.translate(title_locale_str, self.locale)
+        return ItemWithDescription(icon=enemy.icon, title=title_str, description=enemy.name)
+
+    def _get_enemy_items(
+        self,
+        enemy_ids: list[int],
+        enemies: list[ambr.AbyssEnemy],
+        floor_enemy_level: int,
+        monster_curve: dict[str, dict[str, dict[str, float]]],
+    ) -> list[ItemWithDescription]:
+        items = []
+        for enemy_id in enemy_ids:
+            enemy = dutils.get(enemies, id=enemy_id)
+            if enemy is not None:
+                items.append(self._get_abyss_enemy_item(enemy, floor_enemy_level, monster_curve))
+        return items
+
+    def get_abyss_chamber_enemy_items(
+        self,
+        chamber: ambr.Chamber,
+        enemies: list[ambr.AbyssEnemy],
+        floor_enemy_level: int,
+        monster_curve: dict[str, dict[str, dict[str, float]]],
+    ) -> tuple[list[ItemWithDescription], list[ItemWithDescription]]:
+        result = (
+            self._get_enemy_items(
+                chamber.wave_one_enemies, enemies, floor_enemy_level, monster_curve
+            ),
+            [],
+        )
+        if chamber.wave_two_enemies:
+            result = (
+                result[0],
+                self._get_enemy_items(
+                    chamber.wave_two_enemies, enemies, floor_enemy_level, monster_curve
+                ),
+            )
+
+        return result

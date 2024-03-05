@@ -57,6 +57,7 @@ def draw_item_list(
             card_size[1] * (index % rows) + overall_top_bottom_padding,
         )
         icon = drawer.open_static(item.icon, size=icon_size)
+        icon = drawer.circular_crop(icon)
         im.paste(icon, (pos[0] + icon_top_left_padding, pos[1] + icon_top_left_padding), icon)
 
         drawer.write(
@@ -64,6 +65,7 @@ def draw_item_list(
             size=16,
             position=(pos[0] + title_left_padding, pos[1] + title_top_padding),
             color=DARK_ON_SURFACE if drawer.dark_mode else LIGHT_ON_SURFACE,
+            style="medium",
         )
 
         if isinstance(item, ItemWithTrailing):

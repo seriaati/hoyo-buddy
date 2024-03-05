@@ -19,6 +19,7 @@ from ..hoyo.mihomo_client import MihomoAPI
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui import URLButtonView
 from ..ui.hoyo.checkin import CheckInUI
+from ..ui.hoyo.genshin.abyss import AbyssView
 from ..ui.hoyo.genshin.search import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
 from ..ui.hoyo.hsr.search import BookUI, RelicSetUI
 from ..ui.hoyo.hsr.search import CharacterUI as HSRCharacterUI
@@ -573,6 +574,24 @@ class Hoyo(commands.Cog):
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         return await self._account_autocomplete(i.user.id, current, locale, self.bot.translator)
+
+    @app_commands.command(
+        name=app_commands.locale_str("abyss-enemies", translate=False),
+        description=app_commands.locale_str(
+            "View the current abyss enemies", key="abyss_command_description"
+        ),
+    )
+    async def abyss_enemies_command(self, i: "INTERACTION") -> None:
+        settings = await Settings.get(user_id=i.user.id)
+
+        view = AbyssView(
+            dark_mode=settings.dark_mode,
+            author=i.user,
+            locale=settings.locale or i.locale,
+            translator=self.bot.translator,
+        )
+        view.add_items()
+        await view.update(i)
 
 
 async def setup(bot: "HoyoBuddy") -> None:

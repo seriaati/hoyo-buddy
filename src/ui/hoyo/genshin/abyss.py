@@ -70,7 +70,9 @@ class AbyssView(View):
         await download_and_save_static_images(
             [item.icon for item in items[0] + items[1]], "draw-list", i.client.session
         )
-        buffer = await asyncio.to_thread(draw_item_list, items[self._wave_index], self._dark_mode)
+        buffer = await asyncio.to_thread(
+            draw_item_list, items[self._wave_index], self._dark_mode, self.locale
+        )
         buffer.seek(0)
         file_ = File(buffer, filename="enemies.webp")
 

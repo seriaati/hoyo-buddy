@@ -1,4 +1,5 @@
 from io import BytesIO
+from typing import TYPE_CHECKING
 
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
@@ -13,18 +14,23 @@ from .draw import (
     Drawer,
 )
 
+if TYPE_CHECKING:
+    from discord import Locale
 
-def cache_key(items: list[ItemWithDescription] | list[ItemWithTrailing], dark_mode: bool) -> str:
+
+def cache_key(
+    items: list[ItemWithDescription] | list[ItemWithTrailing], dark_mode: bool, locale: "Locale"
+) -> str:
     items_key = "_".join(
         f"{item.title}_{item.description if isinstance(item, ItemWithDescription) else item.trailing}"
         for item in items
     )
-    return f"{items_key}_{dark_mode}"
+    return f"{items_key}_{dark_mode}_{locale.value}"
 
 
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
 def draw_item_list(
-    items: list[ItemWithDescription] | list[ItemWithTrailing], dark_mode: bool
+    items: list[ItemWithDescription] | list[ItemWithTrailing], dark_mode: bool, locale: "Locale"
 ) -> BytesIO:
     is_trailing = any(isinstance(item, ItemWithTrailing) for item in items)
 
@@ -49,7 +55,7 @@ def draw_item_list(
         color=DARK_SURFACE if dark_mode else LIGHT_SURFACE,
     )
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(draw, folder="draw-list", dark_mode=dark_mode)
+    drawer = Drawer(draw, folder="draw-list", dark_mode=dark_mode, locale=locale)
 
     for index, item in enumerate(items):
         pos = (

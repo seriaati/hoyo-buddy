@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from genshin.models import Notes
 
 
-def draw_notes_card(
+def draw_genshin_notes_card(
     notes: "Notes", locale: "Locale", translator: Translator, dark_mode: bool
 ) -> BytesIO:
     filename = f"{'dark' if dark_mode else 'light'}-gi"

@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import random
 from typing import TYPE_CHECKING, Any
@@ -9,6 +10,8 @@ from seria.utils import read_yaml
 
 from ..bot.translator import LocaleStr, Translator
 from ..db.models import EnkaCache, HoyoAccount, Settings
+from ..draw.hoyo.genshin.notes import draw_genshin_notes_card
+from ..draw.hoyo.hsr.notes import draw_hsr_notes_card
 from ..emojis import PROJECT_AMBER
 from ..enums import Game
 from ..exceptions import IncompleteParamError, InvalidQueryError, NoAccountFoundError
@@ -602,6 +605,74 @@ class Hoyo(commands.Cog):
         )
         view.add_items()
         await view.update(i)
+
+    @app_commands.command(
+        name=app_commands.locale_str("notes", translate=False),
+        description=app_commands.locale_str(
+            "View real-time notes", key="notes_command_description"
+        ),
+    )
+    @app_commands.rename(
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+    )
+    @app_commands.describe(
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+            replace_command_mentions=False,
+        )
+    )
+    async def notes_command(
+        self,
+        i: "INTERACTION",
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+    ) -> None:
+        settings = await Settings.get(user_id=i.user.id)
+        account = (
+            account
+            or await HoyoAccount.filter(user_id=i.user.id, current=True).first()
+            or await HoyoAccount.filter(user_id=i.user.id).first()
+        )
+        if account is None:
+            raise NoAccountFoundError
+
+        await i.response.defer()
+
+        locale = settings.locale or i.locale
+        client = account.client
+        client.set_lang(locale)
+
+        if account.game is Game.GENSHIN:
+            notes = await client.get_genshin_notes()
+            buffer = await asyncio.to_thread(
+                draw_genshin_notes_card,
+                notes,
+                locale,
+                self.bot.translator,
+                settings.dark_mode,
+            )
+        elif account.game is Game.STARRAIL:
+            notes = await client.get_starrail_notes()
+            buffer = await asyncio.to_thread(
+                draw_hsr_notes_card,
+                notes,
+                locale,
+                self.bot.translator,
+                settings.dark_mode,
+            )
+        else:
+            raise NotImplementedError
+
+        buffer.seek(0)
+        file_ = discord.File(buffer, filename="notes.webp")
+        await i.followup.send(file=file_)
+
+    @notes_command.autocomplete("account")
+    async def notes_command_autocomplete(
+        self, i: "INTERACTION", current: str
+    ) -> list[app_commands.Choice]:
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        return await self._account_autocomplete(i.user.id, current, locale, self.bot.translator)
 
 
 async def setup(bot: "HoyoBuddy") -> None:

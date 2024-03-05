@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from genshin.models import StarRailNote
 
 
-def draw_notes_card(
+def draw_hsr_notes_card(
     notes: "StarRailNote", locale: "Locale", translator: Translator, dark_mode: bool
 ) -> BytesIO:
     filename = f"{'dark' if dark_mode else 'light'}-hsr"

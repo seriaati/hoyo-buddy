@@ -917,9 +917,9 @@ geetest = ["rsa"]
 
 [package.source]
 type = "git"
-url = "https://github.com/seriaati/genshin.py"
+url = "https://github.com/thesadru/genshin.py"
 reference = "HEAD"
-resolved_reference = "1c2e41d5b79dcf04f3f5a76dbb113b7d44a4d1e6"
+resolved_reference = "ed913637a0a28ba538974702fb2dff6c46523529"
 
 [[package]]
 name = "identify"
@@ -2238,4 +2238,4 @@ resolved_reference = "0dfda631c242f6a193f9880b4814b47ecbce28e5"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "cea536dd765fb27e96aee421b6ebd55bf13b21f07dcfe7b62f69de928fb938f4"
+content-hash = "37c411b9750af6d2e9e9bca6836c802534a72be833d7cc84aa44843d825106b4"

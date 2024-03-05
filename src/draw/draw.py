@@ -151,9 +151,12 @@ class Drawer:
         )
 
     def _get_font(
-        self, size: int, style: Literal["light", "regular", "medium", "bold"]
+        self,
+        size: int,
+        style: Literal["light", "regular", "medium", "bold"],
+        locale: discord.Locale | None,
     ) -> ImageFont.FreeTypeFont:
-        font = FONT_MAPPING.get(self.locale, FONT_MAPPING[None]).get(style)
+        font = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[None]).get(style)
 
         if font is None:
             msg = f"Invalid font style: {style}"
@@ -180,6 +183,7 @@ class Drawer:
         anchor: str | None = None,
         max_width: int | None = None,
         max_lines: int = 1,
+        locale: discord.Locale | None = None,
     ) -> tuple[int, int, int, int]:
         """Returns (left, top, right, bottom) of the text bounding box."""
         if isinstance(text, str):
@@ -191,7 +195,7 @@ class Drawer:
 
             translated_text = self.translator.translate(text, self.locale)
 
-        font = self._get_font(size, style)
+        font = self._get_font(size, style, locale)
 
         if max_width is not None:
             translated_text = self._wrap_text(translated_text, max_width, max_lines, font)

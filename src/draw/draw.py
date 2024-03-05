@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Literal
 
 import discord
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from .fonts import (
     GENSENROUNDEDTW_BOLD,
@@ -109,8 +109,9 @@ class Drawer:
     def _mask_image_with_color(
         self, image: Image.Image, color: tuple[int, int, int], opacity: float
     ) -> Image.Image:
-        color_bk = Image.new("RGBA", image.size, self.apply_color_opacity(color, opacity))
-        return Image.composite(color_bk, image, image)
+        mask = Image.new("RGBA", image.size, self.apply_color_opacity(color, opacity))
+        image = ImageChops.multiply(image, mask)
+        return image
 
     @staticmethod
     def _shorten_text(text: str, max_width: int, font: ImageFont.FreeTypeFont) -> str:

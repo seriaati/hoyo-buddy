@@ -74,6 +74,8 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         await self.load_extension("jishaku")
 
+        self.push_source_strings.start()
+
     def capture_exception(self, e: Exception) -> None:
         if self.env == "prod":
             sentry_sdk.capture_exception(e)
@@ -96,5 +98,6 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     async def close(self) -> None:
         LOGGER_.info("Bot shutting down...")
+        self.push_source_strings.cancel()
         self.diskcache.close()
         await super().close()

@@ -18,7 +18,7 @@ def cache_key(
     image_url: str,
     primary: tuple[int, int, int],
 ) -> str:
-    return f"{character.id}-{locale}-{dark_mode}-{image_url}-{primary}"
+    return f"{character!r}-{locale}-{dark_mode}-{image_url}-{primary}"
 
 
 @timer

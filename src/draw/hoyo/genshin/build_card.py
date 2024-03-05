@@ -20,7 +20,7 @@ def cache_key(
     character: "Character",
     image_url: str,
 ) -> str:
-    return f"{character.id}-{locale}-{dark_mode}-{image_url}"
+    return f"{character!r}-{locale}-{dark_mode}-{image_url}"
 
 
 @timer

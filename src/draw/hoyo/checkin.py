@@ -8,15 +8,11 @@ from ...utils import timer
 from .. import Drawer
 
 if TYPE_CHECKING:
-    import genshin
-
     from ...hoyo.dataclasses import Reward
 
 
-def cache_key(daily_rewards: tuple["genshin.models.DailyReward", ...], dark_mode: bool) -> str:
-    rewards_key = "_".join(
-        f"{daily_reward.name}_{daily_reward.amount}" for daily_reward in daily_rewards
-    )
+def cache_key(daily_rewards: list["Reward"], dark_mode: bool) -> str:
+    rewards_key = "_".join(repr(reward) for reward in daily_rewards)
     return f"{rewards_key}_{dark_mode}"
 
 

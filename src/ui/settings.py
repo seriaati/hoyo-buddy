@@ -47,7 +47,6 @@ class SettingsUI(View):
         return discord.File(filename, filename="brand.png")
 
     async def update_ui_and_save_settings(self, i: "INTERACTION") -> None:
-        self.translate_items()
         await self.absolute_edit(
             i, embed=self.get_embed(), attachments=[self.get_brand_image_file(i.locale)], view=self
         )

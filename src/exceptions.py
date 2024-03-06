@@ -92,3 +92,39 @@ class IncompleteParamError(HoyoBuddyError):
             ),
             message=reason,
         )
+
+
+class InvalidCodeError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr("Invalid code", key="invalid_code_title"),
+            message=LocaleStr(
+                "The given code is invalid, please try again.",
+                key="invalid_code_description",
+            ),
+        )
+
+
+class InvalidEmailOrPasswordError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr("Invalid e-mail or password", key="invalid_email_password_title"),
+            message=LocaleStr(
+                "The given e-mail or password is invalid, please try again.",
+                key="invalid_email_password_description",
+            ),
+        )
+
+
+class VerificationCodeServiceUnavailableError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr(
+                "Verification code service unavailable",
+                key="verification_code_service_unavailable_title",
+            ),
+            message=LocaleStr(
+                "The verification code service is currently unavailable, please try again later.",
+                key="verification_code_service_unavailable_description",
+            ),
+        )

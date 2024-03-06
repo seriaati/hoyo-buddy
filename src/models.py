@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
 
+import aiohttp
 from attr import dataclass
+from discord import Locale
 
 if TYPE_CHECKING:
     from aiohttp import web
@@ -58,3 +60,10 @@ class ItemWithTrailing:
     icon: str
     title: str
     trailing: str
+
+
+@dataclass
+class DrawInput:
+    dark_mode: bool
+    locale: Locale
+    session: aiohttp.ClientSession

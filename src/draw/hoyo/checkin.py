@@ -8,7 +8,7 @@ from ...utils import timer
 from .. import Drawer
 
 if TYPE_CHECKING:
-    from ...hoyo.dataclasses import Reward
+    from ...models import Reward
 
 
 def cache_key(daily_rewards: list["Reward"], dark_mode: bool) -> str:

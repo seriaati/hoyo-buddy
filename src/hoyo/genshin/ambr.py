@@ -14,7 +14,7 @@ from src.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_element_emoji
 from ...bot.translator import LocaleStr, Translator
 from ...constants import LOCALE_TO_AMBR_LANG, WEEKDAYS
 from ...embeds import DefaultEmbed
-from ..dataclasses import ItemWithDescription
+from ...models import ItemWithDescription
 
 __all__ = ("AmbrAPIClient", "ItemCategory", "AUDIO_LANGUAGES")
 

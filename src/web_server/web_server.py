@@ -10,7 +10,7 @@ from tortoise import Tortoise
 
 from src.db.models import User
 
-from ..hoyo.dataclasses import LoginNotifPayload
+from ..models import LoginNotifPayload
 
 if TYPE_CHECKING:
     from src.bot.translator import Translator

@@ -11,7 +11,7 @@ from ...db.models import AccountNotifSettings
 from ...draw.hoyo import checkin
 from ...draw.static import download_and_save_static_images
 from ...embeds import DefaultEmbed
-from ...hoyo.dataclasses import Reward
+from ...models import Reward
 from ...utils import get_now
 from ..components import Button, GoBackButton, ToggleButton, View
 

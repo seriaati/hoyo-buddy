@@ -78,6 +78,7 @@ preview = true
 "playground.*.py" = ["ALL"]
 "./migrations/*.py" = ["ALL"]
 "src/draw/**/*.py" = ["PLR", "C"]
+"src/models.py" = ["TCH002"]
 
 [tool.ruff.lint.flake8-type-checking]
 quote-annotations = true

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from src.bot.bot import INTERACTION
     from src.bot.translator import Translator
     from src.embeds import DefaultEmbed
-    from src.hoyo.dataclasses import ItemWithDescription
+    from src.models import ItemWithDescription
 
 
 class AbyssView(View):

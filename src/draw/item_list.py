@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
 
-from ..hoyo.dataclasses import ItemWithDescription, ItemWithTrailing
+from ..models import ItemWithDescription, ItemWithTrailing
 from .draw import (
     DARK_ON_SURFACE,
     DARK_ON_SURFACE_VARIANT,

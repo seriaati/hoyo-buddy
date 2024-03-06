@@ -12,7 +12,7 @@ from src.bot.translator import LocaleStr
 from src.db.models import User
 from src.embeds import DefaultEmbed
 from src.emojis import INFO, PASSWORD
-from src.hoyo.dataclasses import LoginNotifPayload
+from src.models import LoginNotifPayload
 
 from ....bot.error_handler import get_error_embed
 from ....exceptions import (

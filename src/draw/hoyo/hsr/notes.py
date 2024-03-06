@@ -92,7 +92,7 @@ def draw_hsr_notes_card(
 
     exped_padding = 201
     icon_pos = (1060, 231)
-    text_x_padding = 300
+    text_x_padding = 20
 
     for index, exped in enumerate(notes.expeditions):
         pos = (icon_pos[0], index * exped_padding + icon_pos[1])
@@ -117,8 +117,8 @@ def draw_hsr_notes_card(
         drawer.write(
             text,
             size=40,
-            position=(icon_pos[0] + text_x_padding, 280 + index * exped_padding),
-            anchor="mm",
+            position=(icon_pos[0] + icon.width + text_x_padding, 280 + index * exped_padding),
+            anchor="lm",
         )
 
     buffer = BytesIO()

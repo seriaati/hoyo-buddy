@@ -11,9 +11,12 @@ from src.hoyo.genshin.ambr import AmbrAPIClient
 from ...components import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:
-    from bot.translator import Translator
+    import aiohttp
 
     from src.bot.bot import INTERACTION
+    from src.bot.translator import Translator
+    from src.embeds import DefaultEmbed
+    from src.hoyo.dataclasses import ItemWithDescription
 
 
 class AbyssView(View):
@@ -39,10 +42,47 @@ class AbyssView(View):
         for wave_index in range(2):
             self.add_item(WaveButton(wave_index))
 
-    async def update(self, i: "INTERACTION") -> None:
-        await i.response.defer()
+    def _update_item_styles(self, item_num: int) -> None:
+        # Update chamber button color
+        for index in range(3):
+            chamber_btn: ChamberButton = self.get_item(f"chamber_{index}_btn")
+            chamber_btn.style = (
+                ButtonStyle.secondary if index != self._chamber_index else ButtonStyle.primary
+            )
 
-        # Get embed and enemy items
+        # Disable wave buttons if there is only one wave
+        if item_num == 1:
+            # Reset wave index
+            self._wave_index = 0
+            for index in range(2):
+                wave_btn: WaveButton = self.get_item(f"wave_{index}_btn")
+                wave_btn.disabled = True
+
+        # Update wave button color
+        for index in range(2):
+            wave_btn: WaveButton = self.get_item(f"wave_{index}_btn")
+            wave_btn.style = (
+                ButtonStyle.secondary if index != self._wave_index else ButtonStyle.primary
+            )
+
+    async def _draw_card(
+        self,
+        session: "aiohttp.ClientSession",
+        items: tuple[list["ItemWithDescription"], list["ItemWithDescription"]],
+    ) -> File:
+        await download_and_save_static_images(
+            [item.icon for item in items[0] + items[1]], "draw-list", session
+        )
+        buffer = await asyncio.to_thread(
+            draw_item_list, items[self._wave_index], self._dark_mode, self.locale
+        )
+        buffer.seek(0)
+        file_ = File(buffer, filename="enemies.webp")
+        return file_
+
+    async def _get_embed_and_enemy_items(
+        self,
+    ) -> tuple["DefaultEmbed", tuple[list["ItemWithDescription"], list["ItemWithDescription"]]]:
         async with AmbrAPIClient(self.locale, self.translator) as client:
             abyss_data = await client.fetch_abyss_data()
             monster_curve = await client.fetch_monster_curve()
@@ -67,37 +107,19 @@ class AbyssView(View):
                 monster_curve=monster_curve,
             )
 
+        return embed, items
+
+    async def update(self, i: "INTERACTION") -> None:
+        await i.response.defer()
+
+        # Get embed and enemy items
+        embed, items = await self._get_embed_and_enemy_items()
+
         # Draw card
-        await download_and_save_static_images(
-            [item.icon for item in items[0] + items[1]], "draw-list", i.client.session
-        )
-        buffer = await asyncio.to_thread(
-            draw_item_list, items[self._wave_index], self._dark_mode, self.locale
-        )
-        buffer.seek(0)
-        file_ = File(buffer, filename="enemies.webp")
+        file_ = await self._draw_card(i.client.session, items)
 
-        # Update chamber button color
-        for index in range(3):
-            chamber_btn: ChamberButton = self.get_item(f"chamber_{index}_btn")
-            chamber_btn.style = (
-                ButtonStyle.secondary if index != self._chamber_index else ButtonStyle.primary
-            )
-
-        # Disable wave buttons if there is only one wave
-        if len(items) == 1:
-            # Reset wave index
-            self._wave_index = 0
-            for index in range(2):
-                wave_btn: WaveButton = self.get_item(f"wave_{index}_btn")
-                wave_btn.disabled = True
-
-        # Update wave button color
-        for index in range(2):
-            wave_btn: WaveButton = self.get_item(f"wave_{index}_btn")
-            wave_btn.style = (
-                ButtonStyle.secondary if index != self._wave_index else ButtonStyle.primary
-            )
+        # Update item styles
+        self._update_item_styles(len(items))
 
         await i.edit_original_response(embed=embed, attachments=[file_], view=self)
         self.message = await i.original_response()

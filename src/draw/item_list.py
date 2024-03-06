@@ -35,16 +35,16 @@ def draw_item_list(
     is_trailing = any(isinstance(item, ItemWithTrailing) for item in items)
 
     # Variables
-    card_size = (360, 56) if is_trailing else (360, 72)
-    overall_top_bottom_padding = 8
-    icon_size = (40, 40)
-    icon_top_left_padding = 8 if is_trailing else 16
-    title_top_padding = 16 if is_trailing else 14
-    title_left_padding = 72
-    description_top_padding = 38
-    description_left_padding = 72
-    trailing_top_padding = 20
-    trailing_left_pading = 322
+    card_size = (720, 112) if is_trailing else (720, 144)
+    overall_top_bottom_padding = 16
+    icon_size = (80, 80)
+    icon_top_left_padding = 16 if is_trailing else 32
+    title_top_padding = 32 if is_trailing else 28
+    title_left_padding = 144
+    description_top_padding = 76
+    description_left_padding = 144
+    trailing_top_padding = 40
+    trailing_left_pading = 644
 
     rows = min(6, len(items))
     columns = 2 if len(items) > 6 else 1
@@ -68,7 +68,7 @@ def draw_item_list(
 
         drawer.write(
             item.title,
-            size=16,
+            size=32,
             position=(pos[0] + title_left_padding, pos[1] + title_top_padding),
             color=DARK_ON_SURFACE if drawer.dark_mode else LIGHT_ON_SURFACE,
             style="medium",
@@ -77,14 +77,14 @@ def draw_item_list(
         if isinstance(item, ItemWithTrailing):
             drawer.write(
                 item.trailing,
-                size=11,
+                size=22,
                 position=(pos[0] + trailing_left_pading, pos[1] + trailing_top_padding),
                 color=DARK_ON_SURFACE_VARIANT if drawer.dark_mode else LIGHT_ON_SURFACE,
             )
         elif isinstance(item, ItemWithDescription):
             drawer.write(
                 item.description,
-                size=14,
+                size=28,
                 position=(pos[0] + description_left_padding, pos[1] + description_top_padding),
                 color=DARK_ON_SURFACE_VARIANT if drawer.dark_mode else LIGHT_ON_SURFACE,
             )

@@ -100,6 +100,7 @@ class AbyssView(View):
             )
 
         await i.edit_original_response(embed=embed, attachments=[file_], view=self)
+        self.message = await i.original_response()
 
 
 class FloorSelect(Select[AbyssView]):

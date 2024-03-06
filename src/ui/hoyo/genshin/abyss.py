@@ -1,18 +1,15 @@
-import asyncio
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle, File, Locale, Member, User
+from discord import ButtonStyle, Locale, Member, User
 
 from src.bot.translator import LocaleStr
-from src.draw.item_list import draw_item_list
-from src.draw.static import download_and_save_static_images
+from src.draw.main_funcs import draw_item_list_card
 from src.hoyo.genshin.ambr import AmbrAPIClient
+from src.models import DrawInput
 
 from ...components import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:
-    import aiohttp
-
     from src.bot.bot import INTERACTION
     from src.bot.translator import Translator
     from src.embeds import DefaultEmbed
@@ -65,21 +62,6 @@ class AbyssView(View):
                 ButtonStyle.secondary if index != self._wave_index else ButtonStyle.primary
             )
 
-    async def _draw_card(
-        self,
-        session: "aiohttp.ClientSession",
-        items: tuple[list["ItemWithDescription"], list["ItemWithDescription"]],
-    ) -> File:
-        await download_and_save_static_images(
-            [item.icon for item in items[0] + items[1]], "draw-list", session
-        )
-        buffer = await asyncio.to_thread(
-            draw_item_list, items[self._wave_index], self._dark_mode, self.locale
-        )
-        buffer.seek(0)
-        file_ = File(buffer, filename="enemies.webp")
-        return file_
-
     async def _get_embed_and_enemy_items(
         self,
     ) -> tuple["DefaultEmbed", tuple[list["ItemWithDescription"], list["ItemWithDescription"]]]:
@@ -116,7 +98,15 @@ class AbyssView(View):
         embed, items = await self._get_embed_and_enemy_items()
 
         # Draw card
-        file_ = await self._draw_card(i.client.session, items)
+        file_ = await draw_item_list_card(
+            DrawInput(
+                dark_mode=self._dark_mode,
+                locale=self.locale,
+                session=i.client.session,
+                filename="enemies.webp",
+            ),
+            items[0] + items[1],
+        )
 
         # Update item styles
         self._update_item_styles(len(items))

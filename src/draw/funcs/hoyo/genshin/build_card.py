@@ -6,12 +6,12 @@ from discord import Locale
 from enka.enums import FightPropType
 from PIL import Image, ImageDraw
 
-from src.utils import timer
-
-from ...draw import Drawer
+from src.draw.drawer import Drawer
 
 if TYPE_CHECKING:
     from enka.models import Character
+
+__all__ = ("draw_genshin_card",)
 
 
 def cache_key(
@@ -23,7 +23,6 @@ def cache_key(
     return f"{character!r}-{locale}-{dark_mode}-{image_url}"
 
 
-@timer
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
 def draw_genshin_card(
     locale: Locale,

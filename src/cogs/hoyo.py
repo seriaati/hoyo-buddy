@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import random
 from typing import TYPE_CHECKING, Any
@@ -10,9 +9,7 @@ from seria.utils import read_yaml
 
 from ..bot.translator import LocaleStr, Translator
 from ..db.models import EnkaCache, HoyoAccount, Settings
-from ..draw.hoyo.genshin.notes import draw_genshin_notes_card
-from ..draw.hoyo.hsr.notes import draw_hsr_notes_card
-from ..draw.static import download_and_save_static_images
+from ..draw import main_funcs
 from ..emojis import PROJECT_AMBER
 from ..enums import Game
 from ..exceptions import IncompleteParamError, InvalidQueryError, NoAccountFoundError
@@ -21,6 +18,7 @@ from ..hoyo.genshin import ambr
 from ..hoyo.hsr import yatta
 from ..hoyo.mihomo_client import MihomoAPI
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
+from ..models import DrawInput
 from ..ui import URLButtonView
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.genshin.abyss import AbyssView
@@ -645,33 +643,31 @@ class Hoyo(commands.Cog):
 
         if account.game is Game.GENSHIN:
             notes = await client.get_genshin_notes()
-            await download_and_save_static_images(
-                [exped.character_icon for exped in notes.expeditions], "gi-notes", self.bot.session
-            )
-            buffer = await asyncio.to_thread(
-                draw_genshin_notes_card,
+            file_ = await main_funcs.draw_gi_notes_card(
+                DrawInput(
+                    dark_mode=settings.dark_mode,
+                    locale=locale,
+                    session=self.bot.session,
+                    filename="notes.webp",
+                ),
                 notes,
-                locale,
                 self.bot.translator,
-                settings.dark_mode,
             )
         elif account.game is Game.STARRAIL:
             notes = await client.get_starrail_notes()
-            await download_and_save_static_images(
-                [exped.item_url for exped in notes.expeditions], "hsr-notes", self.bot.session
-            )
-            buffer = await asyncio.to_thread(
-                draw_hsr_notes_card,
+            file_ = await main_funcs.draw_hsr_notes_card(
+                DrawInput(
+                    dark_mode=settings.dark_mode,
+                    locale=locale,
+                    session=self.bot.session,
+                    filename="notes.webp",
+                ),
                 notes,
-                locale,
                 self.bot.translator,
-                settings.dark_mode,
             )
         else:
             raise NotImplementedError
 
-        buffer.seek(0)
-        file_ = discord.File(buffer, filename="notes.webp")
         await i.followup.send(file=file_)
 
     @notes_command.autocomplete("account")

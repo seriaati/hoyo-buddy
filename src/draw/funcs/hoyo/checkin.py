@@ -4,11 +4,12 @@ from typing import TYPE_CHECKING
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
 
-from ...utils import timer
-from .. import Drawer
+from src.draw.drawer import Drawer
 
 if TYPE_CHECKING:
-    from ...models import Reward
+    from src.models import Reward
+
+__all__ = ("draw_checkin_card",)
 
 
 def cache_key(daily_rewards: list["Reward"], dark_mode: bool) -> str:
@@ -16,9 +17,8 @@ def cache_key(daily_rewards: list["Reward"], dark_mode: bool) -> str:
     return f"{rewards_key}_{dark_mode}"
 
 
-@timer
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
-def draw_card(
+def draw_checkin_card(
     daily_rewards: list["Reward"],
     dark_mode: bool,
 ) -> io.BytesIO:

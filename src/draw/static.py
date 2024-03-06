@@ -44,6 +44,7 @@ async def download_and_save_static_images(
     image_urls: "Sequence[str]", folder: str, session: "aiohttp.ClientSession"
 ) -> None:
     tasks: "list[asyncio.Task]" = []
+    image_urls = list(set(image_urls))
     for image_url in image_urls:
         filename = image_url.split("/")[-1]
         if not os.path.exists(f"{STATIC_FOLDER}/{folder}/{filename}"):

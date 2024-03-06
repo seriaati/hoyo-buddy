@@ -1,4 +1,3 @@
-import asyncio
 from typing import TYPE_CHECKING, Any
 
 import discord
@@ -8,16 +7,13 @@ from ... import emojis
 from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr, Translator
 from ...db.models import AccountNotifSettings
-from ...draw.hoyo import checkin
-from ...draw.static import download_and_save_static_images
+from ...draw.main_funcs import draw_checkin_card
 from ...embeds import DefaultEmbed
-from ...models import Reward
+from ...models import DrawInput, Reward
 from ...utils import get_now
 from ..components import Button, GoBackButton, ToggleButton, View
 
 if TYPE_CHECKING:
-    import io
-
     import aiohttp
 
     from ...bot.bot import INTERACTION
@@ -61,15 +57,6 @@ class CheckInUI(View):
         self.add_item(AutoCheckInToggle(self.account.daily_checkin))
         self.add_item(NotificationSettingsButton())
 
-    @staticmethod
-    async def _draw_checkin_image(
-        rewards: list[Reward],
-        dark_mode: bool,
-        session: "aiohttp.ClientSession",
-    ) -> "io.BytesIO":
-        await download_and_save_static_images([r.icon for r in rewards], "check-in", session)
-        return await asyncio.to_thread(checkin.draw_card, rewards, dark_mode)
-
     async def _get_rewards(self) -> list[Reward]:
         client = self.client
 
@@ -110,9 +97,15 @@ class CheckInUI(View):
         rewards = await self._get_rewards()
         checked_in_day_num = rewards[-2].index
 
-        fp = await self._draw_checkin_image(rewards, self.dark_mode, session)
-        fp.seek(0)
-        file_ = discord.File(fp, filename="check-in.webp")
+        file_ = await draw_checkin_card(
+            DrawInput(
+                dark_mode=self.dark_mode,
+                locale=self.locale,
+                session=session,
+                filename="check-in.webp",
+            ),
+            rewards,
+        )
 
         embed = DefaultEmbed(
             self.locale,

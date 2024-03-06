@@ -1,4 +1,3 @@
-import asyncio
 from io import BytesIO
 from typing import TYPE_CHECKING, Any
 
@@ -10,12 +9,11 @@ from mihomo.models import Character as HSRCharacter
 from src.bot.translator import LocaleStr
 from src.constants import ENKA_LANG_TO_CARD_API_LANG, ENKA_LANG_TO_LOCALE, MIHOMO_LANG_TO_LOCALE
 from src.db.models import CardSettings
-from src.draw.hoyo.genshin.build_card import draw_genshin_card
-from src.draw.hoyo.hsr.build_card import draw_build_card
-from src.draw.static import download_and_save_static_images
+from src.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card
 from src.embeds import DefaultEmbed
 from src.enums import Game
 from src.exceptions import CardNotReadyError
+from src.models import DrawInput
 
 from ...components import (
     View,
@@ -221,20 +219,20 @@ class ProfileView(View):
 
         art = self._card_settings.current_image or character_data["arts"][0]
 
-        urls = await self._retrieve_hsr_image_urls(character, art)
-        await download_and_save_static_images(list(urls), "hsr-build-card", session)
-
         if self._card_settings.custom_primary_color is None:
             primary = character_data["primary"]
             if "primary-dark" in character_data and self._card_settings.dark_mode:
                 primary = character_data["primary-dark"]
             self._card_settings.custom_primary_color = primary
 
-        return await asyncio.to_thread(
-            draw_build_card,
+        return await draw_hsr_build_card(
+            DrawInput(
+                dark_mode=self._card_settings.dark_mode,
+                locale=MIHOMO_LANG_TO_LOCALE[MihomoLang(self.cache_extras[character.id]["lang"])],
+                session=session,
+                filename="card.webp",
+            ),
             character,
-            MIHOMO_LANG_TO_LOCALE[MihomoLang(self.cache_extras[character.id]["lang"])],
-            self._card_settings.dark_mode,
             art,
             self._card_settings.custom_primary_color,
         )
@@ -253,58 +251,16 @@ class ProfileView(View):
 
         art = self._card_settings.current_image or character_data["arts"][0]
 
-        urls = await self._retrieve_genshin_image_urls(character, art)
-        await download_and_save_static_images(list(urls), "gi-build-card", session)
-
-        return await asyncio.to_thread(
-            draw_genshin_card,
-            ENKA_LANG_TO_LOCALE[EnkaLang(self.cache_extras[str(character.id)]["lang"])],
-            self._card_settings.dark_mode,
+        return await draw_gi_build_card(
+            DrawInput(
+                dark_mode=self._card_settings.dark_mode,
+                locale=ENKA_LANG_TO_LOCALE[EnkaLang(self.cache_extras[str(character.id)]["lang"])],
+                session=session,
+                filename="card.webp",
+            ),
             character,
             art,
         )
-
-    async def _retrieve_hsr_image_urls(self, character: "HSRCharacter", art: str) -> set[str]:
-        """Retrieve all image URLs needed to draw the HSR card."""
-        urls: set[str] = set()
-        urls.add(art)
-        for trace in character.traces:
-            urls.add(trace.icon)
-        for trace in character.trace_tree:
-            urls.add(trace.icon)
-        for relic in character.relics:
-            urls.add(relic.icon)
-            urls.add(relic.main_affix.icon)
-            for affix in relic.sub_affixes:
-                urls.add(affix.icon)
-        for attr in character.attributes:
-            urls.add(attr.icon)
-        for addition in character.additions:
-            urls.add(addition.icon)
-        if character.light_cone is not None:
-            urls.add(character.light_cone.portrait)
-            for attr in character.light_cone.attributes:
-                urls.add(attr.icon)
-        urls.add(
-            "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/property/IconEnergyRecovery.png"
-        )
-
-        return urls
-
-    async def _retrieve_genshin_image_urls(self, character: "GICharacter", art: str) -> set[str]:
-        """Retrieve all image URLs needed to draw the Genshin card."""
-        urls: set[str] = set()
-        urls.add(art)
-        urls.add(character.weapon.icon)
-        urls.add(character.icon.gacha)
-        for artifact in character.artifacts:
-            urls.add(artifact.icon)
-        for talent in character.talents:
-            urls.add(talent.icon)
-        for constellation in character.constellations:
-            urls.add(constellation.icon)
-
-        return urls
 
     async def draw_card(self, i: "INTERACTION") -> "io.BytesIO":
         """Draw the character card and return the bytes object."""

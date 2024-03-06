@@ -6,9 +6,10 @@ import mihomo
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
 
-from src.utils import round_down, timer
+from src.draw.drawer import BLACK, WHITE, Drawer
+from src.utils import round_down
 
-from ...draw import BLACK, WHITE, Drawer
+__all__ = ("draw_hsr_build_card",)
 
 
 def cache_key(
@@ -21,9 +22,8 @@ def cache_key(
     return f"{character!r}-{locale}-{dark_mode}-{image_url}-{primary}"
 
 
-@timer
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
-def draw_build_card(
+def draw_hsr_build_card(
     character: "mihomo.models.Character",
     locale: discord.Locale,
     dark_mode: bool,

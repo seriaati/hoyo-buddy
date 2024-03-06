@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
 
-from ..models import ItemWithDescription, ItemWithTrailing
-from .draw import (
+from ...models import ItemWithDescription, ItemWithTrailing
+from ..drawer import (
     DARK_ON_SURFACE,
     DARK_ON_SURFACE_VARIANT,
     DARK_SURFACE,
@@ -16,6 +16,8 @@ from .draw import (
 
 if TYPE_CHECKING:
     from discord import Locale
+
+__all__ = ("draw_item_list",)
 
 
 def cache_key(
@@ -55,7 +57,7 @@ def draw_item_list(
         color=DARK_SURFACE if dark_mode else LIGHT_SURFACE,
     )
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(draw, folder="draw-list", dark_mode=dark_mode, locale=locale)
+    drawer = Drawer(draw, folder="item-list", dark_mode=dark_mode, locale=locale)
 
     for index, item in enumerate(items):
         pos = (

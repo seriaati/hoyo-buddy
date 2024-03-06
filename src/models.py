@@ -62,8 +62,9 @@ class ItemWithTrailing:
     trailing: str
 
 
-@dataclass
+@dataclass(kw_only=True)
 class DrawInput:
     dark_mode: bool
     locale: Locale
     session: aiohttp.ClientSession
+    filename: str

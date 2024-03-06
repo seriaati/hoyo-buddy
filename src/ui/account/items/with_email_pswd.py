@@ -8,18 +8,18 @@ import genshin
 from discord import ButtonStyle
 from tortoise import Tortoise
 
+from src.bot.error_handler import get_error_embed
 from src.bot.translator import LocaleStr
 from src.db.models import User
 from src.embeds import DefaultEmbed
 from src.emojis import INFO, PASSWORD
-from src.models import LoginNotifPayload
-
-from ....bot.error_handler import get_error_embed
-from ....exceptions import (
+from src.exceptions import (
     InvalidCodeError,
     InvalidEmailOrPasswordError,
     VerificationCodeServiceUnavailableError,
 )
+from src.models import LoginNotifPayload
+
 from ...components import Button, GoBackButton, Modal, TextInput
 from .add_acc_select import AddAccountSelect
 

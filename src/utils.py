@@ -1,3 +1,4 @@
+import base64
 import datetime
 import logging
 import math
@@ -72,13 +73,21 @@ def round_down(number: float, decimals: int) -> float:
     return result
 
 
-async def upload_image(image_url: str, session: aiohttp.ClientSession) -> str:
+async def upload_image(
+    session: aiohttp.ClientSession, *, image_url: str | None = None, image: bytes | None = None
+) -> str:
     api = "https://freeimage.host/api/1/upload"
     data = {
         "key": "6d207e02198a847aa98d0a2a901485a5",
         "source": image_url,
         "format": "json",
     }
+
+    if image is not None:
+        # Encode image into base64 string
+        image_base64 = base64.b64encode(image).decode("utf-8")
+        data["source"] = image_base64
+
     async with session.post(api, data=data) as resp:
         resp.raise_for_status()
 

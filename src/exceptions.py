@@ -128,3 +128,25 @@ class VerificationCodeServiceUnavailableError(HoyoBuddyError):
                 key="verification_code_service_unavailable_description",
             ),
         )
+
+
+class NSFWPromptError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr("NSFW Prompt", key="nsfw_prompt_error_title"),
+            message=LocaleStr(
+                "The prompt contains NSFW content, please try again with a different prompt.",
+                key="nsfw_prompt_error_message",
+            ),
+        )
+
+
+class GuildOnlyFeatureError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr("Guild Only Feature", key="guild_only_feature_error_title"),
+            message=LocaleStr(
+                "This feature is only available in guilds, please try again in a guild.",
+                key="guild_only_feature_error_message",
+            ),
+        )

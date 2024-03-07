@@ -9,6 +9,7 @@ from .add_img_btn import AddImageButton
 from .card_settings_info_btn import CardSettingsInfoButton
 from .card_template_select import CardTemplateSelect
 from .dark_mode_btn import DarkModeButton
+from .gen_ai_art_btn import GenerateAIArtButton
 from .image_select import ImageSelect
 from .primary_color_btn import PrimaryColorButton
 from .remove_img_btn import RemoveImageButton
@@ -66,6 +67,8 @@ class CardSettingsButton(Button["ProfileView"]):
             )
         )
         self.view.add_item(CardSettingsInfoButton())
+
+        self.view.add_item(GenerateAIArtButton())
         self.view.add_item(AddImageButton())
         self.view.add_item(
             RemoveImageButton(self.view._card_settings.current_image in default_arts)

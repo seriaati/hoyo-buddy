@@ -4,10 +4,11 @@ from discord import ButtonStyle, TextStyle
 from discord.file import File
 
 from src.bot.translator import LocaleStr
-from src.emojis import ADD
-from src.exceptions import InvalidImageURLError
+from src.constants import NSFW_TAGS
+from src.exceptions import GuildOnlyFeatureError, NSFWPromptError
 from src.ui.components import Button, Modal, TextInput
-from src.utils import is_image_url, test_url_validity, upload_image
+
+from .....utils import upload_image
 
 if TYPE_CHECKING:
     from src.bot.bot import INTERACTION
@@ -17,55 +18,57 @@ if TYPE_CHECKING:
     from .remove_img_btn import RemoveImageButton
 
 
-class AddImageModal(Modal):
-    image_url = TextInput(
-        label=LocaleStr("Image URL", key="profile.add_image_modal.image_url.label"),
-        placeholder="https://example.com/image.png",
-        style=TextStyle.short,
-        max_length=100,
+class GenerateAIArtModal(Modal):
+    prompt = TextInput(
+        label=LocaleStr("Prompt", key="profile.generate_ai_art_modal.prompt.label"),
+        placeholder="navia(genshin impact), foaml dress, idol, beautiful dress, elegant, best quality, aesthetic...",
+        style=TextStyle.paragraph,
+        max_length=250,
     )
 
-    def __init__(self) -> None:
-        super().__init__(title=LocaleStr("Add Custom Image", key="profile.add_image_modal.title"))
+    negative_prompt = TextInput(
+        label=LocaleStr(
+            "Negative Prompt", key="profile.generate_ai_art_modal.negative_prompt.label"
+        ),
+        placeholder="bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs...",
+        style=TextStyle.paragraph,
+        max_length=200,
+        required=False,
+    )
 
 
-class AddImageButton(Button["ProfileView"]):
+class GenerateAIArtButton(Button):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Add Custom Image", key="profile.add_image.button.label"),
-            style=ButtonStyle.green,
-            emoji=ADD,
+            label=LocaleStr("Generate AI Art", key="profile.generate_ai_art.button.label"),
+            style=ButtonStyle.blurple,
             row=3,
         )
 
     async def callback(self, i: "INTERACTION") -> None:
-        assert self.view._card_settings is not None
+        if i.guild is None:
+            raise GuildOnlyFeatureError
 
-        # Open the modal
-        modal = AddImageModal()
+        modal = GenerateAIArtModal(
+            title=LocaleStr("Generate AI Art", key="profile.generate_ai_art_modal.title")
+        )
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()
 
-        image_url = modal.image_url.value
-        if not image_url:
+        if not modal.prompt.value:
             return
 
-        # Check if the image URL is valid.
-        passed = is_image_url(image_url)
-        if not passed:
-            raise InvalidImageURLError
-        passed = await test_url_validity(image_url, i.client.session)
-        if not passed:
-            raise InvalidImageURLError
+        prompt = modal.prompt.value
+        negative_prompt = modal.negative_prompt.value
+        if any(tag.lower() in prompt.lower() for tag in NSFW_TAGS):
+            raise NSFWPromptError
 
         await self.set_loading_state(i)
 
-        # Upload the image to iili
-        try:
-            url = await upload_image(i.client.session, image_url=image_url)
-        except Exception as e:
-            raise InvalidImageURLError from e
+        client = i.client.nai_client
+        bytes_ = await client.generate_image(prompt, negative_prompt)
+        url = await upload_image(i.client.session, image=bytes_)
 
         # Add the image URL to db
         self.view._card_settings.custom_images.append(url)

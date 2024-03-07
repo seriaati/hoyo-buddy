@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 from typing import TYPE_CHECKING, TypeAlias
 
@@ -9,6 +10,7 @@ from asyncache import cached
 from cachetools import TTLCache
 from discord.ext import commands, tasks
 
+from ..hoyo.novelai_client import NAIClient
 from ..utils import get_now
 from .command_tree import CommandTree
 from .translator import AppCommandTranslator, Translator
@@ -60,6 +62,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.translator = translator
         self.env = env
         self.diskcache = diskcache.Cache("./.cache/hoyo_buddy")
+        self.nai_client = NAIClient(
+            token=os.environ["NAI_TOKEN"], host_url=os.environ["NAI_HOST_URL"]
+        )
 
     async def setup_hook(self) -> None:
         await self.tree.set_translator(AppCommandTranslator(self.translator))
@@ -73,6 +78,8 @@ class HoyoBuddy(commands.AutoShardedBot):
                 LOGGER_.exception("Failed to load cog %r", cog_name)
 
         await self.load_extension("jishaku")
+
+        await self.nai_client.init(timeout=120)
 
         self.push_source_strings.start()
 

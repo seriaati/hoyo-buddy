@@ -56,7 +56,7 @@ class WithEmailPassword(Button["AccountManager"]):
                 (
                     f"{INFO} This method requires you to enter your private information.\n\n"
                     "• In exchange, your `cookie_token` can be refreshed automatically, which is used in features related to code redemption.\n"
-                    "• Your e-mail and password are ***NOT*** saved in the database **AT ALL***, so it's practically impossible for them to be leaked.\n"
+                    "• Your e-mail and password are **NOT** saved in the database **AT ALL**, so it's practically impossible for them to be leaked.\n"
                     "• Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy), so you can verify that yourself.\n"
                     "• It is ultimately your choice to decide whether to trust this bot or not.\n\n"
                     "Click on the button below to start.\n"

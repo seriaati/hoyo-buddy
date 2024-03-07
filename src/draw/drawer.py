@@ -198,7 +198,10 @@ class Drawer:
         font = self._get_font(size, style, locale)
 
         if max_width is not None:
-            translated_text = self._wrap_text(translated_text, max_width, max_lines, font)
+            if max_lines == 1:
+                translated_text = self._shorten_text(translated_text, max_width, font)
+            else:
+                translated_text = self._wrap_text(translated_text, max_width, max_lines, font)
 
         self.draw.text(
             position,

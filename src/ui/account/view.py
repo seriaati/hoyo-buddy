@@ -24,7 +24,7 @@ class AccountManager(View):
     def __init__(
         self,
         *,
-        author: "discord.User | discord.Member",
+        author: "discord.User | discord.Member | None",
         locale: "discord.Locale",
         translator: Translator,
         user: User,

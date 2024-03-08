@@ -249,6 +249,7 @@ class EnterEmailPassword(Button["AccountManager"]):
             return
 
         user_id = notif.payload
+        assert self.view.author is not None
         if user_id is None or int(user_id) != self.view.author.id:
             return
         user = await User.get(id=int(user_id))

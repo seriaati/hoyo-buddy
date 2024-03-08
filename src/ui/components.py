@@ -39,7 +39,7 @@ class View(discord.ui.View):
     def __init__(
         self,
         *,
-        author: discord.User | discord.Member,
+        author: discord.User | discord.Member | None,
         locale: discord.Locale,
         translator: Translator,
         timeout: float | None = 180,
@@ -68,6 +68,9 @@ class View(discord.ui.View):
         await self.absolute_send(i, embed=embed, ephemeral=True)
 
     async def interaction_check(self, i: "INTERACTION") -> bool:
+        if self.author is None:
+            return True
+
         if i.user.id != self.author.id:
             embed = ErrorEmbed(
                 self.locale,

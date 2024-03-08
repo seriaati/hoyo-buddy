@@ -482,6 +482,10 @@ class TextInput(discord.ui.TextInput):
         min_length: int | None = None,
         max_length: int | None = None,
         row: int | None = None,
+        is_digit: bool = False,
+        max_value: int | None = None,
+        min_value: int | None = None,
+        is_bool: bool = False,
     ) -> None:
         super().__init__(
             label=label if isinstance(label, str) else "#NoTrans",
@@ -495,6 +499,11 @@ class TextInput(discord.ui.TextInput):
         self.locale_str_label = label
         self.locale_str_placeholder = placeholder
         self.locale_str_default = default
+
+        self.is_digit = is_digit
+        self.max_value = max_value
+        self.min_value = min_value
+        self.is_bool = is_bool
 
 
 class Modal(discord.ui.Modal):
@@ -528,6 +537,7 @@ class Modal(discord.ui.Modal):
             await i.followup.send(embed=embed, ephemeral=True)
 
     async def on_submit(self, i: "INTERACTION") -> None:
+        self.validate_inputs()
         await i.response.defer()
         self.stop()
 
@@ -543,10 +553,66 @@ class Modal(discord.ui.Modal):
         for item in self.children:
             if isinstance(item, TextInput):
                 item.label = translator.translate(item.locale_str_label, locale)
+
+                if item.is_digit:
+                    item.placeholder = f"({item.min_value} ~ {item.max_value})"
+                elif item.is_bool:
+                    item.placeholder = "0/1"
+
                 if item.locale_str_placeholder:
                     item.placeholder = translator.translate(item.locale_str_placeholder, locale)
                 if item.locale_str_default:
                     item.default = translator.translate(item.locale_str_default, locale)
+
+    def validate_inputs(self) -> None:
+        """Validates all TextInput children of the modal. Raises InvalidInputError if any input is invalid."""
+        for item in self.children:
+            if isinstance(item, TextInput) and item.is_digit:
+                try:
+                    value = int(item.value)
+                except ValueError as e:
+                    raise InvalidInputError(
+                        LocaleStr(
+                            "Input `{input}` needs to be an integer",
+                            key="invalid_input.input_needs_to_be_int",
+                            input=item.label,
+                        )
+                    ) from e
+                if item.max_value is not None and value > item.max_value:
+                    raise InvalidInputError(
+                        LocaleStr(
+                            "Input `{input}` needs to be less than or equal to {max_value}",
+                            key="invalid_input.input_out_of_range.max_value",
+                            input=item.label,
+                            max_value=item.max_value,
+                        )
+                    )
+                if item.min_value is not None and value < item.min_value:
+                    raise InvalidInputError(
+                        LocaleStr(
+                            "Input `{input}` needs to be greater than or equal to {min_value}",
+                            key="invalid_input.input_out_of_range.min_value",
+                            min_value=item.min_value,
+                            input=item.label,
+                        )
+                    )
+            elif isinstance(item, TextInput) and item.is_bool:
+                if item.value not in {"0", "1"}:
+                    raise InvalidInputError(
+                        LocaleStr(
+                            "Input `{input}` needs to be either `0` (for false) or `1` (for true)",
+                            key="invalid_input.input_needs_to_be_bool",
+                            input=item.label,
+                        )
+                    )
+
+    def confirm_required_inputs(self) -> bool:
+        """Returns True if any required TextInput is empty. False otherwise."""
+        return any(
+            item.required and not item.value
+            for item in self.children
+            if isinstance(item, TextInput)
+        )
 
 
 class LevelModal(Modal):

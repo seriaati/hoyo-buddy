@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from discord.ext import commands, tasks
 
 from ..hoyo.daily_checkin import DailyCheckin
+from ..hoyo.notes_check import NotesChecker
 from ..utils import get_now
 
 if TYPE_CHECKING:
@@ -25,8 +26,13 @@ class Schedule(commands.Cog):
     @tasks.loop(minutes=loop_interval)
     async def schedule(self) -> None:
         now = get_now()
+        # Every day at 00:00
         if now.hour == 0 and now.minute < self.loop_interval:
             asyncio.create_task(DailyCheckin.execute(self.bot))
+
+        # Every minute
+        if now.minute % 1 < self.loop_interval:
+            asyncio.create_task(NotesChecker.execute(self.bot))
 
     @schedule.before_loop
     async def before_schedule(self) -> None:

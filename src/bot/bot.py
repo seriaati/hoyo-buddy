@@ -98,6 +98,18 @@ class HoyoBuddy(commands.AutoShardedBot):
         else:
             return user
 
+    async def dm_user(self, user_id: int, **kwargs) -> discord.Message | None:
+        user = await self.fetch_user(user_id)
+        if user is None:
+            return None
+
+        try:
+            message = await user.send(**kwargs)
+        except Exception:
+            return None
+
+        return message
+
     @tasks.loop(minutes=30)
     async def push_source_strings(self) -> None:
         if self.env in {"prod", "test"}:

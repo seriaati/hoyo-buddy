@@ -4,10 +4,12 @@ from discord import Locale
 from seria.tortoise.model import Model
 from tortoise import fields
 
-from ..enums import GAME_CONVERTER, Game
+from ..enums import GAME_CONVERTER, Game, NotesNotifyType
 from ..hoyo.gpy_client import GenshinClient
 
 if TYPE_CHECKING:
+    import datetime
+
     import genshin
 
 
@@ -95,3 +97,30 @@ class EnkaCache(Model):
 
     class Meta:
         ordering = ["uid"]
+
+
+class NotesNotify(Model):
+    type = fields.IntEnumField(NotesNotifyType)
+    enabled = fields.BooleanField(default=True)
+    account: fields.ForeignKeyRelation[HoyoAccount] = fields.ForeignKeyField(
+        "models.HoyoAccount", related_name="notifs"
+    )
+
+    last_notif_time: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # type: ignore
+    last_check_time: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # type: ignore
+    est_time: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # type: ignore
+    """Estimated time for the threshold to be reached."""
+
+    notify_interval = fields.IntField()
+    """Notify interval in minutes."""
+    check_interval = fields.IntField()
+    """Check interval in minutes."""
+
+    max_notif_count = fields.IntField(default=5)
+    current_notif_count = fields.IntField(default=0)
+
+    threshold: fields.Field[int] | None = fields.IntField(null=True)
+
+    class Meta:
+        unique_together = ("type", "account")
+        ordering = ["type"]

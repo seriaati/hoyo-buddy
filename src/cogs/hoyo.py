@@ -25,6 +25,7 @@ from ..ui.hoyo.genshin.abyss import AbyssView
 from ..ui.hoyo.genshin.search import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
 from ..ui.hoyo.hsr.search import BookUI, RelicSetUI
 from ..ui.hoyo.hsr.search import CharacterUI as HSRCharacterUI
+from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.profile.view import ProfileView
 
 if TYPE_CHECKING:
@@ -668,7 +669,9 @@ class Hoyo(commands.Cog):
         else:
             raise NotImplementedError
 
-        await i.followup.send(file=file_)
+        view = NotesView(account, author=i.user, locale=locale, translator=self.bot.translator)
+        await i.followup.send(view=view, file=file_)
+        view.message = await i.original_response()
 
     @notes_command.autocomplete("account")
     async def notes_command_autocomplete(

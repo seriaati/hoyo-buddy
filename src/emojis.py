@@ -17,6 +17,7 @@ SMART_TOY = "<:SMART_TOY:1169597339162390528>"
 FREE_CANCELLATION = "<:FREE_CANCELLATION:1169597369470427246>"
 SEARCH = "<:search:1053142091682812054>"
 BOOK_MULTIPLE = "<:bookmultiple:1067260453249618001>"
+BELL_OUTLINE = "<:belloutline:1067642704814674062>"
 
 GENSHIN_IMPACT = "<:genshin_impact:1025630733068423169>"
 HONKAI_STAR_RAIL = "<:honkai_star_rail:1105806784117088336>"
@@ -67,10 +68,21 @@ RELIC_POS_EMOJIS: dict[str, str] = {
     "foot": "<:IconRelicFoot:1196077185933508709>",
     "body": "<:IconRelicBody:1196077184394219600>",
 }
+TOGGLE_EMOJIS: dict[bool, str] = {
+    False: "<:TOGGLE_OFF:1215446301202980914>",
+    True: "<:TOGGLE_ON:1215289748415844382>",
+}
 
 COMFORT_ICON = "<:comfort_icon:1045528772222394378>"
 LOAD_ICON = "<:load_icon:1045528773992386650>"
 PROJECT_AMBER = "<:PROJECT_AMBER:1191752455998930955>"
+
+RESIN = "<:resin:1004648472995168326>"
+REALM_CURRENCY = "<:realm:1004648474266062880>"
+PT_EMOJI = "<:transformer:1004648470981902427>"
+
+TRAILBLAZE_POWER = "<:trailblaze_power:1120556064509788160>"
+RESERVED_TRAILBLAZE_POWER = "<:RESERVED_TRAILBLAZE_POWER:1215465874539028520>"
 
 
 def get_game_emoji(game: genshin.Game | Game) -> str:
@@ -80,8 +92,6 @@ def get_game_emoji(game: genshin.Game | Game) -> str:
         return HONKAI_IMPACT_3RD
     if game is genshin.Game.STARRAIL or game is Game.STARRAIL:
         return HONKAI_STAR_RAIL
-    msg = f"Invalid game: {game}"
-    raise ValueError(msg)
 
 
 def get_element_emoji(element: str) -> str:

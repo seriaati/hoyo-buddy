@@ -4,6 +4,8 @@ from enka import Language as EnkaLanguage
 from mihomo import Language as MihomoLanguage
 from yatta import Language as YattaLanguage
 
+DB_INTEGER_MAX = 2147483647
+
 WEEKDAYS: dict[int, str] = {
     0: "Monday",
     1: "Tuesday",

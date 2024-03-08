@@ -243,7 +243,7 @@ class GoBackButton(Button, Generic[V_co]):
         if self.embeds is not None:
             kwargs["embeds"] = self.embeds
         if self.attachments is not None:
-            kwargs["attachments"] = self.attachments
+            kwargs["attachments"] = [await attachment.to_file() for attachment in self.attachments]
 
         await i.response.edit_message(**kwargs)
 

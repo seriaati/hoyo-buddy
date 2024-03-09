@@ -1,8 +1,10 @@
 from typing import TYPE_CHECKING, Any
 
+from discord import ButtonStyle
+
 from src.bot.translator import LocaleStr
 from src.hoyo.hsr.yatta import YattaAPIClient
-from src.ui import Select, SelectOption, View
+from src.ui import Button, Modal, Select, SelectOption, TextInput, View
 
 if TYPE_CHECKING:
     import yatta
@@ -26,8 +28,10 @@ class CharacterUI(View):
 
         self.selected_page = 0
         self._character_id = character_id
+        self._character_level = 80
 
         self._main_skill_index = 0
+        self._main_skill_levels: list[int] = []
         self._sub_skill_index = 0
         self._eidolon_index = 0
         self._story_index = 0
@@ -39,17 +43,27 @@ class CharacterUI(View):
         self._character_embed: "DefaultEmbed | None" = None
 
         self._character_detail: "yatta.CharacterDetail | None" = None
+        self._manual_avatar: dict[str, Any] | None = None
 
     async def start(self, i: "INTERACTION") -> None:
         await i.response.defer()
 
         async with YattaAPIClient(self.locale, self.translator) as api:
             character_detail = await api.fetch_character_detail(self._character_id)
-            self._character_detail = character_detail
+            manual_avatar = await api.fetch_manual_avatar()
 
-            self._character_embed = api.get_character_embed(character_detail)
+            self._character_detail = character_detail
+            self._manual_avatar = manual_avatar
+
+            self._main_skill_levels = [
+                skill.max_level for skill in character_detail.traces.main_skills
+            ]
+
+            self._character_embed = api.get_character_details_embed(
+                character_detail, self._character_level, manual_avatar
+            )
             self._main_skill_embeds = [
-                api.get_character_main_skill_embed(skill)
+                api.get_character_main_skill_embed(skill, skill.max_level)
                 for skill in character_detail.traces.main_skills
             ]
             self._sub_skill_embeds = [
@@ -63,9 +77,9 @@ class CharacterUI(View):
                 api.get_character_story_embed(story) for story in character_detail.script.stories
             ]
 
-        await self._update(i, responded=True)
+        await self.update(i, responded=True)
 
-    async def _update(self, i: "INTERACTION", *, responded: bool = False) -> None:
+    async def update(self, i: "INTERACTION", *, responded: bool = False) -> None:
         if self._character_detail is None:
             msg = "Character detail not fetched"
             raise RuntimeError(msg)
@@ -76,8 +90,21 @@ class CharacterUI(View):
         match self.selected_page:
             case 0:
                 embed = self._character_embed
+                self.add_item(
+                    EnterCharacterLevel(
+                        LocaleStr("Change character level", key="change_character_level_label")
+                    )
+                )
             case 1:
                 embed = self._main_skill_embeds[self._main_skill_index]
+                self.add_item(
+                    EnterSkilLevel(
+                        label=LocaleStr("Change skill level", key="change_skill_level_label"),
+                        skill_max_level=self._character_detail.traces.main_skills[
+                            self._main_skill_index
+                        ].max_level,
+                    )
+                )
                 self.add_item(
                     ItemSelector(
                         [
@@ -146,6 +173,8 @@ class CharacterUI(View):
         else:
             await i.response.edit_message(embed=embed, view=self)
 
+        self.message = await i.original_response()
+
 
 class PageSelector(Select["CharacterUI"]):
     def __init__(self, current: int) -> None:
@@ -182,7 +211,7 @@ class PageSelector(Select["CharacterUI"]):
 
     async def callback(self, i: "INTERACTION") -> Any:
         self.view.selected_page = int(self.values[0])
-        await self.view._update(i)
+        await self.view.update(i)
 
 
 class ItemSelector(Select["CharacterUI"]):
@@ -192,4 +221,81 @@ class ItemSelector(Select["CharacterUI"]):
 
     async def callback(self, i: "INTERACTION") -> Any:
         self.view.__setattr__(self._index_name, int(self.values[0]))  # noqa: PLC2801
-        await self.view._update(i)
+        await self.view.update(i)
+
+
+class SkillLevelModal(Modal):
+    level = TextInput(
+        label=LocaleStr("Level", key="level_label"),
+        is_digit=True,
+        min_value=1,
+    )
+
+    def __init__(self, max_level: int) -> None:
+        super().__init__(title=LocaleStr("Enter skill level", key="skill_level.modal.title"))
+        self.level.max_value = max_level
+
+
+class EnterSkilLevel(Button[CharacterUI]):
+    def __init__(self, label: LocaleStr, skill_max_level: int) -> None:
+        super().__init__(label=label, style=ButtonStyle.blurple)
+        self._skill_max_level = skill_max_level
+
+    async def callback(self, i: "INTERACTION") -> Any:
+        modal = SkillLevelModal(self._skill_max_level)
+        modal.translate(self.view.locale, self.view.translator)
+        await i.response.send_modal(modal)
+        await modal.wait()
+        incomplete = modal.confirm_required_inputs()
+        if incomplete:
+            return
+
+        assert self.view._character_detail is not None
+        assert self.view._main_skill_index is not None
+
+        self.view._main_skill_levels[self.view._main_skill_index] = int(modal.level.value)
+        async with YattaAPIClient(self.view.locale, self.view.translator) as api:
+            self.view._main_skill_embeds[
+                self.view._main_skill_index
+            ] = api.get_character_main_skill_embed(
+                self.view._character_detail.traces.main_skills[self.view._main_skill_index],
+                self.view._main_skill_levels[self.view._main_skill_index],
+            )
+
+        await self.view.update(i, responded=True)
+
+
+class CharacterLevelModal(Modal):
+    level = TextInput(
+        label=LocaleStr("Level", key="level_label"),
+        is_digit=True,
+        min_value=1,
+        max_value=80,
+    )
+
+
+class EnterCharacterLevel(Button[CharacterUI]):
+    def __init__(self, label: LocaleStr) -> None:
+        super().__init__(label=label, style=ButtonStyle.blurple)
+
+    async def callback(self, i: "INTERACTION") -> Any:
+        modal = CharacterLevelModal(
+            title=LocaleStr("Enter character level", key="chara_level.modal.title")
+        )
+        modal.translate(self.view.locale, self.view.translator)
+        await i.response.send_modal(modal)
+        await modal.wait()
+        incomplete = modal.confirm_required_inputs()
+        if incomplete:
+            return
+
+        assert self.view._character_detail is not None
+        assert self.view._manual_avatar is not None
+
+        self.view._character_level = int(modal.level.value)
+        async with YattaAPIClient(self.view.locale, self.view.translator) as api:
+            self.view._character_embed = api.get_character_details_embed(
+                self.view._character_detail, self.view._character_level, self.view._manual_avatar
+            )
+
+        await self.view.update(i, responded=True)

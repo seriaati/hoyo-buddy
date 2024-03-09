@@ -25,6 +25,7 @@ from ..ui.hoyo.genshin.abyss import AbyssView
 from ..ui.hoyo.genshin.search import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
 from ..ui.hoyo.hsr.search import BookUI, RelicSetUI
 from ..ui.hoyo.hsr.search import CharacterUI as HSRCharacterUI
+from ..ui.hoyo.hsr.search.light_cone import LightConeUI
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.profile.view import ProfileView
 
@@ -380,11 +381,13 @@ class Hoyo(commands.Cog):
                     return await i.followup.send(embed=embed)
 
             if category is yatta.ItemCategory.LIGHT_CONES:
-                async with yatta.YattaAPIClient(locale, i.client.translator) as api:
-                    await i.response.defer()
-                    light_cone = await api.fetch_light_cone_detail(int(query))
-                    embed = api.get_light_cone_embed(light_cone)
-                    return await i.followup.send(embed=embed)
+                light_cone_ui = LightConeUI(
+                    query,
+                    author=i.user,
+                    locale=locale,
+                    translator=i.client.translator,
+                )
+                return await light_cone_ui.start(i)
 
             if category is yatta.ItemCategory.BOOKS:
                 book_ui = BookUI(

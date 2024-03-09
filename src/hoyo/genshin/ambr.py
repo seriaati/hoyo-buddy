@@ -222,10 +222,18 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         formatted_stat_values = self._format_stat_values(stat_values)
         named_stat_values = self._replace_fight_prop_with_name(formatted_stat_values, manual_weapon)
 
+        level_str = self.translator.translate(
+            LocaleStr(
+                "Lv. {level}",
+                key="level_str",
+                level=level,
+            ),
+            self.locale,
+        )
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=character.name,
+            title=f"{character.name} ({level_str})",
             description=LocaleStr(
                 (
                     "{rarity}★ {element}\n"
@@ -242,16 +250,8 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             ),
         )
 
-        level_str = self.translator.translate(
-            LocaleStr(
-                "Lv. {level}",
-                key="level_str",
-                level=level,
-            ),
-            self.locale,
-        )
         embed.add_field(
-            name=f"Stats ({level_str})",
+            name=LocaleStr("Stats", key="stats_embed_field_name"),
             value="\n".join(f"{k}: {v}" for k, v in named_stat_values.items()),
         )
         embed.set_footer(text=character.info.detail)

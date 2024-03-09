@@ -1,9 +1,11 @@
 from typing import TYPE_CHECKING, Any
 
+from discord import ButtonStyle
+
 from src.bot.translator import LocaleStr
 from src.exceptions import InvalidQueryError
 from src.hoyo.genshin.ambr import AmbrAPIClient
-from src.ui import LevelModalButton, Select, SelectOption, View
+from src.ui import Button, Modal, Select, SelectOption, TextInput, View
 
 if TYPE_CHECKING:
     from discord import Locale, Member, User
@@ -53,11 +55,7 @@ class WeaponUI(View):
     def _setup_items(self) -> None:
         self.clear_items()
         self.add_item(
-            WeaponLevelModalButton(
-                True,
-                min_level=1,
-                max_level=90,
-                default_level=self.weapon_level,
+            EnterWeaponLevel(
                 label=LocaleStr("Change weapon level", key="change_weapon_level_label"),
             )
         )
@@ -76,24 +74,32 @@ class WeaponUI(View):
         await i.edit_original_response(embed=embed, view=self)
 
 
-class WeaponLevelModalButton(LevelModalButton["WeaponUI"]):
-    def __init__(
-        self,
-        is_character_level: bool,
-        *,
-        min_level: int,
-        max_level: int,
-        default_level: int | None = None,
-        label: LocaleStr,
-    ) -> None:
-        super().__init__(
-            min_level=min_level, max_level=max_level, default_level=default_level, label=label
-        )
-        self.is_character_level = is_character_level
+class WeaponLevelModal(Modal):
+    level = TextInput(
+        label=LocaleStr("Level", key="level_label"),
+        placeholder="90",
+        is_digit=True,
+        min_value=1,
+        max_value=90,
+    )
+
+
+class EnterWeaponLevel(Button[WeaponUI]):
+    def __init__(self, label: LocaleStr) -> None:
+        super().__init__(label=label, style=ButtonStyle.blurple)
 
     async def callback(self, i: "INTERACTION") -> Any:
-        await super().callback(i)
-        self.view.weapon_level = self.level
+        modal = WeaponLevelModal(
+            title=LocaleStr("Enter weapon level", key="weapon_level.modal.title")
+        )
+        modal.translate(self.view.locale, self.view.translator)
+        await i.response.send_modal(modal)
+        await modal.wait()
+        incomplete = modal.confirm_required_inputs()
+        if incomplete:
+            return
+
+        self.view.weapon_level = int(modal.level.value)
         embed = await self.view._fetch_weapon_embed()
         self.view._setup_items()
         await i.edit_original_response(embed=embed, view=self.view)

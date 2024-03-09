@@ -1,11 +1,11 @@
 import contextlib
 from typing import TYPE_CHECKING, Any
 
-from discord import InteractionResponded, Locale, Member, User
+from discord import ButtonStyle, InteractionResponded, Locale, Member, User
 
 from src.bot.translator import LocaleStr
 from src.hoyo.genshin.ambr import AmbrAPIClient
-from src.ui import LevelModalButton, PaginatorSelect, Select, SelectOption, View
+from src.ui import Button, Modal, PaginatorSelect, Select, SelectOption, TextInput, View
 
 if TYPE_CHECKING:
     import ambr
@@ -95,26 +95,18 @@ class CharacterUI(View):
             case 0:
                 embed = await self.fetch_character_embed()
                 self.add_item(
-                    CharacterLevelModalButton(
-                        True,
-                        min_level=1,
-                        max_level=90,
-                        default=self.character_level,
+                    EnterCharacterLevel(
                         label=LocaleStr(
                             "Change character level", key="change_character_level_label"
-                        ),
+                        )
                     )
                 )
             case 1:
                 embed, upgradeable, talents = await self.fetch_talent_embed()
                 if upgradeable:
                     self.add_item(
-                        CharacterLevelModalButton(
-                            False,
-                            min_level=1,
-                            max_level=10,
-                            default=self.talent_level,
-                            label=LocaleStr("Change talent level", key="change_talent_level_label"),
+                        EnterTalentLevel(
+                            label=LocaleStr("Change talent level", key="change_talent_level_label")
                         )
                     )
                 self.add_item(
@@ -181,31 +173,64 @@ class CharacterUI(View):
         await i.edit_original_response(embed=embed, view=self)
 
 
-class CharacterLevelModalButton(LevelModalButton["CharacterUI"]):
-    def __init__(
-        self,
-        is_character_level: bool,
-        *,
-        min_level: int,
-        max_level: int,
-        default: int | None = None,
-        label: LocaleStr,
-    ) -> None:
-        super().__init__(
-            min_level=min_level, max_level=max_level, default_level=default, label=label
-        )
-        self.is_character_level = is_character_level
+class TalentLevelModal(Modal):
+    level = TextInput(
+        label=LocaleStr("Level", key="level_label"),
+        placeholder="10",
+        is_digit=True,
+        min_value=1,
+        max_value=10,
+    )
+
+
+class EnterTalentLevel(Button[CharacterUI]):
+    def __init__(self, label: LocaleStr) -> None:
+        super().__init__(label=label, style=ButtonStyle.blurple)
 
     async def callback(self, i: "INTERACTION") -> Any:
-        await super().callback(i)
-        if self.is_character_level:
-            self.view.character_level = self.level
-        else:
-            self.view.talent_level = self.level
+        modal = TalentLevelModal(
+            title=LocaleStr("Enter talent level", key="talent_level.modal.title")
+        )
+        modal.translate(self.view.locale, self.view.translator)
+        await i.response.send_modal(modal)
+        await modal.wait()
+        incomplete = modal.confirm_required_inputs()
+        if incomplete:
+            return
+
+        self.view.talent_level = int(modal.level.value)
         await self.view.update(i)
 
 
-class PageSelector(Select["CharacterUI"]):
+class CharacterLevelModal(Modal):
+    level = TextInput(
+        label=LocaleStr("Level", key="level_label"),
+        placeholder="90",
+        is_digit=True,
+        min_value=1,
+        max_value=90,
+    )
+
+
+class EnterCharacterLevel(Button[CharacterUI]):
+    def __init__(self, label: LocaleStr) -> None:
+        super().__init__(label=label, style=ButtonStyle.blurple)
+
+    async def callback(self, i: "INTERACTION") -> Any:
+        modal = CharacterLevelModal(
+            title=LocaleStr("Enter character level", key="chara_level.modal.title")
+        )
+        await i.response.send_modal(modal)
+        await modal.wait()
+        incomplete = modal.confirm_required_inputs()
+        if incomplete:
+            return
+
+        self.view.character_level = int(modal.level.value)
+        await self.view.update(i)
+
+
+class PageSelector(Select[CharacterUI]):
     def __init__(self, current: int) -> None:
         super().__init__(
             options=[
@@ -243,7 +268,7 @@ class PageSelector(Select["CharacterUI"]):
         await self.view.update(i)
 
 
-class ItemSelector(Select["CharacterUI"]):
+class ItemSelector(Select[CharacterUI]):
     def __init__(self, options: list[SelectOption], index_name: str) -> None:
         super().__init__(options=options)
         self.index_name = index_name
@@ -253,7 +278,7 @@ class ItemSelector(Select["CharacterUI"]):
         await self.view.update(i)
 
 
-class QuoteSelector(PaginatorSelect["CharacterUI"]):
+class QuoteSelector(PaginatorSelect[CharacterUI]):
     async def callback(self, i: "INTERACTION") -> Any:
         await super().callback()
         try:

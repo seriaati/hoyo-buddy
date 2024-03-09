@@ -26,8 +26,6 @@ __all__ = (
     "Select",
     "TextInput",
     "Modal",
-    "LevelModal",
-    "LevelModalButton",
     "PaginatorSelect",
     "URLButtonView",
 )
@@ -279,40 +277,6 @@ class ToggleButton(Button, Generic[V_co]):
         self.label = self.view.translator.translate(self._get_label(), self.view.locale)
         if edit:
             await i.response.edit_message(view=self.view, **kwargs)
-
-
-class LevelModalButton(Button, Generic[V_co]):
-    def __init__(
-        self,
-        *,
-        min_level: int,
-        max_level: int,
-        default_level: int | None = None,
-        label: LocaleStr | str | None = None,
-        **kwargs,
-    ) -> None:
-        super().__init__(
-            label=label or LocaleStr("Enter level", key="enter_level_button_label"),
-            style=discord.ButtonStyle.primary,
-            **kwargs,
-        )
-        self.level: int
-        self.min_level = min_level
-        self.max_level = max_level
-        self.default = default_level
-
-        self.view: V_co
-
-    async def callback(self, i: "INTERACTION") -> Any:
-        modal = LevelModal(
-            min_level=self.min_level, max_level=self.max_level, default_level=self.default
-        )
-        modal.translate(self.view.locale, i.client.translator)
-        await i.response.send_modal(modal)
-        await modal.wait()
-        if modal.level is None:
-            return
-        self.level = modal.level
 
 
 class SelectOption(discord.SelectOption):
@@ -613,34 +577,3 @@ class Modal(discord.ui.Modal):
             for item in self.children
             if isinstance(item, TextInput)
         )
-
-
-class LevelModal(Modal):
-    level_input = TextInput(label=LocaleStr("Level", key="level_input_label"))
-
-    def __init__(self, *, min_level: int, max_level: int, default_level: int | None = None) -> None:
-        super().__init__(title=LocaleStr("Enter level", key="enter_level_modal_title"))
-        self.min_level = min_level
-        self.max_level = max_level
-        self.level_input.default = str(default_level) if default_level else None
-        self.level_input.placeholder = f"{min_level} ~ {max_level}"
-        self.level: int | None = None
-
-    async def on_submit(self, i: "INTERACTION") -> None:
-        try:
-            self.level = int(self.level_input.value)
-        except ValueError:
-            raise InvalidInputError(LocaleStr("Level need to be an integer")) from None
-
-        if self.level < self.min_level or self.level > self.max_level:
-            raise InvalidInputError(
-                LocaleStr(
-                    "Level needs to be between {min_level} and {max_level}",
-                    key="level_out_of_range",
-                    min_level=self.min_level,
-                    max_level=self.max_level,
-                )
-            )
-
-        await i.response.defer()
-        self.stop()

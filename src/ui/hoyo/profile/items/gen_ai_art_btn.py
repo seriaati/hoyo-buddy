@@ -7,8 +7,7 @@ from src.bot.translator import LocaleStr
 from src.constants import NSFW_TAGS
 from src.exceptions import GuildOnlyFeatureError, NSFWPromptError
 from src.ui.components import Button, Modal, TextInput
-
-from .....utils import upload_image
+from src.utils import upload_image
 
 if TYPE_CHECKING:
     from src.bot.bot import INTERACTION

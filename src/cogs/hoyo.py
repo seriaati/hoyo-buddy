@@ -13,10 +13,9 @@ from ..draw import main_funcs
 from ..emojis import PROJECT_AMBER
 from ..enums import Game
 from ..exceptions import IncompleteParamError, InvalidQueryError, NoAccountFoundError
-from ..hoyo.enka_client import EnkaAPI
-from ..hoyo.genshin import ambr
-from ..hoyo.hsr import yatta
-from ..hoyo.mihomo_client import MihomoAPI
+from ..hoyo.clients import ambr_client, yatta_client
+from ..hoyo.clients.enka_client import EnkaAPI
+from ..hoyo.clients.mihomo_client import MihomoAPI
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..models import DrawInput
 from ..ui import URLButtonView
@@ -40,15 +39,15 @@ class Hoyo(commands.Cog):
         self.bot = bot
 
         self._search_categories: dict[Game, list[str]] = {
-            Game.GENSHIN: [c.value for c in ambr.ItemCategory],
-            Game.STARRAIL: [c.value for c in yatta.ItemCategory],
+            Game.GENSHIN: [c.value for c in ambr_client.ItemCategory],
+            Game.STARRAIL: [c.value for c in yatta_client.ItemCategory],
         }
 
         # [game][category][locale][item_name] -> item_id
         self._search_autocomplete_choices: dict[
             Game,
             dict[
-                ambr.ItemCategory | yatta.ItemCategory,
+                ambr_client.ItemCategory | yatta_client.ItemCategory,
                 dict[str, dict[str, str]],
             ],
         ] = {}
@@ -61,15 +60,17 @@ class Hoyo(commands.Cog):
 
     async def _fetch_item_task(
         self,
-        api: ambr.AmbrAPIClient | yatta.YattaAPIClient,
-        item_category: ambr.ItemCategory | yatta.ItemCategory,
+        api: ambr_client.AmbrAPIClient | yatta_client.YattaAPIClient,
+        item_category: ambr_client.ItemCategory | yatta_client.ItemCategory,
         locale: discord.Locale,
     ) -> None:
-        if isinstance(api, ambr.AmbrAPIClient) and isinstance(item_category, ambr.ItemCategory):
+        if isinstance(api, ambr_client.AmbrAPIClient) and isinstance(
+            item_category, ambr_client.ItemCategory
+        ):
             game = Game.GENSHIN
             items = await api.fetch_items(item_category)
-        elif isinstance(api, yatta.YattaAPIClient) and isinstance(
-            item_category, yatta.ItemCategory
+        elif isinstance(api, yatta_client.YattaAPIClient) and isinstance(
+            item_category, yatta_client.ItemCategory
         ):
             game = Game.STARRAIL
             items = await api.fetch_items_(item_category)
@@ -89,14 +90,14 @@ class Hoyo(commands.Cog):
         LOGGER_.info("Setting up search autocomplete choices")
         start = self.bot.loop.time()
 
-        for locale in ambr.LOCALE_TO_AMBR_LANG:
-            async with ambr.AmbrAPIClient(locale, self.bot.translator) as api:
-                for item_category in ambr.ItemCategory:
+        for locale in ambr_client.LOCALE_TO_AMBR_LANG:
+            async with ambr_client.AmbrAPIClient(locale, self.bot.translator) as api:
+                for item_category in ambr_client.ItemCategory:
                     await self._fetch_item_task(api, item_category, locale)
 
-        for locale in yatta.LOCALE_TO_YATTA_LANG:
-            async with yatta.YattaAPIClient(locale, self.bot.translator) as api:
-                for item_category in yatta.ItemCategory:
+        for locale in yatta_client.LOCALE_TO_YATTA_LANG:
+            async with yatta_client.YattaAPIClient(locale, self.bot.translator) as api:
+                for item_category in yatta_client.ItemCategory:
                     await self._fetch_item_task(api, item_category, locale)
 
         LOGGER_.info(
@@ -249,11 +250,11 @@ class Hoyo(commands.Cog):
 
         if game is Game.GENSHIN:
             try:
-                category = ambr.ItemCategory(category_value)
+                category = ambr_client.ItemCategory(category_value)
             except ValueError as e:
                 raise InvalidQueryError from e
 
-            if category is ambr.ItemCategory.CHARACTERS:
+            if category is ambr_client.ItemCategory.CHARACTERS:
                 character_ui = CharacterUI(
                     query,
                     author=i.user,
@@ -262,7 +263,7 @@ class Hoyo(commands.Cog):
                 )
                 return await character_ui.update(i)
 
-            if category is ambr.ItemCategory.WEAPONS:
+            if category is ambr_client.ItemCategory.WEAPONS:
                 weapon_ui = WeaponUI(
                     query,
                     author=i.user,
@@ -271,14 +272,14 @@ class Hoyo(commands.Cog):
                 )
                 return await weapon_ui.start(i)
 
-            if category is ambr.ItemCategory.NAMECARDS:
-                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+            if category is ambr_client.ItemCategory.NAMECARDS:
+                async with ambr_client.AmbrAPIClient(locale, i.client.translator) as api:
                     await i.response.defer()
                     namecard_detail = await api.fetch_namecard_detail(int(query))
                     embed = api.get_namecard_embed(namecard_detail)
                     return await i.followup.send(embed=embed)
 
-            if category is ambr.ItemCategory.ARTIFACT_SETS:
+            if category is ambr_client.ItemCategory.ARTIFACT_SETS:
                 artifact_set_ui = ArtifactSetUI(
                     query,
                     author=i.user,
@@ -287,22 +288,22 @@ class Hoyo(commands.Cog):
                 )
                 return await artifact_set_ui.start(i)
 
-            if category is ambr.ItemCategory.FOOD:
-                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+            if category is ambr_client.ItemCategory.FOOD:
+                async with ambr_client.AmbrAPIClient(locale, i.client.translator) as api:
                     await i.response.defer()
                     food_detail = await api.fetch_food_detail(int(query))
                     embed = api.get_food_embed(food_detail)
                     return await i.followup.send(embed=embed)
 
-            if category is ambr.ItemCategory.MATERIALS:
-                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+            if category is ambr_client.ItemCategory.MATERIALS:
+                async with ambr_client.AmbrAPIClient(locale, i.client.translator) as api:
                     await i.response.defer()
                     material_detail = await api.fetch_material_detail(int(query))
                     embed = api.get_material_embed(material_detail)
                     return await i.followup.send(embed=embed)
 
-            if category is ambr.ItemCategory.FURNISHINGS:
-                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+            if category is ambr_client.ItemCategory.FURNISHINGS:
+                async with ambr_client.AmbrAPIClient(locale, i.client.translator) as api:
                     await i.response.defer()
                     furniture_detail = await api.fetch_furniture_detail(int(query))
                     embed = api.get_furniture_embed(furniture_detail)
@@ -317,8 +318,8 @@ class Hoyo(commands.Cog):
                         ),
                     )
 
-            if category is ambr.ItemCategory.FURNISHING_SETS:
-                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+            if category is ambr_client.ItemCategory.FURNISHING_SETS:
+                async with ambr_client.AmbrAPIClient(locale, i.client.translator) as api:
                     await i.response.defer()
                     furniture_set_detail = await api.fetch_furniture_set_detail(int(query))
                     embed = api.get_furniture_set_embed(furniture_set_detail)
@@ -333,8 +334,8 @@ class Hoyo(commands.Cog):
                         ),
                     )
 
-            if category is ambr.ItemCategory.LIVING_BEINGS:
-                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+            if category is ambr_client.ItemCategory.LIVING_BEINGS:
+                async with ambr_client.AmbrAPIClient(locale, i.client.translator) as api:
                     await i.response.defer()
                     monster_detail = await api.fetch_monster_detail(int(query))
                     embed = api.get_monster_embed(monster_detail)
@@ -349,8 +350,8 @@ class Hoyo(commands.Cog):
                         ),
                     )
 
-            if category is ambr.ItemCategory.BOOKS:
-                async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
+            if category is ambr_client.ItemCategory.BOOKS:
+                async with ambr_client.AmbrAPIClient(locale, i.client.translator) as api:
                     await i.response.defer()
                     book = await api.fetch_book_detail(int(query))
                     book_volume_ui = BookVolumeUI(
@@ -362,25 +363,25 @@ class Hoyo(commands.Cog):
                     )
                     return await book_volume_ui.start(i)
 
-            if category is ambr.ItemCategory.TCG:
+            if category is ambr_client.ItemCategory.TCG:
                 tcg_card_ui = TCGCardUI(
                     int(query), author=i.user, locale=locale, translator=i.client.translator
                 )
                 return await tcg_card_ui.start(i)
         elif game is Game.STARRAIL:
             try:
-                category = yatta.ItemCategory(category_value)
+                category = yatta_client.ItemCategory(category_value)
             except ValueError as e:
                 raise InvalidQueryError from e
 
-            if category is yatta.ItemCategory.ITEMS:
-                async with yatta.YattaAPIClient(locale, i.client.translator) as api:
+            if category is yatta_client.ItemCategory.ITEMS:
+                async with yatta_client.YattaAPIClient(locale, i.client.translator) as api:
                     await i.response.defer()
                     item = await api.fetch_item_detail(int(query))
                     embed = api.get_item_embed(item)
                     return await i.followup.send(embed=embed)
 
-            if category is yatta.ItemCategory.LIGHT_CONES:
+            if category is yatta_client.ItemCategory.LIGHT_CONES:
                 light_cone_ui = LightConeUI(
                     query,
                     author=i.user,
@@ -389,19 +390,19 @@ class Hoyo(commands.Cog):
                 )
                 return await light_cone_ui.start(i)
 
-            if category is yatta.ItemCategory.BOOKS:
+            if category is yatta_client.ItemCategory.BOOKS:
                 book_ui = BookUI(
                     query, author=i.user, locale=locale, translator=i.client.translator
                 )
                 return await book_ui.start(i)
 
-            if category is yatta.ItemCategory.RELICS:
+            if category is yatta_client.ItemCategory.RELICS:
                 relic_set_ui = RelicSetUI(
                     query, author=i.user, locale=locale, translator=i.client.translator
                 )
                 return await relic_set_ui.start(i)
 
-            if category is yatta.ItemCategory.CHARACTERS:
+            if category is yatta_client.ItemCategory.CHARACTERS:
                 try:
                     character_id = int(query)
                 except ValueError as e:
@@ -444,9 +445,9 @@ class Hoyo(commands.Cog):
 
         try:
             if game is Game.GENSHIN:
-                category = ambr.ItemCategory(i.namespace.category)
+                category = ambr_client.ItemCategory(i.namespace.category)
             elif game is Game.STARRAIL:
-                category = yatta.ItemCategory(i.namespace.category)
+                category = yatta_client.ItemCategory(i.namespace.category)
             else:
                 return [self._get_error_app_command_choice("Invalid game selected")]
         except ValueError:

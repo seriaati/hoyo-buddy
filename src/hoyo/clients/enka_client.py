@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 import enka
 
-from ..constants import LOCALE_TO_ENKA_LANG
-from ..db.models import EnkaCache
+from ...constants import LOCALE_TO_ENKA_LANG
+from ...db.models import EnkaCache
 
 if TYPE_CHECKING:
     import discord

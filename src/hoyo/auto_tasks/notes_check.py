@@ -6,19 +6,19 @@ from typing import TYPE_CHECKING, ClassVar
 from discord import Locale
 from genshin.models import Notes, StarRailNote
 
-from ..bot.error_handler import get_error_embed
-from ..bot.translator import LocaleStr
-from ..db.models import NotesNotify
-from ..draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card
-from ..embeds import DefaultEmbed, ErrorEmbed
-from ..enums import Game, NotesNotifyType
-from ..icons import RESIN_ICON, RTBP_ICON, TBP_ICON
-from ..models import DrawInput
-from ..ui.hoyo.notes.view import NotesView
-from ..utils import get_now
+from ...bot.error_handler import get_error_embed
+from ...bot.translator import LocaleStr
+from ...db.models import NotesNotify
+from ...draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card
+from ...embeds import DefaultEmbed, ErrorEmbed
+from ...enums import Game, NotesNotifyType
+from ...icons import RESIN_ICON, RTBP_ICON, TBP_ICON
+from ...models import DrawInput
+from ...ui.hoyo.notes.view import NotesView
+from ...utils import get_now
 
 if TYPE_CHECKING:
-    from ..bot.bot import HoyoBuddy
+    from ...bot.bot import HoyoBuddy
 
 LOGGER_ = logging.getLogger(__name__)
 

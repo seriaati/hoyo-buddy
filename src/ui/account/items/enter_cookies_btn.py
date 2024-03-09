@@ -6,7 +6,7 @@ from discord import ButtonStyle, TextStyle
 from src.bot.translator import LocaleStr
 from src.embeds import ErrorEmbed
 from src.emojis import COOKIE
-from src.hoyo.gpy_client import GenshinClient
+from src.hoyo.clients.gpy_client import GenshinClient
 
 from ...components import Button, GoBackButton, Modal, TextInput
 from .add_acc_select import AddAccountSelect

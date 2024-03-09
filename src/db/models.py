@@ -5,7 +5,7 @@ from seria.tortoise.model import Model
 from tortoise import fields
 
 from ..enums import GAME_CONVERTER, Game, NotesNotifyType
-from ..hoyo.gpy_client import GenshinClient
+from ..hoyo.clients.gpy_client import GenshinClient
 
 if TYPE_CHECKING:
     import datetime

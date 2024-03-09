@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 
 from discord.ext import commands, tasks
 
-from ..hoyo.daily_checkin import DailyCheckin
-from ..hoyo.notes_check import NotesChecker
+from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
+from ..hoyo.auto_tasks.notes_check import NotesChecker
 from ..utils import get_now
 
 if TYPE_CHECKING:

@@ -6,7 +6,7 @@ import orjson
 from discord import ButtonStyle, ui
 from discord.ext import commands
 
-from ..hoyo.daily_checkin import DailyCheckin
+from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 
 if TYPE_CHECKING:
     from discord.ext.commands.context import Context

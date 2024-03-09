@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any
 
 from src.exceptions import InvalidQueryError
-from src.hoyo.hsr.yatta import YattaAPIClient
+from src.hoyo.clients.yatta_client import YattaAPIClient
 from src.ui import Select, SelectOption, View
 
 if TYPE_CHECKING:

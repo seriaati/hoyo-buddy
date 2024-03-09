@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from discord import ButtonStyle
 
 from src.bot.translator import LocaleStr
-from src.hoyo.genshin.ambr import AmbrAPIClient
+from src.hoyo.clients.ambr_client import AmbrAPIClient
 from src.ui import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:

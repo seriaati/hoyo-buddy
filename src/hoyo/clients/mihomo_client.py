@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 import mihomo
 
-from ..constants import LOCALE_TO_MIHOMO_LANG
-from ..db.models import EnkaCache
+from ...constants import LOCALE_TO_MIHOMO_LANG
+from ...db.models import EnkaCache
 
 if TYPE_CHECKING:
     import discord

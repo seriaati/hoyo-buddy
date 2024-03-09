@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any
 from discord import ButtonStyle, InteractionResponded, Locale, Member, User
 
 from src.bot.translator import LocaleStr
-from src.hoyo.genshin.ambr import AmbrAPIClient
+from src.hoyo.clients.ambr_client import AmbrAPIClient
 from src.ui import Button, Modal, PaginatorSelect, Select, SelectOption, TextInput, View
 
 if TYPE_CHECKING:

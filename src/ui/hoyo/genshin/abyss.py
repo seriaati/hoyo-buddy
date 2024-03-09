@@ -4,7 +4,7 @@ from discord import ButtonStyle, Locale, Member, User
 
 from src.bot.translator import LocaleStr
 from src.draw.main_funcs import draw_item_list_card
-from src.hoyo.genshin.ambr import AmbrAPIClient
+from src.hoyo.clients.ambr_client import AmbrAPIClient
 from src.models import DrawInput
 
 from ...components import Button, Select, SelectOption, View

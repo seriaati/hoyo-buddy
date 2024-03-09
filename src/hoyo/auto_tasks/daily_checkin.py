@@ -6,16 +6,16 @@ from typing import TYPE_CHECKING, ClassVar
 import discord
 import genshin
 
-from ..bot.error_handler import get_error_embed
-from ..bot.translator import LocaleStr, Translator
-from ..db.models import HoyoAccount, User
-from ..embeds import DefaultEmbed, Embed, ErrorEmbed
-from ..enums import GAME_THUMBNAILS
+from ...bot.error_handler import get_error_embed
+from ...bot.translator import LocaleStr, Translator
+from ...db.models import HoyoAccount, User
+from ...embeds import DefaultEmbed, Embed, ErrorEmbed
+from ...enums import GAME_THUMBNAILS
 
 if TYPE_CHECKING:
     import aiohttp
 
-    from ..bot.bot import HoyoBuddy
+    from ...bot.bot import HoyoBuddy
 
 LOGGER_ = logging.getLogger(__name__)
 

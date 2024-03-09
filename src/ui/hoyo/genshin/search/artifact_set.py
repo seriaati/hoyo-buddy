@@ -5,7 +5,7 @@ from discord import ButtonStyle, Locale, Member, User
 from src.constants import EQUIP_ID_TO_ARTIFACT_POS
 from src.emojis import get_artifact_pos_emoji
 from src.exceptions import InvalidQueryError
-from src.hoyo.genshin.ambr import AmbrAPIClient
+from src.hoyo.clients.ambr_client import AmbrAPIClient
 from src.ui import Button, View
 
 if TYPE_CHECKING:

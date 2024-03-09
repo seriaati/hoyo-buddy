@@ -4,7 +4,7 @@ from discord import ButtonStyle
 
 from src.bot.translator import LocaleStr
 from src.exceptions import InvalidQueryError
-from src.hoyo.genshin.ambr import AmbrAPIClient
+from src.hoyo.clients.ambr_client import AmbrAPIClient
 from src.ui import Button, Modal, Select, SelectOption, TextInput, View
 
 if TYPE_CHECKING:

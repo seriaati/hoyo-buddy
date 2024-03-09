@@ -10,7 +10,7 @@ from asyncache import cached
 from cachetools import TTLCache
 from discord.ext import commands, tasks
 
-from ..hoyo.novelai_client import NAIClient
+from ..hoyo.clients.novelai_client import NAIClient
 from ..utils import get_now
 from .command_tree import CommandTree
 from .translator import AppCommandTranslator, Translator

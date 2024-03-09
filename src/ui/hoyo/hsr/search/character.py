@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any
 from discord import ButtonStyle
 
 from src.bot.translator import LocaleStr
-from src.hoyo.hsr.yatta import YattaAPIClient
+from src.hoyo.clients.yatta_client import YattaAPIClient
 from src.ui import Button, Modal, Select, SelectOption, TextInput, View
 
 if TYPE_CHECKING:

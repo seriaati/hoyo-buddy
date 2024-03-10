@@ -28,7 +28,8 @@ class GeetestWebServer:
         user = await User.get(id=user_id)
         return user.temp_data
 
-    async def _get_page(self, payload: LoginNotifPayload) -> str:
+    @staticmethod
+    async def _get_page(payload: LoginNotifPayload) -> str:
         locale = Locale(payload.locale)
 
         async with aiofiles.open("hoyo_buddy/web_server/captcha.html", encoding="utf-8") as f:

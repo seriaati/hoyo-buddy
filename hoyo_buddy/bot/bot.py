@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 from pathlib import Path
@@ -85,6 +86,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         await self.nai_client.init(timeout=120)
 
         self.push_source_strings.start()
+        self.fetch_source_strings.start()
 
     def capture_exception(self, e: Exception) -> None:
         if self.env == "prod":
@@ -116,10 +118,16 @@ class HoyoBuddy(commands.AutoShardedBot):
     @tasks.loop(minutes=30)
     async def push_source_strings(self) -> None:
         if self.env in {"prod", "test"}:
-            await self.translator.push_source_strings()
+            await asyncio.to_thread(self.translator.push_source_strings)
+
+    @tasks.loop(minutes=30)
+    async def fetch_source_strings(self) -> None:
+        if self.env in {"prod", "test"}:
+            await asyncio.to_thread(self.translator.fetch_source_strings)
 
     async def close(self) -> None:
         LOGGER_.info("Bot shutting down...")
         self.push_source_strings.cancel()
+        self.fetch_source_strings.cancel()
         self.diskcache.close()
         await super().close()

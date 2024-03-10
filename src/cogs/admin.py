@@ -7,6 +7,7 @@ from discord import ButtonStyle, ui
 from discord.ext import commands
 
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
+from ..hoyo.auto_tasks.notes_check import NotesChecker
 
 if TYPE_CHECKING:
     from discord.ext.commands.context import Context
@@ -22,6 +23,11 @@ class TaskView(ui.View):
     async def daily_checkin(self, i: "INTERACTION", _: ui.Button) -> None:
         await i.response.send_message("Daily check-in task started.")
         asyncio.create_task(DailyCheckin.execute(i.client))
+
+    @ui.button(label="Notes Check", style=ButtonStyle.blurple)
+    async def notes_check(self, i: "INTERACTION", _: ui.Button) -> None:
+        await i.response.send_message("Notes check task started.")
+        asyncio.create_task(NotesChecker.execute(i.client))
 
 
 class Admin(commands.Cog):

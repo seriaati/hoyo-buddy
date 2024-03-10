@@ -24,16 +24,26 @@ class NotesNotifyType(IntEnum):
     """Star Rail Expedition"""
     PT = 6
     """Genshin Impact Parametric Transformer"""
-    # GI_DAILY = 7
-    # """Genshin Impact Daily Commissions"""
-    # HSR_DAILY = 8
-    # """Star Rail Daily Training"""
-    # RESIN_DISCOUNT = 9
-    # """Genshin Impact Resin Discount"""
-    # ECHO_OF_WAR = 10
-    # """Star Rail Echo of War"""
+    GI_DAILY = 7
+    """Genshin Impact Daily Commissions"""
+    HSR_DAILY = 8
+    """Star Rail Daily Training"""
+    RESIN_DISCOUNT = 9
+    """Genshin Impact Resin Discount"""
+    ECHO_OF_WAR = 10
+    """Star Rail Echo of War"""
     RESERVED_TB_POWER = 11
     """Star Rail Reserved Trailblaze Power"""
+
+
+class Weekday(IntEnum):
+    MONDAY = 1
+    TUESDAY = 2
+    WEDNESDAY = 3
+    THURSDAY = 4
+    FRIDAY = 5
+    SATURDAY = 6
+    SUNDAY = 7
 
 
 GAME_CONVERTER: dict[Game | genshin.Game, Game | genshin.Game] = {

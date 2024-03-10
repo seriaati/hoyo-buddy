@@ -193,7 +193,7 @@ class Drawer:
                 msg = "Translator is not set"
                 raise RuntimeError(msg)
 
-            translated_text = self.translator.translate(text, self.locale)
+            translated_text = self.translator.translate(text, locale or self.locale)
 
         font = self._get_font(size, style, locale)
 

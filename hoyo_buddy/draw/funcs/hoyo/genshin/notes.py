@@ -27,6 +27,7 @@ def draw_genshin_notes_card(
         size=64,
         position=(76, 67),
         style="bold",
+        locale=locale,
     )
 
     drawer.write(
@@ -58,6 +59,7 @@ def draw_genshin_notes_card(
         size=30,
         position=(textbbox[2] + 20, textbbox[3] - 5),
         anchor="ls",
+        locale=locale,
     )
 
     drawer.write(
@@ -92,6 +94,7 @@ def draw_genshin_notes_card(
         size=30,
         position=(textbbox[2] + 20, textbbox[3] - 5),
         anchor="ls",
+        locale=locale,
     )
 
     exped_padding = 187
@@ -123,6 +126,7 @@ def draw_genshin_notes_card(
             size=40,
             position=(icon_pos[0] + icon.width + text_x_padding, 143 + index * exped_padding),
             anchor="lm",
+            locale=locale,
         )
 
     buffer = BytesIO()

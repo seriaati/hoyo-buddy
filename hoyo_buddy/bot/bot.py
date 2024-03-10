@@ -69,10 +69,10 @@ class HoyoBuddy(commands.AutoShardedBot):
     async def setup_hook(self) -> None:
         await self.tree.set_translator(AppCommandTranslator(self.translator))
 
-        for filepath in Path("src/cogs").glob("**/*.py"):
+        for filepath in Path("hoyo_buddy/cogs").glob("**/*.py"):
             cog_name = Path(filepath).stem
             try:
-                await self.load_extension(f"src.cogs.{cog_name}")
+                await self.load_extension(f"hoyo_buddy.cogs.{cog_name}")
                 LOGGER_.info("Loaded cog %r", cog_name)
             except Exception:
                 LOGGER_.exception("Failed to load cog %r", cog_name)

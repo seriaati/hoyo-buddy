@@ -12,10 +12,10 @@ from ...db.models import NotesNotify
 from ...draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card
 from ...embeds import DefaultEmbed, ErrorEmbed
 from ...enums import Game, NotesNotifyType
-from ...icons import RESIN_ICON, RTBP_ICON, TBP_ICON
+from ...icons import COMMISSION_ICON, PT_ICON, REALM_CURRENCY_ICON, RESIN_ICON, RTBP_ICON, TBP_ICON
 from ...models import DrawInput
 from ...ui.hoyo.notes.view import NotesView
-from ...utils import get_now
+from ...utils import get_hour_before_time, get_now
 
 if TYPE_CHECKING:
     from ...bot.bot import HoyoBuddy
@@ -25,6 +25,7 @@ LOGGER_ = logging.getLogger(__name__)
 
 class NotesChecker:
     _bot: ClassVar["HoyoBuddy"]
+    _notes_cache: ClassVar[dict[Game, dict[int, Notes | StarRailNote]]] = {}
 
     @classmethod
     def _calc_est_time(cls, game: Game, threshold: int, current: int) -> datetime.datetime:
@@ -58,86 +59,109 @@ class NotesChecker:
                 embed = DefaultEmbed(
                     locale,
                     translator,
+                    title=LocaleStr("Resin Reminder", key="resin_reminder_button.label"),
                     description=LocaleStr(
                         "Threshold ({threshold}) is reached",
                         key="threshold.embed.description",
                         threshold=notify.threshold,
                     ),
                 )
-                embed.set_author(
-                    name=LocaleStr("Resin Reminder", key="resin_reminder_button.label"),
-                    icon_url=RESIN_ICON,
-                )
+                embed.set_thumbnail(url=RESIN_ICON)
             case NotesNotifyType.TB_POWER:
                 embed = DefaultEmbed(
                     locale,
                     translator,
+                    title=LocaleStr("Trailblaze Power Reminder", key="tbp_reminder_button.label"),
                     description=LocaleStr(
                         "Threshold ({threshold}) is reached",
                         key="threshold.embed.description",
                         threshold=notify.threshold,
                     ),
                 )
-                embed.set_author(
-                    name=LocaleStr("Trailblaze Power Reminder", key="tbp_reminder_button.label"),
-                    icon_url=TBP_ICON,
-                )
+                embed.set_thumbnail(url=TBP_ICON)
             case NotesNotifyType.RESERVED_TB_POWER:
                 embed = DefaultEmbed(
                     locale,
                     translator,
+                    title=LocaleStr(
+                        "Reserved Trailblaze Power Reminder",
+                        key="rtbp_reminder_button.label",
+                    ),
                     description=LocaleStr(
                         "Threshold ({threshold}) is reached",
                         key="threshold.embed.description",
                         threshold=notify.threshold,
                     ),
                 )
-                embed.set_author(
-                    name=LocaleStr(
-                        "Reserved Trailblaze Power Reminder",
-                        key="rtbp_reminder_button.label",
-                    ),
-                    icon_url=RTBP_ICON,
-                )
+                embed.set_thumbnail(url=RTBP_ICON)
             case NotesNotifyType.GI_EXPED | NotesNotifyType.HSR_EXPED:
                 embed = DefaultEmbed(
                     locale,
                     translator,
+                    title=LocaleStr("Expedition Reminder", key="exped_button.label"),
                     description=LocaleStr(
                         "One (or more) expedetions are finished",
                         key="exped.embed.description",
                     ),
                 )
-                embed.set_author(name=LocaleStr("Expedition Reminder", key="exped_button.label"))
             case NotesNotifyType.PT:
                 embed = DefaultEmbed(
                     locale,
                     translator,
+                    title=LocaleStr("Parametric Transformer Reminder", key="pt_button.label"),
                     description=LocaleStr(
                         "Parametric Transformer is ready",
                         key="pt.embed.description",
                     ),
                 )
-                embed.set_author(
-                    name=LocaleStr("Parametric Transformer Reminder", key="pt_button.label")
-                )
+                embed.set_thumbnail(url=PT_ICON)
             case NotesNotifyType.REALM_CURRENCY:
                 embed = DefaultEmbed(
                     locale,
                     translator,
+                    title=LocaleStr("Realm Currency Reminder", key="realm_curr_button.label"),
                     description=LocaleStr(
                         "Threshold ({threshold}) is reached",
                         key="threshold.embed.description",
                         threshold=notify.threshold,
                     ),
                 )
-                embed.set_author(
-                    name=LocaleStr("Realm Currency Reminder", key="realm_curr_button.label")
+                embed.set_thumbnail(url=REALM_CURRENCY_ICON)
+            case NotesNotifyType.GI_DAILY:
+                embed = DefaultEmbed(
+                    locale,
+                    translator,
+                    title=LocaleStr("Daily Commision Reminder", key="daily_button.label"),
+                    description=LocaleStr(
+                        "Daily commisions or adventure encounters are not completed yet",
+                        key="gi_daily.embed.description",
+                    ),
+                )
+                embed.set_thumbnail(url=COMMISSION_ICON)
+            case NotesNotifyType.HSR_DAILY:
+                embed = DefaultEmbed(
+                    locale,
+                    translator,
+                    title=LocaleStr("Daily Training Reminder", key="daily_training_button.label"),
+                    description=LocaleStr(
+                        "Daily trainings are not completed yet",
+                        key="hsr_daily.embed.description",
+                    ),
+                )
+            case NotesNotifyType.RESIN_DISCOUNT | NotesNotifyType.ECHO_OF_WAR:
+                embed = DefaultEmbed(
+                    locale,
+                    translator,
+                    title=LocaleStr("Weekly Boss Discount Reminder", key="week_boss_button.label"),
+                    description=LocaleStr(
+                        "Weekly boss discounts are not used up yet",
+                        key="resin_discount.embed.description",
+                    ),
                 )
             case _:
                 raise NotImplementedError
 
-        embed.title = str(notify.account)
+        embed.set_author(name=str(notify.account))
         embed.set_footer(
             text=LocaleStr(
                 "Disable this notification or change its settings by clicking the button below",
@@ -173,9 +197,8 @@ class NotesChecker:
         await notify.save()
 
     @classmethod
-    async def _process_resin_notify(cls, notify: NotesNotify) -> None:
+    async def _process_resin_notify(cls, notify: NotesNotify, notes: Notes) -> None:
         """Process resin notification."""
-        notes = await notify.account.client.get_genshin_notes()
         current = notes.current_resin
         threshold = notify.threshold
         assert threshold is not None
@@ -190,9 +213,8 @@ class NotesChecker:
             await cls._notify_user(notify, notes)
 
     @classmethod
-    async def _process_realm_currency_notify(cls, notify: NotesNotify) -> None:
+    async def _process_realm_currency_notify(cls, notify: NotesNotify, notes: Notes) -> None:
         """Process realm currency notification."""
-        notes = await notify.account.client.get_genshin_notes()
         current = notes.current_realm_currency
         threshold = notify.threshold
         assert threshold is not None
@@ -205,9 +227,8 @@ class NotesChecker:
             await cls._notify_user(notify, notes)
 
     @classmethod
-    async def _process_tbp_notify(cls, notify: NotesNotify) -> None:
+    async def _process_tbp_notify(cls, notify: NotesNotify, notes: StarRailNote) -> None:
         """Process trailblaze power notification."""
-        notes = await notify.account.client.get_starrail_notes()
         current = notes.current_stamina
         threshold = notify.threshold
         assert threshold is not None
@@ -222,9 +243,8 @@ class NotesChecker:
             await cls._notify_user(notify, notes)
 
     @classmethod
-    async def _process_rtbp_notify(cls, notify: NotesNotify) -> None:
+    async def _process_rtbp_notify(cls, notify: NotesNotify, notes: StarRailNote) -> None:
         """Process reserved trailblaze power notification."""
-        notes = await notify.account.client.get_starrail_notes()
         current = notes.current_reserve_stamina
         threshold = notify.threshold
         assert threshold is not None
@@ -237,15 +257,10 @@ class NotesChecker:
             await cls._notify_user(notify, notes)
 
     @classmethod
-    async def _process_expedition_notify(cls, notify: NotesNotify) -> None:
+    async def _process_expedition_notify(
+        cls, notify: NotesNotify, notes: Notes | StarRailNote
+    ) -> None:
         """Process expedition notification."""
-        if notify.type is NotesNotifyType.GI_EXPED:
-            notes = await notify.account.client.get_genshin_notes()
-        elif notify.type is NotesNotifyType.HSR_EXPED:
-            notes = await notify.account.client.get_starrail_notes()
-        else:
-            raise NotImplementedError
-
         if any(not exped.finished for exped in notes.expeditions):
             notify.current_notif_count = 0
             await notify.save()
@@ -257,9 +272,7 @@ class NotesChecker:
             await cls._notify_user(notify, notes)
 
     @classmethod
-    async def _process_pt(cls, notify: NotesNotify) -> None:
-        notes = await notify.account.client.get_genshin_notes()
-
+    async def _process_pt_notify(cls, notify: NotesNotify, notes: Notes) -> None:
         remaining_time = notes.remaining_transformer_recovery_time
         if remaining_time is None:
             return
@@ -272,64 +285,141 @@ class NotesChecker:
             await cls._notify_user(notify, notes)
 
     @classmethod
-    async def _process_notify(cls, notify: NotesNotify) -> None:
+    async def _process_daily_notify(cls, notify: NotesNotify, notes: Notes | StarRailNote) -> None:
+        if notify.last_check_time is not None and get_now().day != notify.last_check_time.day:
+            notify.current_notif_count = 0
+            await notify.save()
+
+        if (
+            isinstance(notes, Notes)
+            and notes.completed_commissions + notes.daily_task.completed_tasks >= 4
+        ):
+            return
+        if isinstance(notes, StarRailNote) and notes.current_train_score >= notes.max_train_score:
+            return
+
+        if notify.current_notif_count < notify.max_notif_count:
+            await cls._notify_user(notify, notes)
+
+    @classmethod
+    async def _process_week_boos_discount_notify(
+        cls, notify: NotesNotify, notes: Notes | StarRailNote
+    ) -> None:
+        if notify.last_check_time is not None and get_now().day != notify.last_check_time.day:
+            notify.current_notif_count = 0
+            await notify.save()
+
+        if isinstance(notes, Notes) and notes.remaining_resin_discounts == 0:
+            return
+        if isinstance(notes, StarRailNote) and notes.remaining_weekly_discounts == 0:
+            return
+
+        if notify.current_notif_count < notify.max_notif_count:
+            await cls._notify_user(notify, notes)
+
+    @classmethod
+    async def _process_notify(cls, notify: NotesNotify, notes: Notes | StarRailNote) -> None:
         """Proces notification."""
         match notify.type:
             case NotesNotifyType.RESIN:
-                await cls._process_resin_notify(notify)
+                assert isinstance(notes, Notes)
+                await cls._process_resin_notify(notify, notes)
             case NotesNotifyType.TB_POWER:
-                await cls._process_tbp_notify(notify)
+                assert isinstance(notes, StarRailNote)
+                await cls._process_tbp_notify(notify, notes)
             case NotesNotifyType.RESERVED_TB_POWER:
-                await cls._process_rtbp_notify(notify)
+                assert isinstance(notes, StarRailNote)
+                await cls._process_rtbp_notify(notify, notes)
             case NotesNotifyType.GI_EXPED | NotesNotifyType.HSR_EXPED:
-                await cls._process_expedition_notify(notify)
+                await cls._process_expedition_notify(notify, notes)
             case NotesNotifyType.PT:
-                await cls._process_pt(notify)
+                assert isinstance(notes, Notes)
+                await cls._process_pt_notify(notify, notes)
             case NotesNotifyType.REALM_CURRENCY:
-                await cls._process_realm_currency_notify(notify)
+                assert isinstance(notes, Notes)
+                await cls._process_realm_currency_notify(notify, notes)
+            case NotesNotifyType.GI_DAILY | NotesNotifyType.HSR_DAILY:
+                await cls._process_daily_notify(notify, notes)
+            case NotesNotifyType.RESIN_DISCOUNT | NotesNotifyType.ECHO_OF_WAR:
+                await cls._process_week_boos_discount_notify(notify, notes)
             case _:
                 raise NotImplementedError
 
     @classmethod
-    async def execute(cls, bot: "HoyoBuddy") -> None:
+    async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:
+        content = LocaleStr(
+            "An error occurred while processing your reminder",
+            key="process_notify_error.content",
+        )
+        translated_content = cls._bot.translator.translate(content, await cls._get_locale(notify))
+        embed = cls._get_notify_error_embed(e, await cls._get_locale(notify))
+        await cls._bot.dm_user(notify.account.user.id, embed=embed, content=translated_content)
+
+    @classmethod
+    def _determine_skip(cls, notify: NotesNotify) -> bool:  # noqa: PLR0911
+        """Determine if the notification should be skipped."""
+        if not notify.enabled:
+            return True
+
+        if notify.est_time is not None and get_now() < notify.est_time:
+            return True
+
+        if notify.notify_weekday is not None and notify.notify_weekday != get_now().weekday() + 1:
+            return True
+
+        if (
+            notify.last_check_time is not None
+            and get_now() - notify.last_check_time
+            < datetime.timedelta(minutes=notify.check_interval)
+        ):
+            return True
+
+        if (
+            notify.last_notif_time is not None
+            and get_now() - notify.last_notif_time
+            < datetime.timedelta(minutes=notify.notify_interval)
+        ):
+            return True
+
+        if notify.notify_time is not None and get_now().time() < get_hour_before_time(
+            notify.account.server_reset_time, notify.notify_time
+        ):
+            return True
+
+        return False
+
+    @classmethod
+    async def _get_notes(cls, notify: NotesNotify) -> Notes | StarRailNote:
+        if notify.account.game is Game.GENSHIN:
+            notes = await notify.account.client.get_genshin_notes()
+        elif notify.account.game is Game.STARRAIL:
+            notes = await notify.account.client.get_starrail_notes()
+        else:
+            raise NotImplementedError
+        return notes
+
+    @classmethod
+    async def execute(cls, bot: "HoyoBuddy") -> None:  # noqa: PLR0912
         cls._bot = bot
-        notifies = await NotesNotify.all().prefetch_related("account")
+        cls._notes_cache = {Game.GENSHIN: {}, Game.STARRAIL: {}}
+
+        notifies = await NotesNotify.all().prefetch_related("account").order_by("account_id")
 
         for notify in notifies:
-            if not notify.enabled:
+            if cls._determine_skip(notify):
                 continue
 
-            if notify.est_time is not None and get_now() < notify.est_time:
-                continue
+            if notify.account.uid not in cls._notes_cache[notify.account.game]:
+                notes = await cls._get_notes(notify)
 
-            if (
-                notify.last_check_time is not None
-                and get_now() - notify.last_check_time
-                < datetime.timedelta(minutes=notify.check_interval)
-            ):
-                continue
-
-            if (
-                notify.last_notif_time is not None
-                and get_now() - notify.last_notif_time
-                < datetime.timedelta(minutes=notify.notify_interval)
-            ):
-                continue
+                cls._notes_cache[notify.account.game][notify.account.uid] = notes
+            else:
+                notes = cls._notes_cache[notify.account.game][notify.account.uid]
 
             try:
-                await cls._process_notify(notify)
+                await cls._process_notify(notify, notes)
             except Exception as e:
-                content = LocaleStr(
-                    "An error occurred while processing your reminder",
-                    key="process_notify_error.content",
-                )
-                translated_content = cls._bot.translator.translate(
-                    content, await cls._get_locale(notify)
-                )
-                embed = cls._get_notify_error_embed(e, await cls._get_locale(notify))
-                await cls._bot.dm_user(
-                    notify.account.user.id, embed=embed, content=translated_content
-                )
+                await cls._handle_notify_error(notify, e)
             finally:
                 notify.last_check_time = get_now()
                 await notify.save()

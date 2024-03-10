@@ -26,6 +26,15 @@ def get_now() -> datetime.datetime:
     return datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
 
 
+def get_hour_before_time(time: datetime.time, hour: int) -> datetime.time:
+    """
+    Get the time before a specific hour
+    """
+    return (
+        datetime.datetime.combine(datetime.date.today(), time) - datetime.timedelta(hours=hour)
+    ).time()
+
+
 def timer(func: "Callable[..., Any]") -> "Callable[..., Any]":
     """
     A decorator that prints the runtime of the decorated function

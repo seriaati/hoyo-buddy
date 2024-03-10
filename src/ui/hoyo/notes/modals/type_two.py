@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from src.bot.translator import LocaleStr
-from src.constants import DB_INTEGER_MAX
+from src.constants import DB_SMALLINT_MAX
 from src.ui import Modal, TextInput
 
 if TYPE_CHECKING:
@@ -17,13 +17,13 @@ class TypeTwoModal(Modal):
         label=LocaleStr("Notify Interval (in minutes)", key="notif_modal.notify_interval.label"),
         is_digit=True,
         min_value=10,
-        max_value=DB_INTEGER_MAX,
+        max_value=DB_SMALLINT_MAX,
     )
     max_notif_count = TextInput(
         label=LocaleStr("Max Notify Count", key="notif_modal.max_notif_count.label"),
         is_digit=True,
         min_value=1,
-        max_value=DB_INTEGER_MAX,
+        max_value=DB_SMALLINT_MAX,
     )
 
     def __init__(

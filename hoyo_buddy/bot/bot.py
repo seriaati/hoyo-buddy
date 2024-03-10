@@ -39,6 +39,8 @@ allowed_mentions = discord.AllowedMentions(
 
 
 class HoyoBuddy(commands.AutoShardedBot):
+    owner_id: int
+
     def __init__(
         self,
         *,
@@ -65,6 +67,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.nai_client = NAIClient(
             token=os.environ["NAI_TOKEN"], host_url=os.environ["NAI_HOST_URL"]
         )
+        self.owner_id = 410036441129943050
 
     async def setup_hook(self) -> None:
         await self.tree.set_translator(AppCommandTranslator(self.translator))

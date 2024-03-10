@@ -9,11 +9,11 @@ import sentry_sdk
 from dotenv import load_dotenv
 from sentry_sdk.integrations.logging import LoggingIntegration
 from seria.logging import setup_logging
+from web_server.server import GeetestWebServer
 
 from src.bot.bot import HoyoBuddy
 from src.bot.translator import Translator
 from src.db.pgsql import Database
-from src.web_server.web_server import GeetestWebServer
 
 load_dotenv()
 env = os.environ["ENV"]

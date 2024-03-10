@@ -83,6 +83,6 @@ def get_error_embed(
             locale,
             translator,
             title=LocaleStr("An error occurred", key="error_title"),
-            description=f"{type(error).__name__}: {error}",
+            description=f"{type(error).__name__} {error}",
         )
     return embed, recognized

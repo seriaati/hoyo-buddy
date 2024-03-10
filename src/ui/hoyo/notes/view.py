@@ -5,24 +5,20 @@ from discord import ButtonStyle, Locale, Member, User
 from src.bot.translator import LocaleStr
 from src.db.models import NotesNotify
 from src.embeds import DefaultEmbed
-from src.emojis import (
-    BELL_OUTLINE,
-    REALM_CURRENCY,
-    RESERVED_TRAILBLAZE_POWER,
-    RESIN,
-    TOGGLE_EMOJIS,
-    TRAILBLAZE_POWER,
-)
-from src.enums import Game, NotesNotifyType
+from src.emojis import BELL_OUTLINE, TOGGLE_EMOJIS
+from src.enums import Game, NotesNotifyType, Weekday
 
 from ...components import Button, GoBackButton, View
-from .modals.type_one import TypeOneModal
-from .modals.type_two import TypeTwoModal
 
 if TYPE_CHECKING:
     from src.bot.bot import INTERACTION
     from src.bot.translator import Translator
     from src.db.models import HoyoAccount
+
+    from .modals.type_four import TypeFourModal
+    from .modals.type_one import TypeOneModal
+    from .modals.type_three import TypeThreeModal
+    from .modals.type_two import TypeTwoModal
 
 
 class NotesView(View):
@@ -73,6 +69,46 @@ class NotesView(View):
             max_notif_count=notify.max_notif_count,
         )
 
+    @staticmethod
+    def _get_type3_value(notify: "NotesNotify | None") -> LocaleStr:
+        if notify is None:
+            return LocaleStr("Not set", key="reminder_settings.not_set")
+        return LocaleStr(
+            (
+                "Status: {status}\n"
+                "Notify Interval: {notify_interval} minutes\n"
+                "Max Notify Count: {max_notif_count}\n"
+                "Notify Time: {notify_time} hours before the server resets\n"
+            ),
+            key="reminder_settings.reminde.set.type2",
+            status=TOGGLE_EMOJIS[notify.enabled],
+            notify_interval=notify.notify_interval,
+            max_notif_count=notify.max_notif_count,
+            notify_time=notify.notify_time,
+        )
+
+    @staticmethod
+    def _get_type4_value(notify: "NotesNotify | None") -> LocaleStr:
+        if notify is None:
+            return LocaleStr("Not set", key="reminder_settings.not_set")
+        return LocaleStr(
+            (
+                "Status: {status}\n"
+                "Notify Interval: {notify_interval} minutes\n"
+                "Max Notify Count: {max_notif_count}\n"
+                "Notify Time: {notify_time} hours before the server resets\n"
+                "Notify Weekday: {notify_weekday}"
+            ),
+            key="reminder_settings.reminde.set.type2",
+            status=TOGGLE_EMOJIS[notify.enabled],
+            notify_interval=notify.notify_interval,
+            max_notif_count=notify.max_notif_count,
+            notify_time=notify.notify_time,
+            notify_weekday=LocaleStr(
+                Weekday(notify.notify_weekday).name.title(), warn_no_key=False
+            ),
+        )
+
     async def _get_reminder_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
@@ -117,6 +153,24 @@ class NotesView(View):
                 inline=False,
             )
 
+            daily_notify = await NotesNotify.get_or_none(
+                account=self._account, type=NotesNotifyType.GI_DAILY
+            )
+            embed.add_field(
+                name=LocaleStr("Daily Reminder", key="daily_button.label"),
+                value=self._get_type3_value(daily_notify),
+                inline=False,
+            )
+
+            resin_discount_notify = await NotesNotify.get_or_none(
+                account=self._account, type=NotesNotifyType.RESIN_DISCOUNT
+            )
+            embed.add_field(
+                name=LocaleStr("Weekly Boss Discount Reminder", key="week_boss_button.label"),
+                value=self._get_type4_value(resin_discount_notify),
+                inline=False,
+            )
+
         elif self._account.game is Game.STARRAIL:
             tbp_notify = await NotesNotify.get_or_none(
                 account=self._account, type=NotesNotifyType.TB_POWER
@@ -147,6 +201,24 @@ class NotesView(View):
                 inline=False,
             )
 
+            daily_notify = await NotesNotify.get_or_none(
+                account=self._account, type=NotesNotifyType.HSR_DAILY
+            )
+            embed.add_field(
+                name=LocaleStr("Daily Reminder", key="daily_button.label"),
+                value=self._get_type3_value(daily_notify),
+                inline=False,
+            )
+
+            echo_of_war_notify = await NotesNotify.get_or_none(
+                account=self._account, type=NotesNotifyType.ECHO_OF_WAR
+            )
+            embed.add_field(
+                name=LocaleStr("Weekly Boss Discount Reminder", key="week_boss_button.label"),
+                value=self._get_type4_value(echo_of_war_notify),
+                inline=False,
+            )
+
         else:
             raise NotImplementedError
 
@@ -155,7 +227,7 @@ class NotesView(View):
     async def process_type_one_modal(
         self,
         *,
-        modal: TypeOneModal,
+        modal: "TypeOneModal",
         notify: NotesNotify | None,
         notify_type: NotesNotifyType,
         check_interval: int,
@@ -187,7 +259,7 @@ class NotesView(View):
     async def process_type_two_modal(
         self,
         *,
-        modal: TypeTwoModal,
+        modal: "TypeTwoModal",
         notify: NotesNotify | None,
         notify_type: NotesNotifyType,
         check_interval: int,
@@ -213,6 +285,73 @@ class NotesView(View):
 
         return await self._get_reminder_embed()
 
+    async def process_type_three_modal(
+        self,
+        *,
+        modal: "TypeThreeModal",
+        notify: NotesNotify | None,
+        notify_type: NotesNotifyType,
+        check_interval: int,
+    ) -> DefaultEmbed:
+        enabled = bool(int(modal.enabled.value))
+        notify_interval = int(modal.notify_interval.value)
+        max_notif_count = int(modal.max_notif_count.value)
+        notify_time = int(modal.notify_time.value)
+
+        if notify is None:
+            await NotesNotify.create(
+                type=notify_type,
+                account=self._account,
+                check_interval=check_interval,
+                notify_interval=notify_interval,
+                max_notif_count=max_notif_count,
+                enabled=enabled,
+                notify_time=notify_time,
+            )
+        else:
+            notify.enabled = enabled
+            notify.notify_interval = notify_interval
+            notify.max_notif_count = max_notif_count
+            notify.notify_time = notify_time
+            await notify.save()
+
+        return await self._get_reminder_embed()
+
+    async def process_type_four_modal(
+        self,
+        *,
+        modal: "TypeFourModal",
+        notify: NotesNotify | None,
+        notify_type: NotesNotifyType,
+        check_interval: int,
+    ) -> DefaultEmbed:
+        enabled = bool(int(modal.enabled.value))
+        notify_interval = int(modal.notify_interval.value)
+        max_notif_count = int(modal.max_notif_count.value)
+        notify_time = int(modal.notify_time.value)
+        notify_weekday = int(modal.notify_weekday.value)
+
+        if notify is None:
+            await NotesNotify.create(
+                type=notify_type,
+                account=self._account,
+                check_interval=check_interval,
+                notify_interval=notify_interval,
+                max_notif_count=max_notif_count,
+                enabled=enabled,
+                notify_time=notify_time,
+                notify_weekday=notify_weekday,
+            )
+        else:
+            notify.enabled = enabled
+            notify.notify_interval = notify_interval
+            notify.max_notif_count = max_notif_count
+            notify.notify_time = notify_time
+            notify.notify_weekday = notify_weekday
+            await notify.save()
+
+        return await self._get_reminder_embed()
+
 
 class ReminderButton(Button[NotesView]):
     def __init__(self) -> None:
@@ -232,227 +371,37 @@ class ReminderButton(Button[NotesView]):
         self.view.add_item(go_back_button)
 
         if self.view._account.game is Game.GENSHIN:
+            from .buttons import (  # noqa: PLC0415
+                DailyReminder,
+                ExpeditionReminder,
+                PTReminder,
+                RealmCurrencyReminder,
+                ResinReminder,
+                WeekBossReminder,
+            )
+
             self.view.add_item(ResinReminder(row=0))
-            self.view.add_item(RealmCurrencyReminder(row=1))
-            self.view.add_item(PTReminder(row=2))
-            self.view.add_item(ExpeditionReminder(row=3))
+            self.view.add_item(RealmCurrencyReminder(row=0))
+            self.view.add_item(PTReminder(row=1))
+            self.view.add_item(ExpeditionReminder(row=1))
+            self.view.add_item(DailyReminder(row=2))
+            self.view.add_item(WeekBossReminder(row=2))
         elif self.view._account.game is Game.STARRAIL:
+            from .buttons import (  # noqa: PLC0415
+                DailyReminder,
+                ExpeditionReminder,
+                ReservedTBPReminder,
+                TBPReminder,
+                WeekBossReminder,
+            )
+
             self.view.add_item(TBPReminder(row=0))
-            self.view.add_item(ReservedTBPReminder(row=1))
-            self.view.add_item(ExpeditionReminder(row=2))
+            self.view.add_item(ReservedTBPReminder(row=0))
+            self.view.add_item(ExpeditionReminder(row=1))
+            self.view.add_item(DailyReminder(row=1))
+            self.view.add_item(WeekBossReminder(row=2))
         else:
             raise NotImplementedError
 
         embed = await self.view._get_reminder_embed()
         await i.response.edit_message(embed=embed, view=self.view, attachments=[])
-
-
-class ResinReminder(Button[NotesView]):
-    def __init__(self, *, row: int) -> None:
-        super().__init__(
-            emoji=RESIN,
-            label=LocaleStr("Resin Reminder", key="resin_reminder_button.label"),
-            row=row,
-        )
-
-    async def callback(self, i: "INTERACTION") -> None:
-        notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.RESIN
-        )
-
-        modal = TypeOneModal(
-            notify,
-            title=LocaleStr("Resin Reminder Settings", key="resin_reminder_modal.title"),
-            threshold_max_value=160,
-            min_notify_interval=10,
-        )
-        modal.translate(self.view.locale, self.view.translator)
-        await i.response.send_modal(modal)
-        await modal.wait()
-
-        incomplete = modal.confirm_required_inputs()
-        if incomplete:
-            return
-
-        embed = await self.view.process_type_one_modal(
-            modal=modal,
-            notify=notify,
-            notify_type=NotesNotifyType.RESIN,
-            check_interval=10,
-        )
-        await i.edit_original_response(embed=embed)
-
-
-class RealmCurrencyReminder(Button[NotesView]):
-    def __init__(self, *, row: int) -> None:
-        super().__init__(
-            emoji=REALM_CURRENCY,
-            label=LocaleStr("Realm Currency Reminder", key="realm_curr_button.label"),
-            row=row,
-        )
-
-    async def callback(self, i: "INTERACTION") -> None:
-        notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.REALM_CURRENCY
-        )
-
-        modal = TypeOneModal(
-            notify,
-            title=LocaleStr("Realm Currency Reminder Settings", key="realm_curr_modal.title"),
-            threshold_max_value=2400,
-            min_notify_interval=30,
-        )
-        modal.translate(self.view.locale, self.view.translator)
-        await i.response.send_modal(modal)
-        await modal.wait()
-
-        incomplete = modal.confirm_required_inputs()
-        if incomplete:
-            return
-
-        embed = await self.view.process_type_one_modal(
-            modal=modal,
-            notify=notify,
-            notify_type=NotesNotifyType.REALM_CURRENCY,
-            check_interval=30,
-        )
-        await i.edit_original_response(embed=embed)
-
-
-class ExpeditionReminder(Button[NotesView]):
-    def __init__(self, *, row: int) -> None:
-        super().__init__(label=LocaleStr("Expedition Reminder", key="exped_button.label"), row=row)
-
-    async def callback(self, i: "INTERACTION") -> None:
-        notify_type = (
-            NotesNotifyType.GI_EXPED
-            if self.view._account.game is Game.GENSHIN
-            else NotesNotifyType.HSR_EXPED
-        )
-        notify = await NotesNotify.get_or_none(account=self.view._account, type=notify_type)
-
-        modal = TypeTwoModal(
-            notify,
-            title=LocaleStr("Expedition Reminder Settings", key="exped_modal.title"),
-            min_notify_interval=30,
-        )
-        modal.translate(self.view.locale, self.view.translator)
-        await i.response.send_modal(modal)
-        await modal.wait()
-
-        incomplete = modal.confirm_required_inputs()
-        if incomplete:
-            return
-
-        embed = await self.view.process_type_two_modal(
-            modal=modal,
-            notify=notify,
-            notify_type=notify_type,
-            check_interval=30,
-        )
-        await i.edit_original_response(embed=embed)
-
-
-class PTReminder(Button[NotesView]):
-    def __init__(self, *, row: int) -> None:
-        super().__init__(
-            label=LocaleStr("Parametric Transformer Reminder", key="pt_button.label"), row=row
-        )
-
-    async def callback(self, i: "INTERACTION") -> None:
-        notify = await NotesNotify.get_or_none(account=self.view._account, type=NotesNotifyType.PT)
-
-        modal = TypeTwoModal(
-            notify,
-            title=LocaleStr("Parametric Transformer Reminder Settings", key="pt_modal.title"),
-            min_notify_interval=30,
-        )
-        modal.translate(self.view.locale, self.view.translator)
-        await i.response.send_modal(modal)
-        await modal.wait()
-
-        incomplete = modal.confirm_required_inputs()
-        if incomplete:
-            return
-
-        embed = await self.view.process_type_two_modal(
-            modal=modal,
-            notify=notify,
-            notify_type=NotesNotifyType.PT,
-            check_interval=30,
-        )
-        await i.edit_original_response(embed=embed)
-
-
-class TBPReminder(Button[NotesView]):
-    def __init__(self, *, row: int) -> None:
-        super().__init__(
-            emoji=TRAILBLAZE_POWER,
-            label=LocaleStr("Trailblaze Power Reminder", key="tbp_reminder_button.label"),
-            row=row,
-        )
-
-    async def callback(self, i: "INTERACTION") -> None:
-        notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.TB_POWER
-        )
-
-        modal = TypeOneModal(
-            notify,
-            title=LocaleStr("Trailblaze Power Reminder Settings", key="tbp_reminder_modal.title"),
-            threshold_max_value=240,
-            min_notify_interval=10,
-        )
-        modal.translate(self.view.locale, self.view.translator)
-        await i.response.send_modal(modal)
-        await modal.wait()
-
-        incomplete = modal.confirm_required_inputs()
-        if incomplete:
-            return
-
-        embed = await self.view.process_type_one_modal(
-            modal=modal,
-            notify=notify,
-            notify_type=NotesNotifyType.TB_POWER,
-            check_interval=10,
-        )
-        await i.edit_original_response(embed=embed)
-
-
-class ReservedTBPReminder(Button[NotesView]):
-    def __init__(self, *, row: int) -> None:
-        super().__init__(
-            emoji=RESERVED_TRAILBLAZE_POWER,
-            label=LocaleStr("Reserved Trailblaze Power Reminder", key="rtbp_reminder_button.label"),
-            row=row,
-        )
-
-    async def callback(self, i: "INTERACTION") -> None:
-        notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.RESERVED_TB_POWER
-        )
-
-        modal = TypeOneModal(
-            notify,
-            title=LocaleStr(
-                "Reserved Trailblaze Power Reminder Settings", key="rtbp_reminder_modal.title"
-            ),
-            threshold_max_value=2400,
-            min_notify_interval=30,
-        )
-        modal.translate(self.view.locale, self.view.translator)
-        await i.response.send_modal(modal)
-        await modal.wait()
-
-        incomplete = modal.confirm_required_inputs()
-        if incomplete:
-            return
-
-        embed = await self.view.process_type_one_modal(
-            modal=modal,
-            notify=notify,
-            notify_type=NotesNotifyType.RESERVED_TB_POWER,
-            check_interval=30,
-        )
-        await i.edit_original_response(embed=embed)

@@ -1,15 +1,15 @@
+import datetime
 from typing import TYPE_CHECKING, Any
 
 from discord import Locale
 from seria.tortoise.model import Model
 from tortoise import fields
 
+from ..constants import UID_SERVER_RESET_HOURS
 from ..enums import GAME_CONVERTER, Game, NotesNotifyType
 from ..hoyo.clients.gpy_client import GenshinClient
 
 if TYPE_CHECKING:
-    import datetime
-
     import genshin
 
 
@@ -50,6 +50,14 @@ class HoyoAccount(Model):
     def client(self) -> GenshinClient:
         game: genshin.Game = GAME_CONVERTER[self.game]  # type: ignore
         return GenshinClient(self.cookies, game=game, uid=self.uid)
+
+    @property
+    def server_reset_time(self) -> datetime.time:
+        """Server reset time in UTC+8."""
+        for uid_start, reset_hour in UID_SERVER_RESET_HOURS.items():
+            if str(self.uid).startswith(uid_start):
+                return datetime.time(reset_hour, 0)
+        return datetime.time(4, 0)
 
 
 class AccountNotifSettings(Model):

@@ -5,6 +5,11 @@ from mihomo import Language as MihomoLanguage
 from yatta import Language as YattaLanguage
 
 DB_INTEGER_MAX = 2147483647
+UID_SERVER_RESET_HOURS: dict[str, int] = {
+    "6": 17,  # America, 5 PM
+    "7": 11,  # Europe, 11 AM
+    # Every other server resets at 4 AM
+}
 
 WEEKDAYS: dict[int, str] = {
     0: "Monday",

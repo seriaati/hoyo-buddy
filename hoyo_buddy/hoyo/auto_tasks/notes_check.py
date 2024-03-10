@@ -15,7 +15,7 @@ from ...enums import Game, NotesNotifyType
 from ...icons import COMMISSION_ICON, PT_ICON, REALM_CURRENCY_ICON, RESIN_ICON, RTBP_ICON, TBP_ICON
 from ...models import DrawInput
 from ...ui.hoyo.notes.view import NotesView
-from ...utils import get_hour_before_time, get_now
+from ...utils import get_now
 
 if TYPE_CHECKING:
     from ...bot.bot import HoyoBuddy
@@ -381,9 +381,7 @@ class NotesChecker:
         ):
             return True
 
-        if notify.notify_time is not None and get_now().time() < get_hour_before_time(
-            notify.account.server_reset_time, notify.notify_time
-        ):
+        if notify.notify_time is not None and get_now() < notify.account.server_reset_datetime:
             return True
 
         return False

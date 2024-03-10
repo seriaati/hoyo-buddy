@@ -80,7 +80,7 @@ class NotesView(View):
                 "Max Notify Count: {max_notif_count}\n"
                 "Notify Time: {notify_time} hours before the server resets\n"
             ),
-            key="reminder_settings.reminde.set.type2",
+            key="reminder_settings.reminde.set.type3",
             status=TOGGLE_EMOJIS[notify.enabled],
             notify_interval=notify.notify_interval,
             max_notif_count=notify.max_notif_count,
@@ -99,7 +99,7 @@ class NotesView(View):
                 "Notify Time: {notify_time} hours before the server resets\n"
                 "Notify Weekday: {notify_weekday}"
             ),
-            key="reminder_settings.reminde.set.type2",
+            key="reminder_settings.reminde.set.type4",
             status=TOGGLE_EMOJIS[notify.enabled],
             notify_interval=notify.notify_interval,
             max_notif_count=notify.max_notif_count,

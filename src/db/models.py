@@ -119,15 +119,20 @@ class NotesNotify(Model):
     est_time: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # type: ignore
     """Estimated time for the threshold to be reached."""
 
-    notify_interval = fields.IntField()
+    notify_interval = fields.SmallIntField()
     """Notify interval in minutes."""
-    check_interval = fields.IntField()
+    check_interval = fields.SmallIntField()
     """Check interval in minutes."""
 
-    max_notif_count = fields.IntField(default=5)
-    current_notif_count = fields.IntField(default=0)
+    max_notif_count = fields.SmallIntField(default=5)
+    current_notif_count = fields.SmallIntField(default=0)
 
-    threshold: fields.Field[int] | None = fields.IntField(null=True)
+    threshold: fields.Field[int | None] = fields.SmallIntField(null=True)  # type: ignore
+    """For resin, realm currency, trailblaze power, and reservered trailblaze power."""
+    notify_time: fields.Field[int | None] = fields.SmallIntField(null=True)  # type: ignore
+    """X hour before server resets. For dailies, resin discount, and echo of war."""
+    notify_weekday: fields.Field[int | None] = fields.SmallIntField(null=True)  # type: ignore
+    """For resin discount and echo of war."""
 
     class Meta:
         unique_together = ("type", "account")

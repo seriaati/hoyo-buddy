@@ -31,7 +31,7 @@ class GeetestWebServer:
     async def _get_page(self, payload: LoginNotifPayload) -> str:
         locale = Locale(payload.locale)
 
-        async with aiofiles.open("src/web_server/captcha.html", encoding="utf-8") as f:
+        async with aiofiles.open("hoyo_buddy/web_server/captcha.html", encoding="utf-8") as f:
             content = await f.read()
 
         content = (

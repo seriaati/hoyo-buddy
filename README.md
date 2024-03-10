@@ -18,25 +18,4 @@ Hoyo Buddy is a Discord bot for [Hoyoverse](https://www.hoyoverse.com/zh-tw/) ga
 [Website](https://hb.bot.nu/)
 
 # Contributing
-## Translation
-Translations are hosted on [Transifex](https://app.transifex.com/hoyo-buddy/hoyo-buddy-discord-bot/translate/#zh_TW/hoyo-buddy-discord-bot/475725497).  
-To contribute, join the [Discord Server](https://dsc.gg/hoyo-buddy) and DM me your email and the language you want to translate, so I can add you to the translator team.  
-If the language you want to translate is not in the list below, DM me too.
-### Available Languages
-- Chinese (China)
-- Chinese (Taiwan)
-- French
-- German
-- Indonesian
-- Japanese
-- Korean
-- Portuguese
-- Russian
-- Spanish
-- Thai
-- Vietamese
-## Code
-To contribute, fork this repo and open a [pull request](https://github.com/seriaati/hoyo-buddy/pulls).
-## No Code
-Any suggestions or ideas are welcomed, you can join the [Discord Server](https://dsc.gg/hoyo-buddy) to tell me or open an [issue](https://github.com/seriaati/hoyo-buddy/issues) to describe them.  
-If you find bugs or issues, please report them via the [Discord Server](https://dsc.gg/hoyo-buddy) or open an [issue](https://github.com/seriaati/hoyo-buddy/issues).
+Please read the [Contribution Guidelines](https://github.com/seriaati/hoyo-buddy/blob/main/CONTRIBUTING.md) for more info.

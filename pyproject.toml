@@ -3,8 +3,8 @@ requires-python = ">=3.11"
 
 [tool.poetry]
 name = "hoyo-buddy"
-version = "0.7.2"
-description = "Your best buddy in all Hoyoverse games."
+version = "0.8.0"
+description = "Elevate your Hoyoverse experience."
 authors = ["seriaati <seria.ati@gmail.com>"]
 license = "GPL-3.0"
 readme = "README.md"

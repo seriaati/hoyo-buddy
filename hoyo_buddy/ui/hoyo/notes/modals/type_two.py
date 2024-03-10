@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class TypeTwoModal(Modal):
     enabled = TextInput(
-        label=LocaleStr("Enabled (0 or 1)", key="notif_modal.enabled.label"),
+        label=LocaleStr("Enabled", key="notif_modal.enabled.label"),
         is_bool=True,
     )
     notify_interval = TextInput(

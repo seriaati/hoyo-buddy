@@ -133,8 +133,6 @@ class Translator:
         if isinstance(string, str):
             return string
 
-        LOGGER_.debug("Translating %r to %s", string, locale.value)
-
         extras = self._translate_extras(string.extras, locale)
         message = string.message
 

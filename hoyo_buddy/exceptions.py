@@ -1,6 +1,13 @@
+from typing import TYPE_CHECKING
+
 from discord.app_commands.errors import AppCommandError
 
 from .bot.translator import LocaleStr
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from .enums import Game
 
 
 class HoyoBuddyError(Exception):
@@ -40,14 +47,32 @@ class AccountNotFoundError(HoyoBuddyError, AppCommandError):
 
 
 class NoAccountFoundError(HoyoBuddyError):
-    def __init__(self) -> None:
-        super().__init__(
-            title=LocaleStr("No account found", key="no_account_found_error_title"),
-            message=LocaleStr(
+    def __init__(self, games: "Sequence[Game] | None" = None) -> None:
+        title = (
+            LocaleStr(
+                "No account found for {games}",
+                key="no_account_found_for_games_error_title",
+                games=[LocaleStr(game.value, warn_no_key=False) for game in games],
+            )
+            if games
+            else LocaleStr(
+                "No account found",
+                key="no_account_found_error_title",
+            )
+        )
+        message = (
+            LocaleStr(
+                "You don't have any accounts for {games} yet. Add one with </accounts>",
+                key="no_account_found_error_message",
+                games=[LocaleStr(game.value, warn_no_key=False) for game in games],
+            )
+            if games
+            else LocaleStr(
                 "You don't have any accounts yet. Add one with </accounts>",
                 key="no_account_found_error_message",
-            ),
+            )
         )
+        super().__init__(title=title, message=message)
 
 
 class CardNotReadyError(HoyoBuddyError):

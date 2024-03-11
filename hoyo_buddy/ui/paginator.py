@@ -32,10 +32,6 @@ class PaginatorView(View):
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
-        if len(pages) == 0:
-            msg = "PaginatorView must have at least one page"
-            raise ValueError(msg)
-
         self._pages = pages
         self._current_page = 0
         self._max_page = len(pages) - 1

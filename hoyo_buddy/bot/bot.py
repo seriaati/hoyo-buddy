@@ -2,7 +2,7 @@ import asyncio
 import logging
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TYPE_CHECKING, Any, TypeAlias
 
 import discord
 import diskcache
@@ -12,6 +12,7 @@ from cachetools import TTLCache
 from discord import app_commands
 from discord.ext import commands, tasks
 
+from ..db.models import HoyoAccount
 from ..hoyo.clients.novelai_client import NAIClient
 from ..utils import get_now
 from .command_tree import CommandTree
@@ -19,6 +20,9 @@ from .translator import AppCommandTranslator, LocaleStr, Translator
 
 if TYPE_CHECKING:
     from aiohttp import ClientSession
+
+    from ..enums import Game
+    from ..hoyo.clients import ambr_client, yatta_client
 
 LOGGER_ = logging.getLogger(__name__)
 
@@ -71,6 +75,15 @@ class HoyoBuddy(commands.AutoShardedBot):
         )
         self.owner_id = 410036441129943050
 
+        self.search_autocomplete_choices: dict[
+            Game,
+            dict[
+                ambr_client.ItemCategory | yatta_client.ItemCategory,
+                dict[str, dict[str, str]],
+            ],
+        ] = {}
+        """[game][category][locale][item_name] -> item_id"""
+
     async def setup_hook(self) -> None:
         await self.tree.set_translator(AppCommandTranslator(self.translator))
 
@@ -104,7 +117,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         else:
             return user
 
-    async def dm_user(self, user_id: int, **kwargs) -> discord.Message | None:
+    async def dm_user(self, user_id: int, **kwargs: Any) -> discord.Message | None:
         user = await self.fetch_user(user_id)
         if user is None:
             return None
@@ -132,6 +145,35 @@ class HoyoBuddy(commands.AutoShardedBot):
             name=error_message.to_app_command_locale_str(),
             value="none",
         )
+
+    @staticmethod
+    async def _get_account_autocomplete(
+        user_id: int,
+        current: str,
+        locale: discord.Locale,
+        translator: Translator,
+        games: set["Game"] | None = None,
+    ) -> list[discord.app_commands.Choice[str]]:
+        accounts = await HoyoAccount.filter(user_id=user_id).all()
+        if not accounts:
+            return [
+                discord.app_commands.Choice(
+                    name=discord.app_commands.locale_str(
+                        "You don't have any accounts yet. Add one with /accounts",
+                        key="no_accounts_autocomplete_choice",
+                    ),
+                    value="none",
+                )
+            ]
+
+        return [
+            discord.app_commands.Choice(
+                name=f"{account} | {translator.translate(LocaleStr(account.game, warn_no_key=False), locale)}",
+                value=f"{account.uid}_{account.game}",
+            )
+            for account in accounts
+            if current.lower() in str(account).lower() and (games is None or account.game in games)
+        ]
 
     async def close(self) -> None:
         LOGGER_.info("Bot shutting down...")

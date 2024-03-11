@@ -25,6 +25,7 @@ class User(Model):
 
 
 class HoyoAccount(Model):
+    id = fields.IntField(pk=True, generated=True)
     uid = fields.IntField(index=True)
     username = fields.CharField(max_length=32)
     nickname: fields.Field[str | None] = fields.CharField(max_length=32, null=True)  # type: ignore
@@ -37,6 +38,8 @@ class HoyoAccount(Model):
     daily_checkin = fields.BooleanField(default=True)
     current = fields.BooleanField(default=False)
     notif_settings: fields.BackwardOneToOneRelation["AccountNotifSettings"]
+    notifs: fields.ReverseRelation["NotesNotify"]
+    farm_notifs: fields.BackwardOneToOneRelation["FarmNotify"]
 
     class Meta:
         unique_together = ("uid", "game", "user")
@@ -145,3 +148,11 @@ class NotesNotify(Model):
     class Meta:
         unique_together = ("type", "account")
         ordering = ["type"]
+
+
+class FarmNotify(Model):
+    enabled = fields.BooleanField(default=True)
+    account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
+        "models.HoyoAccount", related_name="farm_notifs", pk=True
+    )
+    item_ids: fields.Field[list[str]] = fields.JSONField(default=[])  # type: ignore

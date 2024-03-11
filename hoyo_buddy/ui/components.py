@@ -111,7 +111,7 @@ class View(discord.ui.View):
                 item.translate(self.locale, self.translator)
 
     @staticmethod
-    async def absolute_send(i: "INTERACTION", **kwargs) -> None:
+    async def absolute_send(i: "INTERACTION", **kwargs: Any) -> None:
         try:
             await i.response.send_message(**kwargs)
         except discord.InteractionResponded:
@@ -247,7 +247,7 @@ class GoBackButton(Button, Generic[V_co]):
 
 
 class ToggleButton(Button, Generic[V_co]):
-    def __init__(self, current_toggle: bool, toggle_label: LocaleStr, **kwargs) -> None:
+    def __init__(self, current_toggle: bool, toggle_label: LocaleStr, **kwargs: Any) -> None:
         self.current_toggle = current_toggle
         self.toggle_label = toggle_label
         kwargs["row"] = kwargs.get("row", 1)
@@ -400,7 +400,7 @@ class PaginatorSelect(Select, Generic[V_co]):
     def __init__(
         self,
         options: list[SelectOption],
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         self.options_before_split = options
         self.page_index = 0

@@ -40,8 +40,9 @@ class FarmDataFetcher:
         # Initialize class variables
         cls._weekday = weekday
 
-        async with AmbrAPIClient(locale or Locale.american_english, translator) as client:
+        async with AmbrAPIClient(Locale.american_english, translator) as client:
             domains = await client.fetch_domains()
+        async with AmbrAPIClient(locale or Locale.american_english, translator) as client:
             upgrades = await client.fetch_upgrade_data()
             characters = await client.fetch_characters()
             weapons = await client.fetch_weapons()

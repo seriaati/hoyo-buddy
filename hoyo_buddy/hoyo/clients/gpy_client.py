@@ -5,7 +5,8 @@ import genshin
 from ...bot.translator import LocaleStr, Translator
 from ...constants import LOCALE_TO_GPY_LANG
 from ...embeds import DefaultEmbed
-from ...enums import GAME_CONVERTER, GAME_THUMBNAILS
+from ...enums import GAME_CONVERTER
+from ...icons import get_game_icon
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -41,6 +42,6 @@ class GenshinClient(genshin.Client):
         converted_game = GAME_CONVERTER[game]
         embed.set_author(
             name=LocaleStr(converted_game.value, warn_no_key=False),
-            icon_url=GAME_THUMBNAILS[game],
+            icon_url=get_game_icon(converted_game),
         )
         return embed

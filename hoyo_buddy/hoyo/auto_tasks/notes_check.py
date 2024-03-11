@@ -396,6 +396,9 @@ class NotesChecker:
 
     @classmethod
     async def execute(cls, bot: "HoyoBuddy") -> None:  # noqa: PLR0912
+        if cls._lock.locked():
+            return
+
         async with cls._lock:
             cls._bot = bot
             cls._notes_cache = {Game.GENSHIN: {}, Game.STARRAIL: {}}

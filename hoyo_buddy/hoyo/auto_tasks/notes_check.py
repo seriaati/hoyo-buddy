@@ -162,7 +162,7 @@ class NotesChecker:
             case _:
                 raise NotImplementedError
 
-        embed.set_author(name=str(notify.account))
+        embed.set_author(name=str(notify.account), icon_url=notify.account.game_icon)
         embed.set_footer(
             text=LocaleStr(
                 "Disable this notification or change its settings by clicking the button below",

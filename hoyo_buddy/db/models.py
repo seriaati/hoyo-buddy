@@ -8,6 +8,7 @@ from tortoise import fields
 from ..constants import UID_SERVER_RESET_HOURS
 from ..enums import GAME_CONVERTER, Game, NotesNotifyType
 from ..hoyo.clients.gpy_client import GenshinClient
+from ..icons import get_game_icon
 from ..utils import get_now
 
 if TYPE_CHECKING:
@@ -69,6 +70,10 @@ class HoyoAccount(Model):
             reset_time += datetime.timedelta(days=1)
 
         return reset_time
+
+    @property
+    def game_icon(self) -> str:
+        return get_game_icon(self.game)
 
 
 class AccountNotifSettings(Model):

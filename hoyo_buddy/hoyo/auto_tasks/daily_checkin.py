@@ -7,15 +7,14 @@ import discord
 import genshin
 
 from ...bot.error_handler import get_error_embed
-from ...bot.translator import LocaleStr, Translator
 from ...db.models import HoyoAccount, User
 from ...embeds import DefaultEmbed, Embed, ErrorEmbed
-from ...enums import GAME_THUMBNAILS
 
 if TYPE_CHECKING:
     import aiohttp
 
     from ...bot.bot import HoyoBuddy
+    from ...bot.translator import Translator
 
 LOGGER_ = logging.getLogger(__name__)
 
@@ -105,7 +104,7 @@ class DailyCheckin:
         cls,
         api_name: str,
         account: HoyoAccount,
-        translator: Translator,
+        translator: "Translator",
         session: "aiohttp.ClientSession",
     ) -> Embed:
         LOGGER_.debug("Daily check-in with %s for %s", api_name, account)
@@ -122,10 +121,7 @@ class DailyCheckin:
                 reward = await client.claim_daily_reward()
             except Exception as e:
                 embed, _ = get_error_embed(e, locale, translator)
-                embed.set_author(
-                    name=LocaleStr(account.game.value, warn_no_key=False),
-                    icon_url=GAME_THUMBNAILS[account.game],
-                )
+                embed.set_author(name=str(account), icon_url=account.game_icon)
             else:
                 embed = client.get_daily_reward_embed(reward, client.game, locale, translator)
             return embed
@@ -147,10 +143,7 @@ class DailyCheckin:
                     genshin.raise_for_retcode(data)
                 except genshin.GenshinException as e:
                     embed, _ = get_error_embed(e, locale, translator)
-                    embed.set_author(
-                        name=LocaleStr(account.game.value, warn_no_key=False),
-                        icon_url=GAME_THUMBNAILS[account.game],
-                    )
+                    embed.set_author(name=str(account), icon_url=account.game_icon)
             else:
                 msg = f"API {api_name} returned {resp.status}"
                 raise RuntimeError(msg)

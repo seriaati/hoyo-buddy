@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 import aiohttp
+import ambr.models
 from attr import dataclass
 from discord import Locale
 
@@ -68,3 +69,10 @@ class DrawInput:
     locale: Locale
     session: aiohttp.ClientSession
     filename: str
+
+
+class FarmData:
+    def __init__(self, domain: ambr.models.Domain) -> None:
+        self.domain = domain
+        self.characters: list[ambr.models.Character] = []
+        self.weapons: list[ambr.models.Weapon] = []

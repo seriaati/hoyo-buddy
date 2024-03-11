@@ -186,6 +186,9 @@ class Drawer:
         locale: discord.Locale | None = None,
     ) -> tuple[int, int, int, int]:
         """Returns (left, top, right, bottom) of the text bounding box."""
+        if not text:
+            return (0, 0, 0, 0)
+
         if isinstance(text, str):
             translated_text = text
         else:

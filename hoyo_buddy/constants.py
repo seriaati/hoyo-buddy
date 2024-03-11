@@ -13,10 +13,21 @@ UID_SERVER_RESET_HOURS: dict[str, int] = {
     # Every other server resets at 4 AM
 }
 UID_TZ_OFFSET: dict[str, int] = {
-    "6": -5,  # America, UTC-5
-    "7": 1,  # Europe, UTC+1
+    "6": -13,  # America, UTC-5
+    "7": -7,  # Europe, UTC+1
     # Every other server is UTC+8
 }
+UID_STARTS: tuple[str, ...] = (
+    "1",  # Celestia
+    "2",  # Celestia
+    "3",  # Celestia
+    "5",  # Irminsul
+    "6",  # America
+    "7",  # Europe
+    "8",  # Asia
+    "18",  # Asia
+    "9",  # TW, HK, MO
+)
 
 WEEKDAYS: dict[int, str] = {
     0: "Monday",

@@ -47,6 +47,16 @@ class LocaleStr:
     def __repr__(self) -> str:
         return f"locale_str({self.message!r}, key={self.key!r}, extras={self.extras!r})"
 
+    def to_app_command_locale_str(self) -> app_commands.locale_str:
+        return app_commands.locale_str(
+            self.message,
+            key=self.key,
+            warn_no_key=self.warn_no_key,
+            translate=self.translate,
+            replace_command_mentions=self.replace_command_mentions,
+            **self.extras,
+        )
+
 
 class CustomRenderingPolicy(AbstractRenderingPolicy):
     @staticmethod

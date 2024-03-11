@@ -9,12 +9,13 @@ import diskcache
 import sentry_sdk
 from asyncache import cached
 from cachetools import TTLCache
+from discord import app_commands
 from discord.ext import commands, tasks
 
 from ..hoyo.clients.novelai_client import NAIClient
 from ..utils import get_now
 from .command_tree import CommandTree
-from .translator import AppCommandTranslator, Translator
+from .translator import AppCommandTranslator, LocaleStr, Translator
 
 if TYPE_CHECKING:
     from aiohttp import ClientSession
@@ -124,6 +125,13 @@ class HoyoBuddy(commands.AutoShardedBot):
     async def fetch_source_strings(self) -> None:
         if self.env in {"prod", "test"}:
             await asyncio.to_thread(self.translator.fetch_source_strings)
+
+    @staticmethod
+    def get_error_app_command_choice(error_message: LocaleStr) -> app_commands.Choice[str]:
+        return app_commands.Choice(
+            name=error_message.to_app_command_locale_str(),
+            value="none",
+        )
 
     async def close(self) -> None:
         LOGGER_.info("Bot shutting down...")

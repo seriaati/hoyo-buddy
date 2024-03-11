@@ -6,6 +6,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands, tasks
 
+from ..bot.translator import LocaleStr
 from ..db.models import Settings
 from ..emojis import PROJECT_AMBER
 from ..enums import Game
@@ -46,13 +47,6 @@ class Search(commands.Cog):
 
     async def cog_unload(self) -> None:
         self._update_search_autocomplete_choices.cancel()
-
-    @staticmethod
-    def _get_error_app_command_choice(error_message: str) -> app_commands.Choice[str]:
-        return app_commands.Choice(
-            name=app_commands.locale_str(error_message, warn_no_key=False),
-            value="none",
-        )
 
     async def _fetch_item_task(
         self,
@@ -341,7 +335,11 @@ class Search(commands.Cog):
         try:
             game = Game(i.namespace.game)
         except ValueError:
-            return [self._get_error_app_command_choice("Invalid game selected")]
+            return [
+                self.bot.get_error_app_command_choice(
+                    LocaleStr("Invalid game selected", key="invalid_category_selected")
+                )
+            ]
 
         return [
             app_commands.Choice(
@@ -359,7 +357,11 @@ class Search(commands.Cog):
         try:
             game = Game(i.namespace.game)
         except ValueError:
-            return [self._get_error_app_command_choice("Invalid game selected")]
+            return [
+                self.bot.get_error_app_command_choice(
+                    LocaleStr("Invalid game selected", key="invalid_game_selected")
+                )
+            ]
 
         try:
             if game is Game.GENSHIN:
@@ -367,9 +369,17 @@ class Search(commands.Cog):
             elif game is Game.STARRAIL:
                 category = yatta_client.ItemCategory(i.namespace.category)
             else:
-                return [self._get_error_app_command_choice("Invalid game selected")]
+                return [
+                    self.bot.get_error_app_command_choice(
+                        LocaleStr("Invalid game selected", key="invalid_game_selected")
+                    )
+                ]
         except ValueError:
-            return [self._get_error_app_command_choice("Invalid category selected")]
+            return [
+                self.bot.get_error_app_command_choice(
+                    LocaleStr("Invalid category selected", key="invalid_category_selected")
+                )
+            ]
 
         if not current:
             locale = (await Settings.get(user_id=i.user.id)).locale or i.locale

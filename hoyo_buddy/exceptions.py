@@ -63,7 +63,7 @@ class NoAccountFoundError(HoyoBuddyError):
         message = (
             LocaleStr(
                 "You don't have any accounts for {games} yet. Add one with </accounts>",
-                key="no_account_found_error_message",
+                key="no_account_found_for_games_error_message",
                 games=[LocaleStr(game.value, warn_no_key=False) for game in games],
             )
             if games

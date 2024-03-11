@@ -132,12 +132,12 @@ class HoyoBuddy(commands.AutoShardedBot):
     @tasks.loop(minutes=30)
     async def push_source_strings(self) -> None:
         if self.env in {"prod", "test"}:
-            await asyncio.to_thread(self.translator.push_source_strings)
+            await asyncio.create_task(self.translator.push_source_strings())
 
     @tasks.loop(minutes=30)
     async def fetch_source_strings(self) -> None:
         if self.env in {"prod", "test"}:
-            await asyncio.to_thread(self.translator.fetch_source_strings)
+            await asyncio.create_task(self.translator.fetch_source_strings())
 
     @staticmethod
     def get_error_app_command_choice(error_message: LocaleStr) -> app_commands.Choice[str]:

@@ -41,7 +41,7 @@ def draw_item_list(
     overall_top_bottom_padding = 16
     icon_size = (80, 80)
     icon_top_left_padding = 16 if is_trailing else 32
-    title_top_padding = 32 if is_trailing else 28
+    title_top_padding = card_size[1] // 2 if is_trailing else 28
     title_left_padding = 144
     description_top_padding = 76
     description_left_padding = 144
@@ -74,6 +74,7 @@ def draw_item_list(
             position=(pos[0] + title_left_padding, pos[1] + title_top_padding),
             color=DARK_ON_SURFACE if drawer.dark_mode else LIGHT_ON_SURFACE,
             style="medium",
+            anchor="lm" if is_trailing else None,
         )
 
         if isinstance(item, ItemWithTrailing):

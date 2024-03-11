@@ -128,18 +128,6 @@ class CheckInUI(View):
         self.message = await i.original_response()
 
 
-class BackButton(Button[CheckInUI]):
-    def __init__(self) -> None:
-        super().__init__(emoji=emojis.BACK, row=4)
-
-    async def callback(self, i: "INTERACTION") -> Any:
-        await self.set_loading_state(i)
-        embed, file_ = await self.view.get_image_embed_and_file(i.client.session)
-        self.view.clear_items()
-        self.view.add_items()
-        await i.edit_original_response(embed=embed, attachments=[file_], view=self.view)
-
-
 class CheckInButton(Button[CheckInUI]):
     def __init__(self) -> None:
         super().__init__(
@@ -152,26 +140,21 @@ class CheckInButton(Button[CheckInUI]):
         client = self.view.client
         assert client.game is not None
 
-        await self.set_loading_state(i)
+        await i.response.defer()
 
         try:
             daily_reward = await client.claim_daily_reward()
         except GenshinException as e:
-            go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
-            self.view.clear_items()
-            self.view.add_item(go_back_button)
-
             embed, _ = get_error_embed(e, self.view.locale, self.view.translator)
-            return await self.unset_loading_state(i, embed=embed, attachments=[])
+            return await i.followup.send(embed=embed, ephemeral=True)
 
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
-        self.view.clear_items()
-        self.view.add_item(go_back_button)
+        embed, file_ = await self.view.get_image_embed_and_file(i.client.session)
+        await i.edit_original_response(embed=embed, attachments=[file_])
 
         embed = client.get_daily_reward_embed(
             daily_reward, client.game, self.view.locale, self.view.translator
         )
-        await self.unset_loading_state(i, embed=embed, attachments=[])
+        await i.followup.send(embed=embed)
 
 
 class AutoCheckInToggle(ToggleButton[CheckInUI]):

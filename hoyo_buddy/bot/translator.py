@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 __all__ = ("Translator", "AppCommandTranslator", "LocaleStr")
 
 LOGGER_ = logging.getLogger(__name__)
-COMMAND_REGEX = r"</[a-z]+>"
+COMMAND_REGEX = r"</[^>]+>"
 
 
 class LocaleStr:
@@ -116,7 +116,13 @@ class Translator:
         command_occurences: list[str] = re.findall(COMMAND_REGEX, message)
         for command_occurence in command_occurences:
             command_name = command_occurence[2:-1]
+            if " " in command_name:
+                # is subcommand
+                command_name = command_name.split(" ")[0]
             command_id = self.synced_commands.get(command_name)
+
+            # after geting the command_id, change command_name back to the original command name
+            command_name = command_occurence[2:-1]
             if command_id is None:
                 message = message.replace(command_occurence, f"</{command_name}:0>")
             else:

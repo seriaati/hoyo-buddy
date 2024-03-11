@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import time
+from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any
 
 import aiofiles
@@ -35,7 +36,7 @@ class LocaleStr:
         warn_no_key: bool = True,
         translate: bool = True,
         replace_command_mentions: bool = True,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         self.message = message
         self.key = key
@@ -161,6 +162,8 @@ class Translator:
         for k, v in extras.items():
             if isinstance(v, LocaleStr):
                 translated_extras[k] = self.translate(v, locale)
+            elif isinstance(v, Sequence) and isinstance(v[0], LocaleStr):
+                translated_extras[k] = ", ".join([self.translate(i, locale) for i in v])
             else:
                 translated_extras[k] = v
         return translated_extras

@@ -358,9 +358,6 @@ class NotesChecker:
     @classmethod
     def _determine_skip(cls, notify: NotesNotify) -> bool:  # noqa: PLR0911
         """Determine if the notification should be skipped."""
-        if not notify.enabled:
-            return True
-
         if notify.est_time is not None and get_now() < notify.est_time:
             return True
 
@@ -401,7 +398,12 @@ class NotesChecker:
         cls._bot = bot
         cls._notes_cache = {Game.GENSHIN: {}, Game.STARRAIL: {}}
 
-        notifies = await NotesNotify.all().prefetch_related("account").order_by("account_id")
+        notifies = (
+            await NotesNotify.filter(enabled=True)
+            .all()
+            .prefetch_related("account")
+            .order_by("account__uid")
+        )
 
         for notify in notifies:
             if cls._determine_skip(notify):

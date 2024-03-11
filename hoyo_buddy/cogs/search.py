@@ -33,15 +33,6 @@ class Search(commands.Cog):
             Game.STARRAIL: [c.value for c in yatta_client.ItemCategory],
         }
 
-        # [game][category][locale][item_name] -> item_id
-        self._search_autocomplete_choices: dict[
-            Game,
-            dict[
-                ambr_client.ItemCategory | yatta_client.ItemCategory,
-                dict[str, dict[str, str]],
-            ],
-        ] = {}
-
     async def cog_load(self) -> None:
         self._update_search_autocomplete_choices.start()
 
@@ -69,7 +60,7 @@ class Search(commands.Cog):
             raise TypeError(msg)
 
         category_locale_choices = (
-            self._search_autocomplete_choices.setdefault(game, {})
+            self.bot.search_autocomplete_choices.setdefault(game, {})
             .setdefault(item_category, {})
             .setdefault(locale.value, {})
         )
@@ -383,11 +374,13 @@ class Search(commands.Cog):
 
         if not current:
             locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-            autocomplete_choices = self._search_autocomplete_choices[game][category][locale.value]
+            autocomplete_choices = self.bot.search_autocomplete_choices[game][category][
+                locale.value
+            ]
         else:
             autocomplete_choices = {
                 k: v
-                for c in self._search_autocomplete_choices[game][category].values()
+                for c in self.bot.search_autocomplete_choices[game][category].values()
                 for k, v in c.items()
             }
 

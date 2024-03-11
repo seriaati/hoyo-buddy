@@ -67,7 +67,7 @@ select = [
     "PIE","T20","ARG","ERA","LOG","PL","TRY"
 ]
 ignore = [
-    "E501","ANN401","ANN101","ANN102","ANN003",
+    "E501","ANN401","ANN101","ANN102",
     "PLR0913","PLR2004","PLR0917","PLR6301",
     "ANN002","ERA001"
 ]

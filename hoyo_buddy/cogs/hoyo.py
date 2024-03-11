@@ -16,6 +16,7 @@ from ..hoyo.clients.mihomo_client import MihomoAPI
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..models import DrawInput
 from ..ui.hoyo.checkin import CheckInUI
+from ..ui.hoyo.farm import FarmView
 from ..ui.hoyo.genshin.abyss import AbyssView
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.profile.view import ProfileView
@@ -36,6 +37,7 @@ class Hoyo(commands.Cog):
         current: str,
         locale: discord.Locale,
         translator: Translator,
+        game: Game | None = None,
     ) -> list[discord.app_commands.Choice]:
         accounts = await HoyoAccount.filter(user_id=user_id).all()
         if not accounts:
@@ -55,7 +57,7 @@ class Hoyo(commands.Cog):
                 value=f"{account.uid}_{account.game}",
             )
             for account in accounts
-            if current.lower() in str(account).lower()
+            if current.lower() in str(account).lower() and (game is None or account.game is game)
         ]
 
     @staticmethod
@@ -322,6 +324,53 @@ class Hoyo(commands.Cog):
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         return await self._account_autocomplete(i.user.id, current, locale, self.bot.translator)
+
+    @app_commands.command(
+        name=app_commands.locale_str("farm", translate=False),
+        description=app_commands.locale_str(
+            "View farmable domains in Genshin Impact", key="farm_command_description"
+        ),
+    )
+    @app_commands.rename(
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+    )
+    @app_commands.describe(
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+            replace_command_mentions=False,
+        )
+    )
+    async def farm_command(
+        self,
+        i: "INTERACTION",
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+    ) -> None:
+        settings = await Settings.get(user_id=i.user.id)
+        account = (
+            account
+            or await HoyoAccount.filter(user_id=i.user.id, current=True, game=Game.GENSHIN).first()
+            or await HoyoAccount.filter(user_id=i.user.id, game=Game.GENSHIN).first()
+        )
+        uid = None if account is None else account.uid
+
+        view = FarmView(
+            uid,
+            settings.dark_mode,
+            author=i.user,
+            locale=settings.locale or i.locale,
+            translator=self.bot.translator,
+        )
+        await view.start(i)
+
+    @farm_command.autocomplete("account")
+    async def farm_command_autocomplete(
+        self, i: "INTERACTION", current: str
+    ) -> list[app_commands.Choice]:
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        return await self._account_autocomplete(
+            i.user.id, current, locale, self.bot.translator, Game.GENSHIN
+        )
 
 
 async def setup(bot: "HoyoBuddy") -> None:

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from mihomo.models import Character as MihomoCharacter
 
     from ..bot.translator import Translator
-    from ..models import DrawInput, ItemWithDescription, ItemWithTrailing, Reward
+    from ..models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
 
 
 async def draw_item_list_card(
@@ -126,6 +126,26 @@ async def draw_gi_notes_card(
     )
     buffer = await asyncio.to_thread(
         funcs.draw_genshin_notes_card, notes, draw_input.locale, translator, draw_input.dark_mode
+    )
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_farm_card(
+    draw_input: "DrawInput", farm_data: list["FarmData"], translator: "Translator"
+) -> File:
+    image_urls = (
+        [r.icon for data in farm_data for r in data.domain.rewards]
+        + [c.icon for data in farm_data for c in data.characters]
+        + [w.icon for data in farm_data for w in data.weapons]
+    )
+    await download_and_save_static_images(
+        image_urls,
+        folder="farm",
+        session=draw_input.session,
+    )
+    buffer = await asyncio.to_thread(
+        funcs.draw_farm_card, farm_data, draw_input.locale, draw_input.dark_mode, translator
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

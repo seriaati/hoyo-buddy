@@ -37,7 +37,7 @@ class Hoyo(commands.Cog):
         current: str,
         locale: discord.Locale,
         translator: Translator,
-        game: Game | None = None,
+        games: set[Game] | None = None,
     ) -> list[discord.app_commands.Choice]:
         accounts = await HoyoAccount.filter(user_id=user_id).all()
         if not accounts:
@@ -57,7 +57,7 @@ class Hoyo(commands.Cog):
                 value=f"{account.uid}_{account.game}",
             )
             for account in accounts
-            if current.lower() in str(account).lower() and (game is None or account.game is game)
+            if current.lower() in str(account).lower() and (games is None or account.game in games)
         ]
 
     @staticmethod
@@ -111,7 +111,9 @@ class Hoyo(commands.Cog):
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        return await self._account_autocomplete(i.user.id, current, locale, self.bot.translator)
+        return await self._account_autocomplete(
+            i.user.id, current, locale, self.bot.translator, {Game.GENSHIN, Game.STARRAIL}
+        )
 
     @app_commands.command(
         name=app_commands.locale_str("profile", translate=False),
@@ -231,7 +233,9 @@ class Hoyo(commands.Cog):
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        return await self._account_autocomplete(i.user.id, current, locale, self.bot.translator)
+        return await self._account_autocomplete(
+            i.user.id, current, locale, self.bot.translator, {Game.GENSHIN, Game.STARRAIL}
+        )
 
     @app_commands.command(
         name=app_commands.locale_str("abyss-enemies", translate=False),
@@ -323,10 +327,16 @@ class Hoyo(commands.Cog):
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        return await self._account_autocomplete(i.user.id, current, locale, self.bot.translator)
+        return await self._account_autocomplete(
+            i.user.id, current, locale, self.bot.translator, {Game.GENSHIN, Game.STARRAIL}
+        )
 
-    @app_commands.command(
-        name=app_commands.locale_str("farm", translate=False),
+    farm = app_commands.Group(
+        name=app_commands.locale_str("farm", translate=False), description="Farm commands"
+    )
+
+    @farm.command(
+        name=app_commands.locale_str("view", translate=False),
         description=app_commands.locale_str(
             "View farmable domains in Genshin Impact", key="farm_command_description"
         ),
@@ -341,7 +351,7 @@ class Hoyo(commands.Cog):
             replace_command_mentions=False,
         )
     )
-    async def farm_command(
+    async def farm_view_command(
         self,
         i: "INTERACTION",
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
@@ -363,13 +373,13 @@ class Hoyo(commands.Cog):
         )
         await view.start(i)
 
-    @farm_command.autocomplete("account")
-    async def farm_command_autocomplete(
+    @farm_view_command.autocomplete("account")
+    async def farm_view_command_autocomplete(
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         return await self._account_autocomplete(
-            i.user.id, current, locale, self.bot.translator, Game.GENSHIN
+            i.user.id, current, locale, self.bot.translator, {Game.GENSHIN}
         )
 
 

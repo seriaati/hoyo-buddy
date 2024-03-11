@@ -24,6 +24,7 @@ LOGGER_ = logging.getLogger(__name__)
 
 
 class NotesChecker:
+    _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
     _bot: ClassVar["HoyoBuddy"]
     _notes_cache: ClassVar[dict[Game, dict[int, Notes | StarRailNote]]] = {}
 
@@ -395,32 +396,33 @@ class NotesChecker:
 
     @classmethod
     async def execute(cls, bot: "HoyoBuddy") -> None:  # noqa: PLR0912
-        cls._bot = bot
-        cls._notes_cache = {Game.GENSHIN: {}, Game.STARRAIL: {}}
+        async with cls._lock:
+            cls._bot = bot
+            cls._notes_cache = {Game.GENSHIN: {}, Game.STARRAIL: {}}
 
-        notifies = (
-            await NotesNotify.filter(enabled=True)
-            .all()
-            .prefetch_related("account")
-            .order_by("account__uid")
-        )
+            notifies = (
+                await NotesNotify.filter(enabled=True)
+                .all()
+                .prefetch_related("account")
+                .order_by("account__uid")
+            )
 
-        for notify in notifies:
-            if cls._determine_skip(notify):
-                continue
+            for notify in notifies:
+                if cls._determine_skip(notify):
+                    continue
 
-            if notify.account.uid not in cls._notes_cache[notify.account.game]:
-                notes = await cls._get_notes(notify)
+                if notify.account.uid not in cls._notes_cache[notify.account.game]:
+                    notes = await cls._get_notes(notify)
 
-                cls._notes_cache[notify.account.game][notify.account.uid] = notes
-            else:
-                notes = cls._notes_cache[notify.account.game][notify.account.uid]
+                    cls._notes_cache[notify.account.game][notify.account.uid] = notes
+                else:
+                    notes = cls._notes_cache[notify.account.game][notify.account.uid]
 
-            try:
-                await cls._process_notify(notify, notes)
-            except Exception as e:
-                await cls._handle_notify_error(notify, e)
-            finally:
-                notify.last_check_time = get_now()
-                await notify.save()
-                await asyncio.sleep(1.2)
+                try:
+                    await cls._process_notify(notify, notes)
+                except Exception as e:
+                    await cls._handle_notify_error(notify, e)
+                finally:
+                    notify.last_check_time = get_now()
+                    await notify.save()
+                    await asyncio.sleep(1.2)

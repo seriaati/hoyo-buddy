@@ -21,7 +21,11 @@ if TYPE_CHECKING:
 LOGGER_ = logging.getLogger(__name__)
 
 
-class Farm(commands.GroupCog, name="farm"):
+class Farm(
+    commands.GroupCog,
+    name=app_commands.locale_str("farm", translate=False),
+    description=app_commands.locale_str("Farm commands", translate=False),
+):
     def __init__(self, bot: "HoyoBuddy") -> None:
         self.bot = bot
 

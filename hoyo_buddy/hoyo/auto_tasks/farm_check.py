@@ -35,7 +35,7 @@ class FarmChecker:
         embed.set_thumbnail(url=item.icon)
         embed.set_footer(
             text=LocaleStr(
-                "Use /farm notify to configure reminder settings\nUse /farm view to view all items farmable today",
+                "Use /farm reminder to configure reminder settings\nUse /farm view to view all items farmable today",
                 key="farm_check.use_farm_notify",
             )
         )

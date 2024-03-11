@@ -104,7 +104,7 @@ class ReminderButton(Button[FarmView]):
             self.view.locale,
             self.view.translator,
             description=LocaleStr(
-                "To set reminders, use the </farm notify> command",
+                "To set reminders, use the </farm reminder> command",
                 key="farm_view.set_reminder.embed.description",
             ),
         )

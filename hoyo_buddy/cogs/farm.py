@@ -204,10 +204,10 @@ class Farm(
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("notify", translate=False),
+        name=app_commands.locale_str("reminder", translate=False),
         description=app_commands.locale_str(
             "Notify you when materials of characters/weapons are farmable",
-            key="farm_notify_command_description",
+            key="farm_reminder_command_description",
         ),
     )
     @app_commands.rename(
@@ -220,7 +220,7 @@ class Farm(
             replace_command_mentions=False,
         ),
     )
-    async def farm_notify_command(
+    async def farm_reminder_command(
         self,
         i: "INTERACTION",
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
@@ -249,7 +249,7 @@ class Farm(
     @farm_view_command.autocomplete("account")
     @farm_add_command.autocomplete("account")
     @farm_remove_command.autocomplete("account")
-    @farm_notify_command.autocomplete("account")
+    @farm_reminder_command.autocomplete("account")
     async def account_autocomplete(
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice[str]]:

@@ -34,7 +34,14 @@ class FarmNotifyView(PaginatorView):
         translator: "Translator",
     ) -> None:
         self._split_item_ids = split_list_to_chunks(farm_notify.item_ids, 12)
-        pages = [Page() for _ in range(len(self._split_item_ids))]
+        pages = [
+            Page(
+                embed=DefaultEmbed(
+                    locale, translator, title=LocaleStr("Farm Reminder", key="farm_notify.title")
+                ).set_image(url="attachment://farm_notify.webp")
+            )
+            for _ in range(len(self._split_item_ids))
+        ]
 
         self._notify = farm_notify
         self._dark_mode = dark_mode

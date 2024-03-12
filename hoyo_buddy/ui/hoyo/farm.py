@@ -46,6 +46,8 @@ class FarmView(View):
             self._weekday = get_now().weekday()
 
     async def start(self, i: "INTERACTION") -> None:
+        await i.response.defer()
+
         if self._weekday == 6:
             embed = DefaultEmbed(
                 self.locale,
@@ -53,9 +55,8 @@ class FarmView(View):
                 title=LocaleStr("Every domain is available on Sundays", key="farm_view.sundays"),
                 description=LocaleStr("🌾 Happy farming!", key="farm_view.happy_farming"),
             )
-            return await i.response.send_message(embed=embed, view=self)
-
-        await i.response.defer()
+            await i.edit_original_response(embed=embed, view=self, attachments=[])
+            return
 
         draw_input = DrawInput(
             dark_mode=self._dark_mode,
@@ -67,7 +68,7 @@ class FarmView(View):
             draw_input, await FarmDataFetcher.fetch(self._weekday, self.translator), self.translator
         )
 
-        await i.edit_original_response(attachments=[file_], view=self)
+        await i.edit_original_response(attachments=[file_], view=self, embed=None)
         self.message = await i.original_response()
 
 

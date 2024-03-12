@@ -47,30 +47,16 @@ class AccountNotFoundError(HoyoBuddyError, AppCommandError):
 
 
 class NoAccountFoundError(HoyoBuddyError):
-    def __init__(self, games: "Sequence[Game] | None" = None) -> None:
-        title = (
-            LocaleStr(
-                "No account found for {games}",
-                key="no_account_found_for_games_error_title",
-                games=[LocaleStr(game.value, warn_no_key=False) for game in games],
-            )
-            if games
-            else LocaleStr(
-                "No account found",
-                key="no_account_found_error_title",
-            )
+    def __init__(self, games: "Sequence[Game]") -> None:
+        title = LocaleStr(
+            "No account found for {games}",
+            key="no_account_found_for_games_error_title",
+            games=[LocaleStr(game.value, warn_no_key=False) for game in games],
         )
-        message = (
-            LocaleStr(
-                "You don't have any accounts for {games} yet. Add one with </accounts>",
-                key="no_account_found_for_games_error_message",
-                games=[LocaleStr(game.value, warn_no_key=False) for game in games],
-            )
-            if games
-            else LocaleStr(
-                "You don't have any accounts yet. Add one with </accounts>",
-                key="no_account_found_error_message",
-            )
+        message = LocaleStr(
+            "You don't have any accounts for {games} yet. Add one with </accounts>",
+            key="no_account_found_for_games_error_message",
+            games=[LocaleStr(game.value, warn_no_key=False) for game in games],
         )
         super().__init__(title=title, message=message)
 

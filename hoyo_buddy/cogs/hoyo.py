@@ -50,7 +50,7 @@ class Hoyo(commands.Cog):
                 or await HoyoAccount.filter(user_id=user_id).first()
             )
             if account_ is None:
-                raise NoAccountFoundError
+                raise NoAccountFoundError([Game.GENSHIN, Game.STARRAIL])
             uid_ = account_.uid
             game = account_.game
         else:
@@ -87,7 +87,7 @@ class Hoyo(commands.Cog):
             or await HoyoAccount.filter(user_id=i.user.id).first()
         )
         if account is None:
-            raise NoAccountFoundError
+            raise NoAccountFoundError([Game.GENSHIN, Game.STARRAIL, Game.HONKAI])
 
         view = CheckInUI(
             account,
@@ -242,7 +242,7 @@ class Hoyo(commands.Cog):
             or await HoyoAccount.filter(user_id=i.user.id).first()
         )
         if account is None:
-            raise NoAccountFoundError
+            raise NoAccountFoundError([Game.GENSHIN, Game.STARRAIL])
 
         await i.response.defer()
 

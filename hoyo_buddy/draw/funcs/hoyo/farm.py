@@ -59,7 +59,9 @@ def draw_farm_card(
         basic_card.paste(lid, (8, 3), lid)
 
         draw = ImageDraw.Draw(basic_card)
-        drawer = Drawer(draw, folder="farm", dark_mode=dark_mode, translator=translator)
+        drawer = Drawer(
+            draw, folder="farm", dark_mode=dark_mode, translator=translator, locale=locale
+        )
 
         drawer.write(
             get_domain_title(data.domain, locale, translator),

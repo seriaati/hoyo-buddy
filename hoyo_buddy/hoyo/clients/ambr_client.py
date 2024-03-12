@@ -14,6 +14,7 @@ from hoyo_buddy.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_element_
 from ...bot.translator import LocaleStr, Translator
 from ...constants import LOCALE_TO_AMBR_LANG, WEEKDAYS
 from ...embeds import DefaultEmbed
+from ...enums import TalentBoost
 from ...models import ItemWithDescription
 
 __all__ = ("AmbrAPIClient", "ItemCategory", "AUDIO_LANGUAGES")
@@ -149,6 +150,20 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             word_to_replace = re.findall(r"{LAYOUT.*?#(.*?)}", brackets[0])[0]
             text = text.replace("".join(brackets), word_to_replace)
         return text
+
+    async def fetch_talent_boost(self, character_id: str) -> TalentBoost:
+        """Fetches the talent boost type of a character's third constellation."""
+        character = await self.fetch_character_detail(character_id)
+        c3 = character.constellations[2]
+        if c3.extra_level is None:
+            msg = f"Character {character_id} does not extra level data in their C3"
+            raise ValueError(msg)
+
+        return (
+            TalentBoost.BOOST_E
+            if c3.extra_level.talent_type is ambr.ExtraLevelType.SKILL
+            else TalentBoost.BOOST_Q
+        )
 
     def _get_params(self, text: str, param_list: list[int | float]) -> list[str]:
         params: list[str] = re.findall(r"{[^}]*}", text)

@@ -65,7 +65,11 @@ class ItemCategory(StrEnum):
 
 
 class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
-    def __init__(self, locale: Locale, translator: Translator) -> None:
+    def __init__(
+        self,
+        locale: Locale = Locale.american_english,
+        translator: Translator | None = None,
+    ) -> None:
         super().__init__(lang=LOCALE_TO_AMBR_LANG.get(locale, Language.EN))
         self.locale = locale
         self.translator = translator
@@ -216,6 +220,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         avatar_curve: dict[str, dict[str, dict[str, float]]],
         manual_weapon: dict[str, str],
     ) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         stat_values = self._calculate_upgrade_stat_values(
             character.upgrade, avatar_curve, level, True
         )
@@ -260,6 +268,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_character_talent_embed(self, talent: ambr.Talent, level: int) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -289,6 +301,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_character_constellation_embed(self, constellation: ambr.Constellation) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -299,6 +315,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_character_story_embed(self, story: ambr.Story) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -310,6 +330,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_character_quote_embed(self, quote: ambr.Quote, character_id: str) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -332,6 +356,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         weapon_curve: dict[str, dict[str, dict[str, float]]],
         manual_weapon: dict[str, str],
     ) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         stat_values = self._calculate_upgrade_stat_values(weapon.upgrade, weapon_curve, level, True)
         main_stat = weapon.upgrade.base_stats[0]
         if main_stat.prop_type is None:
@@ -383,6 +411,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_namecard_embed(self, namecard: ambr.NamecardDetail) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -398,6 +430,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
     def get_artifact_embed(
         self, artifact_set: ambr.ArtifactSetDetail, artifact: ambr.Artifact
     ) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         description = self.translator.translate(
             LocaleStr(
                 "2-Pieces: {bonus_2}",
@@ -423,6 +459,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_food_embed(self, food: ambr.FoodDetail) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         description = create_bullet_list([s.name for s in food.sources])
         if isinstance(food.recipe, ambr.FoodRecipe):
             description += f"\n{create_bullet_list([e.description for e in food.recipe.effects])}"
@@ -438,6 +478,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_material_embed(self, material: ambr.MaterialDetail) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         if material.sources:
             names: list[str] = []
 
@@ -469,6 +513,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_furniture_embed(self, furniture: ambr.FurnitureDetail) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -495,6 +543,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_furniture_set_embed(self, furniture_set: ambr.FurnitureSetDetail) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -508,6 +560,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_monster_embed(self, monster: ambr.MonsterDetail) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale, self.translator, title=monster.name, description=monster.description
         )
@@ -521,6 +577,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
     def get_volume_embed(
         self, book: ambr.BookDetail, volume: ambr.BookVolume, readable: str
     ) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -533,6 +593,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_tcg_card_embed(self, card: ambr.TCGCardDetail) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         energy = card.props.get("GCG_PROP_ENERGY", 0) if card.props else 0
         embed = DefaultEmbed(
             self.locale,
@@ -549,6 +613,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
     def get_tcg_card_dictionaries_embed(
         self, dictionaries: list[ambr.CardDictionary]
     ) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(self.locale, self.translator)
         for d in dictionaries:
             # skip talent related dictionaries
@@ -560,6 +628,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
     def get_tcg_card_talent_embed(
         self, talent: ambr.CardTalent, dictionaries: list[ambr.CardDictionary]
     ) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -587,6 +659,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
     def get_abyss_chamber_embed_with_floor_info(
         self, floor: ambr.Floor, floor_index: int, chamber: ambr.Chamber, chamber_index: int
     ) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -628,6 +704,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         level: int,
         monster_curve: dict[str, dict[str, dict[str, float]]],
     ) -> ItemWithDescription:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         prop_values: dict[str, float] = {
             prop.type: prop.initial_value
             * monster_curve[str(level)]["curveInfos"][prop.growth_type]

@@ -167,7 +167,7 @@ class Translator:
             if isinstance(v, LocaleStr):
                 translated_extras[k] = self.translate(v, locale)
             elif isinstance(v, Sequence) and isinstance(v[0], LocaleStr):
-                translated_extras[k] = ", ".join([self.translate(i, locale) for i in v])
+                translated_extras[k] = "/".join([self.translate(i, locale) for i in v])
             else:
                 translated_extras[k] = v
         return translated_extras

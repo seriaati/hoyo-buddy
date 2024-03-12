@@ -15,6 +15,7 @@ from ..components import Button, GoBackButton, ToggleButton, View
 
 if TYPE_CHECKING:
     import aiohttp
+    from genshin.models import DailyRewardInfo
 
     from ...bot.bot import INTERACTION
     from ...db.models import HoyoAccount
@@ -57,7 +58,7 @@ class CheckInUI(View):
         self.add_item(AutoCheckInToggle(self.account.daily_checkin))
         self.add_item(NotificationSettingsButton())
 
-    async def _get_rewards(self) -> list[Reward]:
+    async def _get_rewards(self) -> tuple[list[Reward], "DailyRewardInfo"]:
         client = self.client
 
         monthly_rewards = await client.get_monthly_rewards()
@@ -69,19 +70,22 @@ class CheckInUI(View):
         claimed_rewards = await client.claimed_rewards(limit=get_now().day)
         claimed_rewards = claimed_rewards[::-1]
         claimed_rewards = [r for r in claimed_rewards if r.time.month == get_now().month]
-        claimed_rewards = [
-            Reward(name=r.name, amount=r.amount, index=i, claimed=True, icon=r.icon)
-            for i, r in enumerate(claimed_rewards, 1)
-        ]
 
-        this_month_claim_num = len(claimed_rewards)
+        reward_info = await client.get_reward_info()
+        this_month_claim_num = reward_info.claimed_rewards
+
+        for r in monthly_rewards[:this_month_claim_num]:
+            r.claimed = True
+
         rewards_to_return = 3
 
         if this_month_claim_num < rewards_to_return:
             result = monthly_rewards[:rewards_to_return]
             next_reward = monthly_rewards[rewards_to_return]
         else:
-            result = claimed_rewards[-rewards_to_return:]
+            result = monthly_rewards[
+                this_month_claim_num - rewards_to_return : this_month_claim_num
+            ]
 
             try:
                 next_reward = monthly_rewards[this_month_claim_num]
@@ -89,13 +93,12 @@ class CheckInUI(View):
                 next_reward = monthly_rewards[0]
 
         result.append(next_reward)
-        return result
+        return result, reward_info
 
     async def get_image_embed_and_file(
         self, session: "aiohttp.ClientSession"
     ) -> tuple[DefaultEmbed, discord.File]:
-        rewards = await self._get_rewards()
-        checked_in_day_num = rewards[-2].index
+        rewards, info = await self._get_rewards()
 
         file_ = await draw_checkin_card(
             DrawInput(
@@ -114,8 +117,8 @@ class CheckInUI(View):
             description=LocaleStr(
                 "Checked in {day} day(s) this month\n" "Missed check-in for {missed} day(s)\n",
                 key="daily_checkin_embed_description",
-                day=checked_in_day_num,
-                missed=get_now().day - checked_in_day_num,
+                day=info.claimed_rewards,
+                missed=info.missed_rewards,
             ),
         )
         embed.set_image(url="attachment://check-in.webp")

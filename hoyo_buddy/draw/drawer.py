@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Literal
 import discord
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
+from ..models import DynamicBKInput, TopPadding
 from .fonts import (
     GENSENROUNDEDTW_BOLD,
     GENSENROUNDEDTW_LIGHT,
@@ -106,13 +107,6 @@ class Drawer:
     ) -> tuple[int, int, int, int]:
         return color + (round(255 * opacity),)
 
-    def _mask_image_with_color(
-        self, image: Image.Image, color: tuple[int, int, int], opacity: float
-    ) -> Image.Image:
-        mask = Image.new("RGBA", image.size, self.apply_color_opacity(color, opacity))
-        image = ImageChops.multiply(image, mask)
-        return image
-
     @staticmethod
     def _shorten_text(text: str, max_width: int, font: ImageFont.FreeTypeFont) -> str:
         if font.getlength(text) <= max_width:
@@ -121,6 +115,61 @@ class Drawer:
         while font.getlength(shortened) > max_width and len(shortened) > 3:
             shortened = shortened[:-4] + "..."
         return shortened
+
+    @staticmethod
+    def draw_dynamic_background(input_: DynamicBKInput) -> tuple[Image.Image, int]:
+        """Draw a dynamic background with a variable number of cards."""
+        card_num = input_.card_num
+
+        # Determine the maximum number of cards
+        if card_num == 1:
+            max_card_num = 1
+        elif card_num % 2 == 0:
+            max_card_num = max(i for i in range(1, card_num) if card_num % i == 0)
+        else:
+            max_card_num = max(i for i in range(1, card_num) if (card_num - (i - 1)) % i == 0)
+        max_card_num = input_.max_card_num or min(max_card_num, 8)
+
+        # Calculate the number of columns
+        cols = (
+            card_num // max_card_num + 1
+            if card_num % max_card_num != 0
+            else card_num // max_card_num
+        )
+
+        # Calculate the width and height of the image
+        width = (
+            input_.left_padding
+            + input_.right_padding
+            + input_.card_width * cols
+            + input_.card_x_padding * (cols - 1)
+        )
+        height = (
+            (
+                input_.top_padding.with_title
+                if input_.draw_title
+                else input_.top_padding.without_title
+            )
+            if isinstance(input_.top_padding, TopPadding)
+            else input_.top_padding
+        )
+        height += (
+            input_.bottom_padding
+            + input_.card_height * max_card_num
+            + input_.card_y_padding * (max_card_num - 1)
+        )
+
+        # Create a new image with the calculated dimensions and background color
+        im = Image.new("RGBA", (width, height), input_.background_color)
+
+        return im, max_card_num
+
+    def _mask_image_with_color(
+        self, image: Image.Image, color: tuple[int, int, int], opacity: float
+    ) -> Image.Image:
+        mask = Image.new("RGBA", image.size, self.apply_color_opacity(color, opacity))
+        image = ImageChops.multiply(image, mask)
+        return image
 
     def _wrap_text(
         self, text: str, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont

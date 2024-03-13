@@ -7,6 +7,25 @@ from yatta import Language as YattaLanguage
 DB_INTEGER_MAX = 2147483647
 DB_SMALLINT_MAX = 32767
 
+TRAVELER_IDS = {10000005, 10000007}
+AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID = {
+    "10000005-anemo": "10000005-504",
+    "10000005-geo": "10000007-506",
+    "10000005-electro": "10000007-507",
+    "10000005-dendro": "10000007-508",
+    "10000005-water": "10000005-509",
+    "10000007-anemo": "10000007-704",
+    "10000007-geo": "10000007-706",
+    "10000007-electro": "10000007-707",
+    "10000007-dendro": "10000007-708",
+    "10000007-water": "10000005-703",  # why
+}
+
+
+def contains_traveler_id(character_id: str) -> bool:
+    return any(str(traveler_id) in character_id for traveler_id in TRAVELER_IDS)
+
+
 UID_SERVER_RESET_HOURS: dict[str, int] = {
     "6": 17,  # America, 5 PM
     "7": 11,  # Europe, 11 AM

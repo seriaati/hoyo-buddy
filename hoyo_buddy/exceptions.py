@@ -1,11 +1,13 @@
 from typing import TYPE_CHECKING
 
 from discord.app_commands.errors import AppCommandError
+from discord.utils import format_dt
 
 from .bot.translator import LocaleStr
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from datetime import datetime
 
     from .enums import Game
 
@@ -159,5 +161,31 @@ class GuildOnlyFeatureError(HoyoBuddyError):
             message=LocaleStr(
                 "This feature is only available in guilds, please try again in a guild.",
                 key="guild_only_feature_error_message",
+            ),
+        )
+
+
+class NoCharsFoundError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr(
+                "No characters found with the selected filter",
+                key="no_characters_found_error_title",
+            ),
+            message=LocaleStr(
+                "No characters found with the selected filter, please try again with a different filter.",
+                key="no_characters_found_error_message",
+            ),
+        )
+
+
+class ActionInCooldownError(HoyoBuddyError):
+    def __init__(self, available_time: "datetime") -> None:
+        super().__init__(
+            title=LocaleStr("Action in Cooldown", key="action_in_cooldown_error_title"),
+            message=LocaleStr(
+                "You are currently in cooldown, please try again at {available_time}.",
+                key="action_in_cooldown_error_message",
+                available_time=format_dt(available_time, "T"),
             ),
         )

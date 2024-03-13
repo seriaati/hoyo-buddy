@@ -13,6 +13,8 @@ GI_ICON = "https://i.imgur.com/QqqrBOg.png"
 HSR_ICON = "https://i.imgur.com/jHyDVSv.png"
 HONKAI_ICON = "https://i.imgur.com/9ueIKNO.png"
 
+LOADING_ICON = "https://i.imgur.com/5siJ799.gif"
+
 
 def get_game_icon(game: Game | GameEnum) -> str:
     match game:

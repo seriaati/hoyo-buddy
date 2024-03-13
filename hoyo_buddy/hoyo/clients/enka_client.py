@@ -23,13 +23,6 @@ class EnkaAPI(enka.EnkaAPI):
         return self
 
     def _update_cache_with_live_data(self, cache: EnkaCache, live_data: "ShowcaseResponse") -> None:
-        """
-        Updates the cache with live data.
-
-        Args:
-            cache (EnkaCache): The cache object to update.
-            live_data (ShowcaseResponse): The live data to update the cache with.
-        """
         live_chara_data = {"live": True, "lang": self._lang.value}
 
         if cache.genshin is None:
@@ -55,18 +48,10 @@ class EnkaAPI(enka.EnkaAPI):
                 cache.extras[str(character.id)].update({"live": False})
 
         cache_data.characters = cache_characters_not_in_live + live_data.characters
+        cache_data.player = live_data.player
         cache.genshin = pickle.dumps(cache_data)
 
     def _set_all_live_to_false(self, cache: EnkaCache) -> None:
-        """
-        Sets the 'live' attribute of all characters in the cache to False.
-
-        Args:
-            cache (EnkaCache): The cache object containing the character data.
-
-        Returns:
-            None
-        """
         if cache.genshin is None:
             return
 

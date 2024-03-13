@@ -46,7 +46,16 @@ class MihomoAPI(mihomo.MihomoAPI):
                 cache.extras[str(character.id)].update({"live": False})
 
         cache_data.characters = cache_characters_not_in_live + live_data.characters
+        cache_data.player = live_data.player
         cache.hsr = pickle.dumps(cache_data)
+
+    def _set_all_live_to_false(self, cache: EnkaCache) -> None:
+        if cache.genshin is None:
+            return
+
+        cache_data: StarrailInfoParsed = pickle.loads(cache.genshin)
+        for character in cache_data.characters:
+            cache.extras[str(character.id)].update({"live": False})
 
     async def fetch_user(self, uid: int) -> "StarrailInfoParsed":
         cache, _ = await EnkaCache.get_or_create(uid=uid)
@@ -56,6 +65,9 @@ class MihomoAPI(mihomo.MihomoAPI):
         except mihomo.UserNotFound:
             if not cache.hsr:
                 raise
+
+            self._set_all_live_to_false(cache)
+            await cache.save()
             cache_data: StarrailInfoParsed = pickle.loads(cache.hsr)
         else:
             self._update_cache_with_live_data(cache, live_data)

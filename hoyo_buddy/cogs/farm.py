@@ -225,16 +225,9 @@ class Farm(
         i: "INTERACTION",
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        account = (
-            account
-            or await HoyoAccount.filter(user_id=i.user.id, current=True, game=Game.GENSHIN).first()
-            or await HoyoAccount.filter(user_id=i.user.id, game=Game.GENSHIN).first()
-        )
-        if account is None:
-            raise NoAccountFoundError([Game.GENSHIN])
-
+        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
         settings = await Settings.get(user_id=i.user.id)
-        farm_notify, _ = await FarmNotify.get_or_create(account=account)
+        farm_notify, _ = await FarmNotify.get_or_create(account=account_)
 
         view = FarmNotifyView(
             farm_notify,
@@ -254,7 +247,7 @@ class Farm(
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice[str]]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        return await self.bot._get_account_autocomplete(
+        return await self.bot.get_account_autocomplete(
             i.user.id, current, locale, self.bot.translator, {Game.GENSHIN}
         )
 

@@ -10,8 +10,10 @@ from asyncache import cached
 from cachetools import TTLCache
 from discord import app_commands
 from discord.ext import commands
+from tortoise.expressions import Q
 
 from ..db.models import HoyoAccount
+from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novelai_client import NAIClient
 from ..utils import get_now
 from .command_tree import CommandTree
@@ -133,7 +135,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         )
 
     @staticmethod
-    async def _get_account_autocomplete(
+    async def get_account_autocomplete(
         user_id: int,
         current: str,
         locale: discord.Locale,
@@ -160,6 +162,16 @@ class HoyoBuddy(commands.AutoShardedBot):
             for account in accounts
             if current.lower() in str(account).lower() and (games is None or account.game in games)
         ]
+
+    @staticmethod
+    async def get_account(user_id: int, games: list["Game"]) -> HoyoAccount:
+        game_query = Q(*[Q(game=game) for game in games], join_type="OR")
+        account = await HoyoAccount.filter(game_query, user_id=user_id, current=True).first()
+        if account is None:
+            account = await HoyoAccount.filter(game_query, user_id=user_id).first()
+        if account is None:
+            raise NoAccountFoundError(games)
+        return account
 
     async def close(self) -> None:
         LOGGER_.info("Bot shutting down...")

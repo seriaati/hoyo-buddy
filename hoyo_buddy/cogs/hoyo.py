@@ -9,7 +9,7 @@ from ..bot.translator import LocaleStr
 from ..db.models import EnkaCache, HoyoAccount, Settings
 from ..draw import main_funcs
 from ..enums import Game
-from ..exceptions import IncompleteParamError, NoAccountFoundError
+from ..exceptions import IncompleteParamError
 from ..hoyo.clients.ambr_client import AmbrAPIClient
 from ..hoyo.clients.enka_client import EnkaAPI
 from ..hoyo.clients.mihomo_client import MihomoAPI
@@ -31,9 +31,8 @@ class Hoyo(commands.Cog):
     def __init__(self, bot: "HoyoBuddy") -> None:
         self.bot = bot
 
-    @staticmethod
     async def _get_uid_and_game(
-        user_id: int, account: HoyoAccount | None, uid: str | None, game_value: str | None
+        self, user_id: int, account: HoyoAccount | None, uid: str | None, game_value: str | None
     ) -> tuple[int, Game]:
         """Get the UID and game from the account or the provided UID and game value."""
         if uid is not None:
@@ -46,18 +45,10 @@ class Hoyo(commands.Cog):
                     )
                 )
             game = Game(game_value)
-        elif account is None:
-            account_ = (
-                await HoyoAccount.filter(user_id=user_id, current=True).first()
-                or await HoyoAccount.filter(user_id=user_id).first()
-            )
-            if account_ is None:
-                raise NoAccountFoundError([Game.GENSHIN, Game.STARRAIL])
+        else:
+            account_ = account or await self.bot.get_account(user_id, [Game.GENSHIN, Game.STARRAIL])
             uid_ = account_.uid
             game = account_.game
-        else:
-            uid_ = account.uid
-            game = account.game
 
         return uid_, game
 
@@ -82,16 +73,11 @@ class Hoyo(commands.Cog):
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         settings = await Settings.get(user_id=i.user.id)
-        account = (
-            account
-            or await HoyoAccount.filter(user_id=i.user.id, current=True).first()
-            or await HoyoAccount.filter(user_id=i.user.id).first()
+        account_ = account or await self.bot.get_account(
+            i.user.id, [Game.GENSHIN, Game.STARRAIL, Game.HONKAI]
         )
-        if account is None:
-            raise NoAccountFoundError([Game.GENSHIN, Game.STARRAIL, Game.HONKAI])
-
         view = CheckInUI(
-            account,
+            account_,
             dark_mode=settings.dark_mode,
             author=i.user,
             locale=settings.locale or i.locale,
@@ -104,7 +90,7 @@ class Hoyo(commands.Cog):
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        return await self.bot._get_account_autocomplete(
+        return await self.bot.get_account_autocomplete(
             i.user.id,
             current,
             locale,
@@ -235,21 +221,14 @@ class Hoyo(commands.Cog):
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         settings = await Settings.get(user_id=i.user.id)
-        account = (
-            account
-            or await HoyoAccount.filter(user_id=i.user.id, current=True).first()
-            or await HoyoAccount.filter(user_id=i.user.id).first()
-        )
-        if account is None:
-            raise NoAccountFoundError([Game.GENSHIN, Game.STARRAIL])
-
+        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN, Game.STARRAIL])
         await i.response.defer()
 
         locale = settings.locale or i.locale
-        client = account.client
+        client = account_.client
         client.set_lang(locale)
 
-        if account.game is Game.GENSHIN:
+        if account_.game is Game.GENSHIN:
             notes = await client.get_genshin_notes()
             file_ = await main_funcs.draw_gi_notes_card(
                 DrawInput(
@@ -261,7 +240,7 @@ class Hoyo(commands.Cog):
                 notes,
                 self.bot.translator,
             )
-        elif account.game is Game.STARRAIL:
+        elif account_.game is Game.STARRAIL:
             notes = await client.get_starrail_notes()
             file_ = await main_funcs.draw_hsr_notes_card(
                 DrawInput(
@@ -276,7 +255,7 @@ class Hoyo(commands.Cog):
         else:
             raise NotImplementedError
 
-        view = NotesView(account, author=i.user, locale=locale, translator=self.bot.translator)
+        view = NotesView(account_, author=i.user, locale=locale, translator=self.bot.translator)
         await i.followup.send(view=view, file=file_)
         view.message = await i.original_response()
 
@@ -286,7 +265,7 @@ class Hoyo(commands.Cog):
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        return await self.bot._get_account_autocomplete(
+        return await self.bot.get_account_autocomplete(
             i.user.id, current, locale, self.bot.translator, {Game.GENSHIN, Game.STARRAIL}
         )
 
@@ -311,19 +290,13 @@ class Hoyo(commands.Cog):
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         settings = await Settings.get(user_id=i.user.id)
-        account = (
-            account
-            or await HoyoAccount.filter(user_id=i.user.id, current=True).first()
-            or await HoyoAccount.filter(user_id=i.user.id).first()
-        )
-        if account is None:
-            raise NoAccountFoundError([Game.GENSHIN])
+        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
 
         async with AmbrAPIClient() as client:
             element_char_counts = await client.fetch_element_char_counts()
 
         view = CharactersView(
-            account,
+            account_,
             settings.dark_mode,
             element_char_counts,
             author=i.user,
@@ -337,7 +310,7 @@ class Hoyo(commands.Cog):
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        return await self.bot._get_account_autocomplete(
+        return await self.bot.get_account_autocomplete(
             i.user.id, current, locale, self.bot.translator, {Game.GENSHIN}
         )
 

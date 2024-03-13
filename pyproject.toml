@@ -19,7 +19,6 @@ transifex-python = "^3.4.0"
 orjson = "^3.9.9"
 rsa = "^4.9"
 jishaku = "^2.5.1"
-aerich = "^0.7.2"
 pillow = "^10.1.0"
 cachetools = "^5.3.2"
 aiofiles = "^23.2.1"
@@ -41,6 +40,7 @@ optional = true
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.1.8"
 pre-commit = "^3.6.0"
+aerich = "^0.7.2"
 
 [tool.poetry.group.linux]
 optional = true

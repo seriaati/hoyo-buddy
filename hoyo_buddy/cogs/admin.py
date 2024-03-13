@@ -1,10 +1,9 @@
 import asyncio
 from typing import TYPE_CHECKING, Any
 
-import aiofiles
-import orjson
 from discord import ButtonStyle, ui
 from discord.ext import commands
+from seria.utils import write_json
 
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
@@ -47,8 +46,9 @@ class Admin(commands.Cog):
     async def sync_command(self, ctx: commands.Context) -> Any:
         message = await ctx.send("Syncing commands...")
         synced_commands = await self.bot.tree.sync()
-        async with aiofiles.open("hoyo_buddy/bot/data/synced_commands.json", "w") as f:
-            await f.write(orjson.dumps({c.name: c.id for c in synced_commands}).decode())
+        await write_json(
+            "hoyo_buddy/bot/data/synced_commands.json", {c.name: c.id for c in synced_commands}
+        )
         await message.edit(content=f"Synced {len(synced_commands)} commands.")
 
     @commands.command(name="push-source-strings", aliases=["pss"])

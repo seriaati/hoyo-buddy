@@ -7,10 +7,8 @@ import time
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any
 
-import aiofiles
-import orjson
 from discord import app_commands
-from seria.utils import split_list_to_chunks
+from seria.utils import read_json, split_list_to_chunks
 from transifex.native import init, tx
 from transifex.native.parsing import SourceString
 from transifex.native.rendering import AbstractRenderingPolicy
@@ -234,13 +232,7 @@ class Translator:
         LOGGER_.info("Fetched translations in %.2f seconds", time.time() - start)
 
     async def load_synced_commands_json(self) -> None:
-        try:
-            async with aiofiles.open(
-                "hoyo_buddy/bot/data/synced_commands.json", encoding="utf-8"
-            ) as f:
-                self.synced_commands = orjson.loads(await f.read())
-        except FileNotFoundError:
-            pass
+        self.synced_commands = await read_json("hoyo_buddy/bot/data/synced_commands.json")
 
     async def push_source_strings(self) -> None:
         if not self.not_translated:

@@ -4,7 +4,7 @@ from discord import File
 from mihomo.models import Character as HSRCharacter
 
 from hoyo_buddy.bot.translator import LocaleStr
-from hoyo_buddy.emojis import GENSHIN_ELEMENT_EMOJIS, HSR_ELEMENT_EMOJIS
+from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji
 from hoyo_buddy.ui.components import PaginatorSelect, SelectOption
 
 if TYPE_CHECKING:
@@ -34,24 +34,24 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
 
             if isinstance(character, HSRCharacter):
                 description = LocaleStr(
-                    "Lv. {level} | E{eidolons}S{superposition} | {data_type}",
+                    "Lv.{level} | E{eidolons}S{superposition} | {data_type}",
                     key="profile.character_select.description",
                     level=character.level,
                     superposition=character.light_cone.superimpose if character.light_cone else 0,
                     eidolons=character.eidolon,
                     data_type=data_type,
                 )
-                emoji = HSR_ELEMENT_EMOJIS[character.element.id.lower()]
+                emoji = get_hsr_element_emoji(character.element.id)
             else:
                 description = LocaleStr(
-                    "Lv. {level} | C{const}R{refine} | {data_type}",
+                    "Lv.{level} | C{const}R{refine} | {data_type}",
                     key="profile.genshin.character_select.description",
                     level=character.level,
                     const=character.constellations_unlocked,
                     refine=character.weapon.refinement,
                     data_type=data_type,
                 )
-                emoji = GENSHIN_ELEMENT_EMOJIS[character.element.name.lower()]
+                emoji = get_gi_element_emoji(character.element.name)
 
             options.append(
                 SelectOption(

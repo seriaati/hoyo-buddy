@@ -11,7 +11,7 @@ from yatta import Language
 from ...bot.translator import LocaleStr
 from ...constants import LOCALE_TO_YATTA_LANG
 from ...embeds import DefaultEmbed
-from ...emojis import HSR_ELEMENT_EMOJIS
+from ...emojis import get_hsr_element_emoji
 
 __all__ = ("ItemCategory", "YattaAPIClient")
 
@@ -179,7 +179,7 @@ class YattaAPIClient(yatta.YattaAPI):
                 ("{rarity}\nElement: {element}\nPath: {path}\nWorld: {world}\n"),
                 key="yatta_character_embed_description",
                 rarity="★" * character.rarity,
-                element=f"{HSR_ELEMENT_EMOJIS[character.types.combat_type.id.lower()]} {character.types.combat_type.name}",
+                element=f"{get_hsr_element_emoji(character.types.combat_type.id)} {character.types.combat_type.name}",
                 path=character.types.path_type.name,
                 world=character.info.faction,
             ),
@@ -217,7 +217,7 @@ class YattaAPIClient(yatta.YattaAPI):
         skill = base_skill.skill_list[0]
         level_str = self.translator.translate(
             LocaleStr(
-                "Lv. {level}",
+                "Lv.{level}",
                 key="level_str",
                 level=level,
             ),

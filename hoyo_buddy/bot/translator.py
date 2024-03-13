@@ -56,6 +56,9 @@ class LocaleStr:
             **self.extras,
         )
 
+    def translate_(self, translator: "Translator", locale: "Locale") -> str:
+        return translator.translate(self, locale)
+
 
 class CustomRenderingPolicy(AbstractRenderingPolicy):
     @staticmethod

@@ -1,3 +1,4 @@
+import logging
 import re
 from collections import defaultdict
 from enum import StrEnum
@@ -9,10 +10,10 @@ from ambr.client import Language
 from discord import Locale
 from seria.utils import create_bullet_list, shorten
 
-from hoyo_buddy.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_element_emoji
+from hoyo_buddy.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_gi_element_emoji
 
 from ...bot.translator import LocaleStr, Translator
-from ...constants import LOCALE_TO_AMBR_LANG, WEEKDAYS
+from ...constants import LOCALE_TO_AMBR_LANG, WEEKDAYS, contains_traveler_id
 from ...embeds import DefaultEmbed
 from ...enums import TalentBoost
 from ...models import ItemWithDescription
@@ -22,6 +23,7 @@ __all__ = ("AmbrAPIClient", "ItemCategory", "AUDIO_LANGUAGES")
 if TYPE_CHECKING:
     from types import TracebackType
 
+LOGGER_ = logging.getLogger(__name__)
 
 PERCENTAGE_FIGHT_PROPS = (
     "FIGHT_PROP_HP_PERCENT",
@@ -152,18 +154,28 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return text
 
     async def fetch_talent_boost(self, character_id: str) -> TalentBoost:
-        """Fetches the talent boost type of a character's third constellation."""
+        """Fetches the character's talent boost type from their C3 extra level data."""
         character = await self.fetch_character_detail(character_id)
         c3 = character.constellations[2]
         if c3.extra_level is None:
-            msg = f"Character {character_id} does not extra level data in their C3"
-            raise ValueError(msg)
+            LOGGER_.warning("Character %s does not have extra level data in their C3", character_id)
+            return TalentBoost.BOOST_E
 
         return (
             TalentBoost.BOOST_E
             if c3.extra_level.talent_type is ambr.ExtraLevelType.SKILL
             else TalentBoost.BOOST_Q
         )
+
+    async def fetch_element_char_counts(self) -> dict[str, int]:
+        """Fetches the number of characters for each element, does not include beta characters and Traveler."""
+        characters = await self.fetch_characters()
+        result: defaultdict[str, int] = defaultdict(int)
+        for character in characters:
+            if character.beta or contains_traveler_id(character.id):
+                continue
+            result[character.element.name.lower()] += 1
+        return dict(result)
 
     def _get_params(self, text: str, param_list: list[int | float]) -> list[str]:
         params: list[str] = re.findall(r"{[^}]*}", text)
@@ -247,7 +259,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
 
         level_str = self.translator.translate(
             LocaleStr(
-                "Lv. {level}",
+                "Lv.{level}",
                 key="level_str",
                 level=level,
             ),
@@ -266,7 +278,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
                 ),
                 key="character_embed_description",
                 rarity=character.rarity,
-                element=get_element_emoji(character.element.name),
+                element=get_gi_element_emoji(character.element.name),
                 birthday=f"{character.birthday.month}/{character.birthday.day}",
                 constellation=character.info.constellation,
                 affiliation=character.info.native,
@@ -302,7 +314,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
 
             level_str = self.translator.translate(
                 LocaleStr(
-                    "Lv. {level}",
+                    "Lv.{level}",
                     key="level_str",
                     level=level,
                 ),
@@ -399,7 +411,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
                 "{weapon_name} ({level_str})",
                 weapon_name=weapon.name,
                 level_str=LocaleStr(
-                    "Lv. {level}",
+                    "Lv.{level}",
                     key="level_str",
                     level=level,
                 ),

@@ -7,7 +7,8 @@ from ...bot.translator import LocaleStr, Translator
 from ...constants import UID_TZ_OFFSET, WEEKDAYS
 from ...draw.main_funcs import draw_farm_card
 from ...embeds import DefaultEmbed
-from ...emojis import BELL_OUTLINE
+from ...emojis import BELL_OUTLINE, GENSHIN_CITY_EMOJIS
+from ...enums import GenshinCity
 from ...hoyo.farm_data import FarmDataFetcher
 from ...models import DrawInput
 from ...utils import get_now
@@ -34,8 +35,7 @@ class FarmView(View):
 
         self._weekday: int = 0
         self._determine_weekday()
-
-        self.add_item(WeekdaySelect(self._weekday))
+        self._city: GenshinCity = GenshinCity.MONDSTADT
 
     def _determine_weekday(self) -> None:
         for uid_start, offset in UID_TZ_OFFSET.items():
@@ -47,6 +47,12 @@ class FarmView(View):
 
     async def start(self, i: "INTERACTION") -> None:
         await i.response.defer()
+
+        self.clear_items()
+        self.add_item(WeekdaySelect(self._weekday))
+        for city in GenshinCity:
+            self.add_item(CityButton(city, self._city))
+        self.add_item(ReminderButton())
 
         if self._weekday == 6:
             embed = DefaultEmbed(
@@ -65,7 +71,9 @@ class FarmView(View):
             filename="farm.webp",
         )
         file_ = await draw_farm_card(
-            draw_input, await FarmDataFetcher.fetch(self._weekday, self.translator), self.translator
+            draw_input,
+            await FarmDataFetcher.fetch(self._weekday, self.translator, city=self._city),
+            self.translator,
         )
 
         await i.edit_original_response(attachments=[file_], view=self, embed=None)
@@ -84,6 +92,7 @@ class WeekdaySelect(Select[FarmView]):
                 )
                 for value, label in WEEKDAYS.items()
             ],
+            row=0,
         )
 
     async def callback(self, i: "INTERACTION") -> None:
@@ -95,9 +104,10 @@ class WeekdaySelect(Select[FarmView]):
 class ReminderButton(Button[FarmView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Set reminder", key="farm_view.set_reminder"),
+            label=LocaleStr("Set Reminders", key="farm_view.set_reminder"),
             style=ButtonStyle.blurple,
             emoji=BELL_OUTLINE,
+            row=2,
         )
 
     async def callback(self, i: "INTERACTION") -> None:
@@ -110,3 +120,19 @@ class ReminderButton(Button[FarmView]):
             ),
         )
         await i.response.send_message(embed=embed, ephemeral=True)
+
+
+class CityButton(Button[FarmView]):
+    def __init__(self, city: GenshinCity, current: GenshinCity) -> None:
+        super().__init__(
+            label=LocaleStr(city.value.title(), warn_no_key=False),
+            style=ButtonStyle.blurple if city == current else ButtonStyle.secondary,
+            emoji=GENSHIN_CITY_EMOJIS[city],
+            custom_id=f"city_{city.value.lower()}_btn",
+            row=1,
+        )
+        self._city = city
+
+    async def callback(self, i: "INTERACTION") -> None:
+        self.view._city = self._city
+        await self.view.start(i)

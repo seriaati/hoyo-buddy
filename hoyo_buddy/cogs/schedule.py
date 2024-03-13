@@ -37,7 +37,7 @@ class Schedule(commands.Cog):
             asyncio.create_task(DailyCheckin.execute(self.bot))
 
         # Every day at 04:00, 11:00, 17:00
-        if now.hour in {4, 11, 17} and now.minute % 1 < self.loop_interval:
+        if now.hour in {4, 11, 17} and now.minute < self.loop_interval:
             match now.hour:
                 case 11:
                     # Europe server
@@ -56,10 +56,9 @@ class Schedule(commands.Cog):
         if now.minute % 1 < self.loop_interval:
             asyncio.create_task(NotesChecker.execute(self.bot))
 
-        # Every 30 minutes
-        if now.minute % 30 < self.loop_interval:
+        # Every hour
+        if now.minute < self.loop_interval:
             asyncio.create_task(self.bot.translator.push_source_strings())
-            asyncio.create_task(self.bot.translator.fetch_source_strings())
 
     @schedule.before_loop
     async def before_schedule(self) -> None:

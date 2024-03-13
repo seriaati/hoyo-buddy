@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from discord import Locale
 
+from ..enums import GenshinCity
 from ..models import FarmData
 from .clients.ambr_client import AmbrAPIClient
 
@@ -35,7 +36,12 @@ class FarmDataFetcher:
 
     @classmethod
     async def fetch(
-        cls, weekday: int, translator: "Translator", *, locale: Locale | None = None
+        cls,
+        weekday: int,
+        translator: "Translator",
+        *,
+        locale: Locale | None = None,
+        city: GenshinCity | None = None,
     ) -> list["FarmData"]:
         # Initialize class variables
         cls._weekday = weekday
@@ -51,6 +57,8 @@ class FarmDataFetcher:
 
         domains_ = cls._get_domains(domains)
         for domain in domains_:
+            if city and GenshinCity(domain.city.name.lower()) != city:
+                continue
             farm_data = FarmData(domain)
             reward_ids = [r.id for r in domain.rewards]
 

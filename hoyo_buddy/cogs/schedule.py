@@ -18,9 +18,13 @@ class Schedule(commands.Cog):
         self.bot = bot
 
     async def cog_load(self) -> None:
+        if self.bot.env == "dev":
+            return
         self.schedule.start()
 
     async def cog_unload(self) -> None:
+        if self.bot.env == "dev":
+            return
         self.schedule.cancel()
 
     loop_interval = 1

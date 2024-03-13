@@ -7,12 +7,13 @@ from tortoise import fields
 
 from ..constants import UID_SERVER_RESET_HOURS
 from ..enums import GAME_CONVERTER, Game, NotesNotifyType
-from ..hoyo.clients.gpy_client import GenshinClient
 from ..icons import get_game_icon
 from ..utils import get_now
 
 if TYPE_CHECKING:
     import genshin
+
+    from ..hoyo.clients.gpy_client import GenshinClient
 
 
 class User(Model):
@@ -52,7 +53,9 @@ class HoyoAccount(Model):
         return f"{self.username} ({self.uid})"
 
     @property
-    def client(self) -> GenshinClient:
+    def client(self) -> "GenshinClient":
+        from ..hoyo.clients.gpy_client import GenshinClient  # noqa: PLC0415
+
         game: genshin.Game = GAME_CONVERTER[self.game]  # type: ignore
         return GenshinClient(self.cookies, game=game, uid=self.uid)
 

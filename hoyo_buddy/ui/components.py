@@ -324,6 +324,8 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.original_placeholder: str | None = None
         self.original_options: list[SelectOption] | None = None
         self.original_disabled: bool | None = None
+        self.original_max_values: int | None = None
+        self.original_min_values: int | None = None
 
         self.view: V_co
 
@@ -354,6 +356,8 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.original_options = self.options.copy()
         self.original_disabled = self.disabled
         self.original_placeholder = self.placeholder[:] if self.placeholder else None
+        self.original_max_values = self.max_values
+        self.original_min_values = self.min_values
 
         self.options = [
             SelectOption(
@@ -366,16 +370,28 @@ class Select(discord.ui.Select, Generic[V_co]):
             )
         ]
         self.disabled = True
+        self.max_values = 1
+        self.min_values = 1
         await self.view.absolute_edit(i, view=self.view)
 
     async def unset_loading_state(self, i: "INTERACTION", **kwargs: Any) -> None:
-        if not self.original_options or self.original_disabled is None:
+        if (
+            not self.original_options
+            or self.original_disabled is None
+            or self.original_max_values is None
+            or self.original_min_values is None
+        ):
             msg = "unset_loading_state called before set_loading_state"
             raise RuntimeError(msg)
 
         self.options = self.original_options
         self.disabled = self.original_disabled
         self.placeholder = self.original_placeholder
+        self.max_values = self.original_max_values
+        self.min_values = self.original_min_values
+
+        self.update_options_defaults()
+
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 
     def update_options_defaults(self, *, values: list[str] | None = None) -> None:

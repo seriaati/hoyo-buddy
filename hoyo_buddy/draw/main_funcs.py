@@ -8,9 +8,11 @@ from hoyo_buddy.draw import funcs
 from .static import download_and_save_static_images
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from io import BytesIO
 
     from enka.models import Character as EnkaCharacter
+    from genshin.models import Character as GenshinCharacter
     from genshin.models import Notes as GenshinNote
     from genshin.models import StarRailNote
     from mihomo.models import Character as MihomoCharacter
@@ -148,4 +150,29 @@ async def draw_farm_card(
         funcs.draw_farm_card, farm_data, draw_input.locale, draw_input.dark_mode, translator
     )
     buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_gi_character_card(
+    draw_input: "DrawInput",
+    characters: "Sequence[GenshinCharacter]",
+    talents: dict[str, str],
+    pc_icons: dict[str, str],
+    translator: "Translator",
+) -> File:
+    urls = [c.weapon.icon for c in characters]
+    urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
+
+    await download_and_save_static_images(urls, "gi-characters", draw_input.session)
+    buffer = await asyncio.to_thread(
+        funcs.draw_character_card,
+        characters,
+        talents,
+        pc_icons,
+        draw_input.dark_mode,
+        translator,
+        draw_input.locale,
+    )
+    buffer.seek(0)
+
     return File(buffer, filename=draw_input.filename)

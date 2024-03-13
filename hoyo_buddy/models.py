@@ -76,3 +76,25 @@ class FarmData:
         self.domain = domain
         self.characters: list[ambr.models.Character] = []
         self.weapons: list[ambr.models.Weapon] = []
+
+
+@dataclass(kw_only=True)
+class TopPadding:
+    with_title: int
+    without_title: int
+
+
+@dataclass(kw_only=True)
+class DynamicBKInput:
+    top_padding: TopPadding | int
+    left_padding: int
+    right_padding: int
+    bottom_padding: int
+    card_height: int
+    card_width: int
+    card_x_padding: int
+    card_y_padding: int
+    card_num: int
+    background_color: tuple[int, int, int]
+    max_card_num: int | None = None
+    draw_title: bool = True

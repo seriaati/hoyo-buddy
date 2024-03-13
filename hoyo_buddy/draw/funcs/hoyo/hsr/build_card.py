@@ -89,7 +89,7 @@ def draw_hsr_build_card(
 
     # write in the middle of the rectangle
     drawer.write(
-        f"Lv. {character.level}/{character.max_level}",
+        f"Lv.{character.level}/{character.max_level}",
         size=64,
         position=(box_x + width // 2, box_y + height // 2),
         color=BLACK if dark_mode else WHITE,
@@ -368,7 +368,7 @@ def draw_hsr_build_card(
         box_y = text_bottom_pos + 20
         draw.rounded_rectangle((box_x, box_y, box_x + width, box_y + height), radius, primary)
         drawer.write(
-            f"Lv. {cone.level}/{cone.max_level}",
+            f"Lv.{cone.level}/{cone.max_level}",
             size=36,
             position=(box_x + width // 2, box_y + height // 2),
             color=BLACK if dark_mode else WHITE,

@@ -55,7 +55,7 @@ class AddAccountSelect(Select["AccountManager"]):
                 )
                 level_str = self.translator.translate(
                     LocaleStr(
-                        "Lv. {level}",
+                        "Lv.{level}",
                         key="level_str",
                         level=account.level,
                     ),

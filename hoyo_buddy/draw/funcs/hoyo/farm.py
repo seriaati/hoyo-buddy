@@ -118,7 +118,7 @@ def draw_farm_card(
     for card in basic_cards[max_card_height_col * 4 : (max_card_height_col + 1) * 4]:
         item_row_num = (card.height - 437) // 199 + 1
         card_height_offset = -114 + (-55 * (item_row_num - 1))
-        background_height += card.height + card_height_offset + y_padding_between_cards
+        background_height += card.height + card_height_offset + y_padding_between_cards - 15
 
     background = Image.new(
         "RGBA",

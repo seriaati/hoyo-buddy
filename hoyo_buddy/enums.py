@@ -52,3 +52,36 @@ GAME_CONVERTER: dict[Game | genshin.Game, Game | genshin.Game] = {
     genshin.Game.STARRAIL: Game.STARRAIL,
     genshin.Game.HONKAI: Game.HONKAI,
 }
+
+
+class TalentBoost(IntEnum):
+    BOOST_E = 1
+    BOOST_Q = 2
+
+
+class GenshinElement(StrEnum):
+    ANEMO = "anemo"
+    GEO = "geo"
+    ELECTRO = "electro"
+    DENDRO = "dendro"
+    PYRO = "pyro"
+    CRYO = "cryo"
+    HYDRO = "hydro"
+
+
+class GenshinCity(StrEnum):
+    MONDSTADT = "mondstadt"
+    LIYUE = "liyue"
+    INAZUMA = "inazuma"
+    SUMERU = "sumeru"
+    FONTAINE = "fontaine"
+
+
+class HSRElement(StrEnum):
+    FIRE = "fire"
+    ICE = "ice"
+    IMAGINARY = "imaginary"
+    PHYSICAL = "physical"
+    QUANTUM = "quantum"
+    THUNDER = "thunder"
+    WIND = "wind"

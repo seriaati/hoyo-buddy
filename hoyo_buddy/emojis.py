@@ -1,6 +1,6 @@
 import genshin
 
-from .enums import Game
+from .enums import Game, GenshinCity, GenshinElement, HSRElement
 
 LOADING = "<a:loading_emoji:1106388708862738463>"
 DELETE = "<:DELETE:1166012141833310248>"
@@ -27,23 +27,30 @@ GENSHIN_IMPACT = "<:genshin_impact:1025630733068423169>"
 HONKAI_STAR_RAIL = "<:honkai_star_rail:1105806784117088336>"
 HONKAI_IMPACT_3RD = "<:honkai_impact:1106034318666637415>"
 
-GENSHIN_ELEMENT_EMOJIS: dict[str, str] = {
-    "pyro": "<:pyro:1189150911428317275>",
-    "hydro": "<:hydro:1189150893875142726>",
-    "cryo": "<:cryo:1189150960413573141>",
-    "anemo": "<:anemo:1189150874916888636>",
-    "dendro": "<:dendro:1189150946878562354>",
-    "geo": "<:geo:1189150979657044012>",
-    "electro": "<:electro:1189150927190495232>",
+GENSHIN_ELEMENT_EMOJIS: dict[GenshinElement, str] = {
+    GenshinElement.PYRO: "<:pyro:1189150911428317275>",
+    GenshinElement.HYDRO: "<:hydro:1189150893875142726>",
+    GenshinElement.CRYO: "<:cryo:1189150960413573141>",
+    GenshinElement.ANEMO: "<:anemo:1189150874916888636>",
+    GenshinElement.DENDRO: "<:dendro:1189150946878562354>",
+    GenshinElement.GEO: "<:geo:1189150979657044012>",
+    GenshinElement.ELECTRO: "<:electro:1189150927190495232>",
+}
+GENSHIN_CITY_EMOJIS: dict[GenshinCity, str] = {
+    GenshinCity.MONDSTADT: "<:Emblem_Mondstadt:982449412938809354>",
+    GenshinCity.LIYUE: "<:Emblem_Liyue:982449411047165992>",
+    GenshinCity.INAZUMA: "<:Emblem_Inazuma:982449409117806674>",
+    GenshinCity.SUMERU: "<:Emblem_Sumeru:1217359294736105472>",
+    GenshinCity.FONTAINE: "<:Emblem_Fontaine:1217359292966109205>",
 }
 HSR_ELEMENT_EMOJIS: dict[str, str] = {
-    "fire": "<:IconAttributeFire:1211302768862695475>",
-    "ice": "<:IconAttributeIce:1211302446769377310>",
-    "imaginary": "<:IconAttributeImaginary:1211302761912606890>",
-    "physical": "<:IconAttributePhysical:1211302759907983461>",
-    "quantum": "<:IconAttributeQuantum:1211302767033983046>",
-    "thunder": "<:IconAttributeThunder:1211302758175735942>",
-    "wind": "<:IconAttributeWind:1211302764915859498>",
+    HSRElement.FIRE: "<:IconAttributeFire:1211302768862695475>",
+    HSRElement.ICE: "<:IconAttributeIce:1211302446769377310>",
+    HSRElement.IMAGINARY: "<:IconAttributeImaginary:1211302761912606890>",
+    HSRElement.PHYSICAL: "<:IconAttributePhysical:1211302759907983461>",
+    HSRElement.QUANTUM: "<:IconAttributeQuantum:1211302767033983046>",
+    HSRElement.THUNDER: "<:IconAttributeThunder:1211302758175735942>",
+    HSRElement.WIND: "<:IconAttributeWind:1211302764915859498>",
 }
 ARTIFACT_POS_EMOJIS: dict[str, str] = {
     "flower": "<:Flower_of_Life:982167959717945374>",
@@ -98,8 +105,12 @@ def get_game_emoji(game: genshin.Game | Game) -> str:
         return HONKAI_STAR_RAIL
 
 
-def get_element_emoji(element: str) -> str:
-    return GENSHIN_ELEMENT_EMOJIS[element.lower()]
+def get_gi_element_emoji(element: str) -> str:
+    return GENSHIN_ELEMENT_EMOJIS[GenshinElement(element.lower())]
+
+
+def get_hsr_element_emoji(element: str) -> str:
+    return HSR_ELEMENT_EMOJIS[element.lower()]
 
 
 def get_artifact_pos_emoji(artifact_pos: str) -> str:

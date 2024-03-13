@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import os
 from pathlib import Path
@@ -10,7 +9,7 @@ import sentry_sdk
 from asyncache import cached
 from cachetools import TTLCache
 from discord import app_commands
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 from ..db.models import HoyoAccount
 from ..hoyo.clients.novelai_client import NAIClient
@@ -99,9 +98,6 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         await self.nai_client.init(timeout=120)
 
-        self.push_source_strings.start()
-        self.fetch_source_strings.start()
-
     def capture_exception(self, e: Exception) -> None:
         if self.env == "prod":
             sentry_sdk.capture_exception(e)
@@ -128,16 +124,6 @@ class HoyoBuddy(commands.AutoShardedBot):
             return None
 
         return message
-
-    @tasks.loop(minutes=30)
-    async def push_source_strings(self) -> None:
-        if self.env in {"prod", "test"}:
-            await asyncio.create_task(self.translator.push_source_strings())
-
-    @tasks.loop(minutes=30)
-    async def fetch_source_strings(self) -> None:
-        if self.env in {"prod", "test"}:
-            await asyncio.create_task(self.translator.fetch_source_strings())
 
     @staticmethod
     def get_error_app_command_choice(error_message: LocaleStr) -> app_commands.Choice[str]:
@@ -177,7 +163,5 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     async def close(self) -> None:
         LOGGER_.info("Bot shutting down...")
-        self.push_source_strings.cancel()
-        self.fetch_source_strings.cancel()
         self.diskcache.close()
         await super().close()

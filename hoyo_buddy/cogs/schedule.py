@@ -56,6 +56,11 @@ class Schedule(commands.Cog):
         if now.minute % 1 < self.loop_interval:
             asyncio.create_task(NotesChecker.execute(self.bot))
 
+        # Every 30 minutes
+        if now.minute % 30 < self.loop_interval:
+            asyncio.create_task(self.bot.translator.push_source_strings())
+            asyncio.create_task(self.bot.translator.fetch_source_strings())
+
     @schedule.before_loop
     async def before_schedule(self) -> None:
         await self.bot.wait_until_ready()

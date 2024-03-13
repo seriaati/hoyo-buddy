@@ -37,10 +37,25 @@ class FarmNotifyView(PaginatorView):
         pages = [
             Page(
                 embed=DefaultEmbed(
-                    locale, translator, title=LocaleStr("Farm Reminder", key="farm_notify.title")
-                ).set_image(url="attachment://farm_notify.webp")
+                    locale,
+                    translator,
+                    title=LocaleStr("Farm Reminder List", key="farm_notify.title"),
+                    description=LocaleStr(
+                        "You will be reminded when the materials of characters/weapons in this list are farmable.",
+                        key="farm_notify.description",
+                    ),
+                )
+                .set_footer(
+                    text=LocaleStr(
+                        "Page {current_page}/{total_pages}",
+                        key="page_footer",
+                        current_page=i + 1,
+                        total_pages=len(self._split_item_ids),
+                    )
+                )
+                .set_image(url="attachment://farm_notify.webp")
             )
-            for _ in range(len(self._split_item_ids))
+            for i in range(len(self._split_item_ids))
         ]
 
         self._notify = farm_notify

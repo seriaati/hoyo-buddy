@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 from typing import TYPE_CHECKING, ClassVar, TypeVar
 
@@ -9,10 +10,13 @@ from ...constants import UID_TZ_OFFSET
 from ...db.models import FarmNotify
 from ...embeds import DefaultEmbed
 from ...utils import get_now
+from ..clients.ambr_client import AmbrAPIClient
 from ..farm_data import FarmDataFetcher
 
 if TYPE_CHECKING:
     from ...bot.bot import HoyoBuddy
+
+LOGGER_ = logging.getLogger(__name__)
 
 CharacterOrWeapon = TypeVar("CharacterOrWeapon", ambr.Character, ambr.Weapon)
 
@@ -20,6 +24,8 @@ CharacterOrWeapon = TypeVar("CharacterOrWeapon", ambr.Character, ambr.Weapon)
 class FarmChecker:
     _bot: ClassVar["HoyoBuddy"]
     _translator: ClassVar[Translator]
+    _item_id_to_name: ClassVar[dict[str, dict[str, str]]]
+    """[locale][item_id] = item_name"""
 
     @classmethod
     async def _notify_user(cls, item: CharacterOrWeapon, farm_notify: FarmNotify) -> None:
@@ -46,11 +52,6 @@ class FarmChecker:
             await FarmNotify.filter(account=farm_notify.account).update(enabled=False)
 
     @classmethod
-    async def _fetch_related_data(cls, farm_notify: FarmNotify) -> None:
-        await farm_notify.account.fetch_related("user")
-        await farm_notify.account.user.fetch_related("settings")
-
-    @classmethod
     async def _check_and_notify(
         cls, item_id: str, items: list[CharacterOrWeapon], farm_notify: FarmNotify
     ) -> bool:
@@ -61,25 +62,54 @@ class FarmChecker:
         return False
 
     @classmethod
-    async def execute(cls, bot: "HoyoBuddy", uid_start: str) -> None:
+    async def execute(cls, bot: "HoyoBuddy", uid_start: str) -> None:  # noqa: C901
+        LOGGER_.info("Starting farm check task for uid_start %s", uid_start)
+
         cls._bot = bot
         cls._translator = bot.translator
+        cls._item_id_to_name = {}
 
         farm_notifies = await FarmNotify.filter(enabled=True).all().prefetch_related("account")
+        if not farm_notifies:
+            return
+
         weekday = (get_now() + timedelta(hours=UID_TZ_OFFSET.get(uid_start, 0))).weekday()
+        farm_datas = await FarmDataFetcher.fetch(weekday, bot.translator)
 
         for farm_notify in farm_notifies:
             if not str(farm_notify.account.uid).startswith(uid_start):
                 continue
 
-            await cls._fetch_related_data(farm_notify)
-            locale = farm_notify.account.user.settings.locale
+            await farm_notify.account.fetch_related("user", "user__settings")
+            locale = farm_notify.account.user.settings.locale or Locale.american_english
+            if locale.value not in cls._item_id_to_name:
+                async with AmbrAPIClient(locale, bot.translator) as client:
+                    characters = await client.fetch_characters()
+                    weapons = await client.fetch_weapons()
+                cls._item_id_to_name[locale.value] = {
+                    str(item.id): item.name for item in characters + weapons
+                }
 
-            farm_datas = await FarmDataFetcher.fetch(weekday, bot.translator, locale=locale)
+            notified: set[str] = set()
 
             for item_id in farm_notify.item_ids:
+                if item_id in notified:
+                    continue
+
                 for farm_data in farm_datas:
-                    if await cls._check_and_notify(item_id, farm_data.characters, farm_notify):
-                        break
-                    if await cls._check_and_notify(item_id, farm_data.weapons, farm_notify):
-                        break
+                    if len(item_id) == 5:
+                        # weapon
+                        notified_ = await cls._check_and_notify(
+                            item_id, farm_data.weapons, farm_notify
+                        )
+                        if notified_:
+                            notified.add(item_id)
+                            break
+
+                    else:
+                        notified_ = await cls._check_and_notify(
+                            item_id, farm_data.characters, farm_notify
+                        )
+                        if notified_:
+                            notified.add(item_id)
+                            break

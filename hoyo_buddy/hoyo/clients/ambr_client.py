@@ -218,7 +218,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
     async def fetch_items(self, item_category: ItemCategory) -> list[Any]:  # noqa: PLR0911
         match item_category:
             case ItemCategory.CHARACTERS:
-                return await self.fetch_characters()
+                return await self.fetch_characters(traveler_gender_symbol=True)
             case ItemCategory.WEAPONS:
                 return await self.fetch_weapons()
             case ItemCategory.ARTIFACT_SETS:
@@ -786,3 +786,20 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             )
 
         return result
+
+    async def fetch_characters(
+        self, use_cache: bool = True, traveler_gender_symbol: bool = False
+    ) -> list[ambr.models.Character]:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
+        characters = await super().fetch_characters(use_cache)
+
+        for character in characters:
+            if contains_traveler_id(character.id):
+                character.name = self.translator.get_traveler_name(
+                    character, self.locale, gender_symbol=traveler_gender_symbol
+                )
+
+        return characters

@@ -9,7 +9,7 @@ from seria.utils import create_bullet_list
 from yatta import Language
 
 from ...bot.translator import LocaleStr
-from ...constants import LOCALE_TO_YATTA_LANG
+from ...constants import LOCALE_TO_YATTA_LANG, TRAILBLAZER_IDS
 from ...embeds import DefaultEmbed
 from ...emojis import get_hsr_element_emoji
 
@@ -150,7 +150,7 @@ class YattaAPIClient(yatta.YattaAPI):
     async def fetch_items_(self, item_category: ItemCategory) -> list[Any]:
         match item_category:
             case ItemCategory.CHARACTERS:
-                return await self.fetch_characters()
+                return await self.fetch_characters(trailblazer_gender_symbol=True)
             case ItemCategory.LIGHT_CONES:
                 return await self.fetch_light_cones()
             case ItemCategory.ITEMS:
@@ -461,3 +461,16 @@ class YattaAPIClient(yatta.YattaAPI):
         embed.set_thumbnail(url=relic.icon)
 
         return embed
+
+    async def fetch_characters(
+        self, *, use_cache: bool = True, trailblazer_gender_symbol: bool = False
+    ) -> list[yatta.models.Character]:
+        characters = await super().fetch_characters(use_cache)
+
+        for character in characters:
+            if character.id in TRAILBLAZER_IDS:
+                character.name = self.translator.get_trailblazer_name(
+                    character, self.locale, gender_symbol=trailblazer_gender_symbol
+                )
+
+        return characters

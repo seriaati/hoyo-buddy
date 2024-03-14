@@ -21,6 +21,8 @@ AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID = {
     "10000007-water": "10000005-703",  # why
 }
 
+TRAILBLAZER_IDS = {8001, 8002, 8003, 8004}
+
 
 def contains_traveler_id(character_id: str) -> bool:
     return any(str(traveler_id) in character_id for traveler_id in TRAVELER_IDS)

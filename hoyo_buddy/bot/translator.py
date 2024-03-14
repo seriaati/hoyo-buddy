@@ -39,7 +39,7 @@ class LocaleStr:
         self.message = message
         self.key = key
         self.warn_no_key = warn_no_key
-        self.translate = translate
+        self.translate_ = translate
         self.replace_command_mentions = replace_command_mentions
         self.extras: dict[str, Any] = kwargs
 
@@ -51,12 +51,12 @@ class LocaleStr:
             self.message,
             key=self.key,
             warn_no_key=self.warn_no_key,
-            translate=self.translate,
+            translate=self.translate_,
             replace_command_mentions=self.replace_command_mentions,
             **self.extras,
         )
 
-    def translate_(self, translator: "Translator", locale: "Locale") -> str:
+    def translate(self, translator: "Translator", locale: "Locale") -> str:
         return translator.translate(self, locale)
 
 
@@ -142,7 +142,7 @@ class Translator:
 
         generated_translation = self._generate_translation(message, extras)
 
-        if not string.translate:
+        if not string.translate_:
             return generated_translation
 
         string_key = self._get_string_key(string)

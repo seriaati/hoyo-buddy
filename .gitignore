@@ -157,3 +157,4 @@ hoyo_buddy/bot/data/synced_commands.json
 .static/*
 .enka_py/
 !.gitkeep
+*.log.*

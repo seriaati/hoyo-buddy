@@ -17,6 +17,7 @@ from hoyo_buddy.hoyo.clients.gpy_client import (
 
 from ....constants import TRAVELER_IDS
 from ....embeds import DefaultEmbed
+from ....emojis import get_gi_element_emoji
 from ....exceptions import ActionInCooldownError, NoCharsFoundError
 from ....icons import LOADING_ICON
 from ....models import DrawInput
@@ -313,7 +314,9 @@ class ElementFilterSelector(Select[CharactersView]):
     def __init__(self) -> None:
         options = [
             SelectOption(
-                label=LocaleStr(element.value.title(), warn_no_key=False), value=element.value
+                label=LocaleStr(element.value.title(), warn_no_key=False),
+                value=element.value,
+                emoji=get_gi_element_emoji(element),
             )
             for element in GenshinElement
         ]

@@ -40,8 +40,6 @@ class NotesChecker:
 
     @classmethod
     async def _get_locale(cls, notify: NotesNotify) -> Locale:
-        await notify.account.fetch_related("user")
-        await notify.account.user.fetch_related("settings")
         return notify.account.user.settings.locale or Locale.american_english
 
     @classmethod
@@ -165,7 +163,7 @@ class NotesChecker:
         embed.set_author(name=str(notify.account), icon_url=notify.account.game_icon)
         embed.set_footer(
             text=LocaleStr(
-                "Disable this notification or change its settings by clicking the button below",
+                "Click the button below to change notification settings.\nIf it is expired, use the /notes command.",
                 key="notif.embed.footer",
             )
         )
@@ -188,7 +186,13 @@ class NotesChecker:
             else await draw_hsr_notes_card(draw_input, notes, cls._bot.translator)
         )
 
-        view = NotesView(notify.account, author=None, locale=locale, translator=cls._bot.translator)
+        view = NotesView(
+            notify.account,
+            notify.account.user.settings,
+            author=None,
+            locale=locale,
+            translator=cls._bot.translator,
+        )
         message = await cls._bot.dm_user(notify.account.user.id, embed=embed, file=file_, view=view)
         view.message = message
 
@@ -406,7 +410,7 @@ class NotesChecker:
             notifies = (
                 await NotesNotify.filter(enabled=True)
                 .all()
-                .prefetch_related("account")
+                .prefetch_related("account", "account__user", "account__user__settings")
                 .order_by("account__uid")
             )
 

@@ -13,11 +13,15 @@ from transifex.native import init, tx
 from transifex.native.parsing import SourceString
 from transifex.native.rendering import AbstractRenderingPolicy
 
+from ..enums import GenshinElement, HSRElement
+
 if TYPE_CHECKING:
     from types import TracebackType
 
+    from ambr.models import Character as GenshinCharacter
     from discord.app_commands.translator import TranslationContextTypes
     from discord.enums import Locale
+    from yatta.models import Character as HSRCharacter
 
 __all__ = ("Translator", "AppCommandTranslator", "LocaleStr")
 
@@ -252,6 +256,38 @@ class Translator:
             )
 
         self.not_translated.clear()
+
+    def get_traveler_name(
+        self, character: "GenshinCharacter", locale: "Locale", *, gender_symbol: bool = True
+    ) -> str:
+        element_str = self.translate(
+            LocaleStr(
+                GenshinElement(character.element.name.lower()).value.title(), warn_no_key=False
+            ),
+            locale,
+        )
+        gender_str = ("♂" if "5" in character.id else "♀") if gender_symbol else ""
+        return (
+            f"{character.name} ({element_str}) ({gender_str})"
+            if gender_str
+            else f"{character.name} ({element_str})"
+        )
+
+    def get_trailblazer_name(
+        self, character: "HSRCharacter", locale: "Locale", *, gender_symbol: bool = True
+    ) -> str:
+        element_str = self.translate(
+            LocaleStr(
+                HSRElement(character.types.combat_type.lower()).value.title(), warn_no_key=False
+            ),
+            locale,
+        )
+        gender_str = ("♂" if character.id % 2 != 0 else "♀") if gender_symbol else ""
+        return (
+            f"{character.name} ({element_str}) ({gender_str})"
+            if gender_str
+            else f"{character.name} ({element_str})"
+        )
 
     async def unload(self) -> None:
         if self.not_translated and self.env in {"prod", "test"}:

@@ -1,16 +1,30 @@
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle, Locale, Member, User
+from discord import ButtonStyle, File, Locale, Member, User
+from discord.utils import format_dt
+from genshin.models import Notes as GenshinNotes
+from genshin.models import StarRailNote as StarRailNotes
 
 from hoyo_buddy.bot.translator import LocaleStr
-from hoyo_buddy.db.models import NotesNotify
+from hoyo_buddy.db.models import NotesNotify, Settings
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.emojis import BELL_OUTLINE, TOGGLE_EMOJIS
+from hoyo_buddy.emojis import (
+    BELL_OUTLINE,
+    PT_EMOJI,
+    REALM_CURRENCY,
+    RESIN,
+    TOGGLE_EMOJIS,
+    TRAILBLAZE_POWER,
+)
 from hoyo_buddy.enums import Game, NotesNotifyType, Weekday
 
+from ....draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card
+from ....models import DrawInput
 from ...components import Button, GoBackButton, View
 
 if TYPE_CHECKING:
+    import aiohttp
+
     from hoyo_buddy.bot.bot import INTERACTION
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.db.models import HoyoAccount
@@ -25,6 +39,7 @@ class NotesView(View):
     def __init__(
         self,
         account: "HoyoAccount",
+        settings: "Settings",
         *,
         author: User | Member | None,
         locale: Locale,
@@ -32,6 +47,7 @@ class NotesView(View):
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self._account = account
+        self._settings = settings
 
         self.add_item(ReminderButton())
 
@@ -351,6 +367,95 @@ class NotesView(View):
             await notify.save()
 
         return await self._get_reminder_embed()
+
+    async def _get_notes(self) -> GenshinNotes | StarRailNotes:
+        if self._account.game is Game.GENSHIN:
+            return await self._account.client.get_genshin_notes()
+        return await self._account.client.get_starrail_notes()
+
+    async def _draw_notes_card(
+        self, session: "aiohttp.ClientSession", notes: GenshinNotes | StarRailNotes
+    ) -> File:
+        if isinstance(notes, GenshinNotes):
+            return await draw_gi_notes_card(
+                DrawInput(
+                    dark_mode=self._settings.dark_mode,
+                    locale=self.locale,
+                    session=session,
+                    filename="notes.webp",
+                ),
+                notes,
+                self.translator,
+            )
+        return await draw_hsr_notes_card(
+            DrawInput(
+                dark_mode=self._settings.dark_mode,
+                locale=self.locale,
+                session=session,
+                filename="notes.webp",
+            ),
+            notes,
+            self.translator,
+        )
+
+    def _get_notes_embed(self, notes: GenshinNotes | StarRailNotes) -> DefaultEmbed:
+        descriptions: list[str] = []
+
+        if isinstance(notes, GenshinNotes):
+            if notes.remaining_resin_recovery_time.seconds > 0:
+                descriptions.append(
+                    LocaleStr(
+                        "{emoji} full {in_time}",
+                        key="notes.item_full_in_time",
+                        emoji=RESIN,
+                        in_time=format_dt(notes.resin_recovery_time, style="R"),
+                    ).translate(self.translator, self.locale)
+                )
+            if notes.remaining_realm_currency_recovery_time.seconds > 0:
+                descriptions.append(
+                    LocaleStr(
+                        "{emoji} available {in_time}",
+                        key="notes_available",
+                        emoji=REALM_CURRENCY,
+                        in_time=format_dt(notes.realm_currency_recovery_time, style="R"),
+                    ).translate(self.translator, self.locale)
+                )
+            if (
+                notes.remaining_transformer_recovery_time is not None
+                and notes.remaining_transformer_recovery_time.seconds > 0
+            ):
+                assert notes.transformer_recovery_time is not None
+                descriptions.append(
+                    LocaleStr(
+                        "{emoji} available {in_time}",
+                        key="notes_available",
+                        emoji=PT_EMOJI,
+                        in_time=format_dt(notes.transformer_recovery_time, style="R"),
+                    ).translate(self.translator, self.locale)
+                )
+        elif isinstance(notes, StarRailNotes) and notes.stamina_recover_time.seconds > 0:
+            descriptions.append(
+                LocaleStr(
+                    "{emoji} full {in_time}",
+                    key="notes.item_full_in_time",
+                    emoji=TRAILBLAZE_POWER,
+                    in_time=format_dt(notes.stamina_recovery_time, style="R"),
+                ).translate(self.translator, self.locale)
+            )
+
+        return DefaultEmbed(
+            self.locale, self.translator, description="\n".join(descriptions)
+        ).set_image(url="attachment://notes.webp")
+
+    async def start(self, i: "INTERACTION") -> None:
+        await i.response.defer()
+
+        notes = await self._get_notes()
+        embed = self._get_notes_embed(notes)
+        file_ = await self._draw_notes_card(i.client.session, notes)
+
+        await i.followup.send(embed=embed, file=file_, view=self)
+        self.message = await i.original_response()
 
 
 class ReminderButton(Button[NotesView]):

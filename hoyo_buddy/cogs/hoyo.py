@@ -7,14 +7,12 @@ from seria.utils import read_yaml
 
 from ..bot.translator import LocaleStr
 from ..db.models import EnkaCache, HoyoAccount, Settings
-from ..draw import main_funcs
 from ..enums import Game
 from ..exceptions import IncompleteParamError
 from ..hoyo.clients.ambr_client import AmbrAPIClient
 from ..hoyo.clients.enka_client import EnkaAPI
 from ..hoyo.clients.mihomo_client import MihomoAPI
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
-from ..models import DrawInput
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.genshin.abyss import AbyssView
 from ..ui.hoyo.genshin.characters import CharactersView
@@ -72,15 +70,15 @@ class Hoyo(commands.Cog):
         i: "INTERACTION",
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        settings = await Settings.get(user_id=i.user.id)
         account_ = account or await self.bot.get_account(
             i.user.id, [Game.GENSHIN, Game.STARRAIL, Game.HONKAI]
         )
+        await account_.fetch_related("user", "user__settings")
         view = CheckInUI(
             account_,
-            dark_mode=settings.dark_mode,
+            dark_mode=account_.user.settings.dark_mode,
             author=i.user,
-            locale=settings.locale or i.locale,
+            locale=account_.user.settings.locale or i.locale,
             translator=self.bot.translator,
         )
         await view.start(i)
@@ -220,44 +218,18 @@ class Hoyo(commands.Cog):
         i: "INTERACTION",
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        settings = await Settings.get(user_id=i.user.id)
         account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN, Game.STARRAIL])
-        await i.response.defer()
+        await account_.fetch_related("user", "user__settings")
+        locale = account_.user.settings.locale or i.locale
 
-        locale = settings.locale or i.locale
-        client = account_.client
-        client.set_lang(locale)
-
-        if account_.game is Game.GENSHIN:
-            notes = await client.get_genshin_notes()
-            file_ = await main_funcs.draw_gi_notes_card(
-                DrawInput(
-                    dark_mode=settings.dark_mode,
-                    locale=locale,
-                    session=self.bot.session,
-                    filename="notes.webp",
-                ),
-                notes,
-                self.bot.translator,
-            )
-        elif account_.game is Game.STARRAIL:
-            notes = await client.get_starrail_notes()
-            file_ = await main_funcs.draw_hsr_notes_card(
-                DrawInput(
-                    dark_mode=settings.dark_mode,
-                    locale=locale,
-                    session=self.bot.session,
-                    filename="notes.webp",
-                ),
-                notes,
-                self.bot.translator,
-            )
-        else:
-            raise NotImplementedError
-
-        view = NotesView(account_, author=i.user, locale=locale, translator=self.bot.translator)
-        await i.followup.send(view=view, file=file_)
-        view.message = await i.original_response()
+        view = NotesView(
+            account_,
+            account_.user.settings,
+            author=i.user,
+            locale=locale,
+            translator=self.bot.translator,
+        )
+        await view.start(i)
 
     @profile_command.autocomplete("account")
     @notes_command.autocomplete("account")
@@ -289,18 +261,18 @@ class Hoyo(commands.Cog):
         i: "INTERACTION",
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        settings = await Settings.get(user_id=i.user.id)
         account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
+        await account_.fetch_related("user", "user__settings")
 
         async with AmbrAPIClient() as client:
             element_char_counts = await client.fetch_element_char_counts()
 
         view = CharactersView(
             account_,
-            settings.dark_mode,
+            account_.user.settings.dark_mode,
             element_char_counts,
             author=i.user,
-            locale=settings.locale or i.locale,
+            locale=account_.user.settings.locale or i.locale,
             translator=self.bot.translator,
         )
         await view.start(i)

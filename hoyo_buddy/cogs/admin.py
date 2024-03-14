@@ -73,6 +73,11 @@ class Admin(commands.Cog):
         view = TaskView()
         await ctx.send("Select a task to run.", view=view)
 
+    @commands.command(name="not-translated", aliases=["nt"])
+    async def not_translated_command(self, ctx: commands.Context) -> Any:
+        not_translated = self.bot.translator.not_translated
+        await ctx.send(f"Not translated:\n```\n{not_translated}\n```\nTotal: {len(not_translated)}")
+
 
 async def setup(bot: "HoyoBuddy") -> None:
     await bot.add_cog(Admin(bot))

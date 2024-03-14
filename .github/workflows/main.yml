@@ -43,7 +43,7 @@ jobs:
         with:
           directory: ./
           badge: ./output/badge.svg
-          patterns: '*.py'
+          patterns: '**.py'
           ignore: 'migrations/models | hoyo_buddy/constants.py | hoyo_buddy/emojis.py | hoyo_buddy/icons.py'
 
       - name: Print the output

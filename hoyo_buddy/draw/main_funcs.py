@@ -5,6 +5,7 @@ from discord import File
 
 from hoyo_buddy.draw import funcs
 
+from ..models import AbyssCharacter
 from .static import download_and_save_static_images
 
 if TYPE_CHECKING:
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
     from enka.models import Character as EnkaCharacter
     from genshin.models import Character as GenshinCharacter
     from genshin.models import Notes as GenshinNote
-    from genshin.models import StarRailNote
+    from genshin.models import SpiralAbyss, StarRailNote
     from mihomo.models import Character as MihomoCharacter
 
     from ..bot.translator import Translator
@@ -175,4 +176,45 @@ async def draw_gi_character_card(
     )
     buffer.seek(0)
 
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_spiral_abyss_card(
+    draw_input: "DrawInput",
+    abyss: "SpiralAbyss",
+    characters: "Sequence[GenshinCharacter]",
+    translator: "Translator",
+) -> File:
+    abyss_characters: dict[str, AbyssCharacter] = {
+        str(chara.id): AbyssCharacter(level=chara.level, const=chara.constellation, icon=chara.icon)
+        for chara in characters
+    }
+
+    urls = [
+        chara.icon
+        for chara in [
+            abyss.ranks.most_bursts_used[0],
+            abyss.ranks.most_damage_taken[0],
+            abyss.ranks.most_kills[0],
+            abyss.ranks.most_skills_used[0],
+            abyss.ranks.strongest_strike[0],
+        ]
+    ] + [
+        chara.icon
+        for floor in abyss.floors
+        for chamber in floor.chambers
+        for battle in chamber.battles
+        for chara in battle.characters
+    ]
+
+    await download_and_save_static_images(urls, "abyss", draw_input.session)
+    buffer = await asyncio.to_thread(
+        funcs.AbyssCard.draw,
+        draw_input.dark_mode,
+        draw_input.locale,
+        translator,
+        abyss,
+        abyss_characters,
+    )
+    buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

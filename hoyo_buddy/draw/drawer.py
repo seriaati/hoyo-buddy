@@ -27,7 +27,8 @@ __all__ = ("Drawer",)
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-EMPHASIS_OPACITY: dict[str, float] = {"high": 0.86, "medium": 0.6, "low": 0.37}
+TRANSPARENT = (0, 0, 0, 0)
+EMPHASIS_OPACITY: dict[str, float] = {"high": 1.0, "medium": 0.6, "low": 0.37}
 
 # Material design colors
 LIGHT_SURFACE = (252, 248, 253)
@@ -233,6 +234,7 @@ class Drawer:
         max_width: int | None = None,
         max_lines: int = 1,
         locale: discord.Locale | None = None,
+        no_write: bool = False,
     ) -> tuple[int, int, int, int]:
         """Returns (left, top, right, bottom) of the text bounding box."""
         if not text:
@@ -255,13 +257,14 @@ class Drawer:
             else:
                 translated_text = self._wrap_text(translated_text, max_width, max_lines, font)
 
-        self.draw.text(
-            position,
-            translated_text,
-            font=font,
-            fill=self._get_text_color(color, emphasis),
-            anchor=anchor,
-        )
+        if not no_write:
+            self.draw.text(
+                position,
+                translated_text,
+                font=font,
+                fill=self._get_text_color(color, emphasis),
+                anchor=anchor,
+            )
 
         textbbox = self.draw.textbbox(
             position, translated_text, font=font, anchor=anchor, font_size=size
@@ -301,12 +304,14 @@ class Drawer:
             image = self._mask_image_with_color(image, mask_color, opacity)
         return image
 
+    def crop_with_mask(self, image: Image.Image, mask: Image.Image) -> Image.Image:
+        empty = Image.new("RGBA", image.size, 0)
+        return Image.composite(image, empty, mask)
+
     def circular_crop(self, image: Image.Image) -> Image.Image:
         """Crop an image into a circle."""
         mask = self._open_image("hoyo-buddy-assets/assets/circular_mask.png", image.size)
-        empty = Image.new("RGBA", image.size, 0)
-        image = Image.composite(image, empty, mask)
-        return image
+        return self.crop_with_mask(image, mask)
 
     def modify_image_for_build_card(
         self, image: Image.Image, target_width: int, target_height: int

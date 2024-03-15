@@ -264,7 +264,7 @@ class Hoyo(commands.Cog):
         account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
         await account_.fetch_related("user", "user__settings")
 
-        async with AmbrAPIClient() as client:
+        async with AmbrAPIClient(translator=self.bot.translator) as client:
             element_char_counts = await client.fetch_element_char_counts()
 
         view = CharactersView(

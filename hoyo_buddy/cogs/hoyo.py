@@ -195,8 +195,7 @@ class Hoyo(commands.Cog):
             locale=settings.locale or i.locale,
             translator=self.bot.translator,
         )
-        view.add_items()
-        await view.update(i)
+        await view.start(i)
 
     @app_commands.command(
         name=app_commands.locale_str("notes", translate=False),

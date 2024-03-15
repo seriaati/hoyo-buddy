@@ -29,13 +29,15 @@ class FarmChecker:
 
     @classmethod
     async def _notify_user(cls, item: CharacterOrWeapon, farm_notify: FarmNotify) -> None:
+        locale = farm_notify.account.user.settings.locale or Locale.american_english
+
         embed = DefaultEmbed(
-            farm_notify.account.user.settings.locale or Locale.american_english,
+            locale,
             cls._translator,
             title=LocaleStr(
                 "Materials for {name} is farmable today",
                 key="farm_check.farmable_today",
-                name=item.name,
+                name=cls._item_id_to_name[locale.value][str(item.id)],
             ),
         )
         embed.set_thumbnail(url=item.icon)

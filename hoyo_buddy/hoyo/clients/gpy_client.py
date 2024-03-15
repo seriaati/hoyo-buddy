@@ -82,7 +82,7 @@ class GenshinClient(genshin.Client):
         pc_icons = {str(character.id): character.pc_icon for character in fields.characters}
         await write_json(PC_ICON_DATA_PATH, pc_icons)
 
-    async def update_gi_talent_level_data(self, character: genshin.models.Character) -> None:
+    async def update_gi_chara_talent_lvl_data(self, character: genshin.models.Character) -> None:
         talent_level_data: dict[str, str] = await read_json(
             GI_TALENT_LEVEL_DATA_PATH.format(uid=self.uid)
         )

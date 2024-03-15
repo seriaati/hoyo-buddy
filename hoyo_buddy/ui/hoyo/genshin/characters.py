@@ -1,3 +1,4 @@
+import asyncio
 import contextlib
 import datetime
 from enum import StrEnum
@@ -92,7 +93,8 @@ class CharactersView(View):
                 not in talent_level_data
             ):
                 updated = True
-                await self._account.client.update_gi_talent_level_data(character)
+                await self._account.client.update_gi_chara_talent_lvl_data(character)
+                await asyncio.sleep(0.5)
 
         return await read_json(filename) if updated else talent_level_data
 
@@ -409,5 +411,6 @@ class UpdateTalentData(Button[CharactersView]):
         await i.response.edit_message(embed=embed, view=self.view, attachments=[])
 
         for character in self.view._characters:
-            await self.view._account.client.update_gi_talent_level_data(character)
+            await self.view._account.client.update_gi_chara_talent_lvl_data(character)
+            await asyncio.sleep(0.5)
         await self.view.start(i)

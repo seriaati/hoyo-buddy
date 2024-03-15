@@ -185,3 +185,14 @@ class ActionInCooldownError(HoyoBuddyError):
                 available_time=format_dt(available_time, "T"),
             ),
         )
+
+
+class NoAbyssDataError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr("No Spiral Abyss Data", key="no_abyss_data_error_title"),
+            message=LocaleStr(
+                "Unable to find any spiral abyss data, either you haven't started the spiral abyss yet or the data is not ready yet. Please try again later",
+                key="no_abyss_data_error_message",
+            ),
+        )

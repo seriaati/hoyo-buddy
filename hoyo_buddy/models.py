@@ -98,3 +98,10 @@ class DynamicBKInput:
     background_color: tuple[int, int, int]
     max_card_num: int | None = None
     draw_title: bool = True
+
+
+@dataclass(kw_only=True)
+class AbyssCharacter:
+    level: int
+    const: int
+    icon: str

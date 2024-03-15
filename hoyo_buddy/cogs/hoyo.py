@@ -15,6 +15,7 @@ from ..hoyo.clients.mihomo_client import MihomoAPI
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.genshin.abyss import AbyssView
+from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
 from ..ui.hoyo.genshin.characters import CharactersView
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.profile.view import ProfileView
@@ -189,7 +190,7 @@ class Hoyo(commands.Cog):
     async def abyss_enemies_command(self, i: "INTERACTION") -> None:
         settings = await Settings.get(user_id=i.user.id)
 
-        view = AbyssView(
+        view = AbyssEnemyView(
             dark_mode=settings.dark_mode,
             author=i.user,
             locale=settings.locale or i.locale,
@@ -276,7 +277,40 @@ class Hoyo(commands.Cog):
         )
         await view.start(i)
 
+    @app_commands.command(
+        name=app_commands.locale_str("abyss", translate=False),
+        description=app_commands.locale_str(
+            "View your spiral abyss data", key="abyss__command_description"
+        ),
+    )
+    @app_commands.rename(
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+    )
+    @app_commands.describe(
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        )
+    )
+    async def abyss_command(
+        self,
+        i: "INTERACTION",
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+    ) -> None:
+        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
+        await account_.fetch_related("user", "user__settings")
+
+        view = AbyssView(
+            account_,
+            account_.user.settings.dark_mode,
+            author=i.user,
+            locale=i.locale,
+            translator=self.bot.translator,
+        )
+        await view.start(i)
+
     @characters_command.autocomplete("account")
+    @abyss_command.autocomplete("account")
     async def characters_command_autocomplete(
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:

@@ -154,9 +154,7 @@ class CheckInButton(Button[CheckInUI]):
         embed, file_ = await self.view.get_image_embed_and_file(i.client.session)
         await i.edit_original_response(embed=embed, attachments=[file_])
 
-        embed = client.get_daily_reward_embed(
-            daily_reward, client.game, self.view.locale, self.view.translator
-        )
+        embed = client.get_daily_reward_embed(daily_reward, self.view.locale, self.view.translator)
         await i.followup.send(embed=embed)
 
 

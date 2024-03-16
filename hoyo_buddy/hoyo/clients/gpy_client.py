@@ -12,10 +12,9 @@ from ...constants import (
     TRAVELER_IDS,
     contains_traveler_id,
 )
-from ...db.models import EnkaCache
+from ...db.models import EnkaCache, HoyoAccount
 from ...embeds import DefaultEmbed
-from ...enums import GAME_CONVERTER, TalentBoost
-from ...icons import get_game_icon
+from ...enums import TalentBoost
 from ...models import HoyolabHSRCharacter, LightCone, Relic, Stat, Trace
 from ...utils import get_now
 from .ambr_client import AmbrAPIClient
@@ -47,9 +46,9 @@ class GenshinClient(genshin.Client, BaseClient):
     @staticmethod
     def get_daily_reward_embed(
         daily_reward: genshin.models.DailyReward,
-        game: genshin.Game,
         locale: "Locale",
         translator: Translator,
+        account: HoyoAccount | None = None,
     ) -> DefaultEmbed:
         embed = DefaultEmbed(
             locale,
@@ -58,11 +57,11 @@ class GenshinClient(genshin.Client, BaseClient):
             description=f"{daily_reward.name} x{daily_reward.amount}",
         )
         embed.set_thumbnail(url=daily_reward.icon)
-        converted_game = GAME_CONVERTER[game]
-        embed.set_author(
-            name=LocaleStr(converted_game.value, warn_no_key=False),
-            icon_url=get_game_icon(converted_game),
-        )
+        if account is not None:
+            embed.set_author(
+                name=str(account),
+                icon_url=account.game_icon,
+            )
         return embed
 
     @staticmethod

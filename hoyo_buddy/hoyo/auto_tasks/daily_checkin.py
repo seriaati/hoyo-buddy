@@ -123,7 +123,7 @@ class DailyCheckin:
                 embed, _ = get_error_embed(e, locale, translator)
                 embed.set_author(name=str(account), icon_url=account.game_icon)
             else:
-                embed = client.get_daily_reward_embed(reward, client.game, locale, translator)
+                embed = client.get_daily_reward_embed(reward, locale, translator, account)
             return embed
 
         payload = {
@@ -137,7 +137,7 @@ class DailyCheckin:
             data = await resp.json()
             if resp.status == 200:
                 reward = genshin.models.DailyReward(**data["data"])
-                embed = client.get_daily_reward_embed(reward, client.game, locale, translator)
+                embed = client.get_daily_reward_embed(reward, locale, translator, account)
             elif resp.status == 400:
                 try:
                     genshin.raise_for_retcode(data)

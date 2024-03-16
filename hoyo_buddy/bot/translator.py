@@ -151,13 +151,13 @@ class Translator:
 
         string_key = self._get_string_key(string)
 
-        source_string = tx.translate(message, "en_US", _key=string_key, escape=False)
+        source_string = tx.translate(message, "en_US", _key=string_key, escape=False, params=extras)
         if source_string is None and self._env != "dev":
             self._not_translated[string_key] = message
             LOGGER_.warning(
                 "String %r is missing on Transifex, added to not_translated", string_key
             )
-        elif source_string != message and self._env != "dev":
+        elif source_string != message.format(**extras) and self._env != "dev":
             self._not_translated[string_key] = message
             LOGGER_.warning(
                 "String %r has different values (CDS vs Local): %r and %r",
@@ -171,7 +171,7 @@ class Translator:
         if "en" in lang or not string.translate_:
             translation = message
         else:
-            translation = tx.translate(message, lang, _key=string_key, escape=False)
+            translation = tx.translate(message, lang, _key=string_key, escape=False, params=extras)
             translation = translation or message
 
         with contextlib.suppress(KeyError):
@@ -179,16 +179,16 @@ class Translator:
 
         return translation
 
-    def _translate_extras(self, extras: dict[str, Any], locale: "Locale") -> dict:
-        translated_extras = {}
+    def _translate_extras(self, extras: dict[str, Any], locale: "Locale") -> dict[str, Any]:
+        extras_: dict[str, Any] = {}
         for k, v in extras.items():
             if isinstance(v, LocaleStr):
-                translated_extras[k] = self.translate(v, locale)
+                extras_[k] = self.translate(v, locale)
             elif isinstance(v, Sequence) and isinstance(v[0], LocaleStr):
-                translated_extras[k] = "/".join([self.translate(i, locale) for i in v])
+                extras_[k] = "/".join([self.translate(i, locale) for i in v])
             else:
-                translated_extras[k] = v
-        return translated_extras
+                extras_[k] = v
+        return extras_
 
     @staticmethod
     def _get_string_key(string: LocaleStr) -> str:

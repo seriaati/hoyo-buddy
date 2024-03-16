@@ -1,3 +1,4 @@
+import pickle
 from typing import TYPE_CHECKING
 
 import genshin
@@ -6,13 +7,16 @@ from seria.utils import read_json, write_json
 from ...bot.translator import LocaleStr, Translator
 from ...constants import (
     AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID,
+    GPY_LANG_TO_LOCALE,
     LOCALE_TO_GPY_LANG,
     TRAVELER_IDS,
     contains_traveler_id,
 )
+from ...db.models import EnkaCache
 from ...embeds import DefaultEmbed
 from ...enums import GAME_CONVERTER, TalentBoost
 from ...icons import get_game_icon
+from ...models import HoyolabHSRCharacter, LightCone, Relic, Stat, Trace
 from ...utils import get_now
 from .ambr_client import AmbrAPIClient
 from .base import BaseClient
@@ -129,3 +133,94 @@ class GenshinClient(genshin.Client, BaseClient):
 
         filename = GI_TALENT_LEVEL_DATA_PATH.format(uid=self.uid)
         await write_json(filename, talent_level_data)
+
+    def convert_hsr_character(
+        self,
+        character: genshin.models.StarRailDetailCharacter,
+        property_info: dict[str, genshin.models.PropertyInfo],
+    ) -> HoyolabHSRCharacter:
+        """Convert StarRailDetailCharacter from gpy to HoyolabHSRCharacter that's used for drawing cards."""
+        prop_icons: dict[int, str] = {
+            prop.property_type: prop.icon for prop in property_info.values()
+        }
+
+        light_cone = (
+            LightCone(
+                id=character.equip.id,
+                level=character.equip.level,
+                superimpose=character.equip.rank,
+                name=character.equip.name,
+            )
+            if character.equip is not None
+            else None
+        )
+        relics = [
+            Relic(
+                id=relic.id,
+                level=relic.level,
+                rarity=relic.rarity,
+                icon=relic.icon,
+                main_affix=Stat(
+                    type=relic.main_property.property_type,
+                    icon=prop_icons[relic.main_property.property_type],
+                    displayed_value=relic.main_property.value,
+                ),
+                sub_affixes=[
+                    Stat(
+                        type=sub_property.property_type,
+                        icon=prop_icons[sub_property.property_type],
+                        displayed_value=sub_property.value,
+                    )
+                    for sub_property in relic.properties
+                ],
+            )
+            for relic in list(character.relics) + list(character.ornaments)
+        ]
+        hsr_chara = HoyolabHSRCharacter(
+            id=str(character.id),
+            element=character.element,
+            name=character.name,
+            level=character.level,
+            eidolon=character.rank,
+            light_cone=light_cone,
+            relics=relics,
+            stats=[
+                Stat(
+                    icon=prop_icons[prop.property_type],
+                    displayed_value=prop.final,
+                    type=prop.property_type,
+                )
+                for prop in character.properties
+            ],
+            trace_tree=[
+                Trace(anchor=skill.anchor, icon=skill.item_url, level=skill.level)
+                for skill in character.skills
+            ],
+        )
+        return hsr_chara
+
+    async def get_hoyolab_hsr_characters(self) -> list[HoyolabHSRCharacter]:
+        """Get characters in HoyolabHSR format."""
+        cache, _ = await EnkaCache.get_or_create(uid=self.uid)
+
+        try:
+            data = await self.get_starrail_characters(self.uid)
+            live_data = [
+                self.convert_hsr_character(character, dict(data.property_info))
+                for character in data.avatar_list
+            ]
+        except genshin.GenshinException as e:
+            if cache.hoyolab is None or e.retcode != 1005:
+                raise
+
+            cache.extras = self._set_all_live_to_false(cache.hoyolab, cache.extras)
+            await cache.save()
+            cache_data: list[HoyolabHSRCharacter] = pickle.loads(cache.hoyolab)
+        else:
+            cache.hoyolab, cache.extras = self._update_cache_with_live_data(
+                cache.hoyolab, cache.extras, live_data, GPY_LANG_TO_LOCALE[self.lang]
+            )
+            await cache.save()
+            cache_data: list[HoyolabHSRCharacter] = pickle.loads(cache.hoyolab)
+
+        return cache_data

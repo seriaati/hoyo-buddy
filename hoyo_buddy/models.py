@@ -105,3 +105,52 @@ class AbyssCharacter:
     level: int
     const: int
     icon: str
+
+
+@dataclass(kw_only=True)
+class LightCone:
+    id: int
+    level: int
+    superimpose: int
+    name: str
+
+    @property
+    def portrait(self) -> str:
+        return f"https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/light_cone_portrait/{self.id}.png"
+
+
+@dataclass(kw_only=True)
+class Stat:
+    type: int
+    icon: str
+    displayed_value: str
+
+
+@dataclass(kw_only=True)
+class Relic:
+    id: int
+    level: int
+    rarity: int
+    icon: str
+    main_affix: Stat
+    sub_affixes: list[Stat]
+
+
+@dataclass(kw_only=True)
+class Trace:
+    anchor: str
+    icon: str
+    level: int
+
+
+@dataclass(kw_only=True)
+class HoyolabHSRCharacter:
+    id: str
+    name: str
+    level: int
+    eidolon: int
+    light_cone: LightCone | None = None
+    relics: list[Relic]
+    stats: list[Stat]
+    trace_tree: list[Trace]
+    element: str

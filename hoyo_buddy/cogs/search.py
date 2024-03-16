@@ -385,7 +385,10 @@ class Search(commands.Cog):
                 )
             ]
 
-        if not self.bot.search_autocomplete_choices:
+        if (
+            not self.bot.search_autocomplete_choices
+            or game not in self.bot.search_autocomplete_choices
+        ):
             return [
                 self.bot.get_error_app_command_choice(
                     LocaleStr(

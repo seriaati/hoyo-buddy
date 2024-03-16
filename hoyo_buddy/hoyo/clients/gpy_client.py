@@ -15,17 +15,19 @@ from ...enums import GAME_CONVERTER, TalentBoost
 from ...icons import get_game_icon
 from ...utils import get_now
 from .ambr_client import AmbrAPIClient
+from .base import BaseClient
 from .enka_client import EnkaAPI
 
 if TYPE_CHECKING:
     from discord import Locale
+
 
 TALENT_BOOST_DATA_PATH = "./.static/talent_boost.json"
 PC_ICON_DATA_PATH = "./.static/pc_icons.json"
 GI_TALENT_LEVEL_DATA_PATH = "./.static/talent_levels/gi_{uid}.json"
 
 
-class GenshinClient(genshin.Client):
+class GenshinClient(genshin.Client, BaseClient):
     def __init__(
         self,
         cookies: str,
@@ -36,7 +38,7 @@ class GenshinClient(genshin.Client):
         super().__init__(cookies, game=game, uid=uid)
 
     def set_lang(self, locale: "Locale") -> None:
-        self.lang = LOCALE_TO_GPY_LANG[locale]
+        self.lang = LOCALE_TO_GPY_LANG.get(locale, "en-us")
 
     @staticmethod
     def get_daily_reward_embed(

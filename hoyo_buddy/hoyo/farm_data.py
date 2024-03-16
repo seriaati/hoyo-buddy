@@ -16,7 +16,7 @@ class FarmDataFetcher:
     _weekday: int
 
     @classmethod
-    def _get_domains(cls, domains: "ambr.Domains") -> list["ambr.Domain"]:
+    def _get_domains(cls, domains: "ambr.Domains") -> list["ambr.Domain"]:  # noqa: PLR0911
         match cls._weekday:
             case 0:
                 return domains.monday
@@ -30,6 +30,8 @@ class FarmDataFetcher:
                 return domains.friday
             case 5:
                 return domains.saturday
+            case 6:
+                return domains.sunday
             case _:
                 msg = "Invalid weekday"
                 raise ValueError(msg)

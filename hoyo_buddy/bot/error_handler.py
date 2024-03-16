@@ -79,10 +79,16 @@ def get_error_embed(
         )
     else:
         recognized = False
+        description = f"{type(error).__name__}: {error}" if error else type(error).__name__
         embed = ErrorEmbed(
             locale,
             translator,
             title=LocaleStr("An error occurred", key="error_title"),
-            description=f"{type(error).__name__} {error}",
+            description=description,
+        )
+        embed.set_footer(
+            text=LocaleStr(
+                "Please report this error to the developer via </feedback>", key="error_footer"
+            )
         )
     return embed, recognized

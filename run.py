@@ -49,6 +49,7 @@ with setup_logging(
         "tortoise.db_client",
         "PIL",
         "aiohttp_client_cache",
+        "transifex",
     ),
     log_filename="hoyo_buddy.log",
 ):

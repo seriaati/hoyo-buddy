@@ -51,6 +51,7 @@ HSR_ELEMENT_EMOJIS: dict[str, str] = {
     HSRElement.QUANTUM: "<:IconAttributeQuantum:1211302767033983046>",
     HSRElement.LIGHTNING: "<:IconAttributeThunder:1211302758175735942>",
     HSRElement.WIND: "<:IconAttributeWind:1211302764915859498>",
+    HSRElement.THUNDER: "<:IconAttributeThunder:1211302758175735942>",
 }
 ARTIFACT_POS_EMOJIS: dict[str, str] = {
     "flower": "<:Flower_of_Life:982167959717945374>",
@@ -110,7 +111,7 @@ def get_gi_element_emoji(element: str) -> str:
 
 
 def get_hsr_element_emoji(element: str) -> str:
-    return HSR_ELEMENT_EMOJIS[element.lower()]
+    return HSR_ELEMENT_EMOJIS[HSRElement(element.lower())]
 
 
 def get_artifact_pos_emoji(artifact_pos: str) -> str:

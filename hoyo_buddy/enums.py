@@ -85,3 +85,4 @@ class HSRElement(StrEnum):
     QUANTUM = "quantum"
     LIGHTNING = "lightning"
     WIND = "wind"
+    THUNDER = "thunder"

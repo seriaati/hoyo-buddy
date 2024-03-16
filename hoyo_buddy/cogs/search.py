@@ -101,8 +101,8 @@ class Search(commands.Cog):
 
     @tasks.loop(hours=24)
     async def _update_search_autocomplete_choices(self) -> None:
-        # if self.bot.env == "dev":
-        #     return
+        if self.bot.env == "dev":
+            return
         await self._setup_search_autocomplete_choices()
 
     @_update_search_autocomplete_choices.before_loop

@@ -1,20 +1,26 @@
 import io
+from typing import TYPE_CHECKING
 
-import discord
-import discord.utils as dutils
 import mihomo
 from cachetools import LRUCache, cached
+from discord.utils import get as dget
 from PIL import Image, ImageDraw
 
+from hoyo_buddy.constants import HSR_ELEMENT_DMG_PROPS
 from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
 from hoyo_buddy.utils import round_down
+
+if TYPE_CHECKING:
+    from discord import Locale
+
+    from hoyo_buddy.models import HoyolabHSRCharacter, Trace
 
 __all__ = ("draw_hsr_build_card",)
 
 
 def cache_key(
-    character: "mihomo.models.Character",
-    locale: discord.Locale,
+    character: "mihomo.models.Character | HoyolabHSRCharacter",
+    locale: "Locale",
     dark_mode: bool,
     image_url: str,
     primary: tuple[int, int, int],
@@ -24,12 +30,23 @@ def cache_key(
 
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
 def draw_hsr_build_card(
-    character: "mihomo.models.Character",
-    locale: discord.Locale,
+    character: "mihomo.models.Character | HoyolabHSRCharacter",
+    locale: "Locale",
     dark_mode: bool,
     image_url: str,
     primary_hex: str,
 ) -> io.BytesIO:
+    def get_attr_display_value(attr: mihomo.Attribute) -> str:
+        if attr.field == "spd":
+            return str(round_down(attr.value, 2))
+        display_value = (
+            f"{round_down(attr.value * 100, 1)}%"
+            if attr.is_percent
+            else str(round_down(attr.value, 0))
+        )
+
+        return display_value
+
     primary = Drawer.hex_to_rgb(primary_hex)
     if dark_mode:
         # blend with dark gray
@@ -88,8 +105,13 @@ def draw_hsr_build_card(
     box_right_pos = box_x + width
 
     # write in the middle of the rectangle
+    level_str = (
+        f"Lv.{character.level}/{character.max_level}"
+        if isinstance(character, mihomo.models.Character)
+        else f"Lv.{character.level}"
+    )
     drawer.write(
-        f"Lv.{character.level}/{character.max_level}",
+        level_str,
         size=64,
         position=(box_x + width // 2, box_y + height // 2),
         color=BLACK if dark_mode else WHITE,
@@ -129,43 +151,41 @@ def draw_hsr_build_card(
     x = 825
     y = 273
     padding = 16
-    traces = (
-        dutils.get(character.traces, type="Talent"),
-        dutils.get(character.traces, type="Normal"),
-        dutils.get(character.traces, type="BPSkill"),
-        dutils.get(character.traces, type="Ultra"),
-    )
 
-    pos_tree: dict[str, mihomo.TraceTreeNode] = {
-        trace.anchor: trace for trace in character.trace_tree
+    traces = {
+        "Normal": dget(character.trace_tree, anchor="Point01"),
+        "Skill": dget(character.trace_tree, anchor="Point02"),
+        "Ultimate": dget(character.trace_tree, anchor="Point03"),
+        "Talent": dget(character.trace_tree, anchor="Point04"),
     }
-    technique = dutils.get(character.traces, type="Maze")
-    main_bubbles: dict[str, mihomo.Trace | mihomo.TraceTreeNode | None] = {
-        "Talent": pos_tree.get("Point08"),
-        "Normal": pos_tree.get("Point06"),
-        "BPSkill": pos_tree.get("Point07"),
-        "Ultra": technique,
+    main_bubbles = {
+        "Normal": dget(character.trace_tree, anchor="Point06"),
+        "Skill": dget(character.trace_tree, anchor="Point07"),
+        "Ultimate": dget(character.trace_tree, anchor="Point08"),
+        "Talent": dget(character.trace_tree, anchor="Point05"),
     }
-    sub_bubbles: dict[str, list[mihomo.TraceTreeNode | None]] = {
-        "Talent": [
-            pos_tree.get("Point16"),
-            pos_tree.get("Point17"),
-            pos_tree.get("Point18"),
-        ],
+    sub_bubbles: dict[str, list["mihomo.TraceTreeNode | Trace | None"]] = {
         "Normal": [
-            pos_tree.get("Point10"),
-            pos_tree.get("Point11"),
-            pos_tree.get("Point12"),
+            dget(character.trace_tree, anchor="Point10"),
+            dget(character.trace_tree, anchor="Point11"),
+            dget(character.trace_tree, anchor="Point12"),
         ],
-        "BPSkill": [
-            pos_tree.get("Point13"),
-            pos_tree.get("Point14"),
-            pos_tree.get("Point15"),
+        "Skill": [
+            dget(character.trace_tree, anchor="Point13"),
+            dget(character.trace_tree, anchor="Point14"),
+            dget(character.trace_tree, anchor="Point15"),
         ],
-        "Ultra": [pos_tree.get("Point09")],
+        "Ultimate": [
+            dget(character.trace_tree, anchor="Point16"),
+            dget(character.trace_tree, anchor="Point17"),
+            dget(character.trace_tree, anchor="Point18"),
+        ],
+        "Talent": [
+            dget(character.trace_tree, anchor="Point09"),
+        ],
     }
 
-    for trace in traces:
+    for trace_id, trace in traces.items():
         if trace is None:
             continue
 
@@ -187,7 +207,7 @@ def draw_hsr_build_card(
         # main bubble
         circle_height = 72
         circle_x = x + 178
-        main_bubble = main_bubbles[trace.type]
+        main_bubble = main_bubbles[trace_id]
         if main_bubble:
             icon = drawer.open_static(
                 main_bubble.icon, size=(60, 60), mask_color=BLACK if dark_mode else WHITE
@@ -202,7 +222,7 @@ def draw_hsr_build_card(
         circle_x += circle_height + 14
         sub_circle_height = 50
         circle_y = y + (circle_height - sub_circle_height) // 2
-        sub_bubbles_ = sub_bubbles[trace.type]
+        sub_bubbles_ = sub_bubbles[trace_id]
         for sub_bubble in sub_bubbles_:
             if sub_bubble is None:
                 continue
@@ -252,66 +272,65 @@ def draw_hsr_build_card(
         light_primary,
     )
 
-    # find the highest elemental damage bonus
-    dmg_additions = [
-        a
-        for a in character.additions
-        if "dmg" in a.field and a.field not in {"break_dmg", "crit_dmg"}
-    ]
-    max_dmg_add = max(dmg_additions, key=lambda a: a.value) if dmg_additions else None
-
     # attributes
-    attr_names = ("hp", "atk", "def", "spd", "crit_rate", "crit_dmg", "sp_rate")
-    attributes = [dutils.get(character.attributes, field=field_name) for field_name in attr_names]
-    attributes.append(max_dmg_add)
-    attributes.append(
-        mihomo.Attribute(
-            field="sp_rate",
-            name="",
-            value=1.0,
-            display="",
-            percent=True,
-            icon="icon/property/IconEnergyRecovery.png",
-        )
-    )
-    attributes = [s for s in attributes if s is not None]
+    attributes: dict[str, str] = {}
+    if isinstance(character, mihomo.models.Character):
+        # Normal attributes
+        attr_names = ("hp", "atk", "def", "spd", "crit_rate", "crit_dmg", "sp_rate")
+        for attr in character.attributes:
+            add_ = dget(character.additions, field=attr.field)
+            if add_ is not None:
+                attr.value += add_.value
+            if attr.field in attr_names:
+                display_value = get_attr_display_value(attr)
+                attributes[attr.icon] = display_value
 
-    # additions
-    addition_names = (
-        "effect_res",
-        "effect_hit",
-        "break_dmg",
-        "heal_rate",
-    )
-    additions = [dutils.get(character.additions, field=field_name) for field_name in addition_names]
-    additions = [s for s in additions if s is not None]
+        if "icon/property/IconEnergyRecovery.png" not in attributes:
+            attributes["icon/property/IconEnergyRecovery.png"] = "100.0%"
+
+        # Get max damage addition
+        dmg_additions = [
+            a
+            for a in character.additions
+            if "dmg" in a.field and a.field not in {"break_dmg", "crit_dmg"}
+        ]
+        max_dmg_add = max(dmg_additions, key=lambda a: a.value) if dmg_additions else None
+        if max_dmg_add is not None:
+            attributes[max_dmg_add.icon] = f"{round_down(max_dmg_add.value * 100, 1)}%"
+
+        # Additions
+        addition_names = ("effect_res", "effect_hit", "break_dmg", "heal_rate")
+        for add_ in character.additions:
+            if add_.field in addition_names:
+                display_value = get_attr_display_value(add_)
+                attributes[add_.icon] = display_value
+    else:
+        # There is no additions/attributes in StarRailCharacter
+        attr_types = (1, 2, 3, 4, 5, 6, 9, 11, 10, 58, 7)
+        for attr in character.stats:
+            if attr.type in attr_types:
+                attributes[attr.icon] = attr.displayed_value
+
+        # Get max damage addition
+        dmg_additions = [s for s in character.stats if s.type in HSR_ELEMENT_DMG_PROPS]
+        max_dmg_add = max(dmg_additions, key=lambda a: a.displayed_value) if dmg_additions else None
+        if max_dmg_add is not None:
+            attributes[max_dmg_add.icon] = max_dmg_add.displayed_value
 
     x = 804
     y = 685
     text_padding = 14
     padding = 13
 
-    for attr in attributes + additions:
-        value = attr.value
+    for index, (icon, value) in enumerate(attributes.items()):
+        icon_ = drawer.open_static(icon, size=(80, 80), mask_color=dark_primary)
+        im.paste(icon_, (x, y), icon_)
 
-        if attr.field in attr_names:
-            addition = dutils.get(character.additions, field=attr.field)
-            if addition is not None:
-                value += addition.value
-
-        icon = drawer.open_static(attr.icon, size=(80, 80), mask_color=dark_primary)
-        im.paste(icon, (x, y), icon)
-
-        display_value = (
-            f"{round_down(value * 100, 1)}%"
-            if attr.is_percent
-            else str(round_down(value, 2 if attr.field == "spd" else 0))
-        )
         drawer.write(
-            display_value,
+            value,
             position=(
-                x + icon.width + text_padding,
-                round(icon.height / 2) + y - 1,
+                x + icon_.width + text_padding,
+                round(icon_.height / 2) + y - 1,
             ),
             size=40,
             color=dark_primary,
@@ -319,11 +338,11 @@ def draw_hsr_build_card(
             anchor="lm",
         )
 
-        if attr.field == "crit_dmg":
+        if index == 5:
             x = 1070
             y = 685
         else:
-            y += icon.height + padding
+            y += icon_.height + padding
 
     # light cone
     cone = character.light_cone
@@ -367,8 +386,13 @@ def draw_hsr_build_card(
         box_x = text_left_pos
         box_y = text_bottom_pos + 20
         draw.rounded_rectangle((box_x, box_y, box_x + width, box_y + height), radius, primary)
+        level_str = (
+            f"Lv.{cone.level}/{cone.max_level}"
+            if isinstance(cone, mihomo.models.LightCone)
+            else f"Lv.{cone.level}"
+        )
         drawer.write(
-            f"Lv.{cone.level}/{cone.max_level}",
+            level_str,
             size=36,
             position=(box_x + width // 2, box_y + height // 2),
             color=BLACK if dark_mode else WHITE,
@@ -391,36 +415,35 @@ def draw_hsr_build_card(
             anchor="mm",
             style="medium",
         )
-        box_bottom_pos = box_y + height
 
-        x = text_left_pos
-        y = box_bottom_pos + 20
-        text_padding = 17
-        attributes = cone.attributes
+        if isinstance(cone, mihomo.models.LightCone):
+            box_bottom_pos = box_y + height
+            x = text_left_pos
+            y = box_bottom_pos + 20
+            text_padding = 17
+            second_attr_x = 0
+            for i, attr in enumerate((cone.attributes + cone.properties)[:4]):
+                icon = drawer.open_static(attr.icon, size=(50, 50), mask_color=dark_primary)
+                im.paste(icon, (x, y), icon)
 
-        second_attr_x = 0
-        for i, attr in enumerate((cone.attributes + cone.properties)[:4]):
-            icon = drawer.open_static(attr.icon, size=(50, 50), mask_color=dark_primary)
-            im.paste(icon, (x, y), icon)
+                textbbox = drawer.write(
+                    attr.displayed_value,
+                    size=32,
+                    position=(
+                        x + icon.width + 2,
+                        round(icon.height / 2) + y - 1,
+                    ),
+                    color=dark_primary,
+                    anchor="lm",
+                )
 
-            textbbox = drawer.write(
-                attr.displayed_value,
-                size=32,
-                position=(
-                    x + icon.width + 2,
-                    round(icon.height / 2) + y - 1,
-                ),
-                color=dark_primary,
-                anchor="lm",
-            )
-
-            if i == 1:
-                x = text_left_pos
-                y += icon.height + 20
-            elif i == 2:
-                x = second_attr_x
-            else:
-                second_attr_x = x = textbbox[2] + text_padding
+                if i == 1:
+                    x = text_left_pos
+                    y += icon.height + 20
+                elif i == 2:
+                    x = second_attr_x
+                else:
+                    second_attr_x = x = textbbox[2] + text_padding
 
     # relic
     relics = character.relics

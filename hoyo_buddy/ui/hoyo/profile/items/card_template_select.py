@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class CardTemplateSelect(Select["ProfileView"]):
-    def __init__(self, current_template: str, is_live: bool, game: Game) -> None:
+    def __init__(self, current_template: str, hb_only: bool, game: Game) -> None:
         hb_templates = (1,)
         src_templates = (1, 2, 3)
         enkac_templates = (1, 2, 3, 5, 7)  # EnkaCard2 templates
@@ -41,7 +41,8 @@ class CardTemplateSelect(Select["ProfileView"]):
                     default=current_template == value,
                 ),
             )
-        if is_live:
+
+        if not hb_only:
             if game is Game.STARRAIL:
                 for template_num in src_templates:
                     value = f"src{template_num}"
@@ -126,6 +127,7 @@ class CardTemplateSelect(Select["ProfileView"]):
                 "Select a template", key="profile.card_template_select.placeholder"
             ),
             row=1,
+            custom_id="profile_card_template_select",
         )
 
     async def callback(self, i: "INTERACTION") -> None:

@@ -83,5 +83,5 @@ class HSRElement(StrEnum):
     IMAGINARY = "imaginary"
     PHYSICAL = "physical"
     QUANTUM = "quantum"
-    THUNDER = "thunder"
+    LIGHTNING = "lightning"
     WIND = "wind"

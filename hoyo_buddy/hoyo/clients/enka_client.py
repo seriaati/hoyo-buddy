@@ -5,59 +5,25 @@ from typing import TYPE_CHECKING
 import enka
 from discord import Locale
 
-from ...constants import LOCALE_TO_ENKA_LANG
+from ...constants import ENKA_LANG_TO_LOCALE, LOCALE_TO_ENKA_LANG
 from ...db.models import EnkaCache
+from .base import BaseClient
 
 if TYPE_CHECKING:
-    from enka.models import Character, ShowcaseResponse
+    from enka.models import ShowcaseResponse
 
 LOGGER_ = logging.getLogger(__name__)
 
 
-class EnkaAPI(enka.EnkaAPI):
+class EnkaAPI(enka.EnkaAPI, BaseClient):
     def __init__(self, locale: Locale = Locale.american_english) -> None:
-        super().__init__(LOCALE_TO_ENKA_LANG.get(locale, enka.Language.ENGLISH))
+        lang = LOCALE_TO_ENKA_LANG.get(locale, enka.Language.ENGLISH)
+        super().__init__(lang=lang)
+        self.locale = ENKA_LANG_TO_LOCALE[lang]
 
     async def __aenter__(self) -> "EnkaAPI":
         await super().__aenter__()
         return self
-
-    def _update_cache_with_live_data(self, cache: EnkaCache, live_data: "ShowcaseResponse") -> None:
-        live_chara_data = {"live": True, "lang": self._lang.value}
-
-        if cache.genshin is None:
-            cache.genshin = pickle.dumps(live_data)
-            cache.extras.update({str(char.id): live_chara_data for char in live_data.characters})
-            return
-
-        cache_data: ShowcaseResponse = pickle.loads(cache.genshin)
-
-        live_character_ids: list[int] = []
-        for character in live_data.characters:
-            live_character_ids.append(character.id)
-            if str(character.id) not in cache.extras:
-                cache.extras[str(character.id)] = live_chara_data
-            else:
-                cache.extras[str(character.id)].update(live_chara_data)
-
-        cache_characters_not_in_live: list["Character"] = []
-
-        for character in cache_data.characters:
-            if character.id not in live_character_ids:
-                cache_characters_not_in_live.append(character)
-                cache.extras[str(character.id)].update({"live": False})
-
-        cache_data.characters = cache_characters_not_in_live + live_data.characters
-        cache_data.player = live_data.player
-        cache.genshin = pickle.dumps(cache_data)
-
-    def _set_all_live_to_false(self, cache: EnkaCache) -> None:
-        if cache.genshin is None:
-            return
-
-        cache_data: ShowcaseResponse = pickle.loads(cache.genshin)
-        for character in cache_data.characters:
-            cache.extras[str(character.id)].update({"live": False})
 
     def get_character_talent_order(self, character_id: str) -> list[int]:
         if self._assets is None:
@@ -79,14 +45,14 @@ class EnkaAPI(enka.EnkaAPI):
             if cache.genshin is None:
                 raise
 
-            self._set_all_live_to_false(cache)
+            cache.extras = self._set_all_live_to_false(cache.genshin, cache.extras)
             await cache.save()
             cache_data: ShowcaseResponse = pickle.loads(cache.genshin)
         else:
-            self._update_cache_with_live_data(cache, live_data)
+            cache.genshin, cache.extras = self._update_cache_with_live_data(
+                cache.genshin, cache.extras, live_data, self.locale
+            )
             await cache.save()
-            assert cache.genshin is not None
-
             cache_data: ShowcaseResponse = pickle.loads(cache.genshin)
 
         return cache_data

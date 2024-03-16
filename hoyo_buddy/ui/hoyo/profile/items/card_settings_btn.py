@@ -5,6 +5,7 @@ from hoyo_buddy.emojis import SETTINGS
 from hoyo_buddy.enums import Game
 from hoyo_buddy.ui.components import Button, GoBackButton
 
+from .....models import HoyolabHSRCharacter
 from .add_img_btn import AddImageButton
 from .card_settings_info_btn import CardSettingsInfoButton
 from .card_template_select import CardTemplateSelect
@@ -38,6 +39,7 @@ class CardSettingsButton(Button["ProfileView"]):
         self.view.add_item(go_back_button)
 
         default_arts: list[str] = self.view._card_data[self.view.character_id]["arts"]
+        character = next(c for c in self.view.characters if str(c.id) == self.view.character_id)
 
         self.view.add_item(
             ImageSelect(
@@ -50,7 +52,8 @@ class CardSettingsButton(Button["ProfileView"]):
         self.view.add_item(
             CardTemplateSelect(
                 self.view._card_settings.template,
-                self.view.character_id in self.view.live_data_character_ids,
+                self.view.character_id not in self.view.live_data_character_ids
+                or isinstance(character, HoyolabHSRCharacter),
                 self.view.game,
             )
         )

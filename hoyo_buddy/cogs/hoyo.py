@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 from discord import app_commands
 from discord.ext import commands
+from mihomo.errors import UserNotFound
 from seria.utils import read_yaml
 
 from ..bot.translator import LocaleStr
@@ -21,7 +22,10 @@ from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.profile.view import ProfileView
 
 if TYPE_CHECKING:
+    from mihomo.models import StarrailInfoParsed
+
     from ..bot.bot import INTERACTION, HoyoBuddy
+    from ..models import HoyolabHSRCharacter
 
 LOGGER_ = logging.getLogger(__name__)
 
@@ -32,8 +36,9 @@ class Hoyo(commands.Cog):
 
     async def _get_uid_and_game(
         self, user_id: int, account: HoyoAccount | None, uid: str | None, game_value: str | None
-    ) -> tuple[int, Game]:
+    ) -> tuple[int, Game, HoyoAccount | None]:
         """Get the UID and game from the account or the provided UID and game value."""
+        account_ = None
         if uid is not None:
             uid_ = int(uid)
             if game_value is None:
@@ -49,7 +54,7 @@ class Hoyo(commands.Cog):
             uid_ = account_.uid
             game = account_.game
 
-        return uid_, game
+        return uid_, game, account_
 
     @app_commands.command(
         name=app_commands.locale_str("check-in", translate=False),
@@ -144,7 +149,7 @@ class Hoyo(commands.Cog):
         await i.response.defer()
 
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        uid_, game = await self._get_uid_and_game(i.user.id, account, uid, game_value)
+        uid_, game, account_ = await self._get_uid_and_game(i.user.id, account, uid, game_value)
 
         if game is Game.GENSHIN:
             async with EnkaAPI(locale) as client:
@@ -156,14 +161,27 @@ class Hoyo(commands.Cog):
                 game,
                 cache.extras,
                 await read_yaml("hoyo-buddy-assets/assets/gi-build-card/data.yaml"),
+                hoyolab_characters=[],
                 genshin_data=data,
                 author=i.user,
                 locale=locale,
                 translator=self.bot.translator,
             )
         elif game is Game.STARRAIL:
-            client = MihomoAPI(locale)
-            data = await client.fetch_user(uid_)
+            hoyolab_charas: list[HoyolabHSRCharacter] = []
+            starrail_data: StarrailInfoParsed | None = None
+
+            try:
+                client = MihomoAPI(locale)
+                starrail_data = await client.fetch_user(uid_)
+            except UserNotFound:
+                if account_ is None:
+                    raise
+
+            if account_ is not None:
+                client = account_.client
+                client.set_lang(locale)
+                hoyolab_charas = await client.get_hoyolab_hsr_characters()
 
             cache = await EnkaCache.get(uid=uid_)
             view = ProfileView(
@@ -171,7 +189,8 @@ class Hoyo(commands.Cog):
                 game,
                 cache.extras,
                 await read_yaml("hoyo-buddy-assets/assets/hsr-build-card/data.yaml"),
-                star_rail_data=data,
+                hoyolab_characters=hoyolab_charas,
+                starrail_data=starrail_data,
                 author=i.user,
                 locale=locale,
                 translator=self.bot.translator,

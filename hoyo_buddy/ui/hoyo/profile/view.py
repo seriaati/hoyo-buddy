@@ -1,16 +1,14 @@
 from io import BytesIO
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypeAlias
 
-from discord.utils import get as dget
-from enka import Language as EnkaLang
-from mihomo import Language as MihomoLang
+from discord import Locale
+from enka.models import Character as GICharacter
 from mihomo.models import Character as HSRCharacter
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.constants import (
-    ENKA_LANG_TO_CARD_API_LANG,
-    ENKA_LANG_TO_LOCALE,
-    MIHOMO_LANG_TO_LOCALE,
+    LOCALE_TO_CARD_API_LANG,
+    LOCALE_TO_MIHOMO_LANG,
 )
 from hoyo_buddy.db.models import CardSettings
 from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card
@@ -19,6 +17,7 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import CardNotReadyError
 from hoyo_buddy.models import DrawInput
 
+from ....models import HoyolabHSRCharacter
 from ...components import (
     View,
 )
@@ -30,15 +29,18 @@ from .items.rmv_from_cache_btn import RemoveFromCacheButton
 
 if TYPE_CHECKING:
     import io
+    from collections.abc import Sequence
 
     import aiohttp
-    from discord import Locale, Member, User
-    from enka.models import Character as GICharacter
+    from discord import Member, User
     from enka.models import ShowcaseResponse
     from mihomo.models import StarrailInfoParsed
 
     from hoyo_buddy.bot.bot import INTERACTION
     from hoyo_buddy.bot.translator import Translator
+
+
+Character: TypeAlias = HoyolabHSRCharacter | GICharacter | HSRCharacter
 
 
 class ProfileView(View):
@@ -48,43 +50,54 @@ class ProfileView(View):
         game: "Game",
         cache_extras: dict[str, dict[str, Any]],
         card_data: dict[str, Any],
-        star_rail_data: "StarrailInfoParsed" = None,  # type: ignore
-        genshin_data: "ShowcaseResponse" = None,  # type: ignore
         *,
+        hoyolab_characters: list[HoyolabHSRCharacter],
+        starrail_data: "StarrailInfoParsed | None" = None,
+        genshin_data: "ShowcaseResponse | None" = None,
         author: "User | Member",
         locale: "Locale",
         translator: "Translator",
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
-        self.star_rail_data = star_rail_data
+        self.hoyolab_characters = hoyolab_characters
+        self.starrail_data = starrail_data
         self.genshin_data = genshin_data
-
-        # Determine live data character IDs based on the game
-        if game is Game.STARRAIL:
-            self.live_data_character_ids = [
-                char.id for char in star_rail_data.characters if cache_extras[char.id]["live"]
-            ]
-        else:
-            self.live_data_character_ids = [
-                str(char.id)
-                for char in genshin_data.characters
-                if cache_extras[str(char.id)]["live"]
-            ]
+        self.live_data_character_ids = [k for k in cache_extras if cache_extras[k]["live"]]
 
         self.uid = uid
         self.game = game
         self.cache_extras = cache_extras
         self.character_id: str | None = None
+        self.characters: Sequence[Character] = []
 
         self._card_settings: CardSettings | None = None
         self._card_data = card_data
 
+    def _set_characters(self) -> None:
+        characters: Sequence[Character] = []
+
+        if self.game is Game.STARRAIL:
+            mihomo_chara_ids: list[str] = []
+            if self.starrail_data is not None:
+                for chara in self.starrail_data.characters:
+                    mihomo_chara_ids.append(str(chara.id))
+                    characters.append(chara)
+            for chara in self.hoyolab_characters:
+                if str(chara.id) not in mihomo_chara_ids:
+                    characters.append(chara)
+
+        elif self.game is Game.GENSHIN:
+            assert self.genshin_data is not None
+            characters.extend(self.genshin_data.characters)
+
+        self.characters = characters
+
     @property
     def player_embed(self) -> DefaultEmbed:
         """Player info embed"""
-        if self.game is Game.STARRAIL:
-            player = self.star_rail_data.player
+        if self.starrail_data is not None:
+            player = self.starrail_data.player
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
@@ -108,7 +121,7 @@ class ProfileView(View):
             embed.set_thumbnail(url=player.avatar.icon)
             if player.signature:
                 embed.set_footer(text=player.signature)
-        else:
+        elif self.genshin_data is not None:
             player = self.genshin_data.player
             embed = DefaultEmbed(
                 self.locale,
@@ -136,14 +149,7 @@ class ProfileView(View):
         self.add_item(CardSettingsButton())
         self.add_item(RemoveFromCacheButton())
         self.add_item(CardInfoButton())
-        self.add_item(
-            CharacterSelect(
-                self.star_rail_data.characters
-                if self.game is Game.STARRAIL
-                else self.genshin_data.characters,
-                self.cache_extras,
-            )
-        )
+        self.add_item(CharacterSelect(self.characters, self.cache_extras))
 
     async def _draw_src_character_card(
         self,
@@ -158,7 +164,7 @@ class ProfileView(View):
         template_num = int(template[-1])
         payload = {
             "uid": uid,
-            "lang": self.cache_extras[character.id]["lang"],
+            "lang": LOCALE_TO_MIHOMO_LANG[Locale(self.cache_extras[character.id]["locale"])].value,
             "template": template_num,
             "character_name": character.name,
             "character_art": self._card_settings.current_image,
@@ -182,9 +188,7 @@ class ProfileView(View):
 
         payload = {
             "uid": uid,
-            "lang": ENKA_LANG_TO_CARD_API_LANG[
-                EnkaLang(self.cache_extras[str(character.id)]["lang"])
-            ],
+            "lang": LOCALE_TO_CARD_API_LANG[Locale(self.cache_extras[str(character.id)]["locale"])],
             "character_id": str(character.id),
             "character_art": self._card_settings.current_image,
         }
@@ -209,7 +213,7 @@ class ProfileView(View):
 
     async def _draw_hb_hsr_character_card(
         self,
-        character: "HSRCharacter",
+        character: "HSRCharacter| HoyolabHSRCharacter",
         session: "aiohttp.ClientSession",
     ) -> BytesIO:
         """Draw Star Rail character card in Hoyo Buddy template."""
@@ -230,7 +234,7 @@ class ProfileView(View):
         return await draw_hsr_build_card(
             DrawInput(
                 dark_mode=self._card_settings.dark_mode,
-                locale=MIHOMO_LANG_TO_LOCALE[MihomoLang(self.cache_extras[character.id]["lang"])],
+                locale=Locale(self.cache_extras[character.id]["locale"]),
                 session=session,
                 filename="card.webp",
             ),
@@ -256,7 +260,7 @@ class ProfileView(View):
         return await draw_gi_build_card(
             DrawInput(
                 dark_mode=self._card_settings.dark_mode,
-                locale=ENKA_LANG_TO_LOCALE[EnkaLang(self.cache_extras[str(character.id)]["lang"])],
+                locale=Locale(self.cache_extras[str(character.id)]["locale"]),
                 session=session,
                 filename="card.webp",
             ),
@@ -268,14 +272,7 @@ class ProfileView(View):
         """Draw the character card and return the bytes object."""
         assert self.character_id is not None
 
-        if self.game is Game.STARRAIL:
-            character = dget(self.star_rail_data.characters, id=self.character_id)
-        else:
-            character = dget(self.genshin_data.characters, id=int(self.character_id))
-
-        if character is None:
-            msg = f"Character not found: {self.character_id}"
-            raise ValueError(msg)
+        character = next(c for c in self.characters if str(c.id) == self.character_id)
 
         # Initialize card settings
         card_settings = await CardSettings.get_or_none(
@@ -297,21 +294,25 @@ class ProfileView(View):
 
         template = self._card_settings.template
 
-        if isinstance(character, HSRCharacter):
+        if isinstance(character, HSRCharacter | HoyolabHSRCharacter):
             if "hb" in template:
                 bytes_obj = await self._draw_hb_hsr_character_card(character, i.client.session)
-            else:
+            elif isinstance(character, HSRCharacter):
                 bytes_obj = await self._draw_src_character_card(
                     self.uid, character, template, i.client.session
                 )
-        elif "hb" in template:
-            bytes_obj = await self._draw_hb_gi_character_card(character, i.client.session)
-        else:
-            bytes_obj = await self._draw_enka_card(self.uid, character, i.client.session, template)
+        elif isinstance(character, GICharacter):
+            if "hb" in template:
+                bytes_obj = await self._draw_hb_gi_character_card(character, i.client.session)
+            else:
+                bytes_obj = await self._draw_enka_card(
+                    self.uid, character, i.client.session, template
+                )
 
         return bytes_obj
 
     async def start(self, i: "INTERACTION") -> None:
+        self._set_characters()
         self._add_items()
         await i.followup.send(embed=self.player_embed, view=self)
         self.message = await i.original_response()

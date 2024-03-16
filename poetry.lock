@@ -994,9 +994,9 @@ geetest = ["rsa"]
 
 [package.source]
 type = "git"
-url = "https://github.com/seriaati/genshin.py"
+url = "https://github.com/thesadru/genshin.py"
 reference = "HEAD"
-resolved_reference = "4f20cf4aac257a932b554d2a5e314c855e9edbc2"
+resolved_reference = "f23467a0bcfabcdf08376946d5845c0c8528aa68"
 
 [[package]]
 name = "h11"
@@ -2436,4 +2436,4 @@ resolved_reference = "96e44d7d83d3edf7d1f342156f69821580d43ddd"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "0e469896593657887069faaabe1a36bc9151ad32ec3cf07982d41cb4490c6825"
+content-hash = "8c4b65dc59799d198bdc0d3ce36c0ff75894afa63cf833d998458336a789da0a"

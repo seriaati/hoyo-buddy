@@ -2072,7 +2072,7 @@ tortoise-orm = {version = "^0.20.0", extras = ["asyncpg"]}
 type = "git"
 url = "https://github.com/seriaati/seria-library"
 reference = "HEAD"
-resolved_reference = "8d253c04307cea40b3938329490f9e00cb8757dd"
+resolved_reference = "49da7acf802aedf1614f4523d432c971e73c366d"
 
 [[package]]
 name = "setuptools"
@@ -2436,4 +2436,4 @@ resolved_reference = "e8f27b05f36144fe3ab5a01d02a773a34f5e395a"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "8c4b65dc59799d198bdc0d3ce36c0ff75894afa63cf833d998458336a789da0a"
+content-hash = "f5387ee5feea3249cab411606b14db3757f2c82bf6680db5a535499e6d3ea20f"

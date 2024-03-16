@@ -15,7 +15,7 @@ discord-py = {extras = ["speed"], version = "^2.3.2"}
 python-dotenv = "^1.0.0"
 sentry-sdk = "^1.32.0"
 tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
-transifex-python = "^3.4.0"
+transifex-python = "^3.5.0"
 orjson = "^3.9.9"
 rsa = "^4.9"
 jishaku = "^2.5.1"

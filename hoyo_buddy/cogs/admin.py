@@ -5,6 +5,7 @@ from discord import ButtonStyle, ui
 from discord.ext import commands
 from seria.utils import write_json
 
+from ..constants import UID_STARTS
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
 from ..hoyo.auto_tasks.notes_check import NotesChecker
@@ -31,8 +32,9 @@ class TaskView(ui.View):
 
     @ui.button(label="Farm Check", style=ButtonStyle.blurple)
     async def farm_check(self, i: "INTERACTION", _: ui.Button) -> None:
-        await i.response.send_message("Farm check task for uid_start `9` started.")
-        asyncio.create_task(FarmChecker.execute(i.client, "9"))
+        await i.response.send_message("Farm check tasks started.")
+        for uid_start in UID_STARTS:
+            asyncio.create_task(FarmChecker.execute(i.client, uid_start))
 
 
 class Admin(commands.Cog):

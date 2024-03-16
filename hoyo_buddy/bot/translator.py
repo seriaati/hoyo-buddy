@@ -152,12 +152,12 @@ class Translator:
         string_key = self._get_string_key(string)
 
         source_string = tx.translate(message, "en_US", _key=string_key, escape=False)
-        if source_string is None:
+        if source_string is None and self._env != "dev":
             self._not_translated[string_key] = message
             LOGGER_.warning(
                 "String %r is missing on Transifex, added to not_translated", string_key
             )
-        elif source_string != message:
+        elif source_string != message and self._env != "dev":
             self._not_translated[string_key] = message
             LOGGER_.warning(
                 "String %r has different values (CDS vs Local): %r and %r",

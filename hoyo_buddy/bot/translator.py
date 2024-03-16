@@ -11,7 +11,7 @@ from discord import app_commands
 from seria.utils import read_json, split_list_to_chunks
 from transifex.native import init, tx
 from transifex.native.parsing import SourceString
-from transifex.native.rendering import AbstractRenderingPolicy
+from transifex.native.rendering import AbstractErrorPolicy, AbstractRenderingPolicy
 
 from ..enums import GenshinElement, HSRElement
 
@@ -64,10 +64,16 @@ class LocaleStr:
         return translator.translate(self, locale)
 
 
-class CustomRenderingPolicy(AbstractRenderingPolicy):
+class CustomMisisngPolicy(AbstractRenderingPolicy):
     @staticmethod
     def get(_: str) -> None:
         return None
+
+
+class CustomErrorPolicy(AbstractErrorPolicy):
+    @staticmethod
+    def get(source_string, translation, language_code, escape, params) -> str:  # noqa: ANN001, ARG004
+        return source_string
 
 
 class Translator:
@@ -110,7 +116,8 @@ class Translator:
                 "id",
                 # "es_ES",
             ),
-            missing_policy=CustomRenderingPolicy(),
+            missing_policy=CustomMisisngPolicy(),
+            error_policy=CustomErrorPolicy(),
         )
         await self.load_synced_commands_json()
 
@@ -151,13 +158,13 @@ class Translator:
 
         string_key = self._get_string_key(string)
 
-        source_string = tx.translate(message, "en_US", _key=string_key, escape=False, params=extras)
+        source_string = tx.translate(message, "en_US", _key=string_key, escape=False)
         if source_string is None and self._env != "dev":
             self._not_translated[string_key] = message
             LOGGER_.warning(
                 "String %r is missing on Transifex, added to not_translated", string_key
             )
-        elif source_string != message.format(**extras) and self._env != "dev":
+        elif source_string != message and self._env != "dev":
             self._not_translated[string_key] = message
             LOGGER_.warning(
                 "String %r has different values (CDS vs Local): %r and %r",

@@ -3,8 +3,10 @@ import random
 from typing import TYPE_CHECKING, Any
 
 import discord
+from ambr.exceptions import ConnectionTimeoutError as ambr_ConnectionTimeoutError
 from discord import app_commands
 from discord.ext import commands, tasks
+from yatta.exceptions import ConnectionTimeoutError as yatta_ConnectionTimeoutError
 
 from ..bot.translator import LocaleStr
 from ..db.models import Settings
@@ -73,11 +75,22 @@ class Search(commands.Cog):
 
         for locale in ambr_client.LOCALE_TO_AMBR_LANG:
             async with ambr_client.AmbrAPIClient(locale, self.bot.translator) as api:
+                try:
+                    await api.fetch_characters()
+                except ambr_ConnectionTimeoutError:
+                    LOGGER_.warning("Ambr API connection timed out, ending ambr setup...")
+                    break
                 for item_category in ambr_client.ItemCategory:
                     await self._fetch_item_task(api, item_category, locale)
 
         for locale in yatta_client.LOCALE_TO_YATTA_LANG:
             async with yatta_client.YattaAPIClient(locale, self.bot.translator) as api:
+                try:
+                    await api.fetch_light_cones()
+                except yatta_ConnectionTimeoutError:
+                    LOGGER_.warning("Yatta API connection timed out, ending yatta setup...")
+                    break
+
                 for item_category in yatta_client.ItemCategory:
                     await self._fetch_item_task(api, item_category, locale)
 
@@ -88,8 +101,8 @@ class Search(commands.Cog):
 
     @tasks.loop(hours=24)
     async def _update_search_autocomplete_choices(self) -> None:
-        if self.bot.env == "dev":
-            return
+        # if self.bot.env == "dev":
+        #     return
         await self._setup_search_autocomplete_choices()
 
     @_update_search_autocomplete_choices.before_loop
@@ -369,6 +382,16 @@ class Search(commands.Cog):
             return [
                 self.bot.get_error_app_command_choice(
                     LocaleStr("Invalid category selected", key="invalid_category_selected")
+                )
+            ]
+
+        if not self.bot.search_autocomplete_choices:
+            return [
+                self.bot.get_error_app_command_choice(
+                    LocaleStr(
+                        "Search autocomplete choices not set up yet, please try again later.",
+                        key="search_autocomplete_not_setup",
+                    )
                 )
             ]
 

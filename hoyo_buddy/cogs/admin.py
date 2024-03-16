@@ -49,6 +49,7 @@ class Admin(commands.Cog):
         await write_json(
             "hoyo_buddy/bot/data/synced_commands.json", {c.name: c.id for c in synced_commands}
         )
+        await self.bot.translator.load_synced_commands_json()
         await message.edit(content=f"Synced {len(synced_commands)} commands.")
 
     @commands.command(name="push-source-strings", aliases=["pss"])
@@ -63,11 +64,6 @@ class Admin(commands.Cog):
         await self.bot.translator.fetch_source_strings()
         await message.edit(content="Fetched source strings.")
 
-    @commands.command(name="reload-synced-commands", aliases=["rsc"])
-    async def reload_sync_commands_command(self, ctx: commands.Context) -> Any:
-        await self.bot.translator.load_synced_commands_json()
-        await ctx.send("Reloaded synced commands JSON.")
-
     @commands.command(name="run-tasks", aliases=["rt"])
     async def run_tasks_command(self, ctx: commands.Context) -> Any:
         view = TaskView()
@@ -75,7 +71,7 @@ class Admin(commands.Cog):
 
     @commands.command(name="not-translated", aliases=["nt"])
     async def not_translated_command(self, ctx: commands.Context) -> Any:
-        not_translated = self.bot.translator.not_translated
+        not_translated = self.bot.translator._not_translated
         await ctx.send(f"Not translated:\n```\n{not_translated}\n```\nTotal: {len(not_translated)}")
 
 

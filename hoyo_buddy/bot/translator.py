@@ -73,9 +73,10 @@ class CustomRenderingPolicy(AbstractRenderingPolicy):
 class Translator:
     def __init__(self, env: str) -> None:
         super().__init__()
-        self.not_translated: dict[str, str] = {}
-        self.env = env
-        self.synced_commands: dict[str, int] = {}
+
+        self._env = env
+        self._not_translated: dict[str, str] = {}
+        self._synced_commands: dict[str, int] = {}
 
     async def __aenter__(self) -> "Translator":
         await self.load()
@@ -90,6 +91,7 @@ class Translator:
         await self.unload()
 
     async def load(self) -> None:
+        # Commented out languages don't have translations yet
         init(
             token=os.environ["TRANSIFEX_TOKEN"],
             secret=os.environ["TRANSIFEX_SECRET"],
@@ -98,33 +100,36 @@ class Translator:
                 "zh_CN",
                 "zh_TW",
                 "ja",
-                "ko",
+                # "ko",
                 "fr",
-                "de",
+                # "de",
                 "pt_BR",
-                "vi",
-                "ru",
-                "th",
+                # "vi",
+                # "ru",
+                # "th",
                 "id",
-                "es_ES",
+                # "es_ES",
             ),
             missing_policy=CustomRenderingPolicy(),
         )
         await self.load_synced_commands_json()
 
-        if self.env in {"prod", "test"}:
+        if self._env in {"prod", "test"}:
             await self.fetch_source_strings()
 
         LOGGER_.info("Translator loaded")
 
-    def replace_command_with_mentions(self, message: str) -> str:
+    async def load_synced_commands_json(self) -> None:
+        self._synced_commands = await read_json("hoyo_buddy/bot/data/synced_commands.json")
+
+    def _replace_command_with_mentions(self, message: str) -> str:
         command_occurences: list[str] = re.findall(COMMAND_REGEX, message)
         for command_occurence in command_occurences:
             command_name = command_occurence[2:-1]
             if " " in command_name:
                 # is subcommand
                 command_name = command_name.split(" ")[0]
-            command_id = self.synced_commands.get(command_name)
+            command_id = self._synced_commands.get(command_name)
 
             # after geting the command_id, change command_name back to the original command name
             command_name = command_occurence[2:-1]
@@ -142,31 +147,39 @@ class Translator:
         message = string.message
 
         if string.replace_command_mentions:
-            message = self.replace_command_with_mentions(message)
-
-        generated_translation = self._generate_translation(message, extras)
-
-        if not string.translate_:
-            return generated_translation
+            message = self._replace_command_with_mentions(message)
 
         string_key = self._get_string_key(string)
+
+        source_string = tx.translate(message, "en_US", _key=string_key, escape=False)
+        if source_string is None:
+            self._not_translated[string_key] = message
+            LOGGER_.warning(
+                "String %r is missing on Transifex, added to not_translated", string_key
+            )
+        elif source_string != message:
+            self._not_translated[string_key] = message
+            LOGGER_.warning(
+                "String %r has different values (CDS vs Local): %r and %r",
+                string_key,
+                source_string,
+                message,
+            )
+
         lang = locale.value.replace("-", "_")
-        is_source = "en" in lang
-        translation = None
+
+        if "en" in lang or not string.translate_:
+            translation = message
+        else:
+            translation = tx.translate(message, lang, _key=string_key, escape=False)
+            translation = translation or message
+
         with contextlib.suppress(KeyError):
-            translation = self._get_translation(message, lang, extras, string_key, is_source)
-
-        if translation is None:
-            self._handle_missing_translation(string_key, message)
-            return generated_translation
-
-        if is_source and translation != message and not extras:
-            self._handle_mismatched_strings(string_key, message)
-            return message
+            translation = translation.format(**extras)
 
         return translation
 
-    def _translate_extras(self, extras: dict, locale: "Locale") -> dict:
+    def _translate_extras(self, extras: dict[str, Any], locale: "Locale") -> dict:
         translated_extras = {}
         for k, v in extras.items():
             if isinstance(v, LocaleStr):
@@ -176,14 +189,6 @@ class Translator:
             else:
                 translated_extras[k] = v
         return translated_extras
-
-    @staticmethod
-    def _generate_translation(message: str, extras: dict) -> str:
-        try:
-            generated_translation = message.format(**extras)
-        except ValueError:
-            generated_translation = message
-        return generated_translation
 
     @staticmethod
     def _get_string_key(string: LocaleStr) -> str:
@@ -201,36 +206,6 @@ class Translator:
             string_key = string.key
         return string_key
 
-    def _get_translation(
-        self, message: str, lang: str, extras: dict, string_key: str, is_source: bool
-    ) -> str | None:
-        translation = tx.translate(
-            message,
-            lang,
-            params=extras,
-            _key=string_key,
-            escape=False,
-            is_source=is_source,
-        )
-        if translation is None:
-            existing = self.not_translated.get(string_key)
-            if existing is not None and existing != message:
-                LOGGER_.warning(
-                    "String %r has different values: %r and %r",
-                    string_key,
-                    existing,
-                    message,
-                )
-            self.not_translated[string_key] = message
-        return translation
-
-    def _handle_missing_translation(self, string_key: str, message: str) -> None:
-        self.not_translated[string_key] = message
-
-    def _handle_mismatched_strings(self, string_key: str, message: str) -> None:
-        LOGGER_.info("Local and CDS strings with key %r do not match", string_key)
-        self.not_translated[string_key] = message
-
     @staticmethod
     async def fetch_source_strings() -> None:
         LOGGER_.info("Fetching translations...")
@@ -238,16 +213,13 @@ class Translator:
         await asyncio.to_thread(tx.fetch_translations)
         LOGGER_.info("Fetched translations in %.2f seconds", time.time() - start)
 
-    async def load_synced_commands_json(self) -> None:
-        self.synced_commands = await read_json("hoyo_buddy/bot/data/synced_commands.json")
-
     async def push_source_strings(self) -> None:
-        if not self.not_translated:
+        if not self._not_translated:
             return
 
-        LOGGER_.info("Pushing %d source strings to Transifex", len(self.not_translated))
+        LOGGER_.info("Pushing %d source strings to Transifex", len(self._not_translated))
         split_source_strings = split_list_to_chunks(
-            [SourceString(string, _key=key) for key, string in self.not_translated.items()],
+            [SourceString(string, _key=key) for key, string in self._not_translated.items()],
             5,
         )
         for source_strings in split_source_strings:
@@ -255,7 +227,7 @@ class Translator:
                 tx.push_source_strings, source_strings, do_not_keep_translations=True
             )
 
-        self.not_translated.clear()
+        self._not_translated.clear()
 
     def get_traveler_name(
         self, character: "GenshinCharacter", locale: "Locale", *, gender_symbol: bool = True
@@ -290,7 +262,7 @@ class Translator:
         )
 
     async def unload(self) -> None:
-        if self.not_translated and self.env in {"prod", "test"}:
+        if self._not_translated and self._env in {"prod", "test"}:
             await self.push_source_strings()
         LOGGER_.info("Translator unloaded")
 

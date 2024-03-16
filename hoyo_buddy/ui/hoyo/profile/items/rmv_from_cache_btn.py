@@ -59,7 +59,7 @@ class RemoveFromCacheButton(Button["ProfileView"]):
                 break
 
         character_select.options = character_select.process_options()
-        self.view.character_id = self.view.star_rail_data.characters[0].id
+        self.view.character_id = str(self.view.characters[0].id)
         character_select.update_options_defaults(values=[self.view.character_id])
         character_select.translate(self.view.locale, self.view.translator)
 

@@ -7,18 +7,20 @@ from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji
 from hoyo_buddy.ui.components import PaginatorSelect, SelectOption
 
+from .....models import HoyolabHSRCharacter
+
 if TYPE_CHECKING:
-    from enka.models import Character as GICharacter
+    from collections.abc import Sequence
 
     from hoyo_buddy.bot.bot import INTERACTION
 
-    from ..view import ProfileView  # noqa: F401
+    from ..view import Character, ProfileView  # noqa: F401
 
 
 class CharacterSelect(PaginatorSelect["ProfileView"]):
     def __init__(
         self,
-        characters: list["HSRCharacter"] | list["GICharacter"],
+        characters: "Sequence[Character]",
         cache_extras: dict[str, dict[str, Any]],
     ) -> None:
         options: list[SelectOption] = []
@@ -34,7 +36,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
 
             if isinstance(character, HSRCharacter):
                 description = LocaleStr(
-                    "Lv.{level} | E{eidolons}S{superposition} | {data_type}",
+                    "Lv.{level} | E{eidolons}S{superposition} | {data_type} | From in-game showcase",
                     key="profile.character_select.description",
                     level=character.level,
                     superposition=character.light_cone.superimpose if character.light_cone else 0,
@@ -42,6 +44,16 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                     data_type=data_type,
                 )
                 emoji = get_hsr_element_emoji(character.element.id)
+            elif isinstance(character, HoyolabHSRCharacter):
+                description = LocaleStr(
+                    "Lv.{level} | E{eidolons}S{superposition} | {data_type} | From HoYoLAB",
+                    key="profile.character_select.hoyolab.description",
+                    level=character.level,
+                    superposition=character.light_cone.superimpose if character.light_cone else 0,
+                    eidolons=character.eidolon,
+                    data_type=data_type,
+                )
+                emoji = get_hsr_element_emoji(character.element)
             else:
                 description = LocaleStr(
                     "Lv.{level} | C{const}R{refine} | {data_type}",

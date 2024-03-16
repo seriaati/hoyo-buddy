@@ -68,22 +68,6 @@ EQUIP_ID_TO_ARTIFACT_POS: dict[str, str] = {
     "EQUIP_DRESS": "circlet",
 }
 
-MIHOMO_LANG_TO_LOCALE: dict[MihomoLanguage, discord.Locale] = {
-    MihomoLanguage.CHT: discord.Locale.taiwan_chinese,
-    MihomoLanguage.CHS: discord.Locale.chinese,
-    MihomoLanguage.DE: discord.Locale.german,
-    MihomoLanguage.EN: discord.Locale.american_english,
-    MihomoLanguage.ES: discord.Locale.spain_spanish,
-    MihomoLanguage.FR: discord.Locale.french,
-    MihomoLanguage.ID: discord.Locale.indonesian,
-    MihomoLanguage.JP: discord.Locale.japanese,
-    MihomoLanguage.KR: discord.Locale.korean,
-    MihomoLanguage.PT: discord.Locale.brazil_portuguese,
-    MihomoLanguage.RU: discord.Locale.russian,
-    MihomoLanguage.TH: discord.Locale.thai,
-    MihomoLanguage.VI: discord.Locale.vietnamese,
-}
-
 LOCALE_TO_MIHOMO_LANG: dict[discord.Locale, MihomoLanguage] = {
     discord.Locale.taiwan_chinese: MihomoLanguage.CHT,
     discord.Locale.chinese: MihomoLanguage.CHS,  # .CN
@@ -99,6 +83,7 @@ LOCALE_TO_MIHOMO_LANG: dict[discord.Locale, MihomoLanguage] = {
     discord.Locale.thai: MihomoLanguage.TH,
     discord.Locale.vietnamese: MihomoLanguage.VI,
 }
+MIHOMO_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_MIHOMO_LANG.items()}
 
 LOCALE_TO_GPY_LANG = {
     discord.Locale.british_english: "en-us",
@@ -117,6 +102,8 @@ LOCALE_TO_GPY_LANG = {
     discord.Locale.vietnamese: "vi-vn",
     discord.Locale.turkish: "tr-tr",
 }
+GPY_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_GPY_LANG.items()}
+
 
 HOYO_BUDDY_LOCALES: dict[discord.Locale, dict[str, str]] = {
     discord.Locale.american_english: {"name": "English (US)", "emoji": "🇺🇸"},
@@ -179,41 +166,34 @@ LOCALE_TO_ENKA_LANG: dict[discord.Locale, EnkaLanguage] = {
     discord.Locale.italian: EnkaLanguage.ITALIAN,
     discord.Locale.turkish: EnkaLanguage.TURKISH,
 }
+ENKA_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_ENKA_LANG.items()}
 
-ENKA_LANG_TO_LOCALE: dict[EnkaLanguage, discord.Locale] = {
-    EnkaLanguage.TRADITIONAL_CHINESE: discord.Locale.taiwan_chinese,
-    EnkaLanguage.SIMPLIFIED_CHINESE: discord.Locale.chinese,
-    EnkaLanguage.GERMAN: discord.Locale.german,
-    EnkaLanguage.ENGLISH: discord.Locale.american_english,
-    EnkaLanguage.SPANISH: discord.Locale.spain_spanish,
-    EnkaLanguage.FRENCH: discord.Locale.french,
-    EnkaLanguage.INDONESIAN: discord.Locale.indonesian,
-    EnkaLanguage.JAPANESE: discord.Locale.japanese,
-    EnkaLanguage.KOREAN: discord.Locale.korean,
-    EnkaLanguage.PORTUGUESE: discord.Locale.brazil_portuguese,
-    EnkaLanguage.RUSSIAN: discord.Locale.russian,
-    EnkaLanguage.THAI: discord.Locale.thai,
-    EnkaLanguage.VIETNAMESE: discord.Locale.vietnamese,
-    EnkaLanguage.ITALIAN: discord.Locale.italian,
-    EnkaLanguage.TURKISH: discord.Locale.turkish,
+LOCALE_TO_CARD_API_LANG: dict[discord.Locale, str] = {
+    discord.Locale.taiwan_chinese: "cht",
+    discord.Locale.chinese: "chs",
+    discord.Locale.german: "de",
+    discord.Locale.american_english: "en",
+    discord.Locale.spain_spanish: "es",
+    discord.Locale.french: "fr",
+    discord.Locale.indonesian: "id",
+    discord.Locale.japanese: "jp",
+    discord.Locale.korean: "kr",
+    discord.Locale.brazil_portuguese: "pt",
+    discord.Locale.russian: "ru",
+    discord.Locale.thai: "th",
+    discord.Locale.vietnamese: "vi",
+    discord.Locale.italian: "it",
+    discord.Locale.turkish: "tr",
 }
 
-ENKA_LANG_TO_CARD_API_LANG: dict[EnkaLanguage, str] = {
-    EnkaLanguage.TRADITIONAL_CHINESE: "cht",
-    EnkaLanguage.SIMPLIFIED_CHINESE: "chs",
-    EnkaLanguage.GERMAN: "de",
-    EnkaLanguage.ENGLISH: "en",
-    EnkaLanguage.SPANISH: "es",
-    EnkaLanguage.FRENCH: "fr",
-    EnkaLanguage.INDONESIAN: "id",
-    EnkaLanguage.JAPANESE: "jp",
-    EnkaLanguage.KOREAN: "kr",
-    EnkaLanguage.PORTUGUESE: "pt",
-    EnkaLanguage.RUSSIAN: "ru",
-    EnkaLanguage.THAI: "th",
-    EnkaLanguage.VIETNAMESE: "vi",
-    EnkaLanguage.ITALIAN: "it",
-    EnkaLanguage.TURKISH: "tr",
+HSR_ELEMENT_DMG_PROPS = {
+    12,  # Physical
+    22,  # Quantum
+    16,  # Ice
+    18,  # Electro
+    20,  # Wind
+    24,  # Imaginary
+    14,  # Fire
 }
 
 # NSFW tags for AI art generation feature

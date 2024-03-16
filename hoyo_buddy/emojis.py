@@ -49,7 +49,7 @@ HSR_ELEMENT_EMOJIS: dict[str, str] = {
     HSRElement.IMAGINARY: "<:IconAttributeImaginary:1211302761912606890>",
     HSRElement.PHYSICAL: "<:IconAttributePhysical:1211302759907983461>",
     HSRElement.QUANTUM: "<:IconAttributeQuantum:1211302767033983046>",
-    HSRElement.THUNDER: "<:IconAttributeThunder:1211302758175735942>",
+    HSRElement.LIGHTNING: "<:IconAttributeThunder:1211302758175735942>",
     HSRElement.WIND: "<:IconAttributeWind:1211302764915859498>",
 }
 ARTIFACT_POS_EMOJIS: dict[str, str] = {

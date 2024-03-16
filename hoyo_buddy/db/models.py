@@ -120,6 +120,7 @@ class EnkaCache(Model):
     uid = fields.IntField(pk=True, index=True)
     hsr: fields.Field[bytes | None] = fields.BinaryField(null=True)  # type: ignore
     genshin: fields.Field[bytes | None] = fields.BinaryField(null=True)  # type: ignore
+    hoyolab: fields.Field[bytes | None] = fields.BinaryField(null=True)  # type: ignore
     extras: fields.Field[dict[str, dict[str, Any]]] = fields.JSONField(default={})  # type: ignore
 
     class Meta:

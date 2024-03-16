@@ -312,16 +312,12 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
                 level_upgrade = talent.upgrades[-1]
                 level = level_upgrade.level
 
-            level_str = self.translator.translate(
-                LocaleStr(
-                    "Lv.{level}",
-                    key="level_str",
+            embed.add_field(
+                name=LocaleStr(
+                    "Skill Attributes (Lv.{level})",
+                    key="skill_attributes_embed_field_name",
                     level=level,
                 ),
-                self.locale,
-            )
-            embed.add_field(
-                name=f"Skill Attributes ({level_str})",
                 value=self._get_skill_attributes(level_upgrade.description, level_upgrade.params),
             )
         embed.set_thumbnail(url=talent.icon)

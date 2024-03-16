@@ -215,7 +215,7 @@ pydantic = "^2.4.2"
 type = "git"
 url = "https://github.com/seriaati/ambr"
 reference = "HEAD"
-resolved_reference = "eccbcdda31a1083df49c986b282f6727edf67600"
+resolved_reference = "66548c9cf8a1420493fa3452c91766280c3c36a0"
 
 [[package]]
 name = "annotated-types"
@@ -2431,7 +2431,7 @@ pydantic = "^2.5.2"
 type = "git"
 url = "https://github.com/seriaati/yatta"
 reference = "HEAD"
-resolved_reference = "96e44d7d83d3edf7d1f342156f69821580d43ddd"
+resolved_reference = "e8f27b05f36144fe3ab5a01d02a773a34f5e395a"
 
 [metadata]
 lock-version = "2.0"

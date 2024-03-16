@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any
 
 import discord
 from ambr.exceptions import ConnectionTimeoutError as ambr_ConnectionTimeoutError
-from discord import app_commands
+from discord import Locale, app_commands
 from discord.ext import commands, tasks
 from yatta.exceptions import ConnectionTimeoutError as yatta_ConnectionTimeoutError
 
@@ -397,11 +397,14 @@ class Search(commands.Cog):
 
         if not current:
             locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-            autocomplete_choices = self.bot.search_autocomplete_choices[game][category][
-                locale.value
-            ]
+            try:
+                choice_dict = self.bot.search_autocomplete_choices[game][category][locale.value]
+            except KeyError:
+                choice_dict = self.bot.search_autocomplete_choices[game][category][
+                    Locale.american_english.value
+                ]
         else:
-            autocomplete_choices = {
+            choice_dict = {
                 k: v
                 for c in self.bot.search_autocomplete_choices[game][category].values()
                 for k, v in c.items()
@@ -409,7 +412,7 @@ class Search(commands.Cog):
 
         choices = [
             app_commands.Choice(name=choice, value=item_id)
-            for choice, item_id in autocomplete_choices.items()
+            for choice, item_id in choice_dict.items()
             if current.lower() in choice.lower()
         ]
 

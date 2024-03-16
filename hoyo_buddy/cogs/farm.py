@@ -2,7 +2,7 @@ import logging
 import random
 from typing import TYPE_CHECKING
 
-from discord import app_commands
+from discord import Locale, app_commands
 from discord.ext import commands
 
 from ..bot.translator import LocaleStr
@@ -286,9 +286,14 @@ class Farm(
 
         if not current:
             locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-            choice_dict = dict(characters[locale.value].items()) | dict(
-                weapons[locale.value].items()
-            )
+            try:
+                choice_dict = dict(characters[locale.value].items()) | dict(
+                    weapons[locale.value].items()
+                )
+            except KeyError:
+                choice_dict = dict(characters[Locale.american_english.value].items()) | dict(
+                    weapons[Locale.american_english.value].items()
+                )
         else:
             choice_dict = {k: v for c in characters.values() for k, v in c.items()} | {
                 k: v for w in weapons.values() for k, v in w.items()

@@ -2,10 +2,11 @@ import asyncio
 from typing import TYPE_CHECKING
 
 from discord import File
+from mihomo.models import Character as MihomoCharacter
 
 from hoyo_buddy.draw import funcs
 
-from ..models import AbyssCharacter
+from ..models import AbyssCharacter, HoyolabHSRCharacter
 from .static import download_and_save_static_images
 
 if TYPE_CHECKING:
@@ -16,7 +17,6 @@ if TYPE_CHECKING:
     from genshin.models import Character as GenshinCharacter
     from genshin.models import Notes as GenshinNote
     from genshin.models import SpiralAbyss, StarRailNote
-    from mihomo.models import Character as MihomoCharacter
 
     from ..bot.translator import Translator
     from ..models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
@@ -46,27 +46,38 @@ async def draw_checkin_card(draw_input: "DrawInput", rewards: list["Reward"]) ->
 
 
 async def draw_hsr_build_card(
-    draw_input: "DrawInput", character: "MihomoCharacter", image_url: str, primary_hex: str
+    draw_input: "DrawInput",
+    character: "MihomoCharacter | HoyolabHSRCharacter",
+    image_url: str,
+    primary_hex: str,
 ) -> "BytesIO":
     urls: list[str] = []
     urls.append(image_url)
-    for trace in character.traces:
-        urls.append(trace.icon)
+    if isinstance(character, HoyolabHSRCharacter):
+        for stat in character.stats:
+            urls.append(stat.icon)
+    else:
+        for trace in character.traces:
+            urls.append(trace.icon)
+        for attr in character.attributes:
+            urls.append(attr.icon)
+        for addition in character.additions:
+            urls.append(addition.icon)
+
     for trace in character.trace_tree:
         urls.append(trace.icon)
+
     for relic in character.relics:
         urls.append(relic.icon)
         urls.append(relic.main_affix.icon)
         for affix in relic.sub_affixes:
             urls.append(affix.icon)
-    for attr in character.attributes:
-        urls.append(attr.icon)
-    for addition in character.additions:
-        urls.append(addition.icon)
+
     if character.light_cone is not None:
         urls.append(character.light_cone.portrait)
-        for attr in character.light_cone.attributes:
-            urls.append(attr.icon)
+        if isinstance(character, MihomoCharacter):
+            for attr in character.light_cone.attributes:
+                urls.append(attr.icon)
     urls.append(
         "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/property/IconEnergyRecovery.png"
     )

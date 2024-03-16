@@ -353,7 +353,11 @@ class NotesChecker:
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:
         content = LocaleStr(
-            "An error occurred while processing your reminder",
+            (
+                "An error occurred while processing your reminder.\n"
+                "You can disable the reminders by using the </notes> command.\n"
+                "If this keeps happening, consider reporting this to the developer with the </feedback> command."
+            ),
             key="process_notify_error.content",
         )
         translated_content = cls._bot.translator.translate(content, await cls._get_locale(notify))
@@ -418,14 +422,13 @@ class NotesChecker:
                 if cls._determine_skip(notify):
                     continue
 
-                if notify.account.uid not in cls._notes_cache[notify.account.game]:
-                    notes = await cls._get_notes(notify)
-
-                    cls._notes_cache[notify.account.game][notify.account.uid] = notes
-                else:
-                    notes = cls._notes_cache[notify.account.game][notify.account.uid]
-
                 try:
+                    if notify.account.uid not in cls._notes_cache[notify.account.game]:
+                        notes = await cls._get_notes(notify)
+                        cls._notes_cache[notify.account.game][notify.account.uid] = notes
+                    else:
+                        notes = cls._notes_cache[notify.account.game][notify.account.uid]
+
                     await cls._process_notify(notify, notes)
                 except Exception as e:
                     await cls._handle_notify_error(notify, e)

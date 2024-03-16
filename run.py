@@ -30,9 +30,12 @@ discord.VoiceClient.warn_nacl = False
 
 
 async def main() -> None:
-    async with aiohttp.ClientSession() as session, Database(), Translator(
-        env
-    ) as translator, HoyoBuddy(session=session, env=env, translator=translator) as bot:
+    async with (
+        aiohttp.ClientSession() as session,
+        Database(),
+        Translator(env) as translator,
+        HoyoBuddy(session=session, env=env, translator=translator) as bot,
+    ):
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
             server = GeetestWebServer(translator=translator)
             asyncio.create_task(server.run())
@@ -41,7 +44,12 @@ async def main() -> None:
 
 with setup_logging(
     logging.DEBUG if env == "dev" else logging.INFO,
-    loggers_to_suppress=("aiosqlite", "tortoise.db_client", "PIL"),
+    loggers_to_suppress=(
+        "aiosqlite",
+        "tortoise.db_client",
+        "PIL",
+        "aiohttp_client_cache",
+    ),
     log_filename="hoyo_buddy.log",
 ):
     try:

@@ -112,24 +112,25 @@ def draw_small_character_card(
         const=character.constellation,
         refine=character.weapon.refinement,
     )
-    drawer.write(text, size=31, position=(227, 32), locale=locale, style="medium")
+    drawer.write(text, size=31, position=(236, 32), locale=locale, style="medium")
     text = LocaleStr("Lv.{level}", key="level_str", level=character.level)
-    drawer.write(text, size=31, position=(227, 72), locale=locale, style="medium")
+    drawer.write(text, size=31, position=(236, 72), locale=locale, style="medium")
 
     friend_textbbox = drawer.write(
-        str(character.friendship), size=18, position=(287, 154), anchor="mm"
+        str(character.friendship), size=18, position=(284, 151), anchor="mm"
     )
-    talent_textbbox = drawer.write(talent_str, size=18, position=(368, 154), anchor="mm")
+    talent_textbbox = drawer.write(talent_str, size=18, position=(405, 151), anchor="mm")
 
     size = 4
-    x_start = 287 + (friend_textbbox[2] - friend_textbbox[0]) // 2
-    x_end = 360 - (talent_textbbox[2] - talent_textbbox[0]) // 2
-    x_avg = (x_start + x_end) // 2
-    y_start = 156 - size
-    draw.ellipse((x_avg, y_start, x_avg + size, y_start + size), fill=WHITE if dark_mode else BLACK)
+    space = talent_textbbox[0] - friend_textbbox[2]
+    x_start = friend_textbbox[2] + space // 2 - size // 2
+    y_start = friend_textbbox[1] + (friend_textbbox[3] - friend_textbbox[1]) // 2 - size // 2
+    draw.ellipse(
+        (x_start, y_start, x_start + size, y_start + size), fill=WHITE if dark_mode else BLACK
+    )
 
     weapon_icon = drawer.open_static(character.weapon.icon)
     weapon_icon = weapon_icon.resize((84, 84))
-    im.paste(weapon_icon, (332, 30), weapon_icon)
+    im.paste(weapon_icon, (365, 26), weapon_icon)
 
     return im

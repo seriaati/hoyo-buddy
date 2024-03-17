@@ -45,6 +45,7 @@ class AbyssView(View):
             self._abyss[self._previous] = await client.get_genshin_spiral_abyss(
                 self._account.uid, previous=self._previous
             )
+
         if self._abyss[self._previous].max_floor == "0-0":
             raise NoAbyssDataError()
         if not self._characters:
@@ -66,8 +67,8 @@ class AbyssView(View):
         )
 
     def _add_items(self) -> None:
-        self.add_item(CurrentButton())
-        self.add_item(PreviousButton())
+        self.add_item(CurrentButton(self._previous))
+        self.add_item(PreviousButton(self._previous))
 
     def _update_button_styles(self) -> None:
         current_btn: CurrentButton = self.get_item("abyss_current")
@@ -89,7 +90,12 @@ class AbyssView(View):
     async def start(self, i: "INTERACTION") -> None:
         await i.response.defer()
 
-        await self._fetch_data()
+        try:
+            await self._fetch_data()
+        except NoAbyssDataError:
+            self._previous = not self._previous
+            await self._fetch_data()
+
         file_ = await self._draw_card(i.client.session)
 
         self._add_items()
@@ -98,10 +104,10 @@ class AbyssView(View):
 
 
 class CurrentButton(Button[AbyssView]):
-    def __init__(self) -> None:
+    def __init__(self, current: bool) -> None:
         super().__init__(
             label=LocaleStr("Current Lunar Phase", key="abyss.current"),
-            style=ButtonStyle.blurple,
+            style=ButtonStyle.blurple if not current else ButtonStyle.gray,
             custom_id="abyss_current",
             row=0,
         )
@@ -109,15 +115,19 @@ class CurrentButton(Button[AbyssView]):
     async def callback(self, i: "INTERACTION") -> None:
         self.view._previous = False
         await self.set_loading_state(i)
-        file_ = await self.view.update(i.client.session)
+        try:
+            file_ = await self.view.update(i.client.session)
+        except Exception:
+            await self.unset_loading_state(i)
+            raise
         await self.unset_loading_state(i, attachments=[file_])
 
 
 class PreviousButton(Button[AbyssView]):
-    def __init__(self) -> None:
+    def __init__(self, current: bool) -> None:
         super().__init__(
             label=LocaleStr("Previous Lunar Phase", key="abyss.previous"),
-            style=ButtonStyle.gray,
+            style=ButtonStyle.blurple if current else ButtonStyle.gray,
             custom_id="abyss_previous",
             row=1,
         )
@@ -125,5 +135,9 @@ class PreviousButton(Button[AbyssView]):
     async def callback(self, i: "INTERACTION") -> None:
         self.view._previous = True
         await self.set_loading_state(i)
-        file_ = await self.view.update(i.client.session)
+        try:
+            file_ = await self.view.update(i.client.session)
+        except Exception:
+            await self.unset_loading_state(i)
+            raise
         await self.unset_loading_state(i, attachments=[file_])

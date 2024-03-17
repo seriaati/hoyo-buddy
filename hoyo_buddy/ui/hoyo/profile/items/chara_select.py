@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Any
 
-from discord import File
 from mihomo.models import Character as HSRCharacter
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -99,8 +98,4 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         await self.set_loading_state(i)
 
         # Redraw the card
-        bytes_obj = await self.view.draw_card(i)
-        bytes_obj.seek(0)
-        await self.unset_loading_state(
-            i, attachments=[File(bytes_obj, filename="card.webp")], embed=None
-        )
+        await self.view.update(i, self)

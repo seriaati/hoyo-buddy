@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle, File
+from discord import ButtonStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import DELETE
@@ -44,8 +44,4 @@ class RemoveImageButton(Button["ProfileView"]):
         image_select.translate(self.view.locale, self.view.translator)
 
         # Redraw the card
-        bytes_obj = await self.view.draw_card(i)
-        bytes_obj.seek(0)
-        await self.unset_loading_state(
-            i, attachments=[File(bytes_obj, filename="card.webp")], embed=None
-        )
+        await self.view.update(i, self)

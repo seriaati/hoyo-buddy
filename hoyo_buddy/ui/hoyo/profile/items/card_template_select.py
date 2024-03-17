@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING
 
-from discord import File
-
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.enums import Game
 from hoyo_buddy.ui.components import Select, SelectOption
@@ -155,8 +153,4 @@ class CardTemplateSelect(Select["ProfileView"]):
         image_select.disabled = self.values[0] == "hattvr1"
 
         # Redraw the card
-        bytes_obj = await self.view.draw_card(i)
-        bytes_obj.seek(0)
-        await self.unset_loading_state(
-            i, attachments=[File(bytes_obj, filename="card.webp")], embed=None
-        )
+        await self.view.update(i, self)

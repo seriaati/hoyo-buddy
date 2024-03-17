@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, TextStyle
-from discord.file import File
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import ADD
@@ -65,6 +64,7 @@ class AddImageButton(Button["ProfileView"]):
         try:
             url = await upload_image(i.client.session, image_url=image_url)
         except Exception as e:
+            await self.unset_loading_state(i)
             raise InvalidImageURLError from e
 
         # Add the image URL to db
@@ -85,8 +85,4 @@ class AddImageButton(Button["ProfileView"]):
         remove_img_btn.disabled = False
 
         # Redraw the card
-        bytes_obj = await self.view.draw_card(i)
-        bytes_obj.seek(0)
-        await self.unset_loading_state(
-            i, attachments=[File(bytes_obj, filename="card.webp")], embed=None
-        )
+        await self.view.update(i, self)

@@ -35,6 +35,7 @@ class Schedule(commands.Cog):
         # Every day at 00:00
         if now.hour == 0 and now.minute < self.loop_interval:
             asyncio.create_task(DailyCheckin.execute(self.bot))
+            asyncio.create_task(self.bot.update_assets())
 
         # Every day at 04:00, 11:00, 17:00
         if now.hour in {4, 11, 17} and now.minute < self.loop_interval:

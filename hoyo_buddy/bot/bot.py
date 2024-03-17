@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING, Any, TypeAlias
 
 import discord
 import diskcache
+import enka
+import genshin
 import sentry_sdk
 from asyncache import cached
 from cachetools import TTLCache
@@ -172,6 +174,16 @@ class HoyoBuddy(commands.AutoShardedBot):
         if account is None:
             raise NoAccountFoundError(games)
         return account
+
+    async def update_assets(self) -> None:
+        # Update EnkaAPI assets
+        async with enka.EnkaAPI() as api:
+            await api.update_assets()
+
+        # Update genshin.py assets
+        await genshin.utility.update_characters_any()
+        client = genshin.Client()
+        await client.update_character_names()
 
     async def close(self) -> None:
         LOGGER_.info("Bot shutting down...")

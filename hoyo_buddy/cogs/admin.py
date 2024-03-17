@@ -76,6 +76,12 @@ class Admin(commands.Cog):
         not_translated = self.bot.translator._not_translated
         await ctx.send(f"Not translated:\n```\n{not_translated}\n```\nTotal: {len(not_translated)}")
 
+    @commands.command(name="update-assets", aliases=["ua"])
+    async def update_assets_command(self, ctx: commands.Context) -> Any:
+        message = await ctx.send("Updating assets...")
+        await self.bot.update_assets()
+        await message.edit(content="Updated assets.")
+
 
 async def setup(bot: "HoyoBuddy") -> None:
     await bot.add_cog(Admin(bot))

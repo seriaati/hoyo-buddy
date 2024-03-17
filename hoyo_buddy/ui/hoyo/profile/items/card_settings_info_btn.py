@@ -44,7 +44,7 @@ class CardSettingsInfoButton(Button["ProfileView"]):
             value=LocaleStr(
                 "- Hoyo Buddy comes with some preset arts that I liked, but you can add your own images too.\n"
                 "- Only direct image URLs are supported, and they must be publicly accessible; GIFs are not supported.\n"
-                "- For Hoyo Buddy's template, vertical images are recommended, the exact size is 640x1138 pixels, crop your image if the position is not right.\n"
+                "- For Hoyo Buddy's templates, vertical images are recommended.\n"
                 "- For server owners, I am not responsible for any NSFW images that you or your members add.\n"
                 "- The red button removes the current custom image and reverts to the default one.",
                 key="profile.info.embed.custom_images.value",
@@ -57,7 +57,7 @@ class CardSettingsInfoButton(Button["ProfileView"]):
                 "- Hoyo Buddy has its own template made by me, but I also added templates made by other developers.\n"
                 "- Code of 3rd party templates are not maintained by me, so I cannot guarantee their quality; I am also not responsible for any issues with them.\n"
                 "- 3rd party templates may have feature limitations compared to Hoyo Buddy's.\n"
-                "- Cached data characters can only use Hoyo Buddy's template.",
+                "- Cached data characters can only use Hoyo Buddy's templates.",
                 key="profile.info.embed.templates.value",
             ),
             inline=False,

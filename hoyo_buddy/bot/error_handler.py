@@ -24,7 +24,7 @@ GENSHIN_ERROR_CONVERTER: dict[
     genshin_errors.InvalidCookies: (
         ("Invalid Cookies", "invalid_cookies_title"),
         (
-            "Refresh your Cookies by logging out from HoYoLAB, then add your accounts again using </accounts>",
+            "Refresh your Cookies by add your accounts again using </accounts>",
             "invalid_cookies_description",
         ),
     ),

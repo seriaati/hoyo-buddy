@@ -88,7 +88,7 @@ def get_error_embed(
         )
         embed.set_footer(
             text=LocaleStr(
-                "Please report this error to the developer via </feedback>", key="error_footer"
+                "Please report this error to the developer via /feedback", key="error_footer"
             )
         )
     return embed, recognized

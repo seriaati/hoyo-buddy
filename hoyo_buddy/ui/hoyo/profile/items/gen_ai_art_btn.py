@@ -64,9 +64,13 @@ class GenerateAIArtButton(Button):
 
         await self.set_loading_state(i)
 
-        client = i.client.nai_client
-        bytes_ = await client.generate_image(prompt, negative_prompt)
-        url = await upload_image(i.client.session, image=bytes_)
+        try:
+            client = i.client.nai_client
+            bytes_ = await client.generate_image(prompt, negative_prompt)
+            url = await upload_image(i.client.session, image=bytes_)
+        except Exception:
+            await self.unset_loading_state(i)
+            raise
 
         # Add the image URL to db
         self.view._card_settings.custom_images.append(url)

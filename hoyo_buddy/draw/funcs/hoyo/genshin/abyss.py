@@ -60,11 +60,14 @@ class AbyssCard:
 
     @classmethod
     def _get_pills(cls) -> list[Image.Image]:
-        most_defeats = cls._abyss.ranks.most_kills[0]
-        strongest_strike = cls._abyss.ranks.strongest_strike[0]
-        most_dmg_taken = cls._abyss.ranks.most_damage_taken[0]
-        most_ults = cls._abyss.ranks.most_bursts_used[0]
-        most_skills = cls._abyss.ranks.most_skills_used[0]
+        try:
+            most_defeats = cls._abyss.ranks.most_kills[0]
+            strongest_strike = cls._abyss.ranks.strongest_strike[0]
+            most_dmg_taken = cls._abyss.ranks.most_damage_taken[0]
+            most_ults = cls._abyss.ranks.most_bursts_used[0]
+            most_skills = cls._abyss.ranks.most_skills_used[0]
+        except IndexError:
+            return []
 
         pills = [
             cls._draw_rank_pill(

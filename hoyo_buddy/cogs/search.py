@@ -3,10 +3,10 @@ import random
 from typing import TYPE_CHECKING, Any
 
 import discord
-from ambr.exceptions import ConnectionTimeoutError as ambr_ConnectionTimeoutError
+from ambr.exceptions import AmbrAPIError
 from discord import Locale, app_commands
 from discord.ext import commands, tasks
-from yatta.exceptions import ConnectionTimeoutError as yatta_ConnectionTimeoutError
+from yatta.exceptions import YattaAPIError
 
 from ..bot.translator import LocaleStr
 from ..db.models import Settings
@@ -77,8 +77,10 @@ class Search(commands.Cog):
             async with ambr_client.AmbrAPIClient(locale, self.bot.translator) as api:
                 try:
                     await api.fetch_characters()
-                except ambr_ConnectionTimeoutError:
-                    LOGGER_.warning("Ambr API connection timed out, ending ambr setup...")
+                except AmbrAPIError as e:
+                    LOGGER_.warning(
+                        "Ambr API errored with status code %s, ending ambr setup...", e.code
+                    )
                     break
                 for item_category in ambr_client.ItemCategory:
                     await self._fetch_item_task(api, item_category, locale)
@@ -87,8 +89,10 @@ class Search(commands.Cog):
             async with yatta_client.YattaAPIClient(locale, self.bot.translator) as api:
                 try:
                     await api.fetch_light_cones()
-                except yatta_ConnectionTimeoutError:
-                    LOGGER_.warning("Yatta API connection timed out, ending yatta setup...")
+                except YattaAPIError as e:
+                    LOGGER_.warning(
+                        "Yatta API errored with status code %s, ending yatta setup...", e.code
+                    )
                     break
 
                 for item_category in yatta_client.ItemCategory:

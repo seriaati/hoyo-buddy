@@ -261,7 +261,7 @@ class ToggleButton(Button, Generic[V_co]):
     def _get_label(self) -> LocaleStr:
         return LocaleStr(
             "{toggle_label}: {toggle}",
-            key="auto_checkin_button_label",
+            key="toggle_button_label",
             toggle_label=self.toggle_label,
             toggle=(
                 LocaleStr("On", key="toggle_on_text")

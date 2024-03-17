@@ -1,7 +1,7 @@
 from io import BytesIO
 from typing import TYPE_CHECKING, Any, TypeAlias
 
-from discord import Locale
+from discord import File, Locale
 from enka.models import Character as GICharacter
 from mihomo.models import Character as HSRCharacter
 
@@ -19,6 +19,8 @@ from hoyo_buddy.models import DrawInput
 
 from ....models import HoyolabHSRCharacter
 from ...components import (
+    Button,
+    Select,
     View,
 )
 from .items.card_info_btn import CardInfoButton
@@ -310,6 +312,19 @@ class ProfileView(View):
                 )
 
         return bytes_obj
+
+    async def update(
+        self, i: "INTERACTION", item: Select["ProfileView"] | Button["ProfileView"]
+    ) -> None:
+        try:
+            bytes_obj = await self.draw_card(i)
+            bytes_obj.seek(0)
+        except Exception:
+            await item.unset_loading_state(i)
+            raise
+        await item.unset_loading_state(
+            i, attachments=[File(bytes_obj, filename="card.webp")], embed=None
+        )
 
     async def start(self, i: "INTERACTION") -> None:
         self._set_characters()

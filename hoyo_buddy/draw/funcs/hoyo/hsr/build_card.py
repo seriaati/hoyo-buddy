@@ -28,7 +28,7 @@ def cache_key(
     return f"{character!r}-{locale}-{dark_mode}-{image_url}-{primary}"
 
 
-@cached(cache=LRUCache(maxsize=100), key=cache_key)
+@cached(cache=LRUCache(maxsize=128), key=cache_key)
 def draw_hsr_build_card(
     character: "mihomo.models.Character | HoyolabHSRCharacter",
     locale: "Locale",
@@ -36,13 +36,13 @@ def draw_hsr_build_card(
     image_url: str,
     primary_hex: str,
 ) -> io.BytesIO:
-    def get_attr_display_value(attr: mihomo.Attribute) -> str:
+    def get_attr_display_value(attr: mihomo.Attribute, add_value: float = 0) -> str:
         if attr.field == "spd":
-            return str(round_down(attr.value, 2))
+            return str(round_down(attr.value + add_value, 2))
         display_value = (
-            f"{round_down(attr.value * 100, 1)}%"
+            f"{round_down((attr.value + add_value) * 100, 1)}%"
             if attr.is_percent
-            else str(round_down(attr.value, 0))
+            else str(round_down(attr.value + add_value, 0))
         )
 
         return display_value
@@ -279,10 +279,8 @@ def draw_hsr_build_card(
         attr_names = ("hp", "atk", "def", "spd", "crit_rate", "crit_dmg", "sp_rate")
         for attr in character.attributes:
             add_ = dget(character.additions, field=attr.field)
-            if add_ is not None:
-                attr.value += add_.value
             if attr.field in attr_names:
-                display_value = get_attr_display_value(attr)
+                display_value = get_attr_display_value(attr, add_.value if add_ else 0)
                 attributes[attr.icon] = display_value
 
         if "icon/property/IconEnergyRecovery.png" not in attributes:

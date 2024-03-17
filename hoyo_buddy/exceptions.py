@@ -62,11 +62,17 @@ class NoAccountFoundError(HoyoBuddyError):
 class CardNotReadyError(HoyoBuddyError):
     def __init__(self, character_name: str) -> None:
         super().__init__(
-            title=LocaleStr("Card Not Ready", key="exceptions.card_not_ready_error.title"),
-            message=LocaleStr(
+            title=LocaleStr(
                 "Card data for {character_name} is not ready yet.",
-                key="exceptions.card_not_ready_error.message",
+                key="exceptions.card_not_ready_error.title",
                 character_name=character_name,
+            ),
+            message=LocaleStr(
+                (
+                    "When new characters are released, I need to spend time to gather fanarts and optimize colors for their cards.\n"
+                    "If you'd like to speed up this process, you can contribute to the card data by reaching me in the [Discord Server](https://dsc.gg/hoyo-buddy)."
+                ),
+                key="exceptions.card_not_ready_error.message",
             ),
         )
 

@@ -289,4 +289,6 @@ class AppCommandTranslator(app_commands.Translator):
         _: "TranslationContextTypes",
     ) -> str:
         locale_str_ = LocaleStr(string.message, **string.extras)
+        if not locale_str_.translate_:
+            return locale_str_.message
         return self.translator.translate(locale_str_, locale)

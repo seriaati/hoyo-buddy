@@ -370,8 +370,8 @@ class SorterSelector(Select[CharactersView]):
         )
 
     async def callback(self, i: "INTERACTION") -> None:
-        characters = self.view._get_filtered_and_sorted_characters()
         self.view._sorter = Sorter(self.values[0])
+        characters = self.view._get_filtered_and_sorted_characters()
 
         await self.set_loading_state(i)
         file_ = await self.view._draw_card(i.client.session, characters)

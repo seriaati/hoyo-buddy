@@ -1,4 +1,5 @@
 # Hoyo Buddy
+
 ![Hoyo Buddy](https://iili.io/J1JqMSR.png)  
 
 ![GitHub issues](https://img.shields.io/github/issues/seriaati/hoyo-buddy)
@@ -13,8 +14,10 @@
 Hoyo Buddy is a Discord bot for [Hoyoverse](https://www.hoyoverse.com/zh-tw/) gamers, it provides all sorts of features related to games released by Hoyoverse (Honkai Impact 3rd, Honkai: Star Rail, and Genshin Impact), the aim is to **elevate the player's Hoyoverse experience**.
 
 ## Quick Links
+
 [Discord Server](https://dsc.gg/hoyo-buddy)  
 [Website](https://hb.bot.nu/)
 
-# Contributing
+## Contributing
+
 Please read the [Contribution Guidelines](https://github.com/seriaati/hoyo-buddy/blob/main/CONTRIBUTING.md) for more info.

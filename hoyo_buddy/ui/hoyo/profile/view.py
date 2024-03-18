@@ -314,17 +314,28 @@ class ProfileView(View):
         return bytes_obj
 
     async def update(
-        self, i: "INTERACTION", item: Select["ProfileView"] | Button["ProfileView"]
+        self,
+        i: "INTERACTION",
+        item: Select["ProfileView"] | Button["ProfileView"],
+        *,
+        unset_loading_state: bool = True,
     ) -> None:
         try:
             bytes_obj = await self.draw_card(i)
             bytes_obj.seek(0)
         except Exception:
-            await item.unset_loading_state(i)
+            if unset_loading_state:
+                await item.unset_loading_state(i)
             raise
-        await item.unset_loading_state(
-            i, attachments=[File(bytes_obj, filename="card.webp")], embed=None
-        )
+
+        if unset_loading_state:
+            await item.unset_loading_state(
+                i, attachments=[File(bytes_obj, filename="card.webp")], embed=None
+            )
+        else:
+            await i.edit_original_response(
+                attachments=[File(bytes_obj, filename="card.webp")], embed=None
+            )
 
     async def start(self, i: "INTERACTION") -> None:
         self._set_characters()

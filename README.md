@@ -16,7 +16,7 @@ Hoyo Buddy is a Discord bot for [Hoyoverse](https://www.hoyoverse.com/zh-tw/) ga
 ## Quick Links
 
 [Discord Server](https://dsc.gg/hoyo-buddy)  
-[Website](https://hb.bot.nu/)
+[Website](http://hb.bot.nu/)
 
 ## Contributing
 

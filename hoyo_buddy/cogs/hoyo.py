@@ -323,7 +323,7 @@ class Hoyo(commands.Cog):
             account_,
             account_.user.settings.dark_mode,
             author=i.user,
-            locale=i.locale,
+            locale=account_.user.settings.locale or i.locale,
             translator=self.bot.translator,
         )
         await view.start(i)

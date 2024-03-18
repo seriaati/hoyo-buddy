@@ -414,8 +414,8 @@ class NotesView(View):
             if notes.remaining_realm_currency_recovery_time.seconds > 0:
                 descriptions.append(
                     LocaleStr(
-                        "{emoji} available {in_time}",
-                        key="notes_available",
+                        "{emoji} full {in_time}",
+                        key="notes.item_full_in_time",
                         emoji=REALM_CURRENCY,
                         in_time=format_dt(notes.realm_currency_recovery_time, style="R"),
                     ).translate(self.translator, self.locale)

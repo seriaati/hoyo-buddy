@@ -228,7 +228,7 @@ class YattaAPIClient(yatta.YattaAPI):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=f"{skill.name} ({level_str})",
+            title=f"{skill.type}: {skill.name} ({level_str})",
             description=self._process_description_params(
                 skill.description, skill.params, param_index=level - 1
             )
@@ -315,6 +315,8 @@ class YattaAPIClient(yatta.YattaAPI):
             )
 
         embed.set_thumbnail(url=skill.icon)
+        if skill.tag:
+            embed.set_author(name=skill.tag)
 
         return embed
 

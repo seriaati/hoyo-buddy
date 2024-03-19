@@ -6,6 +6,8 @@ from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.hoyo.clients.yatta_client import YattaAPIClient
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
 
+from ....components import PaginatorSelect
+
 if TYPE_CHECKING:
     import yatta
     from discord import Locale, Member, User
@@ -35,11 +37,13 @@ class CharacterUI(View):
         self._sub_skill_index = 0
         self._eidolon_index = 0
         self._story_index = 0
+        self._voice_index = 0
 
         self._main_skill_embeds: list["DefaultEmbed"] = []
         self._sub_skill_embeds: list["DefaultEmbed"] = []
         self._eidolon_embeds: list["DefaultEmbed"] = []
         self._story_embeds: list["DefaultEmbed"] = []
+        self._voice_embeds: list["DefaultEmbed"] = []
         self._character_embed: "DefaultEmbed | None" = None
 
         self._character_detail: "yatta.CharacterDetail | None" = None
@@ -75,6 +79,10 @@ class CharacterUI(View):
             ]
             self._story_embeds = [
                 api.get_character_story_embed(story) for story in character_detail.script.stories
+            ]
+            self._voice_embeds = [
+                api.get_character_voice_embed(voice, self._character_id)
+                for voice in character_detail.script.voices
             ]
 
         await self.update(i, responded=True)
@@ -164,6 +172,20 @@ class CharacterUI(View):
                         "_story_index",
                     )
                 )
+            case 5:
+                embed = self._voice_embeds[self._voice_index]
+                self.add_item(
+                    VoiceSelector(
+                        options=[
+                            SelectOption(
+                                label=v.title,
+                                value=str(index),
+                                default=index == self._voice_index,
+                            )
+                            for index, v in enumerate(self._character_detail.script.voices)
+                        ],
+                    )
+                )
             case _:
                 msg = "Invalid page index"
                 raise ValueError(msg)
@@ -204,6 +226,11 @@ class PageSelector(Select["CharacterUI"]):
                     label=LocaleStr("Stories", key="character_stories_page_label"),
                     value="4",
                     default=current == 4,
+                ),
+                SelectOption(
+                    label=LocaleStr("Voices", key="character_voices_page_label"),
+                    value="5",
+                    default=current == 5,
                 ),
             ],
             row=4,
@@ -255,11 +282,11 @@ class EnterSkilLevel(Button[CharacterUI]):
 
         self.view._main_skill_levels[self.view._main_skill_index] = int(modal.level.value)
         async with YattaAPIClient(self.view.locale, self.view.translator) as api:
-            self.view._main_skill_embeds[
-                self.view._main_skill_index
-            ] = api.get_character_main_skill_embed(
-                self.view._character_detail.traces.main_skills[self.view._main_skill_index],
-                self.view._main_skill_levels[self.view._main_skill_index],
+            self.view._main_skill_embeds[self.view._main_skill_index] = (
+                api.get_character_main_skill_embed(
+                    self.view._character_detail.traces.main_skills[self.view._main_skill_index],
+                    self.view._main_skill_levels[self.view._main_skill_index],
+                )
             )
 
         await self.view.update(i, responded=True)
@@ -299,3 +326,14 @@ class EnterCharacterLevel(Button[CharacterUI]):
             )
 
         await self.view.update(i, responded=True)
+
+
+class VoiceSelector(PaginatorSelect[CharacterUI]):
+    async def callback(self, i: "INTERACTION") -> Any:
+        await super().callback()
+        try:
+            self.view._voice_index = int(self.values[0])
+        except ValueError:
+            await i.response.edit_message(view=self.view)
+        else:
+            await self.view.update(i)

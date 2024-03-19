@@ -27,6 +27,7 @@ KEY_DICT: dict[str, str] = {
     "speedBase": "speed",
     "baseAggro": "aggro",
 }
+AUDIO_LANGUAGES = ("EN", "CN", "JP", "KR")
 
 
 class ItemCategory(StrEnum):
@@ -347,6 +348,26 @@ class YattaAPIClient(yatta.YattaAPI):
             self.translator,
             title=story.title,
             description=story.text,
+        )
+        return embed
+
+    def get_character_voice_embed(
+        self, voice: yatta.CharacterVoice, character_id: int
+    ) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
+        description = f"{voice.text}"
+        if voice.audio is not None:
+            voice_str = " ".join(
+                f"[{lang}](https://api.yatta.top/hsr/assets/Audio/{lang}/{character_id}/{voice.audio}.ogg)"
+                for lang in AUDIO_LANGUAGES
+            )
+            description += f"\n\n{voice_str}"
+
+        embed = DefaultEmbed(
+            self.locale, self.translator, title=voice.title, description=description
         )
         return embed
 

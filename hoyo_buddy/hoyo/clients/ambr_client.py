@@ -400,19 +400,15 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             sub_stat_value = round(sub_stat_value, 1)
             sub_stat_value = f"{sub_stat_value}%"
 
+        level_str = LocaleStr(
+            "Lv.{level}",
+            key="level_str",
+            level=level,
+        ).translate(self.translator, self.locale)
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr(
-                "{weapon_name} ({level_str})",
-                weapon_name=weapon.name,
-                level_str=LocaleStr(
-                    "Lv.{level}",
-                    key="level_str",
-                    level=level,
-                ),
-                key="weapon_embed_title",
-            ),
+            title=f"{weapon.name} ({level_str})",
             description=(
                 f"{weapon.rarity}★ {weapon.type}\n{main_stat_name}: {round(main_stat_value)}"
             ),

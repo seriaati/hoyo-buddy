@@ -186,7 +186,12 @@ class Translator:
 
         lang = locale.value.replace("-", "_")
 
-        if "en" in lang or not string.translate_:
+        if (
+            "en" in lang
+            or not string.translate_
+            or self._env == "dev"
+            or string_key in self._not_translated
+        ):
             translation = message
         else:
             translation = tx.translate(message, lang, _key=string_key, escape=False, params=extras)

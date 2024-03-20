@@ -34,14 +34,14 @@ class Others(commands.Cog):
                 (
                     "🤗 Hi! Thanks for taking the time to give me feedback.\n"
                     "Click on the button below to start.\n\n"
-                    "Note: I might contact you for more details. So please keep your DMs opened (or join the Hoyo Buddy Discord server)."
+                    "Note: I might contact you for more details. So please keep your DMs opened (or join the [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
                 ),
                 key="feedback_command.description",
             ),
         )
         owner = await i.client.fetch_user(i.client.owner_id)
         assert owner is not None
-        embed.set_author(name=owner.display_name, icon_url=owner.display_avatar.url)
+        embed.set_author(name=owner.name, icon_url=owner.display_avatar.url)
         embed.set_footer(
             text=LocaleStr(
                 "",
@@ -49,6 +49,7 @@ class Others(commands.Cog):
             )
         )
         await i.followup.send(embed=embed, view=view)
+        view.message = await i.original_response()
 
 
 async def setup(bot: "HoyoBuddy") -> None:

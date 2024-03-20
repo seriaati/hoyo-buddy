@@ -337,6 +337,15 @@ class AbyssCard:
 
         cls._write_chamber_star_counts()
 
+        padding = 80
+        background = Image.new(
+            "RGBA",
+            (im.width + padding * 2, im.height + padding * 2),
+            (23, 23, 23) if dark_mode else (237, 239, 252),
+        )
+        # paste im in the middle of the background
+        background.paste(im, (padding, padding), im)
+
         buffer = BytesIO()
-        im.save(buffer, format="WEBP", lossless=True)
+        background.save(buffer, format="WEBP", lossless=True)
         return buffer

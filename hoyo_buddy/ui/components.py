@@ -1,3 +1,4 @@
+import logging
 from typing import TYPE_CHECKING, Any, Generic, Self, TypeVar
 
 import discord
@@ -31,6 +32,7 @@ __all__ = (
 )
 
 V_co = TypeVar("V_co", bound="View", covariant=True)
+LOGGER_ = logging.getLogger(__name__)
 
 
 class View(discord.ui.View):
@@ -52,6 +54,8 @@ class View(discord.ui.View):
         if self.message:
             self.disable_items()
             await self.message.edit(view=self)
+        else:
+            LOGGER_.warning("View %s timed out without a set message", self.__class__.__name__)
 
     async def on_error(
         self,

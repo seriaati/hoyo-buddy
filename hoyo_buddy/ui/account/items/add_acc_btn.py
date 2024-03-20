@@ -32,7 +32,13 @@ class AddAccountButton(Button["AccountManager"]):
             self.view.translator,
             title=LocaleStr("Adding accounts", key="adding_accounts_title"),
             description=LocaleStr(
-                "Select one of the methods below to add your accounts to Hoyo Buddy",
+                (
+                    "Select one of the methods below to add your accounts to Hoyo Buddy:\n"
+                    "1. With Email and Password: Most recommended, it's the easiest\n"
+                    "2. With Dev Tools: Only work on desktop, a safer option if you have security concerns with the first one\n"
+                    "3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile\n\n"
+                    "Regarding account security, read the [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+                ),
                 key="adding_accounts_description",
             ),
         )

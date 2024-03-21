@@ -13,6 +13,7 @@ from ..exceptions import IncompleteParamError
 from ..hoyo.clients.ambr_client import AmbrAPIClient
 from ..hoyo.clients.enka_client import EnkaAPI
 from ..hoyo.clients.mihomo_client import MihomoAPI
+from ..hoyo.clients.yatta_client import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.genshin.abyss import AbyssView
@@ -250,16 +251,6 @@ class Hoyo(commands.Cog):
         )
         await view.start(i)
 
-    @profile_command.autocomplete("account")
-    @notes_command.autocomplete("account")
-    async def account_autocomplete(
-        self, i: "INTERACTION", current: str
-    ) -> list[app_commands.Choice]:
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        return await self.bot.get_account_autocomplete(
-            i.user.id, current, locale, self.bot.translator, {Game.GENSHIN, Game.STARRAIL}
-        )
-
     @app_commands.command(
         name=app_commands.locale_str("characters", translate=False),
         description=app_commands.locale_str(
@@ -280,21 +271,30 @@ class Hoyo(commands.Cog):
         i: "INTERACTION",
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
+        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN, Game.STARRAIL])
         await account_.fetch_related("user", "user__settings")
 
-        async with AmbrAPIClient(translator=self.bot.translator) as client:
-            element_char_counts = await client.fetch_element_char_counts()
+        await i.response.defer()
+
+        if account_.game is Game.GENSHIN:
+            async with AmbrAPIClient(translator=self.bot.translator) as client:
+                element_char_counts = await client.fetch_element_char_counts()
+                path_char_counts = {}
+        elif account_.game is Game.STARRAIL:
+            async with YattaAPIClient(translator=self.bot.translator) as client:
+                element_char_counts = await client.fetch_element_char_counts()
+                path_char_counts = await client.fetch_path_char_counts()
 
         view = CharactersView(
             account_,
             account_.user.settings.dark_mode,
             element_char_counts,
+            path_char_counts,
             author=i.user,
             locale=account_.user.settings.locale or i.locale,
             translator=self.bot.translator,
         )
-        await view.start(i)
+        await view.start(i, show_first_time_msg=account_.game is Game.GENSHIN)
 
     @app_commands.command(
         name=app_commands.locale_str("abyss", translate=False),
@@ -328,7 +328,6 @@ class Hoyo(commands.Cog):
         )
         await view.start(i)
 
-    @characters_command.autocomplete("account")
     @abyss_command.autocomplete("account")
     async def characters_command_autocomplete(
         self, i: "INTERACTION", current: str
@@ -336,6 +335,17 @@ class Hoyo(commands.Cog):
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         return await self.bot.get_account_autocomplete(
             i.user.id, current, locale, self.bot.translator, {Game.GENSHIN}
+        )
+
+    @characters_command.autocomplete("account")
+    @profile_command.autocomplete("account")
+    @notes_command.autocomplete("account")
+    async def account_autocomplete(
+        self, i: "INTERACTION", current: str
+    ) -> list[app_commands.Choice]:
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        return await self.bot.get_account_autocomplete(
+            i.user.id, current, locale, self.bot.translator, {Game.GENSHIN, Game.STARRAIL}
         )
 
 

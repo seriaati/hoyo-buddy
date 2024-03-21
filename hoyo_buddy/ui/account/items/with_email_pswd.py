@@ -268,7 +268,7 @@ class EnterEmailPassword(Button["AccountManager"]):
                     self.__email, self.__password, geetest=geetest
                 )
             except genshin.GenshinException as e:
-                if e.retcode == -3208:
+                if e.retcode in {-3208, -3203}:  # Account does not exist
                     error_embed, _ = get_error_embed(
                         InvalidEmailOrPasswordError(), self.view.locale, self.view.translator
                     )

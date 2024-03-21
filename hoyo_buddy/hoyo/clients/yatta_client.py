@@ -1,4 +1,5 @@
 import re
+from collections import defaultdict
 from enum import StrEnum
 from typing import TYPE_CHECKING, Any
 
@@ -39,7 +40,9 @@ class ItemCategory(StrEnum):
 
 
 class YattaAPIClient(yatta.YattaAPI):
-    def __init__(self, locale: Locale, translator: "Translator") -> None:
+    def __init__(
+        self, locale: Locale = Locale.american_english, translator: "Translator | None" = None
+    ) -> None:
         super().__init__(lang=LOCALE_TO_YATTA_LANG.get(locale, Language.EN))
         self.locale = locale
         self.translator = translator
@@ -161,9 +164,36 @@ class YattaAPIClient(yatta.YattaAPI):
             case ItemCategory.BOOKS:
                 return await self.fetch_books()
 
+    async def fetch_element_char_counts(self) -> dict[str, int]:
+        """Fetches the number of characters for each element, does not include beta characters and Trailblazer."""
+        characters = await self.fetch_characters()
+        result: defaultdict[str, int] = defaultdict(int)
+        for character in characters:
+            if character.beta or character.id in TRAILBLAZER_IDS:
+                continue
+            result[character.types.combat_type.lower()] += 1
+
+        result["lightning"] = result.pop("thunder")  # Hoyo seriously can't decide on a name
+        return dict(result)
+
+    async def fetch_path_char_counts(self) -> dict[str, int]:
+        """Fetches the number of characters for each path, does not include beta characters and Trailblazer."""
+        characters = await self.fetch_characters()
+        result: defaultdict[str, int] = defaultdict(int)
+        for character in characters:
+            if character.beta or character.id in TRAILBLAZER_IDS:
+                continue
+            result[character.types.path_type.lower()] += 1
+
+        return dict(result)
+
     def get_character_details_embed(
         self, character: yatta.CharacterDetail, level: int, manual_avatar: dict[str, Any]
     ) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         level_str = self.translator.translate(
             LocaleStr(
                 "Lv.{level}",
@@ -215,6 +245,10 @@ class YattaAPIClient(yatta.YattaAPI):
     def get_character_main_skill_embed(
         self, base_skill: yatta.BaseSkill, level: int
     ) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         skill = base_skill.skill_list[0]
         level_str = self.translator.translate(
             LocaleStr(
@@ -321,6 +355,10 @@ class YattaAPIClient(yatta.YattaAPI):
         return embed
 
     def get_character_sub_skill_embed(self, skill: yatta.BaseSkill) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -334,6 +372,10 @@ class YattaAPIClient(yatta.YattaAPI):
         return embed
 
     def get_character_eidolon_embed(self, eidolon: yatta.CharacterEidolon) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -345,6 +387,10 @@ class YattaAPIClient(yatta.YattaAPI):
         return embed
 
     def get_character_story_embed(self, story: yatta.CharacterStory) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -374,6 +420,10 @@ class YattaAPIClient(yatta.YattaAPI):
         return embed
 
     def get_item_embed(self, item: yatta.ItemDetail) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -398,6 +448,10 @@ class YattaAPIClient(yatta.YattaAPI):
         superposition: int,
         manual_avatar: dict[str, Any],
     ) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         level_str = self.translator.translate(
             LocaleStr(
                 "Lv.{level}",
@@ -440,6 +494,10 @@ class YattaAPIClient(yatta.YattaAPI):
     def get_book_series_embed(
         self, book: yatta.BookDetail, series: yatta.BookSeries
     ) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -452,6 +510,10 @@ class YattaAPIClient(yatta.YattaAPI):
         return embed
 
     def get_relic_embed(self, relic_set: yatta.RelicSetDetail, relic: yatta.Relic) -> DefaultEmbed:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         set_effects = relic_set.set_effects
         description = self.translator.translate(
             LocaleStr(
@@ -488,6 +550,10 @@ class YattaAPIClient(yatta.YattaAPI):
     async def fetch_characters(
         self, *, use_cache: bool = True, trailblazer_gender_symbol: bool = False
     ) -> list[yatta.models.Character]:
+        if self.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         characters = await super().fetch_characters(use_cache)
 
         for character in characters:

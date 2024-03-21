@@ -2,6 +2,8 @@ import asyncio
 from typing import TYPE_CHECKING
 
 from discord import File
+from genshin.models import Character as GenshinCharacter
+from genshin.models import StarRailDetailCharacter as StarRailCharacter
 from mihomo.models import Character as MihomoCharacter
 
 from hoyo_buddy.draw import funcs
@@ -14,7 +16,6 @@ if TYPE_CHECKING:
     from io import BytesIO
 
     from enka.models import Character as EnkaCharacter
-    from genshin.models import Character as GenshinCharacter
     from genshin.models import Notes as GenshinNote
     from genshin.models import SpiralAbyss, StarRailNote
 
@@ -165,14 +166,19 @@ async def draw_farm_card(
     return File(buffer, filename=draw_input.filename)
 
 
-async def draw_gi_character_card(
+async def draw_chara_card(
     draw_input: "DrawInput",
-    characters: "Sequence[GenshinCharacter]",
+    characters: "Sequence[GenshinCharacter | StarRailCharacter]",
     talents: dict[str, str],
     pc_icons: dict[str, str],
     translator: "Translator",
 ) -> File:
-    urls = [c.weapon.icon for c in characters]
+    urls: list[str] = []
+    for c in characters:
+        if isinstance(c, GenshinCharacter):
+            urls.append(c.icon)
+        elif isinstance(c, StarRailCharacter) and c.equip:
+            urls.append(c.equip.icon)
     urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
 
     await download_and_save_static_images(urls, "gi-characters", draw_input.session)

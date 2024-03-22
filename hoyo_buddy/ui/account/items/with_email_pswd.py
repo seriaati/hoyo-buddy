@@ -8,7 +8,6 @@ import genshin
 from discord import ButtonStyle
 from tortoise import Tortoise
 
-from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.db.models import User
 from hoyo_buddy.embeds import DefaultEmbed
@@ -269,10 +268,7 @@ class EnterEmailPassword(Button["AccountManager"]):
                 )
             except genshin.GenshinException as e:
                 if e.retcode in {-3208, -3203}:  # Account does not exist
-                    error_embed, _ = get_error_embed(
-                        InvalidEmailOrPasswordError(), self.view.locale, self.view.translator
-                    )
-                    return await self._interaction.followup.send(embed=error_embed, ephemeral=True)
+                    raise InvalidEmailOrPasswordError from e
                 raise
 
             await self._process_app_login_result(self._interaction, result)
@@ -285,12 +281,7 @@ class EnterEmailPassword(Button["AccountManager"]):
                 await self._client._send_verification_email(self._ticket, geetest=geetest)
             except genshin.GenshinException as e:
                 if e.retcode == -3206:
-                    error_embed, _ = get_error_embed(
-                        VerificationCodeServiceUnavailableError(),
-                        self.view.locale,
-                        self.view.translator,
-                    )
-                    return await self._interaction.followup.send(embed=error_embed, ephemeral=True)
+                    raise VerificationCodeServiceUnavailableError from e
                 raise
 
             await self._prompt_user_to_verify_email(self._interaction)

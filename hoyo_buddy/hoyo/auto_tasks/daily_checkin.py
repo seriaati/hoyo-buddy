@@ -36,16 +36,17 @@ class DailyCheckin:
             LOGGER_.info("Daily check-in started")
 
             cls._total_checkin_count = 0
+            cls._bot = bot
+
             queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
             accounts = await HoyoAccount.filter(daily_checkin=True)
             for account in accounts:
                 await queue.put(account)
 
             tasks = [
-                asyncio.create_task(cls._daily_checkin_task(queue, api, bot))
-                for api in CHECKIN_APIS
+                asyncio.create_task(cls._daily_checkin_task(queue, api)) for api in CHECKIN_APIS
             ]
-            tasks.append(asyncio.create_task(cls._daily_checkin_task(queue, "LOCAL", bot)))
+            tasks.append(asyncio.create_task(cls._daily_checkin_task(queue, "LOCAL")))
 
             await queue.join()
             for task in tasks:
@@ -59,10 +60,10 @@ class DailyCheckin:
             )
 
     @classmethod
-    async def _daily_checkin_task(
-        cls, queue: asyncio.Queue[HoyoAccount], api_name: str, bot: "HoyoBuddy"
-    ) -> None:
+    async def _daily_checkin_task(cls, queue: asyncio.Queue[HoyoAccount], api_name: str) -> None:
         LOGGER_.info("Daily check-in task started for api: %s", api_name)
+
+        bot = cls._bot
         if api_name != "LOCAL":
             # test if the api is working
             async with bot.session.get(CHECKIN_APIS[api_name]) as resp:
@@ -94,7 +95,7 @@ class DailyCheckin:
                     isinstance(embed, DefaultEmbed)
                     and account.notif_settings.notify_on_checkin_success
                 ):
-                    await cls._notify_user(bot, account.user, embed)
+                    await cls._notify_user(account.user, embed)
             finally:
                 await asyncio.sleep(2.0)
                 queue.task_done()
@@ -120,7 +121,10 @@ class DailyCheckin:
             try:
                 reward = await client.claim_daily_reward()
             except Exception as e:
-                embed, _ = get_error_embed(e, locale, translator)
+                embed, recognized = get_error_embed(e, locale, translator)
+                if not recognized:
+                    cls._bot.capture_exception(e)
+
                 embed.set_author(name=str(account), icon_url=account.game_icon)
             else:
                 embed = client.get_daily_reward_embed(reward, locale, translator, account)
@@ -142,7 +146,10 @@ class DailyCheckin:
                 try:
                     genshin.raise_for_retcode(data)
                 except genshin.GenshinException as e:
-                    embed, _ = get_error_embed(e, locale, translator)
+                    embed, recognized = get_error_embed(e, locale, translator)
+                    if not recognized:
+                        cls._bot.capture_exception(e)
+
                     embed.set_author(name=str(account), icon_url=account.game_icon)
             else:
                 msg = f"API {api_name} returned {resp.status}"
@@ -151,8 +158,8 @@ class DailyCheckin:
         return embed
 
     @classmethod
-    async def _notify_user(cls, bot: "HoyoBuddy", user: User, embed: Embed) -> None:
-        discord_user = await bot.fetch_user(user.id)
+    async def _notify_user(cls, user: User, embed: Embed) -> None:
+        discord_user = await cls._bot.fetch_user(user.id)
         if discord_user:
             try:
                 await discord_user.send(embed=embed)

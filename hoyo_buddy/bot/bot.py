@@ -115,10 +115,11 @@ class HoyoBuddy(commands.AutoShardedBot):
             )
 
     def capture_exception(self, e: Exception) -> None:
-        if self.env == "prod":
-            sentry_sdk.capture_exception(e)
-        else:
+        if self.env == "dev":
             LOGGER_.exception(e)
+        else:
+            LOGGER_.error("Exception occurred: %s", e.__class__.__name__)
+            sentry_sdk.capture_exception(e)
 
     @cached(cache=TTLCache(maxsize=1024, ttl=360))
     async def fetch_user(self, user_id: int) -> discord.User | None:

@@ -7,6 +7,7 @@ import aiohttp
 import discord
 import sentry_sdk
 from dotenv import load_dotenv
+from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 from seria.logging import setup_logging
 
@@ -20,9 +21,14 @@ env = os.environ["ENV"]  # dev, prod, test
 
 if env != "dev":
     sentry_sdk.init(
-        dsn=os.getenv(f"SENTRY_DSN_{env.upper()}"),
-        integrations=[LoggingIntegration(level=logging.INFO, event_level=logging.ERROR)],
+        dsn=os.getenv("SENTRY_DSN"),
+        integrations=[
+            LoggingIntegration(level=logging.INFO, event_level=logging.WARNING),
+            AioHttpIntegration(transaction_style="method_and_path_pattern"),
+        ],
         traces_sample_rate=1.0,
+        environment=env,
+        enable_tracing=True,
     )
 
 # Disables PyNaCl warning

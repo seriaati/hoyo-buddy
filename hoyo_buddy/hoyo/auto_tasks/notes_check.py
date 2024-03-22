@@ -46,7 +46,7 @@ class NotesChecker:
     def _get_notify_error_embed(cls, err: Exception, locale: Locale) -> ErrorEmbed:
         embed, recognized = get_error_embed(err, locale, cls._bot.translator)
         if not recognized:
-            LOGGER_.exception("Unrecognized error", exc_info=err)
+            cls._bot.capture_exception(err)
         return embed
 
     @classmethod

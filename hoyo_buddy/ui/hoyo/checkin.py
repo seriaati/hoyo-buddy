@@ -1,10 +1,9 @@
 from typing import TYPE_CHECKING, Any
 
 import discord
-from genshin import Game, GenshinException
+from genshin import Game
 
 from ... import emojis
-from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr, Translator
 from ...db.models import AccountNotifSettings
 from ...draw.main_funcs import draw_checkin_card
@@ -144,16 +143,10 @@ class CheckInButton(Button[CheckInUI]):
         assert client.game is not None
 
         await i.response.defer()
-
-        try:
-            daily_reward = await client.claim_daily_reward()
-        except GenshinException as e:
-            embed, _ = get_error_embed(e, self.view.locale, self.view.translator)
-            return await i.followup.send(embed=embed, ephemeral=True)
+        daily_reward = await client.claim_daily_reward()
 
         embed, file_ = await self.view.get_image_embed_and_file(i.client.session)
         await i.edit_original_response(embed=embed, attachments=[file_])
-
         embed = client.get_daily_reward_embed(daily_reward, self.view.locale, self.view.translator)
         await i.followup.send(embed=embed)
 

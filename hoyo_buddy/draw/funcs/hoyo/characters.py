@@ -10,7 +10,7 @@ from hoyo_buddy.draw.drawer import BLACK, DARK_SURFACE, LIGHT_SURFACE, WHITE, Dr
 from hoyo_buddy.hoyo.clients.gpy_client import GenshinClient
 from hoyo_buddy.models import DynamicBKInput
 
-from .....enums import Game
+from ....enums import Game
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -148,9 +148,9 @@ def draw_small_gi_chara_card(
     drawer.write(text, size=31, position=(236, 72), locale=locale, style="medium")
 
     friend_textbbox = drawer.write(
-        str(character.friendship), size=18, position=(284, 151), anchor="mm"
+        str(character.friendship), size=18, position=(284, 154), anchor="mm"
     )
-    talent_textbbox = drawer.write(talent_str, size=18, position=(405, 151), anchor="mm")
+    talent_textbbox = drawer.write(talent_str, size=18, position=(405, 154), anchor="mm")
 
     size = 4
     space = talent_textbbox[0] - friend_textbbox[2]

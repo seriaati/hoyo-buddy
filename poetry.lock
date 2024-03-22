@@ -2016,6 +2016,7 @@ files = [
 ]
 
 [package.dependencies]
+aiohttp = {version = ">=3.5", optional = true, markers = "extra == \"aiohttp\""}
 certifi = "*"
 urllib3 = {version = ">=1.26.11", markers = "python_version >= \"3.6\""}
 
@@ -2437,4 +2438,4 @@ resolved_reference = "6a32ecc68ff5809311374b8f221966997cc2474b"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "f5387ee5feea3249cab411606b14db3757f2c82bf6680db5a535499e6d3ea20f"
+content-hash = "b57b3565dc276274e74903a6d1eb90408824531f36e381eee82d08f54c455bc7"

@@ -13,7 +13,7 @@ readme = "README.md"
 python = "^3.11"
 discord-py = {extras = ["speed"], version = "^2.3.2"}
 python-dotenv = "^1.0.0"
-sentry-sdk = "^1.32.0"
+sentry-sdk = {extras = ["aiohttp"], version = "^1.43.0"}
 tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
 transifex-python = "^3.5.0"
 orjson = "^3.9.9"

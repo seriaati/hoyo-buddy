@@ -10,7 +10,7 @@ from seria.utils import create_bullet_list
 from yatta import Language
 
 from ...bot.translator import LocaleStr
-from ...constants import LOCALE_TO_YATTA_LANG, TRAILBLAZER_IDS
+from ...constants import LOCALE_TO_YATTA_LANG, TRAILBLAZER_IDS, YATTA_PATH_TO_HSR_PATH
 from ...embeds import DefaultEmbed
 from ...emojis import get_hsr_element_emoji
 
@@ -171,7 +171,7 @@ class YattaAPIClient(yatta.YattaAPI):
         for character in characters:
             if character.beta or character.id in TRAILBLAZER_IDS:
                 continue
-            result[character.types.combat_type.lower()] += 1
+            result[character.types.combat_type.value.lower()] += 1
 
         result["lightning"] = result.pop("thunder")  # Hoyo seriously can't decide on a name
         return dict(result)
@@ -183,7 +183,8 @@ class YattaAPIClient(yatta.YattaAPI):
         for character in characters:
             if character.beta or character.id in TRAILBLAZER_IDS:
                 continue
-            result[character.types.path_type.lower()] += 1
+            converted_path = YATTA_PATH_TO_HSR_PATH[character.types.path_type]
+            result[converted_path.value.lower()] += 1
 
         return dict(result)
 

@@ -46,7 +46,7 @@ class CardSettingsButton(Button["ProfileView"]):
                 self.view._card_settings.current_image,
                 default_arts,
                 self.view._card_settings.custom_images,
-                self.view._card_settings.template == "hattvr1",
+                self.view._card_settings.template,
             )
         )
         self.view.add_item(

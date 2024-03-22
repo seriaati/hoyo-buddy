@@ -27,11 +27,12 @@ if TYPE_CHECKING:
     from ..enums import Game
     from ..hoyo.clients import ambr_client, yatta_client
 
-LOGGER_ = logging.getLogger(__name__)
 
 __all__ = ("HoyoBuddy", "INTERACTION")
 
+LOGGER_ = logging.getLogger(__name__)
 INTERACTION: TypeAlias = discord.Interaction["HoyoBuddy"]
+STATUS_CHANNEL_ID = 1220175609347444776
 
 intents = discord.Intents(
     guilds=True,
@@ -101,6 +102,17 @@ class HoyoBuddy(commands.AutoShardedBot):
         await self.load_extension("jishaku")
 
         await self.nai_client.init(timeout=120)
+
+        if self.env != "dev":
+            status_channel = await self.fetch_channel(STATUS_CHANNEL_ID)
+            assert isinstance(status_channel, discord.TextChannel)
+            await status_channel.send(
+                embed=discord.Embed(
+                    title="Bot started 🚀",
+                    description=f"Current time: {discord.utils.format_dt(get_now())}",
+                    color=discord.Color.green(),
+                )
+            )
 
     def capture_exception(self, e: Exception) -> None:
         if self.env == "prod":
@@ -185,5 +197,16 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     async def close(self) -> None:
         LOGGER_.info("Bot shutting down...")
+        if self.env != "dev":
+            status_channel = await self.fetch_channel(STATUS_CHANNEL_ID)
+            assert isinstance(status_channel, discord.TextChannel)
+            await status_channel.send(
+                embed=discord.Embed(
+                    title="Bot shutting down for code changes...",
+                    description=f"Current time: {discord.utils.format_dt(get_now())}",
+                    color=discord.Color.red(),
+                )
+            )
+
         self.diskcache.close()
         await super().close()

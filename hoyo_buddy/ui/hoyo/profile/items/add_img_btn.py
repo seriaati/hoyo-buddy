@@ -74,7 +74,9 @@ class AddImageButton(Button["ProfileView"]):
 
         # Add the new image URL to the image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")
+        image_select.custom_images.append(url)
         image_select.options_before_split = image_select.generate_options()
+        image_select.set_page_based_on_value(url)
         image_select.options = image_select.process_options()
         # Set the new image as the default (selected) option
         image_select.update_options_defaults(values=[url])

@@ -73,7 +73,7 @@ ignore = [
 ]
 preview = true
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "**/__init__.py" = ["F403", "F401"]
 "playground.*.py" = ["ALL"]
 "./migrations/*.py" = ["ALL"]

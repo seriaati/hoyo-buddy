@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 from typing import TYPE_CHECKING
 
 from discord import File
@@ -209,20 +210,20 @@ async def draw_spiral_abyss_card(
 
     urls = [
         chara.icon
+        for floor in abyss.floors
+        for chamber in floor.chambers
+        for battle in chamber.battles
+        for chara in battle.characters
+    ]
+    with contextlib.suppress(IndexError):
         for chara in [
             abyss.ranks.most_bursts_used[0],
             abyss.ranks.most_damage_taken[0],
             abyss.ranks.most_kills[0],
             abyss.ranks.most_skills_used[0],
             abyss.ranks.strongest_strike[0],
-        ]
-    ] + [
-        chara.icon
-        for floor in abyss.floors
-        for chamber in floor.chambers
-        for battle in chamber.battles
-        for chara in battle.characters
-    ]
+        ]:
+            urls.append(chara.icon)
 
     await download_and_save_static_images(urls, "abyss", draw_input.session)
     buffer = await asyncio.to_thread(

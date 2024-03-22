@@ -115,7 +115,8 @@ class FarmNotifyView(PaginatorView):
             return await i.response.send_message(embed=embed)
 
         await self._get_item_icon_and_names()
-        return await super().start(i)
+        await super().start(i)
+        self.message = await i.original_response()
 
 
 class AddItemButton(Button[FarmNotifyView]):

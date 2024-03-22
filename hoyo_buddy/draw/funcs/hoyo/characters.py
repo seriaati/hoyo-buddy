@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 import genshin
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
+from sentry_sdk.metrics import timing
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.draw.drawer import BLACK, DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
@@ -37,6 +38,7 @@ WEAPON_ICON_SIZES = {
 }
 
 
+@timing("characters_card")
 def draw_character_card(
     characters: "Sequence[genshin.models.Character | genshin.models.StarRailDetailCharacter]",
     talents: dict[str, str],

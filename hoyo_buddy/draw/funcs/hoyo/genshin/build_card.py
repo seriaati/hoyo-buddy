@@ -5,6 +5,7 @@ from cachetools import LRUCache, cached
 from discord import Locale
 from enka.enums import FightPropType
 from PIL import Image, ImageDraw
+from sentry_sdk.metrics import timing
 
 from hoyo_buddy.draw.drawer import Drawer
 
@@ -24,6 +25,7 @@ def cache_key(
 
 
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
+@timing("gi_build_card")
 def draw_genshin_card(
     locale: Locale,
     dark_mode: bool,

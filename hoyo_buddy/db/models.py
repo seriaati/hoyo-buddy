@@ -20,6 +20,7 @@ class User(Model):
     id = fields.BigIntField(pk=True, index=True, generated=False)  # noqa: A003
     settings: fields.BackwardOneToOneRelation["Settings"]
     temp_data: fields.Field[dict[str, Any]] = fields.JSONField(default=dict)  # type: ignore
+    last_interaction: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # type: ignore
     accounts: fields.ReverseRelation["HoyoAccount"]
 
     def __str__(self) -> str:

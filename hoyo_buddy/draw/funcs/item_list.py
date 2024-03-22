@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
+from sentry_sdk.metrics import timing
 
 from ...models import ItemWithDescription, ItemWithTrailing
 from ..drawer import (
@@ -31,6 +32,7 @@ def cache_key(
 
 
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
+@timing("item_list_card")
 def draw_item_list(
     items: list[ItemWithDescription] | list[ItemWithTrailing], dark_mode: bool, locale: "Locale"
 ) -> BytesIO:

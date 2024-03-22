@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
+from sentry_sdk.metrics import timing
 
 from hoyo_buddy.draw.drawer import Drawer
 
@@ -18,6 +19,7 @@ def cache_key(daily_rewards: list["Reward"], dark_mode: bool) -> str:
 
 
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
+@timing("checkin_card")
 def draw_checkin_card(
     daily_rewards: list["Reward"],
     dark_mode: bool,

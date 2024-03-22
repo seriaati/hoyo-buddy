@@ -430,6 +430,7 @@ class PaginatorSelect(Select, Generic[V_co]):
 
     def process_options(self) -> list[SelectOption]:
         split_options = split_list_to_chunks(self.options_before_split, 23)
+
         if self.page_index == 0:
             if len(split_options) == 1:
                 return split_options[0]
@@ -437,6 +438,14 @@ class PaginatorSelect(Select, Generic[V_co]):
         if self.page_index == len(split_options) - 1:
             return [PREV_PAGE] + split_options[-1]
         return [PREV_PAGE] + split_options[self.page_index] + [NEXT_PAGE]
+
+    def set_page_based_on_value(self, value: str) -> None:
+        split_options = split_list_to_chunks(self.options_before_split, 23)
+
+        for i, options in enumerate(split_options):
+            if value in [option.value for option in options]:
+                self.page_index = i
+                break
 
     async def callback(self) -> bool:
         changed = False
@@ -448,6 +457,10 @@ class PaginatorSelect(Select, Generic[V_co]):
             changed = True
             self.page_index -= 1
             self.options = self.process_options()
+
+        if changed:
+            for option in self.options:
+                option.default = False
 
         self.translate(self.view.locale, self.view.translator)
         return changed

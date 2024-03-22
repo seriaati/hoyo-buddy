@@ -16,11 +16,11 @@ from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.web_server.server import GeetestWebServer
 
 load_dotenv()
-env = os.environ["ENV"]
+env = os.environ["ENV"]  # dev, prod, test
 
-if env == "prod":
+if env != "dev":
     sentry_sdk.init(
-        dsn=os.getenv("SENTRY_DSN"),
+        dsn=os.getenv(f"SENTRY_DSN_{env.upper()}"),
         integrations=[LoggingIntegration(level=logging.INFO, event_level=logging.ERROR)],
         traces_sample_rate=1.0,
     )
@@ -43,14 +43,7 @@ async def main() -> None:
 
 
 with setup_logging(
-    logging.DEBUG if env == "dev" else logging.INFO,
-    loggers_to_suppress=(
-        "aiosqlite",
-        "tortoise.db_client",
-        "PIL",
-        "aiohttp_client_cache",
-        "transifex",
-    ),
+    logging.INFO,
     log_filename="hoyo_buddy.log",
 ):
     try:

@@ -15,10 +15,10 @@ from ..hoyo.clients.enka_client import EnkaAPI
 from ..hoyo.clients.mihomo_client import MihomoAPI
 from ..hoyo.clients.yatta_client import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
+from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.genshin.abyss import AbyssView
 from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
-from ..ui.hoyo.genshin.characters import CharactersView
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.profile.view import ProfileView
 

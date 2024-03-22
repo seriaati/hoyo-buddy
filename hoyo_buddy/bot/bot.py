@@ -118,7 +118,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         if self.env == "dev":
             LOGGER_.exception(e)
         else:
-            LOGGER_.error("Exception occurred: %s", e.__class__.__name__)
             sentry_sdk.capture_exception(e)
 
     @cached(cache=TTLCache(maxsize=1024, ttl=360))

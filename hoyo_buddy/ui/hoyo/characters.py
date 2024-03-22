@@ -16,14 +16,14 @@ from hoyo_buddy.hoyo.clients.gpy_client import (
     GenshinClient,
 )
 
-from ....constants import TRAILBLAZER_IDS, TRAVELER_IDS
-from ....embeds import DefaultEmbed
-from ....emojis import get_gi_element_emoji, get_hsr_element_emoji, get_hsr_path_emoji
-from ....exceptions import ActionInCooldownError, NoCharsFoundError
-from ....icons import LOADING_ICON
-from ....models import DrawInput
-from ....utils import get_now
-from ...components import Button, Select, SelectOption, View
+from ...constants import TRAILBLAZER_IDS, TRAVELER_IDS
+from ...embeds import DefaultEmbed
+from ...emojis import get_gi_element_emoji, get_hsr_element_emoji, get_hsr_path_emoji
+from ...exceptions import ActionInCooldownError, NoCharsFoundError
+from ...icons import LOADING_ICON
+from ...models import DrawInput
+from ...utils import get_now
+from ..components import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
@@ -236,7 +236,7 @@ class CharactersView(View):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr("Characters", key="characters.embed.title"),
+            title=LocaleStr("Characters Overview", key="characters.embed.title"),
         )
 
         if self._filter in {GIFilter.MAX_FRIENDSHIP, GIFilter.NOT_MAX_FRIENDSHIP}:
@@ -301,8 +301,23 @@ class CharactersView(View):
                 inline=False,
             )
 
-        if self._filter is GIFilter.NONE and not self._element_filters:
-            total_chars = sum(self._element_char_counts.values()) + 1  # Traveler
+        if self._path_filters and self._filter is GIFilter.NONE:
+            total_chars = sum(self._path_char_counts[path.value] for path in self._path_filters)
+            embed.add_field(
+                name=LocaleStr(
+                    "{path} Characters",
+                    key="characters.embed.path_filters",
+                    path=[
+                        LocaleStr(path.value.title().replace("_", " "), warn_no_key=False)
+                        for path in self._path_filters
+                    ],
+                ),
+                value=f"{char_num}/{total_chars}",
+                inline=False,
+            )
+
+        if self._filter is GIFilter.NONE and not self._element_filters and not self._path_filters:
+            total_chars = sum(self._element_char_counts.values()) + 1  # Traveler/Trailblazer
             embed.add_field(
                 name=LocaleStr("Owned Characters", key="characters.embed.owned_characters"),
                 value=f"{char_num}/{total_chars}",
@@ -319,7 +334,10 @@ class CharactersView(View):
         elif self._game is Game.STARRAIL:
             embed.set_footer(
                 text=LocaleStr(
-                    "Level order: Basic ATK/Skill/Ultimate/Talent",
+                    (
+                        "Level order: Basic ATK/Skill/Ultimate/Talent\n"
+                        "Use /profile to view details of a character"
+                    ),
                     key="characters.hsr.embed.footer",
                 )
             )
@@ -378,10 +396,11 @@ class CharactersView(View):
                 await client.get_starrail_characters(self._account.uid)
             ).avatar_list
 
-            # Find traiblazer element and add 1 to the element char count
-            for character in self._gi_characters:
+            # Find traiblazer element and path and add 1 to the count
+            for character in self._hsr_characters:
                 if character.id in TRAILBLAZER_IDS:
                     self._element_char_counts[character.element.lower()] += 1
+                    self._path_char_counts[HSRBaseType(character.base_type).name.lower()] += 1
                     break
 
             characters = self._get_hsr_filtered_and_sorted_characters()
@@ -469,7 +488,7 @@ class PathFilterSelector(Select[CharactersView]):
     def __init__(self) -> None:
         options = [
             SelectOption(
-                label=LocaleStr(path.value.title(), warn_no_key=False),
+                label=LocaleStr(path.value.title().replace("_", " "), warn_no_key=False),
                 value=path.value,
                 emoji=get_hsr_path_emoji(path),
             )

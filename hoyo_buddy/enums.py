@@ -83,6 +83,26 @@ class HSRElement(StrEnum):
     IMAGINARY = "imaginary"
     PHYSICAL = "physical"
     QUANTUM = "quantum"
-    LIGHTNING = "lightning"
+    # LIGHTNING = "lightning"
     WIND = "wind"
     THUNDER = "thunder"
+
+
+class HSRPath(StrEnum):
+    DESTRUCTION = "destruction"  # 毀滅
+    THE_HUNT = "the_hunt"  # 巡獵
+    ERUDITION = "erudition"  # 智識
+    HARMONY = "harmony"  # 同諧
+    NIHILITY = "nihility"  # 虛無
+    PRESERVATION = "preservation"  # 存護
+    ABUNDANCE = "abundance"  # 豐饒
+
+
+class HSRBaseType(IntEnum):
+    DESTRUCTION = 1  # 毀滅
+    THE_HUNT = 2  # 巡獵
+    ERUDITION = 3  # 智識
+    HARMONY = 4  # 同諧
+    NIHILITY = 5  # 虛無
+    PRESERVATION = 6  # 存護
+    ABUNDANCE = 7  # 豐饒

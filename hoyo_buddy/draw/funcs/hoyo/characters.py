@@ -1,6 +1,7 @@
 import io
 from typing import TYPE_CHECKING
 
+import genshin
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
 
@@ -9,17 +10,35 @@ from hoyo_buddy.draw.drawer import BLACK, DARK_SURFACE, LIGHT_SURFACE, WHITE, Dr
 from hoyo_buddy.hoyo.clients.gpy_client import GenshinClient
 from hoyo_buddy.models import DynamicBKInput
 
+from ....enums import Game
+
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    import genshin
     from discord import Locale
 
     from hoyo_buddy.bot.translator import Translator
 
+PC_ICON_OFFSETS = {
+    Game.GENSHIN: (0, -29),
+    Game.STARRAIL: (0, 38),
+}
+PC_ICON_SIZES = {
+    Game.GENSHIN: (214, 214),
+    Game.STARRAIL: (208, 146),
+}
+WEAPON_ICON_POS = {
+    Game.GENSHIN: (365, 26),
+    Game.STARRAIL: (356, 17),
+}
+WEAPON_ICON_SIZES = {
+    Game.GENSHIN: (84, 84),
+    Game.STARRAIL: (102, 102),
+}
+
 
 def draw_character_card(
-    characters: "Sequence[genshin.models.Character]",
+    characters: "Sequence[genshin.models.Character | genshin.models.StarRailDetailCharacter]",
     talents: dict[str, str],
     pc_icons: dict[str, str],
     dark_mode: bool,
@@ -27,9 +46,17 @@ def draw_character_card(
     locale: "Locale",
 ) -> io.BytesIO:
     c_cards: dict[str, Image.Image] = {}
+
+    game = Game.GENSHIN if isinstance(characters[0], genshin.models.Character) else Game.STARRAIL
     for character in characters:
-        talent = talents.get(GenshinClient.convert_character_id_to_ambr_format(character), "?/?/?")
-        card = draw_small_character_card(talent, dark_mode, character, translator, locale)
+        if isinstance(character, genshin.models.Character):
+            talent = talents.get(
+                GenshinClient.convert_character_id_to_ambr_format(character), "?/?/?"
+            )
+            card = draw_small_gi_chara_card(talent, dark_mode, character, translator, locale)
+        else:
+            talent = "/".join(str(s.level) for s in character.skills[:4])
+            card = draw_small_hsr_chara_card(talent, dark_mode, character, translator, locale)
         c_cards[str(character.id)] = card
 
     first_card = list(c_cards.values())[0]
@@ -63,15 +90,17 @@ def draw_character_card(
         character_id = list(c_cards.keys())[index]
         pc_icon_url = pc_icons.get(character_id)
         if pc_icon_url:
-            icon = drawer.open_static(pc_icon_url, size=(214, 214))
-            background.paste(icon, (x, y - 29), icon)
+            offset = PC_ICON_OFFSETS[game]
+            pos = (x + offset[0], y + offset[1])
+            icon = drawer.open_static(pc_icon_url, size=PC_ICON_SIZES[game])
+            background.paste(icon, pos, icon)
 
     fp = io.BytesIO()
     background.save(fp, format="WEBP", loseless=True)
     return fp
 
 
-def cache_key(
+def gi_cache_key(
     talent_str: str,
     dark_mode: bool,
     character: "genshin.models.Character",
@@ -92,17 +121,19 @@ def cache_key(
     )
 
 
-@cached(LRUCache(maxsize=128), key=cache_key)
-def draw_small_character_card(
+@cached(LRUCache(maxsize=128), key=gi_cache_key)
+def draw_small_gi_chara_card(
     talent_str: str,
     dark_mode: bool,
     character: "genshin.models.Character",
     translator: "Translator",
     locale: "Locale",
 ) -> Image.Image:
-    im: Image.Image = Image.open(
-        f"hoyo-buddy-assets/assets/gi-characters/{'dark' if dark_mode else 'light'}_{character.element}.png"
+    game = Game.GENSHIN
+    im = Image.open(
+        f"hoyo-buddy-assets/assets/gi-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png"
     )
+
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="gi-characters", dark_mode=dark_mode, translator=translator)
 
@@ -117,9 +148,9 @@ def draw_small_character_card(
     drawer.write(text, size=31, position=(236, 72), locale=locale, style="medium")
 
     friend_textbbox = drawer.write(
-        str(character.friendship), size=18, position=(284, 151), anchor="mm"
+        str(character.friendship), size=18, position=(284, 154), anchor="mm"
     )
-    talent_textbbox = drawer.write(talent_str, size=18, position=(405, 151), anchor="mm")
+    talent_textbbox = drawer.write(talent_str, size=18, position=(405, 154), anchor="mm")
 
     size = 4
     space = talent_textbbox[0] - friend_textbbox[2]
@@ -129,8 +160,61 @@ def draw_small_character_card(
         (x_start, y_start, x_start + size, y_start + size), fill=WHITE if dark_mode else BLACK
     )
 
-    weapon_icon = drawer.open_static(character.weapon.icon)
-    weapon_icon = weapon_icon.resize((84, 84))
-    im.paste(weapon_icon, (365, 26), weapon_icon)
+    weapon_icon = drawer.open_static(character.weapon.icon, size=WEAPON_ICON_SIZES[game])
+    im.paste(weapon_icon, WEAPON_ICON_POS[game], weapon_icon)
+
+    return im
+
+
+def hsr_cache_key(
+    talent_str: str,
+    dark_mode: bool,
+    character: "genshin.models.StarRailDetailCharacter",
+    _: "Translator",
+    locale: "Locale",
+) -> str:
+    return (
+        f"{talent_str}_"
+        f"{dark_mode}_"
+        f"{character.id}_"
+        f"{character.level}_"
+        f"{character.rank}_"
+        f"{character.equip.rank if character.equip else 0}_"
+        f"{character.equip.id if character.equip else 0}_"
+        f"{character.element}"
+        f"{locale.value}"
+    )
+
+
+@cached(LRUCache(maxsize=128), key=hsr_cache_key)
+def draw_small_hsr_chara_card(
+    talent_str: str,
+    dark_mode: bool,
+    character: "genshin.models.StarRailDetailCharacter",
+    translator: "Translator",
+    locale: "Locale",
+) -> Image.Image:
+    game = Game.STARRAIL
+    im = Image.open(
+        f"hoyo-buddy-assets/assets/hsr-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png"
+    )
+
+    draw = ImageDraw.Draw(im)
+    drawer = Drawer(draw, folder="gi-characters", dark_mode=dark_mode, translator=translator)
+
+    text = LocaleStr("Lv.{level}", key="level_str", level=character.level)
+    drawer.write(text, size=31, position=(230, 35), locale=locale, style="medium")
+    text = LocaleStr(
+        "E{eidolon}S{superimpose}",
+        key="eidolon_superimpose_str",
+        eidolon=character.rank,
+        superimpose=character.equip.rank if character.equip else 0,
+    )
+    drawer.write(text, size=31, position=(230, 77), locale=locale, style="medium")
+    drawer.write(talent_str, size=18, position=(345, 151), anchor="mm")
+
+    if character.equip is not None:
+        weapon_icon = drawer.open_static(character.equip.icon, size=WEAPON_ICON_SIZES[game])
+        im.paste(weapon_icon, WEAPON_ICON_POS[game], weapon_icon)
 
     return im

@@ -1,6 +1,6 @@
 import genshin
 
-from .enums import Game, GenshinCity, GenshinElement, HSRElement
+from .enums import Game, GenshinCity, GenshinElement, HSRElement, HSRPath
 
 LOADING = "<a:loading_emoji:1106388708862738463>"
 DELETE = "<:DELETE:1166012141833310248>"
@@ -49,10 +49,20 @@ HSR_ELEMENT_EMOJIS: dict[str, str] = {
     HSRElement.IMAGINARY: "<:IconAttributeImaginary:1211302761912606890>",
     HSRElement.PHYSICAL: "<:IconAttributePhysical:1211302759907983461>",
     HSRElement.QUANTUM: "<:IconAttributeQuantum:1211302767033983046>",
-    HSRElement.LIGHTNING: "<:IconAttributeThunder:1211302758175735942>",
+    # HSRElement.LIGHTNING: "<:IconAttributeThunder:1211302758175735942>",
     HSRElement.WIND: "<:IconAttributeWind:1211302764915859498>",
     HSRElement.THUNDER: "<:IconAttributeThunder:1211302758175735942>",
 }
+HSR_PATH_EMOJIS: dict[str, str] = {
+    HSRPath.DESTRUCTION: "<:DESTRUCTION:1220140640424296530>",
+    HSRPath.THE_HUNT: "<:THE_HUNT:1220140785215864993>",
+    HSRPath.ERUDITION: "<:ERUDITION:1220140857378734112>",
+    HSRPath.HARMONY: "<:HARMONY:1220140931563389019>",
+    HSRPath.NIHILITY: "<:NIHILITY:1220141009871310948>",
+    HSRPath.PRESERVATION: "<:PRESERVATION:1220141073700094083>",
+    HSRPath.ABUNDANCE: "<:ABUNDANCE:1220141134706118666>",
+}
+
 ARTIFACT_POS_EMOJIS: dict[str, str] = {
     "flower": "<:Flower_of_Life:982167959717945374>",
     "plume": "<:Plume_of_Death:982167959915077643>",
@@ -111,7 +121,13 @@ def get_gi_element_emoji(element: str) -> str:
 
 
 def get_hsr_element_emoji(element: str) -> str:
+    if element.lower() == "lightning":
+        element = "thunder"
     return HSR_ELEMENT_EMOJIS[HSRElement(element.lower())]
+
+
+def get_hsr_path_emoji(path: str) -> str:
+    return HSR_PATH_EMOJIS[HSRPath(path.lower())]
 
 
 def get_artifact_pos_emoji(artifact_pos: str) -> str:

@@ -3,6 +3,9 @@ from ambr import Language as AmbrLanguage
 from enka import Language as EnkaLanguage
 from mihomo import Language as MihomoLanguage
 from yatta import Language as YattaLanguage
+from yatta import PathType
+
+from .enums import HSRPath
 
 DB_INTEGER_MAX = 2147483647
 DB_SMALLINT_MAX = 32767
@@ -194,6 +197,16 @@ HSR_ELEMENT_DMG_PROPS = {
     20,  # Wind
     24,  # Imaginary
     14,  # Fire
+}
+
+YATTA_PATH_TO_HSR_PATH = {
+    PathType.KNIGHT: HSRPath.PRESERVATION,
+    PathType.MAGE: HSRPath.ERUDITION,
+    PathType.PRIEST: HSRPath.ABUNDANCE,
+    PathType.ROGUE: HSRPath.THE_HUNT,
+    PathType.SHAMAN: HSRPath.HARMONY,
+    PathType.WARLOCK: HSRPath.NIHILITY,
+    PathType.WARRIOR: HSRPath.DESTRUCTION,
 }
 
 # NSFW tags for AI art generation feature

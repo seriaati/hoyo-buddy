@@ -168,7 +168,7 @@ class Translator:
                 and string_key not in self._not_translated
             ):
                 self._not_translated[string_key] = message
-                LOGGER_.warning(
+                LOGGER_.info(
                     "String %r is missing on Transifex, added to not_translated", string_key
                 )
             elif (
@@ -177,8 +177,8 @@ class Translator:
                 and string_key not in self._not_translated
             ):
                 self._not_translated[string_key] = message
-                LOGGER_.warning(
-                    "String %r has different values (CDS vs Local): %r and %r",
+                LOGGER_.info(
+                    "String %r has different values (CDS vs Local): %r and %r, added to not_translated",
                     string_key,
                     source_string,
                     message.format(**extras),

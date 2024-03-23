@@ -189,7 +189,7 @@ async def draw_chara_card(
     urls: list[str] = []
     for c in characters:
         if isinstance(c, GenshinCharacter):
-            urls.append(c.icon)
+            urls.append(c.weapon.icon)
         elif isinstance(c, StarRailCharacter) and c.equip:
             urls.append(c.equip.icon)
     urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)

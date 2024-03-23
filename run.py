@@ -5,6 +5,7 @@ import os
 
 import aiohttp
 import discord
+import git
 import sentry_sdk
 from dotenv import load_dotenv
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
@@ -20,6 +21,8 @@ load_dotenv()
 env = os.environ["ENV"]  # dev, prod, test
 
 if env != "dev":
+    repo = git.Repo()
+    tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
     sentry_sdk.init(
         dsn=os.getenv("SENTRY_DSN"),
         integrations=[
@@ -29,6 +32,7 @@ if env != "dev":
         traces_sample_rate=1.0,
         environment=env,
         enable_tracing=True,
+        release=tags[-1].name if tags else None,
     )
 
 # Disables PyNaCl warning

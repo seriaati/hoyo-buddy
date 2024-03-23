@@ -387,10 +387,9 @@ class NotesChecker:
         ):
             return True
 
-        if notify.notify_time is not None and get_now() < notify.account.server_reset_datetime:
-            return True
-
-        return False
+        return bool(
+            notify.notify_time is not None and get_now() < notify.account.server_reset_datetime
+        )
 
     @classmethod
     async def _get_notes(cls, notify: NotesNotify) -> Notes | StarRailNote:

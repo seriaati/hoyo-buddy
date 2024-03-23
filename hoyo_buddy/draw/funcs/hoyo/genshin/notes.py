@@ -2,7 +2,6 @@ from io import BytesIO
 from typing import TYPE_CHECKING
 
 from PIL import Image, ImageDraw
-from sentry_sdk.metrics import timing
 
 from hoyo_buddy.bot.translator import LocaleStr, Translator
 from hoyo_buddy.draw.drawer import Drawer
@@ -15,7 +14,6 @@ if TYPE_CHECKING:
 __all__ = ("draw_genshin_notes_card",)
 
 
-@timing("gi_notes_card")
 def draw_genshin_notes_card(
     notes: "Notes", locale: "Locale", translator: Translator, dark_mode: bool
 ) -> BytesIO:

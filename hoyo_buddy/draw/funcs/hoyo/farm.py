@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 
 from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
-from sentry_sdk.metrics import timing
 
 from hoyo_buddy.bot.translator import LocaleStr, Translator
 from hoyo_buddy.draw.drawer import DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
@@ -22,7 +21,6 @@ def cache_key(farm_data: list["FarmData"], locale: "Locale", dark_mode: bool, _:
 
 
 @cached(LRUCache(maxsize=128), key=cache_key)
-@timing("farm_card")
 def draw_farm_card(
     farm_data: list["FarmData"],
     locale: "Locale",

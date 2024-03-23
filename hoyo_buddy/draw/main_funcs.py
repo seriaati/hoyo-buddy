@@ -6,6 +6,7 @@ from discord import File
 from genshin.models import Character as GenshinCharacter
 from genshin.models import StarRailDetailCharacter as StarRailCharacter
 from mihomo.models import Character as MihomoCharacter
+from sentry_sdk.metrics import timing
 
 from hoyo_buddy.draw import funcs
 
@@ -33,16 +34,18 @@ async def draw_item_list_card(
         "item-list",
         draw_input.session,
     )
-    buffer = await asyncio.to_thread(
-        funcs.draw_item_list, items, draw_input.dark_mode, draw_input.locale
-    )
+    with timing("draw", tags={"type": "item_list_card"}):
+        buffer = await asyncio.to_thread(
+            funcs.draw_item_list, items, draw_input.dark_mode, draw_input.locale
+        )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
 
 async def draw_checkin_card(draw_input: "DrawInput", rewards: list["Reward"]) -> File:
     await download_and_save_static_images([r.icon for r in rewards], "check-in", draw_input.session)
-    buffer = await asyncio.to_thread(funcs.draw_checkin_card, rewards, draw_input.dark_mode)
+    with timing("draw", tags={"type": "checkin_card"}):
+        buffer = await asyncio.to_thread(funcs.draw_checkin_card, rewards, draw_input.dark_mode)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
@@ -85,14 +88,15 @@ async def draw_hsr_build_card(
     )
     await download_and_save_static_images(urls, "hsr-build-card", draw_input.session)
 
-    buffer = await asyncio.to_thread(
-        funcs.draw_hsr_build_card,
-        character,
-        draw_input.locale,
-        draw_input.dark_mode,
-        image_url,
-        primary_hex,
-    )
+    with timing("draw", tags={"type": "hsr_build_card"}):
+        buffer = await asyncio.to_thread(
+            funcs.draw_hsr_build_card,
+            character,
+            draw_input.locale,
+            draw_input.dark_mode,
+            image_url,
+            primary_hex,
+        )
     return buffer
 
 
@@ -104,9 +108,10 @@ async def draw_hsr_notes_card(
         folder="hsr-notes",
         session=draw_input.session,
     )
-    buffer = await asyncio.to_thread(
-        funcs.draw_hsr_notes_card, notes, draw_input.locale, translator, draw_input.dark_mode
-    )
+    with timing("draw", tags={"type": "hsr_notes_card"}):
+        buffer = await asyncio.to_thread(
+            funcs.draw_hsr_notes_card, notes, draw_input.locale, translator, draw_input.dark_mode
+        )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
@@ -126,9 +131,10 @@ async def draw_gi_build_card(
         urls.append(constellation.icon)
     await download_and_save_static_images(urls, "gi-build-card", draw_input.session)
 
-    buffer = await asyncio.to_thread(
-        funcs.draw_genshin_card, draw_input.locale, draw_input.dark_mode, character, image_url
-    )
+    with timing("draw", tags={"type": "gi_build_card"}):
+        buffer = await asyncio.to_thread(
+            funcs.draw_genshin_card, draw_input.locale, draw_input.dark_mode, character, image_url
+        )
     return buffer
 
 
@@ -140,9 +146,14 @@ async def draw_gi_notes_card(
         folder="gi-notes",
         session=draw_input.session,
     )
-    buffer = await asyncio.to_thread(
-        funcs.draw_genshin_notes_card, notes, draw_input.locale, translator, draw_input.dark_mode
-    )
+    with timing("draw", tags={"type": "gi_notes_card"}):
+        buffer = await asyncio.to_thread(
+            funcs.draw_genshin_notes_card,
+            notes,
+            draw_input.locale,
+            translator,
+            draw_input.dark_mode,
+        )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
@@ -160,9 +171,10 @@ async def draw_farm_card(
         folder="farm",
         session=draw_input.session,
     )
-    buffer = await asyncio.to_thread(
-        funcs.draw_farm_card, farm_data, draw_input.locale, draw_input.dark_mode, translator
-    )
+    with timing("draw", tags={"type": "farm_card"}):
+        buffer = await asyncio.to_thread(
+            funcs.draw_farm_card, farm_data, draw_input.locale, draw_input.dark_mode, translator
+        )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
@@ -183,15 +195,16 @@ async def draw_chara_card(
     urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
 
     await download_and_save_static_images(urls, "gi-characters", draw_input.session)
-    buffer = await asyncio.to_thread(
-        funcs.draw_character_card,
-        characters,
-        talents,
-        pc_icons,
-        draw_input.dark_mode,
-        translator,
-        draw_input.locale,
-    )
+    with timing("draw", tags={"type": "hsr_character_card"}):
+        buffer = await asyncio.to_thread(
+            funcs.draw_character_card,
+            characters,
+            talents,
+            pc_icons,
+            draw_input.dark_mode,
+            translator,
+            draw_input.locale,
+        )
     buffer.seek(0)
 
     return File(buffer, filename=draw_input.filename)
@@ -226,13 +239,14 @@ async def draw_spiral_abyss_card(
             urls.append(chara.icon)
 
     await download_and_save_static_images(urls, "abyss", draw_input.session)
-    buffer = await asyncio.to_thread(
-        funcs.AbyssCard.draw,
-        draw_input.dark_mode,
-        draw_input.locale,
-        translator,
-        abyss,
-        abyss_characters,
-    )
+    with timing("draw", tags={"type": "spiral_abyss_card"}):
+        buffer = await asyncio.to_thread(
+            funcs.AbyssCard.draw,
+            draw_input.dark_mode,
+            draw_input.locale,
+            translator,
+            abyss,
+            abyss_characters,
+        )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

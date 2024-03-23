@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING, ClassVar
 
 from discord import Locale
 from PIL import Image, ImageDraw, ImageFilter
-from sentry_sdk.metrics import timing
 
 from hoyo_buddy.bot.translator import LocaleStr, Translator
 from hoyo_buddy.draw.drawer import BLACK, TRANSPARENT, WHITE, Drawer
@@ -283,7 +282,6 @@ class AbyssCard:
                 )
 
     @classmethod
-    @timing("abyss_card")
     def draw(
         cls,
         dark_mode: bool,

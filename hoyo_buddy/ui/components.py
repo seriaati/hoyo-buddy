@@ -50,12 +50,17 @@ class View(discord.ui.View):
         self.translator = translator
         self.message: discord.Message | None = None
 
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__module__.replace('hoyo_buddy.ui.', '')}.{self.__class__.__name__}"
+        )
+
     async def on_timeout(self) -> None:
         if self.message:
             self.disable_items()
             await self.message.edit(view=self)
         else:
-            LOGGER_.warning("View %s timed out without a set message", self.__class__.__name__)
+            LOGGER_.error("View %r timed out without a set message", self)
 
     async def on_error(
         self,
@@ -120,6 +125,8 @@ class View(discord.ui.View):
             await i.response.send_message(**kwargs)
         except discord.InteractionResponded:
             await i.followup.send(**kwargs)
+        except discord.NotFound:
+            pass
 
     @staticmethod
     async def absolute_edit(i: "INTERACTION", **kwargs: Any) -> None:

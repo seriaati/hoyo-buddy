@@ -33,6 +33,7 @@ seria-library = {git = "https://github.com/seriaati/seria-library"}
 enka-py = {git = "https://github.com/seriaati/enka-py"}
 asyncpg-listen = "^0.0.6"
 novelai = {git = "https://github.com/kokosensei/NovelAI-API"}
+gitpython = "^3.1.42"
 
 [tool.poetry.group.dev]
 optional = true

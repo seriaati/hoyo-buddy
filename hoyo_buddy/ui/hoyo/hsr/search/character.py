@@ -86,6 +86,7 @@ class CharacterUI(View):
             ]
 
         await self.update(i, responded=True)
+        self.message = await i.original_response()
 
     async def update(self, i: "INTERACTION", *, responded: bool = False) -> None:
         if self._character_detail is None:

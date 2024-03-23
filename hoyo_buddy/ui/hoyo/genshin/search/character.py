@@ -171,6 +171,7 @@ class CharacterUI(View):
                 raise ValueError(msg)
 
         await i.edit_original_response(embed=embed, view=self)
+        self.message = await i.original_response()
 
 
 class TalentLevelModal(Modal):

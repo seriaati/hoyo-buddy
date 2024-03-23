@@ -23,7 +23,7 @@ class DarkModeButton(ToggleButton["ProfileView"]):
         assert self.view._card_settings is not None
 
         # Save the new dark mode setting
-        await super().callback(i, edit=False)
+        await super().callback(i, edit=True)
         self.view._card_settings.dark_mode = self.current_toggle
         await self.view._card_settings.save()
 

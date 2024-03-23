@@ -158,8 +158,11 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         character = await self.fetch_character_detail(character_id)
         c3 = character.constellations[2]
         if c3.extra_level is None:
-            LOGGER_.warning("Character %s does not have extra level data in their C3", character_id)
-            return TalentBoost.BOOST_E
+            # guess with constellation description
+            e_skill = character.talents[1]
+            if e_skill.name in c3.description:
+                return TalentBoost.BOOST_E
+            return TalentBoost.BOOST_Q
 
         return (
             TalentBoost.BOOST_E

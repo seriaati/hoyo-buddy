@@ -31,6 +31,9 @@ class Embed(discord.Embed):
         self.locale = locale
         self.translator = translator
 
+    def __repr__(self) -> str:
+        return f"<Embed title={self.title!r} description={self.description!r}>"
+
     def add_field(
         self,
         *,

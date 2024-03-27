@@ -8,6 +8,7 @@ from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
 from ..hoyo.auto_tasks.notes_check import NotesChecker
 from ..utils import get_now
+from .search import Search
 
 if TYPE_CHECKING:
     from ..bot.bot import HoyoBuddy
@@ -52,6 +53,12 @@ class Schedule(commands.Cog):
                         if uid_start in {"7", "6"}:
                             continue
                         asyncio.create_task(FarmChecker.execute(self.bot, uid_start))
+
+        # Every day at 11:00
+        if now.hour == 11 and now.minute < self.loop_interval and self.bot.env != "dev":
+            search_cog = self.bot.get_cog("Search")
+            if isinstance(search_cog, Search):
+                asyncio.create_task(search_cog._setup_search_autocomplete_choices())
 
         # Every minute
         if now.minute % 1 < self.loop_interval:

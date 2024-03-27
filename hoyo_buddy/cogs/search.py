@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import random
 from typing import TYPE_CHECKING, Any
@@ -5,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 import discord
 from ambr.exceptions import AmbrAPIError
 from discord import Locale, app_commands
-from discord.ext import commands, tasks
+from discord.ext import commands
 from yatta.exceptions import YattaAPIError
 
 from ..bot.translator import LocaleStr
@@ -36,10 +37,7 @@ class Search(commands.Cog):
         }
 
     async def cog_load(self) -> None:
-        self._update_search_autocomplete_choices.start()
-
-    async def cog_unload(self) -> None:
-        self._update_search_autocomplete_choices.cancel()
+        asyncio.create_task(self._setup_search_autocomplete_choices())
 
     async def _fetch_item_task(
         self,
@@ -102,16 +100,6 @@ class Search(commands.Cog):
             "Finished setting up search autocomplete choices, took %.2f seconds",
             self.bot.loop.time() - start,
         )
-
-    @tasks.loop(hours=24)
-    async def _update_search_autocomplete_choices(self) -> None:
-        if self.bot.env == "dev":
-            return
-        await self._setup_search_autocomplete_choices()
-
-    @_update_search_autocomplete_choices.before_loop
-    async def _before_update_search_autocomplete_choices(self) -> None:
-        await self.bot.wait_until_ready()
 
     @app_commands.command(
         name=app_commands.locale_str("search", translate=False),

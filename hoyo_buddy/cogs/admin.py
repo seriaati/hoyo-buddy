@@ -9,6 +9,7 @@ from ..constants import UID_STARTS
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
 from ..hoyo.auto_tasks.notes_check import NotesChecker
+from .search import Search
 
 if TYPE_CHECKING:
     from discord.ext.commands.context import Context
@@ -81,6 +82,15 @@ class Admin(commands.Cog):
         message = await ctx.send("Updating assets...")
         await self.bot.update_assets()
         await message.edit(content="Updated assets.")
+
+    @commands.command(name="update-search-autocomplete", aliases=["usa"])
+    async def update_search_autocomplete_command(self, ctx: commands.Context) -> Any:
+        message = await ctx.send("Updating search autocomplete...")
+        search_cog = self.bot.get_cog("Search")
+        search_cog = self.bot.get_cog("Search")
+        if isinstance(search_cog, Search):
+            asyncio.create_task(search_cog._setup_search_autocomplete_choices())
+        await message.edit(content="Updated search autocomplete.")
 
 
 async def setup(bot: "HoyoBuddy") -> None:

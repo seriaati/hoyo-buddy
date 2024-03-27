@@ -134,6 +134,26 @@ class EnterEmailPassword(Button["AccountManager"]):
         self._interaction: "INTERACTION | None" = None
         self._ticket: dict[str, Any] | None = None
 
+    async def _process_app_login_result(self, i: "INTERACTION", result: dict[str, Any]) -> None:
+        if "session_id" in result:
+            self._condition = LoginCondition.GEETEST_TRIGGERED
+            await User.filter(id=i.user.id).update(temp_data=result)
+            return await self._prompt_user_to_solve_geetest(i)
+
+        if "risk_ticket" in result:
+            mmt = await self._client._send_verification_email(result)
+            if mmt is not None:
+                self._condition = LoginCondition.GEETEST_TRIGGERED_FOR_EMAIL
+                self._ticket = result
+                await User.filter(id=i.user.id).update(temp_data=mmt)
+                return await self._prompt_user_to_solve_geetest(i)
+
+            self._condition = LoginCondition.NEED_EMAIL_VERIFICATION
+            self._ticket = result
+            return await self._prompt_user_to_verify_email(i)
+
+        await self._finish_cookie_setup(i, result)
+
     async def _prompt_user_to_solve_geetest(self, i: "INTERACTION") -> None:
         assert i.channel is not None and i.message is not None
         payload = LoginNotifPayload(
@@ -276,26 +296,6 @@ class EnterEmailPassword(Button["AccountManager"]):
 
         assert self._login_listener_task is not None
         self._login_listener_task.cancel()
-
-    async def _process_app_login_result(self, i: "INTERACTION", result: dict[str, Any]) -> None:
-        if "session_id" in result:
-            self._condition = LoginCondition.GEETEST_TRIGGERED
-            await User.filter(id=i.user.id).update(temp_data=result)
-            return await self._prompt_user_to_solve_geetest(i)
-
-        if "risk_ticket" in result:
-            mmt = await self._client._send_verification_email(result)
-            if mmt is not None:
-                self._condition = LoginCondition.GEETEST_TRIGGERED_FOR_EMAIL
-                self._ticket = result
-                await User.filter(id=i.user.id).update(temp_data=mmt)
-                return await self._prompt_user_to_solve_geetest(i)
-
-            self._condition = LoginCondition.NEED_EMAIL_VERIFICATION
-            self._ticket = result
-            return await self._prompt_user_to_verify_email(i)
-
-        await self._finish_cookie_setup(i, result)
 
     async def callback(self, i: "INTERACTION") -> Any:
         modal = EmailPasswordModal(

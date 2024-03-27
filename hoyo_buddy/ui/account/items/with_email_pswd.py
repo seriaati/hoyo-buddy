@@ -1,6 +1,5 @@
 import asyncio
 import os
-from enum import IntEnum
 from typing import TYPE_CHECKING, Any
 
 import asyncpg_listen
@@ -8,6 +7,7 @@ import genshin
 from discord import ButtonStyle
 from tortoise import Tortoise
 
+from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.db.models import User
 from hoyo_buddy.embeds import DefaultEmbed
@@ -15,8 +15,8 @@ from hoyo_buddy.emojis import INFO, PASSWORD
 from hoyo_buddy.exceptions import (
     InvalidCodeError,
     InvalidEmailOrPasswordError,
-    VerificationCodeServiceUnavailableError,
 )
+from hoyo_buddy.hoyo.login_handler import LoginCondition, LoginHandler, LoginResultType
 from hoyo_buddy.models import LoginNotifPayload
 
 from ...components import Button, GoBackButton, Modal, TextInput
@@ -32,12 +32,6 @@ GEETEST_SERVER_URL = {
     "test": "http://geetest-server-test.seriaati.xyz",
     "dev": "http://localhost:5000",
 }
-
-
-class Condition(IntEnum):
-    GEETEST_TRIGGERED = 1
-    GEETEST_TRIGGERED_FOR_EMAIL = 2
-    NEED_EMAIL_VERIFICATION = 3
 
 
 class WithEmailPassword(Button["AccountManager"]):
@@ -134,7 +128,7 @@ class EnterEmailPassword(Button["AccountManager"]):
 
         self.__email: str | None = None
         self.__password: str | None = None
-        self._condition: Condition | None = None
+        self._condition: LoginCondition | None = None
         self._login_listener_task: asyncio.Task | None = None
         self._client = genshin.Client()
         self._interaction: "INTERACTION | None" = None
@@ -166,7 +160,7 @@ class EnterEmailPassword(Button["AccountManager"]):
             title=LocaleStr(
                 "😅 Ugh! Need to solve CAPTCHA before logging in", key="geetest.embed.title"
             )
-            if self._condition is Condition.GEETEST_TRIGGERED
+            if self._condition is LoginCondition.GEETEST_TRIGGERED
             else LocaleStr(
                 "😥 Agh! Need to solve CAPTCHA (again!) before sending an e-mail verification",
                 key="email-geetest.embed.title",
@@ -232,9 +226,6 @@ class EnterEmailPassword(Button["AccountManager"]):
 
         await i.edit_original_response(embed=embed, view=self.view)
 
-        if self._login_listener_task is not None:
-            self._login_listener_task.cancel()
-
     def _start_notif_listener(self) -> None:
         login_listener = asyncpg_listen.NotificationListener(
             asyncpg_listen.connect_func(os.environ["DB_URL"])
@@ -260,54 +251,47 @@ class EnterEmailPassword(Button["AccountManager"]):
             and self._condition is not None
         )
 
-        if self._condition is Condition.GEETEST_TRIGGERED:
-            geetest = user.temp_data
-            try:
-                result = await self._client._app_login(
-                    self.__email, self.__password, geetest=geetest
-                )
-            except genshin.GenshinException as e:
-                if e.retcode in {-3208, -3203}:  # Account does not exist
-                    raise InvalidEmailOrPasswordError from e
-                raise
-
-            await self._process_app_login_result(self._interaction, result)
-
-        elif self._condition is Condition.GEETEST_TRIGGERED_FOR_EMAIL:
-            assert self._ticket is not None
-
-            geetest = user.temp_data
-            try:
-                await self._client._send_verification_email(self._ticket, geetest=geetest)
-            except genshin.GenshinException as e:
-                if e.retcode == -3206:
-                    raise VerificationCodeServiceUnavailableError from e
-                raise
-
-            await self._prompt_user_to_verify_email(self._interaction)
-
-        elif self._condition is Condition.NEED_EMAIL_VERIFICATION:
-            assert self._ticket is not None
-            result = await self._client._app_login(
-                self.__email, self.__password, ticket=self._ticket
+        try:
+            result = await LoginHandler.handle(
+                user=user,
+                email=self.__email,
+                password=self.__password,
+                client=self._client,
+                condition=self._condition,
             )
-            await self._finish_cookie_setup(self._interaction, result)
+        except Exception as e:
+            embed, recognized = get_error_embed(e, self.view.locale, self.view.translator)
+            if not recognized:
+                self._interaction.client.capture_exception(e)
+            await self._interaction.edit_original_response(embed=embed)
+            return
+
+        match result.type:
+            case LoginResultType.PROCESS_APP_LOGIN_RESULT:
+                await self._process_app_login_result(self._interaction, result.data)
+            case LoginResultType.PROMPT_USER_TO_VERIFY_EMAIL:
+                await self._prompt_user_to_verify_email(self._interaction)
+            case LoginResultType.FINISH_COOKIE_SETUP:
+                await self._finish_cookie_setup(self._interaction, result.data)
+
+        assert self._login_listener_task is not None
+        self._login_listener_task.cancel()
 
     async def _process_app_login_result(self, i: "INTERACTION", result: dict[str, Any]) -> None:
         if "session_id" in result:
-            self._condition = Condition.GEETEST_TRIGGERED
+            self._condition = LoginCondition.GEETEST_TRIGGERED
             await User.filter(id=i.user.id).update(temp_data=result)
             return await self._prompt_user_to_solve_geetest(i)
 
         if "risk_ticket" in result:
             mmt = await self._client._send_verification_email(result)
             if mmt is not None:
-                self._condition = Condition.GEETEST_TRIGGERED_FOR_EMAIL
+                self._condition = LoginCondition.GEETEST_TRIGGERED_FOR_EMAIL
                 self._ticket = result
                 await User.filter(id=i.user.id).update(temp_data=mmt)
                 return await self._prompt_user_to_solve_geetest(i)
 
-            self._condition = Condition.NEED_EMAIL_VERIFICATION
+            self._condition = LoginCondition.NEED_EMAIL_VERIFICATION
             self._ticket = result
             return await self._prompt_user_to_verify_email(i)
 

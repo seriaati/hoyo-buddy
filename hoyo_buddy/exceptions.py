@@ -131,7 +131,7 @@ class InvalidEmailOrPasswordError(HoyoBuddyError):
         )
 
 
-class VerificationCodeServiceUnavailableError(HoyoBuddyError):
+class VerCodeServiceDownError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(
             title=LocaleStr(

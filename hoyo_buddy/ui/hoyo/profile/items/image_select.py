@@ -58,7 +58,7 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
                     added_values.add(url)
 
         # HB templates don't wotk with official art, default image is always Hoyo Buddy Collection (1)
-        if "hb" in self.template:
+        if "hb" in self.template and self.current_image_url is None:
             options[1].default = True
         return options
 

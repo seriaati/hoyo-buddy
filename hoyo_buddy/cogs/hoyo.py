@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from discord import app_commands
 from discord.ext import commands
-from mihomo.errors import UserNotFound
+from mihomo.errors import HttpRequestError, UserNotFound
 from seria.utils import read_yaml
 
 from ..bot.translator import LocaleStr
@@ -175,7 +175,7 @@ class Hoyo(commands.Cog):
             try:
                 client = MihomoAPI(locale)
                 starrail_data = await client.fetch_user(uid_)
-            except UserNotFound:
+            except (HttpRequestError, UserNotFound):
                 if account_ is None:
                     raise
 

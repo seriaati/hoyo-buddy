@@ -996,7 +996,7 @@ geetest = ["rsa"]
 type = "git"
 url = "https://github.com/thesadru/genshin.py"
 reference = "HEAD"
-resolved_reference = "b3873600ea6c78f64b112679e23c04860a9a0394"
+resolved_reference = "f6f4c11bd22abe5b31c741db5a29598480c8bf27"
 
 [[package]]
 name = "gitdb"

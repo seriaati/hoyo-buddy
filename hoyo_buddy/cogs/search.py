@@ -37,6 +37,8 @@ class Search(commands.Cog):
         }
 
     async def cog_load(self) -> None:
+        if self.bot.env == "dev":
+            return
         asyncio.create_task(self._setup_search_autocomplete_choices())
 
     async def _fetch_item_task(

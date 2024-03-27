@@ -79,10 +79,6 @@ class AccountManager(View):
             name=LocaleStr("Game", key="account_game"),
             value=LocaleStr(account.game.value, warn_no_key=False),
         )
-        embed.add_field(
-            name=LocaleStr("Server", key="account_server"),
-            value=LocaleStr(account.server, warn_no_key=False),
-        )
         if account.nickname:
             embed.add_field(
                 name=LocaleStr("Username", key="account_username"),

@@ -1,3 +1,4 @@
+import contextlib
 import logging
 from typing import TYPE_CHECKING, Any, Generic, Self, TypeVar
 
@@ -58,7 +59,8 @@ class View(discord.ui.View):
     async def on_timeout(self) -> None:
         if self.message:
             self.disable_items()
-            await self.message.edit(view=self)
+            with contextlib.suppress(discord.NotFound, discord.HTTPException):
+                await self.message.edit(view=self)
         else:
             LOGGER_.error("View %r timed out without a set message", self)
 

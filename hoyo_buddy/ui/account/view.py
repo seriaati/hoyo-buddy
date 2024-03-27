@@ -36,7 +36,13 @@ class AccountManager(View):
         self.accounts = accounts
         self.selected_account: HoyoAccount | None = None
 
-    async def init(self) -> None:
+    async def start(self, i: "INTERACTION") -> None:
+        self._add_items()
+        embed = self.account_embed
+        await i.response.send_message(embed=embed, view=self, ephemeral=True)
+        self.message = await i.original_response()
+
+    def _add_items(self) -> None:
         if self.accounts:
             self.selected_account = (
                 next((a for a in self.accounts if a.current), None) or self.accounts[0]
@@ -48,7 +54,8 @@ class AccountManager(View):
         else:
             self.add_item(AddAccountButton())
 
-    def get_account_embed(self) -> DefaultEmbed:
+    @property
+    def account_embed(self) -> DefaultEmbed:
         account = self.selected_account
 
         if account is None:
@@ -110,11 +117,9 @@ class AccountManager(View):
                 user=self.user,
                 accounts=accounts,
             )
-            await view.init()
-            await self.absolute_edit(i, embed=view.get_account_embed(), view=view)
-            view.message = await i.original_response()
+            await view.start(i)
         else:
             account_selector = self.get_item("account_selector")
             if isinstance(account_selector, Select):
                 account_selector.options = self.get_account_options()
-            await self.absolute_edit(i, embed=self.get_account_embed(), view=self)
+            await self.absolute_edit(i, embed=self.account_embed, view=self)

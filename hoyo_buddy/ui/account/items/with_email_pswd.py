@@ -245,13 +245,17 @@ class EnterEmailPassword(Button["AccountManager"]):
         )
 
         await i.edit_original_response(embed=embed, view=self.view)
+        if self._login_listener_task is not None:
+            self._login_listener_task.cancel()
 
     def _start_notif_listener(self) -> None:
         login_listener = asyncpg_listen.NotificationListener(
             asyncpg_listen.connect_func(os.environ["DB_URL"])
         )
+        assert self.view.author is not None
         self._login_listener_task = asyncio.create_task(
-            login_listener.run({"login": self._handle_login_notifs}, notification_timeout=3)
+            login_listener.run({"login": self._handle_login_notifs}, notification_timeout=3),
+            name=f"login_listener_{self.view.author.id}",
         )
 
     async def _handle_login_notifs(self, notif: asyncpg_listen.NotificationOrTimeout) -> None:
@@ -294,9 +298,6 @@ class EnterEmailPassword(Button["AccountManager"]):
             case LoginResultType.FINISH_COOKIE_SETUP:
                 await self._finish_cookie_setup(self._interaction, result.data)
 
-        assert self._login_listener_task is not None
-        self._login_listener_task.cancel()
-
     async def callback(self, i: "INTERACTION") -> Any:
         modal = EmailPasswordModal(
             title=LocaleStr(
@@ -328,3 +329,8 @@ class EnterEmailPassword(Button["AccountManager"]):
 
         self._start_notif_listener()
         await self._process_app_login_result(i, result)
+
+        # Auto-cancel the listener after 5 minutes
+        await asyncio.sleep(300)
+        if self._login_listener_task is not None:
+            self._login_listener_task.cancel()

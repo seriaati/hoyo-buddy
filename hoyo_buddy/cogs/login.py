@@ -31,11 +31,7 @@ class Login(commands.Cog):
             user=user,
             accounts=accounts,
         )
-        await view.init()
-
-        embed = view.get_account_embed()
-        await i.response.send_message(embed=embed, view=view, ephemeral=True)
-        view.message = await i.original_response()
+        await view.start(i)
 
 
 async def setup(bot: "HoyoBuddy") -> None:

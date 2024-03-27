@@ -105,7 +105,7 @@ class ReminderButton(Button[FarmView]):
     def __init__(self) -> None:
         super().__init__(
             label=LocaleStr("Set Reminders", key="farm_view.set_reminder"),
-            style=ButtonStyle.blurple,
+            style=ButtonStyle.green,
             emoji=BELL_OUTLINE,
             row=2,
         )

@@ -36,6 +36,7 @@ if TYPE_CHECKING:
     import aiohttp
     from discord import Member, User
     from enka.models import ShowcaseResponse
+    from genshin.models import StarRailUserStats
     from mihomo.models import StarrailInfoParsed
 
     from hoyo_buddy.bot.bot import INTERACTION
@@ -54,6 +55,7 @@ class ProfileView(View):
         card_data: dict[str, Any],
         *,
         hoyolab_characters: list[HoyolabHSRCharacter],
+        hoyolab_user: "StarRailUserStats | None" = None,
         starrail_data: "StarrailInfoParsed | None" = None,
         genshin_data: "ShowcaseResponse | None" = None,
         author: "User | Member",
@@ -63,6 +65,7 @@ class ProfileView(View):
         super().__init__(author=author, locale=locale, translator=translator)
 
         self.hoyolab_characters = hoyolab_characters
+        self.hoyolab_user = hoyolab_user
         self.starrail_data = starrail_data
         self.genshin_data = genshin_data
         self.live_data_character_ids = [k for k in cache_extras if cache_extras[k]["live"]]
@@ -143,6 +146,37 @@ class ProfileView(View):
             embed.set_image(url=player.namecard.full)
             if player.signature:
                 embed.set_footer(text=player.signature)
+        elif self.hoyolab_user is not None:
+            player = self.hoyolab_user.info
+            stats = self.hoyolab_user.stats
+            embed = DefaultEmbed(
+                self.locale,
+                self.translator,
+                title=player.nickname,
+                description=LocaleStr(
+                    "Trailblaze Level: {level}\n"
+                    "Characters: {characters}\n"
+                    "Chests: {chest}\n"
+                    "Memory of Chaos: {moc}\n"
+                    "Achievements: {achievements}\n",
+                    key="profile.player_info.gi.embed.description",
+                    level=player.level,
+                    characters=stats.avatar_num,
+                    chest=stats.chest_num,
+                    moc=stats.abyss_process,
+                    achievements=stats.achievement_num,
+                ),
+            )
+        else:
+            embed = DefaultEmbed(
+                self.locale,
+                self.translator,
+                title=LocaleStr("No data available", key="profile.no_data.title"),
+                description=LocaleStr(
+                    "Game services are currently down; luckily, Hoyo Buddy helped you to cache your character data, so you can still view your character cards as normal.",
+                    key="profile.no_data.description",
+                ),
+            )
 
         return embed
 

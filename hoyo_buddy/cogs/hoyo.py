@@ -151,6 +151,7 @@ class Hoyo(commands.Cog):
 
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         uid_, game, account_ = await self._get_uid_and_game(i.user.id, account, uid, game_value)
+        hoyolab_user = None
 
         if game is Game.GENSHIN:
             async with EnkaAPI(locale) as client:
@@ -182,6 +183,8 @@ class Hoyo(commands.Cog):
             if account_ is not None:
                 client = account_.client
                 client.set_lang(locale)
+                if starrail_data is None:
+                    hoyolab_user = await client.get_starrail_user()
                 hoyolab_charas = await client.get_hoyolab_hsr_characters()
 
             cache = await EnkaCache.get(uid=uid_)
@@ -191,6 +194,7 @@ class Hoyo(commands.Cog):
                 cache.extras,
                 await read_yaml("hoyo-buddy-assets/assets/hsr-build-card/data.yaml"),
                 hoyolab_characters=hoyolab_charas,
+                hoyolab_user=hoyolab_user,
                 starrail_data=starrail_data,
                 author=i.user,
                 locale=locale,

@@ -67,6 +67,7 @@ class LightConeUI(View):
         embed = await self._fetch_weapon_embed()
         self._setup_items()
         await i.edit_original_response(embed=embed, view=self)
+        self.message = await i.original_response()
 
 
 class LightConeLevelModal(Modal):

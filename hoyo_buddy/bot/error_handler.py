@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from ambr.exceptions import DataNotFoundError
 from genshin import errors as genshin_errors
@@ -13,39 +13,62 @@ if TYPE_CHECKING:
 
 __all__ = ("get_error_embed",)
 
-GENSHIN_ERROR_CONVERTER: dict[
-    type[genshin_errors.GenshinException],
-    tuple[tuple[str, str] | None, tuple[str, str] | None],
-] = {
-    genshin_errors.AlreadyClaimed: (
-        ("Daily check-in reward already claimed", "already_claimed_title"),
-        ("Come back tomorrow!", "already_claimed_description"),
-    ),
-    genshin_errors.InvalidCookies: (
-        ("Invalid Cookies", "invalid_cookies_title"),
-        (
-            "Refresh your Cookies by add your accounts again using </accounts>",
-            "invalid_cookies_description",
+GENSHIN_ERROR_CONVERTER: dict[int, dict[Literal["title", "description"], LocaleStr]] = {
+    -5003: {
+        "title": LocaleStr("Daily check-in reward already claimed", key="already_claimed_title"),
+        "description": LocaleStr("Come back tomorrow!", key="already_claimed_description"),
+    },
+    -100: {
+        "title": LocaleStr("Invalid Cookies", key="invalid_cookies_title"),
+        "description": LocaleStr(
+            "Refresh your Cookies by adding your accounts again using </accounts>",
+            key="invalid_cookies_description",
         ),
-    ),
+    },
+    -3205: {
+        "title": LocaleStr("Invalid verification code", key="invalid_verification_code_title"),
+        "description": LocaleStr(
+            "Please check the verification code and try again.",
+            key="invalid_verification_code_description",
+        ),
+    },
+    -3208: {
+        "title": LocaleStr("Invalid e-mail or password", key="invalid_email_password_title"),
+        "description": LocaleStr(
+            "The e-mail or password you provided is incorrect. Please check and try again.",
+            key="invalid_email_password_description",
+        ),
+    },
+    -3206: {
+        "title": LocaleStr(
+            "Verification code service unavailable", key="verification_code_unavailable_title"
+        ),
+        "description": LocaleStr(
+            "Please try again later.", key="verification_code_unavailable_description"
+        ),
+    },
 }
 
 MIHOMO_ERROR_CONVERTER: dict[
     type[mihomo_errors.BaseException],
-    tuple[tuple[str, str] | None, tuple[str, str] | None],
+    dict[Literal["title", "description"], LocaleStr],
 ] = {
-    mihomo_errors.HttpRequestError: (
-        ("Failed to fetch data", "http_request_error_title"),
-        ("Please try again later.", "http_request_error_description"),
-    ),
-    mihomo_errors.UserNotFound: (
-        ("User not found", "user_not_found_title"),
-        ("Please check the provided UID.", "user_not_found_description"),
-    ),
-    mihomo_errors.InvalidParams: (
-        ("Invalid parameters", "invalid_params_title"),
-        ("Please check the provided parameters.", "invalid_params_description"),
-    ),
+    mihomo_errors.HttpRequestError: {
+        "title": LocaleStr("Failed to fetch data", key="http_request_error_title"),
+        "description": LocaleStr("Please try again later.", key="http_request_error_description"),
+    },
+    mihomo_errors.UserNotFound: {
+        "title": LocaleStr("User not found", key="user_not_found_title"),
+        "description": LocaleStr(
+            "Please check the provided UID.", key="user_not_found_description"
+        ),
+    },
+    mihomo_errors.InvalidParams: {
+        "title": LocaleStr("Invalid parameters", key="invalid_params_title"),
+        "description": LocaleStr(
+            "Please check the provided parameters.", key="invalid_params_description"
+        ),
+    },
 }
 
 
@@ -53,8 +76,11 @@ def get_error_embed(
     error: Exception, locale: "discord.Locale", translator: Translator
 ) -> tuple[ErrorEmbed, bool]:
     recognized = True
+    embed = None
+
     if isinstance(error, DataNotFoundError):
         error = InvalidQueryError()
+
     if isinstance(error, HoyoBuddyError):
         embed = ErrorEmbed(
             locale,
@@ -63,21 +89,18 @@ def get_error_embed(
             description=error.message,
         )
     elif isinstance(error, genshin_errors.GenshinException | mihomo_errors.BaseException):
-        if isinstance(error, genshin_errors.GenshinException):
-            title, description = GENSHIN_ERROR_CONVERTER.get(type(error), (None, None))
-        else:
-            title, description = MIHOMO_ERROR_CONVERTER.get(type(error), (None, None))
-        embed = ErrorEmbed(
-            locale,
-            translator,
-            title=LocaleStr(title[0], key=title[1])
-            if title
-            else LocaleStr("An error occurred", key="error_title"),
-            description=LocaleStr(description[0], key=description[1])
-            if description
-            else str(error),
+        title, description = None, None
+
+        err_info = (
+            GENSHIN_ERROR_CONVERTER.get(error.retcode)
+            if isinstance(error, genshin_errors.GenshinException)
+            else MIHOMO_ERROR_CONVERTER.get(type(error))
         )
-    else:
+        if err_info is not None:
+            title, description = err_info["title"], err_info["description"]
+            embed = ErrorEmbed(locale, translator, title=title, description=description)
+
+    if embed is None:
         recognized = False
         description = f"{type(error).__name__}: {error}" if error else type(error).__name__
         embed = ErrorEmbed(
@@ -91,4 +114,5 @@ def get_error_embed(
                 "Please report this error to the developer via /feedback", key="error_footer"
             )
         )
+
     return embed, recognized

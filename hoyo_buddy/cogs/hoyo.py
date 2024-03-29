@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 from discord import app_commands
 from discord.ext import commands
+from genshin.errors import GenshinException
 from mihomo.errors import HttpRequestError, UserNotFound
 from seria.utils import read_yaml
 
@@ -178,6 +179,7 @@ class Hoyo(commands.Cog):
                 starrail_data = await client.fetch_user(uid_)
             except (HttpRequestError, UserNotFound):
                 if account_ is None:
+                    # mihomo fails and no hoyolab account provided, raise error
                     raise
 
             if account_ is not None:
@@ -185,7 +187,12 @@ class Hoyo(commands.Cog):
                 client.set_lang(locale)
                 if starrail_data is None:
                     hoyolab_user = await client.get_starrail_user()
-                hoyolab_charas = await client.get_hoyolab_hsr_characters()
+                try:
+                    hoyolab_charas = await client.get_hoyolab_hsr_characters()
+                except GenshinException:
+                    if starrail_data is None:
+                        # mihomo and hoyolab both failed, raise error
+                        raise
 
             cache = await EnkaCache.get(uid=uid_)
             view = ProfileView(

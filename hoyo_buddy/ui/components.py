@@ -612,7 +612,8 @@ class Modal(discord.ui.Modal):
                         )
                     )
 
-    def confirm_required_inputs(self) -> bool:
+    @property
+    def incomplete(self) -> bool:
         """Returns True if any required TextInput is empty. False otherwise."""
         return any(
             item.required and not item.value

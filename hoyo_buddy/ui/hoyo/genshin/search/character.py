@@ -195,8 +195,7 @@ class EnterTalentLevel(Button[CharacterUI]):
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()
-        incomplete = modal.confirm_required_inputs()
-        if incomplete:
+        if modal.incomplete:
             return
 
         self.view.talent_level = int(modal.level.value)
@@ -223,7 +222,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
         )
         await i.response.send_modal(modal)
         await modal.wait()
-        incomplete = modal.confirm_required_inputs()
+        incomplete = modal.incomplete
         if incomplete:
             return
 

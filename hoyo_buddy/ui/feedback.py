@@ -38,7 +38,7 @@ class FeedbackButton(Button[FeedbackView]):
         await i.response.send_modal(modal)
         await modal.wait()
 
-        incomplete = modal.confirm_required_inputs()
+        incomplete = modal.incomplete
         if incomplete:
             return
 

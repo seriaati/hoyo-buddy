@@ -91,7 +91,7 @@ class EnterLightConeLevel(Button[LightConeUI]):
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()
-        incomplete = modal.confirm_required_inputs()
+        incomplete = modal.incomplete
         if incomplete:
             return
 

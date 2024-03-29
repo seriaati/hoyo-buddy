@@ -265,7 +265,6 @@ class ProfileView(View):
             primary = character_data["primary"]
             if "primary-dark" in character_data and self._card_settings.dark_mode:
                 primary = character_data["primary-dark"]
-            self._card_settings.custom_primary_color = primary
 
         return await draw_hsr_build_card(
             DrawInput(
@@ -276,7 +275,7 @@ class ProfileView(View):
             ),
             character,
             art,
-            self._card_settings.custom_primary_color,
+            primary,
         )
 
     async def _draw_hb_gi_character_card(

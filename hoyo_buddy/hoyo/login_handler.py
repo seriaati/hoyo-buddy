@@ -1,24 +1,11 @@
-from enum import IntEnum
 from typing import TYPE_CHECKING, Any
 
-import genshin
-
-from ..exceptions import InvalidEmailOrPasswordError, VerCodeServiceDownError
+from ..enums import LoginCondition, LoginPlatform, LoginResultType
 
 if TYPE_CHECKING:
+    import genshin
+
     from ..db.models import User
-
-
-class LoginResultType(IntEnum):
-    PROCESS_APP_LOGIN_RESULT = 0
-    PROMPT_USER_TO_VERIFY_EMAIL = 1
-    FINISH_COOKIE_SETUP = 2
-
-
-class LoginCondition(IntEnum):
-    GEETEST_TRIGGERED = 1
-    GEETEST_TRIGGERED_FOR_EMAIL = 2
-    NEED_EMAIL_VERIFICATION = 3
 
 
 class LoginHandlerResult:
@@ -28,61 +15,64 @@ class LoginHandlerResult:
 
 
 class LoginHandler:
-    _client: genshin.Client
+    _client: "genshin.Client"
 
     @classmethod
     async def _handle_geetest_triggered(
-        cls, geetest: dict[str, Any], email: str, password: str
+        cls, email: str, password: str, *, geetest: dict[str, Any], platform: LoginPlatform
     ) -> LoginHandlerResult:
-        result = await cls._client._app_login(email, password, geetest=geetest)
+        if platform is LoginPlatform.MIYOUSHE:
+            result = await cls._client._cn_login_by_password(email, password, geetest=geetest)
+        else:
+            result = await cls._client._app_login(email, password, geetest=geetest)
         return LoginHandlerResult(LoginResultType.PROCESS_APP_LOGIN_RESULT, result)
 
     @classmethod
     async def _handle_geetest_triggered_for_email(
-        cls, geetest: dict[str, Any], ticket: dict[str, Any]
+        cls, *, geetest: dict[str, Any], ticket: dict[str, Any]
     ) -> LoginHandlerResult:
         await cls._client._send_verification_email(ticket, geetest=geetest)
         return LoginHandlerResult(LoginResultType.PROMPT_USER_TO_VERIFY_EMAIL)
 
     @classmethod
-    async def _handle_need_email_verification(
-        cls, ticket: dict[str, Any], email: str, password: str
+    async def _handle_geetest_triggered_for_otp(
+        cls, mobile: str, *, geetest: dict[str, Any]
     ) -> LoginHandlerResult:
+        await cls._client._send_mobile_otp(mobile, geetest=geetest)
+        return LoginHandlerResult(LoginResultType.PROMPT_USER_TO_VERIFY_EMAIL)
+
+    @classmethod
+    async def _handle_need_email_verification(
+        cls, email: str, password: str, *, ticket: dict[str, Any]
+    ) -> LoginHandlerResult:
+        # Miyoushe doesn't have email verification
         result = await cls._client._app_login(email, password, ticket=ticket)
         return LoginHandlerResult(LoginResultType.FINISH_COOKIE_SETUP, result)
 
     @classmethod
     async def handle(
         cls,
+        *,
         user: "User",
         email: str,
         password: str,
-        client: genshin.Client,
+        mobile: str,
+        ticket: dict[str, Any],
+        client: "genshin.Client",
         condition: LoginCondition,
+        platform: LoginPlatform,
     ) -> LoginHandlerResult:
         cls._client = client
+        geetest = user.temp_data
 
-        try:
-            match condition:
-                case LoginCondition.GEETEST_TRIGGERED:
-                    return await cls._handle_geetest_triggered(user.temp_data, email, password)
-                case LoginCondition.GEETEST_TRIGGERED_FOR_EMAIL:
-                    return await cls._handle_geetest_triggered_for_email(
-                        user.temp_data, user.temp_data
-                    )
-                case LoginCondition.NEED_EMAIL_VERIFICATION:
-                    return await cls._handle_need_email_verification(
-                        user.temp_data, email, password
-                    )
-        except genshin.GenshinException as e:
-            if e.retcode in {-3208, -3203}:
-                raise InvalidEmailOrPasswordError from e
-            elif e.retcode == -3206:
-                raise VerCodeServiceDownError from e
-            else:
-                raise
-        except Exception:
-            raise
-        finally:
-            user.temp_data.clear()
-            await user.save()
+        match condition:
+            case LoginCondition.GEETEST_TRIGGERED_FOR_LOGIN:
+                return await cls._handle_geetest_triggered(
+                    email, password, geetest=geetest, platform=platform
+                )
+            case LoginCondition.GEETEST_TRIGGERED_FOR_EMAIL:
+                return await cls._handle_geetest_triggered_for_email(geetest=geetest, ticket=ticket)
+            case LoginCondition.GEETEST_TRIGGERED_FOR_OTP:
+                return await cls._handle_geetest_triggered_for_otp(mobile, geetest=geetest)
+            case LoginCondition.NEED_EMAIL_VERIFICATION:
+                return await cls._handle_need_email_verification(email, password, ticket=ticket)

@@ -4,6 +4,7 @@ from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import INFO
 
+from ....enums import LoginPlatform
 from ...components import Button, GoBackButton
 from .enter_cookies_btn import EnterCookiesButton
 
@@ -40,7 +41,7 @@ class WithJavaScript(Button["AccountManager"]):
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
 
         self.view.clear_items()
-        self.view.add_item(EnterCookiesButton())
+        self.view.add_item(EnterCookiesButton(platform=LoginPlatform.HOYOLAB))
         self.view.add_item(go_back_button)
         await i.response.edit_message(embed=embed, view=self.view)
         await i.followup.send(code, ephemeral=True)

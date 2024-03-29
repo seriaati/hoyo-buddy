@@ -6,7 +6,8 @@ from ...embeds import DefaultEmbed
 from ...emojis import (
     get_game_emoji,
 )
-from .. import Select, SelectOption, View
+from .. import Select, SelectOption
+from .add_acc_handler import AddAccountHandler
 from .items.acc_select import AccountSelect
 from .items.add_acc_btn import AddAccountButton
 from .items.del_acc_btn import DeleteAccountButton
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
     from ...bot.bot import INTERACTION
 
 
-class AccountManager(View):
+class AccountManager(AddAccountHandler):
     def __init__(
         self,
         *,
@@ -36,26 +37,8 @@ class AccountManager(View):
         self.accounts = accounts
         self.selected_account: HoyoAccount | None = None
 
-    async def start(self, i: "INTERACTION") -> None:
-        self._add_items()
-        embed = self.account_embed
-        await i.response.send_message(embed=embed, view=self, ephemeral=True)
-        self.message = await i.original_response()
-
-    def _add_items(self) -> None:
-        if self.accounts:
-            self.selected_account = (
-                next((a for a in self.accounts if a.current), None) or self.accounts[0]
-            )
-            self.add_item(AccountSelect(self.get_account_options()))
-            self.add_item(AddAccountButton())
-            self.add_item(EditNicknameButton())
-            self.add_item(DeleteAccountButton())
-        else:
-            self.add_item(AddAccountButton())
-
     @property
-    def account_embed(self) -> DefaultEmbed:
+    def _acc_embed(self) -> DefaultEmbed:
         account = self.selected_account
 
         if account is None:
@@ -92,7 +75,19 @@ class AccountManager(View):
         )
         return embed
 
-    def get_account_options(self) -> list[SelectOption]:
+    def _add_items(self) -> None:
+        if self.accounts:
+            self.selected_account = (
+                next((a for a in self.accounts if a.current), None) or self.accounts[0]
+            )
+            self.add_item(AccountSelect(self._get_account_options()))
+            self.add_item(AddAccountButton())
+            self.add_item(EditNicknameButton())
+            self.add_item(DeleteAccountButton())
+        else:
+            self.add_item(AddAccountButton())
+
+    def _get_account_options(self) -> list[SelectOption]:
         return [
             SelectOption(
                 label=str(account),
@@ -102,6 +97,12 @@ class AccountManager(View):
             )
             for account in self.accounts
         ]
+
+    async def start(self, i: "INTERACTION") -> None:
+        self._add_items()
+        embed = self._acc_embed
+        await i.response.send_message(embed=embed, view=self, ephemeral=True)
+        self.message = await i.original_response()
 
     async def refresh(self, i: "INTERACTION", *, soft: bool) -> Any:
         if not soft:
@@ -117,5 +118,5 @@ class AccountManager(View):
         else:
             account_selector = self.get_item("account_selector")
             if isinstance(account_selector, Select):
-                account_selector.options = self.get_account_options()
-            await self.absolute_edit(i, embed=self.account_embed, view=self)
+                account_selector.options = self._get_account_options()
+            await self.absolute_edit(i, embed=self._acc_embed, view=self)

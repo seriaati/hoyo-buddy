@@ -11,12 +11,15 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.bot.bot import INTERACTION
 
+    from ....enums import LoginPlatform
+
 
 class WithDevTools(Button["AccountManager"]):
-    def __init__(self) -> None:
+    def __init__(self, platform: "LoginPlatform") -> None:
         super().__init__(
             label=LocaleStr("With DevTools (Desktop Only)", key="devtools_button_label")
         )
+        self._platform = platform
 
     async def callback(self, i: "INTERACTION") -> None:
         embed = DefaultEmbed(
@@ -42,7 +45,7 @@ class WithDevTools(Button["AccountManager"]):
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
 
         self.view.clear_items()
-        self.view.add_item(EnterCookiesButton(dev_tools=True))
+        self.view.add_item(EnterCookiesButton(platform=self._platform, dev_tools=True))
         self.view.add_item(go_back_button)
 
         await i.response.edit_message(embed=embed, view=self.view)

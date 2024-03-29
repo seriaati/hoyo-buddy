@@ -49,10 +49,6 @@ class AddAccountSelect(Select["AccountManager"]):
     def get_account_options(self) -> "Generator[SelectOption, None, None]":
         for account in self.accounts:
             if isinstance(account.game, GenshinGame):
-                server_name = self.translator.translate(
-                    LocaleStr(account.server_name, warn_no_key=False),
-                    self.locale,
-                )
                 level_str = self.translator.translate(
                     LocaleStr(
                         "Lv.{level}",
@@ -64,7 +60,7 @@ class AddAccountSelect(Select["AccountManager"]):
 
                 yield SelectOption(
                     label=f"[{account.uid}] {account.nickname}",
-                    description=f"{level_str} | {server_name}",
+                    description=f"{level_str} | {account.server_name}",
                     value=f"{account.uid}_{account.game.value}",
                     emoji=get_game_emoji(account.game),
                 )

@@ -20,6 +20,7 @@ class PrimaryColorModal(Modal):
         style=TextStyle.short,
         min_length=7,
         max_length=7,
+        required=False,
     )
 
     def __init__(self, current_color: str | None) -> None:
@@ -51,15 +52,16 @@ class PrimaryColorButton(Button["ProfileView"]):
 
         color = modal.color.value
         if not color:
-            return
+            color = None
 
-        # Test if the color is valid
-        passed = is_valid_hex_color(color)
-        if not passed:
-            raise InvalidColorError
+        if color is not None:
+            # Test if the color is valid
+            passed = is_valid_hex_color(color)
+            if not passed:
+                raise InvalidColorError
 
         # Save the color to settings
-        self.view._card_settings.custom_primary_color = modal.color.value
+        self.view._card_settings.custom_primary_color = color
         await self.view._card_settings.save()
 
         # Redraw the card

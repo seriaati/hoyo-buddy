@@ -38,10 +38,18 @@ class GenshinClient(genshin.Client, BaseClient):
         uid: int | None = None,
         game: genshin.Game = genshin.Game.GENSHIN,
     ) -> None:
-        super().__init__(cookies, game=game, uid=uid)
+        region = (
+            genshin.utility.recognize_region(uid, game=game)
+            if uid is not None
+            else genshin.Region.OVERSEAS
+        ) or genshin.Region.OVERSEAS
+        super().__init__(cookies, game=game, uid=uid, region=region)
 
     def set_lang(self, locale: "Locale") -> None:
-        self.lang = LOCALE_TO_GPY_LANG.get(locale, "en-us")
+        if self.region is genshin.Region.CHINESE:
+            self.lang = "zh-cn"
+        else:
+            self.lang = LOCALE_TO_GPY_LANG.get(locale, "en-us")
 
     @staticmethod
     def get_daily_reward_embed(

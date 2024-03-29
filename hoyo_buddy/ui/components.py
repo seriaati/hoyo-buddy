@@ -1,3 +1,4 @@
+import asyncio
 import contextlib
 import logging
 from typing import TYPE_CHECKING, Any, Generic, Self, TypeVar
@@ -15,6 +16,8 @@ from ..exceptions import InvalidInputError
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+
+    from discord.ui.item import Item
 
     from ..bot.bot import INTERACTION
 
@@ -50,6 +53,7 @@ class View(discord.ui.View):
         self.locale = locale
         self.translator = translator
         self.message: discord.Message | None = None
+        self.tasks: dict[str, asyncio.Task] = {}
 
     def __repr__(self) -> str:
         return (
@@ -63,6 +67,20 @@ class View(discord.ui.View):
                 await self.message.edit(view=self)
         else:
             LOGGER_.error("View %r timed out without a set message", self)
+
+    def _dispatch_item(self, item: "Item", i: "INTERACTION") -> None:
+        if self.__stopped.done():
+            return
+
+        async def schduled_task() -> None:
+            try:
+                await self._scheduled_task(item, i)
+            finally:
+                del self.tasks[str(i.id)]
+
+        self.tasks[str(i.id)] = asyncio.create_task(
+            schduled_task(), name=f"discord-ui-view-dispatch-{self.id}"
+        )
 
     async def on_error(
         self,
@@ -113,6 +131,7 @@ class View(discord.ui.View):
         for item in self.children:
             if isinstance(item, Button | Select) and item.custom_id == custom_id:
                 return item
+
         msg = f"No item found with custom_id {custom_id}"
         raise ValueError(msg)
 

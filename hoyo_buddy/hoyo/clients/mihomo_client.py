@@ -26,7 +26,7 @@ class MihomoAPI(mihomo.MihomoAPI, BaseClient):
 
         try:
             live_data = await super().fetch_user(uid, replace_icon_name_with_url=True)
-        except mihomo.UserNotFound:
+        except (mihomo.UserNotFound, mihomo.HttpRequestError):
             if not cache.hsr:
                 raise
 

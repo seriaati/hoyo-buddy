@@ -18,7 +18,7 @@ class LoginHandler:
     _client: "genshin.Client"
 
     @classmethod
-    async def _handle_geetest_triggered(
+    async def _handle_geetest_triggered_for_login(
         cls, email: str, password: str, *, geetest: dict[str, Any], platform: LoginPlatform
     ) -> LoginHandlerResult:
         if platform is LoginPlatform.MIYOUSHE:
@@ -67,7 +67,7 @@ class LoginHandler:
 
         match condition:
             case LoginCondition.GEETEST_TRIGGERED_FOR_LOGIN:
-                return await cls._handle_geetest_triggered(
+                return await cls._handle_geetest_triggered_for_login(
                     email, password, geetest=geetest, platform=platform
                 )
             case LoginCondition.GEETEST_TRIGGERED_FOR_EMAIL:

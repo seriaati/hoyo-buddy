@@ -106,7 +106,7 @@ class AddAccountHandler(View):
                 await self.finish_cookie_setup(result.data)
 
     async def finish_cookie_setup(self, cookies: dict[str, Any]) -> None:
-        if self.platform is LoginPlatform.HOYOLAB and "stoken_v2" in cookies:
+        if self.platform is LoginPlatform.HOYOLAB and "stoken" in cookies:
             # Get ltoken_v2 and cookie_token_v2
             cookie = await genshin.fetch_cookie_with_stoken_v2(cookies, token_types=[2, 4])
             cookies.update(cookie)

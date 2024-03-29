@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from datetime import datetime
 
-    from .enums import Game
+    from .enums import Game, LoginPlatform
 
 
 class HoyoBuddyError(Exception):
@@ -109,42 +109,6 @@ class IncompleteParamError(HoyoBuddyError):
         )
 
 
-class InvalidCodeError(HoyoBuddyError):
-    def __init__(self) -> None:
-        super().__init__(
-            title=LocaleStr("Invalid code", key="invalid_code_title"),
-            message=LocaleStr(
-                "The given code is invalid, please try again.",
-                key="invalid_code_description",
-            ),
-        )
-
-
-class InvalidEmailOrPasswordError(HoyoBuddyError):
-    def __init__(self) -> None:
-        super().__init__(
-            title=LocaleStr("Invalid e-mail or password", key="invalid_email_password_title"),
-            message=LocaleStr(
-                "The given e-mail or password is invalid, please try again.",
-                key="invalid_email_password_description",
-            ),
-        )
-
-
-class VerCodeServiceDownError(HoyoBuddyError):
-    def __init__(self) -> None:
-        super().__init__(
-            title=LocaleStr(
-                "Verification code service unavailable",
-                key="verification_code_service_unavailable_title",
-            ),
-            message=LocaleStr(
-                "The verification code service is currently unavailable, please try again later.",
-                key="verification_code_service_unavailable_description",
-            ),
-        )
-
-
 class NSFWPromptError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(
@@ -200,5 +164,29 @@ class NoAbyssDataError(HoyoBuddyError):
             message=LocaleStr(
                 "Unable to find any spiral abyss data, either you haven't started the spiral abyss yet or the data is not ready yet. Please try again later",
                 key="no_abyss_data_error_message",
+            ),
+        )
+
+
+class NoGameAccountsError(HoyoBuddyError):
+    def __init__(self, platform: "LoginPlatform") -> None:
+        super().__init__(
+            title=LocaleStr("No Game Accounts", key="no_game_accounts_error_title"),
+            message=LocaleStr(
+                "This {platform} account has no game accounts.",
+                key="no_game_accounts_error_message",
+                platform=LocaleStr(platform.value, warn_no_key=False),
+            ),
+        )
+
+
+class TryOtherMethodError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr("Invalid Cookies", key="try_other_method_error_title"),
+            message=LocaleStr(
+                "Please try other methods to login.\n"
+                "If you are entering cookies manually through DevTools, make sure you are copying them correctly.",
+                key="try_other_method_error_message",
             ),
         )

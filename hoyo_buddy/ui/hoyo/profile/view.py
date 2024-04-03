@@ -329,20 +329,26 @@ class ProfileView(View):
 
         template = self._card_settings.template
 
-        if isinstance(character, HSRCharacter | HoyolabHSRCharacter):
-            if "hb" in template:
-                bytes_obj = await self._draw_hb_hsr_character_card(character, i.client.session)
-            elif isinstance(character, HSRCharacter):
-                bytes_obj = await self._draw_src_character_card(
-                    self.uid, character, template, i.client.session
-                )
-        elif isinstance(character, GICharacter):
-            if "hb" in template:
-                bytes_obj = await self._draw_hb_gi_character_card(character, i.client.session)
-            else:
-                bytes_obj = await self._draw_enka_card(
-                    self.uid, character, i.client.session, template
-                )
+        try:
+            if isinstance(character, HSRCharacter | HoyolabHSRCharacter):
+                if "hb" in template:
+                    bytes_obj = await self._draw_hb_hsr_character_card(character, i.client.session)
+                elif isinstance(character, HSRCharacter):
+                    bytes_obj = await self._draw_src_character_card(
+                        self.uid, character, template, i.client.session
+                    )
+            elif isinstance(character, GICharacter):
+                if "hb" in template:
+                    bytes_obj = await self._draw_hb_gi_character_card(character, i.client.session)
+                else:
+                    bytes_obj = await self._draw_enka_card(
+                        self.uid, character, i.client.session, template
+                    )
+        except Exception:
+            # Reset the template to hb1 if an error occurs
+            self._card_settings.template = "hb1"
+            await self._card_settings.save()
+            raise
 
         return bytes_obj
 

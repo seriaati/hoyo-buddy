@@ -201,3 +201,17 @@ class AIGenImageError(HoyoBuddyError):
             ),
             message=LocaleStr("Check your prompt and try again.", key="ai_gen_image_error_message"),
         )
+
+
+class DownloadImageFailedError(HoyoBuddyError):
+    def __init__(self, url: str, status: int) -> None:
+        super().__init__(
+            title=LocaleStr("Download image failed", key="download_image_failed_error_title"),
+            message=LocaleStr(
+                "Unable to download image {url} with status code {status}.\n"
+                "Try again later, try with a different image, or check if the image URL is valid.",
+                key="download_image_failed_error_message",
+                url=url,
+                status=status,
+            ),
+        )

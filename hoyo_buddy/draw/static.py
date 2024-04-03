@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 
 import aiofiles
 
+from ..exceptions import DownloadImageFailedError
+
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
@@ -17,8 +19,7 @@ STATIC_FOLDER = "./.static"
 async def download_static_image(image_url: str, session: "aiohttp.ClientSession") -> bytes:
     async with session.get(image_url) as resp:
         if resp.status != 200:
-            msg = f"Failed to download image: {image_url}"
-            raise ValueError(msg)
+            raise DownloadImageFailedError(image_url, resp.status)
         image = await resp.read()
         return image
 

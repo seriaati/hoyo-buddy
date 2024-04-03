@@ -1,6 +1,9 @@
 from typing import Any
 
 import novelai
+import novelai.exceptions
+
+from ...exceptions import AIGenImageError
 
 
 class NAIClient(novelai.NAIClient):
@@ -16,8 +19,12 @@ class NAIClient(novelai.NAIClient):
             steps=28,
             n_samples=1,
         )
-        images = await super().generate_image(
-            metadata, host=novelai.Host.CUSTOM, verbose=False, is_opus=False
-        )
+        try:
+            images = await super().generate_image(
+                metadata, host=novelai.Host.CUSTOM, verbose=False, is_opus=False
+            )
+        except novelai.exceptions.NovelAIError as e:
+            raise AIGenImageError from e
+
         im = images[0]
         return im.data

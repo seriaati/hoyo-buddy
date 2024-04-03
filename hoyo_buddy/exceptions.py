@@ -190,3 +190,14 @@ class TryOtherMethodError(HoyoBuddyError):
                 key="try_other_method_error_message",
             ),
         )
+
+
+class AIGenImageError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr(
+                "An error occured while generating your image with AI",
+                key="ai_gen_image_error_title",
+            ),
+            message=LocaleStr("Check your prompt and try again.", key="ai_gen_image_error_message"),
+        )

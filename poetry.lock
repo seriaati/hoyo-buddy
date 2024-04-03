@@ -1016,7 +1016,7 @@ geetest = ["qrcode[pil]", "rsa"]
 type = "git"
 url = "https://github.com/thesadru/genshin.py"
 reference = "HEAD"
-resolved_reference = "6b30d30e211b655bee1fcf5aaa342ed4ba0f9564"
+resolved_reference = "b83eeb6f62392429d6a9aa10215d8ad5211c5d83"
 
 [[package]]
 name = "gitdb"

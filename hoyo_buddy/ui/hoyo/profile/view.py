@@ -262,9 +262,11 @@ class ProfileView(View):
         art = self._card_settings.current_image or character_data["arts"][0]
 
         if self._card_settings.custom_primary_color is None:
-            primary = character_data["primary"]
+            primary: str = character_data["primary"]
             if "primary-dark" in character_data and self._card_settings.dark_mode:
-                primary = character_data["primary-dark"]
+                primary: str = character_data["primary-dark"]
+        else:
+            primary = self._card_settings.custom_primary_color
 
         return await draw_hsr_build_card(
             DrawInput(

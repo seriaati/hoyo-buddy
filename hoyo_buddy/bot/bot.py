@@ -193,7 +193,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             await api.update_assets()
 
         # Update genshin.py assets
-        await genshin.utility.update_characters_enka()
+        await genshin.utility.update_characters_any()
 
     async def close(self) -> None:
         LOGGER_.info("Bot shutting down...")

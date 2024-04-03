@@ -20,7 +20,7 @@ class Metrics(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_remove(self, _: "Guild") -> None:
-        sentry_sdk.metrics.incr("guild.joined", value=-1)
+        sentry_sdk.metrics.incr("guilds.joined", value=-1)
 
     @commands.Cog.listener()
     async def on_interaction(self, i: "INTERACTION") -> None:

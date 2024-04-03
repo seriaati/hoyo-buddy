@@ -1,3 +1,4 @@
+import asyncio
 import pickle
 from typing import TYPE_CHECKING
 
@@ -101,7 +102,16 @@ class GenshinClient(genshin.Client, BaseClient):
         )
         talent_boost_data: dict[str, int] = await read_json(TALENT_BOOST_DATA_PATH)
 
-        details = await self.get_character_details(character.id)
+        try:
+            details = await self.get_character_details(character.id)
+        except genshin.GenshinException as e:
+            if e.retcode == -502002:  # Calculator sync not enabled
+                await self._enable_calculator_sync()
+                await asyncio.sleep(0.5)
+                details = await self.get_character_details(character.id)
+            else:
+                raise
+
         character_id = self.convert_character_id_to_ambr_format(character)
 
         # Get talent boost type

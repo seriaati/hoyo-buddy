@@ -106,10 +106,9 @@ class CharactersView(View):
         updated = False
         for character in self._gi_characters:
             assert isinstance(character, GenshinCharacter)
-            if (
-                GenshinClient.convert_character_id_to_ambr_format(character)
-                not in talent_level_data
-            ):
+
+            ambr_chara_id = GenshinClient.convert_character_id_to_ambr_format(character)
+            if ambr_chara_id not in talent_level_data:
                 updated = True
                 await self._account.client.update_gi_chara_talent_lvl_data(character)
                 await asyncio.sleep(0.5)

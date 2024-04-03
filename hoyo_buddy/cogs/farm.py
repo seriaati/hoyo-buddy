@@ -94,6 +94,9 @@ class Farm(
         query: str,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
+        if query == "none":
+            raise InvalidQueryError
+
         account = (
             account
             or await HoyoAccount.filter(user_id=i.user.id, current=True, game=Game.GENSHIN).first()
@@ -253,8 +256,18 @@ class Farm(
 
     @farm_add_command.autocomplete("query")
     async def query_autocomplete(self, i: "INTERACTION", current: str) -> list[app_commands.Choice]:
-        characters = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
-        weapons = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
+        try:
+            characters = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
+            weapons = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
+        except KeyError:
+            return [
+                self.bot.get_error_app_command_choice(
+                    LocaleStr(
+                        "Search autocomplete choices not set up yet, please try again later.",
+                        key="search_autocomplete_not_setup",
+                    )
+                )
+            ]
 
         if not current:
             locale = (await Settings.get(user_id=i.user.id)).locale or i.locale

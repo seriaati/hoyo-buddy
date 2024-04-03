@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class CardTemplateSelect(Select["ProfileView"]):
     def __init__(self, current_template: str, hb_only: bool, game: Game) -> None:
         hb_templates = (1,)
-        src_templates = (1, 2, 3)
+        src_templates = (1, 3)
         enkac_templates = (1, 2, 3, 5, 7)  # EnkaCard2 templates
 
         options: list[SelectOption] = []

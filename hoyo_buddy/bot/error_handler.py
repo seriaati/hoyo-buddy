@@ -1,11 +1,14 @@
+from datetime import timedelta
 from typing import TYPE_CHECKING, Literal
 
 from ambr.exceptions import DataNotFoundError
+from discord.utils import format_dt
 from genshin import errors as genshin_errors
 from mihomo import errors as mihomo_errors
 
 from ..embeds import ErrorEmbed
 from ..exceptions import HoyoBuddyError, InvalidQueryError
+from ..utils import get_now
 from .translator import LocaleStr, Translator
 
 if TYPE_CHECKING:
@@ -45,6 +48,14 @@ GENSHIN_ERROR_CONVERTER: dict[int, dict[Literal["title", "description"], LocaleS
         ),
         "description": LocaleStr(
             "Please try again later.", key="verification_code_unavailable_description"
+        ),
+    },
+    -3101: {
+        "title": LocaleStr("Action in Cooldown", key="action_in_cooldown_error_title"),
+        "description": LocaleStr(
+            "You are currently in cooldown, please try again at {available_time}.",
+            key="action_in_cooldown_error_message",
+            available_time=format_dt(get_now() + timedelta(minutes=1), "T"),
         ),
     },
 }

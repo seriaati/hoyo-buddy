@@ -1,4 +1,5 @@
 import datetime
+from functools import cached_property
 from typing import TYPE_CHECKING, Any
 
 from discord import Locale
@@ -53,14 +54,14 @@ class HoyoAccount(Model):
             return f"{self.nickname} ({self.uid})"
         return f"{self.username} ({self.uid})"
 
-    @property
+    @cached_property
     def client(self) -> "GenshinClient":
         from ..hoyo.clients.gpy_client import GenshinClient  # noqa: PLC0415
 
         game: genshin.Game = GAME_CONVERTER[self.game]  # type: ignore
         return GenshinClient(self.cookies, game=game, uid=self.uid)
 
-    @property
+    @cached_property
     def server_reset_datetime(self) -> datetime.datetime:
         """Server reset time in UTC+8."""
         for uid_start, reset_hour in UID_SERVER_RESET_HOURS.items():
@@ -75,7 +76,7 @@ class HoyoAccount(Model):
 
         return reset_time
 
-    @property
+    @cached_property
     def game_icon(self) -> str:
         return get_game_icon(self.game)
 

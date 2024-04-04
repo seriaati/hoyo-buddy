@@ -1,10 +1,11 @@
 from datetime import timedelta
 from typing import TYPE_CHECKING, Literal
 
-from ambr.exceptions import DataNotFoundError
+from ambr.exceptions import DataNotFoundError as AmbrDataNotFoundError
 from discord.utils import format_dt
 from genshin import errors as genshin_errors
 from mihomo import errors as mihomo_errors
+from yatta.exceptions import DataNotFoundError as YattaDataNotFoundError
 
 from ..embeds import ErrorEmbed
 from ..exceptions import HoyoBuddyError, InvalidQueryError
@@ -16,33 +17,33 @@ if TYPE_CHECKING:
 
 __all__ = ("get_error_embed",)
 
-GENSHIN_ERROR_CONVERTER: dict[int, dict[Literal["title", "description"], LocaleStr]] = {
-    -5003: {
+GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "description"], LocaleStr]] = {
+    (-5003,): {
         "title": LocaleStr("Daily check-in reward already claimed", key="already_claimed_title"),
         "description": LocaleStr("Come back tomorrow!", key="already_claimed_description"),
     },
-    -100: {
+    (-100,): {
         "title": LocaleStr("Invalid Cookies", key="invalid_cookies_title"),
         "description": LocaleStr(
             "Refresh your Cookies by adding your accounts again using </accounts>",
             key="invalid_cookies_description",
         ),
     },
-    -3205: {
+    (-3205,): {
         "title": LocaleStr("Invalid verification code", key="invalid_verification_code_title"),
         "description": LocaleStr(
             "Please check the verification code and try again.",
             key="invalid_verification_code_description",
         ),
     },
-    -3208: {
+    (-3208,): {
         "title": LocaleStr("Invalid e-mail or password", key="invalid_email_password_title"),
         "description": LocaleStr(
             "The e-mail or password you provided is incorrect. Please check and try again.",
             key="invalid_email_password_description",
         ),
     },
-    -3206: {
+    (-3206,): {
         "title": LocaleStr(
             "Verification code service unavailable", key="verification_code_unavailable_title"
         ),
@@ -50,7 +51,7 @@ GENSHIN_ERROR_CONVERTER: dict[int, dict[Literal["title", "description"], LocaleS
             "Please try again later.", key="verification_code_unavailable_description"
         ),
     },
-    -3101: {
+    (-3101, -1004): {
         "title": LocaleStr("Action in Cooldown", key="action_in_cooldown_error_title"),
         "description": LocaleStr(
             "You are currently in cooldown, please try again at {available_time}.",
@@ -89,7 +90,7 @@ def get_error_embed(
     recognized = True
     embed = None
 
-    if isinstance(error, DataNotFoundError):
+    if isinstance(error, AmbrDataNotFoundError | YattaDataNotFoundError):
         error = InvalidQueryError()
 
     if isinstance(error, HoyoBuddyError):
@@ -100,13 +101,18 @@ def get_error_embed(
             description=error.message,
         )
     elif isinstance(error, genshin_errors.GenshinException | mihomo_errors.BaseException):
-        title, description = None, None
+        err_info = None
 
-        err_info = (
-            GENSHIN_ERROR_CONVERTER.get(error.retcode)
-            if isinstance(error, genshin_errors.GenshinException)
-            else MIHOMO_ERROR_CONVERTER.get(type(error))
-        )
+        if isinstance(error, genshin_errors.GenshinException):
+            for codes, info in GENSHIN_ERROR_CONVERTER.items():
+                if error.retcode in codes:
+                    err_info = info
+                    break
+        elif isinstance(error, mihomo_errors.BaseException):
+            err_info = MIHOMO_ERROR_CONVERTER.get(type(error))
+            if err_info is not None:
+                title, description = err_info["title"], err_info["description"]
+
         if err_info is not None:
             title, description = err_info["title"], err_info["description"]
             embed = ErrorEmbed(locale, translator, title=title, description=description)

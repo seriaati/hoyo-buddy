@@ -9,6 +9,7 @@ from seria.utils import read_yaml
 
 from ..bot.translator import LocaleStr
 from ..db.models import EnkaCache, HoyoAccount, Settings
+from ..draw.main_funcs import draw_exploration_card
 from ..enums import Game
 from ..exceptions import IncompleteParamError
 from ..hoyo.clients.ambr_client import AmbrAPIClient
@@ -16,6 +17,7 @@ from ..hoyo.clients.enka_client import EnkaAPI
 from ..hoyo.clients.mihomo_client import MihomoAPI
 from ..hoyo.clients.yatta_client import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
+from ..models import DrawInput
 from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.genshin.abyss import AbyssView
@@ -339,7 +341,50 @@ class Hoyo(commands.Cog):
         )
         await view.start(i)
 
+    @app_commands.command(
+        name=app_commands.locale_str("exploration", translate=False),
+        description=app_commands.locale_str(
+            "View your exploration statistics in Genshin Impact",
+            key="exploration_command_description",
+        ),
+    )
+    @app_commands.rename(
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+    )
+    @app_commands.describe(
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        )
+    )
+    async def exploration_command(
+        self,
+        i: "INTERACTION",
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+    ) -> None:
+        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
+        await account_.fetch_related("user", "user__settings")
+
+        await i.response.defer()
+
+        locale = account_.user.settings.locale or i.locale
+        account_.client.set_lang(locale)
+        user = await account_.client.get_partial_genshin_user(account_.uid)
+
+        file_ = await draw_exploration_card(
+            DrawInput(
+                dark_mode=account_.user.settings.dark_mode,
+                locale=account_.user.settings.locale or i.locale,
+                session=self.bot.session,
+                filename="exploration.webp",
+            ),
+            user,
+            self.bot.translator,
+        )
+        await i.followup.send(files=[file_])
+
     @abyss_command.autocomplete("account")
+    @exploration_command.autocomplete("account")
     async def characters_command_autocomplete(
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:

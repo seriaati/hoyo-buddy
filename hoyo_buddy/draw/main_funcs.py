@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
     from enka.models import Character as EnkaCharacter
     from genshin.models import Notes as GenshinNote
-    from genshin.models import SpiralAbyss, StarRailNote
+    from genshin.models import PartialGenshinUserStats, SpiralAbyss, StarRailNote
 
     from ..bot.translator import Translator
     from ..models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
@@ -247,6 +247,23 @@ async def draw_spiral_abyss_card(
             translator,
             abyss,
             abyss_characters,
+        )
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_exploration_card(
+    draw_input: "DrawInput",
+    user: "PartialGenshinUserStats",
+    translator: "Translator",
+) -> File:
+    with timing("draw", tags={"type": "exploration_card"}):
+        buffer = await asyncio.to_thread(
+            funcs.ExplorationCard.draw,
+            user,
+            draw_input.dark_mode,
+            draw_input.locale,
+            translator,
         )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

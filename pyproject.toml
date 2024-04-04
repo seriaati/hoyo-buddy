@@ -88,3 +88,6 @@ quote-annotations = true
 [tool.pyright]
 reportIncompatibleMethodOverride = false
 reportIncompatibleVariableOverride = false
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15

@@ -84,3 +84,7 @@ preview = true
 
 [tool.ruff.lint.flake8-type-checking]
 quote-annotations = true
+
+[tool.pyright]
+reportIncompatibleMethodOverride = false
+reportIncompatibleVariableOverride = false

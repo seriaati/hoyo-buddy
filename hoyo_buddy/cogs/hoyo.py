@@ -297,6 +297,8 @@ class Hoyo(commands.Cog):
             async with YattaAPIClient(translator=self.bot.translator) as client:
                 element_char_counts = await client.fetch_element_char_counts()
                 path_char_counts = await client.fetch_path_char_counts()
+        else:
+            raise NotImplementedError
 
         view = CharactersView(
             account_,

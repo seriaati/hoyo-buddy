@@ -330,10 +330,11 @@ class ProfileView(View):
             await self._card_settings.save()
 
         template = self._card_settings.template
+        bytes_obj = None
 
         try:
             if isinstance(character, HSRCharacter | HoyolabHSRCharacter):
-                if "hb" in template:
+                if "hb" in template or isinstance(character, HoyolabHSRCharacter):
                     bytes_obj = await self._draw_hb_hsr_character_card(character, i.client.session)
                 elif isinstance(character, HSRCharacter):
                     bytes_obj = await self._draw_src_character_card(
@@ -351,6 +352,11 @@ class ProfileView(View):
             self._card_settings.template = "hb1"
             await self._card_settings.save()
             raise
+
+        # This should never happen, this is just to address variable unbound error for bytes_obj
+        if bytes_obj is None:
+            msg = "Failed to draw the character card."
+            raise RuntimeError(msg)
 
         return bytes_obj
 

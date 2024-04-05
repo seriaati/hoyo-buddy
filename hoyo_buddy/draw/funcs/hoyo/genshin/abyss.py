@@ -215,17 +215,15 @@ class AbyssCard:
         for index, chara in enumerate(battle.characters):
             shadow = Image.new("RGBA", (130, 160), TRANSPARENT)
             shadow_draw = ImageDraw.Draw(shadow)
-            shadow_draw.rounded_rectangle((0, 0, 116, 147), 12.5, fill=(0, 0, 0, 155))
+            shadow_draw.rounded_rectangle((0, 0, 116, 147), 13, fill=(0, 0, 0, 155))
             for _ in range(5):
                 shadow = shadow.filter(ImageFilter.BLUR)
 
             bk = Image.new("RGBA", (130, 160), TRANSPARENT)
             bk.paste(shadow, (6, 6), shadow)
             bk_draw = ImageDraw.Draw(bk)
-            bk_draw.rounded_rectangle(
-                (0, 0, 116, 147), 12.5, fill=text_bk_colors[mode][chara.rarity]
-            )
-            bk_draw.rounded_rectangle((0, 0, 116, 117), 12.5, fill=bk_colors[mode][chara.rarity])
+            bk_draw.rounded_rectangle((0, 0, 116, 147), 13, fill=text_bk_colors[mode][chara.rarity])
+            bk_draw.rounded_rectangle((0, 0, 116, 117), 13, fill=bk_colors[mode][chara.rarity])
 
             chara_im = drawer.open_static(chara.icon, size=(116, 116))
             chara_im = drawer.crop_with_mask(chara_im, chara_mask)
@@ -233,7 +231,7 @@ class AbyssCard:
 
             bk_draw.rounded_rectangle(
                 (87, 0, 116, 29),
-                12.5,
+                13,
                 fill=text_bk_colors[mode][chara.rarity],
                 corners=(False, True, False, True),
             )

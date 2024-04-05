@@ -218,7 +218,7 @@ class Drawer:
         image = Image.open(path)
         image = image.convert("RGBA")
         if size:
-            image = image.resize(size, Image.LANCZOS)
+            image = image.resize(size, Image.Resampling.LANCZOS)
         return image
 
     def write(
@@ -328,7 +328,7 @@ class Drawer:
         right = round(left + target_width)
         bottom = round(top + target_height)
 
-        image = image.resize((new_width, new_height), resample=Image.LANCZOS)
+        image = image.resize((new_width, new_height), resample=Image.Resampling.LANCZOS)
         image = image.crop((left, top, right, bottom))
 
         if self.dark_mode:

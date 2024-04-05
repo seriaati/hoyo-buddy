@@ -311,7 +311,7 @@ class ExplorationCard:
         cls._write_small_text(
             LocaleStr(
                 '"Every journey has its final day.Don\'t rush."\n-Zhongli',
-                key="exploration.placeholder",
+                key="exploration.placeholder_quote",
             ),
             position=(34, 181),
             drawer=drawer,

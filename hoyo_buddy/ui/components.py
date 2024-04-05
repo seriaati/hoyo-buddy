@@ -547,7 +547,8 @@ class Modal(discord.ui.Modal):
 
     async def on_submit(self, i: "INTERACTION") -> None:
         self.validate_inputs()
-        await i.response.defer()
+        with contextlib.suppress(discord.NotFound):
+            await i.response.defer()
         self.stop()
 
     def translate(

@@ -139,6 +139,8 @@ class View(discord.ui.View):
             await i.response.edit_message(**kwargs)
         except discord.InteractionResponded:
             await i.edit_original_response(**kwargs)
+        except discord.NotFound:
+            pass
 
     @staticmethod
     def get_embeds(message: discord.Message | None) -> list[discord.Embed] | None:

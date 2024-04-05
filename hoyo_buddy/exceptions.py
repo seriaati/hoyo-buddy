@@ -139,7 +139,7 @@ class NoCharsFoundError(HoyoBuddyError):
                 key="no_characters_found_error_title",
             ),
             message=LocaleStr(
-                "No characters found with the selected filter, please try again with a different filter.",
+                "Please try again with a different filter.",
                 key="no_characters_found_error_message",
             ),
         )

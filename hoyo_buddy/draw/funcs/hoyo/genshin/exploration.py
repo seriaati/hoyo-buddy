@@ -253,9 +253,9 @@ class ExplorationCard:
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 117),
             LocaleStr(
-                "Electroculi: {electroculi}",
-                key="exploration.electroculi",
-                electroculi=cls._user.stats.electroculi,
+                "Dendroculi: {dendroculi}",
+                key="exploration.dendroculi",
+                dendroculi=cls._user.stats.dendroculi,
             ): (75, 163),
             LocaleStr(
                 "Reputation: Lv.{reputation}",

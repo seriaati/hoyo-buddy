@@ -1,3 +1,4 @@
+import logging
 from typing import TYPE_CHECKING
 
 import sentry_sdk.metrics
@@ -8,6 +9,8 @@ if TYPE_CHECKING:
     from discord import Guild
 
     from ..bot.bot import INTERACTION, HoyoBuddy
+
+LOGGER_ = logging.getLogger(__name__)
 
 
 class Metrics(commands.Cog):
@@ -28,15 +31,22 @@ class Metrics(commands.Cog):
             case InteractionType.application_command:
                 if isinstance(i.command, app_commands.Command):
                     if i.command.parent is None:
+                        LOGGER_.info("Command executed: %s", i.command.name)
                         sentry_sdk.metrics.incr(
                             "commands.executed", tags={"command": i.command.name}
                         )
                     else:
+                        LOGGER_.info(
+                            "Command executed: %s %s",
+                            i.command.parent.name,
+                            i.command.name,
+                        )
                         sentry_sdk.metrics.incr(
                             "commands.executed",
                             tags={"command": f"{i.command.parent.name} {i.command.name}"},
                         )
                 elif isinstance(i.command, app_commands.ContextMenu):
+                    LOGGER_.info("Context menu command executed: %s", i.command.name)
                     sentry_sdk.metrics.incr(
                         "context_menu_commands.executed",
                         tags={"command": i.command.name},

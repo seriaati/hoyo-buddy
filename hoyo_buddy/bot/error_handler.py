@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Literal
 
 from ambr.exceptions import DataNotFoundError as AmbrDataNotFoundError
 from discord.utils import format_dt
+from enka import exceptions as enka_errors
 from genshin import errors as genshin_errors
 from mihomo import errors as mihomo_errors
 from yatta.exceptions import DataNotFoundError as YattaDataNotFoundError
@@ -83,6 +84,22 @@ MIHOMO_ERROR_CONVERTER: dict[
     },
 }
 
+ENKA_ERROR_CONVERTER: dict[
+    type[enka_errors.EnkaAPIError],
+    dict[Literal["title", "description"], LocaleStr],
+] = {
+    enka_errors.PlayerDoesNotExistError: {
+        "title": LocaleStr("Player does not exist", key="player_not_found_title"),
+        "description": LocaleStr(
+            "Please check the provided UID.", key="player_not_found_description"
+        ),
+    },
+    enka_errors.GameMaintenanceError: {
+        "title": LocaleStr("Game under maintenance", key="game_maintenance_title"),
+        "description": LocaleStr("Please try again later.", key="game_maintenance_description"),
+    },
+}
+
 
 def get_error_embed(
     error: Exception, locale: "discord.Locale", translator: Translator
@@ -100,7 +117,10 @@ def get_error_embed(
             title=error.title,
             description=error.message,
         )
-    elif isinstance(error, genshin_errors.GenshinException | mihomo_errors.BaseException):
+    elif isinstance(
+        error,
+        genshin_errors.GenshinException | mihomo_errors.BaseException | enka_errors.EnkaAPIError,
+    ):
         err_info = None
 
         if isinstance(error, genshin_errors.GenshinException):
@@ -110,8 +130,8 @@ def get_error_embed(
                     break
         elif isinstance(error, mihomo_errors.BaseException):
             err_info = MIHOMO_ERROR_CONVERTER.get(type(error))
-            if err_info is not None:
-                title, description = err_info["title"], err_info["description"]
+        elif isinstance(error, enka_errors.EnkaAPIError):
+            err_info = ENKA_ERROR_CONVERTER.get(type(error))
 
         if err_info is not None:
             title, description = err_info["title"], err_info["description"]

@@ -27,12 +27,13 @@ class RemoveImageButton(Button["ProfileView"]):
     async def callback(self, i: "INTERACTION") -> None:
         assert self.view.character_id is not None
         assert self.view._card_settings is not None
-        assert self.view._card_settings.current_image is not None
 
         await self.set_loading_state(i)
 
         # Remove the current image URL from db
-        self.view._card_settings.custom_images.remove(self.view._card_settings.current_image)
+        current_image = self.view._card_settings.current_image
+        assert current_image is not None
+        self.view._card_settings.custom_images.remove(current_image)
         self.view._card_settings.current_image = None
         await self.view._card_settings.save()
 

@@ -31,22 +31,19 @@ class Metrics(commands.Cog):
             case InteractionType.application_command:
                 if isinstance(i.command, app_commands.Command):
                     if i.command.parent is None:
-                        LOGGER_.info("Command executed: %s", i.command.name)
+                        LOGGER_.info("[Command][%s] %s", i.user.id, i.command.name)
                         sentry_sdk.metrics.incr(
                             "commands.executed", tags={"command": i.command.name}
                         )
                     else:
                         LOGGER_.info(
-                            "Command executed: %s %s",
-                            i.command.parent.name,
-                            i.command.name,
+                            "[Command][%s] %s %s", i.user.id, i.command.parent.name, i.command.name
                         )
                         sentry_sdk.metrics.incr(
                             "commands.executed",
                             tags={"command": f"{i.command.parent.name} {i.command.name}"},
                         )
                 elif isinstance(i.command, app_commands.ContextMenu):
-                    LOGGER_.info("Context menu command executed: %s", i.command.name)
                     sentry_sdk.metrics.incr(
                         "context_menu_commands.executed",
                         tags={"command": i.command.name},

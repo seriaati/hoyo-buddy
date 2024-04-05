@@ -9,7 +9,7 @@ from ..bot.translator import LocaleStr
 from ..db.models import FarmNotify, HoyoAccount, Settings
 from ..embeds import DefaultEmbed
 from ..enums import Game
-from ..exceptions import InvalidQueryError, NoAccountFoundError
+from ..exceptions import InvalidQueryError
 from ..hoyo.clients.ambr_client import ItemCategory
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui.hoyo.farm import FarmView
@@ -97,14 +97,7 @@ class Farm(
         if query == "none":
             raise InvalidQueryError
 
-        account = (
-            account
-            or await HoyoAccount.filter(user_id=i.user.id, current=True, game=Game.GENSHIN).first()
-            or await HoyoAccount.filter(user_id=i.user.id, game=Game.GENSHIN).first()
-        )
-        if account is None:
-            raise NoAccountFoundError([Game.GENSHIN])
-
+        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
         characters = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
         weapons = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
         valid_item_ids = {id_ for c in characters.values() for id_ in c.values()} | {
@@ -115,7 +108,7 @@ class Farm(
             raise InvalidQueryError
 
         settings = await Settings.get(user_id=i.user.id)
-        farm_notify, _ = await FarmNotify.get_or_create(account=account)
+        farm_notify, _ = await FarmNotify.get_or_create(account=account_)
         if query in farm_notify.item_ids:
             embed = DefaultEmbed(
                 settings.locale or i.locale,
@@ -132,7 +125,7 @@ class Farm(
 
         farm_notify.item_ids.append(query)
         # NOTE: This is a workaround for a bug in tortoise-orm
-        await FarmNotify.filter(account=account).update(item_ids=farm_notify.item_ids)
+        await FarmNotify.filter(account=account_).update(item_ids=farm_notify.item_ids)
 
         view = FarmNotifyView(
             farm_notify,
@@ -170,16 +163,9 @@ class Farm(
         query: str,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        account = (
-            account
-            or await HoyoAccount.filter(user_id=i.user.id, current=True, game=Game.GENSHIN).first()
-            or await HoyoAccount.filter(user_id=i.user.id, game=Game.GENSHIN).first()
-        )
-        if account is None:
-            raise NoAccountFoundError([Game.GENSHIN])
-
+        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
         settings = await Settings.get(user_id=i.user.id)
-        farm_notify, _ = await FarmNotify.get_or_create(account=account)
+        farm_notify, _ = await FarmNotify.get_or_create(account=account_)
         if query not in farm_notify.item_ids:
             embed = DefaultEmbed(
                 settings.locale or i.locale,
@@ -194,7 +180,7 @@ class Farm(
 
         farm_notify.item_ids.remove(query)
         # NOTE: This is a workaround for a bug in tortoise-orm
-        await FarmNotify.filter(account=account).update(item_ids=farm_notify.item_ids)
+        await FarmNotify.filter(account=account_).update(item_ids=farm_notify.item_ids)
 
         view = FarmNotifyView(
             farm_notify,

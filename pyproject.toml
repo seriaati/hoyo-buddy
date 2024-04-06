@@ -2,47 +2,47 @@
 requires-python = ">=3.11"
 
 [tool.poetry]
-name = "hoyo-buddy"
-version = "0.9.5"
-description = "Elevate your Hoyoverse experience."
 authors = ["seriaati <seria.ati@gmail.com>"]
+description = "Elevate your Hoyoverse experience."
 license = "GPL-3.0"
+name = "hoyo-buddy"
 readme = "README.md"
+version = "0.9.5"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-discord-py = {extras = ["speed"], version = "^2.3.2"}
-python-dotenv = "^1.0.0"
-sentry-sdk = {extras = ["aiohttp"], version = "^1.43.0"}
-tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
-transifex-python = "^3.5.0"
-orjson = "^3.9.9"
-rsa = "^4.9"
-jishaku = "^2.5.1"
-pillow = "^10.1.0"
-cachetools = "^5.3.2"
 aiofiles = "^23.2.1"
 ambr-py = {git = "https://github.com/seriaati/ambr"}
-genshin = {git = "https://github.com/thesadru/genshin.py", extras = ["all"]}
-psutil = "^5.9.7"
 asyncache = "^0.3.1"
-yatta = {git = "https://github.com/seriaati/yatta"}
-diskcache = "^5.6.3"
-mihomo = {git = "https://github.com/KT-Yeh/mihomo.git"}
-seria-library = {git = "https://github.com/seriaati/seria-library"}
-enka-py = {git = "https://github.com/seriaati/enka-py"}
 asyncpg-listen = "^0.0.6"
-novelai = {git = "https://github.com/kokosensei/NovelAI-API"}
+cachetools = "^5.3.2"
+discord-py = {extras = ["speed"], version = "^2.3.2"}
+diskcache = "^5.6.3"
+enka-py = {git = "https://github.com/seriaati/enka-py"}
+genshin = {git = "https://github.com/thesadru/genshin.py", extras = ["all"]}
 gitpython = "^3.1.42"
+jishaku = "^2.5.1"
+mihomo = {git = "https://github.com/KT-Yeh/mihomo.git"}
+novelai = {git = "https://github.com/kokosensei/NovelAI-API"}
+orjson = "^3.9.9"
+pillow = "^10.1.0"
+psutil = "^5.9.7"
 pydantic = "^2.6.4"
+python = "^3.11"
+python-dotenv = "^1.0.0"
+rsa = "^4.9"
+sentry-sdk = {extras = ["aiohttp"], version = "^1.43.0"}
+seria-library = {git = "https://github.com/seriaati/seria-library"}
+tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
+transifex-python = "^3.5.0"
+yatta = {git = "https://github.com/seriaati/yatta"}
 
 [tool.poetry.group.dev]
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.3.4"
-pre-commit = "^3.6.0"
 aerich = "^0.7.2"
+pre-commit = "^3.6.0"
+ruff = "^0.3.4"
 
 [tool.poetry.group.linux]
 optional = true
@@ -51,36 +51,65 @@ optional = true
 uvloop = "^0.19.0"
 
 [tool.aerich]
-tortoise_orm = "hoyo_buddy.db.config.DB_CONFIG"
 location = "./migrations"
 src_folder = "./."
+tortoise_orm = "hoyo_buddy.db.config.DB_CONFIG"
 
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
 
 [tool.ruff]
 line-length = 100
 
 [tool.ruff.lint]
-select = [
-    "E","W","C90","F","UP","B","SIM","I","N","TCH",
-    "ANN","ASYNC","A","C4","EM","FA","ICN","G",
-    "PIE","T20","ARG","ERA","LOG","PL","TRY"
-]
 ignore = [
-    "E501","ANN401","ANN101","ANN102",
-    "PLR0913","PLR2004","PLR0917","PLR6301",
-    "ANN002","ERA001"
+  "E501",
+  "ANN401",
+  "ANN101",
+  "ANN102",
+  "PLR0913",
+  "PLR2004",
+  "PLR0917",
+  "PLR6301",
+  "ANN002",
+  "ERA001",
 ]
 preview = true
+select = [
+  "E",
+  "W",
+  "C90",
+  "F",
+  "UP",
+  "B",
+  "SIM",
+  "I",
+  "N",
+  "TCH",
+  "ANN",
+  "ASYNC",
+  "A",
+  "C4",
+  "EM",
+  "FA",
+  "ICN",
+  "G",
+  "PIE",
+  "T20",
+  "ARG",
+  "ERA",
+  "LOG",
+  "PL",
+  "TRY",
+]
 
 [tool.ruff.lint.per-file-ignores]
 "**/__init__.py" = ["F403", "F401"]
-"playground.*.py" = ["ALL"]
 "./migrations/*.py" = ["ALL"]
 "hoyo_buddy/draw/**/*.py" = ["PLR", "C"]
 "hoyo_buddy/models.py" = ["TCH002"]
+"playground.*.py" = ["ALL"]
 
 [tool.ruff.lint.flake8-type-checking]
 quote-annotations = true

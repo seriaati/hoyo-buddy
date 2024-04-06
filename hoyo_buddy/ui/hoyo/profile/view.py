@@ -1,3 +1,4 @@
+from functools import cached_property
 from io import BytesIO
 from typing import TYPE_CHECKING, Any, TypeAlias
 
@@ -98,7 +99,7 @@ class ProfileView(View):
 
         self.characters = characters
 
-    @property
+    @cached_property
     def player_embed(self) -> DefaultEmbed:
         """Player info embed"""
         if self.starrail_data is not None:
@@ -147,6 +148,7 @@ class ProfileView(View):
             if player.signature:
                 embed.set_footer(text=player.signature)
         elif self.hoyolab_user is not None:
+            # There is no hsr cache, mihomo isnt working, but hoyolab is working
             player = self.hoyolab_user.info
             stats = self.hoyolab_user.stats
             embed = DefaultEmbed(

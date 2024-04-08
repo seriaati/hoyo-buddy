@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, TextStyle
+from seria.utils import read_json
 
 from hoyo_buddy.bot.translator import LocaleStr
-from hoyo_buddy.constants import NSFW_TAGS
 from hoyo_buddy.exceptions import GuildOnlyFeatureError, NSFWPromptError
 from hoyo_buddy.ui.components import Button, Modal, TextInput
 from hoyo_buddy.utils import upload_image
@@ -59,7 +59,8 @@ class GenerateAIArtButton(Button):
 
         prompt = modal.prompt.value
         negative_prompt = modal.negative_prompt.value
-        if any(tag.lower() in prompt.lower() for tag in NSFW_TAGS):
+        nsfw_tags: list[str] = await read_json("hoyo_buddy/bot/data/nsfw_tags.json")
+        if any(tag.lower() in prompt.lower() for tag in nsfw_tags):
             raise NSFWPromptError
 
         await self.set_loading_state(i)

@@ -10,6 +10,7 @@ from sentry_sdk.metrics import timing
 
 from hoyo_buddy.draw import funcs
 
+from ..constants import HSR_CHARA_ADD_HURTS, HSR_CHARA_DEFAULT_STATS
 from ..models import AbyssCharacter, HoyolabHSRCharacter
 from .static import download_and_save_static_images
 
@@ -83,9 +84,11 @@ async def draw_hsr_build_card(
         if isinstance(character, MihomoCharacter):
             for attr in character.light_cone.attributes:
                 urls.append(attr.icon)
-    urls.append(
-        "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/property/IconEnergyRecovery.png"
-    )
+    for stat in HSR_CHARA_DEFAULT_STATS.values():
+        urls.append(stat["icon"])
+    for icon in HSR_CHARA_ADD_HURTS.values():
+        urls.append(icon)
+
     await download_and_save_static_images(urls, "hsr-build-card", draw_input.session)
 
     with timing("draw", tags={"type": "hsr_build_card"}):

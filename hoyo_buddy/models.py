@@ -5,6 +5,8 @@ import ambr.models
 from attr import dataclass
 from discord import Locale
 
+from .constants import STARRAIL_RES
+
 if TYPE_CHECKING:
     from aiohttp import web
 
@@ -116,7 +118,7 @@ class LightCone:
 
     @property
     def portrait(self) -> str:
-        return f"https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/light_cone_portrait/{self.id}.png"
+        return f"{STARRAIL_RES}/image/light_cone_portrait/{self.id}.png"
 
 
 @dataclass(kw_only=True)

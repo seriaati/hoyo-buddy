@@ -6,7 +6,7 @@ from cachetools import LRUCache, cached
 from discord.utils import get as dget
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.constants import HSR_ELEMENT_DMG_PROPS
+from hoyo_buddy.constants import HSR_CHARA_ADD_HURTS, HSR_CHARA_DEFAULT_STATS, HSR_ELEMENT_DMG_PROPS
 from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
 from hoyo_buddy.utils import round_down
 
@@ -14,8 +14,6 @@ if TYPE_CHECKING:
     from discord import Locale
 
     from hoyo_buddy.models import HoyolabHSRCharacter, Trace
-
-__all__ = ("draw_hsr_build_card",)
 
 
 def cache_key(
@@ -52,7 +50,6 @@ def draw_hsr_build_card(
         # blend with dark gray
         primary = Drawer.blend_color(primary, (32, 36, 33), 0.88)
 
-    secondary = Drawer.blend_color(primary, BLACK if dark_mode else WHITE, 0.88)
     dark_primary = Drawer.blend_color(primary, WHITE if dark_mode else BLACK, 0.6)
     light_primary = Drawer.blend_color(primary, BLACK if dark_mode else WHITE, 0.15)
 
@@ -235,7 +232,7 @@ def draw_hsr_build_card(
                     circle_x + width,
                     y + circle_height // 2,
                 ),
-                fill=secondary,
+                fill=primary,
                 width=width,
             )
             draw.ellipse(
@@ -245,7 +242,7 @@ def draw_hsr_build_card(
                     circle_x + sub_circle_height,
                     circle_y + sub_circle_height,
                 ),
-                fill=secondary,
+                fill=primary,
             )
 
             icon = drawer.open_static(
@@ -283,8 +280,14 @@ def draw_hsr_build_card(
                 display_value = get_attr_display_value(attr, add_.value if add_ else 0)
                 attributes[attr.icon] = display_value
 
-        if "icon/property/IconEnergyRecovery.png" not in attributes:
-            attributes["icon/property/IconEnergyRecovery.png"] = "100.0%"
+        # Additions
+        for stat_name, stat in HSR_CHARA_DEFAULT_STATS.items():
+            add_ = dget(character.additions, field=stat_name)
+            if add_ is not None:
+                display_value = get_attr_display_value(add_)
+                attributes[add_.icon] = display_value
+            else:
+                attributes[stat["icon"]] = stat["value"]
 
         # Get max damage addition
         dmg_additions = [
@@ -293,15 +296,12 @@ def draw_hsr_build_card(
             if "dmg" in a.field and a.field not in {"break_dmg", "crit_dmg"}
         ]
         max_dmg_add = max(dmg_additions, key=lambda a: a.value) if dmg_additions else None
-        if max_dmg_add is not None:
+        if max_dmg_add is None:
+            add_hurt = HSR_CHARA_ADD_HURTS[character.element.id.lower()]
+            attributes[add_hurt] = "0.0%"
+        else:
             attributes[max_dmg_add.icon] = f"{round_down(max_dmg_add.value * 100, 1)}%"
 
-        # Additions
-        addition_names = ("effect_res", "effect_hit", "break_dmg", "heal_rate")
-        for add_ in character.additions:
-            if add_.field in addition_names:
-                display_value = get_attr_display_value(add_)
-                attributes[add_.icon] = display_value
     else:
         # There is no additions/attributes in StarRailCharacter
         attr_types = (1, 2, 3, 4, 5, 6, 9, 11, 10, 58, 7)

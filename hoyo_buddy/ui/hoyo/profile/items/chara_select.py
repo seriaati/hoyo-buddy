@@ -86,6 +86,10 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
 
         self.view.character_id = self.values[0]
 
+        # Enable the player info button
+        player_btn = self.view.get_item("profile_player_info")
+        player_btn.disabled = False
+
         # Enable the card settings button
         card_settings_btn = self.view.get_item("profile_card_settings")
         card_settings_btn.disabled = False

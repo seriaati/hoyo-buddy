@@ -14,15 +14,19 @@ if TYPE_CHECKING:
     from .chara_select import CharacterSelect
 
 
-class PlayerButton(Button["ProfileView"]):
+class PlayerInfoButton(Button["ProfileView"]):
     def __init__(self) -> None:
         super().__init__(
             label=LocaleStr("Player Info", key="profile.player_info.button.label"),
             style=ButtonStyle.blurple,
             emoji=BOOK_MULTIPLE,
+            disabled=True,
+            custom_id="profile_player_info",
         )
 
     async def callback(self, i: "INTERACTION") -> None:
+        self.disabled = True
+
         card_settings_btn: CardSettingsButton = self.view.get_item("profile_card_settings")
         card_settings_btn.disabled = True
 

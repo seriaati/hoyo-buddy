@@ -27,7 +27,7 @@ from ...components import (
 from .items.card_info_btn import CardInfoButton
 from .items.card_settings_btn import CardSettingsButton
 from .items.chara_select import CharacterSelect
-from .items.player_btn import PlayerButton
+from .items.player_btn import PlayerInfoButton
 from .items.rmv_from_cache_btn import RemoveFromCacheButton
 
 if TYPE_CHECKING:
@@ -81,6 +81,7 @@ class ProfileView(View):
         self._card_data = card_data
 
     def _set_characters(self) -> None:
+        """Set the characters list."""
         characters: Sequence[Character] = []
 
         if self.game is Game.STARRAIL:
@@ -183,11 +184,12 @@ class ProfileView(View):
         return embed
 
     def _add_items(self) -> None:
-        self.add_item(PlayerButton())
+        self.add_item(PlayerInfoButton())
         self.add_item(CardSettingsButton())
         self.add_item(RemoveFromCacheButton())
         self.add_item(CardInfoButton())
-        self.add_item(CharacterSelect(self.characters, self.cache_extras))
+        if self.characters:
+            self.add_item(CharacterSelect(self.characters, self.cache_extras))
 
     async def _draw_src_character_card(
         self,

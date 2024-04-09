@@ -60,7 +60,7 @@ class View(discord.ui.View):
             f"{self.__class__.__module__.replace('hoyo_buddy.ui.', '')}.{self.__class__.__name__}"
         )
 
-    async def _dispatch_item(
+    def _dispatch_item(
         self, item: "Item", interaction: discord.Interaction[discord.Client]
     ) -> None:
         if self._View__stopped.done():  # pyright: ignore reportAttributeAccessIssue

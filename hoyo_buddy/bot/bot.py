@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from ..hoyo.clients import ambr_client, yatta_client
 
 
-__all__ = ("HoyoBuddy", "INTERACTION")
+__all__ = ("INTERACTION", "HoyoBuddy")
 
 LOGGER_ = logging.getLogger(__name__)
 INTERACTION: TypeAlias = discord.Interaction["HoyoBuddy"]

@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from discord.enums import Locale
     from yatta.models import Character as HSRCharacter
 
-__all__ = ("Translator", "AppCommandTranslator", "LocaleStr")
+__all__ = ("AppCommandTranslator", "LocaleStr", "Translator")
 
 LOGGER_ = logging.getLogger(__name__)
 COMMAND_REGEX = r"</[^>]+>"

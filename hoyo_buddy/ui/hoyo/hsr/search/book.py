@@ -50,7 +50,7 @@ class BookUI(View):
                     ]
                 )
             )
-        await i.edit_original_response(embed=list(self.series_embeds.values())[0], view=self)
+        await i.edit_original_response(embed=next(iter(self.series_embeds.values())), view=self)
 
 
 class SeriesSelector(Select["BookUI"]):

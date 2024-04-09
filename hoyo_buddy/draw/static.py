@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
     import aiohttp
 
-__all__ = ("download_and_save_static_images", "STATIC_FOLDER")
+__all__ = ("STATIC_FOLDER", "download_and_save_static_images")
 
 STATIC_FOLDER = "./.static"
 

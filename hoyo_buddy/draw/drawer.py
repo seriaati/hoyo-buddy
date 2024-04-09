@@ -106,7 +106,7 @@ class Drawer:
     def apply_color_opacity(
         color: tuple[int, int, int], opacity: float
     ) -> tuple[int, int, int, int]:
-        return color + (round(255 * opacity),)
+        return (*color, round(255 * opacity))
 
     @staticmethod
     def _shorten_text(text: str, max_width: int, font: ImageFont.FreeTypeFont) -> str:

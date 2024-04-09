@@ -1,3 +1,4 @@
+import asyncio
 import contextlib
 import logging
 from typing import TYPE_CHECKING, Any, Generic, Self, TypeVar
@@ -14,23 +15,24 @@ from ..embeds import ErrorEmbed
 from ..exceptions import InvalidInputError
 
 if TYPE_CHECKING:
-    import asyncio
     from collections.abc import Sequence
+
+    from discord.ui.item import Item
 
     from ..bot.bot import INTERACTION
 
 
 __all__ = (
-    "View",
     "Button",
     "GoBackButton",
-    "ToggleButton",
-    "SelectOption",
-    "Select",
-    "TextInput",
     "Modal",
     "PaginatorSelect",
+    "Select",
+    "SelectOption",
+    "TextInput",
+    "ToggleButton",
     "URLButtonView",
+    "View",
 )
 
 V_co = TypeVar("V_co", bound="View", covariant=True)
@@ -51,12 +53,24 @@ class View(discord.ui.View):
         self.locale = locale
         self.translator = translator
         self.message: discord.Message | None = None
-        self.tasks: dict[str, asyncio.Task] = {}
+        self._tasks: set[asyncio.Task] = set()
 
     def __repr__(self) -> str:
         return (
             f"{self.__class__.__module__.replace('hoyo_buddy.ui.', '')}.{self.__class__.__name__}"
         )
+
+    async def _dispatch_item(
+        self, item: "Item", interaction: discord.Interaction[discord.Client]
+    ) -> None:
+        if self._View__stopped.done():  # pyright: ignore reportAttributeAccessIssue
+            return
+
+        task = asyncio.create_task(
+            self._scheduled_task(item, interaction), name=f"discord-ui-view-dispatch-{self.id}"
+        )
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
 
     async def on_timeout(self) -> None:
         if self.message:

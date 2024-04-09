@@ -18,24 +18,34 @@ if TYPE_CHECKING:
 
 
 class TaskView(ui.View):
+    def __init__(self) -> None:
+        super().__init__()
+        self._tasks: set[asyncio.Task] = set()
+
     async def interaction_check(self, i: "INTERACTION") -> bool:
         return await i.client.is_owner(i.user)
 
     @ui.button(label="Daily Check-in", style=ButtonStyle.blurple)
     async def daily_checkin(self, i: "INTERACTION", _: ui.Button) -> None:
         await i.response.send_message("Daily check-in task started.")
-        asyncio.create_task(DailyCheckin.execute(i.client))
+        task = asyncio.create_task(DailyCheckin.execute(i.client))
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
 
     @ui.button(label="Notes Check", style=ButtonStyle.blurple)
     async def notes_check(self, i: "INTERACTION", _: ui.Button) -> None:
         await i.response.send_message("Notes check task started.")
-        asyncio.create_task(NotesChecker.execute(i.client))
+        task = asyncio.create_task(NotesChecker.execute(i.client))
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
 
     @ui.button(label="Farm Check", style=ButtonStyle.blurple)
     async def farm_check(self, i: "INTERACTION", _: ui.Button) -> None:
         await i.response.send_message("Farm check tasks started.")
         for uid_start in UID_STARTS:
-            asyncio.create_task(FarmChecker.execute(i.client, uid_start))
+            task = asyncio.create_task(FarmChecker.execute(i.client, uid_start))
+            self._tasks.add(task)
+            task.add_done_callback(self._tasks.discard)
 
 
 class Admin(commands.Cog):
@@ -88,8 +98,12 @@ class Admin(commands.Cog):
         message = await ctx.send("Updating search autocomplete...")
         search_cog = self.bot.get_cog("Search")
         search_cog = self.bot.get_cog("Search")
+
+        tasks: set[asyncio.Task] = set()
         if isinstance(search_cog, Search):
-            asyncio.create_task(search_cog._setup_search_autocomplete_choices())
+            task = asyncio.create_task(search_cog._setup_search_autocomplete_choices())
+            tasks.add(task)
+            task.add_done_callback(tasks.discard)
         await message.edit(content="Updated search autocomplete.")
 
 

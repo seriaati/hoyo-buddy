@@ -38,7 +38,7 @@ class AddAccountHandler(View):
     password: str = ""
     mobile: str = ""
 
-    _ticket: dict[str, Any] = {}
+    _ticket: dict[str, Any] = {}  # noqa: RUF012
     _task: asyncio.Task | None = None
     _client: genshin.Client | None = None
 

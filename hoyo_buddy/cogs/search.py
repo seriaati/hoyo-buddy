@@ -35,11 +35,14 @@ class Search(commands.Cog):
             Game.GENSHIN: [c.value for c in ambr_client.ItemCategory],
             Game.STARRAIL: [c.value for c in yatta_client.ItemCategory],
         }
+        self._tasks: set[asyncio.Task] = set()
 
     async def cog_load(self) -> None:
         if self.bot.env == "dev":
             return
-        asyncio.create_task(self._setup_search_autocomplete_choices())
+        task = asyncio.create_task(self._setup_search_autocomplete_choices())
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
 
     async def _fetch_item_task(
         self,

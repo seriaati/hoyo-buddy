@@ -5,7 +5,7 @@ import discord
 if TYPE_CHECKING:
     from .bot.translator import LocaleStr, Translator
 
-__all__ = ("Embed", "DefaultEmbed", "ErrorEmbed")
+__all__ = ("DefaultEmbed", "Embed", "ErrorEmbed")
 
 
 class Embed(discord.Embed):

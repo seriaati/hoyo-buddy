@@ -45,7 +45,7 @@ class HoyoAccount(Model):
 
     class Meta:
         unique_together = ("uid", "game", "user")
-        ordering = ["uid"]
+        ordering = ["uid"]  # noqa: RUF012
 
     def __str__(self) -> str:
         if self.nickname:
@@ -113,7 +113,7 @@ class CardSettings(Model):
 
     class Meta:
         unique_together = ("character_id", "user")
-        ordering = ["character_id"]
+        ordering = ["character_id"]  # noqa: RUF012
 
 
 class EnkaCache(Model):
@@ -124,7 +124,7 @@ class EnkaCache(Model):
     extras: fields.Field[dict[str, dict[str, Any]]] = fields.JSONField(default={})  # type: ignore
 
     class Meta:
-        ordering = ["uid"]
+        ordering = ["uid"]  # noqa: RUF012
 
 
 class NotesNotify(Model):
@@ -156,7 +156,7 @@ class NotesNotify(Model):
 
     class Meta:
         unique_together = ("type", "account")
-        ordering = ["type"]
+        ordering = ["type"]  # noqa: RUF012
 
 
 class FarmNotify(Model):

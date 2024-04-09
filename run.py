@@ -48,7 +48,11 @@ async def main() -> None:
     ):
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
             server = GeetestWebServer(translator=translator)
-            asyncio.create_task(server.run())
+            tasks: set[asyncio.Task] = set()
+            task = asyncio.create_task(server.run())
+            tasks.add(task)
+            task.add_done_callback(tasks.discard)
+
             await bot.start(os.environ["DISCORD_TOKEN"])
 
 

@@ -18,7 +18,7 @@ from ...embeds import DefaultEmbed
 from ...enums import TalentBoost
 from ...models import ItemWithDescription
 
-__all__ = ("AmbrAPIClient", "ItemCategory", "AUDIO_LANGUAGES")
+__all__ = ("AUDIO_LANGUAGES", "AmbrAPIClient", "ItemCategory")
 
 if TYPE_CHECKING:
     from types import TracebackType

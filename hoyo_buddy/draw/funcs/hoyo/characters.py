@@ -59,7 +59,7 @@ def draw_character_card(
             card = draw_small_hsr_chara_card(talent, dark_mode, character, translator, locale)
         c_cards[str(character.id)] = card
 
-    first_card = list(c_cards.values())[0]
+    first_card = next(iter(c_cards.values()))
     bk_input = DynamicBKInput(
         top_padding=35,
         bottom_padding=5,

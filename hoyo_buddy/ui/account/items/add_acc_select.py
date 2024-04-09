@@ -7,8 +7,8 @@ from tortoise.exceptions import IntegrityError
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount
 from hoyo_buddy.emojis import get_game_emoji
-from hoyo_buddy.enums import GAME_CONVERTER
 
+from ....constants import GPY_GAME_TO_HB_GAME
 from ...components import Select, SelectOption
 
 if TYPE_CHECKING:
@@ -77,7 +77,7 @@ class AddAccountSelect(Select["AccountManager"]):
                 hoyo_account = await HoyoAccount.create(
                     uid=account.uid,
                     username=account.nickname,
-                    game=GAME_CONVERTER[account.game],
+                    game=GPY_GAME_TO_HB_GAME[account.game],
                     cookies=self.cookies,
                     user=self.view.user,
                     server=account.server_name,
@@ -85,7 +85,7 @@ class AddAccountSelect(Select["AccountManager"]):
             except IntegrityError:
                 await HoyoAccount.filter(
                     uid=account.uid,
-                    game=GAME_CONVERTER[account.game],
+                    game=GPY_GAME_TO_HB_GAME[account.game],
                     user=self.view.user,
                 ).update(cookies=self.cookies, username=account.nickname)
             else:

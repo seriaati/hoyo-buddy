@@ -3,11 +3,12 @@ from typing import Literal
 import discord
 from ambr import Language as AmbrLanguage
 from enka import Language as EnkaLanguage
+from genshin import Game as GPYGame
 from mihomo import Language as MihomoLanguage
 from yatta import Language as YattaLanguage
 from yatta import PathType
 
-from .enums import HSRPath
+from .enums import Game, HSRPath
 
 DB_INTEGER_MAX = 2147483647
 DB_SMALLINT_MAX = 32767
@@ -247,3 +248,12 @@ HSR_CHARA_ADD_HURTS: dict[str, str] = {
     "thunder": f"{STARRAIL_RES}/icon/property/IconThunderAddedRatio.png",
 }
 """Elemental damage boosts for HSR character, element to icon."""
+
+HB_GAME_TO_GPY_GAME: dict[Game, GPYGame] = {
+    Game.GENSHIN: GPYGame.GENSHIN,
+    Game.STARRAIL: GPYGame.STARRAIL,
+    Game.HONKAI: GPYGame.HONKAI,
+}
+"""Hoyo Buddy game enum to genshin.py game enum."""
+GPY_GAME_TO_HB_GAME = {v: k for k, v in HB_GAME_TO_GPY_GAME.items()}
+"""Genshin.py game enum to Hoyo Buddy game enum."""

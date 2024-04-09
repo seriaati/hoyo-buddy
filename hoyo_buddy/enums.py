@@ -1,7 +1,5 @@
 from enum import IntEnum, StrEnum
 
-import genshin
-
 
 class Game(StrEnum):
     GENSHIN = "Genshin Impact"
@@ -42,16 +40,6 @@ class Weekday(IntEnum):
     FRIDAY = 5
     SATURDAY = 6
     SUNDAY = 7
-
-
-GAME_CONVERTER: dict[Game | genshin.Game, Game | genshin.Game] = {
-    Game.GENSHIN: genshin.Game.GENSHIN,
-    Game.STARRAIL: genshin.Game.STARRAIL,
-    Game.HONKAI: genshin.Game.HONKAI,
-    genshin.Game.GENSHIN: Game.GENSHIN,
-    genshin.Game.STARRAIL: Game.STARRAIL,
-    genshin.Game.HONKAI: Game.HONKAI,
-}
 
 
 class TalentBoost(IntEnum):

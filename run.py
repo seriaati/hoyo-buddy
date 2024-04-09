@@ -52,10 +52,7 @@ async def main() -> None:
             await bot.start(os.environ["DISCORD_TOKEN"])
 
 
-with setup_logging(
-    logging.INFO,
-    log_filename="hoyo_buddy.log",
-):
+with setup_logging(logging.INFO, log_filename="hoyo_buddy.log"):
     try:
         import uvloop  # type: ignore
     except ImportError:

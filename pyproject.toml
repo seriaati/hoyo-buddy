@@ -83,6 +83,7 @@ ignore = [
   "D105",
   "D106",
   "D107",
+  "RUF100",
 ]
 preview = true
 select = [
@@ -112,6 +113,7 @@ select = [
   "PL",
   "TRY",
   "D",
+  "RUF",
 ]
 
 [tool.ruff.lint.per-file-ignores]

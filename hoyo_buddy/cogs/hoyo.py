@@ -10,6 +10,7 @@ from seria.utils import read_yaml
 from ..bot.translator import LocaleStr
 from ..db.models import EnkaCache, HoyoAccount, Settings
 from ..draw.main_funcs import draw_exploration_card
+from ..embeds import DefaultEmbed
 from ..enums import Game
 from ..exceptions import IncompleteParamError
 from ..hoyo.clients.ambr_client import AmbrAPIClient
@@ -17,6 +18,7 @@ from ..hoyo.clients.enka_client import EnkaAPI
 from ..hoyo.clients.mihomo_client import MihomoAPI
 from ..hoyo.clients.yatta_client import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
+from ..icons import LOADING_ICON
 from ..models import DrawInput
 from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
@@ -24,6 +26,7 @@ from ..ui.hoyo.genshin.abyss import AbyssView
 from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.profile.view import ProfileView
+from ..ui.hoyo.redeem import GiftCodeModal
 
 if TYPE_CHECKING:
     from mihomo.models import StarrailInfoParsed
@@ -385,6 +388,67 @@ class Hoyo(commands.Cog):
         )
         await i.followup.send(files=[file_])
 
+    @app_commands.command(
+        name=app_commands.locale_str("redeem", translate=False),
+        description=app_commands.locale_str(
+            "Redeem gift codes",
+            key="redeem_command_description",
+        ),
+    )
+    @app_commands.rename(
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+    )
+    @app_commands.describe(
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        )
+    )
+    async def redeem_command(
+        self,
+        i: "INTERACTION",
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+    ) -> None:
+        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN, Game.STARRAIL])
+        await account_.fetch_related("user", "user__settings")
+
+        locale = account_.user.settings.locale or i.locale
+        account_.client.set_lang(locale)
+
+        modal = GiftCodeModal(title=LocaleStr("Enter gift codes", key="gift_code_modal.title"))
+        modal.translate(locale, self.bot.translator)
+        await i.response.send_modal(modal)
+
+        await modal.wait()
+        if modal.incomplete:
+            return
+
+        embed = DefaultEmbed(
+            locale,
+            self.bot.translator,
+            description=LocaleStr(
+                "Due to redemption cooldowns, this may take a while.",
+                key="redeem_command_embed.description",
+            ),
+        )
+        embed.set_author(
+            icon_url=LOADING_ICON,
+            name=LocaleStr("Redeeming gift codes", key="redeem_command_embed.title"),
+        )
+        message = await i.followup.send(embed=embed, wait=True)
+
+        codes = (
+            modal.code_1.value,
+            modal.code_2.value,
+            modal.code_3.value,
+            modal.code_4.value,
+            modal.code_5.value,
+        )
+        embed = await account_.client.redeem_codes(
+            codes, locale=locale, translator=self.bot.translator
+        )
+        await message.edit(embed=embed)
+
     @abyss_command.autocomplete("account")
     @exploration_command.autocomplete("account")
     async def characters_command_autocomplete(
@@ -398,6 +462,7 @@ class Hoyo(commands.Cog):
     @characters_command.autocomplete("account")
     @profile_command.autocomplete("account")
     @notes_command.autocomplete("account")
+    @redeem_command.autocomplete("account")
     async def account_autocomplete(
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:

@@ -102,7 +102,7 @@ class ProfileView(View):
 
     @cached_property
     def player_embed(self) -> DefaultEmbed:
-        """Player info embed"""
+        """Player info embed."""
         if self.starrail_data is not None:
             player = self.starrail_data.player
             embed = DefaultEmbed(

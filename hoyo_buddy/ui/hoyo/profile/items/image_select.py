@@ -32,8 +32,7 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
         )
 
     def generate_options(self) -> list[SelectOption]:
-        """
-        Generates a list of SelectOption objects based on the available image URLs.
+        """Generates a list of SelectOption objects based on the available image URLs.
 
         Returns:
             A list of SelectOption objects representing the available image options.
@@ -63,8 +62,7 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
         return options
 
     def get_image_url_option(self, image_url: str, num: int) -> SelectOption:
-        """
-        Returns a SelectOption object based on the provided image URL and number.
+        """Returns a SelectOption object based on the provided image URL and number.
 
         Args:
             image_url (str): The URL of the image.

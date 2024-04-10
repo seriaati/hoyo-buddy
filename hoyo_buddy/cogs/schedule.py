@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from discord.ext import commands, tasks
 
 from ..constants import UID_STARTS
+from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
 from ..hoyo.auto_tasks.notes_check import NotesChecker
@@ -34,6 +35,7 @@ class Schedule(commands.Cog):
     async def schedule(self) -> None:
         now = get_now()
         tasks: set[asyncio.Task] = set()
+
         # Every day at 00:00
         if now.hour == 0 and now.minute < self.loop_interval:
             tasks.add(asyncio.create_task(DailyCheckin.execute(self.bot)))
@@ -68,6 +70,10 @@ class Schedule(commands.Cog):
         # Every hour
         if now.minute < self.loop_interval:
             tasks.add(asyncio.create_task(self.bot.translator.push_source_strings()))
+
+        # Every 30 minutes
+        if now.minute % 30 < self.loop_interval:
+            tasks.add(asyncio.create_task(AutoRedeem.execute(self.bot)))
 
         for task in tasks:
             task.add_done_callback(tasks.discard)

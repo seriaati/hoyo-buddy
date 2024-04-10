@@ -6,6 +6,7 @@ from discord.ext import commands
 from seria.utils import write_json
 
 from ..constants import UID_STARTS
+from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
 from ..hoyo.auto_tasks.notes_check import NotesChecker
@@ -46,6 +47,13 @@ class TaskView(ui.View):
             task = asyncio.create_task(FarmChecker.execute(i.client, uid_start))
             self._tasks.add(task)
             task.add_done_callback(self._tasks.discard)
+
+    @ui.button(label="Auto Redeem", style=ButtonStyle.blurple)
+    async def auto_redeem(self, i: "INTERACTION", _: ui.Button) -> None:
+        await i.response.send_message("Auto redeem task started.")
+        task = asyncio.create_task(AutoRedeem.execute(i.client))
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
 
 
 class Admin(commands.Cog):
@@ -96,7 +104,6 @@ class Admin(commands.Cog):
     @commands.command(name="update-search-autocomplete", aliases=["usa"])
     async def update_search_autocomplete_command(self, ctx: commands.Context) -> Any:
         message = await ctx.send("Updating search autocomplete...")
-        search_cog = self.bot.get_cog("Search")
         search_cog = self.bot.get_cog("Search")
 
         tasks: set[asyncio.Task] = set()

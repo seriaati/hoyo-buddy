@@ -195,6 +195,13 @@ class HoyoBuddy(commands.AutoShardedBot):
         # Update genshin.py assets
         await genshin.utility.update_characters_any()
 
+    async def on_command_error(
+        self, context: commands.Context, exception: commands.CommandError
+    ) -> None:
+        if isinstance(exception, commands.CommandNotFound):
+            return
+        return await super().on_command_error(context, exception)
+
     async def close(self) -> None:
         LOGGER_.info("Bot shutting down...")
         if self.env != "dev":

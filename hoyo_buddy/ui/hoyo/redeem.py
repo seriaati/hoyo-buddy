@@ -72,11 +72,11 @@ class RedeemUI(View):
             self.translator,
             description=LocaleStr(
                 "Due to redemption cooldowns, this may take a while.",
-                key="redeem_command_embed.description",
+                key="redeem_cooldown_embed.description",
             ),
         ).set_author(
             icon_url=LOADING_ICON,
-            name=LocaleStr("Redeeming gift codes", key="redeem_command_embed.title"),
+            name=LocaleStr("Redeeming gift codes", key="redeem_cooldown_embed.title"),
         )
 
     def _add_items(self) -> None:

@@ -45,7 +45,7 @@ class AutoRedeem:
             elif account.game is Game.STARRAIL:
                 codes = hsr_codes
             else:
-                raise NotImplementedError
+                continue
 
             # filter out codes that have already been redeemed
             codes = [code for code in codes if code not in account.redeemed_codes]

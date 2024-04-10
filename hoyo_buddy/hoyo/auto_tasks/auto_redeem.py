@@ -61,7 +61,7 @@ class AutoRedeem:
             account.redeemed_codes.extend(codes)
             # remove duplicates
             account.redeemed_codes = list(set(account.redeemed_codes))
-            await account.save(update_fields=("redeemed_codes,"))
+            await account.save(update_fields=("redeemed_codes",))
 
             await bot.dm_user(account.user.id, embed=embed)
 

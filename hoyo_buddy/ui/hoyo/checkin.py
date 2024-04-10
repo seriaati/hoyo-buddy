@@ -162,7 +162,7 @@ class AutoCheckInToggle(ToggleButton[CheckInUI]):
     async def callback(self, i: "INTERACTION") -> Any:
         await super().callback(i)
         self.view.account.daily_checkin = self.current_toggle
-        await self.view.account.save()
+        await self.view.account.save(update_fields=("daily_checkin",))
 
 
 class NotificationSettingsButton(Button[CheckInUI]):

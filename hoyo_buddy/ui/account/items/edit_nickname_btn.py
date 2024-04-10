@@ -47,5 +47,5 @@ class EditNicknameButton(Button["AccountManager"]):
         await modal.wait()
 
         account.nickname = modal.nickname.value
-        await account.save()
+        await account.save(update_fields=("nickname",))
         await self.view.refresh(i, soft=True)

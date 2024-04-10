@@ -199,7 +199,7 @@ class NotesChecker:
         notify.enabled = message is not None
         notify.last_notif_time = get_now()
         notify.current_notif_count += 1 if message is not None else 0
-        await notify.save()
+        await notify.save(update_fields=("enabled", "last_notif_time", "current_notif_count"))
 
     @classmethod
     async def _process_resin_notify(cls, notify: NotesNotify, notes: Notes) -> None:
@@ -212,7 +212,7 @@ class NotesChecker:
             est_time = cls._calc_est_time(Game.GENSHIN, threshold, current)
             notify.est_time = est_time
             notify.current_notif_count = 0
-            return await notify.save()
+            return await notify.save(update_fields=("est_time", "current_notif_count"))
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -226,7 +226,7 @@ class NotesChecker:
 
         if current < threshold:
             notify.current_notif_count = 0
-            return await notify.save()
+            return await notify.save(update_fields=("current_notif_count",))
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -242,7 +242,7 @@ class NotesChecker:
             est_time = cls._calc_est_time(Game.STARRAIL, threshold, current)
             notify.est_time = est_time
             notify.current_notif_count = 0
-            return await notify.save()
+            return await notify.save(update_fields=("est_time", "current_notif_count"))
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -256,7 +256,7 @@ class NotesChecker:
 
         if current < threshold:
             notify.current_notif_count = 0
-            return await notify.save()
+            return await notify.save(update_fields=("current_notif_count",))
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -268,7 +268,7 @@ class NotesChecker:
         """Process expedition notification."""
         if any(not exped.finished for exped in notes.expeditions):
             notify.current_notif_count = 0
-            await notify.save()
+            await notify.save(update_fields=("current_notif_count",))
 
         if (
             any(exped.finished for exped in notes.expeditions)
@@ -284,7 +284,7 @@ class NotesChecker:
 
         if remaining_time.seconds >= 0:
             notify.current_notif_count = 0
-            return await notify.save()
+            return await notify.save(update_fields=("current_notif_count",))
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -293,7 +293,7 @@ class NotesChecker:
     async def _process_daily_notify(cls, notify: NotesNotify, notes: Notes | StarRailNote) -> None:
         if notify.last_check_time is not None and get_now().day != notify.last_check_time.day:
             notify.current_notif_count = 0
-            await notify.save()
+            await notify.save(update_fields=("current_notif_count",))
 
         if (
             isinstance(notes, Notes)
@@ -312,7 +312,7 @@ class NotesChecker:
     ) -> None:
         if notify.last_check_time is not None and get_now().day != notify.last_check_time.day:
             notify.current_notif_count = 0
-            await notify.save()
+            await notify.save(update_fields=("current_notif_count",))
 
         if isinstance(notes, Notes) and notes.remaining_resin_discounts == 0:
             return
@@ -433,5 +433,5 @@ class NotesChecker:
                     await cls._handle_notify_error(notify, e)
                 finally:
                     notify.last_check_time = get_now()
-                    await notify.save()
+                    await notify.save(update_fields=("last_check_time",))
                     await asyncio.sleep(1.2)

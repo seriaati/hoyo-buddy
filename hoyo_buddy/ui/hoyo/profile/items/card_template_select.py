@@ -133,7 +133,7 @@ class CardTemplateSelect(Select["ProfileView"]):
 
         # Save the setting to db
         self.view._card_settings.template = self.values[0]
-        await self.view._card_settings.save()
+        await self.view._card_settings.save(update_fields=("template",))
 
         self.update_options_defaults()
         await self.set_loading_state(i)

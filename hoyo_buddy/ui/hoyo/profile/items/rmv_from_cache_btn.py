@@ -48,7 +48,7 @@ class RemoveFromCacheButton(Button["ProfileView"]):
                     gi_cache.characters.remove(character)
                     break
 
-        await cache.save()
+        await cache.save(update_fields=("hsr", "genshin"))
 
         # Update options in the character select
         character_select: CharacterSelect = self.view.get_item("profile_character_select")

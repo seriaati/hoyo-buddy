@@ -21,7 +21,7 @@ class CommandTree(app_commands.CommandTree):
         if created:
             await Settings.create(user=user)
         user.last_interaction = get_now()
-        await user.save()
+        await user.save(update_fields=("last_interaction",))
 
         return True
 

@@ -25,7 +25,7 @@ class DarkModeButton(ToggleButton["ProfileView"]):
         # Save the new dark mode setting
         await super().callback(i, edit=True)
         self.view._card_settings.dark_mode = self.current_toggle
-        await self.view._card_settings.save()
+        await self.view._card_settings.save(update_fields=("dark_mode",))
 
         # Redraw the card
         await self.view.update(i, self, unset_loading_state=False)

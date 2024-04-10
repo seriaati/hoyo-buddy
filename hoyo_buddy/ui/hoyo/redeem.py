@@ -126,4 +126,4 @@ class AutoRedeemToggle(ToggleButton[RedeemUI]):
     async def callback(self, i: "INTERACTION") -> None:
         await super().callback(i)
         self.view.account.auto_redeem = self.current_toggle
-        await self.view.account.save()
+        await self.view.account.save(update_fields=("auto_redeem",))

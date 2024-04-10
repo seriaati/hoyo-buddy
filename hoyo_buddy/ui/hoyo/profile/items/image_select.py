@@ -107,7 +107,7 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
         self.view._card_settings.current_image = (
             None if self.values[0] == "none" else self.values[0]
         )
-        await self.view._card_settings.save()
+        await self.view._card_settings.save(update_fields=("current_image",))
 
         # Enable the remove image button if the image is custom
         remove_image_button: RemoveImageButton = self.view.get_item("profile_remove_image")

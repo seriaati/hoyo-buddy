@@ -31,13 +31,13 @@ class MihomoAPI(mihomo.MihomoAPI, BaseClient):
                 raise
 
             cache.extras = self._set_all_live_to_false(cache.hsr, cache.extras)
-            await cache.save()
+            await cache.save(update_fields=("extras",))
             cache_data: StarrailInfoParsed = pickle.loads(cache.hsr)
         else:
             cache.hsr, cache.extras = self._update_cache_with_live_data(
                 cache.hsr, cache.extras, live_data, self.locale
             )
-            await cache.save()
+            await cache.save(update_fields=("hsr", "extras"))
             cache_data: StarrailInfoParsed = pickle.loads(cache.hsr)
 
         return cache_data

@@ -62,7 +62,7 @@ class PrimaryColorButton(Button["ProfileView"]):
 
         # Save the color to settings
         self.view._card_settings.custom_primary_color = color
-        await self.view._card_settings.save()
+        await self.view._card_settings.save(update_fields=("custom_primary_color",))
 
         # Redraw the card
         await self.view.update(i, self, unset_loading_state=False)

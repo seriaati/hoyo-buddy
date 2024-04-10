@@ -227,13 +227,13 @@ class GenshinClient(genshin.Client, BaseClient):
                 raise
 
             cache.extras = self._set_all_live_to_false(cache.hoyolab, cache.extras)
-            await cache.save()
+            await cache.save(update_fields=("extras",))
             cache_data: list[HoyolabHSRCharacter] = pickle.loads(cache.hoyolab)
         else:
             cache.hoyolab, cache.extras = self._update_cache_with_live_data(
                 cache.hoyolab, cache.extras, live_data, GPY_LANG_TO_LOCALE[self.lang]
             )
-            await cache.save()
+            await cache.save(update_fields=("hoyolab", "extras"))
             cache_data: list[HoyolabHSRCharacter] = pickle.loads(cache.hoyolab)
 
         return cache_data

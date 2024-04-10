@@ -268,7 +268,9 @@ class NotesView(View):
             notify.notify_interval = notify_interval
             notify.max_notif_count = max_notif_count
             notify.enabled = enabled
-            await notify.save()
+            await notify.save(
+                update_fields=("threshold", "notify_interval", "max_notif_count", "enabled")
+            )
 
         return await self._get_reminder_embed()
 
@@ -297,7 +299,7 @@ class NotesView(View):
             notify.enabled = enabled
             notify.notify_interval = notify_interval
             notify.max_notif_count = max_notif_count
-            await notify.save()
+            await notify.save(update_fields=("enabled", "notify_interval", "max_notif_count"))
 
         return await self._get_reminder_embed()
 
@@ -329,7 +331,9 @@ class NotesView(View):
             notify.notify_interval = notify_interval
             notify.max_notif_count = max_notif_count
             notify.notify_time = notify_time
-            await notify.save()
+            await notify.save(
+                update_fields=("enabled", "notify_interval", "max_notif_count", "notify_time")
+            )
 
         return await self._get_reminder_embed()
 
@@ -364,7 +368,15 @@ class NotesView(View):
             notify.max_notif_count = max_notif_count
             notify.notify_time = notify_time
             notify.notify_weekday = notify_weekday
-            await notify.save()
+            await notify.save(
+                update_fields=(
+                    "enabled",
+                    "notify_interval",
+                    "max_notif_count",
+                    "notify_time",
+                    "notify_weekday",
+                )
+            )
 
         return await self._get_reminder_embed()
 

@@ -46,13 +46,13 @@ class EnkaAPI(enka.EnkaAPI, BaseClient):
                 raise
 
             cache.extras = self._set_all_live_to_false(cache.genshin, cache.extras)
-            await cache.save()
+            await cache.save(update_fields=("extras",))
             cache_data: ShowcaseResponse = pickle.loads(cache.genshin)
         else:
             cache.genshin, cache.extras = self._update_cache_with_live_data(
                 cache.genshin, cache.extras, live_data, self.locale
             )
-            await cache.save()
+            await cache.save(update_fields=("genshin", "extras"))
             cache_data: ShowcaseResponse = pickle.loads(cache.genshin)
 
         return cache_data

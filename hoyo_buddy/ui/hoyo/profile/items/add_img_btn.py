@@ -70,7 +70,7 @@ class AddImageButton(Button["ProfileView"]):
         # Add the image URL to db
         self.view._card_settings.custom_images.append(url)
         self.view._card_settings.current_image = url
-        await self.view._card_settings.save()
+        await self.view._card_settings.save(update_fields=("custom_images", "current_image"))
 
         # Add the new image URL to the image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")

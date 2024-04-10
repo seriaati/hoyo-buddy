@@ -94,5 +94,5 @@ class AddAccountSelect(Select["AccountManager"]):
         self.view.user.temp_data.pop("cookies", None)
         self.view.user.temp_data.pop("email", None)
         self.view.user.temp_data.pop("password", None)
-        await self.view.user.save()
+        await self.view.user.save(update_fields=("temp_data",))
         await self.view.refresh(i, soft=False)

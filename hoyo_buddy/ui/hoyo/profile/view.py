@@ -331,7 +331,7 @@ class ProfileView(View):
             and "hb" not in self._card_settings.template
         ):
             self._card_settings.template = "hb1"
-            await self._card_settings.save()
+            await self._card_settings.save(update_fields=("template",))
 
         template = self._card_settings.template
         bytes_obj = None
@@ -354,7 +354,7 @@ class ProfileView(View):
         except Exception:
             # Reset the template to hb1 if an error occurs
             self._card_settings.template = "hb1"
-            await self._card_settings.save()
+            await self._card_settings.save(update_fields=("template",))
             raise
 
         # This should never happen, this is just to address variable unbound error for bytes_obj

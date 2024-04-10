@@ -35,7 +35,7 @@ class RemoveImageButton(Button["ProfileView"]):
         assert current_image is not None
         self.view._card_settings.custom_images.remove(current_image)
         self.view._card_settings.current_image = None
-        await self.view._card_settings.save()
+        await self.view._card_settings.save(update_fields=("custom_images", "current_image"))
 
         # Update the image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")

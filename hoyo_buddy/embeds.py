@@ -4,6 +4,7 @@ import discord
 
 if TYPE_CHECKING:
     from .bot.translator import LocaleStr, Translator
+    from .db.models import HoyoAccount
 
 __all__ = ("DefaultEmbed", "Embed", "ErrorEmbed")
 
@@ -63,6 +64,12 @@ class Embed(discord.Embed):
     ) -> Self:
         translated_text = self.translator.translate(text, self.locale) if text else None
         return super().set_footer(text=translated_text, icon_url=icon_url)
+
+    def add_acc_info(self, account: "HoyoAccount", *, blur: bool = True) -> Self:
+        """Add HoyoAccount information to the author field."""
+        return self.set_author(
+            name=account.blurred_display if blur else str(account), icon_url=account.game_icon
+        )
 
 
 class DefaultEmbed(Embed):

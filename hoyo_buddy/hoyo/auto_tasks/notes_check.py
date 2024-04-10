@@ -160,7 +160,7 @@ class NotesChecker:
             case _:
                 raise NotImplementedError
 
-        embed.set_author(name=str(notify.account), icon_url=notify.account.game_icon)
+        embed.add_acc_info(notify.account)
         embed.set_footer(
             text=LocaleStr(
                 "Click the button below to change notification settings.\nIf it is expired, use the /notes command.",

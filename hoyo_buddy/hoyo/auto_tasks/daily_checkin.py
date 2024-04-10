@@ -125,9 +125,9 @@ class DailyCheckin:
                 if not recognized:
                     cls._bot.capture_exception(e)
 
-                embed.set_author(name=str(account), icon_url=account.game_icon)
+                embed.add_acc_info(account)
             else:
-                embed = client.get_daily_reward_embed(reward, locale, translator, account)
+                embed = client.get_daily_reward_embed(reward, locale, translator)
             return embed
 
         payload = {
@@ -141,7 +141,7 @@ class DailyCheckin:
             data = await resp.json()
             if resp.status == 200:
                 reward = genshin.models.DailyReward(**data["data"])
-                embed = client.get_daily_reward_embed(reward, locale, translator, account)
+                embed = client.get_daily_reward_embed(reward, locale, translator)
             elif resp.status == 400:
                 try:
                     genshin.raise_for_retcode(data)
@@ -150,7 +150,7 @@ class DailyCheckin:
                     if not recognized:
                         cls._bot.capture_exception(e)
 
-                    embed.set_author(name=str(account), icon_url=account.game_icon)
+                    embed.add_acc_info(account)
             else:
                 msg = f"API {api_name} returned {resp.status}"
                 raise RuntimeError(msg)

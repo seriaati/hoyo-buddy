@@ -47,7 +47,7 @@ class FarmChecker:
                 key="farm_check.use_farm_notify",
             )
         )
-        embed.set_author(name=str(farm_notify.account), icon_url=farm_notify.account.game_icon)
+        embed.add_acc_info(farm_notify.account)
 
         message = await cls._bot.dm_user(farm_notify.account.user.id, embed=embed)
         if message is None:

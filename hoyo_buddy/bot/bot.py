@@ -109,7 +109,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             await status_channel.send(
                 embed=discord.Embed(
                     title="Bot started 🚀",
-                    description=f"Current time: {discord.utils.format_dt(get_now())}",
+                    description=f"Current time: {discord.utils.format_dt(get_now(), 'T')}",
                     color=discord.Color.green(),
                 )
             )
@@ -203,7 +203,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             await status_channel.send(
                 embed=discord.Embed(
                     title="Bot shutting down for code changes...",
-                    description=f"Current time: {discord.utils.format_dt(get_now())}",
+                    description=f"Current time: {discord.utils.format_dt(get_now(), 'T')}",
                     color=discord.Color.red(),
                 )
             )

@@ -101,7 +101,7 @@ class RedeemCodesButton(Button[RedeemUI]):
         if modal.incomplete:
             return
 
-        message = await i.followup.send(embed=self.view.cooldown_embed, wait=True)
+        message = await i.edit_original_response(embed=self.view.cooldown_embed)
 
         codes = (
             modal.code_1.value,

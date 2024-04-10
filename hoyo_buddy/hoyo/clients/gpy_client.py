@@ -248,7 +248,7 @@ class GenshinClient(genshin.Client, BaseClient):
 
         # Update cookie in the db via raw sql to avoid circular import
         self._account.cookies = new_str_cookies
-        await self._account.save(update_fields=("cookies"))
+        await self._account.save(update_fields=("cookies",))
 
     async def redeem_codes(
         self,

@@ -23,7 +23,7 @@ class AccountSelect(Select["AccountManager"]):
 
         await HoyoAccount.filter(user=self.view.user).update(current=False)
         selected_account.current = True
-        await selected_account.save(update_fields=("current"))
+        await selected_account.save(update_fields=("current",))
 
         self.view.selected_account = selected_account
         await self.view.refresh(i, soft=True)

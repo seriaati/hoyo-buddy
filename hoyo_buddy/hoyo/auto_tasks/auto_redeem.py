@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 import genshin
 from discord import Locale
 
+from ...bot.translator import LocaleStr
 from ...db.models import HoyoAccount
 from ...enums import Game
 
@@ -54,6 +55,7 @@ class AutoRedeem:
             embed = await account.client.redeem_codes(
                 codes, locale=locale, translator=bot.translator, inline=True
             )
+            embed.set_footer(text=LocaleStr("Turn off auto code redemption in /redeem"))
             account.redeemed_codes.extend(codes)
             # remove duplicates
             account.redeemed_codes = list(set(account.redeemed_codes))

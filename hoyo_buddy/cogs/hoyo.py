@@ -10,7 +10,6 @@ from seria.utils import read_yaml
 from ..bot.translator import LocaleStr
 from ..db.models import EnkaCache, HoyoAccount, Settings
 from ..draw.main_funcs import draw_exploration_card
-from ..embeds import DefaultEmbed
 from ..enums import Game
 from ..exceptions import IncompleteParamError
 from ..hoyo.clients.ambr_client import AmbrAPIClient
@@ -18,7 +17,6 @@ from ..hoyo.clients.enka_client import EnkaAPI
 from ..hoyo.clients.mihomo_client import MihomoAPI
 from ..hoyo.clients.yatta_client import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
-from ..icons import LOADING_ICON
 from ..models import DrawInput
 from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
@@ -26,7 +24,7 @@ from ..ui.hoyo.genshin.abyss import AbyssView
 from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.profile.view import ProfileView
-from ..ui.hoyo.redeem import GiftCodeModal
+from ..ui.hoyo.redeem import RedeemUI
 
 if TYPE_CHECKING:
     from mihomo.models import StarrailInfoParsed
@@ -413,41 +411,9 @@ class Hoyo(commands.Cog):
         await account_.fetch_related("user", "user__settings")
 
         locale = account_.user.settings.locale or i.locale
-        account_.client.set_lang(locale)
-
-        modal = GiftCodeModal(title=LocaleStr("Enter gift codes", key="gift_code_modal.title"))
-        modal.translate(locale, self.bot.translator)
-        await i.response.send_modal(modal)
-
-        await modal.wait()
-        if modal.incomplete:
-            return
-
-        embed = DefaultEmbed(
-            locale,
-            self.bot.translator,
-            description=LocaleStr(
-                "Due to redemption cooldowns, this may take a while.",
-                key="redeem_command_embed.description",
-            ),
-        )
-        embed.set_author(
-            icon_url=LOADING_ICON,
-            name=LocaleStr("Redeeming gift codes", key="redeem_command_embed.title"),
-        )
-        message = await i.followup.send(embed=embed, wait=True)
-
-        codes = (
-            modal.code_1.value,
-            modal.code_2.value,
-            modal.code_3.value,
-            modal.code_4.value,
-            modal.code_5.value,
-        )
-        embed = await account_.client.redeem_codes(
-            codes, locale=locale, translator=self.bot.translator
-        )
-        await message.edit(embed=embed)
+        view = RedeemUI(account_, author=i.user, locale=locale, translator=self.bot.translator)
+        await i.response.send_message(embed=view.start_embed, view=view)
+        view.message = await i.original_response()
 
     @abyss_command.autocomplete("account")
     @exploration_command.autocomplete("account")

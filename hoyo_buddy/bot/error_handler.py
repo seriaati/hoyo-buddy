@@ -23,7 +23,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
         "title": LocaleStr("Daily check-in reward already claimed", key="already_claimed_title"),
         "description": LocaleStr("Come back tomorrow!", key="already_claimed_description"),
     },
-    (-100,): {
+    (-100, 10001, 10103, -1071): {
         "title": LocaleStr("Invalid Cookies", key="invalid_cookies_title"),
         "description": LocaleStr(
             "Refresh your Cookies by adding your accounts again using </accounts>",
@@ -59,6 +59,21 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
             key="action_in_cooldown_error_message",
             available_time=format_dt(get_now() + timedelta(minutes=1), "T"),
         ),
+    },
+    (-2017, -2018): {
+        "title": LocaleStr("Gift code already claimed", key="redeem_code.already_claimed")
+    },
+    (-2001,): {
+        "title": LocaleStr("Gift code expired", key="redeem_code.expired"),
+    },
+    (-1065, -2003, -2004, -2014): {
+        "title": LocaleStr("Invalid gift code", key="redeem_code.invalid"),
+    },
+    (-2016,): {
+        "title": LocaleStr("Gift code redemption in cooldown", key="redeem_code.cooldown"),
+    },
+    (-2021,): {
+        "title": LocaleStr("Adventure Rank too low (less than 10)", key="redeem_code.ar_too_low"),
     },
 }
 
@@ -134,7 +149,7 @@ def get_error_embed(
             err_info = ENKA_ERROR_CONVERTER.get(type(error))
 
         if err_info is not None:
-            title, description = err_info["title"], err_info["description"]
+            title, description = err_info["title"], err_info.get("description", None)
             embed = ErrorEmbed(locale, translator, title=title, description=description)
 
     if embed is None:

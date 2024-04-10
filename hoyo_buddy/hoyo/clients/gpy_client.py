@@ -4,12 +4,13 @@ from typing import TYPE_CHECKING
 
 import genshin
 from seria.utils import read_json, write_json
-from tortoise import Tortoise
 
+from ...bot.error_handler import GENSHIN_ERROR_CONVERTER
 from ...bot.translator import LocaleStr, Translator
 from ...constants import (
     AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID,
     GPY_LANG_TO_LOCALE,
+    HB_GAME_TO_GPY_GAME,
     LOCALE_TO_GPY_LANG,
     TRAVELER_IDS,
     contains_traveler_id,
@@ -17,7 +18,6 @@ from ...constants import (
 from ...db.models import EnkaCache, HoyoAccount
 from ...embeds import DefaultEmbed
 from ...enums import TalentBoost
-from ...icons import get_game_icon
 from ...models import HoyolabHSRCharacter, LightCone, Relic, Stat, Trace
 from ...utils import get_now
 from .ambr_client import AmbrAPIClient
@@ -38,21 +38,12 @@ GI_TALENT_LEVEL_DATA_PATH = "./.static/talent_levels/gi_{uid}.json"
 class GenshinClient(genshin.Client, BaseClient):
     def __init__(
         self,
-        cookies: str,
-        *,
-        user_id: int,
-        uid: int | None = None,
-        game: genshin.Game = genshin.Game.GENSHIN,
+        account: HoyoAccount,
     ) -> None:
-        region = (
-            genshin.utility.recognize_region(uid, game=game)
-            if uid is not None
-            else genshin.Region.OVERSEAS
-        ) or genshin.Region.OVERSEAS
-        super().__init__(cookies, game=game, uid=uid, region=region)
-
-        self._user_id = user_id
-        self.__cookies = cookies
+        game = HB_GAME_TO_GPY_GAME[account.game]
+        region = genshin.utility.recognize_region(account.uid, game=game) or genshin.Region.OVERSEAS
+        super().__init__(account.cookies, game=game, uid=account.uid, region=region)
+        self._account = account
 
     def set_lang(self, locale: "Locale") -> None:
         if self.region is genshin.Region.CHINESE:
@@ -60,25 +51,22 @@ class GenshinClient(genshin.Client, BaseClient):
         else:
             self.lang = LOCALE_TO_GPY_LANG.get(locale, "en-us")
 
-    @staticmethod
     def get_daily_reward_embed(
+        self,
         daily_reward: genshin.models.DailyReward,
         locale: "Locale",
         translator: Translator,
-        account: HoyoAccount | None = None,
     ) -> DefaultEmbed:
-        embed = DefaultEmbed(
-            locale,
-            translator,
-            title=LocaleStr("Daily check-in reward claimed", key="reward_claimed_title"),
-            description=f"{daily_reward.name} x{daily_reward.amount}",
-        )
-        embed.set_thumbnail(url=daily_reward.icon)
-        if account is not None:
-            embed.set_author(
-                name=str(account),
-                icon_url=account.game_icon,
+        embed = (
+            DefaultEmbed(
+                locale,
+                translator,
+                title=LocaleStr("Daily check-in reward claimed", key="reward_claimed_title"),
+                description=f"{daily_reward.name} x{daily_reward.amount}",
             )
+            .set_thumbnail(url=daily_reward.icon)
+            .add_acc_info(self._account)
+        )
         return embed
 
     @staticmethod
@@ -252,21 +240,23 @@ class GenshinClient(genshin.Client, BaseClient):
 
     async def update_cookie_token(self) -> None:
         """Update the cookie token."""
-        parsed_cookies = genshin.parse_cookie(self.__cookies)
+        parsed_cookies = genshin.parse_cookie(self._account.cookies)
         cookies = await genshin.fetch_cookie_with_stoken_v2(parsed_cookies, token_types=[2, 4])
         parsed_cookies.update(cookies)
         self.set_cookies(parsed_cookies)
         new_str_cookies = "; ".join(f"{k}={v}" for k, v in parsed_cookies.items())
 
         # Update cookie in the db via raw sql to avoid circular import
-        conn = Tortoise.get_connection("default")
-        await conn.execute_query(
-            "UPDATE hoyoaccount SET cookies = $1 WHERE user_id = $2",
-            [new_str_cookies, self._user_id],
-        )
+        self._account.cookies = new_str_cookies
+        await self._account.save(update_fields=("cookies"))
 
     async def redeem_codes(
-        self, codes: "Sequence[str]", *, locale: "Locale", translator: Translator
+        self,
+        codes: "Sequence[str]",
+        *,
+        locale: "Locale",
+        translator: Translator,
+        inline: bool,
     ) -> DefaultEmbed:
         """Redeem multiple gift codes and return an embed with the results."""
         results: list[tuple[str, LocaleStr, bool]] = []
@@ -282,15 +272,16 @@ class GenshinClient(genshin.Client, BaseClient):
                 # only sleep if there are more than 1 code
                 await asyncio.sleep(5.5)
 
-        embed = DefaultEmbed(locale, translator)
-        assert self.game is not None
-        embed.set_author(
-            name=LocaleStr("Gift code redemption results", key="redeem_command_embed.title"),
-            icon_url=get_game_icon(self.game),
-        )
+        # get the first 25 results
+        results = results[:25]
+        embed = DefaultEmbed(
+            locale,
+            translator,
+            title=LocaleStr("Gift code redemption results", key="redeem_command_embed.title"),
+        ).add_acc_info(self._account)
         for result in results:
             name = f"{'✅' if result[2] else '❌'} {result[0]}"
-            embed.add_field(name=name, value=result[1], inline=False)
+            embed.add_field(name=name, value=result[1], inline=inline)
 
         return embed
 
@@ -299,27 +290,24 @@ class GenshinClient(genshin.Client, BaseClient):
         success = False
         try:
             await super().redeem_code(code)
-        except genshin.RedemptionClaimed:
-            return LocaleStr(
-                "Gift code already claimed", key="redeem_code.already_claimed"
-            ), success
-        except genshin.RedemptionInvalid:
-            return LocaleStr("Invalid gift code", key="redeem_code.invalid"), success
-        except genshin.RedemptionCooldown:
-            return LocaleStr(
-                "Gift code redemption on cooldown", key="redeem_code.cooldown"
-            ), success
-        except genshin.RedemptionException:
-            return LocaleStr(
-                "Cannot claim codes for accounts with adventure rank lower than 10.",
-                key="redeem_code.failed",
-            ), success
-        except genshin.InvalidCookies:
-            if "stoken" in self.__cookies and "ltmid" in self.__cookies:
+        except genshin.GenshinException as e:
+            if isinstance(e, genshin.InvalidCookies) and all(
+                key in self._account.cookies for key in ("stoken", "ltmid")
+            ):
                 await self.update_cookie_token()
                 return await self.redeem_code(code)
-            else:
+
+            msg = next(
+                (
+                    info["title"]
+                    for codes, info in GENSHIN_ERROR_CONVERTER.items()
+                    if e.retcode in codes
+                ),
+                None,
+            )
+            if msg is None:
                 raise
+            return msg, success
         else:
             success = True
             return LocaleStr("Gift code claimed", key="redeem_code.success"), success

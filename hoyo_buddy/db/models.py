@@ -2,14 +2,15 @@ import datetime
 from functools import cached_property
 from typing import TYPE_CHECKING, Any
 
+import genshin
 from discord import Locale
 from seria.tortoise.model import Model
 from tortoise import fields
 
 from ..constants import HB_GAME_TO_GPY_GAME, UID_SERVER_RESET_HOURS
-from ..enums import Game, NotesNotifyType
+from ..enums import Game, LoginPlatform, NotesNotifyType
 from ..icons import get_game_icon
-from ..utils import get_now
+from ..utils import blur_uid, get_now
 
 if TYPE_CHECKING:
     from ..hoyo.clients.gpy_client import GenshinClient
@@ -42,6 +43,8 @@ class HoyoAccount(Model):
     notif_settings: fields.BackwardOneToOneRelation["AccountNotifSettings"]
     notifs: fields.ReverseRelation["NotesNotify"]
     farm_notifs: fields.BackwardOneToOneRelation["FarmNotify"]
+    redeemed_codes: fields.Field[list[str]] = fields.JSONField(default=[])  # type: ignore
+    auto_redeem = fields.BooleanField(default=True)
 
     class Meta:
         unique_together = ("uid", "game", "user")
@@ -52,12 +55,17 @@ class HoyoAccount(Model):
             return f"{self.nickname} ({self.uid})"
         return f"{self.username} ({self.uid})"
 
+    @property
+    def blurred_display(self) -> str:
+        if self.nickname:
+            return f"{self.nickname} ({blur_uid(self.uid)})"
+        return f"{self.username} ({blur_uid(self.uid)})"
+
     @cached_property
     def client(self) -> "GenshinClient":
         from ..hoyo.clients.gpy_client import GenshinClient  # noqa: PLC0415
 
-        game = HB_GAME_TO_GPY_GAME[self.game]
-        return GenshinClient(self.cookies, user_id=self.user_id, game=game, uid=self.uid)  # pyright: ignore reportAttributeAccessIssue
+        return GenshinClient(self)
 
     @cached_property
     def server_reset_datetime(self) -> datetime.datetime:
@@ -77,6 +85,13 @@ class HoyoAccount(Model):
     @cached_property
     def game_icon(self) -> str:
         return get_game_icon(self.game)
+
+    @cached_property
+    def platform(self) -> LoginPlatform:
+        region = genshin.utility.recognize_region(self.uid, HB_GAME_TO_GPY_GAME[self.game])
+        return (
+            LoginPlatform.HOYOLAB if region is genshin.Region.OVERSEAS else LoginPlatform.MIYOUSHE
+        )
 
 
 class AccountNotifSettings(Model):

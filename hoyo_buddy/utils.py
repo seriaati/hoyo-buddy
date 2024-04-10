@@ -72,3 +72,8 @@ def format_timedelta(td: datetime.timedelta) -> str:
     hours, remainder = divmod(td.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     return f"{hours:02}:{minutes:02}:{seconds:02}"
+
+
+def blur_uid(uid: int) -> str:
+    """Blur a UID by replacing the last 3 digits with asterisks."""
+    return f"{uid // 1000}{'*' * 3}"

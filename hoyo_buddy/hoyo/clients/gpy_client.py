@@ -1,5 +1,6 @@
 import asyncio
 import pickle
+from random import uniform
 from typing import TYPE_CHECKING
 
 import genshin
@@ -70,7 +71,7 @@ class GenshinClient(genshin.Client, BaseClient):
         return embed
 
     @staticmethod
-    def convert_character_id_to_ambr_format(character: genshin.models.Character) -> str:
+    def convert_chara_id_to_ambr_format(character: genshin.models.Character) -> str:
         """Convert character ID to the format used by AmbrAPI (traveler ID contains element)."""
         return (
             f"{character.id}-{character.element.lower()}"
@@ -92,7 +93,16 @@ class GenshinClient(genshin.Client, BaseClient):
         pc_icons = {str(character.id): character.pc_icon for character in fields.characters}
         await write_json(PC_ICON_DATA_PATH, pc_icons)
 
-    async def update_gi_chara_talent_lvl_data(self, character: genshin.models.Character) -> None:
+    async def update_gi_chara_talent_levels(
+        self, characters: "Sequence[genshin.models.Character]"
+    ) -> None:
+        """Update multiple genshin impact character talent levels."""
+        for i, character in enumerate(characters):
+            await self.update_gi_chara_talent_level(character)
+            await asyncio.sleep(3.0 if i % 15 == 0 else uniform(0.5, 0.8))
+
+    async def update_gi_chara_talent_level(self, character: genshin.models.Character) -> None:
+        """Update genshin impact character talent level."""
         talent_level_data: dict[str, str] = await read_json(
             GI_TALENT_LEVEL_DATA_PATH.format(uid=self.uid)
         )
@@ -103,12 +113,12 @@ class GenshinClient(genshin.Client, BaseClient):
         except genshin.GenshinException as e:
             if e.retcode == -502002:  # Calculator sync not enabled
                 await self._enable_calculator_sync()
-                await asyncio.sleep(0.5)
+                await asyncio.sleep(uniform(0.5, 0.8))
                 details = await self.get_character_details(character.id)
             else:
                 raise
 
-        character_id = self.convert_character_id_to_ambr_format(character)
+        character_id = self.convert_chara_id_to_ambr_format(character)
 
         # Get talent boost type
         if character_id not in talent_boost_data:

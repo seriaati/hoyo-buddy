@@ -1,10 +1,8 @@
-import asyncio
 import datetime
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
-from genshin.models import Character as GenshinCharacter
 from seria.utils import read_json
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -30,6 +28,7 @@ if TYPE_CHECKING:
 
     import aiohttp
     from discord import File, Locale, Member, User
+    from genshin.models import Character as GenshinCharacter
     from genshin.models import StarRailDetailCharacter as StarRailCharacter
 
     from hoyo_buddy.bot.bot import INTERACTION
@@ -103,15 +102,14 @@ class CharactersView(View):
         filename = GI_TALENT_LEVEL_DATA_PATH.format(uid=self._account.uid)
         talent_level_data: dict[str, str] = await read_json(filename)
 
-        updated = False
-        for character in self._gi_characters:
-            assert isinstance(character, GenshinCharacter)
-
-            ambr_chara_id = GenshinClient.convert_character_id_to_ambr_format(character)
-            if ambr_chara_id not in talent_level_data:
-                updated = True
-                await self._account.client.update_gi_chara_talent_lvl_data(character)
-                await asyncio.sleep(0.5)
+        characters_to_update = [
+            c
+            for c in self._gi_characters
+            if GenshinClient.convert_chara_id_to_ambr_format(c) not in talent_level_data
+        ]
+        if characters_to_update:
+            await self._account.client.update_gi_chara_talent_levels(characters_to_update)
+        updated = bool(characters_to_update)
 
         return await read_json(filename) if updated else talent_level_data
 
@@ -593,7 +591,5 @@ class UpdateTalentData(Button[CharactersView]):
         self.view.clear_items()
         await i.response.edit_message(embed=embed, view=self.view, attachments=[])
 
-        for character in self.view._gi_characters:
-            await self.view._account.client.update_gi_chara_talent_lvl_data(character)
-            await asyncio.sleep(0.5)
+        await self.view._account.client.update_gi_chara_talent_levels(self.view._gi_characters)
         await self.view.start(i)

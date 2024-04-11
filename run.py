@@ -60,6 +60,6 @@ with setup_logging(logging.INFO, log_filename="hoyo_buddy.log"):
     try:
         import uvloop  # type: ignore
     except ImportError:
-        asyncio.run(main())
+        asyncio.run(main(), debug=True)
     else:
-        uvloop.run(main())
+        uvloop.run(main(), debug=True)

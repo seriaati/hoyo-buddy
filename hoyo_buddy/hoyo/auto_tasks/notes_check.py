@@ -412,16 +412,13 @@ class NotesChecker:
             cls._bot = bot
             cls._notes_cache = {Game.GENSHIN: {}, Game.STARRAIL: {}}
 
-            notifies = (
-                await NotesNotify.filter(enabled=True)
-                .all()
-                .prefetch_related("account", "account__user", "account__user__settings")
-                .order_by("account__uid")
-            )
+            notifies = await NotesNotify.filter(enabled=True).all().order_by("account__uid")
 
             for notify in notifies:
                 if cls._determine_skip(notify):
                     continue
+
+                await notify.fetch_related("account", "account__user", "account__user__settings")
 
                 try:
                     if notify.account.uid not in cls._notes_cache[notify.account.game]:

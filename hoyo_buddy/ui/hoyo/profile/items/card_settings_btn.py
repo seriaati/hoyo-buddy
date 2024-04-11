@@ -60,8 +60,13 @@ class CardSettingsButton(Button["ProfileView"]):
         self.view.add_item(
             PrimaryColorButton(
                 self.view._card_settings.custom_primary_color,
-                "hb" not in self.view._card_settings.template
-                or self.view.game is not Game.STARRAIL,
+                not (
+                    (self.view.game is Game.STARRAIL and "hb" in self.view._card_settings.template)
+                    or (
+                        self.view.game is Game.GENSHIN
+                        and self.view._card_settings.template == "encard1"
+                    )
+                ),
             )
         )
         self.view.add_item(

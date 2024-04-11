@@ -239,8 +239,7 @@ class ProfileView(View):
             payload["template"] = int(template[-1])
             endpoint = "http://localhost:7652/enka-card"
         elif template == "encard1":
-            del payload["character_id"]
-            payload["character_name"] = character.name
+            payload["color"] = self._card_settings.custom_primary_color
             endpoint = "http://localhost:7652/en-card"
         else:
             msg = f"Invalid template: {template}"

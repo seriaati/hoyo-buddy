@@ -75,5 +75,7 @@ def format_timedelta(td: datetime.timedelta) -> str:
 
 
 def blur_uid(uid: int) -> str:
-    """Blur a UID by replacing the last 3 digits with asterisks."""
-    return f"{uid // 1000}{'*' * 3}"
+    """Blur a UID by replacing the middle 5 digits with asterisks."""
+    uid_ = str(uid)
+    middle_index = len(uid_) // 2
+    return uid_[: middle_index - 1] + "***" + uid_[middle_index + 2 :]

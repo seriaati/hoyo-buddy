@@ -269,14 +269,16 @@ class GenshinClient(genshin.Client, BaseClient):
         inline: bool,
     ) -> DefaultEmbed:
         """Redeem multiple gift codes and return an embed with the results."""
-        results: list[tuple[str, LocaleStr, bool]] = []
+        results: list[tuple[str, str, bool]] = []
 
         for code in codes:
             if not code:
                 continue
 
-            result, success = await self.redeem_code(code.strip())
-            results.append((code, result, success))
+            msg, success = await self.redeem_code(
+                code.strip(), locale=locale, translator=translator
+            )
+            results.append((code, msg, success))
 
             if len(code) > 1:
                 # only sleep if there are more than 1 code
@@ -295,7 +297,9 @@ class GenshinClient(genshin.Client, BaseClient):
 
         return embed
 
-    async def redeem_code(self, code: str) -> tuple[LocaleStr, bool]:
+    async def redeem_code(
+        self, code: str, *, locale: "Locale", translator: Translator
+    ) -> tuple[str, bool]:
         """Redeem a gift code, return a message and a boolean indicating success."""
         success = False
         try:
@@ -305,19 +309,24 @@ class GenshinClient(genshin.Client, BaseClient):
                 key in self._account.cookies for key in ("stoken", "ltmid")
             ):
                 await self.update_cookie_token()
-                return await self.redeem_code(code)
+                return await self.redeem_code(code, locale=locale, translator=translator)
 
-            msg = next(
-                (
-                    info["title"]
-                    for codes, info in GENSHIN_ERROR_CONVERTER.items()
-                    if e.retcode in codes
-                ),
+            err_info = next(
+                (info for codes, info in GENSHIN_ERROR_CONVERTER.items() if e.retcode in codes),
                 None,
             )
-            if msg is None:
+            if err_info is None:
                 raise
-            return msg, success
+            title = err_info["title"]
+            description = err_info.get("description")
+            if description is not None:
+                msg = f"{title.translate(translator, locale)}\n{description.translate(translator, locale)}"
+            else:
+                msg = title.translate(translator, locale)
         else:
             success = True
-            return LocaleStr("Gift code claimed", key="redeem_code.success"), success
+            msg = LocaleStr("Gift code claimed", key="redeem_code.success").translate(
+                translator, locale
+            )
+
+        return msg, success

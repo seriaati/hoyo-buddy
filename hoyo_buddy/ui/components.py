@@ -67,7 +67,8 @@ class View(discord.ui.View):
             return
 
         task = asyncio.create_task(
-            self._scheduled_task(item, interaction), name=f"discord-ui-view-dispatch-{self.id}"
+            self._scheduled_task(item, interaction),
+            name=f"discord-ui-view-dispatch-{self.id}-{self!r}",
         )
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)

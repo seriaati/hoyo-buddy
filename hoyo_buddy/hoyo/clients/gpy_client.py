@@ -267,6 +267,7 @@ class GenshinClient(genshin.Client, BaseClient):
         locale: "Locale",
         translator: Translator,
         inline: bool,
+        blur: bool = True,
     ) -> DefaultEmbed:
         """Redeem multiple gift codes and return an embed with the results."""
         results: list[tuple[str, str, bool]] = []
@@ -290,7 +291,7 @@ class GenshinClient(genshin.Client, BaseClient):
             locale,
             translator,
             title=LocaleStr("Gift code redemption results", key="redeem_command_embed.title"),
-        ).add_acc_info(self._account)
+        ).add_acc_info(self._account, blur=blur)
         for result in results:
             name = f"{'✅' if result[2] else '❌'} {result[0]}"
             embed.add_field(name=name, value=result[1], inline=inline)

@@ -54,11 +54,11 @@ class AutoRedeem:
 
             try:
                 embed = await account.client.redeem_codes(
-                    codes, locale=locale, translator=bot.translator, inline=True
+                    codes, locale=locale, translator=bot.translator, inline=True, blur=False
                 )
                 embed.set_footer(
                     text=LocaleStr(
-                        "Turn off auto code redemption in /redeem", key="auto_redeem_footer"
+                        "Turn off auto code redemption with /redeem", key="auto_redeem_footer"
                     )
                 )
             except Exception as e:
@@ -88,4 +88,4 @@ class AutoRedeem:
                 # Sleep every n codes to prevent rate limiting
                 await asyncio.sleep(SLEEP_INTERVAL)
 
-        LOGGER_.info("Auto redeem task completed, redeemed %d codes", redeem_count)
+        LOGGER_.info("Auto redeem task completed")

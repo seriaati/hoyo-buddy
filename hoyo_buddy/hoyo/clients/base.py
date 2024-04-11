@@ -55,12 +55,12 @@ class BaseClient:
         if isinstance(cache_data, list):
             # not_live_cache_charas: list[HoyolabHSRCharacter]
             # live_data: list[HoyolabHSRCharacter]
-            cache_data = not_live_cache_charas + live_data  # type: ignore
+            cache_data = not_live_cache_charas + live_data  # pyright: ignore [reportOperatorIssue]
         else:
             # not_live_cache_charas: list[EnkaCharacter | MihomoCharacter]
             # live_data: ShowcaseResponse | StarrailInfoParsed
-            cache_data.characters = not_live_cache_charas + live_data.characters  # type: ignore
-            cache_data.player = live_data.player  # type: ignore
+            cache_data.characters = not_live_cache_charas + live_data.characters  # pyright: ignore [reportOperatorIssue, reportAttributeAccessIssue]
+            cache_data.player = live_data.player  # pyright: ignore [reportAttributeAccessIssue]
 
         cache = pickle.dumps(cache_data)
 

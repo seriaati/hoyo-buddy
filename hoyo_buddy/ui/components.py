@@ -63,7 +63,7 @@ class View(discord.ui.View):
     def _dispatch_item(
         self, item: "Item", interaction: discord.Interaction[discord.Client]
     ) -> None:
-        if self._View__stopped.done():  # pyright: ignore reportAttributeAccessIssue
+        if self._View__stopped.done():  # pyright: ignore [reportAttributeAccessIssue]
             return
 
         task = asyncio.create_task(

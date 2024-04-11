@@ -51,15 +51,11 @@ class HoyoAccount(Model):
         ordering = ["uid"]  # noqa: RUF012
 
     def __str__(self) -> str:
-        if self.nickname:
-            return f"{self.nickname} ({self.uid})"
-        return f"{self.username} ({self.uid})"
+        return f"{self.nickname or self.username} ({self.uid})"
 
     @property
     def blurred_display(self) -> str:
-        if self.nickname:
-            return f"{self.nickname} ({blur_uid(self.uid)})"
-        return f"{self.username} ({blur_uid(self.uid)})"
+        return f"{self.nickname or self.username} ({blur_uid(self.uid)})"
 
     @cached_property
     def client(self) -> "GenshinClient":

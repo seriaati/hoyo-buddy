@@ -19,8 +19,8 @@ if TYPE_CHECKING:
 class User(Model):
     id = fields.BigIntField(pk=True, index=True, generated=False)  # noqa: A003
     settings: fields.BackwardOneToOneRelation["Settings"]
-    temp_data: fields.Field[dict[str, Any]] = fields.JSONField(default=dict)  # type: ignore
-    last_interaction: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # type: ignore
+    temp_data: fields.Field[dict[str, Any]] = fields.JSONField(default=dict)  # pyright: ignore [reportAssignmentType]
+    last_interaction: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # pyright: ignore [reportAssignmentType]
     accounts: fields.ReverseRelation["HoyoAccount"]
 
     def __str__(self) -> str:
@@ -31,7 +31,7 @@ class HoyoAccount(Model):
     id = fields.IntField(pk=True, generated=True)
     uid = fields.IntField(index=True)
     username = fields.CharField(max_length=32)
-    nickname: fields.Field[str | None] = fields.CharField(max_length=32, null=True)  # type: ignore
+    nickname: fields.Field[str | None] = fields.CharField(max_length=32, null=True)  # pyright: ignore [reportAssignmentType]
     game = fields.CharEnumField(Game, max_length=32)
     cookies = fields.TextField()
     server = fields.CharField(max_length=32)
@@ -43,7 +43,7 @@ class HoyoAccount(Model):
     notif_settings: fields.BackwardOneToOneRelation["AccountNotifSettings"]
     notifs: fields.ReverseRelation["NotesNotify"]
     farm_notifs: fields.BackwardOneToOneRelation["FarmNotify"]
-    redeemed_codes: fields.Field[list[str]] = fields.JSONField(default=[])  # type: ignore
+    redeemed_codes: fields.Field[list[str]] = fields.JSONField(default=[])  # pyright: ignore [reportAssignmentType]
     auto_redeem = fields.BooleanField(default=True)
 
     class Meta:
@@ -99,7 +99,7 @@ class AccountNotifSettings(Model):
 
 
 class Settings(Model):
-    lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)  # type: ignore
+    lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)  # pyright: ignore [reportAssignmentType]
     dark_mode = fields.BooleanField(default=True)
     user: fields.OneToOneRelation[User] = fields.OneToOneField(
         "models.User", related_name="settings", pk=True
@@ -116,10 +116,10 @@ class CardSettings(Model):
         "models.User", related_name="card_settings"
     )
     dark_mode = fields.BooleanField()
-    custom_images: fields.Field[list[str]] = fields.JSONField(default=[])  # type: ignore
+    custom_images: fields.Field[list[str]] = fields.JSONField(default=[])  # pyright: ignore [reportAssignmentType]
     """URLs of custom images."""
-    custom_primary_color: fields.Field[str | None] = fields.CharField(max_length=7, null=True)  # type: ignore
-    current_image: fields.Field[str | None] = fields.CharField(max_length=100, null=True)  # type: ignore
+    custom_primary_color: fields.Field[str | None] = fields.CharField(max_length=7, null=True)  # pyright: ignore [reportAssignmentType]
+    current_image: fields.Field[str | None] = fields.CharField(max_length=100, null=True)  # pyright: ignore [reportAssignmentType]
     template = fields.CharField(max_length=32, default="hb1")
 
     class Meta:
@@ -129,10 +129,10 @@ class CardSettings(Model):
 
 class EnkaCache(Model):
     uid = fields.IntField(pk=True, index=True)
-    hsr: fields.Field[bytes | None] = fields.BinaryField(null=True)  # type: ignore
-    genshin: fields.Field[bytes | None] = fields.BinaryField(null=True)  # type: ignore
-    hoyolab: fields.Field[bytes | None] = fields.BinaryField(null=True)  # type: ignore
-    extras: fields.Field[dict[str, dict[str, Any]]] = fields.JSONField(default={})  # type: ignore
+    hsr: fields.Field[bytes | None] = fields.BinaryField(null=True)  # pyright: ignore [reportAssignmentType]
+    genshin: fields.Field[bytes | None] = fields.BinaryField(null=True)  # pyright: ignore [reportAssignmentType]
+    hoyolab: fields.Field[bytes | None] = fields.BinaryField(null=True)  # pyright: ignore [reportAssignmentType]
+    extras: fields.Field[dict[str, dict[str, Any]]] = fields.JSONField(default={})  # pyright: ignore [reportAssignmentType]
 
     class Meta:
         ordering = ["uid"]  # noqa: RUF012
@@ -145,9 +145,9 @@ class NotesNotify(Model):
         "models.HoyoAccount", related_name="notifs"
     )
 
-    last_notif_time: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # type: ignore
-    last_check_time: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # type: ignore
-    est_time: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # type: ignore
+    last_notif_time: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # pyright: ignore [reportAssignmentType]
+    last_check_time: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # pyright: ignore [reportAssignmentType]
+    est_time: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # pyright: ignore [reportAssignmentType]
     """Estimated time for the threshold to be reached."""
 
     notify_interval = fields.SmallIntField()
@@ -158,11 +158,11 @@ class NotesNotify(Model):
     max_notif_count = fields.SmallIntField(default=5)
     current_notif_count = fields.SmallIntField(default=0)
 
-    threshold: fields.Field[int | None] = fields.SmallIntField(null=True)  # type: ignore
+    threshold: fields.Field[int | None] = fields.SmallIntField(null=True)  # pyright: ignore [reportAssignmentType]
     """For resin, realm currency, trailblaze power, and reservered trailblaze power."""
-    notify_time: fields.Field[int | None] = fields.SmallIntField(null=True)  # type: ignore
+    notify_time: fields.Field[int | None] = fields.SmallIntField(null=True)  # pyright: ignore [reportAssignmentType]
     """X hour before server resets. For dailies, resin discount, and echo of war."""
-    notify_weekday: fields.Field[int | None] = fields.SmallIntField(null=True)  # type: ignore
+    notify_weekday: fields.Field[int | None] = fields.SmallIntField(null=True)  # pyright: ignore [reportAssignmentType]
     """For resin discount and echo of war."""
 
     class Meta:
@@ -175,4 +175,4 @@ class FarmNotify(Model):
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
         "models.HoyoAccount", related_name="farm_notifs", pk=True
     )
-    item_ids: fields.Field[list[str]] = fields.JSONField(default=[])  # type: ignore
+    item_ids: fields.Field[list[str]] = fields.JSONField(default=[])  # pyright: ignore [reportAssignmentType]

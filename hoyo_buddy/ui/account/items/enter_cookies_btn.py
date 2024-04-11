@@ -47,7 +47,7 @@ class EnterCookiesButton(Button["AccountManager"]):
         modal: DevToolCookiesModal | CookiesModal,
     ) -> str:
         if isinstance(modal, DevToolCookiesModal):
-            cookies = "; ".join(f"{child.label}={child.value.strip()}" for child in modal.children)  # type: ignore
+            cookies = "; ".join(f"{child.label}={child.value.strip()}" for child in modal.children)  # pyright: ignore[reportAttributeAccessIssue]
             return cookies
 
         return modal.cookies.value.strip()

@@ -100,7 +100,7 @@ class Drawer:
     @classmethod
     def hex_to_rgb(cls, hex_color_code: str) -> tuple[int, int, int]:
         hex_color_code = hex_color_code.lstrip("#")
-        return tuple(int(hex_color_code[i : i + 2], 16) for i in (0, 2, 4))  # type: ignore
+        return tuple(int(hex_color_code[i : i + 2], 16) for i in (0, 2, 4))  # pyright: ignore [reportReturnType]
 
     @staticmethod
     def apply_color_opacity(
@@ -269,7 +269,7 @@ class Drawer:
         textbbox = self.draw.textbbox(
             position, translated_text, font=font, anchor=anchor, font_size=size
         )
-        return tuple(round(bbox) for bbox in textbbox)  # type: ignore
+        return tuple(round(bbox) for bbox in textbbox)  # pyright: ignore [reportReturnType]
 
     def open_static(
         self,

@@ -351,7 +351,7 @@ class Select(discord.ui.Select, Generic[V_co]):
             custom_id=custom_id,
             min_values=min_values,
             max_values=max_values,
-            options=options,  # type: ignore
+            options=options,  # pyright: ignore [reportArgumentType]
             disabled=disabled,
             row=row,
         )
@@ -367,11 +367,11 @@ class Select(discord.ui.Select, Generic[V_co]):
 
     @property
     def options(self) -> list[SelectOption]:
-        return self._underlying.options  # type: ignore
+        return self._underlying.options  # pyright: ignore [reportReturnType]
 
     @options.setter
     def options(self, value: list[SelectOption]) -> None:
-        self._underlying.options = value  # type: ignore
+        self._underlying.options = value  # pyright: ignore [reportAttributeAccessIssue]
 
     def translate(
         self,

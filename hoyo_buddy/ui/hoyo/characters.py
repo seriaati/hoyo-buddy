@@ -180,7 +180,7 @@ class CharactersView(View):
         self,
     ) -> "Sequence[GenshinCharacter]":
         characters = self._apply_gi_sorter(
-            self._apply_element_filters(self._apply_gi_filter(self._gi_characters))  # type: ignore
+            self._apply_element_filters(self._apply_gi_filter(self._gi_characters))  # pyright: ignore [reportArgumentType]
         )
         if not characters:
             raise NoCharsFoundError
@@ -190,7 +190,7 @@ class CharactersView(View):
         self,
     ) -> "Sequence[StarRailCharacter]":
         characters = self._apply_hsr_sorter(
-            self._apply_element_filters(self._apply_path_filters(self._hsr_characters))  # type: ignore
+            self._apply_element_filters(self._apply_path_filters(self._hsr_characters))  # pyright: ignore [reportArgumentType]
         )
         if not characters:
             raise NoCharsFoundError

@@ -125,6 +125,7 @@ class Farm(
         # NOTE: This is a workaround for a bug in tortoise-orm
         await FarmNotify.filter(account=account_).update(item_ids=farm_notify.item_ids)
 
+        await farm_notify.fetch_related("account")
         view = FarmNotifyView(
             farm_notify,
             settings.dark_mode,
@@ -179,6 +180,7 @@ class Farm(
         # NOTE: This is a workaround for a bug in tortoise-orm
         await FarmNotify.filter(account=account_).update(item_ids=farm_notify.item_ids)
 
+        await farm_notify.fetch_related("account")
         view = FarmNotifyView(
             farm_notify,
             settings.dark_mode,
@@ -214,6 +216,7 @@ class Farm(
         settings = await Settings.get(user_id=i.user.id)
         farm_notify, _ = await FarmNotify.get_or_create(account=account_)
 
+        await farm_notify.fetch_related("account")
         view = FarmNotifyView(
             farm_notify,
             settings.dark_mode,

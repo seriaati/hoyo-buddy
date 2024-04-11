@@ -137,9 +137,7 @@ class Translator:
 
             # after geting the command_id, change command_name back to the original command name
             command_name = command_occurence[2:-1]
-            if command_id is None:
-                message = message.replace(command_occurence, f"</{command_name}:0>")
-            else:
+            if command_id is not None:
                 message = message.replace(command_occurence, f"</{command_name}:{command_id}>")
         return message
 

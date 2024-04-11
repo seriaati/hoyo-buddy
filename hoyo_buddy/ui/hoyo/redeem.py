@@ -5,7 +5,6 @@ from discord import ButtonStyle, Locale, Member, User
 from ...bot.translator import LocaleStr
 from ...embeds import DefaultEmbed
 from ...emojis import GIFT_OUTLINE
-from ...icons import LOADING_ICON
 from ..components import Button, Modal, TextInput, ToggleButton, View
 
 if TYPE_CHECKING:
@@ -70,13 +69,11 @@ class RedeemUI(View):
         return DefaultEmbed(
             self.locale,
             self.translator,
+            title=LocaleStr("Redeeming gift codes", key="redeem_cooldown_embed.title"),
             description=LocaleStr(
                 "Due to redemption cooldowns, this may take a while.",
                 key="redeem_cooldown_embed.description",
             ),
-        ).set_author(
-            icon_url=LOADING_ICON,
-            name=LocaleStr("Redeeming gift codes", key="redeem_cooldown_embed.title"),
         )
 
     def _add_items(self) -> None:
@@ -101,8 +98,7 @@ class RedeemCodesButton(Button[RedeemUI]):
         if modal.incomplete:
             return
 
-        message = await i.edit_original_response(embed=self.view.cooldown_embed)
-
+        await self.set_loading_state(i, embed=self.view.cooldown_embed)
         codes = (
             modal.code_1.value,
             modal.code_2.value,
@@ -113,8 +109,7 @@ class RedeemCodesButton(Button[RedeemUI]):
         embed = await self.view.account.client.redeem_codes(
             codes, locale=self.view.locale, translator=self.view.translator, inline=False
         )
-
-        await message.edit(embed=embed)
+        await self.unset_loading_state(i, embed=embed)
 
 
 class AutoRedeemToggle(ToggleButton[RedeemUI]):

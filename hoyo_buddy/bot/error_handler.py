@@ -75,6 +75,25 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     (-2021,): {
         "title": LocaleStr("Adventure Rank too low (less than 10)", key="redeem_code.ar_too_low"),
     },
+    # 999 and 1000 are custom retcodes for Hoyo Buddy, they don't exist in Hoyo's API
+    (999,): {
+        "title": LocaleStr("Cookie Token Expired", key="redeeem_code.cookie_token_expired_title"),
+        "description": LocaleStr(
+            "Refresh your cookie token by adding your accounts again using </accounts>.\n"
+            "Or, use the e-mail and password method to add your accounts, so your cookie token can be refreshed automatically.",
+            key="redeeem_code.cookie_token_expired_description",
+        ),
+    },
+    (1000,): {
+        "title": LocaleStr(
+            "Failed to refresh cookie token", key="redeeem_code.cookie_token_refresh_failed_title"
+        ),
+        "description": LocaleStr(
+            "It is likely that you have changed your account's password since the last time you add your accounts.\n"
+            "Please add your accounts again using </accounts> with the e-mail and password method.",
+            key="redeeem_code.cookie_token_refresh_failed_description",
+        ),
+    },
 }
 
 MIHOMO_ERROR_CONVERTER: dict[

@@ -282,7 +282,7 @@ class GenshinClient(genshin.Client, BaseClient):
 
             if len(code) > 1:
                 # only sleep if there are more than 1 code
-                await asyncio.sleep(5.5)
+                await asyncio.sleep(uniform(5.5, 6.5))
 
         # get the first 25 results
         results = results[:25]
@@ -305,11 +305,21 @@ class GenshinClient(genshin.Client, BaseClient):
         try:
             await super().redeem_code(code)
         except genshin.GenshinException as e:
-            if isinstance(e, genshin.InvalidCookies) and all(
-                key in self._account.cookies for key in ("stoken", "ltmid")
-            ):
-                await self.update_cookie_token()
-                return await self.redeem_code(code, locale=locale, translator=translator)
+            if isinstance(e, genshin.InvalidCookies):
+                # cookie token is invalid
+                if all(key in self._account.cookies for key in ("stoken", "ltmid")):
+                    # cookie token can be refreshed
+                    try:
+                        await self.update_cookie_token()
+                    except genshin.InvalidCookies as e:
+                        # cookie token refresh failed
+                        raise genshin.GenshinException({"retcode": 1000}) from e
+                    else:
+                        # cookie token refresh succeeded, redeem code again
+                        return await self.redeem_code(code, locale=locale, translator=translator)
+                else:
+                    # cookie token can't be refreshed
+                    raise genshin.GenshinException({"retcode": 999}) from e
 
             err_info = next(
                 (info for codes, info in GENSHIN_ERROR_CONVERTER.items() if e.retcode in codes),
@@ -317,6 +327,7 @@ class GenshinClient(genshin.Client, BaseClient):
             )
             if err_info is None:
                 raise
+
             title = err_info["title"]
             description = err_info.get("description")
             if description is not None:

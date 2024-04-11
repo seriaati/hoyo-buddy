@@ -16,8 +16,8 @@ if TYPE_CHECKING:
     from ...bot.bot import HoyoBuddy
 
 LOGGER_ = logging.getLogger(__name__)
-CODE_NUM_TO_SLEEP = 50
-SLEEP_INTERVAL = 60
+CODE_NUM_TO_SLEEP = 15
+SLEEP_INTERVAL = 120.0
 
 
 class AutoRedeem:

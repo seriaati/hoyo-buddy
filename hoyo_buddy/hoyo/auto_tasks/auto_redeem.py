@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 import genshin
 from discord import Locale
 
+from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr
 from ...db.models import HoyoAccount
 from ...enums import Game
@@ -32,14 +33,10 @@ class AutoRedeem:
         genshin_codes = await cls._get_codes(bot.session, genshin.Game.GENSHIN)
         hsr_codes = await cls._get_codes(bot.session, genshin.Game.STARRAIL)
 
-        accounts = await HoyoAccount.filter(auto_redeem=True).prefetch_related(
-            "user", "user__settings"
-        )
+        accounts = await HoyoAccount.filter(auto_redeem=True)
         redeem_count = 0
 
         for account in accounts:
-            locale = account.user.settings.locale or Locale.american_english
-
             if account.game is Game.GENSHIN:
                 codes = genshin_codes
             elif account.game is Game.STARRAIL:
@@ -52,18 +49,39 @@ class AutoRedeem:
             if not codes:
                 continue
 
-            embed = await account.client.redeem_codes(
-                codes, locale=locale, translator=bot.translator, inline=True
-            )
-            embed.set_footer(
-                text=LocaleStr("Turn off auto code redemption in /redeem", key="auto_redeem_footer")
-            )
-            account.redeemed_codes.extend(codes)
-            # remove duplicates
-            account.redeemed_codes = list(set(account.redeemed_codes))
-            await account.save(update_fields=("redeemed_codes",))
+            await account.fetch_related("user", "user__settings")
+            locale = account.user.settings.locale or Locale.american_english
 
-            await bot.dm_user(account.user.id, embed=embed)
+            try:
+                embed = await account.client.redeem_codes(
+                    codes, locale=locale, translator=bot.translator, inline=True
+                )
+                embed.set_footer(
+                    text=LocaleStr(
+                        "Turn off auto code redemption in /redeem", key="auto_redeem_footer"
+                    )
+                )
+            except Exception as e:
+                embed, recognized = get_error_embed(e, locale, bot.translator)
+                embed.add_acc_info(account, blur=False)
+                if not recognized:
+                    bot.capture_exception(e)
+
+                content = LocaleStr(
+                    "An error occurred while performing automatic code redemption.\n"
+                    "This feature can be disabled with </redeem>.\n",
+                    key="auto_redeem_error.content",
+                )
+                await bot.dm_user(
+                    account.user.id, embed=embed, content=content.translate(bot.translator, locale)
+                )
+            else:
+                account.redeemed_codes.extend(codes)
+                # remove duplicates
+                account.redeemed_codes = list(set(account.redeemed_codes))
+                await account.save(update_fields=("redeemed_codes",))
+
+                await bot.dm_user(account.user.id, embed=embed)
 
             redeem_count += len(codes)
             if redeem_count % CODE_NUM_TO_SLEEP == 0:

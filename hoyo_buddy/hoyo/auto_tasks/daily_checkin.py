@@ -125,7 +125,7 @@ class DailyCheckin:
                 if not recognized:
                     cls._bot.capture_exception(e)
 
-                embed.add_acc_info(account)
+                embed.add_acc_info(account, blur=False)
             else:
                 embed = client.get_daily_reward_embed(reward, locale, translator)
             return embed
@@ -150,7 +150,7 @@ class DailyCheckin:
                     if not recognized:
                         cls._bot.capture_exception(e)
 
-                    embed.add_acc_info(account)
+                    embed.add_acc_info(account, blur=False)
             else:
                 msg = f"API {api_name} returned {resp.status}"
                 raise RuntimeError(msg)

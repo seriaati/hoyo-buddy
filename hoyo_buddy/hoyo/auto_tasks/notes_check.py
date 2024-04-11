@@ -160,7 +160,7 @@ class NotesChecker:
             case _:
                 raise NotImplementedError
 
-        embed.add_acc_info(notify.account)
+        embed.add_acc_info(notify.account, blur=False)
         embed.set_footer(
             text=LocaleStr(
                 "Click the button below to change notification settings.\nIf it is expired, use the /notes command.",
@@ -353,16 +353,18 @@ class NotesChecker:
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:
         content = LocaleStr(
-            (
-                "An error occurred while processing your reminder.\n"
-                "You can disable the reminders by using the </notes> command.\n"
-                "If this keeps happening, consider reporting this to the developer with the </feedback> command."
-            ),
+            "An error occurred while processing your real-time notes reminder.\n"
+            "Disable this feature with </notes>.\n",
             key="process_notify_error.content",
         )
-        translated_content = cls._bot.translator.translate(content, await cls._get_locale(notify))
+        locale = await cls._get_locale(notify)
         embed = cls._get_notify_error_embed(e, await cls._get_locale(notify))
-        await cls._bot.dm_user(notify.account.user.id, embed=embed, content=translated_content)
+        embed.add_acc_info(notify.account, blur=False)
+        await cls._bot.dm_user(
+            notify.account.user.id,
+            embed=embed,
+            content=content.translate(cls._bot.translator, locale),
+        )
 
     @classmethod
     def _determine_skip(cls, notify: NotesNotify) -> bool:  # noqa: PLR0911

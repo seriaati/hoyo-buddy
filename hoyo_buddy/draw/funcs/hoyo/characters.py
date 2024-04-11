@@ -50,9 +50,7 @@ def draw_character_card(
     game = Game.GENSHIN if isinstance(characters[0], genshin.models.Character) else Game.STARRAIL
     for character in characters:
         if isinstance(character, genshin.models.Character):
-            talent = talents.get(
-                GenshinClient.convert_character_id_to_ambr_format(character), "?/?/?"
-            )
+            talent = talents.get(GenshinClient.convert_chara_id_to_ambr_format(character), "?/?/?")
             card = draw_small_gi_chara_card(talent, dark_mode, character, translator, locale)
         else:
             talent = "/".join(str(s.level) for s in character.skills[:4])

@@ -115,7 +115,7 @@ class RedeemCodesButton(Button[RedeemUI]):
 class AutoRedeemToggle(ToggleButton[RedeemUI]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
-            current_toggle, LocaleStr("Auto Redeem", key="auto_redeem_toggle.label"), row=0
+            current_toggle, LocaleStr("Auto code redemption", key="auto_redeem_toggle.label"), row=0
         )
 
     async def callback(self, i: "INTERACTION") -> None:

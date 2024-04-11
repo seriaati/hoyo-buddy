@@ -6,9 +6,10 @@ from ...embeds import DefaultEmbed
 from ...emojis import (
     get_game_emoji,
 )
-from .. import Select, SelectOption
+from .. import SelectOption
 from .add_acc_handler import AddAccountHandler
 from .items.acc_select import AccountSelect
+from .items.acc_settings import AutoCheckinToggle, AutoRedeemToggle
 from .items.add_acc_btn import AddAccountButton
 from .items.del_acc_btn import DeleteAccountButton
 from .items.edit_nickname_btn import EditNicknameButton
@@ -84,6 +85,8 @@ class AccountManager(AddAccountHandler):
             self.add_item(AddAccountButton())
             self.add_item(EditNicknameButton())
             self.add_item(DeleteAccountButton())
+            self.add_item(AutoRedeemToggle(self.selected_account.auto_redeem))
+            self.add_item(AutoCheckinToggle(self.selected_account.daily_checkin))
         else:
             self.add_item(AddAccountButton())
 
@@ -101,8 +104,8 @@ class AccountManager(AddAccountHandler):
     async def start(self, i: "INTERACTION") -> None:
         self._add_items()
         embed = self._acc_embed
-        await i.response.send_message(embed=embed, view=self, ephemeral=True)
-        self.message = await i.original_response()
+        await i.response.defer(ephemeral=True)
+        self.message = await i.edit_original_response(embed=embed, view=self)
 
     async def refresh(self, i: "INTERACTION", *, soft: bool) -> Any:
         if not soft:
@@ -116,7 +119,13 @@ class AccountManager(AddAccountHandler):
             )
             await view.start(i)
         else:
-            account_selector = self.get_item("account_selector")
-            if isinstance(account_selector, Select):
-                account_selector.options = self._get_account_options()
+            assert self.selected_account is not None
+            auto_redeem_toggle: AutoRedeemToggle = self.get_item("auto_redeem_toggle")
+            auto_redeem_toggle.current_toggle = self.selected_account.auto_redeem
+            auto_redeem_toggle.update_style()
+
+            auto_checkin_toggle: AutoCheckinToggle = self.get_item("auto_checkin_toggle")
+            auto_checkin_toggle.current_toggle = self.selected_account.daily_checkin
+            auto_checkin_toggle.update_style()
+
             await self.absolute_edit(i, embed=self._acc_embed, view=self)

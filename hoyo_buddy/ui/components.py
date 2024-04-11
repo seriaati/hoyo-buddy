@@ -304,10 +304,13 @@ class ToggleButton(Button, Generic[V_co]):
             translate=False,
         )
 
+    def update_style(self) -> None:
+        self.style = self._get_style()
+        self.label = self._get_label().translate(self.view.translator, self.view.locale)
+
     async def callback(self, i: "INTERACTION", *, edit: bool = True, **kwargs: Any) -> Any:
         self.current_toggle = not self.current_toggle
-        self.style = self._get_style()
-        self.label = self.view.translator.translate(self._get_label(), self.view.locale)
+        self.update_style()
         if edit:
             await i.response.edit_message(view=self.view, **kwargs)
 

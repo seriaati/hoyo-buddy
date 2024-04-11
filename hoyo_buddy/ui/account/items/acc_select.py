@@ -26,4 +26,5 @@ class AccountSelect(Select["AccountManager"]):
         await selected_account.save(update_fields=("current",))
 
         self.view.selected_account = selected_account
+        self.update_options_defaults()
         await self.view.refresh(i, soft=True)

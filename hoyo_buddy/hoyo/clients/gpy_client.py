@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import genshin
 from seria.utils import read_json, write_json
 
-from ...bot.error_handler import GENSHIN_ERROR_CONVERTER
+from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr, Translator
 from ...constants import (
     AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID,
@@ -304,36 +304,33 @@ class GenshinClient(genshin.Client, BaseClient):
         success = False
         try:
             await super().redeem_code(code)
-        except genshin.GenshinException as e:
-            if isinstance(e, genshin.InvalidCookies):
-                # cookie token is invalid
-                if all(key in self._account.cookies for key in ("stoken", "ltmid")):
-                    # cookie token can be refreshed
-                    try:
-                        await self.update_cookie_token()
-                    except genshin.InvalidCookies as e:
-                        # cookie token refresh failed
-                        raise genshin.GenshinException({"retcode": 1000}) from e
-                    else:
-                        # cookie token refresh succeeded, redeem code again
-                        return await self.redeem_code(code, locale=locale, translator=translator)
+        except genshin.InvalidCookies as e:
+            # cookie token is invalid
+            if all(key in self._account.cookies for key in ("stoken", "ltmid")):
+                # cookie token can be refreshed
+                try:
+                    await self.update_cookie_token()
+                except genshin.InvalidCookies as e:
+                    # cookie token refresh failed
+                    raise genshin.GenshinException({"retcode": 1000}) from e
                 else:
-                    # cookie token can't be refreshed
-                    raise genshin.GenshinException({"retcode": 999}) from e
-
-            err_info = next(
-                (info for codes, info in GENSHIN_ERROR_CONVERTER.items() if e.retcode in codes),
-                None,
-            )
-            if err_info is None:
-                raise
-
-            title = err_info["title"]
-            description = err_info.get("description")
-            if description is not None:
-                msg = f"{title.translate(translator, locale)}\n{description.translate(translator, locale)}"
+                    # cookie token refresh succeeded, redeem code again
+                    return await self.redeem_code(code, locale=locale, translator=translator)
             else:
-                msg = title.translate(translator, locale)
+                # cookie token can't be refreshed
+                raise genshin.GenshinException({"retcode": 999}) from e
+        except genshin.RedemptionCooldown:
+            # sleep then retry
+            await asyncio.sleep(60.0)
+            return await self.redeem_code(code, locale=locale, translator=translator)
+        except Exception as e:
+            embed, recognized = get_error_embed(e, locale, translator)
+            if not recognized:
+                raise
+            assert embed.title is not None
+            if embed.description is None:
+                return embed.title, success
+            return f"{embed.title}\n{embed.description}", success
         else:
             success = True
             msg = LocaleStr("Gift code claimed", key="redeem_code.success").translate(

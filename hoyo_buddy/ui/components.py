@@ -226,7 +226,7 @@ class Button(discord.ui.Button, Generic[V_co]):
         if self.locale_str_label:
             self.label = translator.translate(self.locale_str_label, locale)
 
-    async def set_loading_state(self, i: "INTERACTION") -> None:
+    async def set_loading_state(self, i: "INTERACTION", **kwargs: Any) -> None:
         self.original_label = self.label[:] if self.label else None
         self.original_emoji = str(self.emoji) if self.emoji else None
         self.original_disabled = self.disabled
@@ -236,7 +236,7 @@ class Button(discord.ui.Button, Generic[V_co]):
         self.label = self.view.translator.translate(
             LocaleStr("Loading...", key="loading_text"), self.view.locale
         )
-        await self.view.absolute_edit(i, view=self.view)
+        await self.view.absolute_edit(i, view=self.view, **kwargs)
 
     async def unset_loading_state(self, i: "INTERACTION", **kwargs: Any) -> None:
         if self.original_disabled is None:

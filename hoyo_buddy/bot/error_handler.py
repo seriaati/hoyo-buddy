@@ -79,8 +79,8 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     (999,): {
         "title": LocaleStr("Cookie Token Expired", key="redeeem_code.cookie_token_expired_title"),
         "description": LocaleStr(
-            "Refresh your cookie token by adding your accounts again using </accounts>.\n"
-            "Or, use the e-mail and password method to add your accounts, so your cookie token can be refreshed automatically.",
+            "Refresh your cookie token by adding your accounts again using /accounts.\n"
+            "If you use the e-mail and password method to add your accounts, cookie token can be refreshed automatically.",
             key="redeeem_code.cookie_token_expired_description",
         ),
     },

@@ -77,7 +77,8 @@ class AutoRedeem:
 
         content = LocaleStr(
             "An error occurred while performing automatic code redemption.\n"
-            "This feature can be disabled with </redeem>.\n",
+            "Hoyo Buddy has disabled this feature for this account, you can turn it back on using </redeem>\n"
+            "If this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n",
             key="auto_redeem_error.content",
         )
         await cls._bot.dm_user(
@@ -85,6 +86,9 @@ class AutoRedeem:
             embed=embed,
             content=content.translate(cls._bot.translator, locale),
         )
+
+        account.auto_redeem = False
+        await account.save(update_fields=("auto_redeem",))
 
         return embed
 

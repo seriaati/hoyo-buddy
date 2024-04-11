@@ -7,7 +7,7 @@ import discord
 import genshin
 
 from ...bot.error_handler import get_error_embed
-from ...db.models import HoyoAccount, User
+from ...db.models import HoyoAccount
 from ...embeds import DefaultEmbed, Embed, ErrorEmbed
 
 if TYPE_CHECKING:
@@ -95,7 +95,7 @@ class DailyCheckin:
                     isinstance(embed, DefaultEmbed)
                     and account.notif_settings.notify_on_checkin_success
                 ):
-                    await cls._notify_user(account.user, embed)
+                    await cls._bot.dm_user(account.user.id, embed=embed)
             finally:
                 await asyncio.sleep(2.0)
                 queue.task_done()
@@ -156,12 +156,3 @@ class DailyCheckin:
                 raise RuntimeError(msg)
 
         return embed
-
-    @classmethod
-    async def _notify_user(cls, user: User, embed: Embed) -> None:
-        discord_user = await cls._bot.fetch_user(user.id)
-        if discord_user:
-            try:
-                await discord_user.send(embed=embed)
-            except discord.DiscordException:
-                LOGGER_.exception("Failed to send daily check-in notification to %s", discord_user)

@@ -42,7 +42,6 @@ class Farm(
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
-            replace_command_mentions=False,
         )
     )
     async def farm_view_command(
@@ -85,7 +84,6 @@ class Farm(
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
-            replace_command_mentions=False,
         ),
     )
     async def farm_add_command(
@@ -154,7 +152,6 @@ class Farm(
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
-            replace_command_mentions=False,
         ),
     )
     async def farm_remove_command(
@@ -206,7 +203,6 @@ class Farm(
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
-            replace_command_mentions=False,
         ),
     )
     async def farm_reminder_command(

@@ -37,14 +37,12 @@ class LocaleStr:
         key: str | None = None,
         warn_no_key: bool = True,
         translate: bool = True,
-        replace_command_mentions: bool = True,
         **kwargs: Any,
     ) -> None:
         self.message = message
         self.key = key
         self.warn_no_key = warn_no_key
         self.translate_ = translate
-        self.replace_command_mentions = replace_command_mentions
         self.extras: dict[str, Any] = kwargs
 
     def __repr__(self) -> str:
@@ -56,7 +54,6 @@ class LocaleStr:
             key=self.key,
             warn_no_key=self.warn_no_key,
             translate=self.translate_,
-            replace_command_mentions=self.replace_command_mentions,
             **self.extras,
         )
 
@@ -152,9 +149,7 @@ class Translator:
 
         extras = self._translate_extras(string.extras, locale)
         message = string.message
-
-        if string.replace_command_mentions:
-            message = self._replace_command_with_mentions(message)
+        message = self._replace_command_with_mentions(message)
 
         string_key = self._get_string_key(string)
 

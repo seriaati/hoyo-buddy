@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 LOGGER_ = logging.getLogger(__name__)
 CODE_NUM_TO_SLEEP = 15
-SLEEP_INTERVAL = 120.0
+SLEEP_INTERVAL = 60 * 5
 
 
 class AutoRedeem:
@@ -83,9 +83,9 @@ class AutoRedeem:
 
                 await bot.dm_user(account.user.id, embed=embed)
 
-            redeem_count += len(codes)
-            if redeem_count % CODE_NUM_TO_SLEEP == 0:
-                # Sleep every n codes to prevent rate limiting
-                await asyncio.sleep(SLEEP_INTERVAL)
+                redeem_count += len(embed.fields)
+                if redeem_count % CODE_NUM_TO_SLEEP == 0:
+                    # Sleep every n codes to prevent rate limiting
+                    await asyncio.sleep(SLEEP_INTERVAL)
 
         LOGGER_.info("Auto redeem task completed")

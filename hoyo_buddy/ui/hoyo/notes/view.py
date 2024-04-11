@@ -238,6 +238,7 @@ class NotesView(View):
         else:
             raise NotImplementedError
 
+        embed.add_acc_info(self._account)
         return embed
 
     async def process_type_one_modal(
@@ -455,9 +456,11 @@ class NotesView(View):
                 ).translate(self.translator, self.locale)
             )
 
-        return DefaultEmbed(
-            self.locale, self.translator, description="\n".join(descriptions)
-        ).set_image(url="attachment://notes.webp")
+        return (
+            DefaultEmbed(self.locale, self.translator, description="\n".join(descriptions))
+            .set_image(url="attachment://notes.webp")
+            .add_acc_info(self._account)
+        )
 
     async def start(self, i: "INTERACTION") -> None:
         await i.response.defer()

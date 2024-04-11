@@ -33,7 +33,7 @@ class AutoCheckinToggle(ToggleButton["AccountManager"]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            LocaleStr("Auto check-in", key="auto_checkin_button_label"),
+            LocaleStr("Auto daily check-in", key="auto_checkin_button_label"),
             row=2,
             emoji=SMART_TOY,
             custom_id="auto_checkin_toggle",

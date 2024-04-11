@@ -121,6 +121,7 @@ class CheckInUI(View):
             ),
         )
         embed.set_image(url="attachment://check-in.webp")
+        embed.add_acc_info(self.account)
         return embed, file_
 
     async def start(self, i: "INTERACTION") -> None:
@@ -155,7 +156,7 @@ class AutoCheckInToggle(ToggleButton[CheckInUI]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            LocaleStr("Auto check-in", key="auto_checkin_button_label"),
+            LocaleStr("Auto daily check-in", key="auto_checkin_button_label"),
             emoji=emojis.SMART_TOY,
         )
 

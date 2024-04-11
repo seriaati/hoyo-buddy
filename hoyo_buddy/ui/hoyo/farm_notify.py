@@ -53,6 +53,7 @@ class FarmNotifyView(PaginatorView):
                         total_pages=len(self._split_item_ids),
                     )
                 )
+                .add_acc_info(farm_notify.account)
                 .set_image(url="attachment://farm_notify.webp")
             )
             for i in range(len(self._split_item_ids))
@@ -112,6 +113,7 @@ class FarmNotifyView(PaginatorView):
                     key="farm_notify.empty_description",
                 ),
             )
+            embed.add_acc_info(self._notify.account)
             return await i.response.send_message(embed=embed)
 
         await self._get_item_icon_and_names()

@@ -342,6 +342,7 @@ class CharactersView(View):
             raise NotImplementedError
 
         embed.set_image(url="attachment://characters.webp")
+        embed.add_acc_info(self._account)
         return embed
 
     def _add_items(self) -> None:

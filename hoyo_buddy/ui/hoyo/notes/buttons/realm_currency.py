@@ -17,7 +17,7 @@ class RealmCurrencyReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
             emoji=REALM_CURRENCY,
-            label=LocaleStr("Realm Currency Reminder", key="realm_curr_button.label"),
+            label=LocaleStr("Realm currency reminder", key="realm_curr_button.label"),
             row=row,
         )
 

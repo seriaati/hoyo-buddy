@@ -106,7 +106,7 @@ class FarmNotifyView(PaginatorView):
                 self.locale,
                 self.translator,
                 title=LocaleStr(
-                    "You have no items in your farm reminder list", key="farm_notify.empty"
+                    "You Have no Items in Your Farm Reminder List", key="farm_notify.empty"
                 ),
                 description=LocaleStr(
                     "Add items to your farm reminder list by using the </farm add> command",

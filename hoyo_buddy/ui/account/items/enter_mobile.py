@@ -43,7 +43,7 @@ class EnterVerificationCode(Button["AccountManager"]):
     async def callback(self, i: "INTERACTION") -> None:
         modal = VerifyCodeInput(
             title=LocaleStr(
-                "Enter verification code", key="add_miyoushe_acc.enter_verification_code"
+                "Enter Verification Code", key="add_miyoushe_acc.enter_verification_code"
             )
         )
         modal.translate(self.view.locale, i.client.translator)
@@ -67,7 +67,7 @@ class EnterPhoneNumber(Button["AccountManager"]):
 
     async def callback(self, i: "INTERACTION") -> None:
         modal = PhoneNumberInput(
-            title=LocaleStr("Enter phone number", key="add_miyoushe_acc.enter_mobile_number")
+            title=LocaleStr("Enter Phone Number", key="add_miyoushe_acc.enter_mobile_number")
         )
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
@@ -87,11 +87,11 @@ class EnterPhoneNumber(Button["AccountManager"]):
                 self.view.locale,
                 self.view.translator,
                 title=LocaleStr(
-                    "Verification code sent",
+                    "Verification Code Sent",
                     key="add_miyoushe_acc.verification_code_sent",
                 ),
                 description=LocaleStr(
-                    "Please check your phone for the verification code and click the button below to enter it.",
+                    "Please check your phone for the verification code and click the button below to enter it",
                     key="add_miyoushe_acc.verification_code_sent_description",
                 ),
             )

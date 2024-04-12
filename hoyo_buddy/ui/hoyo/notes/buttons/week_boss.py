@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class WeekBossReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
-            label=LocaleStr("Weekly Boss Discount Reminder", key="week_boss_button.label"), row=row
+            label=LocaleStr("Weekly boss discount reminder", key="week_boss_button.label"), row=row
         )
 
     async def callback(self, i: "INTERACTION") -> None:

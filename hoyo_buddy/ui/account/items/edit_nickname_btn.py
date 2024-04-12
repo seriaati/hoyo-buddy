@@ -23,7 +23,7 @@ class NicknameModal(Modal):
     )
 
     def __init__(self, current_nickname: str | None = None) -> None:
-        super().__init__(title=LocaleStr("Edit nickname", key="edit_nickname_modal_title"))
+        super().__init__(title=LocaleStr("Edit Nickname", key="edit_nickname_modal_title"))
         self.nickname.default = current_nickname
 
 

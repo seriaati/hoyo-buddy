@@ -199,7 +199,7 @@ class AddAccountHandler(View):
             self.locale,
             self.translator,
             title=LocaleStr(
-                "😥 Need to solve CAPTCHA before sending the verification code",
+                "😥 Need to Solve CAPTCHA Before Sending the Verification Code",
                 key="email-geetest.embed.title",
             )
             if self.condition
@@ -225,7 +225,7 @@ class AddAccountHandler(View):
             self.locale,
             self.translator,
             title=LocaleStr(
-                "👍 Almost done! Just need to verify your e-mail",
+                "👍 Almost Done! Just Need to Verify Your E-Mail",
                 key="email-verification.embed.title",
             ),
             description=LocaleStr(

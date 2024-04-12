@@ -108,7 +108,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             assert isinstance(status_channel, discord.TextChannel)
             await status_channel.send(
                 embed=discord.Embed(
-                    title="Bot started 🚀",
+                    title="Bot Started 🚀",
                     description=f"Current time: {discord.utils.format_dt(get_now(), 'T')}",
                     color=discord.Color.green(),
                 )
@@ -209,7 +209,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             assert isinstance(status_channel, discord.TextChannel)
             await status_channel.send(
                 embed=discord.Embed(
-                    title="Bot shutting down for code changes...",
+                    title="Bot Shutting Down for Code Changes 🛠️",
                     description=f"Current time: {discord.utils.format_dt(get_now(), 'T')}",
                     color=discord.Color.red(),
                 )

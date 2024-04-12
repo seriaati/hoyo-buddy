@@ -35,7 +35,7 @@ class FarmChecker:
             locale,
             cls._translator,
             title=LocaleStr(
-                "Materials for {name} is farmable today",
+                "Materials For {name} is Farmable Today",
                 key="farm_check.farmable_today",
                 name=cls._item_id_to_name[locale.value][str(item.id)],
             ),

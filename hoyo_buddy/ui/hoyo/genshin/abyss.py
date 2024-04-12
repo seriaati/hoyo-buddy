@@ -106,7 +106,7 @@ class AbyssView(View):
 class CurrentButton(Button[AbyssView]):
     def __init__(self, current: bool) -> None:
         super().__init__(
-            label=LocaleStr("Current Lunar Phase", key="abyss.current"),
+            label=LocaleStr("Current lunar phase", key="abyss.current"),
             style=ButtonStyle.blurple if not current else ButtonStyle.gray,
             custom_id="abyss_current",
             row=0,
@@ -126,7 +126,7 @@ class CurrentButton(Button[AbyssView]):
 class PreviousButton(Button[AbyssView]):
     def __init__(self, current: bool) -> None:
         super().__init__(
-            label=LocaleStr("Previous Lunar Phase", key="abyss.previous"),
+            label=LocaleStr("Previous lunar phase", key="abyss.previous"),
             style=ButtonStyle.blurple if current else ButtonStyle.gray,
             custom_id="abyss_previous",
             row=1,

@@ -190,7 +190,7 @@ class EnterTalentLevel(Button[CharacterUI]):
 
     async def callback(self, i: "INTERACTION") -> Any:
         modal = TalentLevelModal(
-            title=LocaleStr("Enter talent level", key="talent_level.modal.title")
+            title=LocaleStr("Enter Talent Level", key="talent_level.modal.title")
         )
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
@@ -218,7 +218,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
 
     async def callback(self, i: "INTERACTION") -> Any:
         modal = CharacterLevelModal(
-            title=LocaleStr("Enter character level", key="chara_level.modal.title")
+            title=LocaleStr("Enter Character Level", key="chara_level.modal.title")
         )
         await i.response.send_modal(modal)
         await modal.wait()

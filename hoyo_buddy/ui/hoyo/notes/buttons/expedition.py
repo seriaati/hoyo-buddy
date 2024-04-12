@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class ExpeditionReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
-        super().__init__(label=LocaleStr("Expedition Reminder", key="exped_button.label"), row=row)
+        super().__init__(label=LocaleStr("Expedition reminder", key="exped_button.label"), row=row)
 
     async def callback(self, i: "INTERACTION") -> None:
         notify_type = (

@@ -17,7 +17,7 @@ class TBPReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
             emoji=TRAILBLAZE_POWER,
-            label=LocaleStr("Trailblaze Power Reminder", key="tbp_reminder_button.label"),
+            label=LocaleStr("Trailblaze power reminder", key="tbp_reminder_button.label"),
             row=row,
         )
 

@@ -26,21 +26,21 @@ class TaskView(ui.View):
     async def interaction_check(self, i: "INTERACTION") -> bool:
         return await i.client.is_owner(i.user)
 
-    @ui.button(label="Daily Check-in", style=ButtonStyle.blurple)
+    @ui.button(label="Daily check-in", style=ButtonStyle.blurple)
     async def daily_checkin(self, i: "INTERACTION", _: ui.Button) -> None:
         await i.response.send_message("Daily check-in task started.")
         task = asyncio.create_task(DailyCheckin.execute(i.client))
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)
 
-    @ui.button(label="Notes Check", style=ButtonStyle.blurple)
+    @ui.button(label="Notes check", style=ButtonStyle.blurple)
     async def notes_check(self, i: "INTERACTION", _: ui.Button) -> None:
         await i.response.send_message("Notes check task started.")
         task = asyncio.create_task(NotesChecker.execute(i.client))
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)
 
-    @ui.button(label="Farm Check", style=ButtonStyle.blurple)
+    @ui.button(label="Farm check", style=ButtonStyle.blurple)
     async def farm_check(self, i: "INTERACTION", _: ui.Button) -> None:
         await i.response.send_message("Farm check tasks started.")
         for uid_start in UID_STARTS:
@@ -48,7 +48,7 @@ class TaskView(ui.View):
             self._tasks.add(task)
             task.add_done_callback(self._tasks.discard)
 
-    @ui.button(label="Auto Redeem", style=ButtonStyle.blurple)
+    @ui.button(label="Auto redeem", style=ButtonStyle.blurple)
     async def auto_redeem(self, i: "INTERACTION", _: ui.Button) -> None:
         await i.response.send_message("Auto redeem task started.")
         task = asyncio.create_task(AutoRedeem.execute(i.client))

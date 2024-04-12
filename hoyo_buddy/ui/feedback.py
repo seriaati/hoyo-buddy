@@ -29,7 +29,7 @@ class FeedbackModal(Modal):
 class FeedbackButton(Button[FeedbackView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Give Feedback", key="feedback_button.label"), style=ButtonStyle.blurple
+            label=LocaleStr("Give feedback", key="feedback_button.label"), style=ButtonStyle.blurple
         )
 
     async def callback(self, i: "INTERACTION") -> None:

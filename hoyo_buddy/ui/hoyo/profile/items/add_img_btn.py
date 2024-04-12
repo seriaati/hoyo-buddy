@@ -31,7 +31,7 @@ class AddImageModal(Modal):
 class AddImageButton(Button["ProfileView"]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Add Custom Image", key="profile.add_image.button.label"),
+            label=LocaleStr("Add custom image", key="profile.add_image.button.label"),
             style=ButtonStyle.green,
             emoji=ADD,
             row=3,

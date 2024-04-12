@@ -101,7 +101,7 @@ class View(discord.ui.View):
             embed = ErrorEmbed(
                 self.locale,
                 self.translator,
-                title=LocaleStr("Interaction failed", key="interaction_failed_title"),
+                title=LocaleStr("Interaction Failed", key="interaction_failed_title"),
                 description=LocaleStr(
                     "This view is not initiated by you, therefore you cannot use it.",
                     key="interaction_failed_description",
@@ -297,9 +297,9 @@ class ToggleButton(Button, Generic[V_co]):
             key="toggle_button_label",
             toggle_label=self.toggle_label,
             toggle=(
-                LocaleStr("On", key="toggle_on_text")
+                LocaleStr("on", key="toggle_on_text")
                 if self.current_toggle
-                else LocaleStr("Off", key="toggle_off_text")
+                else LocaleStr("off", key="toggle_off_text")
             ),
             translate=False,
         )

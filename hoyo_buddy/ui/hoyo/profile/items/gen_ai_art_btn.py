@@ -38,7 +38,7 @@ class GenerateAIArtModal(Modal):
 class GenerateAIArtButton(Button):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Generate AI Art", key="profile.generate_ai_art.button.label"),
+            label=LocaleStr("Generate AI art", key="profile.generate_ai_art.button.label"),
             style=ButtonStyle.blurple,
             row=3,
         )

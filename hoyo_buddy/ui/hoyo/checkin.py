@@ -112,7 +112,7 @@ class CheckInUI(View):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr("Daily Check-in", key="daily_checkin_embed_title"),
+            title=LocaleStr("Daily Check-In", key="daily_checkin_embed_title"),
             description=LocaleStr(
                 "Checked in {day} day(s) this month\n" "Missed check-in for {missed} day(s)\n",
                 key="daily_checkin_embed_description",

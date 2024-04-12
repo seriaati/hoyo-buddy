@@ -478,7 +478,7 @@ class ReminderButton(Button[NotesView]):
         super().__init__(
             style=ButtonStyle.blurple,
             emoji=BELL_OUTLINE,
-            label=LocaleStr("Reminder Settings", key="reminder_button.label"),
+            label=LocaleStr("Reminder settings", key="reminder_button.label"),
         )
 
     async def callback(self, i: "INTERACTION") -> None:

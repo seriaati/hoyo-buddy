@@ -233,7 +233,7 @@ class CharactersView(View):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr("Characters Overview", key="characters.embed.title"),
+            title=LocaleStr("Character Overview", key="characters.embed.title"),
         )
 
         if self._filter in {GIFilter.MAX_FRIENDSHIP, GIFilter.NOT_MAX_FRIENDSHIP}:
@@ -564,7 +564,7 @@ class HSRSorterSelector(Select[CharactersView]):
 class UpdateTalentData(Button[CharactersView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Update Talent Level Data", key="characters.update_talent_data"),
+            label=LocaleStr("Update talent level data", key="characters.update_talent_data"),
             style=ButtonStyle.green,
             row=3,
         )

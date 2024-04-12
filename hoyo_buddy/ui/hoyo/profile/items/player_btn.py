@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class PlayerInfoButton(Button["ProfileView"]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Player Info", key="profile.player_info.button.label"),
+            label=LocaleStr("Player info", key="profile.player_info.button.label"),
             style=ButtonStyle.blurple,
             emoji=BOOK_MULTIPLE,
             disabled=True,

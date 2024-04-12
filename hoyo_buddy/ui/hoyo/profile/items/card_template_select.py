@@ -26,7 +26,7 @@ class CardTemplateSelect(Select["ProfileView"]):
             options.append(
                 SelectOption(
                     label=LocaleStr(
-                        "Hoyo Buddy Template {num}",
+                        "Hoyo Buddy template {num}",
                         key="profile.card_template_select.hb.label",
                         num=template_num,
                     ),
@@ -47,7 +47,7 @@ class CardTemplateSelect(Select["ProfileView"]):
                     options.append(
                         SelectOption(
                             label=LocaleStr(
-                                "StarRailCard Template {num}",
+                                "StarRailCard template {num}",
                                 key="profile.card_template_select.src.label",
                                 num=template_num,
                             ),
@@ -65,7 +65,7 @@ class CardTemplateSelect(Select["ProfileView"]):
                     [
                         SelectOption(
                             label=LocaleStr(
-                                "Classic Enka Template",
+                                "Classic Enka template",
                                 key="profile.card_template_select.enka_classic.label",
                             ),
                             description=LocaleStr(
@@ -79,7 +79,7 @@ class CardTemplateSelect(Select["ProfileView"]):
                         ),
                         SelectOption(
                             label=LocaleStr(
-                                "ENCard Template {num}",
+                                "ENCard template {num}",
                                 key="profile.card_template_select.encard.label",
                                 num=1,
                             ),
@@ -98,7 +98,7 @@ class CardTemplateSelect(Select["ProfileView"]):
                     options.append(
                         SelectOption(
                             label=LocaleStr(
-                                "EnkaCard Template {num}",
+                                "EnkaCard template {num}",
                                 key="profile.card_template_select.enkacard.label",
                                 num=template_num,
                             ),

@@ -260,7 +260,7 @@ class SkillLevelModal(Modal):
     )
 
     def __init__(self, max_level: int) -> None:
-        super().__init__(title=LocaleStr("Enter skill level", key="skill_level.modal.title"))
+        super().__init__(title=LocaleStr("Enter Skill Level", key="skill_level.modal.title"))
         self.level.max_value = max_level
 
 
@@ -308,7 +308,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
 
     async def callback(self, i: "INTERACTION") -> Any:
         modal = CharacterLevelModal(
-            title=LocaleStr("Enter character level", key="chara_level.modal.title")
+            title=LocaleStr("Enter Character Level", key="chara_level.modal.title")
         )
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)

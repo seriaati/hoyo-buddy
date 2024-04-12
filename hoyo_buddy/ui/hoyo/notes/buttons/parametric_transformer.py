@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class PTReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
-            label=LocaleStr("Parametric Transformer Reminder", key="pt_button.label"),
+            label=LocaleStr("Parametric transformer reminder", key="pt_button.label"),
             emoji=PT_EMOJI,
             row=row,
         )

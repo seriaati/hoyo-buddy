@@ -17,7 +17,7 @@ class ResinReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
             emoji=RESIN,
-            label=LocaleStr("Resin Reminder", key="resin_reminder_button.label"),
+            label=LocaleStr("Resin reminder", key="resin_reminder_button.label"),
             row=row,
         )
 

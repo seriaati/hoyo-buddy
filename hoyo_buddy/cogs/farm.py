@@ -112,7 +112,7 @@ class Farm(
                 settings.locale or i.locale,
                 self.bot.translator,
                 title=LocaleStr(
-                    "Item already in list", key="farm_add_command.item_already_in_list"
+                    "Item Already in List", key="farm_add_command.item_already_in_list"
                 ),
                 description=LocaleStr(
                     "This item is already in your farm reminder list.",
@@ -168,7 +168,7 @@ class Farm(
             embed = DefaultEmbed(
                 settings.locale or i.locale,
                 self.bot.translator,
-                title=LocaleStr("Item not found", key="farm_remove_command.item_not_found"),
+                title=LocaleStr("Item not Found", key="farm_remove_command.item_not_found"),
                 description=LocaleStr(
                     "This item is not in your farm reminder list.",
                     key="farm_remove_command.item_not_found_description",

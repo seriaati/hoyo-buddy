@@ -20,36 +20,36 @@ __all__ = ("get_error_embed",)
 
 GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "description"], LocaleStr]] = {
     (-5003,): {
-        "title": LocaleStr("Daily check-in reward already claimed", key="already_claimed_title"),
+        "title": LocaleStr("Daily Check-In Reward Already Claimed", key="already_claimed_title"),
         "description": LocaleStr("Come back tomorrow!", key="already_claimed_description"),
     },
     (-100, 10001, 10103, -1071): {
         "title": LocaleStr("Invalid Cookies", key="invalid_cookies_title"),
         "description": LocaleStr(
-            "Refresh your Cookies by adding your accounts again using </accounts>",
+            "Refresh your cookies by adding your accounts again using </accounts>",
             key="invalid_cookies_description",
         ),
     },
     (-3205,): {
-        "title": LocaleStr("Invalid verification code", key="invalid_verification_code_title"),
+        "title": LocaleStr("Invalid Verification Code", key="invalid_verification_code_title"),
         "description": LocaleStr(
             "Please check the verification code and try again.",
             key="invalid_verification_code_description",
         ),
     },
     (-3208,): {
-        "title": LocaleStr("Invalid e-mail or password", key="invalid_email_password_title"),
+        "title": LocaleStr("Invalid E-Mail or Password", key="invalid_email_password_title"),
         "description": LocaleStr(
-            "The e-mail or password you provided is incorrect. Please check and try again.",
+            "The e-mail or password you provided is incorrect, please check and try again.",
             key="invalid_email_password_description",
         ),
     },
     (-3206,): {
         "title": LocaleStr(
-            "Verification code service unavailable", key="verification_code_unavailable_title"
+            "Verification Code Service Unavailable", key="verification_code_unavailable_title"
         ),
         "description": LocaleStr(
-            "Please try again later.", key="verification_code_unavailable_description"
+            "Please try again later", key="verification_code_unavailable_description"
         ),
     },
     (-3101, -1004): {
@@ -73,7 +73,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
         "title": LocaleStr("Gift code redemption in cooldown", key="redeem_code.cooldown"),
     },
     (-2021,): {
-        "title": LocaleStr("Adventure Rank too low (less than 10)", key="redeem_code.ar_too_low"),
+        "title": LocaleStr("Adventure rank too low (less than 10)", key="redeem_code.ar_too_low"),
     },
     # 999 and 1000 are custom retcodes for Hoyo Buddy, they don't exist in Hoyo's API
     (999,): {
@@ -86,7 +86,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     },
     (1000,): {
         "title": LocaleStr(
-            "Failed to refresh cookie token", key="redeeem_code.cookie_token_refresh_failed_title"
+            "Failed to Refresh Cookie Token", key="redeeem_code.cookie_token_refresh_failed_title"
         ),
         "description": LocaleStr(
             "It is likely that you have changed your account's password since the last time you add your accounts.\n"
@@ -101,19 +101,17 @@ MIHOMO_ERROR_CONVERTER: dict[
     dict[Literal["title", "description"], LocaleStr],
 ] = {
     mihomo_errors.HttpRequestError: {
-        "title": LocaleStr("Failed to fetch data", key="http_request_error_title"),
-        "description": LocaleStr("Please try again later.", key="http_request_error_description"),
+        "title": LocaleStr("Failed to Fetch Data", key="http_request_error_title"),
+        "description": LocaleStr("Please try again later", key="http_request_error_description"),
     },
     mihomo_errors.UserNotFound: {
-        "title": LocaleStr("User not found", key="user_not_found_title"),
-        "description": LocaleStr(
-            "Please check the provided UID.", key="user_not_found_description"
-        ),
+        "title": LocaleStr("User Not Found", key="user_not_found_title"),
+        "description": LocaleStr("Please check the provided UID", key="user_not_found_description"),
     },
     mihomo_errors.InvalidParams: {
-        "title": LocaleStr("Invalid parameters", key="invalid_params_title"),
+        "title": LocaleStr("Invalid Parameters", key="invalid_params_title"),
         "description": LocaleStr(
-            "Please check the provided parameters.", key="invalid_params_description"
+            "Please check the provided parameters", key="invalid_params_description"
         ),
     },
 }
@@ -123,14 +121,14 @@ ENKA_ERROR_CONVERTER: dict[
     dict[Literal["title", "description"], LocaleStr],
 ] = {
     enka_errors.PlayerDoesNotExistError: {
-        "title": LocaleStr("Player does not exist", key="player_not_found_title"),
+        "title": LocaleStr("Player Does Not Exist", key="player_not_found_title"),
         "description": LocaleStr(
-            "Please check the provided UID.", key="player_not_found_description"
+            "Please check the provided UID", key="player_not_found_description"
         ),
     },
     enka_errors.GameMaintenanceError: {
-        "title": LocaleStr("Game under maintenance", key="game_maintenance_title"),
-        "description": LocaleStr("Please try again later.", key="game_maintenance_description"),
+        "title": LocaleStr("Game is Under Maintenance", key="game_maintenance_title"),
+        "description": LocaleStr("Please try again later", key="game_maintenance_description"),
     },
 }
 
@@ -177,7 +175,7 @@ def get_error_embed(
         embed = ErrorEmbed(
             locale,
             translator,
-            title=LocaleStr("An error occurred", key="error_title"),
+            title=LocaleStr("An Error Occurred", key="error_title"),
             description=description,
         )
         embed.set_footer(

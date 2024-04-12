@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class WithDevTools(Button["AccountManager"]):
     def __init__(self, platform: "LoginPlatform") -> None:
         super().__init__(
-            label=LocaleStr("With DevTools (Desktop Only)", key="devtools_button_label")
+            label=LocaleStr("With DevTools (desktop only)", key="devtools_button_label")
         )
         self._platform = platform
 

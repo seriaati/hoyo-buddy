@@ -69,7 +69,7 @@ class RedeemUI(View):
         return DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr("Redeeming gift codes", key="redeem_cooldown_embed.title"),
+            title=LocaleStr("Redeeming Gift Codes", key="redeem_cooldown_embed.title"),
             description=LocaleStr(
                 "Due to redemption cooldowns, this may take a while.",
                 key="redeem_cooldown_embed.description",
@@ -84,7 +84,7 @@ class RedeemUI(View):
 class RedeemCodesButton(Button[RedeemUI]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Redeem Codes", key="redeem_codes_button.label"),
+            label=LocaleStr("Redeem codes", key="redeem_codes_button.label"),
             emoji=GIFT_OUTLINE,
             style=ButtonStyle.blurple,
         )

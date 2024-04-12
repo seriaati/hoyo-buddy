@@ -58,7 +58,7 @@ class FarmView(View):
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
-                title=LocaleStr("Every domain is available on Sundays", key="farm_view.sundays"),
+                title=LocaleStr("Every Domain is Available on Sunday", key="farm_view.sundays"),
                 description=LocaleStr("🌾 Happy farming!", key="farm_view.happy_farming"),
             )
             await i.edit_original_response(embed=embed, view=self, attachments=[])
@@ -104,7 +104,7 @@ class WeekdaySelect(Select[FarmView]):
 class ReminderButton(Button[FarmView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Set Reminders", key="farm_view.set_reminder"),
+            label=LocaleStr("Set reminders", key="farm_view.set_reminder"),
             style=ButtonStyle.green,
             emoji=BELL_OUTLINE,
             row=2,

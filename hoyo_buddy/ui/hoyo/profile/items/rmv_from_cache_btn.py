@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 class RemoveFromCacheButton(Button["ProfileView"]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Remove from Cache", key="profile.remove_from_cache.button.label"),
+            label=LocaleStr("Remove from cache", key="profile.remove_from_cache.button.label"),
             style=ButtonStyle.red,
             emoji=DELETE,
             row=3,

@@ -33,7 +33,7 @@ class PrimaryColorModal(Modal):
 class PrimaryColorButton(Button["ProfileView"]):
     def __init__(self, current_color: str | None, disabled: bool) -> None:
         super().__init__(
-            label=LocaleStr("Change Color", key="profile.primary_color.button.label"),
+            label=LocaleStr("Change color", key="profile.primary_color.button.label"),
             style=ButtonStyle.blurple,
             row=2,
             custom_id="profile_primary_color",

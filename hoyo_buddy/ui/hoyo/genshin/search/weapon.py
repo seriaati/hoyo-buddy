@@ -91,7 +91,7 @@ class EnterWeaponLevel(Button[WeaponUI]):
 
     async def callback(self, i: "INTERACTION") -> Any:
         modal = WeaponLevelModal(
-            title=LocaleStr("Enter weapon level", key="weapon_level.modal.title")
+            title=LocaleStr("Enter Weapon Level", key="weapon_level.modal.title")
         )
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)

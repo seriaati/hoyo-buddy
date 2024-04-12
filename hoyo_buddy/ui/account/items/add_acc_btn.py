@@ -32,7 +32,7 @@ class AddMiyousheAccount(Button["AccountManager"]):
             self.view.locale,
             self.view.translator,
             title=LocaleStr(
-                "Select a method to add your accounts", key="add_hoyolab_acc.embed.title"
+                "Select a Method to add Your Accounts", key="add_hoyolab_acc.embed.title"
             ),
             description=LocaleStr(
                 (
@@ -67,7 +67,7 @@ class AddHoyolabAccount(Button["AccountManager"]):
             self.view.locale,
             self.view.translator,
             title=LocaleStr(
-                "Select a method to add your accounts", key="add_hoyolab_acc.embed.title"
+                "Select a Method to add Your Accounts", key="add_hoyolab_acc.embed.title"
             ),
             description=LocaleStr(
                 (
@@ -102,7 +102,7 @@ class AddAccountButton(Button["AccountManager"]):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr("Select your account's platform", key="adding_accounts_title"),
+            title=LocaleStr("Select Your Account's Platform", key="adding_accounts_title"),
             description=LocaleStr(
                 (
                     "Welcome to Hoyo Buddy! Enjoy various features by spending 1 minute to add your accounts.\n\n"

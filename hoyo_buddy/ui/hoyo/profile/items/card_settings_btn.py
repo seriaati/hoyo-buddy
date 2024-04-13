@@ -79,7 +79,10 @@ class CardSettingsButton(Button["ProfileView"]):
         self.view.add_item(GenerateAIArtButton())
         self.view.add_item(AddImageButton())
         self.view.add_item(
-            RemoveImageButton(self.view._card_settings.current_image in default_arts)
+            RemoveImageButton(
+                self.view._card_settings.current_image in default_arts
+                or not self.view._card_settings.current_image
+            )
         )
 
         await i.response.edit_message(view=self.view)

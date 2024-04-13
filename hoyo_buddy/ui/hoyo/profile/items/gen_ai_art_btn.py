@@ -11,7 +11,6 @@ from hoyo_buddy.utils import upload_image
 if TYPE_CHECKING:
     from hoyo_buddy.bot.bot import INTERACTION
 
-    from ..view import ProfileView  # noqa: F401
     from .image_select import ImageSelect
     from .remove_img_btn import RemoveImageButton
 

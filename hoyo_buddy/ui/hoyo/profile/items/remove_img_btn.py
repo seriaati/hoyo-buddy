@@ -28,20 +28,31 @@ class RemoveImageButton(Button["ProfileView"]):
         assert self.view.character_id is not None
         assert self.view._card_settings is not None
 
+        # Disable self
+        self.disabled = True
+
         await self.set_loading_state(i)
 
         # Remove the current image URL from db
         current_image = self.view._card_settings.current_image
         assert current_image is not None
         self.view._card_settings.custom_images.remove(current_image)
-        self.view._card_settings.current_image = None
+
+        # Update the current image URL
+        template = self.view._card_settings.template
+        if "hb" in template:
+            default_arts: list[str] = self.view._card_data[self.view.character_id]["arts"]
+            self.view._card_settings.current_image = default_arts[0]
+        else:
+            self.view._card_settings.current_image = None
         await self.view._card_settings.save(update_fields=("custom_images", "current_image"))
 
-        # Update the image select options
+        # Update image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")
+        image_select.current_image_url = self.view._card_settings.current_image
+        image_select.custom_images = self.view._card_settings.custom_images
         image_select.options_before_split = image_select.generate_options()
         image_select.options = image_select.process_options()
-        image_select.update_options_defaults(values=["none"])
         image_select.translate(self.view.locale, self.view.translator)
 
         # Redraw the card

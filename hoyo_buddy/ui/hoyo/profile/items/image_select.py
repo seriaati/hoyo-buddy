@@ -111,7 +111,9 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
 
         # Enable the remove image button if the image is custom
         remove_image_button: RemoveImageButton = self.view.get_item("profile_remove_image")
-        remove_image_button.disabled = self.values[0] in self.default_collection
+        remove_image_button.disabled = (
+            self.values[0] in self.default_collection or self.values[0] == "none"
+        )
 
         # Redraw the card
         await self.view.update(i, self)

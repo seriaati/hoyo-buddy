@@ -30,7 +30,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
             key="invalid_cookies_description",
         ),
     },
-    (-3205,): {
+    (-3205, -3102): {
         "title": LocaleStr("Invalid Verification Code", key="invalid_verification_code_title"),
         "description": LocaleStr(
             "Please check the verification code and try again.",

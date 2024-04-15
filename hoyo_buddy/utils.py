@@ -3,9 +3,12 @@ import datetime
 import logging
 import math
 import re
-from typing import TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 import aiohttp
+
+if TYPE_CHECKING:
+    from discord import Member, User
 
 T = TypeVar("T")
 
@@ -79,3 +82,13 @@ def blur_uid(uid: int) -> str:
     uid_ = str(uid)
     middle_index = len(uid_) // 2
     return uid_[: middle_index - 1] + "***" + uid_[middle_index + 2 :]
+
+
+def get_discord_user_link(user_id: int) -> str:
+    """Get the link to a Discord user's profile."""
+    return f"https://discord.com/users/{user_id}"
+
+
+def get_discord_user_md_link(user: "User | Member") -> str:
+    """Get the Markdown-formatted link to a Discord user's profile."""
+    return f"[@{user}]({get_discord_user_link(user.id)})"

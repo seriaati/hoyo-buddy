@@ -29,7 +29,7 @@ class SettingsUI(View):
         self.add_item(DarkModeToggle(self.settings.dark_mode))
 
     @staticmethod
-    def _get_filename(theme: str, locale: discord.Locale) -> str:
+    def get_brand_img_filename(theme: str, locale: discord.Locale) -> str:
         filename = f"hoyo-buddy-assets/assets/brand/{theme}-{locale.value.replace('-', '_')}.png"
         if not os.path.exists(filename):
             return f"hoyo-buddy-assets/assets/brand/{theme}-en_US.png"
@@ -43,7 +43,7 @@ class SettingsUI(View):
     def get_brand_image_file(self, interaction_locale: discord.Locale) -> discord.File:
         theme = "DARK" if self.settings.dark_mode else "LIGHT"
         locale = self.settings.locale or interaction_locale
-        filename = self._get_filename(theme, locale)
+        filename = self.get_brand_img_filename(theme, locale)
         return discord.File(filename, filename="brand.png")
 
     async def update_ui_and_save_settings(self, i: "INTERACTION") -> None:

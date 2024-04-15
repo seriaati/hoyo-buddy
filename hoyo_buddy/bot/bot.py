@@ -22,6 +22,7 @@ from .command_tree import CommandTree
 from .translator import AppCommandTranslator, LocaleStr, Translator
 
 if TYPE_CHECKING:
+    import git
     from aiohttp import ClientSession
 
     from ..enums import Game
@@ -57,6 +58,8 @@ class HoyoBuddy(commands.AutoShardedBot):
         session: "ClientSession",
         env: str,
         translator: Translator,
+        repo: "git.Repo",
+        version: str,
     ) -> None:
         super().__init__(
             command_prefix=commands.when_mentioned,
@@ -78,6 +81,8 @@ class HoyoBuddy(commands.AutoShardedBot):
             token=os.environ["NAI_TOKEN"], host_url=os.environ["NAI_HOST_URL"]
         )
         self.owner_id = 410036441129943050
+        self.repo = repo
+        self.version = version
 
         self.search_autocomplete_choices: dict[
             Game,

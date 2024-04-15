@@ -20,9 +20,11 @@ from hoyo_buddy.web_server.server import GeetestWebServer
 load_dotenv()
 env = os.environ["ENV"]  # dev, prod, test
 
+repo = git.Repo()
+tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
+version = tags[-1].name
+
 if env != "dev":
-    repo = git.Repo()
-    tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
     sentry_sdk.init(
         dsn=os.getenv("SENTRY_DSN"),
         integrations=[
@@ -32,7 +34,7 @@ if env != "dev":
         traces_sample_rate=1.0,
         environment=env,
         enable_tracing=True,
-        release=tags[-1].name if tags else None,
+        release=version,
     )
 
 # Disables PyNaCl warning
@@ -44,7 +46,9 @@ async def main() -> None:
         aiohttp.ClientSession() as session,
         Database(),
         Translator(env) as translator,
-        HoyoBuddy(session=session, env=env, translator=translator) as bot,
+        HoyoBuddy(
+            session=session, env=env, translator=translator, repo=repo, version=version
+        ) as bot,
     ):
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
             server = GeetestWebServer(translator=translator)

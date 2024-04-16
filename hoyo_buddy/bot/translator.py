@@ -151,7 +151,6 @@ class Translator:
         locale: "Locale",
         *,
         title_case: bool = False,
-        capitalize: bool = False,
         capitalize_first_word: bool = False,
     ) -> str:
         if isinstance(string, str):
@@ -211,8 +210,6 @@ class Translator:
 
         if title_case:
             translation = convert_to_title_case(translation)
-        elif capitalize:
-            translation = translation.capitalize()
         elif capitalize_first_word:
             translation = capitalize_first_word_(translation)
         return translation

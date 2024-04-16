@@ -76,7 +76,7 @@ class AutoRedeem:
             cls._bot.capture_exception(e)
 
         content = LocaleStr(
-            "An error occurred while performing automatic code redemption.\n"
+            "An error occurred while redeeming codes automatically.\n"
             "Hoyo Buddy has disabled this feature for this account, you can turn it back on using </redeem>\n"
             "If this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n",
             key="auto_redeem_error.content",

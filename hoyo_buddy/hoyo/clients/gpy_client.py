@@ -269,7 +269,7 @@ class GenshinClient(genshin.Client, BaseClient):
         inline: bool,
         blur: bool = True,
     ) -> DefaultEmbed:
-        """Redeem multiple gift codes and return an embed with the results."""
+        """Redeem multiple codes and return an embed with the results."""
         results: list[tuple[str, str, bool]] = []
 
         for code in codes:
@@ -290,7 +290,7 @@ class GenshinClient(genshin.Client, BaseClient):
         embed = DefaultEmbed(
             locale,
             translator,
-            title=LocaleStr("Gift Code Redemption Results", key="redeem_command_embed.title"),
+            title=LocaleStr("Code Redemption Results", key="redeem_command_embed.title"),
         ).add_acc_info(self._account, blur=blur)
         for result in results:
             name = f"{'✅' if result[2] else '❌'} {result[0]}"
@@ -301,7 +301,7 @@ class GenshinClient(genshin.Client, BaseClient):
     async def redeem_code(
         self, code: str, *, locale: "Locale", translator: Translator
     ) -> tuple[str, bool]:
-        """Redeem a gift code, return a message and a boolean indicating success."""
+        """Redeem a code, return a message and a boolean indicating success."""
         success = False
         try:
             await super().redeem_code(code)
@@ -334,7 +334,7 @@ class GenshinClient(genshin.Client, BaseClient):
             return f"{embed.title}\n{embed.description}", success
         else:
             success = True
-            msg = LocaleStr("Gift code claimed", key="redeem_code.success").translate(
+            msg = LocaleStr("Successfully redeemed", key="redeem_code.success").translate(
                 translator, locale
             )
 

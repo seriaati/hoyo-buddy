@@ -389,7 +389,7 @@ class Hoyo(commands.Cog):
     @app_commands.command(
         name=app_commands.locale_str("redeem", translate=False),
         description=app_commands.locale_str(
-            "Redeem gift codes",
+            "Redeem codes for in-game rewards",
             key="redeem_command_description",
         ),
     )

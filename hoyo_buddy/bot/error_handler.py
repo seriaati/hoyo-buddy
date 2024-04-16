@@ -61,16 +61,16 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
         ),
     },
     (-2017, -2018): {
-        "title": LocaleStr("Gift code already claimed", key="redeem_code.already_claimed")
+        "title": LocaleStr("Redemption code already claimed", key="redeem_code.already_claimed")
     },
     (-2001,): {
-        "title": LocaleStr("Gift code expired", key="redeem_code.expired"),
+        "title": LocaleStr("Redemption code expired", key="redeem_code.expired"),
     },
     (-1065, -2003, -2004, -2014): {
-        "title": LocaleStr("Invalid gift code", key="redeem_code.invalid"),
+        "title": LocaleStr("Invalid redemption code", key="redeem_code.invalid"),
     },
     (-2016,): {
-        "title": LocaleStr("Gift code redemption in cooldown", key="redeem_code.cooldown"),
+        "title": LocaleStr("Code redemption in cooldown", key="redeem_code.cooldown"),
     },
     (-2021,): {
         "title": LocaleStr("Adventure rank too low (less than 10)", key="redeem_code.ar_too_low"),

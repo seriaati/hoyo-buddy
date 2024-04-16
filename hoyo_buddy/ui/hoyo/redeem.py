@@ -15,23 +15,21 @@ if TYPE_CHECKING:
 
 
 class GiftCodeModal(Modal):
-    code_1 = TextInput(
-        label=LocaleStr("Gift Code {num}", key="gift_code_modal.code_input.label", num=1)
-    )
+    code_1 = TextInput(label=LocaleStr("Code {num}", key="gift_code_modal.code_input.label", num=1))
     code_2 = TextInput(
-        label=LocaleStr("Gift Code {num}", key="gift_code_modal.code_input.label", num=2),
+        label=LocaleStr("Code {num}", key="gift_code_modal.code_input.label", num=2),
         required=False,
     )
     code_3 = TextInput(
-        label=LocaleStr("Gift Code {num}", key="gift_code_modal.code_input.label", num=3),
+        label=LocaleStr("Code {num}", key="gift_code_modal.code_input.label", num=3),
         required=False,
     )
     code_4 = TextInput(
-        label=LocaleStr("Gift Code {num}", key="gift_code_modal.code_input.label", num=4),
+        label=LocaleStr("Code {num}", key="gift_code_modal.code_input.label", num=4),
         required=False,
     )
     code_5 = TextInput(
-        label=LocaleStr("Gift Code {num}", key="gift_code_modal.code_input.label", num=5),
+        label=LocaleStr("Code {num}", key="gift_code_modal.code_input.label", num=5),
         required=False,
     )
 
@@ -58,8 +56,8 @@ class RedeemUI(View):
             self.translator,
             title=LocaleStr("Redeem Codes", key="redeem_codes_button.label"),
             description=LocaleStr(
-                "Enter up to 5 gift codes to redeem.\n"
-                "Alternatively, you can enable auto redeem to automatically redeem codes.",
+                "Enter up to 5 redemption codes to redeem.\n"
+                "Alternatively, you can enable automatic code redemption.",
                 key="redeem_command_embed.description",
             ),
         ).add_acc_info(self.account)
@@ -69,9 +67,9 @@ class RedeemUI(View):
         return DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr("Redeeming Gift Codes", key="redeem_cooldown_embed.title"),
+            title=LocaleStr("Redeeming Codes", key="redeem_cooldown_embed.title"),
             description=LocaleStr(
-                "Due to redemption cooldowns, this may take a while.",
+                "Due to redeem cooldowns, this may take a while.",
                 key="redeem_cooldown_embed.description",
             ),
         )
@@ -90,7 +88,9 @@ class RedeemCodesButton(Button[RedeemUI]):
         )
 
     async def callback(self, i: "INTERACTION") -> None:
-        modal = GiftCodeModal(title=LocaleStr("Enter gift codes", key="gift_code_modal.title"))
+        modal = GiftCodeModal(
+            title=LocaleStr("Enter redemption codes", key="gift_code_modal.title")
+        )
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
 

@@ -256,7 +256,6 @@ class GenshinClient(genshin.Client, BaseClient):
         self.set_cookies(parsed_cookies)
         new_str_cookies = "; ".join(f"{k}={v}" for k, v in parsed_cookies.items())
 
-        # Update cookie in the db via raw sql to avoid circular import
         self._account.cookies = new_str_cookies
         await self._account.save(update_fields=("cookies",))
 

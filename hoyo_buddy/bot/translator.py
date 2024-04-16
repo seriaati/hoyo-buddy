@@ -177,7 +177,7 @@ class Translator:
                     "String %r is missing on Transifex, added to not_translated", string_key
                 )
             elif (
-                source_string != message.format(**extras)
+                source_string.lower() != message.format(**extras).lower()
                 and self._env != "dev"
                 and string_key not in self._not_translated
             ):

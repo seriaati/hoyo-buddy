@@ -92,3 +92,27 @@ def get_discord_user_link(user_id: int) -> str:
 def get_discord_user_md_link(user: "User | Member") -> str:
     """Get the Markdown-formatted link to a Discord user's profile."""
     return f"[@{user}]({get_discord_user_link(user.id)})"
+
+
+def convert_to_title_case(s: str) -> str:
+    """Convert a string to title case.
+
+    Follows the rules of https://apastyle.apa.org/style-grammar-guidelines/capitalization/title-case
+    """
+    # Capitalize the first letter of each word
+    s = s.title()
+    # Lowercase minor words and articles
+    minor_words = r"(?i)\b(a|an|the|and|as|at|by|for|in|of|on|to|with|but|or|yet|so)\b"
+    s = re.sub(minor_words, lambda m: m.group(0).lower(), s)
+    # Capitalize the first and last words of a hyphenated word
+    s = re.sub(
+        r"(\b\w+)-(\w+)", lambda m: m.group(1).capitalize() + "-" + m.group(2).capitalize(), s
+    )
+    # Capitalize first word
+    s = capitalize_first_word(s)
+    return s
+
+
+def capitalize_first_word(s: str) -> str:
+    """Capitalize the first word of a string and leave the rest unchanged."""
+    return s[:1].upper() + s[1:]

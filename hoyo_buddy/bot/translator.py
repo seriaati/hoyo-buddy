@@ -14,6 +14,8 @@ from transifex.native.parsing import SourceString
 from transifex.native.rendering import AbstractErrorPolicy, AbstractRenderingPolicy
 
 from ..enums import GenshinElement, HSRElement
+from ..utils import capitalize_first_word as capitalize_first_word_
+from ..utils import convert_to_title_case
 
 if TYPE_CHECKING:
     from types import TracebackType
@@ -37,12 +39,14 @@ class LocaleStr:
         key: str | None = None,
         warn_no_key: bool = True,
         translate: bool = True,
+        no_modifiers: bool = False,
         **kwargs: Any,
     ) -> None:
         self.message = message
         self.key = key
         self.warn_no_key = warn_no_key
         self.translate_ = translate
+        self.no_modifiers = no_modifiers
         self.extras: dict[str, Any] = kwargs
 
     def __repr__(self) -> str:
@@ -141,8 +145,17 @@ class Translator:
                 message = message.replace(command_occurence, f"</{command_name}:{command_id}>")
         return message
 
-    def translate(self, string: LocaleStr | str, locale: "Locale") -> str:
+    def translate(
+        self,
+        string: LocaleStr | str,
+        locale: "Locale",
+        *,
+        title_case: bool = False,
+        capitalize: bool = False,
+        capitalize_first_word: bool = False,
+    ) -> str:
         if isinstance(string, str):
+            # it's intentional that we don't apply any modifiers when string is not LocaleStr
             return string
 
         extras = self._translate_extras(string.extras, locale)
@@ -193,6 +206,15 @@ class Translator:
         with contextlib.suppress(KeyError):
             translation = translation.format(**extras)
 
+        if string.no_modifiers:
+            return translation
+
+        if title_case:
+            translation = convert_to_title_case(translation)
+        elif capitalize:
+            translation = translation.capitalize()
+        elif capitalize_first_word:
+            translation = capitalize_first_word_(translation)
         return translation
 
     def _translate_extras(self, extras: dict[str, Any], locale: "Locale") -> dict[str, Any]:

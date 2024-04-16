@@ -20,7 +20,7 @@ class Embed(discord.Embed):
         url: str | None = None,
         description: "LocaleStr | str | None" = None,
     ) -> None:
-        translated_title = translator.translate(title, locale) if title else None
+        translated_title = translator.translate(title, locale, title_case=True) if title else None
         translated_description = translator.translate(description, locale) if description else None
 
         super().__init__(
@@ -42,7 +42,7 @@ class Embed(discord.Embed):
         value: "LocaleStr | str",
         inline: bool = True,
     ) -> Self:
-        translated_name = self.translator.translate(name, self.locale)
+        translated_name = self.translator.translate(name, self.locale, title_case=True)
         translated_value = self.translator.translate(value, self.locale)
         return super().add_field(name=translated_name, value=translated_value, inline=inline)
 

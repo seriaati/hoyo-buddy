@@ -224,7 +224,9 @@ class Button(discord.ui.Button, Generic[V_co]):
         translator: Translator,
     ) -> None:
         if self.locale_str_label:
-            self.label = translator.translate(self.locale_str_label, locale)
+            self.label = translator.translate(
+                self.locale_str_label, locale, capitalize_first_word=True
+            )
 
     async def set_loading_state(self, i: "INTERACTION", **kwargs: Any) -> None:
         self.original_label = self.label[:] if self.label else None
@@ -379,14 +381,20 @@ class Select(discord.ui.Select, Generic[V_co]):
         translator: Translator,
     ) -> None:
         if self.locale_str_placeholder:
-            self.placeholder = translator.translate(self.locale_str_placeholder, locale)
+            self.placeholder = translator.translate(
+                self.locale_str_placeholder, locale, capitalize_first_word=True
+            )
         for option in self.options:
             # NOTE: This is a workaround for a bug(?) in discord.py where options somehow get converted to discord.components.SelectOption internally
             if not isinstance(option, SelectOption):
                 continue
-            option.label = translator.translate(option.locale_str_label, locale)
+            option.label = translator.translate(
+                option.locale_str_label, locale, capitalize_first_word=True
+            )
             if option.locale_str_description:
-                option.description = translator.translate(option.locale_str_description, locale)
+                option.description = translator.translate(
+                    option.locale_str_description, locale, capitalize_first_word=True
+                )
 
     async def set_loading_state(self, i: "INTERACTION") -> None:
         self.original_options = self.options.copy()
@@ -576,10 +584,7 @@ class Modal(discord.ui.Modal):
         locale: discord.Locale,
         translator: Translator,
     ) -> None:
-        self.title = translator.translate(
-            self.locale_str_title,
-            locale,
-        )
+        self.title = translator.translate(self.locale_str_title, locale, title_case=True)
         for item in self.children:
             if isinstance(item, TextInput):
                 item.label = translator.translate(item.locale_str_label, locale)

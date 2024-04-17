@@ -6,7 +6,7 @@ from ..db.models import HoyoAccount
 from ..exceptions import AccountNotFoundError
 
 if TYPE_CHECKING:
-    from ..bot.bot import INTERACTION
+    from ..bot.bot import INTERACTION, USER
 
 
 class HoyoAccountTransformer(app_commands.Transformer):
@@ -16,7 +16,9 @@ class HoyoAccountTransformer(app_commands.Transformer):
         except ValueError as e:
             raise AccountNotFoundError from e
 
-        account = await HoyoAccount.get_or_none(uid=uid, game=game, user_id=i.user.id)
+        user: USER = i.namespace.user
+        user = user or i.user
+        account = await HoyoAccount.get_or_none(uid=uid, game=game, user_id=user.id)
         if account is None:
             raise AccountNotFoundError
         return account

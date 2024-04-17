@@ -22,6 +22,8 @@ from .command_tree import CommandTree
 from .translator import AppCommandTranslator, LocaleStr, Translator
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     import git
     from aiohttp import ClientSession
 
@@ -33,6 +35,7 @@ __all__ = ("INTERACTION", "HoyoBuddy")
 
 LOGGER_ = logging.getLogger(__name__)
 INTERACTION: TypeAlias = discord.Interaction["HoyoBuddy"]
+USER: TypeAlias = discord.User | discord.Member | None
 STATUS_CHANNEL_ID = 1220175609347444776
 
 intents = discord.Intents(
@@ -153,37 +156,69 @@ class HoyoBuddy(commands.AutoShardedBot):
             value="none",
         )
 
-    @staticmethod
     async def get_account_autocomplete(
-        user_id: int,
+        self,
+        user: USER,
+        author_id: int,
         current: str,
         locale: discord.Locale,
         translator: Translator,
-        games: set["Game"] | None = None,
+        games: "Sequence[Game]",
     ) -> list[discord.app_commands.Choice[str]]:
-        accounts = await HoyoAccount.filter(user_id=user_id).all()
+        """Get autocomplete choices for a user's accounts.
+
+        Args:
+            user: The user object to query the accounts with.
+            author_id: The interaction author's ID.
+            current: The current input.
+            locale: Discord locale.
+            translator: Bot's translator.
+            games: The games to filter by
+        """
+        is_author = user is None or user.id == author_id
+        game_query = Q(*[Q(game=game) for game in games], join_type="OR")
+        accounts = await HoyoAccount.filter(
+            game_query, user_id=author_id if user is None else user.id
+        ).all()
+        if not is_author:
+            accounts = [account for account in accounts if account.public]
+
         if not accounts:
+            if is_author:
+                return [
+                    self.get_error_app_command_choice(
+                        LocaleStr(
+                            "You don't have any accounts yet. Add one with /accounts",
+                            key="no_accounts_autocomplete_choice",
+                        )
+                    )
+                ]
             return [
-                discord.app_commands.Choice(
-                    name=discord.app_commands.locale_str(
-                        "You don't have any accounts yet. Add one with /accounts",
-                        key="no_accounts_autocomplete_choice",
-                    ),
-                    value="none",
+                self.get_error_app_command_choice(
+                    LocaleStr(
+                        "This user doesn't have any accounts yet",
+                        key="user_no_accounts_autocomplete_choice",
+                    )
                 )
             ]
 
         return [
             discord.app_commands.Choice(
-                name=f"{account} | {translator.translate(LocaleStr(account.game, warn_no_key=False), locale)}",
+                name=f"{account if is_author else account.blurred_display} | {translator.translate(LocaleStr(account.game, warn_no_key=False), locale)}",
                 value=f"{account.uid}_{account.game}",
             )
             for account in accounts
-            if current.lower() in str(account).lower() and (games is None or account.game in games)
+            if current.lower() in str(account).lower()
         ]
 
     @staticmethod
-    async def get_account(user_id: int, games: list["Game"]) -> HoyoAccount:
+    async def get_account(user_id: int, games: "Sequence[Game]") -> HoyoAccount:
+        """Get an account by user ID and games.
+
+        Args:
+            user_id: The Discord user ID.
+            games: The games to filter by.
+        """
         game_query = Q(*[Q(game=game) for game in games], join_type="OR")
         account = await HoyoAccount.filter(game_query, user_id=user_id, current=True).first()
         if account is None:

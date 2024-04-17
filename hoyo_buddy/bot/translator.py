@@ -39,14 +39,12 @@ class LocaleStr:
         key: str | None = None,
         warn_no_key: bool = True,
         translate: bool = True,
-        no_modifiers: bool = False,
         **kwargs: Any,
     ) -> None:
         self.message = message
         self.key = key
         self.warn_no_key = warn_no_key
         self.translate_ = translate
-        self.no_modifiers = no_modifiers
         self.extras: dict[str, Any] = kwargs
 
     def __repr__(self) -> str:
@@ -151,7 +149,6 @@ class Translator:
         locale: "Locale",
         *,
         title_case: bool = False,
-        capitalize: bool = False,
         capitalize_first_word: bool = False,
     ) -> str:
         if isinstance(string, str):
@@ -178,7 +175,7 @@ class Translator:
                     "String %r is missing on Transifex, added to not_translated", string_key
                 )
             elif (
-                source_string != message.format(**extras)
+                source_string.lower() != message.format(**extras).lower()
                 and self._env != "dev"
                 and string_key not in self._not_translated
             ):
@@ -206,13 +203,8 @@ class Translator:
         with contextlib.suppress(KeyError):
             translation = translation.format(**extras)
 
-        if string.no_modifiers:
-            return translation
-
         if title_case:
             translation = convert_to_title_case(translation)
-        elif capitalize:
-            translation = translation.capitalize()
         elif capitalize_first_word:
             translation = capitalize_first_word_(translation)
         return translation

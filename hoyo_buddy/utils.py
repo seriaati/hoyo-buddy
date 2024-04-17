@@ -101,15 +101,12 @@ def convert_to_title_case(s: str) -> str:
     """
     # Capitalize the first letter of each word
     s = s.title()
-    # Lowercase minor words and articles
-    minor_words = r"(?i)\b(a|an|the|and|as|at|by|for|in|of|on|to|with|but|or|yet|so)\b"
-    s = re.sub(minor_words, lambda m: m.group(0).lower(), s)
-    # Capitalize the first and last words of a hyphenated word
-    s = re.sub(
-        r"(\b\w+)-(\w+)", lambda m: m.group(1).capitalize() + "-" + m.group(2).capitalize(), s
-    )
+    # Lowercase words that are three letters or fewer
+    s = re.sub(r"\b\w{1,3}\b", lambda m: m.group().lower(), s)
     # Capitalize first word
     s = capitalize_first_word(s)
+    # Capitalize the first word after a colon
+    s = re.sub(r"(?<=:)\s*\w+", lambda m: m.group().capitalize(), s)
     return s
 
 

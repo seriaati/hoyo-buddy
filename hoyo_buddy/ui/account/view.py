@@ -9,7 +9,7 @@ from ...emojis import (
 from .. import SelectOption
 from .add_acc_handler import AddAccountHandler
 from .items.acc_select import AccountSelect
-from .items.acc_settings import AutoCheckinToggle, AutoRedeemToggle
+from .items.acc_settings import AccountPublicToggle, AutoCheckinToggle, AutoRedeemToggle
 from .items.add_acc_btn import AddAccountButton
 from .items.del_acc_btn import DeleteAccountButton
 from .items.edit_nickname_btn import EditNicknameButton
@@ -87,6 +87,7 @@ class AccountManager(AddAccountHandler):
             self.add_item(DeleteAccountButton())
             self.add_item(AutoRedeemToggle(self.selected_account.auto_redeem))
             self.add_item(AutoCheckinToggle(self.selected_account.daily_checkin))
+            self.add_item(AccountPublicToggle(self.selected_account.public))
         else:
             self.add_item(AddAccountButton())
 
@@ -127,5 +128,9 @@ class AccountManager(AddAccountHandler):
             auto_checkin_toggle: AutoCheckinToggle = self.get_item("auto_checkin_toggle")
             auto_checkin_toggle.current_toggle = self.selected_account.daily_checkin
             auto_checkin_toggle.update_style()
+
+            acc_public_toggle: AccountPublicToggle = self.get_item("public_account_toggle")
+            acc_public_toggle.current_toggle = self.selected_account.public
+            acc_public_toggle.update_style()
 
             await self.absolute_edit(i, embed=self._acc_embed, view=self)

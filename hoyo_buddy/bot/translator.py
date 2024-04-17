@@ -161,22 +161,18 @@ class Translator:
 
         string_key = self._get_string_key(string)
 
-        if string.translate_:
+        if string.translate_ and self._env != "dev":
+            # Check if the string is missing or has different values
             source_string = tx.translate(
                 message, "en_US", _key=string_key, escape=False, params=extras
             )
-            if (
-                source_string is None
-                and self._env != "dev"
-                and string_key not in self._not_translated
-            ):
+            if source_string is None and string_key not in self._not_translated:
                 self._not_translated[string_key] = message
                 LOGGER_.info(
                     "String %r is missing on Transifex, added to not_translated", string_key
                 )
             elif (
                 source_string.lower() != message.format(**extras).lower()
-                and self._env != "dev"
                 and string_key not in self._not_translated
             ):
                 self._not_translated[string_key] = message

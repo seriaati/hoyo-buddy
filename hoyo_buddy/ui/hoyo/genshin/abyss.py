@@ -42,12 +42,16 @@ class AbyssView(View):
     async def _fetch_data(self) -> None:
         client = self._account.client
         if self._previous not in self._abyss:
-            self._abyss[self._previous] = await client.get_genshin_spiral_abyss(
-                self._account.uid, previous=self._previous
-            )
+            data = await client.get_genshin_spiral_abyss(self._account.uid, previous=self._previous)
+            if not data.ranks:
+                await client.get_record_cards()
+                data = await client.get_genshin_spiral_abyss(
+                    self._account.uid, previous=self._previous
+                )
+            self._abyss[self._previous] = data
 
         if self._abyss[self._previous].max_floor == "0-0":
-            raise NoAbyssDataError()
+            raise NoAbyssDataError
         if not self._characters:
             self._characters = await client.get_genshin_characters(self._account.uid)
 

@@ -45,6 +45,8 @@ class HoyoAccount(Model):
     farm_notifs: fields.BackwardOneToOneRelation["FarmNotify"]
     redeemed_codes: fields.Field[list[str]] = fields.JSONField(default=[])  # pyright: ignore [reportAssignmentType]
     auto_redeem = fields.BooleanField(default=True)
+    public = fields.BooleanField(default=True)
+    """Whether this account can be seen by others."""
 
     class Meta:
         unique_together = ("uid", "game", "user")

@@ -93,18 +93,40 @@ class AutoRedeem:
         return embed
 
     @classmethod
-    async def execute(cls, bot: "HoyoBuddy") -> None:
+    async def execute(
+        cls, bot: "HoyoBuddy", game: Game | None = None, codes: list[str] | None = None
+    ) -> None:
+        """Redeem codes for accounts that have auto redeem enabled.
+
+        Args:
+            bot: The bot instance.
+            game: The game to redeem codes for, all games if None.
+            codes: The codes to redeem, None to fetch from API.
+        """
         if cls._lock.locked():
             return
 
         async with cls._lock:
-            LOGGER_.info("Starting auto redeem task")
+            LOGGER_.info(
+                "Starting auto redeem task for game %s and codes %s",
+                game or "all",
+                codes or "from API",
+            )
             cls._bot = bot
 
-            genshin_codes = await cls._get_codes(bot.session, genshin.Game.GENSHIN)
-            hsr_codes = await cls._get_codes(bot.session, genshin.Game.STARRAIL)
+            if codes is None:
+                genshin_codes = await cls._get_codes(bot.session, genshin.Game.GENSHIN)
+                hsr_codes = await cls._get_codes(bot.session, genshin.Game.STARRAIL)
+            else:
+                genshin_codes = codes
+                hsr_codes = codes
 
-            accounts = await HoyoAccount.filter(auto_redeem=True)
+            accounts = (
+                await HoyoAccount.filter(auto_redeem=True, game=game)
+                if game is not None
+                else await HoyoAccount.filter(auto_redeem=True)
+            )
+
             for account in accounts:
                 if account.game is Game.GENSHIN:
                     codes = genshin_codes

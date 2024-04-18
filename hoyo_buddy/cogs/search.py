@@ -16,6 +16,7 @@ from ..enums import Game
 from ..exceptions import InvalidQueryError
 from ..hoyo.clients import ambr_client, yatta_client
 from ..ui import URLButtonView
+from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
 from ..ui.hoyo.genshin.search import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
 from ..ui.hoyo.hsr.search import BookUI, RelicSetUI
 from ..ui.hoyo.hsr.search import CharacterUI as HSRCharacterUI
@@ -156,7 +157,8 @@ class Search(commands.Cog):
         except ValueError as e:
             raise InvalidQueryError from e
 
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        settings = await Settings.get(user_id=i.user.id)
+        locale = settings.locale or i.locale
 
         if game is Game.GENSHIN:
             try:
@@ -280,6 +282,21 @@ class Search(commands.Cog):
                     )
                     await tcg_card_ui.start(i)
 
+                case ambr_client.ItemCategory.SPIRAL_ABYSS:
+                    try:
+                        index = int(query)
+                    except ValueError as e:
+                        raise InvalidQueryError from e
+
+                    view = AbyssEnemyView(
+                        settings.dark_mode,
+                        index,
+                        author=i.user,
+                        locale=locale,
+                        translator=i.client.translator,
+                    )
+                    await view.start(i)
+
         elif game is Game.STARRAIL:
             try:
                 category = yatta_client.ItemCategory(category_value)
@@ -352,7 +369,7 @@ class Search(commands.Cog):
         ]
 
     @search_command.autocomplete("query")
-    async def search_command_query_autocomplete(
+    async def search_command_query_autocomplete(  # noqa: PLR0912
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         try:
@@ -381,6 +398,10 @@ class Search(commands.Cog):
                     LocaleStr("Invalid category selected", key="invalid_category_selected")
                 )
             ]
+
+        # Special handling for spiral abyss
+        if category is ambr_client.ItemCategory.SPIRAL_ABYSS:
+            return await AbyssEnemyView.get_autocomplete_choices()
 
         if (
             not self.bot.search_autocomplete_choices

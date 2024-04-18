@@ -22,7 +22,6 @@ from ..models import DrawInput
 from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.genshin.abyss import AbyssView
-from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.profile.view import ProfileView
 from ..ui.hoyo.redeem import RedeemUI
@@ -215,23 +214,6 @@ class Hoyo(commands.Cog):
         else:
             raise NotImplementedError
 
-        await view.start(i)
-
-    @app_commands.command(
-        name=app_commands.locale_str("abyss-enemies", translate=False),
-        description=app_commands.locale_str(
-            "View the current abyss enemies", key="abyss_command_description"
-        ),
-    )
-    async def abyss_enemies_command(self, i: "INTERACTION") -> None:
-        settings = await Settings.get(user_id=i.user.id)
-
-        view = AbyssEnemyView(
-            dark_mode=settings.dark_mode,
-            author=i.user,
-            locale=settings.locale or i.locale,
-            translator=self.bot.translator,
-        )
         await view.start(i)
 
     @app_commands.command(

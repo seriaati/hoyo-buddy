@@ -16,7 +16,7 @@ from ..ui.hoyo.farm import FarmView
 from ..ui.hoyo.farm_notify import FarmNotifyView
 
 if TYPE_CHECKING:
-    from ..bot.bot import INTERACTION, HoyoBuddy
+    from ..bot.bot import INTERACTION, USER, HoyoBuddy
 
 LOGGER_ = logging.getLogger(__name__)
 
@@ -95,7 +95,7 @@ class Farm(
         if query == "none":
             raise InvalidQueryError
 
-        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
+        account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         characters = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
         weapons = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
         valid_item_ids = {id_ for c in characters.values() for id_ in c.values()} | {
@@ -161,7 +161,7 @@ class Farm(
         query: str,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
+        account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
         farm_notify, _ = await FarmNotify.get_or_create(account=account_)
         if query not in farm_notify.item_ids:
@@ -212,7 +212,7 @@ class Farm(
         i: "INTERACTION",
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
+        account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
         farm_notify, _ = await FarmNotify.get_or_create(account=account_)
 
@@ -235,8 +235,9 @@ class Farm(
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice[str]]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        user: USER = i.namespace.user
         return await self.bot.get_account_autocomplete(
-            i.user.id, current, locale, self.bot.translator, {Game.GENSHIN}
+            user, i.user.id, current, locale, self.bot.translator, (Game.GENSHIN,)
         )
 
     @farm_add_command.autocomplete("query")

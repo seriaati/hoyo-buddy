@@ -7,6 +7,7 @@ from genshin.errors import GenshinException
 from mihomo.errors import HttpRequestError, UserNotFound
 from seria.utils import read_yaml
 
+from ..bot.bot import USER  # noqa: TCH001
 from ..bot.translator import LocaleStr
 from ..db.models import EnkaCache, HoyoAccount, Settings
 from ..draw.main_funcs import draw_exploration_card
@@ -45,7 +46,6 @@ class Hoyo(commands.Cog):
         """Get the UID and game from the account or the provided UID and game value."""
         account_ = None
         if uid is not None:
-            uid_ = int(uid)
             if game_value is None:
                 raise IncompleteParamError(
                     LocaleStr(
@@ -53,6 +53,7 @@ class Hoyo(commands.Cog):
                         key="game_value_incomplete_param_error_message",
                     )
                 )
+            uid_ = int(uid)
             game = Game(game_value)
         else:
             account_ = account or await self.bot.get_account(user_id, [Game.GENSHIN, Game.STARRAIL])
@@ -68,44 +69,38 @@ class Hoyo(commands.Cog):
         ),
     )
     @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
+        user=app_commands.locale_str(
+            "User to search the accounts with, defaults to you",
+            key="user_autocomplete_param_description",
+        ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
-        )
+        ),
     )
     async def checkin_command(
         self,
         i: "INTERACTION",
+        user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
+        user = user or i.user
         account_ = account or await self.bot.get_account(
-            i.user.id, [Game.GENSHIN, Game.STARRAIL, Game.HONKAI]
+            user.id, (Game.GENSHIN, Game.STARRAIL, Game.HONKAI)
         )
-        await account_.fetch_related("user", "user__settings")
+        settings = await Settings.get(user_id=i.user.id)
         view = CheckInUI(
             account_,
-            dark_mode=account_.user.settings.dark_mode,
+            dark_mode=settings.dark_mode,
             author=i.user,
-            locale=account_.user.settings.locale or i.locale,
+            locale=settings.locale or i.locale,
             translator=self.bot.translator,
         )
         await view.start(i)
-
-    @checkin_command.autocomplete("account")
-    async def checkin_command_autocomplete(
-        self, i: "INTERACTION", current: str
-    ) -> list[app_commands.Choice]:
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        return await self.bot.get_account_autocomplete(
-            i.user.id,
-            current,
-            locale,
-            self.bot.translator,
-            {Game.GENSHIN, Game.STARRAIL, Game.HONKAI},
-        )
 
     @app_commands.command(
         name=app_commands.locale_str("profile", translate=False),
@@ -115,11 +110,16 @@ class Hoyo(commands.Cog):
         ),
     )
     @app_commands.rename(
+        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
         account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
         uid=app_commands.locale_str("uid", translate=False),
         game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
     )
     @app_commands.describe(
+        user=app_commands.locale_str(
+            "User to search the accounts with, defaults to you",
+            key="user_autocomplete_param_description",
+        ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
@@ -147,6 +147,7 @@ class Hoyo(commands.Cog):
     async def profile_command(
         self,
         i: "INTERACTION",
+        user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
         uid: app_commands.Range[str, 9, 10] | None = None,
         game_value: str | None = None,
@@ -154,8 +155,8 @@ class Hoyo(commands.Cog):
         await i.response.defer()
 
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-        uid_, game, account_ = await self._get_uid_and_game(i.user.id, account, uid, game_value)
-        hoyolab_user = None
+        user = user or i.user
+        uid_, game, account_ = await self._get_uid_and_game(user.id, account, uid, game_value)
 
         if game is Game.GENSHIN:
             async with EnkaAPI(locale) as client:
@@ -176,6 +177,7 @@ class Hoyo(commands.Cog):
         elif game is Game.STARRAIL:
             hoyolab_charas: list[HoyolabHSRCharacter] = []
             starrail_data: StarrailInfoParsed | None = None
+            hoyolab_user = None
 
             try:
                 client = MihomoAPI(locale)
@@ -239,22 +241,28 @@ class Hoyo(commands.Cog):
         ),
     )
     @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
+        user=app_commands.locale_str(
+            "User to search the accounts with, defaults to you",
+            key="user_autocomplete_param_description",
+        ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
-        )
+        ),
     )
     async def notes_command(
         self,
         i: "INTERACTION",
+        user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN, Game.STARRAIL])
-        await account_.fetch_related("user", "user__settings")
-        locale = account_.user.settings.locale or i.locale
+        user = user or i.user
+        account_ = account or await self.bot.get_account(user.id, [Game.GENSHIN, Game.STARRAIL])
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
 
         view = NotesView(
             account_,
@@ -272,23 +280,30 @@ class Hoyo(commands.Cog):
         ),
     )
     @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
+        user=app_commands.locale_str(
+            "User to search the accounts with, defaults to you",
+            key="user_autocomplete_param_description",
+        ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
-        )
+        ),
     )
     async def characters_command(
         self,
         i: "INTERACTION",
+        user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN, Game.STARRAIL])
-        await account_.fetch_related("user", "user__settings")
-
         await i.response.defer()
+
+        user = user or i.user
+        account_ = account or await self.bot.get_account(user.id, [Game.GENSHIN, Game.STARRAIL])
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
 
         if account_.game is Game.GENSHIN:
             async with AmbrAPIClient(translator=self.bot.translator) as client:
@@ -307,7 +322,7 @@ class Hoyo(commands.Cog):
             element_char_counts,
             path_char_counts,
             author=i.user,
-            locale=account_.user.settings.locale or i.locale,
+            locale=locale,
             translator=self.bot.translator,
         )
         await view.start(i, show_first_time_msg=account_.game is Game.GENSHIN)
@@ -319,27 +334,34 @@ class Hoyo(commands.Cog):
         ),
     )
     @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
+        user=app_commands.locale_str(
+            "User to search the accounts with, defaults to you",
+            key="user_autocomplete_param_description",
+        ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
-        )
+        ),
     )
     async def abyss_command(
         self,
         i: "INTERACTION",
+        user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
-        await account_.fetch_related("user", "user__settings")
+        user = user or i.user
+        account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
 
         view = AbyssView(
             account_,
             account_.user.settings.dark_mode,
             author=i.user,
-            locale=account_.user.settings.locale or i.locale,
+            locale=locale,
             translator=self.bot.translator,
         )
         await view.start(i)
@@ -352,36 +374,42 @@ class Hoyo(commands.Cog):
         ),
     )
     @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
+        user=app_commands.locale_str(
+            "User to search the accounts with, defaults to you",
+            key="user_autocomplete_param_description",
+        ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
-        )
+        ),
     )
     async def exploration_command(
         self,
         i: "INTERACTION",
+        user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN])
-        await account_.fetch_related("user", "user__settings")
-
         await i.response.defer()
 
-        locale = account_.user.settings.locale or i.locale
-        account_.client.set_lang(locale)
-        user = await account_.client.get_partial_genshin_user(account_.uid)
+        user = user or i.user
+        account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN,))
+
+        settings = await Settings.get(user_id=i.user.id)
+        account_.client.set_lang(settings.locale or i.locale)
+        genshin_user = await account_.client.get_partial_genshin_user(account_.uid)
 
         file_ = await draw_exploration_card(
             DrawInput(
-                dark_mode=account_.user.settings.dark_mode,
-                locale=account_.user.settings.locale or i.locale,
+                dark_mode=settings.dark_mode,
+                locale=settings.locale or i.locale,
                 session=self.bot.session,
                 filename="exploration.webp",
             ),
-            user,
+            genshin_user,
             self.bot.translator,
         )
         await i.followup.send(files=[file_])
@@ -394,23 +422,29 @@ class Hoyo(commands.Cog):
         ),
     )
     @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
+        user=app_commands.locale_str(
+            "User to search the accounts with, defaults to you",
+            key="user_autocomplete_param_description",
+        ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
-        )
+        ),
     )
     async def redeem_command(
         self,
         i: "INTERACTION",
+        user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        account_ = account or await self.bot.get_account(i.user.id, [Game.GENSHIN, Game.STARRAIL])
-        await account_.fetch_related("user", "user__settings")
+        user = user or i.user
+        account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN, Game.STARRAIL))
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
 
-        locale = account_.user.settings.locale or i.locale
         view = RedeemUI(account_, author=i.user, locale=locale, translator=self.bot.translator)
         await i.response.send_message(embed=view.start_embed, view=view)
         view.message = await i.original_response()
@@ -421,8 +455,14 @@ class Hoyo(commands.Cog):
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        user: USER = i.namespace.user
         return await self.bot.get_account_autocomplete(
-            i.user.id, current, locale, self.bot.translator, {Game.GENSHIN}
+            user,
+            i.user.id,
+            current,
+            locale,
+            self.bot.translator,
+            (Game.GENSHIN,),
         )
 
     @characters_command.autocomplete("account")
@@ -433,8 +473,29 @@ class Hoyo(commands.Cog):
         self, i: "INTERACTION", current: str
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        user: USER = i.namespace.user
         return await self.bot.get_account_autocomplete(
-            i.user.id, current, locale, self.bot.translator, {Game.GENSHIN, Game.STARRAIL}
+            user,
+            i.user.id,
+            current,
+            locale,
+            self.bot.translator,
+            (Game.GENSHIN, Game.STARRAIL),
+        )
+
+    @checkin_command.autocomplete("account")
+    async def checkin_command_autocomplete(
+        self, i: "INTERACTION", current: str
+    ) -> list[app_commands.Choice]:
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        user: USER = i.namespace.user
+        return await self.bot.get_account_autocomplete(
+            user,
+            i.user.id,
+            current,
+            locale,
+            self.bot.translator,
+            (Game.GENSHIN, Game.STARRAIL, Game.HONKAI),
         )
 
 

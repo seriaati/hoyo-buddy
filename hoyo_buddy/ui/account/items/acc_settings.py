@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.emojis import GIFT_OUTLINE, PUBLIC, SMART_TOY
 
-from ....emojis import GIFT_OUTLINE, SMART_TOY
 from ...components import ToggleButton
 
 if TYPE_CHECKING:
@@ -45,3 +45,21 @@ class AutoCheckinToggle(ToggleButton["AccountManager"]):
 
         self.view.selected_account.daily_checkin = self.current_toggle
         await self.view.selected_account.save(update_fields=("daily_checkin",))
+
+
+class AccountPublicToggle(ToggleButton["AccountManager"]):
+    def __init__(self, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle,
+            LocaleStr("Set account as public", key="public_account_toggle.label"),
+            row=2,
+            emoji=PUBLIC,
+            custom_id="public_account_toggle",
+        )
+
+    async def callback(self, i: "INTERACTION") -> None:
+        await super().callback(i)
+        assert self.view.selected_account is not None
+
+        self.view.selected_account.public = self.current_toggle
+        await self.view.selected_account.save(update_fields=("public",))

@@ -4,6 +4,7 @@ import logging
 import os
 
 import aiohttp
+import aiohttp.http_websocket
 import discord
 import git
 import sentry_sdk
@@ -57,7 +58,8 @@ async def main() -> None:
             tasks.add(task)
             task.add_done_callback(tasks.discard)
 
-            await bot.start(os.environ["DISCORD_TOKEN"])
+            with contextlib.suppress(aiohttp.http_websocket.WebSocketError):
+                await bot.start(os.environ["DISCORD_TOKEN"])
 
 
 with setup_logging(logging.INFO, log_filename="hoyo_buddy.log"):

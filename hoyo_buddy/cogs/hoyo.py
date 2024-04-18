@@ -55,7 +55,8 @@ class Hoyo(commands.Cog):
             uid_ = int(uid)
             game = Game(game_value)
         else:
-            account_ = account or await self.bot.get_account(user_id, [Game.GENSHIN, Game.STARRAIL])
+            games = (Game(game_value),) if game_value is not None else (Game.GENSHIN, Game.STARRAIL)
+            account_ = account or await self.bot.get_account(user_id, games)
             uid_ = account_.uid
             game = account_.game
 

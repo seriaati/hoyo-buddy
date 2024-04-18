@@ -726,7 +726,9 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
     def _get_abyss_enemy_item(
         self,
         enemy: ambr.AbyssEnemy,
+        *,
         level: int,
+        floor: int,
         monster_curve: dict[str, dict[str, dict[str, float]]],
     ) -> ItemWithDescription:
         if self.translator is None:
@@ -738,20 +740,33 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             * monster_curve[str(level)]["curveInfos"][prop.growth_type]
             for prop in enemy.properties
         }
+
+        # Floor multiplier
+        multiplier = 1
+        if 3 <= floor <= 7:
+            multiplier = 1.5
+        elif 8 <= floor <= 11:
+            multiplier = 2
+        elif floor == 12:
+            multiplier = 2.5
+
+        for prop in prop_values:
+            prop_values[prop] *= multiplier
+
         title_locale_str = LocaleStr(
-            "HP {HP} | DEF {DEF}",
+            "HP: {HP}",
             key="abyss_enemy.item_description",
             HP=f"{round(prop_values['FIGHT_PROP_BASE_HP']):,}",
-            # ATK=f"{round(prop_values['FIGHT_PROP_BASE_ATTACK']):,}",
-            DEF=f"{round(prop_values['FIGHT_PROP_BASE_DEFENSE']):,}",
         )
         title_str = self.translator.translate(title_locale_str, self.locale)
         return ItemWithDescription(icon=enemy.icon, title=title_str, description=enemy.name)
 
     def _get_enemy_items(
         self,
+        *,
         enemy_ids: list[int],
         enemies: list[ambr.AbyssEnemy],
+        floor: int,
         floor_enemy_level: int,
         monster_curve: dict[str, dict[str, dict[str, float]]],
     ) -> list[ItemWithDescription]:
@@ -759,19 +774,29 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         for enemy_id in enemy_ids:
             enemy = dutils.get(enemies, id=enemy_id)
             if enemy is not None:
-                items.append(self._get_abyss_enemy_item(enemy, floor_enemy_level, monster_curve))
+                items.append(
+                    self._get_abyss_enemy_item(
+                        enemy, level=floor_enemy_level, floor=floor, monster_curve=monster_curve
+                    )
+                )
         return items
 
     def get_abyss_chamber_enemy_items(
         self,
         chamber: ambr.Chamber,
         enemies: list[ambr.AbyssEnemy],
+        *,
+        floor: int,
         floor_enemy_level: int,
         monster_curve: dict[str, dict[str, dict[str, float]]],
     ) -> tuple[list[ItemWithDescription], list[ItemWithDescription]]:
         result = (
             self._get_enemy_items(
-                chamber.wave_one_enemies, enemies, floor_enemy_level, monster_curve
+                enemy_ids=chamber.wave_one_enemies,
+                enemies=enemies,
+                floor=floor,
+                floor_enemy_level=floor_enemy_level,
+                monster_curve=monster_curve,
             ),
             [],
         )
@@ -779,7 +804,11 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             result = (
                 result[0],
                 self._get_enemy_items(
-                    chamber.wave_two_enemies, enemies, floor_enemy_level, monster_curve
+                    enemy_ids=chamber.wave_two_enemies,
+                    enemies=enemies,
+                    floor=floor,
+                    floor_enemy_level=floor_enemy_level,
+                    monster_curve=monster_curve,
                 ),
             )
 

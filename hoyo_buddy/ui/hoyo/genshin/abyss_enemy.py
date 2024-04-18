@@ -111,6 +111,7 @@ class AbyssEnemyView(View):
             items = client.get_abyss_chamber_enemy_items(
                 chamber,
                 enemies=self._abyss_data.enemies,
+                floor=self._floor_index + 1,
                 floor_enemy_level=floor.override_enemy_level,
                 monster_curve=self._monster_curve,
             )

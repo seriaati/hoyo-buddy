@@ -65,6 +65,7 @@ class ItemCategory(StrEnum):
     LIVING_BEINGS = "Living Beings"
     BOOKS = "Books"
     TCG = "TCG"
+    SPIRAL_ABYSS = "Spiral Abyss"
 
 
 class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
@@ -242,6 +243,8 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
                 return await self.fetch_books()
             case ItemCategory.TCG:
                 return await self.fetch_tcg_cards()
+            case ItemCategory.SPIRAL_ABYSS:
+                return []
 
     def get_character_embed(
         self,

@@ -6,7 +6,7 @@ from genshin.models import Notes as GenshinNotes
 from genshin.models import StarRailNote as StarRailNotes
 
 from hoyo_buddy.bot.translator import LocaleStr
-from hoyo_buddy.db.models import NotesNotify, Settings
+from hoyo_buddy.db.models import NotesNotify
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import (
     BELL_OUTLINE,
@@ -39,7 +39,7 @@ class NotesView(View):
     def __init__(
         self,
         account: "HoyoAccount",
-        settings: "Settings",
+        dark_mode: bool,
         *,
         author: User | Member | None,
         locale: Locale,
@@ -47,7 +47,7 @@ class NotesView(View):
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self._account = account
-        self._settings = settings
+        self._dark_mode = dark_mode
 
         self.add_item(ReminderButton())
 
@@ -392,7 +392,7 @@ class NotesView(View):
         if isinstance(notes, GenshinNotes):
             return await draw_gi_notes_card(
                 DrawInput(
-                    dark_mode=self._settings.dark_mode,
+                    dark_mode=self._dark_mode,
                     locale=self.locale,
                     session=session,
                     filename="notes.webp",
@@ -402,7 +402,7 @@ class NotesView(View):
             )
         return await draw_hsr_notes_card(
             DrawInput(
-                dark_mode=self._settings.dark_mode,
+                dark_mode=self._dark_mode,
                 locale=self.locale,
                 session=session,
                 filename="notes.webp",

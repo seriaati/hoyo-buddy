@@ -244,13 +244,13 @@ class Hoyo(commands.Cog):
     ) -> None:
         user = user or i.user
         account_ = account or await self.bot.get_account(user.id, [Game.GENSHIN, Game.STARRAIL])
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        settings = await Settings.get(user_id=i.user.id)
 
         view = NotesView(
             account_,
-            account_.user.settings,
+            settings.dark_mode,
             author=i.user,
-            locale=locale,
+            locale=settings.locale or i.locale,
             translator=self.bot.translator,
         )
         await view.start(i)

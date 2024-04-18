@@ -188,7 +188,7 @@ class NotesChecker:
 
         view = NotesView(
             notify.account,
-            notify.account.user.settings,
+            notify.account.user.settings.dark_mode,
             author=None,
             locale=locale,
             translator=cls._bot.translator,

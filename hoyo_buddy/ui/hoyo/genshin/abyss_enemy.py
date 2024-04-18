@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle, Locale, Member, User
+from discord import ButtonStyle, Locale, Member, User, app_commands
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.draw.main_funcs import draw_item_list_card
@@ -23,6 +23,7 @@ class AbyssEnemyView(View):
     def __init__(
         self,
         dark_mode: bool,
+        index: int,
         *,
         author: User | Member,
         locale: Locale,
@@ -34,10 +35,25 @@ class AbyssEnemyView(View):
         self._floor_index = 11
         self._chamber_index = 0
         self._wave_index = 0
-        self._season_index = 0
+        self._season_index = index
 
         self._abyss_data: "AbyssResponse | None" = None
         self._monster_curve: dict[str, dict[str, dict[str, float]]] | None = None
+
+    @staticmethod
+    async def get_autocomplete_choices() -> list[app_commands.Choice[str]]:
+        async with AmbrAPIClient() as client:
+            abyss_data = await client.fetch_abyss_data()
+
+        result: list[app_commands.Choice[str]] = []
+        for index, item in enumerate(abyss_data.abyss_items):
+            name = f"{item.open_time.strftime('%m/%d/%Y')} ~ {item.close_time.strftime('%m/%d/%Y')}"
+            now = get_now().replace(tzinfo=None)
+            if item.open_time <= now <= item.close_time:
+                name += " (✦)"
+            result.append(app_commands.Choice(name=name, value=str(index)))
+
+        return result
 
     def add_items(self) -> None:
         assert self._abyss_data is not None
@@ -71,13 +87,6 @@ class AbyssEnemyView(View):
             wave_btn.style = (
                 ButtonStyle.secondary if index != self._wave_index else ButtonStyle.primary
             )
-
-    def _determine_season_index(self) -> None:
-        assert self._abyss_data is not None
-        for index, abyss_item in enumerate(self._abyss_data.abyss_items):
-            if abyss_item.open_time <= get_now().replace(tzinfo=None) <= abyss_item.close_time:
-                self._season_index = index
-                break
 
     async def _get_embed_and_enemy_items(
         self,
@@ -140,7 +149,6 @@ class AbyssEnemyView(View):
             self._abyss_data = await client.fetch_abyss_data()
             self._monster_curve = await client.fetch_monster_curve()
 
-        self._determine_season_index()
         await self._update(i, defer=False)
 
 

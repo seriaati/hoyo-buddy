@@ -765,14 +765,14 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         self,
         *,
         enemy_ids: list[int],
-        enemies: list[ambr.AbyssEnemy],
+        enemies: dict[str, ambr.AbyssEnemy],
         floor: int,
         floor_enemy_level: int,
         monster_curve: dict[str, dict[str, dict[str, float]]],
     ) -> list[ItemWithDescription]:
         items = []
         for enemy_id in enemy_ids:
-            enemy = dutils.get(enemies, id=enemy_id)
+            enemy = enemies.get(str(enemy_id))
             if enemy is not None:
                 items.append(
                     self._get_abyss_enemy_item(
@@ -784,8 +784,8 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
     def get_abyss_chamber_enemy_items(
         self,
         chamber: ambr.Chamber,
-        enemies: list[ambr.AbyssEnemy],
         *,
+        enemies: dict[str, ambr.AbyssEnemy],
         floor: int,
         floor_enemy_level: int,
         monster_curve: dict[str, dict[str, dict[str, float]]],

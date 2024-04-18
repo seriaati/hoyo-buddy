@@ -3,9 +3,10 @@ from typing import TYPE_CHECKING, Any
 
 from discord import ButtonStyle, ui
 from discord.ext import commands
+from genshin import Game  # noqa: TCH002
 from seria.utils import write_json
 
-from ..constants import UID_STARTS
+from ..constants import GPY_GAME_TO_HB_GAME, UID_STARTS
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
@@ -112,6 +113,16 @@ class Admin(commands.Cog):
             tasks.add(task)
             task.add_done_callback(tasks.discard)
         await message.edit(content="Updated search autocomplete.")
+
+    @commands.command(name="add-codes", aliases=["ac"])
+    async def add_codes_command(self, ctx: commands.Context, game: Game, codes: str) -> Any:
+        tasks: set[asyncio.Task] = set()
+        task = asyncio.create_task(
+            AutoRedeem.execute(self.bot, GPY_GAME_TO_HB_GAME[game], codes.split(","))
+        )
+        tasks.add(task)
+        task.add_done_callback(tasks.discard)
+        await ctx.send("Added codes.")
 
 
 async def setup(bot: "HoyoBuddy") -> None:

@@ -43,7 +43,7 @@ optional = true
 [tool.poetry.group.dev.dependencies]
 aerich = "^0.7.2"
 pre-commit = "^3.6.0"
-ruff = "^0.3.4"
+ruff = "^0.4.0"
 
 [tool.poetry.group.linux]
 optional = true

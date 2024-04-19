@@ -8,7 +8,7 @@ description = "Elevate your Hoyoverse experience."
 license = "GPL-3.0"
 name = "hoyo-buddy"
 readme = "README.md"
-version = "0.9.7"
+version = "0.9.8"
 
 [tool.poetry.dependencies]
 aiofiles = "^23.2.1"

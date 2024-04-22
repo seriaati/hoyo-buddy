@@ -353,7 +353,7 @@ class NotesChecker:
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:
         content = LocaleStr(
-            "An error occurred while performing automatic code redemption.\n"
+            "An error occurred while processing your real-time notes reminder.\n"
             "Hoyo Buddy has disabled this reminder for this account, you can turn it back on using </notes>\n"
             "If this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n",
             key="process_notify_error.content",

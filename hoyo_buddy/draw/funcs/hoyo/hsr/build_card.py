@@ -531,6 +531,9 @@ def draw_hsr_build_card(
             sub_stat_icon_right_pos = stat_x + icon.width
 
             text = attr.displayed_value
+            if isinstance(attr, mihomo.SubAffix) and attr.field == "spd":
+                text = str(attr.value)
+
             drawer.write(
                 text,
                 position=(sub_stat_icon_right_pos + 5, stat_y + 3),

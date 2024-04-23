@@ -314,15 +314,15 @@ class Drawer:
         return self.crop_with_mask(image, mask)
 
     def modify_image_for_build_card(
-        self, image: Image.Image, target_width: int, target_height: int
+        self, image: Image.Image, target_width: int, target_height: int, zoom: float = 1.0
     ) -> Image.Image:
         # Calculate the target height to maintain the aspect ratio
         width, height = image.size
         ratio = min(width / target_width, height / target_height)
 
         # Calculate the new size and left/top coordinates for cropping
-        new_width = round(width / ratio)
-        new_height = round(height / ratio)
+        new_width = round(width / (ratio * zoom))
+        new_height = round(height / (ratio * zoom))
         left = round((new_width - target_width) / 2)
         top = round((new_height - target_height) / 2)
         right = round(left + target_width)

@@ -120,7 +120,7 @@ async def draw_hsr_notes_card(
 
 
 async def draw_gi_build_card(
-    draw_input: "DrawInput", character: "EnkaCharacter", image_url: str
+    draw_input: "DrawInput", character: "EnkaCharacter", image_url: str, zoom: float
 ) -> "BytesIO":
     urls: list[str] = []
     urls.append(image_url)
@@ -136,7 +136,12 @@ async def draw_gi_build_card(
 
     with timing("draw", tags={"type": "gi_build_card"}):
         buffer = await asyncio.to_thread(
-            funcs.draw_genshin_card, draw_input.locale, draw_input.dark_mode, character, image_url
+            funcs.draw_genshin_card,
+            draw_input.locale,
+            draw_input.dark_mode,
+            character,
+            image_url,
+            zoom,
         )
     return buffer
 

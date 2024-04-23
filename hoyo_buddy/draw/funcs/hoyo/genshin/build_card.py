@@ -19,16 +19,14 @@ def cache_key(
     dark_mode: bool,
     character: "Character",
     image_url: str,
+    zoom: float,
 ) -> str:
-    return f"{character!r}-{locale}-{dark_mode}-{image_url}"
+    return f"{character!r}-{locale}-{dark_mode}-{image_url}-{zoom}"
 
 
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
 def draw_genshin_card(
-    locale: Locale,
-    dark_mode: bool,
-    character: "Character",
-    image_url: str,
+    locale: Locale, dark_mode: bool, character: "Character", image_url: str, zoom: float
 ) -> io.BytesIO:
     mode = "dark" if dark_mode else "light"
     text_color = (241, 241, 241) if dark_mode else (33, 33, 33)
@@ -46,7 +44,7 @@ def draw_genshin_card(
     character_im = drawer.open_static(image_url)
     mask = drawer.open_asset("mask.png")
     character_im = drawer.modify_image_for_build_card(
-        character_im, target_width=472, target_height=839
+        character_im, target_width=472, target_height=839, zoom=zoom
     )
     im.paste(character_im, (51, 34), mask)
 

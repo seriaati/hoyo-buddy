@@ -359,9 +359,10 @@ class Search(commands.Cog):
                 )
             ]
 
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         return [
             app_commands.Choice(
-                name=app_commands.locale_str(c, warn_no_key=False),
+                name=LocaleStr(c, warn_no_key=False).translate(i.client.translator, locale),
                 value=c,
             )
             for c in self._search_categories[game]

@@ -204,7 +204,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         return [
             discord.app_commands.Choice(
-                name=f"{account if is_author else account.blurred_display} | {translator.translate(LocaleStr(account.game, warn_no_key=False), locale)}",
+                name=f"{account if is_author else account.blurred_display} | {translator.translate(LocaleStr(account.game, warn_no_key=False), locale)}{' (✦)' if account.current else ''}",
                 value=f"{account.uid}_{account.game}",
             )
             for account in accounts

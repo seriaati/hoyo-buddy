@@ -19,6 +19,7 @@ from hoyo_buddy.exceptions import CardNotReadyError
 from hoyo_buddy.models import DrawInput
 
 from ....models import HoyolabHSRCharacter
+from ....utils import upload_image
 from ...components import (
     Button,
     Select,
@@ -262,7 +263,10 @@ class ProfileView(View):
         if character_data is None:
             raise CardNotReadyError(character.name)
 
-        art = self._card_settings.current_image or character_data["arts"][0]
+        default_art = f"https://raw.githubusercontent.com/FortOfFans/HSR/main/spriteoutput/avatardrawcardresult/{character.id}.png"
+        art = self._card_settings.current_image or await upload_image(
+            session, image_url=default_art
+        )
 
         if self._card_settings.custom_primary_color is None:
             primary: str = character_data["primary"]
@@ -291,11 +295,7 @@ class ProfileView(View):
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert self._card_settings is not None
 
-        character_data = self._card_data.get(str(character.id))
-        if character_data is None:
-            raise CardNotReadyError(character.name)
-
-        art = self._card_settings.current_image or character_data["arts"][0]
+        art = self._card_settings.current_image or character.icon.gacha
 
         return await draw_gi_build_card(
             DrawInput(
@@ -306,6 +306,7 @@ class ProfileView(View):
             ),
             character,
             art,
+            0.8 if self._card_settings.current_image is None else 1.0,
         )
 
     async def draw_card(self, i: "INTERACTION") -> "io.BytesIO":

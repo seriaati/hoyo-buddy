@@ -40,10 +40,6 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
         options: list[SelectOption] = [
             SelectOption(
                 label=LocaleStr("Official art", key="profile.image_select.none.label"),
-                description=LocaleStr(
-                    "Doesn't work with Hoyo Buddy's templates",
-                    key="profile.image_select.none.description",
-                ),
                 value="none",
                 default=self.current_image_url is None and "hb" not in self.template,
             )

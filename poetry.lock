@@ -857,7 +857,7 @@ files = [
 
 [[package]]
 name = "enka-py"
-version = "1.7.0"
+version = "1.7.1"
 description = "An async API wrapper for enka.network written in Python."
 optional = false
 python-versions = "^3.10"
@@ -874,7 +874,7 @@ pydantic = "^2.5.3"
 type = "git"
 url = "https://github.com/seriaati/enka-py"
 reference = "HEAD"
-resolved_reference = "ab8c4ab070768e82de935fd6e127d42c82ff0637"
+resolved_reference = "e312ab0eed1862da507f67572ec73238abceb296"
 
 [[package]]
 name = "filelock"

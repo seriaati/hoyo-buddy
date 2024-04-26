@@ -48,7 +48,10 @@ class EnterEmailVerificationCode(Button["AccountManager"]):
         user = await User.get(id=i.user.id)
         code = modal.code.value
 
-        await self.view.client._verify_email(code, user.temp_data)
+        client = genshin.Client(
+            region=genshin.Region.OVERSEAS  # CN doesn't have email verification
+        )
+        await client._verify_email(code, genshin.models.ActionTicket(**user.temp_data))
         conn = Tortoise.get_connection("default")
         await conn.execute_query(f"NOTIFY login, '{i.user.id}'")
 
@@ -97,16 +100,24 @@ class EnterEmailPassword(Button["AccountManager"]):
             if self._platform is LoginPlatform.MIYOUSHE
             else genshin.Region.OVERSEAS
         )
-        if self._platform is LoginPlatform.MIYOUSHE:
-            result = await client._cn_login_by_password(email, password)
+        result = (
+            await client._app_login(email, password)
+            if self._platform is LoginPlatform.HOYOLAB
+            else await client._cn_web_login(email, password)
+        )
+
+        if isinstance(result, genshin.models.SessionMMT):
+            await self.view.prompt_user_to_solve_geetest(i, for_code=False)
+        elif isinstance(result, genshin.models.ActionTicket):
+            email_result = await client._send_verification_email(result)
+            if isinstance(email_result, genshin.models.SessionMMT):
+                return await self.view.prompt_user_to_solve_geetest(i, for_code=True)
+
+            user = await User.get(id=i.user.id)
+            user.temp_data = result.model_dump()
+            await user.save()
+            await self.view.prompt_user_to_verify_email(i)
         else:
-            result = await client._app_login(email, password)
-
-        # Set up variables for the handler
-        self.view.interaction = i
-        self.view.platform = self._platform
-        self.view.email = email
-        self.view.password = password
-
-        self.view.start_listener()
-        await self.view.process_app_login_result(result)
+            await self.view.finish_cookie_setup(
+                result.to_dict(), platform=self._platform, interaction=i
+            )

@@ -9,9 +9,13 @@ if TYPE_CHECKING:
 
 
 class LoginHandlerResult:
-    def __init__(self, result_type: LoginResultType, data: dict[str, Any] | None = None) -> None:
+    def __init__(
+        self,
+        result_type: LoginResultType,
+        data: genshin.models.AppLoginResult | genshin.models.CNWebLoginResult,
+    ) -> None:
         self.type = result_type
-        self.data: dict[str, Any] = data or {}
+        self.data = data
 
 
 class LoginHandler:
@@ -19,12 +23,17 @@ class LoginHandler:
 
     @classmethod
     async def _handle_geetest_triggered_for_login(
-        cls, email: str, password: str, *, geetest: dict[str, Any], platform: LoginPlatform
+        cls,
+        email: str,
+        password: str,
+        *,
+        mmt_result: genshin.models.SessionMMTResult,
+        platform: LoginPlatform,
     ) -> LoginHandlerResult:
         if platform is LoginPlatform.MIYOUSHE:
-            result = await cls._client._cn_login_by_password(email, password, geetest=geetest)
+            result = await cls._client._cn_web_login(email, password, mmt_result=mmt_result)
         else:
-            result = await cls._client._app_login(email, password, geetest=geetest)
+            result = await cls._client._app_login(email, password, mmt_result=mmt_result)
         return LoginHandlerResult(LoginResultType.PROCESS_APP_LOGIN_RESULT, result)
 
     @classmethod
@@ -63,12 +72,12 @@ class LoginHandler:
         platform: LoginPlatform,
     ) -> LoginHandlerResult:
         cls._client = client
-        geetest = user.temp_data
+        mmt_result = genshin.models.SessionMMTResult(**user.temp_data)
 
         match condition:
             case LoginCondition.GEETEST_TRIGGERED_FOR_LOGIN:
                 return await cls._handle_geetest_triggered_for_login(
-                    email, password, geetest=geetest, platform=platform
+                    email, password, mmt_result=mmt_result, platform=platform
                 )
             case LoginCondition.GEETEST_TRIGGERED_FOR_EMAIL:
                 return await cls._handle_geetest_triggered_for_email(geetest=geetest, ticket=ticket)

@@ -17,11 +17,15 @@ if TYPE_CHECKING:
 
 
 class CookiesModal(Modal):
-    cookies = TextInput(
+    cookies_input = TextInput(
         label="Cookies",
         placeholder=LocaleStr("Paste your cookies here...", key="cookies_modal_placeholder"),
         style=TextStyle.paragraph,
     )
+
+    @property
+    def cookies(self) -> str:
+        return self.cookies_input.value.strip()
 
 
 class DevToolCookiesModal(Modal):
@@ -30,6 +34,10 @@ class DevToolCookiesModal(Modal):
     ltmid_v2 = TextInput(label="ltmid_v2", placeholder="1k922_hy")
     account_mid_v2 = TextInput(label="account_mid_v2", placeholder="1k922_hy")
     account_id_v2 = TextInput(label="account_id_v2", placeholder="1234567")
+
+    @property
+    def cookies(self) -> str:
+        return "; ".join(f"{child.label}={child.value.strip()}" for child in self.children)  # pyright: ignore[reportAttributeAccessIssue]
 
 
 class EnterCookiesButton(Button["AccountManager"]):
@@ -41,16 +49,6 @@ class EnterCookiesButton(Button["AccountManager"]):
         )
         self._platform = platform
         self._is_dev_tools = dev_tools
-
-    @staticmethod
-    def _get_cookies(
-        modal: DevToolCookiesModal | CookiesModal,
-    ) -> str:
-        if isinstance(modal, DevToolCookiesModal):
-            cookies = "; ".join(f"{child.label}={child.value.strip()}" for child in modal.children)  # pyright: ignore[reportAttributeAccessIssue]
-            return cookies
-
-        return modal.cookies.value.strip()
 
     def _get_cookies_modal(self) -> DevToolCookiesModal | CookiesModal:
         if self._is_dev_tools:
@@ -65,13 +63,8 @@ class EnterCookiesButton(Button["AccountManager"]):
         if modal.incomplete:
             return
 
-        cookies = self._get_cookies(modal)
         cookie = SimpleCookie()
-        cookie.load(cookies)
+        cookie.load(modal.cookies)
         dict_cookies = {key: morsel.value for key, morsel in cookie.items()}
 
-        # Set up variables for the handler
-        self.view.interaction = i
-        self.view.platform = self._platform
-
-        await self.view.finish_cookie_setup(dict_cookies)
+        await self.view.finish_cookie_setup(dict_cookies, platform=self._platform, interaction=i)

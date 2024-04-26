@@ -28,15 +28,29 @@ GEETEST_SERVERS = {
 }
 
 
-class AddAccountHandler(View):
+class AddAccountHandler:
     """Class containing logic of adding game accounts to the user's account."""
+
+    def __init__(
+        self,
+        user_id: int,
+        email: str | None = None,
+        password: str | None = None,
+        mobile: str | None = None,
+    ) -> None:
+        self._user_id = user_id
+
+        self._email = email
+        self._password = password
+        self._mobile = mobile
+
+        self._ticket: dict[str, Any] = {}
+        self._task: asyncio.Task | None = None
+        self._client: genshin.Client | None = None
 
     interaction: "INTERACTION"
     condition: LoginCondition
     platform: LoginPlatform
-    email: str = ""
-    password: str = ""
-    mobile: str = ""
 
     _ticket: dict[str, Any] = {}  # noqa: RUF012
     _task: asyncio.Task | None = None
@@ -53,19 +67,13 @@ class AddAccountHandler(View):
         )
         return self._client
 
-    async def on_timeout(self) -> None:
-        if self._task is not None:
-            self._task.cancel()
-        return await super().on_timeout()
-
     def start_listener(self) -> None:
         login_listener = asyncpg_listen.NotificationListener(
             asyncpg_listen.connect_func(os.environ["DB_URL"])
         )
-        assert self.author is not None
         self._task = asyncio.create_task(
             login_listener.run({"login": self.handle_login_notifs}, notification_timeout=3),
-            name=f"login_listener_{self.author.id}",
+            name=f"login_listener_{self._user_id}",
         )
 
     async def handle_login_notifs(self, notif: asyncpg_listen.NotificationOrTimeout) -> None:
@@ -74,8 +82,7 @@ class AddAccountHandler(View):
 
         assert notif.payload is not None
         user_id = notif.payload
-        assert self.author is not None
-        if int(user_id) != self.author.id:
+        if int(user_id) != self._user_id:
             return
         user = await User.get(id=int(user_id))
 
@@ -105,47 +112,6 @@ class AddAccountHandler(View):
             case LoginResultType.FINISH_COOKIE_SETUP:
                 await self.finish_cookie_setup(result.data)
 
-    async def finish_cookie_setup(self, cookies: dict[str, Any]) -> None:
-        if self.platform is LoginPlatform.HOYOLAB and "stoken" in cookies:
-            # Get ltoken_v2 and cookie_token_v2
-            cookie = await genshin.fetch_cookie_with_stoken_v2(cookies, token_types=[2, 4])
-            cookies.update(cookie)
-
-        self.client.set_cookies(cookies)
-
-        # Update the view to let user select the accounts to add
-        try:
-            accounts = await self.client.get_game_accounts()
-        except genshin.errors.InvalidCookies as e:
-            raise TryOtherMethodError from e
-
-        if not accounts:
-            raise NoGameAccountsError(self.platform)
-
-        embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=LocaleStr("🎉 Welcome to Hoyo Buddy!", key="select_account.embed.title"),
-            description=LocaleStr(
-                "Select the accounts you want to add.",
-                key="select_account.embed.description",
-            ),
-        )
-
-        self.clear_items()
-        self.add_item(
-            AddAccountSelect(
-                self.locale,
-                self.translator,
-                accounts=accounts,
-                cookies="; ".join(f"{k}={v}" for k, v in cookies.items()),
-            )
-        )
-
-        await self.interaction.edit_original_response(embed=embed, view=self)
-        if self._task is not None:
-            self._task.cancel()
-
     async def process_app_login_result(
         self, result: dict[str, Any], *, is_mobile: bool = False
     ) -> None:
@@ -173,68 +139,3 @@ class AddAccountHandler(View):
             return await self.prompt_user_to_verify_email()
 
         await self.finish_cookie_setup(result)
-
-    async def prompt_user_to_solve_geetest(self) -> None:
-        i = self.interaction
-        assert i.channel is not None and i.message is not None
-        payload = LoginNotifPayload(
-            user_id=i.user.id,
-            guild_id=i.guild.id if i.guild else None,
-            channel_id=i.channel.id,
-            message_id=i.message.id,
-            locale=self.locale.value,
-        )
-        url = f"{GEETEST_SERVERS[i.client.env]}/captcha?{payload.to_query_string()}"
-
-        go_back_button = GoBackButton(self.children, self.get_embeds(i.message))
-        self.clear_items()
-        self.add_item(
-            Button(
-                label=LocaleStr("Complete CAPTCHA", key="complete_captcha_button_label"), url=url
-            )
-        )
-        self.add_item(go_back_button)
-
-        embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=LocaleStr(
-                "😥 Need to Solve CAPTCHA Before Sending the Verification Code",
-                key="email-geetest.embed.title",
-            )
-            if self.condition
-            in {
-                LoginCondition.GEETEST_TRIGGERED_FOR_EMAIL,
-                LoginCondition.GEETEST_TRIGGERED_FOR_OTP,
-            }
-            else LocaleStr("😅 Need to solve CAPTCHA before logging in", key="geetest.embed.title"),
-            description=LocaleStr(
-                "Click on the button below to complete CAPTCHA.\n",
-                key="captcha.embed.description",
-            ),
-        )
-        await i.edit_original_response(embed=embed, view=self)
-
-    async def prompt_user_to_verify_email(self) -> None:
-        go_back_button = GoBackButton(self.children, self.get_embeds(self.interaction.message))
-        self.clear_items()
-        self.add_item(EnterEmailVerificationCode())
-        self.add_item(go_back_button)
-
-        embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=LocaleStr(
-                "👍 Almost Done! Just Need to Verify Your E-Mail",
-                key="email-verification.embed.title",
-            ),
-            description=LocaleStr(
-                (
-                    "1. Go to the inbox of the e-mail your entered and find the verification code sent from Hoyoverse.\n"
-                    "2. Click the button below to enter the code received.\n"
-                ),
-                key="email-verification.embed.description",
-            ),
-        )
-
-        await self.interaction.edit_original_response(embed=embed, view=self)

@@ -988,15 +988,15 @@ pydantic = "*"
 
 [package.extras]
 all = ["browser-cookie3", "click", "qrcode[pil]", "rsa"]
+auth = ["qrcode[pil]", "rsa"]
 cli = ["click"]
 cookies = ["browser-cookie3"]
-geetest = ["qrcode[pil]", "rsa"]
 
 [package.source]
 type = "git"
 url = "https://github.com/thesadru/genshin.py"
 reference = "dev"
-resolved_reference = "4a2f5fe76cce8421d40677a8d8de72557e379e4a"
+resolved_reference = "816c588ce8dd3b492e76eab4ef8acd91cb898a19"
 
 [[package]]
 name = "gitdb"

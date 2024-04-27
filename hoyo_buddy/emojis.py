@@ -124,6 +124,9 @@ def get_game_emoji(game: genshin.Game | Game) -> str:
     if game is genshin.Game.STARRAIL or game is Game.STARRAIL:
         return HONKAI_STAR_RAIL
 
+    msg = f"Invalid game: {game}"
+    raise ValueError(msg)
+
 
 def get_gi_element_emoji(element: str) -> str:
     return GENSHIN_ELEMENT_EMOJIS[GenshinElement(element.lower())]

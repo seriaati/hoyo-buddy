@@ -22,6 +22,7 @@ from .command_tree import CommandTree
 from .translator import AppCommandTranslator, LocaleStr, Translator
 
 if TYPE_CHECKING:
+    import asyncio
     from collections.abc import Sequence
 
     import git
@@ -95,6 +96,9 @@ class HoyoBuddy(commands.AutoShardedBot):
             ],
         ] = {}
         """[game][category][locale][item_name] -> item_id"""
+
+        self.login_notif_tasks: dict[int, asyncio.Task] = {}
+        """user_id -> task"""
 
     async def setup_hook(self) -> None:
         await self.tree.set_translator(AppCommandTranslator(self.translator))
@@ -254,6 +258,9 @@ class HoyoBuddy(commands.AutoShardedBot):
                     color=discord.Color.red(),
                 )
             )
+
+        for task in self.login_notif_tasks.values():
+            task.cancel()
 
         self.diskcache.close()
         await super().close()

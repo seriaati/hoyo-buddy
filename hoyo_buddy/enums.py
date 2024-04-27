@@ -96,19 +96,6 @@ class HSRBaseType(IntEnum):
     ABUNDANCE = 7  # 豐饒
 
 
-class LoginResultType(IntEnum):
-    PROCESS_APP_LOGIN_RESULT = 0
-    PROMPT_USER_TO_VERIFY_EMAIL = 1
-    FINISH_COOKIE_SETUP = 2
-
-
-class LoginCondition(IntEnum):
-    GEETEST_TRIGGERED_FOR_LOGIN = 1
-    GEETEST_TRIGGERED_FOR_EMAIL = 2
-    GEETEST_TRIGGERED_FOR_OTP = 3
-    NEED_EMAIL_VERIFICATION = 4
-
-
 class LoginPlatform(StrEnum):
     HOYOLAB = "HoYoLAB"
     MIYOUSHE = "Miyoushe"

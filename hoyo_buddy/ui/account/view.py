@@ -11,7 +11,7 @@ from ...exceptions import NoGameAccountsError, TryOtherMethodError
 from ...models import LoginNotifPayload
 from .. import SelectOption
 from ..components import Button, GoBackButton, View
-from .add_acc_handler import GEETEST_SERVERS
+from .geetest_handler import GEETEST_SERVERS
 from .items.acc_select import AccountSelect
 from .items.acc_settings import AccountPublicToggle, AutoCheckinToggle, AutoRedeemToggle
 from .items.add_acc_btn import AddAccountButton
@@ -19,6 +19,7 @@ from .items.add_acc_select import AddAccountSelect
 from .items.del_acc_btn import DeleteAccountButton
 from .items.edit_nickname_btn import EditNicknameButton
 from .items.enter_email_pswd import EnterEmailVerificationCode
+from .items.enter_mobile import EnterVerificationCode
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -187,12 +188,23 @@ class AccountManager(View):
 
         await interaction.edit_original_response(embed=embed, view=self)
 
-    async def prompt_user_to_solve_geetest(self, i: "INTERACTION", *, for_code: bool) -> None:
+    async def prompt_user_to_solve_geetest(
+        self,
+        i: "INTERACTION",
+        *,
+        for_code: bool,
+        gt_version: int = 3,
+        api_server: str = "api-na.geetest.com",
+        proxy_geetest: bool = False,
+    ) -> None:
         """Prompt the user to solve CAPTCHA before sending the verification code or logging in.
 
         Args:
             i: The interaction object.
             for_code: Whether the CAPTCHA is triggered for sending the verification code.
+            gt_version: The version of the geetest CAPTCHA (3 or 4).
+            api_server: The server to request the CAPTCHA from.
+            proxy_geetest: Whether to proxy the geetest CAPTCHA.
         """
         assert i.channel and i.message
 
@@ -202,7 +214,9 @@ class AccountManager(View):
             guild_id=i.guild.id if i.guild else None,
             channel_id=i.channel.id,
             message_id=i.message.id,
-            locale=self.locale.value,
+            gt_version=gt_version,
+            api_server=api_server,
+            proxy_geetest=proxy_geetest,
         )
         url = f"{GEETEST_SERVERS[i.client.env]}/captcha?{payload.to_query_string()}"
 
@@ -231,10 +245,18 @@ class AccountManager(View):
         )
         await i.edit_original_response(embed=embed, view=self)
 
-    async def prompt_user_to_verify_email(self, i: "INTERACTION") -> None:
+    async def prompt_user_to_enter_email_code(
+        self,
+        i: "INTERACTION",
+        *,
+        email: str,
+        password: str,
+        action_ticket: genshin.models.ActionTicket,
+    ) -> None:
+        """Prompt the user to enter the email verification code."""
         go_back_button = GoBackButton(self.children, self.get_embeds(i.message))
         self.clear_items()
-        self.add_item(EnterEmailVerificationCode())
+        self.add_item(EnterEmailVerificationCode(email, password, action_ticket))
         self.add_item(go_back_button)
 
         embed = DefaultEmbed(
@@ -253,4 +275,30 @@ class AccountManager(View):
             ),
         )
 
+        await i.edit_original_response(embed=embed, view=self)
+
+    async def prompt_user_to_enter_mobile_otp(self, i: "INTERACTION", mobile: str) -> None:
+        """Prompt the user to enter the mobile OTP code.
+
+        Args:
+            i: The interaction object.
+            mobile: The mobile number to send the OTP to.
+        """
+        go_back_button = GoBackButton(self.children, self.get_embeds(i.message))
+        self.add_item(go_back_button)
+        self.clear_items()
+        self.add_item(EnterVerificationCode(mobile))
+
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=LocaleStr(
+                "Verification Code Sent",
+                key="add_miyoushe_acc.verification_code_sent",
+            ),
+            description=LocaleStr(
+                "Please check your phone for the verification code and click the button below to enter it",
+                key="add_miyoushe_acc.verification_code_sent_description",
+            ),
+        )
         await i.edit_original_response(embed=embed, view=self)

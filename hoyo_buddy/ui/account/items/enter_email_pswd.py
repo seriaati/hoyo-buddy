@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING, Any
 
 import genshin
 from discord import ButtonStyle
-from tortoise import Tortoise
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.db.models import User
@@ -10,6 +9,7 @@ from hoyo_buddy.emojis import PASSWORD
 from hoyo_buddy.enums import LoginPlatform
 
 from ...components import Button, Modal, TextInput
+from ..geetest_handler import EmailPswdLoginData, GeetestHandler, SendEmailCodeData
 
 if TYPE_CHECKING:
     from ui.account.view import AccountManager  # noqa: F401
@@ -27,12 +27,18 @@ class EmailVerificationCodeModal(Modal):
 
 
 class EnterEmailVerificationCode(Button["AccountManager"]):
-    def __init__(self) -> None:
+    def __init__(
+        self, email: str, password: str, action_ticket: genshin.models.ActionTicket
+    ) -> None:
         super().__init__(
             label=LocaleStr("Enter verification code", key="email-verification-code.button.label"),
             style=ButtonStyle.blurple,
             emoji=PASSWORD,
         )
+
+        self._email = email
+        self._password = password
+        self._action_ticket = action_ticket
 
     async def callback(self, i: "INTERACTION") -> Any:
         modal = EmailVerificationCodeModal(
@@ -52,8 +58,10 @@ class EnterEmailVerificationCode(Button["AccountManager"]):
             region=genshin.Region.OVERSEAS  # CN doesn't have email verification
         )
         await client._verify_email(code, genshin.models.ActionTicket(**user.temp_data))
-        conn = Tortoise.get_connection("default")
-        await conn.execute_query(f"NOTIFY login, '{i.user.id}'")
+        result = await client._app_login(self._email, self._password, ticket=self._action_ticket)
+        await self.view.finish_cookie_setup(
+            result.to_dict(), platform=LoginPlatform.HOYOLAB, interaction=i
+        )
 
 
 class EmailPasswordModal(Modal):
@@ -107,16 +115,33 @@ class EnterEmailPassword(Button["AccountManager"]):
         )
 
         if isinstance(result, genshin.models.SessionMMT):
+            await GeetestHandler.save_user_temp_data(i.user.id, result.model_dump())
+            handler = GeetestHandler(
+                view=self.view,
+                interaction=i,
+                platform=self._platform,
+                data=EmailPswdLoginData(email=email, password=password),
+            )
+            handler.start_listener()
+
             await self.view.prompt_user_to_solve_geetest(i, for_code=False)
         elif isinstance(result, genshin.models.ActionTicket):
             email_result = await client._send_verification_email(result)
             if isinstance(email_result, genshin.models.SessionMMT):
+                await GeetestHandler.save_user_temp_data(i.user.id, email_result.model_dump())
+                handler = GeetestHandler(
+                    view=self.view,
+                    interaction=i,
+                    platform=self._platform,
+                    data=SendEmailCodeData(email=email, password=password, acition_ticket=result),
+                )
+                handler.start_listener()
+
                 return await self.view.prompt_user_to_solve_geetest(i, for_code=True)
 
-            user = await User.get(id=i.user.id)
-            user.temp_data = result.model_dump()
-            await user.save()
-            await self.view.prompt_user_to_verify_email(i)
+            await self.view.prompt_user_to_enter_email_code(
+                i, email=email, password=password, action_ticket=result
+            )
         else:
             await self.view.finish_cookie_setup(
                 result.to_dict(), platform=self._platform, interaction=i

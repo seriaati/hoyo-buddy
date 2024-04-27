@@ -76,11 +76,18 @@ class GeetestHandler:
 
     @staticmethod
     async def save_user_temp_data(user_id: int, data: dict[str, Any]) -> None:
+        """Save user's temp_data to the database.
+
+        Args:
+            user_id: The user's ID.
+            data: The data to save.
+        """
         user = await User.get(id=user_id)
         user.temp_data = data
         await user.save()
 
     def start_listener(self) -> None:
+        """Start listening for geetest NOTIFY."""
         if self._user_id in self._bot.login_notif_tasks:
             self._bot.login_notif_tasks.pop(self._user_id).cancel()
 
@@ -93,12 +100,7 @@ class GeetestHandler:
         )
 
     async def handle_geetest_notifs(self, notif: asyncpg_listen.NotificationOrTimeout) -> None:
-        """Notification handler for geetest triggers.
-
-        There are two ways this function can be called:
-        1. From the web server, after user solves a geetest challenge.
-        2. From ui/account/items/enter_email_pswd.py, after user enters email verification code.
-        """
+        """Notification handler for geetest triggers."""
         if isinstance(notif, asyncpg_listen.Timeout):
             return
 

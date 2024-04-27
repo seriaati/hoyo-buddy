@@ -12,6 +12,7 @@ from .with_dev_tools import WithDevTools
 from .with_email_pswd import WithEmailPassword
 from .with_js import WithJavaScript
 from .with_mobile import WithMobileNumber
+from .with_qrcode import WithQRCode
 
 if TYPE_CHECKING:
     from ui.account.view import AccountManager  # noqa: F401
@@ -36,9 +37,10 @@ class AddMiyousheAccount(Button["AccountManager"]):
             ),
             description=LocaleStr(
                 (
-                    "1. With e-mail/username and password\n"
-                    "2. With phone number\n"
-                    "3. With DevTools: Only work on desktop, a safer option if you have security concerns with the other two methods\n"
+                    "1. With QR code: Recommended for most users if you are logged in on your mobile device\n"
+                    "2. With e-mail/username and password\n"
+                    "3. With phone number\n"
+                    "4. With DevTools: Only work on desktop, a safer option if you have security concerns with the other methods\n"
                 ),
                 key="add_miyoushe_acc.embed.description",
             ),
@@ -46,6 +48,7 @@ class AddMiyousheAccount(Button["AccountManager"]):
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
 
+        self.view.add_item(WithQRCode())
         self.view.add_item(WithEmailPassword(LoginPlatform.MIYOUSHE))
         self.view.add_item(WithMobileNumber())
         self.view.add_item(WithDevTools(LoginPlatform.MIYOUSHE))
@@ -105,7 +108,7 @@ class AddAccountButton(Button["AccountManager"]):
             title=LocaleStr("Select Your Account's Platform", key="adding_accounts_title"),
             description=LocaleStr(
                 (
-                    "Welcome to Hoyo Buddy! Enjoy various features by spending 1 minute to add your accounts.\n\n"
+                    "Welcome to Hoyo Buddy! Enjoy various features by spending less than 1 minute to add your accounts.\n\n"
                     "Regarding account security, please read the [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
                 ),
                 key="adding_accounts_description",

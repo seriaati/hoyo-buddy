@@ -38,7 +38,7 @@ class AddMiyousheAccount(Button["AccountManager"]):
             description=LocaleStr(
                 (
                     "1. With QR code: Recommended for most users if you are logged in on your mobile device\n"
-                    "2. With e-mail/username and password\n"
+                    "2. With email/username and password\n"
                     "3. With phone number\n"
                     "4. With DevTools: Only work on desktop, a safer option if you have security concerns with the other methods\n"
                 ),
@@ -74,7 +74,7 @@ class AddHoyolabAccount(Button["AccountManager"]):
             ),
             description=LocaleStr(
                 (
-                    "1. With e-mail and password: Most recommended, it's the easiest\n"
+                    "1. With email and password: Most recommended, it's the easiest\n"
                     "2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one\n"
                     "3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile\n\n"
                 ),

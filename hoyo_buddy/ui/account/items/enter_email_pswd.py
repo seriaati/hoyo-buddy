@@ -66,7 +66,7 @@ class EnterEmailVerificationCode(Button["AccountManager"]):
 
 class EmailPasswordModal(Modal):
     email = TextInput(
-        label=LocaleStr("e-mail or username", key="email_password_modal_email_input_label"),
+        label=LocaleStr("email or username", key="email_password_modal_email_input_label"),
         placeholder="a@gmail.com",
     )
     password = TextInput(
@@ -79,7 +79,7 @@ class EnterEmailPassword(Button["AccountManager"]):
     def __init__(self, platform: LoginPlatform) -> None:
         super().__init__(
             label=LocaleStr(
-                "Enter e-mail/username and password", key="enter_email_password_button_label"
+                "Enter email/username and password", key="enter_email_password_button_label"
             ),
             emoji=PASSWORD,
             style=ButtonStyle.blurple,
@@ -90,7 +90,7 @@ class EnterEmailPassword(Button["AccountManager"]):
     async def callback(self, i: "INTERACTION") -> Any:
         modal = EmailPasswordModal(
             title=LocaleStr(
-                "Enter E-Mail/Username and Password", key="enter_email_password_button_label"
+                "Enter Email/Username and Password", key="enter_email_password_button_label"
             )
         )
         modal.translate(self.view.locale, i.client.translator)

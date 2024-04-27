@@ -263,12 +263,12 @@ class AccountManager(View):
             self.locale,
             self.translator,
             title=LocaleStr(
-                "👍 Almost Done! Just Need to Verify Your E-Mail",
+                "👍 Almost Done! Just Need to Verify Your Email",
                 key="email-verification.embed.title",
             ),
             description=LocaleStr(
                 (
-                    "1. Go to the inbox of the e-mail your entered and find the verification code sent from Hoyoverse.\n"
+                    "1. Go to the inbox of the email your entered and find the verification code sent from Hoyoverse.\n"
                     "2. Click the button below to enter the code received.\n"
                 ),
                 key="email-verification.embed.description",

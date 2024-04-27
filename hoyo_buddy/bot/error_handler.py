@@ -38,9 +38,9 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
         ),
     },
     (-3208,): {
-        "title": LocaleStr("Invalid E-Mail or Password", key="invalid_email_password_title"),
+        "title": LocaleStr("Invalid Email or Password", key="invalid_email_password_title"),
         "description": LocaleStr(
-            "The e-mail or password you provided is incorrect, please check and try again.",
+            "The email or password you provided is incorrect, please check and try again.",
             key="invalid_email_password_description",
         ),
     },
@@ -80,7 +80,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
         "title": LocaleStr("Cookie Token Expired", key="redeeem_code.cookie_token_expired_title"),
         "description": LocaleStr(
             "Refresh your cookie token by adding your accounts again using </accounts>.\n"
-            "If you use the e-mail and password method to add your accounts, cookie token can be refreshed automatically.",
+            "If you use the email and password method to add your accounts, cookie token can be refreshed automatically.",
             key="redeeem_code.cookie_token_expired_description",
         ),
     },
@@ -90,7 +90,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
         ),
         "description": LocaleStr(
             "It is likely that you have changed your account's password since the last time you add your accounts.\n"
-            "Please add your accounts again using </accounts> with the e-mail and password method.",
+            "Please add your accounts again using </accounts> with the email and password method.",
             key="redeeem_code.cookie_token_refresh_failed_description",
         ),
     },

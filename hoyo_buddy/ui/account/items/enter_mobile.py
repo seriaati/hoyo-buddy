@@ -54,9 +54,7 @@ class EnterVerificationCode(Button["AccountManager"]):
         if modal.incomplete:
             return
 
-        client = genshin.Client(
-            region=genshin.Region.CHINESE  # OS doesn't have mobile OTP login
-        )
+        client = genshin.Client(region=genshin.Region.CHINESE)  # OS doesn't have mobile OTP login
         cookies = await client._login_with_mobile_otp(self._mobile, modal.code.value)
         await self.view.finish_cookie_setup(
             cookies.to_dict(), platform=LoginPlatform.MIYOUSHE, interaction=i
@@ -84,9 +82,7 @@ class EnterPhoneNumber(Button["AccountManager"]):
 
         mobile = modal.mobile.value
 
-        client = genshin.Client(
-            region=genshin.Region.CHINESE  # OS doesn't have mobile OTP login
-        )
+        client = genshin.Client(region=genshin.Region.CHINESE)  # OS doesn't have mobile OTP login
         result = await client._send_mobile_otp(mobile)
 
         if isinstance(result, genshin.models.SessionMMT):
@@ -98,6 +94,6 @@ class EnterPhoneNumber(Button["AccountManager"]):
                 data=SendMobileOTPData(mobile=mobile),
             )
             handler.start_listener()
-            await self.view.prompt_user_to_solve_geetest(i, for_code=True)
+            await self.view.prompt_user_to_solve_geetest(i, for_code=True, gt_version=4)
         else:
             await self.view.prompt_user_to_enter_mobile_otp(i, mobile)

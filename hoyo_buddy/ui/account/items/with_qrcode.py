@@ -80,8 +80,9 @@ class WithQRCode(Button["AccountManager"]):
         await self.set_loading_state(i)
 
         client = genshin.Client(
-            region=genshin.Region.CHINESE, game=genshin.Game.GENSHIN
-        )  # OS doesn't have QR code login
+            region=genshin.Region.CHINESE,  # OS doesn't have QR code login
+            game=genshin.Game.GENSHIN,
+        )
         result = await client._create_qrcode()
         qrcode_img: qrcode.image.pil.PilImage = qrcode.make(result.url)
 

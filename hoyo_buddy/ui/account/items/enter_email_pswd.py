@@ -124,7 +124,9 @@ class EnterEmailPassword(Button["AccountManager"]):
             )
             handler.start_listener()
 
-            await self.view.prompt_user_to_solve_geetest(i, for_code=False)
+            await self.view.prompt_user_to_solve_geetest(
+                i, for_code=False, gt_version=3 if self._platform is LoginPlatform.HOYOLAB else 4
+            )
         elif isinstance(result, genshin.models.ActionTicket):
             email_result = await client._send_verification_email(result)
             if isinstance(email_result, genshin.models.SessionMMT):

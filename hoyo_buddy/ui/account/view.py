@@ -116,6 +116,12 @@ class AccountManager(View):
         self.message = await i.edit_original_response(embed=embed, view=self)
 
     async def refresh(self, i: "INTERACTION", *, soft: bool) -> Any:
+        """Refresh the account manager view.
+
+        Args:
+            i: The interaction object.
+            soft: Whether to refetch account data from the database.
+        """
         if not soft:
             accounts = await HoyoAccount.filter(user=self.user).all()
             view = AccountManager(

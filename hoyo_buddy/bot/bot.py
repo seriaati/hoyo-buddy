@@ -1,7 +1,7 @@
 import logging
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, TypeAlias
+from typing import TYPE_CHECKING, Any, Literal, TypeAlias
 
 import discord
 import diskcache
@@ -116,15 +116,23 @@ class HoyoBuddy(commands.AutoShardedBot):
         await self.nai_client.init(timeout=120)
 
         if self.env != "dev":
-            status_channel = await self.fetch_channel(STATUS_CHANNEL_ID)
-            assert isinstance(status_channel, discord.TextChannel)
-            await status_channel.send(
-                embed=discord.Embed(
-                    title="Bot Started 🚀",
-                    description=f"Current time: {discord.utils.format_dt(get_now(), 'T')}",
-                    color=discord.Color.green(),
-                )
-            )
+            await self._send_status_embed("start")
+
+    async def _send_status_embed(self, status: Literal["start", "stop"]) -> None:
+        """Send a status embed to the status channel.
+
+        Args:
+            status: The status of the bot.
+        """
+        status_channel = await self.fetch_channel(STATUS_CHANNEL_ID)
+        assert isinstance(status_channel, discord.TextChannel)
+
+        embed = discord.Embed(
+            title=f"Bot {'Started' if status == 'start' else 'Stopped'} 🚀",
+            description=f"Current time: {discord.utils.format_dt(get_now(), 'T')}",
+            color=discord.Color.green() if status == "start" else discord.Color.red(),
+        )
+        await status_channel.send(embed=embed)
 
     def capture_exception(self, e: Exception) -> None:
         if self.env == "dev":
@@ -249,15 +257,7 @@ class HoyoBuddy(commands.AutoShardedBot):
     async def close(self) -> None:
         LOGGER_.info("Bot shutting down...")
         if self.env != "dev":
-            status_channel = await self.fetch_channel(STATUS_CHANNEL_ID)
-            assert isinstance(status_channel, discord.TextChannel)
-            await status_channel.send(
-                embed=discord.Embed(
-                    title="Bot Shutting Down for Code Changes 🛠️",
-                    description=f"Current time: {discord.utils.format_dt(get_now(), 'T')}",
-                    color=discord.Color.red(),
-                )
-            )
+            await self._send_status_embed("stop")
 
         for task in self.login_notif_tasks.values():
             task.cancel()

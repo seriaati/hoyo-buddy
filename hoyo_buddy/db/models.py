@@ -29,7 +29,7 @@ class User(Model):
 
 class HoyoAccount(Model):
     id = fields.IntField(pk=True, generated=True)
-    uid = fields.IntField(index=True)
+    uid = fields.BigIntField(index=True)
     username = fields.CharField(max_length=32)
     nickname: fields.Field[str | None] = fields.CharField(max_length=32, null=True)  # pyright: ignore [reportAssignmentType]
     game = fields.CharEnumField(Game, max_length=32)
@@ -130,7 +130,7 @@ class CardSettings(Model):
 
 
 class EnkaCache(Model):
-    uid = fields.IntField(pk=True, index=True)
+    uid = fields.BigIntField(pk=True, index=True)
     hsr: fields.Field[bytes | None] = fields.BinaryField(null=True)  # pyright: ignore [reportAssignmentType]
     genshin: fields.Field[bytes | None] = fields.BinaryField(null=True)  # pyright: ignore [reportAssignmentType]
     hoyolab: fields.Field[bytes | None] = fields.BinaryField(null=True)  # pyright: ignore [reportAssignmentType]

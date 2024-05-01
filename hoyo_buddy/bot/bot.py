@@ -75,6 +75,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             max_messages=None,
             member_cache_flags=discord.MemberCacheFlags.none(),
             tree_cls=CommandTree,
+            activity=discord.Activity(type=discord.ActivityType.watching, name="hb.bot.nu"),
         )
         self.session = session
         self.uptime = get_now()

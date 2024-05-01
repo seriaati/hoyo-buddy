@@ -207,7 +207,7 @@ class ProfileView(View):
             "uid": uid,
             "lang": LOCALE_TO_MIHOMO_LANG[Locale(self.cache_extras[character.id]["locale"])].value,
             "template": template_num,
-            "character_name": character.name,
+            "character_id": character.id,
             "character_art": self._card_settings.current_image,
         }
         endpoint = "http://localhost:7652/star-rail-card"

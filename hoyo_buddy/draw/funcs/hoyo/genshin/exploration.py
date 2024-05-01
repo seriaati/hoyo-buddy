@@ -319,6 +319,19 @@ class ExplorationCard:
         return im
 
     @classmethod
+    def _draw_sea_of_bygone_eras_card(cls) -> Image.Image:
+        exploration = cls._get_exploration(14)
+        texts: dict[LocaleStr | str, tuple[int, int]] = {
+            LocaleStr(
+                "Exploration Progress: {progress}%",
+                key="exploration.progress",
+                progress=0 if exploration is None else exploration.explored,
+            ): (75, 117),
+        }
+        im = cls._draw_exploration_card("seaOfBygoneEras", exploration, texts)
+        return im
+
+    @classmethod
     def _draw_chenyu_value_card(cls) -> Image.Image:
         exploration = cls._get_exploration(10)
         upper_vale = cls._get_exploration(13)
@@ -452,10 +465,15 @@ class ExplorationCard:
         im.paste(shadow, (114 - shadow_offset, 1183 - shadow_offset), shadow)
         im.paste(fontaine, (114, 1183), fontaine)
 
-        placeholder = cls._draw_placeholder_card()
-        shadow = cls._get_shadow("placeholder")
+        sea_of_bygone_eras = cls._draw_sea_of_bygone_eras_card()
+        shadow = cls._get_shadow("seaOfBygoneEras")
         im.paste(shadow, (868 - shadow_offset, 1183 - shadow_offset), shadow)
-        im.paste(placeholder, (868, 1183), placeholder)
+        im.paste(sea_of_bygone_eras, (868, 1183), sea_of_bygone_eras)
+
+        # placeholder = cls._draw_placeholder_card()
+        # shadow = cls._get_shadow("placeholder")
+        # im.paste(shadow, (868 - shadow_offset, 1183 - shadow_offset), shadow)
+        # im.paste(placeholder, (868, 1183), placeholder)
 
         chenyu_vale = cls._draw_chenyu_value_card()
         shadow = cls._get_shadow("chenyuVale")

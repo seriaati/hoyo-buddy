@@ -2,8 +2,6 @@ from typing import TYPE_CHECKING
 
 from discord.utils import get as dget
 
-from hoyo_buddy.db.models import HoyoAccount
-
 from ...components import Select, SelectOption
 
 if TYPE_CHECKING:
@@ -21,10 +19,7 @@ class AccountSelect(Select["AccountManager"]):
         selected_account = dget(self.view.accounts, uid=int(uid), game__value=game)
         assert selected_account is not None
 
-        await HoyoAccount.filter(user=self.view.user).update(current=False)
-        selected_account.current = True
-        await selected_account.save(update_fields=("current",))
-
+        await self.view.user.set_acc_as_current(selected_account)
         self.view.selected_account = selected_account
         self.update_options_defaults()
         await self.view.refresh(i, soft=True)

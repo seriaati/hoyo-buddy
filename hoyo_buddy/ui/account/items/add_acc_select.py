@@ -83,16 +83,19 @@ class AddAccountSelect(Select["AccountManager"]):
                     server=account.server_name,
                 )
             except IntegrityError:
-                await HoyoAccount.filter(
+                hoyo_account = await HoyoAccount.get(
                     uid=account.uid,
                     game=GPY_GAME_TO_HB_GAME[account.game],
                     user=self.view.user,
-                ).update(cookies=self.cookies, username=account.nickname)
+                )
+                hoyo_account.cookies = self.cookies
+                hoyo_account.username = account.nickname
+                await hoyo_account.save()
             else:
                 await AccountNotifSettings.create(account=hoyo_account)
 
-        self.view.user.temp_data.pop("cookies", None)
-        self.view.user.temp_data.pop("email", None)
-        self.view.user.temp_data.pop("password", None)
+            await self.view.user.set_acc_as_current(hoyo_account)
+
+        self.view.user.temp_data.clear()
         await self.view.user.save(update_fields=("temp_data",))
         await self.view.refresh(i, soft=False)

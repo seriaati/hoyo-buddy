@@ -26,6 +26,16 @@ class User(Model):
     def __str__(self) -> str:
         return str(self.id)
 
+    async def set_acc_as_current(self, acc: "HoyoAccount") -> None:
+        """Set the given account as the current account.
+
+        Args:
+            acc: The account to set as current.
+        """
+        await HoyoAccount.filter(user=self).update(current=False)
+        acc.current = True
+        await acc.save(update_fields=("current",))
+
 
 class HoyoAccount(Model):
     id = fields.IntField(pk=True, generated=True)

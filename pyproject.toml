@@ -19,7 +19,7 @@ cachetools = "^5.3.2"
 discord-py = {extras = ["speed"], version = "^2.3.2"}
 diskcache = "^5.6.3"
 enka-py = {git = "https://github.com/seriaati/enka-py"}
-genshin = {git = "https://github.com/thesadru/genshin.py", extras = ["all"]}
+genshin = {git = "https://github.com/thesadru/genshin.py", rev = "dev", extras = ["all"]}
 gitpython = "^3.1.42"
 jishaku = "^2.5.1"
 mihomo = {git = "https://github.com/KT-Yeh/mihomo.git"}

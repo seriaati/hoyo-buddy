@@ -1008,15 +1008,15 @@ rsa = {version = "*", optional = true, markers = "extra == \"all\""}
 
 [package.extras]
 all = ["browser-cookie3", "click", "qrcode[pil]", "rsa"]
+auth = ["qrcode[pil]", "rsa"]
 cli = ["click"]
 cookies = ["browser-cookie3"]
-geetest = ["qrcode[pil]", "rsa"]
 
 [package.source]
 type = "git"
 url = "https://github.com/thesadru/genshin.py"
-reference = "HEAD"
-resolved_reference = "c32ed4b81d23fa734da768753b566466c23a8d7a"
+reference = "dev"
+resolved_reference = "816c588ce8dd3b492e76eab4ef8acd91cb898a19"
 
 [[package]]
 name = "gitdb"
@@ -2633,4 +2633,4 @@ resolved_reference = "a8affe0c5d5539baff7a751657f5dbb5b3481f9b"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "420c4ca34cad36b834be6518ec45bd9588e6810608e27f509a590043a701cda9"
+content-hash = "64a04fe263c0324ce17c08115ee556b60c69987ace9d9138702f8f22672d4bfc"

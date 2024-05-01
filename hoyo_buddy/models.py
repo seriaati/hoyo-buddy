@@ -4,6 +4,7 @@ import aiohttp
 import ambr.models
 from attr import dataclass
 from discord import Locale
+from pydantic import BaseModel
 
 from .constants import STARRAIL_RES
 
@@ -20,13 +21,14 @@ class Reward:
     icon: str
 
 
-@dataclass(kw_only=True)
-class LoginNotifPayload:
+class LoginNotifPayload(BaseModel):
     user_id: int
     guild_id: int | None = None
     channel_id: int
     message_id: int
-    locale: str
+    gt_version: int
+    api_server: str
+    proxy_geetest: bool
 
     @classmethod
     def parse_from_request(cls, request: "web.Request") -> "LoginNotifPayload":
@@ -35,20 +37,13 @@ class LoginNotifPayload:
             guild_id=int(request.query["guild_id"]) if "guild_id" in request.query else None,
             channel_id=int(request.query["channel_id"]),
             message_id=int(request.query["message_id"]),
-            locale=request.query["locale"],
+            gt_version=int(request.query["gt_version"]),
+            api_server=request.query["api_server"],
+            proxy_geetest=bool(request.query["proxy_geetest"]),
         )
 
-    def to_dict(self) -> dict[str, str | int | None]:
-        return {
-            "user_id": self.user_id,
-            "guild_id": self.guild_id,
-            "channel_id": self.channel_id,
-            "message_id": self.message_id,
-            "locale": self.locale,
-        }
-
     def to_query_string(self) -> str:
-        return "&".join(f"{k}={v}" for k, v in self.to_dict().items() if v is not None)
+        return "&".join(f"{k}={v}" for k, v in self.model_dump().items() if v is not None)
 
 
 @dataclass

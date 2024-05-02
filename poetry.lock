@@ -1016,7 +1016,7 @@ cookies = ["browser-cookie3"]
 type = "git"
 url = "https://github.com/thesadru/genshin.py"
 reference = "dev"
-resolved_reference = "816c588ce8dd3b492e76eab4ef8acd91cb898a19"
+resolved_reference = "7e0d98a9098bb2853c7b062958f71a70f1061d79"
 
 [[package]]
 name = "gitdb"

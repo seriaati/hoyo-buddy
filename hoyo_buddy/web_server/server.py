@@ -2,6 +2,7 @@ import asyncio
 import logging
 from typing import TYPE_CHECKING, Any
 
+import aiofiles
 import aiohttp
 from aiohttp import web
 from tortoise import Tortoise
@@ -9,9 +10,10 @@ from tortoise import Tortoise
 from hoyo_buddy.db.models import User
 
 from ..models import LoginNotifPayload
-from .page import PAGE
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from hoyo_buddy.bot.translator import Translator
 
 LOGGER_ = logging.getLogger(__name__)
@@ -22,6 +24,19 @@ GT_V4_URL = "https://static.geetest.com/v4/gt4.js"
 class GeetestWebServer:
     def __init__(self, translator: "Translator") -> None:
         self.translator = translator
+        self.template: str | None = None
+
+    @web.middleware
+    async def error_middleware(
+        self, request: web.Request, handler: "Callable"
+    ) -> web.StreamResponse:
+        try:
+            return await handler(request)
+        except web.HTTPException as e:
+            return web.json_response({"error": e.reason}, status=e.status)
+        except Exception:
+            LOGGER_.exception("Error in web server")
+            return web.json_response({"error": "Internal Server Error"}, status=500)
 
     @staticmethod
     async def _get_mmt(user_id: int) -> dict[str, Any]:
@@ -30,14 +45,18 @@ class GeetestWebServer:
 
     async def captcha(self, request: web.Request) -> web.StreamResponse:
         payload = LoginNotifPayload.parse_from_request(request)
-        body = PAGE.format(
-            user_id=payload.user_id,
-            gt_version=payload.gt_version,
-            api_server=payload.api_server,
-            guild_id=payload.guild_id,
-            channel_id=payload.channel_id,
-            message_id=payload.message_id,
-            proxy_geetest=payload.proxy_geetest,
+
+        if self.template is None:
+            raise web.HTTPInternalServerError(reason="Template not loaded")
+
+        body = (
+            self.template.replace("{ user_id }", str(payload.user_id))
+            .replace("{ gt_version }", str(payload.gt_version))
+            .replace("{ api_server }", payload.api_server)
+            .replace("{ proxy_geetest }", str(payload.proxy_geetest))
+            .replace("{ guild_id }", str(payload.guild_id))
+            .replace("{ channel_id }", str(payload.channel_id))
+            .replace("{ message_id }", str(payload.message_id))
         )
         return web.Response(body=body, content_type="text/html")
 
@@ -61,7 +80,10 @@ class GeetestWebServer:
         data: dict[str, Any] = await request.json()
 
         user_id = data.pop("user_id")
-        await User.filter(id=int(user_id)).update(temp_data=data)
+        user = await User.get(id=int(user_id))
+        user.temp_data = data
+        await user.save()
+
         conn = Tortoise.get_connection("default")
         await conn.execute_query(f"NOTIFY geetest, '{user_id}'")
 
@@ -94,7 +116,10 @@ class GeetestWebServer:
     async def run(self, port: int = 5000) -> None:
         LOGGER_.info("Starting web server... (port=%d)", port)
 
-        app = web.Application()
+        async with aiofiles.open("hoyo_buddy/web_server/page.html") as f:
+            self.template = await f.read()
+
+        app = web.Application(middlewares=[self.error_middleware])
         app.add_routes(
             [
                 web.get("/captcha", self.captcha),

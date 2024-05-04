@@ -65,7 +65,7 @@ async def main() -> None:
 with setup_logging(logging.INFO, log_filename="hoyo_buddy.log"):
     try:
         import uvloop  # pyright: ignore [reportMissingImports]
-    except ImportError:
+    except ModuleNotFoundError:
         asyncio.run(main(), debug=True)
     else:
         uvloop.run(main(), debug=True)

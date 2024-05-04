@@ -124,6 +124,14 @@ class Admin(commands.Cog):
         task.add_done_callback(tasks.discard)
         await ctx.send("Added codes.")
 
+    @commands.command(name="dm")
+    async def dm_command(self, ctx: commands.Context, user_ids: str, *, message: str) -> Any:
+        user_ids_ = user_ids.split(",")
+        message_ = await ctx.send(f"Sending message to {len(user_ids_)} users...")
+        for user_id in user_ids_:
+            await self.bot.dm_user(int(user_id), content=message)
+        await message_.edit(content="Done.")
+
 
 async def setup(bot: "HoyoBuddy") -> None:
     await bot.add_cog(Admin(bot))

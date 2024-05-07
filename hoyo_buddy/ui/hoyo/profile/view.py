@@ -163,7 +163,7 @@ class ProfileView(View):
                     "Chests: {chest}\n"
                     "Memory of Chaos: {moc}\n"
                     "Achievements: {achievements}\n",
-                    key="profile.player_info.gi.embed.description",
+                    key="profile.player_info.hoyolab.embed.description",
                     level=player.level,
                     characters=stats.avatar_num,
                     chest=stats.chest_num,

@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from datetime import datetime
 
-    from .enums import Game, LoginPlatform
+    from .enums import Game, Platform
 
 
 class HoyoBuddyError(Exception):
@@ -169,7 +169,7 @@ class NoAbyssDataError(HoyoBuddyError):
 
 
 class NoGameAccountsError(HoyoBuddyError):
-    def __init__(self, platform: "LoginPlatform") -> None:
+    def __init__(self, platform: "Platform") -> None:
         super().__init__(
             title=LocaleStr("No Game Accounts", key="no_game_accounts_error_title"),
             message=LocaleStr(

@@ -11,11 +11,11 @@ if TYPE_CHECKING:
     from ui.account.view import AccountManager  # noqa: F401
 
     from hoyo_buddy.bot.bot import INTERACTION
-    from hoyo_buddy.enums import LoginPlatform
+    from hoyo_buddy.enums import Platform
 
 
 class WithEmailPassword(Button["AccountManager"]):
-    def __init__(self, platform: "LoginPlatform") -> None:
+    def __init__(self, platform: "Platform") -> None:
         super().__init__(
             label=LocaleStr("With email and password", key="email_password_button_label")
         )

@@ -6,7 +6,7 @@ from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, HOYOLAB, MIYOUSHE
 
-from ....enums import LoginPlatform
+from ....enums import Platform
 from ...components import Button, GoBackButton
 from .with_dev_tools import WithDevTools
 from .with_email_pswd import WithEmailPassword
@@ -25,7 +25,7 @@ class AddMiyousheAccount(Button["AccountManager"]):
         super().__init__(
             custom_id="add_miyoushe_account",
             emoji=MIYOUSHE,
-            label=LocaleStr(LoginPlatform.MIYOUSHE.value, warn_no_key=False),
+            label=LocaleStr(Platform.MIYOUSHE.value, warn_no_key=False),
         )
 
     async def callback(self, i: "INTERACTION") -> None:
@@ -49,9 +49,9 @@ class AddMiyousheAccount(Button["AccountManager"]):
         self.view.clear_items()
 
         self.view.add_item(WithQRCode())
-        self.view.add_item(WithEmailPassword(LoginPlatform.MIYOUSHE))
+        self.view.add_item(WithEmailPassword(Platform.MIYOUSHE))
         self.view.add_item(WithMobileNumber())
-        self.view.add_item(WithDevTools(LoginPlatform.MIYOUSHE))
+        self.view.add_item(WithDevTools(Platform.MIYOUSHE))
         self.view.add_item(go_back_button)
 
         await i.response.edit_message(embed=embed, view=self.view)
@@ -62,7 +62,7 @@ class AddHoyolabAccount(Button["AccountManager"]):
         super().__init__(
             custom_id="add_hoyolab_account",
             emoji=HOYOLAB,
-            label=LocaleStr(LoginPlatform.HOYOLAB.value, warn_no_key=False),
+            label=LocaleStr(Platform.HOYOLAB.value, warn_no_key=False),
         )
 
     async def callback(self, i: "INTERACTION") -> None:
@@ -84,8 +84,8 @@ class AddHoyolabAccount(Button["AccountManager"]):
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
 
-        self.view.add_item(WithEmailPassword(LoginPlatform.HOYOLAB))
-        self.view.add_item(WithDevTools(LoginPlatform.HOYOLAB))
+        self.view.add_item(WithEmailPassword(Platform.HOYOLAB))
+        self.view.add_item(WithDevTools(Platform.HOYOLAB))
         self.view.add_item(WithJavaScript())
         self.view.add_item(go_back_button)
 

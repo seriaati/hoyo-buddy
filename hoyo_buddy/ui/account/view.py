@@ -6,7 +6,7 @@ from ...bot.translator import LocaleStr, Translator
 from ...db.models import HoyoAccount, User
 from ...embeds import DefaultEmbed
 from ...emojis import get_game_emoji
-from ...enums import LoginPlatform
+from ...enums import Platform
 from ...exceptions import NoGameAccountsError, TryOtherMethodError
 from ...models import LoginNotifPayload
 from .. import SelectOption
@@ -149,9 +149,9 @@ class AccountManager(View):
             await self.absolute_edit(i, embed=self._acc_embed, view=self)
 
     async def finish_cookie_setup(
-        self, cookies: dict[str, Any], *, platform: LoginPlatform, interaction: "INTERACTION"
+        self, cookies: dict[str, Any], *, platform: Platform, interaction: "INTERACTION"
     ) -> None:
-        if platform is LoginPlatform.HOYOLAB and ("stoken" in cookies or "stoken_v2" in cookies):
+        if platform is Platform.HOYOLAB and ("stoken" in cookies or "stoken_v2" in cookies):
             # Get ltoken_v2 and cookie_token_v2
             cookie = await genshin.fetch_cookie_with_stoken_v2(cookies, token_types=[2, 4])
             cookies.update(cookie)
@@ -159,7 +159,7 @@ class AccountManager(View):
         client = genshin.Client(
             cookies,
             region=genshin.Region.OVERSEAS
-            if platform is LoginPlatform.HOYOLAB
+            if platform is Platform.HOYOLAB
             else genshin.Region.CHINESE,
         )
 

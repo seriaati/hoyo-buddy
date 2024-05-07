@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 from ...bot.error_handler import get_error_embed
 from ...db.models import User
-from ...enums import LoginPlatform
+from ...enums import Platform
 
 if TYPE_CHECKING:
     from ...bot.bot import INTERACTION
@@ -50,7 +50,7 @@ class GeetestHandler:
         *,
         view: "AccountManager",
         interaction: "INTERACTION",
-        platform: LoginPlatform,
+        platform: Platform,
         data: EmailPswdLoginData | SendMobileOTPData | SendEmailCodeData,
     ) -> None:
         self._view = view
@@ -70,7 +70,7 @@ class GeetestHandler:
             return self._client
         self._client = genshin.Client(
             region=genshin.Region.CHINESE
-            if self._platform is LoginPlatform.MIYOUSHE
+            if self._platform is Platform.MIYOUSHE
             else genshin.Region.OVERSEAS
         )
         return self._client

@@ -6,7 +6,7 @@ from discord import ButtonStyle
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.db.models import User
 from hoyo_buddy.emojis import PASSWORD
-from hoyo_buddy.enums import LoginPlatform
+from hoyo_buddy.enums import Platform
 
 from ...components import Button, Modal, TextInput
 from ..geetest_handler import EmailPswdLoginData, GeetestHandler, SendEmailCodeData
@@ -60,7 +60,7 @@ class EnterEmailVerificationCode(Button["AccountManager"]):
         await client._verify_email(code, genshin.models.ActionTicket(**user.temp_data))
         result = await client._app_login(self._email, self._password, ticket=self._action_ticket)
         await self.view.finish_cookie_setup(
-            result.to_dict(), platform=LoginPlatform.HOYOLAB, interaction=i
+            result.to_dict(), platform=Platform.HOYOLAB, interaction=i
         )
 
 
@@ -76,7 +76,7 @@ class EmailPasswordModal(Modal):
 
 
 class EnterEmailPassword(Button["AccountManager"]):
-    def __init__(self, platform: LoginPlatform) -> None:
+    def __init__(self, platform: Platform) -> None:
         super().__init__(
             label=LocaleStr(
                 "Enter email/username and password", key="enter_email_password_button_label"
@@ -105,12 +105,12 @@ class EnterEmailPassword(Button["AccountManager"]):
 
         client = genshin.Client(
             region=genshin.Region.CHINESE
-            if self._platform is LoginPlatform.MIYOUSHE
+            if self._platform is Platform.MIYOUSHE
             else genshin.Region.OVERSEAS
         )
         result = (
             await client._app_login(email, password)
-            if self._platform is LoginPlatform.HOYOLAB
+            if self._platform is Platform.HOYOLAB
             else await client._cn_web_login(email, password)
         )
 
@@ -125,7 +125,7 @@ class EnterEmailPassword(Button["AccountManager"]):
             handler.start_listener()
 
             await self.view.prompt_user_to_solve_geetest(
-                i, for_code=False, gt_version=3 if self._platform is LoginPlatform.HOYOLAB else 4
+                i, for_code=False, gt_version=3 if self._platform is Platform.HOYOLAB else 4
             )
         elif isinstance(result, genshin.models.ActionTicket):
             email_result = await client._send_verification_email(result)

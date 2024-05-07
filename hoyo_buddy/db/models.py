@@ -8,7 +8,7 @@ from seria.tortoise.model import Model
 from tortoise import fields
 
 from ..constants import HB_GAME_TO_GPY_GAME, UID_SERVER_RESET_HOURS
-from ..enums import Game, LoginPlatform, NotesNotifyType
+from ..enums import Game, NotesNotifyType, Platform
 from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
 
@@ -95,11 +95,9 @@ class HoyoAccount(Model):
         return get_game_icon(self.game)
 
     @cached_property
-    def platform(self) -> LoginPlatform:
+    def platform(self) -> Platform:
         region = genshin.utility.recognize_region(self.uid, HB_GAME_TO_GPY_GAME[self.game])
-        return (
-            LoginPlatform.HOYOLAB if region is genshin.Region.OVERSEAS else LoginPlatform.MIYOUSHE
-        )
+        return Platform.HOYOLAB if region is genshin.Region.OVERSEAS else Platform.MIYOUSHE
 
 
 class AccountNotifSettings(Model):

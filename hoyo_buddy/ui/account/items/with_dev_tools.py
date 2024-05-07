@@ -11,11 +11,11 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.bot.bot import INTERACTION
 
-    from ....enums import LoginPlatform
+    from ....enums import Platform
 
 
 class WithDevTools(Button["AccountManager"]):
-    def __init__(self, platform: "LoginPlatform") -> None:
+    def __init__(self, platform: "Platform") -> None:
         super().__init__(
             label=LocaleStr("With DevTools (desktop only)", key="devtools_button_label")
         )

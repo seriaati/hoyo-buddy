@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.bot.bot import INTERACTION
 
-    from ....enums import LoginPlatform
+    from ....enums import Platform
 
 
 class CookiesModal(Modal):
@@ -41,7 +41,7 @@ class DevToolCookiesModal(Modal):
 
 
 class EnterCookiesButton(Button["AccountManager"]):
-    def __init__(self, *, platform: "LoginPlatform", dev_tools: bool = False) -> None:
+    def __init__(self, *, platform: "Platform", dev_tools: bool = False) -> None:
         super().__init__(
             label=LocaleStr("Enter cookies", key="cookies_button_label"),
             style=ButtonStyle.blurple,

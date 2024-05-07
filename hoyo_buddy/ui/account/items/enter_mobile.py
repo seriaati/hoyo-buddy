@@ -6,7 +6,7 @@ from discord import ButtonStyle
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import PASSWORD, PHONE
 
-from ....enums import LoginPlatform
+from ....enums import Platform
 from ...components import Button, Modal, TextInput
 from ..geetest_handler import GeetestHandler, SendMobileOTPData
 
@@ -57,7 +57,7 @@ class EnterVerificationCode(Button["AccountManager"]):
         client = genshin.Client(region=genshin.Region.CHINESE)  # OS doesn't have mobile OTP login
         cookies = await client._login_with_mobile_otp(self._mobile, modal.code.value)
         await self.view.finish_cookie_setup(
-            cookies.to_dict(), platform=LoginPlatform.MIYOUSHE, interaction=i
+            cookies.to_dict(), platform=Platform.MIYOUSHE, interaction=i
         )
 
 
@@ -90,7 +90,7 @@ class EnterPhoneNumber(Button["AccountManager"]):
             handler = GeetestHandler(
                 view=self.view,
                 interaction=i,
-                platform=LoginPlatform.MIYOUSHE,
+                platform=Platform.MIYOUSHE,
                 data=SendMobileOTPData(mobile=mobile),
             )
             handler.start_listener()

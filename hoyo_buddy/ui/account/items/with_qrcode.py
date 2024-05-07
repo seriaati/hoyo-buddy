@@ -10,7 +10,7 @@ import qrcode.image.pil
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
 
-from ....enums import LoginPlatform
+from ....enums import Platform
 from ...components import Button, GoBackButton
 
 if TYPE_CHECKING:
@@ -113,4 +113,4 @@ class WithQRCode(Button["AccountManager"]):
 
         assert check_result.payload.raw is not None
         cookies = await self._fetch_cookies(check_result.payload.raw)
-        await self.view.finish_cookie_setup(cookies, platform=LoginPlatform.MIYOUSHE, interaction=i)
+        await self.view.finish_cookie_setup(cookies, platform=Platform.MIYOUSHE, interaction=i)

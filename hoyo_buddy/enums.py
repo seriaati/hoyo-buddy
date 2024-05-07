@@ -96,6 +96,6 @@ class HSRBaseType(IntEnum):
     ABUNDANCE = 7  # 豐饒
 
 
-class LoginPlatform(StrEnum):
+class Platform(StrEnum):
     HOYOLAB = "HoYoLAB"
     MIYOUSHE = "Miyoushe"

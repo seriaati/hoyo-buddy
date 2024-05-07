@@ -112,7 +112,7 @@ class Admin(commands.Cog):
             task = asyncio.create_task(search_cog._setup_search_autocomplete_choices())
             tasks.add(task)
             task.add_done_callback(tasks.discard)
-        await message.edit(content="Updated search autocomplete.")
+        await message.edit(content="Search autocomplete update task started.")
 
     @commands.command(name="add-codes", aliases=["ac"])
     async def add_codes_command(self, ctx: commands.Context, game: Game, codes: str) -> Any:

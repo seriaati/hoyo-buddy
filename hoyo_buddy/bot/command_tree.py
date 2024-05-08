@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Literal
 
 from discord import InteractionResponded, InteractionType, app_commands
 
-from ..db.models import Settings, User
+from ..db.models import Settings
 from ..utils import get_now
 from .error_handler import get_error_embed
 
@@ -17,11 +17,20 @@ class CommandTree(app_commands.CommandTree):
         if i.type not in {InteractionType.application_command, InteractionType.autocomplete}:
             return True
 
-        user, created = await User.get_or_create(id=i.user.id)
-        if created:
-            await Settings.create(user=user)
-        user.last_interaction = get_now()
-        await user.save(update_fields=("last_interaction",))
+        async with i.client.pool.acquire() as conn:
+            await conn.execute(
+                'INSERT INTO "user" (id, last_interaction, temp_data) VALUES ($1, $2, $3)'
+                "ON CONFLICT (id) DO UPDATE SET last_interaction = $2;",
+                i.user.id,
+                get_now(),
+                "{}",
+            )
+            await conn.execute(
+                'INSERT INTO "settings" (user_id, dark_mode) VALUES ($1, $2)'
+                "ON CONFLICT (user_id) DO NOTHING;",
+                i.user.id,
+                True,
+            )
 
         return True
 

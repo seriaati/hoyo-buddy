@@ -25,6 +25,7 @@ if TYPE_CHECKING:
     import asyncio
     from collections.abc import Sequence
 
+    import asyncpg
     import git
     from aiohttp import ClientSession
 
@@ -64,6 +65,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         translator: Translator,
         repo: "git.Repo",
         version: str,
+        pool: "asyncpg.Pool",
     ) -> None:
         super().__init__(
             command_prefix=commands.when_mentioned,
@@ -88,6 +90,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.owner_id = 410036441129943050
         self.repo = repo
         self.version = version
+        self.pool = pool
 
         self.search_autocomplete_choices: dict[
             Game,

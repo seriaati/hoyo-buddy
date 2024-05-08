@@ -5,6 +5,7 @@ import os
 
 import aiohttp
 import aiohttp.http_websocket
+import asyncpg
 import discord
 import git
 import sentry_sdk
@@ -43,12 +44,17 @@ discord.VoiceClient.warn_nacl = False
 
 
 async def main() -> None:
+    pool = await asyncpg.create_pool(os.environ["DB_URL"])
+    if pool is None:
+        msg = "Failed to connect to database"
+        raise RuntimeError(msg)
+
     async with (
         aiohttp.ClientSession() as session,
         Database(),
         Translator(env) as translator,
         HoyoBuddy(
-            session=session, env=env, translator=translator, repo=repo, version=version
+            session=session, env=env, translator=translator, repo=repo, version=version, pool=pool
         ) as bot,
     ):
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):

@@ -36,7 +36,7 @@ async def draw_item_list_card(
         draw_input.session,
     )
     with timing("draw", tags={"type": "item_list_card"}):
-        buffer = await asyncio.get_event_loop().run_in_executor(
+        buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.draw_item_list,
             items,

@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal, TypeAlias
 
 import discord
-import diskcache
 import enka
 import genshin
 import sentry_sdk
@@ -83,7 +82,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.uptime = get_now()
         self.translator = translator
         self.env = env
-        self.diskcache = diskcache.Cache("./.cache/hoyo_buddy")
         self.nai_client = NAIClient(
             token=os.environ["NAI_TOKEN"], host_url=os.environ["NAI_HOST_URL"]
         )
@@ -266,5 +264,4 @@ class HoyoBuddy(commands.AutoShardedBot):
         for task in self.login_notif_tasks.values():
             task.cancel()
 
-        self.diskcache.close()
         await super().close()

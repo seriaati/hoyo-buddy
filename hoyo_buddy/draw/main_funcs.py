@@ -36,8 +36,12 @@ async def draw_item_list_card(
         draw_input.session,
     )
     with timing("draw", tags={"type": "item_list_card"}):
-        buffer = await asyncio.to_thread(
-            funcs.draw_item_list, items, draw_input.dark_mode, draw_input.locale
+        buffer = await asyncio.get_event_loop().run_in_executor(
+            draw_input.executor,
+            funcs.draw_item_list,
+            items,
+            draw_input.dark_mode,
+            draw_input.locale,
         )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

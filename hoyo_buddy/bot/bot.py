@@ -22,6 +22,7 @@ from .translator import AppCommandTranslator, LocaleStr, Translator
 
 if TYPE_CHECKING:
     import asyncio
+    import concurrent.futures
     from collections.abc import Sequence
 
     import asyncpg
@@ -65,6 +66,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         repo: "git.Repo",
         version: str,
         pool: "asyncpg.Pool",
+        executor: "concurrent.futures.ProcessPoolExecutor",
     ) -> None:
         super().__init__(
             command_prefix=commands.when_mentioned,
@@ -89,6 +91,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.repo = repo
         self.version = version
         self.pool = pool
+        self.executor = executor
 
         self.search_autocomplete_choices: dict[
             Game,

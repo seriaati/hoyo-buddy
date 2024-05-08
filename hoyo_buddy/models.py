@@ -9,6 +9,8 @@ from pydantic import BaseModel
 from .constants import STARRAIL_RES
 
 if TYPE_CHECKING:
+    import concurrent.futures
+
     from aiohttp import web
 
 
@@ -66,6 +68,7 @@ class DrawInput:
     locale: Locale
     session: aiohttp.ClientSession
     filename: str
+    executor: "concurrent.futures.ProcessPoolExecutor"
 
 
 class FarmData:

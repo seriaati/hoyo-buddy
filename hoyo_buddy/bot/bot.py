@@ -132,7 +132,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         assert isinstance(status_channel, discord.TextChannel)
 
         embed = discord.Embed(
-            title=f"Bot {'Started' if status == 'start' else 'Stopped'} 🚀",
+            title=f"Bot {'Started 🚀' if status == 'start' else 'Shutting Down for Code Update 🛠️'}",
             description=f"Current time: {discord.utils.format_dt(get_now(), 'T')}",
             color=discord.Color.green() if status == "start" else discord.Color.red(),
         )

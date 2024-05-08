@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import concurrent.futures
 import logging
 import os
 from pathlib import Path
@@ -22,7 +25,6 @@ from .translator import AppCommandTranslator, LocaleStr, Translator
 
 if TYPE_CHECKING:
     import asyncio
-    import concurrent.futures
     from collections.abc import Sequence
 
     import asyncpg
@@ -60,13 +62,12 @@ class HoyoBuddy(commands.AutoShardedBot):
     def __init__(
         self,
         *,
-        session: "ClientSession",
+        session: ClientSession,
         env: str,
         translator: Translator,
-        repo: "git.Repo",
+        repo: git.Repo,
         version: str,
-        pool: "asyncpg.Pool",
-        executor: "concurrent.futures.ProcessPoolExecutor",
+        pool: asyncpg.Pool,
     ) -> None:
         super().__init__(
             command_prefix=commands.when_mentioned,
@@ -91,7 +92,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.repo = repo
         self.version = version
         self.pool = pool
-        self.executor = executor
+        self.executor = concurrent.futures.ProcessPoolExecutor()
 
         self.search_autocomplete_choices: dict[
             Game,
@@ -180,7 +181,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         current: str,
         locale: discord.Locale,
         translator: Translator,
-        games: "Sequence[Game]",
+        games: Sequence[Game],
     ) -> list[discord.app_commands.Choice[str]]:
         """Get autocomplete choices for a user's accounts.
 
@@ -229,7 +230,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         ]
 
     @staticmethod
-    async def get_account(user_id: int, games: "Sequence[Game]") -> HoyoAccount:
+    async def get_account(user_id: int, games: Sequence[Game]) -> HoyoAccount:
         """Get an account by user ID and games.
 
         Args:

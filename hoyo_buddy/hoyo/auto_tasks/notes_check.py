@@ -179,6 +179,8 @@ class NotesChecker:
             locale=locale,
             session=cls._bot.session,
             filename="notes.webp",
+            executor=cls._bot.executor,
+            loop=cls._bot.loop,
         )
         file_ = (
             await draw_gi_notes_card(draw_input, notes, cls._bot.translator)

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from functools import cached_property
 from io import BytesIO
 from typing import TYPE_CHECKING, Any, TypeAlias
@@ -32,6 +34,8 @@ from .items.player_btn import PlayerInfoButton
 from .items.rmv_from_cache_btn import RemoveFromCacheButton
 
 if TYPE_CHECKING:
+    import asyncio
+    import concurrent.futures
     import io
     from collections.abc import Sequence
 
@@ -52,17 +56,17 @@ class ProfileView(View):
     def __init__(
         self,
         uid: int,
-        game: "Game",
+        game: Game,
         cache_extras: dict[str, dict[str, Any]],
         card_data: dict[str, Any],
         *,
         hoyolab_characters: list[HoyolabHSRCharacter],
-        hoyolab_user: "StarRailUserStats | None" = None,
-        starrail_data: "StarrailInfoParsed | None" = None,
-        genshin_data: "ShowcaseResponse | None" = None,
-        author: "User | Member",
-        locale: "Locale",
-        translator: "Translator",
+        hoyolab_user: StarRailUserStats | None = None,
+        starrail_data: StarrailInfoParsed | None = None,
+        genshin_data: ShowcaseResponse | None = None,
+        author: User | Member,
+        locale: Locale,
+        translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
@@ -195,9 +199,9 @@ class ProfileView(View):
     async def _draw_src_character_card(
         self,
         uid: int,
-        character: "HSRCharacter",
+        character: HSRCharacter,
         template: str,
-        session: "aiohttp.ClientSession",
+        session: aiohttp.ClientSession,
     ) -> BytesIO:
         """Draw character card in StarRailCard template."""
         assert self._card_settings is not None
@@ -220,8 +224,8 @@ class ProfileView(View):
     async def _draw_enka_card(
         self,
         uid: int,
-        character: "GICharacter",
-        session: "aiohttp.ClientSession",
+        character: GICharacter,
+        session: aiohttp.ClientSession,
         template: str,
     ) -> BytesIO:
         """Draw GI character card in EnkaCard2, ENCard, enka-card templates."""
@@ -253,8 +257,10 @@ class ProfileView(View):
 
     async def _draw_hb_hsr_character_card(
         self,
-        character: "HSRCharacter| HoyolabHSRCharacter",
-        session: "aiohttp.ClientSession",
+        character: HSRCharacter | HoyolabHSRCharacter,
+        session: aiohttp.ClientSession,
+        executor: concurrent.futures.ProcessPoolExecutor,
+        loop: asyncio.AbstractEventLoop,
     ) -> BytesIO:
         """Draw Star Rail character card in Hoyo Buddy template."""
         assert self._card_settings is not None
@@ -281,6 +287,8 @@ class ProfileView(View):
                 locale=Locale(self.cache_extras[character.id]["locale"]),
                 session=session,
                 filename="card.webp",
+                executor=executor,
+                loop=loop,
             ),
             character,
             art,
@@ -289,8 +297,10 @@ class ProfileView(View):
 
     async def _draw_hb_gi_character_card(
         self,
-        character: "GICharacter",
-        session: "aiohttp.ClientSession",
+        character: GICharacter,
+        session: aiohttp.ClientSession,
+        executor: concurrent.futures.ProcessPoolExecutor,
+        loop: asyncio.AbstractEventLoop,
     ) -> BytesIO:
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert self._card_settings is not None
@@ -303,13 +313,15 @@ class ProfileView(View):
                 locale=Locale(self.cache_extras[str(character.id)]["locale"]),
                 session=session,
                 filename="card.webp",
+                executor=executor,
+                loop=loop,
             ),
             character,
             art,
             0.8 if self._card_settings.current_image is None else 1.0,
         )
 
-    async def draw_card(self, i: "INTERACTION") -> "io.BytesIO":
+    async def draw_card(self, i: INTERACTION) -> io.BytesIO:
         """Draw the character card and return the bytes object."""
         assert self.character_id is not None
 
@@ -339,14 +351,18 @@ class ProfileView(View):
         try:
             if isinstance(character, HSRCharacter | HoyolabHSRCharacter):
                 if "hb" in template or isinstance(character, HoyolabHSRCharacter):
-                    bytes_obj = await self._draw_hb_hsr_character_card(character, i.client.session)
+                    bytes_obj = await self._draw_hb_hsr_character_card(
+                        character, i.client.session, i.client.executor, i.client.loop
+                    )
                 elif isinstance(character, HSRCharacter):
                     bytes_obj = await self._draw_src_character_card(
                         self.uid, character, template, i.client.session
                     )
             elif isinstance(character, GICharacter):
                 if "hb" in template:
-                    bytes_obj = await self._draw_hb_gi_character_card(character, i.client.session)
+                    bytes_obj = await self._draw_hb_gi_character_card(
+                        character, i.client.session, i.client.executor, i.client.loop
+                    )
                 else:
                     bytes_obj = await self._draw_enka_card(
                         self.uid, character, i.client.session, template
@@ -366,8 +382,8 @@ class ProfileView(View):
 
     async def update(
         self,
-        i: "INTERACTION",
-        item: Select["ProfileView"] | Button["ProfileView"],
+        i: INTERACTION,
+        item: Select[ProfileView] | Button[ProfileView],
         *,
         unset_loading_state: bool = True,
     ) -> None:
@@ -388,7 +404,7 @@ class ProfileView(View):
                 attachments=[File(bytes_obj, filename="card.webp")], embed=None
             )
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         self._set_characters()
         self._add_items()
         await i.followup.send(embed=self.player_embed, view=self)

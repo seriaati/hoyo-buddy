@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, File, Locale, Member, User
@@ -9,6 +11,8 @@ from ....models import DrawInput
 from ...components import Button, View
 
 if TYPE_CHECKING:
+    import asyncio
+    import concurrent.futures
     from collections.abc import Sequence
 
     import aiohttp
@@ -23,12 +27,12 @@ if TYPE_CHECKING:
 class AbyssView(View):
     def __init__(
         self,
-        account: "HoyoAccount",
+        account: HoyoAccount,
         dark_mode: bool,
         *,
         author: User | Member,
         locale: Locale,
-        translator: "Translator",
+        translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
@@ -36,7 +40,7 @@ class AbyssView(View):
         self._account = account
         self._previous = False
 
-        self._abyss: dict[bool, "SpiralAbyss"] = {}
+        self._abyss: dict[bool, SpiralAbyss] = {}
         self._characters: Sequence[Character] = []
 
     async def _fetch_data(self) -> None:
@@ -55,7 +59,12 @@ class AbyssView(View):
         if not self._characters:
             self._characters = await client.get_genshin_characters(self._account.uid)
 
-    async def _draw_card(self, session: "aiohttp.ClientSession") -> File:
+    async def _draw_card(
+        self,
+        session: aiohttp.ClientSession,
+        executor: concurrent.futures.ProcessPoolExecutor,
+        loop: asyncio.AbstractEventLoop,
+    ) -> File:
         assert self._abyss is not None
 
         return await draw_spiral_abyss_card(
@@ -64,6 +73,8 @@ class AbyssView(View):
                 locale=self.locale,
                 session=session,
                 filename="abyss.webp",
+                executor=executor,
+                loop=loop,
             ),
             self._abyss[self._previous],
             self._characters,
@@ -85,13 +96,18 @@ class AbyssView(View):
             previous_btn.style = ButtonStyle.gray
             current_btn.style = ButtonStyle.blurple
 
-    async def update(self, session: "aiohttp.ClientSession") -> File:
+    async def update(
+        self,
+        session: aiohttp.ClientSession,
+        executor: concurrent.futures.ProcessPoolExecutor,
+        loop: asyncio.AbstractEventLoop,
+    ) -> File:
         await self._fetch_data()
-        file_ = await self._draw_card(session)
+        file_ = await self._draw_card(session, executor, loop)
         self._update_button_styles()
         return file_
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
 
         try:
@@ -100,7 +116,7 @@ class AbyssView(View):
             self._previous = not self._previous
             await self._fetch_data()
 
-        file_ = await self._draw_card(i.client.session)
+        file_ = await self._draw_card(i.client.session, i.client.executor, i.client.loop)
 
         self._add_items()
         await i.edit_original_response(attachments=[file_], view=self)
@@ -116,11 +132,11 @@ class CurrentButton(Button[AbyssView]):
             row=0,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         self.view._previous = False
         await self.set_loading_state(i)
         try:
-            file_ = await self.view.update(i.client.session)
+            file_ = await self.view.update(i.client.session, i.client.executor, i.client.loop)
         except Exception:
             await self.unset_loading_state(i)
             raise
@@ -136,11 +152,11 @@ class PreviousButton(Button[AbyssView]):
             row=1,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         self.view._previous = True
         await self.set_loading_state(i)
         try:
-            file_ = await self.view.update(i.client.session)
+            file_ = await self.view.update(i.client.session, i.client.executor, i.client.loop)
         except Exception:
             await self.unset_loading_state(i)
             raise

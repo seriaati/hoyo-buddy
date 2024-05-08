@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 from enum import StrEnum
 from typing import TYPE_CHECKING
@@ -24,6 +26,8 @@ from ...utils import get_now
 from ..components import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:
+    import asyncio
+    import concurrent.futures
     from collections.abc import Iterable, Sequence
 
     import aiohttp
@@ -61,14 +65,14 @@ class HSRSorter(StrEnum):
 class CharactersView(View):
     def __init__(
         self,
-        account: "HoyoAccount",
+        account: HoyoAccount,
         dark_mode: bool,
         element_char_counts: dict[str, int],
         path_char_counts: dict[str, int],
         *,
-        author: "User | Member | None",
-        locale: "Locale",
-        translator: "Translator",
+        author: User | Member | None,
+        locale: Locale,
+        translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
@@ -114,8 +118,8 @@ class CharactersView(View):
         return await read_json(filename) if updated else talent_level_data
 
     def _apply_gi_filter(
-        self, characters: "Sequence[GenshinCharacter]"
-    ) -> "Sequence[GenshinCharacter]":
+        self, characters: Sequence[GenshinCharacter]
+    ) -> Sequence[GenshinCharacter]:
         if GIFilter.MAX_FRIENDSHIP is self._filter:
             return [c for c in characters if c.friendship == 10]
 
@@ -125,8 +129,8 @@ class CharactersView(View):
         return characters
 
     def _apply_element_filters(
-        self, characters: "Sequence[GenshinCharacter | StarRailCharacter]"
-    ) -> "Sequence[GenshinCharacter | StarRailCharacter]":
+        self, characters: Sequence[GenshinCharacter | StarRailCharacter]
+    ) -> Sequence[GenshinCharacter | StarRailCharacter]:
         if not self._element_filters:
             return characters
 
@@ -134,8 +138,8 @@ class CharactersView(View):
         return [c for c in characters if c.element.lower() in elements]
 
     def _apply_path_filters(
-        self, characters: "Sequence[StarRailCharacter]"
-    ) -> "Sequence[StarRailCharacter]":
+        self, characters: Sequence[StarRailCharacter]
+    ) -> Sequence[StarRailCharacter]:
         if not self._path_filters:
             return characters
 
@@ -143,8 +147,8 @@ class CharactersView(View):
         return [c for c in characters if HSRBaseType(c.base_type).name.lower() in paths]
 
     def _apply_gi_sorter(
-        self, characters: "Sequence[GenshinCharacter]"
-    ) -> "Sequence[GenshinCharacter]":
+        self, characters: Sequence[GenshinCharacter]
+    ) -> Sequence[GenshinCharacter]:
         if self._sorter is GISorter.ELEMENT or self._sorter is HSRSorter.ELEMENT:
             return sorted(characters, key=lambda c: c.element)
 
@@ -160,8 +164,8 @@ class CharactersView(View):
         return sorted(characters, key=lambda c: c.constellation, reverse=True)
 
     def _apply_hsr_sorter(
-        self, characters: "Sequence[StarRailCharacter]"
-    ) -> "Sequence[StarRailCharacter]":
+        self, characters: Sequence[StarRailCharacter]
+    ) -> Sequence[StarRailCharacter]:
         if self._sorter is HSRSorter.PATH:
             return sorted(characters, key=lambda c: c.base_type)
 
@@ -178,7 +182,7 @@ class CharactersView(View):
 
     def _get_gi_filtered_and_sorted_characters(
         self,
-    ) -> "Sequence[GenshinCharacter]":
+    ) -> Sequence[GenshinCharacter]:
         characters = self._apply_gi_sorter(
             self._apply_element_filters(self._apply_gi_filter(self._gi_characters))  # pyright: ignore [reportArgumentType]
         )
@@ -188,7 +192,7 @@ class CharactersView(View):
 
     def _get_hsr_filtered_and_sorted_characters(
         self,
-    ) -> "Sequence[StarRailCharacter]":
+    ) -> Sequence[StarRailCharacter]:
         characters = self._apply_hsr_sorter(
             self._apply_element_filters(self._apply_path_filters(self._hsr_characters))  # pyright: ignore [reportArgumentType]
         )
@@ -198,9 +202,11 @@ class CharactersView(View):
 
     async def _draw_card(
         self,
-        session: "aiohttp.ClientSession",
-        characters: "Sequence[GenshinCharacter | StarRailCharacter]",
-    ) -> "File":
+        session: aiohttp.ClientSession,
+        characters: Sequence[GenshinCharacter | StarRailCharacter],
+        executor: concurrent.futures.ProcessPoolExecutor,
+        loop: asyncio.AbstractEventLoop,
+    ) -> File:
         if self._game is Game.GENSHIN:
             pc_icons = await self._get_pc_icons()
             talent_level_data = await self._get_talent_level_data()
@@ -221,6 +227,8 @@ class CharactersView(View):
                 locale=self.locale,
                 session=session,
                 filename="characters.webp",
+                executor=executor,
+                loop=loop,
             ),
             characters,
             talent_level_data,
@@ -358,7 +366,7 @@ class CharactersView(View):
         else:
             raise NotImplementedError
 
-    async def start(self, i: "INTERACTION", *, show_first_time_msg: bool = False) -> None:
+    async def start(self, i: INTERACTION, *, show_first_time_msg: bool = False) -> None:
         if show_first_time_msg:
             embed = DefaultEmbed(
                 self.locale,
@@ -405,7 +413,9 @@ class CharactersView(View):
         else:
             raise NotImplementedError
 
-        file_ = await self._draw_card(i.client.session, characters)
+        file_ = await self._draw_card(
+            i.client.session, characters, i.client.executor, i.client.loop
+        )
         embed = self._get_embed(len(characters))
 
         self._add_items()
@@ -435,18 +445,20 @@ class FilterSelector(Select[CharactersView]):
             options=options,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         self.view._filter = GIFilter(self.values[0])
         characters = self.view._get_gi_filtered_and_sorted_characters()
 
         await self.set_loading_state(i)
-        file_ = await self.view._draw_card(i.client.session, characters)
+        file_ = await self.view._draw_card(
+            i.client.session, characters, i.client.executor, i.client.loop
+        )
         embed = self.view._get_embed(len(characters))
         await self.unset_loading_state(i, attachments=[file_], embed=embed)
 
 
 class ElementFilterSelector(Select[CharactersView]):
-    def __init__(self, elements: "Iterable[GenshinElement | HSRElement]") -> None:
+    def __init__(self, elements: Iterable[GenshinElement | HSRElement]) -> None:
         options = [
             SelectOption(
                 label=LocaleStr(element.value.title(), warn_no_key=False),
@@ -466,7 +478,7 @@ class ElementFilterSelector(Select[CharactersView]):
             max_values=len(options),
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         if self.view._game is Game.GENSHIN:
             self.view._element_filters = [GenshinElement(value) for value in self.values]
             characters = self.view._get_gi_filtered_and_sorted_characters()
@@ -477,7 +489,9 @@ class ElementFilterSelector(Select[CharactersView]):
             raise NotImplementedError
 
         await self.set_loading_state(i)
-        file_ = await self.view._draw_card(i.client.session, characters)
+        file_ = await self.view._draw_card(
+            i.client.session, characters, i.client.executor, i.client.loop
+        )
         embed = self.view._get_embed(len(characters))
         await self.unset_loading_state(i, attachments=[file_], embed=embed)
 
@@ -501,12 +515,14 @@ class PathFilterSelector(Select[CharactersView]):
             max_values=len(options),
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         self.view._path_filters = [HSRPath(value) for value in self.values]
         characters = self.view._get_hsr_filtered_and_sorted_characters()
 
         await self.set_loading_state(i)
-        file_ = await self.view._draw_card(i.client.session, characters)
+        file_ = await self.view._draw_card(
+            i.client.session, characters, i.client.executor, i.client.loop
+        )
         embed = self.view._get_embed(len(characters))
         await self.unset_loading_state(i, attachments=[file_], embed=embed)
 
@@ -526,12 +542,14 @@ class GISorterSelector(Select[CharactersView]):
             options=options,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         self.view._sorter = GISorter(self.values[0])
         characters = self.view._get_gi_filtered_and_sorted_characters()
 
         await self.set_loading_state(i)
-        file_ = await self.view._draw_card(i.client.session, characters)
+        file_ = await self.view._draw_card(
+            i.client.session, characters, i.client.executor, i.client.loop
+        )
         embed = self.view._get_embed(len(characters))
         await self.unset_loading_state(i, attachments=[file_], embed=embed)
 
@@ -551,12 +569,14 @@ class HSRSorterSelector(Select[CharactersView]):
             options=options,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         self.view._sorter = HSRSorter(self.values[0])
         characters = self.view._get_hsr_filtered_and_sorted_characters()
 
         await self.set_loading_state(i)
-        file_ = await self.view._draw_card(i.client.session, characters)
+        file_ = await self.view._draw_card(
+            i.client.session, characters, i.client.executor, i.client.loop
+        )
         embed = self.view._get_embed(len(characters))
         await self.unset_loading_state(i, attachments=[file_], embed=embed)
 
@@ -569,7 +589,7 @@ class UpdateTalentData(Button[CharactersView]):
             row=3,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         filename = GI_TALENT_LEVEL_DATA_PATH.format(uid=self.view._account.uid)
         talent_level_data: dict[str, str] = await read_json(filename)
         updated_at = datetime.datetime.fromisoformat(talent_level_data["updated_at"])

@@ -2,7 +2,6 @@ import asyncio
 import contextlib
 import logging
 import os
-from concurrent.futures import ProcessPoolExecutor
 
 import aiohttp
 import aiohttp.http_websocket
@@ -50,25 +49,21 @@ async def main() -> None:
         msg = "Failed to connect to database"
         raise RuntimeError(msg)
 
-    with (
-        ProcessPoolExecutor() as executor,
-        contextlib.suppress(
-            KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError
-        ),
+    async with (
+        aiohttp.ClientSession() as session,
+        Database(),
+        Translator(env) as translator,
+        HoyoBuddy(
+            session=session,
+            env=env,
+            translator=translator,
+            repo=repo,
+            version=version,
+            pool=pool,
+        ) as bot,
     ):
-        async with (
-            aiohttp.ClientSession() as session,
-            Database(),
-            Translator(env) as translator,
-            HoyoBuddy(
-                session=session,
-                env=env,
-                translator=translator,
-                repo=repo,
-                version=version,
-                pool=pool,
-                executor=executor,
-            ) as bot,
+        with contextlib.suppress(
+            KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError
         ):
             server = GeetestWebServer(translator=translator)
             tasks: set[asyncio.Task] = set()
@@ -76,7 +71,8 @@ async def main() -> None:
             tasks.add(task)
             task.add_done_callback(tasks.discard)
 
-            await bot.start(os.environ["DISCORD_TOKEN"])
+            with bot.executor:
+                await bot.start(os.environ["DISCORD_TOKEN"])
 
 
 with setup_logging(logging.INFO, log_filename="hoyo_buddy.log"):

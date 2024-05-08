@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 import discord
@@ -13,6 +15,9 @@ from ...utils import get_now
 from ..components import Button, GoBackButton, ToggleButton, View
 
 if TYPE_CHECKING:
+    import asyncio
+    import concurrent.futures
+
     import aiohttp
     from genshin.models import DailyRewardInfo
 
@@ -29,7 +34,7 @@ CHECK_IN_URLS = {
 class CheckInUI(View):
     def __init__(
         self,
-        account: "HoyoAccount",
+        account: HoyoAccount,
         dark_mode: bool,
         *,
         author: discord.User | discord.Member,
@@ -57,7 +62,7 @@ class CheckInUI(View):
         self.add_item(AutoCheckInToggle(self.account.daily_checkin))
         self.add_item(NotificationSettingsButton())
 
-    async def _get_rewards(self) -> tuple[list[Reward], "DailyRewardInfo"]:
+    async def _get_rewards(self) -> tuple[list[Reward], DailyRewardInfo]:
         client = self.client
 
         monthly_rewards = await client.get_monthly_rewards()
@@ -95,7 +100,10 @@ class CheckInUI(View):
         return result, reward_info
 
     async def get_image_embed_and_file(
-        self, session: "aiohttp.ClientSession"
+        self,
+        session: aiohttp.ClientSession,
+        executor: concurrent.futures.ProcessPoolExecutor,
+        loop: asyncio.AbstractEventLoop,
     ) -> tuple[DefaultEmbed, discord.File]:
         rewards, info = await self._get_rewards()
 
@@ -105,6 +113,8 @@ class CheckInUI(View):
                 locale=self.locale,
                 session=session,
                 filename="check-in.webp",
+                executor=executor,
+                loop=loop,
             ),
             rewards,
         )
@@ -124,9 +134,11 @@ class CheckInUI(View):
         embed.add_acc_info(self.account)
         return embed, file_
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
-        embed, file_ = await self.get_image_embed_and_file(i.client.session)
+        embed, file_ = await self.get_image_embed_and_file(
+            i.client.session, i.client.executor, i.client.loop
+        )
         await i.followup.send(embed=embed, file=file_, view=self)
         self.message = await i.original_response()
 
@@ -139,14 +151,16 @@ class CheckInButton(Button[CheckInUI]):
             emoji=emojis.FREE_CANCELLATION,
         )
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         client = self.view.client
         assert client.game is not None
 
         await i.response.defer()
         daily_reward = await client.claim_daily_reward()
 
-        embed, file_ = await self.view.get_image_embed_and_file(i.client.session)
+        embed, file_ = await self.view.get_image_embed_and_file(
+            i.client.session, i.client.executor, i.client.loop
+        )
         await i.edit_original_response(embed=embed, attachments=[file_])
         embed = client.get_daily_reward_embed(daily_reward, self.view.locale, self.view.translator)
         await i.followup.send(embed=embed)
@@ -160,7 +174,7 @@ class AutoCheckInToggle(ToggleButton[CheckInUI]):
             emoji=emojis.SMART_TOY,
         )
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         await super().callback(i)
         self.view.account.daily_checkin = self.current_toggle
         await self.view.account.save(update_fields=("daily_checkin",))
@@ -174,7 +188,7 @@ class NotificationSettingsButton(Button[CheckInUI]):
             row=1,
         )
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         await self.view.account.fetch_related("notif_settings")
         go_back_button = GoBackButton(
             self.view.children,
@@ -199,7 +213,7 @@ class NotifyOnFailureToggle(ToggleButton[CheckInUI]):
             LocaleStr("Notify on check-in failure", key="notify_on_failure_button_label"),
         )
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         await super().callback(i)
         await AccountNotifSettings.filter(account=self.view.account).update(
             notify_on_checkin_failure=self.current_toggle
@@ -213,7 +227,7 @@ class NotifyOnSuccessToggle(ToggleButton[CheckInUI]):
             LocaleStr("Notify on check-in success", key="notify_on_success_button_label"),
         )
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         await super().callback(i)
         await AccountNotifSettings.filter(account=self.view.account).update(
             notify_on_checkin_success=self.current_toggle

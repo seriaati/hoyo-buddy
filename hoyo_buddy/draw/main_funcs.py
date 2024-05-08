@@ -1,3 +1,4 @@
+import asyncio
 import contextlib
 from typing import TYPE_CHECKING
 
@@ -49,7 +50,7 @@ async def draw_item_list_card(
 async def draw_checkin_card(draw_input: "DrawInput", rewards: list["Reward"]) -> File:
     await download_and_save_static_images([r.icon for r in rewards], "check-in", draw_input.session)
     with timing("draw", tags={"type": "checkin_card"}):
-        buffer = await draw_input.loop.run_in_executor(
+        buffer = await asyncio.get_event_loop().run_in_executor(
             draw_input.executor,
             funcs.draw_checkin_card,
             rewards,

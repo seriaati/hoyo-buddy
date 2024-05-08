@@ -36,6 +36,7 @@ seria-library = {git = "https://github.com/seriaati/seria-library"}
 tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
 transifex-python = "^3.5.0"
 yatta = {git = "https://github.com/seriaati/yatta"}
+asyncpg = "^0.29.0"
 
 [tool.poetry.group.dev]
 optional = true

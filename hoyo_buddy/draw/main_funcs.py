@@ -1,4 +1,3 @@
-import asyncio
 import contextlib
 from typing import TYPE_CHECKING
 
@@ -50,7 +49,12 @@ async def draw_item_list_card(
 async def draw_checkin_card(draw_input: "DrawInput", rewards: list["Reward"]) -> File:
     await download_and_save_static_images([r.icon for r in rewards], "check-in", draw_input.session)
     with timing("draw", tags={"type": "checkin_card"}):
-        buffer = await asyncio.to_thread(funcs.draw_checkin_card, rewards, draw_input.dark_mode)
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
+            funcs.draw_checkin_card,
+            rewards,
+            draw_input.dark_mode,
+        )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
@@ -96,7 +100,8 @@ async def draw_hsr_build_card(
     await download_and_save_static_images(urls, "hsr-build-card", draw_input.session)
 
     with timing("draw", tags={"type": "hsr_build_card"}):
-        buffer = await asyncio.to_thread(
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
             funcs.draw_hsr_build_card,
             character,
             draw_input.locale,
@@ -116,8 +121,13 @@ async def draw_hsr_notes_card(
         session=draw_input.session,
     )
     with timing("draw", tags={"type": "hsr_notes_card"}):
-        buffer = await asyncio.to_thread(
-            funcs.draw_hsr_notes_card, notes, draw_input.locale, translator, draw_input.dark_mode
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
+            funcs.draw_hsr_notes_card,
+            notes,
+            draw_input.locale,
+            translator,
+            draw_input.dark_mode,
         )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
@@ -139,7 +149,8 @@ async def draw_gi_build_card(
     await download_and_save_static_images(urls, "gi-build-card", draw_input.session)
 
     with timing("draw", tags={"type": "gi_build_card"}):
-        buffer = await asyncio.to_thread(
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
             funcs.draw_genshin_card,
             draw_input.locale,
             draw_input.dark_mode,
@@ -159,7 +170,8 @@ async def draw_gi_notes_card(
         session=draw_input.session,
     )
     with timing("draw", tags={"type": "gi_notes_card"}):
-        buffer = await asyncio.to_thread(
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
             funcs.draw_genshin_notes_card,
             notes,
             draw_input.locale,
@@ -184,8 +196,13 @@ async def draw_farm_card(
         session=draw_input.session,
     )
     with timing("draw", tags={"type": "farm_card"}):
-        buffer = await asyncio.to_thread(
-            funcs.draw_farm_card, farm_data, draw_input.locale, draw_input.dark_mode, translator
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
+            funcs.draw_farm_card,
+            farm_data,
+            draw_input.locale,
+            draw_input.dark_mode,
+            translator,
         )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
@@ -208,7 +225,8 @@ async def draw_chara_card(
 
     await download_and_save_static_images(urls, "gi-characters", draw_input.session)
     with timing("draw", tags={"type": "hsr_character_card"}):
-        buffer = await asyncio.to_thread(
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
             funcs.draw_character_card,
             characters,
             talents,
@@ -252,7 +270,8 @@ async def draw_spiral_abyss_card(
 
     await download_and_save_static_images(urls, "abyss", draw_input.session)
     with timing("draw", tags={"type": "spiral_abyss_card"}):
-        buffer = await asyncio.to_thread(
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
             funcs.AbyssCard.draw,
             draw_input.dark_mode,
             draw_input.locale,
@@ -270,7 +289,8 @@ async def draw_exploration_card(
     translator: "Translator",
 ) -> File:
     with timing("draw", tags={"type": "exploration_card"}):
-        buffer = await asyncio.to_thread(
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
             funcs.ExplorationCard.draw,
             user,
             draw_input.dark_mode,

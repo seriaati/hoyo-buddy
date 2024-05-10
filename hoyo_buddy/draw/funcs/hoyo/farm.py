@@ -22,7 +22,7 @@ def cache_key(farm_data: list[FarmData], locale: str, dark_mode: bool, _: Transl
     return f"{locale}-{dark_mode}-{'-'.join(str(data.domain.id) for data in farm_data)}"
 
 
-@cached(LRUCache(maxsize=128), key=cache_key)
+@cached(LRUCache(maxsize=32), key=cache_key)
 def draw_farm_card(
     farm_data: list[FarmData],
     locale_: str,

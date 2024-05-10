@@ -4,7 +4,6 @@ import io
 from typing import TYPE_CHECKING
 
 import mihomo
-from cachetools import LRUCache, cached
 from discord import Locale
 from discord.utils import get as dget
 from PIL import Image, ImageDraw
@@ -17,17 +16,6 @@ if TYPE_CHECKING:
     from hoyo_buddy.models import HoyolabHSRCharacter, Trace
 
 
-def cache_key(
-    character: mihomo.models.Character | HoyolabHSRCharacter,
-    locale: str,
-    dark_mode: bool,
-    image_url: str,
-    primary: tuple[int, int, int],
-) -> str:
-    return f"{character!r}-{locale}-{dark_mode}-{image_url}-{primary}"
-
-
-@cached(cache=LRUCache(maxsize=128), key=cache_key)
 def draw_hsr_build_card(
     character: mihomo.models.Character | HoyolabHSRCharacter,
     locale_: str,

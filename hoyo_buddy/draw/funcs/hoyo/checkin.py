@@ -1,7 +1,6 @@
 import io
 from typing import TYPE_CHECKING
 
-from cachetools import LRUCache, cached
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
@@ -12,12 +11,6 @@ if TYPE_CHECKING:
 __all__ = ("draw_checkin_card",)
 
 
-def cache_key(daily_rewards: list["Reward"], dark_mode: bool) -> str:
-    rewards_key = "_".join(repr(reward) for reward in daily_rewards)
-    return f"{rewards_key}_{dark_mode}"
-
-
-@cached(cache=LRUCache(maxsize=100), key=cache_key)
 def draw_checkin_card(
     daily_rewards: list["Reward"],
     dark_mode: bool,

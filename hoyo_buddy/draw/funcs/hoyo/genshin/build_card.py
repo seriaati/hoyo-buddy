@@ -3,7 +3,6 @@ from __future__ import annotations
 import io
 from typing import TYPE_CHECKING
 
-from cachetools import LRUCache, cached
 from discord import Locale
 from enka.enums import FightPropType
 from PIL import Image, ImageDraw
@@ -16,17 +15,6 @@ if TYPE_CHECKING:
 __all__ = ("draw_genshin_card",)
 
 
-def cache_key(
-    locale: str,
-    dark_mode: bool,
-    character: Character,
-    image_url: str,
-    zoom: float,
-) -> str:
-    return f"{character!r}-{locale}-{dark_mode}-{image_url}-{zoom}"
-
-
-@cached(cache=LRUCache(maxsize=100), key=cache_key)
 def draw_genshin_card(
     locale_: str, dark_mode: bool, character: Character, image_url: str, zoom: float
 ) -> io.BytesIO:

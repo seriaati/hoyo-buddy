@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import io
 from typing import TYPE_CHECKING
 
 import mihomo
 from cachetools import LRUCache, cached
+from discord import Locale
 from discord.utils import get as dget
 from PIL import Image, ImageDraw
 
@@ -11,14 +14,12 @@ from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
 from hoyo_buddy.utils import round_down
 
 if TYPE_CHECKING:
-    from discord import Locale
-
     from hoyo_buddy.models import HoyolabHSRCharacter, Trace
 
 
 def cache_key(
-    character: "mihomo.models.Character | HoyolabHSRCharacter",
-    locale: "Locale",
+    character: mihomo.models.Character | HoyolabHSRCharacter,
+    locale: str,
     dark_mode: bool,
     image_url: str,
     primary: tuple[int, int, int],
@@ -28,8 +29,8 @@ def cache_key(
 
 @cached(cache=LRUCache(maxsize=128), key=cache_key)
 def draw_hsr_build_card(
-    character: "mihomo.models.Character | HoyolabHSRCharacter",
-    locale: "Locale",
+    character: mihomo.models.Character | HoyolabHSRCharacter,
+    locale_: str,
     dark_mode: bool,
     image_url: str,
     primary_hex: str,
@@ -44,6 +45,8 @@ def draw_hsr_build_card(
         )
 
         return display_value
+
+    locale = Locale(locale_)
 
     primary = Drawer.hex_to_rgb(primary_hex)
     if dark_mode:
@@ -161,7 +164,7 @@ def draw_hsr_build_card(
         "Ultimate": dget(character.trace_tree, anchor="Point08"),
         "Talent": dget(character.trace_tree, anchor="Point05"),
     }
-    sub_bubbles: dict[str, list["mihomo.TraceTreeNode | Trace | None"]] = {
+    sub_bubbles: dict[str, list[mihomo.TraceTreeNode | Trace | None]] = {
         "Normal": [
             dget(character.trace_tree, anchor="Point10"),
             dget(character.trace_tree, anchor="Point11"),

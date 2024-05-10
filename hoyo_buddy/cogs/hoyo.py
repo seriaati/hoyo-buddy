@@ -391,6 +391,8 @@ class Hoyo(commands.Cog):
                 locale=settings.locale or i.locale,
                 session=self.bot.session,
                 filename="exploration.webp",
+                executor=i.client.executor,
+                loop=i.client.loop,
             ),
             genshin_user,
             self.bot.translator,

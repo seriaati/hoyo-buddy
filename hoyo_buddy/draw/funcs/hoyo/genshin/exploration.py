@@ -406,13 +406,14 @@ class ExplorationCard:
         cls,
         user: "PartialGenshinUserStats",
         dark_mode: bool,
-        locale: Locale,
+        locale_: str,
         translator: Translator,
     ) -> BytesIO:
         im = Image.open(
             f"hoyo-buddy-assets/assets/gi-exploration/background_{'dark' if dark_mode else 'light'}.png"
         )
         draw = ImageDraw.Draw(im)
+        locale = Locale(locale_)
 
         cls._user = user
         cls._drawer = Drawer(

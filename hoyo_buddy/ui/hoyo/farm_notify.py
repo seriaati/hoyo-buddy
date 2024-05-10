@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
@@ -14,6 +16,9 @@ from ..components import Button, ToggleButton
 from ..paginator import Page, PaginatorView
 
 if TYPE_CHECKING:
+    import asyncio
+    import concurrent.futures
+
     import aiohttp
     from discord import Locale, Member, User
     from discord.file import File
@@ -25,13 +30,15 @@ if TYPE_CHECKING:
 class FarmNotifyView(PaginatorView):
     def __init__(
         self,
-        farm_notify: "FarmNotify",
+        farm_notify: FarmNotify,
         dark_mode: bool,
-        session: "aiohttp.ClientSession",
+        session: aiohttp.ClientSession,
+        executor: concurrent.futures.ProcessPoolExecutor,
+        loop: asyncio.AbstractEventLoop,
         *,
-        author: "User | Member | None",
-        locale: "Locale",
-        translator: "Translator",
+        author: User | Member | None,
+        locale: Locale,
+        translator: Translator,
     ) -> None:
         self._split_item_ids = split_list_to_chunks(farm_notify.item_ids, 12)
         pages = [
@@ -67,6 +74,9 @@ class FarmNotifyView(PaginatorView):
 
         super().__init__(pages, author=author, locale=locale, translator=translator)
 
+        self._executor = executor
+        self._loop = loop
+
     def _add_buttons(self) -> None:
         super()._add_buttons()
         self.add_item(NotifyToggle(self._notify.enabled))
@@ -81,7 +91,7 @@ class FarmNotifyView(PaginatorView):
         self._item_names = {c.id: c.name for c in characters} | {str(w.id): w.name for w in weapons}
         self._item_icons = {c.id: c.icon for c in characters} | {str(w.id): w.icon for w in weapons}
 
-    async def _create_file(self) -> "File":
+    async def _create_file(self) -> File:
         items = [
             ItemWithTrailing(
                 icon=self._item_icons[item_id],
@@ -96,11 +106,13 @@ class FarmNotifyView(PaginatorView):
                 locale=self.locale,
                 session=self._session,
                 filename="farm_notify.webp",
+                executor=self._executor,
+                loop=self._loop,
             ),
             items,
         )
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         if not self._notify.item_ids:
             embed = DefaultEmbed(
                 self.locale,
@@ -130,7 +142,7 @@ class AddItemButton(Button[FarmNotifyView]):
             row=1,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -151,7 +163,7 @@ class RemoveItemButton(Button[FarmNotifyView]):
             row=1,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -167,7 +179,7 @@ class NotifyToggle(ToggleButton[FarmNotifyView]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(current_toggle, LocaleStr("Reminder", key="reminder_toggle"), row=1)
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         await super().callback(i, edit=True)
         await self.view._notify.fetch_related("account")
         await FarmNotify.filter(account_id=self.view._notify.account.id).update(

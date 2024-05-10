@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, File, Locale, Member, User
@@ -23,6 +25,9 @@ from ....models import DrawInput
 from ...components import Button, GoBackButton, View
 
 if TYPE_CHECKING:
+    import asyncio
+    import concurrent.futures
+
     import aiohttp
 
     from hoyo_buddy.bot.bot import INTERACTION
@@ -38,12 +43,12 @@ if TYPE_CHECKING:
 class NotesView(View):
     def __init__(
         self,
-        account: "HoyoAccount",
+        account: HoyoAccount,
         dark_mode: bool,
         *,
         author: User | Member | None,
         locale: Locale,
-        translator: "Translator",
+        translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self._account = account
@@ -52,7 +57,7 @@ class NotesView(View):
         self.add_item(ReminderButton())
 
     @staticmethod
-    def _get_type1_value(notify: "NotesNotify | None") -> LocaleStr:
+    def _get_type1_value(notify: NotesNotify | None) -> LocaleStr:
         if notify is None:
             return LocaleStr("Not set", key="reminder_settings.not_set")
         return LocaleStr(
@@ -70,7 +75,7 @@ class NotesView(View):
         )
 
     @staticmethod
-    def _get_type2_value(notify: "NotesNotify | None") -> LocaleStr:
+    def _get_type2_value(notify: NotesNotify | None) -> LocaleStr:
         if notify is None:
             return LocaleStr("Not set", key="reminder_settings.not_set")
         return LocaleStr(
@@ -86,7 +91,7 @@ class NotesView(View):
         )
 
     @staticmethod
-    def _get_type3_value(notify: "NotesNotify | None") -> LocaleStr:
+    def _get_type3_value(notify: NotesNotify | None) -> LocaleStr:
         if notify is None:
             return LocaleStr("Not set", key="reminder_settings.not_set")
         return LocaleStr(
@@ -104,7 +109,7 @@ class NotesView(View):
         )
 
     @staticmethod
-    def _get_type4_value(notify: "NotesNotify | None") -> LocaleStr:
+    def _get_type4_value(notify: NotesNotify | None) -> LocaleStr:
         if notify is None:
             return LocaleStr("Not set", key="reminder_settings.not_set")
         return LocaleStr(
@@ -244,7 +249,7 @@ class NotesView(View):
     async def process_type_one_modal(
         self,
         *,
-        modal: "TypeOneModal",
+        modal: TypeOneModal,
         notify: NotesNotify | None,
         notify_type: NotesNotifyType,
         check_interval: int,
@@ -278,7 +283,7 @@ class NotesView(View):
     async def process_type_two_modal(
         self,
         *,
-        modal: "TypeTwoModal",
+        modal: TypeTwoModal,
         notify: NotesNotify | None,
         notify_type: NotesNotifyType,
         check_interval: int,
@@ -307,7 +312,7 @@ class NotesView(View):
     async def process_type_three_modal(
         self,
         *,
-        modal: "TypeThreeModal",
+        modal: TypeThreeModal,
         notify: NotesNotify | None,
         notify_type: NotesNotifyType,
         check_interval: int,
@@ -341,7 +346,7 @@ class NotesView(View):
     async def process_type_four_modal(
         self,
         *,
-        modal: "TypeFourModal",
+        modal: TypeFourModal,
         notify: NotesNotify | None,
         notify_type: NotesNotifyType,
         check_interval: int,
@@ -387,7 +392,11 @@ class NotesView(View):
         return await self._account.client.get_starrail_notes()
 
     async def _draw_notes_card(
-        self, session: "aiohttp.ClientSession", notes: GenshinNotes | StarRailNotes
+        self,
+        session: aiohttp.ClientSession,
+        notes: GenshinNotes | StarRailNotes,
+        executor: concurrent.futures.ProcessPoolExecutor,
+        loop: asyncio.AbstractEventLoop,
     ) -> File:
         if isinstance(notes, GenshinNotes):
             return await draw_gi_notes_card(
@@ -396,6 +405,8 @@ class NotesView(View):
                     locale=self.locale,
                     session=session,
                     filename="notes.webp",
+                    executor=executor,
+                    loop=loop,
                 ),
                 notes,
                 self.translator,
@@ -406,6 +417,8 @@ class NotesView(View):
                 locale=self.locale,
                 session=session,
                 filename="notes.webp",
+                executor=executor,
+                loop=loop,
             ),
             notes,
             self.translator,
@@ -462,12 +475,14 @@ class NotesView(View):
             .add_acc_info(self._account)
         )
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
 
         notes = await self._get_notes()
         embed = self._get_notes_embed(notes)
-        file_ = await self._draw_notes_card(i.client.session, notes)
+        file_ = await self._draw_notes_card(
+            i.client.session, notes, i.client.executor, i.client.loop
+        )
 
         await i.followup.send(embed=embed, file=file_, view=self)
         self.message = await i.original_response()
@@ -481,7 +496,7 @@ class ReminderButton(Button[NotesView]):
             label=LocaleStr("Reminder settings", key="reminder_button.label"),
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         go_back_button = GoBackButton(
             self.view.children,
             self.view.get_embeds(i.message),

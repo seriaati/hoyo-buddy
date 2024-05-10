@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 from io import BytesIO
 from typing import TYPE_CHECKING
 
+from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.bot.translator import LocaleStr, Translator
@@ -8,15 +11,15 @@ from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.utils import format_timedelta
 
 if TYPE_CHECKING:
-    from discord import Locale
     from genshin.models import StarRailNote
 
 __all__ = ("draw_hsr_notes_card",)
 
 
 def draw_hsr_notes_card(
-    notes: "StarRailNote", locale: "Locale", translator: Translator, dark_mode: bool
+    notes: StarRailNote, locale_: str, translator: Translator, dark_mode: bool
 ) -> BytesIO:
+    locale = Locale(locale_)
     filename = f"{'dark' if dark_mode else 'light'}-hsr"
     im = Image.open(f"hoyo-buddy-assets/assets/notes/{filename}.png")
     draw = ImageDraw.Draw(im)

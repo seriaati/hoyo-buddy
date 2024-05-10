@@ -69,6 +69,8 @@ class FarmView(View):
             locale=self.locale,
             session=i.client.session,
             filename="farm.webp",
+            executor=i.client.executor,
+            loop=i.client.loop,
         )
         file_ = await draw_farm_card(
             draw_input,

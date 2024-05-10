@@ -133,6 +133,8 @@ class AbyssEnemyView(View):
                 locale=self.locale,
                 session=i.client.session,
                 filename="enemies.webp",
+                executor=i.client.executor,
+                loop=i.client.loop,
             ),
             items[self._wave_index],
         )

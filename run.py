@@ -54,24 +54,32 @@ async def main() -> None:
         Database(),
         Translator(env) as translator,
         HoyoBuddy(
-            session=session, env=env, translator=translator, repo=repo, version=version, pool=pool
+            session=session,
+            env=env,
+            translator=translator,
+            repo=repo,
+            version=version,
+            pool=pool,
         ) as bot,
     ):
-        with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
+        with contextlib.suppress(
+            KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError
+        ):
             server = GeetestWebServer(translator=translator)
             tasks: set[asyncio.Task] = set()
             task = asyncio.create_task(server.run())
             tasks.add(task)
             task.add_done_callback(tasks.discard)
 
-            with contextlib.suppress(aiohttp.http_websocket.WebSocketError):
+            with bot.executor:
                 await bot.start(os.environ["DISCORD_TOKEN"])
 
 
-with setup_logging(logging.INFO, log_filename="hoyo_buddy.log"):
-    try:
-        import uvloop  # pyright: ignore [reportMissingImports]
-    except ModuleNotFoundError:
-        asyncio.run(main(), debug=True)
-    else:
-        uvloop.run(main(), debug=True)
+if __name__ == "__main__":
+    with setup_logging(logging.INFO, log_filename="hoyo_buddy.log"):
+        try:
+            import uvloop  # pyright: ignore [reportMissingImports]
+        except ModuleNotFoundError:
+            asyncio.run(main(), debug=True)
+        else:
+            uvloop.run(main(), debug=True)

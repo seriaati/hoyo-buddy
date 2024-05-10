@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 import aiohttp
@@ -9,6 +11,9 @@ from pydantic import BaseModel
 from .constants import STARRAIL_RES
 
 if TYPE_CHECKING:
+    import asyncio
+    import concurrent.futures
+
     from aiohttp import web
 
 
@@ -31,7 +36,7 @@ class LoginNotifPayload(BaseModel):
     proxy_geetest: bool
 
     @classmethod
-    def parse_from_request(cls, request: "web.Request") -> "LoginNotifPayload":
+    def parse_from_request(cls, request: web.Request) -> LoginNotifPayload:
         return cls(
             user_id=int(request.query["user_id"]),
             guild_id=int(request.query["guild_id"]) if "guild_id" in request.query else None,
@@ -66,6 +71,8 @@ class DrawInput:
     locale: Locale
     session: aiohttp.ClientSession
     filename: str
+    executor: concurrent.futures.ProcessPoolExecutor
+    loop: asyncio.AbstractEventLoop
 
 
 class FarmData:

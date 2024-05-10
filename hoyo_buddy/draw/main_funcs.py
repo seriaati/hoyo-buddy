@@ -4,8 +4,6 @@ import contextlib
 from typing import TYPE_CHECKING
 
 from discord import File
-from genshin.models import Character as GenshinCharacter
-from genshin.models import StarRailDetailCharacter as StarRailCharacter
 from mihomo.models import Character as MihomoCharacter
 from sentry_sdk.metrics import timing
 
@@ -20,8 +18,10 @@ if TYPE_CHECKING:
     from io import BytesIO
 
     from enka.models import Character as EnkaCharacter
+    from genshin.models import Character as GenshinCharacter
     from genshin.models import Notes as GenshinNote
     from genshin.models import PartialGenshinUserStats, SpiralAbyss, StarRailNote
+    from genshin.models import StarRailDetailCharacter as StarRailCharacter
 
     from ..bot.translator import Translator
     from ..models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
@@ -104,7 +104,7 @@ async def draw_hsr_build_card(
     with timing("draw", tags={"type": "hsr_build_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
-            funcs.draw_hsr_build_card,
+            funcs.hsr.draw_hsr_build_card,
             character,
             draw_input.locale.value,
             draw_input.dark_mode,
@@ -125,7 +125,7 @@ async def draw_hsr_notes_card(
     with timing("draw", tags={"type": "hsr_notes_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
-            funcs.draw_hsr_notes_card,
+            funcs.hsr.draw_hsr_notes_card,
             notes,
             draw_input.locale.value,
             translator,
@@ -153,7 +153,7 @@ async def draw_gi_build_card(
     with timing("draw", tags={"type": "gi_build_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
-            funcs.draw_genshin_card,
+            funcs.genshin.draw_genshin_card,
             draw_input.locale.value,
             draw_input.dark_mode,
             character,
@@ -174,7 +174,7 @@ async def draw_gi_notes_card(
     with timing("draw", tags={"type": "gi_notes_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
-            funcs.draw_genshin_notes_card,
+            funcs.genshin.draw_genshin_notes_card,
             notes,
             draw_input.locale.value,
             translator,
@@ -210,28 +210,54 @@ async def draw_farm_card(
     return File(buffer, filename=draw_input.filename)
 
 
-async def draw_chara_card(
+async def draw_gi_characters_card(
     draw_input: DrawInput,
-    characters: Sequence[GenshinCharacter | StarRailCharacter],
+    characters: Sequence[GenshinCharacter],
     talents: dict[str, str],
     pc_icons: dict[str, str],
     translator: Translator,
 ) -> File:
     urls: list[str] = []
     for c in characters:
-        if isinstance(c, GenshinCharacter):
-            urls.append(c.weapon.icon)
-        elif isinstance(c, StarRailCharacter) and c.equip:
-            urls.append(c.equip.icon)
+        urls.append(c.weapon.icon)
     urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
 
     await download_and_save_static_images(urls, "gi-characters", draw_input.session)
+    with timing("draw", tags={"type": "gi_character_card"}):
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
+            funcs.genshin.draw_character_card,
+            characters,
+            talents,
+            pc_icons,
+            draw_input.dark_mode,
+            translator,
+            draw_input.locale.value,
+        )
+    buffer.seek(0)
+
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_hsr_characters_card(
+    draw_input: DrawInput,
+    characters: Sequence[StarRailCharacter],
+    pc_icons: dict[str, str],
+    translator: Translator,
+) -> File:
+    urls: list[str] = []
+    for c in characters:
+        if c.equip is None:
+            continue
+        urls.append(c.equip.icon)
+    urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
+
+    await download_and_save_static_images(urls, "hsr-characters", draw_input.session)
     with timing("draw", tags={"type": "hsr_character_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
-            funcs.draw_character_card,
+            funcs.hsr.draw_character_card,
             characters,
-            talents,
             pc_icons,
             draw_input.dark_mode,
             translator,
@@ -274,7 +300,7 @@ async def draw_spiral_abyss_card(
     with timing("draw", tags={"type": "spiral_abyss_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
-            funcs.AbyssCard.draw,
+            funcs.genshin.AbyssCard.draw,
             draw_input.dark_mode,
             draw_input.locale.value,
             translator,
@@ -293,7 +319,7 @@ async def draw_exploration_card(
     with timing("draw", tags={"type": "exploration_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
-            funcs.ExplorationCard.draw,
+            funcs.genshin.ExplorationCard.draw,
             user,
             draw_input.dark_mode,
             draw_input.locale.value,

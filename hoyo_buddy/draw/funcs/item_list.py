@@ -1,6 +1,5 @@
 from io import BytesIO
 
-from cachetools import LRUCache, cached
 from discord import Locale
 from PIL import Image, ImageDraw
 
@@ -14,20 +13,7 @@ from ..drawer import (
     Drawer,
 )
 
-__all__ = ("draw_item_list",)
 
-
-def cache_key(
-    items: list[ItemWithDescription] | list[ItemWithTrailing], dark_mode: bool, locale: "str"
-) -> str:
-    items_key = "_".join(
-        f"{item.title}_{item.description if isinstance(item, ItemWithDescription) else item.trailing}"
-        for item in items
-    )
-    return f"{items_key}_{dark_mode}_{locale}"
-
-
-@cached(cache=LRUCache(maxsize=100), key=cache_key)
 def draw_item_list(
     items: list[ItemWithDescription] | list[ItemWithTrailing], dark_mode: bool, locale_: "str"
 ) -> BytesIO:

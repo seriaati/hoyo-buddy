@@ -8,7 +8,7 @@ from discord import ButtonStyle
 from seria.utils import read_json
 
 from hoyo_buddy.bot.translator import LocaleStr
-from hoyo_buddy.draw.main_funcs import draw_chara_card
+from hoyo_buddy.draw.main_funcs import draw_gi_characters_card, draw_hsr_characters_card
 from hoyo_buddy.enums import Game, GenshinElement, HSRBaseType, HSRElement, HSRPath
 from hoyo_buddy.hoyo.clients.gpy_client import (
     GI_TALENT_LEVEL_DATA_PATH,
@@ -210,6 +210,21 @@ class CharactersView(View):
         if self._game is Game.GENSHIN:
             pc_icons = await self._get_pc_icons()
             talent_level_data = await self._get_talent_level_data()
+
+            file_ = await draw_gi_characters_card(
+                DrawInput(
+                    dark_mode=self._dark_mode,
+                    locale=self.locale,
+                    session=session,
+                    filename="characters.webp",
+                    executor=executor,
+                    loop=loop,
+                ),
+                characters,  # type: ignore [reportArgumentType]
+                talent_level_data,
+                pc_icons,
+                self.translator,
+            )
         elif self._game is Game.STARRAIL:
             pc_icons = {
                 str(
@@ -217,24 +232,22 @@ class CharactersView(View):
                 ): f"https://raw.githubusercontent.com/FortOfFans/HSR/main/spriteoutput/avatariconteam/{c.id}.png"
                 for c in characters
             }
-            talent_level_data = {}
+            file_ = await draw_hsr_characters_card(
+                DrawInput(
+                    dark_mode=self._dark_mode,
+                    locale=self.locale,
+                    session=session,
+                    filename="characters.webp",
+                    executor=executor,
+                    loop=loop,
+                ),
+                characters,  # type: ignore [reportArgumentType]
+                pc_icons,
+                self.translator,
+            )
         else:
             raise NotImplementedError
 
-        file_ = await draw_chara_card(
-            DrawInput(
-                dark_mode=self._dark_mode,
-                locale=self.locale,
-                session=session,
-                filename="characters.webp",
-                executor=executor,
-                loop=loop,
-            ),
-            characters,
-            talent_level_data,
-            pc_icons,
-            self.translator,
-        )
         return file_
 
     def _get_embed(self, char_num: int) -> DefaultEmbed:

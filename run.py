@@ -75,10 +75,11 @@ async def main() -> None:
                 await bot.start(os.environ["DISCORD_TOKEN"])
 
 
-with setup_logging(logging.INFO, log_filename="hoyo_buddy.log"):
-    try:
-        import uvloop  # pyright: ignore [reportMissingImports]
-    except ModuleNotFoundError:
-        asyncio.run(main(), debug=True)
-    else:
-        uvloop.run(main(), debug=True)
+if __name__ == "__main__":
+    with setup_logging(logging.INFO, log_filename="hoyo_buddy.log"):
+        try:
+            import uvloop  # pyright: ignore [reportMissingImports]
+        except ModuleNotFoundError:
+            asyncio.run(main(), debug=True)
+        else:
+            uvloop.run(main(), debug=True)

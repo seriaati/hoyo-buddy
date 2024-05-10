@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from io import BytesIO
 from typing import TYPE_CHECKING, ClassVar
 
@@ -17,14 +19,14 @@ class AbyssCard:
     _dark_mode: ClassVar[bool]
     _locale: ClassVar[Locale]
     _translator: ClassVar[Translator]
-    _abyss: ClassVar["genshin.models.SpiralAbyss"]
-    _abyss_characters: ClassVar[dict[str, "AbyssCharacter"]]
+    _abyss: ClassVar[genshin.models.SpiralAbyss]
+    _abyss_characters: ClassVar[dict[str, AbyssCharacter]]
 
     _drawer: ClassVar[Drawer]
 
     @classmethod
     def _draw_rank_pill(
-        cls, chara: "genshin.models.AbyssRankCharacter", title: LocaleStr
+        cls, chara: genshin.models.AbyssRankCharacter, title: LocaleStr
     ) -> Image.Image:
         textbbox = cls._drawer.write(title, size=48, position=(0, 55), no_write=True)
         text_width = textbbox[2] - textbbox[0]
@@ -183,7 +185,7 @@ class AbyssCard:
             )
 
     @classmethod
-    def _draw_battle_characters(cls, battle: "genshin.models.Battle") -> Image.Image:
+    def _draw_battle_characters(cls, battle: genshin.models.Battle) -> Image.Image:
         im = Image.new("RGBA", (528, 158), TRANSPARENT)
 
         drawer = cls._drawer
@@ -283,14 +285,14 @@ class AbyssCard:
     def draw(
         cls,
         dark_mode: bool,
-        locale: Locale,
+        locale: str,
         translator: Translator,
-        abyss: "genshin.models.SpiralAbyss",
-        charas: dict[str, "AbyssCharacter"],
+        abyss: genshin.models.SpiralAbyss,
+        charas: dict[str, AbyssCharacter],
     ) -> BytesIO:
         # Set class variables
         cls._dark_mode = dark_mode
-        cls._locale = locale
+        cls._locale = Locale(locale)
         cls._translator = translator
         cls._abyss = abyss
         cls._abyss_characters = charas

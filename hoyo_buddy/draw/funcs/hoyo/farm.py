@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 import io
 from typing import TYPE_CHECKING
 
 from cachetools import LRUCache, cached
+from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.bot.translator import LocaleStr, Translator
@@ -9,25 +12,24 @@ from hoyo_buddy.draw.drawer import DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
 
 if TYPE_CHECKING:
     import ambr
-    from discord import Locale
 
     from hoyo_buddy.models import FarmData
 
 __all__ = ("draw_farm_card",)
 
 
-def cache_key(farm_data: list["FarmData"], locale: "Locale", dark_mode: bool, _: Translator) -> str:
+def cache_key(farm_data: list[FarmData], locale: str, dark_mode: bool, _: Translator) -> str:
     return f"{locale}-{dark_mode}-{'-'.join(str(data.domain.id) for data in farm_data)}"
 
 
 @cached(LRUCache(maxsize=128), key=cache_key)
 def draw_farm_card(
-    farm_data: list["FarmData"],
-    locale: "Locale",
+    farm_data: list[FarmData],
+    locale_: str,
     dark_mode: bool,
     translator: Translator,
 ) -> io.BytesIO:
-    def get_domain_title(domain: "ambr.Domain", locale: "Locale", translator: Translator) -> str:
+    def get_domain_title(domain: ambr.Domain, locale: Locale, translator: Translator) -> str:
         """Get the title of a GI domain based on its name and city, assuming the language is English."""
         city_name = translator.translate(
             LocaleStr(domain.city.name.title(), warn_no_key=False), locale
@@ -40,6 +42,7 @@ def draw_farm_card(
         domain_type_name = translator.translate(domain_type, locale)
         return f"{domain_type_name} ({city_name})"
 
+    locale = Locale(locale_)
     mode = "dark" if dark_mode else "light"
     basic_cards: list[Image.Image] = []
 

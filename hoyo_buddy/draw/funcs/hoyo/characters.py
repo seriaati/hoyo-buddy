@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import io
 from typing import TYPE_CHECKING
 
 import genshin
 from cachetools import LRUCache, cached
+from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -14,8 +17,6 @@ from ....enums import Game
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
-
-    from discord import Locale
 
     from hoyo_buddy.bot.translator import Translator
 
@@ -38,13 +39,14 @@ WEAPON_ICON_SIZES = {
 
 
 def draw_character_card(
-    characters: "Sequence[genshin.models.Character | genshin.models.StarRailDetailCharacter]",
+    characters: Sequence[genshin.models.Character | genshin.models.StarRailDetailCharacter],
     talents: dict[str, str],
     pc_icons: dict[str, str],
     dark_mode: bool,
-    translator: "Translator",
-    locale: "Locale",
+    translator: Translator,
+    locale_: str,
 ) -> io.BytesIO:
+    locale = Locale(locale_)
     c_cards: dict[str, Image.Image] = {}
 
     game = Game.GENSHIN if isinstance(characters[0], genshin.models.Character) else Game.STARRAIL
@@ -101,9 +103,9 @@ def draw_character_card(
 def gi_cache_key(
     talent_str: str,
     dark_mode: bool,
-    character: "genshin.models.Character",
-    _: "Translator",
-    locale: "Locale",
+    character: genshin.models.Character,
+    _: Translator,
+    locale: Locale,
 ) -> str:
     return (
         f"{talent_str}_"
@@ -123,9 +125,9 @@ def gi_cache_key(
 def draw_small_gi_chara_card(
     talent_str: str,
     dark_mode: bool,
-    character: "genshin.models.Character",
-    translator: "Translator",
-    locale: "Locale",
+    character: genshin.models.Character,
+    translator: Translator,
+    locale: Locale,
 ) -> Image.Image:
     game = Game.GENSHIN
     im = Image.open(
@@ -167,9 +169,9 @@ def draw_small_gi_chara_card(
 def hsr_cache_key(
     talent_str: str,
     dark_mode: bool,
-    character: "genshin.models.StarRailDetailCharacter",
-    _: "Translator",
-    locale: "Locale",
+    character: genshin.models.StarRailDetailCharacter,
+    _: Translator,
+    locale: Locale,
 ) -> str:
     return (
         f"{talent_str}_"
@@ -188,9 +190,9 @@ def hsr_cache_key(
 def draw_small_hsr_chara_card(
     talent_str: str,
     dark_mode: bool,
-    character: "genshin.models.StarRailDetailCharacter",
-    translator: "Translator",
-    locale: "Locale",
+    character: genshin.models.StarRailDetailCharacter,
+    translator: Translator,
+    locale: Locale,
 ) -> Image.Image:
     game = Game.STARRAIL
     im = Image.open(

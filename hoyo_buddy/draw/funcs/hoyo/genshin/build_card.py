@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import io
 from typing import TYPE_CHECKING
 
@@ -15,9 +17,9 @@ __all__ = ("draw_genshin_card",)
 
 
 def cache_key(
-    locale: Locale,
+    locale: str,
     dark_mode: bool,
-    character: "Character",
+    character: Character,
     image_url: str,
     zoom: float,
 ) -> str:
@@ -26,8 +28,9 @@ def cache_key(
 
 @cached(cache=LRUCache(maxsize=100), key=cache_key)
 def draw_genshin_card(
-    locale: Locale, dark_mode: bool, character: "Character", image_url: str, zoom: float
+    locale_: str, dark_mode: bool, character: Character, image_url: str, zoom: float
 ) -> io.BytesIO:
+    locale = Locale(locale_)
     mode = "dark" if dark_mode else "light"
     text_color = (241, 241, 241) if dark_mode else (33, 33, 33)
 

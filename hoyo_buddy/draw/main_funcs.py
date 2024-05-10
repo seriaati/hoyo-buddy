@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import contextlib
 from typing import TYPE_CHECKING
@@ -27,8 +29,8 @@ if TYPE_CHECKING:
 
 
 async def draw_item_list_card(
-    draw_input: "DrawInput",
-    items: list["ItemWithDescription"] | list["ItemWithTrailing"],
+    draw_input: DrawInput,
+    items: list[ItemWithDescription] | list[ItemWithTrailing],
 ) -> File:
     await download_and_save_static_images(
         [item.icon for item in items],
@@ -47,7 +49,7 @@ async def draw_item_list_card(
     return File(buffer, filename=draw_input.filename)
 
 
-async def draw_checkin_card(draw_input: "DrawInput", rewards: list["Reward"]) -> File:
+async def draw_checkin_card(draw_input: DrawInput, rewards: list[Reward]) -> File:
     await download_and_save_static_images([r.icon for r in rewards], "check-in", draw_input.session)
     with timing("draw", tags={"type": "checkin_card"}):
         buffer = await asyncio.get_event_loop().run_in_executor(
@@ -61,11 +63,11 @@ async def draw_checkin_card(draw_input: "DrawInput", rewards: list["Reward"]) ->
 
 
 async def draw_hsr_build_card(
-    draw_input: "DrawInput",
-    character: "MihomoCharacter | HoyolabHSRCharacter",
+    draw_input: DrawInput,
+    character: MihomoCharacter | HoyolabHSRCharacter,
     image_url: str,
     primary_hex: str,
-) -> "BytesIO":
+) -> BytesIO:
     urls: list[str] = []
     urls.append(image_url)
     if isinstance(character, HoyolabHSRCharacter):
@@ -114,7 +116,7 @@ async def draw_hsr_build_card(
 
 
 async def draw_hsr_notes_card(
-    draw_input: "DrawInput", notes: "StarRailNote", translator: "Translator"
+    draw_input: DrawInput, notes: StarRailNote, translator: Translator
 ) -> File:
     await download_and_save_static_images(
         [exped.item_url for exped in notes.expeditions],
@@ -135,8 +137,8 @@ async def draw_hsr_notes_card(
 
 
 async def draw_gi_build_card(
-    draw_input: "DrawInput", character: "EnkaCharacter", image_url: str, zoom: float
-) -> "BytesIO":
+    draw_input: DrawInput, character: EnkaCharacter, image_url: str, zoom: float
+) -> BytesIO:
     urls: list[str] = []
     urls.append(image_url)
     urls.append(character.weapon.icon)
@@ -163,7 +165,7 @@ async def draw_gi_build_card(
 
 
 async def draw_gi_notes_card(
-    draw_input: "DrawInput", notes: "GenshinNote", translator: "Translator"
+    draw_input: DrawInput, notes: GenshinNote, translator: Translator
 ) -> File:
     await download_and_save_static_images(
         [exped.character_icon for exped in notes.expeditions],
@@ -184,7 +186,7 @@ async def draw_gi_notes_card(
 
 
 async def draw_farm_card(
-    draw_input: "DrawInput", farm_data: list["FarmData"], translator: "Translator"
+    draw_input: DrawInput, farm_data: list[FarmData], translator: Translator
 ) -> File:
     image_urls = (
         [r.icon for data in farm_data for r in data.domain.rewards]
@@ -210,11 +212,11 @@ async def draw_farm_card(
 
 
 async def draw_chara_card(
-    draw_input: "DrawInput",
-    characters: "Sequence[GenshinCharacter | StarRailCharacter]",
+    draw_input: DrawInput,
+    characters: Sequence[GenshinCharacter | StarRailCharacter],
     talents: dict[str, str],
     pc_icons: dict[str, str],
-    translator: "Translator",
+    translator: Translator,
 ) -> File:
     urls: list[str] = []
     for c in characters:
@@ -242,10 +244,10 @@ async def draw_chara_card(
 
 
 async def draw_spiral_abyss_card(
-    draw_input: "DrawInput",
-    abyss: "SpiralAbyss",
-    characters: "Sequence[GenshinCharacter]",
-    translator: "Translator",
+    draw_input: DrawInput,
+    abyss: SpiralAbyss,
+    characters: Sequence[GenshinCharacter],
+    translator: Translator,
 ) -> File:
     abyss_characters: dict[str, AbyssCharacter] = {
         str(chara.id): AbyssCharacter(level=chara.level, const=chara.constellation, icon=chara.icon)
@@ -285,9 +287,9 @@ async def draw_spiral_abyss_card(
 
 
 async def draw_exploration_card(
-    draw_input: "DrawInput",
-    user: "PartialGenshinUserStats",
-    translator: "Translator",
+    draw_input: DrawInput,
+    user: PartialGenshinUserStats,
+    translator: Translator,
 ) -> File:
     with timing("draw", tags={"type": "exploration_card"}):
         buffer = await draw_input.loop.run_in_executor(

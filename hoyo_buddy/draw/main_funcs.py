@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
 
-    from enka.models import Character as EnkaCharacter
+    from enka.gi import Character as EnkaCharacter
     from genshin.models import Character as GenshinCharacter
     from genshin.models import Notes as GenshinNote
     from genshin.models import PartialGenshinUserStats, SpiralAbyss, StarRailNote

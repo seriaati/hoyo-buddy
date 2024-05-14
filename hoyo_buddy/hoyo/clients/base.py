@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, Any, TypeAlias
 
 if TYPE_CHECKING:
     from discord import Locale
-    from enka.models import Character as EnkaCharacter
-    from enka.models import ShowcaseResponse
+    from enka.gi import Character as EnkaCharacter
+    from enka.gi import ShowcaseResponse
     from mihomo.models import Character as MihomoCharacter
     from mihomo.models import StarrailInfoParsed
 

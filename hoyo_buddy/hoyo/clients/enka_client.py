@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import logging
 import pickle
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Self
 
 import enka
 from discord import Locale
@@ -10,18 +12,18 @@ from ...db.models import EnkaCache
 from .base import BaseClient
 
 if TYPE_CHECKING:
-    from enka.models import ShowcaseResponse
+    from enka.gi import ShowcaseResponse
 
 LOGGER_ = logging.getLogger(__name__)
 
 
-class EnkaAPI(enka.EnkaAPI, BaseClient):
+class EnkaAPI(enka.GenshinClient, BaseClient):
     def __init__(self, locale: Locale = Locale.american_english) -> None:
-        lang = LOCALE_TO_ENKA_LANG.get(locale, enka.Language.ENGLISH)
+        lang = LOCALE_TO_ENKA_LANG.get(locale, enka.gi.Language.ENGLISH)
         super().__init__(lang=lang)
         self.locale = ENKA_LANG_TO_LOCALE[lang]
 
-    async def __aenter__(self) -> "EnkaAPI":
+    async def __aenter__(self) -> Self:
         await super().__aenter__()
         return self
 
@@ -36,12 +38,12 @@ class EnkaAPI(enka.EnkaAPI, BaseClient):
 
         return self._assets.character_data[character_id]["SkillOrder"]
 
-    async def fetch_showcase(self, uid: int) -> "ShowcaseResponse":
+    async def fetch_showcase(self, uid: int) -> ShowcaseResponse:
         cache, _ = await EnkaCache.get_or_create(uid=uid)
 
         try:
             live_data = await super().fetch_showcase(uid)
-        except enka.exceptions.GameMaintenanceError:
+        except enka.errors.GameMaintenanceError:
             if cache.genshin is None:
                 raise
 

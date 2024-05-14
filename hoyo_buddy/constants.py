@@ -2,7 +2,7 @@ from typing import Literal
 
 import discord
 from ambr import Language as AmbrLanguage
-from enka import Language as EnkaLanguage
+from enka.gi import Language as EnkaLanguage
 from genshin import Game as GPYGame
 from mihomo import Language as MihomoLanguage
 from yatta import Language as YattaLanguage

@@ -4,13 +4,13 @@ import io
 from typing import TYPE_CHECKING
 
 from discord import Locale
-from enka.enums import FightPropType
+from enka.gi import FightPropType
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
 
 if TYPE_CHECKING:
-    from enka.models import Character
+    from enka.gi import Character
 
 __all__ = ("draw_genshin_card",)
 

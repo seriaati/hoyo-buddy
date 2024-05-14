@@ -5,7 +5,7 @@ from io import BytesIO
 from typing import TYPE_CHECKING, Any, TypeAlias
 
 from discord import File, Locale
-from enka.models import Character as GICharacter
+from enka.gi import Character as GICharacter
 from mihomo.models import Character as HSRCharacter
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -41,7 +41,7 @@ if TYPE_CHECKING:
 
     import aiohttp
     from discord import Member, User
-    from enka.models import ShowcaseResponse
+    from enka.gi import ShowcaseResponse
     from genshin.models import StarRailUserStats
     from mihomo.models import StarrailInfoParsed
 

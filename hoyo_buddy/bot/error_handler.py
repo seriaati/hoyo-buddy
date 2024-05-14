@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Literal
 
 from ambr.exceptions import DataNotFoundError as AmbrDataNotFoundError
 from discord.utils import format_dt
-from enka import exceptions as enka_errors
+from enka import errors as enka_errors
 from genshin import errors as genshin_errors
 from mihomo import errors as mihomo_errors
 from yatta.exceptions import DataNotFoundError as YattaDataNotFoundError

@@ -10,7 +10,7 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.ui.components import Button
 
 if TYPE_CHECKING:
-    from enka.models import ShowcaseResponse
+    from enka.gi import ShowcaseResponse
     from mihomo.models import StarrailInfoParsed
 
     from hoyo_buddy.bot.bot import INTERACTION

@@ -247,7 +247,10 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     async def update_assets(self) -> None:
         # Update EnkaAPI assets
-        async with enka.EnkaAPI() as api:
+        async with enka.GenshinClient() as api:
+            await api.update_assets()
+
+        async with enka.HSRClient() as api:
             await api.update_assets()
 
         # Update genshin.py assets

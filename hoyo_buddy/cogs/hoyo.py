@@ -16,8 +16,8 @@ from ..draw.main_funcs import draw_exploration_card
 from ..enums import Game
 from ..exceptions import IncompleteParamError
 from ..hoyo.clients.ambr_client import AmbrAPIClient
-from ..hoyo.clients.enka_client import EnkaAPI
-from ..hoyo.clients.mihomo_client import MihomoAPI
+from ..hoyo.clients.enka.gi import EnkaGIClient
+from ..hoyo.clients.enka.hsr import EnkaHSRClient
 from ..hoyo.clients.yatta_client import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..models import DrawInput
@@ -159,7 +159,7 @@ class Hoyo(commands.Cog):
         uid_, game, account_ = await self._get_uid_and_game(user.id, account, uid, game_value)
 
         if game is Game.GENSHIN:
-            async with EnkaAPI(locale) as client:
+            async with EnkaGIClient(locale) as client:
                 data = await client.fetch_showcase(uid_)
 
             cache = await EnkaCache.get(uid=uid_)
@@ -180,8 +180,8 @@ class Hoyo(commands.Cog):
             hoyolab_user = None
 
             try:
-                client = MihomoAPI(locale)
-                starrail_data = await client.fetch_user(uid_)
+                async with EnkaHSRClient(locale) as client:
+                    starrail_data = await client.fetch_showcase(uid_)
             except enka.errors.GameMaintenanceError:
                 if account_ is None:
                     # mihomo fails and no hoyolab account provided, raise error

@@ -252,7 +252,7 @@ def draw_hsr_build_card(
     attributes: dict[str, str] = {}
     if isinstance(character, enka.hsr.Character):
         for stat in character.stats:
-            if stat.value == 0 or stat.type.value in enka.hsr.DMG_BONUS_PROPS.values():
+            if stat.type.value in enka.hsr.DMG_BONUS_PROPS.values():
                 continue
             attributes[stat.icon] = stat.formatted_value
 

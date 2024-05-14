@@ -25,7 +25,7 @@ from ...models import HoyolabHSRCharacter, LightCone, Relic, Stat, Trace
 from ...utils import get_now
 from .ambr_client import AmbrAPIClient
 from .base import BaseClient
-from .enka_client import EnkaAPI
+from .enka.gi import EnkaGIClient
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -132,7 +132,7 @@ class GenshinClient(genshin.Client, BaseClient):
             talent_boost = TalentBoost(talent_boost_data[character_id])
 
         # Get talent order
-        async with EnkaAPI() as client:
+        async with EnkaGIClient() as client:
             talent_order = client.get_character_talent_order(
                 self._convert_character_id_to_enka_format(character_id)
             )

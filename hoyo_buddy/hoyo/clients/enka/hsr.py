@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING
 
 import enka
 
-from ...constants import ENKA_HSR_LANG_TO_LOCALE, LOCALE_TO_ENKA_HSR_LANG
-from ...db.models import EnkaCache
-from .base import BaseClient
+from ....constants import ENKA_HSR_LANG_TO_LOCALE, LOCALE_TO_ENKA_HSR_LANG
+from ....db.models import EnkaCache
+from ..base import BaseClient
 
 if TYPE_CHECKING:
     import discord
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 LOGGER_ = logging.getLogger(__name__)
 
 
-class MihomoAPI(enka.HSRClient, BaseClient):
+class EnkaHSRClient(enka.HSRClient, BaseClient):
     def __init__(self, locale: discord.Locale) -> None:
         lang = LOCALE_TO_ENKA_HSR_LANG.get(locale, enka.hsr.Language.ENGLISH)
         super().__init__(lang=lang)

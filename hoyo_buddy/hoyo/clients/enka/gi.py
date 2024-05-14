@@ -7,9 +7,9 @@ from typing import TYPE_CHECKING, Self
 import enka
 from discord import Locale
 
-from ...constants import ENKA_LANG_TO_LOCALE, LOCALE_TO_GI_ENKA_LANG
-from ...db.models import EnkaCache
-from .base import BaseClient
+from ....constants import ENKA_LANG_TO_LOCALE, LOCALE_TO_GI_ENKA_LANG
+from ....db.models import EnkaCache
+from ..base import BaseClient
 
 if TYPE_CHECKING:
     from enka.gi import ShowcaseResponse
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 LOGGER_ = logging.getLogger(__name__)
 
 
-class EnkaAPI(enka.GenshinClient, BaseClient):
+class EnkaGIClient(enka.GenshinClient, BaseClient):
     def __init__(self, locale: Locale = Locale.american_english) -> None:
         lang = LOCALE_TO_GI_ENKA_LANG.get(locale, enka.gi.Language.ENGLISH)
         super().__init__(lang=lang)

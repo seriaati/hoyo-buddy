@@ -1279,25 +1279,6 @@ flake8 = ["flake8"]
 tests = ["psutil", "pytest (!=3.3.0)", "pytest-cov"]
 
 [[package]]
-name = "mihomo"
-version = "2.0.2"
-description = "A simple Python Pydantic model for Honkai: Star Rail parsed data from the Mihomo API."
-optional = false
-python-versions = ">=3.10"
-files = []
-develop = false
-
-[package.dependencies]
-aiohttp = "==3.*"
-pydantic = "==2.*"
-
-[package.source]
-type = "git"
-url = "https://github.com/KT-Yeh/mihomo.git"
-reference = "HEAD"
-resolved_reference = "d7440e749da024987795d2d1d0a5a619a7b1daf6"
-
-[[package]]
 name = "multidict"
 version = "6.0.5"
 description = "multidict implementation"
@@ -2628,4 +2609,4 @@ resolved_reference = "ea49d7f8fe4edd5a289cec1b959a6ee38d896c9c"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "65aff018faf96736202a6fe4b5420e2c711bb94def2802bcdbc83fed45ec3c60"
+content-hash = "2db5f2625291cf7172c93d24e1d2754210f70398247434cf12e5b9b41cf54b63"

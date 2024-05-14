@@ -6,7 +6,6 @@ import logging
 import os
 import re
 import time
-from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any
 
 from discord import app_commands
@@ -217,7 +216,7 @@ class Translator:
         for k, v in extras.items():
             if isinstance(v, LocaleStr):
                 extras_[k] = self.translate(v, locale)
-            elif isinstance(v, Sequence) and isinstance(v[0], LocaleStr):
+            elif isinstance(v, list) and isinstance(v[0], LocaleStr):
                 extras_[k] = "/".join([self.translate(i, locale) for i in v])
             else:
                 extras_[k] = v

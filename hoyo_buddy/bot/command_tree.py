@@ -47,3 +47,5 @@ class CommandTree(app_commands.CommandTree):
             await i.response.send_message(embed=embed, ephemeral=True)
         except InteractionResponded:
             await i.followup.send(embed=embed, ephemeral=True)
+        except Exception:
+            pass

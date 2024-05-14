@@ -13,7 +13,7 @@ from ..bot.bot import USER  # noqa: TCH001
 from ..bot.translator import LocaleStr
 from ..db.models import EnkaCache, HoyoAccount, Settings
 from ..draw.main_funcs import draw_exploration_card
-from ..enums import Game
+from ..enums import Game, Platform
 from ..exceptions import IncompleteParamError
 from ..hoyo.clients.ambr_client import AmbrAPIClient
 from ..hoyo.clients.enka.gi import EnkaGIClient
@@ -427,7 +427,9 @@ class Hoyo(commands.Cog):
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         user = user or i.user
-        account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN, Game.STARRAIL))
+        account_ = account or await self.bot.get_account(
+            user.id, (Game.GENSHIN, Game.STARRAIL), (Platform.HOYOLAB,)
+        )
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
 
         view = RedeemUI(account_, author=i.user, locale=locale, translator=self.bot.translator)

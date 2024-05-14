@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from typing import TYPE_CHECKING
 
@@ -14,19 +16,19 @@ LOGGER_ = logging.getLogger(__name__)
 
 
 class Metrics(commands.Cog):
-    def __init__(self, bot: "HoyoBuddy") -> None:
+    def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_guild_join(self, _: "Guild") -> None:
+    async def on_guild_join(self, _: Guild) -> None:
         sentry_sdk.metrics.incr("guilds.joined")
 
     @commands.Cog.listener()
-    async def on_guild_remove(self, _: "Guild") -> None:
+    async def on_guild_remove(self, _: Guild) -> None:
         sentry_sdk.metrics.incr("guilds.joined", value=-1)
 
     @commands.Cog.listener()
-    async def on_interaction(self, i: "INTERACTION") -> None:
+    async def on_interaction(self, i: INTERACTION) -> None:
         match i.type:
             case InteractionType.application_command:
                 if isinstance(i.command, app_commands.Command):
@@ -54,5 +56,5 @@ class Metrics(commands.Cog):
                 sentry_sdk.metrics.incr("modals.submitted")
 
 
-async def setup(bot: "HoyoBuddy") -> None:
+async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Metrics(bot))

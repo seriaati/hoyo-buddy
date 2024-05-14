@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, User
@@ -21,13 +23,13 @@ class ArtifactSetUI(View):
         *,
         author: User | Member,
         locale: Locale,
-        translator: "Translator",
+        translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.artifact_id = artifact_set_id
         self.artifact_embeds: dict[str, DefaultEmbed] = {}
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
 
         async with AmbrAPIClient(self.locale, self.translator) as api:
@@ -58,5 +60,5 @@ class ArtifactPosButton(Button["ArtifactSetUI"]):
         )
         self.pos = pos
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         await i.response.edit_message(embed=self.view.artifact_embeds[self.pos])

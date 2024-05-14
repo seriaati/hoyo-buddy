@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import contextlib
 import logging
@@ -59,7 +61,7 @@ class LocaleStr:
             **self.extras,
         )
 
-    def translate(self, translator: "Translator", locale: "Locale") -> str:
+    def translate(self, translator: Translator, locale: Locale) -> str:
         return translator.translate(self, locale)
 
 
@@ -83,7 +85,7 @@ class Translator:
         self._not_translated: dict[str, str] = {}
         self._synced_commands: dict[str, int] = {}
 
-    async def __aenter__(self) -> "Translator":
+    async def __aenter__(self) -> Translator:
         await self.load()
         return self
 
@@ -91,7 +93,7 @@ class Translator:
         self,
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
-        traceback: "TracebackType | None",
+        traceback: TracebackType | None,
     ) -> None:
         await self.unload()
 
@@ -146,7 +148,7 @@ class Translator:
     def translate(
         self,
         string: LocaleStr | str,
-        locale: "Locale",
+        locale: Locale,
         *,
         title_case: bool = False,
         capitalize_first_word: bool = False,
@@ -207,7 +209,7 @@ class Translator:
             translation = capitalize_first_word_(translation)
         return translation
 
-    def _translate_extras(self, extras: dict[str, Any], locale: "Locale") -> dict[str, Any]:
+    def _translate_extras(self, extras: dict[str, Any], locale: Locale) -> dict[str, Any]:
         extras_: dict[str, Any] = {}
         for k, v in extras.items():
             if isinstance(v, LocaleStr):
@@ -258,7 +260,7 @@ class Translator:
         self._not_translated.clear()
 
     def get_traveler_name(
-        self, character: "GenshinCharacter", locale: "Locale", *, gender_symbol: bool = True
+        self, character: GenshinCharacter, locale: Locale, *, gender_symbol: bool = True
     ) -> str:
         element_str = self.translate(
             LocaleStr(
@@ -274,7 +276,7 @@ class Translator:
         )
 
     def get_trailblazer_name(
-        self, character: "HSRCharacter", locale: "Locale", *, gender_symbol: bool = True
+        self, character: HSRCharacter, locale: Locale, *, gender_symbol: bool = True
     ) -> str:
         element_str = self.translate(
             LocaleStr(
@@ -303,8 +305,8 @@ class AppCommandTranslator(app_commands.Translator):
     async def translate(
         self,
         string: app_commands.locale_str,
-        locale: "Locale",
-        _: "TranslationContextTypes",
+        locale: Locale,
+        _: TranslationContextTypes,
     ) -> str:
         locale_str_ = LocaleStr(string.message, **string.extras)
         if not locale_str_.translate_:

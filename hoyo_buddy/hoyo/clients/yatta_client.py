@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 from collections import defaultdict
 from enum import StrEnum
@@ -41,13 +43,13 @@ class ItemCategory(StrEnum):
 
 class YattaAPIClient(yatta.YattaAPI):
     def __init__(
-        self, locale: Locale = Locale.american_english, translator: "Translator | None" = None
+        self, locale: Locale = Locale.american_english, translator: Translator | None = None
     ) -> None:
         super().__init__(lang=LOCALE_TO_YATTA_LANG.get(locale, Language.EN))
         self.locale = locale
         self.translator = translator
 
-    async def __aenter__(self) -> "YattaAPIClient":
+    async def __aenter__(self) -> YattaAPIClient:
         await super().start()
         return self
 
@@ -55,7 +57,7 @@ class YattaAPIClient(yatta.YattaAPI):
         self,
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
-        traceback: "TracebackType | None",
+        traceback: TracebackType | None,
     ) -> None:
         return await super().close()
 

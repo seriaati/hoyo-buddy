@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import re
 from collections import defaultdict
@@ -78,7 +80,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         self.locale = locale
         self.translator = translator
 
-    async def __aenter__(self) -> "AmbrAPIClient":
+    async def __aenter__(self) -> AmbrAPIClient:
         await super().start()
         return self
 
@@ -86,7 +88,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         self,
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
-        traceback: "TracebackType | None",
+        traceback: TracebackType | None,
     ) -> None:
         return await super().close()
 

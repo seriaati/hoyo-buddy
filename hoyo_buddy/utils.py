@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import base64
 import datetime
 import logging
@@ -80,7 +82,7 @@ def get_discord_user_link(user_id: int) -> str:
     return f"https://discord.com/users/{user_id}"
 
 
-def get_discord_user_md_link(user: "User | Member") -> str:
+def get_discord_user_md_link(user: User | Member) -> str:
     """Get the Markdown-formatted link to a Discord user's profile."""
     return f"[@{user}]({get_discord_user_link(user.id)})"
 

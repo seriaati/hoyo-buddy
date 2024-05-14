@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 import genshin
@@ -40,7 +42,7 @@ class EnterEmailVerificationCode(Button["AccountManager"]):
         self._password = password
         self._action_ticket = action_ticket
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         modal = EmailVerificationCodeModal(
             title=LocaleStr("Enter Verification Code", key="email-verification-code.button.label")
         )
@@ -87,7 +89,7 @@ class EnterEmailPassword(Button["AccountManager"]):
 
         self._platform = platform
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         modal = EmailPasswordModal(
             title=LocaleStr(
                 "Enter Email/Username and Password", key="enter_email_password_button_label"

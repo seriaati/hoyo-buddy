@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -16,7 +18,7 @@ class DailyReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(label=LocaleStr("Daily reminder", key="daily_button.label"), row=row)
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         notify_type = (
             NotesNotifyType.GI_DAILY
             if self.view._account.game is Game.GENSHIN

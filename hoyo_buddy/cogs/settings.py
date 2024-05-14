@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 from discord import app_commands
@@ -12,14 +14,14 @@ if TYPE_CHECKING:
 
 
 class Settings(commands.Cog):
-    def __init__(self, bot: "HoyoBuddy") -> None:
+    def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
     @app_commands.command(
         name=locale_str("settings", translate=False),
         description=locale_str("Configure your user settings", key="settings_command_description"),
     )
-    async def settings_command(self, i: "INTERACTION") -> Any:
+    async def settings_command(self, i: INTERACTION) -> Any:
         settings = await UserSettings.get(user_id=i.user.id)
         view = SettingsUI(
             author=i.user,
@@ -33,5 +35,5 @@ class Settings(commands.Cog):
         view.message = await i.original_response()
 
 
-async def setup(bot: "HoyoBuddy") -> None:
+async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Settings(bot))

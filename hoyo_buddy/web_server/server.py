@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import logging
 from typing import TYPE_CHECKING, Any
@@ -22,14 +24,12 @@ GT_V4_URL = "https://static.geetest.com/v4/gt4.js"
 
 
 class GeetestWebServer:
-    def __init__(self, translator: "Translator") -> None:
+    def __init__(self, translator: Translator) -> None:
         self.translator = translator
         self.template: str | None = None
 
     @web.middleware
-    async def error_middleware(
-        self, request: web.Request, handler: "Callable"
-    ) -> web.StreamResponse:
+    async def error_middleware(self, request: web.Request, handler: Callable) -> web.StreamResponse:
         try:
             return await handler(request)
         except web.HTTPException as e:

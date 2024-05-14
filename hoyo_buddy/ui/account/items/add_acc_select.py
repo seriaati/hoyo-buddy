@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 import discord
@@ -25,9 +27,9 @@ class AddAccountSelect(Select["AccountManager"]):
     def __init__(
         self,
         locale: discord.Locale,
-        translator: "Translator",
+        translator: Translator,
         *,
-        accounts: "Sequence[GenshinAccount]",
+        accounts: Sequence[GenshinAccount],
         cookies: str,
     ) -> None:
         self.accounts = accounts
@@ -46,7 +48,7 @@ class AddAccountSelect(Select["AccountManager"]):
             ),
         )
 
-    def get_account_options(self) -> "Generator[SelectOption, None, None]":
+    def get_account_options(self) -> Generator[SelectOption, None, None]:
         for account in self.accounts:
             if isinstance(account.game, GenshinGame):
                 level_str = self.translator.translate(
@@ -65,7 +67,7 @@ class AddAccountSelect(Select["AccountManager"]):
                     emoji=get_game_emoji(account.game),
                 )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         for value in self.values:
             uid, game = value.split("_")
             account = discord.utils.get(self.accounts, uid=int(uid), game__value=game)

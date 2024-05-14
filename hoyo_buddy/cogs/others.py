@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 import discord
@@ -22,12 +24,12 @@ if TYPE_CHECKING:
 
 
 class Others(commands.Cog):
-    def __init__(self, bot: "HoyoBuddy") -> None:
+    def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
         self.process = psutil.Process()
         self.repo_url = "https://github.com/seriaati/hoyo-buddy"
 
-    def format_commit(self, commit: "git.Commit") -> str:
+    def format_commit(self, commit: git.Commit) -> str:
         commit_url = f"{self.repo_url}/commit/{commit.hexsha}"
         dt_str = discord.utils.format_dt(commit.authored_datetime, "R")
         return f"[`{commit.hexsha[:7]}`]({commit_url}) {commit.summary} ({dt_str})"
@@ -42,7 +44,7 @@ class Others(commands.Cog):
             "Give feedback to the bot's developer", key="feedback_command_description"
         ),
     )
-    async def feedback_command(self, i: "INTERACTION") -> Any:
+    async def feedback_command(self, i: INTERACTION) -> Any:
         await i.response.defer()
         locale = (await UserSettings.get(user_id=i.user.id)).locale or i.locale
         view = FeedbackView(author=i.user, locale=locale, translator=self.bot.translator)
@@ -74,7 +76,7 @@ class Others(commands.Cog):
         name=locale_str("about", translate=False),
         description=locale_str("About the bot", key="about_command_description"),
     )
-    async def about_command(self, i: "INTERACTION") -> None:
+    async def about_command(self, i: INTERACTION) -> None:
         await i.response.defer()
 
         settings = await UserSettings.get(user_id=i.user.id)
@@ -195,5 +197,5 @@ class Others(commands.Cog):
         view.message = await i.edit_original_response(embed=embed, attachments=[image_], view=view)
 
 
-async def setup(bot: "HoyoBuddy") -> None:
+async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Others(bot))

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import logging
 import os
@@ -32,7 +34,7 @@ class DailyCheckin:
     _total_checkin_count: ClassVar[int]
 
     @classmethod
-    async def execute(cls, bot: "HoyoBuddy") -> None:
+    async def execute(cls, bot: HoyoBuddy) -> None:
         try:
             LOGGER_.info("Daily check-in started")
 
@@ -108,8 +110,8 @@ class DailyCheckin:
         cls,
         api_name: str,
         account: HoyoAccount,
-        translator: "Translator",
-        session: "aiohttp.ClientSession",
+        translator: Translator,
+        session: aiohttp.ClientSession,
     ) -> Embed:
         LOGGER_.debug("Daily check-in with %s for %s", api_name, account)
 

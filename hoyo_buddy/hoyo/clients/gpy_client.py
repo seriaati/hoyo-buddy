@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import pickle
 from random import uniform
@@ -46,7 +48,7 @@ class GenshinClient(genshin.Client, BaseClient):
         super().__init__(account.cookies, game=game, uid=account.uid, region=region)
         self._account = account
 
-    def set_lang(self, locale: "Locale") -> None:
+    def set_lang(self, locale: Locale) -> None:
         if self.region is genshin.Region.CHINESE:
             self.lang = "zh-cn"
         else:
@@ -55,7 +57,7 @@ class GenshinClient(genshin.Client, BaseClient):
     def get_daily_reward_embed(
         self,
         daily_reward: genshin.models.DailyReward,
-        locale: "Locale",
+        locale: Locale,
         translator: Translator,
     ) -> DefaultEmbed:
         embed = (
@@ -94,7 +96,7 @@ class GenshinClient(genshin.Client, BaseClient):
         await write_json(PC_ICON_DATA_PATH, pc_icons)
 
     async def update_gi_chara_talent_levels(
-        self, characters: "Sequence[genshin.models.Character]"
+        self, characters: Sequence[genshin.models.Character]
     ) -> None:
         """Update multiple genshin impact character talent levels."""
         for i, character in enumerate(characters):
@@ -261,9 +263,9 @@ class GenshinClient(genshin.Client, BaseClient):
 
     async def redeem_codes(
         self,
-        codes: "Sequence[str]",
+        codes: Sequence[str],
         *,
-        locale: "Locale",
+        locale: Locale,
         translator: Translator,
         inline: bool,
         blur: bool = True,
@@ -298,7 +300,7 @@ class GenshinClient(genshin.Client, BaseClient):
         return embed
 
     async def redeem_code(
-        self, code: str, *, locale: "Locale", translator: Translator
+        self, code: str, *, locale: Locale, translator: Translator
     ) -> tuple[str, bool]:
         """Redeem a code, return a message and a boolean indicating success."""
         success = False

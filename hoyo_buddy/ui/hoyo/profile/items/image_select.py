@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -89,7 +91,7 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
         )
         return option
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         assert self.view._card_settings is not None
 
         changed = await super().callback()

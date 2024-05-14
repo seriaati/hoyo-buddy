@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import app_commands
@@ -10,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class HoyoAccountTransformer(app_commands.Transformer):
-    async def transform(self, i: "INTERACTION", value: str) -> HoyoAccount:
+    async def transform(self, i: INTERACTION, value: str) -> HoyoAccount:
         try:
             uid, game = value.split("_")
         except ValueError as e:

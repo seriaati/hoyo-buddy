@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 from typing import TYPE_CHECKING
 
@@ -16,7 +18,7 @@ if TYPE_CHECKING:
 
 
 class Schedule(commands.Cog):
-    def __init__(self, bot: "HoyoBuddy") -> None:
+    def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
     async def cog_load(self) -> None:
@@ -80,5 +82,5 @@ class Schedule(commands.Cog):
         await self.bot.wait_until_ready()
 
 
-async def setup(bot: "HoyoBuddy") -> None:
+async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Schedule(bot))

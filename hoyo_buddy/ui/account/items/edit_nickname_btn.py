@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import TextStyle
@@ -35,7 +37,7 @@ class EditNicknameButton(Button["AccountManager"]):
             label=LocaleStr("Edit nickname", key="edit_nickname_button_label"),
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         account = self.view.selected_account
         if account is None:
             msg = "No account selected"

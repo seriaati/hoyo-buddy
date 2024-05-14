@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import os
 from typing import TYPE_CHECKING, Any
@@ -48,8 +50,8 @@ class GeetestHandler:
     def __init__(
         self,
         *,
-        view: "AccountManager",
-        interaction: "INTERACTION",
+        view: AccountManager,
+        interaction: INTERACTION,
         platform: Platform,
         data: EmailPswdLoginData | SendMobileOTPData | SendEmailCodeData,
     ) -> None:

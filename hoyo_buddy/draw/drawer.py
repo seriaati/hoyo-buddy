@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Literal
 
 import discord
@@ -78,7 +80,7 @@ class Drawer:
         folder: str,
         dark_mode: bool,
         locale: discord.Locale = discord.Locale.american_english,
-        translator: "Translator | None" = None,
+        translator: Translator | None = None,
     ) -> None:
         self.draw = draw
         self.folder = folder
@@ -223,7 +225,7 @@ class Drawer:
 
     def write(
         self,
-        text: "LocaleStr | str",
+        text: LocaleStr | str,
         *,
         size: int,
         position: tuple[int, int],

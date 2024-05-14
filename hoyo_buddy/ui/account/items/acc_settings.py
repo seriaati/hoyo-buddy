@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -21,7 +23,7 @@ class AutoRedeemToggle(ToggleButton["AccountManager"]):
             custom_id="auto_redeem_toggle",
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         await super().callback(i)
         assert self.view.selected_account is not None
 
@@ -39,7 +41,7 @@ class AutoCheckinToggle(ToggleButton["AccountManager"]):
             custom_id="auto_checkin_toggle",
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         await super().callback(i)
         assert self.view.selected_account is not None
 
@@ -57,7 +59,7 @@ class AccountPublicToggle(ToggleButton["AccountManager"]):
             custom_id="public_account_toggle",
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         await super().callback(i)
         assert self.view.selected_account is not None
 

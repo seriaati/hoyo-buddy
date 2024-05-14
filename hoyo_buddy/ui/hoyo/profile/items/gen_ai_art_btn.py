@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, TextStyle
@@ -42,7 +44,7 @@ class GenerateAIArtButton(Button):
             row=3,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         if i.guild is None:
             raise GuildOnlyFeatureError
 

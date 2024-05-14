@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import io
 from typing import TYPE_CHECKING, Any
@@ -76,7 +78,7 @@ class WithQRCode(Button["AccountManager"]):
         }
         return cookies
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         await self.set_loading_state(i)
 
         client = genshin.Client(

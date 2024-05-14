@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from genshin import Game
 
 from .enums import Game as GameEnum

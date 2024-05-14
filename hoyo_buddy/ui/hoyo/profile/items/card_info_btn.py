@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -16,7 +18,7 @@ class CardInfoButton(Button["ProfileView"]):
     def __init__(self) -> None:
         super().__init__(emoji=INFO, row=0)
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,

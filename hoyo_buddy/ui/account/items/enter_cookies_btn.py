@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from http.cookies import SimpleCookie
 from typing import TYPE_CHECKING
 
@@ -41,7 +43,7 @@ class DevToolCookiesModal(Modal):
 
 
 class EnterCookiesButton(Button["AccountManager"]):
-    def __init__(self, *, platform: "Platform", dev_tools: bool = False) -> None:
+    def __init__(self, *, platform: Platform, dev_tools: bool = False) -> None:
         super().__init__(
             label=LocaleStr("Enter cookies", key="cookies_button_label"),
             style=ButtonStyle.blurple,
@@ -55,7 +57,7 @@ class EnterCookiesButton(Button["AccountManager"]):
             return DevToolCookiesModal(title=LocaleStr("Enter Cookies", key="cookies_button_label"))
         return CookiesModal(title=LocaleStr("Enter Cookies", key="cookies_button_label"))
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         modal = self._get_cookies_modal()
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)

@@ -4,3 +4,7 @@ repos:
     hooks:
       - id: ruff
       - id: ruff-format
+  - repo: https://github.com/mbroton/import-future-annotations
+    rev: v0.1.0
+    hooks:
+      - id: import-future-annotations

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 import genshin
@@ -42,7 +44,7 @@ class EnterVerificationCode(Button["AccountManager"]):
         )
         self._mobile = mobile
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         modal = VerifyCodeInput(
             title=LocaleStr(
                 "Enter Verification Code", key="add_miyoushe_acc.enter_verification_code"
@@ -70,7 +72,7 @@ class EnterPhoneNumber(Button["AccountManager"]):
             style=ButtonStyle.blurple,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         modal = PhoneNumberInput(
             title=LocaleStr("Enter Phone Number", key="add_miyoushe_acc.enter_mobile_number")
         )

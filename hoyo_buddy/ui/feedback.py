@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, TextStyle, User
@@ -14,7 +16,7 @@ if TYPE_CHECKING:
 
 class FeedbackView(View):
     def __init__(
-        self, *, author: User | Member | None, locale: Locale, translator: "Translator"
+        self, *, author: User | Member | None, locale: Locale, translator: Translator
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.add_item(FeedbackButton())
@@ -32,7 +34,7 @@ class FeedbackButton(Button[FeedbackView]):
             label=LocaleStr("Give feedback", key="feedback_button.label"), style=ButtonStyle.blurple
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         modal = FeedbackModal(title=LocaleStr("Give Feedback", key="feedback_button.label"))
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 from typing import TYPE_CHECKING
 
@@ -17,8 +19,8 @@ if TYPE_CHECKING:
 @dataclass(kw_only=True)
 class Page:
     content: str | None = None
-    embed: "discord.Embed | None" = None
-    file: "discord.File | None" = None
+    embed: discord.Embed | None = None
+    file: discord.File | None = None
 
 
 class PaginatorView(View):
@@ -26,9 +28,9 @@ class PaginatorView(View):
         self,
         pages: list[Page],
         *,
-        author: "discord.User | discord.Member | None",
-        locale: "discord.Locale",
-        translator: "Translator",
+        author: discord.User | discord.Member | None,
+        locale: discord.Locale,
+        translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
@@ -61,7 +63,7 @@ class PaginatorView(View):
     async def _create_file(self) -> discord.File | None:
         """Method to create a file for the current page. Implemented by subclasses."""
 
-    async def _update_page(self, i: "INTERACTION") -> None:
+    async def _update_page(self, i: INTERACTION) -> None:
         with contextlib.suppress(discord.InteractionResponded):
             await i.response.defer()
 
@@ -79,45 +81,45 @@ class PaginatorView(View):
             view=self,
         )
 
-    async def _next_page(self, i: "INTERACTION") -> None:
+    async def _next_page(self, i: INTERACTION) -> None:
         self._current_page = min(self._current_page + 1, self._max_page)
         await self._update_page(i)
 
-    async def _previous_page(self, i: "INTERACTION") -> None:
+    async def _previous_page(self, i: INTERACTION) -> None:
         self._current_page = max(self._current_page - 1, 0)
         await self._update_page(i)
 
-    async def _first_page(self, i: "INTERACTION") -> None:
+    async def _first_page(self, i: INTERACTION) -> None:
         self._current_page = 0
         await self._update_page(i)
 
-    async def _last_page(self, i: "INTERACTION") -> None:
+    async def _last_page(self, i: INTERACTION) -> None:
         self._current_page = self._max_page
         await self._update_page(i)
 
-    async def _go_to_page(self, i: "INTERACTION", page: int) -> None:
+    async def _go_to_page(self, i: INTERACTION, page: int) -> None:
         self._current_page = max(0, min(page, self._max_page))
         await self._update_page(i)
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         await self._update_page(i)
 
 
 class NextButton(Button[PaginatorView]):
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         await self.view._next_page(i)
 
 
 class PreviousButton(Button[PaginatorView]):
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         await self.view._previous_page(i)
 
 
 class FirstButton(Button[PaginatorView]):
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         await self.view._first_page(i)
 
 
 class LastButton(Button[PaginatorView]):
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         await self.view._last_page(i)

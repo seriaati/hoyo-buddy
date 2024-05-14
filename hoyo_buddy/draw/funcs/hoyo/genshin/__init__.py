@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .abyss import AbyssCard
 from .build_card import draw_genshin_card
 from .characters import draw_character_card

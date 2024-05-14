@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, TextStyle
@@ -41,7 +43,7 @@ class PrimaryColorButton(Button["ProfileView"]):
         )
         self.current_color = current_color
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         assert self.view._card_settings is not None
 
         # Open the color modal

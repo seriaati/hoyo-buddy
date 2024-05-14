@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -37,7 +39,7 @@ class TypeThreeModal(Modal):
 
     def __init__(
         self,
-        notes_notify: "NotesNotify | None",
+        notes_notify: NotesNotify | None,
         *,
         title: LocaleStr,
         min_notify_interval: int,

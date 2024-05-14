@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 from functools import cached_property
 from typing import TYPE_CHECKING, Any
@@ -18,15 +20,15 @@ if TYPE_CHECKING:
 
 class User(Model):
     id = fields.BigIntField(pk=True, index=True, generated=False)  # noqa: A003
-    settings: fields.BackwardOneToOneRelation["Settings"]
+    settings: fields.BackwardOneToOneRelation[Settings]
     temp_data: fields.Field[dict[str, Any]] = fields.JSONField(default=dict)  # pyright: ignore [reportAssignmentType]
-    last_interaction: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # pyright: ignore [reportAssignmentType]
-    accounts: fields.ReverseRelation["HoyoAccount"]
+    last_interaction: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)  # pyright: ignore [reportAssignmentType]
+    accounts: fields.ReverseRelation[HoyoAccount]
 
     def __str__(self) -> str:
         return str(self.id)
 
-    async def set_acc_as_current(self, acc: "HoyoAccount") -> None:
+    async def set_acc_as_current(self, acc: HoyoAccount) -> None:
         """Set the given account as the current account.
 
         Args:
@@ -50,9 +52,9 @@ class HoyoAccount(Model):
     )
     daily_checkin = fields.BooleanField(default=True)
     current = fields.BooleanField(default=False)
-    notif_settings: fields.BackwardOneToOneRelation["AccountNotifSettings"]
-    notifs: fields.ReverseRelation["NotesNotify"]
-    farm_notifs: fields.BackwardOneToOneRelation["FarmNotify"]
+    notif_settings: fields.BackwardOneToOneRelation[AccountNotifSettings]
+    notifs: fields.ReverseRelation[NotesNotify]
+    farm_notifs: fields.BackwardOneToOneRelation[FarmNotify]
     redeemed_codes: fields.Field[list[str]] = fields.JSONField(default=[])  # pyright: ignore [reportAssignmentType]
     auto_redeem = fields.BooleanField(default=True)
     public = fields.BooleanField(default=True)
@@ -70,7 +72,7 @@ class HoyoAccount(Model):
         return f"{self.nickname or self.username} ({blur_uid(self.uid)})"
 
     @cached_property
-    def client(self) -> "GenshinClient":
+    def client(self) -> GenshinClient:
         from ..hoyo.clients.gpy_client import GenshinClient  # noqa: PLC0415
 
         return GenshinClient(self)
@@ -155,9 +157,9 @@ class NotesNotify(Model):
         "models.HoyoAccount", related_name="notifs"
     )
 
-    last_notif_time: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # pyright: ignore [reportAssignmentType]
-    last_check_time: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # pyright: ignore [reportAssignmentType]
-    est_time: fields.Field["datetime.datetime | None"] = fields.DatetimeField(null=True)  # pyright: ignore [reportAssignmentType]
+    last_notif_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)  # pyright: ignore [reportAssignmentType]
+    last_check_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)  # pyright: ignore [reportAssignmentType]
+    est_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)  # pyright: ignore [reportAssignmentType]
     """Estimated time for the threshold to be reached."""
 
     notify_interval = fields.SmallIntField()

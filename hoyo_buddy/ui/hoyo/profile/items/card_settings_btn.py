@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -30,7 +32,7 @@ class CardSettingsButton(Button["ProfileView"]):
             emoji=SETTINGS,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         assert self.view._card_settings is not None
         assert self.view.character_id is not None
 

@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 async def upgrade(db) -> str:
     return """
         ALTER TABLE "cardsettings" ADD "template" VARCHAR(32) NOT NULL  DEFAULT 'hb1';"""

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
@@ -20,18 +22,18 @@ class TCGCardUI(View):
         self,
         card_id: int,
         *,
-        author: "User | Member",
-        locale: "Locale",
-        translator: "Translator",
+        author: User | Member,
+        locale: Locale,
+        translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.card_id = card_id
-        self.card_embed: "DefaultEmbed | None" = None
-        self.card: "TCGCardDetail | None" = None
+        self.card_embed: DefaultEmbed | None = None
+        self.card: TCGCardDetail | None = None
 
-        self.dictionary_embed: "DefaultEmbed | None" = None
+        self.dictionary_embed: DefaultEmbed | None = None
 
-        self.talent_embeds: dict[str, "DefaultEmbed"] = {}
+        self.talent_embeds: dict[str, DefaultEmbed] = {}
         self.current_talent_id: str | None = None
 
     def _setup_items(self) -> None:
@@ -46,7 +48,7 @@ class TCGCardUI(View):
         if card.talents:
             self.add_item(CardTalentSelector(card.talents, self.current_talent_id))
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
 
         async with AmbrAPIClient(self.locale, self.translator) as api:
@@ -72,7 +74,7 @@ class ViewCardButton(Button["TCGCardUI"]):
             style=ButtonStyle.primary,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         if self.view.card_embed is None:
             return
 
@@ -88,7 +90,7 @@ class ViewDictionaryButton(Button["TCGCardUI"]):
             style=ButtonStyle.primary,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         if self.view.dictionary_embed is None:
             return
 
@@ -100,7 +102,7 @@ class ViewDictionaryButton(Button["TCGCardUI"]):
 class CardTalentSelector(Select["TCGCardUI"]):
     def __init__(
         self,
-        talents: list["CardTalent"],
+        talents: list[CardTalent],
         current_talent_id: str | None = None,
     ) -> None:
         super().__init__(
@@ -112,7 +114,7 @@ class CardTalentSelector(Select["TCGCardUI"]):
         )
         self.talents = talents
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         talent_id = self.view.current_talent_id = self.values[0]
         talent_embed = self.view.talent_embeds.get(talent_id)
         if talent_embed is None:

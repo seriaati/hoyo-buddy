@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from typing import TYPE_CHECKING
 
@@ -23,6 +25,6 @@ class Database:
         self,
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
-        traceback: "TracebackType | None",
+        traceback: TracebackType | None,
     ) -> None:
         await Tortoise.close_connections()

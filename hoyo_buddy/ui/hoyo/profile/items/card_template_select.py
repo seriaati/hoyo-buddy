@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -128,7 +130,7 @@ class CardTemplateSelect(Select["ProfileView"]):
             custom_id="profile_card_template_select",
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         assert self.view._card_settings is not None
 
         # Save the setting to db

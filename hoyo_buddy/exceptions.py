@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord.app_commands.errors import AppCommandError
@@ -49,7 +51,7 @@ class AccountNotFoundError(HoyoBuddyError, AppCommandError):
 
 
 class NoAccountFoundError(HoyoBuddyError):
-    def __init__(self, games: "Sequence[Game]") -> None:
+    def __init__(self, games: Sequence[Game]) -> None:
         title = LocaleStr("No Account Found", key="no_account_found_for_games_error_title")
         message = LocaleStr(
             "You don't have any accounts for `{games}` yet. Add one with </accounts>",
@@ -146,7 +148,7 @@ class NoCharsFoundError(HoyoBuddyError):
 
 
 class ActionInCooldownError(HoyoBuddyError):
-    def __init__(self, available_time: "datetime") -> None:
+    def __init__(self, available_time: datetime) -> None:
         super().__init__(
             title=LocaleStr("Action in Cooldown", key="action_in_cooldown_error_title"),
             message=LocaleStr(
@@ -169,7 +171,7 @@ class NoAbyssDataError(HoyoBuddyError):
 
 
 class NoGameAccountsError(HoyoBuddyError):
-    def __init__(self, platform: "Platform") -> None:
+    def __init__(self, platform: Platform) -> None:
         super().__init__(
             title=LocaleStr("No Game Accounts", key="no_game_accounts_error_title"),
             message=LocaleStr(

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Literal
 
 from discord import InteractionResponded, InteractionType, app_commands
@@ -13,7 +15,7 @@ __all__ = ("CommandTree",)
 
 
 class CommandTree(app_commands.CommandTree):
-    async def interaction_check(self, i: "INTERACTION") -> Literal[True]:
+    async def interaction_check(self, i: INTERACTION) -> Literal[True]:
         if i.type not in {InteractionType.application_command, InteractionType.autocomplete}:
             return True
 
@@ -34,7 +36,7 @@ class CommandTree(app_commands.CommandTree):
 
         return True
 
-    async def on_error(self, i: "INTERACTION", e: app_commands.AppCommandError) -> None:
+    async def on_error(self, i: INTERACTION, e: app_commands.AppCommandError) -> None:
         error = e.original if isinstance(e, app_commands.errors.CommandInvokeError) else e
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         embed, recognized = get_error_embed(error, locale, i.client.translator)

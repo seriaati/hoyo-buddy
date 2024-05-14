@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 from hoyo_buddy.exceptions import InvalidQueryError
@@ -17,17 +19,17 @@ class BookUI(View):
         self,
         book_id: str,
         *,
-        author: "User | Member",
-        locale: "Locale",
-        translator: "Translator",
+        author: User | Member,
+        locale: Locale,
+        translator: Translator,
         timeout: float | None = 180,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator, timeout=timeout)
 
         self.book_id = book_id
-        self.series_embeds: dict[str, "DefaultEmbed"] = {}
+        self.series_embeds: dict[str, DefaultEmbed] = {}
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
 
         async with YattaAPIClient(self.locale, self.translator) as api:
@@ -57,11 +59,11 @@ class SeriesSelector(Select["BookUI"]):
     def __init__(
         self,
         *,
-        placeholder: "LocaleStr | str | None" = None,
-        options: list["SelectOption"],
+        placeholder: LocaleStr | str | None = None,
+        options: list[SelectOption],
     ) -> None:
         super().__init__(placeholder=placeholder, options=options)
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.update_options_defaults()
         await i.response.edit_message(embed=self.view.series_embeds[self.values[0]], view=self.view)

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, TextStyle
@@ -37,7 +39,7 @@ class AddImageButton(Button["ProfileView"]):
             row=3,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         assert self.view._card_settings is not None
 
         # Open the modal

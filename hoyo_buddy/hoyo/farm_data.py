@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -16,7 +18,7 @@ class FarmDataFetcher:
     _weekday: int
 
     @classmethod
-    def _get_domains(cls, domains: "ambr.Domains") -> list["ambr.Domain"]:  # noqa: PLR0911
+    def _get_domains(cls, domains: ambr.Domains) -> list[ambr.Domain]:  # noqa: PLR0911
         match cls._weekday:
             case 0:
                 return domains.monday
@@ -40,11 +42,11 @@ class FarmDataFetcher:
     async def fetch(
         cls,
         weekday: int,
-        translator: "Translator",
+        translator: Translator,
         *,
         locale: Locale | None = None,
         city: GenshinCity | None = None,
-    ) -> list["FarmData"]:
+    ) -> list[FarmData]:
         # Initialize class variables
         cls._weekday = weekday
 
@@ -55,7 +57,7 @@ class FarmDataFetcher:
             characters = await client.fetch_characters()
             weapons = await client.fetch_weapons()
 
-        farm_datas: list["FarmData"] = []
+        farm_datas: list[FarmData] = []
 
         domains_ = cls._get_domains(domains)
         for domain in domains_:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import genshin
 
 from .enums import Game, GenshinCity, GenshinElement, HSRElement, HSRPath

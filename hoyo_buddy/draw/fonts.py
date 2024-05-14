@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 NUNITO_LIGHT = "hoyo-buddy-assets/fonts/Nunito/Nunito-Light.ttf"
 NUNITO_REGULAR = "hoyo-buddy-assets/fonts/Nunito/Nunito-Regular.ttf"
 NUNITO_MEDIUM = "hoyo-buddy-assets/fonts/Nunito/Nunito-SemiBold.ttf"

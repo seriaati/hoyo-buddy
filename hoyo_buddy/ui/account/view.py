@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 import genshin
@@ -33,11 +35,11 @@ class AccountManager(View):
     def __init__(
         self,
         *,
-        author: "discord.User | discord.Member | None",
-        locale: "discord.Locale",
+        author: discord.User | discord.Member | None,
+        locale: discord.Locale,
         translator: Translator,
         user: User,
-        accounts: "Sequence[HoyoAccount]",
+        accounts: Sequence[HoyoAccount],
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.user = user
@@ -109,13 +111,13 @@ class AccountManager(View):
             for account in self.accounts
         ]
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         self._add_items()
         embed = self._acc_embed
         await i.response.defer(ephemeral=True)
         self.message = await i.edit_original_response(embed=embed, view=self)
 
-    async def refresh(self, i: "INTERACTION", *, soft: bool) -> Any:
+    async def refresh(self, i: INTERACTION, *, soft: bool) -> Any:
         """Refresh the account manager view.
 
         Args:
@@ -149,7 +151,7 @@ class AccountManager(View):
             await self.absolute_edit(i, embed=self._acc_embed, view=self)
 
     async def finish_cookie_setup(
-        self, cookies: dict[str, Any], *, platform: Platform, interaction: "INTERACTION"
+        self, cookies: dict[str, Any], *, platform: Platform, interaction: INTERACTION
     ) -> None:
         if platform is Platform.HOYOLAB and ("stoken" in cookies or "stoken_v2" in cookies):
             # Get ltoken_v2 and cookie_token_v2
@@ -196,7 +198,7 @@ class AccountManager(View):
 
     async def prompt_user_to_solve_geetest(
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         *,
         for_code: bool,
         gt_version: int = 3,
@@ -253,7 +255,7 @@ class AccountManager(View):
 
     async def prompt_user_to_enter_email_code(
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         *,
         email: str,
         password: str,
@@ -283,7 +285,7 @@ class AccountManager(View):
 
         await i.edit_original_response(embed=embed, view=self)
 
-    async def prompt_user_to_enter_mobile_otp(self, i: "INTERACTION", mobile: str) -> None:
+    async def prompt_user_to_enter_mobile_otp(self, i: INTERACTION, mobile: str) -> None:
         """Prompt the user to enter the mobile OTP code.
 
         Args:

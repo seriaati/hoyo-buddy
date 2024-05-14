@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from datetime import timedelta
 from typing import TYPE_CHECKING, ClassVar, TypeVar
@@ -22,7 +24,7 @@ CharacterOrWeapon = TypeVar("CharacterOrWeapon", ambr.Character, ambr.Weapon)
 
 
 class FarmChecker:
-    _bot: ClassVar["HoyoBuddy"]
+    _bot: ClassVar[HoyoBuddy]
     _translator: ClassVar[Translator]
     _item_id_to_name: ClassVar[dict[str, dict[str, str]]]
     """[locale][item_id] = item_name"""
@@ -64,7 +66,7 @@ class FarmChecker:
         return False
 
     @classmethod
-    async def execute(cls, bot: "HoyoBuddy", uid_start: str) -> None:  # noqa: C901
+    async def execute(cls, bot: HoyoBuddy, uid_start: str) -> None:  # noqa: C901
         LOGGER_.info("Starting farm check task for uid_start %s", uid_start)
 
         cls._bot = bot

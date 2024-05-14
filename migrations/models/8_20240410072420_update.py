@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 async def upgrade(db) -> str:
     return """
         ALTER TABLE "hoyoaccount" ADD "redeemed_codes" JSONB NOT NULL DEFAULT '[]';

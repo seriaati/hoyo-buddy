@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -18,7 +20,7 @@ class WeekBossReminder(Button[NotesView]):
             label=LocaleStr("Weekly boss discount reminder", key="week_boss_button.label"), row=row
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         notify_type = (
             NotesNotifyType.RESIN_DISCOUNT
             if self.view._account.game is Game.GENSHIN

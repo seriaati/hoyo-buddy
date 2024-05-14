@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pickle
 from typing import TYPE_CHECKING
 
@@ -29,7 +31,7 @@ class RemoveFromCacheButton(Button["ProfileView"]):
             custom_id="profile_remove_from_cache",
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         cache = await EnkaCache.get(uid=self.view.uid)
 
         # Remove the character from the cache

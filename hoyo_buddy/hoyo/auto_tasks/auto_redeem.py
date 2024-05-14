@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import logging
 from typing import TYPE_CHECKING, ClassVar
@@ -23,12 +25,12 @@ SLEEP_INTERVAL = 60 * 5
 
 
 class AutoRedeem:
-    _bot: ClassVar["HoyoBuddy"]
+    _bot: ClassVar[HoyoBuddy]
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
     _redeem_count: ClassVar[int] = 0
 
     @classmethod
-    async def _get_codes(cls, session: "aiohttp.ClientSession", game: genshin.Game) -> list[str]:
+    async def _get_codes(cls, session: aiohttp.ClientSession, game: genshin.Game) -> list[str]:
         async with session.get(f"https://hoyo-codes.vercel.app/codes?game={game.value}") as resp:
             return (await resp.json())["codes"]
 
@@ -67,9 +69,7 @@ class AutoRedeem:
                 await asyncio.sleep(SLEEP_INTERVAL)
 
     @classmethod
-    async def _handle_error(
-        cls, account: HoyoAccount, locale: Locale, e: Exception
-    ) -> "ErrorEmbed":
+    async def _handle_error(cls, account: HoyoAccount, locale: Locale, e: Exception) -> ErrorEmbed:
         embed, recognized = get_error_embed(e, locale, cls._bot.translator)
         embed.add_acc_info(account, blur=False)
         if not recognized:
@@ -94,7 +94,7 @@ class AutoRedeem:
 
     @classmethod
     async def execute(
-        cls, bot: "HoyoBuddy", game: Game | None = None, codes: list[str] | None = None
+        cls, bot: HoyoBuddy, game: Game | None = None, codes: list[str] | None = None
     ) -> None:
         """Redeem codes for accounts that have auto redeem enabled.
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import timedelta
 from typing import TYPE_CHECKING, Literal
 
@@ -114,7 +116,7 @@ ENKA_ERROR_CONVERTER: dict[
 
 
 def get_error_embed(
-    error: Exception, locale: "discord.Locale", translator: Translator
+    error: Exception, locale: discord.Locale, translator: Translator
 ) -> tuple[ErrorEmbed, bool]:
     recognized = True
     embed = None

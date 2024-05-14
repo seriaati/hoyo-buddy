@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import logging
 import random
@@ -29,7 +31,7 @@ LOGGER_ = logging.getLogger(__name__)
 
 
 class Search(commands.Cog):
-    def __init__(self, bot: "HoyoBuddy") -> None:
+    def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
         self._search_categories: dict[Game, list[str]] = {
@@ -145,7 +147,7 @@ class Search(commands.Cog):
     )
     async def search_command(  # noqa: C901, PLR0911, PLR0912, PLR0914, PLR0915
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         game_value: str,
         category_value: str,
         query: str,
@@ -348,7 +350,7 @@ class Search(commands.Cog):
 
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
-        self, i: "INTERACTION", current: str
+        self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
         try:
             game = Game(i.namespace.game)
@@ -371,7 +373,7 @@ class Search(commands.Cog):
 
     @search_command.autocomplete("query")
     async def search_command_query_autocomplete(  # noqa: PLR0912
-        self, i: "INTERACTION", current: str
+        self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
         try:
             game = Game(i.namespace.game)
@@ -442,5 +444,5 @@ class Search(commands.Cog):
         return choices[:25]
 
 
-async def setup(bot: "HoyoBuddy") -> None:
+async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Search(bot))

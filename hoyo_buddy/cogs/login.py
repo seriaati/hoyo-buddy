@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 from discord import app_commands
@@ -12,14 +14,14 @@ if TYPE_CHECKING:
 
 
 class Login(commands.Cog):
-    def __init__(self, bot: "HoyoBuddy") -> None:
+    def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
     @app_commands.command(
         name=locale_str("accounts", translate=False),
         description=locale_str("Manage your accounts", key="accounts_command_description"),
     )
-    async def accounts(self, i: "INTERACTION") -> Any:
+    async def accounts(self, i: INTERACTION) -> Any:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         user = await User.get(id=i.user.id)
         accounts = await HoyoAccount.filter(user=user).all()
@@ -34,5 +36,5 @@ class Login(commands.Cog):
         await view.start(i)
 
 
-async def setup(bot: "HoyoBuddy") -> None:
+async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Login(bot))

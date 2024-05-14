@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from io import BytesIO
 
 from discord import Locale
@@ -15,7 +17,7 @@ from ..drawer import (
 
 
 def draw_item_list(
-    items: list[ItemWithDescription] | list[ItemWithTrailing], dark_mode: bool, locale_: "str"
+    items: list[ItemWithDescription] | list[ItemWithTrailing], dark_mode: bool, locale_: str
 ) -> BytesIO:
     locale = Locale(locale_)
     is_trailing = any(isinstance(item, ItemWithTrailing) for item in items)

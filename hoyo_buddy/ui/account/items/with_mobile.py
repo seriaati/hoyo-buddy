@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -19,7 +21,7 @@ class WithMobileNumber(Button["AccountManager"]):
             label=LocaleStr("With phone number", key="add_miyoushe_acc.with_mobile_number"),
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import random
 from typing import TYPE_CHECKING
@@ -26,7 +28,7 @@ class Farm(
     name=app_commands.locale_str("farm", translate=False),
     description=app_commands.locale_str("Farm commands", translate=False),
 ):
-    def __init__(self, bot: "HoyoBuddy") -> None:
+    def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
     @app_commands.command(
@@ -46,7 +48,7 @@ class Farm(
     )
     async def farm_view_command(
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         settings = await Settings.get(user_id=i.user.id)
@@ -88,7 +90,7 @@ class Farm(
     )
     async def farm_add_command(
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         query: str,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
@@ -159,7 +161,7 @@ class Farm(
     )
     async def farm_remove_command(
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         query: str,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
@@ -213,7 +215,7 @@ class Farm(
     )
     async def farm_reminder_command(
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
@@ -238,7 +240,7 @@ class Farm(
     @farm_remove_command.autocomplete("account")
     @farm_reminder_command.autocomplete("account")
     async def account_autocomplete(
-        self, i: "INTERACTION", current: str
+        self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         user: USER = i.namespace.user
@@ -247,7 +249,7 @@ class Farm(
         )
 
     @farm_add_command.autocomplete("query")
-    async def query_autocomplete(self, i: "INTERACTION", current: str) -> list[app_commands.Choice]:
+    async def query_autocomplete(self, i: INTERACTION, current: str) -> list[app_commands.Choice]:
         try:
             characters = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
             weapons = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
@@ -280,7 +282,7 @@ class Farm(
 
     @farm_remove_command.autocomplete("query")
     async def user_query_autocomplete(
-        self, i: "INTERACTION", current: str
+        self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
         farm_notify = await FarmNotify.get_or_none(account__user_id=i.user.id)
         if farm_notify is None:
@@ -314,5 +316,5 @@ class Farm(
         return choices[:25]
 
 
-async def setup(bot: "HoyoBuddy") -> None:
+async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Farm(bot))

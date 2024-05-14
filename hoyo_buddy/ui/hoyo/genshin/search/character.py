@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 from typing import TYPE_CHECKING, Any
 
@@ -22,7 +24,7 @@ class CharacterUI(View):
         *,
         author: User | Member,
         locale: Locale,
-        translator: "Translator",
+        translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.character_id = character_id
@@ -34,7 +36,7 @@ class CharacterUI(View):
         self.quote_index = 0
         self.selected_page = 0
 
-    async def fetch_character_embed(self) -> "DefaultEmbed":
+    async def fetch_character_embed(self) -> DefaultEmbed:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             avatar_curve = await api.fetch_avatar_curve()
@@ -46,7 +48,7 @@ class CharacterUI(View):
                 manual_weapon,
             )
 
-    async def fetch_talent_embed(self) -> tuple["DefaultEmbed", bool, list["ambr.Talent"]]:
+    async def fetch_talent_embed(self) -> tuple[DefaultEmbed, bool, list[ambr.Talent]]:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             talent = character_detail.talents[self.talent_index]
@@ -57,7 +59,7 @@ class CharacterUI(View):
                 character_detail.talents,
             )
 
-    async def fetch_const_embed(self) -> tuple["DefaultEmbed", list["ambr.Constellation"]]:
+    async def fetch_const_embed(self) -> tuple[DefaultEmbed, list[ambr.Constellation]]:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             const = character_detail.constellations[self.const_index]
@@ -66,7 +68,7 @@ class CharacterUI(View):
                 character_detail.constellations,
             )
 
-    async def fetch_story_embed(self) -> tuple["DefaultEmbed", list["ambr.Story"]]:
+    async def fetch_story_embed(self) -> tuple[DefaultEmbed, list[ambr.Story]]:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_fetter = await api.fetch_character_fetter(self.character_id)
             story = character_fetter.stories[self.story_index]
@@ -75,7 +77,7 @@ class CharacterUI(View):
                 character_fetter.stories,
             )
 
-    async def fetch_quote_embed(self) -> tuple["DefaultEmbed", list["ambr.Quote"]]:
+    async def fetch_quote_embed(self) -> tuple[DefaultEmbed, list[ambr.Quote]]:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             character_fetter = await api.fetch_character_fetter(self.character_id)
             quote = character_fetter.quotes[self.quote_index]
@@ -84,7 +86,7 @@ class CharacterUI(View):
                 character_fetter.quotes,
             )
 
-    async def update(self, i: "INTERACTION") -> None:
+    async def update(self, i: INTERACTION) -> None:
         with contextlib.suppress(InteractionResponded):
             await i.response.defer()
 
@@ -188,7 +190,7 @@ class EnterTalentLevel(Button[CharacterUI]):
     def __init__(self, label: LocaleStr) -> None:
         super().__init__(label=label, style=ButtonStyle.blurple)
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         modal = TalentLevelModal(
             title=LocaleStr("Enter Talent Level", key="talent_level.modal.title")
         )
@@ -216,7 +218,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
     def __init__(self, label: LocaleStr) -> None:
         super().__init__(label=label, style=ButtonStyle.blurple)
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         modal = CharacterLevelModal(
             title=LocaleStr("Enter Character Level", key="chara_level.modal.title")
         )
@@ -263,7 +265,7 @@ class PageSelector(Select[CharacterUI]):
             row=4,
         )
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view.selected_page = int(self.values[0])
         await self.view.update(i)
 
@@ -273,13 +275,13 @@ class ItemSelector(Select[CharacterUI]):
         super().__init__(options=options)
         self.index_name = index_name
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view.__setattr__(self.index_name, int(self.values[0]))  # noqa: PLC2801
         await self.view.update(i)
 
 
 class QuoteSelector(PaginatorSelect[CharacterUI]):
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         await super().callback()
         try:
             self.view.quote_index = int(self.values[0])

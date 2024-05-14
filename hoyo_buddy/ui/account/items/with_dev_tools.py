@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -15,13 +17,13 @@ if TYPE_CHECKING:
 
 
 class WithDevTools(Button["AccountManager"]):
-    def __init__(self, platform: "Platform") -> None:
+    def __init__(self, platform: Platform) -> None:
         super().__init__(
             label=LocaleStr("With DevTools (desktop only)", key="devtools_button_label")
         )
         self._platform = platform
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,

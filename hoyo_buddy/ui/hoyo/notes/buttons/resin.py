@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -21,7 +23,7 @@ class ResinReminder(Button[NotesView]):
             row=row,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         notify = await NotesNotify.get_or_none(
             account=self.view._account, type=NotesNotifyType.RESIN
         )

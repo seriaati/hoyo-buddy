@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 from discord import ButtonStyle
@@ -20,9 +22,9 @@ class WeaponUI(View):
         self,
         weapon_id: str,
         *,
-        author: "User | Member",
-        locale: "Locale",
-        translator: "Translator",
+        author: User | Member,
+        locale: Locale,
+        translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
@@ -31,7 +33,7 @@ class WeaponUI(View):
         self.refinement = 1
         self.max_refinement = 1
 
-    async def _fetch_weapon_embed(self) -> "DefaultEmbed":
+    async def _fetch_weapon_embed(self) -> DefaultEmbed:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             try:
                 weapon_id = int(self.weapon_id)
@@ -67,7 +69,7 @@ class WeaponUI(View):
             )
         )
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
         embed = await self._fetch_weapon_embed()
         self._setup_items()
@@ -89,7 +91,7 @@ class EnterWeaponLevel(Button[WeaponUI]):
     def __init__(self, label: LocaleStr) -> None:
         super().__init__(label=label, style=ButtonStyle.blurple)
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         modal = WeaponLevelModal(
             title=LocaleStr("Enter Weapon Level", key="weapon_level.modal.title")
         )
@@ -121,7 +123,7 @@ class RefinementSelector(Select["WeaponUI"]):
             ]
         )
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view.refinement = int(self.values[0])
         embed = await self.view._fetch_weapon_embed()
         self.view._setup_items()

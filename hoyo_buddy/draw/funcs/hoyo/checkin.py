@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import io
 from typing import TYPE_CHECKING
 
@@ -12,7 +14,7 @@ __all__ = ("draw_checkin_card",)
 
 
 def draw_checkin_card(
-    daily_rewards: list["Reward"],
+    daily_rewards: list[Reward],
     dark_mode: bool,
 ) -> io.BytesIO:
     im = (

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from io import BytesIO
 from typing import TYPE_CHECKING, ClassVar
 
@@ -12,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class ExplorationCard:
-    _user: ClassVar["PartialGenshinUserStats"]
+    _user: ClassVar[PartialGenshinUserStats]
     _drawer: ClassVar[Drawer]
     _dark_mode: ClassVar[bool]
     _translator: ClassVar[Translator]
@@ -51,11 +53,11 @@ class ExplorationCard:
         )
 
     @classmethod
-    def _get_exploration(cls, exploration_id: int) -> "Exploration | None":
+    def _get_exploration(cls, exploration_id: int) -> Exploration | None:
         return next((e for e in cls._user.explorations if e.id == exploration_id), None)
 
     @classmethod
-    def _get_offering_text(cls, exploration: "Exploration | None") -> str:
+    def _get_offering_text(cls, exploration: Exploration | None) -> str:
         level_str = LocaleStr(
             "Lv.{level}",
             key="level_str",
@@ -152,7 +154,7 @@ class ExplorationCard:
     def _draw_exploration_card(
         cls,
         name: str,
-        exploration: "Exploration | None",
+        exploration: Exploration | None,
         texts: dict[LocaleStr | str, tuple[int, int]],
     ) -> Image.Image:
         im = cls._get_card(name)
@@ -404,7 +406,7 @@ class ExplorationCard:
     @classmethod
     def draw(
         cls,
-        user: "PartialGenshinUserStats",
+        user: PartialGenshinUserStats,
         dark_mode: bool,
         locale_: str,
         translator: Translator,

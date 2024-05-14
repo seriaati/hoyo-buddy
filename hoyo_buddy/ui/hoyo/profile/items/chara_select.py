@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 from enka.hsr import Character as HSRCharacter
@@ -19,7 +21,7 @@ if TYPE_CHECKING:
 class CharacterSelect(PaginatorSelect["ProfileView"]):
     def __init__(
         self,
-        characters: "Sequence[Character]",
+        characters: Sequence[Character],
         cache_extras: dict[str, dict[str, Any]],
     ) -> None:
         options: list[SelectOption] = []
@@ -79,7 +81,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             custom_id="profile_character_select",
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         changed = await super().callback()
         if changed:
             return await i.response.edit_message(view=self.view)

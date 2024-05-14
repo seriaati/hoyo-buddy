@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, User
@@ -20,13 +22,13 @@ class RelicSetUI(View):
         *,
         author: User | Member,
         locale: Locale,
-        translator: "Translator",
+        translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.relic_set_id = relic_set_id
         self.relic_embeds: dict[str, DefaultEmbed] = {}
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
 
         async with YattaAPIClient(self.locale, self.translator) as api:
@@ -55,5 +57,5 @@ class RelicPosButton(Button["RelicSetUI"]):
         super().__init__(style=ButtonStyle.blurple, emoji=get_relic_pos_emoji(pos))
         self.pos = pos
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         await i.response.edit_message(embed=self.view.relic_embeds[self.pos])

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -15,13 +17,13 @@ if TYPE_CHECKING:
 
 
 class WithEmailPassword(Button["AccountManager"]):
-    def __init__(self, platform: "Platform") -> None:
+    def __init__(self, platform: Platform) -> None:
         super().__init__(
             label=LocaleStr("With email and password", key="email_password_button_label")
         )
         self._platform = platform
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,

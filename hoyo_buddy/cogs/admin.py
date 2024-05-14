@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 from typing import TYPE_CHECKING, Any
 
@@ -24,25 +26,25 @@ class TaskView(ui.View):
         super().__init__()
         self._tasks: set[asyncio.Task] = set()
 
-    async def interaction_check(self, i: "INTERACTION") -> bool:
+    async def interaction_check(self, i: INTERACTION) -> bool:
         return await i.client.is_owner(i.user)
 
     @ui.button(label="Daily check-in", style=ButtonStyle.blurple)
-    async def daily_checkin(self, i: "INTERACTION", _: ui.Button) -> None:
+    async def daily_checkin(self, i: INTERACTION, _: ui.Button) -> None:
         await i.response.send_message("Daily check-in task started.")
         task = asyncio.create_task(DailyCheckin.execute(i.client))
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)
 
     @ui.button(label="Notes check", style=ButtonStyle.blurple)
-    async def notes_check(self, i: "INTERACTION", _: ui.Button) -> None:
+    async def notes_check(self, i: INTERACTION, _: ui.Button) -> None:
         await i.response.send_message("Notes check task started.")
         task = asyncio.create_task(NotesChecker.execute(i.client))
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)
 
     @ui.button(label="Farm check", style=ButtonStyle.blurple)
-    async def farm_check(self, i: "INTERACTION", _: ui.Button) -> None:
+    async def farm_check(self, i: INTERACTION, _: ui.Button) -> None:
         await i.response.send_message("Farm check tasks started.")
         for uid_start in UID_STARTS:
             task = asyncio.create_task(FarmChecker.execute(i.client, uid_start))
@@ -50,7 +52,7 @@ class TaskView(ui.View):
             task.add_done_callback(self._tasks.discard)
 
     @ui.button(label="Auto redeem", style=ButtonStyle.blurple)
-    async def auto_redeem(self, i: "INTERACTION", _: ui.Button) -> None:
+    async def auto_redeem(self, i: INTERACTION, _: ui.Button) -> None:
         await i.response.send_message("Auto redeem task started.")
         task = asyncio.create_task(AutoRedeem.execute(i.client))
         self._tasks.add(task)
@@ -58,10 +60,10 @@ class TaskView(ui.View):
 
 
 class Admin(commands.Cog):
-    def __init__(self, bot: "HoyoBuddy") -> None:
+    def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
-    async def cog_check(self, ctx: "Context") -> bool:
+    async def cog_check(self, ctx: Context) -> bool:
         return await self.bot.is_owner(ctx.author)
 
     @commands.command(name="sync")
@@ -133,5 +135,5 @@ class Admin(commands.Cog):
         await message_.edit(content="Done.")
 
 
-async def setup(bot: "HoyoBuddy") -> None:
+async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Admin(bot))

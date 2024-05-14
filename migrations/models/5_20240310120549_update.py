@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 async def upgrade(db) -> str:
     return """
         CREATE TABLE IF NOT EXISTS "notesnotify" (

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
@@ -28,7 +30,7 @@ class AddMiyousheAccount(Button["AccountManager"]):
             label=LocaleStr(Platform.MIYOUSHE.value, warn_no_key=False),
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -65,7 +67,7 @@ class AddHoyolabAccount(Button["AccountManager"]):
             label=LocaleStr(Platform.HOYOLAB.value, warn_no_key=False),
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -101,7 +103,7 @@ class AddAccountButton(Button["AccountManager"]):
             style=ButtonStyle.primary,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,

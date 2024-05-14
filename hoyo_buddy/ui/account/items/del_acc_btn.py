@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
@@ -23,7 +25,7 @@ class DeleteAccountContinue(Button["AccountManager"]):
             style=ButtonStyle.blurple,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         await self.view.refresh(i, soft=False)
 
 
@@ -37,7 +39,7 @@ class DeleteAccountButton(Button["AccountManager"]):
             row=3,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         account = self.view.selected_account
         assert account is not None
         await account.delete()

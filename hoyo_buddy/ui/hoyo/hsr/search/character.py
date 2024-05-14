@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 from discord import ButtonStyle
@@ -22,9 +24,9 @@ class CharacterUI(View):
         self,
         character_id: int,
         *,
-        author: "User | Member",
-        locale: "Locale",
-        translator: "Translator",
+        author: User | Member,
+        locale: Locale,
+        translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
@@ -39,17 +41,17 @@ class CharacterUI(View):
         self._story_index = 0
         self._voice_index = 0
 
-        self._main_skill_embeds: list["DefaultEmbed"] = []
-        self._sub_skill_embeds: list["DefaultEmbed"] = []
-        self._eidolon_embeds: list["DefaultEmbed"] = []
-        self._story_embeds: list["DefaultEmbed"] = []
-        self._voice_embeds: list["DefaultEmbed"] = []
-        self._character_embed: "DefaultEmbed | None" = None
+        self._main_skill_embeds: list[DefaultEmbed] = []
+        self._sub_skill_embeds: list[DefaultEmbed] = []
+        self._eidolon_embeds: list[DefaultEmbed] = []
+        self._story_embeds: list[DefaultEmbed] = []
+        self._voice_embeds: list[DefaultEmbed] = []
+        self._character_embed: DefaultEmbed | None = None
 
-        self._character_detail: "yatta.CharacterDetail | None" = None
+        self._character_detail: yatta.CharacterDetail | None = None
         self._manual_avatar: dict[str, Any] | None = None
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
 
         async with YattaAPIClient(self.locale, self.translator) as api:
@@ -88,7 +90,7 @@ class CharacterUI(View):
         await self.update(i, responded=True)
         self.message = await i.original_response()
 
-    async def update(self, i: "INTERACTION", *, responded: bool = False) -> None:
+    async def update(self, i: INTERACTION, *, responded: bool = False) -> None:
         if self._character_detail is None:
             msg = "Character detail not fetched"
             raise RuntimeError(msg)
@@ -237,7 +239,7 @@ class PageSelector(Select["CharacterUI"]):
             row=4,
         )
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view.selected_page = int(self.values[0])
         await self.view.update(i)
 
@@ -247,7 +249,7 @@ class ItemSelector(Select["CharacterUI"]):
         super().__init__(options=options)
         self._index_name = index_name
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view.__setattr__(self._index_name, int(self.values[0]))  # noqa: PLC2801
         await self.view.update(i)
 
@@ -269,7 +271,7 @@ class EnterSkilLevel(Button[CharacterUI]):
         super().__init__(label=label, style=ButtonStyle.blurple)
         self._skill_max_level = skill_max_level
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         modal = SkillLevelModal(self._skill_max_level)
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
@@ -306,7 +308,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
     def __init__(self, label: LocaleStr) -> None:
         super().__init__(label=label, style=ButtonStyle.blurple)
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         modal = CharacterLevelModal(
             title=LocaleStr("Enter Character Level", key="chara_level.modal.title")
         )
@@ -330,7 +332,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
 
 
 class VoiceSelector(PaginatorSelect[CharacterUI]):
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         await super().callback()
         try:
             self.view._voice_index = int(self.values[0])

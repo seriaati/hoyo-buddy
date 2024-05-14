@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 async def upgrade(db) -> str:
     return """
         ALTER TABLE "user" ADD "last_interaction" TIMESTAMPTZ;"""

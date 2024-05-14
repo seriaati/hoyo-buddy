@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
@@ -45,7 +47,7 @@ class FarmView(View):
         else:
             self._weekday = get_now().weekday()
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
 
         self.clear_items()
@@ -97,7 +99,7 @@ class WeekdaySelect(Select[FarmView]):
             row=0,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         self.view._weekday = int(self.values[0])
         self.update_options_defaults()
         await self.view.start(i)
@@ -112,7 +114,7 @@ class ReminderButton(Button[FarmView]):
             row=2,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -135,6 +137,6 @@ class CityButton(Button[FarmView]):
         )
         self._city = city
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         self.view._city = self._city
         await self.view.start(i)

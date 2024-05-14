@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 from discord import ButtonStyle
@@ -20,9 +22,9 @@ class LightConeUI(View):
         self,
         light_cone_id: str,
         *,
-        author: "User | Member",
-        locale: "Locale",
-        translator: "Translator",
+        author: User | Member,
+        locale: Locale,
+        translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
@@ -30,7 +32,7 @@ class LightConeUI(View):
         self.light_cone_level = 80
         self.superposition = 1
 
-    async def _fetch_weapon_embed(self) -> "DefaultEmbed":
+    async def _fetch_weapon_embed(self) -> DefaultEmbed:
         async with YattaAPIClient(self.locale, self.translator) as api:
             try:
                 light_cone_id = int(self.light_cone_id)
@@ -62,7 +64,7 @@ class LightConeUI(View):
             )
         )
 
-    async def start(self, i: "INTERACTION") -> None:
+    async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
         embed = await self._fetch_weapon_embed()
         self._setup_items()
@@ -84,7 +86,7 @@ class EnterLightConeLevel(Button[LightConeUI]):
     def __init__(self, label: LocaleStr) -> None:
         super().__init__(label=label, style=ButtonStyle.blurple)
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         modal = LightConeLevelModal(
             title=LocaleStr("Enter Weapon Level", key="weapon_level.modal.title")
         )
@@ -116,7 +118,7 @@ class Superposition(Select[LightConeUI]):
             ]
         )
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         self.view.superposition = int(self.values[0])
         embed = await self.view._fetch_weapon_embed()
         self.view._setup_items()

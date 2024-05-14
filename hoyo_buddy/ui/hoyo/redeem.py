@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, User
@@ -37,11 +39,11 @@ class GiftCodeModal(Modal):
 class RedeemUI(View):
     def __init__(
         self,
-        account: "HoyoAccount",
+        account: HoyoAccount,
         *,
         author: User | Member | None,
         locale: Locale,
-        translator: "Translator",
+        translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.account = account
@@ -87,7 +89,7 @@ class RedeemCodesButton(Button[RedeemUI]):
             style=ButtonStyle.blurple,
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         modal = GiftCodeModal(
             title=LocaleStr("Enter redemption codes", key="gift_code_modal.title")
         )
@@ -118,7 +120,7 @@ class AutoRedeemToggle(ToggleButton[RedeemUI]):
             current_toggle, LocaleStr("Auto code redemption", key="auto_redeem_toggle.label"), row=0
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         await super().callback(i)
         self.view.account.auto_redeem = self.current_toggle
         await self.view.account.save(update_fields=("auto_redeem",))

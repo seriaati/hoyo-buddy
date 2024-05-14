@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
@@ -24,7 +26,7 @@ class PlayerInfoButton(Button["ProfileView"]):
             custom_id="profile_player_info",
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         self.disabled = True
 
         card_settings_btn: CardSettingsButton = self.view.get_item("profile_card_settings")

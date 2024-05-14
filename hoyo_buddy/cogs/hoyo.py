@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from typing import TYPE_CHECKING
 
@@ -34,7 +36,7 @@ LOGGER_ = logging.getLogger(__name__)
 
 
 class Hoyo(commands.Cog):
-    def __init__(self, bot: "HoyoBuddy") -> None:
+    def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
     async def _get_uid_and_game(
@@ -82,7 +84,7 @@ class Hoyo(commands.Cog):
     )
     async def checkin_command(
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
@@ -144,7 +146,7 @@ class Hoyo(commands.Cog):
     )
     async def profile_command(
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
         uid: app_commands.Range[str, 9, 10] | None = None,
@@ -237,7 +239,7 @@ class Hoyo(commands.Cog):
     )
     async def notes_command(
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
@@ -276,7 +278,7 @@ class Hoyo(commands.Cog):
     )
     async def characters_command(
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
@@ -330,7 +332,7 @@ class Hoyo(commands.Cog):
     )
     async def abyss_command(
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
@@ -370,7 +372,7 @@ class Hoyo(commands.Cog):
     )
     async def exploration_command(
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
@@ -420,7 +422,7 @@ class Hoyo(commands.Cog):
     )
     async def redeem_command(
         self,
-        i: "INTERACTION",
+        i: INTERACTION,
         user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
@@ -435,7 +437,7 @@ class Hoyo(commands.Cog):
     @abyss_command.autocomplete("account")
     @exploration_command.autocomplete("account")
     async def characters_command_autocomplete(
-        self, i: "INTERACTION", current: str
+        self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         user: USER = i.namespace.user
@@ -452,9 +454,7 @@ class Hoyo(commands.Cog):
     @profile_command.autocomplete("account")
     @notes_command.autocomplete("account")
     @redeem_command.autocomplete("account")
-    async def account_autocomplete(
-        self, i: "INTERACTION", current: str
-    ) -> list[app_commands.Choice]:
+    async def account_autocomplete(self, i: INTERACTION, current: str) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         user: USER = i.namespace.user
         return await self.bot.get_account_autocomplete(
@@ -468,7 +468,7 @@ class Hoyo(commands.Cog):
 
     @checkin_command.autocomplete("account")
     async def checkin_command_autocomplete(
-        self, i: "INTERACTION", current: str
+        self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         user: USER = i.namespace.user
@@ -482,5 +482,5 @@ class Hoyo(commands.Cog):
         )
 
 
-async def setup(bot: "HoyoBuddy") -> None:
+async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Hoyo(bot))

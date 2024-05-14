@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .daily import DailyReminder
 from .expedition import ExpeditionReminder
 from .parametric_transformer import PTReminder

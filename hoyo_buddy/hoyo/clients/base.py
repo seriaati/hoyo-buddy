@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import pickle
 from typing import TYPE_CHECKING, Any, TypeAlias
@@ -22,7 +24,7 @@ class BaseClient:
         cache: bytes | None,
         extras: CacheExtras,
         live_data: Data,
-        locale: "Locale",
+        locale: Locale,
     ) -> tuple[bytes, CacheExtras]:
         live_chara_data: dict[str, Any] = {"live": True, "locale": locale.value}
         characters = live_data if isinstance(live_data, list) else live_data.characters
@@ -42,7 +44,7 @@ class BaseClient:
             else:
                 extras[str(character.id)].update(live_chara_data)
 
-        not_live_cache_charas: list["Character"] = []
+        not_live_cache_charas: list[Character] = []
 
         for character in characters:
             if str(character.id) not in live_character_ids:

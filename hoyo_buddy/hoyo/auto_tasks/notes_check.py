@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import datetime
 import logging
@@ -25,7 +27,7 @@ LOGGER_ = logging.getLogger(__name__)
 
 class NotesChecker:
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
-    _bot: ClassVar["HoyoBuddy"]
+    _bot: ClassVar[HoyoBuddy]
     _notes_cache: ClassVar[dict[Game, dict[int, Notes | StarRailNote]]] = {}
 
     @classmethod
@@ -50,7 +52,7 @@ class NotesChecker:
         return embed
 
     @classmethod
-    def _get_notify_embed(cls, notify: NotesNotify, locale: "Locale") -> DefaultEmbed:
+    def _get_notify_embed(cls, notify: NotesNotify, locale: Locale) -> DefaultEmbed:
         translator = cls._bot.translator
 
         match notify.type:
@@ -410,7 +412,7 @@ class NotesChecker:
         return notes
 
     @classmethod
-    async def execute(cls, bot: "HoyoBuddy") -> None:  # noqa: PLR0912
+    async def execute(cls, bot: HoyoBuddy) -> None:  # noqa: PLR0912
         if cls._lock.locked():
             return
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 from typing import TYPE_CHECKING, Any
 
@@ -20,7 +22,7 @@ class SettingsUI(View):
         author: discord.User | discord.Member,
         locale: discord.Locale,
         translator: Translator,
-        settings: "Settings",
+        settings: Settings,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.settings = settings
@@ -46,7 +48,7 @@ class SettingsUI(View):
         filename = self.get_brand_img_filename(theme, locale)
         return discord.File(filename, filename="brand.png")
 
-    async def update_ui_and_save_settings(self, i: "INTERACTION") -> None:
+    async def update_ui_and_save_settings(self, i: INTERACTION) -> None:
         await self.absolute_edit(
             i, embed=self.get_embed(), attachments=[self.get_brand_image_file(i.locale)], view=self
         )
@@ -85,7 +87,7 @@ class LanguageSelector(Select["SettingsUI"]):
         )
         return options
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         selected = self.values[0]
         self.view.locale = discord.Locale(selected) if selected != "auto" else i.locale
         self.view.settings.lang = self.values[0] if selected != "auto" else None
@@ -101,7 +103,7 @@ class DarkModeToggle(ToggleButton["SettingsUI"]):
             LocaleStr("Dark mode", key="dark_mode_button_label"),
         )
 
-    async def callback(self, i: "INTERACTION") -> Any:
+    async def callback(self, i: INTERACTION) -> Any:
         await super().callback(i)
         self.view.settings.dark_mode = self.current_toggle
 

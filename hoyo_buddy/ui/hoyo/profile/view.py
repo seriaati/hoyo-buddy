@@ -8,10 +8,7 @@ import enka
 from discord import File, Locale
 
 from hoyo_buddy.bot.translator import LocaleStr
-from hoyo_buddy.constants import (
-    LOCALE_TO_CARD_API_LANG,
-    LOCALE_TO_ENKA_HSR_LANG,
-)
+from hoyo_buddy.constants import LOCALE_TO_GI_CARD_API_LANG, LOCALE_TO_HSR_CARD_API_LANG
 from hoyo_buddy.db.models import CardSettings
 from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card
 from hoyo_buddy.embeds import DefaultEmbed
@@ -206,9 +203,10 @@ class ProfileView(View):
         template_num = int(template[-1])
         payload = {
             "uid": uid,
-            "lang": LOCALE_TO_ENKA_HSR_LANG[
-                Locale(self.cache_extras[str(character.id)]["locale"])
-            ].value,
+            "lang": LOCALE_TO_HSR_CARD_API_LANG.get(
+                Locale(self.cache_extras[str(character.id)]["locale"]),
+                "en",
+            ),
             "template": template_num,
             "character_id": str(character.id),
             "character_art": self._card_settings.current_image,
@@ -232,7 +230,9 @@ class ProfileView(View):
 
         payload = {
             "uid": uid,
-            "lang": LOCALE_TO_CARD_API_LANG[Locale(self.cache_extras[str(character.id)]["locale"])],
+            "lang": LOCALE_TO_GI_CARD_API_LANG[
+                Locale(self.cache_extras[str(character.id)]["locale"])
+            ],
             "character_id": str(character.id),
             "character_art": self._card_settings.current_image,
         }

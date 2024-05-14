@@ -92,6 +92,22 @@ LOCALE_TO_ENKA_HSR_LANG: dict[discord.Locale, enka.hsr.Language] = {
 }
 ENKA_HSR_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_ENKA_HSR_LANG.items()}
 
+LOCALE_TO_HSR_CARD_API_LANG: dict[discord.Locale, str] = {
+    discord.Locale.taiwan_chinese: "cht",
+    discord.Locale.chinese: "cn",
+    discord.Locale.german: "de",
+    discord.Locale.spain_spanish: "es",
+    discord.Locale.french: "fr",
+    discord.Locale.indonesian: "id",
+    discord.Locale.japanese: "jp",
+    discord.Locale.korean: "kr",
+    discord.Locale.brazil_portuguese: "pt",
+    discord.Locale.russian: "ru",
+    discord.Locale.thai: "th",
+    discord.Locale.vietnamese: "vi",
+    discord.Locale.ukrainian: "ru",
+}
+
 LOCALE_TO_GPY_LANG = {
     discord.Locale.british_english: "en-us",
     discord.Locale.american_english: "en-us",
@@ -176,7 +192,7 @@ LOCALE_TO_GI_ENKA_LANG: dict[discord.Locale, enka.gi.Language] = {
 }
 ENKA_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_GI_ENKA_LANG.items()}
 
-LOCALE_TO_CARD_API_LANG: dict[discord.Locale, str] = {
+LOCALE_TO_GI_CARD_API_LANG: dict[discord.Locale, str] = {
     discord.Locale.taiwan_chinese: "cht",
     discord.Locale.chinese: "chs",
     discord.Locale.german: "de",

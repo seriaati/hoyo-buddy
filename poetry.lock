@@ -199,23 +199,19 @@ typing_extensions = ">=3.7.2"
 
 [[package]]
 name = "ambr-py"
-version = "1.7.3"
+version = "1.7.4"
 description = "API wrapper for ambr.top written in Python"
 optional = false
-python-versions = "^3.11"
-files = []
-develop = false
+python-versions = "<4.0,>=3.11"
+files = [
+    {file = "ambr_py-1.7.4-py3-none-any.whl", hash = "sha256:72403db56ad61d5224e38b7e2cae769bccd82d833dd3ece84f1a0b02776e5f07"},
+    {file = "ambr_py-1.7.4.tar.gz", hash = "sha256:4866767a949b32ec717faee0d72eea02c2473068b9fd790b7f9259dd41bafc2a"},
+]
 
 [package.dependencies]
-aiohttp = "^3.8.6"
-aiohttp-client-cache = {version = "^0.11.0", extras = ["sqlite"]}
-pydantic = "^2.4.2"
-
-[package.source]
-type = "git"
-url = "https://github.com/seriaati/ambr"
-reference = "HEAD"
-resolved_reference = "e3e048bf81a463c3476b4dca03d48458d1f38560"
+aiohttp = ">=3.8.6,<4.0.0"
+aiohttp-client-cache = {version = ">=0.11.0,<0.12.0", extras = ["sqlite"]}
+pydantic = ">=2.4.2,<3.0.0"
 
 [[package]]
 name = "annotated-types"
@@ -2609,4 +2605,4 @@ resolved_reference = "ea49d7f8fe4edd5a289cec1b959a6ee38d896c9c"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "2db5f2625291cf7172c93d24e1d2754210f70398247434cf12e5b9b41cf54b63"
+content-hash = "4865366a14283771ae699d0c226878a824568580ceb55eed72317286454fc7f4"

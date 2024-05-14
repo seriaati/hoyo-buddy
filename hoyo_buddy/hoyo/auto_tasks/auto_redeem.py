@@ -10,7 +10,7 @@ from discord import Locale
 from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr
 from ...db.models import HoyoAccount
-from ...enums import Game
+from ...enums import Game, Platform
 
 if TYPE_CHECKING:
     import aiohttp
@@ -122,12 +122,15 @@ class AutoRedeem:
                 hsr_codes = codes
 
             accounts = (
-                await HoyoAccount.filter(auto_redeem=True, game=game)
+                await HoyoAccount.filter(auto_redeem=True, game=game).all()
                 if game is not None
-                else await HoyoAccount.filter(auto_redeem=True)
+                else await HoyoAccount.filter(auto_redeem=True).all()
             )
 
             for account in accounts:
+                if account.platform is Platform.MIYOUSHE:
+                    continue
+
                 if account.game is Game.GENSHIN:
                     codes = genshin_codes
                 elif account.game is Game.STARRAIL:

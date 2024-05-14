@@ -120,6 +120,7 @@ HOYO_BUDDY_LOCALES: dict[discord.Locale, dict[str, str]] = {
     discord.Locale.japanese: {"name": "日本語", "emoji": "🇯🇵"},
     discord.Locale.brazil_portuguese: {"name": "Português (BR)", "emoji": "🇧🇷"},
     discord.Locale.indonesian: {"name": "Bahasa Indonesia", "emoji": "🇮🇩"},
+    discord.Locale.dutch: {"name": "Nederlands", "emoji": "🇳🇱"},
 }
 
 LOCALE_TO_AMBR_LANG: dict[discord.Locale, AmbrLanguage] = {

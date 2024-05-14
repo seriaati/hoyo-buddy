@@ -29,7 +29,7 @@ pydantic = "^2.6.4"
 python = "^3.11"
 python-dotenv = "^1.0.0"
 rsa = "^4.9"
-sentry-sdk = {extras = ["aiohttp"], version = "^1.43.0"}
+sentry-sdk = "^2.1.1"
 seria-library = {git = "https://github.com/seriaati/seria-library"}
 tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
 transifex-python = "^3.5.0"

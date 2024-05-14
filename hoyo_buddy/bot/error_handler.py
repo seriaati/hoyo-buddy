@@ -38,7 +38,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
             key="invalid_verification_code_description",
         ),
     },
-    (-3208,): {
+    (-3208, -3203): {
         "title": LocaleStr("Invalid Email or Password", key="invalid_email_password_title"),
         "description": LocaleStr(
             "The email or password you provided is incorrect, please check and try again.",
@@ -74,7 +74,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
         "title": LocaleStr("Code redemption in cooldown", key="redeem_code.cooldown"),
     },
     (-2021,): {
-        "title": LocaleStr("Adventure rank too low (less than 10)", key="redeem_code.ar_too_low"),
+        "title": LocaleStr("Adventure rank too low", key="redeem_code.ar_too_low"),
     },
     # 999 and 1000 are custom retcodes for Hoyo Buddy, they don't exist in Hoyo's API
     (999,): {

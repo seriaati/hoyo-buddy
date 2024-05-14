@@ -17,6 +17,7 @@ from discord.ext import commands
 from tortoise.expressions import Q
 
 from ..db.models import HoyoAccount
+from ..enums import Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novelai_client import NAIClient
 from ..utils import get_now
@@ -182,6 +183,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         locale: discord.Locale,
         translator: Translator,
         games: Sequence[Game],
+        platforms: Sequence[Platform] | None = None,
     ) -> list[discord.app_commands.Choice[str]]:
         """Get autocomplete choices for a user's accounts.
 
@@ -192,6 +194,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             locale: Discord locale.
             translator: Bot's translator.
             games: The games to filter by
+            platforms: The platforms to filter by.
         """
         is_author = user is None or user.id == author_id
         game_query = Q(*[Q(game=game) for game in games], join_type="OR")
@@ -200,6 +203,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         ).all()
         if not is_author:
             accounts = [account for account in accounts if account.public]
+
+        platforms = platforms or list(Platform)
+        accounts = [account for account in accounts if account.platform in platforms]
 
         if not accounts:
             if is_author:
@@ -230,20 +236,32 @@ class HoyoBuddy(commands.AutoShardedBot):
         ]
 
     @staticmethod
-    async def get_account(user_id: int, games: Sequence[Game]) -> HoyoAccount:
+    async def get_account(
+        user_id: int, games: Sequence[Game], platforms: Sequence[Platform] | None = None
+    ) -> HoyoAccount:
         """Get an account by user ID and games.
 
         Args:
             user_id: The Discord user ID.
             games: The games to filter by.
+            platforms: The platforms to filter by.
         """
+        platforms = platforms or list(Platform)
+
         game_query = Q(*[Q(game=game) for game in games], join_type="OR")
-        account = await HoyoAccount.filter(game_query, user_id=user_id, current=True).first()
-        if account is None:
-            account = await HoyoAccount.filter(game_query, user_id=user_id).first()
-        if account is None:
-            raise NoAccountFoundError(games)
-        return account
+        accounts = await HoyoAccount.filter(game_query, user_id=user_id).all()
+        accounts = [account for account in accounts if account.platform in platforms]
+        if not accounts:
+            raise NoAccountFoundError(games, platforms)
+
+        current_accounts = [account for account in accounts if account.current]
+        if current_accounts:
+            return current_accounts[0]
+        else:
+            account = accounts[0]
+            account.current = True
+            await account.save(update_fields=("current",))
+            return account
 
     async def update_assets(self) -> None:
         # Update EnkaAPI assets

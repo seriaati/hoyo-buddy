@@ -3,37 +3,25 @@ from __future__ import annotations
 import io
 from typing import TYPE_CHECKING
 
-import mihomo
+import enka
 from discord import Locale
 from discord.utils import get as dget
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.constants import HSR_CHARA_ADD_HURTS, HSR_CHARA_DEFAULT_STATS, HSR_ELEMENT_DMG_PROPS
+from hoyo_buddy.constants import HSR_ELEMENT_DMG_PROPS
 from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
-from hoyo_buddy.utils import round_down
 
 if TYPE_CHECKING:
-    from hoyo_buddy.models import HoyolabHSRCharacter, Trace
+    import hoyo_buddy.models as hb_models
 
 
 def draw_hsr_build_card(
-    character: mihomo.models.Character | HoyolabHSRCharacter,
+    character: enka.hsr.Character | hb_models.HoyolabHSRCharacter,
     locale_: str,
     dark_mode: bool,
     image_url: str,
     primary_hex: str,
 ) -> io.BytesIO:
-    def get_attr_display_value(attr: mihomo.Attribute, add_value: float = 0) -> str:
-        if attr.field == "spd":
-            return str(round_down(attr.value + add_value, 2))
-        display_value = (
-            f"{round_down((attr.value + add_value) * 100, 1)}%"
-            if attr.is_percent
-            else str(round_down(attr.value + add_value, 0))
-        )
-
-        return display_value
-
     locale = Locale(locale_)
 
     primary = Drawer.hex_to_rgb(primary_hex)
@@ -95,7 +83,7 @@ def draw_hsr_build_card(
     # write in the middle of the rectangle
     level_str = (
         f"Lv.{character.level}/{character.max_level}"
-        if isinstance(character, mihomo.models.Character)
+        if isinstance(character, enka.hsr.Character)
         else f"Lv.{character.level}"
     )
     drawer.write(
@@ -115,7 +103,7 @@ def draw_hsr_build_card(
 
     # write in the middle of the rectangle
     drawer.write(
-        f"E{character.eidolon}",
+        f"E{character.eidolons_unlocked}",
         size=64,
         position=(box_x + width // 2, box_y + height // 2),
         color=BLACK if dark_mode else WHITE,
@@ -141,35 +129,35 @@ def draw_hsr_build_card(
     padding = 16
 
     traces = {
-        "Normal": dget(character.trace_tree, anchor="Point01"),
-        "Skill": dget(character.trace_tree, anchor="Point02"),
-        "Ultimate": dget(character.trace_tree, anchor="Point03"),
-        "Talent": dget(character.trace_tree, anchor="Point04"),
+        "Normal": dget(character.traces, anchor="Point01"),
+        "Skill": dget(character.traces, anchor="Point02"),
+        "Ultimate": dget(character.traces, anchor="Point03"),
+        "Talent": dget(character.traces, anchor="Point04"),
     }
     main_bubbles = {
-        "Normal": dget(character.trace_tree, anchor="Point06"),
-        "Skill": dget(character.trace_tree, anchor="Point07"),
-        "Ultimate": dget(character.trace_tree, anchor="Point08"),
-        "Talent": dget(character.trace_tree, anchor="Point05"),
+        "Normal": dget(character.traces, anchor="Point06"),
+        "Skill": dget(character.traces, anchor="Point07"),
+        "Ultimate": dget(character.traces, anchor="Point08"),
+        "Talent": dget(character.traces, anchor="Point05"),
     }
-    sub_bubbles: dict[str, list[mihomo.TraceTreeNode | Trace | None]] = {
+    sub_bubbles: dict[str, list[enka.hsr.Trace | hb_models.Trace | None]] = {
         "Normal": [
-            dget(character.trace_tree, anchor="Point10"),
-            dget(character.trace_tree, anchor="Point11"),
-            dget(character.trace_tree, anchor="Point12"),
+            dget(character.traces, anchor="Point10"),
+            dget(character.traces, anchor="Point11"),
+            dget(character.traces, anchor="Point12"),
         ],
         "Skill": [
-            dget(character.trace_tree, anchor="Point13"),
-            dget(character.trace_tree, anchor="Point14"),
-            dget(character.trace_tree, anchor="Point15"),
+            dget(character.traces, anchor="Point13"),
+            dget(character.traces, anchor="Point14"),
+            dget(character.traces, anchor="Point15"),
         ],
         "Ultimate": [
-            dget(character.trace_tree, anchor="Point16"),
-            dget(character.trace_tree, anchor="Point17"),
-            dget(character.trace_tree, anchor="Point18"),
+            dget(character.traces, anchor="Point16"),
+            dget(character.traces, anchor="Point17"),
+            dget(character.traces, anchor="Point18"),
         ],
         "Talent": [
-            dget(character.trace_tree, anchor="Point09"),
+            dget(character.traces, anchor="Point09"),
         ],
     }
 
@@ -262,49 +250,25 @@ def draw_hsr_build_card(
 
     # attributes
     attributes: dict[str, str] = {}
-    if isinstance(character, mihomo.models.Character):
-        # Normal attributes
-        attr_names = ("hp", "atk", "def", "spd", "crit_rate", "crit_dmg", "sp_rate")
-        for attr in character.attributes:
-            add_ = dget(character.additions, field=attr.field)
-            if attr.field in attr_names:
-                display_value = get_attr_display_value(attr, add_.value if add_ else 0)
-                attributes[attr.icon] = display_value
+    if isinstance(character, enka.hsr.Character):
+        for stat in character.stats:
+            if stat.value == 0 or stat.type.value in enka.hsr.DMG_BONUS_PROPS.values():
+                continue
+            attributes[stat.icon] = stat.formatted_value
 
-        # Additions
-        for stat_name, stat in HSR_CHARA_DEFAULT_STATS.items():
-            add_ = dget(character.additions, field=stat_name)
-            if add_ is not None:
-                display_value = get_attr_display_value(add_)
-                attributes[add_.icon] = display_value
-            else:
-                attributes[stat["icon"]] = stat["value"]
-
-        # Get max damage addition
-        dmg_additions = [
-            a
-            for a in character.additions
-            if "dmg" in a.field and a.field not in {"break_dmg", "crit_dmg"}
-        ]
-        max_dmg_add = max(dmg_additions, key=lambda a: a.value) if dmg_additions else None
-        if max_dmg_add is None:
-            add_hurt = HSR_CHARA_ADD_HURTS[character.element.id.lower()]
-            attributes[add_hurt] = "0.0%"
-        else:
-            attributes[max_dmg_add.icon] = f"{round_down(max_dmg_add.value * 100, 1)}%"
-
+        max_dmg_add = character.highest_dmg_bonus_stat
+        attributes[max_dmg_add.icon] = max_dmg_add.formatted_value
     else:
-        # There is no additions/attributes in StarRailCharacter
         attr_types = (1, 2, 3, 4, 5, 6, 9, 11, 10, 58, 7)
-        for attr in character.stats:
-            if attr.type in attr_types:
-                attributes[attr.icon] = attr.displayed_value
+        for stat in character.stats:
+            if stat.type in attr_types:
+                attributes[stat.icon] = stat.formatted_value
 
         # Get max damage addition
         dmg_additions = [s for s in character.stats if s.type in HSR_ELEMENT_DMG_PROPS]
-        max_dmg_add = max(dmg_additions, key=lambda a: a.displayed_value) if dmg_additions else None
-        if max_dmg_add is not None:
-            attributes[max_dmg_add.icon] = max_dmg_add.displayed_value
+        if dmg_additions:
+            max_dmg_add = max(dmg_additions, key=lambda a: a.formatted_value)
+            attributes[max_dmg_add.icon] = max_dmg_add.formatted_value
 
     x = 804
     y = 685
@@ -348,7 +312,7 @@ def draw_hsr_build_card(
         )
 
         # light cone icon
-        icon = drawer.open_static(cone.portrait, size=(221, 314))
+        icon = drawer.open_static(cone.icon.image, size=(221, 314))
         im.paste(icon, (box_x + 27, box_y + 25), icon)
         light_cone_icon_right_pos = box_x + 27 + icon.width
         icon_top_pos = box_y + 25
@@ -377,7 +341,7 @@ def draw_hsr_build_card(
         draw.rounded_rectangle((box_x, box_y, box_x + width, box_y + height), radius, primary)
         level_str = (
             f"Lv.{cone.level}/{cone.max_level}"
-            if isinstance(cone, mihomo.models.LightCone)
+            if isinstance(cone, enka.hsr.LightCone)
             else f"Lv.{cone.level}"
         )
         drawer.write(
@@ -405,18 +369,18 @@ def draw_hsr_build_card(
             style="medium",
         )
 
-        if isinstance(cone, mihomo.models.LightCone):
+        if isinstance(cone, enka.hsr.LightCone):
             box_bottom_pos = box_y + height
             x = text_left_pos
             y = box_bottom_pos + 20
             text_padding = 17
             second_attr_x = 0
-            for i, attr in enumerate((cone.attributes + cone.properties)[:4]):
-                icon = drawer.open_static(attr.icon, size=(50, 50), mask_color=dark_primary)
+            for i, stat in enumerate((cone.stats)[:4]):
+                icon = drawer.open_static(stat.icon, size=(50, 50), mask_color=dark_primary)
                 im.paste(icon, (x, y), icon)
 
                 textbbox = drawer.write(
-                    attr.displayed_value,
+                    stat.formatted_value,
                     size=32,
                     position=(
                         x + icon.width + 2,
@@ -468,12 +432,12 @@ def draw_hsr_build_card(
             )
 
         # main stat
-        icon = drawer.open_static(relic.main_affix.icon, size=(50, 50), mask_color=dark_primary)
+        icon = drawer.open_static(relic.main_stat.icon, size=(50, 50), mask_color=dark_primary)
         icon_y = y + 15
         im.paste(icon, (relic_icon_right_pos + 5, icon_y), icon)
         # text
         textbbox = drawer.write(
-            relic.main_affix.displayed_value,
+            relic.main_stat.formatted_value,
             position=(
                 relic_icon_right_pos + 5 + icon.width + 2,
                 round(icon.height / 2) + icon_y - 1,
@@ -516,14 +480,12 @@ def draw_hsr_build_card(
         stat_y = icon_y + icon.height + 10  # main stat icon bottom pos
         stat_y_padding = 10
 
-        for i, attr in enumerate(relic.sub_affixes):
-            icon = drawer.open_static(attr.icon, size=(40, 40), mask_color=dark_primary)
+        for i, stat in enumerate(relic.sub_stats):
+            icon = drawer.open_static(stat.icon, size=(40, 40), mask_color=dark_primary)
             im.paste(icon, (stat_x, stat_y), icon)
             sub_stat_icon_right_pos = stat_x + icon.width
 
-            text = attr.displayed_value
-            if isinstance(attr, mihomo.SubAffix) and attr.field == "spd":
-                text = str(attr.value)
+            text = stat.formatted_value
 
             drawer.write(
                 text,

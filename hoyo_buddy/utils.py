@@ -1,7 +1,6 @@
 import base64
 import datetime
 import logging
-import math
 import re
 from typing import TYPE_CHECKING, TypeVar
 
@@ -39,14 +38,6 @@ def is_image_url(url: str) -> bool:
 def is_valid_hex_color(color: str) -> bool:
     """Test if a string is a valid hex color."""
     return bool(re.match(r"^#(?:[0-9a-fA-F]{3}){1,2}$", color))
-
-
-def round_down(number: float, decimals: int) -> float:
-    factor = 10.0**decimals
-    result = math.floor(number * factor) / factor
-    if decimals == 0:
-        return int(result)
-    return result
 
 
 async def upload_image(

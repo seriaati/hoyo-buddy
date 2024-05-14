@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any
 
-from mihomo.models import Character as HSRCharacter
+from enka.hsr import Character as HSRCharacter
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji
@@ -39,17 +39,17 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                     key="profile.character_select.description",
                     level=character.level,
                     superposition=character.light_cone.superimpose if character.light_cone else 0,
-                    eidolons=character.eidolon,
+                    eidolons=character.eidolons_unlocked,
                     data_type=data_type,
                 )
-                emoji = get_hsr_element_emoji(character.element.id)
+                emoji = get_hsr_element_emoji(character.element.value)
             elif isinstance(character, HoyolabHSRCharacter):
                 description = LocaleStr(
                     "Lv.{level} | E{eidolons}S{superposition} | {data_type} | From HoYoLAB",
                     key="profile.character_select.hoyolab.description",
                     level=character.level,
                     superposition=character.light_cone.superimpose if character.light_cone else 0,
-                    eidolons=character.eidolon,
+                    eidolons=character.eidolons_unlocked,
                     data_type=data_type,
                 )
                 emoji = get_hsr_element_emoji(character.element)

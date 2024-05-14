@@ -4,18 +4,15 @@ from typing import TYPE_CHECKING, Any, TypeAlias
 
 if TYPE_CHECKING:
     from discord import Locale
-    from enka.gi import Character as EnkaCharacter
-    from enka.gi import ShowcaseResponse
-    from mihomo.models import Character as MihomoCharacter
-    from mihomo.models import StarrailInfoParsed
+    from enka import gi, hsr
 
     from hoyo_buddy.models import HoyolabHSRCharacter
 
 
 LOGGER_ = logging.getLogger(__name__)
 
-Data: TypeAlias = "ShowcaseResponse | StarrailInfoParsed | list[HoyolabHSRCharacter]"
-Character: TypeAlias = "EnkaCharacter | MihomoCharacter | HoyolabHSRCharacter"
+Data: TypeAlias = "gi.ShowcaseResponse | hsr.ShowcaseResponse | list[HoyolabHSRCharacter]"
+Character: TypeAlias = "gi.Character | hsr.Character | HoyolabHSRCharacter"
 CacheExtras: TypeAlias = dict[str, dict[str, Any]]
 
 
@@ -57,7 +54,7 @@ class BaseClient:
             # live_data: list[HoyolabHSRCharacter]
             cache_data = not_live_cache_charas + live_data  # pyright: ignore [reportOperatorIssue]
         else:
-            # not_live_cache_charas: list[EnkaCharacter | MihomoCharacter]
+            # not_live_cache_charas: list[GICharacter | HSRCharacter]
             # live_data: ShowcaseResponse | StarrailInfoParsed
             cache_data.characters = not_live_cache_charas + live_data.characters  # pyright: ignore [reportOperatorIssue, reportAttributeAccessIssue]
             cache_data.player = live_data.player  # pyright: ignore [reportAttributeAccessIssue]

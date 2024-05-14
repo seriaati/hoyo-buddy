@@ -111,6 +111,15 @@ class AbyssCharacter:
     icon: str
 
 
+class LightConeIcon:
+    def __init__(self, id_: int) -> None:
+        self._id = id_
+
+    @property
+    def image(self) -> str:
+        return f"{STARRAIL_RES}/image/light_cone/{self._id}.png"
+
+
 @dataclass(kw_only=True)
 class LightCone:
     id: int
@@ -119,15 +128,15 @@ class LightCone:
     name: str
 
     @property
-    def portrait(self) -> str:
-        return f"{STARRAIL_RES}/image/light_cone_portrait/{self.id}.png"
+    def icon(self) -> LightConeIcon:
+        return LightConeIcon(self.id)
 
 
 @dataclass(kw_only=True)
 class Stat:
     type: int
     icon: str
-    displayed_value: str
+    formatted_value: str
 
 
 @dataclass(kw_only=True)
@@ -136,8 +145,8 @@ class Relic:
     level: int
     rarity: int
     icon: str
-    main_affix: Stat
-    sub_affixes: list[Stat]
+    main_stat: Stat
+    sub_stats: list[Stat]
 
 
 @dataclass(kw_only=True)
@@ -152,9 +161,9 @@ class HoyolabHSRCharacter:
     id: str
     name: str
     level: int
-    eidolon: int
+    eidolons_unlocked: int
     light_cone: LightCone | None = None
     relics: list[Relic]
     stats: list[Stat]
-    trace_tree: list[Trace]
+    traces: list[Trace]
     element: str

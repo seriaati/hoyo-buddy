@@ -3,8 +3,8 @@ from __future__ import annotations
 import contextlib
 from typing import TYPE_CHECKING
 
+import enka
 from discord import File
-from mihomo.models import Character as MihomoCharacter
 from sentry_sdk.metrics import timing
 
 from hoyo_buddy.draw import funcs
@@ -17,7 +17,6 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
 
-    from enka.gi import Character as EnkaCharacter
     from genshin.models import Character as GenshinCharacter
     from genshin.models import Notes as GenshinNote
     from genshin.models import PartialGenshinUserStats, SpiralAbyss, StarRailNote
@@ -63,37 +62,30 @@ async def draw_checkin_card(draw_input: DrawInput, rewards: list[Reward]) -> Fil
 
 async def draw_hsr_build_card(
     draw_input: DrawInput,
-    character: MihomoCharacter | HoyolabHSRCharacter,
+    character: enka.hsr.Character | HoyolabHSRCharacter,
     image_url: str,
     primary_hex: str,
 ) -> BytesIO:
     urls: list[str] = []
     urls.append(image_url)
-    if isinstance(character, HoyolabHSRCharacter):
-        for stat in character.stats:
-            urls.append(stat.icon)
-    else:
-        for trace in character.traces:
-            urls.append(trace.icon)
-        for attr in character.attributes:
-            urls.append(attr.icon)
-        for addition in character.additions:
-            urls.append(addition.icon)
 
-    for trace in character.trace_tree:
+    for trace in character.traces:
         urls.append(trace.icon)
+    for stat in character.stats:
+        urls.append(stat.icon)
 
     for relic in character.relics:
         urls.append(relic.icon)
-        urls.append(relic.main_affix.icon)
-        for affix in relic.sub_affixes:
-            urls.append(affix.icon)
+        urls.append(relic.main_stat.icon)
+        for sub_stat in relic.sub_stats:
+            urls.append(sub_stat.icon)
 
     if character.light_cone is not None:
-        urls.append(character.light_cone.portrait)
-        if isinstance(character, MihomoCharacter):
-            for attr in character.light_cone.attributes:
-                urls.append(attr.icon)
+        urls.append(character.light_cone.icon.image)
+        if isinstance(character, enka.hsr.Character):
+            for stat in character.light_cone.stats:
+                urls.append(stat.icon)
+
     for stat in HSR_CHARA_DEFAULT_STATS.values():
         urls.append(stat["icon"])
     for icon in HSR_CHARA_ADD_HURTS.values():
@@ -136,7 +128,7 @@ async def draw_hsr_notes_card(
 
 
 async def draw_gi_build_card(
-    draw_input: DrawInput, character: EnkaCharacter, image_url: str, zoom: float
+    draw_input: DrawInput, character: enka.gi.Character, image_url: str, zoom: float
 ) -> BytesIO:
     urls: list[str] = []
     urls.append(image_url)

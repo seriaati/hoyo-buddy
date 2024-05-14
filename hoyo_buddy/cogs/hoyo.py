@@ -1,10 +1,10 @@
 import logging
 from typing import TYPE_CHECKING
 
+import enka
 from discord import app_commands
 from discord.ext import commands
 from genshin.errors import GenshinException
-from mihomo.errors import HttpRequestError, UserNotFound
 from seria.utils import read_yaml
 
 from ..bot.bot import USER  # noqa: TCH001
@@ -27,8 +27,6 @@ from ..ui.hoyo.profile.view import ProfileView
 from ..ui.hoyo.redeem import RedeemUI
 
 if TYPE_CHECKING:
-    from mihomo.models import StarrailInfoParsed
-
     from ..bot.bot import INTERACTION, HoyoBuddy
     from ..models import HoyolabHSRCharacter
 
@@ -176,13 +174,13 @@ class Hoyo(commands.Cog):
             )
         elif game is Game.STARRAIL:
             hoyolab_charas: list[HoyolabHSRCharacter] = []
-            starrail_data: StarrailInfoParsed | None = None
+            starrail_data: enka.hsr.ShowcaseResponse | None = None
             hoyolab_user = None
 
             try:
                 client = MihomoAPI(locale)
                 starrail_data = await client.fetch_user(uid_)
-            except (HttpRequestError, UserNotFound):
+            except enka.errors.GameMaintenanceError:
                 if account_ is None:
                     # mihomo fails and no hoyolab account provided, raise error
                     raise

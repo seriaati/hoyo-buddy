@@ -183,16 +183,16 @@ class GenshinClient(genshin.Client, BaseClient):
                 level=relic.level,
                 rarity=relic.rarity,
                 icon=relic.icon,
-                main_affix=Stat(
+                main_stat=Stat(
                     type=relic.main_property.property_type,
                     icon=prop_icons[relic.main_property.property_type],
-                    displayed_value=relic.main_property.value,
+                    formatted_value=relic.main_property.value,
                 ),
-                sub_affixes=[
+                sub_stats=[
                     Stat(
                         type=sub_property.property_type,
                         icon=prop_icons[sub_property.property_type],
-                        displayed_value=sub_property.value,
+                        formatted_value=sub_property.value,
                     )
                     for sub_property in relic.properties
                 ],
@@ -204,18 +204,18 @@ class GenshinClient(genshin.Client, BaseClient):
             element=character.element,
             name=character.name,
             level=character.level,
-            eidolon=character.rank,
+            eidolons_unlocked=character.rank,
             light_cone=light_cone,
             relics=relics,
             stats=[
                 Stat(
                     icon=prop_icons[prop.property_type],
-                    displayed_value=prop.final,
+                    formatted_value=prop.final,
                     type=prop.property_type,
                 )
                 for prop in character.properties
             ],
-            trace_tree=[
+            traces=[
                 Trace(anchor=skill.anchor, icon=skill.item_url, level=skill.level)
                 for skill in character.skills
             ],

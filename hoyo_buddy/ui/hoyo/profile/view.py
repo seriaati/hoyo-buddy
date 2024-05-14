@@ -4,14 +4,13 @@ from functools import cached_property
 from io import BytesIO
 from typing import TYPE_CHECKING, Any, TypeAlias
 
+import enka
 from discord import File, Locale
-from enka.gi import Character as GICharacter
-from mihomo.models import Character as HSRCharacter
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.constants import (
     LOCALE_TO_CARD_API_LANG,
-    LOCALE_TO_MIHOMO_LANG,
+    LOCALE_TO_ENKA_HSR_LANG,
 )
 from hoyo_buddy.db.models import CardSettings
 from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card
@@ -41,15 +40,13 @@ if TYPE_CHECKING:
 
     import aiohttp
     from discord import Member, User
-    from enka.gi import ShowcaseResponse
     from genshin.models import StarRailUserStats
-    from mihomo.models import StarrailInfoParsed
 
     from hoyo_buddy.bot.bot import INTERACTION
     from hoyo_buddy.bot.translator import Translator
 
 
-Character: TypeAlias = HoyolabHSRCharacter | GICharacter | HSRCharacter
+Character: TypeAlias = HoyolabHSRCharacter | enka.gi.Character | enka.hsr.Character
 
 
 class ProfileView(View):
@@ -62,8 +59,8 @@ class ProfileView(View):
         *,
         hoyolab_characters: list[HoyolabHSRCharacter],
         hoyolab_user: StarRailUserStats | None = None,
-        starrail_data: StarrailInfoParsed | None = None,
-        genshin_data: ShowcaseResponse | None = None,
+        starrail_data: enka.hsr.ShowcaseResponse | None = None,
+        genshin_data: enka.gi.ShowcaseResponse | None = None,
         author: User | Member,
         locale: Locale,
         translator: Translator,
@@ -113,7 +110,7 @@ class ProfileView(View):
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
-                title=player.name,
+                title=player.nickname,
                 description=LocaleStr(
                     "Trailblaze Level: {level}\n"
                     "Equilibrium Level: {world_level}\n"
@@ -123,14 +120,14 @@ class ProfileView(View):
                     "Achievements: {achievements}\n",
                     key="profile.player_info.embed.description",
                     level=player.level,
-                    world_level=player.world_level,
+                    world_level=player.equilibrium_level,
                     friend_count=player.friend_count,
-                    light_cones=player.light_cones,
-                    characters=player.characters,
-                    achievements=player.achievements,
+                    light_cones=player.stats.light_cone_count,
+                    characters=player.stats.character_count,
+                    achievements=player.stats.achievement_count,
                 ),
             )
-            embed.set_thumbnail(url=player.avatar.icon)
+            embed.set_thumbnail(url=player.icon)
             if player.signature:
                 embed.set_footer(text=player.signature)
         elif self.genshin_data is not None:
@@ -199,7 +196,7 @@ class ProfileView(View):
     async def _draw_src_character_card(
         self,
         uid: int,
-        character: HSRCharacter,
+        character: enka.hsr.Character,
         template: str,
         session: aiohttp.ClientSession,
     ) -> BytesIO:
@@ -209,9 +206,11 @@ class ProfileView(View):
         template_num = int(template[-1])
         payload = {
             "uid": uid,
-            "lang": LOCALE_TO_MIHOMO_LANG[Locale(self.cache_extras[character.id]["locale"])].value,
+            "lang": LOCALE_TO_ENKA_HSR_LANG[
+                Locale(self.cache_extras[str(character.id)]["locale"])
+            ].value,
             "template": template_num,
-            "character_id": character.id,
+            "character_id": str(character.id),
             "character_art": self._card_settings.current_image,
         }
         endpoint = "http://localhost:7652/star-rail-card"
@@ -224,7 +223,7 @@ class ProfileView(View):
     async def _draw_enka_card(
         self,
         uid: int,
-        character: GICharacter,
+        character: enka.gi.Character,
         session: aiohttp.ClientSession,
         template: str,
     ) -> BytesIO:
@@ -257,7 +256,7 @@ class ProfileView(View):
 
     async def _draw_hb_hsr_character_card(
         self,
-        character: HSRCharacter | HoyolabHSRCharacter,
+        character: enka.hsr.Character | HoyolabHSRCharacter,
         session: aiohttp.ClientSession,
         executor: concurrent.futures.ProcessPoolExecutor,
         loop: asyncio.AbstractEventLoop,
@@ -265,7 +264,7 @@ class ProfileView(View):
         """Draw Star Rail character card in Hoyo Buddy template."""
         assert self._card_settings is not None
 
-        character_data = self._card_data.get(character.id)
+        character_data = self._card_data.get(str(character.id))
         if character_data is None:
             raise CardNotReadyError(character.name)
 
@@ -284,7 +283,7 @@ class ProfileView(View):
         return await draw_hsr_build_card(
             DrawInput(
                 dark_mode=self._card_settings.dark_mode,
-                locale=Locale(self.cache_extras[character.id]["locale"]),
+                locale=Locale(self.cache_extras[str(character.id)]["locale"]),
                 session=session,
                 filename="card.webp",
                 executor=executor,
@@ -297,7 +296,7 @@ class ProfileView(View):
 
     async def _draw_hb_gi_character_card(
         self,
-        character: GICharacter,
+        character: enka.gi.Character,
         session: aiohttp.ClientSession,
         executor: concurrent.futures.ProcessPoolExecutor,
         loop: asyncio.AbstractEventLoop,
@@ -349,16 +348,16 @@ class ProfileView(View):
         bytes_obj = None
 
         try:
-            if isinstance(character, HSRCharacter | HoyolabHSRCharacter):
+            if isinstance(character, enka.hsr.Character | HoyolabHSRCharacter):
                 if "hb" in template or isinstance(character, HoyolabHSRCharacter):
                     bytes_obj = await self._draw_hb_hsr_character_card(
                         character, i.client.session, i.client.executor, i.client.loop
                     )
-                elif isinstance(character, HSRCharacter):
+                elif isinstance(character, enka.hsr.Character):
                     bytes_obj = await self._draw_src_character_card(
                         self.uid, character, template, i.client.session
                     )
-            elif isinstance(character, GICharacter):
+            elif isinstance(character, enka.gi.Character):
                 if "hb" in template:
                     bytes_obj = await self._draw_hb_gi_character_card(
                         character, i.client.session, i.client.executor, i.client.loop

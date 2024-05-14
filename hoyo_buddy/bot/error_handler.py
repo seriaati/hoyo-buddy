@@ -5,7 +5,6 @@ from ambr.exceptions import DataNotFoundError as AmbrDataNotFoundError
 from discord.utils import format_dt
 from enka import errors as enka_errors
 from genshin import errors as genshin_errors
-from mihomo import errors as mihomo_errors
 from yatta.exceptions import DataNotFoundError as YattaDataNotFoundError
 
 from ..embeds import ErrorEmbed
@@ -96,25 +95,6 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     },
 }
 
-MIHOMO_ERROR_CONVERTER: dict[
-    type[mihomo_errors.BaseException],
-    dict[Literal["title", "description"], LocaleStr],
-] = {
-    mihomo_errors.HttpRequestError: {
-        "title": LocaleStr("Failed to Fetch Data", key="http_request_error_title"),
-        "description": LocaleStr("Please try again later", key="http_request_error_description"),
-    },
-    mihomo_errors.UserNotFound: {
-        "title": LocaleStr("User Not Found", key="user_not_found_title"),
-        "description": LocaleStr("Please check the provided UID", key="user_not_found_description"),
-    },
-    mihomo_errors.InvalidParams: {
-        "title": LocaleStr("Invalid Parameters", key="invalid_params_title"),
-        "description": LocaleStr(
-            "Please check the provided parameters", key="invalid_params_description"
-        ),
-    },
-}
 
 ENKA_ERROR_CONVERTER: dict[
     type[enka_errors.EnkaAPIError],
@@ -151,7 +131,7 @@ def get_error_embed(
         )
     elif isinstance(
         error,
-        genshin_errors.GenshinException | mihomo_errors.BaseException | enka_errors.EnkaAPIError,
+        genshin_errors.GenshinException | enka_errors.EnkaAPIError,
     ):
         err_info = None
 
@@ -160,8 +140,6 @@ def get_error_embed(
                 if error.retcode in codes:
                     err_info = info
                     break
-        elif isinstance(error, mihomo_errors.BaseException):
-            err_info = MIHOMO_ERROR_CONVERTER.get(type(error))
         elif isinstance(error, enka_errors.EnkaAPIError):
             err_info = ENKA_ERROR_CONVERTER.get(type(error))
 

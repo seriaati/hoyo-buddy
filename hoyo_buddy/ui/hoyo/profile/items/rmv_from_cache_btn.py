@@ -10,8 +10,7 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.ui.components import Button
 
 if TYPE_CHECKING:
-    from enka.gi import ShowcaseResponse
-    from mihomo.models import StarrailInfoParsed
+    import enka
 
     from hoyo_buddy.bot.bot import INTERACTION
 
@@ -35,14 +34,14 @@ class RemoveFromCacheButton(Button["ProfileView"]):
 
         # Remove the character from the cache
         if self.view.game is Game.STARRAIL and cache.hsr is not None:
-            hsr_cache: StarrailInfoParsed = pickle.loads(cache.hsr)
+            hsr_cache: enka.hsr.ShowcaseResponse = pickle.loads(cache.hsr)
             for character in hsr_cache.characters:
                 if character.id == self.view.character_id:
                     hsr_cache.characters.remove(character)
                     break
 
         elif self.view.game is Game.GENSHIN and cache.genshin is not None:
-            gi_cache: ShowcaseResponse = pickle.loads(cache.genshin)
+            gi_cache: enka.gi.ShowcaseResponse = pickle.loads(cache.genshin)
             for character in gi_cache.characters:
                 if character.id == self.view.character_id:
                     gi_cache.characters.remove(character)

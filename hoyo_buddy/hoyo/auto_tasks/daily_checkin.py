@@ -11,7 +11,6 @@ import genshin
 from ...bot.error_handler import get_error_embed
 from ...db.models import HoyoAccount
 from ...embeds import DefaultEmbed, Embed, ErrorEmbed
-from ...enums import Platform
 
 if TYPE_CHECKING:
     import aiohttp
@@ -44,8 +43,6 @@ class DailyCheckin:
             queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
             accounts = await HoyoAccount.filter(daily_checkin=True).all()
             for account in accounts:
-                if account.platform is Platform.MIYOUSHE:
-                    continue
                 await queue.put(account)
 
             tasks = [

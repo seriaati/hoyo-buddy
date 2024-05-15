@@ -23,7 +23,7 @@ class EnkaHSRClient(enka.HSRClient, BaseClient):
         super().__init__(lang=lang)
         self.locale = ENKA_HSR_LANG_TO_LOCALE[lang]
 
-    async def fetch_user(self, uid: int) -> ShowcaseResponse:
+    async def fetch_showcase(self, uid: int) -> ShowcaseResponse:
         cache, _ = await EnkaCache.get_or_create(uid=uid)
 
         try:

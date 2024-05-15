@@ -127,6 +127,10 @@ select = [
 quote-annotations = true
 
 [tool.pyright]
+ignore = [
+  "hoyo_buddy/db/models.py",
+]
+
 reportIncompatibleMethodOverride = false
 reportIncompatibleVariableOverride = false
 

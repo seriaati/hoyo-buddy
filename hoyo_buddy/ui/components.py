@@ -238,6 +238,8 @@ class Button(discord.ui.Button, Generic[V_co]):
         self.label = self.view.translator.translate(
             LocaleStr("Loading...", key="loading_text"), self.view.locale
         )
+
+        self.view.disable_items()
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 
     async def unset_loading_state(self, i: INTERACTION, **kwargs: Any) -> None:
@@ -248,6 +250,8 @@ class Button(discord.ui.Button, Generic[V_co]):
         self.disabled = self.original_disabled
         self.emoji = self.original_emoji
         self.label = self.original_label
+
+        self.view.enable_items()
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 
 
@@ -416,6 +420,8 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.disabled = True
         self.max_values = 1
         self.min_values = 1
+
+        self.view.disable_items()
         await self.view.absolute_edit(i, view=self.view)
 
     async def unset_loading_state(self, i: INTERACTION, **kwargs: Any) -> None:
@@ -435,6 +441,7 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.min_values = self.original_min_values
 
         self.update_options_defaults()
+        self.view.enable_items()
 
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 

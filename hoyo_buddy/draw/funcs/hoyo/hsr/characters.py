@@ -55,7 +55,7 @@ def draw_character_card(
     )
     background, max_card_num = Drawer.draw_dynamic_background(bk_input)
     draw = ImageDraw.Draw(background)
-    drawer = Drawer(draw, folder="gi-characters", dark_mode=dark_mode)
+    drawer = Drawer(draw, folder="hsr-characters", dark_mode=dark_mode)
 
     for index, card in enumerate(c_cards.values()):
         x = (index // max_card_num) * (
@@ -113,7 +113,7 @@ def draw_small_hsr_chara_card(
     )
 
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(draw, folder="gi-characters", dark_mode=dark_mode, translator=translator)
+    drawer = Drawer(draw, folder="hsr-characters", dark_mode=dark_mode, translator=translator)
 
     text = LocaleStr("Lv.{level}", key="level_str", level=character.level)
     drawer.write(text, size=31, position=(230, 35), locale=locale, style="medium")

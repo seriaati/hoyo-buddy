@@ -117,7 +117,7 @@ class LightConeIcon:
 
     @property
     def image(self) -> str:
-        return f"{STARRAIL_RES}/image/light_cone/{self._id}.png"
+        return f"{STARRAIL_RES}/image/light_cone_portrait/{self._id}.png"
 
 
 @dataclass(kw_only=True)

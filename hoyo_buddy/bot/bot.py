@@ -81,6 +81,10 @@ class HoyoBuddy(commands.AutoShardedBot):
             member_cache_flags=discord.MemberCacheFlags.none(),
             tree_cls=CommandTree,
             activity=discord.CustomActivity(f"{version} | hb.bot.nu"),
+            allowed_contexts=discord.app_commands.AppCommandContext(
+                guild=True, dm_channel=True, private_channel=True
+            ),
+            allowed_installs=discord.app_commands.AppInstallationType(guild=True, user=True),
         )
         self.session = session
         self.uptime = get_now()

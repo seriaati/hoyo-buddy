@@ -240,7 +240,10 @@ class GenshinClient(genshin.Client):
         parsed = genshin.models.StarRailDetailCharacters(**data)
         for character in parsed.avatar_list:
             if str(character.id) not in extras:
-                extras[str(character.id)] = {"live": live, "locale": GPY_LANG_TO_LOCALE[self.lang]}
+                extras[str(character.id)] = {
+                    "live": live,
+                    "locale": GPY_LANG_TO_LOCALE[self.lang].value,
+                }
             else:
                 extras[str(character.id)].update({"live": live})
 

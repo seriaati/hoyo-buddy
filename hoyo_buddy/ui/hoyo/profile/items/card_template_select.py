@@ -140,11 +140,13 @@ class CardTemplateSelect(Select["ProfileView"]):
         self.update_options_defaults()
         await self.set_loading_state(i)
 
-        # Enable color button if game is StarRail and template is Hoyo Buddy or game is Genshin and template is ENCard
-        # Otherwise disable
+        # Change the color button state
         change_color_btn: PrimaryColorButton = self.view.get_item("profile_primary_color")
         change_color_btn.disabled = not (
-            (self.view.game is Game.STARRAIL and "hb" in self.values[0])
+            (
+                self.view.game is Game.STARRAIL
+                and ("hb" in self.values[0] or "src" in self.values[0])
+            )
             or (self.view.game is Game.GENSHIN and self.values[0] == "encard1")
         )
 

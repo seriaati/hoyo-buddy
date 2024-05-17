@@ -141,9 +141,9 @@ class CardSettings(Model):
 
 class EnkaCache(Model):
     uid = fields.BigIntField(pk=True, index=True)
-    hsr: fields.Field[bytes | None] = fields.BinaryField(null=True)
-    genshin: fields.Field[bytes | None] = fields.BinaryField(null=True)
-    hoyolab: fields.Field[bytes | None] = fields.BinaryField(null=True)
+    hsr: fields.Field[dict[str, Any]] = fields.JSONField(default={})
+    genshin: fields.Field[dict[str, Any]] = fields.JSONField(default={})
+    hoyolab: fields.Field[dict[str, Any]] = fields.JSONField(default={})
     extras: fields.Field[dict[str, dict[str, Any]]] = fields.JSONField(default={})
 
     class Meta:

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import pickle
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
@@ -12,8 +11,6 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.ui.components import Button
 
 if TYPE_CHECKING:
-    import enka
-
     from hoyo_buddy.bot.bot import INTERACTION
 
     from ..view import ProfileView  # noqa: F401
@@ -35,18 +32,19 @@ class RemoveFromCacheButton(Button["ProfileView"]):
         cache = await EnkaCache.get(uid=self.view.uid)
 
         # Remove the character from the cache
-        if self.view.game is Game.STARRAIL and cache.hsr is not None:
-            hsr_cache: enka.hsr.ShowcaseResponse = pickle.loads(cache.hsr)
-            for character in hsr_cache.characters:
-                if character.id == self.view.character_id:
-                    hsr_cache.characters.remove(character)
+        # We need to touch raw data because we can't convert parsed back to raw
+        if self.view.game is Game.STARRAIL:
+            avatar_list = cache.hsr["detailInfo"]["avatarDetailList"]
+            for character in avatar_list:
+                if str(character["avatarId"]) == self.view.character_id:
+                    avatar_list.remove(character)
                     break
 
         elif self.view.game is Game.GENSHIN and cache.genshin is not None:
-            gi_cache: enka.gi.ShowcaseResponse = pickle.loads(cache.genshin)
-            for character in gi_cache.characters:
-                if character.id == self.view.character_id:
-                    gi_cache.characters.remove(character)
+            avatar_list = cache.genshin["avatarInfoList"]
+            for character in avatar_list:
+                if str(character["avatarId"]) == self.view.character_id:
+                    avatar_list.remove(character)
                     break
 
         await cache.save(update_fields=("hsr", "genshin"))

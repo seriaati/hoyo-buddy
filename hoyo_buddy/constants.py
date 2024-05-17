@@ -75,7 +75,7 @@ EQUIP_ID_TO_ARTIFACT_POS: dict[str, str] = {
     "EQUIP_DRESS": "circlet",
 }
 
-LOCALE_TO_ENKA_HSR_LANG: dict[discord.Locale, enka.hsr.Language] = {
+LOCALE_TO_HSR_ENKA_LANG: dict[discord.Locale, enka.hsr.Language] = {
     discord.Locale.taiwan_chinese: enka.hsr.Language.TRADITIONAL_CHINESE,
     discord.Locale.chinese: enka.hsr.Language.SIMPLIFIED_CHINESE,
     discord.Locale.german: enka.hsr.Language.GERMAN,
@@ -90,7 +90,7 @@ LOCALE_TO_ENKA_HSR_LANG: dict[discord.Locale, enka.hsr.Language] = {
     discord.Locale.thai: enka.hsr.Language.THAI,
     discord.Locale.vietnamese: enka.hsr.Language.VIETNAMESE,
 }
-ENKA_HSR_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_ENKA_HSR_LANG.items()}
+ENKA_HSR_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_HSR_ENKA_LANG.items()}
 
 LOCALE_TO_HSR_CARD_API_LANG: dict[discord.Locale, str] = {
     discord.Locale.taiwan_chinese: "cht",

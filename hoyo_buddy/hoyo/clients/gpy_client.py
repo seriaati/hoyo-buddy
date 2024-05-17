@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import asyncio
-import pickle
 from random import uniform
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import genshin
 from seria.utils import read_json, write_json
@@ -12,7 +11,6 @@ from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr, Translator
 from ...constants import (
     AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID,
-    GPY_LANG_TO_LOCALE,
     HB_GAME_TO_GPY_GAME,
     LOCALE_TO_GPY_LANG,
     TRAVELER_IDS,
@@ -24,7 +22,6 @@ from ...enums import TalentBoost
 from ...models import HoyolabHSRCharacter, LightCone, Relic, Stat, Trace
 from ...utils import get_now
 from .ambr_client import AmbrAPIClient
-from .base import BaseClient
 from .enka.gi import EnkaGIClient
 
 if TYPE_CHECKING:
@@ -38,7 +35,7 @@ PC_ICON_DATA_PATH = "./.static/pc_icons.json"
 GI_TALENT_LEVEL_DATA_PATH = "./.static/talent_levels/gi_{uid}.json"
 
 
-class GenshinClient(genshin.Client, BaseClient):
+class GenshinClient(genshin.Client):
     def __init__(
         self,
         account: HoyoAccount,
@@ -132,10 +129,10 @@ class GenshinClient(genshin.Client, BaseClient):
             talent_boost = TalentBoost(talent_boost_data[character_id])
 
         # Get talent order
-        async with EnkaGIClient() as client:
-            talent_order = client.get_character_talent_order(
-                self._convert_character_id_to_enka_format(character_id)
-            )
+        client = EnkaGIClient()
+        talent_order = await client.get_character_talent_order(
+            self._convert_character_id_to_enka_format(character_id)
+        )
 
         # Get talent levels
         talent_levels: list[int] = []
@@ -224,31 +221,43 @@ class GenshinClient(genshin.Client, BaseClient):
         )
         return hsr_chara
 
+    def _update_live_status(
+        self, data: dict[str, Any], extras: dict[str, dict[str, Any]], live: bool
+    ) -> genshin.models.StarRailDetailCharacters:
+        parsed = genshin.models.StarRailDetailCharacters(**data)
+        for character in parsed.avatar_list:
+            if str(character.id) not in extras:
+                extras[str(character.id)] = {"live": live, "locale": self.lang}
+            else:
+                extras[str(character.id)].update({"live": live})
+
+        return parsed
+
     async def get_hoyolab_hsr_characters(self) -> list[HoyolabHSRCharacter]:
         """Get characters in HoyolabHSR format."""
         cache, _ = await EnkaCache.get_or_create(uid=self.uid)
 
         try:
-            data = await self.get_starrail_characters(self.uid)
-            live_data = [
-                self.convert_hsr_character(character, dict(data.property_info))
-                for character in data.avatar_list
-            ]
+            live_data = (await self.get_starrail_characters(self.uid)).dict()
         except genshin.GenshinException as e:
-            if cache.hoyolab is None or e.retcode != 1005:
+            if not cache.hoyolab or e.retcode != 1005:
                 raise
 
-            cache.extras = self._set_all_live_to_false(cache.hoyolab, cache.extras)
-            await cache.save(update_fields=("extras",))
-            cache_data: list[HoyolabHSRCharacter] = pickle.loads(cache.hoyolab)
+            self._update_live_status(cache.hoyolab, cache.extras, False)
+            await cache.save(update_fields=("extras"))
         else:
-            cache.hoyolab, cache.extras = self._update_cache_with_live_data(
-                cache.hoyolab, cache.extras, live_data, GPY_LANG_TO_LOCALE[self.lang]
-            )
-            await cache.save(update_fields=("hoyolab", "extras"))
-            cache_data: list[HoyolabHSRCharacter] = pickle.loads(cache.hoyolab)
+            cache.hoyolab.update(live_data)
 
-        return cache_data
+            self._update_live_status(cache.hoyolab, cache.extras, False)
+            self._update_live_status(live_data, cache.extras, True)
+
+            await cache.save(update_fields=("hoyolab", "extras"))
+
+        parsed = genshin.models.StarRailDetailCharacters(**cache.hoyolab)
+        return [
+            self.convert_hsr_character(chara, dict(parsed.property_info))
+            for chara in parsed.avatar_list
+        ]
 
     async def update_cookie_token(self) -> None:
         """Update the cookie token."""

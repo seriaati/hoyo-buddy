@@ -159,8 +159,8 @@ class Hoyo(commands.Cog):
         uid_, game, account_ = await self._get_uid_and_game(user.id, account, uid, game_value)
 
         if game is Game.GENSHIN:
-            async with EnkaGIClient(locale) as client:
-                data = await client.fetch_showcase(uid_)
+            client = EnkaGIClient(locale)
+            data = await client.fetch_showcase(uid_)
 
             cache = await EnkaCache.get(uid=uid_)
             view = ProfileView(
@@ -180,8 +180,8 @@ class Hoyo(commands.Cog):
             hoyolab_user = None
 
             try:
-                async with EnkaHSRClient(locale) as client:
-                    starrail_data = await client.fetch_showcase(uid_)
+                client = EnkaHSRClient(locale)
+                starrail_data = await client.fetch_showcase(uid_)
             except enka.errors.GameMaintenanceError:
                 if account_ is None:
                     # mihomo fails and no hoyolab account provided, raise error

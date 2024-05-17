@@ -63,4 +63,4 @@ class RemoveFromCacheButton(Button["ProfileView"]):
         character_select.translate(self.view.locale, self.view.translator)
 
         # Redraw the card
-        await self.view.update(i, self)
+        await self.view.update(i, self, unset_loading_state=False)

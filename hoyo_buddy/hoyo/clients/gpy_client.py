@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from operator import attrgetter
 from random import uniform
 from typing import TYPE_CHECKING, Any
 
@@ -95,13 +96,24 @@ class GenshinClient(genshin.Client):
     async def update_gi_chara_talent_levels(
         self, characters: Sequence[genshin.models.Character]
     ) -> None:
-        """Update multiple genshin impact character talent levels."""
+        """Update multiple GI character talent levels.
+
+        Args:
+            characters: The characters to update.
+        """
+        # Sort characters by level in descending order
+        characters = sorted(characters, key=attrgetter("level"), reverse=True)
+
         for i, character in enumerate(characters):
-            await self.update_gi_chara_talent_level(character)
-            await asyncio.sleep(3.0 if i % 15 == 0 else uniform(0.5, 0.8))
+            try:
+                await self.update_gi_chara_talent_level(character)
+            except genshin.GenshinException:
+                await asyncio.sleep(15.0)
+            else:
+                await asyncio.sleep(3.0 if i % 15 == 0 else uniform(0.5, 0.8))
 
     async def update_gi_chara_talent_level(self, character: genshin.models.Character) -> None:
-        """Update genshin impact character talent level."""
+        """Update GI character talent level."""
         talent_level_data: dict[str, str] = await read_json(
             GI_TALENT_LEVEL_DATA_PATH.format(uid=self.uid)
         )

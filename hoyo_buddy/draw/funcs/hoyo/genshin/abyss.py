@@ -267,6 +267,9 @@ class AbyssCard:
         chamber_padding = 183
 
         for floor in cls._abyss.floors:
+            if floor.floor not in star_pos:
+                continue
+
             for chamber in floor.chambers:
                 cls._drawer.write(
                     str(chamber.stars),
@@ -326,6 +329,9 @@ class AbyssCard:
             12: (1249, 1651),
         }
         for floor in cls._abyss.floors:
+            if floor.floor not in floor_pos:
+                continue
+
             original_pos = floor_pos[floor.floor]
             pos = original_pos
             for chamber in floor.chambers:

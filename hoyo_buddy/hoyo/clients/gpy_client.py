@@ -12,6 +12,7 @@ from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr, Translator
 from ...constants import (
     AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID,
+    GPY_LANG_TO_LOCALE,
     HB_GAME_TO_GPY_GAME,
     LOCALE_TO_GPY_LANG,
     TRAVELER_IDS,
@@ -239,7 +240,7 @@ class GenshinClient(genshin.Client):
         parsed = genshin.models.StarRailDetailCharacters(**data)
         for character in parsed.avatar_list:
             if str(character.id) not in extras:
-                extras[str(character.id)] = {"live": live, "locale": self.lang}
+                extras[str(character.id)] = {"live": live, "locale": GPY_LANG_TO_LOCALE[self.lang]}
             else:
                 extras[str(character.id)].update({"live": live})
 

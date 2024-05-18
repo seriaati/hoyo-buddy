@@ -250,13 +250,14 @@ class Button(discord.ui.Button, Generic[V_co]):
         self.original_emoji = str(self.emoji) if self.emoji else None
         self.original_disabled = self.disabled
 
+        self.view.disable_items()
+
         self.disabled = True
         self.emoji = emojis.LOADING
         self.label = self.view.translator.translate(
             LocaleStr("Loading...", key="loading_text"), self.view.locale
         )
 
-        self.view.disable_items()
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 
     async def unset_loading_state(self, i: INTERACTION, **kwargs: Any) -> None:
@@ -264,11 +265,12 @@ class Button(discord.ui.Button, Generic[V_co]):
             msg = "unset_loading_state called before set_loading_state"
             raise RuntimeError(msg)
 
+        self.view.enable_items()
+
         self.disabled = self.original_disabled
         self.emoji = self.original_emoji
         self.label = self.original_label
 
-        self.view.enable_items()
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 
 
@@ -424,6 +426,8 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.original_max_values = self.max_values
         self.original_min_values = self.min_values
 
+        self.view.disable_items()
+
         self.options = [
             SelectOption(
                 label=self.view.translator.translate(
@@ -438,7 +442,6 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.max_values = 1
         self.min_values = 1
 
-        self.view.disable_items()
         await self.view.absolute_edit(i, view=self.view)
 
     async def unset_loading_state(self, i: INTERACTION, **kwargs: Any) -> None:
@@ -451,6 +454,8 @@ class Select(discord.ui.Select, Generic[V_co]):
             msg = "unset_loading_state called before set_loading_state"
             raise RuntimeError(msg)
 
+        self.view.enable_items()
+
         self.options = self.original_options
         self.disabled = self.original_disabled
         self.placeholder = self.original_placeholder
@@ -458,7 +463,6 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.min_values = self.original_min_values
 
         self.update_options_defaults()
-        self.view.enable_items()
 
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 

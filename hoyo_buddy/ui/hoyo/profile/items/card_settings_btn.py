@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import SETTINGS
-from hoyo_buddy.enums import Game
 from hoyo_buddy.ui.components import Button, GoBackButton
 
 from .....models import HoyolabHSRCharacter
+from ..btn_states import DISABLE_AI_ART, DISABLE_COLOR, DISABLE_DARK_MODE, DISABLE_IMAGE_SELECT
 from .add_img_btn import AddImageButton
 from .card_settings_info_btn import CardSettingsInfoButton
 from .card_template_select import CardTemplateSelect
@@ -49,6 +49,7 @@ class CardSettingsButton(Button["ProfileView"]):
                 default_arts,
                 self.view._card_settings.custom_images,
                 self.view._card_settings.template,
+                DISABLE_IMAGE_SELECT[self.view._card_settings.template],
             )
         )
         self.view.add_item(
@@ -62,23 +63,20 @@ class CardSettingsButton(Button["ProfileView"]):
         self.view.add_item(
             PrimaryColorButton(
                 self.view._card_settings.custom_primary_color,
-                not (
-                    (self.view.game is Game.STARRAIL and "hb" in self.view._card_settings.template)
-                    or (
-                        self.view.game is Game.GENSHIN
-                        and self.view._card_settings.template == "encard1"
-                    )
-                ),
+                DISABLE_COLOR[self.view._card_settings.template],
             )
         )
         self.view.add_item(
             DarkModeButton(
-                self.view._card_settings.dark_mode, "hb" not in self.view._card_settings.template
+                self.view._card_settings.dark_mode,
+                DISABLE_DARK_MODE[self.view._card_settings.template],
             )
         )
         self.view.add_item(CardSettingsInfoButton())
 
-        self.view.add_item(GenerateAIArtButton())
+        self.view.add_item(
+            GenerateAIArtButton(disabled=DISABLE_AI_ART[self.view._card_settings.template])
+        )
         self.view.add_item(AddImageButton())
         self.view.add_item(
             RemoveImageButton(

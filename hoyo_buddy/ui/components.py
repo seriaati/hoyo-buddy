@@ -55,7 +55,9 @@ class View(discord.ui.View):
         self.locale = locale
         self.translator = translator
         self.message: discord.Message | None = None
+
         self._tasks: set[asyncio.Task] = set()
+        self._item_states: dict[str, bool] = {}
 
     def __repr__(self) -> str:
         return (
@@ -97,9 +99,11 @@ class View(discord.ui.View):
         if self.author is None:
             return True
 
+        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+
         if i.user.id != self.author.id:
             embed = ErrorEmbed(
-                self.locale,
+                locale,
                 self.translator,
                 title=LocaleStr("Interaction Failed", key="interaction_failed_title"),
                 description=LocaleStr(
@@ -114,12 +118,25 @@ class View(discord.ui.View):
     def disable_items(self) -> None:
         for child in self.children:
             if isinstance(child, discord.ui.Button | discord.ui.Select):
+                if child.custom_id is not None:
+                    self._item_states[child.custom_id] = child.disabled
+
+                if isinstance(child, discord.ui.Button) and child.url:
+                    continue
+
                 child.disabled = True
 
     def enable_items(self) -> None:
         for child in self.children:
             if isinstance(child, discord.ui.Button | discord.ui.Select):
-                child.disabled = False
+                if isinstance(child, discord.ui.Button) and child.url:
+                    continue
+
+                if child.custom_id is not None:
+                    child.disabled = self._item_states.get(child.custom_id, False)
+                else:
+                    # Cannot determine the original state of the item
+                    child.disabled = False
 
     def add_item(self, item: Button | Select, *, translate: bool = True) -> Self:
         if translate:
@@ -233,13 +250,14 @@ class Button(discord.ui.Button, Generic[V_co]):
         self.original_emoji = str(self.emoji) if self.emoji else None
         self.original_disabled = self.disabled
 
+        self.view.disable_items()
+
         self.disabled = True
         self.emoji = emojis.LOADING
         self.label = self.view.translator.translate(
             LocaleStr("Loading...", key="loading_text"), self.view.locale
         )
 
-        self.view.disable_items()
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 
     async def unset_loading_state(self, i: INTERACTION, **kwargs: Any) -> None:
@@ -247,11 +265,12 @@ class Button(discord.ui.Button, Generic[V_co]):
             msg = "unset_loading_state called before set_loading_state"
             raise RuntimeError(msg)
 
+        self.view.enable_items()
+
         self.disabled = self.original_disabled
         self.emoji = self.original_emoji
         self.label = self.original_label
 
-        self.view.enable_items()
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 
 
@@ -407,6 +426,8 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.original_max_values = self.max_values
         self.original_min_values = self.min_values
 
+        self.view.disable_items()
+
         self.options = [
             SelectOption(
                 label=self.view.translator.translate(
@@ -421,7 +442,6 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.max_values = 1
         self.min_values = 1
 
-        self.view.disable_items()
         await self.view.absolute_edit(i, view=self.view)
 
     async def unset_loading_state(self, i: INTERACTION, **kwargs: Any) -> None:
@@ -434,6 +454,8 @@ class Select(discord.ui.Select, Generic[V_co]):
             msg = "unset_loading_state called before set_loading_state"
             raise RuntimeError(msg)
 
+        self.view.enable_items()
+
         self.options = self.original_options
         self.disabled = self.original_disabled
         self.placeholder = self.original_placeholder
@@ -441,7 +463,6 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.min_values = self.original_min_values
 
         self.update_options_defaults()
-        self.view.enable_items()
 
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 

@@ -210,6 +210,7 @@ class ProfileView(View):
             "template": template_num,
             "character_id": str(character.id),
             "character_art": self._card_settings.current_image,
+            "color": self._card_settings.custom_primary_color,
         }
         endpoint = "http://localhost:7652/star-rail-card"
 

@@ -19,6 +19,7 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
         default_collection: list[str],
         custom_images: list[str],
         template: str,
+        disabled: bool,
     ) -> None:
         self.current_image_url = current_image_url
         self.default_collection = default_collection
@@ -30,7 +31,7 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
             placeholder=LocaleStr("Select an image", key="profile.image_select.placeholder"),
             custom_id="profile_image_select",
             row=0,
-            disabled=template == "hattvr1",
+            disabled=disabled,
         )
 
     def generate_options(self) -> list[SelectOption]:

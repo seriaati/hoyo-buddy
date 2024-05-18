@@ -6,41 +6,41 @@ from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.enums import Game
 from hoyo_buddy.ui.components import Select, SelectOption
 
+from ..btn_states import DISABLE_AI_ART, DISABLE_COLOR, DISABLE_DARK_MODE, DISABLE_IMAGE_SELECT
+
 if TYPE_CHECKING:
     from hoyo_buddy.bot.bot import INTERACTION
 
     from ..view import ProfileView  # noqa: F401
     from .dark_mode_btn import DarkModeButton
+    from .gen_ai_art_btn import GenerateAIArtButton
     from .image_select import ImageSelect
     from .primary_color_btn import PrimaryColorButton
 
 
 class CardTemplateSelect(Select["ProfileView"]):
     def __init__(self, current_template: str, hb_only: bool, game: Game) -> None:
-        hb_templates = (1,)
         src_templates = (1, 2, 3)
         enkac_templates = (1, 2)  # EnkaCard templates
 
         options: list[SelectOption] = []
 
-        for template_num in hb_templates:
-            value = f"hb{template_num}"
-            options.append(
-                SelectOption(
-                    label=LocaleStr(
-                        "Hoyo Buddy template {num}",
-                        key="profile.card_template_select.hb.label",
-                        num=template_num,
-                    ),
-                    description=LocaleStr(
-                        "Designed and programmed by {author}",
-                        key="profile.card_template_select.same_author.description",
-                        author="@seriaati",
-                    ),
-                    value=value,
-                    default=current_template == value,
+        options.append(
+            SelectOption(
+                label=LocaleStr(
+                    "Hoyo Buddy template {num}",
+                    key="profile.card_template_select.hb.label",
+                    num=1,
                 ),
-            )
+                description=LocaleStr(
+                    "Designed and programmed by {author}",
+                    key="profile.card_template_select.same_author.description",
+                    author="@seriaati",
+                ),
+                value="hb1",
+                default=current_template == "hb1",
+            ),
+        )
 
         if not hb_only:
             if game is Game.STARRAIL:
@@ -138,25 +138,20 @@ class CardTemplateSelect(Select["ProfileView"]):
         await self.view._card_settings.save(update_fields=("template",))
 
         self.update_options_defaults()
-        await self.set_loading_state(i)
 
-        # Change the color button state
         change_color_btn: PrimaryColorButton = self.view.get_item("profile_primary_color")
-        change_color_btn.disabled = not (
-            (
-                self.view.game is Game.STARRAIL
-                and ("hb" in self.values[0] or "src" in self.values[0])
-            )
-            or (self.view.game is Game.GENSHIN and self.values[0] == "encard1")
-        )
+        change_color_btn.disabled = DISABLE_COLOR[self.values[0]]
 
-        # Disable the dark mode button if the template is not Hoyo Buddy
         dark_mode_btn: DarkModeButton = self.view.get_item("profile_dark_mode")
-        dark_mode_btn.disabled = "hb" not in self.values[0]
+        dark_mode_btn.disabled = DISABLE_DARK_MODE[self.values[0]]
 
-        # Disable the image select if the template is hattvr1
         image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.disabled = self.values[0] == "hattvr1"
+        image_select.disabled = DISABLE_IMAGE_SELECT[self.values[0]]
+
+        gen_ai_art_btn: GenerateAIArtButton = self.view.get_item("profile_generate_ai_art")
+        gen_ai_art_btn.disabled = DISABLE_AI_ART[self.values[0]]
+
+        await self.set_loading_state(i)
 
         # Redraw the card
         await self.view.update(i, self)

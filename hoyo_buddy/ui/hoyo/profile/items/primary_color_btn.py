@@ -52,19 +52,18 @@ class PrimaryColorButton(Button["ProfileView"]):
         await i.response.send_modal(modal)
         await modal.wait()
 
-        color = modal.color.value
-        if not color:
-            color = None
-
-        if color is not None:
+        color = modal.color.value or None
+        if color:
             # Test if the color is valid
             passed = is_valid_hex_color(color)
             if not passed:
                 raise InvalidColorError
 
         # Save the color to settings
-        self.view._card_settings.custom_primary_color = color
+        self.view._card_settings.custom_primary_color = self.current_color = color
         await self.view._card_settings.save(update_fields=("custom_primary_color",))
 
+        await self.set_loading_state(i)
+
         # Redraw the card
-        await self.view.update(i, self, unset_loading_state=False)
+        await self.view.update(i, self)

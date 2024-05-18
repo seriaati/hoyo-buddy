@@ -37,11 +37,13 @@ class GenerateAIArtModal(Modal):
 
 
 class GenerateAIArtButton(Button):
-    def __init__(self) -> None:
+    def __init__(self, disabled: bool) -> None:
         super().__init__(
             label=LocaleStr("Generate AI art", key="profile.generate_ai_art.button.label"),
             style=ButtonStyle.blurple,
             row=3,
+            custom_id="profile_generate_ai_art",
+            disabled=disabled,
         )
 
     async def callback(self, i: INTERACTION) -> None:

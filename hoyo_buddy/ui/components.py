@@ -55,7 +55,9 @@ class View(discord.ui.View):
         self.locale = locale
         self.translator = translator
         self.message: discord.Message | None = None
+
         self._tasks: set[asyncio.Task] = set()
+        self._item_states: dict[str, bool] = {}
 
     def __repr__(self) -> str:
         return (
@@ -116,12 +118,25 @@ class View(discord.ui.View):
     def disable_items(self) -> None:
         for child in self.children:
             if isinstance(child, discord.ui.Button | discord.ui.Select):
+                if child.custom_id is not None:
+                    self._item_states[child.custom_id] = child.disabled
+
+                if isinstance(child, discord.ui.Button) and child.url:
+                    continue
+
                 child.disabled = True
 
     def enable_items(self) -> None:
         for child in self.children:
             if isinstance(child, discord.ui.Button | discord.ui.Select):
-                child.disabled = False
+                if isinstance(child, discord.ui.Button) and child.url:
+                    continue
+
+                if child.custom_id is not None:
+                    child.disabled = self._item_states.get(child.custom_id, False)
+                else:
+                    # Cannot determine the original state of the item
+                    child.disabled = False
 
     def add_item(self, item: Button | Select, *, translate: bool = True) -> Self:
         if translate:

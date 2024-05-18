@@ -35,7 +35,7 @@ sentry-sdk = "^2.1.1"
 seria-library = {git = "https://github.com/seriaati/seria-library"}
 tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
 transifex-python = "^3.5.0"
-yatta = {git = "https://github.com/seriaati/yatta"}
+yatta-py = "^1.3.6"
 
 [tool.poetry.group.dev]
 optional = true

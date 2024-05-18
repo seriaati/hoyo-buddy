@@ -337,10 +337,9 @@ class ProfileView(View):
             )
         self._card_settings = card_settings
 
-        # Force change the template to hb1 if is cached data
-        if (
-            not self.cache_extras[self.character_id]["live"]
-            and "hb" not in self._card_settings.template
+        # Force change the template to hb1 if is cached data or HoyolabHSRCharacter
+        if not self.cache_extras[self.character_id]["live"] or isinstance(
+            character, HoyolabHSRCharacter
         ):
             self._card_settings.template = "hb1"
             await self._card_settings.save(update_fields=("template",))

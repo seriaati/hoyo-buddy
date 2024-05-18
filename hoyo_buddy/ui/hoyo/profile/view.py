@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from functools import cached_property
 from io import BytesIO
 from typing import TYPE_CHECKING, Any, TypeAlias
 
@@ -9,13 +8,14 @@ from discord import File, Locale
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.constants import LOCALE_TO_GI_CARD_API_LANG, LOCALE_TO_HSR_CARD_API_LANG
-from hoyo_buddy.db.models import CardSettings
+from hoyo_buddy.db.models import CardSettings, HoyoAccount
 from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import CardNotReadyError
 from hoyo_buddy.models import DrawInput
 
+from ....icons import get_game_icon
 from ....models import HoyolabHSRCharacter
 from ....utils import upload_image
 from ...components import (
@@ -58,6 +58,7 @@ class ProfileView(View):
         hoyolab_user: StarRailUserStats | None = None,
         starrail_data: enka.hsr.ShowcaseResponse | None = None,
         genshin_data: enka.gi.ShowcaseResponse | None = None,
+        account: HoyoAccount | None,
         author: User | Member,
         locale: Locale,
         translator: Translator,
@@ -78,6 +79,7 @@ class ProfileView(View):
 
         self._card_settings: CardSettings | None = None
         self._card_data = card_data
+        self._account = account
 
     def _set_characters(self) -> None:
         """Set the characters list."""
@@ -99,7 +101,7 @@ class ProfileView(View):
 
         self.characters = characters
 
-    @cached_property
+    @property
     def player_embed(self) -> DefaultEmbed:
         """Player info embed."""
         if self.starrail_data is not None:
@@ -180,6 +182,16 @@ class ProfileView(View):
                 ),
             )
 
+        return embed
+
+    @property
+    def card_embed(self) -> DefaultEmbed:
+        embed = DefaultEmbed(self.locale, self.translator)
+        embed.set_image(url="attachment://card.webp")
+        if self._account is not None:
+            embed.add_acc_info(self._account)
+        else:
+            embed.set_author(name=f"UID: {self.uid}", icon_url=get_game_icon(self.game))
         return embed
 
     def _add_items(self) -> None:
@@ -394,14 +406,12 @@ class ProfileView(View):
                 await item.unset_loading_state(i)
             raise
 
+        attachments = [File(bytes_obj, filename="card.webp")]
+
         if unset_loading_state:
-            await item.unset_loading_state(
-                i, attachments=[File(bytes_obj, filename="card.webp")], embed=None
-            )
+            await item.unset_loading_state(i, attachments=attachments, embed=self.card_embed)
         else:
-            await i.edit_original_response(
-                attachments=[File(bytes_obj, filename="card.webp")], embed=None
-            )
+            await i.edit_original_response(attachments=attachments, embed=self.card_embed)
 
     async def start(self, i: INTERACTION) -> None:
         self._set_characters()

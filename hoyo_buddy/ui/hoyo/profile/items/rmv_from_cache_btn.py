@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import enka
 from discord import ButtonStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.db.models import EnkaCache
 from hoyo_buddy.emojis import DELETE
 from hoyo_buddy.enums import Game
+from hoyo_buddy.hoyo.clients.enka.base import BaseClient
 from hoyo_buddy.ui.components import Button
 
 if TYPE_CHECKING:
@@ -29,25 +31,23 @@ class RemoveFromCacheButton(Button["ProfileView"]):
         )
 
     async def callback(self, i: INTERACTION) -> None:
+        await i.response.defer()
+
+        assert self.view.character_id is not None
         cache = await EnkaCache.get(uid=self.view.uid)
 
-        # Remove the character from the cache
-        # We need to touch raw data because we can't convert parsed back to raw
+        # Remove the character from cache
         if self.view.game is Game.STARRAIL:
-            avatar_list = cache.hsr["detailInfo"]["avatarDetailList"]
-            for character in avatar_list:
-                if str(character["avatarId"]) == self.view.character_id:
-                    avatar_list.remove(character)
-                    break
+            BaseClient.remove_character_from_cache(
+                cache.hsr, str(self.view.character_id), enka.Game.HSR
+            )
+            await cache.save(update_fields=("hsr",))
 
-        elif self.view.game is Game.GENSHIN and cache.genshin is not None:
-            avatar_list = cache.genshin["avatarInfoList"]
-            for character in avatar_list:
-                if str(character["avatarId"]) == self.view.character_id:
-                    avatar_list.remove(character)
-                    break
-
-        await cache.save(update_fields=("hsr", "genshin"))
+        elif self.view.game is Game.GENSHIN:
+            BaseClient.remove_character_from_cache(
+                cache.genshin, str(self.view.character_id), enka.Game.GI
+            )
+            await cache.save(update_fields=("genshin",))
 
         # Update options in the character select
         character_select: CharacterSelect = self.view.get_item("profile_character_select")

@@ -11,7 +11,7 @@ LOGGER_ = logging.getLogger(__name__)
 
 
 class EnkaHSRClient(BaseClient):
-    async def fetch_showcase(self, uid: int) -> enka.hsr.ShowcaseResponse:
+    async def fetch_showcase(self, uid: int) -> tuple[enka.hsr.ShowcaseResponse, bool]:
         async with enka.HSRClient(
             lang=LOCALE_TO_HSR_ENKA_LANG.get(self._locale, enka.hsr.Language.ENGLISH)
         ) as client:

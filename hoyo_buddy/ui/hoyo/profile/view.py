@@ -59,6 +59,7 @@ class ProfileView(View):
         starrail_data: enka.hsr.ShowcaseResponse | None = None,
         genshin_data: enka.gi.ShowcaseResponse | None = None,
         account: HoyoAccount | None,
+        hoyolab_over_enka: bool = False,
         author: User | Member,
         locale: Locale,
         translator: Translator,
@@ -80,19 +81,24 @@ class ProfileView(View):
         self._card_settings: CardSettings | None = None
         self._card_data = card_data
         self._account = account
+        self._hoyolab_over_enka = hoyolab_over_enka
 
     def _set_characters(self) -> None:
         """Set the characters list."""
         characters: Sequence[Character] = []
 
         if self.game is Game.STARRAIL:
-            mihomo_chara_ids: list[str] = []
+            if self._hoyolab_over_enka and self.hoyolab_characters:
+                self.characters = self.hoyolab_characters
+                return
+
+            enka_chara_ids: list[str] = []
             if self.starrail_data is not None:
                 for chara in self.starrail_data.characters:
-                    mihomo_chara_ids.append(str(chara.id))
+                    enka_chara_ids.append(str(chara.id))
                     characters.append(chara)
             for chara in self.hoyolab_characters:
-                if str(chara.id) not in mihomo_chara_ids:
+                if str(chara.id) not in enka_chara_ids:
                     characters.append(chara)
 
         elif self.game is Game.GENSHIN:

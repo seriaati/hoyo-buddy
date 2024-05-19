@@ -203,7 +203,8 @@ class ProfileView(View):
     def _add_items(self) -> None:
         self.add_item(PlayerInfoButton())
         self.add_item(CardSettingsButton())
-        self.add_item(RemoveFromCacheButton())
+        if self._account is not None:
+            self.add_item(RemoveFromCacheButton())
         self.add_item(CardInfoButton())
         if self.characters:
             self.add_item(CharacterSelect(self.characters, self.cache_extras))

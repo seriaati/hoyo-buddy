@@ -317,7 +317,12 @@ class ProfileView(View):
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert self._card_settings is not None
 
-        art = self._card_settings.current_image or character.icon.gacha
+        if self._card_settings.current_image is not None:
+            art = self._card_settings.current_image
+        elif character.costume is not None:
+            art = character.costume.icon.gacha
+        else:
+            art = character.icon.gacha
 
         return await draw_gi_build_card(
             DrawInput(

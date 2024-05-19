@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 from typing import TYPE_CHECKING, Any
 
 from enka.hsr import Character as HSRCharacter
@@ -97,8 +98,12 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         card_settings_btn.disabled = False
 
         # Enable the remove from cache button if the character is in the cache
-        remove_from_cache_btn = self.view.get_item("profile_remove_from_cache")
-        remove_from_cache_btn.disabled = self.view.character_id in self.view.live_data_character_ids
+        with contextlib.suppress(ValueError):
+            # The button is not present in the view if view._account is None
+            remove_from_cache_btn = self.view.get_item("profile_remove_from_cache")
+            remove_from_cache_btn.disabled = (
+                self.view.character_id in self.view.live_data_character_ids
+            )
 
         self.update_options_defaults()
         await self.set_loading_state(i)

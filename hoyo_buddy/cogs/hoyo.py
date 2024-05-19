@@ -160,7 +160,7 @@ class Hoyo(commands.Cog):
 
         if game is Game.GENSHIN:
             client = EnkaGIClient(locale)
-            data = await client.fetch_showcase(uid_)
+            genshin_data, _ = await client.fetch_showcase(uid_)
 
             cache = await EnkaCache.get(uid=uid_)
             view = ProfileView(
@@ -169,7 +169,7 @@ class Hoyo(commands.Cog):
                 cache.extras,
                 await read_yaml("hoyo-buddy-assets/assets/gi-build-card/data.yaml"),
                 hoyolab_characters=[],
-                genshin_data=data,
+                genshin_data=genshin_data,
                 account=account_,
                 author=i.user,
                 locale=locale,
@@ -179,25 +179,26 @@ class Hoyo(commands.Cog):
             hoyolab_charas: list[HoyolabHSRCharacter] = []
             starrail_data: enka.hsr.ShowcaseResponse | None = None
             hoyolab_user = None
+            errored = False
 
             try:
                 client = EnkaHSRClient(locale)
-                starrail_data = await client.fetch_showcase(uid_)
+                starrail_data, errored = await client.fetch_showcase(uid_)
             except enka.errors.GameMaintenanceError:
                 if account_ is None:
-                    # mihomo fails and no hoyolab account provided, raise error
+                    # enka fails and no hoyolab account provided, raise error
                     raise
 
             if account_ is not None:
                 client = account_.client
                 client.set_lang(locale)
-                if starrail_data is None:
-                    hoyolab_user = await client.get_starrail_user()
                 try:
+                    if starrail_data is None:
+                        hoyolab_user = await client.get_starrail_user()
                     hoyolab_charas = await client.get_hoyolab_hsr_characters()
                 except GenshinException:
                     if starrail_data is None:
-                        # mihomo and hoyolab both failed, raise error
+                        # enka and hoyolab both failed, raise error
                         raise
 
             cache = await EnkaCache.get(uid=uid_)
@@ -210,6 +211,7 @@ class Hoyo(commands.Cog):
                 hoyolab_user=hoyolab_user,
                 starrail_data=starrail_data,
                 account=account_,
+                hoyolab_over_enka=errored,
                 author=i.user,
                 locale=locale,
                 translator=self.bot.translator,

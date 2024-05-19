@@ -21,7 +21,7 @@ class EnkaGIClient(BaseClient):
 
             return client._assets.character_data[character_id]["SkillOrder"]
 
-    async def fetch_showcase(self, uid: int) -> enka.gi.ShowcaseResponse:
+    async def fetch_showcase(self, uid: int) -> tuple[enka.gi.ShowcaseResponse, bool]:
         async with enka.GenshinClient(
             lang=LOCALE_TO_GI_ENKA_LANG.get(self._locale, enka.gi.Language.ENGLISH)
         ) as client:

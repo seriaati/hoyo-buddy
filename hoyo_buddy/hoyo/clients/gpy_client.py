@@ -262,11 +262,8 @@ class GenshinClient(genshin.Client):
             self._update_live_status(cache.hoyolab, cache.extras, False)
             await cache.save(update_fields=("extras"))
         else:
-            cache.hoyolab.update(live_data)
-
-            self._update_live_status(cache.hoyolab, cache.extras, False)
+            cache.hoyolab = live_data
             self._update_live_status(live_data, cache.extras, True)
-
             await cache.save(update_fields=("hoyolab", "extras"))
 
         parsed = genshin.models.StarRailDetailCharacters(**cache.hoyolab)

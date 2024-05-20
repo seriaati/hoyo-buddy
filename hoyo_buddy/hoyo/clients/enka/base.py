@@ -82,6 +82,10 @@ class BaseClient:
             cache["playerInfo"] = data["playerInfo"]
 
             # Update characters
+            if "avatarInfoList" not in data:
+                # Showcase is disabled
+                return cache
+
             for chara in data["avatarInfoList"]:
                 self.remove_character_from_cache(cache, str(chara["avatarId"]), game)
                 cache["avatarInfoList"].append(chara)
@@ -102,6 +106,10 @@ class BaseClient:
                 cache["detailInfo"][key] = data["detailInfo"][key]
 
             # Update characters
+            if "avatarDetailList" not in data["detailInfo"]:
+                # Showcase is disabled
+                return cache
+
             for chara in data["detailInfo"]["avatarDetailList"]:
                 self.remove_character_from_cache(cache, str(chara["avatarId"]), game)
                 cache["detailInfo"]["avatarDetailList"].append(chara)

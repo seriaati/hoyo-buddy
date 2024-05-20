@@ -874,7 +874,7 @@ pydantic = "^2.5.3"
 type = "git"
 url = "https://github.com/seriaati/enka-py"
 reference = "HEAD"
-resolved_reference = "54e7399774b71d52c4673ed43389b8a683e33f5b"
+resolved_reference = "c088d98cbb2cbc5969ce8f16093596eefbd6474b"
 
 [[package]]
 name = "filelock"
@@ -1016,7 +1016,7 @@ cookies = ["browser-cookie3"]
 type = "git"
 url = "https://github.com/thesadru/genshin.py"
 reference = "dev"
-resolved_reference = "d301e7599d495774d0808c353482754fed424cd4"
+resolved_reference = "f7a1b33282869644504d567ecedf7140d9e426fb"
 
 [[package]]
 name = "gitdb"

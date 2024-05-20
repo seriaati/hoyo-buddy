@@ -3,21 +3,17 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-import enka
 from discord import app_commands
 from discord.ext import commands
-from genshin.errors import GenshinException
-from seria.utils import read_yaml
 
 from ..bot.bot import USER  # noqa: TCH001
 from ..bot.translator import LocaleStr
-from ..db.models import EnkaCache, HoyoAccount, Settings
+from ..commands.profile import ProfileCommand
+from ..db.models import HoyoAccount, Settings
 from ..draw.main_funcs import draw_exploration_card
 from ..enums import Game, Platform
 from ..exceptions import IncompleteParamError
 from ..hoyo.clients.ambr_client import AmbrAPIClient
-from ..hoyo.clients.enka.gi import EnkaGIClient
-from ..hoyo.clients.enka.hsr import EnkaHSRClient
 from ..hoyo.clients.yatta_client import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..models import DrawInput
@@ -25,12 +21,10 @@ from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.genshin.abyss import AbyssView
 from ..ui.hoyo.notes.view import NotesView
-from ..ui.hoyo.profile.view import ProfileView
 from ..ui.hoyo.redeem import RedeemUI
 
 if TYPE_CHECKING:
     from ..bot.bot import INTERACTION, HoyoBuddy
-    from ..models import HoyolabHSRCharacter
 
 LOGGER_ = logging.getLogger(__name__)
 
@@ -158,64 +152,19 @@ class Hoyo(commands.Cog):
         user = user or i.user
         uid_, game, account_ = await self._get_uid_and_game(user.id, account, uid, game_value)
 
+        handler = ProfileCommand(
+            uid=uid_,
+            game=game,
+            account=account_,
+            locale=locale,
+            user=user,
+            translator=self.bot.translator,
+        )
+
         if game is Game.GENSHIN:
-            client = EnkaGIClient(locale)
-            genshin_data, _ = await client.fetch_showcase(uid_)
-
-            cache = await EnkaCache.get(uid=uid_)
-            view = ProfileView(
-                uid_,
-                game,
-                cache.extras,
-                await read_yaml("hoyo-buddy-assets/assets/gi-build-card/data.yaml"),
-                hoyolab_characters=[],
-                genshin_data=genshin_data,
-                account=account_,
-                author=i.user,
-                locale=locale,
-                translator=self.bot.translator,
-            )
+            view = await handler.run_genshin()
         elif game is Game.STARRAIL:
-            hoyolab_charas: list[HoyolabHSRCharacter] = []
-            starrail_data: enka.hsr.ShowcaseResponse | None = None
-            hoyolab_user = None
-            errored = False
-
-            try:
-                client = EnkaHSRClient(locale)
-                starrail_data, errored = await client.fetch_showcase(uid_)
-            except enka.errors.GameMaintenanceError:
-                if account_ is None:
-                    # enka fails and no hoyolab account provided, raise error
-                    raise
-
-            if account_ is not None:
-                client = account_.client
-                client.set_lang(locale)
-                try:
-                    if starrail_data is None:
-                        hoyolab_user = await client.get_starrail_user()
-                    hoyolab_charas = await client.get_hoyolab_hsr_characters()
-                except GenshinException:
-                    if starrail_data is None:
-                        # enka and hoyolab both failed, raise error
-                        raise
-
-            cache = await EnkaCache.get(uid=uid_)
-            view = ProfileView(
-                uid_,
-                game,
-                cache.extras,
-                await read_yaml("hoyo-buddy-assets/assets/hsr-build-card/data.yaml"),
-                hoyolab_characters=hoyolab_charas,
-                hoyolab_user=hoyolab_user,
-                starrail_data=starrail_data,
-                account=account_,
-                hoyolab_over_enka=errored,
-                author=i.user,
-                locale=locale,
-                translator=self.bot.translator,
-            )
+            view = await handler.run_hsr()
         else:
             raise NotImplementedError
 

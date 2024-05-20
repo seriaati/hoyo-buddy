@@ -1568,16 +1568,6 @@ typing = ["typing-extensions"]
 xmp = ["defusedxml"]
 
 [[package]]
-name = "pillow-simd"
-version = "9.0.0.post1"
-description = "Python Imaging Library (Fork)"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "Pillow-SIMD-9.0.0.post1.tar.gz", hash = "sha256:918541cfaa90ba3c0e1bae5da31ba1b1f52b09c0009bd90183b787af4e018263"},
-]
-
-[[package]]
 name = "platformdirs"
 version = "4.2.1"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`."
@@ -2617,4 +2607,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "c8ffda985f6d00fc37a0cfff877bf5ef6479113b8a611d82a757f4b1c78f29fa"
+content-hash = "5b3b65989a33a826beb0ee704fc9b7c84f0b2fc656a7f3fb7f99f811f54a8f25"

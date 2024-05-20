@@ -121,7 +121,7 @@ class Others(commands.Cog):
         ]
         embed.add_field(
             name=LocaleStr("Translators", key="about_command.translators"),
-            value="\n".join(translators),
+            value=" ".join(translators),
             inline=False,
         )
 

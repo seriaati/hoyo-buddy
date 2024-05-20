@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import INFO
-from hoyo_buddy.enums import Game
 from hoyo_buddy.ui.components import Button
 
 if TYPE_CHECKING:
@@ -29,9 +28,7 @@ class CardInfoButton(Button["ProfileView"]):
                 "- The Hoyo Buddy templates' designs are original, you are not allowed to modify them or claim that you made them without my permission.\n"
                 "- Game data is provided by {provider}.\n",
                 key="profile.card_info.embed.description",
-                provider="[mihomo](https://api.mihomo.me/)"
-                if self.view.game is Game.STARRAIL
-                else "[Enka.Network](https://api.enka.network/)",
+                provider="[Enka.Network](https://api.enka.network/)",
             ),
         )
         await i.response.send_message(embed=embed, ephemeral=True)

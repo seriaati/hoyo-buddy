@@ -265,7 +265,9 @@ class Farm(
 
         if not current:
             locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
-            choice_dict = dict(characters[locale.value].items())
+            choice_dict = dict(
+                characters.get(locale.value, characters[Locale.american_english.value]).items()
+            )
         else:
             choice_dict = {k: v for c in characters.values() for k, v in c.items()} | {
                 k: v for w in weapons.values() for k, v in w.items()

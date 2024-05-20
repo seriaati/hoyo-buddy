@@ -200,6 +200,10 @@ class ProfileView(View):
             embed.set_author(name=f"UID: {self.uid}", icon_url=get_game_icon(self.game))
         return embed
 
+    @property
+    def character(self) -> Character:
+        return next(c for c in self.characters if str(c.id) == self.character_id)
+
     def _add_items(self) -> None:
         self.add_item(PlayerInfoButton())
         self.add_item(CardSettingsButton())

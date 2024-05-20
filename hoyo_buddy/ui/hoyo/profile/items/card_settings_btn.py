@@ -36,12 +36,12 @@ class CardSettingsButton(Button["ProfileView"]):
         assert self.view._card_settings is not None
         assert self.view.character_id is not None
 
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(self.view.children)
         self.view.clear_items()
         self.view.add_item(go_back_button)
 
         default_arts: list[str] = self.view._card_data[self.view.character_id]["arts"]
-        character = next(c for c in self.view.characters if str(c.id) == self.view.character_id)
+        character = self.view.character
 
         self.view.add_item(
             ImageSelect(

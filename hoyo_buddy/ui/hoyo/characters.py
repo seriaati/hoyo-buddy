@@ -9,7 +9,7 @@ from seria.utils import read_json
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.draw.main_funcs import draw_gi_characters_card, draw_hsr_characters_card
-from hoyo_buddy.enums import Game, GenshinElement, HSRBaseType, HSRElement, HSRPath
+from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath
 from hoyo_buddy.hoyo.clients.gpy_client import (
     GI_TALENT_LEVEL_DATA_PATH,
     PC_ICON_DATA_PATH,
@@ -144,7 +144,7 @@ class CharactersView(View):
             return characters
 
         paths = [path_filter.value for path_filter in self._path_filters]
-        return [c for c in characters if HSRBaseType(c.base_type).name.lower() in paths]
+        return [c for c in characters if c.path.name.lower() in paths]
 
     def _apply_gi_sorter(
         self, characters: Sequence[GenshinCharacter]
@@ -167,7 +167,7 @@ class CharactersView(View):
         self, characters: Sequence[StarRailCharacter]
     ) -> Sequence[StarRailCharacter]:
         if self._sorter is HSRSorter.PATH:
-            return sorted(characters, key=lambda c: c.base_type)
+            return sorted(characters, key=lambda c: c.path)
 
         if self._sorter is HSRSorter.EIDOLON:
             return sorted(characters, key=lambda c: c.rank, reverse=True)
@@ -419,7 +419,7 @@ class CharactersView(View):
             for character in self._hsr_characters:
                 if character.id in TRAILBLAZER_IDS:
                     self._element_char_counts[character.element.lower()] += 1
-                    self._path_char_counts[HSRBaseType(character.base_type).name.lower()] += 1
+                    self._path_char_counts[character.path.name.lower()] += 1
                     break
 
             characters = self._get_hsr_filtered_and_sorted_characters()

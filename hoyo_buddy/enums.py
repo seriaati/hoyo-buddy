@@ -88,16 +88,6 @@ class HSRPath(StrEnum):
     ABUNDANCE = "abundance"  # 豐饒
 
 
-class HSRBaseType(IntEnum):
-    DESTRUCTION = 1  # 毀滅
-    THE_HUNT = 2  # 巡獵
-    ERUDITION = 3  # 智識
-    HARMONY = 4  # 同諧
-    NIHILITY = 5  # 虛無
-    PRESERVATION = 6  # 存護
-    ABUNDANCE = 7  # 豐饒
-
-
 class Platform(StrEnum):
     HOYOLAB = "HoYoLAB"
     MIYOUSHE = "Miyoushe"

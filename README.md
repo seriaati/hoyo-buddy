@@ -11,7 +11,8 @@
 ![GitHub](https://img.shields.io/github/license/seriaati/hoyo-buddy)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-Hoyo Buddy is a Discord bot for [Hoyoverse](https://www.hoyoverse.com/zh-tw/) gamers, it provides all sorts of features related to games released by Hoyoverse (Honkai Impact 3rd, Honkai: Star Rail, and Genshin Impact), the aim is to **elevate the player's Hoyoverse experience**.
+Hoyo Buddy is a feature rich, easy to use, and beautifully designed Discord bot specifically made for Hoyoverse gamers.  
+It is currently in beta, you can invite it by clicking [this link](https://dub.sh/hb-beta-invite).  
 
 ## Quick Links
 

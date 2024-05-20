@@ -26,3 +26,9 @@ class EnkaGIClient(BaseClient):
             lang=LOCALE_TO_GI_ENKA_LANG.get(self._locale, enka.gi.Language.ENGLISH)
         ) as client:
             return await super().fetch_showcase(client, uid)
+
+    async def fetch_builds(self, owner: enka.Owner) -> dict[str, list[enka.gi.Build]]:
+        async with enka.GenshinClient(
+            lang=LOCALE_TO_GI_ENKA_LANG.get(self._locale, enka.gi.Language.ENGLISH)
+        ) as client:
+            return await client.fetch_builds(owner)

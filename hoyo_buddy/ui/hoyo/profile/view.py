@@ -13,16 +13,16 @@ from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import CardNotReadyError
-from hoyo_buddy.models import DrawInput
+from hoyo_buddy.icons import get_game_icon
+from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
+from hoyo_buddy.utils import upload_image
 
-from ....icons import get_game_icon
-from ....models import HoyolabHSRCharacter
-from ....utils import upload_image
 from ...components import (
     Button,
     Select,
     View,
 )
+from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
 from .items.card_settings_btn import CardSettingsButton
 from .items.chara_select import CharacterSelect
@@ -60,6 +60,7 @@ class ProfileView(View):
         genshin_data: enka.gi.ShowcaseResponse | None = None,
         account: HoyoAccount | None,
         hoyolab_over_enka: bool = False,
+        builds: dict[str, list[enka.gi.Build]] | dict[str, list[enka.hsr.Build]] | None = None,
         author: User | Member,
         locale: Locale,
         translator: Translator,
@@ -82,6 +83,7 @@ class ProfileView(View):
         self._card_data = card_data
         self._account = account
         self._hoyolab_over_enka = hoyolab_over_enka
+        self._builds = builds or {}
 
     def _set_characters(self) -> None:
         """Set the characters list."""
@@ -207,11 +209,13 @@ class ProfileView(View):
     def _add_items(self) -> None:
         self.add_item(PlayerInfoButton())
         self.add_item(CardSettingsButton())
+        self.add_item(CardInfoButton())
+
         if self._account is not None:
             self.add_item(RemoveFromCacheButton())
-        self.add_item(CardInfoButton())
         if self.characters:
             self.add_item(CharacterSelect(self.characters, self.cache_extras))
+        self.add_item(BuildSelect())
 
     async def _draw_src_character_card(
         self,
@@ -349,11 +353,10 @@ class ProfileView(View):
             0.8 if self._card_settings.current_image is None else 1.0,
         )
 
-    async def draw_card(self, i: INTERACTION) -> io.BytesIO:
+    async def draw_card(self, i: INTERACTION, *, character: Character | None = None) -> io.BytesIO:
         """Draw the character card and return the bytes object."""
         assert self.character_id is not None
-
-        character = next(c for c in self.characters if str(c.id) == self.character_id)
+        character = character or self.character
 
         # Initialize card settings
         card_settings = await CardSettings.get_or_none(
@@ -413,9 +416,10 @@ class ProfileView(View):
         item: Select[ProfileView] | Button[ProfileView],
         *,
         unset_loading_state: bool = True,
+        character: Character | None = None,
     ) -> None:
         try:
-            bytes_obj = await self.draw_card(i)
+            bytes_obj = await self.draw_card(i, character=character)
             bytes_obj.seek(0)
         except Exception:
             if unset_loading_state:

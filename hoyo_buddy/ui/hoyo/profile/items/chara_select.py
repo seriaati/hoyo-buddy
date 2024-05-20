@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.bot.bot import INTERACTION
 
     from ..view import Character, ProfileView  # noqa: F401
+    from .build_select import BuildSelect
 
 
 class CharacterSelect(PaginatorSelect["ProfileView"]):
@@ -104,6 +105,10 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             remove_from_cache_btn.disabled = (
                 self.view.character_id in self.view.live_data_character_ids
             )
+
+        # Set builds
+        build_select: BuildSelect = self.view.get_item("profile_build_select")
+        build_select.set_options(self.view._builds.get(self.view.character_id, []))
 
         self.update_options_defaults()
         await self.set_loading_state(i)

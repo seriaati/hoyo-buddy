@@ -6,6 +6,7 @@ from discord import ButtonStyle, File, Locale, Member, User
 
 from ....bot.translator import LocaleStr
 from ....draw.main_funcs import draw_spiral_abyss_card
+from ....embeds import DefaultEmbed
 from ....exceptions import NoAbyssDataError
 from ....models import DrawInput
 from ...components import Button, View
@@ -119,7 +120,10 @@ class AbyssView(View):
         file_ = await self._draw_card(i.client.session, i.client.executor, i.client.loop)
 
         self._add_items()
-        await i.edit_original_response(attachments=[file_], view=self)
+
+        embed = DefaultEmbed(self.locale, self.translator).add_acc_info(self._account)
+        embed.set_image(url="attachment://abyss.webp")
+        await i.edit_original_response(embed=embed, attachments=[file_], view=self)
         self.message = await i.original_response()
 
 

@@ -40,5 +40,6 @@ class BuildSelect(Select["ProfileView"]):
         self.disabled = not builds
 
     async def callback(self, i: INTERACTION) -> None:
+        self.view._build_id = int(self.values[0])
         await self.set_loading_state(i)
         await self.view.update(i, self, character=self.build.character)

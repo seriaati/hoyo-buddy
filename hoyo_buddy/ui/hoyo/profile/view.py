@@ -44,6 +44,11 @@ if TYPE_CHECKING:
 
 
 Character: TypeAlias = HoyolabHSRCharacter | enka.gi.Character | enka.hsr.Character
+GI_CARD_ENDPOINTS = {
+    "hattvr": "http://localhost:7652/hattvr-enka-card",
+    "encard": "http://localhost:7652/en-card",
+    "enkacard": "http://localhost:7652/enka-card",
+}
 
 
 class ProfileView(View):
@@ -61,6 +66,7 @@ class ProfileView(View):
         account: HoyoAccount | None,
         hoyolab_over_enka: bool = False,
         builds: dict[str, list[enka.gi.Build]] | dict[str, list[enka.hsr.Build]] | None = None,
+        owner: enka.Owner | None = None,
         author: User | Member,
         locale: Locale,
         translator: Translator,
@@ -85,7 +91,11 @@ class ProfileView(View):
         self._hoyolab_over_enka = hoyolab_over_enka
         self._builds = builds or {}
 
-    def _set_characters(self) -> None:
+        self._owner_username: str | None = owner.username if owner is not None else None
+        self._owner_hash: str | None = owner.hash if owner is not None else None
+        self._build_id: int | None = None
+
+    def _set_characters(self) -> None:  # noqa: PLR0912
         """Set the characters list."""
         characters: Sequence[Character] = []
 
@@ -99,13 +109,26 @@ class ProfileView(View):
                 for chara in self.starrail_data.characters:
                     enka_chara_ids.append(str(chara.id))
                     characters.append(chara)
+
             for chara in self.hoyolab_characters:
                 if str(chara.id) not in enka_chara_ids:
+                    enka_chara_ids.append(str(chara.id))
                     characters.append(chara)
+
+            if self._builds:
+                for builds in self._builds.values():
+                    character = builds[0].character
+                    if str(character.id) not in enka_chara_ids:
+                        characters.append(character)
 
         elif self.game is Game.GENSHIN:
             assert self.genshin_data is not None
-            characters.extend(self.genshin_data.characters)
+            if self._builds:
+                for builds in self._builds.values():
+                    character = builds[0].character
+                    characters.append(character)
+            else:
+                characters.extend(self.genshin_data.characters)
 
         self.characters = characters
 
@@ -263,19 +286,20 @@ class ProfileView(View):
             ],
             "character_id": str(character.id),
             "character_art": self._card_settings.current_image,
+            "color": self._card_settings.custom_primary_color,
+            "template": int(template[-1]),
         }
-        if template == "hattvr1":
-            del payload["character_art"]
-            endpoint = "http://localhost:7652/hattvr-enka-card"
-        elif "enkacard" in template:
-            payload["template"] = int(template[-1])
-            endpoint = "http://localhost:7652/enka-card"
-        elif template == "encard1":
-            payload["color"] = self._card_settings.custom_primary_color
-            endpoint = "http://localhost:7652/en-card"
-        else:
+        if all(v is not None for v in (self._owner_hash, self._owner_username, self._build_id)):
+            payload["owner"] = {
+                "username": self._owner_username,
+                "hash": self._owner_hash,
+                "build_id": self._build_id,
+            }
+
+        endpoint = GI_CARD_ENDPOINTS.get(template[:-1])
+        if endpoint is None:
             msg = f"Invalid template: {template}"
-            raise NotImplementedError(msg)
+            raise ValueError(msg)
 
         async with session.post(endpoint, json=payload) as resp:
             # API returns a WebP image

@@ -29,13 +29,20 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         options: list[SelectOption] = []
 
         for character in characters:
-            data_type = (
-                LocaleStr("Real-time data", key="profile.character_select.live_data.description")
-                if cache_extras[str(character.id)]["live"]
-                else LocaleStr(
-                    "Cached data", key="profile.character_select.cached_data.description"
+            if str(character.id) not in cache_extras:
+                data_type = LocaleStr(
+                    "Enka Network build", key="profile.character_select.enka_network.description"
                 )
-            )
+            else:
+                data_type = (
+                    LocaleStr(
+                        "Real-time data", key="profile.character_select.live_data.description"
+                    )
+                    if cache_extras[str(character.id)]["live"]
+                    else LocaleStr(
+                        "Cached data", key="profile.character_select.cached_data.description"
+                    )
+                )
 
             if isinstance(character, HSRCharacter):
                 description = LocaleStr(

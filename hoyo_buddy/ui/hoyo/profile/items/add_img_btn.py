@@ -8,7 +8,7 @@ from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import ADD
 from hoyo_buddy.exceptions import InvalidImageURLError
 from hoyo_buddy.ui.components import Button, Modal, TextInput
-from hoyo_buddy.utils import is_image_url, test_url_validity, upload_image
+from hoyo_buddy.utils import get_pixiv_proxy_img, is_image_url, test_url_validity, upload_image
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot.bot import INTERACTION
@@ -52,15 +52,23 @@ class AddImageButton(Button["ProfileView"]):
         if not image_url:
             return
 
-        # Check if the image URL is valid.
+        await self.set_loading_state(i)
+
+        image_url = image_url.strip()
+
+        # Pixiv image support
+        if "i.pximg.net" in image_url:
+            image_url = await get_pixiv_proxy_img(i.client.session, image_url)
+
+        # Check if the image URL is valid
         passed = is_image_url(image_url)
         if not passed:
+            await self.unset_loading_state(i)
             raise InvalidImageURLError
         passed = await test_url_validity(image_url, i.client.session)
         if not passed:
+            await self.unset_loading_state(i)
             raise InvalidImageURLError
-
-        await self.set_loading_state(i)
 
         # Upload the image to iili
         try:

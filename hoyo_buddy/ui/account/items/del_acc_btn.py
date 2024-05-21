@@ -8,6 +8,7 @@ from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import DELETE, FORWARD
 
+from ....db.models import HoyoAccount
 from ...components import Button
 
 if TYPE_CHECKING:
@@ -43,6 +44,11 @@ class DeleteAccountButton(Button["AccountManager"]):
         account = self.view.selected_account
         assert account is not None
         await account.delete()
+
+        new_account = await HoyoAccount.filter(user=self.view.user).first()
+        if new_account is not None:
+            new_account.current = True
+            await new_account.save(update_fields=("current",))
 
         embed = DefaultEmbed(
             self.view.locale,

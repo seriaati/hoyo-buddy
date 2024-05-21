@@ -11,6 +11,7 @@ from ..bot.translator import LocaleStr
 from ..commands.profile import ProfileCommand
 from ..db.models import HoyoAccount, Settings
 from ..draw.main_funcs import draw_exploration_card
+from ..embeds import DefaultEmbed
 from ..enums import Game, Platform
 from ..exceptions import IncompleteParamError
 from ..hoyo.clients.ambr_client import AmbrAPIClient
@@ -335,13 +336,14 @@ class Hoyo(commands.Cog):
         account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN,))
 
         settings = await Settings.get(user_id=i.user.id)
-        account_.client.set_lang(settings.locale or i.locale)
+        locale = settings.locale or i.locale
+        account_.client.set_lang(locale)
         genshin_user = await account_.client.get_partial_genshin_user(account_.uid)
 
         file_ = await draw_exploration_card(
             DrawInput(
                 dark_mode=settings.dark_mode,
-                locale=settings.locale or i.locale,
+                locale=locale,
                 session=self.bot.session,
                 filename="exploration.webp",
                 executor=i.client.executor,
@@ -350,7 +352,9 @@ class Hoyo(commands.Cog):
             genshin_user,
             self.bot.translator,
         )
-        await i.followup.send(files=[file_])
+        embed = DefaultEmbed(locale, self.bot.translator).add_acc_info(account_)
+        embed.set_image(url="attachment://exploration.webp")
+        await i.followup.send(embed=embed, files=[file_])
 
     @app_commands.command(
         name=app_commands.locale_str("redeem", translate=False),

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Literal
-
 import discord
 import enka
 from ambr import Language as AmbrLanguage
@@ -190,7 +188,6 @@ LOCALE_TO_GI_ENKA_LANG: dict[discord.Locale, enka.gi.Language] = {
     discord.Locale.italian: enka.gi.Language.ITALIAN,
     discord.Locale.turkish: enka.gi.Language.TURKISH,
 }
-ENKA_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_GI_ENKA_LANG.items()}
 
 LOCALE_TO_GI_CARD_API_LANG: dict[discord.Locale, str] = {
     discord.Locale.taiwan_chinese: "cht",
@@ -232,46 +229,12 @@ YATTA_PATH_TO_HSR_PATH = {
 
 STARRAIL_RES = "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master"
 
-HSR_CHARA_DEFAULT_STATS: dict[str, dict[Literal["icon", "value"], str]] = {
-    "break_dmg": {
-        "icon": f"{STARRAIL_RES}/icon/property/IconBreakUp.png",
-        "value": "0.0%",
-    },
-    "heal_rate": {
-        "icon": f"{STARRAIL_RES}/icon/property/IconHealRatio.png",
-        "value": "0.0%",
-    },
-    "sp_rate": {
-        "icon": f"{STARRAIL_RES}/icon/property/IconEnergyRecovery.png",
-        "value": "100.0%",
-    },
-    "effect_hit": {
-        "icon": f"{STARRAIL_RES}/icon/property/IconStatusProbability.png",
-        "value": "0.0%",
-    },
-    "effect_res": {
-        "icon": f"{STARRAIL_RES}/icon/property/IconStatusResistance.png",
-        "value": "0.0%",
-    },
-}
-"""Default stats for HSR character, icon to value."""
-
-HSR_CHARA_ADD_HURTS: dict[str, str] = {
-    "fire": f"{STARRAIL_RES}/icon/property/IconFireAddedRatio.png",
-    "ice": f"{STARRAIL_RES}/icon/property/IconIceAddedRatio.png",
-    "quantum": f"{STARRAIL_RES}/icon/property/IconQuantumAddedRatio.png",
-    "imaginary": f"{STARRAIL_RES}/icon/property/IconImaginaryAddedRatio.png",
-    "physical": f"{STARRAIL_RES}/icon/property/IconPhysicalAddedRatio.png",
-    "wind": f"{STARRAIL_RES}/icon/property/IconWindAddedRatio.png",
-    "thunder": f"{STARRAIL_RES}/icon/property/IconThunderAddedRatio.png",
-}
-"""Elemental damage boosts for HSR character, element to icon."""
-
 HB_GAME_TO_GPY_GAME: dict[Game, GPYGame] = {
     Game.GENSHIN: GPYGame.GENSHIN,
     Game.STARRAIL: GPYGame.STARRAIL,
     Game.HONKAI: GPYGame.HONKAI,
 }
 """Hoyo Buddy game enum to genshin.py game enum."""
+
 GPY_GAME_TO_HB_GAME = {v: k for k, v in HB_GAME_TO_GPY_GAME.items()}
 """Genshin.py game enum to Hoyo Buddy game enum."""

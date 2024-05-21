@@ -35,18 +35,13 @@ class RemoveImageButton(Button["ProfileView"]):
 
         await self.set_loading_state(i)
 
-        # Remove the current image URL from db
+        # Remove the current image URL
         current_image = self.view._card_settings.current_image
         assert current_image is not None
         self.view._card_settings.custom_images.remove(current_image)
 
         # Update the current image URL
-        template = self.view._card_settings.template
-        if "hb" in template:
-            default_arts: list[str] = self.view._card_data[self.view.character_id]["arts"]
-            self.view._card_settings.current_image = default_arts[0]
-        else:
-            self.view._card_settings.current_image = None
+        self.view._card_settings.current_image = None
         await self.view._card_settings.save(update_fields=("custom_images", "current_image"))
 
         # Update image select options

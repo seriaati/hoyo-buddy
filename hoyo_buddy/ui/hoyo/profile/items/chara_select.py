@@ -116,7 +116,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         with contextlib.suppress(ValueError):
             # The button is not present in the view if view._account is None
             remove_from_cache_btn = self.view.get_item("profile_remove_from_cache")
-            remove_from_cache_btn.disabled = self.view.character_type is CharacterType.CACHE
+            remove_from_cache_btn.disabled = self.view.character_type is not CharacterType.CACHE
 
         # Set builds
         builds = self.view._builds.get(self.view.character_id, [])

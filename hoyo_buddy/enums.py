@@ -91,3 +91,11 @@ class HSRPath(StrEnum):
 class Platform(StrEnum):
     HOYOLAB = "HoYoLAB"
     MIYOUSHE = "Miyoushe"
+
+
+class CharacterType(IntEnum):
+    """/profile character types."""
+
+    CACHE = 1
+    LIVE = 2
+    BUILD = 3

@@ -11,7 +11,7 @@ from hoyo_buddy.constants import LOCALE_TO_GI_CARD_API_LANG, LOCALE_TO_HSR_CARD_
 from hoyo_buddy.db.models import CardSettings, HoyoAccount
 from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import CharacterType, Game
 from hoyo_buddy.exceptions import CardNotReadyError
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
@@ -77,12 +77,12 @@ class ProfileView(View):
         self.hoyolab_user = hoyolab_user
         self.starrail_data = starrail_data
         self.genshin_data = genshin_data
-        self.live_data_character_ids = [k for k in cache_extras if cache_extras[k]["live"]]
 
         self.uid = uid
         self.game = game
         self.cache_extras = cache_extras
         self.character_id: str | None = None
+        self.character_type: CharacterType | None = None
         self.characters: Sequence[Character] = []
 
         self._card_settings: CardSettings | None = None
@@ -140,7 +140,7 @@ class ProfileView(View):
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
-                title=player.nickname,
+                title=f"{player.nickname} ({self.uid})",
                 description=LocaleStr(
                     "Trailblaze Level: {level}\n"
                     "Equilibrium Level: {world_level}\n"
@@ -165,7 +165,7 @@ class ProfileView(View):
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
-                title=player.nickname,
+                title=f"{player.nickname} ({self.uid})",
                 description=LocaleStr(
                     "Adventure Rank: {adventure_rank}\n"
                     "Spiral Abyss: {spiral_abyss}\n"
@@ -181,13 +181,13 @@ class ProfileView(View):
             if player.signature:
                 embed.set_footer(text=player.signature)
         elif self.hoyolab_user is not None:
-            # There is no hsr cache, mihomo isnt working, but hoyolab is working
+            # There is no hsr cache, enka isnt working, but hoyolab is working
             player = self.hoyolab_user.info
             stats = self.hoyolab_user.stats
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
-                title=player.nickname,
+                title=f"{player.nickname} ({self.uid})",
                 description=LocaleStr(
                     "Trailblaze Level: {level}\n"
                     "Characters: {characters}\n"
@@ -333,10 +333,13 @@ class ProfileView(View):
         else:
             primary = self._card_settings.custom_primary_color
 
+        cache_extra = self.cache_extras.get(str(character.id))
+        locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
+
         return await draw_hsr_build_card(
             DrawInput(
                 dark_mode=self._card_settings.dark_mode,
-                locale=Locale(self.cache_extras[str(character.id)]["locale"]),
+                locale=locale,
                 session=session,
                 filename="card.webp",
                 executor=executor,
@@ -364,10 +367,13 @@ class ProfileView(View):
         else:
             art = character.icon.gacha
 
+        cache_extra = self.cache_extras.get(str(character.id))
+        locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
+
         return await draw_gi_build_card(
             DrawInput(
                 dark_mode=self._card_settings.dark_mode,
-                locale=Locale(self.cache_extras[str(character.id)]["locale"]),
+                locale=locale,
                 session=session,
                 filename="card.webp",
                 executor=executor,

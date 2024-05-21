@@ -9,6 +9,7 @@ from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji
 from hoyo_buddy.ui.components import PaginatorSelect, SelectOption
 
+from .....enums import CharacterType
 from .....models import HoyolabHSRCharacter
 
 if TYPE_CHECKING:
@@ -96,6 +97,12 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             return await i.response.edit_message(view=self.view)
 
         self.view.character_id = self.values[0]
+        if self.view.character_id not in self.view.cache_extras:
+            self.view.character_type = CharacterType.BUILD
+        elif self.view.cache_extras[self.view.character_id]["live"]:
+            self.view.character_type = CharacterType.LIVE
+        else:
+            self.view.character_type = CharacterType.CACHE
 
         # Enable the player info button
         player_btn = self.view.get_item("profile_player_info")
@@ -109,13 +116,14 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         with contextlib.suppress(ValueError):
             # The button is not present in the view if view._account is None
             remove_from_cache_btn = self.view.get_item("profile_remove_from_cache")
-            remove_from_cache_btn.disabled = (
-                self.view.character_id in self.view.live_data_character_ids
-            )
+            remove_from_cache_btn.disabled = self.view.character_type is CharacterType.CACHE
 
         # Set builds
+        builds = self.view._builds.get(self.view.character_id, [])
+        if builds:
+            self.view._build_id = builds[0].id
         build_select: BuildSelect = self.view.get_item("profile_build_select")
-        build_select.set_options(self.view._builds.get(self.view.character_id, []))
+        build_select.set_options(builds)
 
         self.update_options_defaults()
         await self.set_loading_state(i)

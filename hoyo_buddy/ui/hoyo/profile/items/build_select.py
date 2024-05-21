@@ -33,7 +33,7 @@ class BuildSelect(Select["ProfileView"]):
             SelectOption(
                 label=build.name or LocaleStr("Current", key="profile.build.current.label"),
                 value=str(build.id),
-                default=build.live,
+                default=self.view._build_id == build.id,
             )
             for build in builds
         ] or [SelectOption(label="Placeholder", value="0")]

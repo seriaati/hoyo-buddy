@@ -250,13 +250,13 @@ class ProfileView(View):
         """Draw character card in StarRailCard template."""
         assert self._card_settings is not None
 
+        cache_extra = self.cache_extras.get(str(character.id))
+        locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
+
         template_num = int(template[-1])
         payload = {
             "uid": uid,
-            "lang": LOCALE_TO_HSR_CARD_API_LANG.get(
-                Locale(self.cache_extras[str(character.id)]["locale"]),
-                "en",
-            ),
+            "lang": LOCALE_TO_HSR_CARD_API_LANG.get(locale, "en"),
             "template": template_num,
             "character_id": str(character.id),
             "character_art": self._card_settings.current_image,
@@ -279,11 +279,12 @@ class ProfileView(View):
         """Draw GI character card in EnkaCard2, ENCard, enka-card templates."""
         assert self._card_settings is not None
 
+        cache_extra = self.cache_extras.get(str(character.id))
+        locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
+
         payload = {
             "uid": uid,
-            "lang": LOCALE_TO_GI_CARD_API_LANG[
-                Locale(self.cache_extras[str(character.id)]["locale"])
-            ],
+            "lang": LOCALE_TO_GI_CARD_API_LANG.get(locale, "en"),
             "character_id": str(character.id),
             "character_art": self._card_settings.current_image,
             "color": self._card_settings.custom_primary_color,

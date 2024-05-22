@@ -99,11 +99,12 @@ class View(discord.ui.View):
         if self.author is None:
             return True
 
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        settings = await Settings.get_or_none(user_id=i.user.id)
+        locale = settings.locale if settings is not None else i.locale
 
         if i.user.id != self.author.id:
             embed = ErrorEmbed(
-                locale,
+                locale or i.locale,
                 self.translator,
                 title=LocaleStr("Interaction Failed", key="interaction_failed_title"),
                 description=LocaleStr(

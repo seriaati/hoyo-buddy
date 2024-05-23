@@ -34,11 +34,12 @@ class BaseClient:
             The updated extras data.
         """
         showcase = client.parse_showcase(data)
+        cache_data = {"live": live, "locale": self._locale.value}
         for character in showcase.characters:
             if str(character.id) not in extras:
-                extras[str(character.id)] = {"live": live, "locale": self._locale.value}
+                extras[str(character.id)] = cache_data
             else:
-                extras[str(character.id)].update({"live": live})
+                extras[str(character.id)].update(cache_data)
 
         return extras
 

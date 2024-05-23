@@ -242,7 +242,6 @@ class ProfileView(View):
 
     async def _draw_src_character_card(
         self,
-        uid: int,
         character: enka.hsr.Character,
         template: str,
         session: aiohttp.ClientSession,
@@ -255,13 +254,24 @@ class ProfileView(View):
 
         template_num = int(template[-1])
         payload = {
-            "uid": uid,
+            "uid": self.uid,
             "lang": LOCALE_TO_HSR_CARD_API_LANG.get(locale, "en"),
             "template": template_num,
             "character_id": str(character.id),
             "character_art": self._card_settings.current_image,
             "color": self._card_settings.custom_primary_color,
         }
+        if all(v is not None for v in (self._owner_hash, self._owner_username, self._build_id)):
+            payload["owner"] = {
+                "username": self._owner_username,
+                "hash": self._owner_hash,
+                "build_id": self._build_id,
+            }
+
+        if isinstance(self.character, HoyolabHSRCharacter):
+            assert self._account is not None
+            payload["cookies"] = self._account.cookies
+
         endpoint = "http://localhost:7652/star-rail-card"
 
         async with session.post(endpoint, json=payload) as resp:
@@ -399,11 +409,8 @@ class ProfileView(View):
             )
         self._card_settings = card_settings
 
-        # Force change the template to hb1 if is cached data or HoyolabHSRCharacter
-        if (
-            self.character_id in self.cache_extras
-            and not self.cache_extras[self.character_id]["live"]
-        ) or isinstance(character, HoyolabHSRCharacter):
+        # Force change the template to hb1 if is cached data
+        if self.character_type is CharacterType.CACHE:
             self._card_settings.template = "hb1"
             await self._card_settings.save(update_fields=("template",))
 
@@ -418,7 +425,7 @@ class ProfileView(View):
                     )
                 elif isinstance(character, enka.hsr.Character):
                     bytes_obj = await self._draw_src_character_card(
-                        self.uid, character, template, i.client.session
+                        character, template, i.client.session
                     )
             elif isinstance(character, enka.gi.Character):
                 if "hb" in template:

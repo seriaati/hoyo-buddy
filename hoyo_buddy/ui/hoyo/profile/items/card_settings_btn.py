@@ -7,7 +7,6 @@ from hoyo_buddy.emojis import SETTINGS
 from hoyo_buddy.ui.components import Button, GoBackButton
 
 from .....enums import CharacterType
-from .....models import HoyolabHSRCharacter
 from ..btn_states import DISABLE_AI_ART, DISABLE_COLOR, DISABLE_DARK_MODE, DISABLE_IMAGE_SELECT
 from .add_img_btn import AddImageButton
 from .card_settings_info_btn import CardSettingsInfoButton
@@ -42,7 +41,6 @@ class CardSettingsButton(Button["ProfileView"]):
         self.view.add_item(go_back_button)
 
         default_arts: list[str] = self.view._card_data[self.view.character_id]["arts"]
-        character = self.view.character
 
         self.view.add_item(
             ImageSelect(
@@ -54,13 +52,10 @@ class CardSettingsButton(Button["ProfileView"]):
             )
         )
 
-        hb_only = self.view.character_type is CharacterType.CACHE or isinstance(
-            character, HoyolabHSRCharacter
-        )
         self.view.add_item(
             CardTemplateSelect(
                 self.view._card_settings.template,
-                hb_only,
+                self.view.character_type is CharacterType.CACHE,
                 self.view.game,
             )
         )

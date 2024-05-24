@@ -6,6 +6,7 @@ import random
 from typing import TYPE_CHECKING, Any
 
 import discord
+import hakushin
 from ambr.exceptions import AmbrAPIError
 from discord import Locale, app_commands
 from discord.ext import commands
@@ -103,6 +104,10 @@ class Search(commands.Cog):
 
                 for item_category in yatta_client.ItemCategory:
                     await self._fetch_item_task(api, item_category, locale)
+
+        async with hakushin.HakushinAPI() as api:
+            _ = await api.fetch_new(hakushin.Game.GI)
+            _ = await api.fetch_new(hakushin.Game.HSR)
 
         LOGGER_.info(
             "Finished setting up search autocomplete choices, took %.2f seconds",

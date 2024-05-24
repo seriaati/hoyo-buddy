@@ -188,3 +188,28 @@ class FarmNotify(Model):
         "models.HoyoAccount", related_name="farm_notifs", pk=True
     )
     item_ids: fields.Field[list[str]] = fields.JSONField(default=[])
+
+
+class JSONFile(Model):
+    name = fields.CharField(max_length=100, index=True)
+    data: fields.Field[dict[str, Any]] = fields.JSONField()
+
+    @staticmethod
+    async def read(filename: str) -> dict[str, Any]:
+        """Read a JSON file."""
+        json_file = await JSONFile.get_or_none(name=filename)
+        if json_file is None:
+            msg = f"JSON file with filename {filename} not found."
+            raise FileNotFoundError(msg)
+
+        return json_file.data
+
+    @staticmethod
+    async def write(filename: str, data: dict[str, Any]) -> None:
+        """Write a JSON file."""
+        json_file = await JSONFile.get_or_none(name=filename)
+        if json_file is None:
+            return await JSONFile.create(name=filename, data=data)
+
+        json_file.data = data
+        await json_file.save(update_fields=("data",))

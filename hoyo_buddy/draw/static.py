@@ -50,8 +50,9 @@ async def download_and_save_static_images(
 
     tasks = []
     for image_url in image_urls:
+        extra_folder = image_url.split("/")[-2]
         filename = clean_url(image_url).split("/")[-1]
-        file_path = STATIC_FOLDER / folder / filename
+        file_path = STATIC_FOLDER / folder / extra_folder / filename
         if not file_path.exists():
             tasks.append(download_and_save_img(image_url, folder, filename, session))
 

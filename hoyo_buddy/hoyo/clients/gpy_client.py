@@ -6,7 +6,6 @@ from random import uniform
 from typing import TYPE_CHECKING, Any
 
 import genshin
-from seria.utils import read_json, write_json
 
 from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr, Translator
@@ -18,7 +17,7 @@ from ...constants import (
     TRAVELER_IDS,
     contains_traveler_id,
 )
-from ...db.models import EnkaCache, HoyoAccount
+from ...db.models import EnkaCache, HoyoAccount, JSONFile
 from ...embeds import DefaultEmbed
 from ...enums import TalentBoost
 from ...models import HoyolabHSRCharacter, LightCone, Relic, Stat, Trace
@@ -30,11 +29,6 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from discord import Locale
-
-
-TALENT_BOOST_DATA_PATH = "./.static/talent_boost.json"
-PC_ICON_DATA_PATH = "./.static/pc_icons.json"
-GI_TALENT_LEVEL_DATA_PATH = "./.static/talent_levels/gi_{uid}.json"
 
 
 class GenshinClient(genshin.Client):
@@ -92,7 +86,7 @@ class GenshinClient(genshin.Client):
     async def update_pc_icons(self) -> None:
         fields = await self.get_lineup_fields()
         pc_icons = {str(character.id): character.pc_icon for character in fields.characters}
-        await write_json(PC_ICON_DATA_PATH, pc_icons)
+        await JSONFile.write("pc_icons.json", pc_icons)
 
     async def update_gi_chara_talent_levels(
         self, characters: Sequence[genshin.models.Character]
@@ -115,10 +109,8 @@ class GenshinClient(genshin.Client):
 
     async def update_gi_chara_talent_level(self, character: genshin.models.Character) -> None:
         """Update GI character talent level."""
-        talent_level_data: dict[str, str] = await read_json(
-            GI_TALENT_LEVEL_DATA_PATH.format(uid=self.uid)
-        )
-        talent_boost_data: dict[str, int] = await read_json(TALENT_BOOST_DATA_PATH)
+        talent_level_data: dict[str, str] = await JSONFile.read(f"talent_levels/gi_{self.uid}.json")
+        talent_boost_data: dict[str, int] = await JSONFile.read("talent_boost.json")
 
         try:
             details = await self.get_character_details(character.id)
@@ -137,7 +129,7 @@ class GenshinClient(genshin.Client):
             async with AmbrAPIClient() as client:
                 talent_boost = await client.fetch_talent_boost(character_id)
             talent_boost_data[character_id] = talent_boost.value
-            await write_json(TALENT_BOOST_DATA_PATH, talent_boost_data)
+            await JSONFile.write("talent_boost.json", talent_boost_data)
         else:
             talent_boost = TalentBoost(talent_boost_data[character_id])
 
@@ -166,8 +158,7 @@ class GenshinClient(genshin.Client):
 
         talent_level_data["updated_at"] = get_now().isoformat()
 
-        filename = GI_TALENT_LEVEL_DATA_PATH.format(uid=self.uid)
-        await write_json(filename, talent_level_data)
+        await JSONFile.write(f"talent_levels/gi_{self.uid}.json", talent_level_data)
 
     def convert_hsr_character(
         self,

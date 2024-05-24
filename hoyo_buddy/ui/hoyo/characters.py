@@ -5,18 +5,14 @@ from enum import StrEnum
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
-from seria.utils import read_json
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.draw.main_funcs import draw_gi_characters_card, draw_hsr_characters_card
 from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath
-from hoyo_buddy.hoyo.clients.gpy_client import (
-    GI_TALENT_LEVEL_DATA_PATH,
-    PC_ICON_DATA_PATH,
-    GenshinClient,
-)
+from hoyo_buddy.hoyo.clients.gpy_client import GenshinClient
 
 from ...constants import TRAILBLAZER_IDS, TRAVELER_IDS
+from ...db.models import JSONFile
 from ...embeds import DefaultEmbed
 from ...emojis import get_gi_element_emoji, get_hsr_element_emoji, get_hsr_path_emoji
 from ...exceptions import ActionInCooldownError, NoCharsFoundError
@@ -94,17 +90,17 @@ class CharactersView(View):
             self._sorter = HSRSorter.ELEMENT
 
     async def _get_pc_icons(self) -> dict[str, str]:
-        pc_icons: dict[str, str] = await read_json(PC_ICON_DATA_PATH)
+        pc_icons: dict[str, str] = await JSONFile.read("pc_icons.json")
 
         if any(str(c.id) not in pc_icons for c in self._gi_characters):
             await self._account.client.update_pc_icons()
-            return await read_json(PC_ICON_DATA_PATH)
+            return await JSONFile.read("pc_icons.json")
 
         return pc_icons
 
     async def _get_talent_level_data(self) -> dict[str, str]:
-        filename = GI_TALENT_LEVEL_DATA_PATH.format(uid=self._account.uid)
-        talent_level_data: dict[str, str] = await read_json(filename)
+        filename = f"talent_levels/gi_{self._account.uid}.json"
+        talent_level_data = await JSONFile.read(filename)
 
         characters_to_update = [
             c
@@ -115,7 +111,7 @@ class CharactersView(View):
             await self._account.client.update_gi_chara_talent_levels(characters_to_update)
         updated = bool(characters_to_update)
 
-        return await read_json(filename) if updated else talent_level_data
+        return await JSONFile.read(filename) if updated else talent_level_data
 
     def _apply_gi_filter(
         self, characters: Sequence[GenshinCharacter]
@@ -603,8 +599,8 @@ class UpdateTalentData(Button[CharactersView]):
         )
 
     async def callback(self, i: INTERACTION) -> None:
-        filename = GI_TALENT_LEVEL_DATA_PATH.format(uid=self.view._account.uid)
-        talent_level_data: dict[str, str] = await read_json(filename)
+        filename = f"talent_levels/gi_{self.view._account.uid}.json"
+        talent_level_data: dict[str, str] = await JSONFile.read(filename)
         updated_at = datetime.datetime.fromisoformat(talent_level_data["updated_at"])
         if get_now() - updated_at < datetime.timedelta(minutes=30):
             raise ActionInCooldownError(available_time=updated_at + datetime.timedelta(minutes=30))

@@ -15,7 +15,6 @@ from hoyo_buddy.enums import CharacterType, Game
 from hoyo_buddy.exceptions import CardNotReadyError
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
-from hoyo_buddy.utils import upload_image
 
 from ...components import (
     Button,
@@ -325,9 +324,7 @@ class ProfileView(View):
             raise CardNotReadyError(character.name)
 
         default_art = f"https://raw.githubusercontent.com/FortOfFans/HSR/main/spriteoutput/avatardrawcardresult/{character.id}.png"
-        art = self._card_settings.current_image or await upload_image(
-            session, image_url=default_art
-        )
+        art = self._card_settings.current_image or default_art
 
         if self._card_settings.custom_primary_color is None:
             primary: str = character_data["primary"]

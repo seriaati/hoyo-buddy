@@ -19,8 +19,6 @@ from ...emojis import get_hsr_element_emoji
 __all__ = ("ItemCategory", "YattaAPIClient")
 
 if TYPE_CHECKING:
-    from types import TracebackType
-
     import aiohttp
 
     from ...bot.translator import Translator
@@ -53,18 +51,6 @@ class YattaAPIClient(yatta.YattaAPI):
         super().__init__(lang=LOCALE_TO_YATTA_LANG.get(locale, Language.EN), session=session)
         self.locale = locale
         self.translator = translator
-
-    async def __aenter__(self) -> YattaAPIClient:
-        await super().start()
-        return self
-
-    async def __aexit__(
-        self,
-        exc_type: type[BaseException] | None,
-        exc_value: BaseException | None,
-        traceback: TracebackType | None,
-    ) -> None:
-        return await super().close()
 
     def _process_description_params(
         self,

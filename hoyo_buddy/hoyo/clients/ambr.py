@@ -23,8 +23,6 @@ from ...models import ItemWithDescription
 __all__ = ("AUDIO_LANGUAGES", "AmbrAPIClient", "ItemCategory")
 
 if TYPE_CHECKING:
-    from types import TracebackType
-
     import aiohttp
 
 LOGGER_ = logging.getLogger(__name__)
@@ -82,18 +80,6 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         super().__init__(lang=LOCALE_TO_AMBR_LANG.get(locale, Language.EN), session=session)
         self.locale = locale
         self.translator = translator
-
-    async def __aenter__(self) -> AmbrAPIClient:
-        await super().start()
-        return self
-
-    async def __aexit__(
-        self,
-        exc_type: type[BaseException] | None,
-        exc_value: BaseException | None,
-        traceback: TracebackType | None,
-    ) -> None:
-        return await super().close()
 
     @staticmethod
     def _format_num(digits: int, calculation: int | float) -> str:

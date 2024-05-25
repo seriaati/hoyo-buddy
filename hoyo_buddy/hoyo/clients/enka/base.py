@@ -104,6 +104,8 @@ class BaseClient:
                 "recordInfo",
             )
             for key in keys_to_update:
+                if key not in data["detailInfo"]:
+                    continue
                 cache["detailInfo"][key] = data["detailInfo"][key]
 
             # Update characters

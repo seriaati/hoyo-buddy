@@ -5,12 +5,8 @@ import logging
 import random
 from typing import TYPE_CHECKING, Any
 
-import discord
-import hakushin
-from ambr.exceptions import AmbrAPIError
 from discord import Locale, app_commands
 from discord.ext import commands
-from yatta.exceptions import YattaAPIError
 
 from ..bot.translator import LocaleStr
 from ..db.models import Settings
@@ -18,6 +14,7 @@ from ..emojis import PROJECT_AMBER
 from ..enums import Game
 from ..exceptions import InvalidQueryError
 from ..hoyo.clients import ambr_client, yatta_client
+from ..hoyo.search_autocomplete import AutocompleteSetup
 from ..ui import URLButtonView
 from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
 from ..ui.hoyo.genshin.search import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
@@ -42,72 +39,20 @@ class Search(commands.Cog):
         self._tasks: set[asyncio.Task] = set()
 
     async def cog_load(self) -> None:
-        if self.bot.env == "dev":
-            return
+        # if self.bot.env == "dev":
+        #     return
+
         task = asyncio.create_task(self._setup_search_autocomplete_choices())
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)
-
-    async def _fetch_item_task(
-        self,
-        api: ambr_client.AmbrAPIClient | yatta_client.YattaAPIClient,
-        item_category: ambr_client.ItemCategory | yatta_client.ItemCategory,
-        locale: discord.Locale,
-    ) -> None:
-        if isinstance(api, ambr_client.AmbrAPIClient) and isinstance(
-            item_category, ambr_client.ItemCategory
-        ):
-            game = Game.GENSHIN
-            items = await api.fetch_items(item_category)
-        elif isinstance(api, yatta_client.YattaAPIClient) and isinstance(
-            item_category, yatta_client.ItemCategory
-        ):
-            game = Game.STARRAIL
-            items = await api.fetch_items_(item_category)
-        else:
-            msg = f"Invalid item category: {item_category!r}"
-            raise TypeError(msg)
-
-        category_locale_choices = (
-            self.bot.search_autocomplete_choices.setdefault(game, {})
-            .setdefault(item_category, {})
-            .setdefault(locale.value, {})
-        )
-        for item in items:
-            category_locale_choices[item.name] = str(item.id)
 
     async def _setup_search_autocomplete_choices(self) -> None:
         LOGGER_.info("Setting up search autocomplete choices")
         start = self.bot.loop.time()
 
-        for locale in ambr_client.LOCALE_TO_AMBR_LANG:
-            async with ambr_client.AmbrAPIClient(locale, self.bot.translator) as api:
-                try:
-                    await api.fetch_characters()
-                except AmbrAPIError as e:
-                    LOGGER_.warning(
-                        "Ambr API errored with status code %s, ending ambr setup...", e.code
-                    )
-                    break
-                for item_category in ambr_client.ItemCategory:
-                    await self._fetch_item_task(api, item_category, locale)
-
-        for locale in yatta_client.LOCALE_TO_YATTA_LANG:
-            async with yatta_client.YattaAPIClient(locale, self.bot.translator) as api:
-                try:
-                    await api.fetch_light_cones()
-                except YattaAPIError as e:
-                    LOGGER_.warning(
-                        "Yatta API errored with status code %s, ending yatta setup...", e.code
-                    )
-                    break
-
-                for item_category in yatta_client.ItemCategory:
-                    await self._fetch_item_task(api, item_category, locale)
-
-        async with hakushin.HakushinAPI() as api:
-            _ = await api.fetch_new(hakushin.Game.GI)
-            _ = await api.fetch_new(hakushin.Game.HSR)
+        self.bot.search_autocomplete_choices = await AutocompleteSetup.start(
+            self.bot.translator, self.bot.session
+        )
 
         LOGGER_.info(
             "Finished setting up search autocomplete choices, took %.2f seconds",

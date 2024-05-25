@@ -25,6 +25,8 @@ __all__ = ("AUDIO_LANGUAGES", "AmbrAPIClient", "ItemCategory")
 if TYPE_CHECKING:
     from types import TracebackType
 
+    import aiohttp
+
 LOGGER_ = logging.getLogger(__name__)
 
 PERCENTAGE_FIGHT_PROPS = (
@@ -75,8 +77,9 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         self,
         locale: Locale = Locale.american_english,
         translator: Translator | None = None,
+        session: aiohttp.ClientSession | None = None,
     ) -> None:
-        super().__init__(lang=LOCALE_TO_AMBR_LANG.get(locale, Language.EN))
+        super().__init__(lang=LOCALE_TO_AMBR_LANG.get(locale, Language.EN), session=session)
         self.locale = locale
         self.translator = translator
 
@@ -220,33 +223,6 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
                 continue
             result += f"{k}: {v}\n"
         return result
-
-    async def fetch_items(self, item_category: ItemCategory) -> list[Any]:  # noqa: PLR0911
-        match item_category:
-            case ItemCategory.CHARACTERS:
-                return await self.fetch_characters(traveler_gender_symbol=True)
-            case ItemCategory.WEAPONS:
-                return await self.fetch_weapons()
-            case ItemCategory.ARTIFACT_SETS:
-                return await self.fetch_artifact_sets()
-            case ItemCategory.FOOD:
-                return await self.fetch_foods()
-            case ItemCategory.MATERIALS:
-                return await self.fetch_materials()
-            case ItemCategory.FURNISHINGS:
-                return await self.fetch_furnitures()
-            case ItemCategory.FURNISHING_SETS:
-                return await self.fetch_furniture_sets()
-            case ItemCategory.NAMECARDS:
-                return await self.fetch_namecards()
-            case ItemCategory.LIVING_BEINGS:
-                return await self.fetch_monsters()
-            case ItemCategory.BOOKS:
-                return await self.fetch_books()
-            case ItemCategory.TCG:
-                return await self.fetch_tcg_cards()
-            case ItemCategory.SPIRAL_ABYSS:
-                return []
 
     def get_character_embed(
         self,

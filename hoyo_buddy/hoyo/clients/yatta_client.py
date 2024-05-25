@@ -21,6 +21,8 @@ __all__ = ("ItemCategory", "YattaAPIClient")
 if TYPE_CHECKING:
     from types import TracebackType
 
+    import aiohttp
+
     from ...bot.translator import Translator
 
 KEY_DICT: dict[str, str] = {
@@ -43,9 +45,12 @@ class ItemCategory(StrEnum):
 
 class YattaAPIClient(yatta.YattaAPI):
     def __init__(
-        self, locale: Locale = Locale.american_english, translator: Translator | None = None
+        self,
+        locale: Locale = Locale.american_english,
+        translator: Translator | None = None,
+        session: aiohttp.ClientSession | None = None,
     ) -> None:
-        super().__init__(lang=LOCALE_TO_YATTA_LANG.get(locale, Language.EN))
+        super().__init__(lang=LOCALE_TO_YATTA_LANG.get(locale, Language.EN), session=session)
         self.locale = locale
         self.translator = translator
 
@@ -152,19 +157,6 @@ class YattaAPIClient(yatta.YattaAPI):
 
     def _convert_upgrade_stat_key(self, key: str) -> str:
         return KEY_DICT.get(key, key)
-
-    async def fetch_items_(self, item_category: ItemCategory) -> list[Any]:
-        match item_category:
-            case ItemCategory.CHARACTERS:
-                return await self.fetch_characters(trailblazer_gender_symbol=True)
-            case ItemCategory.LIGHT_CONES:
-                return await self.fetch_light_cones()
-            case ItemCategory.ITEMS:
-                return await self.fetch_items()
-            case ItemCategory.RELICS:
-                return await self.fetch_relic_sets()
-            case ItemCategory.BOOKS:
-                return await self.fetch_books()
 
     async def fetch_element_char_counts(self) -> dict[str, int]:
         """Fetches the number of characters for each element, does not include beta characters and Trailblazer."""

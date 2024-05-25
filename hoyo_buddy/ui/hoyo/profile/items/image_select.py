@@ -44,7 +44,7 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
             SelectOption(
                 label=LocaleStr("Official art", key="profile.image_select.none.label"),
                 value="none",
-                default=self.current_image_url is None and "hb" not in self.template,
+                default=self.current_image_url is None,
             )
         ]
         added_values: set[str] = set()
@@ -55,9 +55,6 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
                     options.append(self.get_image_url_option(url, index))
                     added_values.add(url)
 
-        # HB templates don't wotk with official art, default image is always Hoyo Buddy Collection (1)
-        if "hb" in self.template and self.current_image_url is None:
-            options[1].default = True
         return options
 
     def get_image_url_option(self, image_url: str, num: int) -> SelectOption:

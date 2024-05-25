@@ -271,7 +271,8 @@ class ProfileView(View):
 
         async with session.post(endpoint, json=payload) as resp:
             # API returns a WebP image
-            resp.raise_for_status()
+            if resp.status != 200:
+                raise ValueError(await resp.text())
             return BytesIO(await resp.read())
 
     async def _draw_enka_card(self, session: aiohttp.ClientSession) -> BytesIO:
@@ -305,7 +306,8 @@ class ProfileView(View):
 
         async with session.post(endpoint, json=payload) as resp:
             # API returns a WebP image
-            resp.raise_for_status()
+            if resp.status != 200:
+                raise ValueError(await resp.text())
             return BytesIO(await resp.read())
 
     async def _draw_hb_hsr_character_card(

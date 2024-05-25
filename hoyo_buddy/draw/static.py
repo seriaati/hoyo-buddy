@@ -27,20 +27,19 @@ async def download_img(image_url: str, session: aiohttp.ClientSession) -> bytes:
         return image
 
 
-async def save_img(folder: str, filename: str, image: bytes) -> None:
-    folder_path = STATIC_FOLDER / folder
-    if not folder_path.exists():
-        folder_path.mkdir(parents=True)
+async def save_img(file_path: pathlib.Path, image: bytes) -> None:
+    if not file_path.parent.exists():
+        file_path.parent.mkdir(parents=True)
 
-    async with aiofiles.open(folder_path / filename, "wb") as f:
+    async with aiofiles.open(file_path, "wb") as f:
         await f.write(image)
 
 
 async def download_and_save_img(
-    image_url: str, folder: str, filename: str, session: aiohttp.ClientSession
+    image_url: str, file_path: pathlib.Path, session: aiohttp.ClientSession
 ) -> None:
     image = await download_img(image_url, session)
-    await save_img(folder, filename, image)
+    await save_img(file_path, image)
 
 
 async def download_and_save_static_images(
@@ -50,10 +49,14 @@ async def download_and_save_static_images(
 
     tasks = []
     for image_url in image_urls:
-        extra_folder = image_url.split("/")[-2]
-        filename = clean_url(image_url).split("/")[-1]
-        file_path = STATIC_FOLDER / folder / extra_folder / filename
+        file_path = get_static_img_path(image_url, folder)
         if not file_path.exists():
-            tasks.append(download_and_save_img(image_url, folder, filename, session))
+            tasks.append(download_and_save_img(image_url, file_path, session))
 
     await asyncio.gather(*tasks)
+
+
+def get_static_img_path(image_url: str, folder: str) -> pathlib.Path:
+    extra_folder = image_url.split("/")[-2]
+    filename = clean_url(image_url).split("/")[-1]
+    return STATIC_FOLDER / folder / extra_folder / filename

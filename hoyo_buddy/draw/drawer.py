@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pathlib
 from typing import TYPE_CHECKING, Literal
 
 import discord
@@ -20,7 +21,7 @@ from .fonts import (
     NUNITO_MEDIUM,
     NUNITO_REGULAR,
 )
-from .static import STATIC_FOLDER
+from .static import get_static_img_path
 
 if TYPE_CHECKING:
     from ..bot.translator import LocaleStr, Translator
@@ -216,8 +217,10 @@ class Drawer:
 
         return ImageFont.truetype(font, size)
 
-    def _open_image(self, path: str, size: tuple[int, int] | None = None) -> Image.Image:
-        image = Image.open(path)
+    def _open_image(
+        self, file_path: pathlib.Path, size: tuple[int, int] | None = None
+    ) -> Image.Image:
+        image = Image.open(file_path)
         image = image.convert("RGBA")
         if size:
             image = image.resize(size, Image.Resampling.LANCZOS)
@@ -282,10 +285,8 @@ class Drawer:
         mask_color: tuple[int, int, int] | None = None,
         opacity: float = 1.0,
     ) -> Image.Image:
-        filename = url.split("/")[-1]
         folder = folder or self.folder
-        path = f"{STATIC_FOLDER}/{folder}/{filename}"
-        image = self._open_image(path, size)
+        image = self._open_image(get_static_img_path(url, folder), size)
         if mask_color:
             image = self._mask_image_with_color(image, mask_color, opacity)
         return image
@@ -300,7 +301,7 @@ class Drawer:
         opacity: float = 1.0,
     ) -> Image.Image:
         folder = folder or self.folder
-        path = f"hoyo-buddy-assets/assets/{folder}/{filename}"
+        path = pathlib.Path(f"hoyo-buddy-assets/assets/{folder}/{filename}")
         image = self._open_image(path, size)
         if mask_color:
             image = self._mask_image_with_color(image, mask_color, opacity)
@@ -312,7 +313,8 @@ class Drawer:
 
     def circular_crop(self, image: Image.Image) -> Image.Image:
         """Crop an image into a circle."""
-        mask = self._open_image("hoyo-buddy-assets/assets/circular_mask.png", image.size)
+        path = pathlib.Path("hoyo-buddy-assets/assets/circular_mask.png")
+        mask = self._open_image(path, image.size)
         return self.crop_with_mask(image, mask)
 
     def modify_image_for_build_card(

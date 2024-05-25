@@ -318,7 +318,14 @@ class Drawer:
         return self.crop_with_mask(image, mask)
 
     def modify_image_for_build_card(
-        self, image: Image.Image, target_width: int, target_height: int, zoom: float = 1.0
+        self,
+        image: Image.Image,
+        *,
+        target_width: int,
+        target_height: int,
+        mask: Image.Image,
+        background_color: tuple[int, int, int] | None = None,
+        zoom: float = 1.0,
     ) -> Image.Image:
         # Calculate the target height to maintain the aspect ratio
         width, height = image.size
@@ -339,9 +346,11 @@ class Drawer:
             overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.2))
             image = Image.alpha_composite(image.convert("RGBA"), overlay)
 
-        new_im = Image.new(
-            "RGBA", (target_width, target_height), BLACK if self.dark_mode else WHITE
-        )
-        new_im.paste(image, (0, 0), image)
+        if background_color is not None:
+            new_im = Image.new("RGBA", (target_width, target_height), background_color)
+            new_im.paste(image, (0, 0), image)
+            new_im = self.crop_with_mask(new_im, mask)
+            return new_im
 
-        return new_im
+        image = self.crop_with_mask(image, mask)
+        return image

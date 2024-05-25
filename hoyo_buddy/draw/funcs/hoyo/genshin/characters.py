@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.draw.drawer import BLACK, DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
-from hoyo_buddy.hoyo.clients.gpy_client import GenshinClient
+from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.models import DynamicBKInput
 
 if TYPE_CHECKING:

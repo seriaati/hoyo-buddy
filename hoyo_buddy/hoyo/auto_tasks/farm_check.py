@@ -12,7 +12,7 @@ from ...constants import UID_TZ_OFFSET
 from ...db.models import FarmNotify
 from ...embeds import DefaultEmbed
 from ...utils import get_now
-from ..clients.ambr_client import AmbrAPIClient
+from ..clients.ambr import AmbrAPIClient
 from ..farm_data import FarmDataFetcher
 
 if TYPE_CHECKING:

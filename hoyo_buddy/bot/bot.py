@@ -19,7 +19,7 @@ from tortoise.expressions import Q
 from ..db.models import HoyoAccount
 from ..enums import Platform
 from ..exceptions import NoAccountFoundError
-from ..hoyo.clients.novelai_client import NAIClient
+from ..hoyo.clients.novel_ai import NAIClient
 from ..utils import get_now
 from .command_tree import CommandTree
 from .translator import AppCommandTranslator, LocaleStr, Translator
@@ -33,7 +33,7 @@ if TYPE_CHECKING:
     from aiohttp import ClientSession
 
     from ..enums import Game
-    from ..hoyo.clients import ambr_client, yatta_client
+    from ..hoyo.clients import ambr, yatta
 
 
 __all__ = ("INTERACTION", "HoyoBuddy")
@@ -102,7 +102,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.search_autocomplete_choices: dict[
             Game,
             dict[
-                ambr_client.ItemCategory | yatta_client.ItemCategory,
+                ambr.ItemCategory | yatta.ItemCategory,
                 dict[str, dict[str, str]],
             ],
         ] = {}

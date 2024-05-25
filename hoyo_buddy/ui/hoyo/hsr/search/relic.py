@@ -6,7 +6,7 @@ from discord import ButtonStyle, Locale, Member, User
 
 from hoyo_buddy.emojis import get_relic_pos_emoji
 from hoyo_buddy.exceptions import InvalidQueryError
-from hoyo_buddy.hoyo.clients.yatta_client import YattaAPIClient
+from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.ui import Button, View
 
 if TYPE_CHECKING:

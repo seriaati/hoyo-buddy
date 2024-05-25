@@ -22,7 +22,7 @@ from ...embeds import DefaultEmbed
 from ...enums import TalentBoost
 from ...models import HoyolabHSRCharacter, LightCone, Relic, Stat, Trace
 from ...utils import get_now
-from .ambr_client import AmbrAPIClient
+from .ambr import AmbrAPIClient
 from .enka.gi import EnkaGIClient
 
 if TYPE_CHECKING:

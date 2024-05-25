@@ -8,7 +8,7 @@ from seria.utils import shorten
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import PROJECT_AMBER
-from hoyo_buddy.hoyo.clients.ambr_client import AmbrAPIClient
+from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.ui import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:

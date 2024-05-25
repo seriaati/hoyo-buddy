@@ -6,8 +6,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias
 
 from ..constants import LOCALE_TO_AMBR_LANG, LOCALE_TO_YATTA_LANG
 from ..enums import Game
-from .clients import ambr_client as ambr
-from .clients import yatta_client as yatta
+from .clients import ambr, yatta
 
 if TYPE_CHECKING:
     import aiohttp

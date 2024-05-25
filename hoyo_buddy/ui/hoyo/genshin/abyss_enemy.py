@@ -6,7 +6,7 @@ from discord import ButtonStyle, Locale, Member, User, app_commands
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.draw.main_funcs import draw_item_list_card
-from hoyo_buddy.hoyo.clients.ambr_client import AmbrAPIClient
+from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.models import DrawInput
 
 from ....utils import get_now

@@ -14,8 +14,8 @@ from ..draw.main_funcs import draw_exploration_card
 from ..embeds import DefaultEmbed
 from ..enums import Game, Platform
 from ..exceptions import IncompleteParamError
-from ..hoyo.clients.ambr_client import AmbrAPIClient
-from ..hoyo.clients.yatta_client import YattaAPIClient
+from ..hoyo.clients.ambr import AmbrAPIClient
+from ..hoyo.clients.yatta import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..models import DrawInput
 from ..ui.hoyo.characters import CharactersView

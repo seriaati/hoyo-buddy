@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from hoyo_buddy.exceptions import InvalidQueryError
-from hoyo_buddy.hoyo.clients.yatta_client import YattaAPIClient
+from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.ui import Select, SelectOption, View
 
 if TYPE_CHECKING:

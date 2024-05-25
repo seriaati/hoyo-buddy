@@ -12,7 +12,7 @@ from ..db.models import FarmNotify, HoyoAccount, Settings
 from ..embeds import DefaultEmbed
 from ..enums import Game
 from ..exceptions import InvalidQueryError
-from ..hoyo.clients.ambr_client import ItemCategory
+from ..hoyo.clients.ambr import ItemCategory
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui.hoyo.farm import FarmView
 from ..ui.hoyo.farm_notify import FarmNotifyView

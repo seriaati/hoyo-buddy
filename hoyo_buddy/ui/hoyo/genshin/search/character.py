@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 from discord import ButtonStyle, InteractionResponded, Locale, Member, User
 
 from hoyo_buddy.bot.translator import LocaleStr
-from hoyo_buddy.hoyo.clients.ambr_client import AmbrAPIClient
+from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.ui import Button, Modal, PaginatorSelect, Select, SelectOption, TextInput, View
 
 if TYPE_CHECKING:

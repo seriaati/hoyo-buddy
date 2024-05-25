@@ -15,7 +15,7 @@ from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
 
 if TYPE_CHECKING:
-    from ..hoyo.clients.gpy_client import GenshinClient
+    from ..hoyo.clients.gpy import GenshinClient
 
 
 class User(Model):
@@ -73,7 +73,7 @@ class HoyoAccount(Model):
 
     @cached_property
     def client(self) -> GenshinClient:
-        from ..hoyo.clients.gpy_client import GenshinClient  # noqa: PLC0415
+        from ..hoyo.clients.gpy import GenshinClient  # noqa: PLC0415
 
         return GenshinClient(self)
 

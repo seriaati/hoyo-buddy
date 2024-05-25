@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from discord import ButtonStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
-from hoyo_buddy.hoyo.clients.ambr_client import AmbrAPIClient
+from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.ui import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:

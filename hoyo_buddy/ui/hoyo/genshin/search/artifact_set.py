@@ -7,7 +7,7 @@ from discord import ButtonStyle, Locale, Member, User
 from hoyo_buddy.constants import EQUIP_ID_TO_ARTIFACT_POS
 from hoyo_buddy.emojis import get_artifact_pos_emoji
 from hoyo_buddy.exceptions import InvalidQueryError
-from hoyo_buddy.hoyo.clients.ambr_client import AmbrAPIClient
+from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.ui import Button, View
 
 if TYPE_CHECKING:

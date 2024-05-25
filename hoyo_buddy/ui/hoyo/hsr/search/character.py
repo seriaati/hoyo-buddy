@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 from discord import ButtonStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
-from hoyo_buddy.hoyo.clients.yatta_client import YattaAPIClient
+from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
 
 from ....components import PaginatorSelect

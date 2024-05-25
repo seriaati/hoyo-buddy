@@ -9,7 +9,7 @@ from discord import ButtonStyle
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.draw.main_funcs import draw_gi_characters_card, draw_hsr_characters_card
 from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath
-from hoyo_buddy.hoyo.clients.gpy_client import GenshinClient
+from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 
 from ...constants import TRAILBLAZER_IDS, TRAVELER_IDS
 from ...db.models import JSONFile

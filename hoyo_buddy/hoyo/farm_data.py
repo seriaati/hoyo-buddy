@@ -6,7 +6,7 @@ from discord import Locale
 
 from ..enums import GenshinCity
 from ..models import FarmData
-from .clients.ambr_client import AmbrAPIClient
+from .clients.ambr import AmbrAPIClient
 
 if TYPE_CHECKING:
     import ambr

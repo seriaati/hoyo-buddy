@@ -10,7 +10,7 @@ from ...db.models import FarmNotify
 from ...draw.main_funcs import draw_item_list_card
 from ...embeds import DefaultEmbed
 from ...emojis import ADD, DELETE
-from ...hoyo.clients.ambr_client import AmbrAPIClient
+from ...hoyo.clients.ambr import AmbrAPIClient
 from ...models import DrawInput, ItemWithTrailing
 from ..components import Button, ToggleButton
 from ..paginator import Page, PaginatorView

@@ -88,7 +88,7 @@ class EnterPhoneNumber(Button["AccountManager"]):
         result = await client._send_mobile_otp(mobile)
 
         if isinstance(result, genshin.models.SessionMMT):
-            await GeetestHandler.save_user_temp_data(i.user.id, result.model_dump())
+            await GeetestHandler.save_user_temp_data(i.user.id, result.dict())
             handler = GeetestHandler(
                 view=self.view,
                 interaction=i,

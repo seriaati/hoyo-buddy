@@ -117,7 +117,7 @@ class EnterEmailPassword(Button["AccountManager"]):
         )
 
         if isinstance(result, genshin.models.SessionMMT):
-            await GeetestHandler.save_user_temp_data(i.user.id, result.model_dump())
+            await GeetestHandler.save_user_temp_data(i.user.id, result.dict())
             handler = GeetestHandler(
                 view=self.view,
                 interaction=i,
@@ -132,7 +132,7 @@ class EnterEmailPassword(Button["AccountManager"]):
         elif isinstance(result, genshin.models.ActionTicket):
             email_result = await client._send_verification_email(result)
             if isinstance(email_result, genshin.models.SessionMMT):
-                await GeetestHandler.save_user_temp_data(i.user.id, email_result.model_dump())
+                await GeetestHandler.save_user_temp_data(i.user.id, email_result.dict())
                 handler = GeetestHandler(
                     view=self.view,
                     interaction=i,

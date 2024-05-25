@@ -129,7 +129,7 @@ class GeetestHandler:
                     )
                     if isinstance(email_result, genshin.models.SessionMMT):
                         # geetest triggered for sending email verification code
-                        await self.save_user_temp_data(self._user_id, email_result.model_dump())
+                        await self.save_user_temp_data(self._user_id, email_result.dict())
                         handler = GeetestHandler(
                             view=self._view,
                             interaction=self._interaction,

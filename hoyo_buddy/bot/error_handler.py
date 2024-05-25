@@ -112,6 +112,12 @@ ENKA_ERROR_CONVERTER: dict[
         "title": LocaleStr("Game is Under Maintenance", key="game_maintenance_title"),
         "description": LocaleStr("Please try again later", key="game_maintenance_description"),
     },
+    enka_errors.WrongUIDFormatError: {
+        "title": LocaleStr("Invalid UID Format", key="invalid_uid_format_title"),
+        "description": LocaleStr(
+            "UID must be a string of 9 digits", key="invalid_uid_format_description"
+        ),
+    },
 }
 
 

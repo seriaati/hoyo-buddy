@@ -50,9 +50,12 @@ class Search(commands.Cog):
         LOGGER_.info("Setting up search autocomplete choices")
         start = self.bot.loop.time()
 
-        self.bot.search_autocomplete_choices = await AutocompleteSetup.start(
-            self.bot.translator, self.bot.session
-        )
+        try:
+            self.bot.search_autocomplete_choices = await AutocompleteSetup.start(
+                self.bot.translator, self.bot.session
+            )
+        except Exception:
+            LOGGER_.exception("Failed to set up search autocomplete choices")
 
         LOGGER_.info(
             "Finished setting up search autocomplete choices, took %.2f seconds",

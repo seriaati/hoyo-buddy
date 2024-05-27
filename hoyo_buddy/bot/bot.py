@@ -33,7 +33,7 @@ if TYPE_CHECKING:
     from aiohttp import ClientSession
 
     from ..enums import Game
-    from ..hoyo.clients import ambr, yatta
+    from ..hoyo.search_autocomplete import AutocompleteChoices
 
 
 __all__ = ("INTERACTION", "HoyoBuddy")
@@ -99,13 +99,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.pool = pool
         self.executor = concurrent.futures.ProcessPoolExecutor()
 
-        self.search_autocomplete_choices: dict[
-            Game,
-            dict[
-                ambr.ItemCategory | yatta.ItemCategory,
-                dict[str, dict[str, str]],
-            ],
-        ] = {}
+        self.search_autocomplete_choices: AutocompleteChoices = {}
         """[game][category][locale][item_name] -> item_id"""
 
         self.login_notif_tasks: dict[int, asyncio.Task] = {}

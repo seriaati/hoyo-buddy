@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import discord
 import enka
+import hakushin
 from ambr import Language as AmbrLanguage
 from genshin import Game as GPYGame
 from yatta import Language as YattaLanguage
@@ -169,6 +170,14 @@ LOCALE_TO_YATTA_LANG: dict[discord.Locale, YattaLanguage] = {
     discord.Locale.russian: YattaLanguage.RU,
     discord.Locale.thai: YattaLanguage.TH,
     discord.Locale.vietnamese: YattaLanguage.VI,
+}
+
+LOCALE_TO_HAKUSHIN_LANG: dict[discord.Locale, hakushin.Language] = {
+    discord.Locale.chinese: hakushin.Language.ZH,
+    discord.Locale.taiwan_chinese: hakushin.Language.ZH,
+    discord.Locale.japanese: hakushin.Language.JA,
+    discord.Locale.korean: hakushin.Language.KO,
+    discord.Locale.american_english: hakushin.Language.EN,
 }
 
 LOCALE_TO_GI_ENKA_LANG: dict[discord.Locale, enka.gi.Language] = {

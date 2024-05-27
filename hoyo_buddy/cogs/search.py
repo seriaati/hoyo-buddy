@@ -5,6 +5,7 @@ import logging
 import random
 from typing import TYPE_CHECKING, Any
 
+import hakushin
 from discord import Locale, app_commands
 from discord.ext import commands
 
@@ -36,6 +37,7 @@ class Search(commands.Cog):
             Game.GENSHIN: [c.value for c in ambr.ItemCategory],
             Game.STARRAIL: [c.value for c in yatta.ItemCategory],
         }
+        self._beta_ids: set[int] = set()
         self._tasks: set[asyncio.Task] = set()
 
     async def cog_load(self) -> None:
@@ -56,6 +58,19 @@ class Search(commands.Cog):
             )
         except Exception:
             LOGGER_.exception("Failed to set up search autocomplete choices")
+
+        async with hakushin.HakushinAPI() as api:
+            gi_new = await api.fetch_new(hakushin.Game.GI)
+            hsr_new = await api.fetch_new(hakushin.Game.HSR)
+
+        self._beta_ids = set(
+            gi_new.artifact_set_ids
+            + gi_new.character_ids
+            + gi_new.weapon_ids
+            + hsr_new.character_ids
+            + hsr_new.light_cone_ids
+            + hsr_new.relic_set_ids
+        )
 
         LOGGER_.info(
             "Finished setting up search autocomplete choices, took %.2f seconds",
@@ -107,6 +122,12 @@ class Search(commands.Cog):
     ) -> Any:
         if category_value == "none" or query == "none":
             raise InvalidQueryError
+
+        if int(query) in self._beta_ids:
+            await i.response.send_message(
+                "This item is currently in beta and may not be available in the database yet."
+            )
+
         try:
             game = Game(game_value)
         except ValueError as e:

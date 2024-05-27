@@ -11,6 +11,8 @@ from ..enums import Game
 from .clients import ambr, hakushin, yatta
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     import aiohttp
 
     from ..bot.translator import Translator
@@ -21,7 +23,7 @@ Tasks: TypeAlias = dict[Game, dict[ItemCategory, dict[str, asyncio.Task[list[Any
 
 LOGGER_ = logging.getLogger(__name__)
 
-HAKUSHIN_ITEM_CATEGORY_GAME_MAP: dict[hakushin.ItemCategory, Game] = {
+HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Mapping[hakushin.ItemCategory, Game] = {
     hakushin.ItemCategory.GI_CHARACTERS: Game.GENSHIN,
     hakushin.ItemCategory.HSR_CHARACTERS: Game.STARRAIL,
     hakushin.ItemCategory.WEAPONS: Game.GENSHIN,
@@ -29,13 +31,16 @@ HAKUSHIN_ITEM_CATEGORY_GAME_MAP: dict[hakushin.ItemCategory, Game] = {
     hakushin.ItemCategory.ARTIFACT_SETS: Game.GENSHIN,
     hakushin.ItemCategory.RELICS: Game.STARRAIL,
 }
-HAKUSHIN_ITEM_CATEGORY_MAP: dict[ambr.ItemCategory | yatta.ItemCategory, hakushin.ItemCategory] = {
-    ambr.ItemCategory.CHARACTERS: hakushin.ItemCategory.GI_CHARACTERS,
-    yatta.ItemCategory.CHARACTERS: hakushin.ItemCategory.HSR_CHARACTERS,
-    ambr.ItemCategory.WEAPONS: hakushin.ItemCategory.WEAPONS,
-    yatta.ItemCategory.LIGHT_CONES: hakushin.ItemCategory.LIGHT_CONES,
-    ambr.ItemCategory.ARTIFACT_SETS: hakushin.ItemCategory.ARTIFACT_SETS,
-    yatta.ItemCategory.RELICS: hakushin.ItemCategory.RELICS,
+HAKUSHIN_ITEM_CATEGORY_MAP: Mapping[
+    tuple[type[ambr.ItemCategory | yatta.ItemCategory], ambr.ItemCategory | yatta.ItemCategory],
+    hakushin.ItemCategory,
+] = {
+    (ambr.ItemCategory, ambr.ItemCategory.CHARACTERS): hakushin.ItemCategory.GI_CHARACTERS,
+    (yatta.ItemCategory, yatta.ItemCategory.CHARACTERS): hakushin.ItemCategory.HSR_CHARACTERS,
+    (ambr.ItemCategory, ambr.ItemCategory.WEAPONS): hakushin.ItemCategory.WEAPONS,
+    (yatta.ItemCategory, yatta.ItemCategory.LIGHT_CONES): hakushin.ItemCategory.LIGHT_CONES,
+    (ambr.ItemCategory, ambr.ItemCategory.ARTIFACT_SETS): hakushin.ItemCategory.ARTIFACT_SETS,
+    (yatta.ItemCategory, yatta.ItemCategory.RELICS): hakushin.ItemCategory.RELICS,
 }
 
 
@@ -172,7 +177,9 @@ class AutocompleteSetup:
         items: list[Any],
     ) -> list[Any]:
         try:
-            hakushin_task = cls._tasks[game][HAKUSHIN_ITEM_CATEGORY_MAP[category]][locale]
+            hakushin_task = cls._tasks[game][
+                HAKUSHIN_ITEM_CATEGORY_MAP[(type(category), category)]
+            ][locale]
         except KeyError:
             return items
 

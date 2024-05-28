@@ -3,6 +3,7 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
+import ambr
 import discord
 import hakushin
 
@@ -42,9 +43,8 @@ class HakushinAPI(hakushin.HakushinAPI):
 
     def get_character_embed(
         self,
-        character: hakushin.models.gi.CharacterDetail,
+        character: hakushin.gi.CharacterDetail,
         level: int,
-        avatar_curve: dict[str, dict[str, dict[str, float]]],
         manual_weapon: dict[str, str],
     ) -> DefaultEmbed:
         self._check_translator()

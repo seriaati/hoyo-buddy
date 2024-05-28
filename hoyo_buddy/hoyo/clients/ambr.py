@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 import logging
-import re
 from collections import defaultdict
 from enum import StrEnum
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import ambr
+import ambr.utils as autils
 import discord.utils as dutils
-from ambr.client import Language
 from discord import Locale
 from seria.utils import create_bullet_list, shorten
 
@@ -77,73 +76,9 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         translator: Translator | None = None,
         session: aiohttp.ClientSession | None = None,
     ) -> None:
-        super().__init__(lang=LOCALE_TO_AMBR_LANG.get(locale, Language.EN), session=session)
+        super().__init__(lang=LOCALE_TO_AMBR_LANG.get(locale, ambr.Language.EN), session=session)
         self.locale = locale
         self.translator = translator
-
-    @staticmethod
-    def _format_num(digits: int, calculation: int | float) -> str:
-        return f"{calculation:.{digits}f}"
-
-    @staticmethod
-    def _calculate_upgrade_stat_values(
-        upgrade_data: ambr.CharacterUpgrade | ambr.WeaponUpgrade,
-        curve_data: dict[str, dict[str, dict[str, float]]],
-        level: int,
-        ascended: bool,
-    ) -> dict[str, float]:
-        result: defaultdict[str, float] = defaultdict(float)
-
-        for stat in upgrade_data.base_stats:
-            if stat.prop_type is None:
-                continue
-            result[stat.prop_type] = (
-                stat.init_value * curve_data[str(level)]["curveInfos"][stat.growth_type]
-            )
-
-        for promote in reversed(upgrade_data.promotes):
-            if promote.add_stats is None:
-                continue
-            if (level == promote.unlock_max_level and ascended) or level > promote.unlock_max_level:
-                for stat in promote.add_stats:
-                    if stat.value != 0:
-                        result[stat.id] += stat.value
-                        if stat.id in {
-                            "FIGHT_PROP_CRITICAL_HURT",
-                            "FIGHT_PROP_CRITICAL",
-                        }:
-                            result[stat.id] += 0.5
-                break
-
-        return result
-
-    @staticmethod
-    def _format_stat_values(stat_values: dict[str, float]) -> dict[str, str]:
-        result: dict[str, str] = {}
-        for fight_prop, value in stat_values.items():
-            if fight_prop in PERCENTAGE_FIGHT_PROPS:
-                result[fight_prop] = f"{round(value * 100, 1)}%"
-            else:
-                result[fight_prop] = str(round(value))
-        return result
-
-    @staticmethod
-    def _replace_fight_prop_with_name(
-        stat_values: dict[str, Any], manual_weapon: dict[str, str]
-    ) -> dict[str, Any]:
-        result: dict[str, Any] = {}
-        for fight_prop, value in stat_values.items():
-            fight_prop_name = manual_weapon.get(fight_prop, fight_prop)
-            result[fight_prop_name] = value
-        return result
-
-    @staticmethod
-    def _format_layout(text: str) -> str:
-        if "LAYOUT" in text:
-            brackets = re.findall(r"{LAYOUT.*?}", text)
-            word_to_replace = re.findall(r"{LAYOUT.*?#(.*?)}", brackets[0])[0]
-            text = text.replace("".join(brackets), word_to_replace)
-        return text
 
     async def fetch_talent_boost(self, character_id: str) -> TalentBoost:
         """Fetches the character's talent boost type from their C3 extra level data."""
@@ -172,44 +107,6 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             result[character.element.name.lower()] += 1
         return dict(result)
 
-    def _get_params(self, text: str, param_list: list[int | float]) -> list[str]:
-        params: list[str] = re.findall(r"{[^}]*}", text)
-
-        for item in params:
-            if "param" not in item:
-                continue
-
-            param_text = re.findall(r"{param(\d+):([^}]*)}", item)[0]
-            param, value = param_text
-
-            if value in {"F1P", "F2P"}:
-                result = self._format_num(int(value[1]), param_list[int(param) - 1] * 100)
-                text = re.sub(re.escape(item), f"{result}%", text)
-            elif value in {"F1", "F2"}:
-                result = self._format_num(int(value[1]), param_list[int(param) - 1])
-                text = re.sub(re.escape(item), result, text)
-            elif value == "P":
-                result = self._format_num(0, param_list[int(param) - 1] * 100)
-                text = re.sub(re.escape(item), f"{result}%", text)
-            elif value == "I":
-                result = int(param_list[int(param) - 1])
-                text = re.sub(re.escape(item), str(round(result)), text)
-
-        text = self._format_layout(text)
-        text = text.replace("{NON_BREAK_SPACE}", "")
-        text = text.replace("#", "")
-        return text.split("|")
-
-    def _get_skill_attributes(self, descriptions: list[str], params: list[int | float]) -> str:
-        result = ""
-        for desc in descriptions:
-            try:
-                k, v = self._get_params(desc, params)
-            except ValueError:
-                continue
-            result += f"{k}: {v}\n"
-        return result
-
     def get_character_embed(
         self,
         character: ambr.CharacterDetail,
@@ -221,11 +118,13 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             msg = "Translator is not set"
             raise RuntimeError(msg)
 
-        stat_values = self._calculate_upgrade_stat_values(
+        stat_values = autils.calculate_upgrade_stat_values(
             character.upgrade, avatar_curve, level, True
         )
-        formatted_stat_values = self._format_stat_values(stat_values)
-        named_stat_values = self._replace_fight_prop_with_name(formatted_stat_values, manual_weapon)
+        formatted_stat_values = autils.format_stat_values(stat_values)
+        named_stat_values = autils.replace_fight_prop_with_name(
+            formatted_stat_values, manual_weapon
+        )
 
         level_str = self.translator.translate(
             LocaleStr(
@@ -273,7 +172,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             self.locale,
             self.translator,
             title=talent.name,
-            description=self._format_layout(talent.description).replace("#", ""),
+            description=autils.format_layout(talent.description).replace("#", ""),
         )
         if talent.upgrades:
             try:
@@ -288,7 +187,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
                     key="skill_attributes_embed_field_name",
                     level=level,
                 ),
-                value=self._get_skill_attributes(level_upgrade.description, level_upgrade.params),
+                value=autils.get_skill_attributes(level_upgrade.description, level_upgrade.params),
             )
         embed.set_thumbnail(url=talent.icon)
         return embed
@@ -353,7 +252,9 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             msg = "Translator is not set"
             raise RuntimeError(msg)
 
-        stat_values = self._calculate_upgrade_stat_values(weapon.upgrade, weapon_curve, level, True)
+        stat_values = autils.calculate_upgrade_stat_values(
+            weapon.upgrade, weapon_curve, level, True
+        )
         main_stat = weapon.upgrade.base_stats[0]
         if main_stat.prop_type is None:
             msg = "Weapon has no main stat"

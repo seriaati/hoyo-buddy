@@ -222,6 +222,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
         modal = CharacterLevelModal(
             title=LocaleStr("Enter Character Level", key="chara_level.modal.title")
         )
+        modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()
         incomplete = modal.incomplete

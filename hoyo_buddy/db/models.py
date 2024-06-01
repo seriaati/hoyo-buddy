@@ -199,8 +199,7 @@ class JSONFile(Model):
         """Read a JSON file."""
         json_file = await JSONFile.get_or_none(name=filename)
         if json_file is None:
-            msg = f"JSON file with filename {filename} not found."
-            raise FileNotFoundError(msg)
+            return {}
 
         return json_file.data
 

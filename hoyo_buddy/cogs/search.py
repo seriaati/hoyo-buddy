@@ -19,7 +19,6 @@ from ..hoyo.search_autocomplete import AutocompleteSetup
 from ..ui import URLButtonView
 from ..ui.hoyo.genshin import search as gi_search
 from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
-from ..ui.hoyo.genshin.search import hakushin as gi_hakushin_search
 from ..ui.hoyo.hsr import search as hsr_search
 from ..ui.hoyo.hsr.search.light_cone import LightConeUI
 
@@ -134,11 +133,12 @@ class Search(commands.Cog):
 
             match category:
                 case ambr.ItemCategory.CHARACTERS:
-                    character_ui = gi_hakushin_search.CharacterUI(
+                    character_ui = gi_search.CharacterUI(
                         query,
                         author=i.user,
                         locale=i.locale,
                         translator=i.client.translator,
+                        hakushin=True
                     )
                     await character_ui.update(i)
                 case ambr.ItemCategory.WEAPONS:
@@ -174,6 +174,7 @@ class Search(commands.Cog):
                         author=i.user,
                         locale=locale,
                         translator=i.client.translator,
+                        hakushin=False,
                     )
                     await character_ui.update(i)
 

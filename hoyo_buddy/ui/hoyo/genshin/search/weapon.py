@@ -7,6 +7,7 @@ from discord import ButtonStyle
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
+from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
 
 if TYPE_CHECKING:
@@ -22,6 +23,7 @@ class WeaponUI(View):
         self,
         weapon_id: str,
         *,
+        hakushin: bool,
         author: User | Member,
         locale: Locale,
         translator: Translator,
@@ -32,6 +34,7 @@ class WeaponUI(View):
         self.weapon_level = 90
         self.refinement = 1
         self.max_refinement = 1
+        self.hakushin = hakushin
 
     async def _fetch_weapon_embed(self) -> DefaultEmbed:
         async with AmbrAPIClient(self.locale, self.translator) as api:
@@ -54,6 +57,32 @@ class WeaponUI(View):
 
             return embed
 
+    async def _fetch_hakushin_weapon_embed(self) -> DefaultEmbed:
+        async with AmbrAPIClient(self.locale, self.translator) as api:
+            manual_weapon = await api.fetch_manual_weapon()
+
+        async with HakushinAPI(self.locale, self.translator) as api:
+            try:
+                weapon_id = int(self.weapon_id)
+            except ValueError:
+                raise InvalidQueryError from None
+
+            weapon_detail = await api.fetch_weapon_detail(weapon_id)
+            embed = api.get_weapon_embed(
+                weapon_detail,
+                self.weapon_level,
+                self.refinement,
+                manual_weapon,
+            )
+            self.max_refinement = len(weapon_detail.refinments)
+
+            return embed
+
+    async def _get_embed(self) -> DefaultEmbed:
+        if self.hakushin:
+            return await self._fetch_hakushin_weapon_embed()
+        return await self._fetch_weapon_embed()
+
     def _setup_items(self) -> None:
         self.clear_items()
         self.add_item(
@@ -71,7 +100,7 @@ class WeaponUI(View):
 
     async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
-        embed = await self._fetch_weapon_embed()
+        embed = await self._get_embed()
         self._setup_items()
         await i.edit_original_response(embed=embed, view=self)
         self.message = await i.original_response()
@@ -103,7 +132,7 @@ class EnterWeaponLevel(Button[WeaponUI]):
             return
 
         self.view.weapon_level = int(modal.level.value)
-        embed = await self.view._fetch_weapon_embed()
+        embed = await self.view._get_embed()
         self.view._setup_items()
         await i.edit_original_response(embed=embed, view=self.view)
 
@@ -125,6 +154,6 @@ class RefinementSelector(Select["WeaponUI"]):
 
     async def callback(self, i: INTERACTION) -> Any:
         self.view.refinement = int(self.values[0])
-        embed = await self.view._fetch_weapon_embed()
+        embed = await self.view._get_embed()
         self.view._setup_items()
         await i.response.edit_message(embed=embed, view=self.view)

@@ -7,6 +7,7 @@ from ambr.exceptions import DataNotFoundError as AmbrDataNotFoundError
 from discord.utils import format_dt
 from enka import errors as enka_errors
 from genshin import errors as genshin_errors
+from hakushin.errors import NotFoundError as HakushinNotFoundError
 from yatta.exceptions import DataNotFoundError as YattaDataNotFoundError
 
 from ..embeds import ErrorEmbed
@@ -127,7 +128,7 @@ def get_error_embed(
     recognized = True
     embed = None
 
-    if isinstance(error, AmbrDataNotFoundError | YattaDataNotFoundError):
+    if isinstance(error, AmbrDataNotFoundError | YattaDataNotFoundError | HakushinNotFoundError):
         error = InvalidQueryError()
 
     if isinstance(error, HoyoBuddyError):

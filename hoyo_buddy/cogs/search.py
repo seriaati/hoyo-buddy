@@ -17,8 +17,15 @@ from ..exceptions import InvalidQueryError
 from ..hoyo.clients import ambr, yatta
 from ..hoyo.search_autocomplete import AutocompleteSetup
 from ..ui import URLButtonView
+from ..ui.hoyo.genshin import search as gi_search
 from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
-from ..ui.hoyo.genshin.search import ArtifactSetUI, BookVolumeUI, CharacterUI, TCGCardUI, WeaponUI
+from ..ui.hoyo.genshin.search import (
+    ArtifactSetUI,
+    BookVolumeUI,
+    TCGCardUI,
+    WeaponUI,
+)
+from ..ui.hoyo.genshin.search.hakushin.character import CharacterUI
 from ..ui.hoyo.hsr.search import BookUI, RelicSetUI
 from ..ui.hoyo.hsr.search import CharacterUI as HSRCharacterUI
 from ..ui.hoyo.hsr.search.light_cone import LightConeUI
@@ -124,9 +131,34 @@ class Search(commands.Cog):
             raise InvalidQueryError
 
         if int(query) in self._beta_ids:
-            await i.response.send_message(
-                "This item is currently in beta and may not be available in the database yet."
-            )
+            try:
+                category = ambr.ItemCategory(category_value)
+            except ValueError as e:
+                try:
+                    category = yatta.ItemCategory(category_value)
+                except ValueError:
+                    raise InvalidQueryError from e
+
+            match category:
+                case ambr.ItemCategory.CHARACTERS:
+                    character_ui = CharacterUI(
+                        query,
+                        author=i.user,
+                        locale=i.locale,
+                        translator=i.client.translator,
+                    )
+                    await character_ui.update(i)
+                case ambr.ItemCategory.WEAPONS:
+                    weapon_ui = WeaponUI(
+                        query,
+                        hakushin=True,
+                        author=i.user,
+                        locale=i.locale,
+                        translator=i.client.translator,
+                    )
+                    await weapon_ui.start(i)
+
+            return
 
         try:
             game = Game(game_value)
@@ -144,7 +176,7 @@ class Search(commands.Cog):
 
             match category:
                 case ambr.ItemCategory.CHARACTERS:
-                    character_ui = CharacterUI(
+                    character_ui = gi_search.CharacterUI(
                         query,
                         author=i.user,
                         locale=locale,
@@ -155,6 +187,7 @@ class Search(commands.Cog):
                 case ambr.ItemCategory.WEAPONS:
                     weapon_ui = WeaponUI(
                         query,
+                        hakushin=False,
                         author=i.user,
                         locale=locale,
                         translator=i.client.translator,

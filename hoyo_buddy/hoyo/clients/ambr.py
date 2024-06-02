@@ -255,6 +255,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         stat_values = autils.calculate_upgrade_stat_values(
             weapon.upgrade, weapon_curve, level, True
         )
+        stat_values = autils.format_stat_values(stat_values)
         main_stat = weapon.upgrade.base_stats[0]
         if main_stat.prop_type is None:
             msg = "Weapon has no main stat"
@@ -266,10 +267,6 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         sub_stat = weapon.upgrade.base_stats[1]
         sub_stat_name = manual_weapon[sub_stat.prop_type] if sub_stat.prop_type else None
         sub_stat_value = stat_values[sub_stat.prop_type] if sub_stat.prop_type else None
-        if sub_stat_value is not None and sub_stat.prop_type in PERCENTAGE_FIGHT_PROPS:
-            sub_stat_value *= 100
-            sub_stat_value = round(sub_stat_value, 1)
-            sub_stat_value = f"{sub_stat_value}%"
 
         level_str = LocaleStr(
             "Lv.{level}",
@@ -280,15 +277,11 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             self.locale,
             self.translator,
             title=f"{weapon.name} ({level_str})",
-            description=(
-                f"{weapon.rarity}★ {weapon.type}\n{main_stat_name}: {round(main_stat_value)}"
-            ),
+            description=f"{weapon.rarity}★ {weapon.type}\n{main_stat_name}: {main_stat_value}",
         )
 
         if sub_stat_name and sub_stat_value:
-            if embed.description is None:
-                msg = "Embed description is None"
-                raise AssertionError(msg)
+            assert embed.description is not None
             embed.description += f"\n{sub_stat_name}: {sub_stat_value}"
 
         if weapon.affix:

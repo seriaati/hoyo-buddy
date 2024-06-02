@@ -10,10 +10,10 @@ from ...components import Button, GoBackButton
 from .enter_email_pswd import EnterEmailPassword
 
 if TYPE_CHECKING:
-    from ui.account.view import AccountManager  # noqa: F401
-
     from hoyo_buddy.bot.bot import INTERACTION
     from hoyo_buddy.enums import Platform
+
+    from ..view import AccountManager  # noqa: F401
 
 
 class WithEmailPassword(Button["AccountManager"]):

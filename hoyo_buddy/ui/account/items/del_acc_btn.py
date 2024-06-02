@@ -12,9 +12,9 @@ from ....db.models import HoyoAccount
 from ...components import Button
 
 if TYPE_CHECKING:
-    from ui.account.view import AccountManager  # noqa: F401
-
     from hoyo_buddy.bot.bot import INTERACTION
+
+    from ..view import AccountManager  # noqa: F401
 
 
 class DeleteAccountContinue(Button["AccountManager"]):

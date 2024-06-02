@@ -10,9 +10,9 @@ from hoyo_buddy.emojis import EDIT
 from ...components import Button, Modal, TextInput
 
 if TYPE_CHECKING:
-    from ui.account.view import AccountManager  # noqa: F401
-
     from hoyo_buddy.bot.bot import INTERACTION
+
+    from ..view import AccountManager  # noqa: F401
 
 
 class NicknameModal(Modal):

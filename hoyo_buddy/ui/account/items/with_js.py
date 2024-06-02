@@ -11,9 +11,9 @@ from ...components import Button, GoBackButton
 from .enter_cookies_btn import EnterCookiesButton
 
 if TYPE_CHECKING:
-    from ui.account.view import AccountManager  # noqa: F401
-
     from hoyo_buddy.bot.bot import INTERACTION
+
+    from ..view import AccountManager  # noqa: F401
 
 
 class WithJavaScript(Button["AccountManager"]):

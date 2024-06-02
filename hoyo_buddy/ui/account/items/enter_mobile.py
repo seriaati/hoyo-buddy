@@ -13,9 +13,8 @@ from ...components import Button, Modal, TextInput
 from ..geetest_handler import GeetestHandler, SendMobileOTPData
 
 if TYPE_CHECKING:
-    from ui.account.view import AccountManager  # noqa: F401
-
     from ....bot.bot import INTERACTION
+    from ..view import AccountManager  # noqa: F401
 
 
 class VerifyCodeInput(Modal):

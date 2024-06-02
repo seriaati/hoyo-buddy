@@ -17,9 +17,9 @@ from .with_mobile import WithMobileNumber
 from .with_qrcode import WithQRCode
 
 if TYPE_CHECKING:
-    from ui.account.view import AccountManager  # noqa: F401
-
     from hoyo_buddy.bot.bot import INTERACTION
+
+    from ..view import AccountManager  # noqa: F401
 
 
 class AddMiyousheAccount(Button["AccountManager"]):

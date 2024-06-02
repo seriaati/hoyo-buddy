@@ -9,9 +9,8 @@ from ...components import Button, GoBackButton
 from .enter_mobile import EnterPhoneNumber
 
 if TYPE_CHECKING:
-    from ui.account.view import AccountManager  # noqa: F401
-
     from ....bot.bot import INTERACTION
+    from ..view import AccountManager  # noqa: F401
 
 
 class WithMobileNumber(Button["AccountManager"]):

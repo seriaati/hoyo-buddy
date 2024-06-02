@@ -17,10 +17,11 @@ if TYPE_CHECKING:
     from collections.abc import Generator, Sequence
 
     from genshin.models import GenshinAccount
-    from ui.account.view import AccountManager  # noqa: F401
 
     from hoyo_buddy.bot.bot import INTERACTION
     from hoyo_buddy.bot.translator import Translator
+
+    from ..view import AccountManager  # noqa: F401
 
 
 class AddAccountSelect(Select["AccountManager"]):

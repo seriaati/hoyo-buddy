@@ -7,9 +7,9 @@ from discord.utils import get as dget
 from ...components import Select, SelectOption
 
 if TYPE_CHECKING:
-    from ui.account.view import AccountManager  # noqa: F401
-
     from hoyo_buddy.bot.bot import INTERACTION
+
+    from ..view import AccountManager  # noqa: F401
 
 
 class AccountSelect(Select["AccountManager"]):

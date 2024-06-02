@@ -41,7 +41,7 @@ class CommandTree(app_commands.CommandTree):
         locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
         embed, recognized = get_error_embed(error, locale, i.client.translator)
         if not recognized:
-            i.client.capture_exception(e)
+            i.client.capture_exception(error)
 
         try:
             await i.response.send_message(embed=embed, ephemeral=True)

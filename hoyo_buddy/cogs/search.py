@@ -19,15 +19,8 @@ from ..hoyo.search_autocomplete import AutocompleteSetup
 from ..ui import URLButtonView
 from ..ui.hoyo.genshin import search as gi_search
 from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
-from ..ui.hoyo.genshin.search import (
-    ArtifactSetUI,
-    BookVolumeUI,
-    TCGCardUI,
-    WeaponUI,
-)
-from ..ui.hoyo.genshin.search.hakushin.character import CharacterUI
-from ..ui.hoyo.hsr.search import BookUI, RelicSetUI
-from ..ui.hoyo.hsr.search import CharacterUI as HSRCharacterUI
+from ..ui.hoyo.genshin.search import hakushin as gi_hakushin_search
+from ..ui.hoyo.hsr import search as hsr_search
 from ..ui.hoyo.hsr.search.light_cone import LightConeUI
 
 if TYPE_CHECKING:
@@ -141,7 +134,7 @@ class Search(commands.Cog):
 
             match category:
                 case ambr.ItemCategory.CHARACTERS:
-                    character_ui = CharacterUI(
+                    character_ui = gi_hakushin_search.CharacterUI(
                         query,
                         author=i.user,
                         locale=i.locale,
@@ -149,7 +142,7 @@ class Search(commands.Cog):
                     )
                     await character_ui.update(i)
                 case ambr.ItemCategory.WEAPONS:
-                    weapon_ui = WeaponUI(
+                    weapon_ui = gi_search.WeaponUI(
                         query,
                         hakushin=True,
                         author=i.user,
@@ -185,7 +178,7 @@ class Search(commands.Cog):
                     await character_ui.update(i)
 
                 case ambr.ItemCategory.WEAPONS:
-                    weapon_ui = WeaponUI(
+                    weapon_ui = gi_search.WeaponUI(
                         query,
                         hakushin=False,
                         author=i.user,
@@ -202,7 +195,7 @@ class Search(commands.Cog):
                         await i.followup.send(embed=embed)
 
                 case ambr.ItemCategory.ARTIFACT_SETS:
-                    artifact_set_ui = ArtifactSetUI(
+                    artifact_set_ui = gi_search.ArtifactSetUI(
                         query,
                         author=i.user,
                         locale=locale,
@@ -276,7 +269,7 @@ class Search(commands.Cog):
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
                         await i.response.defer()
                         book = await api.fetch_book_detail(int(query))
-                        book_volume_ui = BookVolumeUI(
+                        book_volume_ui = gi_search.BookVolumeUI(
                             book,
                             api.lang.value,
                             author=i.user,
@@ -286,7 +279,7 @@ class Search(commands.Cog):
                         await book_volume_ui.start(i)
 
                 case ambr.ItemCategory.TCG:
-                    tcg_card_ui = TCGCardUI(
+                    tcg_card_ui = gi_search.TCGCardUI(
                         int(query), author=i.user, locale=locale, translator=i.client.translator
                     )
                     await tcg_card_ui.start(i)
@@ -330,13 +323,13 @@ class Search(commands.Cog):
                     await light_cone_ui.start(i)
 
                 case yatta.ItemCategory.BOOKS:
-                    book_ui = BookUI(
+                    book_ui = hsr_search.BookUI(
                         query, author=i.user, locale=locale, translator=i.client.translator
                     )
                     await book_ui.start(i)
 
                 case yatta.ItemCategory.RELICS:
-                    relic_set_ui = RelicSetUI(
+                    relic_set_ui = hsr_search.RelicSetUI(
                         query, author=i.user, locale=locale, translator=i.client.translator
                     )
                     await relic_set_ui.start(i)
@@ -347,7 +340,7 @@ class Search(commands.Cog):
                     except ValueError as e:
                         raise InvalidQueryError from e
 
-                    character_ui = HSRCharacterUI(
+                    character_ui = hsr_search.CharacterUI(
                         character_id,
                         author=i.user,
                         locale=locale,

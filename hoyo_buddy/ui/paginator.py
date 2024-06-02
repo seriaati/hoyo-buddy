@@ -64,7 +64,7 @@ class PaginatorView(View):
         """Method to create a file for the current page. Implemented by subclasses."""
 
     async def _update_page(self, i: INTERACTION) -> None:
-        with contextlib.suppress(discord.InteractionResponded):
+        if i.response.is_done():
             await i.response.defer()
 
         page = self._pages[self._current_page]

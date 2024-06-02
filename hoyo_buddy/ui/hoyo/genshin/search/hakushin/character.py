@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import contextlib
 from typing import TYPE_CHECKING, Any
 
 import hakushin
-from discord import ButtonStyle, InteractionResponded, Locale, Member, User
+from discord import ButtonStyle, Locale, Member, User
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
@@ -69,7 +68,7 @@ class CharacterUI(View):
             return (api.get_character_const_embed(const), character_detail.constellations)
 
     async def update(self, i: INTERACTION) -> None:
-        with contextlib.suppress(InteractionResponded):
+        if not i.response.is_done():
             await i.response.defer()
 
         self.clear_items()

@@ -159,21 +159,19 @@ class View(discord.ui.View):
 
     @staticmethod
     async def absolute_send(i: INTERACTION, **kwargs: Any) -> None:
-        try:
-            await i.response.send_message(**kwargs)
-        except discord.InteractionResponded:
-            await i.followup.send(**kwargs)
-        except discord.NotFound:
-            pass
+        with contextlib.suppress(discord.NotFound):
+            if not i.response.is_done():
+                await i.response.send_message(**kwargs)
+            else:
+                await i.followup.send(**kwargs)
 
     @staticmethod
     async def absolute_edit(i: INTERACTION, **kwargs: Any) -> None:
-        try:
-            await i.response.edit_message(**kwargs)
-        except discord.InteractionResponded:
-            await i.edit_original_response(**kwargs)
-        except discord.NotFound:
-            pass
+        with contextlib.suppress(discord.NotFound):
+            if not i.response.is_done():
+                await i.response.edit_message(**kwargs)
+            else:
+                await i.edit_original_response(**kwargs)
 
     @staticmethod
     def get_embeds(message: discord.Message | None) -> list[discord.Embed] | None:
@@ -597,9 +595,9 @@ class Modal(discord.ui.Modal):
         if not recognized:
             i.client.capture_exception(error)
 
-        try:
+        if not i.response.is_done():
             await i.response.send_message(embed=embed, ephemeral=True)
-        except discord.InteractionResponded:
+        else:
             await i.followup.send(embed=embed, ephemeral=True)
 
     async def on_submit(self, i: INTERACTION) -> None:

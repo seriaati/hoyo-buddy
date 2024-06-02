@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
-from discord import InteractionResponded, InteractionType, app_commands
+from discord import InteractionType, app_commands
 
 from ..db.models import Settings
 from ..utils import get_now
@@ -43,9 +43,7 @@ class CommandTree(app_commands.CommandTree):
         if not recognized:
             i.client.capture_exception(error)
 
-        try:
-            await i.response.send_message(embed=embed, ephemeral=True)
-        except InteractionResponded:
+        if i.response.is_done():
             await i.followup.send(embed=embed, ephemeral=True)
-        except Exception:
-            pass
+        else:
+            await i.response.send_message(embed=embed, ephemeral=True)

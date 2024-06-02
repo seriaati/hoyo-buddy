@@ -7,13 +7,14 @@ from discord import ButtonStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import PASSWORD, PHONE
+from hoyo_buddy.enums import Platform
 
-from ....enums import Platform
 from ...components import Button, Modal, TextInput
 from ..geetest_handler import GeetestHandler, SendMobileOTPData
 
 if TYPE_CHECKING:
-    from ....bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import INTERACTION
+
     from ..view import AccountManager  # noqa: F401
 
 

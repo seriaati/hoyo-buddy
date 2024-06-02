@@ -3,13 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.embeds import DefaultEmbed
 
-from ....embeds import DefaultEmbed
 from ...components import Button, GoBackButton
 from .enter_mobile import EnterPhoneNumber
 
 if TYPE_CHECKING:
-    from ....bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import INTERACTION
+
     from ..view import AccountManager  # noqa: F401
 
 

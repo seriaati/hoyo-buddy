@@ -8,8 +8,8 @@ from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.draw.main_funcs import draw_item_list_card
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.models import DrawInput
+from hoyo_buddy.utils import get_now
 
-from ....utils import get_now
 from ...components import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:

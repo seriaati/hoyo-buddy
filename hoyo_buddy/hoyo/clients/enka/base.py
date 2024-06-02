@@ -6,7 +6,7 @@ from typing import Any, overload
 import discord
 import enka
 
-from ....db.models import EnkaCache
+from hoyo_buddy.db.models import EnkaCache
 
 LOGGER_ = logging.getLogger(__name__)
 

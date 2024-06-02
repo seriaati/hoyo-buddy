@@ -4,7 +4,8 @@ import logging
 
 import enka
 
-from ....constants import LOCALE_TO_GI_ENKA_LANG
+from hoyo_buddy.constants import LOCALE_TO_GI_ENKA_LANG
+
 from .base import BaseClient
 
 LOGGER_ = logging.getLogger(__name__)

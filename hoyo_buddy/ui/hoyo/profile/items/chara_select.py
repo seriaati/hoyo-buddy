@@ -7,10 +7,9 @@ from enka.hsr import Character as HSRCharacter
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji
+from hoyo_buddy.enums import CharacterType
+from hoyo_buddy.models import HoyolabHSRCharacter
 from hoyo_buddy.ui.components import PaginatorSelect, SelectOption
-
-from .....enums import CharacterType
-from .....models import HoyolabHSRCharacter
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

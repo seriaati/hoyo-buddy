@@ -7,10 +7,10 @@ from genshin import Game as GenshinGame
 from tortoise.exceptions import IntegrityError
 
 from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME
 from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount
 from hoyo_buddy.emojis import get_game_emoji
 
-from ....constants import GPY_GAME_TO_HB_GAME
 from ...components import Select, SelectOption
 
 if TYPE_CHECKING:

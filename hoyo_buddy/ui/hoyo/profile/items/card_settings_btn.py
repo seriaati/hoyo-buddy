@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import SETTINGS
+from hoyo_buddy.enums import CharacterType
 from hoyo_buddy.ui.components import Button, GoBackButton
 
-from .....enums import CharacterType
 from ..btn_states import DISABLE_AI_ART, DISABLE_COLOR, DISABLE_DARK_MODE, DISABLE_IMAGE_SELECT
 from .add_img_btn import AddImageButton
 from .card_settings_info_btn import CardSettingsInfoButton

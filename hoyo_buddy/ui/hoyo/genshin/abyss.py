@@ -4,11 +4,12 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, File, Locale, Member, User
 
-from ....bot.translator import LocaleStr
-from ....draw.main_funcs import draw_spiral_abyss_card
-from ....embeds import DefaultEmbed
-from ....exceptions import NoAbyssDataError
-from ....models import DrawInput
+from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.draw.main_funcs import draw_spiral_abyss_card
+from hoyo_buddy.embeds import DefaultEmbed
+from hoyo_buddy.exceptions import NoAbyssDataError
+from hoyo_buddy.models import DrawInput
+
 from ...components import Button, View
 
 if TYPE_CHECKING:
@@ -21,8 +22,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.bot.bot import INTERACTION
     from hoyo_buddy.bot.translator import Translator
-
-    from ....db.models import HoyoAccount
+    from hoyo_buddy.db.models import HoyoAccount
 
 
 class AbyssView(View):

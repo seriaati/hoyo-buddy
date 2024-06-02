@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import INFO
+from hoyo_buddy.enums import Platform
 
-from ....enums import Platform
 from ...components import Button, GoBackButton
 from .enter_cookies_btn import EnterCookiesButton
 

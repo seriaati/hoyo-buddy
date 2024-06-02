@@ -7,8 +7,8 @@ from discord import ButtonStyle
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, HOYOLAB, MIYOUSHE
+from hoyo_buddy.enums import Platform
 
-from ....enums import Platform
 from ...components import Button, GoBackButton
 from .with_dev_tools import WithDevTools
 from .with_email_pswd import WithEmailPassword

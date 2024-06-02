@@ -11,8 +11,8 @@ import qrcode.image.pil
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
+from hoyo_buddy.enums import Platform
 
-from ....enums import Platform
 from ...components import Button, GoBackButton
 
 if TYPE_CHECKING:

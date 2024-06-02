@@ -12,8 +12,8 @@ from ...components import Button, Modal, TextInput
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.enums import Platform
 
-    from ....enums import Platform
     from ..view import AccountManager  # noqa: F401
 
 

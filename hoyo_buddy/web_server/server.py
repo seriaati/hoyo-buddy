@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-import logging
 from typing import TYPE_CHECKING, Any
 
 import aiofiles
 import aiohttp
 from aiohttp import web
+from loguru import logger
 from tortoise import Tortoise
 
 from hoyo_buddy.db.models import User
@@ -18,7 +18,6 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.bot.translator import Translator
 
-LOGGER_ = logging.getLogger(__name__)
 GT_V3_URL = "https://static.geetest.com/static/js/gt.0.5.0.js"
 GT_V4_URL = "https://static.geetest.com/v4/gt4.js"
 
@@ -35,7 +34,7 @@ class GeetestWebServer:
         except web.HTTPException as e:
             return web.json_response({"error": e.reason}, status=e.status)
         except Exception:
-            LOGGER_.exception("Error in web server")
+            logger.exception("Error in web server")
             return web.json_response({"error": "Internal Server Error"}, status=500)
 
     @staticmethod
@@ -114,7 +113,7 @@ class GeetestWebServer:
         return web.Response(body=content, status=r.status, content_type="text/javascript")
 
     async def run(self, port: int = 5000) -> None:
-        LOGGER_.info("Starting web server... (port=%d)", port)
+        logger.info("Starting web server... (port=%d)", port)
 
         async with aiofiles.open("hoyo_buddy/web_server/page.html") as f:
             self.template = await f.read()
@@ -136,13 +135,13 @@ class GeetestWebServer:
 
         site = web.TCPSite(runner, "localhost", port)
         await site.start()
-        LOGGER_.info("Web server started")
+        logger.info("Web server started")
 
         try:
             while True:
                 await asyncio.sleep(1)
         except asyncio.CancelledError:
-            LOGGER_.info("Web server shutting down...")
+            logger.info("Web server shutting down...")
             await site.stop()
             await app.shutdown()
             await app.cleanup()

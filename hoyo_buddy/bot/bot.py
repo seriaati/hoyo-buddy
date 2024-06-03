@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import concurrent.futures
-import logging
 import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal, TypeAlias
@@ -14,6 +13,7 @@ from asyncache import cached
 from cachetools import TTLCache
 from discord import app_commands
 from discord.ext import commands
+from loguru import logger
 from tortoise.expressions import Q
 
 from ..db.models import HoyoAccount
@@ -38,7 +38,6 @@ if TYPE_CHECKING:
 
 __all__ = ("INTERACTION", "HoyoBuddy")
 
-LOGGER_ = logging.getLogger(__name__)
 INTERACTION: TypeAlias = discord.Interaction["HoyoBuddy"]
 USER: TypeAlias = discord.User | discord.Member | None
 STATUS_CHANNEL_ID = 1220175609347444776
@@ -112,9 +111,9 @@ class HoyoBuddy(commands.AutoShardedBot):
             cog_name = Path(filepath).stem
             try:
                 await self.load_extension(f"hoyo_buddy.cogs.{cog_name}")
-                LOGGER_.info("Loaded cog %r", cog_name)
+                logger.info(f"Loaded cog {cog_name!r}")
             except Exception:
-                LOGGER_.exception("Failed to load cog %r", cog_name)
+                logger.exception(f"Failed to load cog {cog_name!r}")
 
         await self.load_extension("jishaku")
 
@@ -141,7 +140,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     def capture_exception(self, e: Exception) -> None:
         if self.env == "dev":
-            LOGGER_.exception(e)
+            logger.exception(e)
         else:
             sentry_sdk.capture_exception(e)
 
@@ -280,7 +279,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         return await super().on_command_error(context, exception)
 
     async def close(self) -> None:
-        LOGGER_.info("Bot shutting down...")
+        logger.info("Bot shutting down...")
         if self.env != "dev":
             await self._send_status_embed("stop")
 

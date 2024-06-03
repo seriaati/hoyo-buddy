@@ -12,13 +12,14 @@ import discord
 import git
 import sentry_sdk
 from dotenv import load_dotenv
+from loguru import logger
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
-from seria.logging import setup_logging
+from sentry_sdk.integrations.loguru import LoguruIntegration
 
 from hoyo_buddy.bot.bot import HoyoBuddy
 from hoyo_buddy.bot.translator import Translator
 from hoyo_buddy.db.pgsql import Database
+from hoyo_buddy.logging import InterceptHandler
 from hoyo_buddy.web_server.server import GeetestWebServer
 
 load_dotenv()
@@ -32,7 +33,7 @@ if env != "dev":
     sentry_sdk.init(
         dsn=os.getenv("SENTRY_DSN"),
         integrations=[
-            LoggingIntegration(level=logging.INFO, event_level=logging.WARNING),
+            LoguruIntegration(level=logging.INFO, event_level=logging.WARNING),
             AioHttpIntegration(transaction_style="method_and_path_pattern"),
         ],
         traces_sample_rate=1.0,
@@ -78,10 +79,12 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    with setup_logging(logging.INFO, log_filename="hoyo_buddy.log"):
-        try:
-            import uvloop  # pyright: ignore [reportMissingImports]
-        except ModuleNotFoundError:
-            asyncio.run(main(), debug=True)
-        else:
-            uvloop.run(main(), debug=True)
+    logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
+    logger.add("hoyo_buddy.log", rotation="32 MB", retention="5 days", level="INFO")
+
+    try:
+        import uvloop  # pyright: ignore [reportMissingImports]
+    except ModuleNotFoundError:
+        asyncio.run(main(), debug=True)
+    else:
+        uvloop.run(main(), debug=True)

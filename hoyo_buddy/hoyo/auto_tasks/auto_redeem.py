@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import asyncio
-import logging
 from typing import TYPE_CHECKING, ClassVar
 
 import genshin
 from discord import Locale
+from loguru import logger
 
 from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr
@@ -19,7 +19,6 @@ if TYPE_CHECKING:
 
     from ...bot.bot import HoyoBuddy
 
-LOGGER_ = logging.getLogger(__name__)
 CODE_NUM_TO_SLEEP = 15
 SLEEP_INTERVAL = 60 * 5
 
@@ -107,10 +106,8 @@ class AutoRedeem:
             return
 
         async with cls._lock:
-            LOGGER_.info(
-                "Starting auto redeem task for game %s and codes %s",
-                game or "all",
-                codes or "from API",
+            logger.info(
+                f"Starting auto redeem task for game {game or 'all'} and codes {codes or 'from API'}"
             )
             cls._bot = bot
 
@@ -140,4 +137,4 @@ class AutoRedeem:
 
                 await cls._redeem_codes(codes, account)
 
-            LOGGER_.info("Auto redeem task completed")
+            logger.info("Auto redeem task completed")

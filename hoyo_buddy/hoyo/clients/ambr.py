@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 from collections import defaultdict
 from enum import StrEnum
 from typing import TYPE_CHECKING
@@ -24,7 +23,6 @@ __all__ = ("AUDIO_LANGUAGES", "AmbrAPIClient", "ItemCategory")
 if TYPE_CHECKING:
     import aiohttp
 
-LOGGER_ = logging.getLogger(__name__)
 
 PERCENTAGE_FIGHT_PROPS = (
     "FIGHT_PROP_HP_PERCENT",

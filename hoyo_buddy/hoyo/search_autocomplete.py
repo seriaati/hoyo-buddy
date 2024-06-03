@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import logging
 from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias
 
 from hakushin import Game as HakushinGame
@@ -21,7 +20,6 @@ ItemCategory: TypeAlias = ambr.ItemCategory | yatta.ItemCategory | hakushin.Item
 AutocompleteChoices: TypeAlias = dict[Game, dict[ItemCategory, dict[str, dict[str, str]]]]
 Tasks: TypeAlias = dict[Game, dict[ItemCategory, dict[str, asyncio.Task[list[Any]]]]]
 
-LOGGER_ = logging.getLogger(__name__)
 HARD_EXCLUDE: set[str] = {"15012", "15004"}
 
 HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Mapping[hakushin.ItemCategory, Game] = {

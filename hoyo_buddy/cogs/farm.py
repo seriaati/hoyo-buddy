@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 import random
 from typing import TYPE_CHECKING
 
@@ -19,8 +18,6 @@ from ..ui.hoyo.farm_notify import FarmNotifyView
 
 if TYPE_CHECKING:
     from ..bot.bot import INTERACTION, USER, HoyoBuddy
-
-LOGGER_ = logging.getLogger(__name__)
 
 
 class Farm(

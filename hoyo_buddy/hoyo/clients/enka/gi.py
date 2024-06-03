@@ -1,14 +1,10 @@
 from __future__ import annotations
 
-import logging
-
 import enka
 
 from hoyo_buddy.constants import LOCALE_TO_GI_ENKA_LANG
 
 from .base import BaseClient
-
-LOGGER_ = logging.getLogger(__name__)
 
 
 class EnkaGIClient(BaseClient):

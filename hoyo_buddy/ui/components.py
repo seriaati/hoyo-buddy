@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-import logging
 from typing import TYPE_CHECKING, Any, Generic, Self, TypeVar
 
 import discord
 from discord.utils import MISSING
+from loguru import logger
 from seria.utils import split_list_to_chunks
 
 from .. import emojis
@@ -38,7 +38,6 @@ __all__ = (
 )
 
 V_co = TypeVar("V_co", bound="View", covariant=True)
-LOGGER_ = logging.getLogger(__name__)
 
 
 class View(discord.ui.View):
@@ -81,7 +80,7 @@ class View(discord.ui.View):
             with contextlib.suppress(discord.NotFound, discord.HTTPException):
                 await self.message.edit(view=self)
         else:
-            LOGGER_.error("View %r timed out without a set message", self)
+            logger.error(f"View {self!r} timed out without a set message")
 
     async def on_error(
         self,

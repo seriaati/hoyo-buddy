@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-import logging
 import os
 from typing import TYPE_CHECKING, ClassVar
 
 import discord
 import genshin
+from loguru import logger
 
 from ...bot.error_handler import get_error_embed
 from ...db.models import HoyoAccount
@@ -18,7 +18,6 @@ if TYPE_CHECKING:
     from ...bot.bot import HoyoBuddy
     from ...bot.translator import Translator
 
-LOGGER_ = logging.getLogger(__name__)
 
 CHECKIN_APIS: dict[str, str] = {
     "VERCEL": "https://daily-checkin-api.vercel.app",
@@ -35,7 +34,7 @@ class DailyCheckin:
     @classmethod
     async def execute(cls, bot: HoyoBuddy) -> None:
         try:
-            LOGGER_.info("Daily check-in started")
+            logger.info("Daily check-in started")
 
             cls._total_checkin_count = 0
             cls._bot = bot
@@ -57,13 +56,13 @@ class DailyCheckin:
         except Exception as e:
             bot.capture_exception(e)
         finally:
-            LOGGER_.info(
+            logger.info(
                 "Daily check-in finished, total check-in count: %d", cls._total_checkin_count
             )
 
     @classmethod
     async def _daily_checkin_task(cls, queue: asyncio.Queue[HoyoAccount], api_name: str) -> None:
-        LOGGER_.info("Daily check-in task started for api: %s", api_name)
+        logger.info(f"Daily check-in task started for api: {api_name}")
 
         bot = cls._bot
         if api_name != "LOCAL":
@@ -83,7 +82,7 @@ class DailyCheckin:
             except Exception:
                 await queue.put(account)
                 api_error_count += 1
-                LOGGER_.exception("Daily check-in failed for %s", account)
+                logger.exception(f"Daily check-in failed for {account}")
                 if api_error_count >= MAX_API_ERROR_COUNT:
                     msg = f"Daily check-in API {api_name} failed for {api_error_count} accounts"
                     raise RuntimeError(msg) from None
@@ -110,7 +109,7 @@ class DailyCheckin:
         translator: Translator,
         session: aiohttp.ClientSession,
     ) -> Embed:
-        LOGGER_.debug("Daily check-in with %s for %s", api_name, account)
+        logger.debug(f"Daily check-in with {api_name} for {account}")
 
         await account.user.fetch_related("settings")
 

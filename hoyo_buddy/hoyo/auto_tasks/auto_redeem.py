@@ -30,8 +30,9 @@ class AutoRedeem:
 
     @classmethod
     async def _get_codes(cls, session: aiohttp.ClientSession, game: genshin.Game) -> list[str]:
-        async with session.get(f"https://hoyo-codes.vercel.app/codes?game={game.value}") as resp:
-            return (await resp.json())["codes"]
+        async with session.get(f"https://hoyo-codes.seriaati.xyz/codes?game={game.value}") as resp:
+            data = await resp.json()
+            return [code["code"] for code in data["codes"]]
 
     @classmethod
     async def _redeem_codes(cls, codes: list[str], account: HoyoAccount) -> None:

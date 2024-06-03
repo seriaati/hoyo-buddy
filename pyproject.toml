@@ -18,7 +18,7 @@ asyncache = "^0.3.1"
 asyncpg = "^0.29.0"
 asyncpg-listen = "^0.0.6"
 cachetools = "^5.3.2"
-discord-py = {git = "https://github.com/Rapptz/discord.py", rev = "efe81a6"}
+discord-py = {git = "https://github.com/Rapptz/discord.py", rev = "0e58a927ddbc300a17ef0137d948faa659565313"}
 diskcache = "^5.6.3"
 enka-py = {git = "https://github.com/seriaati/enka-py"}
 genshin = {git = "https://github.com/thesadru/genshin.py", rev = "1a1c03b", extras = ["all"]}

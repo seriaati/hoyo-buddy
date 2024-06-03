@@ -427,7 +427,7 @@ class YattaAPIClient(yatta.YattaAPI):
         self,
         light_cone: yatta.LightConeDetail,
         level: int,
-        superposition: int,
+        superimpose: int,
         manual_avatar: dict[str, Any],
     ) -> DefaultEmbed:
         if self.translator is None:
@@ -446,7 +446,6 @@ class YattaAPIClient(yatta.YattaAPI):
             self.locale,
             self.translator,
             title=f"{light_cone.name} ({level_str})",
-            description=light_cone.description,
         )
 
         result = self._calc_upgrade_stats(light_cone.upgrades)
@@ -463,14 +462,13 @@ class YattaAPIClient(yatta.YattaAPI):
             inline=False,
         )
         embed.add_field(
-            name=light_cone.skill.name,
+            name=f"{light_cone.skill.name} ({superimpose})",
             value=self._process_description_params(
-                light_cone.skill.description, light_cone.skill.params, param_index=superposition - 1
+                light_cone.skill.description, light_cone.skill.params, param_index=superimpose - 1
             ),
             inline=False,
         )
-        embed.set_thumbnail(url=light_cone.icon)
-        embed.set_footer(text=light_cone.description)
+        embed.set_thumbnail(url=light_cone.large_icon)
 
         return embed
 

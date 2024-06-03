@@ -256,7 +256,7 @@ class CharacterUI(View):
                         ItemSelector(
                             [
                                 SelectOption(
-                                    label=f"{s.type}: {s.name}",
+                                    label=f"{s.name}",
                                     value=str(index),
                                     default=index == self._main_skill_index,
                                 )

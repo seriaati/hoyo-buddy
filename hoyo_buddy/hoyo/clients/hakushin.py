@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Literal, overload
 
 import discord
 import hakushin
 
 from ...bot.translator import LocaleStr, Translator
-from ...constants import LOCALE_TO_HAKUSHIN_LANG
+from ...constants import LOCALE_TO_HAKUSHIN_LANG, contains_traveler_id
 from ...embeds import DefaultEmbed
 
 if TYPE_CHECKING:
@@ -95,7 +95,9 @@ class HakushinAPI(hakushin.HakushinAPI):
             self._locale,
             self._translator,
             title=skill.name,
-            description=hakushin.utils.replace_layout(skill.description).replace("#", ""),
+            description=hakushin.utils.replace_layout(skill.description).replace("#", "")
+            if isinstance(skill, hakushin.gi.CharacterSkill)
+            else None,
         )
 
         if isinstance(skill, hakushin.gi.CharacterSkill):
@@ -216,7 +218,7 @@ class HakushinAPI(hakushin.HakushinAPI):
         light_cone: hakushin.hsr.LightConeDetail,
         level: int,
         superimpose: int,
-        manual_avatar: dict[str, Any],
+        manual_weapon: dict[str, str],
     ) -> DefaultEmbed:
         self._check_translator()
         assert self._translator is not None
@@ -233,30 +235,124 @@ class HakushinAPI(hakushin.HakushinAPI):
             self._locale,
             self._translator,
             title=f"{light_cone.name} ({level_str})",
-            description=light_cone.description,
         )
 
         result = hakushin.utils.calc_light_cone_upgrade_stat_values(light_cone, level, True)
-
-        named_stat_values: dict[str, Any] = {}
-        for key, value in result:
-            named_stat = manual_avatar[key]["name"]
-            named_stat_values[named_stat] = int(value[level - 1])
+        result = hakushin.utils.format_stat_values(result)
+        result = hakushin.utils.replace_fight_prop_with_name(result, manual_weapon)
 
         embed.add_field(
             name=LocaleStr("Stats", key="stats_embed_field_name"),
-            value="\n".join(f"{k}: {v}" for k, v in named_stat_values.items()),
+            value="\n".join(f"{k}: {v}" for k, v in result.items()),
             inline=False,
         )
         embed.add_field(
-            name=light_cone.superimpose_info.name,
+            name=f"{light_cone.superimpose_info.name} ({superimpose})",
             value=hakushin.utils.replace_placeholders(
                 light_cone.superimpose_info.description,
                 light_cone.superimpose_info.parameters[str(superimpose)],
             ),
             inline=False,
         )
-        embed.set_thumbnail(url=light_cone.icon)
-        embed.set_footer(text=light_cone.description)
+        embed.set_thumbnail(url=light_cone.image)
 
         return embed
+
+    def get_relic_embed(
+        self, relic_set: hakushin.hsr.RelicSetDetail, relic: hakushin.hsr.Relic
+    ) -> DefaultEmbed:
+        self._check_translator()
+        assert self._translator is not None
+
+        set_effects = relic_set.set_effects
+        description = self._translator.translate(
+            LocaleStr(
+                "2-Pieces: {bonus_2}",
+                bonus_2=hakushin.utils.replace_placeholders(
+                    set_effects.two_piece.description, set_effects.two_piece.parameters
+                ),
+                key="artifact_set_two_piece_embed_description",
+            ),
+            self._locale,
+        )
+        if set_effects.four_piece is not None:
+            four_piece = LocaleStr(
+                "4-Pieces: {bonus_4}",
+                bonus_4=hakushin.utils.replace_placeholders(
+                    set_effects.four_piece.description, set_effects.four_piece.parameters
+                ),
+                key="artifact_set_four_piece_embed_description",
+            )
+            description += "\n" + self._translator.translate(four_piece, self._locale)
+
+        embed = DefaultEmbed(
+            self._locale,
+            self._translator,
+            title=relic.name,
+            description=description,
+        )
+        embed.set_author(name=relic_set.name, icon_url=relic_set.icon)
+        embed.set_footer(text=relic.description)
+        embed.set_thumbnail(url=relic.icon)
+
+        return embed
+
+    def get_artifact_embed(
+        self, artifact_set: hakushin.gi.ArtifactSetDetail, artifact: hakushin.gi.Artifact
+    ) -> DefaultEmbed:
+        self._check_translator()
+        assert self._translator is not None
+
+        description = self._translator.translate(
+            LocaleStr(
+                "2-Pieces: {bonus_2}",
+                bonus_2=artifact_set.set_effect.two_piece.description,
+                key="artifact_set_two_piece_embed_description",
+            ),
+            self._locale,
+        )
+        if artifact_set.set_effect.four_piece is not None:
+            four_piece = LocaleStr(
+                "4-Pieces: {bonus_4}",
+                bonus_4=artifact_set.set_effect.four_piece.description,
+                key="artifact_set_four_piece_embed_description",
+            )
+            description += "\n" + self._translator.translate(four_piece, self._locale)
+
+        embed = DefaultEmbed(
+            self._locale, self._translator, title=artifact.name, description=description
+        )
+        embed.set_author(name=artifact_set.set_effect.two_piece.name, icon_url=artifact_set.icon)
+        embed.set_footer(text=artifact.description)
+        embed.set_thumbnail(url=artifact.icon)
+        return embed
+
+    @overload
+    async def fetch_characters(
+        self, game: Literal[hakushin.Game.GI], *, traveler_gender_symbol: bool = False
+    ) -> list[hakushin.gi.Character]: ...
+    @overload
+    async def fetch_characters(
+        self, game: Literal[hakushin.Game.HSR], *, traveler_gender_symbol: bool = False
+    ) -> list[hakushin.hsr.Character]: ...
+    async def fetch_characters(
+        self,
+        game: Literal[hakushin.Game.GI, hakushin.Game.HSR],
+        *,
+        traveler_gender_symbol: bool = False,
+    ) -> list[hakushin.gi.Character] | list[hakushin.hsr.Character]:
+        self._check_translator()
+        assert self._translator is not None
+
+        characters = await super().fetch_characters(game)
+        if game is hakushin.Game.HSR:
+            return characters
+
+        for character in characters:
+            assert isinstance(character, hakushin.gi.Character)
+            if contains_traveler_id(str(character.id)):
+                character.name = self._translator.get_traveler_name(
+                    character, self._locale, gender_symbol=traveler_gender_symbol
+                )
+
+        return characters

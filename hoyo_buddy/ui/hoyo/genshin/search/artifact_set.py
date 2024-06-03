@@ -8,6 +8,7 @@ from hoyo_buddy.constants import EQUIP_ID_TO_ARTIFACT_POS
 from hoyo_buddy.emojis import get_artifact_pos_emoji
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
+from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
 from hoyo_buddy.ui import Button, View
 
 if TYPE_CHECKING:
@@ -21,35 +22,47 @@ class ArtifactSetUI(View):
         self,
         artifact_set_id: str,
         *,
+        hakushin: bool,
         author: User | Member,
         locale: Locale,
         translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
-        self.artifact_id = artifact_set_id
-        self.artifact_embeds: dict[str, DefaultEmbed] = {}
+        self._artifact_id = artifact_set_id
+        self._artifact_embeds: dict[str, DefaultEmbed] = {}
+
+        self._hakushin = hakushin
 
     async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
 
-        async with AmbrAPIClient(self.locale, self.translator) as api:
-            try:
-                artifact_id = int(self.artifact_id)
-            except ValueError as e:
-                raise InvalidQueryError from e
+        try:
+            artifact_id = int(self._artifact_id)
+        except ValueError as e:
+            raise InvalidQueryError from e
 
-            artifact_set_detail = await api.fetch_artifact_set_detail(artifact_id)
+        if self._hakushin:
+            async with HakushinAPI(self.locale, self.translator) as api:
+                artifact_set_detail = await api.fetch_artifact_set_detail(artifact_id)
 
-            self.artifact_embeds = {
-                artifact.pos: api.get_artifact_embed(artifact_set_detail, artifact)
-                for artifact in artifact_set_detail.artifacts
-            }
+                self._artifact_embeds = {
+                    pos: api.get_artifact_embed(artifact_set_detail, artifact)
+                    for pos, artifact in artifact_set_detail.parts.items()
+                }
+        else:
+            async with AmbrAPIClient(self.locale, self.translator) as api:
+                artifact_set_detail = await api.fetch_artifact_set_detail(artifact_id)
 
-        for artifact in artifact_set_detail.artifacts:
-            self.add_item(ArtifactPosButton(artifact.pos))
+                self._artifact_embeds = {
+                    artifact.pos: api.get_artifact_embed(artifact_set_detail, artifact)
+                    for artifact in artifact_set_detail.artifacts
+                }
+
+        for pos in self._artifact_embeds:
+            self.add_item(ArtifactPosButton(pos))
 
         self.message = await i.edit_original_response(
-            embed=self.artifact_embeds[artifact_set_detail.artifacts[0].pos], view=self
+            embed=next(iter(self._artifact_embeds.values())), view=self
         )
 
 
@@ -61,4 +74,4 @@ class ArtifactPosButton(Button["ArtifactSetUI"]):
         self.pos = pos
 
     async def callback(self, i: INTERACTION) -> None:
-        await i.response.edit_message(embed=self.view.artifact_embeds[self.pos])
+        await i.response.edit_message(embed=self.view._artifact_embeds[self.pos])

@@ -1083,7 +1083,7 @@ pydantic = "^2.7.1"
 type = "git"
 url = "https://github.com/seriaati/hakushin-py"
 reference = "HEAD"
-resolved_reference = "279d62e97969692072589d8b0de1e2a0e12fee8e"
+resolved_reference = "8c9006572d436f266088c8843a728476f360e067"
 
 [[package]]
 name = "httpcore"

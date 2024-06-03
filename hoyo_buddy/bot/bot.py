@@ -99,7 +99,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.pool = pool
         self.executor = concurrent.futures.ProcessPoolExecutor()
 
-        self.search_autocomplete_choices: AutocompleteChoices = {}
+        self.autocomplete_choices: AutocompleteChoices = {}
         """[game][category][locale][item_name] -> item_id"""
 
         self.login_notif_tasks: dict[int, asyncio.Task] = {}

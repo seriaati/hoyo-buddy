@@ -98,8 +98,8 @@ class Farm(
             raise InvalidQueryError
 
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
-        characters = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
-        weapons = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
+        characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
+        weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
         valid_item_ids = {id_ for c in characters.values() for id_ in c.values()} | {
             id_ for w in weapons.values() for id_ in w.values()
         }
@@ -251,8 +251,8 @@ class Farm(
     @farm_add_command.autocomplete("query")
     async def query_autocomplete(self, i: INTERACTION, current: str) -> list[app_commands.Choice]:
         try:
-            characters = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
-            weapons = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
+            characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
+            weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
         except KeyError:
             return [
                 self.bot.get_error_app_command_choice(
@@ -290,8 +290,8 @@ class Farm(
         if farm_notify is None:
             return []
 
-        characters = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
-        weapons = self.bot.search_autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
+        characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
+        weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
 
         if not current:
             locale = (await Settings.get(user_id=i.user.id)).locale or i.locale

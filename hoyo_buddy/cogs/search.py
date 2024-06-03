@@ -5,7 +5,6 @@ import logging
 import random
 from typing import TYPE_CHECKING, Any
 
-import hakushin
 from discord import Locale, app_commands
 from discord.ext import commands
 
@@ -36,7 +35,6 @@ class Search(commands.Cog):
             Game.GENSHIN: [c.value for c in ambr.ItemCategory],
             Game.STARRAIL: [c.value for c in yatta.ItemCategory],
         }
-        self._beta_ids: set[int] = set()
         self._beta_id_to_category: dict[str, str] = {}
         self._tasks: set[asyncio.Task] = set()
 
@@ -57,30 +55,12 @@ class Search(commands.Cog):
         start = self.bot.loop.time()
 
         try:
-            self.bot.search_autocomplete_choices = await AutocompleteSetup.start(
-                self.bot.translator, self.bot.session
-            )
+            (
+                self.bot.autocomplete_choices,
+                self._beta_id_to_category,
+            ) = await AutocompleteSetup.start(self.bot.translator, self.bot.session)
         except Exception:
             LOGGER_.exception("Failed to set up search autocomplete choices")
-
-        async with hakushin.HakushinAPI() as api:
-            gi_new = await api.fetch_new(hakushin.Game.GI)
-            hsr_new = await api.fetch_new(hakushin.Game.HSR)
-
-        self._beta_ids = set(
-            gi_new.artifact_set_ids
-            + gi_new.character_ids
-            + gi_new.weapon_ids
-            + hsr_new.character_ids
-            + hsr_new.light_cone_ids
-            + hsr_new.relic_set_ids
-        )
-        self._set_beta_category(ambr.ItemCategory.CHARACTERS, gi_new.character_ids)
-        self._set_beta_category(ambr.ItemCategory.WEAPONS, gi_new.weapon_ids)
-        self._set_beta_category(ambr.ItemCategory.ARTIFACT_SETS, gi_new.artifact_set_ids)
-        self._set_beta_category(yatta.ItemCategory.CHARACTERS, hsr_new.character_ids)
-        self._set_beta_category(yatta.ItemCategory.LIGHT_CONES, hsr_new.light_cone_ids)
-        self._set_beta_category(yatta.ItemCategory.RELICS, hsr_new.relic_set_ids)
 
         LOGGER_.info(
             "Finished setting up search autocomplete choices, took %.2f seconds",
@@ -138,7 +118,10 @@ class Search(commands.Cog):
         except ValueError as e:
             raise InvalidQueryError from e
 
-        if int(query) in self._beta_ids:
+        settings = await Settings.get(user_id=i.user.id)
+        locale = settings.locale or i.locale
+
+        if query in self._beta_id_to_category:
             if game is Game.GENSHIN:
                 try:
                     category = ambr.ItemCategory(category_value)
@@ -161,7 +144,7 @@ class Search(commands.Cog):
                         character_ui = gi_search.CharacterUI(
                             query,
                             author=i.user,
-                            locale=i.locale,
+                            locale=locale,
                             translator=i.client.translator,
                             hakushin=True,
                         )
@@ -171,12 +154,19 @@ class Search(commands.Cog):
                             query,
                             hakushin=True,
                             author=i.user,
-                            locale=i.locale,
+                            locale=locale,
                             translator=i.client.translator,
                         )
                         await weapon_ui.start(i)
                     case ambr.ItemCategory.ARTIFACT_SETS:
-                        raise NotImplementedError
+                        artifact_set_ui = gi_search.ArtifactSetUI(
+                            query,
+                            author=i.user,
+                            locale=locale,
+                            translator=i.client.translator,
+                            hakushin=True,
+                        )
+                        await artifact_set_ui.start(i)
                     case _:
                         raise InvalidQueryError
 
@@ -194,7 +184,7 @@ class Search(commands.Cog):
                         character_ui = hsr_search.CharacterUI(
                             character_id,
                             author=i.user,
-                            locale=i.locale,
+                            locale=locale,
                             translator=i.client.translator,
                             hakushin=True,
                         )
@@ -203,20 +193,24 @@ class Search(commands.Cog):
                         light_cone_ui = LightConeUI(
                             query,
                             author=i.user,
-                            locale=i.locale,
+                            locale=locale,
                             translator=i.client.translator,
                             hakushin=True,
                         )
                         await light_cone_ui.start(i)
                     case yatta.ItemCategory.RELICS:
-                        raise NotImplementedError
+                        relic_set_ui = hsr_search.RelicSetUI(
+                            query,
+                            author=i.user,
+                            locale=locale,
+                            translator=i.client.translator,
+                            hakushin=True,
+                        )
+                        await relic_set_ui.start(i)
                     case _:
                         raise InvalidQueryError
 
             return
-
-        settings = await Settings.get(user_id=i.user.id)
-        locale = settings.locale or i.locale
 
         if game is Game.GENSHIN:
             try:
@@ -258,6 +252,7 @@ class Search(commands.Cog):
                         author=i.user,
                         locale=locale,
                         translator=i.client.translator,
+                        hakushin=False,
                     )
                     await artifact_set_ui.start(i)
 
@@ -389,7 +384,11 @@ class Search(commands.Cog):
 
                 case yatta.ItemCategory.RELICS:
                     relic_set_ui = hsr_search.RelicSetUI(
-                        query, author=i.user, locale=locale, translator=i.client.translator
+                        query,
+                        author=i.user,
+                        locale=locale,
+                        translator=i.client.translator,
+                        hakushin=False,
                     )
                     await relic_set_ui.start(i)
 
@@ -432,7 +431,7 @@ class Search(commands.Cog):
         ]
 
     @search_command.autocomplete("query")
-    async def search_command_query_autocomplete(  # noqa: PLR0912
+    async def search_command_query_autocomplete(  # noqa: PLR0912, PLR0911
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
         try:
@@ -466,10 +465,7 @@ class Search(commands.Cog):
         if category is ambr.ItemCategory.SPIRAL_ABYSS:
             return await AbyssEnemyView.get_autocomplete_choices()
 
-        if (
-            not self.bot.search_autocomplete_choices
-            or game not in self.bot.search_autocomplete_choices
-        ):
+        if not self.bot.autocomplete_choices or game not in self.bot.autocomplete_choices:
             return [
                 self.bot.get_error_app_command_choice(
                     LocaleStr(
@@ -482,15 +478,22 @@ class Search(commands.Cog):
         if not current:
             locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
             try:
-                choice_dict = self.bot.search_autocomplete_choices[game][category][locale.value]
+                choice_dict = self.bot.autocomplete_choices[game][category][locale.value]
             except KeyError:
-                choice_dict = self.bot.search_autocomplete_choices[game][category][
-                    Locale.american_english.value
-                ]
+                try:
+                    choice_dict = self.bot.autocomplete_choices[game][category][
+                        Locale.american_english.value
+                    ]
+                except KeyError:
+                    return [
+                        self.bot.get_error_app_command_choice(
+                            LocaleStr("No results found", key="search_autocomplete_no_results")
+                        )
+                    ]
         else:
             choice_dict = {
                 k: v
-                for c in self.bot.search_autocomplete_choices[game][category].values()
+                for c in self.bot.autocomplete_choices[game][category].values()
                 for k, v in c.items()
             }
 
@@ -499,6 +502,13 @@ class Search(commands.Cog):
             for choice, item_id in choice_dict.items()
             if current.lower() in choice.lower()
         ]
+
+        if not choices:
+            return [
+                self.bot.get_error_app_command_choice(
+                    LocaleStr("No results found", key="search_autocomplete_no_results")
+                )
+            ]
 
         random.shuffle(choices)
         return choices[:25]

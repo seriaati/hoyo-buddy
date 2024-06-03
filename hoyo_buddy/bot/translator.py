@@ -24,6 +24,7 @@ if TYPE_CHECKING:
     from ambr.models import Character as GenshinCharacter
     from discord.app_commands.translator import TranslationContextTypes
     from discord.enums import Locale
+    from hakushin.models.gi import Character as HakushinCharacter
     from yatta.models import Character as HSRCharacter
 
 __all__ = ("AppCommandTranslator", "LocaleStr", "Translator")
@@ -262,7 +263,11 @@ class Translator:
         self._not_translated.clear()
 
     def get_traveler_name(
-        self, character: GenshinCharacter, locale: Locale, *, gender_symbol: bool = True
+        self,
+        character: GenshinCharacter | HakushinCharacter,
+        locale: Locale,
+        *,
+        gender_symbol: bool = True,
     ) -> str:
         element_str = self.translate(
             LocaleStr(

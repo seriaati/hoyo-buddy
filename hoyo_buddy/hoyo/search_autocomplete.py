@@ -22,6 +22,7 @@ AutocompleteChoices: TypeAlias = dict[Game, dict[ItemCategory, dict[str, dict[st
 Tasks: TypeAlias = dict[Game, dict[ItemCategory, dict[str, asyncio.Task[list[Any]]]]]
 
 LOGGER_ = logging.getLogger(__name__)
+HARD_EXCLUDE: set[str] = {"15012", "15004"}
 
 HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Mapping[hakushin.ItemCategory, Game] = {
     hakushin.ItemCategory.GI_CHARACTERS: Game.GENSHIN,
@@ -46,6 +47,8 @@ HAKUSHIN_ITEM_CATEGORY_MAP: Mapping[
 
 class AutocompleteSetup:
     _result: ClassVar[AutocompleteChoices] = {}
+    _beta_id_to_category: ClassVar[dict[str, str]] = {}
+    """Item ID to ItemCategory.value."""
     _translator: ClassVar[Translator]
     _tasks: ClassVar[Tasks] = {}
 
@@ -103,7 +106,9 @@ class AutocompleteSetup:
     ) -> asyncio.Task[list[Any]] | None:
         match category:
             case hakushin.ItemCategory.GI_CHARACTERS:
-                return tg.create_task(api.fetch_characters(HakushinGame.GI))
+                return tg.create_task(
+                    api.fetch_characters(HakushinGame.GI, traveler_gender_symbol=True)
+                )
             case hakushin.ItemCategory.HSR_CHARACTERS:
                 return tg.create_task(api.fetch_characters(HakushinGame.HSR))
             case hakushin.ItemCategory.WEAPONS:
@@ -154,7 +159,7 @@ class AutocompleteSetup:
     @classmethod
     async def _set_hakushin(cls, tg: asyncio.TaskGroup, session: aiohttp.ClientSession) -> None:
         for locale in LOCALE_TO_HAKUSHIN_LANG:
-            api = hakushin.HakushinAPI(locale, session=session)
+            api = hakushin.HakushinAPI(locale, cls._translator, session=session)
             for category in hakushin.ItemCategory:
                 game = HAKUSHIN_ITEM_CATEGORY_GAME_MAP[category]
 
@@ -184,11 +189,11 @@ class AutocompleteSetup:
             return []
 
         hakushin_items = hakushin_task.result()
-        item_ids = {item.id for item in items}
+        current_item_names: set[str] = {item.name for item in items}
         injected: list[Any] = []
 
         for hakushin_item in hakushin_items:
-            if hakushin_item.id in item_ids:
+            if hakushin_item.name in current_item_names or str(hakushin_item.id) in HARD_EXCLUDE:
                 continue
             items.append(hakushin_item)
             injected.append(hakushin_item)
@@ -199,29 +204,32 @@ class AutocompleteSetup:
     def _get_unreleased_content_item_category(cls, game: Game) -> ItemCategory:
         return (
             ambr.ItemCategory.UNRELEASED_CONTENT
-            if game == Game.GENSHIN
+            if game is Game.GENSHIN
             else yatta.ItemCategory.UNRELEASED_CONTENT
         )
 
     @classmethod
-    def _inject_to_unreleased_content(cls, game: Game, locale: str, items: list[Any]) -> None:
+    def _inject_to_unreleased_content(
+        cls, game: Game, category: ItemCategory, locale: str, items: list[Any]
+    ) -> None:
         if not items:
             return
 
-        unreleased_content_category = cls._get_unreleased_content_item_category(game)
-        if unreleased_content_category not in cls._result[game]:
-            cls._result[game][unreleased_content_category] = {}
-        if locale not in cls._result[game][unreleased_content_category]:
-            cls._result[game][unreleased_content_category][locale] = {}
+        beta_category = cls._get_unreleased_content_item_category(game)
+        if beta_category not in cls._result[game]:
+            cls._result[game][beta_category] = {}
+        if locale not in cls._result[game][beta_category]:
+            cls._result[game][beta_category][locale] = {}
 
-        cls._result[game][unreleased_content_category][locale].update(
-            {item.name: str(item.id) for item in items if item.name}
-        )
+        for item in items:
+            if item.name:
+                cls._result[game][beta_category][locale].update({item.name: str(item.id)})
+                cls._beta_id_to_category[str(item.id)] = category.value
 
     @classmethod
     async def start(
         cls, translator: Translator, session: aiohttp.ClientSession
-    ) -> AutocompleteChoices:
+    ) -> tuple[AutocompleteChoices, dict[str, str]]:
         cls._translator = translator
 
         async with asyncio.TaskGroup() as tg:
@@ -239,9 +247,9 @@ class AutocompleteSetup:
                 for locale, task in category_items.items():
                     items = task.result()
                     injected = cls._inject_hakushin_items(game, category, locale, items)
-                    cls._inject_to_unreleased_content(game, locale, injected)
+                    cls._inject_to_unreleased_content(game, category, locale, injected)
                     cls._result[game][category][locale] = {
                         item.name: str(item.id) for item in items if item.name
                     }
 
-        return cls._result
+        return cls._result, cls._beta_id_to_category

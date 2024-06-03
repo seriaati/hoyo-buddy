@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any
 from discord import ButtonStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
@@ -12,10 +13,11 @@ from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
 
 if TYPE_CHECKING:
     from discord import Locale, Member, User
+    from hakushin.models.hsr import LightConeDetail as HakushinLCDetail
+    from yatta import LightConeDetail
 
     from hoyo_buddy.bot.bot import INTERACTION
     from hoyo_buddy.bot.translator import Translator
-    from hoyo_buddy.embeds import DefaultEmbed
 
 
 class LightConeUI(View):
@@ -32,8 +34,14 @@ class LightConeUI(View):
 
         self._light_cone_id = light_cone_id
         self._light_cone_level = 80
-        self.superimpose = 1
+        self._superimpose = 1
+        self._lc_detail: LightConeDetail | HakushinLCDetail | None = None
+
         self._hakushin = hakushin
+
+    @staticmethod
+    def _convert_manual_avatar(manual_avatar: dict[str, dict[str, str]]) -> dict[str, str]:
+        return {stat_id: stat["name"] for stat_id, stat in manual_avatar.items()}
 
     async def _fetch_embed(self) -> DefaultEmbed:
         if self._hakushin:
@@ -46,9 +54,13 @@ class LightConeUI(View):
                 except ValueError:
                     raise InvalidQueryError from None
 
-                light_cone_detail = await api.fetch_light_cone_detail(light_cone_id)
+                lc_detail = await api.fetch_light_cone_detail(light_cone_id)
+                self._lc_detail = lc_detail
                 embed = api.get_light_cone_embed(
-                    light_cone_detail, self._light_cone_level, self.superimpose, manual_avatar
+                    lc_detail,
+                    self._light_cone_level,
+                    self._superimpose,
+                    self._convert_manual_avatar(manual_avatar),
                 )
         else:
             async with YattaAPIClient(self.locale, self.translator) as api:
@@ -57,10 +69,11 @@ class LightConeUI(View):
                 except ValueError:
                     raise InvalidQueryError from None
 
-                light_cone_detail = await api.fetch_light_cone_detail(light_cone_id)
+                lc_detail = await api.fetch_light_cone_detail(light_cone_id)
+                self._lc_detail = lc_detail
                 manual_avatar = await api.fetch_manual_avatar()
                 embed = api.get_light_cone_embed(
-                    light_cone_detail, self._light_cone_level, self.superimpose, manual_avatar
+                    lc_detail, self._light_cone_level, self._superimpose, manual_avatar
                 )
 
         return embed
@@ -75,12 +88,13 @@ class LightConeUI(View):
             )
         )
         self.add_item(
-            Superposition(
+            SuperimposeSelect(
                 min_superposition=1,
                 max_superposition=5,
-                current_superposition=self.superimpose,
+                current_superposition=self._superimpose,
             )
         )
+        self.add_item(ShowStoryButton())
 
     async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
@@ -121,7 +135,7 @@ class EnterLightConeLevel(Button[LightConeUI]):
         await i.edit_original_response(embed=embed, view=self.view)
 
 
-class Superposition(Select[LightConeUI]):
+class SuperimposeSelect(Select[LightConeUI]):
     def __init__(
         self, *, min_superposition: int, max_superposition: int, current_superposition: int
     ) -> None:
@@ -137,7 +151,22 @@ class Superposition(Select[LightConeUI]):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view.superimpose = int(self.values[0])
+        self.view._superimpose = int(self.values[0])
         embed = await self.view._fetch_embed()
         self.view._setup_items()
         await i.response.edit_message(embed=embed, view=self.view)
+
+
+class ShowStoryButton(Button[LightConeUI]):
+    def __init__(self) -> None:
+        super().__init__(label=LocaleStr("Read Story", key="read_story.button.label"))
+
+    async def callback(self, i: INTERACTION) -> Any:
+        assert self.view._lc_detail is not None
+        embed = DefaultEmbed(
+            self.view.locale,
+            self.view.translator,
+            title=self.view._lc_detail.name,
+            description=self.view._lc_detail.description,
+        )
+        await i.response.send_message(embed=embed, ephemeral=True)

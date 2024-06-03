@@ -52,7 +52,6 @@ class GeetestWebServer:
             self.template.replace("{ user_id }", str(payload.user_id))
             .replace("{ gt_version }", str(payload.gt_version))
             .replace("{ api_server }", payload.api_server)
-            .replace("{ proxy_geetest }", str(payload.proxy_geetest))
             .replace("{ guild_id }", str(payload.guild_id))
             .replace("{ channel_id }", str(payload.channel_id))
             .replace("{ message_id }", str(payload.message_id))
@@ -101,17 +100,6 @@ class GeetestWebServer:
         )
         return web.Response(status=302, headers={"Location": protocol})
 
-    async def proxy(self, request: web.Request) -> web.Response:
-        params = dict(request.query)
-        url = params.pop("url", None)
-        if not url:
-            return web.Response(status=400)
-
-        async with aiohttp.ClientSession() as session, session.get(url, params=params) as r:
-            content = await r.read()
-
-        return web.Response(body=content, status=r.status, content_type="text/javascript")
-
     async def run(self, port: int = 5000) -> None:
         logger.info("Starting web server... (port=%d)", port)
 
@@ -126,7 +114,6 @@ class GeetestWebServer:
                 web.get("/mmt", self.mmt_endpoint),
                 web.post("/send-data", self.send_data_endpoint),
                 web.get("/redirect", self.redirect),
-                web.get("/proxy", self.proxy),
             ]
         )
 

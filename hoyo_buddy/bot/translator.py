@@ -174,7 +174,7 @@ class Translator:
             if source_string is None and string_key not in self._not_translated:
                 self._not_translated[string_key] = message
                 logger.info(
-                    "String %r is missing on Transifex, added to not_translated", string_key
+                    f"String {string_key!r} is missing on Transifex, added to not_translated"
                 )
             elif (
                 source_string is not None
@@ -183,10 +183,7 @@ class Translator:
             ):
                 self._not_translated[string_key] = message
                 logger.info(
-                    "String %r has different values (CDS vs Local): %r and %r, added to not_translated",
-                    string_key,
-                    source_string,
-                    message.format(**extras),
+                    f"String {string_key!r} has different values (CDS vs Local): {source_string!r} and {message.format(**extras)!r}, added to not_translated"
                 )
 
         lang = locale.value.replace("-", "_")
@@ -226,7 +223,7 @@ class Translator:
     def _get_string_key(string: LocaleStr) -> str:
         if string.key is None:
             if string.warn_no_key:
-                logger.warning("Missing key for string %r, using generated key", string.message)
+                logger.warning(f"Missing key for string {string.message!r}, using generated key")
             string_key = (
                 string.message.replace(" ", "_")
                 .replace(",", "")

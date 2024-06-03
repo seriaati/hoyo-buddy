@@ -30,14 +30,15 @@ class Metrics(commands.Cog):
         match i.type:
             case InteractionType.application_command:
                 if isinstance(i.command, app_commands.Command):
+                    parameters = i.namespace.__dict__ or ""
                     if i.command.parent is None:
-                        logger.info("[Command][%s] %s", i.user.id, i.command.name)
+                        logger.info(f"[Command][{i.user.id}] {i.command.name} {parameters}")
                         sentry_sdk.metrics.incr(
                             "commands.executed", tags={"command": i.command.name}
                         )
                     else:
                         logger.info(
-                            "[Command][%s] %s %s", i.user.id, i.command.parent.name, i.command.name
+                            f"[Command][{i.user.id}] {i.command.parent.name} {i.command.name} {parameters}"
                         )
                         sentry_sdk.metrics.incr(
                             "commands.executed",

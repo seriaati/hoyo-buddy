@@ -107,9 +107,7 @@ class AutoRedeem:
 
         async with cls._lock:
             logger.info(
-                "Starting auto redeem task for game %s and codes %s",
-                game or "all",
-                codes or "from API",
+                f"Starting auto redeem task for game {game or 'all'} and codes {codes or 'from API'}"
             )
             cls._bot = bot
 

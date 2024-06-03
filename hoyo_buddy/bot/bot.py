@@ -111,9 +111,9 @@ class HoyoBuddy(commands.AutoShardedBot):
             cog_name = Path(filepath).stem
             try:
                 await self.load_extension(f"hoyo_buddy.cogs.{cog_name}")
-                logger.info("Loaded cog %r", cog_name)
+                logger.info(f"Loaded cog {cog_name!r}")
             except Exception:
-                logger.exception("Failed to load cog %r", cog_name)
+                logger.exception(f"Failed to load cog {cog_name!r}")
 
         await self.load_extension("jishaku")
 

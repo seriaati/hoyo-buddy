@@ -80,7 +80,7 @@ class View(discord.ui.View):
             with contextlib.suppress(discord.NotFound, discord.HTTPException):
                 await self.message.edit(view=self)
         else:
-            logger.error("View %r timed out without a set message", self)
+            logger.error(f"View {self!r} timed out without a set message")
 
     async def on_error(
         self,

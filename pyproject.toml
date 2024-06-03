@@ -21,7 +21,7 @@ cachetools = "^5.3.2"
 discord-py = {git = "https://github.com/Rapptz/discord.py", rev = "efe81a6"}
 diskcache = "^5.6.3"
 enka-py = {git = "https://github.com/seriaati/enka-py"}
-genshin = {git = "https://github.com/thesadru/genshin.py", rev = "1a1c03b", extras = ["all"]}
+genshin = {git = "https://github.com/thesadru/genshin.py", rev = "9d2009318e1a65bdee3e409b9489dc609a43e207", extras = ["all"]}
 gitpython = "^3.1.42"
 hakushin-py = {git = "https://github.com/seriaati/hakushin-py"}
 jishaku = "^2.5.1"

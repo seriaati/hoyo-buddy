@@ -812,7 +812,7 @@ tests = ["check-manifest (>=0.42)", "mock (>=1.3.0)", "pytest (==5.4.3)", "pytes
 
 [[package]]
 name = "discord.py"
-version = "2.4.0a5034+gefe81a67f"
+version = "2.4.0a5041+g0e58a927d"
 description = "A Python wrapper for the Discord API"
 optional = false
 python-versions = ">=3.8"
@@ -826,7 +826,7 @@ Brotli = {version = "*", optional = true, markers = "extra == \"speed\""}
 orjson = {version = ">=3.5.4", optional = true, markers = "extra == \"speed\""}
 
 [package.extras]
-docs = ["sphinx (==4.4.0)", "sphinx-inline-tabs (==2023.4.21)", "sphinxcontrib-applehelp (==1.0.4)", "sphinxcontrib-devhelp (==1.0.2)", "sphinxcontrib-htmlhelp (==2.0.1)", "sphinxcontrib-jsmath (==1.0.1)", "sphinxcontrib-qthelp (==1.0.3)", "sphinxcontrib-serializinghtml (==1.1.5)", "sphinxcontrib-websupport (==1.2.4)", "sphinxcontrib_trio (==1.1.2)", "typing-extensions (>=4.3,<5)"]
+docs = ["sphinx (==4.4.0)", "sphinx-inline-tabs (==2023.4.21)", "sphinxcontrib-applehelp (==1.0.4)", "sphinxcontrib-devhelp (==1.0.2)", "sphinxcontrib-htmlhelp (==2.0.1)", "sphinxcontrib-jsmath (==1.0.1)", "sphinxcontrib-qthelp (==1.0.3)", "sphinxcontrib-serializinghtml (==1.1.5)", "sphinxcontrib-trio (==1.1.2)", "sphinxcontrib-websupport (==1.2.4)", "typing-extensions (>=4.3,<5)"]
 speed = ["Brotli", "aiodns (>=1.1)", "cchardet (==2.1.7)", "orjson (>=3.5.4)"]
 test = ["coverage[toml]", "pytest", "pytest-asyncio", "pytest-cov", "pytest-mock", "typing-extensions (>=4.3,<5)", "tzdata"]
 voice = ["PyNaCl (>=1.3.0,<1.6)"]
@@ -834,8 +834,8 @@ voice = ["PyNaCl (>=1.3.0,<1.6)"]
 [package.source]
 type = "git"
 url = "https://github.com/Rapptz/discord.py"
-reference = "efe81a6"
-resolved_reference = "efe81a67fb55f9f2a67bb84810be729ed8f09bc3"
+reference = "HEAD"
+resolved_reference = "0e58a927ddbc300a17ef0137d948faa659565313"
 
 [[package]]
 name = "diskcache"
@@ -995,12 +995,14 @@ files = [
 
 [[package]]
 name = "genshin"
-version = "1.6.3"
+version = "1.7.1"
 description = "An API wrapper for Genshin Impact."
 optional = false
 python-versions = ">=3.8"
-files = []
-develop = false
+files = [
+    {file = "genshin-1.7.1-py3-none-any.whl", hash = "sha256:0d9b91581f4beadea362ad59fc09d25db3af2f6ffe6e0650350555921327f560"},
+    {file = "genshin-1.7.1.tar.gz", hash = "sha256:d591f263ea914a5cd1f2a6d9cfe0d457cedb274bdfb2b8b689afff4b6df1d4e3"},
+]
 
 [package.dependencies]
 aiohttp = "*"
@@ -1015,12 +1017,6 @@ all = ["browser-cookie3", "click", "qrcode[pil]", "rsa"]
 auth = ["qrcode[pil]", "rsa"]
 cli = ["click"]
 cookies = ["browser-cookie3"]
-
-[package.source]
-type = "git"
-url = "https://github.com/thesadru/genshin.py"
-reference = "1a1c03b"
-resolved_reference = "1a1c03bada6f215142a5b370f778caea8abfdc0e"
 
 [[package]]
 name = "gitdb"
@@ -2630,4 +2626,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "cdd6b4d0300764793e4e33f2411d12d7ab4295d8e895408358bd20e516ebdab6"
+content-hash = "b37eb9b5714f1b99aa03321cecd8ae1142acdecc896e63b62696c60cd716d12a"

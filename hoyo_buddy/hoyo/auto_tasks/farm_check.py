@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import logging
 from datetime import timedelta
 from typing import TYPE_CHECKING, ClassVar, TypeVar
 
 import ambr
 from discord import Locale
+from loguru import logger
 
 from ...bot.translator import LocaleStr, Translator
 from ...constants import UID_TZ_OFFSET
@@ -18,7 +18,6 @@ from ..farm_data import FarmDataFetcher
 if TYPE_CHECKING:
     from ...bot.bot import HoyoBuddy
 
-LOGGER_ = logging.getLogger(__name__)
 
 CharacterOrWeapon = TypeVar("CharacterOrWeapon", ambr.Character, ambr.Weapon)
 
@@ -67,7 +66,7 @@ class FarmChecker:
 
     @classmethod
     async def execute(cls, bot: HoyoBuddy, uid_start: str) -> None:  # noqa: C901
-        LOGGER_.info("Starting farm check task for uid_start %s", uid_start)
+        logger.info("Starting farm check task for uid_start %s", uid_start)
 
         cls._bot = bot
         cls._translator = bot.translator

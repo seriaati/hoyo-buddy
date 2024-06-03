@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 from typing import TYPE_CHECKING
 
 from discord import app_commands
@@ -26,8 +25,6 @@ from ..ui.hoyo.redeem import RedeemUI
 
 if TYPE_CHECKING:
     from ..bot.bot import INTERACTION, HoyoBuddy
-
-LOGGER_ = logging.getLogger(__name__)
 
 
 class Hoyo(commands.Cog):

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import base64
 import datetime
-import logging
 import re
 from typing import TYPE_CHECKING, TypeVar
 
@@ -14,8 +13,6 @@ if TYPE_CHECKING:
 T = TypeVar("T")
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
-
-LOGGER_ = logging.getLogger(__name__)
 
 
 def get_now() -> datetime.datetime:

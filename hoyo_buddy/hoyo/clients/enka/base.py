@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-import logging
 from typing import Any, overload
 
 import discord
 import enka
 
 from hoyo_buddy.db.models import EnkaCache
-
-LOGGER_ = logging.getLogger(__name__)
 
 
 class BaseClient:

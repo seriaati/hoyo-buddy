@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-import logging
 import random
 from typing import TYPE_CHECKING, Any
 
 from discord import Locale, app_commands
 from discord.ext import commands
+from loguru import logger
 
 from ..bot.translator import LocaleStr
 from ..db.models import Settings
@@ -24,8 +24,6 @@ from ..ui.hoyo.hsr.search.light_cone import LightConeUI
 if TYPE_CHECKING:
     from ..bot.bot import INTERACTION, HoyoBuddy
 
-LOGGER_ = logging.getLogger(__name__)
-
 
 class Search(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
@@ -39,8 +37,8 @@ class Search(commands.Cog):
         self._tasks: set[asyncio.Task] = set()
 
     async def cog_load(self) -> None:
-        # if self.bot.env == "dev":
-        #     return
+        if self.bot.env == "dev":
+            return
 
         task = asyncio.create_task(self._setup_search_autocomplete_choices())
         self._tasks.add(task)
@@ -51,7 +49,7 @@ class Search(commands.Cog):
             self._beta_id_to_category[str(item_id)] = category.value
 
     async def _setup_search_autocomplete_choices(self) -> None:
-        LOGGER_.info("Setting up search autocomplete choices")
+        logger.info("Setting up search autocomplete choices")
         start = self.bot.loop.time()
 
         try:
@@ -60,9 +58,9 @@ class Search(commands.Cog):
                 self._beta_id_to_category,
             ) = await AutocompleteSetup.start(self.bot.translator, self.bot.session)
         except Exception:
-            LOGGER_.exception("Failed to set up search autocomplete choices")
+            logger.exception("Failed to set up search autocomplete choices")
 
-        LOGGER_.info(
+        logger.info(
             "Finished setting up search autocomplete choices, took %.2f seconds",
             self.bot.loop.time() - start,
         )

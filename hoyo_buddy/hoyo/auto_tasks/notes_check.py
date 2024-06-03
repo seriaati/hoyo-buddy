@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import datetime
-import logging
 from typing import TYPE_CHECKING, ClassVar
 
 from discord import Locale
@@ -21,8 +20,6 @@ from ...utils import get_now
 
 if TYPE_CHECKING:
     from ...bot.bot import HoyoBuddy
-
-LOGGER_ = logging.getLogger(__name__)
 
 
 class NotesChecker:

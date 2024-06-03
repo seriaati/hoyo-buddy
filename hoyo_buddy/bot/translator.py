@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-import logging
 import os
 import re
 import time
 from typing import TYPE_CHECKING, Any
 
 from discord import app_commands
+from loguru import logger
 from seria.utils import read_json, split_list_to_chunks
 from transifex.native import init, tx
 from transifex.native.parsing import SourceString
@@ -29,7 +29,6 @@ if TYPE_CHECKING:
 
 __all__ = ("AppCommandTranslator", "LocaleStr", "Translator")
 
-LOGGER_ = logging.getLogger(__name__)
 COMMAND_REGEX = r"</[^>]+>"
 
 
@@ -128,7 +127,7 @@ class Translator:
         if self._env in {"prod", "test"}:
             await self.fetch_source_strings()
 
-        LOGGER_.info("Translator loaded")
+        logger.info("Translator loaded")
 
     async def load_synced_commands_json(self) -> None:
         self._synced_commands = await read_json("hoyo_buddy/bot/data/synced_commands.json")
@@ -174,7 +173,7 @@ class Translator:
 
             if source_string is None and string_key not in self._not_translated:
                 self._not_translated[string_key] = message
-                LOGGER_.info(
+                logger.info(
                     "String %r is missing on Transifex, added to not_translated", string_key
                 )
             elif (
@@ -183,7 +182,7 @@ class Translator:
                 and string_key not in self._not_translated
             ):
                 self._not_translated[string_key] = message
-                LOGGER_.info(
+                logger.info(
                     "String %r has different values (CDS vs Local): %r and %r, added to not_translated",
                     string_key,
                     source_string,
@@ -227,7 +226,7 @@ class Translator:
     def _get_string_key(string: LocaleStr) -> str:
         if string.key is None:
             if string.warn_no_key:
-                LOGGER_.warning("Missing key for string %r, using generated key", string.message)
+                logger.warning("Missing key for string %r, using generated key", string.message)
             string_key = (
                 string.message.replace(" ", "_")
                 .replace(",", "")
@@ -241,16 +240,16 @@ class Translator:
 
     @staticmethod
     async def fetch_source_strings() -> None:
-        LOGGER_.info("Fetching translations...")
+        logger.info("Fetching translations...")
         start = time.time()
         await asyncio.to_thread(tx.fetch_translations)
-        LOGGER_.info("Fetched translations in %.2f seconds", time.time() - start)
+        logger.info("Fetched translations in %.2f seconds", time.time() - start)
 
     async def push_source_strings(self) -> None:
         if not self._not_translated:
             return
 
-        LOGGER_.info("Pushing %d source strings to Transifex", len(self._not_translated))
+        logger.info("Pushing %d source strings to Transifex", len(self._not_translated))
         split_source_strings = split_list_to_chunks(
             [SourceString(string, _key=key) for key, string in self._not_translated.items()],
             5,
@@ -301,7 +300,7 @@ class Translator:
     async def unload(self) -> None:
         if self._not_translated and self._env in {"prod", "test"}:
             await self.push_source_strings()
-        LOGGER_.info("Translator unloaded")
+        logger.info("Translator unloaded")
 
 
 class AppCommandTranslator(app_commands.Translator):

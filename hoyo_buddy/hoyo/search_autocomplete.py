@@ -175,21 +175,48 @@ class AutocompleteSetup:
         category: ambr.ItemCategory | yatta.ItemCategory,
         locale: str,
         items: list[Any],
-    ) -> None:
+    ) -> list[Any]:
         try:
             hakushin_task = cls._tasks[game][
                 HAKUSHIN_ITEM_CATEGORY_MAP[(type(category), category)]
             ][locale]
         except KeyError:
-            return
+            return []
 
         hakushin_items = hakushin_task.result()
         item_ids = {item.id for item in items}
+        injected: list[Any] = []
 
         for hakushin_item in hakushin_items:
             if hakushin_item.id in item_ids:
                 continue
             items.append(hakushin_item)
+            injected.append(hakushin_item)
+
+        return injected
+
+    @classmethod
+    def _get_unreleased_content_item_category(cls, game: Game) -> ItemCategory:
+        return (
+            ambr.ItemCategory.UNRELEASED_CONTENT
+            if game == Game.GENSHIN
+            else yatta.ItemCategory.UNRELEASED_CONTENT
+        )
+
+    @classmethod
+    def _inject_to_unreleased_content(cls, game: Game, locale: str, items: list[Any]) -> None:
+        if not items:
+            return
+
+        unreleased_content_category = cls._get_unreleased_content_item_category(game)
+        if unreleased_content_category not in cls._result[game]:
+            cls._result[game][unreleased_content_category] = {}
+        if locale not in cls._result[game][unreleased_content_category]:
+            cls._result[game][unreleased_content_category][locale] = {}
+
+        cls._result[game][unreleased_content_category][locale].update(
+            {item.name: str(item.id) for item in items if item.name}
+        )
 
     @classmethod
     async def start(
@@ -211,7 +238,8 @@ class AutocompleteSetup:
                 cls._result[game][category] = {}
                 for locale, task in category_items.items():
                     items = task.result()
-                    cls._inject_hakushin_items(game, category, locale, items)
+                    injected = cls._inject_hakushin_items(game, category, locale, items)
+                    cls._inject_to_unreleased_content(game, locale, injected)
                     cls._result[game][category][locale] = {
                         item.name: str(item.id) for item in items if item.name
                     }

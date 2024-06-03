@@ -55,6 +55,7 @@ AUDIO_LANGUAGES = ("EN", "CHS", "JP", "KR")
 
 
 class ItemCategory(StrEnum):
+    UNRELEASED_CONTENT = "Unreleased Content"
     CHARACTERS = "Characters"
     WEAPONS = "Weapons"
     ARTIFACT_SETS = "Artifact Sets"

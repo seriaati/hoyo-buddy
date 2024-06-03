@@ -15,7 +15,7 @@ from ..emojis import PROJECT_AMBER
 from ..enums import Game
 from ..exceptions import InvalidQueryError
 from ..hoyo.clients import ambr, yatta
-from ..hoyo.search_autocomplete import AutocompleteSetup
+from ..hoyo.search_autocomplete import AutocompleteSetup, ItemCategory
 from ..ui import URLButtonView
 from ..ui.hoyo.genshin import search as gi_search
 from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
@@ -37,6 +37,7 @@ class Search(commands.Cog):
             Game.STARRAIL: [c.value for c in yatta.ItemCategory],
         }
         self._beta_ids: set[int] = set()
+        self._beta_id_to_category: dict[str, str] = {}
         self._tasks: set[asyncio.Task] = set()
 
     async def cog_load(self) -> None:
@@ -46,6 +47,10 @@ class Search(commands.Cog):
         task = asyncio.create_task(self._setup_search_autocomplete_choices())
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)
+
+    def _set_beta_category(self, category: ItemCategory, beta_ids: list[int]) -> None:
+        for item_id in beta_ids:
+            self._beta_id_to_category[str(item_id)] = category.value
 
     async def _setup_search_autocomplete_choices(self) -> None:
         LOGGER_.info("Setting up search autocomplete choices")
@@ -70,6 +75,12 @@ class Search(commands.Cog):
             + hsr_new.light_cone_ids
             + hsr_new.relic_set_ids
         )
+        self._set_beta_category(ambr.ItemCategory.CHARACTERS, gi_new.character_ids)
+        self._set_beta_category(ambr.ItemCategory.WEAPONS, gi_new.weapon_ids)
+        self._set_beta_category(ambr.ItemCategory.ARTIFACT_SETS, gi_new.artifact_set_ids)
+        self._set_beta_category(yatta.ItemCategory.CHARACTERS, hsr_new.character_ids)
+        self._set_beta_category(yatta.ItemCategory.LIGHT_CONES, hsr_new.light_cone_ids)
+        self._set_beta_category(yatta.ItemCategory.RELICS, hsr_new.relic_set_ids)
 
         LOGGER_.info(
             "Finished setting up search autocomplete choices, took %.2f seconds",
@@ -122,41 +133,87 @@ class Search(commands.Cog):
         if category_value == "none" or query == "none":
             raise InvalidQueryError
 
-        if int(query) in self._beta_ids:
-            try:
-                category = ambr.ItemCategory(category_value)
-            except ValueError as e:
-                try:
-                    category = yatta.ItemCategory(category_value)
-                except ValueError:
-                    raise InvalidQueryError from e
-
-            match category:
-                case ambr.ItemCategory.CHARACTERS:
-                    character_ui = gi_search.CharacterUI(
-                        query,
-                        author=i.user,
-                        locale=i.locale,
-                        translator=i.client.translator,
-                        hakushin=True
-                    )
-                    await character_ui.update(i)
-                case ambr.ItemCategory.WEAPONS:
-                    weapon_ui = gi_search.WeaponUI(
-                        query,
-                        hakushin=True,
-                        author=i.user,
-                        locale=i.locale,
-                        translator=i.client.translator,
-                    )
-                    await weapon_ui.start(i)
-
-            return
-
         try:
             game = Game(game_value)
         except ValueError as e:
             raise InvalidQueryError from e
+
+        if int(query) in self._beta_ids:
+            if game is Game.GENSHIN:
+                try:
+                    category = ambr.ItemCategory(category_value)
+                except ValueError as e:
+                    raise InvalidQueryError from e
+            elif game is Game.STARRAIL:
+                try:
+                    category = yatta.ItemCategory(category_value)
+                except ValueError as e:
+                    raise InvalidQueryError from e
+            else:
+                raise InvalidQueryError
+
+            if game is Game.GENSHIN:
+                if category is ambr.ItemCategory.UNRELEASED_CONTENT:
+                    category = ambr.ItemCategory(self._beta_id_to_category[query])
+
+                match category:
+                    case ambr.ItemCategory.CHARACTERS:
+                        character_ui = gi_search.CharacterUI(
+                            query,
+                            author=i.user,
+                            locale=i.locale,
+                            translator=i.client.translator,
+                            hakushin=True,
+                        )
+                        await character_ui.update(i)
+                    case ambr.ItemCategory.WEAPONS:
+                        weapon_ui = gi_search.WeaponUI(
+                            query,
+                            hakushin=True,
+                            author=i.user,
+                            locale=i.locale,
+                            translator=i.client.translator,
+                        )
+                        await weapon_ui.start(i)
+                    case ambr.ItemCategory.ARTIFACT_SETS:
+                        raise NotImplementedError
+                    case _:
+                        raise InvalidQueryError
+
+            elif game is Game.STARRAIL:
+                if category is yatta.ItemCategory.UNRELEASED_CONTENT:
+                    category = yatta.ItemCategory(self._beta_id_to_category[query])
+
+                match category:
+                    case yatta.ItemCategory.CHARACTERS:
+                        try:
+                            character_id = int(query)
+                        except ValueError as e:
+                            raise InvalidQueryError from e
+
+                        character_ui = hsr_search.CharacterUI(
+                            character_id,
+                            author=i.user,
+                            locale=i.locale,
+                            translator=i.client.translator,
+                            hakushin=True,
+                        )
+                        await character_ui.start(i)
+                    case yatta.ItemCategory.LIGHT_CONES:
+                        light_cone_ui = LightConeUI(
+                            query,
+                            author=i.user,
+                            locale=i.locale,
+                            translator=i.client.translator,
+                            hakushin=True,
+                        )
+                        await light_cone_ui.start(i)
+                    case yatta.ItemCategory.RELICS:
+                        raise NotImplementedError
+                    case _:
+                        raise InvalidQueryError
+
+            return
 
         settings = await Settings.get(user_id=i.user.id)
         locale = settings.locale or i.locale
@@ -320,6 +377,7 @@ class Search(commands.Cog):
                         author=i.user,
                         locale=locale,
                         translator=i.client.translator,
+                        hakushin=False,
                     )
                     await light_cone_ui.start(i)
 
@@ -346,6 +404,7 @@ class Search(commands.Cog):
                         author=i.user,
                         locale=locale,
                         translator=i.client.translator,
+                        hakushin=False,
                     )
                     await character_ui.start(i)
 

@@ -6,6 +6,7 @@ from discord import ButtonStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.exceptions import InvalidQueryError
+from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
 
@@ -22,30 +23,47 @@ class LightConeUI(View):
         self,
         light_cone_id: str,
         *,
+        hakushin: bool,
         author: User | Member,
         locale: Locale,
         translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
-        self.light_cone_id = light_cone_id
-        self.light_cone_level = 80
-        self.superposition = 1
+        self._light_cone_id = light_cone_id
+        self._light_cone_level = 80
+        self.superimpose = 1
+        self._hakushin = hakushin
 
-    async def _fetch_weapon_embed(self) -> DefaultEmbed:
-        async with YattaAPIClient(self.locale, self.translator) as api:
-            try:
-                light_cone_id = int(self.light_cone_id)
-            except ValueError:
-                raise InvalidQueryError from None
+    async def _fetch_embed(self) -> DefaultEmbed:
+        if self._hakushin:
+            async with YattaAPIClient(self.locale, self.translator) as api:
+                manual_avatar = await api.fetch_manual_avatar()
 
-            light_cone_detail = await api.fetch_light_cone_detail(light_cone_id)
-            manual_avatar = await api.fetch_manual_avatar()
-            embed = api.get_light_cone_embed(
-                light_cone_detail, self.light_cone_level, self.superposition, manual_avatar
-            )
+            async with HakushinAPI(self.locale, self.translator) as api:
+                try:
+                    light_cone_id = int(self._light_cone_id)
+                except ValueError:
+                    raise InvalidQueryError from None
 
-            return embed
+                light_cone_detail = await api.fetch_light_cone_detail(light_cone_id)
+                embed = api.get_light_cone_embed(
+                    light_cone_detail, self._light_cone_level, self.superimpose, manual_avatar
+                )
+        else:
+            async with YattaAPIClient(self.locale, self.translator) as api:
+                try:
+                    light_cone_id = int(self._light_cone_id)
+                except ValueError:
+                    raise InvalidQueryError from None
+
+                light_cone_detail = await api.fetch_light_cone_detail(light_cone_id)
+                manual_avatar = await api.fetch_manual_avatar()
+                embed = api.get_light_cone_embed(
+                    light_cone_detail, self._light_cone_level, self.superimpose, manual_avatar
+                )
+
+        return embed
 
     def _setup_items(self) -> None:
         self.clear_items()
@@ -60,13 +78,13 @@ class LightConeUI(View):
             Superposition(
                 min_superposition=1,
                 max_superposition=5,
-                current_superposition=self.superposition,
+                current_superposition=self.superimpose,
             )
         )
 
     async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
-        embed = await self._fetch_weapon_embed()
+        embed = await self._fetch_embed()
         self._setup_items()
         await i.edit_original_response(embed=embed, view=self)
         self.message = await i.original_response()
@@ -97,8 +115,8 @@ class EnterLightConeLevel(Button[LightConeUI]):
         if incomplete:
             return
 
-        self.view.light_cone_level = int(modal.level.value)
-        embed = await self.view._fetch_weapon_embed()
+        self.view._light_cone_level = int(modal.level.value)
+        embed = await self.view._fetch_embed()
         self.view._setup_items()
         await i.edit_original_response(embed=embed, view=self.view)
 
@@ -119,7 +137,7 @@ class Superposition(Select[LightConeUI]):
         )
 
     async def callback(self, i: INTERACTION) -> Any:
-        self.view.superposition = int(self.values[0])
-        embed = await self.view._fetch_weapon_embed()
+        self.view.superimpose = int(self.values[0])
+        embed = await self.view._fetch_embed()
         self.view._setup_items()
         await i.response.edit_message(embed=embed, view=self.view)

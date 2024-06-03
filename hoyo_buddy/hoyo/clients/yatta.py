@@ -34,6 +34,7 @@ AUDIO_LANGUAGES = ("EN", "CN", "JP", "KR")
 
 
 class ItemCategory(StrEnum):
+    UNRELEASED_CONTENT = "Unreleased Content"
     CHARACTERS = "Characters"
     LIGHT_CONES = "Light Cones"
     ITEMS = "Items"
@@ -462,13 +463,14 @@ class YattaAPIClient(yatta.YattaAPI):
             inline=False,
         )
         embed.add_field(
-            name=LocaleStr("Ability", key="yatta_light_cone_ability_field_name"),
+            name=light_cone.skill.name,
             value=self._process_description_params(
                 light_cone.skill.description, light_cone.skill.params, param_index=superposition - 1
             ),
             inline=False,
         )
         embed.set_thumbnail(url=light_cone.icon)
+        embed.set_footer(text=light_cone.description)
 
         return embed
 

@@ -99,9 +99,7 @@ class CharacterUI(View):
 
         async with HakushinAPI(self.locale, self.translator) as api:
             character_detail = await api.fetch_character_detail(self.character_id, hakushin.Game.GI)
-            return api.get_character_embed(
-                character_detail, self.character_level, manual_weapon, hakushin.Game.GI
-            )
+            return api.get_character_embed(character_detail, self.character_level, manual_weapon)
 
     async def fetch_hakushin_skill_embed(
         self,

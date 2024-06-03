@@ -7,11 +7,13 @@ authors = ["seriaati <seria.ati@gmail.com>"]
 description = "Elevate your Hoyoverse experience."
 license = "GPL-3.0"
 name = "hoyo-buddy"
+package-mode = false
 readme = "README.md"
 version = "0.9.12"
 
 [tool.poetry.dependencies]
 aiofiles = "^23.2.1"
+ambr-py = {git = "https://github.com/seriaati/ambr"}
 asyncache = "^0.3.1"
 asyncpg = "^0.29.0"
 asyncpg-listen = "^0.0.6"
@@ -23,6 +25,7 @@ genshin = {git = "https://github.com/thesadru/genshin.py", rev = "1a1c03b", extr
 gitpython = "^3.1.42"
 hakushin-py = {git = "https://github.com/seriaati/hakushin-py"}
 jishaku = "^2.5.1"
+loguru = "^0.7.2"
 novelai = {git = "https://github.com/kokosensei/NovelAI-API"}
 orjson = "^3.9.9"
 pillow = "^10.1.0"
@@ -36,8 +39,6 @@ seria-library = {git = "https://github.com/seriaati/seria-library"}
 tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
 transifex-python = "^3.5.0"
 yatta-py = "^1.3.6"
-ambr-py = {git = "https://github.com/seriaati/ambr"}
-loguru = "^0.7.2"
 
 [tool.poetry.group.dev]
 optional = true

@@ -59,7 +59,7 @@ class CharacterUI(View):
     def _convert_manual_avatar(manual_avatar: dict[str, dict[str, str]]) -> dict[str, str]:
         return {stat_id: stat["name"] for stat_id, stat in manual_avatar.items()}
 
-    async def start(self, i: INTERACTION) -> None:  # noqa: PLR0912
+    async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
 
         if self._hakushin:
@@ -130,7 +130,7 @@ class CharacterUI(View):
         await self.update(i)
         self.message = await i.original_response()
 
-    async def update(self, i: INTERACTION) -> None:
+    async def update(self, i: INTERACTION) -> None:  # noqa: PLR0912
         if self._character_detail is None:
             msg = "Character detail not fetched"
             raise RuntimeError(msg)

@@ -59,7 +59,7 @@ class CharacterUI(View):
     def _convert_manual_avatar(manual_avatar: dict[str, dict[str, str]]) -> dict[str, str]:
         return {stat_id: stat["name"] for stat_id, stat in manual_avatar.items()}
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: INTERACTION) -> None:  # noqa: PLR0912
         await i.response.defer()
 
         if self._hakushin:

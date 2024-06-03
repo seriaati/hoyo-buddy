@@ -14,13 +14,13 @@ if TYPE_CHECKING:
 class HoyoAccountTransformer(app_commands.Transformer):
     async def transform(self, i: INTERACTION, value: str) -> HoyoAccount:
         try:
-            uid, game = value.split("_")
+            account_id = int(value)
         except ValueError as e:
             raise AccountNotFoundError from e
 
         user: USER = i.namespace.user
         user = user or i.user
-        account = await HoyoAccount.get_or_none(uid=uid, game=game, user_id=user.id)
+        account = await HoyoAccount.get_or_none(id=account_id)
         if account is None:
             raise AccountNotFoundError
         return account

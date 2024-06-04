@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal, TypeAlias
 
+import aiohttp
 import discord
 import enka
 import genshin
@@ -139,6 +140,10 @@ class HoyoBuddy(commands.AutoShardedBot):
         await status_channel.send(embed=embed)
 
     def capture_exception(self, e: Exception) -> None:
+        # Errors to suppress
+        if isinstance(e, aiohttp.ClientConnectorError):
+            return
+
         if self.env == "dev":
             logger.exception(e)
         else:

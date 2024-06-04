@@ -92,6 +92,9 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
             key="geetest.required.description",
         ),
     },
+    (-1,): {
+        "title": LocaleStr("Game is Under Maintenance", key="game_maintenance_title"),
+    },
     # 999 and 1000 are custom retcodes for Hoyo Buddy, they don't exist in Hoyo's API
     (999,): {
         "title": LocaleStr("Cookie Token Expired", key="redeeem_code.cookie_token_expired_title"),

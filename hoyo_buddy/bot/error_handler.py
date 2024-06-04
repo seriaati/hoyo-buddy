@@ -40,7 +40,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
             key="invalid_verification_code_description",
         ),
     },
-    (-3208, -3203): {
+    (-3208, -3203, -3004): {
         "title": LocaleStr("Invalid Email or Password", key="invalid_email_password_title"),
         "description": LocaleStr(
             "The email or password you provided is incorrect, please check and try again.",

@@ -14,3 +14,8 @@ GENSENROUNDEDTW_LIGHT = "hoyo-buddy-assets/fonts/GenSenRounded/GenSenRoundedTW-L
 GENSENROUNDEDTW_REGULAR = "hoyo-buddy-assets/fonts/GenSenRounded/GenSenRoundedTW-R-01.ttf"
 GENSENROUNDEDTW_MEDIUM = "hoyo-buddy-assets/fonts/GenSenRounded/GenSenRoundedTW-M-01.ttf"
 GENSENROUNDEDTW_BOLD = "hoyo-buddy-assets/fonts/GenSenRounded/GenSenRoundedTW-B-01.ttf"
+
+NOTOSANSKR_LIGHT = "hoyo-buddy-assets/fonts/NotoSansKR/NotoSansKR-Light.ttf"
+NOTOSANSKR_REGULAR = "hoyo-buddy-assets/fonts/NotoSansKR/NotoSansKR-Regular.ttf"
+NOTOSANSKR_MEDIUM = "hoyo-buddy-assets/fonts/NotoSansKR/NotoSansKR-Medium.ttf"
+NOTOSANSKR_BOLD = "hoyo-buddy-assets/fonts/NotoSansKR/NotoSansKR-Bold.ttf"

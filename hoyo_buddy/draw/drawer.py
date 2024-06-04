@@ -16,6 +16,10 @@ from .fonts import (
     MPLUSROUNDED1C_LIGHT,
     MPLUSROUNDED1C_MEDIUM,
     MPLUSROUNDED1C_REGULAR,
+    NOTOSANSKR_BOLD,
+    NOTOSANSKR_LIGHT,
+    NOTOSANSKR_MEDIUM,
+    NOTOSANSKR_REGULAR,
     NUNITO_BOLD,
     NUNITO_LIGHT,
     NUNITO_MEDIUM,
@@ -63,6 +67,12 @@ FONT_MAPPING: dict[
         "regular": MPLUSROUNDED1C_REGULAR,
         "medium": MPLUSROUNDED1C_MEDIUM,
         "bold": MPLUSROUNDED1C_BOLD,
+    },
+    discord.Locale.korean: {
+        "light": NOTOSANSKR_LIGHT,
+        "regular": NOTOSANSKR_REGULAR,
+        "medium": NOTOSANSKR_MEDIUM,
+        "bold": NOTOSANSKR_BOLD,
     },
     None: {
         "light": NUNITO_LIGHT,

@@ -30,10 +30,9 @@ class LoginNotifPayload(BaseModel):
     user_id: int
     guild_id: int | None = None
     channel_id: int
-    message_id: int
+    message_id: int | None = None
     gt_version: int
     api_server: str
-    proxy_geetest: bool
 
     @classmethod
     def parse_from_request(cls, request: web.Request) -> LoginNotifPayload:
@@ -41,10 +40,9 @@ class LoginNotifPayload(BaseModel):
             user_id=int(request.query["user_id"]),
             guild_id=int(request.query["guild_id"]) if "guild_id" in request.query else None,
             channel_id=int(request.query["channel_id"]),
-            message_id=int(request.query["message_id"]),
+            message_id=int(request.query["message_id"]) if "message_id" in request.query else None,
             gt_version=int(request.query["gt_version"]),
             api_server=request.query["api_server"],
-            proxy_geetest=bool(request.query["proxy_geetest"]),
         )
 
     def to_query_string(self) -> str:

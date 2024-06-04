@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any
 import genshin
 
 from ...bot.translator import LocaleStr, Translator
+from ...constants import GEETEST_SERVERS
 from ...db.models import HoyoAccount, User
 from ...embeds import DefaultEmbed
 from ...emojis import get_game_emoji
@@ -13,7 +14,6 @@ from ...exceptions import NoGameAccountsError, TryOtherMethodError
 from ...models import LoginNotifPayload
 from .. import SelectOption
 from ..components import Button, GoBackButton, View
-from .geetest_handler import GEETEST_SERVERS
 from .items.acc_select import AccountSelect
 from .items.acc_settings import AccountPublicToggle, AutoCheckinToggle, AutoRedeemToggle
 from .items.add_acc_btn import AddAccountButton
@@ -203,7 +203,6 @@ class AccountManager(View):
         for_code: bool,
         gt_version: int = 3,
         api_server: str = "api-na.geetest.com",
-        proxy_geetest: bool = False,
     ) -> None:
         """Prompt the user to solve CAPTCHA before sending the verification code or logging in.
 
@@ -214,17 +213,16 @@ class AccountManager(View):
             api_server: The server to request the CAPTCHA from.
             proxy_geetest: Whether to proxy the geetest CAPTCHA.
         """
-        assert i.channel and i.message
+        assert i.channel
 
         # geetest info is trasmitted through user.temp_data
         payload = LoginNotifPayload(
             user_id=i.user.id,
-            guild_id=i.guild.id if i.guild else None,
+            guild_id=i.guild.id if i.guild is not None else None,
             channel_id=i.channel.id,
-            message_id=i.message.id,
+            message_id=i.message.id if i.message is not None else None,
             gt_version=gt_version,
             api_server=api_server,
-            proxy_geetest=proxy_geetest,
         )
         url = f"{GEETEST_SERVERS[i.client.env]}/captcha?{payload.to_query_string()}"
 

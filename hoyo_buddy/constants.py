@@ -249,7 +249,7 @@ GPY_GAME_TO_HB_GAME = {v: k for k, v in HB_GAME_TO_GPY_GAME.items()}
 """Genshin.py game enum to Hoyo Buddy game enum."""
 
 GEETEST_SERVERS = {
-    "prod": "https://geetest-server.seriaati.xyz",
+    "prod": "http://geetest-server-test.seriaati.xyz",
     "test": "http://geetest-server-test.seriaati.xyz",
     "dev": "http://localhost:5000",
 }

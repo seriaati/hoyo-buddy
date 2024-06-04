@@ -143,6 +143,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         # Errors to suppress
         if isinstance(e, aiohttp.ClientConnectorError):
             return
+        if isinstance(e, discord.NotFound) and e.code == 10062:
+            # Unknown interaction
+            return
 
         if self.env == "dev":
             logger.exception(e)

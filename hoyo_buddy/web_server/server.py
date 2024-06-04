@@ -94,10 +94,13 @@ class GeetestWebServer:
         message_id = request.query["message_id"]
 
         protocol = (
-            f"discord://-/channels/@me/{channel_id}/{message_id}"
-            if guild_id == "null"
-            else f"discord://-/channels/{guild_id}/{channel_id}/{message_id}"
+            f"discord://-/channels/@me/{channel_id}"
+            if guild_id == "None"
+            else f"discord://-/channels/{guild_id}/{channel_id}"
         )
+        if message_id != "None":
+            protocol += f"/{message_id}"
+
         return web.Response(status=302, headers={"Location": protocol})
 
     async def run(self, port: int = 5000) -> None:

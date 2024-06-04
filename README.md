@@ -17,7 +17,7 @@ It is currently in beta, you can invite it by clicking [this link](https://dub.s
 ## Quick Links
 
 [Discord Server](https://dsc.gg/hoyo-buddy)  
-[Website](http://hb.bot.nu/)
+[Website](https://hb.seriaati.xyz/)
 
 ## Contributing
 

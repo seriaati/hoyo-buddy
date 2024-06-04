@@ -141,7 +141,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     def capture_exception(self, e: Exception) -> None:
         # Errors to suppress
-        if isinstance(e, aiohttp.ClientConnectorError):
+        if isinstance(e, aiohttp.ClientConnectorError | aiohttp.ServerDisconnectedError):
             return
         if isinstance(e, discord.NotFound) and e.code == 10062:
             # Unknown interaction

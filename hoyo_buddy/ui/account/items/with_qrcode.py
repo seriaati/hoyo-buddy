@@ -101,9 +101,25 @@ class WithQRCode(Button["AccountManager"]):
 
         scanned = False
         while True:
-            check_result = await client._check_qrcode(
-                result.app_id, result.device_id, result.ticket
-            )
+            try:
+                check_result = await client._check_qrcode(
+                    result.app_id, result.device_id, result.ticket
+                )
+            except genshin.GenshinException as e:
+                if e.retcode == -106:
+                    # QR code expired
+                    return await i.edit_original_response(
+                        embed=DefaultEmbed(
+                            self.view.locale,
+                            self.view.translator,
+                            title=LocaleStr("QR code expired", key="qrcode_expired_title"),
+                            description=LocaleStr(
+                                "Please try again with a new QR code", key="qrcode_expired.desc"
+                            ),
+                        ),
+                        attachments=[],
+                    )
+                raise
             if check_result.status is genshin.models.QRCodeStatus.SCANNED and not scanned:
                 await i.edit_original_response(embed=self._scanned_embed, attachments=[])
                 scanned = True

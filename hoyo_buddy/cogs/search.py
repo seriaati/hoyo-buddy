@@ -61,8 +61,7 @@ class Search(commands.Cog):
             logger.exception("Failed to set up search autocomplete choices")
 
         logger.info(
-            "Finished setting up search autocomplete choices, took %.2f seconds",
-            self.bot.loop.time() - start,
+            f"Finished setting up search autocomplete choices, took {self.bot.loop.time() - start:.2f} seconds",
         )
 
     @app_commands.command(

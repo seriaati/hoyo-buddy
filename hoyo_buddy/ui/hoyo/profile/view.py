@@ -84,6 +84,7 @@ class ProfileView(View):
         self.character_type: CharacterType | None = None
         self.characters: Sequence[Character] = []
 
+        self._character: Character | None = None
         self._card_settings: CardSettings | None = None
         self._card_data = card_data
         self._account = account
@@ -226,7 +227,11 @@ class ProfileView(View):
 
     @property
     def character(self) -> Character:
-        return next(c for c in self.characters if str(c.id) == self.character_id)
+        return self._character or next(c for c in self.characters if str(c.id) == self.character_id)
+
+    @character.setter
+    def character(self, character: Character) -> None:
+        self._character = character
 
     def _add_items(self) -> None:
         self.add_item(PlayerInfoButton())
@@ -391,7 +396,7 @@ class ProfileView(View):
     async def draw_card(self, i: INTERACTION, *, character: Character | None = None) -> io.BytesIO:
         """Draw the character card and return the bytes object."""
         assert self.character_id is not None
-        character = character or self.character
+        self.character = character or self.character
 
         # Initialize card settings
         card_settings = await CardSettings.get_or_none(

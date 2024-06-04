@@ -108,7 +108,6 @@ LOCALE_TO_HSR_CARD_API_LANG: dict[discord.Locale, str] = {
 }
 
 LOCALE_TO_GPY_LANG = {
-    discord.Locale.british_english: "en-us",
     discord.Locale.american_english: "en-us",
     discord.Locale.taiwan_chinese: "zh-tw",
     discord.Locale.chinese: "zh-cn",
@@ -123,19 +122,28 @@ LOCALE_TO_GPY_LANG = {
     discord.Locale.thai: "th-th",
     discord.Locale.vietnamese: "vi-vn",
     discord.Locale.turkish: "tr-tr",
+    discord.Locale.russian: "ru-ru",
+    discord.Locale.ukrainian: "ru-ru",
 }
 GPY_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_GPY_LANG.items()}
 
 
 HOYO_BUDDY_LOCALES: dict[discord.Locale, dict[str, str]] = {
-    discord.Locale.american_english: {"name": "English (US)", "emoji": "🇺🇸"},
+    discord.Locale.american_english: {"name": "English", "emoji": "🇺🇸"},
     discord.Locale.chinese: {"name": "简体中文", "emoji": "🇨🇳"},
     discord.Locale.taiwan_chinese: {"name": "繁體中文", "emoji": "🇹🇼"},
     discord.Locale.french: {"name": "Français", "emoji": "🇫🇷"},
     discord.Locale.japanese: {"name": "日本語", "emoji": "🇯🇵"},
-    discord.Locale.brazil_portuguese: {"name": "Português (BR)", "emoji": "🇧🇷"},
+    discord.Locale.brazil_portuguese: {"name": "Português", "emoji": "🇧🇷"},
     discord.Locale.indonesian: {"name": "Bahasa Indonesia", "emoji": "🇮🇩"},
     discord.Locale.dutch: {"name": "Nederlands", "emoji": "🇳🇱"},
+    discord.Locale.vietnamese: {"name": "Tiếng Việt", "emoji": "🇻🇳"},
+    discord.Locale.thai: {"name": "ภาษาไทย", "emoji": "🇹🇭"},
+    discord.Locale.spain_spanish: {"name": "Español", "emoji": "🇪🇸"},
+    discord.Locale.korean: {"name": "한국어", "emoji": "🇰🇷"},
+    discord.Locale.turkish: {"name": "Türkçe", "emoji": "🇹🇷"},
+    discord.Locale.italian: {"name": "Italiano", "emoji": "🇮🇹"},
+    discord.Locale.russian: {"name": "Русский", "emoji": "🇷🇺"},
 }
 
 LOCALE_TO_AMBR_LANG: dict[discord.Locale, AmbrLanguage] = {
@@ -150,6 +158,7 @@ LOCALE_TO_AMBR_LANG: dict[discord.Locale, AmbrLanguage] = {
     discord.Locale.korean: AmbrLanguage.KR,
     discord.Locale.brazil_portuguese: AmbrLanguage.PT,
     discord.Locale.russian: AmbrLanguage.RU,
+    discord.Locale.ukrainian: AmbrLanguage.RU,
     discord.Locale.thai: AmbrLanguage.TH,
     discord.Locale.vietnamese: AmbrLanguage.VI,
     discord.Locale.italian: AmbrLanguage.IT,
@@ -168,6 +177,7 @@ LOCALE_TO_YATTA_LANG: dict[discord.Locale, YattaLanguage] = {
     discord.Locale.korean: YattaLanguage.KR,
     discord.Locale.brazil_portuguese: YattaLanguage.PT,
     discord.Locale.russian: YattaLanguage.RU,
+    discord.Locale.ukrainian: YattaLanguage.RU,
     discord.Locale.thai: YattaLanguage.TH,
     discord.Locale.vietnamese: YattaLanguage.VI,
 }
@@ -192,6 +202,7 @@ LOCALE_TO_GI_ENKA_LANG: dict[discord.Locale, enka.gi.Language] = {
     discord.Locale.korean: enka.gi.Language.KOREAN,
     discord.Locale.brazil_portuguese: enka.gi.Language.PORTUGUESE,
     discord.Locale.russian: enka.gi.Language.RUSSIAN,
+    discord.Locale.ukrainian: enka.gi.Language.RUSSIAN,
     discord.Locale.thai: enka.gi.Language.THAI,
     discord.Locale.vietnamese: enka.gi.Language.VIETNAMESE,
     discord.Locale.italian: enka.gi.Language.ITALIAN,

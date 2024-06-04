@@ -9,18 +9,14 @@ import genshin
 from pydantic import BaseModel
 
 from ...bot.error_handler import get_error_embed
+from ...bot.translator import LocaleStr
 from ...db.models import User
+from ...embeds import DefaultEmbed
 from ...enums import Platform
 
 if TYPE_CHECKING:
     from ...bot.bot import INTERACTION
     from .view import AccountManager
-
-GEETEST_SERVERS = {
-    "prod": "https://geetest-server.seriaati.xyz",
-    "test": "http://geetest-server-test.seriaati.xyz",
-    "dev": "http://localhost:5000",
-}
 
 
 class EmailPswdLoginData(BaseModel):
@@ -66,6 +62,9 @@ class GeetestHandler:
         self._ticket: dict[str, Any] = {}
         self._client: genshin.Client | None = None
 
+        self._total_timeout = 0
+        self._max_timeout = 300  # 5 minutes
+
     @property
     def client(self) -> genshin.Client:
         if self._client is not None:
@@ -105,6 +104,19 @@ class GeetestHandler:
     async def handle_geetest_notifs(self, notif: asyncpg_listen.NotificationOrTimeout) -> None:  # noqa: PLR0912
         """Notification handler for geetest triggers."""
         if isinstance(notif, asyncpg_listen.Timeout):
+            self._total_timeout += 2
+            if self._total_timeout >= self._max_timeout:
+                embed = DefaultEmbed(
+                    self._view.locale,
+                    self._view.translator,
+                    title=LocaleStr("Verification timeout", key="geeetest_verification_timeout"),
+                    description=LocaleStr(
+                        "The verification has timed out. Please use the </accounts> comand to try again.",
+                        key="accounts.geeetest_verification_timeout_description",
+                    ),
+                )
+                await self._interaction.edit_original_response(embed=embed, view=None)
+                self._bot.login_notif_tasks.pop(self._user_id).cancel()
             return
 
         assert notif.payload is not None

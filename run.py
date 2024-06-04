@@ -83,6 +83,13 @@ if __name__ == "__main__":
     logger.add("hoyo_buddy.log", rotation="32 MB", retention="5 days", level="INFO")
 
     try:
+        from icecream import install
+    except ImportError:
+        pass
+    else:
+        install()
+
+    try:
         import uvloop  # pyright: ignore [reportMissingImports]
     except ModuleNotFoundError:
         asyncio.run(main())

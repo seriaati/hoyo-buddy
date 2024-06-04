@@ -185,23 +185,19 @@ typing_extensions = ">=3.7.2"
 
 [[package]]
 name = "ambr-py"
-version = "1.7.6"
+version = "1.7.7"
 description = "API wrapper for ambr.top written in Python"
 optional = false
-python-versions = "^3.11"
-files = []
-develop = false
+python-versions = "<4.0,>=3.11"
+files = [
+    {file = "ambr_py-1.7.7-py3-none-any.whl", hash = "sha256:69c2d22daf0dc930c0b0a8045feb9f98d6b4fdccd74c32377173faa54a92476c"},
+    {file = "ambr_py-1.7.7.tar.gz", hash = "sha256:238215cb366a81ae4edff5c3e9b2785451a59a749801d568d335312d623e1d0e"},
+]
 
 [package.dependencies]
-aiohttp = "^3.8.6"
-aiohttp-client-cache = {version = "^0.11.0", extras = ["sqlite"]}
-pydantic = "^2.4.2"
-
-[package.source]
-type = "git"
-url = "https://github.com/seriaati/ambr"
-reference = "HEAD"
-resolved_reference = "f1f15d4a84d95a44576005bff9f5b1cbda0e7836"
+aiohttp = ">=3.8.6,<4.0.0"
+aiohttp-client-cache = {version = ">=0.11.0,<0.12.0", extras = ["sqlite"]}
+pydantic = ">=2.4.2,<3.0.0"
 
 [[package]]
 name = "annotated-types"
@@ -479,13 +475,13 @@ files = [
 
 [[package]]
 name = "certifi"
-version = "2024.2.2"
+version = "2024.6.2"
 description = "Python package for providing Mozilla's CA Bundle."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "certifi-2024.2.2-py3-none-any.whl", hash = "sha256:dc383c07b76109f368f6106eee2b593b04a011ea4d55f652c6ca24a754d1cdd1"},
-    {file = "certifi-2024.2.2.tar.gz", hash = "sha256:0569859f95fc761b18b45ef421b1290a0f65f147e92a1e5eb3e635f9a5e4e66f"},
+    {file = "certifi-2024.6.2-py3-none-any.whl", hash = "sha256:ddc6c8ce995e6987e7faf5e3f1b02b302836a0e5d98ece18392cb1a36c72ad56"},
+    {file = "certifi-2024.6.2.tar.gz", hash = "sha256:3cd43f1c6fa7dedc5899d69d3ad0398fd018ad1a17fba83ddaf78aa46c747516"},
 ]
 
 [[package]]
@@ -717,7 +713,7 @@ develop = false
 aiohttp = ">=3.7.4,<4"
 
 [package.extras]
-docs = ["sphinx (==4.4.0)", "sphinx-inline-tabs (==2023.4.21)", "sphinxcontrib-applehelp (==1.0.4)", "sphinxcontrib-devhelp (==1.0.2)", "sphinxcontrib-htmlhelp (==2.0.1)", "sphinxcontrib-jsmath (==1.0.1)", "sphinxcontrib-qthelp (==1.0.3)", "sphinxcontrib-serializinghtml (==1.1.5)", "sphinxcontrib-trio (==1.1.2)", "sphinxcontrib-websupport (==1.2.4)", "typing-extensions (>=4.3,<5)"]
+docs = ["sphinx (==4.4.0)", "sphinx-inline-tabs (==2023.4.21)", "sphinxcontrib-applehelp (==1.0.4)", "sphinxcontrib-devhelp (==1.0.2)", "sphinxcontrib-htmlhelp (==2.0.1)", "sphinxcontrib-jsmath (==1.0.1)", "sphinxcontrib-qthelp (==1.0.3)", "sphinxcontrib-serializinghtml (==1.1.5)", "sphinxcontrib-websupport (==1.2.4)", "sphinxcontrib_trio (==1.1.2)", "typing-extensions (>=4.3,<5)"]
 speed = ["Brotli", "aiodns (>=1.1)", "cchardet (==2.1.7)", "orjson (>=3.5.4)"]
 test = ["coverage[toml]", "pytest", "pytest-asyncio", "pytest-cov", "pytest-mock", "typing-extensions (>=4.3,<5)", "tzdata"]
 voice = ["PyNaCl (>=1.3.0,<1.6)"]
@@ -769,7 +765,7 @@ pydantic = "^2.5.3"
 type = "git"
 url = "https://github.com/seriaati/enka-py"
 reference = "HEAD"
-resolved_reference = "23f0acd7c51d66f6cbc9e54cb0bc2f317102dd95"
+resolved_reference = "ed5570cbb384f6925d8f8121a8a5f483b7c12e9c"
 
 [[package]]
 name = "executing"
@@ -968,23 +964,19 @@ files = [
 
 [[package]]
 name = "hakushin-py"
-version = "0.2.0"
+version = "0.3.0"
 description = "Async API wrapper for hakush.in written in Python."
 optional = false
-python-versions = "^3.11"
-files = []
-develop = false
+python-versions = "<4.0,>=3.11"
+files = [
+    {file = "hakushin_py-0.3.0-py3-none-any.whl", hash = "sha256:2d4d98178c377103efeb3fbde3ed9a15285e5b7c2b95e75bbf3766dd5049480f"},
+    {file = "hakushin_py-0.3.0.tar.gz", hash = "sha256:546a4788bdcf5b64dc03097d1000948afa7284896f95e0d5fb0ef1a339f4a574"},
+]
 
 [package.dependencies]
-aiohttp = "^3.9.5"
-aiohttp-client-cache = {version = "^0.11.0", extras = ["sqlite"]}
-pydantic = "^2.7.1"
-
-[package.source]
-type = "git"
-url = "https://github.com/seriaati/hakushin-py"
-reference = "HEAD"
-resolved_reference = "8c9006572d436f266088c8843a728476f360e067"
+aiohttp = ">=3.9.5,<4.0.0"
+aiohttp-client-cache = {version = ">=0.11.0,<0.12.0", extras = ["sqlite"]}
+pydantic = ">=2.7.1,<3.0.0"
 
 [[package]]
 name = "httpcore"
@@ -1321,17 +1313,14 @@ files = [
 
 [[package]]
 name = "nodeenv"
-version = "1.8.0"
+version = "1.9.0"
 description = "Node.js virtual environment builder"
 optional = false
-python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*"
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 files = [
-    {file = "nodeenv-1.8.0-py2.py3-none-any.whl", hash = "sha256:df865724bb3c3adc86b3876fa209771517b0cfe596beff01a92700e0e8be4cec"},
-    {file = "nodeenv-1.8.0.tar.gz", hash = "sha256:d51e0c37e64fbf47d017feac3145cdbb58836d7eee8c6f6d3b6880c5456227d2"},
+    {file = "nodeenv-1.9.0-py2.py3-none-any.whl", hash = "sha256:508ecec98f9f3330b636d4448c0f1a56fc68017c68f1e7857ebc52acf0eb879a"},
+    {file = "nodeenv-1.9.0.tar.gz", hash = "sha256:07f144e90dae547bf0d4ee8da0ee42664a42a04e02ed68e06324348dafe4bdb1"},
 ]
-
-[package.dependencies]
-setuptools = "*"
 
 [[package]]
 name = "novelai"
@@ -1994,13 +1983,13 @@ files = [
 
 [[package]]
 name = "requests"
-version = "2.32.2"
+version = "2.32.3"
 description = "Python HTTP for Humans."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "requests-2.32.2-py3-none-any.whl", hash = "sha256:fc06670dd0ed212426dfeb94fc1b983d917c4f9847c863f313c9dfaaffb7c23c"},
-    {file = "requests-2.32.2.tar.gz", hash = "sha256:dd951ff5ecf3e3b3aa26b40703ba77495dab41da839ae72ef3c8e5d8e2433289"},
+    {file = "requests-2.32.3-py3-none-any.whl", hash = "sha256:70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6"},
+    {file = "requests-2.32.3.tar.gz", hash = "sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760"},
 ]
 
 [package.dependencies]
@@ -2055,13 +2044,13 @@ files = [
 
 [[package]]
 name = "sentry-sdk"
-version = "2.3.1"
+version = "2.4.0"
 description = "Python client for Sentry (https://sentry.io)"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "sentry_sdk-2.3.1-py2.py3-none-any.whl", hash = "sha256:c5aeb095ba226391d337dd42a6f9470d86c9fc236ecc71cfc7cd1942b45010c6"},
-    {file = "sentry_sdk-2.3.1.tar.gz", hash = "sha256:139a71a19f5e9eb5d3623942491ce03cf8ebc14ea2e39ba3e6fe79560d8a5b1f"},
+    {file = "sentry_sdk-2.4.0-py2.py3-none-any.whl", hash = "sha256:a42b70981cd4ed7da3c85d0360502d2ac932a15a4a420b360e1ebded2fc19a92"},
+    {file = "sentry_sdk-2.4.0.tar.gz", hash = "sha256:62b9bb0489e731ecbce008f9647899b51d220067a75c3adfd46f8187660c0029"},
 ]
 
 [package.dependencies]
@@ -2122,21 +2111,6 @@ type = "git"
 url = "https://github.com/seriaati/seria-library"
 reference = "HEAD"
 resolved_reference = "3923997215d834bd1e1429a16fe9331ca2b44a77"
-
-[[package]]
-name = "setuptools"
-version = "70.0.0"
-description = "Easily download, build, install, upgrade, and uninstall Python packages"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "setuptools-70.0.0-py3-none-any.whl", hash = "sha256:54faa7f2e8d2d11bcd2c07bed282eef1046b5c080d1c32add737d7b5817b1ad4"},
-    {file = "setuptools-70.0.0.tar.gz", hash = "sha256:f211a66637b8fa059bb28183da127d4e86396c991a942b028c6650d4319c3fd0"},
-]
-
-[package.extras]
-docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "pyproject-hooks (!=1.1)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-inline-tabs", "sphinx-lint", "sphinx-notfound-page (>=1,<2)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
-testing = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "importlib-metadata", "ini2toml[lite] (>=0.14)", "jaraco.develop (>=7.21)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "mypy (==1.9)", "packaging (>=23.2)", "pip (>=19.1)", "pyproject-hooks (!=1.1)", "pytest (>=6,!=8.1.1)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-home (>=0.5)", "pytest-mypy", "pytest-perf", "pytest-ruff (>=0.2.1)", "pytest-subprocess", "pytest-timeout", "pytest-xdist (>=3)", "tomli", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
 
 [[package]]
 name = "six"
@@ -2238,13 +2212,13 @@ requests = "*"
 
 [[package]]
 name = "typing-extensions"
-version = "4.12.0"
+version = "4.12.1"
 description = "Backported and Experimental Type Hints for Python 3.8+"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "typing_extensions-4.12.0-py3-none-any.whl", hash = "sha256:b349c66bea9016ac22978d800cfff206d5f9816951f12a7d0ec5578b0a819594"},
-    {file = "typing_extensions-4.12.0.tar.gz", hash = "sha256:8cbcdc8606ebcb0d95453ad7dc5065e6237b6aa230a31e81d0f440c30fed5fd8"},
+    {file = "typing_extensions-4.12.1-py3-none-any.whl", hash = "sha256:6024b58b69089e5a89c347397254e35f1bf02a907728ec7fee9bf0fe837d203a"},
+    {file = "typing_extensions-4.12.1.tar.gz", hash = "sha256:915f5e35ff76f56588223f15fdd5938f9a1cf9195c0de25130c627e4d597f6d1"},
 ]
 
 [[package]]
@@ -2492,4 +2466,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "b42c2368c9be2fcde16b132706d86b6cbd8f0fd7007a05b91e814771d66ea67a"
+content-hash = "6f224d148c28f418d3b78bbbbf0bdeb216f804667c8cd3166db792be1d52a574"

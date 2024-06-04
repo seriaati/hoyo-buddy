@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import timedelta
 from typing import TYPE_CHECKING, Literal
 
+import genshin
 from ambr.exceptions import DataNotFoundError as AmbrDataNotFoundError
 from discord.utils import format_dt
 from enka import errors as enka_errors
@@ -76,6 +77,20 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     },
     (-2021,): {
         "title": LocaleStr("Adventure rank too low", key="redeem_code.ar_too_low"),
+    },
+    (30001,): {
+        "title": LocaleStr("No need for geetest", key="geetest.no_need"),
+        "description": LocaleStr(
+            "You never needed to do a geetest! What are you here for?!",
+            key="geetest.no_need.description",
+        ),
+    },
+    tuple(genshin.constants.GEETEST_RETCODES): {
+        "title": LocaleStr("Geetest Verification Required", key="geetest.required"),
+        "description": LocaleStr(
+            "Use the </geetest> command and choose the account that triggered it to complete the verification",
+            key="geetest.required.description",
+        ),
     },
     # 999 and 1000 are custom retcodes for Hoyo Buddy, they don't exist in Hoyo's API
     (999,): {

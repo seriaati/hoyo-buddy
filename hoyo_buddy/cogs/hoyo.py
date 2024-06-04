@@ -7,6 +7,7 @@ from discord.ext import commands
 
 from ..bot.bot import USER  # noqa: TCH001
 from ..bot.translator import LocaleStr
+from ..commands.geetest import GeetestCommand
 from ..commands.profile import ProfileCommand
 from ..db.models import HoyoAccount, Settings
 from ..draw.main_funcs import draw_exploration_card
@@ -390,6 +391,31 @@ class Hoyo(commands.Cog):
         await i.response.send_message(embed=view.start_embed, view=view)
         view.message = await i.original_response()
 
+    @app_commands.command(
+        name=app_commands.locale_str("geetest", translate=False),
+        description=app_commands.locale_str(
+            "Complete geetest verification",
+            key="geetest_command_description",
+        ),
+    )
+    @app_commands.rename(
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
+    )
+    @app_commands.describe(
+        account=app_commands.locale_str(
+            "Account to run this command with",
+            key="account_autocomplete_no_default_param_description",
+        ),
+    )
+    async def geetest_command(
+        self,
+        i: INTERACTION,
+        account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer],
+    ) -> None:
+        command = GeetestCommand(self.bot, i, account)
+        await command.run()
+        command.start_listener()
+
     @abyss_command.autocomplete("account")
     @exploration_command.autocomplete("account")
     async def characters_command_autocomplete(
@@ -423,6 +449,7 @@ class Hoyo(commands.Cog):
         )
 
     @checkin_command.autocomplete("account")
+    @geetest_command.autocomplete("account")
     async def checkin_command_autocomplete(
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:

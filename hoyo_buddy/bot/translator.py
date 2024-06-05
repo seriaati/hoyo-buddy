@@ -246,7 +246,7 @@ class Translator:
         if not self._not_translated:
             return
 
-        logger.info("Pushing %d source strings to Transifex", len(self._not_translated))
+        logger.info(f"Pushing {len(self._not_translated)} source strings to Transifex")
         split_source_strings = split_list_to_chunks(
             [SourceString(string, _key=key) for key, string in self._not_translated.items()],
             5,

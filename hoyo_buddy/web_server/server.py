@@ -104,7 +104,7 @@ class GeetestWebServer:
         return web.Response(status=302, headers={"Location": protocol})
 
     async def run(self, port: int = 5000) -> None:
-        logger.info("Starting web server... (port=%d)", port)
+        logger.info(f"Starting web server on port {port}...")
 
         async with aiofiles.open("hoyo_buddy/web_server/page.html") as f:
             self.template = await f.read()

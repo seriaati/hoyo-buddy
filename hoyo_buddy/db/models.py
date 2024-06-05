@@ -15,6 +15,7 @@ from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
 
 if TYPE_CHECKING:
+    from ..bot.bot import INTERACTION
     from ..hoyo.clients.gpy import GenshinClient
 
 
@@ -212,3 +213,8 @@ class JSONFile(Model):
 
         json_file.data = data
         await json_file.save(update_fields=("data",))
+
+
+async def get_locale(i: INTERACTION) -> Locale:
+    settings = await Settings.get(user_id=i.user.id)
+    return settings.locale or i.locale

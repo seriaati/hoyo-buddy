@@ -240,7 +240,7 @@ class Translator:
         logger.info("Fetching translations...")
         start = time.time()
         await asyncio.to_thread(tx.fetch_translations)
-        logger.info("Fetched translations in %.2f seconds", time.time() - start)
+        logger.info(f"Fetched translations in {time.time() - start:.2f} seconds")
 
     async def push_source_strings(self) -> None:
         if not self._not_translated:

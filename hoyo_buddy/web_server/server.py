@@ -128,8 +128,7 @@ class GeetestWebServer:
         logger.info("Web server started")
 
         try:
-            while True:
-                await asyncio.sleep(1)
+            await asyncio.Future()
         except asyncio.CancelledError:
             logger.info("Web server shutting down...")
             await site.stop()

@@ -16,6 +16,7 @@ from loguru import logger
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.loguru import LoguruIntegration
 
+from hoyo_buddy.api import BotAPI
 from hoyo_buddy.bot.bot import HoyoBuddy
 from hoyo_buddy.bot.translator import Translator
 from hoyo_buddy.db.pgsql import Database
@@ -68,9 +69,14 @@ async def main() -> None:
         with contextlib.suppress(
             KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError
         ):
-            server = GeetestWebServer(translator=translator)
+            geetest_server = GeetestWebServer(translator=translator)
+            api_server = BotAPI(bot)
+
             tasks: set[asyncio.Task] = set()
-            task = asyncio.create_task(server.run())
+            task = asyncio.create_task(geetest_server.run())
+            tasks.add(task)
+            task.add_done_callback(tasks.discard)
+            task = asyncio.create_task(api_server.run())
             tasks.add(task)
             task.add_done_callback(tasks.discard)
 

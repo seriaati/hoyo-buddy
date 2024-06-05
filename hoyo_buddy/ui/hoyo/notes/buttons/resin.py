@@ -31,7 +31,7 @@ class ResinReminder(Button[NotesView]):
         modal = TypeOneModal(
             notify,
             title=LocaleStr("Resin Reminder Settings", key="resin_reminder_modal.title"),
-            threshold_max_value=160,
+            threshold_max_value=200,
             min_notify_interval=10,
         )
         modal.translate(self.view.locale, self.view.translator)

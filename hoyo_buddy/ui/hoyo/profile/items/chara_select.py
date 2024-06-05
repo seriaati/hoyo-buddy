@@ -96,7 +96,10 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             return await i.response.edit_message(view=self.view)
 
         self.view.character_id = self.values[0]
-        if self.view.character_id not in self.view.cache_extras or self.view.character_id in self.view._builds:
+        if (
+            self.view.character_id not in self.view.cache_extras
+            or self.view.character_id in self.view._builds
+        ):
             self.view.character_type = CharacterType.BUILD
         elif self.view.cache_extras[self.view.character_id]["live"]:
             self.view.character_type = CharacterType.LIVE

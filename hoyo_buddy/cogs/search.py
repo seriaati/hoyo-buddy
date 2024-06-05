@@ -9,7 +9,7 @@ from discord.ext import commands
 from loguru import logger
 
 from ..bot.translator import LocaleStr
-from ..db.models import Settings
+from ..db.models import Settings, get_locale
 from ..emojis import PROJECT_AMBER
 from ..enums import Game
 from ..exceptions import InvalidQueryError
@@ -417,7 +417,7 @@ class Search(commands.Cog):
                 )
             ]
 
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        locale = await get_locale(i)
         return [
             app_commands.Choice(
                 name=LocaleStr(c, warn_no_key=False).translate(i.client.translator, locale),
@@ -473,7 +473,7 @@ class Search(commands.Cog):
             ]
 
         if not current:
-            locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+            locale = await get_locale(i)
             try:
                 choice_dict = self.bot.autocomplete_choices[game][category][locale.value]
             except KeyError:

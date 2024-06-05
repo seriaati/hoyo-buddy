@@ -9,7 +9,7 @@ from ..bot.bot import USER  # noqa: TCH001
 from ..bot.translator import LocaleStr
 from ..commands.geetest import GeetestCommand
 from ..commands.profile import ProfileCommand
-from ..db.models import HoyoAccount, Settings
+from ..db.models import HoyoAccount, Settings, get_locale
 from ..draw.main_funcs import draw_exploration_card
 from ..embeds import DefaultEmbed
 from ..enums import Game, Platform
@@ -147,7 +147,7 @@ class Hoyo(commands.Cog):
     ) -> None:
         await i.response.defer()
 
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        locale = await get_locale(i)
         user = user or i.user
         uid_, game, account_ = await self._get_uid_and_game(user.id, account, uid, game_value)
 
@@ -385,7 +385,7 @@ class Hoyo(commands.Cog):
         account_ = account or await self.bot.get_account(
             user.id, (Game.GENSHIN, Game.STARRAIL), (Platform.HOYOLAB,)
         )
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        locale = await get_locale(i)
 
         view = RedeemUI(account_, author=i.user, locale=locale, translator=self.bot.translator)
         await i.response.send_message(embed=view.start_embed, view=view)
@@ -421,7 +421,7 @@ class Hoyo(commands.Cog):
     async def characters_command_autocomplete(
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        locale = await get_locale(i)
         user: USER = i.namespace.user
         return await self.bot.get_account_autocomplete(
             user,
@@ -437,7 +437,7 @@ class Hoyo(commands.Cog):
     @notes_command.autocomplete("account")
     @redeem_command.autocomplete("account")
     async def account_autocomplete(self, i: INTERACTION, current: str) -> list[app_commands.Choice]:
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        locale = await get_locale(i)
         user: USER = i.namespace.user
         return await self.bot.get_account_autocomplete(
             user,
@@ -453,7 +453,7 @@ class Hoyo(commands.Cog):
     async def checkin_command_autocomplete(
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        locale = await get_locale(i)
         user: USER = i.namespace.user
         return await self.bot.get_account_autocomplete(
             user,

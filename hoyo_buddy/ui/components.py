@@ -12,7 +12,7 @@ from seria.utils import split_list_to_chunks
 from .. import emojis
 from ..bot.error_handler import get_error_embed
 from ..bot.translator import LocaleStr, Translator
-from ..db.models import Settings
+from ..db.models import Settings, get_locale
 from ..embeds import ErrorEmbed
 from ..exceptions import InvalidInputError
 
@@ -88,7 +88,7 @@ class View(discord.ui.View):
         error: Exception,
         _: discord.ui.Item[Any],
     ) -> None:
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        locale = await get_locale(i)
         embed, recognized = get_error_embed(error, locale, i.client.translator)
         if not recognized:
             i.client.capture_exception(error)
@@ -589,7 +589,7 @@ class Modal(discord.ui.Modal):
         i: INTERACTION,
         error: Exception,
     ) -> None:
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        locale = await get_locale(i)
         embed, recognized = get_error_embed(error, locale, i.client.translator)
         if not recognized:
             i.client.capture_exception(error)

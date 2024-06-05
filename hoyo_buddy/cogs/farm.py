@@ -8,7 +8,7 @@ from discord.ext import commands
 
 from ..bot.translator import LocaleStr
 from ..commands.farm import Action, FarmCommand
-from ..db.models import FarmNotify, HoyoAccount, Settings
+from ..db.models import FarmNotify, HoyoAccount, Settings, get_locale
 from ..enums import Game
 from ..hoyo.clients.ambr import ItemCategory
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
@@ -157,7 +157,7 @@ class Farm(
     async def account_autocomplete(
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice[str]]:
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        locale = await get_locale(i)
         user: USER = i.namespace.user
         return await self.bot.get_account_autocomplete(
             user, i.user.id, current, locale, self.bot.translator, (Game.GENSHIN,)
@@ -179,7 +179,7 @@ class Farm(
             ]
 
         if not current:
-            locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+            locale = await get_locale(i)
             choice_dict = dict(
                 characters.get(locale.value, characters[Locale.american_english.value]).items()
             )
@@ -209,7 +209,7 @@ class Farm(
         weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
 
         if not current:
-            locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+            locale = await get_locale(i)
             try:
                 choice_dict = dict(characters[locale.value].items()) | dict(
                     weapons[locale.value].items()

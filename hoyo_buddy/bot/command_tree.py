@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Literal
 
 from discord import InteractionType, app_commands
 
-from ..db.models import Settings
+from ..db.models import get_locale
 from ..utils import get_now
 from .error_handler import get_error_embed
 
@@ -38,7 +38,7 @@ class CommandTree(app_commands.CommandTree):
 
     async def on_error(self, i: INTERACTION, e: app_commands.AppCommandError) -> None:
         error = e.original if isinstance(e, app_commands.errors.CommandInvokeError) else e
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        locale = await get_locale(i)
         embed, recognized = get_error_embed(error, locale, i.client.translator)
         if not recognized:
             i.client.capture_exception(error)

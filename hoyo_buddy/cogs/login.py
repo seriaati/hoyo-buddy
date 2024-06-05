@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands
 
-from ..db.models import HoyoAccount, Settings, User
+from ..db.models import HoyoAccount, User, get_locale
 from ..ui.account.view import AccountManager
 
 if TYPE_CHECKING:
@@ -22,7 +22,7 @@ class Login(commands.Cog):
         description=locale_str("Manage your accounts", key="accounts_command_description"),
     )
     async def accounts(self, i: INTERACTION) -> Any:
-        locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        locale = await get_locale(i)
         user = await User.get(id=i.user.id)
         accounts = await HoyoAccount.filter(user=user).all()
 

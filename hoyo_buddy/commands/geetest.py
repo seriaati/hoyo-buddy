@@ -10,7 +10,7 @@ import genshin
 from ..bot.error_handler import get_error_embed
 from ..bot.translator import LocaleStr
 from ..constants import GEETEST_SERVERS
-from ..db.models import HoyoAccount, Settings, User
+from ..db.models import HoyoAccount, User, get_locale
 from ..embeds import DefaultEmbed
 from ..models import LoginNotifPayload
 from ..ui.components import URLButtonView
@@ -94,7 +94,7 @@ class GeetestCommand:
         await i.response.defer()
         assert i.channel is not None
 
-        self._locale = (await Settings.get(user_id=i.user.id)).locale or i.locale
+        self._locale = await get_locale(i)
 
         client = self._account.client
         client.set_lang(i.locale)

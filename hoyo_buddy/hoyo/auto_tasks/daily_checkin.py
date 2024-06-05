@@ -122,6 +122,9 @@ class DailyCheckin:
             try:
                 reward = await client.claim_daily_reward()
             except Exception as e:
+                if isinstance(e, genshin.DailyGeetestTriggered):
+                    account.user.temp_data = {"geetest": e.gt, "challenge": e.challenge}
+                    await account.user.save()
                 embed, recognized = get_error_embed(e, locale, translator)
                 if not recognized:
                     cls._bot.capture_exception(e)
@@ -144,6 +147,9 @@ class DailyCheckin:
                 reward = genshin.models.DailyReward(**data["data"])
                 embed = client.get_daily_reward_embed(reward, locale, translator)
             elif resp.status == 400:
+                if data["retcode"] == -9999:
+                    account.user.temp_data = data["data"]
+                    await account.user.save()
                 try:
                     genshin.raise_for_retcode(data)
                 except genshin.GenshinException as e:

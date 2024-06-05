@@ -99,3 +99,10 @@ class CharacterType(IntEnum):
     CACHE = 1
     LIVE = 2
     BUILD = 3
+
+
+class GeetestType(StrEnum):
+    """Geetest type."""
+
+    DAILY_CHECKIN = "Daily check-in"
+    REALTIME_NOTES = "Real-time notes"

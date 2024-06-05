@@ -12,6 +12,7 @@ from ..bot.translator import LocaleStr
 from ..constants import GEETEST_SERVERS
 from ..db.models import HoyoAccount, User, get_locale
 from ..embeds import DefaultEmbed
+from ..enums import GeetestType
 from ..models import LoginNotifPayload
 from ..ui.components import URLButtonView
 
@@ -20,11 +21,14 @@ if TYPE_CHECKING:
 
 
 class GeetestCommand:
-    def __init__(self, bot: HoyoBuddy, i: INTERACTION, account: HoyoAccount) -> None:
+    def __init__(
+        self, bot: HoyoBuddy, i: INTERACTION, account: HoyoAccount, type_: GeetestType
+    ) -> None:
         self._bot = bot
         self._interaction = i
         self._account = account
         self._locale = i.locale
+        self._type = type_
 
         self._total_timeout = 0
         self._max_timeout = 300  # 5 minutes
@@ -73,13 +77,23 @@ class GeetestCommand:
             result = user.temp_data
 
             client = self._account.client
-            await client.verify_mmt(genshin.models.MMTResult(**result))
+            if self._type is GeetestType.DAILY_CHECKIN:
+                reward = await client.claim_daily_reward(
+                    challenge={
+                        "challenge": result["geetest_challenge"],
+                        "seccode": result["geetest_seccode"],
+                        "validate": result["geetest_validate"],
+                    }
+                )
+                embed = client.get_daily_reward_embed(reward, self._locale, i.client.translator)
+            else:
+                await client.verify_mmt(genshin.models.MMTResult(**result))
+                embed = DefaultEmbed(
+                    self._locale,
+                    i.client.translator,
+                    title=LocaleStr("Verification complete", key="geeetest_verification_complete"),
+                )
 
-            embed = DefaultEmbed(
-                self._locale,
-                i.client.translator,
-                title=LocaleStr("Verification complete", key="geeetest_verification_complete"),
-            )
             await i.edit_original_response(embed=embed, view=None)
         except Exception as e:
             embed, recognized = get_error_embed(e, self._locale, self._bot.translator)

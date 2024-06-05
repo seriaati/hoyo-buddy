@@ -12,7 +12,7 @@ from ..commands.profile import ProfileCommand
 from ..db.models import HoyoAccount, Settings, get_locale
 from ..draw.main_funcs import draw_exploration_card
 from ..embeds import DefaultEmbed
-from ..enums import Game, Platform
+from ..enums import Game, GeetestType, Platform
 from ..exceptions import IncompleteParamError
 from ..hoyo.clients.ambr import AmbrAPIClient
 from ..hoyo.clients.yatta import YattaAPIClient
@@ -400,19 +400,37 @@ class Hoyo(commands.Cog):
     )
     @app_commands.rename(
         account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
+        type_=app_commands.locale_str("type", key="geetest_command_type_param_name"),
     )
     @app_commands.describe(
         account=app_commands.locale_str(
             "Account to run this command with",
             key="account_autocomplete_no_default_param_description",
         ),
+        type_=app_commands.locale_str(
+            "Type of geetest verification",
+            key="geetest_command_type_param_description",
+        ),
+    )
+    @app_commands.choices(
+        type_=[
+            app_commands.Choice(
+                name=app_commands.locale_str(GeetestType.REALTIME_NOTES.value, warn_no_key=False),
+                value=GeetestType.REALTIME_NOTES.value,
+            ),
+            app_commands.Choice(
+                name=app_commands.locale_str(GeetestType.DAILY_CHECKIN.value, warn_no_key=False),
+                value=GeetestType.DAILY_CHECKIN.value,
+            ),
+        ]
     )
     async def geetest_command(
         self,
         i: INTERACTION,
         account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer],
+        type_: GeetestType,
     ) -> None:
-        command = GeetestCommand(self.bot, i, account)
+        command = GeetestCommand(self.bot, i, account, type_)
         await command.run()
         command.start_listener()
 

@@ -12,6 +12,7 @@ from hakushin.errors import NotFoundError as HakushinNotFoundError
 from yatta.exceptions import DataNotFoundError as YattaDataNotFoundError
 
 from ..embeds import ErrorEmbed
+from ..enums import GeetestType
 from ..exceptions import HoyoBuddyError, InvalidQueryError
 from ..utils import get_now
 from .translator import LocaleStr, Translator
@@ -88,14 +89,15 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     tuple(genshin.constants.GEETEST_RETCODES): {
         "title": LocaleStr("Geetest Verification Required", key="geetest.required"),
         "description": LocaleStr(
-            "Use the </geetest> command and choose the account that triggered it to complete the verification",
+            "Use the </geetest> command, choose the account that triggered the geetest, and choose `{geetest_type}` to complete the verification",
+            geetest_type=GeetestType.REALTIME_NOTES.value,
             key="geetest.required.description",
         ),
     },
     (-1,): {
         "title": LocaleStr("Game is Under Maintenance", key="game_maintenance_title"),
     },
-    # 999 and 1000 are custom retcodes for Hoyo Buddy, they don't exist in Hoyo's API
+    # Below are custom retcodes for Hoyo Buddy, they don't exist in Hoyo's API
     (999,): {
         "title": LocaleStr("Cookie Token Expired", key="redeeem_code.cookie_token_expired_title"),
         "description": LocaleStr(
@@ -112,6 +114,14 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
             "It is likely that you have changed your account's password since the last time you add your accounts.\n"
             "Please add your accounts again using </accounts> with the email and password method.",
             key="redeeem_code.cookie_token_refresh_failed_description",
+        ),
+    },
+    (-9999,): {
+        "title": LocaleStr("Geetest Verification Required", key="geetest.required"),
+        "description": LocaleStr(
+            "Use the </geetest> command, choose the account that triggered the geetest, and choose `{geetest_type}` to complete the verification",
+            geetest_type=GeetestType.DAILY_CHECKIN.value,
+            key="geetest.required.description",
         ),
     },
 }
@@ -163,8 +173,9 @@ def get_error_embed(
         err_info = None
 
         if isinstance(error, genshin_errors.GenshinException):
+            retcode = -9999 if isinstance(error, genshin.DailyGeetestTriggered) else error.retcode
             for codes, info in GENSHIN_ERROR_CONVERTER.items():
-                if error.retcode in codes:
+                if retcode in codes:
                     err_info = info
                     break
         elif isinstance(error, enka_errors.EnkaAPIError):

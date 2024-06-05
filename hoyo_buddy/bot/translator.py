@@ -265,11 +265,15 @@ class Translator:
         *,
         gender_symbol: bool = True,
     ) -> str:
-        element_str = self.translate(
-            LocaleStr(
-                GenshinElement(character.element.name.lower()).value.title(), warn_no_key=False
-            ),
-            locale,
+        element_str = (
+            self.translate(
+                LocaleStr(
+                    GenshinElement(character.element.name.lower()).value.title(), warn_no_key=False
+                ),
+                locale,
+            )
+            if character.element is not None
+            else ""
         )
         gender_str = ("♂" if "5" in character.id else "♀") if gender_symbol else ""
         return (

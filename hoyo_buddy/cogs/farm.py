@@ -7,14 +7,12 @@ from discord import Locale, app_commands
 from discord.ext import commands
 
 from ..bot.translator import LocaleStr
+from ..commands.farm import Action, FarmCommand
 from ..db.models import FarmNotify, HoyoAccount, Settings
-from ..embeds import DefaultEmbed
 from ..enums import Game
-from ..exceptions import InvalidQueryError
 from ..hoyo.clients.ambr import ItemCategory
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui.hoyo.farm import FarmView
-from ..ui.hoyo.farm_notify import FarmNotifyView
 
 if TYPE_CHECKING:
     from ..bot.bot import INTERACTION, USER, HoyoBuddy
@@ -91,51 +89,10 @@ class Farm(
         query: str,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        if query == "none":
-            raise InvalidQueryError
-
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
-        characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
-        weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
-        valid_item_ids = {id_ for c in characters.values() for id_ in c.values()} | {
-            id_ for w in weapons.values() for id_ in w.values()
-        }
-
-        if query not in valid_item_ids:
-            raise InvalidQueryError
-
         settings = await Settings.get(user_id=i.user.id)
-        farm_notify, _ = await FarmNotify.get_or_create(account=account_)
-        if query in farm_notify.item_ids:
-            embed = DefaultEmbed(
-                settings.locale or i.locale,
-                self.bot.translator,
-                title=LocaleStr(
-                    "Item Already in List", key="farm_add_command.item_already_in_list"
-                ),
-                description=LocaleStr(
-                    "This item is already in your farm reminder list.",
-                    key="farm_add_command.item_already_in_list_description",
-                ),
-            )
-            return await i.response.send_message(embed=embed)
-
-        farm_notify.item_ids.append(query)
-        # NOTE: This is a workaround for a bug in tortoise-orm
-        await FarmNotify.filter(account=account_).update(item_ids=farm_notify.item_ids)
-
-        await farm_notify.fetch_related("account")
-        view = FarmNotifyView(
-            farm_notify,
-            settings.dark_mode,
-            self.bot.session,
-            i.client.executor,
-            i.client.loop,
-            author=i.user,
-            locale=settings.locale or i.locale,
-            translator=self.bot.translator,
-        )
-        await view.start(i)
+        command = FarmCommand(i, account_, settings, query, Action.ADD)
+        await command.run()
 
     @app_commands.command(
         name=app_commands.locale_str("remove", translate=False),
@@ -164,35 +121,8 @@ class Farm(
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
-        farm_notify, _ = await FarmNotify.get_or_create(account=account_)
-        if query not in farm_notify.item_ids:
-            embed = DefaultEmbed(
-                settings.locale or i.locale,
-                self.bot.translator,
-                title=LocaleStr("Item not Found", key="farm_remove_command.item_not_found"),
-                description=LocaleStr(
-                    "This item is not in your farm reminder list.",
-                    key="farm_remove_command.item_not_found_description",
-                ),
-            )
-            return await i.response.send_message(embed=embed)
-
-        farm_notify.item_ids.remove(query)
-        # NOTE: This is a workaround for a bug in tortoise-orm
-        await FarmNotify.filter(account=account_).update(item_ids=farm_notify.item_ids)
-
-        await farm_notify.fetch_related("account")
-        view = FarmNotifyView(
-            farm_notify,
-            settings.dark_mode,
-            self.bot.session,
-            i.client.executor,
-            i.client.loop,
-            author=i.user,
-            locale=settings.locale or i.locale,
-            translator=self.bot.translator,
-        )
-        await view.start(i)
+        command = FarmCommand(i, account_, settings, query, Action.REMOVE)
+        await command.run()
 
     @app_commands.command(
         name=app_commands.locale_str("reminder", translate=False),
@@ -217,20 +147,8 @@ class Farm(
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
-        farm_notify, _ = await FarmNotify.get_or_create(account=account_)
-
-        await farm_notify.fetch_related("account")
-        view = FarmNotifyView(
-            farm_notify,
-            settings.dark_mode,
-            self.bot.session,
-            i.client.executor,
-            i.client.loop,
-            author=i.user,
-            locale=settings.locale or i.locale,
-            translator=self.bot.translator,
-        )
-        await view.start(i)
+        command = FarmCommand(i, account_, settings)
+        await command.run()
 
     @farm_view_command.autocomplete("account")
     @farm_add_command.autocomplete("account")

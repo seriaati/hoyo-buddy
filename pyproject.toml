@@ -23,7 +23,7 @@ diskcache = "^5.6.3"
 enka-py = {git = "https://github.com/seriaati/enka-py"}
 genshin = {version = "^1.7.1", extras = ["all"]}
 gitpython = "^3.1.42"
-hakushin-py = "^0.3.0"
+hakushin-py = {git = "https://github.com/seriaati/hakushin-py"}
 jishaku = "^2.5.1"
 loguru = "^0.7.2"
 novelai = {git = "https://github.com/kokosensei/NovelAI-API"}

@@ -132,7 +132,7 @@ class CardSettings(Model):
     custom_images: fields.Field[list[str]] = fields.JSONField(default=[])
     """URLs of custom images."""
     custom_primary_color: fields.Field[str | None] = fields.CharField(max_length=7, null=True)
-    current_image: fields.Field[str | None] = fields.CharField(max_length=100, null=True)
+    current_image: fields.Field[str | None] = fields.TextField(null=True)
     template = fields.CharField(max_length=32, default="hb1")
 
     class Meta:

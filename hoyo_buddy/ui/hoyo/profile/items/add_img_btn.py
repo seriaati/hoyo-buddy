@@ -23,7 +23,6 @@ class AddImageModal(Modal):
         label=LocaleStr("Image URL", key="profile.add_image_modal.image_url.label"),
         placeholder="https://example.com/image.png",
         style=TextStyle.short,
-        max_length=100,
     )
 
     def __init__(self) -> None:

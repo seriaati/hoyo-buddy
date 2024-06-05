@@ -36,7 +36,7 @@ class CharacterUI(View):
         self.const_index = 0
         self.story_index = 0
         self.quote_index = 0
-        self.selected_page = 0
+        self.selected_page = 8 if hakushin else 0
 
         # hakushin specific
         self.hakushin = hakushin

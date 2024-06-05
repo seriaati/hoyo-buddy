@@ -52,11 +52,15 @@ class BaseClient:
             game: The game of the character to remove.
         """
         if game is enka.Game.GI:
+            if "avatarInfoList" not in cache:
+                return
             for character in cache["avatarInfoList"]:
                 if str(character["avatarId"]) == character_id:
                     cache["avatarInfoList"].remove(character)
                     break
         elif game is enka.Game.HSR:
+            if "avatarDetailList" not in cache["detailInfo"]:
+                return
             for character in cache["detailInfo"]["avatarDetailList"]:
                 if str(character["avatarId"]) == character_id:
                     cache["detailInfo"]["avatarDetailList"].remove(character)

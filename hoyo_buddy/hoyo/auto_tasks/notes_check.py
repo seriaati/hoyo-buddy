@@ -420,10 +420,11 @@ class NotesChecker:
             notifies = await NotesNotify.filter(enabled=True).all().order_by("account__uid")
 
             for notify in notifies:
+                await notify.fetch_related("account")
                 if cls._determine_skip(notify):
                     continue
 
-                await notify.fetch_related("account", "account__user", "account__user__settings")
+                await notify.fetch_related("account__user", "account__user__settings")
 
                 try:
                     if notify.account.uid not in cls._notes_cache[notify.account.game]:

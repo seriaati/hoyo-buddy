@@ -17,6 +17,8 @@ from ..models import LoginNotifPayload
 from ..ui.components import URLButtonView
 
 if TYPE_CHECKING:
+    from discord import Message
+
     from ..bot.bot import INTERACTION, HoyoBuddy
 
 
@@ -32,6 +34,7 @@ class GeetestCommand:
 
         self._total_timeout = 0
         self._max_timeout = 300  # 5 minutes
+        self._message: Message | None = None
 
     def start_listener(self) -> None:
         """Start listening for geetest NOTIFY."""
@@ -49,31 +52,32 @@ class GeetestCommand:
         )
 
     async def _handle_notif(self, notif: asyncpg_listen.NotificationOrTimeout) -> None:
-        i = self._interaction
+        assert self._message is not None
+        translator = self._bot.translator
 
         if isinstance(notif, asyncpg_listen.Timeout):
             self._total_timeout += 2
             if self._total_timeout >= self._max_timeout:
                 embed = DefaultEmbed(
                     self._locale,
-                    i.client.translator,
+                    translator,
                     title=LocaleStr("Verification timeout", key="geeetest_verification_timeout"),
                     description=LocaleStr(
                         "The verification has timed out. Please use the </geetest> comand to try again.",
                         key="geeetest_verification_timeout_description",
                     ),
                 )
-                await i.edit_original_response(embed=embed, view=None)
-                self._bot.login_notif_tasks.pop(i.user.id).cancel()
+                await self._message.edit(embed=embed, view=None)
+                self._bot.login_notif_tasks.pop(self._interaction.user.id).cancel()
             return
 
         try:
             assert notif.payload is not None
             user_id = notif.payload
-            if int(user_id) != i.user.id:
+            if int(user_id) != self._interaction.user.id:
                 return
 
-            user = await User.get(id=i.user.id)
+            user = await User.get(id=self._interaction.user.id)
             result = user.temp_data
 
             client = self._account.client
@@ -85,23 +89,23 @@ class GeetestCommand:
                         "validate": result["geetest_validate"],
                     }
                 )
-                embed = client.get_daily_reward_embed(reward, self._locale, i.client.translator)
+                embed = client.get_daily_reward_embed(reward, self._locale, translator)
             else:
                 await client.verify_mmt(genshin.models.MMTResult(**result))
                 embed = DefaultEmbed(
                     self._locale,
-                    i.client.translator,
+                    translator,
                     title=LocaleStr("Verification complete", key="geeetest_verification_complete"),
                 )
 
-            await i.edit_original_response(embed=embed, view=None)
+            await self._message.edit(embed=embed, view=None)
         except Exception as e:
             embed, recognized = get_error_embed(e, self._locale, self._bot.translator)
             if not recognized:
                 self._bot.capture_exception(e)
-            await i.edit_original_response(embed=embed, view=None)
+            await self._message.edit(embed=embed, view=None)
         finally:
-            self._bot.login_notif_tasks.pop(i.user.id).cancel()
+            self._bot.login_notif_tasks.pop(self._interaction.user.id).cancel()
 
     async def run(self) -> None:
         i = self._interaction
@@ -147,3 +151,4 @@ class GeetestCommand:
         ).add_acc_info(self._account)
 
         await i.followup.send(embed=embed, view=view, ephemeral=True)
+        self._message = await i.original_response()

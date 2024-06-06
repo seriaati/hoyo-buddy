@@ -12,12 +12,14 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 Hoyo Buddy is a feature rich, easy to use, and beautifully designed Discord bot specifically made for Hoyoverse gamers.  
-It is currently in beta, you can invite it by clicking [this link](https://dub.sh/hb-beta-invite).  
 
 ## Quick Links
 
+[Try it Out](https://github.com/seriaati/hoyo-buddy/wiki/Getting-Started)
 [Discord Server](https://dsc.gg/hoyo-buddy)  
-[Website](https://hb.seriaati.xyz/)
+[Website](https://hb.seriaati.xyz/)  
+[Privacy Policy](<https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md>)  
+[FAQ](<https://github.com/seriaati/hoyo-buddy/wiki/Frequently-Asked-Questions>)  
 
 ## Contributing
 

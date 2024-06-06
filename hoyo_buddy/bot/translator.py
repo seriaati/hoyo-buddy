@@ -236,11 +236,18 @@ class Translator:
         return string_key
 
     @staticmethod
-    async def fetch_source_strings() -> None:
-        logger.info("Fetching translations...")
+    async def fetch_translations() -> None:
         start = time.time()
         await asyncio.to_thread(tx.fetch_translations)
         logger.info(f"Fetched translations in {time.time() - start:.2f} seconds")
+
+    async def fetch_source_strings(self) -> None:
+        logger.info("Fetching translations...")
+
+        tasks = set()
+        task = asyncio.create_task(self.fetch_translations())
+        tasks.add(task)
+        task.add_done_callback(tasks.discard)
 
     async def push_source_strings(self) -> None:
         if not self._not_translated:

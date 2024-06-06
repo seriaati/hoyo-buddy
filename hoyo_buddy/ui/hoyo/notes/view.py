@@ -53,6 +53,7 @@ class NotesView(View):
         super().__init__(author=author, locale=locale, translator=translator)
         self._account = account
         self._dark_mode = dark_mode
+        self._file: File | None = None
 
         self.add_item(ReminderButton())
 
@@ -244,6 +245,7 @@ class NotesView(View):
             raise NotImplementedError
 
         embed.add_acc_info(self._account)
+        embed.set_image(url="attachment://notes.webp")
         return embed
 
     async def process_type_one_modal(
@@ -480,11 +482,11 @@ class NotesView(View):
 
         notes = await self._get_notes()
         embed = self._get_notes_embed(notes)
-        file_ = await self._draw_notes_card(
+        self._file = await self._draw_notes_card(
             i.client.session, notes, i.client.executor, i.client.loop
         )
 
-        await i.followup.send(embed=embed, file=file_, view=self)
+        await i.followup.send(embed=embed, file=self._file, view=self)
         self.message = await i.original_response()
 
 
@@ -497,10 +499,11 @@ class ReminderButton(Button[NotesView]):
         )
 
     async def callback(self, i: INTERACTION) -> None:
+        assert self.view._file is not None
         go_back_button = GoBackButton(
             self.view.children,
             self.view.get_embeds(i.message),
-            self.view.get_attachments(i.message),
+            [self.view._file],
         )
         self.view.clear_items()
         self.view.add_item(go_back_button)

@@ -46,6 +46,7 @@ class CheckInUI(View):
         self.account = account
         self.client = account.client
         self.dark_mode = dark_mode
+        self._file: discord.File | None = None
         self.add_items()
 
     def add_items(self) -> None:
@@ -136,10 +137,10 @@ class CheckInUI(View):
 
     async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
-        embed, file_ = await self.get_image_embed_and_file(
+        embed, self._file = await self.get_image_embed_and_file(
             i.client.session, i.client.executor, i.client.loop
         )
-        await i.followup.send(embed=embed, file=file_, view=self)
+        await i.followup.send(embed=embed, file=self._file, view=self)
         self.message = await i.original_response()
 
 
@@ -158,10 +159,10 @@ class CheckInButton(Button[CheckInUI]):
         await i.response.defer()
         daily_reward = await client.claim_daily_reward()
 
-        embed, file_ = await self.view.get_image_embed_and_file(
+        embed, self._file = await self.view.get_image_embed_and_file(
             i.client.session, i.client.executor, i.client.loop
         )
-        await i.edit_original_response(embed=embed, attachments=[file_])
+        await i.edit_original_response(embed=embed, attachments=[self._file])
         embed = client.get_daily_reward_embed(daily_reward, self.view.locale, self.view.translator)
         await i.followup.send(embed=embed)
 
@@ -190,10 +191,11 @@ class NotificationSettingsButton(Button[CheckInUI]):
 
     async def callback(self, i: INTERACTION) -> Any:
         await self.view.account.fetch_related("notif_settings")
+        assert self.view._file is not None
         go_back_button = GoBackButton(
             self.view.children,
             self.view.get_embeds(i.message),
-            self.view.get_attachments(i.message),
+            [self.view._file],
         )
         self.view.clear_items()
         self.view.add_item(go_back_button)

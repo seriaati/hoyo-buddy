@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Generic, Self, TypeVar
 import discord
 from discord.utils import MISSING
 from loguru import logger
-from seria.utils import split_list_to_chunks
+from seria.utils import clean_url, split_list_to_chunks
 
 from .. import emojis
 from ..bot.error_handler import get_error_embed
@@ -178,14 +178,6 @@ class View(discord.ui.View):
             return message.embeds
         return None
 
-    @staticmethod
-    def get_attachments(
-        message: discord.Message | None,
-    ) -> list[discord.Attachment] | None:
-        if message:
-            return message.attachments
-        return None
-
 
 class URLButtonView(discord.ui.View):
     def __init__(
@@ -277,13 +269,13 @@ class GoBackButton(Button, Generic[V_co]):
         self,
         original_children: list[discord.ui.Item[Any]],
         embeds: Sequence[discord.Embed] | None = None,
-        attachments: Sequence[discord.Attachment] | None = None,
+        files: Sequence[discord.File] | None = None,
         row: int = 4,
     ) -> None:
         super().__init__(emoji=emojis.BACK, row=row)
         self.original_children = original_children.copy()
         self.embeds = embeds
-        self.attachments = attachments
+        self.files = files
 
         self.view: V_co
 
@@ -296,8 +288,18 @@ class GoBackButton(Button, Generic[V_co]):
         kwargs: dict[str, Any] = {"view": self.view}
         if self.embeds is not None:
             kwargs["embeds"] = self.embeds
-        if self.attachments is not None:
-            kwargs["attachments"] = [await attachment.to_file() for attachment in self.attachments]
+        if self.files is not None:
+            for file_ in self.files:
+                file_.reset()
+            kwargs["attachments"] = self.files
+            for embed in self.embeds or []:
+                original_image = (
+                    clean_url(embed.image.url).split("/")[-1]
+                    if embed.image.url is not None
+                    else None
+                )
+                if original_image is not None:
+                    embed.set_image(url=f"attachment://{original_image}")
 
         await i.response.edit_message(**kwargs)
 

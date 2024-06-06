@@ -88,6 +88,8 @@ class BaseClient:
                 # Showcase is disabled
                 return cache
 
+            if "avatarInfoList" not in cache:
+                cache["avatarInfoList"] = []
             for chara in data["avatarInfoList"]:
                 self.remove_character_from_cache(cache, str(chara["avatarId"]), game)
                 cache["avatarInfoList"].append(chara)
@@ -114,6 +116,8 @@ class BaseClient:
                 # Showcase is disabled
                 return cache
 
+            if "avatarDetailList" not in cache["detailInfo"]:
+                cache["detailInfo"]["avatarDetailList"] = []
             for chara in data["detailInfo"]["avatarDetailList"]:
                 self.remove_character_from_cache(cache, str(chara["avatarId"]), game)
                 cache["detailInfo"]["avatarDetailList"].append(chara)

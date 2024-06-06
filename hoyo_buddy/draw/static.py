@@ -5,6 +5,7 @@ import pathlib
 from typing import TYPE_CHECKING
 
 import aiofiles
+from fake_useragent import UserAgent
 from seria.utils import clean_url
 
 from ..exceptions import DownloadImageFailedError
@@ -19,7 +20,7 @@ STATIC_FOLDER = pathlib.Path("./.static")
 
 
 async def download_img(image_url: str, session: aiohttp.ClientSession) -> bytes:
-    async with session.get(image_url) as resp:
+    async with session.get(image_url, headers={"User-Agent": UserAgent().random}) as resp:
         if resp.status != 200:
             raise DownloadImageFailedError(image_url, resp.status)
 

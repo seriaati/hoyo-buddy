@@ -12,7 +12,7 @@ from hoyo_buddy.db.models import CardSettings, HoyoAccount
 from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import CharacterType, Game
-from hoyo_buddy.exceptions import CardNotReadyError
+from hoyo_buddy.exceptions import CardNotReadyError, DownloadImageFailedError
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
 from hoyo_buddy.ui.components import Button, Select, View
@@ -445,7 +445,11 @@ class ProfileView(View):
         try:
             bytes_obj = await self.draw_card(i, character=character)
             bytes_obj.seek(0)
-        except Exception:
+        except Exception as e:
+            if isinstance(e, DownloadImageFailedError):
+                assert self._card_settings is not None
+                self._card_settings.current_image = None
+                await self._card_settings.save(update_fields=("current_image",))
             if unset_loading_state:
                 await item.unset_loading_state(i)
             raise

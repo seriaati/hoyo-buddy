@@ -154,7 +154,6 @@ class YattaAPIClient(yatta.YattaAPI):
                 continue
             result[character.types.combat_type.value.lower()] += 1
 
-        result["lightning"] = result.pop("thunder")  # Hoyo seriously can't decide on a name
         return dict(result)
 
     async def fetch_path_char_counts(self) -> dict[str, int]:

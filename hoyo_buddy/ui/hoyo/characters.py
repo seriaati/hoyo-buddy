@@ -131,6 +131,8 @@ class CharactersView(View):
             return characters
 
         elements = [element_filter.value for element_filter in self._element_filters]
+        if HSRElement.THUNDER in self._element_filters:
+            elements.append("lightning")  # hoyo seriously can't decide on a name
         return [c for c in characters if c.element.lower() in elements]
 
     def _apply_path_filters(

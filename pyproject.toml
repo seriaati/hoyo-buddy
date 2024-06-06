@@ -21,6 +21,7 @@ cachetools = "^5.3.2"
 discord-py = {git = "https://github.com/Rapptz/discord.py"}
 diskcache = "^5.6.3"
 enka-py = {git = "https://github.com/seriaati/enka-py"}
+fake-useragent = "^1.5.1"
 genshin = {version = "^1.7.1", extras = ["all"]}
 gitpython = "^3.1.42"
 hakushin-py = {git = "https://github.com/seriaati/hakushin-py"}
@@ -34,7 +35,7 @@ pydantic = "^2.6.4"
 python = "^3.11"
 python-dotenv = "^1.0.0"
 rsa = "^4.9"
-sentry-sdk = "^2.1.1"
+sentry-sdk = "^2.4.0"
 seria-library = {git = "https://github.com/seriaati/seria-library"}
 tortoise-orm = {extras = ["asyncpg"], version = "^0.21.0"}
 transifex-python = "^3.5.0"

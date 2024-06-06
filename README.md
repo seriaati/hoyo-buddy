@@ -15,7 +15,7 @@ Hoyo Buddy is a feature rich, easy to use, and beautifully designed Discord bot 
 
 ## Quick Links
 
-[Try it Out](https://github.com/seriaati/hoyo-buddy/wiki/Getting-Started)
+[Try it Out](https://github.com/seriaati/hoyo-buddy/wiki/Getting-Started)  
 [Discord Server](https://dsc.gg/hoyo-buddy)  
 [Website](https://hb.seriaati.xyz/)  
 [Privacy Policy](<https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md>)  

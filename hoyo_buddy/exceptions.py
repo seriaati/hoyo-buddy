@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 class HoyoBuddyError(Exception):
-    def __init__(self, title: LocaleStr, message: LocaleStr) -> None:
+    def __init__(self, title: LocaleStr, message: LocaleStr | None = None) -> None:
         self.title = title
         self.message = message
 
@@ -216,5 +216,15 @@ class DownloadImageFailedError(HoyoBuddyError):
                 key="download_image_failed_error_message",
                 url=url,
                 status=status,
+            ),
+        )
+
+
+class AutocompleteNotDoneYetError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr(
+                "Search autocomplete choices not set up yet, please try again later.",
+                key="search_autocomplete_not_setup",
             ),
         )

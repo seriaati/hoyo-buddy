@@ -7,7 +7,7 @@ from ..bot.translator import LocaleStr
 from ..db.models import FarmNotify, HoyoAccount, Settings
 from ..embeds import DefaultEmbed
 from ..enums import Game
-from ..exceptions import InvalidQueryError
+from ..exceptions import AutocompleteNotDoneYetError, InvalidQueryError
 from ..hoyo.clients import ambr
 from ..ui.hoyo.farm_notify import FarmNotifyView
 
@@ -39,8 +39,12 @@ class FarmCommand:
         self._translator = interaction.client.translator
         self._action = action
 
-        characters = self._choices[Game.GENSHIN][ambr.ItemCategory.CHARACTERS]
-        weapons = self._choices[Game.GENSHIN][ambr.ItemCategory.WEAPONS]
+        try:
+            characters = self._choices[Game.GENSHIN][ambr.ItemCategory.CHARACTERS]
+            weapons = self._choices[Game.GENSHIN][ambr.ItemCategory.WEAPONS]
+        except KeyError as e:
+            raise AutocompleteNotDoneYetError from e
+
         self._valid_item_ids = {id_ for c in characters.values() for id_ in c.values()} | {
             id_ for w in weapons.values() for id_ in w.values()
         }
@@ -97,7 +101,7 @@ class FarmCommand:
         self._validate_query()
 
         farm_notify = await self._get_farm_notify()
-        is_in = self._check_item_in_list(farm_notify)
+        is_in = await self._check_item_in_list(farm_notify)
         if is_in:
             return
 

@@ -13,8 +13,7 @@ from .constants import STARRAIL_RES
 if TYPE_CHECKING:
     import asyncio
     import concurrent.futures
-
-    from aiohttp import web
+    from collections.abc import Mapping
 
 
 @dataclass(kw_only=True)
@@ -35,15 +34,19 @@ class LoginNotifPayload(BaseModel):
     api_server: str
 
     @classmethod
-    def parse_from_request(cls, request: web.Request) -> LoginNotifPayload:
-        return cls(
-            user_id=int(request.query["user_id"]),
-            guild_id=int(request.query["guild_id"]) if "guild_id" in request.query else None,
-            channel_id=int(request.query["channel_id"]),
-            message_id=int(request.query["message_id"]) if "message_id" in request.query else None,
-            gt_version=int(request.query["gt_version"]),
-            api_server=request.query["api_server"],
-        )
+    def parse_from_request(cls, query: Mapping[str, str]) -> LoginNotifPayload:
+        try:
+            return cls(
+                user_id=int(query["user_id"]),
+                guild_id=int(query["guild_id"]) if "guild_id" in query else None,
+                channel_id=int(query["channel_id"]),
+                message_id=int(query["message_id"]) if "message_id" in query else None,
+                gt_version=int(query["gt_version"]),
+                api_server=query["api_server"],
+            )
+        except KeyError as e:
+            msg = f"Missing query parameter: {e}"
+            raise ValueError(msg) from e
 
     def to_query_string(self) -> str:
         return "&".join(f"{k}={v}" for k, v in self.model_dump().items() if v is not None)

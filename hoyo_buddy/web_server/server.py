@@ -43,7 +43,10 @@ class GeetestWebServer:
         return user.temp_data
 
     async def captcha(self, request: web.Request) -> web.StreamResponse:
-        payload = LoginNotifPayload.parse_from_request(request)
+        try:
+            payload = LoginNotifPayload.parse_from_request(request.query)
+        except ValueError as e:
+            raise web.HTTPBadRequest(reason="Missing query parameter") from e
 
         if self.template is None:
             raise web.HTTPInternalServerError(reason="Template not loaded")

@@ -9,7 +9,7 @@ license = "GPL-3.0"
 name = "hoyo-buddy"
 package-mode = false
 readme = "README.md"
-version = "0.9.13"
+version = "1.0.0"
 
 [tool.poetry.dependencies]
 aiofiles = "^23.2.1"

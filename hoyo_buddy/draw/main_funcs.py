@@ -70,7 +70,11 @@ async def draw_hsr_build_card(
 
     for trace in character.traces:
         urls.append(trace.icon)
-    for stat in character.stats:
+
+    stats = (
+        character.stats if isinstance(character, HoyolabHSRCharacter) else character.stats.values()
+    )
+    for stat in stats:
         urls.append(stat.icon)
 
     for relic in character.relics:

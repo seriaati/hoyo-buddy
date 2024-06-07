@@ -254,10 +254,22 @@ def draw_hsr_build_card(
     # attributes
     attributes: dict[str, str] = {}
     if isinstance(character, enka.hsr.Character):
-        for stat in character.stats:
-            if stat.type.value in enka.hsr.DMG_BONUS_PROPS.values():
-                continue
-            attributes[stat.icon] = stat.formatted_value
+        stat_types = (
+            enka.hsr.StatType.MAX_HP,
+            enka.hsr.StatType.ATK,
+            enka.hsr.StatType.DEF,
+            enka.hsr.StatType.SPD,
+            enka.hsr.StatType.CRIT_RATE,
+            enka.hsr.StatType.CRIT_DMG,
+            enka.hsr.StatType.BREAK_EFFECT,
+            enka.hsr.StatType.HEALING_BOOST,
+            enka.hsr.StatType.ENERGY_REGEN_RATE,
+            enka.hsr.StatType.EFFECT_HIT_RATE,
+            enka.hsr.StatType.EFFECT_RES,
+        )
+        for stat_type, stat in character.stats.items():
+            if stat_type in stat_types:
+                attributes[stat.icon] = stat.formatted_value
 
         max_dmg_add = character.highest_dmg_bonus_stat
         attributes[max_dmg_add.icon] = max_dmg_add.formatted_value

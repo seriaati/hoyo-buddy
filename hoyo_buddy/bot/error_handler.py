@@ -59,7 +59,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     (-3101, -1004): {
         "title": LocaleStr("Action in Cooldown", key="action_in_cooldown_error_title"),
         "description": LocaleStr(
-            "You are currently in cooldown, please try again at {available_time}.",
+            "Please try again at {available_time}.",
             key="action_in_cooldown_error_message",
             available_time=format_dt(get_now() + timedelta(minutes=1), "T"),
         ),

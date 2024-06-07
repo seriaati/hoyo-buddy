@@ -176,5 +176,4 @@ class Config:
         self.sentry = args.sentry
         self.translator = args.translator
         self.search_autocomplete = args.search
-        self.status = args.status
         self.schedule = args.schedule

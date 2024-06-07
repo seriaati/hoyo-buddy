@@ -3,7 +3,7 @@ from __future__ import annotations
 import concurrent.futures
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Literal, TypeAlias
+from typing import TYPE_CHECKING, Any, TypeAlias
 
 import aiohttp
 import discord
@@ -122,25 +122,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         await self.load_extension("jishaku")
 
         await self.nai_client.init(timeout=120)
-
-        if self.config.status:
-            await self._send_status_embed("start")
-
-    async def _send_status_embed(self, status: Literal["start", "stop"]) -> None:
-        """Send a status embed to the status channel.
-
-        Args:
-            status: The status of the bot.
-        """
-        status_channel = await self.fetch_channel(STATUS_CHANNEL_ID)
-        assert isinstance(status_channel, discord.TextChannel)
-
-        embed = discord.Embed(
-            title=f"Bot {'Started 🚀' if status == 'start' else 'Shutting Down for Code Update 🛠️'}",
-            description=f"Current time: {discord.utils.format_dt(get_now(), 'T')}",
-            color=discord.Color.green() if status == "start" else discord.Color.red(),
-        )
-        await status_channel.send(embed=embed)
 
     def capture_exception(self, e: Exception) -> None:
         # Errors to suppress
@@ -313,8 +294,6 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     async def close(self) -> None:
         logger.info("Bot shutting down...")
-        if self.env != "dev":
-            await self._send_status_embed("stop")
 
         for task in self.login_notif_tasks.values():
             task.cancel()

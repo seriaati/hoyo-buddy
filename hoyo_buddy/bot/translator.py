@@ -11,9 +11,11 @@ from discord import app_commands
 from loguru import logger
 from seria.utils import read_json, split_list_to_chunks
 from transifex.native import init, tx
+from transifex.native.cache import AbstractCache
 from transifex.native.parsing import SourceString
 from transifex.native.rendering import AbstractErrorPolicy, AbstractRenderingPolicy
 
+from ..db.models import JSONFile
 from ..enums import GenshinElement, HSRElement
 from ..utils import capitalize_first_word as capitalize_first_word_
 from ..utils import convert_to_title_case
@@ -27,9 +29,29 @@ if TYPE_CHECKING:
     from hakushin.models.gi import Character as HakushinCharacter
     from yatta.models import Character as HSRCharacter
 
+    from ..models import Config
+
 __all__ = ("AppCommandTranslator", "LocaleStr", "Translator")
 
 COMMAND_REGEX = r"</[^>]+>"
+LANGUAGES = (
+    "en_US",
+    "zh_CN",
+    "zh_TW",
+    "ja",
+    "fr",
+    "pt_BR",
+    "id",
+    "nl",
+    # "de",
+    # "ko",
+    # "vi",
+    # "ru",
+    # "th",
+    # "es_ES",
+    # "hi",
+    # "ro",
+)
 
 
 class LocaleStr:
@@ -64,6 +86,33 @@ class LocaleStr:
         return translator.translate(self, locale)
 
 
+class TranslatorCache(AbstractCache):
+    def __init__(self) -> None:
+        self._cache: dict[str, dict[str, str]] = {}
+
+    async def load(self) -> None:
+        for language in LANGUAGES:
+            self._cache[language] = await JSONFile.read(f"translations/{language}.json")
+
+    async def save(self) -> None:
+        for language, translations in self._cache.items():
+            await JSONFile.write(f"translations/{language}.json", translations)
+
+    def get(self, key: str, language_code: str) -> str | None:
+        translation = None
+        with contextlib.suppress(KeyError):
+            translation = self._cache[language_code][key]
+        return translation
+
+    def update(self, data: dict[str, tuple[bool, dict[str, dict[str, str]]]]) -> None:
+        for lang_code, (should_update, translations) in data.items():
+            if should_update:
+                if lang_code not in self._cache:
+                    self._cache[lang_code] = {}
+                for key, value in translations.items():
+                    self._cache[lang_code][key] = value["string"]
+
+
 class CustomMisisngPolicy(AbstractRenderingPolicy):
     @staticmethod
     def get(_: str) -> None:
@@ -77,12 +126,13 @@ class CustomErrorPolicy(AbstractErrorPolicy):
 
 
 class Translator:
-    def __init__(self, env: str) -> None:
+    def __init__(self, config: Config) -> None:
         super().__init__()
 
-        self._env = env
+        self._config = config
         self._not_translated: dict[str, str] = {}
         self._synced_commands: dict[str, int] = {}
+        self._cache = TranslatorCache()
 
     async def __aenter__(self) -> Translator:
         await self.load()
@@ -97,37 +147,27 @@ class Translator:
         await self.unload()
 
     async def load(self) -> None:
-        # Commented out languages don't have translations yet
+        await self._cache.load()
         init(
             token=os.environ["TRANSIFEX_TOKEN"],
             secret=os.environ["TRANSIFEX_SECRET"],
-            languages=(
-                "en_US",
-                "zh_CN",
-                "zh_TW",
-                "ja",
-                "fr",
-                "pt_BR",
-                "id",
-                "nl",
-                # "de",
-                # "ko",
-                # "vi",
-                # "ru",
-                # "th",
-                # "es_ES",
-                # "hi",
-                # "ro",
-            ),
+            languages=LANGUAGES,
             missing_policy=CustomMisisngPolicy(),
             error_policy=CustomErrorPolicy(),
+            cache=self._cache,
         )
         await self.load_synced_commands_json()
 
-        if self._env in {"prod", "test"}:
+        if self._config.translator:
             await self.fetch_source_strings()
 
         logger.info("Translator loaded")
+
+    async def unload(self) -> None:
+        if self._not_translated and self._config.translator:
+            await self._cache.save()
+            await self.push_source_strings()
+        logger.info("Translator unloaded")
 
     async def load_synced_commands_json(self) -> None:
         self._synced_commands = await read_json("hoyo_buddy/bot/data/synced_commands.json")
@@ -165,7 +205,7 @@ class Translator:
 
         string_key = self._get_string_key(string)
 
-        if string.translate_ and self._env != "dev":
+        if string.translate_ and self._config.translator:
             # Check if the string is missing or has different values
             source_string = tx.translate(
                 message, "en_US", _key=string_key, escape=False, params=extras
@@ -191,7 +231,7 @@ class Translator:
         if (
             "en" in lang
             or not string.translate_
-            or self._env == "dev"
+            or not self._config.translator
             or string_key in self._not_translated
         ):
             translation = message
@@ -235,11 +275,11 @@ class Translator:
             string_key = string.key
         return string_key
 
-    @staticmethod
-    async def fetch_translations() -> None:
+    async def fetch_translations(self) -> None:
         start = time.time()
         await asyncio.to_thread(tx.fetch_translations)
         logger.info(f"Fetched translations in {time.time() - start:.2f} seconds")
+        await self._cache.save()
 
     async def fetch_source_strings(self) -> None:
         logger.info("Fetching translations...")
@@ -304,11 +344,6 @@ class Translator:
             if gender_str
             else f"{character.name} ({element_str})"
         )
-
-    async def unload(self) -> None:
-        if self._not_translated and self._env in {"prod", "test"}:
-            await self.push_source_strings()
-        logger.info("Translator unloaded")
 
 
 class AppCommandTranslator(app_commands.Translator):

@@ -106,3 +106,10 @@ class GeetestType(StrEnum):
 
     DAILY_CHECKIN = "Daily check-in"
     REALTIME_NOTES = "Real-time notes"
+
+
+class GeetestNotifyType(StrEnum):
+    """Geetst NOTIFY type."""
+
+    LOGIN = "login"
+    COMMAND = "command"

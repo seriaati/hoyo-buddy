@@ -11,6 +11,7 @@ from tortoise import Tortoise
 
 from hoyo_buddy.db.models import User
 
+from ..enums import GeetestNotifyType
 from ..models import LoginNotifPayload
 
 if TYPE_CHECKING:
@@ -48,6 +49,11 @@ class GeetestWebServer:
         except ValueError as e:
             raise web.HTTPBadRequest(reason="Missing query parameter") from e
 
+        try:
+            geetest_type = GeetestNotifyType(request.query["gt_type"])
+        except (KeyError, ValueError) as e:
+            raise web.HTTPBadRequest(reason="Invalid geetest type") from e
+
         if self.template is None:
             raise web.HTTPInternalServerError(reason="Template not loaded")
 
@@ -58,6 +64,7 @@ class GeetestWebServer:
             .replace("{ guild_id }", str(payload.guild_id))
             .replace("{ channel_id }", str(payload.channel_id))
             .replace("{ message_id }", str(payload.message_id))
+            .replace("{ gt_type }", str(geetest_type))
         )
         return web.Response(body=body, content_type="text/html")
 
@@ -80,13 +87,14 @@ class GeetestWebServer:
         """Update user's temp_data with the solved geetest mmt and send a NOTIFY to the database."""
         data: dict[str, Any] = await request.json()
 
+        geetest_type = data.pop("gt_type")  # login, command
         user_id = data.pop("user_id")
         user = await User.get(id=int(user_id))
         user.temp_data = data
         await user.save()
 
         conn = Tortoise.get_connection("default")
-        await conn.execute_query(f"NOTIFY geetest, '{user_id}'")
+        await conn.execute_query(f"NOTIFY geetest_{geetest_type}, '{user_id}'")
 
         return web.Response(status=204)
 

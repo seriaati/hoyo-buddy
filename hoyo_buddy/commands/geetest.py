@@ -12,7 +12,7 @@ from ..bot.translator import LocaleStr
 from ..constants import GEETEST_SERVERS
 from ..db.models import HoyoAccount, User, get_locale
 from ..embeds import DefaultEmbed
-from ..enums import GeetestType
+from ..enums import GeetestNotifyType, GeetestType
 from ..models import LoginNotifPayload
 from ..ui.components import URLButtonView
 
@@ -47,7 +47,10 @@ class GeetestCommand:
             asyncpg_listen.connect_func(os.environ["DB_URL"])
         )
         self._bot.login_notif_tasks[i.user.id] = asyncio.create_task(
-            listener.run({"geetest": self._handle_notif}, notification_timeout=2),
+            listener.run(
+                {f"geetest_{GeetestNotifyType.COMMAND.value}": self._handle_notif},
+                notification_timeout=2,
+            ),
             name=f"geetest_command_listener{i.user.id}",
         )
 
@@ -131,7 +134,7 @@ class GeetestCommand:
             gt_version=3,
             api_server="api.geetest.com",
         )
-        url = f"{GEETEST_SERVERS[i.client.env]}/captcha?{payload.to_query_string()}"
+        url = f"{GEETEST_SERVERS[i.client.env]}/captcha?{payload.to_query_string()}&gt_type={GeetestNotifyType.COMMAND.value}"
 
         view = URLButtonView(
             i.client.translator,

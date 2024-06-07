@@ -12,7 +12,7 @@ from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr
 from ...db.models import User
 from ...embeds import DefaultEmbed
-from ...enums import Platform
+from ...enums import GeetestNotifyType, Platform
 
 if TYPE_CHECKING:
     from ...bot.bot import INTERACTION
@@ -97,7 +97,10 @@ class GeetestHandler:
             asyncpg_listen.connect_func(os.environ["DB_URL"])
         )
         self._bot.login_notif_tasks[self._user_id] = asyncio.create_task(
-            listener.run({"geetest": self.handle_geetest_notifs}, notification_timeout=2),
+            listener.run(
+                {f"geetest_{GeetestNotifyType.LOGIN.value}": self.handle_geetest_notifs},
+                notification_timeout=2,
+            ),
             name=f"geetest_listener_{self._user_id}",
         )
 

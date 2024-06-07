@@ -9,7 +9,7 @@ from ...constants import GEETEST_SERVERS
 from ...db.models import HoyoAccount, User
 from ...embeds import DefaultEmbed
 from ...emojis import get_game_emoji
-from ...enums import Platform
+from ...enums import GeetestNotifyType, Platform
 from ...exceptions import NoGameAccountsError, TryOtherMethodError
 from ...models import LoginNotifPayload
 from .. import SelectOption
@@ -224,7 +224,7 @@ class AccountManager(View):
             gt_version=gt_version,
             api_server=api_server,
         )
-        url = f"{GEETEST_SERVERS[i.client.env]}/captcha?{payload.to_query_string()}"
+        url = f"{GEETEST_SERVERS[i.client.env]}/captcha?{payload.to_query_string()}&gt_type={GeetestNotifyType.LOGIN.value}"
 
         go_back_button = GoBackButton(self.children, self.get_embeds(i.message))
         self.clear_items()

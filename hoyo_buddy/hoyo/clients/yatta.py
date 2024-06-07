@@ -14,7 +14,7 @@ from yatta import Language
 from ...bot.translator import LocaleStr
 from ...constants import LOCALE_TO_YATTA_LANG, TRAILBLAZER_IDS, YATTA_PATH_TO_HSR_PATH
 from ...embeds import DefaultEmbed
-from ...emojis import get_hsr_element_emoji
+from ...emojis import get_hsr_element_emoji, get_hsr_path_emoji
 
 __all__ = ("ItemCategory", "YattaAPIClient")
 
@@ -441,10 +441,14 @@ class YattaAPIClient(yatta.YattaAPI):
             ),
             self.locale,
         )
+
+        lc_path = yatta.PathType(light_cone.type.id)
+        path_emoji = get_hsr_path_emoji(YATTA_PATH_TO_HSR_PATH[lc_path].value)
         embed = DefaultEmbed(
             self.locale,
             self.translator,
             title=f"{light_cone.name} ({level_str})",
+            description=f"{'★' * light_cone.rarity}\n{path_emoji} {light_cone.type.name}",
         )
 
         result = self._calc_upgrade_stats(light_cone.upgrades)

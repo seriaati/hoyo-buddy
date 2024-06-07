@@ -5,10 +5,12 @@ from typing import TYPE_CHECKING, Literal, overload
 
 import discord
 import hakushin
+import yatta
 
 from ...bot.translator import LocaleStr, Translator
-from ...constants import LOCALE_TO_HAKUSHIN_LANG, contains_traveler_id
+from ...constants import LOCALE_TO_HAKUSHIN_LANG, YATTA_PATH_TO_HSR_PATH, contains_traveler_id
 from ...embeds import DefaultEmbed
+from ...emojis import get_hsr_path_emoji
 
 if TYPE_CHECKING:
     import aiohttp
@@ -235,6 +237,15 @@ class HakushinAPI(hakushin.HakushinAPI):
             self._locale,
             self._translator,
             title=f"{light_cone.name} ({level_str})",
+        )
+        lc_path = yatta.PathType(light_cone.path.value)
+        path_emoji = get_hsr_path_emoji(YATTA_PATH_TO_HSR_PATH[lc_path].value)
+        path_name = hakushin.constants.HSR_PATH_NAMES[self.lang][light_cone.path]
+        embed = DefaultEmbed(
+            self._locale,
+            self._translator,
+            title=f"{light_cone.name} ({level_str})",
+            description=f"{'★' * light_cone.rarity}\n{path_emoji} {path_name}",
         )
 
         result = hakushin.utils.calc_light_cone_upgrade_stat_values(light_cone, level, True)

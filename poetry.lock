@@ -765,7 +765,7 @@ pydantic = "^2.5.3"
 type = "git"
 url = "https://github.com/seriaati/enka-py"
 reference = "HEAD"
-resolved_reference = "d50b8d67bc16234dae4e1443d65fe1aab7f5dc2a"
+resolved_reference = "08e7f0c4ba812c6292691234d7daf38bc5605a3e"
 
 [[package]]
 name = "executing"
@@ -975,7 +975,7 @@ files = [
 
 [[package]]
 name = "hakushin-py"
-version = "0.3.0"
+version = "0.3.1"
 description = "Async API wrapper for hakush.in written in Python."
 optional = false
 python-versions = "^3.11"
@@ -991,7 +991,7 @@ pydantic = "^2.7.1"
 type = "git"
 url = "https://github.com/seriaati/hakushin-py"
 reference = "HEAD"
-resolved_reference = "b7f440be4e3143cdc87f1e814a8d13ed8f362ee1"
+resolved_reference = "2183dfac789957e5b869e97063c8d918b72c37b7"
 
 [[package]]
 name = "httpcore"
@@ -1328,13 +1328,13 @@ files = [
 
 [[package]]
 name = "nodeenv"
-version = "1.9.0"
+version = "1.9.1"
 description = "Node.js virtual environment builder"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 files = [
-    {file = "nodeenv-1.9.0-py2.py3-none-any.whl", hash = "sha256:508ecec98f9f3330b636d4448c0f1a56fc68017c68f1e7857ebc52acf0eb879a"},
-    {file = "nodeenv-1.9.0.tar.gz", hash = "sha256:07f144e90dae547bf0d4ee8da0ee42664a42a04e02ed68e06324348dafe4bdb1"},
+    {file = "nodeenv-1.9.1-py2.py3-none-any.whl", hash = "sha256:ba11c9782d29c27c70ffbdda2d7415098754709be8a7056d79a737cd901155c9"},
+    {file = "nodeenv-1.9.1.tar.gz", hash = "sha256:6ec12890a2dab7946721edbfbcd91f3319c6ccc9aec47be7c7e6b7011ee6645f"},
 ]
 
 [[package]]
@@ -2125,7 +2125,7 @@ tortoise = ["tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
 type = "git"
 url = "https://github.com/seriaati/seria-library"
 reference = "HEAD"
-resolved_reference = "3923997215d834bd1e1429a16fe9331ca2b44a77"
+resolved_reference = "3597be2fcc0c10018a7ee34c4a3483cb03f7a4ed"
 
 [[package]]
 name = "six"
@@ -2227,13 +2227,13 @@ requests = "*"
 
 [[package]]
 name = "typing-extensions"
-version = "4.12.1"
+version = "4.12.2"
 description = "Backported and Experimental Type Hints for Python 3.8+"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "typing_extensions-4.12.1-py3-none-any.whl", hash = "sha256:6024b58b69089e5a89c347397254e35f1bf02a907728ec7fee9bf0fe837d203a"},
-    {file = "typing_extensions-4.12.1.tar.gz", hash = "sha256:915f5e35ff76f56588223f15fdd5938f9a1cf9195c0de25130c627e4d597f6d1"},
+    {file = "typing_extensions-4.12.2-py3-none-any.whl", hash = "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d"},
+    {file = "typing_extensions-4.12.2.tar.gz", hash = "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8"},
 ]
 
 [[package]]

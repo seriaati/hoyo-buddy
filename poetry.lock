@@ -748,7 +748,7 @@ files = [
 
 [[package]]
 name = "enka-py"
-version = "2.1.3"
+version = "2.2.0"
 description = "An async API wrapper for enka.network written in Python."
 optional = false
 python-versions = "^3.10"
@@ -765,7 +765,7 @@ pydantic = "^2.5.3"
 type = "git"
 url = "https://github.com/seriaati/enka-py"
 reference = "HEAD"
-resolved_reference = "ed5570cbb384f6925d8f8121a8a5f483b7c12e9c"
+resolved_reference = "d50b8d67bc16234dae4e1443d65fe1aab7f5dc2a"
 
 [[package]]
 name = "executing"

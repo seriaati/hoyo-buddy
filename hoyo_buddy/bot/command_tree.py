@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import contextlib
 from typing import TYPE_CHECKING, Literal
 
-from discord import InteractionType, app_commands
+from discord import InteractionType, NotFound, app_commands
 
 from ..db.models import get_locale
 from ..utils import get_now
@@ -43,7 +44,8 @@ class CommandTree(app_commands.CommandTree):
         if not recognized:
             i.client.capture_exception(error)
 
-        if i.response.is_done():
-            await i.followup.send(embed=embed, ephemeral=True)
-        else:
-            await i.response.send_message(embed=embed, ephemeral=True)
+        with contextlib.suppress(NotFound):
+            if i.response.is_done():
+                await i.followup.send(embed=embed, ephemeral=True)
+            else:
+                await i.response.send_message(embed=embed, ephemeral=True)

@@ -17,6 +17,7 @@ from ..components import Button, GoBackButton, ToggleButton, View
 if TYPE_CHECKING:
     import asyncio
     import concurrent.futures
+    import io
 
     import aiohttp
     from genshin.models import DailyRewardInfo
@@ -46,7 +47,7 @@ class CheckInUI(View):
         self.account = account
         self.client = account.client
         self.dark_mode = dark_mode
-        self._file: discord.File | None = None
+        self._bytes_obj: io.BytesIO | None = None
         self.add_items()
 
     def add_items(self) -> None:
@@ -100,15 +101,15 @@ class CheckInUI(View):
         result.append(next_reward)
         return result, reward_info
 
-    async def get_image_embed_and_file(
+    async def get_embed_and_image(
         self,
         session: aiohttp.ClientSession,
         executor: concurrent.futures.ProcessPoolExecutor,
         loop: asyncio.AbstractEventLoop,
-    ) -> tuple[DefaultEmbed, discord.File]:
+    ) -> tuple[DefaultEmbed, io.BytesIO]:
         rewards, info = await self._get_rewards()
 
-        file_ = await draw_checkin_card(
+        bytes_obj = await draw_checkin_card(
             DrawInput(
                 dark_mode=self.dark_mode,
                 locale=self.locale,
@@ -133,14 +134,17 @@ class CheckInUI(View):
         )
         embed.set_image(url="attachment://check-in.webp")
         embed.add_acc_info(self.account)
-        return embed, file_
+        return embed, bytes_obj
 
     async def start(self, i: INTERACTION) -> None:
         await i.response.defer()
-        embed, self._file = await self.get_image_embed_and_file(
+        embed, self._bytes_obj = await self.get_embed_and_image(
             i.client.session, i.client.executor, i.client.loop
         )
-        await i.followup.send(embed=embed, file=self._file, view=self)
+
+        self._bytes_obj.seek(0)
+        file_ = discord.File(self._bytes_obj, filename="check-in.webp")
+        await i.followup.send(embed=embed, file=file_, view=self)
         self.message = await i.original_response()
 
 
@@ -159,10 +163,14 @@ class CheckInButton(Button[CheckInUI]):
         await i.response.defer()
         daily_reward = await client.claim_daily_reward()
 
-        embed, self._file = await self.view.get_image_embed_and_file(
+        embed, self.view._bytes_obj = await self.view.get_embed_and_image(
             i.client.session, i.client.executor, i.client.loop
         )
-        await i.edit_original_response(embed=embed, attachments=[self._file])
+
+        self.view._bytes_obj.seek(0)
+        file_ = discord.File(self.view._bytes_obj, filename="check-in.webp")
+
+        await i.edit_original_response(embed=embed, attachments=[file_])
         embed = client.get_daily_reward_embed(daily_reward, self.view.locale, self.view.translator)
         await i.followup.send(embed=embed)
 
@@ -191,11 +199,10 @@ class NotificationSettingsButton(Button[CheckInUI]):
 
     async def callback(self, i: INTERACTION) -> Any:
         await self.view.account.fetch_related("notif_settings")
-        assert self.view._file is not None
         go_back_button = GoBackButton(
             self.view.children,
             self.view.get_embeds(i.message),
-            [self.view._file],
+            self.view._bytes_obj,
         )
         self.view.clear_items()
         self.view.add_item(go_back_button)

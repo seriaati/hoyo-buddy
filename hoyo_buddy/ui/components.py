@@ -17,6 +17,7 @@ from ..embeds import ErrorEmbed
 from ..exceptions import InvalidInputError
 
 if TYPE_CHECKING:
+    import io
     from collections.abc import Sequence
 
     from discord.ui.item import Item
@@ -269,13 +270,13 @@ class GoBackButton(Button, Generic[V_co]):
         self,
         original_children: list[discord.ui.Item[Any]],
         embeds: Sequence[discord.Embed] | None = None,
-        files: Sequence[discord.File] | None = None,
+        byte_obj: io.BytesIO | None = None,
         row: int = 4,
     ) -> None:
         super().__init__(emoji=emojis.BACK, row=row)
         self.original_children = original_children.copy()
         self.embeds = embeds
-        self.files = files
+        self.byte_obj = byte_obj
 
         self.view: V_co
 
@@ -288,10 +289,11 @@ class GoBackButton(Button, Generic[V_co]):
         kwargs: dict[str, Any] = {"view": self.view}
         if self.embeds is not None:
             kwargs["embeds"] = self.embeds
-        if self.files is not None:
-            for file_ in self.files:
-                file_.reset()
-            kwargs["attachments"] = self.files
+
+        if self.byte_obj is not None:
+            self.byte_obj.seek(0)
+
+            original_image = None
             for embed in self.embeds or []:
                 original_image = (
                     clean_url(embed.image.url).split("/")[-1]
@@ -300,6 +302,9 @@ class GoBackButton(Button, Generic[V_co]):
                 )
                 if original_image is not None:
                     embed.set_image(url=f"attachment://{original_image}")
+
+            original_image = original_image or "image.webp"
+            kwargs["attachments"] = [discord.File(self.byte_obj, filename=original_image)]
 
         await i.response.edit_message(**kwargs)
 

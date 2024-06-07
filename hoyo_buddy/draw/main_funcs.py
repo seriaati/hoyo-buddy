@@ -46,7 +46,7 @@ async def draw_item_list_card(
     return File(buffer, filename=draw_input.filename)
 
 
-async def draw_checkin_card(draw_input: DrawInput, rewards: list[Reward]) -> File:
+async def draw_checkin_card(draw_input: DrawInput, rewards: list[Reward]) -> BytesIO:
     await download_and_save_static_images([r.icon for r in rewards], "check-in", draw_input.session)
     with timing("draw", tags={"type": "checkin_card"}):
         buffer = await draw_input.loop.run_in_executor(
@@ -55,8 +55,7 @@ async def draw_checkin_card(draw_input: DrawInput, rewards: list[Reward]) -> Fil
             rewards,
             draw_input.dark_mode,
         )
-    buffer.seek(0)
-    return File(buffer, filename=draw_input.filename)
+    return buffer
 
 
 async def draw_hsr_build_card(
@@ -106,7 +105,7 @@ async def draw_hsr_build_card(
 
 async def draw_hsr_notes_card(
     draw_input: DrawInput, notes: StarRailNote, translator: Translator
-) -> File:
+) -> BytesIO:
     await download_and_save_static_images(
         [exped.item_url for exped in notes.expeditions],
         folder="hsr-notes",
@@ -121,8 +120,7 @@ async def draw_hsr_notes_card(
             translator,
             draw_input.dark_mode,
         )
-    buffer.seek(0)
-    return File(buffer, filename=draw_input.filename)
+    return buffer
 
 
 async def draw_gi_build_card(
@@ -155,7 +153,7 @@ async def draw_gi_build_card(
 
 async def draw_gi_notes_card(
     draw_input: DrawInput, notes: GenshinNote, translator: Translator
-) -> File:
+) -> BytesIO:
     await download_and_save_static_images(
         [exped.character_icon for exped in notes.expeditions],
         folder="gi-notes",
@@ -170,8 +168,7 @@ async def draw_gi_notes_card(
             translator,
             draw_input.dark_mode,
         )
-    buffer.seek(0)
-    return File(buffer, filename=draw_input.filename)
+    return buffer
 
 
 async def draw_farm_card(

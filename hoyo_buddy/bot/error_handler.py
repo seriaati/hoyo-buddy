@@ -90,7 +90,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
         "title": LocaleStr("Geetest Verification Required", key="geetest.required"),
         "description": LocaleStr(
             "Use the </geetest> command, choose the account that triggered the geetest, and choose `{geetest_type}` to complete the verification",
-            geetest_type=GeetestType.REALTIME_NOTES.value,
+            geetest_type=LocaleStr(GeetestType.REALTIME_NOTES.value, warn_no_key=False),
             key="geetest.required.description",
         ),
     },
@@ -120,7 +120,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
         "title": LocaleStr("Geetest Verification Required", key="geetest.required"),
         "description": LocaleStr(
             "Use the </geetest> command, choose the account that triggered the geetest, and choose `{geetest_type}` to complete the verification",
-            geetest_type=GeetestType.DAILY_CHECKIN.value,
+            geetest_type=LocaleStr(GeetestType.DAILY_CHECKIN.value, warn_no_key=False),
             key="geetest.required.description",
         ),
     },

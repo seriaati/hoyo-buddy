@@ -35,6 +35,7 @@ if TYPE_CHECKING:
 
     from ..enums import Game
     from ..hoyo.search_autocomplete import AutocompleteChoices
+    from ..models import Config
 
 
 __all__ = ("INTERACTION", "HoyoBuddy")
@@ -69,6 +70,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         repo: git.Repo,
         version: str,
         pool: asyncpg.Pool,
+        config: Config,
     ) -> None:
         super().__init__(
             command_prefix=commands.when_mentioned,
@@ -98,6 +100,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.version = version
         self.pool = pool
         self.executor = concurrent.futures.ProcessPoolExecutor()
+        self.config = config
 
         self.autocomplete_choices: AutocompleteChoices = {}
         """[game][category][locale][item_name] -> item_id"""
@@ -120,7 +123,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         await self.nai_client.init(timeout=120)
 
-        if self.env != "dev":
+        if self.config.status:
             await self._send_status_embed("start")
 
     async def _send_status_embed(self, status: Literal["start", "stop"]) -> None:
@@ -147,7 +150,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             # Unknown interaction
             return
 
-        if self.env == "dev":
+        if not self.config.sentry:
             logger.exception(e)
         else:
             sentry_sdk.capture_exception(e)

@@ -11,6 +11,7 @@ from pydantic import BaseModel
 from .constants import STARRAIL_RES
 
 if TYPE_CHECKING:
+    import argparse
     import asyncio
     import concurrent.futures
     from collections.abc import Mapping
@@ -168,3 +169,12 @@ class HoyolabHSRCharacter:
     stats: list[Stat]
     traces: list[Trace]
     element: str
+
+
+class Config:
+    def __init__(self, args: argparse.Namespace) -> None:
+        self.sentry = args.sentry
+        self.translator = args.translator
+        self.search_autocomplete = args.search
+        self.status = args.status
+        self.schedule = args.schedule

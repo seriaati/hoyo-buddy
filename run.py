@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import asyncio
 import contextlib
 import logging
@@ -22,16 +23,27 @@ from hoyo_buddy.bot.bot import HoyoBuddy
 from hoyo_buddy.bot.translator import Translator
 from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.logging import InterceptHandler
+from hoyo_buddy.models import Config
 from hoyo_buddy.web_server.server import GeetestWebServer
 
 load_dotenv()
 env = os.environ["ENV"]  # dev, prod, test
+is_dev = env == "dev"
 
 repo = git.Repo()
 tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
 version = tags[-1].name
 
-if env != "dev":
+parser = argparse.ArgumentParser()
+parser.add_argument("--sentry", action="store_true", default=not is_dev)
+parser.add_argument("--translator", action="store_true", default=not is_dev)
+parser.add_argument("--search", action="store_true", default=not is_dev)
+parser.add_argument("--status", action="store_true", default=not is_dev)
+parser.add_argument("--schedule", action="store_true", default=not is_dev)
+
+config = Config(parser.parse_args())
+
+if config.sentry:
     sentry_sdk.init(
         dsn=os.getenv("SENTRY_DSN"),
         integrations=[
@@ -58,7 +70,7 @@ async def main() -> None:
     async with (
         aiohttp.ClientSession() as session,
         Database(),
-        Translator(env) as translator,
+        Translator(config) as translator,
         HoyoBuddy(
             session=session,
             env=env,
@@ -66,6 +78,7 @@ async def main() -> None:
             repo=repo,
             version=version,
             pool=pool,
+            config=config,
         ) as bot,
     ):
         with contextlib.suppress(

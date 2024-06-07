@@ -22,12 +22,12 @@ class Schedule(commands.Cog):
         self.bot = bot
 
     async def cog_load(self) -> None:
-        if self.bot.env == "dev":
+        if not self.bot.config.schedule:
             return
         self.schedule.start()
 
     async def cog_unload(self) -> None:
-        if self.bot.env == "dev":
+        if not self.bot.config.schedule:
             return
         self.schedule.cancel()
 
@@ -60,7 +60,11 @@ class Schedule(commands.Cog):
                         tasks.add(asyncio.create_task(FarmChecker.execute(self.bot, uid_start)))
 
         # Every day at 11:00
-        if now.hour == 11 and now.minute < self.loop_interval and self.bot.env != "dev":
+        if (
+            now.hour == 11
+            and now.minute < self.loop_interval
+            and self.bot.config.search_autocomplete
+        ):
             search_cog = self.bot.get_cog("Search")
             if isinstance(search_cog, Search):
                 tasks.add(asyncio.create_task(search_cog._setup_search_autocomplete_choices()))

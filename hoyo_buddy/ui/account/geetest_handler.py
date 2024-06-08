@@ -96,12 +96,13 @@ class GeetestHandler:
         listener = asyncpg_listen.NotificationListener(
             asyncpg_listen.connect_func(os.environ["DB_URL"])
         )
+        listener_name = f"geetest_{GeetestNotifyType.LOGIN.value}_{self._user_id}"
         self._bot.login_notif_tasks[self._user_id] = asyncio.create_task(
             listener.run(
-                {f"geetest_{GeetestNotifyType.LOGIN.value}": self.handle_geetest_notifs},
+                {listener_name: self.handle_geetest_notifs},
                 notification_timeout=2,
             ),
-            name=f"geetest_listener_{self._user_id}",
+            name=listener_name,
         )
 
     async def handle_geetest_notifs(self, notif: asyncpg_listen.NotificationOrTimeout) -> None:  # noqa: PLR0912
@@ -122,12 +123,7 @@ class GeetestHandler:
                 self._bot.login_notif_tasks.pop(self._user_id).cancel()
             return
 
-        assert notif.payload is not None
-        user_id = notif.payload
-        if int(user_id) != self._user_id:
-            return
-
-        user = await User.get(id=int(user_id))
+        user = await User.get(id=int(self._user_id))
 
         try:
             if isinstance(self._data, EmailPswdLoginData):

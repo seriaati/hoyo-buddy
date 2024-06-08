@@ -28,6 +28,7 @@ class GeetestCommand:
     ) -> None:
         self._bot = bot
         self._interaction = i
+        self._user_id = i.user.id
         self._account = account
         self._locale = i.locale
         self._type = type_
@@ -46,12 +47,13 @@ class GeetestCommand:
         listener = asyncpg_listen.NotificationListener(
             asyncpg_listen.connect_func(os.environ["DB_URL"])
         )
+        listener_name = f"geetest_{GeetestNotifyType.LOGIN.value}_{self._user_id}"
         self._bot.login_notif_tasks[i.user.id] = asyncio.create_task(
             listener.run(
-                {f"geetest_{GeetestNotifyType.COMMAND.value}": self._handle_notif},
+                {listener_name: self._handle_notif},
                 notification_timeout=2,
             ),
-            name=f"geetest_command_listener{i.user.id}",
+            name=listener_name,
         )
 
     async def _handle_notif(self, notif: asyncpg_listen.NotificationOrTimeout) -> None:
@@ -71,16 +73,11 @@ class GeetestCommand:
                     ),
                 )
                 await self._message.edit(embed=embed, view=None)
-                self._bot.login_notif_tasks.pop(self._interaction.user.id).cancel()
+                self._bot.login_notif_tasks.pop(self._user_id).cancel()
             return
 
         try:
-            assert notif.payload is not None
-            user_id = notif.payload
-            if int(user_id) != self._interaction.user.id:
-                return
-
-            user = await User.get(id=self._interaction.user.id)
+            user = await User.get(id=self._user_id)
             result = user.temp_data
 
             client = self._account.client
@@ -108,7 +105,7 @@ class GeetestCommand:
                 self._bot.capture_exception(e)
             await self._message.edit(embed=embed, view=None)
         finally:
-            self._bot.login_notif_tasks.pop(self._interaction.user.id).cancel()
+            self._bot.login_notif_tasks.pop(self._user_id).cancel()
 
     async def run(self) -> None:
         i = self._interaction

@@ -94,7 +94,7 @@ class GeetestWebServer:
         await user.save()
 
         conn = Tortoise.get_connection("default")
-        await conn.execute_query(f"NOTIFY geetest_{geetest_type}, '{user_id}'")
+        await conn.execute_query(f"NOTIFY geetest_{geetest_type}_{user_id}")
 
         return web.Response(status=204)
 

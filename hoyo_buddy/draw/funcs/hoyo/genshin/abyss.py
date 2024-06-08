@@ -25,21 +25,14 @@ class AbyssCard:
         charas: dict[str, AbyssCharacter],
     ) -> None:
         self._dark_mode = dark_mode
-        self._locale = Locale(locale)
+        self._locale = locale
         self._translator = translator
         self._abyss = abyss
         self._abyss_characters = charas
 
-        mode = "dark" if self._dark_mode else "light"
-        self._im = Image.open(f"hoyo-buddy-assets/assets/abyss/{mode}_abyss.png")
-        draw = ImageDraw.Draw(self._im)
-        self._drawer = Drawer(
-            draw,
-            folder="abyss",
-            dark_mode=self._dark_mode,
-            locale=self._locale,
-            translator=self._translator,
-        )
+    @property
+    def locale(self) -> Locale:
+        return Locale(self._locale)
 
     def _draw_rank_pill(
         self, chara: genshin.models.AbyssRankCharacter, title: LocaleStr
@@ -65,7 +58,7 @@ class AbyssCard:
             draw,
             folder="abyss",
             dark_mode=self._dark_mode,
-            locale=self._locale,
+            locale=self.locale,
             translator=self._translator,
         )
 
@@ -253,7 +246,7 @@ class AbyssCard:
                 bk_draw,
                 folder="abyss",
                 dark_mode=self._dark_mode,
-                locale=self._locale,
+                locale=self.locale,
                 translator=self._translator,
             )
 
@@ -296,6 +289,17 @@ class AbyssCard:
                 )
 
     def draw(self) -> BytesIO:
+        mode = "dark" if self._dark_mode else "light"
+        self._im = Image.open(f"hoyo-buddy-assets/assets/abyss/{mode}_abyss.png")
+        draw = ImageDraw.Draw(self._im)
+        self._drawer = Drawer(
+            draw,
+            folder="abyss",
+            dark_mode=self._dark_mode,
+            locale=self.locale,
+            translator=self._translator,
+        )
+
         pills = self._get_pills()
         start_pos = (27, 33)
         y_padding = 10

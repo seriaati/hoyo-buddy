@@ -291,16 +291,14 @@ async def draw_spiral_abyss_card(
 
     await download_and_save_static_images(urls, "abyss", draw_input.session)
     with timing("draw", tags={"type": "spiral_abyss_card"}):
-        buffer = await draw_input.loop.run_in_executor(
-            draw_input.executor,
-            funcs.genshin.AbyssCard(
-                draw_input.dark_mode,
-                draw_input.locale.value,
-                translator,
-                abyss,
-                abyss_characters,
-            ).draw,
+        card = funcs.genshin.AbyssCard(
+            draw_input.dark_mode,
+            draw_input.locale.value,
+            translator,
+            abyss,
+            abyss_characters,
         )
+        buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 

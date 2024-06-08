@@ -24,20 +24,12 @@ class ExplorationCard:
         self._user = user
         self._dark_mode = dark_mode
         self._translator = translator
-        self._locale = Locale(locale)
+        self._locale = locale
         self._placeholder = "? ? ?"
 
-        self._im = Image.open(
-            f"hoyo-buddy-assets/assets/gi-exploration/background_{'dark' if dark_mode else 'light'}.png"
-        )
-        draw = ImageDraw.Draw(self._im)
-        self._drawer = Drawer(
-            draw,
-            folder="gi-exploration",
-            dark_mode=dark_mode,
-            locale=self._locale,
-            translator=translator,
-        )
+    @property
+    def locale(self) -> Locale:
+        return Locale(self._locale)
 
     def _get_card(self, name: str) -> Image.Image:
         return self._drawer.open_asset(f"{name}_{'dark' if self._dark_mode else 'light'}.png")
@@ -74,15 +66,15 @@ class ExplorationCard:
             "Lv.{level}",
             key="level_str",
             level=0 if exploration is None else exploration.offerings[0].level,
-        ).translate(self._translator, self._locale)
+        ).translate(self._translator, self.locale)
         if exploration is None:
             return f"{self._placeholder}: {level_str}"
         return f"{exploration.offerings[0].name}: {level_str}"
 
     def _draw_waypoint_card(self) -> Image.Image:
-        self._im = self._get_card("waypoint")
+        im = self._get_card("waypoint")
         drawer = Drawer(
-            ImageDraw.Draw(self._im),
+            ImageDraw.Draw(im),
             folder="gi-exploration",
             dark_mode=self._dark_mode,
             locale=self._drawer.locale,
@@ -108,12 +100,12 @@ class ExplorationCard:
                 locale=Locale.american_english,
             )
 
-        return self._im
+        return im
 
     def _draw_chest_card(self) -> Image.Image:
-        self._im = self._get_card("chest")
+        im = self._get_card("chest")
         drawer = Drawer(
-            ImageDraw.Draw(self._im),
+            ImageDraw.Draw(im),
             folder="gi-exploration",
             dark_mode=self._dark_mode,
             locale=self._drawer.locale,
@@ -158,7 +150,7 @@ class ExplorationCard:
                 locale=Locale.american_english,
             )
 
-        return self._im
+        return im
 
     def _draw_exploration_card(
         self,
@@ -166,9 +158,9 @@ class ExplorationCard:
         exploration: Exploration | None,
         texts: dict[LocaleStr | str, tuple[int, int]],
     ) -> Image.Image:
-        self._im = self._get_card(name)
+        im = self._get_card(name)
         drawer = Drawer(
-            ImageDraw.Draw(self._im),
+            ImageDraw.Draw(im),
             folder="gi-exploration",
             dark_mode=self._dark_mode,
             locale=self._drawer.locale,
@@ -182,7 +174,7 @@ class ExplorationCard:
         for text, pos in texts.items():
             self._write_small_text(text, position=pos, drawer=drawer)
 
-        return self._im
+        return im
 
     def _draw_mondstadt_card(self) -> Image.Image:
         exploration = self._get_exploration(1)
@@ -203,8 +195,8 @@ class ExplorationCard:
                 reputation=0 if exploration is None else exploration.offerings[0].level,
             ): (75, 253),
         }
-        self._im = self._draw_exploration_card("mondstadt", exploration, texts)
-        return self._im
+        im = self._draw_exploration_card("mondstadt", exploration, texts)
+        return im
 
     def _draw_liyue_card(self) -> Image.Image:
         exploration = self._get_exploration(2)
@@ -225,8 +217,8 @@ class ExplorationCard:
                 reputation=0 if exploration is None else exploration.offerings[0].level,
             ): (75, 253),
         }
-        self._im = self._draw_exploration_card("liyue", exploration, texts)
-        return self._im
+        im = self._draw_exploration_card("liyue", exploration, texts)
+        return im
 
     def _draw_inazuma_card(self) -> Image.Image:
         exploration = self._get_exploration(4)
@@ -248,8 +240,8 @@ class ExplorationCard:
             ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
-        self._im = self._draw_exploration_card("inazuma", exploration, texts)
-        return self._im
+        im = self._draw_exploration_card("inazuma", exploration, texts)
+        return im
 
     def _draw_sumeru_card(self) -> Image.Image:
         exploration = self._get_exploration(8)
@@ -271,8 +263,8 @@ class ExplorationCard:
             ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
-        self._im = self._draw_exploration_card("sumeru", exploration, texts)
-        return self._im
+        im = self._draw_exploration_card("sumeru", exploration, texts)
+        return im
 
     def _draw_fontaine_card(self) -> Image.Image:
         exploration = self._get_exploration(9)
@@ -294,17 +286,17 @@ class ExplorationCard:
             ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
-        self._im = self._draw_exploration_card("fontaine", exploration, texts)
-        return self._im
+        im = self._draw_exploration_card("fontaine", exploration, texts)
+        return im
 
     def _draw_placeholder_card(self) -> Image.Image:
-        self._im = self._get_card("placeholder")
-        draw = ImageDraw.Draw(self._im)
+        im = self._get_card("placeholder")
+        draw = ImageDraw.Draw(im)
         drawer = Drawer(
             draw,
             folder="gi-exploration",
             dark_mode=self._dark_mode,
-            locale=self._locale,
+            locale=self.locale,
             translator=self._translator,
         )
         self._write_title(self._placeholder, position=(34, 23), drawer=drawer)
@@ -321,7 +313,7 @@ class ExplorationCard:
             position=(34, 181),
             drawer=drawer,
         )
-        return self._im
+        return im
 
     def _draw_sea_of_bygone_eras_card(self) -> Image.Image:
         exploration = self._get_exploration(14)
@@ -332,8 +324,8 @@ class ExplorationCard:
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 117),
         }
-        self._im = self._draw_exploration_card("seaOfBygoneEras", exploration, texts)
-        return self._im
+        im = self._draw_exploration_card("seaOfBygoneEras", exploration, texts)
+        return im
 
     def _draw_chenyu_value_card(self) -> Image.Image:
         exploration = self._get_exploration(10)
@@ -353,8 +345,8 @@ class ExplorationCard:
             texts[key] = (65, 134 + 45 * i)
         texts.update({self._get_offering_text(exploration): (65, 271)})
 
-        self._im = self._draw_exploration_card("chenyuVale", exploration, texts)
-        return self._im
+        im = self._draw_exploration_card("chenyuVale", exploration, texts)
+        return im
 
     def _draw_the_chasm_card(self) -> Image.Image:
         exploration = self._get_exploration(6)
@@ -373,8 +365,8 @@ class ExplorationCard:
             self._get_offering_text(exploration): (65, 272),
         }
 
-        self._im = self._draw_exploration_card("theChasm", exploration, texts)
-        return self._im
+        im = self._draw_exploration_card("theChasm", exploration, texts)
+        return im
 
     def _draw_dragonspine_card(self) -> Image.Image:
         exploration = self._get_exploration(3)
@@ -386,8 +378,8 @@ class ExplorationCard:
             ): (73, 120),
             self._get_offering_text(exploration): (73, 184),
         }
-        self._im = self._draw_exploration_card("dragonspine", exploration, texts)
-        return self._im
+        im = self._draw_exploration_card("dragonspine", exploration, texts)
+        return im
 
     def _draw_enkanomiya_card(self) -> Image.Image:
         exploration = self._get_exploration(5)
@@ -398,10 +390,21 @@ class ExplorationCard:
                 progress=0 if exploration is None else exploration.explored,
             ): (73, 123),
         }
-        self._im = self._draw_exploration_card("enkanomiya", exploration, texts)
-        return self._im
+        im = self._draw_exploration_card("enkanomiya", exploration, texts)
+        return im
 
     def draw(self) -> BytesIO:
+        mode_str = "dark" if self._dark_mode else "light"
+        self._im = Image.open(f"hoyo-buddy-assets/assets/gi-exploration/background_{mode_str}.png")
+        draw = ImageDraw.Draw(self._im)
+        self._drawer = Drawer(
+            draw,
+            folder="gi-exploration",
+            dark_mode=self._dark_mode,
+            locale=self.locale,
+            translator=self._translator,
+        )
+
         self._drawer.write(
             LocaleStr("World Exploration", key="exploration.title"),
             position=(114, 81),

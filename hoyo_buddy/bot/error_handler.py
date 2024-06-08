@@ -76,7 +76,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     (-2016,): {
         "title": LocaleStr("Code redemption in cooldown", key="redeem_code.cooldown"),
     },
-    (-2021,): {
+    (-2021, -2011): {
         "title": LocaleStr("Adventure rank too low", key="redeem_code.ar_too_low"),
     },
     (30001,): {

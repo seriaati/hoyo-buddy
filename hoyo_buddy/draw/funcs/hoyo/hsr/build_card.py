@@ -84,11 +84,7 @@ def draw_hsr_build_card(
     box_right_pos = box_x + width
 
     # write in the middle of the rectangle
-    level_str = (
-        f"Lv.{character.level}/{character.max_level}"
-        if isinstance(character, enka.hsr.Character)
-        else f"Lv.{character.level}"
-    )
+    level_str = f"Lv.{character.level}/{character.max_level}"
     drawer.write(
         level_str,
         size=64,
@@ -354,11 +350,7 @@ def draw_hsr_build_card(
         box_x = text_left_pos
         box_y = text_bottom_pos + 20
         draw.rounded_rectangle((box_x, box_y, box_x + width, box_y + height), radius, primary)
-        level_str = (
-            f"Lv.{cone.level}/{cone.max_level}"
-            if isinstance(cone, enka.hsr.LightCone)
-            else f"Lv.{cone.level}"
-        )
+        level_str = f"Lv.{cone.level}/{cone.max_level}"
         drawer.write(
             level_str,
             size=36,

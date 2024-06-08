@@ -128,6 +128,7 @@ class LightCone:
     level: int
     superimpose: int
     name: str
+    max_level: int
 
     @property
     def icon(self) -> LightConeIcon:
@@ -169,6 +170,7 @@ class HoyolabHSRCharacter:
     stats: list[Stat]
     traces: list[Trace]
     element: str
+    max_level: int
 
 
 class Config:

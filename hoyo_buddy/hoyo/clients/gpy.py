@@ -6,6 +6,7 @@ from random import uniform
 from typing import TYPE_CHECKING, Any
 
 import genshin
+import hakushin
 
 from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr, Translator
@@ -176,6 +177,12 @@ class GenshinClient(genshin.Client):
                 level=character.equip.level,
                 superimpose=character.equip.rank,
                 name=character.equip.name,
+                max_level=hakushin.utils.get_max_level_from_ascension(
+                    hakushin.utils.get_ascension_from_level(
+                        character.equip.level, True, hakushin.Game.HSR
+                    ),
+                    hakushin.Game.HSR,
+                ),
             )
             if character.equip is not None
             else None
@@ -222,6 +229,10 @@ class GenshinClient(genshin.Client):
                 Trace(anchor=skill.anchor, icon=skill.item_url, level=skill.level)
                 for skill in character.skills
             ],
+            max_level=hakushin.utils.get_max_level_from_ascension(
+                hakushin.utils.get_ascension_from_level(character.level, True, hakushin.Game.HSR),
+                hakushin.Game.HSR,
+            ),
         )
         return hsr_chara
 

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Final, TypeAlias
 
-from enka.hsr import Character as HSRCharacter
+import enka
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji
@@ -19,32 +19,51 @@ if TYPE_CHECKING:
     from ..view import Character, ProfileView  # noqa: F401
     from .build_select import BuildSelect
 
+Builds: TypeAlias = dict[str, list[enka.gi.Build]] | dict[str, list[enka.hsr.Build]]
+
+DATA_TYPES: Final[dict[CharacterType, LocaleStr]] = {
+    CharacterType.BUILD: LocaleStr(
+        "Enka Network build", key="profile.character_select.enka_network.description"
+    ),
+    CharacterType.LIVE: LocaleStr(
+        "Real-time data", key="profile.character_select.live_data.description"
+    ),
+    CharacterType.CACHE: LocaleStr(
+        "Cached data", key="profile.character_select.cached_data.description"
+    ),
+}
+
+
+def determine_chara_type(
+    character_id: str,
+    cache_extras: dict[str, dict[str, Any]],
+    builds: Builds,
+    hoyolab: bool,
+) -> CharacterType:
+    key = f"{character_id}-hoyolab" if hoyolab else character_id
+    if key not in cache_extras or character_id in builds:
+        return CharacterType.BUILD
+    if cache_extras[key]["live"]:
+        return CharacterType.LIVE
+    return CharacterType.CACHE
+
 
 class CharacterSelect(PaginatorSelect["ProfileView"]):
     def __init__(
         self,
         characters: Sequence[Character],
         cache_extras: dict[str, dict[str, Any]],
+        builds: Builds,
     ) -> None:
         options: list[SelectOption] = []
 
         for character in characters:
-            if str(character.id) not in cache_extras:
-                data_type = LocaleStr(
-                    "Enka Network build", key="profile.character_select.enka_network.description"
-                )
-            else:
-                data_type = (
-                    LocaleStr(
-                        "Real-time data", key="profile.character_select.live_data.description"
-                    )
-                    if cache_extras[str(character.id)]["live"]
-                    else LocaleStr(
-                        "Cached data", key="profile.character_select.cached_data.description"
-                    )
-                )
+            character_type = determine_chara_type(
+                str(character.id), cache_extras, builds, isinstance(character, HoyolabHSRCharacter)
+            )
+            data_type = DATA_TYPES[character_type]
 
-            if isinstance(character, HSRCharacter):
+            if isinstance(character, enka.hsr.Character):
                 description = LocaleStr(
                     "Lv.{level} | E{eidolons}S{superposition} | {data_type} | From in-game showcase",
                     key="profile.character_select.description",
@@ -96,15 +115,13 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             return await i.response.edit_message(view=self.view)
 
         self.view.character_id = self.values[0]
-        if (
-            self.view.character_id not in self.view.cache_extras
-            or self.view.character_id in self.view._builds
-        ):
-            self.view.character_type = CharacterType.BUILD
-        elif self.view.cache_extras[self.view.character_id]["live"]:
-            self.view.character_type = CharacterType.LIVE
-        else:
-            self.view.character_type = CharacterType.CACHE
+        character = self.view._get_character(self.view.character_id)
+        self.view.character_type = determine_chara_type(
+            self.view.character_id,
+            self.view.cache_extras,
+            self.view._builds,
+            isinstance(character, HoyolabHSRCharacter),
+        )
 
         # Enable the player info button
         player_btn = self.view.get_item("profile_player_info")

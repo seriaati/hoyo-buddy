@@ -233,11 +233,13 @@ class GenshinClient(genshin.Client):
             "live": live,
             "locale": GPY_LANG_TO_LOCALE[self.lang].value,
         }
+
         for character in parsed.avatar_list:
-            if str(character.id) not in extras:
-                extras[str(character.id)] = cache_data
+            key = f"{character.id}-hoyolab"
+            if key not in extras:
+                extras[key] = cache_data
             else:
-                extras[str(character.id)].update(cache_data)
+                extras[key].update(cache_data)
 
         return parsed
 

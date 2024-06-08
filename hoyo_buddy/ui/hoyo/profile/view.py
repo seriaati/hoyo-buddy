@@ -20,7 +20,7 @@ from hoyo_buddy.ui.components import Button, Select, View
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
 from .items.card_settings_btn import CardSettingsButton
-from .items.chara_select import CharacterSelect
+from .items.chara_select import Builds, CharacterSelect, determine_chara_type
 from .items.player_btn import PlayerInfoButton
 from .items.rmv_from_cache_btn import RemoveFromCacheButton
 
@@ -60,7 +60,7 @@ class ProfileView(View):
         genshin_data: enka.gi.ShowcaseResponse | None = None,
         account: HoyoAccount | None,
         hoyolab_over_enka: bool = False,
-        builds: dict[str, list[enka.gi.Build]] | dict[str, list[enka.hsr.Build]] | None = None,
+        builds: Builds | None = None,
         owner: enka.Owner | None = None,
         author: User | Member,
         locale: Locale,
@@ -90,6 +90,9 @@ class ProfileView(View):
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | None = None
 
+    def _get_character(self, character_id: str) -> Character:
+        return next(c for c in self.characters if str(c.id) == character_id)
+
     def _set_characters(self) -> None:  # noqa: PLR0912
         """Set the characters list."""
         characters: Sequence[Character] = []
@@ -102,6 +105,11 @@ class ProfileView(View):
             enka_chara_ids: list[str] = []
             if self.starrail_data is not None:
                 for chara in self.starrail_data.characters:
+                    chara_type = determine_chara_type(
+                        str(chara.id), self.cache_extras, self._builds, False
+                    )
+                    if chara_type is CharacterType.CACHE:
+                        continue
                     enka_chara_ids.append(str(chara.id))
                     characters.append(chara)
 
@@ -228,7 +236,7 @@ class ProfileView(View):
         if self._account is not None:
             self.add_item(RemoveFromCacheButton())
         if self.characters:
-            self.add_item(CharacterSelect(self.characters, self.cache_extras))
+            self.add_item(CharacterSelect(self.characters, self.cache_extras, self._builds))
         self.add_item(BuildSelect())
 
     async def _draw_src_character_card(
@@ -386,7 +394,7 @@ class ProfileView(View):
         """Draw the character card and return the bytes object."""
         assert self.character_id is not None
 
-        character = character or next(c for c in self.characters if str(c.id) == self.character_id)
+        character = character or self._get_character(self.character_id)
 
         # Initialize card settings
         card_settings = await CardSettings.get_or_none(

@@ -110,6 +110,28 @@ class Drawer:
             round((1 - opactity) * foreground[2] + opactity * background[2]),
         )
 
+    @staticmethod
+    def crop_resize_image(
+        image: Image.Image, size: tuple[int, int], zoom: float = 1.0
+    ) -> Image.Image:
+        """Resize an image without changing its aspect ratio."""
+        # Calculate the target height to maintain the aspect ratio
+        width, height = image.size
+        ratio = min(width / size[0], height / size[1])
+
+        # Calculate the new size and left/top coordinates for cropping
+        new_width = round(width / (ratio * zoom))
+        new_height = round(height / (ratio * zoom))
+        left = round((new_width - size[0]) / 2)
+        top = round((new_height - size[1]) / 2)
+        right = round(left + size[0])
+        bottom = round(top + size[1])
+
+        image = image.resize((new_width, new_height), resample=Image.Resampling.LANCZOS)
+        image = image.crop((left, top, right, bottom))
+
+        return image
+
     @classmethod
     def hex_to_rgb(cls, hex_color_code: str) -> tuple[int, int, int]:
         hex_color_code = hex_color_code.lstrip("#")
@@ -337,20 +359,7 @@ class Drawer:
         background_color: tuple[int, int, int] | None = None,
         zoom: float = 1.0,
     ) -> Image.Image:
-        # Calculate the target height to maintain the aspect ratio
-        width, height = image.size
-        ratio = min(width / target_width, height / target_height)
-
-        # Calculate the new size and left/top coordinates for cropping
-        new_width = round(width / (ratio * zoom))
-        new_height = round(height / (ratio * zoom))
-        left = round((new_width - target_width) / 2)
-        top = round((new_height - target_height) / 2)
-        right = round(left + target_width)
-        bottom = round(top + target_height)
-
-        image = image.resize((new_width, new_height), resample=Image.Resampling.LANCZOS)
-        image = image.crop((left, top, right, bottom))
+        image = self.crop_resize_image(image, (target_width, target_height), zoom)
 
         if self.dark_mode:
             overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.2))

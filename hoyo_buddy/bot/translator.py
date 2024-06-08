@@ -126,7 +126,7 @@ class CustomErrorPolicy(AbstractErrorPolicy):
 
 
 class Translator:
-    def __init__(self, config: Config) -> None:
+    def __init__(self, config: Config | None = None) -> None:
         super().__init__()
 
         self._config = config
@@ -158,13 +158,13 @@ class Translator:
         )
         await self.load_synced_commands_json()
 
-        if self._config.translator:
+        if self._config is not None and self._config.translator:
             await self.fetch_source_strings()
 
         logger.info("Translator loaded")
 
     async def unload(self) -> None:
-        if self._not_translated and self._config.translator:
+        if self._not_translated and self._config is not None and self._config.translator:
             await self._cache.save()
             await self.push_source_strings()
         logger.info("Translator unloaded")
@@ -205,7 +205,7 @@ class Translator:
 
         string_key = self._get_string_key(string)
 
-        if string.translate_ and self._config.translator:
+        if string.translate_ and self._config is not None and self._config.translator:
             # Check if the string is missing or has different values
             source_string = tx.translate(
                 message, "en_US", _key=string_key, escape=False, params=extras
@@ -231,7 +231,7 @@ class Translator:
         if (
             "en" in lang
             or not string.translate_
-            or not self._config.translator
+            or (self._config is not None and not self._config.translator)
             or string_key in self._not_translated
         ):
             translation = message

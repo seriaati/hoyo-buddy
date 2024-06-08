@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Final
+
 import discord
 import enka
 import hakushin
@@ -8,7 +10,7 @@ from genshin import Game as GPYGame
 from yatta import Language as YattaLanguage
 from yatta import PathType
 
-from .enums import Game, HSRPath
+from .enums import ChallengeType, Game, HSRPath
 
 DB_INTEGER_MAX = 2147483647
 DB_SMALLINT_MAX = 32767
@@ -263,4 +265,14 @@ GEETEST_SERVERS = {
     "prod": "http://geetest-server-test.seriaati.xyz",
     "test": "http://geetest-server-test.seriaati.xyz",
     "dev": "http://localhost:5000",
+}
+
+GAME_CHALLANGES: Final[dict[Game, list[ChallengeType]]] = {
+    Game.GENSHIN: [
+        ChallengeType.SPIRAL_ABYSS,
+    ],
+    Game.STARRAIL: [
+        ChallengeType.MOC,
+        ChallengeType.PURE_FICTION,
+    ],
 }

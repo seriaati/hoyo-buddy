@@ -263,6 +263,35 @@ class Hoyo(commands.Cog):
         await view.start(i, show_first_time_msg=account_.game is Game.GENSHIN)
 
     @app_commands.command(
+        name=app_commands.locale_str("challenge", translate=False),
+        description=app_commands.locale_str(
+            "View game end-game content statistics, like spiral abyss, memory of chaos, etc.",
+            key="challenge_command_description",
+        ),
+    )
+    @app_commands.rename(
+        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
+    )
+    @app_commands.describe(
+        user=app_commands.locale_str(
+            "User to search the accounts with, defaults to you",
+            key="user_autocomplete_param_description",
+        ),
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        ),
+    )
+    async def challenge_command(
+        self,
+        i: INTERACTION,
+        user: USER = None,
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+    ) -> None:
+        pass
+
+    @app_commands.command(
         name=app_commands.locale_str("abyss", translate=False),
         description=app_commands.locale_str(
             "View your spiral abyss data", key="abyss__command_description"

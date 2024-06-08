@@ -113,3 +113,11 @@ class GeetestNotifyType(StrEnum):
 
     LOGIN = "login"
     COMMAND = "command"
+
+
+class ChallengeType(StrEnum):
+    """Challenge type."""
+
+    SPIRAL_ABYSS = "Spiral abyss"
+    MOC = "Memory of chaos"
+    PURE_FICTION = "Pure fiction"

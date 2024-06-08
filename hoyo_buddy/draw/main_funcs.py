@@ -18,7 +18,13 @@ if TYPE_CHECKING:
 
     from genshin.models import Character as GenshinCharacter
     from genshin.models import Notes as GenshinNote
-    from genshin.models import PartialGenshinUserStats, SpiralAbyss, StarRailNote
+    from genshin.models import (
+        PartialGenshinUserStats,
+        SpiralAbyss,
+        StarRailChallenge,
+        StarRailNote,
+        StarRailPureFiction,
+    )
     from genshin.models import StarRailDetailCharacter as StarRailCharacter
 
     from ..bot.translator import Translator
@@ -307,11 +313,45 @@ async def draw_exploration_card(
     with timing("draw", tags={"type": "exploration_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
-            funcs.genshin.ExplorationCard.draw,
-            user,
-            draw_input.dark_mode,
-            draw_input.locale.value,
-            translator,
+            funcs.genshin.ExplorationCard(
+                user, draw_input.dark_mode, draw_input.locale.value, translator
+            ).draw,
+        )
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_moc_card(
+    draw_input: DrawInput,
+    data: StarRailChallenge,
+    translator: Translator,
+) -> File:
+    for floor in data.floors:
+        icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
+        await download_and_save_static_images(icons, "moc", draw_input.session)
+
+    with timing("draw", tags={"type": "moc_card"}):
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
+            funcs.hsr.moc.MOCCard(data, draw_input.locale.value, translator).draw,
+        )
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_pure_fiction_card(
+    draw_input: DrawInput,
+    data: StarRailPureFiction,
+    translator: Translator,
+) -> File:
+    for floor in data.floors:
+        icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
+        await download_and_save_static_images(icons, "pf", draw_input.session)
+
+    with timing("draw", tags={"type": "pure_fiction_card"}):
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
+            funcs.hsr.pure_fiction.PureFictionCard(data, draw_input.locale.value, translator).draw,
         )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

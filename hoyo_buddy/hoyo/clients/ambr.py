@@ -539,7 +539,12 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_abyss_chamber_embed_with_floor_info(
-        self, floor: ambr.Floor, floor_index: int, chamber: ambr.Chamber, chamber_index: int
+        self,
+        floor: ambr.Floor,
+        floor_index: int,
+        chamber: ambr.Chamber,
+        chamber_index: int,
+        blessing: ambr.Blessing,
     ) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
@@ -559,6 +564,11 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         embed.add_field(
             name=LocaleStr("Enemy Level", key="abyss_chamber.enemy_level.embed.field.name"),
             value=str(floor.override_enemy_level),
+            inline=False,
+        )
+        embed.add_field(
+            name=LocaleStr("Blessing", key="abyss_chamber.blessing.embed.field.name"),
+            value=blessing.description,
             inline=False,
         )
         embed.add_field(

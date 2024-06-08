@@ -22,7 +22,7 @@ discord-py = {git = "https://github.com/Rapptz/discord.py"}
 diskcache = "^5.6.3"
 enka-py = {git = "https://github.com/seriaati/enka-py"}
 fake-useragent = "^1.5.1"
-genshin = {version = "^1.7.1", extras = ["all"]}
+genshin = {git = "https://github.com/thesadru/genshin.py", extras = ["all"]}
 gitpython = "^3.1.42"
 hakushin-py = {git = "https://github.com/seriaati/hakushin-py"}
 jishaku = "^2.5.1"

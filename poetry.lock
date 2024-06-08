@@ -911,10 +911,8 @@ version = "1.7.1"
 description = "An API wrapper for Genshin Impact."
 optional = false
 python-versions = ">=3.8"
-files = [
-    {file = "genshin-1.7.1-py3-none-any.whl", hash = "sha256:0d9b91581f4beadea362ad59fc09d25db3af2f6ffe6e0650350555921327f560"},
-    {file = "genshin-1.7.1.tar.gz", hash = "sha256:d591f263ea914a5cd1f2a6d9cfe0d457cedb274bdfb2b8b689afff4b6df1d4e3"},
-]
+files = []
+develop = false
 
 [package.dependencies]
 aiohttp = "*"
@@ -929,6 +927,12 @@ all = ["browser-cookie3", "click", "qrcode[pil]", "rsa"]
 auth = ["qrcode[pil]", "rsa"]
 cli = ["click"]
 cookies = ["browser-cookie3"]
+
+[package.source]
+type = "git"
+url = "https://github.com/thesadru/genshin.py"
+reference = "HEAD"
+resolved_reference = "06add94e29d28c022275f7891b5a444dd92d798e"
 
 [[package]]
 name = "gitdb"
@@ -2481,4 +2485,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "59cc0f09f6d7c5a6bb4ca0afe502429dc4a068da203b1d94fc4dc1af016e08a1"
+content-hash = "b8172ccc6bed4003e01b1da162a04c8712f95c3eeae1350f9111145cf8adc220"

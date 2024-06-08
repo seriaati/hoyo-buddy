@@ -21,17 +21,12 @@ class MOCCard:
     def __init__(self, data: StarRailChallenge, locale: str, translator: Translator) -> None:
         self._data = data
 
-        self._locale = Locale(locale)
+        self._locale = locale
         self._translator = translator
 
-        self._im = Image.open("hoyo-buddy-assets/assets/moc/moc.png")
-        self._drawer = Drawer(
-            ImageDraw.Draw(self._im),
-            locale=self._locale,
-            folder="moc",
-            dark_mode=True,
-            translator=translator,
-        )
+    @property
+    def locale(self) -> Locale:
+        return Locale(self._locale)
 
     def _write_title(self) -> None:
         self._drawer.write(
@@ -96,7 +91,7 @@ class MOCCard:
             ImageDraw.Draw(block),
             folder="moc",
             dark_mode=True,
-            locale=self._locale,
+            locale=self.locale,
             translator=self._translator,
         )
 
@@ -136,7 +131,7 @@ class MOCCard:
             ImageDraw.Draw(im),
             folder="moc",
             dark_mode=True,
-            locale=self._locale,
+            locale=self.locale,
             translator=self._translator,
         )
 
@@ -191,6 +186,15 @@ class MOCCard:
         return im
 
     def draw(self) -> BytesIO:
+        self._im = Image.open("hoyo-buddy-assets/assets/moc/moc.png")
+        self._drawer = Drawer(
+            ImageDraw.Draw(self._im),
+            locale=self.locale,
+            folder="moc",
+            dark_mode=True,
+            translator=self._translator,
+        )
+
         self._write_title()
         self._write_moc_name()
         self._write_max_stars()

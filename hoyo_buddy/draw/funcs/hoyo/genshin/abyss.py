@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from io import BytesIO
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING
 
 from discord import Locale
 from PIL import Image, ImageDraw, ImageFilter
@@ -16,19 +16,35 @@ if TYPE_CHECKING:
 
 
 class AbyssCard:
-    _dark_mode: ClassVar[bool]
-    _locale: ClassVar[Locale]
-    _translator: ClassVar[Translator]
-    _abyss: ClassVar[genshin.models.SpiralAbyss]
-    _abyss_characters: ClassVar[dict[str, AbyssCharacter]]
+    def __init__(
+        self,
+        dark_mode: bool,
+        locale: str,
+        translator: Translator,
+        abyss: genshin.models.SpiralAbyss,
+        charas: dict[str, AbyssCharacter],
+    ) -> None:
+        self._dark_mode = dark_mode
+        self._locale = Locale(locale)
+        self._translator = translator
+        self._abyss = abyss
+        self._abyss_characters = charas
 
-    _drawer: ClassVar[Drawer]
+        mode = "dark" if self._dark_mode else "light"
+        self._im = Image.open(f"hoyo-buddy-assets/assets/abyss/{mode}_abyss.png")
+        draw = ImageDraw.Draw(self._im)
+        self._drawer = Drawer(
+            draw,
+            folder="abyss",
+            dark_mode=self._dark_mode,
+            locale=self._locale,
+            translator=self._translator,
+        )
 
-    @classmethod
     def _draw_rank_pill(
-        cls, chara: genshin.models.AbyssRankCharacter, title: LocaleStr
+        self, chara: genshin.models.AbyssRankCharacter, title: LocaleStr
     ) -> Image.Image:
-        textbbox = cls._drawer.write(title, size=48, position=(0, 55), no_write=True)
+        textbbox = self._drawer.write(title, size=48, position=(0, 55), no_write=True)
         text_width = textbbox[2] - textbbox[0]
 
         # Draw shadow
@@ -43,14 +59,14 @@ class AbyssCard:
         pill.paste(shadow, (7, 7), shadow)
         draw = ImageDraw.Draw(pill)
         draw.rounded_rectangle(
-            (0, 0, text_width + 170, 110), 100, fill=BLACK if cls._dark_mode else WHITE
+            (0, 0, text_width + 170, 110), 100, fill=BLACK if self._dark_mode else WHITE
         )
         drawer = Drawer(
             draw,
             folder="abyss",
-            dark_mode=cls._dark_mode,
-            locale=cls._locale,
-            translator=cls._translator,
+            dark_mode=self._dark_mode,
+            locale=self._locale,
+            translator=self._translator,
         )
 
         character_im = drawer.open_static(chara.icon, size=(110, 110))
@@ -60,23 +76,22 @@ class AbyssCard:
 
         return pill
 
-    @classmethod
-    def _get_pills(cls) -> list[Image.Image]:
+    def _get_pills(self) -> list[Image.Image]:
         try:
-            most_defeats = cls._abyss.ranks.most_kills[0]
-            strongest_strike = cls._abyss.ranks.strongest_strike[0]
-            most_dmg_taken = cls._abyss.ranks.most_damage_taken[0]
-            most_ults = cls._abyss.ranks.most_bursts_used[0]
-            most_skills = cls._abyss.ranks.most_skills_used[0]
+            most_defeats = self._abyss.ranks.most_kills[0]
+            strongest_strike = self._abyss.ranks.strongest_strike[0]
+            most_dmg_taken = self._abyss.ranks.most_damage_taken[0]
+            most_ults = self._abyss.ranks.most_bursts_used[0]
+            most_skills = self._abyss.ranks.most_skills_used[0]
         except IndexError:
             return []
 
         pills = [
-            cls._draw_rank_pill(
+            self._draw_rank_pill(
                 most_defeats,
                 LocaleStr("Most Defeats: {val}", key="abyss.most_defeats", val=most_defeats.value),
             ),
-            cls._draw_rank_pill(
+            self._draw_rank_pill(
                 strongest_strike,
                 LocaleStr(
                     "Strongest Single Strike: {val}",
@@ -84,7 +99,7 @@ class AbyssCard:
                     val=strongest_strike.value,
                 ),
             ),
-            cls._draw_rank_pill(
+            self._draw_rank_pill(
                 most_dmg_taken,
                 LocaleStr(
                     "Most Damage Taken: {val}",
@@ -92,13 +107,13 @@ class AbyssCard:
                     val=most_dmg_taken.value,
                 ),
             ),
-            cls._draw_rank_pill(
+            self._draw_rank_pill(
                 most_ults,
                 LocaleStr(
                     "Most Bursts Unleashed: {val}", key="abyss.most_ults", val=most_ults.value
                 ),
             ),
-            cls._draw_rank_pill(
+            self._draw_rank_pill(
                 most_skills,
                 LocaleStr(
                     "Most Skills Casted: {val}", key="abyss.most_skills", val=most_skills.value
@@ -108,9 +123,8 @@ class AbyssCard:
 
         return pills
 
-    @classmethod
-    def _write_overview_texts(cls) -> None:
-        drawer = cls._drawer
+    def _write_overview_texts(self) -> None:
+        drawer = self._drawer
         textbbox = drawer.write(
             LocaleStr("Spiral Abyss Overview", key="abyss.overview"),
             position=(2425, 40),
@@ -119,7 +133,7 @@ class AbyssCard:
             anchor="rt",
         )
         textbbox = drawer.write(
-            f"{cls._abyss.start_time.strftime('%m/%d/%Y')} ~ {cls._abyss.end_time.strftime('%m/%d/%Y')}",
+            f"{self._abyss.start_time.strftime('%m/%d/%Y')} ~ {self._abyss.end_time.strftime('%m/%d/%Y')}",
             position=(2425, textbbox[3] + 40),
             size=48,
             anchor="rt",
@@ -128,8 +142,8 @@ class AbyssCard:
             LocaleStr(
                 "Battles Won/Fought: {val1}/{val2}",
                 key="abyss.battles_won_fought",
-                val1=cls._abyss.total_wins,
-                val2=cls._abyss.total_battles,
+                val1=self._abyss.total_wins,
+                val2=self._abyss.total_battles,
             ),
             position=(2425, textbbox[3] + 60),
             size=48,
@@ -139,7 +153,7 @@ class AbyssCard:
             LocaleStr(
                 "Deepest Descent: {val}",
                 key="abyss.deepest_descent",
-                val=cls._abyss.max_floor,
+                val=self._abyss.max_floor,
             ),
             position=(2425, textbbox[3] + 60),
             size=48,
@@ -149,17 +163,16 @@ class AbyssCard:
             LocaleStr(
                 "Total Stars: {val}",
                 key="abyss.total_stars",
-                val=cls._abyss.total_stars,
+                val=self._abyss.total_stars,
             ),
             position=(2425, textbbox[3] + 60),
             size=48,
             anchor="rt",
         )
 
-    @classmethod
-    def _write_floor_texts(cls) -> None:
-        drawer = cls._drawer
-        stars = {floor.floor: floor.stars for floor in cls._abyss.floors}
+    def _write_floor_texts(self) -> None:
+        drawer = self._drawer
+        stars = {floor.floor: floor.stars for floor in self._abyss.floors}
         pos = {
             9: (65, 812),
             10: (65, 1551),
@@ -184,14 +197,13 @@ class AbyssCard:
                 anchor="lm",
             )
 
-    @classmethod
-    def _draw_battle_characters(cls, battle: genshin.models.Battle) -> Image.Image:
+    def _draw_battle_characters(self, battle: genshin.models.Battle) -> Image.Image:
         im = Image.new("RGBA", (528, 158), TRANSPARENT)
 
-        drawer = cls._drawer
+        drawer = self._drawer
         chara_mask = drawer.open_asset("chara_mask.png", size=(116, 116))
 
-        mode = "dark" if cls._dark_mode else "light"
+        mode = "dark" if self._dark_mode else "light"
         text_bk_colors = {
             "light": {
                 4: (181, 172, 238),
@@ -240,12 +252,12 @@ class AbyssCard:
             bk_drawer = Drawer(
                 bk_draw,
                 folder="abyss",
-                dark_mode=cls._dark_mode,
-                locale=cls._locale,
-                translator=cls._translator,
+                dark_mode=self._dark_mode,
+                locale=self._locale,
+                translator=self._translator,
             )
 
-            abyss_chara = cls._abyss_characters[str(chara.id)]
+            abyss_chara = self._abyss_characters[str(chara.id)]
             bk_drawer.write(
                 f"C{abyss_chara.const}", position=(102, 14), size=18, style="medium", anchor="mm"
             )
@@ -256,8 +268,7 @@ class AbyssCard:
 
         return im
 
-    @classmethod
-    def _write_chamber_star_counts(cls) -> None:
+    def _write_chamber_star_counts(self) -> None:
         star_pos = {
             9: (594, 990),
             10: (594, 1729),
@@ -266,12 +277,12 @@ class AbyssCard:
         }
         chamber_padding = 183
 
-        for floor in cls._abyss.floors:
+        for floor in self._abyss.floors:
             if floor.floor not in star_pos:
                 continue
 
             for chamber in floor.chambers:
-                cls._drawer.write(
+                self._drawer.write(
                     str(chamber.stars),
                     position=star_pos[floor.floor],
                     size=48,
@@ -284,43 +295,16 @@ class AbyssCard:
                     star_pos[floor.floor][1] + chamber_padding,
                 )
 
-    @classmethod
-    def draw(
-        cls,
-        dark_mode: bool,
-        locale: str,
-        translator: Translator,
-        abyss: genshin.models.SpiralAbyss,
-        charas: dict[str, AbyssCharacter],
-    ) -> BytesIO:
-        # Set class variables
-        cls._dark_mode = dark_mode
-        cls._locale = Locale(locale)
-        cls._translator = translator
-        cls._abyss = abyss
-        cls._abyss_characters = charas
-
-        # Draw the card
-        mode = "dark" if cls._dark_mode else "light"
-        im = Image.open(f"hoyo-buddy-assets/assets/abyss/{mode}_abyss.png")
-        draw = ImageDraw.Draw(im)
-        cls._drawer = Drawer(
-            draw,
-            folder="abyss",
-            dark_mode=cls._dark_mode,
-            locale=cls._locale,
-            translator=cls._translator,
-        )
-
-        pills = cls._get_pills()
+    def draw(self) -> BytesIO:
+        pills = self._get_pills()
         start_pos = (27, 33)
         y_padding = 10
         for pill in pills:
-            im.paste(pill, start_pos, pill)
+            self._im.paste(pill, start_pos, pill)
             start_pos = (start_pos[0], start_pos[1] + pill.height + y_padding)
 
-        cls._write_overview_texts()
-        cls._write_floor_texts()
+        self._write_overview_texts()
+        self._write_floor_texts()
 
         floor_pos = {
             9: (26, 912),
@@ -328,7 +312,7 @@ class AbyssCard:
             11: (1249, 912),
             12: (1249, 1651),
         }
-        for floor in cls._abyss.floors:
+        for floor in self._abyss.floors:
             if floor.floor not in floor_pos:
                 continue
 
@@ -336,21 +320,21 @@ class AbyssCard:
             pos = original_pos
             for chamber in floor.chambers:
                 for battle in chamber.battles:
-                    battle_im = cls._draw_battle_characters(battle)
-                    im.paste(battle_im, pos, battle_im)
+                    battle_im = self._draw_battle_characters(battle)
+                    self._im.paste(battle_im, pos, battle_im)
                     pos = (pos[0] + 659, pos[1])
                 pos = (original_pos[0], pos[1] + 183)
 
-        cls._write_chamber_star_counts()
+        self._write_chamber_star_counts()
 
         padding = 80
         background = Image.new(
             "RGBA",
-            (im.width + padding * 2, im.height + padding * 2),
-            (23, 23, 23) if dark_mode else (237, 239, 252),
+            (self._im.width + padding * 2, self._im.height + padding * 2),
+            (23, 23, 23) if self._dark_mode else (237, 239, 252),
         )
         # paste im in the middle of the background
-        background.paste(im, (padding, padding), im)
+        background.paste(self._im, (padding, padding), self._im)
 
         buffer = BytesIO()
         background.save(buffer, format="WEBP", lossless=True)

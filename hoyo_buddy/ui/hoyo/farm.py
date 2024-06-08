@@ -64,6 +64,7 @@ class FarmView(View):
                 description=LocaleStr("🌾 Happy farming!", key="farm_view.happy_farming"),
             )
             await i.edit_original_response(embed=embed, view=self, attachments=[])
+            self.message = await i.original_response()
             return
 
         draw_input = DrawInput(

@@ -47,7 +47,7 @@ class GeetestCommand:
         listener = asyncpg_listen.NotificationListener(
             asyncpg_listen.connect_func(os.environ["DB_URL"])
         )
-        listener_name = f"geetest_{GeetestNotifyType.LOGIN.value}_{self._user_id}"
+        listener_name = f"geetest_{GeetestNotifyType.COMMAND.value}_{self._user_id}"
         self._bot.login_notif_tasks[i.user.id] = asyncio.create_task(
             listener.run(
                 {listener_name: self._handle_notif},

@@ -20,7 +20,6 @@ from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..models import DrawInput
 from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
-from ..ui.hoyo.genshin.abyss import AbyssView
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.redeem import RedeemUI
 
@@ -292,45 +291,6 @@ class Hoyo(commands.Cog):
         pass
 
     @app_commands.command(
-        name=app_commands.locale_str("abyss", translate=False),
-        description=app_commands.locale_str(
-            "View your spiral abyss data", key="abyss__command_description"
-        ),
-    )
-    @app_commands.rename(
-        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
-    )
-    @app_commands.describe(
-        user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
-        ),
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        ),
-    )
-    async def abyss_command(
-        self,
-        i: INTERACTION,
-        user: USER = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
-    ) -> None:
-        user = user or i.user
-        account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
-        settings = await Settings.get(user_id=i.user.id)
-
-        view = AbyssView(
-            account_,
-            settings.dark_mode,
-            author=i.user,
-            locale=settings.locale or i.locale,
-            translator=self.bot.translator,
-        )
-        await view.start(i)
-
-    @app_commands.command(
         name=app_commands.locale_str("exploration", translate=False),
         description=app_commands.locale_str(
             "View your exploration statistics in Genshin Impact",
@@ -463,7 +423,6 @@ class Hoyo(commands.Cog):
         await command.run()
         command.start_listener()
 
-    @abyss_command.autocomplete("account")
     @exploration_command.autocomplete("account")
     async def characters_command_autocomplete(
         self, i: INTERACTION, current: str

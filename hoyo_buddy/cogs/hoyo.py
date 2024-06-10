@@ -424,7 +424,7 @@ class Hoyo(commands.Cog):
         command.start_listener()
 
     @exploration_command.autocomplete("account")
-    async def characters_command_autocomplete(
+    async def exploration_command_autocomplete(
         self, i: INTERACTION, current: str
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)

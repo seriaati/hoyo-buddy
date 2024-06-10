@@ -7,6 +7,7 @@ from discord.ext import commands
 
 from ..bot.bot import USER  # noqa: TCH001
 from ..bot.translator import LocaleStr
+from ..commands.challenge import ChallengeCommand
 from ..commands.geetest import GeetestCommand
 from ..commands.profile import ProfileCommand
 from ..db.models import HoyoAccount, Settings, get_locale
@@ -288,7 +289,8 @@ class Hoyo(commands.Cog):
         user: USER = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        pass
+        command = ChallengeCommand(i, user, account)
+        await command.run()
 
     @app_commands.command(
         name=app_commands.locale_str("exploration", translate=False),
@@ -438,6 +440,7 @@ class Hoyo(commands.Cog):
             (Game.GENSHIN,),
         )
 
+    @challenge_command.autocomplete("account")
     @characters_command.autocomplete("account")
     @profile_command.autocomplete("account")
     @notes_command.autocomplete("account")

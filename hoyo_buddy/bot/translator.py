@@ -1,21 +1,14 @@
 from __future__ import annotations
 
-import asyncio
 import contextlib
-import os
+import pathlib
 import re
-import time
 from typing import TYPE_CHECKING, Any
 
 from discord import app_commands
 from loguru import logger
-from seria.utils import read_json, split_list_to_chunks
-from transifex.native import init, tx
-from transifex.native.cache import AbstractCache
-from transifex.native.parsing import SourceString
-from transifex.native.rendering import AbstractErrorPolicy, AbstractRenderingPolicy
+from seria.utils import read_json, read_yaml, write_yaml
 
-from ..db.models import JSONFile
 from ..enums import GenshinElement, HSRElement
 from ..utils import capitalize_first_word as capitalize_first_word_
 from ..utils import convert_to_title_case
@@ -23,6 +16,7 @@ from ..utils import convert_to_title_case
 if TYPE_CHECKING:
     from types import TracebackType
 
+    import git
     from ambr.models import Character as GenshinCharacter
     from discord.app_commands.translator import TranslationContextTypes
     from discord.enums import Locale
@@ -30,6 +24,7 @@ if TYPE_CHECKING:
     from yatta.models import Character as HSRCharacter
 
     from ..models import Config
+
 
 __all__ = ("AppCommandTranslator", "LocaleStr", "Translator")
 
@@ -86,53 +81,15 @@ class LocaleStr:
         return translator.translate(self, locale)
 
 
-class TranslatorCache(AbstractCache):
-    def __init__(self) -> None:
-        self._cache: dict[str, dict[str, str]] = {}
-
-    async def load(self) -> None:
-        for language in LANGUAGES:
-            self._cache[language] = await JSONFile.read(f"translations/{language}.json")
-
-    async def save(self) -> None:
-        for language, translations in self._cache.items():
-            await JSONFile.write(f"translations/{language}.json", translations)
-
-    def get(self, key: str, language_code: str) -> str | None:
-        translation = None
-        with contextlib.suppress(KeyError):
-            translation = self._cache[language_code][key]
-        return translation
-
-    def update(self, data: dict[str, tuple[bool, dict[str, dict[str, str]]]]) -> None:
-        for lang_code, (should_update, translations) in data.items():
-            if should_update:
-                if lang_code not in self._cache:
-                    self._cache[lang_code] = {}
-                for key, value in translations.items():
-                    self._cache[lang_code][key] = value["string"]
-
-
-class CustomMisisngPolicy(AbstractRenderingPolicy):
-    @staticmethod
-    def get(_: str) -> None:
-        return None
-
-
-class CustomErrorPolicy(AbstractErrorPolicy):
-    @staticmethod
-    def get(source_string, translation, language_code, escape, params) -> str:  # noqa: ANN001, ARG004
-        return source_string
-
-
 class Translator:
-    def __init__(self, config: Config | None = None) -> None:
+    def __init__(self, repo: git.Repo | None = None, config: Config | None = None) -> None:
         super().__init__()
 
+        self._repo = repo
         self._config = config
         self._not_translated: dict[str, str] = {}
         self._synced_commands: dict[str, int] = {}
-        self._cache = TranslatorCache()
+        self._localizations: dict[str, dict[str, str]] = {}
 
     async def __aenter__(self) -> Translator:
         await self.load()
@@ -147,25 +104,21 @@ class Translator:
         await self.unload()
 
     async def load(self) -> None:
-        await self._cache.load()
-        init(
-            token=os.environ["TRANSIFEX_TOKEN"],
-            secret=os.environ["TRANSIFEX_SECRET"],
-            languages=LANGUAGES,
-            missing_policy=CustomMisisngPolicy(),
-            error_policy=CustomErrorPolicy(),
-            cache=self._cache,
-        )
+        await self.fetch_source_strings()
         await self.load_synced_commands_json()
-
-        if self._config is not None and self._config.translator:
-            await self.fetch_source_strings()
 
         logger.info("Translator loaded")
 
+    async def fetch_source_strings(self) -> None:
+        l10n_path = pathlib.Path("./l10n")
+        for lang in LANGUAGES:
+            file_path = l10n_path / f"{lang}.yaml"
+            if not file_path.exists():
+                continue
+            self._localizations[lang] = await read_yaml(file_path.as_posix())
+
     async def unload(self) -> None:
-        if self._not_translated and self._config is not None and self._config.translator:
-            await self._cache.save()
+        if self._config is not None and self._config.translator:
             await self.push_source_strings()
         logger.info("Translator unloaded")
 
@@ -201,15 +154,13 @@ class Translator:
 
         extras = self._translate_extras(string.extras, locale)
         message = string.message
-        message = self._replace_command_with_mentions(message)
-
         string_key = self._get_string_key(string)
 
-        if string.translate_ and self._config is not None and self._config.translator:
+        if string.translate_:
             # Check if the string is missing or has different values
-            source_string = tx.translate(
-                message, "en_US", _key=string_key, escape=False, params=extras
-            )
+            source_string = self._localizations.get("en_US", {}).get(string_key)
+            if source_string is not None:
+                source_string = source_string.format(**extras)
 
             if source_string is None and string_key not in self._not_translated:
                 self._not_translated[string_key] = message
@@ -228,15 +179,10 @@ class Translator:
 
         lang = locale.value.replace("-", "_")
 
-        if (
-            "en" in lang
-            or not string.translate_
-            or (self._config is not None and not self._config.translator)
-            or string_key in self._not_translated
-        ):
+        if "en" in lang or not string.translate_ or string_key in self._not_translated:
             translation = message
         else:
-            translation = tx.translate(message, lang, _key=string_key, escape=False, params=extras)
+            translation = self._localizations.get(lang, {}).get(string_key)
             translation = translation or message
 
         with contextlib.suppress(KeyError):
@@ -246,6 +192,8 @@ class Translator:
             translation = convert_to_title_case(translation)
         elif capitalize_first_word:
             translation = capitalize_first_word_(translation)
+
+        translation = self._replace_command_with_mentions(translation)
         return translation
 
     def _translate_extras(self, extras: dict[str, Any], locale: Locale) -> dict[str, Any]:
@@ -275,33 +223,38 @@ class Translator:
             string_key = string.key
         return string_key
 
-    async def fetch_translations(self) -> None:
-        start = time.time()
-        await asyncio.to_thread(tx.fetch_translations)
-        logger.info(f"Fetched translations in {time.time() - start:.2f} seconds")
-        await self._cache.save()
-
-    async def fetch_source_strings(self) -> None:
-        logger.info("Fetching translations...")
-
-        tasks = set()
-        task = asyncio.create_task(self.fetch_translations())
-        tasks.add(task)
-        task.add_done_callback(tasks.discard)
-
     async def push_source_strings(self) -> None:
         if not self._not_translated:
             return
 
-        logger.info(f"Pushing {len(self._not_translated)} source strings to Transifex")
-        split_source_strings = split_list_to_chunks(
-            [SourceString(string, _key=key) for key, string in self._not_translated.items()],
-            5,
-        )
-        for source_strings in split_source_strings:
-            await asyncio.to_thread(
-                tx.push_source_strings, source_strings, do_not_keep_translations=True
-            )
+        if self._repo is None:
+            msg = "Cannot push source strings, missing git repository"
+            raise RuntimeError(msg)
+
+        source_string_file = pathlib.Path("./l10n/en_US.yaml")
+        source_strings = self._localizations["en_US"]
+        source_strings.update(self._not_translated)
+        await write_yaml(source_string_file.as_posix(), source_strings)
+
+        self._repo.index.add([source_string_file.as_posix()])
+        self._repo.index.commit("chore(l10n): Update source strings")
+
+        l10n_path = pathlib.Path("./l10n")
+        for lang in LANGUAGES:
+            file_path = l10n_path / f"{lang}.yaml"
+            if not file_path.exists():
+                continue
+
+            for key, value in self._not_translated.items():
+                if key not in self._localizations[lang]:
+                    self._localizations[lang][key] = value
+
+            await write_yaml(file_path.as_posix(), self._localizations[lang])
+
+        self._repo.index.add([l10n_path.as_posix()])
+        self._repo.index.commit("chore(l10n): Add new strings")
+
+        self._repo.remotes.origin.push()
 
         self._not_translated.clear()
 

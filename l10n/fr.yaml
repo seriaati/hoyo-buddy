@@ -48,16 +48,13 @@ accounts_command_description: Gérez vos comptes
 action_in_cooldown_error_message: ""
 action_in_cooldown_error_title: ""
 add_account_button_label: Ajouter des comptes
-add_hoyolab_acc.embed.description:
-  ""
+add_hoyolab_acc.embed.description: ""
 add_hoyolab_acc.embed.title: ""
-add_miyoushe_acc.embed.description:
-  ""
+add_miyoushe_acc.embed.description: ""
 add_miyoushe_acc.enter_mobile_number: ""
 add_miyoushe_acc.mobile_number: ""
 add_miyoushe_acc.with_mobile_number: ""
-adding_accounts_description:
-  ""
+adding_accounts_description: ""
 adding_accounts_title: Sélectionnez la plateforme de votre compte
 ai_gen_image_error_message: Vérifiez votre invite et réessayez.
 ai_gen_image_error_title: ""
@@ -69,8 +66,7 @@ artifact_set_two_piece_embed_description: "2-Pièces : {bonus_2}"
 artifact_sets: Ensemble d'artefacts
 auto_checkin_button_label: ""
 auto_locale_option_label: Suivre la langue du client
-auto_redeem_error.content:
-  ""
+auto_redeem_error.content: ""
 auto_redeem_footer: ""
 auto_redeem_toggle.label: ""
 books: Livres
@@ -109,8 +105,7 @@ characters.filter.none: ""
 characters.filter.not_max_friendship: ""
 characters.filter.path.placeholder: ""
 characters.filter.placeholder: ""
-characters.first_time.embed.description:
-  ""
+characters.first_time.embed.description: ""
 characters.first_time.title: ""
 characters.gi.embed.footer: ""
 characters.hsr.embed.footer: ""
@@ -147,13 +142,11 @@ delete_account_button_label: Supprimer le compte sélectionné
 dendro: ""
 destruction: ""
 devtools_button_label: Avec DevTools (ordinateur uniquement)
-devtools_instructions_description:
-  "1. Se connecter à [HoYoLAB](https://www.hoyolab.com/home) ou [Miyoushe](https://www.miyoushe.com/ys/) (pour les joueurs CN)\n2. Ouvrez le DevTools en appuyant sur F12 ou Ctrl+Shift+I.\n3. Appuyez sur l'icône >> dans la barre de navigation supérieure\n4. Cliquez sur l'onglet `Application`.\n5. Cliquez sur \"Cookies\" dans la barre latérale gauche.\n6. Cliquez sur le site web sur lequel vous vous trouvez (par exemple https://www.hoyolab.com).\n7. Tapez `v2` dans la case `Filter`.\n8. Cliquez sur le bouton ci-dessous\n9. Copiez la `Valeur` de chaque cookie et collez-la dans les cases\n"
+devtools_instructions_description: "1. Se connecter à [HoYoLAB](https://www.hoyolab.com/home) ou [Miyoushe](https://www.miyoushe.com/ys/) (pour les joueurs CN)\n2. Ouvrez le DevTools en appuyant sur F12 ou Ctrl+Shift+I.\n3. Appuyez sur l'icône >> dans la barre de navigation supérieure\n4. Cliquez sur l'onglet `Application`.\n5. Cliquez sur \"Cookies\" dans la barre latérale gauche.\n6. Cliquez sur le site web sur lequel vous vous trouvez (par exemple https://www.hoyolab.com).\n7. Tapez `v2` dans la case `Filter`.\n8. Cliquez sur le bouton ci-dessous\n9. Copiez la `Valeur` de chaque cookie et collez-la dans les cases\n"
 dice_cost_embed_field_name: Coût des dés
 domain-type.characters: ""
 domain-type.weapons: ""
-download_image_failed_error_message:
-  ""
+download_image_failed_error_message: ""
 download_image_failed_error_title: ""
 edit_nickname_button_label: Modifier le pseudonyme
 edit_nickname_modal_title: Modifier le pseudonyme
@@ -161,19 +154,16 @@ eidolon_superimpose_str: ""
 electro: ""
 email-geetest.embed.title: ""
 email_password_button_label: ""
-email_password_instructions_description:
-  "<:INFO:1166743144889602190>Note : Cette méthode **NE FONCTIONNE PAS** pour les utilisateurs de Miyoushe, seuls les utilisateurs de HoYoLAB peuvent utiliser cette méthode\n\n1. Cliquez sur le bouton `Compléter le CAPTCHA` ci-dessous\n2. Vous serez redirigé vers un site web, cliquez sur le bouton et complétez le CAPTCHA\n3. Après avoir terminé, cliquez sur le bouton `Continuer` ci-dessous"
+email_password_instructions_description: "<:INFO:1166743144889602190>Note : Cette méthode **NE FONCTIONNE PAS** pour les utilisateurs de Miyoushe, seuls les utilisateurs de HoYoLAB peuvent utiliser cette méthode\n\n1. Cliquez sur le bouton `Compléter le CAPTCHA` ci-dessous\n2. Vous serez redirigé vers un site web, cliquez sur le bouton et complétez le CAPTCHA\n3. Après avoir terminé, cliquez sur le bouton `Continuer` ci-dessous"
 email_password_modal_email_input_label: e-mail ou nom d'utilisateur
 email_password_modal_password_input_label: mot de passe
 enter_email_password_button_label: ""
-enter_email_password_instructions_description:
-  ""
+enter_email_password_instructions_description: ""
 enter_light_cone_level.button.label: ""
 error_footer: ""
 error_title: Une erreur s'est produite
 erudition: ""
-exceptions.card_not_ready_error.message:
-  ""
+exceptions.card_not_ready_error.message: ""
 exceptions.card_not_ready_error.title: ""
 exped.embed.description: ""
 exped_button.label: Rappel d'expédition
@@ -222,8 +212,7 @@ farm_view_command_description: ""
 feedback_button.feedback_sent.description: ""
 feedback_button.feedback_sent.title: ""
 feedback_button.label: ""
-feedback_command.description:
-  ""
+feedback_command.description: ""
 feedback_command_description: ""
 feedback_modal.feedback.label: ""
 fire: ""
@@ -289,8 +278,7 @@ invalid_verification_code_description: Veuillez vérifier le code de vérificati
 invalid_verification_code_title: Code de vérification invalide
 items: Objects
 javascript_button_label: Avec JavaScript
-javascript_instructions_description:
-  "<:INFO:1166743144889602190>Note: Cette méthode devrait fonctionner sur tous les principaux navigateurs sur ordinateur, mais sur mobile, elle ne fonctionne que sur **Chrome** et **Edge**.\n\n1. Connectez-vous à  [HoYoLAB](https://www.hoyolab.com/home) ou [Miyoushe](https://www.miyoushe.com/ys/)(pour les joueurs Chine)\n2. Copiez le code ci-dessous\n3. Cliquez sur la barre d'adresse et saisissez `java`\n4. Collez le code et appuyez sur Entrée. Assurez-vous de **NE PAS METTRE D'ESPACES** entre `java` et `script`\n5. Sélectionnez tout et copiez le texte qui apparaît\n6. Cliquez sur le bouton ci-dessous et collez le texte dans la zone prévue."
+javascript_instructions_description: "<:INFO:1166743144889602190>Note: Cette méthode devrait fonctionner sur tous les principaux navigateurs sur ordinateur, mais sur mobile, elle ne fonctionne que sur **Chrome** et **Edge**.\n\n1. Connectez-vous à  [HoYoLAB](https://www.hoyolab.com/home) ou [Miyoushe](https://www.miyoushe.com/ys/)(pour les joueurs Chine)\n2. Copiez le code ci-dessous\n3. Cliquez sur la barre d'adresse et saisissez `java`\n4. Collez le code et appuyez sur Entrée. Assurez-vous de **NE PAS METTRE D'ESPACES** entre `java` et `script`\n5. Sélectionnez tout et copiez le texte qui apparaît\n6. Cliquez sur le bouton ci-dessous et collez le texte dans la zone prévue."
 level_label: ""
 level_str: "Nv.{level}"
 light_cones: Cônes de lumières
@@ -301,8 +289,7 @@ make_up_for_checkin_button_label: Enregistrement manqué
 materials: Matériaux
 memory_of_chaos: ""
 miyoushe: ""
-mobile_instructions_description:
-  ""
+mobile_instructions_description: ""
 moc_card_battles_fought: ""
 moc_card_cycles_used: ""
 moc_card_farthest_stage: ""
@@ -352,7 +339,6 @@ notify_on_success_button_label: Notifier en cas de succès de l'enregistrement
 nsfw_prompt_error_message: "L'invite contient du contenu NSFW, veuillez réessayer avec une autre invite."
 nsfw_prompt_error_title: ""
 page_footer: ""
-pf_card_title: ""
 pf_card_total_score: ""
 physical: ""
 player_not_found_description: ""
@@ -360,14 +346,12 @@ player_not_found_title: ""
 preservation: ""
 prev_page_option_label: ""
 primogems: primo-gemmes
-process_notify_error.content:
-  ""
+process_notify_error.content: ""
 profile.add_image.button.label: Ajouter une image customisée
 profile.add_image_modal.image_url.label: URL de l'image
 profile.add_image_modal.title: Ajouter une image personnalisée
 profile.build.select.placeholder: ""
-profile.card_info.embed.description:
-  "- Tous les éléments utilisés dans les cartes appartiennent à Hoyoverse, je n'en suis pas propriétaire.\n- Tous les fanarts utilisés dans les cartes sont crédités à leurs artistes respectifs.\n- Les modèles de Hoyo Buddy sont originaux, vous n'êtes pas autorisé à les modifier ou à prétendre que vous les avez créés sans ma permission.\n- Les données du jeu sont fournies par {provider}\n"
+profile.card_info.embed.description: "- Tous les éléments utilisés dans les cartes appartiennent à Hoyoverse, je n'en suis pas propriétaire.\n- Tous les fanarts utilisés dans les cartes sont crédités à leurs artistes respectifs.\n- Les modèles de Hoyo Buddy sont originaux, vous n'êtes pas autorisé à les modifier ou à prétendre que vous les avez créés sans ma permission.\n- Les données du jeu sont fournies par {provider}\n"
 profile.card_info.embed.title: À propos des cartes pour personnage
 profile.card_settings.button.label: Paramètres de la carte
 profile.card_template_select.diff_author.description: "Conçu par {author1} et programmé par {author2}"
@@ -395,16 +379,13 @@ profile.image_select.default_collection.label: "Collection Hoyo Buddy ({num})"
 profile.image_select.none.label: Art officiel
 profile.image_select.placeholder: Sélectionner une image
 profile.info.embed.custom_images.name: Images personnalisées
-profile.info.embed.custom_images.value:
-  "- Hoyo Buddy est livré avec des images prédéfinies que j'ai appréciées, mais vous pouvez également ajouter vos propres images.\n- Seules les URL d'images directes sont prises en charge, et elles doivent être accessibles au public ; les GIF ne sont pas pris en charge.\n- Pour les modèles de Hoyo Buddy, les images verticales sont recommandées.\n- Pour les propriétaires de serveurs, je ne suis pas responsable des images NSFW que vous ou vos membres ajoutez.\n- Le bouton rouge supprime l'image personnalisée actuelle et revient à l'image par défaut."
+profile.info.embed.custom_images.value: "- Hoyo Buddy est livré avec des images prédéfinies que j'ai appréciées, mais vous pouvez également ajouter vos propres images.\n- Seules les URL d'images directes sont prises en charge, et elles doivent être accessibles au public ; les GIF ne sont pas pris en charge.\n- Pour les modèles de Hoyo Buddy, les images verticales sont recommandées.\n- Pour les propriétaires de serveurs, je ne suis pas responsable des images NSFW que vous ou vos membres ajoutez.\n- Le bouton rouge supprime l'image personnalisée actuelle et revient à l'image par défaut."
 profile.info.embed.dark_mode.name: Mode Sombre
-profile.info.embed.dark_mode.value:
-  ""
+profile.info.embed.dark_mode.value: ""
 profile.info.embed.primary_color.name: Couleur primaire
 profile.info.embed.primary_color.value: "- Seuls les codes de couleur hexadécimales sont pris en charge."
 profile.info.embed.templates.name: Modèles
-profile.info.embed.templates.value:
-  ""
+profile.info.embed.templates.value: ""
 profile.info.embed.title: À propos des paramètres de la carte
 profile.player_info.button.label: Informations sur le joueur
 profile.player_info.embed.description: "Niveau Trailblaze : {level}\nNiveau Equilibrium : {world_level}\nNombre d'amis : {friend_count}\nCones de lumière : {light_cones}\nPersonnages : {characters}\nSuccès: {achievements}\n"
@@ -434,11 +415,9 @@ read_story.button.label: ""
 real_time_notes: ""
 realm_curr_button.label: ""
 realm_curr_modal.title: ""
-redeeem_code.cookie_token_expired_description:
-  ""
+redeeem_code.cookie_token_expired_description: ""
 redeeem_code.cookie_token_expired_title: Le jeton de cookie a expiré
-redeeem_code.cookie_token_refresh_failed_description:
-  ""
+redeeem_code.cookie_token_refresh_failed_description: ""
 redeeem_code.cookie_token_refresh_failed_title: Échec de l'actualisation du jeton de cookie
 redeem_code.already_claimed: ""
 redeem_code.cooldown: ""

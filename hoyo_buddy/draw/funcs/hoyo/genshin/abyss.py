@@ -199,43 +199,32 @@ class AbyssCard:
         mode = "dark" if self._dark_mode else "light"
         text_bk_colors = {
             "light": {
-                3: (255, 255, 255),
                 4: (181, 172, 238),
                 5: (231, 179, 151),
             },
             "dark": {
-                3: (28, 28, 28),
                 4: (43, 35, 90),
                 5: (85, 63, 51),
             },
         }
         bk_colors = {
             "light": {
-                3: (255, 255, 255),
                 4: (233, 215, 255),
                 5: (255, 218, 197),
             },
             "dark": {
-                3: (28, 28, 28),
                 4: (95, 82, 147),
                 5: (134, 89, 64),
             },
         }
 
         padding = 19
-        for i in range(4):
-            try:
-                chara = battle.characters[i]
-            except IndexError:
-                chara = None
-
+        for i, chara in enumerate(battle.characters):
             shadow = Image.new("RGBA", (130, 160), TRANSPARENT)
             shadow_draw = ImageDraw.Draw(shadow)
             shadow_draw.rounded_rectangle((0, 0, 116, 147), 13, fill=(0, 0, 0, 155))
             for _ in range(5):
                 shadow = shadow.filter(ImageFilter.BLUR)
-
-            chara_rarity = chara.rarity if chara is not None else 3
 
             bk = Image.new("RGBA", (130, 160), TRANSPARENT)
             bk.paste(shadow, (6, 6), shadow)
@@ -243,12 +232,12 @@ class AbyssCard:
             bk_draw.rounded_rectangle(
                 (0, 0, 116, 147),
                 13,
-                fill=text_bk_colors[mode][chara_rarity],
+                fill=text_bk_colors[mode][chara.rarity],
             )
             bk_draw.rounded_rectangle(
                 (0, 0, 116, 117),
                 13,
-                fill=bk_colors[mode][chara_rarity],
+                fill=bk_colors[mode][chara.rarity],
             )
 
             if chara is not None:
@@ -259,7 +248,7 @@ class AbyssCard:
             bk_draw.rounded_rectangle(
                 (87, 0, 116, 29),
                 13,
-                fill=text_bk_colors[mode][chara_rarity],
+                fill=text_bk_colors[mode][chara.rarity],
                 corners=(False, True, False, True),
             )
             bk_drawer = Drawer(
@@ -270,17 +259,16 @@ class AbyssCard:
                 translator=self._translator,
             )
 
-            if chara is not None:
-                abyss_chara = self._abyss_characters[str(chara.id)]
-                bk_drawer.write(
-                    f"C{abyss_chara.const}",
-                    position=(102, 14),
-                    size=18,
-                    style="medium",
-                    anchor="mm",
-                )
-                level_str = LocaleStr("Lv.{level}", key="level_str", level=abyss_chara.level)
-                bk_drawer.write(level_str, position=(57, 132), size=24, style="medium", anchor="mm")
+            abyss_chara = self._abyss_characters[str(chara.id)]
+            bk_drawer.write(
+                f"C{abyss_chara.const}",
+                position=(102, 14),
+                size=18,
+                style="medium",
+                anchor="mm",
+            )
+            level_str = LocaleStr("Lv.{level}", key="level_str", level=abyss_chara.level)
+            bk_drawer.write(level_str, position=(57, 132), size=24, style="medium", anchor="mm")
 
             im.paste(bk, (i * (padding + 116), 0), bk)
 

@@ -76,6 +76,7 @@ class Schedule(commands.Cog):
         # Every hour
         if now.minute < self.loop_interval:
             tasks.add(asyncio.create_task(self.bot.translator.push_source_strings()))
+            tasks.add(asyncio.create_task(self.bot.translator.fetch_source_strings()))
             tasks.add(asyncio.create_task(AutoRedeem.execute(self.bot)))
 
         for task in tasks:

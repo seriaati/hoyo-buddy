@@ -11,7 +11,7 @@ from hoyo_buddy.ui.components import Button, Modal, TextInput
 from hoyo_buddy.utils import upload_image
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from .image_select import ImageSelect
     from .remove_img_btn import RemoveImageButton
@@ -46,7 +46,7 @@ class GenerateAIArtButton(Button):
             disabled=disabled,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         if i.guild is None:
             raise GuildOnlyFeatureError
 

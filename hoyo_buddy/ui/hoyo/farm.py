@@ -17,7 +17,7 @@ from ...utils import get_now
 from ..components import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:
-    from ...bot.bot import INTERACTION
+    from ...bot.bot import Interaction
 
 
 class FarmView(View):
@@ -47,7 +47,7 @@ class FarmView(View):
         else:
             self._weekday = get_now().weekday()
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         await i.response.defer()
 
         self.clear_items()
@@ -100,7 +100,7 @@ class WeekdaySelect(Select[FarmView]):
             row=0,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         self.view._weekday = int(self.values[0])
         self.update_options_defaults()
         await self.view.start(i)
@@ -115,7 +115,7 @@ class ReminderButton(Button[FarmView]):
             row=2,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -138,6 +138,6 @@ class CityButton(Button[FarmView]):
         )
         self._city = city
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         self.view._city = self._city
         await self.view.start(i)

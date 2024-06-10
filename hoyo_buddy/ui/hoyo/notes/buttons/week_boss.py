@@ -11,7 +11,7 @@ from ..modals import TypeFourModal
 from ..view import NotesView
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
 
 class WeekBossReminder(Button[NotesView]):
@@ -20,7 +20,7 @@ class WeekBossReminder(Button[NotesView]):
             label=LocaleStr("Weekly boss discount reminder", key="week_boss_button.label"), row=row
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         notify_type = (
             NotesNotifyType.RESIN_DISCOUNT
             if self.view._account.game is Game.GENSHIN

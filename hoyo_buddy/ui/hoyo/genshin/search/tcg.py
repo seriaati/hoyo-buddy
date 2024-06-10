@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from ambr.models import CardTalent, TCGCardDetail
     from discord import Locale, Member, User
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
 
@@ -48,7 +48,7 @@ class TCGCardUI(View):
         if card.talents:
             self.add_item(CardTalentSelector(card.talents, self.current_talent_id))
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         await i.response.defer()
 
         async with AmbrAPIClient(self.locale, self.translator) as api:
@@ -74,7 +74,7 @@ class ViewCardButton(Button["TCGCardUI"]):
             style=ButtonStyle.primary,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         if self.view.card_embed is None:
             return
 
@@ -90,7 +90,7 @@ class ViewDictionaryButton(Button["TCGCardUI"]):
             style=ButtonStyle.primary,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         if self.view.dictionary_embed is None:
             return
 
@@ -114,7 +114,7 @@ class CardTalentSelector(Select["TCGCardUI"]):
         )
         self.talents = talents
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         talent_id = self.view.current_talent_id = self.values[0]
         talent_embed = self.view.talent_embeds.get(talent_id)
         if talent_embed is None:

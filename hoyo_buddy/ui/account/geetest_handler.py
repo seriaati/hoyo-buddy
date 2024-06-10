@@ -15,7 +15,7 @@ from ...embeds import DefaultEmbed
 from ...enums import GeetestNotifyType, Platform
 
 if TYPE_CHECKING:
-    from ...bot.bot import INTERACTION
+    from ...bot.bot import Interaction
     from .view import AccountManager
 
 
@@ -47,7 +47,7 @@ class GeetestHandler:
         self,
         *,
         view: AccountManager,
-        interaction: INTERACTION,
+        interaction: Interaction,
         platform: Platform,
         data: EmailPswdLoginData | SendMobileOTPData | SendEmailCodeData,
     ) -> None:

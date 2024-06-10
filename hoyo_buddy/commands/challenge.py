@@ -7,11 +7,11 @@ from ..enums import Game
 from ..ui.hoyo.challenge import ChallengeView
 
 if TYPE_CHECKING:
-    from ..bot.bot import INTERACTION, USER
+    from ..bot.bot import Interaction, User
 
 
 class ChallengeCommand:
-    def __init__(self, interaction: INTERACTION, user: USER, account: HoyoAccount | None) -> None:
+    def __init__(self, interaction: Interaction, user: User, account: HoyoAccount | None) -> None:
         self._user = user
         self._bot = interaction.client
         self._interaction = interaction

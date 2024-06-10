@@ -10,13 +10,13 @@ from ..utils import get_now
 from .error_handler import get_error_embed
 
 if TYPE_CHECKING:
-    from .bot import INTERACTION
+    from .bot import Interaction
 
 __all__ = ("CommandTree",)
 
 
 class CommandTree(app_commands.CommandTree):
-    async def interaction_check(self, i: INTERACTION) -> Literal[True]:
+    async def interaction_check(self, i: Interaction) -> Literal[True]:
         if i.type not in {InteractionType.application_command, InteractionType.autocomplete}:
             return True
 
@@ -37,7 +37,7 @@ class CommandTree(app_commands.CommandTree):
 
         return True
 
-    async def on_error(self, i: INTERACTION, e: app_commands.AppCommandError) -> None:
+    async def on_error(self, i: Interaction, e: app_commands.AppCommandError) -> None:
         error = e.original if isinstance(e, app_commands.errors.CommandInvokeError) else e
         locale = await get_locale(i)
         embed, recognized = get_error_embed(error, locale, i.client.translator)

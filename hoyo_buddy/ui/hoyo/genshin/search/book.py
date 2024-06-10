@@ -14,7 +14,7 @@ from hoyo_buddy.ui import Button, Select, SelectOption, View
 if TYPE_CHECKING:
     from ambr.models import BookDetail, BookVolume
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
 
@@ -52,7 +52,7 @@ class BookVolumeUI(View):
             )
         )
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         embed = await self._fetch_volume_embed()
         self._setup_items()
         await i.edit_original_response(embed=embed, view=self)
@@ -73,7 +73,7 @@ class VolumeSelector(Select["BookVolumeUI"]):
         )
         self.volumes = volumes
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         await i.response.defer()
 
         volume = dutils.get(self.volumes, id=int(self.values[0]))

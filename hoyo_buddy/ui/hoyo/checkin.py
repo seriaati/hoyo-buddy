@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     import aiohttp
     from genshin.models import DailyRewardInfo
 
-    from ...bot.bot import INTERACTION
+    from ...bot.bot import Interaction
     from ...db.models import HoyoAccount
 
 CHECK_IN_URLS = {
@@ -136,7 +136,7 @@ class CheckInUI(View):
         embed.add_acc_info(self.account)
         return embed, bytes_obj
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         await i.response.defer()
         embed, self._bytes_obj = await self.get_embed_and_image(
             i.client.session, i.client.executor, i.client.loop
@@ -156,7 +156,7 @@ class CheckInButton(Button[CheckInUI]):
             emoji=emojis.FREE_CANCELLATION,
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         client = self.view.client
         assert client.game is not None
 
@@ -183,7 +183,7 @@ class AutoCheckInToggle(ToggleButton[CheckInUI]):
             emoji=emojis.SMART_TOY,
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         await super().callback(i)
         self.view.account.daily_checkin = self.current_toggle
         await self.view.account.save(update_fields=("daily_checkin",))
@@ -197,7 +197,7 @@ class NotificationSettingsButton(Button[CheckInUI]):
             row=1,
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         await self.view.account.fetch_related("notif_settings")
         go_back_button = GoBackButton(
             self.view.children,
@@ -222,7 +222,7 @@ class NotifyOnFailureToggle(ToggleButton[CheckInUI]):
             LocaleStr("Notify on check-in failure", key="notify_on_failure_button_label"),
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         await super().callback(i)
         await AccountNotifSettings.filter(account=self.view.account).update(
             notify_on_checkin_failure=self.current_toggle
@@ -236,7 +236,7 @@ class NotifyOnSuccessToggle(ToggleButton[CheckInUI]):
             LocaleStr("Notify on check-in success", key="notify_on_success_button_label"),
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         await super().callback(i)
         await AccountNotifSettings.filter(account=self.view.account).update(
             notify_on_checkin_success=self.current_toggle

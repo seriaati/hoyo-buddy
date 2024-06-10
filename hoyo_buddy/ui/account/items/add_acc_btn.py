@@ -17,7 +17,7 @@ from .with_mobile import WithMobileNumber
 from .with_qrcode import WithQRCode
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import AccountManager  # noqa: F401
 
@@ -30,7 +30,7 @@ class AddMiyousheAccount(Button["AccountManager"]):
             label=LocaleStr(Platform.MIYOUSHE.value, warn_no_key=False),
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -67,7 +67,7 @@ class AddHoyolabAccount(Button["AccountManager"]):
             label=LocaleStr(Platform.HOYOLAB.value, warn_no_key=False),
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -103,7 +103,7 @@ class AddAccountButton(Button["AccountManager"]):
             style=ButtonStyle.primary,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,

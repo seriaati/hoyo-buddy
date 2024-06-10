@@ -13,7 +13,7 @@ from ...components import Button, Modal, TextInput
 from ..geetest_handler import GeetestHandler, SendMobileOTPData
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import AccountManager  # noqa: F401
 
@@ -44,7 +44,7 @@ class EnterVerificationCode(Button["AccountManager"]):
         )
         self._mobile = mobile
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         modal = VerifyCodeInput(
             title=LocaleStr(
                 "Enter Verification Code", key="add_miyoushe_acc.enter_verification_code"
@@ -72,7 +72,7 @@ class EnterPhoneNumber(Button["AccountManager"]):
             style=ButtonStyle.blurple,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         modal = PhoneNumberInput(
             title=LocaleStr("Enter Phone Number", key="add_miyoushe_acc.enter_mobile_number")
         )

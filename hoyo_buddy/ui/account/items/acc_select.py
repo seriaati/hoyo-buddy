@@ -7,7 +7,7 @@ from discord.utils import get as dget
 from ...components import Select, SelectOption
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import AccountManager  # noqa: F401
 
@@ -16,7 +16,7 @@ class AccountSelect(Select["AccountManager"]):
     def __init__(self, options: list[SelectOption]) -> None:
         super().__init__(custom_id="account_selector", options=options)
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         uid, game = self.values[0].split("_")
         selected_account = dget(self.view.accounts, uid=int(uid), game__value=game)
         assert selected_account is not None

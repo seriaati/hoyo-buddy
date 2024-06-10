@@ -19,12 +19,12 @@ from ..ui.components import URLButtonView
 if TYPE_CHECKING:
     from discord import Message
 
-    from ..bot.bot import INTERACTION, HoyoBuddy
+    from ..bot.bot import HoyoBuddy, Interaction
 
 
 class GeetestCommand:
     def __init__(
-        self, bot: HoyoBuddy, i: INTERACTION, account: HoyoAccount, type_: GeetestType
+        self, bot: HoyoBuddy, i: Interaction, account: HoyoAccount, type_: GeetestType
     ) -> None:
         self._bot = bot
         self._interaction = i

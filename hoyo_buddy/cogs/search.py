@@ -22,7 +22,7 @@ from ..ui.hoyo.hsr import search as hsr_search
 from ..ui.hoyo.hsr.search.light_cone import LightConeUI
 
 if TYPE_CHECKING:
-    from ..bot.bot import INTERACTION, HoyoBuddy
+    from ..bot.bot import HoyoBuddy, Interaction
 
 
 class Search(commands.Cog):
@@ -102,7 +102,7 @@ class Search(commands.Cog):
     )
     async def search_command(  # noqa: C901, PLR0911, PLR0912, PLR0914, PLR0915
         self,
-        i: INTERACTION,
+        i: Interaction,
         game_value: str,
         category_value: str,
         query: str,
@@ -406,7 +406,7 @@ class Search(commands.Cog):
 
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
-        self, i: INTERACTION, current: str
+        self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         try:
             game = Game(i.namespace.game)
@@ -429,7 +429,7 @@ class Search(commands.Cog):
 
     @search_command.autocomplete("query")
     async def search_command_query_autocomplete(  # noqa: PLR0912, PLR0911
-        self, i: INTERACTION, current: str
+        self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         try:
             game = Game(i.namespace.game)

@@ -10,7 +10,7 @@ from ..db.models import Settings as UserSettings
 from ..ui.settings import SettingsUI
 
 if TYPE_CHECKING:
-    from ..bot.bot import INTERACTION, HoyoBuddy
+    from ..bot.bot import HoyoBuddy, Interaction
 
 
 class Settings(commands.Cog):
@@ -21,7 +21,7 @@ class Settings(commands.Cog):
         name=locale_str("settings", translate=False),
         description=locale_str("Configure your user settings", key="settings_command_description"),
     )
-    async def settings_command(self, i: INTERACTION) -> Any:
+    async def settings_command(self, i: Interaction) -> Any:
         settings = await UserSettings.get(user_id=i.user.id)
         view = SettingsUI(
             author=i.user,

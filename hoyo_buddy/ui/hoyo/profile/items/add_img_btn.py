@@ -11,7 +11,7 @@ from hoyo_buddy.ui.components import Button, Modal, TextInput
 from hoyo_buddy.utils import get_pixiv_proxy_img, is_image_url, test_url_validity, upload_image
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import ProfileView  # noqa: F401
     from .image_select import ImageSelect
@@ -38,7 +38,7 @@ class AddImageButton(Button["ProfileView"]):
             row=3,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         assert self.view._card_settings is not None
 
         # Open the modal

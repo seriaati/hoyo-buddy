@@ -31,7 +31,7 @@ if TYPE_CHECKING:
 
     import aiohttp
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.db.models import HoyoAccount
 
@@ -478,7 +478,7 @@ class NotesView(View):
             .add_acc_info(self._account)
         )
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         await i.response.defer()
 
         notes = await self._get_notes()
@@ -501,7 +501,7 @@ class ReminderButton(Button[NotesView]):
             label=LocaleStr("Reminder settings", key="reminder_button.label"),
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         go_back_button = GoBackButton(
             self.view.children,
             self.view.get_embeds(i.message),

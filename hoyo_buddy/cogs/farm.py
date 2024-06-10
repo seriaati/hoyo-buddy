@@ -15,7 +15,7 @@ from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui.hoyo.farm import FarmView
 
 if TYPE_CHECKING:
-    from ..bot.bot import INTERACTION, USER, HoyoBuddy
+    from ..bot.bot import HoyoBuddy, Interaction, User
 
 
 class Farm(
@@ -43,7 +43,7 @@ class Farm(
     )
     async def farm_view_command(
         self,
-        i: INTERACTION,
+        i: Interaction,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         settings = await Settings.get(user_id=i.user.id)
@@ -85,7 +85,7 @@ class Farm(
     )
     async def farm_add_command(
         self,
-        i: INTERACTION,
+        i: Interaction,
         query: str,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
@@ -115,7 +115,7 @@ class Farm(
     )
     async def farm_remove_command(
         self,
-        i: INTERACTION,
+        i: Interaction,
         query: str,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
@@ -142,7 +142,7 @@ class Farm(
     )
     async def farm_reminder_command(
         self,
-        i: INTERACTION,
+        i: Interaction,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
@@ -155,16 +155,16 @@ class Farm(
     @farm_remove_command.autocomplete("account")
     @farm_reminder_command.autocomplete("account")
     async def account_autocomplete(
-        self, i: INTERACTION, current: str
+        self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
-        user: USER = i.namespace.user
+        user: User = i.namespace.user
         return await self.bot.get_account_autocomplete(
             user, i.user.id, current, locale, self.bot.translator, (Game.GENSHIN,)
         )
 
     @farm_add_command.autocomplete("query")
-    async def query_autocomplete(self, i: INTERACTION, current: str) -> list[app_commands.Choice]:
+    async def query_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:
         try:
             characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
             weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
@@ -199,7 +199,7 @@ class Farm(
 
     @farm_remove_command.autocomplete("query")
     async def user_query_autocomplete(
-        self, i: INTERACTION, current: str
+        self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         farm_notify = await FarmNotify.get_or_none(account__user_id=i.user.id)
         if farm_notify is None:

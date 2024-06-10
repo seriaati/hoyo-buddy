@@ -10,7 +10,7 @@ from loguru import logger
 if TYPE_CHECKING:
     from discord import Guild
 
-    from ..bot.bot import INTERACTION, HoyoBuddy
+    from ..bot.bot import HoyoBuddy, Interaction
 
 
 class Metrics(commands.Cog):
@@ -26,7 +26,7 @@ class Metrics(commands.Cog):
         sentry_sdk.metrics.incr("guilds.joined", value=-1)
 
     @commands.Cog.listener()
-    async def on_interaction(self, i: INTERACTION) -> None:
+    async def on_interaction(self, i: Interaction) -> None:
         match i.type:
             case InteractionType.application_command:
                 if isinstance(i.command, app_commands.Command):

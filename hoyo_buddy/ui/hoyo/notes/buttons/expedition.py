@@ -11,14 +11,14 @@ from ..modals import TypeTwoModal
 from ..view import NotesView
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
 
 class ExpeditionReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(label=LocaleStr("Expedition reminder", key="exped_button.label"), row=row)
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         notify_type = (
             NotesNotifyType.GI_EXPED
             if self.view._account.game is Game.GENSHIN

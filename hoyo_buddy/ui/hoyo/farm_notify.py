@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from discord import Locale, Member, User
     from discord.file import File
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
 
 
@@ -112,7 +112,7 @@ class FarmNotifyView(PaginatorView):
             items,
         )
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         if not self._notify.item_ids:
             embed = DefaultEmbed(
                 self.locale,
@@ -142,7 +142,7 @@ class AddItemButton(Button[FarmNotifyView]):
             row=1,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -163,7 +163,7 @@ class RemoveItemButton(Button[FarmNotifyView]):
             row=1,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -179,7 +179,7 @@ class NotifyToggle(ToggleButton[FarmNotifyView]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(current_toggle, LocaleStr("Reminder", key="reminder_toggle"), row=1)
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=True)
         await self.view._notify.fetch_related("account")
         await FarmNotify.filter(account_id=self.view._notify.account.id).update(

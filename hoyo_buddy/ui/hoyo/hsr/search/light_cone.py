@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from hakushin.models.hsr import LightConeDetail as HakushinLCDetail
     from yatta import LightConeDetail
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
 
 
@@ -96,7 +96,7 @@ class LightConeUI(View):
         )
         self.add_item(ShowStoryButton())
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         await i.response.defer()
         embed = await self._fetch_embed()
         self._setup_items()
@@ -118,7 +118,7 @@ class EnterLightConeLevel(Button[LightConeUI]):
     def __init__(self, label: LocaleStr) -> None:
         super().__init__(label=label, style=ButtonStyle.blurple)
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         modal = LightConeLevelModal(
             title=LocaleStr("Enter Weapon Level", key="weapon_level.modal.title")
         )
@@ -150,7 +150,7 @@ class SuperimposeSelect(Select[LightConeUI]):
             ]
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         self.view._superimpose = int(self.values[0])
         embed = await self.view._fetch_embed()
         self.view._setup_items()
@@ -161,7 +161,7 @@ class ShowStoryButton(Button[LightConeUI]):
     def __init__(self) -> None:
         super().__init__(label=LocaleStr("Read Story", key="read_story.button.label"))
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         assert self.view._lc_detail is not None
         embed = DefaultEmbed(
             self.view.locale,

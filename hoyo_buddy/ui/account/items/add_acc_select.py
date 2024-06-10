@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
     from genshin.models import GenshinAccount
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
 
     from ..view import AccountManager  # noqa: F401
@@ -68,7 +68,7 @@ class AddAccountSelect(Select["AccountManager"]):
                     emoji=get_game_emoji(account.game),
                 )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         for value in self.values:
             uid, game = value.split("_")
             account = discord.utils.get(self.accounts, uid=int(uid), game__value=game)

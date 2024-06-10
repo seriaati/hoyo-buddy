@@ -10,7 +10,7 @@ from ...components import Button, GoBackButton
 from .enter_email_pswd import EnterEmailPassword
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.enums import Platform
 
     from ..view import AccountManager  # noqa: F401
@@ -23,7 +23,7 @@ class WithEmailPassword(Button["AccountManager"]):
         )
         self._platform = platform
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,

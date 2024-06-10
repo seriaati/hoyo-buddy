@@ -9,7 +9,7 @@ from hoyo_buddy.ui.components import Select, SelectOption
 from ..btn_states import DISABLE_AI_ART, DISABLE_COLOR, DISABLE_DARK_MODE, DISABLE_IMAGE_SELECT
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import ProfileView  # noqa: F401
     from .dark_mode_btn import DarkModeButton
@@ -130,7 +130,7 @@ class CardTemplateSelect(Select["ProfileView"]):
             custom_id="profile_card_template_select",
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         assert self.view._card_settings is not None
 
         # Save the setting to db

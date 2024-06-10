@@ -14,7 +14,7 @@ from ...components import Button, Modal, TextInput
 from ..geetest_handler import EmailPswdLoginData, GeetestHandler, SendEmailCodeData
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import AccountManager  # noqa: F401
 
@@ -42,7 +42,7 @@ class EnterEmailVerificationCode(Button["AccountManager"]):
         self._password = password
         self._action_ticket = action_ticket
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         modal = EmailVerificationCodeModal(
             title=LocaleStr("Enter Verification Code", key="email-verification-code.button.label")
         )
@@ -89,7 +89,7 @@ class EnterEmailPassword(Button["AccountManager"]):
 
         self._platform = platform
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         modal = EmailPasswordModal(
             title=LocaleStr(
                 "Enter Email/Username and Password", key="enter_email_password_button_label"

@@ -15,7 +15,7 @@ from ...components import Button, Select, SelectOption, View
 if TYPE_CHECKING:
     from ambr.models import Abyss, AbyssResponse
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
     from hoyo_buddy.models import ItemWithDescription
@@ -120,7 +120,7 @@ class AbyssEnemyView(View):
 
         return embed, items
 
-    async def _update(self, i: INTERACTION, *, defer: bool = True) -> None:
+    async def _update(self, i: Interaction, *, defer: bool = True) -> None:
         if defer:
             await i.response.defer()
 
@@ -147,7 +147,7 @@ class AbyssEnemyView(View):
         await i.edit_original_response(embed=embed, attachments=[file_], view=self)
         self.message = await i.original_response()
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         await i.response.defer()
 
         async with AmbrAPIClient(self.locale, self.translator) as client:
@@ -173,7 +173,7 @@ class FloorSelect(Select[AbyssEnemyView]):
             row=1,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         self.view._floor_index = int(self.values[0])
         self.view._chamber_index = 0
         self.view._wave_index = 0
@@ -193,7 +193,7 @@ class ChamberButton(Button[AbyssEnemyView]):
 
         self._chamber_index = chamber_index
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         self.view._chamber_index = self._chamber_index
         self.view._wave_index = 0
         await self.view._update(i)
@@ -209,7 +209,7 @@ class WaveButton(Button[AbyssEnemyView]):
 
         self._wave_index = wave_index
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         self.view._wave_index = self._wave_index
         await self.view._update(i)
 
@@ -228,7 +228,7 @@ class AbyssSeasonSelector(Select[AbyssEnemyView]):
             row=0,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         self.view._season_index = int(self.values[0])
         self.view._floor_index = 12
         self.view._chamber_index = 0

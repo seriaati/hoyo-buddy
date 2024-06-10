@@ -12,7 +12,7 @@ from ..modals import TypeOneModal
 from ..view import NotesView
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
 
 class TBPReminder(Button[NotesView]):
@@ -23,7 +23,7 @@ class TBPReminder(Button[NotesView]):
             row=row,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         notify = await NotesNotify.get_or_none(
             account=self.view._account, type=NotesNotifyType.TB_POWER
         )

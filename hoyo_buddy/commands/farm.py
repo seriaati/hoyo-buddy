@@ -14,7 +14,7 @@ from ..ui.hoyo.farm_notify import FarmNotifyView
 if TYPE_CHECKING:
     import discord
 
-    from ..bot.bot import INTERACTION
+    from ..bot.bot import Interaction
 
 
 class Action(IntEnum):
@@ -25,7 +25,7 @@ class Action(IntEnum):
 class FarmCommand:
     def __init__(
         self,
-        interaction: INTERACTION,
+        interaction: Interaction,
         account: HoyoAccount,
         settings: Settings,
         query: str | None = None,

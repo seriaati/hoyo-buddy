@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
     from discord.ui.item import Item
 
-    from ..bot.bot import INTERACTION
+    from ..bot.bot import Interaction
 
 
 __all__ = (
@@ -85,7 +85,7 @@ class View(discord.ui.View):
 
     async def on_error(
         self,
-        i: INTERACTION,
+        i: Interaction,
         error: Exception,
         _: discord.ui.Item[Any],
     ) -> None:
@@ -95,7 +95,7 @@ class View(discord.ui.View):
             i.client.capture_exception(error)
         await self.absolute_send(i, embed=embed, ephemeral=True)
 
-    async def interaction_check(self, i: INTERACTION) -> bool:
+    async def interaction_check(self, i: Interaction) -> bool:
         if self.author is None:
             return True
 
@@ -158,7 +158,7 @@ class View(discord.ui.View):
                 item.translate(self.locale, self.translator)
 
     @staticmethod
-    async def absolute_send(i: INTERACTION, **kwargs: Any) -> None:
+    async def absolute_send(i: Interaction, **kwargs: Any) -> None:
         with contextlib.suppress(discord.NotFound):
             if not i.response.is_done():
                 await i.response.send_message(**kwargs)
@@ -166,7 +166,7 @@ class View(discord.ui.View):
                 await i.followup.send(**kwargs)
 
     @staticmethod
-    async def absolute_edit(i: INTERACTION, **kwargs: Any) -> None:
+    async def absolute_edit(i: Interaction, **kwargs: Any) -> None:
         with contextlib.suppress(discord.NotFound):
             if not i.response.is_done():
                 await i.response.edit_message(**kwargs)
@@ -236,7 +236,7 @@ class Button(discord.ui.Button, Generic[V_co]):
                 self.locale_str_label, locale, capitalize_first_word=True
             )
 
-    async def set_loading_state(self, i: INTERACTION, **kwargs: Any) -> None:
+    async def set_loading_state(self, i: Interaction, **kwargs: Any) -> None:
         self.original_label = self.label[:] if self.label else None
         self.original_emoji = str(self.emoji) if self.emoji else None
         self.original_disabled = self.disabled
@@ -251,7 +251,7 @@ class Button(discord.ui.Button, Generic[V_co]):
 
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 
-    async def unset_loading_state(self, i: INTERACTION, **kwargs: Any) -> None:
+    async def unset_loading_state(self, i: Interaction, **kwargs: Any) -> None:
         if self.original_disabled is None:
             msg = "unset_loading_state called before set_loading_state"
             raise RuntimeError(msg)
@@ -280,7 +280,7 @@ class GoBackButton(Button, Generic[V_co]):
 
         self.view: V_co
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         self.view.clear_items()
         for item in self.original_children:
             if isinstance(item, Button | Select):
@@ -338,7 +338,7 @@ class ToggleButton(Button, Generic[V_co]):
         self.style = self._get_style()
         self.label = self._get_label().translate(self.view.translator, self.view.locale)
 
-    async def callback(self, i: INTERACTION, *, edit: bool = True, **kwargs: Any) -> Any:
+    async def callback(self, i: Interaction, *, edit: bool = True, **kwargs: Any) -> Any:
         self.current_toggle = not self.current_toggle
         self.update_style()
         if edit:
@@ -424,7 +424,7 @@ class Select(discord.ui.Select, Generic[V_co]):
                     option.locale_str_description, locale, capitalize_first_word=True
                 )
 
-    async def set_loading_state(self, i: INTERACTION) -> None:
+    async def set_loading_state(self, i: Interaction) -> None:
         self.original_options = self.options.copy()
         self.original_disabled = self.disabled
         self.original_placeholder = self.placeholder[:] if self.placeholder else None
@@ -449,7 +449,7 @@ class Select(discord.ui.Select, Generic[V_co]):
 
         await self.view.absolute_edit(i, view=self.view)
 
-    async def unset_loading_state(self, i: INTERACTION, **kwargs: Any) -> None:
+    async def unset_loading_state(self, i: Interaction, **kwargs: Any) -> None:
         if (
             not self.original_options
             or self.original_disabled is None
@@ -593,7 +593,7 @@ class Modal(discord.ui.Modal):
 
     async def on_error(
         self,
-        i: INTERACTION,
+        i: Interaction,
         error: Exception,
     ) -> None:
         locale = await get_locale(i)
@@ -606,7 +606,7 @@ class Modal(discord.ui.Modal):
         else:
             await i.followup.send(embed=embed, ephemeral=True)
 
-    async def on_submit(self, i: INTERACTION) -> None:
+    async def on_submit(self, i: Interaction) -> None:
         self.validate_inputs()
         with contextlib.suppress(discord.NotFound):
             await i.response.defer()

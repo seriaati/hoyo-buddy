@@ -9,7 +9,7 @@ from hoyo_buddy.emojis import DELETE
 from hoyo_buddy.ui.components import Button
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import ProfileView  # noqa: F401
     from .image_select import ImageSelect
@@ -26,7 +26,7 @@ class RemoveImageButton(Button["ProfileView"]):
             row=3,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         assert self.view.character_id is not None
         assert self.view._card_settings is not None
 

@@ -10,7 +10,7 @@ from hoyo_buddy.ui.components import Button, Modal, TextInput
 from hoyo_buddy.utils import is_valid_hex_color
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import ProfileView  # noqa: F401
 
@@ -43,7 +43,7 @@ class PrimaryColorButton(Button["ProfileView"]):
         )
         self.current_color = current_color
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         assert self.view._card_settings is not None
 
         # Open the color modal

@@ -12,7 +12,7 @@ from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
 from hoyo_buddy.ui import Button, View
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
 
@@ -33,7 +33,7 @@ class ArtifactSetUI(View):
 
         self._hakushin = hakushin
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         await i.response.defer()
 
         try:
@@ -73,5 +73,5 @@ class ArtifactPosButton(Button["ArtifactSetUI"]):
         )
         self.pos = pos
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         await i.response.edit_message(embed=self.view._artifact_embeds[self.pos])

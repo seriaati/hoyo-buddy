@@ -10,7 +10,7 @@ from ..db.models import HoyoAccount, User, get_locale
 from ..ui.account.view import AccountManager
 
 if TYPE_CHECKING:
-    from ..bot.bot import INTERACTION, HoyoBuddy
+    from ..bot.bot import HoyoBuddy, Interaction
 
 
 class Login(commands.Cog):
@@ -21,7 +21,7 @@ class Login(commands.Cog):
         name=locale_str("accounts", translate=False),
         description=locale_str("Manage your accounts", key="accounts_command_description"),
     )
-    async def accounts(self, i: INTERACTION) -> Any:
+    async def accounts(self, i: Interaction) -> Any:
         locale = await get_locale(i)
         user = await User.get(id=i.user.id)
         accounts = await HoyoAccount.filter(user=user).all()

@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     import aiohttp
     from discord import File, Locale, Member, User
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.db.models import HoyoAccount
 
@@ -214,7 +214,7 @@ class ChallengeView(View):
     async def update(
         self,
         item: Select[ChallengeView] | Button[ChallengeView],
-        i: INTERACTION,
+        i: Interaction,
     ) -> None:
         assert self._challenge_type is not None
 
@@ -243,7 +243,7 @@ class ChallengeView(View):
 
         await item.unset_loading_state(i, embed=embed, attachments=[file_])
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         self._add_items()
         await i.edit_original_response(view=self)
         self.message = await i.original_response()
@@ -269,7 +269,7 @@ class PhaseSelect(Select[ChallengeView]):
             custom_id="challenge_view.phase_select",
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         assert self.view._challenge_type is not None
 
         self.view._previous[self.view._challenge_type] = self.values[0] == "previous"
@@ -289,6 +289,6 @@ class ChallengeTypeSelect(Select[ChallengeView]):
             ],
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         self.view._challenge_type = ChallengeType(self.values[0])
         await self.view.update(self, i)

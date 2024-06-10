@@ -6,7 +6,7 @@ from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.ui.components import PaginatorSelect, SelectOption
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import ProfileView  # noqa: F401
     from .remove_img_btn import RemoveImageButton
@@ -89,7 +89,7 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
         )
         return option
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         assert self.view._card_settings is not None
 
         changed = await super().callback()

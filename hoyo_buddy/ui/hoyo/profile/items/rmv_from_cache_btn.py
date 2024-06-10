@@ -13,7 +13,7 @@ from hoyo_buddy.hoyo.clients.enka.base import BaseClient
 from hoyo_buddy.ui.components import Button
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import ProfileView  # noqa: F401
     from .chara_select import CharacterSelect
@@ -30,7 +30,7 @@ class RemoveFromCacheButton(Button["ProfileView"]):
             custom_id="profile_remove_from_cache",
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         await i.response.defer()
 
         assert self.view.character_id is not None

@@ -12,7 +12,7 @@ from ..components import Button, Modal, TextInput, ToggleButton, View
 if TYPE_CHECKING:
     from hoyo_buddy.bot.translator import Translator
 
-    from ...bot.bot import INTERACTION
+    from ...bot.bot import Interaction
     from ...db.models import HoyoAccount
 
 
@@ -89,7 +89,7 @@ class RedeemCodesButton(Button[RedeemUI]):
             style=ButtonStyle.blurple,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         modal = GiftCodeModal(
             title=LocaleStr("Enter redemption codes", key="gift_code_modal.title")
         )
@@ -120,7 +120,7 @@ class AutoRedeemToggle(ToggleButton[RedeemUI]):
             current_toggle, LocaleStr("Auto code redemption", key="auto_redeem_toggle.label"), row=0
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         await super().callback(i)
         self.view.account.auto_redeem = self.current_toggle
         await self.view.account.save(update_fields=("auto_redeem",))

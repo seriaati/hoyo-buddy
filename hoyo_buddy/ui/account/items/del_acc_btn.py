@@ -12,7 +12,7 @@ from hoyo_buddy.emojis import DELETE, FORWARD
 from ...components import Button
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import AccountManager  # noqa: F401
 
@@ -26,7 +26,7 @@ class DeleteAccountContinue(Button["AccountManager"]):
             style=ButtonStyle.blurple,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         await self.view.refresh(i, soft=False)
 
 
@@ -40,7 +40,7 @@ class DeleteAccountButton(Button["AccountManager"]):
             row=3,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         account = self.view.selected_account
         assert account is not None
         await account.delete()

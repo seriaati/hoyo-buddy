@@ -18,7 +18,7 @@ from .primary_color_btn import PrimaryColorButton
 from .remove_img_btn import RemoveImageButton
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import ProfileView  # noqa: F401
 
@@ -32,7 +32,7 @@ class CardSettingsButton(Button["ProfileView"]):
             emoji=SETTINGS,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         assert self.view._card_settings is not None
         assert self.view.character_id is not None
 

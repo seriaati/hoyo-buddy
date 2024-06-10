@@ -8,7 +8,7 @@ from hoyo_buddy.ui.components import Select, SelectOption
 if TYPE_CHECKING:
     import enka
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import ProfileView  # noqa: F401
 
@@ -39,7 +39,7 @@ class BuildSelect(Select["ProfileView"]):
         ] or [SelectOption(label="Placeholder", value="0")]
         self.disabled = not builds
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         self.view._build_id = int(self.values[0])
         await self.set_loading_state(i)
         await self.view.update(i, self, character=self.build.character)

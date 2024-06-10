@@ -34,7 +34,7 @@ if TYPE_CHECKING:
     from discord import Member, User
     from genshin.models import StarRailUserStats
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
 
 
@@ -390,7 +390,7 @@ class ProfileView(View):
             0.8 if self._card_settings.current_image is None else 1.0,
         )
 
-    async def draw_card(self, i: INTERACTION, *, character: Character | None = None) -> io.BytesIO:
+    async def draw_card(self, i: Interaction, *, character: Character | None = None) -> io.BytesIO:
         """Draw the character card and return the bytes object."""
         assert self.character_id is not None
 
@@ -444,7 +444,7 @@ class ProfileView(View):
 
     async def update(
         self,
-        i: INTERACTION,
+        i: Interaction,
         item: Select[ProfileView] | Button[ProfileView],
         *,
         unset_loading_state: bool = True,
@@ -469,7 +469,7 @@ class ProfileView(View):
         else:
             await i.edit_original_response(attachments=attachments, embed=self.card_embed)
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         self._set_characters()
         self._add_items()
         await i.followup.send(embed=self.player_embed, view=self)

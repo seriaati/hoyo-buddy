@@ -18,7 +18,7 @@ from .search import Search
 if TYPE_CHECKING:
     from discord.ext.commands.context import Context
 
-    from ..bot.bot import INTERACTION, HoyoBuddy
+    from ..bot.bot import HoyoBuddy, Interaction
 
 
 class TaskView(ui.View):
@@ -26,25 +26,25 @@ class TaskView(ui.View):
         super().__init__()
         self._tasks: set[asyncio.Task] = set()
 
-    async def interaction_check(self, i: INTERACTION) -> bool:
+    async def interaction_check(self, i: Interaction) -> bool:
         return await i.client.is_owner(i.user)
 
     @ui.button(label="Daily check-in", style=ButtonStyle.blurple)
-    async def daily_checkin(self, i: INTERACTION, _: ui.Button) -> None:
+    async def daily_checkin(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Daily check-in task started.")
         task = asyncio.create_task(DailyCheckin.execute(i.client))
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)
 
     @ui.button(label="Notes check", style=ButtonStyle.blurple)
-    async def notes_check(self, i: INTERACTION, _: ui.Button) -> None:
+    async def notes_check(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Notes check task started.")
         task = asyncio.create_task(NotesChecker.execute(i.client))
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)
 
     @ui.button(label="Farm check", style=ButtonStyle.blurple)
-    async def farm_check(self, i: INTERACTION, _: ui.Button) -> None:
+    async def farm_check(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Farm check tasks started.")
         for uid_start in UID_STARTS:
             task = asyncio.create_task(FarmChecker.execute(i.client, uid_start))
@@ -52,7 +52,7 @@ class TaskView(ui.View):
             task.add_done_callback(self._tasks.discard)
 
     @ui.button(label="Auto redeem", style=ButtonStyle.blurple)
-    async def auto_redeem(self, i: INTERACTION, _: ui.Button) -> None:
+    async def auto_redeem(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Auto redeem task started.")
         task = asyncio.create_task(AutoRedeem.execute(i.client))
         self._tasks.add(task)

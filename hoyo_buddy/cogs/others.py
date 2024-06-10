@@ -20,7 +20,7 @@ from ..utils import get_discord_user_md_link
 if TYPE_CHECKING:
     import git
 
-    from ..bot.bot import INTERACTION, HoyoBuddy
+    from ..bot.bot import HoyoBuddy, Interaction
 
 
 class Others(commands.Cog):
@@ -44,7 +44,7 @@ class Others(commands.Cog):
             "Give feedback to the bot's developer", key="feedback_command_description"
         ),
     )
-    async def feedback_command(self, i: INTERACTION) -> Any:
+    async def feedback_command(self, i: Interaction) -> Any:
         await i.response.defer()
         locale = (await UserSettings.get(user_id=i.user.id)).locale or i.locale
         view = FeedbackView(author=i.user, locale=locale, translator=self.bot.translator)
@@ -76,7 +76,7 @@ class Others(commands.Cog):
         name=locale_str("about", translate=False),
         description=locale_str("About the bot", key="about_command_description"),
     )
-    async def about_command(self, i: INTERACTION) -> None:
+    async def about_command(self, i: Interaction) -> None:
         await i.response.defer()
 
         settings = await UserSettings.get(user_id=i.user.id)

@@ -11,7 +11,7 @@ from .components import Button, Modal, TextInput, View
 if TYPE_CHECKING:
     from hoyo_buddy.bot.translator import Translator
 
-    from ..bot.bot import INTERACTION
+    from ..bot.bot import Interaction
 
 
 class FeedbackView(View):
@@ -34,7 +34,7 @@ class FeedbackButton(Button[FeedbackView]):
             label=LocaleStr("Give feedback", key="feedback_button.label"), style=ButtonStyle.blurple
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         modal = FeedbackModal(title=LocaleStr("Give Feedback", key="feedback_button.label"))
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)

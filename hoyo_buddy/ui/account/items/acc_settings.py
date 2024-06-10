@@ -8,7 +8,7 @@ from hoyo_buddy.emojis import GIFT_OUTLINE, PUBLIC, SMART_TOY
 from ...components import ToggleButton
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import AccountManager  # noqa: F401
 
@@ -23,7 +23,7 @@ class AutoRedeemToggle(ToggleButton["AccountManager"]):
             custom_id="auto_redeem_toggle",
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         await super().callback(i)
         assert self.view.selected_account is not None
 
@@ -41,7 +41,7 @@ class AutoCheckinToggle(ToggleButton["AccountManager"]):
             custom_id="auto_checkin_toggle",
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         await super().callback(i)
         assert self.view.selected_account is not None
 
@@ -59,7 +59,7 @@ class AccountPublicToggle(ToggleButton["AccountManager"]):
             custom_id="public_account_toggle",
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         await super().callback(i)
         assert self.view.selected_account is not None
 

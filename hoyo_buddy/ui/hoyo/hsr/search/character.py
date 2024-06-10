@@ -15,7 +15,7 @@ from hoyo_buddy.ui.components import PaginatorSelect
 if TYPE_CHECKING:
     from discord import Locale, Member, User
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
 
@@ -59,7 +59,7 @@ class CharacterUI(View):
     def _convert_manual_avatar(manual_avatar: dict[str, dict[str, str]]) -> dict[str, str]:
         return {stat_id: stat["name"] for stat_id, stat in manual_avatar.items()}
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         await i.response.defer()
 
         if self._hakushin:
@@ -130,7 +130,7 @@ class CharacterUI(View):
         await self.update(i)
         self.message = await i.original_response()
 
-    async def update(self, i: INTERACTION) -> None:  # noqa: PLR0912
+    async def update(self, i: Interaction) -> None:  # noqa: PLR0912
         if self._character_detail is None:
             msg = "Character detail not fetched"
             raise RuntimeError(msg)
@@ -347,7 +347,7 @@ class PageSelector(Select["CharacterUI"]):
             ]
         super().__init__(options=options, row=4)
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         self.view.selected_page = int(self.values[0])
         await self.view.update(i)
 
@@ -357,7 +357,7 @@ class ItemSelector(Select["CharacterUI"]):
         super().__init__(options=options)
         self._index_name = index_name
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         self.view.__setattr__(self._index_name, int(self.values[0]))  # noqa: PLC2801
         await self.view.update(i)
 
@@ -379,7 +379,7 @@ class EnterSkilLevel(Button[CharacterUI]):
         super().__init__(label=label, style=ButtonStyle.blurple)
         self._skill_max_level = skill_max_level
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         modal = SkillLevelModal(self._skill_max_level)
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
@@ -428,7 +428,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
     def __init__(self, label: LocaleStr) -> None:
         super().__init__(label=label, style=ButtonStyle.blurple)
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         modal = CharacterLevelModal(
             title=LocaleStr("Enter Character Level", key="chara_level.modal.title")
         )
@@ -463,7 +463,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
 
 
 class VoiceSelector(PaginatorSelect[CharacterUI]):
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         await super().callback()
         try:
             self.view._voice_index = int(self.values[0])

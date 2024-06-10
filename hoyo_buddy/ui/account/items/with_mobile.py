@@ -9,7 +9,7 @@ from ...components import Button, GoBackButton
 from .enter_mobile import EnterPhoneNumber
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import AccountManager  # noqa: F401
 
@@ -21,7 +21,7 @@ class WithMobileNumber(Button["AccountManager"]):
             label=LocaleStr("With phone number", key="add_miyoushe_acc.with_mobile_number"),
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,

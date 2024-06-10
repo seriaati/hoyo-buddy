@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from discord import app_commands
 from discord.ext import commands
 
-from ..bot.bot import USER  # noqa: TCH001
+from ..bot.bot import User  # noqa: TCH001
 from ..bot.translator import LocaleStr
 from ..commands.challenge import ChallengeCommand
 from ..commands.geetest import GeetestCommand
@@ -25,7 +25,7 @@ from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.redeem import RedeemUI
 
 if TYPE_CHECKING:
-    from ..bot.bot import INTERACTION, HoyoBuddy
+    from ..bot.bot import HoyoBuddy, Interaction
 
 
 class Hoyo(commands.Cog):
@@ -77,8 +77,8 @@ class Hoyo(commands.Cog):
     )
     async def checkin_command(
         self,
-        i: INTERACTION,
-        user: USER = None,
+        i: Interaction,
+        user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         user = user or i.user
@@ -139,8 +139,8 @@ class Hoyo(commands.Cog):
     )
     async def profile_command(
         self,
-        i: INTERACTION,
-        user: USER = None,
+        i: Interaction,
+        user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
         uid: app_commands.Range[str, 9, 10] | None = None,
         game_value: str | None = None,
@@ -191,8 +191,8 @@ class Hoyo(commands.Cog):
     )
     async def notes_command(
         self,
-        i: INTERACTION,
-        user: USER = None,
+        i: Interaction,
+        user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         user = user or i.user
@@ -230,8 +230,8 @@ class Hoyo(commands.Cog):
     )
     async def characters_command(
         self,
-        i: INTERACTION,
-        user: USER = None,
+        i: Interaction,
+        user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         await i.response.defer()
@@ -285,8 +285,8 @@ class Hoyo(commands.Cog):
     )
     async def challenge_command(
         self,
-        i: INTERACTION,
-        user: USER = None,
+        i: Interaction,
+        user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         command = ChallengeCommand(i, user, account)
@@ -315,8 +315,8 @@ class Hoyo(commands.Cog):
     )
     async def exploration_command(
         self,
-        i: INTERACTION,
-        user: USER = None,
+        i: Interaction,
+        user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         await i.response.defer()
@@ -368,8 +368,8 @@ class Hoyo(commands.Cog):
     )
     async def redeem_command(
         self,
-        i: INTERACTION,
-        user: USER = None,
+        i: Interaction,
+        user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         user = user or i.user
@@ -417,7 +417,7 @@ class Hoyo(commands.Cog):
     )
     async def geetest_command(
         self,
-        i: INTERACTION,
+        i: Interaction,
         account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer],
         type_: GeetestType,
     ) -> None:
@@ -427,10 +427,10 @@ class Hoyo(commands.Cog):
 
     @exploration_command.autocomplete("account")
     async def exploration_command_autocomplete(
-        self, i: INTERACTION, current: str
+        self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
-        user: USER = i.namespace.user
+        user: User = i.namespace.user
         return await self.bot.get_account_autocomplete(
             user,
             i.user.id,
@@ -445,9 +445,9 @@ class Hoyo(commands.Cog):
     @profile_command.autocomplete("account")
     @notes_command.autocomplete("account")
     @redeem_command.autocomplete("account")
-    async def account_autocomplete(self, i: INTERACTION, current: str) -> list[app_commands.Choice]:
+    async def account_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:
         locale = await get_locale(i)
-        user: USER = i.namespace.user
+        user: User = i.namespace.user
         return await self.bot.get_account_autocomplete(
             user,
             i.user.id,
@@ -460,10 +460,10 @@ class Hoyo(commands.Cog):
     @checkin_command.autocomplete("account")
     @geetest_command.autocomplete("account")
     async def checkin_command_autocomplete(
-        self, i: INTERACTION, current: str
+        self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
-        user: USER = i.namespace.user
+        user: User = i.namespace.user
         return await self.bot.get_account_autocomplete(
             user,
             i.user.id,

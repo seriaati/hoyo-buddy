@@ -10,7 +10,7 @@ from hoyo_buddy.emojis import EDIT
 from ...components import Button, Modal, TextInput
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import AccountManager  # noqa: F401
 
@@ -37,7 +37,7 @@ class EditNicknameButton(Button["AccountManager"]):
             label=LocaleStr("Edit nickname", key="edit_nickname_button_label"),
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         account = self.view.selected_account
         if account is None:
             msg = "No account selected"

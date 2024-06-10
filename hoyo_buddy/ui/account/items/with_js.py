@@ -11,7 +11,7 @@ from ...components import Button, GoBackButton
 from .enter_cookies_btn import EnterCookiesButton
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import AccountManager  # noqa: F401
 
@@ -20,7 +20,7 @@ class WithJavaScript(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(label=LocaleStr("With JavaScript", key="javascript_button_label"))
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,

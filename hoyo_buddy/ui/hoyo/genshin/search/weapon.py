@@ -13,7 +13,7 @@ from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
 if TYPE_CHECKING:
     from discord import Locale, Member, User
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
 
@@ -98,7 +98,7 @@ class WeaponUI(View):
             )
         )
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         await i.response.defer()
         embed = await self._get_embed()
         self._setup_items()
@@ -120,7 +120,7 @@ class EnterWeaponLevel(Button[WeaponUI]):
     def __init__(self, label: LocaleStr) -> None:
         super().__init__(label=label, style=ButtonStyle.blurple)
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         modal = WeaponLevelModal(
             title=LocaleStr("Enter Weapon Level", key="weapon_level.modal.title")
         )
@@ -152,7 +152,7 @@ class RefinementSelector(Select["WeaponUI"]):
             ]
         )
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         self.view.refinement = int(self.values[0])
         embed = await self.view._get_embed()
         self.view._setup_items()

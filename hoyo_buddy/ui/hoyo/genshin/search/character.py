@@ -13,7 +13,7 @@ from hoyo_buddy.ui import Button, Modal, PaginatorSelect, Select, SelectOption, 
 if TYPE_CHECKING:
     import ambr
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
 
@@ -128,7 +128,7 @@ class CharacterUI(View):
             const = character_detail.constellations[self.const_index]
             return (api.get_character_const_embed(const), character_detail.constellations)
 
-    async def update(self, i: INTERACTION) -> None:
+    async def update(self, i: Interaction) -> None:
         if not i.response.is_done():
             await i.response.defer()
 
@@ -291,7 +291,7 @@ class EnterTalentLevel(Button[CharacterUI]):
     def __init__(self, label: LocaleStr) -> None:
         super().__init__(label=label, style=ButtonStyle.blurple)
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         modal = TalentLevelModal(
             title=LocaleStr("Enter Talent Level", key="talent_level.modal.title")
         )
@@ -319,7 +319,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
     def __init__(self, label: LocaleStr) -> None:
         super().__init__(label=label, style=ButtonStyle.blurple)
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         modal = CharacterLevelModal(
             title=LocaleStr("Enter Character Level", key="chara_level.modal.title")
         )
@@ -389,7 +389,7 @@ class PageSelector(Select[CharacterUI]):
             ]
         super().__init__(options=options, row=4)
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         self.view.selected_page = int(self.values[0])
         await self.view.update(i)
 
@@ -399,13 +399,13 @@ class ItemSelector(Select[CharacterUI]):
         super().__init__(options=options)
         self.index_name = index_name
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         self.view.__setattr__(self.index_name, int(self.values[0]))  # noqa: PLC2801
         await self.view.update(i)
 
 
 class QuoteSelector(PaginatorSelect[CharacterUI]):
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         await super().callback()
         try:
             self.view.quote_index = int(self.values[0])

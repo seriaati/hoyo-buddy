@@ -14,7 +14,7 @@ from hoyo_buddy.ui.components import PaginatorSelect, SelectOption
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import Character, ProfileView  # noqa: F401
     from .build_select import BuildSelect
@@ -109,7 +109,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             custom_id="profile_character_select",
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         changed = await super().callback()
         if changed:
             return await i.response.edit_message(view=self.view)

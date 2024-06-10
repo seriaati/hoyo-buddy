@@ -11,7 +11,7 @@ from hoyo_buddy.emojis import COOKIE
 from ...components import Button, Modal, TextInput
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.enums import Platform
 
     from ..view import AccountManager  # noqa: F401
@@ -56,7 +56,7 @@ class EnterCookiesButton(Button["AccountManager"]):
             return DevToolCookiesModal(title=LocaleStr("Enter Cookies", key="cookies_button_label"))
         return CookiesModal(title=LocaleStr("Enter Cookies", key="cookies_button_label"))
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         modal = self._get_cookies_modal()
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)

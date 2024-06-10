@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     from genshin.models import Character as GenshinCharacter
     from genshin.models import StarRailDetailCharacter as StarRailCharacter
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.db.models import HoyoAccount
 
@@ -377,7 +377,7 @@ class CharactersView(View):
         else:
             raise NotImplementedError
 
-    async def start(self, i: INTERACTION, *, show_first_time_msg: bool = False) -> None:
+    async def start(self, i: Interaction, *, show_first_time_msg: bool = False) -> None:
         if show_first_time_msg:
             embed = DefaultEmbed(
                 self.locale,
@@ -456,7 +456,7 @@ class FilterSelector(Select[CharactersView]):
             options=options,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         self.view._filter = GIFilter(self.values[0])
         characters = self.view._get_gi_filtered_and_sorted_characters()
 
@@ -489,7 +489,7 @@ class ElementFilterSelector(Select[CharactersView]):
             max_values=len(options),
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         if self.view._game is Game.GENSHIN:
             self.view._element_filters = [GenshinElement(value) for value in self.values]
             characters = self.view._get_gi_filtered_and_sorted_characters()
@@ -526,7 +526,7 @@ class PathFilterSelector(Select[CharactersView]):
             max_values=len(options),
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         self.view._path_filters = [HSRPath(value) for value in self.values]
         characters = self.view._get_hsr_filtered_and_sorted_characters()
 
@@ -553,7 +553,7 @@ class GISorterSelector(Select[CharactersView]):
             options=options,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         self.view._sorter = GISorter(self.values[0])
         characters = self.view._get_gi_filtered_and_sorted_characters()
 
@@ -580,7 +580,7 @@ class HSRSorterSelector(Select[CharactersView]):
             options=options,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         self.view._sorter = HSRSorter(self.values[0])
         characters = self.view._get_hsr_filtered_and_sorted_characters()
 
@@ -600,7 +600,7 @@ class UpdateTalentData(Button[CharactersView]):
             row=3,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         filename = f"talent_levels/gi_{self.view._account.uid}.json"
         talent_level_data: dict[str, str] = await JSONFile.read(filename)
         updated_at = datetime.datetime.fromisoformat(talent_level_data["updated_at"])

@@ -9,7 +9,7 @@ from hoyo_buddy.ui import Select, SelectOption, View
 if TYPE_CHECKING:
     from discord import Locale, Member, User
 
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import LocaleStr, Translator
     from hoyo_buddy.embeds import DefaultEmbed
 
@@ -29,7 +29,7 @@ class BookUI(View):
         self.book_id = book_id
         self.series_embeds: dict[str, DefaultEmbed] = {}
 
-    async def start(self, i: INTERACTION) -> None:
+    async def start(self, i: Interaction) -> None:
         await i.response.defer()
 
         async with YattaAPIClient(self.locale, self.translator) as api:
@@ -64,6 +64,6 @@ class SeriesSelector(Select["BookUI"]):
     ) -> None:
         super().__init__(placeholder=placeholder, options=options)
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         self.update_options_defaults()
         await i.response.edit_message(embed=self.view.series_embeds[self.values[0]], view=self.view)

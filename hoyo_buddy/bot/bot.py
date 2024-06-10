@@ -38,11 +38,8 @@ if TYPE_CHECKING:
     from ..models import Config
 
 
-__all__ = ("INTERACTION", "HoyoBuddy")
-
-INTERACTION: TypeAlias = discord.Interaction["HoyoBuddy"]
-USER: TypeAlias = discord.User | discord.Member | None
-STATUS_CHANNEL_ID = 1220175609347444776
+Interaction: TypeAlias = discord.Interaction["HoyoBuddy"]
+User: TypeAlias = discord.User | discord.Member | None
 
 intents = discord.Intents(
     guilds=True,
@@ -166,7 +163,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     async def get_account_autocomplete(
         self,
-        user: USER,
+        user: User,
         author_id: int,
         current: str,
         locale: discord.Locale,

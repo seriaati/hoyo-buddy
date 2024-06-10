@@ -6,7 +6,7 @@ from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.ui.components import ToggleButton
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import ProfileView  # noqa: F401
 
@@ -21,7 +21,7 @@ class DarkModeButton(ToggleButton["ProfileView"]):
             disabled=disabled,
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         assert self.view._card_settings is not None
 
         # Save the new dark mode setting

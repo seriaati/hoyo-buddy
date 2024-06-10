@@ -9,7 +9,7 @@ from hoyo_buddy.emojis import BOOK_MULTIPLE
 from hoyo_buddy.ui.components import Button
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import ProfileView  # noqa: F401
     from .card_settings_btn import CardSettingsButton
@@ -26,7 +26,7 @@ class PlayerInfoButton(Button["ProfileView"]):
             custom_id="profile_player_info",
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         self.disabled = True
 
         card_settings_btn: CardSettingsButton = self.view.get_item("profile_card_settings")

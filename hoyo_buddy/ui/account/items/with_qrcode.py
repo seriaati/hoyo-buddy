@@ -16,7 +16,7 @@ from hoyo_buddy.enums import Platform
 from ...components import Button, GoBackButton
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import INTERACTION
+    from hoyo_buddy.bot.bot import Interaction
 
     from ..view import AccountManager  # noqa: F401
 
@@ -78,7 +78,7 @@ class WithQRCode(Button["AccountManager"]):
         }
         return cookies
 
-    async def callback(self, i: INTERACTION) -> Any:
+    async def callback(self, i: Interaction) -> Any:
         await self.set_loading_state(i)
 
         client = genshin.Client(

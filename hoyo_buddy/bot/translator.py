@@ -110,6 +110,9 @@ class Translator:
         logger.info("Translator loaded")
 
     async def fetch_source_strings(self) -> None:
+        if self._repo is not None:
+            self._repo.remotes.origin.pull()
+
         l10n_path = pathlib.Path("./l10n")
         for lang in LANGUAGES:
             file_path = l10n_path / f"{lang}.yaml"

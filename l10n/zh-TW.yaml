@@ -1,0 +1,739 @@
+about_command.contribute: 貢獻
+about_command.developer: 開發者
+about_command.discord_server: Discord 伺服器
+about_command.guild_count: 伺服器數量
+about_command.invite: 邀請機器人
+about_command.latest_changes: 最近的變更
+about_command.ram_usage: 記憶體使用量
+about_command.support: 支持開發者
+about_command.translators: 翻譯員
+about_command.uptime: 上線時間
+about_command.website: 官方網站
+about_command_description: 關於機器人
+about_embed.description: 一個為 Hoyoverse 遊戲玩家量身訂做的 Discord 機器人, 功能豐富、易於使用且設計精美。
+abundance: 豐饒
+abyss.battles_won_fought: '獲勝次數/戰鬥次數: {val1}/{val2}'
+abyss.current: ''
+abyss.deepest_descent: '最深抵達: {val}'
+abyss.floor: 第 {val} 層
+abyss.most_defeats: '最多擊破數: {val}'
+abyss.most_dmg_taken: '承受最多傷害: {val}'
+abyss.most_skills: '最多元素戰技施放次數: {val}'
+abyss.most_ults: '最多元素爆發施放次數: {val}'
+abyss.overview: 深境螺旋總覽
+abyss.phase_select.placeholder: ''
+abyss.previous: ''
+abyss.strongest_strike: '最強一擊: {val}'
+abyss.total_stars: '總星數: {val}'
+abyss__command_description: 查看你的深境螺旋資料
+abyss_chamber.challenge_target.embed.field.name: 挑戰目標
+abyss_chamber.embed.title: 第 {floor_index} 層 - 第 {chamber_index} 間
+abyss_chamber.enemy_level.embed.field.name: 敵人等級
+abyss_chamber.ley_line_disorder.embed.field.name: 地脈異常
+abyss_command_description: 查看當前深境螺旋的敵人
+abyss_enemy.item_description: '血量: {HP}'
+account_autocomplete_no_default_param_description: 用於運行此指令的帳戶
+account_autocomplete_param_description: 選擇用來運行指令的帳戶，默認為在 /accounts 中選擇的
+account_autocomplete_param_name: 帳戶
+account_deleted_description: '{account} 已被刪除。'
+account_deleted_title: 帳戶已刪除
+account_game: 遊戲
+account_manager_footer: 被選擇的帳戶會作為運行所有指令的預設帳戶
+account_manager_no_accounts_description: 你目前沒有任何帳戶。
+account_manager_title: 帳戶管理
+account_not_found_error_message: 無法透過提供的關鍵字找到任何帳戶，請從自動完成中選擇選項，而不是輸入自己的關鍵字。
+account_not_found_error_title: 找不到該帳戶
+account_server: 伺服器
+account_username: 使用者名稱
+accounts_command_description: 管理您的帳戶
+action_in_cooldown_error_message: '請在 {available_time}  時再試一次。 '
+action_in_cooldown_error_title: 操作正在冷卻
+add_account_button_label: 新增帳戶
+add_hoyolab_acc.embed.description: '1. 透過電子郵件和密碼：最推薦的方式，它最簡單
+
+  2. 透過開發者工具：只能在電腦上運作，如果你對第一個方式有安全疑慮的話，這是一個比較安全的選擇
+
+  3. 透過 JavaScript：過期的方式，大多數帳戶已經無法使用了。可以在電腦和手機上的 Google Chrome 或 Microsoft Edge 運作。
+
+
+  '
+add_hoyolab_acc.embed.title: 選擇一個新增帳戶的方式
+add_miyoushe_acc.embed.description: '1. 透過 QR 碼：如果你在手機上有登入的話，這是最推薦的方式
+
+  2. 透過電子郵件/使用者名稱或密碼
+
+  3. 透過電話號碼
+
+  4. 透過開發者工具：只能在電腦上運作，如果你對其他兩種方式有安全疑慮的話，這是一個比較安全的選擇
+
+  '
+add_miyoushe_acc.enter_mobile_number: 輸入電話號碼
+add_miyoushe_acc.mobile_number: 電話號碼
+add_miyoushe_acc.with_mobile_number: 透過電話號碼
+adding_accounts_description: '歡迎使用 Hoyo Buddy! 僅需花費 1 分鐘的時間即可快速新增帳戶並開始享受各式功能。
+
+
+  關於帳戶安全問題，請詳閱 [維基頁面](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security)
+  ，關於我們如何使用及蒐集你的資料，請參閱 [隱私權政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)'
+adding_accounts_title: 選擇帳戶的所屬平台
+ai_gen_image_error_message: 請檢查你輸入的提示並再試一次。
+ai_gen_image_error_title: 在使用 AI 生成圖片時發生了錯誤
+already_claimed_description: 明天再回來吧！
+already_claimed_title: 已領取本日簽到獎勵
+anemo: 風
+artifact_set_four_piece_embed_description: '四件套: {bonus_4}'
+artifact_set_two_piece_embed_description: '二件套: {bonus_2}'
+artifact_sets: 聖遺物套裝
+auto_checkin_button_label: 自動每日簽到
+auto_locale_option_label: 遵循客戶端語言
+auto_redeem_error.content: '在自動兌換時發生了錯誤。
+
+  Hoyo Buddy 已經停用此帳戶的自動兌換功能，你可以使用</redeem:1044926380456017924>將其重新打開。
+
+  如果這個錯誤持續發生，或是你不知道如何解決它，請通過</feedback:1054261265561833512>聯絡開發者。
+
+  '
+auto_redeem_footer: 使用 /redeem 關閉自動兌換兌換碼功能
+auto_redeem_toggle.label: 自動兌換兌換碼
+books: 書籍
+captcha.embed.description: '點擊下方的按鈕來完成 CAPTCHA
+
+  '
+challenge_command_description: ''
+challenge_type_select.placeholder: ''
+chamber_button_label: 第 {value} 間
+change_character_level_label: 變更角色等級
+change_skill_level_label: 變更技能等級
+change_talent_level_label: 變更天賦等級
+change_weapon_level_label: 變更武器等級
+chara_level.modal.title: 輸入角色等級
+character_const_page_label: 命座
+character_embed_description: '{rarity}★ {element}
+
+  生日: {birthday}
+
+  命座: {constellation}
+
+  隸屬於: {affiliation}
+
+  '
+character_passives_page_label: 被動天賦
+character_profile_page_label: 資料
+character_quotes_page_label: 語音
+character_skills_page_label: 技能
+character_stories_page_label: 故事
+character_talents_page_label: 天賦
+character_voices_page_label: 語音
+characters: 角色
+characters.embed.element_filters: '{element}角色'
+characters.embed.element_max_friendship: 滿好感度的{element}角色
+characters.embed.element_not_max_friendship: 尚未達到滿好感度的{element}角色
+characters.embed.max_friendship: 滿好感度的角色
+characters.embed.not_max_friendship: 尚未達到滿好感度的角色
+characters.embed.owned_characters: 擁有的角色
+characters.embed.path_filters: '{path} 角色'
+characters.embed.title: 角色總覽
+characters.filter.element.placeholder: 篩選元素…
+characters.filter.max_friendship: 滿好感度
+characters.filter.none: 無
+characters.filter.not_max_friendship: 尚未達到滿好感度
+characters.filter.path.placeholder: 篩選命途…
+characters.filter.placeholder: 選擇篩選條件…
+characters.first_time.embed.description: '如果這是你首次使用此指令，這可能需要一點時間。
+
+  這是因為此指令需要從各個來源獲取資料。
+
+  下次你使用這個指令時，應該就不會需要這麼久了。
+
+  請耐心等待資料獲取完成。'
+characters.first_time.title: 正在獲取資料...
+characters.gi.embed.footer: 等級排序：普通攻擊/元素戰技/元素爆發
+characters.hsr.embed.footer: '等級順序：普通攻擊/戰技/終結技/天賦
+
+  使用 /profile 查看角色詳情'
+characters.sorter.constellation: 命座
+characters.sorter.eidolon: 星魂
+characters.sorter.element: 元素
+characters.sorter.friendship: 好感度
+characters.sorter.level: 等級
+characters.sorter.path: 命途
+characters.sorter.placeholder: 選擇一個排序...
+characters.sorter.rarity: 稀有度
+characters.update_talent_data: 更新天賦等級資料
+characters.update_talent_data.embed.description: 這個可能會花費一些時間，如果你有很多角色，會需要更久。請耐心等候。
+characters.update_talent_data.title: 正在更新天賦等級…
+characters_command_description: 查看你擁有的所有角色
+checkin_button_label: 簽到
+checkin_command_description: 遊戲每日簽到
+complete_captcha_button_label: 完成 CAPTCHA
+complete_geetest_button_description: 點擊下方按鈕來完成 Geetest 驗證
+complete_geetest_button_label: 完成 Geetest 驗證
+const_refine_str: '{const}命{refine}精'
+continue_button_label: 繼續
+cookies_button_label: 輸入 Cookies
+cookies_modal_placeholder: 在此貼上你的 Cookies...
+cryo: 冰
+daily_button.label: 每日任務通知
+daily_check_in: 每日簽到
+daily_checkin_embed_description: '本月已簽到 {day} 天
+
+  錯過簽到 {missed} 天
+
+  '
+daily_checkin_embed_title: 每日簽到
+daily_modal.title: 每日任務通知設定
+daily_training_button.label: 每日實訓通知
+dark_mode_button_label: 深色模式
+delete_account_button_label: 刪除所選帳戶
+dendro: 草
+destruction: 毀滅
+devtools_button_label: 透過開發者工具（電腦限定）
+devtools_instructions_description: '1. 登入 [HoYoLAB](https://www.hoyolab.com/home)
+  或 [米遊社](https://www.miyoushe.com/ys/) （中國玩家適用）
+
+  2. 透過 F12 或 Ctrl+Shift+I 打開開發者工具
+
+  3. 點擊 >> 按鈕
+
+  4. 點擊 `Application` 頁面
+
+  5. 點擊位於左方的 `Cookies`
+
+  6. 點擊你當前位於的網站（例如 https://www.hoyolab.com）
+
+  7. 在 `Filter` 欄位中輸入 `v2`
+
+  8, 點擊下方的按鈕
+
+  9. 複製每個 Cookie 的值並將它們黏貼於框中
+
+  '
+dice_cost_embed_field_name: 骰子花費
+domain-type.characters: 角色
+domain-type.weapons: 武器
+download_image_failed_error_message: '無法下載圖片 {url}，狀態碼 {status}。
+
+  稍後再試、使用其他圖片或檢查圖片網址是否有效。'
+download_image_failed_error_title: 圖片下載失敗
+edit_nickname_button_label: 編輯暱稱
+edit_nickname_modal_title: 編輯暱稱
+eidolon_superimpose_str: 魂{eidolon}疊{superimpose}
+electro: 雷
+email-geetest.embed.title: 😥 需要完成 CAPTCHA 驗證後才能寄送驗證碼
+email_password_button_label: 透過電子郵件和密碼
+email_password_instructions_description: '<:INFO:1166743144889602190> 注意: 此方式 **不適用於**
+  米遊社的使用者，只有 Hoyolab 的使用者可以使用這個方式。
+
+
+  1. 選擇下方的「完成 CAPTCHA」選項
+
+  2. 你會被重新導向至一個網站，點擊按鈕來完成 CAPTCHA
+
+  3. 完成後，選擇下方的「繼續」選項
+
+  '
+email_password_modal_email_input_label: 電子郵件或使用者名稱
+email_password_modal_password_input_label: 密碼
+enter_email_password_button_label: 輸入電子郵件/使用者名稱和密碼
+enter_email_password_instructions_description: '<:INFO:1166743144889602190> 此方式需輸入私人資訊。
+
+
+  • 作為交換，你的 `cookie_token` 將能被自動刷新，這在兌換碼相關的功能中會有用處（只有 HoYoLAB 使用者受益）。
+
+  • 你的電子郵件和密碼 **完全不會** 被保存在資料庫中，所以它們幾乎不可能被洩漏。
+
+  • 此外，這個機器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上是開源的，所以你可以自行驗證這點。
+
+  • 你保有是否信任此機器人的最終決定權
+
+
+  點擊下方的按鈕開始。
+
+  '
+enter_light_cone_level.button.label: 變更光錐等級
+error_footer: 請透過 /feedback 向開發者回報這個錯誤
+error_title: 發生了一個錯誤
+erudition: 智識
+exceptions.card_not_ready_error.message: '當新的角色釋出時，我需要花費時間來收集同人繪圖和優化卡片的顏色。
+
+  如果你想加快此過程，你可以在 [Discord 伺服器](https://dsc.gg/hoyo-buddy) 中聯繫我來為卡片資料做出貢獻。'
+exceptions.card_not_ready_error.title: '{character_name} 的卡片資料尚未準備好。'
+exped.embed.description: 一或多個探索派遣已經完成了
+exped_button.label: 探索派遣通知
+exped_modal.title: 探索派遣通知設定
+exploration.anemoculi: '風神瞳: {anemoculi}'
+exploration.chests: 解鎖的寶箱
+exploration.common_chests: 普通
+exploration.dendroculi: '草神瞳: {dendroculi}'
+exploration.electroculi: '雷神瞳: {electroculi}'
+exploration.exquisite_chests: 精緻
+exploration.geoculi: '岩神瞳: {geoculi}'
+exploration.hydroculi: '水神瞳: {hydroculi}'
+exploration.luxurious_chests: 華麗
+exploration.placeholder: 尚未釋出
+exploration.placeholder_quote: '「旅程總有一天會迎來終點，不必匆忙。」
+
+  - 鍾離'
+exploration.precious_chests: 珍貴
+exploration.progress: '探索進度: {progress}%'
+exploration.remarkable_chests: 奇饋
+exploration.reputation: '聲望: {reputation} 等'
+exploration.title: 大世界探索
+exploration.waypoints: 解鎖的錨點
+exploration_command_description: 查看原神中的探索資料
+farm_add_command.item_already_in_list: 該物品已存在於列表中
+farm_add_command.item_already_in_list_description: 此物品已經在你的刷本通知列表裡了。
+farm_add_command_description: 新增角色/武器，以在其素材可以刷取時收到通知
+farm_check.farmable_today: 今天可以刷取 {name} 的素材了
+farm_check.use_farm_notify: '使用 /farm reminder 進行通知設定
+
+  使用 /farm view 查看今日能刷取的所有材料'
+farm_notify.add_item: 新增物品
+farm_notify.add_item.embed.description: 如欲新增物品，請使用</farm add:1044926380456017920>指令
+farm_notify.description: 你會在此列表內的角色/武器的素材可以刷取時收到通知。
+farm_notify.empty: 你的刷本通知列表中沒有任何物品
+farm_notify.empty_description: ''
+farm_notify.remove_item: 移除物品
+farm_notify.remove_item.embed.description: ''
+farm_notify.title: 刷本通知列表
+farm_reminder_command_description: 在角色/武器的素材可以刷取時通知你
+farm_remove_command.item_not_found: 找不到該物品
+farm_remove_command.item_not_found_description: 此物品沒有在你的刷本通知列表裡。
+farm_remove_command_description: 從刷本通知列表中移除角色/武器
+farm_view.happy_farming: 🌾 享受刷本吧！
+farm_view.set_reminder: 設置提醒
+farm_view.set_reminder.embed.description: 如欲設定通知，請使用</farm reminder:1044926380456017920>指令
+farm_view.sundays: ''
+farm_view.weekday_select.placeholder: 選擇一個星期
+farm_view_command_description: 查看原神中可以刷取的副本
+feedback_button.feedback_sent.description: 🥰 非常感謝你的反饋！
+feedback_button.feedback_sent.title: 反饋已寄出
+feedback_button.label: 給予反饋
+feedback_command.description: '🤗 嗨！感謝你抽出時間給予我反饋。
+
+  請點擊下面的按鈕開始。
+
+
+  註:我可能會就更多細節與你聯繫，請將私訊保持開啟狀態（或加入 [Hoyo Buddy 的 Discord 伺服器](https://dsc.gg/hoyo-buddy)）。'
+feedback_command_description: 向機器人開發者提供反饋
+feedback_modal.feedback.label: 反饋
+fire: 火
+floor_select_label: 第 {value} 層
+fontaine: 楓丹
+food: 食物
+friday: 星期五
+furnishing_sets: 家具套裝
+furnishings: 家具
+furniture_embed_description: '{comfort_icon} 舒適度: {comfort}
+
+  {load_icon} 負荷: {load}
+
+  提供信任度: {trust}
+
+  製作時間: {hour} 小時'
+game_maintenance_description: 請稍後再試
+game_maintenance_title: 遊戲正在維護
+game_value_incomplete_param_error_message: 你必須指定 UID 所屬的遊戲
+geeetest_verification_complete: 驗證完成
+geeetest_verification_timeout: ''
+geeetest_verification_timeout_description: ''
+geetest.embed.title: 😅 需要完成 CAPTCHA 驗證後才能登入
+geetest.no_need: 無需進行 Geetest 驗證
+geetest.no_need.description: ''
+geetest.required: 需要進行 Geetest 驗證
+geetest.required.description: 使用</geetest:1248060288566169666>指令，選擇觸發此驗證的帳戶，並選擇 `{geetest_type}`
+  來完成驗證
+geetest_command_description: 完成 Geetest 驗證
+geetest_command_type_param_description: Geetest 驗證的類別
+geetest_command_type_param_name: 類別
+genshin_impact: 原神
+geo: 岩
+gi_daily.embed.description: 每日委託或冒險歷練尚未全部完成
+gift_code_modal.code_input.label: 兌換碼 {num}
+gift_code_modal.title: 輸入兌換碼
+guild_only_feature_error_message: 這個功能只能在伺服器中使用，請在伺服器中再試一次。
+guild_only_feature_error_title: 伺服器專屬功能
+harmony: 同諧
+honkai:_star_rail: '崩壞: 星穹鐵道'
+honkai_impact_3rd: 崩壞3
+hoyolab: HoYoLAB
+hsr_daily.embed.description: 每日實訓尚未全部完成
+hydro: 水
+ice: 冰
+imaginary: 虛數
+inazuma: 稻妻
+incomplete_param_error_title: 給予的指令參數不完整
+instructions_title: 指示
+interaction_failed_description: 此交互界面並不是由你觸發的，所以你無法使用它。
+interaction_failed_title: 交互失敗
+invalid_category_selected: 選擇了無效的遊戲
+invalid_color_error_message: ''
+invalid_color_error_title: ''
+invalid_cookies_description: 使用</accounts:1020580644478275615>來刷新你的帳戶的 cookies
+invalid_cookies_title: 無效的 Cookies
+invalid_email_password_description: 提供的電子郵件或密碼錯誤，請檢查後重試。
+invalid_email_password_title: 無效的電子郵件或密碼
+invalid_game_selected: 選擇了無效的遊戲
+invalid_image_url_error_message: 一個有效的圖片網址需要是一個直接連結、帶有圖片的副檔名且能被公開存取。
+invalid_image_url_error_title: 無效的圖片網址
+invalid_input.input_needs_to_be_bool: 輸入框 `{input}` 的值需為 `0` (否) 或 `1` (是)
+invalid_input.input_needs_to_be_int: 輸入框 `{input}` 的值需為一個整數
+invalid_input.input_out_of_range.max_value: 輸入框 `{input}` 的值需小於或等於 {max_value}
+invalid_input.input_out_of_range.min_value: 輸入框 `{input}` 的值需大於或等於 {min_value}
+invalid_input_error_title: 無效的輸入
+invalid_query_error_message: 無法透過提供的關鍵字找到任何內容，請從自動完成中選擇選項，而不是輸入自己的關鍵字。
+invalid_query_error_title: 無效的關鍵字
+invalid_verification_code_description: 請檢查驗證碼後再試一次
+invalid_verification_code_title: 無效的驗證碼
+items: 物品
+javascript_button_label: 透過 JavaScript
+javascript_instructions_description: '<:INFO:1166743144889602190> 注意: 此方式在電腦上理應適用於所有主流瀏覽器，但在手機上只適用於
+  **Chrome** 和 **Edge**。
+
+
+  1. 登入 [HoYoLAB](https://www.hoyolab.com/home) 或 [米遊社](https://www.miyoushe.com/ys/)
+  （中國玩家適用）
+
+  2. 複製下方的程式碼
+
+  3. 點擊網址列並輸入 `java`
+
+  4. 將程式碼貼上後按 ENTER。確保 `java` 和 `script` 之間 **沒有任何空格**。
+
+  5. 全選並複製出現的文字
+
+  6. 點擊下方按鈕並將文字貼在框內
+
+  '
+level_label: 等級
+level_str: '{level}等'
+light_cones: 光錐
+living_beings: 生物
+liyue: 璃月
+loading_text: 載入中…
+make_up_for_checkin_button_label: 補簽
+materials: 材料
+memory_of_chaos: ''
+miyoushe: 米遊社
+mobile_instructions_description: '1. 點擊下方的按鈕來輸入你的電話號碼
+
+  2. 你會收到一則包含驗證碼的簡訊
+
+  3. 點擊下方的按鈕輸入驗證碼
+
+  '
+monday: 星期一
+mondstadt: 蒙德
+namecards: 名片
+next_page_option_label: 下一頁
+nickname_modal_label: 暱稱
+nickname_modal_placeholder: 主帳戶、亞洲帳戶…
+nihility: 虛無
+no_abyss_data_error_message: 找不到任何螺旋深淵資料，可能你尚未開始，亦或資料還沒準備好。 請稍後再試
+no_abyss_data_error_title: 查無深境螺旋資料
+no_account_found_for_games_error_message: 你沒有任何遊戲為 `{games}` 且平台為 `{platforms}` 的帳戶。請使用</accounts:1020580644478275615>來新增
+no_account_found_for_games_error_title: 找不到任何帳戶
+no_accounts_autocomplete_choice: 你尚未擁有任何賬戶。請透過 /accounts 來添加
+no_characters_found_error_message: 請在選擇其他篩選條件後重新嘗試。
+no_characters_found_error_title: 無法找到任何符合篩選條件的角色
+no_game_accounts_error_message: 此{platform}帳戶沒有任何遊戲帳戶。
+no_game_accounts_error_title: 沒有遊戲帳戶
+notes-card.gi.completed: 已完成
+notes-card.gi.daily-commissions: 每日委託
+notes-card.gi.expedition-finished: 已完成
+notes-card.gi.expedition-remaining: 剩餘 {time}
+notes-card.gi.realm-currency: 洞天寶錢
+notes-card.gi.realtime-notes: 即時便籤
+notes-card.gi.remaining: 剩餘
+notes-card.gi.resin: 樹脂
+notes-card.gi.resin-discounts: 樹脂折扣
+notes-card.hsr.daily-training: 每日實訓
+notes-card.hsr.echo-of-war-discounts: 歷戰餘響折扣
+notes-card.hsr.reserved-power: 後備開拓力
+notes-card.hsr.trailblaze-power: 開拓力
+notes.item_full_in_time: '{emoji} 在{in_time}額滿'
+notes_available: '{emoji} 在 {in_time} 可用'
+notes_command_description: 查看即時便籤
+notif.embed.footer: '點擊下方的按鈕更改通知設定。
+
+  如果它已經過期了，使用 /notes 指令。'
+notif_modal.enabled.label: 已啟用
+notif_modal.max_notif_count.label: 最大通知數
+notif_modal.notify_interval.label: 通知間隔（分鐘）
+notif_modal.notify_time.label: 在伺服器重置時間 (4:00 AM) 的前 X 小時通知
+notif_modal.notify_weekday.label: 星期幾通知
+notif_modal.threshold.label: 閥值
+notification_settings_button_label: 通知設定
+notify_on_failure_button_label: 簽到失敗通知
+notify_on_success_button_label: 簽到成功通知
+nsfw_prompt_error_message: 此提示包含不合宜的內容，請嘗試使用不同的提示後再試一次。
+nsfw_prompt_error_title: 不合宜的提示
+page_footer: '{current_page}/{total_pages}頁'
+physical: 物理
+player_not_found_description: 請檢查提供的 UID
+player_not_found_title: 玩家不存在
+preservation: 存護
+prev_page_option_label: 上一頁
+primogems: 原石
+process_notify_error.content: ''
+profile.add_image.button.label: 新增自定義圖片
+profile.add_image_modal.image_url.label: 圖片網址
+profile.add_image_modal.title: 新增自定義圖片
+profile.build.select.placeholder: 選擇一個角色配置…
+profile.card_info.embed.description: '- 卡片中使用的所有素材均歸屬於 Hoyoverse，我不擁有它們。
+
+  - 卡片中使用的所有同人作品均出自於其各自的繪師之手。
+
+  - Hoyo Buddy 的樣式為原創，未經我的許可，你不得修改它們或聲稱它們是你製作的。
+
+  - 遊戲資料由 {provider} 提供
+
+  '
+profile.card_info.embed.title: 關於角色面板卡片
+profile.card_settings.button.label: 卡片設定
+profile.card_template_select.diff_author.description: 由 {author1} 設計並由 {author2} 製作
+profile.card_template_select.encard.label: ENCard 樣式 {num}
+profile.card_template_select.enka_classic.label: 經典 Enka 樣式
+profile.card_template_select.enkacard.label: EnkaCard 樣式 {num}
+profile.card_template_select.hb.label: Hoyo Buddy 樣式 {num}
+profile.card_template_select.placeholder: 選擇一個樣式
+profile.card_template_select.same_author.description: 由 {author} 設計和製作
+profile.card_template_select.src.label: StarRailCard 樣式 {num}
+profile.character_select.cached_data.description: 快取數據
+profile.character_select.description: '{level} 級 | {eidolons}魂{superposition}疊 | {data_type}
+  | 來自遊戲內展示櫃'
+profile.character_select.enka_network.description: Enka Network 角色配置
+profile.character_select.hoyolab.description: '{level} 級 | {eidolons}魂{superposition}疊
+  | {data_type} | 來自 HoYoLAB'
+profile.character_select.live_data.description: 即時數據
+profile.character_select.placeholder: 選擇一個角色
+profile.dark_mode.button.label: 深色模式
+profile.generate_ai_art.button.label: 生成 AI 繪圖
+profile.generate_ai_art_modal.negative_prompt.label: 負面提示
+profile.generate_ai_art_modal.prompt.label: 提示
+profile.generate_ai_art_modal.title: 生成 AI 繪圖
+profile.genshin.character_select.description: '{level}等 | {const}命{refine}精 | {data_type}'
+profile.image_select.custom_image.label: 自訂圖片 ({num})
+profile.image_select.default_collection.label: Hoyo Buddy 收藏 ({num})
+profile.image_select.none.label: 官方繪圖
+profile.image_select.placeholder: 選擇一張圖片
+profile.info.embed.custom_images.name: 自定義圖片
+profile.info.embed.custom_images.value: '- Hoyo Buddy 附帶了一些我喜歡的預設繪圖，但你也可以添加自己的圖片。
+
+  - 只支援圖片網址，且必須是公開可訪問的；不支援GIF圖片。
+
+  - 對於Hoyo Buddy的樣式，建議使用垂直圖片。
+
+  - 對於伺服器擁有者，我不對您或您的成員添加的任何不適宜的圖片負責。
+
+  - 紅色按鈕將刪除當前自定義圖片並恢復為默認圖片。'
+profile.info.embed.dark_mode.name: 深色模式
+profile.info.embed.dark_mode.value: '- 此設定與</settings:1020580644478275614>中的設定分別儲存，預設為亮色模式。
+
+  - 亮色模式的卡片通常看起來更好，因為顏色並未針對深色模式進行優化。
+
+  - 歡迎提供關於深色模式卡片顏色的建議！'
+profile.info.embed.primary_color.name: 主色
+profile.info.embed.primary_color.value: '- 僅支援十六進位色碼。'
+profile.info.embed.templates.name: 樣式
+profile.info.embed.templates.value: '- Hoyo Buddy 有我自己製作的卡片樣式，但我也加入了其他開發者製作的樣式。
+
+  - 第3方樣式的程式碼並非由我維護，所以我無法保證其品質；對於任何與它們相關的問題，我也不負責任。
+
+  - 第3方樣式可能會有功能上的限制。
+
+  - 快取資料的角色只能使用 Hoyo Buddy 的樣式。'
+profile.info.embed.title: 關於卡片設定
+profile.player_info.button.label: 玩家資訊
+profile.player_info.embed.description: '開拓等級: {level}
+
+  均衡等級: {world_level}
+
+  好友數量: {friend_count}
+
+  光錐: {light_cones}
+
+  角色: {characters}
+
+  成就: {achievements}
+
+  '
+profile.player_info.gi.embed.description: '冒險等階: {adventure_rank}
+
+  深境螺旋: {spiral_abyss}
+
+  成就: {achievements}
+
+  '
+profile.player_info.hoyolab.embed.description: '開拓等級：{level}
+
+  角色：{characters}
+
+  寶箱：{chest}
+
+  混沌回憶：{moc}
+
+  成就：{achievements}
+
+  '
+profile.primary_color.button.label: 變更顏色
+profile.primary_color_modal.color.label: 顏色（十六進制代碼）
+profile.primary_color_modal.title: 變更卡片顏色
+profile.remove_from_cache.button.label: 從快取中移除
+profile.remove_image.button.label: 移除自定義圖片
+profile_command_description: 查看遊戲內的個人資料並生成角色面板卡片
+profile_command_game_value_description: UID 所屬的遊戲
+profile_command_uid_param_description: 玩家的UID，如果提供了帳戶參數，则覆蓋該參數。
+pt_button.label: 質變儀通知
+pt_modal.title: 質變儀通知設定
+public_account_toggle.label: 設置帳戶為公開
+pure_fiction: ''
+pyro: 火
+qrcode_button_label: 透過 QR 碼
+qrcode_confirmed.desc: 登入成功
+qrcode_expired.desc: 請刷新二維碼後重試
+qrcode_expired_title: 二維碼已過期
+qrcode_login_instructions.desc: 使用米遊社應用程式掃描下方的 QR 碼來登入。
+qrcode_scanned.desc: QR 碼掃描成功。請在裝置上同意登入。
+quantum: 量子
+read_story.button.label: ''
+real_time_notes: 即時便籤
+realm_curr_button.label: 洞天寶錢通知
+realm_curr_modal.title: 洞天寶錢通知設定
+redeeem_code.cookie_token_expired_description: '使用</accounts:1020580644478275615>再次新增你的帳戶來刷新
+  cookie token。
+
+  如果你使用電子郵件和密碼的方式來新增帳戶，cookie token 將可以被自動刷新。'
+redeeem_code.cookie_token_expired_title: Cookie Token 已過期
+redeeem_code.cookie_token_refresh_failed_description: '自上次新增帳戶以來，你可能已變更帳戶密碼。
+
+  請使用</accounts:1020580644478275615>透過電子郵件和密碼的方式重新新增您的帳戶。'
+redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失敗
+redeem_code.already_claimed: 兌換碼已經被兌換過了
+redeem_code.cooldown: 兌換碼兌換操作正在冷卻
+redeem_code.expired: 兌換碼已過期
+redeem_code.invalid: ''
+redeem_code.success: 兌換成功
+redeem_codes_button.label: 兌換兌換碼
+redeem_command_description: 兌換兌換碼以獲取遊戲內的獎勵
+redeem_command_embed.description: '輸入至多 5 個兌換碼來兌換。
+
+  或者，你可以啟用自動兌換功能。'
+redeem_command_embed.title: 兌換結果
+redeem_cooldown_embed.description: 由於兌換操作具有冷卻機制，這可能會花費一些時間。
+redeem_cooldown_embed.title: 正在兌換
+refinement_indicator: 精鍊 {r}
+relics: 遺器
+reminder_button.label: 通知設定
+reminder_settings.not_set: 尚未設定
+reminder_settings.reminde.set.type1: '狀態: {status}
+
+  閥值: {threshold}
+
+  通知間隔: {notify_interval} 分鐘
+
+  最大通知數: {max_notif_count}'
+reminder_settings.reminde.set.type2: '狀態: {status}
+
+  通知間隔: {notify_interval} 分鐘
+
+  最大通知數: {max_notif_count}'
+reminder_settings.reminde.set.type3: '狀態: {status}
+
+  通知間隔: {notify_interval} 分鐘
+
+  最大通知數: {max_notif_count}
+
+  通知時間: 伺服器重置前的 {notify_time} 小時
+
+  '
+reminder_settings.reminde.set.type4: '狀態: {status}
+
+  通知間隔: {notify_interval} 分鐘
+
+  最大通知數: {max_notif_count}
+
+  通知時間: 伺服器重置前的 {notify_time} 小時
+
+  星期幾通知: {notify_weekday}'
+reminder_settings_title: 即時便籤通知
+reminder_toggle: 通知
+resin_discount.embed.description: 每週首領折扣尚未全部使用完畢
+resin_reminder_button.label: 樹脂通知
+resin_reminder_modal.title: 樹脂通知設定
+reward_claimed_title: 已領取每日簽到獎勵
+rtbp_reminder_button.label: 後備開拓力通知
+rtbp_reminder_modal.title: 後備開拓力通知設定
+saturday: 星期六
+search_autocomplete_no_results: 未能找到任何結果
+search_autocomplete_not_setup: 搜尋自動完成選項尚未設置完成，請稍後再試。
+search_command_category_param_description: 欲搜尋的分類
+search_command_category_param_name: 分類
+search_command_description: 搜尋任何與遊戲相關的內容
+search_command_game_param_description: 欲搜尋的遊戲
+search_command_game_param_name: 遊戲
+search_command_query_param_description: 欲搜尋的關鍵字
+search_command_query_param_name: 關鍵字
+select_account.embed.description: 選擇你想要添加的帳戶
+select_account.embed.title: 🎉 歡迎來到 Hoyo Buddy！
+select_accounts_to_add_placeholder: 選擇欲新增的帳戶…
+settings_command_description: 配置使用者設定
+skill_attributes_embed_field_name: 技能屬性 ({level}等)
+skill_level.modal.title: 輸入技能等級
+spiral_abyss: 深境螺旋
+stats_embed_field_name: 數據
+sumeru: 須彌
+sunday: 星期日
+superposition_indicator: 疊影 {s}
+talent_level.modal.title: 輸入天賦等級
+tbp_reminder_button.label: 開拓力通知
+tbp_reminder_modal.title: 開拓力通知設定
+tcg: 交換式卡牌
+the_hunt: 巡獵
+threshold.embed.description: 已達閥值 ({threshold})
+thunder: 雷
+thursday: 星期四
+toggle_off_text: 關
+toggle_on_text: 開
+traditional_chinese_server: 繁體中文伺服器
+try_other_method_error_message: '請嘗試使用其他方式登入。
+
+  如果你正在使用開發者工具手動輸入你的 cookies，請確保你有正確的將他們複製過去。'
+try_other_method_error_title: 無效的 Cookies
+tuesday: 星期二
+unreleased_content: 尚未釋出的內容
+user_autocomplete_param_description: 用於搜尋帳戶的使用者，預設為自己
+user_autocomplete_param_name: 使用者
+user_no_accounts_autocomplete_choice: 這位使用者沒有新增任何帳戶
+view_card_button_label: 卡片
+view_dictionary_button_label: 辭典
+volume_selector_placeholder: 選擇欲閱讀的章節
+wave_button_label: 第 {value} 波
+weapon_level.modal.title: ''
+weapons: 武器
+wednesday: 星期三
+week_boss_button.label: 每週首領折扣通知
+week_boss_modal.title: 每週首領折扣通知設定
+wind: 風
+yatta_character_detail_page_label: 詳情
+yatta_character_eidolon_page_label: 星魂
+yatta_character_embed_description: '{rarity}
+
+  元素: {element}
+
+  命途: {path}
+
+  世界: {world}
+
+  '
+yatta_character_skill_aoe_weakness_break_field_value: '群體: {aoe_weakness_break}'
+yatta_character_skill_energy_field_name: 能量
+yatta_character_skill_energy_generation_field_value: '產生: {energy_generation}'
+yatta_character_skill_energy_need_field_value: '花費: {energy_need}'
+yatta_character_skill_page_label: 技能
+yatta_character_skill_single_weakness_break_field_value: '單一: {single_weakness_break}'
+yatta_character_skill_spread_weakness_break_field_value: '範圍: {spread_weakness_break}'
+yatta_character_skill_weakness_break_field_name: 弱點擊破
+yatta_character_trace_page_label: 行跡
+yatta_item_sources_field_name: 來源
+yatta_light_cone_ability_field_name: 技能

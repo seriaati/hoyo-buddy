@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from datetime import datetime
 
-    from .enums import Game, Platform
+    from .enums import ChallengeType, Game, Platform
 
 
 class HoyoBuddyError(Exception):
@@ -160,13 +160,18 @@ class ActionInCooldownError(HoyoBuddyError):
         )
 
 
-class NoAbyssDataError(HoyoBuddyError):
-    def __init__(self) -> None:
+class NoChallengeDataError(HoyoBuddyError):
+    def __init__(self, challenge_type: ChallengeType) -> None:
         super().__init__(
-            title=LocaleStr("No Spiral Abyss Data", key="no_abyss_data_error_title"),
+            title=LocaleStr(
+                "No {challenge} Data",
+                key="no_challenge_data_err_title",
+                challenge=LocaleStr(challenge_type.value, warn_no_key=False),
+            ),
             message=LocaleStr(
-                "Unable to find any spiral abyss data, either you haven't started the spiral abyss yet or the data is not ready yet. Please try again later",
-                key="no_abyss_data_error_message",
+                "Unable to find any {challenge} data for this phase. Either you haven't started {challenge} yet or the data is not ready yet. Please try again later",  # noqa: RUF027
+                key="no_challenge_data_err_message",
+                challenge=LocaleStr(challenge_type.value, warn_no_key=False),
             ),
         )
 

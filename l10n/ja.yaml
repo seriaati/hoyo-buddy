@@ -48,16 +48,13 @@ accounts_command_description: あなたのアカウントを管理
 action_in_cooldown_error_message: ""
 action_in_cooldown_error_title: ""
 add_account_button_label: アカウント追加
-add_hoyolab_acc.embed.description:
-  ""
+add_hoyolab_acc.embed.description: ""
 add_hoyolab_acc.embed.title: ""
-add_miyoushe_acc.embed.description:
-  ""
+add_miyoushe_acc.embed.description: ""
 add_miyoushe_acc.enter_mobile_number: ""
 add_miyoushe_acc.mobile_number: ""
 add_miyoushe_acc.with_mobile_number: ""
-adding_accounts_description:
-  ""
+adding_accounts_description: ""
 adding_accounts_title: ""
 ai_gen_image_error_message: ""
 ai_gen_image_error_title: ""
@@ -69,8 +66,7 @@ artifact_set_two_piece_embed_description: "2セット：{bonus_2}"
 artifact_sets: 聖遺物セット
 auto_checkin_button_label: ""
 auto_locale_option_label: クライアントの言語に従う
-auto_redeem_error.content:
-  ""
+auto_redeem_error.content: ""
 auto_redeem_footer: ""
 auto_redeem_toggle.label: ""
 books: 本
@@ -109,8 +105,7 @@ characters.filter.none: ""
 characters.filter.not_max_friendship: ""
 characters.filter.path.placeholder: ""
 characters.filter.placeholder: ""
-characters.first_time.embed.description:
-  ""
+characters.first_time.embed.description: ""
 characters.first_time.title: ""
 characters.gi.embed.footer: ""
 characters.hsr.embed.footer: ""
@@ -147,13 +142,11 @@ delete_account_button_label: 選択したアカウントを削除
 dendro: ""
 destruction: ""
 devtools_button_label: ""
-devtools_instructions_description:
-  "1. [HoYoLAB](https://www.hoyolab.com/home)または[Miyoushe](https://www.miyoushe.com/ys/)(中国版プレーヤー用)にログインする。\n2. F12またはCtrl+Shift+IでDevToolsを開く。\n3. 上部のナビゲーションバーにある >> アイコンを押します。\n4. アプリケーション」タブをクリックする。\n5. 左サイドバーの「クッキー」をクリックする。\n6. 今いるウェブサイト（例：https://www.hoyolab.com）をクリックする。\n7. 「フィルター」ボックスに「v2」と入力する。\n8. 下のボタンをクリックする。\n9. それぞれのクッキーの`値`をコピーし、ボックスに貼り付けます。\n"
+devtools_instructions_description: "1. [HoYoLAB](https://www.hoyolab.com/home)または[Miyoushe](https://www.miyoushe.com/ys/)(中国版プレーヤー用)にログインする。\n2. F12またはCtrl+Shift+IでDevToolsを開く。\n3. 上部のナビゲーションバーにある >> アイコンを押します。\n4. アプリケーション」タブをクリックする。\n5. 左サイドバーの「クッキー」をクリックする。\n6. 今いるウェブサイト（例：https://www.hoyolab.com）をクリックする。\n7. 「フィルター」ボックスに「v2」と入力する。\n8. 下のボタンをクリックする。\n9. それぞれのクッキーの`値`をコピーし、ボックスに貼り付けます。\n"
 dice_cost_embed_field_name: サイコロコスト
 domain-type.characters: ""
 domain-type.weapons: ""
-download_image_failed_error_message:
-  ""
+download_image_failed_error_message: ""
 download_image_failed_error_title: ""
 edit_nickname_button_label: ニックネームを変更
 edit_nickname_modal_title: ニックネームを編集
@@ -161,19 +154,16 @@ eidolon_superimpose_str: ""
 electro: ""
 email-geetest.embed.title: ""
 email_password_button_label: ""
-email_password_instructions_description:
-  "<:INFO:1166743144889602190>注意：この方法はMiyousheユーザーには使えません。\n\n1. 下の`CAPTCHA認証`ボタンをクリックしてください。\n2. ウェブサイトにリダイレクトされますので、ボタンをクリックしてCAPTCHA認証を完了してください。\n3. 完了後、下の「Continue」ボタンをクリックしてください。\n"
+email_password_instructions_description: "<:INFO:1166743144889602190>注意：この方法はMiyousheユーザーには使えません。\n\n1. 下の`CAPTCHA認証`ボタンをクリックしてください。\n2. ウェブサイトにリダイレクトされますので、ボタンをクリックしてCAPTCHA認証を完了してください。\n3. 完了後、下の「Continue」ボタンをクリックしてください。\n"
 email_password_modal_email_input_label: メールアドレスかユーザーネーム
 email_password_modal_password_input_label: パスワード
 enter_email_password_button_label: ""
-enter_email_password_instructions_description:
-  ""
+enter_email_password_instructions_description: ""
 enter_light_cone_level.button.label: ""
 error_footer: ""
 error_title: ""
 erudition: ""
-exceptions.card_not_ready_error.message:
-  ""
+exceptions.card_not_ready_error.message: ""
 exceptions.card_not_ready_error.title: ""
 exped.embed.description: ""
 exped_button.label: ""
@@ -222,8 +212,7 @@ farm_view_command_description: ""
 feedback_button.feedback_sent.description: ""
 feedback_button.feedback_sent.title: ""
 feedback_button.label: ""
-feedback_command.description:
-  ""
+feedback_command.description: ""
 feedback_command_description: ""
 feedback_modal.feedback.label: ""
 fire: ""
@@ -289,8 +278,7 @@ invalid_verification_code_description: ""
 invalid_verification_code_title: ""
 items: アイテム
 javascript_button_label: JavaScriptで続行
-javascript_instructions_description:
-  "<:INFO:1166743144889602190>注意t：この方法はほとんどの主要なPCブラウザで可能ですが、スマートフォンでは*Chrome** と**Edge**のみで使用可能です。\n\n1.  [HoYoLAB](https://www.hoyolab.com/home)か[Miyoushe](https://www.miyoushe.com/ys/) (中国版プレイヤー用)にログイン\n2. 下のコードをコピー\n3. アドレス欄をクリックし、'java'と入力\n4. コードをペーストし、'java'と'script'の文字の間に**スペースがないこと**を確認してください。そして、 Enterを押して続行します\n5. 出力されたすべての文字列を選択、コピーします\n6. 下にあるボタンをクリックし、テキストボックスにペーストしてください。\n"
+javascript_instructions_description: "<:INFO:1166743144889602190>注意t：この方法はほとんどの主要なPCブラウザで可能ですが、スマートフォンでは*Chrome** と**Edge**のみで使用可能です。\n\n1.  [HoYoLAB](https://www.hoyolab.com/home)か[Miyoushe](https://www.miyoushe.com/ys/) (中国版プレイヤー用)にログイン\n2. 下のコードをコピー\n3. アドレス欄をクリックし、'java'と入力\n4. コードをペーストし、'java'と'script'の文字の間に**スペースがないこと**を確認してください。そして、 Enterを押して続行します\n5. 出力されたすべての文字列を選択、コピーします\n6. 下にあるボタンをクリックし、テキストボックスにペーストしてください。\n"
 level_label: ""
 level_str: "Lv.{level}"
 light_cones: 光円錐
@@ -301,8 +289,7 @@ make_up_for_checkin_button_label: 埋め合わせログイン
 materials: 素材
 memory_of_chaos: ""
 miyoushe: ""
-mobile_instructions_description:
-  ""
+mobile_instructions_description: ""
 moc_card_battles_fought: ""
 moc_card_cycles_used: ""
 moc_card_farthest_stage: ""
@@ -352,7 +339,6 @@ notify_on_success_button_label: チェックイン成功時の通知
 nsfw_prompt_error_message: ""
 nsfw_prompt_error_title: ""
 page_footer: ""
-pf_card_title: ""
 pf_card_total_score: ""
 physical: ""
 player_not_found_description: ""
@@ -360,14 +346,12 @@ player_not_found_title: ""
 preservation: ""
 prev_page_option_label: ""
 primogems: 原石
-process_notify_error.content:
-  ""
+process_notify_error.content: ""
 profile.add_image.button.label: ""
 profile.add_image_modal.image_url.label: ""
 profile.add_image_modal.title: ""
 profile.build.select.placeholder: ""
-profile.card_info.embed.description:
-  ""
+profile.card_info.embed.description: ""
 profile.card_info.embed.title: ""
 profile.card_settings.button.label: ""
 profile.card_template_select.diff_author.description: ""
@@ -395,16 +379,13 @@ profile.image_select.default_collection.label: ""
 profile.image_select.none.label: ""
 profile.image_select.placeholder: ""
 profile.info.embed.custom_images.name: ""
-profile.info.embed.custom_images.value:
-  ""
+profile.info.embed.custom_images.value: ""
 profile.info.embed.dark_mode.name: ""
-profile.info.embed.dark_mode.value:
-  ""
+profile.info.embed.dark_mode.value: ""
 profile.info.embed.primary_color.name: ""
 profile.info.embed.primary_color.value: ""
 profile.info.embed.templates.name: ""
-profile.info.embed.templates.value:
-  ""
+profile.info.embed.templates.value: ""
 profile.info.embed.title: ""
 profile.player_info.button.label: ""
 profile.player_info.embed.description: ""
@@ -434,11 +415,9 @@ read_story.button.label: ""
 real_time_notes: ""
 realm_curr_button.label: ""
 realm_curr_modal.title: ""
-redeeem_code.cookie_token_expired_description:
-  ""
+redeeem_code.cookie_token_expired_description: ""
 redeeem_code.cookie_token_expired_title: ""
-redeeem_code.cookie_token_refresh_failed_description:
-  ""
+redeeem_code.cookie_token_refresh_failed_description: ""
 redeeem_code.cookie_token_refresh_failed_title: ""
 redeem_code.already_claimed: ""
 redeem_code.cooldown: ""

@@ -77,7 +77,7 @@ books: 書籍
 captcha.embed.description: "點擊下方的按鈕來完成 CAPTCHA\n"
 challenge_command_description: "查看遊戲後期內容的資料，例如深境螺旋、混沌回憶等等"
 challenge_type_select.placeholder: 選擇一個遊戲模式
-challenge_view.buff_used_in: "於 {floor} 使用"
+challenge_view.buff_used_in: "於 {floors} 使用"
 challenge_view.team: "隊伍 {team}"
 chamber_button_label: "第 {value} 間"
 change_character_level_label: 變更角色等級

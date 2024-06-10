@@ -1,7 +1,0 @@
-files:
-  - source: /l10n/en_US.yaml
-    translation: /l10n/%locale_with_underscore%.yaml
-pull_request_title: "chore(l10n): Sync with Crowdin"
-pull_request_labels: ["l10n"]
-commit_message: "chore(l10n): Update %language% translations"
-append_commit_message: false

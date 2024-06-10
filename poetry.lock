@@ -2129,7 +2129,7 @@ tortoise = ["tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
 type = "git"
 url = "https://github.com/seriaati/seria-library"
 reference = "HEAD"
-resolved_reference = "3597be2fcc0c10018a7ee34c4a3483cb03f7a4ed"
+resolved_reference = "aa85ff2addde9b13c4ca0fa5ebd8755579402fec"
 
 [[package]]
 name = "six"

@@ -9,6 +9,8 @@ from PIL import Image, ImageDraw
 from hoyo_buddy.bot.translator import LocaleStr, Translator
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
 
+from .....enums import ChallengeType
+
 if TYPE_CHECKING:
     from genshin.models.starrail import (
         FictionFloor,
@@ -38,7 +40,7 @@ class PureFictionCard:
 
     def _write_title(self) -> None:
         self._drawer.write(
-            LocaleStr("Pure Fiction", key="pf_card_title"),
+            LocaleStr(ChallengeType.PURE_FICTION.value, warn_no_key=False),
             size=80,
             position=(76, 75),
             style="bold",

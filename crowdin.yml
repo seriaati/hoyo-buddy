@@ -1,0 +1,3 @@
+files:
+  - source: /l10n/en_US.yaml
+    translation: /l10n/%locale_with_underscore%.yaml

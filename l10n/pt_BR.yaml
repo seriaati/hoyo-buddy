@@ -1,87 +1,87 @@
-about_command.contribute: ''
-about_command.developer: ''
-about_command.discord_server: ''
-about_command.guild_count: ''
-about_command.invite: ''
-about_command.latest_changes: ''
-about_command.ram_usage: ''
-about_command.support: ''
-about_command.translators: ''
-about_command.uptime: ''
-about_command.website: ''
-about_command_description: ''
-about_embed.description: ''
-abundance: ''
-abyss.battles_won_fought: ''
-abyss.current: ''
-abyss.deepest_descent: ''
-abyss.floor: ''
-abyss.most_defeats: ''
-abyss.most_dmg_taken: ''
-abyss.most_skills: ''
-abyss.most_ults: ''
-abyss.overview: ''
-abyss.phase_select.placeholder: ''
-abyss.previous: ''
-abyss.strongest_strike: ''
-abyss.total_stars: ''
-abyss__command_description: ''
-abyss_chamber.challenge_target.embed.field.name: ''
-abyss_chamber.embed.title: ''
-abyss_chamber.enemy_level.embed.field.name: ''
-abyss_chamber.ley_line_disorder.embed.field.name: ''
-abyss_command_description: ''
-abyss_enemy.item_description: ''
-account_autocomplete_no_default_param_description: ''
-account_autocomplete_param_description: ''
+about_command.contribute: ""
+about_command.developer: ""
+about_command.discord_server: ""
+about_command.guild_count: ""
+about_command.invite: ""
+about_command.latest_changes: ""
+about_command.ram_usage: ""
+about_command.support: ""
+about_command.translators: ""
+about_command.uptime: ""
+about_command.website: ""
+about_command_description: ""
+about_embed.description: ""
+abundance: ""
+abyss.battles_won_fought: ""
+abyss.current: ""
+abyss.deepest_descent: ""
+abyss.floor: ""
+abyss.most_defeats: ""
+abyss.most_dmg_taken: ""
+abyss.most_skills: ""
+abyss.most_ults: ""
+abyss.overview: ""
+abyss.phase_select.placeholder: ""
+abyss.previous: ""
+abyss.strongest_strike: ""
+abyss.total_stars: ""
+abyss__command_description: ""
+abyss_chamber.challenge_target.embed.field.name: ""
+abyss_chamber.embed.title: ""
+abyss_chamber.enemy_level.embed.field.name: ""
+abyss_chamber.ley_line_disorder.embed.field.name: ""
+abyss_command_description: ""
+abyss_enemy.item_description: ""
+account_autocomplete_no_default_param_description: ""
+account_autocomplete_param_description: ""
 account_autocomplete_param_name: conta
-account_deleted_description: '{account} foi excluído '
-account_deleted_title: ''
+account_deleted_description: "{account} foi excluído "
+account_deleted_title: ""
 account_game: Jogo
-account_manager_footer: ''
+account_manager_footer: ""
 account_manager_no_accounts_description: Você ainda não possui nenhuma conta
 account_manager_title: Gestor de contas
-account_not_found_error_message: ''
-account_not_found_error_title: ''
+account_not_found_error_message: ""
+account_not_found_error_title: ""
 account_server: Servidor
 account_username: Nome do utilizador
 accounts_command_description: Gerencie suas contas
-action_in_cooldown_error_message: ''
-action_in_cooldown_error_title: ''
+action_in_cooldown_error_message: ""
+action_in_cooldown_error_title: ""
 add_account_button_label: Adicionar contas
-add_hoyolab_acc.embed.description: ''
-add_hoyolab_acc.embed.title: ''
-add_miyoushe_acc.embed.description: ''
-add_miyoushe_acc.enter_mobile_number: ''
-add_miyoushe_acc.mobile_number: ''
-add_miyoushe_acc.with_mobile_number: ''
-adding_accounts_description: ''
-adding_accounts_title: ''
-ai_gen_image_error_message: ''
-ai_gen_image_error_title: ''
+add_hoyolab_acc.embed.description: ""
+add_hoyolab_acc.embed.title: ""
+add_miyoushe_acc.embed.description: ""
+add_miyoushe_acc.enter_mobile_number: ""
+add_miyoushe_acc.mobile_number: ""
+add_miyoushe_acc.with_mobile_number: ""
+adding_accounts_description: ""
+adding_accounts_title: ""
+ai_gen_image_error_message: ""
+ai_gen_image_error_title: ""
 already_claimed_description: Volte amanhã!
-already_claimed_title: ''
-anemo: ''
-artifact_set_four_piece_embed_description: '4-Peças: {bonus_4}'
-artifact_set_two_piece_embed_description: '2-Peças: {bonus_2}'
+already_claimed_title: ""
+anemo: ""
+artifact_set_four_piece_embed_description: "4-Peças: {bonus_4}"
+artifact_set_two_piece_embed_description: "2-Peças: {bonus_2}"
 artifact_sets: Conjuntos de artefatos
-auto_checkin_button_label: ''
+auto_checkin_button_label: ""
 auto_locale_option_label: Seguir o idioma do cliente
-auto_redeem_error.content: ''
-auto_redeem_footer: ''
-auto_redeem_toggle.label: ''
+auto_redeem_error.content: ""
+auto_redeem_footer: ""
+auto_redeem_toggle.label: ""
 books: Livros
-captcha.embed.description: ''
-challenge_command_description: ''
-challenge_type_select.placeholder: ''
-chamber_button_label: ''
+captcha.embed.description: ""
+challenge_command_description: ""
+challenge_type_select.placeholder: ""
+chamber_button_label: ""
 change_character_level_label: Mudar nível da personagem
-change_skill_level_label: ''
-change_talent_level_label: ''
-change_weapon_level_label: ''
-chara_level.modal.title: ''
+change_skill_level_label: ""
+change_talent_level_label: ""
+change_weapon_level_label: ""
+chara_level.modal.title: ""
 character_const_page_label: Constelações
-character_embed_description: '{rarity}★{element}
+character_embed_description: "{rarity}★{element}
 
   Aniversário:{birthday}
 
@@ -89,80 +89,82 @@ character_embed_description: '{rarity}★{element}
 
   Afiliação:{affiliation}
 
-  '
-character_passives_page_label: ''
+  "
+character_passives_page_label: ""
 character_profile_page_label: Perfil
 character_quotes_page_label: Citações
-character_skills_page_label: ''
+character_skills_page_label: ""
 character_stories_page_label: Histórias
 character_talents_page_label: Talentos
-character_voices_page_label: ''
-characters: ''
-characters.embed.element_filters: ''
-characters.embed.element_max_friendship: ''
-characters.embed.element_not_max_friendship: ''
-characters.embed.max_friendship: ''
-characters.embed.not_max_friendship: ''
-characters.embed.owned_characters: ''
-characters.embed.path_filters: ''
-characters.embed.title: ''
-characters.filter.element.placeholder: ''
-characters.filter.max_friendship: ''
-characters.filter.none: ''
-characters.filter.not_max_friendship: ''
-characters.filter.path.placeholder: ''
-characters.filter.placeholder: ''
-characters.first_time.embed.description: ''
-characters.first_time.title: ''
-characters.gi.embed.footer: ''
-characters.hsr.embed.footer: ''
-characters.sorter.constellation: ''
-characters.sorter.eidolon: ''
-characters.sorter.element: ''
-characters.sorter.friendship: ''
-characters.sorter.level: ''
-characters.sorter.path: ''
-characters.sorter.placeholder: ''
-characters.sorter.rarity: ''
-characters.update_talent_data: ''
-characters.update_talent_data.embed.description: ''
-characters.update_talent_data.title: ''
-characters_command_description: ''
+character_voices_page_label: ""
+characters: ""
+characters.embed.element_filters: ""
+characters.embed.element_max_friendship: ""
+characters.embed.element_not_max_friendship: ""
+characters.embed.max_friendship: ""
+characters.embed.not_max_friendship: ""
+characters.embed.owned_characters: ""
+characters.embed.path_filters: ""
+characters.embed.title: ""
+characters.filter.element.placeholder: ""
+characters.filter.max_friendship: ""
+characters.filter.none: ""
+characters.filter.not_max_friendship: ""
+characters.filter.path.placeholder: ""
+characters.filter.placeholder: ""
+characters.first_time.embed.description: ""
+characters.first_time.title: ""
+characters.gi.embed.footer: ""
+characters.hsr.embed.footer: ""
+characters.sorter.constellation: ""
+characters.sorter.eidolon: ""
+characters.sorter.element: ""
+characters.sorter.friendship: ""
+characters.sorter.level: ""
+characters.sorter.path: ""
+characters.sorter.placeholder: ""
+characters.sorter.rarity: ""
+characters.update_talent_data: ""
+characters.update_talent_data.embed.description: ""
+characters.update_talent_data.title: ""
+characters_command_description: ""
 checkin_button_label: Check-in
 checkin_command_description: Check-in diária do jogo
 complete_captcha_button_label: Complete CAPTHA
-complete_geetest_button_description: ''
-complete_geetest_button_label: ''
-const_refine_str: ''
+complete_geetest_button_description: ""
+complete_geetest_button_label: ""
+const_refine_str: ""
 continue_button_label: Continuar
-cookies_button_label: ''
+cookies_button_label: ""
 cookies_modal_placeholder: Cole os teus Cookies aqui
-cryo: ''
-daily_button.label: ''
-daily_check_in: ''
-daily_checkin_embed_description: "Realizou check-in por{day} dia(s) neste mês\nPerdeu\
+cryo: ""
+daily_button.label: ""
+daily_check_in: ""
+daily_checkin_embed_description:
+  "Realizou check-in por{day} dia(s) neste mês\nPerdeu\
   \ o check-in por {missed} dia(s) \n"
-daily_checkin_embed_title: ''
-daily_modal.title: ''
-daily_training_button.label: ''
+daily_checkin_embed_title: ""
+daily_modal.title: ""
+daily_training_button.label: ""
 dark_mode_button_label: Modo escuro
 delete_account_button_label: Apagar conta selecionada
-dendro: ''
-destruction: ''
-devtools_button_label: ''
-devtools_instructions_description: ''
+dendro: ""
+destruction: ""
+devtools_button_label: ""
+devtools_instructions_description: ""
 dice_cost_embed_field_name: Custo de dados
-domain-type.characters: ''
-domain-type.weapons: ''
-download_image_failed_error_message: ''
-download_image_failed_error_title: ''
+domain-type.characters: ""
+domain-type.weapons: ""
+download_image_failed_error_message: ""
+download_image_failed_error_title: ""
 edit_nickname_button_label: Editar apelido
 edit_nickname_modal_title: Editar apelido
-eidolon_superimpose_str: ''
-electro: ''
-email-geetest.embed.title: ''
-email_password_button_label: ''
-email_password_instructions_description: '<:INFO:1166743144889602190>Nota: Este método
+eidolon_superimpose_str: ""
+electro: ""
+email-geetest.embed.title: ""
+email_password_button_label: ""
+email_password_instructions_description:
+  "<:INFO:1166743144889602190>Nota: Este método
   **NÃO FUNCIONA** para utilizadores de Miyoshe, apenas utilizadores de HoYoLAB
 
 
@@ -170,140 +172,143 @@ email_password_instructions_description: '<:INFO:1166743144889602190>Nota: Este 
 
   2. Você será redirecionado para um site, clique no botão e complete o CAPTCHA.
 
-  3. Após completar, clique no botão `Continuar` abaixo.'
-email_password_modal_email_input_label: ''
+  3. Após completar, clique no botão `Continuar` abaixo."
+email_password_modal_email_input_label: ""
 email_password_modal_password_input_label: palavra-passe
-enter_email_password_button_label: ''
-enter_email_password_instructions_description: ''
-enter_light_cone_level.button.label: ''
-error_footer: ''
-error_title: ''
-erudition: ''
-exceptions.card_not_ready_error.message: ''
-exceptions.card_not_ready_error.title: ''
-exped.embed.description: ''
-exped_button.label: ''
-exped_modal.title: ''
-exploration.anemoculi: ''
-exploration.chests: ''
-exploration.common_chests: ''
-exploration.dendroculi: ''
-exploration.electroculi: ''
-exploration.exquisite_chests: ''
-exploration.geoculi: ''
-exploration.hydroculi: ''
-exploration.luxurious_chests: ''
-exploration.placeholder: ''
-exploration.placeholder_quote: ''
-exploration.precious_chests: ''
-exploration.progress: ''
-exploration.remarkable_chests: ''
-exploration.reputation: ''
-exploration.title: ''
-exploration.waypoints: ''
-exploration_command_description: ''
-farm_add_command.item_already_in_list: ''
-farm_add_command.item_already_in_list_description: ''
-farm_add_command_description: ''
-farm_check.farmable_today: ''
-farm_check.use_farm_notify: ''
-farm_notify.add_item: ''
-farm_notify.add_item.embed.description: ''
-farm_notify.description: ''
-farm_notify.empty: ''
-farm_notify.empty_description: ''
-farm_notify.remove_item: ''
-farm_notify.remove_item.embed.description: ''
-farm_notify.title: ''
-farm_reminder_command_description: ''
-farm_remove_command.item_not_found: ''
-farm_remove_command.item_not_found_description: ''
-farm_remove_command_description: ''
-farm_view.happy_farming: ''
-farm_view.set_reminder: ''
-farm_view.set_reminder.embed.description: ''
-farm_view.sundays: ''
-farm_view.weekday_select.placeholder: ''
-farm_view_command_description: ''
-feedback_button.feedback_sent.description: ''
-feedback_button.feedback_sent.title: ''
-feedback_button.label: ''
-feedback_command.description: ''
-feedback_command_description: ''
-feedback_modal.feedback.label: ''
-fire: ''
-floor_select_label: ''
-fontaine: ''
+enter_email_password_button_label: ""
+enter_email_password_instructions_description: ""
+enter_light_cone_level.button.label: ""
+error_footer: ""
+error_title: ""
+erudition: ""
+exceptions.card_not_ready_error.message: ""
+exceptions.card_not_ready_error.title: ""
+exped.embed.description: ""
+exped_button.label: ""
+exped_modal.title: ""
+exploration.anemoculi: ""
+exploration.chests: ""
+exploration.common_chests: ""
+exploration.dendroculi: ""
+exploration.electroculi: ""
+exploration.exquisite_chests: ""
+exploration.geoculi: ""
+exploration.hydroculi: ""
+exploration.luxurious_chests: ""
+exploration.placeholder: ""
+exploration.placeholder_quote: ""
+exploration.precious_chests: ""
+exploration.progress: ""
+exploration.remarkable_chests: ""
+exploration.reputation: ""
+exploration.title: ""
+exploration.waypoints: ""
+exploration_command_description: ""
+farm_add_command.item_already_in_list: ""
+farm_add_command.item_already_in_list_description: ""
+farm_add_command_description: ""
+farm_check.farmable_today: ""
+farm_check.use_farm_notify: ""
+farm_notify.add_item: ""
+farm_notify.add_item.embed.description: ""
+farm_notify.description: ""
+farm_notify.empty: ""
+farm_notify.empty_description: ""
+farm_notify.remove_item: ""
+farm_notify.remove_item.embed.description: ""
+farm_notify.title: ""
+farm_reminder_command_description: ""
+farm_remove_command.item_not_found: ""
+farm_remove_command.item_not_found_description: ""
+farm_remove_command_description: ""
+farm_view.happy_farming: ""
+farm_view.set_reminder: ""
+farm_view.set_reminder.embed.description: ""
+farm_view.sundays: ""
+farm_view.weekday_select.placeholder: ""
+farm_view_command_description: ""
+feedback_button.feedback_sent.description: ""
+feedback_button.feedback_sent.title: ""
+feedback_button.label: ""
+feedback_command.description: ""
+feedback_command_description: ""
+feedback_modal.feedback.label: ""
+fire: ""
+floor_select_label: ""
+fontaine: ""
 food: Comida
-friday: ''
+friday: ""
 furnishing_sets: Conjunto de Mobília
 furnishings: Mobília
-furniture_embed_description: '{comfort_icon}Conforto: {comfort}
+furniture_embed_description: "{comfort_icon}Conforto: {comfort}
 
   {load_icon}Carga: {load}
 
   Confiança: {trust}
 
-  Tempo de creação: {hour}h'
-game_maintenance_description: ''
-game_maintenance_title: ''
-game_value_incomplete_param_error_message: ''
-geeetest_verification_complete: ''
-geeetest_verification_timeout: ''
-geeetest_verification_timeout_description: ''
-geetest.embed.title: ''
-geetest.no_need: ''
-geetest.no_need.description: ''
-geetest.required: ''
-geetest.required.description: ''
-geetest_command_description: ''
-geetest_command_type_param_description: ''
-geetest_command_type_param_name: ''
+  Tempo de creação: {hour}h"
+game_maintenance_description: ""
+game_maintenance_title: ""
+game_value_incomplete_param_error_message: ""
+geeetest_verification_complete: ""
+geeetest_verification_timeout: ""
+geeetest_verification_timeout_description: ""
+geetest.embed.title: ""
+geetest.no_need: ""
+geetest.no_need.description: ""
+geetest.required: ""
+geetest.required.description: ""
+geetest_command_description: ""
+geetest_command_type_param_description: ""
+geetest_command_type_param_name: ""
 genshin_impact: Genshin Impact
-geo: ''
-gi_daily.embed.description: ''
-gift_code_modal.code_input.label: ''
-gift_code_modal.title: ''
-guild_only_feature_error_message: ''
-guild_only_feature_error_title: ''
-harmony: ''
-honkai:_star_rail: 'Honkai: Star Rail'
+geo: ""
+gi_daily.embed.description: ""
+gift_code_modal.code_input.label: ""
+gift_code_modal.title: ""
+guild_only_feature_error_message: ""
+guild_only_feature_error_title: ""
+harmony: ""
+honkai:_star_rail: "Honkai: Star Rail"
 honkai_impact_3rd: Honkai Impact 3rd
-hoyolab: ''
-hsr_daily.embed.description: ''
-hydro: ''
-ice: ''
-imaginary: ''
-inazuma: ''
-incomplete_param_error_title: ''
+hoyolab: ""
+hsr_daily.embed.description: ""
+hydro: ""
+ice: ""
+imaginary: ""
+inazuma: ""
+incomplete_param_error_title: ""
 instructions_title: Instruções
-interaction_failed_description: Esta visualização não foi iniciada por você, portanto
+interaction_failed_description:
+  Esta visualização não foi iniciada por você, portanto
   você não pode utilizá-la.
-interaction_failed_title: ''
-invalid_category_selected: ''
-invalid_color_error_message: ''
-invalid_color_error_title: ''
-invalid_cookies_description: ''
+interaction_failed_title: ""
+invalid_category_selected: ""
+invalid_color_error_message: ""
+invalid_color_error_title: ""
+invalid_cookies_description: ""
 invalid_cookies_title: Cookies inválidos
-invalid_email_password_description: ''
-invalid_email_password_title: ''
+invalid_email_password_description: ""
+invalid_email_password_title: ""
 invalid_game_selected: Jogo selecionado invádido
-invalid_image_url_error_message: ''
-invalid_image_url_error_title: ''
-invalid_input.input_needs_to_be_bool: ''
-invalid_input.input_needs_to_be_int: ''
-invalid_input.input_out_of_range.max_value: ''
-invalid_input.input_out_of_range.min_value: ''
-invalid_input_error_title: ''
-invalid_query_error_message: Não foi possível encontrar nada com a consulta fornecida.
+invalid_image_url_error_message: ""
+invalid_image_url_error_title: ""
+invalid_input.input_needs_to_be_bool: ""
+invalid_input.input_needs_to_be_int: ""
+invalid_input.input_out_of_range.max_value: ""
+invalid_input.input_out_of_range.min_value: ""
+invalid_input_error_title: ""
+invalid_query_error_message:
+  Não foi possível encontrar nada com a consulta fornecida.
   Por favor, selecione opções a partir do preenchimento automático em vez de digitar
   sua própria consulta.
 invalid_query_error_title: Consulta inválido
-invalid_verification_code_description: ''
-invalid_verification_code_title: ''
+invalid_verification_code_description: ""
+invalid_verification_code_title: ""
 items: Itens
 javascript_button_label: Com JavaScript
-javascript_instructions_description: '<:INFO:1166743144889602190> Nota: Este método
+javascript_instructions_description:
+  "<:INFO:1166743144889602190> Nota: Este método
   deve funcionar em todos os principais navegadores em computadores, mas em dispositivo
   móveis, só funciona no **Chrome** e **Edge**
 
@@ -320,173 +325,174 @@ javascript_instructions_description: '<:INFO:1166743144889602190> Nota: Este mé
 
   5. Seleciona tudo e copie o texto que aparece
 
-  6. Clique no botão abaixo e cole o texto na caixa'
-level_label: ''
-level_str: ''
+  6. Clique no botão abaixo e cole o texto na caixa"
+level_label: ""
+level_str: ""
 light_cones: Cones de luz
 living_beings: Ser vivo
-liyue: ''
+liyue: ""
 loading_text: Carregando...
 make_up_for_checkin_button_label: Compensação de check-in
 materials: Materiais
-memory_of_chaos: ''
-miyoushe: ''
-mobile_instructions_description: ''
-monday: ''
-mondstadt: ''
+memory_of_chaos: ""
+miyoushe: ""
+mobile_instructions_description: ""
+monday: ""
+mondstadt: ""
 namecards: Cartões de nome
 next_page_option_label: Página seguinte
 nickname_modal_label: Apelido
 nickname_modal_placeholder: Conta principal, conta da Ásia...
-nihility: ''
-no_abyss_data_error_message: ''
-no_abyss_data_error_title: ''
-no_account_found_for_games_error_message: ''
-no_account_found_for_games_error_title: ''
-no_accounts_autocomplete_choice: 'Você ainda não possui nenhuma conta. Adiciona uma
-  com o comando /accounts '
-no_characters_found_error_message: ''
-no_characters_found_error_title: ''
-no_game_accounts_error_message: ''
-no_game_accounts_error_title: ''
-notes-card.gi.completed: ''
-notes-card.gi.daily-commissions: ''
-notes-card.gi.expedition-finished: ''
-notes-card.gi.expedition-remaining: ''
-notes-card.gi.realm-currency: ''
-notes-card.gi.realtime-notes: ''
-notes-card.gi.remaining: ''
-notes-card.gi.resin: ''
-notes-card.gi.resin-discounts: ''
-notes-card.hsr.daily-training: ''
-notes-card.hsr.echo-of-war-discounts: ''
-notes-card.hsr.reserved-power: ''
-notes-card.hsr.trailblaze-power: ''
-notes.item_full_in_time: ''
-notes_available: ''
-notes_command_description: ''
-notif.embed.footer: ''
-notif_modal.enabled.label: ''
-notif_modal.max_notif_count.label: ''
-notif_modal.notify_interval.label: ''
-notif_modal.notify_time.label: ''
-notif_modal.notify_weekday.label: ''
-notif_modal.threshold.label: ''
+nihility: ""
+no_abyss_data_error_message: ""
+no_abyss_data_error_title: ""
+no_account_found_for_games_error_message: ""
+no_account_found_for_games_error_title: ""
+no_accounts_autocomplete_choice:
+  "Você ainda não possui nenhuma conta. Adiciona uma
+  com o comando /accounts "
+no_characters_found_error_message: ""
+no_characters_found_error_title: ""
+no_game_accounts_error_message: ""
+no_game_accounts_error_title: ""
+notes-card.gi.completed: ""
+notes-card.gi.daily-commissions: ""
+notes-card.gi.expedition-finished: ""
+notes-card.gi.expedition-remaining: ""
+notes-card.gi.realm-currency: ""
+notes-card.gi.realtime-notes: ""
+notes-card.gi.remaining: ""
+notes-card.gi.resin: ""
+notes-card.gi.resin-discounts: ""
+notes-card.hsr.daily-training: ""
+notes-card.hsr.echo-of-war-discounts: ""
+notes-card.hsr.reserved-power: ""
+notes-card.hsr.trailblaze-power: ""
+notes.item_full_in_time: ""
+notes_available: ""
+notes_command_description: ""
+notif.embed.footer: ""
+notif_modal.enabled.label: ""
+notif_modal.max_notif_count.label: ""
+notif_modal.notify_interval.label: ""
+notif_modal.notify_time.label: ""
+notif_modal.notify_weekday.label: ""
+notif_modal.threshold.label: ""
 notification_settings_button_label: Configurações de notificação
 notify_on_failure_button_label: Notificar em caso de falha no check-in
 notify_on_success_button_label: Notificar em caso de sucesso no check-in
-nsfw_prompt_error_message: ''
-nsfw_prompt_error_title: ''
-page_footer: ''
-physical: ''
-player_not_found_description: ''
-player_not_found_title: ''
-preservation: ''
-prev_page_option_label: ''
+nsfw_prompt_error_message: ""
+nsfw_prompt_error_title: ""
+page_footer: ""
+physical: ""
+player_not_found_description: ""
+player_not_found_title: ""
+preservation: ""
+prev_page_option_label: ""
 primogems: primogems
-process_notify_error.content: ''
-profile.add_image.button.label: ''
-profile.add_image_modal.image_url.label: ''
-profile.add_image_modal.title: ''
-profile.build.select.placeholder: ''
-profile.card_info.embed.description: ''
-profile.card_info.embed.title: ''
-profile.card_settings.button.label: ''
-profile.card_template_select.diff_author.description: ''
-profile.card_template_select.encard.label: ''
-profile.card_template_select.enka_classic.label: ''
-profile.card_template_select.enkacard.label: ''
-profile.card_template_select.hb.label: ''
-profile.card_template_select.placeholder: ''
-profile.card_template_select.same_author.description: ''
-profile.card_template_select.src.label: ''
-profile.character_select.cached_data.description: ''
-profile.character_select.description: ''
-profile.character_select.enka_network.description: ''
-profile.character_select.hoyolab.description: ''
-profile.character_select.live_data.description: ''
-profile.character_select.placeholder: ''
-profile.dark_mode.button.label: ''
-profile.generate_ai_art.button.label: ''
-profile.generate_ai_art_modal.negative_prompt.label: ''
-profile.generate_ai_art_modal.prompt.label: ''
-profile.generate_ai_art_modal.title: ''
-profile.genshin.character_select.description: ''
-profile.image_select.custom_image.label: ''
-profile.image_select.default_collection.label: ''
-profile.image_select.none.label: ''
-profile.image_select.placeholder: ''
-profile.info.embed.custom_images.name: ''
-profile.info.embed.custom_images.value: ''
-profile.info.embed.dark_mode.name: ''
-profile.info.embed.dark_mode.value: ''
-profile.info.embed.primary_color.name: ''
-profile.info.embed.primary_color.value: ''
-profile.info.embed.templates.name: ''
-profile.info.embed.templates.value: ''
-profile.info.embed.title: ''
-profile.player_info.button.label: ''
-profile.player_info.embed.description: ''
-profile.player_info.gi.embed.description: ''
-profile.player_info.hoyolab.embed.description: ''
-profile.primary_color.button.label: ''
-profile.primary_color_modal.color.label: ''
-profile.primary_color_modal.title: ''
-profile.remove_from_cache.button.label: ''
-profile.remove_image.button.label: ''
-profile_command_description: ''
-profile_command_game_value_description: ''
-profile_command_uid_param_description: ''
-pt_button.label: ''
-pt_modal.title: ''
-public_account_toggle.label: ''
-pure_fiction: ''
-pyro: ''
-qrcode_button_label: ''
-qrcode_confirmed.desc: ''
-qrcode_expired.desc: ''
-qrcode_expired_title: ''
-qrcode_login_instructions.desc: ''
-qrcode_scanned.desc: ''
-quantum: ''
-read_story.button.label: ''
-real_time_notes: ''
-realm_curr_button.label: ''
-realm_curr_modal.title: ''
-redeeem_code.cookie_token_expired_description: ''
-redeeem_code.cookie_token_expired_title: ''
-redeeem_code.cookie_token_refresh_failed_description: ''
-redeeem_code.cookie_token_refresh_failed_title: ''
-redeem_code.already_claimed: ''
-redeem_code.cooldown: ''
-redeem_code.expired: ''
-redeem_code.invalid: ''
-redeem_code.success: ''
-redeem_codes_button.label: ''
-redeem_command_description: ''
-redeem_command_embed.description: ''
-redeem_command_embed.title: ''
-redeem_cooldown_embed.description: ''
-redeem_cooldown_embed.title: ''
-refinement_indicator: ''
+process_notify_error.content: ""
+profile.add_image.button.label: ""
+profile.add_image_modal.image_url.label: ""
+profile.add_image_modal.title: ""
+profile.build.select.placeholder: ""
+profile.card_info.embed.description: ""
+profile.card_info.embed.title: ""
+profile.card_settings.button.label: ""
+profile.card_template_select.diff_author.description: ""
+profile.card_template_select.encard.label: ""
+profile.card_template_select.enka_classic.label: ""
+profile.card_template_select.enkacard.label: ""
+profile.card_template_select.hb.label: ""
+profile.card_template_select.placeholder: ""
+profile.card_template_select.same_author.description: ""
+profile.card_template_select.src.label: ""
+profile.character_select.cached_data.description: ""
+profile.character_select.description: ""
+profile.character_select.enka_network.description: ""
+profile.character_select.hoyolab.description: ""
+profile.character_select.live_data.description: ""
+profile.character_select.placeholder: ""
+profile.dark_mode.button.label: ""
+profile.generate_ai_art.button.label: ""
+profile.generate_ai_art_modal.negative_prompt.label: ""
+profile.generate_ai_art_modal.prompt.label: ""
+profile.generate_ai_art_modal.title: ""
+profile.genshin.character_select.description: ""
+profile.image_select.custom_image.label: ""
+profile.image_select.default_collection.label: ""
+profile.image_select.none.label: ""
+profile.image_select.placeholder: ""
+profile.info.embed.custom_images.name: ""
+profile.info.embed.custom_images.value: ""
+profile.info.embed.dark_mode.name: ""
+profile.info.embed.dark_mode.value: ""
+profile.info.embed.primary_color.name: ""
+profile.info.embed.primary_color.value: ""
+profile.info.embed.templates.name: ""
+profile.info.embed.templates.value: ""
+profile.info.embed.title: ""
+profile.player_info.button.label: ""
+profile.player_info.embed.description: ""
+profile.player_info.gi.embed.description: ""
+profile.player_info.hoyolab.embed.description: ""
+profile.primary_color.button.label: ""
+profile.primary_color_modal.color.label: ""
+profile.primary_color_modal.title: ""
+profile.remove_from_cache.button.label: ""
+profile.remove_image.button.label: ""
+profile_command_description: ""
+profile_command_game_value_description: ""
+profile_command_uid_param_description: ""
+pt_button.label: ""
+pt_modal.title: ""
+public_account_toggle.label: ""
+pure_fiction: ""
+pyro: ""
+qrcode_button_label: ""
+qrcode_confirmed.desc: ""
+qrcode_expired.desc: ""
+qrcode_expired_title: ""
+qrcode_login_instructions.desc: ""
+qrcode_scanned.desc: ""
+quantum: ""
+read_story.button.label: ""
+real_time_notes: ""
+realm_curr_button.label: ""
+realm_curr_modal.title: ""
+redeeem_code.cookie_token_expired_description: ""
+redeeem_code.cookie_token_expired_title: ""
+redeeem_code.cookie_token_refresh_failed_description: ""
+redeeem_code.cookie_token_refresh_failed_title: ""
+redeem_code.already_claimed: ""
+redeem_code.cooldown: ""
+redeem_code.expired: ""
+redeem_code.invalid: ""
+redeem_code.success: ""
+redeem_codes_button.label: ""
+redeem_command_description: ""
+redeem_command_embed.description: ""
+redeem_command_embed.title: ""
+redeem_cooldown_embed.description: ""
+redeem_cooldown_embed.title: ""
+refinement_indicator: ""
 relics: Relíquias
-reminder_button.label: ''
-reminder_settings.not_set: ''
-reminder_settings.reminde.set.type1: ''
-reminder_settings.reminde.set.type2: ''
-reminder_settings.reminde.set.type3: ''
-reminder_settings.reminde.set.type4: ''
-reminder_settings_title: ''
-reminder_toggle: ''
-resin_discount.embed.description: ''
-resin_reminder_button.label: ''
-resin_reminder_modal.title: ''
-reward_claimed_title: ''
-rtbp_reminder_button.label: ''
-rtbp_reminder_modal.title: ''
-saturday: ''
-search_autocomplete_no_results: ''
-search_autocomplete_not_setup: ''
+reminder_button.label: ""
+reminder_settings.not_set: ""
+reminder_settings.reminde.set.type1: ""
+reminder_settings.reminde.set.type2: ""
+reminder_settings.reminde.set.type3: ""
+reminder_settings.reminde.set.type4: ""
+reminder_settings_title: ""
+reminder_toggle: ""
+resin_discount.embed.description: ""
+resin_reminder_button.label: ""
+resin_reminder_modal.title: ""
+reward_claimed_title: ""
+rtbp_reminder_button.label: ""
+rtbp_reminder_modal.title: ""
+saturday: ""
+search_autocomplete_no_results: ""
+search_autocomplete_not_setup: ""
 search_command_category_param_description: Categoria para pesquisar
 search_command_category_param_name: categoria
 search_command_description: Pesquisar qualquer coisa relacionado a jogos
@@ -494,49 +500,49 @@ search_command_game_param_description: Jogos para pesquisar
 search_command_game_param_name: jogo
 search_command_query_param_description: Consulta para pesquisar
 search_command_query_param_name: consulta
-select_account.embed.description: ''
-select_account.embed.title: ''
+select_account.embed.description: ""
+select_account.embed.title: ""
 select_accounts_to_add_placeholder: Selecione as contas que você deseja adicionar...
 settings_command_description: Configurar suas configurações de usuário
-skill_attributes_embed_field_name: ''
-skill_level.modal.title: ''
-spiral_abyss: ''
-stats_embed_field_name: ''
-sumeru: ''
-sunday: ''
-superposition_indicator: ''
-talent_level.modal.title: ''
-tbp_reminder_button.label: ''
-tbp_reminder_modal.title: ''
+skill_attributes_embed_field_name: ""
+skill_level.modal.title: ""
+spiral_abyss: ""
+stats_embed_field_name: ""
+sumeru: ""
+sunday: ""
+superposition_indicator: ""
+talent_level.modal.title: ""
+tbp_reminder_button.label: ""
+tbp_reminder_modal.title: ""
 tcg: TGC
-test: ''
-the_hunt: ''
-threshold.embed.description: ''
-thunder: ''
-thursday: ''
-toggle_off_text: ''
-toggle_on_text: ''
-traditional_chinese_server: ''
-try_other_method_error_message: ''
-try_other_method_error_title: ''
-tuesday: ''
-unreleased_content: ''
-user_autocomplete_param_description: ''
-user_autocomplete_param_name: ''
-user_no_accounts_autocomplete_choice: ''
+
+the_hunt: ""
+threshold.embed.description: ""
+thunder: ""
+thursday: ""
+toggle_off_text: ""
+toggle_on_text: ""
+traditional_chinese_server: ""
+try_other_method_error_message: ""
+try_other_method_error_title: ""
+tuesday: ""
+unreleased_content: ""
+user_autocomplete_param_description: ""
+user_autocomplete_param_name: ""
+user_no_accounts_autocomplete_choice: ""
 view_card_button_label: Carta
 view_dictionary_button_label: Dicionário
 volume_selector_placeholder: Selecione um volume para ler
-wave_button_label: ''
-weapon_level.modal.title: ''
+wave_button_label: ""
+weapon_level.modal.title: ""
 weapons: Armas
-wednesday: ''
-week_boss_button.label: ''
-week_boss_modal.title: ''
-wind: ''
+wednesday: ""
+week_boss_button.label: ""
+week_boss_modal.title: ""
+wind: ""
 yatta_character_detail_page_label: Detalhes
 yatta_character_eidolon_page_label: Eidolons
-yatta_character_embed_description: '{rarity}
+yatta_character_embed_description: "{rarity}
 
   Elemento: {element}
 
@@ -544,14 +550,14 @@ yatta_character_embed_description: '{rarity}
 
   Mundo: {world}
 
-  '
-yatta_character_skill_aoe_weakness_break_field_value: 'AoE: {aoe_weakness_break}'
+  "
+yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}"
 yatta_character_skill_energy_field_name: Energia
-yatta_character_skill_energy_generation_field_value: 'Geração: {energy_generation}'
-yatta_character_skill_energy_need_field_value: 'Custo: {energy_need}'
+yatta_character_skill_energy_generation_field_value: "Geração: {energy_generation}"
+yatta_character_skill_energy_need_field_value: "Custo: {energy_need}"
 yatta_character_skill_page_label: Habilidades
-yatta_character_skill_single_weakness_break_field_value: 'Único: {single_weakness_break}'
-yatta_character_skill_spread_weakness_break_field_value: 'Espalhar: {spread_weakness_break}'
+yatta_character_skill_single_weakness_break_field_value: "Único: {single_weakness_break}"
+yatta_character_skill_spread_weakness_break_field_value: "Espalhar: {spread_weakness_break}"
 yatta_character_skill_weakness_break_field_name: Fraqueza
 yatta_character_trace_page_label: Traços
 yatta_item_sources_field_name: Fontes

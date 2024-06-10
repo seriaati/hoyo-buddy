@@ -10,41 +10,45 @@ about_command.translators: Vertalers
 about_command.uptime: Uptime
 about_command.website: Officiële website
 about_command_description: Over de bot
-about_embed.description: Een uitgebreide, gebruiksvriendelijke en prachtig ontworpen
+about_embed.description:
+  Een uitgebreide, gebruiksvriendelijke en prachtig ontworpen
   Discord-bot, speciaal gemaakt voor Hoyoverse gamers.
 abundance: Abundance
-abyss.battles_won_fought: 'Gewonnen/gevochten gevechten: {val1}/{val2}'
-abyss.current: ''
-abyss.deepest_descent: 'Diepste Afdaling: {val}'
+abyss.battles_won_fought: "Gewonnen/gevochten gevechten: {val1}/{val2}"
+abyss.current: ""
+abyss.deepest_descent: "Diepste Afdaling: {val}"
 abyss.floor: Vloer {val}
-abyss.most_defeats: 'Meeste Nederlagen: {val}'
-abyss.most_dmg_taken: 'Meeste Schade Geleden: {val}'
-abyss.most_skills: 'Meeste Vaardigheden: {val}'
-abyss.most_ults: 'Meeste Uitbarstingen: {val}'
+abyss.most_defeats: "Meeste Nederlagen: {val}"
+abyss.most_dmg_taken: "Meeste Schade Geleden: {val}"
+abyss.most_skills: "Meeste Vaardigheden: {val}"
+abyss.most_ults: "Meeste Uitbarstingen: {val}"
 abyss.overview: Spiral Abyss Overzicht
-abyss.phase_select.placeholder: ''
-abyss.previous: ''
-abyss.strongest_strike: 'Sterkste Enkele Slag: {val}'
-abyss.total_stars: 'Aantal Sterren: {val}'
+abyss.phase_select.placeholder: ""
+abyss.previous: ""
+abyss.strongest_strike: "Sterkste Enkele Slag: {val}"
+abyss.total_stars: "Aantal Sterren: {val}"
 abyss__command_description: Bekijk je spiral abyss gegevens
 abyss_chamber.challenge_target.embed.field.name: Uitdaging Doel
 abyss_chamber.embed.title: Vloer {floor_index} - Kamer {chamber_index}
 abyss_chamber.enemy_level.embed.field.name: Vijand Niveau
 abyss_chamber.ley_line_disorder.embed.field.name: Ley Lijn Stoornis
 abyss_command_description: Bekijk de huidige vijanden van de abyss
-abyss_enemy.item_description: 'HP: {HP}'
-account_autocomplete_no_default_param_description: ''
-account_autocomplete_param_description: Account om deze commando mee uit te voeren,
+abyss_enemy.item_description: "HP: {HP}"
+account_autocomplete_no_default_param_description: ""
+account_autocomplete_param_description:
+  Account om deze commando mee uit te voeren,
   standaard de geselecteerde account in /accounts
 account_autocomplete_param_name: account
-account_deleted_description: '{account} is verwijderd.'
+account_deleted_description: "{account} is verwijderd."
 account_deleted_title: Account Verwijderd
 account_game: Spel
-account_manager_footer: De geselecteerde account wordt standaard gebruikt voor alle
+account_manager_footer:
+  De geselecteerde account wordt standaard gebruikt voor alle
   commandos
 account_manager_no_accounts_description: Je hebt nog geen accounts.
 account_manager_title: Account Manager
-account_not_found_error_message: Er kan geen account worden gevonden met de opgegeven
+account_not_found_error_message:
+  Er kan geen account worden gevonden met de opgegeven
   query. Selecteer keuzes uit de autoaanvulling in plaats van je eigen query te typen.
 account_not_found_error_title: Account niet gevonden
 account_server: Server
@@ -53,7 +57,8 @@ accounts_command_description: Beheer je accounts
 action_in_cooldown_error_message: Probeer het opnieuw op {available_time}.
 action_in_cooldown_error_title: Actie in Cooldown
 add_account_button_label: Accounts toegoeven
-add_hoyolab_acc.embed.description: '1. Met email en wachtwoord: wordt het meest aanbevolen,
+add_hoyolab_acc.embed.description:
+  "1. Met email en wachtwoord: wordt het meest aanbevolen,
   het is het gemakkelijkst.
 
   2. Met DevTools: Werkt alleen op desktop, een veiligere optie als je je zorgen maakt
@@ -63,9 +68,10 @@ add_hoyolab_acc.embed.description: '1. Met email en wachtwoord: wordt het meest 
   op Google Chrome of Microsoft Edge op zowel desktop als mobiel
 
 
-  '
+  "
 add_hoyolab_acc.embed.title: Selecteer een Methode om je Accounts toe te Voegen
-add_miyoushe_acc.embed.description: '1. Met QR-code: Aanbevolen voor de meeste gebruikers
+add_miyoushe_acc.embed.description:
+  "1. Met QR-code: Aanbevolen voor de meeste gebruikers
   als je bent ingelogd op je mobiele apparaat
 
   2. Met email/gebruikersnaam en wachtwoord
@@ -75,45 +81,48 @@ add_miyoushe_acc.embed.description: '1. Met QR-code: Aanbevolen voor de meeste g
   4. Met DevTools: Werkt alleen op desktop, een veiligere optie als je je zorgen maakt
   over de beveiliging met de andere methoden
 
-  '
+  "
 add_miyoushe_acc.enter_mobile_number: Voer Telefoonnummer in
 add_miyoushe_acc.mobile_number: Telefoonnummer
 add_miyoushe_acc.with_mobile_number: Met telefoonnummer
-adding_accounts_description: 'Welkom bij Hoyo Buddy! Geniet van verschillende functies
+adding_accounts_description:
+  "Welkom bij Hoyo Buddy! Geniet van verschillende functies
   door minder dan 1 minuut te besteden aan het toevoegen van je accounts.
 
 
   Wat betreft accountbeveiliging, lees de [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security),
-  for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)'
+  for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Selecteer het Platform van je Account
 ai_gen_image_error_message: Controleer je prompt en probeer het opnieuw.
-ai_gen_image_error_title: Er is een Fout Opgetreden Tijdens het Genereren van Kunst
+ai_gen_image_error_title:
+  Er is een Fout Opgetreden Tijdens het Genereren van Kunst
   met AI
 already_claimed_description: Kom morgen weer terug!
 already_claimed_title: Beloning Voor Dagelijkse Inchecken al Geclaimd
 anemo: Anemo
-artifact_set_four_piece_embed_description: '4-Delen: {bonus_4}'
-artifact_set_two_piece_embed_description: '2-Delen: {bonus_2}'
+artifact_set_four_piece_embed_description: "4-Delen: {bonus_4}"
+artifact_set_two_piece_embed_description: "2-Delen: {bonus_2}"
 artifact_sets: Artefact Sets
 auto_checkin_button_label: Automatisch dagelijks inchecken
 auto_locale_option_label: Volg client taal
-auto_redeem_error.content: ''
+auto_redeem_error.content: ""
 auto_redeem_footer: Schakel automatisch code inwisselen uit met /redeem
 auto_redeem_toggle.label: Automatisch code inwisselen
 books: Boeken
-captcha.embed.description: 'Klik op de onderstaande knop om de CAPTCHA in te vullen.
+captcha.embed.description:
+  "Klik op de onderstaande knop om de CAPTCHA in te vullen.
 
-  '
-challenge_command_description: ''
-challenge_type_select.placeholder: ''
+  "
+challenge_command_description: ""
+challenge_type_select.placeholder: ""
 chamber_button_label: Kamer {value}
 change_character_level_label: Karakter niveau wijzigen
 change_skill_level_label: Vaardigheids niveau wijzigen
 change_talent_level_label: Talent niveau wijzigen
 change_weapon_level_label: Wapen Niveau Wijzigen
-chara_level.modal.title: ''
+chara_level.modal.title: ""
 character_const_page_label: Constellaties
-character_embed_description: '{rarity}★  {element}
+character_embed_description: "{rarity}★  {element}
 
   Birthday: {birthday}
 
@@ -121,22 +130,22 @@ character_embed_description: '{rarity}★  {element}
 
   Affiliation: {affiliation}
 
-  '
-character_passives_page_label: ''
+  "
+character_passives_page_label: ""
 character_profile_page_label: Profiel
 character_quotes_page_label: Citaten
-character_skills_page_label: ''
+character_skills_page_label: ""
 character_stories_page_label: Verhalen
 character_talents_page_label: Talenten
 character_voices_page_label: Stemmen
 characters: Karakters
-characters.embed.element_filters: '{element} Karakters'
-characters.embed.element_max_friendship: 'Max Vriendschap {element} Karakters '
+characters.embed.element_filters: "{element} Karakters"
+characters.embed.element_max_friendship: "Max Vriendschap {element} Karakters "
 characters.embed.element_not_max_friendship: Niet Max Vriendschap {element} Karakters
 characters.embed.max_friendship: Max Vriendschap Karakters
 characters.embed.not_max_friendship: Niet Max Vriendschap Karakters
 characters.embed.owned_characters: Eigen Karakters
-characters.embed.path_filters: '{path} Karakters'
+characters.embed.path_filters: "{path} Karakters"
 characters.embed.title: Karakter Overzicht
 characters.filter.element.placeholder: Selecteer element filters...
 characters.filter.max_friendship: Max vriendschap
@@ -144,19 +153,21 @@ characters.filter.none: Geen
 characters.filter.not_max_friendship: Niet max vriendschap
 characters.filter.path.placeholder: Path filters selecteren...
 characters.filter.placeholder: Selecteer een filter...
-characters.first_time.embed.description: 'Als dit de eerste keer is dat je dit commando
+characters.first_time.embed.description:
+  "Als dit de eerste keer is dat je dit commando
   gebruikt, kan het even duren.
 
   Dit komt omdat de commando gegevens van veel bronnen moet ophalen.
 
   De volgende keer dat je dit commando gebruikt, zou het sneller moeten gaan.
 
-  Wees geduldig en wacht tot de bronnen zijn opgehaald.'
+  Wees geduldig en wacht tot de bronnen zijn opgehaald."
 characters.first_time.title: Bronnen ophalen...
-characters.gi.embed.footer: 'Niveau volgorde: Basis ATK/Vaardigheid/Uitbarsting'
-characters.hsr.embed.footer: 'Niveau volgorde: Basis ATK/Vaardigheid/Uitbarsting/Talent
+characters.gi.embed.footer: "Niveau volgorde: Basis ATK/Vaardigheid/Uitbarsting"
+characters.hsr.embed.footer:
+  "Niveau volgorde: Basis ATK/Vaardigheid/Uitbarsting/Talent
 
-  Gebruik /profile om de details van een karakter te bekijken'
+  Gebruik /profile om de details van een karakter te bekijken"
 characters.sorter.constellation: Constellatie
 characters.sorter.eidolon: Eidolon
 characters.sorter.element: Element
@@ -166,27 +177,28 @@ characters.sorter.path: Path
 characters.sorter.placeholder: Selecteer een sorter...
 characters.sorter.rarity: Zeldzaamheid
 characters.update_talent_data: Talent niveau gegevens bijwerken
-characters.update_talent_data.embed.description: Dit kan even duren. Als je veel karakters
+characters.update_talent_data.embed.description:
+  Dit kan even duren. Als je veel karakters
   hebt, kan het zelfs nog langer duren. Wees geduldig.
 characters.update_talent_data.title: Gegevens over talent niveau bijwerken...
 characters_command_description: Al je karakters bekijken
 checkin_button_label: Inchecken
 checkin_command_description: Spel dagelijks inchecken
 complete_captcha_button_label: CAPTCHA invoeren
-complete_geetest_button_description: ''
-complete_geetest_button_label: ''
+complete_geetest_button_description: ""
+complete_geetest_button_label: ""
 const_refine_str: C{const}R{refine}
 continue_button_label: Ga verder
 cookies_button_label: Voer Cookies in
 cookies_modal_placeholder: Plak je cookies hier...
 cryo: Cryo
 daily_button.label: Dagelijkse herinnering
-daily_check_in: ''
-daily_checkin_embed_description: 'Ingecheckt op {day} dag(en) deze maand
+daily_check_in: ""
+daily_checkin_embed_description: "Ingecheckt op {day} dag(en) deze maand
 
   Inchecken gemist voor {missed} dag(en)
 
-  '
+  "
 daily_checkin_embed_title: Dagelijks Inchecken
 daily_modal.title: Instellingen Dagelijkse Herinnering
 daily_training_button.label: Dagelijkse Trainings Herinnering
@@ -195,7 +207,8 @@ delete_account_button_label: Verwijder geselecteerde account
 dendro: Dendro
 destruction: Destruction
 devtools_button_label: Met DevTools (alleen desktop)
-devtools_instructions_description: '1. Inloggen op [HoYoLAB](https://www.hoyolab.com/home)
+devtools_instructions_description:
+  "1. Inloggen op [HoYoLAB](https://www.hoyolab.com/home)
   of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN spelers)
 
   2. Open de DevTools door op F12 of Ctrl+Shift+I te drukken
@@ -214,25 +227,28 @@ devtools_instructions_description: '1. Inloggen op [HoYoLAB](https://www.hoyolab
 
   9. Kopieer de `waarde` van elk cookie en plak ze in de vakjes
 
-  '
+  "
 dice_cost_embed_field_name: Kosten Dobbelstenen
 domain-type.characters: Karakters
 domain-type.weapons: Wapens
-download_image_failed_error_message: 'Kan afbeelding {url} met status code {status}niet
+download_image_failed_error_message:
+  "Kan afbeelding {url} met status code {status}niet
   downloaden.
 
   Probeer het later nog eens, probeer het met een andere afbeelding of controleer
-  of de URL van de afbeelding geldig is.'
+  of de URL van de afbeelding geldig is."
 download_image_failed_error_title: Afbeelding Downloaden Mislukte
 edit_nickname_button_label: Bijnaam wijzigen
 edit_nickname_modal_title: Bijnaam bewerken
 eidolon_superimpose_str: E{eidolon}S{superimpose}
 electro: Electro
-email-geetest.embed.title: 😥 CAPTCHA moet worden opgelost voordat de verificatiecode
+email-geetest.embed.title:
+  😥 CAPTCHA moet worden opgelost voordat de verificatiecode
   wordt verzonden
 email_password_button_label: Met email en wachtwoord
-email_password_instructions_description: '<:INFO:1166743144889602190> Note: This method
-  **DOESN''T WORK** for Miyoushe users, only HoYoLAB users can use this method.
+email_password_instructions_description:
+  "<:INFO:1166743144889602190> Note: This method
+  **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.
 
 
   1. Click the `Complete CAPTCHA` button below
@@ -241,11 +257,12 @@ email_password_instructions_description: '<:INFO:1166743144889602190> Note: This
 
   3. After completing, click on the `Continue` button below
 
-  '
+  "
 email_password_modal_email_input_label: email of gebruikersnaam
 email_password_modal_password_input_label: wachtwoord
 enter_email_password_button_label: Voer email/gebruikersnaam en wachtwoord in
-enter_email_password_instructions_description: '<:INFO:1166743144889602190> Deze methode
+enter_email_password_instructions_description:
+  "<:INFO:1166743144889602190> Deze methode
   vereist dat je je privégegevens invoert.
 
 
@@ -263,85 +280,96 @@ enter_email_password_instructions_description: '<:INFO:1166743144889602190> Deze
 
   Klik op de knop hieronder om te beginnen.
 
-  '
+  "
 enter_light_cone_level.button.label: Light cone niveau wijzigen
 error_footer: Meld deze fout aan de ontwikkelaar via /feedback
 error_title: Er is een Fout Opgetreden
 erudition: Erudition
-exceptions.card_not_ready_error.message: 'Als er nieuwe personages worden uitgebracht,
+exceptions.card_not_ready_error.message:
+  "Als er nieuwe personages worden uitgebracht,
   moet ik tijd besteden aan het verzamelen van fanarts en het optimaliseren van kleuren
   voor hun kaarten.
 
   Als je dit proces wilt versnellen, kun je bijdragen aan de kaartgegevens door me
-  te bereiken op de [Discord Server](https://dsc.gg/hoyo-buddy).'
-exceptions.card_not_ready_error.title: Kaart gegevens voor {character_name} zijn nog
+  te bereiken op de [Discord Server](https://dsc.gg/hoyo-buddy)."
+exceptions.card_not_ready_error.title:
+  Kaart gegevens voor {character_name} zijn nog
   niet klaar.
 exped.embed.description: Een (of meer) expedities zijn klaar
 exped_button.label: Expeditie herinnering
 exped_modal.title: Instellingen Herinnering Expeditie
-exploration.anemoculi: 'Anemoculi: {anemoculi}'
+exploration.anemoculi: "Anemoculi: {anemoculi}"
 exploration.chests: Kisten Ontgrendeld
 exploration.common_chests: Algemeen
-exploration.dendroculi: 'Dendroculi: {dendroculi}'
-exploration.electroculi: 'Electroculi: {electroculi}'
+exploration.dendroculi: "Dendroculi: {dendroculi}"
+exploration.electroculi: "Electroculi: {electroculi}"
 exploration.exquisite_chests: Uitstekend
-exploration.geoculi: 'Geoculi: {geoculi}'
-exploration.hydroculi: 'Hydroculi: {hydroculi}'
+exploration.geoculi: "Geoculi: {geoculi}"
+exploration.hydroculi: "Hydroculi: {hydroculi}"
 exploration.luxurious_chests: Luxe
 exploration.placeholder: Wordt nog vrijgegeven
-exploration.placeholder_quote: '"Elke reis heeft zijn laatste dag. Haast je niet."
+exploration.placeholder_quote:
+  '"Elke reis heeft zijn laatste dag. Haast je niet."
 
   - Zhongli'
 exploration.precious_chests: Waardevol
-exploration.progress: 'Verkenning Vooruitgang: {progress}%'
+exploration.progress: "Verkenning Vooruitgang: {progress}%"
 exploration.remarkable_chests: Opmerkelijk
-exploration.reputation: 'Reputatie: Nv.{reputation}'
+exploration.reputation: "Reputatie: Nv.{reputation}"
 exploration.title: Wereld Verkenning
 exploration.waypoints: Waypoints Intgrendeld
 exploration_command_description: Bekijk je verkennings statistieken in Genshin Impact
 farm_add_command.item_already_in_list: Item al in lijst
-farm_add_command.item_already_in_list_description: Dit item staat al in je bewerkbare
+farm_add_command.item_already_in_list_description:
+  Dit item staat al in je bewerkbare
   items herinneringen lijst
-farm_add_command_description: Voeg karakter/wapen toe om een melding te krijgen wanneer
+farm_add_command_description:
+  Voeg karakter/wapen toe om een melding te krijgen wanneer
   zijn materialen bewerkbaar zijn
 farm_check.farmable_today: Materialen Voor {name} is Vandaag Bewerkbaar
-farm_check.use_farm_notify: 'Gebruik /farm reminder om instellingen voor herinneringen
+farm_check.use_farm_notify:
+  "Gebruik /farm reminder om instellingen voor herinneringen
   te configureren
 
-  Gebruik /farm view om alle items te bekijken die vandaag te bewerken zijn'
+  Gebruik /farm view om alle items te bekijken die vandaag te bewerken zijn"
 farm_notify.add_item: Item toevoegen
-farm_notify.add_item.embed.description: ''
-farm_notify.description: Je wordt eraan herinnerd wanneer de materialen van karakters/wapens
+farm_notify.add_item.embed.description: ""
+farm_notify.description:
+  Je wordt eraan herinnerd wanneer de materialen van karakters/wapens
   in deze lijst bewerkbaar zijn.
 farm_notify.empty: Je hebt geen items in je bewerkbare items herinneringen lijst
-farm_notify.empty_description: ''
+farm_notify.empty_description: ""
 farm_notify.remove_item: Item verwijderen
-farm_notify.remove_item.embed.description: ''
+farm_notify.remove_item.embed.description: ""
 farm_notify.title: Bewerkbare Items Herinneringen Lijst
-farm_reminder_command_description: Melden wanneer materialen van karakters/wapens
+farm_reminder_command_description:
+  Melden wanneer materialen van karakters/wapens
   kunnen bewerkbaar worden
 farm_remove_command.item_not_found: Item niet gevonden
-farm_remove_command.item_not_found_description: Dit item staat niet in je bewerkbare
+farm_remove_command.item_not_found_description:
+  Dit item staat niet in je bewerkbare
   items herinneringen lijst,
-farm_remove_command_description: Verwijder karakter/wapen uit de bewerkbare items
+farm_remove_command_description:
+  Verwijder karakter/wapen uit de bewerkbare items
   herinneringen lijst
 farm_view.happy_farming: 🌾 Veel plezier aan bewerken!
 farm_view.set_reminder: Meldingen Instellen
-farm_view.set_reminder.embed.description: ''
-farm_view.sundays: ''
+farm_view.set_reminder.embed.description: ""
+farm_view.sundays: ""
 farm_view.weekday_select.placeholder: Selecteer een weekdag
 farm_view_command_description: Bekijk bewerkbare domeinen in Genshin Impact
 feedback_button.feedback_sent.description: 🥰 Hartelijk dank voor je feedback!
 feedback_button.feedback_sent.title: Feedback Gestuurd
 feedback_button.label: Geef Feedback
-feedback_command.description: '🤗 Hoi! Bedankt dat je de tijd neemt om me feedback
+feedback_command.description:
+  "🤗 Hoi! Bedankt dat je de tijd neemt om me feedback
   te geven.
 
   Klik op de knop hieronder om te beginnen.
 
 
   Opmerking: het kan zijn dat ik contact met je opneem voor meer details. Dus houd
-  je DM''s open (of word lid van de  [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy)).'
+  je DM's open (of word lid van de  [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
 feedback_command_description: Geef feedback aan de botontwikkelaar
 feedback_modal.feedback.label: Feedback
 fire: Fire
@@ -351,38 +379,40 @@ food: Voedsel
 friday: Vrijdag
 furnishing_sets: Meubel Sets
 furnishings: Meubels
-furniture_embed_description: '{comfort_icon} Comfort: {comfort}
+furniture_embed_description: "{comfort_icon} Comfort: {comfort}
 
   {load_icon} Laden: {load}
 
   Vertrouwen: {trust}
 
-  Tijd van Creatie: {hour}h'
+  Tijd van Creatie: {hour}h"
 game_maintenance_description: Probeer het later nog eens
 game_maintenance_title: Spel is Onder Onderhoud
 game_value_incomplete_param_error_message: Je moet het spel van de UID specificeren
-geeetest_verification_complete: ''
-geeetest_verification_timeout: ''
-geeetest_verification_timeout_description: ''
+geeetest_verification_complete: ""
+geeetest_verification_timeout: ""
+geeetest_verification_timeout_description: ""
 geetest.embed.title: 😅 CAPTCHA oplossen voor aanmelden
-geetest.no_need: ''
-geetest.no_need.description: ''
-geetest.required: ''
-geetest.required.description: ''
-geetest_command_description: ''
-geetest_command_type_param_description: ''
-geetest_command_type_param_name: ''
+geetest.no_need: ""
+geetest.no_need.description: ""
+geetest.required: ""
+geetest.required.description: ""
+geetest_command_description: ""
+geetest_command_type_param_description: ""
+geetest_command_type_param_name: ""
 genshin_impact: Genshin Impact
 geo: Geo
-gi_daily.embed.description: Dagelijkse commissies of avontuurlijke ontmoetingen zijn
+gi_daily.embed.description:
+  Dagelijkse commissies of avontuurlijke ontmoetingen zijn
   nog niet voltooid
 gift_code_modal.code_input.label: Code {num}
 gift_code_modal.title: Voer Inwisselcodes in
-guild_only_feature_error_message: Deze functie is alleen beschikbaar in gilden, probeer
+guild_only_feature_error_message:
+  Deze functie is alleen beschikbaar in gilden, probeer
   het opnieuw in een gilde.
 guild_only_feature_error_title: Functie Alleen Voor Gilde
 harmony: Harmony
-honkai:_star_rail: 'Honkai: Star Rail'
+honkai:_star_rail: "Honkai: Star Rail"
 honkai_impact_3rd: Honkai Impact 3rd
 hoyolab: HoYoLAB
 hsr_daily.embed.description: Dagelijkse trainingen zijn nog niet afgerond
@@ -392,39 +422,48 @@ imaginary: Imaginary
 inazuma: Inazuma
 incomplete_param_error_title: De Opgegeven Commando Parameters Zijn Onvolledig
 instructions_title: Instructies
-interaction_failed_description: Deze weergave is niet door jou geïnitieerd, daarom
+interaction_failed_description:
+  Deze weergave is niet door jou geïnitieerd, daarom
   kun je hem niet gebruiken.
 interaction_failed_title: Interactie Mislukt
 invalid_category_selected: Ongeldig spel geselecteerd
-invalid_color_error_message: ''
-invalid_color_error_title: ''
-invalid_cookies_description: ''
+invalid_color_error_message: ""
+invalid_color_error_title: ""
+invalid_cookies_description: ""
 invalid_cookies_title: Ongeldige Cookies
-invalid_email_password_description: Het opgegeven emailadres of wachtwoord is onjuist.
+invalid_email_password_description:
+  Het opgegeven emailadres of wachtwoord is onjuist.
   Controleer dit en probeer het opnieuw.
 invalid_email_password_title: Ongeldige email of wachtwoord
 invalid_game_selected: Ongeldig spel geselecteerd
-invalid_image_url_error_message: Een geldige URL voor afbeeldingen moet een directe
+invalid_image_url_error_message:
+  Een geldige URL voor afbeeldingen moet een directe
   URL zijn naar een afbeeldingsbestand dat een afbeeldingsextensie bevat en publiek
   toegankelijk is.
 invalid_image_url_error_title: Ongeldige Afbeelding URL
-invalid_input.input_needs_to_be_bool: Invoer `{input}` moet '0' (voor onwaar) of `1`
+invalid_input.input_needs_to_be_bool:
+  Invoer `{input}` moet '0' (voor onwaar) of `1`
   (voor waar) zijn
 invalid_input.input_needs_to_be_int: Invoer `{input}` moet een geheel getal zijn
-invalid_input.input_out_of_range.max_value: Input `{input}` moet kleiner zijn dan
+invalid_input.input_out_of_range.max_value:
+  Input `{input}` moet kleiner zijn dan
   of gelijk aan {max_value}
-invalid_input.input_out_of_range.min_value: Invoer `{input}` moet groter zijn of gelijk
+invalid_input.input_out_of_range.min_value:
+  Invoer `{input}` moet groter zijn of gelijk
   aan {min_value}
 invalid_input_error_title: Ongeldige Invoer
-invalid_query_error_message: Je kan niets vinden met de opgegeven query. Selecteer
+invalid_query_error_message:
+  Je kan niets vinden met de opgegeven query. Selecteer
   keuzes uit de autoaanvullen in plaats van je eigen query te typen.
 invalid_query_error_title: Ongeldige query
-invalid_verification_code_description: Controleer de verificatiecode en probeer het
+invalid_verification_code_description:
+  Controleer de verificatiecode en probeer het
   opnieuw.
 invalid_verification_code_title: Ongeldige Verificatiecode
 items: Items
 javascript_button_label: Met JavaScript
-javascript_instructions_description: '<:INFO:1166743144889602190> Opmerking: Deze
+javascript_instructions_description:
+  "<:INFO:1166743144889602190> Opmerking: Deze
   methode zou moeten werken voor alle grote browsers op desktop, maar op mobiel werkt
   het alleen voor **Chrome** en **Edge**.
 
@@ -443,7 +482,7 @@ javascript_instructions_description: '<:INFO:1166743144889602190> Opmerking: Dez
 
   6. Klik op de knop hieronder en plak de tekst in het vak
 
-  '
+  "
 level_label: Niveau
 level_str: Nv.{level}
 light_cones: Licht Kegels
@@ -452,16 +491,17 @@ liyue: Liyue
 loading_text: Aan het laden...
 make_up_for_checkin_button_label: Opmaken voor inchecken
 materials: Materialen
-memory_of_chaos: ''
+memory_of_chaos: ""
 miyoushe: Miyoushe
-mobile_instructions_description: '1. Klik op de knop hieronder om je telefoonnummer
+mobile_instructions_description:
+  "1. Klik op de knop hieronder om je telefoonnummer
   in te voeren
 
   2. Je ontvangt een verificatiecode via sms
 
   3. Klik op de knop hieronder om de verificatiecode in te voeren
 
-  '
+  "
 monday: Maandag
 mondstadt: Mondstadt
 namecards: Naamkaartjes
@@ -469,21 +509,22 @@ next_page_option_label: Volgende pagina
 nickname_modal_label: Bijnaam
 nickname_modal_placeholder: Hoofd account, Azië account...
 nihility: Nihility
-no_abyss_data_error_message: Er kunnen geen spiral abyss gegevens worden gevonden.
+no_abyss_data_error_message:
+  Er kunnen geen spiral abyss gegevens worden gevonden.
   Je hebt de spiral abyss nog niet gestart of de gegevens zijn nog niet klaar. Probeer
   het later nog eens
 no_abyss_data_error_title: Geen Spiral Abyss Gegevens
-no_account_found_for_games_error_message: ''
+no_account_found_for_games_error_message: ""
 no_account_found_for_games_error_title: Geen Account Gevonden
 no_accounts_autocomplete_choice: Je hebt nog geen accounts. Voeg er een toe met /accounts
 no_characters_found_error_message: Probeer het opnieuw met een ander filter
 no_characters_found_error_title: Geen tkarakters gevonden met het geselecteerde filter
-no_game_accounts_error_message: ''
-no_game_accounts_error_title: ''
+no_game_accounts_error_message: ""
+no_game_accounts_error_title: ""
 notes-card.gi.completed: Afgerond
 notes-card.gi.daily-commissions: Dagelijkse Commissies
 notes-card.gi.expedition-finished: Klaar
-notes-card.gi.expedition-remaining: '{time}Overgebleven'
+notes-card.gi.expedition-remaining: "{time}Overgebleven"
 notes-card.gi.realm-currency: Realm Currency
 notes-card.gi.realtime-notes: Real-Time Notities
 notes-card.gi.remaining: Overig
@@ -493,26 +534,29 @@ notes-card.hsr.daily-training: Dagelijkse Training
 notes-card.hsr.echo-of-war-discounts: Echo of War Kortingen
 notes-card.hsr.reserved-power: Gereserveerd Kracht
 notes-card.hsr.trailblaze-power: Trailblaze Kracht
-notes.item_full_in_time: '{emoji} full {in_time}'
-notes_available: '{emoji} available {in_time}'
+notes.item_full_in_time: "{emoji} full {in_time}"
+notes_available: "{emoji} available {in_time}"
 notes_command_description: Bekijk real-time notities
-notif.embed.footer: 'Klik op de onderstaande knop om de notificatie instellingen te
+notif.embed.footer:
+  "Klik op de onderstaande knop om de notificatie instellingen te
   wijzigen.
 
-  Gebruik de commando /notes als deze is verlopen.'
+  Gebruik de commando /notes als deze is verlopen."
 notif_modal.enabled.label: Ingeschakeld
 notif_modal.max_notif_count.label: Max Aantal Meldingen
 notif_modal.notify_interval.label: Interval Melding (in minuten)
-notif_modal.notify_time.label: Melden X uur voordat de server wordt gereset (4:00
+notif_modal.notify_time.label:
+  Melden X uur voordat de server wordt gereset (4:00
   AM)
 notif_modal.notify_weekday.label: De weekdag om te melden
 notif_modal.threshold.label: Drempel
 notification_settings_button_label: Instellingen meldingen
 notify_on_failure_button_label: Melden bij mislukte inchecken
 notify_on_success_button_label: Melding bij succesvol inchecken
-nsfw_prompt_error_message: De prompt bevat NSFW-inhoud, probeer het opnieuw met een
+nsfw_prompt_error_message:
+  De prompt bevat NSFW-inhoud, probeer het opnieuw met een
   andere prompt.
-nsfw_prompt_error_title: ''
+nsfw_prompt_error_title: ""
 page_footer: Pagina {current_page}/{total_pages}
 physical: Fysiek
 player_not_found_description: Controleer de meegeleverde UID
@@ -520,12 +564,13 @@ player_not_found_title: Speler Bestaat Niet
 preservation: Preservation
 prev_page_option_label: Vorige pagina
 primogems: primogems
-process_notify_error.content: ''
+process_notify_error.content: ""
 profile.add_image.button.label: Afbeelding toevoegen
 profile.add_image_modal.image_url.label: Afbeelding URL
 profile.add_image_modal.title: Afbeelding Toevoegen
-profile.build.select.placeholder: ''
-profile.card_info.embed.description: '- Alle assets die gebruikt zijn in de kaarten
+profile.build.select.placeholder: ""
+profile.card_info.embed.description:
+  "- Alle assets die gebruikt zijn in de kaarten
   behoren toe aan Hoyoverse, ik bezit ze niet.
 
   - Alle fanarts die gebruikt zijn in de kaarten zijn gecrediteerd aan hun respectievelijke
@@ -536,10 +581,11 @@ profile.card_info.embed.description: '- Alle assets die gebruikt zijn in de kaar
 
   - Spelgegevens worden geleverd door {provider}.
 
-  '
+  "
 profile.card_info.embed.title: Over Karakter Build Kaarten
 profile.card_settings.button.label: Kaart instellingen
-profile.card_template_select.diff_author.description: Designed by {author1} and programmed
+profile.card_template_select.diff_author.description:
+  Designed by {author1} and programmed
   by {author2}
 profile.card_template_select.encard.label: ENCard sjabloon {num}
 profile.card_template_select.enka_classic.label: Klassiek Enka sjabloon
@@ -549,10 +595,12 @@ profile.card_template_select.placeholder: Selecteer een sjabloon
 profile.card_template_select.same_author.description: Designed and programmed by {author}
 profile.card_template_select.src.label: StarRailCard sjabloon {num}
 profile.character_select.cached_data.description: Gecachte gegevens
-profile.character_select.description: Nv.{level} | E{eidolons}S{superposition}I{data_type}|
+profile.character_select.description:
+  Nv.{level} | E{eidolons}S{superposition}I{data_type}|
   Uit de showcase in het spel
-profile.character_select.enka_network.description: ''
-profile.character_select.hoyolab.description: Nv.{level} | E{eidolons} S{superposition}
+profile.character_select.enka_network.description: ""
+profile.character_select.hoyolab.description:
+  Nv.{level} | E{eidolons} S{superposition}
   | {data_type} | Van HoYoLAB
 profile.character_select.live_data.description: Real-time gegevens
 profile.character_select.placeholder: Selecteer een karakter
@@ -567,12 +615,13 @@ profile.image_select.default_collection.label: Hoyo Buddy Collectie ({num})
 profile.image_select.none.label: Officiële kunst
 profile.image_select.placeholder: Selecteer een afbeelding
 profile.info.embed.custom_images.name: Afbeeldingen
-profile.info.embed.custom_images.value: '- Hoyo Buddy wordt geleverd met een aantal
+profile.info.embed.custom_images.value:
+  "- Hoyo Buddy wordt geleverd met een aantal
   vooraf ingestelde afbeeldingen die ik leuk vond, maar je kunt ook je eigen afbeeldingen
   toevoegen.
 
-  - Alleen directe URL''s van afbeeldingen worden ondersteund en ze moeten publiek
-  toegankelijk zijn; GIF''s worden niet ondersteund.
+  - Alleen directe URL's van afbeeldingen worden ondersteund en ze moeten publiek
+  toegankelijk zijn; GIF's worden niet ondersteund.
 
   - Voor de sjablonen van Hoyo Buddy worden verticale afbeeldingen aanbevolen.
 
@@ -580,13 +629,14 @@ profile.info.embed.custom_images.value: '- Hoyo Buddy wordt geleverd met een aan
   jij of je leden toevoegen.
 
   - De rode knop verwijdert de huidige aangepaste afbeelding en keert terug naar de
-  standaardafbeelding.'
+  standaardafbeelding."
 profile.info.embed.dark_mode.name: Donkere Modus
-profile.info.embed.dark_mode.value: ''
+profile.info.embed.dark_mode.value: ""
 profile.info.embed.primary_color.name: Primaire Kleur
-profile.info.embed.primary_color.value: '- Alleen hex kleurcodes worden ondersteund.'
+profile.info.embed.primary_color.value: "- Alleen hex kleurcodes worden ondersteund."
 profile.info.embed.templates.name: Sjablonen
-profile.info.embed.templates.value: '- Hoyo Buddy heeft zijn eigen sjabloon gemaakt
+profile.info.embed.templates.value:
+  "- Hoyo Buddy heeft zijn eigen sjabloon gemaakt
   door mij, maar ik heb ook sjablonen toegevoegd die gemaakt zijn door andere ontwikkelaars.
 
   - De code van templates van 3e partijen wordt niet door mij onderhouden, dus ik
@@ -596,10 +646,10 @@ profile.info.embed.templates.value: '- Hoyo Buddy heeft zijn eigen sjabloon gema
   - Sjablonen van 3e partijen kunnen functiebeperkingen hebben in vergelijking met
   die van Hoyo Buddy.
 
-  - Cached data karakters kunnen alleen Hoyo Buddy''s sjablonen gebruiken.'
+  - Cached data karakters kunnen alleen Hoyo Buddy's sjablonen gebruiken."
 profile.info.embed.title: Over Kaart Instellingen
 profile.player_info.button.label: Spelers info
-profile.player_info.embed.description: 'Trailblaze Niveau: {level}
+profile.player_info.embed.description: "Trailblaze Niveau: {level}
 
   Equilibrium Niveau: {world_level}
 
@@ -611,15 +661,15 @@ profile.player_info.embed.description: 'Trailblaze Niveau: {level}
 
   Prestaties: {achievements}
 
-  '
-profile.player_info.gi.embed.description: 'Adventure Rank: {adventure_rank}
+  "
+profile.player_info.gi.embed.description: "Adventure Rank: {adventure_rank}
 
   Spiral Abyss: {spiral_abyss}
 
   Prestaties: {achievements}
 
-  '
-profile.player_info.hoyolab.embed.description: 'Trailblaze Niveau: {level}
+  "
+profile.player_info.hoyolab.embed.description: "Trailblaze Niveau: {level}
 
   Karakters: {characters}
 
@@ -629,48 +679,52 @@ profile.player_info.hoyolab.embed.description: 'Trailblaze Niveau: {level}
 
   Prestaties: {achievements}
 
-  '
+  "
 profile.primary_color.button.label: Kleur wijzigen
 profile.primary_color_modal.color.label: Kleur (hex code)
 profile.primary_color_modal.title: Kleur Kaart Wijzigen
 profile.remove_from_cache.button.label: Verwijderen uit cache
 profile.remove_image.button.label: Afbeelding verwijderen
-profile_command_description: Bekijk je in-game profiel en genereer personage build
+profile_command_description:
+  Bekijk je in-game profiel en genereer personage build
   kaarten
 profile_command_game_value_description: Spel van de UID
-profile_command_uid_param_description: UID van de speler, dit overschrijft de account
+profile_command_uid_param_description:
+  UID van de speler, dit overschrijft de account
   parameter indien opgegeven
 pt_button.label: Parametric transformer herinnering
 pt_modal.title: Instellingen Parametric Transformer Herinnering
 public_account_toggle.label: Account instellen als publiek
-pure_fiction: ''
+pure_fiction: ""
 pyro: Pyro
 qrcode_button_label: Met QR code
 qrcode_confirmed.desc: Succesvol ingelogd
-qrcode_expired.desc: ''
-qrcode_expired_title: ''
-qrcode_login_instructions.desc: Scan de QR code hieronder met je Miyoushe app om in
+qrcode_expired.desc: ""
+qrcode_expired_title: ""
+qrcode_login_instructions.desc:
+  Scan de QR code hieronder met je Miyoushe app om in
   te loggen.
 qrcode_scanned.desc: De QR code is succesvol gescand. Bevestig de login op je apparaat.
 quantum: Quantum
-read_story.button.label: ''
-real_time_notes: ''
+read_story.button.label: ""
+real_time_notes: ""
 realm_curr_button.label: Realm currency herinnering
 realm_curr_modal.title: Instellingen Realm Currency Herinnering
-redeeem_code.cookie_token_expired_description: ''
+redeeem_code.cookie_token_expired_description: ""
 redeeem_code.cookie_token_expired_title: Cookie Token Verlopen
-redeeem_code.cookie_token_refresh_failed_description: ''
+redeeem_code.cookie_token_refresh_failed_description: ""
 redeeem_code.cookie_token_refresh_failed_title: Vernieuwen cookietoken mislukt
 redeem_code.already_claimed: Inwisselcode al geclaimd
 redeem_code.cooldown: Cadeaucode inwisselen in cooldown
 redeem_code.expired: Inwisselcode verlopen
-redeem_code.invalid: ''
+redeem_code.invalid: ""
 redeem_code.success: Succesvol ingewisseld
 redeem_codes_button.label: Codes inwisselen
 redeem_command_description: Codes inwisselen voor beloningen in de game
-redeem_command_embed.description: 'Voer maximaal 5 inwisselcodes in om in te wisselen.
+redeem_command_embed.description:
+  "Voer maximaal 5 inwisselcodes in om in te wisselen.
 
-  Je kunt ook automatisch codes inwisselen inschakelen.'
+  Je kunt ook automatisch codes inwisselen inschakelen."
 redeem_command_embed.title: Resultaten code inwisselen
 redeem_cooldown_embed.description: Vanwege de inwissel cooldowns kan dit even duren.
 redeem_cooldown_embed.title: Codes Inwisselen
@@ -678,28 +732,19 @@ refinement_indicator: Verfijning {r}
 relics: Relikwieën
 reminder_button.label: Herinnering instellingen
 reminder_settings.not_set: Niet ingesteld
-reminder_settings.reminde.set.type1: 'Status: {status}
+reminder_settings.reminde.set.type1: "Status: {status}
 
   Drempel: {threshold}
 
   Meldingsinterval: {notify_interval} minuten
 
-  Max Aantal Meldingen: {max_notif_count}'
-reminder_settings.reminde.set.type2: 'Status: {status}
+  Max Aantal Meldingen: {max_notif_count}"
+reminder_settings.reminde.set.type2: "Status: {status}
 
   Meldingsinterval: {notify_interval} minuten
 
-  Max Aantal Meldingen: {max_notif_count}'
-reminder_settings.reminde.set.type3: 'Status: {status}
-
-  Meldingsinterval: {notify_interval} minuten
-
-  Max Aantal Meldingen: {max_notif_count}
-
-  Melding Tijd: {notify_time} uren voordat de server wordt gereset
-
-  '
-reminder_settings.reminde.set.type4: 'Status: {status}
+  Max Aantal Meldingen: {max_notif_count}"
+reminder_settings.reminde.set.type3: "Status: {status}
 
   Meldingsinterval: {notify_interval} minuten
 
@@ -707,7 +752,16 @@ reminder_settings.reminde.set.type4: 'Status: {status}
 
   Melding Tijd: {notify_time} uren voordat de server wordt gereset
 
-  Melding Weekdag: {notify_weekday}'
+  "
+reminder_settings.reminde.set.type4: "Status: {status}
+
+  Meldingsinterval: {notify_interval} minuten
+
+  Max Aantal Meldingen: {max_notif_count}
+
+  Melding Tijd: {notify_time} uren voordat de server wordt gereset
+
+  Melding Weekdag: {notify_weekday}"
 reminder_settings_title: Real-Time Herinneringen Voor Notities
 reminder_toggle: Herinnering
 resin_discount.embed.description: Wekelijkse kortingen voor bazen zijn nog niet opgebruikt
@@ -717,8 +771,9 @@ reward_claimed_title: Dagelijkse Inchecken Beloning Geclaimd
 rtbp_reminder_button.label: Gereserveerde trailblaze kracht herinnering
 rtbp_reminder_modal.title: Gereserveerde Instellingen Voor Trailblaze Kracht Herinnering
 saturday: Zaterdag
-search_autocomplete_no_results: ''
-search_autocomplete_not_setup: Autocomplete zoekkeuzes nog niet ingesteld, probeer
+search_autocomplete_no_results: ""
+search_autocomplete_not_setup:
+  Autocomplete zoekkeuzes nog niet ingesteld, probeer
   het later nog eens.
 search_command_category_param_description: Categorie om in te zoeken
 search_command_category_param_name: categorie
@@ -742,7 +797,7 @@ talent_level.modal.title: Voer Talent Niveau in
 tbp_reminder_button.label: Trailblaze kracht herinnering
 tbp_reminder_modal.title: Instellingen Voor Trailblaze Kracht Herinnering
 tcg: TCG
-test: ''
+
 the_hunt: The Hunt
 threshold.embed.description: Drempel ({threshold}) is bereikt
 thunder: Thunder
@@ -750,14 +805,15 @@ thursday: Donderdag
 toggle_off_text: uit
 toggle_on_text: op
 traditional_chinese_server: Traditioneel Chinees Server
-try_other_method_error_message: 'Probeer andere methoden om in te loggen.
+try_other_method_error_message: "Probeer andere methoden om in te loggen.
 
   Als je cookies handmatig invoert via DevTools, zorg er dan voor dat je ze correct
-  kopieert.'
+  kopieert."
 try_other_method_error_title: Ongeldige Cookies
 tuesday: Dinsdag
-unreleased_content: ''
-user_autocomplete_param_description: Gebruiker om de accounts mee te doorzoeken, standaard
+unreleased_content: ""
+user_autocomplete_param_description:
+  Gebruiker om de accounts mee te doorzoeken, standaard
   jezelf
 user_autocomplete_param_name: gebruiker
 user_no_accounts_autocomplete_choice: Deze gebruiker heeft nog geen accounts
@@ -765,7 +821,7 @@ view_card_button_label: Kaart
 view_dictionary_button_label: Woordenboek
 volume_selector_placeholder: Selecteer een volume om te lezen
 wave_button_label: Golf {value}
-weapon_level.modal.title: ''
+weapon_level.modal.title: ""
 weapons: Wapens
 wednesday: Woensdag
 week_boss_button.label: Wekelijkse baas korting herinnering
@@ -773,7 +829,7 @@ week_boss_modal.title: Instellingen Wekelijkse Baas Korting Herinnering
 wind: Wind
 yatta_character_detail_page_label: Details
 yatta_character_eidolon_page_label: Eidolons
-yatta_character_embed_description: '{rarity}
+yatta_character_embed_description: "{rarity}
 
   Element:{element}
 
@@ -781,14 +837,14 @@ yatta_character_embed_description: '{rarity}
 
   Wereld: {world}
 
-  '
-yatta_character_skill_aoe_weakness_break_field_value: 'AoE: {aoe_weakness_break}'
+  "
+yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}"
 yatta_character_skill_energy_field_name: Energie
-yatta_character_skill_energy_generation_field_value: 'Generation: {energy_generation}'
-yatta_character_skill_energy_need_field_value: 'Kost: {energy_need}'
+yatta_character_skill_energy_generation_field_value: "Generation: {energy_generation}"
+yatta_character_skill_energy_need_field_value: "Kost: {energy_need}"
 yatta_character_skill_page_label: Vaardigheden
-yatta_character_skill_single_weakness_break_field_value: 'Single: {single_weakness_break}'
-yatta_character_skill_spread_weakness_break_field_value: 'Verspreid: {spread_weakness_break}'
+yatta_character_skill_single_weakness_break_field_value: "Single: {single_weakness_break}"
+yatta_character_skill_spread_weakness_break_field_value: "Verspreid: {spread_weakness_break}"
 yatta_character_skill_weakness_break_field_name: Zwakte Breuk
 yatta_character_trace_page_label: Sporen
 yatta_item_sources_field_name: Bronnen

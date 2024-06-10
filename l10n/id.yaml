@@ -48,16 +48,13 @@ accounts_command_description: Kelola akunmu
 action_in_cooldown_error_message: "Silakan coba lagi di {available_time}."
 action_in_cooldown_error_title: Aksi dalam Cooldown
 add_account_button_label: Tambah akun
-add_hoyolab_acc.embed.description:
-  "1. Dengan email dan kata sandi: Paling direkomendasikan, dan paling mudah\n2. Dengan DevTools: Hanya berfungsi pada desktop, opsi yang lebih aman jika kamu memiliki kekhawatiran keamanan dengan yang pertama\n3. Dengan JavaScript: Metode yang ketinggalan jaman, tidak akan berfungsi untuk sebagian besar akun. Berfungsi di Google Chrome atau Microsoft Edge pada desktop dan mobile\n\n"
+add_hoyolab_acc.embed.description: "1. Dengan email dan kata sandi: Paling direkomendasikan, dan paling mudah\n2. Dengan DevTools: Hanya berfungsi pada desktop, opsi yang lebih aman jika kamu memiliki kekhawatiran keamanan dengan yang pertama\n3. Dengan JavaScript: Metode yang ketinggalan jaman, tidak akan berfungsi untuk sebagian besar akun. Berfungsi di Google Chrome atau Microsoft Edge pada desktop dan mobile\n\n"
 add_hoyolab_acc.embed.title: Pilih metode untuk menambahkan akun kamu
-add_miyoushe_acc.embed.description:
-  "1. Dengan kode QR: Direkomendasikan untuk pengguna sebagian besar jika kamu telah masuk pada perangkat mobile kamu\n2. Dengan email/username dan kata sandi\n3. Dengan nomor telepon\n4. Dengan DevTools: Hanya berfungsi pada desktop, pilihan yang lebih aman jika kamu memiliki kekhawatiran keamanan dengan metode lainnya\n"
+add_miyoushe_acc.embed.description: "1. Dengan kode QR: Direkomendasikan untuk pengguna sebagian besar jika kamu telah masuk pada perangkat mobile kamu\n2. Dengan email/username dan kata sandi\n3. Dengan nomor telepon\n4. Dengan DevTools: Hanya berfungsi pada desktop, pilihan yang lebih aman jika kamu memiliki kekhawatiran keamanan dengan metode lainnya\n"
 add_miyoushe_acc.enter_mobile_number: Masukkan nomor telepon
 add_miyoushe_acc.mobile_number: Nomor telepon
 add_miyoushe_acc.with_mobile_number: Pakai nomor telepon
-adding_accounts_description:
-  "Selamat datang di Hoyo Buddy! Nikmati berbagai fitur keren dengan meluangkan waktu kurang dari 1 menit untuk menambahkan akun kamu.\n\nMengenai keamanan akun, silakan baca [Halaman Wiki](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), untuk cara kami menggunakan dan mengumpulkan data kamu, silakan baca [Kebijakan Privasi]( https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "Selamat datang di Hoyo Buddy! Nikmati berbagai fitur keren dengan meluangkan waktu kurang dari 1 menit untuk menambahkan akun kamu.\n\nMengenai keamanan akun, silakan baca [Halaman Wiki](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), untuk cara kami menggunakan dan mengumpulkan data kamu, silakan baca [Kebijakan Privasi]( https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Pilih Platform Akun Kamu
 ai_gen_image_error_message: Periksa prompt kamu dan coba lagi
 ai_gen_image_error_title: Terjadi kesalahan saat membuat gambar dengan AI
@@ -69,8 +66,7 @@ artifact_set_two_piece_embed_description: "2-Pieces: {bonus_2}"
 artifact_sets: Set Artefak
 auto_checkin_button_label: Absen harian otomatis
 auto_locale_option_label: Ikuti bahasa klien
-auto_redeem_error.content:
-  ""
+auto_redeem_error.content: ""
 auto_redeem_footer: Matikan penukaran kode otomatis dengan /redeem
 auto_redeem_toggle.label: Penukaran kode otomatis
 books: Buku
@@ -109,8 +105,7 @@ characters.filter.none: Tidak ada
 characters.filter.not_max_friendship: Bukan Persahabatan maks
 characters.filter.path.placeholder: Pilih filter path...
 characters.filter.placeholder: Pilih filter...
-characters.first_time.embed.description:
-  "Jika ini pertama kali kamu menggunakan perintah ini, maka ini membutuhkan waktu beberapa saat.\nIni dikarenakan suatu perintah mengambil data dari banyak sumber.\nIni akan lebih cepat saat kamu menggunakan perintah ini lagi.\nHarap bersabar dan tunggu hingga sumber daya selesai diambil"
+characters.first_time.embed.description: "Jika ini pertama kali kamu menggunakan perintah ini, maka ini membutuhkan waktu beberapa saat.\nIni dikarenakan suatu perintah mengambil data dari banyak sumber.\nIni akan lebih cepat saat kamu menggunakan perintah ini lagi.\nHarap bersabar dan tunggu hingga sumber daya selesai diambil"
 characters.first_time.title: Mengambil sumber daya...
 characters.gi.embed.footer: "Urutan level: Normal ATK/Skill/Burst"
 characters.hsr.embed.footer: "Urutan level: Basic ATK/Skill/Ultimate/Talenta\nGunakan /profile untuk melihat detail karakter"
@@ -147,13 +142,11 @@ delete_account_button_label: Hapus akun yang dipilih
 dendro: Dendro
 destruction: Destruction
 devtools_button_label: Dengan DevTools (Hanya pada Dekstop)
-devtools_instructions_description:
-  "1. Masuk ke [HoYoLAB](https://www.hoyolab.com/home) atau [Miyoushe](https://www.miyoushe.com/ys/) (untuk pemain CN)\n2. Buka DevTools dengan menekan F12 atau Ctrl+Shift+I\n3. Tekan ikon >> pada bilah navigasi atas\n4. Klik pada tab `Application`\n5. Klik `Cookie` di sidebar kiri\n6. Klik situs web yang kamu buka (misalnya https://www.hoyolab.com)\n7. Ketik `v2` di kotak `Filter`\n8. Klik tombol di bawah\n9. Salin `Value` setiap cookie dan tempelkan ke dalam kotak\n"
+devtools_instructions_description: "1. Masuk ke [HoYoLAB](https://www.hoyolab.com/home) atau [Miyoushe](https://www.miyoushe.com/ys/) (untuk pemain CN)\n2. Buka DevTools dengan menekan F12 atau Ctrl+Shift+I\n3. Tekan ikon >> pada bilah navigasi atas\n4. Klik pada tab `Application`\n5. Klik `Cookie` di sidebar kiri\n6. Klik situs web yang kamu buka (misalnya https://www.hoyolab.com)\n7. Ketik `v2` di kotak `Filter`\n8. Klik tombol di bawah\n9. Salin `Value` setiap cookie dan tempelkan ke dalam kotak\n"
 dice_cost_embed_field_name: Biaya Dadu
 domain-type.characters: Karakter
 domain-type.weapons: Senjata
-download_image_failed_error_message:
-  "Tidak dapat mengunduh gambar {url} dengan status kode{status}.\ncoba lagi nanti, coba dengan gambar berbeda, atau cek apakah URL gambar valid."
+download_image_failed_error_message: "Tidak dapat mengunduh gambar {url} dengan status kode{status}.\ncoba lagi nanti, coba dengan gambar berbeda, atau cek apakah URL gambar valid."
 download_image_failed_error_title: Gambar gagal diunduh
 edit_nickname_button_label: Edit nickname
 edit_nickname_modal_title: Edit nickname
@@ -161,19 +154,16 @@ eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
 email-geetest.embed.title: 😥 Perlu menyelesaikan CAPTCHA sebelum mengirim kode verifikasi
 email_password_button_label: Dengan email dan password
-email_password_instructions_description:
-  "<:INFO:1166743144889602190> Catatan: Cara ini **TIDAK BEKERJA** untuk pengguna Miyoushe, hanya pengguna HoYoLAB yang bisa menggunakan cara ini.\n\n1. Klik tombol `Lengkapi CAPTCHA` di bawah\n2. kamu akan diarahkan ke sebuah situs web, klik tombol dan lengkapi CAPTCHA\n3. Setelah selesai, klik tombol `Lanjutkan` di bawah\n"
+email_password_instructions_description: "<:INFO:1166743144889602190> Catatan: Cara ini **TIDAK BEKERJA** untuk pengguna Miyoushe, hanya pengguna HoYoLAB yang bisa menggunakan cara ini.\n\n1. Klik tombol `Lengkapi CAPTCHA` di bawah\n2. kamu akan diarahkan ke sebuah situs web, klik tombol dan lengkapi CAPTCHA\n3. Setelah selesai, klik tombol `Lanjutkan` di bawah\n"
 email_password_modal_email_input_label: e-mail atau username
 email_password_modal_password_input_label: password
 enter_email_password_button_label: Masukkan email/username dan kata sandi
-enter_email_password_instructions_description:
-  "<:INFO:1166743144889602190> Metode ini mengharuskan kamu memasukkan informasi pribadi kamu.\n\n• Sebagai gantinya, `cookie_token` kamu dapat diperbarui secara otomatis, yang digunakan dalam fitur yang terkait dengan penukaran kode (hanya untuk pengguna HoYoLAB).\n• Email dan kata sandi kamu **TIDAK** disimpan dalam database **SAMA SEKALI**, sehingga hampir tidak mungkin untuk terjadi kebocoran data.\n• Selain itu, bot ini open source di [GitHub](https://github.com/seriaati/hoyo-buddy), sehingga kamu dapat memverifikasi sendiri.\n• Pada akhirnya, itu adalah pilihan kamu sendiri untuk memutuskan apakah kamu ingin percaya bot ini atau tidak.\n\nKlik tombol di bawah untuk memulai.\n"
+enter_email_password_instructions_description: "<:INFO:1166743144889602190> Metode ini mengharuskan kamu memasukkan informasi pribadi kamu.\n\n• Sebagai gantinya, `cookie_token` kamu dapat diperbarui secara otomatis, yang digunakan dalam fitur yang terkait dengan penukaran kode (hanya untuk pengguna HoYoLAB).\n• Email dan kata sandi kamu **TIDAK** disimpan dalam database **SAMA SEKALI**, sehingga hampir tidak mungkin untuk terjadi kebocoran data.\n• Selain itu, bot ini open source di [GitHub](https://github.com/seriaati/hoyo-buddy), sehingga kamu dapat memverifikasi sendiri.\n• Pada akhirnya, itu adalah pilihan kamu sendiri untuk memutuskan apakah kamu ingin percaya bot ini atau tidak.\n\nKlik tombol di bawah untuk memulai.\n"
 enter_light_cone_level.button.label: Ubah level light cone
 error_footer: Silakan laporkan kesalahan ini kepada pengembang melalui /feedback
 error_title: Terjadi kesalahan
 erudition: Erudition
-exceptions.card_not_ready_error.message:
-  "Saat karakter baru dirilis, saya perlu meluangkan waktu untuk mengumpulkan fanart dan mengoptimalkan warna untuk kartu mereka.\nJika kamu ingin mempercepat proses ini, kamu dapat berkontribusi pada data kartu dengan menghubungi saya di [Server Discord](https://dsc.gg/hoyo-buddy)."
+exceptions.card_not_ready_error.message: "Saat karakter baru dirilis, saya perlu meluangkan waktu untuk mengumpulkan fanart dan mengoptimalkan warna untuk kartu mereka.\nJika kamu ingin mempercepat proses ini, kamu dapat berkontribusi pada data kartu dengan menghubungi saya di [Server Discord](https://dsc.gg/hoyo-buddy)."
 exceptions.card_not_ready_error.title: "Data kartu untuk {character_name} belum siap."
 exped.embed.description: Satu (atau lebih) ekspedisi selesai
 exped_button.label: Pengingat ekspedisi
@@ -224,8 +214,7 @@ farm_view_command_description: Lihat domain yang dapat difarming di Genshin Impa
 feedback_button.feedback_sent.description: 🥰 Terimakasih banyak atas masukanmu!
 feedback_button.feedback_sent.title: Masukan Terkirim
 feedback_button.label: Berikan Masukan
-feedback_command.description:
-  "\U0001F917 Hay! Terimakasih telah meluangkan waktu untuk memberikan kami masukan\nKlik tombol dibawah untuk memulai.\n\nCatatan: Saya mungkin akan menghubungi kamu untuk rincian lebih lanjut. Jadi tolong tetap buka DM kamu (atau bergabung ke [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
+feedback_command.description: "\U0001F917 Hay! Terimakasih telah meluangkan waktu untuk memberikan kami masukan\nKlik tombol dibawah untuk memulai.\n\nCatatan: Saya mungkin akan menghubungi kamu untuk rincian lebih lanjut. Jadi tolong tetap buka DM kamu (atau bergabung ke [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
 feedback_command_description: Berikan masukan untuk developer bot
 feedback_modal.feedback.label: Masukan
 fire: Fire
@@ -291,8 +280,7 @@ invalid_verification_code_description: Silakan periksa kode verifikasi dan coba 
 invalid_verification_code_title: Kode verifikasi tidak valid
 items: Item
 javascript_button_label: Dengan JavaScript
-javascript_instructions_description:
-  "<:INFO:1166743144889602190> Catatan: Metode ini dapat digunakan pada semua browser utama di desktop, namun pada perangkat seluler, metode ini hanya dapat digunakan pada **Chrome** dan **Edge**.\n\n1. Login ke [HoYoLAB](https://www.hoyolab.com/home) atau [Miyoushe](https://www.miyoushe.com/ys/) (untuk pemain CN)\n2. Salin kode di bawah\n3. Klik pada bilah alamat dan ketik `java`\n4. Tempelkan kodenya dan tekan enter. Pastikan **TIDAK ADA SPASI** antara `java` dan `script`\n5. Pilih semua dan salin teks yang muncul\n6. Klik tombol di bawah dan tempel teks di dalam kotak\n"
+javascript_instructions_description: "<:INFO:1166743144889602190> Catatan: Metode ini dapat digunakan pada semua browser utama di desktop, namun pada perangkat seluler, metode ini hanya dapat digunakan pada **Chrome** dan **Edge**.\n\n1. Login ke [HoYoLAB](https://www.hoyolab.com/home) atau [Miyoushe](https://www.miyoushe.com/ys/) (untuk pemain CN)\n2. Salin kode di bawah\n3. Klik pada bilah alamat dan ketik `java`\n4. Tempelkan kodenya dan tekan enter. Pastikan **TIDAK ADA SPASI** antara `java` dan `script`\n5. Pilih semua dan salin teks yang muncul\n6. Klik tombol di bawah dan tempel teks di dalam kotak\n"
 level_label: Level
 level_str: "Lv.{level}"
 light_cones: Light Cone
@@ -303,8 +291,7 @@ make_up_for_checkin_button_label: Absen susulan
 materials: Material
 memory_of_chaos: ""
 miyoushe: Miyoushe
-mobile_instructions_description:
-  "1. Klik tombol di bawah untuk memasukkan nomor telepon kamu\n2. Kamu akan menerima kode verifikasi melalui SMS\n3. Klik tombol di bawah untuk memasukkan kode verifikasi\n"
+mobile_instructions_description: "1. Klik tombol di bawah untuk memasukkan nomor telepon kamu\n2. Kamu akan menerima kode verifikasi melalui SMS\n3. Klik tombol di bawah untuk memasukkan kode verifikasi\n"
 moc_card_battles_fought: ""
 moc_card_cycles_used: ""
 moc_card_farthest_stage: ""
@@ -354,7 +341,6 @@ notify_on_success_button_label: Beritahu jika absen berhasil
 nsfw_prompt_error_message: "Perintah tersebut berisi konten NSFW, silakan coba lagi dengan perintah lain."
 nsfw_prompt_error_title: NSFW Terdeteksi
 page_footer: "Halaman {current_page}/{total_pages}"
-pf_card_title: ""
 pf_card_total_score: ""
 physical: Physical
 player_not_found_description: Silakan periksa kembali UID yang diberikan
@@ -362,14 +348,12 @@ player_not_found_title: Pemain tidak ditemukan
 preservation: Preservation
 prev_page_option_label: Halaman Sebelumnya
 primogems: primogems
-process_notify_error.content:
-  ""
+process_notify_error.content: ""
 profile.add_image.button.label: Tambah gambar kustom
 profile.add_image_modal.image_url.label: URL Gambar
 profile.add_image_modal.title: Tambah Gambar Kustom
 profile.build.select.placeholder: Pilih build...
-profile.card_info.embed.description:
-  "- Semua aset yang digunakan dalam kartu adalah milik Hoyoverse, saya bukan pemiliknya.\n- Semua fanart yang digunakan dalam kartu dikreditkan ke artisnya masing-masing.\n- Desain template Hoyo Buddy adalah asli, kamu tidak diperbolehkan memodifikasinya atau mengklaim bahwa kamu membuatnya tanpa izin saya.\n- Data permainan disediakan oleh {provider}\n"
+profile.card_info.embed.description: "- Semua aset yang digunakan dalam kartu adalah milik Hoyoverse, saya bukan pemiliknya.\n- Semua fanart yang digunakan dalam kartu dikreditkan ke artisnya masing-masing.\n- Desain template Hoyo Buddy adalah asli, kamu tidak diperbolehkan memodifikasinya atau mengklaim bahwa kamu membuatnya tanpa izin saya.\n- Data permainan disediakan oleh {provider}\n"
 profile.card_info.embed.title: Tentang Kartu Build Karakter
 profile.card_settings.button.label: Pengaturan kartu
 profile.card_template_select.diff_author.description: "Dirancang oleh {author1} dan diprogram oleh {author2}"
@@ -397,16 +381,13 @@ profile.image_select.default_collection.label: "Koleksi Hoyo Buddy ({num})"
 profile.image_select.none.label: Gambar resmi
 profile.image_select.placeholder: Pilih gambar
 profile.info.embed.custom_images.name: Gambar Kustom
-profile.info.embed.custom_images.value:
-  "- Hoyo Buddy hadir dengan beberapa seni preset yang saya suka, tetapi kamu juga dapat menambahkan gambar kamu sendiri.\n- Hanya URL gambar langsung yang didukung, dan harus dapat diakses publik; GIF tidak didukung.\n- Untuk template Hoyo Buddy, disarankan menggunakan gambar vertikal.\n- Bagi pemilik server, saya tidak bertanggung jawab atas gambar NSFW apa pun yang kamu atau anggota kamu tambahkan.\n- Tombol merah menghapus gambar khusus saat ini dan kembali ke gambar default."
+profile.info.embed.custom_images.value: "- Hoyo Buddy hadir dengan beberapa seni preset yang saya suka, tetapi kamu juga dapat menambahkan gambar kamu sendiri.\n- Hanya URL gambar langsung yang didukung, dan harus dapat diakses publik; GIF tidak didukung.\n- Untuk template Hoyo Buddy, disarankan menggunakan gambar vertikal.\n- Bagi pemilik server, saya tidak bertanggung jawab atas gambar NSFW apa pun yang kamu atau anggota kamu tambahkan.\n- Tombol merah menghapus gambar khusus saat ini dan kembali ke gambar default."
 profile.info.embed.dark_mode.name: Mode Gelap
-profile.info.embed.dark_mode.value:
-  ""
+profile.info.embed.dark_mode.value: ""
 profile.info.embed.primary_color.name: Warna Primer
 profile.info.embed.primary_color.value: "- Hanya kode warna hex yang didukung."
 profile.info.embed.templates.name: Template
-profile.info.embed.templates.value:
-  "- Hoyo Buddy mempunyai template buatan saya sendiri, namun saya juga menambahkan template buatan developer lain.\n- Kode templat pihak ke 3 tidak saya kelola, jadi saya tidak dapat menjamin kualitasnya; Saya juga tidak bertanggung jawab atas masalah apa pun dengan mereka.\n- Templat pihak ketiga mungkin memiliki keterbatasan fitur dibandingkan dengan milik Hoyo Buddy.\n- Karakter data yang di-cache hanya dapat menggunakan template Hoyo Buddy."
+profile.info.embed.templates.value: "- Hoyo Buddy mempunyai template buatan saya sendiri, namun saya juga menambahkan template buatan developer lain.\n- Kode templat pihak ke 3 tidak saya kelola, jadi saya tidak dapat menjamin kualitasnya; Saya juga tidak bertanggung jawab atas masalah apa pun dengan mereka.\n- Templat pihak ketiga mungkin memiliki keterbatasan fitur dibandingkan dengan milik Hoyo Buddy.\n- Karakter data yang di-cache hanya dapat menggunakan template Hoyo Buddy."
 profile.info.embed.title: Tentang Pengaturan Kartu
 profile.player_info.button.label: Info pemain
 profile.player_info.embed.description: "Level Trailblaze: {level}\nLevel Equilibrium: {world_level}\nJumlah Teman: {friend_count}\nLight Cone: {light_cones}\nKarakter: {characters}\nAchievement: {achievements}\n"
@@ -436,11 +417,9 @@ read_story.button.label: Baca Kisah
 real_time_notes: Catatan real-time
 realm_curr_button.label: Pengingat realm currency
 realm_curr_modal.title: Pengaturan Pengingat Realm Currency
-redeeem_code.cookie_token_expired_description:
-  ""
+redeeem_code.cookie_token_expired_description: ""
 redeeem_code.cookie_token_expired_title: Batas waktu token cookie berakhir
-redeeem_code.cookie_token_refresh_failed_description:
-  ""
+redeeem_code.cookie_token_refresh_failed_description: ""
 redeeem_code.cookie_token_refresh_failed_title: Gagal memperbarui token cookie
 redeem_code.already_claimed: Kode penukaran telah digunakan
 redeem_code.cooldown: Penukaran kode sedang cooldown

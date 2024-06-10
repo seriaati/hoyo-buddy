@@ -10,47 +10,42 @@ about_command.translators: Penerjemah
 about_command.uptime: Uptime
 about_command.website: Website resmi
 about_command_description: Tentang bot
-about_embed.description:
-  Bot discord yang kaya fitur, mudah digunakan, dan dirancang
+about_embed.description: Bot discord yang kaya fitur, mudah digunakan, dan dirancang
   dengan baik, khusus dibuat untuk game Hoyoverse.
 abundance: Abundance
 abyss.battles_won_fought: Jumlah Pertarungan {val1}/{val2}
-abyss.current: ""
-abyss.deepest_descent: "Pencapaian Tertinggi: {val}"
+abyss.current: ''
+abyss.deepest_descent: 'Pencapaian Tertinggi: {val}'
 abyss.floor: Lantai {val}
-abyss.most_defeats: "Mengalahkan Terbanyak: {val}"
-abyss.most_dmg_taken: "Menerima Damage Terbanyak: {val}"
-abyss.most_skills: "Menggunakan Skill Terbanyak: {val}"
-abyss.most_ults: "Menggunakan Burst Terbanyak: {val}"
+abyss.most_defeats: 'Mengalahkan Terbanyak: {val}'
+abyss.most_dmg_taken: 'Menerima Damage Terbanyak: {val}'
+abyss.most_skills: 'Menggunakan Skill Terbanyak: {val}'
+abyss.most_ults: 'Menggunakan Burst Terbanyak: {val}'
 abyss.overview: Ringkasan Spiral Abyss
-abyss.phase_select.placeholder: ""
-abyss.previous: ""
-abyss.strongest_strike: "Serangan Tunggal Terkuat: {val}"
-abyss.total_stars: "Total Bintang: {val}"
+abyss.phase_select.placeholder: ''
+abyss.previous: ''
+abyss.strongest_strike: 'Serangan Tunggal Terkuat: {val}'
+abyss.total_stars: 'Total Bintang: {val}'
 abyss__command_description: Lihat data spiral abyss kamu
 abyss_chamber.challenge_target.embed.field.name: Target Tantangan
 abyss_chamber.embed.title: Lantai {floor_index} - Ruang {chamber_index}
 abyss_chamber.enemy_level.embed.field.name: Level Musuh
 abyss_chamber.ley_line_disorder.embed.field.name: Gangguan Ley Line
 abyss_command_description: Lihat musuh abyss saat ini
-abyss_enemy.item_description: "HP: {HP}"
-account_autocomplete_no_default_param_description:
-  Akun untuk menjalankan perintah
+abyss_enemy.item_description: 'HP: {HP}'
+account_autocomplete_no_default_param_description: Akun untuk menjalankan perintah
   ini
-account_autocomplete_param_description:
-  Akun untuk menjalankan perintah ini, defaultnya
+account_autocomplete_param_description: Akun untuk menjalankan perintah ini, defaultnya
   adalah akun yang dipilih di /accounts
 account_autocomplete_param_name: akun
-account_deleted_description: "{account} sudah dihapus."
+account_deleted_description: '{account} sudah dihapus.'
 account_deleted_title: Akun Dihapus
 account_game: Game
-account_manager_footer:
-  Akun yang dipilih akan menjadi akun default yang digunakan
+account_manager_footer: Akun yang dipilih akan menjadi akun default yang digunakan
   untuk semua perintah
 account_manager_no_accounts_description: Kamu belum memiliki akun apa pun.
 account_manager_title: Kelola Akun
-account_not_found_error_message:
-  Tidak dapat menemukan akun dengan kueri yang diberikan,
+account_not_found_error_message: Tidak dapat menemukan akun dengan kueri yang diberikan,
   harap pilih pilihan dari pelengkapan otomatis alih-alih mengetik kueri kamu sendiri.
 account_not_found_error_title: Akun tidak ditemukan
 account_server: Server
@@ -59,8 +54,7 @@ accounts_command_description: Kelola akunmu
 action_in_cooldown_error_message: Silakan coba lagi di {available_time}.
 action_in_cooldown_error_title: Aksi dalam Cooldown
 add_account_button_label: Tambah akun
-add_hoyolab_acc.embed.description:
-  "1. Dengan email dan kata sandi: Paling direkomendasikan,
+add_hoyolab_acc.embed.description: '1. Dengan email dan kata sandi: Paling direkomendasikan,
   dan paling mudah
 
   2. Dengan DevTools: Hanya berfungsi pada desktop, opsi yang lebih aman jika kamu
@@ -71,10 +65,9 @@ add_hoyolab_acc.embed.description:
   dan mobile
 
 
-  "
+  '
 add_hoyolab_acc.embed.title: Pilih metode untuk menambahkan akun kamu
-add_miyoushe_acc.embed.description:
-  "1. Dengan kode QR: Direkomendasikan untuk pengguna
+add_miyoushe_acc.embed.description: '1. Dengan kode QR: Direkomendasikan untuk pengguna
   sebagian besar jika kamu telah masuk pada perangkat mobile kamu
 
   2. Dengan email/username dan kata sandi
@@ -84,30 +77,29 @@ add_miyoushe_acc.embed.description:
   4. Dengan DevTools: Hanya berfungsi pada desktop, pilihan yang lebih aman jika kamu
   memiliki kekhawatiran keamanan dengan metode lainnya
 
-  "
+  '
 add_miyoushe_acc.enter_mobile_number: Masukkan nomor telepon
 add_miyoushe_acc.mobile_number: Nomor telepon
 add_miyoushe_acc.with_mobile_number: Pakai nomor telepon
-adding_accounts_description:
-  "Selamat datang di Hoyo Buddy! Nikmati berbagai fitur
+adding_accounts_description: 'Selamat datang di Hoyo Buddy! Nikmati berbagai fitur
   keren dengan meluangkan waktu kurang dari 1 menit untuk menambahkan akun kamu.
 
 
   Mengenai keamanan akun, silakan baca [Halaman Wiki](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security),
   untuk cara kami menggunakan dan mengumpulkan data kamu, silakan baca [Kebijakan
-  Privasi]( https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+  Privasi]( https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)'
 adding_accounts_title: Pilih Platform Akun Kamu
 ai_gen_image_error_message: Periksa prompt kamu dan coba lagi
 ai_gen_image_error_title: Terjadi kesalahan saat membuat gambar dengan AI
 already_claimed_description: Kembali lagi besok!
 already_claimed_title: Hadiah absen harian sudah diklaim
 anemo: Anemo
-artifact_set_four_piece_embed_description: "4-Bagian: {bonus_4}"
-artifact_set_two_piece_embed_description: "2-Pieces: {bonus_2}"
+artifact_set_four_piece_embed_description: '4-Bagian: {bonus_4}'
+artifact_set_two_piece_embed_description: '2-Pieces: {bonus_2}'
 artifact_sets: Set Artefak
 auto_checkin_button_label: Absen harian otomatis
 auto_locale_option_label: Ikuti bahasa klien
-auto_redeem_error.content: "Terjadi kesalahan saat menukar kode secara otomatis.
+auto_redeem_error.content: 'Terjadi kesalahan saat menukar kode secara otomatis.
 
   Hoyo Buddy telah menonaktifkan fitur ini pada akun ini, kamu bisa mengaktifkannya
   kembali menggunakan </redeem>
@@ -115,15 +107,17 @@ auto_redeem_error.content: "Terjadi kesalahan saat menukar kode secara otomatis.
   Jika kesalahan ini masih terjadi atau kamu tidak tahu cara mengatasinya, silakan
   hubungi pengembang melalui </feedback>.
 
-  "
+  '
 auto_redeem_footer: Matikan penukaran kode otomatis dengan /redeem
 auto_redeem_toggle.label: Penukaran kode otomatis
 books: Buku
-captcha.embed.description: "Klik tombol di bawah untuk menyelesaikan CAPTCHA.
+captcha.embed.description: 'Klik tombol di bawah untuk menyelesaikan CAPTCHA.
 
-  "
-challenge_command_description: ""
-challenge_type_select.placeholder: ""
+  '
+challenge_command_description: ''
+challenge_type_select.placeholder: ''
+challenge_view.buff_used_in: ''
+challenge_view.team: ''
 chamber_button_label: Ruang {value}
 change_character_level_label: Ubah level karakter
 change_skill_level_label: Ubah level skill
@@ -131,7 +125,7 @@ change_talent_level_label: Ubah level talenta
 change_weapon_level_label: Ubah level senjata
 chara_level.modal.title: Masukan Level Karakter
 character_const_page_label: Konstelasi
-character_embed_description: "{rarity}★ {element}
+character_embed_description: '{rarity}★ {element}
 
   Ulang Tahun: {birthday}
 
@@ -139,7 +133,7 @@ character_embed_description: "{rarity}★ {element}
 
   Afiliasi: {affiliation}
 
-  "
+  '
 character_passives_page_label: Pasif
 character_profile_page_label: Profil
 character_quotes_page_label: Quote
@@ -148,15 +142,14 @@ character_stories_page_label: Story
 character_talents_page_label: Talenta
 character_voices_page_label: Suara
 characters: Karakter
-characters.embed.element_filters: "{element} Karakter"
+characters.embed.element_filters: '{element} Karakter'
 characters.embed.element_max_friendship: Persahabatan Karakter {element} Maks
-characters.embed.element_not_max_friendship:
-  Bukan Karakter {element} Persahabatan
+characters.embed.element_not_max_friendship: Bukan Karakter {element} Persahabatan
   Maks
 characters.embed.max_friendship: Persahabatan Karakter Maks
 characters.embed.not_max_friendship: Bukan Persahabatan Karakter Maks
 characters.embed.owned_characters: Karakter Dimiliki
-characters.embed.path_filters: "{path} Karakter"
+characters.embed.path_filters: '{path} Karakter'
 characters.embed.title: Ringkasan karakter
 characters.filter.element.placeholder: Pilih filter elemen
 characters.filter.max_friendship: Persahabatan Maks
@@ -164,20 +157,19 @@ characters.filter.none: Tidak ada
 characters.filter.not_max_friendship: Bukan Persahabatan maks
 characters.filter.path.placeholder: Pilih filter path...
 characters.filter.placeholder: Pilih filter...
-characters.first_time.embed.description:
-  "Jika ini pertama kali kamu menggunakan perintah
+characters.first_time.embed.description: 'Jika ini pertama kali kamu menggunakan perintah
   ini, maka ini membutuhkan waktu beberapa saat.
 
   Ini dikarenakan suatu perintah mengambil data dari banyak sumber.
 
   Ini akan lebih cepat saat kamu menggunakan perintah ini lagi.
 
-  Harap bersabar dan tunggu hingga sumber daya selesai diambil"
+  Harap bersabar dan tunggu hingga sumber daya selesai diambil'
 characters.first_time.title: Mengambil sumber daya...
-characters.gi.embed.footer: "Urutan level: Normal ATK/Skill/Burst"
-characters.hsr.embed.footer: "Urutan level: Basic ATK/Skill/Ultimate/Talenta
+characters.gi.embed.footer: 'Urutan level: Normal ATK/Skill/Burst'
+characters.hsr.embed.footer: 'Urutan level: Basic ATK/Skill/Ultimate/Talenta
 
-  Gunakan /profile untuk melihat detail karakter"
+  Gunakan /profile untuk melihat detail karakter'
 characters.sorter.constellation: Konstelasi
 characters.sorter.eidolon: Eidolon
 characters.sorter.element: Elemen
@@ -187,8 +179,7 @@ characters.sorter.path: Path
 characters.sorter.placeholder: Pilih penyortir...
 characters.sorter.rarity: Rarity
 characters.update_talent_data: Perbarui data level talent
-characters.update_talent_data.embed.description:
-  Proses ini mungkin memerlukan waktu
+characters.update_talent_data.embed.description: Proses ini mungkin memerlukan waktu
   yang lebih lama, jika kamu memiliki banyak karakter, maka waktu yang dibutuhkan
   dapat lebih panjang. Mohon bersabar.
 characters.update_talent_data.title: Memperbarui data level talenta...
@@ -196,8 +187,7 @@ characters_command_description: Lihat semua karakter milikmu
 checkin_button_label: Absen
 checkin_command_description: Absen harian game
 complete_captcha_button_label: Lengkapi CAPTCHA
-complete_geetest_button_description:
-  Klik tombol di bawah ini untuk melengkapi verifikasi
+complete_geetest_button_description: Klik tombol di bawah ini untuk melengkapi verifikasi
   geetest
 complete_geetest_button_label: Lengkapi geetest
 const_refine_str: C{const}R{refine}
@@ -207,11 +197,11 @@ cookies_modal_placeholder: Tempel cookies kamu disini...
 cryo: Cryo
 daily_button.label: Pengingat harian
 daily_check_in: Absen harian
-daily_checkin_embed_description: "Abesn {day} hari bulan ini
+daily_checkin_embed_description: 'Abesn {day} hari bulan ini
 
   Tidak absen {missed} hari
 
-  "
+  '
 daily_checkin_embed_title: Absen harian
 daily_modal.title: Pengaturan Pengingat Harian
 daily_training_button.label: Pengingat Pelatihan Harian
@@ -220,8 +210,7 @@ delete_account_button_label: Hapus akun yang dipilih
 dendro: Dendro
 destruction: Destruction
 devtools_button_label: Dengan DevTools (Hanya pada Dekstop)
-devtools_instructions_description:
-  "1. Masuk ke [HoYoLAB](https://www.hoyolab.com/home)
+devtools_instructions_description: '1. Masuk ke [HoYoLAB](https://www.hoyolab.com/home)
   atau [Miyoushe](https://www.miyoushe.com/ys/) (untuk pemain CN)
 
   2. Buka DevTools dengan menekan F12 atau Ctrl+Shift+I
@@ -240,15 +229,14 @@ devtools_instructions_description:
 
   9. Salin `Value` setiap cookie dan tempelkan ke dalam kotak
 
-  "
+  '
 dice_cost_embed_field_name: Biaya Dadu
 domain-type.characters: Karakter
 domain-type.weapons: Senjata
-download_image_failed_error_message:
-  "Tidak dapat mengunduh gambar {url} dengan status
+download_image_failed_error_message: 'Tidak dapat mengunduh gambar {url} dengan status
   kode{status}.
 
-  coba lagi nanti, coba dengan gambar berbeda, atau cek apakah URL gambar valid."
+  coba lagi nanti, coba dengan gambar berbeda, atau cek apakah URL gambar valid.'
 download_image_failed_error_title: Gambar gagal diunduh
 edit_nickname_button_label: Edit nickname
 edit_nickname_modal_title: Edit nickname
@@ -256,8 +244,7 @@ eidolon_superimpose_str: E{eidolon}S{superimpose}
 electro: Electro
 email-geetest.embed.title: 😥 Perlu menyelesaikan CAPTCHA sebelum mengirim kode verifikasi
 email_password_button_label: Dengan email dan password
-email_password_instructions_description:
-  "<:INFO:1166743144889602190> Catatan: Cara
+email_password_instructions_description: '<:INFO:1166743144889602190> Catatan: Cara
   ini **TIDAK BEKERJA** untuk pengguna Miyoushe, hanya pengguna HoYoLAB yang bisa
   menggunakan cara ini.
 
@@ -268,12 +255,11 @@ email_password_instructions_description:
 
   3. Setelah selesai, klik tombol `Lanjutkan` di bawah
 
-  "
+  '
 email_password_modal_email_input_label: e-mail atau username
 email_password_modal_password_input_label: password
 enter_email_password_button_label: Masukkan email/username dan kata sandi
-enter_email_password_instructions_description:
-  "<:INFO:1166743144889602190> Metode
+enter_email_password_instructions_description: '<:INFO:1166743144889602190> Metode
   ini mengharuskan kamu memasukkan informasi pribadi kamu.
 
 
@@ -292,98 +278,86 @@ enter_email_password_instructions_description:
 
   Klik tombol di bawah untuk memulai.
 
-  "
+  '
 enter_light_cone_level.button.label: Ubah level light cone
 error_footer: Silakan laporkan kesalahan ini kepada pengembang melalui /feedback
 error_title: Terjadi kesalahan
 erudition: Erudition
-exceptions.card_not_ready_error.message:
-  "Saat karakter baru dirilis, saya perlu meluangkan
+exceptions.card_not_ready_error.message: 'Saat karakter baru dirilis, saya perlu meluangkan
   waktu untuk mengumpulkan fanart dan mengoptimalkan warna untuk kartu mereka.
 
   Jika kamu ingin mempercepat proses ini, kamu dapat berkontribusi pada data kartu
-  dengan menghubungi saya di [Server Discord](https://dsc.gg/hoyo-buddy)."
+  dengan menghubungi saya di [Server Discord](https://dsc.gg/hoyo-buddy).'
 exceptions.card_not_ready_error.title: Data kartu untuk {character_name} belum siap.
 exped.embed.description: Satu (atau lebih) ekspedisi selesai
 exped_button.label: Pengingat ekspedisi
 exped_modal.title: Pengaturan Pengingat Ekspedisi
-exploration.anemoculi: "Anemoculus: {anemoculi}"
+exploration.anemoculi: 'Anemoculus: {anemoculi}'
 exploration.chests: Chest Terbuka
 exploration.common_chests: Common
-exploration.dendroculi: "Dendroculus: {dendroculi}"
-exploration.electroculi: "Electroculus: {electroculi}"
+exploration.dendroculi: 'Dendroculus: {dendroculi}'
+exploration.electroculi: 'Electroculus: {electroculi}'
 exploration.exquisite_chests: Exquisite
-exploration.geoculi: "Geoculus: {geoculi}"
-exploration.hydroculi: "Hydroculus: {hydroculi}"
+exploration.geoculi: 'Geoculus: {geoculi}'
+exploration.hydroculi: 'Hydroculus: {hydroculi}'
 exploration.luxurious_chests: Luxurious
 exploration.placeholder: Belum rilis
-exploration.placeholder_quote:
-  '"Setiap perjalanan pasti ada akhirnya, tidak perlu
+exploration.placeholder_quote: '"Setiap perjalanan pasti ada akhirnya, tidak perlu
   terburu-buru."
 
   -Zhongli'
 exploration.precious_chests: Precious
-exploration.progress: "Progres Eksplorasi: {progress}%"
+exploration.progress: 'Progres Eksplorasi: {progress}%'
 exploration.remarkable_chests: Remarkable
-exploration.reputation: "Reputasi: Lv.{reputation}"
+exploration.reputation: 'Reputasi: Lv.{reputation}'
 exploration.title: Eksplorasi Dunia
 exploration.waypoints: Waypoint Terbuka
 exploration_command_description: Lihat statistik eksplorasimu di Genshin Impact
 farm_add_command.item_already_in_list: Item sudah ada dalam daftar
-farm_add_command.item_already_in_list_description:
-  Item ini sudah ada di dalam daftar
+farm_add_command.item_already_in_list_description: Item ini sudah ada di dalam daftar
   pengingat farming kamu
-farm_add_command_description:
-  Tambah karakter/senjata untuk diberitahu ketika materialnya
+farm_add_command_description: Tambah karakter/senjata untuk diberitahu ketika materialnya
   dapat difarming
 farm_check.farmable_today: Material untuk {name}dapat di farm hari ini
-farm_check.use_farm_notify:
-  "Gunakan /farm reminder untuk konfigurasikan pengaturan
+farm_check.use_farm_notify: 'Gunakan /farm reminder untuk konfigurasikan pengaturan
   pengingat
 
-  Gunakan /farm view untuk melihat semua item yang bisa difarming hari ini"
+  Gunakan /farm view untuk melihat semua item yang bisa difarming hari ini'
 farm_notify.add_item: Tambahkan item
-farm_notify.add_item.embed.description:
-  Untuk menambahkan item, gunakan perintah </farm
+farm_notify.add_item.embed.description: Untuk menambahkan item, gunakan perintah </farm
   add:1044926380456017920>
-farm_notify.description:
-  Kamu akan diingatkan ketika material karakter/senjata dalam
+farm_notify.description: Kamu akan diingatkan ketika material karakter/senjata dalam
   daftar ini dapat difarming.
 farm_notify.empty: Kamu tidak memiliki item di daftar pengingat farming kamu
-farm_notify.empty_description: ""
+farm_notify.empty_description: ''
 farm_notify.remove_item: Hapus item
-farm_notify.remove_item.embed.description:
-  Untuk hapus item, gunakan perintah </farm
+farm_notify.remove_item.embed.description: Untuk hapus item, gunakan perintah </farm
   remove:1044926380456017920>
 farm_notify.title: Daftar Pengingat Farming
-farm_reminder_command_description:
-  Memberi tahu kamu ketika material karakter/senjata
+farm_reminder_command_description: Memberi tahu kamu ketika material karakter/senjata
   bisa difarming
 farm_remove_command.item_not_found: Item tidak ditemukan
-farm_remove_command.item_not_found_description:
-  Item ini tidak ada di dalam daftar
+farm_remove_command.item_not_found_description: Item ini tidak ada di dalam daftar
   pengingat farming kamu
 farm_remove_command_description: Hapus karakter/senjata dari daftar pengingat farming
 farm_view.happy_farming: 🌾 Happy farming!
 farm_view.set_reminder: Atur Pengingat
-farm_view.set_reminder.embed.description:
-  Untuk mengatur pengingat, gunakan perintah
+farm_view.set_reminder.embed.description: Untuk mengatur pengingat, gunakan perintah
   </farm reminder>
-farm_view.sundays: ""
+farm_view.sundays: ''
 farm_view.weekday_select.placeholder: Pilih hari kerja
 farm_view_command_description: Lihat domain yang dapat difarming di Genshin Impact
 feedback_button.feedback_sent.description: 🥰 Terimakasih banyak atas masukanmu!
 feedback_button.feedback_sent.title: Masukan Terkirim
 feedback_button.label: Berikan Masukan
-feedback_command.description:
-  "🤗 Hay! Terimakasih telah meluangkan waktu untuk memberikan
+feedback_command.description: '🤗 Hay! Terimakasih telah meluangkan waktu untuk memberikan
   kami masukan
 
   Klik tombol dibawah untuk memulai.
 
 
   Catatan: Saya mungkin akan menghubungi kamu untuk rincian lebih lanjut. Jadi tolong
-  tetap buka DM kamu (atau bergabung ke [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
+  tetap buka DM kamu (atau bergabung ke [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy)).'
 feedback_command_description: Berikan masukan untuk developer bot
 feedback_modal.feedback.label: Masukan
 fire: Fire
@@ -393,27 +367,25 @@ food: Makanan
 friday: Jumat
 furnishing_sets: Set Perabot
 furnishings: Perabot
-furniture_embed_description: "{comfort_icon} Comfort: {comfort}
+furniture_embed_description: '{comfort_icon} Comfort: {comfort}
 
   {load_icon} Load: {load}
 
   Trust: {trust}
 
-  Waktu Pembuatan: {hour}h"
+  Waktu Pembuatan: {hour}h'
 game_maintenance_description: Silakan coba lagi nanti
 game_maintenance_title: Game sedang dalam pemeliharaan
 game_value_incomplete_param_error_message: Kamu harus menentukan UID dari game
 geeetest_verification_complete: Verifikasi selesai
 geeetest_verification_timeout: Batas waktu verfikasi
-geeetest_verification_timeout_description:
-  Verifikasi telah berakhir. Silakan gunakan
+geeetest_verification_timeout_description: Verifikasi telah berakhir. Silakan gunakan
   perintah </geetest> untuk coba lagi.
 geetest.embed.title: 😅 Perlu menyelesaikan CAPTCHA sebelum masuk
 geetest.no_need: Tidak perlu geetest
 geetest.no_need.description: Kamu tidak perlu melalukan geetest! Kenapa kamu di sini?!
 geetest.required: Diperlukan Verifikasi Geetest
-geetest.required.description:
-  Gunakan perintah </geetest> , pilih akun untuk memicu
+geetest.required.description: Gunakan perintah </geetest> , pilih akun untuk memicu
   geetest, dan pilih `{geetest_type}` untuk menyelesaikan verifikasi
 geetest_command_description: Lengkapi verifikasi geetest
 geetest_command_type_param_description: Jenis untuk verifikasi geetest
@@ -423,12 +395,11 @@ geo: Geo
 gi_daily.embed.description: Komisi harian atau keahlian petualangan belum selesai
 gift_code_modal.code_input.label: Kode {num}
 gift_code_modal.title: Masukkan kode penukaran
-guild_only_feature_error_message:
-  Fitur ini hanya tersedia di dalam guild, silakan
+guild_only_feature_error_message: Fitur ini hanya tersedia di dalam guild, silakan
   coba lagi di dalam guild.
 guild_only_feature_error_title: Fitur hanya untuk guild
 harmony: Harmony
-honkai:_star_rail: "Honkai: Star Rail"
+honkai:_star_rail: 'Honkai: Star Rail'
 honkai_impact_3rd: Honkai Impact 3rd
 hoyolab: HoYoLAB
 hsr_daily.embed.description: Pelatihan harian belum selesai
@@ -438,41 +409,32 @@ imaginary: Imaginary
 inazuma: Inazuma
 incomplete_param_error_title: Parameter-parameter perintah yang diberikan tidak lengkap
 instructions_title: Petunjuk
-interaction_failed_description:
-  Tampilan ini tidak dimulai olehmu, oleh karena itu
+interaction_failed_description: Tampilan ini tidak dimulai olehmu, oleh karena itu
   kamu tidak dapat menggunakannya.
 interaction_failed_title: Interaksi gagal
 invalid_category_selected: Jenis game yang dipilih tidak valid
-invalid_color_error_message:
-  "Warna yang valid harus berupa kode warna heksadesimal,
-  misalnya #FF0000"
+invalid_color_error_message: 'Warna yang valid harus berupa kode warna heksadesimal,
+  misalnya #FF0000'
 invalid_color_error_title: warna tidak valid
-invalid_cookies_description:
-  Refresh cookie kamu dengan menambahkan akun kamu lagi
+invalid_cookies_description: Refresh cookie kamu dengan menambahkan akun kamu lagi
   menggunakan </accounts>
 invalid_cookies_title: Cookie Tidak Valid
-invalid_email_password_description:
-  Email atau kata sandi yang kamu berikan salah,
+invalid_email_password_description: Email atau kata sandi yang kamu berikan salah,
   silakan periksa dan coba lagi.
 invalid_email_password_title: Email atau kata sandi tidak valid
 invalid_game_selected: Permainan yang dipilih tidak valid
-invalid_image_url_error_message:
-  URL gambar yang valid harus berupa URL langsung ke
+invalid_image_url_error_message: URL gambar yang valid harus berupa URL langsung ke
   file gambar yang berisi ekstensi gambar, dan dapat diakses publik.
 invalid_image_url_error_title: URL gambar tidak valid
-invalid_input.input_needs_to_be_bool:
-  Input `{input}` harus berupa `0` (untuk salah)
+invalid_input.input_needs_to_be_bool: Input `{input}` harus berupa `0` (untuk salah)
   atau `1` (untuk benar)
 invalid_input.input_needs_to_be_int: Input `{input}` harus berupa bilangan bulat
-invalid_input.input_out_of_range.max_value:
-  Input `{input}` harus kurang dari atau
+invalid_input.input_out_of_range.max_value: Input `{input}` harus kurang dari atau
   sama dengan{max_value}
-invalid_input.input_out_of_range.min_value:
-  Input `{input}` harus lebih besar atau
+invalid_input.input_out_of_range.min_value: Input `{input}` harus lebih besar atau
   sama dengan {min_value}
 invalid_input_error_title: Input tidak valid
-invalid_query_error_message:
-  Tidak dapat menemukan apa pun dengan pertanyaan yang
+invalid_query_error_message: Tidak dapat menemukan apa pun dengan pertanyaan yang
   diberikan, harap pilih pilihan dari pelengkapan otomatis alih-alih mengetik pertanyaan
   kamu sendiri.
 invalid_query_error_title: Pertanyaan tidak valid
@@ -480,8 +442,7 @@ invalid_verification_code_description: Silakan periksa kode verifikasi dan coba 
 invalid_verification_code_title: Kode verifikasi tidak valid
 items: Item
 javascript_button_label: Dengan JavaScript
-javascript_instructions_description:
-  "<:INFO:1166743144889602190> Catatan: Metode
+javascript_instructions_description: '<:INFO:1166743144889602190> Catatan: Metode
   ini dapat digunakan pada semua browser utama di desktop, namun pada perangkat seluler,
   metode ini hanya dapat digunakan pada **Chrome** dan **Edge**.
 
@@ -500,7 +461,7 @@ javascript_instructions_description:
 
   6. Klik tombol di bawah dan tempel teks di dalam kotak
 
-  "
+  '
 level_label: Level
 level_str: Lv.{level}
 light_cones: Light Cone
@@ -509,17 +470,20 @@ liyue: Liyue
 loading_text: Memuat...
 make_up_for_checkin_button_label: Absen susulan
 materials: Material
-memory_of_chaos: ""
+memory_of_chaos: ''
 miyoushe: Miyoushe
-mobile_instructions_description:
-  "1. Klik tombol di bawah untuk memasukkan nomor telepon
+mobile_instructions_description: '1. Klik tombol di bawah untuk memasukkan nomor telepon
   kamu
 
   2. Kamu akan menerima kode verifikasi melalui SMS
 
   3. Klik tombol di bawah untuk memasukkan kode verifikasi
 
-  "
+  '
+moc_card_battles_fought: ''
+moc_card_cycles_used: ''
+moc_card_farthest_stage: ''
+moc_quick_clear: ''
 monday: Senin
 mondstadt: Mondstadt
 namecards: Kartu nama
@@ -527,27 +491,25 @@ next_page_option_label: Halaman selanjutnya
 nickname_modal_label: Nickname
 nickname_modal_placeholder: Akun utama, akun Asia...
 nihility: Nihility
-no_abyss_data_error_message:
-  Tidak dapat menemukan data spiral abyss apa pun, mungkin
+no_abyss_data_error_message: Tidak dapat menemukan data spiral abyss apa pun, mungkin
   kamu belum memulai spiral abyss atau datanya belum siap. Silakan coba lagi nanti
 no_abyss_data_error_title: Tidak Ada Data Spiral Abyss
-no_account_found_for_games_error_message:
-  Kamu belum memiliki akun di game `{games}`
+no_account_found_for_games_error_message: Kamu belum memiliki akun di game `{games}`
   dan platform `{platforms}`. Tambahkan dengan </accounts>
 no_account_found_for_games_error_title: Tidak ditemukan akun
-no_accounts_autocomplete_choice:
-  Kamu belum memiliki akun apapun. Tambahkan satu dengan
+no_accounts_autocomplete_choice: Kamu belum memiliki akun apapun. Tambahkan satu dengan
   /accounts
+no_challenge_data_err_message: ''
+no_challenge_data_err_title: ''
 no_characters_found_error_message: Silakan coba lagi dengan filter yang berbeda
-no_characters_found_error_title:
-  Tidak ada karakter yang ditemukan dengan filter yang
+no_characters_found_error_title: Tidak ada karakter yang ditemukan dengan filter yang
   dipilih
-no_game_accounts_error_message: "Tidak ada akun game di akun {platform}. "
+no_game_accounts_error_message: 'Tidak ada akun game di akun {platform}. '
 no_game_accounts_error_title: Tidak Ada Akun
 notes-card.gi.completed: Selesai
 notes-card.gi.daily-commissions: Komisi Harian
 notes-card.gi.expedition-finished: Selesai
-notes-card.gi.expedition-remaining: "{time} Tersisa"
+notes-card.gi.expedition-remaining: '{time} Tersisa'
 notes-card.gi.realm-currency: Realm Currency
 notes-card.gi.realtime-notes: Catatan Real-Time
 notes-card.gi.remaining: Tersisa
@@ -557,12 +519,12 @@ notes-card.hsr.daily-training: Pelatihan Harian
 notes-card.hsr.echo-of-war-discounts: Diskon Echo of War
 notes-card.hsr.reserved-power: Cadangan Power
 notes-card.hsr.trailblaze-power: Trailblaze Power
-notes.item_full_in_time: "{emoji} penuh {in_time}"
-notes_available: "{emoji} tersedia {in_time}"
+notes.item_full_in_time: '{emoji} penuh {in_time}'
+notes_available: '{emoji} tersedia {in_time}'
 notes_command_description: Lihat catatan real-time
-notif.embed.footer: "Klik tombol di bawah untuk mengubah pengaturan notifikasi.
+notif.embed.footer: 'Klik tombol di bawah untuk mengubah pengaturan notifikasi.
 
-  Jika sudah habis masa berlakunya, gunakan perintah /notes."
+  Jika sudah habis masa berlakunya, gunakan perintah /notes.'
 notif_modal.enabled.label: Diaktifkan
 notif_modal.max_notif_count.label: Jumlah Pemberitahuan Maks
 notif_modal.notify_interval.label: Pemberitahuan Interval (dalam menit)
@@ -572,19 +534,19 @@ notif_modal.threshold.label: Batas
 notification_settings_button_label: Pengaturan notifikasi
 notify_on_failure_button_label: Beritahu jika absen gagal
 notify_on_success_button_label: Beritahu jika absen berhasil
-nsfw_prompt_error_message:
-  Perintah tersebut berisi konten NSFW, silakan coba lagi
+nsfw_prompt_error_message: Perintah tersebut berisi konten NSFW, silakan coba lagi
   dengan perintah lain.
 nsfw_prompt_error_title: NSFW Terdeteksi
 page_footer: Halaman {current_page}/{total_pages}
+pf_card_title: ''
+pf_card_total_score: ''
 physical: Physical
 player_not_found_description: Silakan periksa kembali UID yang diberikan
 player_not_found_title: Pemain tidak ditemukan
 preservation: Preservation
 prev_page_option_label: Halaman Sebelumnya
 primogems: primogems
-process_notify_error.content:
-  "Terjadi kesalahan saat memproses pengingat catatan
+process_notify_error.content: 'Terjadi kesalahan saat memproses pengingat catatan
   real-time.
 
   Hoyo Buddy telah menonaktifkan pengingat ini untuk akun ini, kamu dapat mengaktifkannya
@@ -593,13 +555,12 @@ process_notify_error.content:
   Jika masalah ini berlanjut atau kamu tidak tahu cara memperbaikinya, silakan hubungi
   pengembang melalui </feedback>.
 
-  "
+  '
 profile.add_image.button.label: Tambah gambar kustom
 profile.add_image_modal.image_url.label: URL Gambar
 profile.add_image_modal.title: Tambah Gambar Kustom
 profile.build.select.placeholder: Pilih build...
-profile.card_info.embed.description:
-  "- Semua aset yang digunakan dalam kartu adalah
+profile.card_info.embed.description: '- Semua aset yang digunakan dalam kartu adalah
   milik Hoyoverse, saya bukan pemiliknya.
 
   - Semua fanart yang digunakan dalam kartu dikreditkan ke artisnya masing-masing.
@@ -609,28 +570,24 @@ profile.card_info.embed.description:
 
   - Data permainan disediakan oleh {provider}
 
-  "
+  '
 profile.card_info.embed.title: Tentang Kartu Build Karakter
 profile.card_settings.button.label: Pengaturan kartu
-profile.card_template_select.diff_author.description:
-  Dirancang oleh {author1} dan
+profile.card_template_select.diff_author.description: Dirancang oleh {author1} dan
   diprogram oleh {author2}
 profile.card_template_select.encard.label: Template ENCard {num}
 profile.card_template_select.enka_classic.label: Template Enka klasik
 profile.card_template_select.enkacard.label: Template EnkaCard {num}
 profile.card_template_select.hb.label: Template Hoyo Buddy {num}
 profile.card_template_select.placeholder: Pilih template
-profile.card_template_select.same_author.description:
-  Dirancang dan diprogram oleh
+profile.card_template_select.same_author.description: Dirancang dan diprogram oleh
   {author}
 profile.card_template_select.src.label: Template StarRailCard {num}
 profile.character_select.cached_data.description: Data cache
-profile.character_select.description:
-  Lv.{level} | E{eidolons}S{superposition} | {data_type}
+profile.character_select.description: Lv.{level} | E{eidolons}S{superposition} | {data_type}
   | Dari showcase in-game
 profile.character_select.enka_network.description: Enka Network build
-profile.character_select.hoyolab.description:
-  Lv.{level} | E{eidolons}S{superposition}
+profile.character_select.hoyolab.description: Lv.{level} | E{eidolons}S{superposition}
   | {data_type} | Dari HoYoLAB
 profile.character_select.live_data.description: Data real-time
 profile.character_select.placeholder: Pilih karakter
@@ -645,8 +602,7 @@ profile.image_select.default_collection.label: Koleksi Hoyo Buddy ({num})
 profile.image_select.none.label: Gambar resmi
 profile.image_select.placeholder: Pilih gambar
 profile.info.embed.custom_images.name: Gambar Kustom
-profile.info.embed.custom_images.value:
-  "- Hoyo Buddy hadir dengan beberapa seni preset
+profile.info.embed.custom_images.value: '- Hoyo Buddy hadir dengan beberapa seni preset
   yang saya suka, tetapi kamu juga dapat menambahkan gambar kamu sendiri.
 
   - Hanya URL gambar langsung yang didukung, dan harus dapat diakses publik; GIF tidak
@@ -657,21 +613,19 @@ profile.info.embed.custom_images.value:
   - Bagi pemilik server, saya tidak bertanggung jawab atas gambar NSFW apa pun yang
   kamu atau anggota kamu tambahkan.
 
-  - Tombol merah menghapus gambar khusus saat ini dan kembali ke gambar default."
+  - Tombol merah menghapus gambar khusus saat ini dan kembali ke gambar default.'
 profile.info.embed.dark_mode.name: Mode Gelap
-profile.info.embed.dark_mode.value:
-  "- Pengaturan ini independen pada pengaturan di
+profile.info.embed.dark_mode.value: '- Pengaturan ini independen pada pengaturan di
   </settings>, pengaturan default adalah mode terang.
 
   - Kartu mode terang cenderung terlihat lebih baik karena warnanya tidak dioptimalkan
   untuk mode gelap.
 
-  - Saran untuk warna mode gelap diterima!"
+  - Saran untuk warna mode gelap diterima!'
 profile.info.embed.primary_color.name: Warna Primer
-profile.info.embed.primary_color.value: "- Hanya kode warna hex yang didukung."
+profile.info.embed.primary_color.value: '- Hanya kode warna hex yang didukung.'
 profile.info.embed.templates.name: Template
-profile.info.embed.templates.value:
-  "- Hoyo Buddy mempunyai template buatan saya sendiri,
+profile.info.embed.templates.value: '- Hoyo Buddy mempunyai template buatan saya sendiri,
   namun saya juga menambahkan template buatan developer lain.
 
   - Kode templat pihak ke 3 tidak saya kelola, jadi saya tidak dapat menjamin kualitasnya;
@@ -680,10 +634,10 @@ profile.info.embed.templates.value:
   - Templat pihak ketiga mungkin memiliki keterbatasan fitur dibandingkan dengan milik
   Hoyo Buddy.
 
-  - Karakter data yang di-cache hanya dapat menggunakan template Hoyo Buddy."
+  - Karakter data yang di-cache hanya dapat menggunakan template Hoyo Buddy.'
 profile.info.embed.title: Tentang Pengaturan Kartu
 profile.player_info.button.label: Info pemain
-profile.player_info.embed.description: "Level Trailblaze: {level}
+profile.player_info.embed.description: 'Level Trailblaze: {level}
 
   Level Equilibrium: {world_level}
 
@@ -695,15 +649,15 @@ profile.player_info.embed.description: "Level Trailblaze: {level}
 
   Achievement: {achievements}
 
-  "
-profile.player_info.gi.embed.description: "Rank Adventure: {adventure_rank}
+  '
+profile.player_info.gi.embed.description: 'Rank Adventure: {adventure_rank}
 
   Spiral Abyss: {spiral_abyss}
 
   Achievement: {achievements}
 
-  "
-profile.player_info.hoyolab.embed.description: "Level Trailblaze: {level}
+  '
+profile.player_info.hoyolab.embed.description: 'Level Trailblaze: {level}
 
   Jumlah Karakter:{characters}
 
@@ -713,52 +667,46 @@ profile.player_info.hoyolab.embed.description: "Level Trailblaze: {level}
 
   Achievement: {achievements}
 
-  "
+  '
 profile.primary_color.button.label: Ubah warna
 profile.primary_color_modal.color.label: Warna (hex code)
 profile.primary_color_modal.title: Ganti Warna Kartu
 profile.remove_from_cache.button.label: Hapus dari cache
 profile.remove_image.button.label: Hapus gambar kustom
-profile_command_description:
-  Lihat profil dalam game kamu dan buat kartu pembentukan
+profile_command_description: Lihat profil dalam game kamu dan buat kartu pembentukan
   karakter
 profile_command_game_value_description: UID dari Game
-profile_command_uid_param_description:
-  UID pemain, ini akan menggantikan parameter
+profile_command_uid_param_description: UID pemain, ini akan menggantikan parameter
   akun jika disediakan
 pt_button.label: Pengingat parametric transformer
 pt_modal.title: Pengaturan Pengingat Parametric Transformer
 public_account_toggle.label: Setel akun sebagai publik
-pure_fiction: ""
+pure_fiction: ''
 pyro: Pyro
 qrcode_button_label: Dengan kode QR
 qrcode_confirmed.desc: Berhasil masuk
 qrcode_expired.desc: Silakan coba lagi dengan kode QR yang baru
 qrcode_expired_title: Kode QR kedaluwarsa
-qrcode_login_instructions.desc:
-  Pindai kode QR di bawah menggunakan aplikasi Miyoushe
+qrcode_login_instructions.desc: Pindai kode QR di bawah menggunakan aplikasi Miyoushe
   untuk masuk
-qrcode_scanned.desc:
-  Berhasil memindai kode QR. Silakan konfirmasi masuk melalui perangkat
+qrcode_scanned.desc: Berhasil memindai kode QR. Silakan konfirmasi masuk melalui perangkat
   kamu.
 quantum: Quantum
 read_story.button.label: Baca Kisah
 real_time_notes: Catatan real-time
 realm_curr_button.label: Pengingat realm currency
 realm_curr_modal.title: Pengaturan Pengingat Realm Currency
-redeeem_code.cookie_token_expired_description:
-  "Refresh token cookie kamu dengan menambahkan
+redeeem_code.cookie_token_expired_description: 'Refresh token cookie kamu dengan menambahkan
   akunmu lagi menggunakan </accounts>.
 
   Jika kamu menggunakan metode email dan kata sandi untuk menambahkan akun, token
-  cookie bisa diperbarui secara otomatis."
+  cookie bisa diperbarui secara otomatis.'
 redeeem_code.cookie_token_expired_title: Batas waktu token cookie berakhir
-redeeem_code.cookie_token_refresh_failed_description:
-  "Mungkin kamu sudah mengubah
+redeeem_code.cookie_token_refresh_failed_description: 'Mungkin kamu sudah mengubah
   kata sandi akunmu sejak terakhir kali kamu menambahkan akun.
 
   Silakan tambahkan akunmu lagi menggunakan </accounts> dengan metode email dan kata
-  sandi."
+  sandi.'
 redeeem_code.cookie_token_refresh_failed_title: Gagal memperbarui token cookie
 redeem_code.already_claimed: Kode penukaran telah digunakan
 redeem_code.cooldown: Penukaran kode sedang cooldown
@@ -767,31 +715,29 @@ redeem_code.invalid: Kode penukaran tidak valid
 redeem_code.success: Penukaran berhasil
 redeem_codes_button.label: Penukaran kode
 redeem_command_description: Penukaran kode untuk hadiah dalam game
-redeem_command_embed.description:
-  "Masukkan hingga 5 kode penukaran untuk menukarkan\
+redeem_command_embed.description: "Masukkan hingga 5 kode penukaran untuk menukarkan\
   \ kode. \nAtau, kamu dapat mengaktifkan penukaran kode otomatis."
 redeem_command_embed.title: Hasil penukaran kode
-redeem_cooldown_embed.description:
-  Karena cooldown pada penukaran kode, proses ini
+redeem_cooldown_embed.description: Karena cooldown pada penukaran kode, proses ini
   mungkin memerlukan waktu yang lebih lama.
 redeem_cooldown_embed.title: Menukarkan kode
 refinement_indicator: Refinement {r}
 relics: Relic
 reminder_button.label: Pengaturan pengingat
 reminder_settings.not_set: Tidak diatur
-reminder_settings.reminde.set.type1: "Status: {status}
+reminder_settings.reminde.set.type1: 'Status: {status}
 
   Ambang batas: {threshold}
 
   Notif Interval: {notify_interval} minutes
 
-  Notif Jumlah Maks: {max_notif_count}"
-reminder_settings.reminde.set.type2: "Status: {status}
+  Notif Jumlah Maks: {max_notif_count}'
+reminder_settings.reminde.set.type2: 'Status: {status}
 
   Notif Interval: {notify_interval} minutes
 
-  Notif Jumlah Maks: {max_notif_count}"
-reminder_settings.reminde.set.type3: "Status: {status}
+  Notif Jumlah Maks: {max_notif_count}'
+reminder_settings.reminde.set.type3: 'Status: {status}
 
   Notif Interval: {notify_interval} menit
 
@@ -799,8 +745,8 @@ reminder_settings.reminde.set.type3: "Status: {status}
 
   Waktu Notif: {notify_time} jam sebelum server reset
 
-  "
-reminder_settings.reminde.set.type4: "Status: {status}
+  '
+reminder_settings.reminde.set.type4: 'Status: {status}
 
   Notif Interval: {notify_interval} menit
 
@@ -808,7 +754,7 @@ reminder_settings.reminde.set.type4: "Status: {status}
 
   Waktu Notif: {notify_time} jam sebelum server reset
 
-  Notif Mingguan: {notify_weekday}"
+  Notif Mingguan: {notify_weekday}'
 reminder_settings_title: Pengingat Catatan Real-Time
 reminder_toggle: Pengingat
 resin_discount.embed.description: Diskon weekly boss belum habis
@@ -819,8 +765,7 @@ rtbp_reminder_button.label: Pengingat trailblaze power yang dicadangkan
 rtbp_reminder_modal.title: Pengaturan Pengingat Trailblaze Power yang Dicadangkan
 saturday: Sabtu
 search_autocomplete_no_results: Hasil tidak ditemukan
-search_autocomplete_not_setup:
-  Pilihan pelengkapan otomatis penelusuran belum disiapkan,
+search_autocomplete_not_setup: Pilihan pelengkapan otomatis penelusuran belum disiapkan,
   coba lagi nanti.
 search_command_category_param_description: Pencarian kategori
 search_command_category_param_name: kategori
@@ -844,7 +789,6 @@ talent_level.modal.title: Masukkan level talent
 tbp_reminder_button.label: Pengingat trailblaze power
 tbp_reminder_modal.title: Pengaturan Pengingat Trailblaze Power
 tcg: TCG
-
 the_hunt: The Hunt
 threshold.embed.description: Ambang batas ({threshold}) tercapai
 thunder: Thunder
@@ -852,15 +796,14 @@ thursday: Kamis
 toggle_off_text: mati
 toggle_on_text: nyala
 traditional_chinese_server: Server Cina Tradisional
-try_other_method_error_message: "Silakan coba metode lain untuk login.
+try_other_method_error_message: 'Silakan coba metode lain untuk login.
 
   Jika kamu memasukkan cookie secara manual melalui DevTools, pastikan kamu menyalinnya
-  dengan benar."
+  dengan benar.'
 try_other_method_error_title: Cookies Tidakvalid
 tuesday: Kamis
 unreleased_content: Konten yang belum rilis
-user_autocomplete_param_description:
-  Untuk mencari akun dengan user terkait, secara
+user_autocomplete_param_description: Untuk mencari akun dengan user terkait, secara
   default ke kamu
 user_autocomplete_param_name: user
 user_no_accounts_autocomplete_choice: User ini belum memiliki akun apa pun
@@ -876,7 +819,7 @@ week_boss_modal.title: Pengaturan Pengingat Diskon Weekly Boss
 wind: Wind
 yatta_character_detail_page_label: Detail
 yatta_character_eidolon_page_label: Eidolon
-yatta_character_embed_description: "{rarity}
+yatta_character_embed_description: '{rarity}
 
   Elemen: {element}
 
@@ -884,14 +827,14 @@ yatta_character_embed_description: "{rarity}
 
   Dunia: {world}
 
-  "
-yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}"
+  '
+yatta_character_skill_aoe_weakness_break_field_value: 'AoE: {aoe_weakness_break}'
 yatta_character_skill_energy_field_name: Energy
-yatta_character_skill_energy_generation_field_value: "Generation: {energy_generation}"
-yatta_character_skill_energy_need_field_value: "Cost: {energy_need}"
+yatta_character_skill_energy_generation_field_value: 'Generation: {energy_generation}'
+yatta_character_skill_energy_need_field_value: 'Cost: {energy_need}'
 yatta_character_skill_page_label: Skill
-yatta_character_skill_single_weakness_break_field_value: "Single: {single_weakness_break}"
-yatta_character_skill_spread_weakness_break_field_value: "Spread: {spread_weakness_break}"
+yatta_character_skill_single_weakness_break_field_value: 'Single: {single_weakness_break}'
+yatta_character_skill_spread_weakness_break_field_value: 'Spread: {spread_weakness_break}'
 yatta_character_skill_weakness_break_field_name: Weakness Break
 yatta_character_trace_page_label: Trace
 yatta_item_sources_field_name: Sumber

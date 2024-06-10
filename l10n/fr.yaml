@@ -10,85 +10,84 @@ about_command.translators: Traducteurs
 about_command.uptime: Temps de fonctionnement
 about_command.website: Site officiel
 about_command_description: A propos du bot
-about_embed.description:
-  Un bot Discord riche en fonctionnalités, facile à utiliser
+about_embed.description: Un bot Discord riche en fonctionnalités, facile à utiliser
   et magnifiquement conçu pour les joueurs de Hoyoverse.
-abundance: ""
-abyss.battles_won_fought: ""
-abyss.current: ""
-abyss.deepest_descent: ""
-abyss.floor: ""
-abyss.most_defeats: ""
-abyss.most_dmg_taken: ""
-abyss.most_skills: ""
-abyss.most_ults: ""
-abyss.overview: ""
-abyss.phase_select.placeholder: ""
-abyss.previous: ""
-abyss.strongest_strike: ""
-abyss.total_stars: ""
-abyss__command_description: ""
+abundance: ''
+abyss.battles_won_fought: ''
+abyss.current: ''
+abyss.deepest_descent: ''
+abyss.floor: ''
+abyss.most_defeats: ''
+abyss.most_dmg_taken: ''
+abyss.most_skills: ''
+abyss.most_ults: ''
+abyss.overview: ''
+abyss.phase_select.placeholder: ''
+abyss.previous: ''
+abyss.strongest_strike: ''
+abyss.total_stars: ''
+abyss__command_description: ''
 abyss_chamber.challenge_target.embed.field.name: Cible du challenge
 abyss_chamber.embed.title: Étage {floor_index} - Chambre {chamber_index}
 abyss_chamber.enemy_level.embed.field.name: Niveau des ennemis
-abyss_chamber.ley_line_disorder.embed.field.name: ""
+abyss_chamber.ley_line_disorder.embed.field.name: ''
 abyss_command_description: Voir les ennemis actuels de l'abysse
-abyss_enemy.item_description: "PV: {HP}"
-account_autocomplete_no_default_param_description: ""
-account_autocomplete_param_description:
-  Compte avec lequel exécuter cette commande,
+abyss_enemy.item_description: 'PV: {HP}'
+account_autocomplete_no_default_param_description: ''
+account_autocomplete_param_description: Compte avec lequel exécuter cette commande,
   par défaut le compte sélectionné dans /accounts
 account_autocomplete_param_name: compte
-account_deleted_description: "{account}a été supprimé"
+account_deleted_description: '{account}a été supprimé'
 account_deleted_title: Compte supprimé
 account_game: Jeu
-account_manager_footer: ""
+account_manager_footer: ''
 account_manager_no_accounts_description: Vous n'avez pas encore de compte
 account_manager_title: Gestionnaire de compte
-account_not_found_error_message:
-  Impossible de trouver un compte avec la requête fournie,
+account_not_found_error_message: Impossible de trouver un compte avec la requête fournie,
   veuillez sélectionner des choix à partir de l'autocomplétion au lieu de taper votre
   propre requête.
 account_not_found_error_title: Compte introuvable
 account_server: Serveur
 account_username: Nom d'utilisateur
 accounts_command_description: Gérez vos comptes
-action_in_cooldown_error_message: ""
-action_in_cooldown_error_title: ""
+action_in_cooldown_error_message: ''
+action_in_cooldown_error_title: ''
 add_account_button_label: Ajouter des comptes
-add_hoyolab_acc.embed.description: ""
-add_hoyolab_acc.embed.title: ""
-add_miyoushe_acc.embed.description: ""
-add_miyoushe_acc.enter_mobile_number: ""
-add_miyoushe_acc.mobile_number: ""
-add_miyoushe_acc.with_mobile_number: ""
-adding_accounts_description: ""
+add_hoyolab_acc.embed.description: ''
+add_hoyolab_acc.embed.title: ''
+add_miyoushe_acc.embed.description: ''
+add_miyoushe_acc.enter_mobile_number: ''
+add_miyoushe_acc.mobile_number: ''
+add_miyoushe_acc.with_mobile_number: ''
+adding_accounts_description: ''
 adding_accounts_title: Sélectionnez la plateforme de votre compte
 ai_gen_image_error_message: Vérifiez votre invite et réessayez.
-ai_gen_image_error_title: ""
+ai_gen_image_error_title: ''
 already_claimed_description: Revenez demain !
 already_claimed_title: Les récompenses de connexion quotidienne ont déjà été prises
-anemo: ""
-artifact_set_four_piece_embed_description: "4-Pièces : {bonus_4}"
-artifact_set_two_piece_embed_description: "2-Pièces : {bonus_2}"
+anemo: ''
+artifact_set_four_piece_embed_description: '4-Pièces : {bonus_4}'
+artifact_set_two_piece_embed_description: '2-Pièces : {bonus_2}'
 artifact_sets: Ensemble d'artefacts
-auto_checkin_button_label: ""
+auto_checkin_button_label: ''
 auto_locale_option_label: Suivre la langue du client
-auto_redeem_error.content: ""
-auto_redeem_footer: ""
-auto_redeem_toggle.label: ""
+auto_redeem_error.content: ''
+auto_redeem_footer: ''
+auto_redeem_toggle.label: ''
 books: Livres
-captcha.embed.description: ""
-challenge_command_description: ""
-challenge_type_select.placeholder: ""
+captcha.embed.description: ''
+challenge_command_description: ''
+challenge_type_select.placeholder: ''
+challenge_view.buff_used_in: ''
+challenge_view.team: ''
 chamber_button_label: Chambre {value}
 change_character_level_label: Changer le niveau du personnage
-change_skill_level_label: ""
-change_talent_level_label: ""
-change_weapon_level_label: ""
-chara_level.modal.title: ""
+change_skill_level_label: ''
+change_talent_level_label: ''
+change_weapon_level_label: ''
+chara_level.modal.title: ''
 character_const_page_label: Constellation
-character_embed_description: "{rarity} ★ {element}
+character_embed_description: '{rarity} ★ {element}
 
   Anniversaire: {birthday}
 
@@ -96,72 +95,71 @@ character_embed_description: "{rarity} ★ {element}
 
   Affiliation: {affiliation}
 
-  "
-character_passives_page_label: ""
+  '
+character_passives_page_label: ''
 character_profile_page_label: Profile
 character_quotes_page_label: Citation
-character_skills_page_label: ""
+character_skills_page_label: ''
 character_stories_page_label: Histoires
 character_talents_page_label: Aptitudes
-character_voices_page_label: ""
-characters: ""
-characters.embed.element_filters: ""
-characters.embed.element_max_friendship: ""
-characters.embed.element_not_max_friendship: ""
-characters.embed.max_friendship: ""
-characters.embed.not_max_friendship: ""
-characters.embed.owned_characters: ""
-characters.embed.path_filters: ""
-characters.embed.title: ""
-characters.filter.element.placeholder: ""
-characters.filter.max_friendship: ""
-characters.filter.none: ""
-characters.filter.not_max_friendship: ""
-characters.filter.path.placeholder: ""
-characters.filter.placeholder: ""
-characters.first_time.embed.description: ""
-characters.first_time.title: ""
-characters.gi.embed.footer: ""
-characters.hsr.embed.footer: ""
-characters.sorter.constellation: ""
-characters.sorter.eidolon: ""
-characters.sorter.element: ""
-characters.sorter.friendship: ""
-characters.sorter.level: ""
-characters.sorter.path: ""
-characters.sorter.placeholder: ""
-characters.sorter.rarity: ""
-characters.update_talent_data: ""
-characters.update_talent_data.embed.description: ""
-characters.update_talent_data.title: ""
-characters_command_description: ""
+character_voices_page_label: ''
+characters: ''
+characters.embed.element_filters: ''
+characters.embed.element_max_friendship: ''
+characters.embed.element_not_max_friendship: ''
+characters.embed.max_friendship: ''
+characters.embed.not_max_friendship: ''
+characters.embed.owned_characters: ''
+characters.embed.path_filters: ''
+characters.embed.title: ''
+characters.filter.element.placeholder: ''
+characters.filter.max_friendship: ''
+characters.filter.none: ''
+characters.filter.not_max_friendship: ''
+characters.filter.path.placeholder: ''
+characters.filter.placeholder: ''
+characters.first_time.embed.description: ''
+characters.first_time.title: ''
+characters.gi.embed.footer: ''
+characters.hsr.embed.footer: ''
+characters.sorter.constellation: ''
+characters.sorter.eidolon: ''
+characters.sorter.element: ''
+characters.sorter.friendship: ''
+characters.sorter.level: ''
+characters.sorter.path: ''
+characters.sorter.placeholder: ''
+characters.sorter.rarity: ''
+characters.update_talent_data: ''
+characters.update_talent_data.embed.description: ''
+characters.update_talent_data.title: ''
+characters_command_description: ''
 checkin_button_label: Enregistrement
 checkin_command_description: Enregistrement quotidien dans le jeux
 complete_captcha_button_label: Complete CAPTCHA
-complete_geetest_button_description: ""
-complete_geetest_button_label: ""
-const_refine_str: ""
+complete_geetest_button_description: ''
+complete_geetest_button_label: ''
+const_refine_str: ''
 continue_button_label: Continuer
 cookies_button_label: Saisir les cookies
 cookies_modal_placeholder: Collez vos Cookies ici
-cryo: ""
+cryo: ''
 daily_button.label: Rappel quotidien
-daily_check_in: ""
-daily_checkin_embed_description: "Vérifié {day} jour(s) ce mois-ci
+daily_check_in: ''
+daily_checkin_embed_description: 'Vérifié {day} jour(s) ce mois-ci
 
-  L'enregistrement pour {missed} jour(s) a / ont été manqué
+  L''enregistrement pour {missed} jour(s) a / ont été manqué
 
-  "
+  '
 daily_checkin_embed_title: Connexion quotidienne
 daily_modal.title: Paramètres du rappel quotidien
-daily_training_button.label: ""
+daily_training_button.label: ''
 dark_mode_button_label: Mode sombre
 delete_account_button_label: Supprimer le compte sélectionné
-dendro: ""
-destruction: ""
+dendro: ''
+destruction: ''
 devtools_button_label: Avec DevTools (ordinateur uniquement)
-devtools_instructions_description:
-  '1. Se connecter à [HoYoLAB](https://www.hoyolab.com/home)
+devtools_instructions_description: '1. Se connecter à [HoYoLAB](https://www.hoyolab.com/home)
   ou [Miyoushe](https://www.miyoushe.com/ys/) (pour les joueurs CN)
 
   2. Ouvrez le DevTools en appuyant sur F12 ou Ctrl+Shift+I.
@@ -182,18 +180,17 @@ devtools_instructions_description:
 
   '
 dice_cost_embed_field_name: Coût des dés
-domain-type.characters: ""
-domain-type.weapons: ""
-download_image_failed_error_message: ""
-download_image_failed_error_title: ""
+domain-type.characters: ''
+domain-type.weapons: ''
+download_image_failed_error_message: ''
+download_image_failed_error_title: ''
 edit_nickname_button_label: Modifier le pseudonyme
 edit_nickname_modal_title: Modifier le pseudonyme
-eidolon_superimpose_str: ""
-electro: ""
-email-geetest.embed.title: ""
-email_password_button_label: ""
-email_password_instructions_description:
-  "<:INFO:1166743144889602190>Note : Cette
+eidolon_superimpose_str: ''
+electro: ''
+email-geetest.embed.title: ''
+email_password_button_label: ''
+email_password_instructions_description: '<:INFO:1166743144889602190>Note : Cette
   méthode **NE FONCTIONNE PAS** pour les utilisateurs de Miyoushe, seuls les utilisateurs
   de HoYoLAB peuvent utiliser cette méthode
 
@@ -202,147 +199,142 @@ email_password_instructions_description:
 
   2. Vous serez redirigé vers un site web, cliquez sur le bouton et complétez le CAPTCHA
 
-  3. Après avoir terminé, cliquez sur le bouton `Continuer` ci-dessous"
+  3. Après avoir terminé, cliquez sur le bouton `Continuer` ci-dessous'
 email_password_modal_email_input_label: e-mail ou nom d'utilisateur
 email_password_modal_password_input_label: mot de passe
-enter_email_password_button_label: ""
-enter_email_password_instructions_description: ""
-enter_light_cone_level.button.label: ""
-error_footer: ""
+enter_email_password_button_label: ''
+enter_email_password_instructions_description: ''
+enter_light_cone_level.button.label: ''
+error_footer: ''
 error_title: Une erreur s'est produite
-erudition: ""
-exceptions.card_not_ready_error.message: ""
-exceptions.card_not_ready_error.title: ""
-exped.embed.description: ""
+erudition: ''
+exceptions.card_not_ready_error.message: ''
+exceptions.card_not_ready_error.title: ''
+exped.embed.description: ''
 exped_button.label: Rappel d'expédition
 exped_modal.title: Paramètres de rappel de l'expédition
-exploration.anemoculi: ""
-exploration.chests: ""
-exploration.common_chests: ""
-exploration.dendroculi: ""
-exploration.electroculi: ""
-exploration.exquisite_chests: ""
-exploration.geoculi: ""
-exploration.hydroculi: ""
-exploration.luxurious_chests: ""
-exploration.placeholder: ""
-exploration.placeholder_quote: ""
-exploration.precious_chests: ""
-exploration.progress: ""
-exploration.remarkable_chests: ""
-exploration.reputation: ""
-exploration.title: ""
-exploration.waypoints: ""
-exploration_command_description: ""
-farm_add_command.item_already_in_list: ""
-farm_add_command.item_already_in_list_description: ""
-farm_add_command_description: ""
-farm_check.farmable_today: ""
-farm_check.use_farm_notify: ""
-farm_notify.add_item: ""
-farm_notify.add_item.embed.description: ""
-farm_notify.description: ""
-farm_notify.empty: ""
-farm_notify.empty_description: ""
-farm_notify.remove_item: ""
-farm_notify.remove_item.embed.description: ""
-farm_notify.title: ""
-farm_reminder_command_description: ""
-farm_remove_command.item_not_found: ""
-farm_remove_command.item_not_found_description: ""
-farm_remove_command_description: ""
-farm_view.happy_farming: ""
-farm_view.set_reminder: ""
-farm_view.set_reminder.embed.description: ""
-farm_view.sundays: ""
-farm_view.weekday_select.placeholder: ""
-farm_view_command_description: ""
-feedback_button.feedback_sent.description: ""
-feedback_button.feedback_sent.title: ""
-feedback_button.label: ""
-feedback_command.description: ""
-feedback_command_description: ""
-feedback_modal.feedback.label: ""
-fire: ""
+exploration.anemoculi: ''
+exploration.chests: ''
+exploration.common_chests: ''
+exploration.dendroculi: ''
+exploration.electroculi: ''
+exploration.exquisite_chests: ''
+exploration.geoculi: ''
+exploration.hydroculi: ''
+exploration.luxurious_chests: ''
+exploration.placeholder: ''
+exploration.placeholder_quote: ''
+exploration.precious_chests: ''
+exploration.progress: ''
+exploration.remarkable_chests: ''
+exploration.reputation: ''
+exploration.title: ''
+exploration.waypoints: ''
+exploration_command_description: ''
+farm_add_command.item_already_in_list: ''
+farm_add_command.item_already_in_list_description: ''
+farm_add_command_description: ''
+farm_check.farmable_today: ''
+farm_check.use_farm_notify: ''
+farm_notify.add_item: ''
+farm_notify.add_item.embed.description: ''
+farm_notify.description: ''
+farm_notify.empty: ''
+farm_notify.empty_description: ''
+farm_notify.remove_item: ''
+farm_notify.remove_item.embed.description: ''
+farm_notify.title: ''
+farm_reminder_command_description: ''
+farm_remove_command.item_not_found: ''
+farm_remove_command.item_not_found_description: ''
+farm_remove_command_description: ''
+farm_view.happy_farming: ''
+farm_view.set_reminder: ''
+farm_view.set_reminder.embed.description: ''
+farm_view.sundays: ''
+farm_view.weekday_select.placeholder: ''
+farm_view_command_description: ''
+feedback_button.feedback_sent.description: ''
+feedback_button.feedback_sent.title: ''
+feedback_button.label: ''
+feedback_command.description: ''
+feedback_command_description: ''
+feedback_modal.feedback.label: ''
+fire: ''
 floor_select_label: Étage {value}
-fontaine: ""
+fontaine: ''
 food: Nouritture
 friday: Vendredi
 furnishing_sets: Ensemble de décorations
 furnishings: Décorations
-furniture_embed_description: "Confort : {comfort_icon} {comfort}
+furniture_embed_description: 'Confort : {comfort_icon} {comfort}
 
   Charge : {load_icon} {load}
 
   Confiance : {trust}
 
-  Heure de création : {hour}h"
-game_maintenance_description: ""
-game_maintenance_title: ""
-game_value_incomplete_param_error_message:
-  Tu dois spécifier le jeux qui correspond
+  Heure de création : {hour}h'
+game_maintenance_description: ''
+game_maintenance_title: ''
+game_value_incomplete_param_error_message: Tu dois spécifier le jeux qui correspond
   a l'UID
-geeetest_verification_complete: ""
-geeetest_verification_timeout: ""
-geeetest_verification_timeout_description: ""
-geetest.embed.title: ""
-geetest.no_need: ""
-geetest.no_need.description: ""
-geetest.required: ""
-geetest.required.description: ""
-geetest_command_description: ""
-geetest_command_type_param_description: ""
-geetest_command_type_param_name: ""
+geeetest_verification_complete: ''
+geeetest_verification_timeout: ''
+geeetest_verification_timeout_description: ''
+geetest.embed.title: ''
+geetest.no_need: ''
+geetest.no_need.description: ''
+geetest.required: ''
+geetest.required.description: ''
+geetest_command_description: ''
+geetest_command_type_param_description: ''
+geetest_command_type_param_name: ''
 genshin_impact: Genshin Impact
-geo: ""
-gi_daily.embed.description: ""
-gift_code_modal.code_input.label: ""
-gift_code_modal.title: ""
-guild_only_feature_error_message: ""
-guild_only_feature_error_title: ""
-harmony: ""
-honkai:_star_rail: "Honkai: Star Rail"
+geo: ''
+gi_daily.embed.description: ''
+gift_code_modal.code_input.label: ''
+gift_code_modal.title: ''
+guild_only_feature_error_message: ''
+guild_only_feature_error_title: ''
+harmony: ''
+honkai:_star_rail: 'Honkai: Star Rail'
 honkai_impact_3rd: Honkai Impact 3rd
-hoyolab: ""
-hsr_daily.embed.description: ""
-hydro: ""
-ice: ""
-imaginary: ""
-inazuma: ""
+hoyolab: ''
+hsr_daily.embed.description: ''
+hydro: ''
+ice: ''
+imaginary: ''
+inazuma: ''
 incomplete_param_error_title: Les paramètres de la commande sont incomplets
 instructions_title: Instructions
-interaction_failed_description:
-  Cette vue n'a pas été initiée par vous, vous ne pouvez
+interaction_failed_description: Cette vue n'a pas été initiée par vous, vous ne pouvez
   donc pas l'utiliser.
 interaction_failed_title: Échec de l'interaction
-invalid_category_selected: ""
-invalid_color_error_message: ""
-invalid_color_error_title: ""
-invalid_cookies_description: ""
+invalid_category_selected: ''
+invalid_color_error_message: ''
+invalid_color_error_title: ''
+invalid_cookies_description: ''
 invalid_cookies_title: Cookies invalides
-invalid_email_password_description: ""
-invalid_email_password_title: ""
+invalid_email_password_description: ''
+invalid_email_password_title: ''
 invalid_game_selected: Jeu invalide sélectionné
-invalid_image_url_error_message: ""
-invalid_image_url_error_title: ""
-invalid_input.input_needs_to_be_bool: ""
-invalid_input.input_needs_to_be_int: ""
-invalid_input.input_out_of_range.max_value: ""
-invalid_input.input_out_of_range.min_value: ""
+invalid_image_url_error_message: ''
+invalid_image_url_error_title: ''
+invalid_input.input_needs_to_be_bool: ''
+invalid_input.input_needs_to_be_int: ''
+invalid_input.input_out_of_range.max_value: ''
+invalid_input.input_out_of_range.min_value: ''
 invalid_input_error_title: Entrée invalide
-invalid_query_error_message:
-  Impossible de trouver quoi que ce soit avec la requête
+invalid_query_error_message: Impossible de trouver quoi que ce soit avec la requête
   fournie, veuillez sélectionner des choix à partir de l'autocomplétion au lieu de
   taper votre propre requête.
 invalid_query_error_title: Requête invalide
-invalid_verification_code_description:
-  Veuillez vérifier le code de vérification et
+invalid_verification_code_description: Veuillez vérifier le code de vérification et
   réessayer.
 invalid_verification_code_title: Code de vérification invalide
 items: Objects
 javascript_button_label: Avec JavaScript
-javascript_instructions_description:
-  "<:INFO:1166743144889602190>Note: Cette méthode
+javascript_instructions_description: '<:INFO:1166743144889602190>Note: Cette méthode
   devrait fonctionner sur tous les principaux navigateurs sur ordinateur, mais sur
   mobile, elle ne fonctionne que sur **Chrome** et **Edge**.
 
@@ -352,135 +344,136 @@ javascript_instructions_description:
 
   2. Copiez le code ci-dessous
 
-  3. Cliquez sur la barre d'adresse et saisissez `java`
+  3. Cliquez sur la barre d''adresse et saisissez `java`
 
-  4. Collez le code et appuyez sur Entrée. Assurez-vous de **NE PAS METTRE D'ESPACES**
+  4. Collez le code et appuyez sur Entrée. Assurez-vous de **NE PAS METTRE D''ESPACES**
   entre `java` et `script`
 
   5. Sélectionnez tout et copiez le texte qui apparaît
 
-  6. Cliquez sur le bouton ci-dessous et collez le texte dans la zone prévue."
-level_label: ""
+  6. Cliquez sur le bouton ci-dessous et collez le texte dans la zone prévue.'
+level_label: ''
 level_str: Nv.{level}
 light_cones: Cônes de lumières
 living_beings: Êtres vivants
-liyue: ""
+liyue: ''
 loading_text: Chargement...
 make_up_for_checkin_button_label: Enregistrement manqué
 materials: Matériaux
-memory_of_chaos: ""
-miyoushe: ""
-mobile_instructions_description: ""
-monday: ""
-mondstadt: ""
+memory_of_chaos: ''
+miyoushe: ''
+mobile_instructions_description: ''
+moc_card_battles_fought: ''
+moc_card_cycles_used: ''
+moc_card_farthest_stage: ''
+moc_quick_clear: ''
+monday: ''
+mondstadt: ''
 namecards: Carte de
 next_page_option_label: Page suivante
 nickname_modal_label: Surnom
 nickname_modal_placeholder: Compte principal, Compte Asie...
-nihility: ""
-no_abyss_data_error_message: ""
-no_abyss_data_error_title: ""
-no_account_found_for_games_error_message: ""
-no_account_found_for_games_error_title: ""
-no_accounts_autocomplete_choice:
-  Vous n'avez encore aucun compte. Ajoutez-en un avec
+nihility: ''
+no_abyss_data_error_message: ''
+no_abyss_data_error_title: ''
+no_account_found_for_games_error_message: ''
+no_account_found_for_games_error_title: ''
+no_accounts_autocomplete_choice: Vous n'avez encore aucun compte. Ajoutez-en un avec
   /accounts
-no_characters_found_error_message: ""
-no_characters_found_error_title: ""
-no_game_accounts_error_message: ""
-no_game_accounts_error_title: ""
+no_challenge_data_err_message: ''
+no_challenge_data_err_title: ''
+no_characters_found_error_message: ''
+no_characters_found_error_title: ''
+no_game_accounts_error_message: ''
+no_game_accounts_error_title: ''
 notes-card.gi.completed: Terminé
 notes-card.gi.daily-commissions: Commissions journalières
 notes-card.gi.expedition-finished: Fini
-notes-card.gi.expedition-remaining: "{time}Restant"
-notes-card.gi.realm-currency: ""
-notes-card.gi.realtime-notes: ""
-notes-card.gi.remaining: ""
+notes-card.gi.expedition-remaining: '{time}Restant'
+notes-card.gi.realm-currency: ''
+notes-card.gi.realtime-notes: ''
+notes-card.gi.remaining: ''
 notes-card.gi.resin: Résines
 notes-card.gi.resin-discounts: Remises sur la résine
-notes-card.hsr.daily-training: ""
-notes-card.hsr.echo-of-war-discounts: ""
-notes-card.hsr.reserved-power: ""
-notes-card.hsr.trailblaze-power: ""
-notes.item_full_in_time: ""
-notes_available: ""
+notes-card.hsr.daily-training: ''
+notes-card.hsr.echo-of-war-discounts: ''
+notes-card.hsr.reserved-power: ''
+notes-card.hsr.trailblaze-power: ''
+notes.item_full_in_time: ''
+notes_available: ''
 notes_command_description: Voir les notes en temps réel
-notif.embed.footer: ""
+notif.embed.footer: ''
 notif_modal.enabled.label: Activé
 notif_modal.max_notif_count.label: Nombre max de notifs
 notif_modal.notify_interval.label: Intervalle de notification (en minutes)
-notif_modal.notify_time.label:
-  Notifier X heures avant la réinitialisation du serveur
+notif_modal.notify_time.label: Notifier X heures avant la réinitialisation du serveur
   (4:00 AM)
 notif_modal.notify_weekday.label: Le jour de la semaine à notifier
 notif_modal.threshold.label: Seuil
 notification_settings_button_label: Paramètre de notifications
 notify_on_failure_button_label: Notifier en cas d'échec de l'enregistrement
 notify_on_success_button_label: Notifier en cas de succès de l'enregistrement
-nsfw_prompt_error_message:
-  L'invite contient du contenu NSFW, veuillez réessayer avec
+nsfw_prompt_error_message: L'invite contient du contenu NSFW, veuillez réessayer avec
   une autre invite.
-nsfw_prompt_error_title: ""
-page_footer: ""
-physical: ""
-player_not_found_description: ""
-player_not_found_title: ""
-preservation: ""
-prev_page_option_label: ""
+nsfw_prompt_error_title: ''
+page_footer: ''
+pf_card_title: ''
+pf_card_total_score: ''
+physical: ''
+player_not_found_description: ''
+player_not_found_title: ''
+preservation: ''
+prev_page_option_label: ''
 primogems: primo-gemmes
-process_notify_error.content: ""
+process_notify_error.content: ''
 profile.add_image.button.label: Ajouter une image customisée
 profile.add_image_modal.image_url.label: URL de l'image
 profile.add_image_modal.title: Ajouter une image personnalisée
-profile.build.select.placeholder: ""
-profile.card_info.embed.description:
-  "- Tous les éléments utilisés dans les cartes
-  appartiennent à Hoyoverse, je n'en suis pas propriétaire.
+profile.build.select.placeholder: ''
+profile.card_info.embed.description: '- Tous les éléments utilisés dans les cartes
+  appartiennent à Hoyoverse, je n''en suis pas propriétaire.
 
   - Tous les fanarts utilisés dans les cartes sont crédités à leurs artistes respectifs.
 
-  - Les modèles de Hoyo Buddy sont originaux, vous n'êtes pas autorisé à les modifier
+  - Les modèles de Hoyo Buddy sont originaux, vous n''êtes pas autorisé à les modifier
   ou à prétendre que vous les avez créés sans ma permission.
 
   - Les données du jeu sont fournies par {provider}
 
-  "
+  '
 profile.card_info.embed.title: À propos des cartes pour personnage
 profile.card_settings.button.label: Paramètres de la carte
-profile.card_template_select.diff_author.description:
-  Conçu par {author1} et programmé
+profile.card_template_select.diff_author.description: Conçu par {author1} et programmé
   par {author2}
-profile.card_template_select.encard.label: "Modèle de carte EN {num} "
+profile.card_template_select.encard.label: 'Modèle de carte EN {num} '
 profile.card_template_select.enka_classic.label: Modèle classique Enka
 profile.card_template_select.enkacard.label: Modèle de carte Enka {num}
 profile.card_template_select.hb.label: Modèle Hoyo Buddy {num}
 profile.card_template_select.placeholder: Sélectionner un modèle
-profile.card_template_select.same_author.description: ""
+profile.card_template_select.same_author.description: ''
 profile.card_template_select.src.label: Modèle de carte StarRail {num}
 profile.character_select.cached_data.description: Données mises en cache
-profile.character_select.description:
-  Nv. {level} | E{eidolons}S{superposition} |
+profile.character_select.description: Nv. {level} | E{eidolons}S{superposition} |
   {data_type} | De la vitrine du jeu
-profile.character_select.enka_network.description: ""
-profile.character_select.hoyolab.description: ""
+profile.character_select.enka_network.description: ''
+profile.character_select.hoyolab.description: ''
 profile.character_select.live_data.description: Données en temps réel
 profile.character_select.placeholder: Sélectionner un personnage
 profile.dark_mode.button.label: Mode Sombre
 profile.generate_ai_art.button.label: Generer des art par IA
-profile.generate_ai_art_modal.negative_prompt.label: ""
+profile.generate_ai_art_modal.negative_prompt.label: ''
 profile.generate_ai_art_modal.prompt.label: Invite
 profile.generate_ai_art_modal.title: Generer des art par IA
-profile.genshin.character_select.description: "Nv.{level} | C{const}R{refine} | {data_type}  "
+profile.genshin.character_select.description: 'Nv.{level} | C{const}R{refine} | {data_type}  '
 profile.image_select.custom_image.label: Image personalisée  ({num})
 profile.image_select.default_collection.label: Collection Hoyo Buddy ({num})
 profile.image_select.none.label: Art officiel
 profile.image_select.placeholder: Sélectionner une image
 profile.info.embed.custom_images.name: Images personnalisées
-profile.info.embed.custom_images.value:
-  "- Hoyo Buddy est livré avec des images prédéfinies
-  que j'ai appréciées, mais vous pouvez également ajouter vos propres images.
+profile.info.embed.custom_images.value: '- Hoyo Buddy est livré avec des images prédéfinies
+  que j''ai appréciées, mais vous pouvez également ajouter vos propres images.
 
-  - Seules les URL d'images directes sont prises en charge, et elles doivent être
+  - Seules les URL d''images directes sont prises en charge, et elles doivent être
   accessibles au public ; les GIF ne sont pas pris en charge.
 
   - Pour les modèles de Hoyo Buddy, les images verticales sont recommandées.
@@ -488,23 +481,22 @@ profile.info.embed.custom_images.value:
   - Pour les propriétaires de serveurs, je ne suis pas responsable des images NSFW
   que vous ou vos membres ajoutez.
 
-  - Le bouton rouge supprime l'image personnalisée actuelle et revient à l'image
-  par défaut."
+  - Le bouton rouge supprime l''image personnalisée actuelle et revient à l''image
+  par défaut.'
 profile.info.embed.dark_mode.name: Mode Sombre
-profile.info.embed.dark_mode.value: ""
+profile.info.embed.dark_mode.value: ''
 profile.info.embed.primary_color.name: Couleur primaire
-profile.info.embed.primary_color.value:
-  "- Seuls les codes de couleur hexadécimales
-  sont pris en charge."
+profile.info.embed.primary_color.value: '- Seuls les codes de couleur hexadécimales
+  sont pris en charge.'
 profile.info.embed.templates.name: Modèles
-profile.info.embed.templates.value: ""
+profile.info.embed.templates.value: ''
 profile.info.embed.title: À propos des paramètres de la carte
 profile.player_info.button.label: Informations sur le joueur
-profile.player_info.embed.description: "Niveau Trailblaze : {level}
+profile.player_info.embed.description: 'Niveau Trailblaze : {level}
 
   Niveau Equilibrium : {world_level}
 
-  Nombre d'amis : {friend_count}
+  Nombre d''amis : {friend_count}
 
   Cones de lumière : {light_cones}
 
@@ -512,73 +504,70 @@ profile.player_info.embed.description: "Niveau Trailblaze : {level}
 
   Succès: {achievements}
 
-  "
-profile.player_info.gi.embed.description: ""
-profile.player_info.hoyolab.embed.description: ""
+  '
+profile.player_info.gi.embed.description: ''
+profile.player_info.hoyolab.embed.description: ''
 profile.primary_color.button.label: Changer la couleur
 profile.primary_color_modal.color.label: Couleur (code hexa)
 profile.primary_color_modal.title: Changer la couleur de la carte
 profile.remove_from_cache.button.label: Supprimer du cache
 profile.remove_image.button.label: Suprrimer une image customisée
-profile_command_description:
-  Consultez votre profil dans le jeu et générez des build
+profile_command_description: Consultez votre profil dans le jeu et générez des build
   de personnage.
 profile_command_game_value_description: Jeu de l'UID
-profile_command_uid_param_description: ""
+profile_command_uid_param_description: ''
 pt_button.label: Rappel sur les transformateurs paramétriques
-pt_modal.title: ""
+pt_modal.title: ''
 public_account_toggle.label: Définir le compte à publique
-pure_fiction: ""
-pyro: ""
-qrcode_button_label: ""
-qrcode_confirmed.desc: ""
-qrcode_expired.desc: ""
-qrcode_expired_title: ""
-qrcode_login_instructions.desc: ""
-qrcode_scanned.desc: ""
-quantum: ""
-read_story.button.label: ""
-real_time_notes: ""
-realm_curr_button.label: ""
-realm_curr_modal.title: ""
-redeeem_code.cookie_token_expired_description: ""
+pure_fiction: ''
+pyro: ''
+qrcode_button_label: ''
+qrcode_confirmed.desc: ''
+qrcode_expired.desc: ''
+qrcode_expired_title: ''
+qrcode_login_instructions.desc: ''
+qrcode_scanned.desc: ''
+quantum: ''
+read_story.button.label: ''
+real_time_notes: ''
+realm_curr_button.label: ''
+realm_curr_modal.title: ''
+redeeem_code.cookie_token_expired_description: ''
 redeeem_code.cookie_token_expired_title: Le jeton de cookie a expiré
-redeeem_code.cookie_token_refresh_failed_description: ""
-redeeem_code.cookie_token_refresh_failed_title:
-  Échec de l'actualisation du jeton
+redeeem_code.cookie_token_refresh_failed_description: ''
+redeeem_code.cookie_token_refresh_failed_title: Échec de l'actualisation du jeton
   de cookie
-redeem_code.already_claimed: ""
-redeem_code.cooldown: ""
-redeem_code.expired: ""
-redeem_code.invalid: ""
-redeem_code.success: ""
-redeem_codes_button.label: ""
-redeem_command_description: ""
-redeem_command_embed.description: ""
-redeem_command_embed.title: ""
-redeem_cooldown_embed.description:
-  En raison des temps de recharge, cela peut prendre
+redeem_code.already_claimed: ''
+redeem_code.cooldown: ''
+redeem_code.expired: ''
+redeem_code.invalid: ''
+redeem_code.success: ''
+redeem_codes_button.label: ''
+redeem_command_description: ''
+redeem_command_embed.description: ''
+redeem_command_embed.title: ''
+redeem_cooldown_embed.description: En raison des temps de recharge, cela peut prendre
   un certain temps.
 redeem_cooldown_embed.title: Codes d'échange
-refinement_indicator: ""
+refinement_indicator: ''
 relics: Reliques
 reminder_button.label: Paramètres de rappel
 reminder_settings.not_set: Non défini
-reminder_settings.reminde.set.type1: ""
-reminder_settings.reminde.set.type2: ""
-reminder_settings.reminde.set.type3: ""
-reminder_settings.reminde.set.type4: ""
+reminder_settings.reminde.set.type1: ''
+reminder_settings.reminde.set.type2: ''
+reminder_settings.reminde.set.type3: ''
+reminder_settings.reminde.set.type4: ''
 reminder_settings_title: Rappels de notes en temps réel
-reminder_toggle: ""
-resin_discount.embed.description: ""
+reminder_toggle: ''
+resin_discount.embed.description: ''
 resin_reminder_button.label: Rappel de résine
 resin_reminder_modal.title: Paramètres de rappel de la résine
 reward_claimed_title: Les récompenses de connexion quotidienne été prises
-rtbp_reminder_button.label: ""
-rtbp_reminder_modal.title: ""
+rtbp_reminder_button.label: ''
+rtbp_reminder_modal.title: ''
 saturday: Samedi
-search_autocomplete_no_results: ""
-search_autocomplete_not_setup: ""
+search_autocomplete_no_results: ''
+search_autocomplete_not_setup: ''
 search_command_category_param_description: Dans quelle catégorie rechercher
 search_command_category_param_name: catégorie
 search_command_description: Recherchez tout ce qui concerne les jeux
@@ -590,47 +579,45 @@ select_account.embed.description: Sélectionnez les comptes que vous souhaitez a
 select_account.embed.title: 🎉 Bienvenue chez Hoyo Buddy!
 select_accounts_to_add_placeholder: Sélectionnez les comptes que vous souhaitez ajouter...
 settings_command_description: Configurez vos paramètres d'utilisateur
-skill_attributes_embed_field_name: ""
-skill_level.modal.title: ""
+skill_attributes_embed_field_name: ''
+skill_level.modal.title: ''
 spiral_abyss: Abysses Spiralés
-stats_embed_field_name: ""
-sumeru: ""
-sunday: ""
-superposition_indicator: ""
-talent_level.modal.title: ""
-tbp_reminder_button.label: ""
-tbp_reminder_modal.title: ""
+stats_embed_field_name: ''
+sumeru: ''
+sunday: ''
+superposition_indicator: ''
+talent_level.modal.title: ''
+tbp_reminder_button.label: ''
+tbp_reminder_modal.title: ''
 tcg: JDC
-
-the_hunt: ""
-threshold.embed.description: ""
-thunder: ""
+the_hunt: ''
+threshold.embed.description: ''
+thunder: ''
 thursday: Jeudi
 toggle_off_text: arrêt
 toggle_on_text: marche
 traditional_chinese_server: Serveur chinois traditionnel
-try_other_method_error_message: ""
-try_other_method_error_title: ""
+try_other_method_error_message: ''
+try_other_method_error_title: ''
 tuesday: Mardi
-unreleased_content: ""
-user_autocomplete_param_description:
-  "Utilisateur avec lequel effectuer la recherche
-  dans les comptes, par défaut : vous"
+unreleased_content: ''
+user_autocomplete_param_description: 'Utilisateur avec lequel effectuer la recherche
+  dans les comptes, par défaut : vous'
 user_autocomplete_param_name: utilisateur
-user_no_accounts_autocomplete_choice: ""
+user_no_accounts_autocomplete_choice: ''
 view_card_button_label: Carte
 view_dictionary_button_label: Dictionnaire
 volume_selector_placeholder: Sélectionnez un volume à lire
 wave_button_label: Vague {value}
-weapon_level.modal.title: ""
+weapon_level.modal.title: ''
 weapons: Armes
 wednesday: Mercredi
 week_boss_button.label: Rappel hebdomadaire des remises accordées aux boss
 week_boss_modal.title: Paramètres du rappel hebdomadaire des remises sur les boss
-wind: ""
+wind: ''
 yatta_character_detail_page_label: Détails
 yatta_character_eidolon_page_label: Eidolons
-yatta_character_embed_description: "{rarity}
+yatta_character_embed_description: '{rarity}
 
   Élément : {element}
 
@@ -638,14 +625,14 @@ yatta_character_embed_description: "{rarity}
 
   Monde : {world}
 
-  "
-yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}"
+  '
+yatta_character_skill_aoe_weakness_break_field_value: 'AoE: {aoe_weakness_break}'
 yatta_character_skill_energy_field_name: Énergie
-yatta_character_skill_energy_generation_field_value: "Génération : {energy_generation}"
-yatta_character_skill_energy_need_field_value: "Coût : {energy_need}"
+yatta_character_skill_energy_generation_field_value: 'Génération : {energy_generation}'
+yatta_character_skill_energy_need_field_value: 'Coût : {energy_need}'
 yatta_character_skill_page_label: Compétences
-yatta_character_skill_single_weakness_break_field_value: "Unique: {single_weakness_break}"
-yatta_character_skill_spread_weakness_break_field_value: "Propagation: {spread_weakness_break}"
+yatta_character_skill_single_weakness_break_field_value: 'Unique: {single_weakness_break}'
+yatta_character_skill_spread_weakness_break_field_value: 'Propagation: {spread_weakness_break}'
 yatta_character_skill_weakness_break_field_name: Effect de rupture
 yatta_character_trace_page_label: Trace
 yatta_item_sources_field_name: Sources

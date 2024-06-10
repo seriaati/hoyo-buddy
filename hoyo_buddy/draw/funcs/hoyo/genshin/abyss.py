@@ -199,47 +199,67 @@ class AbyssCard:
         mode = "dark" if self._dark_mode else "light"
         text_bk_colors = {
             "light": {
+                3: (255, 255, 255),
                 4: (181, 172, 238),
                 5: (231, 179, 151),
             },
             "dark": {
+                3: (28, 28, 28),
                 4: (43, 35, 90),
                 5: (85, 63, 51),
             },
         }
         bk_colors = {
             "light": {
+                3: (255, 255, 255),
                 4: (233, 215, 255),
                 5: (255, 218, 197),
             },
             "dark": {
+                3: (28, 28, 28),
                 4: (95, 82, 147),
                 5: (134, 89, 64),
             },
         }
 
         padding = 19
-        for index, chara in enumerate(battle.characters):
+        for i in range(4):
+            try:
+                chara = battle.characters[i]
+            except IndexError:
+                chara = None
+
             shadow = Image.new("RGBA", (130, 160), TRANSPARENT)
             shadow_draw = ImageDraw.Draw(shadow)
             shadow_draw.rounded_rectangle((0, 0, 116, 147), 13, fill=(0, 0, 0, 155))
             for _ in range(5):
                 shadow = shadow.filter(ImageFilter.BLUR)
 
+            chara_rarity = chara.rarity if chara is not None else 3
+
             bk = Image.new("RGBA", (130, 160), TRANSPARENT)
             bk.paste(shadow, (6, 6), shadow)
             bk_draw = ImageDraw.Draw(bk)
-            bk_draw.rounded_rectangle((0, 0, 116, 147), 13, fill=text_bk_colors[mode][chara.rarity])
-            bk_draw.rounded_rectangle((0, 0, 116, 117), 13, fill=bk_colors[mode][chara.rarity])
+            bk_draw.rounded_rectangle(
+                (0, 0, 116, 147),
+                13,
+                fill=text_bk_colors[mode][chara_rarity],
+            )
+            bk_draw.rounded_rectangle(
+                (0, 0, 116, 117),
+                13,
+                fill=bk_colors[mode][chara_rarity],
+            )
 
-            chara_im = drawer.open_static(chara.icon, size=(116, 116))
-            chara_im = drawer.crop_with_mask(chara_im, chara_mask)
-            bk.paste(chara_im, (0, 2), chara_im)
+            if chara is not None:
+                chara_im = drawer.open_static(chara.icon, size=(116, 116))
+                chara_im = drawer.crop_with_mask(chara_im, chara_mask)
+                bk.paste(chara_im, (0, 2), chara_im)
 
             bk_draw.rounded_rectangle(
                 (87, 0, 116, 29),
                 13,
-                fill=text_bk_colors[mode][chara.rarity],
+                fill=text_bk_colors[mode][chara_rarity],
                 corners=(False, True, False, True),
             )
             bk_drawer = Drawer(
@@ -250,14 +270,19 @@ class AbyssCard:
                 translator=self._translator,
             )
 
-            abyss_chara = self._abyss_characters[str(chara.id)]
-            bk_drawer.write(
-                f"C{abyss_chara.const}", position=(102, 14), size=18, style="medium", anchor="mm"
-            )
-            level_str = LocaleStr("Lv.{level}", key="level_str", level=abyss_chara.level)
-            bk_drawer.write(level_str, position=(57, 132), size=24, style="medium", anchor="mm")
+            if chara is not None:
+                abyss_chara = self._abyss_characters[str(chara.id)]
+                bk_drawer.write(
+                    f"C{abyss_chara.const}",
+                    position=(102, 14),
+                    size=18,
+                    style="medium",
+                    anchor="mm",
+                )
+                level_str = LocaleStr("Lv.{level}", key="level_str", level=abyss_chara.level)
+                bk_drawer.write(level_str, position=(57, 132), size=24, style="medium", anchor="mm")
 
-            im.paste(bk, (index * (padding + 116), 0), bk)
+            im.paste(bk, (i * (padding + 116), 0), bk)
 
         return im
 
@@ -270,22 +295,26 @@ class AbyssCard:
         }
         chamber_padding = 183
 
-        for floor in self._abyss.floors:
-            if floor.floor not in star_pos:
-                continue
+        for floor_i in range(9, 13):
+            floor = next((f for f in self._abyss.floors if f.floor == floor_i), None)
 
-            for chamber in floor.chambers:
+            for chamber_i in range(3):
+                try:
+                    chamber = floor.chambers[chamber_i] if floor is not None else None
+                except IndexError:
+                    chamber = None
+
                 self._drawer.write(
-                    str(chamber.stars),
-                    position=star_pos[floor.floor],
+                    str(chamber.stars) if chamber is not None else "0",
+                    position=star_pos[floor_i],
                     size=48,
                     style="medium",
                     locale=Locale.american_english,
                     anchor="mm",
                 )
-                star_pos[floor.floor] = (
-                    star_pos[floor.floor][0],
-                    star_pos[floor.floor][1] + chamber_padding,
+                star_pos[floor_i] = (
+                    star_pos[floor_i][0],
+                    star_pos[floor_i][1] + chamber_padding,
                 )
 
     def draw(self) -> BytesIO:
@@ -316,14 +345,23 @@ class AbyssCard:
             11: (1249, 912),
             12: (1249, 1651),
         }
-        for floor in self._abyss.floors:
-            if floor.floor not in floor_pos:
-                continue
+        for floor_i in range(9, 13):
+            floor = next((f for f in self._abyss.floors if f.floor == floor_i), None)
 
-            original_pos = floor_pos[floor.floor]
+            original_pos = floor_pos[floor_i]
             pos = original_pos
-            for chamber in floor.chambers:
-                for battle in chamber.battles:
+            for chamber_i in range(3):
+                try:
+                    chamber = floor.chambers[chamber_i] if floor is not None else None
+                except IndexError:
+                    chamber = None
+                for battle_i in range(2):
+                    try:
+                        battle = chamber.battles[battle_i] if chamber is not None else None
+                    except IndexError:
+                        battle = None
+                    if battle is None:
+                        continue
                     battle_im = self._draw_battle_characters(battle)
                     self._im.paste(battle_im, pos, battle_im)
                     pos = (pos[0] + 659, pos[1])

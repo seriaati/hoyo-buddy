@@ -110,22 +110,22 @@ class MOCCard:
         block.paste(icon, (0, 0), icon)
 
         level_flair = drawer.open_asset("level_flair.png")
-        block.paste(level_flair, (0, 103), level_flair)
+        block.paste(level_flair, (0, 96), level_flair)
         drawer.write(
             str(chara.level),
-            size=12,
-            position=(24, 111),
+            size=18,
+            position=(31, 108),
             style="bold",
             anchor="mm",
             color=WHITE,
         )
 
         const_flair = drawer.open_asset("const_flair.png")
-        block.paste(const_flair, (96, 0), const_flair)
+        block.paste(const_flair, (90, 0), const_flair)
         drawer.write(
             str(chara.rank),
-            size=12,
-            position=(108, 12),
+            size=18,
+            position=(105, 16),
             style="bold",
             anchor="mm",
             color=WHITE,
@@ -157,6 +157,7 @@ class MOCCard:
                 size=25,
                 position=(0, 60),
                 color=WHITE,
+                style="medium",
             )
         else:
             cycle_tbox = drawer.write(
@@ -168,6 +169,7 @@ class MOCCard:
                 size=25,
                 position=(0, 60),
                 color=WHITE,
+                style="medium",
             )
 
         rightmost = max(name_tbox[2], cycle_tbox[2])

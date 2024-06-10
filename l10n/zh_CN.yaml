@@ -1,723 +1,688 @@
-about_command.contribute: 贡献
-about_command.developer: 开发者
-about_command.discord_server: Discord 服务器
-about_command.guild_count: 服务器数量
-about_command.invite: 邀请机器人
-about_command.latest_changes: 最新更改
-about_command.ram_usage: 内存使用量
-about_command.support: 支持开发者
-about_command.translators: 翻译员
-about_command.uptime: 运行时间
-about_command.website: 官方网站
-about_command_description: 关于机器人
-about_embed.description: 一个为 Hoyoverse 游戏玩家量身订做的 Discord 机器人，功能丰富、易于使用且设计精美。
-abundance: 丰饶
-abyss.battles_won_fought: 获胜次数/战斗次数：{val1}/{val2}
-abyss.current: ''
-abyss.deepest_descent: 最深抵达：{val}
-abyss.floor: 第 {val} 层
-abyss.most_defeats: 最多击破数：{val}
-abyss.most_dmg_taken: 承受最多伤害：{val}
-abyss.most_skills: 元素战技施放数：{val}
-abyss.most_ults: 元素爆发次数：{val}
-abyss.overview: 深境螺旋战绩
-abyss.phase_select.placeholder: ''
-abyss.previous: ''
-abyss.strongest_strike: 最强一击：{val}
-abyss.total_stars: 获取星数：{val}
-abyss__command_description: 查看深境螺旋战绩
-abyss_chamber.challenge_target.embed.field.name: 挑战目标
-abyss_chamber.embed.title: 第{floor_index}层 - 第{chamber_index}间
-abyss_chamber.enemy_level.embed.field.name: 敌人等级
-abyss_chamber.ley_line_disorder.embed.field.name: 地脉异常
-abyss_command_description: 查看当前深境螺旋的敌人
-abyss_enemy.item_description: 生命值：{HP}
-account_autocomplete_no_default_param_description: 用于运行此指令的帐户
-account_autocomplete_param_description: 选择用该命令运行的账户，默认为/accounts中选择的
-account_autocomplete_param_name: 账号
-account_deleted_description: '{account} 已被删除'
-account_deleted_title: 账号已删除
-account_game: 游戏
-account_manager_footer: 被选择账号会作为所有指令运行的预设账号
-account_manager_no_accounts_description: 你尚未持有任何账号
-account_manager_title: 账号管理
-account_not_found_error_message: 无法通过所提供的查询找到账户，请从已提供的选项中选择，而不是自己输入的选项。
-account_not_found_error_title: 账号未找到
-account_server: 所属服务器
-account_username: 用户名
-accounts_command_description: 管理账户
-action_in_cooldown_error_message: 请在 {available_time} 时再试一次。
-action_in_cooldown_error_title: 操作冷却中
-add_account_button_label: 添加账号
-add_hoyolab_acc.embed.description: '1.通过邮箱和密码：最为推荐、最简单的方式。
-
-  2.通过开发者工具：仅在电脑生效，如果你对第一种方式存有安全顾虑，该方式更安全些。
-
-  3.通过JavaScript：过时的方式，不适用于大多数账号。可以在电脑或移动设备上的Google Chrome或者Microsoft Edge 使用。
-
-
-  '
-add_hoyolab_acc.embed.title: 选择一个添加账号的方式
-add_miyoushe_acc.embed.description: '1. 通过 QR 码：如果你在手机上有登入米游社的话，此方式是最推荐的
-
-  2.通过邮箱/用户名和密码
-
-  3.通过手机号。
-
-  4.通过开发者工具：仅在电脑上有效，如果你存有安全顾虑，相较于上面两种方式，该方式更安全。
-
-  '
-add_miyoushe_acc.enter_mobile_number: 输入手机号
-add_miyoushe_acc.mobile_number: 手机号
-add_miyoushe_acc.with_mobile_number: 通过手机号
-adding_accounts_description: '欢迎来到Hoyo Buddy！只需要花费1分钟添加账号的时间，即可享受各种功能。
-
-  关于账号安全，请阅读[Wiki页面](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security)，关于我们如何使用和收集你的数据，请阅读[隐私政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)'
-adding_accounts_title: 选择账号所属平台
-ai_gen_image_error_message: 请检查输入的提示并重试。
-ai_gen_image_error_title: 在使用AI生成绘图中发生错误
-already_claimed_description: 明天再签到吧
-already_claimed_title: 已领取每日奖励
-anemo: 风
-artifact_set_four_piece_embed_description: 四件套：{bonus_4}
-artifact_set_two_piece_embed_description: 二件套：{bonus_2}
-artifact_sets: 圣遗物套装
-auto_checkin_button_label: 自动每日签到
-auto_locale_option_label: 遵循Discord客户端语言
-auto_redeem_error.content: '在自动兑换时发生了错误。
-
-  Hoyo Buddy已为此账户仅禁用了该功能，你可以使用</redeem:1044926380456017924>重新启用。
-
-  如果该错误依旧存在或者不知道如何应对，请通过</feedback:1054261265561833512>联系开发者。
-
-  '
-auto_redeem_footer: 使用 /redeem 关闭自动兑换功能。
-auto_redeem_toggle.label: 自动兑换
-books: 书籍
-captcha.embed.description: '点击下方按钮来完成 CAPTCHA。
-
-  '
-challenge_command_description: ''
-challenge_type_select.placeholder: ''
-chamber_button_label: 第 {value} 间
-change_character_level_label: 更改角色等级
-change_skill_level_label: 更改技能等级
-change_talent_level_label: 更改天赋等级
-change_weapon_level_label: 更改武器等级
-chara_level.modal.title: 输入角色等级
-character_const_page_label: 命之座
-character_embed_description: '{rarity}★ {element}
-
-  生日: {birthday}
-
-  命之座: {constellation}
-
-  所属: {affiliation}
-
-  '
-character_passives_page_label: 被动天赋
-character_profile_page_label: 个人资料
-character_quotes_page_label: 语音
-character_skills_page_label: 技能
-character_stories_page_label: 故事
-character_talents_page_label: 天赋
-character_voices_page_label: 语音
-characters: 角色
-characters.embed.element_filters: '{element}角色'
-characters.embed.element_max_friendship: 满好感度{element}角色
-characters.embed.element_not_max_friendship: 未满好感度{element}角色
-characters.embed.max_friendship: 满好感度角色
-characters.embed.not_max_friendship: 未满好感度角色
-characters.embed.owned_characters: 已拥有角色
-characters.embed.path_filters: '{path} 角色'
-characters.embed.title: 角色一览
-characters.filter.element.placeholder: 选择过滤元素
-characters.filter.max_friendship: 满好感度
-characters.filter.none: 无
-characters.filter.not_max_friendship: 未达到满好感度
-characters.filter.path.placeholder: 选择命途
-characters.filter.placeholder: 选择一个筛选器
-characters.first_time.embed.description: '如果这是你首次使用此指令，可能需要一点时间。
-
-  这是因为此指令需要从各来源来获取数据。
-
-  下次使用此命令时，应该会更快。
-
-  请耐心等待数据获取完成。'
-characters.first_time.title: 获取资料中...
-characters.gi.embed.footer: 等级顺序：普通攻击/元素战技/元素爆发
-characters.hsr.embed.footer: '等级顺序：普攻/战技/终结技/天赋
-
-  使用 /profile 查看角色详情'
-characters.sorter.constellation: 命座
-characters.sorter.eidolon: 星魂
-characters.sorter.element: 元素
-characters.sorter.friendship: 好感度
-characters.sorter.level: 等级
-characters.sorter.path: 命途
-characters.sorter.placeholder: 选择排序
-characters.sorter.rarity: 稀有度
-characters.update_talent_data: 更新天赋等级数据
-characters.update_talent_data.embed.description: 这个可能会花费一些时间，如果你有很多角色，会需要更久。 请耐心等候。
-characters.update_talent_data.title: 正在更新天赋等级数据…
-characters_command_description: 查看你所拥有的全部角色
-checkin_button_label: 签到
-checkin_command_description: 游戏每日签到
-complete_captcha_button_label: 完成 CAPTCHA
-complete_geetest_button_description: ''
-complete_geetest_button_label: ''
-const_refine_str: '{const}命 精{refine}'
-continue_button_label: 继续
-cookies_button_label: 输入 Cookies
-cookies_modal_placeholder: 在此粘贴你的 Cookie...
-cryo: 冰
-daily_button.label: 每日任务提醒
-daily_check_in: 每日签到
-daily_checkin_embed_description: '本月已签到{day}天
-
-  漏签{missed}天
-
-  '
-daily_checkin_embed_title: 每日签到
-daily_modal.title: 每日任务提醒设置
-daily_training_button.label: 每日实训提醒
-dark_mode_button_label: 深色模式
-delete_account_button_label: 删除所选账号
-dendro: 草
-destruction: 毁灭
-devtools_button_label: 通过开发者工具（仅限桌面端）
-devtools_instructions_description: '1. 登录 [HoYoLAB](https://www.hoyolab.com/home)
-  或 [米游社](https://www.miyoushe.com/ys/) （中国玩家适用）
-
-  2. 通过 F12 或 Ctrl+Shift+I 打开开发者工具
-
-  3. 点击 >> 按钮
-
-  4. 点击 `应用程序` 页面
-
-  5. 点击位于左方的 `Cookies`
-
-  6. 点开你目前处于的网站（例如 https://www.hoyolab.com）
-
-  7. 在 `筛选器(Filter)` 一栏中输入 `v2`
-
-  8, 点开下方的按钮
-
-  9. 复制每个 Cookie 的 `值` ，并依次粘贴于对应输入框中。
-
-  '
-dice_cost_embed_field_name: 骰子花费
-domain-type.characters: 角色
-domain-type.weapons: 武器
-download_image_failed_error_message: '无法下载图片{url}，状态码{status}。
-
-  请稍后再试，或者尝试用不同图片，或者检查该图片URL是否无效。'
-download_image_failed_error_title: 图像下载失败
-edit_nickname_button_label: 编辑昵称
-edit_nickname_modal_title: 编辑昵称
-eidolon_superimpose_str: '{eidolon}魂  叠影{superimpose}阶'
-electro: 雷
-email-geetest.embed.title: 😥在发送验证码之前需要解决CAPTCHA问题
-email_password_button_label: 通过邮箱和密码
-email_password_instructions_description: '<:INFO:1166743144889602190> 注意: 该方式**并不适用**于米游社用户，仅对HoYoLAB用户有效。
-
-
-  1. 点击下方的 `完成 CAPTCHA` 按钮
-
-  2. 被引导至一个新的网站后，按下按钮以完成 CAPTCHA
-
-  3. 完成后，点击下方的 `继续` 按钮
-
-  '
-email_password_modal_email_input_label: 电子邮箱或用户名
-email_password_modal_password_input_label: 密码
-enter_email_password_button_label: 输入电子邮箱/用户名和密码
-enter_email_password_instructions_description: '<:INFO:1166743144889602190> 这个方法需要输入你的个人信息。
-
-
-  • 作为交换，你的 `cookie_token` 可以自动刷新，这在兑换码相关功能中会有用处（只有 HoYoLAB 使用者受益）。
-
-  • 你的邮箱和密码**完全不会**被保存在数据库中，因此几乎不可能被泄露。
-
-  • 此外，这个机器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上有开源，所以你可以自行验证这点。
-
-  • 你可以自行决定是否信任该机器人。
-
-
-  点击下方按钮开始。
-
-  '
-enter_light_cone_level.button.label: 更改光锥等级
-error_footer: 请通过 /feedback 向开发者回报这个错误。
-error_title: 出现错误
-erudition: 智识
-exceptions.card_not_ready_error.message: '当新角色公布时，我需要花费时间来收集同人图和优化卡片的颜色。
-
-  如果你想加快该进程，可以在[Discord 服务器](https://dsc.gg/hoyo-buddy) 中联系我来为卡片资料做出贡献。'
-exceptions.card_not_ready_error.title: '{character_name} 的卡片数据还没有准备好呢。'
-exped.embed.description: 一个或者多个派遣已经完成了
-exped_button.label: 探索派遣提醒
-exped_modal.title: 探索派遣提醒设置
-exploration.anemoculi: 风神瞳：{anemoculi}
-exploration.chests: 已解锁宝箱数
-exploration.common_chests: 普通宝箱数
-exploration.dendroculi: 草神瞳：{dendroculi}
-exploration.electroculi: 雷神瞳：{electroculi}
-exploration.exquisite_chests: 精致宝箱数
-exploration.geoculi: 岩神瞳：{geoculi}
-exploration.hydroculi: 水神瞳：{hydroculi}
-exploration.luxurious_chests: 华丽宝箱数
-exploration.placeholder: 待公开内容
-exploration.placeholder_quote: '“旅程总有一天会迎来终点，不必匆忙。”
-
-  ————钟离'
-exploration.precious_chests: 珍贵宝箱数
-exploration.progress: 探索度：{progress}%
-exploration.remarkable_chests: 奇馈宝箱数
-exploration.reputation: 声望等级：{reputation}
-exploration.title: 世界探索
-exploration.waypoints: 已解锁锚点
-exploration_command_description: 查看原神大世界探索度
-farm_add_command.item_already_in_list: 该物品已存在于列表中
-farm_add_command.item_already_in_list_description: 此物品已经在你的刷本提醒列表里了。
-farm_add_command_description: 新增角色/武器，以在其素材可以刷取时收到通知
-farm_check.farmable_today: 今天可以刷取 {name} 的素材了
-farm_check.use_farm_notify: '使用 /farm reminder 进行提醒设置
-
-  使用 /farm view 查看今日能刷取的所有材料'
-farm_notify.add_item: 添加物品
-farm_notify.add_item.embed.description: ''
-farm_notify.description: 你会在此列表内的角色/武器的素材可以刷取时收到提醒。
-farm_notify.empty: 你的刷本提醒列表中没有任何物品
-farm_notify.empty_description: ''
-farm_notify.remove_item: 移除物品
-farm_notify.remove_item.embed.description: ''
-farm_notify.title: 刷本提醒列表
-farm_reminder_command_description: 在角色/武器的素材可以刷取时通知你
-farm_remove_command.item_not_found: 找不到该物品
-farm_remove_command.item_not_found_description: 此物品没有在你的刷本提醒列表中。
-farm_remove_command_description: 从刷本提醒列表中移除角色/武器
-farm_view.happy_farming: 🌾 享受刷本吧！
-farm_view.set_reminder: 设置提醒
-farm_view.set_reminder.embed.description: ''
-farm_view.sundays: ''
-farm_view.weekday_select.placeholder: 选择一个星期
-farm_view_command_description: 查看原神中可以刷取的副本
-feedback_button.feedback_sent.description: 🥰 非常感谢你的反馈
-feedback_button.feedback_sent.title: 反馈已发送
-feedback_button.label: 给予反馈
-feedback_command.description: '🤗 嗨！感谢你抽出时间给予我反馈。请点击下方按钮来开始吧。
-
-
-  注：我可能就更多细节而言来与你联系，所以请保持私信为开启状态（或者加入[Hoyo Buddy 的 Discord 服务器](https://dsc.gg/hoyo-buddy)）。'
-feedback_command_description: 向机器人开发者提供反馈
-feedback_modal.feedback.label: 反馈
-fire: 火
-floor_select_label: 第 {value} 层
-fontaine: 枫丹
-food: 食物
-friday: 星期五
-furnishing_sets: 家居套装
-furnishings: 家具
-furniture_embed_description: '{comfort_icon} 舒适度: {comfort}
-
-  {load_icon} 负荷: {load}
-
-  提供信任度: {trust}制作时间: {hour} 小时'
-game_maintenance_description: 请稍后再试
-game_maintenance_title: 游戏处于维护中。
-game_value_incomplete_param_error_message: 你必须指定所属游戏UID
-geeetest_verification_complete: ''
-geeetest_verification_timeout: ''
-geeetest_verification_timeout_description: ''
-geetest.embed.title: 😅 需要完成 CAPTCHA 验证后才可登录
-geetest.no_need: ''
-geetest.no_need.description: ''
-geetest.required: 需要Geetest验证
-geetest.required.description: ''
-geetest_command_description: 完成 Geetest 验证
-geetest_command_type_param_description: Geetest 验证的类别
-geetest_command_type_param_name: 类别
-genshin_impact: 原神
-geo: 岩
-gi_daily.embed.description: 每日委托或冒险历练尚未全部完成
-gift_code_modal.code_input.label: 兑换码 {num}
-gift_code_modal.title: 输入兑换码
-guild_only_feature_error_message: 这个功能只能在服务器中使用，请在服务器中重试。
-guild_only_feature_error_title: 服务器专属功能
-harmony: 同谐
-honkai:_star_rail: 崩坏：星穹铁道
-honkai_impact_3rd: 崩坏3
+about_command.contribute: Contribute
+about_command.developer: Developer
+about_command.discord_server: Discord server
+about_command.guild_count: Guild count
+about_command.invite: Invite bot
+about_command.latest_changes: Latest changes
+about_command.ram_usage: RAM Usage
+about_command.support: Support developer
+about_command.translators: Translators
+about_command.uptime: Uptime
+about_command.website: Official website
+about_command_description: About the bot
+about_embed.description:
+  - A feature rich, easy to use, and beautifully designed Discord
+  - bot specifically made for Hoyoverse gamers.
+abundance: Abundance
+abyss.battles_won_fought: "Battles Won/Fought: {val1}/{val2}"
+abyss.current: Current phase
+abyss.deepest_descent: "Deepest Descent: {val}"
+abyss.floor: Floor {val}
+abyss.most_defeats: "Most Defeats: {val}"
+abyss.most_dmg_taken: "Most Damage Taken: {val}"
+abyss.most_skills: "Most Skills Casted: {val}"
+abyss.most_ults: "Most Bursts Unleashed: {val}"
+abyss.overview: Spiral Abyss Overview
+abyss.phase_select.placeholder: Select a phase
+abyss.previous: Previous phase
+abyss.strongest_strike: "Strongest Single Strike: {val}"
+abyss.total_stars: "Total Stars: {val}"
+abyss__command_description: View your spiral abyss data
+abyss_chamber.challenge_target.embed.field.name: Challenge Target
+abyss_chamber.embed.title: Floor {floor_index} - Chamber {chamber_index}
+abyss_chamber.enemy_level.embed.field.name: Enemy Level
+abyss_chamber.ley_line_disorder.embed.field.name: Ley Line Disorder
+abyss_command_description: View the current abyss enemies
+abyss_enemy.item_description: "HP: {HP}"
+account_autocomplete_no_default_param_description: Account to run this command with
+account_autocomplete_param_description:
+  - Account to run this command with, defaults
+  - to the selected one in /accounts
+account_autocomplete_param_name: account
+account_deleted_description: "{account} has been deleted."
+account_deleted_title: Account Deleted
+account_game: Game
+account_manager_footer: Selected account will be the default one used for all commands
+account_manager_no_accounts_description: You don't have any accounts yet.
+account_manager_title: Account Manager
+account_not_found_error_message:
+  - Unable to find an account with the provided query,
+  - please select choices from the autocomplete instead of typing your own query.
+account_not_found_error_title: Account not found
+account_server: Server
+account_username: Username
+accounts_command_description: Manage your accounts
+action_in_cooldown_error_message: Please try again at {available_time}.
+action_in_cooldown_error_title: Action in Cooldown
+add_account_button_label: Add accounts
+add_hoyolab_acc.embed.description:
+  ""1. With email and password": Most recommended,
+  0: it's the easiest
+  2. With DevTools: Only work on desktop, a safer option if you have security concerns
+  1: with the first one
+  3. With JavaScript: Outdated method, won't work for most accounts. Works on Google
+  2: Chrome or Microsoft Edge on both desktop and mobile
+  3: '"'
+add_hoyolab_acc.embed.title: Select a Method to add Your Accounts
+add_miyoushe_acc.embed.description:
+  ""1. With QR code": Recommended for most users if
+  0: you are logged in on your mobile device
+  1: 2. With email/username and password
+  2: 3. With phone number
+  4. With DevTools: Only work on desktop, a safer option if you have security concerns
+  3: with the other methods
+  4: '"'
+add_miyoushe_acc.enter_mobile_number: Enter phone number
+add_miyoushe_acc.mobile_number: Phone number
+add_miyoushe_acc.with_mobile_number: With phone number
+adding_accounts_description:
+  - Regarding account security, please read the [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security),
+  - for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_title: Select Your Account's Platform
+ai_gen_image_error_message: Check your prompt and try again.
+ai_gen_image_error_title: An Error Occured While Generating Art With AI
+already_claimed_description: Come back tomorrow!
+already_claimed_title: Daily Check-In Reward Already Claimed
+anemo: Anemo
+artifact_set_four_piece_embed_description: "4-Pieces: {bonus_4}"
+artifact_set_two_piece_embed_description: "2-Pieces: {bonus_2}"
+artifact_sets: Artifact Sets
+auto_checkin_button_label: Auto daily check-in
+auto_locale_option_label: Follow client language
+auto_redeem_error.content:
+  - Hoyo Buddy has disabled this feature for this account, you can turn it back on using
+  - </redeem:1044926380456017924>
+  - If this error persists or you don't know how to fix it, please contact the developer
+  - via </feedback:1054261265561833512>.
+  - '"'
+auto_redeem_footer: Turn off auto code redemption with /redeem
+auto_redeem_toggle.label: Auto code redemption
+books: Books
+captcha.embed.description: "Click on the button below to complete CAPTCHA. "
+challenge_command_description:
+  - View game end-game content statistics, like spiral
+  - abyss, memory of chaos, etc.
+challenge_type_select.placeholder: Select a game mode
+chamber_button_label: Chamber {value}
+change_character_level_label: Change character level
+change_skill_level_label: Change skill level
+change_talent_level_label: Change talent level
+change_weapon_level_label: Change weapon level
+chara_level.modal.title: Enter Character Level
+character_const_page_label: Constellations
+character_embed_description: "{rarity}★ {element} Birthday: {birthday} Constellation: {constellation} Affiliation: {affiliation} "
+character_passives_page_label: Passives
+character_profile_page_label: Profile
+character_quotes_page_label: Quotes
+character_skills_page_label: Skills
+character_stories_page_label: Stories
+character_talents_page_label: Talents
+character_voices_page_label: Voices
+characters: Characters
+characters.embed.element_filters: "{element} Characters"
+characters.embed.element_max_friendship: Max Friendship {element} Characters
+characters.embed.element_not_max_friendship: Not Max Friendship {element} Characters
+characters.embed.max_friendship: Max Friendship Characters
+characters.embed.not_max_friendship: Not Max Friendship Characters
+characters.embed.owned_characters: Owned Characters
+characters.embed.path_filters: "{path} Characters"
+characters.embed.title: Character Overview
+characters.filter.element.placeholder: Select element filters...
+characters.filter.max_friendship: Max friendship
+characters.filter.none: None
+characters.filter.not_max_friendship: Not max friendship
+characters.filter.path.placeholder: Select path filters...
+characters.filter.placeholder: Select a filter...
+characters.first_time.embed.description:
+  - This is because the command needs to fetch data from many sources.
+  - It should be faster next time you use this command.
+  - Please be patient and wait for the resources to be fetched."
+characters.first_time.title: Fetching resources...
+characters.gi.embed.footer: "Level order: Normal ATK/Skill/Burst"
+characters.hsr.embed.footer: "Level order: Basic ATK/Skill/Ultimate/Talent Use /profile to view details of a character"
+characters.sorter.constellation: Constellation
+characters.sorter.eidolon: Eidolon
+characters.sorter.element: Element
+characters.sorter.friendship: Friendship
+characters.sorter.level: Level
+characters.sorter.path: Path
+characters.sorter.placeholder: Select a sorter...
+characters.sorter.rarity: Rarity
+characters.update_talent_data: Update talent level data
+characters.update_talent_data.embed.description:
+  - This may take a while, if you own
+  - a lot of characters, this can take even longer. Please be patient.
+characters.update_talent_data.title: Updating talent level data...
+characters_command_description: View all of your characters
+checkin_button_label: Check-in
+checkin_command_description: Game daily check-in
+complete_captcha_button_label: Complete CAPTCHA
+complete_geetest_button_description:
+  - Click the button below to complete the geetest
+  - verification
+complete_geetest_button_label: Complete geetest
+const_refine_str: C{const}R{refine}
+continue_button_label: Continue
+cookies_button_label: Enter cookies
+cookies_modal_placeholder: Paste your cookies here...
+cryo: Cryo
+daily_button.label: Daily reminder
+daily_check_in: Daily check-in
+daily_checkin_embed_description: "Checked in {day} day(s) this month Missed check-in for {missed} day(s) "
+daily_checkin_embed_title: Daily Check-In
+daily_modal.title: Daily Reminder Settings
+daily_training_button.label: Daily Training Reminder
+dark_mode_button_label: Dark mode
+delete_account_button_label: Delete selected account
+dendro: Dendro
+destruction: Destruction
+devtools_button_label: With DevTools (desktop only)
+devtools_instructions_description:
+  - '"1. Login to [HoYoLAB](https://www.hoyolab.com/home)'
+  - or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)
+  - 2. Open the DevTools by pressing F12 or Ctrl+Shift+I
+  - 3. Press the >> icon on the top navigation bar
+  - 4. Click on the `Application` tab
+  - 5. Click on `Cookies` on the left sidebar
+  - 6. Click on the website you're on (e.g. https://www.hoyolab.com)
+  - 7. Type `v2` in the `Filter` box
+  - 8. Click the button below
+  - 9. Copy the `Value` of each cookie and paste them in the boxes
+  - '"'
+dice_cost_embed_field_name: Dice Cost
+domain-type.characters: Characters
+domain-type.weapons: Weapons
+download_image_failed_error_message:
+  - Try again later, try with a different image, or check if the image URL is valid."
+download_image_failed_error_title: Image Download Failed
+edit_nickname_button_label: Edit nickname
+edit_nickname_modal_title: Edit nickname
+eidolon_superimpose_str: E{eidolon}S{superimpose}
+electro: Electro
+email-geetest.embed.title:
+  - '😥 Need to solve CAPTCHA before sending the verification'
+  - code
+email_password_button_label: With email and password
+email_password_instructions_description:
+  ""<:INFO:1166743144889602190> Note": This method
+  0: '**DOESN''T WORK** for Miyoushe users, only HoYoLAB users can use this method.'
+  1: 1. Click the `Complete CAPTCHA` button below
+  2: 2. You will be redirected to a website, click the button and complete the CAPTCHA
+  3: 3. After completing, click on the `Continue` button below
+  4: '"'
+email_password_modal_email_input_label: e-mail or username
+email_password_modal_password_input_label: password
+enter_email_password_button_label: Enter email/username and password
+enter_email_password_instructions_description:
+  - '"<:INFO:1166743144889602190> This method'
+  - requires you to enter your private information.
+  - '• In exchange, your `cookie_token` can be refreshed automatically, which is used'
+  - in features related to code redemption (for HoYoLAB users only).
+  - '• Your email and password are **NOT** saved in the database **AT ALL**, so it''s'
+  - practically impossible for them to be leaked.
+  - '• Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy),'
+  - so you can verify that yourself.
+  - '• It is ultimately your choice to decide whether to trust this bot or not.'
+  - Click on the button below to start.
+  - '"'
+enter_light_cone_level.button.label: Change light cone level
+error_footer: Please report this error to the developer via /feedback
+error_title: An Error Occurred
+erudition: Erudition
+exceptions.card_not_ready_error.message:
+  - If you'd like to speed up this process, you can contribute to the card data by
+  - reaching me in the [Discord Server](https://dsc.gg/hoyo-buddy)."
+exceptions.card_not_ready_error.title:
+  - Card data for {character_name} is not ready
+  - yet.
+exped.embed.description: One (or more) expedetions are finished
+exped_button.label: Expedition reminder
+exped_modal.title: Expedition Reminder Settings
+exploration.anemoculi: "Anemoculi: {anemoculi}"
+exploration.chests: Chests Unlocked
+exploration.common_chests: Common
+exploration.dendroculi: "Dendroculi: {dendroculi}"
+exploration.electroculi: "Electroculi: {electroculi}"
+exploration.exquisite_chests: Exquisite
+exploration.geoculi: "Geoculi: {geoculi}"
+exploration.hydroculi: "Hydroculi: {hydroculi}"
+exploration.luxurious_chests: Luxurious
+exploration.placeholder: Yet to be released
+exploration.placeholder_quote: '"Every journey has its final day.Don''t rush." -Zhongli'
+exploration.precious_chests: Precious
+exploration.progress: "Exploration Progress: {progress}%"
+exploration.remarkable_chests: Remarkable
+exploration.reputation: "Reputation: Lv.{reputation}"
+exploration.title: World Exploration
+exploration.waypoints: Waypoints Unlocked
+exploration_command_description: View your exploration statistics in Genshin Impact
+farm_add_command.item_already_in_list: Item already in list
+farm_add_command.item_already_in_list_description:
+  - This item is already in your farm
+  - reminder list.
+farm_add_command_description:
+  - Add character/weapon to be notified when its materials
+  - are farmable
+farm_check.farmable_today: Materials For {name} is Farmable Today
+farm_check.use_farm_notify: "Use /farm reminder to configure reminder settings Use /farm view to view all items farmable today"
+farm_notify.add_item: Add item
+farm_notify.add_item.embed.description:
+  - To add items, use the </farm add:1044926380456017920>
+  - command
+farm_notify.description:
+  - You will be reminded when the materials of characters/weapons
+  - in this list are farmable.
+farm_notify.empty: You have no items in your farm reminder list
+farm_notify.empty_description:
+  - Add items to your farm reminder list by using the </farm
+  - add:1044926380456017920> command
+farm_notify.remove_item: Remove item
+farm_notify.remove_item.embed.description:
+  - To remove items, use the </farm remove:1044926380456017920>
+  - command
+farm_notify.title: Farm Reminder List
+farm_reminder_command_description:
+  - Notify you when materials of characters/weapons
+  - are farmable
+farm_remove_command.item_not_found: Item not found
+farm_remove_command.item_not_found_description:
+  - This item is not in your farm reminder
+  - list.
+farm_remove_command_description: Remove character/weapon from farm reminder list
+farm_view.happy_farming: '🌾 Happy farming!'
+farm_view.set_reminder: Set Reminders
+farm_view.set_reminder.embed.description:
+  - To set reminders, use the </farm reminder:1044926380456017920>
+  - command
+farm_view.sundays: Every Domain is Available on Sunday
+farm_view.weekday_select.placeholder: Select a weekday
+farm_view_command_description: View farmable domains in Genshin Impact
+feedback_button.feedback_sent.description: '🥰 Thank you very much for your feedback!'
+feedback_button.feedback_sent.title: Feedback Sent
+feedback_button.label: Give Feedback
+feedback_command.description:
+  0: Click on the button below to start.
+  Note: I might contact you for more details. So please keep your DMs opened (or join
+  1: the [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
+feedback_command_description: Give feedback to the bot's developer
+feedback_modal.feedback.label: Feedback
+fire: Fire
+floor_select_label: Floor {value}
+fontaine: Fontaine
+food: Food
+friday: Friday
+furnishing_sets: Furnishing Sets
+furnishings: Furnishings
+furniture_embed_description: "{comfort_icon} Comfort: {comfort} {load_icon} Load: {load} Trust: {trust} Creation Time: {hour}h"
+game_maintenance_description: Please try again later
+game_maintenance_title: Game is Under Maintenance
+game_value_incomplete_param_error_message: You must specify the game of the UID
+geeetest_verification_complete: Verification complete
+geeetest_verification_timeout: Verification timeout
+geeetest_verification_timeout_description:
+  - The verification has timed out. Please
+  - use the </geetest:1248060288566169666> comand to try again.
+geetest.embed.title: '😅 Need to solve CAPTCHA before logging in'
+geetest.no_need: No need for geetest
+geetest.no_need.description: You never needed to do a geetest! What are you here for?!
+geetest.required: Geetest Verification Required
+geetest.required.description:
+  - Use the </geetest:1248060288566169666> command, choose
+  - the account that triggered the geetest, and choose `{geetest_type}` to complete
+  - the verification
+geetest_command_description: Complete geetest verification
+geetest_command_type_param_description: Type of geetest verification
+geetest_command_type_param_name: type
+genshin_impact: Genshin Impact
+geo: Geo
+gi_daily.embed.description:
+  - Daily commisions or adventure encounters are not completed
+  - yet
+gift_code_modal.code_input.label: Code {num}
+gift_code_modal.title: Enter redemption codes
+guild_only_feature_error_message:
+  - This feature is only available in guilds, please
+  - try again in a guild.
+guild_only_feature_error_title: Guild Only Feature
+harmony: Harmony
+"honkai:_star_rail": "Honkai: Star Rail"
+honkai_impact_3rd: Honkai Impact 3rd
 hoyolab: HoYoLAB
-hsr_daily.embed.description: 每日实训尚未全部完成
-hydro: 水
-ice: 冰
-imaginary: 虚数
-inazuma: 稻妻
-incomplete_param_error_title: 给予的指令参数不完整
-instructions_title: 指引
-interaction_failed_description: 该视图不是由你发起，因此无法使用。
-interaction_failed_title: 交互失败
-invalid_category_selected: 选择的游戏无效
-invalid_color_error_message: ''
-invalid_color_error_title: ''
-invalid_cookies_description: ''
-invalid_cookies_title: 无效的 Cookies
-invalid_email_password_description: 输入的邮箱或密码不正确，请检查后重试。
-invalid_email_password_title: 无效邮箱或密码
-invalid_game_selected: 选择的游戏无效
-invalid_image_url_error_message: 一个有效的图片URL需要的是带有图片拓展名的图片文件直连链接，且可公开访问。
-invalid_image_url_error_title: 无效图片URL
-invalid_input.input_needs_to_be_bool: 输入框 `{input}` 的值需为 `0` (否) 或 `1` (是)
-invalid_input.input_needs_to_be_int: 输入框 `{input}` 的值需为一个整数
-invalid_input.input_out_of_range.max_value: 输入框 `{input}` 的值需小于或等于 {min_value}
-invalid_input.input_out_of_range.min_value: 输入框 `{input}` 的值需大于或等于 {min_value}
-invalid_input_error_title: 无效输入
-invalid_query_error_message: 无法通过输入的关键字找到任何内容，请从自动完成的候选条中选择，而不是输入自己的关键字。
-invalid_query_error_title: 无效关键字
-invalid_verification_code_description: 请检查验证码后重试。
-invalid_verification_code_title: 验证码错误
-items: 物品
-javascript_button_label: 通过 JavaScript
-javascript_instructions_description: '<:INFO:1166743144889602190> 注意：此方法在电脑上应该适用于所有主流浏览器，但在手机上只适用于
-  **Chrome** 和 **Edge**.
-
-
-  1. 登录 [HoYoLAB](https://www.hoyolab.com/home) 或 [米游社] (https://www.miyoushe.com/ys/)
-  （中国玩家适用）
-
-  2. 复制以下代码
-
-  3. 点击浏览器地址栏然后输入 `java`
-
-  4. 粘贴代码后按回车键。请确保 `java` 和 `script` 之间**没有空格**
-
-  5. 全选并复制所出现的文字
-
-  6. 点击下方按钮，粘贴在文本框中
-
-  '
-level_label: 等级
+hsr_daily.embed.description: Daily trainings are not completed yet
+hydro: Hydro
+ice: Ice
+imaginary: Imaginary
+inazuma: Inazuma
+incomplete_param_error_title: The Given Command Parameters are Incomplete
+instructions_title: Instructions
+interaction_failed_description:
+  - This view is not initiated by you, therefore you cannot
+  - use it.
+interaction_failed_title: Interaction Failed
+invalid_category_selected: Invalid game selected
+invalid_color_error_message: "A valid color needs to be a hexadecimal color code, e.g. #FF0000"
+invalid_color_error_title: Invalid Color
+invalid_cookies_description:
+  - Refresh your cookies by adding your accounts again using
+  - </accounts:1020580644478275615>
+invalid_cookies_title: Invalid Cookies
+invalid_email_password_description:
+  - The email or password you provided is incorrect,
+  - please check and try again.
+invalid_email_password_title: Invalid Email or Password
+invalid_game_selected: Invalid game selected
+invalid_image_url_error_message:
+  - A valid image URL needs to be a direct URL to an
+  - image file that contains an image extension, and is publicly accessible.
+invalid_image_url_error_title: Invalid image URL
+invalid_input.input_needs_to_be_bool:
+  - Input `{input}` needs to be either `0` (for
+  - false) or `1` (for true)
+invalid_input.input_needs_to_be_int: Input `{input}` needs to be an integer
+invalid_input.input_out_of_range.max_value:
+  - Input `{input}` needs to be less than
+  - or equal to {max_value}
+invalid_input.input_out_of_range.min_value:
+  - Input `{input}` needs to be greater than
+  - or equal to {min_value}
+invalid_input_error_title: Invalid Input
+invalid_query_error_message:
+  - Unable to find anything with the provided query, please
+  - select choices from the autocomplete instead of typing your own query.
+invalid_query_error_title: Invalid query
+invalid_verification_code_description:
+  - Please check the verification code and try
+  - again.
+invalid_verification_code_title: Invalid Verification Code
+items: Items
+javascript_button_label: With JavaScript
+javascript_instructions_description:
+  ""<:INFO:1166743144889602190> Note": This method
+  0: should work for all major browsers on desktop, but on mobile, it only works for
+  1: '**Chrome** and **Edge**.'
+  2: 1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/)
+  3: (for CN players)
+  4: 2. Copy the code below
+  5: 3. Click on the address bar and type `java`
+  6: 4. Paste the code and press enter. Make sure there are **NO SPACES** between `java`
+  7: and `script`
+  8: 5. Select all and copy the text that appears
+  9: 6. Click the button below and paste the text in the box
+  10: '"'
+level_label: Level
 level_str: Lv.{level}
-light_cones: 光锥
-living_beings: 生物
-liyue: 璃月
-loading_text: 加载中...
-make_up_for_checkin_button_label: 补签
-materials: 材料
-memory_of_chaos: ''
-miyoushe: 米游社
-mobile_instructions_description: '1.点击下方按钮输入手机号
-
-  2.你将会收到短信验证码
-
-  3.点击下方按钮填写验证码
-
-  '
-monday: 星期一
-mondstadt: 蒙德
-namecards: 名片
-next_page_option_label: 下一页
-nickname_modal_label: 昵称
-nickname_modal_placeholder: 主账号、亚服账号...
-nihility: 虚无
-no_abyss_data_error_message: 找不到任何深境螺旋数据，可能你还没开始打，或者数据还未刷新。请稍后重试。
-no_abyss_data_error_title: 暂无挑战数据
-no_account_found_for_games_error_message: 你没有任何游戏为 `{games}` 且平台为 `{platforms}` 的帐户。请使用</accounts:1020580644478275615>来新增
-no_account_found_for_games_error_title: 账号未发现
-no_accounts_autocomplete_choice: 您还未持有账号。通过/accounts来添加吧。
-no_characters_found_error_message: 请选择其他筛选条件后重试。
-no_characters_found_error_title: 未找到与筛选条件符合的角色
-no_game_accounts_error_message: ''
-no_game_accounts_error_title: ''
-notes-card.gi.completed: 已完成
-notes-card.gi.daily-commissions: 每日委托
-notes-card.gi.expedition-finished: 已完成
-notes-card.gi.expedition-remaining: 剩余 {time}
-notes-card.gi.realm-currency: 洞天宝钱
-notes-card.gi.realtime-notes: 实时便笺
-notes-card.gi.remaining: 剩余
-notes-card.gi.resin: 树脂
-notes-card.gi.resin-discounts: 树脂折扣
-notes-card.hsr.daily-training: 每日实训
-notes-card.hsr.echo-of-war-discounts: 历战余响剩余
-notes-card.hsr.reserved-power: 后备开拓力
-notes-card.hsr.trailblaze-power: 开拓力
-notes.item_full_in_time: '{emoji} 在{in_time}溢出'
-notes_available: '{emoji} 在 {in_time} 可用'
-notes_command_description: 查看实时便笺
-notif.embed.footer: '点击下方按钮更改通知设置。
-
-  如果已经过期，请使用 /notes 指令。'
-notif_modal.enabled.label: 开
-notif_modal.max_notif_count.label: 最大通知数
-notif_modal.notify_interval.label: 通知间隔（分钟）
-notif_modal.notify_time.label: 在服务器重置时间（4:00 AM）前 X 小时通知
-notif_modal.notify_weekday.label: 星期几通知
-notif_modal.threshold.label: 阈值
-notification_settings_button_label: 通知设定
-notify_on_failure_button_label: 签到失败通知
-notify_on_success_button_label: 签到成功通知
-nsfw_prompt_error_message: 此提示包含不宜內容，请使用其他提示后再试。
-nsfw_prompt_error_title: ''
-page_footer: '{current_page}/{total_pages}页'
-physical: 物理
-player_not_found_description: 请检查所提供UID
-player_not_found_title: 玩家不存在
-preservation: 存护
-prev_page_option_label: 上一页
-primogems: 原石
-process_notify_error.content: ''
-profile.add_image.button.label: 添加自定义图片
-profile.add_image_modal.image_url.label: 图像URL
-profile.add_image_modal.title: 添加自定义图片
-profile.build.select.placeholder: 选择一个角色配置…
-profile.card_info.embed.description: '—— 卡片中所使用的素材均归Hoyoverse所有，我并未其拥有权。
-
-  —— 卡片中所使用的同人作品均隶属于各自画师。
-
-  —— Hoyo Buddy 样式为原创，未经我的许可，严禁修改或声称它们是出自于你之手。
-
-  —— 游戏数据由{provider}提供。'
-profile.card_info.embed.title: 关于角色面板卡片
-profile.card_settings.button.label: 卡片设置
-profile.card_template_select.diff_author.description: 由{author1}设计，{author2}制作
-profile.card_template_select.encard.label: ENCard 样式 {num}
-profile.card_template_select.enka_classic.label: 经典 Enka 样式
-profile.card_template_select.enkacard.label: EnkaCard 样式 {num}
-profile.card_template_select.hb.label: Hoyo Buddy 样式 {num}
-profile.card_template_select.placeholder: 选择样式
-profile.card_template_select.same_author.description: 由{author}设计与制作
-profile.card_template_select.src.label: 星穹铁道卡片样式{num}
-profile.character_select.cached_data.description: 缓存数据
-profile.character_select.description: '{level}级 | {eidolons}魂{superposition}叠 | {data_type}
-  | 源于游戏内展示柜'
-profile.character_select.enka_network.description: Enka Network 角色配置
-profile.character_select.hoyolab.description: '{level} 级 | {eidolons}魂{superposition}叠
-  | {data_type} | 源于HoYoLAB'
-profile.character_select.live_data.description: 实时数据
-profile.character_select.placeholder: 选择角色
-profile.dark_mode.button.label: 深色模式
-profile.generate_ai_art.button.label: 生成 AI 绘画
-profile.generate_ai_art_modal.negative_prompt.label: 负面提示
-profile.generate_ai_art_modal.prompt.label: 提示
-profile.generate_ai_art_modal.title: 生成 AI 绘图
-profile.genshin.character_select.description: Lv.{level} | {const}命{refine}精 | {data_type}
-profile.image_select.custom_image.label: 自定义图片（{num}）
-profile.image_select.default_collection.label: Hoyo Buddy 系列 ({num})
-profile.image_select.none.label: 官方绘图
-profile.image_select.placeholder: 选择一张图片
-profile.info.embed.custom_images.name: 自定义图片
-profile.info.embed.custom_images.value: '- Hoyo Buddy附带了一些我喜欢的预设图片，你也可以添加自己的图片。
-
-  - 仅支持直连图像URL，且必须可公开访问；不支持GIF格式。
-
-  - 对于Hoyo Buddy的样式，建议使用垂直图片。
-
-  - 对于服务器拥有者，我不会对您或您的成员所添加的不宜图片而负责。
-
-  - 点击红色按钮，可移除当前自定义图片，并恢复为默认图片。'
-profile.info.embed.dark_mode.name: 深色模式
-profile.info.embed.dark_mode.value: ''
-profile.info.embed.primary_color.name: 原色
-profile.info.embed.primary_color.value: '- 仅支持十六进制颜色代码。'
-profile.info.embed.templates.name: 样式
-profile.info.embed.templates.value: '- Hoyo Buddy有我自己制作的卡片样式，但我也加入了其他开发者制作的样式。
-
-  - 第三方样式的代码并非由我维护，所以我无法保证其品质；对于任何与它们相关的问题，我也不负责。
-
-  - 第三方样式可能会有功能上的限制。
-
-  - 缓存数据的角色只能使用Hoyo Buddy的样式。'
-profile.info.embed.title: 关于卡片设定
-profile.player_info.button.label: 玩家资料
-profile.player_info.embed.description: '开拓等级：{level}
-
-  均衡等级：{world_level}
-
-  好友数量：{friend_count}
-
-  光锥：{light_cones}
-
-  角色：{characters}
-
-  成就：{achievements}
-
-  '
-profile.player_info.gi.embed.description: '冒险等阶：{adventure_rank}
-
-  深境螺旋：{spiral_abyss}
-
-  成就：{achievements}
-
-  '
-profile.player_info.hoyolab.embed.description: '开拓等级：{level}
-
-  角色：{characters}
-
-  宝箱：{chest}
-
-  混沌回忆：{moc}
-
-  成就：{achievements}
-
-  '
-profile.primary_color.button.label: 更改颜色
-profile.primary_color_modal.color.label: 颜色（十六进制代码）
-profile.primary_color_modal.title: 更改卡片颜色
-profile.remove_from_cache.button.label: 从缓存中移除
-profile.remove_image.button.label: 删除自定义图片
-profile_command_description: 查看游戏内的个人资料并生成角色面板卡片
-profile_command_game_value_description: 所属游戏UID
-profile_command_uid_param_description: 玩家的UID，如果账号有提供，将会覆盖原先的UID
-pt_button.label: 参量质变仪提醒
-pt_modal.title: 参量质变仪提醒设置
-public_account_toggle.label: 设置账户为公开
-pure_fiction: ''
-pyro: 火
-qrcode_button_label: 通过二维码
-qrcode_confirmed.desc: 登录成功
-qrcode_expired.desc: 请刷新二维码后重试。
-qrcode_expired_title: 二维码已过期
-qrcode_login_instructions.desc: 使用米游社扫描下方二维码来登录
-qrcode_scanned.desc: 扫码成功。请在装备上同意登录。
-quantum: 量子
-read_story.button.label: ''
-real_time_notes: 实时便笺
-realm_curr_button.label: 洞天宝钱提醒
-realm_curr_modal.title: 洞天宝钱提醒设置
-redeeem_code.cookie_token_expired_description: '使用</accounts:1020580644478275615>再次添加账号来刷新cookie
-  token。
-
-  如果你使用电子邮箱和密码的方式添加账户，cookie token会自动刷新。'
-redeeem_code.cookie_token_expired_title: Cookie Token 已过期
-redeeem_code.cookie_token_refresh_failed_description: '自上次新增帐户以来，你可能已变更帐户密码。
-
-  请使用</accounts:1020580644478275615>透过电子邮件和密码的方式重新新增您的帐户。'
-redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失败
-redeem_code.already_claimed: 你已经兑换过了
-redeem_code.cooldown: 兑换操作处于冷却中
-redeem_code.expired: 兑换码已过期
-redeem_code.invalid: ''
-redeem_code.success: 兑换成功
-redeem_codes_button.label: 兑换码
-redeem_command_description: 使用兑换码兑换游戏奖励
-redeem_command_embed.description: '输入兑换码，最多可同时兑换5个。
-
-  或者，你可以启用自动兑换功能。'
-redeem_command_embed.title: 兑换结果
-redeem_cooldown_embed.description: 由于兑换有冷却机制，这可能虚要一段时间。
-redeem_cooldown_embed.title: 兑换中
-refinement_indicator: 精炼 {r}
-relics: 遗器
-reminder_button.label: 提醒设置
-reminder_settings.not_set: 未设置
-reminder_settings.reminde.set.type1: '状态：{status}
-
-  阈值：{threshold}
-
-  通知间隔：{notify_interval} 分钟
-
-  最大通知数：{max_notif_count}'
-reminder_settings.reminde.set.type2: '状态：{status}
-
-  通知间隔：{notify_interval} 分钟
-
-  最大通知数：{max_notif_count}'
-reminder_settings.reminde.set.type3: '状态：{status}
-
-  通知间隔：{notify_interval} 分钟
-
-  最大通知数：{max_notif_count}
-
-  通知时间：服务器重置前 {notify_time} 个小时
-
-  '
-reminder_settings.reminde.set.type4: '状态：{status}
-
-  通知间隔：{notify_interval} 分钟
-
-  最大通知数：{max_notif_count}
-
-  通知时间：服务器重置前 {notify_time} 个小时
-
-  星期几通知：{notify_weekday}'
-reminder_settings_title: 实时便笺提醒
-reminder_toggle: 提醒
-resin_discount.embed.description: 周本消耗折扣尚未使用完毕
-resin_reminder_button.label: 树脂提醒
-resin_reminder_modal.title: 树脂提醒设置
-reward_claimed_title: 已领取每日奖励
-rtbp_reminder_button.label: 后备开拓力提醒
-rtbp_reminder_modal.title: 后备开拓力提醒设置
-saturday: 星期六
-search_autocomplete_no_results: 未能找到任何结果
-search_autocomplete_not_setup: 搜索自动完成选项还未设置，请稍后再试。
-search_command_category_param_description: 要搜索的类别
-search_command_category_param_name: 类别
-search_command_description: 搜寻任何与游戏相关的内容
-search_command_game_param_description: 要搜索的游戏
-search_command_game_param_name: 游戏
-search_command_query_param_description: 要搜索的关键字
-search_command_query_param_name: 关键字
-select_account.embed.description: 选择你想要添加的账号。
-select_account.embed.title: 🎉 欢迎来到 Hoyo Buddy！
-select_accounts_to_add_placeholder: 选择要添加的账号...
-settings_command_description: 调整用户设置
-skill_attributes_embed_field_name: 技能属性（等级{level}）
-skill_level.modal.title: 输入技能等级
-spiral_abyss: 深境螺旋
-stats_embed_field_name: 数据
-sumeru: 须弥
-sunday: 星期日
-superposition_indicator: 叠影 {s}
-talent_level.modal.title: 输入天赋等级
-tbp_reminder_button.label: 开拓力提醒
-tbp_reminder_modal.title: 开拓力提醒设置
-tcg: 七圣召唤
-the_hunt: 巡猎
-threshold.embed.description: 已达阈值（{threshold}）
-thunder: 雷
-thursday: 星期四
-toggle_off_text: 关
-toggle_on_text: 开
-traditional_chinese_server: 繁体中文服务器
-try_other_method_error_message: 请尝试其他登录方式。如果你正在使用开发者工具手动输入Cookie，请确保你是否有正确复制过去。
-try_other_method_error_title: 无效 Cookies
-tuesday: 星期二
-unreleased_content: 尚未释出的内容
-user_autocomplete_param_description: 输入要搜索的用户，默认为自己
-user_autocomplete_param_name: 用户
-user_no_accounts_autocomplete_choice: 此用户尚未绑定账号。
-view_card_button_label: 卡片
-view_dictionary_button_label: 字典
-volume_selector_placeholder: 选择要阅读的章节
-wave_button_label: 第 {value} 波
-weapon_level.modal.title: ''
-weapons: 武器
-wednesday: 星期三
-week_boss_button.label: 周本消耗减半提醒
-week_boss_modal.title: 周本消耗减半提醒设置
-wind: 风
-yatta_character_detail_page_label: 详情
-yatta_character_eidolon_page_label: 星魂
-yatta_character_embed_description: '{rarity}
-
-  元素：{element}
-
-  命途：{path}
-
-  世界：{world}
-
-  '
-yatta_character_skill_aoe_weakness_break_field_value: 群体：{aoe_weakness_break}
-yatta_character_skill_energy_field_name: 能量
-yatta_character_skill_energy_generation_field_value: 产生：{energy_generation}
-yatta_character_skill_energy_need_field_value: 花费：{energy_need}
-yatta_character_skill_page_label: 技能
-yatta_character_skill_single_weakness_break_field_value: 单一：{single_weakness_break}
-yatta_character_skill_spread_weakness_break_field_value: 范围：{spread_weakness_break}
-yatta_character_skill_weakness_break_field_name: 弱点击破
-yatta_character_trace_page_label: 行迹
-yatta_item_sources_field_name: 来源
-yatta_light_cone_ability_field_name: 技能
+light_cones: Light Cones
+living_beings: Living Beings
+liyue: Liyue
+loading_text: Loading...
+make_up_for_checkin_button_label: Make up for check-in
+materials: Materials
+memory_of_chaos: Memory of chaos
+miyoushe: Miyoushe
+mobile_instructions_description:
+  - 2. You will receive a verification code via SMS
+  - 3. Click the button below to enter the verification code
+  - '"'
+monday: Monday
+mondstadt: Mondstadt
+namecards: Namecards
+next_page_option_label: Next page
+nickname_modal_label: Nickname
+nickname_modal_placeholder: Main account, Asia account...
+nihility: Nihility
+no_abyss_data_error_message:
+  - Unable to find any spiral abyss data, either you haven't
+  - started the spiral abyss yet or the data is not ready yet. Please try again later
+no_abyss_data_error_title: No Spiral Abyss Data
+no_account_found_for_games_error_message:
+  - You don't have any accounts for games `{games}`
+  - and platforms `{platforms}` yet. Add one with </accounts:1020580644478275615>
+no_account_found_for_games_error_title: No Account Found
+no_accounts_autocomplete_choice: You don't have any accounts yet. Add one with /accounts
+no_characters_found_error_message: Please try again with a different filter
+no_characters_found_error_title: No characters found with the selected filter
+no_game_accounts_error_message: This {platform} account has no game accounts.
+no_game_accounts_error_title: No Game Accounts
+notes-card.gi.completed: Completed
+notes-card.gi.daily-commissions: Daily Commissions
+notes-card.gi.expedition-finished: Finished
+notes-card.gi.expedition-remaining: "{time} Remaining"
+notes-card.gi.realm-currency: Realm Currency
+notes-card.gi.realtime-notes: Real-Time Notes
+notes-card.gi.remaining: Remaining
+notes-card.gi.resin: Resin
+notes-card.gi.resin-discounts: Resin Discounts
+notes-card.hsr.daily-training: Daily Training
+notes-card.hsr.echo-of-war-discounts: Echo of War Discounts
+notes-card.hsr.reserved-power: Reserved Power
+notes-card.hsr.trailblaze-power: Trailblaze Power
+notes.item_full_in_time: "{emoji} full {in_time}"
+notes_available: "{emoji} available {in_time}"
+notes_command_description: View real-time notes
+notif.embed.footer: "Click the button below to change notification settings. If it is expired, use the /notes command."
+notif_modal.enabled.label: Enabled
+notif_modal.max_notif_count.label: Max Notify Count
+notif_modal.notify_interval.label: Notify Interval (in minutes)
+notif_modal.notify_time.label: Notify X hours before server resets (4:00 AM)
+notif_modal.notify_weekday.label: The weekday to notify
+notif_modal.threshold.label: Threshold
+notification_settings_button_label: Notification settings
+notify_on_failure_button_label: Notify on check-in failure
+notify_on_success_button_label: Notify on check-in success
+nsfw_prompt_error_message:
+  - The prompt contains NSFW content, please try again with
+  - a different prompt.
+nsfw_prompt_error_title: NSFW Prompt Detected
+page_footer: Page {current_page}/{total_pages}
+physical: Physical
+player_not_found_description: Please check the provided UID
+player_not_found_title: Player Does Not Exist
+preservation: Preservation
+prev_page_option_label: Previous page
+primogems: primogems
+process_notify_error.content:
+  - Hoyo Buddy has disabled this reminder for this account, you can turn it back on
+  - using </notes:1248060288566169664>
+  - If this error persists or you don't know how to fix it, please contact the developer
+  - via </feedback:1054261265561833512>.
+  - '"'
+profile.add_image.button.label: Add custom image
+profile.add_image_modal.image_url.label: Image URL
+profile.add_image_modal.title: Add Custom Image
+profile.build.select.placeholder: Select a build...
+profile.card_info.embed.description:
+  - All fanarts used in the cards are credited to their respective artists.
+  - The Hoyo Buddy templates' designs are original, you are not allowed to modify
+  - 
+    - Game data is provided by {provider}.
+  - '"'
+profile.card_info.embed.title: About Character Build Cards
+profile.card_settings.button.label: Card settings
+profile.card_template_select.diff_author.description:
+  - Designed by {author1} and programmed
+  - by {author2}
+profile.card_template_select.encard.label: ENCard template {num}
+profile.card_template_select.enka_classic.label: Classic Enka template
+profile.card_template_select.enkacard.label: EnkaCard template {num}
+profile.card_template_select.hb.label: Hoyo Buddy template {num}
+profile.card_template_select.placeholder: Select a template
+profile.card_template_select.same_author.description: Designed and programmed by {author}
+profile.card_template_select.src.label: StarRailCard template {num}
+profile.character_select.cached_data.description: Cached data
+profile.character_select.description: "Lv.{level} | E{eidolons}S{superposition} | {data_type} | From in-game showcase"
+profile.character_select.enka_network.description: Enka Network build
+profile.character_select.hoyolab.description: "Lv.{level} | E{eidolons}S{superposition} | {data_type} | From HoYoLAB"
+profile.character_select.live_data.description: Real-time data
+profile.character_select.placeholder: Select a character
+profile.dark_mode.button.label: Dark Mode
+profile.generate_ai_art.button.label: Generate AI art
+profile.generate_ai_art_modal.negative_prompt.label: Negative Prompt
+profile.generate_ai_art_modal.prompt.label: Prompt
+profile.generate_ai_art_modal.title: Generate AI Art
+profile.genshin.character_select.description: Lv.{level} | C{const}R{refine} | {data_type}
+profile.image_select.custom_image.label: Custom Image ({num})
+profile.image_select.default_collection.label: Hoyo Buddy Collection ({num})
+profile.image_select.none.label: Official art
+profile.image_select.placeholder: Select an image
+profile.info.embed.custom_images.name: Custom Images
+profile.info.embed.custom_images.value:
+  - Only direct image URLs are supported, and they must be publicly accessible; GIFs
+  - 
+    - For Hoyo Buddy's templates, vertical images are recommended.
+    - For server owners, I am not responsible for any NSFW images that you or your members
+  - 
+    - The red button removes the current custom image and reverts to the default one."
+profile.info.embed.dark_mode.name: Dark Mode
+profile.info.embed.dark_mode.value:
+  - 
+    - Light mode cards tend to look better because the colors are not optimized for
+  - 
+    - Suggestions for dark mode colors are welcome!"
+profile.info.embed.primary_color.name: Primary Color
+profile.info.embed.primary_color.value: "- Only hex color codes are supported."
+profile.info.embed.templates.name: Templates
+profile.info.embed.templates.value:
+  - Code of 3rd party templates are not maintained by me, so I cannot guarantee their
+  - 
+    - 3rd party templates may have feature limitations compared to Hoyo Buddy's.
+    - Cached data characters can only use Hoyo Buddy's templates."
+profile.info.embed.title: About Card Settings
+profile.player_info.button.label: Player info
+profile.player_info.embed.description: "Trailblaze Level: {level} Equilibrium Level: {world_level} Friend Count: {friend_count} Light Cones: {light_cones} Characters: {characters} Achievements: {achievements} "
+profile.player_info.gi.embed.description: "Adventure Rank: {adventure_rank} Spiral Abyss: {spiral_abyss} Achievements: {achievements} "
+profile.player_info.hoyolab.embed.description: "Trailblaze Level: {level} Characters: {characters} Chests: {chest} Memory of Chaos: {moc} Achievements: {achievements} "
+profile.primary_color.button.label: Change color
+profile.primary_color_modal.color.label: Color (hex code)
+profile.primary_color_modal.title: Change Card Color
+profile.remove_from_cache.button.label: Remove from cache
+profile.remove_image.button.label: Remove custom image
+profile_command_description:
+  - View your in-game profile and generate character build
+  - cards
+profile_command_game_value_description: Game of the UID
+profile_command_uid_param_description:
+  - UID of the player, this overrides the account
+  - parameter if provided
+pt_button.label: Parametric transformer reminder
+pt_modal.title: Parametric Transformer Reminder Settings
+public_account_toggle.label: Set account as public
+pure_fiction: Pure fiction
+pyro: Pyro
+qrcode_button_label: With QR code
+qrcode_confirmed.desc: Successfully logged in
+qrcode_expired.desc: Please try again with a new QR code
+qrcode_expired_title: QR code expired
+qrcode_login_instructions.desc:
+  - Scan the QR code below with your Miyoushe app to log
+  - in.
+qrcode_scanned.desc:
+  - Successfully scanned the QR code. Please confirm the login on
+  - your device.
+quantum: Quantum
+read_story.button.label: Read Story
+real_time_notes: Real-time notes
+realm_curr_button.label: Realm currency reminder
+realm_curr_modal.title: Realm Currency Reminder Settings
+redeeem_code.cookie_token_expired_description:
+  - your accounts again using </accounts:1020580644478275615>.
+  - If you use the email and password method to add your accounts, cookie token can
+  - be refreshed automatically."
+redeeem_code.cookie_token_expired_title: Cookie Token Expired
+redeeem_code.cookie_token_refresh_failed_description:
+  - Please add your accounts again using </accounts:1020580644478275615> with the email
+  - and password method."
+redeeem_code.cookie_token_refresh_failed_title: Failed to refresh cookie token
+redeem_code.already_claimed: Redemption code already claimed
+redeem_code.cooldown: Gift code redemption in cooldown
+redeem_code.expired: Redemption code expired
+redeem_code.invalid: Invalid redemption code
+redeem_code.success: Successfully redeemed
+redeem_codes_button.label: Redeem codes
+redeem_command_description: Redeem codes for in-game rewards
+redeem_command_embed.description: "Enter up to 5 redemption codes to redeem. Alternatively, you can enable automatic code redemption."
+redeem_command_embed.title: Code Redemption Results
+redeem_cooldown_embed.description: Due to redeem cooldowns, this may take a while.
+redeem_cooldown_embed.title: Redeeming Codes
+refinement_indicator: Refinement {r}
+relics: Relics
+reminder_button.label: Reminder settings
+reminder_settings.not_set: Not set
+reminder_settings.reminde.set.type1: "Status: {status} Threshold: {threshold} Notify Interval: {notify_interval} minutes Max Notify Count: {max_notif_count}"
+reminder_settings.reminde.set.type2: "Status: {status} Notify Interval: {notify_interval} minutes Max Notify Count: {max_notif_count}"
+reminder_settings.reminde.set.type3: "Status: {status} Notify Interval: {notify_interval} minutes Max Notify Count: {max_notif_count} Notify Time: {notify_time} hours before the server resets "
+reminder_settings.reminde.set.type4: "Status: {status} Notify Interval: {notify_interval} minutes Max Notify Count: {max_notif_count} Notify Time: {notify_time} hours before the server resets Notify Weekday: {notify_weekday}"
+reminder_settings_title: Real-Time Notes Reminders
+reminder_toggle: Reminder
+resin_discount.embed.description: Weekly boss discounts are not used up yet
+resin_reminder_button.label: Resin reminder
+resin_reminder_modal.title: Resin Reminder Settings
+reward_claimed_title: Daily Check-In Reward Claimed
+rtbp_reminder_button.label: Reserved trailblaze power reminder
+rtbp_reminder_modal.title: Reserved Trailblaze Power Reminder Settings
+saturday: Saturday
+search_autocomplete_no_results: No results found
+search_autocomplete_not_setup:
+  - Search autocomplete choices not set up yet, please
+  - try again later.
+search_command_category_param_description: Category to search in
+search_command_category_param_name: category
+search_command_description: Search anything game related
+search_command_game_param_description: Game to search in
+search_command_game_param_name: game
+search_command_query_param_description: Query to search for
+search_command_query_param_name: query
+select_account.embed.description: Select the accounts you want to add.
+select_account.embed.title: '🎉 Welcome to Hoyo Buddy!'
+select_accounts_to_add_placeholder: Select the accounts you want to add...
+settings_command_description: Configure your user settings
+skill_attributes_embed_field_name: Skill Attributes (Lv.{level})
+skill_level.modal.title: Enter Skill Level
+spiral_abyss: Spiral Abyss
+stats_embed_field_name: Stats
+sumeru: Sumeru
+sunday: Sunday
+superposition_indicator: Superposition {s}
+talent_level.modal.title: Enter Talent Level
+tbp_reminder_button.label: Trailblaze power reminder
+tbp_reminder_modal.title: Trailblaze Power Reminder Settings
+tcg: TCG
+the_hunt: The Hunt
+threshold.embed.description: Threshold ({threshold}) is reached
+thunder: Thunder
+thursday: Thursday
+toggle_off_text: "off"
+toggle_on_text: "on"
+traditional_chinese_server: Traditional Chinese Server
+try_other_method_error_message: "Please try other methods to login. If you are entering cookies manually through DevTools, make sure you are copying them correctly."
+try_other_method_error_title: Invalid Cookies
+tuesday: Tuesday
+unreleased_content: Unreleased Content
+user_autocomplete_param_description:
+  - User to search the accounts with, defaults to
+  - you
+user_autocomplete_param_name: user
+user_no_accounts_autocomplete_choice: This user doesn't have any accounts yet
+view_card_button_label: Card
+view_dictionary_button_label: Dictionary
+volume_selector_placeholder: Select a volume to read
+wave_button_label: Wave {value}
+weapon_level.modal.title: Enter Weapon Level
+weapons: Weapons
+wednesday: Wednesday
+week_boss_button.label: Weekly boss discount reminder
+week_boss_modal.title: Weekly Boss Discount Reminder Settings
+wind: Wind
+yatta_character_detail_page_label: Details
+yatta_character_eidolon_page_label: Eidolons
+yatta_character_embed_description: "{rarity} Element: {element} Path: {path} World: {world} "
+yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}"
+yatta_character_skill_energy_field_name: Energy
+yatta_character_skill_energy_generation_field_value: "Generation: {energy_generation}"
+yatta_character_skill_energy_need_field_value: "Cost: {energy_need}"
+yatta_character_skill_page_label: Skills
+yatta_character_skill_single_weakness_break_field_value: "Single: {single_weakness_break}"
+yatta_character_skill_spread_weakness_break_field_value: "Spread: {spread_weakness_break}"
+yatta_character_skill_weakness_break_field_name: Weakness Break
+yatta_character_trace_page_label: Traces
+yatta_item_sources_field_name: Sources
+yatta_light_cone_ability_field_name: Ability

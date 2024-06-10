@@ -240,6 +240,9 @@ class Translator:
 
         l10n_path = pathlib.Path("./l10n")
         for lang in LANGUAGES:
+            if lang == "en_US":
+                continue
+
             file_path = l10n_path / f"{lang}.yaml"
             if not file_path.exists():
                 continue

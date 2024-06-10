@@ -156,7 +156,9 @@ class PureFictionCard:
         else:
             cycle_tbox = drawer.write(
                 LocaleStr(
-                    "Cycles Used: {cycles}", key="moc_card_cycles_used", cycles=stage.round_num
+                    "Cycles Used: {cycles}",
+                    key="moc_card_cycles_used",
+                    cycles=stage.round_num,
                 ),
                 size=25,
                 position=(0, 60),
@@ -169,14 +171,16 @@ class PureFictionCard:
         im.paste(line, (rightmost + padding, 10))
 
         star = drawer.open_asset("star.png")
-        pos = (rightmost + padding + 37, 18)
+        pos = (rightmost + padding + 37, 14)
         for _ in range(stage.star_num):
             im.paste(star, pos)
             pos = (pos[0] + 62, pos[1])
 
         drawer.write(
             LocaleStr(
-                "Total Score: {score}", key="pf_card_total_score", score=stage.score or 80000
+                "Total Score: {score}",
+                key="pf_card_total_score",
+                score=stage.score or 80000,
             ),
             size=25,
             position=(rightmost + padding + 37, 60),
@@ -187,7 +191,11 @@ class PureFictionCard:
 
         pos = (0, 135)
         for i in range(8):
-            chara = characters[i] if i < len(characters) else None
+            try:
+                chara = characters[i]
+            except IndexError:
+                chara = None
+
             block = self._draw_block(chara)
             im.paste(block, pos, block)
             pos = (pos[0] + 172, pos[1])

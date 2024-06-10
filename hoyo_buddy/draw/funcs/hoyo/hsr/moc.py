@@ -161,7 +161,9 @@ class MOCCard:
         else:
             cycle_tbox = drawer.write(
                 LocaleStr(
-                    "Cycles Used: {cycles}", key="moc_card_cycles_used", cycles=stage.round_num
+                    "Cycles Used: {cycles}",
+                    key="moc_card_cycles_used",
+                    cycles=stage.round_num,
                 ),
                 size=25,
                 position=(0, 60),
@@ -183,7 +185,10 @@ class MOCCard:
 
         pos = (0, 135)
         for i in range(8):
-            chara = characters[i] if i < len(characters) else None
+            try:
+                chara = characters[i]
+            except IndexError:
+                chara = None
             block = self._draw_block(chara)
             im.paste(block, pos, block)
             pos = (pos[0] + 172, pos[1])
@@ -211,7 +216,7 @@ class MOCCard:
 
         self._data.floors.reverse()
         pos = (83, 492)
-        for i, stage in enumerate(self._data.floors[6:12]):
+        for i, stage in enumerate(self._data.floors[-6:]):
             stage_im = self._draw_stage(stage)
             self._im.paste(stage_im, pos, stage_im)
             pos = (pos[0] + 779, pos[1])

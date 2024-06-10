@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 import enka
 from discord import File
@@ -322,6 +322,7 @@ async def draw_exploration_card(
 async def draw_moc_card(
     draw_input: DrawInput,
     data: StarRailChallenge,
+    index: Literal[0, 1],
     translator: Translator,
 ) -> File:
     for floor in data.floors:
@@ -331,7 +332,9 @@ async def draw_moc_card(
     with timing("draw", tags={"type": "moc_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
-            funcs.hsr.moc.MOCCard(data, draw_input.locale.value, translator).draw,
+            funcs.hsr.moc.MOCCard(
+                data, data.seasons[index], draw_input.locale.value, translator
+            ).draw,
         )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
@@ -340,6 +343,7 @@ async def draw_moc_card(
 async def draw_pure_fiction_card(
     draw_input: DrawInput,
     data: StarRailPureFiction,
+    index: Literal[0, 1],
     translator: Translator,
 ) -> File:
     for floor in data.floors:
@@ -349,7 +353,9 @@ async def draw_pure_fiction_card(
     with timing("draw", tags={"type": "pure_fiction_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
-            funcs.hsr.pure_fiction.PureFictionCard(data, draw_input.locale.value, translator).draw,
+            funcs.hsr.pure_fiction.PureFictionCard(
+                data, data.seasons[index], draw_input.locale.value, translator
+            ).draw,
         )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

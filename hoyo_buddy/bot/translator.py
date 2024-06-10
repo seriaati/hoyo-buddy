@@ -162,22 +162,18 @@ class Translator:
         if string.translate_:
             # Check if the string is missing or has different values
             source_string = self._localizations.get("en_US", {}).get(string_key)
-            if source_string is not None:
-                source_string = source_string.format(**extras)
 
             if source_string is None and string_key not in self._not_translated:
                 self._not_translated[string_key] = message
-                logger.info(
-                    f"String {string_key!r} is missing on Transifex, added to not_translated"
-                )
+                logger.info(f"String {string_key!r} is missing in source lang file")
             elif (
                 source_string is not None
-                and source_string.lower() != message.format(**extras).lower()
+                and source_string.lower() != message.lower()
                 and string_key not in self._not_translated
             ):
                 self._not_translated[string_key] = message
                 logger.info(
-                    f"String {string_key!r} has different values (CDS vs Local): {source_string!r} and {message.format(**extras)!r}, added to not_translated"
+                    f"String {string_key!r} has different values in code vs. source lang file"
                 )
 
         lang = locale.value.replace("-", "_")
@@ -248,9 +244,8 @@ class Translator:
             if not file_path.exists():
                 continue
 
-            for key, value in self._not_translated.items():
-                if key not in self._localizations[lang]:
-                    self._localizations[lang][key] = value
+            for key in self._not_translated:
+                self._localizations[lang][key] = ""
 
             await write_yaml(file_path.as_posix(), self._localizations[lang])
 
@@ -258,7 +253,6 @@ class Translator:
         self._repo.index.commit("chore(l10n): Add new strings")
 
         self._repo.remotes.origin.push()
-
         self._not_translated.clear()
 
     def get_traveler_name(

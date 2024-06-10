@@ -49,33 +49,15 @@ action_in_cooldown_error_message: "Please try again at {available_time}."
 action_in_cooldown_error_title: Action in Cooldown
 add_account_button_label: Add accounts
 add_hoyolab_acc.embed.description:
-  "1. With email and password: Most recommended, it's the easiest
-
-  2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one
-
-  3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile
-
-
-  "
+  "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one\n3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile\n\n"
 add_hoyolab_acc.embed.title: Select a Method to add Your Accounts
 add_miyoushe_acc.embed.description:
-  "1. With QR code: Recommended for most users if you are logged in on your mobile device
-
-  2. With email/username and password
-
-  3. With phone number
-
-  4. With DevTools: Only work on desktop, a safer option if you have security concerns with the other methods
-
-  "
+  "1. With QR code: Recommended for most users if you are logged in on your mobile device\n2. With email/username and password\n3. With phone number\n4. With DevTools: Only work on desktop, a safer option if you have security concerns with the other methods\n"
 add_miyoushe_acc.enter_mobile_number: Enter phone number
 add_miyoushe_acc.mobile_number: Phone number
 add_miyoushe_acc.with_mobile_number: With phone number
 adding_accounts_description:
-  "Welcome to Hoyo Buddy! Enjoy various features by spending less than 1 minute to add your accounts.
-
-
-  Regarding account security, please read the [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+  "Welcome to Hoyo Buddy! Enjoy various features by spending less than 1 minute to add your accounts.\n\nRegarding account security, please read the [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Select Your Account's Platform
 ai_gen_image_error_message: Check your prompt and try again.
 ai_gen_image_error_title: An Error Occured While Generating Art With AI
@@ -88,19 +70,11 @@ artifact_sets: Artifact Sets
 auto_checkin_button_label: Auto daily check-in
 auto_locale_option_label: Follow client language
 auto_redeem_error.content:
-  "An error occurred while redeeming codes automatically.
-
-  Hoyo Buddy has disabled this feature for this account, you can turn it back on using </redeem>
-
-  If this error persists or you don't know how to fix it, please contact the developer via </feedback>.
-
-  "
+  "An error occurred while redeeming codes automatically.\nHoyo Buddy has disabled this feature for this account, you can turn it back on using </redeem>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n"
 auto_redeem_footer: Turn off auto code redemption with /redeem
 auto_redeem_toggle.label: Auto code redemption
 books: Books
-captcha.embed.description: "Click on the button below to complete CAPTCHA.
-
-  "
+captcha.embed.description: "Click on the button below to complete CAPTCHA.\n"
 challenge_command_description: "View game end-game content statistics, like spiral abyss, memory of chaos, etc."
 challenge_type_select.placeholder: Select a game mode
 challenge_view.buff_used_in: "Used in: {floors}"
@@ -112,15 +86,7 @@ change_talent_level_label: Change talent level
 change_weapon_level_label: Change weapon level
 chara_level.modal.title: Enter Character Level
 character_const_page_label: Constellations
-character_embed_description: "{rarity}★ {element}
-
-  Birthday: {birthday}
-
-  Constellation: {constellation}
-
-  Affiliation: {affiliation}
-
-  "
+character_embed_description: "{rarity}★ {element}\nBirthday: {birthday}\nConstellation: {constellation}\nAffiliation: {affiliation}\n"
 character_passives_page_label: Passives
 character_profile_page_label: Profile
 character_quotes_page_label: Quotes
@@ -144,18 +110,10 @@ characters.filter.not_max_friendship: Not max friendship
 characters.filter.path.placeholder: Select path filters...
 characters.filter.placeholder: Select a filter...
 characters.first_time.embed.description:
-  "If this is your first time using this command, this may take a while.
-
-  This is because the command needs to fetch data from many sources.
-
-  It should be faster next time you use this command.
-
-  Please be patient and wait for the resources to be fetched."
+  "If this is your first time using this command, this may take a while.\nThis is because the command needs to fetch data from many sources.\nIt should be faster next time you use this command.\nPlease be patient and wait for the resources to be fetched."
 characters.first_time.title: Fetching resources...
 characters.gi.embed.footer: "Level order: Normal ATK/Skill/Burst"
-characters.hsr.embed.footer: "Level order: Basic ATK/Skill/Ultimate/Talent
-
-  Use /profile to view details of a character"
+characters.hsr.embed.footer: "Level order: Basic ATK/Skill/Ultimate/Talent\nUse /profile to view details of a character"
 characters.sorter.constellation: Constellation
 characters.sorter.eidolon: Eidolon
 characters.sorter.element: Element
@@ -180,11 +138,7 @@ cookies_modal_placeholder: Paste your cookies here...
 cryo: Cryo
 daily_button.label: Daily reminder
 daily_check_in: Daily check-in
-daily_checkin_embed_description: "Checked in {day} day(s) this month
-
-  Missed check-in for {missed} day(s)
-
-  "
+daily_checkin_embed_description: "Checked in {day} day(s) this month\nMissed check-in for {missed} day(s)\n"
 daily_checkin_embed_title: Daily Check-In
 daily_modal.title: Daily Reminder Settings
 daily_training_button.label: Daily Training Reminder
@@ -194,32 +148,12 @@ dendro: Dendro
 destruction: Destruction
 devtools_button_label: With DevTools (desktop only)
 devtools_instructions_description:
-  "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)
-
-  2. Open the DevTools by pressing F12 or Ctrl+Shift+I
-
-  3. Press the >> icon on the top navigation bar
-
-  4. Click on the `Application` tab
-
-  5. Click on `Cookies` on the left sidebar
-
-  6. Click on the website you're on (e.g. https://www.hoyolab.com)
-
-  7. Type `v2` in the `Filter` box
-
-  8. Click the button below
-
-  9. Copy the `Value` of each cookie and paste them in the boxes
-
-  "
+  "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Open the DevTools by pressing F12 or Ctrl+Shift+I\n3. Press the >> icon on the top navigation bar\n4. Click on the `Application` tab\n5. Click on `Cookies` on the left sidebar\n6. Click on the website you're on (e.g. https://www.hoyolab.com)\n7. Type `v2` in the `Filter` box\n8. Click the button below\n9. Copy the `Value` of each cookie and paste them in the boxes\n"
 dice_cost_embed_field_name: Dice Cost
 domain-type.characters: Characters
 domain-type.weapons: Weapons
 download_image_failed_error_message:
-  "Unable to download image {url} with status code {status}.
-
-  Try again later, try with a different image, or check if the image URL is valid."
+  "Unable to download image {url} with status code {status}.\nTry again later, try with a different image, or check if the image URL is valid."
 download_image_failed_error_title: Image Download Failed
 edit_nickname_button_label: Edit nickname
 edit_nickname_modal_title: Edit nickname
@@ -228,43 +162,18 @@ electro: Electro
 email-geetest.embed.title: 😥 Need to solve CAPTCHA before sending the verification code
 email_password_button_label: With email and password
 email_password_instructions_description:
-  "<:INFO:1166743144889602190> Note: This method **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.
-
-
-  1. Click the `Complete CAPTCHA` button below
-
-  2. You will be redirected to a website, click the button and complete the CAPTCHA
-
-  3. After completing, click on the `Continue` button below
-
-  "
+  "<:INFO:1166743144889602190> Note: This method **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.\n\n1. Click the `Complete CAPTCHA` button below\n2. You will be redirected to a website, click the button and complete the CAPTCHA\n3. After completing, click on the `Continue` button below\n"
 email_password_modal_email_input_label: e-mail or username
 email_password_modal_password_input_label: password
 enter_email_password_button_label: Enter email/username and password
 enter_email_password_instructions_description:
-  "<:INFO:1166743144889602190> This method requires you to enter your private information.
-
-
-  • In exchange, your `cookie_token` can be refreshed automatically, which is used in features related to code redemption (for HoYoLAB users only).
-
-  • Your email and password are **NOT** saved in the database **AT ALL**, so it's practically impossible for them to be leaked.
-
-  • Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy), so you can verify that yourself.
-
-  • It is ultimately your choice to decide whether to trust this bot or not.
-
-
-  Click on the button below to start.
-
-  "
+  "<:INFO:1166743144889602190> This method requires you to enter your private information.\n\n• In exchange, your `cookie_token` can be refreshed automatically, which is used in features related to code redemption (for HoYoLAB users only).\n• Your email and password are **NOT** saved in the database **AT ALL**, so it's practically impossible for them to be leaked.\n• Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy), so you can verify that yourself.\n• It is ultimately your choice to decide whether to trust this bot or not.\n\nClick on the button below to start.\n"
 enter_light_cone_level.button.label: Change light cone level
 error_footer: Please report this error to the developer via /feedback
 error_title: An Error Occurred
 erudition: Erudition
 exceptions.card_not_ready_error.message:
-  "When new characters are released, I need to spend time to gather fanarts and optimize colors for their cards.
-
-  If you'd like to speed up this process, you can contribute to the card data by reaching me in the [Discord Server](https://dsc.gg/hoyo-buddy)."
+  "When new characters are released, I need to spend time to gather fanarts and optimize colors for their cards.\nIf you'd like to speed up this process, you can contribute to the card data by reaching me in the [Discord Server](https://dsc.gg/hoyo-buddy)."
 exceptions.card_not_ready_error.title: "Card data for {character_name} is not ready yet."
 exped.embed.description: One (or more) expedetions are finished
 exped_button.label: Expedition reminder
@@ -293,9 +202,7 @@ farm_add_command.item_already_in_list: Item already in list
 farm_add_command.item_already_in_list_description: This item is already in your farm reminder list.
 farm_add_command_description: Add character/weapon to be notified when its materials are farmable
 farm_check.farmable_today: "Materials For {name} is Farmable Today"
-farm_check.use_farm_notify: "Use /farm reminder to configure reminder settings
-
-  Use /farm view to view all items farmable today"
+farm_check.use_farm_notify: "Use /farm reminder to configure reminder settings\nUse /farm view to view all items farmable today"
 farm_notify.add_item: Add item
 farm_notify.add_item.embed.description: "To add items, use the </farm add> command"
 farm_notify.description: You will be reminded when the materials of characters/weapons in this list are farmable.
@@ -318,12 +225,7 @@ feedback_button.feedback_sent.description: 🥰 Thank you very much for your fee
 feedback_button.feedback_sent.title: Feedback Sent
 feedback_button.label: Give Feedback
 feedback_command.description:
-  "🤗 Hi! Thanks for taking the time to give me feedback.
-
-  Click on the button below to start.
-
-
-  Note: I might contact you for more details. So please keep your DMs opened (or join the [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
+  "\U0001F917 Hi! Thanks for taking the time to give me feedback.\nClick on the button below to start.\n\nNote: I might contact you for more details. So please keep your DMs opened (or join the [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
 feedback_command_description: Give feedback to the bot's developer
 feedback_modal.feedback.label: Feedback
 fire: Fire
@@ -333,13 +235,7 @@ food: Food
 friday: Friday
 furnishing_sets: Furnishing Sets
 furnishings: Furnishings
-furniture_embed_description: "{comfort_icon} Comfort: {comfort}
-
-  {load_icon} Load: {load}
-
-  Trust: {trust}
-
-  Creation Time: {hour}h"
+furniture_embed_description: "{comfort_icon} Comfort: {comfort}\n{load_icon} Load: {load}\nTrust: {trust}\nCreation Time: {hour}h"
 game_maintenance_description: Please try again later
 game_maintenance_title: Game is Under Maintenance
 game_value_incomplete_param_error_message: You must specify the game of the UID
@@ -396,22 +292,7 @@ invalid_verification_code_title: Invalid Verification Code
 items: Items
 javascript_button_label: With JavaScript
 javascript_instructions_description:
-  "<:INFO:1166743144889602190> Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.
-
-
-  1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)
-
-  2. Copy the code below
-
-  3. Click on the address bar and type `java`
-
-  4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`
-
-  5. Select all and copy the text that appears
-
-  6. Click the button below and paste the text in the box
-
-  "
+  "<:INFO:1166743144889602190> Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Copy the code below\n3. Click on the address bar and type `java`\n4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n5. Select all and copy the text that appears\n6. Click the button below and paste the text in the box\n"
 level_label: Level
 level_str: "Lv.{level}"
 light_cones: Light Cones
@@ -423,13 +304,7 @@ materials: Materials
 memory_of_chaos: Memory of chaos
 miyoushe: Miyoushe
 mobile_instructions_description:
-  "1. Click the button below to enter your phone number
-
-  2. You will receive a verification code via SMS
-
-  3. Click the button below to enter the verification code
-
-  "
+  "1. Click the button below to enter your phone number\n2. You will receive a verification code via SMS\n3. Click the button below to enter the verification code\n"
 moc_card_battles_fought: "Battles Fought: {battles}"
 moc_card_cycles_used: "Cycles Used: {cycles}"
 moc_card_farthest_stage: "Farthest Stage: {stage}"
@@ -466,9 +341,7 @@ notes-card.hsr.trailblaze-power: Trailblaze Power
 notes.item_full_in_time: "{emoji} full {in_time}"
 notes_available: "{emoji} available {in_time}"
 notes_command_description: View real-time notes
-notif.embed.footer: "Click the button below to change notification settings.
-
-  If it is expired, use the /notes command."
+notif.embed.footer: "Click the button below to change notification settings.\nIf it is expired, use the /notes command."
 notif_modal.enabled.label: Enabled
 notif_modal.max_notif_count.label: Max Notify Count
 notif_modal.notify_interval.label: Notify Interval (in minutes)
@@ -490,27 +363,13 @@ preservation: Preservation
 prev_page_option_label: Previous page
 primogems: primogems
 process_notify_error.content:
-  "An error occurred while processing your real-time notes reminder.
-
-  Hoyo Buddy has disabled this reminder for this account, you can turn it back on using </notes>
-
-  If this error persists or you don't know how to fix it, please contact the developer via </feedback>.
-
-  "
+  "An error occurred while processing your real-time notes reminder.\nHoyo Buddy has disabled this reminder for this account, you can turn it back on using </notes>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n"
 profile.add_image.button.label: Add custom image
 profile.add_image_modal.image_url.label: Image URL
 profile.add_image_modal.title: Add Custom Image
 profile.build.select.placeholder: Select a build...
 profile.card_info.embed.description:
-  "- All assets used in the cards belong to Hoyoverse, I do not own them.
-
-  - All fanarts used in the cards are credited to their respective artists.
-
-  - The Hoyo Buddy templates' designs are original, you are not allowed to modify them or claim that you made them without my permission.
-
-  - Game data is provided by {provider}.
-
-  "
+  "- All assets used in the cards belong to Hoyoverse, I do not own them.\n- All fanarts used in the cards are credited to their respective artists.\n- The Hoyo Buddy templates' designs are original, you are not allowed to modify them or claim that you made them without my permission.\n- Game data is provided by {provider}.\n"
 profile.card_info.embed.title: About Character Build Cards
 profile.card_settings.button.label: Card settings
 profile.card_template_select.diff_author.description: "Designed by {author1} and programmed by {author2}"
@@ -539,66 +398,20 @@ profile.image_select.none.label: Official art
 profile.image_select.placeholder: Select an image
 profile.info.embed.custom_images.name: Custom Images
 profile.info.embed.custom_images.value:
-  "- Hoyo Buddy comes with some preset arts that I liked, but you can add your own images too.
-
-  - Only direct image URLs are supported, and they must be publicly accessible; GIFs are not supported.
-
-  - For Hoyo Buddy's templates, vertical images are recommended.
-
-  - For server owners, I am not responsible for any NSFW images that you or your members add.
-
-  - The red button removes the current custom image and reverts to the default one."
+  "- Hoyo Buddy comes with some preset arts that I liked, but you can add your own images too.\n- Only direct image URLs are supported, and they must be publicly accessible; GIFs are not supported.\n- For Hoyo Buddy's templates, vertical images are recommended.\n- For server owners, I am not responsible for any NSFW images that you or your members add.\n- The red button removes the current custom image and reverts to the default one."
 profile.info.embed.dark_mode.name: Dark Mode
 profile.info.embed.dark_mode.value:
-  "- This setting is independent from the one in </settings>, defaults to light mode.
-
-  - Light mode cards tend to look better because the colors are not optimized for dark mode.
-
-  - Suggestions for dark mode colors are welcome!"
+  "- This setting is independent from the one in </settings>, defaults to light mode.\n- Light mode cards tend to look better because the colors are not optimized for dark mode.\n- Suggestions for dark mode colors are welcome!"
 profile.info.embed.primary_color.name: Primary Color
 profile.info.embed.primary_color.value: "- Only hex color codes are supported."
 profile.info.embed.templates.name: Templates
 profile.info.embed.templates.value:
-  "- Hoyo Buddy has its own template made by me, but I also added templates made by other developers.
-
-  - Code of 3rd party templates are not maintained by me, so I cannot guarantee their quality; I am also not responsible for any issues with them.
-
-  - 3rd party templates may have feature limitations compared to Hoyo Buddy's.
-
-  - Cached data characters can only use Hoyo Buddy's templates."
+  "- Hoyo Buddy has its own template made by me, but I also added templates made by other developers.\n- Code of 3rd party templates are not maintained by me, so I cannot guarantee their quality; I am also not responsible for any issues with them.\n- 3rd party templates may have feature limitations compared to Hoyo Buddy's.\n- Cached data characters can only use Hoyo Buddy's templates."
 profile.info.embed.title: About Card Settings
 profile.player_info.button.label: Player info
-profile.player_info.embed.description: "Trailblaze Level: {level}
-
-  Equilibrium Level: {world_level}
-
-  Friend Count: {friend_count}
-
-  Light Cones: {light_cones}
-
-  Characters: {characters}
-
-  Achievements: {achievements}
-
-  "
-profile.player_info.gi.embed.description: "Adventure Rank: {adventure_rank}
-
-  Spiral Abyss: {spiral_abyss}
-
-  Achievements: {achievements}
-
-  "
-profile.player_info.hoyolab.embed.description: "Trailblaze Level: {level}
-
-  Characters: {characters}
-
-  Chests: {chest}
-
-  Memory of Chaos: {moc}
-
-  Achievements: {achievements}
-
-  "
+profile.player_info.embed.description: "Trailblaze Level: {level}\nEquilibrium Level: {world_level}\nFriend Count: {friend_count}\nLight Cones: {light_cones}\nCharacters: {characters}\nAchievements: {achievements}\n"
+profile.player_info.gi.embed.description: "Adventure Rank: {adventure_rank}\nSpiral Abyss: {spiral_abyss}\nAchievements: {achievements}\n"
+profile.player_info.hoyolab.embed.description: "Trailblaze Level: {level}\nCharacters: {characters}\nChests: {chest}\nMemory of Chaos: {moc}\nAchievements: {achievements}\n"
 profile.primary_color.button.label: Change color
 profile.primary_color_modal.color.label: Color (hex code)
 profile.primary_color_modal.title: Change Card Color
@@ -624,14 +437,10 @@ real_time_notes: Real-time notes
 realm_curr_button.label: Realm currency reminder
 realm_curr_modal.title: Realm Currency Reminder Settings
 redeeem_code.cookie_token_expired_description:
-  "Refresh your cookie token by adding your accounts again using </accounts>.
-
-  If you use the email and password method to add your accounts, cookie token can be refreshed automatically."
+  "Refresh your cookie token by adding your accounts again using </accounts>.\nIf you use the email and password method to add your accounts, cookie token can be refreshed automatically."
 redeeem_code.cookie_token_expired_title: Cookie Token Expired
 redeeem_code.cookie_token_refresh_failed_description:
-  "It is likely that you have changed your account's password since the last time you add your accounts.
-
-  Please add your accounts again using </accounts> with the email and password method."
+  "It is likely that you have changed your account's password since the last time you add your accounts.\nPlease add your accounts again using </accounts> with the email and password method."
 redeeem_code.cookie_token_refresh_failed_title: Failed to refresh cookie token
 redeem_code.already_claimed: Redemption code already claimed
 redeem_code.cooldown: Gift code redemption in cooldown
@@ -640,9 +449,7 @@ redeem_code.invalid: Invalid redemption code
 redeem_code.success: Successfully redeemed
 redeem_codes_button.label: Redeem codes
 redeem_command_description: Redeem codes for in-game rewards
-redeem_command_embed.description: "Enter up to 5 redemption codes to redeem.
-
-  Alternatively, you can enable automatic code redemption."
+redeem_command_embed.description: "Enter up to 5 redemption codes to redeem.\nAlternatively, you can enable automatic code redemption."
 redeem_command_embed.title: Code Redemption Results
 redeem_cooldown_embed.description: "Due to redeem cooldowns, this may take a while."
 redeem_cooldown_embed.title: Redeeming Codes
@@ -650,36 +457,10 @@ refinement_indicator: "Refinement {r}"
 relics: Relics
 reminder_button.label: Reminder settings
 reminder_settings.not_set: Not set
-reminder_settings.reminde.set.type1: "Status: {status}
-
-  Threshold: {threshold}
-
-  Notify Interval: {notify_interval} minutes
-
-  Max Notify Count: {max_notif_count}"
-reminder_settings.reminde.set.type2: "Status: {status}
-
-  Notify Interval: {notify_interval} minutes
-
-  Max Notify Count: {max_notif_count}"
-reminder_settings.reminde.set.type3: "Status: {status}
-
-  Notify Interval: {notify_interval} minutes
-
-  Max Notify Count: {max_notif_count}
-
-  Notify Time: {notify_time} hours before the server resets
-
-  "
-reminder_settings.reminde.set.type4: "Status: {status}
-
-  Notify Interval: {notify_interval} minutes
-
-  Max Notify Count: {max_notif_count}
-
-  Notify Time: {notify_time} hours before the server resets
-
-  Notify Weekday: {notify_weekday}"
+reminder_settings.reminde.set.type1: "Status: {status}\nThreshold: {threshold}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}"
+reminder_settings.reminde.set.type2: "Status: {status}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}"
+reminder_settings.reminde.set.type3: "Status: {status}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}\nNotify Time: {notify_time} hours before the server resets\n"
+reminder_settings.reminde.set.type4: "Status: {status}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}\nNotify Time: {notify_time} hours before the server resets\nNotify Weekday: {notify_weekday}"
 reminder_settings_title: Real-Time Notes Reminders
 reminder_toggle: Reminder
 resin_discount.embed.description: Weekly boss discounts are not used up yet
@@ -720,9 +501,7 @@ thursday: Thursday
 toggle_off_text: "off"
 toggle_on_text: "on"
 traditional_chinese_server: Traditional Chinese Server
-try_other_method_error_message: "Please try other methods to login.
-
-  If you are entering cookies manually through DevTools, make sure you are copying them correctly."
+try_other_method_error_message: "Please try other methods to login.\nIf you are entering cookies manually through DevTools, make sure you are copying them correctly."
 try_other_method_error_title: Invalid Cookies
 tuesday: Tuesday
 unreleased_content: Unreleased Content
@@ -741,15 +520,7 @@ week_boss_modal.title: Weekly Boss Discount Reminder Settings
 wind: Wind
 yatta_character_detail_page_label: Details
 yatta_character_eidolon_page_label: Eidolons
-yatta_character_embed_description: "{rarity}
-
-  Element: {element}
-
-  Path: {path}
-
-  World: {world}
-
-  "
+yatta_character_embed_description: "{rarity}\nElement: {element}\nPath: {path}\nWorld: {world}\n"
 yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}"
 yatta_character_skill_energy_field_name: Energy
 yatta_character_skill_energy_generation_field_value: "Generation: {energy_generation}"

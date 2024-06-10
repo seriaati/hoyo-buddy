@@ -79,13 +79,13 @@ class Admin(commands.Cog):
     @commands.command(name="push-source-strings", aliases=["pss"])
     async def push_source_strings_command(self, ctx: commands.Context) -> Any:
         message = await ctx.send("Pushing source strings...")
-        await self.bot.translator.push_source_strings()
+        await self.bot.translator.update_l10n_files()
         await message.edit(content="Pushed source strings.")
 
     @commands.command(name="fetch-source-strings", aliases=["fss"])
     async def fetch_source_strings_command(self, ctx: commands.Context) -> Any:
         message = await ctx.send("Fetching source strings...")
-        await self.bot.translator.fetch_source_strings()
+        await self.bot.translator.load_l10n_files()
         await message.edit(content="Fetched source strings.")
 
     @commands.command(name="run-tasks", aliases=["rt"])

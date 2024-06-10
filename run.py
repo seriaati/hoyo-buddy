@@ -69,7 +69,7 @@ async def main() -> None:
     async with (
         aiohttp.ClientSession() as session,
         Database(),
-        Translator(repo) as translator,
+        Translator(config) as translator,
         HoyoBuddy(
             session=session,
             env=env,

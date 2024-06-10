@@ -5,10 +5,9 @@ import pathlib
 import re
 from typing import TYPE_CHECKING, Any
 
-import yaml
 from discord import app_commands
 from loguru import logger
-from seria.utils import read_json, read_yaml
+from seria.utils import read_json, read_yaml, write_yaml
 
 from ..enums import GenshinElement, HSRElement
 from ..utils import capitalize_first_word as capitalize_first_word_
@@ -17,7 +16,6 @@ from ..utils import convert_to_title_case
 if TYPE_CHECKING:
     from types import TracebackType
 
-    import git
     from ambr.models import Character as GenshinCharacter
     from discord.app_commands.translator import TranslationContextTypes
     from discord.enums import Locale
@@ -86,10 +84,9 @@ class LocaleStr:
 
 
 class Translator:
-    def __init__(self, repo: git.Repo | None = None, config: Config | None = None) -> None:
+    def __init__(self, config: Config | None = None) -> None:
         super().__init__()
 
-        self._repo = repo
         self._config = config
         self._not_translated: dict[str, str] = {}
         self._synced_commands: dict[str, int] = {}
@@ -108,15 +105,12 @@ class Translator:
         await self.unload()
 
     async def load(self) -> None:
-        await self.fetch_source_strings()
+        await self.load_l10n_files()
         await self.load_synced_commands_json()
 
         logger.info("Translator loaded")
 
-    async def fetch_source_strings(self) -> None:
-        if self._repo is not None:
-            self._repo.remotes.origin.pull()
-
+    async def load_l10n_files(self) -> None:
         for lang in LANGUAGES:
             file_path = L10N_PATH / f"{lang}.yaml"
             if not file_path.exists():
@@ -124,7 +118,6 @@ class Translator:
             self._localizations[lang] = await read_yaml(file_path.as_posix())
 
     async def unload(self) -> None:
-        await self.push_source_strings()
         logger.info("Translator unloaded")
 
     async def load_synced_commands_json(self) -> None:
@@ -164,26 +157,19 @@ class Translator:
         if string.translate_:
             # Check if the string is missing or has different values
             source_string = self._localizations[SOURCE_LANG].get(string_key)
-            changed = False
 
             if source_string is None and string_key not in self._not_translated:
                 self._not_translated[string_key] = message
-                logger.info(f"String {string_key!r} is missing in source lang file")
-                changed = True
+                logger.error(f"String {string_key!r} is missing in source lang file")
             elif (
                 source_string is not None
                 and source_string.lower() != message.lower()
                 and string_key not in self._not_translated
             ):
                 self._not_translated[string_key] = message
-                logger.info(
+                logger.error(
                     f"String {string_key!r} has different values in code vs. source lang file"
                 )
-                changed = True
-
-            if changed:
-                self._update_source_string_file()
-                self._update_l10n_files()
 
         lang = locale.value.replace("-", "_")
 
@@ -231,29 +217,20 @@ class Translator:
             string_key = string.key
         return string_key
 
-    async def push_source_strings(self) -> None:
+    async def update_l10n_files(self) -> None:
         if not self._not_translated:
             return
 
-        if self._repo is None:
-            msg = "Cannot push source strings, missing git repository"
-            raise RuntimeError(msg)
-
-        self._update_source_string_file()
-
-        self._update_l10n_files()
-
-        if self._config is not None and self._config.translator:
-            self._repo.index.add([SOURCE_LANG_PATH.as_posix()])
-            self._repo.index.commit("chore(l10n): Update source strings")
-
-            self._repo.index.add([L10N_PATH.as_posix()])
-            self._repo.index.commit("chore(l10n): Add new strings")
-            self._repo.remotes.origin.push()
-
+        await self._update_source_str_file()
+        await self._update_l10n_files()
         self._not_translated.clear()
 
-    def _update_l10n_files(self) -> None:
+    async def _update_source_str_file(self) -> None:
+        source_strings = self._localizations[SOURCE_LANG]
+        source_strings.update(self._not_translated)
+        await write_yaml(SOURCE_LANG_PATH.as_posix(), source_strings)
+
+    async def _update_l10n_files(self) -> None:
         for lang in LANGUAGES:
             if lang == SOURCE_LANG:
                 continue
@@ -265,14 +242,7 @@ class Translator:
             for key in self._not_translated:
                 self._localizations[lang][key] = ""
 
-            with open(file_path, "w", encoding="utf-8") as f:
-                f.write(yaml.dump(self._localizations[lang], allow_unicode=True))
-
-    def _update_source_string_file(self) -> None:
-        source_strings = self._localizations[SOURCE_LANG]
-        source_strings.update(self._not_translated)
-        with open(SOURCE_LANG_PATH, "w", encoding="utf-8") as f:
-            f.write(yaml.dump(source_strings, allow_unicode=True))
+            await write_yaml(file_path.as_posix(), self._localizations[lang])
 
     def get_traveler_name(
         self,

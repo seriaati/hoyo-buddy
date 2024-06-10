@@ -48,16 +48,13 @@ accounts_command_description: Manage your accounts
 action_in_cooldown_error_message: "Please try again at {available_time}."
 action_in_cooldown_error_title: Action in Cooldown
 add_account_button_label: Add accounts
-add_hoyolab_acc.embed.description:
-  "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one\n3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile\n\n"
+add_hoyolab_acc.embed.description: "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one\n3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile\n\n"
 add_hoyolab_acc.embed.title: Select a Method to add Your Accounts
-add_miyoushe_acc.embed.description:
-  "1. With QR code: Recommended for most users if you are logged in on your mobile device\n2. With email/username and password\n3. With phone number\n4. With DevTools: Only work on desktop, a safer option if you have security concerns with the other methods\n"
+add_miyoushe_acc.embed.description: "1. With QR code: Recommended for most users if you are logged in on your mobile device\n2. With email/username and password\n3. With phone number\n4. With DevTools: Only work on desktop, a safer option if you have security concerns with the other methods\n"
 add_miyoushe_acc.enter_mobile_number: Enter phone number
 add_miyoushe_acc.mobile_number: Phone number
 add_miyoushe_acc.with_mobile_number: With phone number
-adding_accounts_description:
-  "Welcome to Hoyo Buddy! Enjoy various features by spending less than 1 minute to add your accounts.\n\nRegarding account security, please read the [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "Welcome to Hoyo Buddy! Enjoy various features by spending less than 1 minute to add your accounts.\n\nRegarding account security, please read the [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Select Your Account's Platform
 ai_gen_image_error_message: Check your prompt and try again.
 ai_gen_image_error_title: An Error Occured While Generating Art With AI
@@ -69,8 +66,7 @@ artifact_set_two_piece_embed_description: "2-Pieces: {bonus_2}"
 artifact_sets: Artifact Sets
 auto_checkin_button_label: Auto daily check-in
 auto_locale_option_label: Follow client language
-auto_redeem_error.content:
-  "An error occurred while redeeming codes automatically.\nHoyo Buddy has disabled this feature for this account, you can turn it back on using </redeem>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n"
+auto_redeem_error.content: "An error occurred while redeeming codes automatically.\nHoyo Buddy has disabled this feature for this account, you can turn it back on using </redeem>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n"
 auto_redeem_footer: Turn off auto code redemption with /redeem
 auto_redeem_toggle.label: Auto code redemption
 books: Books
@@ -109,8 +105,7 @@ characters.filter.none: None
 characters.filter.not_max_friendship: Not max friendship
 characters.filter.path.placeholder: Select path filters...
 characters.filter.placeholder: Select a filter...
-characters.first_time.embed.description:
-  "If this is your first time using this command, this may take a while.\nThis is because the command needs to fetch data from many sources.\nIt should be faster next time you use this command.\nPlease be patient and wait for the resources to be fetched."
+characters.first_time.embed.description: "If this is your first time using this command, this may take a while.\nThis is because the command needs to fetch data from many sources.\nIt should be faster next time you use this command.\nPlease be patient and wait for the resources to be fetched."
 characters.first_time.title: Fetching resources...
 characters.gi.embed.footer: "Level order: Normal ATK/Skill/Burst"
 characters.hsr.embed.footer: "Level order: Basic ATK/Skill/Ultimate/Talent\nUse /profile to view details of a character"
@@ -147,13 +142,11 @@ delete_account_button_label: Delete selected account
 dendro: Dendro
 destruction: Destruction
 devtools_button_label: With DevTools (desktop only)
-devtools_instructions_description:
-  "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Open the DevTools by pressing F12 or Ctrl+Shift+I\n3. Press the >> icon on the top navigation bar\n4. Click on the `Application` tab\n5. Click on `Cookies` on the left sidebar\n6. Click on the website you're on (e.g. https://www.hoyolab.com)\n7. Type `v2` in the `Filter` box\n8. Click the button below\n9. Copy the `Value` of each cookie and paste them in the boxes\n"
+devtools_instructions_description: "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Open the DevTools by pressing F12 or Ctrl+Shift+I\n3. Press the >> icon on the top navigation bar\n4. Click on the `Application` tab\n5. Click on `Cookies` on the left sidebar\n6. Click on the website you're on (e.g. https://www.hoyolab.com)\n7. Type `v2` in the `Filter` box\n8. Click the button below\n9. Copy the `Value` of each cookie and paste them in the boxes\n"
 dice_cost_embed_field_name: Dice Cost
 domain-type.characters: Characters
 domain-type.weapons: Weapons
-download_image_failed_error_message:
-  "Unable to download image {url} with status code {status}.\nTry again later, try with a different image, or check if the image URL is valid."
+download_image_failed_error_message: "Unable to download image {url} with status code {status}.\nTry again later, try with a different image, or check if the image URL is valid."
 download_image_failed_error_title: Image Download Failed
 edit_nickname_button_label: Edit nickname
 edit_nickname_modal_title: Edit nickname
@@ -161,19 +154,16 @@ eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
 email-geetest.embed.title: 😥 Need to solve CAPTCHA before sending the verification code
 email_password_button_label: With email and password
-email_password_instructions_description:
-  "<:INFO:1166743144889602190> Note: This method **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.\n\n1. Click the `Complete CAPTCHA` button below\n2. You will be redirected to a website, click the button and complete the CAPTCHA\n3. After completing, click on the `Continue` button below\n"
+email_password_instructions_description: "<:INFO:1166743144889602190> Note: This method **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.\n\n1. Click the `Complete CAPTCHA` button below\n2. You will be redirected to a website, click the button and complete the CAPTCHA\n3. After completing, click on the `Continue` button below\n"
 email_password_modal_email_input_label: e-mail or username
 email_password_modal_password_input_label: password
 enter_email_password_button_label: Enter email/username and password
-enter_email_password_instructions_description:
-  "<:INFO:1166743144889602190> This method requires you to enter your private information.\n\n• In exchange, your `cookie_token` can be refreshed automatically, which is used in features related to code redemption (for HoYoLAB users only).\n• Your email and password are **NOT** saved in the database **AT ALL**, so it's practically impossible for them to be leaked.\n• Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy), so you can verify that yourself.\n• It is ultimately your choice to decide whether to trust this bot or not.\n\nClick on the button below to start.\n"
+enter_email_password_instructions_description: "<:INFO:1166743144889602190> This method requires you to enter your private information.\n\n• In exchange, your `cookie_token` can be refreshed automatically, which is used in features related to code redemption (for HoYoLAB users only).\n• Your email and password are **NOT** saved in the database **AT ALL**, so it's practically impossible for them to be leaked.\n• Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy), so you can verify that yourself.\n• It is ultimately your choice to decide whether to trust this bot or not.\n\nClick on the button below to start.\n"
 enter_light_cone_level.button.label: Change light cone level
 error_footer: Please report this error to the developer via /feedback
 error_title: An Error Occurred
 erudition: Erudition
-exceptions.card_not_ready_error.message:
-  "When new characters are released, I need to spend time to gather fanarts and optimize colors for their cards.\nIf you'd like to speed up this process, you can contribute to the card data by reaching me in the [Discord Server](https://dsc.gg/hoyo-buddy)."
+exceptions.card_not_ready_error.message: "When new characters are released, I need to spend time to gather fanarts and optimize colors for their cards.\nIf you'd like to speed up this process, you can contribute to the card data by reaching me in the [Discord Server](https://dsc.gg/hoyo-buddy)."
 exceptions.card_not_ready_error.title: "Card data for {character_name} is not ready yet."
 exped.embed.description: One (or more) expedetions are finished
 exped_button.label: Expedition reminder
@@ -224,8 +214,7 @@ farm_view_command_description: View farmable domains in Genshin Impact
 feedback_button.feedback_sent.description: 🥰 Thank you very much for your feedback!
 feedback_button.feedback_sent.title: Feedback Sent
 feedback_button.label: Give Feedback
-feedback_command.description:
-  "\U0001F917 Hi! Thanks for taking the time to give me feedback.\nClick on the button below to start.\n\nNote: I might contact you for more details. So please keep your DMs opened (or join the [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
+feedback_command.description: "\U0001F917 Hi! Thanks for taking the time to give me feedback.\nClick on the button below to start.\n\nNote: I might contact you for more details. So please keep your DMs opened (or join the [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
 feedback_command_description: Give feedback to the bot's developer
 feedback_modal.feedback.label: Feedback
 fire: Fire
@@ -291,8 +280,7 @@ invalid_verification_code_description: Please check the verification code and tr
 invalid_verification_code_title: Invalid Verification Code
 items: Items
 javascript_button_label: With JavaScript
-javascript_instructions_description:
-  "<:INFO:1166743144889602190> Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Copy the code below\n3. Click on the address bar and type `java`\n4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n5. Select all and copy the text that appears\n6. Click the button below and paste the text in the box\n"
+javascript_instructions_description: "<:INFO:1166743144889602190> Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Copy the code below\n3. Click on the address bar and type `java`\n4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n5. Select all and copy the text that appears\n6. Click the button below and paste the text in the box\n"
 level_label: Level
 level_str: "Lv.{level}"
 light_cones: Light Cones
@@ -303,8 +291,7 @@ make_up_for_checkin_button_label: Make up for check-in
 materials: Materials
 memory_of_chaos: Memory of chaos
 miyoushe: Miyoushe
-mobile_instructions_description:
-  "1. Click the button below to enter your phone number\n2. You will receive a verification code via SMS\n3. Click the button below to enter the verification code\n"
+mobile_instructions_description: "1. Click the button below to enter your phone number\n2. You will receive a verification code via SMS\n3. Click the button below to enter the verification code\n"
 moc_card_battles_fought: "Battles Fought: {battles}"
 moc_card_cycles_used: "Cycles Used: {cycles}"
 moc_card_farthest_stage: "Farthest Stage: {stage}"
@@ -354,7 +341,6 @@ notify_on_success_button_label: Notify on check-in success
 nsfw_prompt_error_message: "The prompt contains NSFW content, please try again with a different prompt."
 nsfw_prompt_error_title: NSFW Prompt Detected
 page_footer: "Page {current_page}/{total_pages}"
-pf_card_title: Pure Fiction
 pf_card_total_score: "Total Score: {score}"
 physical: Physical
 player_not_found_description: Please check the provided UID
@@ -362,14 +348,12 @@ player_not_found_title: Player Does Not Exist
 preservation: Preservation
 prev_page_option_label: Previous page
 primogems: primogems
-process_notify_error.content:
-  "An error occurred while processing your real-time notes reminder.\nHoyo Buddy has disabled this reminder for this account, you can turn it back on using </notes>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n"
+process_notify_error.content: "An error occurred while processing your real-time notes reminder.\nHoyo Buddy has disabled this reminder for this account, you can turn it back on using </notes>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n"
 profile.add_image.button.label: Add custom image
 profile.add_image_modal.image_url.label: Image URL
 profile.add_image_modal.title: Add Custom Image
 profile.build.select.placeholder: Select a build...
-profile.card_info.embed.description:
-  "- All assets used in the cards belong to Hoyoverse, I do not own them.\n- All fanarts used in the cards are credited to their respective artists.\n- The Hoyo Buddy templates' designs are original, you are not allowed to modify them or claim that you made them without my permission.\n- Game data is provided by {provider}.\n"
+profile.card_info.embed.description: "- All assets used in the cards belong to Hoyoverse, I do not own them.\n- All fanarts used in the cards are credited to their respective artists.\n- The Hoyo Buddy templates' designs are original, you are not allowed to modify them or claim that you made them without my permission.\n- Game data is provided by {provider}.\n"
 profile.card_info.embed.title: About Character Build Cards
 profile.card_settings.button.label: Card settings
 profile.card_template_select.diff_author.description: "Designed by {author1} and programmed by {author2}"
@@ -397,16 +381,13 @@ profile.image_select.default_collection.label: "Hoyo Buddy Collection ({num})"
 profile.image_select.none.label: Official art
 profile.image_select.placeholder: Select an image
 profile.info.embed.custom_images.name: Custom Images
-profile.info.embed.custom_images.value:
-  "- Hoyo Buddy comes with some preset arts that I liked, but you can add your own images too.\n- Only direct image URLs are supported, and they must be publicly accessible; GIFs are not supported.\n- For Hoyo Buddy's templates, vertical images are recommended.\n- For server owners, I am not responsible for any NSFW images that you or your members add.\n- The red button removes the current custom image and reverts to the default one."
+profile.info.embed.custom_images.value: "- Hoyo Buddy comes with some preset arts that I liked, but you can add your own images too.\n- Only direct image URLs are supported, and they must be publicly accessible; GIFs are not supported.\n- For Hoyo Buddy's templates, vertical images are recommended.\n- For server owners, I am not responsible for any NSFW images that you or your members add.\n- The red button removes the current custom image and reverts to the default one."
 profile.info.embed.dark_mode.name: Dark Mode
-profile.info.embed.dark_mode.value:
-  "- This setting is independent from the one in </settings>, defaults to light mode.\n- Light mode cards tend to look better because the colors are not optimized for dark mode.\n- Suggestions for dark mode colors are welcome!"
+profile.info.embed.dark_mode.value: "- This setting is independent from the one in </settings>, defaults to light mode.\n- Light mode cards tend to look better because the colors are not optimized for dark mode.\n- Suggestions for dark mode colors are welcome!"
 profile.info.embed.primary_color.name: Primary Color
 profile.info.embed.primary_color.value: "- Only hex color codes are supported."
 profile.info.embed.templates.name: Templates
-profile.info.embed.templates.value:
-  "- Hoyo Buddy has its own template made by me, but I also added templates made by other developers.\n- Code of 3rd party templates are not maintained by me, so I cannot guarantee their quality; I am also not responsible for any issues with them.\n- 3rd party templates may have feature limitations compared to Hoyo Buddy's.\n- Cached data characters can only use Hoyo Buddy's templates."
+profile.info.embed.templates.value: "- Hoyo Buddy has its own template made by me, but I also added templates made by other developers.\n- Code of 3rd party templates are not maintained by me, so I cannot guarantee their quality; I am also not responsible for any issues with them.\n- 3rd party templates may have feature limitations compared to Hoyo Buddy's.\n- Cached data characters can only use Hoyo Buddy's templates."
 profile.info.embed.title: About Card Settings
 profile.player_info.button.label: Player info
 profile.player_info.embed.description: "Trailblaze Level: {level}\nEquilibrium Level: {world_level}\nFriend Count: {friend_count}\nLight Cones: {light_cones}\nCharacters: {characters}\nAchievements: {achievements}\n"
@@ -436,11 +417,9 @@ read_story.button.label: Read Story
 real_time_notes: Real-time notes
 realm_curr_button.label: Realm currency reminder
 realm_curr_modal.title: Realm Currency Reminder Settings
-redeeem_code.cookie_token_expired_description:
-  "Refresh your cookie token by adding your accounts again using </accounts>.\nIf you use the email and password method to add your accounts, cookie token can be refreshed automatically."
+redeeem_code.cookie_token_expired_description: "Refresh your cookie token by adding your accounts again using </accounts>.\nIf you use the email and password method to add your accounts, cookie token can be refreshed automatically."
 redeeem_code.cookie_token_expired_title: Cookie Token Expired
-redeeem_code.cookie_token_refresh_failed_description:
-  "It is likely that you have changed your account's password since the last time you add your accounts.\nPlease add your accounts again using </accounts> with the email and password method."
+redeeem_code.cookie_token_refresh_failed_description: "It is likely that you have changed your account's password since the last time you add your accounts.\nPlease add your accounts again using </accounts> with the email and password method."
 redeeem_code.cookie_token_refresh_failed_title: Failed to refresh cookie token
 redeem_code.already_claimed: Redemption code already claimed
 redeem_code.cooldown: Gift code redemption in cooldown

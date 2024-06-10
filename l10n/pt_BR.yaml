@@ -48,16 +48,13 @@ accounts_command_description: Gerencie suas contas
 action_in_cooldown_error_message: ""
 action_in_cooldown_error_title: ""
 add_account_button_label: Adicionar contas
-add_hoyolab_acc.embed.description:
-  ""
+add_hoyolab_acc.embed.description: ""
 add_hoyolab_acc.embed.title: ""
-add_miyoushe_acc.embed.description:
-  ""
+add_miyoushe_acc.embed.description: ""
 add_miyoushe_acc.enter_mobile_number: ""
 add_miyoushe_acc.mobile_number: ""
 add_miyoushe_acc.with_mobile_number: ""
-adding_accounts_description:
-  ""
+adding_accounts_description: ""
 adding_accounts_title: ""
 ai_gen_image_error_message: ""
 ai_gen_image_error_title: ""
@@ -69,8 +66,7 @@ artifact_set_two_piece_embed_description: "2-Peças: {bonus_2}"
 artifact_sets: Conjuntos de artefatos
 auto_checkin_button_label: ""
 auto_locale_option_label: Seguir o idioma do cliente
-auto_redeem_error.content:
-  ""
+auto_redeem_error.content: ""
 auto_redeem_footer: ""
 auto_redeem_toggle.label: ""
 books: Livros
@@ -109,8 +105,7 @@ characters.filter.none: ""
 characters.filter.not_max_friendship: ""
 characters.filter.path.placeholder: ""
 characters.filter.placeholder: ""
-characters.first_time.embed.description:
-  ""
+characters.first_time.embed.description: ""
 characters.first_time.title: ""
 characters.gi.embed.footer: ""
 characters.hsr.embed.footer: ""
@@ -147,13 +142,11 @@ delete_account_button_label: Apagar conta selecionada
 dendro: ""
 destruction: ""
 devtools_button_label: ""
-devtools_instructions_description:
-  ""
+devtools_instructions_description: ""
 dice_cost_embed_field_name: Custo de dados
 domain-type.characters: ""
 domain-type.weapons: ""
-download_image_failed_error_message:
-  ""
+download_image_failed_error_message: ""
 download_image_failed_error_title: ""
 edit_nickname_button_label: Editar apelido
 edit_nickname_modal_title: Editar apelido
@@ -161,19 +154,16 @@ eidolon_superimpose_str: ""
 electro: ""
 email-geetest.embed.title: ""
 email_password_button_label: ""
-email_password_instructions_description:
-  "<:INFO:1166743144889602190>Nota: Este método **NÃO FUNCIONA** para utilizadores de Miyoshe, apenas utilizadores de HoYoLAB\n\n1. Clique no botão `Completar CAPTCHA` abaixo.\n2. Você será redirecionado para um site, clique no botão e complete o CAPTCHA.\n3. Após completar, clique no botão `Continuar` abaixo."
+email_password_instructions_description: "<:INFO:1166743144889602190>Nota: Este método **NÃO FUNCIONA** para utilizadores de Miyoshe, apenas utilizadores de HoYoLAB\n\n1. Clique no botão `Completar CAPTCHA` abaixo.\n2. Você será redirecionado para um site, clique no botão e complete o CAPTCHA.\n3. Após completar, clique no botão `Continuar` abaixo."
 email_password_modal_email_input_label: ""
 email_password_modal_password_input_label: palavra-passe
 enter_email_password_button_label: ""
-enter_email_password_instructions_description:
-  ""
+enter_email_password_instructions_description: ""
 enter_light_cone_level.button.label: ""
 error_footer: ""
 error_title: ""
 erudition: ""
-exceptions.card_not_ready_error.message:
-  ""
+exceptions.card_not_ready_error.message: ""
 exceptions.card_not_ready_error.title: ""
 exped.embed.description: ""
 exped_button.label: ""
@@ -222,8 +212,7 @@ farm_view_command_description: ""
 feedback_button.feedback_sent.description: ""
 feedback_button.feedback_sent.title: ""
 feedback_button.label: ""
-feedback_command.description:
-  ""
+feedback_command.description: ""
 feedback_command_description: ""
 feedback_modal.feedback.label: ""
 fire: ""
@@ -289,8 +278,7 @@ invalid_verification_code_description: ""
 invalid_verification_code_title: ""
 items: Itens
 javascript_button_label: Com JavaScript
-javascript_instructions_description:
-  "<:INFO:1166743144889602190> Nota: Este método deve funcionar em todos os principais navegadores em computadores, mas em dispositivo móveis, só funciona no **Chrome** e **Edge**\n\n1. Faça login no [HoYoLab](https://www.hoyolab.com/home) ou [Miyoushe](https://www.miyoushe.com/ys/) (para jogadores da China)\n2. Copie o código abaixo\n3. Clique na barra endereço e digite java\n4. Copia o código e clique enter. Confirme-se que **NÃO HÁ ESPAÇO** entre `java` e `script`\n5. Seleciona tudo e copie o texto que aparece\n6. Clique no botão abaixo e cole o texto na caixa"
+javascript_instructions_description: "<:INFO:1166743144889602190> Nota: Este método deve funcionar em todos os principais navegadores em computadores, mas em dispositivo móveis, só funciona no **Chrome** e **Edge**\n\n1. Faça login no [HoYoLab](https://www.hoyolab.com/home) ou [Miyoushe](https://www.miyoushe.com/ys/) (para jogadores da China)\n2. Copie o código abaixo\n3. Clique na barra endereço e digite java\n4. Copia o código e clique enter. Confirme-se que **NÃO HÁ ESPAÇO** entre `java` e `script`\n5. Seleciona tudo e copie o texto que aparece\n6. Clique no botão abaixo e cole o texto na caixa"
 level_label: ""
 level_str: ""
 light_cones: Cones de luz
@@ -301,8 +289,7 @@ make_up_for_checkin_button_label: Compensação de check-in
 materials: Materiais
 memory_of_chaos: ""
 miyoushe: ""
-mobile_instructions_description:
-  ""
+mobile_instructions_description: ""
 moc_card_battles_fought: ""
 moc_card_cycles_used: ""
 moc_card_farthest_stage: ""
@@ -352,7 +339,6 @@ notify_on_success_button_label: Notificar em caso de sucesso no check-in
 nsfw_prompt_error_message: ""
 nsfw_prompt_error_title: ""
 page_footer: ""
-pf_card_title: ""
 pf_card_total_score: ""
 physical: ""
 player_not_found_description: ""
@@ -360,14 +346,12 @@ player_not_found_title: ""
 preservation: ""
 prev_page_option_label: ""
 primogems: primogems
-process_notify_error.content:
-  ""
+process_notify_error.content: ""
 profile.add_image.button.label: ""
 profile.add_image_modal.image_url.label: ""
 profile.add_image_modal.title: ""
 profile.build.select.placeholder: ""
-profile.card_info.embed.description:
-  ""
+profile.card_info.embed.description: ""
 profile.card_info.embed.title: ""
 profile.card_settings.button.label: ""
 profile.card_template_select.diff_author.description: ""
@@ -395,16 +379,13 @@ profile.image_select.default_collection.label: ""
 profile.image_select.none.label: ""
 profile.image_select.placeholder: ""
 profile.info.embed.custom_images.name: ""
-profile.info.embed.custom_images.value:
-  ""
+profile.info.embed.custom_images.value: ""
 profile.info.embed.dark_mode.name: ""
-profile.info.embed.dark_mode.value:
-  ""
+profile.info.embed.dark_mode.value: ""
 profile.info.embed.primary_color.name: ""
 profile.info.embed.primary_color.value: ""
 profile.info.embed.templates.name: ""
-profile.info.embed.templates.value:
-  ""
+profile.info.embed.templates.value: ""
 profile.info.embed.title: ""
 profile.player_info.button.label: ""
 profile.player_info.embed.description: ""
@@ -434,11 +415,9 @@ read_story.button.label: ""
 real_time_notes: ""
 realm_curr_button.label: ""
 realm_curr_modal.title: ""
-redeeem_code.cookie_token_expired_description:
-  ""
+redeeem_code.cookie_token_expired_description: ""
 redeeem_code.cookie_token_expired_title: ""
-redeeem_code.cookie_token_refresh_failed_description:
-  ""
+redeeem_code.cookie_token_refresh_failed_description: ""
 redeeem_code.cookie_token_refresh_failed_title: ""
 redeem_code.already_claimed: ""
 redeem_code.cooldown: ""

@@ -67,7 +67,7 @@ artifact_set_two_piece_embed_description: "2-Pieces: {bonus_2}"
 artifact_sets: Artifact Sets
 auto_checkin_button_label: Auto daily check-in
 auto_locale_option_label: Follow client language
-auto_redeem_error.content: "An error occurred while redeeming codes automatically.\nHoyo Buddy has disabled this feature for this account, you can turn it back on using </redeem>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback:1054261265561833512>.\n"
+auto_redeem_error.content: "An error occurred while redeeming codes automatically.\nHoyo Buddy has disabled this feature for this account, you can turn it back on using </redeem>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n"
 auto_redeem_footer: Turn off auto code redemption with /redeem
 auto_redeem_toggle.label: Auto code redemption
 books: Books
@@ -342,7 +342,7 @@ player_not_found_title: Player Does Not Exist
 preservation: Preservation
 prev_page_option_label: Previous page
 primogems: primogems
-process_notify_error.content: "An error occurred while processing your real-time notes reminder.\nHoyo Buddy has disabled this reminder for this account, you can turn it back on using </notes>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback:1054261265561833512>.\n"
+process_notify_error.content: "An error occurred while processing your real-time notes reminder.\nHoyo Buddy has disabled this reminder for this account, you can turn it back on using </notes>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n"
 profile.add_image.button.label: Add custom image
 profile.add_image_modal.image_url.label: Image URL
 profile.add_image_modal.title: Add Custom Image

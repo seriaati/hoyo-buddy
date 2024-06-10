@@ -48,16 +48,13 @@ accounts_command_description: Beheer je accounts
 action_in_cooldown_error_message: "Probeer het opnieuw op {available_time}."
 action_in_cooldown_error_title: Actie in Cooldown
 add_account_button_label: Accounts toegoeven
-add_hoyolab_acc.embed.description:
-  "1. Met email en wachtwoord: wordt het meest aanbevolen, het is het gemakkelijkst.\n2. Met DevTools: Werkt alleen op desktop, een veiligere optie als je je zorgen maakt over de beveiliging met de eerste\n3. Met JavaScript: Verouderde methode, werkt niet voor de meeste accounts. Werkt op Google Chrome of Microsoft Edge op zowel desktop als mobiel\n\n"
+add_hoyolab_acc.embed.description: "1. Met email en wachtwoord: wordt het meest aanbevolen, het is het gemakkelijkst.\n2. Met DevTools: Werkt alleen op desktop, een veiligere optie als je je zorgen maakt over de beveiliging met de eerste\n3. Met JavaScript: Verouderde methode, werkt niet voor de meeste accounts. Werkt op Google Chrome of Microsoft Edge op zowel desktop als mobiel\n\n"
 add_hoyolab_acc.embed.title: Selecteer een Methode om je Accounts toe te Voegen
-add_miyoushe_acc.embed.description:
-  "1. Met QR-code: Aanbevolen voor de meeste gebruikers als je bent ingelogd op je mobiele apparaat\n2. Met email/gebruikersnaam en wachtwoord\n3. Met telefoonnummer\n4. Met DevTools: Werkt alleen op desktop, een veiligere optie als je je zorgen maakt over de beveiliging met de andere methoden\n"
+add_miyoushe_acc.embed.description: "1. Met QR-code: Aanbevolen voor de meeste gebruikers als je bent ingelogd op je mobiele apparaat\n2. Met email/gebruikersnaam en wachtwoord\n3. Met telefoonnummer\n4. Met DevTools: Werkt alleen op desktop, een veiligere optie als je je zorgen maakt over de beveiliging met de andere methoden\n"
 add_miyoushe_acc.enter_mobile_number: Voer Telefoonnummer in
 add_miyoushe_acc.mobile_number: Telefoonnummer
 add_miyoushe_acc.with_mobile_number: Met telefoonnummer
-adding_accounts_description:
-  "Welkom bij Hoyo Buddy! Geniet van verschillende functies door minder dan 1 minuut te besteden aan het toevoegen van je accounts.\n\nWat betreft accountbeveiliging, lees de [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "Welkom bij Hoyo Buddy! Geniet van verschillende functies door minder dan 1 minuut te besteden aan het toevoegen van je accounts.\n\nWat betreft accountbeveiliging, lees de [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Selecteer het Platform van je Account
 ai_gen_image_error_message: Controleer je prompt en probeer het opnieuw.
 ai_gen_image_error_title: Er is een Fout Opgetreden Tijdens het Genereren van Kunst met AI
@@ -69,8 +66,7 @@ artifact_set_two_piece_embed_description: "2-Delen: {bonus_2}"
 artifact_sets: Artefact Sets
 auto_checkin_button_label: Automatisch dagelijks inchecken
 auto_locale_option_label: Volg client taal
-auto_redeem_error.content:
-  ""
+auto_redeem_error.content: ""
 auto_redeem_footer: Schakel automatisch code inwisselen uit met /redeem
 auto_redeem_toggle.label: Automatisch code inwisselen
 books: Boeken
@@ -109,8 +105,7 @@ characters.filter.none: Geen
 characters.filter.not_max_friendship: Niet max vriendschap
 characters.filter.path.placeholder: Path filters selecteren...
 characters.filter.placeholder: Selecteer een filter...
-characters.first_time.embed.description:
-  "Als dit de eerste keer is dat je dit commando gebruikt, kan het even duren.\nDit komt omdat de commando gegevens van veel bronnen moet ophalen.\nDe volgende keer dat je dit commando gebruikt, zou het sneller moeten gaan.\nWees geduldig en wacht tot de bronnen zijn opgehaald."
+characters.first_time.embed.description: "Als dit de eerste keer is dat je dit commando gebruikt, kan het even duren.\nDit komt omdat de commando gegevens van veel bronnen moet ophalen.\nDe volgende keer dat je dit commando gebruikt, zou het sneller moeten gaan.\nWees geduldig en wacht tot de bronnen zijn opgehaald."
 characters.first_time.title: Bronnen ophalen...
 characters.gi.embed.footer: "Niveau volgorde: Basis ATK/Vaardigheid/Uitbarsting"
 characters.hsr.embed.footer: "Niveau volgorde: Basis ATK/Vaardigheid/Uitbarsting/Talent\nGebruik /profile om de details van een karakter te bekijken"
@@ -147,13 +142,11 @@ delete_account_button_label: Verwijder geselecteerde account
 dendro: Dendro
 destruction: Destruction
 devtools_button_label: Met DevTools (alleen desktop)
-devtools_instructions_description:
-  "1. Inloggen op [HoYoLAB](https://www.hoyolab.com/home) of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN spelers)\n2. Open de DevTools door op F12 of Ctrl+Shift+I te drukken\n3. Druk op het >> pictogram op de bovenste navigatiebalk\n4. Klik op het tabblad `Toepassing\n5. Klik op `Kookies` in de linker zijbalk\n6. Klik op de website waar je bent (bijv. https://www.hoyolab.com)\n7. Typ `v2` in het vak `Filter`\n8. Klik op de knop hieronder\n9. Kopieer de `waarde` van elk cookie en plak ze in de vakjes\n"
+devtools_instructions_description: "1. Inloggen op [HoYoLAB](https://www.hoyolab.com/home) of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN spelers)\n2. Open de DevTools door op F12 of Ctrl+Shift+I te drukken\n3. Druk op het >> pictogram op de bovenste navigatiebalk\n4. Klik op het tabblad `Toepassing\n5. Klik op `Kookies` in de linker zijbalk\n6. Klik op de website waar je bent (bijv. https://www.hoyolab.com)\n7. Typ `v2` in het vak `Filter`\n8. Klik op de knop hieronder\n9. Kopieer de `waarde` van elk cookie en plak ze in de vakjes\n"
 dice_cost_embed_field_name: Kosten Dobbelstenen
 domain-type.characters: Karakters
 domain-type.weapons: Wapens
-download_image_failed_error_message:
-  "Kan afbeelding {url} met status code {status}niet downloaden.\nProbeer het later nog eens, probeer het met een andere afbeelding of controleer of de URL van de afbeelding geldig is."
+download_image_failed_error_message: "Kan afbeelding {url} met status code {status}niet downloaden.\nProbeer het later nog eens, probeer het met een andere afbeelding of controleer of de URL van de afbeelding geldig is."
 download_image_failed_error_title: Afbeelding Downloaden Mislukte
 edit_nickname_button_label: Bijnaam wijzigen
 edit_nickname_modal_title: Bijnaam bewerken
@@ -161,19 +154,16 @@ eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
 email-geetest.embed.title: 😥 CAPTCHA moet worden opgelost voordat de verificatiecode wordt verzonden
 email_password_button_label: Met email en wachtwoord
-email_password_instructions_description:
-  "<:INFO:1166743144889602190> Note: This method **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.\n\n1. Click the `Complete CAPTCHA` button below\n2. You will be redirected to a website, click the button and complete the CAPTCHA\n3. After completing, click on the `Continue` button below\n"
+email_password_instructions_description: "<:INFO:1166743144889602190> Note: This method **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.\n\n1. Click the `Complete CAPTCHA` button below\n2. You will be redirected to a website, click the button and complete the CAPTCHA\n3. After completing, click on the `Continue` button below\n"
 email_password_modal_email_input_label: email of gebruikersnaam
 email_password_modal_password_input_label: wachtwoord
 enter_email_password_button_label: Voer email/gebruikersnaam en wachtwoord in
-enter_email_password_instructions_description:
-  "<:INFO:1166743144889602190> Deze methode vereist dat je je privégegevens invoert.\n\n- In ruil daarvoor kan je `cookie_token` automatisch worden vernieuwd, die wordt gebruikt in functies met betrekking tot het inwisselen van codes (alleen voor HoYoLAB-gebruikers).\n- Je e-mailadres en wachtwoord worden **NIET** opgeslagen in de database, dus het is praktisch onmogelijk dat ze uitlekken.\n- Bovendien is deze bot open-sourced op [GitHub](https://github.com/seriaati/hoyo-buddy), dus je kunt dat zelf controleren.\n- Het is uiteindelijk aan jou om te beslissen of je deze bot vertrouwt of niet.\n\nKlik op de knop hieronder om te beginnen.\n"
+enter_email_password_instructions_description: "<:INFO:1166743144889602190> Deze methode vereist dat je je privégegevens invoert.\n\n- In ruil daarvoor kan je `cookie_token` automatisch worden vernieuwd, die wordt gebruikt in functies met betrekking tot het inwisselen van codes (alleen voor HoYoLAB-gebruikers).\n- Je e-mailadres en wachtwoord worden **NIET** opgeslagen in de database, dus het is praktisch onmogelijk dat ze uitlekken.\n- Bovendien is deze bot open-sourced op [GitHub](https://github.com/seriaati/hoyo-buddy), dus je kunt dat zelf controleren.\n- Het is uiteindelijk aan jou om te beslissen of je deze bot vertrouwt of niet.\n\nKlik op de knop hieronder om te beginnen.\n"
 enter_light_cone_level.button.label: Light cone niveau wijzigen
 error_footer: Meld deze fout aan de ontwikkelaar via /feedback
 error_title: Er is een Fout Opgetreden
 erudition: Erudition
-exceptions.card_not_ready_error.message:
-  "Als er nieuwe personages worden uitgebracht, moet ik tijd besteden aan het verzamelen van fanarts en het optimaliseren van kleuren voor hun kaarten.\nAls je dit proces wilt versnellen, kun je bijdragen aan de kaartgegevens door me te bereiken op de [Discord Server](https://dsc.gg/hoyo-buddy)."
+exceptions.card_not_ready_error.message: "Als er nieuwe personages worden uitgebracht, moet ik tijd besteden aan het verzamelen van fanarts en het optimaliseren van kleuren voor hun kaarten.\nAls je dit proces wilt versnellen, kun je bijdragen aan de kaartgegevens door me te bereiken op de [Discord Server](https://dsc.gg/hoyo-buddy)."
 exceptions.card_not_ready_error.title: "Kaart gegevens voor {character_name} zijn nog niet klaar."
 exped.embed.description: Een (of meer) expedities zijn klaar
 exped_button.label: Expeditie herinnering
@@ -224,8 +214,7 @@ farm_view_command_description: Bekijk bewerkbare domeinen in Genshin Impact
 feedback_button.feedback_sent.description: 🥰 Hartelijk dank voor je feedback!
 feedback_button.feedback_sent.title: Feedback Gestuurd
 feedback_button.label: Geef Feedback
-feedback_command.description:
-  "\U0001F917 Hoi! Bedankt dat je de tijd neemt om me feedback te geven.\nKlik op de knop hieronder om te beginnen.\n\nOpmerking: het kan zijn dat ik contact met je opneem voor meer details. Dus houd je DM's open (of word lid van de  [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
+feedback_command.description: "\U0001F917 Hoi! Bedankt dat je de tijd neemt om me feedback te geven.\nKlik op de knop hieronder om te beginnen.\n\nOpmerking: het kan zijn dat ik contact met je opneem voor meer details. Dus houd je DM's open (of word lid van de  [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
 feedback_command_description: Geef feedback aan de botontwikkelaar
 feedback_modal.feedback.label: Feedback
 fire: Fire
@@ -291,8 +280,7 @@ invalid_verification_code_description: Controleer de verificatiecode en probeer 
 invalid_verification_code_title: Ongeldige Verificatiecode
 items: Items
 javascript_button_label: Met JavaScript
-javascript_instructions_description:
-  "<:INFO:1166743144889602190> Opmerking: Deze methode zou moeten werken voor alle grote browsers op desktop, maar op mobiel werkt het alleen voor **Chrome** en **Edge**.\n\n1. Log in op [HoYoLAB](https://www.hoyolab.com/home) of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN spelers).\n2. Kopieer de onderstaande code\n3. Klik op de adresbalk en typ `java`\n4. Plak de code en druk op enter. Zorg ervoor dat er **Geen spaties** staan tussen `java` en `script`\n5. Selecteer alles en kopieer de tekst die verschijnt\n6. Klik op de knop hieronder en plak de tekst in het vak\n"
+javascript_instructions_description: "<:INFO:1166743144889602190> Opmerking: Deze methode zou moeten werken voor alle grote browsers op desktop, maar op mobiel werkt het alleen voor **Chrome** en **Edge**.\n\n1. Log in op [HoYoLAB](https://www.hoyolab.com/home) of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN spelers).\n2. Kopieer de onderstaande code\n3. Klik op de adresbalk en typ `java`\n4. Plak de code en druk op enter. Zorg ervoor dat er **Geen spaties** staan tussen `java` en `script`\n5. Selecteer alles en kopieer de tekst die verschijnt\n6. Klik op de knop hieronder en plak de tekst in het vak\n"
 level_label: Niveau
 level_str: "Nv.{level}"
 light_cones: Licht Kegels
@@ -303,8 +291,7 @@ make_up_for_checkin_button_label: Opmaken voor inchecken
 materials: Materialen
 memory_of_chaos: ""
 miyoushe: Miyoushe
-mobile_instructions_description:
-  "1. Klik op de knop hieronder om je telefoonnummer in te voeren\n2. Je ontvangt een verificatiecode via sms\n3. Klik op de knop hieronder om de verificatiecode in te voeren\n"
+mobile_instructions_description: "1. Klik op de knop hieronder om je telefoonnummer in te voeren\n2. Je ontvangt een verificatiecode via sms\n3. Klik op de knop hieronder om de verificatiecode in te voeren\n"
 moc_card_battles_fought: ""
 moc_card_cycles_used: ""
 moc_card_farthest_stage: ""
@@ -354,7 +341,6 @@ notify_on_success_button_label: Melding bij succesvol inchecken
 nsfw_prompt_error_message: "De prompt bevat NSFW-inhoud, probeer het opnieuw met een andere prompt."
 nsfw_prompt_error_title: ""
 page_footer: "Pagina {current_page}/{total_pages}"
-pf_card_title: ""
 pf_card_total_score: ""
 physical: Fysiek
 player_not_found_description: Controleer de meegeleverde UID
@@ -362,14 +348,12 @@ player_not_found_title: Speler Bestaat Niet
 preservation: Preservation
 prev_page_option_label: Vorige pagina
 primogems: primogems
-process_notify_error.content:
-  ""
+process_notify_error.content: ""
 profile.add_image.button.label: Afbeelding toevoegen
 profile.add_image_modal.image_url.label: Afbeelding URL
 profile.add_image_modal.title: Afbeelding Toevoegen
 profile.build.select.placeholder: ""
-profile.card_info.embed.description:
-  "- Alle assets die gebruikt zijn in de kaarten behoren toe aan Hoyoverse, ik bezit ze niet.\n- Alle fanarts die gebruikt zijn in de kaarten zijn gecrediteerd aan hun respectievelijke artiesten.\n- De ontwerpen van de Hoyo Buddy sjablonen zijn origineel, je mag ze niet aanpassen of beweren dat je ze gemaakt hebt zonder mijn toestemming.\n- Spelgegevens worden geleverd door {provider}.\n"
+profile.card_info.embed.description: "- Alle assets die gebruikt zijn in de kaarten behoren toe aan Hoyoverse, ik bezit ze niet.\n- Alle fanarts die gebruikt zijn in de kaarten zijn gecrediteerd aan hun respectievelijke artiesten.\n- De ontwerpen van de Hoyo Buddy sjablonen zijn origineel, je mag ze niet aanpassen of beweren dat je ze gemaakt hebt zonder mijn toestemming.\n- Spelgegevens worden geleverd door {provider}.\n"
 profile.card_info.embed.title: Over Karakter Build Kaarten
 profile.card_settings.button.label: Kaart instellingen
 profile.card_template_select.diff_author.description: "Designed by {author1} and programmed by {author2}"
@@ -397,16 +381,13 @@ profile.image_select.default_collection.label: "Hoyo Buddy Collectie ({num})"
 profile.image_select.none.label: Officiële kunst
 profile.image_select.placeholder: Selecteer een afbeelding
 profile.info.embed.custom_images.name: Afbeeldingen
-profile.info.embed.custom_images.value:
-  "- Hoyo Buddy wordt geleverd met een aantal vooraf ingestelde afbeeldingen die ik leuk vond, maar je kunt ook je eigen afbeeldingen toevoegen.\n- Alleen directe URL's van afbeeldingen worden ondersteund en ze moeten publiek toegankelijk zijn; GIF's worden niet ondersteund.\n- Voor de sjablonen van Hoyo Buddy worden verticale afbeeldingen aanbevolen.\n- Voor server eigenaren, ik ben niet verantwoordelijk voor NSFW afbeeldingen die jij of je leden toevoegen.\n- De rode knop verwijdert de huidige aangepaste afbeelding en keert terug naar de standaardafbeelding."
+profile.info.embed.custom_images.value: "- Hoyo Buddy wordt geleverd met een aantal vooraf ingestelde afbeeldingen die ik leuk vond, maar je kunt ook je eigen afbeeldingen toevoegen.\n- Alleen directe URL's van afbeeldingen worden ondersteund en ze moeten publiek toegankelijk zijn; GIF's worden niet ondersteund.\n- Voor de sjablonen van Hoyo Buddy worden verticale afbeeldingen aanbevolen.\n- Voor server eigenaren, ik ben niet verantwoordelijk voor NSFW afbeeldingen die jij of je leden toevoegen.\n- De rode knop verwijdert de huidige aangepaste afbeelding en keert terug naar de standaardafbeelding."
 profile.info.embed.dark_mode.name: Donkere Modus
-profile.info.embed.dark_mode.value:
-  ""
+profile.info.embed.dark_mode.value: ""
 profile.info.embed.primary_color.name: Primaire Kleur
 profile.info.embed.primary_color.value: "- Alleen hex kleurcodes worden ondersteund."
 profile.info.embed.templates.name: Sjablonen
-profile.info.embed.templates.value:
-  "- Hoyo Buddy heeft zijn eigen sjabloon gemaakt door mij, maar ik heb ook sjablonen toegevoegd die gemaakt zijn door andere ontwikkelaars.\n- De code van templates van 3e partijen wordt niet door mij onderhouden, dus ik kan de kwaliteit ervan niet garanderen; ik ben ook niet verantwoordelijk voor eventuele problemen ermee.\n- Sjablonen van 3e partijen kunnen functiebeperkingen hebben in vergelijking met die van Hoyo Buddy.\n- Cached data karakters kunnen alleen Hoyo Buddy's sjablonen gebruiken."
+profile.info.embed.templates.value: "- Hoyo Buddy heeft zijn eigen sjabloon gemaakt door mij, maar ik heb ook sjablonen toegevoegd die gemaakt zijn door andere ontwikkelaars.\n- De code van templates van 3e partijen wordt niet door mij onderhouden, dus ik kan de kwaliteit ervan niet garanderen; ik ben ook niet verantwoordelijk voor eventuele problemen ermee.\n- Sjablonen van 3e partijen kunnen functiebeperkingen hebben in vergelijking met die van Hoyo Buddy.\n- Cached data karakters kunnen alleen Hoyo Buddy's sjablonen gebruiken."
 profile.info.embed.title: Over Kaart Instellingen
 profile.player_info.button.label: Spelers info
 profile.player_info.embed.description: "Trailblaze Niveau: {level}\nEquilibrium Niveau: {world_level}\nAantal Vrienden: {friend_count}\nLicht Kegels: {light_cones}\nKarakters: {characters}\nPrestaties: {achievements}\n"
@@ -436,11 +417,9 @@ read_story.button.label: ""
 real_time_notes: ""
 realm_curr_button.label: Realm currency herinnering
 realm_curr_modal.title: Instellingen Realm Currency Herinnering
-redeeem_code.cookie_token_expired_description:
-  ""
+redeeem_code.cookie_token_expired_description: ""
 redeeem_code.cookie_token_expired_title: Cookie Token Verlopen
-redeeem_code.cookie_token_refresh_failed_description:
-  ""
+redeeem_code.cookie_token_refresh_failed_description: ""
 redeeem_code.cookie_token_refresh_failed_title: Vernieuwen cookietoken mislukt
 redeem_code.already_claimed: Inwisselcode al geclaimd
 redeem_code.cooldown: Cadeaucode inwisselen in cooldown

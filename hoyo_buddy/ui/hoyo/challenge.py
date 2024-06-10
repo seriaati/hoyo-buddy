@@ -64,6 +64,7 @@ class ChallengeView(View):
     async def _fetch_data(self) -> None:
         assert self._challenge_type is not None
         client = self._account.client
+        client.set_lang(self.locale)
 
         previous = self._previous[self._challenge_type]
         if previous not in self._challenges[self._challenge_type]:

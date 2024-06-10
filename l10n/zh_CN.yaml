@@ -48,16 +48,13 @@ accounts_command_description: 管理账户
 action_in_cooldown_error_message: "请在 {available_time} 时再试一次。"
 action_in_cooldown_error_title: 操作冷却中
 add_account_button_label: 添加账号
-add_hoyolab_acc.embed.description:
-  "1.通过邮箱和密码：最为推荐、最简单的方式。\n2.通过开发者工具：仅在电脑生效，如果你对第一种方式存有安全顾虑，该方式更安全些。\n3.通过JavaScript：过时的方式，不适用于大多数账号。可以在电脑或移动设备上的Google Chrome或者Microsoft Edge 使用。\n\n"
+add_hoyolab_acc.embed.description: "1.通过邮箱和密码：最为推荐、最简单的方式。\n2.通过开发者工具：仅在电脑生效，如果你对第一种方式存有安全顾虑，该方式更安全些。\n3.通过JavaScript：过时的方式，不适用于大多数账号。可以在电脑或移动设备上的Google Chrome或者Microsoft Edge 使用。\n\n"
 add_hoyolab_acc.embed.title: 选择一个添加账号的方式
-add_miyoushe_acc.embed.description:
-  "1. 通过 QR 码：如果你在手机上有登入米游社的话，此方式是最推荐的\n2.通过邮箱/用户名和密码\n3.通过手机号。\n4.通过开发者工具：仅在电脑上有效，如果你存有安全顾虑，相较于上面两种方式，该方式更安全。\n"
+add_miyoushe_acc.embed.description: "1. 通过 QR 码：如果你在手机上有登入米游社的话，此方式是最推荐的\n2.通过邮箱/用户名和密码\n3.通过手机号。\n4.通过开发者工具：仅在电脑上有效，如果你存有安全顾虑，相较于上面两种方式，该方式更安全。\n"
 add_miyoushe_acc.enter_mobile_number: 输入手机号
 add_miyoushe_acc.mobile_number: 手机号
 add_miyoushe_acc.with_mobile_number: 通过手机号
-adding_accounts_description:
-  "欢迎来到Hoyo Buddy！只需要花费1分钟添加账号的时间，即可享受各种功能。\n关于账号安全，请阅读[Wiki页面](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security)，关于我们如何使用和收集你的数据，请阅读[隐私政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "欢迎来到Hoyo Buddy！只需要花费1分钟添加账号的时间，即可享受各种功能。\n关于账号安全，请阅读[Wiki页面](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security)，关于我们如何使用和收集你的数据，请阅读[隐私政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: 选择账号所属平台
 ai_gen_image_error_message: 请检查输入的提示并重试。
 ai_gen_image_error_title: 在使用AI生成绘图中发生错误
@@ -69,8 +66,7 @@ artifact_set_two_piece_embed_description: "二件套：{bonus_2}"
 artifact_sets: 圣遗物套装
 auto_checkin_button_label: 自动每日签到
 auto_locale_option_label: 遵循Discord客户端语言
-auto_redeem_error.content:
-  ""
+auto_redeem_error.content: ""
 auto_redeem_footer: 使用 /redeem 关闭自动兑换功能。
 auto_redeem_toggle.label: 自动兑换
 books: 书籍
@@ -109,8 +105,7 @@ characters.filter.none: 无
 characters.filter.not_max_friendship: 未达到满好感度
 characters.filter.path.placeholder: 选择命途
 characters.filter.placeholder: 选择一个筛选器
-characters.first_time.embed.description:
-  "如果这是你首次使用此指令，可能需要一点时间。\n这是因为此指令需要从各来源来获取数据。\n下次使用此命令时，应该会更快。\n请耐心等待数据获取完成。"
+characters.first_time.embed.description: "如果这是你首次使用此指令，可能需要一点时间。\n这是因为此指令需要从各来源来获取数据。\n下次使用此命令时，应该会更快。\n请耐心等待数据获取完成。"
 characters.first_time.title: 获取资料中...
 characters.gi.embed.footer: "等级顺序：普通攻击/元素战技/元素爆发"
 characters.hsr.embed.footer: "等级顺序：普攻/战技/终结技/天赋\n使用 /profile 查看角色详情"
@@ -147,13 +142,11 @@ delete_account_button_label: 删除所选账号
 dendro: 草
 destruction: 毁灭
 devtools_button_label: 通过开发者工具（仅限桌面端）
-devtools_instructions_description:
-  "1. 登录 [HoYoLAB](https://www.hoyolab.com/home) 或 [米游社](https://www.miyoushe.com/ys/) （中国玩家适用）\n2. 通过 F12 或 Ctrl+Shift+I 打开开发者工具\n3. 点击 >> 按钮\n4. 点击 `应用程序` 页面\n5. 点击位于左方的 `Cookies`\n6. 点开你目前处于的网站（例如 https://www.hoyolab.com）\n7. 在 `筛选器(Filter)` 一栏中输入 `v2`\n8, 点开下方的按钮\n9. 复制每个 Cookie 的 `值` ，并依次粘贴于对应输入框中。\n"
+devtools_instructions_description: "1. 登录 [HoYoLAB](https://www.hoyolab.com/home) 或 [米游社](https://www.miyoushe.com/ys/) （中国玩家适用）\n2. 通过 F12 或 Ctrl+Shift+I 打开开发者工具\n3. 点击 >> 按钮\n4. 点击 `应用程序` 页面\n5. 点击位于左方的 `Cookies`\n6. 点开你目前处于的网站（例如 https://www.hoyolab.com）\n7. 在 `筛选器(Filter)` 一栏中输入 `v2`\n8, 点开下方的按钮\n9. 复制每个 Cookie 的 `值` ，并依次粘贴于对应输入框中。\n"
 dice_cost_embed_field_name: 骰子花费
 domain-type.characters: 角色
 domain-type.weapons: 武器
-download_image_failed_error_message:
-  "无法下载图片{url}，状态码{status}。\n请稍后再试，或者尝试用不同图片，或者检查该图片URL是否无效。"
+download_image_failed_error_message: "无法下载图片{url}，状态码{status}。\n请稍后再试，或者尝试用不同图片，或者检查该图片URL是否无效。"
 download_image_failed_error_title: 图像下载失败
 edit_nickname_button_label: 编辑昵称
 edit_nickname_modal_title: 编辑昵称
@@ -161,19 +154,16 @@ eidolon_superimpose_str: "{eidolon}魂  叠影{superimpose}阶"
 electro: 雷
 email-geetest.embed.title: 😥在发送验证码之前需要解决CAPTCHA问题
 email_password_button_label: 通过邮箱和密码
-email_password_instructions_description:
-  "<:INFO:1166743144889602190> 注意: 该方式**并不适用**于米游社用户，仅对HoYoLAB用户有效。\n\n1. 点击下方的 `完成 CAPTCHA` 按钮\n2. 被引导至一个新的网站后，按下按钮以完成 CAPTCHA\n3. 完成后，点击下方的 `继续` 按钮\n"
+email_password_instructions_description: "<:INFO:1166743144889602190> 注意: 该方式**并不适用**于米游社用户，仅对HoYoLAB用户有效。\n\n1. 点击下方的 `完成 CAPTCHA` 按钮\n2. 被引导至一个新的网站后，按下按钮以完成 CAPTCHA\n3. 完成后，点击下方的 `继续` 按钮\n"
 email_password_modal_email_input_label: 电子邮箱或用户名
 email_password_modal_password_input_label: 密码
 enter_email_password_button_label: 输入电子邮箱/用户名和密码
-enter_email_password_instructions_description:
-  "<:INFO:1166743144889602190> 这个方法需要输入你的个人信息。\n\n• 作为交换，你的 `cookie_token` 可以自动刷新，这在兑换码相关功能中会有用处（只有 HoYoLAB 使用者受益）。\n• 你的邮箱和密码**完全不会**被保存在数据库中，因此几乎不可能被泄露。\n• 此外，这个机器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上有开源，所以你可以自行验证这点。\n• 你可以自行决定是否信任该机器人。\n\n点击下方按钮开始。\n"
+enter_email_password_instructions_description: "<:INFO:1166743144889602190> 这个方法需要输入你的个人信息。\n\n• 作为交换，你的 `cookie_token` 可以自动刷新，这在兑换码相关功能中会有用处（只有 HoYoLAB 使用者受益）。\n• 你的邮箱和密码**完全不会**被保存在数据库中，因此几乎不可能被泄露。\n• 此外，这个机器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上有开源，所以你可以自行验证这点。\n• 你可以自行决定是否信任该机器人。\n\n点击下方按钮开始。\n"
 enter_light_cone_level.button.label: 更改光锥等级
 error_footer: 请通过 /feedback 向开发者回报这个错误。
 error_title: 出现错误
 erudition: 智识
-exceptions.card_not_ready_error.message:
-  "当新角色公布时，我需要花费时间来收集同人图和优化卡片的颜色。\n如果你想加快该进程，可以在[Discord 服务器](https://dsc.gg/hoyo-buddy) 中联系我来为卡片资料做出贡献。"
+exceptions.card_not_ready_error.message: "当新角色公布时，我需要花费时间来收集同人图和优化卡片的颜色。\n如果你想加快该进程，可以在[Discord 服务器](https://dsc.gg/hoyo-buddy) 中联系我来为卡片资料做出贡献。"
 exceptions.card_not_ready_error.title: "{character_name} 的卡片数据还没有准备好呢。"
 exped.embed.description: 一个或者多个派遣已经完成了
 exped_button.label: 探索派遣提醒
@@ -224,8 +214,7 @@ farm_view_command_description: 查看原神中可以刷取的副本
 feedback_button.feedback_sent.description: 🥰 非常感谢你的反馈
 feedback_button.feedback_sent.title: 反馈已发送
 feedback_button.label: 给予反馈
-feedback_command.description:
-  "\U0001F917 嗨！感谢你抽出时间给予我反馈。请点击下方按钮来开始吧。\n\n注：我可能就更多细节而言来与你联系，所以请保持私信为开启状态（或者加入[Hoyo Buddy 的 Discord 服务器](https://dsc.gg/hoyo-buddy)）。"
+feedback_command.description: "\U0001F917 嗨！感谢你抽出时间给予我反馈。请点击下方按钮来开始吧。\n\n注：我可能就更多细节而言来与你联系，所以请保持私信为开启状态（或者加入[Hoyo Buddy 的 Discord 服务器](https://dsc.gg/hoyo-buddy)）。"
 feedback_command_description: 向机器人开发者提供反馈
 feedback_modal.feedback.label: 反馈
 fire: 火
@@ -291,8 +280,7 @@ invalid_verification_code_description: 请检查验证码后重试。
 invalid_verification_code_title: 验证码错误
 items: 物品
 javascript_button_label: 通过 JavaScript
-javascript_instructions_description:
-  "<:INFO:1166743144889602190> 注意：此方法在电脑上应该适用于所有主流浏览器，但在手机上只适用于 **Chrome** 和 **Edge**.\n\n1. 登录 [HoYoLAB](https://www.hoyolab.com/home) 或 [米游社] (https://www.miyoushe.com/ys/) （中国玩家适用）\n2. 复制以下代码\n3. 点击浏览器地址栏然后输入 `java`\n4. 粘贴代码后按回车键。请确保 `java` 和 `script` 之间**没有空格**\n5. 全选并复制所出现的文字\n6. 点击下方按钮，粘贴在文本框中\n"
+javascript_instructions_description: "<:INFO:1166743144889602190> 注意：此方法在电脑上应该适用于所有主流浏览器，但在手机上只适用于 **Chrome** 和 **Edge**.\n\n1. 登录 [HoYoLAB](https://www.hoyolab.com/home) 或 [米游社] (https://www.miyoushe.com/ys/) （中国玩家适用）\n2. 复制以下代码\n3. 点击浏览器地址栏然后输入 `java`\n4. 粘贴代码后按回车键。请确保 `java` 和 `script` 之间**没有空格**\n5. 全选并复制所出现的文字\n6. 点击下方按钮，粘贴在文本框中\n"
 level_label: 等级
 level_str: "Lv.{level}"
 light_cones: 光锥
@@ -303,8 +291,7 @@ make_up_for_checkin_button_label: 补签
 materials: 材料
 memory_of_chaos: ""
 miyoushe: 米游社
-mobile_instructions_description:
-  "1.点击下方按钮输入手机号\n2.你将会收到短信验证码\n3.点击下方按钮填写验证码\n"
+mobile_instructions_description: "1.点击下方按钮输入手机号\n2.你将会收到短信验证码\n3.点击下方按钮填写验证码\n"
 moc_card_battles_fought: ""
 moc_card_cycles_used: ""
 moc_card_farthest_stage: ""
@@ -354,7 +341,6 @@ notify_on_success_button_label: 签到成功通知
 nsfw_prompt_error_message: "此提示包含不宜內容，请使用其他提示后再试。"
 nsfw_prompt_error_title: ""
 page_footer: "{current_page}/{total_pages}页"
-pf_card_title: ""
 pf_card_total_score: ""
 physical: 物理
 player_not_found_description: 请检查所提供UID
@@ -362,14 +348,12 @@ player_not_found_title: 玩家不存在
 preservation: 存护
 prev_page_option_label: 上一页
 primogems: 原石
-process_notify_error.content:
-  ""
+process_notify_error.content: ""
 profile.add_image.button.label: 添加自定义图片
 profile.add_image_modal.image_url.label: 图像URL
 profile.add_image_modal.title: 添加自定义图片
 profile.build.select.placeholder: 选择一个角色配置…
-profile.card_info.embed.description:
-  "—— 卡片中所使用的素材均归Hoyoverse所有，我并未其拥有权。\n—— 卡片中所使用的同人作品均隶属于各自画师。\n—— Hoyo Buddy 样式为原创，未经我的许可，严禁修改或声称它们是出自于你之手。\n—— 游戏数据由{provider}提供。"
+profile.card_info.embed.description: "—— 卡片中所使用的素材均归Hoyoverse所有，我并未其拥有权。\n—— 卡片中所使用的同人作品均隶属于各自画师。\n—— Hoyo Buddy 样式为原创，未经我的许可，严禁修改或声称它们是出自于你之手。\n—— 游戏数据由{provider}提供。"
 profile.card_info.embed.title: 关于角色面板卡片
 profile.card_settings.button.label: 卡片设置
 profile.card_template_select.diff_author.description: "由{author1}设计，{author2}制作"
@@ -397,16 +381,13 @@ profile.image_select.default_collection.label: "Hoyo Buddy 系列 ({num})"
 profile.image_select.none.label: 官方绘图
 profile.image_select.placeholder: 选择一张图片
 profile.info.embed.custom_images.name: 自定义图片
-profile.info.embed.custom_images.value:
-  "- Hoyo Buddy附带了一些我喜欢的预设图片，你也可以添加自己的图片。\n- 仅支持直连图像URL，且必须可公开访问；不支持GIF格式。\n- 对于Hoyo Buddy的样式，建议使用垂直图片。\n- 对于服务器拥有者，我不会对您或您的成员所添加的不宜图片而负责。\n- 点击红色按钮，可移除当前自定义图片，并恢复为默认图片。"
+profile.info.embed.custom_images.value: "- Hoyo Buddy附带了一些我喜欢的预设图片，你也可以添加自己的图片。\n- 仅支持直连图像URL，且必须可公开访问；不支持GIF格式。\n- 对于Hoyo Buddy的样式，建议使用垂直图片。\n- 对于服务器拥有者，我不会对您或您的成员所添加的不宜图片而负责。\n- 点击红色按钮，可移除当前自定义图片，并恢复为默认图片。"
 profile.info.embed.dark_mode.name: 深色模式
-profile.info.embed.dark_mode.value:
-  ""
+profile.info.embed.dark_mode.value: ""
 profile.info.embed.primary_color.name: 原色
 profile.info.embed.primary_color.value: "- 仅支持十六进制颜色代码。"
 profile.info.embed.templates.name: 样式
-profile.info.embed.templates.value:
-  "- Hoyo Buddy有我自己制作的卡片样式，但我也加入了其他开发者制作的样式。\n- 第三方样式的代码并非由我维护，所以我无法保证其品质；对于任何与它们相关的问题，我也不负责。\n- 第三方样式可能会有功能上的限制。\n- 缓存数据的角色只能使用Hoyo Buddy的样式。"
+profile.info.embed.templates.value: "- Hoyo Buddy有我自己制作的卡片样式，但我也加入了其他开发者制作的样式。\n- 第三方样式的代码并非由我维护，所以我无法保证其品质；对于任何与它们相关的问题，我也不负责。\n- 第三方样式可能会有功能上的限制。\n- 缓存数据的角色只能使用Hoyo Buddy的样式。"
 profile.info.embed.title: 关于卡片设定
 profile.player_info.button.label: 玩家资料
 profile.player_info.embed.description: "开拓等级：{level}\n均衡等级：{world_level}\n好友数量：{friend_count}\n光锥：{light_cones}\n角色：{characters}\n成就：{achievements}\n"
@@ -436,11 +417,9 @@ read_story.button.label: ""
 real_time_notes: 实时便笺
 realm_curr_button.label: 洞天宝钱提醒
 realm_curr_modal.title: 洞天宝钱提醒设置
-redeeem_code.cookie_token_expired_description:
-  ""
+redeeem_code.cookie_token_expired_description: ""
 redeeem_code.cookie_token_expired_title: Cookie Token 已过期
-redeeem_code.cookie_token_refresh_failed_description:
-  ""
+redeeem_code.cookie_token_refresh_failed_description: ""
 redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失败
 redeem_code.already_claimed: 你已经兑换过了
 redeem_code.cooldown: 兑换操作处于冷却中

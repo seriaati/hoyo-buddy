@@ -13,13 +13,21 @@ if TYPE_CHECKING:
     from genshin.models.starrail import (
         FloorCharacter,
         StarRailChallenge,
+        StarRailChallengeSeason,
         StarRailFloor,
     )
 
 
 class MOCCard:
-    def __init__(self, data: StarRailChallenge, locale: str, translator: Translator) -> None:
+    def __init__(
+        self,
+        data: StarRailChallenge,
+        season: StarRailChallengeSeason,
+        locale: str,
+        translator: Translator,
+    ) -> None:
         self._data = data
+        self._season = season
 
         self._locale = locale
         self._translator = translator
@@ -39,7 +47,7 @@ class MOCCard:
 
     def _write_moc_name(self) -> None:
         self._drawer.write(
-            self._data.name,
+            self._season.name,
             size=64,
             position=(76, 197),
             style="medium",
@@ -61,7 +69,7 @@ class MOCCard:
             LocaleStr(
                 "Farthest Stage: {stage}",
                 key="moc_card_farthest_stage",
-                stage=self._data.max_floor.replace(self._data.name, "")[1:],
+                stage=self._data.max_floor.replace(self._season.name, "").strip(),
             ),
             size=25,
             position=(303, 340),
@@ -135,7 +143,7 @@ class MOCCard:
             translator=self._translator,
         )
 
-        stage_name = stage.name.replace(self._data.name, "")[1:]
+        stage_name = stage.name.replace(self._season.name, "").strip()
         name_tbox = drawer.write(
             stage_name,
             size=44,

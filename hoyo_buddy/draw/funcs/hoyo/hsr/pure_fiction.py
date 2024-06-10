@@ -13,13 +13,22 @@ if TYPE_CHECKING:
     from genshin.models.starrail import (
         FictionFloor,
         FloorCharacter,
+        StarRailChallengeSeason,
         StarRailPureFiction,
     )
 
 
 class PureFictionCard:
-    def __init__(self, data: StarRailPureFiction, locale: str, translator: Translator) -> None:
+    def __init__(
+        self,
+        data: StarRailPureFiction,
+        season: StarRailChallengeSeason,
+        locale: str,
+        translator: Translator,
+    ) -> None:
         self._data = data
+        self._season = season
+
         self._locale = locale
         self._translator = translator
 
@@ -37,7 +46,7 @@ class PureFictionCard:
 
     def _write_pf_name(self) -> None:
         self._drawer.write(
-            self._data.name,
+            self._season.name,
             size=64,
             position=(76, 197),
             style="medium",
@@ -57,7 +66,7 @@ class PureFictionCard:
             LocaleStr(
                 "Farthest Stage: {stage}",
                 key="moc_card_farthest_stage",
-                stage=self._data.max_floor.replace(self._data.name, "")[1:],
+                stage=self._data.max_floor.replace(self._season.name, "").strip(),
             ),
             size=25,
             position=(303, 340),
@@ -129,7 +138,7 @@ class PureFictionCard:
             translator=self._translator,
         )
 
-        stage_name = stage.name.replace(self._data.name, "")[1:]
+        stage_name = stage.name.replace(self._season.name, "").strip()
         name_tbox = drawer.write(
             stage_name,
             size=44,

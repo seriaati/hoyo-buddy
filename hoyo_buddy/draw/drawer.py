@@ -111,9 +111,7 @@ class Drawer:
         )
 
     @staticmethod
-    def crop_resize_image(
-        image: Image.Image, size: tuple[int, int], zoom: float = 1.0
-    ) -> Image.Image:
+    def resize_crop(image: Image.Image, size: tuple[int, int], zoom: float = 1.0) -> Image.Image:
         """Resize an image without changing its aspect ratio."""
         # Calculate the target height to maintain the aspect ratio
         width, height = image.size

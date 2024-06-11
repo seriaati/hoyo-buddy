@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING, TypeVar
 
 import aiohttp
 
+from .constants import UTC_8
+
 if TYPE_CHECKING:
     from discord import Member, User
 
@@ -17,7 +19,7 @@ IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
 
 def get_now() -> datetime.datetime:
     """Get the current time in UTC+8."""
-    return datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
+    return datetime.datetime.now(UTC_8)
 
 
 async def test_url_validity(url: str, session: aiohttp.ClientSession) -> bool:

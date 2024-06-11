@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from typing import Final
 
 import discord
@@ -276,3 +277,5 @@ GAME_CHALLANGES: Final[dict[Game, list[ChallengeType]]] = {
         ChallengeType.PURE_FICTION,
     ],
 }
+
+UTC_8 = datetime.timezone(datetime.timedelta(hours=8))

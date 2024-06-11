@@ -88,9 +88,7 @@ class CharactersView(View):
         self._element_char_counts = element_char_counts
         self._path_char_counts = path_char_counts
 
-        self._original_gi_characters: list[GICharacter | UnownedCharacter] = []
         self._gi_characters: list[GICharacter | UnownedCharacter] = []
-        self._original_hsr_characters: list[HSRCharacter | UnownedCharacter] = []
         self._hsr_characters: list[HSRCharacter | UnownedCharacter] = []
 
         self._filter: GIFilter = GIFilter.NONE
@@ -427,10 +425,7 @@ class CharactersView(View):
 
         client = self._account.client
         if self._game is Game.GENSHIN:
-            self._original_gi_characters = list(
-                await client.get_genshin_characters(self._account.uid)
-            )
-            self._gi_characters = self._original_gi_characters.copy()
+            self._gi_characters = list(await client.get_genshin_characters(self._account.uid))
 
             # Find traveler element and add 1 to the element char count
             for character in self._gi_characters:
@@ -440,10 +435,9 @@ class CharactersView(View):
 
             characters = self._get_gi_filtered_and_sorted_characters()
         elif self._game is Game.STARRAIL:
-            self._original_hsr_characters = list(
+            self._hsr_characters = list(
                 (await client.get_starrail_characters(self._account.uid)).avatar_list
             )
-            self._hsr_characters = self._original_hsr_characters.copy()
 
             # Find traiblazer element and path and add 1 to the count
             for character in self._hsr_characters:
@@ -689,12 +683,10 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
                 self.view._gi_characters = [
                     c for c in self.view._gi_characters if not isinstance(c, UnownedCharacter)
                 ]
-                # self.view._gi_characters = self.view._original_gi_characters.copy()
             elif self.view._game is Game.STARRAIL:
                 self.view._hsr_characters = [
                     c for c in self.view._hsr_characters if not isinstance(c, UnownedCharacter)
                 ]
-                # self.view._hsr_characters = self.view._original_hsr_characters.copy()
         else:  # noqa: PLR5501
             if self.view._game is Game.GENSHIN:
                 current_chara_ids = {

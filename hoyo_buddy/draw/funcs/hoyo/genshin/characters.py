@@ -10,12 +10,12 @@ from PIL import Image, ImageDraw
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.draw.drawer import BLACK, DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
-from hoyo_buddy.models import DynamicBKInput
+from hoyo_buddy.models import DynamicBKInput, UnownedCharacter
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    import genshin
+    from genshin.models import Character as GICharacter
 
     from hoyo_buddy.bot.translator import Translator
 
@@ -26,7 +26,7 @@ WEAPON_ICON_SIZES = (84, 84)
 
 
 def draw_character_card(
-    characters: Sequence[genshin.models.Character],
+    characters: Sequence[GICharacter | UnownedCharacter],
     talents: dict[str, str],
     pc_icons: dict[str, str],
     dark_mode: bool,
@@ -37,7 +37,11 @@ def draw_character_card(
     c_cards: dict[str, Image.Image] = {}
 
     for character in characters:
-        talent = talents.get(GenshinClient.convert_chara_id_to_ambr_format(character), "?/?/?")
+        talent = (
+            ""
+            if isinstance(character, UnownedCharacter)
+            else talents.get(GenshinClient.convert_chara_id_to_ambr_format(character), "?/?/?")
+        )
         card = draw_small_gi_chara_card(talent, dark_mode, character, translator, locale)
         c_cards[str(character.id)] = card
 
@@ -74,7 +78,11 @@ def draw_character_card(
         if pc_icon_url:
             offset = PC_ICON_OFFSETS
             pos = (x + offset[0], y + offset[1])
-            icon = drawer.open_static(pc_icon_url, size=PC_ICON_SIZES)
+            if "ambr" in pc_icon_url:
+                icon = drawer.open_static(pc_icon_url)
+                icon = drawer.middle_crop(icon, PC_ICON_SIZES)
+            else:
+                icon = drawer.open_static(pc_icon_url, size=PC_ICON_SIZES)
             background.paste(icon, pos, icon)
 
     fp = io.BytesIO()
@@ -85,10 +93,12 @@ def draw_character_card(
 def gi_cache_key(
     talent_str: str,
     dark_mode: bool,
-    character: genshin.models.Character,
+    character: GICharacter | UnownedCharacter,
     _: Translator,
     locale: Locale,
 ) -> str:
+    if isinstance(character, UnownedCharacter):
+        return f"{dark_mode}_{character.id}_{character.element}"
     return (
         f"{talent_str}_"
         f"{dark_mode}_"
@@ -107,7 +117,7 @@ def gi_cache_key(
 def draw_small_gi_chara_card(
     talent_str: str,
     dark_mode: bool,
-    character: genshin.models.Character,
+    character: GICharacter | UnownedCharacter,
     translator: Translator,
     locale: Locale,
 ) -> Image.Image:
@@ -117,6 +127,9 @@ def draw_small_gi_chara_card(
 
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="gi-characters", dark_mode=dark_mode, translator=translator)
+
+    if isinstance(character, UnownedCharacter):
+        return im
 
     text = LocaleStr(
         "C{const}R{refine}",
@@ -129,9 +142,9 @@ def draw_small_gi_chara_card(
     drawer.write(text, size=31, position=(236, 72), locale=locale, style="medium")
 
     friend_textbbox = drawer.write(
-        str(character.friendship), size=18, position=(284, 154), anchor="mm"
+        str(character.friendship), size=18, position=(284, 151), anchor="mm"
     )
-    talent_textbbox = drawer.write(talent_str, size=18, position=(405, 154), anchor="mm")
+    talent_textbbox = drawer.write(talent_str, size=18, position=(405, 151), anchor="mm")
 
     size = 4
     space = talent_textbbox[0] - friend_textbbox[2]

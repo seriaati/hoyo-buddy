@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import datetime
 from typing import Final
 
 import discord
 import enka
+import genshin
 import hakushin
 from ambr import Language as AmbrLanguage
 from genshin import Game as GPYGame
@@ -249,6 +251,16 @@ YATTA_PATH_TO_HSR_PATH = {
     PathType.WARRIOR: HSRPath.DESTRUCTION,
 }
 
+YATTA_PATH_TO_GPY_PATH = {
+    PathType.KNIGHT: genshin.models.StarRailPath.PRESERVATION,
+    PathType.MAGE: genshin.models.StarRailPath.ERUDITION,
+    PathType.PRIEST: genshin.models.StarRailPath.ABUNDANCE,
+    PathType.ROGUE: genshin.models.StarRailPath.THE_HUNT,
+    PathType.SHAMAN: genshin.models.StarRailPath.HARMONY,
+    PathType.WARLOCK: genshin.models.StarRailPath.NIHILITY,
+    PathType.WARRIOR: genshin.models.StarRailPath.DESTRUCTION,
+}
+
 STARRAIL_RES = "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master"
 
 HB_GAME_TO_GPY_GAME: dict[Game, GPYGame] = {
@@ -276,3 +288,5 @@ GAME_CHALLANGES: Final[dict[Game, list[ChallengeType]]] = {
         ChallengeType.PURE_FICTION,
     ],
 }
+
+UTC_8 = datetime.timezone(datetime.timedelta(hours=8))

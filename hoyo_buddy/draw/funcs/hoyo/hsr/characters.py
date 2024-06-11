@@ -5,16 +5,15 @@ from typing import TYPE_CHECKING
 
 from cachetools import LRUCache, cached
 from discord import Locale
+from genshin.models import StarRailDetailCharacter as HSRCharacter
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.draw.drawer import DARK_SURFACE, LIGHT_SURFACE, Drawer
-from hoyo_buddy.models import DynamicBKInput
+from hoyo_buddy.models import DynamicBKInput, UnownedCharacter
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
-
-    import genshin
 
     from hoyo_buddy.bot.translator import Translator
 
@@ -25,7 +24,7 @@ WEAPON_ICON_SIZES = (102, 102)
 
 
 def draw_character_card(
-    characters: Sequence[genshin.models.StarRailDetailCharacter],
+    characters: Sequence[HSRCharacter | UnownedCharacter],
     pc_icons: dict[str, str],
     dark_mode: bool,
     translator: Translator,
@@ -35,7 +34,11 @@ def draw_character_card(
     c_cards: dict[str, Image.Image] = {}
 
     for character in characters:
-        talent = "/".join(str(s.level) for s in character.skills[:4])
+        talent = (
+            "/".join(str(s.level) for s in character.skills[:4])
+            if isinstance(character, HSRCharacter)
+            else ""
+        )
         card = draw_small_hsr_chara_card(talent, dark_mode, character, translator, locale)
         c_cards[str(character.id)] = card
 
@@ -83,10 +86,12 @@ def draw_character_card(
 def hsr_cache_key(
     talent_str: str,
     dark_mode: bool,
-    character: genshin.models.StarRailDetailCharacter,
+    character: HSRCharacter | UnownedCharacter,
     _: Translator,
     locale: Locale,
 ) -> str:
+    if isinstance(character, UnownedCharacter):
+        return f"{dark_mode}_{character.id}_{character.element}"
     return (
         f"{talent_str}_"
         f"{dark_mode}_"
@@ -104,7 +109,7 @@ def hsr_cache_key(
 def draw_small_hsr_chara_card(
     talent_str: str,
     dark_mode: bool,
-    character: genshin.models.StarRailDetailCharacter,
+    character: HSRCharacter | UnownedCharacter,
     translator: Translator,
     locale: Locale,
 ) -> Image.Image:
@@ -114,6 +119,9 @@ def draw_small_hsr_chara_card(
 
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="hsr-characters", dark_mode=dark_mode, translator=translator)
+
+    if isinstance(character, UnownedCharacter):
+        return im
 
     text = LocaleStr("Lv.{level}", key="level_str", level=character.level)
     drawer.write(text, size=31, position=(230, 35), locale=locale, style="medium")

@@ -185,13 +185,13 @@ typing_extensions = ">=3.7.2"
 
 [[package]]
 name = "ambr-py"
-version = "1.7.7"
+version = "1.7.8"
 description = "API wrapper for ambr.top written in Python"
 optional = false
 python-versions = "<4.0,>=3.11"
 files = [
-    {file = "ambr_py-1.7.7-py3-none-any.whl", hash = "sha256:69c2d22daf0dc930c0b0a8045feb9f98d6b4fdccd74c32377173faa54a92476c"},
-    {file = "ambr_py-1.7.7.tar.gz", hash = "sha256:238215cb366a81ae4edff5c3e9b2785451a59a749801d568d335312d623e1d0e"},
+    {file = "ambr_py-1.7.8-py3-none-any.whl", hash = "sha256:ab40fdc39544e4ed9e17598e847a9eac5d8c9f27b31343c1cd31d27c9d6e2e08"},
+    {file = "ambr_py-1.7.8.tar.gz", hash = "sha256:c5ac3b14cff9a468d2fdb8d44c5ebdaba7718b904423ccd9a3e12b0d15d88436"},
 ]
 
 [package.dependencies]
@@ -2182,13 +2182,13 @@ multidict = ">=4.0"
 
 [[package]]
 name = "yatta-py"
-version = "1.3.7"
+version = "1.3.8"
 description = "Python async API wrapper for hsr.yatta.top"
 optional = false
 python-versions = "<4.0,>=3.11"
 files = [
-    {file = "yatta_py-1.3.7-py3-none-any.whl", hash = "sha256:d66104055bec0fa22f926a4a6b0d5ee850cc80343c6ddce40e04d6f1f6994f73"},
-    {file = "yatta_py-1.3.7.tar.gz", hash = "sha256:e0d816b9ca1c71491a5d77f0c6053a6b762ea0cc5a33549b1d8c80c947b113ea"},
+    {file = "yatta_py-1.3.8-py3-none-any.whl", hash = "sha256:014ad6f2d6d1d078ec22fd493a04304ac9895ebe5ed882b3a3a4bed4a917a842"},
+    {file = "yatta_py-1.3.8.tar.gz", hash = "sha256:036883aece6ef5c45abc25211e6c7fb90d8c82030a1c2711b36f5451ebf762c2"},
 ]
 
 [package.dependencies]

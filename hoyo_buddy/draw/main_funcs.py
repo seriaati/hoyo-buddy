@@ -9,7 +9,7 @@ from sentry_sdk.metrics import timing
 
 from hoyo_buddy.draw import funcs
 
-from ..models import AbyssCharacter, HoyolabHSRCharacter
+from ..models import AbyssCharacter, HoyolabHSRCharacter, UnownedCharacter
 from .static import download_and_save_static_images
 
 if TYPE_CHECKING:
@@ -205,13 +205,15 @@ async def draw_farm_card(
 
 async def draw_gi_characters_card(
     draw_input: DrawInput,
-    characters: Sequence[GenshinCharacter],
+    characters: Sequence[GenshinCharacter | UnownedCharacter],
     talents: dict[str, str],
     pc_icons: dict[str, str],
     translator: Translator,
 ) -> File:
     urls: list[str] = []
     for c in characters:
+        if isinstance(c, UnownedCharacter):
+            continue
         urls.append(c.weapon.icon)
     urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
 
@@ -234,13 +236,13 @@ async def draw_gi_characters_card(
 
 async def draw_hsr_characters_card(
     draw_input: DrawInput,
-    characters: Sequence[StarRailCharacter],
+    characters: Sequence[StarRailCharacter | UnownedCharacter],
     pc_icons: dict[str, str],
     translator: Translator,
 ) -> File:
     urls: list[str] = []
     for c in characters:
-        if c.equip is None:
+        if isinstance(c, UnownedCharacter) or c.equip is None:
             continue
         urls.append(c.equip.icon)
     urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)

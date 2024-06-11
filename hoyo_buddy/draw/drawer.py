@@ -111,9 +111,7 @@ class Drawer:
         )
 
     @staticmethod
-    def crop_resize_image(
-        image: Image.Image, size: tuple[int, int], zoom: float = 1.0
-    ) -> Image.Image:
+    def resize_crop(image: Image.Image, size: tuple[int, int], zoom: float = 1.0) -> Image.Image:
         """Resize an image without changing its aspect ratio."""
         # Calculate the target height to maintain the aspect ratio
         width, height = image.size
@@ -130,6 +128,18 @@ class Drawer:
         image = image.resize((new_width, new_height), resample=Image.Resampling.LANCZOS)
         image = image.crop((left, top, right, bottom))
 
+        return image
+
+    @staticmethod
+    def middle_crop(image: Image.Image, size: tuple[int, int]) -> Image.Image:
+        """Crop an image from the center."""
+        width, height = image.size
+        left = width // 2 - size[0] // 2
+        top = height // 2 - size[1] // 2
+        right = left + size[0]
+        bottom = top + size[1]
+
+        image = image.crop((left, top, right, bottom))
         return image
 
     @classmethod
@@ -359,7 +369,7 @@ class Drawer:
         background_color: tuple[int, int, int] | None = None,
         zoom: float = 1.0,
     ) -> Image.Image:
-        image = self.crop_resize_image(image, (target_width, target_height), zoom)
+        image = self.resize_crop(image, (target_width, target_height), zoom)
 
         if self.dark_mode:
             overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.2))

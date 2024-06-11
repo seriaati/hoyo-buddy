@@ -511,3 +511,4 @@ yatta_character_skill_weakness_break_field_name: Weakness Break
 yatta_character_trace_page_label: Traces
 yatta_item_sources_field_name: Sources
 yatta_light_cone_ability_field_name: Ability
+characters.show_owned_only: Show owned characters only

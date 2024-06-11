@@ -5,6 +5,7 @@ from typing import Final
 
 import discord
 import enka
+import genshin
 import hakushin
 from ambr import Language as AmbrLanguage
 from genshin import Game as GPYGame
@@ -248,6 +249,16 @@ YATTA_PATH_TO_HSR_PATH = {
     PathType.SHAMAN: HSRPath.HARMONY,
     PathType.WARLOCK: HSRPath.NIHILITY,
     PathType.WARRIOR: HSRPath.DESTRUCTION,
+}
+
+YATTA_PATH_TO_GPY_PATH = {
+    PathType.KNIGHT: genshin.models.StarRailPath.PRESERVATION,
+    PathType.MAGE: genshin.models.StarRailPath.ERUDITION,
+    PathType.PRIEST: genshin.models.StarRailPath.ABUNDANCE,
+    PathType.ROGUE: genshin.models.StarRailPath.THE_HUNT,
+    PathType.SHAMAN: genshin.models.StarRailPath.HARMONY,
+    PathType.WARLOCK: genshin.models.StarRailPath.NIHILITY,
+    PathType.WARRIOR: genshin.models.StarRailPath.DESTRUCTION,
 }
 
 STARRAIL_RES = "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master"

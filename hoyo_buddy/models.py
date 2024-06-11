@@ -6,7 +6,8 @@ import aiohttp
 import ambr.models
 from attr import dataclass
 from discord import Locale
-from pydantic import BaseModel
+from genshin.models import StarRailPath
+from pydantic import BaseModel, field_validator
 
 from .constants import STARRAIL_RES
 
@@ -179,3 +180,21 @@ class Config:
         self.translator = args.translator
         self.search_autocomplete = args.search
         self.schedule = args.schedule
+
+
+class UnownedCharacter(BaseModel):
+    id: str
+    element: str
+    rarity: int
+    path: StarRailPath = StarRailPath.ABUNDANCE
+    level: int = 0
+    friendship: int = 0
+    constellation: int = 0
+    rank: int = 0
+
+    @field_validator("element", mode="before")
+    @classmethod
+    def __validate_element(cls, v: str) -> str:
+        if v.lower() == "thunder":
+            return "lightning"
+        return v.lower()

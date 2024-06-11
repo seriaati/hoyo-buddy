@@ -130,6 +130,18 @@ class Drawer:
 
         return image
 
+    @staticmethod
+    def middle_crop(image: Image.Image, size: tuple[int, int]) -> Image.Image:
+        """Crop an image from the center."""
+        width, height = image.size
+        left = width // 2 - size[0] // 2
+        top = height // 2 - size[1] // 2
+        right = left + size[0]
+        bottom = top + size[1]
+
+        image = image.crop((left, top, right, bottom))
+        return image
+
     @classmethod
     def hex_to_rgb(cls, hex_color_code: str) -> tuple[int, int, int]:
         hex_color_code = hex_color_code.lstrip("#")
@@ -357,7 +369,7 @@ class Drawer:
         background_color: tuple[int, int, int] | None = None,
         zoom: float = 1.0,
     ) -> Image.Image:
-        image = self.crop_resize_image(image, (target_width, target_height), zoom)
+        image = self.resize_crop(image, (target_width, target_height), zoom)
 
         if self.dark_mode:
             overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.2))

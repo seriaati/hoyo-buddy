@@ -50,7 +50,7 @@ action_in_cooldown_error_title: Action in Cooldown
 add_account_button_label: Add accounts
 add_hoyolab_acc.embed.description: "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one\n3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile\n\n"
 add_hoyolab_acc.embed.title: Select a Method to add Your Accounts
-add_miyoushe_acc.embed.description: "1. With modded Miyoushe app: Easiest and fastest way to add your accounts"
+add_miyoushe_acc.embed.description: "1. With modded Miyoushe app: Available only for Android devices"
 add_miyoushe_acc.enter_mobile_number: Enter phone number
 add_miyoushe_acc.mobile_number: Phone number
 add_miyoushe_acc.with_mobile_number: With phone number

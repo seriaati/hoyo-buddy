@@ -37,7 +37,7 @@ class AddMiyousheAccount(Button["AccountManager"]):
                 "Select a Method to add Your Accounts", key="add_hoyolab_acc.embed.title"
             ),
             description=LocaleStr(
-                "1. With modded Miyoushe app: Easiest and fastest way to add your accounts",
+                "1. With modded Miyoushe app: Available only for Android devices",
                 key="add_miyoushe_acc.embed.description",
             ),
         )

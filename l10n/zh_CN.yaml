@@ -50,7 +50,7 @@ action_in_cooldown_error_title: 操作冷却中
 add_account_button_label: 添加账号
 add_hoyolab_acc.embed.description: "1.通过邮箱和密码：最为推荐、最简单的方式。\n2.通过开发者工具：仅在电脑生效，如果你对第一种方式存有安全顾虑，该方式更安全些。\n3.通过JavaScript：过时的方式，不适用于大多数账号。可以在电脑或移动设备上的Google Chrome或者Microsoft Edge 使用。\n\n"
 add_hoyolab_acc.embed.title: 选择一个添加账号的方式
-add_miyoushe_acc.embed.description: "1. 通过 QR 码：如果你在手机上有登入米游社的话，此方式是最推荐的\n2.通过邮箱/用户名和密码\n3.通过手机号。\n4.通过开发者工具：仅在电脑上有效，如果你存有安全顾虑，相较于上面两种方式，该方式更安全。\n"
+add_miyoushe_acc.embed.description: ""
 add_miyoushe_acc.enter_mobile_number: 输入手机号
 add_miyoushe_acc.mobile_number: 手机号
 add_miyoushe_acc.with_mobile_number: 通过手机号
@@ -155,7 +155,7 @@ electro: 雷
 email-geetest.embed.title: 😥在发送验证码之前需要解决CAPTCHA问题
 email_password_button_label: 通过邮箱和密码
 email_password_instructions_description: "<:INFO:1166743144889602190> 注意: 该方式**并不适用**于米游社用户，仅对HoYoLAB用户有效。\n\n1. 点击下方的 `完成 CAPTCHA` 按钮\n2. 被引导至一个新的网站后，按下按钮以完成 CAPTCHA\n3. 完成后，点击下方的 `继续` 按钮\n"
-email_password_modal_email_input_label: 电子邮箱或用户名
+email_password_modal_email_input_label: ""
 email_password_modal_password_input_label: 密码
 enter_email_password_button_label: 输入电子邮箱/用户名和密码
 enter_email_password_instructions_description: "<:INFO:1166743144889602190> 这个方法需要输入你的个人信息。\n\n• 作为交换，你的 `cookie_token` 可以自动刷新，这在兑换码相关功能中会有用处（只有 HoYoLAB 使用者受益）。\n• 你的邮箱和密码**完全不会**被保存在数据库中，因此几乎不可能被泄露。\n• 此外，这个机器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上有开源，所以你可以自行验证这点。\n• 你可以自行决定是否信任该机器人。\n\n点击下方按钮开始。\n"
@@ -511,3 +511,14 @@ yatta_character_skill_weakness_break_field_name: 弱点击破
 yatta_character_trace_page_label: 行迹
 yatta_item_sources_field_name: 来源
 yatta_light_cone_ability_field_name: 技能
+characters.show_owned_only: ""
+redeem_code.ar_too_low: ""
+data_not_public.title: ""
+data_not_public.description: ""
+modded_app_button_label: ""
+modded_app_login_instructions.desc: ""
+download_app_button_label: ""
+login_detail_modal.input_label: ""
+enter_login_details_button_label: ""
+not_implemented_error_title: ""
+not_implemented_error_message: ""

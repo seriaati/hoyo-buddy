@@ -184,6 +184,9 @@ class AccountManager(View):
             ),
         )
 
+        device_id = cookies.pop("x-rpc-device_id", None)
+        device_fp = cookies.pop("x-rpc-device_fp", None)
+
         self.clear_items()
         self.add_item(
             AddAccountSelect(
@@ -191,6 +194,8 @@ class AccountManager(View):
                 self.translator,
                 accounts=accounts,
                 cookies="; ".join(f"{k}={v}" for k, v in cookies.items()),
+                device_id=device_id,
+                device_fp=device_fp,
             )
         )
 

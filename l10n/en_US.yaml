@@ -50,7 +50,7 @@ action_in_cooldown_error_title: Action in Cooldown
 add_account_button_label: Add accounts
 add_hoyolab_acc.embed.description: "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one\n3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile\n\n"
 add_hoyolab_acc.embed.title: Select a Method to add Your Accounts
-add_miyoushe_acc.embed.description: "1. With QR code: Recommended for most users if you are logged in on your mobile device\n2. With email/username and password\n3. With phone number\n4. With DevTools: Only work on desktop, a safer option if you have security concerns with the other methods\n"
+add_miyoushe_acc.embed.description: "1. With modded Miyoushe app: Available only for Android devices"
 add_miyoushe_acc.enter_mobile_number: Enter phone number
 add_miyoushe_acc.mobile_number: Phone number
 add_miyoushe_acc.with_mobile_number: With phone number
@@ -515,3 +515,10 @@ characters.show_owned_only: Show owned characters only
 redeem_code.ar_too_low: Adventure rank too low
 data_not_public.title: Data is not Public
 data_not_public.description: "Enable the data sharing option in your battle chronicle settings\nhttps://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/DataNotPublicTutorial.gif"
+modded_app_button_label: With modded app
+modded_app_login_instructions.desc: "1. If you have Miyoushe installed on your device, uninstall it.\n2. Download the modded apk by clicking the button below.\n3. Install the modded app and open it.\n4. Ignore any update prompts and log in with your account.\n5. Click 'my account' and click on the key icon.\n6. Click 'copy login details'.\n7. Click the '{label}' button below and paste the copied details."
+download_app_button_label: Download app
+login_detail_modal.input_label: Login details
+enter_login_details_button_label: Enter login details
+not_implemented_error_title: Not Implemented
+not_implemented_error_message: "This feature is not implemented for `{game}` under platform `{platform}` yet."

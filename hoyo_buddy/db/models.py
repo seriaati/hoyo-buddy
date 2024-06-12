@@ -60,6 +60,8 @@ class HoyoAccount(Model):
     auto_redeem = fields.BooleanField(default=True)
     public = fields.BooleanField(default=True)
     """Whether this account can be seen by others."""
+    device_id: fields.Field[str | None] = fields.CharField(max_length=36, null=True)
+    device_fp: fields.Field[str | None] = fields.CharField(max_length=13, null=True)
 
     class Meta:
         unique_together = ("uid", "game", "user")

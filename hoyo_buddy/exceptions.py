@@ -233,3 +233,16 @@ class AutocompleteNotDoneYetError(HoyoBuddyError):
                 key="search_autocomplete_not_setup",
             ),
         )
+
+
+class FeatureNotImplementedError(HoyoBuddyError):
+    def __init__(self, *, platform: Platform, game: Game) -> None:
+        super().__init__(
+            title=LocaleStr("Not Implemented", key="not_implemented_error_title"),
+            message=LocaleStr(
+                "This feature is not implemented for `{game}` under platform `{platform}` yet.",
+                key="not_implemented_error_message",
+                game=LocaleStr(game.value, warn_no_key=False),
+                platform=LocaleStr(platform.value, warn_no_key=False),
+            ),
+        )

@@ -50,7 +50,7 @@ action_in_cooldown_error_title: 操作正在冷卻
 add_account_button_label: 新增帳戶
 add_hoyolab_acc.embed.description: "1. 透過電子郵件和密碼：最推薦的方式，它最簡單\n2. 透過開發者工具：只能在電腦上運作，如果你對第一個方式有安全疑慮的話，這是一個比較安全的選擇\n3. 透過 JavaScript：過期的方式，大多數帳戶已經無法使用了。可以在電腦和手機上的 Google Chrome 或 Microsoft Edge 運作。\n\n"
 add_hoyolab_acc.embed.title: 選擇一個新增帳戶的方式
-add_miyoushe_acc.embed.description: "1. 透過 QR 碼：如果你在手機上有登入的話，這是最推薦的方式\n2. 透過電子郵件/使用者名稱或密碼\n3. 透過電話號碼\n4. 透過開發者工具：只能在電腦上運作，如果你對其他兩種方式有安全疑慮的話，這是一個比較安全的選擇\n"
+add_miyoushe_acc.embed.description: ""
 add_miyoushe_acc.enter_mobile_number: 輸入電話號碼
 add_miyoushe_acc.mobile_number: 電話號碼
 add_miyoushe_acc.with_mobile_number: 透過電話號碼
@@ -515,3 +515,10 @@ characters.show_owned_only: 僅顯示已擁有的角色
 redeem_code.ar_too_low: 冒險等階過低
 data_not_public.title: 資料沒有公開
 data_not_public.description: "在你的戰績設定中打開資料分享的選項\nhttps://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/DataNotPublicTutorial.gif"
+modded_app_button_label: ""
+modded_app_login_instructions.desc: ""
+download_app_button_label: ""
+login_detail_modal.input_label: ""
+enter_login_details_button_label: ""
+not_implemented_error_title: ""
+not_implemented_error_message: ""

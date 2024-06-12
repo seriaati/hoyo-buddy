@@ -76,12 +76,6 @@ class Admin(commands.Cog):
         await self.bot.translator.load_synced_commands_json()
         await message.edit(content=f"Synced {len(synced_commands)} commands.")
 
-    @commands.command(name="push-source-strings", aliases=["pss"])
-    async def push_source_strings_command(self, ctx: commands.Context) -> Any:
-        message = await ctx.send("Pushing source strings...")
-        await self.bot.translator.update_l10n_files()
-        await message.edit(content="Pushed source strings.")
-
     @commands.command(name="fetch-source-strings", aliases=["fss"])
     async def fetch_source_strings_command(self, ctx: commands.Context) -> Any:
         message = await ctx.send("Fetching source strings...")
@@ -92,11 +86,6 @@ class Admin(commands.Cog):
     async def run_tasks_command(self, ctx: commands.Context) -> Any:
         view = TaskView()
         await ctx.send("Select a task to run.", view=view)
-
-    @commands.command(name="not-translated", aliases=["nt"])
-    async def not_translated_command(self, ctx: commands.Context) -> Any:
-        not_translated = self.bot.translator._not_translated
-        await ctx.send(f"Not translated:\n```\n{not_translated}\n```\nTotal: {len(not_translated)}")
 
     @commands.command(name="update-assets", aliases=["ua"])
     async def update_assets_command(self, ctx: commands.Context) -> Any:

@@ -109,8 +109,6 @@ class DailyCheckin:
         translator: Translator,
         session: aiohttp.ClientSession,
     ) -> Embed:
-        logger.debug(f"Daily check-in with {api_name} for {account}")
-
         await account.user.fetch_related("settings")
 
         locale = account.user.settings.locale or discord.Locale.american_english

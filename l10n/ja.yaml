@@ -155,7 +155,7 @@ electro: ""
 email-geetest.embed.title: ""
 email_password_button_label: ""
 email_password_instructions_description: "<:INFO:1166743144889602190>注意：この方法はMiyousheユーザーには使えません。\n\n1. 下の`CAPTCHA認証`ボタンをクリックしてください。\n2. ウェブサイトにリダイレクトされますので、ボタンをクリックしてCAPTCHA認証を完了してください。\n3. 完了後、下の「Continue」ボタンをクリックしてください。\n"
-email_password_modal_email_input_label: メールアドレスかユーザーネーム
+email_password_modal_email_input_label: ""
 email_password_modal_password_input_label: パスワード
 enter_email_password_button_label: ""
 enter_email_password_instructions_description: ""
@@ -509,3 +509,14 @@ yatta_character_skill_weakness_break_field_name: 弱点撃破
 yatta_character_trace_page_label: 種族
 yatta_item_sources_field_name: ソース
 yatta_light_cone_ability_field_name: 能力
+characters.show_owned_only: ""
+redeem_code.ar_too_low: ""
+data_not_public.title: ""
+data_not_public.description: ""
+modded_app_button_label: ""
+modded_app_login_instructions.desc: ""
+download_app_button_label: ""
+login_detail_modal.input_label: ""
+enter_login_details_button_label: ""
+not_implemented_error_title: ""
+not_implemented_error_message: ""

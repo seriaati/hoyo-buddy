@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 
 from discord import app_commands
 from loguru import logger
-from seria.utils import read_json, read_yaml, write_yaml
+from seria.utils import read_json, read_yaml
 
 from ..enums import GenshinElement, HSRElement
 from ..utils import capitalize_first_word as capitalize_first_word_
@@ -216,33 +216,6 @@ class Translator:
         else:
             string_key = string.key
         return string_key
-
-    async def update_l10n_files(self) -> None:
-        if not self._not_translated:
-            return
-
-        await self._update_source_str_file()
-        await self._update_l10n_files()
-        self._not_translated.clear()
-
-    async def _update_source_str_file(self) -> None:
-        source_strings = self._localizations[SOURCE_LANG]
-        source_strings.update(self._not_translated)
-        await write_yaml(SOURCE_LANG_PATH.as_posix(), source_strings)
-
-    async def _update_l10n_files(self) -> None:
-        for lang in LANGUAGES:
-            if lang == SOURCE_LANG:
-                continue
-
-            file_path = L10N_PATH / f"{lang}.yaml"
-            if not file_path.exists():
-                continue
-
-            for key in self._not_translated:
-                self._localizations[lang][key] = ""
-
-            await write_yaml(file_path.as_posix(), self._localizations[lang])
 
     def get_traveler_name(
         self,

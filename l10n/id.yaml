@@ -50,7 +50,7 @@ action_in_cooldown_error_title: Aksi dalam Cooldown
 add_account_button_label: Tambah akun
 add_hoyolab_acc.embed.description: "1. Dengan email dan kata sandi: Paling direkomendasikan, dan paling mudah\n2. Dengan DevTools: Hanya berfungsi pada desktop, opsi yang lebih aman jika kamu memiliki kekhawatiran keamanan dengan yang pertama\n3. Dengan JavaScript: Metode yang ketinggalan jaman, tidak akan berfungsi untuk sebagian besar akun. Berfungsi di Google Chrome atau Microsoft Edge pada desktop dan mobile\n\n"
 add_hoyolab_acc.embed.title: Pilih metode untuk menambahkan akun kamu
-add_miyoushe_acc.embed.description: "1. Dengan kode QR: Direkomendasikan untuk pengguna sebagian besar jika kamu telah masuk pada perangkat mobile kamu\n2. Dengan email/username dan kata sandi\n3. Dengan nomor telepon\n4. Dengan DevTools: Hanya berfungsi pada desktop, pilihan yang lebih aman jika kamu memiliki kekhawatiran keamanan dengan metode lainnya\n"
+add_miyoushe_acc.embed.description: ""
 add_miyoushe_acc.enter_mobile_number: Masukkan nomor telepon
 add_miyoushe_acc.mobile_number: Nomor telepon
 add_miyoushe_acc.with_mobile_number: Pakai nomor telepon
@@ -155,7 +155,7 @@ electro: Electro
 email-geetest.embed.title: 😥 Perlu menyelesaikan CAPTCHA sebelum mengirim kode verifikasi
 email_password_button_label: Dengan email dan password
 email_password_instructions_description: "<:INFO:1166743144889602190> Catatan: Cara ini **TIDAK BEKERJA** untuk pengguna Miyoushe, hanya pengguna HoYoLAB yang bisa menggunakan cara ini.\n\n1. Klik tombol `Lengkapi CAPTCHA` di bawah\n2. kamu akan diarahkan ke sebuah situs web, klik tombol dan lengkapi CAPTCHA\n3. Setelah selesai, klik tombol `Lanjutkan` di bawah\n"
-email_password_modal_email_input_label: e-mail atau username
+email_password_modal_email_input_label: ""
 email_password_modal_password_input_label: password
 enter_email_password_button_label: Masukkan email/username dan kata sandi
 enter_email_password_instructions_description: "<:INFO:1166743144889602190> Metode ini mengharuskan kamu memasukkan informasi pribadi kamu.\n\n• Sebagai gantinya, `cookie_token` kamu dapat diperbarui secara otomatis, yang digunakan dalam fitur yang terkait dengan penukaran kode (hanya untuk pengguna HoYoLAB).\n• Email dan kata sandi kamu **TIDAK** disimpan dalam database **SAMA SEKALI**, sehingga hampir tidak mungkin untuk terjadi kebocoran data.\n• Selain itu, bot ini open source di [GitHub](https://github.com/seriaati/hoyo-buddy), sehingga kamu dapat memverifikasi sendiri.\n• Pada akhirnya, itu adalah pilihan kamu sendiri untuk memutuskan apakah kamu ingin percaya bot ini atau tidak.\n\nKlik tombol di bawah untuk memulai.\n"
@@ -511,3 +511,14 @@ yatta_character_skill_weakness_break_field_name: Weakness Break
 yatta_character_trace_page_label: Trace
 yatta_item_sources_field_name: Sumber
 yatta_light_cone_ability_field_name: Kemampuan
+characters.show_owned_only: ""
+redeem_code.ar_too_low: ""
+data_not_public.title: ""
+data_not_public.description: ""
+modded_app_button_label: ""
+modded_app_login_instructions.desc: ""
+download_app_button_label: ""
+login_detail_modal.input_label: ""
+enter_login_details_button_label: ""
+not_implemented_error_title: ""
+not_implemented_error_message: ""

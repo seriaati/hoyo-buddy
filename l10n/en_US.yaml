@@ -513,3 +513,5 @@ yatta_item_sources_field_name: Sources
 yatta_light_cone_ability_field_name: Ability
 characters.show_owned_only: Show owned characters only
 redeem_code.ar_too_low: Adventure rank too low
+data_not_public.title: Data is not Public
+data_not_public.description: "Enable the data sharing option in your battle chronicle settings\nhttps://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/DataNotPublicTutorial.gif"

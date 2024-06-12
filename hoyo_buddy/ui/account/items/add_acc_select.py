@@ -32,13 +32,18 @@ class AddAccountSelect(Select["AccountManager"]):
         *,
         accounts: Sequence[GenshinAccount],
         cookies: str,
+        device_id: str | None,
+        device_fp: str | None,
     ) -> None:
         self.accounts = accounts
         self.cookies = cookies
         self.translator = translator
         self.locale = locale
-        options = list(self.get_account_options())
 
+        self._device_id = device_id
+        self._device_fp = device_fp
+
+        options = list(self.get_account_options())
         super().__init__(
             custom_id="select_accounts_to_add",
             options=options,
@@ -84,6 +89,8 @@ class AddAccountSelect(Select["AccountManager"]):
                     cookies=self.cookies,
                     user=self.view.user,
                     server=account.server_name,
+                    device_id=self._device_id,
+                    device_fp=self._device_fp,
                 )
             except IntegrityError:
                 hoyo_account = await HoyoAccount.get(
@@ -93,7 +100,12 @@ class AddAccountSelect(Select["AccountManager"]):
                 )
                 hoyo_account.cookies = self.cookies
                 hoyo_account.username = account.nickname
-                await hoyo_account.save()
+                hoyo_account.server = account.server_name
+                hoyo_account.device_id = self._device_id
+                hoyo_account.device_fp = self._device_fp
+                await hoyo_account.save(
+                    update_fields=("cookies", "username", "server", "device_id", "device_fp")
+                )
             else:
                 await AccountNotifSettings.create(account=hoyo_account)
 

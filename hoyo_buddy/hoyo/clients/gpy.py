@@ -39,7 +39,14 @@ class GenshinClient(genshin.Client):
     ) -> None:
         game = HB_GAME_TO_GPY_GAME[account.game]
         region = genshin.utility.recognize_region(account.uid, game=game) or genshin.Region.OVERSEAS
-        super().__init__(account.cookies, game=game, uid=account.uid, region=region)
+        super().__init__(
+            account.cookies,
+            game=game,
+            uid=account.uid,
+            region=region,
+            device_id=account.device_id,
+            device_fp=account.device_fp,
+        )
         self._account = account
 
     def set_lang(self, locale: Locale) -> None:

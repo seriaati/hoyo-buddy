@@ -13,8 +13,7 @@ from ...components import Button, GoBackButton
 from .with_dev_tools import WithDevTools
 from .with_email_pswd import WithEmailPassword
 from .with_js import WithJavaScript
-from .with_mobile import WithMobileNumber
-from .with_qrcode import WithQRCode
+from .with_mod_app import WithModApp
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot.bot import Interaction
@@ -38,22 +37,18 @@ class AddMiyousheAccount(Button["AccountManager"]):
                 "Select a Method to add Your Accounts", key="add_hoyolab_acc.embed.title"
             ),
             description=LocaleStr(
-                (
-                    "1. With QR code: Recommended for most users if you are logged in on your mobile device\n"
-                    "2. With email/username and password\n"
-                    "3. With phone number\n"
-                    "4. With DevTools: Only work on desktop, a safer option if you have security concerns with the other methods\n"
-                ),
+                "1. With modded Miyoushe app: Easiest and fastest way to add your accounts",
                 key="add_miyoushe_acc.embed.description",
             ),
         )
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
 
-        self.view.add_item(WithQRCode())
-        self.view.add_item(WithEmailPassword(Platform.MIYOUSHE))
-        self.view.add_item(WithMobileNumber())
-        self.view.add_item(WithDevTools(Platform.MIYOUSHE))
+        # self.view.add_item(WithQRCode())
+        # self.view.add_item(WithEmailPassword(Platform.MIYOUSHE))
+        # self.view.add_item(WithMobileNumber())
+        # self.view.add_item(WithDevTools(Platform.MIYOUSHE))
+        self.view.add_item(WithModApp())
         self.view.add_item(go_back_button)
 
         await i.response.edit_message(embed=embed, view=self.view)

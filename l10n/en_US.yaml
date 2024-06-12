@@ -520,3 +520,5 @@ modded_app_login_instructions.desc: "1. If you have Miyoushe installed on your d
 download_app_button_label: Download app
 login_detail_modal.input_label: Login details
 enter_login_details_button_label: Enter login details
+not_implemented_error_title: Not Implemented
+not_implemented_error_message: "This feature is not implemented for `{game}` under platform `{platform}` yet."

@@ -50,7 +50,7 @@ action_in_cooldown_error_title: Actie in Cooldown
 add_account_button_label: Accounts toegoeven
 add_hoyolab_acc.embed.description: "1. Met email en wachtwoord: wordt het meest aanbevolen, het is het gemakkelijkst.\n2. Met DevTools: Werkt alleen op desktop, een veiligere optie als je je zorgen maakt over de beveiliging met de eerste\n3. Met JavaScript: Verouderde methode, werkt niet voor de meeste accounts. Werkt op Google Chrome of Microsoft Edge op zowel desktop als mobiel\n\n"
 add_hoyolab_acc.embed.title: Selecteer een Methode om je Accounts toe te Voegen
-add_miyoushe_acc.embed.description: "1. Met QR-code: Aanbevolen voor de meeste gebruikers als je bent ingelogd op je mobiele apparaat\n2. Met email/gebruikersnaam en wachtwoord\n3. Met telefoonnummer\n4. Met DevTools: Werkt alleen op desktop, een veiligere optie als je je zorgen maakt over de beveiliging met de andere methoden\n"
+add_miyoushe_acc.embed.description: ""
 add_miyoushe_acc.enter_mobile_number: Voer Telefoonnummer in
 add_miyoushe_acc.mobile_number: Telefoonnummer
 add_miyoushe_acc.with_mobile_number: Met telefoonnummer
@@ -155,7 +155,7 @@ electro: Electro
 email-geetest.embed.title: 😥 CAPTCHA moet worden opgelost voordat de verificatiecode wordt verzonden
 email_password_button_label: Met email en wachtwoord
 email_password_instructions_description: "<:INFO:1166743144889602190> Note: This method **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.\n\n1. Click the `Complete CAPTCHA` button below\n2. You will be redirected to a website, click the button and complete the CAPTCHA\n3. After completing, click on the `Continue` button below\n"
-email_password_modal_email_input_label: email of gebruikersnaam
+email_password_modal_email_input_label: ""
 email_password_modal_password_input_label: wachtwoord
 enter_email_password_button_label: Voer email/gebruikersnaam en wachtwoord in
 enter_email_password_instructions_description: "<:INFO:1166743144889602190> Deze methode vereist dat je je privégegevens invoert.\n\n- In ruil daarvoor kan je `cookie_token` automatisch worden vernieuwd, die wordt gebruikt in functies met betrekking tot het inwisselen van codes (alleen voor HoYoLAB-gebruikers).\n- Je e-mailadres en wachtwoord worden **NIET** opgeslagen in de database, dus het is praktisch onmogelijk dat ze uitlekken.\n- Bovendien is deze bot open-sourced op [GitHub](https://github.com/seriaati/hoyo-buddy), dus je kunt dat zelf controleren.\n- Het is uiteindelijk aan jou om te beslissen of je deze bot vertrouwt of niet.\n\nKlik op de knop hieronder om te beginnen.\n"
@@ -511,3 +511,14 @@ yatta_character_skill_weakness_break_field_name: Zwakte Breuk
 yatta_character_trace_page_label: Sporen
 yatta_item_sources_field_name: Bronnen
 yatta_light_cone_ability_field_name: Vermogen
+characters.show_owned_only: ""
+redeem_code.ar_too_low: ""
+data_not_public.title: ""
+data_not_public.description: ""
+modded_app_button_label: ""
+modded_app_login_instructions.desc: ""
+download_app_button_label: ""
+login_detail_modal.input_label: ""
+enter_login_details_button_label: ""
+not_implemented_error_title: ""
+not_implemented_error_message: ""

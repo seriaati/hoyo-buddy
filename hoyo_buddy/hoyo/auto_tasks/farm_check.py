@@ -116,3 +116,5 @@ class FarmChecker:
                         if notified_:
                             notified.add(item_id)
                             break
+
+        logger.info(f"Finished farm check task for uid_start {uid_start}")

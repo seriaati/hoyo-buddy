@@ -13,7 +13,7 @@ about_command_description: 关于机器人
 about_embed.description: "一个为 Hoyoverse 游戏玩家量身订做的 Discord 机器人，功能丰富、易于使用且设计精美。"
 abundance: 丰饶
 abyss.battles_won_fought: "获胜次数/战斗次数：{val1}/{val2}"
-abyss.current: ""
+abyss.current: 当期
 abyss.deepest_descent: "最深抵达：{val}"
 abyss.floor: "第 {val} 层"
 abyss.most_defeats: "最多击破数：{val}"
@@ -21,8 +21,8 @@ abyss.most_dmg_taken: "承受最多伤害：{val}"
 abyss.most_skills: "元素战技施放数：{val}"
 abyss.most_ults: "元素爆发次数：{val}"
 abyss.overview: 深境螺旋战绩
-abyss.phase_select.placeholder: ""
-abyss.previous: ""
+abyss.phase_select.placeholder: 选择一个阶段
+abyss.previous: 上期
 abyss.strongest_strike: "最强一击：{val}"
 abyss.total_stars: "获取星数：{val}"
 abyss_chamber.challenge_target.embed.field.name: 挑战目标
@@ -50,7 +50,7 @@ action_in_cooldown_error_title: 操作冷却中
 add_account_button_label: 添加账号
 add_hoyolab_acc.embed.description: "1.通过邮箱和密码：最为推荐、最简单的方式。\n2.通过开发者工具：仅在电脑生效，如果你对第一种方式存有安全顾虑，该方式更安全些。\n3.通过JavaScript：过时的方式，不适用于大多数账号。可以在电脑或移动设备上的Google Chrome或者Microsoft Edge 使用。\n\n"
 add_hoyolab_acc.embed.title: 选择一个添加账号的方式
-add_miyoushe_acc.embed.description: ""
+add_miyoushe_acc.embed.description: "1. 透过改装过的米游社: 只有安卓装置可使用"
 add_miyoushe_acc.enter_mobile_number: 输入手机号
 add_miyoushe_acc.mobile_number: 手机号
 add_miyoushe_acc.with_mobile_number: 通过手机号
@@ -66,15 +66,15 @@ artifact_set_two_piece_embed_description: "二件套：{bonus_2}"
 artifact_sets: 圣遗物套装
 auto_checkin_button_label: 自动每日签到
 auto_locale_option_label: 遵循Discord客户端语言
-auto_redeem_error.content: ""
+auto_redeem_error.content: "在自动兑换兑换码时发生了错误。\nHoyo Buddy 已经为此帐户禁用了该功能，你可以使用</redeem>将其重新启用。\n如果该错误依旧存在或者你不知道如何应对，请透过</feedback>联系开发者。\n"
 auto_redeem_footer: 使用 /redeem 关闭自动兑换功能。
 auto_redeem_toggle.label: 自动兑换
 books: 书籍
 captcha.embed.description: "点击下方按钮来完成 CAPTCHA。\n"
-challenge_command_description: ""
-challenge_type_select.placeholder: ""
-challenge_view.buff_used_in: ""
-challenge_view.team: ""
+challenge_command_description: "查看游戏后期内容的资料，例如深境螺旋，混沌回忆等"
+challenge_type_select.placeholder: 选择一个游戏模式
+challenge_view.buff_used_in: "于 {floors} 使用"
+challenge_view.team: "队伍 {team}"
 chamber_button_label: "第 {value} 间"
 change_character_level_label: 更改角色等级
 change_skill_level_label: 更改技能等级
@@ -124,8 +124,8 @@ characters_command_description: 查看你所拥有的全部角色
 checkin_button_label: 签到
 checkin_command_description: 游戏每日签到
 complete_captcha_button_label: 完成 CAPTCHA
-complete_geetest_button_description: ""
-complete_geetest_button_label: ""
+complete_geetest_button_description: 点击下方按钮来完成 geetest 验证
+complete_geetest_button_label: 完成 geetest 验证
 const_refine_str: "{const}命 精{refine}"
 continue_button_label: 继续
 cookies_button_label: 输入 Cookies
@@ -155,7 +155,7 @@ electro: 雷
 email-geetest.embed.title: 😥在发送验证码之前需要解决CAPTCHA问题
 email_password_button_label: 通过邮箱和密码
 email_password_instructions_description: "<:INFO:1166743144889602190> 注意: 该方式**并不适用**于米游社用户，仅对HoYoLAB用户有效。\n\n1. 点击下方的 `完成 CAPTCHA` 按钮\n2. 被引导至一个新的网站后，按下按钮以完成 CAPTCHA\n3. 完成后，点击下方的 `继续` 按钮\n"
-email_password_modal_email_input_label: ""
+email_password_modal_email_input_label: 电子邮箱或用户名
 email_password_modal_password_input_label: 密码
 enter_email_password_button_label: 输入电子邮箱/用户名和密码
 enter_email_password_instructions_description: "<:INFO:1166743144889602190> 这个方法需要输入你的个人信息。\n\n• 作为交换，你的 `cookie_token` 可以自动刷新，这在兑换码相关功能中会有用处（只有 HoYoLAB 使用者受益）。\n• 你的邮箱和密码**完全不会**被保存在数据库中，因此几乎不可能被泄露。\n• 此外，这个机器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上有开源，所以你可以自行验证这点。\n• 你可以自行决定是否信任该机器人。\n\n点击下方按钮开始。\n"
@@ -194,12 +194,12 @@ farm_add_command_description: 新增角色/武器，以在其素材可以刷取�
 farm_check.farmable_today: "今天可以刷取 {name} 的素材了"
 farm_check.use_farm_notify: "使用 /farm reminder 进行提醒设置\n使用 /farm view 查看今日能刷取的所有材料"
 farm_notify.add_item: 添加物品
-farm_notify.add_item.embed.description: ""
+farm_notify.add_item.embed.description: "使用</farm add>指令将物品添加到清单内"
 farm_notify.description: 你会在此列表内的角色/武器的素材可以刷取时收到提醒。
 farm_notify.empty: 你的刷本提醒列表中没有任何物品
-farm_notify.empty_description: ""
+farm_notify.empty_description: 使用</farm add>指令将物品新增至你的刷本通知清单里
 farm_notify.remove_item: 移除物品
-farm_notify.remove_item.embed.description: ""
+farm_notify.remove_item.embed.description: "使用</farm remove>指令将物品从清单内移除"
 farm_notify.title: 刷本提醒列表
 farm_reminder_command_description: 在角色/武器的素材可以刷取时通知你
 farm_remove_command.item_not_found: 找不到该物品
@@ -207,8 +207,8 @@ farm_remove_command.item_not_found_description: 此物品没有在你的刷本�
 farm_remove_command_description: 从刷本提醒列表中移除角色/武器
 farm_view.happy_farming: 🌾 享受刷本吧！
 farm_view.set_reminder: 设置提醒
-farm_view.set_reminder.embed.description: ""
-farm_view.sundays: ""
+farm_view.set_reminder.embed.description: "使用</farm reminder>指令设定刷本通知"
+farm_view.sundays: 在星期日，所有副本皆可刷取
 farm_view.weekday_select.placeholder: 选择一个星期
 farm_view_command_description: 查看原神中可以刷取的副本
 feedback_button.feedback_sent.description: 🥰 非常感谢你的反馈
@@ -228,14 +228,14 @@ furniture_embed_description: "{comfort_icon} 舒适度: {comfort}\n{load_icon} �
 game_maintenance_description: 请稍后再试
 game_maintenance_title: 游戏处于维护中。
 game_value_incomplete_param_error_message: 你必须指定所属游戏UID
-geeetest_verification_complete: ""
-geeetest_verification_timeout: ""
-geeetest_verification_timeout_description: ""
+geeetest_verification_complete: 验证完成
+geeetest_verification_timeout: 验证已过期
+geeetest_verification_timeout_description: 验证已过期。请使用</geetest>再试一次。
 geetest.embed.title: 😅 需要完成 CAPTCHA 验证后才可登录
-geetest.no_need: ""
-geetest.no_need.description: ""
+geetest.no_need: 无需进行 Geetest 验证
+geetest.no_need.description: "从来不需要进行 geetest 验证！你怎么在这？！"
 geetest.required: 需要Geetest验证
-geetest.required.description: ""
+geetest.required.description: "使用</geetest>指令，选择触发此验证的帐户，并选择 `{geetest_type}` 来完成验证"
 geetest_command_description: 完成 Geetest 验证
 geetest_command_type_param_description: Geetest 验证的类别
 geetest_command_type_param_name: 类别
@@ -260,9 +260,9 @@ instructions_title: 指引
 interaction_failed_description: "该视图不是由你发起，因此无法使用。"
 interaction_failed_title: 交互失败
 invalid_category_selected: 选择的游戏无效
-invalid_color_error_message: ""
-invalid_color_error_title: ""
-invalid_cookies_description: ""
+invalid_color_error_message: "一个有效的色码需为一个十六进制码，例如 #FF0000"
+invalid_color_error_title: 无效的色码
+invalid_cookies_description: 使用</accounts>来刷新帐户的 cookies
 invalid_cookies_title: 无效的 Cookies
 invalid_email_password_description: "输入的邮箱或密码不正确，请检查后重试。"
 invalid_email_password_title: 无效邮箱或密码
@@ -289,13 +289,13 @@ liyue: 璃月
 loading_text: 加载中...
 make_up_for_checkin_button_label: 补签
 materials: 材料
-memory_of_chaos: ""
+memory_of_chaos: 混沌回忆
 miyoushe: 米游社
 mobile_instructions_description: "1.点击下方按钮输入手机号\n2.你将会收到短信验证码\n3.点击下方按钮填写验证码\n"
-moc_card_battles_fought: ""
-moc_card_cycles_used: ""
-moc_card_farthest_stage: ""
-moc_quick_clear: ""
+moc_card_battles_fought: "战斗次数: {battles}"
+moc_card_cycles_used: "使用轮次: {cycles}"
+moc_card_farthest_stage: "最高关卡: {stage}"
+moc_quick_clear: 快速通关
 monday: 星期一
 mondstadt: 蒙德
 namecards: 名片
@@ -303,15 +303,15 @@ next_page_option_label: 下一页
 nickname_modal_label: 昵称
 nickname_modal_placeholder: "主账号、亚服账号..."
 nihility: 虚无
-no_account_found_for_games_error_message: ""
+no_account_found_for_games_error_message: "你没有任何游戏为 `{games}` 且平台为 `{platforms}` 的帐户。请使用</accounts>新增"
 no_account_found_for_games_error_title: 账号未发现
 no_accounts_autocomplete_choice: 您还未持有账号。通过/accounts来添加吧。
-no_challenge_data_err_message: ""
-no_challenge_data_err_title: ""
+no_challenge_data_err_message: "无法找到任何此阶段的 {challenge} 数据。可能你尚未开始进行 {challenge} 或是资料尚未刷新。请稍后再试"
+no_challenge_data_err_title: "没有 {challenge} 数据"
 no_characters_found_error_message: 请选择其他筛选条件后重试。
 no_characters_found_error_title: 未找到与筛选条件符合的角色
-no_game_accounts_error_message: ""
-no_game_accounts_error_title: ""
+no_game_accounts_error_message: "此{platform}帐户没有任何游戏帐户。"
+no_game_accounts_error_title: 没有游戏帐户
 notes-card.gi.completed: 已完成
 notes-card.gi.daily-commissions: 每日委托
 notes-card.gi.expedition-finished: 已完成
@@ -339,16 +339,16 @@ notification_settings_button_label: 通知设定
 notify_on_failure_button_label: 签到失败通知
 notify_on_success_button_label: 签到成功通知
 nsfw_prompt_error_message: "此提示包含不宜內容，请使用其他提示后再试。"
-nsfw_prompt_error_title: ""
+nsfw_prompt_error_title: 侦测到不合宜的提示
 page_footer: "{current_page}/{total_pages}页"
-pf_card_total_score: ""
+pf_card_total_score: "总分: {score}"
 physical: 物理
 player_not_found_description: 请检查所提供UID
 player_not_found_title: 玩家不存在
 preservation: 存护
 prev_page_option_label: 上一页
 primogems: 原石
-process_notify_error.content: ""
+process_notify_error.content: "在处理你的即时便签通知时发生了错误。\nHoyo Buddy 已为此帐户禁用了该功能，你可以使用</notes>将其重新启用。\n如果该错误依旧存在或者你不知道如何应对，请通过</feedback>联系开发者。\n"
 profile.add_image.button.label: 添加自定义图片
 profile.add_image_modal.image_url.label: 图像URL
 profile.add_image_modal.title: 添加自定义图片
@@ -383,7 +383,7 @@ profile.image_select.placeholder: 选择一张图片
 profile.info.embed.custom_images.name: 自定义图片
 profile.info.embed.custom_images.value: "- Hoyo Buddy附带了一些我喜欢的预设图片，你也可以添加自己的图片。\n- 仅支持直连图像URL，且必须可公开访问；不支持GIF格式。\n- 对于Hoyo Buddy的样式，建议使用垂直图片。\n- 对于服务器拥有者，我不会对您或您的成员所添加的不宜图片而负责。\n- 点击红色按钮，可移除当前自定义图片，并恢复为默认图片。"
 profile.info.embed.dark_mode.name: 深色模式
-profile.info.embed.dark_mode.value: ""
+profile.info.embed.dark_mode.value: "- 此设定与</settings>中的设定分别储存，预设为亮色模式。\n- 亮色模式的卡片通常看起来更好看，这是因为深色模式的颜色并没有被特别优化过。\n- 欢迎提供关于深色模式卡片颜色的建议！"
 profile.info.embed.primary_color.name: 原色
 profile.info.embed.primary_color.value: "- 仅支持十六进制颜色代码。"
 profile.info.embed.templates.name: 样式
@@ -404,7 +404,7 @@ profile_command_uid_param_description: "玩家的UID，如果账号有提供，�
 pt_button.label: 参量质变仪提醒
 pt_modal.title: 参量质变仪提醒设置
 public_account_toggle.label: 设置账户为公开
-pure_fiction: ""
+pure_fiction: 虚构叙事
 pyro: 火
 qrcode_button_label: 通过二维码
 qrcode_confirmed.desc: 登录成功
@@ -413,18 +413,18 @@ qrcode_expired_title: 二维码已过期
 qrcode_login_instructions.desc: 使用米游社扫描下方二维码来登录
 qrcode_scanned.desc: 扫码成功。请在装备上同意登录。
 quantum: 量子
-read_story.button.label: ""
+read_story.button.label: 阅读故事
 real_time_notes: 实时便笺
 realm_curr_button.label: 洞天宝钱提醒
 realm_curr_modal.title: 洞天宝钱提醒设置
-redeeem_code.cookie_token_expired_description: ""
+redeeem_code.cookie_token_expired_description: "使用</accounts>再次添加帐户来刷新 cookie token。\n如果你使用电子邮箱和密码的方式添加帐户，cookie token 会自动刷新。"
 redeeem_code.cookie_token_expired_title: Cookie Token 已过期
-redeeem_code.cookie_token_refresh_failed_description: ""
+redeeem_code.cookie_token_refresh_failed_description: "自上次新增帐户以来，你可能已变更帐户密码。\n请使用</accounts>透过电子邮件和密码的方式重新新增您的帐户。"
 redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失败
 redeem_code.already_claimed: 你已经兑换过了
 redeem_code.cooldown: 兑换操作处于冷却中
 redeem_code.expired: 兑换码已过期
-redeem_code.invalid: ""
+redeem_code.invalid: 无效的兑换码
 redeem_code.success: 兑换成功
 redeem_codes_button.label: 兑换码
 redeem_command_description: 使用兑换码兑换游戏奖励
@@ -491,7 +491,7 @@ view_card_button_label: 卡片
 view_dictionary_button_label: 字典
 volume_selector_placeholder: 选择要阅读的章节
 wave_button_label: "第 {value} 波"
-weapon_level.modal.title: ""
+weapon_level.modal.title: 输入武器等级
 weapons: 武器
 wednesday: 星期三
 week_boss_button.label: 周本消耗减半提醒
@@ -511,14 +511,14 @@ yatta_character_skill_weakness_break_field_name: 弱点击破
 yatta_character_trace_page_label: 行迹
 yatta_item_sources_field_name: 来源
 yatta_light_cone_ability_field_name: 技能
-characters.show_owned_only: ""
-redeem_code.ar_too_low: ""
-data_not_public.title: ""
-data_not_public.description: ""
-modded_app_button_label: ""
-modded_app_login_instructions.desc: ""
-download_app_button_label: ""
-login_detail_modal.input_label: ""
-enter_login_details_button_label: ""
-not_implemented_error_title: ""
-not_implemented_error_message: ""
+characters.show_owned_only: 仅显示已拥有的角色
+redeem_code.ar_too_low: 冒险等级过低
+data_not_public.title: 资料不公开
+data_not_public.description: "在战绩设定中打开资料分享的选项\nhttps://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/DataNotPublicTutorial.gif"
+modded_app_button_label: 透过改装过的米游社 app
+modded_app_login_instructions.desc: "1. 如果你的装置上已经有米游社的应用程序，请将它卸载。\n2. 点击下方的按钮下载改装过的应用程序档案。\n3. 安装该应用程序，并启动它。\n4. 忽略任何更新视窗，登入你的帐户。\n5. 点击「我的」并点击钥匙图案。\n6. 点击「复制登入信息」。\n7. 点击下方的「{label}」按钮并将复制的登入信息贴上。"
+download_app_button_label: 下载应用程序
+login_detail_modal.input_label: 登入信息
+enter_login_details_button_label: 输入登入信息
+not_implemented_error_title: 尚未实装
+not_implemented_error_message: "此功能尚未在平台 `{platform}` 下的 `{game}` 上实装。"

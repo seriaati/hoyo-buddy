@@ -69,14 +69,20 @@ class Search(commands.Cog):
         description=app_commands.locale_str("search_command_description"),
     )
     @app_commands.rename(
-        game_value=app_commands.locale_str("search_command_game_param_name"),
-        category_value=app_commands.locale_str("search_cmd_category_param_name"),
-        query=app_commands.locale_str("search_command_query_param_name"),
+        game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
+        category_value=app_commands.locale_str("category", key="search_cmd_category_param_name"),
+        query=app_commands.locale_str("query", key="search_command_query_param_name"),
     )
     @app_commands.describe(
-        game_value=app_commands.locale_str("search_command_game_param_description"),
-        category_value=app_commands.locale_str("search_command_category_param_description"),
-        query=app_commands.locale_str("search_command_query_param_description"),
+        game_value=app_commands.locale_str(
+            "Game to search in", key="search_command_game_param_description"
+        ),
+        category_value=app_commands.locale_str(
+            "Category to search in", key="search_command_category_param_description"
+        ),
+        query=app_commands.locale_str(
+            "Query to search for", key="search_command_query_param_description"
+        ),
     )
     async def search_command(  # noqa: C901, PLR0911, PLR0912, PLR0914, PLR0915
         self,

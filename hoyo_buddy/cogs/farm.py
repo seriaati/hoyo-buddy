@@ -20,19 +20,26 @@ if TYPE_CHECKING:
 
 class Farm(
     commands.GroupCog,
-    name=app_commands.locale_str("farm", translate=False),
-    description=app_commands.locale_str("Farm commands", translate=False),
+    name=app_commands.locale_str("farm"),
+    description=app_commands.locale_str("Farm commands"),
 ):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
     @app_commands.command(
-        name=app_commands.locale_str("view", translate=False),
-        description=app_commands.locale_str("farm_view_command_description"),
+        name=app_commands.locale_str("view"),
+        description=app_commands.locale_str(
+            "View farmable domains in Genshin Impact", key="farm_view_command_description"
+        ),
     )
-    @app_commands.rename(account=app_commands.locale_str("account_autocomplete_param_name"))
+    @app_commands.rename(
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+    )
     @app_commands.describe(
-        account=app_commands.locale_str("account_autocomplete_param_description")
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        )
     )
     async def farm_view_command(
         self,
@@ -57,16 +64,24 @@ class Farm(
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("add", translate=False),
-        description=app_commands.locale_str("farm_add_command_description"),
+        name=app_commands.locale_str("add"),
+        description=app_commands.locale_str(
+            "Add character/weapon to be notified when its materials are farmable",
+            key="farm_add_command_description",
+        ),
     )
     @app_commands.rename(
-        query=app_commands.locale_str("search_command_query_param_name"),
-        account=app_commands.locale_str("account_autocomplete_param_name"),
+        query=app_commands.locale_str("query", key="search_command_query_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
-        query=app_commands.locale_str("search_command_query_param_description"),
-        account=app_commands.locale_str("account_autocomplete_param_description"),
+        query=app_commands.locale_str(
+            "Query to search for", query="search_command_query_param_description"
+        ),
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        ),
     )
     async def farm_add_command(
         self,
@@ -80,16 +95,23 @@ class Farm(
         await command.run()
 
     @app_commands.command(
-        name=app_commands.locale_str("remove", translate=False),
-        description=app_commands.locale_str("farm_remove_command_description"),
+        name=app_commands.locale_str("remove"),
+        description=app_commands.locale_str(
+            "Remove character/weapon from farm reminder list", key="farm_remove_command_description"
+        ),
     )
     @app_commands.rename(
-        query=app_commands.locale_str("search_command_query_param_name"),
-        account=app_commands.locale_str("account_autocomplete_param_name"),
+        query=app_commands.locale_str("query", key="search_command_query_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
-        query=app_commands.locale_str("search_command_query_param_description"),
-        account=app_commands.locale_str("account_autocomplete_param_description"),
+        query=app_commands.locale_str(
+            "Query to search for", key="search_command_query_param_description"
+        ),
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        ),
     )
     async def farm_remove_command(
         self,
@@ -103,14 +125,20 @@ class Farm(
         await command.run()
 
     @app_commands.command(
-        name=app_commands.locale_str("reminder", translate=False),
-        description=app_commands.locale_str("farm_reminder_command_description"),
+        name=app_commands.locale_str("reminder"),
+        description=app_commands.locale_str(
+            "Notify you when materials of characters/weapons are farmable",
+            key="farm_reminder_command_description",
+        ),
     )
     @app_commands.rename(
-        account=app_commands.locale_str("account_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
-        account=app_commands.locale_str("account_autocomplete_param_description"),
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        ),
     )
     async def farm_reminder_command(
         self,

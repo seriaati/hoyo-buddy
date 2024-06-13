@@ -254,6 +254,6 @@ class AppCommandTranslator(app_commands.Translator):
     async def translate(
         self, string: app_commands.locale_str, locale: Locale, _: TranslationContextTypes
     ) -> str:
-        if not string.extras.get("translate", True):
+        if (key := string.extras.get("key")) is None:
             return string.message
-        return self.translator.translate(LocaleStr(key=string.message), locale)
+        return self.translator.translate(LocaleStr(key=key), locale)

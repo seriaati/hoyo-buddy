@@ -19,16 +19,14 @@ if TYPE_CHECKING:
 
 class GenerateAIArtModal(Modal):
     prompt = TextInput(
-        label=LocaleStr("Prompt", key="profile.generate_ai_art_modal.prompt.label"),
+        label=LocaleStr(key="profile.generate_ai_art_modal.prompt.label"),
         placeholder="navia(genshin impact), foaml dress, idol, beautiful dress, elegant, best quality, aesthetic...",
         style=TextStyle.paragraph,
         max_length=250,
     )
 
     negative_prompt = TextInput(
-        label=LocaleStr(
-            "Negative Prompt", key="profile.generate_ai_art_modal.negative_prompt.label"
-        ),
+        label=LocaleStr(key="profile.generate_ai_art_modal.negative_prompt.label"),
         placeholder="bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs...",
         style=TextStyle.paragraph,
         max_length=200,
@@ -39,7 +37,7 @@ class GenerateAIArtModal(Modal):
 class GenerateAIArtButton(Button):
     def __init__(self, disabled: bool) -> None:
         super().__init__(
-            label=LocaleStr("Generate AI art", key="profile.generate_ai_art.button.label"),
+            label=LocaleStr(key="profile.generate_ai_art.button.label"),
             style=ButtonStyle.blurple,
             row=3,
             custom_id="profile_generate_ai_art",
@@ -50,9 +48,7 @@ class GenerateAIArtButton(Button):
         if i.guild is None:
             raise GuildOnlyFeatureError
 
-        modal = GenerateAIArtModal(
-            title=LocaleStr("Generate AI Art", key="profile.generate_ai_art_modal.title")
-        )
+        modal = GenerateAIArtModal(title=LocaleStr(key="profile.generate_ai_art_modal.title"))
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()

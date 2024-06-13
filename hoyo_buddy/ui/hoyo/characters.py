@@ -8,7 +8,7 @@ from discord import ButtonStyle
 from genshin.models import Character as GICharacter
 from genshin.models import StarRailDetailCharacter as HSRCharacter
 
-from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.bot.translator import EnumStr, LocaleStr
 from hoyo_buddy.draw.main_funcs import draw_gi_characters_card, draw_hsr_characters_card
 from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
@@ -277,7 +277,7 @@ class CharactersView(View):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr("Character Overview", key="characters.embed.title"),
+            title=LocaleStr(key="characters.embed.title"),
         )
 
         if self._filter in {GIFilter.MAX_FRIENDSHIP, GIFilter.NOT_MAX_FRIENDSHIP}:
@@ -293,34 +293,28 @@ class CharactersView(View):
             if self._filter is GIFilter.MAX_FRIENDSHIP:
                 embed.add_field(
                     name=LocaleStr(
-                        "Max Friendship {element} Characters",
                         key="characters.embed.element_max_friendship",
                         element=[
-                            LocaleStr(element.value.title(), warn_no_key=False)
+                            LocaleStr(custom_str=element.value.title())
                             for element in self._element_filters
                         ],
                     )
                     if self._element_filters
-                    else LocaleStr(
-                        "Max Friendship Characters", key="characters.embed.max_friendship"
-                    ),
+                    else LocaleStr(key="characters.embed.max_friendship"),
                     value=f"{char_num}/{total_chars}",
                     inline=False,
                 )
             else:
                 embed.add_field(
                     name=LocaleStr(
-                        "Not Max Friendship {element} Characters",
                         key="characters.embed.element_not_max_friendship",
                         element=[
-                            LocaleStr(element.value.title(), warn_no_key=False)
+                            LocaleStr(custom_str=element.value.title())
                             for element in self._element_filters
                         ],
                     )
                     if self._element_filters
-                    else LocaleStr(
-                        "Not Max Friendship Characters", key="characters.embed.not_max_friendship"
-                    ),
+                    else LocaleStr(key="characters.embed.not_max_friendship"),
                     value=f"{char_num}/{total_chars}",
                     inline=False,
                 )
@@ -331,10 +325,9 @@ class CharactersView(View):
             )
             embed.add_field(
                 name=LocaleStr(
-                    "{element} Characters",
                     key="characters.embed.element_filters",
                     element=[
-                        LocaleStr(element.value.title(), warn_no_key=False)
+                        LocaleStr(custom_str=element.value.title())
                         for element in self._element_filters
                     ],
                 ),
@@ -346,10 +339,9 @@ class CharactersView(View):
             total_chars = sum(self._path_char_counts[path.value] for path in self._path_filters)
             embed.add_field(
                 name=LocaleStr(
-                    "{path} Characters",
                     key="characters.embed.path_filters",
                     path=[
-                        LocaleStr(path.value.title().replace("_", " "), warn_no_key=False)
+                        LocaleStr(custom_str=path.value.title().replace("_", " "))
                         for path in self._path_filters
                     ],
                 ),
@@ -360,28 +352,15 @@ class CharactersView(View):
         if self._filter is GIFilter.NONE and not self._element_filters and not self._path_filters:
             total_chars = sum(self._element_char_counts.values()) + 1  # Traveler/Trailblazer
             embed.add_field(
-                name=LocaleStr("Owned Characters", key="characters.embed.owned_characters"),
+                name=LocaleStr(key="characters.embed.owned_characters"),
                 value=f"{char_num}/{total_chars}",
                 inline=False,
             )
 
         if self._game is Game.GENSHIN:
-            embed.set_footer(
-                text=LocaleStr(
-                    "Level order: Normal ATK/Skill/Burst",
-                    key="characters.gi.embed.footer",
-                )
-            )
+            embed.set_footer(text=LocaleStr(key="characters.gi.embed.footer"))
         elif self._game is Game.STARRAIL:
-            embed.set_footer(
-                text=LocaleStr(
-                    (
-                        "Level order: Basic ATK/Skill/Ultimate/Talent\n"
-                        "Use /profile to view details of a character"
-                    ),
-                    key="characters.hsr.embed.footer",
-                )
-            )
+            embed.set_footer(text=LocaleStr(key="characters.hsr.embed.footer"))
         else:
             raise NotImplementedError
 
@@ -408,18 +387,10 @@ class CharactersView(View):
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
-                description=LocaleStr(
-                    (
-                        "If this is your first time using this command, this may take a while.\n"
-                        "This is because the command needs to fetch data from many sources.\n"
-                        "It should be faster next time you use this command.\n"
-                        "Please be patient and wait for the resources to be fetched."
-                    ),
-                    key="characters.first_time.embed.description",
-                ),
+                description=LocaleStr(key="characters.first_time.embed.description"),
             ).set_author(
                 icon_url=LOADING_ICON,
-                name=LocaleStr("Fetching resources...", key="characters.first_time.title"),
+                name=LocaleStr(key="characters.first_time.title"),
             )
             await i.edit_original_response(embed=embed)
 
@@ -464,21 +435,21 @@ class FilterSelector(Select[CharactersView]):
     def __init__(self) -> None:
         options = [
             SelectOption(
-                label=LocaleStr("None", key="characters.filter.none"),
+                label=LocaleStr(key="characters.filter.none"),
                 value=GIFilter.NONE,
                 default=True,
             ),
             SelectOption(
-                label=LocaleStr("Max friendship", key="characters.filter.max_friendship"),
+                label=LocaleStr(key="characters.filter.max_friendship"),
                 value=GIFilter.MAX_FRIENDSHIP,
             ),
             SelectOption(
-                label=LocaleStr("Not max friendship", key="characters.filter.not_max_friendship"),
+                label=LocaleStr(key="characters.filter.not_max_friendship"),
                 value=GIFilter.NOT_MAX_FRIENDSHIP,
             ),
         ]
         super().__init__(
-            placeholder=LocaleStr("Select a filter...", key="characters.filter.placeholder"),
+            placeholder=LocaleStr(key="characters.filter.placeholder"),
             options=options,
         )
 
@@ -500,7 +471,7 @@ class ElementFilterSelector(Select[CharactersView]):
     def __init__(self, elements: Iterable[GenshinElement | HSRElement]) -> None:
         options = [
             SelectOption(
-                label=LocaleStr(element.value.title(), warn_no_key=False),
+                label=EnumStr(element),
                 value=element.value,
                 emoji=get_gi_element_emoji(element)
                 if isinstance(element, GenshinElement)
@@ -509,9 +480,7 @@ class ElementFilterSelector(Select[CharactersView]):
             for element in elements
         ]
         super().__init__(
-            placeholder=LocaleStr(
-                "Select element filters...", key="characters.filter.element.placeholder"
-            ),
+            placeholder=LocaleStr(key="characters.filter.element.placeholder"),
             options=options,
             min_values=0,
             max_values=len(options),
@@ -540,17 +509,11 @@ class ElementFilterSelector(Select[CharactersView]):
 class PathFilterSelector(Select[CharactersView]):
     def __init__(self) -> None:
         options = [
-            SelectOption(
-                label=LocaleStr(path.value.title().replace("_", " "), warn_no_key=False),
-                value=path.value,
-                emoji=get_hsr_path_emoji(path),
-            )
+            SelectOption(label=EnumStr(path), value=path.value, emoji=get_hsr_path_emoji(path))
             for path in HSRPath
         ]
         super().__init__(
-            placeholder=LocaleStr(
-                "Select path filters...", key="characters.filter.path.placeholder"
-            ),
+            placeholder=LocaleStr(key="characters.filter.path.placeholder"),
             options=options,
             min_values=0,
             max_values=len(options),
@@ -574,14 +537,14 @@ class GISorterSelector(Select[CharactersView]):
     def __init__(self, current: GISorter | HSRSorter) -> None:
         options = [
             SelectOption(
-                label=LocaleStr(sorter.name.title(), key=f"characters.sorter.{sorter.value}"),
+                label=LocaleStr(key=f"characters.sorter.{sorter.value}"),
                 value=sorter.value,
                 default=sorter == current,
             )
             for sorter in GISorter
         ]
         super().__init__(
-            placeholder=LocaleStr("Select a sorter...", key="characters.sorter.placeholder"),
+            placeholder=LocaleStr(key="characters.sorter.placeholder"),
             options=options,
         )
 
@@ -603,15 +566,14 @@ class HSRSorterSelector(Select[CharactersView]):
     def __init__(self, current: GISorter | HSRSorter) -> None:
         options = [
             SelectOption(
-                label=LocaleStr(sorter.name.title(), key=f"characters.sorter.{sorter.value}"),
+                label=LocaleStr(key=f"characters.sorter.{sorter.value}"),
                 value=sorter.value,
                 default=sorter == current,
             )
             for sorter in HSRSorter
         ]
         super().__init__(
-            placeholder=LocaleStr("Select a sorter...", key="characters.sorter.placeholder"),
-            options=options,
+            placeholder=LocaleStr(key="characters.sorter.placeholder"), options=options
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -631,7 +593,7 @@ class HSRSorterSelector(Select[CharactersView]):
 class UpdateTalentData(Button[CharactersView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Update talent level data", key="characters.update_talent_data"),
+            label=LocaleStr(key="characters.update_talent_data"),
             style=ButtonStyle.green,
             row=3,
         )
@@ -646,15 +608,10 @@ class UpdateTalentData(Button[CharactersView]):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            description=LocaleStr(
-                "This may take a while, if you own a lot of characters, this can take even longer. Please be patient.",
-                key="characters.update_talent_data.embed.description",
-            ),
+            description=LocaleStr(key="characters.update_talent_data.embed.description"),
         ).set_author(
             icon_url=LOADING_ICON,
-            name=LocaleStr(
-                "Updating talent level data...", key="characters.update_talent_data.title"
-            ),
+            name=LocaleStr(key="characters.update_talent_data.title"),
         )
         self.view.clear_items()
         await i.response.edit_message(embed=embed, view=self.view, attachments=[])
@@ -668,7 +625,7 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
     def __init__(self) -> None:
         super().__init__(
             current_toggle=True,
-            toggle_label=LocaleStr("Show owned characters only", key="characters.show_owned_only"),
+            toggle_label=LocaleStr(key="characters.show_owned_only"),
             row=4,
         )
 

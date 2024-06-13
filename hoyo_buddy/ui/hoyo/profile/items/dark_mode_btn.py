@@ -15,7 +15,7 @@ class DarkModeButton(ToggleButton["ProfileView"]):
     def __init__(self, current_toggle: bool, disabled: bool) -> None:
         super().__init__(
             current_toggle,
-            LocaleStr("Dark Mode", key="profile.dark_mode.button.label"),
+            LocaleStr(key="profile.dark_mode.button.label"),
             row=2,
             custom_id="profile_dark_mode",
             disabled=disabled,

@@ -31,13 +31,11 @@ def draw_farm_card(
 ) -> io.BytesIO:
     def get_domain_title(domain: ambr.Domain, locale: Locale, translator: Translator) -> str:
         """Get the title of a GI domain based on its name and city, assuming the language is English."""
-        city_name = translator.translate(
-            LocaleStr(domain.city.name.title(), warn_no_key=False), locale
-        )
+        city_name = translator.translate(LocaleStr(custom_str=domain.city.name.title()), locale)
         domain_type = (
-            LocaleStr("Characters", key="domain-type.characters")
+            LocaleStr(key="domain-type.characters")
             if "Mastery" in domain.name
-            else LocaleStr("Weapons", key="domain-type.weapons")
+            else LocaleStr(key="domain-type.weapons")
         )
         domain_type_name = translator.translate(domain_type, locale)
         return f"{domain_type_name} ({city_name})"

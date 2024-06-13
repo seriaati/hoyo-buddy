@@ -20,19 +20,19 @@ if TYPE_CHECKING:
 
 class AddImageModal(Modal):
     image_url = TextInput(
-        label=LocaleStr("Image URL", key="profile.add_image_modal.image_url.label"),
+        label=LocaleStr(key="profile.add_image_modal.image_url.label"),
         placeholder="https://example.com/image.png",
         style=TextStyle.short,
     )
 
     def __init__(self) -> None:
-        super().__init__(title=LocaleStr("Add Custom Image", key="profile.add_image_modal.title"))
+        super().__init__(title=LocaleStr(key="profile.add_image_modal.title"))
 
 
 class AddImageButton(Button["ProfileView"]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Add custom image", key="profile.add_image.button.label"),
+            label=LocaleStr(key="profile.add_image.button.label"),
             style=ButtonStyle.green,
             emoji=ADD,
             row=3,

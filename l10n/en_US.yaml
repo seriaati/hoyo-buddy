@@ -365,9 +365,9 @@ profile.card_template_select.placeholder: Select a template
 profile.card_template_select.same_author.description: "Designed and programmed by {author}"
 profile.card_template_select.src.label: "StarRailCard template {num}"
 profile.character_select.cached_data.description: Cached data
-profile.character_select.description: "Lv.{level} | E{eidolons}S{superposition} | {data_type} | From in-game showcase"
+profile.character_select.description: "E{eidolons}S{superposition} | {data_type} | In-game showcase"
 profile.character_select.enka_network.description: Enka Network build
-profile.character_select.hoyolab.description: "Lv.{level} | E{eidolons}S{superposition} | {data_type} | From HoYoLAB"
+profile.character_select.hoyolab.description: "E{eidolons}S{superposition} | {data_type} | HoYoLAB"
 profile.character_select.live_data.description: Real-time data
 profile.character_select.placeholder: Select a character
 profile.dark_mode.button.label: Dark Mode
@@ -375,7 +375,7 @@ profile.generate_ai_art.button.label: Generate AI art
 profile.generate_ai_art_modal.negative_prompt.label: Negative Prompt
 profile.generate_ai_art_modal.prompt.label: Prompt
 profile.generate_ai_art_modal.title: Generate AI Art
-profile.genshin.character_select.description: "Lv.{level} | C{const}R{refine} | {data_type}"
+profile.genshin.character_select.description: "C{const}R{refine} | {data_type}"
 profile.image_select.custom_image.label: "Custom Image ({num})"
 profile.image_select.default_collection.label: "Hoyo Buddy Collection ({num})"
 profile.image_select.none.label: Official art
@@ -522,3 +522,4 @@ login_detail_modal.input_label: Login details
 enter_login_details_button_label: Enter login details
 not_implemented_error_title: Not Implemented
 not_implemented_error_message: "This feature is not implemented for `{game}` under platform `{platform}` yet."
+profile.build.current.label: Current

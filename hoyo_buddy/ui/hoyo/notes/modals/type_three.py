@@ -12,26 +12,23 @@ if TYPE_CHECKING:
 
 class TypeThreeModal(Modal):
     enabled = TextInput(
-        label=LocaleStr("Enabled", key="notif_modal.enabled.label"),
+        label=LocaleStr(key="notif_modal.enabled.label"),
         is_bool=True,
     )
     notify_interval = TextInput(
-        label=LocaleStr("Notify Interval (in minutes)", key="notif_modal.notify_interval.label"),
+        label=LocaleStr(key="notif_modal.notify_interval.label"),
         is_digit=True,
         min_value=10,
         max_value=DB_SMALLINT_MAX,
     )
     max_notif_count = TextInput(
-        label=LocaleStr("Max Notify Count", key="notif_modal.max_notif_count.label"),
+        label=LocaleStr(key="notif_modal.max_notif_count.label"),
         is_digit=True,
         min_value=1,
         max_value=DB_SMALLINT_MAX,
     )
     notify_time = TextInput(
-        label=LocaleStr(
-            "Notify X hours before server resets (4:00 AM)",
-            key="notif_modal.notify_time.label",
-        ),
+        label=LocaleStr(key="notif_modal.notify_time.label"),
         is_digit=True,
         min_value=1,
         max_value=24,

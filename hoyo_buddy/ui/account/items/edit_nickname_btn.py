@@ -17,15 +17,15 @@ if TYPE_CHECKING:
 
 class NicknameModal(Modal):
     nickname = TextInput(
-        label=LocaleStr("Nickname", key="nickname_modal_label"),
-        placeholder=LocaleStr("Main account, Asia account...", key="nickname_modal_placeholder"),
+        label=LocaleStr(key="nickname_modal_label"),
+        placeholder=LocaleStr(key="nickname_modal_placeholder"),
         required=False,
         style=TextStyle.short,
         max_length=32,
     )
 
     def __init__(self, current_nickname: str | None = None) -> None:
-        super().__init__(title=LocaleStr("Edit Nickname", key="edit_nickname_modal_title"))
+        super().__init__(title=LocaleStr(key="edit_nickname_modal_title"))
         self.nickname.default = current_nickname
 
 
@@ -34,7 +34,7 @@ class EditNicknameButton(Button["AccountManager"]):
         super().__init__(
             custom_id="edit_nickname",
             emoji=EDIT,
-            label=LocaleStr("Edit nickname", key="edit_nickname_button_label"),
+            label=LocaleStr(key="edit_nickname_button_label"),
         )
 
     async def callback(self, i: Interaction) -> None:

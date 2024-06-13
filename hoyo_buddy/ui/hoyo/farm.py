@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, User
 
-from ...bot.translator import LocaleStr, Translator
+from ...bot.translator import EnumStr, LocaleStr, Translator
 from ...constants import UID_TZ_OFFSET, WEEKDAYS
 from ...draw.main_funcs import draw_farm_card
 from ...embeds import DefaultEmbed
@@ -60,8 +60,8 @@ class FarmView(View):
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
-                title=LocaleStr("Every Domain is Available on Sunday", key="farm_view.sundays"),
-                description=LocaleStr("🌾 Happy farming!", key="farm_view.happy_farming"),
+                title=LocaleStr(key="farm_view.sundays"),
+                description=LocaleStr(key="farm_view.happy_farming"),
             )
             await i.edit_original_response(embed=embed, view=self, attachments=[])
             self.message = await i.original_response()
@@ -88,12 +88,10 @@ class FarmView(View):
 class WeekdaySelect(Select[FarmView]):
     def __init__(self, current: int) -> None:
         super().__init__(
-            placeholder=LocaleStr("Select a weekday", key="farm_view.weekday_select.placeholder"),
+            placeholder=LocaleStr(key="farm_view.weekday_select.placeholder"),
             options=[
                 SelectOption(
-                    label=LocaleStr(label, warn_no_key=False),
-                    value=str(value),
-                    default=value == current,
+                    label=LocaleStr(custom_str=label), value=str(value), default=value == current
                 )
                 for value, label in WEEKDAYS.items()
             ],
@@ -109,7 +107,7 @@ class WeekdaySelect(Select[FarmView]):
 class ReminderButton(Button[FarmView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Set reminders", key="farm_view.set_reminder"),
+            label=LocaleStr(key="farm_view.set_reminder"),
             style=ButtonStyle.green,
             emoji=BELL_OUTLINE,
             row=2,
@@ -119,10 +117,7 @@ class ReminderButton(Button[FarmView]):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            description=LocaleStr(
-                "To set reminders, use the </farm reminder> command",
-                key="farm_view.set_reminder.embed.description",
-            ),
+            description=LocaleStr(key="farm_view.set_reminder.embed.description"),
         )
         await i.response.send_message(embed=embed, ephemeral=True)
 
@@ -130,7 +125,7 @@ class ReminderButton(Button[FarmView]):
 class CityButton(Button[FarmView]):
     def __init__(self, city: GenshinCity, current: GenshinCity) -> None:
         super().__init__(
-            label=LocaleStr(city.value.title(), warn_no_key=False),
+            label=EnumStr(city),
             style=ButtonStyle.blurple if city == current else ButtonStyle.secondary,
             emoji=GENSHIN_CITY_EMOJIS[city],
             custom_id=f"city_{city.value.lower()}_btn",

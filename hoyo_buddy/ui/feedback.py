@@ -24,18 +24,16 @@ class FeedbackView(View):
 
 class FeedbackModal(Modal):
     feedback = TextInput(
-        label=LocaleStr("Feedback", key="feedback_modal.feedback.label"), style=TextStyle.paragraph
+        label=LocaleStr(key="feedback_modal.feedback.label"), style=TextStyle.paragraph
     )
 
 
 class FeedbackButton(Button[FeedbackView]):
     def __init__(self) -> None:
-        super().__init__(
-            label=LocaleStr("Give feedback", key="feedback_button.label"), style=ButtonStyle.blurple
-        )
+        super().__init__(label=LocaleStr(key="feedback_button.label"), style=ButtonStyle.blurple)
 
     async def callback(self, i: Interaction) -> None:
-        modal = FeedbackModal(title=LocaleStr("Give Feedback", key="feedback_button.label"))
+        modal = FeedbackModal(title=LocaleStr(key="feedback_button.label"))
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()
@@ -60,10 +58,7 @@ class FeedbackButton(Button[FeedbackView]):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr("Feedback Sent", key="feedback_button.feedback_sent.title"),
-            description=LocaleStr(
-                "🥰 Thank you very much for your feedback!",
-                key="feedback_button.feedback_sent.description",
-            ),
+            title=LocaleStr(key="feedback_button.feedback_sent.title"),
+            description=LocaleStr(key="feedback_button.feedback_sent.description"),
         )
         await i.edit_original_response(embed=embed, view=None)

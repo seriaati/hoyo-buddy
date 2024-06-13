@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import LocaleStr, Translator
+from hoyo_buddy.bot.translator import EnumStr, LocaleStr, Translator
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
 
 from .....enums import ChallengeType
@@ -40,7 +40,7 @@ class PureFictionCard:
 
     def _write_title(self) -> None:
         self._drawer.write(
-            LocaleStr(ChallengeType.PURE_FICTION.value, warn_no_key=False),
+            EnumStr(ChallengeType.PURE_FICTION),
             size=80,
             position=(76, 75),
             style="bold",
@@ -66,7 +66,6 @@ class PureFictionCard:
     def _write_farthest_stage(self) -> None:
         self._drawer.write(
             LocaleStr(
-                "Farthest Stage: {stage}",
                 key="moc_card_farthest_stage",
                 stage=self._data.max_floor.replace(self._season.name, "").strip(),
             ),
@@ -77,7 +76,6 @@ class PureFictionCard:
     def _write_battles_fought(self) -> None:
         self._drawer.write(
             LocaleStr(
-                "Battles Fought: {battles}",
                 key="moc_card_battles_fought",
                 battles=self._data.total_battles,
             ),
@@ -150,7 +148,7 @@ class PureFictionCard:
         )
         if stage.round_num == 0:
             cycle_tbox = drawer.write(
-                LocaleStr("Quick Clear", key="moc_quick_clear"),
+                LocaleStr(key="moc_quick_clear"),
                 size=25,
                 position=(0, 60),
                 color=WHITE,
@@ -158,11 +156,7 @@ class PureFictionCard:
             )
         else:
             cycle_tbox = drawer.write(
-                LocaleStr(
-                    "Cycles Used: {cycles}",
-                    key="moc_card_cycles_used",
-                    cycles=stage.round_num,
-                ),
+                LocaleStr(key="moc_card_cycles_used", cycles=stage.round_num),
                 size=25,
                 position=(0, 60),
                 color=WHITE,
@@ -181,11 +175,7 @@ class PureFictionCard:
             pos = (pos[0] + 62, pos[1])
 
         drawer.write(
-            LocaleStr(
-                "Total Score: {score}",
-                key="pf_card_total_score",
-                score=stage.score or 80000,
-            ),
+            LocaleStr(key="pf_card_total_score", score=stage.score or 80000),
             size=25,
             position=(rightmost + padding + 37, 60),
             color=WHITE,

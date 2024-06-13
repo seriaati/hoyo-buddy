@@ -175,20 +175,12 @@ class YattaAPIClient(yatta.YattaAPI):
             msg = "Translator is not set"
             raise RuntimeError(msg)
 
-        level_str = self.translator.translate(
-            LocaleStr(
-                "Lv.{level}",
-                key="level_str",
-                level=level,
-            ),
-            self.locale,
-        )
+        level_str = self.translator.translate(LocaleStr(key="level_str", level=level), self.locale)
         embed = DefaultEmbed(
             self.locale,
             self.translator,
             title=f"{character.name} ({level_str})",
             description=LocaleStr(
-                ("{rarity}\nElement: {element}\nPath: {path}\nWorld: {world}\n"),
                 key="yatta_character_embed_description",
                 rarity="★" * character.rarity,
                 element=f"{get_hsr_element_emoji(character.types.combat_type.id)} {character.types.combat_type.name}",
@@ -214,7 +206,7 @@ class YattaAPIClient(yatta.YattaAPI):
             named_stat_values[named_stat] = value_
 
         embed.add_field(
-            name=LocaleStr("Stats", key="stats_embed_field_name"),
+            name=LocaleStr(key="stats_embed_field_name"),
             value="\n".join(f"{k}: {v}" for k, v in named_stat_values.items()),
         )
         embed.set_footer(text=character.info.description)
@@ -231,14 +223,7 @@ class YattaAPIClient(yatta.YattaAPI):
             raise RuntimeError(msg)
 
         skill = base_skill.skill_list[0]
-        level_str = self.translator.translate(
-            LocaleStr(
-                "Lv.{level}",
-                key="level_str",
-                level=level,
-            ),
-            self.locale,
-        )
+        level_str = self.translator.translate(LocaleStr(key="level_str", level=level), self.locale)
 
         embed = DefaultEmbed(
             self.locale,
@@ -259,7 +244,6 @@ class YattaAPIClient(yatta.YattaAPI):
             energy_value_strs.append(
                 self.translator.translate(
                     LocaleStr(
-                        "Generation: {energy_generation}",
                         key="yatta_character_skill_energy_generation_field_value",
                         energy_generation=energy_generation.value,
                     ),
@@ -270,7 +254,6 @@ class YattaAPIClient(yatta.YattaAPI):
             energy_value_strs.append(
                 self.translator.translate(
                     LocaleStr(
-                        "Cost: {energy_need}",
                         key="yatta_character_skill_energy_need_field_value",
                         energy_need=energy_need.value,
                     ),
@@ -279,7 +262,7 @@ class YattaAPIClient(yatta.YattaAPI):
             )
         if energy_value_strs:
             embed.add_field(
-                name=LocaleStr("Energy", key="yatta_character_skill_energy_field_name"),
+                name=LocaleStr(key="yatta_character_skill_energy_field_name"),
                 value="/".join(energy_value_strs),
             )
 
@@ -292,7 +275,6 @@ class YattaAPIClient(yatta.YattaAPI):
             weakness_break_value_strs.append(
                 self.translator.translate(
                     LocaleStr(
-                        "Single: {single_weakness_break}",
                         key="yatta_character_skill_single_weakness_break_field_value",
                         single_weakness_break=single_weakness_break.value,
                     ),
@@ -303,7 +285,6 @@ class YattaAPIClient(yatta.YattaAPI):
             weakness_break_value_strs.append(
                 self.translator.translate(
                     LocaleStr(
-                        "Spread: {spread_weakness_break}",
                         key="yatta_character_skill_spread_weakness_break_field_value",
                         spread_weakness_break=spread_weakness_break.value,
                     ),
@@ -314,7 +295,6 @@ class YattaAPIClient(yatta.YattaAPI):
             weakness_break_value_strs.append(
                 self.translator.translate(
                     LocaleStr(
-                        "AoE: {aoe_weakness_break}",
                         key="yatta_character_skill_aoe_weakness_break_field_value",
                         aoe_weakness_break=aoe_weakness_break.value,
                     ),
@@ -323,9 +303,7 @@ class YattaAPIClient(yatta.YattaAPI):
             )
         if weakness_break_value_strs:
             embed.add_field(
-                name=LocaleStr(
-                    "Weakness Break", key="yatta_character_skill_weakness_break_field_name"
-                ),
+                name=LocaleStr(key="yatta_character_skill_weakness_break_field_name"),
                 value="/".join(weakness_break_value_strs),
             )
 
@@ -413,7 +391,7 @@ class YattaAPIClient(yatta.YattaAPI):
         )
         if item.sources:
             embed.add_field(
-                name=LocaleStr("Sources", key="yatta_item_sources_field_name"),
+                name=LocaleStr(key="yatta_item_sources_field_name"),
                 value=create_bullet_list([source.description for source in item.sources]),
             )
         embed.set_footer(text=item.story)
@@ -433,14 +411,7 @@ class YattaAPIClient(yatta.YattaAPI):
             msg = "Translator is not set"
             raise RuntimeError(msg)
 
-        level_str = self.translator.translate(
-            LocaleStr(
-                "Lv.{level}",
-                key="level_str",
-                level=level,
-            ),
-            self.locale,
-        )
+        level_str = self.translator.translate(LocaleStr(key="level_str", level=level), self.locale)
 
         lc_path = yatta.PathType(light_cone.type.id)
         path_emoji = get_hsr_path_emoji(YATTA_PATH_TO_HSR_PATH[lc_path].value)
@@ -460,7 +431,7 @@ class YattaAPIClient(yatta.YattaAPI):
             named_stat_values[named_stat] = int(value[level - 1])
 
         embed.add_field(
-            name=LocaleStr("Stats", key="stats_embed_field_name"),
+            name=LocaleStr(key="stats_embed_field_name"),
             value="\n".join(f"{k}: {v}" for k, v in named_stat_values.items()),
             inline=False,
         )
@@ -501,7 +472,6 @@ class YattaAPIClient(yatta.YattaAPI):
         set_effects = relic_set.set_effects
         description = self.translator.translate(
             LocaleStr(
-                "2-Pieces: {bonus_2}",
                 bonus_2=self._process_description_params(
                     set_effects.two_piece.description, set_effects.two_piece.params
                 ),
@@ -511,7 +481,6 @@ class YattaAPIClient(yatta.YattaAPI):
         )
         if set_effects.four_piece is not None:
             four_piece = LocaleStr(
-                "4-Pieces: {bonus_4}",
                 bonus_4=self._process_description_params(
                     set_effects.four_piece.description, set_effects.four_piece.params
                 ),

@@ -23,18 +23,15 @@ if TYPE_CHECKING:
 
 class WithQRCode(Button["AccountManager"]):
     def __init__(self) -> None:
-        super().__init__(label=LocaleStr("With QR code", key="qrcode_button_label"))
+        super().__init__(label=LocaleStr(key="qrcode_button_label"))
 
     @property
     def _instructions_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr("Instructions", key="instructions_title"),
-            description=LocaleStr(
-                "Scan the QR code below with your Miyoushe app to log in.",
-                key="qrcode_login_instructions.desc",
-            ),
+            title=LocaleStr(key="instructions_title"),
+            description=LocaleStr(key="qrcode_login_instructions.desc"),
         )
         embed.set_image(url="attachment://qrcode.webp")
         return embed
@@ -44,11 +41,8 @@ class WithQRCode(Button["AccountManager"]):
         return DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr("Instructions", key="instructions_title"),
-            description=LocaleStr(
-                "Successfully scanned the QR code. Please confirm the login on your device.",
-                key="qrcode_scanned.desc",
-            ),
+            title=LocaleStr(key="instructions_title"),
+            description=LocaleStr(key="qrcode_scanned.desc"),
         )
 
     @property
@@ -56,8 +50,8 @@ class WithQRCode(Button["AccountManager"]):
         return DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr("Instructions", key="instructions_title"),
-            description=LocaleStr("Successfully logged in", key="qrcode_confirmed.desc"),
+            title=LocaleStr(key="instructions_title"),
+            description=LocaleStr(key="qrcode_confirmed.desc"),
         )
 
     @staticmethod
@@ -112,10 +106,8 @@ class WithQRCode(Button["AccountManager"]):
                         embed=DefaultEmbed(
                             self.view.locale,
                             self.view.translator,
-                            title=LocaleStr("QR code expired", key="qrcode_expired_title"),
-                            description=LocaleStr(
-                                "Please try again with a new QR code", key="qrcode_expired.desc"
-                            ),
+                            title=LocaleStr(key="qrcode_expired_title"),
+                            description=LocaleStr(key="qrcode_expired.desc"),
                         ),
                         attachments=[],
                     )

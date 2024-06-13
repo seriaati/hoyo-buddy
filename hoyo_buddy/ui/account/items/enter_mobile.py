@@ -20,14 +20,14 @@ if TYPE_CHECKING:
 
 class VerifyCodeInput(Modal):
     code = TextInput(
-        label=LocaleStr("Verification code", key="add_miyoushe_acc.verify_code"),
+        label=LocaleStr(key="add_miyoushe_acc.verify_code"),
         placeholder="123456",
     )
 
 
 class PhoneNumberInput(Modal):
     mobile = TextInput(
-        label=LocaleStr("Phone number", key="add_miyoushe_acc.mobile_number"),
+        label=LocaleStr(key="add_miyoushe_acc.mobile_number"),
         placeholder="1234567890",
     )
 
@@ -36,20 +36,14 @@ class EnterVerificationCode(Button["AccountManager"]):
     def __init__(self, mobile: str) -> None:
         super().__init__(
             custom_id="enter_verification_code",
-            label=LocaleStr(
-                "Enter verification code", key="add_miyoushe_acc.enter_verification_code"
-            ),
+            label=LocaleStr(key="add_miyoushe_acc.enter_verification_code"),
             emoji=PASSWORD,
             style=ButtonStyle.green,
         )
         self._mobile = mobile
 
     async def callback(self, i: Interaction) -> None:
-        modal = VerifyCodeInput(
-            title=LocaleStr(
-                "Enter Verification Code", key="add_miyoushe_acc.enter_verification_code"
-            )
-        )
+        modal = VerifyCodeInput(title=LocaleStr(key="add_miyoushe_acc.enter_verification_code"))
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
         await modal.wait()
@@ -67,15 +61,13 @@ class EnterPhoneNumber(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="enter_mobile_number",
-            label=LocaleStr("Enter phone number", key="add_miyoushe_acc.enter_mobile_number"),
+            label=LocaleStr(key="add_miyoushe_acc.enter_mobile_number"),
             emoji=PHONE,
             style=ButtonStyle.blurple,
         )
 
     async def callback(self, i: Interaction) -> None:
-        modal = PhoneNumberInput(
-            title=LocaleStr("Enter Phone Number", key="add_miyoushe_acc.enter_mobile_number")
-        )
+        modal = PhoneNumberInput(title=LocaleStr(key="add_miyoushe_acc.enter_mobile_number"))
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
         await modal.wait()

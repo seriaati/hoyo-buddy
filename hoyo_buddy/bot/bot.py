@@ -23,7 +23,7 @@ from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
 from ..utils import get_now
 from .command_tree import CommandTree
-from .translator import AppCommandTranslator, LocaleStr, Translator
+from .translator import AppCommandTranslator, EnumStr, LocaleStr, Translator
 
 if TYPE_CHECKING:
     import asyncio
@@ -197,24 +197,18 @@ class HoyoBuddy(commands.AutoShardedBot):
             if is_author:
                 return [
                     self.get_error_app_command_choice(
-                        LocaleStr(
-                            "You don't have any accounts yet. Add one with /accounts",
-                            key="no_accounts_autocomplete_choice",
-                        )
+                        LocaleStr(key="no_accounts_autocomplete_choice")
                     )
                 ]
             return [
                 self.get_error_app_command_choice(
-                    LocaleStr(
-                        "This user doesn't have any accounts yet",
-                        key="user_no_accounts_autocomplete_choice",
-                    )
+                    LocaleStr(key="user_no_accounts_autocomplete_choice")
                 )
             ]
 
         return [
             discord.app_commands.Choice(
-                name=f"{account if is_author else account.blurred_display} | {translator.translate(LocaleStr(account.game, warn_no_key=False), locale)}{' (✦)' if account.current else ''}",
+                name=f"{account if is_author else account.blurred_display} | {translator.translate(EnumStr(account.game), locale)}{' (✦)' if account.current else ''}",
                 value=f"{account.id}",
             )
             for account in accounts
@@ -273,7 +267,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             for command in cog.walk_app_commands():
                 desc = (
                     LocaleStr(
-                        command._locale_description.message,
+                        custom_str=command._locale_description.message,
                         **command._locale_description.extras,
                     )
                     if command._locale_description is not None

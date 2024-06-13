@@ -132,13 +132,12 @@ def draw_small_gi_chara_card(
         return im
 
     text = LocaleStr(
-        "C{const}R{refine}",
         key="const_refine_str",
         const=character.constellation,
         refine=character.weapon.refinement,
     )
     drawer.write(text, size=31, position=(236, 32), locale=locale, style="medium")
-    text = LocaleStr("Lv.{level}", key="level_str", level=character.level)
+    text = LocaleStr(key="level_str", level=character.level)
     drawer.write(text, size=31, position=(236, 72), locale=locale, style="medium")
 
     friend_textbbox = drawer.write(

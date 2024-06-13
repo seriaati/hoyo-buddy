@@ -63,7 +63,6 @@ class ExplorationCard:
 
     def _get_offering_text(self, exploration: Exploration | None) -> str:
         level_str = LocaleStr(
-            "Lv.{level}",
             key="level_str",
             level=0 if exploration is None else exploration.offerings[0].level,
         ).translate(self._translator, self.locale)
@@ -81,7 +80,7 @@ class ExplorationCard:
             translator=self._drawer.translator,
         )
         self._write_title(
-            LocaleStr("Waypoints Unlocked", key="exploration.waypoints"),
+            LocaleStr(key="exploration.waypoints"),
             position=(35, 20),
             drawer=drawer,
         )
@@ -112,17 +111,17 @@ class ExplorationCard:
             translator=self._drawer.translator,
         )
         self._write_title(
-            LocaleStr("Chests Unlocked", key="exploration.chests"),
+            LocaleStr(key="exploration.chests"),
             position=(21, 20),
             drawer=drawer,
         )
 
         chest_types: dict[LocaleStr, tuple[int, int]] = {
-            LocaleStr("Common", key="exploration.common_chests"): (78, 167),
-            LocaleStr("Exquisite", key="exploration.exquisite_chests"): (210, 167),
-            LocaleStr("Precious", key="exploration.precious_chests"): (343, 167),
-            LocaleStr("Luxurious", key="exploration.luxurious_chests"): (476, 167),
-            LocaleStr("Remarkable", key="exploration.remarkable_chests"): (611, 167),
+            LocaleStr(key="exploration.common_chests"): (78, 167),
+            LocaleStr(key="exploration.exquisite_chests"): (210, 167),
+            LocaleStr(key="exploration.precious_chests"): (343, 167),
+            LocaleStr(key="exploration.luxurious_chests"): (476, 167),
+            LocaleStr(key="exploration.remarkable_chests"): (611, 167),
         }
         chest_nums: dict[int, tuple[int, int]] = {
             self._user.stats.common_chests: (79, 196),
@@ -180,17 +179,14 @@ class ExplorationCard:
         exploration = self._get_exploration(1)
         texts: dict[LocaleStr | str, tuple[int, int]] = {
             LocaleStr(
-                "Exploration Progress: {progress}%",
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 161),
             LocaleStr(
-                "Anemoculi: {anemoculi}",
                 key="exploration.anemoculi",
                 anemoculi=self._user.stats.anemoculi,
             ): (75, 207),
             LocaleStr(
-                "Reputation: Lv.{reputation}",
                 key="exploration.reputation",
                 reputation=0 if exploration is None else exploration.offerings[0].level,
             ): (75, 253),
@@ -202,17 +198,14 @@ class ExplorationCard:
         exploration = self._get_exploration(2)
         texts: dict[LocaleStr | str, tuple[int, int]] = {
             LocaleStr(
-                "Exploration Progress: {progress}%",
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 161),
             LocaleStr(
-                "Geoculi: {geoculi}",
                 key="exploration.geoculi",
                 geoculi=self._user.stats.geoculi,
             ): (75, 207),
             LocaleStr(
-                "Reputation: Lv.{reputation}",
                 key="exploration.reputation",
                 reputation=0 if exploration is None else exploration.offerings[0].level,
             ): (75, 253),
@@ -224,17 +217,14 @@ class ExplorationCard:
         exploration = self._get_exploration(4)
         texts = {
             LocaleStr(
-                "Exploration Progress: {progress}%",
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 117),
             LocaleStr(
-                "Electroculi: {electroculi}",
                 key="exploration.electroculi",
                 electroculi=self._user.stats.electroculi,
             ): (75, 163),
             LocaleStr(
-                "Reputation: Lv.{reputation}",
                 key="exploration.reputation",
                 reputation=0 if exploration is None else exploration.offerings[1].level,
             ): (75, 209),
@@ -247,17 +237,14 @@ class ExplorationCard:
         exploration = self._get_exploration(8)
         texts = {
             LocaleStr(
-                "Exploration Progress: {progress}%",
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 117),
             LocaleStr(
-                "Dendroculi: {dendroculi}",
                 key="exploration.dendroculi",
                 dendroculi=self._user.stats.dendroculi,
             ): (75, 163),
             LocaleStr(
-                "Reputation: Lv.{reputation}",
                 key="exploration.reputation",
                 reputation=0 if exploration is None else exploration.offerings[1].level,
             ): (75, 209),
@@ -270,17 +257,14 @@ class ExplorationCard:
         exploration = self._get_exploration(9)
         texts = {
             LocaleStr(
-                "Exploration Progress: {progress}%",
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 117),
             LocaleStr(
-                "Hydroculi: {hydroculi}",
                 key="exploration.hydroculi",
                 hydroculi=self._user.stats.hydroculi,
             ): (75, 163),
             LocaleStr(
-                "Reputation: Lv.{reputation}",
                 key="exploration.reputation",
                 reputation=0 if exploration is None else exploration.offerings[1].level,
             ): (75, 209),
@@ -301,15 +285,12 @@ class ExplorationCard:
         )
         self._write_title(self._placeholder, position=(34, 23), drawer=drawer)
         self._write_small_text(
-            LocaleStr("Yet to be released", key="exploration.placeholder"),
+            LocaleStr(key="exploration.placeholder"),
             position=(35, 113),
             drawer=drawer,
         )
         self._write_small_text(
-            LocaleStr(
-                '"Every journey has its final day.Don\'t rush."\n-Zhongli',
-                key="exploration.placeholder_quote",
-            ),
+            LocaleStr(key="exploration.placeholder_quote"),
             position=(34, 181),
             drawer=drawer,
         )
@@ -319,7 +300,6 @@ class ExplorationCard:
         exploration = self._get_exploration(14)
         texts: dict[LocaleStr | str, tuple[int, int]] = {
             LocaleStr(
-                "Exploration Progress: {progress}%",
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 117),
@@ -357,7 +337,6 @@ class ExplorationCard:
 
         texts = {
             LocaleStr(
-                "Exploration Progress: {progress}%",
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (65, 152),
@@ -372,7 +351,6 @@ class ExplorationCard:
         exploration = self._get_exploration(3)
         texts = {
             LocaleStr(
-                "Exploration Progress: {progress}%",
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (73, 120),
@@ -385,7 +363,6 @@ class ExplorationCard:
         exploration = self._get_exploration(5)
         texts: dict[LocaleStr | str, tuple[int, int]] = {
             LocaleStr(
-                "Exploration Progress: {progress}%",
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (73, 123),
@@ -406,7 +383,7 @@ class ExplorationCard:
         )
 
         self._drawer.write(
-            LocaleStr("World Exploration", key="exploration.title"),
+            LocaleStr(key="exploration.title"),
             position=(114, 81),
             size=72,
             style="bold",

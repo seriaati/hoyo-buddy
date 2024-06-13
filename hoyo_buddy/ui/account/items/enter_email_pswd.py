@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 class EmailVerificationCodeModal(Modal):
     code = TextInput(
-        label=LocaleStr("Verification Code", key="email_verification_code_modal_code_input_label"),
+        label=LocaleStr(key="email_verification_code_modal_code_input_label"),
         placeholder="123456",
         min_length=6,
         max_length=6,
@@ -33,7 +33,7 @@ class EnterEmailVerificationCode(Button["AccountManager"]):
         self, email: str, password: str, action_ticket: genshin.models.ActionTicket
     ) -> None:
         super().__init__(
-            label=LocaleStr("Enter verification code", key="email-verification-code.button.label"),
+            label=LocaleStr(key="email-verification-code.button.label"),
             style=ButtonStyle.blurple,
             emoji=PASSWORD,
         )
@@ -44,7 +44,7 @@ class EnterEmailVerificationCode(Button["AccountManager"]):
 
     async def callback(self, i: Interaction) -> Any:
         modal = EmailVerificationCodeModal(
-            title=LocaleStr("Enter Verification Code", key="email-verification-code.button.label")
+            title=LocaleStr(key="email-verification-code.button.label")
         )
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
@@ -68,11 +68,11 @@ class EnterEmailVerificationCode(Button["AccountManager"]):
 
 class EmailPasswordModal(Modal):
     email = TextInput(
-        label=LocaleStr("email or username", key="email_password_modal_email_input_label"),
+        label=LocaleStr(key="email_password_modal_email_input_label"),
         placeholder="a@gmail.com",
     )
     password = TextInput(
-        label=LocaleStr("password", key="email_password_modal_password_input_label"),
+        label=LocaleStr(key="email_password_modal_password_input_label"),
         placeholder="12345678",
     )
 
@@ -80,9 +80,7 @@ class EmailPasswordModal(Modal):
 class EnterEmailPassword(Button["AccountManager"]):
     def __init__(self, platform: Platform) -> None:
         super().__init__(
-            label=LocaleStr(
-                "Enter email/username and password", key="enter_email_password_button_label"
-            ),
+            label=LocaleStr(key="enter_email_password_button_label"),
             emoji=PASSWORD,
             style=ButtonStyle.blurple,
         )
@@ -90,11 +88,7 @@ class EnterEmailPassword(Button["AccountManager"]):
         self._platform = platform
 
     async def callback(self, i: Interaction) -> Any:
-        modal = EmailPasswordModal(
-            title=LocaleStr(
-                "Enter Email/Username and Password", key="enter_email_password_button_label"
-            )
-        )
+        modal = EmailPasswordModal(title=LocaleStr(key="enter_email_password_button_label"))
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
         await modal.wait()

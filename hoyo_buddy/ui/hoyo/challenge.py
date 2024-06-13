@@ -12,7 +12,7 @@ from genshin.models import (
     StarRailPureFiction,
 )
 
-from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.bot.translator import EnumStr, LocaleStr
 from hoyo_buddy.draw.main_funcs import draw_moc_card, draw_pure_fiction_card, draw_spiral_abyss_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.exceptions import NoChallengeDataError
@@ -175,7 +175,6 @@ class ChallengeView(View):
             n1_buff = floor.node_1.buff
             if n1_buff is not None:
                 team_str = LocaleStr(
-                    "team {team}",
                     key="challenge_view.team",
                     team=1,
                 ).translate(self.translator, self.locale)
@@ -188,7 +187,6 @@ class ChallengeView(View):
             n2_buff = floor.node_2.buff
             if n2_buff is not None:
                 team_str = LocaleStr(
-                    "team {team}",
                     key="challenge_view.team",
                     team=2,
                 ).translate(self.translator, self.locale)
@@ -200,7 +198,6 @@ class ChallengeView(View):
 
         for buff in buffs:
             used_in = LocaleStr(
-                "Used in: {floors}",
                 key="challenge_view.buff_used_in",
                 floors=", ".join(buff_usage[buff]),
             ).translate(self.translator, self.locale)
@@ -253,15 +250,15 @@ class ChallengeView(View):
 class PhaseSelect(Select[ChallengeView]):
     def __init__(self, previous: bool) -> None:
         super().__init__(
-            placeholder=LocaleStr("Select a phase", key="abyss.phase_select.placeholder"),
+            placeholder=LocaleStr(key="abyss.phase_select.placeholder"),
             options=[
                 SelectOption(
-                    label=LocaleStr("Current phase", key="abyss.current"),
+                    label=LocaleStr(key="abyss.current"),
                     value="current",
                     default=not previous,
                 ),
                 SelectOption(
-                    label=LocaleStr("Previous phase", key="abyss.previous"),
+                    label=LocaleStr(key="abyss.previous"),
                     value="previous",
                     default=previous,
                 ),
@@ -280,14 +277,8 @@ class PhaseSelect(Select[ChallengeView]):
 class ChallengeTypeSelect(Select[ChallengeView]):
     def __init__(self, types: list[ChallengeType]) -> None:
         super().__init__(
-            placeholder=LocaleStr("Select a game mode", key="challenge_type_select.placeholder"),
-            options=[
-                SelectOption(
-                    label=LocaleStr(type_.value, warn_no_key=False),
-                    value=type_.value,
-                )
-                for type_ in types
-            ],
+            placeholder=LocaleStr(key="challenge_type_select.placeholder"),
+            options=[SelectOption(label=EnumStr(type_), value=type_.value) for type_ in types],
         )
 
     async def callback(self, i: Interaction) -> None:

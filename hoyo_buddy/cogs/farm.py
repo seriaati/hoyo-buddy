@@ -20,14 +20,20 @@ if TYPE_CHECKING:
 
 class Farm(
     commands.GroupCog,
-    name=app_commands.locale_str("farm", translate=False),
-    description=app_commands.locale_str("Farm commands", translate=False),
+    name=app_commands.locale_str(
+        "farm",
+    ),
+    description=app_commands.locale_str(
+        "Farm commands",
+    ),
 ):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
     @app_commands.command(
-        name=app_commands.locale_str("view", translate=False),
+        name=app_commands.locale_str(
+            "view",
+        ),
         description=app_commands.locale_str(
             "View farmable domains in Genshin Impact", key="farm_view_command_description"
         ),
@@ -64,7 +70,9 @@ class Farm(
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("add", translate=False),
+        name=app_commands.locale_str(
+            "add",
+        ),
         description=app_commands.locale_str(
             "Add character/weapon to be notified when its materials are farmable",
             key="farm_add_command_description",
@@ -95,7 +103,9 @@ class Farm(
         await command.run()
 
     @app_commands.command(
-        name=app_commands.locale_str("remove", translate=False),
+        name=app_commands.locale_str(
+            "remove",
+        ),
         description=app_commands.locale_str(
             "Remove character/weapon from farm reminder list", key="farm_remove_command_description"
         ),
@@ -125,7 +135,9 @@ class Farm(
         await command.run()
 
     @app_commands.command(
-        name=app_commands.locale_str("reminder", translate=False),
+        name=app_commands.locale_str(
+            "reminder",
+        ),
         description=app_commands.locale_str(
             "Notify you when materials of characters/weapons are farmable",
             key="farm_reminder_command_description",
@@ -171,10 +183,7 @@ class Farm(
         except KeyError:
             return [
                 self.bot.get_error_app_command_choice(
-                    LocaleStr(
-                        "Search autocomplete choices not set up yet, please try again later.",
-                        key="search_autocomplete_not_setup",
-                    )
+                    LocaleStr(key="search_autocomplete_not_setup")
                 )
             ]
 

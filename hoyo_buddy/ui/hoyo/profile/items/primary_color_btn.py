@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 class PrimaryColorModal(Modal):
     color = TextInput(
-        label=LocaleStr("Color (hex code)", key="profile.primary_color_modal.color.label"),
+        label=LocaleStr(key="profile.primary_color_modal.color.label"),
         placeholder="#000000",
         style=TextStyle.short,
         min_length=7,
@@ -26,16 +26,14 @@ class PrimaryColorModal(Modal):
     )
 
     def __init__(self, current_color: str | None) -> None:
-        super().__init__(
-            title=LocaleStr("Change Card Color", key="profile.primary_color_modal.title")
-        )
+        super().__init__(title=LocaleStr(key="profile.primary_color_modal.title"))
         self.color.default = current_color
 
 
 class PrimaryColorButton(Button["ProfileView"]):
     def __init__(self, current_color: str | None, disabled: bool) -> None:
         super().__init__(
-            label=LocaleStr("Change color", key="profile.primary_color.button.label"),
+            label=LocaleStr(key="profile.primary_color.button.label"),
             style=ButtonStyle.blurple,
             row=2,
             custom_id="profile_primary_color",

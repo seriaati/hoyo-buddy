@@ -26,7 +26,7 @@ def draw_genshin_notes_card(
     drawer = Drawer(draw, folder="gi-notes", dark_mode=dark_mode, translator=translator)
 
     drawer.write(
-        LocaleStr("Real-Time Notes", key="notes-card.gi.realtime-notes"),
+        LocaleStr(key="notes-card.gi.realtime-notes"),
         size=64,
         position=(76, 67),
         style="bold",
@@ -34,7 +34,7 @@ def draw_genshin_notes_card(
     )
 
     drawer.write(
-        LocaleStr("Resin", key="notes-card.gi.resin"),
+        LocaleStr(key="notes-card.gi.resin"),
         size=35,
         position=(110, 400),
         style="light",
@@ -45,7 +45,7 @@ def draw_genshin_notes_card(
     )
 
     drawer.write(
-        LocaleStr("Daily Commissions", key="notes-card.gi.daily-commissions"),
+        LocaleStr(key="notes-card.gi.daily-commissions"),
         size=35,
         position=(110, 800),
         style="light",
@@ -58,7 +58,7 @@ def draw_genshin_notes_card(
         style="medium",
     )
     drawer.write(
-        LocaleStr("Completed", key="notes-card.gi.completed"),
+        LocaleStr(key="notes-card.gi.completed"),
         size=30,
         position=(textbbox[2] + 20, textbbox[3] - 5),
         anchor="ls",
@@ -66,7 +66,7 @@ def draw_genshin_notes_card(
     )
 
     drawer.write(
-        LocaleStr("Realm Currency", key="notes-card.gi.realm-currency"),
+        LocaleStr(key="notes-card.gi.realm-currency"),
         size=35,
         position=(596, 400),
         style="light",
@@ -80,7 +80,7 @@ def draw_genshin_notes_card(
     )
 
     drawer.write(
-        LocaleStr("Resin Discounts", key="notes-card.gi.resin-discounts"),
+        LocaleStr(key="notes-card.gi.resin-discounts"),
         size=35,
         position=(596, 800),
         style="light",
@@ -93,7 +93,7 @@ def draw_genshin_notes_card(
         style="medium",
     )
     drawer.write(
-        LocaleStr("Remaining", key="notes-card.gi.remaining"),
+        LocaleStr(key="notes-card.gi.remaining"),
         size=30,
         position=(textbbox[2] + 20, textbbox[3] - 5),
         anchor="ls",
@@ -113,12 +113,10 @@ def draw_genshin_notes_card(
 
         text = (
             LocaleStr(
-                "Finished",
                 key="notes-card.gi.expedition-finished",
             )
             if exped.finished
             else LocaleStr(
-                "{time} Remaining",
                 key="notes-card.gi.expedition-remaining",
                 time=format_timedelta(exped.remaining_time),
             )

@@ -64,13 +64,8 @@ class FarmCommand:
             embed = DefaultEmbed(
                 self.locale,
                 self._translator,
-                title=LocaleStr(
-                    "Item Already in List", key="farm_add_command.item_already_in_list"
-                ),
-                description=LocaleStr(
-                    "This item is already in your farm reminder list.",
-                    key="farm_add_command.item_already_in_list_description",
-                ),
+                title=LocaleStr(key="farm_add_command.item_already_in_list"),
+                description=LocaleStr(key="farm_add_command.item_already_in_list_description"),
             )
             await self._interaction.response.send_message(embed=embed)
             return True

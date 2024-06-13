@@ -61,7 +61,7 @@ class BookVolumeUI(View):
 class VolumeSelector(Select["BookVolumeUI"]):
     def __init__(self, volumes: list[BookVolume], selected_volume: BookVolume) -> None:
         super().__init__(
-            placeholder=LocaleStr("Select a volume to read", key="volume_selector_placeholder"),
+            placeholder=LocaleStr(key="volume_selector_placeholder"),
             options=[
                 SelectOption(
                     label=shorten(volume.name, 100),

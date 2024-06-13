@@ -50,42 +50,42 @@ class TalentBoost(IntEnum):
 
 
 class GenshinElement(StrEnum):
-    ANEMO = "anemo"
-    GEO = "geo"
-    ELECTRO = "electro"
-    DENDRO = "dendro"
-    PYRO = "pyro"
-    CRYO = "cryo"
-    HYDRO = "hydro"
+    ANEMO = "Anemo"
+    GEO = "Geo"
+    ELECTRO = "Electro"
+    DENDRO = "Dendro"
+    PYRO = "Pyro"
+    CRYO = "Cryo"
+    HYDRO = "Hydro"
 
 
 class GenshinCity(StrEnum):
-    MONDSTADT = "mondstadt"
-    LIYUE = "liyue"
-    INAZUMA = "inazuma"
-    SUMERU = "sumeru"
-    FONTAINE = "fontaine"
+    MONDSTADT = "Mondstadt"
+    LIYUE = "Liyue"
+    INAZUMA = "Inazuma"
+    SUMERU = "Sumeru"
+    FONTAINE = "Fontaine"
 
 
 class HSRElement(StrEnum):
-    FIRE = "fire"
-    ICE = "ice"
-    IMAGINARY = "imaginary"
-    PHYSICAL = "physical"
-    QUANTUM = "quantum"
+    FIRE = "Fire"
+    ICE = "Ice"
+    IMAGINARY = "Imaginary"
+    PHYSICAL = "Physical"
+    QUANTUM = "Quantum"
     # LIGHTNING = "lightning"
-    WIND = "wind"
-    THUNDER = "thunder"
+    WIND = "Wind"
+    THUNDER = "Thunder"
 
 
 class HSRPath(StrEnum):
-    DESTRUCTION = "destruction"  # 毀滅
-    THE_HUNT = "the_hunt"  # 巡獵
-    ERUDITION = "erudition"  # 智識
-    HARMONY = "harmony"  # 同諧
-    NIHILITY = "nihility"  # 虛無
-    PRESERVATION = "preservation"  # 存護
-    ABUNDANCE = "abundance"  # 豐饒
+    DESTRUCTION = "Destruction"  # 毀滅
+    THE_HUNT = "The Hunt"  # 巡獵
+    ERUDITION = "Erudition"  # 智識
+    HARMONY = "Harmony"  # 同諧
+    NIHILITY = "Nihility"  # 虛無
+    PRESERVATION = "Preservation"  # 存護
+    ABUNDANCE = "Abundance"  # 豐饒
 
 
 class Platform(StrEnum):

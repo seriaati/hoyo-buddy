@@ -123,10 +123,9 @@ def draw_small_hsr_chara_card(
     if isinstance(character, UnownedCharacter):
         return im
 
-    text = LocaleStr("Lv.{level}", key="level_str", level=character.level)
+    text = LocaleStr(key="level_str", level=character.level)
     drawer.write(text, size=31, position=(230, 35), locale=locale, style="medium")
     text = LocaleStr(
-        "E{eidolon}S{superimpose}",
         key="eidolon_superimpose_str",
         eidolon=character.rank,
         superimpose=character.equip.rank if character.equip else 0,

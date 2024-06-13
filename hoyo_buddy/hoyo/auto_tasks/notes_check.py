@@ -57,11 +57,9 @@ class NotesChecker:
                 embed = DefaultEmbed(
                     locale,
                     translator,
-                    title=LocaleStr("Resin Reminder", key="resin_reminder_button.label"),
+                    title=LocaleStr(key="resin_reminder_button.label"),
                     description=LocaleStr(
-                        "Threshold ({threshold}) is reached",
-                        key="threshold.embed.description",
-                        threshold=notify.threshold,
+                        key="threshold.embed.description", threshold=notify.threshold
                     ),
                 )
                 embed.set_thumbnail(url=RESIN_ICON)
@@ -69,11 +67,9 @@ class NotesChecker:
                 embed = DefaultEmbed(
                     locale,
                     translator,
-                    title=LocaleStr("Trailblaze Power Reminder", key="tbp_reminder_button.label"),
+                    title=LocaleStr(key="tbp_reminder_button.label"),
                     description=LocaleStr(
-                        "Threshold ({threshold}) is reached",
-                        key="threshold.embed.description",
-                        threshold=notify.threshold,
+                        key="threshold.embed.description", threshold=notify.threshold
                     ),
                 )
                 embed.set_thumbnail(url=TBP_ICON)
@@ -81,14 +77,9 @@ class NotesChecker:
                 embed = DefaultEmbed(
                     locale,
                     translator,
-                    title=LocaleStr(
-                        "Reserved Trailblaze Power Reminder",
-                        key="rtbp_reminder_button.label",
-                    ),
+                    title=LocaleStr(key="rtbp_reminder_button.label"),
                     description=LocaleStr(
-                        "Threshold ({threshold}) is reached",
-                        key="threshold.embed.description",
-                        threshold=notify.threshold,
+                        key="threshold.embed.description", threshold=notify.threshold
                     ),
                 )
                 embed.set_thumbnail(url=RTBP_ICON)
@@ -96,32 +87,24 @@ class NotesChecker:
                 embed = DefaultEmbed(
                     locale,
                     translator,
-                    title=LocaleStr("Expedition Reminder", key="exped_button.label"),
-                    description=LocaleStr(
-                        "One (or more) expedetions are finished",
-                        key="exped.embed.description",
-                    ),
+                    title=LocaleStr(key="exped_button.label"),
+                    description=LocaleStr(key="exped.embed.description"),
                 )
             case NotesNotifyType.PT:
                 embed = DefaultEmbed(
                     locale,
                     translator,
-                    title=LocaleStr("Parametric Transformer Reminder", key="pt_button.label"),
-                    description=LocaleStr(
-                        "Parametric Transformer is ready",
-                        key="pt.embed.description",
-                    ),
+                    title=LocaleStr(key="pt_button.label"),
+                    description=LocaleStr(key="pt.embed.description"),
                 )
                 embed.set_thumbnail(url=PT_ICON)
             case NotesNotifyType.REALM_CURRENCY:
                 embed = DefaultEmbed(
                     locale,
                     translator,
-                    title=LocaleStr("Realm Currency Reminder", key="realm_curr_button.label"),
+                    title=LocaleStr(key="realm_curr_button.label"),
                     description=LocaleStr(
-                        "Threshold ({threshold}) is reached",
-                        key="threshold.embed.description",
-                        threshold=notify.threshold,
+                        key="threshold.embed.description", threshold=notify.threshold
                     ),
                 )
                 embed.set_thumbnail(url=REALM_CURRENCY_ICON)
@@ -129,43 +112,29 @@ class NotesChecker:
                 embed = DefaultEmbed(
                     locale,
                     translator,
-                    title=LocaleStr("Daily Commision Reminder", key="daily_button.label"),
-                    description=LocaleStr(
-                        "Daily commisions or adventure encounters are not completed yet",
-                        key="gi_daily.embed.description",
-                    ),
+                    title=LocaleStr(key="daily_button.label"),
+                    description=LocaleStr(key="gi_daily.embed.description"),
                 )
                 embed.set_thumbnail(url=COMMISSION_ICON)
             case NotesNotifyType.HSR_DAILY:
                 embed = DefaultEmbed(
                     locale,
                     translator,
-                    title=LocaleStr("Daily Training Reminder", key="daily_training_button.label"),
-                    description=LocaleStr(
-                        "Daily trainings are not completed yet",
-                        key="hsr_daily.embed.description",
-                    ),
+                    title=LocaleStr(key="daily_training_button.label"),
+                    description=LocaleStr(key="hsr_daily.embed.description"),
                 )
             case NotesNotifyType.RESIN_DISCOUNT | NotesNotifyType.ECHO_OF_WAR:
                 embed = DefaultEmbed(
                     locale,
                     translator,
-                    title=LocaleStr("Weekly Boss Discount Reminder", key="week_boss_button.label"),
-                    description=LocaleStr(
-                        "Weekly boss discounts are not used up yet",
-                        key="resin_discount.embed.description",
-                    ),
+                    title=LocaleStr(key="week_boss_button.label"),
+                    description=LocaleStr(key="resin_discount.embed.description"),
                 )
             case _:
                 raise NotImplementedError
 
         embed.add_acc_info(notify.account, blur=False)
-        embed.set_footer(
-            text=LocaleStr(
-                "Click the button below to change notification settings.\nIf it is expired, use the /notes command.",
-                key="notif.embed.footer",
-            )
-        )
+        embed.set_footer(text=LocaleStr(key="notif.embed.footer"))
         embed.set_image(url="attachment://notes.webp")
         return embed
 
@@ -353,12 +322,7 @@ class NotesChecker:
 
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:
-        content = LocaleStr(
-            "An error occurred while processing your real-time notes reminder.\n"
-            "Hoyo Buddy has disabled this reminder for this account, you can turn it back on using </notes>\n"
-            "If this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n",
-            key="process_notify_error.content",
-        )
+        content = LocaleStr(key="process_notify_error.content")
         locale = await cls._get_locale(notify)
         embed = cls._get_notify_error_embed(e, await cls._get_locale(notify))
         embed.add_acc_info(notify.account, blur=False)

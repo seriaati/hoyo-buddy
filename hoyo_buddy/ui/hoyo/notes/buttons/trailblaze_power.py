@@ -19,7 +19,7 @@ class TBPReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
             emoji=TRAILBLAZE_POWER,
-            label=LocaleStr("Trailblaze power reminder", key="tbp_reminder_button.label"),
+            label=LocaleStr(key="tbp_reminder_button.label"),
             row=row,
         )
 
@@ -30,7 +30,7 @@ class TBPReminder(Button[NotesView]):
 
         modal = TypeOneModal(
             notify,
-            title=LocaleStr("Trailblaze Power Reminder Settings", key="tbp_reminder_modal.title"),
+            title=LocaleStr(key="tbp_reminder_modal.title"),
             threshold_max_value=240,
             min_notify_interval=10,
         )

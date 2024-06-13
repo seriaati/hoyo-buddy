@@ -61,14 +61,8 @@ class NotesView(View):
     @staticmethod
     def _get_type1_value(notify: NotesNotify | None) -> LocaleStr:
         if notify is None:
-            return LocaleStr("Not set", key="reminder_settings.not_set")
+            return LocaleStr(key="reminder_settings.not_set")
         return LocaleStr(
-            (
-                "Status: {status}\n"
-                "Threshold: {threshold}\n"
-                "Notify Interval: {notify_interval} minutes\n"
-                "Max Notify Count: {max_notif_count}"
-            ),
             key="reminder_settings.reminde.set.type1",
             status=TOGGLE_EMOJIS[notify.enabled],
             threshold=notify.threshold,
@@ -79,13 +73,8 @@ class NotesView(View):
     @staticmethod
     def _get_type2_value(notify: NotesNotify | None) -> LocaleStr:
         if notify is None:
-            return LocaleStr("Not set", key="reminder_settings.not_set")
+            return LocaleStr(key="reminder_settings.not_set")
         return LocaleStr(
-            (
-                "Status: {status}\n"
-                "Notify Interval: {notify_interval} minutes\n"
-                "Max Notify Count: {max_notif_count}"
-            ),
             key="reminder_settings.reminde.set.type2",
             status=TOGGLE_EMOJIS[notify.enabled],
             notify_interval=notify.notify_interval,
@@ -95,14 +84,8 @@ class NotesView(View):
     @staticmethod
     def _get_type3_value(notify: NotesNotify | None) -> LocaleStr:
         if notify is None:
-            return LocaleStr("Not set", key="reminder_settings.not_set")
+            return LocaleStr(key="reminder_settings.not_set")
         return LocaleStr(
-            (
-                "Status: {status}\n"
-                "Notify Interval: {notify_interval} minutes\n"
-                "Max Notify Count: {max_notif_count}\n"
-                "Notify Time: {notify_time} hours before the server resets\n"
-            ),
             key="reminder_settings.reminde.set.type3",
             status=TOGGLE_EMOJIS[notify.enabled],
             notify_interval=notify.notify_interval,
@@ -113,30 +96,21 @@ class NotesView(View):
     @staticmethod
     def _get_type4_value(notify: NotesNotify | None) -> LocaleStr:
         if notify is None:
-            return LocaleStr("Not set", key="reminder_settings.not_set")
+            return LocaleStr(key="reminder_settings.not_set")
         return LocaleStr(
-            (
-                "Status: {status}\n"
-                "Notify Interval: {notify_interval} minutes\n"
-                "Max Notify Count: {max_notif_count}\n"
-                "Notify Time: {notify_time} hours before the server resets\n"
-                "Notify Weekday: {notify_weekday}"
-            ),
             key="reminder_settings.reminde.set.type4",
             status=TOGGLE_EMOJIS[notify.enabled],
             notify_interval=notify.notify_interval,
             max_notif_count=notify.max_notif_count,
             notify_time=notify.notify_time,
-            notify_weekday=LocaleStr(
-                Weekday(notify.notify_weekday).name.title(), warn_no_key=False
-            ),
+            notify_weekday=LocaleStr(custom_str=Weekday(notify.notify_weekday).name.title()),
         )
 
     async def _get_reminder_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr("Real-Time Notes Reminders", key="reminder_settings_title"),
+            title=LocaleStr(key="reminder_settings_title"),
         )
 
         if self._account.game is Game.GENSHIN:
@@ -144,7 +118,7 @@ class NotesView(View):
                 account=self._account, type=NotesNotifyType.RESIN
             )
             embed.add_field(
-                name=LocaleStr("Resin Reminder", key="resin_reminder_button.label"),
+                name=LocaleStr(key="resin_reminder_button.label"),
                 value=self._get_type1_value(resin_notify),
                 inline=False,
             )
@@ -153,7 +127,7 @@ class NotesView(View):
                 account=self._account, type=NotesNotifyType.REALM_CURRENCY
             )
             embed.add_field(
-                name=LocaleStr("Realm Currency Reminder", key="realm_curr_button.label"),
+                name=LocaleStr(key="realm_curr_button.label"),
                 value=self._get_type1_value(realm_currency_notify),
                 inline=False,
             )
@@ -162,7 +136,7 @@ class NotesView(View):
                 account=self._account, type=NotesNotifyType.PT
             )
             embed.add_field(
-                name=LocaleStr("Parametric Transformer Reminder", key="pt_button.label"),
+                name=LocaleStr(key="pt_button.label"),
                 value=self._get_type2_value(pt_notify),
                 inline=False,
             )
@@ -171,7 +145,7 @@ class NotesView(View):
                 account=self._account, type=NotesNotifyType.GI_EXPED
             )
             embed.add_field(
-                name=LocaleStr("Expedition Reminder", key="exped_button.label"),
+                name=LocaleStr(key="exped_button.label"),
                 value=self._get_type2_value(expedition_notify),
                 inline=False,
             )
@@ -180,7 +154,7 @@ class NotesView(View):
                 account=self._account, type=NotesNotifyType.GI_DAILY
             )
             embed.add_field(
-                name=LocaleStr("Daily Reminder", key="daily_button.label"),
+                name=LocaleStr(key="daily_button.label"),
                 value=self._get_type3_value(daily_notify),
                 inline=False,
             )
@@ -189,7 +163,7 @@ class NotesView(View):
                 account=self._account, type=NotesNotifyType.RESIN_DISCOUNT
             )
             embed.add_field(
-                name=LocaleStr("Weekly Boss Discount Reminder", key="week_boss_button.label"),
+                name=LocaleStr(key="week_boss_button.label"),
                 value=self._get_type4_value(resin_discount_notify),
                 inline=False,
             )
@@ -199,7 +173,7 @@ class NotesView(View):
                 account=self._account, type=NotesNotifyType.TB_POWER
             )
             embed.add_field(
-                name=LocaleStr("Trailblaze Power Reminder", key="tbp_reminder_button.label"),
+                name=LocaleStr(key="tbp_reminder_button.label"),
                 value=self._get_type1_value(tbp_notify),
                 inline=False,
             )
@@ -208,9 +182,7 @@ class NotesView(View):
                 account=self._account, type=NotesNotifyType.RESERVED_TB_POWER
             )
             embed.add_field(
-                name=LocaleStr(
-                    "Reserved Trailblaze Power Reminder", key="rtbp_reminder_button.label"
-                ),
+                name=LocaleStr(key="rtbp_reminder_button.label"),
                 value=self._get_type1_value(reserved_tbp_notify),
                 inline=False,
             )
@@ -219,7 +191,7 @@ class NotesView(View):
                 account=self._account, type=NotesNotifyType.HSR_EXPED
             )
             embed.add_field(
-                name=LocaleStr("Expedition Reminder", key="exped_button.label"),
+                name=LocaleStr(key="exped_button.label"),
                 value=self._get_type2_value(expedition_notify),
                 inline=False,
             )
@@ -228,7 +200,7 @@ class NotesView(View):
                 account=self._account, type=NotesNotifyType.HSR_DAILY
             )
             embed.add_field(
-                name=LocaleStr("Daily Reminder", key="daily_button.label"),
+                name=LocaleStr(key="daily_button.label"),
                 value=self._get_type3_value(daily_notify),
                 inline=False,
             )
@@ -237,7 +209,7 @@ class NotesView(View):
                 account=self._account, type=NotesNotifyType.ECHO_OF_WAR
             )
             embed.add_field(
-                name=LocaleStr("Weekly Boss Discount Reminder", key="week_boss_button.label"),
+                name=LocaleStr(key="week_boss_button.label"),
                 value=self._get_type4_value(echo_of_war_notify),
                 inline=False,
             )
@@ -434,7 +406,6 @@ class NotesView(View):
             if notes.remaining_resin_recovery_time.seconds > 0:
                 descriptions.append(
                     LocaleStr(
-                        "{emoji} full {in_time}",
                         key="notes.item_full_in_time",
                         emoji=RESIN,
                         in_time=format_dt(notes.resin_recovery_time, style="R"),
@@ -443,7 +414,6 @@ class NotesView(View):
             if notes.remaining_realm_currency_recovery_time.seconds > 0:
                 descriptions.append(
                     LocaleStr(
-                        "{emoji} full {in_time}",
                         key="notes.item_full_in_time",
                         emoji=REALM_CURRENCY,
                         in_time=format_dt(notes.realm_currency_recovery_time, style="R"),
@@ -456,7 +426,6 @@ class NotesView(View):
                 assert notes.transformer_recovery_time is not None
                 descriptions.append(
                     LocaleStr(
-                        "{emoji} available {in_time}",
                         key="notes_available",
                         emoji=PT_EMOJI,
                         in_time=format_dt(notes.transformer_recovery_time, style="R"),
@@ -465,7 +434,6 @@ class NotesView(View):
         elif isinstance(notes, StarRailNotes) and notes.stamina_recover_time.seconds > 0:
             descriptions.append(
                 LocaleStr(
-                    "{emoji} full {in_time}",
                     key="notes.item_full_in_time",
                     emoji=TRAILBLAZE_POWER,
                     in_time=format_dt(notes.stamina_recovery_time, style="R"),
@@ -498,7 +466,7 @@ class ReminderButton(Button[NotesView]):
         super().__init__(
             style=ButtonStyle.blurple,
             emoji=BELL_OUTLINE,
-            label=LocaleStr("Reminder settings", key="reminder_button.label"),
+            label=LocaleStr(key="reminder_button.label"),
         )
 
     async def callback(self, i: Interaction) -> None:

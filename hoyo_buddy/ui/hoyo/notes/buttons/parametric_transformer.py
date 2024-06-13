@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class PTReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
-            label=LocaleStr("Parametric transformer reminder", key="pt_button.label"),
+            label=LocaleStr(key="pt_button.label"),
             emoji=PT_EMOJI,
             row=row,
         )
@@ -26,11 +26,7 @@ class PTReminder(Button[NotesView]):
     async def callback(self, i: Interaction) -> None:
         notify = await NotesNotify.get_or_none(account=self.view._account, type=NotesNotifyType.PT)
 
-        modal = TypeTwoModal(
-            notify,
-            title=LocaleStr("Parametric Transformer Reminder Settings", key="pt_modal.title"),
-            min_notify_interval=30,
-        )
+        modal = TypeTwoModal(notify, title=LocaleStr(key="pt_modal.title"), min_notify_interval=30)
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()

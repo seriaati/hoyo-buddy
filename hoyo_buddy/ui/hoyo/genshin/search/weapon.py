@@ -85,11 +85,7 @@ class WeaponUI(View):
 
     def _setup_items(self) -> None:
         self.clear_items()
-        self.add_item(
-            EnterWeaponLevel(
-                label=LocaleStr("Change weapon level", key="change_weapon_level_label"),
-            )
-        )
+        self.add_item(EnterWeaponLevel(label=LocaleStr(key="change_weapon_level_label")))
         self.add_item(
             RefinementSelector(
                 min_refinement=1,
@@ -108,7 +104,7 @@ class WeaponUI(View):
 
 class WeaponLevelModal(Modal):
     level = TextInput(
-        label=LocaleStr("Level", key="level_label"),
+        label=LocaleStr(key="level_label"),
         placeholder="90",
         is_digit=True,
         min_value=1,
@@ -121,9 +117,7 @@ class EnterWeaponLevel(Button[WeaponUI]):
         super().__init__(label=label, style=ButtonStyle.blurple)
 
     async def callback(self, i: Interaction) -> Any:
-        modal = WeaponLevelModal(
-            title=LocaleStr("Enter Weapon Level", key="weapon_level.modal.title")
-        )
+        modal = WeaponLevelModal(title=LocaleStr(key="weapon_level.modal.title"))
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()
@@ -144,7 +138,7 @@ class RefinementSelector(Select["WeaponUI"]):
         super().__init__(
             options=[
                 SelectOption(
-                    label=LocaleStr("Refinement {r}", r=i, key="refinement_indicator"),
+                    label=LocaleStr(r=i, key="refinement_indicator"),
                     value=str(i),
                     default=current_refinement == i,
                 )

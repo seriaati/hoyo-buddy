@@ -39,7 +39,9 @@ class Others(commands.Cog):
         return "\n".join(self.format_commit(commit) for commit in commits)
 
     @app_commands.command(
-        name=locale_str("feedback", translate=False),
+        name=locale_str(
+            "feedback",
+        ),
         description=locale_str(
             "Give feedback to the bot's developer", key="feedback_command_description"
         ),
@@ -52,28 +54,19 @@ class Others(commands.Cog):
             locale,
             self.bot.translator,
             description=LocaleStr(
-                (
-                    "🤗 Hi! Thanks for taking the time to give me feedback.\n"
-                    "Click on the button below to start.\n\n"
-                    "Note: I might contact you for more details. So please keep your DMs opened (or join the [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
-                ),
                 key="feedback_command.description",
             ),
         )
         owner = await i.client.fetch_user(i.client.owner_id)
         assert owner is not None
         embed.set_author(name=owner.name, icon_url=owner.display_avatar.url)
-        embed.set_footer(
-            text=LocaleStr(
-                "",
-                key="feedback_command.footer",
-            )
-        )
         await i.followup.send(embed=embed, view=view)
         view.message = await i.original_response()
 
     @app_commands.command(
-        name=locale_str("about", translate=False),
+        name=locale_str(
+            "about",
+        ),
         description=locale_str("About the bot", key="about_command_description"),
     )
     async def about_command(self, i: Interaction) -> None:
@@ -86,15 +79,12 @@ class Others(commands.Cog):
             locale=locale,
             translator=self.bot.translator,
             title=f"{self.bot.user.name} {self.bot.version}",
-            description=LocaleStr(
-                "A feature rich, easy to use, and beautifully designed Discord bot specifically made for Hoyoverse gamers.",
-                key="about_embed.description",
-            ),
+            description=LocaleStr(key="about_embed.description"),
         )
 
         # latest changes
         embed.add_field(
-            name=LocaleStr("Latest changes", key="about_command.latest_changes"),
+            name=LocaleStr(key="about_command.latest_changes"),
             value=self.get_last_commits(),
             inline=False,
         )
@@ -103,7 +93,7 @@ class Others(commands.Cog):
         owner = await i.client.fetch_user(i.client.owner_id)
         assert owner is not None
         embed.add_field(
-            name=LocaleStr("Developer", key="about_command.developer"),
+            name=LocaleStr(key="about_command.developer"),
             value=get_discord_user_md_link(owner),
             inline=False,
         )
@@ -120,28 +110,28 @@ class Others(commands.Cog):
             get_discord_user_md_link(translator) for translator in translator_role.members
         ]
         embed.add_field(
-            name=LocaleStr("Translators", key="about_command.translators"),
+            name=LocaleStr(key="about_command.translators"),
             value=" ".join(translators),
             inline=False,
         )
 
         # guild count
         embed.add_field(
-            name=LocaleStr("Guild count", key="about_command.guild_count"),
+            name=LocaleStr(key="about_command.guild_count"),
             value=str(len(i.client.guilds)),
         )
 
         # ram usage
         memory_usage = self.process.memory_info().rss / 1024**2
         embed.add_field(
-            name=LocaleStr("RAM Usage", key="about_command.ram_usage"),
+            name=LocaleStr(key="about_command.ram_usage"),
             value=f"{memory_usage:.2f} MB",
         )
 
         # uptime
         uptime = discord.utils.format_dt(i.client.uptime, "R")
         embed.add_field(
-            name=LocaleStr("Uptime", key="about_command.uptime"),
+            name=LocaleStr(key="about_command.uptime"),
             value=uptime,
         )
 
@@ -150,7 +140,7 @@ class Others(commands.Cog):
         view.add_item(Button(label="GitHub", url=self.repo_url, emoji=GITHUB_WHITE_ICON, row=0))
         view.add_item(
             Button(
-                label=LocaleStr("Discord server", key="about_command.discord_server"),
+                label=LocaleStr(key="about_command.discord_server"),
                 url="https://dsc.gg/hoyo-buddy",
                 emoji=DISCORD_WHITE_ICON,
                 row=0,
@@ -158,14 +148,14 @@ class Others(commands.Cog):
         )
         view.add_item(
             Button(
-                label=LocaleStr("Official website", key="about_command.website"),
+                label=LocaleStr(key="about_command.website"),
                 url="https://seria.is-a.dev/hoyo-buddy",
                 row=1,
             )
         )
         view.add_item(
             Button(
-                label=LocaleStr("Invite bot", key="about_command.invite"),
+                label=LocaleStr(key="about_command.invite"),
                 url="https://dub.sh/hb-invite"
                 if self.bot.env == "prod"
                 else "https://dub.sh/hb-beta-invite",
@@ -174,14 +164,14 @@ class Others(commands.Cog):
         )
         view.add_item(
             Button(
-                label=LocaleStr("Support developer", key="about_command.support"),
+                label=LocaleStr(key="about_command.support"),
                 url="https://buymeacoffee.com/seria",
                 row=1,
             )
         )
         view.add_item(
             Button(
-                label=LocaleStr("Contribute", key="about_command.contribute"),
+                label=LocaleStr(key="about_command.contribute"),
                 url="https://github.com/seriaati/hoyo-buddy/blob/main/CONTRIBUTING.md",
                 row=1,
             )

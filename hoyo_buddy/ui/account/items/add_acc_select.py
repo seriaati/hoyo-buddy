@@ -49,7 +49,6 @@ class AddAccountSelect(Select["AccountManager"]):
             options=options,
             max_values=len(options),
             placeholder=LocaleStr(
-                "Select the accounts you want to add...",
                 key="select_accounts_to_add_placeholder",
             ),
         )
@@ -58,11 +57,7 @@ class AddAccountSelect(Select["AccountManager"]):
         for account in self.accounts:
             if isinstance(account.game, GenshinGame):
                 level_str = self.translator.translate(
-                    LocaleStr(
-                        "Lv.{level}",
-                        key="level_str",
-                        level=account.level,
-                    ),
+                    LocaleStr(key="level_str", level=account.level),
                     self.locale,
                 )
 

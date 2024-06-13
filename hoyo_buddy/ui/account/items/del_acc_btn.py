@@ -21,7 +21,7 @@ class DeleteAccountContinue(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="delete_account_continue",
-            label=LocaleStr("Continue", key="continue_button_label"),
+            label=LocaleStr(key="continue_button_label"),
             emoji=FORWARD,
             style=ButtonStyle.blurple,
         )
@@ -36,7 +36,7 @@ class DeleteAccountButton(Button["AccountManager"]):
             custom_id="delete_account",
             style=ButtonStyle.red,
             emoji=DELETE,
-            label=LocaleStr("Delete selected account", key="delete_account_button_label"),
+            label=LocaleStr(key="delete_account_button_label"),
             row=3,
         )
 
@@ -53,12 +53,8 @@ class DeleteAccountButton(Button["AccountManager"]):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr("Account Deleted", key="account_deleted_title"),
-            description=LocaleStr(
-                "{account} has been deleted.",
-                key="account_deleted_description",
-                account=str(account),
-            ),
+            title=LocaleStr(key="account_deleted_title"),
+            description=LocaleStr(key="account_deleted_description", account=str(account)),
         )
         self.view.clear_items()
         self.view.add_item(DeleteAccountContinue())

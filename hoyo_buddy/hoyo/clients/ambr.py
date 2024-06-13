@@ -126,11 +126,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         )
 
         level_str = self.translator.translate(
-            LocaleStr(
-                "Lv.{level}",
-                key="level_str",
-                level=level,
-            ),
+            LocaleStr(key="level_str", level=level),
             self.locale,
         )
         embed = DefaultEmbed(
@@ -138,12 +134,6 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             self.translator,
             title=f"{character.name} ({level_str})",
             description=LocaleStr(
-                (
-                    "{rarity}★ {element}\n"
-                    "Birthday: {birthday}\n"
-                    "Constellation: {constellation}\n"
-                    "Affiliation: {affiliation}\n"
-                ),
                 key="character_embed_description",
                 rarity=character.rarity,
                 element=get_gi_element_emoji(character.element.name),
@@ -154,7 +144,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         )
 
         embed.add_field(
-            name=LocaleStr("Stats", key="stats_embed_field_name"),
+            name=LocaleStr(key="stats_embed_field_name"),
             value="\n".join(f"{k}: {v}" for k, v in named_stat_values.items()),
         )
         embed.set_footer(text=character.info.detail)
@@ -181,11 +171,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
                 level = level_upgrade.level
 
             embed.add_field(
-                name=LocaleStr(
-                    "Skill Attributes (Lv.{level})",
-                    key="skill_attributes_embed_field_name",
-                    level=level,
-                ),
+                name=LocaleStr(key="skill_attributes_embed_field_name", level=level),
                 value=autils.get_skill_attributes(level_upgrade.description, level_upgrade.params),
             )
         embed.set_thumbnail(url=talent.icon)
@@ -267,11 +253,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         sub_stat_name = manual_weapon[sub_stat.prop_type] if sub_stat.prop_type else None
         sub_stat_value = stat_values[sub_stat.prop_type] if sub_stat.prop_type else None
 
-        level_str = LocaleStr(
-            "Lv.{level}",
-            key="level_str",
-            level=level,
-        ).translate(self.translator, self.locale)
+        level_str = LocaleStr(key="level_str", level=level).translate(self.translator, self.locale)
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -285,7 +267,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
 
         if weapon.affix:
             embed.add_field(
-                name=LocaleStr("Refinement {r}", r=refinement, key="refinement_indicator"),
+                name=LocaleStr(r=refinement, key="refinement_indicator"),
                 value=weapon.affix.upgrades[refinement - 1].description,
             )
         embed.set_thumbnail(url=weapon.icon)
@@ -318,7 +300,6 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
 
         description = self.translator.translate(
             LocaleStr(
-                "2-Pieces: {bonus_2}",
                 bonus_2=artifact_set.affix_list[0].effect,
                 key="artifact_set_two_piece_embed_description",
             ),
@@ -326,7 +307,6 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         )
         if len(artifact_set.affix_list) == 2:
             four_piece = LocaleStr(
-                "4-Pieces: {bonus_4}",
                 bonus_4=artifact_set.affix_list[1].effect,
                 key="artifact_set_four_piece_embed_description",
             )
@@ -404,10 +384,6 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             self.translator,
             title=f"{furniture.name}\n{'★' * furniture.rarity}",
             description=LocaleStr(
-                "{comfort_icon} Comfort: {comfort}\n"
-                "{load_icon} Load: {load}\n"
-                "Trust: {trust}\n"
-                "Creation Time: {hour}h",
                 key="furniture_embed_description",
                 comfort_icon=COMFORT_ICON,
                 load_icon=LOAD_ICON,
@@ -530,9 +506,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
                         name=dictionary.name, value=dictionary.description, inline=False
                     )
 
-        embed.add_field(
-            name=LocaleStr("Dice Cost", key="dice_cost_embed_field_name"), value=dice_str
-        )
+        embed.add_field(name=LocaleStr(key="dice_cost_embed_field_name"), value=dice_str)
 
         embed.set_author(name="/".join([t.name for t in talent.tags]))
         embed.set_thumbnail(url=talent.icon)
@@ -554,7 +528,6 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             self.locale,
             self.translator,
             title=LocaleStr(
-                "Floor {floor_index} - Chamber {chamber_index}",
                 floor_index=floor_index + 1,
                 chamber_index=chamber_index + 1,
                 key="abyss_chamber.embed.title",
@@ -562,26 +535,22 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         )
 
         embed.add_field(
-            name=LocaleStr("Enemy Level", key="abyss_chamber.enemy_level.embed.field.name"),
+            name=LocaleStr(key="abyss_chamber.enemy_level.embed.field.name"),
             value=str(floor.override_enemy_level),
             inline=False,
         )
         embed.add_field(
-            name=LocaleStr("Blessing", key="abyss_chamber.blessing.embed.field.name"),
+            name=LocaleStr(key="abyss_chamber.blessing.embed.field.name"),
             value=blessing.description,
             inline=False,
         )
         embed.add_field(
-            name=LocaleStr(
-                "Challenge Target", key="abyss_chamber.challenge_target.embed.field.name"
-            ),
+            name=LocaleStr(key="abyss_chamber.challenge_target.embed.field.name"),
             value=chamber.challenge_target.formatted,
             inline=False,
         )
         embed.add_field(
-            name=LocaleStr(
-                "Ley Line Disorder", key="abyss_chamber.ley_line_disorder.embed.field.name"
-            ),
+            name=LocaleStr(key="abyss_chamber.ley_line_disorder.embed.field.name"),
             value=create_bullet_list(
                 [lld.description for lld in floor.ley_line_disorders if lld.visible]
             ),
@@ -621,7 +590,6 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             prop_values[prop] *= multiplier
 
         title_locale_str = LocaleStr(
-            "HP: {HP}",
             key="abyss_enemy.item_description",
             HP=f"{round(prop_values['FIGHT_PROP_BASE_HP']):,}",
         )

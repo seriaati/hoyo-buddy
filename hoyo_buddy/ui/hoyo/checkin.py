@@ -58,7 +58,7 @@ class CheckInUI(View):
         self.add_item(
             Button(
                 url=CHECK_IN_URLS[self.client.game],
-                label=LocaleStr("Make up for check-in", key="make_up_for_checkin_button_label"),
+                label=LocaleStr(key="make_up_for_checkin_button_label"),
             )
         )
         self.add_item(AutoCheckInToggle(self.account.daily_checkin))
@@ -124,9 +124,8 @@ class CheckInUI(View):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr("Daily Check-In", key="daily_checkin_embed_title"),
+            title=LocaleStr(key="daily_checkin_embed_title"),
             description=LocaleStr(
-                "Checked in {day} day(s) this month\n" "Missed check-in for {missed} day(s)\n",
                 key="daily_checkin_embed_description",
                 day=info.claimed_rewards,
                 missed=info.missed_rewards,
@@ -152,7 +151,7 @@ class CheckInButton(Button[CheckInUI]):
     def __init__(self) -> None:
         super().__init__(
             style=discord.ButtonStyle.primary,
-            label=LocaleStr("Check-in", key="checkin_button_label"),
+            label=LocaleStr(key="checkin_button_label"),
             emoji=emojis.FREE_CANCELLATION,
         )
 
@@ -179,7 +178,7 @@ class AutoCheckInToggle(ToggleButton[CheckInUI]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            LocaleStr("Auto daily check-in", key="auto_checkin_button_label"),
+            LocaleStr(key="auto_checkin_button_label"),
             emoji=emojis.SMART_TOY,
         )
 
@@ -192,7 +191,7 @@ class AutoCheckInToggle(ToggleButton[CheckInUI]):
 class NotificationSettingsButton(Button[CheckInUI]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Notification settings", key="notification_settings_button_label"),
+            label=LocaleStr(key="notification_settings_button_label"),
             emoji=emojis.SETTINGS,
             row=1,
         )
@@ -219,7 +218,7 @@ class NotifyOnFailureToggle(ToggleButton[CheckInUI]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            LocaleStr("Notify on check-in failure", key="notify_on_failure_button_label"),
+            LocaleStr(key="notify_on_failure_button_label"),
         )
 
     async def callback(self, i: Interaction) -> Any:
@@ -233,7 +232,7 @@ class NotifyOnSuccessToggle(ToggleButton[CheckInUI]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            LocaleStr("Notify on check-in success", key="notify_on_success_button_label"),
+            LocaleStr(key="notify_on_success_button_label"),
         )
 
     async def callback(self, i: Interaction) -> Any:

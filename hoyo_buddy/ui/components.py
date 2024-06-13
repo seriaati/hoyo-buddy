@@ -106,11 +106,8 @@ class View(discord.ui.View):
             embed = ErrorEmbed(
                 locale or i.locale,
                 self.translator,
-                title=LocaleStr("Interaction Failed", key="interaction_failed_title"),
-                description=LocaleStr(
-                    "This view is not initiated by you, therefore you cannot use it.",
-                    key="interaction_failed_description",
-                ),
+                title=LocaleStr(key="interaction_failed_title"),
+                description=LocaleStr(key="interaction_failed_description"),
             )
             await i.response.send_message(embed=embed, ephemeral=True)
             return False
@@ -245,9 +242,7 @@ class Button(discord.ui.Button, Generic[V_co]):
 
         self.disabled = True
         self.emoji = emojis.LOADING
-        self.label = self.view.translator.translate(
-            LocaleStr("Loading...", key="loading_text"), self.view.locale
-        )
+        self.label = self.view.translator.translate(LocaleStr(key="loading_text"), self.view.locale)
 
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 
@@ -323,13 +318,12 @@ class ToggleButton(Button, Generic[V_co]):
 
     def _get_label(self) -> LocaleStr:
         return LocaleStr(
-            "{toggle_label}: {toggle}",
-            key="toggle_button_label",
+            custom_str="{toggle_label}: {toggle}",
             toggle_label=self.toggle_label,
             toggle=(
-                LocaleStr("on", key="toggle_on_text")
+                LocaleStr(key="toggle_on_text")
                 if self.current_toggle
-                else LocaleStr("off", key="toggle_off_text")
+                else LocaleStr(key="toggle_off_text")
             ),
             translate=False,
         )
@@ -356,7 +350,7 @@ class SelectOption(discord.SelectOption):
         default: bool = False,
     ) -> None:
         super().__init__(
-            label=label if isinstance(label, str) else label.message,
+            label=label if isinstance(label, str) else label.identifier,
             value=value,
             emoji=emoji,
             default=default,
@@ -436,7 +430,7 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.options = [
             SelectOption(
                 label=self.view.translator.translate(
-                    LocaleStr("Loading...", key="loading_text"), self.view.locale
+                    LocaleStr(key="loading_text"), self.view.locale
                 ),
                 value="loading",
                 default=True,
@@ -478,12 +472,12 @@ class Select(discord.ui.Select, Generic[V_co]):
 
 
 NEXT_PAGE = SelectOption(
-    label=LocaleStr("Next page", key="next_page_option_label"),
+    label=LocaleStr(key="next_page_option_label"),
     value="next_page",
     emoji=emojis.FORWARD,
 )
 PREV_PAGE = SelectOption(
-    label=LocaleStr("Previous page", key="prev_page_option_label"),
+    label=LocaleStr(key="prev_page_option_label"),
     value="prev_page",
     emoji=emojis.BACK,
 )
@@ -641,7 +635,6 @@ class Modal(discord.ui.Modal):
                 except ValueError as e:
                     raise InvalidInputError(
                         LocaleStr(
-                            "Input `{input}` needs to be an integer",
                             key="invalid_input.input_needs_to_be_int",
                             input=item.label,
                         )
@@ -649,7 +642,6 @@ class Modal(discord.ui.Modal):
                 if item.max_value is not None and value > item.max_value:
                     raise InvalidInputError(
                         LocaleStr(
-                            "Input `{input}` needs to be less than or equal to {max_value}",
                             key="invalid_input.input_out_of_range.max_value",
                             input=item.label,
                             max_value=item.max_value,
@@ -658,7 +650,6 @@ class Modal(discord.ui.Modal):
                 if item.min_value is not None and value < item.min_value:
                     raise InvalidInputError(
                         LocaleStr(
-                            "Input `{input}` needs to be greater than or equal to {min_value}",
                             key="invalid_input.input_out_of_range.min_value",
                             min_value=item.min_value,
                             input=item.label,
@@ -667,11 +658,7 @@ class Modal(discord.ui.Modal):
             elif isinstance(item, TextInput) and item.is_bool:
                 if item.value not in {"0", "1"}:
                     raise InvalidInputError(
-                        LocaleStr(
-                            "Input `{input}` needs to be either `0` (for false) or `1` (for true)",
-                            key="invalid_input.input_needs_to_be_bool",
-                            input=item.label,
-                        )
+                        LocaleStr(key="invalid_input.input_needs_to_be_bool", input=item.label)
                     )
 
     @property

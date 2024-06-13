@@ -162,9 +162,7 @@ class FloorSelect(Select[AbyssEnemyView]):
         super().__init__(
             options=[
                 SelectOption(
-                    label=LocaleStr(
-                        "Floor {value}", key="floor_select_label", value=str(index + 1)
-                    ),
+                    label=LocaleStr(key="floor_select_label", value=str(index + 1)),
                     value=str(index),
                     default=index == floor_index,
                 )
@@ -184,9 +182,7 @@ class FloorSelect(Select[AbyssEnemyView]):
 class ChamberButton(Button[AbyssEnemyView]):
     def __init__(self, chamber_index: int) -> None:
         super().__init__(
-            label=LocaleStr(
-                "Chamber {value}", key="chamber_button_label", value=str(chamber_index + 1)
-            ),
+            label=LocaleStr(key="chamber_button_label", value=str(chamber_index + 1)),
             custom_id=f"chamber_{chamber_index}_btn",
             row=2,
         )
@@ -202,7 +198,7 @@ class ChamberButton(Button[AbyssEnemyView]):
 class WaveButton(Button[AbyssEnemyView]):
     def __init__(self, wave_index: int) -> None:
         super().__init__(
-            label=LocaleStr("Wave {value}", key="wave_button_label", value=str(wave_index + 1)),
+            label=LocaleStr(key="wave_button_label", value=str(wave_index + 1)),
             custom_id=f"wave_{wave_index}_btn",
             row=3,
         )

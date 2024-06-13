@@ -40,10 +40,7 @@ class Hoyo(commands.Cog):
         if uid is not None:
             if game_value is None:
                 raise IncompleteParamError(
-                    LocaleStr(
-                        "You must specify the game of the UID",
-                        key="game_value_incomplete_param_error_message",
-                    )
+                    LocaleStr(key="game_value_incomplete_param_error_message")
                 )
             uid_ = int(uid)
             game = Game(game_value)
@@ -56,7 +53,9 @@ class Hoyo(commands.Cog):
         return uid_, game, account_
 
     @app_commands.command(
-        name=app_commands.locale_str("check-in", translate=False),
+        name=app_commands.locale_str(
+            "check-in",
+        ),
         description=app_commands.locale_str(
             "Game daily check-in", key="checkin_command_description"
         ),
@@ -96,7 +95,9 @@ class Hoyo(commands.Cog):
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("profile", translate=False),
+        name=app_commands.locale_str(
+            "profile",
+        ),
         description=app_commands.locale_str(
             "View your in-game profile and generate character build cards",
             key="profile_command_description",
@@ -105,7 +106,9 @@ class Hoyo(commands.Cog):
     @app_commands.rename(
         user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
         account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
-        uid=app_commands.locale_str("uid", translate=False),
+        uid=app_commands.locale_str(
+            "uid",
+        ),
         game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
     )
     @app_commands.describe(
@@ -128,11 +131,15 @@ class Hoyo(commands.Cog):
     @app_commands.choices(
         game_value=[
             app_commands.Choice(
-                name=app_commands.locale_str(Game.GENSHIN.value, warn_no_key=False),
+                name=app_commands.locale_str(
+                    Game.GENSHIN.value,
+                ),
                 value=Game.GENSHIN.value,
             ),
             app_commands.Choice(
-                name=app_commands.locale_str(Game.STARRAIL.value, warn_no_key=False),
+                name=app_commands.locale_str(
+                    Game.STARRAIL.value,
+                ),
                 value=Game.STARRAIL.value,
             ),
         ]
@@ -170,7 +177,9 @@ class Hoyo(commands.Cog):
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("notes", translate=False),
+        name=app_commands.locale_str(
+            "notes",
+        ),
         description=app_commands.locale_str(
             "View real-time notes", key="notes_command_description"
         ),
@@ -209,7 +218,9 @@ class Hoyo(commands.Cog):
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("characters", translate=False),
+        name=app_commands.locale_str(
+            "characters",
+        ),
         description=app_commands.locale_str(
             "View all of your characters", key="characters_command_description"
         ),
@@ -263,7 +274,9 @@ class Hoyo(commands.Cog):
         await view.start(i, show_first_time_msg=account_.game is Game.GENSHIN)
 
     @app_commands.command(
-        name=app_commands.locale_str("challenge", translate=False),
+        name=app_commands.locale_str(
+            "challenge",
+        ),
         description=app_commands.locale_str(
             "View game end-game content statistics, like spiral abyss, memory of chaos, etc.",
             key="challenge_command_description",
@@ -293,7 +306,9 @@ class Hoyo(commands.Cog):
         await command.run()
 
     @app_commands.command(
-        name=app_commands.locale_str("exploration", translate=False),
+        name=app_commands.locale_str(
+            "exploration",
+        ),
         description=app_commands.locale_str(
             "View your exploration statistics in Genshin Impact",
             key="exploration_command_description",
@@ -346,7 +361,9 @@ class Hoyo(commands.Cog):
         await i.followup.send(embed=embed, files=[file_])
 
     @app_commands.command(
-        name=app_commands.locale_str("redeem", translate=False),
+        name=app_commands.locale_str(
+            "redeem",
+        ),
         description=app_commands.locale_str(
             "Redeem codes for in-game rewards",
             key="redeem_command_description",
@@ -383,7 +400,9 @@ class Hoyo(commands.Cog):
         view.message = await i.original_response()
 
     @app_commands.command(
-        name=app_commands.locale_str("geetest", translate=False),
+        name=app_commands.locale_str(
+            "geetest",
+        ),
         description=app_commands.locale_str(
             "Complete geetest verification",
             key="geetest_command_description",
@@ -406,11 +425,15 @@ class Hoyo(commands.Cog):
     @app_commands.choices(
         type_=[
             app_commands.Choice(
-                name=app_commands.locale_str(GeetestType.REALTIME_NOTES.value, warn_no_key=False),
+                name=app_commands.locale_str(
+                    GeetestType.REALTIME_NOTES.value,
+                ),
                 value=GeetestType.REALTIME_NOTES.value,
             ),
             app_commands.Choice(
-                name=app_commands.locale_str(GeetestType.DAILY_CHECKIN.value, warn_no_key=False),
+                name=app_commands.locale_str(
+                    GeetestType.DAILY_CHECKIN.value,
+                ),
                 value=GeetestType.DAILY_CHECKIN.value,
             ),
         ]

@@ -165,18 +165,17 @@ class Farm(
 
     @farm_add_command.autocomplete("query")
     async def query_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:
+        locale = await get_locale(i)
+
         try:
             characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
             weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
         except KeyError:
-            return [
-                self.bot.get_error_app_command_choice(
-                    LocaleStr(key="search_autocomplete_not_setup")
-                )
-            ]
+            return self.bot.get_error_autocomplete(
+                LocaleStr(key="search_autocomplete_not_setup"), locale
+            )
 
         if not current:
-            locale = await get_locale(i)
             choice_dict = dict(
                 characters.get(locale.value, characters[Locale.american_english.value]).items()
             )

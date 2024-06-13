@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeAlias
 
+import aiocache
 import aiohttp
 import discord
 import enka
@@ -99,6 +100,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.pool = pool
         self.executor = concurrent.futures.ProcessPoolExecutor()
         self.config = config
+        self.cache = aiocache.SimpleMemoryCache()
 
         self.autocomplete_choices: AutocompleteChoices = {}
         """[game][category][locale][item_name] -> item_id"""
@@ -155,12 +157,15 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         return message
 
-    @staticmethod
-    def get_error_app_command_choice(error_message: LocaleStr) -> app_commands.Choice[str]:
-        return app_commands.Choice(
-            name=error_message.to_app_command_locale_str(),
-            value="none",
-        )
+    def get_error_autocomplete(
+        self, error_message: LocaleStr, locale: discord.Locale
+    ) -> list[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(
+                name=error_message.translate(self.translator, locale),
+                value="none",
+            )
+        ]
 
     def get_enum_autocomplete(
         self, enums: Sequence[StrEnum], locale: discord.Locale, current: str
@@ -207,16 +212,12 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         if not accounts:
             if is_author:
-                return [
-                    self.get_error_app_command_choice(
-                        LocaleStr(key="no_accounts_autocomplete_choice")
-                    )
-                ]
-            return [
-                self.get_error_app_command_choice(
-                    LocaleStr(key="user_no_accounts_autocomplete_choice")
+                return self.get_error_autocomplete(
+                    LocaleStr(key="no_accounts_autocomplete_choice"), locale
                 )
-            ]
+            return self.get_error_autocomplete(
+                LocaleStr(key="user_no_accounts_autocomplete_choice"), locale
+            )
 
         return [
             discord.app_commands.Choice(

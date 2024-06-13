@@ -401,22 +401,23 @@ class Search(commands.Cog):
     async def search_command_category_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
+        locale = await get_locale(i)
         try:
             game = Game(i.namespace.game)
         except ValueError:
-            return [self.bot.get_error_app_command_choice(LocaleStr(key="invalid_game_selected"))]
+            return self.bot.get_error_autocomplete(LocaleStr(key="invalid_game_selected"), locale)
 
-        locale = await get_locale(i)
         return self.bot.get_enum_autocomplete(self._search_categories[game], locale, current)
 
     @search_command.autocomplete("query")
     async def search_command_query_autocomplete(  # noqa: PLR0912, PLR0911
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
+        locale = await get_locale(i)
         try:
-            game = Game(i.namespace.game_value)
+            game = Game(i.namespace.game)
         except ValueError:
-            return [self.bot.get_error_app_command_choice(LocaleStr(key="invalid_game_selected"))]
+            return self.bot.get_error_autocomplete(LocaleStr(key="invalid_game_selected"), locale)
 
         try:
             if game is Game.GENSHIN:
@@ -424,27 +425,24 @@ class Search(commands.Cog):
             elif game is Game.STARRAIL:
                 category = yatta.ItemCategory(i.namespace.category)
             else:
-                return [
-                    self.bot.get_error_app_command_choice(LocaleStr(key="invalid_game_selected"))
-                ]
+                return self.bot.get_error_autocomplete(
+                    LocaleStr(key="invalid_game_selected"), locale
+                )
         except ValueError:
-            return [
-                self.bot.get_error_app_command_choice(LocaleStr(key="invalid_category_selected"))
-            ]
+            return self.bot.get_error_autocomplete(
+                LocaleStr(key="invalid_category_selected"), locale
+            )
 
         # Special handling for spiral abyss
         if category is ambr.ItemCategory.SPIRAL_ABYSS:
             return await AbyssEnemyView.get_autocomplete_choices()
 
         if not self.bot.autocomplete_choices or game not in self.bot.autocomplete_choices:
-            return [
-                self.bot.get_error_app_command_choice(
-                    LocaleStr(key="search_autocomplete_not_setup")
-                )
-            ]
+            return self.bot.get_error_autocomplete(
+                LocaleStr(key="search_autocomplete_not_setup"), locale
+            )
 
         if not current:
-            locale = await get_locale(i)
             try:
                 choice_dict = self.bot.autocomplete_choices[game][category][locale.value]
             except KeyError:
@@ -453,11 +451,9 @@ class Search(commands.Cog):
                         Locale.american_english.value
                     ]
                 except KeyError:
-                    return [
-                        self.bot.get_error_app_command_choice(
-                            LocaleStr(key="search_autocomplete_no_results")
-                        )
-                    ]
+                    return self.bot.get_error_autocomplete(
+                        LocaleStr(key="search_autocomplete_no_results"), locale
+                    )
         else:
             choice_dict = {
                 k: v
@@ -472,11 +468,9 @@ class Search(commands.Cog):
         ]
 
         if not choices:
-            return [
-                self.bot.get_error_app_command_choice(
-                    LocaleStr(key="search_autocomplete_no_results")
-                )
-            ]
+            return self.bot.get_error_autocomplete(
+                LocaleStr(key="search_autocomplete_no_results"), locale
+            )
 
         random.shuffle(choices)
         return choices[:25]

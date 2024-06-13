@@ -12,8 +12,8 @@ from seria.utils import create_bullet_list, shorten
 
 from hoyo_buddy.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_gi_element_emoji
 
-from ...bot.translator import LocaleStr, Translator
-from ...constants import LOCALE_TO_AMBR_LANG, WEEKDAYS, contains_traveler_id
+from ...bot.translator import LocaleStr, Translator, WeekdayStr
+from ...constants import LOCALE_TO_AMBR_LANG, contains_traveler_id
 from ...embeds import DefaultEmbed
 from ...enums import TalentBoost
 from ...models import ItemWithDescription
@@ -350,7 +350,10 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             for source in material.sources:
                 if source.days:
                     days_str = ", ".join(
-                        [self.translator.translate(WEEKDAYS[d], self.locale) for d in source.days]
+                        [
+                            self.translator.translate(WeekdayStr(day), self.locale)
+                            for day in source.days
+                        ]
                     )
                     names.append(f"{source.name} ({days_str})")
                 else:

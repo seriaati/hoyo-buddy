@@ -294,10 +294,7 @@ class CharactersView(View):
                 embed.add_field(
                     name=LocaleStr(
                         key="characters.embed.element_max_friendship",
-                        element=[
-                            LocaleStr(custom_str=element.value.title())
-                            for element in self._element_filters
-                        ],
+                        element=[EnumStr(element) for element in self._element_filters],
                     )
                     if self._element_filters
                     else LocaleStr(key="characters.embed.max_friendship"),
@@ -308,10 +305,7 @@ class CharactersView(View):
                 embed.add_field(
                     name=LocaleStr(
                         key="characters.embed.element_not_max_friendship",
-                        element=[
-                            LocaleStr(custom_str=element.value.title())
-                            for element in self._element_filters
-                        ],
+                        element=[EnumStr(element) for element in self._element_filters],
                     )
                     if self._element_filters
                     else LocaleStr(key="characters.embed.not_max_friendship"),
@@ -326,10 +320,7 @@ class CharactersView(View):
             embed.add_field(
                 name=LocaleStr(
                     key="characters.embed.element_filters",
-                    element=[
-                        LocaleStr(custom_str=element.value.title())
-                        for element in self._element_filters
-                    ],
+                    element=[EnumStr(element) for element in self._element_filters],
                 ),
                 value=f"{char_num}/{total_chars}",
                 inline=False,
@@ -340,10 +331,7 @@ class CharactersView(View):
             embed.add_field(
                 name=LocaleStr(
                     key="characters.embed.path_filters",
-                    path=[
-                        LocaleStr(custom_str=path.value.title().replace("_", " "))
-                        for path in self._path_filters
-                    ],
+                    path=[EnumStr(path) for path in self._path_filters],
                 ),
                 value=f"{char_num}/{total_chars}",
                 inline=False,

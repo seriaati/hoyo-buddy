@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, User
 
-from ...bot.translator import EnumStr, LocaleStr, Translator
+from ...bot.translator import EnumStr, LocaleStr, Translator, WeekdayStr
 from ...constants import UID_TZ_OFFSET, WEEKDAYS
 from ...draw.main_funcs import draw_farm_card
 from ...embeds import DefaultEmbed
@@ -91,9 +91,9 @@ class WeekdaySelect(Select[FarmView]):
             placeholder=LocaleStr(key="farm_view.weekday_select.placeholder"),
             options=[
                 SelectOption(
-                    label=LocaleStr(custom_str=label), value=str(value), default=value == current
+                    label=WeekdayStr(weekday), value=str(weekday), default=weekday == current
                 )
-                for value, label in WEEKDAYS.items()
+                for weekday in WEEKDAYS
             ],
             row=0,
         )

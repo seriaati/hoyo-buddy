@@ -18,10 +18,8 @@ class Login(commands.Cog):
         self.bot = bot
 
     @app_commands.command(
-        name=locale_str(
-            "accounts",
-        ),
-        description=locale_str("Manage your accounts", key="accounts_command_description"),
+        name=locale_str("accounts", translate=False),
+        description=locale_str("accounts_command_description"),
     )
     async def accounts(self, i: Interaction) -> Any:
         locale = await get_locale(i)

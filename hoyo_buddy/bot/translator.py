@@ -9,6 +9,7 @@ from discord import app_commands
 from loguru import logger
 from seria.utils import read_json, read_yaml
 
+from ..constants import WEEKDAYS
 from ..enums import GenshinElement, HSRElement
 from ..utils import capitalize_first_word as capitalize_first_word_
 from ..utils import convert_to_title_case
@@ -52,11 +53,15 @@ LANGUAGES = (
 )
 
 
+def gen_string_key(string: str) -> str:
+    return string.replace(" ", "_").replace(",", "").replace(".", "").replace("-", "_").lower()
+
+
 class LocaleStr:
     def __init__(
         self,
         *,
-        # custom_str: str | None = None,
+        custom_str: str | None = None,
         key: str | None = None,
         translate: bool = True,
         **kwargs: Any,
@@ -85,12 +90,17 @@ class LocaleStr:
 
 class EnumStr(LocaleStr):
     def __init__(self, enum: StrEnum) -> None:
-        super().__init__(custom_str=enum.value)
+        super().__init__(key=gen_string_key(enum.value))
 
 
 class LevelStr(LocaleStr):
     def __init__(self, level: int) -> None:
         super().__init__(key="level_str", level=level)
+
+
+class WeekdayStr(LocaleStr):
+    def __init__(self, weekday: int) -> None:
+        super().__init__(key=WEEKDAYS[weekday].lower())
 
 
 class Translator:
@@ -200,14 +210,7 @@ class Translator:
             if string.custom_str is None:
                 msg = "Either key or custom_str must be provided"
                 raise ValueError(msg)
-
-            string_key = (
-                string.custom_str.replace(" ", "_")
-                .replace(",", "")
-                .replace(".", "")
-                .replace("-", "_")
-                .lower()
-            )
+            string_key = gen_string_key(string.custom_str)
         else:
             string_key = string.key
         return string_key
@@ -253,7 +256,6 @@ class AppCommandTranslator(app_commands.Translator):
     async def translate(
         self, string: app_commands.locale_str, locale: Locale, _: TranslationContextTypes
     ) -> str:
-        if "key" not in string.extras:
+        if not string.extras.get("translate", True):
             return string.message
-        locale_str_ = LocaleStr(**string.extras)
-        return self.translator.translate(locale_str_, locale)
+        return self.translator.translate(LocaleStr(key=string.message), locale)

@@ -39,12 +39,8 @@ class Others(commands.Cog):
         return "\n".join(self.format_commit(commit) for commit in commits)
 
     @app_commands.command(
-        name=locale_str(
-            "feedback",
-        ),
-        description=locale_str(
-            "Give feedback to the bot's developer", key="feedback_command_description"
-        ),
+        name=locale_str("feedback", translate=False),
+        description=locale_str("feedback_command_description"),
     )
     async def feedback_command(self, i: Interaction) -> Any:
         await i.response.defer()
@@ -64,10 +60,8 @@ class Others(commands.Cog):
         view.message = await i.original_response()
 
     @app_commands.command(
-        name=locale_str(
-            "about",
-        ),
-        description=locale_str("About the bot", key="about_command_description"),
+        name=locale_str("about", translate=False),
+        description=locale_str("about_command_description"),
     )
     async def about_command(self, i: Interaction) -> None:
         await i.response.defer()

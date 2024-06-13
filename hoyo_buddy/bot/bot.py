@@ -28,6 +28,7 @@ from .translator import AppCommandTranslator, EnumStr, LocaleStr, Translator
 if TYPE_CHECKING:
     import asyncio
     from collections.abc import Sequence
+    from enum import StrEnum
 
     import asyncpg
     import git
@@ -160,6 +161,17 @@ class HoyoBuddy(commands.AutoShardedBot):
             name=error_message.to_app_command_locale_str(),
             value="none",
         )
+
+    def get_enum_autocomplete(
+        self, enums: Sequence[StrEnum], locale: discord.Locale, current: str
+    ) -> list[discord.app_commands.Choice[str]]:
+        return [
+            discord.app_commands.Choice(
+                name=EnumStr(enum).translate(self.translator, locale), value=enum.value
+            )
+            for enum in enums
+            if current.lower() in EnumStr(enum).translate(self.translator, locale).lower()
+        ]
 
     async def get_account_autocomplete(
         self,

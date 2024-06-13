@@ -8,7 +8,7 @@ from discord import Locale, app_commands
 from discord.ext import commands
 from loguru import logger
 
-from ..bot.translator import LocaleStr
+from ..bot.translator import EnumStr, LocaleStr
 from ..db.models import Settings, get_locale
 from ..emojis import PROJECT_AMBER
 from ..enums import Game
@@ -29,9 +29,9 @@ class Search(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
-        self._search_categories: dict[Game, list[str]] = {
-            Game.GENSHIN: [c.value for c in ambr.ItemCategory],
-            Game.STARRAIL: [c.value for c in yatta.ItemCategory],
+        self._search_categories: dict[Game, list[ambr.ItemCategory | yatta.ItemCategory]] = {
+            Game.GENSHIN: list(ambr.ItemCategory),
+            Game.STARRAIL: list(yatta.ItemCategory),
         }
         self._beta_id_to_category: dict[str, str] = {}
         self._tasks: set[asyncio.Task] = set()
@@ -65,46 +65,18 @@ class Search(commands.Cog):
         )
 
     @app_commands.command(
-        name=app_commands.locale_str(
-            "search",
-        ),
-        description=app_commands.locale_str(
-            "Search anything game related", key="search_command_description"
-        ),
+        name=app_commands.locale_str("search", translate=False),
+        description=app_commands.locale_str("search_command_description"),
     )
     @app_commands.rename(
-        game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
-        category_value=app_commands.locale_str(
-            "category", key="search_command_category_param_name"
-        ),
-        query=app_commands.locale_str("query", key="search_command_query_param_name"),
+        game_value=app_commands.locale_str("search_command_game_param_name"),
+        category_value=app_commands.locale_str("search_cmd_category_param_name"),
+        query=app_commands.locale_str("search_command_query_param_name"),
     )
     @app_commands.describe(
-        game_value=app_commands.locale_str(
-            "Game to search in", key="search_command_game_param_description"
-        ),
-        category_value=app_commands.locale_str(
-            "Category to search in", key="search_command_category_param_description"
-        ),
-        query=app_commands.locale_str(
-            "Query to search for", key="search_command_query_param_description"
-        ),
-    )
-    @app_commands.choices(
-        game_value=[
-            app_commands.Choice(
-                name=app_commands.locale_str(
-                    Game.GENSHIN.value,
-                ),
-                value=Game.GENSHIN.value,
-            ),
-            app_commands.Choice(
-                name=app_commands.locale_str(
-                    Game.STARRAIL.value,
-                ),
-                value=Game.STARRAIL.value,
-            ),
-        ]
+        game_value=app_commands.locale_str("search_command_game_param_description"),
+        category_value=app_commands.locale_str("search_command_category_param_description"),
+        query=app_commands.locale_str("search_command_query_param_description"),
     )
     async def search_command(  # noqa: C901, PLR0911, PLR0912, PLR0914, PLR0915
         self,
@@ -410,6 +382,13 @@ class Search(commands.Cog):
                     )
                     await character_ui.start(i)
 
+    @search_command.autocomplete("game_value")
+    async def search_command_game_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice]:
+        locale = await get_locale(i)
+        return self.bot.get_enum_autocomplete([Game.GENSHIN, Game.STARRAIL], locale, current)
+
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
         self, i: Interaction, current: str
@@ -424,7 +403,7 @@ class Search(commands.Cog):
         locale = await get_locale(i)
         return [
             app_commands.Choice(
-                name=LocaleStr(custom_str=category).translate(i.client.translator, locale),
+                name=EnumStr(category).translate(i.client.translator, locale),
                 value=category,
             )
             for category in self._search_categories[game]

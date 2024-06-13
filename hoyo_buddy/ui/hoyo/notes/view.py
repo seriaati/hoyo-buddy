@@ -7,7 +7,7 @@ from discord.utils import format_dt
 from genshin.models import Notes as GenshinNotes
 from genshin.models import StarRailNote as StarRailNotes
 
-from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.bot.translator import LocaleStr, WeekdayStr
 from hoyo_buddy.db.models import NotesNotify
 from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card
 from hoyo_buddy.embeds import DefaultEmbed
@@ -19,7 +19,7 @@ from hoyo_buddy.emojis import (
     TOGGLE_EMOJIS,
     TRAILBLAZE_POWER,
 )
-from hoyo_buddy.enums import Game, NotesNotifyType, Weekday
+from hoyo_buddy.enums import Game, NotesNotifyType
 from hoyo_buddy.models import DrawInput
 
 from ...components import Button, GoBackButton, View
@@ -97,13 +97,18 @@ class NotesView(View):
     def _get_type4_value(notify: NotesNotify | None) -> LocaleStr:
         if notify is None:
             return LocaleStr(key="reminder_settings.not_set")
+
+        if notify.notify_weekday is None:
+            msg = "notify_weekday is None"
+            raise ValueError(msg)
+
         return LocaleStr(
             key="reminder_settings.reminde.set.type4",
             status=TOGGLE_EMOJIS[notify.enabled],
             notify_interval=notify.notify_interval,
             max_notif_count=notify.max_notif_count,
             notify_time=notify.notify_time,
-            notify_weekday=LocaleStr(custom_str=Weekday(notify.notify_weekday).name.title()),
+            notify_weekday=WeekdayStr(notify.notify_weekday),
         )
 
     async def _get_reminder_embed(self) -> DefaultEmbed:

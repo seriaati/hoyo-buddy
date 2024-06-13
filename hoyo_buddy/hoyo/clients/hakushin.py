@@ -7,7 +7,7 @@ import discord
 import hakushin
 import yatta
 
-from ...bot.translator import LocaleStr, Translator
+from ...bot.translator import LevelStr, LocaleStr, Translator
 from ...constants import LOCALE_TO_HAKUSHIN_LANG, YATTA_PATH_TO_HSR_PATH, contains_traveler_id
 from ...embeds import DefaultEmbed
 from ...emojis import get_hsr_path_emoji
@@ -62,9 +62,7 @@ class HakushinAPI(hakushin.HakushinAPI):
             formatted_stat_values, manual_weapon
         )
 
-        level_str = self._translator.translate(
-            LocaleStr(key="level_str", level=level), self._locale
-        )
+        level_str = self._translator.translate(LevelStr(level), self._locale)
         embed = DefaultEmbed(
             self._locale,
             self._translator,
@@ -173,9 +171,7 @@ class HakushinAPI(hakushin.HakushinAPI):
             formatted_stat_values, manual_weapon
         )
 
-        level_str = self._translator.translate(
-            LocaleStr(key="level_str", level=level), self._locale
-        )
+        level_str = self._translator.translate(LevelStr(level), self._locale)
         embed = DefaultEmbed(
             self._locale,
             self._translator,
@@ -210,9 +206,7 @@ class HakushinAPI(hakushin.HakushinAPI):
         self._check_translator()
         assert self._translator is not None
 
-        level_str = self._translator.translate(
-            LocaleStr(key="level_str", level=level), self._locale
-        )
+        level_str = self._translator.translate(LevelStr(level), self._locale)
         embed = DefaultEmbed(
             self._locale,
             self._translator,

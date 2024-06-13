@@ -11,7 +11,7 @@ from discord import Locale
 from seria.utils import create_bullet_list
 from yatta import Language
 
-from ...bot.translator import LocaleStr
+from ...bot.translator import LevelStr, LocaleStr
 from ...constants import LOCALE_TO_YATTA_LANG, TRAILBLAZER_IDS, YATTA_PATH_TO_HSR_PATH
 from ...embeds import DefaultEmbed
 from ...emojis import get_hsr_element_emoji, get_hsr_path_emoji
@@ -175,7 +175,7 @@ class YattaAPIClient(yatta.YattaAPI):
             msg = "Translator is not set"
             raise RuntimeError(msg)
 
-        level_str = self.translator.translate(LocaleStr(key="level_str", level=level), self.locale)
+        level_str = self.translator.translate(LevelStr(level), self.locale)
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -223,7 +223,7 @@ class YattaAPIClient(yatta.YattaAPI):
             raise RuntimeError(msg)
 
         skill = base_skill.skill_list[0]
-        level_str = self.translator.translate(LocaleStr(key="level_str", level=level), self.locale)
+        level_str = self.translator.translate(LevelStr(level), self.locale)
 
         embed = DefaultEmbed(
             self.locale,
@@ -411,7 +411,7 @@ class YattaAPIClient(yatta.YattaAPI):
             msg = "Translator is not set"
             raise RuntimeError(msg)
 
-        level_str = self.translator.translate(LocaleStr(key="level_str", level=level), self.locale)
+        level_str = self.translator.translate(LevelStr(level), self.locale)
 
         lc_path = yatta.PathType(light_cone.type.id)
         path_emoji = get_hsr_path_emoji(YATTA_PATH_TO_HSR_PATH[lc_path].value)

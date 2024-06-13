@@ -8,7 +8,7 @@ from discord import Locale
 from genshin.models import StarRailDetailCharacter as HSRCharacter
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.draw.drawer import DARK_SURFACE, LIGHT_SURFACE, Drawer
 from hoyo_buddy.models import DynamicBKInput, UnownedCharacter
 
@@ -123,7 +123,7 @@ def draw_small_hsr_chara_card(
     if isinstance(character, UnownedCharacter):
         return im
 
-    text = LocaleStr(key="level_str", level=character.level)
+    text = LevelStr(character.level)
     drawer.write(text, size=31, position=(230, 35), locale=locale, style="medium")
     text = LocaleStr(
         key="eidolon_superimpose_str",

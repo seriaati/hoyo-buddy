@@ -7,7 +7,7 @@ from cachetools import LRUCache, cached
 from discord import Locale
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.draw.drawer import BLACK, DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.models import DynamicBKInput, UnownedCharacter
@@ -137,8 +137,9 @@ def draw_small_gi_chara_card(
         refine=character.weapon.refinement,
     )
     drawer.write(text, size=31, position=(236, 32), locale=locale, style="medium")
-    text = LocaleStr(key="level_str", level=character.level)
-    drawer.write(text, size=31, position=(236, 72), locale=locale, style="medium")
+    drawer.write(
+        LevelStr(character.level), size=31, position=(236, 72), locale=locale, style="medium"
+    )
 
     friend_textbbox = drawer.write(
         str(character.friendship), size=18, position=(284, 151), anchor="mm"

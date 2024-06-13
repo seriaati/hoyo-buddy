@@ -6,7 +6,7 @@ import discord
 from genshin import Game as GenshinGame
 from tortoise.exceptions import IntegrityError
 
-from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME
 from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount
 from hoyo_buddy.emojis import get_game_emoji
@@ -56,10 +56,7 @@ class AddAccountSelect(Select["AccountManager"]):
     def get_account_options(self) -> Generator[SelectOption, None, None]:
         for account in self.accounts:
             if isinstance(account.game, GenshinGame):
-                level_str = self.translator.translate(
-                    LocaleStr(key="level_str", level=account.level),
-                    self.locale,
-                )
+                level_str = self.translator.translate(LevelStr(account.level), self.locale)
 
                 yield SelectOption(
                     label=f"[{account.uid}] {account.nickname}",

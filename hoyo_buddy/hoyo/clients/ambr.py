@@ -12,7 +12,7 @@ from seria.utils import create_bullet_list, shorten
 
 from hoyo_buddy.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_gi_element_emoji
 
-from ...bot.translator import LocaleStr, Translator, WeekdayStr
+from ...bot.translator import LevelStr, LocaleStr, Translator, WeekdayStr
 from ...constants import LOCALE_TO_AMBR_LANG, contains_traveler_id
 from ...embeds import DefaultEmbed
 from ...enums import TalentBoost
@@ -125,10 +125,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             formatted_stat_values, manual_weapon
         )
 
-        level_str = self.translator.translate(
-            LocaleStr(key="level_str", level=level),
-            self.locale,
-        )
+        level_str = self.translator.translate(LevelStr(level), self.locale)
         embed = DefaultEmbed(
             self.locale,
             self.translator,
@@ -253,7 +250,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         sub_stat_name = manual_weapon[sub_stat.prop_type] if sub_stat.prop_type else None
         sub_stat_value = stat_values[sub_stat.prop_type] if sub_stat.prop_type else None
 
-        level_str = LocaleStr(key="level_str", level=level).translate(self.translator, self.locale)
+        level_str = LevelStr(level).translate(self.translator, self.locale)
         embed = DefaultEmbed(
             self.locale,
             self.translator,

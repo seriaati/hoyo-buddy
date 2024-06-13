@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw, ImageFilter
 
-from hoyo_buddy.bot.translator import LocaleStr, Translator
+from hoyo_buddy.bot.translator import LevelStr, LocaleStr, Translator
 from hoyo_buddy.draw.drawer import BLACK, TRANSPARENT, WHITE, Drawer
 
 if TYPE_CHECKING:
@@ -258,8 +258,13 @@ class AbyssCard:
                 style="medium",
                 anchor="mm",
             )
-            level_str = LocaleStr(key="level_str", level=abyss_chara.level)
-            bk_drawer.write(level_str, position=(57, 132), size=24, style="medium", anchor="mm")
+            bk_drawer.write(
+                LevelStr(abyss_chara.level),
+                position=(57, 132),
+                size=24,
+                style="medium",
+                anchor="mm",
+            )
 
             im.paste(bk, (i * (padding + 116), 0), bk)
 

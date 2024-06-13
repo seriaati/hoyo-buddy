@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import LocaleStr, Translator
+from hoyo_buddy.bot.translator import LevelStr, LocaleStr, Translator
 from hoyo_buddy.draw.drawer import Drawer
 
 if TYPE_CHECKING:
@@ -62,9 +62,8 @@ class ExplorationCard:
         return next((e for e in self._user.explorations if e.id == exploration_id), None)
 
     def _get_offering_text(self, exploration: Exploration | None) -> str:
-        level_str = LocaleStr(
-            key="level_str",
-            level=0 if exploration is None else exploration.offerings[0].level,
+        level_str = LevelStr(
+            0 if exploration is None else exploration.offerings[0].level
         ).translate(self._translator, self.locale)
         if exploration is None:
             return f"{self._placeholder}: {level_str}"

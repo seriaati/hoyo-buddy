@@ -56,7 +56,7 @@ class LocaleStr:
     def __init__(
         self,
         *,
-        custom_str: str | None = None,
+        # custom_str: str | None = None,
         key: str | None = None,
         translate: bool = True,
         **kwargs: Any,
@@ -251,10 +251,7 @@ class AppCommandTranslator(app_commands.Translator):
         self.translator = translator
 
     async def translate(
-        self,
-        string: app_commands.locale_str,
-        locale: Locale,
-        _: TranslationContextTypes,
+        self, string: app_commands.locale_str, locale: Locale, _: TranslationContextTypes
     ) -> str:
         if "key" not in string.extras:
             return string.message

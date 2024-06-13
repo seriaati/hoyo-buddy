@@ -31,12 +31,8 @@ class Farm(
         self.bot = bot
 
     @app_commands.command(
-        name=app_commands.locale_str(
-            "view",
-        ),
-        description=app_commands.locale_str(
-            "View farmable domains in Genshin Impact", key="farm_view_command_description"
-        ),
+        name=app_commands.locale_str("view"),
+        description=app_commands.locale_str("farm_view_command_description"),
     )
     @app_commands.rename(
         account=app_commands.locale_str("account", key="account_autocomplete_param_name")

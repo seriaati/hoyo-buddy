@@ -266,10 +266,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         for cog in self.cogs.values():
             for command in cog.walk_app_commands():
                 desc = (
-                    LocaleStr(
-                        custom_str=command._locale_description.message,
-                        **command._locale_description.extras,
-                    )
+                    LocaleStr(key=command._locale_description.message)
                     if command._locale_description is not None
                     else command.description
                 )

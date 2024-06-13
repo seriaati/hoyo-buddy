@@ -65,8 +65,10 @@ class Search(commands.Cog):
         )
 
     @app_commands.command(
-        name=app_commands.locale_str("search", translate=False),
-        description=app_commands.locale_str("search_command_description"),
+        name=app_commands.locale_str("search"),
+        description=app_commands.locale_str(
+            "Search anything game related", key="search_command_description"
+        ),
     )
     @app_commands.rename(
         game_value=app_commands.locale_str("game", key="search_command_game_param_name"),

@@ -77,7 +77,7 @@ class LocaleStr:
 
     def to_app_command_locale_str(self) -> app_commands.locale_str:
         return app_commands.locale_str(
-            "",
+            self.identifier,
             custom_str=self.custom_str,
             key=self.key,
             translate=self.translate_,
@@ -210,10 +210,8 @@ class Translator:
             if string.custom_str is None:
                 msg = "Either key or custom_str must be provided"
                 raise ValueError(msg)
-            string_key = gen_string_key(string.custom_str)
-        else:
-            string_key = string.key
-        return string_key
+            return gen_string_key(string.custom_str)
+        return string.key
 
     def get_traveler_name(
         self,

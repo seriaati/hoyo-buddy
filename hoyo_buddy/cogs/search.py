@@ -8,7 +8,7 @@ from discord import Locale, app_commands
 from discord.ext import commands
 from loguru import logger
 
-from ..bot.translator import EnumStr, LocaleStr
+from ..bot.translator import LocaleStr
 from ..db.models import Settings, get_locale
 from ..emojis import PROJECT_AMBER
 from ..enums import Game
@@ -396,26 +396,17 @@ class Search(commands.Cog):
         try:
             game = Game(i.namespace.game)
         except ValueError:
-            return [
-                self.bot.get_error_app_command_choice(LocaleStr(key="invalid_category_selected"))
-            ]
+            return [self.bot.get_error_app_command_choice(LocaleStr(key="invalid_game_selected"))]
 
         locale = await get_locale(i)
-        return [
-            app_commands.Choice(
-                name=EnumStr(category).translate(i.client.translator, locale),
-                value=category,
-            )
-            for category in self._search_categories[game]
-            if current.lower() in category.lower()
-        ]
+        return self.bot.get_enum_autocomplete(self._search_categories[game], locale, current)
 
     @search_command.autocomplete("query")
     async def search_command_query_autocomplete(  # noqa: PLR0912, PLR0911
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         try:
-            game = Game(i.namespace.game)
+            game = Game(i.namespace.game_value)
         except ValueError:
             return [self.bot.get_error_app_command_choice(LocaleStr(key="invalid_game_selected"))]
 

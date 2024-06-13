@@ -259,7 +259,7 @@ incomplete_param_error_title: The Given Command Parameters are Incomplete
 instructions_title: Instructions
 interaction_failed_description: "This view is not initiated by you, therefore you cannot use it."
 interaction_failed_title: Interaction Failed
-invalid_category_selected: Invalid game selected
+invalid_category_selected: Invalid category selected
 invalid_color_error_message: "A valid color needs to be a hexadecimal color code, e.g. #FF0000"
 invalid_color_error_title: Invalid Color
 invalid_cookies_description: Refresh your cookies by adding your accounts again using </accounts>

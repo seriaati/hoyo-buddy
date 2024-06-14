@@ -6,6 +6,7 @@ import hakushin
 from discord import ButtonStyle, Locale, Member, User
 
 from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.constants import GI_SKILL_TYPE_KEYS
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
 from hoyo_buddy.ui import Button, Modal, PaginatorSelect, Select, SelectOption, TextInput, View
@@ -128,7 +129,7 @@ class CharacterUI(View):
             const = character_detail.constellations[self.const_index]
             return (api.get_character_const_embed(const), character_detail.constellations)
 
-    async def update(self, i: Interaction) -> None:
+    async def update(self, i: Interaction) -> None:  # noqa: PLR0912, PLR0915
         if not i.response.is_done():
             await i.response.defer()
 
@@ -147,19 +148,26 @@ class CharacterUI(View):
                     self.add_item(
                         EnterTalentLevel(label=LocaleStr(key="change_talent_level_label"))
                     )
-                self.add_item(
-                    ItemSelector(
-                        [
-                            SelectOption(
-                                label=t.name,
-                                value=str(i),
-                                default=i == self.talent_index,
-                            )
-                            for i, t in enumerate(talents)
-                        ],
-                        "talent_index",
+
+                options: list[SelectOption] = []
+                for index, talent in enumerate(talents):
+                    skill_type_key = GI_SKILL_TYPE_KEYS.get(index)
+                    label_prefix = (
+                        LocaleStr(key=skill_type_key) if skill_type_key is not None else None
                     )
-                )
+                    label = (
+                        f"{label_prefix.translate(self.translator, self.locale)}: {talent.name}"
+                        if label_prefix is not None
+                        else talent.name
+                    )
+                    options.append(
+                        SelectOption(
+                            label=label,
+                            value=str(index),
+                            default=index == self.talent_index,
+                        )
+                    )
+                self.add_item(ItemSelector(options, "talent_index"))
             case 2:
                 embed, consts = await self.fetch_const_embed()
                 self.add_item(
@@ -207,19 +215,24 @@ class CharacterUI(View):
             case 5:
                 embed, skills = await self.fetch_hakushin_skill_embed()
                 self.add_item(EnterTalentLevel(label=LocaleStr(key="change_skill_level_label")))
-                self.add_item(
-                    ItemSelector(
-                        [
-                            SelectOption(
-                                label=s.name,
-                                value=str(i),
-                                default=i == self.skill_index,
-                            )
-                            for i, s in enumerate(skills)
-                        ],
-                        "skill_index",
+
+                options: list[SelectOption] = []
+                for index, skill in enumerate(skills):
+                    skill_type_key = GI_SKILL_TYPE_KEYS.get(index)
+                    label_prefix = (
+                        LocaleStr(key=skill_type_key) if skill_type_key is not None else None
                     )
-                )
+                    label = (
+                        f"{label_prefix.translate(self.translator, self.locale)}: {skill.name}"
+                        if label_prefix is not None
+                        else skill.name
+                    )
+                    options.append(
+                        SelectOption(
+                            label=label, value=str(index), default=index == self.skill_index
+                        )
+                    )
+                self.add_item(ItemSelector(options, "skill_index"))
             case 6:
                 embed, passives = await self.fetch_hakushin_passive_embed()
                 self.add_item(

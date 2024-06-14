@@ -326,3 +326,17 @@ GAME_CHALLANGES: Final[dict[Game, list[ChallengeType]]] = {
 }
 
 UTC_8 = datetime.timezone(datetime.timedelta(hours=8))
+
+HAKUSHIN_HSR_SKILL_TYPE_NAMES = {
+    "Normal": "hsr.normal_attack",
+    "BPSkill": "hsr.skill",
+    "Ultra": "hsr.ultimate",
+    "Maze": "hsr.technique",
+}
+GI_SKILL_TYPE_KEYS = {
+    1: "gi.skill",
+    2: "gi.burst",
+    3: "gi.passive",
+    4: "gi.passive",
+    5: "gi.passive",
+}

@@ -96,8 +96,7 @@ class FarmCommand:
         self._validate_query()
 
         farm_notify = await self._get_farm_notify()
-        is_in = await self._check_item_in_list(farm_notify)
-        if is_in:
+        if self._action is not Action.REMOVE and await self._check_item_in_list(farm_notify):
             return
 
         if self._query is not None:

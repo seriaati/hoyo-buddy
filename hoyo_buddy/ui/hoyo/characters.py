@@ -346,9 +346,24 @@ class CharactersView(View):
             )
 
         if self._game is Game.GENSHIN:
-            embed.set_footer(text=LocaleStr(key="characters.gi.embed.footer"))
+            embed.set_footer(
+                text=LocaleStr(
+                    key="characters.gi.embed.footer",
+                    normal=LocaleStr(key="hsr.normal_attack"),
+                    skill=LocaleStr(key="gi.skill"),
+                    burst=LocaleStr(key="gi.burst"),
+                )
+            )
         elif self._game is Game.STARRAIL:
-            embed.set_footer(text=LocaleStr(key="characters.hsr.embed.footer"))
+            embed.set_footer(
+                text=LocaleStr(
+                    key="characters.hsr.embed.footer",
+                    normal=LocaleStr(key="hsr.normal_attack"),
+                    skill=LocaleStr(key="hsr.skill"),
+                    ultimate=LocaleStr(key="hsr.ultimate"),
+                    talent=LocaleStr(key="hsr.talent"),
+                )
+            )
         else:
             raise NotImplementedError
 

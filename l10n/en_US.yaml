@@ -107,8 +107,16 @@ characters.filter.path.placeholder: Select path filters...
 characters.filter.placeholder: Select a filter...
 characters.first_time.embed.description: "If this is your first time using this command, this may take a while.\nThis is because the command needs to fetch data from many sources.\nIt should be faster next time you use this command.\nPlease be patient and wait for the resources to be fetched."
 characters.first_time.title: Fetching resources...
-characters.gi.embed.footer: "Level order: Normal ATK/Skill/Burst"
-characters.hsr.embed.footer: "Level order: Basic ATK/Skill/Ultimate/Talent\nUse /profile to view details of a character"
+characters.gi.embed.footer: "Level order: {normal}/{skill}/{burst}"
+characters.hsr.embed.footer: "Level order: {normal}/{skill}/{ultimate}/{talent}\nUse /profile to view details of a character"
+hsr.ultimate: Ultimate
+hsr.normal_attack: Normal attack
+hsr.skill: Skill
+hsr.talent: Talent
+hsr.technique: Technique
+gi.skill: Elemental skill
+gi.burst: Elemental burst
+gi.passive: Passive
 characters.sorter.constellation: Constellation
 characters.sorter.eidolon: Eidolon
 characters.sorter.element: Element

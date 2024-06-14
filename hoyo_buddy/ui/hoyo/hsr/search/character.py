@@ -251,22 +251,16 @@ class CharacterUI(View):
                     )
 
                     options: list[SelectOption] = []
-                    for index, skill in enumerate(self._character_detail.skills.values()):
-                        type_str_key = (
-                            HAKUSHIN_HSR_SKILL_TYPE_NAMES.get(skill.type)
-                            if skill.type is not None
-                            else None
+                    skills = list(self._character_detail.skills.values())
+                    skills.sort(key=lambda s: s.type or "Talent", reverse=True)
+                    for index, skill in enumerate(skills):
+                        type_str_key = HAKUSHIN_HSR_SKILL_TYPE_NAMES.get(skill.type or "Talent")
+                        type_str = LocaleStr(key=type_str_key).translate(
+                            self.translator, self.locale
                         )
-                        type_str = (
-                            LocaleStr(key=type_str_key).translate(self.translator, self.locale)
-                            if type_str_key is not None
-                            else None
-                        )
-                        label_prefix = f"{type_str}: " if type_str is not None else ""
-                        label = f"{label_prefix}{skill.name}"
                         options.append(
                             SelectOption(
-                                label=label,
+                                label=f"{type_str}: {skill.name}",
                                 value=str(index),
                                 default=index == self._main_skill_index,
                             )

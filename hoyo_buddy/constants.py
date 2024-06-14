@@ -332,6 +332,8 @@ HAKUSHIN_HSR_SKILL_TYPE_NAMES = {
     "BPSkill": "hsr.skill",
     "Ultra": "hsr.ultimate",
     "Maze": "hsr.technique",
+    "MazeNormal": "hsr.technique",
+    "Talent": "hsr.talent",
 }
 GI_SKILL_TYPE_KEYS = {
     1: "gi.skill",

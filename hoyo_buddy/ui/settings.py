@@ -58,6 +58,7 @@ class SettingsUI(View):
         )
 
         # NOTE: This is a workaround for a bug in tortoise ORM
+        await i.client.cache.set(i.user.id, self.settings.lang)
         await Settings.filter(user_id=i.user.id).update(
             lang=self.settings.lang, dark_mode=self.settings.dark_mode
         )

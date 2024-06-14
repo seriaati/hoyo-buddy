@@ -5,7 +5,6 @@ import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeAlias
 
-import aiocache
 import aiohttp
 import discord
 import enka
@@ -23,6 +22,7 @@ from ..enums import Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
 from ..utils import get_now
+from .cache import LFUCache
 from .command_tree import CommandTree
 from .translator import AppCommandTranslator, EnumStr, LocaleStr, Translator
 
@@ -100,7 +100,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.pool = pool
         self.executor = concurrent.futures.ProcessPoolExecutor()
         self.config = config
-        self.cache = aiocache.SimpleMemoryCache()
+        self.cache = LFUCache()
 
         self.autocomplete_choices: AutocompleteChoices = {}
         """[game][category][locale][item_name] -> item_id"""

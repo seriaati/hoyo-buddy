@@ -330,8 +330,9 @@ class HakushinAPI(hakushin.HakushinAPI):
             return characters
 
         for character in characters:
-            assert isinstance(character, hakushin.gi.Character)
-            if contains_traveler_id(str(character.id)):
+            if isinstance(character, hakushin.gi.Character) and contains_traveler_id(
+                str(character.id)
+            ):
                 character.name = self._translator.get_traveler_name(
                     character, self._locale, gender_symbol=traveler_gender_symbol
                 )

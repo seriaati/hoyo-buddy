@@ -5,12 +5,18 @@ import pathlib
 import re
 from typing import TYPE_CHECKING, Any
 
+from ambr.models import Character as GenshinCharacter
 from discord import app_commands
+from hakushin.models.gi import Character as HakushinCharacter
 from loguru import logger
 from seria.utils import read_json, read_yaml
 
-from ..constants import WEEKDAYS
-from ..enums import GenshinElement, HSRElement
+from ..constants import (
+    AMBR_ELEMENT_TO_ELEMENT,
+    HAKUSHIN_GI_ELEMENT_TO_ELEMENT,
+    WEEKDAYS,
+    YATTA_COMBAT_TYPE_TO_ELEMENT,
+)
 from ..utils import capitalize_first_word as capitalize_first_word_
 from ..utils import convert_to_title_case
 
@@ -18,10 +24,8 @@ if TYPE_CHECKING:
     from enum import StrEnum
     from types import TracebackType
 
-    from ambr.models import Character as GenshinCharacter
     from discord.app_commands.translator import TranslationContextTypes
     from discord.enums import Locale
-    from hakushin.models.gi import Character as HakushinCharacter
     from yatta.models import Character as HSRCharacter
 
     from ..models import Config
@@ -220,11 +224,14 @@ class Translator:
         *,
         gender_symbol: bool = True,
     ) -> str:
-        element_str = (
-            self.translate(EnumStr(GenshinElement(character.element.name.lower())), locale)
-            if character.element is not None
-            else ""
-        )
+        if isinstance(character, GenshinCharacter):
+            element = AMBR_ELEMENT_TO_ELEMENT[character.element]
+        elif isinstance(character, HakushinCharacter) and character.element is not None:
+            element = HAKUSHIN_GI_ELEMENT_TO_ELEMENT[character.element]
+        else:
+            element = None
+
+        element_str = "" if element is None else self.translate(EnumStr(element), locale)
         gender_str = ("♂" if "5" in character.id else "♀") if gender_symbol else ""
         return (
             f"{character.name} ({element_str}) ({gender_str})"
@@ -236,7 +243,7 @@ class Translator:
         self, character: HSRCharacter, locale: Locale, *, gender_symbol: bool = True
     ) -> str:
         element_str = self.translate(
-            EnumStr(HSRElement(character.types.combat_type.lower())), locale
+            EnumStr(YATTA_COMBAT_TYPE_TO_ELEMENT[character.types.combat_type]), locale
         )
         gender_str = ("♂" if character.id % 2 != 0 else "♀") if gender_symbol else ""
         return (

@@ -31,7 +31,7 @@ abyss_chamber.enemy_level.embed.field.name: Level Musuh
 abyss_chamber.ley_line_disorder.embed.field.name: Gangguan Ley Line
 abyss_command_description: Lihat musuh abyss saat ini
 abyss_enemy.item_description: "HP: {HP}"
-acc_no_default_param_desc: Akun untuk menjalankan perintah ini
+acc_no_default_param_desc: ""
 account_autocomplete_param_description: "Akun untuk menjalankan perintah ini, defaultnya adalah akun yang dipilih di /accounts"
 account_autocomplete_param_name: akun
 account_deleted_description: "{account} sudah dihapus."
@@ -107,8 +107,16 @@ characters.filter.path.placeholder: Pilih filter path...
 characters.filter.placeholder: Pilih filter...
 characters.first_time.embed.description: "Jika ini pertama kali kamu menggunakan perintah ini, maka ini membutuhkan waktu beberapa saat.\nIni dikarenakan suatu perintah mengambil data dari banyak sumber.\nIni akan lebih cepat saat kamu menggunakan perintah ini lagi.\nHarap bersabar dan tunggu hingga sumber daya selesai diambil"
 characters.first_time.title: Mengambil sumber daya...
-characters.gi.embed.footer: "Urutan level: Normal ATK/Skill/Burst"
-characters.hsr.embed.footer: "Urutan level: Basic ATK/Skill/Ultimate/Talenta\nGunakan /profile untuk melihat detail karakter"
+characters.gi.embed.footer: ""
+characters.hsr.embed.footer: ""
+hsr.ultimate: ""
+hsr.normal_attack: ""
+hsr.skill: ""
+hsr.talent: ""
+hsr.technique: ""
+gi.skill: ""
+gi.burst: ""
+gi.passive: ""
 characters.sorter.constellation: Konstelasi
 characters.sorter.eidolon: Eidolon
 characters.sorter.element: Elemen
@@ -178,8 +186,7 @@ exploration.geoculi: "Geoculus: {geoculi}"
 exploration.hydroculi: "Hydroculus: {hydroculi}"
 exploration.luxurious_chests: Luxurious
 exploration.placeholder: Belum rilis
-exploration.placeholder_quote:
-  '"Setiap perjalanan pasti ada akhirnya, tidak perlu terburu-buru."
+exploration.placeholder_quote: '"Setiap perjalanan pasti ada akhirnya, tidak perlu terburu-buru."
 
   -Zhongli'
 exploration.precious_chests: Precious
@@ -238,7 +245,7 @@ geetest.no_need.description: "Kamu tidak perlu melalukan geetest! Kenapa kamu di
 geetest.required: Diperlukan Verifikasi Geetest
 geetest.required.description: ""
 geetest_command_description: Lengkapi verifikasi geetest
-geetest_cmd_type_param_desc: Jenis untuk verifikasi geetest
+geetest_cmd_type_param_desc: ""
 geetest_command_type_param_name: jenis
 genshin_impact: Genshin Impact
 geo: Geo
@@ -260,7 +267,7 @@ incomplete_param_error_title: Parameter-parameter perintah yang diberikan tidak 
 instructions_title: Petunjuk
 interaction_failed_description: "Tampilan ini tidak dimulai olehmu, oleh karena itu kamu tidak dapat menggunakannya."
 interaction_failed_title: Interaksi gagal
-invalid_category_selected: Jenis game yang dipilih tidak valid
+invalid_category_selected: ""
 invalid_color_error_message: "Warna yang valid harus berupa kode warna heksadesimal, misalnya #FF0000"
 invalid_color_error_title: warna tidak valid
 invalid_cookies_description: ""
@@ -366,9 +373,9 @@ profile.card_template_select.placeholder: Pilih template
 profile.card_template_select.same_author.description: "Dirancang dan diprogram oleh {author}"
 profile.card_template_select.src.label: "Template StarRailCard {num}"
 profile.character_select.cached_data.description: Data cache
-profile.character_select.description: "Lv.{level} | E{eidolons}S{superposition} | {data_type} | Dari showcase in-game"
+profile.character_select.description: ""
 profile.character_select.enka_network.description: Enka Network build
-profile.character_select.hoyolab.description: "Lv.{level} | E{eidolons}S{superposition} | {data_type} | Dari HoYoLAB"
+profile.character_select.hoyolab.description: ""
 profile.character_select.live_data.description: Data real-time
 profile.character_select.placeholder: Pilih karakter
 profile.dark_mode.button.label: Mode Gelap
@@ -376,7 +383,7 @@ profile.generate_ai_art.button.label: Buat gambar AI
 profile.generate_ai_art_modal.negative_prompt.label: Perintah Negatif
 profile.generate_ai_art_modal.prompt.label: Perintah
 profile.generate_ai_art_modal.title: Generate AI Art
-profile.genshin.character_select.description: "Lv.{level} | C{const}R{refine} | {data_type}"
+profile.genshin.character_select.description: ""
 profile.image_select.custom_image.label: "Gambar Kustom ({num})"
 profile.image_select.default_collection.label: "Koleksi Hoyo Buddy ({num})"
 profile.image_select.none.label: Gambar resmi
@@ -453,7 +460,7 @@ saturday: Sabtu
 search_autocomplete_no_results: Hasil tidak ditemukan
 search_autocomplete_not_setup: "Pilihan pelengkapan otomatis penelusuran belum disiapkan, coba lagi nanti."
 search_command_category_param_description: Pencarian kategori
-search_cmd_category_param_name: kategori
+search_cmd_category_param_name: ""
 search_command_description: Cari apa pun yang berhubungan dengan game
 search_command_game_param_description: Pencarian game
 search_command_game_param_name: game
@@ -523,3 +530,4 @@ login_detail_modal.input_label: ""
 enter_login_details_button_label: ""
 not_implemented_error_title: ""
 not_implemented_error_message: ""
+profile.build.current.label: ""

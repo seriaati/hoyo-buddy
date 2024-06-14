@@ -109,6 +109,14 @@ characters.first_time.embed.description: ""
 characters.first_time.title: ""
 characters.gi.embed.footer: ""
 characters.hsr.embed.footer: ""
+hsr.ultimate: ""
+hsr.normal_attack: ""
+hsr.skill: ""
+hsr.talent: ""
+hsr.technique: ""
+gi.skill: ""
+gi.burst: ""
+gi.passive: ""
 characters.sorter.constellation: ""
 characters.sorter.eidolon: ""
 characters.sorter.element: ""
@@ -178,7 +186,7 @@ exploration.geoculi: ""
 exploration.hydroculi: ""
 exploration.luxurious_chests: ""
 exploration.placeholder: ""
-exploration.placeholder_quote: ""
+exploration.placeholder_quote: ''
 exploration.precious_chests: ""
 exploration.progress: ""
 exploration.remarkable_chests: ""
@@ -363,7 +371,7 @@ profile.card_template_select.placeholder: Sélectionner un modèle
 profile.card_template_select.same_author.description: ""
 profile.card_template_select.src.label: "Modèle de carte StarRail {num}"
 profile.character_select.cached_data.description: Données mises en cache
-profile.character_select.description: "Nv. {level} | E{eidolons}S{superposition} | {data_type} | De la vitrine du jeu"
+profile.character_select.description: ""
 profile.character_select.enka_network.description: ""
 profile.character_select.hoyolab.description: ""
 profile.character_select.live_data.description: Données en temps réel
@@ -373,7 +381,7 @@ profile.generate_ai_art.button.label: Generer des art par IA
 profile.generate_ai_art_modal.negative_prompt.label: ""
 profile.generate_ai_art_modal.prompt.label: Invite
 profile.generate_ai_art_modal.title: Generer des art par IA
-profile.genshin.character_select.description: "Nv.{level} | C{const}R{refine} | {data_type}  "
+profile.genshin.character_select.description: ""
 profile.image_select.custom_image.label: "Image personalisée  ({num})"
 profile.image_select.default_collection.label: "Collection Hoyo Buddy ({num})"
 profile.image_select.none.label: Art officiel
@@ -450,7 +458,7 @@ saturday: Samedi
 search_autocomplete_no_results: ""
 search_autocomplete_not_setup: ""
 search_command_category_param_description: Dans quelle catégorie rechercher
-search_cmd_category_param_name: catégorie
+search_cmd_category_param_name: ""
 search_command_description: Recherchez tout ce qui concerne les jeux
 search_command_game_param_description: Dans quelle jeux rechercher
 search_command_game_param_name: jeux
@@ -520,3 +528,4 @@ login_detail_modal.input_label: ""
 enter_login_details_button_label: ""
 not_implemented_error_title: ""
 not_implemented_error_message: ""
+profile.build.current.label: ""

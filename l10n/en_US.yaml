@@ -31,7 +31,7 @@ abyss_chamber.enemy_level.embed.field.name: Enemy Level
 abyss_chamber.ley_line_disorder.embed.field.name: Ley Line Disorder
 abyss_command_description: View the current abyss enemies
 abyss_enemy.item_description: "HP: {HP}"
-account_autocomplete_no_default_param_description: Account to run this command with
+acc_no_default_param_desc: Account to run this command with
 account_autocomplete_param_description: "Account to run this command with, defaults to the selected one in /accounts"
 account_autocomplete_param_name: account
 account_deleted_description: "{account} has been deleted."
@@ -237,7 +237,7 @@ geetest.no_need.description: "You never needed to do a geetest! What are you her
 geetest.required: Geetest Verification Required
 geetest.required.description: "Use the </geetest> command, choose the account that triggered the geetest, and choose `{geetest_type}` to complete the verification"
 geetest_command_description: Complete geetest verification
-geetest_command_type_param_description: Type of geetest verification
+geetest_cmd_type_param_desc: Type of geetest verification
 geetest_command_type_param_name: type
 genshin_impact: Genshin Impact
 geo: Geo
@@ -259,7 +259,7 @@ incomplete_param_error_title: The Given Command Parameters are Incomplete
 instructions_title: Instructions
 interaction_failed_description: "This view is not initiated by you, therefore you cannot use it."
 interaction_failed_title: Interaction Failed
-invalid_category_selected: Invalid game selected
+invalid_category_selected: Invalid category selected
 invalid_color_error_message: "A valid color needs to be a hexadecimal color code, e.g. #FF0000"
 invalid_color_error_title: Invalid Color
 invalid_cookies_description: Refresh your cookies by adding your accounts again using </accounts>
@@ -365,9 +365,9 @@ profile.card_template_select.placeholder: Select a template
 profile.card_template_select.same_author.description: "Designed and programmed by {author}"
 profile.card_template_select.src.label: "StarRailCard template {num}"
 profile.character_select.cached_data.description: Cached data
-profile.character_select.description: "Lv.{level} | E{eidolons}S{superposition} | {data_type} | From in-game showcase"
+profile.character_select.description: "E{eidolons}S{superposition} | {data_type} | In-game showcase"
 profile.character_select.enka_network.description: Enka Network build
-profile.character_select.hoyolab.description: "Lv.{level} | E{eidolons}S{superposition} | {data_type} | From HoYoLAB"
+profile.character_select.hoyolab.description: "E{eidolons}S{superposition} | {data_type} | HoYoLAB"
 profile.character_select.live_data.description: Real-time data
 profile.character_select.placeholder: Select a character
 profile.dark_mode.button.label: Dark Mode
@@ -375,7 +375,7 @@ profile.generate_ai_art.button.label: Generate AI art
 profile.generate_ai_art_modal.negative_prompt.label: Negative Prompt
 profile.generate_ai_art_modal.prompt.label: Prompt
 profile.generate_ai_art_modal.title: Generate AI Art
-profile.genshin.character_select.description: "Lv.{level} | C{const}R{refine} | {data_type}"
+profile.genshin.character_select.description: "C{const}R{refine} | {data_type}"
 profile.image_select.custom_image.label: "Custom Image ({num})"
 profile.image_select.default_collection.label: "Hoyo Buddy Collection ({num})"
 profile.image_select.none.label: Official art
@@ -452,7 +452,7 @@ saturday: Saturday
 search_autocomplete_no_results: No results found
 search_autocomplete_not_setup: "Search autocomplete choices not set up yet, please try again later."
 search_command_category_param_description: Category to search in
-search_command_category_param_name: category
+search_cmd_category_param_name: category
 search_command_description: Search anything game related
 search_command_game_param_description: Game to search in
 search_command_game_param_name: game
@@ -522,3 +522,4 @@ login_detail_modal.input_label: Login details
 enter_login_details_button_label: Enter login details
 not_implemented_error_title: Not Implemented
 not_implemented_error_message: "This feature is not implemented for `{game}` under platform `{platform}` yet."
+profile.build.current.label: Current

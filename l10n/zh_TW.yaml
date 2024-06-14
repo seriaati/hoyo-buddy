@@ -31,7 +31,7 @@ abyss_chamber.enemy_level.embed.field.name: 敵人等級
 abyss_chamber.ley_line_disorder.embed.field.name: 地脈異常
 abyss_command_description: 查看當前深境螺旋的敵人
 abyss_enemy.item_description: "血量: {HP}"
-account_autocomplete_no_default_param_description: 用於運行此指令的帳戶
+acc_no_default_param_desc: 用於運行此指令的帳戶
 account_autocomplete_param_description: "選擇用來運行指令的帳戶，默認為在 /accounts 中選擇的"
 account_autocomplete_param_name: 帳戶
 account_deleted_description: "{account} 已被刪除。"
@@ -178,9 +178,9 @@ exploration.geoculi: "岩神瞳: {geoculi}"
 exploration.hydroculi: "水神瞳: {hydroculi}"
 exploration.luxurious_chests: 華麗
 exploration.placeholder: 尚未釋出
-exploration.placeholder_quote: '「旅程總有一天會迎來終點，不必匆忙。」
+exploration.placeholder_quote: "「旅程總有一天會迎來終點，不必匆忙。」
 
-  - 鍾離'
+  - 鍾離"
 exploration.precious_chests: 珍貴
 exploration.progress: "探索進度: {progress}%"
 exploration.remarkable_chests: 奇饋
@@ -237,7 +237,7 @@ geetest.no_need.description: "你從來不需要做 geetest 驗證！你為什�
 geetest.required: 需要進行 Geetest 驗證
 geetest.required.description: "使用</geetest>指令，選擇觸發此驗證的帳戶，並選擇 `{geetest_type}` 來完成驗證"
 geetest_command_description: 完成 Geetest 驗證
-geetest_command_type_param_description: Geetest 驗證的類別
+geetest_cmd_type_param_desc: Geetest 驗證的類別
 geetest_command_type_param_name: 類別
 genshin_impact: 原神
 geo: 岩
@@ -400,7 +400,7 @@ profile.remove_from_cache.button.label: 從快取中移除
 profile.remove_image.button.label: 移除自定義圖片
 profile_command_description: 查看遊戲內的個人資料並生成角色面板卡片
 profile_command_game_value_description: UID 所屬的遊戲
-profile_command_uid_param_description: "玩家的UID，如果提供了帳戶參數，则覆蓋該參數。"
+profile_command_uid_param_description: "玩家的UID，如果提供了帳戶參數，則覆蓋該參數。"
 pt_button.label: 質變儀通知
 pt_modal.title: 質變儀通知設定
 public_account_toggle.label: 設置帳戶為公開
@@ -452,7 +452,7 @@ saturday: 星期六
 search_autocomplete_no_results: 未能找到任何結果
 search_autocomplete_not_setup: "搜尋自動完成選項尚未設置完成，請稍後再試。"
 search_command_category_param_description: 欲搜尋的分類
-search_command_category_param_name: 分類
+search_cmd_category_param_name: 分類
 search_command_description: 搜尋任何與遊戲相關的內容
 search_command_game_param_description: 欲搜尋的遊戲
 search_command_game_param_name: 遊戲

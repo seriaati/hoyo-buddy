@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Final, TypeAlias
 
 import enka
 
-from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji
 from hoyo_buddy.enums import CharacterType
 from hoyo_buddy.models import HoyolabHSRCharacter
@@ -22,15 +22,9 @@ if TYPE_CHECKING:
 Builds: TypeAlias = dict[str, list[enka.gi.Build]] | dict[str, list[enka.hsr.Build]]
 
 DATA_TYPES: Final[dict[CharacterType, LocaleStr]] = {
-    CharacterType.BUILD: LocaleStr(
-        "Enka Network build", key="profile.character_select.enka_network.description"
-    ),
-    CharacterType.LIVE: LocaleStr(
-        "Real-time data", key="profile.character_select.live_data.description"
-    ),
-    CharacterType.CACHE: LocaleStr(
-        "Cached data", key="profile.character_select.cached_data.description"
-    ),
+    CharacterType.BUILD: LocaleStr(key="profile.character_select.enka_network.description"),
+    CharacterType.LIVE: LocaleStr(key="profile.character_select.live_data.description"),
+    CharacterType.CACHE: LocaleStr(key="profile.character_select.cached_data.description"),
 }
 
 
@@ -65,7 +59,6 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
 
             if isinstance(character, enka.hsr.Character):
                 description = LocaleStr(
-                    "Lv.{level} | E{eidolons}S{superposition} | {data_type} | From in-game showcase",
                     key="profile.character_select.description",
                     level=character.level,
                     superposition=character.light_cone.superimpose if character.light_cone else 0,
@@ -75,7 +68,6 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                 emoji = get_hsr_element_emoji(character.element.value)
             elif isinstance(character, HoyolabHSRCharacter):
                 description = LocaleStr(
-                    "Lv.{level} | E{eidolons}S{superposition} | {data_type} | From HoYoLAB",
                     key="profile.character_select.hoyolab.description",
                     level=character.level,
                     superposition=character.light_cone.superimpose if character.light_cone else 0,
@@ -85,7 +77,6 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                 emoji = get_hsr_element_emoji(character.element)
             else:
                 description = LocaleStr(
-                    "Lv.{level} | C{const}R{refine} | {data_type}",
                     key="profile.genshin.character_select.description",
                     level=character.level,
                     const=character.constellations_unlocked,
@@ -96,7 +87,12 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
 
             options.append(
                 SelectOption(
-                    label=character.name,
+                    label=LocaleStr(
+                        custom_str="{name} ({level_str})",
+                        translate=False,
+                        name=character.name,
+                        level_str=LevelStr(character.level),
+                    ),
                     description=description,
                     value=str(character.id),
                     emoji=emoji,
@@ -105,7 +101,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
 
         super().__init__(
             options,
-            placeholder=LocaleStr("Select a character", key="profile.character_select.placeholder"),
+            placeholder=LocaleStr(key="profile.character_select.placeholder"),
             custom_id="profile_character_select",
         )
 
@@ -143,6 +139,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             self.view._build_id = builds[0].id
         build_select: BuildSelect = self.view.get_item("profile_build_select")
         build_select.set_options(builds)
+        build_select.translate(self.view.locale, self.view.translator)
 
         self.update_options_defaults()
         await self.set_loading_state(i)

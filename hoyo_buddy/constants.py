@@ -3,16 +3,14 @@ from __future__ import annotations
 import datetime
 from typing import Final
 
+import ambr
 import discord
 import enka
 import genshin
 import hakushin
-from ambr import Language as AmbrLanguage
-from genshin import Game as GPYGame
-from yatta import Language as YattaLanguage
-from yatta import PathType
+import yatta
 
-from .enums import ChallengeType, Game, HSRPath
+from .enums import ChallengeType, Game, GenshinCity, GenshinElement, HSRElement, HSRPath
 
 DB_INTEGER_MAX = 2147483647
 DB_SMALLINT_MAX = 32767
@@ -150,40 +148,40 @@ HOYO_BUDDY_LOCALES: dict[discord.Locale, dict[str, str]] = {
     discord.Locale.russian: {"name": "Русский", "emoji": "🇷🇺"},
 }
 
-LOCALE_TO_AMBR_LANG: dict[discord.Locale, AmbrLanguage] = {
-    discord.Locale.taiwan_chinese: AmbrLanguage.CHT,
-    discord.Locale.chinese: AmbrLanguage.CHS,
-    discord.Locale.german: AmbrLanguage.DE,
-    discord.Locale.american_english: AmbrLanguage.EN,
-    discord.Locale.spain_spanish: AmbrLanguage.ES,
-    discord.Locale.french: AmbrLanguage.FR,
-    discord.Locale.indonesian: AmbrLanguage.ID,
-    discord.Locale.japanese: AmbrLanguage.JP,
-    discord.Locale.korean: AmbrLanguage.KR,
-    discord.Locale.brazil_portuguese: AmbrLanguage.PT,
-    discord.Locale.russian: AmbrLanguage.RU,
-    discord.Locale.ukrainian: AmbrLanguage.RU,
-    discord.Locale.thai: AmbrLanguage.TH,
-    discord.Locale.vietnamese: AmbrLanguage.VI,
-    discord.Locale.italian: AmbrLanguage.IT,
-    discord.Locale.turkish: AmbrLanguage.TR,
+LOCALE_TO_AMBR_LANG: dict[discord.Locale, ambr.Language] = {
+    discord.Locale.taiwan_chinese: ambr.Language.CHT,
+    discord.Locale.chinese: ambr.Language.CHS,
+    discord.Locale.german: ambr.Language.DE,
+    discord.Locale.american_english: ambr.Language.EN,
+    discord.Locale.spain_spanish: ambr.Language.ES,
+    discord.Locale.french: ambr.Language.FR,
+    discord.Locale.indonesian: ambr.Language.ID,
+    discord.Locale.japanese: ambr.Language.JP,
+    discord.Locale.korean: ambr.Language.KR,
+    discord.Locale.brazil_portuguese: ambr.Language.PT,
+    discord.Locale.russian: ambr.Language.RU,
+    discord.Locale.ukrainian: ambr.Language.RU,
+    discord.Locale.thai: ambr.Language.TH,
+    discord.Locale.vietnamese: ambr.Language.VI,
+    discord.Locale.italian: ambr.Language.IT,
+    discord.Locale.turkish: ambr.Language.TR,
 }
 
-LOCALE_TO_YATTA_LANG: dict[discord.Locale, YattaLanguage] = {
-    discord.Locale.taiwan_chinese: YattaLanguage.CHT,
-    discord.Locale.chinese: YattaLanguage.CN,
-    discord.Locale.german: YattaLanguage.DE,
-    discord.Locale.american_english: YattaLanguage.EN,
-    discord.Locale.spain_spanish: YattaLanguage.ES,
-    discord.Locale.french: YattaLanguage.FR,
-    discord.Locale.indonesian: YattaLanguage.ID,
-    discord.Locale.japanese: YattaLanguage.JP,
-    discord.Locale.korean: YattaLanguage.KR,
-    discord.Locale.brazil_portuguese: YattaLanguage.PT,
-    discord.Locale.russian: YattaLanguage.RU,
-    discord.Locale.ukrainian: YattaLanguage.RU,
-    discord.Locale.thai: YattaLanguage.TH,
-    discord.Locale.vietnamese: YattaLanguage.VI,
+LOCALE_TO_YATTA_LANG: dict[discord.Locale, yatta.Language] = {
+    discord.Locale.taiwan_chinese: yatta.Language.CHT,
+    discord.Locale.chinese: yatta.Language.CN,
+    discord.Locale.german: yatta.Language.DE,
+    discord.Locale.american_english: yatta.Language.EN,
+    discord.Locale.spain_spanish: yatta.Language.ES,
+    discord.Locale.french: yatta.Language.FR,
+    discord.Locale.indonesian: yatta.Language.ID,
+    discord.Locale.japanese: yatta.Language.JP,
+    discord.Locale.korean: yatta.Language.KR,
+    discord.Locale.brazil_portuguese: yatta.Language.PT,
+    discord.Locale.russian: yatta.Language.RU,
+    discord.Locale.ukrainian: yatta.Language.RU,
+    discord.Locale.thai: yatta.Language.TH,
+    discord.Locale.vietnamese: yatta.Language.VI,
 }
 
 LOCALE_TO_HAKUSHIN_LANG: dict[discord.Locale, hakushin.Language] = {
@@ -242,31 +240,69 @@ HSR_ELEMENT_DMG_PROPS = {
 }
 
 YATTA_PATH_TO_HSR_PATH = {
-    PathType.KNIGHT: HSRPath.PRESERVATION,
-    PathType.MAGE: HSRPath.ERUDITION,
-    PathType.PRIEST: HSRPath.ABUNDANCE,
-    PathType.ROGUE: HSRPath.THE_HUNT,
-    PathType.SHAMAN: HSRPath.HARMONY,
-    PathType.WARLOCK: HSRPath.NIHILITY,
-    PathType.WARRIOR: HSRPath.DESTRUCTION,
+    yatta.PathType.KNIGHT: HSRPath.PRESERVATION,
+    yatta.PathType.MAGE: HSRPath.ERUDITION,
+    yatta.PathType.PRIEST: HSRPath.ABUNDANCE,
+    yatta.PathType.ROGUE: HSRPath.THE_HUNT,
+    yatta.PathType.SHAMAN: HSRPath.HARMONY,
+    yatta.PathType.WARLOCK: HSRPath.NIHILITY,
+    yatta.PathType.WARRIOR: HSRPath.DESTRUCTION,
 }
 
 YATTA_PATH_TO_GPY_PATH = {
-    PathType.KNIGHT: genshin.models.StarRailPath.PRESERVATION,
-    PathType.MAGE: genshin.models.StarRailPath.ERUDITION,
-    PathType.PRIEST: genshin.models.StarRailPath.ABUNDANCE,
-    PathType.ROGUE: genshin.models.StarRailPath.THE_HUNT,
-    PathType.SHAMAN: genshin.models.StarRailPath.HARMONY,
-    PathType.WARLOCK: genshin.models.StarRailPath.NIHILITY,
-    PathType.WARRIOR: genshin.models.StarRailPath.DESTRUCTION,
+    yatta.PathType.KNIGHT: genshin.models.StarRailPath.PRESERVATION,
+    yatta.PathType.MAGE: genshin.models.StarRailPath.ERUDITION,
+    yatta.PathType.PRIEST: genshin.models.StarRailPath.ABUNDANCE,
+    yatta.PathType.ROGUE: genshin.models.StarRailPath.THE_HUNT,
+    yatta.PathType.SHAMAN: genshin.models.StarRailPath.HARMONY,
+    yatta.PathType.WARLOCK: genshin.models.StarRailPath.NIHILITY,
+    yatta.PathType.WARRIOR: genshin.models.StarRailPath.DESTRUCTION,
+}
+
+YATTA_COMBAT_TYPE_TO_ELEMENT = {
+    yatta.CombatType.ICE: HSRElement.ICE,
+    yatta.CombatType.FIRE: HSRElement.FIRE,
+    yatta.CombatType.IMAGINARY: HSRElement.IMAGINARY,
+    yatta.CombatType.PHYSICAL: HSRElement.PHYSICAL,
+    yatta.CombatType.QUANTUM: HSRElement.QUANTUM,
+    yatta.CombatType.WIND: HSRElement.WIND,
+    yatta.CombatType.THUNDER: HSRElement.THUNDER,
+}
+
+HAKUSHIN_GI_ELEMENT_TO_ELEMENT = {
+    hakushin.enums.GIElement.ANEMO: GenshinElement.ANEMO,
+    hakushin.enums.GIElement.GEO: GenshinElement.GEO,
+    hakushin.enums.GIElement.ELECTRO: GenshinElement.ELECTRO,
+    hakushin.enums.GIElement.DENDRO: GenshinElement.DENDRO,
+    hakushin.enums.GIElement.PYRO: GenshinElement.PYRO,
+    hakushin.enums.GIElement.CRYO: GenshinElement.CRYO,
+    hakushin.enums.GIElement.HYDRO: GenshinElement.HYDRO,
+}
+
+AMBR_ELEMENT_TO_ELEMENT = {
+    ambr.Element.ANEMO: GenshinElement.ANEMO,
+    ambr.Element.GEO: GenshinElement.GEO,
+    ambr.Element.ELECTRO: GenshinElement.ELECTRO,
+    ambr.Element.DENDRO: GenshinElement.DENDRO,
+    ambr.Element.PYRO: GenshinElement.PYRO,
+    ambr.Element.CRYO: GenshinElement.CRYO,
+    ambr.Element.HYDRO: GenshinElement.HYDRO,
+}
+
+AMBR_CITY_TO_CITY = {
+    ambr.City.MONDSTADT: GenshinCity.MONDSTADT,
+    ambr.City.LIYUE: GenshinCity.LIYUE,
+    ambr.City.INAZUMA: GenshinCity.INAZUMA,
+    ambr.City.SUMERU: GenshinCity.SUMERU,
+    ambr.City.FONTAINE: GenshinCity.FONTAINE,
 }
 
 STARRAIL_RES = "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master"
 
-HB_GAME_TO_GPY_GAME: dict[Game, GPYGame] = {
-    Game.GENSHIN: GPYGame.GENSHIN,
-    Game.STARRAIL: GPYGame.STARRAIL,
-    Game.HONKAI: GPYGame.HONKAI,
+HB_GAME_TO_GPY_GAME: dict[Game, genshin.Game] = {
+    Game.GENSHIN: genshin.Game.GENSHIN,
+    Game.STARRAIL: genshin.Game.STARRAIL,
+    Game.HONKAI: genshin.Game.HONKAI,
 }
 """Hoyo Buddy game enum to genshin.py game enum."""
 

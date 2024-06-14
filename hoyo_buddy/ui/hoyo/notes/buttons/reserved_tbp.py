@@ -19,7 +19,7 @@ class ReservedTBPReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
             emoji=RESERVED_TRAILBLAZE_POWER,
-            label=LocaleStr("Reserved trailblaze power reminder", key="rtbp_reminder_button.label"),
+            label=LocaleStr(key="rtbp_reminder_button.label"),
             row=row,
         )
 
@@ -30,9 +30,7 @@ class ReservedTBPReminder(Button[NotesView]):
 
         modal = TypeOneModal(
             notify,
-            title=LocaleStr(
-                "Reserved Trailblaze Power Reminder Settings", key="rtbp_reminder_modal.title"
-            ),
+            title=LocaleStr(key="rtbp_reminder_modal.title"),
             threshold_max_value=2400,
             min_notify_interval=30,
         )

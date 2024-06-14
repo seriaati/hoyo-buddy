@@ -46,15 +46,11 @@ class FarmNotifyView(PaginatorView):
                 embed=DefaultEmbed(
                     locale,
                     translator,
-                    title=LocaleStr("Farm Reminder List", key="farm_notify.title"),
-                    description=LocaleStr(
-                        "You will be reminded when the materials of characters/weapons in this list are farmable.",
-                        key="farm_notify.description",
-                    ),
+                    title=LocaleStr(key="farm_notify.title"),
+                    description=LocaleStr(key="farm_notify.description"),
                 )
                 .set_footer(
                     text=LocaleStr(
-                        "Page {current_page}/{total_pages}",
                         key="page_footer",
                         current_page=i + 1,
                         total_pages=len(self._split_item_ids),
@@ -117,13 +113,8 @@ class FarmNotifyView(PaginatorView):
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
-                title=LocaleStr(
-                    "You Have no Items in Your Farm Reminder List", key="farm_notify.empty"
-                ),
-                description=LocaleStr(
-                    "Add items to your farm reminder list by using the </farm add> command",
-                    key="farm_notify.empty_description",
-                ),
+                title=LocaleStr(key="farm_notify.empty"),
+                description=LocaleStr(key="farm_notify.empty_description"),
             )
             embed.add_acc_info(self._notify.account)
             return await i.response.send_message(embed=embed)
@@ -136,7 +127,7 @@ class FarmNotifyView(PaginatorView):
 class AddItemButton(Button[FarmNotifyView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Add item", key="farm_notify.add_item"),
+            label=LocaleStr(key="farm_notify.add_item"),
             style=ButtonStyle.blurple,
             emoji=ADD,
             row=1,
@@ -146,10 +137,7 @@ class AddItemButton(Button[FarmNotifyView]):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            description=LocaleStr(
-                "To add items, use the </farm add> command",
-                key="farm_notify.add_item.embed.description",
-            ),
+            description=LocaleStr(key="farm_notify.add_item.embed.description"),
         )
         await i.response.send_message(embed=embed, ephemeral=True)
 
@@ -157,7 +145,7 @@ class AddItemButton(Button[FarmNotifyView]):
 class RemoveItemButton(Button[FarmNotifyView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Remove item", key="farm_notify.remove_item"),
+            label=LocaleStr(key="farm_notify.remove_item"),
             style=ButtonStyle.red,
             emoji=DELETE,
             row=1,
@@ -167,17 +155,14 @@ class RemoveItemButton(Button[FarmNotifyView]):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            description=LocaleStr(
-                "To remove items, use the </farm remove> command",
-                key="farm_notify.remove_item.embed.description",
-            ),
+            description=LocaleStr(key="farm_notify.remove_item.embed.description"),
         )
         await i.response.send_message(embed=embed, ephemeral=True)
 
 
 class NotifyToggle(ToggleButton[FarmNotifyView]):
     def __init__(self, current_toggle: bool) -> None:
-        super().__init__(current_toggle, LocaleStr("Reminder", key="reminder_toggle"), row=1)
+        super().__init__(current_toggle, LocaleStr(key="reminder_toggle"), row=1)
 
     async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=True)

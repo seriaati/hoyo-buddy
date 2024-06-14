@@ -18,22 +18,15 @@ class WithMobileNumber(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="with_mobile_number",
-            label=LocaleStr("With phone number", key="add_miyoushe_acc.with_mobile_number"),
+            label=LocaleStr(key="add_miyoushe_acc.with_mobile_number"),
         )
 
     async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr("Instructions", key="instructions_title"),
-            description=LocaleStr(
-                (
-                    "1. Click the button below to enter your phone number\n"
-                    "2. You will receive a verification code via SMS\n"
-                    "3. Click the button below to enter the verification code\n"
-                ),
-                key="mobile_instructions_description",
-            ),
+            title=LocaleStr(key="instructions_title"),
+            description=LocaleStr(key="mobile_instructions_description"),
         )
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
 

@@ -16,9 +16,7 @@ if TYPE_CHECKING:
 
 class WeekBossReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
-        super().__init__(
-            label=LocaleStr("Weekly boss discount reminder", key="week_boss_button.label"), row=row
-        )
+        super().__init__(label=LocaleStr(key="week_boss_button.label"), row=row)
 
     async def callback(self, i: Interaction) -> None:
         notify_type = (
@@ -30,7 +28,7 @@ class WeekBossReminder(Button[NotesView]):
 
         modal = TypeFourModal(
             notify,
-            title=LocaleStr("Weekly Boss Discount Reminder Settings", key="week_boss_modal.title"),
+            title=LocaleStr(key="week_boss_modal.title"),
             min_notify_interval=30,
         )
         modal.translate(self.view.locale, self.view.translator)

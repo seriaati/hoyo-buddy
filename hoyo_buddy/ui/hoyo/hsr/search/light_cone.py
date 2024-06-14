@@ -82,9 +82,7 @@ class LightConeUI(View):
         self.clear_items()
         self.add_item(
             EnterLightConeLevel(
-                label=LocaleStr(
-                    "Change light cone level", key="enter_light_cone_level.button.label"
-                ),
+                label=LocaleStr(key="enter_light_cone_level.button.label"),
             )
         )
         self.add_item(
@@ -106,7 +104,7 @@ class LightConeUI(View):
 
 class LightConeLevelModal(Modal):
     level = TextInput(
-        label=LocaleStr("Level", key="level_label"),
+        label=LocaleStr(key="level_label"),
         placeholder="80",
         is_digit=True,
         min_value=1,
@@ -119,9 +117,7 @@ class EnterLightConeLevel(Button[LightConeUI]):
         super().__init__(label=label, style=ButtonStyle.blurple)
 
     async def callback(self, i: Interaction) -> Any:
-        modal = LightConeLevelModal(
-            title=LocaleStr("Enter Weapon Level", key="weapon_level.modal.title")
-        )
+        modal = LightConeLevelModal(title=LocaleStr(key="weapon_level.modal.title"))
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()
@@ -142,7 +138,7 @@ class SuperimposeSelect(Select[LightConeUI]):
         super().__init__(
             options=[
                 SelectOption(
-                    label=LocaleStr("Superposition {s}", s=i, key="superposition_indicator"),
+                    label=LocaleStr(s=i, key="superposition_indicator"),
                     value=str(i),
                     default=current_superposition == i,
                 )
@@ -159,7 +155,7 @@ class SuperimposeSelect(Select[LightConeUI]):
 
 class ShowStoryButton(Button[LightConeUI]):
     def __init__(self) -> None:
-        super().__init__(label=LocaleStr("Read Story", key="read_story.button.label"))
+        super().__init__(label=LocaleStr(key="read_story.button.label"))
 
     async def callback(self, i: Interaction) -> Any:
         assert self.view._lc_detail is not None

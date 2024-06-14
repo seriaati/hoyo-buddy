@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 class CardSettingsButton(Button["ProfileView"]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Card settings", key="profile.card_settings.button.label"),
+            label=LocaleStr(key="profile.card_settings.button.label"),
             disabled=True,
             custom_id="profile_card_settings",
             emoji=SETTINGS,

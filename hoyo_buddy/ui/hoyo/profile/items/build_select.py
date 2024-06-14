@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class BuildSelect(Select["ProfileView"]):
     def __init__(self) -> None:
         super().__init__(
-            placeholder=LocaleStr("Select a build...", key="profile.build.select.placeholder"),
+            placeholder=LocaleStr(key="profile.build.select.placeholder"),
             options=[SelectOption(label="Placeholder", value="0")],
             disabled=True,
             custom_id="profile_build_select",
@@ -31,7 +31,7 @@ class BuildSelect(Select["ProfileView"]):
         self._builds = builds
         self.options = [
             SelectOption(
-                label=build.name or LocaleStr("Current", key="profile.build.current.label"),
+                label=build.name or LocaleStr(key="profile.build.current.label"),
                 value=str(build.id),
                 default=self.view._build_id == build.id,
             )

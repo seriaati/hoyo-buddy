@@ -22,12 +22,14 @@ from ..enums import Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
 from ..utils import get_now
+from .cache import LFUCache
 from .command_tree import CommandTree
-from .translator import AppCommandTranslator, LocaleStr, Translator
+from .translator import AppCommandTranslator, EnumStr, LocaleStr, Translator
 
 if TYPE_CHECKING:
     import asyncio
     from collections.abc import Sequence
+    from enum import StrEnum
 
     import asyncpg
     import git
@@ -98,6 +100,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.pool = pool
         self.executor = concurrent.futures.ProcessPoolExecutor()
         self.config = config
+        self.cache = LFUCache()
 
         self.autocomplete_choices: AutocompleteChoices = {}
         """[game][category][locale][item_name] -> item_id"""
@@ -154,12 +157,26 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         return message
 
-    @staticmethod
-    def get_error_app_command_choice(error_message: LocaleStr) -> app_commands.Choice[str]:
-        return app_commands.Choice(
-            name=error_message.to_app_command_locale_str(),
-            value="none",
-        )
+    def get_error_autocomplete(
+        self, error_message: LocaleStr, locale: discord.Locale
+    ) -> list[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(
+                name=error_message.translate(self.translator, locale),
+                value="none",
+            )
+        ]
+
+    def get_enum_autocomplete(
+        self, enums: Sequence[StrEnum], locale: discord.Locale, current: str
+    ) -> list[discord.app_commands.Choice[str]]:
+        return [
+            discord.app_commands.Choice(
+                name=EnumStr(enum).translate(self.translator, locale), value=enum.value
+            )
+            for enum in enums
+            if current.lower() in EnumStr(enum).translate(self.translator, locale).lower()
+        ]
 
     async def get_account_autocomplete(
         self,
@@ -195,26 +212,16 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         if not accounts:
             if is_author:
-                return [
-                    self.get_error_app_command_choice(
-                        LocaleStr(
-                            "You don't have any accounts yet. Add one with /accounts",
-                            key="no_accounts_autocomplete_choice",
-                        )
-                    )
-                ]
-            return [
-                self.get_error_app_command_choice(
-                    LocaleStr(
-                        "This user doesn't have any accounts yet",
-                        key="user_no_accounts_autocomplete_choice",
-                    )
+                return self.get_error_autocomplete(
+                    LocaleStr(key="no_accounts_autocomplete_choice"), locale
                 )
-            ]
+            return self.get_error_autocomplete(
+                LocaleStr(key="user_no_accounts_autocomplete_choice"), locale
+            )
 
         return [
             discord.app_commands.Choice(
-                name=f"{account if is_author else account.blurred_display} | {translator.translate(LocaleStr(account.game, warn_no_key=False), locale)}{' (✦)' if account.current else ''}",
+                name=f"{account if is_author else account.blurred_display} | {translator.translate(EnumStr(account.game), locale)}{' (✦)' if account.current else ''}",
                 value=f"{account.id}",
             )
             for account in accounts
@@ -272,10 +279,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         for cog in self.cogs.values():
             for command in cog.walk_app_commands():
                 desc = (
-                    LocaleStr(
-                        command._locale_description.message,
-                        **command._locale_description.extras,
-                    )
+                    LocaleStr(key=command._locale_description.message)
                     if command._locale_description is not None
                     else command.description
                 )

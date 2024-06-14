@@ -5,21 +5,27 @@ import pathlib
 import re
 from typing import TYPE_CHECKING, Any
 
+from ambr.models import Character as GenshinCharacter
 from discord import app_commands
+from hakushin.models.gi import Character as HakushinCharacter
 from loguru import logger
 from seria.utils import read_json, read_yaml
 
-from ..enums import GenshinElement, HSRElement
+from ..constants import (
+    AMBR_ELEMENT_TO_ELEMENT,
+    HAKUSHIN_GI_ELEMENT_TO_ELEMENT,
+    WEEKDAYS,
+    YATTA_COMBAT_TYPE_TO_ELEMENT,
+)
 from ..utils import capitalize_first_word as capitalize_first_word_
 from ..utils import convert_to_title_case
 
 if TYPE_CHECKING:
+    from enum import StrEnum
     from types import TracebackType
 
-    from ambr.models import Character as GenshinCharacter
     from discord.app_commands.translator import TranslationContextTypes
     from discord.enums import Locale
-    from hakushin.models.gi import Character as HakushinCharacter
     from yatta.models import Character as HSRCharacter
 
     from ..models import Config
@@ -51,30 +57,33 @@ LANGUAGES = (
 )
 
 
+def gen_string_key(string: str) -> str:
+    return string.replace(" ", "_").replace(",", "").replace(".", "").replace("-", "_").lower()
+
+
 class LocaleStr:
     def __init__(
         self,
-        message: str,
         *,
+        custom_str: str | None = None,
         key: str | None = None,
-        warn_no_key: bool = True,
         translate: bool = True,
         **kwargs: Any,
     ) -> None:
-        self.message = message
+        self.custom_str = custom_str
         self.key = key
-        self.warn_no_key = warn_no_key
         self.translate_ = translate
         self.extras: dict[str, Any] = kwargs
 
-    def __repr__(self) -> str:
-        return f"locale_str({self.message!r}, key={self.key!r}, extras={self.extras!r})"
+    @property
+    def identifier(self) -> str:
+        return self.custom_str or self.key or ""
 
     def to_app_command_locale_str(self) -> app_commands.locale_str:
         return app_commands.locale_str(
-            self.message,
+            self.identifier,
+            custom_str=self.custom_str,
             key=self.key,
-            warn_no_key=self.warn_no_key,
             translate=self.translate_,
             **self.extras,
         )
@@ -83,12 +92,27 @@ class LocaleStr:
         return translator.translate(self, locale)
 
 
+class EnumStr(LocaleStr):
+    def __init__(self, enum: StrEnum) -> None:
+        super().__init__(key=gen_string_key(enum.value))
+
+
+class LevelStr(LocaleStr):
+    def __init__(self, level: int) -> None:
+        super().__init__(key="level_str", level=level)
+
+
+class WeekdayStr(LocaleStr):
+    def __init__(self, weekday: int) -> None:
+        super().__init__(key=WEEKDAYS[weekday].lower())
+
+
 class Translator:
     def __init__(self, config: Config | None = None) -> None:
         super().__init__()
 
         self._config = config
-        self._not_translated: dict[str, str] = {}
+        self._not_translated: set[str] = set()
         self._synced_commands: dict[str, int] = {}
         self._localizations: dict[str, dict[str, str]] = {}
 
@@ -147,37 +171,20 @@ class Translator:
         capitalize_first_word: bool = False,
     ) -> str:
         if isinstance(string, str):
-            # it's intentional that we don't apply any modifiers when string is not LocaleStr
+            # It's intentional that we don't apply any modifiers when string is not LocaleStr
             return string
 
         extras = self._translate_extras(string.extras, locale)
-        message = string.message
         string_key = self._get_string_key(string)
 
-        if string.translate_:
-            # Check if the string is missing or has different values
-            source_string = self._localizations[SOURCE_LANG].get(string_key)
-
-            if source_string is None and string_key not in self._not_translated:
-                self._not_translated[string_key] = message
-                logger.error(f"String {string_key!r} is missing in source lang file")
-            elif (
-                source_string is not None
-                and source_string.lower() != message.lower()
-                and string_key not in self._not_translated
-            ):
-                self._not_translated[string_key] = message
-                logger.error(
-                    f"String {string_key!r} has different values in code vs. source lang file"
-                )
+        source_string = self._localizations[SOURCE_LANG].get(string_key)
+        if string.translate_ and source_string is None and string_key not in self._not_translated:
+            self._not_translated.add(string_key)
+            logger.error(f"String {string_key!r} is missing in source lang file")
 
         lang = locale.value.replace("-", "_")
-
-        if "en" in lang or not string.translate_ or string_key in self._not_translated:
-            translation = message
-        else:
-            translation = self._localizations.get(lang, {}).get(string_key)
-            translation = translation or message
+        translation = self._localizations.get(lang, {}).get(string_key)
+        translation = translation or source_string or string.custom_str or string_key
 
         with contextlib.suppress(KeyError):
             translation = translation.format(**extras)
@@ -204,18 +211,11 @@ class Translator:
     @staticmethod
     def _get_string_key(string: LocaleStr) -> str:
         if string.key is None:
-            if string.warn_no_key:
-                logger.warning(f"Missing key for string {string.message!r}, using generated key")
-            string_key = (
-                string.message.replace(" ", "_")
-                .replace(",", "")
-                .replace(".", "")
-                .replace("-", "_")
-                .lower()
-            )
-        else:
-            string_key = string.key
-        return string_key
+            if string.custom_str is None:
+                msg = "Either key or custom_str must be provided"
+                raise ValueError(msg)
+            return gen_string_key(string.custom_str)
+        return string.key
 
     def get_traveler_name(
         self,
@@ -224,16 +224,14 @@ class Translator:
         *,
         gender_symbol: bool = True,
     ) -> str:
-        element_str = (
-            self.translate(
-                LocaleStr(
-                    GenshinElement(character.element.name.lower()).value.title(), warn_no_key=False
-                ),
-                locale,
-            )
-            if character.element is not None
-            else ""
-        )
+        if isinstance(character, GenshinCharacter):
+            element = AMBR_ELEMENT_TO_ELEMENT[character.element]
+        elif isinstance(character, HakushinCharacter) and character.element is not None:
+            element = HAKUSHIN_GI_ELEMENT_TO_ELEMENT[character.element]
+        else:
+            element = None
+
+        element_str = "" if element is None else self.translate(EnumStr(element), locale)
         gender_str = ("♂" if "5" in character.id else "♀") if gender_symbol else ""
         return (
             f"{character.name} ({element_str}) ({gender_str})"
@@ -245,10 +243,7 @@ class Translator:
         self, character: HSRCharacter, locale: Locale, *, gender_symbol: bool = True
     ) -> str:
         element_str = self.translate(
-            LocaleStr(
-                HSRElement(character.types.combat_type.lower()).value.title(), warn_no_key=False
-            ),
-            locale,
+            EnumStr(YATTA_COMBAT_TYPE_TO_ELEMENT[character.types.combat_type]), locale
         )
         gender_str = ("♂" if character.id % 2 != 0 else "♀") if gender_symbol else ""
         return (
@@ -264,12 +259,8 @@ class AppCommandTranslator(app_commands.Translator):
         self.translator = translator
 
     async def translate(
-        self,
-        string: app_commands.locale_str,
-        locale: Locale,
-        _: TranslationContextTypes,
+        self, string: app_commands.locale_str, locale: Locale, _: TranslationContextTypes
     ) -> str:
-        locale_str_ = LocaleStr(string.message, **string.extras)
-        if not locale_str_.translate_:
-            return locale_str_.message
-        return self.translator.translate(locale_str_, locale)
+        if (key := string.extras.get("key")) is None:
+            return string.message
+        return self.translator.translate(LocaleStr(key=key), locale)

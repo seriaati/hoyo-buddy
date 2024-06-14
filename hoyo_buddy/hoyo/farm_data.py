@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from discord import Locale
 
-from ..enums import GenshinCity
+from ..constants import AMBR_CITY_TO_CITY
 from ..models import FarmData
 from .clients.ambr import AmbrAPIClient
 
@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     import ambr
 
     from ..bot.translator import Translator
+    from ..enums import GenshinCity
 
 
 class FarmDataFetcher:
@@ -61,7 +62,7 @@ class FarmDataFetcher:
 
         domains_ = cls._get_domains(domains)
         for domain in domains_:
-            if city and GenshinCity(domain.city.name.lower()) != city:
+            if city is not None and AMBR_CITY_TO_CITY[domain.city] != city:
                 continue
             farm_data = FarmData(domain)
             reward_ids = [r.id for r in domain.rewards]

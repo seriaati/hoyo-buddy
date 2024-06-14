@@ -28,12 +28,10 @@ class CardTemplateSelect(Select["ProfileView"]):
         options.append(
             SelectOption(
                 label=LocaleStr(
-                    "Hoyo Buddy template {num}",
                     key="profile.card_template_select.hb.label",
                     num=1,
                 ),
                 description=LocaleStr(
-                    "Designed and programmed by {author}",
                     key="profile.card_template_select.same_author.description",
                     author="@seriaati",
                 ),
@@ -49,12 +47,10 @@ class CardTemplateSelect(Select["ProfileView"]):
                     options.append(
                         SelectOption(
                             label=LocaleStr(
-                                "StarRailCard template {num}",
                                 key="profile.card_template_select.src.label",
                                 num=template_num,
                             ),
                             description=LocaleStr(
-                                "Designed and programmed by {author}",
                                 key="profile.card_template_select.same_author.description",
                                 author="@korzzex",
                             ),
@@ -67,11 +63,9 @@ class CardTemplateSelect(Select["ProfileView"]):
                     [
                         SelectOption(
                             label=LocaleStr(
-                                "Classic Enka template",
                                 key="profile.card_template_select.enka_classic.label",
                             ),
                             description=LocaleStr(
-                                "Designed by {author1} and programmed by {author2}",
                                 key="profile.card_template_select.diff_author.description",
                                 author1="@algoinde",
                                 author2="@hattvr",
@@ -81,12 +75,10 @@ class CardTemplateSelect(Select["ProfileView"]):
                         ),
                         SelectOption(
                             label=LocaleStr(
-                                "ENCard template {num}",
                                 key="profile.card_template_select.encard.label",
                                 num=1,
                             ),
                             description=LocaleStr(
-                                "Designed and programmed by {author}",
                                 key="profile.card_template_select.same_author.description",
                                 author="@korzzex",
                             ),
@@ -100,19 +92,16 @@ class CardTemplateSelect(Select["ProfileView"]):
                     options.append(
                         SelectOption(
                             label=LocaleStr(
-                                "EnkaCard template {num}",
                                 key="profile.card_template_select.enkacard.label",
                                 num=template_num,
                             ),
                             description=LocaleStr(
-                                "Designed by {author1} and programmed by {author2}",
                                 key="profile.card_template_select.diff_author.description",
                                 author1="@algoinde",
                                 author2="@korzzex",
                             )
                             if template_num == 3
                             else LocaleStr(
-                                "Designed and programmed by {author}",
                                 key="profile.card_template_select.same_author.description",
                                 author="@korzzex",
                             ),
@@ -123,9 +112,7 @@ class CardTemplateSelect(Select["ProfileView"]):
 
         super().__init__(
             options=options,
-            placeholder=LocaleStr(
-                "Select a template", key="profile.card_template_select.placeholder"
-            ),
+            placeholder=LocaleStr(key="profile.card_template_select.placeholder"),
             row=1,
             custom_id="profile_card_template_select",
         )

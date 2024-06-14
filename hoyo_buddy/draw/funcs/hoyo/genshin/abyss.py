@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw, ImageFilter
 
-from hoyo_buddy.bot.translator import LocaleStr, Translator
+from hoyo_buddy.bot.translator import LevelStr, LocaleStr, Translator
 from hoyo_buddy.draw.drawer import BLACK, TRANSPARENT, WHITE, Drawer
 
 if TYPE_CHECKING:
@@ -82,12 +82,11 @@ class AbyssCard:
         pills = [
             self._draw_rank_pill(
                 most_defeats,
-                LocaleStr("Most Defeats: {val}", key="abyss.most_defeats", val=most_defeats.value),
+                LocaleStr(key="abyss.most_defeats", val=most_defeats.value),
             ),
             self._draw_rank_pill(
                 strongest_strike,
                 LocaleStr(
-                    "Strongest Single Strike: {val}",
                     key="abyss.strongest_strike",
                     val=strongest_strike.value,
                 ),
@@ -95,22 +94,17 @@ class AbyssCard:
             self._draw_rank_pill(
                 most_dmg_taken,
                 LocaleStr(
-                    "Most Damage Taken: {val}",
                     key="abyss.most_dmg_taken",
                     val=most_dmg_taken.value,
                 ),
             ),
             self._draw_rank_pill(
                 most_ults,
-                LocaleStr(
-                    "Most Bursts Unleashed: {val}", key="abyss.most_ults", val=most_ults.value
-                ),
+                LocaleStr(key="abyss.most_ults", val=most_ults.value),
             ),
             self._draw_rank_pill(
                 most_skills,
-                LocaleStr(
-                    "Most Skills Casted: {val}", key="abyss.most_skills", val=most_skills.value
-                ),
+                LocaleStr(key="abyss.most_skills", val=most_skills.value),
             ),
         ]
 
@@ -119,7 +113,7 @@ class AbyssCard:
     def _write_overview_texts(self) -> None:
         drawer = self._drawer
         textbbox = drawer.write(
-            LocaleStr("Spiral Abyss Overview", key="abyss.overview"),
+            LocaleStr(key="abyss.overview"),
             position=(2425, 40),
             size=90,
             style="bold",
@@ -133,7 +127,6 @@ class AbyssCard:
         )
         textbbox = drawer.write(
             LocaleStr(
-                "Battles Won/Fought: {val1}/{val2}",
                 key="abyss.battles_won_fought",
                 val1=self._abyss.total_wins,
                 val2=self._abyss.total_battles,
@@ -144,7 +137,6 @@ class AbyssCard:
         )
         textbbox = drawer.write(
             LocaleStr(
-                "Deepest Descent: {val}",
                 key="abyss.deepest_descent",
                 val=self._abyss.max_floor,
             ),
@@ -154,7 +146,6 @@ class AbyssCard:
         )
         textbbox = drawer.write(
             LocaleStr(
-                "Total Stars: {val}",
                 key="abyss.total_stars",
                 val=self._abyss.total_stars,
             ),
@@ -175,7 +166,7 @@ class AbyssCard:
         for floor in range(9, 13):
             start_pos = pos[floor]
             drawer.write(
-                LocaleStr("Floor {val}", key="abyss.floor", val=floor),
+                LocaleStr(key="abyss.floor", val=floor),
                 position=start_pos,
                 size=64,
                 style="medium",
@@ -267,8 +258,13 @@ class AbyssCard:
                 style="medium",
                 anchor="mm",
             )
-            level_str = LocaleStr("Lv.{level}", key="level_str", level=abyss_chara.level)
-            bk_drawer.write(level_str, position=(57, 132), size=24, style="medium", anchor="mm")
+            bk_drawer.write(
+                LevelStr(abyss_chara.level),
+                position=(57, 132),
+                size=24,
+                style="medium",
+                anchor="mm",
+            )
 
             im.paste(bk, (i * (padding + 116), 0), bk)
 

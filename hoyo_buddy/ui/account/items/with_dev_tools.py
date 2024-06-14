@@ -17,30 +17,15 @@ if TYPE_CHECKING:
 
 class WithDevTools(Button["AccountManager"]):
     def __init__(self, platform: Platform) -> None:
-        super().__init__(
-            label=LocaleStr("With DevTools (desktop only)", key="devtools_button_label")
-        )
+        super().__init__(label=LocaleStr(key="devtools_button_label"))
         self._platform = platform
 
     async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr("Instructions", key="instructions_title"),
-            description=LocaleStr(
-                (
-                    "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n"
-                    "2. Open the DevTools by pressing F12 or Ctrl+Shift+I\n"
-                    "3. Press the >> icon on the top navigation bar\n"
-                    "4. Click on the `Application` tab\n"
-                    "5. Click on `Cookies` on the left sidebar\n"
-                    "6. Click on the website you're on (e.g. https://www.hoyolab.com)\n"
-                    "7. Type `v2` in the `Filter` box\n"
-                    "8. Click the button below\n"
-                    "9. Copy the `Value` of each cookie and paste them in the boxes\n"
-                ),
-                key="devtools_instructions_description",
-            ),
+            title=LocaleStr(key="instructions_title"),
+            description=LocaleStr(key="devtools_instructions_description"),
         )
         embed.set_image(url="https://i.imgur.com/HWMZhVe.gif")
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))

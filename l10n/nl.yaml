@@ -31,7 +31,7 @@ abyss_chamber.enemy_level.embed.field.name: Vijand Niveau
 abyss_chamber.ley_line_disorder.embed.field.name: Ley Lijn Stoornis
 abyss_command_description: Bekijk de huidige vijanden van de abyss
 abyss_enemy.item_description: "HP: {HP}"
-account_autocomplete_no_default_param_description: ""
+acc_no_default_param_desc: ""
 account_autocomplete_param_description: "Account om deze commando mee uit te voeren, standaard de geselecteerde account in /accounts"
 account_autocomplete_param_name: account
 account_deleted_description: "{account} is verwijderd."
@@ -178,7 +178,8 @@ exploration.geoculi: "Geoculi: {geoculi}"
 exploration.hydroculi: "Hydroculi: {hydroculi}"
 exploration.luxurious_chests: Luxe
 exploration.placeholder: Wordt nog vrijgegeven
-exploration.placeholder_quote: '"Elke reis heeft zijn laatste dag. Haast je niet."
+exploration.placeholder_quote:
+  '"Elke reis heeft zijn laatste dag. Haast je niet."
 
   - Zhongli'
 exploration.precious_chests: Waardevol
@@ -237,7 +238,7 @@ geetest.no_need.description: ""
 geetest.required: ""
 geetest.required.description: ""
 geetest_command_description: ""
-geetest_command_type_param_description: ""
+geetest_cmd_type_param_desc: ""
 geetest_command_type_param_name: ""
 genshin_impact: Genshin Impact
 geo: Geo
@@ -452,7 +453,7 @@ saturday: Zaterdag
 search_autocomplete_no_results: ""
 search_autocomplete_not_setup: "Autocomplete zoekkeuzes nog niet ingesteld, probeer het later nog eens."
 search_command_category_param_description: Categorie om in te zoeken
-search_command_category_param_name: categorie
+search_cmd_category_param_name: categorie
 search_command_description: Zoek alles wat met het spel te maken heeft
 search_command_game_param_description: Spel om in te zoeken
 search_command_game_param_name: spel

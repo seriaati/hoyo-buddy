@@ -218,5 +218,10 @@ class JSONFile(Model):
 
 
 async def get_locale(i: Interaction) -> Locale:
+    cache = i.client.cache
+    if await cache.exists(i.user.id):
+        return Locale(await cache.get(i.user.id))
     settings = await Settings.get(user_id=i.user.id)
-    return settings.locale or i.locale
+    locale = settings.locale or i.locale
+    await cache.set(i.user.id, locale.value)
+    return locale

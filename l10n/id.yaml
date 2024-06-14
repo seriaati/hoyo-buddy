@@ -31,7 +31,7 @@ abyss_chamber.enemy_level.embed.field.name: Level Musuh
 abyss_chamber.ley_line_disorder.embed.field.name: Gangguan Ley Line
 abyss_command_description: Lihat musuh abyss saat ini
 abyss_enemy.item_description: "HP: {HP}"
-account_autocomplete_no_default_param_description: Akun untuk menjalankan perintah ini
+acc_no_default_param_desc: Akun untuk menjalankan perintah ini
 account_autocomplete_param_description: "Akun untuk menjalankan perintah ini, defaultnya adalah akun yang dipilih di /accounts"
 account_autocomplete_param_name: akun
 account_deleted_description: "{account} sudah dihapus."
@@ -178,7 +178,8 @@ exploration.geoculi: "Geoculus: {geoculi}"
 exploration.hydroculi: "Hydroculus: {hydroculi}"
 exploration.luxurious_chests: Luxurious
 exploration.placeholder: Belum rilis
-exploration.placeholder_quote: '"Setiap perjalanan pasti ada akhirnya, tidak perlu terburu-buru."
+exploration.placeholder_quote:
+  '"Setiap perjalanan pasti ada akhirnya, tidak perlu terburu-buru."
 
   -Zhongli'
 exploration.precious_chests: Precious
@@ -237,7 +238,7 @@ geetest.no_need.description: "Kamu tidak perlu melalukan geetest! Kenapa kamu di
 geetest.required: Diperlukan Verifikasi Geetest
 geetest.required.description: ""
 geetest_command_description: Lengkapi verifikasi geetest
-geetest_command_type_param_description: Jenis untuk verifikasi geetest
+geetest_cmd_type_param_desc: Jenis untuk verifikasi geetest
 geetest_command_type_param_name: jenis
 genshin_impact: Genshin Impact
 geo: Geo
@@ -452,7 +453,7 @@ saturday: Sabtu
 search_autocomplete_no_results: Hasil tidak ditemukan
 search_autocomplete_not_setup: "Pilihan pelengkapan otomatis penelusuran belum disiapkan, coba lagi nanti."
 search_command_category_param_description: Pencarian kategori
-search_command_category_param_name: kategori
+search_cmd_category_param_name: kategori
 search_command_description: Cari apa pun yang berhubungan dengan game
 search_command_game_param_description: Pencarian game
 search_command_game_param_name: game

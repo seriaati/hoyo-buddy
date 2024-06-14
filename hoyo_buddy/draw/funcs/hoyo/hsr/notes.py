@@ -26,7 +26,7 @@ def draw_hsr_notes_card(
     drawer = Drawer(draw, folder="hsr-notes", dark_mode=dark_mode, translator=translator)
 
     drawer.write(
-        LocaleStr("Real-Time Notes", key="notes-card.gi.realtime-notes"),
+        LocaleStr(key="notes-card.gi.realtime-notes"),
         size=64,
         position=(76, 67),
         style="bold",
@@ -34,7 +34,7 @@ def draw_hsr_notes_card(
     )
 
     drawer.write(
-        LocaleStr("Daily Training", key="notes-card.hsr.daily-training"),
+        LocaleStr(key="notes-card.hsr.daily-training"),
         size=35,
         position=(110, 400),
         style="light",
@@ -48,7 +48,7 @@ def draw_hsr_notes_card(
     )
 
     drawer.write(
-        LocaleStr("Trailblaze Power", key="notes-card.hsr.trailblaze-power"),
+        LocaleStr(key="notes-card.hsr.trailblaze-power"),
         size=35,
         position=(110, 800),
         style="light",
@@ -62,7 +62,7 @@ def draw_hsr_notes_card(
     )
 
     drawer.write(
-        LocaleStr("Echo of War Discounts", key="notes-card.hsr.echo-of-war-discounts"),
+        LocaleStr(key="notes-card.hsr.echo-of-war-discounts"),
         size=35,
         position=(596, 400),
         style="light",
@@ -75,7 +75,7 @@ def draw_hsr_notes_card(
         style="medium",
     )
     drawer.write(
-        LocaleStr("Remaining", key="notes-card.gi.remaining"),
+        LocaleStr(key="notes-card.gi.remaining"),
         size=30,
         position=(textbbox[2] + 20, textbbox[3] - 5),
         anchor="ls",
@@ -83,7 +83,7 @@ def draw_hsr_notes_card(
     )
 
     drawer.write(
-        LocaleStr("Reserved Power", key="notes-card.hsr.reserved-power"),
+        LocaleStr(key="notes-card.hsr.reserved-power"),
         size=35,
         position=(596, 800),
         style="light",
@@ -109,12 +109,10 @@ def draw_hsr_notes_card(
 
         text = (
             LocaleStr(
-                "Finished",
                 key="notes-card.gi.expedition-finished",
             )
             if exped.finished
             else LocaleStr(
-                "{time} Remaining",
                 key="notes-card.gi.expedition-remaining",
                 time=format_timedelta(exped.remaining_time),
             )

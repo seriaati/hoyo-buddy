@@ -12,23 +12,23 @@ if TYPE_CHECKING:
 
 class TypeOneModal(Modal):
     enabled = TextInput(
-        label=LocaleStr("Enabled", key="notif_modal.enabled.label"),
+        label=LocaleStr(key="notif_modal.enabled.label"),
         is_bool=True,
     )
     threshold = TextInput(
-        label=LocaleStr("Threshold", key="notif_modal.threshold.label"),
+        label=LocaleStr(key="notif_modal.threshold.label"),
         is_digit=True,
         min_value=0,
         max_value=240,
     )
     notify_interval = TextInput(
-        label=LocaleStr("Notify Interval (in minutes)", key="notif_modal.notify_interval.label"),
+        label=LocaleStr(key="notif_modal.notify_interval.label"),
         is_digit=True,
         min_value=10,
         max_value=DB_SMALLINT_MAX,
     )
     max_notif_count = TextInput(
-        label=LocaleStr("Max Notify Count", key="notif_modal.max_notif_count.label"),
+        label=LocaleStr(key="notif_modal.max_notif_count.label"),
         is_digit=True,
         min_value=1,
         max_value=DB_SMALLINT_MAX,

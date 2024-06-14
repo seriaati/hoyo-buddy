@@ -17,7 +17,7 @@ class AutoRedeemToggle(ToggleButton["AccountManager"]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            LocaleStr("Auto code redemption", key="auto_redeem_toggle.label"),
+            LocaleStr(key="auto_redeem_toggle.label"),
             row=2,
             emoji=GIFT_OUTLINE,
             custom_id="auto_redeem_toggle",
@@ -35,7 +35,7 @@ class AutoCheckinToggle(ToggleButton["AccountManager"]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            LocaleStr("Auto daily check-in", key="auto_checkin_button_label"),
+            LocaleStr(key="auto_checkin_button_label"),
             row=2,
             emoji=SMART_TOY,
             custom_id="auto_checkin_toggle",
@@ -53,7 +53,7 @@ class AccountPublicToggle(ToggleButton["AccountManager"]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            LocaleStr("Set account as public", key="public_account_toggle.label"),
+            LocaleStr(key="public_account_toggle.label"),
             row=2,
             emoji=PUBLIC,
             custom_id="public_account_toggle",

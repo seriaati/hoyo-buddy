@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
 
-from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.bot.translator import EnumStr, LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, HOYOLAB, MIYOUSHE
 from hoyo_buddy.enums import Platform
@@ -26,20 +26,15 @@ class AddMiyousheAccount(Button["AccountManager"]):
         super().__init__(
             custom_id="add_miyoushe_account",
             emoji=MIYOUSHE,
-            label=LocaleStr(Platform.MIYOUSHE.value, warn_no_key=False),
+            label=EnumStr(Platform.MIYOUSHE),
         )
 
     async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr(
-                "Select a Method to add Your Accounts", key="add_hoyolab_acc.embed.title"
-            ),
-            description=LocaleStr(
-                "1. With modded Miyoushe app: Available only for Android devices",
-                key="add_miyoushe_acc.embed.description",
-            ),
+            title=LocaleStr(key="add_hoyolab_acc.embed.title"),
+            description=LocaleStr(key="add_miyoushe_acc.embed.description"),
         )
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
@@ -59,24 +54,15 @@ class AddHoyolabAccount(Button["AccountManager"]):
         super().__init__(
             custom_id="add_hoyolab_account",
             emoji=HOYOLAB,
-            label=LocaleStr(Platform.HOYOLAB.value, warn_no_key=False),
+            label=EnumStr(Platform.HOYOLAB),
         )
 
     async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr(
-                "Select a Method to add Your Accounts", key="add_hoyolab_acc.embed.title"
-            ),
-            description=LocaleStr(
-                (
-                    "1. With email and password: Most recommended, it's the easiest\n"
-                    "2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one\n"
-                    "3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile\n\n"
-                ),
-                key="add_hoyolab_acc.embed.description",
-            ),
+            title=LocaleStr(key="add_hoyolab_acc.embed.title"),
+            description=LocaleStr(key="add_hoyolab_acc.embed.description"),
         )
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
@@ -94,7 +80,7 @@ class AddAccountButton(Button["AccountManager"]):
         super().__init__(
             custom_id="add_account",
             emoji=ADD,
-            label=LocaleStr("Add accounts", key="add_account_button_label"),
+            label=LocaleStr(key="add_account_button_label"),
             style=ButtonStyle.primary,
         )
 
@@ -102,14 +88,8 @@ class AddAccountButton(Button["AccountManager"]):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr("Select Your Account's Platform", key="adding_accounts_title"),
-            description=LocaleStr(
-                (
-                    "Welcome to Hoyo Buddy! Enjoy various features by spending less than 1 minute to add your accounts.\n\n"
-                    "Regarding account security, please read the [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
-                ),
-                key="adding_accounts_description",
-            ),
+            title=LocaleStr(key="adding_accounts_title"),
+            description=LocaleStr(key="adding_accounts_description"),
         )
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()

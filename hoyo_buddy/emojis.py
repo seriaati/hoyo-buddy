@@ -131,17 +131,17 @@ def get_game_emoji(game: genshin.Game | Game) -> str:
 
 
 def get_gi_element_emoji(element: str) -> str:
-    return GENSHIN_ELEMENT_EMOJIS[GenshinElement(element.lower())]
+    return GENSHIN_ELEMENT_EMOJIS[GenshinElement(element.title())]
 
 
 def get_hsr_element_emoji(element: str) -> str:
     if element.lower() == "lightning":
         element = "thunder"
-    return HSR_ELEMENT_EMOJIS[HSRElement(element.lower())]
+    return HSR_ELEMENT_EMOJIS[HSRElement(element.title())]
 
 
 def get_hsr_path_emoji(path: str) -> str:
-    return HSR_PATH_EMOJIS[HSRPath(path.lower())]
+    return HSR_PATH_EMOJIS[HSRPath(path.title())]
 
 
 def get_artifact_pos_emoji(artifact_pos: str) -> str:

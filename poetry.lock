@@ -23,6 +23,22 @@ asyncmy = ["asyncmy (>=0.2.8rc1,<0.3.0)"]
 asyncpg = ["asyncpg"]
 
 [[package]]
+name = "aiocache"
+version = "0.12.2"
+description = "multi backend asyncio cache"
+optional = false
+python-versions = "*"
+files = [
+    {file = "aiocache-0.12.2-py2.py3-none-any.whl", hash = "sha256:9b6fa30634ab0bfc3ecc44928a91ff07c6ea16d27d55469636b296ebc6eb5918"},
+    {file = "aiocache-0.12.2.tar.gz", hash = "sha256:b41c9a145b050a5dcbae1599f847db6dd445193b1f3bd172d8e0fe0cb9e96684"},
+]
+
+[package.extras]
+memcached = ["aiomcache (>=0.5.2)"]
+msgpack = ["msgpack (>=0.5.5)"]
+redis = ["redis (>=4.2.0)"]
+
+[[package]]
 name = "aiofiles"
 version = "23.2.1"
 description = "File support for asyncio."
@@ -655,7 +671,7 @@ pydantic = "^2.5.3"
 type = "git"
 url = "https://github.com/seriaati/enka-py"
 reference = "HEAD"
-resolved_reference = "22b01ac5afba41f1876fdb550d8460e3c328dd99"
+resolved_reference = "21c43b5345ed7928fe5c18029f82d7ff8389d9e9"
 
 [[package]]
 name = "executing"
@@ -2199,4 +2215,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "572f0f243889832bf332cb4cb8c8e865bef482172f4591e678c78b76cc535852"
+content-hash = "9218fdd10f3e9904318e5e562a280c3a82d9cbb9db163e738fd3f976cf861557"

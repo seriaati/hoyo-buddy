@@ -31,7 +31,7 @@ abyss_chamber.enemy_level.embed.field.name: Niveau des ennemis
 abyss_chamber.ley_line_disorder.embed.field.name: ""
 abyss_command_description: Voir les ennemis actuels de l'abysse
 abyss_enemy.item_description: "PV: {HP}"
-account_autocomplete_no_default_param_description: ""
+acc_no_default_param_desc: ""
 account_autocomplete_param_description: "Compte avec lequel exécuter cette commande, par défaut le compte sélectionné dans /accounts"
 account_autocomplete_param_name: compte
 account_deleted_description: "{account}a été supprimé"
@@ -178,7 +178,7 @@ exploration.geoculi: ""
 exploration.hydroculi: ""
 exploration.luxurious_chests: ""
 exploration.placeholder: ""
-exploration.placeholder_quote: ''
+exploration.placeholder_quote: ""
 exploration.precious_chests: ""
 exploration.progress: ""
 exploration.remarkable_chests: ""
@@ -235,7 +235,7 @@ geetest.no_need.description: ""
 geetest.required: ""
 geetest.required.description: ""
 geetest_command_description: ""
-geetest_command_type_param_description: ""
+geetest_cmd_type_param_desc: ""
 geetest_command_type_param_name: ""
 genshin_impact: Genshin Impact
 geo: ""
@@ -450,7 +450,7 @@ saturday: Samedi
 search_autocomplete_no_results: ""
 search_autocomplete_not_setup: ""
 search_command_category_param_description: Dans quelle catégorie rechercher
-search_command_category_param_name: catégorie
+search_cmd_category_param_name: catégorie
 search_command_description: Recherchez tout ce qui concerne les jeux
 search_command_game_param_description: Dans quelle jeux rechercher
 search_command_game_param_name: jeux

@@ -21,12 +21,8 @@ class CardInfoButton(Button["ProfileView"]):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr("About Character Build Cards", key="profile.card_info.embed.title"),
+            title=LocaleStr(key="profile.card_info.embed.title"),
             description=LocaleStr(
-                "- All assets used in the cards belong to Hoyoverse, I do not own them.\n"
-                "- All fanarts used in the cards are credited to their respective artists.\n"
-                "- The Hoyo Buddy templates' designs are original, you are not allowed to modify them or claim that you made them without my permission.\n"
-                "- Game data is provided by {provider}.\n",
                 key="profile.card_info.embed.description",
                 provider="[Enka.Network](https://api.enka.network/)",
             ),

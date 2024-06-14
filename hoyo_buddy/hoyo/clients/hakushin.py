@@ -7,7 +7,7 @@ import discord
 import hakushin
 import yatta
 
-from ...bot.translator import LocaleStr, Translator
+from ...bot.translator import LevelStr, LocaleStr, Translator
 from ...constants import LOCALE_TO_HAKUSHIN_LANG, YATTA_PATH_TO_HSR_PATH, contains_traveler_id
 from ...embeds import DefaultEmbed
 from ...emojis import get_hsr_path_emoji
@@ -62,14 +62,7 @@ class HakushinAPI(hakushin.HakushinAPI):
             formatted_stat_values, manual_weapon
         )
 
-        level_str = self._translator.translate(
-            LocaleStr(
-                "Lv.{level}",
-                key="level_str",
-                level=level,
-            ),
-            self._locale,
-        )
+        level_str = self._translator.translate(LevelStr(level), self._locale)
         embed = DefaultEmbed(
             self._locale,
             self._translator,
@@ -78,7 +71,7 @@ class HakushinAPI(hakushin.HakushinAPI):
         )
 
         embed.add_field(
-            name=LocaleStr("Stats", key="stats_embed_field_name"),
+            name=LocaleStr(key="stats_embed_field_name"),
             value="\n".join(f"{k}: {v}" for k, v in named_stat_values.items()),
         )
         embed.set_footer(text=character.description)
@@ -105,11 +98,7 @@ class HakushinAPI(hakushin.HakushinAPI):
         if isinstance(skill, hakushin.gi.CharacterSkill):
             level_upgrade = skill.upgrade_info[str(level - 1)]
             embed.add_field(
-                name=LocaleStr(
-                    "Skill Attributes (Lv.{level})",
-                    key="skill_attributes_embed_field_name",
-                    level=level,
-                ),
+                name=LocaleStr(key="skill_attributes_embed_field_name", level=level),
                 value=hakushin.utils.get_skill_attributes(
                     level_upgrade.attributes, level_upgrade.parameters
                 ),
@@ -118,11 +107,7 @@ class HakushinAPI(hakushin.HakushinAPI):
         else:
             level_upgrade = skill.level_info[str(level)]
             embed.add_field(
-                name=LocaleStr(
-                    "Skill Attributes (Lv.{level})",
-                    key="skill_attributes_embed_field_name",
-                    level=level,
-                ),
+                name=LocaleStr(key="skill_attributes_embed_field_name", level=level),
                 value=hakushin.utils.replace_placeholders(
                     skill.description, level_upgrade.parameters
                 ),
@@ -186,11 +171,7 @@ class HakushinAPI(hakushin.HakushinAPI):
             formatted_stat_values, manual_weapon
         )
 
-        level_str = LocaleStr(
-            "Lv.{level}",
-            key="level_str",
-            level=level,
-        ).translate(self._translator, self._locale)
+        level_str = self._translator.translate(LevelStr(level), self._locale)
         embed = DefaultEmbed(
             self._locale,
             self._translator,
@@ -200,13 +181,13 @@ class HakushinAPI(hakushin.HakushinAPI):
 
         if weapon.refinments:
             embed.add_field(
-                name=LocaleStr("Refinement {r}", r=refinement, key="refinement_indicator"),
+                name=LocaleStr(r=refinement, key="refinement_indicator"),
                 value=weapon.refinments[str(refinement)].description,
                 inline=False,
             )
 
         embed.add_field(
-            name=LocaleStr("Stats", key="stats_embed_field_name"),
+            name=LocaleStr(key="stats_embed_field_name"),
             value="\n".join(f"{k}: {v}" for k, v in named_stat_values.items()),
             inline=False,
         )
@@ -225,14 +206,7 @@ class HakushinAPI(hakushin.HakushinAPI):
         self._check_translator()
         assert self._translator is not None
 
-        level_str = self._translator.translate(
-            LocaleStr(
-                "Lv.{level}",
-                key="level_str",
-                level=level,
-            ),
-            self._locale,
-        )
+        level_str = self._translator.translate(LevelStr(level), self._locale)
         embed = DefaultEmbed(
             self._locale,
             self._translator,
@@ -253,7 +227,7 @@ class HakushinAPI(hakushin.HakushinAPI):
         result = hakushin.utils.replace_fight_prop_with_name(result, manual_weapon)
 
         embed.add_field(
-            name=LocaleStr("Stats", key="stats_embed_field_name"),
+            name=LocaleStr(key="stats_embed_field_name"),
             value="\n".join(f"{k}: {v}" for k, v in result.items()),
             inline=False,
         )
@@ -278,7 +252,6 @@ class HakushinAPI(hakushin.HakushinAPI):
         set_effects = relic_set.set_effects
         description = self._translator.translate(
             LocaleStr(
-                "2-Pieces: {bonus_2}",
                 bonus_2=hakushin.utils.replace_placeholders(
                     set_effects.two_piece.description, set_effects.two_piece.parameters
                 ),
@@ -288,7 +261,6 @@ class HakushinAPI(hakushin.HakushinAPI):
         )
         if set_effects.four_piece is not None:
             four_piece = LocaleStr(
-                "4-Pieces: {bonus_4}",
                 bonus_4=hakushin.utils.replace_placeholders(
                     set_effects.four_piece.description, set_effects.four_piece.parameters
                 ),
@@ -316,7 +288,6 @@ class HakushinAPI(hakushin.HakushinAPI):
 
         description = self._translator.translate(
             LocaleStr(
-                "2-Pieces: {bonus_2}",
                 bonus_2=artifact_set.set_effect.two_piece.description,
                 key="artifact_set_two_piece_embed_description",
             ),
@@ -324,7 +295,6 @@ class HakushinAPI(hakushin.HakushinAPI):
         )
         if artifact_set.set_effect.four_piece is not None:
             four_piece = LocaleStr(
-                "4-Pieces: {bonus_4}",
                 bonus_4=artifact_set.set_effect.four_piece.description,
                 key="artifact_set_four_piece_embed_description",
             )
@@ -360,8 +330,9 @@ class HakushinAPI(hakushin.HakushinAPI):
             return characters
 
         for character in characters:
-            assert isinstance(character, hakushin.gi.Character)
-            if contains_traveler_id(str(character.id)):
+            if isinstance(character, hakushin.gi.Character) and contains_traveler_id(
+                str(character.id)
+            ):
                 character.name = self._translator.get_traveler_name(
                     character, self._locale, gender_symbol=traveler_gender_symbol
                 )

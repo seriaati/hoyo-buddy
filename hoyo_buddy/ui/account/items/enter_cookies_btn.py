@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 class CookiesModal(Modal):
     cookies_input = TextInput(
         label="Cookies",
-        placeholder=LocaleStr("Paste your cookies here...", key="cookies_modal_placeholder"),
+        placeholder=LocaleStr(key="cookies_modal_placeholder"),
         style=TextStyle.paragraph,
     )
 
@@ -44,7 +44,7 @@ class DevToolCookiesModal(Modal):
 class EnterCookiesButton(Button["AccountManager"]):
     def __init__(self, *, platform: Platform, dev_tools: bool = False) -> None:
         super().__init__(
-            label=LocaleStr("Enter cookies", key="cookies_button_label"),
+            label=LocaleStr(key="cookies_button_label"),
             style=ButtonStyle.blurple,
             emoji=COOKIE,
         )
@@ -53,8 +53,8 @@ class EnterCookiesButton(Button["AccountManager"]):
 
     def _get_cookies_modal(self) -> DevToolCookiesModal | CookiesModal:
         if self._is_dev_tools:
-            return DevToolCookiesModal(title=LocaleStr("Enter Cookies", key="cookies_button_label"))
-        return CookiesModal(title=LocaleStr("Enter Cookies", key="cookies_button_label"))
+            return DevToolCookiesModal(title=LocaleStr(key="cookies_button_label"))
+        return CookiesModal(title=LocaleStr(key="cookies_button_label"))
 
     async def callback(self, i: Interaction) -> None:
         modal = self._get_cookies_modal()

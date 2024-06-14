@@ -15,7 +15,7 @@ from ..embeds import ErrorEmbed
 from ..enums import GeetestType
 from ..exceptions import HoyoBuddyError, InvalidQueryError
 from ..utils import get_now
-from .translator import LocaleStr, Translator
+from .translator import EnumStr, LocaleStr, Translator
 
 if TYPE_CHECKING:
     import discord
@@ -24,111 +24,66 @@ __all__ = ("get_error_embed",)
 
 GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "description"], LocaleStr]] = {
     (-5003,): {
-        "title": LocaleStr("Daily Check-In Reward Already Claimed", key="already_claimed_title"),
-        "description": LocaleStr("Come back tomorrow!", key="already_claimed_description"),
+        "title": LocaleStr(key="already_claimed_title"),
+        "description": LocaleStr(key="already_claimed_description"),
     },
     (-100, 10001, 10103, -1071): {
-        "title": LocaleStr("Invalid Cookies", key="invalid_cookies_title"),
-        "description": LocaleStr(
-            "Refresh your cookies by adding your accounts again using </accounts>",
-            key="invalid_cookies_description",
-        ),
+        "title": LocaleStr(key="invalid_cookies_title"),
+        "description": LocaleStr(key="invalid_cookies_description"),
     },
     (-3205, -3102): {
-        "title": LocaleStr("Invalid Verification Code", key="invalid_verification_code_title"),
-        "description": LocaleStr(
-            "Please check the verification code and try again.",
-            key="invalid_verification_code_description",
-        ),
+        "title": LocaleStr(key="invalid_verification_code_title"),
+        "description": LocaleStr(key="invalid_verification_code_description"),
     },
     (-3208, -3203, -3004): {
-        "title": LocaleStr("Invalid Email or Password", key="invalid_email_password_title"),
-        "description": LocaleStr(
-            "The email or password you provided is incorrect, please check and try again.",
-            key="invalid_email_password_description",
-        ),
+        "title": LocaleStr(key="invalid_email_password_title"),
+        "description": LocaleStr(key="invalid_email_password_description"),
     },
     (-3206,): {
-        "title": LocaleStr(
-            "Verification Code Service Unavailable", key="verification_code_unavailable_title"
-        ),
-        "description": LocaleStr(
-            "Please try again later", key="verification_code_unavailable_description"
-        ),
+        "title": LocaleStr(key="verification_code_unavailable_title"),
+        "description": LocaleStr(key="verification_code_unavailable_description"),
     },
     (-3101, -1004): {
-        "title": LocaleStr("Action in Cooldown", key="action_in_cooldown_error_title"),
+        "title": LocaleStr(key="action_in_cooldown_error_title"),
         "description": LocaleStr(
-            "Please try again at {available_time}.",
             key="action_in_cooldown_error_message",
             available_time=format_dt(get_now() + timedelta(minutes=1), "T"),
         ),
     },
-    (-2017, -2018): {
-        "title": LocaleStr("Redemption code already claimed", key="redeem_code.already_claimed")
-    },
-    (-2001,): {
-        "title": LocaleStr("Redemption code expired", key="redeem_code.expired"),
-    },
-    (-1065, -2003, -2004, -2014): {
-        "title": LocaleStr("Invalid redemption code", key="redeem_code.invalid"),
-    },
-    (-2016,): {
-        "title": LocaleStr("Code redemption in cooldown", key="redeem_code.cooldown"),
-    },
+    (-2017, -2018): {"title": LocaleStr(key="redeem_code.already_claimed")},
+    (-2001,): {"title": LocaleStr(key="redeem_code.expired")},
+    (-1065, -2003, -2004, -2014): {"title": LocaleStr(key="redeem_code.invalid")},
+    (-2016,): {"title": LocaleStr(key="redeem_code.cooldown")},
     (10102,): {
-        "title": LocaleStr("Data is not Public", key="data_not_public.title"),
-        "description": LocaleStr(
-            "Enable the data sharing option in your battle chronicle settings\nhttps://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/DataNotPublicTutorial.gif",
-            key="data_not_public.description",
-        ),
+        "title": LocaleStr(key="data_not_public.title"),
+        "description": LocaleStr(key="data_not_public.description"),
     },
-    (-2021, -2011): {
-        "title": LocaleStr("Adventure rank too low", key="redeem_code.ar_too_low"),
-    },
+    (-2021, -2011): {"title": LocaleStr(key="redeem_code.ar_too_low")},
     (30001,): {
-        "title": LocaleStr("No need for geetest", key="geetest.no_need"),
-        "description": LocaleStr(
-            "You never needed to do a geetest! What are you here for?!",
-            key="geetest.no_need.description",
-        ),
+        "title": LocaleStr(key="geetest.no_need"),
+        "description": LocaleStr(key="geetest.no_need.description"),
     },
     tuple(genshin.constants.GEETEST_RETCODES): {
-        "title": LocaleStr("Geetest Verification Required", key="geetest.required"),
+        "title": LocaleStr(key="geetest.required"),
         "description": LocaleStr(
-            "Use the </geetest> command, choose the account that triggered the geetest, and choose `{geetest_type}` to complete the verification",
-            geetest_type=LocaleStr(GeetestType.REALTIME_NOTES.value, warn_no_key=False),
+            geetest_type=EnumStr(GeetestType.REALTIME_NOTES),
             key="geetest.required.description",
         ),
     },
-    (-1,): {
-        "title": LocaleStr("Game is Under Maintenance", key="game_maintenance_title"),
-    },
+    (-1,): {"title": LocaleStr(key="game_maintenance_title")},
     # Below are custom retcodes for Hoyo Buddy, they don't exist in Hoyo's API
     (999,): {
-        "title": LocaleStr("Cookie Token Expired", key="redeeem_code.cookie_token_expired_title"),
-        "description": LocaleStr(
-            "Refresh your cookie token by adding your accounts again using </accounts>.\n"
-            "If you use the email and password method to add your accounts, cookie token can be refreshed automatically.",
-            key="redeeem_code.cookie_token_expired_description",
-        ),
+        "title": LocaleStr(key="redeeem_code.cookie_token_expired_title"),
+        "description": LocaleStr(key="redeeem_code.cookie_token_expired_description"),
     },
     (1000,): {
-        "title": LocaleStr(
-            "Failed to Refresh Cookie Token", key="redeeem_code.cookie_token_refresh_failed_title"
-        ),
-        "description": LocaleStr(
-            "It is likely that you have changed your account's password since the last time you add your accounts.\n"
-            "Please add your accounts again using </accounts> with the email and password method.",
-            key="redeeem_code.cookie_token_refresh_failed_description",
-        ),
+        "title": LocaleStr(key="redeeem_code.cookie_token_refresh_failed_title"),
+        "description": LocaleStr(key="redeeem_code.cookie_token_refresh_failed_description"),
     },
     (-9999,): {
-        "title": LocaleStr("Geetest Verification Required", key="geetest.required"),
+        "title": LocaleStr(key="geetest.required"),
         "description": LocaleStr(
-            "Use the </geetest> command, choose the account that triggered the geetest, and choose `{geetest_type}` to complete the verification",
-            geetest_type=LocaleStr(GeetestType.DAILY_CHECKIN.value, warn_no_key=False),
-            key="geetest.required.description",
+            geetest_type=EnumStr(GeetestType.DAILY_CHECKIN), key="geetest.required.description"
         ),
     },
 }
@@ -139,20 +94,16 @@ ENKA_ERROR_CONVERTER: dict[
     dict[Literal["title", "description"], LocaleStr],
 ] = {
     enka_errors.PlayerDoesNotExistError: {
-        "title": LocaleStr("Player Does Not Exist", key="player_not_found_title"),
-        "description": LocaleStr(
-            "Please check the provided UID", key="player_not_found_description"
-        ),
+        "title": LocaleStr(key="player_not_found_title"),
+        "description": LocaleStr(key="player_not_found_description"),
     },
     enka_errors.GameMaintenanceError: {
-        "title": LocaleStr("Game is Under Maintenance", key="game_maintenance_title"),
-        "description": LocaleStr("Please try again later", key="game_maintenance_description"),
+        "title": LocaleStr(key="game_maintenance_title"),
+        "description": LocaleStr(key="game_maintenance_description"),
     },
     enka_errors.WrongUIDFormatError: {
-        "title": LocaleStr("Invalid UID Format", key="invalid_uid_format_title"),
-        "description": LocaleStr(
-            "UID must be a string of 9 digits", key="invalid_uid_format_description"
-        ),
+        "title": LocaleStr(key="invalid_uid_format_title"),
+        "description": LocaleStr(key="invalid_uid_format_description"),
     },
 }
 
@@ -198,13 +149,9 @@ def get_error_embed(
         embed = ErrorEmbed(
             locale,
             translator,
-            title=LocaleStr("An Error Occurred", key="error_title"),
+            title=LocaleStr(key="error_title"),
             description=description,
         )
-        embed.set_footer(
-            text=LocaleStr(
-                "Please report this error to the developer via /feedback", key="error_footer"
-            )
-        )
+        embed.set_footer(text=LocaleStr(key="error_footer"))
 
     return embed, recognized

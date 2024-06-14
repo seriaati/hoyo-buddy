@@ -58,6 +58,7 @@ class SettingsUI(View):
         )
 
         # NOTE: This is a workaround for a bug in tortoise ORM
+        await i.client.cache.set(i.user.id, self.settings.lang)
         await Settings.filter(user_id=i.user.id).update(
             lang=self.settings.lang, dark_mode=self.settings.dark_mode
         )
@@ -72,7 +73,7 @@ class LanguageSelector(Select["SettingsUI"]):
     def _get_options(current_locale: discord.Locale | None) -> list[SelectOption]:
         options: list[SelectOption] = [
             SelectOption(
-                label=LocaleStr("Follow client language", key="auto_locale_option_label"),
+                label=LocaleStr(key="auto_locale_option_label"),
                 value="auto",
                 emoji="🏳️",
                 default=not current_locale,
@@ -104,7 +105,7 @@ class DarkModeToggle(ToggleButton["SettingsUI"]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            LocaleStr("Dark mode", key="dark_mode_button_label"),
+            LocaleStr(key="dark_mode_button_label"),
         )
 
     async def callback(self, i: Interaction) -> Any:

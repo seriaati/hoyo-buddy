@@ -29,9 +29,9 @@ class Search(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
-        self._search_categories: dict[Game, list[str]] = {
-            Game.GENSHIN: [c.value for c in ambr.ItemCategory],
-            Game.STARRAIL: [c.value for c in yatta.ItemCategory],
+        self._search_categories: dict[Game, list[ambr.ItemCategory | yatta.ItemCategory]] = {
+            Game.GENSHIN: list(ambr.ItemCategory),
+            Game.STARRAIL: list(yatta.ItemCategory),
         }
         self._beta_id_to_category: dict[str, str] = {}
         self._tasks: set[asyncio.Task] = set()
@@ -65,16 +65,14 @@ class Search(commands.Cog):
         )
 
     @app_commands.command(
-        name=app_commands.locale_str("search", translate=False),
+        name=app_commands.locale_str("search"),
         description=app_commands.locale_str(
             "Search anything game related", key="search_command_description"
         ),
     )
     @app_commands.rename(
         game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
-        category_value=app_commands.locale_str(
-            "category", key="search_command_category_param_name"
-        ),
+        category_value=app_commands.locale_str("category", key="search_cmd_category_param_name"),
         query=app_commands.locale_str("query", key="search_command_query_param_name"),
     )
     @app_commands.describe(
@@ -87,18 +85,6 @@ class Search(commands.Cog):
         query=app_commands.locale_str(
             "Query to search for", key="search_command_query_param_description"
         ),
-    )
-    @app_commands.choices(
-        game_value=[
-            app_commands.Choice(
-                name=app_commands.locale_str(Game.GENSHIN.value, warn_no_key=False),
-                value=Game.GENSHIN.value,
-            ),
-            app_commands.Choice(
-                name=app_commands.locale_str(Game.STARRAIL.value, warn_no_key=False),
-                value=Game.STARRAIL.value,
-            ),
-        ]
     )
     async def search_command(  # noqa: C901, PLR0911, PLR0912, PLR0914, PLR0915
         self,
@@ -404,41 +390,34 @@ class Search(commands.Cog):
                     )
                     await character_ui.start(i)
 
+    @search_command.autocomplete("game_value")
+    async def search_command_game_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice]:
+        locale = await get_locale(i)
+        return self.bot.get_enum_autocomplete([Game.GENSHIN, Game.STARRAIL], locale, current)
+
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
+        locale = await get_locale(i)
         try:
             game = Game(i.namespace.game)
         except ValueError:
-            return [
-                self.bot.get_error_app_command_choice(
-                    LocaleStr("Invalid game selected", key="invalid_category_selected")
-                )
-            ]
+            return self.bot.get_error_autocomplete(LocaleStr(key="invalid_game_selected"), locale)
 
-        locale = await get_locale(i)
-        return [
-            app_commands.Choice(
-                name=LocaleStr(c, warn_no_key=False).translate(i.client.translator, locale),
-                value=c,
-            )
-            for c in self._search_categories[game]
-            if current.lower() in c.lower()
-        ]
+        return self.bot.get_enum_autocomplete(self._search_categories[game], locale, current)
 
     @search_command.autocomplete("query")
     async def search_command_query_autocomplete(  # noqa: PLR0912, PLR0911
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
+        locale = await get_locale(i)
         try:
             game = Game(i.namespace.game)
         except ValueError:
-            return [
-                self.bot.get_error_app_command_choice(
-                    LocaleStr("Invalid game selected", key="invalid_game_selected")
-                )
-            ]
+            return self.bot.get_error_autocomplete(LocaleStr(key="invalid_game_selected"), locale)
 
         try:
             if game is Game.GENSHIN:
@@ -446,34 +425,24 @@ class Search(commands.Cog):
             elif game is Game.STARRAIL:
                 category = yatta.ItemCategory(i.namespace.category)
             else:
-                return [
-                    self.bot.get_error_app_command_choice(
-                        LocaleStr("Invalid game selected", key="invalid_game_selected")
-                    )
-                ]
-        except ValueError:
-            return [
-                self.bot.get_error_app_command_choice(
-                    LocaleStr("Invalid category selected", key="invalid_category_selected")
+                return self.bot.get_error_autocomplete(
+                    LocaleStr(key="invalid_game_selected"), locale
                 )
-            ]
+        except ValueError:
+            return self.bot.get_error_autocomplete(
+                LocaleStr(key="invalid_category_selected"), locale
+            )
 
         # Special handling for spiral abyss
         if category is ambr.ItemCategory.SPIRAL_ABYSS:
             return await AbyssEnemyView.get_autocomplete_choices()
 
         if not self.bot.autocomplete_choices or game not in self.bot.autocomplete_choices:
-            return [
-                self.bot.get_error_app_command_choice(
-                    LocaleStr(
-                        "Search autocomplete choices not set up yet, please try again later.",
-                        key="search_autocomplete_not_setup",
-                    )
-                )
-            ]
+            return self.bot.get_error_autocomplete(
+                LocaleStr(key="search_autocomplete_not_setup"), locale
+            )
 
         if not current:
-            locale = await get_locale(i)
             try:
                 choice_dict = self.bot.autocomplete_choices[game][category][locale.value]
             except KeyError:
@@ -482,11 +451,9 @@ class Search(commands.Cog):
                         Locale.american_english.value
                     ]
                 except KeyError:
-                    return [
-                        self.bot.get_error_app_command_choice(
-                            LocaleStr("No results found", key="search_autocomplete_no_results")
-                        )
-                    ]
+                    return self.bot.get_error_autocomplete(
+                        LocaleStr(key="search_autocomplete_no_results"), locale
+                    )
         else:
             choice_dict = {
                 k: v
@@ -501,11 +468,9 @@ class Search(commands.Cog):
         ]
 
         if not choices:
-            return [
-                self.bot.get_error_app_command_choice(
-                    LocaleStr("No results found", key="search_autocomplete_no_results")
-                )
-            ]
+            return self.bot.get_error_autocomplete(
+                LocaleStr(key="search_autocomplete_no_results"), locale
+            )
 
         random.shuffle(choices)
         return choices[:25]

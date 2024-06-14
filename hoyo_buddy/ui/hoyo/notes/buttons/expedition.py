@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 class ExpeditionReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
-        super().__init__(label=LocaleStr("Expedition reminder", key="exped_button.label"), row=row)
+        super().__init__(label=LocaleStr(key="exped_button.label"), row=row)
 
     async def callback(self, i: Interaction) -> None:
         notify_type = (
@@ -27,9 +27,7 @@ class ExpeditionReminder(Button[NotesView]):
         notify = await NotesNotify.get_or_none(account=self.view._account, type=notify_type)
 
         modal = TypeTwoModal(
-            notify,
-            title=LocaleStr("Expedition Reminder Settings", key="exped_modal.title"),
-            min_notify_interval=30,
+            notify, title=LocaleStr(key="exped_modal.title"), min_notify_interval=30
         )
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)

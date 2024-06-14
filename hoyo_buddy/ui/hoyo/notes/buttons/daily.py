@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 class DailyReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
-        super().__init__(label=LocaleStr("Daily reminder", key="daily_button.label"), row=row)
+        super().__init__(label=LocaleStr(key="daily_button.label"), row=row)
 
     async def callback(self, i: Interaction) -> None:
         notify_type = (
@@ -27,9 +27,7 @@ class DailyReminder(Button[NotesView]):
         notify = await NotesNotify.get_or_none(account=self.view._account, type=notify_type)
 
         modal = TypeThreeModal(
-            notify,
-            title=LocaleStr("Daily Reminder Settings", key="daily_modal.title"),
-            min_notify_interval=30,
+            notify, title=LocaleStr(key="daily_modal.title"), min_notify_interval=30
         )
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)

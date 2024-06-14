@@ -18,9 +18,7 @@ if TYPE_CHECKING:
 class RealmCurrencyReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
-            emoji=REALM_CURRENCY,
-            label=LocaleStr("Realm currency reminder", key="realm_curr_button.label"),
-            row=row,
+            emoji=REALM_CURRENCY, label=LocaleStr(key="realm_curr_button.label"), row=row
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -30,7 +28,7 @@ class RealmCurrencyReminder(Button[NotesView]):
 
         modal = TypeOneModal(
             notify,
-            title=LocaleStr("Realm Currency Reminder Settings", key="realm_curr_modal.title"),
+            title=LocaleStr(key="realm_curr_modal.title"),
             threshold_max_value=2400,
             min_notify_interval=30,
         )

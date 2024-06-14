@@ -18,7 +18,7 @@ class Settings(commands.Cog):
         self.bot = bot
 
     @app_commands.command(
-        name=locale_str("settings", translate=False),
+        name=locale_str("settings"),
         description=locale_str("Configure your user settings", key="settings_command_description"),
     )
     async def settings_command(self, i: Interaction) -> Any:

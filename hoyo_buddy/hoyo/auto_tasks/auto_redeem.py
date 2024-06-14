@@ -48,11 +48,7 @@ class AutoRedeem:
             embed = await account.client.redeem_codes(
                 codes, locale=locale, translator=cls._bot.translator, inline=True, blur=False
             )
-            embed.set_footer(
-                text=LocaleStr(
-                    "Turn off auto code redemption with /redeem", key="auto_redeem_footer"
-                )
-            )
+            embed.set_footer(text=LocaleStr(key="auto_redeem_footer"))
         except Exception as e:
             embed = await cls._handle_error(account, locale, e)
         else:
@@ -75,12 +71,7 @@ class AutoRedeem:
         if not recognized:
             cls._bot.capture_exception(e)
 
-        content = LocaleStr(
-            "An error occurred while redeeming codes automatically.\n"
-            "Hoyo Buddy has disabled this feature for this account, you can turn it back on using </redeem>\n"
-            "If this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n",
-            key="auto_redeem_error.content",
-        )
+        content = LocaleStr(key="auto_redeem_error.content")
         await cls._bot.dm_user(
             account.user.id,
             embed=embed,

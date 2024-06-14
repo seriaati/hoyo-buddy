@@ -67,10 +67,10 @@ class TCGCardUI(View):
             await i.edit_original_response(embed=self.card_embed, view=self)
 
 
-class ViewCardButton(Button["TCGCardUI"]):
+class ViewCardButton(Button[TCGCardUI]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Card", key="view_card_button_label"),
+            label=LocaleStr(key="view_card_button_label"),
             style=ButtonStyle.primary,
         )
 
@@ -83,10 +83,10 @@ class ViewCardButton(Button["TCGCardUI"]):
         await i.response.edit_message(embed=self.view.card_embed, view=self.view)
 
 
-class ViewDictionaryButton(Button["TCGCardUI"]):
+class ViewDictionaryButton(Button[TCGCardUI]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr("Dictionary", key="view_dictionary_button_label"),
+            label=LocaleStr(key="view_dictionary_button_label"),
             style=ButtonStyle.primary,
         )
 
@@ -99,7 +99,7 @@ class ViewDictionaryButton(Button["TCGCardUI"]):
         await i.response.edit_message(embed=self.view.dictionary_embed, view=self.view)
 
 
-class CardTalentSelector(Select["TCGCardUI"]):
+class CardTalentSelector(Select[TCGCardUI]):
     def __init__(
         self,
         talents: list[CardTalent],

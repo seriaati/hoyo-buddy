@@ -18,7 +18,7 @@ class Login(commands.Cog):
         self.bot = bot
 
     @app_commands.command(
-        name=locale_str("accounts", translate=False),
+        name=locale_str("accounts"),
         description=locale_str("Manage your accounts", key="accounts_command_description"),
     )
     async def accounts(self, i: Interaction) -> Any:

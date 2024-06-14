@@ -28,7 +28,7 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
 
         super().__init__(
             self.generate_options(),
-            placeholder=LocaleStr("Select an image", key="profile.image_select.placeholder"),
+            placeholder=LocaleStr(key="profile.image_select.placeholder"),
             custom_id="profile_image_select",
             row=0,
             disabled=disabled,
@@ -42,7 +42,7 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
         """
         options: list[SelectOption] = [
             SelectOption(
-                label=LocaleStr("Official art", key="profile.image_select.none.label"),
+                label=LocaleStr(key="profile.image_select.none.label"),
                 value="none",
                 default=self.current_image_url is None,
             )
@@ -69,17 +69,9 @@ class ImageSelect(PaginatorSelect["ProfileView"]):
 
         """
         label = (
-            LocaleStr(
-                "Hoyo Buddy Collection ({num})",
-                key="profile.image_select.default_collection.label",
-                num=num,
-            )
+            LocaleStr(key="profile.image_select.default_collection.label", num=num)
             if image_url in self.default_collection
-            else LocaleStr(
-                "Custom Image ({num})",
-                key="profile.image_select.custom_image.label",
-                num=num,
-            )
+            else LocaleStr(key="profile.image_select.custom_image.label", num=num)
         )
         option = SelectOption(
             label=label,

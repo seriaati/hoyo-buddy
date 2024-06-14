@@ -143,15 +143,13 @@ class CharacterUI(View):
                 case 0:
                     embed = self._character_embed
                     self.add_item(
-                        EnterCharacterLevel(
-                            LocaleStr("Change character level", key="change_character_level_label")
-                        )
+                        EnterCharacterLevel(LocaleStr(key="change_character_level_label"))
                     )
                 case 1:
                     embed = self._main_skill_embeds[self._main_skill_index]
                     self.add_item(
                         EnterSkilLevel(
-                            label=LocaleStr("Change skill level", key="change_skill_level_label"),
+                            label=LocaleStr(key="change_skill_level_label"),
                             skill_max_level=self._character_detail.traces.main_skills[
                                 self._main_skill_index
                             ].max_level,
@@ -238,15 +236,13 @@ class CharacterUI(View):
                 case 0:
                     embed = self._character_embed
                     self.add_item(
-                        EnterCharacterLevel(
-                            LocaleStr("Change character level", key="change_character_level_label")
-                        )
+                        EnterCharacterLevel(LocaleStr(key="change_character_level_label"))
                     )
                 case 1:
                     embed = self._main_skill_embeds[self._main_skill_index]
                     self.add_item(
                         EnterSkilLevel(
-                            label=LocaleStr("Change skill level", key="change_skill_level_label"),
+                            label=LocaleStr(key="change_skill_level_label"),
                             skill_max_level=list(self._character_detail.skills.values())[
                                 self._main_skill_index
                             ].max_level,
@@ -297,17 +293,17 @@ class PageSelector(Select["CharacterUI"]):
         if hakushin:
             options = [
                 SelectOption(
-                    label=LocaleStr("Details", key="yatta_character_detail_page_label"),
+                    label=LocaleStr(key="yatta_character_detail_page_label"),
                     value="0",
                     default=current == 0,
                 ),
                 SelectOption(
-                    label=LocaleStr("Skills", key="yatta_character_skill_page_label"),
+                    label=LocaleStr(key="yatta_character_skill_page_label"),
                     value="1",
                     default=current == 1,
                 ),
                 SelectOption(
-                    label=LocaleStr("Eidolons", key="yatta_character_eidolon_page_label"),
+                    label=LocaleStr(key="yatta_character_eidolon_page_label"),
                     value="2",
                     default=current == 2,
                 ),
@@ -315,32 +311,32 @@ class PageSelector(Select["CharacterUI"]):
         else:
             options = [
                 SelectOption(
-                    label=LocaleStr("Details", key="yatta_character_detail_page_label"),
+                    label=LocaleStr(key="yatta_character_detail_page_label"),
                     value="0",
                     default=current == 0,
                 ),
                 SelectOption(
-                    label=LocaleStr("Skills", key="yatta_character_skill_page_label"),
+                    label=LocaleStr(key="yatta_character_skill_page_label"),
                     value="1",
                     default=current == 1,
                 ),
                 SelectOption(
-                    label=LocaleStr("Eidolons", key="yatta_character_eidolon_page_label"),
+                    label=LocaleStr(key="yatta_character_eidolon_page_label"),
                     value="2",
                     default=current == 2,
                 ),
                 SelectOption(
-                    label=LocaleStr("Traces", key="yatta_character_trace_page_label"),
+                    label=LocaleStr(key="yatta_character_trace_page_label"),
                     value="3",
                     default=current == 3,
                 ),
                 SelectOption(
-                    label=LocaleStr("Stories", key="character_stories_page_label"),
+                    label=LocaleStr(key="character_stories_page_label"),
                     value="4",
                     default=current == 4,
                 ),
                 SelectOption(
-                    label=LocaleStr("Voices", key="character_voices_page_label"),
+                    label=LocaleStr(key="character_voices_page_label"),
                     value="5",
                     default=current == 5,
                 ),
@@ -364,13 +360,13 @@ class ItemSelector(Select["CharacterUI"]):
 
 class SkillLevelModal(Modal):
     level = TextInput(
-        label=LocaleStr("Level", key="level_label"),
+        label=LocaleStr(key="level_label"),
         is_digit=True,
         min_value=1,
     )
 
     def __init__(self, max_level: int) -> None:
-        super().__init__(title=LocaleStr("Enter Skill Level", key="skill_level.modal.title"))
+        super().__init__(title=LocaleStr(key="skill_level.modal.title"))
         self.level.max_value = max_level
 
 
@@ -417,7 +413,7 @@ class EnterSkilLevel(Button[CharacterUI]):
 
 class CharacterLevelModal(Modal):
     level = TextInput(
-        label=LocaleStr("Level", key="level_label"),
+        label=LocaleStr(key="level_label"),
         is_digit=True,
         min_value=1,
         max_value=80,
@@ -429,9 +425,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
         super().__init__(label=label, style=ButtonStyle.blurple)
 
     async def callback(self, i: Interaction) -> Any:
-        modal = CharacterLevelModal(
-            title=LocaleStr("Enter Character Level", key="chara_level.modal.title")
-        )
+        modal = CharacterLevelModal(title=LocaleStr(key="chara_level.modal.title"))
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()

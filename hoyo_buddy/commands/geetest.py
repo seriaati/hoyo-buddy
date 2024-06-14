@@ -67,11 +67,8 @@ class GeetestCommand:
                 embed = DefaultEmbed(
                     self._locale,
                     translator,
-                    title=LocaleStr("Verification timeout", key="geeetest_verification_timeout"),
-                    description=LocaleStr(
-                        "The verification has timed out. Please use the </geetest> comand to try again.",
-                        key="geeetest_verification_timeout_description",
-                    ),
+                    title=LocaleStr(key="geeetest_verification_timeout"),
+                    description=LocaleStr(key="geeetest_verification_timeout_description"),
                 )
                 await self._message.edit(embed=embed, view=None)
                 self._bot.login_notif_tasks.pop(self._user_id).cancel()
@@ -96,7 +93,7 @@ class GeetestCommand:
                 embed = DefaultEmbed(
                     self._locale,
                     translator,
-                    title=LocaleStr("Verification complete", key="geeetest_verification_complete"),
+                    title=LocaleStr(key="geeetest_verification_complete"),
                 )
 
             await self._message.edit(embed=embed, view=None)
@@ -143,17 +140,14 @@ class GeetestCommand:
             i.client.translator,
             self._locale,
             url=url,
-            label=LocaleStr("Complete geetest", key="complete_geetest_button_label"),
+            label=LocaleStr(key="complete_geetest_button_label"),
         )
 
         embed = DefaultEmbed(
             self._locale,
             i.client.translator,
-            title=LocaleStr("Complete geetest", key="complete_geetest_button_label"),
-            description=LocaleStr(
-                "Click the button below to complete the geetest verification",
-                key="complete_geetest_button_description",
-            ),
+            title=LocaleStr(key="complete_geetest_button_label"),
+            description=LocaleStr(key="complete_geetest_button_description"),
         ).add_acc_info(self._account)
 
         await i.followup.send(embed=embed, view=view, ephemeral=True)

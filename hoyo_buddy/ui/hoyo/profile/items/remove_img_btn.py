@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class RemoveImageButton(Button["ProfileView"]):
     def __init__(self, disabled: bool) -> None:
         super().__init__(
-            label=LocaleStr("Remove custom image", key="profile.remove_image.button.label"),
+            label=LocaleStr(key="profile.remove_image.button.label"),
             style=ButtonStyle.red,
             disabled=disabled,
             custom_id="profile_remove_image",

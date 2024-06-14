@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any
 
 import genshin
 
-from ...bot.translator import LocaleStr, Translator
+from ...bot.translator import EnumStr, LocaleStr, Translator
 from ...constants import GEETEST_SERVERS
 from ...db.models import HoyoAccount, User
 from ...embeds import DefaultEmbed
@@ -55,11 +55,8 @@ class AccountManager(View):
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
-                title=LocaleStr("Account Manager", key="account_manager_title"),
-                description=LocaleStr(
-                    "You don't have any accounts yet.",
-                    key="account_manager_no_accounts_description",
-                ),
+                title=LocaleStr(key="account_manager_title"),
+                description=LocaleStr(key="account_manager_no_accounts_description"),
             )
             return embed
 
@@ -69,20 +66,15 @@ class AccountManager(View):
             title=str(account),
         )
         embed.add_field(
-            name=LocaleStr("Game", key="account_game"),
-            value=LocaleStr(account.game.value, warn_no_key=False),
+            name=LocaleStr(key="account_game"),
+            value=EnumStr(account.game),
         )
         if account.nickname:
             embed.add_field(
-                name=LocaleStr("Username", key="account_username"),
+                name=LocaleStr(key="account_username"),
                 value=account.username,
             )
-        embed.set_footer(
-            text=LocaleStr(
-                "Selected account will be the default one used for all commands",
-                key="account_manager_footer",
-            )
-        )
+        embed.set_footer(text=LocaleStr(key="account_manager_footer"))
         return embed
 
     def _add_items(self) -> None:
@@ -177,11 +169,8 @@ class AccountManager(View):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr("🎉 Welcome to Hoyo Buddy!", key="select_account.embed.title"),
-            description=LocaleStr(
-                "Select the accounts you want to add.",
-                key="select_account.embed.description",
-            ),
+            title=LocaleStr(key="select_account.embed.title"),
+            description=LocaleStr(key="select_account.embed.description"),
         )
 
         device_id = cookies.pop("x-rpc-device_id", None)
@@ -233,26 +222,16 @@ class AccountManager(View):
 
         go_back_button = GoBackButton(self.children, self.get_embeds(i.message))
         self.clear_items()
-        self.add_item(
-            Button(
-                label=LocaleStr("Complete CAPTCHA", key="complete_captcha_button_label"), url=url
-            )
-        )
+        self.add_item(Button(label=LocaleStr(key="complete_captcha_button_label"), url=url))
         self.add_item(go_back_button)
 
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr(
-                "😥 Need to Solve CAPTCHA Before Sending the Verification Code",
-                key="email-geetest.embed.title",
-            )
+            title=LocaleStr(key="email-geetest.embed.title")
             if for_code
-            else LocaleStr("😅 Need to solve CAPTCHA before logging in", key="geetest.embed.title"),
-            description=LocaleStr(
-                "Click on the button below to complete CAPTCHA.\n",
-                key="captcha.embed.description",
-            ),
+            else LocaleStr(key="geetest.embed.title"),
+            description=LocaleStr(key="captcha.embed.description"),
         )
         await i.edit_original_response(embed=embed, view=self)
 
@@ -273,17 +252,8 @@ class AccountManager(View):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr(
-                "👍 Almost Done! Just Need to Verify Your Email",
-                key="email-verification.embed.title",
-            ),
-            description=LocaleStr(
-                (
-                    "1. Go to the inbox of the email your entered and find the verification code sent from Hoyoverse.\n"
-                    "2. Click the button below to enter the code received.\n"
-                ),
-                key="email-verification.embed.description",
-            ),
+            title=LocaleStr(key="email-verification.embed.title"),
+            description=LocaleStr(key="email-verification.embed.description"),
         )
 
         await i.edit_original_response(embed=embed, view=self)
@@ -303,13 +273,7 @@ class AccountManager(View):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr(
-                "Verification Code Sent",
-                key="add_miyoushe_acc.verification_code_sent",
-            ),
-            description=LocaleStr(
-                "Please check your phone for the verification code and click the button below to enter it",
-                key="add_miyoushe_acc.verification_code_sent_description",
-            ),
+            title=LocaleStr(key="add_miyoushe_acc.verification_code_sent"),
+            description=LocaleStr(key="add_miyoushe_acc.verification_code_sent_description"),
         )
         await i.edit_original_response(embed=embed, view=self)

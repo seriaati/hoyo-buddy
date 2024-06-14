@@ -65,7 +65,7 @@ class GenshinClient(genshin.Client):
             DefaultEmbed(
                 locale,
                 translator,
-                title=LocaleStr("Daily Check-In Reward Claimed", key="reward_claimed_title"),
+                title=LocaleStr(key="reward_claimed_title"),
                 description=f"{daily_reward.name} x{daily_reward.amount}",
             )
             .set_thumbnail(url=daily_reward.icon)
@@ -325,7 +325,7 @@ class GenshinClient(genshin.Client):
         embed = DefaultEmbed(
             locale,
             translator,
-            title=LocaleStr("Code Redemption Results", key="redeem_command_embed.title"),
+            title=LocaleStr(key="redeem_command_embed.title"),
         ).add_acc_info(self._account, blur=blur)
         for result in results:
             name = f"{'✅' if result[2] else '❌'} {result[0]}"
@@ -369,8 +369,6 @@ class GenshinClient(genshin.Client):
             return f"{embed.title}\n{embed.description}", success
         else:
             success = True
-            msg = LocaleStr("Successfully redeemed", key="redeem_code.success").translate(
-                translator, locale
-            )
+            msg = LocaleStr(key="redeem_code.success").translate(translator, locale)
 
         return msg, success

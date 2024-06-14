@@ -20,14 +20,14 @@ if TYPE_CHECKING:
 
 class Farm(
     commands.GroupCog,
-    name=app_commands.locale_str("farm", translate=False),
-    description=app_commands.locale_str("Farm commands", translate=False),
+    name=app_commands.locale_str("farm"),
+    description=app_commands.locale_str("Farm commands"),
 ):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
     @app_commands.command(
-        name=app_commands.locale_str("view", translate=False),
+        name=app_commands.locale_str("view"),
         description=app_commands.locale_str(
             "View farmable domains in Genshin Impact", key="farm_view_command_description"
         ),
@@ -64,7 +64,7 @@ class Farm(
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("add", translate=False),
+        name=app_commands.locale_str("add"),
         description=app_commands.locale_str(
             "Add character/weapon to be notified when its materials are farmable",
             key="farm_add_command_description",
@@ -76,7 +76,7 @@ class Farm(
     )
     @app_commands.describe(
         query=app_commands.locale_str(
-            "Query to search for", key="search_command_query_param_description"
+            "Query to search for", query="search_command_query_param_description"
         ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -95,7 +95,7 @@ class Farm(
         await command.run()
 
     @app_commands.command(
-        name=app_commands.locale_str("remove", translate=False),
+        name=app_commands.locale_str("remove"),
         description=app_commands.locale_str(
             "Remove character/weapon from farm reminder list", key="farm_remove_command_description"
         ),
@@ -125,7 +125,7 @@ class Farm(
         await command.run()
 
     @app_commands.command(
-        name=app_commands.locale_str("reminder", translate=False),
+        name=app_commands.locale_str("reminder"),
         description=app_commands.locale_str(
             "Notify you when materials of characters/weapons are farmable",
             key="farm_reminder_command_description",
@@ -165,21 +165,17 @@ class Farm(
 
     @farm_add_command.autocomplete("query")
     async def query_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:
+        locale = await get_locale(i)
+
         try:
             characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
             weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
         except KeyError:
-            return [
-                self.bot.get_error_app_command_choice(
-                    LocaleStr(
-                        "Search autocomplete choices not set up yet, please try again later.",
-                        key="search_autocomplete_not_setup",
-                    )
-                )
-            ]
+            return self.bot.get_error_autocomplete(
+                LocaleStr(key="search_autocomplete_not_setup"), locale
+            )
 
         if not current:
-            locale = await get_locale(i)
             choice_dict = dict(
                 characters.get(locale.value, characters[Locale.american_english.value]).items()
             )

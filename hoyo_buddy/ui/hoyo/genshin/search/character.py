@@ -139,19 +139,13 @@ class CharacterUI(View):
             case 0:
                 embed = await self.fetch_character_embed()
                 self.add_item(
-                    EnterCharacterLevel(
-                        label=LocaleStr(
-                            "Change character level", key="change_character_level_label"
-                        )
-                    )
+                    EnterCharacterLevel(label=LocaleStr(key="change_character_level_label"))
                 )
             case 1:
                 embed, upgradeable, talents = await self.fetch_talent_embed()
                 if upgradeable:
                     self.add_item(
-                        EnterTalentLevel(
-                            label=LocaleStr("Change talent level", key="change_talent_level_label")
-                        )
+                        EnterTalentLevel(label=LocaleStr(key="change_talent_level_label"))
                     )
                 self.add_item(
                     ItemSelector(
@@ -212,11 +206,7 @@ class CharacterUI(View):
                 )
             case 5:
                 embed, skills = await self.fetch_hakushin_skill_embed()
-                self.add_item(
-                    EnterTalentLevel(
-                        label=LocaleStr("Change skill level", key="change_skill_level_label")
-                    )
-                )
+                self.add_item(EnterTalentLevel(label=LocaleStr(key="change_skill_level_label")))
                 self.add_item(
                     ItemSelector(
                         [
@@ -263,11 +253,7 @@ class CharacterUI(View):
             case 8:
                 embed = await self.fetch_hakushin_character_embed()
                 self.add_item(
-                    EnterCharacterLevel(
-                        label=LocaleStr(
-                            "Change character level", key="change_character_level_label"
-                        )
-                    )
+                    EnterCharacterLevel(label=LocaleStr(key="change_character_level_label"))
                 )
             case _:
                 msg = f"Invalid page index: {self.selected_page}"
@@ -279,7 +265,7 @@ class CharacterUI(View):
 
 class TalentLevelModal(Modal):
     level = TextInput(
-        label=LocaleStr("Level", key="level_label"),
+        label=LocaleStr(key="level_label"),
         placeholder="10",
         is_digit=True,
         min_value=1,
@@ -292,9 +278,7 @@ class EnterTalentLevel(Button[CharacterUI]):
         super().__init__(label=label, style=ButtonStyle.blurple)
 
     async def callback(self, i: Interaction) -> Any:
-        modal = TalentLevelModal(
-            title=LocaleStr("Enter Talent Level", key="talent_level.modal.title")
-        )
+        modal = TalentLevelModal(title=LocaleStr(key="talent_level.modal.title"))
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()
@@ -307,7 +291,7 @@ class EnterTalentLevel(Button[CharacterUI]):
 
 class CharacterLevelModal(Modal):
     level = TextInput(
-        label=LocaleStr("Level", key="level_label"),
+        label=LocaleStr(key="level_label"),
         placeholder="90",
         is_digit=True,
         min_value=1,
@@ -320,9 +304,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
         super().__init__(label=label, style=ButtonStyle.blurple)
 
     async def callback(self, i: Interaction) -> Any:
-        modal = CharacterLevelModal(
-            title=LocaleStr("Enter Character Level", key="chara_level.modal.title")
-        )
+        modal = CharacterLevelModal(title=LocaleStr(key="chara_level.modal.title"))
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()
@@ -339,22 +321,22 @@ class PageSelector(Select[CharacterUI]):
         if hakushin:
             options = [
                 SelectOption(
-                    label=LocaleStr("Profile", key="character_profile_page_label"),
+                    label=LocaleStr(key="character_profile_page_label"),
                     value="8",
                     default=current == 8,
                 ),
                 SelectOption(
-                    label=LocaleStr("Skills", key="character_skills_page_label"),
+                    label=LocaleStr(key="character_skills_page_label"),
                     value="5",
                     default=current == 5,
                 ),
                 SelectOption(
-                    label=LocaleStr("Passives", key="character_passives_page_label"),
+                    label=LocaleStr(key="character_passives_page_label"),
                     value="6",
                     default=current == 6,
                 ),
                 SelectOption(
-                    label=LocaleStr("Constellations", key="character_const_page_label"),
+                    label=LocaleStr(key="character_const_page_label"),
                     value="7",
                     default=current == 7,
                 ),
@@ -362,27 +344,27 @@ class PageSelector(Select[CharacterUI]):
         else:
             options = [
                 SelectOption(
-                    label=LocaleStr("Profile", key="character_profile_page_label"),
+                    label=LocaleStr(key="character_profile_page_label"),
                     value="0",
                     default=current == 0,
                 ),
                 SelectOption(
-                    label=LocaleStr("Talents", key="character_talents_page_label"),
+                    label=LocaleStr(key="character_talents_page_label"),
                     value="1",
                     default=current == 1,
                 ),
                 SelectOption(
-                    label=LocaleStr("Constellations", key="character_const_page_label"),
+                    label=LocaleStr(key="character_const_page_label"),
                     value="2",
                     default=current == 2,
                 ),
                 SelectOption(
-                    label=LocaleStr("Stories", key="character_stories_page_label"),
+                    label=LocaleStr(key="character_stories_page_label"),
                     value="3",
                     default=current == 3,
                 ),
                 SelectOption(
-                    label=LocaleStr("Quotes", key="character_quotes_page_label"),
+                    label=LocaleStr(key="character_quotes_page_label"),
                     value="4",
                     default=current == 4,
                 ),

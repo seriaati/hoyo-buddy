@@ -145,12 +145,6 @@ class ProfileView(View):
                 self.translator,
                 title=f"{player.nickname} ({self.uid})",
                 description=LocaleStr(
-                    "Trailblaze Level: {level}\n"
-                    "Equilibrium Level: {world_level}\n"
-                    "Friend Count: {friend_count}\n"
-                    "Light Cones: {light_cones}\n"
-                    "Characters: {characters}\n"
-                    "Achievements: {achievements}\n",
                     key="profile.player_info.embed.description",
                     level=player.level,
                     world_level=player.equilibrium_level,
@@ -170,9 +164,6 @@ class ProfileView(View):
                 self.translator,
                 title=f"{player.nickname} ({self.uid})",
                 description=LocaleStr(
-                    "Adventure Rank: {adventure_rank}\n"
-                    "Spiral Abyss: {spiral_abyss}\n"
-                    "Achievements: {achievements}\n",
                     key="profile.player_info.gi.embed.description",
                     adventure_rank=player.level,
                     spiral_abyss=f"{player.abyss_floor}-{player.abyss_level}",
@@ -192,11 +183,6 @@ class ProfileView(View):
                 self.translator,
                 title=f"{player.nickname} ({self.uid})",
                 description=LocaleStr(
-                    "Trailblaze Level: {level}\n"
-                    "Characters: {characters}\n"
-                    "Chests: {chest}\n"
-                    "Memory of Chaos: {moc}\n"
-                    "Achievements: {achievements}\n",
                     key="profile.player_info.hoyolab.embed.description",
                     level=player.level,
                     characters=stats.avatar_num,
@@ -209,11 +195,8 @@ class ProfileView(View):
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
-                title=LocaleStr("No data available", key="profile.no_data.title"),
-                description=LocaleStr(
-                    "Game services are currently down; luckily, Hoyo Buddy helped you to cache your character data, so you can still view your character cards as normal.",
-                    key="profile.no_data.description",
-                ),
+                title=LocaleStr(key="profile.no_data.title"),
+                description=LocaleStr(key="profile.no_data.description"),
             )
 
         return embed

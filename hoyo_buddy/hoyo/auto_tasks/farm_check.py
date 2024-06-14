@@ -36,18 +36,12 @@ class FarmChecker:
             locale,
             cls._translator,
             title=LocaleStr(
-                "Materials For {name} is Farmable Today",
                 key="farm_check.farmable_today",
                 name=cls._item_id_to_name[locale.value][str(item.id)],
             ),
         )
         embed.set_thumbnail(url=item.icon)
-        embed.set_footer(
-            text=LocaleStr(
-                "Use /farm reminder to configure reminder settings\nUse /farm view to view all items farmable today",
-                key="farm_check.use_farm_notify",
-            )
-        )
+        embed.set_footer(text=LocaleStr(key="farm_check.use_farm_notify"))
         embed.add_acc_info(farm_notify.account, blur=False)
 
         message = await cls._bot.dm_user(farm_notify.account.user.id, embed=embed)

@@ -31,7 +31,7 @@ abyss_chamber.enemy_level.embed.field.name: 敵人等級
 abyss_chamber.ley_line_disorder.embed.field.name: 地脈異常
 abyss_command_description: 查看當前深境螺旋的敵人
 abyss_enemy.item_description: "血量: {HP}"
-acc_no_default_param_desc: 用于运行此指令的帐户
+acc_no_default_param_desc: 用於運行此指令的帳戶
 account_autocomplete_param_description: "選擇用來運行指令的帳戶，默認為在 /accounts 中選擇的"
 account_autocomplete_param_name: 帳戶
 account_deleted_description: "{account} 已被刪除。"

@@ -245,7 +245,7 @@ geetest.no_need.description: "你從來不需要做 geetest 驗證！你為什�
 geetest.required: 需要進行 Geetest 驗證
 geetest.required.description: "使用</geetest>指令，選擇觸發此驗證的帳戶，並選擇 `{geetest_type}` 來完成驗證"
 geetest_command_description: 完成 Geetest 驗證
-geetest_cmd_type_param_desc: Geetest 验证的类别
+geetest_cmd_type_param_desc: Geetest 驗證的類別
 geetest_command_type_param_name: 類別
 genshin_impact: 原神
 geo: 岩

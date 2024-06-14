@@ -373,9 +373,9 @@ profile.card_template_select.placeholder: 選擇一個樣式
 profile.card_template_select.same_author.description: "由 {author} 設計和製作"
 profile.card_template_select.src.label: "StarRailCard 樣式 {num}"
 profile.character_select.cached_data.description: 快取數據
-profile.character_select.description: "{eidolons}魂{superposition}叠 | {data_type} | 游戏展示柜"
+profile.character_select.description: "{eidolons}魂{superposition}疊 | {data_type} | 遊戲展示櫃"
 profile.character_select.enka_network.description: Enka Network 角色配置
-profile.character_select.hoyolab.description: "{eidolons}魂{superposition}叠 | {data_type} | HoYoLAB"
+profile.character_select.hoyolab.description: "{eidolons}魂{superposition}疊 | {data_type} | HoYoLAB"
 profile.character_select.live_data.description: 即時數據
 profile.character_select.placeholder: 選擇一個角色
 profile.dark_mode.button.label: 深色模式

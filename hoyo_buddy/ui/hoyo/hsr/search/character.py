@@ -7,6 +7,7 @@ import yatta
 from discord import ButtonStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.constants import HAKUSHIN_HSR_SKILL_TYPE_NAMES
 from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
@@ -130,7 +131,7 @@ class CharacterUI(View):
         await self.update(i)
         self.message = await i.original_response()
 
-    async def update(self, i: Interaction) -> None:  # noqa: PLR0912
+    async def update(self, i: Interaction) -> None:  # noqa: PLR0912, PLR0915
         if self._character_detail is None:
             msg = "Character detail not fetched"
             raise RuntimeError(msg)
@@ -189,7 +190,7 @@ class CharacterUI(View):
                         ItemSelector(
                             [
                                 SelectOption(
-                                    label=s.name,
+                                    label=f"{s.skill_list[0].type}: {s.skill_list[0].name}",
                                     value=str(index),
                                     default=index == self._sub_skill_index,
                                 )
@@ -248,19 +249,23 @@ class CharacterUI(View):
                             ].max_level,
                         )
                     )
-                    self.add_item(
-                        ItemSelector(
-                            [
-                                SelectOption(
-                                    label=f"{s.name}",
-                                    value=str(index),
-                                    default=index == self._main_skill_index,
-                                )
-                                for index, s in enumerate(self._character_detail.skills.values())
-                            ],
-                            "_main_skill_index",
+
+                    options: list[SelectOption] = []
+                    skills = list(self._character_detail.skills.values())
+                    skills.sort(key=lambda s: s.type or "Talent", reverse=True)
+                    for index, skill in enumerate(skills):
+                        type_str_key = HAKUSHIN_HSR_SKILL_TYPE_NAMES.get(skill.type or "Talent")
+                        type_str = LocaleStr(key=type_str_key).translate(
+                            self.translator, self.locale
                         )
-                    )
+                        options.append(
+                            SelectOption(
+                                label=f"{type_str}: {skill.name}",
+                                value=str(index),
+                                default=index == self._main_skill_index,
+                            )
+                        )
+                    self.add_item(ItemSelector(options, "_main_skill_index"))
                 case 2:
                     embed = self._eidolon_embeds[self._eidolon_index]
                     self.add_item(

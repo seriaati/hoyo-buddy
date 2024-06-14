@@ -31,7 +31,7 @@ abyss_chamber.enemy_level.embed.field.name: 敵レベル
 abyss_chamber.ley_line_disorder.embed.field.name: 地脈異常
 abyss_command_description: 現在の深境螺旋の敵を見る
 abyss_enemy.item_description: "HP：{HP}"
-acc_no_default_param_desc: このコマンドを実行するアカウントを選択
+acc_no_default_param_desc: ""
 account_autocomplete_param_description: "このコマンドを実行するアカウント。デフォルトは/accountsで選択したアカウントです。"
 account_autocomplete_param_name: アカウント
 account_deleted_description: "{account}は削除されました"
@@ -109,6 +109,14 @@ characters.first_time.embed.description: ""
 characters.first_time.title: ""
 characters.gi.embed.footer: ""
 characters.hsr.embed.footer: ""
+hsr.ultimate: ""
+hsr.normal_attack: ""
+hsr.skill: ""
+hsr.talent: ""
+hsr.technique: ""
+gi.skill: ""
+gi.burst: ""
+gi.passive: ""
 characters.sorter.constellation: ""
 characters.sorter.eidolon: ""
 characters.sorter.element: ""
@@ -178,7 +186,7 @@ exploration.geoculi: ""
 exploration.hydroculi: ""
 exploration.luxurious_chests: ""
 exploration.placeholder: ""
-exploration.placeholder_quote: ""
+exploration.placeholder_quote: ''
 exploration.precious_chests: ""
 exploration.progress: ""
 exploration.remarkable_chests: ""
@@ -450,7 +458,7 @@ saturday: ""
 search_autocomplete_no_results: ""
 search_autocomplete_not_setup: ""
 search_command_category_param_description: 検索対象のカテゴリー
-search_cmd_category_param_name: カテゴリー
+search_cmd_category_param_name: ""
 search_command_description: ゲーム関連についてなんでも検索
 search_command_game_param_description: 検索対象のゲーム
 search_command_game_param_name: ゲーム
@@ -520,3 +528,4 @@ login_detail_modal.input_label: ""
 enter_login_details_button_label: ""
 not_implemented_error_title: ""
 not_implemented_error_message: ""
+profile.build.current.label: ""

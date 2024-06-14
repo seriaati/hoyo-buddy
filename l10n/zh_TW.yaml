@@ -109,8 +109,8 @@ characters.first_time.embed.description: "如果這是你首次使用此指令�
 characters.first_time.title: 正在獲取資料...
 characters.gi.embed.footer: "等級順序: {normal}/{skill}/{burst}"
 characters.hsr.embed.footer: "等級順序: {normal}/{skill}/{ultimate}/{talent}\n使用 /profile 查看角色詳情"
-hsr.ultimate: 终结技
-hsr.normal_attack: 普通攻击
+hsr.ultimate: 終結技
+hsr.normal_attack: 普通攻擊
 hsr.skill: 战技
 hsr.talent: 天赋
 hsr.technique: 秘技

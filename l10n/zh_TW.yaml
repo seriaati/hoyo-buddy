@@ -267,7 +267,7 @@ incomplete_param_error_title: 給予的指令參數不完整
 instructions_title: 指示
 interaction_failed_description: "此交互界面並不是由你觸發的，所以你無法使用它。"
 interaction_failed_title: 交互失敗
-invalid_category_selected: 选择了无效的类别
+invalid_category_selected: 選擇了無效的類別
 invalid_color_error_message: "一個有效的色碼需為一個十六進制碼，例如 #FF0000"
 invalid_color_error_title: 無效的色碼
 invalid_cookies_description: 使用</accounts>來刷新帳戶的 cookies

@@ -460,7 +460,7 @@ saturday: 星期六
 search_autocomplete_no_results: 未能找到任何結果
 search_autocomplete_not_setup: "搜尋自動完成選項尚未設置完成，請稍後再試。"
 search_command_category_param_description: 欲搜尋的分類
-search_cmd_category_param_name: 类别
+search_cmd_category_param_name: 分類
 search_command_description: 搜尋任何與遊戲相關的內容
 search_command_game_param_description: 欲搜尋的遊戲
 search_command_game_param_name: 遊戲
@@ -530,4 +530,4 @@ login_detail_modal.input_label: 登入信息
 enter_login_details_button_label: 輸入登入信息
 not_implemented_error_title: 尚未實裝
 not_implemented_error_message: "這個功能尚未在平台 `{platform}` 下的 `{game}` 上實裝。"
-profile.build.current.label: 当前
+profile.build.current.label: 當前

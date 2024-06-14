@@ -8,8 +8,7 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.bot.translator import EnumStr, LocaleStr, Translator
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
-
-from .....enums import ChallengeType
+from hoyo_buddy.enums import ChallengeType
 
 if TYPE_CHECKING:
     from genshin.models.starrail import (

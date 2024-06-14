@@ -31,7 +31,7 @@ abyss_chamber.enemy_level.embed.field.name: 敌人等级
 abyss_chamber.ley_line_disorder.embed.field.name: 地脉异常
 abyss_command_description: 查看当前深境螺旋的敌人
 abyss_enemy.item_description: "生命值：{HP}"
-acc_no_default_param_desc: ""
+acc_no_default_param_desc: 用于运行此指令的帐户
 account_autocomplete_param_description: "选择用该命令运行的账户，默认为/accounts中选择的"
 account_autocomplete_param_name: 账号
 account_deleted_description: "{account} 已被删除"
@@ -107,16 +107,16 @@ characters.filter.path.placeholder: 选择命途
 characters.filter.placeholder: 选择一个筛选器
 characters.first_time.embed.description: "如果这是你首次使用此指令，可能需要一点时间。\n这是因为此指令需要从各来源来获取数据。\n下次使用此命令时，应该会更快。\n请耐心等待数据获取完成。"
 characters.first_time.title: 获取资料中...
-characters.gi.embed.footer: ""
-characters.hsr.embed.footer: ""
-hsr.ultimate: ""
-hsr.normal_attack: ""
-hsr.skill: ""
-hsr.talent: ""
-hsr.technique: ""
-gi.skill: ""
-gi.burst: ""
-gi.passive: ""
+characters.gi.embed.footer: "等级顺序: {normal}/{skill}/{burst}"
+characters.hsr.embed.footer: "等级顺序: {normal}/{skill}/{ultimate}/{talent}\n使用 /profile 查看角色详情"
+hsr.ultimate: 终结技
+hsr.normal_attack: 普通攻击
+hsr.skill: 战技
+hsr.talent: 天赋
+hsr.technique: 秘技
+gi.skill: 元素战技
+gi.burst: 元素爆发
+gi.passive: 被动天赋
 characters.sorter.constellation: 命座
 characters.sorter.eidolon: 星魂
 characters.sorter.element: 元素
@@ -245,7 +245,7 @@ geetest.no_need.description: "从来不需要进行 geetest 验证！你怎么�
 geetest.required: 需要Geetest验证
 geetest.required.description: "使用</geetest>指令，选择触发此验证的帐户，并选择 `{geetest_type}` 来完成验证"
 geetest_command_description: 完成 Geetest 验证
-geetest_cmd_type_param_desc: ""
+geetest_cmd_type_param_desc: Geetest 验证的类别
 geetest_command_type_param_name: 类别
 genshin_impact: 原神
 geo: 岩
@@ -267,7 +267,7 @@ incomplete_param_error_title: 给予的指令参数不完整
 instructions_title: 指引
 interaction_failed_description: "该视图不是由你发起，因此无法使用。"
 interaction_failed_title: 交互失败
-invalid_category_selected: ""
+invalid_category_selected: 选择了无效的类别
 invalid_color_error_message: "一个有效的色码需为一个十六进制码，例如 #FF0000"
 invalid_color_error_title: 无效的色码
 invalid_cookies_description: 使用</accounts>来刷新帐户的 cookies
@@ -373,9 +373,9 @@ profile.card_template_select.placeholder: 选择样式
 profile.card_template_select.same_author.description: "由{author}设计与制作"
 profile.card_template_select.src.label: "星穹铁道卡片样式{num}"
 profile.character_select.cached_data.description: 缓存数据
-profile.character_select.description: ""
+profile.character_select.description: "{eidolons}魂{superposition}叠 | {data_type} | 游戏展示柜"
 profile.character_select.enka_network.description: Enka Network 角色配置
-profile.character_select.hoyolab.description: ""
+profile.character_select.hoyolab.description: "{eidolons}魂{superposition}叠 | {data_type} | HoYoLAB"
 profile.character_select.live_data.description: 实时数据
 profile.character_select.placeholder: 选择角色
 profile.dark_mode.button.label: 深色模式
@@ -383,7 +383,7 @@ profile.generate_ai_art.button.label: 生成 AI 绘画
 profile.generate_ai_art_modal.negative_prompt.label: 负面提示
 profile.generate_ai_art_modal.prompt.label: 提示
 profile.generate_ai_art_modal.title: 生成 AI 绘图
-profile.genshin.character_select.description: ""
+profile.genshin.character_select.description: "{const}命{refine}精 | {data_type}"
 profile.image_select.custom_image.label: "自定义图片（{num}）"
 profile.image_select.default_collection.label: "Hoyo Buddy 系列 ({num})"
 profile.image_select.none.label: 官方绘图
@@ -460,7 +460,7 @@ saturday: 星期六
 search_autocomplete_no_results: 未能找到任何结果
 search_autocomplete_not_setup: "搜索自动完成选项还未设置，请稍后再试。"
 search_command_category_param_description: 要搜索的类别
-search_cmd_category_param_name: ""
+search_cmd_category_param_name: 类别
 search_command_description: 搜寻任何与游戏相关的内容
 search_command_game_param_description: 要搜索的游戏
 search_command_game_param_name: 游戏
@@ -530,4 +530,4 @@ login_detail_modal.input_label: 登入信息
 enter_login_details_button_label: 输入登入信息
 not_implemented_error_title: 尚未实装
 not_implemented_error_message: "此功能尚未在平台 `{platform}` 下的 `{game}` 上实装。"
-profile.build.current.label: ""
+profile.build.current.label: 当前

@@ -252,7 +252,6 @@ class CharacterUI(View):
 
                     options: list[SelectOption] = []
                     skills = list(self._character_detail.skills.values())
-                    skills.sort(key=lambda s: s.type or "Talent", reverse=True)
                     for index, skill in enumerate(skills):
                         type_str_key = HAKUSHIN_HSR_SKILL_TYPE_NAMES.get(skill.type or "Talent")
                         type_str = LocaleStr(key=type_str_key).translate(

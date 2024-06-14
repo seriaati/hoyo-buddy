@@ -111,8 +111,8 @@ characters.gi.embed.footer: "等級順序: {normal}/{skill}/{burst}"
 characters.hsr.embed.footer: "等級順序: {normal}/{skill}/{ultimate}/{talent}\n使用 /profile 查看角色詳情"
 hsr.ultimate: 終結技
 hsr.normal_attack: 普通攻擊
-hsr.skill: 战技
-hsr.talent: 天赋
+hsr.skill: 戰技
+hsr.talent: 天賦
 hsr.technique: 秘技
 gi.skill: 元素战技
 gi.burst: 元素爆发

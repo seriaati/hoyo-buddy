@@ -275,21 +275,26 @@ class HoyoBuddy(commands.AutoShardedBot):
         return await super().on_command_error(context, exception)
 
     def get_all_commands(self, locale: discord.Locale) -> dict[str, str]:
+        if self.tree.translator is None:
+            msg = "Translator is not set"
+            raise RuntimeError(msg)
+
         result: dict[str, str] = {}
         for cog in self.cogs.values():
             for command in cog.walk_app_commands():
-                desc = (
-                    LocaleStr(key=command._locale_description.message)
-                    if command._locale_description is not None
-                    else command.description
-                )
-                translated_desc = self.translator.translate(desc, locale)
+                if (string := command._locale_description) is None:
+                    continue
+                if (key := string.extras.get("key")) is None:
+                    desc = string.message
+                else:
+                    desc = self.translator.translate(LocaleStr(key=key), locale)
+
                 name = (
                     f"/{cog.__cog_name__} {command.name}"
                     if isinstance(cog, commands.GroupCog)
                     else f"/{command.name}"
                 )
-                result[name] = translated_desc
+                result[name] = desc
 
         return result
 

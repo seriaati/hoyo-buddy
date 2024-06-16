@@ -531,3 +531,4 @@ enter_login_details_button_label: 输入登入信息
 not_implemented_error_title: 尚未实装
 not_implemented_error_message: "此功能尚未在平台 `{platform}` 下的 `{game}` 上实装。"
 profile.build.current.label: 当前
+abyss_chamber.blessing.embed.field.name: 渊月祝福

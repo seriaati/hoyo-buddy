@@ -190,7 +190,7 @@ class CharacterUI(View):
                         ItemSelector(
                             [
                                 SelectOption(
-                                    label=f"{s.skill_list[0].type}: {s.skill_list[0].name}",
+                                    label=f"{s.name}",
                                     value=str(index),
                                     default=index == self._sub_skill_index,
                                 )

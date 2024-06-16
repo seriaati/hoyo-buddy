@@ -531,3 +531,4 @@ enter_login_details_button_label: Enter login details
 not_implemented_error_title: Not Implemented
 not_implemented_error_message: "This feature is not implemented for `{game}` under platform `{platform}` yet."
 profile.build.current.label: Current
+abyss_chamber.blessing.embed.field.name: Blessing of the Abyssal Moon

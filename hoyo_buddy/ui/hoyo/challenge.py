@@ -196,12 +196,12 @@ class ChallengeView(View):
                 if n2_buff.name not in buffs:
                     buffs[n2_buff.name] = n2_buff.description
 
-        for buff in buffs:
+        for buff_name, buff in buffs.items():
             used_in = LocaleStr(
                 key="challenge_view.buff_used_in",
-                floors=", ".join(buff_usage[buff]),
+                floors=", ".join(buff_usage[buff_name]),
             ).translate(self.translator, self.locale)
-            embed.add_field(name=buff, value=f"{used_in}\n{buffs[buff]}", inline=False)
+            embed.add_field(name=buff_name, value=f"{used_in}\n{buff}", inline=False)
 
         return embed
 

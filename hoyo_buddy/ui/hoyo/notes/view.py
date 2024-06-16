@@ -108,7 +108,7 @@ class NotesView(View):
             notify_interval=notify.notify_interval,
             max_notif_count=notify.max_notif_count,
             notify_time=notify.notify_time,
-            notify_weekday=WeekdayStr(notify.notify_weekday),
+            notify_weekday=WeekdayStr(notify.notify_weekday - 1),
         )
 
     async def _get_reminder_embed(self) -> DefaultEmbed:

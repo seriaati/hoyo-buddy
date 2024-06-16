@@ -17,7 +17,10 @@ __all__ = ("CommandTree",)
 
 class CommandTree(app_commands.CommandTree):
     async def interaction_check(self, i: Interaction) -> Literal[True]:
-        if i.type not in {InteractionType.application_command, InteractionType.autocomplete}:
+        if (
+            i.type not in {InteractionType.application_command, InteractionType.autocomplete}
+            or i.user.id in i.client.user_ids
+        ):
             return True
 
         async with i.client.pool.acquire() as conn:
@@ -34,6 +37,7 @@ class CommandTree(app_commands.CommandTree):
                 i.user.id,
                 True,
             )
+            i.client.user_ids.add(i.user.id)
 
         return True
 

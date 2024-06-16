@@ -17,7 +17,7 @@ from discord.ext import commands
 from loguru import logger
 from tortoise.expressions import Q
 
-from ..db.models import HoyoAccount
+from ..db import models
 from ..enums import Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
@@ -101,6 +101,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.executor = concurrent.futures.ProcessPoolExecutor()
         self.config = config
         self.cache = LFUCache()
+        self.user_ids: set[int] = set()
 
         self.autocomplete_choices: AutocompleteChoices = {}
         """[game][category][locale][item_name] -> item_id"""
@@ -122,6 +123,10 @@ class HoyoBuddy(commands.AutoShardedBot):
         await self.load_extension("jishaku")
 
         await self.nai_client.init(timeout=120)
+
+        user_ids: list[int] = await models.User.all().values_list("id", flat=True)  # type: ignore [reportAssignmentType]
+        for user_id in user_ids:
+            self.user_ids.add(user_id)
 
     def capture_exception(self, e: Exception) -> None:
         # Errors to suppress
@@ -201,7 +206,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         """
         is_author = user is None or user.id == author_id
         game_query = Q(*[Q(game=game) for game in games], join_type="OR")
-        accounts = await HoyoAccount.filter(
+        accounts = await models.HoyoAccount.filter(
             game_query, user_id=author_id if user is None else user.id
         ).all()
         if not is_author:
@@ -231,7 +236,7 @@ class HoyoBuddy(commands.AutoShardedBot):
     @staticmethod
     async def get_account(
         user_id: int, games: Sequence[Game], platforms: Sequence[Platform] | None = None
-    ) -> HoyoAccount:
+    ) -> models.HoyoAccount:
         """Get an account by user ID and games.
 
         Args:
@@ -242,7 +247,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         platforms = platforms or list(Platform)
 
         game_query = Q(*[Q(game=game) for game in games], join_type="OR")
-        accounts = await HoyoAccount.filter(game_query, user_id=user_id).all()
+        accounts = await models.HoyoAccount.filter(game_query, user_id=user_id).all()
         accounts = [account for account in accounts if account.platform in platforms]
         if not accounts:
             raise NoAccountFoundError(games, platforms)

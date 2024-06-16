@@ -155,7 +155,7 @@ class CharactersView(View):
         if not self._element_filters:
             return characters
 
-        elements = [element_filter.value for element_filter in self._element_filters]
+        elements = [element_filter.value.lower() for element_filter in self._element_filters]
         if HSRElement.THUNDER in self._element_filters:
             elements.append("lightning")  # hoyo seriously can't decide on a name
         return [c for c in characters if c.element.lower() in elements]
@@ -166,7 +166,7 @@ class CharactersView(View):
         if not self._path_filters:
             return characters
 
-        paths = [path_filter.value for path_filter in self._path_filters]
+        paths = [path_filter.value.lower() for path_filter in self._path_filters]
         return [c for c in characters if c.path.name.lower() in paths]
 
     def _apply_gi_sorter(
@@ -315,7 +315,8 @@ class CharactersView(View):
 
         if self._element_filters and self._filter is GIFilter.NONE:
             total_chars = sum(
-                self._element_char_counts[element.value] for element in self._element_filters
+                self._element_char_counts[element.value.lower()]
+                for element in self._element_filters
             )
             embed.add_field(
                 name=LocaleStr(
@@ -327,7 +328,9 @@ class CharactersView(View):
             )
 
         if self._path_filters and self._filter is GIFilter.NONE:
-            total_chars = sum(self._path_char_counts[path.value] for path in self._path_filters)
+            total_chars = sum(
+                self._path_char_counts[path.value.lower()] for path in self._path_filters
+            )
             embed.add_field(
                 name=LocaleStr(
                     key="characters.embed.path_filters",

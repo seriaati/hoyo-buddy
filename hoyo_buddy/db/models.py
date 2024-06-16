@@ -178,7 +178,7 @@ class NotesNotify(Model):
     notify_time: fields.Field[int | None] = fields.SmallIntField(null=True)
     """X hour before server resets. For dailies, resin discount, and echo of war."""
     notify_weekday: fields.Field[int | None] = fields.SmallIntField(null=True)
-    """For resin discount and echo of war."""
+    """For resin discount and echo of war, 1~7, 1 is Monday."""
 
     class Meta:
         unique_together = ("type", "account")

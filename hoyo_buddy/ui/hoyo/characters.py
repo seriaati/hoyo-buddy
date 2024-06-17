@@ -285,7 +285,7 @@ class CharactersView(View):
                 sum(
                     1
                     for c in self._gi_characters
-                    if GenshinElement(c.element.lower()) in self._element_filters
+                    if GenshinElement(c.element.title()) in self._element_filters
                 )
                 if self._element_filters
                 else len(self._gi_characters)

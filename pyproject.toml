@@ -30,7 +30,7 @@ loguru = "^0.7.2"
 novelai = {git = "https://github.com/kokosensei/NovelAI-API"}
 orjson = "^3.9.9"
 pillow = "^10.1.0"
-psutil = "^5.9.7"
+psutil = "^6.0.0"
 pydantic = "^2.6.4"
 python = "^3.11"
 python-dotenv = "^1.0.0"

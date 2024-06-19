@@ -145,7 +145,7 @@ class PureFictionCard:
             style="bold",
             color=WHITE,
         )
-        if stage.round_num == 0:
+        if not stage.node_1.avatars:
             cycle_tbox = drawer.write(
                 LocaleStr(key="moc_quick_clear"),
                 size=25,

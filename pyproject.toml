@@ -19,7 +19,7 @@ asyncache = "^0.3.1"
 asyncpg = "^0.29.0"
 asyncpg-listen = "^0.0.6"
 cachetools = "^5.3.3"
-discord-py = {git = "https://github.com/Rapptz/discord.py"}
+discord-py = {git = "https://github.com/Rapptz/discord.py", rev = "c055fd3"}
 enka-api = "^2.2.4"
 fake-useragent = "^1.5.1"
 genshin = {git = "https://github.com/seriaati/genshin.py", extras = ["all"]}

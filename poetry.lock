@@ -201,13 +201,13 @@ typing_extensions = ">=3.7.2"
 
 [[package]]
 name = "ambr-py"
-version = "1.7.8"
+version = "1.7.9"
 description = "API wrapper for ambr.top written in Python"
 optional = false
 python-versions = "<4.0,>=3.11"
 files = [
-    {file = "ambr_py-1.7.8-py3-none-any.whl", hash = "sha256:ab40fdc39544e4ed9e17598e847a9eac5d8c9f27b31343c1cd31d27c9d6e2e08"},
-    {file = "ambr_py-1.7.8.tar.gz", hash = "sha256:c5ac3b14cff9a468d2fdb8d44c5ebdaba7718b904423ccd9a3e12b0d15d88436"},
+    {file = "ambr_py-1.7.9-py3-none-any.whl", hash = "sha256:2affef697dddd5307ff2b5848986c40f124442f71b4faa9c5eb73989979539e1"},
+    {file = "ambr_py-1.7.9.tar.gz", hash = "sha256:623e1a102ba0ef716667226c336c8c566e0ad9544e75b78c1b515cb3340af2ed"},
 ]
 
 [package.dependencies]
@@ -619,7 +619,7 @@ tests = ["check-manifest (>=0.42)", "mock (>=1.3.0)", "pytest (==5.4.3)", "pytes
 
 [[package]]
 name = "discord.py"
-version = "2.4.0a5041+g0e58a927d"
+version = "2.4.0a5049+gc055fd32b"
 description = "A Python wrapper for the Discord API"
 optional = false
 python-versions = ">=3.8"
@@ -638,8 +638,8 @@ voice = ["PyNaCl (>=1.3.0,<1.6)"]
 [package.source]
 type = "git"
 url = "https://github.com/Rapptz/discord.py"
-reference = "HEAD"
-resolved_reference = "0e58a927ddbc300a17ef0137d948faa659565313"
+reference = "c055fd3"
+resolved_reference = "c055fd32bbe5c68b144a7ac938b911035eb6d3e1"
 
 [[package]]
 name = "distlib"
@@ -696,18 +696,18 @@ files = [
 
 [[package]]
 name = "filelock"
-version = "3.14.0"
+version = "3.15.3"
 description = "A platform independent file lock."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "filelock-3.14.0-py3-none-any.whl", hash = "sha256:43339835842f110ca7ae60f1e1c160714c5a6afd15a2873419ab185334975c0f"},
-    {file = "filelock-3.14.0.tar.gz", hash = "sha256:6ea72da3be9b8c82afd3edcf99f2fffbb5076335a5ae4d03248bb5b6c3eae78a"},
+    {file = "filelock-3.15.3-py3-none-any.whl", hash = "sha256:0151273e5b5d6cf753a61ec83b3a9b7d8821c39ae9af9d7ecf2f9e2f17404103"},
+    {file = "filelock-3.15.3.tar.gz", hash = "sha256:e1199bf5194a2277273dacd50269f0d87d0682088a3c561c15674ea9005d8635"},
 ]
 
 [package.extras]
 docs = ["furo (>=2023.9.10)", "sphinx (>=7.2.6)", "sphinx-autodoc-typehints (>=1.25.2)"]
-testing = ["covdefaults (>=2.3)", "coverage (>=7.3.2)", "diff-cover (>=8.0.1)", "pytest (>=7.4.3)", "pytest-cov (>=4.1)", "pytest-mock (>=3.12)", "pytest-timeout (>=2.2)"]
+testing = ["covdefaults (>=2.3)", "coverage (>=7.3.2)", "diff-cover (>=8.0.1)", "pytest (>=7.4.3)", "pytest-asyncio (>=0.21)", "pytest-cov (>=4.1)", "pytest-mock (>=3.12)", "pytest-timeout (>=2.2)", "virtualenv (>=20.26.2)"]
 typing = ["typing-extensions (>=4.8)"]
 
 [[package]]
@@ -1879,7 +1879,7 @@ tortoise = ["tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
 type = "git"
 url = "https://github.com/seriaati/seria-library"
 reference = "HEAD"
-resolved_reference = "aa85ff2addde9b13c4ca0fa5ebd8755579402fec"
+resolved_reference = "a95d6dba7d458a5f5e565a87460f4fc6f0712327"
 
 [[package]]
 name = "six"
@@ -1979,13 +1979,13 @@ six = "*"
 
 [[package]]
 name = "urllib3"
-version = "2.2.1"
+version = "2.2.2"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "urllib3-2.2.1-py3-none-any.whl", hash = "sha256:450b20ec296a467077128bff42b73080516e71b56ff59a60a02bef2232c4fa9d"},
-    {file = "urllib3-2.2.1.tar.gz", hash = "sha256:d0570876c61ab9e520d776c38acbbb5b05a776d3f9ff98a5c8fd5162a444cf19"},
+    {file = "urllib3-2.2.2-py3-none-any.whl", hash = "sha256:a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472"},
+    {file = "urllib3-2.2.2.tar.gz", hash = "sha256:dd505485549a7a552833da5e6063639d0d177c04f23bc3864e41e5dc5f612168"},
 ]
 
 [package.extras]
@@ -2208,4 +2208,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7d85a00223d5968f1602930ebf1cb9acd0a26693a7011669194d8f846bddb7b8"
+content-hash = "f6b6e8242b53573d37d36fedd335b0a7f6e5b03f1310a261bb535f8d31be84c7"

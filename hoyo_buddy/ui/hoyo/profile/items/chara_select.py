@@ -35,7 +35,8 @@ def determine_chara_type(
     hoyolab: bool,
 ) -> CharacterType:
     key = f"{character_id}-hoyolab" if hoyolab else character_id
-    if key not in cache_extras or character_id in builds:
+    chara_builds = builds.get(character_id, [])
+    if key not in cache_extras or (chara_builds and not any(build.live for build in chara_builds)):
         return CharacterType.BUILD
     if cache_extras[key]["live"]:
         return CharacterType.LIVE

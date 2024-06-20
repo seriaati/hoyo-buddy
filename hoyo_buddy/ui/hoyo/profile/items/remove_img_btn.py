@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
@@ -38,7 +39,10 @@ class RemoveImageButton(Button["ProfileView"]):
         # Remove the current image URL
         current_image = self.view._card_settings.current_image
         assert current_image is not None
-        self.view._card_settings.custom_images.remove(current_image)
+
+        with contextlib.suppress(ValueError):
+            # For whatever reason, the current image may not be in the custom images list
+            self.view._card_settings.custom_images.remove(current_image)
 
         # Update the current image URL
         self.view._card_settings.current_image = None

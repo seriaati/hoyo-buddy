@@ -653,25 +653,21 @@ files = [
 ]
 
 [[package]]
-name = "enka-py"
-version = "2.2.1"
+name = "enka-api"
+version = "2.2.4"
 description = "An async API wrapper for enka.network written in Python."
 optional = false
-python-versions = "^3.10"
-files = []
-develop = false
+python-versions = "<4.0,>=3.10"
+files = [
+    {file = "enka_api-2.2.4-py3-none-any.whl", hash = "sha256:3b2faaa85cf397fea79b06b3d76ad9fa23b49bbd7d2bd2a08acc231677dd3ca6"},
+    {file = "enka_api-2.2.4.tar.gz", hash = "sha256:af2751178a74ff2e8eeeea89fe5cc7388f8fe13153c9befa7a6b1150fe82c2c8"},
+]
 
 [package.dependencies]
-aiofiles = "^23.2.1"
-aiohttp-client-cache = {version = "^0.11.0", extras = ["sqlite"]}
-orjson = "^3.9.10"
-pydantic = "^2.5.3"
-
-[package.source]
-type = "git"
-url = "https://github.com/seriaati/enka-py"
-reference = "HEAD"
-resolved_reference = "21c43b5345ed7928fe5c18029f82d7ff8389d9e9"
+aiofiles = ">=23.2.1,<24.0.0"
+aiohttp-client-cache = {version = ">=0.11.0,<0.12.0", extras = ["sqlite"]}
+orjson = ">=3.9.10,<4.0.0"
+pydantic = ">=2.5.3,<3.0.0"
 
 [[package]]
 name = "executing"
@@ -827,7 +823,7 @@ cookies = ["browser-cookie3"]
 type = "git"
 url = "https://github.com/seriaati/genshin.py"
 reference = "HEAD"
-resolved_reference = "e09309890be914cb558c1be63eb784d5b90f3edc"
+resolved_reference = "443e65758fe95ac1d5039b763b3b8c79735635e5"
 
 [[package]]
 name = "gitdb"
@@ -874,23 +870,19 @@ files = [
 
 [[package]]
 name = "hakushin-py"
-version = "0.3.1"
+version = "0.3.2"
 description = "Async API wrapper for hakush.in written in Python."
 optional = false
-python-versions = "^3.11"
-files = []
-develop = false
+python-versions = "<4.0,>=3.11"
+files = [
+    {file = "hakushin_py-0.3.2-py3-none-any.whl", hash = "sha256:3e4132fb3d94052fb1e1b650738bc96a1ee8f716e57ec7ffda48b54114652187"},
+    {file = "hakushin_py-0.3.2.tar.gz", hash = "sha256:cf606129a609d83263566b3296cf8d738308f8d61bbb2a936492e7473107342f"},
+]
 
 [package.dependencies]
-aiohttp = "^3.9.5"
-aiohttp-client-cache = {version = "^0.11.0", extras = ["sqlite"]}
-pydantic = "^2.7.1"
-
-[package.source]
-type = "git"
-url = "https://github.com/seriaati/hakushin-py"
-reference = "HEAD"
-resolved_reference = "3b88248474f1a8a562c047ea6094a5ec89cfb6ab"
+aiohttp = ">=3.9.5,<4.0.0"
+aiohttp-client-cache = {version = ">=0.11.0,<0.12.0", extras = ["sqlite"]}
+pydantic = ">=2.7.1,<3.0.0"
 
 [[package]]
 name = "httpcore"
@@ -2216,4 +2208,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "c353ef85132c2e425d0f761b3e0a1330648cec5b864869f892cbb7d0e58c6366"
+content-hash = "7d85a00223d5968f1602930ebf1cb9acd0a26693a7011669194d8f846bddb7b8"

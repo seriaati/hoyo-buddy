@@ -20,11 +20,11 @@ asyncpg = "^0.29.0"
 asyncpg-listen = "^0.0.6"
 cachetools = "^5.3.3"
 discord-py = {git = "https://github.com/Rapptz/discord.py"}
-enka-py = {git = "https://github.com/seriaati/enka-py"}
+enka-api = "^2.2.4"
 fake-useragent = "^1.5.1"
 genshin = {git = "https://github.com/seriaati/genshin.py", extras = ["all"]}
 gitpython = "^3.1.42"
-hakushin-py = {git = "https://github.com/seriaati/hakushin-py"}
+hakushin-py = "^0.3.2"
 jishaku = "^2.5.1"
 loguru = "^0.7.2"
 novelai = {git = "https://github.com/kokosensei/NovelAI-API"}

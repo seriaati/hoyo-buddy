@@ -61,28 +61,25 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             if isinstance(character, enka.hsr.Character):
                 description = LocaleStr(
                     key="profile.character_select.description",
-                    level=character.level,
-                    superposition=character.light_cone.superimpose if character.light_cone else 0,
-                    eidolons=character.eidolons_unlocked,
-                    data_type=data_type,
+                    s=character.light_cone.superimpose if character.light_cone is not None else 0,
+                    e=character.eidolons_unlocked,
+                    d=data_type,
                 )
                 emoji = get_hsr_element_emoji(character.element.value)
             elif isinstance(character, HoyolabHSRCharacter):
                 description = LocaleStr(
                     key="profile.character_select.hoyolab.description",
-                    level=character.level,
-                    superposition=character.light_cone.superimpose if character.light_cone else 0,
-                    eidolons=character.eidolons_unlocked,
-                    data_type=data_type,
+                    s=character.light_cone.superimpose if character.light_cone is not None else 0,
+                    e=character.eidolons_unlocked,
+                    d=data_type,
                 )
                 emoji = get_hsr_element_emoji(character.element)
             else:
                 description = LocaleStr(
                     key="profile.genshin.character_select.description",
-                    level=character.level,
-                    const=character.constellations_unlocked,
-                    refine=character.weapon.refinement,
-                    data_type=data_type,
+                    c=character.constellations_unlocked,
+                    r=character.weapon.refinement,
+                    d=data_type,
                 )
                 emoji = get_gi_element_emoji(character.element.name)
 

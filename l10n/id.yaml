@@ -13,7 +13,7 @@ about_command_description: Tentang bot
 about_embed.description: "Bot discord yang kaya fitur, mudah digunakan, dan dirancang dengan baik, khusus dibuat untuk game Hoyoverse."
 abundance: Abundance
 abyss.battles_won_fought: "Jumlah Pertarungan {val1}/{val2}"
-abyss.current: ""
+abyss.current: Fase saat ini
 abyss.deepest_descent: "Pencapaian Tertinggi: {val}"
 abyss.floor: "Lantai {val}"
 abyss.most_defeats: "Mengalahkan Terbanyak: {val}"
@@ -21,8 +21,8 @@ abyss.most_dmg_taken: "Menerima Damage Terbanyak: {val}"
 abyss.most_skills: "Menggunakan Skill Terbanyak: {val}"
 abyss.most_ults: "Menggunakan Burst Terbanyak: {val}"
 abyss.overview: Ringkasan Spiral Abyss
-abyss.phase_select.placeholder: ""
-abyss.previous: ""
+abyss.phase_select.placeholder: Pilih fase
+abyss.previous: Fase sebelumnya
 abyss.strongest_strike: "Serangan Tunggal Terkuat: {val}"
 abyss.total_stars: "Total Bintang: {val}"
 abyss_chamber.challenge_target.embed.field.name: Target Tantangan
@@ -31,7 +31,7 @@ abyss_chamber.enemy_level.embed.field.name: Level Musuh
 abyss_chamber.ley_line_disorder.embed.field.name: Gangguan Ley Line
 abyss_command_description: Lihat musuh abyss saat ini
 abyss_enemy.item_description: "HP: {HP}"
-acc_no_default_param_desc: ""
+acc_no_default_param_desc: Akun untuk menjalankan perintah ini
 account_autocomplete_param_description: "Akun untuk menjalankan perintah ini, defaultnya adalah akun yang dipilih di /accounts"
 account_autocomplete_param_name: akun
 account_deleted_description: "{account} sudah dihapus."
@@ -50,7 +50,7 @@ action_in_cooldown_error_title: Aksi dalam Cooldown
 add_account_button_label: Tambah akun
 add_hoyolab_acc.embed.description: "1. Dengan email dan kata sandi: Paling direkomendasikan, dan paling mudah\n2. Dengan DevTools: Hanya berfungsi pada desktop, opsi yang lebih aman jika kamu memiliki kekhawatiran keamanan dengan yang pertama\n3. Dengan JavaScript: Metode yang ketinggalan jaman, tidak akan berfungsi untuk sebagian besar akun. Berfungsi di Google Chrome atau Microsoft Edge pada desktop dan mobile\n\n"
 add_hoyolab_acc.embed.title: Pilih metode untuk menambahkan akun kamu
-add_miyoushe_acc.embed.description: ""
+add_miyoushe_acc.embed.description: "1. Dengan aplikasi Miyoushe modifikasi: Hanya tersedia untuk Android"
 add_miyoushe_acc.enter_mobile_number: Masukkan nomor telepon
 add_miyoushe_acc.mobile_number: Nomor telepon
 add_miyoushe_acc.with_mobile_number: Pakai nomor telepon
@@ -66,13 +66,13 @@ artifact_set_two_piece_embed_description: "2-Pieces: {bonus_2}"
 artifact_sets: Set Artefak
 auto_checkin_button_label: Absen harian otomatis
 auto_locale_option_label: Ikuti bahasa klien
-auto_redeem_error.content: ""
+auto_redeem_error.content: "Terjadi error saat menukar kode secara otomatis.\nHoyo Buddy telah menonaktifkan fitur ini untuk akun ini, kamu bisa mengaktifkannya lagi menggunakan </redeem>\nJika kesalahan ini masih ada atau kamu tidak tahu cara memperbaikinya, silakan hubungi pengembang melalui </feedback>.\n"
 auto_redeem_footer: Matikan penukaran kode otomatis dengan /redeem
 auto_redeem_toggle.label: Penukaran kode otomatis
 books: Buku
 captcha.embed.description: "Klik tombol di bawah untuk menyelesaikan CAPTCHA.\n"
-challenge_command_description: ""
-challenge_type_select.placeholder: ""
+challenge_command_description: "Lihat statistik konten end-game, seperti spiral abyss, memory of chaos, dll."
+challenge_type_select.placeholder: Pilih mode game
 challenge_view.buff_used_in: ""
 challenge_view.team: ""
 chamber_button_label: "Ruang {value}"
@@ -163,7 +163,7 @@ electro: Electro
 email-geetest.embed.title: 😥 Perlu menyelesaikan CAPTCHA sebelum mengirim kode verifikasi
 email_password_button_label: Dengan email dan password
 email_password_instructions_description: "<:INFO:1166743144889602190> Catatan: Cara ini **TIDAK BEKERJA** untuk pengguna Miyoushe, hanya pengguna HoYoLAB yang bisa menggunakan cara ini.\n\n1. Klik tombol `Lengkapi CAPTCHA` di bawah\n2. kamu akan diarahkan ke sebuah situs web, klik tombol dan lengkapi CAPTCHA\n3. Setelah selesai, klik tombol `Lanjutkan` di bawah\n"
-email_password_modal_email_input_label: ""
+email_password_modal_email_input_label: email atau username
 email_password_modal_password_input_label: password
 enter_email_password_button_label: Masukkan email/username dan kata sandi
 enter_email_password_instructions_description: "<:INFO:1166743144889602190> Metode ini mengharuskan kamu memasukkan informasi pribadi kamu.\n\n• Sebagai gantinya, `cookie_token` kamu dapat diperbarui secara otomatis, yang digunakan dalam fitur yang terkait dengan penukaran kode (hanya untuk pengguna HoYoLAB).\n• Email dan kata sandi kamu **TIDAK** disimpan dalam database **SAMA SEKALI**, sehingga hampir tidak mungkin untuk terjadi kebocoran data.\n• Selain itu, bot ini open source di [GitHub](https://github.com/seriaati/hoyo-buddy), sehingga kamu dapat memverifikasi sendiri.\n• Pada akhirnya, itu adalah pilihan kamu sendiri untuk memutuskan apakah kamu ingin percaya bot ini atau tidak.\n\nKlik tombol di bawah untuk memulai.\n"
@@ -202,7 +202,7 @@ farm_add_command_description: Tambah karakter/senjata untuk diberitahu ketika ma
 farm_check.farmable_today: "Material untuk {name}dapat di farm hari ini"
 farm_check.use_farm_notify: "Gunakan /farm reminder untuk konfigurasikan pengaturan pengingat\nGunakan /farm view untuk melihat semua item yang bisa difarming hari ini"
 farm_notify.add_item: Tambahkan item
-farm_notify.add_item.embed.description: ""
+farm_notify.add_item.embed.description: "Untuk menambahkan item, gunakan perintah </farm add>"
 farm_notify.description: Kamu akan diingatkan ketika material karakter/senjata dalam daftar ini dapat difarming.
 farm_notify.empty: Kamu tidak memiliki item di daftar pengingat farming kamu
 farm_notify.empty_description: ""
@@ -476,7 +476,7 @@ spiral_abyss: Spiral abyss
 stats_embed_field_name: Stats
 sumeru: Sumeru
 sunday: Minggu
-superposition_indicator: "Superposition {s}"
+superimpose_indicator: ""
 talent_level.modal.title: Masukkan level talent
 tbp_reminder_button.label: Pengingat trailblaze power
 tbp_reminder_modal.title: Pengaturan Pengingat Trailblaze Power

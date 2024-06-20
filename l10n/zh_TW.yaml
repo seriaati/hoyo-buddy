@@ -186,9 +186,9 @@ exploration.geoculi: "岩神瞳: {geoculi}"
 exploration.hydroculi: "水神瞳: {hydroculi}"
 exploration.luxurious_chests: 華麗
 exploration.placeholder: 尚未釋出
-exploration.placeholder_quote: "「旅程總有一天會迎來終點，不必匆忙。」
+exploration.placeholder_quote: '「旅程總有一天會迎來終點，不必匆忙。」
 
-  - 鍾離"
+  - 鍾離'
 exploration.precious_chests: 珍貴
 exploration.progress: "探索進度: {progress}%"
 exploration.remarkable_chests: 奇饋
@@ -373,9 +373,9 @@ profile.card_template_select.placeholder: 選擇一個樣式
 profile.card_template_select.same_author.description: "由 {author} 設計和製作"
 profile.card_template_select.src.label: "StarRailCard 樣式 {num}"
 profile.character_select.cached_data.description: 快取數據
-profile.character_select.description: "{e}魂{s}疊 | {d} | 遊戲展示櫃"
+profile.character_select.description: ""
 profile.character_select.enka_network.description: Enka Network 角色配置
-profile.character_select.hoyolab.description: "{e}魂{s}疊 | {d} | HoYoLAB"
+profile.character_select.hoyolab.description: ""
 profile.character_select.live_data.description: 即時數據
 profile.character_select.placeholder: 選擇一個角色
 profile.dark_mode.button.label: 深色模式
@@ -383,7 +383,7 @@ profile.generate_ai_art.button.label: 生成 AI 繪圖
 profile.generate_ai_art_modal.negative_prompt.label: 負面提示
 profile.generate_ai_art_modal.prompt.label: 提示
 profile.generate_ai_art_modal.title: 生成 AI 繪圖
-profile.genshin.character_select.description: "{c}命{r}精 | {d}"
+profile.genshin.character_select.description: ""
 profile.image_select.custom_image.label: "自訂圖片 ({num})"
 profile.image_select.default_collection.label: "Hoyo Buddy 收藏 ({num})"
 profile.image_select.none.label: 官方繪圖
@@ -476,7 +476,7 @@ spiral_abyss: 深境螺旋
 stats_embed_field_name: 數據
 sumeru: 須彌
 sunday: 星期日
-superposition_indicator: "疊影 {s}"
+superimpose_indicator: ""
 talent_level.modal.title: 輸入天賦等級
 tbp_reminder_button.label: 開拓力通知
 tbp_reminder_modal.title: 開拓力通知設定

@@ -157,7 +157,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         try:
             message = await user.send(**kwargs)
-        except Exception:
+        except (discord.Forbidden, discord.HTTPException):
             return None
 
         return message

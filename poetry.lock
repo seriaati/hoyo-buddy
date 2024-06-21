@@ -821,9 +821,9 @@ cookies = ["browser-cookie3"]
 
 [package.source]
 type = "git"
-url = "https://github.com/seriaati/genshin.py"
+url = "https://github.com/thesadru/genshin.py"
 reference = "HEAD"
-resolved_reference = "443e65758fe95ac1d5039b763b3b8c79735635e5"
+resolved_reference = "164e65925510fba0dd16ddd19f78868f5a2f92a4"
 
 [[package]]
 name = "gitdb"
@@ -2208,4 +2208,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "f6b6e8242b53573d37d36fedd335b0a7f6e5b03f1310a261bb535f8d31be84c7"
+content-hash = "237a3185ff39d71461ac93782d7da6bb415baea0b26610d147dbfcbc81fc0e85"

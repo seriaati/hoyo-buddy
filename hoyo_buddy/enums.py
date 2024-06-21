@@ -111,3 +111,4 @@ class ChallengeType(StrEnum):
     SPIRAL_ABYSS = "Spiral abyss"
     MOC = "Memory of chaos"
     PURE_FICTION = "Pure fiction"
+    APC_SHADOW = "Apocalyptic shadow"

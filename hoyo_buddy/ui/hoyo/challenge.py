@@ -6,25 +6,28 @@ from typing import TYPE_CHECKING, Final, TypeAlias
 from genshin.models import (
     Character as GICharacter,
 )
-from genshin.models import (
-    SpiralAbyss,
-    StarRailChallenge,
-    StarRailPureFiction,
-)
+from genshin.models import SpiralAbyss, StarRailAPCShadow, StarRailChallenge, StarRailPureFiction
 
 from hoyo_buddy.bot.translator import EnumStr, LocaleStr
-from hoyo_buddy.draw.main_funcs import draw_moc_card, draw_pure_fiction_card, draw_spiral_abyss_card
+from hoyo_buddy.draw.main_funcs import (
+    draw_apc_shadow_card,
+    draw_moc_card,
+    draw_pure_fiction_card,
+    draw_spiral_abyss_card,
+)
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.exceptions import NoChallengeDataError
 from hoyo_buddy.models import DrawInput
 
 from ...bot.error_handler import get_error_embed
 from ...enums import ChallengeType, Game
+from ...utils import get_floor_difficulty
 from ..components import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:
     import asyncio
     import concurrent.futures
+    from collections.abc import Sequence
 
     import aiohttp
     from discord import File, Locale, Member, User
@@ -33,11 +36,11 @@ if TYPE_CHECKING:
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.db.models import HoyoAccount
 
-Challenge: TypeAlias = StarRailChallenge | SpiralAbyss | StarRailPureFiction
+Challenge: TypeAlias = StarRailChallenge | SpiralAbyss | StarRailPureFiction | StarRailAPCShadow
 
-GAME_TO_CHALLENGE_TYPES: Final[dict[Game, list[ChallengeType]]] = {
-    Game.GENSHIN: [ChallengeType.SPIRAL_ABYSS],
-    Game.STARRAIL: [ChallengeType.MOC, ChallengeType.PURE_FICTION],
+GAME_CHALLENGE_TYPES: Final[dict[Game, tuple[ChallengeType, ...]]] = {
+    Game.GENSHIN: (ChallengeType.SPIRAL_ABYSS,),
+    Game.STARRAIL: (ChallengeType.MOC, ChallengeType.PURE_FICTION, ChallengeType.APC_SHADOW),
 }
 
 
@@ -87,6 +90,10 @@ class ChallengeView(View):
                 challenge = await client.get_starrail_pure_fiction(
                     self._account.uid, previous=previous
                 )
+            elif self._challenge_type is ChallengeType.APC_SHADOW:
+                challenge = await client.get_starrail_apc_shadow(
+                    self._account.uid, previous=previous
+                )
             else:
                 msg = f"Invalid challenge type: {self._challenge_type}"
                 raise ValueError(msg)
@@ -100,6 +107,8 @@ class ChallengeView(View):
             raise NoChallengeDataError(ChallengeType.MOC)
         elif isinstance(challenge, StarRailPureFiction) and not challenge.has_data:
             raise NoChallengeDataError(ChallengeType.PURE_FICTION)
+        elif isinstance(challenge, StarRailAPCShadow) and not challenge.has_data:
+            raise NoChallengeDataError(ChallengeType.APC_SHADOW)
 
     async def _draw_card(
         self,
@@ -154,6 +163,20 @@ class ChallengeView(View):
                 1 if previous else 0,
                 self.translator,
             )
+        elif isinstance(challenge, StarRailAPCShadow):
+            return await draw_apc_shadow_card(
+                DrawInput(
+                    dark_mode=self._dark_mode,
+                    locale=self.locale,
+                    session=session,
+                    filename="challenge.webp",
+                    executor=executor,
+                    loop=loop,
+                ),
+                challenge,
+                1 if previous else 0,
+                self.translator,
+            )
 
         msg = f"Invalid challenge type: {self._challenge_type}"
         raise ValueError(msg)
@@ -164,49 +187,45 @@ class ChallengeView(View):
         previous = self._previous[self._challenge_type]
         challenge = self._challenges[self._challenge_type][previous]
 
-        if not isinstance(challenge, StarRailPureFiction):
-            return embed
+        if isinstance(challenge, StarRailPureFiction | StarRailAPCShadow):
+            buffs: dict[str, str] = {}  # Buff name to description
+            buff_usage: defaultdict[str, list[str]] = defaultdict(list)  # Buff name to floor names
+            season = challenge.seasons[1 if previous else 0]
 
-        season = challenge.seasons[1 if previous else 0]
-        buffs: dict[str, str] = {}  # Buff name to description
-        buff_usage: defaultdict[str, list[str]] = defaultdict(list)  # Buff name to floor names
+            for floor in reversed(challenge.floors):
+                n1_buff = floor.node_1.buff
+                if n1_buff is not None:
+                    team_str = LocaleStr(key="challenge_view.team", team=1).translate(
+                        self.translator, self.locale
+                    )
 
-        for floor in reversed(challenge.floors):
-            n1_buff = floor.node_1.buff
-            if n1_buff is not None:
-                team_str = LocaleStr(
-                    key="challenge_view.team",
-                    team=1,
+                    floor_name = get_floor_difficulty(floor.name, season.name)
+                    buff_usage[n1_buff.name].append(f"{floor_name} ({team_str})")
+                    if n1_buff.name not in buffs:
+                        buffs[n1_buff.name] = n1_buff.description
+
+                n2_buff = floor.node_2.buff
+                if n2_buff is not None:
+                    team_str = LocaleStr(key="challenge_view.team", team=2).translate(
+                        self.translator, self.locale
+                    )
+
+                    floor_name = get_floor_difficulty(floor.name, season.name)
+                    buff_usage[n2_buff.name].append(f"{floor_name} ({team_str})")
+                    if n2_buff.name not in buffs:
+                        buffs[n2_buff.name] = n2_buff.description
+
+            for buff_name, buff in buffs.items():
+                used_in = LocaleStr(
+                    key="challenge_view.buff_used_in",
+                    floors=", ".join(buff_usage[buff_name]),
                 ).translate(self.translator, self.locale)
-
-                floor_name = floor.name.replace(season.name, "").strip()
-                buff_usage[n1_buff.name].append(f"{floor_name} ({team_str})")
-                if n1_buff.name not in buffs:
-                    buffs[n1_buff.name] = n1_buff.description
-
-            n2_buff = floor.node_2.buff
-            if n2_buff is not None:
-                team_str = LocaleStr(
-                    key="challenge_view.team",
-                    team=2,
-                ).translate(self.translator, self.locale)
-
-                floor_name = floor.name.replace(season.name, "").strip()
-                buff_usage[n2_buff.name].append(f"{floor_name} ({team_str})")
-                if n2_buff.name not in buffs:
-                    buffs[n2_buff.name] = n2_buff.description
-
-        for buff_name, buff in buffs.items():
-            used_in = LocaleStr(
-                key="challenge_view.buff_used_in",
-                floors=", ".join(buff_usage[buff_name]),
-            ).translate(self.translator, self.locale)
-            embed.add_field(name=buff_name, value=f"{used_in}\n{buff}", inline=False)
+                embed.add_field(name=buff_name, value=f"{used_in}\n{buff}", inline=False)
 
         return embed
 
     def _add_items(self) -> None:
-        self.add_item(ChallengeTypeSelect(GAME_TO_CHALLENGE_TYPES[self._account.game]))
+        self.add_item(ChallengeTypeSelect(GAME_CHALLENGE_TYPES[self._account.game]))
         self.add_item(PhaseSelect(False))
 
     async def update(
@@ -225,7 +244,10 @@ class ChallengeView(View):
         await item.set_loading_state(i)
         try:
             await self._fetch_data()
-            file_ = await self._draw_card(i.client.session, i.client.executor, i.client.loop)
+            try:
+                file_ = await self._draw_card(i.client.session, i.client.executor, i.client.loop)
+            except IndexError as e:
+                raise NoChallengeDataError(self._challenge_type) from e
         except NoChallengeDataError as e:
             await item.unset_loading_state(i)
             embed, _ = get_error_embed(e, self.locale, self.translator)
@@ -275,7 +297,7 @@ class PhaseSelect(Select[ChallengeView]):
 
 
 class ChallengeTypeSelect(Select[ChallengeView]):
-    def __init__(self, types: list[ChallengeType]) -> None:
+    def __init__(self, types: Sequence[ChallengeType]) -> None:
         super().__init__(
             placeholder=LocaleStr(key="challenge_type_select.placeholder"),
             options=[SelectOption(label=EnumStr(type_), value=type_.value) for type_ in types],

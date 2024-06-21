@@ -101,14 +101,11 @@ class ChallengeView(View):
             self._challenges[self._challenge_type] = {previous: challenge}
 
         challenge = self._challenges[self._challenge_type][previous]
-        if isinstance(challenge, SpiralAbyss) and challenge.max_floor == "0-0":
-            raise NoChallengeDataError(ChallengeType.SPIRAL_ABYSS)
-        elif isinstance(challenge, StarRailChallenge) and not challenge.has_data:
-            raise NoChallengeDataError(ChallengeType.MOC)
-        elif isinstance(challenge, StarRailPureFiction) and not challenge.has_data:
-            raise NoChallengeDataError(ChallengeType.PURE_FICTION)
-        elif isinstance(challenge, StarRailAPCShadow) and not challenge.has_data:
-            raise NoChallengeDataError(ChallengeType.APC_SHADOW)
+        if isinstance(challenge, SpiralAbyss):
+            if challenge.max_floor == "0-0":
+                raise NoChallengeDataError(ChallengeType.SPIRAL_ABYSS)
+        elif not challenge.has_data:
+            raise NoChallengeDataError(self._challenge_type)
 
     async def _draw_card(
         self,

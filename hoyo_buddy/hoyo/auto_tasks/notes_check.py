@@ -4,6 +4,7 @@ import asyncio
 import datetime
 from typing import TYPE_CHECKING, ClassVar
 
+import discord
 from discord import Locale
 from genshin.models import Notes, StarRailNote
 
@@ -150,11 +151,13 @@ class NotesChecker:
             executor=cls._bot.executor,
             loop=cls._bot.loop,
         )
-        file_ = (
+        buffer = (
             await draw_gi_notes_card(draw_input, notes, cls._bot.translator)
             if isinstance(notes, Notes)
             else await draw_hsr_notes_card(draw_input, notes, cls._bot.translator)
         )
+        buffer.seek(0)
+        file_ = discord.File(buffer, filename="notes.webp")
 
         view = NotesView(
             notify.account,
@@ -324,8 +327,9 @@ class NotesChecker:
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:
         content = LocaleStr(key="process_notify_error.content")
         locale = await cls._get_locale(notify)
-        embed = cls._get_notify_error_embed(e, await cls._get_locale(notify))
+        embed = cls._get_notify_error_embed(e, locale)
         embed.add_acc_info(notify.account, blur=False)
+
         await cls._bot.dm_user(
             notify.account.user.id,
             embed=embed,

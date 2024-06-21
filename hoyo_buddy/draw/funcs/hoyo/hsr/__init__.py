@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from .apc_shadow import APCShadowCard
 from .build_card import draw_hsr_build_card
 from .characters import draw_character_card
 from .moc import MOCCard

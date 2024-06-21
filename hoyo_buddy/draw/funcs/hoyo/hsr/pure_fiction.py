@@ -10,6 +10,8 @@ from hoyo_buddy.bot.translator import EnumStr, LocaleStr, Translator
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
 from hoyo_buddy.enums import ChallengeType
 
+from .....utils import get_floor_difficulty
+
 if TYPE_CHECKING:
     from genshin.models.starrail import (
         FictionFloor,
@@ -66,7 +68,7 @@ class PureFictionCard:
         self._drawer.write(
             LocaleStr(
                 key="moc_card_farthest_stage",
-                stage=self._data.max_floor.replace(self._season.name, "").strip(),
+                stage=get_floor_difficulty(self._data.max_floor, self._season.name),
             ),
             size=25,
             position=(303, 340),
@@ -137,7 +139,7 @@ class PureFictionCard:
             translator=self._translator,
         )
 
-        stage_name = stage.name.replace(self._season.name, "").strip()
+        stage_name = get_floor_difficulty(stage.name, self._season.name)
         name_tbox = drawer.write(
             stage_name,
             size=44,
@@ -145,7 +147,7 @@ class PureFictionCard:
             style="bold",
             color=WHITE,
         )
-        if not stage.node_1.avatars:
+        if stage.is_quick_clear:
             cycle_tbox = drawer.write(
                 LocaleStr(key="moc_quick_clear"),
                 size=25,

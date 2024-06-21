@@ -125,3 +125,8 @@ async def get_pixiv_proxy_img(session: aiohttp.ClientSession, url: str) -> str:
             return img_url
 
     return proxy_img_urls[0]
+
+
+def get_floor_difficulty(floor_name: str, season_name: str) -> str:
+    """Get the difficulty of a floor in a Star Rail challenge."""
+    return floor_name.replace(season_name, "").replace(":", "").replace("•", "").strip()

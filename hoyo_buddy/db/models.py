@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-from functools import cached_property
 from typing import TYPE_CHECKING, Any
 
 import genshin
@@ -74,13 +73,13 @@ class HoyoAccount(Model):
     def blurred_display(self) -> str:
         return f"{self.nickname or self.username} ({blur_uid(self.uid)})"
 
-    @cached_property
+    @property
     def client(self) -> GenshinClient:
         from ..hoyo.clients.gpy import GenshinClient  # noqa: PLC0415
 
         return GenshinClient(self)
 
-    @cached_property
+    @property
     def server_reset_datetime(self) -> datetime.datetime:
         """Server reset time in UTC+8."""
         for uid_start, reset_hour in UID_SERVER_RESET_HOURS.items():
@@ -95,11 +94,11 @@ class HoyoAccount(Model):
 
         return reset_time
 
-    @cached_property
+    @property
     def game_icon(self) -> str:
         return get_game_icon(self.game)
 
-    @cached_property
+    @property
     def platform(self) -> Platform:
         region = genshin.utility.recognize_region(self.uid, HB_GAME_TO_GPY_GAME[self.game])
         return Platform.HOYOLAB if region is genshin.Region.OVERSEAS else Platform.MIYOUSHE

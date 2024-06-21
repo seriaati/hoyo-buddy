@@ -254,8 +254,15 @@ class NotesView(View):
             notify.notify_interval = notify_interval
             notify.max_notif_count = max_notif_count
             notify.enabled = enabled
+            notify.est_time = None
             await notify.save(
-                update_fields=("threshold", "notify_interval", "max_notif_count", "enabled")
+                update_fields=(
+                    "threshold",
+                    "notify_interval",
+                    "max_notif_count",
+                    "enabled",
+                    "est_time",
+                )
             )
 
         return await self._get_reminder_embed()

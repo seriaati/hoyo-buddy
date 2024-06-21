@@ -373,9 +373,9 @@ profile.card_template_select.placeholder: 选择样式
 profile.card_template_select.same_author.description: "由{author}设计与制作"
 profile.card_template_select.src.label: "星穹铁道卡片样式{num}"
 profile.character_select.cached_data.description: 缓存数据
-profile.character_select.description: ""
+profile.character_select.description: "{e}魂{s}叠 | {d} | 游戏展示柜"
 profile.character_select.enka_network.description: Enka Network 角色配置
-profile.character_select.hoyolab.description: ""
+profile.character_select.hoyolab.description: "{e}魂{s}叠 | {d} | HoYoLAB"
 profile.character_select.live_data.description: 实时数据
 profile.character_select.placeholder: 选择角色
 profile.dark_mode.button.label: 深色模式
@@ -383,7 +383,7 @@ profile.generate_ai_art.button.label: 生成 AI 绘画
 profile.generate_ai_art_modal.negative_prompt.label: 负面提示
 profile.generate_ai_art_modal.prompt.label: 提示
 profile.generate_ai_art_modal.title: 生成 AI 绘图
-profile.genshin.character_select.description: ""
+profile.genshin.character_select.description: "{c}命{r}精 | {d}"
 profile.image_select.custom_image.label: "自定义图片（{num}）"
 profile.image_select.default_collection.label: "Hoyo Buddy 系列 ({num})"
 profile.image_select.none.label: 官方绘图
@@ -476,7 +476,7 @@ spiral_abyss: 深境螺旋
 stats_embed_field_name: 数据
 sumeru: 须弥
 sunday: 星期日
-superimpose_indicator: ""
+superimpose_indicator: "叠影 {s}"
 talent_level.modal.title: 输入天赋等级
 tbp_reminder_button.label: 开拓力提醒
 tbp_reminder_modal.title: 开拓力提醒设置
@@ -532,3 +532,8 @@ not_implemented_error_title: 尚未实装
 not_implemented_error_message: "此功能尚未在平台 `{platform}` 下的 `{game}` 上实装。"
 profile.build.current.label: 当前
 abyss_chamber.blessing.embed.field.name: 渊月祝福
+apocalyptic_shadow: 末日幻影
+apc_shadow.highest_diff_cleared: "最高完成难度: {diff}"
+apc_shadow.times_challenged: "挑战次数: {times}"
+apc_shadow.boss_defeated: 首领已击败
+apc_shadow.boss_defeated_no: 首领未击败

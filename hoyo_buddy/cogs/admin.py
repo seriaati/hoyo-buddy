@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 from typing import TYPE_CHECKING, Any
 
-from discord import ButtonStyle, ui
+from discord import ButtonStyle, TextStyle, ui
 from discord.ext import commands
 from genshin import Game  # noqa: TCH002
 from seria.utils import write_json
@@ -19,6 +19,33 @@ if TYPE_CHECKING:
     from discord.ext.commands.context import Context
 
     from ..bot.bot import HoyoBuddy, Interaction
+
+
+class DMModal(ui.Modal):
+    user_ids = ui.TextInput(label="User IDs")
+    message = ui.TextInput(label="Message", style=TextStyle.paragraph)
+
+    async def on_submit(self, i: Interaction) -> None:
+        await i.response.defer()
+        self.stop()
+
+
+class DMModalView(ui.View):
+    def __init__(self) -> None:
+        super().__init__()
+
+    @ui.button(label="Open modal", style=ButtonStyle.blurple)
+    async def send(self, i: Interaction, _: ui.Button) -> None:
+        modal = DMModal(title="Set message", custom_id="dm_modal")
+        await i.response.send_modal(modal)
+        await modal.wait()
+
+        user_ids = [int(user_id) for user_id in modal.user_ids.value.split(",")]
+
+        await i.edit_original_response(content=f"Sending message to {len(user_ids)} users...")
+        for user_id in user_ids:
+            await i.client.dm_user(int(user_id), content=modal.message.value)
+        await i.edit_original_response(content="Done.")
 
 
 class TaskView(ui.View):
@@ -116,12 +143,9 @@ class Admin(commands.Cog):
         await ctx.send("Added codes.")
 
     @commands.command(name="dm")
-    async def dm_command(self, ctx: commands.Context, user_ids: str, *, message: str) -> Any:
-        user_ids_ = user_ids.split(",")
-        message_ = await ctx.send(f"Sending message to {len(user_ids_)} users...")
-        for user_id in user_ids_:
-            await self.bot.dm_user(int(user_id), content=message)
-        await message_.edit(content="Done.")
+    async def dm_command(self, ctx: commands.Context) -> Any:
+        view = DMModalView()
+        await ctx.send(view=view)
 
 
 async def setup(bot: HoyoBuddy) -> None:

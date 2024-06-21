@@ -186,9 +186,9 @@ exploration.geoculi: "岩神瞳: {geoculi}"
 exploration.hydroculi: "水神瞳: {hydroculi}"
 exploration.luxurious_chests: 華麗
 exploration.placeholder: 尚未釋出
-exploration.placeholder_quote: '「旅程總有一天會迎來終點，不必匆忙。」
+exploration.placeholder_quote: "「旅程總有一天會迎來終點，不必匆忙。」
 
-  - 鍾離'
+  - 鍾離"
 exploration.precious_chests: 珍貴
 exploration.progress: "探索進度: {progress}%"
 exploration.remarkable_chests: 奇饋
@@ -532,3 +532,8 @@ not_implemented_error_title: 尚未實裝
 not_implemented_error_message: "這個功能尚未在平台 `{platform}` 下的 `{game}` 上實裝。"
 profile.build.current.label: 當前
 abyss_chamber.blessing.embed.field.name: 淵月祝福
+apocalyptic_shadow: 末日幻影
+apc_shadow.highest_diff_cleared: "最高完成難度: {diff}"
+apc_shadow.times_challenged: "挑戰次數: {times}"
+apc_shadow.boss_defeated: 已擊敗首領
+apc_shadow.boss_defeated_no: 未擊敗首領

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING, Final, TypeAlias
+from typing import TYPE_CHECKING
 
 from genshin.models import (
     Character as GICharacter,
@@ -9,6 +9,7 @@ from genshin.models import (
 from genshin.models import SpiralAbyss, StarRailAPCShadow, StarRailChallenge, StarRailPureFiction
 
 from hoyo_buddy.bot.translator import EnumStr, LocaleStr
+from hoyo_buddy.constants import GAME_CHALLENGE_TYPES
 from hoyo_buddy.draw.main_funcs import (
     draw_apc_shadow_card,
     draw_moc_card,
@@ -20,7 +21,7 @@ from hoyo_buddy.exceptions import NoChallengeDataError
 from hoyo_buddy.models import DrawInput
 
 from ...bot.error_handler import get_error_embed
-from ...enums import ChallengeType, Game
+from ...enums import ChallengeType
 from ...utils import get_floor_difficulty
 from ..components import Button, Select, SelectOption, View
 
@@ -35,13 +36,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.db.models import HoyoAccount
-
-Challenge: TypeAlias = StarRailChallenge | SpiralAbyss | StarRailPureFiction | StarRailAPCShadow
-
-GAME_CHALLENGE_TYPES: Final[dict[Game, tuple[ChallengeType, ...]]] = {
-    Game.GENSHIN: (ChallengeType.SPIRAL_ABYSS,),
-    Game.STARRAIL: (ChallengeType.MOC, ChallengeType.PURE_FICTION, ChallengeType.APC_SHADOW),
-}
+    from hoyo_buddy.types import Challenge
 
 
 class ChallengeView(View):

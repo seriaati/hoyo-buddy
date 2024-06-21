@@ -342,3 +342,8 @@ GI_SKILL_TYPE_KEYS = {
     4: "gi.passive",
     5: "gi.passive",
 }
+
+GAME_CHALLENGE_TYPES: Final[dict[Game, tuple[ChallengeType, ...]]] = {
+    Game.GENSHIN: (ChallengeType.SPIRAL_ABYSS,),
+    Game.STARRAIL: (ChallengeType.MOC, ChallengeType.PURE_FICTION, ChallengeType.APC_SHADOW),
+}

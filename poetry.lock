@@ -619,7 +619,7 @@ tests = ["check-manifest (>=0.42)", "mock (>=1.3.0)", "pytest (==5.4.3)", "pytes
 
 [[package]]
 name = "discord.py"
-version = "2.4.0a5051+gc75ca25e0"
+version = "2.5.0a5053+g3a8063602"
 description = "A Python wrapper for the Discord API"
 optional = false
 python-versions = ">=3.8"
@@ -638,8 +638,8 @@ voice = ["PyNaCl (>=1.3.0,<1.6)"]
 [package.source]
 type = "git"
 url = "https://github.com/Rapptz/discord.py"
-reference = "c75ca25e03796194610db656d43d5aa8792fcf73"
-resolved_reference = "c75ca25e03796194610db656d43d5aa8792fcf73"
+reference = "3a8063602919813e91d19101f9b5a0e9e7438d4b"
+resolved_reference = "3a8063602919813e91d19101f9b5a0e9e7438d4b"
 
 [[package]]
 name = "distlib"
@@ -2208,4 +2208,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "766badb728c5ebf91fedb544fba83d5f39a9bb92fb6fa922313e8c15a34abafb"
+content-hash = "2c936e859e55c4f448f14a0c4d68c3f81302b68047f854d5c50eb6a0b1bffd95"

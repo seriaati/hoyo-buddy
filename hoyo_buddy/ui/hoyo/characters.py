@@ -243,7 +243,7 @@ class CharactersView(View):
                     executor=executor,
                     loop=loop,
                 ),
-                characters,  # type: ignore [reportArgumentType]
+                characters,  # pyright: ignore [reportArgumentType]
                 talent_level_data,
                 pc_icons,
                 self.translator,
@@ -264,7 +264,7 @@ class CharactersView(View):
                     executor=executor,
                     loop=loop,
                 ),
-                characters,  # type: ignore [reportArgumentType]
+                characters,  # pyright: ignore [reportArgumentType]
                 pc_icons,
                 self.translator,
             )

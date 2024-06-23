@@ -70,7 +70,7 @@ def draw_item_list(
                 position=(pos[0] + trailing_left_pading, pos[1] + trailing_top_padding),
                 color=DARK_ON_SURFACE_VARIANT if drawer.dark_mode else LIGHT_ON_SURFACE,
             )
-        elif isinstance(item, ItemWithDescription):
+        else:
             drawer.write(
                 item.description,
                 size=28,

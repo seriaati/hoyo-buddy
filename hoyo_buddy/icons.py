@@ -19,13 +19,12 @@ LOADING_ICON = "https://i.imgur.com/5siJ799.gif"
 
 
 def get_game_icon(game: Game | GameEnum) -> str:
-    match game:
-        case Game.GENSHIN | GameEnum.GENSHIN:
-            return GI_ICON
-        case Game.STARRAIL | GameEnum.STARRAIL:
-            return HSR_ICON
-        case Game.HONKAI | GameEnum.HONKAI:
-            return HONKAI_ICON
-        case _:
-            msg = f"Invalid game: {game!r}"
-            raise ValueError(msg)
+    if game in {Game.GENSHIN, GameEnum.GENSHIN}:
+        return GI_ICON
+    if game in {Game.STARRAIL, GameEnum.STARRAIL}:
+        return HSR_ICON
+    if game in {Game.HONKAI, GameEnum.HONKAI}:
+        return HONKAI_ICON
+
+    msg = f"This game doesn't have an icon: {game}"
+    raise ValueError(msg)

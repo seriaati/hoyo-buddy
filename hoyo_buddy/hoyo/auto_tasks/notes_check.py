@@ -131,8 +131,6 @@ class NotesChecker:
                     title=LocaleStr(key="week_boss_button.label"),
                     description=LocaleStr(key="resin_discount.embed.description"),
                 )
-            case _:
-                raise NotImplementedError
 
         embed.add_acc_info(notify.account, blur=False)
         embed.set_footer(text=LocaleStr(key="notif.embed.footer"))
@@ -320,8 +318,6 @@ class NotesChecker:
                 await cls._process_daily_notify(notify, notes)
             case NotesNotifyType.RESIN_DISCOUNT | NotesNotifyType.ECHO_OF_WAR:
                 await cls._process_week_boos_discount_notify(notify, notes)
-            case _:
-                raise NotImplementedError
 
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:

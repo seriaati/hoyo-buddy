@@ -443,7 +443,7 @@ class NotesView(View):
                         in_time=format_dt(notes.transformer_recovery_time, style="R"),
                     ).translate(self.translator, self.locale)
                 )
-        elif isinstance(notes, StarRailNotes) and notes.stamina_recover_time.seconds > 0:
+        elif notes.stamina_recover_time.seconds > 0:  # StarRailNotes
             descriptions.append(
                 LocaleStr(
                     key="notes.item_full_in_time",

@@ -124,7 +124,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         await self.nai_client.init(timeout=120)
 
-        user_ids: list[int] = await models.User.all().values_list("id", flat=True)  # type: ignore [reportAssignmentType]
+        user_ids: list[int] = await models.User.all().values_list("id", flat=True)  # pyright: ignore [reportAssignmentType]
         for user_id in user_ids:
             self.user_ids.add(user_id)
 

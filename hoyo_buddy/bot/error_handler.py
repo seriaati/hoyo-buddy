@@ -136,7 +136,7 @@ def get_error_embed(
                 if retcode in codes:
                     err_info = info
                     break
-        elif isinstance(error, enka_errors.EnkaAPIError):
+        else:
             err_info = ENKA_ERROR_CONVERTER.get(type(error))
 
         if err_info is not None:

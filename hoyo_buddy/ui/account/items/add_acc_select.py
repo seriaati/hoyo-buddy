@@ -55,7 +55,8 @@ class AddAccountSelect(Select["AccountManager"]):
 
     def get_account_options(self) -> Generator[SelectOption, None, None]:
         for account in self.accounts:
-            if isinstance(account.game, GenshinGame):
+            # Sometimes other Hoyo games like 未定事件簿 might appear here, so we add this check
+            if isinstance(account.game, GenshinGame):  # pyright: ignore [reportUnnecessaryIsInstance]
                 level_str = self.translator.translate(LevelStr(account.level), self.locale)
 
                 yield SelectOption(

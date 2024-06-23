@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Any
 
 from ambr.models import Character as GenshinCharacter
 from discord import app_commands
-from hakushin.models.gi import Character as HakushinCharacter
 from loguru import logger
 from seria.utils import read_json, read_yaml
 
@@ -26,6 +25,7 @@ if TYPE_CHECKING:
 
     from discord.app_commands.translator import TranslationContextTypes
     from discord.enums import Locale
+    from hakushin.models.gi import Character as HakushinCharacter
     from yatta.models import Character as HSRCharacter
 
     from ..models import Config
@@ -226,7 +226,7 @@ class Translator:
     ) -> str:
         if isinstance(character, GenshinCharacter):
             element = AMBR_ELEMENT_TO_ELEMENT[character.element]
-        elif isinstance(character, HakushinCharacter) and character.element is not None:
+        elif character.element is not None:  # HakushinCharacter
             element = HAKUSHIN_GI_ELEMENT_TO_ELEMENT[character.element]
         else:
             element = None

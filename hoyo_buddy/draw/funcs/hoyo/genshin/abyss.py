@@ -231,10 +231,9 @@ class AbyssCard:
                 fill=bk_colors[mode][chara.rarity],
             )
 
-            if chara is not None:
-                chara_im = drawer.open_static(chara.icon, size=(116, 116))
-                chara_im = drawer.crop_with_mask(chara_im, chara_mask)
-                bk.paste(chara_im, (0, 2), chara_im)
+            chara_im = drawer.open_static(chara.icon, size=(116, 116))
+            chara_im = drawer.crop_with_mask(chara_im, chara_mask)
+            bk.paste(chara_im, (0, 2), chara_im)
 
             bk_draw.rounded_rectangle(
                 (87, 0, 116, 29),

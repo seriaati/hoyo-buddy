@@ -96,12 +96,6 @@ class CardTemplateSelect(Select["ProfileView"]):
                                 num=template_num,
                             ),
                             description=LocaleStr(
-                                key="profile.card_template_select.diff_author.description",
-                                author1="@algoinde",
-                                author2="@korzzex",
-                            )
-                            if template_num == 3
-                            else LocaleStr(
                                 key="profile.card_template_select.same_author.description",
                                 author="@korzzex",
                             ),

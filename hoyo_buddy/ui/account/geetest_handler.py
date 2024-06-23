@@ -176,7 +176,7 @@ class GeetestHandler:
                     password=self._data.password,
                     action_ticket=self._data.acition_ticket,
                 )
-            elif isinstance(self._data, SendMobileOTPData):
+            else:  # SendMobileOTPData
                 # geetest was triggered for sending mobile OTP
                 result = await self.client._send_mobile_otp(
                     self._data.mobile,

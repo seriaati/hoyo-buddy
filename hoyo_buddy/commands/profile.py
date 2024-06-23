@@ -42,7 +42,7 @@ class ProfileCommand:
         genshin_data, _ = await client.fetch_showcase(self._uid)
 
         builds = None
-        if genshin_data is not None and genshin_data.owner is not None:
+        if genshin_data.owner is not None:
             builds = await client.fetch_builds(genshin_data.owner)
 
         cache = await EnkaCache.get(uid=self._uid)

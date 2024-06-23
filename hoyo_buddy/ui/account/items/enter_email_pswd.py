@@ -50,7 +50,7 @@ class EnterEmailVerificationCode(Button["AccountManager"]):
         await i.response.send_modal(modal)
         await modal.wait()
 
-        if modal.code.value is None:
+        if modal.incomplete:
             return
 
         user = await User.get(id=i.user.id)
@@ -93,7 +93,7 @@ class EnterEmailPassword(Button["AccountManager"]):
         await i.response.send_modal(modal)
         await modal.wait()
 
-        if modal.email.value is None or modal.password.value is None:
+        if modal.incomplete:
             return
 
         email = modal.email.value

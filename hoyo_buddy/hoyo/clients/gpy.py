@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 from operator import attrgetter
 from random import uniform
 from typing import TYPE_CHECKING, Any
@@ -46,6 +47,7 @@ class GenshinClient(genshin.Client):
             region=region,
             device_id=account.device_id,
             device_fp=account.device_fp,
+            proxy="socks5://127.0.0.1:9091" if os.environ["ENV"] == "prod" else None,
         )
         self._account = account
 

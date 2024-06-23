@@ -50,6 +50,7 @@ class ChallengeView(View):
     def __init__(
         self,
         account: HoyoAccount,
+        dark_mode: bool,
         *,
         author: User | Member,
         locale: Locale,
@@ -58,6 +59,8 @@ class ChallengeView(View):
         super().__init__(author=author, locale=locale, translator=translator)
 
         self._account = account
+        self._dark_mode = dark_mode
+
         self._challenge_type: ChallengeType | None = None
         self._season_ids: dict[ChallengeType, int] = {}
         """The user's selected season ID for a challange type"""
@@ -172,7 +175,7 @@ class ChallengeView(View):
         if isinstance(self.challenge, SpiralAbyss):
             return await draw_spiral_abyss_card(
                 DrawInput(
-                    dark_mode=False,
+                    dark_mode=self._dark_mode,
                     locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
                     session=session,
                     filename="challenge.webp",
@@ -186,7 +189,7 @@ class ChallengeView(View):
         elif isinstance(self.challenge, StarRailChallenge):
             return await draw_moc_card(
                 DrawInput(
-                    dark_mode=False,
+                    dark_mode=self._dark_mode,
                     locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
                     session=session,
                     filename="challenge.webp",
@@ -200,7 +203,7 @@ class ChallengeView(View):
         elif isinstance(self.challenge, StarRailPureFiction):
             return await draw_pure_fiction_card(
                 DrawInput(
-                    dark_mode=False,
+                    dark_mode=self._dark_mode,
                     locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
                     session=session,
                     filename="challenge.webp",
@@ -214,7 +217,7 @@ class ChallengeView(View):
         elif isinstance(self.challenge, StarRailAPCShadow):
             return await draw_apc_shadow_card(
                 DrawInput(
-                    dark_mode=False,
+                    dark_mode=self._dark_mode,
                     locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
                     session=session,
                     filename="challenge.webp",

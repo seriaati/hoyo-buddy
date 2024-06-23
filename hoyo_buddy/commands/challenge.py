@@ -32,7 +32,6 @@ class ChallengeCommand:
 
         view = ChallengeView(
             account,
-            settings.dark_mode,
             author=i.user,
             locale=locale,
             translator=translator,

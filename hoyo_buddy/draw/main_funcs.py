@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 
 import enka
 from discord import File
@@ -23,6 +23,7 @@ if TYPE_CHECKING:
         SpiralAbyss,
         StarRailAPCShadow,
         StarRailChallenge,
+        StarRailChallengeSeason,
         StarRailNote,
         StarRailPureFiction,
     )
@@ -325,7 +326,7 @@ async def draw_exploration_card(
 async def draw_moc_card(
     draw_input: DrawInput,
     data: StarRailChallenge,
-    index: Literal[0, 1],
+    season: StarRailChallengeSeason,
     translator: Translator,
 ) -> File:
     for floor in data.floors:
@@ -335,9 +336,7 @@ async def draw_moc_card(
     with timing("draw", tags={"type": "moc_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
-            funcs.hsr.moc.MOCCard(
-                data, data.seasons[index], draw_input.locale.value, translator
-            ).draw,
+            funcs.hsr.moc.MOCCard(data, season, draw_input.locale.value, translator).draw,
         )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
@@ -346,7 +345,7 @@ async def draw_moc_card(
 async def draw_pure_fiction_card(
     draw_input: DrawInput,
     data: StarRailPureFiction,
-    index: Literal[0, 1],
+    season: StarRailChallengeSeason,
     translator: Translator,
 ) -> File:
     for floor in data.floors:
@@ -357,7 +356,7 @@ async def draw_pure_fiction_card(
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.hsr.pure_fiction.PureFictionCard(
-                data, data.seasons[index], draw_input.locale.value, translator
+                data, season, draw_input.locale.value, translator
             ).draw,
         )
     buffer.seek(0)
@@ -367,7 +366,7 @@ async def draw_pure_fiction_card(
 async def draw_apc_shadow_card(
     draw_input: DrawInput,
     data: StarRailAPCShadow,
-    index: Literal[0, 1],
+    season: StarRailChallengeSeason,
     translator: Translator,
 ) -> File:
     for floor in data.floors:
@@ -378,7 +377,7 @@ async def draw_apc_shadow_card(
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.hsr.apc_shadow.APCShadowCard(
-                data, data.seasons[index], draw_input.locale.value, translator
+                data, season, draw_input.locale.value, translator
             ).draw,
         )
     buffer.seek(0)

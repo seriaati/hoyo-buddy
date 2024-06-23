@@ -212,7 +212,8 @@ class JSONFile(Model):
         """Write a JSON file."""
         json_file = await JSONFile.get_or_none(name=filename)
         if json_file is None:
-            return await JSONFile.create(name=filename, data=data)
+            await JSONFile.create(name=filename, data=data)
+            return
 
         json_file.data = data
         await json_file.save(update_fields=("data",))

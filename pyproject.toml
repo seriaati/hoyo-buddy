@@ -130,8 +130,13 @@ select = [
 quote-annotations = true
 
 [tool.pyright]
+enableTypeIgnoreComments = false
 reportIncompatibleMethodOverride = false
 reportIncompatibleVariableOverride = false
+reportUnnecessaryComparison = true
+reportUnnecessaryContains = true
+reportUnnecessaryIsInstance = true
+reportUnnecessaryTypeIgnoreComment = true
 
 [tool.ruff.lint.mccabe]
 max-complexity = 15

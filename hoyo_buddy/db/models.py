@@ -3,21 +3,23 @@
 from __future__ import annotations
 
 import datetime
+import pickle
 from typing import TYPE_CHECKING, Any
 
 import genshin
 from discord import Locale
 from seria.tortoise.model import Model
-from tortoise import fields
+from tortoise import exceptions, fields
 
 from ..constants import HB_GAME_TO_GPY_GAME, UID_SERVER_RESET_HOURS
-from ..enums import Game, NotesNotifyType, Platform
+from ..enums import ChallengeType, Game, NotesNotifyType, Platform
 from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
 
 if TYPE_CHECKING:
     from ..bot.bot import Interaction
     from ..hoyo.clients.gpy import GenshinClient
+    from ..types import Challenge
 
 
 class User(Model):
@@ -217,6 +219,58 @@ class JSONFile(Model):
 
         json_file.data = data
         await json_file.save(update_fields=("data",))
+
+
+class ChallengeHistory(Model):
+    uid = fields.BigIntField(index=True)
+    season_id = fields.IntField()
+    name: fields.Field[str | None] = fields.CharField(max_length=64, null=True)
+    challenge_type = fields.CharEnumField(ChallengeType, max_length=32)
+    data = fields.BinaryField()
+    start_time = fields.DatetimeField()
+    end_time = fields.DatetimeField()
+
+    class Meta:
+        unique_together = ("uid", "season_id", "challenge_type")
+        ordering = ["-end_time"]  # noqa: RUF012
+
+    @property
+    def duration_str(self) -> str:
+        return f"{self.start_time:%Y-%m-%d} ~ {self.end_time:%Y-%m-%d}"
+
+    @property
+    def parsed_data(self) -> Challenge:
+        """Parsed challenge data from binary pickled data."""
+        return pickle.loads(self.data)
+
+    @classmethod
+    async def add_data(
+        cls, uid: int, challenge_type: ChallengeType, season_id: int, data: Challenge
+    ) -> None:
+        try:
+            if isinstance(data, genshin.models.SpiralAbyss):
+                start_time = data.start_time
+                end_time = data.end_time
+                name = None
+            else:
+                season = next(season for season in data.seasons if season.id == season_id)
+                start_time = season.begin_time.datetime
+                end_time = season.end_time.datetime
+                name = season.name
+
+            await cls.create(
+                uid=uid,
+                season_id=season_id,
+                challenge_type=challenge_type,
+                data=pickle.dumps(data),
+                start_time=start_time,
+                end_time=end_time,
+                name=name,
+            )
+        except exceptions.IntegrityError:
+            await cls.filter(uid=uid, season_id=season_id, challenge_type=challenge_type).update(
+                data=pickle.dumps(data)
+            )
 
 
 async def get_locale(i: Interaction) -> Locale:

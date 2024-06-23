@@ -141,7 +141,7 @@ class Hoyo(commands.Cog):
             game=game,
             account=account_,
             locale=locale,
-            user=user,
+            user=i.user,
             translator=self.bot.translator,
         )
 

@@ -87,9 +87,9 @@ class LightConeUI(View):
         )
         self.add_item(
             SuperimposeSelect(
-                min_superposition=1,
-                max_superposition=5,
-                current_superposition=self._superimpose,
+                min_superimpose=1,
+                max_superimpose=5,
+                current_superimpose=self._superimpose,
             )
         )
         self.add_item(ShowStoryButton())
@@ -133,16 +133,16 @@ class EnterLightConeLevel(Button[LightConeUI]):
 
 class SuperimposeSelect(Select[LightConeUI]):
     def __init__(
-        self, *, min_superposition: int, max_superposition: int, current_superposition: int
+        self, *, min_superimpose: int, max_superimpose: int, current_superimpose: int
     ) -> None:
         super().__init__(
             options=[
                 SelectOption(
-                    label=LocaleStr(s=i, key="superposition_indicator"),
+                    label=LocaleStr(s=i, key="superimpose_indicator"),
                     value=str(i),
-                    default=current_superposition == i,
+                    default=current_superimpose == i,
                 )
-                for i in range(min_superposition, max_superposition + 1)
+                for i in range(min_superimpose, max_superimpose + 1)
             ]
         )
 

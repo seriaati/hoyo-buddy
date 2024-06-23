@@ -172,6 +172,21 @@ redis = ["redis (>=4.2)"]
 sqlite = ["aiosqlite (>=0.16)"]
 
 [[package]]
+name = "aiohttp-socks"
+version = "0.8.4"
+description = "Proxy connector for aiohttp"
+optional = false
+python-versions = "*"
+files = [
+    {file = "aiohttp_socks-0.8.4-py3-none-any.whl", hash = "sha256:74b21105634ed31d56ed6fee43701ca16218b53475e606d56950a4d17e8290ea"},
+    {file = "aiohttp_socks-0.8.4.tar.gz", hash = "sha256:6b611d4ce838e9cf2c2fed5e0dba447cc84824a6cba95dc5747606201da46cb4"},
+]
+
+[package.dependencies]
+aiohttp = ">=2.3.2"
+python-socks = {version = ">=2.4.3,<3.0.0", extras = ["asyncio"]}
+
+[[package]]
 name = "aiosignal"
 version = "1.3.1"
 description = "aiosignal: a list of registered asynchronous callbacks"
@@ -803,6 +818,7 @@ develop = false
 
 [package.dependencies]
 aiohttp = "*"
+aiohttp-socks = {version = "*", optional = true, markers = "extra == \"all\""}
 browser-cookie3 = {version = "*", optional = true, markers = "extra == \"all\""}
 click = {version = "*", optional = true, markers = "extra == \"all\""}
 pydantic = "*"
@@ -810,16 +826,17 @@ qrcode = {version = "*", extras = ["pil"], optional = true, markers = "extra == 
 rsa = {version = "*", optional = true, markers = "extra == \"all\""}
 
 [package.extras]
-all = ["browser-cookie3", "click", "qrcode[pil]", "rsa"]
+all = ["aiohttp-socks", "browser-cookie3", "click", "qrcode[pil]", "rsa"]
 auth = ["qrcode[pil]", "rsa"]
 cli = ["click"]
 cookies = ["browser-cookie3"]
+socks-proxy = ["aiohttp-socks"]
 
 [package.source]
 type = "git"
 url = "https://github.com/seriaati/genshin.py"
 reference = "HEAD"
-resolved_reference = "164e65925510fba0dd16ddd19f78868f5a2f92a4"
+resolved_reference = "39b6a7087863d5210e031809a3c4220602a8baa6"
 
 [[package]]
 name = "gitdb"
@@ -1671,6 +1688,26 @@ files = [
 
 [package.extras]
 cli = ["click (>=5.0)"]
+
+[[package]]
+name = "python-socks"
+version = "2.4.4"
+description = "Core proxy (SOCKS4, SOCKS5, HTTP tunneling) functionality for Python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "python-socks-2.4.4.tar.gz", hash = "sha256:e5a8e4f78203612c813946feacd87b98943965a04389fe221fa1e9ab263ad22e"},
+    {file = "python_socks-2.4.4-py3-none-any.whl", hash = "sha256:fda465d3ef229119ee614eb85f2b7c0ad28be6dd40e0ef8dd317c49e8725e514"},
+]
+
+[package.dependencies]
+async-timeout = {version = ">=3.0.1", optional = true, markers = "extra == \"asyncio\""}
+
+[package.extras]
+anyio = ["anyio (>=3.3.4,<5.0.0)"]
+asyncio = ["async-timeout (>=3.0.1)"]
+curio = ["curio (>=1.4)"]
+trio = ["trio (>=0.16.0)"]
 
 [[package]]
 name = "pytz"

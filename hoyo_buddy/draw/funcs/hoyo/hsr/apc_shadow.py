@@ -15,9 +15,9 @@ from .....utils import get_floor_difficulty
 if TYPE_CHECKING:
     from genshin.models.starrail import (
         APCShadowFloor,
-        APCShadowSeason,
         FloorCharacter,
         StarRailAPCShadow,
+        StarRailChallengeSeason,
     )
 
 
@@ -25,7 +25,7 @@ class APCShadowCard:
     def __init__(
         self,
         data: StarRailAPCShadow,
-        season: APCShadowSeason,
+        season: StarRailChallengeSeason,
         locale: str,
         translator: Translator,
     ) -> None:

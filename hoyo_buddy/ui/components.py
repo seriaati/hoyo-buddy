@@ -408,7 +408,7 @@ class Select(discord.ui.Select, Generic[V_co]):
             )
         for option in self.options:
             # NOTE: This is a workaround for a bug(?) in discord.py where options somehow get converted to discord.components.SelectOption internally
-            if not isinstance(option, SelectOption):
+            if not isinstance(option, SelectOption):  # pyright: ignore[reportUnnecessaryIsInstance]
                 continue
             option.label = translator.translate(
                 option.locale_str_label, locale, capitalize_first_word=True

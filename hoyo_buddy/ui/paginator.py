@@ -12,7 +12,7 @@ from .components import Button, View
 if TYPE_CHECKING:
     from hoyo_buddy.bot.translator import Translator
 
-    from ..bot.bot import Interaction
+    from ..types import Interaction
 
 
 @dataclass(kw_only=True)

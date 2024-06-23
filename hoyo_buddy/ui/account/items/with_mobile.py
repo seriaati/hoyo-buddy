@@ -9,7 +9,7 @@ from ...components import Button, GoBackButton
 from .enter_mobile import EnterPhoneNumber
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Interaction
 
     from ..view import AccountManager  # noqa: F401
 

@@ -12,9 +12,9 @@ from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
 from hoyo_buddy.ui import Button, View
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.types import Interaction
 
 
 class ArtifactSetUI(View):

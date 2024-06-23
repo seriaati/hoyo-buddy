@@ -13,9 +13,9 @@ from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
 if TYPE_CHECKING:
     from discord import Locale, Member, User
 
-    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.types import Interaction
 
 
 class WeaponUI(View):

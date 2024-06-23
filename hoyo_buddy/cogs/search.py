@@ -22,7 +22,8 @@ from ..ui.hoyo.hsr import search as hsr_search
 from ..ui.hoyo.hsr.search.light_cone import LightConeUI
 
 if TYPE_CHECKING:
-    from ..bot.bot import HoyoBuddy, Interaction
+    from ..bot import HoyoBuddy
+    from ..types import Interaction
 
 
 class Search(commands.Cog):

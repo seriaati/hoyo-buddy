@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 
     import discord
 
-    from ...bot.bot import Interaction
+    from ...types import Interaction
 
 
 class AccountManager(View):

@@ -16,7 +16,7 @@ from ..clients.ambr import AmbrAPIClient
 from ..farm_data import FarmDataFetcher
 
 if TYPE_CHECKING:
-    from ...bot.bot import HoyoBuddy
+    from ...bot import HoyoBuddy
 
 
 CharacterOrWeapon = TypeVar("CharacterOrWeapon", ambr.Character, ambr.Weapon)

@@ -6,10 +6,10 @@ from discord import ButtonStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import BOOK_MULTIPLE
-from hoyo_buddy.ui.components import Button
+from hoyo_buddy.ui import Button
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Interaction
 
     from ..view import ProfileView  # noqa: F401
     from .card_settings_btn import CardSettingsButton

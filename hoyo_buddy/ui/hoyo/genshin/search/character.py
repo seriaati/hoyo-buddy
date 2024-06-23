@@ -14,9 +14,9 @@ from hoyo_buddy.ui import Button, Modal, PaginatorSelect, Select, SelectOption, 
 if TYPE_CHECKING:
     import ambr
 
-    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.types import Interaction
 
 
 class CharacterUI(View):

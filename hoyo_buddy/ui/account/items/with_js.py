@@ -10,7 +10,7 @@ from ...components import Button, GoBackButton
 from .enter_cookies_btn import EnterCookiesButton
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Interaction
 
     from ..view import AccountManager  # noqa: F401
 

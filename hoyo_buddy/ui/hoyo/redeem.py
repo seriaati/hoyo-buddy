@@ -12,8 +12,8 @@ from ..components import Button, Modal, TextInput, ToggleButton, View
 if TYPE_CHECKING:
     from hoyo_buddy.bot.translator import Translator
 
-    from ...bot.bot import Interaction
     from ...db.models import HoyoAccount
+    from ...types import Interaction
 
 
 class GiftCodeModal(Modal):

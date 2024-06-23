@@ -10,7 +10,8 @@ from ..db.models import HoyoAccount, User, get_locale
 from ..ui.account.view import AccountManager
 
 if TYPE_CHECKING:
-    from ..bot.bot import HoyoBuddy, Interaction
+    from ..bot import HoyoBuddy
+    from ..types import Interaction
 
 
 class Login(commands.Cog):

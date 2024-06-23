@@ -19,7 +19,7 @@ from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from sentry_sdk.integrations.loguru import LoguruIntegration
 
 from hoyo_buddy.api import BotAPI
-from hoyo_buddy.bot.bot import HoyoBuddy
+from hoyo_buddy.bot import HoyoBuddy
 from hoyo_buddy.bot.translator import Translator
 from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.logging import InterceptHandler

@@ -10,7 +10,7 @@ from ..utils import get_now
 from .error_handler import get_error_embed
 
 if TYPE_CHECKING:
-    from .bot import Interaction
+    from ..types import Interaction
 
 __all__ = ("CommandTree",)
 

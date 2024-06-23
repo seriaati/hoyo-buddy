@@ -18,7 +18,8 @@ from .search import Search
 if TYPE_CHECKING:
     from discord.ext.commands.context import Context
 
-    from ..bot.bot import HoyoBuddy, Interaction
+    from ..bot import HoyoBuddy
+    from ..types import Interaction
 
 
 class DMModal(ui.Modal):

@@ -15,12 +15,13 @@ from ..embeds import DefaultEmbed
 from ..enums import GeetestNotifyType, GeetestType, Platform
 from ..exceptions import FeatureNotImplementedError
 from ..models import LoginNotifPayload
-from ..ui.components import URLButtonView
+from ..ui import URLButtonView
 
 if TYPE_CHECKING:
     from discord import Message
 
-    from ..bot.bot import HoyoBuddy, Interaction
+    from ..bot import HoyoBuddy
+    from ..types import Interaction
 
 
 class GeetestCommand:

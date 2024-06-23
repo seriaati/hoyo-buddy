@@ -12,9 +12,9 @@ if TYPE_CHECKING:
     from ambr.models import CardTalent, TCGCardDetail
     from discord import Locale, Member, User
 
-    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.types import Interaction
 
 
 class TCGCardUI(View):

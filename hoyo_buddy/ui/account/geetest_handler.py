@@ -15,7 +15,7 @@ from ...embeds import DefaultEmbed
 from ...enums import GeetestNotifyType, Platform
 
 if TYPE_CHECKING:
-    from ...bot.bot import Interaction
+    from ...types import Interaction
     from .view import AccountManager
 
 

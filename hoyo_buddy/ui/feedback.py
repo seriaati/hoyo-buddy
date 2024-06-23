@@ -11,7 +11,7 @@ from .components import Button, Modal, TextInput, View
 if TYPE_CHECKING:
     from hoyo_buddy.bot.translator import Translator
 
-    from ..bot.bot import Interaction
+    from ..types import Interaction
 
 
 class FeedbackView(View):

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import SETTINGS
 from hoyo_buddy.enums import CharacterType
-from hoyo_buddy.ui.components import Button, GoBackButton
+from hoyo_buddy.ui import Button, GoBackButton
 
 from ..btn_states import DISABLE_AI_ART, DISABLE_COLOR, DISABLE_DARK_MODE, DISABLE_IMAGE_SELECT
 from .add_img_btn import AddImageButton
@@ -18,7 +18,7 @@ from .primary_color_btn import PrimaryColorButton
 from .remove_img_btn import RemoveImageButton
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Interaction
 
     from ..view import ProfileView  # noqa: F401
 

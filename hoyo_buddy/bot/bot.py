@@ -3,7 +3,7 @@ from __future__ import annotations
 import concurrent.futures
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, TypeAlias
+from typing import TYPE_CHECKING, Any
 
 import aiohttp
 import discord
@@ -38,10 +38,9 @@ if TYPE_CHECKING:
     from ..enums import Game
     from ..hoyo.search_autocomplete import AutocompleteChoices
     from ..models import Config
+    from ..types import User
 
-
-Interaction: TypeAlias = discord.Interaction["HoyoBuddy"]
-User: TypeAlias = discord.User | discord.Member | None
+__all__ = ("HoyoBuddy",)
 
 intents = discord.Intents(
     guilds=True,

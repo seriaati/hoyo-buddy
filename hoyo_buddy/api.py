@@ -6,7 +6,7 @@ from aiohttp import web
 from loguru import logger
 
 if TYPE_CHECKING:
-    from .bot.bot import HoyoBuddy
+    from .bot import HoyoBuddy
 
 
 class BotAPI:

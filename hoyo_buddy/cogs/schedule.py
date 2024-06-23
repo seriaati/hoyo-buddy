@@ -14,7 +14,7 @@ from ..utils import get_now
 from .search import Search
 
 if TYPE_CHECKING:
-    from ..bot.bot import HoyoBuddy
+    from ..bot import HoyoBuddy
 
 
 class Schedule(commands.Cog):

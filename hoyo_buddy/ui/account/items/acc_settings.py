@@ -8,7 +8,7 @@ from hoyo_buddy.emojis import GIFT_OUTLINE, PUBLIC, SMART_TOY
 from ...components import ToggleButton
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Interaction
 
     from ..view import AccountManager  # noqa: F401
 

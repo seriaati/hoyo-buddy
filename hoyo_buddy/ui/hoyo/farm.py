@@ -17,7 +17,7 @@ from ...utils import get_now
 from ..components import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:
-    from ...bot.bot import Interaction
+    from ...types import Interaction
 
 
 class FarmView(View):

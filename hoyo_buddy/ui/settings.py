@@ -12,7 +12,7 @@ from ..embeds import DefaultEmbed
 from .components import Select, SelectOption, ToggleButton, View
 
 if TYPE_CHECKING:
-    from ..bot.bot import Interaction
+    from ..types import Interaction
 
 
 class SettingsUI(View):

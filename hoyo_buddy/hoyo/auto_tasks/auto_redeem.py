@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.embeds import ErrorEmbed
 
-    from ...bot.bot import HoyoBuddy
+    from ...bot import HoyoBuddy
 
 CODE_NUM_TO_SLEEP = 15
 SLEEP_INTERVAL = 60 * 5

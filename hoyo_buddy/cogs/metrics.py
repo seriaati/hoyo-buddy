@@ -10,7 +10,8 @@ from loguru import logger
 if TYPE_CHECKING:
     from discord import Guild
 
-    from ..bot.bot import HoyoBuddy, Interaction
+    from ..bot import HoyoBuddy
+    from ..types import Interaction
 
 
 class Metrics(commands.Cog):

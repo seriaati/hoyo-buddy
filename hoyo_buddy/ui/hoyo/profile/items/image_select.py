@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
-from hoyo_buddy.ui.components import PaginatorSelect, SelectOption
+from hoyo_buddy.ui import PaginatorSelect, SelectOption
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Interaction
 
     from ..view import ProfileView  # noqa: F401
     from .remove_img_btn import RemoveImageButton

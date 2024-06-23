@@ -7,11 +7,11 @@ from seria.utils import read_json
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.exceptions import GuildOnlyFeatureError, NSFWPromptError
-from hoyo_buddy.ui.components import Button, Modal, TextInput
+from hoyo_buddy.ui import Button, Modal, TextInput
 from hoyo_buddy.utils import upload_image
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Interaction
 
     from .image_select import ImageSelect
     from .remove_img_btn import RemoveImageButton

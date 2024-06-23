@@ -10,10 +10,10 @@ from hoyo_buddy.db.models import EnkaCache
 from hoyo_buddy.emojis import DELETE
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.enka.base import BaseClient
-from hoyo_buddy.ui.components import Button
+from hoyo_buddy.ui import Button
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Interaction
 
     from ..view import ProfileView  # noqa: F401
     from .chara_select import CharacterSelect

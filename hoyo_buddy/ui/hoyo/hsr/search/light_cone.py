@@ -16,8 +16,8 @@ if TYPE_CHECKING:
     from hakushin.models.hsr import LightConeDetail as HakushinLCDetail
     from yatta import LightConeDetail
 
-    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.types import Interaction
 
 
 class LightConeUI(View):

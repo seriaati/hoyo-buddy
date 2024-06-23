@@ -22,8 +22,8 @@ if TYPE_CHECKING:
     import aiohttp
     from genshin.models import DailyRewardInfo
 
-    from ...bot.bot import Interaction
     from ...db.models import HoyoAccount
+    from ...types import Interaction
 
 CHECK_IN_URLS = {
     Game.GENSHIN: "https://act.hoyolab.com/ys/event/signin-sea-v3/index.html?act_id=e202102251931481",

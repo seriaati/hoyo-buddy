@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
     from discord.ui.item import Item
 
-    from ..bot.bot import Interaction
+    from ..types import Interaction
 
 
 __all__ = (

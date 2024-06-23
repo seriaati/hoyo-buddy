@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from discord import app_commands
 from discord.ext import commands
 
-from ..bot.bot import User  # noqa: TCH001
 from ..bot.translator import LocaleStr
 from ..commands.challenge import ChallengeCommand
 from ..commands.geetest import GeetestCommand
@@ -19,13 +18,15 @@ from ..hoyo.clients.ambr import AmbrAPIClient
 from ..hoyo.clients.yatta import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..models import DrawInput
+from ..types import User  # noqa: TCH001
 from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.redeem import RedeemUI
 
 if TYPE_CHECKING:
-    from ..bot.bot import HoyoBuddy, Interaction
+    from ..bot import HoyoBuddy
+    from ..types import Interaction
 
 
 class Hoyo(commands.Cog):

@@ -11,7 +11,7 @@ from ..modals import TypeThreeModal
 from ..view import NotesView
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Interaction
 
 
 class DailyReminder(Button[NotesView]):

@@ -17,9 +17,8 @@ from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
 
 if TYPE_CHECKING:
-    from ..bot.bot import Interaction
     from ..hoyo.clients.gpy import GenshinClient
-    from ..types import Challenge
+    from ..types import Challenge, Interaction
 
 
 class User(Model):

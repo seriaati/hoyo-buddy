@@ -20,7 +20,7 @@ from ...ui.hoyo.notes.view import NotesView
 from ...utils import get_now
 
 if TYPE_CHECKING:
-    from ...bot.bot import HoyoBuddy
+    from ...bot import HoyoBuddy
 
 
 class NotesChecker:

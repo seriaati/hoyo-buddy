@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Any, Final, TypeAlias
+from typing import TYPE_CHECKING, Any, Final
 
 import enka
 
@@ -9,17 +9,16 @@ from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji
 from hoyo_buddy.enums import CharacterType
 from hoyo_buddy.models import HoyolabHSRCharacter
-from hoyo_buddy.ui.components import PaginatorSelect, SelectOption
+from hoyo_buddy.ui import PaginatorSelect, SelectOption
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Builds, Interaction
 
     from ..view import Character, ProfileView  # noqa: F401
     from .build_select import BuildSelect
 
-Builds: TypeAlias = dict[str, list[enka.gi.Build]] | dict[str, list[enka.hsr.Build]]
 
 DATA_TYPES: Final[dict[CharacterType, LocaleStr]] = {
     CharacterType.BUILD: LocaleStr(key="profile.character_select.enka_network.description"),

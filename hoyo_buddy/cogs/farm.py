@@ -15,7 +15,8 @@ from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..ui.hoyo.farm import FarmView
 
 if TYPE_CHECKING:
-    from ..bot.bot import HoyoBuddy, Interaction, User
+    from ..bot import HoyoBuddy
+    from ..types import Interaction, User
 
 
 class Farm(

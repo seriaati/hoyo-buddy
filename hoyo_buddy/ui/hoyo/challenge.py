@@ -40,10 +40,9 @@ if TYPE_CHECKING:
     import aiohttp
     from discord import File, Locale, Member, User
 
-    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.db.models import HoyoAccount
-    from hoyo_buddy.types import Challenge
+    from hoyo_buddy.types import Challenge, Interaction
 
 
 class ChallengeView(View):

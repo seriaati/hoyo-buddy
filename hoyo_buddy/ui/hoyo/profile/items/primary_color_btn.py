@@ -6,11 +6,11 @@ from discord import ButtonStyle, TextStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.exceptions import InvalidColorError
-from hoyo_buddy.ui.components import Button, Modal, TextInput
+from hoyo_buddy.ui import Button, Modal, TextInput
 from hoyo_buddy.utils import is_valid_hex_color
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Interaction
 
     from ..view import ProfileView  # noqa: F401
 

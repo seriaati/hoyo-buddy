@@ -15,7 +15,7 @@ from ...embeds import DefaultEmbed, Embed, ErrorEmbed
 if TYPE_CHECKING:
     import aiohttp
 
-    from ...bot.bot import HoyoBuddy
+    from ...bot import HoyoBuddy
     from ...bot.translator import Translator
 
 

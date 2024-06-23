@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.enums import Game
-from hoyo_buddy.ui.components import Select, SelectOption
+from hoyo_buddy.ui import Select, SelectOption
 
 from ..btn_states import DISABLE_AI_ART, DISABLE_COLOR, DISABLE_DARK_MODE, DISABLE_IMAGE_SELECT
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Interaction
 
     from ..view import ProfileView  # noqa: F401
     from .dark_mode_btn import DarkModeButton

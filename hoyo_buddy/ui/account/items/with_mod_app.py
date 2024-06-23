@@ -12,7 +12,7 @@ from hoyo_buddy.enums import Platform
 from ...components import Button, GoBackButton, Modal, TextInput
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Interaction
 
     from ..view import AccountManager  # noqa: F401
 

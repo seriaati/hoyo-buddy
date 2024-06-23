@@ -7,7 +7,7 @@ from ..enums import Game
 from ..ui.hoyo.challenge import ChallengeView
 
 if TYPE_CHECKING:
-    from ..bot.bot import Interaction, User
+    from ..types import Interaction, User
 
 
 class ChallengeCommand:

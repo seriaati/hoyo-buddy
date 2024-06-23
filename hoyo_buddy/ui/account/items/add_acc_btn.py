@@ -16,7 +16,7 @@ from .with_js import WithJavaScript
 from .with_mod_app import WithModApp
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import Interaction
+    from hoyo_buddy.types import Interaction
 
     from ..view import AccountManager  # noqa: F401
 

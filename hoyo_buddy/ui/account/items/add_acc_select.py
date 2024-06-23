@@ -18,8 +18,8 @@ if TYPE_CHECKING:
 
     from genshin.models import GenshinAccount
 
-    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.types import Interaction
 
     from ..view import AccountManager  # noqa: F401
 

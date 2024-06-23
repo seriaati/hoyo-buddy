@@ -31,9 +31,9 @@ if TYPE_CHECKING:
 
     import aiohttp
 
-    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.types import Interaction
 
     from .modals.type_four import TypeFourModal
     from .modals.type_one import TypeOneModal

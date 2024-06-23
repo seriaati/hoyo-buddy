@@ -15,12 +15,12 @@ from hoyo_buddy.enums import CharacterType, Game
 from hoyo_buddy.exceptions import CardNotReadyError, DownloadImageFailedError
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
-from hoyo_buddy.ui.components import Button, Select, View
+from hoyo_buddy.ui import Button, Select, View
 
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
 from .items.card_settings_btn import CardSettingsButton
-from .items.chara_select import Builds, CharacterSelect, determine_chara_type
+from .items.chara_select import CharacterSelect, determine_chara_type
 from .items.player_btn import PlayerInfoButton
 from .items.rmv_from_cache_btn import RemoveFromCacheButton
 
@@ -34,8 +34,8 @@ if TYPE_CHECKING:
     from discord import Member, User
     from genshin.models import StarRailUserStats
 
-    from hoyo_buddy.bot.bot import Interaction
     from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.types import Builds, Interaction
 
 
 Character: TypeAlias = HoyolabHSRCharacter | enka.gi.Character | enka.hsr.Character

@@ -14,7 +14,7 @@ from ..ui.hoyo.farm_notify import FarmNotifyView
 if TYPE_CHECKING:
     import discord
 
-    from ..bot.bot import Interaction
+    from ..types import Interaction
 
 
 class Action(IntEnum):

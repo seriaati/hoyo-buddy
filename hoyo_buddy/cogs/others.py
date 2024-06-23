@@ -12,7 +12,7 @@ from ..bot.translator import LocaleStr
 from ..db.models import Settings as UserSettings
 from ..embeds import DefaultEmbed
 from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
-from ..ui.components import Button, View
+from ..ui import Button, View
 from ..ui.feedback import FeedbackView
 from ..ui.settings import SettingsUI
 from ..utils import get_discord_user_md_link
@@ -20,7 +20,8 @@ from ..utils import get_discord_user_md_link
 if TYPE_CHECKING:
     import git
 
-    from ..bot.bot import HoyoBuddy, Interaction
+    from ..bot import HoyoBuddy
+    from ..types import Interaction
 
 
 class Others(commands.Cog):

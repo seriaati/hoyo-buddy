@@ -47,7 +47,9 @@ class GenshinClient(genshin.Client):
             region=region,
             device_id=account.device_id,
             device_fp=account.device_fp,
-            proxy="socks5://127.0.0.1:9091" if os.environ["ENV"] == "prod" else None,
+            proxy="socks5://127.0.0.1:9091"
+            if os.environ["ENV"] == "prod" and region is genshin.Region.OVERSEAS
+            else None,
         )
         self._account = account
 

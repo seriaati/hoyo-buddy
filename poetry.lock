@@ -681,7 +681,7 @@ pydantic = "^2.5.3"
 [package.source]
 type = "git"
 url = "https://github.com/seriaati/enka-py"
-reference = "HEAD"
+reference = "378bde7"
 resolved_reference = "378bde7e127e851114ec499f3e83ac8232b47228"
 
 [[package]]
@@ -1908,15 +1908,15 @@ files = []
 develop = false
 
 [package.extras]
-all = ["aiofiles (>=23.2.1,<24.0.0)", "discord-py (>=2.3.2,<3.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)", "tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
-files = ["aiofiles (>=23.2.1,<24.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)"]
+all = ["aiofiles (>=24.0.0,<25.0.0)", "discord-py (>=2.3.2,<3.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)", "tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
+files = ["aiofiles (>=24.0.0,<25.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)"]
 tortoise = ["tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
 
 [package.source]
 type = "git"
 url = "https://github.com/seriaati/seria-library"
 reference = "HEAD"
-resolved_reference = "eaade1f782c02de0f93057713bc582a05927cf20"
+resolved_reference = "cd0b5b80b8197c0890457e1a6c48ae1d67a8ffff"
 
 [[package]]
 name = "six"
@@ -2245,4 +2245,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "fb8b9dd9c6eabcf95472356822cb2804c3b62d081a8b89843303c7200fdbce48"
+content-hash = "0e0830aac055a71f981c15b8dc468a423f3b943aeb1baf3b41422ef8dc316106"

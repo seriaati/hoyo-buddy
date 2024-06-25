@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import enka
 from discord import app_commands
 from discord.ext import commands
 
@@ -43,7 +44,11 @@ class Hoyo(commands.Cog):
                 raise IncompleteParamError(
                     LocaleStr(key="game_value_incomplete_param_error_message")
                 )
-            uid_ = int(uid)
+            try:
+                uid_ = int(uid)
+            except ValueError as e:
+                raise enka.errors.WrongUIDFormatError from e
+
             try:
                 game = Game(game_value)
             except ValueError as e:

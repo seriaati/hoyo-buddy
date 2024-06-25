@@ -9,6 +9,7 @@ from discord.ext import commands
 from ..bot.translator import LocaleStr
 from ..commands.challenge import ChallengeCommand
 from ..commands.geetest import GeetestCommand
+from ..commands.leaderboard import LeaderboardCommand
 from ..commands.profile import ProfileCommand
 from ..db.models import HoyoAccount, Settings, get_locale
 from ..draw.main_funcs import draw_exploration_card
@@ -168,6 +169,47 @@ class Hoyo(commands.Cog):
             raise NotImplementedError
 
         await view.start(i)
+
+    @app_commands.command(
+        name=app_commands.locale_str("leaderboard"),
+        description=app_commands.locale_str(
+            "View the leaderboard", key="leaderboard.command.description"
+        ),
+    )
+    @app_commands.rename(
+        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
+        uid=app_commands.locale_str("uid"),
+        game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
+    )
+    @app_commands.describe(
+        user=app_commands.locale_str(
+            "User to search the accounts with, defaults to you",
+            key="user_autocomplete_param_description",
+        ),
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        ),
+        uid=app_commands.locale_str(
+            "UID of the player, this overrides the account parameter if provided",
+            key="profile_command_uid_param_description",
+        ),
+        game_value=app_commands.locale_str(
+            "Game of the UID", key="profile_command_game_value_description"
+        ),
+    )
+    async def leaderboard_command(
+        self,
+        i: Interaction,
+        user: User = None,
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        uid: app_commands.Range[str, 9, 10] | None = None,
+        game_value: str | None = None,
+    ) -> None:
+        user = user or i.user
+        uid_, game, _ = await self._get_uid_and_game(user.id, account, uid, game_value)
+        LeaderboardCommand(i, uid_, game)
 
     @app_commands.command(
         name=app_commands.locale_str("notes"),
@@ -430,7 +472,15 @@ class Hoyo(commands.Cog):
         locale = await get_locale(i)
         return self.bot.get_enum_autocomplete([Game.GENSHIN, Game.STARRAIL], locale, current)
 
+    @leaderboard_command.autocomplete("game_value")
+    async def leaderboard_game_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        locale = await get_locale(i)
+        return self.bot.get_enum_autocomplete([Game.GENSHIN], locale, current)
+
     @exploration_command.autocomplete("account")
+    @leaderboard_command.autocomplete("account")
     async def exploration_command_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:

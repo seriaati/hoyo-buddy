@@ -112,3 +112,7 @@ class ChallengeType(StrEnum):
     MOC = "Memory of chaos"
     PURE_FICTION = "Pure fiction"
     APC_SHADOW = "Apocalyptic shadow"
+
+
+class LeaderboardType(StrEnum):
+    CHARA_DMG = "chara_dmg"

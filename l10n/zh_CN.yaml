@@ -537,3 +537,6 @@ apc_shadow.highest_diff_cleared: "最高完成难度: {diff}"
 apc_shadow.times_challenged: "挑战次数: {times}"
 apc_shadow.boss_defeated: 首领已击败
 apc_shadow.boss_defeated_no: 首领未击败
+notes.bonus_sync_points: "额外拟合值: {cur}/{max}"
+invalid_uid_format_title: 错误的 UID 格式
+invalid_uid_format_description: "UID 需为一个 9 至 10 位数的数字"

@@ -44,9 +44,18 @@ class Hoyo(commands.Cog):
                     LocaleStr(key="game_value_incomplete_param_error_message")
                 )
             uid_ = int(uid)
-            game = Game(game_value)
+            try:
+                game = Game(game_value)
+            except ValueError as e:
+                raise InvalidQueryError from e
         else:
-            games = (Game(game_value),) if game_value is not None else (Game.GENSHIN, Game.STARRAIL)
+            try:
+                games = (
+                    (Game(game_value),) if game_value is not None else (Game.GENSHIN, Game.STARRAIL)
+                )
+            except ValueError as e:
+                raise InvalidQueryError from e
+
             account_ = account or await self.bot.get_account(user_id, games)
             uid_ = account_.uid
             game = account_.game

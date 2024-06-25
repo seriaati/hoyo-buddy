@@ -10,7 +10,15 @@ import genshin
 import hakushin
 import yatta
 
-from .enums import ChallengeType, Game, GenshinCity, GenshinElement, HSRElement, HSRPath
+from .enums import (
+    ChallengeType,
+    Game,
+    GenshinCity,
+    GenshinElement,
+    HSRElement,
+    HSRPath,
+    LeaderboardType,
+)
 
 DB_INTEGER_MAX = 2147483647
 DB_SMALLINT_MAX = 32767
@@ -346,4 +354,8 @@ GI_SKILL_TYPE_KEYS = {
 GAME_CHALLENGE_TYPES: Final[dict[Game, tuple[ChallengeType, ...]]] = {
     Game.GENSHIN: (ChallengeType.SPIRAL_ABYSS,),
     Game.STARRAIL: (ChallengeType.MOC, ChallengeType.PURE_FICTION, ChallengeType.APC_SHADOW),
+}
+
+GAME_LB_TYPES: Final[dict[Game, tuple[LeaderboardType, ...]]] = {
+    Game.GENSHIN: (LeaderboardType.CHARA_DMG,),
 }

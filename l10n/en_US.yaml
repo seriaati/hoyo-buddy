@@ -537,3 +537,5 @@ apc_shadow.highest_diff_cleared: "Highest difficulty cleared: {diff}"
 apc_shadow.times_challenged: "Times challenged: {times}"
 apc_shadow.boss_defeated: Boss Defeated
 apc_shadow.boss_defeated_no: Boss Not Defeated
+leaderboard.command.description: View the leaderboard
+chara_dmg: Character dmg

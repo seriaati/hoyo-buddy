@@ -215,6 +215,26 @@ files = [
 typing_extensions = ">=3.7.2"
 
 [[package]]
+name = "akasha-py"
+version = "0.1.0"
+description = "Async API wrapper for akasha.cv written in Python"
+optional = false
+python-versions = "^3.11"
+files = []
+develop = false
+
+[package.dependencies]
+aiohttp = "^3.9.5"
+aiohttp-client-cache = {version = "^0.11.0", extras = ["sqlite"]}
+pydantic = "^2.7.4"
+
+[package.source]
+type = "git"
+url = "https://github.com/seriaati/akasha-py"
+reference = "HEAD"
+resolved_reference = "3af0c33d41291b7d7023ac8074d156edf2c94642"
+
+[[package]]
 name = "ambr-py"
 version = "1.7.9"
 description = "API wrapper for ambr.top written in Python"
@@ -1904,15 +1924,15 @@ files = []
 develop = false
 
 [package.extras]
-all = ["aiofiles (>=23.2.1,<24.0.0)", "discord-py (>=2.3.2,<3.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)", "tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
-files = ["aiofiles (>=23.2.1,<24.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)"]
+all = ["aiofiles (>=24.0.0,<25.0.0)", "discord-py (>=2.3.2,<3.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)", "tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
+files = ["aiofiles (>=24.0.0,<25.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)"]
 tortoise = ["tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
 
 [package.source]
 type = "git"
 url = "https://github.com/seriaati/seria-library"
 reference = "HEAD"
-resolved_reference = "eaade1f782c02de0f93057713bc582a05927cf20"
+resolved_reference = "cd0b5b80b8197c0890457e1a6c48ae1d67a8ffff"
 
 [[package]]
 name = "six"
@@ -2241,4 +2261,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "19f22d97b3420b1dbd3b9a110f2efe06f050248a2a05c83157d18775e7409bd0"
+content-hash = "8686ae2c6331ae4dbfa3c536b622509b4de18215c02a08b529d13ee7f9318fff"

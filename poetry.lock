@@ -253,8 +253,12 @@ files = [
   {file = "ambr_py-1.7.9.tar.gz", hash = "sha256:623e1a102ba0ef716667226c336c8c566e0ad9544e75b78c1b515cb3340af2ed"},
 ]
 name = "ambr-py"
+name = "ambr-py"
+optional = false
 optional = false
 python-versions = "<4.0,>=3.11"
+python-versions = "<4.0,>=3.11"
+version = "1.7.9"
 version = "1.7.9"
 
 [package.dependencies]
@@ -2072,19 +2076,13 @@ all = [
   "pyyaml (>=6.0.1,<7.0.0)",
   "tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)",
 ]
-all = [
-  "aiofiles (>=24.0.0,<25.0.0)",
-  "discord-py (>=2.3.2,<3.0.0)",
-  "orjson (>=3.9.13,<4.0.0)",
-  "pyyaml (>=6.0.1,<7.0.0)",
-  "tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)",
-]
-files = ["aiofiles (>=24.0.0,<25.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)"]
 files = ["aiofiles (>=24.0.0,<25.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)"]
 tortoise = ["tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
 
 [package.source]
 reference = "HEAD"
+reference = "HEAD"
+resolved_reference = "cd0b5b80b8197c0890457e1a6c48ae1d67a8ffff"
 resolved_reference = "cd0b5b80b8197c0890457e1a6c48ae1d67a8ffff"
 type = "git"
 url = "https://github.com/seriaati/seria-library"
@@ -2445,5 +2443,6 @@ pydantic = ">=2.5.2,<3.0.0"
 
 [metadata]
 content-hash = "0e0830aac055a71f981c15b8dc468a423f3b943aeb1baf3b41422ef8dc316106"
+content-hash = "8686ae2c6331ae4dbfa3c536b622509b4de18215c02a08b529d13ee7f9318fff"
 lock-version = "2.0"
 python-versions = "^3.11"

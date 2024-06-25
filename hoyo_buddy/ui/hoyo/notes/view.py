@@ -412,7 +412,7 @@ class NotesView(View):
         )
 
     def _get_notes_embed(self, notes: GenshinNotes | StarRailNotes) -> DefaultEmbed:
-        descriptions: list[str] = []
+        descriptions: list[LocaleStr] = []
 
         if isinstance(notes, GenshinNotes):
             if notes.remaining_resin_recovery_time.seconds > 0:
@@ -421,7 +421,7 @@ class NotesView(View):
                         key="notes.item_full_in_time",
                         emoji=RESIN,
                         in_time=format_dt(notes.resin_recovery_time, style="R"),
-                    ).translate(self.translator, self.locale)
+                    )
                 )
             if notes.remaining_realm_currency_recovery_time.seconds > 0:
                 descriptions.append(
@@ -429,7 +429,7 @@ class NotesView(View):
                         key="notes.item_full_in_time",
                         emoji=REALM_CURRENCY,
                         in_time=format_dt(notes.realm_currency_recovery_time, style="R"),
-                    ).translate(self.translator, self.locale)
+                    )
                 )
             if (
                 notes.remaining_transformer_recovery_time is not None
@@ -441,19 +441,32 @@ class NotesView(View):
                         key="notes_available",
                         emoji=PT_EMOJI,
                         in_time=format_dt(notes.transformer_recovery_time, style="R"),
-                    ).translate(self.translator, self.locale)
+                    )
                 )
-        elif notes.stamina_recover_time.seconds > 0:  # StarRailNotes
-            descriptions.append(
-                LocaleStr(
-                    key="notes.item_full_in_time",
-                    emoji=TRAILBLAZE_POWER,
-                    in_time=format_dt(notes.stamina_recovery_time, style="R"),
-                ).translate(self.translator, self.locale)
-            )
+        else:  # StarRailNotes
+            if notes.stamina_recover_time.seconds > 0:
+                descriptions.append(
+                    LocaleStr(
+                        key="notes.item_full_in_time",
+                        emoji=TRAILBLAZE_POWER,
+                        in_time=format_dt(notes.stamina_recovery_time, style="R"),
+                    )
+                )
+            if notes.have_bonus_synchronicity_points:
+                descriptions.append(
+                    LocaleStr(
+                        key="notes.bonus_sync_points",
+                        cur=notes.current_bonus_synchronicity_points,
+                        max=notes.max_bonus_synchronicity_points,
+                    )
+                )
+
+        translated_description = "\n".join(
+            [description.translate(self.translator, self.locale) for description in descriptions]
+        )
 
         return (
-            DefaultEmbed(self.locale, self.translator, description="\n".join(descriptions))
+            DefaultEmbed(self.locale, self.translator, description=translated_description)
             .set_image(url="attachment://notes.webp")
             .add_acc_info(self._account)
         )

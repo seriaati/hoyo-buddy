@@ -40,13 +40,13 @@ redis = ["redis (>=4.2.0)"]
 
 [[package]]
 name = "aiofiles"
-version = "23.2.1"
+version = "24.1.0"
 description = "File support for asyncio."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "aiofiles-23.2.1-py3-none-any.whl", hash = "sha256:19297512c647d4b27a2cf7c34caa7e405c0d60b5560618a29a9fe027b18b0107"},
-    {file = "aiofiles-23.2.1.tar.gz", hash = "sha256:84ec2218d8419404abcb9f0c02df3f34c6e0a68ed41072acfb1cef5cbc29051a"},
+    {file = "aiofiles-24.1.0-py3-none-any.whl", hash = "sha256:b4ec55f4195e3eb5d7abd1bf7e061763e864dd4954231fb8539a0ef8bb8260e5"},
+    {file = "aiofiles-24.1.0.tar.gz", hash = "sha256:22a075c9e5a3810f0c2e48f3008c94d68c65d763b9b03857924c99e57355166c"},
 ]
 
 [[package]]
@@ -668,17 +668,21 @@ name = "enka-api"
 version = "2.2.4"
 description = "An async API wrapper for enka.network written in Python."
 optional = false
-python-versions = "<4.0,>=3.10"
-files = [
-    {file = "enka_api-2.2.4-py3-none-any.whl", hash = "sha256:3b2faaa85cf397fea79b06b3d76ad9fa23b49bbd7d2bd2a08acc231677dd3ca6"},
-    {file = "enka_api-2.2.4.tar.gz", hash = "sha256:af2751178a74ff2e8eeeea89fe5cc7388f8fe13153c9befa7a6b1150fe82c2c8"},
-]
+python-versions = "^3.10"
+files = []
+develop = false
 
 [package.dependencies]
-aiofiles = ">=23.2.1,<24.0.0"
-aiohttp-client-cache = {version = ">=0.11.0,<0.12.0", extras = ["sqlite"]}
-orjson = ">=3.9.10,<4.0.0"
-pydantic = ">=2.5.3,<3.0.0"
+aiofiles = "^24.0.0"
+aiohttp-client-cache = {version = "^0.11.0", extras = ["sqlite"]}
+orjson = "^3.9.10"
+pydantic = "^2.5.3"
+
+[package.source]
+type = "git"
+url = "https://github.com/seriaati/enka-py"
+reference = "HEAD"
+resolved_reference = "378bde7e127e851114ec499f3e83ac8232b47228"
 
 [[package]]
 name = "executing"
@@ -836,7 +840,7 @@ socks-proxy = ["aiohttp-socks"]
 type = "git"
 url = "https://github.com/seriaati/genshin.py"
 reference = "HEAD"
-resolved_reference = "39b6a7087863d5210e031809a3c4220602a8baa6"
+resolved_reference = "c13d724473a64d7e708c394324c4353a09335935"
 
 [[package]]
 name = "gitdb"
@@ -2241,4 +2245,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "19f22d97b3420b1dbd3b9a110f2efe06f050248a2a05c83157d18775e7409bd0"
+content-hash = "fb8b9dd9c6eabcf95472356822cb2804c3b62d081a8b89843303c7200fdbce48"

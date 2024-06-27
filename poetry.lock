@@ -681,8 +681,8 @@ pydantic = "^2.5.3"
 [package.source]
 type = "git"
 url = "https://github.com/seriaati/enka-py"
-reference = "378bde7"
-resolved_reference = "378bde7e127e851114ec499f3e83ac8232b47228"
+reference = "2228ab779d7cce20c19f5ebd6034862eef4845a9"
+resolved_reference = "2228ab779d7cce20c19f5ebd6034862eef4845a9"
 
 [[package]]
 name = "executing"
@@ -2246,4 +2246,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "2ec76872082594a14e1a7946a3c7dbac4d4a854f7fef46f1fb68468827f93f71"
+content-hash = "7709899c5f8ba675876217d1c3e9aed12d8f37d4b54338e0fe54644662c2da6c"

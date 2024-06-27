@@ -20,7 +20,7 @@ asyncpg = "^0.29.0"
 asyncpg-listen = "^0.0.6"
 cachetools = "^5.3.3"
 discord-py = "^2.4.0"
-enka-api = {git = "https://github.com/seriaati/enka-py", rev = "378bde7"}
+enka-api = {git = "https://github.com/seriaati/enka-py", rev = "2228ab779d7cce20c19f5ebd6034862eef4845a9"}
 fake-useragent = "^1.5.1"
 genshin = {git = "https://github.com/seriaati/genshin.py", extras = ["all"]}
 gitpython = "^3.1.42"

@@ -139,11 +139,10 @@ class Admin(commands.Cog):
             code_ = code.split("/")[-1] if "https" in code else code
             codes_.add(code_)
 
+        message = await ctx.send("Adding codes...")
         task_ran = await AutoRedeem.execute(self.bot, GPY_GAME_TO_HB_GAME[game], codes.split(","))
-        if task_ran:
-            await ctx.send("Added codes.")
-        else:
-            await ctx.send("Task is already running.")
+        if not task_ran:
+            await message.edit(content="Auto redeem task is already running.")
 
     @commands.command(name="dm")
     async def dm_command(self, ctx: commands.Context) -> Any:

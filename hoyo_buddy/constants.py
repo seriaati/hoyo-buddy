@@ -29,7 +29,7 @@ AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID = {
     "10000007-hydro": "10000007-703",
 }
 
-TRAILBLAZER_IDS = {8001, 8002, 8003, 8004}
+TRAILBLAZER_IDS = {8001, 8002, 8003, 8004, 8005, 8006, 1001, 1224}
 
 
 def contains_traveler_id(character_id: str) -> bool:
@@ -277,6 +277,16 @@ HAKUSHIN_GI_ELEMENT_TO_ELEMENT = {
     hakushin.enums.GIElement.PYRO: GenshinElement.PYRO,
     hakushin.enums.GIElement.CRYO: GenshinElement.CRYO,
     hakushin.enums.GIElement.HYDRO: GenshinElement.HYDRO,
+}
+
+HAKUSHIN_HSR_ELEMENT_TO_ELEMENT = {
+    hakushin.enums.HSRElement.WIND: HSRElement.WIND,
+    hakushin.enums.HSRElement.FIRE: HSRElement.FIRE,
+    hakushin.enums.HSRElement.ICE: HSRElement.ICE,
+    hakushin.enums.HSRElement.THUNDER: HSRElement.THUNDER,
+    hakushin.enums.HSRElement.PHYSICAL: HSRElement.PHYSICAL,
+    hakushin.enums.HSRElement.QUANTUM: HSRElement.QUANTUM,
+    hakushin.enums.HSRElement.IMAGINARY: HSRElement.IMAGINARY,
 }
 
 AMBR_ELEMENT_TO_ELEMENT = {

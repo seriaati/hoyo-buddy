@@ -159,7 +159,7 @@ download_image_failed_error_title: ""
 edit_nickname_button_label: ニックネームを変更
 edit_nickname_modal_title: ニックネームを編集
 eidolon_superimpose_str: ""
-electro: ""
+electro: 雷
 email-geetest.embed.title: ""
 email_password_button_label: ""
 email_password_instructions_description: "<:INFO:1166743144889602190>注意：この方法はMiyousheユーザーには使えません。\n\n1. 下の`CAPTCHA認証`ボタンをクリックしてください。\n2. ウェブサイトにリダイレクトされますので、ボタンをクリックしてCAPTCHA認証を完了してください。\n3. 完了後、下の「Continue」ボタンをクリックしてください。\n"
@@ -223,7 +223,7 @@ feedback_button.label: ""
 feedback_command.description: ""
 feedback_command_description: ""
 feedback_modal.feedback.label: ""
-fire: ""
+fire: 炎
 floor_select_label: ""
 fontaine: ""
 food: 食料
@@ -258,8 +258,8 @@ honkai_impact_3rd: 崩壊3rd
 hoyolab: ""
 hsr_daily.embed.description: ""
 hydro: ""
-ice: ""
-imaginary: ""
+ice: 氷
+imaginary: 虚数
 inazuma: ""
 incomplete_param_error_title: ""
 instructions_title: 手順
@@ -348,7 +348,7 @@ nsfw_prompt_error_message: ""
 nsfw_prompt_error_title: ""
 page_footer: ""
 pf_card_total_score: ""
-physical: ""
+physical: 物理
 player_not_found_description: ""
 player_not_found_title: ""
 preservation: ""
@@ -418,7 +418,7 @@ qrcode_expired.desc: ""
 qrcode_expired_title: ""
 qrcode_login_instructions.desc: ""
 qrcode_scanned.desc: ""
-quantum: ""
+quantum: 量子
 read_story.button.label: ""
 real_time_notes: ""
 realm_curr_button.label: ""
@@ -502,7 +502,7 @@ weapons: 武器
 wednesday: ""
 week_boss_button.label: ""
 week_boss_modal.title: ""
-wind: ""
+wind: 風
 yatta_character_detail_page_label: 詳細
 yatta_character_eidolon_page_label: 星魂
 yatta_character_embed_description: "{rarity}\n元素：{element}\nパス：{path}\n世界：{world}\n"
@@ -530,3 +530,11 @@ not_implemented_error_title: ""
 not_implemented_error_message: ""
 profile.build.current.label: ""
 abyss_chamber.blessing.embed.field.name: ""
+apocalyptic_shadow: ""
+apc_shadow.highest_diff_cleared: ""
+apc_shadow.times_challenged: ""
+apc_shadow.boss_defeated: ""
+apc_shadow.boss_defeated_no: ""
+notes.bonus_sync_points: ""
+invalid_uid_format_title: ""
+invalid_uid_format_description: ""

@@ -219,16 +219,20 @@ name = "ambr-py"
 version = "1.7.9"
 description = "API wrapper for ambr.top written in Python"
 optional = false
-python-versions = "<4.0,>=3.11"
-files = [
-    {file = "ambr_py-1.7.9-py3-none-any.whl", hash = "sha256:2affef697dddd5307ff2b5848986c40f124442f71b4faa9c5eb73989979539e1"},
-    {file = "ambr_py-1.7.9.tar.gz", hash = "sha256:623e1a102ba0ef716667226c336c8c566e0ad9544e75b78c1b515cb3340af2ed"},
-]
+python-versions = "^3.11"
+files = []
+develop = false
 
 [package.dependencies]
-aiohttp = ">=3.8.6,<4.0.0"
-aiohttp-client-cache = {version = ">=0.11.0,<0.12.0", extras = ["sqlite"]}
-pydantic = ">=2.4.2,<3.0.0"
+aiohttp = "^3.8.6"
+aiohttp-client-cache = {version = "^0.11.0", extras = ["sqlite"]}
+pydantic = "^2.4.2"
+
+[package.source]
+type = "git"
+url = "https://github.com/seriaati/ambr"
+reference = "HEAD"
+resolved_reference = "a785cf3896f62feef8ec269847d54e0e26e40a18"
 
 [[package]]
 name = "annotated-types"
@@ -681,7 +685,7 @@ pydantic = "^2.5.3"
 [package.source]
 type = "git"
 url = "https://github.com/seriaati/enka-py"
-reference = "2228ab779d7cce20c19f5ebd6034862eef4845a9"
+reference = "HEAD"
 resolved_reference = "2228ab779d7cce20c19f5ebd6034862eef4845a9"
 
 [[package]]
@@ -2246,4 +2250,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7709899c5f8ba675876217d1c3e9aed12d8f37d4b54338e0fe54644662c2da6c"
+content-hash = "9278d0fc970be310ff1b5d4053a1afcb5880781b222c668466ac790dca6f2d85"

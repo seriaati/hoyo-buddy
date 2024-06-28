@@ -55,7 +55,7 @@ class BookVolumeUI(View):
     async def start(self, i: Interaction) -> None:
         embed = await self._fetch_volume_embed()
         self._setup_items()
-        await i.edit_original_response(embed=embed, view=self)
+        self.message = await i.edit_original_response(embed=embed, view=self)
 
 
 class VolumeSelector(Select["BookVolumeUI"]):

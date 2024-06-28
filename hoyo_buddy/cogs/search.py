@@ -443,24 +443,17 @@ class Search(commands.Cog):
                 LocaleStr(key="search_autocomplete_not_setup"), locale
             )
 
-        if not current:
+        try:
+            choice_dict = self.bot.autocomplete_choices[game][category][locale.value]
+        except KeyError:
             try:
-                choice_dict = self.bot.autocomplete_choices[game][category][locale.value]
+                choice_dict = self.bot.autocomplete_choices[game][category][
+                    Locale.american_english.value
+                ]
             except KeyError:
-                try:
-                    choice_dict = self.bot.autocomplete_choices[game][category][
-                        Locale.american_english.value
-                    ]
-                except KeyError:
-                    return self.bot.get_error_autocomplete(
-                        LocaleStr(key="search_autocomplete_no_results"), locale
-                    )
-        else:
-            choice_dict = {
-                k: v
-                for c in self.bot.autocomplete_choices[game][category].values()
-                for k, v in c.items()
-            }
+                return self.bot.get_error_autocomplete(
+                    LocaleStr(key="search_autocomplete_no_results"), locale
+                )
 
         choices = [
             app_commands.Choice(name=choice, value=item_id)

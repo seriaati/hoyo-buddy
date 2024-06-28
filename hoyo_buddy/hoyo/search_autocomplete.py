@@ -87,7 +87,7 @@ class AutocompleteSetup:
     ) -> asyncio.Task[list[Any]] | None:
         match category:
             case yatta.ItemCategory.CHARACTERS:
-                return tg.create_task(api.fetch_characters())
+                return tg.create_task(api.fetch_characters(trailblazer_gender_symbol=True))
             case yatta.ItemCategory.LIGHT_CONES:
                 return tg.create_task(api.fetch_light_cones())
             case yatta.ItemCategory.ITEMS:
@@ -105,11 +105,9 @@ class AutocompleteSetup:
     ) -> asyncio.Task[list[Any]] | None:
         match category:
             case hakushin.ItemCategory.GI_CHARACTERS:
-                return tg.create_task(
-                    api.fetch_characters(HakushinGame.GI, traveler_gender_symbol=True)
-                )
+                return tg.create_task(api.fetch_characters(HakushinGame.GI, gender_symbol=True))
             case hakushin.ItemCategory.HSR_CHARACTERS:
-                return tg.create_task(api.fetch_characters(HakushinGame.HSR))
+                return tg.create_task(api.fetch_characters(HakushinGame.HSR, gender_symbol=True))
             case hakushin.ItemCategory.WEAPONS:
                 return tg.create_task(api.fetch_weapons())
             case hakushin.ItemCategory.LIGHT_CONES:

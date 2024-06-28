@@ -5,7 +5,8 @@ import pathlib
 import re
 from typing import TYPE_CHECKING, Any
 
-from ambr.models import Character as GenshinCharacter
+import ambr
+import yatta
 from discord import app_commands
 from loguru import logger
 from seria.utils import read_json, read_yaml
@@ -13,6 +14,7 @@ from seria.utils import read_json, read_yaml
 from ..constants import (
     AMBR_ELEMENT_TO_ELEMENT,
     HAKUSHIN_GI_ELEMENT_TO_ELEMENT,
+    HAKUSHIN_HSR_ELEMENT_TO_ELEMENT,
     WEEKDAYS,
     YATTA_COMBAT_TYPE_TO_ELEMENT,
 )
@@ -23,10 +25,9 @@ if TYPE_CHECKING:
     from enum import StrEnum
     from types import TracebackType
 
+    import hakushin
     from discord.app_commands.translator import TranslationContextTypes
     from discord.enums import Locale
-    from hakushin.models.gi import Character as HakushinCharacter
-    from yatta.models import Character as HSRCharacter
 
     from ..models import Config
 
@@ -219,14 +220,14 @@ class Translator:
 
     def get_traveler_name(
         self,
-        character: GenshinCharacter | HakushinCharacter,
+        character: ambr.Character | hakushin.gi.Character,
         locale: Locale,
         *,
         gender_symbol: bool = True,
     ) -> str:
-        if isinstance(character, GenshinCharacter):
+        if isinstance(character, ambr.Character):
             element = AMBR_ELEMENT_TO_ELEMENT[character.element]
-        elif character.element is not None:  # HakushinCharacter
+        elif character.element is not None:  # hakushin.gi.Character
             element = HAKUSHIN_GI_ELEMENT_TO_ELEMENT[character.element]
         else:
             element = None
@@ -240,12 +241,29 @@ class Translator:
         )
 
     def get_trailblazer_name(
-        self, character: HSRCharacter, locale: Locale, *, gender_symbol: bool = True
+        self,
+        character: yatta.Character | hakushin.hsr.Character,
+        locale: Locale,
+        *,
+        gender_symbol: bool = True,
     ) -> str:
-        element_str = self.translate(
-            EnumStr(YATTA_COMBAT_TYPE_TO_ELEMENT[character.types.combat_type]), locale
+        if isinstance(character, yatta.Character):
+            element_str = self.translate(
+                EnumStr(YATTA_COMBAT_TYPE_TO_ELEMENT[character.types.combat_type]), locale
+            )
+        else:
+            element_str = self.translate(
+                EnumStr(HAKUSHIN_HSR_ELEMENT_TO_ELEMENT[character.element]), locale
+            )
+
+        # Only gender_str if is trailblazer
+        # constants.TRAILBAZER_IDS may contain characters that are not trailblazers (like March 7th)
+        gender_str = (
+            ("♂" if character.id % 2 != 0 else "♀")
+            if gender_symbol and str(character.id)[0] == "8"
+            else ""
         )
-        gender_str = ("♂" if character.id % 2 != 0 else "♀") if gender_symbol else ""
+
         return (
             f"{character.name} ({element_str}) ({gender_str})"
             if gender_str

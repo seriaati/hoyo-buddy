@@ -8,7 +8,12 @@ import hakushin
 import yatta
 
 from ...bot.translator import LevelStr, LocaleStr, Translator
-from ...constants import LOCALE_TO_HAKUSHIN_LANG, YATTA_PATH_TO_HSR_PATH, contains_traveler_id
+from ...constants import (
+    LOCALE_TO_HAKUSHIN_LANG,
+    TRAILBLAZER_IDS,
+    YATTA_PATH_TO_HSR_PATH,
+    contains_traveler_id,
+)
 from ...embeds import DefaultEmbed
 from ...emojis import get_hsr_path_emoji
 
@@ -310,31 +315,33 @@ class HakushinAPI(hakushin.HakushinAPI):
 
     @overload
     async def fetch_characters(
-        self, game: Literal[hakushin.Game.GI], *, traveler_gender_symbol: bool = False
+        self, game: Literal[hakushin.Game.GI], *, gender_symbol: bool = False
     ) -> list[hakushin.gi.Character]: ...
     @overload
     async def fetch_characters(
-        self, game: Literal[hakushin.Game.HSR], *, traveler_gender_symbol: bool = False
+        self, game: Literal[hakushin.Game.HSR], *, gender_symbol: bool = False
     ) -> list[hakushin.hsr.Character]: ...
     async def fetch_characters(
         self,
         game: Literal[hakushin.Game.GI, hakushin.Game.HSR],
         *,
-        traveler_gender_symbol: bool = False,
+        gender_symbol: bool = False,
     ) -> list[hakushin.gi.Character] | list[hakushin.hsr.Character]:
         self._check_translator()
         assert self._translator is not None
 
         characters = await super().fetch_characters(game)
-        if game is hakushin.Game.HSR:
-            return characters
 
         for character in characters:
             if isinstance(character, hakushin.gi.Character) and contains_traveler_id(
                 str(character.id)
             ):
                 character.name = self._translator.get_traveler_name(
-                    character, self._locale, gender_symbol=traveler_gender_symbol
+                    character, self._locale, gender_symbol=gender_symbol
+                )
+            elif isinstance(character, hakushin.hsr.Character) and character.id in TRAILBLAZER_IDS:
+                character.name = self._translator.get_trailblazer_name(
+                    character, self._locale, gender_symbol=gender_symbol
                 )
 
         return characters

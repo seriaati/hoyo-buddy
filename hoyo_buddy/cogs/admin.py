@@ -90,6 +90,7 @@ class TaskView(ui.View):
 class Admin(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
+        self._tasks: set[asyncio.Task] = set()
 
     async def cog_check(self, ctx: Context) -> bool:
         return await self.bot.is_owner(ctx.author)
@@ -106,9 +107,8 @@ class Admin(commands.Cog):
 
     @commands.command(name="fetch-source-strings", aliases=["fss"])
     async def fetch_source_strings_command(self, ctx: commands.Context) -> Any:
-        message = await ctx.send("Fetching source strings...")
         await self.bot.translator.load_l10n_files()
-        await message.edit(content="Fetched source strings.")
+        await ctx.send(content="Fetched source strings.")
 
     @commands.command(name="run-tasks", aliases=["rt"])
     async def run_tasks_command(self, ctx: commands.Context) -> Any:
@@ -126,22 +126,24 @@ class Admin(commands.Cog):
         message = await ctx.send("Updating search autocomplete...")
         search_cog = self.bot.get_cog("Search")
 
-        tasks: set[asyncio.Task] = set()
         if isinstance(search_cog, Search):
             task = asyncio.create_task(search_cog._setup_search_autocomplete_choices())
-            tasks.add(task)
-            task.add_done_callback(tasks.discard)
+            self._tasks.add(task)
+            task.add_done_callback(self._tasks.discard)
         await message.edit(content="Search autocomplete update task started.")
 
     @commands.command(name="add-codes", aliases=["ac"])
     async def add_codes_command(self, ctx: commands.Context, game: Game, codes: str) -> Any:
-        tasks: set[asyncio.Task] = set()
-        task = asyncio.create_task(
-            AutoRedeem.execute(self.bot, GPY_GAME_TO_HB_GAME[game], codes.split(","))
-        )
-        tasks.add(task)
-        task.add_done_callback(tasks.discard)
-        await ctx.send("Added codes.")
+        codes_: set[str] = set()
+        for code in codes.split(","):
+            code_ = code.split("/")[-1] if "https" in code else code
+            codes_.add(code_)
+
+        task_ran = await AutoRedeem.execute(self.bot, GPY_GAME_TO_HB_GAME[game], codes.split(","))
+        if task_ran:
+            await ctx.send("Added codes.")
+        else:
+            await ctx.send("Task is already running.")
 
     @commands.command(name="dm")
     async def dm_command(self, ctx: commands.Context) -> Any:

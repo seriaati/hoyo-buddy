@@ -86,16 +86,19 @@ class AutoRedeem:
     @classmethod
     async def execute(
         cls, bot: HoyoBuddy, game: Game | None = None, codes: list[str] | None = None
-    ) -> None:
+    ) -> bool:
         """Redeem codes for accounts that have auto redeem enabled.
 
         Args:
             bot: The bot instance.
             game: The game to redeem codes for, all games if None.
             codes: The codes to redeem, None to fetch from API.
+
+        Returns:
+            True if the task was successful, False if the task was already running.
         """
         if cls._lock.locked():
-            return
+            return False
 
         async with cls._lock:
             logger.info(
@@ -130,3 +133,5 @@ class AutoRedeem:
                 await cls._redeem_codes(codes, account)
 
             logger.info("Auto redeem task completed")
+
+        return True

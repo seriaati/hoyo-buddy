@@ -63,8 +63,8 @@ class TCGCardUI(View):
                 self.dictionary_embed = api.get_tcg_card_dictionaries_embed(card.dictionaries)
             self.card_embed = api.get_tcg_card_embed(card)
 
-            self._setup_items()
-            await i.edit_original_response(embed=self.card_embed, view=self)
+        self._setup_items()
+        self.message = await i.edit_original_response(embed=self.card_embed, view=self)
 
 
 class ViewCardButton(Button[TCGCardUI]):

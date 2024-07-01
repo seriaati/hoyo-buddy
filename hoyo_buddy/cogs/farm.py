@@ -87,8 +87,8 @@ class Farm(
     async def farm_add_command(
         self,
         i: Interaction,
+        account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer],
         query: str,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
@@ -117,8 +117,8 @@ class Farm(
     async def farm_remove_command(
         self,
         i: Interaction,
+        account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer],
         query: str,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
@@ -176,14 +176,9 @@ class Farm(
                 LocaleStr(key="search_autocomplete_not_setup"), locale
             )
 
-        if not current:
-            choice_dict = dict(
-                characters.get(locale.value, characters[Locale.american_english.value]).items()
-            )
-        else:
-            choice_dict = {k: v for c in characters.values() for k, v in c.items()} | {
-                k: v for w in weapons.values() for k, v in w.items()
-            }
+        choice_dict = dict(
+            characters.get(locale.value, characters[Locale.american_english.value]).items()
+        ) | dict(weapons.get(locale.value, weapons[Locale.american_english.value]).items())
 
         choices = [
             app_commands.Choice(name=name, value=value)
@@ -198,27 +193,32 @@ class Farm(
     async def user_query_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
-        farm_notify = await FarmNotify.get_or_none(account__user_id=i.user.id)
+        account_namespace: str = i.namespace.account
+        account = await HoyoAccountTransformer().transform(i, account_namespace)
+        locale = await get_locale(i)
+
+        farm_notify = await FarmNotify.get_or_none(account_id=account.id)
         if farm_notify is None:
-            return []
+            return self.bot.get_error_autocomplete(
+                LocaleStr(key="search_autocomplete_no_results"), locale
+            )
 
-        characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
-        weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
+        try:
+            characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
+            weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
+        except KeyError:
+            return self.bot.get_error_autocomplete(
+                LocaleStr(key="search_autocomplete_not_setup"), locale
+            )
 
-        if not current:
-            locale = await get_locale(i)
-            try:
-                choice_dict = dict(characters[locale.value].items()) | dict(
-                    weapons[locale.value].items()
-                )
-            except KeyError:
-                choice_dict = dict(characters[Locale.american_english.value].items()) | dict(
-                    weapons[Locale.american_english.value].items()
-                )
-        else:
-            choice_dict = {k: v for c in characters.values() for k, v in c.items()} | {
-                k: v for w in weapons.values() for k, v in w.items()
-            }
+        try:
+            choice_dict = dict(characters[locale.value].items()) | dict(
+                weapons[locale.value].items()
+            )
+        except KeyError:
+            choice_dict = dict(characters[Locale.american_english.value].items()) | dict(
+                weapons[Locale.american_english.value].items()
+            )
 
         choices = [
             app_commands.Choice(name=name, value=value)
@@ -226,7 +226,11 @@ class Farm(
             if current.lower() in name.lower() and value in farm_notify.item_ids
         ]
 
-        random.shuffle(choices)
+        if not choices:
+            return self.bot.get_error_autocomplete(
+                LocaleStr(key="search_autocomplete_no_results"), locale
+            )
+
         return choices[:25]
 
 

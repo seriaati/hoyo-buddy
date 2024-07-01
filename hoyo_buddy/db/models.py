@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime
 import pickle
+from functools import cached_property
 from typing import TYPE_CHECKING, Any
 
 import genshin
@@ -76,7 +77,7 @@ class HoyoAccount(Model):
     def blurred_display(self) -> str:
         return f"{self.nickname or self.username} ({blur_uid(self.uid)})"
 
-    @property
+    @cached_property
     def client(self) -> GenshinClient:
         from ..hoyo.clients.gpy import GenshinClient  # noqa: PLC0415
 

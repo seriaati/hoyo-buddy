@@ -5,6 +5,7 @@ import datetime
 from typing import TYPE_CHECKING, ClassVar
 
 import discord
+import python_socks
 from discord import Locale
 from genshin.models import Notes, StarRailNote
 
@@ -392,7 +393,11 @@ class NotesChecker:
 
                 try:
                     if notify.account.uid not in cls._notes_cache[notify.account.game]:
-                        notes = await cls._get_notes(notify)
+                        try:
+                            notes = await cls._get_notes(notify)
+                        except python_socks._errors.ProxyError:
+                            notify.account.client.proxy = None
+                            notes = await cls._get_notes(notify)
                         cls._notes_cache[notify.account.game][notify.account.uid] = notes
                     else:
                         notes = cls._notes_cache[notify.account.game][notify.account.uid]

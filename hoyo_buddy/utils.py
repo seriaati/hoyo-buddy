@@ -3,7 +3,7 @@ from __future__ import annotations
 import base64
 import datetime
 import re
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING
 
 import aiohttp
 
@@ -11,8 +11,6 @@ from .constants import UTC_8
 
 if TYPE_CHECKING:
     from discord import Member, User
-
-T = TypeVar("T")
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
 

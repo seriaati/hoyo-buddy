@@ -29,14 +29,11 @@ if TYPE_CHECKING:
     from discord.app_commands.translator import TranslationContextTypes
     from discord.enums import Locale
 
-    from ..models import Config
-
 
 __all__ = ("AppCommandTranslator", "LocaleStr", "Translator")
 
 COMMAND_REGEX = r"</[^>]+>"
 SOURCE_LANG = "en_US"
-SOURCE_LANG_PATH = pathlib.Path(f"./l10n/{SOURCE_LANG}.yaml")
 L10N_PATH = pathlib.Path("./l10n")
 LANGUAGES = (
     "en_US",
@@ -80,15 +77,6 @@ class LocaleStr:
     def identifier(self) -> str:
         return self.custom_str or self.key or ""
 
-    def to_app_command_locale_str(self) -> app_commands.locale_str:
-        return app_commands.locale_str(
-            self.identifier,
-            custom_str=self.custom_str,
-            key=self.key,
-            translate=self.translate_,
-            **self.extras,
-        )
-
     def translate(self, translator: Translator, locale: Locale) -> str:
         return translator.translate(self, locale)
 
@@ -109,10 +97,9 @@ class WeekdayStr(LocaleStr):
 
 
 class Translator:
-    def __init__(self, config: Config | None = None) -> None:
+    def __init__(self) -> None:
         super().__init__()
 
-        self._config = config
         self._not_translated: set[str] = set()
         self._synced_commands: dict[str, int] = {}
         self._localizations: dict[str, dict[str, str]] = {}

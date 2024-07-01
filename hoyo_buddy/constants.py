@@ -12,7 +12,6 @@ import yatta
 
 from .enums import ChallengeType, Game, GenshinCity, GenshinElement, HSRElement, HSRPath
 
-DB_INTEGER_MAX = 2147483647
 DB_SMALLINT_MAX = 32767
 
 TRAVELER_IDS = {10000005, 10000007}
@@ -91,7 +90,6 @@ LOCALE_TO_HSR_ENKA_LANG: dict[discord.Locale, enka.hsr.Language] = {
     discord.Locale.thai: enka.hsr.Language.THAI,
     discord.Locale.vietnamese: enka.hsr.Language.VIETNAMESE,
 }
-ENKA_HSR_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_HSR_ENKA_LANG.items()}
 
 LOCALE_TO_HSR_CARD_API_LANG: dict[discord.Locale, str] = {
     discord.Locale.taiwan_chinese: "cht",
@@ -323,16 +321,6 @@ GEETEST_SERVERS = {
     "prod": "http://geetest-server-test.seriaati.xyz",
     "test": "http://geetest-server-test.seriaati.xyz",
     "dev": "http://localhost:5000",
-}
-
-GAME_CHALLANGES: Final[dict[Game, list[ChallengeType]]] = {
-    Game.GENSHIN: [
-        ChallengeType.SPIRAL_ABYSS,
-    ],
-    Game.STARRAIL: [
-        ChallengeType.MOC,
-        ChallengeType.PURE_FICTION,
-    ],
 }
 
 UTC_8 = datetime.timezone(datetime.timedelta(hours=8))

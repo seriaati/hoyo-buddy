@@ -59,7 +59,6 @@ class GeetestHandler:
         self._platform = platform
         self._data = data
 
-        self._ticket: dict[str, Any] = {}
         self._client: genshin.Client | None = None
 
         self._total_timeout = 0

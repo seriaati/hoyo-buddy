@@ -14,7 +14,7 @@ from ..emojis import PROJECT_AMBER
 from ..enums import Game
 from ..exceptions import InvalidQueryError
 from ..hoyo.clients import ambr, yatta
-from ..hoyo.search_autocomplete import AutocompleteSetup, ItemCategory
+from ..hoyo.search_autocomplete import AutocompleteSetup
 from ..ui import URLButtonView
 from ..ui.hoyo.genshin import search as gi_search
 from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
@@ -44,10 +44,6 @@ class Search(commands.Cog):
         task = asyncio.create_task(self._setup_search_autocomplete_choices())
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)
-
-    def _set_beta_category(self, category: ItemCategory, beta_ids: list[int]) -> None:
-        for item_id in beta_ids:
-            self._beta_id_to_category[str(item_id)] = category.value
 
     async def _setup_search_autocomplete_choices(self) -> None:
         logger.info("Setting up search autocomplete choices")

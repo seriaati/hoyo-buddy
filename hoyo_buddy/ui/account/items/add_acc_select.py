@@ -93,11 +93,10 @@ class AddAccountSelect(Select["AccountManager"]):
                 )
                 hoyo_account.cookies = self.cookies
                 hoyo_account.username = account.nickname
-                hoyo_account.server = account.server_name
                 hoyo_account.device_id = self._device_id
                 hoyo_account.device_fp = self._device_fp
                 await hoyo_account.save(
-                    update_fields=("cookies", "username", "server", "device_id", "device_fp")
+                    update_fields=("cookies", "username", "device_id", "device_fp")
                 )
             else:
                 await AccountNotifSettings.create(account=hoyo_account)

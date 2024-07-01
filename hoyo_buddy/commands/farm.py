@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from ..bot.translator import LocaleStr
 from ..db.models import FarmNotify, HoyoAccount, Settings
-from ..embeds import DefaultEmbed
+from ..embeds import ErrorEmbed
 from ..enums import Game
 from ..exceptions import AutocompleteNotDoneYetError, InvalidQueryError
 from ..hoyo.clients import ambr
@@ -61,7 +61,7 @@ class FarmCommand:
 
     async def _check_item_in_list(self, farm_notify: FarmNotify) -> bool:
         if self._query in farm_notify.item_ids:
-            embed = DefaultEmbed(
+            embed = ErrorEmbed(
                 self.locale,
                 self._translator,
                 title=LocaleStr(key="farm_add_command.item_already_in_list"),
@@ -103,7 +103,19 @@ class FarmCommand:
             if self._action is Action.ADD:
                 farm_notify.item_ids.append(self._query)
             elif self._action is Action.REMOVE:
-                farm_notify.item_ids.remove(self._query)
+                try:
+                    farm_notify.item_ids.remove(self._query)
+                except ValueError:
+                    embed = ErrorEmbed(
+                        self.locale,
+                        self._translator,
+                        title=LocaleStr(key="farm_remove_command.item_not_in_list"),
+                        description=LocaleStr(
+                            key="farm_remove_command.item_not_in_list_description"
+                        ),
+                    )
+                    await self._interaction.response.send_message(embed=embed)
+                    return
 
             await self._update_farm_notify(farm_notify)
 

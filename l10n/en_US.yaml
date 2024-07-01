@@ -198,6 +198,8 @@ exploration.waypoints: Waypoints Unlocked
 exploration_command_description: View your exploration statistics in Genshin Impact
 farm_add_command.item_already_in_list: Item already in list
 farm_add_command.item_already_in_list_description: This item is already in your farm reminder list.
+farm_remove_command.item_not_in_list: Remove item failed
+farm_remove_command.item_not_in_list_description: This item is not in your farm reminder list
 farm_add_command_description: Add character/weapon to be notified when its materials are farmable
 farm_check.farmable_today: "Materials For {name} is Farmable Today"
 farm_check.use_farm_notify: "Use /farm reminder to configure reminder settings\nUse /farm view to view all items farmable today"

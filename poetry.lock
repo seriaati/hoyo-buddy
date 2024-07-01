@@ -844,7 +844,7 @@ socks-proxy = ["aiohttp-socks"]
 type = "git"
 url = "https://github.com/seriaati/genshin.py"
 reference = "HEAD"
-resolved_reference = "8424e1d4304497cbb077ce149687fa196f7c94c6"
+resolved_reference = "9d0277b805b18ee4fbd9a2c364348c8708e708ce"
 
 [[package]]
 name = "gitdb"
@@ -2105,6 +2105,17 @@ docs = ["furo (>=2023.7.26)", "proselint (>=0.13)", "sphinx (>=7.1.2,!=7.3)", "s
 test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess (>=1)", "flaky (>=3.7)", "packaging (>=23.1)", "pytest (>=7.4)", "pytest-env (>=0.8.2)", "pytest-freezer (>=0.4.8)", "pytest-mock (>=3.11.1)", "pytest-randomly (>=3.12)", "pytest-timeout (>=2.1)", "setuptools (>=68)", "time-machine (>=2.10)"]
 
 [[package]]
+name = "vulture"
+version = "2.11"
+description = "Find dead code"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "vulture-2.11-py2.py3-none-any.whl", hash = "sha256:12d745f7710ffbf6aeb8279ba9068a24d4e52e8ed333b8b044035c9d6b823aba"},
+    {file = "vulture-2.11.tar.gz", hash = "sha256:f0fbb60bce6511aad87ee0736c502456737490a82d919a44e6d92262cb35f1c2"},
+]
+
+[[package]]
 name = "wheel"
 version = "0.43.0"
 description = "A built-package format for Python"
@@ -2254,4 +2265,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "36ac05a0fd57103f752d121734929f7846c7b927aa1d295c1435322fe94851f2"
+content-hash = "89fdaa2ca923b3df7dcf1266b330eec2dcf12cb894791b17c1cebc852a259fc5"

@@ -373,7 +373,7 @@ class Hoyo(commands.Cog):
     ) -> None:
         user = user or i.user
         account_ = account or await self.bot.get_account(
-            user.id, (Game.GENSHIN, Game.STARRAIL), (Platform.HOYOLAB,)
+            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ), (Platform.HOYOLAB,)
         )
         locale = await get_locale(i)
 
@@ -444,7 +444,6 @@ class Hoyo(commands.Cog):
     @characters_command.autocomplete("account")
     @profile_command.autocomplete("account")
     @notes_command.autocomplete("account")
-    @redeem_command.autocomplete("account")
     async def account_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:
         locale = await get_locale(i)
         user: User = i.namespace.user
@@ -452,9 +451,24 @@ class Hoyo(commands.Cog):
             user, i.user.id, current, locale, self.bot.translator, (Game.GENSHIN, Game.STARRAIL)
         )
 
-    @checkin_command.autocomplete("account")
     @geetest_command.autocomplete("account")
-    async def checkin_command_autocomplete(
+    async def gi_hsr_honkai_acc_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice]:
+        locale = await get_locale(i)
+        user: User = i.namespace.user
+        return await self.bot.get_account_autocomplete(
+            user,
+            i.user.id,
+            current,
+            locale,
+            self.bot.translator,
+            (Game.GENSHIN, Game.STARRAIL, Game.HONKAI),
+        )
+
+    @checkin_command.autocomplete("account")
+    @redeem_command.autocomplete("account")
+    async def all_game_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)

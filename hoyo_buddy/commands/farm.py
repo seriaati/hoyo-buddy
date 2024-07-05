@@ -109,10 +109,8 @@ class FarmCommand:
                     embed = ErrorEmbed(
                         self.locale,
                         self._translator,
-                        title=LocaleStr(key="farm_remove_command.item_not_in_list"),
-                        description=LocaleStr(
-                            key="farm_remove_command.item_not_in_list_description"
-                        ),
+                        title=LocaleStr(key="farm_remove_command.item_not_found"),
+                        description=LocaleStr(key="farm_remove_command.item_not_found_description"),
                     )
                     await self._interaction.response.send_message(embed=embed)
                     return

@@ -216,13 +216,12 @@ class YattaAPIClient(yatta.YattaAPI):
         return embed
 
     def get_character_main_skill_embed(
-        self, base_skill: yatta.BaseSkill, level: int
+        self, skill: yatta.SkillListSkill, level: int
     ) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
             raise RuntimeError(msg)
 
-        skill = base_skill.skill_list[0]
         level_str = self.translator.translate(LevelStr(level), self.locale)
 
         embed = DefaultEmbed(

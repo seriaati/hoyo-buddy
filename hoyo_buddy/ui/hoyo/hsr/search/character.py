@@ -108,8 +108,9 @@ class CharacterUI(View):
                     character_detail, self._character_level, manual_avatar
                 )
                 self._main_skill_embeds = [
-                    api.get_character_main_skill_embed(skill, skill.max_level)
+                    api.get_character_main_skill_embed(sk, skill.max_level)
                     for skill in character_detail.traces.main_skills
+                    for sk in skill.skill_list
                 ]
                 self._sub_skill_embeds = [
                     api.get_character_sub_skill_embed(skill)
@@ -130,7 +131,7 @@ class CharacterUI(View):
         await self.update(i)
         self.message = await i.original_response()
 
-    async def update(self, i: Interaction) -> None:  # noqa: PLR0912, PLR0915
+    async def update(self, i: Interaction) -> None:  # noqa: PLR0912, PLR0915, C901
         if self._character_detail is None:
             msg = "Character detail not fetched"
             raise RuntimeError(msg)
@@ -155,19 +156,19 @@ class CharacterUI(View):
                             ].max_level,
                         )
                     )
-                    self.add_item(
-                        ItemSelector(
-                            [
+                    options: list[SelectOption] = []
+                    index = 0
+                    for skill in self._character_detail.traces.main_skills:
+                        for sk in skill.skill_list:
+                            options.append(
                                 SelectOption(
-                                    label=f"{s.skill_list[0].type}: {s.skill_list[0].name}",
+                                    label=f"{sk.type}: {sk.name}",
                                     value=str(index),
                                     default=index == self._main_skill_index,
                                 )
-                                for index, s in enumerate(self._character_detail.traces.main_skills)
-                            ],
-                            "_main_skill_index",
-                        )
-                    )
+                            )
+                            index += 1
+                    self.add_item(ItemSelector(options, "_main_skill_index"))
                 case 2:
                     embed = self._eidolon_embeds[self._eidolon_index]
                     self.add_item(
@@ -394,9 +395,14 @@ class EnterSkilLevel(Button[CharacterUI]):
 
         if isinstance(self.view._character_detail, yatta.CharacterDetail):
             async with YattaAPIClient(self.view.locale, self.view.translator) as api:
+                skills = [
+                    sk
+                    for skill in self.view._character_detail.traces.main_skills
+                    for sk in skill.skill_list
+                ]
                 self.view._main_skill_embeds[self.view._main_skill_index] = (
                     api.get_character_main_skill_embed(
-                        self.view._character_detail.traces.main_skills[self.view._main_skill_index],
+                        skills[self.view._main_skill_index],
                         self.view._main_skill_levels[self.view._main_skill_index],
                     )
                 )

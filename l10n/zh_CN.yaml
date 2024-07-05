@@ -540,3 +540,4 @@ apc_shadow.boss_defeated_no: 首领未击败
 notes.bonus_sync_points: "额外拟合值: {cur}/{max}"
 invalid_uid_format_title: 错误的 UID 格式
 invalid_uid_format_description: "UID 需为一个 9 至 10 位数的数字"
+zenless_zone_zero: 絕區零

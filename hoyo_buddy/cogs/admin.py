@@ -8,7 +8,7 @@ from discord.ext import commands
 from genshin import Game  # noqa: TCH002
 from seria.utils import write_json
 
-from ..constants import GPY_GAME_TO_HB_GAME, UID_STARTS
+from ..constants import UID_STARTS
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
@@ -140,7 +140,7 @@ class Admin(commands.Cog):
             codes_.add(code_)
 
         message = await ctx.send("Adding codes...")
-        task_ran = await AutoRedeem.execute(self.bot, GPY_GAME_TO_HB_GAME[game], codes.split(","))
+        task_ran = await AutoRedeem.execute(self.bot, game, codes.split(","))
         if not task_ran:
             await message.edit(content="Auto redeem task is already running.")
 

@@ -9,8 +9,9 @@ from loguru import logger
 
 from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr
+from ...constants import HB_GAME_TO_GPY_GAME
 from ...db.models import HoyoAccount
-from ...enums import Game, Platform
+from ...enums import Platform
 
 if TYPE_CHECKING:
     import aiohttp
@@ -85,7 +86,7 @@ class AutoRedeem:
 
     @classmethod
     async def execute(
-        cls, bot: HoyoBuddy, game: Game | None = None, codes: list[str] | None = None
+        cls, bot: HoyoBuddy, game: genshin.Game | None = None, codes: list[str] | None = None
     ) -> bool:
         """Redeem codes for accounts that have auto redeem enabled.
 
@@ -106,12 +107,11 @@ class AutoRedeem:
             )
             cls._bot = bot
 
-            if codes is None:
-                genshin_codes = await cls._get_codes(bot.session, genshin.Game.GENSHIN)
-                hsr_codes = await cls._get_codes(bot.session, genshin.Game.STARRAIL)
-            else:
-                genshin_codes = codes
-                hsr_codes = codes
+            game_codes = (
+                {game: codes}
+                if game is not None and codes is not None
+                else {game_: await cls._get_codes(bot.session, game_) for game_ in genshin.Game}
+            )
 
             accounts = (
                 await HoyoAccount.filter(auto_redeem=True, game=game).all()
@@ -123,14 +123,9 @@ class AutoRedeem:
                 if account.platform is Platform.MIYOUSHE:
                     continue
 
-                if account.game is Game.GENSHIN:
-                    codes = genshin_codes
-                elif account.game is Game.STARRAIL:
-                    codes = hsr_codes
-                else:
-                    continue
-
-                await cls._redeem_codes(codes, account)
+                await cls._redeem_codes(
+                    game_codes.get(HB_GAME_TO_GPY_GAME[account.game], []), account
+                )
 
             logger.info("Auto redeem task completed")
 

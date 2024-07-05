@@ -239,8 +239,17 @@ class NotesChecker:
     ) -> None:
         """Process expedition notification."""
         if any(not exped.finished for exped in notes.expeditions):
+            min_remain_time = min(
+                exped.remaining_time for exped in notes.expeditions if not exped.finished
+            )
+            notify.est_time = get_now() + min_remain_time
             notify.current_notif_count = 0
-            await notify.save(update_fields=("current_notif_count",))
+            await notify.save(
+                update_fields=(
+                    "est_time",
+                    "current_notif_count",
+                )
+            )
 
         if (
             any(exped.finished for exped in notes.expeditions)

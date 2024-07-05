@@ -47,21 +47,21 @@ class CheckInUI(View):
         super().__init__(author=author, locale=locale, translator=translator, timeout=timeout)
         self.account = account
         self.client = account.client
+        self.client.set_lang(locale)
+
         self.dark_mode = dark_mode
         self._bytes_obj: io.BytesIO | None = None
         self.add_items()
 
     def add_items(self) -> None:
-        if self.client.game is None:
-            msg = "Client game is None"
-            raise AssertionError(msg)
         self.add_item(CheckInButton())
-        self.add_item(
-            Button(
-                url=CHECK_IN_URLS[self.client.game],
-                label=LocaleStr(key="make_up_for_checkin_button_label"),
+        if self.client.game is not None:
+            self.add_item(
+                Button(
+                    url=CHECK_IN_URLS[self.client.game],
+                    label=LocaleStr(key="make_up_for_checkin_button_label"),
+                )
             )
-        )
         self.add_item(AutoCheckInToggle(self.account.daily_checkin))
         self.add_item(NotificationSettingsButton())
 

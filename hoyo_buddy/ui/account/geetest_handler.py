@@ -113,7 +113,7 @@ class GeetestHandler:
                     self._view.locale,
                     self._view.translator,
                     title=LocaleStr(key="geeetest_verification_timeout"),
-                    description=LocaleStr(key="accounts.geeetest_verification_timeout_description"),
+                    description=LocaleStr(key="geeetest_verification_timeout_description"),
                 )
                 await self._interaction.edit_original_response(embed=embed, view=None)
                 self._bot.login_notif_tasks.pop(self._user_id).cancel()

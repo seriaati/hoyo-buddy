@@ -95,7 +95,7 @@ class Hoyo(commands.Cog):
     ) -> None:
         user = user or i.user
         account_ = account or await self.bot.get_account(
-            user.id, (Game.GENSHIN, Game.STARRAIL, Game.HONKAI)
+            user.id, (Game.GENSHIN, Game.STARRAIL, Game.HONKAI, Game.ZZZ)
         )
         settings = await Settings.get(user_id=i.user.id)
         view = CheckInUI(
@@ -465,7 +465,7 @@ class Hoyo(commands.Cog):
             current,
             locale,
             self.bot.translator,
-            (Game.GENSHIN, Game.STARRAIL, Game.HONKAI),
+            (Game.GENSHIN, Game.STARRAIL, Game.HONKAI, Game.ZZZ),
         )
 
 

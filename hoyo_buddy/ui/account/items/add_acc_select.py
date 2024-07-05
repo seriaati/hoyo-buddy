@@ -60,8 +60,8 @@ class AddAccountSelect(Select["AccountManager"]):
                 level_str = self.translator.translate(LevelStr(account.level), self.locale)
 
                 yield SelectOption(
-                    label=f"[{account.uid}] {account.nickname}",
-                    description=f"{level_str} | {account.server_name}",
+                    label=f"{account.nickname} ({account.uid})",
+                    description=f"{level_str}",
                     value=f"{account.uid}_{account.game.value}",
                     emoji=get_game_emoji(account.game),
                 )

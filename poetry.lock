@@ -232,7 +232,7 @@ pydantic = "^2.4.2"
 type = "git"
 url = "https://github.com/seriaati/ambr"
 reference = "HEAD"
-resolved_reference = "a785cf3896f62feef8ec269847d54e0e26e40a18"
+resolved_reference = "2755af91b5b45c4a86a2aaf685af47bca13a87b4"
 
 [[package]]
 name = "annotated-types"
@@ -510,13 +510,13 @@ files = [
 
 [[package]]
 name = "certifi"
-version = "2024.6.2"
+version = "2024.7.4"
 description = "Python package for providing Mozilla's CA Bundle."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "certifi-2024.6.2-py3-none-any.whl", hash = "sha256:ddc6c8ce995e6987e7faf5e3f1b02b302836a0e5d98ece18392cb1a36c72ad56"},
-    {file = "certifi-2024.6.2.tar.gz", hash = "sha256:3cd43f1c6fa7dedc5899d69d3ad0398fd018ad1a17fba83ddaf78aa46c747516"},
+    {file = "certifi-2024.7.4-py3-none-any.whl", hash = "sha256:c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90"},
+    {file = "certifi-2024.7.4.tar.gz", hash = "sha256:5a1e7645bc0ec61a09e26c36f6106dd4cf40c6db3a1fb6352b0244e7fb057c7b"},
 ]
 
 [[package]]
@@ -686,7 +686,7 @@ pydantic = "^2.5.3"
 type = "git"
 url = "https://github.com/seriaati/enka-py"
 reference = "HEAD"
-resolved_reference = "2228ab779d7cce20c19f5ebd6034862eef4845a9"
+resolved_reference = "cbf40d9d00a34faab0ce1444bac1cae03258efe0"
 
 [[package]]
 name = "executing"
@@ -842,9 +842,9 @@ socks-proxy = ["aiohttp-socks"]
 
 [package.source]
 type = "git"
-url = "https://github.com/seriaati/genshin.py"
-reference = "HEAD"
-resolved_reference = "9d0277b805b18ee4fbd9a2c364348c8708e708ce"
+url = "https://github.com/thesadru/genshin.py"
+reference = "dev"
+resolved_reference = "4f1b2ebc5cdea62f65f9348b8fc79d6d12099d18"
 
 [[package]]
 name = "gitdb"
@@ -907,7 +907,7 @@ pydantic = "^2.7.1"
 type = "git"
 url = "https://github.com/seriaati/hakushin-py"
 reference = "HEAD"
-resolved_reference = "f1ca1b60123cb666c5d1314c8afc6b15e95d67f7"
+resolved_reference = "c411f93caadea43a98aec16619900b2dd78710f8"
 
 [[package]]
 name = "httpcore"
@@ -1732,13 +1732,13 @@ cli = ["click (>=5.0)"]
 
 [[package]]
 name = "python-socks"
-version = "2.4.4"
+version = "2.5.0"
 description = "Core proxy (SOCKS4, SOCKS5, HTTP tunneling) functionality for Python"
 optional = false
 python-versions = "*"
 files = [
-    {file = "python-socks-2.4.4.tar.gz", hash = "sha256:e5a8e4f78203612c813946feacd87b98943965a04389fe221fa1e9ab263ad22e"},
-    {file = "python_socks-2.4.4-py3-none-any.whl", hash = "sha256:fda465d3ef229119ee614eb85f2b7c0ad28be6dd40e0ef8dd317c49e8725e514"},
+    {file = "python_socks-2.5.0-py3-none-any.whl", hash = "sha256:68b34379faac94bba3f9959f45cb9ed0b9a0dc65b509eb0799d9c47fb5a9af98"},
+    {file = "python_socks-2.5.0.tar.gz", hash = "sha256:cc4ad990d67bd238e496afefe436af0247793bbe01d1d4a0d37a3b124ff0baa3"},
 ]
 
 [package.dependencies]
@@ -1941,20 +1941,16 @@ name = "seria-library"
 version = "1.5.1"
 description = "Seria's library (of code)"
 optional = false
-python-versions = "^3.11"
-files = []
-develop = false
+python-versions = "<4.0,>=3.11"
+files = [
+    {file = "seria_library-1.5.1-py3-none-any.whl", hash = "sha256:85ce3af2d80c726df27400d6711b0967a4fcb4a989eb692c52b99048f57fe2bc"},
+    {file = "seria_library-1.5.1.tar.gz", hash = "sha256:550ad4cc18d86f347faea836e82a29738c3e36cb18ed39455abfbcedbf659c48"},
+]
 
 [package.extras]
-all = ["aiofiles (>=24.0.0,<25.0.0)", "discord-py (>=2.3.2,<3.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)", "tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
-files = ["aiofiles (>=24.0.0,<25.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)"]
+all = ["aiofiles (>=23.2.1,<24.0.0)", "discord-py (>=2.3.2,<3.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)", "tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
+files = ["aiofiles (>=23.2.1,<24.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)"]
 tortoise = ["tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
-
-[package.source]
-type = "git"
-url = "https://github.com/seriaati/seria-library"
-reference = "HEAD"
-resolved_reference = "cd0b5b80b8197c0890457e1a6c48ae1d67a8ffff"
 
 [[package]]
 name = "six"
@@ -2294,4 +2290,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "89fdaa2ca923b3df7dcf1266b330eec2dcf12cb894791b17c1cebc852a259fc5"
+content-hash = "4702252d51f4a332b3bf0da47e90e8693128d0eaf691a22a379bf10acbe2b1d9"

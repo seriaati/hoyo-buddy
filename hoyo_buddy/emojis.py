@@ -34,6 +34,7 @@ DISCORD_WHITE_ICON = "<:DISCORD_WHITE_ICON:1229374673566044161>"
 GENSHIN_IMPACT = "<:genshin_impact:1025630733068423169>"
 HONKAI_STAR_RAIL = "<:honkai_star_rail:1105806784117088336>"
 HONKAI_IMPACT_3RD = "<:honkai_impact:1106034318666637415>"
+ZZZ = "<:ZZZ:1258606929953947780>"
 
 MIYOUSHE = "<:MIYOUSHE:1222510853975179355>"
 HOYOLAB = "<:hoyolab_icon:1025044103135776809>"
@@ -125,9 +126,8 @@ def get_game_emoji(game: genshin.Game | Game) -> str:
         return HONKAI_IMPACT_3RD
     if game is genshin.Game.STARRAIL or game is Game.STARRAIL:
         return HONKAI_STAR_RAIL
-
-    msg = f"Invalid game: {game}"
-    raise ValueError(msg)
+    if game is genshin.Game.ZZZ or game is Game.ZZZ:
+        return ZZZ
 
 
 def get_gi_element_emoji(element: str) -> str:

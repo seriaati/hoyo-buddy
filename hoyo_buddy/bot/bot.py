@@ -253,12 +253,16 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         current_accounts = [account for account in accounts if account.current]
         if current_accounts:
+            if len(current_accounts) > 1:
+                for account in current_accounts[1:]:
+                    account.current = False
+                    await account.save(update_fields=("current",))
             return current_accounts[0]
-        else:
-            account = accounts[0]
-            account.current = True
-            await account.save(update_fields=("current",))
-            return account
+
+        account = accounts[0]
+        account.current = True
+        await account.save(update_fields=("current",))
+        return account
 
     async def update_assets(self) -> None:
         # Update EnkaAPI assets

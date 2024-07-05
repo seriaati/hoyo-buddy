@@ -22,7 +22,7 @@ cachetools = "^5.3.3"
 discord-py = "^2.4.0"
 enka-api = {git = "https://github.com/seriaati/enka-py"}
 fake-useragent = "^1.5.1"
-genshin = {git = "https://github.com/seriaati/genshin.py", extras = ["all"]}
+genshin = {git = "https://github.com/thesadru/genshin.py", extras = ["all"], branch = "dev"}
 gitpython = "^3.1.42"
 hakushin-py = {git = "https://github.com/seriaati/hakushin-py"}
 jishaku = "^2.5.1"

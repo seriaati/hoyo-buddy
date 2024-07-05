@@ -542,3 +542,4 @@ apc_shadow.boss_defeated_no: Boss Not Defeated
 notes.bonus_sync_points: "Bonus Synchronity Points: {cur}/{max}"
 invalid_uid_format_title: Invalid UID Format
 invalid_uid_format_description: "UID must be a 9 to 10 digit number"
+zenless_zone_zero: Zenless Zone Zero

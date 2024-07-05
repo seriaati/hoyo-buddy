@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 import genshin
 
 from ...bot.translator import EnumStr, LocaleStr, Translator
-from ...constants import GEETEST_SERVERS
+from ...constants import GEETEST_SERVERS, LOCALE_TO_GPY_LANG
 from ...db.models import HoyoAccount, User
 from ...embeds import DefaultEmbed
 from ...emojis import get_game_emoji
@@ -155,6 +155,7 @@ class AccountManager(View):
             region=genshin.Region.OVERSEAS
             if platform is Platform.HOYOLAB
             else genshin.Region.CHINESE,
+            lang=LOCALE_TO_GPY_LANG[self.locale],
         )
 
         # Update the view to let user select the accounts to add

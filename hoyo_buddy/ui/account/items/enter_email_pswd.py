@@ -96,7 +96,7 @@ class EnterEmailPassword(Button["AccountManager"]):
         if modal.incomplete:
             return
 
-        email = modal.email.value
+        email = modal.email.value.strip()
         password = modal.password.value
 
         client = genshin.Client(

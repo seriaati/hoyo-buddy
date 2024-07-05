@@ -14,7 +14,7 @@ REALM_CURRENCY_ICON = "https://i.imgur.com/eAJ0RFr.png"
 GI_ICON = "https://iili.io/dKleQ4I.png"
 HSR_ICON = "https://iili.io/dKlesBp.png"
 HONKAI_ICON = "https://iili.io/dKleLEN.png"
-ZZZ_ICON = "https://iili.io/dKlekrP.png"
+ZZZ_ICON = "https://iili.io/dKviRC7.jpg"
 
 LOADING_ICON = "https://i.imgur.com/5siJ799.gif"
 

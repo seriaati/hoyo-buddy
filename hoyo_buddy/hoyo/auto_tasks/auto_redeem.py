@@ -11,7 +11,7 @@ from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr
 from ...constants import HB_GAME_TO_GPY_GAME
 from ...db.models import HoyoAccount
-from ...enums import Platform
+from ...enums import Game, Platform
 
 if TYPE_CHECKING:
     import aiohttp
@@ -110,7 +110,10 @@ class AutoRedeem:
             game_codes = (
                 {game: codes}
                 if game is not None and codes is not None
-                else {game_: await cls._get_codes(bot.session, game_) for game_ in genshin.Game}
+                else {
+                    game_: await cls._get_codes(bot.session, game_)
+                    for game_ in (genshin.Game.GENSHIN, genshin.Game.ZZZ, genshin.Game.STARRAIL)
+                }
             )
 
             accounts = (
@@ -120,7 +123,7 @@ class AutoRedeem:
             )
 
             for account in accounts:
-                if account.platform is Platform.MIYOUSHE:
+                if account.platform is Platform.MIYOUSHE or account.game is Game.HONKAI:
                     continue
 
                 await cls._redeem_codes(

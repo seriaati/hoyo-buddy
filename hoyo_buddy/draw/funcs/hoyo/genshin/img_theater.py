@@ -127,7 +127,9 @@ class ImgTheaterCard:
 
             block.paste(const_flair, (92, 0), const_flair)
             block_drawer.write(
-                str(self._chara_consts.get(character.id, "?")),
+                str(self._chara_consts.get(character.id, "?"))
+                if character.type is genshin.models.TheaterCharaType.NORMAL
+                else "?",
                 size=18,
                 position=(107, 15),
                 anchor="mm",

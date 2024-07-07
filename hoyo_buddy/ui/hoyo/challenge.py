@@ -3,21 +3,25 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING
 
+import discord
+from ambr.utils import remove_html_tags
 from genshin.models import (
-    Character as GICharacter,
-)
-from genshin.models import (
+    ChallengeBuff,
+    ImgTheaterData,
     SpiralAbyss,
     StarRailAPCShadow,
     StarRailChallenge,
     StarRailChallengeSeason,
     StarRailPureFiction,
+    TheaterBuff,
 )
+from genshin.models import Character as GICharacter
 
 from hoyo_buddy.bot.translator import EnumStr, LocaleStr
 from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE
 from hoyo_buddy.draw.main_funcs import (
     draw_apc_shadow_card,
+    draw_img_theater_card,
     draw_moc_card,
     draw_pure_fiction_card,
     draw_spiral_abyss_card,
@@ -25,6 +29,7 @@ from hoyo_buddy.draw.main_funcs import (
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.exceptions import NoChallengeDataError
 from hoyo_buddy.models import DrawInput
+from hoyo_buddy.types import ChallengeWithBuff
 
 from ...bot.error_handler import get_error_embed
 from ...db.models import ChallengeHistory
@@ -43,6 +48,98 @@ if TYPE_CHECKING:
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.db.models import HoyoAccount
     from hoyo_buddy.types import Challenge, Interaction
+
+
+class BuffView(View):
+    def __init__(
+        self,
+        challenge: ChallengeWithBuff,
+        season: StarRailChallengeSeason | None,
+        *,
+        author: User | Member,
+        locale: Locale,
+        translator: Translator,
+    ) -> None:
+        super().__init__(author=author, locale=locale, translator=translator)
+        self._challenge = challenge
+        self._season = season
+        self._buffs, self._buff_usage = self._calc_buff_usage()
+        self.add_item(BuffSelector(list(self._buffs.values())))
+
+    def get_buff_embed(self, buff: ChallengeBuff | TheaterBuff, floors: str) -> DefaultEmbed:
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=buff.name,
+            description=remove_html_tags(buff.description),
+        )
+        embed.add_field(name=LocaleStr(key="challenge_view.buff_used_in"), value=floors)
+        embed.set_thumbnail(url=buff.icon)
+        return embed
+
+    def _calc_buff_usage(
+        self,
+    ) -> tuple[dict[str, ChallengeBuff | TheaterBuff], defaultdict[str, list[str]]]:
+        buffs: dict[str, ChallengeBuff | TheaterBuff] = {}  # Buff name to buff object
+        buff_usage: defaultdict[str, list[str]] = defaultdict(list)  # Buff name to floor names
+
+        if isinstance(self._challenge, StarRailPureFiction | StarRailAPCShadow):
+            assert self._season is not None
+
+            for floor in reversed(self._challenge.floors):
+                n1_buff = floor.node_1.buff
+                if n1_buff is not None:
+                    team_str = LocaleStr(key="challenge_view.team", team=1).translate(
+                        self.translator, self.locale
+                    )
+
+                    floor_name = get_floor_difficulty(floor.name, self._season.name)
+                    buff_usage[n1_buff.name].append(f"{floor_name} ({team_str})")
+                    if n1_buff.name not in buffs:
+                        buffs[n1_buff.name] = n1_buff
+
+                n2_buff = floor.node_2.buff
+                if n2_buff is not None:
+                    team_str = LocaleStr(key="challenge_view.team", team=2).translate(
+                        self.translator, self.locale
+                    )
+
+                    floor_name = get_floor_difficulty(floor.name, self._season.name)
+                    buff_usage[n2_buff.name].append(f"{floor_name} ({team_str})")
+                    if n2_buff.name not in buffs:
+                        buffs[n2_buff.name] = n2_buff
+        else:
+            for act in reversed(self._challenge.acts):
+                act_buffs = list(act.wondroud_booms) + list(act.mystery_caches)
+                for buff in act_buffs:
+                    act_name = LocaleStr(
+                        key="img_theater_act_block_title", act=act.round_id
+                    ).translate(self.translator, self.locale)
+                    buff_usage[buff.name].append(act_name)
+                    if buff.name not in buffs:
+                        buffs[buff.name] = buff
+
+        return buffs, buff_usage
+
+
+class BuffSelector(Select[BuffView]):
+    def __init__(self, buffs: list[ChallengeBuff | TheaterBuff]) -> None:
+        super().__init__(
+            placeholder=LocaleStr(key="challenge_view.buff_select.placeholder"),
+            options=[
+                SelectOption(
+                    label=buff.name,
+                    description=remove_html_tags(buff.description[:100]),
+                    value=buff.name,
+                )
+                for buff in buffs
+            ],
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        buff = self.view._buffs[self.values[0]]
+        embed = self.view.get_buff_embed(buff, ", ".join(self.view._buff_usage[buff.name]))
+        await i.response.edit_message(embed=embed)
 
 
 class ChallengeView(View):
@@ -91,9 +188,10 @@ class ChallengeView(View):
     def _get_season_id(self, challenge: Challenge, previous: bool) -> int:
         if isinstance(challenge, SpiralAbyss):
             return challenge.season
-        else:
-            index = 1 if previous else 0
-            return challenge.seasons[index].id
+        if isinstance(challenge, ImgTheaterData):
+            return challenge.schedule.id
+        index = 1 if previous else 0
+        return challenge.seasons[index].id
 
     async def _fetch_data(self) -> None:
         if self.challenge is not None:
@@ -101,6 +199,12 @@ class ChallengeView(View):
 
         client = self._account.client
         client.set_lang(self.locale)
+
+        if (
+            self.challenge_type in {ChallengeType.SPIRAL_ABYSS, ChallengeType.IMG_THEATER}
+            and not self._characters
+        ):
+            self._characters = list(await client.get_genshin_characters(self._account.uid))
 
         for previous in (False, True):
             if self.challenge_type is ChallengeType.SPIRAL_ABYSS:
@@ -112,8 +216,6 @@ class ChallengeView(View):
                     challenge = await client.get_genshin_spiral_abyss(
                         self._account.uid, previous=previous
                     )
-                if not self._characters:
-                    self._characters = list(await client.get_genshin_characters(self._account.uid))
             elif self.challenge_type is ChallengeType.MOC:
                 challenge = await client.get_starrail_challenge(
                     self._account.uid, previous=previous
@@ -126,6 +228,10 @@ class ChallengeView(View):
                 challenge = await client.get_starrail_apc_shadow(
                     self._account.uid, previous=previous
                 )
+            elif self.challenge_type is ChallengeType.IMG_THEATER:
+                challenge = (
+                    await client.get_imaginarium_theater(self._account.uid, previous=previous)
+                ).datas[0]
             else:
                 msg = f"Invalid challenge type: {self._challenge_type}"
                 raise ValueError(msg)
@@ -152,8 +258,8 @@ class ChallengeView(View):
             raise NoChallengeDataError(self.challenge_type)
 
     def _get_season(self, challenge: Challenge) -> StarRailChallengeSeason:
-        if isinstance(challenge, SpiralAbyss):
-            msg = "Spiral Abyss does not have seasons"
+        if isinstance(challenge, SpiralAbyss | ImgTheaterData):
+            msg = f"Can't get season for {self.challenge_type}"
             raise TypeError(msg)
 
         result = next(
@@ -227,51 +333,28 @@ class ChallengeView(View):
                 self._get_season(self.challenge),
                 self.translator,
             )
+        elif isinstance(self.challenge, ImgTheaterData):
+            return await draw_img_theater_card(
+                DrawInput(
+                    dark_mode=self._dark_mode,
+                    locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
+                    session=session,
+                    filename="challenge.webp",
+                    executor=executor,
+                    loop=loop,
+                ),
+                self.challenge,
+                {chara.id: chara.constellation for chara in self._characters},
+                self.translator,
+            )
 
         msg = f"Invalid challenge type: {self._challenge_type}"
         raise ValueError(msg)
 
-    def _add_buff_details(self, embed: DefaultEmbed) -> DefaultEmbed:
-        if isinstance(self.challenge, StarRailPureFiction | StarRailAPCShadow):
-            buffs: dict[str, str] = {}  # Buff name to description
-            buff_usage: defaultdict[str, list[str]] = defaultdict(list)  # Buff name to floor names
-            season = self._get_season(self.challenge)
-
-            for floor in reversed(self.challenge.floors):
-                n1_buff = floor.node_1.buff
-                if n1_buff is not None:
-                    team_str = LocaleStr(key="challenge_view.team", team=1).translate(
-                        self.translator, self.locale
-                    )
-
-                    floor_name = get_floor_difficulty(floor.name, season.name)
-                    buff_usage[n1_buff.name].append(f"{floor_name} ({team_str})")
-                    if n1_buff.name not in buffs:
-                        buffs[n1_buff.name] = n1_buff.description
-
-                n2_buff = floor.node_2.buff
-                if n2_buff is not None:
-                    team_str = LocaleStr(key="challenge_view.team", team=2).translate(
-                        self.translator, self.locale
-                    )
-
-                    floor_name = get_floor_difficulty(floor.name, season.name)
-                    buff_usage[n2_buff.name].append(f"{floor_name} ({team_str})")
-                    if n2_buff.name not in buffs:
-                        buffs[n2_buff.name] = n2_buff.description
-
-            for buff_name, buff in buffs.items():
-                used_in = LocaleStr(
-                    key="challenge_view.buff_used_in",
-                    floors=", ".join(buff_usage[buff_name]),
-                ).translate(self.translator, self.locale)
-                embed.add_field(name=buff_name, value=f"{used_in}\n{buff}", inline=False)
-
-        return embed
-
     def _add_items(self) -> None:
         self.add_item(ChallengeTypeSelect(GAME_CHALLENGE_TYPES[self._account.game]))
         self.add_item(PhaseSelect())
+        self.add_item(ViewBuffs())
 
     async def update(
         self,
@@ -279,7 +362,7 @@ class ChallengeView(View):
         i: Interaction,
     ) -> None:
         assert self.challenge is not None
-        await item.set_loading_state(i)
+
         try:
             self._check_challlenge_data(self.challenge)
             file_ = await self._draw_card(i.client.session, i.client.executor, i.client.loop)
@@ -293,7 +376,6 @@ class ChallengeView(View):
             raise
 
         embed = DefaultEmbed(self.locale, self.translator).add_acc_info(self._account)
-        embed = self._add_buff_details(embed)
         embed.set_image(url="attachment://challenge.webp")
 
         await item.unset_loading_state(i, embed=embed, attachments=[file_])
@@ -331,6 +413,7 @@ class PhaseSelect(Select[ChallengeView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view.season_id = int(self.values[0])
+        await self.set_loading_state(i)
         await self.view.update(self, i)
 
 
@@ -344,7 +427,22 @@ class ChallengeTypeSelect(Select[ChallengeView]):
     async def callback(self, i: Interaction) -> None:
         self.view._challenge_type = ChallengeType(self.values[0])
 
-        await self.view._fetch_data()
+        view_buff_btn = self.view.get_item("challenge_view.view_buffs")
+        view_buff_btn.disabled = self.view.challenge_type not in {
+            ChallengeType.APC_SHADOW,
+            ChallengeType.PURE_FICTION,
+            ChallengeType.IMG_THEATER,
+        }
+
+        phase_select: PhaseSelect = self.view.get_item("challenge_view.phase_select")
+        phase_select.disabled = False
+
+        await self.set_loading_state(i)
+        try:
+            await self.view._fetch_data()
+        except Exception:
+            await self.unset_loading_state(i)
+            raise
 
         histories = await ChallengeHistory.filter(
             uid=self.view._account.uid, challenge_type=self.view.challenge_type
@@ -357,10 +455,38 @@ class ChallengeTypeSelect(Select[ChallengeView]):
         if self.view.challenge_type not in self.view._season_ids:
             self.view.season_id = histories[0].season_id
 
-        phase_select: PhaseSelect = self.view.get_item("challenge_view.phase_select")
         phase_select.set_options(histories)
         phase_select.translate(self.view.locale, self.view.translator)
         phase_select.update_options_defaults(values=[str(self.view.season_id)])
-        phase_select.disabled = False
 
         await self.view.update(self, i)
+
+
+class ViewBuffs(Button[ChallengeView]):
+    def __init__(self) -> None:
+        super().__init__(
+            label=LocaleStr(key="challenge_view.view_buffs"),
+            style=discord.ButtonStyle.blurple,
+            disabled=True,
+            custom_id="challenge_view.view_buffs",
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        if not isinstance(self.view.challenge, ChallengeWithBuff):
+            return
+
+        season = (
+            None
+            if self.view.challenge_type is ChallengeType.IMG_THEATER
+            else self.view._get_season(self.view.challenge)
+        )
+        view = BuffView(
+            self.view.challenge,
+            season,
+            author=i.user,
+            locale=self.view.locale,
+            translator=self.view.translator,
+        )
+        first_buff = next(iter(view._buffs.values()))
+        embed = view.get_buff_embed(first_buff, ", ".join(view._buff_usage[first_buff.name]))
+        await i.response.send_message(embed=embed, view=view, ephemeral=True)

@@ -11,6 +11,12 @@ Challenge: TypeAlias = (
     | genshin.models.SpiralAbyss
     | genshin.models.StarRailPureFiction
     | genshin.models.StarRailAPCShadow
+    | genshin.models.ImgTheaterData
+)
+ChallengeWithBuff: TypeAlias = (
+    genshin.models.StarRailAPCShadow
+    | genshin.models.ImgTheaterData
+    | genshin.models.StarRailPureFiction
 )
 
 Interaction: TypeAlias = discord.Interaction[HoyoBuddy]

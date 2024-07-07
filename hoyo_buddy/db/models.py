@@ -247,17 +247,21 @@ class ChallengeHistory(Model):
     async def add_data(
         cls, uid: int, challenge_type: ChallengeType, season_id: int, data: Challenge
     ) -> None:
-        try:
-            if isinstance(data, genshin.models.SpiralAbyss):
-                start_time = data.start_time
-                end_time = data.end_time
-                name = None
-            else:
-                season = next(season for season in data.seasons if season.id == season_id)
-                start_time = season.begin_time.datetime
-                end_time = season.end_time.datetime
-                name = season.name
+        if isinstance(data, genshin.models.SpiralAbyss):
+            start_time = data.start_time
+            end_time = data.end_time
+            name = None
+        elif isinstance(data, genshin.models.ImgTheaterData):
+            start_time = data.schedule.start_time
+            end_time = data.schedule.end_time
+            name = None
+        else:
+            season = next(season for season in data.seasons if season.id == season_id)
+            start_time = season.begin_time.datetime
+            end_time = season.end_time.datetime
+            name = season.name
 
+        try:
             await cls.create(
                 uid=uid,
                 season_id=season_id,
@@ -269,7 +273,7 @@ class ChallengeHistory(Model):
             )
         except exceptions.IntegrityError:
             await cls.filter(uid=uid, season_id=season_id, challenge_type=challenge_type).update(
-                data=pickle.dumps(data)
+                data=pickle.dumps(data), name=name
             )
 
 

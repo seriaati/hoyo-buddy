@@ -113,3 +113,4 @@ class ChallengeType(StrEnum):
     MOC = "Memory of chaos"
     PURE_FICTION = "Pure fiction"
     APC_SHADOW = "Apocalyptic shadow"
+    IMG_THEATER = "img_theater_large_block_title"

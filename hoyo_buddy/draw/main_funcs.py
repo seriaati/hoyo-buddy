@@ -17,8 +17,8 @@ if TYPE_CHECKING:
     from io import BytesIO
 
     from genshin.models import Character as GenshinCharacter
-    from genshin.models import Notes as GenshinNote
     from genshin.models import (
+        ImgTheaterData,
         PartialGenshinUserStats,
         SpiralAbyss,
         StarRailAPCShadow,
@@ -27,6 +27,7 @@ if TYPE_CHECKING:
         StarRailNote,
         StarRailPureFiction,
     )
+    from genshin.models import Notes as GenshinNote
     from genshin.models import StarRailDetailCharacter as StarRailCharacter
 
     from ..bot.translator import Translator
@@ -380,5 +381,27 @@ async def draw_apc_shadow_card(
                 data, season, draw_input.locale.value, translator
             ).draw,
         )
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_img_theater_card(
+    draw_input: DrawInput,
+    data: ImgTheaterData,
+    chara_consts: dict[int, int],
+    translator: Translator,
+) -> File:
+    for act in data.acts:
+        icons = [chara.icon for chara in act.characters]
+        await download_and_save_static_images(icons, "img-theater", draw_input.session)
+
+    with timing("draw", tags={"type": "img_theater_card"}):
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
+            funcs.genshin.ImgTheaterCard(
+                data, chara_consts, draw_input.locale.value, translator
+            ).draw,
+        )
+
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

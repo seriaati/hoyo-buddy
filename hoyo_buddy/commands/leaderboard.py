@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -6,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class LeaderboardCommand:
-    def __init__(self, interaction: "Interaction", uid: int, game: "Game") -> None:
+    def __init__(self, interaction: Interaction, uid: int, game: Game) -> None:
         self._interaction = interaction
         self._uid = uid
         self._game = game

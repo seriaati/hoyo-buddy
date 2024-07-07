@@ -73,7 +73,7 @@ books: 書籍
 captcha.embed.description: "點擊下方的按鈕來完成 CAPTCHA\n"
 challenge_command_description: "查看遊戲後期內容的資料，例如深境螺旋、混沌回憶等等"
 challenge_type_select.placeholder: 選擇一個遊戲模式
-challenge_view.buff_used_in: "於 {floors} 使用"
+challenge_view.buff_used_in: 使用於
 challenge_view.team: "隊伍 {team}"
 chamber_button_label: "第 {value} 間"
 change_character_level_label: 變更角色等級
@@ -541,3 +541,13 @@ notes.bonus_sync_points: "額外擬和值: {cur}/{max}"
 invalid_uid_format_title: 錯誤的 UID 格式
 invalid_uid_format_description: "UID 需為一個 9 至 10 位數的數字"
 zenless_zone_zero: 絕區零
+img_theater_large_block_title: 幻想真境劇詩
+img_theater_stats_line_one: "最佳紀錄: 第 {act} 幕"
+img_theater_stats_line_two: "消耗幻劇之花: {flower}"
+img_theater_stats_line_three: "觸發場外觀眾聲援: {support} 次"
+img_theater_stats_line_four: "表演助理角色支援其他玩家: {assist} 次"
+img_theater_legend_block_support_chara: 表演助理
+img_theater_legend_block_trial_chara: 試用角色
+img_theater_act_block_title: "第 {act} 幕"
+challenge_view.view_buffs: 查看增益
+challenge_view.buff_select.placeholder: 選擇一項增益來查看…

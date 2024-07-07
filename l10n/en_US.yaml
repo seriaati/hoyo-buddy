@@ -548,6 +548,6 @@ img_theater_stats_line_three: "Triggered External Audience Support: {support} ti
 img_theater_stats_line_four: "Supporting Cast Characters Assist Other Players: {assist} times"
 img_theater_legend_block_support_chara: Support Character
 img_theater_legend_block_trial_chara: Trial Character
-img_theater_act_block_title: Act {act}
+img_theater_act_block_title: "Act {act}"
 challenge_view.view_buffs: View buffs
 challenge_view.buff_select.placeholder: Select a buff to view...

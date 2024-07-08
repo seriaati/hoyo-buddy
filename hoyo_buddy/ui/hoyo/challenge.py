@@ -131,6 +131,7 @@ class BuffSelector(Select[BuffView]):
                     label=buff.name,
                     description=remove_html_tags(buff.description[:100]),
                     value=buff.name,
+                    default=buff.name == buffs[0].name,
                 )
                 for buff in buffs
             ],

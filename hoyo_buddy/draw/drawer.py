@@ -20,10 +20,16 @@ from .fonts import (
     NOTOSANSKR_LIGHT,
     NOTOSANSKR_MEDIUM,
     NOTOSANSKR_REGULAR,
+    NUNITO_BLACK,
+    NUNITO_BLACK_ITALIC,
     NUNITO_BOLD,
+    NUNITO_BOLD_ITALIC,
     NUNITO_LIGHT,
+    NUNITO_LIGHT_ITALIC,
     NUNITO_MEDIUM,
+    NUNITO_MEDIUM_ITALIC,
     NUNITO_REGULAR,
+    NUNITO_REGULAR_ITALIC,
 )
 from .static import get_static_img_path
 
@@ -79,6 +85,12 @@ FONT_MAPPING: dict[
         "regular": NUNITO_REGULAR,
         "medium": NUNITO_MEDIUM,
         "bold": NUNITO_BOLD,
+        "black": NUNITO_BLACK,
+        "light_italic": NUNITO_LIGHT_ITALIC,
+        "regular_italic": NUNITO_REGULAR_ITALIC,
+        "medium_italic": NUNITO_MEDIUM_ITALIC,
+        "bold_italic": NUNITO_BOLD_ITALIC,
+        "black_italic": NUNITO_BLACK_ITALIC,
     },
 }
 
@@ -248,10 +260,18 @@ class Drawer:
     def _get_font(
         self,
         size: int,
-        style: Literal["light", "regular", "medium", "bold"],
+        style: Literal["light", "regular", "medium", "bold", "black"],
         locale: discord.Locale | None,
+        italic: bool,
     ) -> ImageFont.FreeTypeFont:
-        font = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[None]).get(style)
+        style_ = f"{style}_italic" if italic else style
+        font = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[None]).get(style_)
+        if font is None:
+            if style == "black":
+                # Can't find black font, use bold instead
+                style = "bold"
+            # When the font doesn't have italic version
+            font = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[None]).get(style)
 
         if font is None:
             msg = f"Invalid font style: {style}"
@@ -275,13 +295,15 @@ class Drawer:
         size: int,
         position: tuple[int, int],
         color: tuple[int, int, int] | None = None,
-        style: Literal["light", "regular", "medium", "bold"] = "regular",
+        style: Literal["light", "regular", "medium", "bold", "black"] = "regular",
         emphasis: Literal["high", "medium", "low"] = "high",
         anchor: str | None = None,
         max_width: int | None = None,
         max_lines: int = 1,
         locale: discord.Locale | None = None,
         no_write: bool = False,
+        italic: bool = False,
+        title_case: bool = False,
     ) -> tuple[int, int, int, int]:
         """Returns (left, top, right, bottom) of the text bounding box."""
         if not text:
@@ -294,9 +316,11 @@ class Drawer:
                 msg = "Translator is not set"
                 raise RuntimeError(msg)
 
-            translated_text = self.translator.translate(text, locale or self.locale)
+            translated_text = self.translator.translate(
+                text, locale or self.locale, title_case=title_case
+            )
 
-        font = self._get_font(size, style, locale)
+        font = self._get_font(size, style, locale, italic)
 
         if max_width is not None:
             if max_lines == 1:

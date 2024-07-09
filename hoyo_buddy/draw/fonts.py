@@ -1,9 +1,14 @@
-from __future__ import annotations
-
 NUNITO_LIGHT = "hoyo-buddy-assets/fonts/Nunito/Nunito-Light.ttf"
 NUNITO_REGULAR = "hoyo-buddy-assets/fonts/Nunito/Nunito-Regular.ttf"
 NUNITO_MEDIUM = "hoyo-buddy-assets/fonts/Nunito/Nunito-SemiBold.ttf"
 NUNITO_BOLD = "hoyo-buddy-assets/fonts/Nunito/Nunito-Bold.ttf"
+NUNITO_BLACK = "hoyo-buddy-assets/fonts/Nunito/Nunito-Black.ttf"
+
+NUNITO_LIGHT_ITALIC = "hoyo-buddy-assets/fonts/Nunito/Nunito-LightItalic.ttf"
+NUNITO_REGULAR_ITALIC = "hoyo-buddy-assets/fonts/Nunito/Nunito-Italic.ttf"
+NUNITO_MEDIUM_ITALIC = "hoyo-buddy-assets/fonts/Nunito/Nunito-MediumItalic.ttf"
+NUNITO_BOLD_ITALIC = "hoyo-buddy-assets/fonts/Nunito/Nunito-BoldItalic.ttf"
+NUNITO_BLACK_ITALIC = "hoyo-buddy-assets/fonts/Nunito/Nunito-BlackItalic.ttf"
 
 MPLUSROUNDED1C_LIGHT = "hoyo-buddy-assets/fonts/MPLUSRounded1c/MPLUSRounded1c-Light.ttf"
 MPLUSROUNDED1C_REGULAR = "hoyo-buddy-assets/fonts/MPLUSRounded1c/MPLUSRounded1c-Regular.ttf"

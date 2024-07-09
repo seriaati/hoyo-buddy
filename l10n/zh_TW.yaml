@@ -551,3 +551,16 @@ img_theater_legend_block_trial_chara: 試用角色
 img_theater_act_block_title: "第 {act} 幕"
 challenge_view.view_buffs: 查看增益
 challenge_view.buff_select.placeholder: 選擇一項增益來查看…
+battery_charge_button.label: 電量
+scratch_card_button.label: 刮刮樂
+scratch_card.embed.description: 還沒刮刮刮樂
+zzz_engagement_button.label: 活躍度
+zzz_engagement.embed.description: 今日的活躍度尚未完成
+video_store_button.label: 錄影帶店經營
+video_store.embed.description: 錄影帶的收益尚未領取
+scratch_card.incomplete: 尚未完成
+video_store.currently_open: 正在營業
+video_store.revenue_available: 收益可領取
+video_store.waiting_to_open: 正在等待營業
+notes-card.zzz.title: 即時便籤
+reminder_modal.title: "{notify}通知設定"

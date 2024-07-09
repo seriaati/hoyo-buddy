@@ -559,7 +559,6 @@ zzz_engagement.embed.description: Today's engagement is not completed yet
 video_store_button.label: Video store management
 video_store.embed.description: Video store revenue not claimed yet
 scratch_card.incomplete: Incomplete
-scratch_card.completed: Completed
 video_store.currently_open: Currently open
 video_store.revenue_available: Revenue available
 video_store.waiting_to_open: Waiting to open

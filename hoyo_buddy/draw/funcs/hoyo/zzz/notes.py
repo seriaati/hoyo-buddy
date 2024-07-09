@@ -74,7 +74,7 @@ def draw_zzz_notes(
     text = LocaleStr(
         key="scratch_card.incomplete"
         if not notes.scratch_card_completed
-        else "scratch_card.completed"
+        else "notes-card.gi.completed"
     )
 
     drawer.write(

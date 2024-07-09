@@ -551,3 +551,17 @@ img_theater_legend_block_trial_chara: Trial Character
 img_theater_act_block_title: "Act {act}"
 challenge_view.view_buffs: View buffs
 challenge_view.buff_select.placeholder: Select a buff to view...
+battery_charge_button.label: Battery charge
+scratch_card_button.label: Scratch card mania
+scratch_card.embed.description: Scratch card not scratched yet
+zzz_engagement_button.label: Engagement
+zzz_engagement.embed.description: Today's engagement is not completed yet
+video_store_button.label: Video store management
+video_store.embed.description: Video store revenue not claimed yet
+scratch_card.incomplete: Incomplete
+scratch_card.completed: Completed
+video_store.currently_open: Currently open
+video_store.revenue_available: Revenue available
+video_store.waiting_to_open: Waiting to open
+notes-card.zzz.title: Sticky Notes
+reminder_modal.title: "{notify} Reminder Settings"

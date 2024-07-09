@@ -26,6 +26,7 @@ if TYPE_CHECKING:
         StarRailChallengeSeason,
         StarRailNote,
         StarRailPureFiction,
+        ZZZNotes,
     )
     from genshin.models import Notes as GenshinNote
     from genshin.models import StarRailDetailCharacter as StarRailCharacter
@@ -405,3 +406,20 @@ async def draw_img_theater_card(
 
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
+
+
+async def draw_zzz_notes_card(
+    draw_input: DrawInput,
+    notes: ZZZNotes,
+    translator: Translator,
+) -> BytesIO:
+    with timing("draw", tags={"type": "zzz_notes_card"}):
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
+            funcs.zzz.draw_zzz_notes,
+            notes,
+            draw_input.locale.value,
+            translator,
+            draw_input.dark_mode,
+        )
+    return buffer

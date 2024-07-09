@@ -35,10 +35,14 @@ def contains_traveler_id(character_id: str) -> bool:
     return any(str(traveler_id) in character_id for traveler_id in TRAVELER_IDS)
 
 
-UID_SERVER_RESET_HOURS: dict[str, int] = {
-    "6": 17,  # America, 5 PM
-    "7": 11,  # Europe, 11 AM
-    # Every other server resets at 4 AM
+SERVER_RESET_HOURS: dict[str, int] = {
+    "os_usa": 17,
+    "os_euro": 11,
+    "prod_official_usa": 17,
+    "prod_official_eur": 11,
+    "prod_gf_us": 17,
+    "prod_gf_eu": 11,
+    # Every other server is 4
 }
 UID_TZ_OFFSET: dict[str, int] = {
     "6": -13,  # America, UTC-5

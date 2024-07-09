@@ -12,7 +12,7 @@ from discord import Locale
 from seria.tortoise.model import Model
 from tortoise import exceptions, fields
 
-from ..constants import HB_GAME_TO_GPY_GAME, UID_SERVER_RESET_HOURS
+from ..constants import HB_GAME_TO_GPY_GAME, SERVER_RESET_HOURS
 from ..enums import ChallengeType, Game, NotesNotifyType, Platform
 from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
@@ -86,16 +86,11 @@ class HoyoAccount(Model):
     @property
     def server_reset_datetime(self) -> datetime.datetime:
         """Server reset time in UTC+8."""
-        for uid_start, reset_hour in UID_SERVER_RESET_HOURS.items():
-            if str(self.uid).startswith(uid_start):
-                reset_time = get_now().replace(hour=reset_hour, minute=0, second=0, microsecond=0)
-                break
-        else:
-            reset_time = get_now().replace(hour=4, minute=0, second=0, microsecond=0)
-
+        server = genshin.utility.recognize_server(self.uid, HB_GAME_TO_GPY_GAME[self.game])
+        reset_hour = SERVER_RESET_HOURS.get(server, 4)
+        reset_time = get_now().replace(hour=reset_hour, minute=0, second=0, microsecond=0)
         if reset_time < get_now():
             reset_time += datetime.timedelta(days=1)
-
         return reset_time
 
     @property

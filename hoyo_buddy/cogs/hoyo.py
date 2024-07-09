@@ -196,7 +196,9 @@ class Hoyo(commands.Cog):
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         user = user or i.user
-        account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ))
+        account_ = account or await self.bot.get_account(
+            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
+        )
         settings = await Settings.get(user_id=i.user.id)
 
         view = NotesView(
@@ -443,15 +445,18 @@ class Hoyo(commands.Cog):
     @challenge_command.autocomplete("account")
     @characters_command.autocomplete("account")
     @profile_command.autocomplete("account")
-    async def gi_hsr_acc_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:
+    async def gi_hsr_acc_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
         user: User = i.namespace.user
         return await self.bot.get_account_autocomplete(
             user, i.user.id, current, locale, self.bot.translator, (Game.GENSHIN, Game.STARRAIL)
         )
 
-    @geetest_command.autocomplete("account")
-    async def gi_hsr_honkai_acc_autocomplete(
+    @redeem_command.autocomplete("account")
+    @notes_command.autocomplete("account")
+    async def gi_hsr_zzz_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
@@ -462,12 +467,11 @@ class Hoyo(commands.Cog):
             current,
             locale,
             self.bot.translator,
-            (Game.GENSHIN, Game.STARRAIL, Game.HONKAI),
+            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ),
         )
 
     @checkin_command.autocomplete("account")
-    @redeem_command.autocomplete("account")
-    @notes_command.autocomplete("account")
+    @geetest_command.autocomplete("account")
     async def all_game_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:

@@ -563,4 +563,4 @@ video_store.currently_open: 正在營業
 video_store.revenue_available: 收益可領取
 video_store.waiting_to_open: 正在等待營業
 notes-card.zzz.title: 即時便籤
-reminder_modal.title: "{notify} 通知設定"
+reminder_modal.title: "{notify}通知設定"

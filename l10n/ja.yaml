@@ -549,3 +549,16 @@ img_theater_legend_block_trial_chara: ""
 img_theater_act_block_title: ""
 challenge_view.view_buffs: ""
 challenge_view.buff_select.placeholder: ""
+battery_charge_button.label: バッテリー
+scratch_card_button.label: スクラッチカード
+scratch_card.embed.description: ""
+zzz_engagement_button.label: 活躍度
+zzz_engagement.embed.description: ""
+video_store_button.label: ビデオ屋の経営
+video_store.embed.description: ""
+scratch_card.incomplete: ""
+video_store.currently_open: 営業中
+video_store.revenue_available: ""
+video_store.waiting_to_open: ""
+notes-card.zzz.title: リアルタイムノート
+reminder_modal.title: ""

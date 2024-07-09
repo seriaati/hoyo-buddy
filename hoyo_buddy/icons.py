@@ -10,6 +10,8 @@ RTBP_ICON = "https://api.yatta.top/hsr/assets/UI/item/12.png"
 PT_ICON = "https://api.ambr.top/assets/UI/UI_ItemIcon_220021.png"
 COMMISSION_ICON = "https://i.imgur.com/x73cn2G.png"
 REALM_CURRENCY_ICON = "https://i.imgur.com/eAJ0RFr.png"
+BATTERY_CHARGE_ICON = "https://iili.io/df9gZTG.png"
+SCRATCH_CARD_ICON = "https://iili.io/dfWBR5v.png"
 
 GI_ICON = "https://iili.io/dKleQ4I.png"
 HSR_ICON = "https://iili.io/dKlesBp.png"

@@ -33,6 +33,14 @@ class NotesNotifyType(IntEnum):
     """Star Rail Echo of War"""
     RESERVED_TB_POWER = 11
     """Star Rail Reserved Trailblaze Power"""
+    BATTERY = 12
+    """ZZZ Battery Charge"""
+    ZZZ_DAILY = 13
+    """ZZZ Engagement"""
+    SCRATCH_CARD = 14
+    """ZZZ Scratch Card Mania"""
+    VIDEO_STORE = 15
+    """ZZZ Video Store Management"""
 
 
 class TalentBoost(IntEnum):

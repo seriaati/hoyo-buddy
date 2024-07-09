@@ -2,20 +2,30 @@ from __future__ import annotations
 
 import asyncio
 import datetime
+from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar
 
 import discord
 import python_socks
 from discord import Locale
-from genshin.models import Notes, StarRailNote
+from genshin.models import Notes, StarRailNote, VideoStoreState, ZZZNotes
 
 from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr
 from ...db.models import NotesNotify
-from ...draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card
+from ...draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
 from ...embeds import DefaultEmbed, ErrorEmbed
 from ...enums import Game, NotesNotifyType
-from ...icons import COMMISSION_ICON, PT_ICON, REALM_CURRENCY_ICON, RESIN_ICON, RTBP_ICON, TBP_ICON
+from ...icons import (
+    BATTERY_CHARGE_ICON,
+    COMMISSION_ICON,
+    PT_ICON,
+    REALM_CURRENCY_ICON,
+    RESIN_ICON,
+    RTBP_ICON,
+    SCRATCH_CARD_ICON,
+    TBP_ICON,
+)
 from ...models import DrawInput
 from ...ui.hoyo.notes.view import NotesView
 from ...utils import get_now
@@ -27,17 +37,15 @@ if TYPE_CHECKING:
 class NotesChecker:
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
     _bot: ClassVar[HoyoBuddy]
-    _notes_cache: ClassVar[dict[Game, dict[int, Notes | StarRailNote]]] = {}
 
     @classmethod
     def _calc_est_time(cls, game: Game, threshold: int, current: int) -> datetime.datetime:
         """Calculate the estimated time for resin/trailblaze power to reach the threshold."""
         if game is Game.GENSHIN:
             return get_now() + datetime.timedelta(minutes=(threshold - current) * 8)
-        elif game is Game.STARRAIL:
+        if game in {Game.STARRAIL, Game.ZZZ}:
             return get_now() + datetime.timedelta(minutes=(threshold - current) * 6)
-        else:
-            raise NotImplementedError
+        raise NotImplementedError
 
     @classmethod
     async def _get_locale(cls, notify: NotesNotify) -> Locale:
@@ -51,7 +59,7 @@ class NotesChecker:
         return embed
 
     @classmethod
-    def _get_notify_embed(cls, notify: NotesNotify, locale: Locale) -> DefaultEmbed:
+    def _get_notify_embed(cls, notify: NotesNotify, locale: Locale) -> DefaultEmbed:  # noqa: PLR0912
         translator = cls._bot.translator
 
         match notify.type:
@@ -132,6 +140,38 @@ class NotesChecker:
                     title=LocaleStr(key="week_boss_button.label"),
                     description=LocaleStr(key="resin_discount.embed.description"),
                 )
+            case NotesNotifyType.BATTERY:
+                embed = DefaultEmbed(
+                    locale,
+                    translator,
+                    title=LocaleStr(key="battery_charge_button.label"),
+                    description=LocaleStr(
+                        key="threshold.embed.description", threshold=notify.threshold
+                    ),
+                )
+                embed.set_thumbnail(url=BATTERY_CHARGE_ICON)
+            case NotesNotifyType.SCRATCH_CARD:
+                embed = DefaultEmbed(
+                    locale,
+                    translator,
+                    title=LocaleStr(key="scratch_card_button.label"),
+                    description=LocaleStr(key="scratch_card.embed.description"),
+                )
+                embed.set_thumbnail(url=SCRATCH_CARD_ICON)
+            case NotesNotifyType.ZZZ_DAILY:
+                embed = DefaultEmbed(
+                    locale,
+                    translator,
+                    title=LocaleStr(key="zzz_engagement_button.label"),
+                    description=LocaleStr(key="zzz_engagement.embed.description"),
+                )
+            case NotesNotifyType.VIDEO_STORE:
+                embed = DefaultEmbed(
+                    locale,
+                    translator,
+                    title=LocaleStr(key="video_store_button.label"),
+                    description=LocaleStr(key="video_store.embed.description"),
+                )
 
         embed.add_acc_info(notify.account, blur=False)
         embed.set_footer(text=LocaleStr(key="notif.embed.footer"))
@@ -139,7 +179,9 @@ class NotesChecker:
         return embed
 
     @classmethod
-    async def _notify_user(cls, notify: NotesNotify, notes: StarRailNote | Notes) -> None:
+    async def _notify_user(
+        cls, notify: NotesNotify, notes: StarRailNote | Notes | ZZZNotes
+    ) -> None:
         locale = await cls._get_locale(notify)
         embed = cls._get_notify_embed(notify, locale)
         draw_input = DrawInput(
@@ -150,11 +192,13 @@ class NotesChecker:
             executor=cls._bot.executor,
             loop=cls._bot.loop,
         )
-        buffer = (
-            await draw_gi_notes_card(draw_input, notes, cls._bot.translator)
-            if isinstance(notes, Notes)
-            else await draw_hsr_notes_card(draw_input, notes, cls._bot.translator)
-        )
+
+        if isinstance(notes, ZZZNotes):
+            buffer = await draw_zzz_notes_card(draw_input, notes, cls._bot.translator)
+        elif isinstance(notes, StarRailNote):
+            buffer = await draw_hsr_notes_card(draw_input, notes, cls._bot.translator)
+        else:
+            buffer = await draw_gi_notes_card(draw_input, notes, cls._bot.translator)
         buffer.seek(0)
         file_ = discord.File(buffer, filename="notes.webp")
 
@@ -197,8 +241,10 @@ class NotesChecker:
         assert threshold is not None
 
         if current < threshold:
+            est_time = get_now() + notes.remaining_realm_currency_recovery_time
+            notify.est_time = est_time
             notify.current_notif_count = 0
-            return await notify.save(update_fields=("current_notif_count",))
+            return await notify.save(update_fields=("est_time", "current_notif_count"))
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -244,12 +290,7 @@ class NotesChecker:
             )
             notify.est_time = get_now() + min_remain_time
             notify.current_notif_count = 0
-            await notify.save(
-                update_fields=(
-                    "est_time",
-                    "current_notif_count",
-                )
-            )
+            await notify.save(update_fields=("est_time", "current_notif_count"))
 
         if (
             any(exped.finished for exped in notes.expeditions)
@@ -265,30 +306,41 @@ class NotesChecker:
 
         if remaining_time.seconds >= 0:
             notify.current_notif_count = 0
-            return await notify.save(update_fields=("current_notif_count",))
+            notify.est_time = get_now() + remaining_time
+            return await notify.save(update_fields=("current_notif_count", "est_time"))
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
 
     @classmethod
-    async def _process_daily_notify(cls, notify: NotesNotify, notes: Notes | StarRailNote) -> None:
+    async def _process_daily_notify(
+        cls, notify: NotesNotify, notes: Notes | StarRailNote | ZZZNotes
+    ) -> None:
         if notify.last_check_time is not None and get_now().day != notify.last_check_time.day:
             notify.current_notif_count = 0
             await notify.save(update_fields=("current_notif_count",))
 
-        if (
+        gi_notes_completed = (
             isinstance(notes, Notes)
             and notes.completed_commissions + notes.daily_task.completed_tasks >= 4
-        ):
-            return
-        if isinstance(notes, StarRailNote) and notes.current_train_score >= notes.max_train_score:
+        )
+        hsr_notes_completed = (
+            isinstance(notes, StarRailNote) and notes.current_train_score >= notes.max_train_score
+        )
+        zzz_notes_completed = (
+            isinstance(notes, ZZZNotes) and notes.engagement.current >= notes.engagement.max
+        )
+        if gi_notes_completed or hsr_notes_completed or zzz_notes_completed:
+            notify.current_notif_count = 0
+            notify.est_time = notify.account.server_reset_datetime
+            await notify.save(update_fields=("current_notif_count", "est_time"))
             return
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
 
     @classmethod
-    async def _process_week_boos_discount_notify(
+    async def _process_week_boss_discount_notify(
         cls, notify: NotesNotify, notes: Notes | StarRailNote
     ) -> None:
         if notify.last_check_time is not None and get_now().day != notify.last_check_time.day:
@@ -304,7 +356,47 @@ class NotesChecker:
             await cls._notify_user(notify, notes)
 
     @classmethod
-    async def _process_notify(cls, notify: NotesNotify, notes: Notes | StarRailNote) -> None:
+    async def _process_battery_charge_notify(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
+        current = notes.battery_charge.current
+        threshold = notify.threshold
+        assert threshold is not None
+
+        if current < threshold:
+            est_time = cls._calc_est_time(Game.ZZZ, threshold, current)
+            notify.est_time = est_time
+            notify.current_notif_count = 0
+            return await notify.save(update_fields=("est_time", "current_notif_count"))
+
+        if notify.current_notif_count < notify.max_notif_count:
+            await cls._notify_user(notify, notes)
+
+    @classmethod
+    async def _process_scratch_card_notify(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
+        if notes.scratch_card_completed:
+            est_time = notify.account.server_reset_datetime
+            notify.est_time = est_time
+            notify.current_notif_count = 0
+            return await notify.save(update_fields=("est_time", "current_notif_count"))
+
+        if notify.current_notif_count < notify.max_notif_count:
+            await cls._notify_user(notify, notes)
+
+    @classmethod
+    async def _process_video_store_notify(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
+        if notes.video_store_state in {
+            VideoStoreState.CURRENTLY_OPEN,
+            VideoStoreState.WAITING_TO_OPEN,
+        }:
+            notify.current_notif_count = 0
+            return await notify.save(update_fields=("current_notif_count",))
+
+        if notify.current_notif_count < notify.max_notif_count:
+            await cls._notify_user(notify, notes)
+
+    @classmethod
+    async def _process_notify(
+        cls, notify: NotesNotify, notes: Notes | StarRailNote | ZZZNotes
+    ) -> None:
         """Proces notification."""
         match notify.type:
             case NotesNotifyType.RESIN:
@@ -317,6 +409,7 @@ class NotesChecker:
                 assert isinstance(notes, StarRailNote)
                 await cls._process_rtbp_notify(notify, notes)
             case NotesNotifyType.GI_EXPED | NotesNotifyType.HSR_EXPED:
+                assert isinstance(notes, Notes | StarRailNote)
                 await cls._process_expedition_notify(notify, notes)
             case NotesNotifyType.PT:
                 assert isinstance(notes, Notes)
@@ -324,10 +417,20 @@ class NotesChecker:
             case NotesNotifyType.REALM_CURRENCY:
                 assert isinstance(notes, Notes)
                 await cls._process_realm_currency_notify(notify, notes)
-            case NotesNotifyType.GI_DAILY | NotesNotifyType.HSR_DAILY:
+            case NotesNotifyType.GI_DAILY | NotesNotifyType.HSR_DAILY | NotesNotifyType.ZZZ_DAILY:
                 await cls._process_daily_notify(notify, notes)
             case NotesNotifyType.RESIN_DISCOUNT | NotesNotifyType.ECHO_OF_WAR:
-                await cls._process_week_boos_discount_notify(notify, notes)
+                assert isinstance(notes, Notes)
+                await cls._process_week_boss_discount_notify(notify, notes)
+            case NotesNotifyType.BATTERY:
+                assert isinstance(notes, ZZZNotes)
+                await cls._process_battery_charge_notify(notify, notes)
+            case NotesNotifyType.SCRATCH_CARD:
+                assert isinstance(notes, ZZZNotes)
+                await cls._process_scratch_card_notify(notify, notes)
+            case NotesNotifyType.VIDEO_STORE:
+                assert isinstance(notes, ZZZNotes)
+                await cls._process_video_store_notify(notify, notes)
 
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:
@@ -368,16 +471,23 @@ class NotesChecker:
         ):
             return True
 
-        return bool(
-            notify.notify_time is not None and get_now() < notify.account.server_reset_datetime
-        )
+        if (  # noqa: SIM103
+            notify.notify_time is not None
+            and get_now()
+            < notify.account.server_reset_datetime - datetime.timedelta(hours=notify.notify_time)
+        ):
+            return True
+
+        return False
 
     @classmethod
-    async def _get_notes(cls, notify: NotesNotify) -> Notes | StarRailNote:
+    async def _get_notes(cls, notify: NotesNotify) -> Notes | StarRailNote | ZZZNotes:
         if notify.account.game is Game.GENSHIN:
             notes = await notify.account.client.get_genshin_notes()
         elif notify.account.game is Game.STARRAIL:
             notes = await notify.account.client.get_starrail_notes()
+        elif notify.account.game is Game.ZZZ:
+            notes = await notify.account.client.get_zzz_notes()
         else:
             raise NotImplementedError
         return notes
@@ -389,7 +499,9 @@ class NotesChecker:
 
         async with cls._lock:
             cls._bot = bot
-            cls._notes_cache = {Game.GENSHIN: {}, Game.STARRAIL: {}}
+            notes_cache: defaultdict[Game, dict[int, Notes | StarRailNote | ZZZNotes]] = (
+                defaultdict(dict)
+            )
 
             notifies = await NotesNotify.filter(enabled=True).all().order_by("account__uid")
 
@@ -401,15 +513,15 @@ class NotesChecker:
                 await notify.fetch_related("account__user", "account__user__settings")
 
                 try:
-                    if notify.account.uid not in cls._notes_cache[notify.account.game]:
+                    if notify.account.uid not in notes_cache[notify.account.game]:
                         try:
                             notes = await cls._get_notes(notify)
                         except python_socks._errors.ProxyError:
                             notify.account.client.proxy = None
                             notes = await cls._get_notes(notify)
-                        cls._notes_cache[notify.account.game][notify.account.uid] = notes
+                        notes_cache[notify.account.game][notify.account.uid] = notes
                     else:
-                        notes = cls._notes_cache[notify.account.game][notify.account.uid]
+                        notes = notes_cache[notify.account.game][notify.account.uid]
 
                     await cls._process_notify(notify, notes)
                 except Exception as e:

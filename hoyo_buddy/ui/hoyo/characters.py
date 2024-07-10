@@ -102,7 +102,8 @@ class CharactersView(View):
             self._sorter = HSRSorter.ELEMENT
 
     async def _get_pc_icons(self) -> dict[str, str]:
-        pc_icons: dict[str, str] = await JSONFile.read("pc_icons.json")
+        pc_icons: dict[str, str] = {}
+        # pc_icons: dict[str, str] = await JSONFile.read("pc_icons.json")
 
         if any(str(c.id) not in pc_icons for c in self._gi_characters):
             await self._account.client.update_pc_icons()

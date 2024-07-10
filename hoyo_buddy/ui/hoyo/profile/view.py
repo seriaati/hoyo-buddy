@@ -443,7 +443,7 @@ class ProfileView(View):
                 await self._card_settings.save(update_fields=("current_image",))
             if unset_loading_state:
                 await item.unset_loading_state(i)
-            raise
+            raise ThirdPartyCardTempError from e
 
         attachments = [File(bytes_obj, filename="card.webp")]
 

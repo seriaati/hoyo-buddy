@@ -88,7 +88,7 @@ class GeetestCommand:
                         "validate": result["geetest_validate"],
                     }
                 )
-                embed = client.get_daily_reward_embed(reward, self._locale, translator)
+                embed = client.get_daily_reward_embed(reward, self._locale, translator, blur=True)
             else:
                 await client.verify_mmt(genshin.models.MMTResult(**result))
                 embed = DefaultEmbed(

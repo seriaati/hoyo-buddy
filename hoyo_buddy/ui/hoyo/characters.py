@@ -602,7 +602,7 @@ class UpdateTalentData(Button[CharactersView]):
     def __init__(self) -> None:
         super().__init__(
             label=LocaleStr(key="characters.update_talent_data"),
-            style=ButtonStyle.green,
+            style=ButtonStyle.blurple,
             row=3,
         )
 

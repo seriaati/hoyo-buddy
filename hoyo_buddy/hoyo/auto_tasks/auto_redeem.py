@@ -9,7 +9,7 @@ from loguru import logger
 
 from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr
-from ...constants import HB_GAME_TO_GPY_GAME
+from ...constants import GPY_GAME_TO_HB_GAME, HB_GAME_TO_GPY_GAME
 from ...db.models import HoyoAccount
 from ...enums import Game, Platform
 
@@ -117,7 +117,7 @@ class AutoRedeem:
             )
 
             accounts = (
-                await HoyoAccount.filter(auto_redeem=True, game=game).all()
+                await HoyoAccount.filter(auto_redeem=True, game=GPY_GAME_TO_HB_GAME[game]).all()
                 if game is not None
                 else await HoyoAccount.filter(auto_redeem=True).all()
             )

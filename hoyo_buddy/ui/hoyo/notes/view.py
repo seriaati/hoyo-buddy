@@ -22,6 +22,7 @@ from hoyo_buddy.emojis import (
 from hoyo_buddy.enums import Game, NotesNotifyType
 from hoyo_buddy.models import DrawInput
 
+from ....exceptions import FeatureNotImplementedError
 from ...components import Button, GoBackButton, View
 
 if TYPE_CHECKING:
@@ -257,7 +258,9 @@ class NotesView(View):
             )
 
         else:
-            raise NotImplementedError
+            raise FeatureNotImplementedError(
+                platform=self._account.platform, game=self._account.game
+            )
 
         embed.add_acc_info(self._account)
         embed.set_image(url="attachment://notes.webp")
@@ -417,7 +420,9 @@ class NotesView(View):
             return await self._account.client.get_genshin_notes()
         if self._account.game is Game.ZZZ:
             return await self._account.client.get_zzz_notes()
-        return await self._account.client.get_starrail_notes()
+        if self._account.game is Game.STARRAIL:
+            return await self._account.client.get_starrail_notes()
+        raise FeatureNotImplementedError(platform=self._account.platform, game=self._account.game)
 
     async def _draw_notes_card(
         self,
@@ -611,7 +616,9 @@ class ReminderButton(Button[NotesView]):
             self.view.add_item(ScratchCardReminder(row=1))
             self.view.add_item(VideoStoreReminder(row=1))
         else:
-            raise NotImplementedError
+            raise FeatureNotImplementedError(
+                platform=self.view._account.platform, game=self.view._account.game
+            )
 
         embed = await self.view._get_reminder_embed()
         await i.response.edit_message(embed=embed, view=self.view, attachments=[])

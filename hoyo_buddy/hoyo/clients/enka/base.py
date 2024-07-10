@@ -65,9 +65,6 @@ class BaseClient:
                 if str(character["avatarId"]) == character_id:
                     cache["detailInfo"]["avatarDetailList"].remove(character)
                     break
-        else:
-            msg = f"Game {game} is not supported."
-            raise NotImplementedError(msg)
 
     def _update_cache(
         self,
@@ -123,9 +120,6 @@ class BaseClient:
                 cache["detailInfo"]["avatarDetailList"].append(chara)
 
             return cache
-        else:
-            msg = f"Game {game} is not supported."
-            raise NotImplementedError(msg)
 
     @overload
     async def fetch_showcase(

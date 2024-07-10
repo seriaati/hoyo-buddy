@@ -14,7 +14,7 @@ from ..db.models import HoyoAccount, Settings, get_locale
 from ..draw.main_funcs import draw_exploration_card
 from ..embeds import DefaultEmbed
 from ..enums import Game, GeetestType, Platform
-from ..exceptions import IncompleteParamError, InvalidQueryError
+from ..exceptions import FeatureNotImplementedError, IncompleteParamError, InvalidQueryError
 from ..hoyo.clients.ambr import AmbrAPIClient
 from ..hoyo.clients.yatta import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
@@ -165,7 +165,7 @@ class Hoyo(commands.Cog):
         elif game is Game.STARRAIL:
             view = await handler.run_hsr()
         else:
-            raise NotImplementedError
+            raise FeatureNotImplementedError(platform=Platform.HOYOLAB, game=game)
 
         await view.start(i)
 
@@ -251,7 +251,7 @@ class Hoyo(commands.Cog):
                 element_char_counts = await client.fetch_element_char_counts()
                 path_char_counts = await client.fetch_path_char_counts()
         else:
-            raise NotImplementedError
+            raise FeatureNotImplementedError(platform=account_.platform, game=account_.game)
 
         view = CharactersView(
             account_,

@@ -23,7 +23,7 @@ from ...constants import (
 from ...db.models import JSONFile
 from ...embeds import DefaultEmbed
 from ...emojis import get_gi_element_emoji, get_hsr_element_emoji, get_hsr_path_emoji
-from ...exceptions import ActionInCooldownError, NoCharsFoundError
+from ...exceptions import ActionInCooldownError, FeatureNotImplementedError, NoCharsFoundError
 from ...hoyo.clients.ambr import AmbrAPIClient
 from ...hoyo.clients.yatta import YattaAPIClient
 from ...icons import LOADING_ICON
@@ -269,7 +269,7 @@ class CharactersView(View):
                 self.translator,
             )
         else:
-            raise NotImplementedError
+            raise FeatureNotImplementedError(platform=self._account.platform, game=self._game)
 
         return file_
 
@@ -368,7 +368,7 @@ class CharactersView(View):
                 )
             )
         else:
-            raise NotImplementedError
+            raise FeatureNotImplementedError(platform=self._account.platform, game=self._game)
 
         embed.set_image(url="attachment://characters.webp")
         embed.add_acc_info(self._account)
@@ -386,7 +386,7 @@ class CharactersView(View):
             self.add_item(ElementFilterSelector(HSRElement))
             self.add_item(HSRSorterSelector(self._sorter))
         else:
-            raise NotImplementedError
+            raise FeatureNotImplementedError(platform=self._account.platform, game=self._game)
 
     async def start(self, i: Interaction, *, show_first_time_msg: bool = False) -> None:
         if show_first_time_msg:
@@ -425,7 +425,7 @@ class CharactersView(View):
 
             characters = self._get_hsr_filtered_and_sorted_characters()
         else:
-            raise NotImplementedError
+            raise FeatureNotImplementedError(platform=self._account.platform, game=self._game)
 
         file_ = await self._draw_card(
             i.client.session, characters, i.client.executor, i.client.loop
@@ -500,7 +500,9 @@ class ElementFilterSelector(Select[CharactersView]):
             self.view._element_filters = [HSRElement(value) for value in self.values]
             characters = self.view._get_hsr_filtered_and_sorted_characters()
         else:
-            raise NotImplementedError
+            raise FeatureNotImplementedError(
+                platform=self.view._account.platform, game=self.view._game
+            )
 
         await self.set_loading_state(i)
         file_ = await self.view._draw_card(
@@ -711,7 +713,9 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
         elif self.view._game is Game.STARRAIL:
             characters = self.view._get_hsr_filtered_and_sorted_characters()
         else:
-            raise NotImplementedError
+            raise FeatureNotImplementedError(
+                platform=self.view._account.platform, game=self.view._game
+            )
 
         file_ = await self.view._draw_card(
             i.client.session, characters, i.client.executor, i.client.loop

@@ -30,11 +30,11 @@ class CookiesModal(Modal):
 
 
 class DevToolCookiesModal(Modal):
-    ltuid_v2 = TextInput(label="ltuid_v2", placeholder="1234567")
+    ltuid_v2 = TextInput(label="ltuid_v2", placeholder="1234567", is_digit=True)
     ltoken_v2 = TextInput(label="ltoken_v2", placeholder="v2_ABCDe5678...")
     ltmid_v2 = TextInput(label="ltmid_v2", placeholder="1k922_hy")
     account_mid_v2 = TextInput(label="account_mid_v2", placeholder="1k922_hy")
-    account_id_v2 = TextInput(label="account_id_v2", placeholder="1234567")
+    account_id_v2 = TextInput(label="account_id_v2", placeholder="1234567", is_digit=True)
 
     @property
     def cookies(self) -> str:

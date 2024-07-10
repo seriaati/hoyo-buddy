@@ -567,6 +567,6 @@ reminder_modal.title: "{notify}提醒设置"
 redeem_code.reached_max_limit: 此兌換碼已達使用上限
 profile_view.set_cur_temp_as_default: 設置當前樣式為預設
 set_cur_temp_as_default.done: 完成
-set_cur_temp_as_default.done_desc: 你已將當前的卡片樣式設置為預設樣式。
+set_cur_temp_as_default.done_desc: 你已将当前的卡片样式设置为预设样式。
 third_party_card_temp_error_title: 在使用第3方样式绘制卡片时发生错误
 third_party_card_temp_error_message: 为了使角色卡片能正常显示，此角色的卡片样式已被重置为 Hoyo Buddy 的样式。如果此错误持续发生，请使用 </feedback> 联系开发者。

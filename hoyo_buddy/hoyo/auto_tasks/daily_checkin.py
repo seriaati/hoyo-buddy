@@ -129,7 +129,7 @@ class DailyCheckin:
 
                 embed.add_acc_info(account, blur=False)
             else:
-                embed = client.get_daily_reward_embed(reward, locale, translator)
+                embed = client.get_daily_reward_embed(reward, locale, translator, blur=False)
             return embed
 
         payload = {
@@ -143,7 +143,7 @@ class DailyCheckin:
             data = await resp.json()
             if resp.status == 200:
                 reward = genshin.models.DailyReward(**data["data"])
-                embed = client.get_daily_reward_embed(reward, locale, translator)
+                embed = client.get_daily_reward_embed(reward, locale, translator, blur=False)
             elif resp.status == 400:
                 if data["retcode"] == -9999:
                     account.user.temp_data = data["data"]

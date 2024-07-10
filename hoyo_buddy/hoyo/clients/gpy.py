@@ -64,6 +64,8 @@ class GenshinClient(genshin.Client):
         daily_reward: genshin.models.DailyReward,
         locale: Locale,
         translator: Translator,
+        *,
+        blur: bool,
     ) -> DefaultEmbed:
         embed = (
             DefaultEmbed(
@@ -73,7 +75,7 @@ class GenshinClient(genshin.Client):
                 description=f"{daily_reward.name} x{daily_reward.amount}",
             )
             .set_thumbnail(url=daily_reward.icon)
-            .add_acc_info(self._account)
+            .add_acc_info(self._account, blur=blur)
         )
         return embed
 

@@ -171,7 +171,7 @@ class CheckInButton(Button[CheckInUI]):
         file_ = discord.File(self.view._bytes_obj, filename="check-in.webp")
 
         await i.edit_original_response(embed=embed, attachments=[file_])
-        embed = client.get_daily_reward_embed(daily_reward, self.view.locale, self.view.translator)
+        embed = client.get_daily_reward_embed(daily_reward, self.view.locale, self.view.translator, blur=True)
         await i.followup.send(embed=embed)
 
 

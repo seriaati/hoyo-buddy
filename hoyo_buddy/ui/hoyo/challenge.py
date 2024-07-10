@@ -491,3 +491,4 @@ class ViewBuffs(Button[ChallengeView]):
         first_buff = next(iter(view._buffs.values()))
         embed = view.get_buff_embed(first_buff, ", ".join(view._buff_usage[first_buff.name]))
         await i.response.send_message(embed=embed, view=view, ephemeral=True)
+        view.message = await i.original_response()

@@ -30,7 +30,9 @@ def draw_hsr_build_card(
         primary = Drawer.blend_color(primary, (32, 36, 33), 0.88)
 
     dark_primary = Drawer.blend_color(primary, WHITE if dark_mode else BLACK, 0.6)
-    light_primary = Drawer.blend_color(primary, BLACK if dark_mode else WHITE, 0.15)
+    light_primary = Drawer.blend_color(
+        primary, BLACK if dark_mode else WHITE, 0.23 if dark_mode else 0.18
+    )
 
     im = Image.new("RGBA", (2244, 1297), primary)
     draw = ImageDraw.Draw(im)

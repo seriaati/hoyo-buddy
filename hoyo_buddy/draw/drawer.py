@@ -57,7 +57,7 @@ FONT_MAPPING: dict[
         "medium": NOTOSANSKR_MEDIUM,
         "bold": NOTOSANSKR_BOLD,
     },
-    None: {
+    discord.Locale.american_english: {
         "light": NUNITO_LIGHT,
         "regular": NUNITO_REGULAR,
         "medium": NUNITO_MEDIUM,
@@ -242,13 +242,14 @@ class Drawer:
         italic: bool,
     ) -> ImageFont.FreeTypeFont:
         style_ = f"{style}_italic" if italic else style
-        font = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[None]).get(style_)
+        default_locale = discord.Locale.american_english
+        font = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[default_locale]).get(style_)
         if font is None:
             if style == "black":
                 # Can't find black font, use bold instead
                 style = "bold"
             # When the font doesn't have italic version
-            font = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[None]).get(style)
+            font = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[default_locale]).get(style)
 
         if font is None:
             msg = f"Invalid font style: {style}"

@@ -209,6 +209,7 @@ class NotesChecker:
             locale=locale,
             translator=cls._bot.translator,
         )
+        view.bytes_obj = buffer
         message = await cls._bot.dm_user(notify.account.user.id, embed=embed, file=file_, view=view)
         view.message = message
 

@@ -55,7 +55,7 @@ class NotesView(View):
         super().__init__(author=author, locale=locale, translator=translator)
         self._account = account
         self._dark_mode = dark_mode
-        self._bytes_obj: io.BytesIO | None = None
+        self.bytes_obj: io.BytesIO | None = None
 
         self.add_item(ReminderButton())
 
@@ -546,12 +546,12 @@ class NotesView(View):
 
         notes = await self._get_notes()
         embed = self._get_notes_embed(notes)
-        self._bytes_obj = await self._draw_notes_card(
+        self.bytes_obj = await self._draw_notes_card(
             i.client.session, notes, i.client.executor, i.client.loop
         )
 
-        self._bytes_obj.seek(0)
-        file_ = File(self._bytes_obj, filename="notes.webp")
+        self.bytes_obj.seek(0)
+        file_ = File(self.bytes_obj, filename="notes.webp")
         await i.followup.send(embed=embed, file=file_, view=self)
         self.message = await i.original_response()
 
@@ -568,7 +568,7 @@ class ReminderButton(Button[NotesView]):
         go_back_button = GoBackButton(
             self.view.children,
             self.view.get_embeds(i.message),
-            self.view._bytes_obj,
+            self.view.bytes_obj,
         )
         self.view.clear_items()
         self.view.add_item(go_back_button)

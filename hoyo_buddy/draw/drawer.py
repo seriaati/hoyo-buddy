@@ -396,7 +396,7 @@ class Drawer:
         image = self.resize_crop(image, (target_width, target_height), zoom)
 
         if self.dark_mode:
-            overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.2))
+            overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.1))
             image = Image.alpha_composite(image.convert("RGBA"), overlay)
 
         if background_color is not None:

@@ -117,6 +117,9 @@ class Settings(Model):
     user: fields.OneToOneRelation[User] = fields.OneToOneField(
         "models.User", related_name="settings", pk=True
     )
+    gi_card_temp = fields.CharField(max_length=32, default="hb1")
+    hsr_card_temp = fields.CharField(max_length=32, default="hb1")
+    zzz_card_temp = fields.CharField(max_length=32, default="hb1")
 
     @property
     def locale(self) -> Locale | None:

@@ -181,3 +181,11 @@ class FeatureNotImplementedError(HoyoBuddyError):
                 key="not_implemented_error_message", game=EnumStr(game), platform=EnumStr(platform)
             ),
         )
+
+
+class ThirdPartyCardTempError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr(key="third_party_card_temp_error_title"),
+            message=LocaleStr(key="third_party_card_temp_error_message"),
+        )

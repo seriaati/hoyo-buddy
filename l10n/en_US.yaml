@@ -565,5 +565,8 @@ video_store.waiting_to_open: Waiting to open
 notes-card.zzz.title: Sticky Notes
 reminder_modal.title: "{notify} Reminder Settings"
 redeem_code.reached_max_limit: This redemption code has reached its max usage limit
+profile_view.set_cur_temp_as_default: Set current template as default
+set_cur_temp_as_default.done: Done
+set_cur_temp_as_default.done_desc: Your have set your default card template to the current one.
 third_party_card_temp_error_title: An error occured while drawing the card with a 3rd party template
 third_party_card_temp_error_message: The card template for this character has been reset to Hoyo Buddy's template, so that you can at least see the card. If this error persists, please contact the developer via /feedback.

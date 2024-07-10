@@ -16,6 +16,7 @@ from .gen_ai_art_btn import GenerateAIArtButton
 from .image_select import ImageSelect
 from .primary_color_btn import PrimaryColorButton
 from .remove_img_btn import RemoveImageButton
+from .set_default_temp import SetCurTempAsDefaultButton
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
@@ -65,6 +66,7 @@ class CardSettingsButton(Button["ProfileView"]):
                 DISABLE_COLOR[self.view._card_settings.template],
             )
         )
+        self.view.add_item(SetCurTempAsDefaultButton())
         self.view.add_item(
             DarkModeButton(
                 self.view._card_settings.dark_mode,

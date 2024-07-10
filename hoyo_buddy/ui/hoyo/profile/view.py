@@ -8,11 +8,15 @@ from discord import File, Locale
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.constants import LOCALE_TO_GI_CARD_API_LANG, LOCALE_TO_HSR_CARD_API_LANG
-from hoyo_buddy.db.models import CardSettings, HoyoAccount
+from hoyo_buddy.db.models import CardSettings, HoyoAccount, Settings
 from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import CharacterType, Game
-from hoyo_buddy.exceptions import CardNotReadyError, DownloadImageFailedError
+from hoyo_buddy.exceptions import (
+    CardNotReadyError,
+    DownloadImageFailedError,
+    ThirdPartyCardTempError,
+)
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
@@ -384,8 +388,24 @@ class ProfileView(View):
             user_id=i.user.id, character_id=self.character_id
         )
         if card_settings is None:
+            user_settings = await Settings.get(user_id=i.user.id)
+            templates = {
+                Game.GENSHIN: user_settings.gi_card_temp,
+                Game.STARRAIL: user_settings.hsr_card_temp,
+                Game.ZZZ: user_settings.zzz_card_temp,
+            }
+            template = templates.get(self.game)
+            if template is None:
+                msg = (
+                    f"Game {self.game!r} does not have its table column for default card template."
+                )
+                raise ValueError(msg)
+
             card_settings = await CardSettings.create(
-                user_id=i.user.id, character_id=self.character_id, dark_mode=False
+                user_id=i.user.id,
+                character_id=self.character_id,
+                dark_mode=False,
+                template=template,
             )
         self._card_settings = card_settings
 
@@ -420,7 +440,7 @@ class ProfileView(View):
 
         # This should never happen, this is just to address variable unbound error for bytes_obj
         if bytes_obj is None:
-            msg = "Failed to draw the character card."
+            msg = "bytes_obj should not be None."
             raise RuntimeError(msg)
 
         return bytes_obj

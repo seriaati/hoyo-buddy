@@ -7,30 +7,7 @@ import discord
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from ..models import DynamicBKInput, TopPadding
-from .fonts import (
-    GENSENROUNDEDTW_BOLD,
-    GENSENROUNDEDTW_LIGHT,
-    GENSENROUNDEDTW_MEDIUM,
-    GENSENROUNDEDTW_REGULAR,
-    MPLUSROUNDED1C_BOLD,
-    MPLUSROUNDED1C_LIGHT,
-    MPLUSROUNDED1C_MEDIUM,
-    MPLUSROUNDED1C_REGULAR,
-    NOTOSANSKR_BOLD,
-    NOTOSANSKR_LIGHT,
-    NOTOSANSKR_MEDIUM,
-    NOTOSANSKR_REGULAR,
-    NUNITO_BLACK,
-    NUNITO_BLACK_ITALIC,
-    NUNITO_BOLD,
-    NUNITO_BOLD_ITALIC,
-    NUNITO_LIGHT,
-    NUNITO_LIGHT_ITALIC,
-    NUNITO_MEDIUM,
-    NUNITO_MEDIUM_ITALIC,
-    NUNITO_REGULAR,
-    NUNITO_REGULAR_ITALIC,
-)
+from .fonts import *  # noqa: F403
 from .static import get_static_img_path
 
 if TYPE_CHECKING:

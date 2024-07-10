@@ -564,3 +564,4 @@ video_store.revenue_available: Revenue available
 video_store.waiting_to_open: Waiting to open
 notes-card.zzz.title: Sticky Notes
 reminder_modal.title: "{notify} Reminder Settings"
+redeem_code.reached_max_limit: This redemption code has reached its max usage limit

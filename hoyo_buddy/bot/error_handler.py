@@ -52,6 +52,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     },
     (-2017, -2018): {"title": LocaleStr(key="redeem_code.already_claimed")},
     (-2001,): {"title": LocaleStr(key="redeem_code.expired")},
+    (-2006,): {"title": LocaleStr(key="redeem_code.reached_max_limit")},
     (-1065, -2003, -2004, -2014): {"title": LocaleStr(key="redeem_code.invalid")},
     (-2016,): {"title": LocaleStr(key="redeem_code.cooldown")},
     (10102,): {

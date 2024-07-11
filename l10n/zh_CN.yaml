@@ -569,4 +569,6 @@ profile_view.set_cur_temp_as_default: 设置当前样式为预设
 set_cur_temp_as_default.done: 完成
 set_cur_temp_as_default.done_desc: 你已将当前的卡片样式设置为预设样式。
 third_party_card_temp_error_title: 在使用第3方样式绘制卡片时发生错误
-third_party_card_temp_error_message: 为了使角色卡片能正常显示，此角色的卡片样式已被重置为 Hoyo Buddy 的样式。如果此错误持续发生，请使用 </feedback> 联系开发者。
+third_party_card_temp_error_message: "为了使角色卡片能正常显示，此角色的卡片样式已被重置为 Hoyo Buddy 的样式。如果此错误持续发生，请使用 </feedback> 联系开发者。"
+account_locked_title: 账户已被锁定20分钟
+account_locked_description: 输入错误密码的次数过多。请等待 20 分钟，然后重试。如果你认为这是一个错误，请通过 </feedback> 联系开发人员。

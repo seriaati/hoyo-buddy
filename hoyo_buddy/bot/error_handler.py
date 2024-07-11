@@ -55,6 +55,10 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     (-2006,): {"title": LocaleStr(key="redeem_code.reached_max_limit")},
     (-1065, -2003, -2004, -2014): {"title": LocaleStr(key="redeem_code.invalid")},
     (-2016,): {"title": LocaleStr(key="redeem_code.cooldown")},
+    (-3202,): {
+        "title": LocaleStr(key="account_locked_title"),
+        "description": LocaleStr(key="account_locked_description"),
+    },
     (10102,): {
         "title": LocaleStr(key="data_not_public.title"),
         "description": LocaleStr(key="data_not_public.description"),

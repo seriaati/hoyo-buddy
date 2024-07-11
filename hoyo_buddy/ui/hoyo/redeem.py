@@ -17,21 +17,28 @@ if TYPE_CHECKING:
 
 
 class GiftCodeModal(Modal):
-    code_1 = TextInput(label=LocaleStr(key="gift_code_modal.code_input.label", num=1))
+    code_1 = TextInput(
+        label=LocaleStr(key="gift_code_modal.code_input.label", num=1),
+        placeholder="https://hsr.hoyoverse.com/gift?code=...",
+    )
     code_2 = TextInput(
         label=LocaleStr(key="gift_code_modal.code_input.label", num=2),
+        placeholder="https://zzz.hoyoverse.com/gift?code=...",
         required=False,
     )
     code_3 = TextInput(
         label=LocaleStr(key="gift_code_modal.code_input.label", num=3),
+        placeholder="GENSHINGIFT",
         required=False,
     )
     code_4 = TextInput(
         label=LocaleStr(key="gift_code_modal.code_input.label", num=4),
+        placeholder="HSR2024",
         required=False,
     )
     code_5 = TextInput(
         label=LocaleStr(key="gift_code_modal.code_input.label", num=5),
+        placeholder="HOYOBUDDY",
         required=False,
     )
 
@@ -99,6 +106,9 @@ class RedeemCodesButton(Button[RedeemUI]):
             modal.code_4.value,
             modal.code_5.value,
         )
+
+        # Extract codes from urls
+        codes = [code.split("code=")[1] if "code=" in code else code for code in codes]
         embed = await self.view.account.client.redeem_codes(
             codes, locale=self.view.locale, translator=self.view.translator, inline=False
         )

@@ -10,6 +10,8 @@ from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
 
+from .....utils import ephemeral
+
 if TYPE_CHECKING:
     from discord import Locale, Member, User
 
@@ -95,7 +97,7 @@ class WeaponUI(View):
         )
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
         embed = await self._get_embed()
         self._setup_items()
         await i.edit_original_response(embed=embed, view=self)

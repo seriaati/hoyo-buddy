@@ -13,7 +13,7 @@ from ...emojis import BELL_OUTLINE, GENSHIN_CITY_EMOJIS
 from ...enums import GenshinCity
 from ...hoyo.farm_data import FarmDataFetcher
 from ...models import DrawInput
-from ...utils import get_now
+from ...utils import ephemeral, get_now
 from ..components import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:
@@ -48,7 +48,7 @@ class FarmView(View):
             self._weekday = get_now().weekday()
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         self.clear_items()
         self.add_item(WeekdaySelect(self._weekday))

@@ -20,7 +20,6 @@ class ChallengeCommand:
 
     async def run(self) -> None:
         i = self._interaction
-        await i.response.defer()
 
         user = self._user or i.user
         account = self._account or await self._bot.get_account(

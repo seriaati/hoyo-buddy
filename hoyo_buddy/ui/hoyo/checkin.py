@@ -137,7 +137,6 @@ class CheckInUI(View):
         return embed, bytes_obj
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer()
         embed, self._bytes_obj = await self.get_embed_and_image(
             i.client.session, i.client.executor, i.client.loop
         )

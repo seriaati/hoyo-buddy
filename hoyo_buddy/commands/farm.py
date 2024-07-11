@@ -10,6 +10,7 @@ from ..enums import Game
 from ..exceptions import AutocompleteNotDoneYetError, InvalidQueryError
 from ..hoyo.clients import ambr
 from ..ui.hoyo.farm_notify import FarmNotifyView
+from ..utils import ephemeral
 
 if TYPE_CHECKING:
     import discord
@@ -93,6 +94,8 @@ class FarmCommand:
         await view.start(self._interaction)
 
     async def run(self) -> None:
+        await self._interaction.response.defer(ephemeral=ephemeral(self._interaction))
+
         self._validate_query()
 
         farm_notify = await self._get_farm_notify()
@@ -112,7 +115,7 @@ class FarmCommand:
                         title=LocaleStr(key="farm_remove_command.item_not_found"),
                         description=LocaleStr(key="farm_remove_command.item_not_found_description"),
                     )
-                    await self._interaction.response.send_message(embed=embed)
+                    await self._interaction.followup.send(embed=embed)
                     return
 
             await self._update_farm_notify(farm_notify)

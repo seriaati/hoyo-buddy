@@ -542,8 +542,6 @@ class NotesView(View):
         )
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer()
-
         notes = await self._get_notes()
         embed = self._get_notes_embed(notes)
         self.bytes_obj = await self._draw_notes_card(

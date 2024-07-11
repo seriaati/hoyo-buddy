@@ -8,6 +8,7 @@ from discord.ext import commands
 
 from ..db.models import Settings as UserSettings
 from ..ui.settings import SettingsUI
+from ..utils import ephemeral
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
@@ -23,6 +24,8 @@ class Settings(commands.Cog):
         description=locale_str("Configure your user settings", key="settings_command_description"),
     )
     async def settings_command(self, i: Interaction) -> Any:
+        await i.response.defer(ephemeral=ephemeral(i))
+
         settings = await UserSettings.get(user_id=i.user.id)
         view = SettingsUI(
             author=i.user,
@@ -30,7 +33,7 @@ class Settings(commands.Cog):
             translator=self.bot.translator,
             settings=settings,
         )
-        await i.response.send_message(
+        await i.followup.send(
             embed=view.get_embed(), file=view.get_brand_image_file(i.locale), view=view
         )
         view.message = await i.original_response()

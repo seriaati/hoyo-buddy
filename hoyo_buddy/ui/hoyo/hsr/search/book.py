@@ -6,6 +6,8 @@ from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.ui import Select, SelectOption, View
 
+from .....utils import ephemeral
+
 if TYPE_CHECKING:
     from discord import Locale, Member, User
 
@@ -30,7 +32,7 @@ class BookUI(View):
         self.series_embeds: dict[str, DefaultEmbed] = {}
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         async with YattaAPIClient(self.locale, self.translator) as api:
             try:

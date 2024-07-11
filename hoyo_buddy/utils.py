@@ -10,7 +10,7 @@ import aiohttp
 from .constants import UTC_8
 
 if TYPE_CHECKING:
-    from discord import Member, User
+    from discord import Interaction, Member, User
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
 
@@ -128,3 +128,10 @@ async def get_pixiv_proxy_img(session: aiohttp.ClientSession, url: str) -> str:
 def get_floor_difficulty(floor_name: str, season_name: str) -> str:
     """Get the difficulty of a floor in a Star Rail challenge."""
     return floor_name.replace(season_name, "").replace(":", "").replace("•", "").strip()
+
+
+def ephemeral(i: Interaction) -> bool:
+    """Returns true if the interaction needs to be ephemeral."""
+    if i.guild is None:
+        return False
+    return not i.app_permissions.send_messages

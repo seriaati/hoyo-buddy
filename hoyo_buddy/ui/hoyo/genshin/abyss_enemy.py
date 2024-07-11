@@ -8,7 +8,7 @@ from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.draw.main_funcs import draw_item_list_card
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.models import DrawInput
-from hoyo_buddy.utils import get_now
+from hoyo_buddy.utils import ephemeral, get_now
 
 from ...components import Button, Select, SelectOption, View
 
@@ -148,7 +148,7 @@ class AbyssEnemyView(View):
         self.message = await i.original_response()
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         async with AmbrAPIClient(self.locale, self.translator) as client:
             self._abyss_data = await client.fetch_abyss_data()

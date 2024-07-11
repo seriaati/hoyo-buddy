@@ -8,6 +8,8 @@ from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.ui import Button, Select, SelectOption, View
 
+from .....utils import ephemeral
+
 if TYPE_CHECKING:
     from ambr.models import CardTalent, TCGCardDetail
     from discord import Locale, Member, User
@@ -49,7 +51,7 @@ class TCGCardUI(View):
             self.add_item(CardTalentSelector(card.talents, self.current_talent_id))
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         async with AmbrAPIClient(self.locale, self.translator) as api:
             card = await api.fetch_tcg_card_detail(self.card_id)

@@ -113,7 +113,6 @@ class GeetestCommand:
             )
 
         i = self._interaction
-        await i.response.defer()
         assert i.channel is not None
 
         self._locale = await get_locale(i)

@@ -15,7 +15,7 @@ from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
 from ..ui import Button, View
 from ..ui.feedback import FeedbackView
 from ..ui.settings import SettingsUI
-from ..utils import get_discord_user_md_link
+from ..utils import ephemeral, get_discord_user_md_link
 
 if TYPE_CHECKING:
     import git
@@ -46,7 +46,7 @@ class Others(commands.Cog):
         ),
     )
     async def feedback_command(self, i: Interaction) -> Any:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
         locale = (await UserSettings.get(user_id=i.user.id)).locale or i.locale
         view = FeedbackView(author=i.user, locale=locale, translator=self.bot.translator)
         embed = DefaultEmbed(
@@ -67,7 +67,7 @@ class Others(commands.Cog):
         description=locale_str("About the bot", key="about_command_description"),
     )
     async def about_command(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         settings = await UserSettings.get(user_id=i.user.id)
         locale = settings.locale or i.locale

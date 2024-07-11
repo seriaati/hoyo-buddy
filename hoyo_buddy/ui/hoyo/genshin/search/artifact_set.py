@@ -11,6 +11,8 @@ from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
 from hoyo_buddy.ui import Button, View
 
+from .....utils import ephemeral
+
 if TYPE_CHECKING:
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
@@ -34,7 +36,7 @@ class ArtifactSetUI(View):
         self._hakushin = hakushin
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         try:
             artifact_id = int(self._artifact_id)

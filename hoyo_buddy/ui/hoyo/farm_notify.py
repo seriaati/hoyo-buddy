@@ -117,7 +117,7 @@ class FarmNotifyView(PaginatorView):
                 description=LocaleStr(key="farm_notify.empty_description"),
             )
             embed.add_acc_info(self._notify.account)
-            return await i.response.send_message(embed=embed)
+            return await i.followup.send(embed=embed)
 
         await self._get_item_icon_and_names()
         await super().start(i)

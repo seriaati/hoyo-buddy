@@ -39,6 +39,7 @@ class CharacterUI(View):
         self._character_level = 80
 
         self._main_skill_index = 0
+        self._main_skill_max_levels: list[int] = []
         self._main_skill_levels: list[int] = []
         self._sub_skill_index = 0
         self._eidolon_index = 0
@@ -102,8 +103,10 @@ class CharacterUI(View):
                 self._character_detail = character_detail
                 self._manual_avatar = manual_avatar
 
-                self._main_skill_levels = [
-                    skill.max_level for skill in character_detail.traces.main_skills
+                self._main_skill_max_levels = self._main_skill_levels = [
+                    sk.max_level
+                    for skill in character_detail.traces.main_skills
+                    for sk in skill.skill_list
                 ]
 
                 self._character_embed = api.get_character_details_embed(
@@ -153,9 +156,7 @@ class CharacterUI(View):
                     self.add_item(
                         EnterSkilLevel(
                             label=LocaleStr(key="change_skill_level_label"),
-                            skill_max_level=self._character_detail.traces.main_skills[
-                                self._main_skill_index
-                            ].max_level,
+                            skill_max_level=self._main_skill_max_levels[self._main_skill_index],
                         )
                     )
                     options: list[SelectOption] = []
@@ -246,9 +247,7 @@ class CharacterUI(View):
                     self.add_item(
                         EnterSkilLevel(
                             label=LocaleStr(key="change_skill_level_label"),
-                            skill_max_level=list(self._character_detail.skills.values())[
-                                self._main_skill_index
-                            ].max_level,
+                            skill_max_level=self._main_skill_max_levels[self._main_skill_index],
                         )
                     )
 

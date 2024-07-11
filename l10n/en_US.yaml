@@ -571,4 +571,4 @@ set_cur_temp_as_default.done_desc: Your have set your default card template to t
 third_party_card_temp_error_title: An error occured while drawing the card with a 3rd party template
 third_party_card_temp_error_message: "The card template for this character has been reset to Hoyo Buddy's template, so that you can at least see the card. If this error persists, please contact the developer via </feedback>."
 account_locked_title: Account has been locked for 20 minutes
-account_locked_description: You have entered the incorrect password too many times. Please wait 20 minutes and try again. If you believe this is an error, please contact the developer via </feedback>.
+account_locked_description: "You have entered the incorrect password too many times. Please wait 20 minutes and try again. If you believe this is an error, please contact the developer via </feedback>."

@@ -39,9 +39,8 @@ def draw_zzz_notes(
     drawer.write(
         LocaleStr(key="notes-card.zzz.title"),
         size=84,
-        style="black",
+        style="black_italic",
         position=(76, 44),
-        italic=True,
     )
 
     # Battery charge

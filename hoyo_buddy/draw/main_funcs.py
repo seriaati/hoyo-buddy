@@ -438,6 +438,8 @@ async def draw_zzz_build_card(
     urls: list[str] = []
     urls.append(image_url)
     urls.extend(disc_icons.values())
+    if agent.w_engine is not None:
+        urls.append(agent.w_engine.icon)
     await download_and_save_static_images(urls, "zzz-build-card", draw_input.session)
 
     with timing("draw", tags={"type": "zzz_build_card"}):

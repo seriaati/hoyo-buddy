@@ -15,7 +15,7 @@ from hoyo_buddy.constants import LOCALE_TO_GI_CARD_API_LANG, LOCALE_TO_HSR_CARD_
 from hoyo_buddy.db.models import CardSettings, HoyoAccount, Settings
 from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card, draw_zzz_build_card
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import CharacterType, Game
+from hoyo_buddy.enums import CharacterType, Game, Platform
 from hoyo_buddy.exceptions import (
     CardNotReadyError,
     DownloadImageFailedError,
@@ -416,8 +416,13 @@ class ProfileView(View):
         client = self._account.client
         client.set_lang(self.locale)
         agent = await client.get_zzz_agent_info(character.id)
-        client.set_lang(Locale.american_english)
-        en_agent = await client.get_zzz_agent_info(character.id)
+
+        if self.locale is Locale.chinese or self._account.platform is Platform.MIYOUSHE:
+            # No need to refetch the agent info
+            cn_agent = agent
+        else:
+            client.set_lang(Locale.chinese)
+            cn_agent = await client.get_zzz_agent_info(character.id)
 
         agent_data = await read_json("./.static/zzz_agent_data.json")
         if str(character.id) not in agent_data:
@@ -429,7 +434,7 @@ class ProfileView(View):
         agent_icon = agent_data[str(character.id)]["icon_url"]
 
         disc_icons = await read_json("./.static/zzz_disc_icons.json")
-        if any(disc.name not in disc_icons for disc in en_agent.discs):
+        if any(disc.name not in disc_icons for disc in cn_agent.discs):
             async with session.get(
                 "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite/disc_icons.json"
             ) as resp:
@@ -451,7 +456,7 @@ class ProfileView(View):
                 loop=loop,
             ),
             agent,
-            en_agent,
+            cn_agent,
             level_data={"x": agent_draw_data["level_x"], "y": agent_draw_data["level_y"]},
             image_url=agent_icon,
             image_data={

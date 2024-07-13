@@ -41,6 +41,7 @@ Other projects made by me that are used in Hoyo Buddy
 - [hoyo-codes](https://github.com/seriaati/hoyo-codes): API to get gift codes for all Hoyoverse games, used in the automatic code redemption feature.
 - [daily-checkin-api](https://github.com/seriaati/daily_checkin_api) (private): API to perform daily check-in, used in the automatic daily check-in feature.
 - [hoyo-buddy-assets](https://github.com/seriaati/hoyo-buddy-assets) (private): Hoyo Buddy assets, used in image generation features.
+- [ZenlessAssetScrape](https://github.com/seriaati/ZenlessAssetScrape): Zenless Zone Zero assets/data scraped from various database websites, used in ZZZ build card feature.
 
 ## Contributing
 

@@ -5,6 +5,7 @@ import discord
 import genshin
 from discord import utils as dutils
 from PIL import Image, ImageDraw
+from PIL.Image import Transpose
 
 from hoyo_buddy.draw.drawer import Drawer
 
@@ -49,7 +50,9 @@ class ZZZAgentCard:
     def draw(self) -> BytesIO:
         im = Image.open(f"hoyo-buddy-assets/assets/zzz-build-card/agents/{self._agent.id}.png")
         draw = ImageDraw.Draw(im)
-        drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False, locale=discord.Locale(self._locale))
+        drawer = Drawer(
+            draw, folder="zzz-build-card", dark_mode=False, locale=discord.Locale(self._locale)
+        )
 
         # Level
         level_text = f"Lv.{self._agent.level}"
@@ -67,6 +70,9 @@ class ZZZAgentCard:
         agent_image = drawer.open_static(
             self._image_url, size=(self._image_data["width"], self._image_data["height"])
         )
+        if self._agent.id == 1121:  # Ben
+            # Flip image horizontally
+            agent_image = agent_image.transpose(Transpose.FLIP_LEFT_RIGHT)
         im.paste(agent_image, (self._image_data["x"], self._image_data["y"]), agent_image)
 
         # Equip section
@@ -89,7 +95,7 @@ class ZZZAgentCard:
                 locale=discord.Locale.american_english,
                 anchor="mm",
             )
-            drawer.write(
+            name_tbox = drawer.write(
                 engine.name.upper(),
                 size=64,
                 position=(106, 280),
@@ -99,29 +105,32 @@ class ZZZAgentCard:
                 color=(20, 20, 20),
                 sans=True,
             )
+            bottom = name_tbox[3]
 
             stats = (engine.main_properties[0], engine.properties[0])
-            stat_positions = {
-                0: {
-                    "icon": (106, 430),
-                    "value": (160, 435),
-                },
-                1: {
-                    "icon": (106, 500),
-                    "value": (160, 505),
-                },
-            }
+            stat_positions = {0: (106, bottom + 40), 1: (106, bottom + 40 + 60)}
             for i, stat in enumerate(stats):
                 if isinstance(stat.type, genshin.models.ZZZPropertyType):
                     icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[stat.type]}", size=(40, 40))
-                    im.paste(icon, stat_positions[i]["icon"], icon)
+                    im.paste(icon, stat_positions[i], icon)
+                tbox = drawer.write(
+                    f"{stat.name}  {stat.value}",
+                    size=28,
+                    style="medium",
+                    sans=True,
+                    color=(20, 20, 20),
+                    position=(0, 0),
+                    no_write=True,
+                )
+                height = tbox[3] - tbox[1]
                 drawer.write(
                     f"{stat.name}  {stat.value}",
                     size=28,
                     style="medium",
                     sans=True,
                     color=(20, 20, 20),
-                    position=stat_positions[i]["value"],
+                    position=(106 + 50, stat_positions[i][1] + height),
+                    anchor="lm",
                 )
 
         # Discs
@@ -157,9 +166,7 @@ class ZZZAgentCard:
                 )
 
             sub_stat_pos = (start_pos[0] + 144, start_pos[1] + 70)
-            for j, sub_stat in enumerate(
-                (disc.properties[0], disc.properties[0], disc.properties[0], disc.properties[0])
-            ):
+            for j, sub_stat in enumerate(disc.properties):
                 if isinstance(sub_stat.type, genshin.models.ZZZPropertyType):
                     sub_stat_icon = drawer.open_asset(
                         f"stat_icons/{STAT_ICONS[sub_stat.type]}", size=(25, 25)

@@ -57,7 +57,7 @@ class Hoyo(commands.Cog):
         else:
             try:
                 games = (
-                    (Game(game_value),) if game_value is not None else (Game.GENSHIN, Game.STARRAIL)
+                    (Game(game_value),) if game_value is not None else (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
                 )
             except ValueError as e:
                 raise InvalidQueryError from e
@@ -167,6 +167,8 @@ class Hoyo(commands.Cog):
             view = await handler.run_genshin()
         elif game is Game.STARRAIL:
             view = await handler.run_hsr()
+        elif game is Game.ZZZ:
+            view = await handler.run_zzz()
         else:
             raise FeatureNotImplementedError(platform=Platform.HOYOLAB, game=game)
 
@@ -453,7 +455,6 @@ class Hoyo(commands.Cog):
 
     @challenge_command.autocomplete("account")
     @characters_command.autocomplete("account")
-    @profile_command.autocomplete("account")
     async def gi_hsr_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
@@ -465,6 +466,7 @@ class Hoyo(commands.Cog):
 
     @redeem_command.autocomplete("account")
     @notes_command.autocomplete("account")
+    @profile_command.autocomplete("account")
     async def gi_hsr_zzz_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:

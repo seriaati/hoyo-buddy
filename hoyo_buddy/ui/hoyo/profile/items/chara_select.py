@@ -4,10 +4,11 @@ import contextlib
 from typing import TYPE_CHECKING, Any, Final
 
 import enka
+from genshin.models import ZZZPartialAgent
 
 from hoyo_buddy.bot.translator import LevelStr, LocaleStr
-from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji
-from hoyo_buddy.enums import CharacterType
+from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji, get_zzz_element_emoji
+from hoyo_buddy.enums import CharacterType, Game
 from hoyo_buddy.models import HoyolabHSRCharacter
 from hoyo_buddy.ui import PaginatorSelect, SelectOption
 
@@ -53,7 +54,10 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
 
         for character in characters:
             character_type = determine_chara_type(
-                str(character.id), cache_extras, builds, isinstance(character, HoyolabHSRCharacter)
+                str(character.id),
+                cache_extras,
+                builds,
+                isinstance(character, HoyolabHSRCharacter | ZZZPartialAgent),
             )
             data_type = DATA_TYPES[character_type]
 
@@ -73,7 +77,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                     d=data_type,
                 )
                 emoji = get_hsr_element_emoji(character.element)
-            else:
+            elif isinstance(character, enka.gi.Character):
                 description = LocaleStr(
                     key="profile.genshin.character_select.description",
                     c=character.constellations_unlocked,
@@ -81,6 +85,11 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                     d=data_type,
                 )
                 emoji = get_gi_element_emoji(character.element.name)
+            else:  # ZZZPartialAgent
+                description = LocaleStr(
+                    key="profile.zzz_hoyolab.character_select.description", m=character.rank
+                )
+                emoji = get_zzz_element_emoji(character.element.name)
 
             options.append(
                 SelectOption(
@@ -122,7 +131,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
 
         # Enable the card settings button
         card_settings_btn = self.view.get_item("profile_card_settings")
-        card_settings_btn.disabled = False
+        card_settings_btn.disabled = self.view.game is Game.ZZZ
 
         # Enable the remove from cache button if the character is in the cache
         with contextlib.suppress(ValueError):

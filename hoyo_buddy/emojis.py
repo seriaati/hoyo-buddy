@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import genshin
 
-from .enums import Game, GenshinCity, GenshinElement, HSRElement, HSRPath
+from .enums import Game, GenshinCity, GenshinElement, HSRElement, HSRPath, ZZZElement
 
 LOADING = "<a:loading_emoji:1106388708862738463>"
 DELETE = "<:DELETE:1166012141833310248>"
@@ -74,6 +74,13 @@ HSR_PATH_EMOJIS: dict[str, str] = {
     HSRPath.PRESERVATION: "<:PRESERVATION:1220141073700094083>",
     HSRPath.ABUNDANCE: "<:ABUNDANCE:1220141134706118666>",
 }
+ZZZ_ELEMENT_EMOJIS: dict[ZZZElement, str] = {
+    ZZZElement.FIRE: "<:FIRE:1261296222237626478>",
+    ZZZElement.ELECTRIC: "<:ELECTRIC:1261296220249526354>",
+    ZZZElement.ETHER: "<:ETHER:1261295818032549908>",
+    ZZZElement.ICE: "<:ICE:1261296218101907569>",
+    ZZZElement.PHYSICAL: "<:PHYSICAL:1261296216126390273>",
+}
 
 ARTIFACT_POS_EMOJIS: dict[str, str] = {
     "flower": "<:Flower_of_Life:982167959717945374>",
@@ -141,6 +148,10 @@ def get_hsr_element_emoji(element: str) -> str:
     if element.lower() == "lightning":
         element = "thunder"
     return HSR_ELEMENT_EMOJIS[HSRElement(element.title())]
+
+
+def get_zzz_element_emoji(element: str) -> str:
+    return ZZZ_ELEMENT_EMOJIS[ZZZElement(element.title())]
 
 
 def get_hsr_path_emoji(path: str) -> str:

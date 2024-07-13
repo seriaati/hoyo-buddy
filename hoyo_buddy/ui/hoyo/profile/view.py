@@ -4,12 +4,16 @@ from io import BytesIO
 from typing import TYPE_CHECKING, Any, TypeAlias
 
 import enka
+import orjson
 from discord import File, Locale
+from genshin.models import ZZZPartialAgent
+from loguru import logger
+from seria.utils import read_json, write_json
 
-from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.constants import LOCALE_TO_GI_CARD_API_LANG, LOCALE_TO_HSR_CARD_API_LANG
 from hoyo_buddy.db.models import CardSettings, HoyoAccount, Settings
-from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card
+from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card, draw_zzz_build_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import CharacterType, Game
 from hoyo_buddy.exceptions import (
@@ -21,6 +25,7 @@ from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
 
+from ....utils import blur_uid
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
 from .items.card_settings_btn import CardSettingsButton
@@ -36,13 +41,15 @@ if TYPE_CHECKING:
 
     import aiohttp
     from discord import Member, User
-    from genshin.models import StarRailUserStats
+    from genshin.models import RecordCard, StarRailUserStats
 
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.types import Builds, Interaction
 
 
-Character: TypeAlias = HoyolabHSRCharacter | enka.gi.Character | enka.hsr.Character
+Character: TypeAlias = (
+    HoyolabHSRCharacter | enka.gi.Character | enka.hsr.Character | ZZZPartialAgent
+)
 GI_CARD_ENDPOINTS = {
     "hattvr": "http://localhost:7652/hattvr-enka-card",
     "encard": "http://localhost:7652/en-card",
@@ -62,6 +69,8 @@ class ProfileView(View):
         hoyolab_user: StarRailUserStats | None = None,
         starrail_data: enka.hsr.ShowcaseResponse | None = None,
         genshin_data: enka.gi.ShowcaseResponse | None = None,
+        zzz_data: Sequence[ZZZPartialAgent] | None = None,
+        zzz_user: RecordCard | None = None,
         account: HoyoAccount | None,
         hoyolab_over_enka: bool = False,
         builds: Builds | None = None,
@@ -76,6 +85,8 @@ class ProfileView(View):
         self.hoyolab_user = hoyolab_user
         self.starrail_data = starrail_data
         self.genshin_data = genshin_data
+        self.zzz_data = zzz_data
+        self.zzz_user = zzz_user
 
         self.uid = uid
         self.game = game
@@ -137,17 +148,22 @@ class ProfileView(View):
             else:
                 characters.extend(self.genshin_data.characters)
 
+        elif self.game is Game.ZZZ:
+            assert self.zzz_data is not None
+            characters.extend(self.zzz_data)
+
         self.characters = characters
 
     @property
     def player_embed(self) -> DefaultEmbed:
         """Player info embed."""
+        uid_str = blur_uid(self.uid) if self._account is not None else str(self.uid)
         if self.starrail_data is not None:
             player = self.starrail_data.player
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
-                title=f"{player.nickname} ({self.uid})",
+                title=f"{player.nickname} ({uid_str})",
                 description=LocaleStr(
                     key="profile.player_info.embed.description",
                     level=player.level,
@@ -166,7 +182,7 @@ class ProfileView(View):
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
-                title=f"{player.nickname} ({self.uid})",
+                title=f"{player.nickname} ({uid_str})",
                 description=LocaleStr(
                     key="profile.player_info.gi.embed.description",
                     adventure_rank=player.level,
@@ -185,7 +201,7 @@ class ProfileView(View):
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
-                title=f"{player.nickname} ({self.uid})",
+                title=f"{player.nickname} ({uid_str})",
                 description=LocaleStr(
                     key="profile.player_info.hoyolab.embed.description",
                     level=player.level,
@@ -194,6 +210,16 @@ class ProfileView(View):
                     moc=stats.abyss_process,
                     achievements=stats.achievement_num,
                 ),
+            )
+        elif self.zzz_user is not None:
+            player = self.zzz_user
+            data_str = "\n".join(f"{data.name}: {data.value}" for data in player.data)
+            level_str = LevelStr(player.level).translate(self.translator, self.locale)
+            embed = DefaultEmbed(
+                self.locale,
+                self.translator,
+                title=f"{player.nickname} ({uid_str})",
+                description=f"{level_str}\n{data_str}",
             )
         else:
             embed = DefaultEmbed(
@@ -350,7 +376,6 @@ class ProfileView(View):
     ) -> BytesIO:
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert self._card_settings is not None
-
         assert isinstance(character, enka.gi.Character)
 
         if self._card_settings.current_image is not None:
@@ -375,6 +400,67 @@ class ProfileView(View):
             character,
             art,
             0.8 if self._card_settings.current_image is None else 1.0,
+        )
+
+    async def _draw_hb_zzz_character_card(
+        self,
+        session: aiohttp.ClientSession,
+        executor: concurrent.futures.ProcessPoolExecutor,
+        loop: asyncio.AbstractEventLoop,
+        character: Character,
+    ) -> BytesIO:
+        """Draw ZZZ build card in Hoyo Buddy template."""
+        assert isinstance(character, ZZZPartialAgent)
+        assert self._account is not None
+
+        client = self._account.client
+        client.set_lang(self.locale)
+        agent = await client.get_zzz_agent_info(character.id)
+        client.set_lang(Locale.american_english)
+        en_agent = await client.get_zzz_agent_info(character.id)
+
+        agent_data = await read_json("./.static/zzz_agent_data.json")
+        if str(character.id) not in agent_data:
+            async with session.get(
+                "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite/agent_data.json"
+            ) as resp:
+                agent_data = orjson.loads(await resp.text())
+                await write_json("./.static/zzz_agent_data.json", agent_data)
+        agent_icon = agent_data[str(character.id)]["icon_url"]
+
+        disc_icons = await read_json("./.static/zzz_disc_icons.json")
+        if any(disc.name not in disc_icons for disc in en_agent.discs):
+            async with session.get(
+                "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite/disc_icons.json"
+            ) as resp:
+                disc_icons = orjson.loads(await resp.text())
+                await write_json("./.static/zzz_disc_icons.json", disc_icons)
+
+        agent_draw_data = self._card_data[str(character.id)]
+
+        cache_extra = self.cache_extras.get(str(character.id))
+        locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
+
+        return await draw_zzz_build_card(
+            DrawInput(
+                dark_mode=True,
+                locale=locale,
+                session=session,
+                filename="card.webp",
+                executor=executor,
+                loop=loop,
+            ),
+            agent,
+            en_agent,
+            level_data={"x": agent_draw_data["level_x"], "y": agent_draw_data["level_y"]},
+            image_url=agent_icon,
+            image_data={
+                "width": agent_draw_data["image_w"],
+                "height": agent_draw_data["image_h"],
+                "x": agent_draw_data["image_x"],
+                "y": agent_draw_data["image_y"],
+            },
+            disc_icons=disc_icons,
         )
 
     async def draw_card(self, i: Interaction, *, character: Character | None = None) -> io.BytesIO:
@@ -432,17 +518,17 @@ class ProfileView(View):
                     )
                 else:
                     bytes_obj = await self._draw_enka_card(i.client.session, character)
+            elif self.game is Game.ZZZ:
+                bytes_obj = await self._draw_hb_zzz_character_card(
+                    i.client.session, i.client.executor, i.client.loop, character
+                )
         except Exception:
             # Reset the template to hb1 if an error occurs
             self._card_settings.template = "hb1"
             await self._card_settings.save(update_fields=("template",))
             raise
 
-        # This should never happen, this is just to address variable unbound error for bytes_obj
-        if bytes_obj is None:
-            msg = "bytes_obj should not be None."
-            raise RuntimeError(msg)
-
+        assert bytes_obj is not None
         return bytes_obj
 
     async def update(
@@ -463,6 +549,8 @@ class ProfileView(View):
                 await self._card_settings.save(update_fields=("current_image",))
             if unset_loading_state:
                 await item.unset_loading_state(i)
+
+            logger.exception("Failed to draw card")
             raise ThirdPartyCardTempError from e
 
         attachments = [File(bytes_obj, filename="card.webp")]

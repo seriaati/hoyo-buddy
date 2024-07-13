@@ -109,3 +109,25 @@ class ProfileCommand:
             locale=self._locale,
             translator=self._translator,
         )
+
+    async def run_zzz(self) -> ProfileView:
+        assert self._account is not None
+        client = self._account.client
+        client.set_lang(self._locale)
+        zzz_data = await client.get_zzz_agents()
+        record_cards = await client.get_record_cards()
+        zzz_user = next((card for card in record_cards if card.uid == self._account.uid), None)
+        cache, _ = await EnkaCache.get_or_create(uid=self._uid)
+        return ProfileView(
+            self._uid,
+            self._game,
+            cache.extras,
+            await read_yaml("hoyo-buddy-assets/assets/zzz-build-card/agent_data.yaml"),
+            account=self._account,
+            hoyolab_characters=[],
+            zzz_data=zzz_data,
+            zzz_user=zzz_user,
+            author=self._user,
+            locale=self._locale,
+            translator=self._translator,
+        )

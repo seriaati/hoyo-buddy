@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 import enka
 from discord import File
@@ -26,6 +26,7 @@ if TYPE_CHECKING:
         StarRailChallengeSeason,
         StarRailNote,
         StarRailPureFiction,
+        ZZZFullAgent,
         ZZZNotes,
     )
     from genshin.models import Notes as GenshinNote
@@ -421,5 +422,38 @@ async def draw_zzz_notes_card(
             draw_input.locale.value,
             translator,
             draw_input.dark_mode,
+        )
+    return buffer
+
+
+async def draw_zzz_build_card(
+    draw_input: DrawInput,
+    agent: ZZZFullAgent,
+    en_agent: ZZZFullAgent,
+    level_data: dict[Literal["x", "y"], int],
+    image_url: str,
+    image_data: dict[Literal["width", "height", "x", "y"], int],
+    disc_icons: dict[str, str],
+) -> BytesIO:
+    urls: list[str] = []
+    urls.append(image_url)
+    urls.extend(disc_icons.values())
+    if agent.w_engine is not None:
+        urls.append(agent.w_engine.icon)
+    await download_and_save_static_images(urls, "zzz-build-card", draw_input.session)
+
+    with timing("draw", tags={"type": "zzz_build_card"}):
+        card = funcs.zzz.ZZZAgentCard(
+            agent,
+            en_agent,
+            locale=draw_input.locale.value,
+            level_data=level_data,
+            image_url=image_url,
+            image_data=image_data,
+            disc_icons=disc_icons,
+        )
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
+            card.draw,
         )
     return buffer

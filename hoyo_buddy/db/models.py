@@ -148,6 +148,7 @@ class EnkaCache(Model):
     hsr: fields.Field[dict[str, Any]] = fields.JSONField(default={})
     genshin: fields.Field[dict[str, Any]] = fields.JSONField(default={})
     hoyolab: fields.Field[dict[str, Any]] = fields.JSONField(default={})
+    hoyolab_zzz: fields.Field[dict[str, Any] | None] = fields.JSONField(default={}, null=True)
     extras: fields.Field[dict[str, dict[str, Any]]] = fields.JSONField(default={})
 
     class Meta:

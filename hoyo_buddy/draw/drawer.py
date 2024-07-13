@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import pathlib
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Literal, TypeAlias
 
 import discord
 from PIL import Image, ImageChops, ImageDraw, ImageFont
@@ -29,10 +29,20 @@ DARK_SURFACE = (19, 19, 22)
 DARK_ON_SURFACE = (200, 197, 202)
 DARK_ON_SURFACE_VARIANT = (199, 197, 208)
 
-FONT_MAPPING: dict[
-    discord.Locale | None,
-    dict[str, str],
-] = {
+FontStyle: TypeAlias = Literal[
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black",
+    "light_italic",
+    "regular_italic",
+    "medium_italic",
+    "bold_italic",
+    "black_italic",
+]
+
+FONT_MAPPING: dict[discord.Locale, dict[FontStyle, str]] = {
     discord.Locale.chinese: {
         "light": GENSENROUNDEDTW_LIGHT,
         "regular": GENSENROUNDEDTW_REGULAR,
@@ -69,6 +79,21 @@ FONT_MAPPING: dict[
         "bold_italic": NUNITO_BOLD_ITALIC,
         "black_italic": NUNITO_BLACK_ITALIC,
     },
+}
+
+SANS_FONT_MAPPING: dict[discord.Locale, dict[FontStyle, str]] = {
+    discord.Locale.american_english: {
+        "light": NUNITO_SANS_LIGHT,
+        "regular": NUNITO_SANS_REGULAR,
+        "medium": NUNITO_SANS_MEDIUM,
+        "bold": NUNITO_SANS_BOLD,
+        "black": NUNITO_SANS_BLACK,
+        "light_italic": NUNITO_SANS_LIGHT_ITALIC,
+        "regular_italic": NUNITO_SANS_REGULAR_ITALIC,
+        "medium_italic": NUNITO_SANS_MEDIUM_ITALIC,
+        "bold_italic": NUNITO_SANS_BOLD_ITALIC,
+        "black_italic": NUNITO_SANS_BLACK_ITALIC,
+    }
 }
 
 
@@ -237,20 +262,28 @@ class Drawer:
     def _get_font(
         self,
         size: int,
-        style: Literal["light", "regular", "medium", "bold", "black"],
+        style: FontStyle,
         locale: discord.Locale | None,
-        italic: bool,
+        sans: bool,
     ) -> ImageFont.FreeTypeFont:
-        style_ = f"{style}_italic" if italic else style
         default_locale = discord.Locale.american_english
-        font = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[default_locale]).get(style_)
-        if font is None:
-            if style == "black":
-                # Can't find black font, use bold instead
-                style = "bold"
-            # When the font doesn't have italic version
-            font = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[default_locale]).get(style)
 
+        if sans:
+            font_map = SANS_FONT_MAPPING.get(locale or self.locale)
+            if font_map is None:
+                # Can't find sans font, use regular instead
+                font_map = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[default_locale])
+        else:
+            font_map = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[default_locale])
+
+        if style == "black" and "black" not in font_map:
+            # Can't find black version, use bold instead
+            style = "bold"
+        if style.endswith("_italic") and style not in font_map:
+            # Can't find italic version, use regular instead
+            style = style.replace("_italic", "")  # pyright: ignore [reportAssignmentType]
+
+        font = font_map.get(style)
         if font is None:
             msg = f"Invalid font style: {style}"
             raise ValueError(msg)
@@ -273,15 +306,15 @@ class Drawer:
         size: int,
         position: tuple[int, int],
         color: tuple[int, int, int] | None = None,
-        style: Literal["light", "regular", "medium", "bold", "black"] = "regular",
+        style: FontStyle = "regular",
         emphasis: Literal["high", "medium", "low"] = "high",
         anchor: str | None = None,
         max_width: int | None = None,
         max_lines: int = 1,
         locale: discord.Locale | None = None,
         no_write: bool = False,
-        italic: bool = False,
         title_case: bool = False,
+        sans: bool = False,
     ) -> tuple[int, int, int, int]:
         """Returns (left, top, right, bottom) of the text bounding box."""
         if not text:
@@ -298,7 +331,7 @@ class Drawer:
                 text, locale or self.locale, title_case=title_case
             )
 
-        font = self._get_font(size, style, locale, italic)
+        font = self._get_font(size, style, locale, sans)
 
         if max_width is not None:
             if max_lines == 1:

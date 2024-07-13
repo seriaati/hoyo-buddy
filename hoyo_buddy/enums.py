@@ -122,3 +122,11 @@ class ChallengeType(StrEnum):
     PURE_FICTION = "Pure fiction"
     APC_SHADOW = "Apocalyptic shadow"
     IMG_THEATER = "img_theater_large_block_title"
+
+
+class ZZZElement(StrEnum):
+    ETHER = "Ether"
+    FIRE = "Fire"
+    ICE = "Ice"
+    PHYSICAL = "Physical"
+    ELECTRIC = "Electric"

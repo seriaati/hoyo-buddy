@@ -1,6 +1,6 @@
 NUNITO_LIGHT = "hoyo-buddy-assets/fonts/Nunito/Nunito-Light.ttf"
 NUNITO_REGULAR = "hoyo-buddy-assets/fonts/Nunito/Nunito-Regular.ttf"
-NUNITO_MEDIUM = "hoyo-buddy-assets/fonts/Nunito/Nunito-SemiBold.ttf"
+NUNITO_MEDIUM = "hoyo-buddy-assets/fonts/Nunito/Nunito-Medium.ttf"
 NUNITO_BOLD = "hoyo-buddy-assets/fonts/Nunito/Nunito-Bold.ttf"
 NUNITO_BLACK = "hoyo-buddy-assets/fonts/Nunito/Nunito-Black.ttf"
 
@@ -9,6 +9,18 @@ NUNITO_REGULAR_ITALIC = "hoyo-buddy-assets/fonts/Nunito/Nunito-Italic.ttf"
 NUNITO_MEDIUM_ITALIC = "hoyo-buddy-assets/fonts/Nunito/Nunito-MediumItalic.ttf"
 NUNITO_BOLD_ITALIC = "hoyo-buddy-assets/fonts/Nunito/Nunito-BoldItalic.ttf"
 NUNITO_BLACK_ITALIC = "hoyo-buddy-assets/fonts/Nunito/Nunito-BlackItalic.ttf"
+
+NUNITO_SANS_LIGHT = "hoyo-buddy-assets/fonts/NunitoSans/NunitoSans_10pt-Light.ttf"
+NUNITO_SANS_REGULAR = "hoyo-buddy-assets/fonts/NunitoSans/NunitoSans_10pt-Regular.ttf"
+NUNITO_SANS_MEDIUM = "hoyo-buddy-assets/fonts/NunitoSans/NunitoSans_10pt-Medium.ttf"
+NUNITO_SANS_BOLD = "hoyo-buddy-assets/fonts/NunitoSans/NunitoSans_10pt-Bold.ttf"
+NUNITO_SANS_BLACK = "hoyo-buddy-assets/fonts/NunitoSans/NunitoSans_10pt-Black.ttf"
+
+NUNITO_SANS_LIGHT_ITALIC = "hoyo-buddy-assets/fonts/NunitoSans/NunitoSans_10pt-LightItalic.ttf"
+NUNITO_SANS_REGULAR_ITALIC = "hoyo-buddy-assets/fonts/NunitoSans/NunitoSans_10pt-Italic.ttf"
+NUNITO_SANS_MEDIUM_ITALIC = "hoyo-buddy-assets/fonts/NunitoSans/NunitoSans_10pt-MediumItalic.ttf"
+NUNITO_SANS_BOLD_ITALIC = "hoyo-buddy-assets/fonts/NunitoSans/NunitoSans_10pt-BoldItalic.ttf"
+NUNITO_SANS_BLACK_ITALIC = "hoyo-buddy-assets/fonts/NunitoSans/NunitoSans_10pt-BlackItalic.ttf"
 
 MPLUSROUNDED1C_LIGHT = "hoyo-buddy-assets/fonts/MPLUSRounded1c/MPLUSRounded1c-Light.ttf"
 MPLUSROUNDED1C_REGULAR = "hoyo-buddy-assets/fonts/MPLUSRounded1c/MPLUSRounded1c-Regular.ttf"

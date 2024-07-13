@@ -250,22 +250,32 @@ class GenshinClient(genshin.Client):
         return hsr_chara
 
     def _update_live_status(
-        self, data: dict[str, Any], extras: dict[str, dict[str, Any]], live: bool
-    ) -> genshin.models.StarRailDetailCharacters:
-        parsed = genshin.models.StarRailDetailCharacters(**data)
+        self,
+        data: dict[str, Any],
+        extras: dict[str, dict[str, Any]],
+        live: bool,
+        *,
+        zzz: bool,
+    ) -> None:
         cache_data = {
             "live": live,
             "locale": GPY_LANG_TO_LOCALE[self.lang].value,
         }
-
-        for character in parsed.avatar_list:
-            key = f"{character.id}-hoyolab"
+        if zzz:
+            parsed = genshin.models.ZZZFullAgent(**data)
+            key = f"{parsed.id}-hoyolab"
             if key not in extras:
                 extras[key] = cache_data
             else:
                 extras[key].update(cache_data)
-
-        return parsed
+        else:
+            parsed = genshin.models.StarRailDetailCharacters(**data)
+            for character in parsed.avatar_list:
+                key = f"{character.id}-hoyolab"
+                if key not in extras:
+                    extras[key] = cache_data
+                else:
+                    extras[key].update(cache_data)
 
     async def get_hoyolab_hsr_characters(self) -> list[HoyolabHSRCharacter]:
         """Get characters in HoyolabHSR format."""
@@ -277,11 +287,11 @@ class GenshinClient(genshin.Client):
             if not cache.hoyolab or e.retcode != 1005:
                 raise
 
-            self._update_live_status(cache.hoyolab, cache.extras, False)
+            self._update_live_status(cache.hoyolab, cache.extras, False, zzz=False)
             await cache.save(update_fields=("extras"))
         else:
             cache.hoyolab = live_data
-            self._update_live_status(live_data, cache.extras, True)
+            self._update_live_status(live_data, cache.extras, True, zzz=False)
             await cache.save(update_fields=("hoyolab", "extras"))
 
         parsed = genshin.models.StarRailDetailCharacters(**cache.hoyolab)
@@ -289,6 +299,26 @@ class GenshinClient(genshin.Client):
             self.convert_hsr_character(chara, dict(parsed.property_info))
             for chara in parsed.avatar_list
         ]
+
+    async def get_zzz_agent_info(self, character_id: int) -> genshin.models.ZZZFullAgent:
+        cache, _ = await EnkaCache.get_or_create(uid=self.uid)
+
+        try:
+            live_data = (await super().get_zzz_agent_info(character_id)).dict()
+        except genshin.GenshinException as e:
+            if not cache.hoyolab_zzz or e.retcode != 1005:
+                raise
+
+            self._update_live_status(cache.hoyolab_zzz, cache.extras, False, zzz=True)
+            await cache.save(update_fields=("extras"))
+        else:
+            cache.hoyolab_zzz = cache.hoyolab_zzz or {}
+            cache.hoyolab_zzz.update({str(character_id): live_data})
+            self._update_live_status(live_data, cache.extras, True, zzz=True)
+            await cache.save(update_fields=("hoyolab_zzz", "extras"))
+
+        parsed = genshin.models.ZZZFullAgent(**cache.hoyolab_zzz[str(character_id)])
+        return parsed
 
     async def update_cookie_token(self) -> None:
         """Update the cookie token."""

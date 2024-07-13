@@ -1,29 +1,42 @@
+from __future__ import annotations
+
 from io import BytesIO
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 import discord
-import genshin
 from discord import utils as dutils
+from genshin.models import ZZZPropertyType as PropType
 from PIL import Image, ImageDraw
 from PIL.Image import Transpose
 
 from hoyo_buddy.draw.drawer import Drawer
 
+if TYPE_CHECKING:
+    import genshin
+
 STAT_ICONS = {
-    genshin.models.ZZZPropertyType.ENGINE_HP: "HP.png",
-    genshin.models.ZZZPropertyType.DISC_HP: "HP.png",
-    genshin.models.ZZZPropertyType.ENGINE_BASE_ATK: "ATK.png",
-    genshin.models.ZZZPropertyType.ENGINE_ATK: "ATK.png",
-    genshin.models.ZZZPropertyType.DISC_ATK: "ATK.png",
-    genshin.models.ZZZPropertyType.DISC_ANOMALY_PROFICIENCY: "ANOMALY_PRO.png",
-    genshin.models.ZZZPropertyType.ENGINE_DEF: "DEF.png",
-    genshin.models.ZZZPropertyType.DISC_DEF: "DEF.png",
-    genshin.models.ZZZPropertyType.CRIT_DMG: "CRIT_DMG.png",
-    genshin.models.ZZZPropertyType.CRIT_RATE: "CRIT_RATE.png",
-    genshin.models.ZZZPropertyType.ENGINE_ENERGY_REGEN: "ENERGY_REGEN.png",
-    genshin.models.ZZZPropertyType.ENGINE_PEN_RATIO: "PEN_RATIO.png",
-    genshin.models.ZZZPropertyType.DISC_PEN: "PEN_RATIO.png",
-    genshin.models.ZZZPropertyType.ENGINE_IMPACT: "IMPACT.png",
+    # Disc
+    PropType.DISC_HP: "HP.png",
+    PropType.DISC_ATK: "ATK.png",
+    PropType.DISC_DEF: "DEF.png",
+    PropType.DISC_PEN: "PEN_RATIO.png",
+    PropType.DISC_BONUS_PHYSICAL_DMG: "PHYSICAL.png",
+    PropType.DISC_BONUS_FIRE_DMG: "FIRE.png",
+    PropType.DISC_BONUS_ICE_DMG: "ICE.png",
+    PropType.DISC_BONUS_ELECTRIC_DMG: "ELECTRIC.png",
+    PropType.DISC_BONUS_ETHER_DMG: "ETHER.png",
+    # W-engine
+    PropType.ENGINE_HP: "HP.png",
+    PropType.ENGINE_BASE_ATK: "ATK.png",
+    PropType.ENGINE_ATK: "ATK.png",
+    PropType.ENGINE_DEF: "DEF.png",
+    PropType.ENGINE_ENERGY_REGEN: "ENERGY_REGEN.png",
+    # Common
+    PropType.CRIT_DMG: "CRIT_DMG.png",
+    PropType.CRIT_RATE: "CRIT_RATE.png",
+    PropType.ANOMALY_PROFICIENCY: "ANOMALY_PRO.png",
+    PropType.PEN_RATIO: "PEN_RATIO.png",
+    PropType.IMPACT: "IMPACT.png",
 }
 
 
@@ -31,7 +44,7 @@ class ZZZAgentCard:
     def __init__(
         self,
         agent: genshin.models.ZZZFullAgent,
-        en_agent: genshin.models.ZZZFullAgent,
+        cn_agent: genshin.models.ZZZFullAgent,
         *,
         locale: str,
         level_data: dict[Literal["x", "y"], int],
@@ -40,7 +53,7 @@ class ZZZAgentCard:
         disc_icons: dict[str, str],
     ) -> None:
         self._agent = agent
-        self._en_agent = en_agent
+        self._en_agent = cn_agent
         self._locale = locale
         self._level_data = level_data
         self._image_url = image_url
@@ -110,7 +123,7 @@ class ZZZAgentCard:
             stats = (engine.main_properties[0], engine.properties[0])
             stat_positions = {0: (106, bottom + 40), 1: (106, bottom + 40 + 60)}
             for i, stat in enumerate(stats):
-                if isinstance(stat.type, genshin.models.ZZZPropertyType):
+                if isinstance(stat.type, PropType):
                     icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[stat.type]}", size=(40, 40))
                     im.paste(icon, stat_positions[i], icon)
                 tbox = drawer.write(
@@ -151,7 +164,7 @@ class ZZZAgentCard:
             )
 
             main_stat = disc.main_properties[0]
-            if isinstance(main_stat.type, genshin.models.ZZZPropertyType):
+            if isinstance(main_stat.type, PropType):
                 main_stat_icon = drawer.open_asset(
                     f"stat_icons/{STAT_ICONS[main_stat.type]}", size=(35, 35)
                 )
@@ -167,7 +180,7 @@ class ZZZAgentCard:
 
             sub_stat_pos = (start_pos[0] + 144, start_pos[1] + 70)
             for j, sub_stat in enumerate(disc.properties):
-                if isinstance(sub_stat.type, genshin.models.ZZZPropertyType):
+                if isinstance(sub_stat.type, PropType):
                     sub_stat_icon = drawer.open_asset(
                         f"stat_icons/{STAT_ICONS[sub_stat.type]}", size=(25, 25)
                     )
@@ -207,23 +220,19 @@ class ZZZAgentCard:
         # Stats
         start_pos = (2851, 769)
         props = (
-            dutils.get(self._agent.properties, type=genshin.models.ZZZPropertyType.AGENT_HP),
-            dutils.get(self._agent.properties, type=genshin.models.ZZZPropertyType.AGENT_ATK),
-            dutils.get(self._agent.properties, type=genshin.models.ZZZPropertyType.AGENT_DEF),
-            dutils.get(self._agent.properties, type=genshin.models.ZZZPropertyType.AGENT_IMPACT),
-            dutils.get(self._agent.properties, type=genshin.models.ZZZPropertyType.AGENT_CRIT_RATE),
-            dutils.get(
-                self._agent.properties, type=genshin.models.ZZZPropertyType.AGENT_ANOMALY_MASTERY
-            ),
+            dutils.get(self._agent.properties, type=PropType.AGENT_HP),
+            dutils.get(self._agent.properties, type=PropType.AGENT_ATK),
+            dutils.get(self._agent.properties, type=PropType.AGENT_DEF),
+            dutils.get(self._agent.properties, type=PropType.AGENT_IMPACT),
+            dutils.get(self._agent.properties, type=PropType.AGENT_CRIT_RATE),
+            dutils.get(self._agent.properties, type=PropType.AGENT_ANOMALY_MASTERY),
             dutils.get(
                 self._agent.properties,
-                type=genshin.models.ZZZPropertyType.AGENT_ANOMALY_PROFICIENCY,
+                type=PropType.AGENT_ANOMALY_PROFICIENCY,
             ),
-            dutils.get(self._agent.properties, type=genshin.models.ZZZPropertyType.AGENT_PEN_RATIO),
-            dutils.get(
-                self._agent.properties, type=genshin.models.ZZZPropertyType.AGENT_ENERGY_GEN
-            ),
-            dutils.get(self._agent.properties, type=genshin.models.ZZZPropertyType.AGENT_CRIT_DMG),
+            dutils.get(self._agent.properties, type=PropType.AGENT_PEN_RATIO),
+            dutils.get(self._agent.properties, type=PropType.AGENT_ENERGY_GEN),
+            dutils.get(self._agent.properties, type=PropType.AGENT_CRIT_DMG),
         )
         for i, prop in enumerate(props):
             if prop is None:

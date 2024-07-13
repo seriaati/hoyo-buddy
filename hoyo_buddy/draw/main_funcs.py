@@ -429,7 +429,7 @@ async def draw_zzz_notes_card(
 async def draw_zzz_build_card(
     draw_input: DrawInput,
     agent: ZZZFullAgent,
-    en_agent: ZZZFullAgent,
+    cn_agent: ZZZFullAgent,
     level_data: dict[Literal["x", "y"], int],
     image_url: str,
     image_data: dict[Literal["width", "height", "x", "y"], int],
@@ -445,7 +445,7 @@ async def draw_zzz_build_card(
     with timing("draw", tags={"type": "zzz_build_card"}):
         card = funcs.zzz.ZZZAgentCard(
             agent,
-            en_agent,
+            cn_agent,
             locale=draw_input.locale.value,
             level_data=level_data,
             image_url=image_url,

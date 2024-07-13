@@ -575,5 +575,5 @@ account_locked_description: "You have entered the incorrect password too many ti
 ether: Ether
 electric: Electric
 profile.no_data.title: No player data available
-profile.no_data.description: Believe it or not, there is nothing to display here.
-profile.zzz_hoyolab.character_select.description: Mindscape cinema {m} | HoYoLAB data
+profile.no_data.description: "Believe it or not, there is nothing to display here."
+profile.zzz_hoyolab.character_select.description: "Mindscape cinema {m} | HoYoLAB data"

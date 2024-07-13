@@ -57,7 +57,9 @@ class Hoyo(commands.Cog):
         else:
             try:
                 games = (
-                    (Game(game_value),) if game_value is not None else (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
+                    (Game(game_value),)
+                    if game_value is not None
+                    else (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
                 )
             except ValueError as e:
                 raise InvalidQueryError from e

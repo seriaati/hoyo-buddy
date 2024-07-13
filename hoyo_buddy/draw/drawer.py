@@ -266,15 +266,18 @@ class Drawer:
         locale: discord.Locale | None,
         sans: bool,
     ) -> ImageFont.FreeTypeFont:
+        locale = locale or self.locale
         default_locale = discord.Locale.american_english
 
         if sans:
-            font_map = SANS_FONT_MAPPING.get(locale or self.locale)
+            if locale not in SANS_FONT_MAPPING:
+                locale = default_locale
+            font_map = SANS_FONT_MAPPING.get(locale)
             if font_map is None:
                 # Can't find sans font, use regular instead
-                font_map = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[default_locale])
+                font_map = FONT_MAPPING.get(locale, FONT_MAPPING[default_locale])
         else:
-            font_map = FONT_MAPPING.get(locale or self.locale, FONT_MAPPING[default_locale])
+            font_map = FONT_MAPPING.get(locale, FONT_MAPPING[default_locale])
 
         if style == "black" and "black" not in font_map:
             # Can't find black version, use bold instead
@@ -285,7 +288,7 @@ class Drawer:
 
         font = font_map.get(style)
         if font is None:
-            msg = f"Invalid font style: {style}"
+            msg = f"Unable to find font style for {style} in {locale} locale"
             raise ValueError(msg)
 
         return ImageFont.truetype(font, size)

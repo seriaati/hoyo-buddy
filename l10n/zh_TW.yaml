@@ -571,4 +571,9 @@ set_cur_temp_as_default.done_desc: 你已將當前的卡片樣式設置為預設
 third_party_card_temp_error_title: 在使用第3方樣式繪製卡片時發生錯誤
 third_party_card_temp_error_message: "為了使角色卡片能正常顯示，此角色的卡片樣式已被重置為 Hoyo Buddy 的樣式。如果此錯誤持續發生，請使用 </feedback> 聯繫開發者。"
 account_locked_title: 帳戶已被鎖定 20 分鐘
-account_locked_description: 輸入錯誤密碼的次數過多。請等待 20 分鐘，然後重試。如果你認為這是一個錯誤，請通過 </feedback> 聯繫開發人員。
+account_locked_description: "輸入錯誤密碼的次數過多。請等待 20 分鐘，然後重試。如果你認為這是一個錯誤，請通過 </feedback> 聯繫開發人員。"
+ether: 以太
+electric: 電屬性
+profile.no_data.title: 沒有可用的玩家資料
+profile.no_data.description: 你相信嗎，這裡居然沒有任何東西能顯示。
+profile.zzz_hoyolab.character_select.description: "意象影畫 {m} | HoYoLAB 數據"

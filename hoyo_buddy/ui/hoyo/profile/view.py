@@ -457,15 +457,10 @@ class ProfileView(View):
             ),
             agent,
             cn_agent,
-            level_data={"x": agent_draw_data["level_x"], "y": agent_draw_data["level_y"]},
             image_url=agent_icon,
-            image_data={
-                "width": agent_draw_data["image_w"],
-                "height": agent_draw_data["image_h"],
-                "x": agent_draw_data["image_x"],
-                "y": agent_draw_data["image_y"],
-            },
+            agent_data=agent_draw_data,
             disc_icons=disc_icons,
+            agent_full_name=agent_data[str(character.id)]["full_name"],
         )
 
     async def draw_card(self, i: Interaction, *, character: Character | None = None) -> io.BytesIO:

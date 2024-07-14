@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any
 
 import enka
 from discord import File
@@ -430,9 +430,10 @@ async def draw_zzz_build_card(
     draw_input: DrawInput,
     agent: ZZZFullAgent,
     cn_agent: ZZZFullAgent,
-    level_data: dict[Literal["x", "y"], int],
+    *,
+    agent_full_name: str,
     image_url: str,
-    image_data: dict[Literal["width", "height", "x", "y"], int],
+    agent_data: dict[str, Any],
     disc_icons: dict[str, str],
 ) -> BytesIO:
     urls: list[str] = []
@@ -447,9 +448,9 @@ async def draw_zzz_build_card(
             agent,
             cn_agent,
             locale=draw_input.locale.value,
-            level_data=level_data,
+            agent_full_name=agent_full_name,
             image_url=image_url,
-            image_data=image_data,
+            agent_data=agent_data,
             disc_icons=disc_icons,
         )
         buffer = await draw_input.loop.run_in_executor(

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from io import BytesIO
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any
 
 import discord
 from discord import utils as dutils
@@ -64,18 +64,18 @@ class ZZZAgentCard:
         cn_agent: genshin.models.ZZZFullAgent,
         *,
         locale: str,
-        level_data: dict[Literal["x", "y"], int],
         image_url: str,
-        image_data: dict[Literal["width", "height", "x", "y"], int],
+        agent_data: dict[str, Any],
         disc_icons: dict[str, str],
+        agent_full_name: str,
     ) -> None:
         self._agent = agent
         self._en_agent = cn_agent
         self._locale = locale
-        self._level_data = level_data
         self._image_url = image_url
-        self._image_data = image_data
+        self._agent_data = agent_data
         self._disc_icons = disc_icons
+        self._agent_full_name = agent_full_name
 
     def draw(self) -> BytesIO:
         im = Image.open(f"hoyo-buddy-assets/assets/zzz-build-card/agents/{self._agent.id}.png")
@@ -88,7 +88,7 @@ class ZZZAgentCard:
         level_text = f"Lv.{self._agent.level}"
         drawer.write(
             level_text,
-            position=(self._level_data["x"], self._level_data["y"]),
+            position=(self._agent_data["level_x"], self._agent_data["level_y"]),
             size=250,
             color=(41, 41, 41),
             locale=discord.Locale.american_english,
@@ -98,28 +98,42 @@ class ZZZAgentCard:
 
         # Media rank
         rank_text = drawer.open_asset(f"rank/M{self._agent.rank}.png")
-        im.paste(rank_text, (self._level_data["x"], self._level_data["y"] + 260), rank_text)
+        im.paste(
+            rank_text, (self._agent_data["level_x"], self._agent_data["level_y"] + 260), rank_text
+        )
 
         # Agent full name
-        drawer.write(
-            self._agent.full_name,
-            position=(self._level_data["x"] + rank_text.width + 10, self._level_data["y"] + 290),
-            size=72,
-            color=(41, 41, 41),
-            style="black_italic",
-            sans=True,
-            max_width=403,
-            max_lines=2,
+        text = drawer._wrap_text(
+            self._agent_full_name,
+            403,
+            2,
+            drawer._get_font(72, "black_italic", discord.Locale(self._locale), True),
         )
+        if "\n" in text:
+            drawer.write(
+                self._agent_full_name,
+                position=(
+                    self._agent_data["level_x"] + rank_text.width + 10,
+                    self._agent_data["level_y"] + 290,
+                ),
+                size=72,
+                color=(41, 41, 41),
+                style="black_italic",
+                sans=True,
+                max_width=403,
+                max_lines=2,
+            )
 
         # Agent image
         agent_image = drawer.open_static(
-            self._image_url, size=(self._image_data["width"], self._image_data["height"])
+            self._image_url, size=(self._agent_data["image_w"], self._agent_data["image_h"])
         )
-        if self._agent.id == 1121:  # Ben
+        if self._agent_data.get("flip", False):
             # Flip image horizontally
             agent_image = agent_image.transpose(Transpose.FLIP_LEFT_RIGHT)
-        im.paste(agent_image, (self._image_data["x"], self._image_data["y"]), agent_image)
+        im.paste(
+            agent_image, (self._agent_data["image_x"], self._agent_data["image_y"]), agent_image
+        )
 
         # Equip section
         equip_section = drawer.open_asset("equip_section.png")

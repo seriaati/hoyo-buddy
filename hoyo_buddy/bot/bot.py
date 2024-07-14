@@ -260,8 +260,6 @@ class HoyoBuddy(commands.AutoShardedBot):
             return current_accounts[0]
 
         account = accounts[0]
-        account.current = True
-        await account.save(update_fields=("current",))
         return account
 
     async def update_assets(self) -> None:

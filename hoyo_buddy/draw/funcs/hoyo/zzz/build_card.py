@@ -14,6 +14,23 @@ from hoyo_buddy.draw.drawer import Drawer
 if TYPE_CHECKING:
     import genshin
 
+
+def fill_zeros(s: str) -> str:
+    number_part = float(s.replace("%", ""))
+
+    if "%" in s:
+        formatted_number = f"{number_part:.1f}"
+        return f"{formatted_number}%"
+
+    if number_part >= 1000 or number_part >= 100:
+        formatted_number = f"{number_part:.0f}"
+    elif number_part >= 10:
+        formatted_number = f"{number_part:.1f}"
+    else:
+        formatted_number = f"{number_part:.2f}"
+    return formatted_number
+
+
 STAT_ICONS = {
     # Disc
     PropType.DISC_HP: "HP.png",
@@ -73,10 +90,26 @@ class ZZZAgentCard:
             level_text,
             position=(self._level_data["x"], self._level_data["y"]),
             size=250,
-            color=(20, 20, 20),
+            color=(41, 41, 41),
             locale=discord.Locale.american_english,
             style="black_italic",
             sans=True,
+        )
+
+        # Media rank
+        rank_text = drawer.open_asset(f"rank/M{self._agent.rank}.png")
+        im.paste(rank_text, (self._level_data["x"], self._level_data["y"] + 260), rank_text)
+
+        # Agent full name
+        drawer.write(
+            self._agent.full_name,
+            position=(self._level_data["x"] + rank_text.width + 10, self._level_data["y"] + 290),
+            size=72,
+            color=(41, 41, 41),
+            style="black_italic",
+            sans=True,
+            max_width=403,
+            max_lines=2,
         )
 
         # Agent image
@@ -94,24 +127,43 @@ class ZZZAgentCard:
         # W-engine
         engine = self._agent.w_engine
         if engine is not None:
+            # Engine icon
             icon = drawer.open_static(engine.icon, size=(317, 317))
-            im.paste(icon, (462, 249), icon)
-            engine_level = drawer.open_asset("engine_level.png")
-            im.paste(engine_level, (646, 511), engine_level)
+            im.paste(icon, (480, 263), icon)
+
+            # Engine level
+            level_flair = drawer.open_asset("engine_level_flair.png")
+            im.paste(level_flair, (663, 510), level_flair)
             drawer.write(
                 f"Lv.{engine.level}",
                 size=36,
-                position=(702, 538),
+                position=(720, 536),
                 color=(255, 255, 255),
                 style="medium",
                 sans=True,
                 locale=discord.Locale.american_english,
                 anchor="mm",
             )
+
+            # Engine star
+            star_flair = drawer.open_asset("engine_star_flair.png")
+            im.paste(star_flair, (498, 284), star_flair)
+            drawer.write(
+                str(engine.refinement),
+                size=46,
+                position=(533, 318),
+                color=(255, 255, 255),
+                style="medium",
+                sans=True,
+                locale=discord.Locale.american_english,
+                anchor="mm",
+            )
+
+            # Engine name
             name_tbox = drawer.write(
                 engine.name.upper(),
                 size=64,
-                position=(106, 280),
+                position=(94, 267),
                 max_width=392,
                 max_lines=2,
                 style="black",
@@ -120,31 +172,25 @@ class ZZZAgentCard:
             )
             bottom = name_tbox[3]
 
+            # Engine stats
             stats = (engine.main_properties[0], engine.properties[0])
-            stat_positions = {0: (106, bottom + 40), 1: (106, bottom + 40 + 60)}
+            stat_positions = {0: (94, bottom + 40), 1: (94, bottom + 40 + 60)}
             for i, stat in enumerate(stats):
                 if isinstance(stat.type, PropType):
                     icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[stat.type]}", size=(40, 40))
                     im.paste(icon, stat_positions[i], icon)
-                tbox = drawer.write(
-                    f"{stat.name}  {stat.value}",
-                    size=28,
-                    style="medium",
-                    sans=True,
-                    color=(20, 20, 20),
-                    position=(0, 0),
-                    no_write=True,
-                )
-                height = tbox[3] - tbox[1]
-                drawer.write(
-                    f"{stat.name}  {stat.value}",
-                    size=28,
-                    style="medium",
-                    sans=True,
-                    color=(20, 20, 20),
-                    position=(106 + 50, stat_positions[i][1] + height),
-                    anchor="lm",
-                )
+                    drawer.write(
+                        f"{stat.name}  {fill_zeros(stat.value)}",
+                        size=28,
+                        style="medium",
+                        sans=True,
+                        color=(20, 20, 20),
+                        position=(
+                            stat_positions[i][0] + 60,
+                            stat_positions[i][1] + icon.height // 2,
+                        ),
+                        anchor="lm",
+                    )
 
         # Discs
         start_pos = (74, 670)
@@ -170,28 +216,41 @@ class ZZZAgentCard:
                 )
                 im.paste(main_stat_icon, (start_pos[0] + 140, start_pos[1] + 15), main_stat_icon)
                 drawer.write(
-                    main_stat.value,
+                    fill_zeros(main_stat.value),
                     size=28,
-                    position=(start_pos[0] + 185, start_pos[1] + 33),
+                    position=(start_pos[0] + 185, start_pos[1] + 15 + main_stat_icon.height // 2),
                     style="medium",
                     sans=True,
                     anchor="lm",
                 )
 
             sub_stat_pos = (start_pos[0] + 144, start_pos[1] + 70)
-            for j, sub_stat in enumerate(disc.properties):
-                if isinstance(sub_stat.type, PropType):
-                    sub_stat_icon = drawer.open_asset(
-                        f"stat_icons/{STAT_ICONS[sub_stat.type]}", size=(25, 25)
-                    )
-                    im.paste(sub_stat_icon, sub_stat_pos, sub_stat_icon)
-                    drawer.write(
-                        sub_stat.value,
-                        size=18,
-                        position=(sub_stat_pos[0] + 30, sub_stat_pos[1] + 11),
-                        sans=True,
-                        anchor="lm",
-                    )
+            for j in range(4):
+                try:
+                    sub_stat = disc.properties[j]
+                except IndexError:
+                    sub_stat_icon = drawer.open_asset("stat_icons/PLACEHOLDER.png", size=(25, 25))
+                    text = "N/A"
+                else:
+                    if isinstance(sub_stat.type, PropType):
+                        sub_stat_icon = drawer.open_asset(
+                            f"stat_icons/{STAT_ICONS[sub_stat.type]}", size=(25, 25)
+                        )
+                    else:
+                        sub_stat_icon = drawer.open_asset(
+                            "stat_icons/PLACEHOLDER.png", size=(25, 25)
+                        )
+                    text = fill_zeros(sub_stat.value)
+
+                im.paste(sub_stat_icon, sub_stat_pos, sub_stat_icon)
+                drawer.write(
+                    text,
+                    size=18,
+                    position=(sub_stat_pos[0] + 30, sub_stat_pos[1] + sub_stat_icon.height // 2),
+                    sans=True,
+                    anchor="lm",
+                    locale=discord.Locale.american_english,
+                )
 
                 if j == 1:
                     sub_stat_pos = (start_pos[0] + 144, start_pos[1] + 115)

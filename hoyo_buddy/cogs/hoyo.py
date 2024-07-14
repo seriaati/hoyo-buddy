@@ -35,7 +35,7 @@ class Hoyo(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
-    async def _get_uid_and_game(
+    async def _parse_params(
         self, user_id: int, account: HoyoAccount | None, uid: str | None, game_value: str | None
     ) -> tuple[int, Game, HoyoAccount | None]:
         """Get the UID and game from the account or the provided UID and game value."""
@@ -154,7 +154,7 @@ class Hoyo(commands.Cog):
 
         locale = await get_locale(i)
         user = user or i.user
-        uid_, game, account_ = await self._get_uid_and_game(user.id, account, uid, game_value)
+        uid_, game, account_ = await self._parse_params(user.id, account, uid, game_value)
 
         handler = ProfileCommand(
             uid=uid_,

@@ -232,9 +232,8 @@ class HoyoBuddy(commands.AutoShardedBot):
             if current.lower() in str(account).lower()
         ]
 
-    @staticmethod
     async def get_account(
-        user_id: int, games: Sequence[Game], platforms: Sequence[Platform] | None = None
+        self, user_id: int, games: Sequence[Game], platforms: Sequence[Platform] | None = None
     ) -> models.HoyoAccount:
         """Get an account by user ID and games.
 
@@ -252,15 +251,26 @@ class HoyoBuddy(commands.AutoShardedBot):
             raise NoAccountFoundError(games, platforms)
 
         current_accounts = [account for account in accounts if account.current]
-        if current_accounts:
-            if len(current_accounts) > 1:
-                for account in current_accounts[1:]:
-                    account.current = False
-                    await account.save(update_fields=("current",))
-            return current_accounts[0]
+        await self.sanitize_accounts(user_id)
+        return current_accounts[0] if current_accounts else accounts[0]
 
-        account = accounts[0]
-        return account
+    @staticmethod
+    async def sanitize_accounts(user_id: int) -> None:
+        """Sanitize accounts for a user.
+
+        Args:
+            user_id: The user ID to sanitize the accounts for.
+        """
+        accounts = await models.HoyoAccount.filter(user_id=user_id).all()
+        current_accounts = [account for account in accounts if account.current]
+        if not current_accounts and accounts:
+            accounts[0].current = True
+            await accounts[0].save()
+            return
+        if len(current_accounts) > 1:
+            for account in current_accounts[1:]:
+                account.current = False
+                await account.save()
 
     async def update_assets(self) -> None:
         # Update EnkaAPI assets

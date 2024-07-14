@@ -77,7 +77,7 @@ class CharacterUI(View):
             self._character_detail = character_detail
             self._manual_avatar = manual_avatar
 
-            self._main_skill_levels = [
+            self._main_skill_max_levels = self._main_skill_levels = [
                 skill.max_level for skill in character_detail.skills.values()
             ]
 

@@ -176,7 +176,12 @@ class PureFictionCard:
             pos = (pos[0] + 62, pos[1])
 
         drawer.write(
-            LocaleStr(key="pf_card_total_score", score=stage.score or 80000),
+            LocaleStr(
+                key="pf_card_total_score",
+                score=f"{stage.node_1.score}+{stage.node_2.score}={stage.score}"
+                if not stage.is_quick_clear
+                else 80000,
+            ),
             size=25,
             position=(rightmost + padding + 37, 60),
             color=WHITE,

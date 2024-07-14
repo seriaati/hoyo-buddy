@@ -148,7 +148,12 @@ class APCShadowCard:
             color=WHITE,
         )
         score_tbox = drawer.write(
-            LocaleStr(key="pf_card_total_score", score=stage.score or 8000),
+            LocaleStr(
+                key="pf_card_total_score",
+                score=f"{stage.node_1.score}+{stage.node_2.score}={stage.score}"
+                if not stage.is_quick_clear
+                else 80000,
+            ),
             size=25,
             position=(0, 60),
             color=WHITE,

@@ -515,11 +515,7 @@ class NotesChecker:
 
                 try:
                     if notify.account.uid not in notes_cache[notify.account.game]:
-                        try:
-                            notes = await cls._get_notes(notify)
-                        except python_socks._errors.ProxyError:
-                            notify.account.client.proxy = None
-                            notes = await cls._get_notes(notify)
+                        notes = await cls._get_notes(notify)
                         notes_cache[notify.account.game][notify.account.uid] = notes
                     else:
                         notes = notes_cache[notify.account.game][notify.account.uid]

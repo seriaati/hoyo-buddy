@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any
 
 import genshin
 import hakushin
+import python_socks
 
 from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr, Translator
@@ -52,6 +53,13 @@ class GenshinClient(genshin.Client):
             else None,
         )
         self._account = account
+
+    async def request(self, *args: Any, **kwargs: Any) -> Any:
+        try:
+            return await super().request(*args, **kwargs)
+        except python_socks.ProxyError:
+            self.proxy = None
+            return await super().request(*args, **kwargs)
 
     def set_lang(self, locale: Locale) -> None:
         if self.region is genshin.Region.CHINESE:

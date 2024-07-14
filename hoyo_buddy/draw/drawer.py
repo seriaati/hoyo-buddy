@@ -266,22 +266,20 @@ class Drawer:
         locale: discord.Locale | None,
         sans: bool,
     ) -> ImageFont.FreeTypeFont:
-        locale = locale or self.locale
         default_locale = discord.Locale.american_english
+        locale = locale or self.locale
+        if locale is discord.Locale.british_english:
+            locale = discord.Locale.american_english
+        if sans and locale not in SANS_FONT_MAPPING:
+            sans = False
 
         if sans:
-            if locale not in SANS_FONT_MAPPING:
-                locale = default_locale
-            font_map = SANS_FONT_MAPPING.get(locale)
-            if font_map is None:
-                # Can't find sans font, use regular instead
-                font_map = FONT_MAPPING.get(locale, FONT_MAPPING[default_locale])
+            font_map = SANS_FONT_MAPPING[locale]
         else:
             font_map = FONT_MAPPING.get(locale, FONT_MAPPING[default_locale])
 
-        if style == "black" and "black" not in font_map:
-            # Can't find black version, use bold instead
-            style = "bold"
+        if style.startswith("black") and style not in font_map:
+            style = style.replace("black", "bold")  # pyright: ignore [reportAssignmentType]
         if style.endswith("_italic") and style not in font_map:
             # Can't find italic version, use regular instead
             style = style.replace("_italic", "")  # pyright: ignore [reportAssignmentType]

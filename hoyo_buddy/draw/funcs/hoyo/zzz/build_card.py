@@ -103,15 +103,10 @@ class ZZZAgentCard:
         )
 
         # Agent full name
-        text = drawer._wrap_text(
-            self._agent_full_name,
-            403,
-            2,
-            drawer._get_font(72, "black_italic", discord.Locale(self._locale), True),
-        )
-        if "\n" in text:
+        text = self._agent_full_name.split(" ", maxsplit=1)
+        if len(text) > 1:
             drawer.write(
-                self._agent_full_name,
+                "\n".join(text),
                 position=(
                     self._agent_data["level_x"] + rank_text.width + 10,
                     self._agent_data["level_y"] + 290,
@@ -120,8 +115,7 @@ class ZZZAgentCard:
                 color=(41, 41, 41),
                 style="black_italic",
                 sans=True,
-                max_width=403,
-                max_lines=2,
+                locale=discord.Locale.american_english,
             )
 
         # Agent image

@@ -7,6 +7,7 @@ from genshin import GenshinException
 from seria.utils import read_yaml
 
 from ..db.models import EnkaCache, HoyoAccount
+from ..exceptions import InvalidQueryError
 from ..hoyo.clients.enka.gi import EnkaGIClient
 from ..hoyo.clients.enka.hsr import EnkaHSRClient
 from ..ui.hoyo.profile.view import ProfileView
@@ -111,7 +112,9 @@ class ProfileCommand:
         )
 
     async def run_zzz(self) -> ProfileView:
-        assert self._account is not None
+        if self._account is None:
+            raise InvalidQueryError
+
         client = self._account.client
         client.set_lang(self._locale)
         zzz_data = await client.get_zzz_agents()

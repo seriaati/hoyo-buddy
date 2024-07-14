@@ -507,10 +507,10 @@ def draw_hsr_build_card(
                 stat_x = relic_icon_right_pos + 8
                 stat_y += icon.height + stat_y_padding
 
-        y += height + y_padding
-        if index == 2:
-            x += width + x_padding
-            y = 653
+        x += width + x_padding
+        if index in {1, 3}:
+            x = 1374
+            y += height + y_padding
 
     # logo
     # filename = "dark_logo.png" if dark_mode else "light_logo.png"

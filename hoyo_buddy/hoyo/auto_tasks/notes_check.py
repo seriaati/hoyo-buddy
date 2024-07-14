@@ -6,7 +6,6 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar
 
 import discord
-import python_socks
 from discord import Locale
 from genshin.models import Notes, StarRailNote, VideoStoreState, ZZZNotes
 

@@ -421,7 +421,7 @@ class NotesChecker:
             case NotesNotifyType.GI_DAILY | NotesNotifyType.HSR_DAILY | NotesNotifyType.ZZZ_DAILY:
                 await cls._process_daily_notify(notify, notes)
             case NotesNotifyType.RESIN_DISCOUNT | NotesNotifyType.ECHO_OF_WAR:
-                assert isinstance(notes, Notes)
+                assert isinstance(notes, Notes | StarRailNote)
                 await cls._process_week_boss_discount_notify(notify, notes)
             case NotesNotifyType.BATTERY:
                 assert isinstance(notes, ZZZNotes)

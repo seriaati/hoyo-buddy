@@ -458,3 +458,29 @@ async def draw_zzz_build_card(
             card.draw,
         )
     return buffer
+
+
+async def draw_zzz_characters_card(
+    draw_input: DrawInput,
+    agents: Sequence[ZZZFullAgent],
+    translator: Translator,
+) -> File:
+    urls: list[str] = []
+    for agent in agents:
+        urls.append(agent.banner_icon)
+        if agent.w_engine is not None:
+            urls.append(agent.w_engine.icon)
+
+    await download_and_save_static_images(urls, "zzz-characters", draw_input.session)
+    with timing("draw", tags={"type": "zzz_character_card"}):
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
+            funcs.zzz.draw_big_agent_card,
+            agents,
+            draw_input.dark_mode,
+            draw_input.locale.value,
+            translator,
+        )
+    buffer.seek(0)
+
+    return File(buffer, filename=draw_input.filename)

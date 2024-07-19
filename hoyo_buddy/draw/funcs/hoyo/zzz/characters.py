@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING, Any
 
 import discord
 from cachetools import TTLCache, cached
+from discord import utils as dutils
+from genshin.models import ZZZSkillType
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.bot.translator import LevelStr, Translator
@@ -84,7 +86,21 @@ def draw_agent_small_card(
 
     # Skill
     im.paste(skill_bar, (457, 362), skill_bar)
-    text = "/".join(str(skill.level) for skill in agent.skills)
+    skill_order = (
+        ZZZSkillType.BASIC_ATTACK,
+        ZZZSkillType.DODGE,
+        ZZZSkillType.ASSIST,
+        ZZZSkillType.SPECIAL_ATTACK,
+        ZZZSkillType.CHAIN_ATTACK,
+        ZZZSkillType.CORE_SKILL,
+    )
+    skill_levels: list[int] = []
+    for skill_type in skill_order:
+        skill = dutils.get(agent.skills, type=skill_type)
+        if skill is None:
+            continue
+        skill_levels.append(skill.level)
+    text = "/".join(str(level) for level in skill_levels)
     drawer.write(
         text,
         size=42,

@@ -143,10 +143,10 @@ def draw_big_agent_card(
         for agent in agents
     ]
 
-    card_height = card.height
-    card_width = card.width
+    card_height = 457
+    card_width = 909
     card_x_padding = 38
-    card_y_padding = 30
+    card_y_padding = 45
     card_start_pos = (65, 70)
 
     max_card_per_col = 7

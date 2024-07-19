@@ -73,8 +73,8 @@ books: Buku
 captcha.embed.description: "Klik tombol di bawah untuk menyelesaikan CAPTCHA.\n"
 challenge_command_description: "Lihat statistik konten end-game, seperti spiral abyss, memory of chaos, dll."
 challenge_type_select.placeholder: Pilih mode game
-challenge_view.buff_used_in: ""
-challenge_view.team: ""
+challenge_view.buff_used_in: Digunakan dalam
+challenge_view.team: "tim {team}"
 chamber_button_label: "Ruang {value}"
 change_character_level_label: Ubah level karakter
 change_skill_level_label: Ubah level skill
@@ -91,13 +91,11 @@ character_stories_page_label: Story
 character_talents_page_label: Talenta
 character_voices_page_label: Suara
 characters: Karakter
-characters.embed.element_filters: "{element} Karakter"
 characters.embed.element_max_friendship: "Persahabatan Karakter {element} Maks"
 characters.embed.element_not_max_friendship: "Bukan Karakter {element} Persahabatan Maks"
 characters.embed.max_friendship: Persahabatan Karakter Maks
 characters.embed.not_max_friendship: Bukan Persahabatan Karakter Maks
 characters.embed.owned_characters: Karakter Dimiliki
-characters.embed.path_filters: "{path} Karakter"
 characters.embed.title: Ringkasan karakter
 characters.filter.element.placeholder: Pilih filter elemen
 characters.filter.max_friendship: Persahabatan Maks
@@ -107,16 +105,16 @@ characters.filter.path.placeholder: Pilih filter path...
 characters.filter.placeholder: Pilih filter...
 characters.first_time.embed.description: "Jika ini pertama kali kamu menggunakan perintah ini, maka ini membutuhkan waktu beberapa saat.\nIni dikarenakan suatu perintah mengambil data dari banyak sumber.\nIni akan lebih cepat saat kamu menggunakan perintah ini lagi.\nHarap bersabar dan tunggu hingga sumber daya selesai diambil"
 characters.first_time.title: Mengambil sumber daya...
-characters.gi.embed.footer: ""
-characters.hsr.embed.footer: ""
-hsr.ultimate: ""
-hsr.normal_attack: ""
-hsr.skill: ""
-hsr.talent: ""
+characters.level_order.footer: ""
+characters.extra_detail.footer: ""
+hsr.ultimate: Ultimate
+hsr.normal_attack: Normal attack
+hsr.skill: Skill
+hsr.talent: Talenta
 hsr.technique: ""
-gi.skill: ""
-gi.burst: ""
-gi.passive: ""
+gi.skill: Elemental skill
+gi.burst: Elemental burst
+gi.passive: Pasif
 characters.sorter.constellation: Konstelasi
 characters.sorter.eidolon: Eidolon
 characters.sorter.element: Elemen
@@ -205,9 +203,9 @@ farm_notify.add_item: Tambahkan item
 farm_notify.add_item.embed.description: "Untuk menambahkan item, gunakan perintah </farm add>"
 farm_notify.description: Kamu akan diingatkan ketika material karakter/senjata dalam daftar ini dapat difarming.
 farm_notify.empty: Kamu tidak memiliki item di daftar pengingat farming kamu
-farm_notify.empty_description: ""
+farm_notify.empty_description: "Tambahkan item ke daftar pengingat farmingmu dengan menggunakan perintah </farm add> "
 farm_notify.remove_item: Hapus item
-farm_notify.remove_item.embed.description: ""
+farm_notify.remove_item.embed.description: "Untuk hapus item, gunakan perintah </farm remove:1044926380456017920>"
 farm_notify.title: Daftar Pengingat Farming
 farm_reminder_command_description: Memberi tahu kamu ketika material karakter/senjata bisa difarming
 farm_remove_command.item_not_found: Item tidak ditemukan
@@ -215,8 +213,8 @@ farm_remove_command.item_not_found_description: Item ini tidak ada di dalam daft
 farm_remove_command_description: Hapus karakter/senjata dari daftar pengingat farming
 farm_view.happy_farming: 🌾 Happy farming!
 farm_view.set_reminder: Atur Pengingat
-farm_view.set_reminder.embed.description: ""
-farm_view.sundays: ""
+farm_view.set_reminder.embed.description: "Untuk mengatur pengingat, gunakan perintah </farm reminder:1044926380456017920>"
+farm_view.sundays: Semua Domain Tersedia dihari Minggu
 farm_view.weekday_select.placeholder: Pilih hari kerja
 farm_view_command_description: Lihat domain yang dapat difarming di Genshin Impact
 feedback_button.feedback_sent.description: 🥰 Terimakasih banyak atas masukanmu!
@@ -238,12 +236,12 @@ game_maintenance_title: Game sedang dalam pemeliharaan
 game_value_incomplete_param_error_message: Kamu harus menentukan UID dari game
 geeetest_verification_complete: Verifikasi selesai
 geeetest_verification_timeout: Batas waktu verfikasi
-geeetest_verification_timeout_description: ""
+geeetest_verification_timeout_description: Batas waktu verifikasi telah habis. Silakan gunakan perintah </geetest> untuk mengulanginya lagi.
 geetest.embed.title: 😅 Perlu menyelesaikan CAPTCHA sebelum masuk
 geetest.no_need: Tidak perlu geetest
 geetest.no_need.description: "Kamu tidak perlu melalukan geetest! Kenapa kamu di sini?!"
 geetest.required: Diperlukan Verifikasi Geetest
-geetest.required.description: ""
+geetest.required.description: "Gunakan perintah </geetest> , pilih akun untuk pemicu geetest, dan pilih `{geetest_type}` untuk menyelesaikan verifikasi"
 geetest_command_description: Lengkapi verifikasi geetest
 geetest_cmd_type_param_desc: ""
 geetest_command_type_param_name: jenis
@@ -267,10 +265,10 @@ incomplete_param_error_title: Parameter-parameter perintah yang diberikan tidak 
 instructions_title: Petunjuk
 interaction_failed_description: "Tampilan ini tidak dimulai olehmu, oleh karena itu kamu tidak dapat menggunakannya."
 interaction_failed_title: Interaksi gagal
-invalid_category_selected: ""
+invalid_category_selected: Kategori yang dipilih tidak valid
 invalid_color_error_message: "Warna yang valid harus berupa kode warna heksadesimal, misalnya #FF0000"
 invalid_color_error_title: warna tidak valid
-invalid_cookies_description: ""
+invalid_cookies_description: Refresh cookie kamu dengan menambahkan akunmu lagi menggunakan </accounts>
 invalid_cookies_title: Cookie Tidak Valid
 invalid_email_password_description: "Email atau kata sandi yang kamu berikan salah, silakan periksa dan coba lagi."
 invalid_email_password_title: Email atau kata sandi tidak valid
@@ -297,10 +295,10 @@ liyue: Liyue
 loading_text: Memuat...
 make_up_for_checkin_button_label: Absen susulan
 materials: Material
-memory_of_chaos: ""
+memory_of_chaos: Memory of chaos
 miyoushe: Miyoushe
 mobile_instructions_description: "1. Klik tombol di bawah untuk memasukkan nomor telepon kamu\n2. Kamu akan menerima kode verifikasi melalui SMS\n3. Klik tombol di bawah untuk memasukkan kode verifikasi\n"
-moc_card_battles_fought: ""
+moc_card_battles_fought: "Jumlah Pertempuran: {battles}"
 moc_card_cycles_used: ""
 moc_card_farthest_stage: ""
 moc_quick_clear: ""
@@ -311,11 +309,11 @@ next_page_option_label: Halaman selanjutnya
 nickname_modal_label: Nickname
 nickname_modal_placeholder: "Akun utama, akun Asia..."
 nihility: Nihility
-no_account_found_for_games_error_message: ""
+no_account_found_for_games_error_message: "Kamu belum memiliki akun untuk game `{games}` dan platform `{platforms}`. Tambahkan satu dengan </accounts>"
 no_account_found_for_games_error_title: Tidak ditemukan akun
 no_accounts_autocomplete_choice: Kamu belum memiliki akun apapun. Tambahkan satu dengan /accounts
-no_challenge_data_err_message: ""
-no_challenge_data_err_title: ""
+no_challenge_data_err_message: "Tidak dapat menemukan data {challenge} untuk fase ini. Kamu belum memulai {challenge} atau datanya belum ada. Silakan coba lagi nanti"
+no_challenge_data_err_title: "Tidak ada Data {challenge}"
 no_characters_found_error_message: Silakan coba lagi dengan filter yang berbeda
 no_characters_found_error_title: Tidak ada karakter yang ditemukan dengan filter yang dipilih
 no_game_accounts_error_message: "Tidak ada akun game di akun {platform}. "
@@ -349,14 +347,14 @@ notify_on_success_button_label: Beritahu jika absen berhasil
 nsfw_prompt_error_message: "Perintah tersebut berisi konten NSFW, silakan coba lagi dengan perintah lain."
 nsfw_prompt_error_title: NSFW Terdeteksi
 page_footer: "Halaman {current_page}/{total_pages}"
-pf_card_total_score: ""
+pf_card_total_score: "Total Skor: {score}"
 physical: Physical
 player_not_found_description: Silakan periksa kembali UID yang diberikan
 player_not_found_title: Pemain tidak ditemukan
 preservation: Preservation
 prev_page_option_label: Halaman Sebelumnya
 primogems: primogems
-process_notify_error.content: ""
+process_notify_error.content: "Terjadi kesalahan saat memproses pengingat catatan real-timemu\nHoyo Buddy telah menonaktifkan pengingat untuk akun ini, kamu dapat mengaktifkannya kembali menggunakan </notes>\nJika kesalahan ini masih terjadi atau kamu tidak tahu cara memperbaikinya, silakan hubungi pengembang melalui </feedback>.\n"
 profile.add_image.button.label: Tambah gambar kustom
 profile.add_image_modal.image_url.label: URL Gambar
 profile.add_image_modal.title: Tambah Gambar Kustom
@@ -570,3 +568,27 @@ set_cur_temp_as_default.done: ""
 set_cur_temp_as_default.done_desc: ""
 third_party_card_temp_error_title: ""
 third_party_card_temp_error_message: ""
+account_locked_title: ""
+account_locked_description: ""
+ether: ""
+electric: ""
+profile.no_data.title: ""
+profile.no_data.description: ""
+profile.zzz_hoyolab.character_select.description: ""
+characters.filter.specialty.placeholder: ""
+zzz.basic: ""
+zzz.dodge: ""
+zzz.assist: ""
+zzz.special: ""
+zzz.chain: ""
+zzz.core: ""
+attack: ""
+stun: ""
+anomaly: ""
+support: ""
+defense: ""
+characters.filter.faction.placeholder: ""
+characters.sorter.speciality: ""
+characters.sorter.faction: ""
+characters.sorter.mindscape_cinema: ""
+characters.embed.filter_text: ""

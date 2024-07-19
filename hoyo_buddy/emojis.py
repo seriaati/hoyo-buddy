@@ -81,6 +81,13 @@ ZZZ_ELEMENT_EMOJIS: dict[ZZZElement, str] = {
     ZZZElement.ICE: "<:ICE:1261296218101907569>",
     ZZZElement.PHYSICAL: "<:PHYSICAL:1261296216126390273>",
 }
+ZZZ_SPECIALTY_EMOJIS: dict[genshin.models.ZZZSpecialty, str] = {
+    genshin.models.ZZZSpecialty.ANOMALY: "<:zzzProfessionNuclear:1263458200980689046>",
+    genshin.models.ZZZSpecialty.ATTACK: "<:zzzProfessionSword:1263458204688318554>",
+    genshin.models.ZZZSpecialty.DEFENSE: "<:zzzProfessionShield:1263458202943623208>",
+    genshin.models.ZZZSpecialty.STUN: "<:zzzProfessionMace:1263458199068082207>",
+    genshin.models.ZZZSpecialty.SUPPORT: "<:zzzProfessionBullet:1263458197453148191>",
+}
 
 ARTIFACT_POS_EMOJIS: dict[str, str] = {
     "flower": "<:Flower_of_Life:982167959717945374>",

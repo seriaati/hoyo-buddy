@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from collections import defaultdict
+from typing import TYPE_CHECKING, Any
 
 import enka
 from discord import app_commands
@@ -10,6 +11,7 @@ from ..bot.translator import LocaleStr
 from ..commands.challenge import ChallengeCommand
 from ..commands.geetest import GeetestCommand
 from ..commands.profile import ProfileCommand
+from ..constants import ZZZ_AGENT_DATA
 from ..db.models import HoyoAccount, Settings, get_locale
 from ..draw.main_funcs import draw_exploration_card
 from ..embeds import DefaultEmbed
@@ -24,7 +26,7 @@ from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.redeem import RedeemUI
-from ..utils import ephemeral
+from ..utils import ephemeral, fetch_and_cache_json
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
@@ -248,17 +250,37 @@ class Hoyo(commands.Cog):
         await i.response.defer(ephemeral=ephemeral(i))
 
         user = user or i.user
-        account_ = account or await self.bot.get_account(user.id, [Game.GENSHIN, Game.STARRAIL])
+        account_ = account or await self.bot.get_account(
+            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
+        )
         settings = await Settings.get(user_id=i.user.id)
 
         if account_.game is Game.GENSHIN:
             async with AmbrAPIClient(translator=self.bot.translator) as client:
                 element_char_counts = await client.fetch_element_char_counts()
                 path_char_counts = {}
+                faction_char_counts = {}
         elif account_.game is Game.STARRAIL:
             async with YattaAPIClient(translator=self.bot.translator) as client:
                 element_char_counts = await client.fetch_element_char_counts()
                 path_char_counts = await client.fetch_path_char_counts()
+                faction_char_counts = {}
+        elif account_.game is Game.ZZZ:
+            agent_data: dict[str, Any] = await fetch_and_cache_json(
+                i.client.session,
+                url=ZZZ_AGENT_DATA,
+                file_path="./.static/zzz_agent_data.json",
+            )
+
+            element_char_counts: dict[str, int] = defaultdict(int)
+            path_char_counts = {}
+            faction_char_counts: dict[str, int] = defaultdict(int)
+
+            for agent in agent_data.values():
+                if agent["beta"]:
+                    continue
+                element_char_counts[agent["element"].lower()] += 1
+                faction_char_counts[agent["faction"].lower()] += 1
         else:
             raise FeatureNotImplementedError(platform=account_.platform, game=account_.game)
 
@@ -267,6 +289,7 @@ class Hoyo(commands.Cog):
             settings.dark_mode,
             element_char_counts,
             path_char_counts,
+            faction_char_counts,
             author=i.user,
             locale=settings.locale or i.locale,
             translator=self.bot.translator,
@@ -456,7 +479,6 @@ class Hoyo(commands.Cog):
         )
 
     @challenge_command.autocomplete("account")
-    @characters_command.autocomplete("account")
     async def gi_hsr_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
@@ -469,6 +491,7 @@ class Hoyo(commands.Cog):
     @redeem_command.autocomplete("account")
     @notes_command.autocomplete("account")
     @profile_command.autocomplete("account")
+    @characters_command.autocomplete("account")
     async def gi_hsr_zzz_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:

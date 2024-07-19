@@ -4,13 +4,19 @@ import datetime
 from enum import StrEnum
 from typing import TYPE_CHECKING, TypeAlias
 
-from discord import ButtonStyle
+from discord import ButtonStyle, Locale
 from genshin.models import Character as GICharacter
 from genshin.models import StarRailDetailCharacter as HSRCharacter
+from genshin.models import ZZZFullAgent as ZZZCharacter
+from genshin.models import ZZZSpecialty
 
 from hoyo_buddy.bot.translator import EnumStr, LocaleStr
-from hoyo_buddy.draw.main_funcs import draw_gi_characters_card, draw_hsr_characters_card
-from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath
+from hoyo_buddy.draw.main_funcs import (
+    draw_gi_characters_card,
+    draw_hsr_characters_card,
+    draw_zzz_characters_card,
+)
+from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath, ZZZElement
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 
 from ...constants import (
@@ -22,7 +28,13 @@ from ...constants import (
 )
 from ...db.models import JSONFile
 from ...embeds import DefaultEmbed
-from ...emojis import get_gi_element_emoji, get_hsr_element_emoji, get_hsr_path_emoji
+from ...emojis import (
+    ZZZ_SPECIALTY_EMOJIS,
+    get_gi_element_emoji,
+    get_hsr_element_emoji,
+    get_hsr_path_emoji,
+    get_zzz_element_emoji,
+)
 from ...exceptions import ActionInCooldownError, FeatureNotImplementedError, NoCharsFoundError
 from ...hoyo.clients.ambr import AmbrAPIClient
 from ...hoyo.clients.yatta import YattaAPIClient
@@ -37,13 +49,11 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
 
     import aiohttp
-    from discord import File, Locale, Member, User
+    from discord import File, Member, User
 
     from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.db.models import HoyoAccount
     from hoyo_buddy.types import Interaction
-
-Character: TypeAlias = GICharacter | HSRCharacter | UnownedCharacter
 
 
 class GIFilter(StrEnum):
@@ -68,6 +78,19 @@ class HSRSorter(StrEnum):
     EIDOLON = "eidolon"
 
 
+class ZZZSorter(StrEnum):
+    ELEMENT = "element"
+    SPECIALTY = "speciality"
+    FACTION = "faction"
+    RARITY = "rarity"
+    LEVEL = "level"
+    MINDSCAPE_CINEMA = "mindscape_cinema"
+
+
+Character: TypeAlias = GICharacter | HSRCharacter | UnownedCharacter | ZZZCharacter
+Sorter: TypeAlias = GISorter | HSRSorter | ZZZSorter
+
+
 class CharactersView(View):
     def __init__(
         self,
@@ -75,6 +98,7 @@ class CharactersView(View):
         dark_mode: bool,
         element_char_counts: dict[str, int],
         path_char_counts: dict[str, int],
+        faction_char_counts: dict[str, int],
         *,
         author: User | Member | None,
         locale: Locale,
@@ -87,21 +111,29 @@ class CharactersView(View):
         self._dark_mode = dark_mode
         self._element_char_counts = element_char_counts
         self._path_char_counts = path_char_counts
+        self._faction_char_counts = faction_char_counts
 
         self._gi_characters: list[GICharacter | UnownedCharacter] = []
         self._hsr_characters: list[HSRCharacter | UnownedCharacter] = []
+        self._zzz_characters: list[ZZZCharacter] = []
 
         self._filter: GIFilter = GIFilter.NONE
-        self._element_filters: list[GenshinElement | HSRElement] = []
+        self._element_filters: list[GenshinElement | HSRElement | ZZZElement] = []
         self._path_filters: list[HSRPath] = []
-        self._sorter: GISorter | HSRSorter
 
+        self._speciality_filters: list[ZZZSpecialty] = []
+        self._faction_filters: list[str] = []
+        self._faction_l10n: dict[str, str] = {}
+
+        self._sorter: GISorter | HSRSorter | ZZZSorter
         if self._game is Game.GENSHIN:
             self._sorter = GISorter.ELEMENT
         elif self._game is Game.STARRAIL:
             self._sorter = HSRSorter.ELEMENT
+        elif self._game is Game.ZZZ:
+            self._sorter = ZZZSorter.ELEMENT
 
-    async def _get_pc_icons(self) -> dict[str, str]:
+    async def _get_gi_pc_icons(self) -> dict[str, str]:
         pc_icons: dict[str, str] = {}
         # pc_icons: dict[str, str] = await JSONFile.read("pc_icons.json")
 
@@ -109,19 +141,19 @@ class CharactersView(View):
             await self._account.client.update_pc_icons()
             pc_icons = await JSONFile.read("pc_icons.json")
 
+        if all(str(c.id) in pc_icons for c in self._gi_characters):
+            return pc_icons
+
         async with AmbrAPIClient() as client:
             for chara in self._gi_characters:
                 if str(chara.id) not in pc_icons:
-                    pc_icons[str(chara.id)] = (
-                        f"https://raw.githubusercontent.com/FortOfFans/GI/main/spriteoutput/avatariconteam/{chara.id}.png"
-                    )
                     character_detail = await client.fetch_character_detail(str(chara.id))
                     pc_icons[str(chara.id)] = character_detail.icon
                     await JSONFile.write("pc_icons.json", pc_icons)
 
         return pc_icons
 
-    async def _get_talent_level_data(self) -> dict[str, str]:
+    async def _get_gi_talent_level_data(self) -> dict[str, str]:
         filename = f"talent_levels/gi_{self._account.uid}.json"
         talent_level_data = await JSONFile.read(filename)
 
@@ -158,8 +190,18 @@ class CharactersView(View):
 
         elements = [element_filter.value.lower() for element_filter in self._element_filters]
         if HSRElement.THUNDER in self._element_filters:
-            elements.append("lightning")  # hoyo seriously can't decide on a name
-        return [c for c in characters if c.element.lower() in elements]
+            elements.append("lightning")  # Hoyo seriously can't decide on a name
+
+        result: list[Character] = []
+        for character in characters:
+            if isinstance(character.element, str):
+                element = character.element.lower()
+            else:
+                element = character.element.name.lower()
+            if element in elements:
+                result.append(character)
+
+        return result
 
     def _apply_path_filters(
         self, characters: Sequence[HSRCharacter | UnownedCharacter]
@@ -169,6 +211,21 @@ class CharactersView(View):
 
         paths = [path_filter.value.lower() for path_filter in self._path_filters]
         return [c for c in characters if c.path.name.lower() in paths]
+
+    def _apply_speciality_filters(
+        self, characters: Sequence[ZZZCharacter]
+    ) -> Sequence[ZZZCharacter]:
+        if not self._speciality_filters:
+            return characters
+
+        specialities = [speciality_filter.value for speciality_filter in self._speciality_filters]
+        return [c for c in characters if c.specialty.value in specialities]
+
+    def _apply_faction_filters(self, characters: Sequence[ZZZCharacter]) -> Sequence[ZZZCharacter]:
+        if not self._faction_filters:
+            return characters
+
+        return [c for c in characters if c.faction_name in self._faction_filters]
 
     def _apply_gi_sorter(
         self, characters: Sequence[GICharacter | UnownedCharacter]
@@ -204,22 +261,44 @@ class CharactersView(View):
 
         return sorted(characters, key=lambda c: c.element.lower())
 
-    def _get_gi_filtered_and_sorted_characters(
-        self,
-    ) -> Sequence[GICharacter | UnownedCharacter]:
-        characters = self._apply_gi_sorter(
-            self._apply_element_filters(self._apply_gi_filter(self._gi_characters))  # pyright: ignore [reportArgumentType]
-        )
-        if not characters:
-            raise NoCharsFoundError
-        return characters
+    def _apply_zzz_sorter(self, characters: Sequence[ZZZCharacter]) -> Sequence[ZZZCharacter]:
+        if self._sorter is ZZZSorter.ELEMENT:
+            return sorted(characters, key=lambda c: c.element)
 
-    def _get_hsr_filtered_and_sorted_characters(
-        self,
-    ) -> Sequence[HSRCharacter | UnownedCharacter]:
-        characters = self._apply_hsr_sorter(
-            self._apply_element_filters(self._apply_path_filters(self._hsr_characters))  # pyright: ignore [reportArgumentType]
-        )
+        if self._sorter is ZZZSorter.SPECIALTY:
+            return sorted(characters, key=lambda c: c.specialty)
+
+        if self._sorter is ZZZSorter.FACTION:
+            return sorted(characters, key=lambda c: c.faction_name)
+
+        if self._sorter is ZZZSorter.LEVEL:
+            return sorted(characters, key=lambda c: c.level, reverse=True)
+
+        if self._sorter is ZZZSorter.RARITY:
+            return sorted(characters, key=lambda c: c.rarity, reverse=True)
+
+        return sorted(characters, key=lambda c: c.rank, reverse=True)
+
+    def _get_filtered_sorted_characters(self) -> Sequence[Character]:
+        if self._game is Game.GENSHIN:
+            characters = self._apply_gi_sorter(
+                self._apply_element_filters(self._apply_gi_filter(self._gi_characters))  # pyright: ignore [reportArgumentType]
+            )
+        elif self._game is Game.STARRAIL:
+            characters = self._apply_hsr_sorter(
+                self._apply_element_filters(self._apply_path_filters(self._hsr_characters))  # pyright: ignore [reportArgumentType]
+            )
+        elif self._game is Game.ZZZ:
+            characters = self._apply_zzz_sorter(
+                self._apply_element_filters(
+                    self._apply_speciality_filters(
+                        self._apply_faction_filters(self._zzz_characters)
+                    )  # pyright: ignore [reportArgumentType]
+                )
+            )
+        else:
+            raise FeatureNotImplementedError(platform=self._account.platform, game=self._game)
+
         if not characters:
             raise NoCharsFoundError
         return characters
@@ -232,8 +311,8 @@ class CharactersView(View):
         loop: asyncio.AbstractEventLoop,
     ) -> File:
         if self._game is Game.GENSHIN:
-            pc_icons = await self._get_pc_icons()
-            talent_level_data = await self._get_talent_level_data()
+            pc_icons = await self._get_gi_pc_icons()
+            talent_level_data = await self._get_gi_talent_level_data()
 
             file_ = await draw_gi_characters_card(
                 DrawInput(
@@ -267,6 +346,19 @@ class CharactersView(View):
                 ),
                 characters,  # pyright: ignore [reportArgumentType]
                 pc_icons,
+                self.translator,
+            )
+        elif self._game is Game.ZZZ:
+            file_ = await draw_zzz_characters_card(
+                DrawInput(
+                    dark_mode=self._dark_mode,
+                    locale=self.locale,
+                    session=session,
+                    filename="characters.webp",
+                    executor=executor,
+                    loop=loop,
+                ),
+                characters,  # pyright: ignore [reportArgumentType]
                 self.translator,
             )
         else:
@@ -341,8 +433,31 @@ class CharactersView(View):
                 inline=False,
             )
 
-        if self._filter is GIFilter.NONE and not self._element_filters and not self._path_filters:
-            total_chars = sum(self._element_char_counts.values()) + 1  # Traveler/Trailblazer
+        if self._faction_filters and self._filter is GIFilter.NONE:
+            total_chars = sum(
+                self._faction_char_counts[self._faction_l10n[faction].lower()]
+                for faction in self._faction_filters
+            )
+            embed.add_field(
+                name=LocaleStr(
+                    key="characters.embed.faction_filters",
+                    faction="/".join(self._faction_filters),
+                ),
+                value=f"{char_num}/{total_chars}",
+                inline=False,
+            )
+
+        if (
+            self._filter is GIFilter.NONE
+            and not self._element_filters
+            and not self._path_filters
+            and not self._speciality_filters
+            and not self._faction_filters
+        ):
+            total_chars = sum(self._element_char_counts.values())
+            if self._game in {Game.GENSHIN, Game.STARRAIL}:
+                # Traveler/Trailblazer
+                total_chars += 1
             embed.add_field(
                 name=LocaleStr(key="characters.embed.owned_characters"),
                 value=f"{char_num}/{total_chars}",
@@ -368,24 +483,40 @@ class CharactersView(View):
                     talent=LocaleStr(key="hsr.talent"),
                 )
             )
-        else:
-            raise FeatureNotImplementedError(platform=self._account.platform, game=self._game)
+        elif self._game is Game.ZZZ:
+            embed.set_footer(
+                text=LocaleStr(
+                    key="characters.zzz.embed.footer",
+                    basic=LocaleStr(key="zzz.basic"),
+                    dodge=LocaleStr(key="zzz.dodge"),
+                    assist=LocaleStr(key="zzz.assist"),
+                    special=LocaleStr(key="zzz.special"),
+                    chain=LocaleStr(key="zzz.chain"),
+                    core=LocaleStr(key="zzz.core"),
+                )
+            )
 
         embed.set_image(url="attachment://characters.webp")
         embed.add_acc_info(self._account)
         return embed
 
     def _add_items(self) -> None:
-        self.add_item(ShowOwnedOnly())
         if self._game is Game.GENSHIN:
-            self.add_item(FilterSelector())
+            self.add_item(ShowOwnedOnly())
+            self.add_item(GIFilterSelector())
             self.add_item(ElementFilterSelector(GenshinElement))
-            self.add_item(GISorterSelector(self._sorter))
+            self.add_item(SorterSelector(self._sorter, self._game))
             self.add_item(UpdateTalentData())
         elif self._game is Game.STARRAIL:
+            self.add_item(ShowOwnedOnly())
             self.add_item(PathFilterSelector())
             self.add_item(ElementFilterSelector(HSRElement))
-            self.add_item(HSRSorterSelector(self._sorter))
+            self.add_item(SorterSelector(self._sorter, self._game))
+        elif self._game is Game.ZZZ:
+            self.add_item(ElementFilterSelector(ZZZElement))
+            self.add_item(SpecialtyFilterSelector(self._zzz_characters))
+            self.add_item(FactionFilterSelector(self._zzz_characters))
+            self.add_item(SorterSelector(self._sorter, self._game))
         else:
             raise FeatureNotImplementedError(platform=self._account.platform, game=self._game)
 
@@ -402,6 +533,8 @@ class CharactersView(View):
             await i.edit_original_response(embed=embed)
 
         client = self._account.client
+        client.set_lang(self.locale)
+
         if self._game is Game.GENSHIN:
             self._gi_characters = list(await client.get_genshin_characters(self._account.uid))
 
@@ -411,7 +544,6 @@ class CharactersView(View):
                     self._element_char_counts[character.element.lower()] += 1
                     break
 
-            characters = self._get_gi_filtered_and_sorted_characters()
         elif self._game is Game.STARRAIL:
             self._hsr_characters = list(
                 (await client.get_starrail_characters(self._account.uid)).avatar_list
@@ -424,10 +556,21 @@ class CharactersView(View):
                     self._path_char_counts[character.path.name.lower()] += 1
                     break
 
-            characters = self._get_hsr_filtered_and_sorted_characters()
+        elif self._game is Game.ZZZ:
+            agents = await client.get_zzz_agents()
+            self._zzz_characters = full_agents = list(
+                await client.get_zzz_agent_info([agent.id for agent in agents])
+            )
+            client.set_lang(Locale.american_english)
+            en_full_agents = list(await client.get_zzz_agent_info([agent.id for agent in agents]))
+            self._faction_l10n = {
+                agent.faction_name: en_agent.faction_name
+                for agent, en_agent in zip(full_agents, en_full_agents, strict=False)
+            }
         else:
             raise FeatureNotImplementedError(platform=self._account.platform, game=self._game)
 
+        characters = self._get_filtered_sorted_characters()
         file_ = await self._draw_card(
             i.client.session, characters, i.client.executor, i.client.loop
         )
@@ -437,8 +580,20 @@ class CharactersView(View):
         await i.edit_original_response(attachments=[file_], view=self, embed=embed)
         self.message = await i.original_response()
 
+    async def callback(
+        self, i: Interaction, item: Button | Select, *, set_loading_state: bool = True
+    ) -> None:
+        characters = self._get_filtered_sorted_characters()
+        if set_loading_state:
+            await item.set_loading_state(i)
+        file_ = await self._draw_card(
+            i.client.session, characters, i.client.executor, i.client.loop
+        )
+        embed = self._get_embed(len([c for c in characters if not isinstance(c, UnownedCharacter)]))
+        await item.unset_loading_state(i, attachments=[file_], embed=embed)
 
-class FilterSelector(Select[CharactersView]):
+
+class GIFilterSelector(Select[CharactersView]):
     def __init__(self) -> None:
         options = [
             SelectOption(
@@ -462,27 +617,23 @@ class FilterSelector(Select[CharactersView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view._filter = GIFilter(self.values[0])
-        characters = self.view._get_gi_filtered_and_sorted_characters()
-
-        await self.set_loading_state(i)
-        file_ = await self.view._draw_card(
-            i.client.session, characters, i.client.executor, i.client.loop
-        )
-        embed = self.view._get_embed(
-            len([c for c in characters if not isinstance(c, UnownedCharacter)])
-        )
-        await self.unset_loading_state(i, attachments=[file_], embed=embed)
+        await self.view.callback(i, self)
 
 
 class ElementFilterSelector(Select[CharactersView]):
-    def __init__(self, elements: Iterable[GenshinElement | HSRElement]) -> None:
+    def __init__(self, elements: Iterable[GenshinElement | HSRElement | ZZZElement]) -> None:
+        def get_element_emoji(element: GenshinElement | HSRElement | ZZZElement) -> str:
+            if isinstance(element, GenshinElement):
+                return get_gi_element_emoji(element)
+            if isinstance(element, HSRElement):
+                return get_hsr_element_emoji(element)
+            return get_zzz_element_emoji(element)
+
         options = [
             SelectOption(
                 label=EnumStr(element),
                 value=element.value,
-                emoji=get_gi_element_emoji(element)
-                if isinstance(element, GenshinElement)
-                else get_hsr_element_emoji(element),
+                emoji=get_element_emoji(element),
             )
             for element in elements
         ]
@@ -494,25 +645,18 @@ class ElementFilterSelector(Select[CharactersView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        if self.view._game is Game.GENSHIN:
-            self.view._element_filters = [GenshinElement(value) for value in self.values]
-            characters = self.view._get_gi_filtered_and_sorted_characters()
-        elif self.view._game is Game.STARRAIL:
-            self.view._element_filters = [HSRElement(value) for value in self.values]
-            characters = self.view._get_hsr_filtered_and_sorted_characters()
-        else:
-            raise FeatureNotImplementedError(
-                platform=self.view._account.platform, game=self.view._game
-            )
+        element_types: dict[Game, type[GenshinElement | HSRElement | ZZZElement]] = {
+            Game.GENSHIN: GenshinElement,
+            Game.STARRAIL: HSRElement,
+            Game.ZZZ: ZZZElement,
+        }
+        if self.view._game not in element_types:
+            msg = f"Element type not found for game {self.view._game}"
+            raise KeyError(msg)
 
-        await self.set_loading_state(i)
-        file_ = await self.view._draw_card(
-            i.client.session, characters, i.client.executor, i.client.loop
-        )
-        embed = self.view._get_embed(
-            len([c for c in characters if not isinstance(c, UnownedCharacter)])
-        )
-        await self.unset_loading_state(i, attachments=[file_], embed=embed)
+        element_type = element_types[self.view._game]
+        self.view._element_filters = [element_type(value) for value in self.values]
+        await self.view.callback(i, self)
 
 
 class PathFilterSelector(Select[CharactersView]):
@@ -530,73 +674,78 @@ class PathFilterSelector(Select[CharactersView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view._path_filters = [HSRPath(value) for value in self.values]
-        characters = self.view._get_hsr_filtered_and_sorted_characters()
-
-        await self.set_loading_state(i)
-        file_ = await self.view._draw_card(
-            i.client.session, characters, i.client.executor, i.client.loop
-        )
-        embed = self.view._get_embed(
-            len([c for c in characters if not isinstance(c, UnownedCharacter)])
-        )
-        await self.unset_loading_state(i, attachments=[file_], embed=embed)
+        await self.view.callback(i, self)
 
 
-class GISorterSelector(Select[CharactersView]):
-    def __init__(self, current: GISorter | HSRSorter) -> None:
+class SpecialtyFilterSelector(Select[CharactersView]):
+    def __init__(self, characters: Sequence[ZZZCharacter]) -> None:
         options = [
             SelectOption(
-                label=LocaleStr(key=f"characters.sorter.{sorter.value}"),
-                value=sorter.value,
-                default=sorter == current,
+                label=LocaleStr(key=speciality.name.lower()),
+                value=str(speciality),
+                emoji=ZZZ_SPECIALTY_EMOJIS[speciality],
             )
-            for sorter in GISorter
+            for speciality in {character.specialty for character in characters}
         ]
+        super().__init__(
+            placeholder=LocaleStr(key="characters.filter.specialty.placeholder"),
+            options=options,
+            min_values=0,
+            max_values=len(options),
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        self.view._speciality_filters = [ZZZSpecialty(int(value)) for value in self.values]
+        await self.view.callback(i, self)
+
+
+class FactionFilterSelector(Select[CharactersView]):
+    def __init__(self, characters: Sequence[ZZZCharacter]) -> None:
+        options = [
+            SelectOption(label=faction, value=faction)
+            for faction in {character.faction_name for character in characters}
+        ]
+        super().__init__(
+            placeholder=LocaleStr(key="characters.filter.faction.placeholder"),
+            options=options,
+            min_values=0,
+            max_values=len(options),
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        self.view._faction_filters = self.values
+        await self.view.callback(i, self)
+
+
+class SorterSelector(Select[CharactersView]):
+    def __init__(self, current: Sorter, game: Game) -> None:
+        sorters: dict[Game, type[Sorter]] = {
+            Game.GENSHIN: GISorter,
+            Game.STARRAIL: HSRSorter,
+            Game.ZZZ: ZZZSorter,
+        }
+        if game not in sorters:
+            msg = f"Sorter not found for game {game}"
+            raise KeyError(msg)
+
+        self._game = game
+        self._sorter = sorters[game]
+
         super().__init__(
             placeholder=LocaleStr(key="characters.sorter.placeholder"),
-            options=options,
+            options=[
+                SelectOption(
+                    label=LocaleStr(key=f"characters.sorter.{sorter.value}"),
+                    value=sorter.value,
+                    default=sorter == current,
+                )
+                for sorter in self._sorter
+            ],
         )
 
     async def callback(self, i: Interaction) -> None:
-        self.view._sorter = GISorter(self.values[0])
-        characters = self.view._get_gi_filtered_and_sorted_characters()
-
-        await self.set_loading_state(i)
-        file_ = await self.view._draw_card(
-            i.client.session, characters, i.client.executor, i.client.loop
-        )
-        embed = self.view._get_embed(
-            len([c for c in characters if not isinstance(c, UnownedCharacter)])
-        )
-        await self.unset_loading_state(i, attachments=[file_], embed=embed)
-
-
-class HSRSorterSelector(Select[CharactersView]):
-    def __init__(self, current: GISorter | HSRSorter) -> None:
-        options = [
-            SelectOption(
-                label=LocaleStr(key=f"characters.sorter.{sorter.value}"),
-                value=sorter.value,
-                default=sorter == current,
-            )
-            for sorter in HSRSorter
-        ]
-        super().__init__(
-            placeholder=LocaleStr(key="characters.sorter.placeholder"), options=options
-        )
-
-    async def callback(self, i: Interaction) -> None:
-        self.view._sorter = HSRSorter(self.values[0])
-        characters = self.view._get_hsr_filtered_and_sorted_characters()
-
-        await self.set_loading_state(i)
-        file_ = await self.view._draw_card(
-            i.client.session, characters, i.client.executor, i.client.loop
-        )
-        embed = self.view._get_embed(
-            len([c for c in characters if not isinstance(c, UnownedCharacter)])
-        )
-        await self.unset_loading_state(i, attachments=[file_], embed=embed)
+        self.view._sorter = self._sorter(self.values[0])
+        await self.view.callback(i, self)
 
 
 class UpdateTalentData(Button[CharactersView]):
@@ -709,19 +858,4 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
                         )
                     )
 
-        if self.view._game is Game.GENSHIN:
-            characters = self.view._get_gi_filtered_and_sorted_characters()
-        elif self.view._game is Game.STARRAIL:
-            characters = self.view._get_hsr_filtered_and_sorted_characters()
-        else:
-            raise FeatureNotImplementedError(
-                platform=self.view._account.platform, game=self.view._game
-            )
-
-        file_ = await self.view._draw_card(
-            i.client.session, characters, i.client.executor, i.client.loop
-        )
-        embed = self.view._get_embed(
-            len([c for c in characters if not isinstance(c, UnownedCharacter)])
-        )
-        await self.unset_loading_state(i, attachments=[file_], embed=embed)
+        await self.view.callback(i, self, set_loading_state=False)

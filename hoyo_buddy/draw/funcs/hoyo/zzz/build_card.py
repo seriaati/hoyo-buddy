@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any
 import discord
 from discord import utils as dutils
 from genshin.models import ZZZPropertyType as PropType
+from genshin.models import ZZZSkillType
 from PIL import Image, ImageDraw
 from PIL.Image import Transpose
 
@@ -272,7 +273,18 @@ class ZZZAgentCard:
         im.paste(stats_section, (2743, 519), stats_section)
         # Skill levels
         start_pos = (2852, 554)
-        for i, skill in enumerate(self._agent.skills):
+        skill_order = (
+            ZZZSkillType.BASIC_ATTACK,
+            ZZZSkillType.DODGE,
+            ZZZSkillType.ASSIST,
+            ZZZSkillType.SPECIAL_ATTACK,
+            ZZZSkillType.CHAIN_ATTACK,
+            ZZZSkillType.CORE_SKILL,
+        )
+        for i, skill_type in enumerate(skill_order):
+            skill = dutils.get(self._agent.skills, type=skill_type)
+            if skill is None:
+                continue
             drawer.write(
                 str(skill.level),
                 size=48,

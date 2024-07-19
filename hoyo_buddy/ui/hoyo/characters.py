@@ -413,8 +413,8 @@ class CharactersView(View):
             )
             embed.add_field(
                 name=LocaleStr(
-                    key="characters.embed.element_filters",
-                    element=[EnumStr(element) for element in self._element_filters],
+                    key="characters.embed.filter_text",
+                    filter=[EnumStr(element) for element in self._element_filters],
                 ),
                 value=f"{char_num}/{total_chars}",
                 inline=False,
@@ -426,8 +426,8 @@ class CharactersView(View):
             )
             embed.add_field(
                 name=LocaleStr(
-                    key="characters.embed.path_filters",
-                    path=[EnumStr(path) for path in self._path_filters],
+                    key="characters.embed.filter_text",
+                    filter=[EnumStr(path) for path in self._path_filters],
                 ),
                 value=f"{char_num}/{total_chars}",
                 inline=False,
@@ -440,8 +440,8 @@ class CharactersView(View):
             )
             embed.add_field(
                 name=LocaleStr(
-                    key="characters.embed.faction_filters",
-                    faction="/".join(self._faction_filters),
+                    key="characters.embed.filter_text",
+                    filter="/".join(self._faction_filters),
                 ),
                 value=f"{char_num}/{total_chars}",
                 inline=False,
@@ -464,37 +464,37 @@ class CharactersView(View):
                 inline=False,
             )
 
-        if self._game is Game.GENSHIN:
-            embed.set_footer(
-                text=LocaleStr(
-                    key="characters.gi.embed.footer",
-                    normal=LocaleStr(key="hsr.normal_attack"),
-                    skill=LocaleStr(key="gi.skill"),
-                    burst=LocaleStr(key="gi.burst"),
-                )
+        game_keys = {
+            Game.GENSHIN: (
+                "gi.normal_attack",
+                "gi.skill",
+                "gi.burst",
+            ),
+            Game.STARRAIL: (
+                "hsr.normal_attack",
+                "hsr.skill",
+                "hsr.ultimate",
+                "hsr.talent",
+            ),
+            Game.ZZZ: (
+                "zzz.basic",
+                "zzz.dodge",
+                "zzz.assist",
+                "zzz.special",
+                "zzz.chain",
+                "zzz.core",
+            ),
+        }
+
+        footer = LocaleStr(
+            key="characters.level_order.footer",
+            order=[LocaleStr(key=key) for key in game_keys[self._game]],
+        ).translate(self.translator, self.locale)
+        if self._game in {Game.STARRAIL}:
+            footer += LocaleStr(key="characters.extra_detail.footer").translate(
+                self.translator, self.locale
             )
-        elif self._game is Game.STARRAIL:
-            embed.set_footer(
-                text=LocaleStr(
-                    key="characters.hsr.embed.footer",
-                    normal=LocaleStr(key="hsr.normal_attack"),
-                    skill=LocaleStr(key="hsr.skill"),
-                    ultimate=LocaleStr(key="hsr.ultimate"),
-                    talent=LocaleStr(key="hsr.talent"),
-                )
-            )
-        elif self._game is Game.ZZZ:
-            embed.set_footer(
-                text=LocaleStr(
-                    key="characters.zzz.embed.footer",
-                    basic=LocaleStr(key="zzz.basic"),
-                    dodge=LocaleStr(key="zzz.dodge"),
-                    assist=LocaleStr(key="zzz.assist"),
-                    special=LocaleStr(key="zzz.special"),
-                    chain=LocaleStr(key="zzz.chain"),
-                    core=LocaleStr(key="zzz.core"),
-                )
-            )
+        embed.set_footer(text=footer)
 
         embed.set_image(url="attachment://characters.webp")
         embed.add_acc_info(self._account)
@@ -517,8 +517,6 @@ class CharactersView(View):
             self.add_item(SpecialtyFilterSelector(self._zzz_characters))
             self.add_item(FactionFilterSelector(self._zzz_characters))
             self.add_item(SorterSelector(self._sorter, self._game))
-        else:
-            raise FeatureNotImplementedError(platform=self._account.platform, game=self._game)
 
     async def start(self, i: Interaction, *, show_first_time_msg: bool = False) -> None:
         if show_first_time_msg:

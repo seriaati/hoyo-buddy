@@ -91,13 +91,11 @@ character_stories_page_label: Stories
 character_talents_page_label: Talents
 character_voices_page_label: Voices
 characters: Characters
-characters.embed.element_filters: "{element} Characters"
 characters.embed.element_max_friendship: "Max Friendship {element} Characters"
 characters.embed.element_not_max_friendship: "Not Max Friendship {element} Characters"
 characters.embed.max_friendship: Max Friendship Characters
 characters.embed.not_max_friendship: Not Max Friendship Characters
 characters.embed.owned_characters: Owned Characters
-characters.embed.path_filters: "{path} Characters"
 characters.embed.title: Character Overview
 characters.filter.element.placeholder: Select element filters...
 characters.filter.max_friendship: Max friendship
@@ -107,8 +105,8 @@ characters.filter.path.placeholder: Select path filters...
 characters.filter.placeholder: Select a filter...
 characters.first_time.embed.description: "If this is your first time using this command, this may take a while.\nThis is because the command needs to fetch data from many sources.\nIt should be faster next time you use this command.\nPlease be patient and wait for the resources to be fetched."
 characters.first_time.title: Fetching resources...
-characters.gi.embed.footer: "Level order: {normal}/{skill}/{burst}"
-characters.hsr.embed.footer: "Level order: {normal}/{skill}/{ultimate}/{talent}\nUse /profile to view details of a character"
+characters.level_order.footer: "Level order: {order}"
+characters.extra_detail.footer: "Use /profile to view details of a character"
 hsr.ultimate: Ultimate
 hsr.normal_attack: Normal attack
 hsr.skill: Skill
@@ -578,7 +576,6 @@ profile.no_data.title: No player data available
 profile.no_data.description: "Believe it or not, there is nothing to display here."
 profile.zzz_hoyolab.character_select.description: "Mindscape cinema {m} | HoYoLAB data"
 characters.filter.specialty.placeholder: Select specialty filters...
-characters.zzz.embed.footer: "Level order: {basic}/{dodge}/{assist}/{special}/{chain}/{core}"
 zzz.basic: Basic Attack
 zzz.dodge: Dodge
 zzz.assist: Assist
@@ -594,4 +591,4 @@ characters.filter.faction.placeholder: Select faction filters...
 characters.sorter.speciality: Speciality
 characters.sorter.faction: Faction
 characters.sorter.mindscape_cinema: Mindscape cinema
-characters.embed.faction_filters: "{faction} Characters"
+characters.embed.filter_text: "{filter} Characters"

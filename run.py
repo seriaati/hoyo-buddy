@@ -117,4 +117,4 @@ if __name__ == "__main__":
     except ModuleNotFoundError:
         asyncio.run(main(), debug=True)
     else:
-        uvloop.run(main(), debug=True)
+        uvloop.run(main())

@@ -27,7 +27,6 @@ SLEEP_INTERVAL = 60 * 5
 class AutoRedeem:
     _bot: ClassVar[HoyoBuddy]
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
-    _redeem_count: ClassVar[int] = 0
 
     @classmethod
     async def _get_codes(cls, session: aiohttp.ClientSession, game: genshin.Game) -> list[str]:
@@ -38,8 +37,10 @@ class AutoRedeem:
     @classmethod
     async def _redeem_codes(cls, codes: list[str], account: HoyoAccount) -> None:
         # filter out codes that have already been redeemed
+        logger.debug(f"Redeeming codes for {account!r}, codes: {codes}")
         codes = [code for code in codes if code not in account.redeemed_codes]
         if not codes:
+            logger.debug("No codes, skipping")
             return
 
         await account.fetch_related("user", "user__settings")
@@ -57,13 +58,7 @@ class AutoRedeem:
             # remove duplicates
             account.redeemed_codes = list(set(account.redeemed_codes))
             await account.save(update_fields=("redeemed_codes",))
-
             await cls._bot.dm_user(account.user.id, embed=embed)
-
-            cls._redeem_count += len(embed.fields)
-            if cls._redeem_count % CODE_NUM_TO_SLEEP == 0:
-                # Sleep every n codes to prevent being rate limited
-                await asyncio.sleep(SLEEP_INTERVAL)
 
     @classmethod
     async def _handle_error(cls, account: HoyoAccount, locale: Locale, e: Exception) -> ErrorEmbed:
@@ -115,6 +110,7 @@ class AutoRedeem:
                     for game_ in (genshin.Game.GENSHIN, genshin.Game.ZZZ, genshin.Game.STARRAIL)
                 }
             )
+            logger.debug(f"Game codes: {game_codes}")
 
             accounts = (
                 await HoyoAccount.filter(auto_redeem=True, game=GPY_GAME_TO_HB_GAME[game]).all()

@@ -178,6 +178,15 @@ class NotesChecker:
         return embed
 
     @classmethod
+    async def _reset_notif_count(
+        cls, notify: NotesNotify, *, est_time: datetime.datetime | None = None
+    ) -> None:
+        notify.current_notif_count = 0
+        if est_time is not None:
+            notify.est_time = est_time
+        await notify.save(update_fields=("current_notif_count", "est_time"))
+
+    @classmethod
     async def _notify_user(
         cls, notify: NotesNotify, notes: StarRailNote | Notes | ZZZNotes
     ) -> None:
@@ -226,9 +235,7 @@ class NotesChecker:
 
         if current < threshold:
             est_time = cls._calc_est_time(Game.GENSHIN, threshold, current)
-            notify.est_time = est_time
-            notify.current_notif_count = 0
-            return await notify.save(update_fields=("est_time", "current_notif_count"))
+            return await cls._reset_notif_count(notify, est_time=est_time)
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -242,9 +249,7 @@ class NotesChecker:
 
         if current < threshold:
             est_time = get_now() + notes.remaining_realm_currency_recovery_time
-            notify.est_time = est_time
-            notify.current_notif_count = 0
-            return await notify.save(update_fields=("est_time", "current_notif_count"))
+            return await cls._reset_notif_count(notify, est_time=est_time)
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -258,9 +263,7 @@ class NotesChecker:
 
         if current < threshold:
             est_time = cls._calc_est_time(Game.STARRAIL, threshold, current)
-            notify.est_time = est_time
-            notify.current_notif_count = 0
-            return await notify.save(update_fields=("est_time", "current_notif_count"))
+            return await cls._reset_notif_count(notify, est_time=est_time)
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -273,8 +276,7 @@ class NotesChecker:
         assert threshold is not None
 
         if current < threshold:
-            notify.current_notif_count = 0
-            return await notify.save(update_fields=("current_notif_count",))
+            return await cls._reset_notif_count(notify)
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -288,9 +290,8 @@ class NotesChecker:
             min_remain_time = min(
                 exped.remaining_time for exped in notes.expeditions if not exped.finished
             )
-            notify.est_time = get_now() + min_remain_time
-            notify.current_notif_count = 0
-            await notify.save(update_fields=("est_time", "current_notif_count"))
+            est_time = get_now() + min_remain_time
+            return await cls._reset_notif_count(notify, est_time=est_time)
 
         if (
             any(exped.finished for exped in notes.expeditions)
@@ -305,9 +306,8 @@ class NotesChecker:
             return
 
         if remaining_time.seconds >= 0:
-            notify.current_notif_count = 0
-            notify.est_time = get_now() + remaining_time
-            return await notify.save(update_fields=("current_notif_count", "est_time"))
+            est_time = get_now() + remaining_time
+            return await cls._reset_notif_count(notify, est_time=est_time)
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -317,24 +317,23 @@ class NotesChecker:
         cls, notify: NotesNotify, notes: Notes | StarRailNote | ZZZNotes
     ) -> None:
         if notify.last_check_time is not None and get_now().day != notify.last_check_time.day:
-            notify.current_notif_count = 0
-            await notify.save(update_fields=("current_notif_count",))
+            return await cls._reset_notif_count(notify)
 
-        gi_notes_completed = (
+        if (
             isinstance(notes, Notes)
             and notes.completed_commissions + notes.daily_task.completed_tasks >= 4
-        )
-        hsr_notes_completed = (
-            isinstance(notes, StarRailNote) and notes.current_train_score >= notes.max_train_score
-        )
-        zzz_notes_completed = (
-            isinstance(notes, ZZZNotes) and notes.engagement.current >= notes.engagement.max
-        )
-        if gi_notes_completed or hsr_notes_completed or zzz_notes_completed:
-            notify.current_notif_count = 0
-            notify.est_time = notify.account.server_reset_datetime
-            await notify.save(update_fields=("current_notif_count", "est_time"))
-            return
+        ):
+            return await cls._reset_notif_count(
+                notify, est_time=notify.account.server_reset_datetime
+            )
+        if isinstance(notes, StarRailNote) and notes.current_train_score >= notes.max_train_score:
+            return await cls._reset_notif_count(
+                notify, est_time=notify.account.server_reset_datetime
+            )
+        if isinstance(notes, ZZZNotes) and notes.engagement.current >= notes.engagement.max:
+            return await cls._reset_notif_count(
+                notify, est_time=notify.account.server_reset_datetime
+            )
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -344,8 +343,7 @@ class NotesChecker:
         cls, notify: NotesNotify, notes: Notes | StarRailNote
     ) -> None:
         if notify.last_check_time is not None and get_now().day != notify.last_check_time.day:
-            notify.current_notif_count = 0
-            await notify.save(update_fields=("current_notif_count",))
+            return await cls._reset_notif_count(notify)
 
         if isinstance(notes, Notes) and notes.remaining_resin_discounts == 0:
             return
@@ -363,9 +361,7 @@ class NotesChecker:
 
         if current < threshold:
             est_time = cls._calc_est_time(Game.ZZZ, threshold, current)
-            notify.est_time = est_time
-            notify.current_notif_count = 0
-            return await notify.save(update_fields=("est_time", "current_notif_count"))
+            return await cls._reset_notif_count(notify, est_time=est_time)
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -373,10 +369,9 @@ class NotesChecker:
     @classmethod
     async def _process_scratch_card_notify(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
         if notes.scratch_card_completed:
-            est_time = notify.account.server_reset_datetime
-            notify.est_time = est_time
-            notify.current_notif_count = 0
-            return await notify.save(update_fields=("est_time", "current_notif_count"))
+            return await cls._reset_notif_count(
+                notify, est_time=notify.account.server_reset_datetime
+            )
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -387,8 +382,7 @@ class NotesChecker:
             VideoStoreState.CURRENTLY_OPEN,
             VideoStoreState.WAITING_TO_OPEN,
         }:
-            notify.current_notif_count = 0
-            return await notify.save(update_fields=("current_notif_count",))
+            return await cls._reset_notif_count(notify)
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)

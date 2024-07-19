@@ -73,6 +73,11 @@ class HoyoAccount(Model):
     def __str__(self) -> str:
         return f"{self.nickname or self.username} ({self.uid})"
 
+    def __repr__(self) -> str:
+        return (
+            f"<HoyoAccount id={self.id} uid={self.uid} username={self.username} game={self.game}>"
+        )
+
     @property
     def blurred_display(self) -> str:
         return f"{self.nickname or self.username} ({blur_uid(self.uid)})"

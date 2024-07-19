@@ -20,9 +20,9 @@ from hoyo_buddy.emojis import (
     TRAILBLAZE_POWER,
 )
 from hoyo_buddy.enums import Game, NotesNotifyType
+from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.models import DrawInput
 
-from ....exceptions import FeatureNotImplementedError
 from ...components import Button, GoBackButton, View
 
 if TYPE_CHECKING:

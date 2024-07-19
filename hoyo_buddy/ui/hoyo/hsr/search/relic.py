@@ -9,8 +9,7 @@ from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.ui import Button, View
-
-from .....utils import ephemeral
+from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot.translator import Translator

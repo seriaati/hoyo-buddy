@@ -7,9 +7,8 @@ from discord import ButtonStyle
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.db.models import Settings
 from hoyo_buddy.embeds import DefaultEmbed
+from hoyo_buddy.enums import Game
 from hoyo_buddy.ui import Button
-
-from .....enums import Game
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction

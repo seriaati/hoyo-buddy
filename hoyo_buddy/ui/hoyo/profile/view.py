@@ -28,8 +28,8 @@ from hoyo_buddy.exceptions import (
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
+from hoyo_buddy.utils import blur_uid, fetch_and_cache_json
 
-from ....utils import blur_uid, fetch_and_cache_json
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
 from .items.card_settings_btn import CardSettingsButton

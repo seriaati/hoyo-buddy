@@ -11,8 +11,7 @@ from hoyo_buddy.constants import HAKUSHIN_HSR_SKILL_TYPE_NAMES
 from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.ui import Button, Modal, PaginatorSelect, Select, SelectOption, TextInput, View
-
-from .....utils import ephemeral
+from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from discord import Locale, Member, User

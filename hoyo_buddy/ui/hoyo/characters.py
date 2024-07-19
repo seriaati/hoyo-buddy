@@ -491,7 +491,7 @@ class CharactersView(View):
             order=[LocaleStr(key=key) for key in game_keys[self._game]],
         ).translate(self.translator, self.locale)
         if self._game in {Game.STARRAIL, Game.ZZZ}:
-            footer += LocaleStr(key="characters.extra_detail.footer").translate(
+            footer += "\n" + LocaleStr(key="characters.extra_detail.footer").translate(
                 self.translator, self.locale
             )
         embed.set_footer(text=footer)

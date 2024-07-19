@@ -4,14 +4,18 @@ from io import BytesIO
 from typing import TYPE_CHECKING, Any, TypeAlias
 
 import enka
-import orjson
 from discord import File, Locale
 from genshin.models import ZZZPartialAgent
 from loguru import logger
-from seria.utils import read_json, write_json
+from seria.utils import read_json
 
 from hoyo_buddy.bot.translator import LevelStr, LocaleStr
-from hoyo_buddy.constants import LOCALE_TO_GI_CARD_API_LANG, LOCALE_TO_HSR_CARD_API_LANG
+from hoyo_buddy.constants import (
+    LOCALE_TO_GI_CARD_API_LANG,
+    LOCALE_TO_HSR_CARD_API_LANG,
+    ZZZ_AGENT_DATA,
+    ZZZ_DISC_ICONS,
+)
 from hoyo_buddy.db.models import CardSettings, HoyoAccount, Settings
 from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card, draw_zzz_build_card
 from hoyo_buddy.embeds import DefaultEmbed
@@ -25,7 +29,7 @@ from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
 
-from ....utils import blur_uid
+from ....utils import blur_uid, fetch_and_cache_json
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
 from .items.card_settings_btn import CardSettingsButton
@@ -424,22 +428,20 @@ class ProfileView(View):
             client.set_lang(Locale.chinese)
             cn_agent = await client.get_zzz_agent_info(character.id)
 
-        agent_data = await read_json("./.static/zzz_agent_data.json")
+        file_path = "./.static/zzz_agent_data.json"
+        agent_data = await read_json(file_path)
         if str(character.id) not in agent_data:
-            async with session.get(
-                "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite/agent_data.json"
-            ) as resp:
-                agent_data = orjson.loads(await resp.text())
-                await write_json("./.static/zzz_agent_data.json", agent_data)
+            agent_data = await fetch_and_cache_json(
+                session, url=ZZZ_AGENT_DATA, file_path=file_path
+            )
         agent_icon = agent_data[str(character.id)]["icon_url"]
 
-        disc_icons = await read_json("./.static/zzz_disc_icons.json")
+        file_path = "./.static/zzz_disc_icons.json"
+        disc_icons = await read_json(file_path)
         if any(disc.name not in disc_icons for disc in cn_agent.discs):
-            async with session.get(
-                "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite/disc_icons.json"
-            ) as resp:
-                disc_icons = orjson.loads(await resp.text())
-                await write_json("./.static/zzz_disc_icons.json", disc_icons)
+            disc_icons = await fetch_and_cache_json(
+                session, url=ZZZ_DISC_ICONS, file_path=file_path
+            )
 
         agent_draw_data = self._card_data[str(character.id)]
 

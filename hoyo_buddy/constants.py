@@ -12,6 +12,7 @@ import yatta
 
 from .enums import ChallengeType, Game, GenshinCity, GenshinElement, HSRElement, HSRPath
 
+IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
 DB_SMALLINT_MAX = 32767
 
 TRAVELER_IDS = {10000005, 10000007}
@@ -350,3 +351,7 @@ GAME_CHALLENGE_TYPES: Final[dict[Game, tuple[ChallengeType, ...]]] = {
     Game.GENSHIN: (ChallengeType.SPIRAL_ABYSS, ChallengeType.IMG_THEATER),
     Game.STARRAIL: (ChallengeType.MOC, ChallengeType.PURE_FICTION, ChallengeType.APC_SHADOW),
 }
+
+ZENLESS_DATA = "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite"
+ZZZ_AGENT_DATA = f"{ZENLESS_DATA}/agent_data.json"
+ZZZ_DISC_ICONS = f"{ZENLESS_DATA}/disc_icons.json"

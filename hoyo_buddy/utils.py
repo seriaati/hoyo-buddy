@@ -3,16 +3,21 @@ from __future__ import annotations
 import base64
 import datetime
 import re
-from typing import TYPE_CHECKING
+import time
+from contextlib import contextmanager
+from typing import TYPE_CHECKING, Any
 
 import aiohttp
+import orjson
+from loguru import logger
+from seria.utils import write_json
 
-from .constants import UTC_8
+from .constants import IMAGE_EXTENSIONS, UTC_8
 
 if TYPE_CHECKING:
-    from discord import Interaction, Member, User
+    from collections.abc import Generator
 
-IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
+    from discord import Interaction, Member, User
 
 
 def get_now() -> datetime.datetime:
@@ -135,3 +140,24 @@ def ephemeral(i: Interaction) -> bool:
     if i.guild is None:
         return False
     return not i.app_permissions.send_messages
+
+
+async def fetch_and_cache_json(session: aiohttp.ClientSession, *, url: str, file_path: str) -> Any:
+    async with session.get(url) as resp:
+        data = orjson.loads(await resp.text())
+        await write_json(file_path, data)
+        return data
+
+
+@contextmanager
+def measure_time(
+    description: str = "Execution", *, print_: bool = False
+) -> Generator[None, Any, None]:
+    start_time = time.time()
+    yield
+    end_time = time.time()
+    msg = f"{description} time: {end_time - start_time:.6f} seconds"
+    if print_:
+        print(msg)  # noqa: T201
+    else:
+        logger.debug(msg)

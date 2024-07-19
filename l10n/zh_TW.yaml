@@ -91,13 +91,11 @@ character_stories_page_label: 故事
 character_talents_page_label: 天賦
 character_voices_page_label: 語音
 characters: 角色
-characters.embed.element_filters: "{element}角色"
 characters.embed.element_max_friendship: "滿好感度的{element}角色"
 characters.embed.element_not_max_friendship: "尚未達到滿好感度的{element}角色"
 characters.embed.max_friendship: 滿好感度的角色
 characters.embed.not_max_friendship: 尚未達到滿好感度的角色
 characters.embed.owned_characters: 擁有的角色
-characters.embed.path_filters: "{path} 角色"
 characters.embed.title: 角色總覽
 characters.filter.element.placeholder: 篩選元素…
 characters.filter.max_friendship: 滿好感度
@@ -107,8 +105,8 @@ characters.filter.path.placeholder: 篩選命途…
 characters.filter.placeholder: 選擇篩選條件…
 characters.first_time.embed.description: "如果這是你首次使用此指令，這可能需要一點時間。\n這是因為此指令需要從各個來源獲取資料。\n下次你使用這個指令時，應該就不會需要這麼久了。\n請耐心等待資料獲取完成。"
 characters.first_time.title: 正在獲取資料...
-characters.gi.embed.footer: "等級順序: {normal}/{skill}/{burst}"
-characters.hsr.embed.footer: "等級順序: {normal}/{skill}/{ultimate}/{talent}\n使用 /profile 查看角色詳情"
+characters.level_order.footer: "等級順序: {order}"
+characters.extra_detail.footer: "使用 /profile 查看角色詳情"
 hsr.ultimate: 終結技
 hsr.normal_attack: 普通攻擊
 hsr.skill: 戰技
@@ -575,5 +573,22 @@ account_locked_description: "輸入錯誤密碼的次數過多。請等待 20 �
 ether: 以太
 electric: 電屬性
 profile.no_data.title: 沒有可用的玩家資料
-profile.no_data.description: 你相信嗎，這裡居然沒有任何東西能顯示。
+profile.no_data.description: "你相信嗎，這裡居然沒有任何東西能顯示。"
 profile.zzz_hoyolab.character_select.description: "意象影畫 {m} | HoYoLAB 數據"
+characters.filter.specialty.placeholder: 篩選特性…
+zzz.basic: 普通攻擊
+zzz.dodge: 閃避
+zzz.assist: 支援技
+zzz.special: 特殊技
+zzz.chain: 連攜技
+zzz.core: 核心技
+attack: 強攻
+stun: 擊破
+anomaly: 異常
+support: 支援
+defense: 防護
+characters.filter.faction.placeholder: 篩選陣營…
+characters.sorter.speciality: 特性
+characters.sorter.faction: 陣營
+characters.sorter.mindscape_cinema: 意象影畫
+characters.embed.filter_text: "{filter} 角色"

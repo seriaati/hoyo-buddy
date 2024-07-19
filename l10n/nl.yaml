@@ -91,13 +91,11 @@ character_stories_page_label: Verhalen
 character_talents_page_label: Talenten
 character_voices_page_label: Stemmen
 characters: Karakters
-characters.embed.element_filters: "{element} Karakters"
 characters.embed.element_max_friendship: "Max Vriendschap {element} Karakters "
 characters.embed.element_not_max_friendship: "Niet Max Vriendschap {element} Karakters"
 characters.embed.max_friendship: Max Vriendschap Karakters
 characters.embed.not_max_friendship: Niet Max Vriendschap Karakters
 characters.embed.owned_characters: Eigen Karakters
-characters.embed.path_filters: "{path} Karakters"
 characters.embed.title: Karakter Overzicht
 characters.filter.element.placeholder: Selecteer element filters...
 characters.filter.max_friendship: Max vriendschap
@@ -107,8 +105,8 @@ characters.filter.path.placeholder: Path filters selecteren...
 characters.filter.placeholder: Selecteer een filter...
 characters.first_time.embed.description: "Als dit de eerste keer is dat je dit commando gebruikt, kan het even duren.\nDit komt omdat de commando gegevens van veel bronnen moet ophalen.\nDe volgende keer dat je dit commando gebruikt, zou het sneller moeten gaan.\nWees geduldig en wacht tot de bronnen zijn opgehaald."
 characters.first_time.title: Bronnen ophalen...
-characters.gi.embed.footer: ""
-characters.hsr.embed.footer: ""
+characters.level_order.footer: ""
+characters.extra_detail.footer: ""
 hsr.ultimate: ""
 hsr.normal_attack: ""
 hsr.skill: ""
@@ -570,3 +568,27 @@ set_cur_temp_as_default.done: ""
 set_cur_temp_as_default.done_desc: ""
 third_party_card_temp_error_title: ""
 third_party_card_temp_error_message: ""
+account_locked_title: ""
+account_locked_description: ""
+ether: ""
+electric: ""
+profile.no_data.title: ""
+profile.no_data.description: ""
+profile.zzz_hoyolab.character_select.description: ""
+characters.filter.specialty.placeholder: ""
+zzz.basic: ""
+zzz.dodge: ""
+zzz.assist: ""
+zzz.special: ""
+zzz.chain: ""
+zzz.core: ""
+attack: ""
+stun: ""
+anomaly: ""
+support: ""
+defense: ""
+characters.filter.faction.placeholder: ""
+characters.sorter.speciality: ""
+characters.sorter.faction: ""
+characters.sorter.mindscape_cinema: ""
+characters.embed.filter_text: ""

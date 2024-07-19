@@ -490,7 +490,7 @@ class CharactersView(View):
             key="characters.level_order.footer",
             order=[LocaleStr(key=key) for key in game_keys[self._game]],
         ).translate(self.translator, self.locale)
-        if self._game in {Game.STARRAIL}:
+        if self._game in {Game.STARRAIL, Game.ZZZ}:
             footer += LocaleStr(key="characters.extra_detail.footer").translate(
                 self.translator, self.locale
             )

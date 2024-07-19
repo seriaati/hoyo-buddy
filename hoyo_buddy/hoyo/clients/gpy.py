@@ -371,7 +371,7 @@ class GenshinClient(genshin.Client):
             )
             results.append((code, msg, success))
 
-            if len(code) > 1:
+            if len(codes) > 1:
                 # only sleep if there are more than 1 code
                 await asyncio.sleep(uniform(5.5, 6.5))
 

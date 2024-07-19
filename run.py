@@ -5,6 +5,7 @@ import asyncio
 import contextlib
 import logging
 import os
+import sys
 
 import aiohttp
 import aiohttp.http_websocket
@@ -99,6 +100,8 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
+    logger.remove()
+    logger.add(sys.stderr, level="DEBUG" if is_dev else "INFO")
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
     logger.add("hoyo_buddy.log", rotation="32 MB", retention="5 days", level="INFO")
 

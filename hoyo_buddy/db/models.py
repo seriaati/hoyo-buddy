@@ -75,7 +75,7 @@ class HoyoAccount(Model):
 
     def __repr__(self) -> str:
         return (
-            f"<HoyoAccount id={self.id} uid={self.uid} username={self.username} game={self.game}>"
+            f"<HoyoAccount id={self.id} uid={self.uid} username={self.username!r} game={self.game}>"
         )
 
     @property

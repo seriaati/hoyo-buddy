@@ -102,6 +102,8 @@ def draw_big_agent_card(
 ) -> BytesIO:
     asset_path = "hoyo-buddy-assets/assets/zzz-characters"
     theme = "dark" if dark_mode else "light"
+
+    # Open assets
     mask = Image.open(f"{asset_path}/mask_{theme}.png")
     card = Image.open(f"{asset_path}/card_{theme}.png")
     circle = Image.open(f"{asset_path}/circle_{theme}.png")
@@ -124,6 +126,7 @@ def draw_big_agent_card(
         )
         for agent in agents
     ]
+
     card_height = card.height
     card_width = card.width
     card_x_padding = 38
@@ -146,7 +149,9 @@ def draw_big_agent_card(
     big_card_width = card_width * col_num + card_x_padding * (col_num - 1) + card_start_pos[0] * 2
 
     im = Image.new(
-        "RGBA", (big_card_width, big_card_height), (33, 33, 33) if dark_mode else (239, 239, 239)
+        "RGBA",
+        (big_card_width, big_card_height),
+        (33, 33, 33) if dark_mode else (239, 239, 239),
     )
 
     for i, card in enumerate(cards):
@@ -157,5 +162,5 @@ def draw_big_agent_card(
         im.paste(card, (x, y), card)
 
     buffer = BytesIO()
-    im.save(buffer, format="WEBP", lossless=True)
+    im.save(buffer, format="WEBP", quality=80)
     return buffer

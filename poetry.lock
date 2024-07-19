@@ -232,7 +232,7 @@ pydantic = "^2.4.2"
 type = "git"
 url = "https://github.com/seriaati/ambr"
 reference = "HEAD"
-resolved_reference = "654c5ec96e93e31aa6f8a1ced484aa56b93fbeaa"
+resolved_reference = "0248d6907f2f75e45c8e754b152387f625cdbf66"
 
 [[package]]
 name = "annotated-types"
@@ -686,7 +686,7 @@ pydantic = "^2.5.3"
 type = "git"
 url = "https://github.com/seriaati/enka-py"
 reference = "HEAD"
-resolved_reference = "1146b6ae27da6be0e13e24535c4ed1f8e20d62e5"
+resolved_reference = "cc1ef779a59761e3c9a9b5f33a0e16f57dc39299"
 
 [[package]]
 name = "executing"
@@ -844,7 +844,7 @@ socks-proxy = ["aiohttp-socks"]
 type = "git"
 url = "https://github.com/thesadru/genshin.py"
 reference = "dev"
-resolved_reference = "0829163482e706ce46ba72f22dbaeb1e510b3a7d"
+resolved_reference = "5602e186f37de74383d710b0498ec416c52d1f68"
 
 [[package]]
 name = "gitdb"
@@ -907,7 +907,7 @@ pydantic = "^2.7.1"
 type = "git"
 url = "https://github.com/seriaati/hakushin-py"
 reference = "HEAD"
-resolved_reference = "c411f93caadea43a98aec16619900b2dd78710f8"
+resolved_reference = "79d1dc1447090ace09b04372aa7bfb5fdc482313"
 
 [[package]]
 name = "httpcore"
@@ -1987,13 +1987,13 @@ files = [
 
 [[package]]
 name = "tomlkit"
-version = "0.12.5"
+version = "0.13.0"
 description = "Style preserving TOML library"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "tomlkit-0.12.5-py3-none-any.whl", hash = "sha256:af914f5a9c59ed9d0762c7b64d3b5d5df007448eb9cd2edc8a46b1eafead172f"},
-    {file = "tomlkit-0.12.5.tar.gz", hash = "sha256:eef34fba39834d4d6b73c9ba7f3e4d1c417a4e56f89a7e96e090dd0d24b8fb3c"},
+    {file = "tomlkit-0.13.0-py3-none-any.whl", hash = "sha256:7075d3042d03b80f603482d69bf0c8f345c2b30e41699fd8883227f89972b264"},
+    {file = "tomlkit-0.13.0.tar.gz", hash = "sha256:08ad192699734149f5b97b45f1f18dad7eb1b6d16bc72ad0c2335772650d7b72"},
 ]
 
 [[package]]

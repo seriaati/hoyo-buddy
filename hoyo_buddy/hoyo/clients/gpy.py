@@ -4,7 +4,7 @@ import asyncio
 import os
 from operator import attrgetter
 from random import uniform
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, overload
 
 import genshin
 import hakushin
@@ -308,25 +308,36 @@ class GenshinClient(genshin.Client):
             for chara in parsed.avatar_list
         ]
 
-    async def get_zzz_agent_info(self, character_id: int) -> genshin.models.ZZZFullAgent:
-        cache, _ = await EnkaCache.get_or_create(uid=self.uid)
+    @overload
+    async def get_zzz_agent_info(
+        self, character_id: Sequence[int]
+    ) -> Sequence[genshin.models.ZZZFullAgent]: ...
+    @overload
+    async def get_zzz_agent_info(self, character_id: int) -> genshin.models.ZZZFullAgent: ...
+    async def get_zzz_agent_info(
+        self, character_id: Sequence[int] | int
+    ) -> Sequence[genshin.models.ZZZFullAgent] | genshin.models.ZZZFullAgent:
+        if isinstance(character_id, int):
+            # Only do cache stuff when there is a single character
+            cache, _ = await EnkaCache.get_or_create(uid=self.uid)
 
-        try:
-            live_data = (await super().get_zzz_agent_info(character_id)).dict()
-        except genshin.GenshinException as e:
-            if not cache.hoyolab_zzz or e.retcode != 1005:
-                raise
+            try:
+                live_data = (await super().get_zzz_agent_info(character_id)).dict()
+            except genshin.GenshinException as e:
+                if not cache.hoyolab_zzz or e.retcode != 1005:
+                    raise
 
-            self._update_live_status(cache.hoyolab_zzz, cache.extras, False, zzz=True)
-            await cache.save(update_fields=("extras"))
-        else:
-            cache.hoyolab_zzz = cache.hoyolab_zzz or {}
-            cache.hoyolab_zzz.update({str(character_id): live_data})
-            self._update_live_status(live_data, cache.extras, True, zzz=True)
-            await cache.save(update_fields=("hoyolab_zzz", "extras"))
+                self._update_live_status(cache.hoyolab_zzz, cache.extras, False, zzz=True)
+                await cache.save(update_fields=("extras"))
+            else:
+                cache.hoyolab_zzz = cache.hoyolab_zzz or {}
+                cache.hoyolab_zzz.update({str(character_id): live_data})
+                self._update_live_status(live_data, cache.extras, True, zzz=True)
+                await cache.save(update_fields=("hoyolab_zzz", "extras"))
 
-        parsed = genshin.models.ZZZFullAgent(**cache.hoyolab_zzz[str(character_id)])
-        return parsed
+            parsed = genshin.models.ZZZFullAgent(**cache.hoyolab_zzz[str(character_id)])
+            return parsed
+        return await super().get_zzz_agent_info(character_id)
 
     async def update_cookie_token(self) -> None:
         """Update the cookie token."""

@@ -14,7 +14,7 @@ from hoyo_buddy.emojis import get_game_emoji
 from ...components import Select, SelectOption
 
 if TYPE_CHECKING:
-    from collections.abc import Generator, Sequence
+    from collections.abc import Sequence
 
     from genshin.models import GenshinAccount
 
@@ -43,7 +43,7 @@ class AddAccountSelect(Select["AccountManager"]):
         self._device_id = device_id
         self._device_fp = device_fp
 
-        options = list(self.get_account_options())
+        options = self.get_account_options()
         super().__init__(
             custom_id="select_accounts_to_add",
             options=options,
@@ -53,18 +53,26 @@ class AddAccountSelect(Select["AccountManager"]):
             ),
         )
 
-    def get_account_options(self) -> Generator[SelectOption, None, None]:
+    def get_account_options(self) -> list[SelectOption]:
+        result: list[SelectOption] = []
+        added_vals: set[str] = set()
         for account in self.accounts:
             # Sometimes other Hoyo games like 未定事件簿 might appear here, so we add this check
             if isinstance(account.game, GenshinGame):  # pyright: ignore [reportUnnecessaryIsInstance]
                 level_str = self.translator.translate(LevelStr(account.level), self.locale)
-
-                yield SelectOption(
-                    label=f"{account.nickname} ({account.uid})",
-                    description=f"{level_str}",
-                    value=f"{account.uid}_{account.game.value}",
-                    emoji=get_game_emoji(account.game),
+                option_val = f"{account.uid}_{account.game.value}"
+                if option_val in added_vals:
+                    continue
+                result.append(
+                    SelectOption(
+                        label=f"{account.nickname} ({account.uid})",
+                        description=f"{level_str}",
+                        value=option_val,
+                        emoji=get_game_emoji(account.game),
+                    )
                 )
+                added_vals.add(option_val)
+        return result
 
     async def callback(self, i: Interaction) -> None:
         for value in self.values:

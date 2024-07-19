@@ -577,3 +577,21 @@ electric: Electric
 profile.no_data.title: No player data available
 profile.no_data.description: "Believe it or not, there is nothing to display here."
 profile.zzz_hoyolab.character_select.description: "Mindscape cinema {m} | HoYoLAB data"
+characters.filter.specialty.placeholder: Select specialty filters...
+characters.zzz.embed.footer: "Level order: {basic}/{dodge}/{assist}/{special}/{chain}/{core}"
+zzz.basic: Basic Attack
+zzz.dodge: Dodge
+zzz.assist: Assist
+zzz.special: Special Attack
+zzz.chain: Chain Attack
+zzz.core: Core Skill
+attack: Attack
+stun: Stun
+anomaly: Anomaly
+support: Support
+defense: Defense
+characters.filter.faction.placeholder: Select faction filters...
+characters.sorter.speciality: Speciality
+characters.sorter.faction: Faction
+characters.sorter.mindscape_cinema: Mindscape cinema
+characters.embed.faction_filters: "{faction} Characters"

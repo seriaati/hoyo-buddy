@@ -17,6 +17,7 @@ GI_ICON = "https://iili.io/dKleQ4I.png"
 HSR_ICON = "https://iili.io/dKlesBp.png"
 HONKAI_ICON = "https://iili.io/dKleLEN.png"
 ZZZ_ICON = "https://iili.io/dKviRC7.jpg"
+TOT_ICON = "https://iili.io/dnhj7P1.png"
 
 LOADING_ICON = "https://i.imgur.com/5siJ799.gif"
 
@@ -30,6 +31,8 @@ def get_game_icon(game: Game | GameEnum) -> str:
         return HONKAI_ICON
     if game in {Game.ZZZ, GameEnum.ZZZ}:
         return ZZZ_ICON
+    if game in {Game.TOT, GameEnum.TOT}:
+        return TOT_ICON
 
     msg = f"This game doesn't have an icon: {game}"
     raise ValueError(msg)

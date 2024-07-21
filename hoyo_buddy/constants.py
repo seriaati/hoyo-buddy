@@ -317,6 +317,7 @@ HB_GAME_TO_GPY_GAME: dict[Game, genshin.Game] = {
     Game.STARRAIL: genshin.Game.STARRAIL,
     Game.HONKAI: genshin.Game.HONKAI,
     Game.ZZZ: genshin.Game.ZZZ,
+    Game.TOT: genshin.Game.TOT,
 }
 """Hoyo Buddy game enum to genshin.py game enum."""
 

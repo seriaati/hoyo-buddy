@@ -10,6 +10,7 @@ from ...bot.translator import LocaleStr, Translator
 from ...db.models import AccountNotifSettings
 from ...draw.main_funcs import draw_checkin_card
 from ...embeds import DefaultEmbed
+from ...enums import Platform
 from ...models import DrawInput, Reward
 from ...utils import get_now
 from ..components import Button, GoBackButton, ToggleButton, View
@@ -30,6 +31,7 @@ CHECK_IN_URLS = {
     Game.HONKAI: "https://act.hoyolab.com/bbs/event/signin-bh3/index.html?act_id=e202110291205111",
     Game.STARRAIL: "https://act.hoyolab.com/bbs/event/signin/hkrpg/index.html?act_id=e202303301540311",
     Game.ZZZ: "https://act.hoyolab.com/bbs/event/signin/zzz/e202406031448091.html?act_id=e202406031448091",
+    Game.TOT: "https://act.hoyolab.com/bbs/event/signin/nxx/index.html?act_id=e202202281857121",
 }
 
 
@@ -55,7 +57,10 @@ class CheckInUI(View):
 
     def add_items(self) -> None:
         self.add_item(CheckInButton())
-        if self.client.game is not None:
+        if self.client.game is not None and self.account.platform is Platform.HOYOLAB:
+            if self.client.game not in CHECK_IN_URLS:
+                msg = f"Check-in URL for {self.client.game} is not available."
+                raise ValueError(msg)
             self.add_item(
                 Button(
                     url=CHECK_IN_URLS[self.client.game],

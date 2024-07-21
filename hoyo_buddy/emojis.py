@@ -31,10 +31,11 @@ PUBLIC = "<:PUBLIC:1230137382691541093>"
 GITHUB_WHITE_ICON = "<:GITHUB_WHITE_ICON:1229374869435846676>"
 DISCORD_WHITE_ICON = "<:DISCORD_WHITE_ICON:1229374673566044161>"
 
-GENSHIN_IMPACT = "<:genshin_impact:1025630733068423169>"
-HONKAI_STAR_RAIL = "<:honkai_star_rail:1105806784117088336>"
-HONKAI_IMPACT_3RD = "<:honkai_impact:1106034318666637415>"
-ZZZ = "<:ZZZ:1258778293633814549>"
+GI_EMOJI = "<:genshin_impact:1025630733068423169>"
+HSR_EMOJI = "<:honkai_star_rail:1105806784117088336>"
+HI3_EMOJI = "<:honkai_impact:1106034318666637415>"
+ZZZ_EMOJI = "<:ZZZ:1258778293633814549>"
+TOT_EMOJI = "<:TOT_ICON:1264395240001769473>"
 
 MIYOUSHE = "<:MIYOUSHE:1222510853975179355>"
 HOYOLAB = "<:hoyolab_icon:1025044103135776809>"
@@ -138,13 +139,15 @@ SCRATCH_CARD_EMOJI = "<:SCRATCH_CARD:1260127526580260989>"
 
 def get_game_emoji(game: genshin.Game | Game) -> str:
     if game is genshin.Game.GENSHIN or game is Game.GENSHIN:
-        return GENSHIN_IMPACT
+        return GI_EMOJI
     if game is genshin.Game.HONKAI or game is Game.HONKAI:
-        return HONKAI_IMPACT_3RD
+        return HI3_EMOJI
     if game is genshin.Game.STARRAIL or game is Game.STARRAIL:
-        return HONKAI_STAR_RAIL
+        return HSR_EMOJI
     if game is genshin.Game.ZZZ or game is Game.ZZZ:
-        return ZZZ
+        return ZZZ_EMOJI
+    if game is genshin.Game.TOT or game is Game.TOT:
+        return TOT_EMOJI
 
 
 def get_gi_element_emoji(element: str) -> str:

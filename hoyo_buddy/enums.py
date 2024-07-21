@@ -8,6 +8,7 @@ class Game(StrEnum):
     STARRAIL = "Honkai: Star Rail"
     HONKAI = "Honkai Impact 3rd"
     ZZZ = "Zenless Zone Zero"
+    TOT = "Tears of Themis"
 
 
 class NotesNotifyType(IntEnum):

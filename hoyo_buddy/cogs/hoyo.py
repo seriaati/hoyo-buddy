@@ -11,6 +11,7 @@ from ..bot.translator import LocaleStr
 from ..commands.challenge import ChallengeCommand
 from ..commands.geetest import GeetestCommand
 from ..commands.profile import ProfileCommand
+from ..commands.stats import StatsCommand
 from ..constants import ZZZ_AGENT_DATA
 from ..db.models import HoyoAccount, Settings, get_locale
 from ..draw.main_funcs import draw_exploration_card
@@ -102,7 +103,7 @@ class Hoyo(commands.Cog):
 
         user = user or i.user
         account_ = account or await self.bot.get_account(
-            user.id, (Game.GENSHIN, Game.STARRAIL, Game.HONKAI, Game.ZZZ)
+            user.id, (Game.GENSHIN, Game.STARRAIL, Game.HONKAI, Game.ZZZ, Game.TOT)
         )
         settings = await Settings.get(user_id=i.user.id)
         view = CheckInUI(
@@ -452,6 +453,25 @@ class Hoyo(commands.Cog):
         await command.run()
         command.start_listener()
 
+    @app_commands.command(
+        name=app_commands.locale_str("stats"),
+        description=app_commands.locale_str(
+            "View game account statistics", key="stats_command_description"
+        ),
+    )
+    @app_commands.rename(
+        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
+    )
+    @app_commands.describe(
+        user=app_commands.locale_str(
+            "User to search the accounts with, defaults to you",
+            key="user_autocomplete_param_description",
+        ),
+    )
+    async def stats_command(self, i: Interaction, user: User = None) -> None:
+        command = StatsCommand(user)
+        await command.run(i)
+
     @geetest_command.autocomplete("type_")
     async def geetest_type_autocomplete(
         self, i: Interaction, current: str
@@ -519,7 +539,7 @@ class Hoyo(commands.Cog):
             current,
             locale,
             self.bot.translator,
-            (Game.GENSHIN, Game.STARRAIL, Game.HONKAI, Game.ZZZ),
+            (Game.GENSHIN, Game.STARRAIL, Game.HONKAI, Game.ZZZ, Game.TOT),
         )
 
 

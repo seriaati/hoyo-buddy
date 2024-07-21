@@ -18,7 +18,7 @@ from loguru import logger
 from tortoise.expressions import Q
 
 from ..db import models
-from ..enums import Platform
+from ..enums import Game, Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
 from ..utils import get_now
@@ -35,7 +35,6 @@ if TYPE_CHECKING:
     import git
     from aiohttp import ClientSession
 
-    from ..enums import Game
     from ..hoyo.search_autocomplete import AutocompleteChoices
     from ..models import Config
     from ..types import User
@@ -233,7 +232,10 @@ class HoyoBuddy(commands.AutoShardedBot):
         ]
 
     async def get_account(
-        self, user_id: int, games: Sequence[Game], platforms: Sequence[Platform] | None = None
+        self,
+        user_id: int,
+        games: Sequence[Game] | None = None,
+        platforms: Sequence[Platform] | None = None,
     ) -> models.HoyoAccount:
         """Get an account by user ID and games.
 
@@ -242,6 +244,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             games: The games to filter by.
             platforms: The platforms to filter by.
         """
+        games = games or list(Game)
         platforms = platforms or list(Platform)
 
         game_query = Q(*[Q(game=game) for game in games], join_type="OR")

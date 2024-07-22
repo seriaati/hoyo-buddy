@@ -844,7 +844,7 @@ socks-proxy = ["aiohttp-socks"]
 type = "git"
 url = "https://github.com/thesadru/genshin.py"
 reference = "dev"
-resolved_reference = "566f148ab3b6e49ddbb61ce71c515920c9436b02"
+resolved_reference = "4d370e4b7ab23c5147c433b811fc5967421ff883"
 
 [[package]]
 name = "gitdb"

@@ -11,7 +11,7 @@ from ...bot.error_handler import get_error_embed
 from ...bot.translator import LocaleStr
 from ...constants import GPY_GAME_TO_HB_GAME, HB_GAME_TO_GPY_GAME
 from ...db.models import HoyoAccount
-from ...enums import Game, Platform
+from ...enums import Platform
 
 if TYPE_CHECKING:
     import aiohttp
@@ -102,13 +102,16 @@ class AutoRedeem:
             )
             cls._bot = bot
 
+            games_to_redeem = (
+                genshin.Game.GENSHIN,
+                genshin.Game.STARRAIL,
+                genshin.Game.ZZZ,
+                genshin.Game.TOT,
+            )
             game_codes = (
                 {game: codes}
                 if game is not None and codes is not None
-                else {
-                    game_: await cls._get_codes(bot.session, game_)
-                    for game_ in (genshin.Game.GENSHIN, genshin.Game.ZZZ, genshin.Game.STARRAIL)
-                }
+                else {game_: await cls._get_codes(bot.session, game_) for game_ in games_to_redeem}
             )
             logger.debug(f"Game codes: {game_codes}")
 
@@ -119,7 +122,7 @@ class AutoRedeem:
             )
 
             for account in accounts:
-                if account.platform is Platform.MIYOUSHE or account.game is Game.HONKAI:
+                if account.platform is Platform.MIYOUSHE or HB_GAME_TO_GPY_GAME[account.game] not in game_codes:
                     continue
 
                 await cls._redeem_codes(

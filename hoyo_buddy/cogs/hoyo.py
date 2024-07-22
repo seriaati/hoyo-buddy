@@ -411,7 +411,7 @@ class Hoyo(commands.Cog):
 
         user = user or i.user
         account_ = account or await self.bot.get_account(
-            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ), (Platform.HOYOLAB,)
+            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT), (Platform.HOYOLAB,)
         )
         locale = await get_locale(i)
 

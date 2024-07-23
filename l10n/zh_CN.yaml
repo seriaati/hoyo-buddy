@@ -592,3 +592,7 @@ characters.sorter.speciality: 特性
 characters.sorter.faction: 阵营
 characters.sorter.mindscape_cinema: 意象影画
 characters.embed.filter_text: "{filter}角色"
+stats_command_description: 查看游戏帐号数据
+stats.select_card: 选择一个游戏帐号...
+tears_of_themis: 未定事件簿
+honkai_suit_rarity: "稀有度 {rarity}"

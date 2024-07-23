@@ -254,7 +254,7 @@ class Hoyo(commands.Cog):
 
         user = user or i.user
         account_ = account or await self.bot.get_account(
-            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
+            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
         )
         settings = await Settings.get(user_id=i.user.id)
 
@@ -284,6 +284,10 @@ class Hoyo(commands.Cog):
                     continue
                 element_char_counts[agent["element"].lower()] += 1
                 faction_char_counts[agent["faction"].lower()] += 1
+        elif account_.game is Game.HONKAI:
+            element_char_counts = {}
+            path_char_counts = {}
+            faction_char_counts = {}
         else:
             raise FeatureNotImplementedError(platform=account_.platform, game=account_.game)
 
@@ -514,11 +518,18 @@ class Hoyo(commands.Cog):
 
     @notes_command.autocomplete("account")
     @profile_command.autocomplete("account")
-    @characters_command.autocomplete("account")
     async def gi_hsr_zzz_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         return await self.game_autocomplete(i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ))
+
+    @characters_command.autocomplete("account")
+    async def gi_hsr_zzz_honkai_acc_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        return await self.game_autocomplete(
+            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
+        )
 
     @redeem_command.autocomplete("account")
     async def gi_hsr_zzz_tot_acc_autocomplete(

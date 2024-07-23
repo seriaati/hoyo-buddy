@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import datetime
 from enum import StrEnum
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TYPE_CHECKING, Final, TypeAlias
 
 from discord import ButtonStyle, Locale
 from genshin.models import Character as GICharacter
+from genshin.models import FullBattlesuit as HonkaiCharacter
 from genshin.models import StarRailDetailCharacter as HSRCharacter
 from genshin.models import ZZZFullAgent as ZZZCharacter
 from genshin.models import ZZZSpecialty
@@ -13,6 +14,7 @@ from genshin.models import ZZZSpecialty
 from hoyo_buddy.bot.translator import EnumStr, LocaleStr
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_characters_card,
+    draw_honkai_suits_card,
     draw_hsr_characters_card,
     draw_zzz_characters_card,
 )
@@ -55,6 +57,28 @@ if TYPE_CHECKING:
     from hoyo_buddy.db.models import HoyoAccount
     from hoyo_buddy.types import Interaction
 
+GAME_FOOTERS: Final[dict[Game, tuple[str, ...]]] = {
+    Game.GENSHIN: (
+        "gi.normal_attack",
+        "gi.skill",
+        "gi.burst",
+    ),
+    Game.STARRAIL: (
+        "hsr.normal_attack",
+        "hsr.skill",
+        "hsr.ultimate",
+        "hsr.talent",
+    ),
+    Game.ZZZ: (
+        "zzz.basic",
+        "zzz.dodge",
+        "zzz.assist",
+        "zzz.special",
+        "zzz.chain",
+        "zzz.core",
+    ),
+}
+
 
 class GIFilter(StrEnum):
     NONE = "none"
@@ -87,8 +111,15 @@ class ZZZSorter(StrEnum):
     MINDSCAPE_CINEMA = "mindscape_cinema"
 
 
-Character: TypeAlias = GICharacter | HSRCharacter | UnownedCharacter | ZZZCharacter
-Sorter: TypeAlias = GISorter | HSRSorter | ZZZSorter
+class HonkaiSorter(StrEnum):
+    LEVEL = "level"
+    RARITY = "rarity"
+
+
+Character: TypeAlias = (
+    GICharacter | HSRCharacter | UnownedCharacter | ZZZCharacter | HonkaiCharacter
+)
+Sorter: TypeAlias = GISorter | HSRSorter | ZZZSorter | HonkaiSorter
 
 
 class CharactersView(View):
@@ -116,6 +147,7 @@ class CharactersView(View):
         self._gi_characters: list[GICharacter | UnownedCharacter] = []
         self._hsr_characters: list[HSRCharacter | UnownedCharacter] = []
         self._zzz_characters: list[ZZZCharacter] = []
+        self._honkai_characters: list[HonkaiCharacter] = []
 
         self._filter: GIFilter = GIFilter.NONE
         self._element_filters: list[GenshinElement | HSRElement | ZZZElement] = []
@@ -125,13 +157,15 @@ class CharactersView(View):
         self._faction_filters: list[str] = []
         self._faction_l10n: dict[str, str] = {}
 
-        self._sorter: GISorter | HSRSorter | ZZZSorter
+        self._sorter: Sorter
         if self._game is Game.GENSHIN:
             self._sorter = GISorter.ELEMENT
         elif self._game is Game.STARRAIL:
             self._sorter = HSRSorter.ELEMENT
         elif self._game is Game.ZZZ:
             self._sorter = ZZZSorter.ELEMENT
+        elif self._game is Game.HONKAI:
+            self._sorter = HonkaiSorter.LEVEL
 
     async def _get_gi_pc_icons(self) -> dict[str, str]:
         pc_icons: dict[str, str] = {}
@@ -184,7 +218,9 @@ class CharactersView(View):
 
         return characters
 
-    def _apply_element_filters(self, characters: Sequence[Character]) -> Sequence[Character]:
+    def _apply_element_filters(
+        self, characters: Sequence[GICharacter | HSRCharacter | ZZZCharacter | UnownedCharacter]
+    ) -> Sequence[Character]:
         if not self._element_filters:
             return characters
 
@@ -279,6 +315,14 @@ class CharactersView(View):
 
         return sorted(characters, key=lambda c: c.rank, reverse=True)
 
+    def _apply_honkai_sorter(
+        self, characters: Sequence[HonkaiCharacter]
+    ) -> Sequence[HonkaiCharacter]:
+        if self._sorter is HonkaiSorter.LEVEL:
+            return sorted(characters, key=lambda c: c.level, reverse=True)
+
+        return sorted(characters, key=lambda c: c.rarity, reverse=True)
+
     def _get_filtered_sorted_characters(self) -> Sequence[Character]:
         if self._game is Game.GENSHIN:
             characters = self._apply_gi_sorter(
@@ -296,6 +340,8 @@ class CharactersView(View):
                     )  # pyright: ignore [reportArgumentType]
                 )
             )
+        elif self._game is Game.HONKAI:
+            characters = self._apply_honkai_sorter(self._honkai_characters)
         else:
             raise FeatureNotImplementedError(platform=self._account.platform, game=self._game)
 
@@ -361,6 +407,19 @@ class CharactersView(View):
                 characters,  # pyright: ignore [reportArgumentType]
                 self.translator,
             )
+        elif self._game is Game.HONKAI:
+            file_ = await draw_honkai_suits_card(
+                DrawInput(
+                    dark_mode=self._dark_mode,
+                    locale=self.locale,
+                    session=session,
+                    filename="characters.webp",
+                    executor=executor,
+                    loop=loop,
+                ),
+                characters,  # pyright: ignore [reportArgumentType]
+                self.translator,
+            )
         else:
             raise FeatureNotImplementedError(platform=self._account.platform, game=self._game)
 
@@ -372,6 +431,11 @@ class CharactersView(View):
             self.translator,
             title=LocaleStr(key="characters.embed.title"),
         )
+        embed.set_image(url="attachment://characters.webp")
+        embed.add_acc_info(self._account)
+
+        if self._game is Game.HONKAI:
+            return embed
 
         if self._filter in {GIFilter.MAX_FRIENDSHIP, GIFilter.NOT_MAX_FRIENDSHIP}:
             total_chars = (
@@ -464,40 +528,17 @@ class CharactersView(View):
                 inline=False,
             )
 
-        game_keys = {
-            Game.GENSHIN: (
-                "gi.normal_attack",
-                "gi.skill",
-                "gi.burst",
-            ),
-            Game.STARRAIL: (
-                "hsr.normal_attack",
-                "hsr.skill",
-                "hsr.ultimate",
-                "hsr.talent",
-            ),
-            Game.ZZZ: (
-                "zzz.basic",
-                "zzz.dodge",
-                "zzz.assist",
-                "zzz.special",
-                "zzz.chain",
-                "zzz.core",
-            ),
-        }
+        if self._game in GAME_FOOTERS:
+            footer = LocaleStr(
+                key="characters.level_order.footer",
+                order=[LocaleStr(key=key) for key in GAME_FOOTERS[self._game]],
+            ).translate(self.translator, self.locale)
+            if self._game in {Game.STARRAIL, Game.ZZZ}:
+                footer += "\n" + LocaleStr(key="characters.extra_detail.footer").translate(
+                    self.translator, self.locale
+                )
+            embed.set_footer(text=footer)
 
-        footer = LocaleStr(
-            key="characters.level_order.footer",
-            order=[LocaleStr(key=key) for key in game_keys[self._game]],
-        ).translate(self.translator, self.locale)
-        if self._game in {Game.STARRAIL, Game.ZZZ}:
-            footer += "\n" + LocaleStr(key="characters.extra_detail.footer").translate(
-                self.translator, self.locale
-            )
-        embed.set_footer(text=footer)
-
-        embed.set_image(url="attachment://characters.webp")
-        embed.add_acc_info(self._account)
         return embed
 
     def _add_items(self) -> None:
@@ -516,6 +557,8 @@ class CharactersView(View):
             self.add_item(ElementFilterSelector(ZZZElement))
             self.add_item(SpecialtyFilterSelector(self._zzz_characters))
             self.add_item(FactionFilterSelector(self._zzz_characters))
+            self.add_item(SorterSelector(self._sorter, self._game))
+        elif self._game is Game.HONKAI:
             self.add_item(SorterSelector(self._sorter, self._game))
 
     async def start(self, i: Interaction, *, show_first_time_msg: bool = False) -> None:
@@ -565,6 +608,8 @@ class CharactersView(View):
                 agent.faction_name: en_agent.faction_name
                 for agent, en_agent in zip(full_agents, en_full_agents, strict=False)
             }
+        elif self._game is Game.HONKAI:
+            self._honkai_characters = list(await client.get_honkai_battlesuits(self._account.uid))
         else:
             raise FeatureNotImplementedError(platform=self._account.platform, game=self._game)
 
@@ -578,7 +623,7 @@ class CharactersView(View):
         await i.edit_original_response(attachments=[file_], view=self, embed=embed)
         self.message = await i.original_response()
 
-    async def callback(
+    async def item_callback(
         self, i: Interaction, item: Button | Select, *, set_loading_state: bool = True
     ) -> None:
         characters = self._get_filtered_sorted_characters()
@@ -615,7 +660,7 @@ class GIFilterSelector(Select[CharactersView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view._filter = GIFilter(self.values[0])
-        await self.view.callback(i, self)
+        await self.view.item_callback(i, self)
 
 
 class ElementFilterSelector(Select[CharactersView]):
@@ -654,7 +699,7 @@ class ElementFilterSelector(Select[CharactersView]):
 
         element_type = element_types[self.view._game]
         self.view._element_filters = [element_type(value) for value in self.values]
-        await self.view.callback(i, self)
+        await self.view.item_callback(i, self)
 
 
 class PathFilterSelector(Select[CharactersView]):
@@ -672,7 +717,7 @@ class PathFilterSelector(Select[CharactersView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view._path_filters = [HSRPath(value) for value in self.values]
-        await self.view.callback(i, self)
+        await self.view.item_callback(i, self)
 
 
 class SpecialtyFilterSelector(Select[CharactersView]):
@@ -694,7 +739,7 @@ class SpecialtyFilterSelector(Select[CharactersView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view._speciality_filters = [ZZZSpecialty(int(value)) for value in self.values]
-        await self.view.callback(i, self)
+        await self.view.item_callback(i, self)
 
 
 class FactionFilterSelector(Select[CharactersView]):
@@ -712,7 +757,7 @@ class FactionFilterSelector(Select[CharactersView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view._faction_filters = self.values
-        await self.view.callback(i, self)
+        await self.view.item_callback(i, self)
 
 
 class SorterSelector(Select[CharactersView]):
@@ -721,6 +766,7 @@ class SorterSelector(Select[CharactersView]):
             Game.GENSHIN: GISorter,
             Game.STARRAIL: HSRSorter,
             Game.ZZZ: ZZZSorter,
+            Game.HONKAI: HonkaiSorter,
         }
         if game not in sorters:
             msg = f"Sorter not found for game {game}"
@@ -743,7 +789,7 @@ class SorterSelector(Select[CharactersView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view._sorter = self._sorter(self.values[0])
-        await self.view.callback(i, self)
+        await self.view.item_callback(i, self)
 
 
 class UpdateTalentData(Button[CharactersView]):
@@ -856,4 +902,4 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
                         )
                     )
 
-        await self.view.callback(i, self, set_loading_state=False)
+        await self.view.item_callback(i, self, set_loading_state=False)

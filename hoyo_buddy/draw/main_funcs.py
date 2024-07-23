@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 
     from genshin.models import Character as GenshinCharacter
     from genshin.models import (
+        FullBattlesuit,
         ImgTheaterData,
         PartialGenshinUserStats,
         SpiralAbyss,
@@ -483,4 +484,28 @@ async def draw_zzz_characters_card(
         )
     buffer.seek(0)
 
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_honkai_suits_card(
+    draw_input: DrawInput, suits: Sequence[FullBattlesuit], translator: Translator
+) -> File:
+    urls: list[str] = []
+    for suit in suits:
+        urls.append(suit.tall_icon)
+        urls.append(suit.weapon.icon)
+        for stig in suit.stigmata:
+            urls.append(stig.icon)
+
+    await download_and_save_static_images(urls, "honkai-characters", draw_input.session)
+    with timing("draw", tags={"type": "honkai_suits_card"}):
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
+            funcs.hoyo.honkai.draw_big_suit_card,
+            suits,
+            draw_input.locale.value,
+            draw_input.dark_mode,
+            translator,
+        )
+    buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

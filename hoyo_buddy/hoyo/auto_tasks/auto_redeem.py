@@ -122,7 +122,10 @@ class AutoRedeem:
             )
 
             for account in accounts:
-                if account.platform is Platform.MIYOUSHE or HB_GAME_TO_GPY_GAME[account.game] not in game_codes:
+                if (
+                    account.platform is Platform.MIYOUSHE
+                    or HB_GAME_TO_GPY_GAME[account.game] not in game_codes
+                ):
                     continue
 
                 await cls._redeem_codes(

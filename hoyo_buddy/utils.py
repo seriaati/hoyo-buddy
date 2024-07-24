@@ -10,9 +10,9 @@ from typing import TYPE_CHECKING, Any
 import aiohttp
 import orjson
 from loguru import logger
-from seria.utils import write_json
 
 from .constants import IMAGE_EXTENSIONS, UTC_8
+from .db.models import JSONFile
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -145,7 +145,7 @@ def ephemeral(i: Interaction) -> bool:
 async def fetch_and_cache_json(session: aiohttp.ClientSession, *, url: str, file_path: str) -> Any:
     async with session.get(url) as resp:
         data = orjson.loads(await resp.text())
-        await write_json(file_path, data)
+        await JSONFile.write(file_path, data)
         return data
 
 

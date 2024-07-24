@@ -77,7 +77,7 @@ class Farm(
     )
     @app_commands.describe(
         query=app_commands.locale_str(
-            "Query to search for", query="search_command_query_param_description"
+            "Query to search for", key="search_command_query_param_description"
         ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",

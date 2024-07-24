@@ -13,7 +13,7 @@ from discord import Locale
 from seria.tortoise.model import Model
 from tortoise import exceptions, fields
 
-from ..constants import HB_GAME_TO_GPY_GAME, SERVER_RESET_HOURS
+from ..constants import HB_GAME_TO_GPY_GAME, SERVER_RESET_HOURS, UTC_8
 from ..enums import ChallengeType, Game, NotesNotifyType, Platform
 from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
@@ -252,7 +252,9 @@ class ChallengeHistory(Model):
 
     @property
     def duration_str(self) -> str:
-        return f"{self.start_time:%Y-%m-%d} ~ {self.end_time:%Y-%m-%d}"
+        start_time = self.start_time.astimezone(UTC_8)
+        end_time = self.end_time.astimezone(UTC_8)
+        return f"{start_time:%Y-%m-%d} ~ {end_time:%Y-%m-%d}"
 
     @property
     def parsed_data(self) -> Challenge:

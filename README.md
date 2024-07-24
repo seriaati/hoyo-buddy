@@ -32,7 +32,7 @@ Hoyo Buddy is a feature rich, easy to use, and beautifully designed Discord bot 
 Other projects made by me that are used in Hoyo Buddy
 - [ambr.py](https://github.com/seriaati/ambr): API wrapper for [Project Ambr](https://ambr.top), used to obtain Genshin Impact game data.
 - [yatta.py](https://github.com/seriaati/yatta): API wrapper for [Project Yatta](https://hsr.yatta.top), used to obtain Honkai Star Rail game data.
-- [hakushin.py](https://github.com/seriaati/hakushin-py): API wrapper for [Hakushin](https://hakush.in), used to obtain beta Genshin Impact and Honkai Star Rail game data.
+- [hakushin.py](https://github.com/seriaati/hakushin-py): API wrapper for [Hakushin](https://hakush.in), used to obtain beta Genshin Impact and Honkai Star Rail game data, and Zenless Zone Zero data.
 - [akasha.py](https://github.com/seriaati/akasha-py): API wrapper for [Akasha System](https://akasha.cv), used in the character damage leaderboard feature.
 - [enka.py](https://github.com/seriaati/enka-py): API wrapper for [Enka Network](https://enka.network), used to obtain Genshin Impact and Honkai Star Rail player showcase data.
 - [enka-card-api](https://github.com/seriaati/enka-card-api): API to generate 3rd party template cards.

@@ -9,10 +9,9 @@ from hoyo_buddy.constants import EQUIP_ID_TO_ARTIFACT_POS, LOCALE_TO_HAKUSHIN_LA
 from hoyo_buddy.emojis import get_artifact_pos_emoji
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
+from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.ui import Button, View
 from hoyo_buddy.utils import ephemeral
-
-from .....hoyo.clients.hakushin import HakushinTranslator
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot.translator import Translator

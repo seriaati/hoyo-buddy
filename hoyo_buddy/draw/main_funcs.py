@@ -492,7 +492,7 @@ async def draw_honkai_suits_card(
 ) -> File:
     urls: list[str] = []
     for suit in suits:
-        urls.append(suit.tall_icon)
+        urls.append(suit.tall_icon.replace(" ", ""))
         urls.append(suit.weapon.icon)
         for stig in suit.stigmata:
             urls.append(stig.icon)

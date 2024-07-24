@@ -34,7 +34,7 @@ def draw_small_suit_card(
         dark_mode=True,
     )
 
-    suit_icon = drawer.open_static(suit.tall_icon, size=(146, 256))
+    suit_icon = drawer.open_static(suit.tall_icon.replace(" ", ""), size=(146, 256))
     suit_icon = drawer.crop_with_mask(suit_icon, suit_mask)
     im.paste(suit_icon, (0, 11), suit_icon)
 

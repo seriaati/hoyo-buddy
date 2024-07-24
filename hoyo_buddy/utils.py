@@ -12,7 +12,6 @@ import orjson
 from loguru import logger
 
 from .constants import IMAGE_EXTENSIONS, UTC_8
-from .db.models import JSONFile
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -140,13 +139,6 @@ def ephemeral(i: Interaction) -> bool:
     if i.guild is None:
         return False
     return not i.app_permissions.send_messages
-
-
-async def fetch_and_cache_json(session: aiohttp.ClientSession, *, url: str, file_path: str) -> Any:
-    async with session.get(url) as resp:
-        data = orjson.loads(await resp.text())
-        await JSONFile.write(file_path, data)
-        return data
 
 
 @contextmanager

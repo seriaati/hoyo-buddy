@@ -13,7 +13,7 @@ from ..commands.geetest import GeetestCommand
 from ..commands.profile import ProfileCommand
 from ..commands.stats import StatsCommand
 from ..constants import ZZZ_AGENT_DATA
-from ..db.models import HoyoAccount, Settings, get_locale
+from ..db.models import HoyoAccount, JSONFile, Settings, get_locale
 from ..draw.main_funcs import draw_exploration_card
 from ..embeds import DefaultEmbed
 from ..enums import Game, GeetestType, Platform
@@ -27,7 +27,7 @@ from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.redeem import RedeemUI
-from ..utils import ephemeral, fetch_and_cache_json
+from ..utils import ephemeral
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -269,7 +269,7 @@ class Hoyo(commands.Cog):
                 path_char_counts = await client.fetch_path_char_counts()
                 faction_char_counts = {}
         elif account_.game is Game.ZZZ:
-            agent_data: dict[str, Any] = await fetch_and_cache_json(
+            agent_data: dict[str, Any] = await JSONFile.fetch_and_cache(
                 i.client.session,
                 url=ZZZ_AGENT_DATA,
                 file_path="./.static/zzz_agent_data.json",

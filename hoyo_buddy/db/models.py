@@ -8,6 +8,7 @@ from functools import cached_property
 from typing import TYPE_CHECKING, Any
 
 import genshin
+import orjson
 from discord import Locale
 from seria.tortoise.model import Model
 from tortoise import exceptions, fields
@@ -18,6 +19,8 @@ from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
 
 if TYPE_CHECKING:
+    import aiohttp
+
     from ..hoyo.clients.gpy import GenshinClient
     from ..types import Challenge, Interaction
 
@@ -225,6 +228,13 @@ class JSONFile(Model):
 
         json_file.data = data
         await json_file.save(update_fields=("data",))
+
+    @staticmethod
+    async def fetch_and_cache(session: aiohttp.ClientSession, *, url: str, file_path: str) -> Any:
+        async with session.get(url) as resp:
+            data = orjson.loads(await resp.text())
+            await JSONFile.write(file_path, data)
+            return data
 
 
 class ChallengeHistory(Model):

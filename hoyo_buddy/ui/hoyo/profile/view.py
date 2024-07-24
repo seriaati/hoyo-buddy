@@ -27,7 +27,7 @@ from hoyo_buddy.exceptions import (
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
-from hoyo_buddy.utils import blur_uid, fetch_and_cache_json
+from hoyo_buddy.utils import blur_uid
 
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
@@ -430,7 +430,7 @@ class ProfileView(View):
         file_path = "./.static/zzz_agent_data.json"
         agent_data = await JSONFile.read(file_path)
         if str(character.id) not in agent_data:
-            agent_data = await fetch_and_cache_json(
+            agent_data = await JSONFile.fetch_and_cache(
                 session, url=ZZZ_AGENT_DATA, file_path=file_path
             )
         agent_icon = agent_data[str(character.id)]["icon_url"]
@@ -438,7 +438,7 @@ class ProfileView(View):
         file_path = "./.static/zzz_disc_icons.json"
         disc_icons = await JSONFile.read(file_path)
         if any(disc.name not in disc_icons for disc in cn_agent.discs):
-            disc_icons = await fetch_and_cache_json(
+            disc_icons = await JSONFile.fetch_and_cache(
                 session, url=ZZZ_DISC_ICONS, file_path=file_path
             )
 

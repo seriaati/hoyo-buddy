@@ -1,15 +1,13 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import TYPE_CHECKING, Literal, overload
+from typing import TYPE_CHECKING
 
-import discord
 import hakushin
 import yatta
 
 from ...bot.translator import LevelStr, LocaleStr, Translator
 from ...constants import (
-    LOCALE_TO_HAKUSHIN_LANG,
     TRAILBLAZER_IDS,
     YATTA_PATH_TO_HSR_PATH,
     contains_traveler_id,
@@ -18,7 +16,9 @@ from ...embeds import DefaultEmbed
 from ...emojis import get_hsr_path_emoji
 
 if TYPE_CHECKING:
-    import aiohttp
+    from collections.abc import Sequence
+
+    from discord import Locale
 
 
 class ItemCategory(StrEnum):
@@ -30,22 +30,10 @@ class ItemCategory(StrEnum):
     RELICS = "relics"
 
 
-class HakushinAPI(hakushin.HakushinAPI):
-    def __init__(
-        self,
-        locale: discord.Locale = discord.Locale.american_english,
-        translator: Translator | None = None,
-        session: aiohttp.ClientSession | None = None,
-    ) -> None:
-        super().__init__(LOCALE_TO_HAKUSHIN_LANG.get(locale, hakushin.Language.EN), session=session)
-
+class HakushinTranslator:
+    def __init__(self, locale: Locale, translator: Translator) -> None:
         self._locale = locale
         self._translator = translator
-
-    def _check_translator(self) -> None:
-        if self._translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
 
     def get_character_embed(
         self,
@@ -53,9 +41,6 @@ class HakushinAPI(hakushin.HakushinAPI):
         level: int,
         manual_weapon: dict[str, str],
     ) -> DefaultEmbed:
-        self._check_translator()
-        assert self._translator is not None
-
         stat_values = (
             hakushin.utils.calc_gi_chara_upgrade_stat_values(character, level, True)
             if isinstance(character, hakushin.gi.CharacterDetail)
@@ -88,9 +73,6 @@ class HakushinAPI(hakushin.HakushinAPI):
     def get_character_skill_embed(
         self, skill: hakushin.gi.CharacterSkill | hakushin.hsr.Skill, level: int
     ) -> DefaultEmbed:
-        self._check_translator()
-        assert self._translator is not None
-
         embed = DefaultEmbed(
             self._locale,
             self._translator,
@@ -120,9 +102,6 @@ class HakushinAPI(hakushin.HakushinAPI):
         return embed
 
     def get_character_passive_embed(self, passive: hakushin.gi.CharacterPassive) -> DefaultEmbed:
-        self._check_translator()
-        assert self._translator is not None
-
         embed = DefaultEmbed(
             self._locale,
             self._translator,
@@ -133,9 +112,6 @@ class HakushinAPI(hakushin.HakushinAPI):
         return embed
 
     def get_character_const_embed(self, const: hakushin.gi.CharacterConstellation) -> DefaultEmbed:
-        self._check_translator()
-        assert self._translator is not None
-
         embed = DefaultEmbed(
             self._locale,
             self._translator,
@@ -146,9 +122,6 @@ class HakushinAPI(hakushin.HakushinAPI):
         return embed
 
     def get_character_eidolon_embed(self, eidolon: hakushin.hsr.Eidolon) -> DefaultEmbed:
-        self._check_translator()
-        assert self._translator is not None
-
         embed = DefaultEmbed(
             self._locale,
             self._translator,
@@ -167,9 +140,6 @@ class HakushinAPI(hakushin.HakushinAPI):
         refinement: int,
         manual_weapon: dict[str, str],
     ) -> DefaultEmbed:
-        self._check_translator()
-        assert self._translator is not None
-
         stat_values = hakushin.utils.calc_weapon_upgrade_stat_values(weapon, level, True)
         formatted_stat_values = hakushin.utils.format_stat_values(stat_values)
         named_stat_values = hakushin.utils.replace_fight_prop_with_name(
@@ -207,10 +177,8 @@ class HakushinAPI(hakushin.HakushinAPI):
         level: int,
         superimpose: int,
         manual_weapon: dict[str, str],
+        lang: hakushin.Language,
     ) -> DefaultEmbed:
-        self._check_translator()
-        assert self._translator is not None
-
         level_str = self._translator.translate(LevelStr(level), self._locale)
         embed = DefaultEmbed(
             self._locale,
@@ -219,7 +187,7 @@ class HakushinAPI(hakushin.HakushinAPI):
         )
         lc_path = yatta.PathType(light_cone.path.value)
         path_emoji = get_hsr_path_emoji(YATTA_PATH_TO_HSR_PATH[lc_path].value)
-        path_name = hakushin.constants.HSR_PATH_NAMES[self.lang][light_cone.path]
+        path_name = hakushin.constants.HSR_PATH_NAMES[lang][light_cone.path]
         embed = DefaultEmbed(
             self._locale,
             self._translator,
@@ -251,9 +219,6 @@ class HakushinAPI(hakushin.HakushinAPI):
     def get_relic_embed(
         self, relic_set: hakushin.hsr.RelicSetDetail, relic: hakushin.hsr.Relic
     ) -> DefaultEmbed:
-        self._check_translator()
-        assert self._translator is not None
-
         set_effects = relic_set.set_effects
         description = self._translator.translate(
             LocaleStr(
@@ -288,9 +253,6 @@ class HakushinAPI(hakushin.HakushinAPI):
     def get_artifact_embed(
         self, artifact_set: hakushin.gi.ArtifactSetDetail, artifact: hakushin.gi.Artifact
     ) -> DefaultEmbed:
-        self._check_translator()
-        assert self._translator is not None
-
         description = self._translator.translate(
             LocaleStr(
                 bonus_2=artifact_set.set_effect.two_piece.description,
@@ -313,25 +275,13 @@ class HakushinAPI(hakushin.HakushinAPI):
         embed.set_thumbnail(url=artifact.icon)
         return embed
 
-    @overload
-    async def fetch_characters(
-        self, game: Literal[hakushin.Game.GI], *, gender_symbol: bool = False
-    ) -> list[hakushin.gi.Character]: ...
-    @overload
-    async def fetch_characters(
-        self, game: Literal[hakushin.Game.HSR], *, gender_symbol: bool = False
-    ) -> list[hakushin.hsr.Character]: ...
-    async def fetch_characters(
+    def translate_mc_names(
         self,
-        game: Literal[hakushin.Game.GI, hakushin.Game.HSR],
+        characters: Sequence[hakushin.gi.Character] | Sequence[hakushin.hsr.Character],
         *,
         gender_symbol: bool = False,
-    ) -> list[hakushin.gi.Character] | list[hakushin.hsr.Character]:
-        self._check_translator()
-        assert self._translator is not None
-
-        characters = await super().fetch_characters(game)
-
+    ) -> Sequence[hakushin.gi.Character] | Sequence[hakushin.hsr.Character]:
+        """Translate the name of the main characters in GI and HSR."""
         for character in characters:
             if isinstance(character, hakushin.gi.Character) and contains_traveler_id(
                 str(character.id)

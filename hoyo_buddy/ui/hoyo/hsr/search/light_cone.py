@@ -2,15 +2,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+import hakushin
 from discord import ButtonStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.exceptions import InvalidQueryError
-from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
+from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
 from hoyo_buddy.utils import ephemeral
+
+from .....constants import LOCALE_TO_HAKUSHIN_LANG
 
 if TYPE_CHECKING:
     from discord import Locale, Member, User
@@ -49,20 +52,25 @@ class LightConeUI(View):
             async with YattaAPIClient(self.locale, self.translator) as api:
                 manual_avatar = await api.fetch_manual_avatar()
 
-            async with HakushinAPI(self.locale, self.translator) as api:
+            async with hakushin.HakushinAPI(
+                hakushin.Game.HSR, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+            ) as api:
                 try:
                     light_cone_id = int(self._light_cone_id)
                 except ValueError:
                     raise InvalidQueryError from None
 
                 lc_detail = await api.fetch_light_cone_detail(light_cone_id)
-                self._lc_detail = lc_detail
-                embed = api.get_light_cone_embed(
-                    lc_detail,
-                    self._light_cone_level,
-                    self._superimpose,
-                    self._convert_manual_avatar(manual_avatar),
-                )
+
+            self._lc_detail = lc_detail
+            translator = HakushinTranslator(self.locale, self.translator)
+            embed = translator.get_light_cone_embed(
+                lc_detail,
+                self._light_cone_level,
+                self._superimpose,
+                self._convert_manual_avatar(manual_avatar),
+                LOCALE_TO_HAKUSHIN_LANG[self.locale],
+            )
         else:
             async with YattaAPIClient(self.locale, self.translator) as api:
                 try:

@@ -6,9 +6,9 @@ import hakushin
 from discord import ButtonStyle, Locale, Member, User
 
 from hoyo_buddy.bot.translator import LocaleStr
-from hoyo_buddy.constants import GI_SKILL_TYPE_KEYS
+from hoyo_buddy.constants import GI_SKILL_TYPE_KEYS, LOCALE_TO_HAKUSHIN_LANG
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
-from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
+from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.ui import Button, Modal, PaginatorSelect, Select, SelectOption, TextInput, View
 from hoyo_buddy.utils import ephemeral
 
@@ -44,6 +44,7 @@ class CharacterUI(View):
         self.hakushin = hakushin
         self.skill_index = 0
         self.passive_index = 0
+        self._hakushin_translator = HakushinTranslator(self.locale, self.translator)
 
     async def fetch_character_embed(self) -> DefaultEmbed:
         async with AmbrAPIClient(self.locale, self.translator) as api:
@@ -99,36 +100,54 @@ class CharacterUI(View):
         async with AmbrAPIClient(self.locale, self.translator) as api:
             manual_weapon = await api.fetch_manual_weapon()
 
-        async with HakushinAPI(self.locale, self.translator) as api:
-            character_detail = await api.fetch_character_detail(self.character_id, hakushin.Game.GI)
-            return api.get_character_embed(character_detail, self.character_level, manual_weapon)
+        async with hakushin.HakushinAPI(
+            hakushin.Game.GI, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+        ) as api:
+            character_detail = await api.fetch_character_detail(self.character_id)
+        return self._hakushin_translator.get_character_embed(
+            character_detail, self.character_level, manual_weapon
+        )
 
     async def fetch_hakushin_skill_embed(
         self,
     ) -> tuple[DefaultEmbed, list[hakushin.gi.CharacterSkill]]:
-        async with HakushinAPI(self.locale, self.translator) as api:
-            character_detail = await api.fetch_character_detail(self.character_id, hakushin.Game.GI)
-            skill = character_detail.skills[self.skill_index]
-            return (
-                api.get_character_skill_embed(skill, self.talent_level),
-                character_detail.skills,
-            )
+        async with hakushin.HakushinAPI(
+            hakushin.Game.GI, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+        ) as api:
+            character_detail = await api.fetch_character_detail(self.character_id)
+
+        skill = character_detail.skills[self.skill_index]
+        return (
+            self._hakushin_translator.get_character_skill_embed(skill, self.talent_level),
+            character_detail.skills,
+        )
 
     async def fetch_hakushin_passive_embed(
         self,
     ) -> tuple[DefaultEmbed, list[hakushin.gi.CharacterPassive]]:
-        async with HakushinAPI(self.locale, self.translator) as api:
-            character_detail = await api.fetch_character_detail(self.character_id, hakushin.Game.GI)
+        async with hakushin.HakushinAPI(
+            hakushin.Game.GI, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+        ) as api:
+            character_detail = await api.fetch_character_detail(self.character_id)
             passive = character_detail.passives[self.passive_index]
-            return (api.get_character_passive_embed(passive), character_detail.passives)
+        return (
+            self._hakushin_translator.get_character_passive_embed(passive),
+            character_detail.passives,
+        )
 
     async def fetch_hakushin_const_embed(
         self,
     ) -> tuple[DefaultEmbed, list[hakushin.gi.CharacterConstellation]]:
-        async with HakushinAPI(self.locale, self.translator) as api:
-            character_detail = await api.fetch_character_detail(self.character_id, hakushin.Game.GI)
+        async with hakushin.HakushinAPI(
+            hakushin.Game.GI, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+        ) as api:
+            character_detail = await api.fetch_character_detail(self.character_id)
             const = character_detail.constellations[self.const_index]
-            return (api.get_character_const_embed(const), character_detail.constellations)
+
+        return (
+            self._hakushin_translator.get_character_const_embed(const),
+            character_detail.constellations,
+        )
 
     async def update(self, i: Interaction) -> None:  # noqa: PLR0912, PLR0915
         if not i.response.is_done():

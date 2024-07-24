@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import hakushin
 from discord import ButtonStyle, Locale, Member, User
 
 from hoyo_buddy.emojis import get_relic_pos_emoji
 from hoyo_buddy.exceptions import InvalidQueryError
-from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
+from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.ui import Button, View
 from hoyo_buddy.utils import ephemeral
@@ -44,13 +45,14 @@ class RelicSetUI(View):
             raise InvalidQueryError from e
 
         if self._hakushin:
-            async with HakushinAPI(self.locale, self.translator) as api:
+            async with hakushin.HakushinAPI(hakushin.Game.HSR) as api:
                 relic_set_detail = await api.fetch_relic_set_detail(relic_id)
 
-                self._relic_embeds = {
-                    RELIC_POS[index]: api.get_relic_embed(relic_set_detail, relic)
-                    for index, relic in enumerate(relic_set_detail.parts.values())
-                }
+            translator = HakushinTranslator(self.locale, self.translator)
+            self._relic_embeds = {
+                RELIC_POS[index]: translator.get_relic_embed(relic_set_detail, relic)
+                for index, relic in enumerate(relic_set_detail.parts.values())
+            }
         else:
             async with YattaAPIClient(self.locale, self.translator) as api:
                 relic_set_detail = await api.fetch_relic_set_detail(relic_id)
@@ -67,7 +69,7 @@ class RelicSetUI(View):
         self.message = await i.original_response()
 
 
-class RelicPosButton(Button["RelicSetUI"]):
+class RelicPosButton(Button[RelicSetUI]):
     def __init__(self, pos: str) -> None:
         super().__init__(style=ButtonStyle.blurple, emoji=get_relic_pos_emoji(pos))
         self.pos = pos

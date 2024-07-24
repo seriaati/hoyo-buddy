@@ -7,8 +7,8 @@ import yatta
 from discord import ButtonStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
-from hoyo_buddy.constants import HAKUSHIN_HSR_SKILL_TYPE_NAMES
-from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
+from hoyo_buddy.constants import HAKUSHIN_HSR_SKILL_TYPE_NAMES, LOCALE_TO_HAKUSHIN_LANG
+from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.ui import Button, Modal, PaginatorSelect, Select, SelectOption, TextInput, View
 from hoyo_buddy.utils import ephemeral
@@ -56,6 +56,7 @@ class CharacterUI(View):
         self._manual_avatar: dict[str, Any] | None = None
 
         self._hakushin = hakushin
+        self._hakushin_translator = HakushinTranslator(self.locale, self.translator)
 
     @staticmethod
     def _convert_manual_avatar(manual_avatar: dict[str, dict[str, str]]) -> dict[str, str]:
@@ -68,10 +69,10 @@ class CharacterUI(View):
             async with YattaAPIClient(self.locale, self.translator) as api:
                 manual_avatar = await api.fetch_manual_avatar()
 
-            async with HakushinAPI(self.locale, self.translator) as api:
-                character_detail = await api.fetch_character_detail(
-                    self._character_id, hakushin.Game.HSR
-                )
+            async with hakushin.HakushinAPI(
+                hakushin.Game.HSR, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+            ) as api:
+                character_detail = await api.fetch_character_detail(self._character_id)
 
             self._character_detail = character_detail
             self._manual_avatar = manual_avatar
@@ -80,18 +81,18 @@ class CharacterUI(View):
                 skill.max_level for skill in character_detail.skills.values()
             ]
 
-            self._character_embed = api.get_character_embed(
+            self._character_embed = self._hakushin_translator.get_character_embed(
                 character_detail,
                 self._character_level,
                 self._convert_manual_avatar(manual_avatar),
             )
 
             self._main_skill_embeds = [
-                api.get_character_skill_embed(skill, skill.max_level)
+                self._hakushin_translator.get_character_skill_embed(skill, skill.max_level)
                 for skill in character_detail.skills.values()
             ]
             self._eidolon_embeds = [
-                api.get_character_eidolon_embed(eidolon)
+                self._hakushin_translator.get_character_eidolon_embed(eidolon)
                 for eidolon in character_detail.eidolons.values()
             ]
         else:
@@ -407,15 +408,12 @@ class EnterSkilLevel(Button[CharacterUI]):
                     )
                 )
         else:
-            async with HakushinAPI(self.view.locale, self.view.translator) as api:
-                self.view._main_skill_embeds[self.view._main_skill_index] = (
-                    api.get_character_skill_embed(
-                        list(self.view._character_detail.skills.values())[
-                            self.view._main_skill_index
-                        ],
-                        self.view._main_skill_levels[self.view._main_skill_index],
-                    )
+            self.view._main_skill_embeds[self.view._main_skill_index] = (
+                self.view._hakushin_translator.get_character_skill_embed(
+                    list(self.view._character_detail.skills.values())[self.view._main_skill_index],
+                    self.view._main_skill_levels[self.view._main_skill_index],
                 )
+            )
 
         await self.view.update(i)
 
@@ -455,12 +453,11 @@ class EnterCharacterLevel(Button[CharacterUI]):
                     self.view._manual_avatar,
                 )
         else:
-            async with HakushinAPI(self.view.locale, self.view.translator) as api:
-                self.view._character_embed = api.get_character_embed(
-                    self.view._character_detail,
-                    self.view._character_level,
-                    self.view._convert_manual_avatar(self.view._manual_avatar),
-                )
+            self.view._character_embed = self.view._hakushin_translator.get_character_embed(
+                self.view._character_detail,
+                self.view._character_level,
+                self.view._convert_manual_avatar(self.view._manual_avatar),
+            )
 
         await self.view.update(i)
 

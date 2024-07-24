@@ -2,15 +2,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import hakushin
 from discord import ButtonStyle, Locale, Member, User
 
-from hoyo_buddy.constants import EQUIP_ID_TO_ARTIFACT_POS
+from hoyo_buddy.constants import EQUIP_ID_TO_ARTIFACT_POS, LOCALE_TO_HAKUSHIN_LANG
 from hoyo_buddy.emojis import get_artifact_pos_emoji
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
-from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
 from hoyo_buddy.ui import Button, View
 from hoyo_buddy.utils import ephemeral
+
+from .....hoyo.clients.hakushin import HakushinTranslator
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot.translator import Translator
@@ -43,11 +45,14 @@ class ArtifactSetUI(View):
             raise InvalidQueryError from e
 
         if self._hakushin:
-            async with HakushinAPI(self.locale, self.translator) as api:
+            async with hakushin.HakushinAPI(
+                hakushin.Game.GI, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+            ) as api:
                 artifact_set_detail = await api.fetch_artifact_set_detail(artifact_id)
 
+                translator = HakushinTranslator(self.locale, self.translator)
                 self._artifact_embeds = {
-                    pos: api.get_artifact_embed(artifact_set_detail, artifact)
+                    pos: translator.get_artifact_embed(artifact_set_detail, artifact)
                     for pos, artifact in artifact_set_detail.parts.items()
                 }
         else:

@@ -2,14 +2,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+import hakushin
 from discord import ButtonStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
-from hoyo_buddy.hoyo.clients.hakushin import HakushinAPI
+from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
 from hoyo_buddy.utils import ephemeral
+
+from .....constants import LOCALE_TO_HAKUSHIN_LANG
 
 if TYPE_CHECKING:
     from discord import Locale, Member, User
@@ -62,22 +65,26 @@ class WeaponUI(View):
         async with AmbrAPIClient(self.locale, self.translator) as api:
             manual_weapon = await api.fetch_manual_weapon()
 
-        async with HakushinAPI(self.locale, self.translator) as api:
+        async with hakushin.HakushinAPI(
+            hakushin.Game.GI, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+        ) as api:
             try:
                 weapon_id = int(self.weapon_id)
             except ValueError:
                 raise InvalidQueryError from None
 
             weapon_detail = await api.fetch_weapon_detail(weapon_id)
-            embed = api.get_weapon_embed(
-                weapon_detail,
-                self.weapon_level,
-                self.refinement,
-                manual_weapon,
-            )
-            self.max_refinement = len(weapon_detail.refinments)
 
-            return embed
+        translator = HakushinTranslator(self.locale, self.translator)
+        embed = translator.get_weapon_embed(
+            weapon_detail,
+            self.weapon_level,
+            self.refinement,
+            manual_weapon,
+        )
+        self.max_refinement = len(weapon_detail.refinments)
+
+        return embed
 
     async def _get_embed(self) -> DefaultEmbed:
         if self.hakushin:

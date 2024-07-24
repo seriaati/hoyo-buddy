@@ -5,7 +5,7 @@ requires-python = ">=3.11"
 [tool.poetry]
 authors = ["seriaati <seria.ati@gmail.com>"]
 description = "Elevate your Hoyoverse experience."
-license = "GPL-3.0"
+license = "GPL-3.0-only"
 name = "hoyo-buddy"
 package-mode = false
 readme = "README.md"

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from ...bot.translator import LevelStr, LocaleStr
 from ...embeds import DefaultEmbed
 from ...emojis import get_game_emoji
+from ...utils import blur_uid
 from ..components import Select, SelectOption, View
 
 if TYPE_CHECKING:
@@ -21,8 +22,8 @@ if TYPE_CHECKING:
 
 def get_label(card: RecordCard) -> str:
     if not card.nickname:
-        return str(card.uid)
-    return f"{card.nickname} ({card.uid})"
+        return blur_uid(card.uid)
+    return f"{card.nickname} ({blur_uid(card.uid)})"
 
 
 class StatsView(View):

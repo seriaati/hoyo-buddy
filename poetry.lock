@@ -835,8 +835,8 @@ socks-proxy = ["aiohttp-socks"]
 [package.source]
 type = "git"
 url = "https://github.com/thesadru/genshin.py"
-reference = "dev"
-resolved_reference = "073a96e187fb026aa29b9d0dca4478f365ba26fb"
+reference = "master"
+resolved_reference = "348a3c7b30ee2185c80390f33da6daa260980721"
 
 [[package]]
 name = "gitdb"
@@ -2279,4 +2279,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "2ee0c911d56d4510366f8e060c45caa8dfb06a66d9677c4c8098cb5f99a8f620"
+content-hash = "ef4bf62c092ddab16406d3872a144153c4151ebe8e030cc5e3bb36a4bf6b665a"

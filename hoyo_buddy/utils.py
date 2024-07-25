@@ -8,7 +8,6 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any
 
 import aiohttp
-import orjson
 from loguru import logger
 
 from .constants import IMAGE_EXTENSIONS, UTC_8

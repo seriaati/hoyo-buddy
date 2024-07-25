@@ -20,9 +20,6 @@ if TYPE_CHECKING:
 
     from ...bot import HoyoBuddy
 
-CODE_NUM_TO_SLEEP = 15
-SLEEP_INTERVAL = 60 * 5
-
 
 class AutoRedeem:
     _bot: ClassVar[HoyoBuddy]

@@ -197,7 +197,7 @@ exploration_command_description: View your exploration statistics in Genshin Imp
 farm_add_command.item_already_in_list: Item already in list
 farm_add_command.item_already_in_list_description: This item is already in your farm reminder list.
 farm_add_command_description: Add character/weapon to be notified when its materials are farmable
-farm_check.farmable_today: "Materials For {name} is Farmable Today"
+farm_check.farmable_today: "Materials For {name} are Farmable Today"
 farm_check.use_farm_notify: "Use /farm reminder to configure reminder settings\nUse /farm view to view all items farmable today"
 farm_notify.add_item: Add item
 farm_notify.add_item.embed.description: "To add items, use the </farm add> command"

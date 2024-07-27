@@ -57,8 +57,8 @@ class Others(commands.Cog):
             ),
         )
         owner = await i.client.fetch_user(i.client.owner_id)
-        assert owner is not None
-        embed.set_author(name=owner.name, icon_url=owner.display_avatar.url)
+        if owner is not None:
+            embed.set_author(name=owner.name, icon_url=owner.display_avatar.url)
         await i.followup.send(embed=embed, view=view)
         view.message = await i.original_response()
 
@@ -69,13 +69,18 @@ class Others(commands.Cog):
     async def about_command(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
+        guild = self.bot.get_guild(1000727526194298910) or await i.client.fetch_guild(
+            1000727526194298910
+        )
+        if not guild.chunked:
+            await guild.chunk()
+
         settings = await UserSettings.get(user_id=i.user.id)
         locale = settings.locale or i.locale
-        assert self.bot.user is not None
         embed = DefaultEmbed(
             locale=locale,
             translator=self.bot.translator,
-            title=f"{self.bot.user.name} {self.bot.version}",
+            title=f"{self.bot.user.name if self.bot.user is not None else 'Hoyo Buddy'} {self.bot.version}",
             description=LocaleStr(key="about_embed.description"),
         )
 
@@ -88,29 +93,35 @@ class Others(commands.Cog):
 
         # developer
         owner = await i.client.fetch_user(i.client.owner_id)
-        assert owner is not None
-        embed.add_field(
-            name=LocaleStr(key="about_command.developer"),
-            value=get_discord_user_md_link(owner),
-            inline=False,
-        )
+        if owner is not None:
+            embed.add_field(
+                name=LocaleStr(key="about_command.developer"),
+                value=get_discord_user_md_link(owner),
+                inline=False,
+            )
+
+        # designer
+        designer_role = guild.get_role(1266651937411960882)
+        if designer_role is not None:
+            designers = [get_discord_user_md_link(designer) for designer in designer_role.members]
+            embed.add_field(
+                name=LocaleStr(key="about_command.designers"),
+                value=" ".join(designers),
+                inline=False,
+            )
 
         # translators
-        guild = self.bot.get_guild(1000727526194298910) or await i.client.fetch_guild(
-            1000727526194298910
-        )
-        if not guild.chunked:
-            await guild.chunk()
+
         translator_role = guild.get_role(1010181916642787503)
-        assert translator_role is not None
-        translators = [
-            get_discord_user_md_link(translator) for translator in translator_role.members
-        ]
-        embed.add_field(
-            name=LocaleStr(key="about_command.translators"),
-            value=" ".join(translators),
-            inline=False,
-        )
+        if translator_role is not None:
+            translators = [
+                get_discord_user_md_link(translator) for translator in translator_role.members
+            ]
+            embed.add_field(
+                name=LocaleStr(key="about_command.translators"),
+                value=" ".join(translators),
+                inline=False,
+            )
 
         # guild count
         embed.add_field(
@@ -150,15 +161,14 @@ class Others(commands.Cog):
                 row=1,
             )
         )
-        view.add_item(
-            Button(
-                label=LocaleStr(key="about_command.invite"),
-                url="https://dub.sh/hb-invite"
-                if self.bot.env == "prod"
-                else "https://dub.sh/hb-beta-invite",
-                row=1,
+        if self.bot.user is not None:
+            view.add_item(
+                Button(
+                    label=LocaleStr(key="about_command.invite"),
+                    url=f"https://discord.com/oauth2/authorize?client_id={self.bot.user.id}",
+                    row=1,
+                )
             )
-        )
         view.add_item(
             Button(
                 label=LocaleStr(key="about_command.support"),

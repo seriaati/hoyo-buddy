@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import pathlib
 from typing import TYPE_CHECKING
 
 import aiofiles
@@ -11,6 +10,7 @@ from ..exceptions import DownloadImageFailedError
 from ..utils import get_static_img_path
 
 if TYPE_CHECKING:
+    import pathlib
     from collections.abc import Sequence
 
     import aiohttp

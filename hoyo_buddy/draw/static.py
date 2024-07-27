@@ -6,17 +6,16 @@ from typing import TYPE_CHECKING
 
 import aiofiles
 from fake_useragent import UserAgent
-from seria.utils import clean_url
 
 from ..exceptions import DownloadImageFailedError
+from ..utils import get_static_img_path
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
     import aiohttp
 
-
-STATIC_FOLDER = pathlib.Path("./.static")
+__all__ = ("download_and_save_static_images",)
 
 
 async def download_img(image_url: str, session: aiohttp.ClientSession) -> bytes:
@@ -55,9 +54,3 @@ async def download_and_save_static_images(
             tasks.append(download_and_save_img(image_url, file_path, session))
 
     await asyncio.gather(*tasks)
-
-
-def get_static_img_path(image_url: str, folder: str) -> pathlib.Path:
-    extra_folder = image_url.split("/")[-2]
-    filename = clean_url(image_url).split("/")[-1]
-    return STATIC_FOLDER / folder / extra_folder / filename

@@ -9,10 +9,12 @@ from typing import TYPE_CHECKING, Any
 
 import aiohttp
 from loguru import logger
+from seria.utils import clean_url
 
-from .constants import IMAGE_EXTENSIONS, UTC_8
+from .constants import IMAGE_EXTENSIONS, STATIC_FOLDER, UTC_8
 
 if TYPE_CHECKING:
+    import pathlib
     from collections.abc import Generator
 
     from discord import Interaction, Member, User
@@ -152,3 +154,9 @@ def measure_time(
         print(msg)  # noqa: T201
     else:
         logger.debug(msg)
+
+
+def get_static_img_path(image_url: str, folder: str) -> pathlib.Path:
+    extra_folder = image_url.split("/")[-2]
+    filename = clean_url(image_url).split("/")[-1]
+    return STATIC_FOLDER / folder / extra_folder / filename

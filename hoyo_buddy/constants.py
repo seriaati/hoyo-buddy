@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import pathlib
 from typing import Final
 
 import ambr
@@ -11,6 +12,8 @@ import hakushin
 import yatta
 
 from .enums import ChallengeType, Game, GenshinCity, GenshinElement, HSRElement, HSRPath
+
+STATIC_FOLDER = pathlib.Path("./.static")
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
 DB_SMALLINT_MAX = 32767

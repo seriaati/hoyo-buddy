@@ -156,8 +156,8 @@ class Drawer:
         image = image.crop((left, top, right, bottom))
         return image
 
-    @classmethod
-    def hex_to_rgb(cls, hex_color_code: str) -> tuple[int, int, int]:
+    @staticmethod
+    def hex_to_rgb(hex_color_code: str) -> tuple[int, int, int]:
         hex_color_code = hex_color_code.lstrip("#")
         return tuple(int(hex_color_code[i : i + 2], 16) for i in (0, 2, 4))  # pyright: ignore [reportReturnType]
 
@@ -224,15 +224,21 @@ class Drawer:
 
         return im, max_card_num
 
-    def _mask_image_with_color(
-        self, image: Image.Image, color: tuple[int, int, int], opacity: float
+    @classmethod
+    def mask_image_with_color(
+        cls, image: Image.Image, color: tuple[int, int, int], *, opacity: float = 1.0
     ) -> Image.Image:
-        mask = Image.new("RGBA", image.size, self.apply_color_opacity(color, opacity))
-        image = ImageChops.multiply(image, mask)
-        return image
+        if opacity != 1.0:
+            mask = Image.new("RGBA", image.size, cls.apply_color_opacity(color, opacity))
+            image = ImageChops.multiply(image, mask)
+            return image
+        colored_image = Image.new("RGBA", image.size, color)
+        colored_image.putalpha(image.getchannel("A"))
+        return colored_image
 
+    @classmethod
     def _wrap_text(
-        self, text: str, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont
+        cls, text: str, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont
     ) -> str:
         lines: list[str] = [""]
         for word in text.split():
@@ -243,7 +249,7 @@ class Drawer:
                 lines.append(word)
                 if len(lines) > max_lines:
                     del lines[-1]
-                    lines[-1] = self._shorten_text(lines[-1], max_width, font)
+                    lines[-1] = cls._shorten_text(lines[-1], max_width, font)
                     break
         return "\n".join(lines)
 
@@ -291,9 +297,8 @@ class Drawer:
 
         return ImageFont.truetype(font, size)
 
-    def _open_image(
-        self, file_path: pathlib.Path, size: tuple[int, int] | None = None
-    ) -> Image.Image:
+    @staticmethod
+    def _open_image(file_path: pathlib.Path, size: tuple[int, int] | None = None) -> Image.Image:
         image = Image.open(file_path)
         image = image.convert("RGBA")
         if size:
@@ -366,7 +371,7 @@ class Drawer:
         folder = folder or self.folder
         image = self._open_image(get_static_img_path(url, folder), size)
         if mask_color:
-            image = self._mask_image_with_color(image, mask_color, opacity)
+            image = self.mask_image_with_color(image, mask_color, opacity=opacity)
         return image
 
     def open_asset(
@@ -382,18 +387,20 @@ class Drawer:
         path = pathlib.Path(f"hoyo-buddy-assets/assets/{folder}/{filename}")
         image = self._open_image(path, size)
         if mask_color:
-            image = self._mask_image_with_color(image, mask_color, opacity)
+            image = self.mask_image_with_color(image, mask_color, opacity=opacity)
         return image
 
-    def crop_with_mask(self, image: Image.Image, mask: Image.Image) -> Image.Image:
+    @staticmethod
+    def crop_with_mask(image: Image.Image, mask: Image.Image) -> Image.Image:
         empty = Image.new("RGBA", image.size, 0)
         return Image.composite(image, empty, mask)
 
-    def circular_crop(self, image: Image.Image) -> Image.Image:
+    @classmethod
+    def circular_crop(cls, image: Image.Image) -> Image.Image:
         """Crop an image into a circle."""
         path = pathlib.Path("hoyo-buddy-assets/assets/circular_mask.png")
-        mask = self._open_image(path, image.size)
-        return self.crop_with_mask(image, mask)
+        mask = cls._open_image(path, image.size)
+        return cls.crop_with_mask(image, mask)
 
     def modify_image_for_build_card(
         self,

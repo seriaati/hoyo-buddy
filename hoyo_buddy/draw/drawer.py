@@ -7,8 +7,8 @@ import discord
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from ..models import DynamicBKInput, TopPadding
+from ..utils import get_static_img_path
 from .fonts import *  # noqa: F403
-from .static import get_static_img_path
 
 if TYPE_CHECKING:
     from ..bot.translator import LocaleStr, Translator
@@ -426,3 +426,36 @@ class Drawer:
 
         image = self.crop_with_mask(image, mask)
         return image
+
+    @staticmethod
+    def mask_image_with_image(image: Image.Image, mask: Image.Image) -> Image.Image:
+        overlay = Image.new("RGBA", mask.size)
+        return Image.composite(image, overlay, mask)
+
+    @classmethod
+    def create_pattern_blob(
+        cls,
+        *,
+        color: tuple[int, int, int],
+        rotation: float,
+        pattern: Image.Image,
+        blob: Image.Image,
+        pattern_opacity: float = 0.97,
+    ) -> Image.Image:
+        pattern_color = cls.blend_color(color, (0, 0, 0), pattern_opacity)
+
+        # Mask pattern and blob with colors
+        colored_pattern = cls.mask_image_with_color(pattern, pattern_color)
+        colored_blob = cls.mask_image_with_color(blob, color)
+
+        # Crop pattern to blob size and mask it with blob shape
+        colored_pattern = cls.resize_crop(colored_pattern, blob.size)
+        colored_pattern = cls.mask_image_with_image(colored_pattern, blob)
+
+        # Paste blob, then pattern
+        result = Image.new("RGBA", blob.size)
+        result.alpha_composite(colored_blob)
+        result.alpha_composite(colored_pattern)
+        result = result.rotate(rotation, resample=Image.Resampling.BICUBIC, expand=True)
+
+        return result

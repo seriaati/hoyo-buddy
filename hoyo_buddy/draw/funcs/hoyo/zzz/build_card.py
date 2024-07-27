@@ -1,36 +1,17 @@
 from __future__ import annotations
 
 from io import BytesIO
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 import discord
 from discord import utils as dutils
+from genshin.models import ZZZFullAgent, ZZZSkillType
 from genshin.models import ZZZPropertyType as PropType
-from genshin.models import ZZZSkillType
 from PIL import Image, ImageDraw
 from PIL.Image import Transpose
 
-from hoyo_buddy.draw.drawer import Drawer
-
-if TYPE_CHECKING:
-    import genshin
-
-
-def fill_zeros(s: str) -> str:
-    number_part = float(s.replace("%", ""))
-
-    if "%" in s:
-        formatted_number = f"{number_part:.1f}"
-        return f"{formatted_number}%"
-
-    if number_part >= 1000 or number_part >= 100:
-        formatted_number = f"{number_part:.0f}"
-    elif number_part >= 10:
-        formatted_number = f"{number_part:.1f}"
-    else:
-        formatted_number = f"{number_part:.2f}"
-    return formatted_number
-
+from hoyo_buddy.draw.drawer import BLACK, Drawer
+from hoyo_buddy.exceptions import CardNotReadyError
 
 STAT_ICONS = {
     # Disc
@@ -61,8 +42,8 @@ STAT_ICONS = {
 class ZZZAgentCard:
     def __init__(
         self,
-        agent: genshin.models.ZZZFullAgent,
-        cn_agent: genshin.models.ZZZFullAgent,
+        agent: ZZZFullAgent,
+        cn_agent: ZZZFullAgent,
         *,
         locale: str,
         image_url: str,
@@ -71,15 +52,91 @@ class ZZZAgentCard:
         agent_full_name: str,
     ) -> None:
         self._agent = agent
-        self._en_agent = cn_agent
+        self._cn_agent = cn_agent
         self._locale = locale
         self._image_url = image_url
         self._agent_data = agent_data
         self._disc_icons = disc_icons
         self._agent_full_name = agent_full_name
 
+    @staticmethod
+    def fill_zeros(s: str) -> str:
+        number_part = float(s.replace("%", ""))
+
+        if "%" in s:
+            formatted_number = f"{number_part:.1f}"
+            return f"{formatted_number}%"
+
+        if number_part >= 1000 or number_part >= 100:
+            formatted_number = f"{number_part:.0f}"
+        elif number_part >= 10:
+            formatted_number = f"{number_part:.1f}"
+        else:
+            formatted_number = f"{number_part:.2f}"
+        return formatted_number
+
+    def _draw_background(self) -> Image.Image:
+        card = Image.open("hoyo-buddy-assets/assets/zzz-build-card/card_base.png")
+        draw = ImageDraw.Draw(card)
+        drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False)
+
+        # Open images
+        pattern = drawer.open_asset("pattern.png")
+        blob_left = drawer.open_asset("blob_left.png")
+        blob_mid = drawer.open_asset("blob_mid.png")
+        blob_rb = drawer.open_asset("blob_rb.png")
+        blob_rt = drawer.open_asset("blob_rt.png")
+        z_blob = drawer.open_asset("z_blob.png")
+
+        agent_color = self._agent_data.get("color")
+        if agent_color is None:
+            raise CardNotReadyError(self._agent.name)
+        blob_color = drawer.hex_to_rgb(agent_color)
+        z_blob_color = drawer.blend_color(blob_color, (0, 0, 0), 0.85)
+
+        blob_left = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_left
+        )
+        card.alpha_composite(blob_left, (-345, -351))
+        blob_mid = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_mid
+        )
+        card.alpha_composite(blob_mid, (947, 176))
+        blob_rb = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_rb
+        )
+        card.alpha_composite(blob_rb, (2534, 709))
+        blob_rt = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_rt
+        )
+        card.alpha_composite(blob_rt, (3004, -174))
+        z_blob = drawer.create_pattern_blob(
+            color=z_blob_color, rotation=0, pattern=pattern, blob=z_blob
+        )
+        z_blob = drawer.resize_crop(z_blob, blob_left.size)
+        z_blob = drawer.mask_image_with_image(z_blob, blob_left)
+        card.alpha_composite(z_blob, (-345, -350))
+
+        logo = drawer.open_asset("logo.png")
+        card.alpha_composite(logo, (24, 18))
+
+        name_position = (self._agent_data.get("name_x", 2234), self._agent_data.get("name_y", -64))
+        drawer.write(
+            self._agent_full_name,
+            size=460,
+            style="black_italic",
+            position=name_position,
+            color=BLACK,
+            sans=True,
+        )
+
+        bangboo = drawer.open_asset("bangboo.png")
+        card.alpha_composite(bangboo, (3113, 1168))
+
+        return card
+
     def draw(self) -> BytesIO:
-        im = Image.open(f"hoyo-buddy-assets/assets/zzz-build-card/agents/{self._agent.id}.png")
+        im = self._draw_background()
         draw = ImageDraw.Draw(im)
         drawer = Drawer(
             draw, folder="zzz-build-card", dark_mode=False, locale=discord.Locale(self._locale)
@@ -189,7 +246,7 @@ class ZZZAgentCard:
                     icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[stat.type]}", size=(40, 40))
                     im.paste(icon, stat_positions[i], icon)
                     drawer.write(
-                        f"{stat.name}  {fill_zeros(stat.value)}",
+                        f"{stat.name}  {self.fill_zeros(stat.value)}",
                         size=28,
                         style="medium",
                         sans=True,
@@ -204,7 +261,7 @@ class ZZZAgentCard:
         # Discs
         start_pos = (74, 670)
         disc_mask = drawer.open_asset("disc_mask.png", size=(125, 152))
-        for i, disc in enumerate(self._en_agent.discs):
+        for i, disc in enumerate(self._cn_agent.discs):
             icon = drawer.open_static(self._disc_icons[disc.set_effect.name])
             icon = drawer.middle_crop(icon, (125, 152))
             icon = drawer.crop_with_mask(icon, disc_mask)
@@ -225,7 +282,7 @@ class ZZZAgentCard:
                 )
                 im.paste(main_stat_icon, (start_pos[0] + 140, start_pos[1] + 15), main_stat_icon)
                 drawer.write(
-                    fill_zeros(main_stat.value),
+                    self.fill_zeros(main_stat.value),
                     size=28,
                     position=(start_pos[0] + 185, start_pos[1] + 15 + main_stat_icon.height // 2),
                     style="medium",
@@ -249,7 +306,7 @@ class ZZZAgentCard:
                         sub_stat_icon = drawer.open_asset(
                             "stat_icons/PLACEHOLDER.png", size=(25, 25)
                         )
-                    text = fill_zeros(sub_stat.value)
+                    text = self.fill_zeros(sub_stat.value)
 
                 im.paste(sub_stat_icon, sub_stat_pos, sub_stat_icon)
                 drawer.write(

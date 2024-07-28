@@ -68,6 +68,7 @@ class HoyoAccount(Model):
     """Whether this account can be seen by others."""
     device_id: fields.Field[str | None] = fields.CharField(max_length=36, null=True)
     device_fp: fields.Field[str | None] = fields.CharField(max_length=13, null=True)
+    region: genshin.Region | None = fields.CharEnumField(genshin.Region, max_length=2, null=True)
 
     class Meta:
         unique_together = ("uid", "game", "user")
@@ -107,7 +108,9 @@ class HoyoAccount(Model):
 
     @property
     def platform(self) -> Platform:
-        region = genshin.utility.recognize_region(self.uid, HB_GAME_TO_GPY_GAME[self.game])
+        region = self.region or genshin.utility.recognize_region(
+            self.uid, HB_GAME_TO_GPY_GAME[self.game]
+        )
         if region is None:
             return Platform.HOYOLAB
         return Platform.HOYOLAB if region is genshin.Region.OVERSEAS else Platform.MIYOUSHE

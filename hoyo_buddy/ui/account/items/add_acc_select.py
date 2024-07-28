@@ -3,13 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import discord
-from genshin import Game as GenshinGame
+import genshin
 from tortoise.exceptions import IntegrityError
 
 from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME
 from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount
 from hoyo_buddy.emojis import get_game_emoji
+from hoyo_buddy.enums import Platform
 
 from ...components import Select, SelectOption
 
@@ -32,6 +33,7 @@ class AddAccountSelect(Select["AccountManager"]):
         *,
         accounts: Sequence[GenshinAccount],
         cookies: str,
+        platform: Platform,
         device_id: str | None,
         device_fp: str | None,
     ) -> None:
@@ -40,6 +42,9 @@ class AddAccountSelect(Select["AccountManager"]):
         self.translator = translator
         self.locale = locale
 
+        self._region = (
+            genshin.Region.CHINESE if platform is Platform.MIYOUSHE else genshin.Region.OVERSEAS
+        )
         self._device_id = device_id
         self._device_fp = device_fp
 
@@ -57,8 +62,8 @@ class AddAccountSelect(Select["AccountManager"]):
         result: list[SelectOption] = []
         added_vals: set[str] = set()
         for account in self.accounts:
-            # Sometimes other Hoyo games like 未定事件簿 might appear here, so we add this check
-            if isinstance(account.game, GenshinGame):  # pyright: ignore [reportUnnecessaryIsInstance]
+            # Sometimes other Hoyo games might appear here, so we add this check
+            if isinstance(account.game, genshin.Game):  # pyright: ignore [reportUnnecessaryIsInstance]
                 level_str = self.translator.translate(LevelStr(account.level), self.locale)
                 option_val = f"{account.uid}_{account.game.value}"
                 if option_val in added_vals:
@@ -92,6 +97,7 @@ class AddAccountSelect(Select["AccountManager"]):
                     server=account.server_name,
                     device_id=self._device_id,
                     device_fp=self._device_fp,
+                    region=self._region,
                 )
             except IntegrityError:
                 hoyo_account = await HoyoAccount.get(
@@ -103,8 +109,9 @@ class AddAccountSelect(Select["AccountManager"]):
                 hoyo_account.username = account.nickname
                 hoyo_account.device_id = self._device_id
                 hoyo_account.device_fp = self._device_fp
+                hoyo_account.region = self._region
                 await hoyo_account.save(
-                    update_fields=("cookies", "username", "device_id", "device_fp")
+                    update_fields=("cookies", "username", "device_id", "device_fp", "region")
                 )
             else:
                 await AccountNotifSettings.create(account=hoyo_account)

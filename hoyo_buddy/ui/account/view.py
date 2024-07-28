@@ -183,6 +183,7 @@ class AccountManager(View):
                 self.translator,
                 accounts=accounts,
                 cookies="; ".join(f"{k}={v}" for k, v in cookies.items()),
+                platform=platform,
                 device_id=device_id,
                 device_fp=device_fp,
             )

@@ -29,7 +29,7 @@ from .ambr import AmbrAPIClient
 from .enka.gi import EnkaGIClient
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
 
     from discord import Locale
 
@@ -40,7 +40,11 @@ class GenshinClient(genshin.Client):
         account: HoyoAccount,
     ) -> None:
         game = HB_GAME_TO_GPY_GAME[account.game]
-        region = genshin.utility.recognize_region(account.uid, game=game) or genshin.Region.OVERSEAS
+        region = (
+            account.region
+            or genshin.utility.recognize_region(account.uid, game=game)
+            or genshin.Region.OVERSEAS
+        )
         super().__init__(
             account.cookies,
             game=game,
@@ -51,6 +55,7 @@ class GenshinClient(genshin.Client):
             proxy="socks5://127.0.0.1:9091"
             if os.environ["ENV"] == "prod" and region is genshin.Region.OVERSEAS
             else None,
+            debug=True,
         )
         self._account = account
 

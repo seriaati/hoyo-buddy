@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import asyncio
 import os
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, Literal
 
 import discord
 import genshin
 from loguru import logger
 
 from ...bot.error_handler import get_error_embed
-from ...db.models import HoyoAccount
+from ...db.models import AccountNotifSettings, HoyoAccount
 from ...embeds import DefaultEmbed, Embed, ErrorEmbed
 
 if TYPE_CHECKING:
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from ...bot.translator import Translator
 
 
-CHECKIN_APIS: dict[str, str] = {
+CHECKIN_APIS: dict[Literal["VERCEL", "DETA", "RENDER"], str] = {
     "VERCEL": "https://daily-checkin-api.vercel.app",
     "DETA": "https://dailycheckin-1-e3972598.deta.app",
     "RENDER": "https://daily-checkin-api.onrender.com",
@@ -61,7 +61,11 @@ class DailyCheckin:
             )
 
     @classmethod
-    async def _daily_checkin_task(cls, queue: asyncio.Queue[HoyoAccount], api_name: str) -> None:
+    async def _daily_checkin_task(
+        cls,
+        queue: asyncio.Queue[HoyoAccount],
+        api_name: Literal["VERCEL", "DETA", "RENDER", "LOCAL"],
+    ) -> None:
         logger.info(f"Daily check-in task started for api: {api_name}")
 
         bot = cls._bot
@@ -88,15 +92,18 @@ class DailyCheckin:
                     raise RuntimeError(msg) from None
             else:
                 cls._total_checkin_count += 1
-                await account.fetch_related("notif_settings")
-                if (
-                    isinstance(embed, ErrorEmbed)
-                    and account.notif_settings.notify_on_checkin_failure
-                ) or (
-                    isinstance(embed, DefaultEmbed)
-                    and account.notif_settings.notify_on_checkin_success
-                ):
-                    await cls._bot.dm_user(account.user.id, embed=embed)
+                try:
+                    notif_settings = await AccountNotifSettings.get_or_none(account=account)
+                    if notif_settings is None:
+                        notif_settings = await AccountNotifSettings.create(account=account)
+                    if (
+                        isinstance(embed, ErrorEmbed) and notif_settings.notify_on_checkin_failure
+                    ) or (
+                        isinstance(embed, DefaultEmbed) and notif_settings.notify_on_checkin_success
+                    ):
+                        await cls._bot.dm_user(account.user.id, embed=embed)
+                except Exception as e:
+                    cls._bot.capture_exception(e)
             finally:
                 await asyncio.sleep(2.0)
                 queue.task_done()
@@ -104,7 +111,7 @@ class DailyCheckin:
     @classmethod
     async def _daily_checkin(
         cls,
-        api_name: str,
+        api_name: Literal["VERCEL", "DETA", "RENDER", "LOCAL"],
         account: HoyoAccount,
         translator: Translator,
         session: aiohttp.ClientSession,
@@ -113,6 +120,8 @@ class DailyCheckin:
 
         locale = account.user.settings.locale or discord.Locale.american_english
         client = account.client
+        updated_cookies = await client.update_cookies_for_checkin()
+        cookies = updated_cookies or account.cookies
         assert client.game is not None
         client.set_lang(locale)
 
@@ -134,9 +143,10 @@ class DailyCheckin:
 
         payload = {
             "token": API_TOKEN,
-            "cookies": account.cookies,
+            "cookies": cookies,
             "lang": client.lang,
             "game": client.game.value,
+            "region": client.region.value,
         }
         api_url = CHECKIN_APIS[api_name]
         async with session.post(f"{api_url}/checkin/", json=payload) as resp:

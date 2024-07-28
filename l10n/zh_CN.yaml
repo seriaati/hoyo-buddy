@@ -596,3 +596,4 @@ stats_command_description: 查看游戏帐号数据
 stats.select_card: 选择一个游戏帐号...
 tears_of_themis: 未定事件簿
 honkai_suit_rarity: "稀有度 {rarity}"
+about_command.designers: 设计师

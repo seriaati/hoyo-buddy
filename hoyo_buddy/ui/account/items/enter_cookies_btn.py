@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from http.cookies import SimpleCookie
 from typing import TYPE_CHECKING
 
+import genshin
 from discord import ButtonStyle, TextStyle
 
 from hoyo_buddy.bot.translator import LocaleStr
@@ -64,8 +64,5 @@ class EnterCookiesButton(Button["AccountManager"]):
         if modal.incomplete:
             return
 
-        cookie = SimpleCookie()
-        cookie.load(modal.cookies)
-        dict_cookies = {key: morsel.value for key, morsel in cookie.items()}
-
-        await self.view.finish_cookie_setup(dict_cookies, platform=self._platform, interaction=i)
+        cookies = genshin.parse_cookie(modal.cookies)
+        await self.view.finish_cookie_setup(cookies, platform=self._platform, interaction=i)

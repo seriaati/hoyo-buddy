@@ -432,3 +432,40 @@ class GenshinClient(genshin.Client):
             msg = LocaleStr(key="redeem_code.success").translate(translator, locale)
 
         return msg, success
+
+    async def update_cookies_for_checkin(self) -> dict[str, str] | None:
+        """Update client cookies for check-in if the client region is CN."""
+        if self.region is genshin.Region.OVERSEAS:
+            return
+
+        cookies = genshin.parse_cookie(self._account.cookies)
+        cookie_token = (await genshin.cn_fetch_cookie_token_with_stoken_v2(cookies))["cookie_token"]
+        cookies["cookie_token"] = cookie_token
+        cookies["account_id"] = cookies["ltuid"]
+        self.set_cookies(cookies)
+        return cookies
+
+    async def request_daily_reward(
+        self,
+        endpoint: str,
+        *,
+        game: genshin.Game | None = None,
+        method: str = "GET",
+        lang: str | None = None,
+        params: Mapping[str, Any] | None = None,
+        headers: Mapping[str, str] | None = None,
+        challenge: Mapping[str, str] | None = None,
+        **kwargs: Any,
+    ) -> Mapping[str, str]:
+        """Claim the daily reward."""
+        await self.update_cookies_for_checkin()
+        return await super().request_daily_reward(
+            endpoint,
+            game=game,
+            method=method,
+            lang=lang,
+            params=params,
+            headers=headers,
+            challenge=challenge,
+            **kwargs,
+        )

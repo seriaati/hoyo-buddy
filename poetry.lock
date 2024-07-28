@@ -216,13 +216,13 @@ typing_extensions = ">=3.7.2"
 
 [[package]]
 name = "ambr-py"
-version = "1.7.10"
+version = "1.7.11"
 description = "API wrapper for ambr.top written in Python"
 optional = false
 python-versions = "<4.0,>=3.11"
 files = [
-    {file = "ambr_py-1.7.10-py3-none-any.whl", hash = "sha256:a05bcd907a52c1016888e75d7f38fad7bd939ed1b1067721f2e286ccdcc598ac"},
-    {file = "ambr_py-1.7.10.tar.gz", hash = "sha256:359b8bc8aba5cf3ee2db0ffc1c29afb9f52f328460d9b58d3b947ef52cba9770"},
+    {file = "ambr_py-1.7.11-py3-none-any.whl", hash = "sha256:d90133869369bd49efd27a2b40fb676d0292c5470eef40040611cb75baf9d8bf"},
+    {file = "ambr_py-1.7.11.tar.gz", hash = "sha256:d56e55e7f1acc24ab6371beed7a13823ed9aa3eae62fc5c5427772b8d410d9c3"},
 ]
 
 [package.dependencies]
@@ -836,7 +836,7 @@ socks-proxy = ["aiohttp-socks"]
 type = "git"
 url = "https://github.com/thesadru/genshin.py"
 reference = "master"
-resolved_reference = "348a3c7b30ee2185c80390f33da6daa260980721"
+resolved_reference = "5976af370d64ffcf6cc3e22816f324ad89e1a9d2"
 
 [[package]]
 name = "gitdb"

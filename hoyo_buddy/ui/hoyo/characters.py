@@ -18,8 +18,7 @@ from hoyo_buddy.draw.main_funcs import (
     draw_hsr_characters_card,
     draw_zzz_characters_card,
 )
-from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath, ZZZElement
-from hoyo_buddy.hoyo.clients.gpy import GenshinClient
+from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath, Platform, ZZZElement
 
 from ...constants import (
     TRAILBLAZER_IDS,
@@ -59,7 +58,7 @@ if TYPE_CHECKING:
 
 GAME_FOOTERS: Final[dict[Game, tuple[str, ...]]] = {
     Game.GENSHIN: (
-        "gi.normal_attack",
+        "hsr.normal_attack",
         "gi.skill",
         "gi.burst",
     ),
@@ -168,44 +167,27 @@ class CharactersView(View):
             self._sorter = HonkaiSorter.LEVEL
 
     async def _get_gi_pc_icons(self) -> dict[str, str]:
-        pc_icons: dict[str, str] = {}
-        # pc_icons: dict[str, str] = await JSONFile.read("pc_icons.json")
-
-        if any(str(c.id) not in pc_icons for c in self._gi_characters):
+        if self._account.platform is Platform.HOYOLAB:
             await self._account.client.update_pc_icons()
+
+        pc_icons = await JSONFile.read("pc_icons.json")
+
+        is_missing = any(str(c.id) not in pc_icons for c in self._gi_characters)
+        if is_missing:
+            async with AmbrAPIClient(translator=self.translator) as client:
+                ambr_charas = await client.fetch_characters()
+                for chara in self._gi_characters:
+                    if str(chara.id) in pc_icons:
+                        continue
+                    ambr_chara = next((c for c in ambr_charas if c.id == chara.id), None)
+                    if ambr_chara is None:
+                        continue
+                    pc_icons[str(chara.id)] = ambr_chara.icon
+                await JSONFile.write("pc_icons.json", pc_icons)
+
             pc_icons = await JSONFile.read("pc_icons.json")
 
-        if all(str(c.id) in pc_icons for c in self._gi_characters):
-            return pc_icons
-
-        async with AmbrAPIClient() as client:
-            for chara in self._gi_characters:
-                if str(chara.id) not in pc_icons:
-                    character_detail = await client.fetch_character_detail(str(chara.id))
-                    pc_icons[str(chara.id)] = character_detail.icon
-                    await JSONFile.write("pc_icons.json", pc_icons)
-
         return pc_icons
-
-    async def _get_gi_talent_level_data(self) -> dict[str, str]:
-        filename = f"talent_levels/gi_{self._account.uid}.json"
-        talent_level_data = await JSONFile.read(filename)
-
-        charas_to_update: list[GICharacter] = []
-
-        for chara in self._gi_characters:
-            if (
-                isinstance(chara, UnownedCharacter)
-                or GenshinClient.convert_chara_id_to_ambr_format(chara) in talent_level_data
-            ):
-                continue
-            charas_to_update.append(chara)
-
-        if charas_to_update:
-            await self._account.client.update_gi_chara_talent_levels(charas_to_update)
-        updated = bool(charas_to_update)
-
-        return await JSONFile.read(filename) if updated else talent_level_data
 
     def _apply_gi_filter(
         self, characters: Sequence[GICharacter | UnownedCharacter]
@@ -358,7 +340,7 @@ class CharactersView(View):
     ) -> File:
         if self._game is Game.GENSHIN:
             pc_icons = await self._get_gi_pc_icons()
-            talent_level_data = await self._get_gi_talent_level_data()
+            talent_level_data = await JSONFile.read(f"talent_levels/gi_{self._account.uid}.json")
 
             file_ = await draw_gi_characters_card(
                 DrawInput(

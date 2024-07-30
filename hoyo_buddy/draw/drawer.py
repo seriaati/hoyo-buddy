@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import pathlib
-from typing import TYPE_CHECKING, Literal, TypeAlias
+from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
 
 import discord
 from PIL import Image, ImageChops, ImageDraw, ImageFont
@@ -41,6 +41,14 @@ FontStyle: TypeAlias = Literal[
     "bold_italic",
     "black_italic",
 ]
+
+
+class TextBBox(NamedTuple):
+    left: int
+    top: int
+    right: int
+    bottom: int
+
 
 FONT_MAPPING: dict[discord.Locale, dict[FontStyle, str]] = {
     discord.Locale.chinese: {
@@ -321,10 +329,10 @@ class Drawer:
         no_write: bool = False,
         title_case: bool = False,
         sans: bool = False,
-    ) -> tuple[int, int, int, int]:
+    ) -> TextBBox:
         """Returns (left, top, right, bottom) of the text bounding box."""
         if not text:
-            return (0, 0, 0, 0)
+            return TextBBox(0, 0, 0, 0)
 
         if isinstance(text, str):
             translated_text = text
@@ -357,7 +365,7 @@ class Drawer:
         textbbox = self.draw.textbbox(
             position, translated_text, font=font, anchor=anchor, font_size=size
         )
-        return tuple(round(bbox) for bbox in textbbox)  # pyright: ignore [reportReturnType]
+        return TextBBox(*textbbox)
 
     def open_static(
         self,

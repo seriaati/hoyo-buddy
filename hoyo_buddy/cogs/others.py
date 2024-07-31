@@ -8,10 +8,10 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands
 
-from ..bot.translator import LocaleStr
 from ..db.models import Settings as UserSettings
 from ..embeds import DefaultEmbed
 from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
+from ..l10n import LocaleStr
 from ..ui import Button, View
 from ..ui.feedback import FeedbackView
 from ..ui.settings import SettingsUI

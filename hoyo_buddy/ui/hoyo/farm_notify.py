@@ -5,12 +5,12 @@ from typing import TYPE_CHECKING
 from discord import ButtonStyle
 from seria.utils import split_list_to_chunks
 
-from ...bot.translator import LocaleStr
 from ...db.models import FarmNotify
 from ...draw.main_funcs import draw_item_list_card
 from ...embeds import DefaultEmbed
 from ...emojis import ADD, DELETE
 from ...hoyo.clients.ambr import AmbrAPIClient
+from ...l10n import LocaleStr
 from ...models import DrawInput, ItemWithTrailing
 from ..components import Button, ToggleButton
 from ..paginator import Page, PaginatorView
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from discord import Locale, Member, User
     from discord.file import File
 
-    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 

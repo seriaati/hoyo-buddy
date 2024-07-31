@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING, Any, Final
 import enka
 from genshin.models import ZZZPartialAgent
 
-from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji, get_zzz_element_emoji
 from hoyo_buddy.enums import CharacterType, Game
+from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import HoyolabHSRCharacter
 from hoyo_buddy.ui import PaginatorSelect, SelectOption
 

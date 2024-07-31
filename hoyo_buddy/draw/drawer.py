@@ -12,7 +12,7 @@ from ..utils import get_static_img_path
 from .fonts import *  # noqa: F403
 
 if TYPE_CHECKING:
-    from ..bot.translator import LocaleStr, Translator
+    from ..l10n import LocaleStr, Translator
 
 __all__ = ("Drawer",)
 

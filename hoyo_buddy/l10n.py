@@ -11,15 +11,15 @@ from discord import app_commands
 from loguru import logger
 from seria.utils import read_json, read_yaml
 
-from ..constants import (
+from .constants import (
     AMBR_ELEMENT_TO_ELEMENT,
     HAKUSHIN_GI_ELEMENT_TO_ELEMENT,
     HAKUSHIN_HSR_ELEMENT_TO_ELEMENT,
     WEEKDAYS,
     YATTA_COMBAT_TYPE_TO_ELEMENT,
 )
-from ..utils import capitalize_first_word as capitalize_first_word_
-from ..utils import convert_to_title_case
+from .utils import capitalize_first_word as capitalize_first_word_
+from .utils import convert_to_title_case
 
 if TYPE_CHECKING:
     from enum import StrEnum

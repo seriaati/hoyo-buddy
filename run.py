@@ -21,8 +21,8 @@ from sentry_sdk.integrations.loguru import LoguruIntegration
 
 from hoyo_buddy.api import BotAPI
 from hoyo_buddy.bot import HoyoBuddy
-from hoyo_buddy.bot.translator import Translator
 from hoyo_buddy.db.pgsql import Database
+from hoyo_buddy.l10n import Translator
 from hoyo_buddy.logging import InterceptHandler
 from hoyo_buddy.models import Config
 from hoyo_buddy.web_server.server import GeetestWebServer

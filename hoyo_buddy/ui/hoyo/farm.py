@@ -5,13 +5,13 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, User
 
-from ...bot.translator import EnumStr, LocaleStr, Translator, WeekdayStr
 from ...constants import UID_TZ_OFFSET, WEEKDAYS
 from ...draw.main_funcs import draw_farm_card
 from ...embeds import DefaultEmbed
 from ...emojis import BELL_OUTLINE, GENSHIN_CITY_EMOJIS
 from ...enums import GenshinCity
 from ...hoyo.farm_data import FarmDataFetcher
+from ...l10n import EnumStr, LocaleStr, Translator, WeekdayStr
 from ...models import DrawInput
 from ...utils import ephemeral, get_now
 from ..components import Button, Select, SelectOption, View

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.enums import Game
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Select, SelectOption
 
 from ..btn_states import DISABLE_AI_ART, DISABLE_COLOR, DISABLE_DARK_MODE, DISABLE_IMAGE_SELECT

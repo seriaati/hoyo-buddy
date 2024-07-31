@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw, ImageFilter
 
-from hoyo_buddy.bot.translator import LevelStr, LocaleStr, Translator
 from hoyo_buddy.draw.drawer import BLACK, TRANSPARENT, WHITE, Drawer
+from hoyo_buddy.l10n import LevelStr, LocaleStr, Translator
 
 if TYPE_CHECKING:
     import genshin

@@ -33,7 +33,7 @@ if TYPE_CHECKING:
     from genshin.models import Notes as GenshinNote
     from genshin.models import StarRailDetailCharacter as StarRailCharacter
 
-    from ..bot.translator import Translator
+    from ..l10n import Translator
     from ..models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
 
 

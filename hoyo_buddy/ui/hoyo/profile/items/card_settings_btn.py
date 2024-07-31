@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import SETTINGS
 from hoyo_buddy.enums import CharacterType
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, GoBackButton
 
 from ..btn_states import DISABLE_AI_ART, DISABLE_COLOR, DISABLE_DARK_MODE, DISABLE_IMAGE_SELECT

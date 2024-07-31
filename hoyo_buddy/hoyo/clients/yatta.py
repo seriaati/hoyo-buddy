@@ -11,17 +11,17 @@ from discord import Locale
 from seria.utils import create_bullet_list
 from yatta import Language
 
-from ...bot.translator import LevelStr, LocaleStr
 from ...constants import LOCALE_TO_YATTA_LANG, TRAILBLAZER_IDS, YATTA_PATH_TO_HSR_PATH
 from ...embeds import DefaultEmbed
 from ...emojis import get_hsr_element_emoji, get_hsr_path_emoji
+from ...l10n import LevelStr, LocaleStr
 
 __all__ = ("ItemCategory", "YattaAPIClient")
 
 if TYPE_CHECKING:
     import aiohttp
 
-    from ...bot.translator import Translator
+    from ...l10n import Translator
 
 KEY_DICT: dict[str, str] = {
     "hPBase": "maxHP",

@@ -11,8 +11,8 @@ from .clients.ambr import AmbrAPIClient
 if TYPE_CHECKING:
     import ambr
 
-    from ..bot.translator import Translator
     from ..enums import GenshinCity
+    from ..l10n import Translator
 
 
 class FarmDataFetcher:

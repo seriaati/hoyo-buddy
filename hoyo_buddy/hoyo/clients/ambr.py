@@ -12,10 +12,10 @@ from seria.utils import create_bullet_list, shorten
 
 from hoyo_buddy.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_gi_element_emoji
 
-from ...bot.translator import LevelStr, LocaleStr, Translator, WeekdayStr
 from ...constants import LOCALE_TO_AMBR_LANG, contains_traveler_id
 from ...embeds import DefaultEmbed
 from ...enums import TalentBoost
+from ...l10n import LevelStr, LocaleStr, Translator, WeekdayStr
 from ...models import ItemWithDescription
 
 __all__ = ("AUDIO_LANGUAGES", "AmbrAPIClient", "ItemCategory")

@@ -17,7 +17,7 @@ from ..models import LoginNotifPayload
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.l10n import Translator
 
 GT_V3_URL = "https://static.geetest.com/static/js/gt.0.5.0.js"
 GT_V4_URL = "https://static.geetest.com/v4/gt4.js"

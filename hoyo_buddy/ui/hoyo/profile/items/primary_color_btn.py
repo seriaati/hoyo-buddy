@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, TextStyle
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.exceptions import InvalidColorError
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Modal, TextInput
 from hoyo_buddy.utils import is_valid_hex_color
 

@@ -8,14 +8,14 @@ from discord import Locale
 from genshin.models import StarRailDetailCharacter as HSRCharacter
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.draw.drawer import DARK_SURFACE, LIGHT_SURFACE, Drawer
+from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DynamicBKInput, UnownedCharacter
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.l10n import Translator
 
 PC_ICON_OFFSETS = (0, 38)
 PC_ICON_SIZES = (208, 146)

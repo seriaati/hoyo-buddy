@@ -8,13 +8,13 @@ from discord import Locale, app_commands
 from discord.ext import commands
 from loguru import logger
 
-from ..bot.translator import LocaleStr
 from ..db.models import Settings, get_locale
 from ..emojis import PROJECT_AMBER
 from ..enums import Game
 from ..exceptions import InvalidQueryError
 from ..hoyo.clients import ambr, yatta
 from ..hoyo.search_autocomplete import AutocompleteSetup
+from ..l10n import LocaleStr
 from ..ui import URLButtonView
 from ..ui.hoyo.genshin import search as gi_search
 from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView

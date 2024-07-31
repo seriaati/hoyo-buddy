@@ -14,8 +14,8 @@ from yatta.exceptions import DataNotFoundError as YattaDataNotFoundError
 from ..embeds import ErrorEmbed
 from ..enums import GeetestType
 from ..exceptions import HoyoBuddyError, InvalidQueryError
+from ..l10n import EnumStr, LocaleStr, Translator
 from ..utils import get_now
-from .translator import EnumStr, LocaleStr, Translator
 
 if TYPE_CHECKING:
     import discord

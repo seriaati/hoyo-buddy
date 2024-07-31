@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, TextStyle, User
 
-from ..bot.translator import LocaleStr
 from ..embeds import DefaultEmbed
+from ..l10n import LocaleStr
 from .components import Button, Modal, TextInput, View
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.l10n import Translator
 
     from ..types import Interaction
 

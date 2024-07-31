@@ -6,7 +6,6 @@ import genshin
 from discord import ButtonStyle, File, Locale, Member, User
 from discord.utils import format_dt
 
-from hoyo_buddy.bot.translator import LocaleStr, WeekdayStr
 from hoyo_buddy.db.models import NotesNotify
 from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
 from hoyo_buddy.embeds import DefaultEmbed
@@ -21,6 +20,7 @@ from hoyo_buddy.emojis import (
 )
 from hoyo_buddy.enums import Game, NotesNotifyType
 from hoyo_buddy.exceptions import FeatureNotImplementedError
+from hoyo_buddy.l10n import LocaleStr, WeekdayStr
 from hoyo_buddy.models import DrawInput
 
 from ...components import Button, GoBackButton, View
@@ -32,8 +32,8 @@ if TYPE_CHECKING:
 
     import aiohttp
 
-    from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
     from .modals.type_four import TypeFourModal

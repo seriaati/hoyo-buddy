@@ -13,8 +13,8 @@ from hoyo_buddy.ui import Button, View
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 RELIC_POS: tuple[str, ...] = ("neck", "head", "hand", "object", "foot", "body")

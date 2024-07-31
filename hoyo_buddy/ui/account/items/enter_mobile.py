@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING
 import genshin
 from discord import ButtonStyle
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import PASSWORD, PHONE
 from hoyo_buddy.enums import Platform
+from hoyo_buddy.l10n import LocaleStr
 
 from ...components import Button, Modal, TextInput
 from ..geetest_handler import GeetestHandler, SendMobileOTPData

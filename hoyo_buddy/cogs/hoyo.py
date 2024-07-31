@@ -7,7 +7,6 @@ import enka
 from discord import app_commands
 from discord.ext import commands
 
-from ..bot.translator import LocaleStr
 from ..commands.challenge import ChallengeCommand
 from ..commands.geetest import GeetestCommand
 from ..commands.profile import ProfileCommand
@@ -21,6 +20,7 @@ from ..exceptions import FeatureNotImplementedError, IncompleteParamError, Inval
 from ..hoyo.clients.ambr import AmbrAPIClient
 from ..hoyo.clients.yatta import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
+from ..l10n import LocaleStr
 from ..models import DrawInput
 from ..types import User  # noqa: TCH001
 from ..ui.hoyo.characters import CharactersView

@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import EnumStr, LocaleStr, Translator
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
 from hoyo_buddy.enums import ChallengeType
+from hoyo_buddy.l10n import EnumStr, LocaleStr, Translator
 from hoyo_buddy.utils import get_floor_difficulty
 
 if TYPE_CHECKING:

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ...bot.translator import LevelStr, LocaleStr
 from ...embeds import DefaultEmbed
 from ...emojis import get_game_emoji
+from ...l10n import LevelStr, LocaleStr
 from ...utils import blur_uid
 from ..components import Select, SelectOption, View
 
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from discord import Locale
     from genshin.models import RecordCard
 
-    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import User
 
     from ...types import Interaction

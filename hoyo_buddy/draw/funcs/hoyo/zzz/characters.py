@@ -9,8 +9,8 @@ from discord import utils as dutils
 from genshin.models import ZZZSkillType
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import LevelStr, Translator
 from hoyo_buddy.draw.drawer import WHITE, Drawer
+from hoyo_buddy.l10n import LevelStr, Translator
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

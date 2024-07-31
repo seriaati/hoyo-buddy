@@ -15,8 +15,8 @@ from ..ui.hoyo.profile.view import ProfileView
 if TYPE_CHECKING:
     import discord
 
-    from ..bot.translator import Translator
     from ..enums import Game
+    from ..l10n import Translator
     from ..models import HoyolabHSRCharacter
 
 

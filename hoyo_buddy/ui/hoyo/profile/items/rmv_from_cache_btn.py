@@ -5,11 +5,11 @@ from typing import TYPE_CHECKING
 import enka
 from discord import ButtonStyle
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.db.models import EnkaCache
 from hoyo_buddy.emojis import DELETE
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.enka.base import BaseClient
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
 
 if TYPE_CHECKING:

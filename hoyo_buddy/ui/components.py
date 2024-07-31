@@ -11,10 +11,10 @@ from seria.utils import clean_url, split_list_to_chunks
 
 from .. import emojis
 from ..bot.error_handler import get_error_embed
-from ..bot.translator import LocaleStr, Translator
 from ..db.models import Settings, get_locale
 from ..embeds import ErrorEmbed
 from ..exceptions import InvalidInputError
+from ..l10n import LocaleStr, Translator
 
 if TYPE_CHECKING:
     import io

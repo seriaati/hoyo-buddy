@@ -10,7 +10,6 @@ from discord import Locale
 from genshin.models import Notes, StarRailNote, VideoStoreState, ZZZNotes
 
 from ...bot.error_handler import get_error_embed
-from ...bot.translator import LocaleStr
 from ...db.models import NotesNotify
 from ...draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
 from ...embeds import DefaultEmbed, ErrorEmbed
@@ -25,6 +24,7 @@ from ...icons import (
     SCRATCH_CARD_ICON,
     TBP_ICON,
 )
+from ...l10n import LocaleStr
 from ...models import DrawInput
 from ...ui.hoyo.notes.view import NotesView
 from ...utils import get_now

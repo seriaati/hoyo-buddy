@@ -8,10 +8,10 @@ from discord import Locale
 from loguru import logger
 
 from ...bot.error_handler import get_error_embed
-from ...bot.translator import LocaleStr
 from ...constants import GPY_GAME_TO_HB_GAME, HB_GAME_TO_GPY_GAME
 from ...db.models import HoyoAccount
 from ...enums import Platform
+from ...l10n import LocaleStr
 
 if TYPE_CHECKING:
     import aiohttp

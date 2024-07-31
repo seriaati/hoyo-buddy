@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 import genshin
 from discord import ButtonStyle, TextStyle
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import COOKIE
+from hoyo_buddy.l10n import LocaleStr
 
 from ...components import Button, Modal, TextInput
 

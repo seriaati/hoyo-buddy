@@ -5,12 +5,12 @@ from typing import TYPE_CHECKING, Any
 import hakushin
 from discord import ButtonStyle
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.constants import LOCALE_TO_HAKUSHIN_LANG
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
 from hoyo_buddy.utils import ephemeral
 
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from hakushin.models.hsr import LightConeDetail as HakushinLCDetail
     from yatta import LightConeDetail
 
-    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 

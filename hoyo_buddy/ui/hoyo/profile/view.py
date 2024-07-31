@@ -8,7 +8,6 @@ from discord import File, Locale
 from genshin.models import ZZZPartialAgent
 from loguru import logger
 
-from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
@@ -25,6 +24,7 @@ from hoyo_buddy.exceptions import (
     ThirdPartyCardTempError,
 )
 from hoyo_buddy.icons import get_game_icon
+from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
 from hoyo_buddy.utils import blur_uid
@@ -46,7 +46,7 @@ if TYPE_CHECKING:
     from discord import Member, User
     from genshin.models import RecordCard, StarRailUserStats
 
-    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Builds, Interaction
 
 

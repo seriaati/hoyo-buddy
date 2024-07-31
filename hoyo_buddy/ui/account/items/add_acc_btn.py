@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
 
-from hoyo_buddy.bot.translator import EnumStr, LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, HOYOLAB, MIYOUSHE
 from hoyo_buddy.enums import Platform
+from hoyo_buddy.l10n import EnumStr, LocaleStr
 
 from ...components import Button, GoBackButton
 from .with_dev_tools import WithDevTools

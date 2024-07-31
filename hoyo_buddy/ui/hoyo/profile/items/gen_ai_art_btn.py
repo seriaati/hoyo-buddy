@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 from discord import ButtonStyle, TextStyle
 from seria.utils import read_json
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.exceptions import GuildOnlyFeatureError, NSFWPromptError
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Modal, TextInput
 from hoyo_buddy.utils import upload_image
 

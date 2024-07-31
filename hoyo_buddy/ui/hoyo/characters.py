@@ -11,7 +11,6 @@ from genshin.models import StarRailDetailCharacter as HSRCharacter
 from genshin.models import ZZZFullAgent as ZZZCharacter
 from genshin.models import ZZZSpecialty
 
-from hoyo_buddy.bot.translator import EnumStr, LocaleStr
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_characters_card,
     draw_honkai_suits_card,
@@ -19,6 +18,7 @@ from hoyo_buddy.draw.main_funcs import (
     draw_zzz_characters_card,
 )
 from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath, Platform, ZZZElement
+from hoyo_buddy.l10n import EnumStr, LocaleStr
 
 from ...constants import (
     TRAILBLAZER_IDS,
@@ -52,8 +52,8 @@ if TYPE_CHECKING:
     import aiohttp
     from discord import File, Member, User
 
-    from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 GAME_FOOTERS: Final[dict[Game, tuple[str, ...]]] = {

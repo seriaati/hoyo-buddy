@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.bot.translator import LocaleStr
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Select, SelectOption
 
 if TYPE_CHECKING:

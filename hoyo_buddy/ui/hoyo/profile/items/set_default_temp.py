@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.db.models import Settings
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
 
 if TYPE_CHECKING:

@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, TextStyle
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import ADD
 from hoyo_buddy.exceptions import InvalidImageURLError
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Modal, TextInput
 from hoyo_buddy.utils import get_pixiv_proxy_img, is_image_url, test_url_validity, upload_image
 

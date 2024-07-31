@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.constants import DB_SMALLINT_MAX
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Modal, TextInput
 
 if TYPE_CHECKING:

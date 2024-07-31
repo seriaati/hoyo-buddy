@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.db.models import NotesNotify
 from hoyo_buddy.emojis import PT_EMOJI
 from hoyo_buddy.enums import NotesNotifyType
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
 
 from ..modals import TypeTwoModal

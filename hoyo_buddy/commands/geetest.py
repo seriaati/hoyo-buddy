@@ -8,12 +8,12 @@ import asyncpg_listen
 import genshin
 
 from ..bot.error_handler import get_error_embed
-from ..bot.translator import LocaleStr
 from ..constants import GEETEST_SERVERS
 from ..db.models import HoyoAccount, User, get_locale
 from ..embeds import DefaultEmbed
 from ..enums import GeetestNotifyType, GeetestType, Platform
 from ..exceptions import FeatureNotImplementedError
+from ..l10n import LocaleStr
 from ..models import LoginNotifPayload
 from ..ui import URLButtonView
 

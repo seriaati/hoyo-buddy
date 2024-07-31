@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from discord.app_commands.errors import AppCommandError
 from discord.utils import format_dt
 
-from .bot.translator import EnumStr, LocaleStr
+from .l10n import EnumStr, LocaleStr
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

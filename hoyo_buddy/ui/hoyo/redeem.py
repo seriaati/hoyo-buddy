@@ -4,13 +4,13 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, User
 
-from ...bot.translator import LocaleStr
 from ...embeds import DefaultEmbed
 from ...emojis import GIFT_OUTLINE
+from ...l10n import LocaleStr
 from ..components import Button, Modal, TextInput, ToggleButton, View
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.l10n import Translator
 
     from ...db.models import HoyoAccount
     from ...types import Interaction

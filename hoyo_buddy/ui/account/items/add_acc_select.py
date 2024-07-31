@@ -6,11 +6,11 @@ import discord
 import genshin
 from tortoise.exceptions import IntegrityError
 
-from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME
 from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.enums import Platform
+from hoyo_buddy.l10n import LevelStr, LocaleStr
 
 from ...components import Select, SelectOption
 
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
     from genshin.models import GenshinAccount
 
-    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
     from ..view import AccountManager  # noqa: F401

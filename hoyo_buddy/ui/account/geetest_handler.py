@@ -9,10 +9,10 @@ import genshin
 from pydantic import BaseModel
 
 from ...bot.error_handler import get_error_embed
-from ...bot.translator import LocaleStr
 from ...db.models import User
 from ...embeds import DefaultEmbed
 from ...enums import GeetestNotifyType, Platform
+from ...l10n import LocaleStr
 
 if TYPE_CHECKING:
     from ...types import Interaction

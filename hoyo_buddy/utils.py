@@ -146,10 +146,10 @@ def ephemeral(i: Interaction) -> bool:
 def measure_time(
     description: str = "Execution", *, print_: bool = False
 ) -> Generator[None, Any, None]:
-    start_time = time.time()
+    start_time = time.time_ns()
     yield
-    end_time = time.time()
-    msg = f"{description} time: {end_time - start_time:.6f} seconds"
+    end_time = time.time_ns()
+    msg = f"{description} time: {(end_time - start_time) / 1e6:.2f} ms"
     if print_:
         print(msg)  # noqa: T201
     else:

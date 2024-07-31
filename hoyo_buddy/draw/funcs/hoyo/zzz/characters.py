@@ -48,7 +48,7 @@ def draw_agent_small_card(
 
     # Banner icon
     icon = drawer.open_static(agent.banner_icon, size=(880, 458))
-    icon = drawer.crop_with_mask(icon, mask)
+    icon = drawer.mask_image_with_image(icon, mask)
     im.paste(icon, (-204, 0), icon)
 
     # Rank

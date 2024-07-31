@@ -106,7 +106,7 @@ class MOCCard:
         icon = drawer.open_static(chara.icon)
         icon = drawer.resize_crop(icon, (120, 120))
         mask = drawer.open_asset("mask.png")
-        icon = drawer.crop_with_mask(icon, mask)
+        icon = drawer.mask_image_with_image(icon, mask)
         block.paste(icon, (0, 0), icon)
 
         level_flair = drawer.open_asset("level_flair.png")

@@ -264,7 +264,7 @@ class ZZZAgentCard:
         for i, disc in enumerate(self._cn_agent.discs):
             icon = drawer.open_static(self._disc_icons[disc.set_effect.name])
             icon = drawer.middle_crop(icon, (125, 152))
-            icon = drawer.crop_with_mask(icon, disc_mask)
+            icon = drawer.mask_image_with_image(icon, disc_mask)
             im.paste(icon, start_pos, icon)
 
             drawer.write(

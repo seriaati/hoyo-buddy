@@ -35,12 +35,12 @@ def draw_small_suit_card(
     )
 
     suit_icon = drawer.open_static(suit.tall_icon.replace(" ", ""), size=(146, 256))
-    suit_icon = drawer.crop_with_mask(suit_icon, suit_mask)
+    suit_icon = drawer.mask_image_with_image(suit_icon, suit_mask)
     im.paste(suit_icon, (0, 11), suit_icon)
 
     weapon_icon = drawer.open_static(suit.weapon.icon)
     weapon_icon = drawer.resize_crop(weapon_icon, (75, 75))
-    weapon_icon = drawer.crop_with_mask(weapon_icon, mask)
+    weapon_icon = drawer.mask_image_with_image(weapon_icon, mask)
     im.paste(weapon_icon, (198, 56), weapon_icon)
 
     start_pos = (198, 156)
@@ -48,7 +48,7 @@ def draw_small_suit_card(
     for stig in suit.stigmata:
         stig_icon = drawer.open_static(stig.icon)
         stig_icon = drawer.resize_crop(stig_icon, (75, 75))
-        stig_icon = drawer.crop_with_mask(stig_icon, mask)
+        stig_icon = drawer.mask_image_with_image(stig_icon, mask)
         im.paste(stig_icon, start_pos, stig_icon)
         start_pos = (start_pos[0] + x_diff, start_pos[1])
 

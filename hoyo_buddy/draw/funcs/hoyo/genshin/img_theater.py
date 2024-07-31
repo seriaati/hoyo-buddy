@@ -122,7 +122,7 @@ class ImgTheaterCard:
             icon = block_drawer.open_static(character.icon)
             icon = self._drawer.resize_crop(icon, (120, 120))
             mask = self._drawer.open_asset("mask.png")
-            icon = self._drawer.crop_with_mask(icon, mask)
+            icon = self._drawer.mask_image_with_image(icon, mask)
             block.paste(icon, (2, 2), icon)
 
             block.paste(const_flair, (92, 0), const_flair)

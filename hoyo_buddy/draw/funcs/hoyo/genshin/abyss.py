@@ -232,7 +232,7 @@ class AbyssCard:
             )
 
             chara_im = drawer.open_static(chara.icon, size=(116, 116))
-            chara_im = drawer.crop_with_mask(chara_im, chara_mask)
+            chara_im = drawer.mask_image_with_image(chara_im, chara_mask)
             bk.paste(chara_im, (0, 2), chara_im)
 
             bk_draw.rounded_rectangle(

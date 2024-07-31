@@ -403,17 +403,12 @@ class Drawer:
             image = self.mask_image_with_color(image, mask_color, opacity=opacity)
         return image
 
-    @staticmethod
-    def crop_with_mask(image: Image.Image, mask: Image.Image) -> Image.Image:
-        empty = Image.new("RGBA", image.size, 0)
-        return Image.composite(image, empty, mask)
-
     @classmethod
     def circular_crop(cls, image: Image.Image) -> Image.Image:
         """Crop an image into a circle."""
         path = pathlib.Path("hoyo-buddy-assets/assets/circular_mask.png")
         mask = cls.open_image(path, image.size)
-        return cls.crop_with_mask(image, mask)
+        return cls.mask_image_with_image(image, mask)
 
     def modify_image_for_build_card(
         self,
@@ -434,10 +429,10 @@ class Drawer:
         if background_color is not None:
             new_im = Image.new("RGBA", (target_width, target_height), background_color)
             new_im.paste(image, (0, 0), image)
-            new_im = self.crop_with_mask(new_im, mask)
+            new_im = self.mask_image_with_image(new_im, mask)
             return new_im
 
-        image = self.crop_with_mask(image, mask)
+        image = self.mask_image_with_image(image, mask)
         return image
 
     @staticmethod

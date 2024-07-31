@@ -10,7 +10,7 @@ from sentry_sdk.metrics import timing
 from hoyo_buddy.draw import funcs
 
 from ..models import AbyssCharacter, HoyolabHSRCharacter, UnownedCharacter
-from .static import download_and_save_static_images
+from .static import download_images
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -41,7 +41,7 @@ async def draw_item_list_card(
     draw_input: DrawInput,
     items: list[ItemWithDescription] | list[ItemWithTrailing],
 ) -> File:
-    await download_and_save_static_images(
+    await download_images(
         [item.icon for item in items],
         "item-list",
         draw_input.session,
@@ -59,7 +59,7 @@ async def draw_item_list_card(
 
 
 async def draw_checkin_card(draw_input: DrawInput, rewards: list[Reward]) -> BytesIO:
-    await download_and_save_static_images([r.icon for r in rewards], "check-in", draw_input.session)
+    await download_images([r.icon for r in rewards], "check-in", draw_input.session)
     with timing("draw", tags={"type": "checkin_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
@@ -100,7 +100,7 @@ async def draw_hsr_build_card(
             for stat in character.light_cone.stats:
                 urls.append(stat.icon)
 
-    await download_and_save_static_images(urls, "hsr-build-card", draw_input.session)
+    await download_images(urls, "hsr-build-card", draw_input.session)
 
     with timing("draw", tags={"type": "hsr_build_card"}):
         buffer = await draw_input.loop.run_in_executor(
@@ -118,7 +118,7 @@ async def draw_hsr_build_card(
 async def draw_hsr_notes_card(
     draw_input: DrawInput, notes: StarRailNote, translator: Translator
 ) -> BytesIO:
-    await download_and_save_static_images(
+    await download_images(
         [exped.item_url for exped in notes.expeditions],
         folder="hsr-notes",
         session=draw_input.session,
@@ -148,7 +148,7 @@ async def draw_gi_build_card(
         urls.append(talent.icon)
     for constellation in character.constellations:
         urls.append(constellation.icon)
-    await download_and_save_static_images(urls, "gi-build-card", draw_input.session)
+    await download_images(urls, "gi-build-card", draw_input.session)
 
     with timing("draw", tags={"type": "gi_build_card"}):
         buffer = await draw_input.loop.run_in_executor(
@@ -166,7 +166,7 @@ async def draw_gi_build_card(
 async def draw_gi_notes_card(
     draw_input: DrawInput, notes: GenshinNote, translator: Translator
 ) -> BytesIO:
-    await download_and_save_static_images(
+    await download_images(
         [exped.character_icon for exped in notes.expeditions],
         folder="gi-notes",
         session=draw_input.session,
@@ -191,7 +191,7 @@ async def draw_farm_card(
         + [c.icon for data in farm_data for c in data.characters]
         + [w.icon for data in farm_data for w in data.weapons]
     )
-    await download_and_save_static_images(
+    await download_images(
         image_urls,
         folder="farm",
         session=draw_input.session,
@@ -223,7 +223,7 @@ async def draw_gi_characters_card(
         urls.append(c.weapon.icon)
     urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
 
-    await download_and_save_static_images(urls, "gi-characters", draw_input.session)
+    await download_images(urls, "gi-characters", draw_input.session)
     with timing("draw", tags={"type": "gi_character_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
@@ -253,7 +253,7 @@ async def draw_hsr_characters_card(
         urls.append(c.equip.icon)
     urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
 
-    await download_and_save_static_images(urls, "hsr-characters", draw_input.session)
+    await download_images(urls, "hsr-characters", draw_input.session)
     with timing("draw", tags={"type": "hsr_character_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
@@ -297,7 +297,7 @@ async def draw_spiral_abyss_card(
         ]:
             urls.append(chara.icon)
 
-    await download_and_save_static_images(urls, "abyss", draw_input.session)
+    await download_images(urls, "abyss", draw_input.session)
     with timing("draw", tags={"type": "spiral_abyss_card"}):
         card = funcs.genshin.AbyssCard(
             draw_input.dark_mode,
@@ -335,7 +335,7 @@ async def draw_moc_card(
 ) -> File:
     for floor in data.floors:
         icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
-        await download_and_save_static_images(icons, "moc", draw_input.session)
+        await download_images(icons, "moc", draw_input.session)
 
     with timing("draw", tags={"type": "moc_card"}):
         buffer = await draw_input.loop.run_in_executor(
@@ -354,7 +354,7 @@ async def draw_pure_fiction_card(
 ) -> File:
     for floor in data.floors:
         icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
-        await download_and_save_static_images(icons, "pf", draw_input.session)
+        await download_images(icons, "pf", draw_input.session)
 
     with timing("draw", tags={"type": "pure_fiction_card"}):
         buffer = await draw_input.loop.run_in_executor(
@@ -375,7 +375,7 @@ async def draw_apc_shadow_card(
 ) -> File:
     for floor in data.floors:
         icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
-        await download_and_save_static_images(icons, "apc-shadow", draw_input.session)
+        await download_images(icons, "apc-shadow", draw_input.session)
 
     with timing("draw", tags={"type": "apc_shadow_card"}):
         buffer = await draw_input.loop.run_in_executor(
@@ -396,7 +396,7 @@ async def draw_img_theater_card(
 ) -> File:
     for act in data.acts:
         icons = [chara.icon for chara in act.characters]
-        await download_and_save_static_images(icons, "img-theater", draw_input.session)
+        await download_images(icons, "img-theater", draw_input.session)
 
     with timing("draw", tags={"type": "img_theater_card"}):
         buffer = await draw_input.loop.run_in_executor(
@@ -442,7 +442,7 @@ async def draw_zzz_build_card(
     urls.extend(disc_icons.values())
     if agent.w_engine is not None:
         urls.append(agent.w_engine.icon)
-    await download_and_save_static_images(urls, "zzz-build-card", draw_input.session)
+    await download_images(urls, "zzz-build-card", draw_input.session)
 
     with timing("draw", tags={"type": "zzz_build_card"}):
         card = funcs.zzz.ZZZAgentCard(
@@ -472,7 +472,7 @@ async def draw_zzz_characters_card(
         if agent.w_engine is not None:
             urls.append(agent.w_engine.icon)
 
-    await download_and_save_static_images(urls, "zzz-characters", draw_input.session)
+    await download_images(urls, "zzz-characters", draw_input.session)
     with timing("draw", tags={"type": "zzz_character_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
@@ -497,7 +497,7 @@ async def draw_honkai_suits_card(
         for stig in suit.stigmata:
             urls.append(stig.icon)
 
-    await download_and_save_static_images(urls, "honkai-characters", draw_input.session)
+    await download_images(urls, "honkai-characters", draw_input.session)
     with timing("draw", tags={"type": "honkai_suits_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,

@@ -9,10 +9,11 @@ from genshin.models import ZZZPartialAgent
 from loguru import logger
 
 from hoyo_buddy.constants import (
+    HSR_DEFAULT_ART_URL,
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
-    ZZZ_AGENT_DATA,
-    ZZZ_DISC_ICONS,
+    ZZZ_AGENT_DATA_URL,
+    ZZZ_DISC_ICONS_URL,
 )
 from hoyo_buddy.db.models import CardSettings, HoyoAccount, JSONFile, Settings
 from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card, draw_zzz_build_card
@@ -345,7 +346,7 @@ class ProfileView(View):
         if character_data is None:
             raise CardNotReadyError(character.name)
 
-        default_art = f"https://raw.githubusercontent.com/FortOfFans/HSR/main/spriteoutput/avatardrawcardresult/{character.id}.png"
+        default_art = HSR_DEFAULT_ART_URL.format(char_id=character.id)
         art = self._card_settings.current_image or default_art
 
         if self._card_settings.custom_primary_color is None:
@@ -433,7 +434,7 @@ class ProfileView(View):
         agent_data = await JSONFile.read(file_path)
         if str(character.id) not in agent_data:
             agent_data = await JSONFile.fetch_and_cache(
-                session, url=ZZZ_AGENT_DATA, filename=file_path
+                session, url=ZZZ_AGENT_DATA_URL, filename=file_path
             )
         agent_icon = agent_data[str(character.id)]["icon_url"]
 
@@ -441,7 +442,7 @@ class ProfileView(View):
         disc_icons = await JSONFile.read(file_path)
         if any(disc.name not in disc_icons for disc in cn_agent.discs):
             disc_icons = await JSONFile.fetch_and_cache(
-                session, url=ZZZ_DISC_ICONS, filename=file_path
+                session, url=ZZZ_DISC_ICONS_URL, filename=file_path
             )
 
         agent_draw_data = self._card_data[str(character.id)]

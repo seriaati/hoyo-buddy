@@ -11,7 +11,7 @@ from ..commands.challenge import ChallengeCommand
 from ..commands.geetest import GeetestCommand
 from ..commands.profile import ProfileCommand
 from ..commands.stats import StatsCommand
-from ..constants import ZZZ_AGENT_DATA
+from ..constants import ZZZ_AGENT_DATA_URL
 from ..db.models import HoyoAccount, JSONFile, Settings, get_locale
 from ..draw.main_funcs import draw_exploration_card
 from ..embeds import DefaultEmbed
@@ -271,7 +271,7 @@ class Hoyo(commands.Cog):
         elif account_.game is Game.ZZZ:
             agent_data: dict[str, Any] = await JSONFile.fetch_and_cache(
                 i.client.session,
-                url=ZZZ_AGENT_DATA,
+                url=ZZZ_AGENT_DATA_URL,
                 filename="zzz_agent_data.json",
             )
 

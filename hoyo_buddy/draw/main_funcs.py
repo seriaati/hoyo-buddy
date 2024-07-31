@@ -11,7 +11,7 @@ from seria.utils import read_yaml
 
 from hoyo_buddy.draw import funcs
 
-from ..constants import ZZZ_AGENT_DATA, ZZZ_DISC_ICONS
+from ..constants import ZZZ_AGENT_DATA_URL, ZZZ_DISC_ICONS_URL
 from ..db.models import JSONFile
 from ..models import AbyssCharacter, HoyolabHSRCharacter, UnownedCharacter
 from .static import download_images
@@ -522,7 +522,7 @@ async def draw_zzz_team_card(draw_input: DrawInput, agents: Sequence[ZZZFullAgen
     agent_name_data = await JSONFile.read(filename)
     if any(str(agent.id) not in agent_name_data for agent in agents):
         agent_name_data = await JSONFile.fetch_and_cache(
-            draw_input.session, url=ZZZ_AGENT_DATA, filename=filename
+            draw_input.session, url=ZZZ_AGENT_DATA_URL, filename=filename
         )
     agent_full_names = {k: v["name"] for k, v in agent_name_data.items()}
 
@@ -532,7 +532,7 @@ async def draw_zzz_team_card(draw_input: DrawInput, agents: Sequence[ZZZFullAgen
     disc_icons = await JSONFile.read(filename)
     if any(disc.name not in disc_icons for disc in discs):
         disc_icons = await JSONFile.fetch_and_cache(
-            draw_input.session, url=ZZZ_DISC_ICONS, filename=filename
+            draw_input.session, url=ZZZ_DISC_ICONS_URL, filename=filename
         )
 
     new_disc_icons: dict[str, str] = {}

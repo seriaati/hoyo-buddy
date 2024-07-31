@@ -356,6 +356,8 @@ GAME_CHALLENGE_TYPES: Final[dict[Game, tuple[ChallengeType, ...]]] = {
     Game.STARRAIL: (ChallengeType.MOC, ChallengeType.PURE_FICTION, ChallengeType.APC_SHADOW),
 }
 
-ZENLESS_DATA = "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite"
-ZZZ_AGENT_DATA = f"{ZENLESS_DATA}/agent_data.json"
-ZZZ_DISC_ICONS = f"{ZENLESS_DATA}/disc_icons.json"
+ZENLESS_DATA_URL = "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite"
+ZZZ_AGENT_DATA_URL = f"{ZENLESS_DATA_URL}/agent_data.json"
+ZZZ_DISC_ICONS_URL = f"{ZENLESS_DATA_URL}/disc_icons.json"
+
+HSR_DEFAULT_ART_URL = "https://raw.githubusercontent.com/FortOfFans/HSR/main/spriteoutput/avatardrawcardresult/{char_id}.png"

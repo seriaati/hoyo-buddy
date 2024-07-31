@@ -516,11 +516,11 @@ class PaginatorSelect(Select, Generic[V_co]):
 
     async def callback(self) -> bool:
         changed = False
-        if self.values[0] == "next_page":
+        if "next_page" in self.values:
             changed = True
             self.page_index += 1
             self.options = self.process_options()
-        elif self.values[0] == "prev_page":
+        elif "prev_page" in self.values:
             changed = True
             self.page_index -= 1
             self.options = self.process_options()

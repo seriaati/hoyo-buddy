@@ -252,7 +252,9 @@ class ProfileView(View):
         if self._account is not None:
             self.add_item(RemoveFromCacheButton())
         if self.characters:
-            self.add_item(CharacterSelect(self.characters, self.cache_extras, self._builds))
+            self.add_item(
+                CharacterSelect(self.game, self.characters, self.cache_extras, self._builds)
+            )
         self.add_item(BuildSelect())
 
     async def _draw_src_character_card(

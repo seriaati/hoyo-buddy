@@ -26,6 +26,11 @@ DATA_TYPES: Final[dict[CharacterType, LocaleStr]] = {
     CharacterType.LIVE: LocaleStr(key="profile.character_select.live_data.description"),
     CharacterType.CACHE: LocaleStr(key="profile.character_select.cached_data.description"),
 }
+MAX_VALUES: Final[dict[Game, int]] = {
+    Game.GENSHIN: 4,
+    Game.STARRAIL: 4,
+    Game.ZZZ: 3,
+}
 
 
 def determine_chara_type(
@@ -46,6 +51,7 @@ def determine_chara_type(
 class CharacterSelect(PaginatorSelect["ProfileView"]):
     def __init__(
         self,
+        game: Game,
         characters: Sequence[Character],
         cache_extras: dict[str, dict[str, Any]],
         builds: Builds,
@@ -109,6 +115,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             options,
             placeholder=LocaleStr(key="profile.character_select.placeholder"),
             custom_id="profile_character_select",
+            max_values=MAX_VALUES[game],
         )
 
     async def callback(self, i: Interaction) -> None:

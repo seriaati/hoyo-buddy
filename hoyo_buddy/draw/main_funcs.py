@@ -4,11 +4,15 @@ import contextlib
 from typing import TYPE_CHECKING, Any
 
 import enka
+import hakushin
 from discord import File
 from sentry_sdk.metrics import timing
+from seria.utils import read_yaml
 
 from hoyo_buddy.draw import funcs
 
+from ..constants import ZZZ_AGENT_DATA, ZZZ_DISC_ICONS
+from ..db.models import JSONFile
 from ..models import AbyssCharacter, HoyolabHSRCharacter, UnownedCharacter
 from .static import download_images
 
@@ -507,5 +511,52 @@ async def draw_honkai_suits_card(
             draw_input.dark_mode,
             translator,
         )
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_zzz_team_card(draw_input: DrawInput, agents: Sequence[ZZZFullAgent]) -> File:
+    agent_data = await read_yaml("hoyo-buddy-assets/assets/zzz-build-card/agent_data.yaml")
+
+    filename = "zzz_agent_data.json"
+    agent_name_data = await JSONFile.read(filename)
+    if any(str(agent.id) not in agent_name_data for agent in agents):
+        agent_name_data = await JSONFile.fetch_and_cache(
+            draw_input.session, url=ZZZ_AGENT_DATA, filename=filename
+        )
+    agent_full_names = {k: v["name"] for k, v in agent_name_data.items()}
+
+    async with hakushin.HakushinAPI(hakushin.Game.ZZZ, lang=hakushin.Language.ZH) as api:
+        discs = await api.fetch_drive_discs()
+    filename = "zzz_disc_icons.json"
+    disc_icons = await JSONFile.read(filename)
+    if any(disc.name not in disc_icons for disc in discs):
+        disc_icons = await JSONFile.fetch_and_cache(
+            draw_input.session, url=ZZZ_DISC_ICONS, filename=filename
+        )
+
+    new_disc_icons: dict[str, str] = {}
+    for disc_name, disc_icon in disc_icons.items():
+        disc = next((disc for disc in discs if disc.name == disc_name), None)
+        if disc is not None:
+            new_disc_icons[str(disc.id)[:3]] = disc_icon
+
+    agent_images = {agent.id: agent.banner_icon for agent in agents}
+
+    urls = list(agent_images.values())
+    urls.extend(agent.w_engine.icon for agent in agents if agent.w_engine is not None)
+    urls.extend(disc_icons.values())
+    await download_images(urls, "zzz-team-card", draw_input.session)
+
+    card = funcs.zzz.ZZZTeamCard(
+        locale=draw_input.locale.value,
+        agents=agents,
+        agent_data=agent_data,
+        agent_images=agent_images,
+        agent_full_names=agent_full_names,
+        disc_icons=new_disc_icons,
+    )
+    with timing("draw", tags={"type": "zzz_team_card"}):
+        buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

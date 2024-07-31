@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pathlib
+from functools import lru_cache
 from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
 
 import discord
@@ -306,9 +307,9 @@ class Drawer:
         return ImageFont.truetype(font, size)
 
     @staticmethod
-    def _open_image(file_path: pathlib.Path, size: tuple[int, int] | None = None) -> Image.Image:
+    @lru_cache
+    def open_image(file_path: pathlib.Path, size: tuple[int, int] | None = None) -> Image.Image:
         image = Image.open(file_path)
-        image = image.convert("RGBA")
         if size:
             image = image.resize(size, Image.Resampling.LANCZOS)
         return image
@@ -329,6 +330,8 @@ class Drawer:
         no_write: bool = False,
         title_case: bool = False,
         sans: bool = False,
+        stroke_width: int = 0,
+        stroke_color: tuple[int, int, int] | None = None,
     ) -> TextBBox:
         """Returns (left, top, right, bottom) of the text bounding box."""
         if not text:
@@ -360,6 +363,8 @@ class Drawer:
                 font=font,
                 fill=self._get_text_color(color, emphasis),
                 anchor=anchor,
+                stroke_width=stroke_width,
+                stroke_fill=stroke_color,
             )
 
         textbbox = self.draw.textbbox(
@@ -377,7 +382,7 @@ class Drawer:
         opacity: float = 1.0,
     ) -> Image.Image:
         folder = folder or self.folder
-        image = self._open_image(get_static_img_path(url, folder), size)
+        image = self.open_image(get_static_img_path(url, folder), size)
         if mask_color:
             image = self.mask_image_with_color(image, mask_color, opacity=opacity)
         return image
@@ -393,7 +398,7 @@ class Drawer:
     ) -> Image.Image:
         folder = folder or self.folder
         path = pathlib.Path(f"hoyo-buddy-assets/assets/{folder}/{filename}")
-        image = self._open_image(path, size)
+        image = self.open_image(path, size)
         if mask_color:
             image = self.mask_image_with_color(image, mask_color, opacity=opacity)
         return image
@@ -407,7 +412,7 @@ class Drawer:
     def circular_crop(cls, image: Image.Image) -> Image.Image:
         """Crop an image into a circle."""
         path = pathlib.Path("hoyo-buddy-assets/assets/circular_mask.png")
-        mask = cls._open_image(path, image.size)
+        mask = cls.open_image(path, image.size)
         return cls.crop_with_mask(image, mask)
 
     def modify_image_for_build_card(

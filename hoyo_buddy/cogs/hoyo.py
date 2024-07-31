@@ -272,7 +272,7 @@ class Hoyo(commands.Cog):
             agent_data: dict[str, Any] = await JSONFile.fetch_and_cache(
                 i.client.session,
                 url=ZZZ_AGENT_DATA,
-                file_path="./.static/zzz_agent_data.json",
+                filename="zzz_agent_data.json",
             )
 
             element_char_counts: dict[str, int] = defaultdict(int)

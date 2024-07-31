@@ -427,19 +427,19 @@ class ProfileView(View):
             client.set_lang(Locale.chinese)
             cn_agent = await client.get_zzz_agent_info(character.id)
 
-        file_path = "./.static/zzz_agent_data.json"
+        file_path = "zzz_agent_data.json"
         agent_data = await JSONFile.read(file_path)
         if str(character.id) not in agent_data:
             agent_data = await JSONFile.fetch_and_cache(
-                session, url=ZZZ_AGENT_DATA, file_path=file_path
+                session, url=ZZZ_AGENT_DATA, filename=file_path
             )
         agent_icon = agent_data[str(character.id)]["icon_url"]
 
-        file_path = "./.static/zzz_disc_icons.json"
+        file_path = "zzz_disc_icons.json"
         disc_icons = await JSONFile.read(file_path)
         if any(disc.name not in disc_icons for disc in cn_agent.discs):
             disc_icons = await JSONFile.fetch_and_cache(
-                session, url=ZZZ_DISC_ICONS, file_path=file_path
+                session, url=ZZZ_DISC_ICONS, filename=file_path
             )
 
         agent_draw_data = self._card_data[str(character.id)]

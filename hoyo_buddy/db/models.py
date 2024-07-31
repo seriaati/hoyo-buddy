@@ -210,10 +210,10 @@ class FarmNotify(Model):
 
 class JSONFile(Model):
     name = fields.CharField(max_length=100, index=True)
-    data: fields.Field[dict[str, Any]] = fields.JSONField()
+    data: fields.Field[Any] = fields.JSONField()
 
     @staticmethod
-    async def read(filename: str) -> dict[str, Any]:
+    async def read(filename: str) -> Any:
         """Read a JSON file."""
         json_file = await JSONFile.get_or_none(name=filename)
         if json_file is None:
@@ -222,7 +222,7 @@ class JSONFile(Model):
         return json_file.data
 
     @staticmethod
-    async def write(filename: str, data: dict[str, Any]) -> None:
+    async def write(filename: str, data: Any) -> None:
         """Write a JSON file."""
         json_file = await JSONFile.get_or_none(name=filename)
         if json_file is None:
@@ -233,10 +233,10 @@ class JSONFile(Model):
         await json_file.save(update_fields=("data",))
 
     @staticmethod
-    async def fetch_and_cache(session: aiohttp.ClientSession, *, url: str, file_path: str) -> Any:
+    async def fetch_and_cache(session: aiohttp.ClientSession, *, url: str, filename: str) -> Any:
         async with session.get(url) as resp:
             data = orjson.loads(await resp.text())
-            await JSONFile.write(file_path, data)
+            await JSONFile.write(filename, data)
             return data
 
 

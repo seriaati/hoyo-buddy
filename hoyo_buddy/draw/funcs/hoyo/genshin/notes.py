@@ -4,7 +4,7 @@ from io import BytesIO
 from typing import TYPE_CHECKING
 
 from discord import Locale
-from PIL import Image, ImageDraw
+from PIL import ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.l10n import LocaleStr, Translator

@@ -371,7 +371,9 @@ class ExplorationCard:
 
     def draw(self) -> BytesIO:
         mode_str = "dark" if self._dark_mode else "light"
-        self._im = Drawer.open_image(f"hoyo-buddy-assets/assets/gi-exploration/background_{mode_str}.png")
+        self._im = Drawer.open_image(
+            f"hoyo-buddy-assets/assets/gi-exploration/background_{mode_str}.png"
+        )
         draw = ImageDraw.Draw(self._im)
         self._drawer = Drawer(
             draw,

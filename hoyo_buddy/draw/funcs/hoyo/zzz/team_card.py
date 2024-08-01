@@ -6,40 +6,16 @@ from typing import TYPE_CHECKING, Any
 from discord import Locale
 from discord import utils as dutils
 from genshin.models import ZZZPropertyType as PropType
-from genshin.models import ZZZSkillType
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
+
+from .common import SKILL_ORDER, STAT_ICONS, get_props
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from genshin.models import ZZZFullAgent
-
-STAT_ICONS = {
-    # Disc
-    PropType.DISC_HP: "HP.png",
-    PropType.DISC_ATK: "ATK.png",
-    PropType.DISC_DEF: "DEF.png",
-    PropType.DISC_PEN: "PEN_RATIO.png",
-    PropType.DISC_BONUS_PHYSICAL_DMG: "PHYSICAL.png",
-    PropType.DISC_BONUS_FIRE_DMG: "FIRE.png",
-    PropType.DISC_BONUS_ICE_DMG: "ICE.png",
-    PropType.DISC_BONUS_ELECTRIC_DMG: "ELECTRIC.png",
-    PropType.DISC_BONUS_ETHER_DMG: "ETHER.png",
-    # W-engine
-    PropType.ENGINE_HP: "HP.png",
-    PropType.ENGINE_BASE_ATK: "ATK.png",
-    PropType.ENGINE_ATK: "ATK.png",
-    PropType.ENGINE_DEF: "DEF.png",
-    PropType.ENGINE_ENERGY_REGEN: "ENERGY_REGEN.png",
-    # Common
-    PropType.CRIT_DMG: "CRIT_DMG.png",
-    PropType.CRIT_RATE: "CRIT_RATE.png",
-    PropType.ANOMALY_PROFICIENCY: "ANOMALY_PRO.png",
-    PropType.PEN_RATIO: "PEN_RATIO.png",
-    PropType.IMPACT: "IMPACT.png",
-}
 
 
 class ZZZTeamCard:
@@ -222,16 +198,8 @@ class ZZZTeamCard:
             start_pos = (1132, 21) if i == 2 else (start_pos[0], start_pos[1] + y_diff)
 
     def _draw_skill_levels(self, agent: ZZZFullAgent, drawer: Drawer) -> None:
-        skill_order = (
-            ZZZSkillType.BASIC_ATTACK,
-            ZZZSkillType.DODGE,
-            ZZZSkillType.ASSIST,
-            ZZZSkillType.SPECIAL_ATTACK,
-            ZZZSkillType.CHAIN_ATTACK,
-            ZZZSkillType.CORE_SKILL,
-        )
         start_pos = (669, 214)
-        for i, skill_type in enumerate(skill_order):
+        for i, skill_type in enumerate(SKILL_ORDER):
             skill = dutils.get(agent.skills, type=skill_type)
             if skill is None:
                 continue
@@ -306,18 +274,7 @@ class ZZZTeamCard:
         )
 
     def _draw_stats(self, agent: ZZZFullAgent, drawer: Drawer) -> None:
-        props = (
-            dutils.get(agent.properties, type=PropType.AGENT_HP),
-            dutils.get(agent.properties, type=PropType.AGENT_ATK),
-            dutils.get(agent.properties, type=PropType.AGENT_DEF),
-            dutils.get(agent.properties, type=PropType.AGENT_IMPACT),
-            dutils.get(agent.properties, type=PropType.AGENT_CRIT_RATE),
-            dutils.get(agent.properties, type=PropType.AGENT_ANOMALY_MASTERY),
-            dutils.get(agent.properties, type=PropType.AGENT_ANOMALY_PROFICIENCY),
-            dutils.get(agent.properties, type=PropType.AGENT_PEN_RATIO),
-            dutils.get(agent.properties, type=PropType.AGENT_ENERGY_GEN),
-            dutils.get(agent.properties, type=PropType.AGENT_CRIT_DMG),
-        )
+        props = get_props(agent)
         start_pos = (306, 48)
         for i, prop in enumerate(props):
             if prop is None:

@@ -16,12 +16,18 @@ from hoyo_buddy.constants import (
     ZZZ_DISC_ICONS_URL,
 )
 from hoyo_buddy.db.models import CardSettings, HoyoAccount, JSONFile, Settings
-from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card, draw_zzz_build_card
+from hoyo_buddy.draw.main_funcs import (
+    draw_gi_build_card,
+    draw_hsr_build_card,
+    draw_zzz_build_card,
+    draw_zzz_team_card,
+)
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import CharacterType, Game, Platform
 from hoyo_buddy.exceptions import (
     CardNotReadyError,
     DownloadImageFailedError,
+    FeatureNotImplementedError,
     ThirdPartyCardTempError,
 )
 from hoyo_buddy.icons import get_game_icon
@@ -430,19 +436,19 @@ class ProfileView(View):
             client.set_lang(Locale.chinese)
             cn_agent = await client.get_zzz_agent_info(character.id)
 
-        file_path = "zzz_agent_data.json"
-        agent_data = await JSONFile.read(file_path)
+        filename = "zzz_agent_data.json"
+        agent_data = await JSONFile.read(filename)
         if str(character.id) not in agent_data:
             agent_data = await JSONFile.fetch_and_cache(
-                session, url=ZZZ_AGENT_DATA_URL, filename=file_path
+                session, url=ZZZ_AGENT_DATA_URL, filename=filename
             )
         agent_icon = agent_data[str(character.id)]["icon_url"]
 
-        file_path = "zzz_disc_icons.json"
-        disc_icons = await JSONFile.read(file_path)
+        filename = "zzz_disc_icons.json"
+        disc_icons = await JSONFile.read(filename)
         if any(disc.name not in disc_icons for disc in cn_agent.discs):
             disc_icons = await JSONFile.fetch_and_cache(
-                session, url=ZZZ_DISC_ICONS_URL, filename=file_path
+                session, url=ZZZ_DISC_ICONS_URL, filename=filename
             )
 
         agent_draw_data = self._card_data[str(character.id)]
@@ -534,6 +540,24 @@ class ProfileView(View):
 
         assert bytes_obj is not None
         return bytes_obj
+
+    async def draw_team_card(self, i: Interaction, *, character_ids: Sequence[str]) -> io.BytesIO:
+        draw_input = DrawInput(
+            dark_mode=False,
+            locale=self.locale,
+            session=i.client.session,
+            filename="card.webp",
+            executor=i.client.executor,
+            loop=i.client.loop,
+        )
+        if self.game is Game.ZZZ:
+            assert self._account is not None
+            client = self._account.client
+            client.set_lang(self.locale)
+            agents = [await client.get_zzz_agent_info(int(char_id)) for char_id in character_ids]
+            return await draw_zzz_team_card(draw_input, agents)
+
+        raise FeatureNotImplementedError(game=self.game)
 
     async def update(
         self,

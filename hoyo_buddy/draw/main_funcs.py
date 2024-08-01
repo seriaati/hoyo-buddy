@@ -515,7 +515,7 @@ async def draw_honkai_suits_card(
     return File(buffer, filename=draw_input.filename)
 
 
-async def draw_zzz_team_card(draw_input: DrawInput, agents: Sequence[ZZZFullAgent]) -> File:
+async def draw_zzz_team_card(draw_input: DrawInput, agents: Sequence[ZZZFullAgent]) -> BytesIO:
     agent_data = await read_yaml("hoyo-buddy-assets/assets/zzz-build-card/agent_data.yaml")
 
     filename = "zzz_agent_data.json"
@@ -558,5 +558,4 @@ async def draw_zzz_team_card(draw_input: DrawInput, agents: Sequence[ZZZFullAgen
     )
     with timing("draw", tags={"type": "zzz_team_card"}):
         buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
-    buffer.seek(0)
-    return File(buffer, filename=draw_input.filename)
+    return buffer

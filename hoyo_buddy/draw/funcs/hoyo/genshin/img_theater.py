@@ -126,10 +126,16 @@ class ImgTheaterCard:
             block.paste(icon, (2, 2), icon)
 
             block.paste(const_flair, (92, 0), const_flair)
+            const_text = {
+                genshin.models.TheaterCharaType.NORMAL: str(
+                    self._chara_consts.get(character.id, "?")
+                ),
+                genshin.models.TheaterCharaType.SUPPORT: "?",
+                genshin.models.TheaterCharaType.TRIAL: "0",
+            }
+            text = const_text[character.type]
             block_drawer.write(
-                str(self._chara_consts.get(character.id, "?"))
-                if character.type is genshin.models.TheaterCharaType.NORMAL
-                else "?",
+                text,
                 size=18,
                 position=(107, 15),
                 anchor="mm",

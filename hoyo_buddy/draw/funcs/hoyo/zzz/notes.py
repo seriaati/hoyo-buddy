@@ -25,7 +25,7 @@ def draw_zzz_notes(
     )
 
     filename = f"{'dark' if dark_mode else 'light'}_notes_{battery_level}"
-    im = Image.open(f"hoyo-buddy-assets/assets/zzz-notes/{filename}.png")
+    im = Drawer.open_image(f"hoyo-buddy-assets/assets/zzz-notes/{filename}.png")
     draw = ImageDraw.Draw(im)
     drawer = Drawer(
         draw,

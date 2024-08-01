@@ -302,7 +302,7 @@ class AbyssCard:
 
     def draw(self) -> BytesIO:
         mode = "dark" if self._dark_mode else "light"
-        self._im = Image.open(f"hoyo-buddy-assets/assets/abyss/{mode}_abyss.png")
+        self._im = Drawer.open_image(f"hoyo-buddy-assets/assets/abyss/{mode}_abyss.png")
         draw = ImageDraw.Draw(self._im)
         self._drawer = Drawer(
             draw,

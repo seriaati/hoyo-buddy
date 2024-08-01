@@ -120,12 +120,12 @@ def draw_big_agent_card(
     theme = "dark" if dark_mode else "light"
 
     # Open assets
-    mask = Image.open(f"{asset_path}/mask_{theme}.png")
-    card = Image.open(f"{asset_path}/card_{theme}.png")
-    circle = Image.open(f"{asset_path}/circle_{theme}.png")
-    level_bar = Image.open(f"{asset_path}/level_bar_{theme}.png")
-    skill_bar = Image.open(f"{asset_path}/skill_bar_{theme}.png")
-    engine_block = Image.open(f"{asset_path}/engine_block_{theme}.png")
+    mask = Drawer.open_image(f"{asset_path}/mask_{theme}.png")
+    card = Drawer.open_image(f"{asset_path}/card_{theme}.png")
+    circle = Drawer.open_image(f"{asset_path}/circle_{theme}.png")
+    level_bar = Drawer.open_image(f"{asset_path}/level_bar_{theme}.png")
+    skill_bar = Drawer.open_image(f"{asset_path}/skill_bar_{theme}.png")
+    engine_block = Drawer.open_image(f"{asset_path}/engine_block_{theme}.png")
 
     cards: list[Image.Image] = [
         draw_agent_small_card(

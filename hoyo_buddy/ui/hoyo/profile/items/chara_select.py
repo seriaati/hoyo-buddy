@@ -124,18 +124,23 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         if changed:
             return await i.response.edit_message(view=self.view)
 
-        self.view.character_id = self.values[0]
-        character = self.view.characters[self.view.character_id]
+        # Enable the player info button
+        player_btn = self.view.get_item("profile_player_info")
+        player_btn.disabled = False
+
+        self.view.character_ids = self.values
+        if len(self.view.character_ids) > 1:
+            await self.set_loading_state(i)
+            return await self.view.update(i, self, team_card=True)
+
+        character_id = self.view.character_ids[0]
+        character = self.view.characters[character_id]
         self.view.character_type = determine_chara_type(
-            self.view.character_id,
+            character_id,
             cache_extras=self.view.cache_extras,
             builds=self.view._builds,
             is_hoyolab=isinstance(character, HoyolabHSRCharacter),
         )
-
-        # Enable the player info button
-        player_btn = self.view.get_item("profile_player_info")
-        player_btn.disabled = False
 
         # Enable the card settings button
         card_settings_btn = self.view.get_item("profile_card_settings")
@@ -148,7 +153,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             remove_from_cache_btn.disabled = self.view.character_type is not CharacterType.CACHE
 
         # Set builds
-        builds = self.view._builds.get(self.view.character_id, [])
+        builds = self.view._builds.get(character_id, [])
         if builds:
             self.view._build_id = builds[0].id
         build_select: BuildSelect = self.view.get_item("profile_build_select")

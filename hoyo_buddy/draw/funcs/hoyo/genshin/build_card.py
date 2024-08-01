@@ -23,7 +23,7 @@ def draw_genshin_card(
     text_color = (241, 241, 241) if dark_mode else (33, 33, 33)
 
     # main card
-    im: Image.Image = Image.open(
+    im: Image.Image = Drawer.open_image(
         f"hoyo-buddy-assets/assets/gi-build-card/backgrounds/{mode}_{character.element.name.title()}.png"
     )
     draw = ImageDraw.Draw(im)

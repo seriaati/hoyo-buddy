@@ -101,7 +101,7 @@ class ProfileView(View):
         self.uid = uid
         self.game = game
         self.cache_extras = cache_extras
-        self.character_id: str | None = None
+        self.character_ids: list[str] = []
         self.character_type: CharacterType | None = None
         self.characters: dict[str, Character] = {}
 
@@ -475,15 +475,12 @@ class ProfileView(View):
         )
 
     async def draw_card(self, i: Interaction, *, character: Character | None = None) -> io.BytesIO:
-        """Draw the character card and return the bytes object."""
-        assert self.character_id is not None
-
-        character = character or self.characters[self.character_id]
+        """Draw build card for a single character."""
+        character_id = self.character_ids[0]
+        character = character or self.characters[character_id]
 
         # Initialize card settings
-        card_settings = await CardSettings.get_or_none(
-            user_id=i.user.id, character_id=self.character_id
-        )
+        card_settings = await CardSettings.get_or_none(user_id=i.user.id, character_id=character_id)
         if card_settings is None:
             user_settings = await Settings.get(user_id=i.user.id)
             templates = {
@@ -500,7 +497,7 @@ class ProfileView(View):
 
             card_settings = await CardSettings.create(
                 user_id=i.user.id,
-                character_id=self.character_id,
+                character_id=character_id,
                 dark_mode=False,
                 template=template,
             )
@@ -512,25 +509,22 @@ class ProfileView(View):
             await self._card_settings.save(update_fields=("template",))
 
         template = self._card_settings.template
-        bytes_obj = None
 
         try:
             if self.game is Game.STARRAIL:
                 if "hb" in template:
-                    bytes_obj = await self._draw_hb_hsr_character_card(
+                    return await self._draw_hb_hsr_character_card(
                         i.client.session, i.client.executor, i.client.loop, character
                     )
-                else:
-                    bytes_obj = await self._draw_src_character_card(i.client.session, character)
+                return await self._draw_src_character_card(i.client.session, character)
             elif self.game is Game.GENSHIN:
                 if "hb" in template:
-                    bytes_obj = await self._draw_hb_gi_character_card(
+                    return await self._draw_hb_gi_character_card(
                         i.client.session, i.client.executor, i.client.loop, character
                     )
-                else:
-                    bytes_obj = await self._draw_enka_card(i.client.session, character)
+                return await self._draw_enka_card(i.client.session, character)
             elif self.game is Game.ZZZ:
-                bytes_obj = await self._draw_hb_zzz_character_card(
+                return await self._draw_hb_zzz_character_card(
                     i.client.session, i.client.executor, i.client.loop, character
                 )
         except Exception:
@@ -539,10 +533,11 @@ class ProfileView(View):
             await self._card_settings.save(update_fields=("template",))
             raise
 
-        assert bytes_obj is not None
-        return bytes_obj
+        msg = f"draw_card not implemented for game {self.game} template {template}"
+        raise ValueError(msg)
 
-    async def draw_team_card(self, i: Interaction, *, character_ids: Sequence[str]) -> io.BytesIO:
+    async def draw_team_card(self, i: Interaction) -> io.BytesIO:
+        """Draw team card for multiple characters."""
         draw_input = DrawInput(
             dark_mode=False,
             locale=self.locale,
@@ -555,8 +550,10 @@ class ProfileView(View):
             assert self._account is not None
             client = self._account.client
             client.set_lang(self.locale)
-            agents = [await client.get_zzz_agent_info(int(char_id)) for char_id in character_ids]
-            return await draw_zzz_team_card(draw_input, agents)
+            agents = [
+                await client.get_zzz_agent_info(int(char_id)) for char_id in self.character_ids
+            ]
+            return await draw_zzz_team_card(draw_input, agents, self._card_data)
 
         raise FeatureNotImplementedError(game=self.game)
 
@@ -567,9 +564,14 @@ class ProfileView(View):
         *,
         unset_loading_state: bool = True,
         character: Character | None = None,
+        team_card: bool = False,
     ) -> None:
         try:
-            bytes_obj = await self.draw_card(i, character=character)
+            bytes_obj = (
+                await self.draw_team_card(i)
+                if team_card
+                else await self.draw_card(i, character=character)
+            )
             bytes_obj.seek(0)
         except Exception as e:
             if isinstance(e, DownloadImageFailedError):

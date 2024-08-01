@@ -29,7 +29,7 @@ class ImgTheaterCard:
         return discord.Locale(self._locale)
 
     def _open_asset(self, asset: str) -> Image.Image:
-        return Image.open(f"{self._asset_dir}/{asset}")
+        return Drawer.open_image(f"{self._asset_dir}/{asset}")
 
     def _write_large_block_texts(self) -> None:
         self._drawer.write(

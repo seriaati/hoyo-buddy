@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import pathlib
-from functools import lru_cache
 from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
 
 import discord
+from cachetools import LRUCache
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from ..models import DynamicBKInput, TopPadding
@@ -104,6 +104,8 @@ SANS_FONT_MAPPING: dict[discord.Locale, dict[FontStyle, str]] = {
         "black_italic": NUNITO_SANS_BLACK_ITALIC,
     }
 }
+
+image_cache: LRUCache[pathlib.Path, Image.Image] = LRUCache(maxsize=512)
 
 
 class Drawer:
@@ -307,12 +309,20 @@ class Drawer:
         return ImageFont.truetype(font, size)
 
     @staticmethod
-    @lru_cache
-    def open_image(file_path: pathlib.Path, size: tuple[int, int] | None = None) -> Image.Image:
-        image = Image.open(file_path)
-        if size:
+    def open_image(
+        file_path: pathlib.Path | str, size: tuple[int, int] | None = None
+    ) -> Image.Image:
+        if isinstance(file_path, str):
+            file_path = pathlib.Path(file_path)
+
+        image = image_cache.get(file_path)
+        if image is None:
+            image = Image.open(file_path)
+            image_cache[file_path] = image
+
+        if size is not None:
             image = image.resize(size, Image.Resampling.LANCZOS)
-        return image
+        return image.copy()
 
     def write(
         self,

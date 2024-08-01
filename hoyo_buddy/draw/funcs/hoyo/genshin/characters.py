@@ -121,7 +121,7 @@ def draw_small_gi_chara_card(
     translator: Translator,
     locale: Locale,
 ) -> Image.Image:
-    im = Image.open(
+    im = Drawer.open_image(
         f"hoyo-buddy-assets/assets/gi-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png"
     )
 

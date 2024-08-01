@@ -28,7 +28,6 @@ class RemoveImageButton(Button["ProfileView"]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        assert self.view.character_id is not None
         assert self.view._card_settings is not None
 
         # Disable self

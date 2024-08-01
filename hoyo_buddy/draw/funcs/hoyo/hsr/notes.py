@@ -21,7 +21,7 @@ def draw_hsr_notes_card(
 ) -> BytesIO:
     locale = Locale(locale_)
     filename = f"{'dark' if dark_mode else 'light'}-hsr"
-    im = Image.open(f"hoyo-buddy-assets/assets/notes/{filename}.png")
+    im = Drawer.open_image(f"hoyo-buddy-assets/assets/notes/{filename}.png")
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="hsr-notes", dark_mode=dark_mode, translator=translator)
 

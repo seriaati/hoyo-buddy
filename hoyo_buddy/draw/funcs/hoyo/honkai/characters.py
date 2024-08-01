@@ -79,9 +79,9 @@ def draw_big_suit_card(
     theme = "dark" if dark_mode else "light"
 
     # Open assets
-    mask = Image.open(f"{asset_path}/mask.png")
-    suit_mask = Image.open(f"{asset_path}/suit_mask.png")
-    card = Image.open(f"{asset_path}/card_{theme}.png")
+    mask = Drawer.open_image(f"{asset_path}/mask.png")
+    suit_mask = Drawer.open_image(f"{asset_path}/suit_mask.png")
+    card = Drawer.open_image(f"{asset_path}/card_{theme}.png")
 
     cards: Sequence[Image.Image] = [
         draw_small_suit_card(

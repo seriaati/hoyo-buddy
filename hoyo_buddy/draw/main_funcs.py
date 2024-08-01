@@ -7,7 +7,6 @@ import enka
 import hakushin
 from discord import File
 from sentry_sdk.metrics import timing
-from seria.utils import read_yaml
 
 from hoyo_buddy.draw import funcs
 
@@ -515,9 +514,9 @@ async def draw_honkai_suits_card(
     return File(buffer, filename=draw_input.filename)
 
 
-async def draw_zzz_team_card(draw_input: DrawInput, agents: Sequence[ZZZFullAgent]) -> BytesIO:
-    agent_data = await read_yaml("hoyo-buddy-assets/assets/zzz-build-card/agent_data.yaml")
-
+async def draw_zzz_team_card(
+    draw_input: DrawInput, agents: Sequence[ZZZFullAgent], agent_data: dict[str, Any]
+) -> BytesIO:
     filename = "zzz_agent_data.json"
     agent_name_data = await JSONFile.read(filename)
     if any(str(agent.id) not in agent_name_data for agent in agents):

@@ -35,13 +35,12 @@ class CardSettingsButton(Button["ProfileView"]):
 
     async def callback(self, i: Interaction) -> None:
         assert self.view._card_settings is not None
-        assert self.view.character_id is not None
 
         go_back_button = GoBackButton(self.view.children)
         self.view.clear_items()
         self.view.add_item(go_back_button)
 
-        default_arts: list[str] = self.view._card_data[self.view.character_id]["arts"]
+        default_arts: list[str] = self.view._card_data[self.view.character_ids[0]]["arts"]
 
         self.view.add_item(
             ImageSelect(

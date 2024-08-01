@@ -313,5 +313,5 @@ class ZZZTeamCard:
             start_pos = (start_pos[0], start_pos[1] + y_diff)
 
         buffer = BytesIO()
-        im.save(buffer, format="WEBP", quality=80)
+        im.save(buffer, format="WEBP", loseless=True)
         return buffer

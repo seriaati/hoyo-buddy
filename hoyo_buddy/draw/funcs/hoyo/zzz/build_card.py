@@ -37,7 +37,7 @@ class ZZZAgentCard:
         self._agent_full_name = agent_full_name
 
     def _draw_background(self) -> Image.Image:
-        card = Image.open("hoyo-buddy-assets/assets/zzz-build-card/card_base.png")
+        card = Drawer.open_image("hoyo-buddy-assets/assets/zzz-build-card/card_base.png")
         draw = ImageDraw.Draw(card)
         drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False)
 

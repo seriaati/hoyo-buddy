@@ -3,7 +3,7 @@ from __future__ import annotations
 import io
 from typing import TYPE_CHECKING
 
-from cachetools import LRUCache, cached
+from cachetools import TTLCache, cached
 from discord import Locale
 from PIL import Image, ImageDraw
 
@@ -113,7 +113,7 @@ def gi_cache_key(
     )
 
 
-@cached(LRUCache(maxsize=128), key=gi_cache_key)
+@cached(TTLCache(maxsize=64, ttl=180), key=gi_cache_key)
 def draw_small_gi_chara_card(
     talent_str: str,
     dark_mode: bool,

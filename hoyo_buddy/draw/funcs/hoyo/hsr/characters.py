@@ -3,7 +3,7 @@ from __future__ import annotations
 import io
 from typing import TYPE_CHECKING
 
-from cachetools import LRUCache, cached
+from cachetools import TTLCache, cached
 from discord import Locale
 from genshin.models import StarRailDetailCharacter as HSRCharacter
 from PIL import Image, ImageDraw
@@ -105,7 +105,7 @@ def hsr_cache_key(
     )
 
 
-@cached(LRUCache(maxsize=128), key=hsr_cache_key)
+@cached(TTLCache(maxsize=64, ttl=180), key=hsr_cache_key)
 def draw_small_hsr_chara_card(
     talent_str: str,
     dark_mode: bool,

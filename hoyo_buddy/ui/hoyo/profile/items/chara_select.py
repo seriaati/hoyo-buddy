@@ -35,11 +35,12 @@ MAX_VALUES: Final[dict[Game, int]] = {
 
 def determine_chara_type(
     character_id: str,
+    *,
     cache_extras: dict[str, dict[str, Any]],
     builds: Builds,
-    hoyolab: bool,
+    is_hoyolab: bool,
 ) -> CharacterType:
-    key = f"{character_id}-hoyolab" if hoyolab else character_id
+    key = f"{character_id}-hoyolab" if is_hoyolab else character_id
     chara_builds = builds.get(character_id, [])
     if key not in cache_extras or (chara_builds and not any(build.live for build in chara_builds)):
         return CharacterType.BUILD
@@ -61,9 +62,9 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         for character in characters:
             character_type = determine_chara_type(
                 str(character.id),
-                cache_extras,
-                builds,
-                isinstance(character, HoyolabHSRCharacter | ZZZPartialAgent),
+                cache_extras=cache_extras,
+                builds=builds,
+                is_hoyolab=isinstance(character, HoyolabHSRCharacter | ZZZPartialAgent),
             )
             data_type = DATA_TYPES[character_type]
 
@@ -124,12 +125,12 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             return await i.response.edit_message(view=self.view)
 
         self.view.character_id = self.values[0]
-        character = self.view._get_character(self.view.character_id)
+        character = self.view.characters[self.view.character_id]
         self.view.character_type = determine_chara_type(
             self.view.character_id,
-            self.view.cache_extras,
-            self.view._builds,
-            isinstance(character, HoyolabHSRCharacter),
+            cache_extras=self.view.cache_extras,
+            builds=self.view._builds,
+            is_hoyolab=isinstance(character, HoyolabHSRCharacter),
         )
 
         # Enable the player info button

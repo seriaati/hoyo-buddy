@@ -103,7 +103,7 @@ class ProfileView(View):
         self.cache_extras = cache_extras
         self.character_id: str | None = None
         self.character_type: CharacterType | None = None
-        self.characters: Sequence[Character] = []
+        self.characters: dict[str, Character] = {}
 
         self._card_settings: CardSettings | None = None
         self._card_data = card_data
@@ -115,52 +115,51 @@ class ProfileView(View):
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | None = None
 
-    def _get_character(self, character_id: str) -> Character:
-        return next(c for c in self.characters if str(c.id) == character_id)
-
     def _set_characters(self) -> None:  # noqa: PLR0912
-        """Set the characters list."""
-        characters: Sequence[Character] = []
+        characters: dict[str, Character] = {}
 
         if self.game is Game.STARRAIL:
             if self._hoyolab_over_enka and self.hoyolab_characters:
-                self.characters = self.hoyolab_characters
+                self.characters = {str(chara.id): chara for chara in self.hoyolab_characters}
                 return
 
             enka_chara_ids: list[str] = []
             if self.starrail_data is not None:
                 for chara in self.starrail_data.characters:
                     chara_type = determine_chara_type(
-                        str(chara.id), self.cache_extras, self._builds, False
+                        str(chara.id),
+                        cache_extras=self.cache_extras,
+                        builds=self._builds,
+                        is_hoyolab=False,
                     )
                     if chara_type is CharacterType.CACHE:
                         continue
                     enka_chara_ids.append(str(chara.id))
-                    characters.append(chara)
+                    characters[str(chara.id)] = chara
 
             for chara in self.hoyolab_characters:
                 if str(chara.id) not in enka_chara_ids:
                     enka_chara_ids.append(str(chara.id))
-                    characters.append(chara)
+                    characters[str(chara.id)] = chara
 
-            if self._builds:
-                for builds in self._builds.values():
-                    character = builds[0].character
-                    if str(character.id) not in enka_chara_ids:
-                        characters.append(character)
+            for builds in self._builds.values():
+                character = builds[0].character
+                if str(character.id) not in enka_chara_ids:
+                    characters[str(character.id)] = character
 
         elif self.game is Game.GENSHIN:
             assert self.genshin_data is not None
-            if self._builds:
-                for builds in self._builds.values():
-                    character = builds[0].character
-                    characters.append(character)
-            else:
-                characters.extend(self.genshin_data.characters)
+            for chara in self.genshin_data.characters:
+                characters[str(chara.id)] = chara
+
+            for builds in self._builds.values():
+                character = builds[0].character
+                characters[str(character.id)] = character
 
         elif self.game is Game.ZZZ:
             assert self.zzz_data is not None
-            characters.extend(self.zzz_data)
+            for chara in self.zzz_data:
+                characters[str(chara.id)] = chara
 
         self.characters = characters
 
@@ -260,7 +259,9 @@ class ProfileView(View):
             self.add_item(RemoveFromCacheButton())
         if self.characters:
             self.add_item(
-                CharacterSelect(self.game, self.characters, self.cache_extras, self._builds)
+                CharacterSelect(
+                    self.game, list(self.characters.values()), self.cache_extras, self._builds
+                )
             )
         self.add_item(BuildSelect())
 
@@ -477,7 +478,7 @@ class ProfileView(View):
         """Draw the character card and return the bytes object."""
         assert self.character_id is not None
 
-        character = character or self._get_character(self.character_id)
+        character = character or self.characters[self.character_id]
 
         # Initialize card settings
         card_settings = await CardSettings.get_or_none(

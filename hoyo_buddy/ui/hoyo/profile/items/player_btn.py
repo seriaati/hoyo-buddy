@@ -38,4 +38,7 @@ class PlayerInfoButton(Button["ProfileView"]):
         build_select = self.view.get_item("profile_build_select")
         build_select.disabled = True
 
+        redraw_card_btn = self.view.get_item("profile_redraw_card")
+        redraw_card_btn.disabled = True
+
         await i.response.edit_message(embed=self.view.player_embed, attachments=[], view=self.view)

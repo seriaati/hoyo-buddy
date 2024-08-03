@@ -319,6 +319,7 @@ class Drawer:
         if image is None:
             image = Image.open(file_path)
             image_cache[file_path] = image
+        image = image.convert("RGBA")
 
         if size is not None:
             image = image.resize(size, Image.Resampling.LANCZOS)

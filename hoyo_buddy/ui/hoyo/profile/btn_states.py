@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 # Determine button states based on template and game.
 # Templates aren't based on enums, games are.
 # Templates: hb1, src1, src2, src3, enkacard1, enkacard2, encard1, hattvr1

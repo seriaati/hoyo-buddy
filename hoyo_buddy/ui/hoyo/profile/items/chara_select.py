@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 
     from ..view import Character, ProfileView  # noqa: F401
     from .build_select import BuildSelect
+    from .redraw_card_btn import RedrawCardButton
 
 
 DATA_TYPES: Final[dict[CharacterType, LocaleStr]] = {
@@ -151,6 +152,10 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             # The button is not present in the view if view._account is None
             remove_from_cache_btn = self.view.get_item("profile_remove_from_cache")
             remove_from_cache_btn.disabled = self.view.character_type is not CharacterType.CACHE
+
+        # Enable the redraw card button
+        redraw_card_btn: RedrawCardButton = self.view.get_item("profile_redraw_card")
+        redraw_card_btn.disabled = False
 
         # Set builds
         builds = self.view._builds.get(character_id, [])

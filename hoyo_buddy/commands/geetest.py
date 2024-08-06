@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import os
 from typing import TYPE_CHECKING
 
 import asyncpg_listen
+import discord
 import genshin
 
 from ..bot.error_handler import get_error_embed
@@ -71,7 +73,8 @@ class GeetestCommand:
                     title=LocaleStr(key="geeetest_verification_timeout"),
                     description=LocaleStr(key="geeetest_verification_timeout_description"),
                 )
-                await self._message.edit(embed=embed, view=None)
+                with contextlib.suppress(discord.HTTPException):
+                    await self._message.edit(embed=embed, view=None)
                 self._bot.login_notif_tasks.pop(self._user_id).cancel()
             return
 

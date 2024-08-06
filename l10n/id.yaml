@@ -197,7 +197,7 @@ exploration_command_description: Lihat statistik eksplorasimu di Genshin Impact
 farm_add_command.item_already_in_list: Item sudah ada dalam daftar
 farm_add_command.item_already_in_list_description: Item ini sudah ada di dalam daftar pengingat farming kamu
 farm_add_command_description: Tambah karakter/senjata untuk diberitahu ketika materialnya dapat difarming
-farm_check.farmable_today: "Material untuk {name}dapat di farm hari ini"
+farm_check.farmable_today: ""
 farm_check.use_farm_notify: "Gunakan /farm reminder untuk konfigurasikan pengaturan pengingat\nGunakan /farm view untuk melihat semua item yang bisa difarming hari ini"
 farm_notify.add_item: Tambahkan item
 farm_notify.add_item.embed.description: "Untuk menambahkan item, gunakan perintah </farm add>"
@@ -309,7 +309,7 @@ next_page_option_label: Halaman selanjutnya
 nickname_modal_label: Nickname
 nickname_modal_placeholder: "Akun utama, akun Asia..."
 nihility: Nihility
-no_account_found_for_games_error_message: "Kamu belum memiliki akun untuk game `{games}` dan platform `{platforms}`. Tambahkan satu dengan </accounts>"
+no_account_found_for_games_error_message: ""
 no_account_found_for_games_error_title: Tidak ditemukan akun
 no_accounts_autocomplete_choice: Kamu belum memiliki akun apapun. Tambahkan satu dengan /accounts
 no_challenge_data_err_message: "Tidak dapat menemukan data {challenge} untuk fase ini. Kamu belum memulai {challenge} atau datanya belum ada. Silakan coba lagi nanti"
@@ -527,6 +527,7 @@ download_app_button_label: ""
 login_detail_modal.input_label: ""
 enter_login_details_button_label: ""
 not_implemented_error_title: ""
+not_implemented_error_only_game_message: ""
 not_implemented_error_message: ""
 profile.build.current.label: ""
 abyss_chamber.blessing.embed.field.name: ""
@@ -592,3 +593,15 @@ characters.sorter.speciality: ""
 characters.sorter.faction: ""
 characters.sorter.mindscape_cinema: ""
 characters.embed.filter_text: ""
+stats_command_description: ""
+stats.select_card: ""
+tears_of_themis: ""
+honkai_suit_rarity: ""
+about_command.designers: ""
+card_settings.modifying_for: ""
+card_settings.card_color: ""
+card_settings.no_color: ""
+card_settings.color_default: ""
+card_settings.current_image: ""
+profile.redraw_card_button_label: ""
+card_settings.footer: ""

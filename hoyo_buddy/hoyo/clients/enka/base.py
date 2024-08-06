@@ -157,6 +157,11 @@ class BaseClient:
         else:
             showcase_cache = self._update_cache(client.game, cache=showcase_cache, data=live_data)
 
+            try:
+                client.parse_showcase(live_data)
+            except KeyError:
+                await client.update_assets()
+
             self._update_live_status(client, showcase_cache, cache.extras, False)
             self._update_live_status(client, live_data, cache.extras, True)
 

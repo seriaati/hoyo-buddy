@@ -558,3 +558,35 @@ async def draw_zzz_team_card(
     with timing("draw", tags={"type": "zzz_team_card"}):
         buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     return buffer
+
+
+async def draw_hsr_team_card(
+    draw_input: DrawInput,
+    characters: Sequence[HoyolabHSRCharacter | enka.hsr.Character],
+    character_images: dict[str, str],
+    card_data: dict[str, Any],
+) -> BytesIO:
+    urls: list[str] = list(character_images.values())
+    for character in characters:
+        if character.light_cone is not None:
+            urls.append(character.light_cone.icon.image)
+            if isinstance(character, enka.hsr.Character):
+                urls.extend([stat.icon for stat in character.light_cone.stats])
+        urls.extend([trace.icon for trace in character.traces])
+        urls.extend([relic.icon for relic in character.relics])
+        if isinstance(character, enka.hsr.Character):
+            urls.extend([stat.icon for stat in character.stats.values()])
+        else:
+            urls.extend([stat.icon for stat in character.stats])
+
+    await download_images(urls, "hsr-team-card", draw_input.session)
+
+    with timing("draw", tags={"type": "hsr_team_card"}):
+        card = funcs.hsr.HSRTeamCard(
+            locale=draw_input.locale.value,
+            characters=characters,
+            character_images=character_images,
+            card_data=card_data,
+        )
+        buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
+    return buffer

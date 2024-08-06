@@ -381,6 +381,8 @@ class Drawer:
         textbbox = self.draw.textbbox(
             position, translated_text, font=font, anchor=anchor, font_size=size
         )
+        # There is a bug where the textbbox may return a float value
+        textbbox = (int(i) for i in textbbox)
         return TextBBox(*textbbox)
 
     def open_static(

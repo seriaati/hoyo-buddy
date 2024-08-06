@@ -27,7 +27,7 @@ class HSRTeamCard:
         character_images: dict[str, str],
         card_data: dict[str, Any],
     ) -> None:
-        self._locale = Locale(locale)
+        self._locale = locale
         self._characters = characters
         self._character_images = character_images
         self._card_data = card_data
@@ -78,7 +78,7 @@ class HSRTeamCard:
             style="bold",
             sans=True,
             anchor="lm",
-            locale=self._locale,
+            locale=Locale(self._locale),
             max_width=363,
         )
 
@@ -310,6 +310,7 @@ class HSRTeamCard:
             sans=True,
             max_width=180,
             max_lines=3,
+            locale=Locale(self._locale),
         )
 
         if isinstance(lc, enka.hsr.LightCone):

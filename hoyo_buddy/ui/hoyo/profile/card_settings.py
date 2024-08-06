@@ -9,7 +9,7 @@ from seria.utils import read_json, read_yaml
 
 from hoyo_buddy.constants import HSR_DEFAULT_ART_URL
 from hoyo_buddy.db.models import CardSettings, Settings
-from hoyo_buddy.embeds import DefaultEmbed
+from hoyo_buddy.embeds import DefaultEmbed, Embed
 from hoyo_buddy.emojis import (
     ADD,
     DELETE,
@@ -103,6 +103,11 @@ async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> C
         )
 
     return card_settings
+
+
+async def get_art_url(user_id: int, character_id: str, *, game: Game) -> str | None:
+    card_settings = await get_card_settings(user_id, character_id, game=game)
+    return card_settings.current_image
 
 
 def get_default_art(character: Character) -> str:
@@ -240,16 +245,17 @@ class CardSettingsView(View):
             chara for chara in self._characters if str(chara.id) == self.selected_character_id
         )
 
-    def get_settings_embed(self) -> DefaultEmbed:
+    def get_settings_embed(self) -> Embed:
         card_settings = self.card_settings
         character = self._get_current_character()
 
-        embed = DefaultEmbed(
+        color = card_settings.custom_primary_color or get_default_color(character, self._card_data)
+        embed = Embed(
             locale=self.locale,
             translator=self.translator,
             title=LocaleStr(key="card_settings.modifying_for", name=character.name),
+            color=int(color.lstrip("#"), 16) if color is not None else 6649080,
         )
-        color = card_settings.custom_primary_color or get_default_color(character, self._card_data)
         default_str = LocaleStr(key="card_settings.color_default").translate(
             self.translator, self.locale
         )

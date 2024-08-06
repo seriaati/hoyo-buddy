@@ -187,8 +187,8 @@ class GenshinClient(genshin.Client):
 
         await JSONFile.write(f"talent_levels/gi_{self.uid}.json", talent_level_data)
 
+    @staticmethod
     def convert_hsr_character(
-        self,
         character: genshin.models.StarRailDetailCharacter,
         property_info: dict[str, genshin.models.PropertyInfo],
     ) -> HoyolabHSRCharacter:

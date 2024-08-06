@@ -785,9 +785,12 @@ class UpdateTalentData(Button[CharactersView]):
     async def callback(self, i: Interaction) -> None:
         filename = f"talent_levels/gi_{self.view._account.uid}.json"
         talent_level_data: dict[str, str] = await JSONFile.read(filename)
-        updated_at = datetime.datetime.fromisoformat(talent_level_data["updated_at"])
-        if get_now() - updated_at < datetime.timedelta(minutes=30):
-            raise ActionInCooldownError(available_time=updated_at + datetime.timedelta(minutes=30))
+        if talent_level_data:
+            updated_at = datetime.datetime.fromisoformat(talent_level_data["updated_at"])
+            if get_now() - updated_at < datetime.timedelta(minutes=30):
+                raise ActionInCooldownError(
+                    available_time=updated_at + datetime.timedelta(minutes=30)
+                )
 
         embed = DefaultEmbed(
             self.view.locale,

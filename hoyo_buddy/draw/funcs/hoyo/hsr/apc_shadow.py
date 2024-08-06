@@ -151,7 +151,7 @@ class APCShadowCard:
                 key="pf_card_total_score",
                 score=f"{stage.node_1.score}+{stage.node_2.score}={stage.score}"
                 if not stage.is_quick_clear
-                else 80000,
+                else 8000,
             ),
             size=25,
             position=(0, 60),

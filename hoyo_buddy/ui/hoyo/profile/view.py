@@ -18,6 +18,7 @@ from hoyo_buddy.db.models import CardSettings, HoyoAccount, JSONFile
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
     draw_hsr_build_card,
+    draw_hsr_team_card,
     draw_zzz_build_card,
     draw_zzz_team_card,
 )
@@ -33,7 +34,7 @@ from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
-from hoyo_buddy.ui.hoyo.profile.card_settings import get_card_settings, get_default_art
+from hoyo_buddy.ui.hoyo.profile.card_settings import get_art_url, get_card_settings, get_default_art
 from hoyo_buddy.ui.hoyo.profile.items.redraw_card_btn import RedrawCardButton
 from hoyo_buddy.utils import blur_uid
 
@@ -535,6 +536,19 @@ class ProfileView(View):
                 await client.get_zzz_agent_info(int(char_id)) for char_id in self.character_ids
             ]
             return await draw_zzz_team_card(draw_input, agents, self._card_data)
+        if self.game is Game.STARRAIL:
+            characters = [self.characters[char_id] for char_id in self.character_ids]
+            character_images = {
+                char_id: await get_art_url(i.user.id, char_id, game=self.game)
+                or get_default_art(char)
+                for char_id, char in self.characters.items()
+            }
+            return await draw_hsr_team_card(
+                draw_input,
+                characters,  # pyright: ignore [reportArgumentType]
+                character_images,
+                self._card_data,
+            )
 
         raise FeatureNotImplementedError(game=self.game)
 

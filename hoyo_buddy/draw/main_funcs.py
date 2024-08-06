@@ -515,7 +515,10 @@ async def draw_honkai_suits_card(
 
 
 async def draw_zzz_team_card(
-    draw_input: DrawInput, agents: Sequence[ZZZFullAgent], agent_data: dict[str, Any]
+    draw_input: DrawInput,
+    agents: Sequence[ZZZFullAgent],
+    agent_data: dict[str, Any],
+    agent_images: dict[int, str],
 ) -> BytesIO:
     filename = "zzz_agent_data.json"
     agent_name_data = await JSONFile.read(filename)
@@ -539,8 +542,6 @@ async def draw_zzz_team_card(
         disc = next((disc for disc in discs if disc.name == disc_name), None)
         if disc is not None:
             new_disc_icons[str(disc.id)[:3]] = disc_icon
-
-    agent_images = {agent.id: agent.banner_icon for agent in agents}
 
     urls = list(agent_images.values())
     urls.extend(agent.w_engine.icon for agent in agents if agent.w_engine is not None)

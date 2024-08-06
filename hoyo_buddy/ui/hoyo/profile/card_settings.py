@@ -142,10 +142,12 @@ def get_default_color(character: Character, card_data: dict[str, Any]) -> str | 
     return None
 
 
-def get_default_collection(character: Character, card_data: dict[str, Any]) -> list[str]:
-    if isinstance(character, ZZZPartialAgent):
+def get_default_collection(
+    character_id: str, card_data: dict[str, Any], *, game: Game
+) -> list[str]:
+    if game is Game.ZZZ:
         return []
-    return card_data[str(character.id)]["arts"]
+    return card_data[character_id]["arts"]
 
 
 class CardSettingsView(View):
@@ -181,7 +183,9 @@ class CardSettingsView(View):
 
     def _add_items(self) -> None:
         character = self._get_current_character()
-        default_collection = get_default_collection(character, self._card_data)
+        default_collection = get_default_collection(
+            str(character.id), self._card_data, game=self.game
+        )
 
         self.add_item(
             CharacterSelect(
@@ -318,10 +322,37 @@ class CharacterSelect(PaginatorSelect[CardSettingsView]):
         if changed:
             return await i.response.edit_message(view=self.view)
 
+        self.update_options_defaults()
         self.view.selected_character_id = self.values[0]
         self.view.card_settings = await get_card_settings(
             self.view._user_id, self.values[0], game=self.view.game
         )
+        default_arts = get_default_collection(
+            self.values[0], self.view._card_data, game=self.view.game
+        )
+        custom_arts = self.view.card_settings.custom_images
+
+        # Update other item styles
+        image_select: ImageSelect = self.view.get_item("profile_image_select")
+        image_select.update(
+            current_image=self.view.card_settings.current_image,
+            custom_images=custom_arts,
+            default_collection=default_arts,
+        )
+
+        template_select: CardTemplateSelect = self.view.get_item("profile_card_template_select")
+        template_select.update_options_defaults(values=[self.view.card_settings.template])
+
+        remove_image_button: RemoveImageButton = self.view.get_item("profile_remove_image")
+        remove_image_button.disabled = (
+            self.view.card_settings.current_image is None
+            or self.view.card_settings.current_image in default_arts
+        )
+
+        dark_mode_button: DarkModeButton = self.view.get_item("profile_dark_mode")
+        dark_mode_button.current_toggle = self.view.card_settings.dark_mode
+        dark_mode_button.update_style()
+
         embed = self.view.get_settings_embed()
         await i.response.edit_message(embed=embed, view=self.view)
 
@@ -373,11 +404,7 @@ class RemoveImageButton(Button[CardSettingsView]):
 
         # Update image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.current_image_url = self.view.card_settings.current_image
-        image_select.custom_images = self.view.card_settings.custom_images
-        image_select.options_before_split = image_select.get_options()
-        image_select.options = image_select.process_options()
-        image_select.translate(self.view.locale, self.view.translator)
+        image_select.update(current_image=None, custom_images=self.view.card_settings.custom_images)
 
         embed = self.view.get_settings_embed()
         await i.response.edit_message(embed=embed, view=self.view)
@@ -405,6 +432,23 @@ class ImageSelect(PaginatorSelect[CardSettingsView]):
             disabled=disabled,
             row=row,
         )
+
+    def update(
+        self,
+        *,
+        current_image: str | None,
+        custom_images: list[str],
+        default_collection: list[str] | None = None,
+    ) -> None:
+        self.current_image_url = current_image
+        self.custom_images = custom_images
+        self.default_collection = default_collection or self.default_collection
+
+        self.options_before_split = self.get_options()
+        self.options = self.process_options()
+        if current_image is not None:
+            self.set_page_based_on_value(current_image)
+        self.translate(self.view.locale, self.view.translator)
 
     def get_options(self) -> list[SelectOption]:
         options: list[SelectOption] = [
@@ -569,11 +613,7 @@ class GenerateAIArtButton(Button):
 
         # Add the new image URL to the image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.options_before_split = image_select.get_options()
-        image_select.options = image_select.process_options()
-        # Set the new image as the default (selected) option
-        image_select.update_options_defaults(values=[url])
-        image_select.translate(self.view.locale, self.view.translator)
+        image_select.update(current_image=url, custom_images=self.view._card_settings.custom_images)
 
         # Enable the remove image button
         remove_img_btn: RemoveImageButton = self.view.get_item("profile_remove_image")
@@ -710,13 +750,9 @@ class AddImageButton(Button[CardSettingsView]):
 
         # Add the new image URL to the image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.custom_images.append(image_url)
-        image_select.options_before_split = image_select.get_options()
-        image_select.set_page_based_on_value(image_url)
-        image_select.options = image_select.process_options()
-        # Set the new image as the default (selected) option
-        image_select.update_options_defaults(values=[image_url])
-        image_select.translate(self.view.locale, self.view.translator)
+        image_select.update(
+            current_image=image_url, custom_images=self.view.card_settings.custom_images
+        )
 
         # Enable the remove image button
         self.view._item_states["profile_remove_image"] = False

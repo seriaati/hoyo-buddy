@@ -350,7 +350,7 @@ class ProfileView(View):
         if character_data is None:
             raise CardNotReadyError(character.name)
 
-        image_url = get_default_art(character)
+        image_url = card_settings.current_image or get_default_art(character)
 
         if card_settings.custom_primary_color is None:
             primary: str = character_data["primary"]
@@ -387,7 +387,7 @@ class ProfileView(View):
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert isinstance(character, enka.gi.Character)
 
-        image_url = get_default_art(character)
+        image_url = card_settings.current_image or get_default_art(character)
 
         cache_extra = self.cache_extras.get(str(character.id))
         locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
@@ -444,7 +444,6 @@ class ProfileView(View):
             )
 
         agent_draw_data = self._card_data[str(character.id)]
-
         cache_extra = self.cache_extras.get(str(character.id))
         locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
 
@@ -535,7 +534,12 @@ class ProfileView(View):
             agents = [
                 await client.get_zzz_agent_info(int(char_id)) for char_id in self.character_ids
             ]
-            return await draw_zzz_team_card(draw_input, agents, self._card_data)
+            agent_images = {
+                int(char_id): await get_art_url(i.user.id, char_id, game=self.game)
+                or get_default_art(char)
+                for char_id, char in self.characters.items()
+            }
+            return await draw_zzz_team_card(draw_input, agents, self._card_data, agent_images)
         if self.game is Game.STARRAIL:
             characters = [self.characters[char_id] for char_id in self.character_ids]
             character_images = {
@@ -559,14 +563,13 @@ class ProfileView(View):
         *,
         unset_loading_state: bool = True,
         character: Character | None = None,
-        team_card: bool = False,
     ) -> None:
         card_settings = await get_card_settings(i.user.id, self.character_ids[0], game=self.game)
 
         try:
             bytes_obj = (
                 await self.draw_team_card(i)
-                if team_card
+                if len(self.character_ids) > 1
                 else await self.draw_card(i, card_settings, character=character)
             )
             bytes_obj.seek(0)

@@ -164,10 +164,6 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         build_select.set_options(builds)
         build_select.translate(self.view.locale, self.view.translator)
 
-        if is_team:
-            await self.set_loading_state(i)
-            return await self.view.update(i, self, team_card=True)
-
         self.update_options_defaults()
         await self.set_loading_state(i)
 

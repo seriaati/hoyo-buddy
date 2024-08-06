@@ -5,11 +5,10 @@ from typing import TYPE_CHECKING
 
 import enka
 from discord import Locale
-from discord.utils import get as dget
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.constants import HSR_ELEMENT_DMG_PROPS
 from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
+from hoyo_buddy.draw.funcs.hoyo.hsr.common import get_character_skills, get_character_stats
 
 if TYPE_CHECKING:
     import hoyo_buddy.models as hb_models
@@ -129,38 +128,7 @@ def draw_hsr_build_card(
     y = 273
     padding = 16
 
-    traces = {
-        "Normal": dget(character.traces, anchor="Point01"),
-        "Skill": dget(character.traces, anchor="Point02"),
-        "Ultimate": dget(character.traces, anchor="Point03"),
-        "Talent": dget(character.traces, anchor="Point04"),
-    }
-    main_bubbles = {
-        "Normal": dget(character.traces, anchor="Point06"),
-        "Skill": dget(character.traces, anchor="Point07"),
-        "Ultimate": dget(character.traces, anchor="Point08"),
-        "Talent": dget(character.traces, anchor="Point05"),
-    }
-    sub_bubbles: dict[str, list[enka.hsr.Trace | hb_models.Trace | None]] = {
-        "Normal": [
-            dget(character.traces, anchor="Point10"),
-            dget(character.traces, anchor="Point11"),
-            dget(character.traces, anchor="Point12"),
-        ],
-        "Skill": [
-            dget(character.traces, anchor="Point13"),
-            dget(character.traces, anchor="Point14"),
-            dget(character.traces, anchor="Point15"),
-        ],
-        "Ultimate": [
-            dget(character.traces, anchor="Point16"),
-            dget(character.traces, anchor="Point17"),
-            dget(character.traces, anchor="Point18"),
-        ],
-        "Talent": [
-            dget(character.traces, anchor="Point09"),
-        ],
-    }
+    traces, main_bubbles, sub_bubbles = get_character_skills(character)
 
     for trace_id, trace in traces.items():
         if trace is None:
@@ -250,38 +218,7 @@ def draw_hsr_build_card(
     )
 
     # attributes
-    attributes: dict[str, str] = {}
-    if isinstance(character, enka.hsr.Character):
-        stat_types = (
-            enka.hsr.StatType.MAX_HP,
-            enka.hsr.StatType.ATK,
-            enka.hsr.StatType.DEF,
-            enka.hsr.StatType.SPD,
-            enka.hsr.StatType.CRIT_RATE,
-            enka.hsr.StatType.CRIT_DMG,
-            enka.hsr.StatType.BREAK_EFFECT,
-            enka.hsr.StatType.HEALING_BOOST,
-            enka.hsr.StatType.ENERGY_REGEN_RATE,
-            enka.hsr.StatType.EFFECT_HIT_RATE,
-            enka.hsr.StatType.EFFECT_RES,
-        )
-        for stat_type, stat in character.stats.items():
-            if stat_type in stat_types:
-                attributes[stat.icon] = stat.formatted_value
-
-        max_dmg_add = character.highest_dmg_bonus_stat
-        attributes[max_dmg_add.icon] = max_dmg_add.formatted_value
-    else:
-        attr_types = (1, 2, 3, 4, 5, 6, 9, 11, 10, 58, 7)
-        for stat in character.stats:
-            if stat.type in attr_types:
-                attributes[stat.icon] = stat.formatted_value
-
-        # Get max damage addition
-        dmg_additions = [s for s in character.stats if s.type in HSR_ELEMENT_DMG_PROPS]
-        if dmg_additions:
-            max_dmg_add = max(dmg_additions, key=lambda a: a.formatted_value)
-            attributes[max_dmg_add.icon] = max_dmg_add.formatted_value
+    attributes, _ = get_character_stats(character)
 
     x = 804
     y = 685

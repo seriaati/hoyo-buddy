@@ -309,7 +309,7 @@ next_page_option_label: 下一頁
 nickname_modal_label: 暱稱
 nickname_modal_placeholder: "主帳戶、亞洲帳戶…"
 nihility: 虛無
-no_account_found_for_games_error_message: "你沒有任何遊戲為 `{games}` 且平台為 `{platforms}` 的帳戶。請使用</accounts>來新增"
+no_account_found_for_games_error_message: "你們有任何在 `{platforms}` 上的 `{games}` 帳戶。使用</accounts>來新增"
 no_account_found_for_games_error_title: 找不到任何帳戶
 no_accounts_autocomplete_choice: 你尚未擁有任何賬戶。請透過 /accounts 來添加
 no_challenge_data_err_message: "無法找到任何此階段的 {challenge} 資料。可能你還沒開始進行 {challenge} 或是資料尚未刷新。請稍後再試。"
@@ -526,8 +526,9 @@ modded_app_login_instructions.desc: "1. 如果你的裝置上已經有米遊社�
 download_app_button_label: 下載 app
 login_detail_modal.input_label: 登入信息
 enter_login_details_button_label: 輸入登入信息
-not_implemented_error_title: 尚未實裝
-not_implemented_error_message: "這個功能尚未在平台 `{platform}` 下的 `{game}` 上實裝。"
+not_implemented_error_title: 功能尚未實裝
+not_implemented_error_only_game_message: "此功能尚未在 `{game}` 帳戶上實裝。"
+not_implemented_error_message: "此功能尚未在 `{platform}` 上的 `{game}` 帳戶上實裝。"
 profile.build.current.label: 當前
 abyss_chamber.blessing.embed.field.name: 淵月祝福
 apocalyptic_shadow: 末日幻影
@@ -597,3 +598,10 @@ stats.select_card: 選擇一個遊戲帳戶…
 tears_of_themis: 未定事件簿
 honkai_suit_rarity: "稀有度 {rarity}"
 about_command.designers: 設計師
+card_settings.modifying_for: "正在修改{name}的卡片設置"
+card_settings.card_color: 卡片顏色
+card_settings.no_color: 此卡片樣式不支援修改卡片顏色
+card_settings.color_default: 預設
+card_settings.current_image: 當前圖片
+profile.redraw_card_button_label: 重新繪製卡片
+card_settings.footer: 修改完畢後，點擊上方訊息中的綠色按鈕來重新繪製卡片

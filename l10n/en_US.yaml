@@ -598,10 +598,10 @@ stats.select_card: Select a game account...
 tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Rank {rarity}"
 about_command.designers: Designers
-card_settings.modifying_for: Modifying Card Settings for {name}
+card_settings.modifying_for: "Modifying Card Settings for {name}"
 card_settings.card_color: Card color
 card_settings.no_color: This card template does not support color modification
 card_settings.color_default: Default
 card_settings.current_image: Current image
 profile.redraw_card_button_label: Redraw card
-card_settings.footer: When you're done, click the green button in the message above to redraw the card
+card_settings.footer: "When you're done, click the green button in the message above to redraw the card"

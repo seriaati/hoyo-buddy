@@ -19,16 +19,17 @@ def get_character_stats(
         stat_types = (
             enka.hsr.StatType.MAX_HP,
             enka.hsr.StatType.ATK,
+            enka.hsr.StatType.CRIT_RATE,
+            enka.hsr.StatType.EFFECT_HIT_RATE,
+            enka.hsr.StatType.BREAK_EFFECT,
+            enka.hsr.StatType.ENERGY_REGEN_RATE,
             enka.hsr.StatType.DEF,
             enka.hsr.StatType.SPD,
-            enka.hsr.StatType.CRIT_RATE,
             enka.hsr.StatType.CRIT_DMG,
-            enka.hsr.StatType.BREAK_EFFECT,
-            enka.hsr.StatType.HEALING_BOOST,
-            enka.hsr.StatType.ENERGY_REGEN_RATE,
-            enka.hsr.StatType.EFFECT_HIT_RATE,
             enka.hsr.StatType.EFFECT_RES,
+            enka.hsr.StatType.HEALING_BOOST,
         )
+
         for stat_type in stat_types:
             stat = character.stats.get(stat_type)
             if stat is None:
@@ -38,7 +39,7 @@ def get_character_stats(
         max_dmg_add = character.highest_dmg_bonus_stat
         stats[max_dmg_add.icon] = max_dmg_add.formatted_value
     else:
-        attr_types = (1, 2, 3, 4, 5, 6, 9, 11, 10, 58, 7)
+        attr_types = (1, 2, 5, 58, 9, 10, 3, 4, 6, 7, 11)
         for attr_type in attr_types:
             stat = next((s for s in character.stats if s.type == attr_type), None)
             if stat is None:

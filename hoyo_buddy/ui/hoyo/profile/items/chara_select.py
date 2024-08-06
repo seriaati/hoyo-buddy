@@ -19,7 +19,6 @@ if TYPE_CHECKING:
 
     from ..view import Character, ProfileView  # noqa: F401
     from .build_select import BuildSelect
-    from .redraw_card_btn import RedrawCardButton
 
 
 DATA_TYPES: Final[dict[CharacterType, LocaleStr]] = {
@@ -125,14 +124,8 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         if changed:
             return await i.response.edit_message(view=self.view)
 
-        # Enable the player info button
-        player_btn = self.view.get_item("profile_player_info")
-        player_btn.disabled = False
-
         self.view.character_ids = self.values
-        if len(self.view.character_ids) > 1:
-            await self.set_loading_state(i)
-            return await self.view.update(i, self, team_card=True)
+        is_team = len(self.values) > 1
 
         character_id = self.view.character_ids[0]
         character = self.view.characters[character_id]
@@ -143,18 +136,24 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             is_hoyolab=isinstance(character, HoyolabHSRCharacter),
         )
 
-        # Enable the card settings button
-        card_settings_btn = self.view.get_item("profile_card_settings")
-        card_settings_btn.disabled = self.view.game is Game.ZZZ
-
         # Enable the remove from cache button if the character is in the cache
         with contextlib.suppress(ValueError):
             # The button is not present in the view if view._account is None
             remove_from_cache_btn = self.view.get_item("profile_remove_from_cache")
-            remove_from_cache_btn.disabled = self.view.character_type is not CharacterType.CACHE
+            remove_from_cache_btn.disabled = (
+                self.view.character_type is not CharacterType.CACHE and not is_team
+            )
+
+        # Enable the player info button
+        player_btn = self.view.get_item("profile_player_info")
+        player_btn.disabled = False
+
+        # Enable the card settings button
+        card_settings_btn = self.view.get_item("profile_card_settings")
+        card_settings_btn.disabled = False
 
         # Enable the redraw card button
-        redraw_card_btn: RedrawCardButton = self.view.get_item("profile_redraw_card")
+        redraw_card_btn = self.view.get_item("profile_redraw_card")
         redraw_card_btn.disabled = False
 
         # Set builds
@@ -164,6 +163,10 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         build_select: BuildSelect = self.view.get_item("profile_build_select")
         build_select.set_options(builds)
         build_select.translate(self.view.locale, self.view.translator)
+
+        if is_team:
+            await self.set_loading_state(i)
+            return await self.view.update(i, self, team_card=True)
 
         self.update_options_defaults()
         await self.set_loading_state(i)

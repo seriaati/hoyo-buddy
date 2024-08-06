@@ -305,7 +305,7 @@ class HSRTeamCard:
         drawer.write(
             lc.name,
             size=26,
-            position=(168, 496),
+            position=(168, 500),
             style="bold",
             sans=True,
             max_width=180,
@@ -334,6 +334,8 @@ class HSRTeamCard:
 
     def draw(self) -> BytesIO:
         im = Drawer.open_image("hoyo-buddy-assets/assets/hsr-team-card/background.png")
+        if len(self._characters) < 3:
+            im = im.crop((0, 0, im.width, 1068))
 
         start_pos = (51, 58)
         x_diff = 745

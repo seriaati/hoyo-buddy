@@ -4,7 +4,7 @@
     "python.analysis.inlayHints.functionReturnTypes": true,
     "python.analysis.autoImportCompletions": true,
     "python.analysis.diagnosticMode": "workspace",
-    "python.analysis.importFormat": "relative",
+    "python.analysis.importFormat": "absolute",
     "python.analysis.typeCheckingMode": "standard",
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,

@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING, Any
 import genshin
 from discord import ButtonStyle
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.db.models import User
 from hoyo_buddy.emojis import PASSWORD
 from hoyo_buddy.enums import Platform
+from hoyo_buddy.l10n import LocaleStr
 
 from ...components import Button, Modal, TextInput
 from ..geetest_handler import EmailPswdLoginData, GeetestHandler, SendEmailCodeData

@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 import hakushin
 import yatta
 
-from ...bot.translator import LevelStr, LocaleStr, Translator
 from ...constants import (
     TRAILBLAZER_IDS,
     YATTA_PATH_TO_HSR_PATH,
@@ -14,6 +13,7 @@ from ...constants import (
 )
 from ...embeds import DefaultEmbed
 from ...emojis import get_hsr_path_emoji
+from ...l10n import LevelStr, LocaleStr, Translator
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

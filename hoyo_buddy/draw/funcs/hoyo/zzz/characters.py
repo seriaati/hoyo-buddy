@@ -9,8 +9,8 @@ from discord import utils as dutils
 from genshin.models import ZZZSkillType
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import LevelStr, Translator
 from hoyo_buddy.draw.drawer import WHITE, Drawer
+from hoyo_buddy.l10n import LevelStr, Translator
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -48,7 +48,7 @@ def draw_agent_small_card(
 
     # Banner icon
     icon = drawer.open_static(agent.banner_icon, size=(880, 458))
-    icon = drawer.crop_with_mask(icon, mask)
+    icon = drawer.mask_image_with_image(icon, mask)
     im.paste(icon, (-204, 0), icon)
 
     # Rank
@@ -120,12 +120,12 @@ def draw_big_agent_card(
     theme = "dark" if dark_mode else "light"
 
     # Open assets
-    mask = Image.open(f"{asset_path}/mask_{theme}.png")
-    card = Image.open(f"{asset_path}/card_{theme}.png")
-    circle = Image.open(f"{asset_path}/circle_{theme}.png")
-    level_bar = Image.open(f"{asset_path}/level_bar_{theme}.png")
-    skill_bar = Image.open(f"{asset_path}/skill_bar_{theme}.png")
-    engine_block = Image.open(f"{asset_path}/engine_block_{theme}.png")
+    mask = Drawer.open_image(f"{asset_path}/mask_{theme}.png")
+    card = Drawer.open_image(f"{asset_path}/card_{theme}.png")
+    circle = Drawer.open_image(f"{asset_path}/circle_{theme}.png")
+    level_bar = Drawer.open_image(f"{asset_path}/level_bar_{theme}.png")
+    skill_bar = Drawer.open_image(f"{asset_path}/skill_bar_{theme}.png")
+    engine_block = Drawer.open_image(f"{asset_path}/engine_block_{theme}.png")
 
     cards: list[Image.Image] = [
         draw_agent_small_card(

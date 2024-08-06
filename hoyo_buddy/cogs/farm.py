@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING
 from discord import Locale, app_commands
 from discord.ext import commands
 
-from ..bot.translator import LocaleStr
 from ..commands.farm import Action, FarmCommand
 from ..db.models import FarmNotify, HoyoAccount, Settings, get_locale
 from ..enums import Game
 from ..hoyo.clients.ambr import ItemCategory
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
+from ..l10n import LocaleStr
 from ..ui.hoyo.farm import FarmView
 
 if TYPE_CHECKING:

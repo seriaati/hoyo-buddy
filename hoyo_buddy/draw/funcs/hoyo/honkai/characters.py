@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import LevelStr, LocaleStr, Translator
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.l10n import LevelStr, LocaleStr, Translator
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -35,12 +35,12 @@ def draw_small_suit_card(
     )
 
     suit_icon = drawer.open_static(suit.tall_icon.replace(" ", ""), size=(146, 256))
-    suit_icon = drawer.crop_with_mask(suit_icon, suit_mask)
+    suit_icon = drawer.mask_image_with_image(suit_icon, suit_mask)
     im.paste(suit_icon, (0, 11), suit_icon)
 
     weapon_icon = drawer.open_static(suit.weapon.icon)
     weapon_icon = drawer.resize_crop(weapon_icon, (75, 75))
-    weapon_icon = drawer.crop_with_mask(weapon_icon, mask)
+    weapon_icon = drawer.mask_image_with_image(weapon_icon, mask)
     im.paste(weapon_icon, (198, 56), weapon_icon)
 
     start_pos = (198, 156)
@@ -48,7 +48,7 @@ def draw_small_suit_card(
     for stig in suit.stigmata:
         stig_icon = drawer.open_static(stig.icon)
         stig_icon = drawer.resize_crop(stig_icon, (75, 75))
-        stig_icon = drawer.crop_with_mask(stig_icon, mask)
+        stig_icon = drawer.mask_image_with_image(stig_icon, mask)
         im.paste(stig_icon, start_pos, stig_icon)
         start_pos = (start_pos[0] + x_diff, start_pos[1])
 
@@ -79,9 +79,9 @@ def draw_big_suit_card(
     theme = "dark" if dark_mode else "light"
 
     # Open assets
-    mask = Image.open(f"{asset_path}/mask.png")
-    suit_mask = Image.open(f"{asset_path}/suit_mask.png")
-    card = Image.open(f"{asset_path}/card_{theme}.png")
+    mask = Drawer.open_image(f"{asset_path}/mask.png")
+    suit_mask = Drawer.open_image(f"{asset_path}/suit_mask.png")
+    card = Drawer.open_image(f"{asset_path}/card_{theme}.png")
 
     cards: Sequence[Image.Image] = [
         draw_small_suit_card(

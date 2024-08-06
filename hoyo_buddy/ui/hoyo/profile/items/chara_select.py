@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING, Any, Final
 import enka
 from genshin.models import ZZZPartialAgent
 
-from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji, get_zzz_element_emoji
 from hoyo_buddy.enums import CharacterType, Game
+from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import HoyolabHSRCharacter
 from hoyo_buddy.ui import PaginatorSelect, SelectOption
 
@@ -26,15 +26,21 @@ DATA_TYPES: Final[dict[CharacterType, LocaleStr]] = {
     CharacterType.LIVE: LocaleStr(key="profile.character_select.live_data.description"),
     CharacterType.CACHE: LocaleStr(key="profile.character_select.cached_data.description"),
 }
+MAX_VALUES: Final[dict[Game, int]] = {
+    Game.GENSHIN: 1,
+    Game.STARRAIL: 4,
+    Game.ZZZ: 3,
+}
 
 
 def determine_chara_type(
     character_id: str,
+    *,
     cache_extras: dict[str, dict[str, Any]],
     builds: Builds,
-    hoyolab: bool,
+    is_hoyolab: bool,
 ) -> CharacterType:
-    key = f"{character_id}-hoyolab" if hoyolab else character_id
+    key = f"{character_id}-hoyolab" if is_hoyolab else character_id
     chara_builds = builds.get(character_id, [])
     if key not in cache_extras or (chara_builds and not any(build.live for build in chara_builds)):
         return CharacterType.BUILD
@@ -46,6 +52,7 @@ def determine_chara_type(
 class CharacterSelect(PaginatorSelect["ProfileView"]):
     def __init__(
         self,
+        game: Game,
         characters: Sequence[Character],
         cache_extras: dict[str, dict[str, Any]],
         builds: Builds,
@@ -55,9 +62,9 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         for character in characters:
             character_type = determine_chara_type(
                 str(character.id),
-                cache_extras,
-                builds,
-                isinstance(character, HoyolabHSRCharacter | ZZZPartialAgent),
+                cache_extras=cache_extras,
+                builds=builds,
+                is_hoyolab=isinstance(character, HoyolabHSRCharacter | ZZZPartialAgent),
             )
             data_type = DATA_TYPES[character_type]
 
@@ -109,6 +116,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             options,
             placeholder=LocaleStr(key="profile.character_select.placeholder"),
             custom_id="profile_character_select",
+            max_values=MAX_VALUES[game],
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -116,14 +124,25 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         if changed:
             return await i.response.edit_message(view=self.view)
 
-        self.view.character_id = self.values[0]
-        character = self.view._get_character(self.view.character_id)
+        self.view.character_ids = self.values
+        is_team = len(self.values) > 1
+
+        character_id = self.view.character_ids[0]
+        character = self.view.characters[character_id]
         self.view.character_type = determine_chara_type(
-            self.view.character_id,
-            self.view.cache_extras,
-            self.view._builds,
-            isinstance(character, HoyolabHSRCharacter),
+            character_id,
+            cache_extras=self.view.cache_extras,
+            builds=self.view._builds,
+            is_hoyolab=isinstance(character, HoyolabHSRCharacter),
         )
+
+        # Enable the remove from cache button if the character is in the cache
+        with contextlib.suppress(ValueError):
+            # The button is not present in the view if view._account is None
+            remove_from_cache_btn = self.view.get_item("profile_remove_from_cache")
+            remove_from_cache_btn.disabled = (
+                self.view.character_type is not CharacterType.CACHE and not is_team
+            )
 
         # Enable the player info button
         player_btn = self.view.get_item("profile_player_info")
@@ -131,16 +150,14 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
 
         # Enable the card settings button
         card_settings_btn = self.view.get_item("profile_card_settings")
-        card_settings_btn.disabled = self.view.game is Game.ZZZ
+        card_settings_btn.disabled = False
 
-        # Enable the remove from cache button if the character is in the cache
-        with contextlib.suppress(ValueError):
-            # The button is not present in the view if view._account is None
-            remove_from_cache_btn = self.view.get_item("profile_remove_from_cache")
-            remove_from_cache_btn.disabled = self.view.character_type is not CharacterType.CACHE
+        # Enable the redraw card button
+        redraw_card_btn = self.view.get_item("profile_redraw_card")
+        redraw_card_btn.disabled = False
 
         # Set builds
-        builds = self.view._builds.get(self.view.character_id, [])
+        builds = self.view._builds.get(character_id, [])
         if builds:
             self.view._build_id = builds[0].id
         build_select: BuildSelect = self.view.get_item("profile_build_select")

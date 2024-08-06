@@ -7,10 +7,10 @@ import ambr
 from discord import Locale
 from loguru import logger
 
-from ...bot.translator import LocaleStr, Translator
 from ...constants import UID_TZ_OFFSET
 from ...db.models import FarmNotify
 from ...embeds import DefaultEmbed
+from ...l10n import LocaleStr, Translator
 from ...utils import get_now
 from ..clients.ambr import AmbrAPIClient
 from ..farm_data import FarmDataFetcher

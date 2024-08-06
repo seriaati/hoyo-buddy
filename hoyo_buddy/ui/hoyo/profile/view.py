@@ -8,25 +8,31 @@ from discord import File, Locale
 from genshin.models import ZZZPartialAgent
 from loguru import logger
 
-from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
-    ZZZ_AGENT_DATA,
-    ZZZ_DISC_ICONS,
 )
-from hoyo_buddy.db.models import CardSettings, HoyoAccount, JSONFile, Settings
-from hoyo_buddy.draw.main_funcs import draw_gi_build_card, draw_hsr_build_card, draw_zzz_build_card
+from hoyo_buddy.draw.main_funcs import (
+    draw_gi_build_card,
+    draw_hsr_build_card,
+    draw_hsr_team_card,
+    draw_zzz_build_card,
+    draw_zzz_team_card,
+)
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import CharacterType, Game, Platform
+from hoyo_buddy.enums import CharacterType, Game
 from hoyo_buddy.exceptions import (
     CardNotReadyError,
     DownloadImageFailedError,
+    FeatureNotImplementedError,
     ThirdPartyCardTempError,
 )
 from hoyo_buddy.icons import get_game_icon
+from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
+from hoyo_buddy.ui.hoyo.profile.card_settings import get_art_url, get_card_settings, get_default_art
+from hoyo_buddy.ui.hoyo.profile.items.redraw_card_btn import RedrawCardButton
 from hoyo_buddy.utils import blur_uid
 
 from .items.build_select import BuildSelect
@@ -46,7 +52,8 @@ if TYPE_CHECKING:
     from discord import Member, User
     from genshin.models import RecordCard, StarRailUserStats
 
-    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.db.models import CardSettings, HoyoAccount
+    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Builds, Interaction
 
 
@@ -94,11 +101,10 @@ class ProfileView(View):
         self.uid = uid
         self.game = game
         self.cache_extras = cache_extras
-        self.character_id: str | None = None
+        self.character_ids: list[str] = []
         self.character_type: CharacterType | None = None
-        self.characters: Sequence[Character] = []
+        self.characters: dict[str, Character] = {}
 
-        self._card_settings: CardSettings | None = None
         self._card_data = card_data
         self._account = account
         self._hoyolab_over_enka = hoyolab_over_enka
@@ -108,52 +114,51 @@ class ProfileView(View):
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | None = None
 
-    def _get_character(self, character_id: str) -> Character:
-        return next(c for c in self.characters if str(c.id) == character_id)
-
     def _set_characters(self) -> None:  # noqa: PLR0912
-        """Set the characters list."""
-        characters: Sequence[Character] = []
+        characters: dict[str, Character] = {}
 
         if self.game is Game.STARRAIL:
             if self._hoyolab_over_enka and self.hoyolab_characters:
-                self.characters = self.hoyolab_characters
+                self.characters = {str(chara.id): chara for chara in self.hoyolab_characters}
                 return
 
             enka_chara_ids: list[str] = []
             if self.starrail_data is not None:
                 for chara in self.starrail_data.characters:
                     chara_type = determine_chara_type(
-                        str(chara.id), self.cache_extras, self._builds, False
+                        str(chara.id),
+                        cache_extras=self.cache_extras,
+                        builds=self._builds,
+                        is_hoyolab=False,
                     )
                     if chara_type is CharacterType.CACHE:
                         continue
                     enka_chara_ids.append(str(chara.id))
-                    characters.append(chara)
+                    characters[str(chara.id)] = chara
 
             for chara in self.hoyolab_characters:
                 if str(chara.id) not in enka_chara_ids:
                     enka_chara_ids.append(str(chara.id))
-                    characters.append(chara)
+                    characters[str(chara.id)] = chara
 
-            if self._builds:
-                for builds in self._builds.values():
-                    character = builds[0].character
-                    if str(character.id) not in enka_chara_ids:
-                        characters.append(character)
+            for builds in self._builds.values():
+                character = builds[0].character
+                if str(character.id) not in enka_chara_ids:
+                    characters[str(character.id)] = character
 
         elif self.game is Game.GENSHIN:
             assert self.genshin_data is not None
-            if self._builds:
-                for builds in self._builds.values():
-                    character = builds[0].character
-                    characters.append(character)
-            else:
-                characters.extend(self.genshin_data.characters)
+            for chara in self.genshin_data.characters:
+                characters[str(chara.id)] = chara
+
+            for builds in self._builds.values():
+                character = builds[0].character
+                characters[str(character.id)] = character
 
         elif self.game is Game.ZZZ:
             assert self.zzz_data is not None
-            characters.extend(self.zzz_data)
+            for chara in self.zzz_data:
+                characters[str(chara.id)] = chara
 
         self.characters = characters
 
@@ -247,31 +252,34 @@ class ProfileView(View):
     def _add_items(self) -> None:
         self.add_item(PlayerInfoButton())
         self.add_item(CardSettingsButton())
+        self.add_item(RedrawCardButton())
         self.add_item(CardInfoButton())
 
         if self._account is not None:
             self.add_item(RemoveFromCacheButton())
         if self.characters:
-            self.add_item(CharacterSelect(self.characters, self.cache_extras, self._builds))
+            self.add_item(
+                CharacterSelect(
+                    self.game, list(self.characters.values()), self.cache_extras, self._builds
+                )
+            )
         self.add_item(BuildSelect())
 
     async def _draw_src_character_card(
-        self, session: aiohttp.ClientSession, character: Character
+        self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
     ) -> BytesIO:
         """Draw character card in StarRailCard template."""
-        assert self._card_settings is not None
-
         cache_extra = self.cache_extras.get(str(character.id))
         locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
 
-        template = self._card_settings.template
+        template = card_settings.template
         payload = {
             "uid": self.uid,
             "lang": LOCALE_TO_HSR_CARD_API_LANG.get(locale, "en"),
             "template": int(template[-1]),
             "character_id": str(character.id),
-            "character_art": self._card_settings.current_image,
-            "color": self._card_settings.custom_primary_color,
+            "character_art": card_settings.current_image,
+            "color": card_settings.custom_primary_color,
         }
         if all(v is not None for v in (self._owner_hash, self._owner_username, self._build_id)):
             payload["owner"] = {
@@ -293,21 +301,19 @@ class ProfileView(View):
             return BytesIO(await resp.read())
 
     async def _draw_enka_card(
-        self, session: aiohttp.ClientSession, character: Character
+        self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
     ) -> BytesIO:
         """Draw GI character card in EnkaCard2, ENCard, enka-card templates."""
-        assert self._card_settings is not None
-
         cache_extra = self.cache_extras.get(str(character.id))
         locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
-        template = self._card_settings.template
+        template = card_settings.template
 
         payload = {
             "uid": self.uid,
             "lang": LOCALE_TO_GI_CARD_API_LANG.get(locale, "en"),
             "character_id": str(character.id),
-            "character_art": self._card_settings.current_image,
-            "color": self._card_settings.custom_primary_color,
+            "character_art": card_settings.current_image,
+            "color": card_settings.custom_primary_color,
             "template": int(template[-1]),
         }
         if all(v is not None for v in (self._owner_hash, self._owner_username, self._build_id)):
@@ -334,31 +340,29 @@ class ProfileView(View):
         executor: concurrent.futures.ProcessPoolExecutor,
         loop: asyncio.AbstractEventLoop,
         character: Character,
+        card_settings: CardSettings,
     ) -> BytesIO:
         """Draw Star Rail character card in Hoyo Buddy template."""
-        assert self._card_settings is not None
-
         assert isinstance(character, enka.hsr.Character | HoyolabHSRCharacter)
         character_data = self._card_data.get(str(character.id))
         if character_data is None:
             raise CardNotReadyError(character.name)
 
-        default_art = f"https://raw.githubusercontent.com/FortOfFans/HSR/main/spriteoutput/avatardrawcardresult/{character.id}.png"
-        art = self._card_settings.current_image or default_art
+        image_url = card_settings.current_image or get_default_art(character)
 
-        if self._card_settings.custom_primary_color is None:
+        if card_settings.custom_primary_color is None:
             primary: str = character_data["primary"]
-            if "primary-dark" in character_data and self._card_settings.dark_mode:
+            if "primary-dark" in character_data and card_settings.dark_mode:
                 primary: str = character_data["primary-dark"]
         else:
-            primary = self._card_settings.custom_primary_color
+            primary = card_settings.custom_primary_color
 
         cache_extra = self.cache_extras.get(str(character.id))
         locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
 
         return await draw_hsr_build_card(
             DrawInput(
-                dark_mode=self._card_settings.dark_mode,
+                dark_mode=card_settings.dark_mode,
                 locale=locale,
                 session=session,
                 filename="card.webp",
@@ -366,7 +370,7 @@ class ProfileView(View):
                 loop=loop,
             ),
             character,
-            art,
+            image_url,
             primary,
         )
 
@@ -376,24 +380,19 @@ class ProfileView(View):
         executor: concurrent.futures.ProcessPoolExecutor,
         loop: asyncio.AbstractEventLoop,
         character: Character,
+        card_settings: CardSettings,
     ) -> BytesIO:
         """Draw Genshin Impact character card in Hoyo Buddy template."""
-        assert self._card_settings is not None
         assert isinstance(character, enka.gi.Character)
 
-        if self._card_settings.current_image is not None:
-            art = self._card_settings.current_image
-        elif character.costume is not None:
-            art = character.costume.icon.gacha
-        else:
-            art = character.icon.gacha
+        image_url = card_settings.current_image or get_default_art(character)
 
         cache_extra = self.cache_extras.get(str(character.id))
         locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
 
         return await draw_gi_build_card(
             DrawInput(
-                dark_mode=self._card_settings.dark_mode,
+                dark_mode=card_settings.dark_mode,
                 locale=locale,
                 session=session,
                 filename="card.webp",
@@ -401,8 +400,8 @@ class ProfileView(View):
                 loop=loop,
             ),
             character,
-            art,
-            0.8 if self._card_settings.current_image is None else 1.0,
+            image_url,
+            0.8 if card_settings.current_image is None else 1.0,
         )
 
     async def _draw_hb_zzz_character_card(
@@ -411,6 +410,7 @@ class ProfileView(View):
         executor: concurrent.futures.ProcessPoolExecutor,
         loop: asyncio.AbstractEventLoop,
         character: Character,
+        card_settings: CardSettings,
     ) -> BytesIO:
         """Draw ZZZ build card in Hoyo Buddy template."""
         assert isinstance(character, ZZZPartialAgent)
@@ -420,32 +420,12 @@ class ProfileView(View):
         client.set_lang(self.locale)
         agent = await client.get_zzz_agent_info(character.id)
 
-        if self.locale is Locale.chinese or self._account.platform is Platform.MIYOUSHE:
-            # No need to refetch the agent info
-            cn_agent = agent
-        else:
-            client.set_lang(Locale.chinese)
-            cn_agent = await client.get_zzz_agent_info(character.id)
-
-        file_path = "./.static/zzz_agent_data.json"
-        agent_data = await JSONFile.read(file_path)
-        if str(character.id) not in agent_data:
-            agent_data = await JSONFile.fetch_and_cache(
-                session, url=ZZZ_AGENT_DATA, file_path=file_path
-            )
-        agent_icon = agent_data[str(character.id)]["icon_url"]
-
-        file_path = "./.static/zzz_disc_icons.json"
-        disc_icons = await JSONFile.read(file_path)
-        if any(disc.name not in disc_icons for disc in cn_agent.discs):
-            disc_icons = await JSONFile.fetch_and_cache(
-                session, url=ZZZ_DISC_ICONS, file_path=file_path
-            )
-
-        agent_draw_data = self._card_data[str(character.id)]
-
         cache_extra = self.cache_extras.get(str(character.id))
         locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
+
+        agent_data = self._card_data.get(str(character.id))
+        if agent_data is None:
+            raise CardNotReadyError(character.name)
 
         return await draw_zzz_build_card(
             DrawInput(
@@ -457,80 +437,120 @@ class ProfileView(View):
                 loop=loop,
             ),
             agent,
-            cn_agent,
-            image_url=agent_icon,
-            agent_data=agent_draw_data,
-            disc_icons=disc_icons,
-            agent_full_name=agent_data[str(character.id)]["full_name"],
+            agent_data=agent_data,
+            color=card_settings.custom_primary_color,
         )
 
-    async def draw_card(self, i: Interaction, *, character: Character | None = None) -> io.BytesIO:
-        """Draw the character card and return the bytes object."""
-        assert self.character_id is not None
-
-        character = character or self._get_character(self.character_id)
-
-        # Initialize card settings
-        card_settings = await CardSettings.get_or_none(
-            user_id=i.user.id, character_id=self.character_id
-        )
-        if card_settings is None:
-            user_settings = await Settings.get(user_id=i.user.id)
-            templates = {
-                Game.GENSHIN: user_settings.gi_card_temp,
-                Game.STARRAIL: user_settings.hsr_card_temp,
-                Game.ZZZ: user_settings.zzz_card_temp,
-            }
-            template = templates.get(self.game)
-            if template is None:
-                msg = (
-                    f"Game {self.game!r} does not have its table column for default card template."
-                )
-                raise ValueError(msg)
-
-            card_settings = await CardSettings.create(
-                user_id=i.user.id,
-                character_id=self.character_id,
-                dark_mode=False,
-                template=template,
-            )
-        self._card_settings = card_settings
+    async def draw_card(
+        self, i: Interaction, card_settings: CardSettings, *, character: Character | None = None
+    ) -> io.BytesIO:
+        """Draw build card for a single character."""
+        character_id = self.character_ids[0]
+        character = character or self.characters[character_id]
 
         # Force change the template to hb1 if is cached data
         if self.character_type is CharacterType.CACHE:
-            self._card_settings.template = "hb1"
-            await self._card_settings.save(update_fields=("template",))
+            card_settings.template = "hb1"
+            await card_settings.save(update_fields=("template",))
 
-        template = self._card_settings.template
-        bytes_obj = None
+        template = card_settings.template
 
-        try:
-            if self.game is Game.STARRAIL:
-                if "hb" in template:
-                    bytes_obj = await self._draw_hb_hsr_character_card(
-                        i.client.session, i.client.executor, i.client.loop, character
-                    )
-                else:
-                    bytes_obj = await self._draw_src_character_card(i.client.session, character)
-            elif self.game is Game.GENSHIN:
-                if "hb" in template:
-                    bytes_obj = await self._draw_hb_gi_character_card(
-                        i.client.session, i.client.executor, i.client.loop, character
-                    )
-                else:
-                    bytes_obj = await self._draw_enka_card(i.client.session, character)
-            elif self.game is Game.ZZZ:
-                bytes_obj = await self._draw_hb_zzz_character_card(
-                    i.client.session, i.client.executor, i.client.loop, character
+        if self.game is Game.STARRAIL:
+            if "hb" in template:
+                return await self._draw_hb_hsr_character_card(
+                    i.client.session,
+                    i.client.executor,
+                    i.client.loop,
+                    character,
+                    card_settings,
                 )
-        except Exception:
-            # Reset the template to hb1 if an error occurs
-            self._card_settings.template = "hb1"
-            await self._card_settings.save(update_fields=("template",))
-            raise
+            return await self._draw_src_character_card(
+                i.client.session,
+                character,
+                card_settings,
+            )
+        elif self.game is Game.GENSHIN:
+            if "hb" in template:
+                return await self._draw_hb_gi_character_card(
+                    i.client.session,
+                    i.client.executor,
+                    i.client.loop,
+                    character,
+                    card_settings,
+                )
+            return await self._draw_enka_card(
+                i.client.session,
+                character,
+                card_settings,
+            )
+        elif self.game is Game.ZZZ:
+            return await self._draw_hb_zzz_character_card(
+                i.client.session,
+                i.client.executor,
+                i.client.loop,
+                character,
+                card_settings,
+            )
 
-        assert bytes_obj is not None
-        return bytes_obj
+        msg = f"draw_card not implemented for game {self.game} template {template}"
+        raise ValueError(msg)
+
+    async def draw_team_card(self, i: Interaction) -> io.BytesIO:
+        """Draw team card for multiple characters."""
+        draw_input = DrawInput(
+            dark_mode=False,
+            locale=self.locale,
+            session=i.client.session,
+            filename="card.webp",
+            executor=i.client.executor,
+            loop=i.client.loop,
+        )
+        images = {
+            char_id: await get_art_url(i.user.id, char_id, game=self.game) or get_default_art(char)
+            for char_id, char in self.characters.items()
+        }
+        if self.game is Game.ZZZ:
+            assert self._account is not None
+            client = self._account.client
+            client.set_lang(self.locale)
+            agents = [
+                await client.get_zzz_agent_info(int(char_id)) for char_id in self.character_ids
+            ]
+
+            for agent in agents:
+                if str(agent.id) not in self._card_data:
+                    raise CardNotReadyError(agent.name)
+
+            agent_colors = {
+                char_id: (
+                    await get_card_settings(i.user.id, char_id, game=self.game)
+                ).custom_primary_color
+                or self._card_data[char_id]["color"]
+                for char_id in self.character_ids
+            }
+            return await draw_zzz_team_card(draw_input, agents, agent_colors, images)
+        if self.game is Game.STARRAIL:
+            characters = [self.characters[char_id] for char_id in self.character_ids]
+            character_colors = {
+                char_id: (
+                    await get_card_settings(i.user.id, char_id, game=self.game)
+                ).custom_primary_color
+                or self._card_data[char_id]["primary"]
+                for char_id in self.character_ids
+            }
+
+            for char_id in self.character_ids:
+                if char_id not in self._card_data:
+                    raise CardNotReadyError(self.characters[char_id].name)
+
+            return await draw_hsr_team_card(
+                draw_input,
+                characters,  # pyright: ignore [reportArgumentType]
+                images,
+                character_colors,
+            )
+
+        raise FeatureNotImplementedError(game=self.game)
 
     async def update(
         self,
@@ -540,19 +560,28 @@ class ProfileView(View):
         unset_loading_state: bool = True,
         character: Character | None = None,
     ) -> None:
+        card_settings = await get_card_settings(i.user.id, self.character_ids[0], game=self.game)
+
         try:
-            bytes_obj = await self.draw_card(i, character=character)
+            bytes_obj = (
+                await self.draw_team_card(i)
+                if len(self.character_ids) > 1
+                else await self.draw_card(i, card_settings, character=character)
+            )
             bytes_obj.seek(0)
         except Exception as e:
             if isinstance(e, DownloadImageFailedError):
-                assert self._card_settings is not None
-                self._card_settings.current_image = None
-                await self._card_settings.save(update_fields=("current_image",))
+                card_settings.current_image = None
+                await card_settings.save(update_fields=("current_image",))
             if unset_loading_state:
                 await item.unset_loading_state(i)
 
-            logger.exception("Failed to draw card")
-            raise ThirdPartyCardTempError from e
+            if "hb" not in card_settings.template:
+                logger.exception("Failed to draw card")
+                card_settings.template = "hb1"
+                await card_settings.save(update_fields=("template",))
+                raise ThirdPartyCardTempError from e
+            raise
 
         attachments = [File(bytes_obj, filename="card.webp")]
 

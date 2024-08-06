@@ -7,8 +7,8 @@ from cachetools import LRUCache, cached
 from discord import Locale
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import LocaleStr, Translator
 from hoyo_buddy.draw.drawer import DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
+from hoyo_buddy.l10n import LocaleStr, Translator
 
 if TYPE_CHECKING:
     import ambr
@@ -45,7 +45,9 @@ def draw_farm_card(
     basic_cards: list[Image.Image] = []
 
     for data in farm_data:
-        basic_card: Image.Image = Image.open(f"hoyo-buddy-assets/assets/farm/{mode}_card.png")
+        basic_card: Image.Image = Drawer.open_image(
+            f"hoyo-buddy-assets/assets/farm/{mode}_card.png"
+        )
         draw = ImageDraw.Draw(basic_card)
         drawer = Drawer(draw, folder="farm", dark_mode=dark_mode, translator=translator)
 

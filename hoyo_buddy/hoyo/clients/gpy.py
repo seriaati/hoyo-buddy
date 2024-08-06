@@ -11,7 +11,6 @@ import hakushin
 import python_socks
 
 from ...bot.error_handler import get_error_embed
-from ...bot.translator import LocaleStr, Translator
 from ...constants import (
     AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID,
     GPY_LANG_TO_LOCALE,
@@ -23,6 +22,7 @@ from ...constants import (
 from ...db.models import EnkaCache, HoyoAccount, JSONFile
 from ...embeds import DefaultEmbed
 from ...enums import TalentBoost
+from ...l10n import LocaleStr, Translator
 from ...models import HoyolabHSRCharacter, LightCone, Relic, Stat, Trace
 from ...utils import get_now
 from .ambr import AmbrAPIClient
@@ -187,8 +187,8 @@ class GenshinClient(genshin.Client):
 
         await JSONFile.write(f"talent_levels/gi_{self.uid}.json", talent_level_data)
 
+    @staticmethod
     def convert_hsr_character(
-        self,
         character: genshin.models.StarRailDetailCharacter,
         property_info: dict[str, genshin.models.PropertyInfo],
     ) -> HoyolabHSRCharacter:

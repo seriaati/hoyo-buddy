@@ -18,9 +18,9 @@ def draw_checkin_card(
     dark_mode: bool,
 ) -> io.BytesIO:
     im = (
-        Image.open("hoyo-buddy-assets/assets/check-in/DARK_1.png")
+        Drawer.open_image("hoyo-buddy-assets/assets/check-in/DARK_1.png")
         if dark_mode
-        else Image.open("hoyo-buddy-assets/assets/check-in/LIGHT_1.png")
+        else Drawer.open_image("hoyo-buddy-assets/assets/check-in/LIGHT_1.png")
     )
 
     text = Image.new("RGBA", im.size, (255, 255, 255, 0))

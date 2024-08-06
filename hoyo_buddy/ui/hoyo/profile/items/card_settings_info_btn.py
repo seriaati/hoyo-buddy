@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import INFO
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
 
 if TYPE_CHECKING:

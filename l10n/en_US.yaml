@@ -309,7 +309,7 @@ next_page_option_label: Next page
 nickname_modal_label: Nickname
 nickname_modal_placeholder: "Main account, Asia account..."
 nihility: Nihility
-no_account_found_for_games_error_message: "You don't have any accounts for games `{games}` and platforms `{platforms}` yet. Add one with </accounts>"
+no_account_found_for_games_error_message: "You don't have any `{games}` accounts on `{platforms}` yet. Add one with </accounts>"
 no_account_found_for_games_error_title: No Account Found
 no_accounts_autocomplete_choice: You don't have any accounts yet. Add one with /accounts
 no_challenge_data_err_message: "Unable to find any {challenge} data for this phase. Either you haven't started {challenge} yet or the data is not ready yet. Please try again later"
@@ -526,8 +526,9 @@ modded_app_login_instructions.desc: "1. If you have Miyoushe installed on your d
 download_app_button_label: Download app
 login_detail_modal.input_label: Login details
 enter_login_details_button_label: Enter login details
-not_implemented_error_title: Not Implemented
-not_implemented_error_message: "This feature is not implemented for `{game}` under platform `{platform}` yet."
+not_implemented_error_title: Feature not Implemented Yet
+not_implemented_error_only_game_message: "This feature is not implemented for `{game}` accounts yet."
+not_implemented_error_message: "This feature is not implemented for `{game}` accounts on `{platform}` yet."
 profile.build.current.label: Current
 abyss_chamber.blessing.embed.field.name: Blessing of the Abyssal Moon
 apocalyptic_shadow: Apocalyptic shadow
@@ -597,3 +598,10 @@ stats.select_card: Select a game account...
 tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Rank {rarity}"
 about_command.designers: Designers
+card_settings.modifying_for: Modifying Card Settings for {name}
+card_settings.card_color: Card color
+card_settings.no_color: This card template does not support color modification
+card_settings.color_default: Default
+card_settings.current_image: Current image
+profile.redraw_card_button_label: Redraw card
+card_settings.footer: When you're done, click the green button in the message above to redraw the card

@@ -6,11 +6,11 @@ import discord
 from genshin import Game
 
 from ... import emojis
-from ...bot.translator import LocaleStr, Translator
 from ...db.models import AccountNotifSettings
 from ...draw.main_funcs import draw_checkin_card
 from ...embeds import DefaultEmbed
 from ...enums import Platform
+from ...l10n import LocaleStr, Translator
 from ...models import DrawInput, Reward
 from ...utils import get_now
 from ..components import Button, GoBackButton, ToggleButton, View

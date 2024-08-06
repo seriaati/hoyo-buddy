@@ -5,78 +5,38 @@ from typing import Any
 
 import discord
 from discord import utils as dutils
-from genshin.models import ZZZFullAgent, ZZZSkillType
+from genshin.models import ZZZFullAgent
 from genshin.models import ZZZPropertyType as PropType
 from PIL import Image, ImageDraw
 from PIL.Image import Transpose
 
 from hoyo_buddy.draw.drawer import BLACK, Drawer
-from hoyo_buddy.exceptions import CardNotReadyError
 
-STAT_ICONS = {
-    # Disc
-    PropType.DISC_HP: "HP.png",
-    PropType.DISC_ATK: "ATK.png",
-    PropType.DISC_DEF: "DEF.png",
-    PropType.DISC_PEN: "PEN_RATIO.png",
-    PropType.DISC_BONUS_PHYSICAL_DMG: "PHYSICAL.png",
-    PropType.DISC_BONUS_FIRE_DMG: "FIRE.png",
-    PropType.DISC_BONUS_ICE_DMG: "ICE.png",
-    PropType.DISC_BONUS_ELECTRIC_DMG: "ELECTRIC.png",
-    PropType.DISC_BONUS_ETHER_DMG: "ETHER.png",
-    # W-engine
-    PropType.ENGINE_HP: "HP.png",
-    PropType.ENGINE_BASE_ATK: "ATK.png",
-    PropType.ENGINE_ATK: "ATK.png",
-    PropType.ENGINE_DEF: "DEF.png",
-    PropType.ENGINE_ENERGY_REGEN: "ENERGY_REGEN.png",
-    # Common
-    PropType.CRIT_DMG: "CRIT_DMG.png",
-    PropType.CRIT_RATE: "CRIT_RATE.png",
-    PropType.ANOMALY_PROFICIENCY: "ANOMALY_PRO.png",
-    PropType.PEN_RATIO: "PEN_RATIO.png",
-    PropType.IMPACT: "IMPACT.png",
-}
+from .common import SKILL_ORDER, STAT_ICONS, get_props
 
 
 class ZZZAgentCard:
     def __init__(
         self,
         agent: ZZZFullAgent,
-        cn_agent: ZZZFullAgent,
         *,
         locale: str,
         image_url: str,
         agent_data: dict[str, Any],
         disc_icons: dict[str, str],
         agent_full_name: str,
+        color: str | None,
     ) -> None:
         self._agent = agent
-        self._cn_agent = cn_agent
         self._locale = locale
         self._image_url = image_url
         self._agent_data = agent_data
         self._disc_icons = disc_icons
         self._agent_full_name = agent_full_name
-
-    @staticmethod
-    def fill_zeros(s: str) -> str:
-        number_part = float(s.replace("%", ""))
-
-        if "%" in s:
-            formatted_number = f"{number_part:.1f}"
-            return f"{formatted_number}%"
-
-        if number_part >= 1000 or number_part >= 100:
-            formatted_number = f"{number_part:.0f}"
-        elif number_part >= 10:
-            formatted_number = f"{number_part:.1f}"
-        else:
-            formatted_number = f"{number_part:.2f}"
-        return formatted_number
+        self._color = color
 
     def _draw_background(self) -> Image.Image:
-        card = Image.open("hoyo-buddy-assets/assets/zzz-build-card/card_base.png")
+        card = Drawer.open_image("hoyo-buddy-assets/assets/zzz-build-card/card_base.png")
         draw = ImageDraw.Draw(card)
         drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False)
 
@@ -88,9 +48,7 @@ class ZZZAgentCard:
         blob_rt = drawer.open_asset("blob_rt.png")
         z_blob = drawer.open_asset("z_blob.png")
 
-        agent_color = self._agent_data.get("color")
-        if agent_color is None:
-            raise CardNotReadyError(self._agent.name)
+        agent_color = self._color or self._agent_data["color"]
         blob_color = drawer.hex_to_rgb(agent_color)
         z_blob_color = drawer.blend_color(blob_color, (0, 0, 0), 0.85)
 
@@ -138,9 +96,7 @@ class ZZZAgentCard:
     def draw(self) -> BytesIO:
         im = self._draw_background()
         draw = ImageDraw.Draw(im)
-        drawer = Drawer(
-            draw, folder="zzz-build-card", dark_mode=False, locale=discord.Locale(self._locale)
-        )
+        drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False)
 
         # Level
         level_text = f"Lv.{self._agent.level}"
@@ -149,7 +105,6 @@ class ZZZAgentCard:
             position=(self._agent_data["level_x"], self._agent_data["level_y"]),
             size=250,
             color=(41, 41, 41),
-            locale=discord.Locale.american_english,
             style="black_italic",
             sans=True,
         )
@@ -173,7 +128,6 @@ class ZZZAgentCard:
                 color=(41, 41, 41),
                 style="black_italic",
                 sans=True,
-                locale=discord.Locale.american_english,
             )
 
         # Agent image
@@ -207,7 +161,6 @@ class ZZZAgentCard:
                 color=(255, 255, 255),
                 style="medium",
                 sans=True,
-                locale=discord.Locale.american_english,
                 anchor="mm",
             )
 
@@ -221,7 +174,6 @@ class ZZZAgentCard:
                 color=(255, 255, 255),
                 style="medium",
                 sans=True,
-                locale=discord.Locale.american_english,
                 anchor="mm",
             )
 
@@ -235,6 +187,7 @@ class ZZZAgentCard:
                 style="black",
                 color=(20, 20, 20),
                 sans=True,
+                locale=discord.Locale(self._locale),
             )
             bottom = name_tbox[3]
 
@@ -246,7 +199,7 @@ class ZZZAgentCard:
                     icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[stat.type]}", size=(40, 40))
                     im.paste(icon, stat_positions[i], icon)
                     drawer.write(
-                        f"{stat.name}  {self.fill_zeros(stat.value)}",
+                        f"{stat.name}  {stat.value}",
                         size=28,
                         style="medium",
                         sans=True,
@@ -256,15 +209,16 @@ class ZZZAgentCard:
                             stat_positions[i][1] + icon.height // 2,
                         ),
                         anchor="lm",
+                        locale=discord.Locale(self._locale),
                     )
 
         # Discs
         start_pos = (74, 670)
         disc_mask = drawer.open_asset("disc_mask.png", size=(125, 152))
-        for i, disc in enumerate(self._cn_agent.discs):
-            icon = drawer.open_static(self._disc_icons[disc.set_effect.name])
+        for i, disc in enumerate(self._agent.discs):
+            icon = drawer.open_static(self._disc_icons[str(disc.id)[:3]])
             icon = drawer.middle_crop(icon, (125, 152))
-            icon = drawer.crop_with_mask(icon, disc_mask)
+            icon = drawer.mask_image_with_image(icon, disc_mask)
             im.paste(icon, start_pos, icon)
 
             drawer.write(
@@ -282,7 +236,7 @@ class ZZZAgentCard:
                 )
                 im.paste(main_stat_icon, (start_pos[0] + 140, start_pos[1] + 15), main_stat_icon)
                 drawer.write(
-                    self.fill_zeros(main_stat.value),
+                    main_stat.value,
                     size=28,
                     position=(start_pos[0] + 185, start_pos[1] + 15 + main_stat_icon.height // 2),
                     style="medium",
@@ -306,7 +260,7 @@ class ZZZAgentCard:
                         sub_stat_icon = drawer.open_asset(
                             "stat_icons/PLACEHOLDER.png", size=(25, 25)
                         )
-                    text = self.fill_zeros(sub_stat.value)
+                    text = sub_stat.value
 
                 im.paste(sub_stat_icon, sub_stat_pos, sub_stat_icon)
                 drawer.write(
@@ -315,7 +269,6 @@ class ZZZAgentCard:
                     position=(sub_stat_pos[0] + 30, sub_stat_pos[1] + sub_stat_icon.height // 2),
                     sans=True,
                     anchor="lm",
-                    locale=discord.Locale.american_english,
                 )
 
                 if j == 1:
@@ -330,15 +283,7 @@ class ZZZAgentCard:
         im.paste(stats_section, (2743, 519), stats_section)
         # Skill levels
         start_pos = (2852, 554)
-        skill_order = (
-            ZZZSkillType.BASIC_ATTACK,
-            ZZZSkillType.DODGE,
-            ZZZSkillType.ASSIST,
-            ZZZSkillType.SPECIAL_ATTACK,
-            ZZZSkillType.CHAIN_ATTACK,
-            ZZZSkillType.CORE_SKILL,
-        )
-        for i, skill_type in enumerate(skill_order):
+        for i, skill_type in enumerate(SKILL_ORDER):
             skill = dutils.get(self._agent.skills, type=skill_type)
             if skill is None:
                 continue
@@ -350,26 +295,11 @@ class ZZZAgentCard:
                 style="medium",
                 sans=True,
                 anchor="mm",
-                locale=discord.Locale.american_english,
             )
             start_pos = (2852, 554 + 86) if i == 2 else (start_pos[0] + 180, start_pos[1])
         # Stats
         start_pos = (2851, 769)
-        props = (
-            dutils.get(self._agent.properties, type=PropType.AGENT_HP),
-            dutils.get(self._agent.properties, type=PropType.AGENT_ATK),
-            dutils.get(self._agent.properties, type=PropType.AGENT_DEF),
-            dutils.get(self._agent.properties, type=PropType.AGENT_IMPACT),
-            dutils.get(self._agent.properties, type=PropType.AGENT_CRIT_RATE),
-            dutils.get(self._agent.properties, type=PropType.AGENT_ANOMALY_MASTERY),
-            dutils.get(
-                self._agent.properties,
-                type=PropType.AGENT_ANOMALY_PROFICIENCY,
-            ),
-            dutils.get(self._agent.properties, type=PropType.AGENT_PEN_RATIO),
-            dutils.get(self._agent.properties, type=PropType.AGENT_ENERGY_GEN),
-            dutils.get(self._agent.properties, type=PropType.AGENT_CRIT_DMG),
-        )
+        props = get_props(self._agent)
         for i, prop in enumerate(props):
             if prop is None:
                 continue
@@ -380,7 +310,6 @@ class ZZZAgentCard:
                 color=(20, 20, 20),
                 style="regular",
                 sans=True,
-                locale=discord.Locale.american_english,
             )
             start_pos = (3100, 769) if i == 4 else (start_pos[0], start_pos[1] + 93)
 

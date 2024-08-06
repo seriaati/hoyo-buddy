@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import BOOK_MULTIPLE
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
 
 if TYPE_CHECKING:
@@ -37,5 +37,8 @@ class PlayerInfoButton(Button["ProfileView"]):
 
         build_select = self.view.get_item("profile_build_select")
         build_select.disabled = True
+
+        redraw_card_btn = self.view.get_item("profile_redraw_card")
+        redraw_card_btn.disabled = True
 
         await i.response.edit_message(embed=self.view.player_embed, attachments=[], view=self.view)

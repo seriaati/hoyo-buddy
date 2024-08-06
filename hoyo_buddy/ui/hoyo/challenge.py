@@ -17,7 +17,6 @@ from genshin.models import (
 )
 from genshin.models import Character as GICharacter
 
-from hoyo_buddy.bot.translator import EnumStr, LocaleStr
 from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE
 from hoyo_buddy.draw.main_funcs import (
     draw_apc_shadow_card,
@@ -28,6 +27,7 @@ from hoyo_buddy.draw.main_funcs import (
 )
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.exceptions import NoChallengeDataError
+from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.models import DrawInput
 from hoyo_buddy.types import ChallengeWithBuff
 
@@ -45,8 +45,8 @@ if TYPE_CHECKING:
     import aiohttp
     from discord import File, Locale, Member, User
 
-    from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Challenge, Interaction
 
 

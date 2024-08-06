@@ -3,10 +3,10 @@ from io import BytesIO
 
 import discord
 from genshin.models import VideoStoreState, ZZZNotes
-from PIL import Image, ImageDraw
+from PIL import ImageDraw
 
-from hoyo_buddy.bot.translator import LocaleStr, Translator
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.l10n import LocaleStr, Translator
 
 __all__ = ("draw_zzz_notes",)
 
@@ -25,7 +25,7 @@ def draw_zzz_notes(
     )
 
     filename = f"{'dark' if dark_mode else 'light'}_notes_{battery_level}"
-    im = Image.open(f"hoyo-buddy-assets/assets/zzz-notes/{filename}.png")
+    im = Drawer.open_image(f"hoyo-buddy-assets/assets/zzz-notes/{filename}.png")
     draw = ImageDraw.Draw(im)
     drawer = Drawer(
         draw,

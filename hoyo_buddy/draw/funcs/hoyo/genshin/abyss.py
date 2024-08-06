@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw, ImageFilter
 
-from hoyo_buddy.bot.translator import LevelStr, LocaleStr, Translator
 from hoyo_buddy.draw.drawer import BLACK, TRANSPARENT, WHITE, Drawer
+from hoyo_buddy.l10n import LevelStr, LocaleStr, Translator
 
 if TYPE_CHECKING:
     import genshin
@@ -232,7 +232,7 @@ class AbyssCard:
             )
 
             chara_im = drawer.open_static(chara.icon, size=(116, 116))
-            chara_im = drawer.crop_with_mask(chara_im, chara_mask)
+            chara_im = drawer.mask_image_with_image(chara_im, chara_mask)
             bk.paste(chara_im, (0, 2), chara_im)
 
             bk_draw.rounded_rectangle(
@@ -302,7 +302,7 @@ class AbyssCard:
 
     def draw(self) -> BytesIO:
         mode = "dark" if self._dark_mode else "light"
-        self._im = Image.open(f"hoyo-buddy-assets/assets/abyss/{mode}_abyss.png")
+        self._im = Drawer.open_image(f"hoyo-buddy-assets/assets/abyss/{mode}_abyss.png")
         draw = ImageDraw.Draw(self._im)
         self._drawer = Drawer(
             draw,

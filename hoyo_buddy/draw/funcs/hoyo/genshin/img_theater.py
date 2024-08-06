@@ -4,8 +4,8 @@ import discord
 import genshin
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import LocaleStr, Translator
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.l10n import LocaleStr, Translator
 
 
 class ImgTheaterCard:
@@ -29,7 +29,7 @@ class ImgTheaterCard:
         return discord.Locale(self._locale)
 
     def _open_asset(self, asset: str) -> Image.Image:
-        return Image.open(f"{self._asset_dir}/{asset}")
+        return Drawer.open_image(f"{self._asset_dir}/{asset}")
 
     def _write_large_block_texts(self) -> None:
         self._drawer.write(
@@ -122,14 +122,20 @@ class ImgTheaterCard:
             icon = block_drawer.open_static(character.icon)
             icon = self._drawer.resize_crop(icon, (120, 120))
             mask = self._drawer.open_asset("mask.png")
-            icon = self._drawer.crop_with_mask(icon, mask)
+            icon = self._drawer.mask_image_with_image(icon, mask)
             block.paste(icon, (2, 2), icon)
 
             block.paste(const_flair, (92, 0), const_flair)
+            const_text = {
+                genshin.models.TheaterCharaType.NORMAL: str(
+                    self._chara_consts.get(character.id, "?")
+                ),
+                genshin.models.TheaterCharaType.SUPPORT: "?",
+                genshin.models.TheaterCharaType.TRIAL: "0",
+            }
+            text = const_text[character.type]
             block_drawer.write(
-                str(self._chara_consts.get(character.id, "?"))
-                if character.type is genshin.models.TheaterCharaType.NORMAL
-                else "?",
+                text,
                 size=18,
                 position=(107, 15),
                 anchor="mm",

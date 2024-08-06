@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, User, app_commands
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.draw.main_funcs import draw_item_list_card
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput
 from hoyo_buddy.utils import ephemeral, get_now
 
@@ -15,8 +15,8 @@ from ...components import Button, Select, SelectOption, View
 if TYPE_CHECKING:
     from ambr.models import Abyss, AbyssResponse
 
-    from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.models import ItemWithDescription
     from hoyo_buddy.types import Interaction
 

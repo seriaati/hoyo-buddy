@@ -3,12 +3,12 @@ from __future__ import annotations
 from enum import IntEnum
 from typing import TYPE_CHECKING
 
-from ..bot.translator import LocaleStr
 from ..db.models import FarmNotify, HoyoAccount, Settings
 from ..embeds import ErrorEmbed
 from ..enums import Game
 from ..exceptions import AutocompleteNotDoneYetError, InvalidQueryError
 from ..hoyo.clients import ambr
+from ..l10n import LocaleStr
 from ..ui.hoyo.farm_notify import FarmNotifyView
 from ..utils import ephemeral
 

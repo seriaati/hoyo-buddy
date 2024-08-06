@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING, Any
 import genshin
 from discord import ButtonStyle, TextStyle
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Platform
+from hoyo_buddy.l10n import LocaleStr
 
 from ...components import Button, GoBackButton, Modal, TextInput
 

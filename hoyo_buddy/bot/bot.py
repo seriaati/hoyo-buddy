@@ -21,10 +21,10 @@ from ..db import models
 from ..enums import Game, Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
+from ..l10n import AppCommandTranslator, EnumStr, LocaleStr, Translator
 from ..utils import get_now
 from .cache import LFUCache
 from .command_tree import CommandTree
-from .translator import AppCommandTranslator, EnumStr, LocaleStr, Translator
 
 if TYPE_CHECKING:
     import asyncio

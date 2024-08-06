@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING, Any
 
 import discord
 
-from ..bot.translator import LocaleStr, Translator
 from ..constants import HOYO_BUDDY_LOCALES
 from ..db.models import Settings
 from ..embeds import DefaultEmbed
+from ..l10n import LocaleStr, Translator
 from .components import Select, SelectOption, ToggleButton, View
 
 if TYPE_CHECKING:

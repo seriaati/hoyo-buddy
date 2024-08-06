@@ -4,6 +4,7 @@ import pathlib
 from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
 
 import discord
+from cachetools import LRUCache
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from ..models import DynamicBKInput, TopPadding
@@ -11,7 +12,7 @@ from ..utils import get_static_img_path
 from .fonts import *  # noqa: F403
 
 if TYPE_CHECKING:
-    from ..bot.translator import LocaleStr, Translator
+    from ..l10n import LocaleStr, Translator
 
 __all__ = ("Drawer",)
 
@@ -104,6 +105,8 @@ SANS_FONT_MAPPING: dict[discord.Locale, dict[FontStyle, str]] = {
     }
 }
 
+image_cache: LRUCache[pathlib.Path, Image.Image] = LRUCache(maxsize=512)
+
 
 class Drawer:
     def __init__(
@@ -133,7 +136,7 @@ class Drawer:
         )
 
     @staticmethod
-    def resize_crop(image: Image.Image, size: tuple[int, int], zoom: float = 1.0) -> Image.Image:
+    def resize_crop(image: Image.Image, size: tuple[int, int], *, zoom: float = 1.0) -> Image.Image:
         """Resize an image without changing its aspect ratio."""
         # Calculate the target height to maintain the aspect ratio
         width, height = image.size
@@ -306,12 +309,21 @@ class Drawer:
         return ImageFont.truetype(font, size)
 
     @staticmethod
-    def _open_image(file_path: pathlib.Path, size: tuple[int, int] | None = None) -> Image.Image:
-        image = Image.open(file_path)
+    def open_image(
+        file_path: pathlib.Path | str, size: tuple[int, int] | None = None
+    ) -> Image.Image:
+        if isinstance(file_path, str):
+            file_path = pathlib.Path(file_path)
+
+        image = image_cache.get(file_path)
+        if image is None:
+            image = Image.open(file_path)
+            image_cache[file_path] = image
         image = image.convert("RGBA")
-        if size:
+
+        if size is not None:
             image = image.resize(size, Image.Resampling.LANCZOS)
-        return image
+        return image.copy()
 
     def write(
         self,
@@ -329,6 +341,8 @@ class Drawer:
         no_write: bool = False,
         title_case: bool = False,
         sans: bool = False,
+        stroke_width: int = 0,
+        stroke_color: tuple[int, int, int] | None = None,
     ) -> TextBBox:
         """Returns (left, top, right, bottom) of the text bounding box."""
         if not text:
@@ -360,6 +374,8 @@ class Drawer:
                 font=font,
                 fill=self._get_text_color(color, emphasis),
                 anchor=anchor,
+                stroke_width=stroke_width,
+                stroke_fill=stroke_color,
             )
 
         textbbox = self.draw.textbbox(
@@ -377,7 +393,7 @@ class Drawer:
         opacity: float = 1.0,
     ) -> Image.Image:
         folder = folder or self.folder
-        image = self._open_image(get_static_img_path(url, folder), size)
+        image = self.open_image(get_static_img_path(url, folder), size)
         if mask_color:
             image = self.mask_image_with_color(image, mask_color, opacity=opacity)
         return image
@@ -393,22 +409,17 @@ class Drawer:
     ) -> Image.Image:
         folder = folder or self.folder
         path = pathlib.Path(f"hoyo-buddy-assets/assets/{folder}/{filename}")
-        image = self._open_image(path, size)
+        image = self.open_image(path, size)
         if mask_color:
             image = self.mask_image_with_color(image, mask_color, opacity=opacity)
         return image
-
-    @staticmethod
-    def crop_with_mask(image: Image.Image, mask: Image.Image) -> Image.Image:
-        empty = Image.new("RGBA", image.size, 0)
-        return Image.composite(image, empty, mask)
 
     @classmethod
     def circular_crop(cls, image: Image.Image) -> Image.Image:
         """Crop an image into a circle."""
         path = pathlib.Path("hoyo-buddy-assets/assets/circular_mask.png")
-        mask = cls._open_image(path, image.size)
-        return cls.crop_with_mask(image, mask)
+        mask = cls.open_image(path, image.size)
+        return cls.mask_image_with_image(image, mask)
 
     def modify_image_for_build_card(
         self,
@@ -420,7 +431,7 @@ class Drawer:
         background_color: tuple[int, int, int] | None = None,
         zoom: float = 1.0,
     ) -> Image.Image:
-        image = self.resize_crop(image, (target_width, target_height), zoom)
+        image = self.resize_crop(image, (target_width, target_height), zoom=zoom)
 
         if self.dark_mode:
             overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.1))
@@ -429,10 +440,10 @@ class Drawer:
         if background_color is not None:
             new_im = Image.new("RGBA", (target_width, target_height), background_color)
             new_im.paste(image, (0, 0), image)
-            new_im = self.crop_with_mask(new_im, mask)
+            new_im = self.mask_image_with_image(new_im, mask)
             return new_im
 
-        image = self.crop_with_mask(image, mask)
+        image = self.mask_image_with_image(image, mask)
         return image
 
     @staticmethod

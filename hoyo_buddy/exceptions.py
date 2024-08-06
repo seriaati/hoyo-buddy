@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from discord.app_commands.errors import AppCommandError
 from discord.utils import format_dt
 
-from .bot.translator import EnumStr, LocaleStr
+from .l10n import EnumStr, LocaleStr
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -174,13 +174,15 @@ class AutocompleteNotDoneYetError(HoyoBuddyError):
 
 
 class FeatureNotImplementedError(HoyoBuddyError):
-    def __init__(self, *, platform: Platform, game: Game) -> None:
-        super().__init__(
-            title=LocaleStr(key="not_implemented_error_title"),
-            message=LocaleStr(
+    def __init__(self, *, platform: Platform | None = None, game: Game) -> None:
+        message = (
+            LocaleStr(key="not_implemented_error_only_game_message", game=EnumStr(game))
+            if platform is None
+            else LocaleStr(
                 key="not_implemented_error_message", game=EnumStr(game), platform=EnumStr(platform)
-            ),
+            )
         )
+        super().__init__(title=LocaleStr(key="not_implemented_error_title"), message=message)
 
 
 class ThirdPartyCardTempError(HoyoBuddyError):

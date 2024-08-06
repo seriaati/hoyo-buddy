@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 from discord import TextStyle
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import EDIT
+from hoyo_buddy.l10n import LocaleStr
 
 from ...components import Button, Modal, TextInput
 

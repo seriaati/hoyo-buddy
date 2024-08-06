@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import GIFT_OUTLINE, PUBLIC, SMART_TOY
+from hoyo_buddy.l10n import LocaleStr
 
 from ...components import ToggleButton
 

@@ -10,8 +10,8 @@ from hoyo_buddy.utils import ephemeral
 if TYPE_CHECKING:
     from discord import Locale, Member, User
 
-    from hoyo_buddy.bot.translator import LocaleStr, Translator
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.l10n import LocaleStr, Translator
     from hoyo_buddy.types import Interaction
 
 

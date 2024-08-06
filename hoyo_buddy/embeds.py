@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Self
 import discord
 
 if TYPE_CHECKING:
-    from .bot.translator import LocaleStr, Translator
     from .db.models import HoyoAccount
+    from .l10n import LocaleStr, Translator
 
 __all__ = ("DefaultEmbed", "Embed", "ErrorEmbed")
 

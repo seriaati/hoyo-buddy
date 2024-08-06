@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.db.models import HoyoAccount
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import DELETE, FORWARD
+from hoyo_buddy.l10n import LocaleStr
 
 from ...components import Button
 

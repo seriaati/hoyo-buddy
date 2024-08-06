@@ -3,13 +3,13 @@ from __future__ import annotations
 import io
 from typing import TYPE_CHECKING
 
-from cachetools import LRUCache, cached
+from cachetools import TTLCache, cached
 from discord import Locale
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.draw.drawer import BLACK, DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
+from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DynamicBKInput, UnownedCharacter
 
 if TYPE_CHECKING:
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
     from genshin.models import Character as GICharacter
 
-    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.l10n import Translator
 
 PC_ICON_OFFSETS = (0, -29)
 PC_ICON_SIZES = (214, 214)
@@ -113,7 +113,7 @@ def gi_cache_key(
     )
 
 
-@cached(LRUCache(maxsize=128), key=gi_cache_key)
+@cached(TTLCache(maxsize=64, ttl=180), key=gi_cache_key)
 def draw_small_gi_chara_card(
     talent_str: str,
     dark_mode: bool,
@@ -121,7 +121,7 @@ def draw_small_gi_chara_card(
     translator: Translator,
     locale: Locale,
 ) -> Image.Image:
-    im = Image.open(
+    im = Drawer.open_image(
         f"hoyo-buddy-assets/assets/gi-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png"
     )
 

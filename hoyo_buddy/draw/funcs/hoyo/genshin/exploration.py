@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import LevelStr, LocaleStr, Translator
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.l10n import LevelStr, LocaleStr, Translator
 
 if TYPE_CHECKING:
     from genshin.models import Exploration, PartialGenshinUserStats
@@ -371,7 +371,9 @@ class ExplorationCard:
 
     def draw(self) -> BytesIO:
         mode_str = "dark" if self._dark_mode else "light"
-        self._im = Image.open(f"hoyo-buddy-assets/assets/gi-exploration/background_{mode_str}.png")
+        self._im = Drawer.open_image(
+            f"hoyo-buddy-assets/assets/gi-exploration/background_{mode_str}.png"
+        )
         draw = ImageDraw.Draw(self._im)
         self._drawer = Drawer(
             draw,

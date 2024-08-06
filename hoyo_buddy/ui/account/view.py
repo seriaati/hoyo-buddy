@@ -4,13 +4,13 @@ from typing import TYPE_CHECKING, Any
 
 import genshin
 
-from ...bot.translator import EnumStr, LocaleStr, Translator
 from ...constants import GEETEST_SERVERS
 from ...db.models import HoyoAccount, User
 from ...embeds import DefaultEmbed
 from ...emojis import get_game_emoji
 from ...enums import GeetestNotifyType, Platform
 from ...exceptions import NoGameAccountsError, TryOtherMethodError
+from ...l10n import EnumStr, LocaleStr, Translator
 from ...models import LoginNotifPayload
 from .. import SelectOption
 from ..components import Button, GoBackButton, View

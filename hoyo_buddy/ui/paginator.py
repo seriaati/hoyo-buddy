@@ -10,7 +10,7 @@ from ..emojis import DOUBLE_LEFT, DOUBLE_RIGHT, LEFT, RIGHT
 from .components import Button, View
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.l10n import Translator
 
     from ..types import Interaction
 

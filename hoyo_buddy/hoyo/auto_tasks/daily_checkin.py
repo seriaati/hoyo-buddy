@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     import aiohttp
 
     from ...bot import HoyoBuddy
-    from ...bot.translator import Translator
+    from ...l10n import Translator
 
 
 CHECKIN_APIS: dict[Literal["VERCEL", "DETA", "RENDER"], str] = {

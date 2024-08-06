@@ -6,16 +6,16 @@ import discord.utils as dutils
 from discord import Locale, Member, User
 from seria.utils import shorten
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.emojis import PROJECT_AMBER
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:
     from ambr.models import BookDetail, BookVolume
 
-    from hoyo_buddy.bot.translator import Translator
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 

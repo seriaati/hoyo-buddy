@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
     import aiohttp
 
-    from ..bot.translator import Translator
+    from ..l10n import Translator
 
 ItemCategory: TypeAlias = ambr.ItemCategory | yatta.ItemCategory | HakushinItemCategory
 AutocompleteChoices: TypeAlias = dict[Game, dict[ItemCategory, dict[str, dict[str, str]]]]

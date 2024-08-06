@@ -3,19 +3,19 @@ from __future__ import annotations
 import io
 from typing import TYPE_CHECKING
 
-from cachetools import LRUCache, cached
+from cachetools import TTLCache, cached
 from discord import Locale
 from genshin.models import StarRailDetailCharacter as HSRCharacter
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import LevelStr, LocaleStr
 from hoyo_buddy.draw.drawer import DARK_SURFACE, LIGHT_SURFACE, Drawer
+from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DynamicBKInput, UnownedCharacter
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from hoyo_buddy.bot.translator import Translator
+    from hoyo_buddy.l10n import Translator
 
 PC_ICON_OFFSETS = (0, 38)
 PC_ICON_SIZES = (208, 146)
@@ -105,7 +105,7 @@ def hsr_cache_key(
     )
 
 
-@cached(LRUCache(maxsize=128), key=hsr_cache_key)
+@cached(TTLCache(maxsize=64, ttl=180), key=hsr_cache_key)
 def draw_small_hsr_chara_card(
     talent_str: str,
     dark_mode: bool,
@@ -113,7 +113,7 @@ def draw_small_hsr_chara_card(
     translator: Translator,
     locale: Locale,
 ) -> Image.Image:
-    im = Image.open(
+    im = Drawer.open_image(
         f"hoyo-buddy-assets/assets/hsr-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png"
     )
 

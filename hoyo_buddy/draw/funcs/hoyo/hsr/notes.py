@@ -4,10 +4,10 @@ from io import BytesIO
 from typing import TYPE_CHECKING
 
 from discord import Locale
-from PIL import Image, ImageDraw
+from PIL import ImageDraw
 
-from hoyo_buddy.bot.translator import LocaleStr, Translator
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.l10n import LocaleStr, Translator
 from hoyo_buddy.utils import format_timedelta
 
 if TYPE_CHECKING:
@@ -21,7 +21,7 @@ def draw_hsr_notes_card(
 ) -> BytesIO:
     locale = Locale(locale_)
     filename = f"{'dark' if dark_mode else 'light'}-hsr"
-    im = Image.open(f"hoyo-buddy-assets/assets/notes/{filename}.png")
+    im = Drawer.open_image(f"hoyo-buddy-assets/assets/notes/{filename}.png")
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="hsr-notes", dark_mode=dark_mode, translator=translator)
 

@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.bot.translator import EnumStr, LocaleStr, Translator
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
 from hoyo_buddy.enums import ChallengeType
+from hoyo_buddy.l10n import EnumStr, LocaleStr, Translator
 from hoyo_buddy.utils import get_floor_difficulty
 
 if TYPE_CHECKING:
@@ -84,9 +84,9 @@ class PureFictionCard:
         )
 
     def _draw_block(self, chara: FloorCharacter | None = None) -> Image.Image:
-        block = Image.open("hoyo-buddy-assets/assets/pf/block.png")
+        block = Drawer.open_image("hoyo-buddy-assets/assets/pf/block.png")
         if chara is None:
-            empty = Image.open("hoyo-buddy-assets/assets/pf/empty.png")
+            empty = Drawer.open_image("hoyo-buddy-assets/assets/pf/empty.png")
             block.paste(empty, (27, 28), empty)
             return block
 
@@ -101,7 +101,7 @@ class PureFictionCard:
         icon = drawer.open_static(chara.icon)
         icon = drawer.resize_crop(icon, (120, 120))
         mask = drawer.open_asset("mask.png")
-        icon = drawer.crop_with_mask(icon, mask)
+        icon = drawer.mask_image_with_image(icon, mask)
         block.paste(icon, (0, 0), icon)
 
         level_flair = drawer.open_asset("level_flair.png")
@@ -205,7 +205,7 @@ class PureFictionCard:
         return im
 
     def draw(self) -> BytesIO:
-        self._im = Image.open("hoyo-buddy-assets/assets/pf/pf.png")
+        self._im = Drawer.open_image("hoyo-buddy-assets/assets/pf/pf.png")
         self._drawer = Drawer(
             ImageDraw.Draw(self._im),
             folder="pf",

@@ -9,9 +9,9 @@ import genshin
 import qrcode
 import qrcode.image.pil
 
-from hoyo_buddy.bot.translator import LocaleStr
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Platform
+from hoyo_buddy.l10n import LocaleStr
 
 from ...components import Button, GoBackButton
 

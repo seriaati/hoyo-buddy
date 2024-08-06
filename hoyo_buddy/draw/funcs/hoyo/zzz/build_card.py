@@ -11,7 +11,6 @@ from PIL import Image, ImageDraw
 from PIL.Image import Transpose
 
 from hoyo_buddy.draw.drawer import BLACK, Drawer
-from hoyo_buddy.exceptions import CardNotReadyError
 
 from .common import SKILL_ORDER, STAT_ICONS, get_props
 
@@ -20,21 +19,21 @@ class ZZZAgentCard:
     def __init__(
         self,
         agent: ZZZFullAgent,
-        cn_agent: ZZZFullAgent,
         *,
         locale: str,
         image_url: str,
         agent_data: dict[str, Any],
         disc_icons: dict[str, str],
         agent_full_name: str,
+        color: str | None,
     ) -> None:
         self._agent = agent
-        self._cn_agent = cn_agent
         self._locale = locale
         self._image_url = image_url
         self._agent_data = agent_data
         self._disc_icons = disc_icons
         self._agent_full_name = agent_full_name
+        self._color = color
 
     def _draw_background(self) -> Image.Image:
         card = Drawer.open_image("hoyo-buddy-assets/assets/zzz-build-card/card_base.png")
@@ -49,9 +48,7 @@ class ZZZAgentCard:
         blob_rt = drawer.open_asset("blob_rt.png")
         z_blob = drawer.open_asset("z_blob.png")
 
-        agent_color = self._agent_data.get("color")
-        if agent_color is None:
-            raise CardNotReadyError(self._agent.name)
+        agent_color = self._color or self._agent_data["color"]
         blob_color = drawer.hex_to_rgb(agent_color)
         z_blob_color = drawer.blend_color(blob_color, (0, 0, 0), 0.85)
 
@@ -218,8 +215,8 @@ class ZZZAgentCard:
         # Discs
         start_pos = (74, 670)
         disc_mask = drawer.open_asset("disc_mask.png", size=(125, 152))
-        for i, disc in enumerate(self._cn_agent.discs):
-            icon = drawer.open_static(self._disc_icons[disc.set_effect.name])
+        for i, disc in enumerate(self._agent.discs):
+            icon = drawer.open_static(self._disc_icons[str(disc.id)[:3]])
             icon = drawer.middle_crop(icon, (125, 152))
             icon = drawer.mask_image_with_image(icon, disc_mask)
             im.paste(icon, start_pos, icon)

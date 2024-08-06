@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from io import BytesIO
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from discord import Locale
 from discord import utils as dutils
@@ -24,15 +24,15 @@ class ZZZTeamCard:
         *,
         locale: str,
         agents: Sequence[ZZZFullAgent],
-        agent_data: dict[str, Any],
-        agent_images: dict[int, str],
+        agent_colors: dict[str, str],
+        agent_images: dict[str, str],
         agent_full_names: dict[str, str],
         disc_icons: dict[str, str],
     ) -> None:
         self._locale = locale
         self._dark_mode = False
         self._agents = agents
-        self._agent_data = agent_data
+        self._agent_colors = agent_colors
         self._agent_images = agent_images
         self._agent_full_names = agent_full_names
         self._disc_icons = disc_icons
@@ -75,8 +75,8 @@ class ZZZTeamCard:
 
     def _draw_agent_card(self, agent: ZZZFullAgent) -> Image.Image:
         im = self._draw_card(
-            image_url=self._agent_images[agent.id],
-            blob_color=Drawer.hex_to_rgb(self._agent_data[str(agent.id)]["color"]),
+            image_url=self._agent_images[str(agent.id)],
+            blob_color=Drawer.hex_to_rgb(self._agent_colors[str(agent.id)]),
         )
         drawer = Drawer(ImageDraw.Draw(im), folder="zzz-team-card", dark_mode=self._dark_mode)
 

@@ -11,10 +11,7 @@ from loguru import logger
 from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
-    ZZZ_AGENT_DATA_URL,
-    ZZZ_DISC_ICONS_URL,
 )
-from hoyo_buddy.db.models import CardSettings, HoyoAccount, JSONFile
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
     draw_hsr_build_card,
@@ -23,7 +20,7 @@ from hoyo_buddy.draw.main_funcs import (
     draw_zzz_team_card,
 )
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import CharacterType, Game, Platform
+from hoyo_buddy.enums import CharacterType, Game
 from hoyo_buddy.exceptions import (
     CardNotReadyError,
     DownloadImageFailedError,
@@ -55,6 +52,7 @@ if TYPE_CHECKING:
     from discord import Member, User
     from genshin.models import RecordCard, StarRailUserStats
 
+    from hoyo_buddy.db.models import CardSettings, HoyoAccount
     from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Builds, Interaction
 
@@ -254,8 +252,8 @@ class ProfileView(View):
     def _add_items(self) -> None:
         self.add_item(PlayerInfoButton())
         self.add_item(CardSettingsButton())
-        self.add_item(CardInfoButton())
         self.add_item(RedrawCardButton())
+        self.add_item(CardInfoButton())
 
         if self._account is not None:
             self.add_item(RemoveFromCacheButton())
@@ -412,6 +410,7 @@ class ProfileView(View):
         executor: concurrent.futures.ProcessPoolExecutor,
         loop: asyncio.AbstractEventLoop,
         character: Character,
+        card_settings: CardSettings,
     ) -> BytesIO:
         """Draw ZZZ build card in Hoyo Buddy template."""
         assert isinstance(character, ZZZPartialAgent)
@@ -421,31 +420,12 @@ class ProfileView(View):
         client.set_lang(self.locale)
         agent = await client.get_zzz_agent_info(character.id)
 
-        if self.locale is Locale.chinese or self._account.platform is Platform.MIYOUSHE:
-            # No need to refetch the agent info
-            cn_agent = agent
-        else:
-            client.set_lang(Locale.chinese)
-            cn_agent = await client.get_zzz_agent_info(character.id)
-
-        filename = "zzz_agent_data.json"
-        agent_data = await JSONFile.read(filename)
-        if str(character.id) not in agent_data:
-            agent_data = await JSONFile.fetch_and_cache(
-                session, url=ZZZ_AGENT_DATA_URL, filename=filename
-            )
-        agent_icon = agent_data[str(character.id)]["icon_url"]
-
-        filename = "zzz_disc_icons.json"
-        disc_icons = await JSONFile.read(filename)
-        if any(disc.name not in disc_icons for disc in cn_agent.discs):
-            disc_icons = await JSONFile.fetch_and_cache(
-                session, url=ZZZ_DISC_ICONS_URL, filename=filename
-            )
-
-        agent_draw_data = self._card_data[str(character.id)]
         cache_extra = self.cache_extras.get(str(character.id))
         locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
+
+        agent_data = self._card_data.get(str(character.id))
+        if agent_data is None:
+            raise CardNotReadyError(character.name)
 
         return await draw_zzz_build_card(
             DrawInput(
@@ -457,11 +437,8 @@ class ProfileView(View):
                 loop=loop,
             ),
             agent,
-            cn_agent,
-            image_url=agent_icon,
-            agent_data=agent_draw_data,
-            disc_icons=disc_icons,
-            agent_full_name=agent_data[str(character.id)]["full_name"],
+            agent_data=agent_data,
+            color=card_settings.custom_primary_color,
         )
 
     async def draw_card(
@@ -512,6 +489,7 @@ class ProfileView(View):
                 i.client.executor,
                 i.client.loop,
                 character,
+                card_settings,
             )
 
         msg = f"draw_card not implemented for game {self.game} template {template}"
@@ -527,6 +505,10 @@ class ProfileView(View):
             executor=i.client.executor,
             loop=i.client.loop,
         )
+        images = {
+            char_id: await get_art_url(i.user.id, char_id, game=self.game) or get_default_art(char)
+            for char_id, char in self.characters.items()
+        }
         if self.game is Game.ZZZ:
             assert self._account is not None
             client = self._account.client
@@ -534,24 +516,38 @@ class ProfileView(View):
             agents = [
                 await client.get_zzz_agent_info(int(char_id)) for char_id in self.character_ids
             ]
-            agent_images = {
-                int(char_id): await get_art_url(i.user.id, char_id, game=self.game)
-                or get_default_art(char)
-                for char_id, char in self.characters.items()
+
+            for agent in agents:
+                if str(agent.id) not in self._card_data:
+                    raise CardNotReadyError(agent.name)
+
+            agent_colors = {
+                char_id: (
+                    await get_card_settings(i.user.id, char_id, game=self.game)
+                ).custom_primary_color
+                or self._card_data[char_id]["color"]
+                for char_id in self.character_ids
             }
-            return await draw_zzz_team_card(draw_input, agents, self._card_data, agent_images)
+            return await draw_zzz_team_card(draw_input, agents, agent_colors, images)
         if self.game is Game.STARRAIL:
             characters = [self.characters[char_id] for char_id in self.character_ids]
-            character_images = {
-                char_id: await get_art_url(i.user.id, char_id, game=self.game)
-                or get_default_art(char)
-                for char_id, char in self.characters.items()
+            character_colors = {
+                char_id: (
+                    await get_card_settings(i.user.id, char_id, game=self.game)
+                ).custom_primary_color
+                or self._card_data[char_id]["primary"]
+                for char_id in self.character_ids
             }
+
+            for char_id in self.character_ids:
+                if char_id not in self._card_data:
+                    raise CardNotReadyError(self.characters[char_id].name)
+
             return await draw_hsr_team_card(
                 draw_input,
                 characters,  # pyright: ignore [reportArgumentType]
-                character_images,
-                self._card_data,
+                images,
+                character_colors,
             )
 
         raise FeatureNotImplementedError(game=self.game)

@@ -13,6 +13,8 @@ from hoyo_buddy.embeds import DefaultEmbed, Embed
 from hoyo_buddy.emojis import (
     ADD,
     DELETE,
+    PALETTE,
+    PHOTO_ADD,
     get_gi_element_emoji,
     get_hsr_element_emoji,
     get_zzz_element_emoji,
@@ -43,12 +45,7 @@ from hoyo_buddy.utils import (
     upload_image,
 )
 
-from .btn_states import (
-    DISABLE_AI_ART,
-    DISABLE_COLOR,
-    DISABLE_DARK_MODE,
-    DISABLE_IMAGE_SELECT,
-)
+from .btn_states import DISABLE_COLOR, DISABLE_DARK_MODE, DISABLE_IMAGE
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -159,6 +156,7 @@ class CardSettingsView(View):
         card_settings: CardSettings,
         game: Game,
         hb_template_only: bool,
+        is_team: bool,
         *,
         author: User | Member,
         locale: Locale,
@@ -170,6 +168,7 @@ class CardSettingsView(View):
         self._user_id = author.id
         self._card_data = card_data
         self._hb_template_only = hb_template_only
+        self._is_team = is_team
 
         self.game = game
         self.selected_character_id = selected_character_id
@@ -200,7 +199,8 @@ class CardSettingsView(View):
                 default_collection=default_collection,
                 custom_images=self.card_settings.custom_images,
                 template=self.card_settings.template,
-                disabled=DISABLE_IMAGE_SELECT[self.card_settings.template],
+                disabled=(self.game is Game.ZZZ and not self._is_team)
+                or self.card_settings.template in DISABLE_IMAGE,
                 row=1,
             )
         )
@@ -215,11 +215,18 @@ class CardSettingsView(View):
 
         self.add_item(
             GenerateAIArtButton(
-                disabled=DISABLE_AI_ART[self.card_settings.template],
+                disabled=(self.game is Game.ZZZ and not self._is_team)
+                or self.card_settings.template in DISABLE_IMAGE,
                 row=3,
             )
         )
-        self.add_item(AddImageButton(row=3))
+        self.add_item(
+            AddImageButton(
+                row=3,
+                disabled=(self.game is Game.ZZZ and not self._is_team)
+                or self.card_settings.template in DISABLE_IMAGE,
+            )
+        )
         self.add_item(
             RemoveImageButton(
                 disabled=self.card_settings.current_image is None
@@ -231,14 +238,14 @@ class CardSettingsView(View):
         self.add_item(
             PrimaryColorButton(
                 self.card_settings.custom_primary_color,
-                disabled=DISABLE_COLOR[self.card_settings.template],
+                disabled=self.card_settings.template in DISABLE_COLOR,
                 row=4,
             )
         )
         self.add_item(
             DarkModeButton(
                 current_toggle=self.card_settings.dark_mode,
-                disabled=DISABLE_DARK_MODE[self.card_settings.template],
+                disabled=self.game is Game.ZZZ or self.card_settings.template in DISABLE_DARK_MODE,
                 row=4,
             )
         )
@@ -525,6 +532,7 @@ class PrimaryColorButton(Button[CardSettingsView]):
             custom_id="profile_primary_color",
             disabled=disabled,
             row=row,
+            emoji=PALETTE,
         )
         self.current_color = current_color
 
@@ -577,6 +585,7 @@ class GenerateAIArtButton(Button):
             custom_id="profile_generate_ai_art",
             disabled=disabled,
             row=row,
+            emoji=PHOTO_ADD,
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -671,16 +680,16 @@ class CardTemplateSelect(Select[CardSettingsView]):
         self.update_options_defaults()
 
         change_color_btn: PrimaryColorButton = self.view.get_item("profile_primary_color")
-        change_color_btn.disabled = DISABLE_COLOR[self.values[0]]
+        change_color_btn.disabled = self.values[0] in DISABLE_COLOR
 
         dark_mode_btn: DarkModeButton = self.view.get_item("profile_dark_mode")
-        dark_mode_btn.disabled = DISABLE_DARK_MODE[self.values[0]]
+        dark_mode_btn.disabled = self.values[0] in DISABLE_DARK_MODE
 
         image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.disabled = DISABLE_IMAGE_SELECT[self.values[0]]
+        image_select.disabled = self.values[0] in DISABLE_IMAGE
 
         gen_ai_art_btn: GenerateAIArtButton = self.view.get_item("profile_generate_ai_art")
-        gen_ai_art_btn.disabled = DISABLE_AI_ART[self.values[0]]
+        gen_ai_art_btn.disabled = self.values[0] in DISABLE_IMAGE
 
         embed = self.view.get_settings_embed()
         await i.response.edit_message(embed=embed, view=self.view)
@@ -698,12 +707,13 @@ class AddImageModal(Modal):
 
 
 class AddImageButton(Button[CardSettingsView]):
-    def __init__(self, row: int) -> None:
+    def __init__(self, row: int, disabled: bool) -> None:
         super().__init__(
             label=LocaleStr(key="profile.add_image.button.label"),
             style=ButtonStyle.green,
             emoji=ADD,
             row=row,
+            disabled=disabled,
         )
 
     async def callback(self, i: Interaction) -> None:

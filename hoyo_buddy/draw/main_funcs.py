@@ -430,18 +430,48 @@ async def draw_zzz_notes_card(
     return buffer
 
 
+async def fetch_zzz_draw_data(
+    draw_input: DrawInput, agents: Sequence[ZZZFullAgent]
+) -> tuple[dict[str, str], dict[str, str], dict[str, str]]:
+    filename = "zzz_agent_data.json"
+    agent_name_data = await JSONFile.read(filename)
+    if any(str(agent.id) not in agent_name_data for agent in agents):
+        agent_name_data = await JSONFile.fetch_and_cache(
+            draw_input.session, url=ZZZ_AGENT_DATA_URL, filename=filename
+        )
+    agent_full_names: dict[str, str] = {k: v["name"] for k, v in agent_name_data.items()}
+    agent_icons: dict[str, str] = {k: v["icon_url"] for k, v in agent_name_data.items()}
+
+    async with hakushin.HakushinAPI(hakushin.Game.ZZZ, lang=hakushin.Language.ZH) as api:
+        discs = await api.fetch_drive_discs()
+    filename = "zzz_disc_icons.json"
+    disc_icons = await JSONFile.read(filename)
+    if any(disc.name not in disc_icons for disc in discs):
+        disc_icons = await JSONFile.fetch_and_cache(
+            draw_input.session, url=ZZZ_DISC_ICONS_URL, filename=filename
+        )
+
+    new_disc_icons: dict[str, str] = {}
+    for disc_name, disc_icon in disc_icons.items():
+        disc = next((disc for disc in discs if disc.name == disc_name), None)
+        if disc is not None:
+            new_disc_icons[str(disc.id)[:3]] = disc_icon
+
+    return agent_full_names, agent_icons, new_disc_icons
+
+
 async def draw_zzz_build_card(
     draw_input: DrawInput,
     agent: ZZZFullAgent,
-    cn_agent: ZZZFullAgent,
     *,
-    agent_full_name: str,
-    image_url: str,
     agent_data: dict[str, Any],
-    disc_icons: dict[str, str],
+    color: str | None,
 ) -> BytesIO:
+    agent_full_names, agent_icons, disc_icons = await fetch_zzz_draw_data(draw_input, [agent])
+
+    icon = agent_icons[str(agent.id)]
     urls: list[str] = []
-    urls.append(image_url)
+    urls.append(icon)
     urls.extend(disc_icons.values())
     if agent.w_engine is not None:
         urls.append(agent.w_engine.icon)
@@ -450,12 +480,12 @@ async def draw_zzz_build_card(
     with timing("draw", tags={"type": "zzz_build_card"}):
         card = funcs.zzz.ZZZAgentCard(
             agent,
-            cn_agent,
             locale=draw_input.locale.value,
-            agent_full_name=agent_full_name,
-            image_url=image_url,
+            agent_full_name=agent_full_names[str(agent.id)],
+            image_url=icon,
             agent_data=agent_data,
             disc_icons=disc_icons,
+            color=color,
         )
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
@@ -517,31 +547,10 @@ async def draw_honkai_suits_card(
 async def draw_zzz_team_card(
     draw_input: DrawInput,
     agents: Sequence[ZZZFullAgent],
-    agent_data: dict[str, Any],
-    agent_images: dict[int, str],
+    agent_colors: dict[str, str],
+    agent_images: dict[str, str],
 ) -> BytesIO:
-    filename = "zzz_agent_data.json"
-    agent_name_data = await JSONFile.read(filename)
-    if any(str(agent.id) not in agent_name_data for agent in agents):
-        agent_name_data = await JSONFile.fetch_and_cache(
-            draw_input.session, url=ZZZ_AGENT_DATA_URL, filename=filename
-        )
-    agent_full_names = {k: v["name"] for k, v in agent_name_data.items()}
-
-    async with hakushin.HakushinAPI(hakushin.Game.ZZZ, lang=hakushin.Language.ZH) as api:
-        discs = await api.fetch_drive_discs()
-    filename = "zzz_disc_icons.json"
-    disc_icons = await JSONFile.read(filename)
-    if any(disc.name not in disc_icons for disc in discs):
-        disc_icons = await JSONFile.fetch_and_cache(
-            draw_input.session, url=ZZZ_DISC_ICONS_URL, filename=filename
-        )
-
-    new_disc_icons: dict[str, str] = {}
-    for disc_name, disc_icon in disc_icons.items():
-        disc = next((disc for disc in discs if disc.name == disc_name), None)
-        if disc is not None:
-            new_disc_icons[str(disc.id)[:3]] = disc_icon
+    agent_full_names, _, disc_icons = await fetch_zzz_draw_data(draw_input, agents)
 
     urls = list(agent_images.values())
     urls.extend(agent.w_engine.icon for agent in agents if agent.w_engine is not None)
@@ -551,10 +560,10 @@ async def draw_zzz_team_card(
     card = funcs.zzz.ZZZTeamCard(
         locale=draw_input.locale.value,
         agents=agents,
-        agent_data=agent_data,
+        agent_colors=agent_colors,
         agent_images=agent_images,
         agent_full_names=agent_full_names,
-        disc_icons=new_disc_icons,
+        disc_icons=disc_icons,
     )
     with timing("draw", tags={"type": "zzz_team_card"}):
         buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
@@ -565,7 +574,7 @@ async def draw_hsr_team_card(
     draw_input: DrawInput,
     characters: Sequence[HoyolabHSRCharacter | enka.hsr.Character],
     character_images: dict[str, str],
-    card_data: dict[str, Any],
+    character_colors: dict[str, str],
 ) -> BytesIO:
     urls: list[str] = list(character_images.values())
     for character in characters:
@@ -587,7 +596,7 @@ async def draw_hsr_team_card(
             locale=draw_input.locale.value,
             characters=characters,
             character_images=character_images,
-            card_data=card_data,
+            character_colors=character_colors,
         )
         buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     return buffer

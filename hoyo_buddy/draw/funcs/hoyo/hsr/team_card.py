@@ -25,18 +25,18 @@ class HSRTeamCard:
         locale: str,
         characters: Sequence[HSRCharacter | enka.hsr.Character],
         character_images: dict[str, str],
-        card_data: dict[str, Any],
+        character_colors: dict[str, Any],
     ) -> None:
         self._locale = locale
         self._characters = characters
         self._character_images = character_images
-        self._card_data = card_data
+        self._character_colors = character_colors
 
     def _draw_character_card(self, character: HSRCharacter | enka.hsr.Character) -> Image.Image:
         im = Drawer.open_image("hoyo-buddy-assets/assets/hsr-team-card/card.png")
         drawer = Drawer(ImageDraw.Draw(im), folder="hsr-team-card", dark_mode=True)
 
-        primary = drawer.hex_to_rgb(self._card_data[str(character.id)]["primary"])
+        primary = drawer.hex_to_rgb(self._character_colors[str(character.id)])
 
         img_mask = drawer.open_asset("img_mask.png")
         img = drawer.open_static(self._character_images[str(character.id)])

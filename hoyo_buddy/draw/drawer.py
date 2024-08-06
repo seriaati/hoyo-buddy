@@ -136,7 +136,7 @@ class Drawer:
         )
 
     @staticmethod
-    def resize_crop(image: Image.Image, size: tuple[int, int], zoom: float = 1.0) -> Image.Image:
+    def resize_crop(image: Image.Image, size: tuple[int, int], *, zoom: float = 1.0) -> Image.Image:
         """Resize an image without changing its aspect ratio."""
         # Calculate the target height to maintain the aspect ratio
         width, height = image.size
@@ -431,7 +431,7 @@ class Drawer:
         background_color: tuple[int, int, int] | None = None,
         zoom: float = 1.0,
     ) -> Image.Image:
-        image = self.resize_crop(image, (target_width, target_height), zoom)
+        image = self.resize_crop(image, (target_width, target_height), zoom=zoom)
 
         if self.dark_mode:
             overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.1))

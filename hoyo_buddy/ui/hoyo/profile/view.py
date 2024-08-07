@@ -12,6 +12,7 @@ from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
 )
+from hoyo_buddy.db.models import Settings
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
     draw_gi_team_card,
@@ -505,8 +506,9 @@ class ProfileView(View):
         """Draw team card for multiple characters."""
         self._check_card_data()
 
+        settings = await Settings.get(user_id=i.user.id)
         draw_input = DrawInput(
-            dark_mode=False,
+            dark_mode=settings.team_card_dark_mode,
             locale=self.locale,
             session=i.client.session,
             filename="card.webp",

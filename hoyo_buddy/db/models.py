@@ -133,6 +133,7 @@ class Settings(Model):
     gi_card_temp = fields.CharField(max_length=32, default="hb1")
     hsr_card_temp = fields.CharField(max_length=32, default="hb1")
     zzz_card_temp = fields.CharField(max_length=32, default="hb1")
+    team_card_dark_mode = fields.BooleanField(default=False)
 
     @property
     def locale(self) -> Locale | None:

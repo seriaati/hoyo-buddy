@@ -157,6 +157,7 @@ class CardSettingsView(View):
         game: Game,
         hb_template_only: bool,
         is_team: bool,
+        settings: Settings,
         *,
         author: User | Member,
         locale: Locale,
@@ -173,6 +174,7 @@ class CardSettingsView(View):
         self.game = game
         self.selected_character_id = selected_character_id
         self.card_settings = card_settings
+        self.settings = settings
 
         self._add_items()
 
@@ -181,6 +183,16 @@ class CardSettingsView(View):
         return f"[{color}](https://www.colorhexa.com/{color[1:]})"
 
     def _add_items(self) -> None:
+        disable_image_features = (
+            self.game is Game.ZZZ and not self._is_team
+        ) or self.card_settings.template in DISABLE_IMAGE
+        disable_color_features = (
+            self.game is Game.GENSHIN or self.card_settings.template in DISABLE_COLOR
+        )
+        disable_dark_mode_features = (
+            self.game is Game.ZZZ or self.card_settings.template in DISABLE_DARK_MODE
+        )
+
         character = self._get_current_character()
         default_collection = get_default_collection(
             str(character.id), self._card_data, game=self.game
@@ -199,8 +211,7 @@ class CardSettingsView(View):
                 default_collection=default_collection,
                 custom_images=self.card_settings.custom_images,
                 template=self.card_settings.template,
-                disabled=(self.game is Game.ZZZ and not self._is_team)
-                or self.card_settings.template in DISABLE_IMAGE,
+                disabled=disable_image_features,
                 row=1,
             )
         )
@@ -213,20 +224,8 @@ class CardSettingsView(View):
             )
         )
 
-        self.add_item(
-            GenerateAIArtButton(
-                disabled=(self.game is Game.ZZZ and not self._is_team)
-                or self.card_settings.template in DISABLE_IMAGE,
-                row=3,
-            )
-        )
-        self.add_item(
-            AddImageButton(
-                row=3,
-                disabled=(self.game is Game.ZZZ and not self._is_team)
-                or self.card_settings.template in DISABLE_IMAGE,
-            )
-        )
+        self.add_item(GenerateAIArtButton(disabled=disable_image_features, row=3))
+        self.add_item(AddImageButton(row=3, disabled=disable_image_features))
         self.add_item(
             RemoveImageButton(
                 disabled=self.card_settings.current_image is None
@@ -237,15 +236,20 @@ class CardSettingsView(View):
 
         self.add_item(
             PrimaryColorButton(
-                self.card_settings.custom_primary_color,
-                disabled=self.card_settings.template in DISABLE_COLOR,
-                row=4,
+                self.card_settings.custom_primary_color, disabled=disable_color_features, row=4
             )
         )
         self.add_item(
             DarkModeButton(
                 current_toggle=self.card_settings.dark_mode,
-                disabled=self.game is Game.ZZZ or self.card_settings.template in DISABLE_DARK_MODE,
+                disabled=disable_dark_mode_features,
+                row=4,
+            )
+        )
+        self.add_item(
+            TeamCardDarkModeButton(
+                self.settings.team_card_dark_mode,
+                disable_dark_mode_features,
                 row=4,
             )
         )
@@ -378,6 +382,22 @@ class DarkModeButton(ToggleButton[CardSettingsView]):
         await super().callback(i, edit=True)
         self.view.card_settings.dark_mode = self.current_toggle
         await self.view.card_settings.save(update_fields=("dark_mode",))
+
+
+class TeamCardDarkModeButton(ToggleButton[CardSettingsView]):
+    def __init__(self, current_toggle: bool, disabled: bool, row: int) -> None:
+        super().__init__(
+            current_toggle,
+            LocaleStr(key="profile.team_dark_mode.button.label"),
+            custom_id="profile_team_dark_mode",
+            disabled=disabled,
+            row=row,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i, edit=True)
+        self.view.settings.team_card_dark_mode = self.current_toggle
+        await Settings.filter(user_id=i.user.id).update(team_card_dark_mode=self.current_toggle)
 
 
 class RemoveImageButton(Button[CardSettingsView]):

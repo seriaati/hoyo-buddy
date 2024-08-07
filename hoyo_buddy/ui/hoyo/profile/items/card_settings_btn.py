@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
 
+from hoyo_buddy.db.models import Settings
 from hoyo_buddy.emojis import SETTINGS
 from hoyo_buddy.enums import CharacterType
 from hoyo_buddy.l10n import LocaleStr
@@ -29,6 +30,7 @@ class CardSettingsButton(Button["ProfileView"]):
     async def callback(self, i: Interaction) -> None:
         character_id = self.view.character_ids[0]
         card_settings = await get_card_settings(i.user.id, character_id, game=self.view.game)
+        settings = await Settings.get(user_id=i.user.id)
         view = CardSettingsView(
             list(self.view.characters.values()),
             character_id,
@@ -37,6 +39,7 @@ class CardSettingsButton(Button["ProfileView"]):
             self.view.game,
             self.view.character_type is CharacterType.CACHE,
             len(self.view.character_ids) > 1,
+            settings,
             author=i.user,
             locale=self.view.locale,
             translator=self.view.translator,

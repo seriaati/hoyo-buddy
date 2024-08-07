@@ -606,3 +606,4 @@ card_settings.current_image: Current image
 profile.redraw_card_button_label: Redraw card
 card_settings.footer: "When you're done, click the green button in the message above to redraw the card"
 profile.team_dark_mode.button.label: Team card dark mode
+profile.character_select.multi.placeholder: Select character(s)...

@@ -114,7 +114,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
 
         super().__init__(
             options,
-            placeholder=LocaleStr(key="profile.character_select.placeholder"),
+            placeholder=LocaleStr(key="profile.character_select.multi.placeholder"),
             custom_id="profile_character_select",
             max_values=MAX_VALUES[game],
         )

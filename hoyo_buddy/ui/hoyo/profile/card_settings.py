@@ -705,6 +705,9 @@ class CardTemplateSelect(Select[CardSettingsView]):
         dark_mode_btn: DarkModeButton = self.view.get_item("profile_dark_mode")
         dark_mode_btn.disabled = self.values[0] in DISABLE_DARK_MODE
 
+        team_dark_mode_btn: TeamCardDarkModeButton = self.view.get_item("profile_team_dark_mode")
+        team_dark_mode_btn.disabled = self.values[0] in DISABLE_DARK_MODE
+
         image_select: ImageSelect = self.view.get_item("profile_image_select")
         image_select.disabled = self.values[0] in DISABLE_IMAGE
 

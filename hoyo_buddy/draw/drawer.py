@@ -270,6 +270,7 @@ class Drawer:
                     del lines[-1]
                     lines[-1] = cls._shorten_text(lines[-1], max_width, font)
                     break
+        lines = [line for line in lines if line]
         return "\n".join(lines)
 
     def _get_text_color(

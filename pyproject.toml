@@ -9,7 +9,7 @@ license = "GPL-3.0-only"
 name = "hoyo-buddy"
 package-mode = false
 readme = "README.md"
-version = "1.5.2"
+version = "1.6.0"
 
 [tool.poetry.dependencies]
 aiocache = "^0.12.2"
@@ -35,9 +35,9 @@ pydantic = "^2.6.4"
 python = "^3.11"
 python-dotenv = "^1.0.0"
 sentry-sdk = "^2.4.0"
+seria-library = {version = "^1.5.3", extras = ["files"]}
 tortoise-orm = {extras = ["asyncpg"], version = "^0.21.0"}
 yatta-py = "^1.3.6"
-seria-library = {version = "^1.5.3", extras = ["files"]}
 
 [tool.poetry.group.dev]
 optional = true

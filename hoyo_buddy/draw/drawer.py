@@ -50,6 +50,14 @@ class TextBBox(NamedTuple):
     right: int
     bottom: int
 
+    @property
+    def width(self) -> int:
+        return self.right - self.left
+
+    @property
+    def height(self) -> int:
+        return self.bottom - self.top
+
 
 FONT_MAPPING: dict[discord.Locale, dict[FontStyle, str]] = {
     discord.Locale.chinese: {
@@ -437,11 +445,11 @@ class Drawer:
 
         if self.dark_mode:
             overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.1))
-            image = Image.alpha_composite(image.convert("RGBA"), overlay)
+            image = Image.alpha_composite(image, overlay)
 
         if background_color is not None:
             new_im = Image.new("RGBA", (target_width, target_height), background_color)
-            new_im.paste(image, (0, 0), image)
+            new_im.alpha_composite(image)
             new_im = self.mask_image_with_image(new_im, mask)
             return new_im
 

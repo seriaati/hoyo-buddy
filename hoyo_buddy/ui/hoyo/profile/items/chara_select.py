@@ -27,7 +27,7 @@ DATA_TYPES: Final[dict[CharacterType, LocaleStr]] = {
     CharacterType.CACHE: LocaleStr(key="profile.character_select.cached_data.description"),
 }
 MAX_VALUES: Final[dict[Game, int]] = {
-    Game.GENSHIN: 1,
+    Game.GENSHIN: 4,
     Game.STARRAIL: 4,
     Game.ZZZ: 3,
 }

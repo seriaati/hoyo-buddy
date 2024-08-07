@@ -14,6 +14,7 @@ from hoyo_buddy.constants import (
 )
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
+    draw_gi_team_card,
     draw_hsr_build_card,
     draw_hsr_team_card,
     draw_zzz_build_card,
@@ -113,6 +114,11 @@ class ProfileView(View):
         self._owner_username: str | None = owner.username if owner is not None else None
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | None = None
+
+    def _check_card_data(self) -> None:
+        for char_id in self.character_ids:
+            if char_id not in self._card_data:
+                raise CardNotReadyError(self.characters[char_id].name)
 
     def _set_characters(self) -> None:  # noqa: PLR0912
         characters: dict[str, Character] = {}
@@ -497,6 +503,8 @@ class ProfileView(View):
 
     async def draw_team_card(self, i: Interaction) -> io.BytesIO:
         """Draw team card for multiple characters."""
+        self._check_card_data()
+
         draw_input = DrawInput(
             dark_mode=False,
             locale=self.locale,
@@ -517,10 +525,6 @@ class ProfileView(View):
                 await client.get_zzz_agent_info(int(char_id)) for char_id in self.character_ids
             ]
 
-            for agent in agents:
-                if str(agent.id) not in self._card_data:
-                    raise CardNotReadyError(agent.name)
-
             agent_colors = {
                 char_id: (
                     await get_card_settings(i.user.id, char_id, game=self.game)
@@ -538,16 +542,18 @@ class ProfileView(View):
                 or self._card_data[char_id]["primary"]
                 for char_id in self.character_ids
             }
-
-            for char_id in self.character_ids:
-                if char_id not in self._card_data:
-                    raise CardNotReadyError(self.characters[char_id].name)
-
             return await draw_hsr_team_card(
                 draw_input,
                 characters,  # pyright: ignore [reportArgumentType]
                 images,
                 character_colors,
+            )
+        if self.game is Game.GENSHIN:
+            characters = [self.characters[char_id] for char_id in self.character_ids]
+            return await draw_gi_team_card(
+                draw_input,
+                characters,  # pyright: ignore [reportArgumentType]
+                images,
             )
 
         raise FeatureNotImplementedError(game=self.game)

@@ -84,9 +84,8 @@ class GITeamCard:
         # Colors
         color_1 = (237, 237, 237) if self._dark_mode else (95, 95, 95)
         color_2 = (237, 237, 237) if self._dark_mode else (131, 131, 131)
-        color_3 = (243, 243, 243) if self._dark_mode else (217, 217, 217)
-        color_4 = (255, 255, 255) if self._dark_mode else (104, 104, 104)
-        color_5 = (110, 110, 110) if self._dark_mode else (237, 237, 237)
+        color_3 = (255, 255, 255) if self._dark_mode else (104, 104, 104)
+        color_4 = (110, 110, 110) if self._dark_mode else (237, 237, 237)
 
         im = Drawer.open_image(f"hoyo-buddy-assets/assets/gi-team-card/{self._theme}_card.png")
         drawer = Drawer(ImageDraw.Draw(im), folder="gi-team-card", dark_mode=self._dark_mode)
@@ -132,17 +131,17 @@ class GITeamCard:
             size=47,
             style="bold",
             position=(0, 0),
-            color=color_3,
+            color=color_2,
         )
         text_im = text_im.rotate(90, expand=True)
         im.alpha_composite(text_im, (25, 653))
 
         # Stars
-        stars = drawer.open_asset(f"stars/stars_{character.rarity}.png", mask_color=color_3)
+        stars = drawer.open_asset(f"stars/stars_{character.rarity}.png", mask_color=color_2)
         im.alpha_composite(stars, (482, 47))
 
         # Contellations
-        const_bg = drawer.open_asset("const_bg.png", mask_color=color_5)
+        const_bg = drawer.open_asset("const_bg.png", mask_color=color_4)
         im.alpha_composite(const_bg, (477, 449))
         start_pos = (488, 465)
         no_unlock_color = (141, 141, 141) if self._dark_mode else (217, 217, 217)
@@ -150,20 +149,26 @@ class GITeamCard:
             icon = drawer.open_static(
                 const.icon,
                 size=(42, 42),
-                mask_color=color_4 if const.unlocked else no_unlock_color,
+                mask_color=color_3 if const.unlocked else no_unlock_color,
             )
             im.alpha_composite(icon, start_pos)
             start_pos = (start_pos[0], start_pos[1] + 50)
 
         # Talents
-        skill_bg = drawer.open_asset("skill_bg.png", mask_color=color_5)
+        skill_bg = drawer.open_asset("skill_bg.png", mask_color=color_4)
         im.alpha_composite(skill_bg, (96, 719))
         start_pos = (133, 726)
-        for skill in character.talents:
-            icon = drawer.open_static(skill.icon, size=(40, 40), mask_color=color_4)
+        talents = character.talents
+        if character.id == 10000002:  # Ayaka
+            talents.pop(0)
+        elif character.id == 10000041:  # Mona
+            talents.pop(2)
+
+        for talent in character.talents:
+            icon = drawer.open_static(talent.icon, size=(40, 40), mask_color=color_3)
             im.alpha_composite(icon, start_pos)
             tbox = drawer.write(
-                str(skill.level),
+                str(talent.level),
                 size=25,
                 style="bold",
                 color=color_1,
@@ -206,8 +211,8 @@ class GITeamCard:
         )
 
         # Artifacts and weapon
-        artifact_layer = drawer.open_asset("artifact_layer.png", mask_color=color_5)
-        weapon_layer = drawer.open_asset("weapon_layer.png", mask_color=color_5)
+        artifact_layer = drawer.open_asset("artifact_layer.png", mask_color=color_4)
+        weapon_layer = drawer.open_asset("weapon_layer.png", mask_color=color_4)
         start_pos = (564, 35)
         x_diff = 199
         y_diff = 173
@@ -381,6 +386,8 @@ class GITeamCard:
 
     def draw(self) -> BytesIO:
         im = Drawer.open_image(f"hoyo-buddy-assets/assets/gi-team-card/{self._theme}_bg.png")
+        if len(self._characters) < 3:
+            im = im.crop((0, 0, im.width, 922))
 
         start_pos = (50, 60)
         x_diff = 1025

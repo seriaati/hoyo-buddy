@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias
+from typing import TYPE_CHECKING, Any, ClassVar, Final, TypeAlias
 
 import hakushin
 import hakushin.clients
@@ -12,8 +12,6 @@ from .clients import ambr, yatta
 from .clients.hakushin import ItemCategory as HakushinItemCategory
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
-
     import aiohttp
 
     from ..l10n import Translator
@@ -24,7 +22,7 @@ Tasks: TypeAlias = dict[Game, dict[ItemCategory, dict[str, asyncio.Task[list[Any
 
 HARD_EXCLUDE: set[str] = {"15012", "15004"}
 
-HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Mapping[HakushinItemCategory, Game] = {
+HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Final[dict[HakushinItemCategory, Game]] = {
     HakushinItemCategory.GI_CHARACTERS: Game.GENSHIN,
     HakushinItemCategory.HSR_CHARACTERS: Game.STARRAIL,
     HakushinItemCategory.WEAPONS: Game.GENSHIN,
@@ -32,9 +30,11 @@ HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Mapping[HakushinItemCategory, Game] = {
     HakushinItemCategory.ARTIFACT_SETS: Game.GENSHIN,
     HakushinItemCategory.RELICS: Game.STARRAIL,
 }
-HAKUSHIN_ITEM_CATEGORY_MAP: Mapping[
-    tuple[type[ambr.ItemCategory | yatta.ItemCategory], ambr.ItemCategory | yatta.ItemCategory],
-    HakushinItemCategory,
+HAKUSHIN_ITEM_CATEGORY_MAP: Final[
+    dict[
+        tuple[type[ambr.ItemCategory | yatta.ItemCategory], ambr.ItemCategory | yatta.ItemCategory],
+        HakushinItemCategory,
+    ]
 ] = {
     (ambr.ItemCategory, ambr.ItemCategory.CHARACTERS): HakushinItemCategory.GI_CHARACTERS,
     (yatta.ItemCategory, yatta.ItemCategory.CHARACTERS): HakushinItemCategory.HSR_CHARACTERS,

@@ -845,13 +845,13 @@ files = [
 
 [[package]]
 name = "hakushin-py"
-version = "0.4.0"
+version = "0.4.3"
 description = "Async API wrapper for hakush.in written in Python."
 optional = false
 python-versions = "<4.0,>=3.11"
 files = [
-    {file = "hakushin_py-0.4.0-py3-none-any.whl", hash = "sha256:12096a38a80e057a4e2de52b25e3d744d90e11be4ff98df3a006bccb795d36b0"},
-    {file = "hakushin_py-0.4.0.tar.gz", hash = "sha256:b0d62d2a402e14c20786febb02ca65199d2f9eb6cc95c2914612b92f36a68bb9"},
+    {file = "hakushin_py-0.4.3-py3-none-any.whl", hash = "sha256:63b9b73d8635b34a44f63e701a4c24070b74724d729b622b525be127d91f2892"},
+    {file = "hakushin_py-0.4.3.tar.gz", hash = "sha256:f1496a48268d44413060ed1c857bc671b234554e62c2d11d8da003b3dbbd9806"},
 ]
 
 [package.dependencies]

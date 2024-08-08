@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final, Literal
 
 import hakushin
 import yatta
@@ -20,6 +20,15 @@ if TYPE_CHECKING:
 
     from discord import Locale
 
+SKILL_TYPE_ICONS: Final[dict[hakushin.enums.ZZZSkillType, str]] = {
+    hakushin.enums.ZZZSkillType.BASIC: "https://api.hakush.in/zzz/UI/Icon_Normal.webp",
+    hakushin.enums.ZZZSkillType.SPECIAL: "https://api.hakush.in/zzz/UI/Icon_SpecialReady.webp",
+    hakushin.enums.ZZZSkillType.ASSIST: "https://api.hakush.in/zzz/UI/Icon_Switch.webp",
+    hakushin.enums.ZZZSkillType.DODGE: "https://api.hakush.in/zzz/UI/Icon_Evade.webp",
+    hakushin.enums.ZZZSkillType.CHAIN: "https://api.hakush.in/zzz/UI/Icon_UltimateReady.webp",
+}
+STAR_NUMS: Final[dict[Literal["S", "A", "B"], int]] = {"S": 5, "A": 4, "B": 3}
+
 
 class ItemCategory(StrEnum):
     GI_CHARACTERS = "gi_characters"
@@ -28,6 +37,13 @@ class ItemCategory(StrEnum):
     LIGHT_CONES = "light_cones"
     ARTIFACT_SETS = "artifact_sets"
     RELICS = "relics"
+
+
+class ZZZItemCategory(StrEnum):
+    AGENTS = "cat.zzz_agents"
+    BANGBOOS = "cat.zzz_bangboos"
+    W_ENGINES = "cat.zzz_w_engines"
+    DISC_DRIVES = "cat.zzz_disc_drives"
 
 
 class HakushinTranslator:
@@ -295,3 +311,85 @@ class HakushinTranslator:
                 )
 
         return characters
+
+    def get_agent_info_embed(self, agent: hakushin.zzz.CharacterDetail) -> DefaultEmbed:
+        embed = DefaultEmbed(
+            self._locale,
+            self._translator,
+            title=agent.name,
+            description=LocaleStr(
+                key="zzz_search.agent_info",
+                rarity=agent.rarity or "?",
+                specialty=agent.specialty.name,
+                atk_type=agent.attack_type.name,
+                faction=agent.faction.name,
+                element=agent.element.name,
+            ),
+        )
+        embed.set_image(url=agent.icon)
+        return embed
+
+    def get_agent_skill_embed(self, skill: hakushin.zzz.ZZZCharacterSkill) -> DefaultEmbed:
+        embed = DefaultEmbed(self._locale, self._translator)
+        for desc in skill.descriptions:
+            if desc.description is None:
+                continue
+            embed.add_field(name=desc.name, value=desc.description, inline=False)
+        embed.set_thumbnail(url=SKILL_TYPE_ICONS[skill.type])
+        return embed
+
+    def get_agent_core_embed(self, cores: hakushin.zzz.ZZZCharacterPassive) -> DefaultEmbed:
+        embed = DefaultEmbed(self._locale, self._translator)
+        core = cores.levels[0]
+        embed.add_field(name=core.names[0], value=core.descriptions[0], inline=False)
+        embed.add_field(name=core.names[1], value=core.descriptions[1], inline=False)
+        embed.set_thumbnail(url="https://api.hakush.in/zzz/UI/Icon_CoreSkill.webp")
+        return embed
+
+    def get_agent_cinema_embed(self, cinema: hakushin.zzz.MindscapeCinema) -> DefaultEmbed:
+        embed = DefaultEmbed(
+            self._locale, self._translator, title=cinema.name, description=cinema.description
+        )
+        embed.set_footer(text=cinema.description2)
+        return embed
+
+    def get_bangboo_embed(self, bangboo: hakushin.zzz.BangbooDetail) -> DefaultEmbed:
+        embed = DefaultEmbed(self._locale, self._translator, title=bangboo.name)
+        embed.description = "★" * STAR_NUMS[bangboo.rarity]
+        for skill_id, skill_info in bangboo.skills.items():
+            skill = skill_info["1"]
+            embed.add_field(
+                name=f"{skill_id}. {skill.name}",
+                value=skill.description,
+                inline=False,
+            )
+        embed.set_image(url=bangboo.icon)
+        embed.set_footer(text=bangboo.description)
+        return embed
+
+    def get_engine_embed(self, engine: hakushin.zzz.WeaponDetail, refinement: int) -> DefaultEmbed:
+        embed = DefaultEmbed(self._locale, self._translator, title=engine.name)
+        embed.description = ""
+        if engine.rarity is not None:
+            embed.description = "★" * STAR_NUMS[engine.rarity]
+        embed.description += f"\n{engine.description}\n\n{engine.description2}"
+
+        effect = engine.refinements[str(refinement)]
+        embed.add_field(name=f"{effect.name} ({refinement})", value=effect.description)
+        embed.set_footer(text=engine.short_description)
+        embed.set_thumbnail(url=engine.icon)
+        return embed
+
+    def get_disc_embed(self, disc: hakushin.zzz.DriveDiscDetail) -> DefaultEmbed:
+        embed = DefaultEmbed(self._locale, self._translator, title=disc.name)
+
+        two_piece = LocaleStr(
+            key="artifact_set_two_piece_embed_description", bonus_2=disc.two_piece_effect
+        ).translate(self._translator, self._locale)
+        four_piece = LocaleStr(
+            key="artifact_set_four_piece_embed_description", bonus_4=disc.four_piece_effect
+        ).translate(self._translator, self._locale)
+        embed.description = f"{two_piece}\n{four_piece}"
+
+        embed.set_thumbnail(url=disc.icon)
+        return embed

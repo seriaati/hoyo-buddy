@@ -131,3 +131,7 @@ class ZZZElement(StrEnum):
     ICE = "Ice"
     PHYSICAL = "Physical"
     ELECTRIC = "Electric"
+
+
+class BetaItemCategory(StrEnum):
+    UNRELEASED_CONTENT = "Unreleased Content"

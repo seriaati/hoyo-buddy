@@ -1,10 +1,14 @@
-from typing import TypeAlias
+import asyncio
+from collections import defaultdict
+from typing import Any, TypeAlias
 
 import discord
 import enka
 import genshin
 
 from .bot import HoyoBuddy
+from .enums import Game
+from .hoyo.clients import ambr, hakushin, yatta
 
 Challenge: TypeAlias = (
     genshin.models.StarRailChallenge
@@ -22,3 +26,14 @@ ChallengeWithBuff: TypeAlias = (
 Interaction: TypeAlias = discord.Interaction[HoyoBuddy]
 User: TypeAlias = discord.User | discord.Member | None
 Builds: TypeAlias = dict[str, list[enka.gi.Build]] | dict[str, list[enka.hsr.Build]]
+
+ItemCategory: TypeAlias = (
+    ambr.ItemCategory | yatta.ItemCategory | hakushin.ItemCategory | hakushin.ZZZItemCategory
+)
+AutocompleteChoices: TypeAlias = defaultdict[
+    Game, defaultdict[ItemCategory, defaultdict[discord.Locale, dict[str, str]]]
+]
+BetaAutocompleteChoices: TypeAlias = defaultdict[Game, defaultdict[discord.Locale, dict[str, str]]]
+Tasks: TypeAlias = defaultdict[
+    Game, defaultdict[ItemCategory, defaultdict[discord.Locale, asyncio.Task[list[Any]]]]
+]

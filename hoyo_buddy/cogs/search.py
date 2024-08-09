@@ -13,7 +13,7 @@ from hoyo_buddy.constants import locale_to_hakushin_lang
 
 from ..db.models import Settings, get_locale
 from ..emojis import PROJECT_AMBER
-from ..enums import Game
+from ..enums import BetaItemCategory, Game
 from ..exceptions import InvalidQueryError
 from ..hoyo.clients import ambr, hakushin, yatta
 from ..hoyo.search_autocomplete import AutocompleteSetup
@@ -27,6 +27,8 @@ from ..ui.hoyo.zzz import search as zzz_search
 from ..utils import ephemeral
 
 if TYPE_CHECKING:
+    from enum import StrEnum
+
     from ..bot import HoyoBuddy
     from ..types import Interaction
 
@@ -35,9 +37,7 @@ class Search(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
-        self._search_categories: dict[
-            Game, list[ambr.ItemCategory | yatta.ItemCategory | hakushin.ZZZItemCategory]
-        ] = {
+        self._search_categories: dict[Game, list[StrEnum]] = {
             Game.GENSHIN: list(ambr.ItemCategory),
             Game.STARRAIL: list(yatta.ItemCategory),
             Game.ZZZ: list(hakushin.ZZZItemCategory),
@@ -61,6 +61,7 @@ class Search(commands.Cog):
             (
                 self.bot.autocomplete_choices,
                 self._beta_id_to_category,
+                self.bot.beta_autocomplete_choices,
             ) = await AutocompleteSetup.start(self.bot.translator, self.bot.session)
         except Exception:
             logger.exception("Failed to set up search autocomplete choices")
@@ -109,100 +110,12 @@ class Search(commands.Cog):
         settings = await Settings.get(user_id=i.user.id)
         locale = settings.locale or i.locale
 
-        if query in self._beta_id_to_category:
-            if game is Game.GENSHIN:
-                try:
-                    category = ambr.ItemCategory(category_value)
-                except ValueError as e:
-                    raise InvalidQueryError from e
-            elif game is Game.STARRAIL:
-                try:
-                    category = yatta.ItemCategory(category_value)
-                except ValueError as e:
-                    raise InvalidQueryError from e
-            else:
-                raise InvalidQueryError
-
-            if game is Game.GENSHIN:
-                if category is ambr.ItemCategory.UNRELEASED_CONTENT:
-                    category = ambr.ItemCategory(self._beta_id_to_category[query])
-
-                match category:
-                    case ambr.ItemCategory.CHARACTERS:
-                        character_ui = gi_search.CharacterUI(
-                            query,
-                            author=i.user,
-                            locale=locale,
-                            translator=i.client.translator,
-                            hakushin=True,
-                        )
-                        await character_ui.update(i)
-                    case ambr.ItemCategory.WEAPONS:
-                        weapon_ui = gi_search.WeaponUI(
-                            query,
-                            hakushin=True,
-                            author=i.user,
-                            locale=locale,
-                            translator=i.client.translator,
-                        )
-                        await weapon_ui.start(i)
-                    case ambr.ItemCategory.ARTIFACT_SETS:
-                        artifact_set_ui = gi_search.ArtifactSetUI(
-                            query,
-                            author=i.user,
-                            locale=locale,
-                            translator=i.client.translator,
-                            hakushin=True,
-                        )
-                        await artifact_set_ui.start(i)
-                    case _:
-                        raise InvalidQueryError
-
-            elif game is Game.STARRAIL:
-                if category is yatta.ItemCategory.UNRELEASED_CONTENT:
-                    category = yatta.ItemCategory(self._beta_id_to_category[query])
-
-                match category:
-                    case yatta.ItemCategory.CHARACTERS:
-                        try:
-                            character_id = int(query)
-                        except ValueError as e:
-                            raise InvalidQueryError from e
-
-                        character_ui = hsr_search.CharacterUI(
-                            character_id,
-                            author=i.user,
-                            locale=locale,
-                            translator=i.client.translator,
-                            hakushin=True,
-                        )
-                        await character_ui.start(i)
-                    case yatta.ItemCategory.LIGHT_CONES:
-                        light_cone_ui = LightConeUI(
-                            query,
-                            author=i.user,
-                            locale=locale,
-                            translator=i.client.translator,
-                            hakushin=True,
-                        )
-                        await light_cone_ui.start(i)
-                    case yatta.ItemCategory.RELICS:
-                        relic_set_ui = hsr_search.RelicSetUI(
-                            query,
-                            author=i.user,
-                            locale=locale,
-                            translator=i.client.translator,
-                            hakushin=True,
-                        )
-                        await relic_set_ui.start(i)
-                    case _:
-                        raise InvalidQueryError
-
-            return
+        is_beta = query in self._beta_id_to_category
+        category = self._beta_id_to_category.get(query, category_value)
 
         if game is Game.GENSHIN:
             try:
-                category = ambr.ItemCategory(category_value)
+                category = ambr.ItemCategory(category)
             except ValueError as e:
                 raise InvalidQueryError from e
 
@@ -213,14 +126,14 @@ class Search(commands.Cog):
                         author=i.user,
                         locale=locale,
                         translator=i.client.translator,
-                        hakushin=False,
+                        hakushin=is_beta,
                     )
                     await character_ui.update(i)
 
                 case ambr.ItemCategory.WEAPONS:
                     weapon_ui = gi_search.WeaponUI(
                         query,
-                        hakushin=False,
+                        hakushin=is_beta,
                         author=i.user,
                         locale=locale,
                         translator=i.client.translator,
@@ -240,7 +153,7 @@ class Search(commands.Cog):
                         author=i.user,
                         locale=locale,
                         translator=i.client.translator,
-                        hakushin=False,
+                        hakushin=is_beta,
                     )
                     await artifact_set_ui.start(i)
 
@@ -342,7 +255,7 @@ class Search(commands.Cog):
 
         elif game is Game.STARRAIL:
             try:
-                category = yatta.ItemCategory(category_value)
+                category = yatta.ItemCategory(category)
             except ValueError as e:
                 raise InvalidQueryError from e
 
@@ -360,7 +273,7 @@ class Search(commands.Cog):
                         author=i.user,
                         locale=locale,
                         translator=i.client.translator,
-                        hakushin=False,
+                        hakushin=is_beta,
                     )
                     await light_cone_ui.start(i)
 
@@ -376,7 +289,7 @@ class Search(commands.Cog):
                         author=i.user,
                         locale=locale,
                         translator=i.client.translator,
-                        hakushin=False,
+                        hakushin=is_beta,
                     )
                     await relic_set_ui.start(i)
 
@@ -391,13 +304,13 @@ class Search(commands.Cog):
                         author=i.user,
                         locale=locale,
                         translator=i.client.translator,
-                        hakushin=False,
+                        hakushin=is_beta,
                     )
                     await character_ui.start(i)
 
         elif game is Game.ZZZ:
             try:
-                category = hakushin.ZZZItemCategory(category_value)
+                category = hakushin.ZZZItemCategory(category)
             except ValueError as e:
                 raise InvalidQueryError from e
 
@@ -473,7 +386,10 @@ class Search(commands.Cog):
         except ValueError:
             return self.bot.get_error_autocomplete(LocaleStr(key="invalid_game_selected"), locale)
 
-        return self.bot.get_enum_autocomplete(self._search_categories[game], locale, current)
+        categories = self._search_categories[game]
+        return self.bot.get_enum_autocomplete(
+            [BetaItemCategory.UNRELEASED_CONTENT, *categories], locale, current
+        )
 
     @search_command.autocomplete("query")
     async def search_command_query_autocomplete(  # noqa: PLR0912, PLR0911
@@ -485,42 +401,53 @@ class Search(commands.Cog):
         except ValueError:
             return self.bot.get_error_autocomplete(LocaleStr(key="invalid_game_selected"), locale)
 
-        try:
-            if game is Game.GENSHIN:
-                category = ambr.ItemCategory(i.namespace.category)
-            elif game is Game.STARRAIL:
-                category = yatta.ItemCategory(i.namespace.category)
-            elif game is Game.ZZZ:
-                category = hakushin.ZZZItemCategory(i.namespace.category)
-            else:
-                return self.bot.get_error_autocomplete(
-                    LocaleStr(key="invalid_game_selected"), locale
-                )
-        except ValueError:
-            return self.bot.get_error_autocomplete(
-                LocaleStr(key="invalid_category_selected"), locale
-            )
-
-        # Special handling for spiral abyss
-        if category is ambr.ItemCategory.SPIRAL_ABYSS:
-            return await AbyssEnemyView.get_autocomplete_choices()
-
         if not self.bot.autocomplete_choices or game not in self.bot.autocomplete_choices:
             return self.bot.get_error_autocomplete(
                 LocaleStr(key="search_autocomplete_not_setup"), locale
             )
 
-        try:
-            choice_dict = self.bot.autocomplete_choices[game][category][locale.value]
-        except KeyError:
+        if i.namespace.category == BetaItemCategory.UNRELEASED_CONTENT.value:
             try:
-                choice_dict = self.bot.autocomplete_choices[game][category][
-                    Locale.american_english.value
-                ]
+                choice_dict = self.bot.beta_autocomplete_choices[game][locale]
             except KeyError:
+                try:
+                    choice_dict = self.bot.beta_autocomplete_choices[game][Locale.american_english]
+                except KeyError:
+                    return self.bot.get_error_autocomplete(
+                        LocaleStr(key="search_autocomplete_no_results"), locale
+                    )
+        else:
+            try:
+                if game is Game.GENSHIN:
+                    category = ambr.ItemCategory(i.namespace.category)
+                elif game is Game.STARRAIL:
+                    category = yatta.ItemCategory(i.namespace.category)
+                elif game is Game.ZZZ:
+                    category = hakushin.ZZZItemCategory(i.namespace.category)
+                else:
+                    return self.bot.get_error_autocomplete(
+                        LocaleStr(key="invalid_game_selected"), locale
+                    )
+            except ValueError:
                 return self.bot.get_error_autocomplete(
-                    LocaleStr(key="search_autocomplete_no_results"), locale
+                    LocaleStr(key="invalid_category_selected"), locale
                 )
+
+            # Special handling for spiral abyss
+            if category is ambr.ItemCategory.SPIRAL_ABYSS:
+                return await AbyssEnemyView.get_autocomplete_choices()
+
+            try:
+                choice_dict = self.bot.autocomplete_choices[game][category][locale]
+            except KeyError:
+                try:
+                    choice_dict = self.bot.autocomplete_choices[game][category][
+                        Locale.american_english
+                    ]
+                except KeyError:
+                    return self.bot.get_error_autocomplete(
+                        LocaleStr(key="search_autocomplete_no_results"), locale
+                    )
 
         choices = [
             app_commands.Choice(name=choice, value=item_id)

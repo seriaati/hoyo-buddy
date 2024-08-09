@@ -177,8 +177,8 @@ class Farm(
             )
 
         choice_dict = dict(
-            characters.get(locale.value, characters[Locale.american_english.value]).items()
-        ) | dict(weapons.get(locale.value, weapons[Locale.american_english.value]).items())
+            characters.get(locale, characters[Locale.american_english]).items()
+        ) | dict(weapons.get(locale, weapons[Locale.american_english]).items())
 
         choices = [
             app_commands.Choice(name=name, value=value)
@@ -212,12 +212,10 @@ class Farm(
             )
 
         try:
-            choice_dict = dict(characters[locale.value].items()) | dict(
-                weapons[locale.value].items()
-            )
+            choice_dict = dict(characters[locale].items()) | dict(weapons[locale].items())
         except KeyError:
-            choice_dict = dict(characters[Locale.american_english.value].items()) | dict(
-                weapons[Locale.american_english.value].items()
+            choice_dict = dict(characters[Locale.american_english].items()) | dict(
+                weapons[Locale.american_english].items()
             )
 
         choices = [

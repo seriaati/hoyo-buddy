@@ -34,7 +34,6 @@ AUDIO_LANGUAGES = ("EN", "CN", "JP", "KR")
 
 
 class ItemCategory(StrEnum):
-    UNRELEASED_CONTENT = "Unreleased Content"
     CHARACTERS = "Characters"
     LIGHT_CONES = "Light Cones"
     ITEMS = "Items"

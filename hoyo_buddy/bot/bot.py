@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import concurrent.futures
 import os
+from collections import defaultdict
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -35,9 +36,8 @@ if TYPE_CHECKING:
     import git
     from aiohttp import ClientSession
 
-    from ..hoyo.search_autocomplete import AutocompleteChoices
     from ..models import Config
-    from ..types import User
+    from ..types import AutocompleteChoices, BetaAutocompleteChoices, User
 
 __all__ = ("HoyoBuddy",)
 
@@ -101,8 +101,14 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.cache = LFUCache()
         self.user_ids: set[int] = set()
 
-        self.autocomplete_choices: AutocompleteChoices = {}
+        self.autocomplete_choices: AutocompleteChoices = defaultdict(
+            lambda: defaultdict(defaultdict)
+        )
         """[game][category][locale][item_name] -> item_id"""
+        self.beta_autocomplete_choices: BetaAutocompleteChoices = defaultdict(
+            lambda: defaultdict(dict)
+        )
+        """[game][locale][item_name] -> item_id"""
 
         self.login_notif_tasks: dict[int, asyncio.Task] = {}
         """user_id -> task"""

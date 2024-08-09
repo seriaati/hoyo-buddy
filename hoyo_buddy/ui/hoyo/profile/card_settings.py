@@ -605,7 +605,7 @@ class GenerateAIArtModal(Modal):
     )
 
 
-class GenerateAIArtButton(Button):
+class GenerateAIArtButton(Button[CardSettingsView]):
     def __init__(self, disabled: bool, row: int) -> None:
         super().__init__(
             label=LocaleStr(key="profile.generate_ai_art.button.label"),
@@ -644,19 +644,19 @@ class GenerateAIArtButton(Button):
             raise
 
         # Add the image URL to db
-        self.view._card_settings.custom_images.append(url)
-        self.view._card_settings.current_image = url
-        await self.view._card_settings.save(update_fields=("custom_images", "current_image"))
+        self.view.card_settings.custom_images.append(url)
+        self.view.card_settings.current_image = url
+        await self.view.card_settings.save(update_fields=("custom_images", "current_image"))
 
         # Add the new image URL to the image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.update(current_image=url, custom_images=self.view._card_settings.custom_images)
+        image_select.update(current_image=url, custom_images=self.view.card_settings.custom_images)
 
         # Enable the remove image button
         remove_img_btn: RemoveImageButton = self.view.get_item("profile_remove_image")
         remove_img_btn.disabled = False
 
-        embed = self.view.get_settings_embed(self.view._card_settings)
+        embed = self.view.get_settings_embed()
         await self.unset_loading_state(i, embed=embed)
 
 

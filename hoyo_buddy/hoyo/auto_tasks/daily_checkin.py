@@ -105,7 +105,7 @@ class DailyCheckin:
                 except Exception as e:
                     cls._bot.capture_exception(e)
             finally:
-                await asyncio.sleep(2.0)
+                await asyncio.sleep(2.3)
                 queue.task_done()
 
     @classmethod

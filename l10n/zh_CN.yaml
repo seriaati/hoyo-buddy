@@ -605,3 +605,17 @@ card_settings.color_default: 默认
 card_settings.current_image: 当前图片
 profile.redraw_card_button_label: 重新绘制卡片
 card_settings.footer: "修改完毕后, 点击上方信息中的绿色按钮来重新绘制卡片"
+profile.team_dark_mode.button.label: 队伍卡片深色模式
+profile.character_select.multi.placeholder: 选择角色…
+zzz_search.agent_info: "稀有度: {rarity}\n特性: {specialty}\n攻击方式: {atk_type}\n阵营: {faction}\n元素: {element}"
+cat_zzz_agents: 代理人
+cat_zzz_bangboos: 邦布
+cat_zzz_w_engines: 音擎
+cat_zzz_drive_discs: 驱动盘
+search.agent_page.info: 代理人信息
+search.agent_page.skills: 技能
+search.agent_page.cinemas: 意象影画
+search.agent_page.placeholder: 选择一页…
+zzz.skill_type.placeholder: 选择一个代理人技能…
+zzz.cinema.placeholder: 选择一幅意象影画…
+zzz.engine.refinement_select.placeholder: 选择一个精炼等级…

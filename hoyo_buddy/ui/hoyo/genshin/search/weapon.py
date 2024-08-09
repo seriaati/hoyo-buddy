@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 import hakushin
 from discord import ButtonStyle
 
-from hoyo_buddy.constants import LOCALE_TO_HAKUSHIN_LANG
+from hoyo_buddy.constants import locale_to_hakushin_lang
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
@@ -65,7 +65,7 @@ class WeaponUI(View):
             manual_weapon = await api.fetch_manual_weapon()
 
         async with hakushin.HakushinAPI(
-            hakushin.Game.GI, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
         ) as api:
             try:
                 weapon_id = int(self.weapon_id)

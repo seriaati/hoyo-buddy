@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 import hakushin
 from discord import ButtonStyle
 
-from hoyo_buddy.constants import LOCALE_TO_HAKUSHIN_LANG
+from hoyo_buddy.constants import locale_to_hakushin_lang
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
@@ -52,7 +52,7 @@ class LightConeUI(View):
                 manual_avatar = await api.fetch_manual_avatar()
 
             async with hakushin.HakushinAPI(
-                hakushin.Game.HSR, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+                hakushin.Game.HSR, locale_to_hakushin_lang(self.locale)
             ) as api:
                 try:
                     light_cone_id = int(self._light_cone_id)
@@ -68,7 +68,7 @@ class LightConeUI(View):
                 self._light_cone_level,
                 self._superimpose,
                 self._convert_manual_avatar(manual_avatar),
-                LOCALE_TO_HAKUSHIN_LANG[self.locale],
+                locale_to_hakushin_lang(self.locale),
             )
         else:
             async with YattaAPIClient(self.locale, self.translator) as api:

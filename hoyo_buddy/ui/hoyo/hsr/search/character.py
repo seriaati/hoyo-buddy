@@ -6,7 +6,7 @@ import hakushin
 import yatta
 from discord import ButtonStyle
 
-from hoyo_buddy.constants import HAKUSHIN_HSR_SKILL_TYPE_NAMES, LOCALE_TO_HAKUSHIN_LANG
+from hoyo_buddy.constants import HAKUSHIN_HSR_SKILL_TYPE_NAMES, locale_to_hakushin_lang
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
@@ -70,7 +70,7 @@ class CharacterUI(View):
                 manual_avatar = await api.fetch_manual_avatar()
 
             async with hakushin.HakushinAPI(
-                hakushin.Game.HSR, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+                hakushin.Game.HSR, locale_to_hakushin_lang(self.locale)
             ) as api:
                 character_detail = await api.fetch_character_detail(self._character_id)
 

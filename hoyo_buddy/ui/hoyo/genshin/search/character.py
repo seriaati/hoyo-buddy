@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 import hakushin
 from discord import ButtonStyle, Locale, Member, User
 
-from hoyo_buddy.constants import GI_SKILL_TYPE_KEYS, LOCALE_TO_HAKUSHIN_LANG
+from hoyo_buddy.constants import GI_SKILL_TYPE_KEYS, locale_to_hakushin_lang
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.l10n import LocaleStr
@@ -101,7 +101,7 @@ class CharacterUI(View):
             manual_weapon = await api.fetch_manual_weapon()
 
         async with hakushin.HakushinAPI(
-            hakushin.Game.GI, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
         ) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
         return self._hakushin_translator.get_character_embed(
@@ -112,7 +112,7 @@ class CharacterUI(View):
         self,
     ) -> tuple[DefaultEmbed, list[hakushin.gi.CharacterSkill]]:
         async with hakushin.HakushinAPI(
-            hakushin.Game.GI, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
         ) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
 
@@ -126,7 +126,7 @@ class CharacterUI(View):
         self,
     ) -> tuple[DefaultEmbed, list[hakushin.gi.CharacterPassive]]:
         async with hakushin.HakushinAPI(
-            hakushin.Game.GI, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
         ) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             passive = character_detail.passives[self.passive_index]
@@ -139,7 +139,7 @@ class CharacterUI(View):
         self,
     ) -> tuple[DefaultEmbed, list[hakushin.gi.CharacterConstellation]]:
         async with hakushin.HakushinAPI(
-            hakushin.Game.GI, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
         ) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             const = character_detail.constellations[self.const_index]

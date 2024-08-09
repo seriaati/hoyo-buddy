@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import hakushin
 from discord import ButtonStyle, Locale, Member, User
 
-from hoyo_buddy.constants import EQUIP_ID_TO_ARTIFACT_POS, LOCALE_TO_HAKUSHIN_LANG
+from hoyo_buddy.constants import EQUIP_ID_TO_ARTIFACT_POS, locale_to_hakushin_lang
 from hoyo_buddy.emojis import get_artifact_pos_emoji
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
@@ -45,7 +45,7 @@ class ArtifactSetUI(View):
 
         if self._hakushin:
             async with hakushin.HakushinAPI(
-                hakushin.Game.GI, LOCALE_TO_HAKUSHIN_LANG[self.locale]
+                hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
             ) as api:
                 artifact_set_detail = await api.fetch_artifact_set_detail(artifact_id)
 

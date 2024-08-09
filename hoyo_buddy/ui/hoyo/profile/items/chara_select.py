@@ -96,7 +96,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                 description = LocaleStr(
                     key="profile.zzz_hoyolab.character_select.description", m=character.rank
                 )
-                emoji = get_zzz_element_emoji(character.element.name)
+                emoji = get_zzz_element_emoji(character.element)
 
             options.append(
                 SelectOption(

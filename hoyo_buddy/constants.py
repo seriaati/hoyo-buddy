@@ -198,6 +198,7 @@ LOCALE_TO_HAKUSHIN_LANG: dict[discord.Locale, hakushin.Language] = {
     discord.Locale.american_english: hakushin.Language.EN,
 }
 
+
 LOCALE_TO_GI_ENKA_LANG: dict[discord.Locale, enka.gi.Language] = {
     discord.Locale.taiwan_chinese: enka.gi.Language.TRADITIONAL_CHINESE,
     discord.Locale.chinese: enka.gi.Language.SIMPLIFIED_CHINESE,
@@ -361,3 +362,7 @@ ZZZ_AGENT_DATA_URL = f"{ZENLESS_DATA_URL}/agent_data.json"
 ZZZ_DISC_ICONS_URL = f"{ZENLESS_DATA_URL}/disc_icons.json"
 
 HSR_DEFAULT_ART_URL = "https://raw.githubusercontent.com/FortOfFans/HSR/main/spriteoutput/avatardrawcardresult/{char_id}.png"
+
+
+def locale_to_hakushin_lang(locale: discord.Locale) -> hakushin.Language:
+    return LOCALE_TO_HAKUSHIN_LANG.get(locale, hakushin.Language.EN)

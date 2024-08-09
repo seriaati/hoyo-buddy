@@ -312,7 +312,7 @@ class CharacterSelect(PaginatorSelect[CardSettingsView]):
     @staticmethod
     def _get_chara_emoji(chara: Character) -> str:
         if isinstance(chara, ZZZPartialAgent):
-            return get_zzz_element_emoji(chara.element.name)
+            return get_zzz_element_emoji(chara.element)
         if isinstance(chara, enka.gi.Character):
             return get_gi_element_emoji(chara.element.name)
         return get_hsr_element_emoji(str(chara.element))

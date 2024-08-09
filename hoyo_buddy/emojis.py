@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import genshin
+import hakushin
 
 from .enums import Game, GenshinCity, GenshinElement, HSRElement, HSRPath, ZZZElement
 
@@ -124,6 +125,15 @@ TOGGLE_EMOJIS: dict[bool, str] = {
     True: "<:TOGGLE_ON:1215289748415844382>",
 }
 
+ZZZ_SKILL_TYPE_EMOJIS: dict[hakushin.enums.ZZZSkillType, str] = {
+    hakushin.enums.ZZZSkillType.ASSIST: "<:Icon_Switch:1271096975131021426>",
+    hakushin.enums.ZZZSkillType.BASIC: "<:Icon_Normal:1271096817978839123>",
+    hakushin.enums.ZZZSkillType.CHAIN: "<:Icon_UltimateReady:1271096958647406642>",
+    hakushin.enums.ZZZSkillType.DODGE: "<:Icon_Evade:1271096823649407117>",
+    hakushin.enums.ZZZSkillType.SPECIAL: "<:Icon_SpecialReady:1271096829320364213>",
+}
+ZZZ_SKILL_TYPE_CORE = "<:Icon_CoreSkill:1271096929014648873>"
+
 COMFORT_ICON = "<:comfort_icon:1045528772222394378>"
 LOAD_ICON = "<:load_icon:1045528773992386650>"
 PROJECT_AMBER = "<:PROJECT_AMBER:1191752455998930955>"
@@ -162,8 +172,18 @@ def get_hsr_element_emoji(element: str) -> str:
     return HSR_ELEMENT_EMOJIS[HSRElement(element.title())]
 
 
-def get_zzz_element_emoji(element: str) -> str:
-    return ZZZ_ELEMENT_EMOJIS[ZZZElement(element.title())]
+def get_zzz_element_emoji(
+    element: ZZZElement
+    | hakushin.enums.ZZZElement
+    | hakushin.zzz.CharacterProp
+    | genshin.models.ZZZElementType,
+) -> str:
+    name = (
+        genshin.models.ZZZElementType(element.id).name
+        if isinstance(element, hakushin.zzz.CharacterProp)
+        else element.name
+    )
+    return ZZZ_ELEMENT_EMOJIS[ZZZElement(name.title())]
 
 
 def get_hsr_path_emoji(path: str) -> str:

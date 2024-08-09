@@ -253,7 +253,7 @@ class NotesView(View):
             )
             embed.add_field(
                 name=LocaleStr(key="video_store_button.label"),
-                value=self._get_type3_value(video_store_notify),
+                value=self._get_type2_value(video_store_notify),
                 inline=False,
             )
 

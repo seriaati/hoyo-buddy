@@ -487,6 +487,13 @@ class NotesChecker:
         return notes
 
     @classmethod
+    async def _adjust_notify(cls, notify: NotesNotify) -> NotesNotify:
+        if notify.type is NotesNotifyType.VIDEO_STORE:
+            notify.notify_time = None
+            await notify.save(update_fields=("notify_time",))
+        return notify
+
+    @classmethod
     async def execute(cls, bot: HoyoBuddy) -> None:  # noqa: PLR0912
         if cls._lock.locked():
             return
@@ -499,7 +506,8 @@ class NotesChecker:
 
             notifies = await NotesNotify.filter(enabled=True).all().order_by("account__uid")
 
-            for notify in notifies:
+            for notify_ in notifies:
+                notify = await cls._adjust_notify(notify_)
                 await notify.fetch_related("account")
                 if cls._determine_skip(notify):
                     continue

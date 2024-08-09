@@ -7,7 +7,7 @@ from hoyo_buddy.enums import NotesNotifyType
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
 
-from ..modals import TypeThreeModal
+from ..modals import TypeTwoModal
 from ..view import NotesView
 
 if TYPE_CHECKING:
@@ -23,7 +23,7 @@ class VideoStoreReminder(Button[NotesView]):
             account=self.view._account, type=NotesNotifyType.VIDEO_STORE
         )
 
-        modal = TypeThreeModal(
+        modal = TypeTwoModal(
             notify,
             title=LocaleStr(
                 key="reminder_modal.title", notify=LocaleStr(key="video_store_button.label")
@@ -38,7 +38,7 @@ class VideoStoreReminder(Button[NotesView]):
         if incomplete:
             return
 
-        embed = await self.view.process_type_three_modal(
+        embed = await self.view.process_type_two_modal(
             modal=modal,
             notify=notify,
             notify_type=NotesNotifyType.VIDEO_STORE,

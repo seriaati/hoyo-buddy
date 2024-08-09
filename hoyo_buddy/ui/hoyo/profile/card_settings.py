@@ -60,10 +60,10 @@ if TYPE_CHECKING:
 CARD_TEMPLATES: Final[dict[Game, tuple[str, ...]]] = {
     Game.GENSHIN: ("hb1", "hattvr1", "encard1", "enkacard1", "enkacard2"),
     Game.STARRAIL: ("hb1", "src1", "src2", "src3"),
-    Game.ZZZ: ("hb1",),
+    Game.ZZZ: ("hb1", "hb2"),
 }
 CARD_TEMPLATE_AUTHORS: Final[dict[str, tuple[str, str]]] = {
-    "hb": ("@seriaati", "@seriaati"),
+    "hb": ("@ayasaku_", "@seriaati"),
     "src": ("@korzzex", "@korzzex"),
     "hattvr": ("@algoinde", "@hattvr"),
     "encard": ("@korzzex", "@korzzex"),
@@ -182,17 +182,25 @@ class CardSettingsView(View):
     def _get_color_markdown(color: str) -> str:
         return f"[{color}](https://www.colorhexa.com/{color[1:]})"
 
-    def _add_items(self) -> None:
-        disable_image_features = (
+    @property
+    def disable_image_features(self) -> bool:
+        return (
             self.game is Game.ZZZ and not self._is_team
         ) or self.card_settings.template in DISABLE_IMAGE
-        disable_color_features = (
-            self.game is Game.GENSHIN or self.card_settings.template in DISABLE_COLOR
-        )
-        disable_dark_mode_features = (
-            self.game is Game.ZZZ or self.card_settings.template in DISABLE_DARK_MODE
-        )
 
+    @property
+    def disable_ai_features(self) -> bool:
+        return self.game is Game.ZZZ or self.card_settings.template in DISABLE_IMAGE
+
+    @property
+    def disable_color_features(self) -> bool:
+        return self.game is Game.GENSHIN or self.card_settings.template in DISABLE_COLOR
+
+    @property
+    def disable_dark_mode_features(self) -> bool:
+        return self.game is Game.ZZZ or self.card_settings.template in DISABLE_DARK_MODE
+
+    def _add_items(self) -> None:
         character = self._get_current_character()
         default_collection = get_default_collection(
             str(character.id), self._card_data, game=self.game
@@ -211,7 +219,7 @@ class CardSettingsView(View):
                 default_collection=default_collection,
                 custom_images=self.card_settings.custom_images,
                 template=self.card_settings.template,
-                disabled=disable_image_features,
+                disabled=self.disable_image_features,
                 row=1,
             )
         )
@@ -224,8 +232,8 @@ class CardSettingsView(View):
             )
         )
 
-        self.add_item(GenerateAIArtButton(disabled=disable_image_features, row=3))
-        self.add_item(AddImageButton(row=3, disabled=disable_image_features))
+        self.add_item(GenerateAIArtButton(disabled=self.disable_ai_features, row=3))
+        self.add_item(AddImageButton(row=3, disabled=self.disable_image_features))
         self.add_item(
             RemoveImageButton(
                 disabled=self.card_settings.current_image is None
@@ -236,20 +244,20 @@ class CardSettingsView(View):
 
         self.add_item(
             PrimaryColorButton(
-                self.card_settings.custom_primary_color, disabled=disable_color_features, row=4
+                self.card_settings.custom_primary_color, disabled=self.disable_color_features, row=4
             )
         )
         self.add_item(
             DarkModeButton(
                 current_toggle=self.card_settings.dark_mode,
-                disabled=disable_dark_mode_features,
+                disabled=self.disable_dark_mode_features,
                 row=4,
             )
         )
         self.add_item(
             TeamCardDarkModeButton(
                 self.settings.team_card_dark_mode,
-                disable_dark_mode_features,
+                self.disable_dark_mode_features,
                 row=4,
             )
         )
@@ -700,19 +708,19 @@ class CardTemplateSelect(Select[CardSettingsView]):
         self.update_options_defaults()
 
         change_color_btn: PrimaryColorButton = self.view.get_item("profile_primary_color")
-        change_color_btn.disabled = self.values[0] in DISABLE_COLOR
+        change_color_btn.disabled = self.view.disable_color_features
 
         dark_mode_btn: DarkModeButton = self.view.get_item("profile_dark_mode")
-        dark_mode_btn.disabled = self.values[0] in DISABLE_DARK_MODE
+        dark_mode_btn.disabled = self.view.disable_dark_mode_features
 
         team_dark_mode_btn: TeamCardDarkModeButton = self.view.get_item("profile_team_dark_mode")
-        team_dark_mode_btn.disabled = self.values[0] in DISABLE_DARK_MODE
+        team_dark_mode_btn.disabled = self.view.disable_dark_mode_features
 
         image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.disabled = self.values[0] in DISABLE_IMAGE
+        image_select.disabled = self.view.disable_image_features
 
         gen_ai_art_btn: GenerateAIArtButton = self.view.get_item("profile_generate_ai_art")
-        gen_ai_art_btn.disabled = self.values[0] in DISABLE_IMAGE
+        gen_ai_art_btn.disabled = self.view.disable_ai_features
 
         embed = self.view.get_settings_embed()
         await i.response.edit_message(embed=embed, view=self.view)

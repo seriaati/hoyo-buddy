@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias
+from typing import TYPE_CHECKING, Any, ClassVar, Final, TypeAlias
 
 import hakushin
 import hakushin.clients
@@ -10,21 +10,22 @@ from ..constants import LOCALE_TO_AMBR_LANG, LOCALE_TO_HAKUSHIN_LANG, LOCALE_TO_
 from ..enums import Game
 from .clients import ambr, yatta
 from .clients.hakushin import ItemCategory as HakushinItemCategory
+from .clients.hakushin import ZZZItemCategory
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
-
     import aiohttp
 
     from ..l10n import Translator
 
-ItemCategory: TypeAlias = ambr.ItemCategory | yatta.ItemCategory | HakushinItemCategory
+ItemCategory: TypeAlias = (
+    ambr.ItemCategory | yatta.ItemCategory | HakushinItemCategory | ZZZItemCategory
+)
 AutocompleteChoices: TypeAlias = dict[Game, dict[ItemCategory, dict[str, dict[str, str]]]]
 Tasks: TypeAlias = dict[Game, dict[ItemCategory, dict[str, asyncio.Task[list[Any]]]]]
 
 HARD_EXCLUDE: set[str] = {"15012", "15004"}
 
-HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Mapping[HakushinItemCategory, Game] = {
+HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Final[dict[HakushinItemCategory, Game]] = {
     HakushinItemCategory.GI_CHARACTERS: Game.GENSHIN,
     HakushinItemCategory.HSR_CHARACTERS: Game.STARRAIL,
     HakushinItemCategory.WEAPONS: Game.GENSHIN,
@@ -32,9 +33,11 @@ HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Mapping[HakushinItemCategory, Game] = {
     HakushinItemCategory.ARTIFACT_SETS: Game.GENSHIN,
     HakushinItemCategory.RELICS: Game.STARRAIL,
 }
-HAKUSHIN_ITEM_CATEGORY_MAP: Mapping[
-    tuple[type[ambr.ItemCategory | yatta.ItemCategory], ambr.ItemCategory | yatta.ItemCategory],
-    HakushinItemCategory,
+HAKUSHIN_ITEM_CATEGORY_MAP: Final[
+    dict[
+        tuple[type[ambr.ItemCategory | yatta.ItemCategory], ambr.ItemCategory | yatta.ItemCategory],
+        HakushinItemCategory,
+    ]
 ] = {
     (ambr.ItemCategory, ambr.ItemCategory.CHARACTERS): HakushinItemCategory.GI_CHARACTERS,
     (yatta.ItemCategory, yatta.ItemCategory.CHARACTERS): HakushinItemCategory.HSR_CHARACTERS,
@@ -130,6 +133,20 @@ class AutocompleteSetup:
                 return None
 
     @classmethod
+    def _get_hakushin_zzz_task(
+        cls, api: hakushin.clients.ZZZClient, category: ZZZItemCategory, tg: asyncio.TaskGroup
+    ) -> asyncio.Task[list[Any]]:
+        match category:
+            case ZZZItemCategory.AGENTS:
+                return tg.create_task(api.fetch_characters())
+            case ZZZItemCategory.W_ENGINES:
+                return tg.create_task(api.fetch_weapons())
+            case ZZZItemCategory.DRIVE_DISCS:
+                return tg.create_task(api.fetch_drive_discs())
+            case ZZZItemCategory.BANGBOOS:
+                return tg.create_task(api.fetch_bangboos())
+
+    @classmethod
     async def _setup_ambr(cls, tg: asyncio.TaskGroup, session: aiohttp.ClientSession) -> None:
         game = Game.GENSHIN
         if game not in cls._tasks:
@@ -168,6 +185,7 @@ class AutocompleteSetup:
         for locale, lang in LOCALE_TO_HAKUSHIN_LANG.items():
             gi_api = hakushin.HakushinAPI(hakushin.Game.GI, lang, session=session)
             hsr_api = hakushin.HakushinAPI(hakushin.Game.HSR, lang, session=session)
+            zzz_api = hakushin.HakushinAPI(hakushin.Game.ZZZ, lang, session=session)
             for category in HakushinItemCategory:
                 game = HAKUSHIN_ITEM_CATEGORY_GAME_MAP[category]
 
@@ -183,6 +201,18 @@ class AutocompleteSetup:
                     cls._tasks[game][category][locale.value] = task
                     await asyncio.sleep(0.1)
 
+            for category in ZZZItemCategory:
+                game = Game.ZZZ
+
+                if game not in cls._tasks:
+                    cls._tasks[game] = {}
+                if category not in cls._tasks[game]:
+                    cls._tasks[game][category] = {}
+
+                task = cls._get_hakushin_zzz_task(zzz_api, category, tg)
+                cls._tasks[game][category][locale.value] = task
+                await asyncio.sleep(0.1)
+
     @classmethod
     def _inject_hakushin_items(
         cls,
@@ -192,9 +222,9 @@ class AutocompleteSetup:
         items: list[Any],
     ) -> None:
         try:
-            hakushin_task = cls._tasks[game][
-                HAKUSHIN_ITEM_CATEGORY_MAP[(type(category), category)]
-            ][locale]
+            hakushin_task = cls._tasks[game][HAKUSHIN_ITEM_CATEGORY_MAP[type(category), category]][
+                locale
+            ]
         except KeyError:
             return
 
@@ -271,8 +301,9 @@ class AutocompleteSetup:
                 cls._result[game][category] = {}
                 for locale, task in category_items.items():
                     items = task.result()
-                    cls._inject_hakushin_items(game, category, locale, items)
-                    cls._inject_to_unreleased_content(game, category, locale, items)
+                    if isinstance(category, ambr.ItemCategory | yatta.ItemCategory):
+                        cls._inject_hakushin_items(game, category, locale, items)
+                        cls._inject_to_unreleased_content(game, category, locale, items)
                     cls._result[game][category][locale] = {
                         item.name: str(item.id) for item in items if item.name
                     }

@@ -848,17 +848,21 @@ name = "hakushin-py"
 version = "0.4.3"
 description = "Async API wrapper for hakush.in written in Python."
 optional = false
-python-versions = "<4.0,>=3.11"
-files = [
-    {file = "hakushin_py-0.4.3-py3-none-any.whl", hash = "sha256:63b9b73d8635b34a44f63e701a4c24070b74724d729b622b525be127d91f2892"},
-    {file = "hakushin_py-0.4.3.tar.gz", hash = "sha256:f1496a48268d44413060ed1c857bc671b234554e62c2d11d8da003b3dbbd9806"},
-]
+python-versions = "^3.11"
+files = []
+develop = false
 
 [package.dependencies]
-aiohttp = ">=3.9.5,<4.0.0"
-aiohttp-client-cache = {version = ">=0.11.0,<0.12.0", extras = ["sqlite"]}
-loguru = ">=0.7.2,<0.8.0"
-pydantic = ">=2.7.1,<3.0.0"
+aiohttp = "^3.9.5"
+aiohttp-client-cache = {version = "^0.11.0", extras = ["sqlite"]}
+loguru = "^0.7.2"
+pydantic = "^2.7.1"
+
+[package.source]
+type = "git"
+url = "https://github.com/seriaati/hakushin-py"
+reference = "HEAD"
+resolved_reference = "2e3d1c02881829594860e4c4ecf2d70dd69cf1f2"
 
 [[package]]
 name = "httpcore"
@@ -2170,4 +2174,4 @@ pydantic = ">=2.5.2,<3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "866e4e7cd6b43e85ed5d57b3899fe69678e860252675779b40ca5a44c7eb762d"
+content-hash = "d129ffb5df8436495fd14ed4b13639927ef727283cea6339ec8173ade3d6fe34"

@@ -8,6 +8,9 @@ from discord.ext import commands
 from genshin import Game  # noqa: TCH002
 from seria.utils import write_json
 
+from hoyo_buddy.db.models import HoyoAccount
+from hoyo_buddy.emojis import get_game_emoji
+
 from ..constants import UID_STARTS
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
@@ -148,6 +151,24 @@ class Admin(commands.Cog):
     async def dm_command(self, ctx: commands.Context) -> Any:
         view = DMModalView()
         await ctx.send(view=view)
+
+    @commands.command(name="get-accounts", aliases=["ga"])
+    async def get_accounts_command(self, ctx: commands.Context, user_id: int) -> Any:
+        accounts = await HoyoAccount.filter(user_id=user_id).all()
+        msg = "\n".join(
+            [
+                f"- [{account.id}] {get_game_emoji(account.game)} {account.uid}, {account.username}"
+                for account in accounts
+            ]
+        )
+        await ctx.send(msg)
+
+    @commands.command(name="get-cookies", aliases=["gc"])
+    async def get_cookies_command(self, ctx: commands.Context, account_id: int) -> Any:
+        account = await HoyoAccount.get_or_none(id=account_id)
+        if account is None:
+            return await ctx.send("Account not found.")
+        await ctx.send(f"```{account.cookies}```")
 
 
 async def setup(bot: HoyoBuddy) -> None:

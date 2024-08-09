@@ -222,9 +222,9 @@ class AutocompleteSetup:
         items: list[Any],
     ) -> None:
         try:
-            hakushin_task = cls._tasks[game][
-                HAKUSHIN_ITEM_CATEGORY_MAP[(type(category), category)]
-            ][locale]
+            hakushin_task = cls._tasks[game][HAKUSHIN_ITEM_CATEGORY_MAP[type(category), category]][
+                locale
+            ]
         except KeyError:
             return
 

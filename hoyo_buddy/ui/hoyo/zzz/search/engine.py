@@ -46,7 +46,7 @@ class EngineSearchView(View):
     async def update(self, i: Interaction) -> None:
         embed = self._hakushin_translator.get_engine_embed(self._engine, self._refinement)
         if i.response.is_done():
-            await i.edit_original_response(embed=embed)
+            await i.edit_original_response(embed=embed, view=self)
         else:
             await i.response.edit_message(embed=embed, view=self)
 

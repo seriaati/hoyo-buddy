@@ -109,7 +109,7 @@ class DailyCheckin:
                 queue.task_done()
 
     @classmethod
-    async def _daily_checkin(
+    async def _daily_checkin(  # noqa: PLR0912
         cls,
         api_name: Literal["VERCEL", "DETA", "RENDER", "LOCAL"],
         account: HoyoAccount,
@@ -117,13 +117,21 @@ class DailyCheckin:
         session: aiohttp.ClientSession,
     ) -> Embed:
         await account.user.fetch_related("settings")
-
         locale = account.user.settings.locale or discord.Locale.american_english
         client = account.client
-        updated_cookies = await client.update_cookies_for_checkin()
-        cookies = updated_cookies or account.cookies
-        assert client.game is not None
         client.set_lang(locale)
+
+        try:
+            updated_cookies = await client.update_cookies_for_checkin()
+        except Exception as e:
+            embed, recognized = get_error_embed(e, locale, translator)
+            if not recognized:
+                cls._bot.capture_exception(e)
+
+            embed.add_acc_info(account, blur=False)
+            return embed
+
+        cookies = updated_cookies or account.cookies
 
         if api_name == "LOCAL":
             try:
@@ -141,6 +149,8 @@ class DailyCheckin:
                 embed = client.get_daily_reward_embed(reward, locale, translator, blur=False)
             return embed
 
+        # API check-in
+        assert client.game is not None
         payload = {
             "token": API_TOKEN,
             "cookies": cookies,

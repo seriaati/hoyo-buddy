@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 import enka
 import hakushin
@@ -431,7 +431,7 @@ async def draw_zzz_notes_card(
 
 
 async def fetch_zzz_draw_data(
-    draw_input: DrawInput, agents: Sequence[ZZZFullAgent]
+    draw_input: DrawInput, agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2]
 ) -> tuple[dict[str, str], dict[str, str], dict[str, str]]:
     filename = "zzz_agent_data.json"
     agent_name_data = await JSONFile.read(filename)
@@ -440,10 +440,14 @@ async def fetch_zzz_draw_data(
             draw_input.session, url=ZZZ_AGENT_DATA_URL, filename=filename
         )
     agent_full_names: dict[str, str] = {k: v["name"] for k, v in agent_name_data.items()}
-    agent_icons: dict[str, str] = {k: v["icon_url"] for k, v in agent_name_data.items()}
+    agent_images: dict[str, str] = {k: v["icon_url"] for k, v in agent_name_data.items()}
 
     async with hakushin.HakushinAPI(hakushin.Game.ZZZ, lang=hakushin.Language.ZH) as api:
         discs = await api.fetch_drive_discs()
+        if template == 2:
+            characters = await api.fetch_characters()
+            agent_images = {str(char.id): char.phase_3_cinema_art for char in characters}
+
     filename = "zzz_disc_icons.json"
     disc_icons = await JSONFile.read(filename)
     if any(disc.name not in disc_icons for disc in discs):
@@ -457,21 +461,24 @@ async def fetch_zzz_draw_data(
         if disc is not None:
             new_disc_icons[str(disc.id)[:3]] = disc_icon
 
-    return agent_full_names, agent_icons, new_disc_icons
+    return agent_full_names, agent_images, new_disc_icons
 
 
 async def draw_zzz_build_card(
     draw_input: DrawInput,
     agent: ZZZFullAgent,
     *,
-    agent_data: dict[str, Any],
+    card_data: dict[str, Any],
     color: str | None,
+    template: Literal[1, 2],
 ) -> BytesIO:
-    agent_full_names, agent_icons, disc_icons = await fetch_zzz_draw_data(draw_input, [agent])
+    agent_full_names, agent_images, disc_icons = await fetch_zzz_draw_data(
+        draw_input, [agent], template=template
+    )
 
-    icon = agent_icons[str(agent.id)]
+    image = agent_images[str(agent.id)]
     urls: list[str] = []
-    urls.append(icon)
+    urls.append(image)
     urls.extend(disc_icons.values())
     if agent.w_engine is not None:
         urls.append(agent.w_engine.icon)
@@ -482,8 +489,8 @@ async def draw_zzz_build_card(
             agent,
             locale=draw_input.locale.value,
             agent_full_name=agent_full_names[str(agent.id)],
-            image_url=icon,
-            agent_data=agent_data,
+            image_url=image,
+            card_data=card_data,
             disc_icons=disc_icons,
             color=color,
         )
@@ -550,7 +557,7 @@ async def draw_zzz_team_card(
     agent_colors: dict[str, str],
     agent_images: dict[str, str],
 ) -> BytesIO:
-    agent_full_names, _, disc_icons = await fetch_zzz_draw_data(draw_input, agents)
+    agent_full_names, _, disc_icons = await fetch_zzz_draw_data(draw_input, agents, template=1)
 
     urls = list(agent_images.values())
     urls.extend(agent.w_engine.icon for agent in agents if agent.w_engine is not None)

@@ -22,7 +22,7 @@ class ZZZAgentCard:
         *,
         locale: str,
         image_url: str,
-        agent_data: dict[str, Any],
+        card_data: dict[str, Any],
         disc_icons: dict[str, str],
         agent_full_name: str,
         color: str | None,
@@ -30,7 +30,7 @@ class ZZZAgentCard:
         self._agent = agent
         self._locale = locale
         self._image_url = image_url
-        self._agent_data = agent_data
+        self._card_data = card_data
         self._disc_icons = disc_icons
         self._agent_full_name = agent_full_name
         self._color = color
@@ -48,7 +48,7 @@ class ZZZAgentCard:
         blob_rt = drawer.open_asset("blob_rt.png")
         z_blob = drawer.open_asset("z_blob.png")
 
-        agent_color = self._color or self._agent_data["color"]
+        agent_color = self._color or self._card_data["color"]
         blob_color = drawer.hex_to_rgb(agent_color)
         z_blob_color = drawer.blend_color(blob_color, (0, 0, 0), 0.85)
 
@@ -78,7 +78,7 @@ class ZZZAgentCard:
         logo = drawer.open_asset("logo.png")
         card.alpha_composite(logo, (24, 18))
 
-        name_position = (self._agent_data.get("name_x", 2234), self._agent_data.get("name_y", -64))
+        name_position = (self._card_data.get("name_x", 2234), self._card_data.get("name_y", -64))
         drawer.write(
             self._agent_full_name,
             size=460,
@@ -98,11 +98,21 @@ class ZZZAgentCard:
         draw = ImageDraw.Draw(im)
         drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False)
 
+        # Agent image
+        agent_image = drawer.open_static(self._image_url)
+        agent_image = drawer.resize_crop(
+            agent_image, (self._card_data["image_w"], self._card_data["image_h"])
+        )
+        if self._card_data.get("flip", False):
+            # Flip image horizontally
+            agent_image = agent_image.transpose(Transpose.FLIP_LEFT_RIGHT)
+        im.paste(agent_image, (self._card_data["image_x"], self._card_data["image_y"]), agent_image)
+
         # Level
         level_text = f"Lv.{self._agent.level}"
         drawer.write(
             level_text,
-            position=(self._agent_data["level_x"], self._agent_data["level_y"]),
+            position=(self._card_data["level_x"], self._card_data["level_y"]),
             size=250,
             color=(41, 41, 41),
             style="black_italic",
@@ -112,7 +122,7 @@ class ZZZAgentCard:
         # Media rank
         rank_text = drawer.open_asset(f"rank/M{self._agent.rank}.png")
         im.paste(
-            rank_text, (self._agent_data["level_x"], self._agent_data["level_y"] + 260), rank_text
+            rank_text, (self._card_data["level_x"], self._card_data["level_y"] + 260), rank_text
         )
 
         # Agent full name
@@ -121,25 +131,14 @@ class ZZZAgentCard:
             drawer.write(
                 "\n".join(text),
                 position=(
-                    self._agent_data["level_x"] + rank_text.width + 10,
-                    self._agent_data["level_y"] + 290,
+                    self._card_data["level_x"] + rank_text.width + 10,
+                    self._card_data["level_y"] + 290,
                 ),
                 size=72,
                 color=(41, 41, 41),
                 style="black_italic",
                 sans=True,
             )
-
-        # Agent image
-        agent_image = drawer.open_static(
-            self._image_url, size=(self._agent_data["image_w"], self._agent_data["image_h"])
-        )
-        if self._agent_data.get("flip", False):
-            # Flip image horizontally
-            agent_image = agent_image.transpose(Transpose.FLIP_LEFT_RIGHT)
-        im.paste(
-            agent_image, (self._agent_data["image_x"], self._agent_data["image_y"]), agent_image
-        )
 
         # Equip section
         equip_section = drawer.open_asset("equip_section.png")

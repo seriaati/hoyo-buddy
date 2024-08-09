@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from io import BytesIO
-from typing import TYPE_CHECKING, Any, TypeAlias
+from typing import TYPE_CHECKING, Any, Literal, TypeAlias
 
 import enka
 from discord import File, Locale
 from genshin.models import ZZZPartialAgent
 from loguru import logger
+from seria.utils import read_yaml
 
 from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
@@ -430,8 +431,21 @@ class ProfileView(View):
         cache_extra = self.cache_extras.get(str(character.id))
         locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
 
-        agent_data = self._card_data.get(str(character.id))
-        if agent_data is None:
+        template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
+        if template_num == 2:
+            temp2_card_data = await read_yaml(
+                "hoyo-buddy-assets/assets/zzz-build-card/agent_data_temp2.yaml"
+            )
+            agent_temp1_data = self._card_data.get(str(character.id))
+            agent_temp2_data = temp2_card_data.get(str(character.id))
+            if agent_temp1_data is None or agent_temp2_data is None:
+                raise CardNotReadyError(character.name)
+            agent_temp2_data["color"] = agent_temp1_data["color"]
+            agent_temp_data = agent_temp2_data
+        else:
+            agent_temp_data = self._card_data.get(str(character.id))
+
+        if agent_temp_data is None:
             raise CardNotReadyError(character.name)
 
         return await draw_zzz_build_card(
@@ -444,8 +458,9 @@ class ProfileView(View):
                 loop=loop,
             ),
             agent,
-            agent_data=agent_data,
+            card_data=agent_temp_data,
             color=card_settings.custom_primary_color,
+            template=template_num,
         )
 
     async def draw_card(

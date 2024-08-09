@@ -104,7 +104,7 @@ class PageSelect(Select[AgentSearchView]):
                 SelectOption(
                     label=LocaleStr(key=f"search.agent_page.{key}"),
                     value=key,
-                    default=current == key,
+                    default=current == key or (current == "core" and key == "skills"),
                 )
                 for key in keys
             ],

@@ -12,13 +12,15 @@ from ...constants import (
     contains_traveler_id,
 )
 from ...embeds import DefaultEmbed
-from ...emojis import get_hsr_path_emoji
+from ...emojis import get_hsr_path_emoji, get_zzz_element_emoji
 from ...l10n import LevelStr, LocaleStr, Translator
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from discord import Locale
+
+__all__ = ("HakushinTranslator",)
 
 SKILL_TYPE_ICONS: Final[dict[hakushin.enums.ZZZSkillType, str]] = {
     hakushin.enums.ZZZSkillType.BASIC: "https://api.hakush.in/zzz/UI/Icon_Normal.webp",
@@ -40,10 +42,10 @@ class ItemCategory(StrEnum):
 
 
 class ZZZItemCategory(StrEnum):
-    AGENTS = "cat.zzz_agents"
-    BANGBOOS = "cat.zzz_bangboos"
-    W_ENGINES = "cat.zzz_w_engines"
-    DISC_DRIVES = "cat.zzz_disc_drives"
+    AGENTS = "cat_zzz_agents"
+    BANGBOOS = "cat_zzz_bangboos"
+    W_ENGINES = "cat_zzz_w_engines"
+    DRIVE_DISCS = "cat_zzz_drive_discs"
 
 
 class HakushinTranslator:
@@ -109,12 +111,13 @@ class HakushinTranslator:
             embed.set_thumbnail(url=level_upgrade.icon)
         else:
             level_upgrade = skill.level_info[str(level)]
-            embed.add_field(
-                name=LocaleStr(key="skill_attributes_embed_field_name", level=level),
-                value=hakushin.utils.replace_placeholders(
-                    skill.description, level_upgrade.parameters
-                ),
-            )
+            if skill.description is not None:
+                embed.add_field(
+                    name=LocaleStr(key="skill_attributes_embed_field_name", level=level),
+                    value=hakushin.utils.replace_placeholders(
+                        skill.description, level_upgrade.parameters
+                    ),
+                )
         return embed
 
     def get_character_passive_embed(self, passive: hakushin.gi.CharacterPassive) -> DefaultEmbed:
@@ -323,58 +326,84 @@ class HakushinTranslator:
                 specialty=agent.specialty.name,
                 atk_type=agent.attack_type.name,
                 faction=agent.faction.name,
-                element=agent.element.name,
+                element=f"{get_zzz_element_emoji(agent.element)} {agent.element.name}",
             ),
         )
-        embed.set_image(url=agent.icon)
+        embed.set_image(url=agent.image)
         return embed
 
-    def get_agent_skill_embed(self, skill: hakushin.zzz.ZZZCharacterSkill) -> DefaultEmbed:
+    def get_agent_skill_embed(
+        self, skill: hakushin.zzz.CharacterSkill, agent: hakushin.zzz.CharacterDetail
+    ) -> DefaultEmbed:
         embed = DefaultEmbed(self._locale, self._translator)
         for desc in skill.descriptions:
             if desc.description is None:
                 continue
             embed.add_field(name=desc.name, value=desc.description, inline=False)
         embed.set_thumbnail(url=SKILL_TYPE_ICONS[skill.type])
+        embed.set_author(name=agent.name, icon_url=agent.icon)
         return embed
 
-    def get_agent_core_embed(self, cores: hakushin.zzz.ZZZCharacterPassive) -> DefaultEmbed:
+    def get_agent_core_embed(
+        self, cores: hakushin.zzz.CharacterCoreSkill, agent: hakushin.zzz.CharacterDetail
+    ) -> DefaultEmbed:
         embed = DefaultEmbed(self._locale, self._translator)
-        core = cores.levels[0]
+        core = cores.levels[1]
         embed.add_field(name=core.names[0], value=core.descriptions[0], inline=False)
         embed.add_field(name=core.names[1], value=core.descriptions[1], inline=False)
         embed.set_thumbnail(url="https://api.hakush.in/zzz/UI/Icon_CoreSkill.webp")
+        embed.set_author(name=agent.name, icon_url=agent.icon)
         return embed
 
-    def get_agent_cinema_embed(self, cinema: hakushin.zzz.MindscapeCinema) -> DefaultEmbed:
+    def get_agent_cinema_embed(
+        self,
+        cinema: hakushin.zzz.MindscapeCinema,
+        agent_id: int,
+        index: int,
+        agent: hakushin.zzz.CharacterDetail,
+    ) -> DefaultEmbed:
         embed = DefaultEmbed(
             self._locale, self._translator, title=cinema.name, description=cinema.description
         )
         embed.set_footer(text=cinema.description2)
+
+        phases = {
+            0: 1,
+            1: 1,
+            2: 2,
+            3: 2,
+            4: 3,
+            5: 3,
+        }
+        url = f"https://api.hakush.in/zzz/UI/Mindscape_{agent_id}_{phases[index]}.webp"
+        embed.set_image(url=url)
+        embed.set_author(name=agent.name, icon_url=agent.icon)
         return embed
 
     def get_bangboo_embed(self, bangboo: hakushin.zzz.BangbooDetail) -> DefaultEmbed:
         embed = DefaultEmbed(self._locale, self._translator, title=bangboo.name)
         embed.description = "★" * STAR_NUMS[bangboo.rarity]
         for skill_id, skill_info in bangboo.skills.items():
-            skill = skill_info["1"]
+            skill = skill_info.get("1")
+            if skill is None:
+                continue
             embed.add_field(
                 name=f"{skill_id}. {skill.name}",
                 value=skill.description,
                 inline=False,
             )
-        embed.set_image(url=bangboo.icon)
+        embed.set_thumbnail(url=bangboo.icon)
         embed.set_footer(text=bangboo.description)
         return embed
 
-    def get_engine_embed(self, engine: hakushin.zzz.WeaponDetail, refinement: int) -> DefaultEmbed:
+    def get_engine_embed(self, engine: hakushin.zzz.WeaponDetail, refinement: str) -> DefaultEmbed:
         embed = DefaultEmbed(self._locale, self._translator, title=engine.name)
         embed.description = ""
         if engine.rarity is not None:
             embed.description = "★" * STAR_NUMS[engine.rarity]
         embed.description += f"\n{engine.description}\n\n{engine.description2}"
 
-        effect = engine.refinements[str(refinement)]
+        effect = engine.refinements[refinement]
         embed.add_field(name=f"{effect.name} ({refinement})", value=effect.description)
         embed.set_footer(text=engine.short_description)
         embed.set_thumbnail(url=engine.icon)

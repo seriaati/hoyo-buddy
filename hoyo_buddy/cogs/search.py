@@ -4,15 +4,18 @@ import asyncio
 import random
 from typing import TYPE_CHECKING, Any
 
+import hakushin as hakushin_api
 from discord import Locale, app_commands
 from discord.ext import commands
 from loguru import logger
+
+from hoyo_buddy.constants import locale_to_hakushin_lang
 
 from ..db.models import Settings, get_locale
 from ..emojis import PROJECT_AMBER
 from ..enums import Game
 from ..exceptions import InvalidQueryError
-from ..hoyo.clients import ambr, yatta
+from ..hoyo.clients import ambr, hakushin, yatta
 from ..hoyo.search_autocomplete import AutocompleteSetup
 from ..l10n import LocaleStr
 from ..ui import URLButtonView
@@ -20,6 +23,7 @@ from ..ui.hoyo.genshin import search as gi_search
 from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
 from ..ui.hoyo.hsr import search as hsr_search
 from ..ui.hoyo.hsr.search.light_cone import LightConeUI
+from ..ui.hoyo.zzz import search as zzz_search
 from ..utils import ephemeral
 
 if TYPE_CHECKING:
@@ -31,9 +35,12 @@ class Search(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
-        self._search_categories: dict[Game, list[ambr.ItemCategory | yatta.ItemCategory]] = {
+        self._search_categories: dict[
+            Game, list[ambr.ItemCategory | yatta.ItemCategory | hakushin.ZZZItemCategory]
+        ] = {
             Game.GENSHIN: list(ambr.ItemCategory),
             Game.STARRAIL: list(yatta.ItemCategory),
+            Game.ZZZ: list(hakushin.ZZZItemCategory),
         }
         self._beta_id_to_category: dict[str, str] = {}
         self._tasks: set[asyncio.Task] = set()
@@ -388,12 +395,73 @@ class Search(commands.Cog):
                     )
                     await character_ui.start(i)
 
+        elif game is Game.ZZZ:
+            try:
+                category = hakushin.ZZZItemCategory(category_value)
+            except ValueError as e:
+                raise InvalidQueryError from e
+
+            match category:
+                case hakushin.ZZZItemCategory.AGENTS:
+                    try:
+                        agent_id = int(query)
+                    except ValueError as e:
+                        raise InvalidQueryError from e
+
+                    view = zzz_search.AgentSearchView(
+                        agent_id,
+                        author=i.user,
+                        locale=locale,
+                        translator=i.client.translator,
+                    )
+                    await view.start(i)
+                case hakushin.ZZZItemCategory.BANGBOOS:
+                    try:
+                        bangboo_id = int(query)
+                    except ValueError as e:
+                        raise InvalidQueryError from e
+
+                    await i.response.defer(ephemeral=ephemeral(i))
+                    translator = hakushin.HakushinTranslator(locale, i.client.translator)
+                    async with hakushin_api.HakushinAPI(
+                        hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)
+                    ) as api:
+                        disc = await api.fetch_bangboo_detail(bangboo_id)
+                    embed = translator.get_bangboo_embed(disc)
+                    await i.followup.send(embed=embed)
+                case hakushin.ZZZItemCategory.W_ENGINES:
+                    try:
+                        engine_id = int(query)
+                    except ValueError as e:
+                        raise InvalidQueryError from e
+
+                    view = zzz_search.EngineSearchView(
+                        engine_id, author=i.user, locale=locale, translator=i.client.translator
+                    )
+                    await view.start(i)
+                case hakushin.ZZZItemCategory.DRIVE_DISCS:
+                    try:
+                        disc_id = int(query)
+                    except ValueError as e:
+                        raise InvalidQueryError from e
+
+                    await i.response.defer(ephemeral=ephemeral(i))
+                    translator = hakushin.HakushinTranslator(locale, i.client.translator)
+                    async with hakushin_api.HakushinAPI(
+                        hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)
+                    ) as api:
+                        disc = await api.fetch_drive_disc_detail(disc_id)
+                    embed = translator.get_disc_embed(disc)
+                    await i.followup.send(embed=embed)
+
     @search_command.autocomplete("game_value")
     async def search_command_game_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
-        return self.bot.get_enum_autocomplete([Game.GENSHIN, Game.STARRAIL], locale, current)
+        return self.bot.get_enum_autocomplete(
+            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current
+        )
 
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
@@ -422,6 +490,8 @@ class Search(commands.Cog):
                 category = ambr.ItemCategory(i.namespace.category)
             elif game is Game.STARRAIL:
                 category = yatta.ItemCategory(i.namespace.category)
+            elif game is Game.ZZZ:
+                category = hakushin.ZZZItemCategory(i.namespace.category)
             else:
                 return self.bot.get_error_autocomplete(
                     LocaleStr(key="invalid_game_selected"), locale

@@ -138,18 +138,22 @@ class Translator:
     async def load_synced_commands_json(self) -> None:
         self._synced_commands = await read_json("hoyo_buddy/bot/data/synced_commands.json")
 
-    def get_dyks(self, locale: Locale) -> list[str]:
+    def get_dyks(self, locale: Locale) -> list[tuple[str, bool]]:
         keys: set[str] = set()
         for key in self._localizations[SOURCE_LANG]:
             if key.startswith("dyk_"):
                 keys.add(key)
 
-        return [self.translate(LocaleStr(key=key), locale) for key in keys]
+        return [
+            (self.translate(LocaleStr(key=key), locale), key.endswith("_no_title")) for key in keys
+        ]
 
     def get_dyk(self, locale: Locale) -> str:
         title = self.translate(LocaleStr(key="title_dyk"), locale)
         dyks = self.get_dyks(locale)
-        dyk = random.choice(dyks)
+        dyk, no_title = random.choice(dyks)
+        if no_title:
+            return f"-# {INFO} {dyk}"
         return f"-# {INFO} {title} {dyk}"
 
     def _replace_command_with_mentions(self, message: str) -> str:

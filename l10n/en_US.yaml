@@ -607,17 +607,16 @@ search.agent_page.placeholder: Select a page...
 zzz.skill_type.placeholder: Select an agent skill...
 zzz.cinema.placeholder: Select a mindscape cinema...
 zzz.engine.refinement_select.placeholder: Select a refinement level...
-dyk_discord_server_updates: "We post updates notes of Hoyo Buddy in our [Discord server](<https://dsc.gg/hoyo-buddy>)"
+dyk_discord_server_updates: "We post release notes of Hoyo Buddy in our [Discord server](<https://dsc.gg/hoyo-buddy>)"
 dyk_discord_server_feedback: "You can join our [Discord server](<https://dsc.gg/hoyo-buddy>) to give feedback"
 dyk_something_wrong: You can use the /feedback command to report any issues
 dyk_contact_me: "You can directly contact us in our [Discord server](<https://dsc.gg/hoyo-buddy>)"
 dyk_donate_no_title: "Enjoy using Hoyo Buddy? Consider [making a donation](<https://github.com/seriaati#support-my-work>) to support us"
 dyk_easter_egg1_no_title: HELP I'M STUCK IN THIS TEXT-
-dyk_easter_egg2_no_title: HE IS AFTER ME-
 dyk_team: "Hoyo Buddy is built by a small team of 1 programmer, 1 designer, and 1 project manager"
-dyk_disable: You can disable this message using the /settings command
-dyk_settings_lang: You can change the language of the bot using the /settings command
-dyk_settings_theme: You can switch between light and dark mode using the /settings command
+dyk_disable: You can disable this message using /settings
+dyk_settings_lang: You can change the language of the bot using /settings
+dyk_settings_theme: You can switch between light and dark mode using /settings
 dyk_suggest_light: We recommend using light mode for the best experience
 dyk_security: "We have a [dedicated article](<https://github.com/seriaati/hoyo-buddy/wiki/Account-Security>) regarding account security"
 dyk_github: "Hoyo Buddy is open-sourced on [GitHub](<https://github.com/seriaati/hoyo-buddy>)"

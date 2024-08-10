@@ -158,11 +158,8 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
 
         # Set builds
         build_select: BuildSelect = self.view.get_item("profile_build_select")
-        if not is_team:
-            builds = self.view._builds.get(character_id, [])
-            if builds:
-                self.view._build_id = builds[0].id
-
+        if not is_team and (builds := self.view._builds.get(character_id)):
+            self.view._build_id = builds[0].id
             build_select.set_options(builds)
             build_select.translate(self.view.locale, self.view.translator)
             build_select.disabled = False

@@ -55,6 +55,7 @@ class SettingsUI(View):
             i,
             embed=self.get_embed(),
             attachments=[self.get_brand_image_file(self.locale)],
+            view=self,
         )
 
         # Update cache
@@ -103,7 +104,6 @@ class LanguageSelector(Select["SettingsUI"]):
         self.view.settings.lang = self.values[0] if selected != "auto" else None
         self.options = self._get_options(self.view.settings.locale)
         self.update_options_defaults()
-
         await self.view.update_ui_and_save_settings(i)
 
 

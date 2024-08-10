@@ -380,7 +380,7 @@ class DarkModeButton(ToggleButton[CardSettingsView]):
     def __init__(self, current_toggle: bool, disabled: bool, row: int) -> None:
         super().__init__(
             current_toggle,
-            LocaleStr(key="profile.dark_mode.button.label"),
+            LocaleStr(key="dark_mode_button_label"),
             custom_id="profile_dark_mode",
             disabled=disabled,
             row=row,
@@ -620,7 +620,7 @@ class GenerateAIArtButton(Button[CardSettingsView]):
         if i.guild is None:
             raise GuildOnlyFeatureError
 
-        modal = GenerateAIArtModal(title=LocaleStr(key="profile.generate_ai_art_modal.title"))
+        modal = GenerateAIArtModal(title=LocaleStr(key="profile.generate_ai_art.button.label"))
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()
@@ -734,7 +734,7 @@ class AddImageModal(Modal):
     )
 
     def __init__(self) -> None:
-        super().__init__(title=LocaleStr(key="profile.add_image_modal.title"))
+        super().__init__(title=LocaleStr(key="profile.add_image.button.label"))
 
 
 class AddImageButton(Button[CardSettingsView]):

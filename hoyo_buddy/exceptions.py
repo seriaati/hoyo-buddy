@@ -147,7 +147,7 @@ class NoGameAccountsError(HoyoBuddyError):
 class TryOtherMethodError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(
-            title=LocaleStr(key="try_other_method_error_title"),
+            title=LocaleStr(key="invalid_cookies_title"),
             message=LocaleStr(key="try_other_method_error_message"),
         )
 

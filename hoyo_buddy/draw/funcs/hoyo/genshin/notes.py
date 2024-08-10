@@ -26,7 +26,7 @@ def draw_genshin_notes_card(
     drawer = Drawer(draw, folder="gi-notes", dark_mode=dark_mode, translator=translator)
 
     drawer.write(
-        LocaleStr(key="notes-card.gi.realtime-notes"),
+        LocaleStr(key="real_time_notes"),
         size=64,
         position=(76, 67),
         style="bold",

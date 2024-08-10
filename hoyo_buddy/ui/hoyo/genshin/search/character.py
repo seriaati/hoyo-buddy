@@ -160,13 +160,13 @@ class CharacterUI(View):
             case 0:
                 embed = await self.fetch_character_embed()
                 self.add_item(
-                    EnterCharacterLevel(label=LocaleStr(key="change_character_level_label"))
+                    EnterCharacterLevel(label=LocaleStr(key="change_character_characters.sorter.level"))
                 )
             case 1:
                 embed, upgradeable, talents = await self.fetch_talent_embed()
                 if upgradeable:
                     self.add_item(
-                        EnterTalentLevel(label=LocaleStr(key="change_talent_level_label"))
+                        EnterTalentLevel(label=LocaleStr(key="change_talent_characters.sorter.level"))
                     )
 
                 options: list[SelectOption] = []
@@ -234,7 +234,7 @@ class CharacterUI(View):
                 )
             case 5:
                 embed, skills = await self.fetch_hakushin_skill_embed()
-                self.add_item(EnterTalentLevel(label=LocaleStr(key="change_skill_level_label")))
+                self.add_item(EnterTalentLevel(label=LocaleStr(key="change_skill_characters.sorter.level")))
 
                 options: list[SelectOption] = []
                 for index, skill in enumerate(skills):
@@ -286,7 +286,7 @@ class CharacterUI(View):
             case 8:
                 embed = await self.fetch_hakushin_character_embed()
                 self.add_item(
-                    EnterCharacterLevel(label=LocaleStr(key="change_character_level_label"))
+                    EnterCharacterLevel(label=LocaleStr(key="change_character_characters.sorter.level"))
                 )
             case _:
                 msg = f"Invalid page index: {self.selected_page}"
@@ -298,7 +298,7 @@ class CharacterUI(View):
 
 class TalentLevelModal(Modal):
     level = TextInput(
-        label=LocaleStr(key="level_label"),
+        label=LocaleStr(key="characters.sorter.level"),
         placeholder="10",
         is_digit=True,
         min_value=1,
@@ -324,7 +324,7 @@ class EnterTalentLevel(Button[CharacterUI]):
 
 class CharacterLevelModal(Modal):
     level = TextInput(
-        label=LocaleStr(key="level_label"),
+        label=LocaleStr(key="characters.sorter.level"),
         placeholder="90",
         is_digit=True,
         min_value=1,
@@ -359,7 +359,7 @@ class PageSelector(Select[CharacterUI]):
                     default=current == 8,
                 ),
                 SelectOption(
-                    label=LocaleStr(key="character_skills_page_label"),
+                    label=LocaleStr(key="search.agent_page.skills"),
                     value="5",
                     default=current == 5,
                 ),

@@ -149,13 +149,13 @@ class CharacterUI(View):
                 case 0:
                     embed = self._character_embed
                     self.add_item(
-                        EnterCharacterLevel(LocaleStr(key="change_character_level_label"))
+                        EnterCharacterLevel(LocaleStr(key="change_character_characters.sorter.level"))
                     )
                 case 1:
                     embed = self._main_skill_embeds[self._main_skill_index]
                     self.add_item(
                         EnterSkilLevel(
-                            label=LocaleStr(key="change_skill_level_label"),
+                            label=LocaleStr(key="change_skill_characters.sorter.level"),
                             skill_max_level=self._main_skill_max_levels[self._main_skill_index],
                         )
                     )
@@ -240,13 +240,13 @@ class CharacterUI(View):
                 case 0:
                     embed = self._character_embed
                     self.add_item(
-                        EnterCharacterLevel(LocaleStr(key="change_character_level_label"))
+                        EnterCharacterLevel(LocaleStr(key="change_character_characters.sorter.level"))
                     )
                 case 1:
                     embed = self._main_skill_embeds[self._main_skill_index]
                     self.add_item(
                         EnterSkilLevel(
-                            label=LocaleStr(key="change_skill_level_label"),
+                            label=LocaleStr(key="change_skill_characters.sorter.level"),
                             skill_max_level=self._main_skill_max_levels[self._main_skill_index],
                         )
                     )
@@ -303,7 +303,7 @@ class PageSelector(Select["CharacterUI"]):
                     default=current == 0,
                 ),
                 SelectOption(
-                    label=LocaleStr(key="yatta_character_skill_page_label"),
+                    label=LocaleStr(key="search.agent_page.skills"),
                     value="1",
                     default=current == 1,
                 ),
@@ -321,7 +321,7 @@ class PageSelector(Select["CharacterUI"]):
                     default=current == 0,
                 ),
                 SelectOption(
-                    label=LocaleStr(key="yatta_character_skill_page_label"),
+                    label=LocaleStr(key="search.agent_page.skills"),
                     value="1",
                     default=current == 1,
                 ),
@@ -365,7 +365,7 @@ class ItemSelector(Select["CharacterUI"]):
 
 class SkillLevelModal(Modal):
     level = TextInput(
-        label=LocaleStr(key="level_label"),
+        label=LocaleStr(key="characters.sorter.level"),
         is_digit=True,
         min_value=1,
     )
@@ -420,7 +420,7 @@ class EnterSkilLevel(Button[CharacterUI]):
 
 class CharacterLevelModal(Modal):
     level = TextInput(
-        label=LocaleStr(key="level_label"),
+        label=LocaleStr(key="characters.sorter.level"),
         is_digit=True,
         min_value=1,
         max_value=80,

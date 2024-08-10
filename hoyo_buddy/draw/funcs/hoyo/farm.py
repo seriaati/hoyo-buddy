@@ -33,9 +33,9 @@ def draw_farm_card(
         """Get the title of a GI domain based on its name and city, assuming the language is English."""
         city_name = translator.translate(LocaleStr(custom_str=domain.city.name.title()), locale)
         domain_type = (
-            LocaleStr(key="domain-type.characters")
+            LocaleStr(key="characters")
             if "Mastery" in domain.name
-            else LocaleStr(key="domain-type.weapons")
+            else LocaleStr(key="weapons")
         )
         domain_type_name = translator.translate(domain_type, locale)
         return f"{domain_type_name} ({city_name})"

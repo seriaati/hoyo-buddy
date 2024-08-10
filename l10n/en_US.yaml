@@ -36,7 +36,6 @@ account_autocomplete_param_description: "Account to run this command with, defau
 account_autocomplete_param_name: account
 account_deleted_description: "{account} has been deleted."
 account_deleted_title: Account Deleted
-account_game: Game
 account_manager_footer: Selected account will be the default one used for all commands
 account_manager_no_accounts_description: You don't have any accounts yet.
 account_manager_title: Account Manager
@@ -86,7 +85,6 @@ character_embed_description: "{rarity}★ {element}\nBirthday: {birthday}\nConst
 character_passives_page_label: Passives
 character_profile_page_label: Profile
 character_quotes_page_label: Quotes
-character_skills_page_label: Skills
 character_stories_page_label: Stories
 character_talents_page_label: Talents
 character_voices_page_label: Voices
@@ -140,7 +138,6 @@ cryo: Cryo
 daily_button.label: Daily reminder
 daily_check_in: Daily check-in
 daily_checkin_embed_description: "Checked in {day} day(s) this month\nMissed check-in for {missed} day(s)\n"
-daily_checkin_embed_title: Daily Check-In
 daily_modal.title: Daily Reminder Settings
 daily_training_button.label: Daily Training Reminder
 dark_mode_button_label: Dark mode
@@ -150,11 +147,8 @@ destruction: Destruction
 devtools_button_label: With DevTools (desktop only)
 devtools_instructions_description: "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Open the DevTools by pressing F12 or Ctrl+Shift+I\n3. Press the >> icon on the top navigation bar\n4. Click on the `Application` tab\n5. Click on `Cookies` on the left sidebar\n6. Click on the website you're on (e.g. https://www.hoyolab.com)\n7. Type `v2` in the `Filter` box\n8. Click the button below\n9. Copy the `Value` of each cookie and paste them in the boxes\n"
 dice_cost_embed_field_name: Dice Cost
-domain-type.characters: Characters
-domain-type.weapons: Weapons
 download_image_failed_error_message: "Unable to download image {url} with status code {status}.\nTry again later, try with a different image, or check if the image URL is valid."
 download_image_failed_error_title: Image Download Failed
-edit_nickname_button_label: Edit nickname
 edit_nickname_modal_title: Edit nickname
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
@@ -287,7 +281,6 @@ invalid_verification_code_title: Invalid Verification Code
 items: Items
 javascript_button_label: With JavaScript
 javascript_instructions_description: "<:INFO:1166743144889602190> Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Copy the code below\n3. Click on the address bar and type `java`\n4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n5. Select all and copy the text that appears\n6. Click the button below and paste the text in the box\n"
-level_label: Level
 level_str: "Lv.{level}"
 light_cones: Light Cones
 living_beings: Living Beings
@@ -357,7 +350,6 @@ primogems: primogems
 process_notify_error.content: "An error occurred while processing your real-time notes reminder.\nHoyo Buddy has disabled this reminder for this account, you can turn it back on using </notes>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n"
 profile.add_image.button.label: Add custom image
 profile.add_image_modal.image_url.label: Image URL
-profile.add_image_modal.title: Add Custom Image
 profile.build.select.placeholder: Select a build...
 profile.card_info.embed.description: "- All assets used in the cards belong to Hoyoverse, I do not own them.\n- All fanarts used in the cards are credited to their respective artists.\n- The Hoyo Buddy templates' designs are original, you are not allowed to modify them or claim that you made them without my permission.\n- Game data is provided by {provider}.\n"
 profile.card_info.embed.title: About Character Build Cards
@@ -376,7 +368,6 @@ profile.character_select.enka_network.description: Enka Network build
 profile.character_select.hoyolab.description: "E{e}S{s} | {d} | HoYoLAB"
 profile.character_select.live_data.description: Real-time data
 profile.character_select.placeholder: Select a character
-profile.dark_mode.button.label: Dark Mode
 profile.generate_ai_art.button.label: Generate AI art
 profile.generate_ai_art_modal.negative_prompt.label: Negative Prompt
 profile.generate_ai_art_modal.prompt.label: Prompt
@@ -388,7 +379,6 @@ profile.image_select.none.label: Official art
 profile.image_select.placeholder: Select an image
 profile.info.embed.custom_images.name: Custom Images
 profile.info.embed.custom_images.value: "- Hoyo Buddy comes with some preset arts that I liked, but you can add your own images too.\n- Only direct image URLs are supported, and they must be publicly accessible; GIFs are not supported.\n- For Hoyo Buddy's templates, vertical images are recommended.\n- For server owners, I am not responsible for any NSFW images that you or your members add.\n- The red button removes the current custom image and reverts to the default one."
-profile.info.embed.dark_mode.name: Dark Mode
 profile.info.embed.dark_mode.value: "- This setting is independent from the one in </settings>, defaults to light mode.\n- Light mode cards tend to look better because the colors are not optimized for dark mode.\n- Suggestions for dark mode colors are welcome!"
 profile.info.embed.primary_color.name: Primary Color
 profile.info.embed.primary_color.value: "- Only hex color codes are supported."
@@ -487,7 +477,6 @@ toggle_off_text: "off"
 toggle_on_text: "on"
 traditional_chinese_server: Traditional Chinese Server
 try_other_method_error_message: "Please try other methods to login.\nIf you are entering cookies manually through DevTools, make sure you are copying them correctly."
-try_other_method_error_title: Invalid Cookies
 tuesday: Tuesday
 unreleased_content: Unreleased Content
 user_autocomplete_param_description: "User to search the accounts with, defaults to you"
@@ -510,7 +499,6 @@ yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}
 yatta_character_skill_energy_field_name: Energy
 yatta_character_skill_energy_generation_field_value: "Generation: {energy_generation}"
 yatta_character_skill_energy_need_field_value: "Cost: {energy_need}"
-yatta_character_skill_page_label: Skills
 yatta_character_skill_single_weakness_break_field_value: "Single: {single_weakness_break}"
 yatta_character_skill_spread_weakness_break_field_value: "Spread: {spread_weakness_break}"
 yatta_character_skill_weakness_break_field_name: Weakness Break

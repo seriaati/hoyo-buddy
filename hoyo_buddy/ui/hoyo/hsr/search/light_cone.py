@@ -112,7 +112,7 @@ class LightConeUI(View):
 
 class LightConeLevelModal(Modal):
     level = TextInput(
-        label=LocaleStr(key="level_label"),
+        label=LocaleStr(key="characters.sorter.level"),
         placeholder="80",
         is_digit=True,
         min_value=1,

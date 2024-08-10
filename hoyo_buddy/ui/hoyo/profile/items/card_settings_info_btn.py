@@ -29,7 +29,7 @@ class CardSettingsInfoButton(Button["ProfileView"]):
             inline=False,
         )
         embed.add_field(
-            name=LocaleStr(key="profile.info.embed.dark_mode.name"),
+            name=LocaleStr(key="dark_mode_button_label"),
             value=LocaleStr(key="profile.info.embed.dark_mode.value"),
             inline=False,
         )

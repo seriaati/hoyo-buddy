@@ -36,7 +36,6 @@ account_autocomplete_param_description: "選擇用來運行指令的帳戶，默
 account_autocomplete_param_name: 帳戶
 account_deleted_description: "{account} 已被刪除。"
 account_deleted_title: 帳戶已刪除
-account_game: 遊戲
 account_manager_footer: 被選擇的帳戶會作為運行所有指令的預設帳戶
 account_manager_no_accounts_description: 你目前沒有任何帳戶。
 account_manager_title: 帳戶管理
@@ -86,7 +85,6 @@ character_embed_description: "{rarity}★ {element}\n生日: {birthday}\n命座:
 character_passives_page_label: 被動天賦
 character_profile_page_label: 資料
 character_quotes_page_label: 語音
-character_skills_page_label: 技能
 character_stories_page_label: 故事
 character_talents_page_label: 天賦
 character_voices_page_label: 語音
@@ -140,7 +138,6 @@ cryo: 冰
 daily_button.label: 每日任務通知
 daily_check_in: 每日簽到
 daily_checkin_embed_description: "本月已簽到 {day} 天\n錯過簽到 {missed} 天\n"
-daily_checkin_embed_title: 每日簽到
 daily_modal.title: 每日任務通知設定
 daily_training_button.label: 每日實訓通知
 dark_mode_button_label: 深色模式
@@ -150,11 +147,8 @@ destruction: 毀滅
 devtools_button_label: 透過開發者工具（電腦限定）
 devtools_instructions_description: "1. 登入 [HoYoLAB](https://www.hoyolab.com/home) 或 [米遊社](https://www.miyoushe.com/ys/) （中國玩家適用）\n2. 透過 F12 或 Ctrl+Shift+I 打開開發者工具\n3. 點擊 >> 按鈕\n4. 點擊 `Application` 頁面\n5. 點擊位於左方的 `Cookies`\n6. 點擊你當前位於的網站（例如 https://www.hoyolab.com）\n7. 在 `Filter` 欄位中輸入 `v2`\n8, 點擊下方的按鈕\n9. 複製每個 Cookie 的值並將它們黏貼於框中\n"
 dice_cost_embed_field_name: 骰子花費
-domain-type.characters: 角色
-domain-type.weapons: 武器
 download_image_failed_error_message: "無法下載圖片 {url}，狀態碼 {status}。\n稍後再試、使用其他圖片或檢查圖片網址是否有效。"
 download_image_failed_error_title: 圖片下載失敗
-edit_nickname_button_label: 編輯暱稱
 edit_nickname_modal_title: 編輯暱稱
 eidolon_superimpose_str: "魂{eidolon}疊{superimpose}"
 electro: 雷
@@ -287,7 +281,6 @@ invalid_verification_code_title: 無效的驗證碼
 items: 物品
 javascript_button_label: 透過 JavaScript
 javascript_instructions_description: "<:INFO:1166743144889602190> 注意: 此方式在電腦上理應適用於所有主流瀏覽器，但在手機上只適用於 **Chrome** 和 **Edge**。\n\n1. 登入 [HoYoLAB](https://www.hoyolab.com/home) 或 [米遊社](https://www.miyoushe.com/ys/) （中國玩家適用）\n2. 複製下方的程式碼\n3. 點擊網址列並輸入 `java`\n4. 將程式碼貼上後按 ENTER。確保 `java` 和 `script` 之間 **沒有任何空格**。\n5. 全選並複製出現的文字\n6. 點擊下方按鈕並將文字貼在框內\n"
-level_label: 等級
 level_str: "{level}等"
 light_cones: 光錐
 living_beings: 生物
@@ -357,7 +350,6 @@ primogems: 原石
 process_notify_error.content: "在處理你的即時便籤通知時發生了錯誤。\nHoyo Buddy 已經將此帳號的此通知功能關閉，你可以使用</notes>將它重新開啟。\n如果這個錯誤持續發生，或是你不知道如何處理，請透過</feedback>與開發者聯繫。\n"
 profile.add_image.button.label: 新增自定義圖片
 profile.add_image_modal.image_url.label: 圖片網址
-profile.add_image_modal.title: 新增自定義圖片
 profile.build.select.placeholder: 選擇一個角色配置…
 profile.card_info.embed.description: "- 卡片中使用的所有素材均歸屬於 Hoyoverse，我不擁有它們。\n- 卡片中使用的所有同人作品均出自於其各自的繪師之手。\n- Hoyo Buddy 的樣式為原創，未經我的許可，你不得修改它們或聲稱它們是你製作的。\n- 遊戲資料由 {provider} 提供\n"
 profile.card_info.embed.title: 關於角色面板卡片
@@ -376,7 +368,6 @@ profile.character_select.enka_network.description: Enka Network 角色配置
 profile.character_select.hoyolab.description: "{e}魂{s}疊 | {d} | HoYoLAB"
 profile.character_select.live_data.description: 即時數據
 profile.character_select.placeholder: 選擇一個角色
-profile.dark_mode.button.label: 深色模式
 profile.generate_ai_art.button.label: 生成 AI 繪圖
 profile.generate_ai_art_modal.negative_prompt.label: 負面提示
 profile.generate_ai_art_modal.prompt.label: 提示
@@ -388,7 +379,6 @@ profile.image_select.none.label: 官方繪圖
 profile.image_select.placeholder: 選擇一張圖片
 profile.info.embed.custom_images.name: 自定義圖片
 profile.info.embed.custom_images.value: "- Hoyo Buddy 附帶了一些我喜歡的預設繪圖，但你也可以添加自己的圖片。\n- 只支援圖片網址，且必須是公開可訪問的；不支援GIF圖片。\n- 對於Hoyo Buddy的樣式，建議使用垂直圖片。\n- 對於伺服器擁有者，我不對您或您的成員添加的任何不適宜的圖片負責。\n- 紅色按鈕將刪除當前自定義圖片並恢復為默認圖片。"
-profile.info.embed.dark_mode.name: 深色模式
 profile.info.embed.dark_mode.value: "- 此設定與</settings>中的設定分別儲存，預設為亮色模式。\n- 亮色模式的卡片通常看起來更好，因為顏色並未針對深色模式進行優化。\n- 歡迎提供關於深色模式卡片顏色的建議！"
 profile.info.embed.primary_color.name: 主色
 profile.info.embed.primary_color.value: "- 僅支援十六進位色碼。"
@@ -487,7 +477,6 @@ toggle_off_text: "關"
 toggle_on_text: "開"
 traditional_chinese_server: 繁體中文伺服器
 try_other_method_error_message: "請嘗試使用其他方式登入。\n如果你正在使用開發者工具手動輸入你的 cookies，請確保你有正確的將他們複製過去。"
-try_other_method_error_title: 無效的 Cookies
 tuesday: 星期二
 unreleased_content: 尚未釋出的內容
 user_autocomplete_param_description: "用於搜尋帳戶的使用者，預設為自己"
@@ -510,7 +499,6 @@ yatta_character_skill_aoe_weakness_break_field_value: "群體: {aoe_weakness_bre
 yatta_character_skill_energy_field_name: 能量
 yatta_character_skill_energy_generation_field_value: "產生: {energy_generation}"
 yatta_character_skill_energy_need_field_value: "花費: {energy_need}"
-yatta_character_skill_page_label: 技能
 yatta_character_skill_single_weakness_break_field_value: "單一: {single_weakness_break}"
 yatta_character_skill_spread_weakness_break_field_value: "範圍: {spread_weakness_break}"
 yatta_character_skill_weakness_break_field_name: 弱點擊破
@@ -619,3 +607,22 @@ search.agent_page.placeholder: 選擇一頁…
 zzz.skill_type.placeholder: 選擇一個代理人技能…
 zzz.cinema.placeholder: 選擇一幅意象影畫…
 zzz.engine.refinement_select.placeholder: 選擇一個精鍊等級…
+dyk_discord_server_updates: "我們會在 [Discord 伺服器](<https://dsc.gg/hoyo-buddy>) 中發布更新日誌"
+dyk_discord_server_feedback: "你可以加入我們的 [Discord 伺服器](<https://dsc.gg/hoyo-buddy>) 來給予回饋"
+dyk_something_wrong: 你可以使用 /feedback 指令來回報任何問題
+dyk_contact_me: "你可以在 [Discord 伺服器](<https://dsc.gg/hoyo-buddy>) 和我們直接聯繫"
+dyk_donate_no_title: "喜歡 Hoyo Buddy 嗎？考慮[透過捐款](<https://github.com/seriaati/seriaati/blob/main/README_ZH.md#%E6%94%AF%E6%8C%81%E6%88%91>)來支持我們"
+dyk_easter_egg1_no_title: 救命我被困在這些字裡-
+dyk_team: Hoyo Buddy 的小團隊由一位程式設計師、一位設計師和一位公關組成
+dyk_disable: 你可以在 /settings 中將這則訊息關閉
+dyk_settings_lang: 你可以在 /settings 中變更機器人使用的語言
+dyk_settings_theme: 你可以在 /settings 中切換成亮色或深色模式
+dyk_suggest_light: 我們推薦使用亮色模式來獲得最佳體驗
+dyk_security: "我們有一則講解關於帳號安全的[文章](<https://github.com/seriaati/hoyo-buddy/wiki/Account-Security>)"
+dyk_github: "Hoyo Buddy 於 [GitHub](<https://github.com/seriaati/hoyo-buddy>) 上開源"
+dyk_python: Hoyo Buddy 使用純 Python 撰寫而成
+dyk_unreleased: 你可以使用 /search 查看尚未釋出的遊戲內容
+dyk_team_card: 你可以透過選擇多個角色的方式在 /profile 產生隊伍卡片
+title_dyk: 你知道嗎？
+new_zzz_temp: 全新！讓你的絕區零代理人試試 Hoyo Buddy 卡片樣式 2
+dyk_button_label: 「你知道嗎」訊息

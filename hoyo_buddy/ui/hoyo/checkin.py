@@ -6,7 +6,7 @@ import discord
 from genshin import Game
 
 from ... import emojis
-from ...db.models import AccountNotifSettings
+from ...db.models import AccountNotifSettings, get_dyk
 from ...draw.main_funcs import draw_checkin_card
 from ...embeds import DefaultEmbed
 from ...enums import Platform
@@ -130,7 +130,7 @@ class CheckInUI(View):
         embed = DefaultEmbed(
             self.locale,
             self.translator,
-            title=LocaleStr(key="daily_checkin_embed_title"),
+            title=LocaleStr(key="daily_check_in"),
             description=LocaleStr(
                 key="daily_checkin_embed_description",
                 day=info.claimed_rewards,
@@ -148,7 +148,7 @@ class CheckInUI(View):
 
         self._bytes_obj.seek(0)
         file_ = discord.File(self._bytes_obj, filename="check-in.webp")
-        await i.followup.send(embed=embed, file=file_, view=self)
+        await i.followup.send(embed=embed, file=file_, view=self, content=await get_dyk(i))
         self.message = await i.original_response()
 
 
@@ -186,7 +186,6 @@ class AutoCheckInToggle(ToggleButton[CheckInUI]):
         super().__init__(
             current_toggle,
             LocaleStr(key="auto_checkin_button_label"),
-            emoji=emojis.SMART_TOY,
         )
 
     async def callback(self, i: Interaction) -> Any:

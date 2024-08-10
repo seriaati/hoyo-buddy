@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import contextlib
 import pathlib
+import random
 import re
 from typing import TYPE_CHECKING, Any
 
@@ -10,6 +11,8 @@ import yatta
 from discord import app_commands
 from loguru import logger
 from seria.utils import read_json, read_yaml
+
+from hoyo_buddy.emojis import INFO
 
 from .constants import (
     AMBR_ELEMENT_TO_ELEMENT,
@@ -134,6 +137,20 @@ class Translator:
 
     async def load_synced_commands_json(self) -> None:
         self._synced_commands = await read_json("hoyo_buddy/bot/data/synced_commands.json")
+
+    def get_dyks(self, locale: Locale) -> list[str]:
+        keys: set[str] = set()
+        for key in self._localizations[SOURCE_LANG]:
+            if key.startswith("dyk_"):
+                keys.add(key)
+
+        return [self.translate(LocaleStr(key=key), locale) for key in keys]
+
+    def get_dyk(self, locale: Locale) -> str:
+        title = self.translate(LocaleStr(key="title_dyk"), locale)
+        dyks = self.get_dyks(locale)
+        dyk = random.choice(dyks)
+        return f"-# {INFO} {title} {dyk}"
 
     def _replace_command_with_mentions(self, message: str) -> str:
         command_occurences: list[str] = re.findall(COMMAND_REGEX, message)

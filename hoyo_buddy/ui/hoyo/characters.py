@@ -27,7 +27,7 @@ from ...constants import (
     YATTA_PATH_TO_GPY_PATH,
     contains_traveler_id,
 )
-from ...db.models import JSONFile
+from ...db.models import JSONFile, get_dyk
 from ...embeds import DefaultEmbed
 from ...emojis import (
     ZZZ_SPECIALTY_EMOJIS,
@@ -553,7 +553,7 @@ class CharactersView(View):
                 icon_url=LOADING_ICON,
                 name=LocaleStr(key="characters.first_time.title"),
             )
-            await i.edit_original_response(embed=embed)
+            await i.edit_original_response(embed=embed, content=await get_dyk(i))
 
         client = self._account.client
         client.set_lang(self.locale)

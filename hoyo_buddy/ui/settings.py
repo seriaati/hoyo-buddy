@@ -29,6 +29,7 @@ class SettingsUI(View):
 
         self.add_item(LanguageSelector(self.settings.locale))
         self.add_item(DarkModeToggle(self.settings.dark_mode))
+        self.add_item(DYKTolggle(self.settings.enable_dyk))
 
     @staticmethod
     def get_brand_img_filename(theme: str, locale: discord.Locale) -> str:
@@ -54,13 +55,17 @@ class SettingsUI(View):
             i,
             embed=self.get_embed(),
             attachments=[self.get_brand_image_file(self.locale)],
-            view=self,
         )
 
+        # Update cache
+        await i.client.cache.set(f"{i.user.id}:lang", self.settings.lang)
+        await i.client.cache.set(f"{i.user.id}:dyk", self.settings.enable_dyk)
+
         # NOTE: This is a workaround for a bug in tortoise ORM
-        await i.client.cache.set(i.user.id, self.settings.lang)
         await Settings.filter(user_id=i.user.id).update(
-            lang=self.settings.lang, dark_mode=self.settings.dark_mode
+            lang=self.settings.lang,
+            dark_mode=self.settings.dark_mode,
+            enable_dyk=self.settings.enable_dyk,
         )
 
 
@@ -111,5 +116,17 @@ class DarkModeToggle(ToggleButton["SettingsUI"]):
     async def callback(self, i: Interaction) -> Any:
         await super().callback(i)
         self.view.settings.dark_mode = self.current_toggle
+        await self.view.update_ui_and_save_settings(i)
 
+
+class DYKTolggle(ToggleButton[SettingsUI]):
+    def __init__(self, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle,
+            LocaleStr(key="dyk_button_label"),
+        )
+
+    async def callback(self, i: Interaction) -> Any:
+        await super().callback(i)
+        self.view.settings.enable_dyk = self.current_toggle
         await self.view.update_ui_and_save_settings(i)

@@ -6,7 +6,7 @@ import genshin
 from discord import ButtonStyle, File, Locale, Member, User
 from discord.utils import format_dt
 
-from hoyo_buddy.db.models import NotesNotify
+from hoyo_buddy.db.models import NotesNotify, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import (
@@ -550,7 +550,7 @@ class NotesView(View):
 
         self.bytes_obj.seek(0)
         file_ = File(self.bytes_obj, filename="notes.webp")
-        await i.followup.send(embed=embed, file=file_, view=self)
+        await i.followup.send(embed=embed, file=file_, view=self, content=await get_dyk(i))
         self.message = await i.original_response()
 
 

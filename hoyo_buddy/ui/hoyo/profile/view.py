@@ -13,7 +13,7 @@ from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
 )
-from hoyo_buddy.db.models import Settings
+from hoyo_buddy.db.models import Settings, get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
     draw_gi_team_card,
@@ -616,5 +616,12 @@ class ProfileView(View):
     async def start(self, i: Interaction) -> None:
         self._set_characters()
         self._add_items()
-        await i.followup.send(embed=self.player_embed, view=self)
+
+        if self.game is Game.ZZZ:
+            new_msg = LocaleStr(key="new_zzz_temp").translate(i.client.translator, self.locale)
+            dyk = f"-# {new_msg}"
+        else:
+            dyk = await get_dyk(i)
+
+        await i.followup.send(embed=self.player_embed, view=self, content=dyk)
         self.message = await i.original_response()

@@ -134,6 +134,7 @@ class Settings(Model):
     hsr_card_temp = fields.CharField(max_length=32, default="hb1")
     zzz_card_temp = fields.CharField(max_length=32, default="hb2")
     team_card_dark_mode = fields.BooleanField(default=False)
+    enable_dyk = fields.BooleanField(default=True)
 
     @property
     def locale(self) -> Locale | None:
@@ -301,10 +302,28 @@ class ChallengeHistory(Model):
 
 async def get_locale(i: Interaction) -> Locale:
     cache = i.client.cache
-    if await cache.exists(i.user.id):
-        locale = await cache.get(i.user.id)
+    key = f"{i.user.id}:lang"
+    if await cache.exists(key):
+        locale = await cache.get(key)
         return Locale(locale) if locale is not None else i.locale
-    settings = await Settings.get(user_id=i.user.id)
+    settings = await Settings.get(user_id=i.user.id).only("lang")
     locale = settings.locale or i.locale
-    await cache.set(i.user.id, locale.value)
+    await cache.set(key, locale.value)
     return locale
+
+
+async def get_enable_dyk(i: Interaction) -> bool:
+    cache = i.client.cache
+    key = f"{i.user.id}:dyk"
+    if await cache.exists(key):
+        return await cache.get(key)
+    settings = await Settings.get(user_id=i.user.id).only("enable_dyk")
+    await cache.set(key, settings.enable_dyk)
+    return settings.enable_dyk
+
+
+async def get_dyk(i: Interaction) -> str:
+    enable_dyk = await get_enable_dyk(i)
+    if not enable_dyk:
+        return ""
+    return i.client.translator.get_dyk(i.locale)

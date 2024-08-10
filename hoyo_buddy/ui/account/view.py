@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 import genshin
 
 from ...constants import GEETEST_SERVERS
-from ...db.models import HoyoAccount, User
+from ...db.models import HoyoAccount, User, get_dyk
 from ...embeds import DefaultEmbed
 from ...emojis import get_game_emoji
 from ...enums import GeetestNotifyType, Platform
@@ -66,7 +66,7 @@ class AccountManager(View):
             title=str(account),
         )
         embed.add_field(
-            name=LocaleStr(key="account_game"),
+            name=LocaleStr(key="search_command_game_param_name"),
             value=EnumStr(account.game),
         )
         if account.nickname:
@@ -107,7 +107,9 @@ class AccountManager(View):
         self._add_items()
         embed = self._acc_embed
         await i.response.defer(ephemeral=True)
-        self.message = await i.edit_original_response(embed=embed, view=self)
+        self.message = await i.edit_original_response(
+            embed=embed, view=self, content=await get_dyk(i)
+        )
 
     async def refresh(self, i: Interaction, *, soft: bool) -> Any:
         """Refresh the account manager view.

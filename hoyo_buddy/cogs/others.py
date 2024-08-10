@@ -9,6 +9,7 @@ from discord.app_commands import locale_str
 from discord.ext import commands
 
 from ..db.models import Settings as UserSettings
+from ..db.models import get_dyk
 from ..embeds import DefaultEmbed
 from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
 from ..l10n import LocaleStr
@@ -191,7 +192,9 @@ class Others(commands.Cog):
         )
         embed.set_image(url="attachment://brand.png")
 
-        view.message = await i.edit_original_response(embed=embed, attachments=[image_], view=view)
+        view.message = await i.edit_original_response(
+            embed=embed, attachments=[image_], view=view, content=await get_dyk(i)
+        )
 
 
 async def setup(bot: HoyoBuddy) -> None:

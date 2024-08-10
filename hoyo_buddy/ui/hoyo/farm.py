@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, Locale, Member, User
 
+from hoyo_buddy.db.models import get_dyk
+
 from ...constants import UID_TZ_OFFSET, WEEKDAYS
 from ...draw.main_funcs import draw_farm_card
 from ...embeds import DefaultEmbed
@@ -63,7 +65,9 @@ class FarmView(View):
                 title=LocaleStr(key="farm_view.sundays"),
                 description=LocaleStr(key="farm_view.happy_farming"),
             )
-            await i.edit_original_response(embed=embed, view=self, attachments=[])
+            await i.edit_original_response(
+                embed=embed, view=self, attachments=[], content=await get_dyk(i)
+            )
             self.message = await i.original_response()
             return
 
@@ -81,7 +85,9 @@ class FarmView(View):
             self.translator,
         )
 
-        await i.edit_original_response(attachments=[file_], view=self, embed=None)
+        await i.edit_original_response(
+            attachments=[file_], view=self, embed=None, content=await get_dyk(i)
+        )
         self.message = await i.original_response()
 
 

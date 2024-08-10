@@ -32,7 +32,7 @@ from hoyo_buddy.models import DrawInput
 from hoyo_buddy.types import ChallengeWithBuff
 
 from ...bot.error_handler import get_error_embed
-from ...db.models import ChallengeHistory
+from ...db.models import ChallengeHistory, get_dyk
 from ...enums import ChallengeType
 from ...utils import get_floor_difficulty
 from ..components import Button, Select, SelectOption, View
@@ -383,7 +383,7 @@ class ChallengeView(View):
 
     async def start(self, i: Interaction) -> None:
         self._add_items()
-        self.message = await i.edit_original_response(view=self)
+        self.message = await i.edit_original_response(view=self, content=await get_dyk(i))
 
 
 class PhaseSelect(Select[ChallengeView]):

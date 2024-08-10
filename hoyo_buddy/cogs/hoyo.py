@@ -12,7 +12,7 @@ from ..commands.geetest import GeetestCommand
 from ..commands.profile import ProfileCommand
 from ..commands.stats import StatsCommand
 from ..constants import ZZZ_AGENT_DATA_URL
-from ..db.models import HoyoAccount, JSONFile, Settings, get_locale
+from ..db.models import HoyoAccount, JSONFile, Settings, get_dyk, get_locale
 from ..draw.main_funcs import draw_exploration_card
 from ..embeds import DefaultEmbed
 from ..enums import Game, GeetestType, Platform
@@ -385,7 +385,7 @@ class Hoyo(commands.Cog):
         )
         embed = DefaultEmbed(locale, self.bot.translator).add_acc_info(account_)
         embed.set_image(url="attachment://exploration.webp")
-        await i.followup.send(embed=embed, files=[file_])
+        await i.followup.send(embed=embed, files=[file_], content=await get_dyk(i))
 
     @app_commands.command(
         name=app_commands.locale_str("redeem"),
@@ -422,7 +422,7 @@ class Hoyo(commands.Cog):
         locale = await get_locale(i)
 
         view = RedeemUI(account_, author=i.user, locale=locale, translator=self.bot.translator)
-        await i.followup.send(embed=view.start_embed, view=view)
+        await i.followup.send(embed=view.start_embed, view=view, content=await get_dyk(i))
         view.message = await i.original_response()
 
     @app_commands.command(

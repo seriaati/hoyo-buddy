@@ -19,7 +19,6 @@ class AutoRedeemToggle(ToggleButton["AccountManager"]):
             current_toggle,
             LocaleStr(key="auto_redeem_toggle.label"),
             row=2,
-            emoji=GIFT_OUTLINE,
             custom_id="auto_redeem_toggle",
         )
 
@@ -37,7 +36,6 @@ class AutoCheckinToggle(ToggleButton["AccountManager"]):
             current_toggle,
             LocaleStr(key="auto_checkin_button_label"),
             row=2,
-            emoji=SMART_TOY,
             custom_id="auto_checkin_toggle",
         )
 
@@ -55,7 +53,6 @@ class AccountPublicToggle(ToggleButton["AccountManager"]):
             current_toggle,
             LocaleStr(key="public_account_toggle.label"),
             row=2,
-            emoji=PUBLIC,
             custom_id="public_account_toggle",
         )
 

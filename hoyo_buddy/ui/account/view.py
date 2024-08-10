@@ -159,7 +159,7 @@ class AccountManager(View):
 
         # Update the view to let user select the accounts to add
         try:
-            accounts = await client.get_game_accounts()
+            accounts = await client.get_record_cards()
         except genshin.errors.InvalidCookies as e:
             raise TryOtherMethodError from e
 

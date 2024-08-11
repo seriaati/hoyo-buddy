@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import pathlib
-from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
+from typing import TYPE_CHECKING, Final, Literal, NamedTuple, TypeAlias
 
 import discord
 from cachetools import LRUCache
@@ -98,19 +98,25 @@ FONT_MAPPING: dict[discord.Locale, dict[FontStyle, str]] = {
     },
 }
 
-SANS_FONT_MAPPING: dict[discord.Locale, dict[FontStyle, str]] = {
-    discord.Locale.american_english: {
-        "light": NUNITO_SANS_LIGHT,
-        "regular": NUNITO_SANS_REGULAR,
-        "medium": NUNITO_SANS_MEDIUM,
-        "bold": NUNITO_SANS_BOLD,
-        "black": NUNITO_SANS_BLACK,
-        "light_italic": NUNITO_SANS_LIGHT_ITALIC,
-        "regular_italic": NUNITO_SANS_REGULAR_ITALIC,
-        "medium_italic": NUNITO_SANS_MEDIUM_ITALIC,
-        "bold_italic": NUNITO_SANS_BOLD_ITALIC,
-        "black_italic": NUNITO_SANS_BLACK_ITALIC,
-    }
+SANS_FONT_MAPPING: Final[dict[FontStyle, str]] = {
+    "light": NUNITO_SANS_LIGHT,
+    "regular": NUNITO_SANS_REGULAR,
+    "medium": NUNITO_SANS_MEDIUM,
+    "bold": NUNITO_SANS_BOLD,
+    "black": NUNITO_SANS_BLACK,
+    "light_italic": NUNITO_SANS_LIGHT_ITALIC,
+    "regular_italic": NUNITO_SANS_REGULAR_ITALIC,
+    "medium_italic": NUNITO_SANS_MEDIUM_ITALIC,
+    "bold_italic": NUNITO_SANS_BOLD_ITALIC,
+    "black_italic": NUNITO_SANS_BLACK_ITALIC,
+}
+
+GOTHIC_FONT_MAPPING: Final[dict[FontStyle, str]] = {
+    "light": ZENMARUGOTHIC_LIGHT,
+    "regular": ZENMARUGOTHIC_REGULAR,
+    "medium": ZENMARUGOTHIC_MEDIUM,
+    "bold": ZENMARUGOTHIC_BOLD,
+    "black": ZENMARUGOTHIC_BLACK,
 }
 
 image_cache: LRUCache[pathlib.Path, Image.Image] = LRUCache(maxsize=512)
@@ -289,18 +295,25 @@ class Drawer:
         self,
         size: int,
         style: FontStyle,
-        locale: discord.Locale | None,
-        sans: bool,
+        *,
+        locale: discord.Locale | None = None,
+        sans: bool = False,
+        gothic: bool = False,
     ) -> ImageFont.FreeTypeFont:
         default_locale = discord.Locale.american_english
+
         locale = locale or self.locale
         if locale is discord.Locale.british_english:
             locale = discord.Locale.american_english
-        if sans and locale not in SANS_FONT_MAPPING:
-            sans = False
 
-        if sans:
-            font_map = SANS_FONT_MAPPING[locale]
+        if sans and gothic:
+            msg = "Cannot use sans and gothic fonts at the same time"
+            raise ValueError(msg)
+
+        if sans and locale is default_locale:
+            font_map = SANS_FONT_MAPPING
+        elif gothic and locale is default_locale:
+            font_map = GOTHIC_FONT_MAPPING
         else:
             font_map = FONT_MAPPING.get(locale, FONT_MAPPING[default_locale])
 
@@ -350,6 +363,7 @@ class Drawer:
         no_write: bool = False,
         title_case: bool = False,
         sans: bool = False,
+        gothic: bool = False,
         stroke_width: int = 0,
         stroke_color: tuple[int, int, int] | None = None,
     ) -> TextBBox:
@@ -368,7 +382,7 @@ class Drawer:
                 text, locale or self.locale, title_case=title_case
             )
 
-        font = self._get_font(size, style, locale, sans)
+        font = self._get_font(size, style, locale=locale, sans=sans, gothic=gothic)
 
         if max_width is not None:
             if max_lines == 1:

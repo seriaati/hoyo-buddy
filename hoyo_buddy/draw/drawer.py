@@ -139,6 +139,16 @@ class Drawer:
         self.translator = translator
 
     @classmethod
+    def calc_dynamic_fontsize(
+        cls, text: str, max_width: int, max_size: int, font: ImageFont.FreeTypeFont
+    ) -> int:
+        size = max_size
+        while font.getlength(text) > max_width:
+            size -= 1
+            font = ImageFont.truetype(font.path, size)
+        return size
+
+    @classmethod
     def blend_color(
         cls, foreground: tuple[int, int, int], background: tuple[int, int, int], opactity: float
     ) -> tuple[int, int, int]:

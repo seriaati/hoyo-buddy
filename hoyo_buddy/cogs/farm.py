@@ -153,7 +153,6 @@ class Farm(
 
     @farm_view_command.autocomplete("account")
     @farm_add_command.autocomplete("account")
-    @farm_remove_command.autocomplete("account")
     @farm_reminder_command.autocomplete("account")
     async def account_autocomplete(
         self, i: Interaction, current: str
@@ -161,7 +160,23 @@ class Farm(
         locale = await get_locale(i)
         user: User = i.namespace.user
         return await self.bot.get_account_autocomplete(
-            user, i.user.id, current, locale, self.bot.translator, (Game.GENSHIN,)
+            user, i.user.id, current, locale, self.bot.translator, games=(Game.GENSHIN,)
+        )
+
+    @farm_remove_command.autocomplete("account")
+    async def account_with_id_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        locale = await get_locale(i)
+        user: User = i.namespace.user
+        return await self.bot.get_account_autocomplete(
+            user,
+            i.user.id,
+            current,
+            locale,
+            self.bot.translator,
+            games=(Game.GENSHIN,),
+            show_id=True,
         )
 
     @farm_add_command.autocomplete("query")
@@ -194,19 +209,20 @@ class Farm(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         account_namespace: str = i.namespace.account
-        account = await HoyoAccountTransformer().transform(i, account_namespace)
+        # Find [account_id] from account_namespace
+        account_id = int(account_namespace.split("]")[0].strip("["))
         locale = await get_locale(i)
 
-        farm_notify = await FarmNotify.get_or_none(account_id=account.id)
+        farm_notify = await FarmNotify.get_or_none(account_id=account_id)
         if farm_notify is None:
             return self.bot.get_error_autocomplete(
                 LocaleStr(key="search_autocomplete_no_results"), locale
             )
 
-        try:
-            characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
-            weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
-        except KeyError:
+        characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
+        weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
+
+        if Locale.american_english not in characters:
             return self.bot.get_error_autocomplete(
                 LocaleStr(key="search_autocomplete_not_setup"), locale
             )

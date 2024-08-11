@@ -501,7 +501,7 @@ class Hoyo(commands.Cog):
         locale = await get_locale(i)
         user: User = i.namespace.user
         return await self.bot.get_account_autocomplete(
-            user, i.user.id, current, locale, self.bot.translator, games
+            user, i.user.id, current, locale, self.bot.translator, games=games
         )
 
     @exploration_command.autocomplete("account")

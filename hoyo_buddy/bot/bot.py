@@ -187,6 +187,21 @@ class HoyoBuddy(commands.AutoShardedBot):
             if current.lower() in EnumStr(enum).translate(self.translator, locale).lower()
         ]
 
+    @staticmethod
+    def _get_account_choice_name(
+        account: models.HoyoAccount,
+        locale: discord.Locale,
+        translator: Translator,
+        *,
+        is_author: bool,
+        show_id: bool,
+    ) -> str:
+        account_id_str = f"[{account.id}] " if show_id else ""
+        account_display = account if is_author else account.blurred_display
+        game_str = translator.translate(EnumStr(account.game), locale)
+        current_str = " (✦)" if account.current else ""
+        return f"{account_id_str}{account_display} | {game_str}{current_str}"
+
     async def get_account_autocomplete(
         self,
         user: User,
@@ -194,8 +209,10 @@ class HoyoBuddy(commands.AutoShardedBot):
         current: str,
         locale: discord.Locale,
         translator: Translator,
-        games: Sequence[Game],
+        *,
+        games: Sequence[Game] | None = None,
         platforms: Sequence[Platform] | None = None,
+        show_id: bool = False,
     ) -> list[discord.app_commands.Choice[str]]:
         """Get autocomplete choices for a user's accounts.
 
@@ -207,7 +224,9 @@ class HoyoBuddy(commands.AutoShardedBot):
             translator: Bot's translator.
             games: The games to filter by
             platforms: The platforms to filter by.
+            show_id: Whether to show the account ID.
         """
+        games = games or list(Game)
         is_author = user is None or user.id == author_id
         game_query = Q(*[Q(game=game) for game in games], join_type="OR")
         accounts = await models.HoyoAccount.filter(
@@ -230,8 +249,10 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         return [
             discord.app_commands.Choice(
-                name=f"{account if is_author else account.blurred_display} | {translator.translate(EnumStr(account.game), locale)}{' (✦)' if account.current else ''}",
-                value=f"{account.id}",
+                name=self._get_account_choice_name(
+                    account, locale, translator, is_author=is_author, show_id=show_id
+                ),
+                value=str(account.id),
             )
             for account in accounts
             if current.lower() in str(account).lower()

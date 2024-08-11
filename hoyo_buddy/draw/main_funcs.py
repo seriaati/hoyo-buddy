@@ -3,6 +3,7 @@ from __future__ import annotations
 import contextlib
 from typing import TYPE_CHECKING, Any, Literal
 
+import ambr
 import enka
 import hakushin
 from discord import File
@@ -139,7 +140,12 @@ async def draw_hsr_notes_card(
 
 
 async def draw_gi_build_card(
-    draw_input: DrawInput, character: enka.gi.Character, image_url: str, zoom: float
+    draw_input: DrawInput,
+    character: enka.gi.Character,
+    *,
+    image_url: str,
+    zoom: float,
+    template: Literal[1, 2],
 ) -> BytesIO:
     urls: list[str] = []
     urls.append(image_url)
@@ -151,18 +157,38 @@ async def draw_gi_build_card(
         urls.append(talent.icon)
     for constellation in character.constellations:
         urls.append(constellation.icon)
-    await download_images(urls, "gi-build-card", draw_input.session)
 
-    with timing("draw", tags={"type": "gi_build_card"}):
-        buffer = await draw_input.loop.run_in_executor(
-            draw_input.executor,
-            funcs.genshin.draw_genshin_card,
-            draw_input.locale.value,
-            draw_input.dark_mode,
-            character,
-            image_url,
-            zoom,
+    if template == 2:
+        async with ambr.AmbrAPI() as api:
+            characters = await api.fetch_characters()
+            ambr_char = next((char for char in characters if str(character.id) in char.id), None)
+            if ambr_char is None:
+                msg = f"Character {character.id} not found in Amber's database."
+                raise ValueError(msg)
+
+        await download_images(urls, "gi-build-card2", draw_input.session)
+        card = funcs.genshin.GITempTwoBuildCard(
+            locale=draw_input.locale.value,
+            character=character,
+            zoom=zoom,
+            dark_mode=draw_input.dark_mode,
+            character_image=image_url,
+            english_name=ambr_char.name,
         )
+        with timing("draw", tags={"type": "gi_build_card2"}):
+            buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
+    else:
+        await download_images(urls, "gi-build-card", draw_input.session)
+        with timing("draw", tags={"type": "gi_build_card"}):
+            buffer = await draw_input.loop.run_in_executor(
+                draw_input.executor,
+                funcs.genshin.draw_genshin_card,
+                draw_input.locale.value,
+                draw_input.dark_mode,
+                character,
+                image_url,
+                zoom,
+            )
     return buffer
 
 

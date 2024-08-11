@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from .abyss import AbyssCard
 from .build_card import draw_genshin_card
+from .build_card2 import GITempTwoBuildCard
 from .characters import draw_character_card
 from .exploration import ExplorationCard
 from .img_theater import ImgTheaterCard

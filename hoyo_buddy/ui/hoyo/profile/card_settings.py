@@ -58,7 +58,7 @@ if TYPE_CHECKING:
     from .view import Character
 
 CARD_TEMPLATES: Final[dict[Game, tuple[str, ...]]] = {
-    Game.GENSHIN: ("hb1", "hattvr1", "encard1", "enkacard1", "enkacard2"),
+    Game.GENSHIN: ("hb1", "hb2", "hattvr1", "encard1", "enkacard1", "enkacard2"),
     Game.STARRAIL: ("hb1", "src1", "src2", "src3"),
     Game.ZZZ: ("hb1", "hb2"),
 }

@@ -398,6 +398,12 @@ class ProfileView(View):
         cache_extra = self.cache_extras.get(str(character.id))
         locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
 
+        template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
+        if template_num == 2:
+            zoom = 0.7 if card_settings.current_image is None else 1.0
+        else:
+            zoom = 0.8 if card_settings.current_image is None else 1.0
+
         return await draw_gi_build_card(
             DrawInput(
                 dark_mode=card_settings.dark_mode,
@@ -408,8 +414,9 @@ class ProfileView(View):
                 loop=loop,
             ),
             character,
-            image_url,
-            0.8 if card_settings.current_image is None else 1.0,
+            image_url=image_url,
+            zoom=zoom,
+            template=template_num,
         )
 
     async def _draw_hb_zzz_character_card(

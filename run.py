@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 from loguru import logger
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
-from sentry_sdk.integrations.loguru import LoguruIntegration
+from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
 
 from hoyo_buddy.api import BotAPI
 from hoyo_buddy.bot import HoyoBuddy
@@ -47,9 +47,11 @@ if config.sentry:
     sentry_sdk.init(
         dsn=os.getenv("SENTRY_DSN"),
         integrations=[
-            LoguruIntegration(),
-            AioHttpIntegration(transaction_style="method_and_path_pattern"),
             AsyncioIntegration(),
+        ],
+        disabled_integrations=[
+            AsyncPGIntegration(),
+            AioHttpIntegration(),
         ],
         traces_sample_rate=1.0,
         environment=env,

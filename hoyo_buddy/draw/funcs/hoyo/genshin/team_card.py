@@ -73,23 +73,24 @@ class GITeamCard:
         tbox = drawer.write(
             f"Lv.{character.level}",
             size=47,
-            style="bold",
+            style="medium",
             position=(0, 0),
             no_write=True,
         )
-        text_im = Image.new("RGBA", (tbox.width, tbox.height * 2))
+        text_im = Image.new("RGBA", (tbox.width, tbox.height))
         text_im_drawer = Drawer(
             ImageDraw.Draw(text_im), folder="gi-team-card", dark_mode=self._dark_mode
         )
         text_im_drawer.write(
             f"Lv.{character.level}",
             size=47,
-            style="bold",
+            style="medium",
             position=(0, 0),
             color=color_2,
+            anchor="lt",
         )
         text_im = text_im.rotate(90, expand=True)
-        im.alpha_composite(text_im, (25, 653))
+        im.alpha_composite(text_im, (38, 644))
 
         # Stars
         stars = drawer.open_asset(f"stars/stars_{character.rarity}.png", mask_color=color_2)
@@ -125,7 +126,7 @@ class GITeamCard:
             tbox = drawer.write(
                 str(talent.level),
                 size=25,
-                style="bold",
+                style="medium",
                 color=color_1,
                 position=(start_pos[0] + 45, start_pos[1] + icon.width // 2),
                 anchor="lm",
@@ -133,7 +134,7 @@ class GITeamCard:
             start_pos = (tbox.right + 40, start_pos[1])
 
         # Stats
-        stats_bg = drawer.open_asset("stats_bg.png")
+        stats_bg = drawer.open_asset("stats_bg.png", mask_color=color_4)
         im.alpha_composite(stats_bg, (564, 552))
         stats_layer = drawer.open_asset("stats_layer.png", mask_color=color_1)
         im.alpha_composite(stats_layer, (602, 574))
@@ -211,6 +212,7 @@ class GITeamCard:
                         position=text_pos,
                         color=color_1,
                         anchor="rt",
+                        locale=Locale(self._locale),
                     )
                     text_pos = (text_pos[0], text_pos[1] + line_height)
 

@@ -116,7 +116,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
             options,
             placeholder=LocaleStr(key="profile.character_select.multi.placeholder"),
             custom_id="profile_character_select",
-            max_values=MAX_VALUES[game],
+            max_values=min(MAX_VALUES[game], len(options)),
         )
 
     async def callback(self, i: Interaction) -> None:

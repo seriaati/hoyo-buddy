@@ -150,14 +150,14 @@ class CharacterUI(View):
                     embed = self._character_embed
                     self.add_item(
                         EnterCharacterLevel(
-                            LocaleStr(key="change_character_characters.sorter.level")
+                            LocaleStr(key="change_character_level_label")
                         )
                     )
                 case 1:
                     embed = self._main_skill_embeds[self._main_skill_index]
                     self.add_item(
                         EnterSkilLevel(
-                            label=LocaleStr(key="change_skill_characters.sorter.level"),
+                            label=LocaleStr(key="change_skill_level_label"),
                             skill_max_level=self._main_skill_max_levels[self._main_skill_index],
                         )
                     )
@@ -243,14 +243,14 @@ class CharacterUI(View):
                     embed = self._character_embed
                     self.add_item(
                         EnterCharacterLevel(
-                            LocaleStr(key="change_character_characters.sorter.level")
+                            LocaleStr(key="change_character_level_label")
                         )
                     )
                 case 1:
                     embed = self._main_skill_embeds[self._main_skill_index]
                     self.add_item(
                         EnterSkilLevel(
-                            label=LocaleStr(key="change_skill_characters.sorter.level"),
+                            label=LocaleStr(key="change_skill_level_label"),
                             skill_max_level=self._main_skill_max_levels[self._main_skill_index],
                         )
                     )

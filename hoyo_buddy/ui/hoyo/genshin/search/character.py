@@ -161,7 +161,7 @@ class CharacterUI(View):
                 embed = await self.fetch_character_embed()
                 self.add_item(
                     EnterCharacterLevel(
-                        label=LocaleStr(key="change_character_characters.sorter.level")
+                        label=LocaleStr(key="change_character_level_label")
                     )
                 )
             case 1:
@@ -169,7 +169,7 @@ class CharacterUI(View):
                 if upgradeable:
                     self.add_item(
                         EnterTalentLevel(
-                            label=LocaleStr(key="change_talent_characters.sorter.level")
+                            label=LocaleStr(key="change_talent_level_label")
                         )
                     )
 
@@ -239,7 +239,7 @@ class CharacterUI(View):
             case 5:
                 embed, skills = await self.fetch_hakushin_skill_embed()
                 self.add_item(
-                    EnterTalentLevel(label=LocaleStr(key="change_skill_characters.sorter.level"))
+                    EnterTalentLevel(label=LocaleStr(key="change_skill_level_label"))
                 )
 
                 options: list[SelectOption] = []
@@ -293,7 +293,7 @@ class CharacterUI(View):
                 embed = await self.fetch_hakushin_character_embed()
                 self.add_item(
                     EnterCharacterLevel(
-                        label=LocaleStr(key="change_character_characters.sorter.level")
+                        label=LocaleStr(key="change_character_level_label")
                     )
                 )
             case _:

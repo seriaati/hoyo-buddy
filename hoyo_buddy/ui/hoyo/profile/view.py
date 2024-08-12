@@ -34,7 +34,12 @@ from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
-from hoyo_buddy.ui.hoyo.profile.card_settings import get_art_url, get_card_settings, get_default_art
+from hoyo_buddy.ui.hoyo.profile.card_settings import (
+    get_art_url,
+    get_card_settings,
+    get_default_art,
+    get_default_collection,
+)
 from hoyo_buddy.ui.hoyo.profile.items.redraw_card_btn import RedrawCardButton
 from hoyo_buddy.utils import blur_uid
 
@@ -417,6 +422,9 @@ class ProfileView(View):
             image_url=image_url,
             zoom=zoom,
             template=template_num,
+            top_crop=template_num == 2
+            and card_settings.current_image
+            in get_default_collection(str(character.id), self._card_data, game=Game.GENSHIN),
         )
 
     async def _draw_hb_zzz_character_card(

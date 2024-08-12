@@ -25,6 +25,7 @@ class GITempTwoBuildCard:
         character: enka.gi.Character,
         character_image: str,
         english_name: str,
+        top_crop: bool,
         zoom: float = 1.0,
     ) -> None:
         self._locale = locale
@@ -34,6 +35,7 @@ class GITempTwoBuildCard:
         self._english_name = english_name
         self._theme = "dark" if dark_mode else "light"
         self._zoom = zoom
+        self._top_crop = top_crop
 
     def draw(self) -> BytesIO:
         character = self._character
@@ -55,6 +57,7 @@ class GITempTwoBuildCard:
             mask=img_mask,
             background_color=element_color,
             zoom=self._zoom,
+            top_crop=self._top_crop,
         )
         img = drawer.mask_image_with_image(img, img_mask)
         im.alpha_composite(img, (79, 66))

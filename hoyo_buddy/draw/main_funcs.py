@@ -146,6 +146,7 @@ async def draw_gi_build_card(
     image_url: str,
     zoom: float,
     template: Literal[1, 2],
+    top_crop: bool,
 ) -> BytesIO:
     urls: list[str] = []
     urls.append(image_url)
@@ -174,6 +175,7 @@ async def draw_gi_build_card(
             dark_mode=draw_input.dark_mode,
             character_image=image_url,
             english_name=ambr_char.name,
+            top_crop=top_crop,
         )
         with timing("draw", tags={"type": "gi_build_card2"}):
             buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)

@@ -180,6 +180,38 @@ class Drawer:
         return image
 
     @staticmethod
+    def ratio_resize(
+        image: Image.Image, *, width: int | None = None, height: int | None = None
+    ) -> Image.Image:
+        """Resize an image to a targeted width/height while maintaining the aspect ratio."""
+        if width is not None and height is not None:
+            msg = "Can't provide both width and height"
+            raise ValueError(msg)
+
+        if width is not None:
+            im_height = round(image.height * (width / image.width))
+            im_width = width
+        elif height is not None:
+            im_width = round(image.width * (height / image.height))
+            im_height = height
+        else:
+            msg = "Either width or height must be provided"
+            raise ValueError(msg)
+
+        image = image.resize((im_width, im_height), resample=Image.Resampling.LANCZOS)
+        return image
+
+    @staticmethod
+    def top_crop(image: Image.Image, height: int) -> Image.Image:
+        """Crop an image from the top."""
+        left = 0
+        top = 0
+        right = image.width
+        bottom = height
+        image = image.crop((left, top, right, bottom))
+        return image
+
+    @staticmethod
     def middle_crop(image: Image.Image, size: tuple[int, int]) -> Image.Image:
         """Crop an image from the center."""
         width, height = image.size
@@ -273,7 +305,7 @@ class Drawer:
 
     @classmethod
     def _wrap_text(
-        cls, text: str, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont
+        cls, text: str, *, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont
     ) -> str:
         lines: list[str] = [""]
         for word in text.split():
@@ -398,7 +430,9 @@ class Drawer:
             if max_lines == 1:
                 translated_text = self._shorten_text(translated_text, max_width, font)
             else:
-                translated_text = self._wrap_text(translated_text, max_width, max_lines, font)
+                translated_text = self._wrap_text(
+                    translated_text, max_width=max_width, max_lines=max_lines, font=font
+                )
 
         if not no_write:
             self.draw.text(
@@ -465,8 +499,13 @@ class Drawer:
         mask: Image.Image,
         background_color: tuple[int, int, int] | None = None,
         zoom: float = 1.0,
+        top_crop: bool = False,
     ) -> Image.Image:
-        image = self.resize_crop(image, (target_width, target_height), zoom=zoom)
+        if top_crop:
+            image = self.ratio_resize(image, width=target_width)
+            image = self.top_crop(image, target_height)
+        else:
+            image = self.resize_crop(image, (target_width, target_height), zoom=zoom)
 
         if self.dark_mode:
             overlay = Image.new("RGBA", image.size, self.apply_color_opacity((0, 0, 0), 0.1))

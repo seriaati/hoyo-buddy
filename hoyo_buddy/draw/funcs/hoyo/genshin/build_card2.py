@@ -139,12 +139,11 @@ class GITempTwoBuildCard:
         im.alpha_composite(stars, (278, 1353))
 
         # Weapon name
-        texts = drawer._wrap_text(
-            weapon.name,
-            187,
-            2,
-            drawer._get_font(46, "medium", locale=Locale(self._locale), gothic=True),
-        ).split("\n")
+        font = drawer._get_font(46, "medium", locale=Locale(self._locale), gothic=True)
+        texts = drawer._wrap_text(weapon.name, max_width=187, max_lines=2, font=font).split("\n")
+        if len(texts) == 1 and font.getlength(texts[0]) > 187:
+            # Split the text into two lines
+            texts = [texts[0][: len(texts[0]) // 2], texts[0][len(texts[0]) // 2 :]]
         start_pos = (707, 1375)
         line_height = 50
         for text in texts:

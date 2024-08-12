@@ -196,12 +196,14 @@ class GITeamCard:
                 )
 
                 # Weapon name
-                texts = drawer._wrap_text(
-                    weapon.name,
-                    74,
-                    2,
-                    drawer._get_font(19, "medium", locale=Locale(self._locale)),
-                ).split("\n")
+                font = drawer._get_font(19, "medium", locale=Locale(self._locale))
+                texts = drawer._wrap_text(weapon.name, max_width=74, max_lines=2, font=font).split(
+                    "\n"
+                )
+                if len(texts) == 1 and font.getlength(texts[0]) > 74:
+                    # Split the text into two lines
+                    texts = [texts[0][: len(texts[0]) // 2], texts[0][len(texts[0]) // 2 :]]
+
                 text_pos = (start_pos[0] + 167, start_pos[1] + 43)
                 line_height = 25
                 for text in texts:

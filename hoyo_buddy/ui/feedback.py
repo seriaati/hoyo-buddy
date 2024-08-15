@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle, Locale, Member, TextStyle, User
+from discord import ButtonStyle, Locale, Member, TextChannel, TextStyle, User
+from loguru import logger
 
 from ..embeds import DefaultEmbed
 from ..l10n import LocaleStr
@@ -43,8 +44,6 @@ class FeedbackButton(Button[FeedbackView]):
             return
 
         feedback = modal.feedback.value
-        owner = await i.client.fetch_user(i.client.owner_id)
-        assert owner is not None
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
@@ -53,7 +52,12 @@ class FeedbackButton(Button[FeedbackView]):
         )
         embed.set_author(name=i.user.display_name, icon_url=i.user.display_avatar.url)
         embed.set_footer(text=f"User ID: {i.user.id}")
-        await owner.send(embed=embed)
+
+        feedback_channel = await i.client.fetch_channel(1273772399925399633)
+        if isinstance(feedback_channel, TextChannel):
+            await feedback_channel.send(embed=embed)
+        else:
+            logger.error("Failed to fetch feedback channel.")
 
         embed = DefaultEmbed(
             self.view.locale,

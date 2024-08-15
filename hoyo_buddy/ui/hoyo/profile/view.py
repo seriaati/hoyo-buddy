@@ -545,10 +545,13 @@ class ProfileView(View):
             executor=i.client.executor,
             loop=i.client.loop,
         )
+        characters = [self.characters[char_id] for char_id in self.character_ids]
         images = {
-            char_id: await get_art_url(i.user.id, char_id, game=self.game) or get_default_art(char)
-            for char_id, char in self.characters.items()
+            str(char.id): await get_art_url(i.user.id, str(char.id), game=self.game)
+            or get_default_art(char)
+            for char in characters
         }
+
         if self.game is Game.ZZZ:
             assert self._account is not None
             client = self._account.client
@@ -566,7 +569,6 @@ class ProfileView(View):
             }
             return await draw_zzz_team_card(draw_input, agents, agent_colors, images)
         if self.game is Game.STARRAIL:
-            characters = [self.characters[char_id] for char_id in self.character_ids]
             character_colors = {
                 char_id: (
                     await get_card_settings(i.user.id, char_id, game=self.game)

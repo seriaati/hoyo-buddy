@@ -24,7 +24,7 @@ enka-api = "^2.2.5"
 fake-useragent = "^1.5.1"
 genshin = {git = "https://github.com/thesadru/genshin.py", extras = ["all"], branch = "master"}
 gitpython = "^3.1.42"
-hakushin-py = {git = "https://github.com/seriaati/hakushin-py"}
+hakushin-py = "^0.4.4"
 jishaku = "^2.5.1"
 loguru = "^0.7.2"
 novelai = {git = "https://github.com/kokosensei/NovelAI-API"}

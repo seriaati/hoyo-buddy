@@ -144,7 +144,10 @@ def get_default_collection(
 ) -> list[str]:
     if game is Game.ZZZ:
         return []
-    return card_data[character_id]["arts"]
+    data = card_data.get(character_id)
+    if data is None:
+        return []
+    return data["arts"]
 
 
 class CardSettingsView(View):

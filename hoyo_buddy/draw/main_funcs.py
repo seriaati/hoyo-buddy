@@ -46,7 +46,7 @@ async def draw_item_list_card(
     items: list[ItemWithDescription] | list[ItemWithTrailing],
 ) -> File:
     await download_images(
-        [item.icon for item in items],
+        [item.icon for item in items if item.icon is not None],
         "item-list",
         draw_input.session,
     )

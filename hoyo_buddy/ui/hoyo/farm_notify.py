@@ -2,14 +2,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle
+from discord import ButtonStyle, Locale
 from seria.utils import split_list_to_chunks
+
+from hoyo_buddy.enums import Game
 
 from ...db.models import FarmNotify
 from ...draw.main_funcs import draw_item_list_card
 from ...embeds import DefaultEmbed
 from ...emojis import ADD, DELETE
-from ...hoyo.clients.ambr import AmbrAPIClient
+from ...hoyo.clients.ambr import AmbrAPIClient, ItemCategory
 from ...l10n import LocaleStr
 from ...models import DrawInput, ItemWithTrailing
 from ..components import Button, ToggleButton
@@ -20,7 +22,7 @@ if TYPE_CHECKING:
     import concurrent.futures
 
     import aiohttp
-    from discord import Locale, Member, User
+    from discord import Member, User
     from discord.file import File
 
     from hoyo_buddy.l10n import Translator
@@ -79,19 +81,18 @@ class FarmNotifyView(PaginatorView):
         self.add_item(AddItemButton())
         self.add_item(RemoveItemButton())
 
-    async def _get_item_icon_and_names(self) -> None:
+    async def _fetch_item_icons(self) -> None:
         async with AmbrAPIClient(self.locale, self.translator) as client:
             characters = await client.fetch_characters()
             weapons = await client.fetch_weapons()
 
-        self._item_names = {c.id: c.name for c in characters} | {str(w.id): w.name for w in weapons}
         self._item_icons = {c.id: c.icon for c in characters} | {str(w.id): w.icon for w in weapons}
 
     async def _create_file(self) -> File:
         items = [
             ItemWithTrailing(
-                icon=self._item_icons[item_id],
-                title=self._item_names[item_id],
+                icon=self._item_icons.get(item_id),
+                title=self._item_names.get(str(item_id), item_id),
                 trailing="",
             )
             for item_id in self._split_item_ids[self._current_page]
@@ -119,7 +120,24 @@ class FarmNotifyView(PaginatorView):
             embed.add_acc_info(self._notify.account)
             return await i.followup.send(embed=embed)
 
-        await self._get_item_icon_and_names()
+        character_choices = i.client.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
+        try:
+            characters = character_choices[self.locale]
+        except KeyError:
+            characters = character_choices[Locale.american_english]
+
+        weapon_choices = i.client.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
+        try:
+            weapons = weapon_choices[self.locale]
+        except KeyError:
+            weapons = weapon_choices[Locale.american_english]
+
+        for name, id_ in characters.items():
+            self._item_names[id_] = name
+        for name, id_ in weapons.items():
+            self._item_names[id_] = name
+
+        await self._fetch_item_icons()
         await super().start(i)
         self.message = await i.original_response()
 

@@ -50,9 +50,12 @@ def draw_item_list(
             card_size[0] if index >= rows else 0,
             card_size[1] * (index % rows) + overall_top_bottom_padding,
         )
-        icon = drawer.open_static(item.icon, size=icon_size)
-        icon = drawer.circular_crop(icon)
-        im.paste(icon, (pos[0] + icon_top_left_padding, pos[1] + icon_top_left_padding), icon)
+        if item.icon is not None:
+            icon = drawer.open_static(item.icon, size=icon_size)
+            icon = drawer.circular_crop(icon)
+            im.alpha_composite(
+                icon, (pos[0] + icon_top_left_padding, pos[1] + icon_top_left_padding)
+            )
 
         drawer.write(
             item.title,

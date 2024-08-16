@@ -54,16 +54,14 @@ class LoginNotifPayload(BaseModel):
         return "&".join(f"{k}={v}" for k, v in self.model_dump().items() if v is not None)
 
 
-@dataclass
-class ItemWithDescription:
-    icon: str
+class ItemWithDescription(BaseModel):
+    icon: str | None
     title: str
     description: str
 
 
-@dataclass
-class ItemWithTrailing:
-    icon: str
+class ItemWithTrailing(BaseModel):
+    icon: str | None
     title: str
     trailing: str
 

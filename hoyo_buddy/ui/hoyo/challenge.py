@@ -176,7 +176,7 @@ class ChallengeView(View):
     def challenge(self) -> Challenge | None:
         if self.challenge_type not in self._season_ids:
             return None
-        return self._challenge_cache[self.challenge_type].get(self._season_ids[self.challenge_type])
+        return self._challenge_cache[self.challenge_type].get(self.season_id)
 
     @property
     def season_id(self) -> int:
@@ -251,7 +251,9 @@ class ChallengeView(View):
                 challenge,
             )
 
-    def _check_challlenge_data(self, challenge: Challenge) -> None:
+    def _check_challlenge_data(self, challenge: Challenge | None) -> None:
+        if challenge is None:
+            raise NoChallengeDataError(self.challenge_type)
         if isinstance(challenge, SpiralAbyss):
             if challenge.max_floor == "0-0":
                 raise NoChallengeDataError(ChallengeType.SPIRAL_ABYSS)
@@ -362,8 +364,6 @@ class ChallengeView(View):
         item: Select[ChallengeView] | Button[ChallengeView],
         i: Interaction,
     ) -> None:
-        assert self.challenge is not None
-
         try:
             self._check_challlenge_data(self.challenge)
             file_ = await self._draw_card(i.client.session, i.client.executor, i.client.loop)

@@ -11,8 +11,6 @@ from sentry_sdk.metrics import timing
 
 from hoyo_buddy.draw import funcs
 
-from ..constants import ZZZ_AGENT_DATA_URL, ZZZ_DISC_ICONS_URL
-from ..db.models import JSONFile
 from ..models import AbyssCharacter, HoyolabHSRCharacter, UnownedCharacter
 from .static import download_images
 
@@ -459,37 +457,29 @@ async def draw_zzz_notes_card(
 
 
 async def fetch_zzz_draw_data(
-    draw_input: DrawInput, agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2]
+    agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2]
 ) -> tuple[dict[str, str], dict[str, str], dict[str, str]]:
-    filename = "zzz_agent_data.json"
-    agent_name_data = await JSONFile.read(filename)
-    if any(str(agent.id) not in agent_name_data for agent in agents):
-        agent_name_data = await JSONFile.fetch_and_cache(
-            draw_input.session, url=ZZZ_AGENT_DATA_URL, filename=filename
-        )
-    agent_full_names: dict[str, str] = {k: v["name"] for k, v in agent_name_data.items()}
-    agent_images: dict[str, str] = {k: v["icon_url"] for k, v in agent_name_data.items()}
+    agent_full_names: dict[str, str] = {}
 
-    async with hakushin.HakushinAPI(hakushin.Game.ZZZ, lang=hakushin.Language.ZH) as api:
-        discs = await api.fetch_drive_discs()
+    async with hakushin.HakushinAPI(hakushin.Game.ZZZ) as api:
+        characters = await api.fetch_characters()
+        for agent in agents:
+            character_detail = await api.fetch_character_detail(agent.id)
+            if character_detail.info is None:
+                continue
+            agent_full_names[str(agent.id)] = character_detail.info.full_name
         if template == 2:
-            characters = await api.fetch_characters()
             agent_images = {str(char.id): char.phase_3_cinema_art for char in characters}
+        else:
+            agent_images = {str(char.id): char.image for char in characters}
 
-    filename = "zzz_disc_icons.json"
-    disc_icons = await JSONFile.read(filename)
-    if any(disc.name not in disc_icons for disc in discs):
-        disc_icons = await JSONFile.fetch_and_cache(
-            draw_input.session, url=ZZZ_DISC_ICONS_URL, filename=filename
-        )
+        items = await api.fetch_items()
+        disc_pos = {"[1]", "[2]", "[3]", "[4]", "[5]", "[6]"}
+        disc_icons = {
+            str(item.id): item.icon for item in items if any(pos in item.name for pos in disc_pos)
+        }
 
-    new_disc_icons: dict[str, str] = {}
-    for disc_name, disc_icon in disc_icons.items():
-        disc = next((disc for disc in discs if disc.name == disc_name), None)
-        if disc is not None:
-            new_disc_icons[str(disc.id)[:3]] = disc_icon
-
-    return agent_full_names, agent_images, new_disc_icons
+    return agent_full_names, agent_images, disc_icons
 
 
 async def draw_zzz_build_card(
@@ -500,9 +490,7 @@ async def draw_zzz_build_card(
     color: str | None,
     template: Literal[1, 2],
 ) -> BytesIO:
-    agent_full_names, agent_images, disc_icons = await fetch_zzz_draw_data(
-        draw_input, [agent], template=template
-    )
+    full_names, agent_images, disc_icons = await fetch_zzz_draw_data([agent], template=template)
 
     image = agent_images[str(agent.id)]
     urls: list[str] = []
@@ -516,7 +504,7 @@ async def draw_zzz_build_card(
         card = funcs.zzz.ZZZAgentCard(
             agent,
             locale=draw_input.locale.value,
-            agent_full_name=agent_full_names[str(agent.id)],
+            agent_full_name=full_names[str(agent.id)],
             image_url=image,
             card_data=card_data,
             disc_icons=disc_icons,
@@ -585,7 +573,7 @@ async def draw_zzz_team_card(
     agent_colors: dict[str, str],
     agent_images: dict[str, str],
 ) -> BytesIO:
-    agent_full_names, _, disc_icons = await fetch_zzz_draw_data(draw_input, agents, template=1)
+    agent_full_names, _, disc_icons = await fetch_zzz_draw_data(agents, template=1)
 
     urls = list(agent_images.values())
     urls.extend(agent.w_engine.icon for agent in agents if agent.w_engine is not None)

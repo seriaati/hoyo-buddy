@@ -117,7 +117,7 @@ class ZZZTeamCard:
         y_diff = 94
         disc_mask = drawer.open_asset("disc_mask.png")
         for i, disc in enumerate(agent.discs):
-            icon = drawer.open_static(self._disc_icons[str(disc.id)[:3]])
+            icon = drawer.open_static(self._disc_icons[str(disc.id)])
             icon = drawer.resize_crop(icon, disc_mask.size)
             icon = drawer.mask_image_with_image(icon, disc_mask)
             im.alpha_composite(icon, start_pos)

@@ -215,7 +215,7 @@ class ZZZAgentCard:
         start_pos = (74, 670)
         disc_mask = drawer.open_asset("disc_mask.png", size=(125, 152))
         for i, disc in enumerate(self._agent.discs):
-            icon = drawer.open_static(self._disc_icons[str(disc.id)[:3]])
+            icon = drawer.open_static(self._disc_icons[str(disc.id)])
             icon = drawer.middle_crop(icon, (125, 152))
             icon = drawer.mask_image_with_image(icon, disc_mask)
             im.paste(icon, start_pos, icon)

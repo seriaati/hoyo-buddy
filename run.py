@@ -18,7 +18,7 @@ from loguru import logger
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
-from sentry_sdk.integrations.loguru import LoguruIntegration
+from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 
 from hoyo_buddy.api import BotAPI
 from hoyo_buddy.bot import HoyoBuddy
@@ -43,13 +43,17 @@ parser.add_argument("--search", action="store_true", default=not is_dev)
 parser.add_argument("--schedule", action="store_true", default=not is_dev)
 
 config = Config(parser.parse_args())
+discord.VoiceClient.warn_nacl = False
 
-if config.sentry:
+
+def init_sentry() -> None:
     sentry_sdk.init(
         dsn=os.getenv("SENTRY_DSN"),
         integrations=[
             AsyncioIntegration(),
-            LoguruIntegration(level=logging.INFO, event_level=logging.ERROR),
+            LoguruIntegration(
+                level=LoggingLevels.INFO.value, event_level=LoggingLevels.ERROR.value
+            ),
         ],
         disabled_integrations=[
             AsyncPGIntegration(),
@@ -60,9 +64,6 @@ if config.sentry:
         enable_tracing=True,
         release=version,
     )
-
-# Disables PyNaCl warning
-discord.VoiceClient.warn_nacl = False
 
 
 async def main() -> None:
@@ -105,6 +106,10 @@ async def main() -> None:
 
 if __name__ == "__main__":
     logger.remove()
+
+    if config.sentry:
+        init_sentry()
+
     logger.add(sys.stderr, level="DEBUG" if is_dev else "INFO")
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
     logger.add("hoyo_buddy.log", rotation="32 MB", retention="5 days", level="INFO")

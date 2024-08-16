@@ -149,9 +149,7 @@ class CharacterUI(View):
                 case 0:
                     embed = self._character_embed
                     self.add_item(
-                        EnterCharacterLevel(
-                            LocaleStr(key="change_character_level_label")
-                        )
+                        EnterCharacterLevel(LocaleStr(key="change_character_level_label"))
                     )
                 case 1:
                     embed = self._main_skill_embeds[self._main_skill_index]
@@ -242,9 +240,7 @@ class CharacterUI(View):
                 case 0:
                     embed = self._character_embed
                     self.add_item(
-                        EnterCharacterLevel(
-                            LocaleStr(key="change_character_level_label")
-                        )
+                        EnterCharacterLevel(LocaleStr(key="change_character_level_label"))
                     )
                 case 1:
                     embed = self._main_skill_embeds[self._main_skill_index]

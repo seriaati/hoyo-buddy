@@ -92,9 +92,7 @@ class WeaponUI(View):
 
     def _setup_items(self) -> None:
         self.clear_items()
-        self.add_item(
-            EnterWeaponLevel(label=LocaleStr(key="change_weapon_level_label"))
-        )
+        self.add_item(EnterWeaponLevel(label=LocaleStr(key="change_weapon_level_label")))
         self.add_item(
             RefinementSelector(
                 min_refinement=1,

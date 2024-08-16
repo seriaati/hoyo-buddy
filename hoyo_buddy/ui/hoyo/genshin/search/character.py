@@ -160,17 +160,13 @@ class CharacterUI(View):
             case 0:
                 embed = await self.fetch_character_embed()
                 self.add_item(
-                    EnterCharacterLevel(
-                        label=LocaleStr(key="change_character_level_label")
-                    )
+                    EnterCharacterLevel(label=LocaleStr(key="change_character_level_label"))
                 )
             case 1:
                 embed, upgradeable, talents = await self.fetch_talent_embed()
                 if upgradeable:
                     self.add_item(
-                        EnterTalentLevel(
-                            label=LocaleStr(key="change_talent_level_label")
-                        )
+                        EnterTalentLevel(label=LocaleStr(key="change_talent_level_label"))
                     )
 
                 options: list[SelectOption] = []
@@ -238,9 +234,7 @@ class CharacterUI(View):
                 )
             case 5:
                 embed, skills = await self.fetch_hakushin_skill_embed()
-                self.add_item(
-                    EnterTalentLevel(label=LocaleStr(key="change_skill_level_label"))
-                )
+                self.add_item(EnterTalentLevel(label=LocaleStr(key="change_skill_level_label")))
 
                 options: list[SelectOption] = []
                 for index, skill in enumerate(skills):
@@ -292,9 +286,7 @@ class CharacterUI(View):
             case 8:
                 embed = await self.fetch_hakushin_character_embed()
                 self.add_item(
-                    EnterCharacterLevel(
-                        label=LocaleStr(key="change_character_level_label")
-                    )
+                    EnterCharacterLevel(label=LocaleStr(key="change_character_level_label"))
                 )
             case _:
                 msg = f"Invalid page index: {self.selected_page}"

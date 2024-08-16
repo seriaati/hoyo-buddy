@@ -504,7 +504,7 @@ async def draw_zzz_build_card(
         card = funcs.zzz.ZZZAgentCard(
             agent,
             locale=draw_input.locale.value,
-            agent_full_name=full_names[str(agent.id)],
+            agent_full_name=full_names.get(str(agent.id), ""),
             image_url=image,
             card_data=card_data,
             disc_icons=disc_icons,

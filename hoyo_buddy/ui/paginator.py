@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import discord
 from attr import dataclass
@@ -62,9 +62,11 @@ class PaginatorView(View):
     async def _create_file(self) -> discord.File | None:
         """Method to create a file for the current page. Implemented by subclasses."""
 
-    async def _update_page(self, i: Interaction) -> None:
+    async def _update_page(
+        self, i: Interaction, *, followup: bool = False, ephemeral: bool = False
+    ) -> None:
         if not i.response.is_done():
-            await i.response.defer()
+            await i.response.defer(ephemeral=ephemeral)
 
         page = self._pages[self._current_page]
         file_ = await self._create_file()
@@ -73,12 +75,26 @@ class PaginatorView(View):
 
         self._upadte_button_state()
 
-        await i.edit_original_response(
-            content=page.content,
-            embed=page.embed,
-            attachments=[page.file] if page.file else [],
-            view=self,
-        )
+        if followup:
+            kwargs: dict[str, Any] = {}
+            if page.content is not None:
+                kwargs["content"] = page.content
+            if page.embed is not None:
+                kwargs["embed"] = page.embed
+            await i.followup.send(
+                files=[page.file] if page.file else [],
+                view=self,
+                ephemeral=ephemeral,
+                **kwargs,
+            )
+            self.message = await i.original_response()
+        else:
+            self.message = await i.edit_original_response(
+                content=page.content,
+                embed=page.embed,
+                attachments=[page.file] if page.file else [],
+                view=self,
+            )
 
     async def _next_page(self, i: Interaction) -> None:
         self._current_page = min(self._current_page + 1, self._max_page)
@@ -100,8 +116,10 @@ class PaginatorView(View):
         self._current_page = max(0, min(page, self._max_page))
         await self._update_page(i)
 
-    async def start(self, i: Interaction) -> None:
-        await self._update_page(i)
+    async def start(
+        self, i: Interaction, *, followup: bool = False, ephemeral: bool = False
+    ) -> None:
+        await self._update_page(i, followup=followup, ephemeral=ephemeral)
 
 
 class NextButton(Button[PaginatorView]):

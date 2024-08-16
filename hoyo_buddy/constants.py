@@ -136,6 +136,10 @@ LOCALE_TO_GPY_LANG = {
 GPY_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_GPY_LANG.items()}
 
 
+def locale_to_gpy_lang(locale: discord.Locale) -> str:
+    return LOCALE_TO_GPY_LANG.get(locale, "en-us")
+
+
 HOYO_BUDDY_LOCALES: dict[discord.Locale, dict[str, str]] = {
     discord.Locale.american_english: {"name": "English", "emoji": "🇺🇸"},
     discord.Locale.chinese: {"name": "简体中文", "emoji": "🇨🇳"},

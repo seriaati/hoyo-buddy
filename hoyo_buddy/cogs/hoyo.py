@@ -7,6 +7,8 @@ import enka
 from discord import app_commands
 from discord.ext import commands
 
+from hoyo_buddy.commands.events import EventsCommand
+
 from ..commands.challenge import ChallengeCommand
 from ..commands.geetest import GeetestCommand
 from ..commands.profile import ProfileCommand
@@ -36,7 +38,7 @@ if TYPE_CHECKING:
     from ..types import Interaction
 
 
-class Hoyo(commands.Cog):
+class Hoyo(commands.Cog):  # noqa: PLR0904
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
@@ -478,13 +480,36 @@ class Hoyo(commands.Cog):
         command = StatsCommand(user)
         await command.run(i)
 
+    @app_commands.command(
+        name=app_commands.locale_str("events"),
+        description=app_commands.locale_str(
+            "View ongoing game events", key="events_command_description"
+        ),
+    )
+    @app_commands.rename(
+        game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
+    )
+    @app_commands.describe(
+        game_value=app_commands.locale_str(
+            "Game to view events for", key="events_command_game_param_description"
+        ),
+    )
+    async def events_command(self, i: Interaction, game_value: str) -> None:
+        try:
+            game = Game(game_value)
+        except ValueError as e:
+            raise InvalidQueryError from e
+
+        command = EventsCommand(game)
+        await command.run(i)
+
     @geetest_command.autocomplete("type_")
     async def geetest_type_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         return self.bot.get_enum_autocomplete(
-            [GeetestType.DAILY_CHECKIN, GeetestType.REALTIME_NOTES], locale, current
+            (GeetestType.DAILY_CHECKIN, GeetestType.REALTIME_NOTES), locale, current
         )
 
     @profile_command.autocomplete("game_value")
@@ -492,7 +517,16 @@ class Hoyo(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
-        return self.bot.get_enum_autocomplete([Game.GENSHIN, Game.STARRAIL], locale, current)
+        return self.bot.get_enum_autocomplete((Game.GENSHIN, Game.STARRAIL), locale, current)
+
+    @events_command.autocomplete("game_value")
+    async def events_game_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        locale = await get_locale(i)
+        return self.bot.get_enum_autocomplete(
+            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current
+        )
 
     async def game_autocomplete(
         self, i: Interaction, current: str, games: Sequence[Game] | None = None

@@ -160,3 +160,22 @@ def get_static_img_path(image_url: str, folder: str) -> pathlib.Path:
     extra_folder = image_url.split("/")[-2]
     filename = clean_url(image_url).split("/")[-1]
     return STATIC_FOLDER / folder / extra_folder / filename
+
+
+def format_ann_content(content: str) -> str:
+    content = content.replace("\\n", "\n")
+    # replace tags with style attributes
+    content = content.replace("</p>", "\n")
+    content = content.replace("<strong>", "**")
+    content = content.replace("</strong>", "**")
+
+    # remove all HTML tags
+    html_regex = re.compile(r"<[^>]*>|&([a-z0-9]+|#\d{1,6}|#x[0-9a-f]{1,6});")
+    content = re.sub(html_regex, "", content)
+
+    # remove time tags from mihoyo
+    content = content.replace('t class="t_gl"', "")
+    content = content.replace('t class="t_lc"', "")
+    content = content.replace("/t", "")
+
+    return content

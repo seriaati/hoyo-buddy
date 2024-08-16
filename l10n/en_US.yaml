@@ -626,3 +626,10 @@ dyk_team_card: You can generate a team card in /profile by selecting multiple ch
 title_dyk: "Did you know?"
 new_zzz_temp: NEW! Try out Hoyo Buddy template 2 for your ZZZ agents
 dyk_button_label: Did you know messages
+events_view_start_date_embed_field: Start Time
+events_view_end_date_embed_field: End Time
+events_view_ann_select_placeholder: Select an event...
+events_command_description: View ongoing game events
+events_view_ann_type_select_placeholder: Select an event type...
+events_view_content_label: View content
+events_command_game_param_description: Game to view events for

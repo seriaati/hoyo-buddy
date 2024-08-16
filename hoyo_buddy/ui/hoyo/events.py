@@ -12,7 +12,7 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.l10n import LocaleStr, Translator
-from hoyo_buddy.ui.components import Button, Select, SelectOption, View
+from hoyo_buddy.ui.components import Button, PaginatorSelect, Select, SelectOption, View
 from hoyo_buddy.ui.paginator import Page, PaginatorView
 from hoyo_buddy.utils import ephemeral, format_ann_content
 
@@ -92,7 +92,7 @@ class EventsView(View):
         self.message = await i.original_response()
 
 
-class EventSelector(Select[EventsView]):
+class EventSelector(PaginatorSelect[EventsView]):
     def __init__(self, anns: Sequence[genshin.models.Announcement]) -> None:
         super().__init__(
             custom_id="events_view_ann_select",

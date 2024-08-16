@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
     from discord.ui.item import Item
 
-    from ..types import Interaction
+    from ..types import Interaction, User
 
 
 __all__ = (
@@ -45,7 +45,7 @@ class View(discord.ui.View):
     def __init__(
         self,
         *,
-        author: discord.User | discord.Member | None,
+        author: User,
         locale: discord.Locale,
         translator: Translator,
         timeout: float | None = 180,

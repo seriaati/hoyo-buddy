@@ -81,9 +81,10 @@ class ZZZTeamCard:
         drawer = Drawer(ImageDraw.Draw(im), folder="zzz-team-card", dark_mode=self._dark_mode)
 
         # Agent long name
-        text = self._agent_full_names[str(agent.id)].upper()
-        text_im = self._render_rotated_text(drawer, text)
-        im.alpha_composite(text_im, (170, 20))
+        text = self._agent_full_names.get(str(agent.id))
+        if text is not None:
+            text_im = self._render_rotated_text(drawer, text)
+            im.alpha_composite(text_im, (170, 20))
 
         # Agent level and rank
         text = f"Lv.{agent.level} M{agent.rank}"
@@ -286,7 +287,7 @@ class ZZZTeamCard:
 
     def _render_rotated_text(self, drawer: Drawer, text: str) -> Image.Image:
         textbbox = drawer.write(
-            text, size=42, position=(0, 0), style="black_italic", sans=True, no_write=True
+            text.upper(), size=42, position=(0, 0), style="black_italic", sans=True, no_write=True
         )
         text_im = Image.new(
             "RGBA", (textbbox.right - textbbox.left, (textbbox.bottom - textbbox.top) * 2)
@@ -295,7 +296,7 @@ class ZZZTeamCard:
             ImageDraw.Draw(text_im), folder="zzz-team-card", dark_mode=self._dark_mode
         )
         text_drawer.write(
-            text, size=42, position=(0, 0), style="black_italic", sans=True, color=BLACK
+            text.upper(), size=42, position=(0, 0), style="black_italic", sans=True, color=BLACK
         )
         text_im = text_im.rotate(-90, expand=True, resample=Image.Resampling.BICUBIC)
         return text_im

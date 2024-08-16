@@ -465,9 +465,9 @@ async def fetch_zzz_draw_data(
         characters = await api.fetch_characters()
         for agent in agents:
             character_detail = await api.fetch_character_detail(agent.id)
-            if character_detail.info is None:
-                continue
-            agent_full_names[str(agent.id)] = character_detail.info.full_name
+            agent_full_names[str(agent.id)] = (
+                agent.name if character_detail.info is None else character_detail.info.full_name
+            )
         if template == 2:
             agent_images = {str(char.id): char.phase_3_cinema_art for char in characters}
         else:

@@ -613,7 +613,7 @@ dyk_something_wrong: 你可以使用 /feedback 指令來回報任何問題
 dyk_contact_me: "你可以在 [Discord 伺服器](<https://dsc.gg/hoyo-buddy>) 和我們直接聯繫"
 dyk_donate_no_title: "喜歡 Hoyo Buddy 嗎？考慮透過[捐款](<https://github.com/seriaati/seriaati/blob/main/README_ZH.md#%E6%94%AF%E6%8C%81%E6%88%91>)來支持我們"
 dyk_easter_egg1_no_title: 救命我被困在這些字裡-
-dyk_team: Hoyo Buddy 的小團隊由 1 位程式設計師、1 位平面設計師和 1 位公關組成
+dyk_team: "Hoyo Buddy 的小團隊由 1 位程式設計師、1 位平面設計師和 1 位公關組成"
 dyk_disable: 你可以在 /settings 中將這則訊息關閉
 dyk_settings_lang: 你可以在 /settings 中變更機器人使用的語言
 dyk_settings_theme: 你可以在 /settings 中切換成亮色或深色模式
@@ -623,6 +623,13 @@ dyk_github: "Hoyo Buddy 於 [GitHub](<https://github.com/seriaati/hoyo-buddy>) �
 dyk_python: Hoyo Buddy 使用純 Python 撰寫而成
 dyk_unreleased: 你可以使用 /search 查看尚未釋出的遊戲內容
 dyk_team_card: 你可以透過選擇多個角色的方式在 /profile 產生隊伍卡片
-title_dyk: 你知道嗎？
+title_dyk: "你知道嗎？"
 new_zzz_temp: 全新！讓你的絕區零代理人試試 Hoyo Buddy 卡片樣式 2
 dyk_button_label: 「你知道嗎」訊息
+events_view_start_date_embed_field: 開始時間
+events_view_end_date_embed_field: 結束時間
+events_view_ann_select_placeholder: 選擇一個活動…
+events_command_description: 查看正在進行中的遊戲活動
+events_view_ann_type_select_placeholder: 選擇一個活動類別…
+events_view_content_label: 查看內容
+events_command_game_param_description: 用於查看活動的遊戲

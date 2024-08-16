@@ -324,6 +324,7 @@ async def get_enable_dyk(i: Interaction) -> bool:
 
 async def get_dyk(i: Interaction) -> str:
     enable_dyk = await get_enable_dyk(i)
+    locale = await get_locale(i)
     if not enable_dyk:
         return ""
-    return i.client.translator.get_dyk(i.locale)
+    return i.client.translator.get_dyk(locale)

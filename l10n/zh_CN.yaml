@@ -627,7 +627,7 @@ title_dyk: "你知道吗？"
 new_zzz_temp: 全新！让你的绝区零代理人试试 Hoyo Buddy 卡片样式 2
 dyk_button_label: 「你知道吗」讯息
 events_view_start_date_embed_field: 开始时间
-events_view_end_date_embed_field: 結束時間
+events_view_end_date_embed_field: 结束时间
 events_view_ann_select_placeholder: 选择一个活动…
 events_command_description: 查看正在进行中的游戏活动
 events_view_ann_type_select_placeholder: 选择一个活动分类…

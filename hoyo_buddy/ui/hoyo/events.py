@@ -101,8 +101,13 @@ class EventSelector(Select[EventsView]):
         )
 
     def _get_ann_option(self, ann: genshin.models.Announcement, default: bool) -> SelectOption:
+        start_time = ann.start_time.replace(tzinfo=UTC_8)
+        end_time = ann.end_time.replace(tzinfo=UTC_8)
         return SelectOption(
-            label=format_ann_content(ann.title)[:100], value=str(ann.id), default=default
+            label=format_ann_content(ann.title)[:100],
+            value=str(ann.id),
+            default=default,
+            description=f"{start_time.strftime('%Y-%m-%d %H:%M')} ~ {end_time.strftime('%Y-%m-%d %H:%M')}",
         )
 
     def set_options(self, anns: Sequence[genshin.models.Announcement]) -> None:

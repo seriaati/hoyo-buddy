@@ -365,7 +365,7 @@ profile.card_template_select.src.label: "星穹铁道卡片样式{num}"
 profile.character_select.cached_data.description: 缓存数据
 profile.character_select.description: "{e}魂{s}叠 | {d} | 游戏展示柜"
 profile.character_select.enka_network.description: Enka Network 角色配置
-profile.character_select.hoyolab.description: "{e}魂{s}叠 | {d} | HoYoLAB"
+profile.character_select.hoyolab.description: "{e}魂{s}叠 | {d} | {platform}"
 profile.character_select.live_data.description: 实时数据
 profile.character_select.placeholder: 选择角色
 profile.generate_ai_art.button.label: 生成 AI 绘画
@@ -563,7 +563,7 @@ ether: 以太
 electric: 电属性
 profile.no_data.title: 没有可用的玩家数据
 profile.no_data.description: "你相信吗，这里居然没有任何东西可以显示。"
-profile.zzz_hoyolab.character_select.description: "意象影画 {m} | HoYoLAB 数据"
+profile.zzz_hoyolab.character_select.description: "意象影画 {m} | {platform}数据"
 characters.filter.specialty.placeholder: 筛选特性…
 zzz.basic: 普通攻击
 zzz.dodge: 闪避
@@ -625,7 +625,7 @@ dyk_unreleased: 你可以使用 /search 查看尚未释出的游戏内容
 dyk_team_card: 你可以透过选择多个角色的方式在 /profile 生成队伍卡片
 title_dyk: "你知道吗？"
 new_zzz_temp: 全新！让你的绝区零代理人试试 Hoyo Buddy 卡片样式 2
-dyk_button_label: 「你知道吗」讯息
+button_label_dyk: 「你知道吗」讯息
 events_view_start_date_embed_field: 开始时间
 events_view_end_date_embed_field: 结束时间
 events_view_ann_select_placeholder: 选择一个活动…

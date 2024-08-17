@@ -625,7 +625,7 @@ dyk_unreleased: You can view unreleased game content using /search
 dyk_team_card: You can generate a team card in /profile by selecting multiple characters
 title_dyk: "Did you know?"
 new_zzz_temp: NEW! Try out Hoyo Buddy template 2 for your ZZZ agents
-dyk_button_label: Did you know messages
+button_label_dyk: Did you know messages
 events_view_start_date_embed_field: Start Time
 events_view_end_date_embed_field: End Time
 events_view_ann_select_placeholder: Select an event...

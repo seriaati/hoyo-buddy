@@ -124,7 +124,7 @@ class DYKTolggle(ToggleButton[SettingsUI]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
-            LocaleStr(key="dyk_button_label"),
+            LocaleStr(key="button_label_dyk"),
         )
 
     async def callback(self, i: Interaction) -> Any:

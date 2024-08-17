@@ -163,7 +163,7 @@ class YattaAPIClient(yatta.YattaAPI):
             if character.beta or character.id in TRAILBLAZER_IDS:
                 continue
             converted_path = YATTA_PATH_TO_HSR_PATH[character.types.path_type]
-            result[converted_path.value.lower()] += 1
+            result[converted_path.name.lower()] += 1
 
         return dict(result)
 

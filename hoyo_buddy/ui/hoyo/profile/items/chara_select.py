@@ -15,6 +15,7 @@ from hoyo_buddy.ui import PaginatorSelect, SelectOption
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
+    from hoyo_buddy.db.models import HoyoAccount
     from hoyo_buddy.types import Builds, Interaction
 
     from ..view import Character, ProfileView  # noqa: F401
@@ -56,6 +57,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         characters: Sequence[Character],
         cache_extras: dict[str, dict[str, Any]],
         builds: Builds,
+        account: HoyoAccount | None,
     ) -> None:
         options: list[SelectOption] = []
 
@@ -82,11 +84,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                     s=character.light_cone.superimpose if character.light_cone is not None else 0,
                     e=character.eidolons_unlocked,
                     d=data_type,
-                    platform=EnumStr(
-                        self.view._account.platform
-                        if self.view._account is not None
-                        else Platform.HOYOLAB
-                    ),
+                    platform=EnumStr(account.platform if account is not None else Platform.HOYOLAB),
                 )
                 emoji = get_hsr_element_emoji(character.element)
             elif isinstance(character, enka.gi.Character):
@@ -101,11 +99,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                 description = LocaleStr(
                     key="profile.zzz_hoyolab.character_select.description",
                     m=character.rank,
-                    platform=EnumStr(
-                        self.view._account.platform
-                        if self.view._account is not None
-                        else Platform.HOYOLAB
-                    ),
+                    platform=EnumStr(account.platform if account is not None else Platform.HOYOLAB),
                 )
                 emoji = get_zzz_element_emoji(character.element)
 

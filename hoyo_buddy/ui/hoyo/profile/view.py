@@ -273,7 +273,11 @@ class ProfileView(View):
         if self.characters:
             self.add_item(
                 CharacterSelect(
-                    self.game, list(self.characters.values()), self.cache_extras, self._builds
+                    self.game,
+                    list(self.characters.values()),
+                    self.cache_extras,
+                    self._builds,
+                    self._account,
                 )
             )
         self.add_item(BuildSelect())

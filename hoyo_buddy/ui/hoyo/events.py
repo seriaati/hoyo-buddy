@@ -114,6 +114,10 @@ class EventSelector(PaginatorSelect[EventsView]):
         self.options = [self._get_ann_option(ann, i == 0) for i, ann in enumerate(anns)]
 
     async def callback(self, i: Interaction) -> None:
+        changed = self.update_page()
+        if changed:
+            return await i.response.edit_message(view=self.view)
+
         self.view.ann_id = int(self.values[0])
         ann = self.view._get_ann(self.view.ann_id)
         embed = self.view._get_ann_embed(ann)

@@ -464,10 +464,9 @@ class EnterCharacterLevel(Button[CharacterUI]):
 
 class VoiceSelector(PaginatorSelect[CharacterUI]):
     async def callback(self, i: Interaction) -> Any:
-        await super().callback()
-        try:
-            self.view._voice_index = int(self.values[0])
-        except ValueError:
-            await i.response.edit_message(view=self.view)
-        else:
-            await self.view.update(i)
+        changed = self.update_page()
+        if changed:
+            return await i.response.edit_message(view=self.view)
+
+        self.view._voice_index = int(self.values[0])
+        await self.view.update(i)

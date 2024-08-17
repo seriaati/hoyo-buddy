@@ -120,7 +120,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        changed = await super().callback()
+        changed = self.update_page()
         if changed:
             return await i.response.edit_message(view=self.view)
 

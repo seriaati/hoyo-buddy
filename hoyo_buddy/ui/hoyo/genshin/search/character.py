@@ -421,10 +421,9 @@ class ItemSelector(Select[CharacterUI]):
 
 class QuoteSelector(PaginatorSelect[CharacterUI]):
     async def callback(self, i: Interaction) -> Any:
-        await super().callback()
-        try:
-            self.view.quote_index = int(self.values[0])
-        except ValueError:
-            await i.response.edit_message(view=self.view)
-        else:
-            await self.view.update(i)
+        changed = self.update_page()
+        if changed:
+            return await i.response.edit_message(view=self.view)
+
+        self.view.quote_index = int(self.values[0])
+        await self.view.update(i)

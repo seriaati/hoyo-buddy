@@ -340,7 +340,7 @@ class CharacterSelect(PaginatorSelect[CardSettingsView]):
         ]
 
     async def callback(self, i: Interaction) -> None:
-        changed = await super().callback()
+        changed = self.update_page()
         if changed:
             return await i.response.edit_message(view=self.view)
 
@@ -520,7 +520,7 @@ class ImageSelect(PaginatorSelect[CardSettingsView]):
         return option
 
     async def callback(self, i: Interaction) -> None:
-        changed = await super().callback()
+        changed = self.update_page()
         if changed:
             return await i.response.edit_message(view=self.view)
 

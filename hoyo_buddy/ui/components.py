@@ -516,7 +516,7 @@ class PaginatorSelect(Select, Generic[V_co]):
                 self.page_index = i
                 break
 
-    async def callback(self) -> bool:
+    def update_page(self) -> bool:
         changed = False
         if "next_page" in self.values:
             changed = True

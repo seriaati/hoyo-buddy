@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from io import BytesIO
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import discord
 from discord import utils as dutils
@@ -14,6 +14,9 @@ from hoyo_buddy.draw.drawer import BLACK, Drawer
 
 from .common import SKILL_ORDER, STAT_ICONS, get_props
 
+if TYPE_CHECKING:
+    from hoyo_buddy.models import AgentNameData
+
 
 class ZZZAgentCard:
     def __init__(
@@ -24,7 +27,7 @@ class ZZZAgentCard:
         image_url: str,
         card_data: dict[str, Any],
         disc_icons: dict[str, str],
-        agent_full_name: str,
+        name_data: AgentNameData | None,
         color: str | None,
     ) -> None:
         self._agent = agent
@@ -32,7 +35,7 @@ class ZZZAgentCard:
         self._image_url = image_url
         self._card_data = card_data
         self._disc_icons = disc_icons
-        self._agent_full_name = agent_full_name
+        self._name_data = name_data
         self._color = color
 
     def _draw_background(self) -> Image.Image:
@@ -78,15 +81,19 @@ class ZZZAgentCard:
         logo = drawer.open_asset("logo.png")
         card.alpha_composite(logo, (24, 18))
 
-        name_position = (self._card_data.get("name_x", 2234), self._card_data.get("name_y", -64))
-        drawer.write(
-            self._agent_full_name,
-            size=460,
-            style="black_italic",
-            position=name_position,
-            color=BLACK,
-            sans=True,
-        )
+        if self._name_data is not None:
+            name_position = (
+                self._card_data.get("name_x", 2234),
+                self._card_data.get("name_y", -64),
+            )
+            drawer.write(
+                self._name_data.full_name,
+                size=460,
+                style="black_italic",
+                position=name_position,
+                color=BLACK,
+                sans=True,
+            )
 
         bangboo = drawer.open_asset("bangboo.png")
         card.alpha_composite(bangboo, (3113, 1168))
@@ -135,20 +142,21 @@ class ZZZAgentCard:
                 rank_text, (self._card_data["level_x"], self._card_data["level_y"] + 260), rank_text
             )
 
-        # Agent full name
-        text = self._agent_full_name.split(" ", maxsplit=1)
-        if len(text) > 1:
-            drawer.write(
-                "\n".join(text),
-                position=(
-                    self._card_data["level_x"] + rank_text.width + 10,
-                    self._card_data["level_y"] + 290,
-                ),
-                size=72,
-                color=(41, 41, 41),
-                style="black_italic",
-                sans=True,
-            )
+        if self._name_data is not None:
+            # Agent full name
+            text = self._name_data.full_name.split(" ", maxsplit=1)
+            if len(text) > 1:
+                drawer.write(
+                    "\n".join(text),
+                    position=(
+                        self._card_data["level_x"] + rank_text.width + 10,
+                        self._card_data["level_y"] + 290,
+                    ),
+                    size=72,
+                    color=(41, 41, 41),
+                    style="black_italic",
+                    sans=True,
+                )
 
         # Equip section
         equip_section = drawer.open_asset("equip_section.png")

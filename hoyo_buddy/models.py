@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, NamedTuple
 
 import aiohttp
 import ambr.models
@@ -196,3 +196,14 @@ class UnownedCharacter(BaseModel):
         if v.lower() == "thunder":
             return "lightning"
         return v.lower()
+
+
+class AgentNameData(NamedTuple):
+    full_name: str
+    short_name: str
+
+
+class ZZZDrawData(NamedTuple):
+    name_data: dict[str, AgentNameData]
+    agent_images: dict[str, str]
+    disc_icons: dict[str, str]

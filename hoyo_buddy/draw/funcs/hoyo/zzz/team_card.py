@@ -17,6 +17,8 @@ if TYPE_CHECKING:
 
     from genshin.models import ZZZFullAgent
 
+    from hoyo_buddy.models import AgentNameData
+
 
 class ZZZTeamCard:
     def __init__(
@@ -26,7 +28,7 @@ class ZZZTeamCard:
         agents: Sequence[ZZZFullAgent],
         agent_colors: dict[str, str],
         agent_images: dict[str, str],
-        agent_full_names: dict[str, str],
+        name_datas: dict[str, AgentNameData],
         disc_icons: dict[str, str],
     ) -> None:
         self._locale = locale
@@ -34,7 +36,7 @@ class ZZZTeamCard:
         self._agents = agents
         self._agent_colors = agent_colors
         self._agent_images = agent_images
-        self._agent_full_names = agent_full_names
+        self._name_datas = name_datas
         self._disc_icons = disc_icons
 
     def _draw_card(self, *, image_url: str, blob_color: tuple[int, int, int]) -> Image.Image:
@@ -81,9 +83,9 @@ class ZZZTeamCard:
         drawer = Drawer(ImageDraw.Draw(im), folder="zzz-team-card", dark_mode=self._dark_mode)
 
         # Agent long name
-        text = self._agent_full_names.get(str(agent.id))
-        if text is not None:
-            text_im = self._render_rotated_text(drawer, text)
+        name_data = self._name_datas.get(str(agent.id))
+        if name_data is not None:
+            text_im = self._render_rotated_text(drawer, name_data)
             im.alpha_composite(text_im, (170, 20))
 
         # Agent level and rank
@@ -285,10 +287,26 @@ class ZZZTeamCard:
             drawer.write(text, size=24, position=start_pos, sans=True)
             start_pos = (454, 48) if i == 4 else (start_pos[0], start_pos[1] + 45)
 
-    def _render_rotated_text(self, drawer: Drawer, text: str) -> Image.Image:
+    def _render_rotated_text(self, drawer: Drawer, name_data: AgentNameData) -> Image.Image:
+        text = name_data.full_name.upper()
         textbbox = drawer.write(
-            text.upper(), size=42, position=(0, 0), style="black_italic", sans=True, no_write=True
+            text,
+            size=42,
+            position=(0, 0),
+            style="black_italic",
+            sans=True,
+            no_write=True,
         )
+        if textbbox.width > 280:
+            text = name_data.short_name.upper()
+            textbbox = drawer.write(
+                text,
+                size=42,
+                position=(0, 0),
+                style="black_italic",
+                sans=True,
+                no_write=True,
+            )
         text_im = Image.new(
             "RGBA", (textbbox.right - textbbox.left, (textbbox.bottom - textbbox.top) * 2)
         )
@@ -296,7 +314,12 @@ class ZZZTeamCard:
             ImageDraw.Draw(text_im), folder="zzz-team-card", dark_mode=self._dark_mode
         )
         text_drawer.write(
-            text.upper(), size=42, position=(0, 0), style="black_italic", sans=True, color=BLACK
+            text,
+            size=42,
+            position=(0, 0),
+            style="black_italic",
+            sans=True,
+            color=BLACK,
         )
         text_im = text_im.rotate(-90, expand=True, resample=Image.Resampling.BICUBIC)
         return text_im

@@ -11,7 +11,13 @@ from sentry_sdk.metrics import timing
 
 from hoyo_buddy.draw import funcs
 
-from ..models import AbyssCharacter, HoyolabHSRCharacter, UnownedCharacter
+from ..models import (
+    AbyssCharacter,
+    AgentNameData,
+    HoyolabHSRCharacter,
+    UnownedCharacter,
+    ZZZDrawData,
+)
 from .static import download_images
 
 if TYPE_CHECKING:
@@ -458,15 +464,18 @@ async def draw_zzz_notes_card(
 
 async def fetch_zzz_draw_data(
     agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2]
-) -> tuple[dict[str, str], dict[str, str], dict[str, str]]:
-    agent_full_names: dict[str, str] = {}
+) -> ZZZDrawData:
+    agent_full_names: dict[str, AgentNameData] = {}
 
     async with hakushin.HakushinAPI(hakushin.Game.ZZZ) as api:
         characters = await api.fetch_characters()
         for agent in agents:
-            character_detail = await api.fetch_character_detail(agent.id)
-            agent_full_names[str(agent.id)] = (
-                agent.name if character_detail.info is None else character_detail.info.full_name
+            chara_detail = await api.fetch_character_detail(agent.id)
+            agent_full_names[str(agent.id)] = AgentNameData(
+                short_name=chara_detail.name,
+                full_name=chara_detail.info.full_name
+                if chara_detail.info is not None
+                else chara_detail.name,
             )
         if template == 2:
             agent_images = {str(char.id): char.phase_3_cinema_art for char in characters}
@@ -479,7 +488,7 @@ async def fetch_zzz_draw_data(
             str(item.id): item.icon for item in items if any(pos in item.name for pos in disc_pos)
         }
 
-    return agent_full_names, agent_images, disc_icons
+    return ZZZDrawData(agent_full_names, agent_images, disc_icons)
 
 
 async def draw_zzz_build_card(
@@ -490,12 +499,12 @@ async def draw_zzz_build_card(
     color: str | None,
     template: Literal[1, 2],
 ) -> BytesIO:
-    full_names, agent_images, disc_icons = await fetch_zzz_draw_data([agent], template=template)
+    draw_data = await fetch_zzz_draw_data([agent], template=template)
 
-    image = agent_images[str(agent.id)]
+    image = draw_data.agent_images[str(agent.id)]
     urls: list[str] = []
     urls.append(image)
-    urls.extend(disc_icons.values())
+    urls.extend(draw_data.disc_icons.values())
     if agent.w_engine is not None:
         urls.append(agent.w_engine.icon)
     await download_images(urls, "zzz-build-card", draw_input.session)
@@ -504,10 +513,10 @@ async def draw_zzz_build_card(
         card = funcs.zzz.ZZZAgentCard(
             agent,
             locale=draw_input.locale.value,
-            agent_full_name=full_names.get(str(agent.id), ""),
+            name_data=draw_data.name_data.get(str(agent.id)),
             image_url=image,
             card_data=card_data,
-            disc_icons=disc_icons,
+            disc_icons=draw_data.disc_icons,
             color=color,
         )
         buffer = await draw_input.loop.run_in_executor(
@@ -573,11 +582,11 @@ async def draw_zzz_team_card(
     agent_colors: dict[str, str],
     agent_images: dict[str, str],
 ) -> BytesIO:
-    agent_full_names, _, disc_icons = await fetch_zzz_draw_data(agents, template=1)
+    draw_data = await fetch_zzz_draw_data(agents, template=1)
 
     urls = list(agent_images.values())
     urls.extend(agent.w_engine.icon for agent in agents if agent.w_engine is not None)
-    urls.extend(disc_icons.values())
+    urls.extend(draw_data.disc_icons.values())
     await download_images(urls, "zzz-team-card", draw_input.session)
 
     card = funcs.zzz.ZZZTeamCard(
@@ -585,8 +594,8 @@ async def draw_zzz_team_card(
         agents=agents,
         agent_colors=agent_colors,
         agent_images=agent_images,
-        agent_full_names=agent_full_names,
-        disc_icons=disc_icons,
+        name_datas=draw_data.name_data,
+        disc_icons=draw_data.disc_icons,
     )
     with timing("draw", tags={"type": "zzz_team_card"}):
         buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)

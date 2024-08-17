@@ -157,7 +157,7 @@ class Admin(commands.Cog):
         accounts = await HoyoAccount.filter(user_id=user_id).all()
         msg = "\n".join(
             [
-                f"- [{account.id}] {get_game_emoji(account.game)} {account.uid}, {account.username}"
+                f"- [{account.id}] {get_game_emoji(account.game)} {account.uid}, {account.username}, {account.region}"
                 for account in accounts
             ]
         )

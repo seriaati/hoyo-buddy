@@ -7,8 +7,8 @@ import enka
 from genshin.models import ZZZPartialAgent
 
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji, get_zzz_element_emoji
-from hoyo_buddy.enums import CharacterType, Game
-from hoyo_buddy.l10n import LevelStr, LocaleStr
+from hoyo_buddy.enums import CharacterType, Game, Platform
+from hoyo_buddy.l10n import EnumStr, LevelStr, LocaleStr
 from hoyo_buddy.models import HoyolabHSRCharacter
 from hoyo_buddy.ui import PaginatorSelect, SelectOption
 
@@ -82,6 +82,11 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                     s=character.light_cone.superimpose if character.light_cone is not None else 0,
                     e=character.eidolons_unlocked,
                     d=data_type,
+                    platform=EnumStr(
+                        self.view._account.platform
+                        if self.view._account is not None
+                        else Platform.HOYOLAB
+                    ),
                 )
                 emoji = get_hsr_element_emoji(character.element)
             elif isinstance(character, enka.gi.Character):
@@ -94,7 +99,13 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                 emoji = get_gi_element_emoji(character.element.name)
             else:  # ZZZPartialAgent
                 description = LocaleStr(
-                    key="profile.zzz_hoyolab.character_select.description", m=character.rank
+                    key="profile.zzz_hoyolab.character_select.description",
+                    m=character.rank,
+                    platform=EnumStr(
+                        self.view._account.platform
+                        if self.view._account is not None
+                        else Platform.HOYOLAB
+                    ),
                 )
                 emoji = get_zzz_element_emoji(character.element)
 

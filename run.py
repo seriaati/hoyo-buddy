@@ -18,6 +18,7 @@ from loguru import logger
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 
 from hoyo_buddy.api import BotAPI
@@ -58,6 +59,7 @@ def init_sentry() -> None:
         disabled_integrations=[
             AsyncPGIntegration(),
             AioHttpIntegration(),
+            LoggingIntegration(),
         ],
         traces_sample_rate=1.0,
         environment=env,

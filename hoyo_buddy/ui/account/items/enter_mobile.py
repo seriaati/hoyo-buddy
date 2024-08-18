@@ -7,7 +7,6 @@ from discord import ButtonStyle
 
 from hoyo_buddy.emojis import PASSWORD, PHONE
 from hoyo_buddy.enums import Platform
-from hoyo_buddy.l10n import LocaleStr
 
 from ...components import Button, Modal, TextInput
 from ..geetest_handler import GeetestHandler, SendMobileOTPData
@@ -19,31 +18,25 @@ if TYPE_CHECKING:
 
 
 class VerifyCodeInput(Modal):
-    code = TextInput(
-        label=LocaleStr(key="add_miyoushe_acc.verify_code"),
-        placeholder="123456",
-    )
+    code = TextInput(label="验证码", placeholder="123456")
 
 
 class PhoneNumberInput(Modal):
-    mobile = TextInput(
-        label=LocaleStr(key="add_miyoushe_acc.mobile_number"),
-        placeholder="1234567890",
-    )
+    mobile = TextInput(label="手机号", placeholder="1234567890")
 
 
 class EnterVerificationCode(Button["AccountManager"]):
     def __init__(self, mobile: str) -> None:
         super().__init__(
             custom_id="enter_verification_code",
-            label=LocaleStr(key="add_miyoushe_acc.enter_verification_code"),
+            label="输入验证码",
             emoji=PASSWORD,
             style=ButtonStyle.green,
         )
         self._mobile = mobile
 
     async def callback(self, i: Interaction) -> None:
-        modal = VerifyCodeInput(title=LocaleStr(key="add_miyoushe_acc.enter_verification_code"))
+        modal = VerifyCodeInput(title="输入验证码")
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
         await modal.wait()
@@ -61,13 +54,13 @@ class EnterPhoneNumber(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="enter_mobile_number",
-            label=LocaleStr(key="add_miyoushe_acc.enter_mobile_number"),
+            label="输入手机号",
             emoji=PHONE,
             style=ButtonStyle.blurple,
         )
 
     async def callback(self, i: Interaction) -> None:
-        modal = PhoneNumberInput(title=LocaleStr(key="add_miyoushe_acc.enter_mobile_number"))
+        modal = PhoneNumberInput(title="输入手机号")
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
         await modal.wait()

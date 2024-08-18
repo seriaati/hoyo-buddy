@@ -159,7 +159,6 @@ class AccountManager(View):
             else genshin.Region.CHINESE,
         )
 
-        # Update the view to let user select the accounts to add
         try:
             accounts = await client.get_record_cards()
         except genshin.errors.InvalidCookies as e:

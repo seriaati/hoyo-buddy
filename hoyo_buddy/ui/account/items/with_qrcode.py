@@ -11,7 +11,6 @@ import qrcode.image.pil
 
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Platform
-from hoyo_buddy.l10n import LocaleStr
 
 from ...components import Button, GoBackButton
 
@@ -23,15 +22,15 @@ if TYPE_CHECKING:
 
 class WithQRCode(Button["AccountManager"]):
     def __init__(self) -> None:
-        super().__init__(label=LocaleStr(key="qrcode_button_label"))
+        super().__init__(label="通过扫描二维码")
 
     @property
     def _instructions_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr(key="instructions_title"),
-            description=LocaleStr(key="qrcode_login_instructions.desc"),
+            title="指引",
+            description="使用米游社扫描下方二维码来登录",
         )
         embed.set_image(url="attachment://qrcode.webp")
         return embed
@@ -41,8 +40,8 @@ class WithQRCode(Button["AccountManager"]):
         return DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr(key="instructions_title"),
-            description=LocaleStr(key="qrcode_scanned.desc"),
+            title="指引",
+            description="扫码成功, 请在装备上同意登录。",
         )
 
     @property
@@ -50,8 +49,8 @@ class WithQRCode(Button["AccountManager"]):
         return DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr(key="instructions_title"),
-            description=LocaleStr(key="qrcode_confirmed.desc"),
+            title="指引",
+            description="登录成功",
         )
 
     @staticmethod
@@ -106,8 +105,8 @@ class WithQRCode(Button["AccountManager"]):
                         embed=DefaultEmbed(
                             self.view.locale,
                             self.view.translator,
-                            title=LocaleStr(key="qrcode_expired_title"),
-                            description=LocaleStr(key="qrcode_expired.desc"),
+                            title="二维码已过期",
+                            description="请刷新二维码后重试",
                         ),
                         attachments=[],
                     )

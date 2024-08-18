@@ -13,7 +13,9 @@ from ...components import Button, GoBackButton
 from .with_dev_tools import WithDevTools
 from .with_email_pswd import WithEmailPassword
 from .with_js import WithJavaScript
+from .with_mobile import WithMobileNumber
 from .with_mod_app import WithModApp
+from .with_qrcode import WithQRCode
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
@@ -34,16 +36,16 @@ class AddMiyousheAccount(Button["AccountManager"]):
             self.view.locale,
             self.view.translator,
             title=LocaleStr(key="add_hoyolab_acc.embed.title"),
-            description=LocaleStr(key="add_miyoushe_acc.embed.description"),
+            description="1. 通过改装过的米游社应用程序: 只有安卓裝置可使用\n2. 通过扫描二维码\n3. 通过手机号: 只有中国大陆手机号可使用\n4. 通过邮箱密码\n5. 通过开发者工具",
         )
         go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
 
-        # self.view.add_item(WithQRCode())
-        # self.view.add_item(WithEmailPassword(Platform.MIYOUSHE))
-        # self.view.add_item(WithMobileNumber())
-        # self.view.add_item(WithDevTools(Platform.MIYOUSHE))
         self.view.add_item(WithModApp())
+        self.view.add_item(WithQRCode())
+        self.view.add_item(WithMobileNumber())
+        self.view.add_item(WithEmailPassword(Platform.MIYOUSHE))
+        self.view.add_item(WithDevTools(Platform.MIYOUSHE))
         self.view.add_item(go_back_button)
 
         await i.response.edit_message(embed=embed, view=self.view)

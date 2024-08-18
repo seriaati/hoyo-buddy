@@ -7,7 +7,6 @@ from discord import ButtonStyle, TextStyle
 
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Platform
-from hoyo_buddy.l10n import LocaleStr
 
 from ...components import Button, GoBackButton, Modal, TextInput
 
@@ -19,18 +18,15 @@ if TYPE_CHECKING:
 
 class WithModApp(Button["AccountManager"]):
     def __init__(self) -> None:
-        super().__init__(label=LocaleStr(key="modded_app_button_label"))
+        super().__init__(label="通过改装过的米游社应用程序")
 
     @property
     def _instructions_embed(self) -> list[DefaultEmbed]:
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr(key="instructions_title"),
-            description=LocaleStr(
-                key="modded_app_login_instructions.desc",
-                label=LocaleStr(key="enter_login_details_button_label"),
-            ),
+            title="指引",
+            description="1. 如果你的装置上已经有米游社的应用程序, 请将它卸载。\n2. 点击下方的按钮下载改装过的应用程序档案。\n3. 安装该应用程序, 并启动它。\n4. 忽略任何更新视窗, 登入你的帐户。\n5. 点击「我的」并点击钥匙图案。\n6. 点击「复制登入信息」。\n7. 点击下方的「通过改装过的米游社应用程序」按钮并将复制的登入信息贴上。",
             url="https://github.com/seriaati/hoyo-buddy",
         )
         embed.set_image(
@@ -48,7 +44,7 @@ class WithModApp(Button["AccountManager"]):
         self.view.add_item(go_back_button)
         self.view.add_item(
             Button(
-                label=LocaleStr(key="download_app_button_label"),
+                label="下载应用程序",
                 url="https://github.com/PaiGramTeam/GetToken/releases/latest/download/miyoushe-361-lspatched.apk",
             )
         )
@@ -57,15 +53,13 @@ class WithModApp(Button["AccountManager"]):
 
 
 class LoginDetailModal(Modal):
-    login_detail = TextInput(
-        label=LocaleStr(key="login_detail_modal.input_label"), style=TextStyle.long
-    )
+    login_detail = TextInput(label="登录信息", style=TextStyle.long)
 
 
 class EnterLoginDetails(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr(key="enter_login_details_button_label"),
+            label="输入登录信息",
             style=ButtonStyle.primary,
         )
 
@@ -73,7 +67,7 @@ class EnterLoginDetails(Button["AccountManager"]):
         self.view.clear_items()
         self.view.add_item(GoBackButton(self.view.children, self.view.get_embeds(i.message)))
 
-        modal = LoginDetailModal(title=LocaleStr(key="enter_login_details_button_label"))
+        modal = LoginDetailModal(title="输入登录信息")
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()

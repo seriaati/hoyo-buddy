@@ -49,10 +49,6 @@ action_in_cooldown_error_title: Action in Cooldown
 add_account_button_label: Add accounts
 add_hoyolab_acc.embed.description: "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one\n3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile\n\n"
 add_hoyolab_acc.embed.title: Select a Method to add Your Accounts
-add_miyoushe_acc.embed.description: "1. With modded Miyoushe app: Available only for Android devices"
-add_miyoushe_acc.enter_mobile_number: Enter phone number
-add_miyoushe_acc.mobile_number: Phone number
-add_miyoushe_acc.with_mobile_number: With phone number
 adding_accounts_description: "Welcome to Hoyo Buddy! Enjoy various features by spending less than 1 minute to add your accounts.\n\nRegarding account security, please read the [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Select Your Account's Platform
 ai_gen_image_error_message: Check your prompt and try again.
@@ -290,7 +286,6 @@ make_up_for_checkin_button_label: Make up for check-in
 materials: Materials
 memory_of_chaos: Memory of chaos
 miyoushe: Miyoushe
-mobile_instructions_description: "1. Click the button below to enter your phone number\n2. You will receive a verification code via SMS\n3. Click the button below to enter the verification code\n"
 moc_card_battles_fought: "Battles Fought: {battles}"
 moc_card_cycles_used: "Cycles Used: {cycles}"
 moc_card_farthest_stage: "Farthest Stage: {stage}"
@@ -402,12 +397,6 @@ pt_modal.title: Parametric Transformer Reminder Settings
 public_account_toggle.label: Set account as public
 pure_fiction: Pure fiction
 pyro: Pyro
-qrcode_button_label: With QR code
-qrcode_confirmed.desc: Successfully logged in
-qrcode_expired.desc: Please try again with a new QR code
-qrcode_expired_title: QR code expired
-qrcode_login_instructions.desc: Scan the QR code below with your Miyoushe app to log in.
-qrcode_scanned.desc: Successfully scanned the QR code. Please confirm the login on your device.
 quantum: Quantum
 read_story.button.label: Read Story
 real_time_notes: Real-time notes
@@ -509,11 +498,6 @@ characters.show_owned_only: Show owned characters only
 redeem_code.ar_too_low: Adventure rank too low
 data_not_public.title: Data is not Public
 data_not_public.description: "Enable the data sharing option in your battle chronicle settings\nhttps://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/DataNotPublicTutorial.gif"
-modded_app_button_label: With modded app
-modded_app_login_instructions.desc: "1. If you have Miyoushe installed on your device, uninstall it.\n2. Download the modded apk by clicking the button below.\n3. Install the modded app and open it.\n4. Ignore any update prompts and log in with your account.\n5. Click 'my account' and click on the key icon.\n6. Click 'copy login details'.\n7. Click the '{label}' button below and paste the copied details."
-download_app_button_label: Download app
-login_detail_modal.input_label: Login details
-enter_login_details_button_label: Enter login details
 not_implemented_error_title: Feature not Implemented Yet
 not_implemented_error_only_game_message: "This feature is not implemented for `{game}` accounts yet."
 not_implemented_error_message: "This feature is not implemented for `{game}` accounts on `{platform}` yet."

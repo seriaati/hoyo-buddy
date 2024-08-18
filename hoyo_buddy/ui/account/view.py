@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, Any
 
 import genshin
 
+from hoyo_buddy.ui.account.items.enter_device_info import EnterDeviceInfoButton
+
 from ...constants import GEETEST_SERVERS
 from ...db.models import HoyoAccount, User, get_dyk
 from ...embeds import DefaultEmbed
@@ -176,6 +178,20 @@ class AccountManager(View):
 
         device_id = cookies.pop("x-rpc-device_id", None)
         device_fp = cookies.pop("x-rpc-device_fp", None)
+
+        if platform is Platform.MIYOUSHE and (device_id is None or device_fp is None):
+            enter_device_info_btn = EnterDeviceInfoButton(cookies)
+            embed = enter_device_info_btn.get_embed(self)
+            self.clear_items()
+            self.add_item(enter_device_info_btn)
+            self.add_item(
+                Button(
+                    label="下载应用程序",
+                    url="https://mirror.ghproxy.com/https://raw.githubusercontent.com/forchannot/get_device_info/main/app/build/outputs/apk/debug/app-debug.apk",
+                )
+            )
+            await interaction.edit_original_response(embed=embed, view=self)
+            return
 
         self.clear_items()
         self.add_item(

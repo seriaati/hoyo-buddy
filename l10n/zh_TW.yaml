@@ -49,10 +49,6 @@ action_in_cooldown_error_title: 操作正在冷卻
 add_account_button_label: 新增帳戶
 add_hoyolab_acc.embed.description: "1. 透過電子郵件和密碼：最推薦的方式，它最簡單\n2. 透過開發者工具：只能在電腦上運作，如果你對第一個方式有安全疑慮的話，這是一個比較安全的選擇\n3. 透過 JavaScript：過期的方式，大多數帳戶已經無法使用了。可以在電腦和手機上的 Google Chrome 或 Microsoft Edge 運作。\n\n"
 add_hoyolab_acc.embed.title: 選擇一個新增帳戶的方式
-add_miyoushe_acc.embed.description: "1. 透過改裝過的米遊社 app: 只有安卓裝置可使用"
-add_miyoushe_acc.enter_mobile_number: 輸入電話號碼
-add_miyoushe_acc.mobile_number: 電話號碼
-add_miyoushe_acc.with_mobile_number: 透過電話號碼
 adding_accounts_description: "歡迎使用 Hoyo Buddy! 僅需花費 1 分鐘的時間即可快速新增帳戶並開始享受各式功能。\n\n關於帳戶安全問題，請詳閱 [維基頁面](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security) ，關於我們如何使用及蒐集你的資料，請參閱 [隱私權政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: 選擇帳戶的所屬平台
 ai_gen_image_error_message: 請檢查你輸入的提示並再試一次。
@@ -290,7 +286,6 @@ make_up_for_checkin_button_label: 補簽
 materials: 材料
 memory_of_chaos: 混沌回憶
 miyoushe: 米遊社
-mobile_instructions_description: "1. 點擊下方的按鈕來輸入你的電話號碼\n2. 你會收到一則包含驗證碼的簡訊\n3. 點擊下方的按鈕輸入驗證碼\n"
 moc_card_battles_fought: "戰鬥次數: {battles}"
 moc_card_cycles_used: "使用輪次: {cycles}"
 moc_card_farthest_stage: "最高關卡: {stage}"
@@ -402,12 +397,6 @@ pt_modal.title: 質變儀通知設定
 public_account_toggle.label: 設置帳戶為公開
 pure_fiction: 虛構敘事
 pyro: 火
-qrcode_button_label: 透過 QR 碼
-qrcode_confirmed.desc: 登入成功
-qrcode_expired.desc: 請刷新二維碼後重試
-qrcode_expired_title: 二維碼已過期
-qrcode_login_instructions.desc: 使用米遊社應用程式掃描下方的 QR 碼來登入。
-qrcode_scanned.desc: QR 碼掃描成功。請在裝置上同意登入。
 quantum: 量子
 read_story.button.label: 閱讀故事
 real_time_notes: 即時便籤
@@ -509,11 +498,6 @@ characters.show_owned_only: 僅顯示已擁有的角色
 redeem_code.ar_too_low: 冒險等階過低
 data_not_public.title: 資料沒有公開
 data_not_public.description: "在你的戰績設定中打開資料分享的選項\nhttps://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/DataNotPublicTutorial.gif"
-modded_app_button_label: 透過改裝過的米遊社 app
-modded_app_login_instructions.desc: "1. 如果你的裝置上已經有米遊社的 app，請將它解除安裝。\n2. 點擊下方的按鈕下載改裝過的 apk。\n3. 安裝該 apk 並打開 app。\n4. 忽略任何更新視窗，登入你的帳戶。\n5. 點擊「我的」並點擊鑰匙圖案。\n6. 點擊「複製登入信息」。\n7. 點擊下方的「{label}」按鈕並將複製的登入信息貼上。"
-download_app_button_label: 下載 app
-login_detail_modal.input_label: 登入信息
-enter_login_details_button_label: 輸入登入信息
 not_implemented_error_title: 功能尚未實裝
 not_implemented_error_only_game_message: "此功能尚未在 `{game}` 帳戶上實裝。"
 not_implemented_error_message: "此功能尚未在 `{platform}` 上的 `{game}` 帳戶上實裝。"

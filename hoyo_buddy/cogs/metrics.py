@@ -35,7 +35,7 @@ class Metrics(commands.Cog):
                     if i.command.parent is None:
                         logger.info(
                             f"[Command][{i.user.id}] {i.command.name}",
-                            extra={"parameters": parameters},
+                            parameters=parameters,
                         )
                         sentry_sdk.metrics.incr(
                             "commands.executed", tags={"command": i.command.name}
@@ -43,7 +43,7 @@ class Metrics(commands.Cog):
                     else:
                         logger.info(
                             f"[Command][{i.user.id}] {i.command.parent.name} {i.command.name}",
-                            extra={"parameters": parameters},
+                            parameters=parameters,
                         )
                         sentry_sdk.metrics.incr(
                             "commands.executed",

@@ -36,7 +36,6 @@ account_autocomplete_param_description: "Compte avec lequel exécuter cette comm
 account_autocomplete_param_name: compte
 account_deleted_description: "{account}a été supprimé"
 account_deleted_title: Compte supprimé
-account_game: Jeu
 account_manager_footer: ""
 account_manager_no_accounts_description: Vous n'avez pas encore de compte
 account_manager_title: Gestionnaire de compte
@@ -50,10 +49,6 @@ action_in_cooldown_error_title: ""
 add_account_button_label: Ajouter des comptes
 add_hoyolab_acc.embed.description: ""
 add_hoyolab_acc.embed.title: ""
-add_miyoushe_acc.embed.description: ""
-add_miyoushe_acc.enter_mobile_number: ""
-add_miyoushe_acc.mobile_number: ""
-add_miyoushe_acc.with_mobile_number: ""
 adding_accounts_description: ""
 adding_accounts_title: Sélectionnez la plateforme de votre compte
 ai_gen_image_error_message: Vérifiez votre invite et réessayez.
@@ -86,7 +81,6 @@ character_embed_description: "{rarity} ★ {element}\nAnniversaire: {birthday}\n
 character_passives_page_label: ""
 character_profile_page_label: Profile
 character_quotes_page_label: Citation
-character_skills_page_label: ""
 character_stories_page_label: Histoires
 character_talents_page_label: Aptitudes
 character_voices_page_label: ""
@@ -140,7 +134,6 @@ cryo: ""
 daily_button.label: Rappel quotidien
 daily_check_in: ""
 daily_checkin_embed_description: "Vérifié {day} jour(s) ce mois-ci\nL'enregistrement pour {missed} jour(s) a / ont été manqué\n"
-daily_checkin_embed_title: Connexion quotidienne
 daily_modal.title: Paramètres du rappel quotidien
 daily_training_button.label: ""
 dark_mode_button_label: Mode sombre
@@ -150,11 +143,8 @@ destruction: ""
 devtools_button_label: Avec DevTools (ordinateur uniquement)
 devtools_instructions_description: "1. Se connecter à [HoYoLAB](https://www.hoyolab.com/home) ou [Miyoushe](https://www.miyoushe.com/ys/) (pour les joueurs CN)\n2. Ouvrez le DevTools en appuyant sur F12 ou Ctrl+Shift+I.\n3. Appuyez sur l'icône >> dans la barre de navigation supérieure\n4. Cliquez sur l'onglet `Application`.\n5. Cliquez sur \"Cookies\" dans la barre latérale gauche.\n6. Cliquez sur le site web sur lequel vous vous trouvez (par exemple https://www.hoyolab.com).\n7. Tapez `v2` dans la case `Filter`.\n8. Cliquez sur le bouton ci-dessous\n9. Copiez la `Valeur` de chaque cookie et collez-la dans les cases\n"
 dice_cost_embed_field_name: Coût des dés
-domain-type.characters: ""
-domain-type.weapons: ""
 download_image_failed_error_message: ""
 download_image_failed_error_title: ""
-edit_nickname_button_label: Modifier le pseudonyme
 edit_nickname_modal_title: Modifier le pseudonyme
 eidolon_superimpose_str: ""
 electro: ""
@@ -285,7 +275,6 @@ invalid_verification_code_title: Code de vérification invalide
 items: Objects
 javascript_button_label: Avec JavaScript
 javascript_instructions_description: "<:INFO:1166743144889602190>Note: Cette méthode devrait fonctionner sur tous les principaux navigateurs sur ordinateur, mais sur mobile, elle ne fonctionne que sur **Chrome** et **Edge**.\n\n1. Connectez-vous à  [HoYoLAB](https://www.hoyolab.com/home) ou [Miyoushe](https://www.miyoushe.com/ys/)(pour les joueurs Chine)\n2. Copiez le code ci-dessous\n3. Cliquez sur la barre d'adresse et saisissez `java`\n4. Collez le code et appuyez sur Entrée. Assurez-vous de **NE PAS METTRE D'ESPACES** entre `java` et `script`\n5. Sélectionnez tout et copiez le texte qui apparaît\n6. Cliquez sur le bouton ci-dessous et collez le texte dans la zone prévue."
-level_label: ""
 level_str: "Nv.{level}"
 light_cones: Cônes de lumières
 living_beings: Êtres vivants
@@ -295,7 +284,6 @@ make_up_for_checkin_button_label: Enregistrement manqué
 materials: Matériaux
 memory_of_chaos: ""
 miyoushe: ""
-mobile_instructions_description: ""
 moc_card_battles_fought: ""
 moc_card_cycles_used: ""
 moc_card_farthest_stage: ""
@@ -355,7 +343,6 @@ primogems: primo-gemmes
 process_notify_error.content: ""
 profile.add_image.button.label: Ajouter une image customisée
 profile.add_image_modal.image_url.label: URL de l'image
-profile.add_image_modal.title: Ajouter une image personnalisée
 profile.build.select.placeholder: ""
 profile.card_info.embed.description: "- Tous les éléments utilisés dans les cartes appartiennent à Hoyoverse, je n'en suis pas propriétaire.\n- Tous les fanarts utilisés dans les cartes sont crédités à leurs artistes respectifs.\n- Les modèles de Hoyo Buddy sont originaux, vous n'êtes pas autorisé à les modifier ou à prétendre que vous les avez créés sans ma permission.\n- Les données du jeu sont fournies par {provider}\n"
 profile.card_info.embed.title: À propos des cartes pour personnage
@@ -374,7 +361,6 @@ profile.character_select.enka_network.description: ""
 profile.character_select.hoyolab.description: ""
 profile.character_select.live_data.description: Données en temps réel
 profile.character_select.placeholder: Sélectionner un personnage
-profile.dark_mode.button.label: Mode Sombre
 profile.generate_ai_art.button.label: Generer des art par IA
 profile.generate_ai_art_modal.negative_prompt.label: ""
 profile.generate_ai_art_modal.prompt.label: Invite
@@ -386,7 +372,6 @@ profile.image_select.none.label: Art officiel
 profile.image_select.placeholder: Sélectionner une image
 profile.info.embed.custom_images.name: Images personnalisées
 profile.info.embed.custom_images.value: "- Hoyo Buddy est livré avec des images prédéfinies que j'ai appréciées, mais vous pouvez également ajouter vos propres images.\n- Seules les URL d'images directes sont prises en charge, et elles doivent être accessibles au public ; les GIF ne sont pas pris en charge.\n- Pour les modèles de Hoyo Buddy, les images verticales sont recommandées.\n- Pour les propriétaires de serveurs, je ne suis pas responsable des images NSFW que vous ou vos membres ajoutez.\n- Le bouton rouge supprime l'image personnalisée actuelle et revient à l'image par défaut."
-profile.info.embed.dark_mode.name: Mode Sombre
 profile.info.embed.dark_mode.value: ""
 profile.info.embed.primary_color.name: Couleur primaire
 profile.info.embed.primary_color.value: "- Seuls les codes de couleur hexadécimales sont pris en charge."
@@ -410,12 +395,6 @@ pt_modal.title: ""
 public_account_toggle.label: Définir le compte à publique
 pure_fiction: ""
 pyro: ""
-qrcode_button_label: ""
-qrcode_confirmed.desc: ""
-qrcode_expired.desc: ""
-qrcode_expired_title: ""
-qrcode_login_instructions.desc: ""
-qrcode_scanned.desc: ""
 quantum: ""
 read_story.button.label: ""
 real_time_notes: ""
@@ -485,7 +464,6 @@ toggle_off_text: "arrêt"
 toggle_on_text: "marche"
 traditional_chinese_server: Serveur chinois traditionnel
 try_other_method_error_message: ""
-try_other_method_error_title: ""
 tuesday: Mardi
 unreleased_content: ""
 user_autocomplete_param_description: "Utilisateur avec lequel effectuer la recherche dans les comptes, par défaut : vous"
@@ -508,7 +486,6 @@ yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}
 yatta_character_skill_energy_field_name: Énergie
 yatta_character_skill_energy_generation_field_value: "Génération : {energy_generation}"
 yatta_character_skill_energy_need_field_value: "Coût : {energy_need}"
-yatta_character_skill_page_label: Compétences
 yatta_character_skill_single_weakness_break_field_value: "Unique: {single_weakness_break}"
 yatta_character_skill_spread_weakness_break_field_value: "Propagation: {spread_weakness_break}"
 yatta_character_skill_weakness_break_field_name: Effect de rupture
@@ -519,11 +496,6 @@ characters.show_owned_only: ""
 redeem_code.ar_too_low: ""
 data_not_public.title: ""
 data_not_public.description: ""
-modded_app_button_label: ""
-modded_app_login_instructions.desc: ""
-download_app_button_label: ""
-login_detail_modal.input_label: ""
-enter_login_details_button_label: ""
 not_implemented_error_title: ""
 not_implemented_error_only_game_message: ""
 not_implemented_error_message: ""
@@ -603,3 +575,43 @@ card_settings.color_default: ""
 card_settings.current_image: ""
 profile.redraw_card_button_label: ""
 card_settings.footer: ""
+profile.team_dark_mode.button.label: ""
+profile.character_select.multi.placeholder: ""
+zzz_search.agent_info: ""
+cat_zzz_agents: ""
+cat_zzz_bangboos: ""
+cat_zzz_w_engines: ""
+cat_zzz_drive_discs: ""
+search.agent_page.info: ""
+search.agent_page.skills: ""
+search.agent_page.cinemas: ""
+search.agent_page.placeholder: ""
+zzz.skill_type.placeholder: ""
+zzz.cinema.placeholder: ""
+zzz.engine.refinement_select.placeholder: ""
+dyk_discord_server_updates: ""
+dyk_discord_server_feedback: ""
+dyk_something_wrong: ""
+dyk_contact_me: ""
+dyk_donate_no_title: ""
+dyk_easter_egg1_no_title: ""
+dyk_team: ""
+dyk_disable: ""
+dyk_settings_lang: ""
+dyk_settings_theme: ""
+dyk_suggest_light: ""
+dyk_security: ""
+dyk_github: ""
+dyk_python: ""
+dyk_unreleased: ""
+dyk_team_card: ""
+title_dyk: ""
+new_zzz_temp: ""
+button_label_dyk: ""
+events_view_start_date_embed_field: ""
+events_view_end_date_embed_field: ""
+events_view_ann_select_placeholder: ""
+events_command_description: ""
+events_view_ann_type_select_placeholder: ""
+events_view_content_label: ""
+events_command_game_param_description: ""

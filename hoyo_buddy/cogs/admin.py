@@ -168,7 +168,12 @@ class Admin(commands.Cog):
         account = await HoyoAccount.get_or_none(id=account_id)
         if account is None:
             return await ctx.send("Account not found.")
-        await ctx.send(f"```{account.cookies}```")
+
+        await ctx.send(f"cookies:\n```{account.cookies}```")
+        if account.device_fp is not None:
+            await ctx.send(f"device_fp:\n```{account.device_fp}```")
+        if account.device_id is not None:
+            await ctx.send(f"device_id:\n```{account.device_id}```")
 
 
 async def setup(bot: HoyoBuddy) -> None:

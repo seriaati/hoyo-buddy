@@ -208,7 +208,12 @@ class Farm(
     async def user_query_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
-        account_namespace: str = i.namespace.account
+        account_namespace: str | None = i.namespace.account
+
+        if account_namespace is None:
+            return self.bot.get_error_autocomplete(
+                LocaleStr(key="search_autocomplete_no_results"), await get_locale(i)
+            )
         # Find [account_id] from account_namespace
         account_id = int(account_namespace.split("]")[0].strip("["))
         locale = await get_locale(i)

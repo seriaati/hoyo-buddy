@@ -36,7 +36,6 @@ account_autocomplete_param_description: "Akun untuk menjalankan perintah ini, de
 account_autocomplete_param_name: akun
 account_deleted_description: "{account} sudah dihapus."
 account_deleted_title: Akun Dihapus
-account_game: Game
 account_manager_footer: Akun yang dipilih akan menjadi akun default yang digunakan untuk semua perintah
 account_manager_no_accounts_description: Kamu belum memiliki akun apa pun.
 account_manager_title: Kelola Akun
@@ -50,10 +49,6 @@ action_in_cooldown_error_title: Aksi dalam Cooldown
 add_account_button_label: Tambah akun
 add_hoyolab_acc.embed.description: "1. Dengan email dan kata sandi: Paling direkomendasikan, dan paling mudah\n2. Dengan DevTools: Hanya berfungsi pada desktop, opsi yang lebih aman jika kamu memiliki kekhawatiran keamanan dengan yang pertama\n3. Dengan JavaScript: Metode yang ketinggalan jaman, tidak akan berfungsi untuk sebagian besar akun. Berfungsi di Google Chrome atau Microsoft Edge pada desktop dan mobile\n\n"
 add_hoyolab_acc.embed.title: Pilih metode untuk menambahkan akun kamu
-add_miyoushe_acc.embed.description: "1. Dengan aplikasi Miyoushe modifikasi: Hanya tersedia untuk Android"
-add_miyoushe_acc.enter_mobile_number: Masukkan nomor telepon
-add_miyoushe_acc.mobile_number: Nomor telepon
-add_miyoushe_acc.with_mobile_number: Pakai nomor telepon
 adding_accounts_description: "Selamat datang di Hoyo Buddy! Nikmati berbagai fitur keren dengan meluangkan waktu kurang dari 1 menit untuk menambahkan akun kamu.\n\nMengenai keamanan akun, silakan baca [Halaman Wiki](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), untuk cara kami menggunakan dan mengumpulkan data kamu, silakan baca [Kebijakan Privasi]( https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Pilih Platform Akun Kamu
 ai_gen_image_error_message: Periksa prompt kamu dan coba lagi
@@ -86,7 +81,6 @@ character_embed_description: "{rarity}★ {element}\nUlang Tahun: {birthday}\nKo
 character_passives_page_label: Pasif
 character_profile_page_label: Profil
 character_quotes_page_label: Quote
-character_skills_page_label: Skill
 character_stories_page_label: Story
 character_talents_page_label: Talenta
 character_voices_page_label: Suara
@@ -140,7 +134,6 @@ cryo: Cryo
 daily_button.label: Pengingat harian
 daily_check_in: Absen harian
 daily_checkin_embed_description: "Absen {day} hari bulan ini\nTidak absen {missed} hari\n"
-daily_checkin_embed_title: Absen harian
 daily_modal.title: Pengaturan Pengingat Harian
 daily_training_button.label: Pengingat Pelatihan Harian
 dark_mode_button_label: Mode gelap
@@ -150,11 +143,8 @@ destruction: Destruction
 devtools_button_label: Dengan DevTools (Hanya pada Dekstop)
 devtools_instructions_description: "1. Masuk ke [HoYoLAB](https://www.hoyolab.com/home) atau [Miyoushe](https://www.miyoushe.com/ys/) (untuk pemain CN)\n2. Buka DevTools dengan menekan F12 atau Ctrl+Shift+I\n3. Tekan ikon >> pada bilah navigasi atas\n4. Klik pada tab `Application`\n5. Klik `Cookie` di sidebar kiri\n6. Klik situs web yang kamu buka (misalnya https://www.hoyolab.com)\n7. Ketik `v2` di kotak `Filter`\n8. Klik tombol di bawah\n9. Salin `Value` setiap cookie dan tempelkan ke dalam kotak\n"
 dice_cost_embed_field_name: Biaya Dadu
-domain-type.characters: Karakter
-domain-type.weapons: Senjata
 download_image_failed_error_message: "Tidak dapat mengunduh gambar {url} dengan status kode{status}.\ncoba lagi nanti, coba dengan gambar berbeda, atau cek apakah URL gambar valid."
 download_image_failed_error_title: Gambar gagal diunduh
-edit_nickname_button_label: Edit nickname
 edit_nickname_modal_title: Edit nickname
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
@@ -287,7 +277,6 @@ invalid_verification_code_title: Kode verifikasi tidak valid
 items: Item
 javascript_button_label: Dengan JavaScript
 javascript_instructions_description: "<:INFO:1166743144889602190> Catatan: Metode ini dapat digunakan pada semua browser utama di desktop, namun pada perangkat seluler, metode ini hanya dapat digunakan pada **Chrome** dan **Edge**.\n\n1. Login ke [HoYoLAB](https://www.hoyolab.com/home) atau [Miyoushe](https://www.miyoushe.com/ys/) (untuk pemain CN)\n2. Salin kode di bawah\n3. Klik pada bilah alamat dan ketik `java`\n4. Tempelkan kodenya dan tekan enter. Pastikan **TIDAK ADA SPASI** antara `java` dan `script`\n5. Pilih semua dan salin teks yang muncul\n6. Klik tombol di bawah dan tempel teks di dalam kotak\n"
-level_label: Level
 level_str: "Lv.{level}"
 light_cones: Light Cone
 living_beings: Makhluk Hidup
@@ -297,7 +286,6 @@ make_up_for_checkin_button_label: Absen susulan
 materials: Material
 memory_of_chaos: Memory of chaos
 miyoushe: Miyoushe
-mobile_instructions_description: "1. Klik tombol di bawah untuk memasukkan nomor telepon kamu\n2. Kamu akan menerima kode verifikasi melalui SMS\n3. Klik tombol di bawah untuk memasukkan kode verifikasi\n"
 moc_card_battles_fought: "Jumlah Pertempuran: {battles}"
 moc_card_cycles_used: ""
 moc_card_farthest_stage: ""
@@ -357,7 +345,6 @@ primogems: primogems
 process_notify_error.content: "Terjadi kesalahan saat memproses pengingat catatan real-timemu\nHoyo Buddy telah menonaktifkan pengingat untuk akun ini, kamu dapat mengaktifkannya kembali menggunakan </notes>\nJika kesalahan ini masih terjadi atau kamu tidak tahu cara memperbaikinya, silakan hubungi pengembang melalui </feedback>.\n"
 profile.add_image.button.label: Tambah gambar kustom
 profile.add_image_modal.image_url.label: URL Gambar
-profile.add_image_modal.title: Tambah Gambar Kustom
 profile.build.select.placeholder: Pilih build...
 profile.card_info.embed.description: "- Semua aset yang digunakan dalam kartu adalah milik Hoyoverse, saya bukan pemiliknya.\n- Semua fanart yang digunakan dalam kartu dikreditkan ke artisnya masing-masing.\n- Desain template Hoyo Buddy adalah asli, kamu tidak diperbolehkan memodifikasinya atau mengklaim bahwa kamu membuatnya tanpa izin saya.\n- Data permainan disediakan oleh {provider}\n"
 profile.card_info.embed.title: Tentang Kartu Build Karakter
@@ -376,7 +363,6 @@ profile.character_select.enka_network.description: Enka Network build
 profile.character_select.hoyolab.description: ""
 profile.character_select.live_data.description: Data real-time
 profile.character_select.placeholder: Pilih karakter
-profile.dark_mode.button.label: Mode Gelap
 profile.generate_ai_art.button.label: Buat gambar AI
 profile.generate_ai_art_modal.negative_prompt.label: Perintah Negatif
 profile.generate_ai_art_modal.prompt.label: Perintah
@@ -388,7 +374,6 @@ profile.image_select.none.label: Gambar resmi
 profile.image_select.placeholder: Pilih gambar
 profile.info.embed.custom_images.name: Gambar Kustom
 profile.info.embed.custom_images.value: "- Hoyo Buddy hadir dengan beberapa seni preset yang saya suka, tetapi kamu juga dapat menambahkan gambar kamu sendiri.\n- Hanya URL gambar langsung yang didukung, dan harus dapat diakses publik; GIF tidak didukung.\n- Untuk template Hoyo Buddy, disarankan menggunakan gambar vertikal.\n- Bagi pemilik server, saya tidak bertanggung jawab atas gambar NSFW apa pun yang kamu atau anggota kamu tambahkan.\n- Tombol merah menghapus gambar khusus saat ini dan kembali ke gambar default."
-profile.info.embed.dark_mode.name: Mode Gelap
 profile.info.embed.dark_mode.value: ""
 profile.info.embed.primary_color.name: Warna Primer
 profile.info.embed.primary_color.value: "- Hanya kode warna hex yang didukung."
@@ -412,12 +397,6 @@ pt_modal.title: Pengaturan Pengingat Parametric Transformer
 public_account_toggle.label: Setel akun sebagai publik
 pure_fiction: ""
 pyro: Pyro
-qrcode_button_label: Dengan kode QR
-qrcode_confirmed.desc: Berhasil masuk
-qrcode_expired.desc: Silakan coba lagi dengan kode QR yang baru
-qrcode_expired_title: Kode QR kedaluwarsa
-qrcode_login_instructions.desc: Pindai kode QR di bawah menggunakan aplikasi Miyoushe untuk masuk
-qrcode_scanned.desc: Berhasil memindai kode QR. Silakan konfirmasi masuk melalui perangkat kamu.
 quantum: Quantum
 read_story.button.label: Baca Kisah
 real_time_notes: Catatan real-time
@@ -487,7 +466,6 @@ toggle_off_text: "mati"
 toggle_on_text: "nyala"
 traditional_chinese_server: Server Cina Tradisional
 try_other_method_error_message: "Silakan coba metode lain untuk login.\nJika kamu memasukkan cookie secara manual melalui DevTools, pastikan kamu menyalinnya dengan benar."
-try_other_method_error_title: Cookies Tidakvalid
 tuesday: Kamis
 unreleased_content: Konten yang belum rilis
 user_autocomplete_param_description: "Untuk mencari akun dengan user terkait, secara default ke kamu"
@@ -510,7 +488,6 @@ yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}
 yatta_character_skill_energy_field_name: Energy
 yatta_character_skill_energy_generation_field_value: "Generation: {energy_generation}"
 yatta_character_skill_energy_need_field_value: "Cost: {energy_need}"
-yatta_character_skill_page_label: Skill
 yatta_character_skill_single_weakness_break_field_value: "Single: {single_weakness_break}"
 yatta_character_skill_spread_weakness_break_field_value: "Spread: {spread_weakness_break}"
 yatta_character_skill_weakness_break_field_name: Weakness Break
@@ -521,11 +498,6 @@ characters.show_owned_only: ""
 redeem_code.ar_too_low: ""
 data_not_public.title: ""
 data_not_public.description: ""
-modded_app_button_label: ""
-modded_app_login_instructions.desc: ""
-download_app_button_label: ""
-login_detail_modal.input_label: ""
-enter_login_details_button_label: ""
 not_implemented_error_title: ""
 not_implemented_error_only_game_message: ""
 not_implemented_error_message: ""
@@ -605,3 +577,43 @@ card_settings.color_default: ""
 card_settings.current_image: ""
 profile.redraw_card_button_label: ""
 card_settings.footer: ""
+profile.team_dark_mode.button.label: ""
+profile.character_select.multi.placeholder: ""
+zzz_search.agent_info: ""
+cat_zzz_agents: ""
+cat_zzz_bangboos: ""
+cat_zzz_w_engines: ""
+cat_zzz_drive_discs: ""
+search.agent_page.info: ""
+search.agent_page.skills: ""
+search.agent_page.cinemas: ""
+search.agent_page.placeholder: ""
+zzz.skill_type.placeholder: ""
+zzz.cinema.placeholder: ""
+zzz.engine.refinement_select.placeholder: ""
+dyk_discord_server_updates: ""
+dyk_discord_server_feedback: ""
+dyk_something_wrong: ""
+dyk_contact_me: ""
+dyk_donate_no_title: ""
+dyk_easter_egg1_no_title: ""
+dyk_team: ""
+dyk_disable: ""
+dyk_settings_lang: ""
+dyk_settings_theme: ""
+dyk_suggest_light: ""
+dyk_security: ""
+dyk_github: ""
+dyk_python: ""
+dyk_unreleased: ""
+dyk_team_card: ""
+title_dyk: ""
+new_zzz_temp: ""
+button_label_dyk: ""
+events_view_start_date_embed_field: ""
+events_view_end_date_embed_field: ""
+events_view_ann_select_placeholder: ""
+events_command_description: ""
+events_view_ann_type_select_placeholder: ""
+events_view_content_label: ""
+events_command_game_param_description: ""

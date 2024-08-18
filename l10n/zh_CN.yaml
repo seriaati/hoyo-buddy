@@ -49,10 +49,6 @@ action_in_cooldown_error_title: 操作冷却中
 add_account_button_label: 添加账号
 add_hoyolab_acc.embed.description: "1.通过邮箱和密码：最为推荐、最简单的方式。\n2.通过开发者工具：仅在电脑生效，如果你对第一种方式存有安全顾虑，该方式更安全些。\n3.通过JavaScript：过时的方式，不适用于大多数账号。可以在电脑或移动设备上的Google Chrome或者Microsoft Edge 使用。\n\n"
 add_hoyolab_acc.embed.title: 选择一个添加账号的方式
-add_miyoushe_acc.embed.description: "1. 透过改装过的米游社: 只有安卓装置可使用"
-add_miyoushe_acc.enter_mobile_number: 输入手机号
-add_miyoushe_acc.mobile_number: 手机号
-add_miyoushe_acc.with_mobile_number: 通过手机号
 adding_accounts_description: "欢迎来到Hoyo Buddy！只需要花费1分钟添加账号的时间，即可享受各种功能。\n关于账号安全，请阅读[Wiki页面](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security)，关于我们如何使用和收集你的数据，请阅读[隐私政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: 选择账号所属平台
 ai_gen_image_error_message: 请检查输入的提示并重试。
@@ -290,7 +286,6 @@ make_up_for_checkin_button_label: 补签
 materials: 材料
 memory_of_chaos: 混沌回忆
 miyoushe: 米游社
-mobile_instructions_description: "1.点击下方按钮输入手机号\n2.你将会收到短信验证码\n3.点击下方按钮填写验证码\n"
 moc_card_battles_fought: "战斗次数: {battles}"
 moc_card_cycles_used: "使用轮次: {cycles}"
 moc_card_farthest_stage: "最高关卡: {stage}"
@@ -402,12 +397,6 @@ pt_modal.title: 参量质变仪提醒设置
 public_account_toggle.label: 设置账户为公开
 pure_fiction: 虚构叙事
 pyro: 火
-qrcode_button_label: 通过二维码
-qrcode_confirmed.desc: 登录成功
-qrcode_expired.desc: 请刷新二维码后重试。
-qrcode_expired_title: 二维码已过期
-qrcode_login_instructions.desc: 使用米游社扫描下方二维码来登录
-qrcode_scanned.desc: 扫码成功。请在装备上同意登录。
 quantum: 量子
 read_story.button.label: 阅读故事
 real_time_notes: 实时便笺
@@ -509,11 +498,6 @@ characters.show_owned_only: 仅显示已拥有的角色
 redeem_code.ar_too_low: 冒险等级过低
 data_not_public.title: 资料不公开
 data_not_public.description: "在战绩设定中打开资料分享的选项\nhttps://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/DataNotPublicTutorial.gif"
-modded_app_button_label: 透过改装过的米游社 app
-modded_app_login_instructions.desc: "1. 如果你的装置上已经有米游社的应用程序，请将它卸载。\n2. 点击下方的按钮下载改装过的应用程序档案。\n3. 安装该应用程序，并启动它。\n4. 忽略任何更新视窗，登入你的帐户。\n5. 点击「我的」并点击钥匙图案。\n6. 点击「复制登入信息」。\n7. 点击下方的「{label}」按钮并将复制的登入信息贴上。"
-download_app_button_label: 下载应用程序
-login_detail_modal.input_label: 登入信息
-enter_login_details_button_label: 输入登入信息
 not_implemented_error_title: 功能尚未实装
 not_implemented_error_only_game_message: "此功能尚未在 `{game}` 账户上实装。"
 not_implemented_error_message: "此功能尚未在 `{platform}` 上的 `{game}` 帐户上实装。"

@@ -36,7 +36,6 @@ account_autocomplete_param_description: "Account om deze commando mee uit te voe
 account_autocomplete_param_name: account
 account_deleted_description: "{account} is verwijderd."
 account_deleted_title: Account Verwijderd
-account_game: Spel
 account_manager_footer: De geselecteerde account wordt standaard gebruikt voor alle commandos
 account_manager_no_accounts_description: Je hebt nog geen accounts.
 account_manager_title: Account Manager
@@ -50,10 +49,6 @@ action_in_cooldown_error_title: Actie in Cooldown
 add_account_button_label: Accounts toegoeven
 add_hoyolab_acc.embed.description: "1. Met email en wachtwoord: wordt het meest aanbevolen, het is het gemakkelijkst.\n2. Met DevTools: Werkt alleen op desktop, een veiligere optie als je je zorgen maakt over de beveiliging met de eerste\n3. Met JavaScript: Verouderde methode, werkt niet voor de meeste accounts. Werkt op Google Chrome of Microsoft Edge op zowel desktop als mobiel\n\n"
 add_hoyolab_acc.embed.title: Selecteer een Methode om je Accounts toe te Voegen
-add_miyoushe_acc.embed.description: ""
-add_miyoushe_acc.enter_mobile_number: Voer Telefoonnummer in
-add_miyoushe_acc.mobile_number: Telefoonnummer
-add_miyoushe_acc.with_mobile_number: Met telefoonnummer
 adding_accounts_description: "Welkom bij Hoyo Buddy! Geniet van verschillende functies door minder dan 1 minuut te besteden aan het toevoegen van je accounts.\n\nWat betreft accountbeveiliging, lees de [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Selecteer het Platform van je Account
 ai_gen_image_error_message: Controleer je prompt en probeer het opnieuw.
@@ -86,7 +81,6 @@ character_embed_description: "{rarity}★  {element}\nBirthday: {birthday}\nCons
 character_passives_page_label: ""
 character_profile_page_label: Profiel
 character_quotes_page_label: Citaten
-character_skills_page_label: ""
 character_stories_page_label: Verhalen
 character_talents_page_label: Talenten
 character_voices_page_label: Stemmen
@@ -140,7 +134,6 @@ cryo: Cryo
 daily_button.label: Dagelijkse herinnering
 daily_check_in: ""
 daily_checkin_embed_description: "Ingecheckt op {day} dag(en) deze maand\nInchecken gemist voor {missed} dag(en)\n"
-daily_checkin_embed_title: Dagelijks Inchecken
 daily_modal.title: Instellingen Dagelijkse Herinnering
 daily_training_button.label: Dagelijkse Trainings Herinnering
 dark_mode_button_label: Donkere modus
@@ -150,11 +143,8 @@ destruction: Destruction
 devtools_button_label: Met DevTools (alleen desktop)
 devtools_instructions_description: "1. Inloggen op [HoYoLAB](https://www.hoyolab.com/home) of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN spelers)\n2. Open de DevTools door op F12 of Ctrl+Shift+I te drukken\n3. Druk op het >> pictogram op de bovenste navigatiebalk\n4. Klik op het tabblad `Toepassing\n5. Klik op `Kookies` in de linker zijbalk\n6. Klik op de website waar je bent (bijv. https://www.hoyolab.com)\n7. Typ `v2` in het vak `Filter`\n8. Klik op de knop hieronder\n9. Kopieer de `waarde` van elk cookie en plak ze in de vakjes\n"
 dice_cost_embed_field_name: Kosten Dobbelstenen
-domain-type.characters: Karakters
-domain-type.weapons: Wapens
 download_image_failed_error_message: "Kan afbeelding {url} met status code {status}niet downloaden.\nProbeer het later nog eens, probeer het met een andere afbeelding of controleer of de URL van de afbeelding geldig is."
 download_image_failed_error_title: Afbeelding Downloaden Mislukte
-edit_nickname_button_label: Bijnaam wijzigen
 edit_nickname_modal_title: Bijnaam bewerken
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
@@ -287,7 +277,6 @@ invalid_verification_code_title: Ongeldige Verificatiecode
 items: Items
 javascript_button_label: Met JavaScript
 javascript_instructions_description: "<:INFO:1166743144889602190> Opmerking: Deze methode zou moeten werken voor alle grote browsers op desktop, maar op mobiel werkt het alleen voor **Chrome** en **Edge**.\n\n1. Log in op [HoYoLAB](https://www.hoyolab.com/home) of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN spelers).\n2. Kopieer de onderstaande code\n3. Klik op de adresbalk en typ `java`\n4. Plak de code en druk op enter. Zorg ervoor dat er **Geen spaties** staan tussen `java` en `script`\n5. Selecteer alles en kopieer de tekst die verschijnt\n6. Klik op de knop hieronder en plak de tekst in het vak\n"
-level_label: Niveau
 level_str: "Nv.{level}"
 light_cones: Licht Kegels
 living_beings: Levende Wezens
@@ -297,7 +286,6 @@ make_up_for_checkin_button_label: Opmaken voor inchecken
 materials: Materialen
 memory_of_chaos: ""
 miyoushe: Miyoushe
-mobile_instructions_description: "1. Klik op de knop hieronder om je telefoonnummer in te voeren\n2. Je ontvangt een verificatiecode via sms\n3. Klik op de knop hieronder om de verificatiecode in te voeren\n"
 moc_card_battles_fought: ""
 moc_card_cycles_used: ""
 moc_card_farthest_stage: ""
@@ -357,7 +345,6 @@ primogems: primogems
 process_notify_error.content: ""
 profile.add_image.button.label: Afbeelding toevoegen
 profile.add_image_modal.image_url.label: Afbeelding URL
-profile.add_image_modal.title: Afbeelding Toevoegen
 profile.build.select.placeholder: ""
 profile.card_info.embed.description: "- Alle assets die gebruikt zijn in de kaarten behoren toe aan Hoyoverse, ik bezit ze niet.\n- Alle fanarts die gebruikt zijn in de kaarten zijn gecrediteerd aan hun respectievelijke artiesten.\n- De ontwerpen van de Hoyo Buddy sjablonen zijn origineel, je mag ze niet aanpassen of beweren dat je ze gemaakt hebt zonder mijn toestemming.\n- Spelgegevens worden geleverd door {provider}.\n"
 profile.card_info.embed.title: Over Karakter Build Kaarten
@@ -376,7 +363,6 @@ profile.character_select.enka_network.description: ""
 profile.character_select.hoyolab.description: ""
 profile.character_select.live_data.description: Real-time gegevens
 profile.character_select.placeholder: Selecteer een karakter
-profile.dark_mode.button.label: Donkere Modus
 profile.generate_ai_art.button.label: Genereer AI kunst
 profile.generate_ai_art_modal.negative_prompt.label: Negatieve Prompt
 profile.generate_ai_art_modal.prompt.label: Prompt
@@ -388,7 +374,6 @@ profile.image_select.none.label: Officiële kunst
 profile.image_select.placeholder: Selecteer een afbeelding
 profile.info.embed.custom_images.name: Afbeeldingen
 profile.info.embed.custom_images.value: "- Hoyo Buddy wordt geleverd met een aantal vooraf ingestelde afbeeldingen die ik leuk vond, maar je kunt ook je eigen afbeeldingen toevoegen.\n- Alleen directe URL's van afbeeldingen worden ondersteund en ze moeten publiek toegankelijk zijn; GIF's worden niet ondersteund.\n- Voor de sjablonen van Hoyo Buddy worden verticale afbeeldingen aanbevolen.\n- Voor server eigenaren, ik ben niet verantwoordelijk voor NSFW afbeeldingen die jij of je leden toevoegen.\n- De rode knop verwijdert de huidige aangepaste afbeelding en keert terug naar de standaardafbeelding."
-profile.info.embed.dark_mode.name: Donkere Modus
 profile.info.embed.dark_mode.value: ""
 profile.info.embed.primary_color.name: Primaire Kleur
 profile.info.embed.primary_color.value: "- Alleen hex kleurcodes worden ondersteund."
@@ -412,12 +397,6 @@ pt_modal.title: Instellingen Parametric Transformer Herinnering
 public_account_toggle.label: Account instellen als publiek
 pure_fiction: ""
 pyro: Pyro
-qrcode_button_label: Met QR code
-qrcode_confirmed.desc: Succesvol ingelogd
-qrcode_expired.desc: ""
-qrcode_expired_title: ""
-qrcode_login_instructions.desc: Scan de QR code hieronder met je Miyoushe app om in te loggen.
-qrcode_scanned.desc: De QR code is succesvol gescand. Bevestig de login op je apparaat.
 quantum: Quantum
 read_story.button.label: ""
 real_time_notes: ""
@@ -487,7 +466,6 @@ toggle_off_text: "uit"
 toggle_on_text: "op"
 traditional_chinese_server: Traditioneel Chinees Server
 try_other_method_error_message: "Probeer andere methoden om in te loggen.\nAls je cookies handmatig invoert via DevTools, zorg er dan voor dat je ze correct kopieert."
-try_other_method_error_title: Ongeldige Cookies
 tuesday: Dinsdag
 unreleased_content: ""
 user_autocomplete_param_description: "Gebruiker om de accounts mee te doorzoeken, standaard jezelf"
@@ -510,7 +488,6 @@ yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}
 yatta_character_skill_energy_field_name: Energie
 yatta_character_skill_energy_generation_field_value: "Generation: {energy_generation}"
 yatta_character_skill_energy_need_field_value: "Kost: {energy_need}"
-yatta_character_skill_page_label: Vaardigheden
 yatta_character_skill_single_weakness_break_field_value: "Single: {single_weakness_break}"
 yatta_character_skill_spread_weakness_break_field_value: "Verspreid: {spread_weakness_break}"
 yatta_character_skill_weakness_break_field_name: Zwakte Breuk
@@ -521,11 +498,6 @@ characters.show_owned_only: ""
 redeem_code.ar_too_low: ""
 data_not_public.title: ""
 data_not_public.description: ""
-modded_app_button_label: ""
-modded_app_login_instructions.desc: ""
-download_app_button_label: ""
-login_detail_modal.input_label: ""
-enter_login_details_button_label: ""
 not_implemented_error_title: ""
 not_implemented_error_only_game_message: ""
 not_implemented_error_message: ""
@@ -605,3 +577,43 @@ card_settings.color_default: ""
 card_settings.current_image: ""
 profile.redraw_card_button_label: ""
 card_settings.footer: ""
+profile.team_dark_mode.button.label: ""
+profile.character_select.multi.placeholder: ""
+zzz_search.agent_info: ""
+cat_zzz_agents: ""
+cat_zzz_bangboos: ""
+cat_zzz_w_engines: ""
+cat_zzz_drive_discs: ""
+search.agent_page.info: ""
+search.agent_page.skills: ""
+search.agent_page.cinemas: ""
+search.agent_page.placeholder: ""
+zzz.skill_type.placeholder: ""
+zzz.cinema.placeholder: ""
+zzz.engine.refinement_select.placeholder: ""
+dyk_discord_server_updates: ""
+dyk_discord_server_feedback: ""
+dyk_something_wrong: ""
+dyk_contact_me: ""
+dyk_donate_no_title: ""
+dyk_easter_egg1_no_title: ""
+dyk_team: ""
+dyk_disable: ""
+dyk_settings_lang: ""
+dyk_settings_theme: ""
+dyk_suggest_light: ""
+dyk_security: ""
+dyk_github: ""
+dyk_python: ""
+dyk_unreleased: ""
+dyk_team_card: ""
+title_dyk: ""
+new_zzz_temp: ""
+button_label_dyk: ""
+events_view_start_date_embed_field: ""
+events_view_end_date_embed_field: ""
+events_view_ann_select_placeholder: ""
+events_command_description: ""
+events_view_ann_type_select_placeholder: ""
+events_view_content_label: ""
+events_command_game_param_description: ""

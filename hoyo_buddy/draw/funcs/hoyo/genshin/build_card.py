@@ -8,6 +8,7 @@ from enka.gi import FightPropType
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.draw.funcs.hoyo.genshin.common import STATS_ORDER
 
 if TYPE_CHECKING:
     from enka.gi import Character
@@ -43,15 +44,7 @@ def draw_genshin_card(
     im.paste(character_im, (51, 34), character_im)
 
     # stats
-    fight_props_to_draw = [
-        FightPropType.FIGHT_PROP_MAX_HP,
-        FightPropType.FIGHT_PROP_CUR_DEFENSE,
-        FightPropType.FIGHT_PROP_CUR_ATTACK,
-        FightPropType.FIGHT_PROP_CRITICAL,
-        FightPropType.FIGHT_PROP_CRITICAL_HURT,
-        FightPropType.FIGHT_PROP_CHARGE_EFFICIENCY,
-        FightPropType.FIGHT_PROP_ELEMENT_MASTERY,
-    ]
+    fight_props_to_draw = list(STATS_ORDER).copy()
 
     add_hurt_fight_prop = character.highest_dmg_bonus_stat.type
     add_hurt_icon = drawer.open_asset(f"fight-props/{mode}_{add_hurt_fight_prop.name}.png")

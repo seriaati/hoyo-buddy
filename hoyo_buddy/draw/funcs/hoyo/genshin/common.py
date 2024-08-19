@@ -33,8 +33,8 @@ ELEMENT_COLORS: Final[dict[enka.gi.Element, str]] = {
 }
 STATS_ORDER: Final[tuple[enka.gi.FightPropType, ...]] = (
     enka.gi.FightPropType.FIGHT_PROP_MAX_HP,
-    enka.gi.FightPropType.FIGHT_PROP_DEFENSE,
-    enka.gi.FightPropType.FIGHT_PROP_ATTACK,
+    enka.gi.FightPropType.FIGHT_PROP_CUR_DEFENSE,
+    enka.gi.FightPropType.FIGHT_PROP_CUR_ATTACK,
     enka.gi.FightPropType.FIGHT_PROP_ELEMENT_MASTERY,
     enka.gi.FightPropType.FIGHT_PROP_CRITICAL,
     enka.gi.FightPropType.FIGHT_PROP_CRITICAL_HURT,

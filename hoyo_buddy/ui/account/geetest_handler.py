@@ -119,6 +119,9 @@ class GeetestHandler:
                 self._bot.login_notif_tasks.pop(self._user_id).cancel()
             return
 
+        user_id = int(notif.channel.split("_")[-1])
+        if user_id != self._user_id:
+            return
         user = await User.get(id=int(self._user_id))
 
         try:

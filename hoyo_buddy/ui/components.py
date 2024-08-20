@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import contextlib
 from typing import TYPE_CHECKING, Any, Generic, Self, TypeVar
 
@@ -17,10 +16,9 @@ from ..exceptions import InvalidInputError
 from ..l10n import LocaleStr, Translator
 
 if TYPE_CHECKING:
+    import asyncio
     import io
     from collections.abc import Sequence
-
-    from discord.ui.item import Item
 
     from ..types import Interaction, User
 
@@ -63,17 +61,6 @@ class View(discord.ui.View):
         return (
             f"{self.__class__.__module__.replace('hoyo_buddy.ui.', '')}.{self.__class__.__name__}"
         )
-
-    def _dispatch_item(self, item: Item, interaction: discord.Interaction[discord.Client]) -> None:
-        if self._View__stopped.done():  # pyright: ignore [reportAttributeAccessIssue]
-            return
-
-        task = asyncio.create_task(
-            self._scheduled_task(item, interaction),
-            name=f"discord-ui-view-dispatch-{self.id}-{self!r}",
-        )
-        self._tasks.add(task)
-        task.add_done_callback(self._tasks.discard)
 
     async def on_timeout(self) -> None:
         if self.message:

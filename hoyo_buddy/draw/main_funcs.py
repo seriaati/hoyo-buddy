@@ -562,7 +562,8 @@ async def draw_honkai_suits_card(
         for stig in suit.stigmata:
             urls.append(stig.icon)
 
-    await download_images(urls, "honkai-characters", draw_input.session)
+    await download_images(urls, "honkai-characters", draw_input.session, ignore_error=True)
+
     with timing("draw", tags={"type": "honkai_suits_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,

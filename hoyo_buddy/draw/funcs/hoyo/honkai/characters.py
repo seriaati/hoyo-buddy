@@ -34,9 +34,13 @@ def draw_small_suit_card(
         dark_mode=True,
     )
 
-    suit_icon = drawer.open_static(suit.tall_icon.replace(" ", ""), size=(146, 256))
-    suit_icon = drawer.mask_image_with_image(suit_icon, suit_mask)
-    im.paste(suit_icon, (0, 11), suit_icon)
+    try:
+        suit_icon = drawer.open_static(suit.tall_icon.replace(" ", ""), size=(146, 256))
+    except FileNotFoundError:
+        pass
+    else:
+        suit_icon = drawer.mask_image_with_image(suit_icon, suit_mask)
+        im.paste(suit_icon, (0, 11), suit_icon)
 
     weapon_icon = drawer.open_static(suit.weapon.icon)
     weapon_icon = drawer.resize_crop(weapon_icon, (75, 75))

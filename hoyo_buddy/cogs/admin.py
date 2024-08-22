@@ -55,7 +55,6 @@ class DMModalView(ui.View):
 class TaskView(ui.View):
     def __init__(self) -> None:
         super().__init__()
-        self._tasks: set[asyncio.Task] = set()
 
     async def interaction_check(self, i: Interaction) -> bool:
         return await i.client.is_owner(i.user)
@@ -63,31 +62,23 @@ class TaskView(ui.View):
     @ui.button(label="Daily check-in", style=ButtonStyle.blurple)
     async def daily_checkin(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Daily check-in task started.")
-        task = asyncio.create_task(DailyCheckin.execute(i.client))
-        self._tasks.add(task)
-        task.add_done_callback(self._tasks.discard)
+        asyncio.create_task(DailyCheckin.execute(i.client))
 
     @ui.button(label="Notes check", style=ButtonStyle.blurple)
     async def notes_check(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Notes check task started.")
-        task = asyncio.create_task(NotesChecker.execute(i.client))
-        self._tasks.add(task)
-        task.add_done_callback(self._tasks.discard)
+        asyncio.create_task(NotesChecker.execute(i.client))
 
     @ui.button(label="Farm check", style=ButtonStyle.blurple)
     async def farm_check(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Farm check tasks started.")
         for uid_start in UID_STARTS:
-            task = asyncio.create_task(FarmChecker.execute(i.client, uid_start))
-            self._tasks.add(task)
-            task.add_done_callback(self._tasks.discard)
+            asyncio.create_task(FarmChecker.execute(i.client, uid_start))
 
     @ui.button(label="Auto redeem", style=ButtonStyle.blurple)
     async def auto_redeem(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Auto redeem task started.")
-        task = asyncio.create_task(AutoRedeem.execute(i.client))
-        self._tasks.add(task)
-        task.add_done_callback(self._tasks.discard)
+        asyncio.create_task(AutoRedeem.execute(i.client))
 
 
 class Admin(commands.Cog):
@@ -130,9 +121,7 @@ class Admin(commands.Cog):
         search_cog = self.bot.get_cog("Search")
 
         if isinstance(search_cog, Search):
-            task = asyncio.create_task(search_cog._setup_search_autocomplete_choices())
-            self._tasks.add(task)
-            task.add_done_callback(self._tasks.discard)
+            asyncio.create_task(search_cog._setup_search_autocomplete_choices())
         await message.edit(content="Search autocomplete update task started.")
 
     @commands.command(name="add-codes", aliases=["ac"])

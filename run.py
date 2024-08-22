@@ -27,6 +27,7 @@ from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.l10n import Translator
 from hoyo_buddy.logging import InterceptHandler
 from hoyo_buddy.models import Config
+from hoyo_buddy.utils import wrap_task_factory
 from hoyo_buddy.web_server.server import GeetestWebServer
 
 load_dotenv()
@@ -69,6 +70,8 @@ def init_sentry() -> None:
 
 
 async def main() -> None:
+    wrap_task_factory()
+
     pool = await asyncpg.create_pool(os.environ["DB_URL"])
     if pool is None:
         msg = "Failed to connect to database"
@@ -94,13 +97,8 @@ async def main() -> None:
             geetest_server = GeetestWebServer(translator=translator)
             api_server = BotAPI(bot)
 
-            tasks: set[asyncio.Task] = set()
-            task = asyncio.create_task(geetest_server.run())
-            tasks.add(task)
-            task.add_done_callback(tasks.discard)
-            task = asyncio.create_task(api_server.run())
-            tasks.add(task)
-            task.add_done_callback(tasks.discard)
+            asyncio.create_task(geetest_server.run())
+            asyncio.create_task(api_server.run())
 
             with bot.executor:
                 await bot.start(os.environ["DISCORD_TOKEN"])

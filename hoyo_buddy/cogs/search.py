@@ -43,15 +43,12 @@ class Search(commands.Cog):
             Game.ZZZ: list(hakushin.ZZZItemCategory),
         }
         self._beta_id_to_category: dict[str, str] = {}
-        self._tasks: set[asyncio.Task] = set()
 
     async def cog_load(self) -> None:
         if not self.bot.config.search_autocomplete:
             return
 
-        task = asyncio.create_task(self._setup_search_autocomplete_choices())
-        self._tasks.add(task)
-        task.add_done_callback(self._tasks.discard)
+        asyncio.create_task(self._setup_search_autocomplete_choices())
 
     async def _setup_search_autocomplete_choices(self) -> None:
         logger.info("Setting up search autocomplete choices")

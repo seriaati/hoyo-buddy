@@ -625,12 +625,8 @@ dependencies = [
     { name = "sentry-sdk" },
     { name = "seria-library", extra = ["files"] },
     { name = "tortoise-orm" },
+    { name = "uvloop", marker = "platform_system == 'Linux'" },
     { name = "yatta-py" },
-]
-
-[package.optional-dependencies]
-linux = [
-    { name = "uvloop" },
 ]
 
 [package.dev-dependencies]
@@ -666,7 +662,7 @@ requires-dist = [
     { name = "sentry-sdk", specifier = ">=2.13.0" },
     { name = "seria-library", extras = ["files"], specifier = ">=1.5.4" },
     { name = "tortoise-orm", specifier = ">=0.21.6" },
-    { name = "uvloop", marker = "extra == 'linux'", specifier = ">=0.20.0" },
+    { name = "uvloop", marker = "platform_system == 'Linux'", specifier = ">=0.20.0" },
     { name = "yatta-py", specifier = ">=1.3.8" },
 ]
 

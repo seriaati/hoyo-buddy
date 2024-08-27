@@ -29,6 +29,7 @@ dependencies = [
   "yatta-py>=1.3.8",
   "seria-library[files]>=1.5.4",
   "aerich>=0.7.2",
+  "uvloop>=0.20.0; platform_system == 'Linux'",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = "GPL-3.0-only"
@@ -36,11 +37,6 @@ name = "hoyo-buddy"
 readme = "README.md"
 requires-python = ">=3.11"
 version = "1.8.6"
-
-[project.optional-dependencies]
-linux = [
-  "uvloop>=0.20.0",
-]
 
 [build-system]
 build-backend = "hatchling.build"

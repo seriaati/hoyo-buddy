@@ -179,7 +179,7 @@ class FeatureNotImplementedError(HoyoBuddyError):
             LocaleStr(key="not_implemented_error_only_game_message", game=EnumStr(game))
             if platform is None
             else LocaleStr(
-                key="not_implemented_error_message", game=EnumStr(game), platform=EnumStr(platform)
+                key="not_implemented_error_message", game=EnumStr(game), platform=EnumStr(platform),
             )
         )
         super().__init__(title=LocaleStr(key="not_implemented_error_title"), message=message)

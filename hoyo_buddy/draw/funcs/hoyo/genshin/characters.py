@@ -122,7 +122,7 @@ def draw_small_gi_chara_card(
     locale: Locale,
 ) -> Image.Image:
     im = Drawer.open_image(
-        f"hoyo-buddy-assets/assets/gi-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png"
+        f"hoyo-buddy-assets/assets/gi-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png",
     )
 
     draw = ImageDraw.Draw(im)
@@ -138,11 +138,11 @@ def draw_small_gi_chara_card(
     )
     drawer.write(text, size=31, position=(236, 32), locale=locale, style="medium")
     drawer.write(
-        LevelStr(character.level), size=31, position=(236, 72), locale=locale, style="medium"
+        LevelStr(character.level), size=31, position=(236, 72), locale=locale, style="medium",
     )
 
     friend_textbbox = drawer.write(
-        str(character.friendship), size=18, position=(284, 151), anchor="mm"
+        str(character.friendship), size=18, position=(284, 151), anchor="mm",
     )
     talent_textbbox = drawer.write(talent_str, size=18, position=(405, 151), anchor="mm")
 
@@ -151,7 +151,7 @@ def draw_small_gi_chara_card(
     x_start = friend_textbbox[2] + space // 2 - size // 2
     y_start = friend_textbbox[1] + (friend_textbbox[3] - friend_textbbox[1]) // 2 - size // 2
     draw.ellipse(
-        (x_start, y_start, x_start + size, y_start + size), fill=WHITE if dark_mode else BLACK
+        (x_start, y_start, x_start + size, y_start + size), fill=WHITE if dark_mode else BLACK,
     )
 
     weapon_icon = drawer.open_static(character.weapon.icon, size=WEAPON_ICON_SIZES)

@@ -17,7 +17,7 @@ __all__ = ("draw_genshin_card",)
 
 
 def draw_genshin_card(
-    locale_: str, dark_mode: bool, character: Character, image_url: str, zoom: float
+    locale_: str, dark_mode: bool, character: Character, image_url: str, zoom: float,
 ) -> io.BytesIO:
     locale = Locale(locale_)
     mode = "dark" if dark_mode else "light"
@@ -25,11 +25,11 @@ def draw_genshin_card(
 
     # main card
     im: Image.Image = Drawer.open_image(
-        f"hoyo-buddy-assets/assets/gi-build-card/backgrounds/{mode}_{character.element.name.title()}.png"
+        f"hoyo-buddy-assets/assets/gi-build-card/backgrounds/{mode}_{character.element.name.title()}.png",
     )
     draw = ImageDraw.Draw(im)
     drawer = Drawer(
-        draw, folder="gi-build-card", dark_mode=dark_mode, locale=Locale.american_english
+        draw, folder="gi-build-card", dark_mode=dark_mode, locale=Locale.american_english,
     )
 
     # character image
@@ -101,7 +101,7 @@ def draw_genshin_card(
         sub_stat = weapon.stats[1]
         sub_x_offset = textbbox[2] + 20
         sub_stat_icon = drawer.open_asset(
-            f"fight-props/{mode}_{sub_stat.type.name}.png", size=(36, 36)
+            f"fight-props/{mode}_{sub_stat.type.name}.png", size=(36, 36),
         )
         im.paste(sub_stat_icon, (sub_x_offset, 220), sub_stat_icon)
         drawer.write(
@@ -114,7 +114,7 @@ def draw_genshin_card(
 
     text = f"R{weapon.refinement}"
     textbbox = drawer.write(
-        text, size=35, style="medium", position=(x_offset, 275), color=text_color
+        text, size=35, style="medium", position=(x_offset, 275), color=text_color,
     )
     drawer.write(
         f"Lv.{weapon.level}/{weapon.max_level}",
@@ -130,7 +130,7 @@ def draw_genshin_card(
     for index, const in enumerate(character.constellations):
         icon_color = (255, 255, 255) if dark_mode else (67, 67, 67)
         const_icon = drawer.open_static(
-            const.icon, size=(80, 80), mask_color=icon_color, opacity=1.0 if const.unlocked else 0.1
+            const.icon, size=(80, 80), mask_color=icon_color, opacity=1.0 if const.unlocked else 0.1,
         )
         im.paste(const_icon, (1025 + 137 * (index % 3), 380 + 106 * (index // 3)), const_icon)
 
@@ -193,7 +193,7 @@ def draw_genshin_card(
         # main stat
         main_stat = artifact.main_stat
         main_stat_icon = drawer.open_asset(
-            f"fight-props/{mode}_{main_stat.type.name}.png", size=(32, 32), mask_color=text_color
+            f"fight-props/{mode}_{main_stat.type.name}.png", size=(32, 32), mask_color=text_color,
         )
         textbbox = drawer.write(
             main_stat.formatted_value,

@@ -17,7 +17,7 @@ __all__ = ("draw_genshin_notes_card",)
 
 
 def draw_genshin_notes_card(
-    notes: Notes, locale_: str, translator: Translator, dark_mode: bool
+    notes: Notes, locale_: str, translator: Translator, dark_mode: bool,
 ) -> BytesIO:
     filename = f"{'dark' if dark_mode else 'light'}-gi"
     locale = Locale(locale_)
@@ -41,7 +41,7 @@ def draw_genshin_notes_card(
         locale=locale,
     )
     drawer.write(
-        f"{notes.current_resin}/{notes.max_resin}", size=60, position=(110, 460), style="medium"
+        f"{notes.current_resin}/{notes.max_resin}", size=60, position=(110, 460), style="medium",
     )
 
     drawer.write(

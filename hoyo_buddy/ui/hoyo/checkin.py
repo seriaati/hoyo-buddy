@@ -65,7 +65,7 @@ class CheckInUI(View):
                 Button(
                     url=CHECK_IN_URLS[self.client.game],
                     label=LocaleStr(key="make_up_for_checkin_button_label"),
-                )
+                ),
             )
         self.add_item(AutoCheckInToggle(self.account.daily_checkin))
         self.add_item(NotificationSettingsButton())
@@ -143,7 +143,7 @@ class CheckInUI(View):
 
     async def start(self, i: Interaction) -> None:
         embed, self._bytes_obj = await self.get_embed_and_image(
-            i.client.session, i.client.executor, i.client.loop
+            i.client.session, i.client.executor, i.client.loop,
         )
 
         self._bytes_obj.seek(0)
@@ -168,7 +168,7 @@ class CheckInButton(Button[CheckInUI]):
         daily_reward = await client.claim_daily_reward()
 
         embed, self.view._bytes_obj = await self.view.get_embed_and_image(
-            i.client.session, i.client.executor, i.client.loop
+            i.client.session, i.client.executor, i.client.loop,
         )
 
         self.view._bytes_obj.seek(0)
@@ -176,7 +176,7 @@ class CheckInButton(Button[CheckInUI]):
 
         await i.edit_original_response(embed=embed, attachments=[file_])
         embed = client.get_daily_reward_embed(
-            daily_reward, self.view.locale, self.view.translator, blur=True
+            daily_reward, self.view.locale, self.view.translator, blur=True,
         )
         await i.followup.send(embed=embed)
 
@@ -212,10 +212,10 @@ class NotificationSettingsButton(Button[CheckInUI]):
         self.view.clear_items()
         self.view.add_item(go_back_button)
         self.view.add_item(
-            NotifyOnFailureToggle(self.view.account.notif_settings.notify_on_checkin_failure)
+            NotifyOnFailureToggle(self.view.account.notif_settings.notify_on_checkin_failure),
         )
         self.view.add_item(
-            NotifyOnSuccessToggle(self.view.account.notif_settings.notify_on_checkin_success)
+            NotifyOnSuccessToggle(self.view.account.notif_settings.notify_on_checkin_success),
         )
         await i.response.edit_message(view=self.view)
 
@@ -230,7 +230,7 @@ class NotifyOnFailureToggle(ToggleButton[CheckInUI]):
     async def callback(self, i: Interaction) -> Any:
         await super().callback(i)
         await AccountNotifSettings.filter(account=self.view.account).update(
-            notify_on_checkin_failure=self.current_toggle
+            notify_on_checkin_failure=self.current_toggle,
         )
 
 
@@ -244,5 +244,5 @@ class NotifyOnSuccessToggle(ToggleButton[CheckInUI]):
     async def callback(self, i: Interaction) -> Any:
         await super().callback(i)
         await AccountNotifSettings.filter(account=self.view.account).update(
-            notify_on_checkin_success=self.current_toggle
+            notify_on_checkin_success=self.current_toggle,
         )

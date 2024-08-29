@@ -73,7 +73,7 @@ class GITempTwoBuildCard:
         )
         text_im = Image.new("RGBA", (tbox.width, tbox.height * 2))
         text_im_drawer = Drawer(
-            ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode
+            ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode,
         )
         text_im_drawer.write(
             f"Lv.{character.level}",
@@ -93,7 +93,7 @@ class GITempTwoBuildCard:
 
         # Name
         size = drawer.calc_dynamic_fontsize(
-            self._english_name, 935, 251, drawer._get_font(251, "light", gothic=True)
+            self._english_name, 935, 251, drawer._get_font(251, "light", gothic=True),
         )
         tbox = drawer.write(
             self._english_name,
@@ -105,7 +105,7 @@ class GITempTwoBuildCard:
         )
         text_im = Image.new("RGBA", (tbox.width, tbox.height))
         text_im_drawer = Drawer(
-            ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode
+            ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode,
         )
         text_im_drawer.write(
             self._english_name,
@@ -212,7 +212,7 @@ class GITempTwoBuildCard:
                 color=color_1,
             )
             stat2_icon = drawer.open_asset(
-                f"stats/{stat2.type}.png", mask_color=color_1, size=(35, 35)
+                f"stats/{stat2.type}.png", mask_color=color_1, size=(35, 35),
             )
             stat2_icon_x = stat2_tbox.left - 50
             stat2_icon_y = stat2_tbox.top + (stat2_tbox.height - stat2_icon.height) // 2
@@ -303,7 +303,7 @@ class GITempTwoBuildCard:
             ss_start_pos = (start_pos[0] + 39, start_pos[1] + 212)
             for j, sub_stat in enumerate(artifact.sub_stats):
                 icon = drawer.open_asset(
-                    f"stats/{sub_stat.type}.png", size=(35, 35), mask_color=color_3
+                    f"stats/{sub_stat.type}.png", size=(35, 35), mask_color=color_3,
                 )
                 im.alpha_composite(icon, ss_start_pos)
                 drawer.write(

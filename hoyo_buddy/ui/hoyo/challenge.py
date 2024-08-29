@@ -90,7 +90,7 @@ class BuffView(View):
                 n1_buff = floor.node_1.buff
                 if n1_buff is not None:
                     team_str = LocaleStr(key="challenge_view.team", team=1).translate(
-                        self.translator, self.locale
+                        self.translator, self.locale,
                     )
 
                     floor_name = get_floor_difficulty(floor.name, self._season.name)
@@ -101,7 +101,7 @@ class BuffView(View):
                 n2_buff = floor.node_2.buff
                 if n2_buff is not None:
                     team_str = LocaleStr(key="challenge_view.team", team=2).translate(
-                        self.translator, self.locale
+                        self.translator, self.locale,
                     )
 
                     floor_name = get_floor_difficulty(floor.name, self._season.name)
@@ -113,7 +113,7 @@ class BuffView(View):
                 act_buffs = list(act.wondroud_booms) + list(act.mystery_caches)
                 for buff in act_buffs:
                     act_name = LocaleStr(
-                        key="img_theater_act_block_title", act=act.round_id
+                        key="img_theater_act_block_title", act=act.round_id,
                     ).translate(self.translator, self.locale)
                     buff_usage[buff.name].append(act_name)
                     if buff.name not in buffs:
@@ -210,24 +210,24 @@ class ChallengeView(View):
         for previous in (False, True):
             if self.challenge_type is ChallengeType.SPIRAL_ABYSS:
                 challenge = await client.get_genshin_spiral_abyss(
-                    self._account.uid, previous=previous
+                    self._account.uid, previous=previous,
                 )
                 if not challenge.ranks:
                     await client.get_record_cards()
                     challenge = await client.get_genshin_spiral_abyss(
-                        self._account.uid, previous=previous
+                        self._account.uid, previous=previous,
                     )
             elif self.challenge_type is ChallengeType.MOC:
                 challenge = await client.get_starrail_challenge(
-                    self._account.uid, previous=previous
+                    self._account.uid, previous=previous,
                 )
             elif self.challenge_type is ChallengeType.PURE_FICTION:
                 challenge = await client.get_starrail_pure_fiction(
-                    self._account.uid, previous=previous
+                    self._account.uid, previous=previous,
                 )
             elif self.challenge_type is ChallengeType.APC_SHADOW:
                 challenge = await client.get_starrail_apc_shadow(
-                    self._account.uid, previous=previous
+                    self._account.uid, previous=previous,
                 )
             elif self.challenge_type is ChallengeType.IMG_THEATER:
                 challenge = (
@@ -404,11 +404,11 @@ class PhaseSelect(Select[ChallengeView]):
                         label=history.name,
                         description=history.duration_str,
                         value=str(history.season_id),
-                    )
+                    ),
                 )
             else:
                 options.append(
-                    SelectOption(label=history.duration_str, value=str(history.season_id))
+                    SelectOption(label=history.duration_str, value=str(history.season_id)),
                 )
         self.options = options
 
@@ -446,7 +446,7 @@ class ChallengeTypeSelect(Select[ChallengeView]):
             raise
 
         histories = await ChallengeHistory.filter(
-            uid=self.view._account.uid, challenge_type=self.view.challenge_type
+            uid=self.view._account.uid, challenge_type=self.view.challenge_type,
         )
         for history in histories:
             self.view._challenge_cache[self.view.challenge_type][history.season_id] = (

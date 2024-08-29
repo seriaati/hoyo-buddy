@@ -124,7 +124,7 @@ async def draw_hsr_build_card(
 
 
 async def draw_hsr_notes_card(
-    draw_input: DrawInput, notes: StarRailNote, translator: Translator
+    draw_input: DrawInput, notes: StarRailNote, translator: Translator,
 ) -> BytesIO:
     await download_images(
         [exped.item_url for exped in notes.expeditions],
@@ -199,7 +199,7 @@ async def draw_gi_build_card(
 
 
 async def draw_gi_notes_card(
-    draw_input: DrawInput, notes: GenshinNote, translator: Translator
+    draw_input: DrawInput, notes: GenshinNote, translator: Translator,
 ) -> BytesIO:
     await download_images(
         [exped.character_icon for exped in notes.expeditions],
@@ -219,7 +219,7 @@ async def draw_gi_notes_card(
 
 
 async def draw_farm_card(
-    draw_input: DrawInput, farm_data: list[FarmData], translator: Translator
+    draw_input: DrawInput, farm_data: list[FarmData], translator: Translator,
 ) -> File:
     image_urls = (
         [r.icon for data in farm_data for r in data.domain.rewards]
@@ -355,7 +355,7 @@ async def draw_exploration_card(
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.genshin.ExplorationCard(
-                user, draw_input.dark_mode, draw_input.locale.value, translator
+                user, draw_input.dark_mode, draw_input.locale.value, translator,
             ).draw,
         )
     buffer.seek(0)
@@ -395,7 +395,7 @@ async def draw_pure_fiction_card(
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.hsr.pure_fiction.PureFictionCard(
-                data, season, draw_input.locale.value, translator
+                data, season, draw_input.locale.value, translator,
             ).draw,
         )
     buffer.seek(0)
@@ -416,7 +416,7 @@ async def draw_apc_shadow_card(
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.hsr.apc_shadow.APCShadowCard(
-                data, season, draw_input.locale.value, translator
+                data, season, draw_input.locale.value, translator,
             ).draw,
         )
     buffer.seek(0)
@@ -437,7 +437,7 @@ async def draw_img_theater_card(
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.genshin.ImgTheaterCard(
-                data, chara_consts, draw_input.locale.value, translator
+                data, chara_consts, draw_input.locale.value, translator,
             ).draw,
         )
 
@@ -463,7 +463,7 @@ async def draw_zzz_notes_card(
 
 
 async def fetch_zzz_draw_data(
-    agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2]
+    agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2],
 ) -> ZZZDrawData:
     agent_full_names: dict[str, AgentNameData] = {}
 
@@ -553,7 +553,7 @@ async def draw_zzz_characters_card(
 
 
 async def draw_honkai_suits_card(
-    draw_input: DrawInput, suits: Sequence[FullBattlesuit], translator: Translator
+    draw_input: DrawInput, suits: Sequence[FullBattlesuit], translator: Translator,
 ) -> File:
     urls: list[str] = []
     for suit in suits:

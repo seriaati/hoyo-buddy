@@ -58,7 +58,7 @@ class TCGCardUI(View):
             if card.talents:
                 for talent in card.talents:
                     self.talent_embeds[talent.id] = api.get_tcg_card_talent_embed(
-                        talent, card.dictionaries
+                        talent, card.dictionaries,
                     )
             if card.dictionaries:
                 self.dictionary_embed = api.get_tcg_card_dictionaries_embed(card.dictionaries)

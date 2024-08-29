@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 
 class GeetestCommand:
     def __init__(
-        self, bot: HoyoBuddy, i: Interaction, account: HoyoAccount, type_: GeetestType
+        self, bot: HoyoBuddy, i: Interaction, account: HoyoAccount, type_: GeetestType,
     ) -> None:
         self._bot = bot
         self._interaction = i
@@ -49,7 +49,7 @@ class GeetestCommand:
             self._bot.login_notif_tasks.pop(i.user.id).cancel()
 
         listener = asyncpg_listen.NotificationListener(
-            asyncpg_listen.connect_func(os.environ["DB_URL"])
+            asyncpg_listen.connect_func(os.environ["DB_URL"]),
         )
         listener_name = f"geetest_{GeetestNotifyType.COMMAND.value}_{self._user_id}"
         self._bot.login_notif_tasks[i.user.id] = asyncio.create_task(
@@ -89,7 +89,7 @@ class GeetestCommand:
                         "challenge": result["geetest_challenge"],
                         "seccode": result["geetest_seccode"],
                         "validate": result["geetest_validate"],
-                    }
+                    },
                 )
                 embed = client.get_daily_reward_embed(reward, self._locale, translator, blur=True)
             else:
@@ -112,7 +112,7 @@ class GeetestCommand:
     async def run(self) -> None:
         if self._account.platform is not Platform.HOYOLAB:
             raise FeatureNotImplementedError(
-                platform=self._account.platform, game=self._account.game
+                platform=self._account.platform, game=self._account.game,
             )
 
         i = self._interaction

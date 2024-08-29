@@ -45,7 +45,7 @@ class AutoRedeem:
 
         try:
             embed = await account.client.redeem_codes(
-                codes, locale=locale, translator=cls._bot.translator, inline=True, blur=False
+                codes, locale=locale, translator=cls._bot.translator, inline=True, blur=False,
             )
             embed.set_footer(text=LocaleStr(key="auto_redeem_footer"))
         except Exception as e:
@@ -78,7 +78,7 @@ class AutoRedeem:
 
     @classmethod
     async def execute(
-        cls, bot: HoyoBuddy, game: genshin.Game | None = None, codes: list[str] | None = None
+        cls, bot: HoyoBuddy, game: genshin.Game | None = None, codes: list[str] | None = None,
     ) -> bool:
         """Redeem codes for accounts that have auto redeem enabled.
 
@@ -95,7 +95,7 @@ class AutoRedeem:
 
         async with cls._lock:
             logger.info(
-                f"Starting auto redeem task for game {game or 'all'} and codes {codes or 'from API'}"
+                f"Starting auto redeem task for game {game or 'all'} and codes {codes or 'from API'}",
             )
             cls._bot = bot
 
@@ -126,7 +126,7 @@ class AutoRedeem:
                     continue
 
                 await cls._redeem_codes(
-                    game_codes.get(HB_GAME_TO_GPY_GAME[account.game], []), account
+                    game_codes.get(HB_GAME_TO_GPY_GAME[account.game], []), account,
                 )
 
             logger.info("Auto redeem task completed")

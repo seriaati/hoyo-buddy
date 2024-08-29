@@ -14,7 +14,7 @@ DB_CONFIG = {
         "models": {
             "models": ["hoyo_buddy.db.models", "aerich.models"],
             "default_connection": "default",
-        }
+        },
     },
     "use_tz": False,
     "minsize": 1,

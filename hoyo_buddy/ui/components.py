@@ -177,8 +177,8 @@ class URLButtonView(discord.ui.View):
         super().__init__()
         self.add_item(
             discord.ui.Button(
-                label=translator.translate(label, locale) if label else None, url=url, emoji=emoji
-            )
+                label=translator.translate(label, locale) if label else None, url=url, emoji=emoji,
+            ),
         )
 
 
@@ -217,7 +217,7 @@ class Button(discord.ui.Button, Generic[V_co]):
     ) -> None:
         if self.locale_str_label:
             self.label = translator.translate(
-                self.locale_str_label, locale, capitalize_first_word=True
+                self.locale_str_label, locale, capitalize_first_word=True,
             )
 
     async def set_loading_state(self, i: Interaction, **kwargs: Any) -> None:
@@ -385,18 +385,18 @@ class Select(discord.ui.Select, Generic[V_co]):
     ) -> None:
         if self.locale_str_placeholder:
             self.placeholder = translator.translate(
-                self.locale_str_placeholder, locale, capitalize_first_word=True
+                self.locale_str_placeholder, locale, capitalize_first_word=True,
             )
         for option in self.options:
             # NOTE: This is a workaround for a bug(?) in discord.py where options somehow get converted to discord.components.SelectOption internally
             if not isinstance(option, SelectOption):  # pyright: ignore[reportUnnecessaryIsInstance]
                 continue
             option.label = translator.translate(
-                option.locale_str_label, locale, capitalize_first_word=True
+                option.locale_str_label, locale, capitalize_first_word=True,
             )
             if option.locale_str_description:
                 option.description = translator.translate(
-                    option.locale_str_description, locale, capitalize_first_word=True
+                    option.locale_str_description, locale, capitalize_first_word=True,
                 )
 
     async def set_loading_state(self, i: Interaction) -> None:
@@ -411,12 +411,12 @@ class Select(discord.ui.Select, Generic[V_co]):
         self.options = [
             SelectOption(
                 label=self.view.translator.translate(
-                    LocaleStr(key="loading_text"), self.view.locale
+                    LocaleStr(key="loading_text"), self.view.locale,
                 ),
                 value="loading",
                 default=True,
                 emoji=emojis.LOADING,
-            )
+            ),
         ]
         self.disabled = True
         self.max_values = 1
@@ -627,7 +627,7 @@ class Modal(discord.ui.Modal):
                         LocaleStr(
                             key="invalid_input.input_needs_to_be_int",
                             input=item.label,
-                        )
+                        ),
                     ) from e
                 if item.max_value is not None and value > item.max_value:
                     raise InvalidInputError(
@@ -635,7 +635,7 @@ class Modal(discord.ui.Modal):
                             key="invalid_input.input_out_of_range.max_value",
                             input=item.label,
                             max_value=item.max_value,
-                        )
+                        ),
                     )
                 if item.min_value is not None and value < item.min_value:
                     raise InvalidInputError(
@@ -643,12 +643,12 @@ class Modal(discord.ui.Modal):
                             key="invalid_input.input_out_of_range.min_value",
                             min_value=item.min_value,
                             input=item.label,
-                        )
+                        ),
                     )
             elif isinstance(item, TextInput) and item.is_bool:
                 if item.value not in {"0", "1"}:
                     raise InvalidInputError(
-                        LocaleStr(key="invalid_input.input_needs_to_be_bool", input=item.label)
+                        LocaleStr(key="invalid_input.input_needs_to_be_bool", input=item.label),
                     )
 
     @property

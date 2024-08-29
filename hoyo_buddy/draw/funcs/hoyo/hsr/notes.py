@@ -17,7 +17,7 @@ __all__ = ("draw_hsr_notes_card",)
 
 
 def draw_hsr_notes_card(
-    notes: StarRailNote, locale_: str, translator: Translator, dark_mode: bool
+    notes: StarRailNote, locale_: str, translator: Translator, dark_mode: bool,
 ) -> BytesIO:
     locale = Locale(locale_)
     filename = f"{'dark' if dark_mode else 'light'}-hsr"

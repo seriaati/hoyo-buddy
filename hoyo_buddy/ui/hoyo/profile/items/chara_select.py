@@ -114,7 +114,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                     description=description,
                     value=str(character.id),
                     emoji=emoji,
-                )
+                ),
             )
 
         super().__init__(

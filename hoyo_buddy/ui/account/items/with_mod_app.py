@@ -30,11 +30,11 @@ class WithModApp(Button["AccountManager"]):
             url="https://github.com/seriaati/hoyo-buddy",
         )
         embed.set_image(
-            url="https://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/MiyousheCopyLoginTutorial1.jpg"
+            url="https://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/MiyousheCopyLoginTutorial1.jpg",
         )
         embed2 = embed.copy()
         embed2.set_image(
-            url="https://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/MiyousheCopyLoginTutorial2.jpg"
+            url="https://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/MiyousheCopyLoginTutorial2.jpg",
         )
         return [embed, embed2]
 
@@ -46,7 +46,7 @@ class WithModApp(Button["AccountManager"]):
             Button(
                 label="下载应用程序",
                 url="https://github.com/PaiGramTeam/GetToken/releases/latest/download/miyoushe-361-lspatched.apk",
-            )
+            ),
         )
         self.view.add_item(EnterLoginDetails())
         await i.response.edit_message(embeds=self._instructions_embed, view=self.view)

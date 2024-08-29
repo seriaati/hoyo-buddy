@@ -23,7 +23,7 @@ class NAIClient(novelai.NAIClient):
         )
         try:
             images = await super().generate_image(
-                metadata, host=novelai.Host.CUSTOM, verbose=False, is_opus=False
+                metadata, host=novelai.Host.CUSTOM, verbose=False, is_opus=False,
             )
         except novelai.exceptions.NovelAIError as e:
             raise AIGenImageError from e

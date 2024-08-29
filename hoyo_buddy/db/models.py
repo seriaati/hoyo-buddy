@@ -55,7 +55,7 @@ class HoyoAccount(Model):
     cookies = fields.TextField()
     server = fields.CharField(max_length=32)
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
-        "models.User", related_name="accounts"
+        "models.User", related_name="accounts",
     )
     daily_checkin = fields.BooleanField(default=True)
     current = fields.BooleanField(default=False)
@@ -109,7 +109,7 @@ class HoyoAccount(Model):
     @property
     def platform(self) -> Platform:
         region = self.region or genshin.utility.recognize_region(
-            self.uid, HB_GAME_TO_GPY_GAME[self.game]
+            self.uid, HB_GAME_TO_GPY_GAME[self.game],
         )
         if region is None:
             return Platform.HOYOLAB
@@ -120,7 +120,7 @@ class AccountNotifSettings(Model):
     notify_on_checkin_failure = fields.BooleanField(default=True)
     notify_on_checkin_success = fields.BooleanField(default=True)
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
-        "models.HoyoAccount", related_name="notif_settings", pk=True
+        "models.HoyoAccount", related_name="notif_settings", pk=True,
     )
 
 
@@ -128,7 +128,7 @@ class Settings(Model):
     lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)
     dark_mode = fields.BooleanField(default=True)
     user: fields.OneToOneRelation[User] = fields.OneToOneField(
-        "models.User", related_name="settings", pk=True
+        "models.User", related_name="settings", pk=True,
     )
     gi_card_temp = fields.CharField(max_length=32, default="hb1")
     hsr_card_temp = fields.CharField(max_length=32, default="hb1")
@@ -144,7 +144,7 @@ class Settings(Model):
 class CardSettings(Model):
     character_id = fields.CharField(max_length=8)
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
-        "models.User", related_name="card_settings"
+        "models.User", related_name="card_settings",
     )
     dark_mode = fields.BooleanField()
     custom_images: fields.Field[list[str]] = fields.JSONField(default=[])
@@ -174,7 +174,7 @@ class NotesNotify(Model):
     type = fields.IntEnumField(NotesNotifyType)
     enabled = fields.BooleanField(default=True)
     account: fields.ForeignKeyRelation[HoyoAccount] = fields.ForeignKeyField(
-        "models.HoyoAccount", related_name="notifs"
+        "models.HoyoAccount", related_name="notifs",
     )
 
     last_notif_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
@@ -205,7 +205,7 @@ class NotesNotify(Model):
 class FarmNotify(Model):
     enabled = fields.BooleanField(default=True)
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
-        "models.HoyoAccount", related_name="farm_notifs", pk=True
+        "models.HoyoAccount", related_name="farm_notifs", pk=True,
     )
     item_ids: fields.Field[list[str]] = fields.JSONField(default=[])
 
@@ -268,7 +268,7 @@ class ChallengeHistory(Model):
 
     @classmethod
     async def add_data(
-        cls, uid: int, challenge_type: ChallengeType, season_id: int, data: Challenge
+        cls, uid: int, challenge_type: ChallengeType, season_id: int, data: Challenge,
     ) -> None:
         if isinstance(data, genshin.models.SpiralAbyss):
             start_time = data.start_time
@@ -296,7 +296,7 @@ class ChallengeHistory(Model):
             )
         except exceptions.IntegrityError:
             await cls.filter(uid=uid, season_id=season_id, challenge_type=challenge_type).update(
-                data=pickle.dumps(data), name=name
+                data=pickle.dumps(data), name=name,
             )
 
 

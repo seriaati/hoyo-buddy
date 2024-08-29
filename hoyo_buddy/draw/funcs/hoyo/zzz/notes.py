@@ -18,10 +18,10 @@ def get_nearest_battery_level(current: int, max_battery: int) -> int:
 
 
 def draw_zzz_notes(
-    notes: ZZZNotes, locale_: str, translator: Translator, dark_mode: bool
+    notes: ZZZNotes, locale_: str, translator: Translator, dark_mode: bool,
 ) -> BytesIO:
     battery_level = get_nearest_battery_level(
-        notes.battery_charge.current, notes.battery_charge.max
+        notes.battery_charge.current, notes.battery_charge.max,
     )
 
     filename = f"{'dark' if dark_mode else 'light'}_notes_{battery_level}"
@@ -73,7 +73,7 @@ def draw_zzz_notes(
     text = LocaleStr(
         key="scratch_card.incomplete"
         if not notes.scratch_card_completed
-        else "notes-card.gi.completed"
+        else "notes-card.gi.completed",
     )
 
     drawer.write(

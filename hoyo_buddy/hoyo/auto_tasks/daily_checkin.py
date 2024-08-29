@@ -57,7 +57,7 @@ class DailyCheckin:
             bot.capture_exception(e)
         finally:
             logger.info(
-                "Daily check-in finished, total check-in count: %d", cls._total_checkin_count
+                "Daily check-in finished, total check-in count: %d", cls._total_checkin_count,
             )
 
     @classmethod

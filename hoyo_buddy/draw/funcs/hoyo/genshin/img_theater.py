@@ -128,7 +128,7 @@ class ImgTheaterCard:
             block.paste(const_flair, (92, 0), const_flair)
             const_text = {
                 genshin.models.TheaterCharaType.NORMAL: str(
-                    self._chara_consts.get(character.id, "?")
+                    self._chara_consts.get(character.id, "?"),
                 ),
                 genshin.models.TheaterCharaType.SUPPORT: "?",
                 genshin.models.TheaterCharaType.TRIAL: "0",
@@ -173,7 +173,7 @@ class ImgTheaterCard:
 
         for i, act in enumerate(self._theater.acts):
             self._draw_act_block(
-                act, (start_pos[0] + i % 2 * x_padding, start_pos[1] + i // 2 * y_padding)
+                act, (start_pos[0] + i % 2 * x_padding, start_pos[1] + i // 2 * y_padding),
             )
 
         buffer = io.BytesIO()

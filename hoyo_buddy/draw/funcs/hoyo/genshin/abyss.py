@@ -35,7 +35,7 @@ class AbyssCard:
         return Locale(self._locale)
 
     def _draw_rank_pill(
-        self, chara: genshin.models.AbyssRankCharacter, title: LocaleStr
+        self, chara: genshin.models.AbyssRankCharacter, title: LocaleStr,
     ) -> Image.Image:
         textbbox = self._drawer.write(title, size=48, position=(0, 55), no_write=True)
         text_width = textbbox[2] - textbbox[0]
@@ -52,7 +52,7 @@ class AbyssCard:
         pill.paste(shadow, (7, 7), shadow)
         draw = ImageDraw.Draw(pill)
         draw.rounded_rectangle(
-            (0, 0, text_width + 170, 110), 100, fill=BLACK if self._dark_mode else WHITE
+            (0, 0, text_width + 170, 110), 100, fill=BLACK if self._dark_mode else WHITE,
         )
         drawer = Drawer(
             draw,

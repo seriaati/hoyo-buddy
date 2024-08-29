@@ -116,7 +116,7 @@ class GenshinClient(genshin.Client):
         await JSONFile.write("pc_icons.json", pc_icons)
 
     async def update_gi_chara_talent_levels(
-        self, characters: Sequence[genshin.models.Character]
+        self, characters: Sequence[genshin.models.Character],
     ) -> None:
         """Update multiple GI character talent levels.
 
@@ -163,7 +163,7 @@ class GenshinClient(genshin.Client):
         # Get talent order
         client = EnkaGIClient()
         talent_order = await client.get_character_talent_order(
-            self._convert_character_id_to_enka_format(character_id)
+            self._convert_character_id_to_enka_format(character_id),
         )
 
         # Get talent levels
@@ -205,7 +205,7 @@ class GenshinClient(genshin.Client):
                 name=character.equip.name,
                 max_level=hakushin.utils.get_max_level_from_ascension(
                     hakushin.utils.get_ascension_from_level(
-                        character.equip.level, True, hakushin.Game.HSR
+                        character.equip.level, True, hakushin.Game.HSR,
                     ),
                     hakushin.Game.HSR,
                 ),
@@ -315,12 +315,12 @@ class GenshinClient(genshin.Client):
 
     @overload
     async def get_zzz_agent_info(
-        self, character_id: Sequence[int]
+        self, character_id: Sequence[int],
     ) -> Sequence[genshin.models.ZZZFullAgent]: ...
     @overload
     async def get_zzz_agent_info(self, character_id: int) -> genshin.models.ZZZFullAgent: ...
     async def get_zzz_agent_info(
-        self, character_id: Sequence[int] | int
+        self, character_id: Sequence[int] | int,
     ) -> Sequence[genshin.models.ZZZFullAgent] | genshin.models.ZZZFullAgent:
         if isinstance(character_id, int):
             # Only do cache stuff when there is a single character
@@ -372,7 +372,7 @@ class GenshinClient(genshin.Client):
                 continue
 
             msg, success = await self.redeem_code(
-                code.strip(), locale=locale, translator=translator
+                code.strip(), locale=locale, translator=translator,
             )
             results.append((code, msg, success))
 
@@ -394,7 +394,7 @@ class GenshinClient(genshin.Client):
         return embed
 
     async def redeem_code(
-        self, code: str, *, locale: Locale, translator: Translator
+        self, code: str, *, locale: Locale, translator: Translator,
     ) -> tuple[str, bool]:
         """Redeem a code, return a message and a boolean indicating success."""
         success = False

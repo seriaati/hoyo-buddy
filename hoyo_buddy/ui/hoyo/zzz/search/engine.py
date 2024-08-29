@@ -39,7 +39,7 @@ class EngineSearchView(View):
 
     async def _fetch_data(self) -> None:
         async with hakushin.HakushinAPI(
-            hakushin.Game.ZZZ, locale_to_hakushin_lang(self.locale)
+            hakushin.Game.ZZZ, locale_to_hakushin_lang(self.locale),
         ) as api:
             self._engine = await api.fetch_weapon_detail(self._engine_id)
 

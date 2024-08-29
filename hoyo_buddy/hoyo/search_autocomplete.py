@@ -54,7 +54,7 @@ class AutocompleteSetup:
 
     @classmethod
     def _get_ambr_task(  # noqa: PLR0911
-        cls, api: ambr.AmbrAPIClient, category: ambr.ItemCategory, tg: asyncio.TaskGroup
+        cls, api: ambr.AmbrAPIClient, category: ambr.ItemCategory, tg: asyncio.TaskGroup,
     ) -> asyncio.Task[list[Any]] | None:
         match category:
             case ambr.ItemCategory.CHARACTERS:
@@ -84,7 +84,7 @@ class AutocompleteSetup:
 
     @classmethod
     def _get_yatta_task(
-        cls, api: yatta.YattaAPIClient, category: yatta.ItemCategory, tg: asyncio.TaskGroup
+        cls, api: yatta.YattaAPIClient, category: yatta.ItemCategory, tg: asyncio.TaskGroup,
     ) -> asyncio.Task[list[Any]]:
         match category:
             case yatta.ItemCategory.CHARACTERS:
@@ -100,7 +100,7 @@ class AutocompleteSetup:
 
     @classmethod
     def _get_hakushin_gi_task(  # noqa: PLR0911
-        cls, api: hakushin.clients.GIClient, category: HakushinItemCategory, tg: asyncio.TaskGroup
+        cls, api: hakushin.clients.GIClient, category: HakushinItemCategory, tg: asyncio.TaskGroup,
     ) -> asyncio.Task[list[Any]] | None:
         match category:
             case HakushinItemCategory.GI_CHARACTERS:
@@ -114,7 +114,7 @@ class AutocompleteSetup:
 
     @classmethod
     def _get_hakushin_hsr_task(
-        cls, api: hakushin.clients.HSRClient, category: HakushinItemCategory, tg: asyncio.TaskGroup
+        cls, api: hakushin.clients.HSRClient, category: HakushinItemCategory, tg: asyncio.TaskGroup,
     ) -> asyncio.Task[list[Any]] | None:
         match category:
             case HakushinItemCategory.HSR_CHARACTERS:
@@ -128,7 +128,7 @@ class AutocompleteSetup:
 
     @classmethod
     def _get_hakushin_zzz_task(
-        cls, api: hakushin.clients.ZZZClient, category: ZZZItemCategory, tg: asyncio.TaskGroup
+        cls, api: hakushin.clients.ZZZClient, category: ZZZItemCategory, tg: asyncio.TaskGroup,
     ) -> asyncio.Task[list[Any]]:
         match category:
             case ZZZItemCategory.AGENTS:
@@ -222,7 +222,7 @@ class AutocompleteSetup:
 
     @classmethod
     def _add_to_beta_results(
-        cls, game: Game, category: ItemCategory, locale: Locale, items: list[Any]
+        cls, game: Game, category: ItemCategory, locale: Locale, items: list[Any],
     ) -> None:
         beta_ids = cls._category_beta_ids.get((game, category), [])
 
@@ -236,7 +236,7 @@ class AutocompleteSetup:
 
     @classmethod
     async def start(
-        cls, translator: Translator, session: aiohttp.ClientSession
+        cls, translator: Translator, session: aiohttp.ClientSession,
     ) -> tuple[AutocompleteChoices, dict[str, str], BetaAutocompleteChoices]:
         cls._translator = translator
 

@@ -121,7 +121,7 @@ class NotesView(View):
 
         if self._account.game is Game.GENSHIN:
             resin_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.RESIN
+                account=self._account, type=NotesNotifyType.RESIN,
             )
             embed.add_field(
                 name=LocaleStr(key="resin_reminder_button.label"),
@@ -130,7 +130,7 @@ class NotesView(View):
             )
 
             realm_currency_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.REALM_CURRENCY
+                account=self._account, type=NotesNotifyType.REALM_CURRENCY,
             )
             embed.add_field(
                 name=LocaleStr(key="realm_curr_button.label"),
@@ -139,7 +139,7 @@ class NotesView(View):
             )
 
             pt_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.PT
+                account=self._account, type=NotesNotifyType.PT,
             )
             embed.add_field(
                 name=LocaleStr(key="pt_button.label"),
@@ -148,7 +148,7 @@ class NotesView(View):
             )
 
             expedition_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.GI_EXPED
+                account=self._account, type=NotesNotifyType.GI_EXPED,
             )
             embed.add_field(
                 name=LocaleStr(key="exped_button.label"),
@@ -157,7 +157,7 @@ class NotesView(View):
             )
 
             daily_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.GI_DAILY
+                account=self._account, type=NotesNotifyType.GI_DAILY,
             )
             embed.add_field(
                 name=LocaleStr(key="daily_button.label"),
@@ -166,7 +166,7 @@ class NotesView(View):
             )
 
             resin_discount_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.RESIN_DISCOUNT
+                account=self._account, type=NotesNotifyType.RESIN_DISCOUNT,
             )
             embed.add_field(
                 name=LocaleStr(key="week_boss_button.label"),
@@ -176,7 +176,7 @@ class NotesView(View):
 
         elif self._account.game is Game.STARRAIL:
             tbp_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.TB_POWER
+                account=self._account, type=NotesNotifyType.TB_POWER,
             )
             embed.add_field(
                 name=LocaleStr(key="tbp_reminder_button.label"),
@@ -185,7 +185,7 @@ class NotesView(View):
             )
 
             reserved_tbp_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.RESERVED_TB_POWER
+                account=self._account, type=NotesNotifyType.RESERVED_TB_POWER,
             )
             embed.add_field(
                 name=LocaleStr(key="rtbp_reminder_button.label"),
@@ -194,7 +194,7 @@ class NotesView(View):
             )
 
             expedition_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.HSR_EXPED
+                account=self._account, type=NotesNotifyType.HSR_EXPED,
             )
             embed.add_field(
                 name=LocaleStr(key="exped_button.label"),
@@ -203,7 +203,7 @@ class NotesView(View):
             )
 
             daily_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.HSR_DAILY
+                account=self._account, type=NotesNotifyType.HSR_DAILY,
             )
             embed.add_field(
                 name=LocaleStr(key="daily_button.label"),
@@ -212,7 +212,7 @@ class NotesView(View):
             )
 
             echo_of_war_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.ECHO_OF_WAR
+                account=self._account, type=NotesNotifyType.ECHO_OF_WAR,
             )
             embed.add_field(
                 name=LocaleStr(key="week_boss_button.label"),
@@ -222,7 +222,7 @@ class NotesView(View):
 
         elif self._account.game is Game.ZZZ:
             battery_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.BATTERY
+                account=self._account, type=NotesNotifyType.BATTERY,
             )
             embed.add_field(
                 name=LocaleStr(key="battery_charge_button.label"),
@@ -231,7 +231,7 @@ class NotesView(View):
             )
 
             daily_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.ZZZ_DAILY
+                account=self._account, type=NotesNotifyType.ZZZ_DAILY,
             )
             embed.add_field(
                 name=LocaleStr(key="daily_button.label"),
@@ -240,7 +240,7 @@ class NotesView(View):
             )
 
             scratch_card_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.SCRATCH_CARD
+                account=self._account, type=NotesNotifyType.SCRATCH_CARD,
             )
             embed.add_field(
                 name=LocaleStr(key="scratch_card_button.label"),
@@ -249,7 +249,7 @@ class NotesView(View):
             )
 
             video_store_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.VIDEO_STORE
+                account=self._account, type=NotesNotifyType.VIDEO_STORE,
             )
             embed.add_field(
                 name=LocaleStr(key="video_store_button.label"),
@@ -259,7 +259,7 @@ class NotesView(View):
 
         else:
             raise FeatureNotImplementedError(
-                platform=self._account.platform, game=self._account.game
+                platform=self._account.platform, game=self._account.game,
             )
 
         embed.add_acc_info(self._account)
@@ -302,7 +302,7 @@ class NotesView(View):
                     "max_notif_count",
                     "enabled",
                     "est_time",
-                )
+                ),
             )
 
         return await self._get_reminder_embed()
@@ -365,7 +365,7 @@ class NotesView(View):
             notify.max_notif_count = max_notif_count
             notify.notify_time = notify_time
             await notify.save(
-                update_fields=("enabled", "notify_interval", "max_notif_count", "notify_time")
+                update_fields=("enabled", "notify_interval", "max_notif_count", "notify_time"),
             )
 
         return await self._get_reminder_embed()
@@ -408,7 +408,7 @@ class NotesView(View):
                     "max_notif_count",
                     "notify_time",
                     "notify_weekday",
-                )
+                ),
             )
 
         return await self._get_reminder_embed()
@@ -471,7 +471,7 @@ class NotesView(View):
         )
 
     def _get_notes_embed(
-        self, notes: genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes
+        self, notes: genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes,
     ) -> DefaultEmbed:
         descriptions: list[LocaleStr] = []
 
@@ -482,7 +482,7 @@ class NotesView(View):
                         key="notes.item_full_in_time",
                         emoji=RESIN,
                         in_time=format_dt(notes.resin_recovery_time, style="R"),
-                    )
+                    ),
                 )
             if notes.remaining_realm_currency_recovery_time.seconds > 0:
                 descriptions.append(
@@ -490,7 +490,7 @@ class NotesView(View):
                         key="notes.item_full_in_time",
                         emoji=REALM_CURRENCY,
                         in_time=format_dt(notes.realm_currency_recovery_time, style="R"),
-                    )
+                    ),
                 )
             if (
                 notes.remaining_transformer_recovery_time is not None
@@ -502,7 +502,7 @@ class NotesView(View):
                         key="notes_available",
                         emoji=PT_EMOJI,
                         in_time=format_dt(notes.transformer_recovery_time, style="R"),
-                    )
+                    ),
                 )
         elif isinstance(notes, genshin.models.ZZZNotes):
             if notes.battery_charge.seconds_till_full > 0:
@@ -511,7 +511,7 @@ class NotesView(View):
                         key="notes.item_full_in_time",
                         emoji=BATTERY_CHARGE_EMOJI,
                         in_time=format_dt(notes.battery_charge.full_datetime, style="R"),
-                    )
+                    ),
                 )
         else:  # StarRailNotes
             if notes.stamina_recover_time.seconds > 0:
@@ -520,7 +520,7 @@ class NotesView(View):
                         key="notes.item_full_in_time",
                         emoji=TRAILBLAZE_POWER,
                         in_time=format_dt(notes.stamina_recovery_time, style="R"),
-                    )
+                    ),
                 )
             if notes.have_bonus_synchronicity_points:
                 descriptions.append(
@@ -528,11 +528,11 @@ class NotesView(View):
                         key="notes.bonus_sync_points",
                         cur=notes.current_bonus_synchronicity_points,
                         max=notes.max_bonus_synchronicity_points,
-                    )
+                    ),
                 )
 
         translated_description = "\n".join(
-            [description.translate(self.translator, self.locale) for description in descriptions]
+            [description.translate(self.translator, self.locale) for description in descriptions],
         )
 
         return (
@@ -545,7 +545,7 @@ class NotesView(View):
         notes = await self._get_notes()
         embed = self._get_notes_embed(notes)
         self.bytes_obj = await self._draw_notes_card(
-            i.client.session, notes, i.client.executor, i.client.loop
+            i.client.session, notes, i.client.executor, i.client.loop,
         )
 
         self.bytes_obj.seek(0)
@@ -615,7 +615,7 @@ class ReminderButton(Button[NotesView]):
             self.view.add_item(VideoStoreReminder(row=1))
         else:
             raise FeatureNotImplementedError(
-                platform=self.view._account.platform, game=self.view._account.game
+                platform=self.view._account.platform, game=self.view._account.game,
             )
 
         embed = await self.view._get_reminder_embed()

@@ -66,7 +66,7 @@ class FarmView(View):
                 description=LocaleStr(key="farm_view.happy_farming"),
             )
             await i.edit_original_response(
-                embed=embed, view=self, attachments=[], content=await get_dyk(i)
+                embed=embed, view=self, attachments=[], content=await get_dyk(i),
             )
             self.message = await i.original_response()
             return
@@ -86,7 +86,7 @@ class FarmView(View):
         )
 
         await i.edit_original_response(
-            attachments=[file_], view=self, embed=None, content=await get_dyk(i)
+            attachments=[file_], view=self, embed=None, content=await get_dyk(i),
         )
         self.message = await i.original_response()
 
@@ -97,7 +97,7 @@ class WeekdaySelect(Select[FarmView]):
             placeholder=LocaleStr(key="farm_view.weekday_select.placeholder"),
             options=[
                 SelectOption(
-                    label=WeekdayStr(weekday), value=str(weekday), default=weekday == current
+                    label=WeekdayStr(weekday), value=str(weekday), default=weekday == current,
                 )
                 for weekday in WEEKDAYS
             ],

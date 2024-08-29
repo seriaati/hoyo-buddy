@@ -18,12 +18,12 @@ if TYPE_CHECKING:
 class RealmCurrencyReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
-            emoji=REALM_CURRENCY, label=LocaleStr(key="realm_curr_button.label"), row=row
+            emoji=REALM_CURRENCY, label=LocaleStr(key="realm_curr_button.label"), row=row,
         )
 
     async def callback(self, i: Interaction) -> None:
         notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.REALM_CURRENCY
+            account=self.view._account, type=NotesNotifyType.REALM_CURRENCY,
         )
 
         modal = TypeOneModal(

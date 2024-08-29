@@ -30,7 +30,7 @@ def draw_hsr_build_card(
 
     dark_primary = Drawer.blend_color(primary, WHITE if dark_mode else BLACK, 0.6)
     light_primary = Drawer.blend_color(
-        primary, BLACK if dark_mode else WHITE, 0.23 if dark_mode else 0.18
+        primary, BLACK if dark_mode else WHITE, 0.23 if dark_mode else 0.18,
     )
 
     im = Image.new("RGBA", (2244, 1297), primary)
@@ -136,7 +136,7 @@ def draw_hsr_build_card(
 
         # trace bubble
         icon = drawer.open_static(
-            trace.icon, size=(65, 65), mask_color=BLACK if dark_mode else WHITE
+            trace.icon, size=(65, 65), mask_color=BLACK if dark_mode else WHITE,
         )
         im.paste(trace_bk, (x, y), trace_bk)
         im.paste(icon, (x + 7, y + 4), icon)
@@ -155,7 +155,7 @@ def draw_hsr_build_card(
         main_bubble = main_bubbles[trace_id]
         if main_bubble:
             icon = drawer.open_static(
-                main_bubble.icon, size=(60, 60), mask_color=BLACK if dark_mode else WHITE
+                main_bubble.icon, size=(60, 60), mask_color=BLACK if dark_mode else WHITE,
             )
             draw.ellipse(
                 (circle_x, y, circle_x + circle_height, y + circle_height),
@@ -194,7 +194,7 @@ def draw_hsr_build_card(
             )
 
             icon = drawer.open_static(
-                sub_bubble.icon, size=(50, 50), mask_color=BLACK if dark_mode else WHITE
+                sub_bubble.icon, size=(50, 50), mask_color=BLACK if dark_mode else WHITE,
             )
             # place the icon in the middle of the circle
             icon_x = circle_x + (sub_circle_height - icon.width) // 2

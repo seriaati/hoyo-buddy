@@ -44,7 +44,7 @@ def draw_farm_card(
 
     for data in farm_data:
         basic_card: Image.Image = Drawer.open_image(
-            f"hoyo-buddy-assets/assets/farm/{mode}_card.png"
+            f"hoyo-buddy-assets/assets/farm/{mode}_card.png",
         )
         draw = ImageDraw.Draw(basic_card)
         drawer = Drawer(draw, folder="farm", dark_mode=dark_mode, translator=translator)
@@ -61,7 +61,7 @@ def draw_farm_card(
 
         draw = ImageDraw.Draw(basic_card)
         drawer = Drawer(
-            draw, folder="farm", dark_mode=dark_mode, translator=translator, locale=locale
+            draw, folder="farm", dark_mode=dark_mode, translator=translator, locale=locale,
         )
 
         drawer.write(

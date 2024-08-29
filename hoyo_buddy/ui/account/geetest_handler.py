@@ -71,7 +71,7 @@ class GeetestHandler:
         self._client = genshin.Client(
             region=genshin.Region.CHINESE
             if self._platform is Platform.MIYOUSHE
-            else genshin.Region.OVERSEAS
+            else genshin.Region.OVERSEAS,
         )
         return self._client
 
@@ -93,7 +93,7 @@ class GeetestHandler:
             self._bot.login_notif_tasks.pop(self._user_id).cancel()
 
         listener = asyncpg_listen.NotificationListener(
-            asyncpg_listen.connect_func(os.environ["DB_URL"])
+            asyncpg_listen.connect_func(os.environ["DB_URL"]),
         )
         listener_name = f"geetest_{GeetestNotifyType.LOGIN.value}_{self._user_id}"
         self._bot.login_notif_tasks[self._user_id] = asyncio.create_task(
@@ -135,7 +135,7 @@ class GeetestHandler:
                 if isinstance(result, genshin.models.ActionTicket):
                     # email verification required
                     email_result = await self.client._send_verification_email(
-                        result, mmt_result=genshin.models.SessionMMTResult(**user.temp_data)
+                        result, mmt_result=genshin.models.SessionMMTResult(**user.temp_data),
                     )
                     if isinstance(email_result, genshin.models.SessionMMT):
                         # geetest triggered for sending email verification code
@@ -152,7 +152,7 @@ class GeetestHandler:
                         )
                         handler.start_listener()
                         await self._view.prompt_user_to_solve_geetest(
-                            self._interaction, for_code=True
+                            self._interaction, for_code=True,
                         )
                     else:
                         await self._view.prompt_user_to_enter_email_code(
@@ -164,7 +164,7 @@ class GeetestHandler:
                 else:
                     # no email verification required
                     await self._view.finish_cookie_setup(
-                        result.to_dict(), platform=self._platform, interaction=self._interaction
+                        result.to_dict(), platform=self._platform, interaction=self._interaction,
                     )
             elif isinstance(self._data, SendEmailCodeData):
                 # geetest was triggered for sending email verification code
@@ -185,7 +185,7 @@ class GeetestHandler:
                     mmt_result=genshin.models.SessionMMTResult(**user.temp_data),
                 )
                 await self._view.prompt_user_to_enter_mobile_otp(
-                    self._interaction, self._data.mobile
+                    self._interaction, self._data.mobile,
                 )
         except Exception as e:
             embed, recognized = get_error_embed(e, self._view.locale, self._view.translator)

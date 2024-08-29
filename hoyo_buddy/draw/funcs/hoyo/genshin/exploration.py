@@ -38,7 +38,7 @@ class ExplorationCard:
         return self._drawer.open_asset(f"{name}_shadow.png")
 
     def _write_title(
-        self, text: LocaleStr | str, *, position: tuple[int, int], drawer: Drawer
+        self, text: LocaleStr | str, *, position: tuple[int, int], drawer: Drawer,
     ) -> None:
         drawer.write(
             text,
@@ -48,7 +48,7 @@ class ExplorationCard:
         )
 
     def _write_small_text(
-        self, text: LocaleStr | str, *, position: tuple[int, int], drawer: Drawer
+        self, text: LocaleStr | str, *, position: tuple[int, int], drawer: Drawer,
     ) -> None:
         drawer.write(
             text,
@@ -63,7 +63,7 @@ class ExplorationCard:
 
     def _get_offering_text(self, exploration: Exploration | None) -> str:
         level_str = LevelStr(
-            0 if exploration is None else exploration.offerings[0].level
+            0 if exploration is None else exploration.offerings[0].level,
         ).translate(self._translator, self.locale)
         if exploration is None:
             return f"{self._placeholder}: {level_str}"
@@ -372,7 +372,7 @@ class ExplorationCard:
     def draw(self) -> BytesIO:
         mode_str = "dark" if self._dark_mode else "light"
         self._im = Drawer.open_image(
-            f"hoyo-buddy-assets/assets/gi-exploration/background_{mode_str}.png"
+            f"hoyo-buddy-assets/assets/gi-exploration/background_{mode_str}.png",
         )
         draw = ImageDraw.Draw(self._im)
         self._drawer = Drawer(

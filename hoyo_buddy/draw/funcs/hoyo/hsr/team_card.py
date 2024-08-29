@@ -273,7 +273,7 @@ class HSRTeamCard:
                 border_width,
                 lc_icon.width - border_width,
                 lc_icon.height - border_width,
-            )
+            ),
         )
         lc_icon = drawer.resize_crop(lc_icon, (128, 178))
         lc_icon = drawer.mask_image_with_image(lc_icon, lc_mask)

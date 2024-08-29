@@ -38,7 +38,7 @@ class Metrics(commands.Cog):
                             parameters=parameters,
                         )
                         sentry_sdk.metrics.incr(
-                            "commands.executed", tags={"command": i.command.name}
+                            "commands.executed", tags={"command": i.command.name},
                         )
                     else:
                         logger.info(

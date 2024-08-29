@@ -58,7 +58,7 @@ def draw_small_suit_card(
 
     rarities = {1: "B", 2: "A", 3: "S", 4: "SS", 5: "SSS"}
     rarity_text = LocaleStr(key="honkai_suit_rarity", rarity=rarities[suit.rarity]).translate(
-        translator, Locale(locale)
+        translator, Locale(locale),
     )
     level_text = LevelStr(suit.level).translate(translator, Locale(locale))
     drawer.write(

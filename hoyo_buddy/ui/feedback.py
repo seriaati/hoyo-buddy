@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 class FeedbackView(View):
     def __init__(
-        self, *, author: User | Member | None, locale: Locale, translator: Translator
+        self, *, author: User | Member | None, locale: Locale, translator: Translator,
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.add_item(FeedbackButton())
@@ -25,7 +25,7 @@ class FeedbackView(View):
 
 class FeedbackModal(Modal):
     feedback = TextInput(
-        label=LocaleStr(key="feedback_modal.feedback.label"), style=TextStyle.paragraph
+        label=LocaleStr(key="feedback_modal.feedback.label"), style=TextStyle.paragraph,
     )
 
 

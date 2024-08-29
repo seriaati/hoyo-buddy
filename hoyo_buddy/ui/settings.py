@@ -83,7 +83,7 @@ class LanguageSelector(Select["SettingsUI"]):
                 value="auto",
                 emoji="🏳️",
                 default=not current_locale,
-            )
+            ),
         ]
         options.extend(
             [
@@ -94,7 +94,7 @@ class LanguageSelector(Select["SettingsUI"]):
                     default=locale == current_locale,
                 )
                 for locale in HOYO_BUDDY_LOCALES
-            ]
+            ],
         )
         return options
 

@@ -43,7 +43,7 @@ class Others(commands.Cog):
     @app_commands.command(
         name=locale_str("feedback"),
         description=locale_str(
-            "Give feedback to the bot's developer", key="feedback_command_description"
+            "Give feedback to the bot's developer", key="feedback_command_description",
         ),
     )
     async def feedback_command(self, i: Interaction) -> Any:
@@ -71,7 +71,7 @@ class Others(commands.Cog):
         await i.response.defer(ephemeral=ephemeral(i))
 
         guild = self.bot.get_guild(1000727526194298910) or await i.client.fetch_guild(
-            1000727526194298910
+            1000727526194298910,
         )
         if not guild.chunked:
             await guild.chunk()
@@ -153,14 +153,14 @@ class Others(commands.Cog):
                 url="https://dsc.gg/hoyo-buddy",
                 emoji=DISCORD_WHITE_ICON,
                 row=0,
-            )
+            ),
         )
         view.add_item(
             Button(
                 label=LocaleStr(key="about_command.website"),
                 url="https://seria.is-a.dev/hoyo-buddy",
                 row=1,
-            )
+            ),
         )
         if self.bot.user is not None:
             view.add_item(
@@ -168,21 +168,21 @@ class Others(commands.Cog):
                     label=LocaleStr(key="about_command.invite"),
                     url=f"https://discord.com/oauth2/authorize?client_id={self.bot.user.id}",
                     row=1,
-                )
+                ),
             )
         view.add_item(
             Button(
                 label=LocaleStr(key="about_command.support"),
                 url="https://buymeacoffee.com/seria",
                 row=1,
-            )
+            ),
         )
         view.add_item(
             Button(
                 label=LocaleStr(key="about_command.contribute"),
                 url="https://github.com/seriaati/hoyo-buddy/blob/main/CONTRIBUTING.md",
                 row=1,
-            )
+            ),
         )
 
         # brand image
@@ -193,7 +193,7 @@ class Others(commands.Cog):
         embed.set_image(url="attachment://brand.png")
 
         view.message = await i.edit_original_response(
-            embed=embed, attachments=[image_], view=view, content=await get_dyk(i)
+            embed=embed, attachments=[image_], view=view, content=await get_dyk(i),
         )
 
 

@@ -101,18 +101,18 @@ class CharacterUI(View):
             manual_weapon = await api.fetch_manual_weapon()
 
         async with hakushin.HakushinAPI(
-            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
+            hakushin.Game.GI, locale_to_hakushin_lang(self.locale),
         ) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
         return self._hakushin_translator.get_character_embed(
-            character_detail, self.character_level, manual_weapon
+            character_detail, self.character_level, manual_weapon,
         )
 
     async def fetch_hakushin_skill_embed(
         self,
     ) -> tuple[DefaultEmbed, list[hakushin.gi.CharacterSkill]]:
         async with hakushin.HakushinAPI(
-            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
+            hakushin.Game.GI, locale_to_hakushin_lang(self.locale),
         ) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
 
@@ -126,7 +126,7 @@ class CharacterUI(View):
         self,
     ) -> tuple[DefaultEmbed, list[hakushin.gi.CharacterPassive]]:
         async with hakushin.HakushinAPI(
-            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
+            hakushin.Game.GI, locale_to_hakushin_lang(self.locale),
         ) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             passive = character_detail.passives[self.passive_index]
@@ -139,7 +139,7 @@ class CharacterUI(View):
         self,
     ) -> tuple[DefaultEmbed, list[hakushin.gi.CharacterConstellation]]:
         async with hakushin.HakushinAPI(
-            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
+            hakushin.Game.GI, locale_to_hakushin_lang(self.locale),
         ) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             const = character_detail.constellations[self.const_index]
@@ -160,13 +160,13 @@ class CharacterUI(View):
             case 0:
                 embed = await self.fetch_character_embed()
                 self.add_item(
-                    EnterCharacterLevel(label=LocaleStr(key="change_character_level_label"))
+                    EnterCharacterLevel(label=LocaleStr(key="change_character_level_label")),
                 )
             case 1:
                 embed, upgradeable, talents = await self.fetch_talent_embed()
                 if upgradeable:
                     self.add_item(
-                        EnterTalentLevel(label=LocaleStr(key="change_talent_level_label"))
+                        EnterTalentLevel(label=LocaleStr(key="change_talent_level_label")),
                     )
 
                 options: list[SelectOption] = []
@@ -185,7 +185,7 @@ class CharacterUI(View):
                             label=label,
                             value=str(index),
                             default=index == self.talent_index,
-                        )
+                        ),
                     )
                 self.add_item(ItemSelector(options, "talent_index"))
             case 2:
@@ -201,7 +201,7 @@ class CharacterUI(View):
                             for i, c in enumerate(consts)
                         ],
                         "const_index",
-                    )
+                    ),
                 )
             case 3:
                 embed, stories = await self.fetch_story_embed()
@@ -216,7 +216,7 @@ class CharacterUI(View):
                             for i, s in enumerate(stories)
                         ],
                         "story_index",
-                    )
+                    ),
                 )
             case 4:
                 embed, quotes = await self.fetch_quote_embed()
@@ -229,8 +229,8 @@ class CharacterUI(View):
                                 default=i == self.quote_index,
                             )
                             for i, q in enumerate(quotes)
-                        ]
-                    )
+                        ],
+                    ),
                 )
             case 5:
                 embed, skills = await self.fetch_hakushin_skill_embed()
@@ -249,8 +249,8 @@ class CharacterUI(View):
                     )
                     options.append(
                         SelectOption(
-                            label=label, value=str(index), default=index == self.skill_index
-                        )
+                            label=label, value=str(index), default=index == self.skill_index,
+                        ),
                     )
                 self.add_item(ItemSelector(options, "skill_index"))
             case 6:
@@ -266,7 +266,7 @@ class CharacterUI(View):
                             for i, p in enumerate(passives)
                         ],
                         "passive_index",
-                    )
+                    ),
                 )
             case 7:
                 embed, consts = await self.fetch_hakushin_const_embed()
@@ -281,12 +281,12 @@ class CharacterUI(View):
                             for i, c in enumerate(consts)
                         ],
                         "const_index",
-                    )
+                    ),
                 )
             case 8:
                 embed = await self.fetch_hakushin_character_embed()
                 self.add_item(
-                    EnterCharacterLevel(label=LocaleStr(key="change_character_level_label"))
+                    EnterCharacterLevel(label=LocaleStr(key="change_character_level_label")),
                 )
             case _:
                 msg = f"Invalid page index: {self.selected_page}"

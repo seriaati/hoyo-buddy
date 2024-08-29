@@ -70,7 +70,7 @@ class Search(commands.Cog):
     @app_commands.command(
         name=app_commands.locale_str("search"),
         description=app_commands.locale_str(
-            "Search anything game related", key="search_command_description"
+            "Search anything game related", key="search_command_description",
         ),
     )
     @app_commands.rename(
@@ -80,13 +80,13 @@ class Search(commands.Cog):
     )
     @app_commands.describe(
         game_value=app_commands.locale_str(
-            "Game to search in", key="search_command_game_param_description"
+            "Game to search in", key="search_command_game_param_description",
         ),
         category_value=app_commands.locale_str(
-            "Category to search in", key="search_command_category_param_description"
+            "Category to search in", key="search_command_category_param_description",
         ),
         query=app_commands.locale_str(
-            "Query to search for", key="search_command_query_param_description"
+            "Query to search for", key="search_command_query_param_description",
         ),
     )
     async def search_command(  # noqa: C901, PLR0911, PLR0912, PLR0914, PLR0915
@@ -231,7 +231,7 @@ class Search(commands.Cog):
 
                 case ambr.ItemCategory.TCG:
                     tcg_card_ui = gi_search.TCGCardUI(
-                        int(query), author=i.user, locale=locale, translator=i.client.translator
+                        int(query), author=i.user, locale=locale, translator=i.client.translator,
                     )
                     await tcg_card_ui.start(i)
 
@@ -276,7 +276,7 @@ class Search(commands.Cog):
 
                 case yatta.ItemCategory.BOOKS:
                     book_ui = hsr_search.BookUI(
-                        query, author=i.user, locale=locale, translator=i.client.translator
+                        query, author=i.user, locale=locale, translator=i.client.translator,
                     )
                     await book_ui.start(i)
 
@@ -334,7 +334,7 @@ class Search(commands.Cog):
                     await i.response.defer(ephemeral=ephemeral(i))
                     translator = hakushin.HakushinTranslator(locale, i.client.translator)
                     async with hakushin_api.HakushinAPI(
-                        hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)
+                        hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale),
                     ) as api:
                         disc = await api.fetch_bangboo_detail(bangboo_id)
                     embed = translator.get_bangboo_embed(disc)
@@ -346,7 +346,7 @@ class Search(commands.Cog):
                         raise InvalidQueryError from e
 
                     view = zzz_search.EngineSearchView(
-                        engine_id, author=i.user, locale=locale, translator=i.client.translator
+                        engine_id, author=i.user, locale=locale, translator=i.client.translator,
                     )
                     await view.start(i)
                 case hakushin.ZZZItemCategory.DRIVE_DISCS:
@@ -358,7 +358,7 @@ class Search(commands.Cog):
                     await i.response.defer(ephemeral=ephemeral(i))
                     translator = hakushin.HakushinTranslator(locale, i.client.translator)
                     async with hakushin_api.HakushinAPI(
-                        hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)
+                        hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale),
                     ) as api:
                         disc = await api.fetch_drive_disc_detail(disc_id)
                     embed = translator.get_disc_embed(disc)
@@ -366,16 +366,16 @@ class Search(commands.Cog):
 
     @search_command.autocomplete("game_value")
     async def search_command_game_autocomplete(
-        self, i: Interaction, current: str
+        self, i: Interaction, current: str,
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
         return self.bot.get_enum_autocomplete(
-            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current
+            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current,
         )
 
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
-        self, i: Interaction, current: str
+        self, i: Interaction, current: str,
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
         try:
@@ -385,12 +385,12 @@ class Search(commands.Cog):
 
         categories = self._search_categories[game]
         return self.bot.get_enum_autocomplete(
-            [BetaItemCategory.UNRELEASED_CONTENT, *categories], locale, current
+            [BetaItemCategory.UNRELEASED_CONTENT, *categories], locale, current,
         )
 
     @search_command.autocomplete("query")
     async def search_command_query_autocomplete(  # noqa: PLR0912, PLR0911
-        self, i: Interaction, current: str
+        self, i: Interaction, current: str,
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
         try:
@@ -400,7 +400,7 @@ class Search(commands.Cog):
 
         if not self.bot.autocomplete_choices or game not in self.bot.autocomplete_choices:
             return self.bot.get_error_autocomplete(
-                LocaleStr(key="search_autocomplete_not_setup"), locale
+                LocaleStr(key="search_autocomplete_not_setup"), locale,
             )
 
         if i.namespace.category == BetaItemCategory.UNRELEASED_CONTENT.value:
@@ -411,7 +411,7 @@ class Search(commands.Cog):
                     choice_dict = self.bot.beta_autocomplete_choices[game][Locale.american_english]
                 except KeyError:
                     return self.bot.get_error_autocomplete(
-                        LocaleStr(key="search_autocomplete_no_results"), locale
+                        LocaleStr(key="search_autocomplete_no_results"), locale,
                     )
         else:
             try:
@@ -423,11 +423,11 @@ class Search(commands.Cog):
                     category = hakushin.ZZZItemCategory(i.namespace.category)
                 else:
                     return self.bot.get_error_autocomplete(
-                        LocaleStr(key="invalid_game_selected"), locale
+                        LocaleStr(key="invalid_game_selected"), locale,
                     )
             except ValueError:
                 return self.bot.get_error_autocomplete(
-                    LocaleStr(key="invalid_category_selected"), locale
+                    LocaleStr(key="invalid_category_selected"), locale,
                 )
 
             # Special handling for spiral abyss
@@ -443,7 +443,7 @@ class Search(commands.Cog):
                     ]
                 except KeyError:
                     return self.bot.get_error_autocomplete(
-                        LocaleStr(key="search_autocomplete_no_results"), locale
+                        LocaleStr(key="search_autocomplete_no_results"), locale,
                     )
 
         choices = [
@@ -454,7 +454,7 @@ class Search(commands.Cog):
 
         if not choices:
             return self.bot.get_error_autocomplete(
-                LocaleStr(key="search_autocomplete_no_results"), locale
+                LocaleStr(key="search_autocomplete_no_results"), locale,
             )
 
         random.shuffle(choices)

@@ -128,7 +128,7 @@ class GeetestWebServer:
                 web.get("/mmt", self.mmt_endpoint),
                 web.post("/send-data", self.send_data_endpoint),
                 web.get("/redirect", self.redirect),
-            ]
+            ],
         )
 
         runner = web.AppRunner(app)

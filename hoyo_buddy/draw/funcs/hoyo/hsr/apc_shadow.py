@@ -171,10 +171,10 @@ class APCShadowCard:
             pos = (pos[0] + 62, pos[1])
 
         defeated_text = LocaleStr(key="apc_shadow.boss_defeated").translate(
-            self._translator, self.locale
+            self._translator, self.locale,
         )
         not_defeated_text = LocaleStr(key="apc_shadow.boss_defeated_no").translate(
-            self._translator, self.locale
+            self._translator, self.locale,
         )
 
         if stage.node_1.boss_defeated and stage.node_2.boss_defeated:

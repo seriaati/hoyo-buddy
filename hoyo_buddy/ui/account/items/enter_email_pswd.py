@@ -30,7 +30,7 @@ class EmailVerificationCodeModal(Modal):
 
 class EnterEmailVerificationCode(Button["AccountManager"]):
     def __init__(
-        self, email: str, password: str, action_ticket: genshin.models.ActionTicket
+        self, email: str, password: str, action_ticket: genshin.models.ActionTicket,
     ) -> None:
         super().__init__(
             label=LocaleStr(key="email-verification-code.button.label"),
@@ -44,7 +44,7 @@ class EnterEmailVerificationCode(Button["AccountManager"]):
 
     async def callback(self, i: Interaction) -> Any:
         modal = EmailVerificationCodeModal(
-            title=LocaleStr(key="email-verification-code.button.label")
+            title=LocaleStr(key="email-verification-code.button.label"),
         )
         modal.translate(self.view.locale, i.client.translator)
         await i.response.send_modal(modal)
@@ -57,12 +57,12 @@ class EnterEmailVerificationCode(Button["AccountManager"]):
         code = modal.code.value
 
         client = genshin.Client(
-            region=genshin.Region.OVERSEAS  # CN doesn't have email verification
+            region=genshin.Region.OVERSEAS,  # CN doesn't have email verification
         )
         await client._verify_email(code, genshin.models.ActionTicket(**user.temp_data))
         result = await client._app_login(self._email, self._password, ticket=self._action_ticket)
         await self.view.finish_cookie_setup(
-            result.to_dict(), platform=Platform.HOYOLAB, interaction=i
+            result.to_dict(), platform=Platform.HOYOLAB, interaction=i,
         )
 
 
@@ -102,7 +102,7 @@ class EnterEmailPassword(Button["AccountManager"]):
         client = genshin.Client(
             region=genshin.Region.CHINESE
             if self._platform is Platform.MIYOUSHE
-            else genshin.Region.OVERSEAS
+            else genshin.Region.OVERSEAS,
         )
         result = (
             await client._app_login(email, password)
@@ -121,7 +121,7 @@ class EnterEmailPassword(Button["AccountManager"]):
             handler.start_listener()
 
             await self.view.prompt_user_to_solve_geetest(
-                i, for_code=False, gt_version=3 if self._platform is Platform.HOYOLAB else 4
+                i, for_code=False, gt_version=3 if self._platform is Platform.HOYOLAB else 4,
             )
         elif isinstance(result, genshin.models.ActionTicket):
             email_result = await client._send_verification_email(result)
@@ -138,9 +138,9 @@ class EnterEmailPassword(Button["AccountManager"]):
                 return await self.view.prompt_user_to_solve_geetest(i, for_code=True)
 
             await self.view.prompt_user_to_enter_email_code(
-                i, email=email, password=password, action_ticket=result
+                i, email=email, password=password, action_ticket=result,
             )
         else:
             await self.view.finish_cookie_setup(
-                result.to_dict(), platform=self._platform, interaction=i
+                result.to_dict(), platform=self._platform, interaction=i,
             )

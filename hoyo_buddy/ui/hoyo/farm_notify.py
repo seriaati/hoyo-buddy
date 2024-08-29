@@ -56,10 +56,10 @@ class FarmNotifyView(PaginatorView):
                         key="page_footer",
                         current_page=i + 1,
                         total_pages=len(self._split_item_ids),
-                    )
+                    ),
                 )
                 .add_acc_info(farm_notify.account)
-                .set_image(url="attachment://farm_notify.webp")
+                .set_image(url="attachment://farm_notify.webp"),
             )
             for i in range(len(self._split_item_ids))
         ]
@@ -186,5 +186,5 @@ class NotifyToggle(ToggleButton[FarmNotifyView]):
         await super().callback(i, edit=True)
         await self.view._notify.fetch_related("account")
         await FarmNotify.filter(account_id=self.view._notify.account.id).update(
-            enabled=self.current_toggle
+            enabled=self.current_toggle,
         )

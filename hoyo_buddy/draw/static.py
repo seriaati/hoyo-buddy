@@ -32,7 +32,7 @@ async def download_image_task(
         if resp.status != 200:
             if ZZZ_GAME_RECORD in image_url:
                 image_url = image_url.replace(
-                    ZZZ_GAME_RECORD, ZZZ_GAME_RECORD.replace("zzz", "nap")
+                    ZZZ_GAME_RECORD, ZZZ_GAME_RECORD.replace("zzz", "nap"),
                 )
                 return await download_image_task(image_url, file_path, session)
             if ignore_error:
@@ -61,5 +61,5 @@ async def download_images(
             if file_path.exists():
                 continue
             tg.create_task(
-                download_image_task(image_url, file_path, session, ignore_error=ignore_error)
+                download_image_task(image_url, file_path, session, ignore_error=ignore_error),
             )

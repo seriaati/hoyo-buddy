@@ -18,18 +18,18 @@ if TYPE_CHECKING:
 class BatteryReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
-            emoji=BATTERY_CHARGE_EMOJI, label=LocaleStr(key="battery_charge_button.label"), row=row
+            emoji=BATTERY_CHARGE_EMOJI, label=LocaleStr(key="battery_charge_button.label"), row=row,
         )
 
     async def callback(self, i: Interaction) -> None:
         notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.BATTERY
+            account=self.view._account, type=NotesNotifyType.BATTERY,
         )
 
         modal = TypeOneModal(
             notify,
             title=LocaleStr(
-                key="reminder_modal.title", notify=LocaleStr(key="battery_charge_button.label")
+                key="reminder_modal.title", notify=LocaleStr(key="battery_charge_button.label"),
             ),
             threshold_max_value=240,
             min_notify_interval=10,

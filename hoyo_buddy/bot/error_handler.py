@@ -88,7 +88,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     (-9999,): {
         "title": LocaleStr(key="geetest.required"),
         "description": LocaleStr(
-            geetest_type=EnumStr(GeetestType.DAILY_CHECKIN), key="geetest.required.description"
+            geetest_type=EnumStr(GeetestType.DAILY_CHECKIN), key="geetest.required.description",
         ),
     },
 }
@@ -114,7 +114,7 @@ ENKA_ERROR_CONVERTER: dict[
 
 
 def get_error_embed(
-    error: Exception, locale: discord.Locale, translator: Translator
+    error: Exception, locale: discord.Locale, translator: Translator,
 ) -> tuple[ErrorEmbed, bool]:
     recognized = True
     embed = None

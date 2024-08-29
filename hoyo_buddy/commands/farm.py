@@ -69,7 +69,7 @@ class FarmCommand:
                 description=LocaleStr(key="farm_add_command.item_already_in_list_description"),
             )
             await self._interaction.followup.send(
-                embed=embed, ephemeral=ephemeral(self._interaction)
+                embed=embed, ephemeral=ephemeral(self._interaction),
             )
             return True
         return False

@@ -42,7 +42,7 @@ class PaginatorView(View):
     def _add_buttons(self) -> None:
         self.add_item(FirstButton(emoji=DOUBLE_LEFT, custom_id="first_page"))
         self.add_item(
-            PreviousButton(emoji=LEFT, style=ButtonStyle.blurple, custom_id="previous_page")
+            PreviousButton(emoji=LEFT, style=ButtonStyle.blurple, custom_id="previous_page"),
         )
         self.add_item(NextButton(emoji=RIGHT, style=ButtonStyle.blurple, custom_id="next_page"))
         self.add_item(LastButton(emoji=DOUBLE_RIGHT, custom_id="last_page"))
@@ -63,7 +63,7 @@ class PaginatorView(View):
         """Method to create a file for the current page. Implemented by subclasses."""
 
     async def _update_page(
-        self, i: Interaction, *, followup: bool = False, ephemeral: bool = False
+        self, i: Interaction, *, followup: bool = False, ephemeral: bool = False,
     ) -> None:
         if not i.response.is_done():
             await i.response.defer(ephemeral=ephemeral)
@@ -117,7 +117,7 @@ class PaginatorView(View):
         await self._update_page(i)
 
     async def start(
-        self, i: Interaction, *, followup: bool = False, ephemeral: bool = False
+        self, i: Interaction, *, followup: bool = False, ephemeral: bool = False,
     ) -> None:
         await self._update_page(i, followup=followup, ephemeral=ephemeral)
 

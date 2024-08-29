@@ -50,7 +50,7 @@ class FarmChecker:
 
     @classmethod
     async def _check_and_notify(
-        cls, item_id: str, items: list[CharacterOrWeapon], farm_notify: FarmNotify
+        cls, item_id: str, items: list[CharacterOrWeapon], farm_notify: FarmNotify,
     ) -> bool:
         for item in items:
             if str(item.id) == item_id:
@@ -97,7 +97,7 @@ class FarmChecker:
                     if len(item_id) == 5:
                         # weapon
                         notified_ = await cls._check_and_notify(
-                            item_id, farm_data.weapons, farm_notify
+                            item_id, farm_data.weapons, farm_notify,
                         )
                         if notified_:
                             notified.add(item_id)
@@ -105,7 +105,7 @@ class FarmChecker:
 
                     else:
                         notified_ = await cls._check_and_notify(
-                            item_id, farm_data.characters, farm_notify
+                            item_id, farm_data.characters, farm_notify,
                         )
                         if notified_:
                             notified.add(item_id)

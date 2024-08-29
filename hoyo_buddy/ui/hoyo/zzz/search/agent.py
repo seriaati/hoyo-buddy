@@ -54,7 +54,7 @@ class AgentSearchView(View):
         self.clear_items()
         if self._page in {"skills", "core"}:
             self.add_item(
-                SkillSelect(list(self._agent.skills.keys()), self._skill_type, self._page)
+                SkillSelect(list(self._agent.skills.keys()), self._skill_type, self._page),
             )
         elif self._page == "cinemas":
             self.add_item(CinemaSelect(self._agent.mindscape_cinemas, self._cinema_index))
@@ -62,7 +62,7 @@ class AgentSearchView(View):
 
     async def _fetch_data(self) -> None:
         async with hakushin.HakushinAPI(
-            hakushin.Game.ZZZ, locale_to_hakushin_lang(self.locale)
+            hakushin.Game.ZZZ, locale_to_hakushin_lang(self.locale),
         ) as api:
             self._agent = await api.fetch_character_detail(self._agent_id)
 
@@ -80,7 +80,7 @@ class AgentSearchView(View):
         else:
             cinema = self._agent.mindscape_cinemas[self._cinema_index]
             embed = self._hakushin_translator.get_agent_cinema_embed(
-                cinema, self._agent.id, self._cinema_index, self._agent
+                cinema, self._agent.id, self._cinema_index, self._agent,
             )
 
         if i.response.is_done():
@@ -138,7 +138,7 @@ class SkillSelect(Select[AgentSearchView]):
                 value="core",
                 emoji=ZZZ_SKILL_TYPE_CORE,
                 default=page == "core",
-            )
+            ),
         )
         super().__init__(options=options, placeholder=LocaleStr(key="zzz.skill_type.placeholder"))
 

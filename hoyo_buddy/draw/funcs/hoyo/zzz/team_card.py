@@ -51,15 +51,15 @@ class ZZZTeamCard:
         left_blob = drawer.open_asset("left_blob.png")
 
         right_blob = drawer.create_pattern_blob(
-            color=blob_color, rotation=30, pattern=pattern, blob=right_blob
+            color=blob_color, rotation=30, pattern=pattern, blob=right_blob,
         )
         card.alpha_composite(right_blob, (880, -100))
         middle_blob = drawer.create_pattern_blob(
-            color=blob_color, rotation=90, pattern=pattern, blob=middle_blob
+            color=blob_color, rotation=90, pattern=pattern, blob=middle_blob,
         )
         card.alpha_composite(middle_blob, (570, -100))
         left_blob = drawer.create_pattern_blob(
-            color=blob_color, rotation=0, pattern=pattern, blob=left_blob
+            color=blob_color, rotation=0, pattern=pattern, blob=left_blob,
         )
         card.alpha_composite(left_blob, (13, -30))
 
@@ -237,7 +237,7 @@ class ZZZTeamCard:
             if not isinstance(stat.type, PropType):
                 continue
             icon = drawer.open_asset(
-                f"stat_icons/{STAT_ICONS[stat.type]}", folder="zzz-build-card", size=(23, 23)
+                f"stat_icons/{STAT_ICONS[stat.type]}", folder="zzz-build-card", size=(23, 23),
             )
             im.alpha_composite(icon, start_pos)
             text = stat.value
@@ -308,10 +308,10 @@ class ZZZTeamCard:
                 no_write=True,
             )
         text_im = Image.new(
-            "RGBA", (textbbox.right - textbbox.left, (textbbox.bottom - textbbox.top) * 2)
+            "RGBA", (textbbox.right - textbbox.left, (textbbox.bottom - textbbox.top) * 2),
         )
         text_drawer = Drawer(
-            ImageDraw.Draw(text_im), folder="zzz-team-card", dark_mode=self._dark_mode
+            ImageDraw.Draw(text_im), folder="zzz-team-card", dark_mode=self._dark_mode,
         )
         text_drawer.write(
             text,

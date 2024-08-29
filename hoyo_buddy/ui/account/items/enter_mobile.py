@@ -46,7 +46,7 @@ class EnterVerificationCode(Button["AccountManager"]):
         client = genshin.Client(region=genshin.Region.CHINESE)  # OS doesn't have mobile OTP login
         cookies = await client._login_with_mobile_otp(self._mobile, modal.code.value)
         await self.view.finish_cookie_setup(
-            cookies.to_dict(), platform=Platform.MIYOUSHE, interaction=i
+            cookies.to_dict(), platform=Platform.MIYOUSHE, interaction=i,
         )
 
 

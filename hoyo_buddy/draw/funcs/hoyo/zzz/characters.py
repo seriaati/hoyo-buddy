@@ -54,7 +54,7 @@ def draw_agent_small_card(
     # Rank
     im.paste(circle, (29, 29), circle)
     drawer.write(
-        str(agent.rank), size=58, position=(69, 69), style="medium", anchor="mm", color=WHITE
+        str(agent.rank), size=58, position=(69, 69), style="medium", anchor="mm", color=WHITE,
     )
 
     # Level
@@ -114,7 +114,7 @@ def draw_agent_small_card(
 
 
 def draw_big_agent_card(
-    agents: Sequence[ZZZFullAgent], dark_mode: bool, locale: str, translator: Translator
+    agents: Sequence[ZZZFullAgent], dark_mode: bool, locale: str, translator: Translator,
 ) -> BytesIO:
     asset_path = "hoyo-buddy-assets/assets/zzz-characters"
     theme = "dark" if dark_mode else "light"

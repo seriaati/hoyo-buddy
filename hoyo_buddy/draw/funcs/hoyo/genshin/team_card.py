@@ -65,7 +65,7 @@ class GITeamCard:
         # Character element
         element_icon = drawer.open_asset(f"elements/{character.element.name.title()}.png")
         element_icon = drawer.mask_image_with_color(
-            element_icon, drawer.hex_to_rgb(ELEMENT_COLORS[character.element])
+            element_icon, drawer.hex_to_rgb(ELEMENT_COLORS[character.element]),
         )
         im.alpha_composite(element_icon, (34, 36))
 
@@ -79,7 +79,7 @@ class GITeamCard:
         )
         text_im = Image.new("RGBA", (tbox.width, tbox.height))
         text_im_drawer = Drawer(
-            ImageDraw.Draw(text_im), folder="gi-team-card", dark_mode=self._dark_mode
+            ImageDraw.Draw(text_im), folder="gi-team-card", dark_mode=self._dark_mode,
         )
         text_im_drawer.write(
             f"Lv.{character.level}",
@@ -198,7 +198,7 @@ class GITeamCard:
                 # Weapon name
                 font = drawer._get_font(19, "medium", locale=Locale(self._locale))
                 texts = drawer._wrap_text(weapon.name, max_width=74, max_lines=2, font=font).split(
-                    "\n"
+                    "\n",
                 )
                 if len(texts) == 1 and font.getlength(texts[0]) > 74:
                     # Split the text into two lines
@@ -220,7 +220,7 @@ class GITeamCard:
 
                 # Stars
                 stars = drawer.open_asset(
-                    f"stars/weapon_stars_{weapon.rarity}.png", mask_color=color_2
+                    f"stars/weapon_stars_{weapon.rarity}.png", mask_color=color_2,
                 )
                 im.alpha_composite(stars, (start_pos[0] + 105, text_pos[1] + 5))
 
@@ -242,7 +242,7 @@ class GITeamCard:
                     anchor="lm",
                 )
                 icon = drawer.open_asset(
-                    f"stats/{stat.type.name}.png", size=(16, 16), mask_color=color_2
+                    f"stats/{stat.type.name}.png", size=(16, 16), mask_color=color_2,
                 )
                 icon_x = tbox.left - icon.width - 7
                 im.alpha_composite(icon, (icon_x, start_pos[1] + 123))
@@ -265,7 +265,7 @@ class GITeamCard:
                         anchor="lm",
                     )
                     icon = drawer.open_asset(
-                        f"stats/{stat.type.name}.png", size=(16, 16), mask_color=color_2
+                        f"stats/{stat.type.name}.png", size=(16, 16), mask_color=color_2,
                     )
                     im.alpha_composite(icon, (tbox.left - icon.width - 7, start_pos[1] + 123))
             else:
@@ -310,7 +310,7 @@ class GITeamCard:
                         color=color_1,
                     )
                     icon = drawer.open_asset(
-                        f"stats/{stat.type.name}.png", size=(19, 19), mask_color=color_1
+                        f"stats/{stat.type.name}.png", size=(19, 19), mask_color=color_1,
                     )
                     im.alpha_composite(icon, (tbox.left - icon.width - 5, start_pos[1] + 47))
 
@@ -318,7 +318,7 @@ class GITeamCard:
                     sub_stat_start_pos = (start_pos[0] + 17, start_pos[1] + 90)
                     for j, sub_stat in enumerate(artifact.sub_stats):
                         icon = drawer.open_asset(
-                            f"stats/{sub_stat.type.name}.png", size=(16, 16), mask_color=color_2
+                            f"stats/{sub_stat.type.name}.png", size=(16, 16), mask_color=color_2,
                         )
                         im.alpha_composite(icon, sub_stat_start_pos)
                         drawer.write(

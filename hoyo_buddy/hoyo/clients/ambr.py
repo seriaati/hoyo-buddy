@@ -91,11 +91,11 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             raise RuntimeError(msg)
 
         stat_values = autils.calculate_upgrade_stat_values(
-            character.upgrade, avatar_curve, level, True
+            character.upgrade, avatar_curve, level, True,
         )
         formatted_stat_values = autils.format_stat_values(stat_values)
         named_stat_values = autils.replace_fight_prop_with_name(
-            formatted_stat_values, manual_weapon
+            formatted_stat_values, manual_weapon,
         )
 
         level_str = self.translator.translate(LevelStr(level), self.locale)
@@ -208,7 +208,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             raise RuntimeError(msg)
 
         stat_values = autils.calculate_upgrade_stat_values(
-            weapon.upgrade, weapon_curve, level, True
+            weapon.upgrade, weapon_curve, level, True,
         )
         stat_values = autils.format_stat_values(stat_values)
         main_stat = weapon.upgrade.base_stats[0]
@@ -262,7 +262,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_artifact_embed(
-        self, artifact_set: ambr.ArtifactSetDetail, artifact: ambr.Artifact
+        self, artifact_set: ambr.ArtifactSetDetail, artifact: ambr.Artifact,
     ) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
@@ -283,7 +283,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             description += "\n" + self.translator.translate(four_piece, self.locale)
 
         embed = DefaultEmbed(
-            self.locale, self.translator, title=artifact.name, description=description
+            self.locale, self.translator, title=artifact.name, description=description,
         )
         embed.set_author(name=artifact_set.name, icon_url=artifact_set.icon)
         embed.set_footer(text=artifact.description)
@@ -323,7 +323,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
                         [
                             self.translator.translate(WeekdayStr(day), self.locale)
                             for day in source.days
-                        ]
+                        ],
                     )
                     names.append(f"{source.name} ({days_str})")
                 else:
@@ -396,7 +396,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             raise RuntimeError(msg)
 
         embed = DefaultEmbed(
-            self.locale, self.translator, title=monster.name, description=monster.description
+            self.locale, self.translator, title=monster.name, description=monster.description,
         )
         if monster.special_name:
             embed.set_author(name=f"{monster.type}/{monster.special_name}")
@@ -406,7 +406,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_volume_embed(
-        self, book: ambr.BookDetail, volume: ambr.BookVolume, readable: str
+        self, book: ambr.BookDetail, volume: ambr.BookVolume, readable: str,
     ) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
@@ -442,7 +442,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_tcg_card_dictionaries_embed(
-        self, dictionaries: list[ambr.CardDictionary]
+        self, dictionaries: list[ambr.CardDictionary],
     ) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
@@ -457,7 +457,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return embed
 
     def get_tcg_card_talent_embed(
-        self, talent: ambr.CardTalent, dictionaries: list[ambr.CardDictionary]
+        self, talent: ambr.CardTalent, dictionaries: list[ambr.CardDictionary],
     ) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
@@ -476,7 +476,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
                 dictionary = dutils.get(dictionaries, id=k)
                 if dictionary:
                     embed.add_field(
-                        name=dictionary.name, value=dictionary.description, inline=False
+                        name=dictionary.name, value=dictionary.description, inline=False,
                     )
 
         embed.add_field(name=LocaleStr(key="dice_cost_embed_field_name"), value=dice_str)
@@ -525,7 +525,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         embed.add_field(
             name=LocaleStr(key="abyss_chamber.ley_line_disorder.embed.field.name"),
             value=create_bullet_list(
-                [lld.description for lld in floor.ley_line_disorders if lld.visible]
+                [lld.description for lld in floor.ley_line_disorders if lld.visible],
             ),
             inline=False,
         )
@@ -584,8 +584,8 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
             if enemy is not None:
                 items.append(
                     self._get_abyss_enemy_item(
-                        enemy, level=floor_enemy_level, floor=floor, monster_curve=monster_curve
-                    )
+                        enemy, level=floor_enemy_level, floor=floor, monster_curve=monster_curve,
+                    ),
                 )
         return items
 
@@ -623,7 +623,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         return result
 
     async def fetch_characters(
-        self, use_cache: bool = True, traveler_gender_symbol: bool = False
+        self, use_cache: bool = True, traveler_gender_symbol: bool = False,
     ) -> list[ambr.models.Character]:
         if self.translator is None:
             msg = "Translator is not set"
@@ -634,7 +634,7 @@ class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
         for character in characters:
             if contains_traveler_id(character.id):
                 character.name = self.translator.get_traveler_name(
-                    character, self.locale, gender_symbol=traveler_gender_symbol
+                    character, self.locale, gender_symbol=traveler_gender_symbol,
                 )
 
         return characters

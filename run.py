@@ -54,7 +54,7 @@ def init_sentry() -> None:
         integrations=[
             AsyncioIntegration(),
             LoguruIntegration(
-                level=LoggingLevels.INFO.value, event_level=LoggingLevels.ERROR.value
+                level=LoggingLevels.INFO.value, event_level=LoggingLevels.ERROR.value,
             ),
         ],
         disabled_integrations=[
@@ -92,7 +92,7 @@ async def main() -> None:
         ) as bot,
     ):
         with contextlib.suppress(
-            KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError
+            KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError,
         ):
             geetest_server = GeetestWebServer(translator=translator)
             api_server = BotAPI(bot)

@@ -27,19 +27,11 @@ DATA_TYPES: Final[dict[CharacterType, LocaleStr]] = {
     CharacterType.LIVE: LocaleStr(key="profile.character_select.live_data.description"),
     CharacterType.CACHE: LocaleStr(key="profile.character_select.cached_data.description"),
 }
-MAX_VALUES: Final[dict[Game, int]] = {
-    Game.GENSHIN: 4,
-    Game.STARRAIL: 4,
-    Game.ZZZ: 3,
-}
+MAX_VALUES: Final[dict[Game, int]] = {Game.GENSHIN: 4, Game.STARRAIL: 4, Game.ZZZ: 3}
 
 
 def determine_chara_type(
-    character_id: str,
-    *,
-    cache_extras: dict[str, dict[str, Any]],
-    builds: Builds,
-    is_hoyolab: bool,
+    character_id: str, *, cache_extras: dict[str, dict[str, Any]], builds: Builds, is_hoyolab: bool
 ) -> CharacterType:
     key = f"{character_id}-hoyolab" if is_hoyolab else character_id
     chara_builds = builds.get(character_id, [])
@@ -114,7 +106,7 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                     description=description,
                     value=str(character.id),
                     emoji=emoji,
-                ),
+                )
             )
 
         super().__init__(

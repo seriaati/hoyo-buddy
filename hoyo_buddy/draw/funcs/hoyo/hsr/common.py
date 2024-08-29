@@ -92,8 +92,6 @@ def get_character_skills(
             dget(character.traces, anchor="Point17"),
             dget(character.traces, anchor="Point18"),
         ],
-        "Talent": [
-            dget(character.traces, anchor="Point09"),
-        ],
+        "Talent": [dget(character.traces, anchor="Point09")],
     }
     return traces, main_bubbles, sub_bubbles

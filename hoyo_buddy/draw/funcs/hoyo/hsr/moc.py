@@ -40,20 +40,12 @@ class MOCCard:
 
     def _write_title(self) -> None:
         self._drawer.write(
-            EnumStr(ChallengeType.MOC),
-            size=80,
-            position=(76, 75),
-            style="bold",
-            color=WHITE,
+            EnumStr(ChallengeType.MOC), size=80, position=(76, 75), style="bold", color=WHITE
         )
 
     def _write_moc_name(self) -> None:
         self._drawer.write(
-            self._season.name,
-            size=64,
-            position=(76, 197),
-            style="medium",
-            color=WHITE,
+            self._season.name, size=64, position=(76, 197), style="medium", color=WHITE
         )
 
     def _write_max_stars(self) -> None:
@@ -79,10 +71,7 @@ class MOCCard:
 
     def _write_battles_fought(self) -> None:
         self._drawer.write(
-            LocaleStr(
-                key="moc_card_battles_fought",
-                battles=self._data.total_battles,
-            ),
+            LocaleStr(key="moc_card_battles_fought", battles=self._data.total_battles),
             size=25,
             position=(303, 374),
             color=WHITE,
@@ -112,23 +101,13 @@ class MOCCard:
         level_flair = drawer.open_asset("level_flair.png")
         block.paste(level_flair, (0, 96), level_flair)
         drawer.write(
-            str(chara.level),
-            size=18,
-            position=(31, 108),
-            style="bold",
-            anchor="mm",
-            color=WHITE,
+            str(chara.level), size=18, position=(31, 108), style="bold", anchor="mm", color=WHITE
         )
 
         const_flair = drawer.open_asset("const_flair.png")
         block.paste(const_flair, (90, 0), const_flair)
         drawer.write(
-            str(chara.rank),
-            size=18,
-            position=(105, 16),
-            style="bold",
-            anchor="mm",
-            color=WHITE,
+            str(chara.rank), size=18, position=(105, 16), style="bold", anchor="mm", color=WHITE
         )
 
         return block
@@ -144,13 +123,7 @@ class MOCCard:
         )
 
         stage_name = get_floor_difficulty(stage.name, self._season.name)
-        name_tbox = drawer.write(
-            stage_name,
-            size=44,
-            position=(0, 0),
-            style="bold",
-            color=WHITE,
-        )
+        name_tbox = drawer.write(stage_name, size=44, position=(0, 0), style="bold", color=WHITE)
         if stage.is_quick_clear:
             cycle_tbox = drawer.write(
                 LocaleStr(key="moc_quick_clear"),

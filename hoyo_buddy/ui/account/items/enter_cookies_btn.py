@@ -44,9 +44,7 @@ class DevToolCookiesModal(Modal):
 class EnterCookiesButton(Button["AccountManager"]):
     def __init__(self, *, platform: Platform, dev_tools: bool = False) -> None:
         super().__init__(
-            label=LocaleStr(key="cookies_button_label"),
-            style=ButtonStyle.blurple,
-            emoji=COOKIE,
+            label=LocaleStr(key="cookies_button_label"), style=ButtonStyle.blurple, emoji=COOKIE
         )
         self._platform = platform
         self._is_dev_tools = dev_tools

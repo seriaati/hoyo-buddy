@@ -50,11 +50,7 @@ class WeaponUI(View):
             weapon_curve = await api.fetch_weapon_curve()
             manual_weapon = await api.fetch_manual_weapon()
             embed = api.get_weapon_embed(
-                weapon_detail,
-                self.weapon_level,
-                self.refinement,
-                weapon_curve,
-                manual_weapon,
+                weapon_detail, self.weapon_level, self.refinement, weapon_curve, manual_weapon
             )
             self.max_refinement = len(weapon_detail.upgrade.awaken_cost) + 1
 
@@ -65,7 +61,7 @@ class WeaponUI(View):
             manual_weapon = await api.fetch_manual_weapon()
 
         async with hakushin.HakushinAPI(
-            hakushin.Game.GI, locale_to_hakushin_lang(self.locale),
+            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
         ) as api:
             try:
                 weapon_id = int(self.weapon_id)
@@ -76,10 +72,7 @@ class WeaponUI(View):
 
         translator = HakushinTranslator(self.locale, self.translator)
         embed = translator.get_weapon_embed(
-            weapon_detail,
-            self.weapon_level,
-            self.refinement,
-            manual_weapon,
+            weapon_detail, self.weapon_level, self.refinement, manual_weapon
         )
         self.max_refinement = len(weapon_detail.refinments)
 
@@ -98,7 +91,7 @@ class WeaponUI(View):
                 min_refinement=1,
                 max_refinement=self.max_refinement,
                 current_refinement=self.refinement,
-            ),
+            )
         )
 
     async def start(self, i: Interaction) -> None:
@@ -140,7 +133,7 @@ class EnterWeaponLevel(Button[WeaponUI]):
 
 class RefinementSelector(Select["WeaponUI"]):
     def __init__(
-        self, *, min_refinement: int, max_refinement: int, current_refinement: int,
+        self, *, min_refinement: int, max_refinement: int, current_refinement: int
     ) -> None:
         super().__init__(
             options=[
@@ -150,7 +143,7 @@ class RefinementSelector(Select["WeaponUI"]):
                     default=current_refinement == i,
                 )
                 for i in range(min_refinement, max_refinement + 1)
-            ],
+            ]
         )
 
     async def callback(self, i: Interaction) -> Any:

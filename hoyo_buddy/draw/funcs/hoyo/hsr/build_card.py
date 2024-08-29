@@ -30,7 +30,7 @@ def draw_hsr_build_card(
 
     dark_primary = Drawer.blend_color(primary, WHITE if dark_mode else BLACK, 0.6)
     light_primary = Drawer.blend_color(
-        primary, BLACK if dark_mode else WHITE, 0.23 if dark_mode else 0.18,
+        primary, BLACK if dark_mode else WHITE, 0.23 if dark_mode else 0.18
     )
 
     im = Image.new("RGBA", (2244, 1297), primary)
@@ -77,11 +77,7 @@ def draw_hsr_build_card(
 
     box_x = name_textbbox[2] + padding
     box_y = name_textbbox[1]
-    draw.rounded_rectangle(
-        (box_x, box_y, box_x + width, box_y + height),
-        radius,
-        primary,
-    )
+    draw.rounded_rectangle((box_x, box_y, box_x + width, box_y + height), radius, primary)
     box_right_pos = box_x + width
 
     # write in the middle of the rectangle
@@ -117,11 +113,7 @@ def draw_hsr_build_card(
     radius = 25
     box_x = 770
     box_y = 252
-    draw.rounded_rectangle(
-        (box_x, box_y, box_x + width, box_y + height),
-        radius,
-        light_primary,
-    )
+    draw.rounded_rectangle((box_x, box_y, box_x + width, box_y + height), radius, light_primary)
 
     trace_bk = drawer.open_asset("base/trace_bk.png", mask_color=primary)
     x = 825
@@ -136,7 +128,7 @@ def draw_hsr_build_card(
 
         # trace bubble
         icon = drawer.open_static(
-            trace.icon, size=(65, 65), mask_color=BLACK if dark_mode else WHITE,
+            trace.icon, size=(65, 65), mask_color=BLACK if dark_mode else WHITE
         )
         im.paste(trace_bk, (x, y), trace_bk)
         im.paste(icon, (x + 7, y + 4), icon)
@@ -155,12 +147,9 @@ def draw_hsr_build_card(
         main_bubble = main_bubbles[trace_id]
         if main_bubble:
             icon = drawer.open_static(
-                main_bubble.icon, size=(60, 60), mask_color=BLACK if dark_mode else WHITE,
+                main_bubble.icon, size=(60, 60), mask_color=BLACK if dark_mode else WHITE
             )
-            draw.ellipse(
-                (circle_x, y, circle_x + circle_height, y + circle_height),
-                fill=primary,
-            )
+            draw.ellipse((circle_x, y, circle_x + circle_height, y + circle_height), fill=primary)
             im.paste(icon, (circle_x + 6, y + 6), icon)
 
         # sub bubbles
@@ -174,27 +163,17 @@ def draw_hsr_build_card(
             # draw a line in the middle of the circle
             width = 10
             draw.line(
-                (
-                    circle_x - 15,
-                    y + circle_height // 2,
-                    circle_x + width,
-                    y + circle_height // 2,
-                ),
+                (circle_x - 15, y + circle_height // 2, circle_x + width, y + circle_height // 2),
                 fill=primary,
                 width=width,
             )
             draw.ellipse(
-                (
-                    circle_x,
-                    circle_y,
-                    circle_x + sub_circle_height,
-                    circle_y + sub_circle_height,
-                ),
+                (circle_x, circle_y, circle_x + sub_circle_height, circle_y + sub_circle_height),
                 fill=primary,
             )
 
             icon = drawer.open_static(
-                sub_bubble.icon, size=(50, 50), mask_color=BLACK if dark_mode else WHITE,
+                sub_bubble.icon, size=(50, 50), mask_color=BLACK if dark_mode else WHITE
             )
             # place the icon in the middle of the circle
             icon_x = circle_x + (sub_circle_height - icon.width) // 2
@@ -211,11 +190,7 @@ def draw_hsr_build_card(
     box_x = 770
     box_y = 653
     radius = 25
-    draw.rounded_rectangle(
-        (box_x, box_y, box_x + width, box_y + height),
-        radius,
-        light_primary,
-    )
+    draw.rounded_rectangle((box_x, box_y, box_x + width, box_y + height), radius, light_primary)
 
     # attributes
     attributes, _ = get_character_stats(character)
@@ -231,10 +206,7 @@ def draw_hsr_build_card(
 
         drawer.write(
             value,
-            position=(
-                x + icon_.width + text_padding,
-                round(icon_.height / 2) + y - 1,
-            ),
+            position=(x + icon_.width + text_padding, round(icon_.height / 2) + y - 1),
             size=40,
             color=dark_primary,
             style="medium",
@@ -255,11 +227,7 @@ def draw_hsr_build_card(
         box_x = 1375
         box_y = 252
         radius = 25
-        draw.rounded_rectangle(
-            (box_x, box_y, box_x + width, box_y + height),
-            radius,
-            light_primary,
-        )
+        draw.rounded_rectangle((box_x, box_y, box_x + width, box_y + height), radius, light_primary)
 
         # light cone icon
         icon = drawer.open_static(cone.icon.image, size=(221, 314))
@@ -328,10 +296,7 @@ def draw_hsr_build_card(
                 textbbox = drawer.write(
                     stat.formatted_value,
                     size=32,
-                    position=(
-                        x + icon.width + 2,
-                        round(icon.height / 2) + y - 1,
-                    ),
+                    position=(x + icon.width + 2, round(icon.height / 2) + y - 1),
                     color=dark_primary,
                     anchor="lm",
                 )
@@ -371,11 +336,7 @@ def draw_hsr_build_card(
         size = star_icon.size
         upper_left = (pos[0] - rarity / 2 * size[0], pos[1] - size[1] / 2)
         for i in range(rarity):
-            im.paste(
-                star_icon,
-                (int(upper_left[0] + i * (size[0])), int(upper_left[1])),
-                star_icon,
-            )
+            im.paste(star_icon, (int(upper_left[0] + i * (size[0])), int(upper_left[1])), star_icon)
 
         # main stat
         icon = drawer.open_static(relic.main_stat.icon, size=(50, 50), mask_color=dark_primary)
@@ -403,14 +364,7 @@ def draw_hsr_build_card(
         box_x = relic_icon_right_pos + 183
         box_y = round(main_stat_text_height / 2) - round(level_height / 2) + textbbox[1] - 2
         draw.rounded_rectangle(
-            (
-                box_x,
-                box_y,
-                box_x + level_width,
-                box_y + level_height,
-            ),
-            radius,
-            primary,
+            (box_x, box_y, box_x + level_width, box_y + level_height), radius, primary
         )
         drawer.write(
             f"+{relic.level}",

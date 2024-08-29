@@ -46,14 +46,10 @@ def is_valid_hex_color(color: str) -> bool:
 
 
 async def upload_image(
-    session: aiohttp.ClientSession, *, image_url: str | None = None, image: bytes | None = None,
+    session: aiohttp.ClientSession, *, image_url: str | None = None, image: bytes | None = None
 ) -> str:
     api = "https://freeimage.host/api/1/upload"
-    data = {
-        "key": "6d207e02198a847aa98d0a2a901485a5",
-        "source": image_url,
-        "format": "json",
-    }
+    data = {"key": "6d207e02198a847aa98d0a2a901485a5", "source": image_url, "format": "json"}
 
     if image is not None:
         # Encode image into base64 string
@@ -144,7 +140,7 @@ def ephemeral(i: Interaction) -> bool:
 
 @contextmanager
 def measure_time(
-    description: str = "Execution", *, print_: bool = False,
+    description: str = "Execution", *, print_: bool = False
 ) -> Generator[None, Any, None]:
     start_time = time.time_ns()
     yield
@@ -179,7 +175,6 @@ def format_ann_content(content: str) -> str:
     return content.replace("/t", "")
 
 
-
 _tasks_set: set[asyncio.Task[Any] | asyncio.Future[Any]] = set()
 
 
@@ -188,7 +183,7 @@ def wrap_task_factory() -> None:
     original_factory = loop.get_task_factory()
 
     def new_factory(
-        loop: asyncio.AbstractEventLoop, coro: asyncio._CoroutineLike[Any], **kwargs: Any,
+        loop: asyncio.AbstractEventLoop, coro: asyncio._CoroutineLike[Any], **kwargs: Any
     ) -> asyncio.Task[Any] | asyncio.Future[Any]:
         if original_factory is not None:
             t = original_factory(loop, coro, **kwargs)

@@ -22,10 +22,7 @@ class HoyoBuddyError(Exception):
 
 class InvalidInputError(HoyoBuddyError):
     def __init__(self, reason: LocaleStr) -> None:
-        super().__init__(
-            title=LocaleStr(key="invalid_input_error_title"),
-            message=reason,
-        )
+        super().__init__(title=LocaleStr(key="invalid_input_error_title"), message=reason)
 
 
 class InvalidQueryError(HoyoBuddyError):
@@ -59,8 +56,7 @@ class CardNotReadyError(HoyoBuddyError):
     def __init__(self, character_name: str) -> None:
         super().__init__(
             title=LocaleStr(
-                key="exceptions.card_not_ready_error.title",
-                character_name=character_name,
+                key="exceptions.card_not_ready_error.title", character_name=character_name
             ),
             message=LocaleStr(key="exceptions.card_not_ready_error.message"),
         )
@@ -125,13 +121,9 @@ class ActionInCooldownError(HoyoBuddyError):
 class NoChallengeDataError(HoyoBuddyError):
     def __init__(self, challenge_type: ChallengeType) -> None:
         super().__init__(
-            title=LocaleStr(
-                key="no_challenge_data_err_title",
-                challenge=EnumStr(challenge_type),
-            ),
+            title=LocaleStr(key="no_challenge_data_err_title", challenge=EnumStr(challenge_type)),
             message=LocaleStr(
-                key="no_challenge_data_err_message",
-                challenge=EnumStr(challenge_type),
+                key="no_challenge_data_err_message", challenge=EnumStr(challenge_type)
             ),
         )
 
@@ -179,7 +171,7 @@ class FeatureNotImplementedError(HoyoBuddyError):
             LocaleStr(key="not_implemented_error_only_game_message", game=EnumStr(game))
             if platform is None
             else LocaleStr(
-                key="not_implemented_error_message", game=EnumStr(game), platform=EnumStr(platform),
+                key="not_implemented_error_message", game=EnumStr(game), platform=EnumStr(platform)
             )
         )
         super().__init__(title=LocaleStr(key="not_implemented_error_title"), message=message)

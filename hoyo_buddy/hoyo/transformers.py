@@ -21,7 +21,7 @@ class HoyoAccountTransformer(app_commands.Transformer):
         user: User = i.namespace.user
         account = (
             await HoyoAccount.get_or_none(
-                id=account_id, user_id=user.id if user is not None else i.user.id,
+                id=account_id, user_id=user.id if user is not None else i.user.id
             )
             if user is None or i.user.id == user.id
             else await HoyoAccount.get_or_none(id=account_id, user_id=user.id, public=True)

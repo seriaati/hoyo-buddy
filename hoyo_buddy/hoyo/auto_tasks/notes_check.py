@@ -68,7 +68,7 @@ class NotesChecker:
                     translator,
                     title=LocaleStr(key="resin_reminder_button.label"),
                     description=LocaleStr(
-                        key="threshold.embed.description", threshold=notify.threshold,
+                        key="threshold.embed.description", threshold=notify.threshold
                     ),
                 )
                 embed.set_thumbnail(url=RESIN_ICON)
@@ -78,7 +78,7 @@ class NotesChecker:
                     translator,
                     title=LocaleStr(key="tbp_reminder_button.label"),
                     description=LocaleStr(
-                        key="threshold.embed.description", threshold=notify.threshold,
+                        key="threshold.embed.description", threshold=notify.threshold
                     ),
                 )
                 embed.set_thumbnail(url=TBP_ICON)
@@ -88,7 +88,7 @@ class NotesChecker:
                     translator,
                     title=LocaleStr(key="rtbp_reminder_button.label"),
                     description=LocaleStr(
-                        key="threshold.embed.description", threshold=notify.threshold,
+                        key="threshold.embed.description", threshold=notify.threshold
                     ),
                 )
                 embed.set_thumbnail(url=RTBP_ICON)
@@ -113,7 +113,7 @@ class NotesChecker:
                     translator,
                     title=LocaleStr(key="realm_curr_button.label"),
                     description=LocaleStr(
-                        key="threshold.embed.description", threshold=notify.threshold,
+                        key="threshold.embed.description", threshold=notify.threshold
                     ),
                 )
                 embed.set_thumbnail(url=REALM_CURRENCY_ICON)
@@ -145,7 +145,7 @@ class NotesChecker:
                     translator,
                     title=LocaleStr(key="battery_charge_button.label"),
                     description=LocaleStr(
-                        key="threshold.embed.description", threshold=notify.threshold,
+                        key="threshold.embed.description", threshold=notify.threshold
                     ),
                 )
                 embed.set_thumbnail(url=BATTERY_CHARGE_ICON)
@@ -179,7 +179,7 @@ class NotesChecker:
 
     @classmethod
     async def _reset_notif_count(
-        cls, notify: NotesNotify, *, est_time: datetime.datetime | None = None,
+        cls, notify: NotesNotify, *, est_time: datetime.datetime | None = None
     ) -> None:
         notify.current_notif_count = 0
         if est_time is not None:
@@ -188,7 +188,7 @@ class NotesChecker:
 
     @classmethod
     async def _notify_user(
-        cls, notify: NotesNotify, notes: StarRailNote | Notes | ZZZNotes,
+        cls, notify: NotesNotify, notes: StarRailNote | Notes | ZZZNotes
     ) -> None:
         locale = await cls._get_locale(notify)
         embed = cls._get_notify_embed(notify, locale)
@@ -287,7 +287,7 @@ class NotesChecker:
 
     @classmethod
     async def _process_expedition_notify(
-        cls, notify: NotesNotify, notes: Notes | StarRailNote,
+        cls, notify: NotesNotify, notes: Notes | StarRailNote
     ) -> None:
         """Process expedition notification."""
         if any(not exped.finished for exped in notes.expeditions):
@@ -320,7 +320,7 @@ class NotesChecker:
 
     @classmethod
     async def _process_daily_notify(
-        cls, notify: NotesNotify, notes: Notes | StarRailNote | ZZZNotes,
+        cls, notify: NotesNotify, notes: Notes | StarRailNote | ZZZNotes
     ) -> None:
         if notify.last_check_time is not None and get_now().day != notify.last_check_time.day:
             return await cls._reset_notif_count(notify)
@@ -330,15 +330,15 @@ class NotesChecker:
             and notes.completed_commissions + notes.daily_task.completed_tasks >= 4
         ):
             return await cls._reset_notif_count(
-                notify, est_time=notify.account.server_reset_datetime,
+                notify, est_time=notify.account.server_reset_datetime
             )
         if isinstance(notes, StarRailNote) and notes.current_train_score >= notes.max_train_score:
             return await cls._reset_notif_count(
-                notify, est_time=notify.account.server_reset_datetime,
+                notify, est_time=notify.account.server_reset_datetime
             )
         if isinstance(notes, ZZZNotes) and notes.engagement.current >= notes.engagement.max:
             return await cls._reset_notif_count(
-                notify, est_time=notify.account.server_reset_datetime,
+                notify, est_time=notify.account.server_reset_datetime
             )
 
         if notify.current_notif_count < notify.max_notif_count:
@@ -347,7 +347,7 @@ class NotesChecker:
 
     @classmethod
     async def _process_week_boss_discount_notify(
-        cls, notify: NotesNotify, notes: Notes | StarRailNote,
+        cls, notify: NotesNotify, notes: Notes | StarRailNote
     ) -> None:
         if notify.last_check_time is not None and get_now().day != notify.last_check_time.day:
             return await cls._reset_notif_count(notify)
@@ -379,7 +379,7 @@ class NotesChecker:
     async def _process_scratch_card_notify(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
         if notes.scratch_card_completed:
             return await cls._reset_notif_count(
-                notify, est_time=notify.account.server_reset_datetime,
+                notify, est_time=notify.account.server_reset_datetime
             )
 
         if notify.current_notif_count < notify.max_notif_count:
@@ -400,7 +400,7 @@ class NotesChecker:
 
     @classmethod
     async def _process_notify(
-        cls, notify: NotesNotify, notes: Notes | StarRailNote | ZZZNotes,
+        cls, notify: NotesNotify, notes: Notes | StarRailNote | ZZZNotes
     ) -> None:
         """Proces notification."""
         match notify.type:

@@ -256,11 +256,11 @@ class Translator:
     ) -> str:
         if isinstance(character, yatta.Character):
             element_str = self.translate(
-                EnumStr(YATTA_COMBAT_TYPE_TO_ELEMENT[character.types.combat_type]), locale,
+                EnumStr(YATTA_COMBAT_TYPE_TO_ELEMENT[character.types.combat_type]), locale
             )
         else:
             element_str = self.translate(
-                EnumStr(HAKUSHIN_HSR_ELEMENT_TO_ELEMENT[character.element]), locale,
+                EnumStr(HAKUSHIN_HSR_ELEMENT_TO_ELEMENT[character.element]), locale
             )
 
         # Only gender_str if is trailblazer
@@ -284,7 +284,7 @@ class AppCommandTranslator(app_commands.Translator):
         self.translator = translator
 
     async def translate(
-        self, string: app_commands.locale_str, locale: Locale, _: TranslationContextTypes,
+        self, string: app_commands.locale_str, locale: Locale, _: TranslationContextTypes
     ) -> str:
         if (key := string.extras.get("key")) is None:
             return string.message

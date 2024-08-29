@@ -71,8 +71,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     tuple(genshin.constants.GEETEST_RETCODES): {
         "title": LocaleStr(key="geetest.required"),
         "description": LocaleStr(
-            geetest_type=EnumStr(GeetestType.REALTIME_NOTES),
-            key="geetest.required.description",
+            geetest_type=EnumStr(GeetestType.REALTIME_NOTES), key="geetest.required.description"
         ),
     },
     (-1,): {"title": LocaleStr(key="game_maintenance_title")},
@@ -88,15 +87,14 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     (-9999,): {
         "title": LocaleStr(key="geetest.required"),
         "description": LocaleStr(
-            geetest_type=EnumStr(GeetestType.DAILY_CHECKIN), key="geetest.required.description",
+            geetest_type=EnumStr(GeetestType.DAILY_CHECKIN), key="geetest.required.description"
         ),
     },
 }
 
 
 ENKA_ERROR_CONVERTER: dict[
-    type[enka_errors.EnkaAPIError],
-    dict[Literal["title", "description"], LocaleStr],
+    type[enka_errors.EnkaAPIError], dict[Literal["title", "description"], LocaleStr]
 ] = {
     enka_errors.PlayerDoesNotExistError: {
         "title": LocaleStr(key="player_not_found_title"),
@@ -114,7 +112,7 @@ ENKA_ERROR_CONVERTER: dict[
 
 
 def get_error_embed(
-    error: Exception, locale: discord.Locale, translator: Translator,
+    error: Exception, locale: discord.Locale, translator: Translator
 ) -> tuple[ErrorEmbed, bool]:
     recognized = True
     embed = None
@@ -123,16 +121,8 @@ def get_error_embed(
         error = InvalidQueryError()
 
     if isinstance(error, HoyoBuddyError):
-        embed = ErrorEmbed(
-            locale,
-            translator,
-            title=error.title,
-            description=error.message,
-        )
-    elif isinstance(
-        error,
-        genshin_errors.GenshinException | enka_errors.EnkaAPIError,
-    ):
+        embed = ErrorEmbed(locale, translator, title=error.title, description=error.message)
+    elif isinstance(error, genshin_errors.GenshinException | enka_errors.EnkaAPIError):
         err_info = None
 
         if isinstance(error, genshin_errors.GenshinException):
@@ -152,10 +142,7 @@ def get_error_embed(
         recognized = False
         description = f"{type(error).__name__}: {error}" if error else type(error).__name__
         embed = ErrorEmbed(
-            locale,
-            translator,
-            title=LocaleStr(key="error_title"),
-            description=description,
+            locale, translator, title=LocaleStr(key="error_title"), description=description
         )
         embed.set_footer(text=LocaleStr(key="error_footer"))
 

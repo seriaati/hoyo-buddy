@@ -34,11 +34,10 @@ class Metrics(commands.Cog):
                     parameters = i.namespace.__dict__
                     if i.command.parent is None:
                         logger.info(
-                            f"[Command][{i.user.id}] {i.command.name}",
-                            parameters=parameters,
+                            f"[Command][{i.user.id}] {i.command.name}", parameters=parameters
                         )
                         sentry_sdk.metrics.incr(
-                            "commands.executed", tags={"command": i.command.name},
+                            "commands.executed", tags={"command": i.command.name}
                         )
                     else:
                         logger.info(
@@ -51,8 +50,7 @@ class Metrics(commands.Cog):
                         )
                 elif isinstance(i.command, app_commands.ContextMenu):
                     sentry_sdk.metrics.incr(
-                        "context_menu_commands.executed",
-                        tags={"command": i.command.name},
+                        "context_menu_commands.executed", tags={"command": i.command.name}
                     )
             case InteractionType.component:
                 sentry_sdk.metrics.incr("components.interacted")

@@ -53,9 +53,7 @@ class AddAccountSelect(Select["AccountManager"]):
             custom_id="select_accounts_to_add",
             options=options,
             max_values=len(options),
-            placeholder=LocaleStr(
-                key="select_accounts_to_add_placeholder",
-            ),
+            placeholder=LocaleStr(key="select_accounts_to_add_placeholder"),
         )
 
     def get_account_options(self) -> list[SelectOption]:
@@ -74,7 +72,7 @@ class AddAccountSelect(Select["AccountManager"]):
                         description=f"{level_str}",
                         value=option_val,
                         emoji=get_game_emoji(account.game),
-                    ),
+                    )
                 )
                 added_vals.add(option_val)
         return result
@@ -101,9 +99,7 @@ class AddAccountSelect(Select["AccountManager"]):
                 )
             except IntegrityError:
                 hoyo_account = await HoyoAccount.get(
-                    uid=account.uid,
-                    game=GPY_GAME_TO_HB_GAME[account.game],
-                    user=self.view.user,
+                    uid=account.uid, game=GPY_GAME_TO_HB_GAME[account.game], user=self.view.user
                 )
                 hoyo_account.cookies = self.cookies
                 hoyo_account.username = account.nickname
@@ -111,7 +107,7 @@ class AddAccountSelect(Select["AccountManager"]):
                 hoyo_account.device_fp = self._device_fp
                 hoyo_account.region = self._region
                 await hoyo_account.save(
-                    update_fields=("cookies", "username", "device_id", "device_fp", "region"),
+                    update_fields=("cookies", "username", "device_id", "device_fp", "region")
                 )
             else:
                 await AccountNotifSettings.create(account=hoyo_account)

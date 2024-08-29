@@ -25,14 +25,7 @@ if TYPE_CHECKING:
 
 
 class EventsView(View):
-    def __init__(
-        self,
-        game: Game,
-        *,
-        author: User,
-        locale: Locale,
-        translator: Translator,
-    ) -> None:
+    def __init__(self, game: Game, *, author: User, locale: Locale, translator: Translator) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
         self._game = game
@@ -87,7 +80,7 @@ class EventsView(View):
         self._add_items()
 
         await i.followup.send(
-            embed=self._get_ann_embed(self.first_ann), view=self, content=await get_dyk(i),
+            embed=self._get_ann_embed(self.first_ann), view=self, content=await get_dyk(i)
         )
         self.message = await i.original_response()
 
@@ -157,7 +150,7 @@ class EventTypeSelector(Select[EventsView]):
 class ViewContentButton(Button[EventsView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr(key="events_view_content_label"), style=ButtonStyle.blurple,
+            label=LocaleStr(key="events_view_content_label"), style=ButtonStyle.blurple
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -167,6 +160,6 @@ class ViewContentButton(Button[EventsView]):
         contents: list[str] = [content[i : i + 2000] for i in range(0, len(content), 2000)]
         pages = [Page(content=content) for content in contents]
         view = PaginatorView(
-            pages, author=i.user, locale=self.view.locale, translator=self.view.translator,
+            pages, author=i.user, locale=self.view.locale, translator=self.view.translator
         )
         await view.start(i, ephemeral=True, followup=True)

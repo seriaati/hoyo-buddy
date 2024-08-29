@@ -52,7 +52,7 @@ class LightConeUI(View):
                 manual_avatar = await api.fetch_manual_avatar()
 
             async with hakushin.HakushinAPI(
-                hakushin.Game.HSR, locale_to_hakushin_lang(self.locale),
+                hakushin.Game.HSR, locale_to_hakushin_lang(self.locale)
             ) as api:
                 try:
                     light_cone_id = int(self._light_cone_id)
@@ -81,7 +81,7 @@ class LightConeUI(View):
                 self._lc_detail = lc_detail
                 manual_avatar = await api.fetch_manual_avatar()
                 embed = api.get_light_cone_embed(
-                    lc_detail, self._light_cone_level, self._superimpose, manual_avatar,
+                    lc_detail, self._light_cone_level, self._superimpose, manual_avatar
                 )
 
         return embed
@@ -89,16 +89,12 @@ class LightConeUI(View):
     def _setup_items(self) -> None:
         self.clear_items()
         self.add_item(
-            EnterLightConeLevel(
-                label=LocaleStr(key="enter_light_cone_level.button.label"),
-            ),
+            EnterLightConeLevel(label=LocaleStr(key="enter_light_cone_level.button.label"))
         )
         self.add_item(
             SuperimposeSelect(
-                min_superimpose=1,
-                max_superimpose=5,
-                current_superimpose=self._superimpose,
-            ),
+                min_superimpose=1, max_superimpose=5, current_superimpose=self._superimpose
+            )
         )
         self.add_item(ShowStoryButton())
 
@@ -141,7 +137,7 @@ class EnterLightConeLevel(Button[LightConeUI]):
 
 class SuperimposeSelect(Select[LightConeUI]):
     def __init__(
-        self, *, min_superimpose: int, max_superimpose: int, current_superimpose: int,
+        self, *, min_superimpose: int, max_superimpose: int, current_superimpose: int
     ) -> None:
         super().__init__(
             options=[
@@ -151,7 +147,7 @@ class SuperimposeSelect(Select[LightConeUI]):
                     default=current_superimpose == i,
                 )
                 for i in range(min_superimpose, max_superimpose + 1)
-            ],
+            ]
         )
 
     async def callback(self, i: Interaction) -> Any:

@@ -45,7 +45,7 @@ class ArtifactSetUI(View):
 
         if self._hakushin:
             async with hakushin.HakushinAPI(
-                hakushin.Game.GI, locale_to_hakushin_lang(self.locale),
+                hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
             ) as api:
                 artifact_set_detail = await api.fetch_artifact_set_detail(artifact_id)
 
@@ -67,14 +67,14 @@ class ArtifactSetUI(View):
             self.add_item(ArtifactPosButton(pos))
 
         self.message = await i.edit_original_response(
-            embed=next(iter(self._artifact_embeds.values())), view=self,
+            embed=next(iter(self._artifact_embeds.values())), view=self
         )
 
 
 class ArtifactPosButton(Button["ArtifactSetUI"]):
     def __init__(self, pos: str) -> None:
         super().__init__(
-            style=ButtonStyle.blurple, emoji=get_artifact_pos_emoji(EQUIP_ID_TO_ARTIFACT_POS[pos]),
+            style=ButtonStyle.blurple, emoji=get_artifact_pos_emoji(EQUIP_ID_TO_ARTIFACT_POS[pos])
         )
         self.pos = pos
 

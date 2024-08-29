@@ -18,14 +18,12 @@ if TYPE_CHECKING:
 class TBPReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
-            emoji=TRAILBLAZE_POWER,
-            label=LocaleStr(key="tbp_reminder_button.label"),
-            row=row,
+            emoji=TRAILBLAZE_POWER, label=LocaleStr(key="tbp_reminder_button.label"), row=row
         )
 
     async def callback(self, i: Interaction) -> None:
         notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.TB_POWER,
+            account=self.view._account, type=NotesNotifyType.TB_POWER
         )
 
         modal = TypeOneModal(
@@ -43,9 +41,6 @@ class TBPReminder(Button[NotesView]):
             return
 
         embed = await self.view.process_type_one_modal(
-            modal=modal,
-            notify=notify,
-            notify_type=NotesNotifyType.TB_POWER,
-            check_interval=10,
+            modal=modal, notify=notify, notify_type=NotesNotifyType.TB_POWER, check_interval=10
         )
         await i.edit_original_response(embed=embed)

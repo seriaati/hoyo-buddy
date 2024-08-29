@@ -61,20 +61,12 @@ class AccountManager(View):
                 description=LocaleStr(key="account_manager_no_accounts_description"),
             )
 
-        embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=str(account),
-        )
+        embed = DefaultEmbed(self.locale, self.translator, title=str(account))
         embed.add_field(
-            name=LocaleStr(key="search_command_game_param_name"),
-            value=EnumStr(account.game),
+            name=LocaleStr(key="search_command_game_param_name"), value=EnumStr(account.game)
         )
         if account.nickname:
-            embed.add_field(
-                name=LocaleStr(key="account_username"),
-                value=account.username,
-            )
+            embed.add_field(name=LocaleStr(key="account_username"), value=account.username)
         embed.set_footer(text=LocaleStr(key="account_manager_footer"))
         return embed
 
@@ -109,7 +101,7 @@ class AccountManager(View):
         embed = self._acc_embed
         await i.response.defer(ephemeral=True)
         self.message = await i.edit_original_response(
-            embed=embed, view=self, content=await get_dyk(i),
+            embed=embed, view=self, content=await get_dyk(i)
         )
 
     async def refresh(self, i: Interaction, *, soft: bool) -> Any:
@@ -146,7 +138,7 @@ class AccountManager(View):
             await self.absolute_edit(i, embed=self._acc_embed, view=self)
 
     async def finish_cookie_setup(
-        self, cookies: dict[str, Any], *, platform: Platform, interaction: Interaction,
+        self, cookies: dict[str, Any], *, platform: Platform, interaction: Interaction
     ) -> None:
         if platform is Platform.HOYOLAB and ("stoken" in cookies or "stoken_v2" in cookies):
             # Get ltoken_v2 and cookie_token_v2
@@ -187,7 +179,7 @@ class AccountManager(View):
                 Button(
                     label="下载应用程序",
                     url="https://mirror.ghproxy.com/https://raw.githubusercontent.com/forchannot/get_device_info/main/app/build/outputs/apk/debug/app-debug.apk",
-                ),
+                )
             )
             await interaction.edit_original_response(embed=embed, view=self)
             return
@@ -202,7 +194,7 @@ class AccountManager(View):
                 platform=platform,
                 device_id=device_id,
                 device_fp=device_fp,
-            ),
+            )
         )
 
         await interaction.edit_original_response(embed=embed, view=self)

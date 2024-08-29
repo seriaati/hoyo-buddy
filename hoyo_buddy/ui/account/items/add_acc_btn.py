@@ -26,9 +26,7 @@ if TYPE_CHECKING:
 class AddMiyousheAccount(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
-            custom_id="add_miyoushe_account",
-            emoji=MIYOUSHE,
-            label=EnumStr(Platform.MIYOUSHE),
+            custom_id="add_miyoushe_account", emoji=MIYOUSHE, label=EnumStr(Platform.MIYOUSHE)
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -54,9 +52,7 @@ class AddMiyousheAccount(Button["AccountManager"]):
 class AddHoyolabAccount(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
-            custom_id="add_hoyolab_account",
-            emoji=HOYOLAB,
-            label=EnumStr(Platform.HOYOLAB),
+            custom_id="add_hoyolab_account", emoji=HOYOLAB, label=EnumStr(Platform.HOYOLAB)
         )
 
     async def callback(self, i: Interaction) -> None:

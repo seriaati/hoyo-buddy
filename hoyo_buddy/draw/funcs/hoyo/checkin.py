@@ -13,10 +13,7 @@ if TYPE_CHECKING:
 __all__ = ("draw_checkin_card",)
 
 
-def draw_checkin_card(
-    daily_rewards: list[Reward],
-    dark_mode: bool,
-) -> io.BytesIO:
+def draw_checkin_card(daily_rewards: list[Reward], dark_mode: bool) -> io.BytesIO:
     im = (
         Drawer.open_image("hoyo-buddy-assets/assets/check-in/DARK_1.png")
         if dark_mode

@@ -114,7 +114,7 @@ def draw_small_hsr_chara_card(
     locale: Locale,
 ) -> Image.Image:
     im = Drawer.open_image(
-        f"hoyo-buddy-assets/assets/hsr-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png",
+        f"hoyo-buddy-assets/assets/hsr-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png"
     )
 
     draw = ImageDraw.Draw(im)

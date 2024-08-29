@@ -23,17 +23,13 @@ class ChallengeCommand:
 
         user = self._user or i.user
         account = self._account or await self._bot.get_account(
-            user.id, [Game.GENSHIN, Game.STARRAIL],
+            user.id, [Game.GENSHIN, Game.STARRAIL]
         )
         settings = await Settings.get(user_id=self._user_id)
         locale = settings.locale or i.locale
         translator = i.client.translator
 
         view = ChallengeView(
-            account,
-            settings.dark_mode,
-            author=i.user,
-            locale=locale,
-            translator=translator,
+            account, settings.dark_mode, author=i.user, locale=locale, translator=translator
         )
         await view.start(i)

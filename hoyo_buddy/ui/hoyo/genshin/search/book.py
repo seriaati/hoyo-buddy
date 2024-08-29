@@ -48,7 +48,7 @@ class BookVolumeUI(View):
                 label="ambr.top",
                 url=f"https://ambr.top/{self.ambr_api_lang}/archive/book/{self.book.id}",
                 emoji=PROJECT_AMBER,
-            ),
+            )
         )
 
     async def start(self, i: Interaction) -> None:

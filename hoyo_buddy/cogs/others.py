@@ -43,7 +43,7 @@ class Others(commands.Cog):
     @app_commands.command(
         name=locale_str("feedback"),
         description=locale_str(
-            "Give feedback to the bot's developer", key="feedback_command_description",
+            "Give feedback to the bot's developer", key="feedback_command_description"
         ),
     )
     async def feedback_command(self, i: Interaction) -> Any:
@@ -51,11 +51,7 @@ class Others(commands.Cog):
         locale = (await UserSettings.get(user_id=i.user.id)).locale or i.locale
         view = FeedbackView(author=i.user, locale=locale, translator=self.bot.translator)
         embed = DefaultEmbed(
-            locale,
-            self.bot.translator,
-            description=LocaleStr(
-                key="feedback_command.description",
-            ),
+            locale, self.bot.translator, description=LocaleStr(key="feedback_command.description")
         )
         owner = await i.client.fetch_user(i.client.owner_id)
         if owner is not None:
@@ -71,7 +67,7 @@ class Others(commands.Cog):
         await i.response.defer(ephemeral=ephemeral(i))
 
         guild = self.bot.get_guild(1000727526194298910) or await i.client.fetch_guild(
-            1000727526194298910,
+            1000727526194298910
         )
         if not guild.chunked:
             await guild.chunk()
@@ -126,23 +122,18 @@ class Others(commands.Cog):
 
         # guild count
         embed.add_field(
-            name=LocaleStr(key="about_command.guild_count"),
-            value=str(len(i.client.guilds)),
+            name=LocaleStr(key="about_command.guild_count"), value=str(len(i.client.guilds))
         )
 
         # ram usage
         memory_usage = self.process.memory_info().rss / 1024**2
         embed.add_field(
-            name=LocaleStr(key="about_command.ram_usage"),
-            value=f"{memory_usage:.2f} MB",
+            name=LocaleStr(key="about_command.ram_usage"), value=f"{memory_usage:.2f} MB"
         )
 
         # uptime
         uptime = discord.utils.format_dt(i.client.uptime, "R")
-        embed.add_field(
-            name=LocaleStr(key="about_command.uptime"),
-            value=uptime,
-        )
+        embed.add_field(name=LocaleStr(key="about_command.uptime"), value=uptime)
 
         # url buttons
         view = View(locale=locale, translator=self.bot.translator, author=None)
@@ -153,14 +144,14 @@ class Others(commands.Cog):
                 url="https://dsc.gg/hoyo-buddy",
                 emoji=DISCORD_WHITE_ICON,
                 row=0,
-            ),
+            )
         )
         view.add_item(
             Button(
                 label=LocaleStr(key="about_command.website"),
                 url="https://seria.is-a.dev/hoyo-buddy",
                 row=1,
-            ),
+            )
         )
         if self.bot.user is not None:
             view.add_item(
@@ -168,21 +159,21 @@ class Others(commands.Cog):
                     label=LocaleStr(key="about_command.invite"),
                     url=f"https://discord.com/oauth2/authorize?client_id={self.bot.user.id}",
                     row=1,
-                ),
+                )
             )
         view.add_item(
             Button(
                 label=LocaleStr(key="about_command.support"),
                 url="https://buymeacoffee.com/seria",
                 row=1,
-            ),
+            )
         )
         view.add_item(
             Button(
                 label=LocaleStr(key="about_command.contribute"),
                 url="https://github.com/seriaati/hoyo-buddy/blob/main/CONTRIBUTING.md",
                 row=1,
-            ),
+            )
         )
 
         # brand image
@@ -193,7 +184,7 @@ class Others(commands.Cog):
         embed.set_image(url="attachment://brand.png")
 
         view.message = await i.edit_original_response(
-            embed=embed, attachments=[image_], view=view, content=await get_dyk(i),
+            embed=embed, attachments=[image_], view=view, content=await get_dyk(i)
         )
 
 

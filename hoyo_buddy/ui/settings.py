@@ -83,7 +83,7 @@ class LanguageSelector(Select["SettingsUI"]):
                 value="auto",
                 emoji="🏳️",
                 default=not current_locale,
-            ),
+            )
         ]
         options.extend(
             [
@@ -94,7 +94,7 @@ class LanguageSelector(Select["SettingsUI"]):
                     default=locale == current_locale,
                 )
                 for locale in HOYO_BUDDY_LOCALES
-            ],
+            ]
         )
         return options
 
@@ -109,10 +109,7 @@ class LanguageSelector(Select["SettingsUI"]):
 
 class DarkModeToggle(ToggleButton["SettingsUI"]):
     def __init__(self, current_toggle: bool) -> None:
-        super().__init__(
-            current_toggle,
-            LocaleStr(key="dark_mode_button_label"),
-        )
+        super().__init__(current_toggle, LocaleStr(key="dark_mode_button_label"))
 
     async def callback(self, i: Interaction) -> Any:
         await super().callback(i)
@@ -122,10 +119,7 @@ class DarkModeToggle(ToggleButton["SettingsUI"]):
 
 class DYKTolggle(ToggleButton[SettingsUI]):
     def __init__(self, current_toggle: bool) -> None:
-        super().__init__(
-            current_toggle,
-            LocaleStr(key="button_label_dyk"),
-        )
+        super().__init__(current_toggle, LocaleStr(key="button_label_dyk"))
 
     async def callback(self, i: Interaction) -> Any:
         await super().callback(i)

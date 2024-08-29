@@ -17,7 +17,7 @@ __all__ = ("draw_genshin_notes_card",)
 
 
 def draw_genshin_notes_card(
-    notes: Notes, locale_: str, translator: Translator, dark_mode: bool,
+    notes: Notes, locale_: str, translator: Translator, dark_mode: bool
 ) -> BytesIO:
     filename = f"{'dark' if dark_mode else 'light'}-gi"
     locale = Locale(locale_)
@@ -26,11 +26,7 @@ def draw_genshin_notes_card(
     drawer = Drawer(draw, folder="gi-notes", dark_mode=dark_mode, translator=translator)
 
     drawer.write(
-        LocaleStr(key="real_time_notes"),
-        size=64,
-        position=(76, 67),
-        style="bold",
-        locale=locale,
+        LocaleStr(key="real_time_notes"), size=64, position=(76, 67), style="bold", locale=locale
     )
 
     drawer.write(
@@ -41,7 +37,7 @@ def draw_genshin_notes_card(
         locale=locale,
     )
     drawer.write(
-        f"{notes.current_resin}/{notes.max_resin}", size=60, position=(110, 460), style="medium",
+        f"{notes.current_resin}/{notes.max_resin}", size=60, position=(110, 460), style="medium"
     )
 
     drawer.write(
@@ -112,9 +108,7 @@ def draw_genshin_notes_card(
         im.paste(icon, pos, icon)
 
         text = (
-            LocaleStr(
-                key="notes-card.gi.expedition-finished",
-            )
+            LocaleStr(key="notes-card.gi.expedition-finished")
             if exped.finished
             else LocaleStr(
                 key="notes-card.gi.expedition-remaining",

@@ -65,7 +65,7 @@ class CheckInUI(View):
                 Button(
                     url=CHECK_IN_URLS[self.client.game],
                     label=LocaleStr(key="make_up_for_checkin_button_label"),
-                ),
+                )
             )
         self.add_item(AutoCheckInToggle(self.account.daily_checkin))
         self.add_item(NotificationSettingsButton())
@@ -143,7 +143,7 @@ class CheckInUI(View):
 
     async def start(self, i: Interaction) -> None:
         embed, self._bytes_obj = await self.get_embed_and_image(
-            i.client.session, i.client.executor, i.client.loop,
+            i.client.session, i.client.executor, i.client.loop
         )
 
         self._bytes_obj.seek(0)
@@ -168,7 +168,7 @@ class CheckInButton(Button[CheckInUI]):
         daily_reward = await client.claim_daily_reward()
 
         embed, self.view._bytes_obj = await self.view.get_embed_and_image(
-            i.client.session, i.client.executor, i.client.loop,
+            i.client.session, i.client.executor, i.client.loop
         )
 
         self.view._bytes_obj.seek(0)
@@ -176,17 +176,14 @@ class CheckInButton(Button[CheckInUI]):
 
         await i.edit_original_response(embed=embed, attachments=[file_])
         embed = client.get_daily_reward_embed(
-            daily_reward, self.view.locale, self.view.translator, blur=True,
+            daily_reward, self.view.locale, self.view.translator, blur=True
         )
         await i.followup.send(embed=embed)
 
 
 class AutoCheckInToggle(ToggleButton[CheckInUI]):
     def __init__(self, current_toggle: bool) -> None:
-        super().__init__(
-            current_toggle,
-            LocaleStr(key="auto_checkin_button_label"),
-        )
+        super().__init__(current_toggle, LocaleStr(key="auto_checkin_button_label"))
 
     async def callback(self, i: Interaction) -> Any:
         await super().callback(i)
@@ -197,52 +194,42 @@ class AutoCheckInToggle(ToggleButton[CheckInUI]):
 class NotificationSettingsButton(Button[CheckInUI]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr(key="notification_settings_button_label"),
-            emoji=emojis.SETTINGS,
-            row=1,
+            label=LocaleStr(key="notification_settings_button_label"), emoji=emojis.SETTINGS, row=1
         )
 
     async def callback(self, i: Interaction) -> Any:
         await self.view.account.fetch_related("notif_settings")
         go_back_button = GoBackButton(
-            self.view.children,
-            self.view.get_embeds(i.message),
-            self.view._bytes_obj,
+            self.view.children, self.view.get_embeds(i.message), self.view._bytes_obj
         )
         self.view.clear_items()
         self.view.add_item(go_back_button)
         self.view.add_item(
-            NotifyOnFailureToggle(self.view.account.notif_settings.notify_on_checkin_failure),
+            NotifyOnFailureToggle(self.view.account.notif_settings.notify_on_checkin_failure)
         )
         self.view.add_item(
-            NotifyOnSuccessToggle(self.view.account.notif_settings.notify_on_checkin_success),
+            NotifyOnSuccessToggle(self.view.account.notif_settings.notify_on_checkin_success)
         )
         await i.response.edit_message(view=self.view)
 
 
 class NotifyOnFailureToggle(ToggleButton[CheckInUI]):
     def __init__(self, current_toggle: bool) -> None:
-        super().__init__(
-            current_toggle,
-            LocaleStr(key="notify_on_failure_button_label"),
-        )
+        super().__init__(current_toggle, LocaleStr(key="notify_on_failure_button_label"))
 
     async def callback(self, i: Interaction) -> Any:
         await super().callback(i)
         await AccountNotifSettings.filter(account=self.view.account).update(
-            notify_on_checkin_failure=self.current_toggle,
+            notify_on_checkin_failure=self.current_toggle
         )
 
 
 class NotifyOnSuccessToggle(ToggleButton[CheckInUI]):
     def __init__(self, current_toggle: bool) -> None:
-        super().__init__(
-            current_toggle,
-            LocaleStr(key="notify_on_success_button_label"),
-        )
+        super().__init__(current_toggle, LocaleStr(key="notify_on_success_button_label"))
 
     async def callback(self, i: Interaction) -> Any:
         await super().callback(i)
         await AccountNotifSettings.filter(account=self.view.account).update(
-            notify_on_checkin_success=self.current_toggle,
+            notify_on_checkin_success=self.current_toggle
         )

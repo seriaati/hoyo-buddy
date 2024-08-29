@@ -15,11 +15,7 @@ if TYPE_CHECKING:
 
 class ExplorationCard:
     def __init__(
-        self,
-        user: PartialGenshinUserStats,
-        dark_mode: bool,
-        locale: str,
-        translator: Translator,
+        self, user: PartialGenshinUserStats, dark_mode: bool, locale: str, translator: Translator
     ) -> None:
         self._user = user
         self._dark_mode = dark_mode
@@ -38,32 +34,21 @@ class ExplorationCard:
         return self._drawer.open_asset(f"{name}_shadow.png")
 
     def _write_title(
-        self, text: LocaleStr | str, *, position: tuple[int, int], drawer: Drawer,
+        self, text: LocaleStr | str, *, position: tuple[int, int], drawer: Drawer
     ) -> None:
-        drawer.write(
-            text,
-            position=position,
-            size=48,
-            style="medium",
-        )
+        drawer.write(text, position=position, size=48, style="medium")
 
     def _write_small_text(
-        self, text: LocaleStr | str, *, position: tuple[int, int], drawer: Drawer,
+        self, text: LocaleStr | str, *, position: tuple[int, int], drawer: Drawer
     ) -> None:
-        drawer.write(
-            text,
-            position=position,
-            size=26,
-            style="regular",
-            anchor="lm",
-        )
+        drawer.write(text, position=position, size=26, style="regular", anchor="lm")
 
     def _get_exploration(self, exploration_id: int) -> Exploration | None:
         return next((e for e in self._user.explorations if e.id == exploration_id), None)
 
     def _get_offering_text(self, exploration: Exploration | None) -> str:
         level_str = LevelStr(
-            0 if exploration is None else exploration.offerings[0].level,
+            0 if exploration is None else exploration.offerings[0].level
         ).translate(self._translator, self.locale)
         if exploration is None:
             return f"{self._placeholder}: {level_str}"
@@ -78,11 +63,7 @@ class ExplorationCard:
             locale=self._drawer.locale,
             translator=self._drawer.translator,
         )
-        self._write_title(
-            LocaleStr(key="exploration.waypoints"),
-            position=(35, 20),
-            drawer=drawer,
-        )
+        self._write_title(LocaleStr(key="exploration.waypoints"), position=(35, 20), drawer=drawer)
 
         texts: dict[str, tuple[int, int]] = {
             str(self._user.stats.unlocked_waypoints): (75, 193),
@@ -109,11 +90,7 @@ class ExplorationCard:
             locale=self._drawer.locale,
             translator=self._drawer.translator,
         )
-        self._write_title(
-            LocaleStr(key="exploration.chests"),
-            position=(21, 20),
-            drawer=drawer,
-        )
+        self._write_title(LocaleStr(key="exploration.chests"), position=(21, 20), drawer=drawer)
 
         chest_types: dict[LocaleStr, tuple[int, int]] = {
             LocaleStr(key="exploration.common_chests"): (78, 167),
@@ -181,10 +158,7 @@ class ExplorationCard:
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 161),
-            LocaleStr(
-                key="exploration.anemoculi",
-                anemoculi=self._user.stats.anemoculi,
-            ): (75, 207),
+            LocaleStr(key="exploration.anemoculi", anemoculi=self._user.stats.anemoculi): (75, 207),
             LocaleStr(
                 key="exploration.reputation",
                 reputation=0 if exploration is None else exploration.offerings[0].level,
@@ -199,10 +173,7 @@ class ExplorationCard:
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 161),
-            LocaleStr(
-                key="exploration.geoculi",
-                geoculi=self._user.stats.geoculi,
-            ): (75, 207),
+            LocaleStr(key="exploration.geoculi", geoculi=self._user.stats.geoculi): (75, 207),
             LocaleStr(
                 key="exploration.reputation",
                 reputation=0 if exploration is None else exploration.offerings[0].level,
@@ -217,10 +188,10 @@ class ExplorationCard:
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 117),
-            LocaleStr(
-                key="exploration.electroculi",
-                electroculi=self._user.stats.electroculi,
-            ): (75, 163),
+            LocaleStr(key="exploration.electroculi", electroculi=self._user.stats.electroculi): (
+                75,
+                163,
+            ),
             LocaleStr(
                 key="exploration.reputation",
                 reputation=0 if exploration is None else exploration.offerings[1].level,
@@ -236,10 +207,10 @@ class ExplorationCard:
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 117),
-            LocaleStr(
-                key="exploration.dendroculi",
-                dendroculi=self._user.stats.dendroculi,
-            ): (75, 163),
+            LocaleStr(key="exploration.dendroculi", dendroculi=self._user.stats.dendroculi): (
+                75,
+                163,
+            ),
             LocaleStr(
                 key="exploration.reputation",
                 reputation=0 if exploration is None else exploration.offerings[1].level,
@@ -255,10 +226,7 @@ class ExplorationCard:
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 117),
-            LocaleStr(
-                key="exploration.hydroculi",
-                hydroculi=self._user.stats.hydroculi,
-            ): (75, 163),
+            LocaleStr(key="exploration.hydroculi", hydroculi=self._user.stats.hydroculi): (75, 163),
             LocaleStr(
                 key="exploration.reputation",
                 reputation=0 if exploration is None else exploration.offerings[1].level,
@@ -279,14 +247,10 @@ class ExplorationCard:
         )
         self._write_title(self._placeholder, position=(34, 23), drawer=drawer)
         self._write_small_text(
-            LocaleStr(key="exploration.placeholder"),
-            position=(35, 113),
-            drawer=drawer,
+            LocaleStr(key="exploration.placeholder"), position=(35, 113), drawer=drawer
         )
         self._write_small_text(
-            LocaleStr(key="exploration.placeholder_quote"),
-            position=(34, 181),
-            drawer=drawer,
+            LocaleStr(key="exploration.placeholder_quote"), position=(34, 181), drawer=drawer
         )
         return im
 
@@ -296,7 +260,7 @@ class ExplorationCard:
             LocaleStr(
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
-            ): (75, 117),
+            ): (75, 117)
         }
         return self._draw_exploration_card("seaOfBygoneEras", exploration, texts)
 
@@ -355,14 +319,14 @@ class ExplorationCard:
             LocaleStr(
                 key="exploration.progress",
                 progress=0 if exploration is None else exploration.explored,
-            ): (73, 123),
+            ): (73, 123)
         }
         return self._draw_exploration_card("enkanomiya", exploration, texts)
 
     def draw(self) -> BytesIO:
         mode_str = "dark" if self._dark_mode else "light"
         self._im = Drawer.open_image(
-            f"hoyo-buddy-assets/assets/gi-exploration/background_{mode_str}.png",
+            f"hoyo-buddy-assets/assets/gi-exploration/background_{mode_str}.png"
         )
         draw = ImageDraw.Draw(self._im)
         self._drawer = Drawer(
@@ -374,10 +338,7 @@ class ExplorationCard:
         )
 
         self._drawer.write(
-            LocaleStr(key="exploration.title"),
-            position=(114, 81),
-            size=72,
-            style="bold",
+            LocaleStr(key="exploration.title"), position=(114, 81), size=72, style="bold"
         )
         shadow_offset = 5
 

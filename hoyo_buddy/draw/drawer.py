@@ -140,7 +140,7 @@ class Drawer:
 
     @classmethod
     def calc_dynamic_fontsize(
-        cls, text: str, max_width: int, max_size: int, font: ImageFont.FreeTypeFont,
+        cls, text: str, max_width: int, max_size: int, font: ImageFont.FreeTypeFont
     ) -> int:
         size = max_size
         while font.getlength(text) > max_width:
@@ -150,7 +150,7 @@ class Drawer:
 
     @classmethod
     def blend_color(
-        cls, foreground: tuple[int, int, int], background: tuple[int, int, int], opactity: float,
+        cls, foreground: tuple[int, int, int], background: tuple[int, int, int], opactity: float
     ) -> tuple[int, int, int]:
         opactity = 1 - opactity
         return (
@@ -177,10 +177,9 @@ class Drawer:
         image = image.resize((new_width, new_height), resample=Image.Resampling.LANCZOS)
         return image.crop((left, top, right, bottom))
 
-
     @staticmethod
     def ratio_resize(
-        image: Image.Image, *, width: int | None = None, height: int | None = None,
+        image: Image.Image, *, width: int | None = None, height: int | None = None
     ) -> Image.Image:
         """Resize an image to a targeted width/height while maintaining the aspect ratio."""
         if width is not None and height is not None:
@@ -226,7 +225,7 @@ class Drawer:
 
     @staticmethod
     def apply_color_opacity(
-        color: tuple[int, int, int], opacity: float,
+        color: tuple[int, int, int], opacity: float
     ) -> tuple[int, int, int, int]:
         return (*color, round(255 * opacity))
 
@@ -289,7 +288,7 @@ class Drawer:
 
     @classmethod
     def mask_image_with_color(
-        cls, image: Image.Image, color: tuple[int, int, int], *, opacity: float = 1.0,
+        cls, image: Image.Image, color: tuple[int, int, int], *, opacity: float = 1.0
     ) -> Image.Image:
         if opacity != 1.0:
             mask = Image.new("RGBA", image.size, cls.apply_color_opacity(color, opacity))
@@ -300,7 +299,7 @@ class Drawer:
 
     @classmethod
     def _wrap_text(
-        cls, text: str, *, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont,
+        cls, text: str, *, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont
     ) -> str:
         lines: list[str] = [""]
         for word in text.split():
@@ -317,15 +316,13 @@ class Drawer:
         return "\n".join(lines)
 
     def _get_text_color(
-        self,
-        color: tuple[int, int, int] | None,
-        emphasis: Literal["high", "medium", "low"],
+        self, color: tuple[int, int, int] | None, emphasis: Literal["high", "medium", "low"]
     ) -> tuple[int, int, int, int]:
         if color is not None:
             return self.apply_color_opacity(color, EMPHASIS_OPACITY[emphasis])
 
         return self.apply_color_opacity(
-            WHITE if self.dark_mode else BLACK, EMPHASIS_OPACITY[emphasis],
+            WHITE if self.dark_mode else BLACK, EMPHASIS_OPACITY[emphasis]
         )
 
     def _get_font(
@@ -369,7 +366,7 @@ class Drawer:
 
     @staticmethod
     def open_image(
-        file_path: pathlib.Path | str, size: tuple[int, int] | None = None,
+        file_path: pathlib.Path | str, size: tuple[int, int] | None = None
     ) -> Image.Image:
         if isinstance(file_path, str):
             file_path = pathlib.Path(file_path)
@@ -416,7 +413,7 @@ class Drawer:
                 raise RuntimeError(msg)
 
             translated_text = self.translator.translate(
-                text, locale or self.locale, title_case=title_case,
+                text, locale or self.locale, title_case=title_case
             )
 
         font = self._get_font(size, style, locale=locale, sans=sans, gothic=gothic)
@@ -426,7 +423,7 @@ class Drawer:
                 translated_text = self._shorten_text(translated_text, max_width, font)
             else:
                 translated_text = self._wrap_text(
-                    translated_text, max_width=max_width, max_lines=max_lines, font=font,
+                    translated_text, max_width=max_width, max_lines=max_lines, font=font
                 )
 
         if not no_write:
@@ -441,7 +438,7 @@ class Drawer:
             )
 
         textbbox = self.draw.textbbox(
-            position, translated_text, font=font, anchor=anchor, font_size=size,
+            position, translated_text, font=font, anchor=anchor, font_size=size
         )
         # There is a bug where the textbbox may return a float value
         textbbox = (int(i) for i in textbbox)
@@ -543,4 +540,3 @@ class Drawer:
         result.alpha_composite(colored_blob)
         result.alpha_composite(colored_pattern)
         return result.rotate(rotation, resample=Image.Resampling.BICUBIC, expand=True)
-

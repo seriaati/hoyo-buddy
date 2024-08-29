@@ -42,7 +42,7 @@ class BaseClient:
 
     @staticmethod
     def remove_character_from_cache(
-        cache: dict[str, Any], character_id: str, game: enka.Game,
+        cache: dict[str, Any], character_id: str, game: enka.Game
     ) -> None:
         """Remove the character from the cache.
 
@@ -67,11 +67,7 @@ class BaseClient:
                     break
 
     def _update_cache(
-        self,
-        game: enka.Game,
-        *,
-        cache: dict[str, Any],
-        data: dict[str, Any],
+        self, game: enka.Game, *, cache: dict[str, Any], data: dict[str, Any]
     ) -> dict[str, Any]:
         if not cache:
             return data
@@ -124,14 +120,14 @@ class BaseClient:
 
     @overload
     async def fetch_showcase(
-        self, client: enka.HSRClient, uid: int,
+        self, client: enka.HSRClient, uid: int
     ) -> tuple[enka.hsr.ShowcaseResponse, bool]: ...
     @overload
     async def fetch_showcase(
-        self, client: enka.GenshinClient, uid: int,
+        self, client: enka.GenshinClient, uid: int
     ) -> tuple[enka.gi.ShowcaseResponse, bool]: ...
     async def fetch_showcase(
-        self, client: enka.HSRClient | enka.GenshinClient, uid: int,
+        self, client: enka.HSRClient | enka.GenshinClient, uid: int
     ) -> tuple[enka.hsr.ShowcaseResponse | enka.gi.ShowcaseResponse, bool]:
         """Fetch the showcase data for the given UID.
 

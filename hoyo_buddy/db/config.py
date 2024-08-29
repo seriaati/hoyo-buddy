@@ -7,14 +7,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DB_CONFIG = {
-    "connections": {
-        "default": os.environ["DB_URL"],
-    },
+    "connections": {"default": os.environ["DB_URL"]},
     "apps": {
         "models": {
             "models": ["hoyo_buddy.db.models", "aerich.models"],
             "default_connection": "default",
-        },
+        }
     },
     "use_tz": False,
     "minsize": 1,

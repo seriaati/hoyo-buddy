@@ -106,7 +106,7 @@ class AbyssEnemyView(View):
             chamber = floor.chambers[self._chamber_index]
 
             embed = client.get_abyss_chamber_embed_with_floor_info(
-                floor, self._floor_index, chamber, self._chamber_index, abyss.blessing,
+                floor, self._floor_index, chamber, self._chamber_index, abyss.blessing
             )
             embed.set_image(url="attachment://enemies.webp")
 

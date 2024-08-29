@@ -9,10 +9,7 @@ from genshin.models import ZZZPartialAgent
 from loguru import logger
 from seria.utils import read_yaml
 
-from hoyo_buddy.constants import (
-    LOCALE_TO_GI_CARD_API_LANG,
-    LOCALE_TO_HSR_CARD_API_LANG,
-)
+from hoyo_buddy.constants import LOCALE_TO_GI_CARD_API_LANG, LOCALE_TO_HSR_CARD_API_LANG
 from hoyo_buddy.db.models import Settings, get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
@@ -278,12 +275,12 @@ class ProfileView(View):
                     self.cache_extras,
                     self._builds,
                     self._account,
-                ),
+                )
             )
         self.add_item(BuildSelect())
 
     async def _draw_src_character_card(
-        self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings,
+        self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
     ) -> BytesIO:
         """Draw character card in StarRailCard template."""
         cache_extra = self.cache_extras.get(str(character.id))
@@ -318,7 +315,7 @@ class ProfileView(View):
             return BytesIO(await resp.read())
 
     async def _draw_enka_card(
-        self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings,
+        self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
     ) -> BytesIO:
         """Draw GI character card in EnkaCard2, ENCard, enka-card templates."""
         cache_extra = self.cache_extras.get(str(character.id))
@@ -453,7 +450,7 @@ class ProfileView(View):
         template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
         if template_num == 2:
             temp2_card_data = await read_yaml(
-                "hoyo-buddy-assets/assets/zzz-build-card/agent_data_temp2.yaml",
+                "hoyo-buddy-assets/assets/zzz-build-card/agent_data_temp2.yaml"
             )
             agent_temp1_data = self._card_data.get(str(character.id))
             agent_temp2_data = temp2_card_data.get(str(character.id))
@@ -483,7 +480,7 @@ class ProfileView(View):
         )
 
     async def draw_card(
-        self, i: Interaction, card_settings: CardSettings, *, character: Character | None = None,
+        self, i: Interaction, card_settings: CardSettings, *, character: Character | None = None
     ) -> io.BytesIO:
         """Draw build card for a single character."""
         character_id = self.character_ids[0]
@@ -499,38 +496,18 @@ class ProfileView(View):
         if self.game is Game.STARRAIL:
             if "hb" in template:
                 return await self._draw_hb_hsr_character_card(
-                    i.client.session,
-                    i.client.executor,
-                    i.client.loop,
-                    character,
-                    card_settings,
+                    i.client.session, i.client.executor, i.client.loop, character, card_settings
                 )
-            return await self._draw_src_character_card(
-                i.client.session,
-                character,
-                card_settings,
-            )
+            return await self._draw_src_character_card(i.client.session, character, card_settings)
         if self.game is Game.GENSHIN:
             if "hb" in template:
                 return await self._draw_hb_gi_character_card(
-                    i.client.session,
-                    i.client.executor,
-                    i.client.loop,
-                    character,
-                    card_settings,
+                    i.client.session, i.client.executor, i.client.loop, character, card_settings
                 )
-            return await self._draw_enka_card(
-                i.client.session,
-                character,
-                card_settings,
-            )
+            return await self._draw_enka_card(i.client.session, character, card_settings)
         if self.game is Game.ZZZ:
             return await self._draw_hb_zzz_character_card(
-                i.client.session,
-                i.client.executor,
-                i.client.loop,
-                character,
-                card_settings,
+                i.client.session, i.client.executor, i.client.loop, character, card_settings
             )
 
         msg = f"draw_card not implemented for game {self.game} template {template}"

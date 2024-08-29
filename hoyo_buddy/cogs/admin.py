@@ -94,7 +94,7 @@ class Admin(commands.Cog):
         message = await ctx.send("Syncing commands...")
         synced_commands = await self.bot.tree.sync()
         await write_json(
-            "hoyo_buddy/bot/data/synced_commands.json", {c.name: c.id for c in synced_commands},
+            "hoyo_buddy/bot/data/synced_commands.json", {c.name: c.id for c in synced_commands}
         )
         await self.bot.translator.load_synced_commands_json()
         await message.edit(content=f"Synced {len(synced_commands)} commands.")
@@ -148,7 +148,7 @@ class Admin(commands.Cog):
             [
                 f"- [{account.id}] {get_game_emoji(account.game)} {account.uid}, {account.username}, {account.region}"
                 for account in accounts
-            ],
+            ]
         )
         await ctx.send(msg)
 

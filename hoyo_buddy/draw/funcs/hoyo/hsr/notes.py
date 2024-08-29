@@ -17,7 +17,7 @@ __all__ = ("draw_hsr_notes_card",)
 
 
 def draw_hsr_notes_card(
-    notes: StarRailNote, locale_: str, translator: Translator, dark_mode: bool,
+    notes: StarRailNote, locale_: str, translator: Translator, dark_mode: bool
 ) -> BytesIO:
     locale = Locale(locale_)
     filename = f"{'dark' if dark_mode else 'light'}-hsr"
@@ -26,11 +26,7 @@ def draw_hsr_notes_card(
     drawer = Drawer(draw, folder="hsr-notes", dark_mode=dark_mode, translator=translator)
 
     drawer.write(
-        LocaleStr(key="real_time_notes"),
-        size=64,
-        position=(76, 67),
-        style="bold",
-        locale=locale,
+        LocaleStr(key="real_time_notes"), size=64, position=(76, 67), style="bold", locale=locale
     )
 
     drawer.write(
@@ -55,10 +51,7 @@ def draw_hsr_notes_card(
         locale=locale,
     )
     drawer.write(
-        f"{notes.current_stamina}/{notes.max_stamina}",
-        size=60,
-        position=(110, 860),
-        style="medium",
+        f"{notes.current_stamina}/{notes.max_stamina}", size=60, position=(110, 860), style="medium"
     )
 
     drawer.write(
@@ -90,10 +83,7 @@ def draw_hsr_notes_card(
         locale=locale,
     )
     textbbox = drawer.write(
-        f"{notes.current_reserve_stamina}/2400",
-        size=60,
-        position=(596, 860),
-        style="medium",
+        f"{notes.current_reserve_stamina}/2400", size=60, position=(596, 860), style="medium"
     )
 
     exped_padding = 201
@@ -108,9 +98,7 @@ def draw_hsr_notes_card(
         im.paste(icon, pos, icon)
 
         text = (
-            LocaleStr(
-                key="notes-card.gi.expedition-finished",
-            )
+            LocaleStr(key="notes-card.gi.expedition-finished")
             if exped.finished
             else LocaleStr(
                 key="notes-card.gi.expedition-remaining",

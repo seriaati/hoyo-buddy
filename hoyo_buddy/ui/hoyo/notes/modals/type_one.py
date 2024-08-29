@@ -11,10 +11,7 @@ if TYPE_CHECKING:
 
 
 class TypeOneModal(Modal):
-    enabled = TextInput(
-        label=LocaleStr(key="notif_modal.enabled.label"),
-        is_bool=True,
-    )
+    enabled = TextInput(label=LocaleStr(key="notif_modal.enabled.label"), is_bool=True)
     threshold = TextInput(
         label=LocaleStr(key="notif_modal.threshold.label"),
         is_digit=True,

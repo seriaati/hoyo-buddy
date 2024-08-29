@@ -32,9 +32,7 @@ class NicknameModal(Modal):
 class EditNicknameButton(Button["AccountManager"]):
     def __init__(self) -> None:
         super().__init__(
-            custom_id="edit_nickname",
-            emoji=EDIT,
-            label=LocaleStr(key="edit_nickname_modal_title"),
+            custom_id="edit_nickname", emoji=EDIT, label=LocaleStr(key="edit_nickname_modal_title")
         )
 
     async def callback(self, i: Interaction) -> None:

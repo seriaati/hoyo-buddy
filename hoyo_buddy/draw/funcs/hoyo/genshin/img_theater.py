@@ -41,30 +41,16 @@ class ImgTheaterCard:
 
         stats = self._theater.stats
         lines = (
+            LocaleStr(key="img_theater_stats_line_one", act=stats.best_record),
+            LocaleStr(key="img_theater_stats_line_two", flower=stats.fantasia_flowers_used),
             LocaleStr(
-                key="img_theater_stats_line_one",
-                act=stats.best_record,
+                key="img_theater_stats_line_three", support=stats.audience_support_trigger_num
             ),
-            LocaleStr(
-                key="img_theater_stats_line_two",
-                flower=stats.fantasia_flowers_used,
-            ),
-            LocaleStr(
-                key="img_theater_stats_line_three",
-                support=stats.audience_support_trigger_num,
-            ),
-            LocaleStr(
-                key="img_theater_stats_line_four",
-                assist=stats.player_assists,
-            ),
+            LocaleStr(key="img_theater_stats_line_four", assist=stats.player_assists),
         )
         line_height = 45
         for i, line in enumerate(lines):
-            self._drawer.write(
-                line,
-                size=24,
-                position=(112, 190 + i * line_height),
-            )
+            self._drawer.write(line, size=24, position=(112, 190 + i * line_height))
 
     def _write_legend_block_texts(self) -> None:
         self._drawer.write(
@@ -128,27 +114,17 @@ class ImgTheaterCard:
             block.paste(const_flair, (92, 0), const_flair)
             const_text = {
                 genshin.models.TheaterCharaType.NORMAL: str(
-                    self._chara_consts.get(character.id, "?"),
+                    self._chara_consts.get(character.id, "?")
                 ),
                 genshin.models.TheaterCharaType.SUPPORT: "?",
                 genshin.models.TheaterCharaType.TRIAL: "0",
             }
             text = const_text[character.type]
-            block_drawer.write(
-                text,
-                size=18,
-                position=(107, 15),
-                anchor="mm",
-                style="bold",
-            )
+            block_drawer.write(text, size=18, position=(107, 15), anchor="mm", style="bold")
 
             block.paste(level_flair, (2, 98), level_flair)
             block_drawer.write(
-                str(character.level),
-                size=18,
-                position=(27, 110),
-                anchor="mm",
-                style="bold",
+                str(character.level), size=18, position=(27, 110), anchor="mm", style="bold"
             )
 
             self._im.paste(block, start_pos, block)
@@ -173,7 +149,7 @@ class ImgTheaterCard:
 
         for i, act in enumerate(self._theater.acts):
             self._draw_act_block(
-                act, (start_pos[0] + i % 2 * x_padding, start_pos[1] + i // 2 * y_padding),
+                act, (start_pos[0] + i % 2 * x_padding, start_pos[1] + i // 2 * y_padding)
             )
 
         buffer = io.BytesIO()

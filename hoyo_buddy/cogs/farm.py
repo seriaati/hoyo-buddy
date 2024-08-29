@@ -30,17 +30,17 @@ class Farm(
     @app_commands.command(
         name=app_commands.locale_str("view"),
         description=app_commands.locale_str(
-            "View farmable domains in Genshin Impact", key="farm_view_command_description",
+            "View farmable domains in Genshin Impact", key="farm_view_command_description"
         ),
     )
     @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
     )
     @app_commands.describe(
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
-        ),
+        )
     )
     async def farm_view_command(
         self,
@@ -77,7 +77,7 @@ class Farm(
     )
     @app_commands.describe(
         query=app_commands.locale_str(
-            "Query to search for", key="search_command_query_param_description",
+            "Query to search for", key="search_command_query_param_description"
         ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -98,7 +98,7 @@ class Farm(
     @app_commands.command(
         name=app_commands.locale_str("remove"),
         description=app_commands.locale_str(
-            "Remove character/weapon from farm reminder list", key="farm_remove_command_description",
+            "Remove character/weapon from farm reminder list", key="farm_remove_command_description"
         ),
     )
     @app_commands.rename(
@@ -107,7 +107,7 @@ class Farm(
     )
     @app_commands.describe(
         query=app_commands.locale_str(
-            "Query to search for", key="search_command_query_param_description",
+            "Query to search for", key="search_command_query_param_description"
         ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -133,13 +133,13 @@ class Farm(
         ),
     )
     @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
     )
     @app_commands.describe(
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
-        ),
+        )
     )
     async def farm_reminder_command(
         self,
@@ -155,17 +155,17 @@ class Farm(
     @farm_add_command.autocomplete("account")
     @farm_reminder_command.autocomplete("account")
     async def account_autocomplete(
-        self, i: Interaction, current: str,
+        self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         user: User = i.namespace.user
         return await self.bot.get_account_autocomplete(
-            user, i.user.id, current, locale, self.bot.translator, games=(Game.GENSHIN,),
+            user, i.user.id, current, locale, self.bot.translator, games=(Game.GENSHIN,)
         )
 
     @farm_remove_command.autocomplete("account")
     async def account_with_id_autocomplete(
-        self, i: Interaction, current: str,
+        self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         user: User = i.namespace.user
@@ -188,11 +188,11 @@ class Farm(
             weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
         except KeyError:
             return self.bot.get_error_autocomplete(
-                LocaleStr(key="search_autocomplete_not_setup"), locale,
+                LocaleStr(key="search_autocomplete_not_setup"), locale
             )
 
         choice_dict = dict(
-            characters.get(locale, characters[Locale.american_english]).items(),
+            characters.get(locale, characters[Locale.american_english]).items()
         ) | dict(weapons.get(locale, weapons[Locale.american_english]).items())
 
         choices = [
@@ -206,13 +206,13 @@ class Farm(
 
     @farm_remove_command.autocomplete("query")
     async def user_query_autocomplete(
-        self, i: Interaction, current: str,
+        self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         account_namespace: str | None = i.namespace.account
 
         if account_namespace is None:
             return self.bot.get_error_autocomplete(
-                LocaleStr(key="search_autocomplete_no_results"), await get_locale(i),
+                LocaleStr(key="search_autocomplete_no_results"), await get_locale(i)
             )
         # Find [account_id] from account_namespace
         account_id = int(account_namespace.split("]")[0].strip("["))
@@ -221,7 +221,7 @@ class Farm(
         farm_notify = await FarmNotify.get_or_none(account_id=account_id)
         if farm_notify is None:
             return self.bot.get_error_autocomplete(
-                LocaleStr(key="search_autocomplete_no_results"), locale,
+                LocaleStr(key="search_autocomplete_no_results"), locale
             )
 
         characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
@@ -229,14 +229,14 @@ class Farm(
 
         if Locale.american_english not in characters:
             return self.bot.get_error_autocomplete(
-                LocaleStr(key="search_autocomplete_not_setup"), locale,
+                LocaleStr(key="search_autocomplete_not_setup"), locale
             )
 
         try:
             choice_dict = dict(characters[locale].items()) | dict(weapons[locale].items())
         except KeyError:
             choice_dict = dict(characters[Locale.american_english].items()) | dict(
-                weapons[Locale.american_english].items(),
+                weapons[Locale.american_english].items()
             )
 
         choices = [
@@ -247,7 +247,7 @@ class Farm(
 
         if not choices:
             return self.bot.get_error_autocomplete(
-                LocaleStr(key="search_autocomplete_no_results"), locale,
+                LocaleStr(key="search_autocomplete_no_results"), locale
             )
 
         return choices[:25]

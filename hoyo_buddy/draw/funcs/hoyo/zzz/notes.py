@@ -18,10 +18,10 @@ def get_nearest_battery_level(current: int, max_battery: int) -> int:
 
 
 def draw_zzz_notes(
-    notes: ZZZNotes, locale_: str, translator: Translator, dark_mode: bool,
+    notes: ZZZNotes, locale_: str, translator: Translator, dark_mode: bool
 ) -> BytesIO:
     battery_level = get_nearest_battery_level(
-        notes.battery_charge.current, notes.battery_charge.max,
+        notes.battery_charge.current, notes.battery_charge.max
     )
 
     filename = f"{'dark' if dark_mode else 'light'}_notes_{battery_level}"
@@ -37,10 +37,7 @@ def draw_zzz_notes(
 
     # Title
     drawer.write(
-        LocaleStr(key="notes-card.zzz.title"),
-        size=84,
-        style="black_italic",
-        position=(76, 44),
+        LocaleStr(key="notes-card.zzz.title"), size=84, style="black_italic", position=(76, 44)
     )
 
     # Battery charge
@@ -73,15 +70,10 @@ def draw_zzz_notes(
     text = LocaleStr(
         key="scratch_card.incomplete"
         if not notes.scratch_card_completed
-        else "notes-card.gi.completed",
+        else "notes-card.gi.completed"
     )
 
-    drawer.write(
-        text,
-        size=32,
-        style="medium",
-        position=(598, 487),
-    )
+    drawer.write(text, size=32, style="medium", position=(598, 487))
 
     # Video store management
     drawer.write(
@@ -100,12 +92,7 @@ def draw_zzz_notes(
     else:
         key = "video_store.waiting_to_open"
 
-    drawer.write(
-        LocaleStr(key=key),
-        size=32,
-        style="medium",
-        position=(112, 890),
-    )
+    drawer.write(LocaleStr(key=key), size=32, style="medium", position=(112, 890))
 
     # Engagement
     drawer.write(

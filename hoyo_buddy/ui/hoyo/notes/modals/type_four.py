@@ -11,10 +11,7 @@ if TYPE_CHECKING:
 
 
 class TypeFourModal(Modal):
-    enabled = TextInput(
-        label=LocaleStr(key="notif_modal.enabled.label"),
-        is_bool=True,
-    )
+    enabled = TextInput(label=LocaleStr(key="notif_modal.enabled.label"), is_bool=True)
     notify_interval = TextInput(
         label=LocaleStr(key="notif_modal.notify_interval.label"),
         is_digit=True,
@@ -41,11 +38,7 @@ class TypeFourModal(Modal):
     )
 
     def __init__(
-        self,
-        notes_notify: NotesNotify | None,
-        *,
-        title: LocaleStr,
-        min_notify_interval: int,
+        self, notes_notify: NotesNotify | None, *, title: LocaleStr, min_notify_interval: int
     ) -> None:
         self.notify_interval.min_value = min_notify_interval
         if notes_notify is not None:

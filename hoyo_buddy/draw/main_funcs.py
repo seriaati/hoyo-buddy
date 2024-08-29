@@ -46,13 +46,10 @@ if TYPE_CHECKING:
 
 
 async def draw_item_list_card(
-    draw_input: DrawInput,
-    items: list[ItemWithDescription] | list[ItemWithTrailing],
+    draw_input: DrawInput, items: list[ItemWithDescription] | list[ItemWithTrailing]
 ) -> File:
     await download_images(
-        [item.icon for item in items if item.icon is not None],
-        "item-list",
-        draw_input.session,
+        [item.icon for item in items if item.icon is not None], "item-list", draw_input.session
     )
     with timing("draw", tags={"type": "item_list_card"}):
         buffer = await draw_input.loop.run_in_executor(
@@ -70,10 +67,7 @@ async def draw_checkin_card(draw_input: DrawInput, rewards: list[Reward]) -> Byt
     await download_images([r.icon for r in rewards], "check-in", draw_input.session)
     with timing("draw", tags={"type": "checkin_card"}):
         return await draw_input.loop.run_in_executor(
-            draw_input.executor,
-            funcs.draw_checkin_card,
-            rewards,
-            draw_input.dark_mode,
+            draw_input.executor, funcs.draw_checkin_card, rewards, draw_input.dark_mode
         )
 
 
@@ -122,7 +116,7 @@ async def draw_hsr_build_card(
 
 
 async def draw_hsr_notes_card(
-    draw_input: DrawInput, notes: StarRailNote, translator: Translator,
+    draw_input: DrawInput, notes: StarRailNote, translator: Translator
 ) -> BytesIO:
     await download_images(
         [exped.item_url for exped in notes.expeditions],
@@ -196,7 +190,7 @@ async def draw_gi_build_card(
 
 
 async def draw_gi_notes_card(
-    draw_input: DrawInput, notes: GenshinNote, translator: Translator,
+    draw_input: DrawInput, notes: GenshinNote, translator: Translator
 ) -> BytesIO:
     await download_images(
         [exped.character_icon for exped in notes.expeditions],
@@ -215,18 +209,14 @@ async def draw_gi_notes_card(
 
 
 async def draw_farm_card(
-    draw_input: DrawInput, farm_data: list[FarmData], translator: Translator,
+    draw_input: DrawInput, farm_data: list[FarmData], translator: Translator
 ) -> File:
     image_urls = (
         [r.icon for data in farm_data for r in data.domain.rewards]
         + [c.icon for data in farm_data for c in data.characters]
         + [w.icon for data in farm_data for w in data.weapons]
     )
-    await download_images(
-        image_urls,
-        folder="farm",
-        session=draw_input.session,
-    )
+    await download_images(image_urls, folder="farm", session=draw_input.session)
     with timing("draw", tags={"type": "farm_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
@@ -331,11 +321,7 @@ async def draw_spiral_abyss_card(
     await download_images(urls, "abyss", draw_input.session)
     with timing("draw", tags={"type": "spiral_abyss_card"}):
         card = funcs.genshin.AbyssCard(
-            draw_input.dark_mode,
-            draw_input.locale.value,
-            translator,
-            abyss,
-            abyss_characters,
+            draw_input.dark_mode, draw_input.locale.value, translator, abyss, abyss_characters
         )
         buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
@@ -343,15 +329,13 @@ async def draw_spiral_abyss_card(
 
 
 async def draw_exploration_card(
-    draw_input: DrawInput,
-    user: PartialGenshinUserStats,
-    translator: Translator,
+    draw_input: DrawInput, user: PartialGenshinUserStats, translator: Translator
 ) -> File:
     with timing("draw", tags={"type": "exploration_card"}):
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.genshin.ExplorationCard(
-                user, draw_input.dark_mode, draw_input.locale.value, translator,
+                user, draw_input.dark_mode, draw_input.locale.value, translator
             ).draw,
         )
     buffer.seek(0)
@@ -391,7 +375,7 @@ async def draw_pure_fiction_card(
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.hsr.pure_fiction.PureFictionCard(
-                data, season, draw_input.locale.value, translator,
+                data, season, draw_input.locale.value, translator
             ).draw,
         )
     buffer.seek(0)
@@ -412,7 +396,7 @@ async def draw_apc_shadow_card(
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.hsr.apc_shadow.APCShadowCard(
-                data, season, draw_input.locale.value, translator,
+                data, season, draw_input.locale.value, translator
             ).draw,
         )
     buffer.seek(0)
@@ -433,7 +417,7 @@ async def draw_img_theater_card(
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.genshin.ImgTheaterCard(
-                data, chara_consts, draw_input.locale.value, translator,
+                data, chara_consts, draw_input.locale.value, translator
             ).draw,
         )
 
@@ -442,9 +426,7 @@ async def draw_img_theater_card(
 
 
 async def draw_zzz_notes_card(
-    draw_input: DrawInput,
-    notes: ZZZNotes,
-    translator: Translator,
+    draw_input: DrawInput, notes: ZZZNotes, translator: Translator
 ) -> BytesIO:
     with timing("draw", tags={"type": "zzz_notes_card"}):
         return await draw_input.loop.run_in_executor(
@@ -458,7 +440,7 @@ async def draw_zzz_notes_card(
 
 
 async def fetch_zzz_draw_data(
-    agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2],
+    agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2]
 ) -> ZZZDrawData:
     agent_full_names: dict[str, AgentNameData] = {}
 
@@ -514,16 +496,11 @@ async def draw_zzz_build_card(
             disc_icons=draw_data.disc_icons,
             color=color,
         )
-        return await draw_input.loop.run_in_executor(
-            draw_input.executor,
-            card.draw,
-        )
+        return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
 
 async def draw_zzz_characters_card(
-    draw_input: DrawInput,
-    agents: Sequence[ZZZFullAgent],
-    translator: Translator,
+    draw_input: DrawInput, agents: Sequence[ZZZFullAgent], translator: Translator
 ) -> File:
     urls: list[str] = []
     for agent in agents:
@@ -547,7 +524,7 @@ async def draw_zzz_characters_card(
 
 
 async def draw_honkai_suits_card(
-    draw_input: DrawInput, suits: Sequence[FullBattlesuit], translator: Translator,
+    draw_input: DrawInput, suits: Sequence[FullBattlesuit], translator: Translator
 ) -> File:
     urls: list[str] = []
     for suit in suits:
@@ -628,9 +605,7 @@ async def draw_hsr_team_card(
 
 
 async def draw_gi_team_card(
-    draw_input: DrawInput,
-    characters: Sequence[enka.gi.Character],
-    character_images: dict[str, str],
+    draw_input: DrawInput, characters: Sequence[enka.gi.Character], character_images: dict[str, str]
 ) -> BytesIO:
     urls: list[str] = list(character_images.values())
     for character in characters:
@@ -649,4 +624,3 @@ async def draw_gi_team_card(
     )
     with timing("draw", tags={"type": "gi_team_card"}):
         return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
-

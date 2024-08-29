@@ -21,7 +21,7 @@ class ResinReminder(Button[NotesView]):
 
     async def callback(self, i: Interaction) -> None:
         notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.RESIN,
+            account=self.view._account, type=NotesNotifyType.RESIN
         )
 
         modal = TypeOneModal(
@@ -39,9 +39,6 @@ class ResinReminder(Button[NotesView]):
             return
 
         embed = await self.view.process_type_one_modal(
-            modal=modal,
-            notify=notify,
-            notify_type=NotesNotifyType.RESIN,
-            check_interval=10,
+            modal=modal, notify=notify, notify_type=NotesNotifyType.RESIN, check_interval=10
         )
         await i.edit_original_response(embed=embed)

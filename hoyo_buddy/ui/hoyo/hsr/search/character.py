@@ -70,7 +70,7 @@ class CharacterUI(View):
                 manual_avatar = await api.fetch_manual_avatar()
 
             async with hakushin.HakushinAPI(
-                hakushin.Game.HSR, locale_to_hakushin_lang(self.locale),
+                hakushin.Game.HSR, locale_to_hakushin_lang(self.locale)
             ) as api:
                 character_detail = await api.fetch_character_detail(self._character_id)
 
@@ -82,9 +82,7 @@ class CharacterUI(View):
             ]
 
             self._character_embed = self._hakushin_translator.get_character_embed(
-                character_detail,
-                self._character_level,
-                self._convert_manual_avatar(manual_avatar),
+                character_detail, self._character_level, self._convert_manual_avatar(manual_avatar)
             )
 
             self._main_skill_embeds = [
@@ -110,7 +108,7 @@ class CharacterUI(View):
                 ]
 
                 self._character_embed = api.get_character_details_embed(
-                    character_detail, self._character_level, manual_avatar,
+                    character_detail, self._character_level, manual_avatar
                 )
                 self._main_skill_embeds = [
                     api.get_character_main_skill_embed(sk, skill.max_level)
@@ -149,7 +147,7 @@ class CharacterUI(View):
                 case 0:
                     embed = self._character_embed
                     self.add_item(
-                        EnterCharacterLevel(LocaleStr(key="change_character_level_label")),
+                        EnterCharacterLevel(LocaleStr(key="change_character_level_label"))
                     )
                 case 1:
                     embed = self._main_skill_embeds[self._main_skill_index]
@@ -157,7 +155,7 @@ class CharacterUI(View):
                         EnterSkilLevel(
                             label=LocaleStr(key="change_skill_level_label"),
                             skill_max_level=self._main_skill_max_levels[self._main_skill_index],
-                        ),
+                        )
                     )
                     options: list[SelectOption] = []
                     index = 0
@@ -168,7 +166,7 @@ class CharacterUI(View):
                                     label=f"{sk.type}: {sk.name}",
                                     value=str(index),
                                     default=index == self._main_skill_index,
-                                ),
+                                )
                             )
                             index += 1
                     self.add_item(ItemSelector(options, "_main_skill_index"))
@@ -185,7 +183,7 @@ class CharacterUI(View):
                                 for index, e in enumerate(self._character_detail.eidolons)
                             ],
                             "_eidolon_index",
-                        ),
+                        )
                     )
                 case 3:
                     embed = self._sub_skill_embeds[self._sub_skill_index]
@@ -201,7 +199,7 @@ class CharacterUI(View):
                                 if s.point_type == "Special" and s.name is not None
                             ],
                             "_sub_skill_index",
-                        ),
+                        )
                     )
                 case 4:
                     embed = self._story_embeds[self._story_index]
@@ -216,7 +214,7 @@ class CharacterUI(View):
                                 for index, s in enumerate(self._character_detail.script.stories)
                             ],
                             "_story_index",
-                        ),
+                        )
                     )
                 case 5:
                     embed = self._voice_embeds[self._voice_index]
@@ -229,8 +227,8 @@ class CharacterUI(View):
                                     default=index == self._voice_index,
                                 )
                                 for index, v in enumerate(self._character_detail.script.voices)
-                            ],
-                        ),
+                            ]
+                        )
                     )
                 case _:
                     msg = "Invalid page index"
@@ -240,7 +238,7 @@ class CharacterUI(View):
                 case 0:
                     embed = self._character_embed
                     self.add_item(
-                        EnterCharacterLevel(LocaleStr(key="change_character_level_label")),
+                        EnterCharacterLevel(LocaleStr(key="change_character_level_label"))
                     )
                 case 1:
                     embed = self._main_skill_embeds[self._main_skill_index]
@@ -248,7 +246,7 @@ class CharacterUI(View):
                         EnterSkilLevel(
                             label=LocaleStr(key="change_skill_level_label"),
                             skill_max_level=self._main_skill_max_levels[self._main_skill_index],
-                        ),
+                        )
                     )
 
                     options: list[SelectOption] = []
@@ -256,14 +254,14 @@ class CharacterUI(View):
                     for index, skill in enumerate(skills):
                         type_str_key = HAKUSHIN_HSR_SKILL_TYPE_NAMES.get(skill.type or "Talent")
                         type_str = LocaleStr(key=type_str_key).translate(
-                            self.translator, self.locale,
+                            self.translator, self.locale
                         )
                         options.append(
                             SelectOption(
                                 label=f"{type_str}: {skill.name}",
                                 value=str(index),
                                 default=index == self._main_skill_index,
-                            ),
+                            )
                         )
                     self.add_item(ItemSelector(options, "_main_skill_index"))
                 case 2:
@@ -279,7 +277,7 @@ class CharacterUI(View):
                                 for index, e in enumerate(self._character_detail.eidolons.values())
                             ],
                             "_eidolon_index",
-                        ),
+                        )
                     )
                 case _:
                     msg = "Invalid page index"
@@ -303,9 +301,7 @@ class PageSelector(Select["CharacterUI"]):
                     default=current == 0,
                 ),
                 SelectOption(
-                    label=LocaleStr(key="search.agent_page.skills"),
-                    value="1",
-                    default=current == 1,
+                    label=LocaleStr(key="search.agent_page.skills"), value="1", default=current == 1
                 ),
                 SelectOption(
                     label=LocaleStr(key="yatta_character_eidolon_page_label"),
@@ -321,9 +317,7 @@ class PageSelector(Select["CharacterUI"]):
                     default=current == 0,
                 ),
                 SelectOption(
-                    label=LocaleStr(key="search.agent_page.skills"),
-                    value="1",
-                    default=current == 1,
+                    label=LocaleStr(key="search.agent_page.skills"), value="1", default=current == 1
                 ),
                 SelectOption(
                     label=LocaleStr(key="yatta_character_eidolon_page_label"),
@@ -364,11 +358,7 @@ class ItemSelector(Select["CharacterUI"]):
 
 
 class SkillLevelModal(Modal):
-    level = TextInput(
-        label=LocaleStr(key="characters.sorter.level"),
-        is_digit=True,
-        min_value=1,
-    )
+    level = TextInput(label=LocaleStr(key="characters.sorter.level"), is_digit=True, min_value=1)
 
     def __init__(self, max_level: int) -> None:
         super().__init__(title=LocaleStr(key="skill_level.modal.title"))
@@ -420,10 +410,7 @@ class EnterSkilLevel(Button[CharacterUI]):
 
 class CharacterLevelModal(Modal):
     level = TextInput(
-        label=LocaleStr(key="characters.sorter.level"),
-        is_digit=True,
-        min_value=1,
-        max_value=80,
+        label=LocaleStr(key="characters.sorter.level"), is_digit=True, min_value=1, max_value=80
     )
 
 

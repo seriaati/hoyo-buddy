@@ -47,19 +47,16 @@ class WithQRCode(Button["AccountManager"]):
     @property
     def _confirmed_embed(self) -> DefaultEmbed:
         return DefaultEmbed(
-            self.view.locale,
-            self.view.translator,
-            title="指引",
-            description="登录成功",
+            self.view.locale, self.view.translator, title="指引", description="登录成功"
         )
 
     @staticmethod
     async def _fetch_cookies(raw_data: genshin.models.QRCodeRawData) -> dict[str, Any]:
         cookie_token = await genshin.fetch_cookie_token_with_game_token(
-            game_token=raw_data.game_token, account_id=raw_data.account_id,
+            game_token=raw_data.game_token, account_id=raw_data.account_id
         )
         stoken = await genshin.fetch_stoken_with_game_token(
-            game_token=raw_data.game_token, account_id=int(raw_data.account_id),
+            game_token=raw_data.game_token, account_id=int(raw_data.account_id)
         )
 
         return {
@@ -95,7 +92,7 @@ class WithQRCode(Button["AccountManager"]):
         while True:
             try:
                 check_result = await client._check_qrcode(
-                    result.app_id, result.device_id, result.ticket,
+                    result.app_id, result.device_id, result.ticket
                 )
             except genshin.GenshinException as e:
                 if e.retcode == -106:

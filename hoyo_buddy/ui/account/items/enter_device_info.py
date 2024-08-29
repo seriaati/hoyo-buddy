@@ -49,18 +49,18 @@ class EnterDeviceInfoButton(Button["AccountManager"]):
                     self.view.translator,
                     title="错误",
                     description="无法解析设备信息",
-                ),
+                )
             )
             return
 
         client = genshin.Client(region=genshin.Region.CHINESE)
         device_id = str(uuid.uuid4()).lower()
         device_fp = await client.generate_fp(
-            device_id=device_id, device_board=device_info["deviceBoard"], oaid=device_info["oaid"],
+            device_id=device_id, device_board=device_info["deviceBoard"], oaid=device_info["oaid"]
         )
         self._cookies["x-rpc-device_id"] = device_id
         self._cookies["x-rpc-device_fp"] = device_fp
 
         await self.view.finish_cookie_setup(
-            self._cookies, platform=Platform.MIYOUSHE, interaction=i,
+            self._cookies, platform=Platform.MIYOUSHE, interaction=i
         )

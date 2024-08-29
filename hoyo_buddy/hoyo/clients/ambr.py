@@ -91,11 +91,11 @@ class AmbrAPIClient(ambr.AmbrAPI):
             raise RuntimeError(msg)
 
         stat_values = autils.calculate_upgrade_stat_values(
-            character.upgrade, avatar_curve, level, True,
+            character.upgrade, avatar_curve, level, True
         )
         formatted_stat_values = autils.format_stat_values(stat_values)
         named_stat_values = autils.replace_fight_prop_with_name(
-            formatted_stat_values, manual_weapon,
+            formatted_stat_values, manual_weapon
         )
 
         level_str = self.translator.translate(LevelStr(level), self.locale)
@@ -167,10 +167,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
             raise RuntimeError(msg)
 
         embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=story.title,
-            description=story.text,
+            self.locale, self.translator, title=story.title, description=story.text
         )
         if story.tips:
             embed.set_footer(text=story.tips)
@@ -208,7 +205,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
             raise RuntimeError(msg)
 
         stat_values = autils.calculate_upgrade_stat_values(
-            weapon.upgrade, weapon_curve, level, True,
+            weapon.upgrade, weapon_curve, level, True
         )
         stat_values = autils.format_stat_values(stat_values)
         main_stat = weapon.upgrade.base_stats[0]
@@ -250,10 +247,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
             raise RuntimeError(msg)
 
         embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=namecard.name,
-            description=namecard.description,
+            self.locale, self.translator, title=namecard.name, description=namecard.description
         )
         embed.set_thumbnail(url=namecard.icon)
         embed.set_image(url=namecard.picture)
@@ -262,7 +256,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         return embed
 
     def get_artifact_embed(
-        self, artifact_set: ambr.ArtifactSetDetail, artifact: ambr.Artifact,
+        self, artifact_set: ambr.ArtifactSetDetail, artifact: ambr.Artifact
     ) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
@@ -283,7 +277,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
             description += "\n" + self.translator.translate(four_piece, self.locale)
 
         embed = DefaultEmbed(
-            self.locale, self.translator, title=artifact.name, description=description,
+            self.locale, self.translator, title=artifact.name, description=description
         )
         embed.set_author(name=artifact_set.name, icon_url=artifact_set.icon)
         embed.set_footer(text=artifact.description)
@@ -299,12 +293,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         if isinstance(food.recipe, ambr.FoodRecipe):
             description += f"\n{create_bullet_list([e.description for e in food.recipe.effects])}"
 
-        embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=food.name,
-            description=description,
-        )
+        embed = DefaultEmbed(self.locale, self.translator, title=food.name, description=description)
         embed.set_thumbnail(url=food.icon)
         embed.set_footer(text=food.description)
         return embed
@@ -323,7 +312,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
                         [
                             self.translator.translate(WeekdayStr(day), self.locale)
                             for day in source.days
-                        ],
+                        ]
                     )
                     names.append(f"{source.name} ({days_str})")
                 else:
@@ -396,7 +385,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
             raise RuntimeError(msg)
 
         embed = DefaultEmbed(
-            self.locale, self.translator, title=monster.name, description=monster.description,
+            self.locale, self.translator, title=monster.name, description=monster.description
         )
         if monster.special_name:
             embed.set_author(name=f"{monster.type}/{monster.special_name}")
@@ -406,17 +395,14 @@ class AmbrAPIClient(ambr.AmbrAPI):
         return embed
 
     def get_volume_embed(
-        self, book: ambr.BookDetail, volume: ambr.BookVolume, readable: str,
+        self, book: ambr.BookDetail, volume: ambr.BookVolume, readable: str
     ) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
             raise RuntimeError(msg)
 
         embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=volume.name,
-            description=shorten(readable, 4096),
+            self.locale, self.translator, title=volume.name, description=shorten(readable, 4096)
         )
         embed.set_author(name=book.name)
         embed.set_thumbnail(url=book.icon)
@@ -442,7 +428,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         return embed
 
     def get_tcg_card_dictionaries_embed(
-        self, dictionaries: list[ambr.CardDictionary],
+        self, dictionaries: list[ambr.CardDictionary]
     ) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
@@ -457,17 +443,14 @@ class AmbrAPIClient(ambr.AmbrAPI):
         return embed
 
     def get_tcg_card_talent_embed(
-        self, talent: ambr.CardTalent, dictionaries: list[ambr.CardDictionary],
+        self, talent: ambr.CardTalent, dictionaries: list[ambr.CardDictionary]
     ) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
             raise RuntimeError(msg)
 
         embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=talent.name,
-            description=talent.description,
+            self.locale, self.translator, title=talent.name, description=talent.description
         )
         dice_str = "\n".join([f"{DICE_EMOJIS[d.type] * d.amount}" for d in talent.cost])
 
@@ -476,7 +459,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
                 dictionary = dutils.get(dictionaries, id=k)
                 if dictionary:
                     embed.add_field(
-                        name=dictionary.name, value=dictionary.description, inline=False,
+                        name=dictionary.name, value=dictionary.description, inline=False
                     )
 
         embed.add_field(name=LocaleStr(key="dice_cost_embed_field_name"), value=dice_str)
@@ -525,7 +508,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed.add_field(
             name=LocaleStr(key="abyss_chamber.ley_line_disorder.embed.field.name"),
             value=create_bullet_list(
-                [lld.description for lld in floor.ley_line_disorders if lld.visible],
+                [lld.description for lld in floor.ley_line_disorders if lld.visible]
             ),
             inline=False,
         )
@@ -563,8 +546,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
             prop_values[prop] *= multiplier
 
         title_locale_str = LocaleStr(
-            key="abyss_enemy.item_description",
-            HP=f"{round(prop_values['FIGHT_PROP_BASE_HP']):,}",
+            key="abyss_enemy.item_description", HP=f"{round(prop_values['FIGHT_PROP_BASE_HP']):,}"
         )
         title_str = self.translator.translate(title_locale_str, self.locale)
         return ItemWithDescription(icon=enemy.icon, title=title_str, description=enemy.name)
@@ -584,8 +566,8 @@ class AmbrAPIClient(ambr.AmbrAPI):
             if enemy is not None:
                 items.append(
                     self._get_abyss_enemy_item(
-                        enemy, level=floor_enemy_level, floor=floor, monster_curve=monster_curve,
-                    ),
+                        enemy, level=floor_enemy_level, floor=floor, monster_curve=monster_curve
+                    )
                 )
         return items
 
@@ -623,7 +605,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         return result
 
     async def fetch_characters(
-        self, use_cache: bool = True, traveler_gender_symbol: bool = False,
+        self, use_cache: bool = True, traveler_gender_symbol: bool = False
     ) -> list[ambr.models.Character]:
         if self.translator is None:
             msg = "Translator is not set"
@@ -634,7 +616,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         for character in characters:
             if contains_traveler_id(character.id):
                 character.name = self.translator.get_traveler_name(
-                    character, self.locale, gender_symbol=traveler_gender_symbol,
+                    character, self.locale, gender_symbol=traveler_gender_symbol
                 )
 
         return characters

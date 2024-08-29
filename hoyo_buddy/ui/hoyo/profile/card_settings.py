@@ -93,10 +93,7 @@ async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> C
             raise ValueError(msg)
 
         card_settings = await CardSettings.create(
-            user_id=user_id,
-            character_id=character_id,
-            dark_mode=False,
-            template=template,
+            user_id=user_id, character_id=character_id, dark_mode=False, template=template
         )
 
     return card_settings
@@ -140,7 +137,7 @@ def get_default_color(character: Character, card_data: dict[str, Any]) -> str | 
 
 
 def get_default_collection(
-    character_id: str, card_data: dict[str, Any], *, game: Game,
+    character_id: str, card_data: dict[str, Any], *, game: Game
 ) -> list[str]:
     if game is Game.ZZZ:
         return []
@@ -206,15 +203,13 @@ class CardSettingsView(View):
     def _add_items(self) -> None:
         character = self._get_current_character()
         default_collection = get_default_collection(
-            str(character.id), self._card_data, game=self.game,
+            str(character.id), self._card_data, game=self.game
         )
 
         self.add_item(
             CharacterSelect(
-                characters=self._characters,
-                character_id=self.selected_character_id,
-                row=0,
-            ),
+                characters=self._characters, character_id=self.selected_character_id, row=0
+            )
         )
         self.add_item(
             ImageSelect(
@@ -224,15 +219,12 @@ class CardSettingsView(View):
                 template=self.card_settings.template,
                 disabled=self.disable_image_features,
                 row=1,
-            ),
+            )
         )
         self.add_item(
             CardTemplateSelect(
-                self.card_settings.template,
-                hb_only=self._hb_template_only,
-                game=self.game,
-                row=2,
-            ),
+                self.card_settings.template, hb_only=self._hb_template_only, game=self.game, row=2
+            )
         )
 
         self.add_item(GenerateAIArtButton(disabled=self.disable_ai_features, row=3))
@@ -242,27 +234,25 @@ class CardSettingsView(View):
                 disabled=self.card_settings.current_image is None
                 or self.card_settings.current_image in default_collection,
                 row=3,
-            ),
+            )
         )
 
         self.add_item(
             PrimaryColorButton(
-                self.card_settings.custom_primary_color, disabled=self.disable_color_features, row=4,
-            ),
+                self.card_settings.custom_primary_color, disabled=self.disable_color_features, row=4
+            )
         )
         self.add_item(
             DarkModeButton(
                 current_toggle=self.card_settings.dark_mode,
                 disabled=self.disable_dark_mode_features,
                 row=4,
-            ),
+            )
         )
         self.add_item(
             TeamCardDarkModeButton(
-                self.settings.team_card_dark_mode,
-                self.disable_dark_mode_features,
-                row=4,
-            ),
+                self.settings.team_card_dark_mode, self.disable_dark_mode_features, row=4
+            )
         )
         self.add_item(SetCurTempAsDefaultButton(row=4))
 
@@ -283,7 +273,7 @@ class CardSettingsView(View):
             color=int(color.lstrip("#"), 16) if color is not None else 6649080,
         )
         default_str = LocaleStr(key="card_settings.color_default").translate(
-            self.translator, self.locale,
+            self.translator, self.locale
         )
         if color is not None:
             value = self._get_color_markdown(color)
@@ -296,7 +286,7 @@ class CardSettingsView(View):
         image_url = card_settings.current_image or get_default_art(character)
         embed.set_image(url=image_url)
         embed.add_field(
-            name=LocaleStr(key="card_settings.current_image"), value=image_url, inline=False,
+            name=LocaleStr(key="card_settings.current_image"), value=image_url, inline=False
         )
 
         embed.set_footer(text=LocaleStr(key="card_settings.footer"))
@@ -347,10 +337,10 @@ class CharacterSelect(PaginatorSelect[CardSettingsView]):
         self.update_options_defaults()
         self.view.selected_character_id = self.values[0]
         self.view.card_settings = await get_card_settings(
-            self.view._user_id, self.values[0], game=self.view.game,
+            self.view._user_id, self.values[0], game=self.view.game
         )
         default_arts = get_default_collection(
-            self.values[0], self.view._card_data, game=self.view.game,
+            self.values[0], self.view._card_data, game=self.view.game
         )
         custom_arts = self.view.card_settings.custom_images
 
@@ -495,7 +485,7 @@ class ImageSelect(PaginatorSelect[CardSettingsView]):
                 label=LocaleStr(key="profile.image_select.none.label"),
                 value="none",
                 default=self.current_image_url is None,
-            ),
+            )
         ]
         added_values: set[str] = set()
 
@@ -514,9 +504,7 @@ class ImageSelect(PaginatorSelect[CardSettingsView]):
             else LocaleStr(key="profile.image_select.custom_image.label", num=num)
         )
         return SelectOption(
-            label=label,
-            value=image_url,
-            default=image_url == self.current_image_url,
+            label=label, value=image_url, default=image_url == self.current_image_url
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -677,7 +665,7 @@ class CardTemplateSelect(Select[CardSettingsView]):
             author1, author2 = CARD_TEMPLATE_AUTHORS[template_id]
             if author1 == author2:
                 description = LocaleStr(
-                    key="profile.card_template_select.same_author.description", author=author1,
+                    key="profile.card_template_select.same_author.description", author=author1
                 )
             else:
                 description = LocaleStr(
@@ -796,7 +784,7 @@ class AddImageButton(Button[CardSettingsView]):
         # Add the new image URL to the image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")
         image_select.update(
-            current_image=image_url, custom_images=self.view.card_settings.custom_images,
+            current_image=image_url, custom_images=self.view.card_settings.custom_images
         )
 
         # Enable the remove image button
@@ -829,7 +817,7 @@ class SetCurTempAsDefaultButton(Button[CardSettingsView]):
             raise ValueError(msg)
 
         await Settings.filter(user_id=i.user.id).update(
-            **{column_name: self.view.card_settings.template},
+            **{column_name: self.view.card_settings.template}
         )
 
         embed = DefaultEmbed(

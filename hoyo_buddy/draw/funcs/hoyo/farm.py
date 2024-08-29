@@ -24,10 +24,7 @@ def cache_key(farm_data: list[FarmData], locale: str, dark_mode: bool, _: Transl
 
 @cached(LRUCache(maxsize=32), key=cache_key)
 def draw_farm_card(
-    farm_data: list[FarmData],
-    locale_: str,
-    dark_mode: bool,
-    translator: Translator,
+    farm_data: list[FarmData], locale_: str, dark_mode: bool, translator: Translator
 ) -> io.BytesIO:
     def get_domain_title(domain: ambr.Domain, locale: Locale, translator: Translator) -> str:
         """Get the title of a GI domain based on its name and city, assuming the language is English."""
@@ -44,7 +41,7 @@ def draw_farm_card(
 
     for data in farm_data:
         basic_card: Image.Image = Drawer.open_image(
-            f"hoyo-buddy-assets/assets/farm/{mode}_card.png",
+            f"hoyo-buddy-assets/assets/farm/{mode}_card.png"
         )
         draw = ImageDraw.Draw(basic_card)
         drawer = Drawer(draw, folder="farm", dark_mode=dark_mode, translator=translator)
@@ -61,7 +58,7 @@ def draw_farm_card(
 
         draw = ImageDraw.Draw(basic_card)
         drawer = Drawer(
-            draw, folder="farm", dark_mode=dark_mode, translator=translator, locale=locale,
+            draw, folder="farm", dark_mode=dark_mode, translator=translator, locale=locale
         )
 
         drawer.write(
@@ -122,9 +119,7 @@ def draw_farm_card(
         background_height += card.height + card_height_offset + y_padding_between_cards - 15
 
     background = Image.new(
-        "RGBA",
-        (background_width, background_height),
-        DARK_SURFACE if dark_mode else LIGHT_SURFACE,
+        "RGBA", (background_width, background_height), DARK_SURFACE if dark_mode else LIGHT_SURFACE
     )
 
     x = right_left_margin

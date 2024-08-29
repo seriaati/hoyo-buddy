@@ -20,13 +20,13 @@ class VideoStoreReminder(Button[NotesView]):
 
     async def callback(self, i: Interaction) -> None:
         notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.VIDEO_STORE,
+            account=self.view._account, type=NotesNotifyType.VIDEO_STORE
         )
 
         modal = TypeTwoModal(
             notify,
             title=LocaleStr(
-                key="reminder_modal.title", notify=LocaleStr(key="video_store_button.label"),
+                key="reminder_modal.title", notify=LocaleStr(key="video_store_button.label")
             ),
             min_notify_interval=30,
         )
@@ -39,9 +39,6 @@ class VideoStoreReminder(Button[NotesView]):
             return
 
         embed = await self.view.process_type_two_modal(
-            modal=modal,
-            notify=notify,
-            notify_type=NotesNotifyType.VIDEO_STORE,
-            check_interval=30,
+            modal=modal, notify=notify, notify_type=NotesNotifyType.VIDEO_STORE, check_interval=30
         )
         await i.edit_original_response(embed=embed)

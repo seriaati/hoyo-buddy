@@ -19,9 +19,7 @@ class CardSettingsInfoButton(Button["ProfileView"]):
 
     async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
-            self.view.locale,
-            self.view.translator,
-            title=LocaleStr(key="profile.info.embed.title"),
+            self.view.locale, self.view.translator, title=LocaleStr(key="profile.info.embed.title")
         )
         embed.add_field(
             name=LocaleStr(key="profile.info.embed.primary_color.name"),

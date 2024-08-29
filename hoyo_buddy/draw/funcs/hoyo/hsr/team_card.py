@@ -96,14 +96,7 @@ class HSRTeamCard:
                 icon = drawer.open_static(max_dmg_add.icon, size=(52, 48), mask_color=WHITE)
                 im.alpha_composite(icon, (494, 402))
 
-            drawer.write(
-                stat,
-                size=26,
-                position=start_pos,
-                style="regular",
-                sans=True,
-                anchor="lm",
-            )
+            drawer.write(stat, size=26, position=start_pos, style="regular", sans=True, anchor="lm")
 
             start_pos = (387 + x_diff, 143) if i == 5 else (start_pos[0], start_pos[1] + y_diff)
 
@@ -159,15 +152,11 @@ class HSRTeamCard:
 
                 line_x = start_pos[0] + main_bubble.width + diff * i
                 im.alpha_composite(
-                    line,
-                    (line_x, start_pos[1] + main_bubble.height // 2 - line.height // 2),
+                    line, (line_x, start_pos[1] + main_bubble.height // 2 - line.height // 2)
                 )
                 sub_bubble_x = line_x + line.width
                 sub_bubble_y = start_pos[1] + 5
-                im.alpha_composite(
-                    sub_bubble,
-                    (sub_bubble_x, sub_bubble_y),
-                )
+                im.alpha_composite(sub_bubble, (sub_bubble_x, sub_bubble_y))
                 icon = drawer.open_static(s_bubble.icon, size=(25, 25), mask_color=WHITE)
                 im.alpha_composite(
                     icon,
@@ -273,7 +262,7 @@ class HSRTeamCard:
                 border_width,
                 lc_icon.width - border_width,
                 lc_icon.height - border_width,
-            ),
+            )
         )
         lc_icon = drawer.resize_crop(lc_icon, (128, 178))
         lc_icon = drawer.mask_image_with_image(lc_icon, lc_mask)
@@ -293,12 +282,7 @@ class HSRTeamCard:
         lc_level = drawer.open_asset("lc_level.png", mask_color=primary)
         im.alpha_composite(lc_level, (89, 663))
         drawer.write(
-            f"Lv.{lc.level}",
-            size=19,
-            position=(122, 676),
-            style="medium",
-            sans=True,
-            anchor="mm",
+            f"Lv.{lc.level}", size=19, position=(122, 676), style="medium", sans=True, anchor="mm"
         )
 
         # Light cone name

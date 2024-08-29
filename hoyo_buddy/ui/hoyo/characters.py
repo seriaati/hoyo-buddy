@@ -57,25 +57,9 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
 GAME_FOOTERS: Final[dict[Game, tuple[str, ...]]] = {
-    Game.GENSHIN: (
-        "hsr.normal_attack",
-        "gi.skill",
-        "gi.burst",
-    ),
-    Game.STARRAIL: (
-        "hsr.normal_attack",
-        "hsr.skill",
-        "hsr.ultimate",
-        "hsr.talent",
-    ),
-    Game.ZZZ: (
-        "zzz.basic",
-        "zzz.dodge",
-        "zzz.assist",
-        "zzz.special",
-        "zzz.chain",
-        "zzz.core",
-    ),
+    Game.GENSHIN: ("hsr.normal_attack", "gi.skill", "gi.burst"),
+    Game.STARRAIL: ("hsr.normal_attack", "hsr.skill", "hsr.ultimate", "hsr.talent"),
+    Game.ZZZ: ("zzz.basic", "zzz.dodge", "zzz.assist", "zzz.special", "zzz.chain", "zzz.core"),
 }
 
 
@@ -190,7 +174,7 @@ class CharactersView(View):
         return pc_icons
 
     def _apply_gi_filter(
-        self, characters: Sequence[GICharacter | UnownedCharacter],
+        self, characters: Sequence[GICharacter | UnownedCharacter]
     ) -> Sequence[GICharacter | UnownedCharacter]:
         if self._filter is GIFilter.MAX_FRIENDSHIP:
             return [c for c in characters if isinstance(c, UnownedCharacter) or c.friendship == 10]
@@ -201,7 +185,7 @@ class CharactersView(View):
         return characters
 
     def _apply_element_filters(
-        self, characters: Sequence[GICharacter | HSRCharacter | ZZZCharacter | UnownedCharacter],
+        self, characters: Sequence[GICharacter | HSRCharacter | ZZZCharacter | UnownedCharacter]
     ) -> Sequence[Character]:
         if not self._element_filters:
             return characters
@@ -222,7 +206,7 @@ class CharactersView(View):
         return result
 
     def _apply_path_filters(
-        self, characters: Sequence[HSRCharacter | UnownedCharacter],
+        self, characters: Sequence[HSRCharacter | UnownedCharacter]
     ) -> Sequence[HSRCharacter | UnownedCharacter]:
         if not self._path_filters:
             return characters
@@ -231,7 +215,7 @@ class CharactersView(View):
         return [c for c in characters if c.path.name.lower() in paths]
 
     def _apply_speciality_filters(
-        self, characters: Sequence[ZZZCharacter],
+        self, characters: Sequence[ZZZCharacter]
     ) -> Sequence[ZZZCharacter]:
         if not self._speciality_filters:
             return characters
@@ -246,7 +230,7 @@ class CharactersView(View):
         return [c for c in characters if c.faction_name in self._faction_filters]
 
     def _apply_gi_sorter(
-        self, characters: Sequence[GICharacter | UnownedCharacter],
+        self, characters: Sequence[GICharacter | UnownedCharacter]
     ) -> Sequence[GICharacter | UnownedCharacter]:
         if self._sorter is GISorter.ELEMENT or self._sorter is HSRSorter.ELEMENT:
             return sorted(characters, key=lambda c: c.element.lower())
@@ -263,7 +247,7 @@ class CharactersView(View):
         return sorted(characters, key=lambda c: c.constellation, reverse=True)
 
     def _apply_hsr_sorter(
-        self, characters: Sequence[HSRCharacter | UnownedCharacter],
+        self, characters: Sequence[HSRCharacter | UnownedCharacter]
     ) -> Sequence[HSRCharacter | UnownedCharacter]:
         if self._sorter is HSRSorter.PATH:
             return sorted(characters, key=lambda c: c.path)
@@ -298,7 +282,7 @@ class CharactersView(View):
         return sorted(characters, key=lambda c: c.rank, reverse=True)
 
     def _apply_honkai_sorter(
-        self, characters: Sequence[HonkaiCharacter],
+        self, characters: Sequence[HonkaiCharacter]
     ) -> Sequence[HonkaiCharacter]:
         if self._sorter is HonkaiSorter.LEVEL:
             return sorted(characters, key=lambda c: c.level, reverse=True)
@@ -308,19 +292,19 @@ class CharactersView(View):
     def _get_filtered_sorted_characters(self) -> Sequence[Character]:
         if self._game is Game.GENSHIN:
             characters = self._apply_gi_sorter(
-                self._apply_element_filters(self._apply_gi_filter(self._gi_characters)),  # pyright: ignore [reportArgumentType]
+                self._apply_element_filters(self._apply_gi_filter(self._gi_characters))  # pyright: ignore [reportArgumentType]
             )
         elif self._game is Game.STARRAIL:
             characters = self._apply_hsr_sorter(
-                self._apply_element_filters(self._apply_path_filters(self._hsr_characters)),  # pyright: ignore [reportArgumentType]
+                self._apply_element_filters(self._apply_path_filters(self._hsr_characters))  # pyright: ignore [reportArgumentType]
             )
         elif self._game is Game.ZZZ:
             characters = self._apply_zzz_sorter(
                 self._apply_element_filters(
                     self._apply_speciality_filters(
-                        self._apply_faction_filters(self._zzz_characters),
-                    ),  # pyright: ignore [reportArgumentType]
-                ),
+                        self._apply_faction_filters(self._zzz_characters)
+                    )  # pyright: ignore [reportArgumentType]
+                )
             )
         elif self._game is Game.HONKAI:
             characters = self._apply_honkai_sorter(self._honkai_characters)
@@ -359,7 +343,7 @@ class CharactersView(View):
         elif self._game is Game.STARRAIL:
             pc_icons = {
                 str(
-                    c.id,
+                    c.id
                 ): f"https://raw.githubusercontent.com/FortOfFans/HSR/main/spriteoutput/avatariconteam/{c.id}.png"
                 for c in characters
             }
@@ -409,9 +393,7 @@ class CharactersView(View):
 
     def _get_embed(self, char_num: int) -> DefaultEmbed:
         embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=LocaleStr(key="characters.embed.title"),
+            self.locale, self.translator, title=LocaleStr(key="characters.embed.title")
         )
         embed.set_image(url="attachment://characters.webp")
         embed.add_acc_info(self._account)
@@ -486,8 +468,7 @@ class CharactersView(View):
             )
             embed.add_field(
                 name=LocaleStr(
-                    key="characters.embed.filter_text",
-                    filter="/".join(self._faction_filters),
+                    key="characters.embed.filter_text", filter="/".join(self._faction_filters)
                 ),
                 value=f"{char_num}/{total_chars}",
                 inline=False,
@@ -517,7 +498,7 @@ class CharactersView(View):
             ).translate(self.translator, self.locale)
             if self._game in {Game.STARRAIL, Game.ZZZ}:
                 footer += "\n" + LocaleStr(key="characters.extra_detail.footer").translate(
-                    self.translator, self.locale,
+                    self.translator, self.locale
                 )
             embed.set_footer(text=footer)
 
@@ -549,10 +530,7 @@ class CharactersView(View):
                 self.locale,
                 self.translator,
                 description=LocaleStr(key="characters.first_time.embed.description"),
-            ).set_author(
-                icon_url=LOADING_ICON,
-                name=LocaleStr(key="characters.first_time.title"),
-            )
+            ).set_author(icon_url=LOADING_ICON, name=LocaleStr(key="characters.first_time.title"))
             await i.edit_original_response(embed=embed, content=await get_dyk(i))
 
         client = self._account.client
@@ -569,7 +547,7 @@ class CharactersView(View):
 
         elif self._game is Game.STARRAIL:
             self._hsr_characters = list(
-                (await client.get_starrail_characters(self._account.uid)).avatar_list,
+                (await client.get_starrail_characters(self._account.uid)).avatar_list
             )
 
             # Find traiblazer element and path and add 1 to the count
@@ -582,7 +560,7 @@ class CharactersView(View):
         elif self._game is Game.ZZZ:
             agents = await client.get_zzz_agents()
             self._zzz_characters = full_agents = list(
-                await client.get_zzz_agent_info([agent.id for agent in agents]),
+                await client.get_zzz_agent_info([agent.id for agent in agents])
             )
             client.set_lang(Locale.american_english)
             en_full_agents = list(await client.get_zzz_agent_info([agent.id for agent in agents]))
@@ -597,7 +575,7 @@ class CharactersView(View):
 
         characters = self._get_filtered_sorted_characters()
         file_ = await self._draw_card(
-            i.client.session, characters, i.client.executor, i.client.loop,
+            i.client.session, characters, i.client.executor, i.client.loop
         )
         embed = self._get_embed(len([c for c in characters if not isinstance(c, UnownedCharacter)]))
 
@@ -606,13 +584,13 @@ class CharactersView(View):
         self.message = await i.original_response()
 
     async def item_callback(
-        self, i: Interaction, item: Button | Select, *, set_loading_state: bool = True,
+        self, i: Interaction, item: Button | Select, *, set_loading_state: bool = True
     ) -> None:
         characters = self._get_filtered_sorted_characters()
         if set_loading_state:
             await item.set_loading_state(i)
         file_ = await self._draw_card(
-            i.client.session, characters, i.client.executor, i.client.loop,
+            i.client.session, characters, i.client.executor, i.client.loop
         )
         embed = self._get_embed(len([c for c in characters if not isinstance(c, UnownedCharacter)]))
         await item.unset_loading_state(i, attachments=[file_], embed=embed)
@@ -622,9 +600,7 @@ class GIFilterSelector(Select[CharactersView]):
     def __init__(self) -> None:
         options = [
             SelectOption(
-                label=LocaleStr(key="characters.filter.none"),
-                value=GIFilter.NONE,
-                default=True,
+                label=LocaleStr(key="characters.filter.none"), value=GIFilter.NONE, default=True
             ),
             SelectOption(
                 label=LocaleStr(key="characters.filter.max_friendship"),
@@ -636,8 +612,7 @@ class GIFilterSelector(Select[CharactersView]):
             ),
         ]
         super().__init__(
-            placeholder=LocaleStr(key="characters.filter.placeholder"),
-            options=options,
+            placeholder=LocaleStr(key="characters.filter.placeholder"), options=options
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -656,9 +631,7 @@ class ElementFilterSelector(Select[CharactersView]):
 
         options = [
             SelectOption(
-                label=EnumStr(element),
-                value=element.value,
-                emoji=get_element_emoji(element),
+                label=EnumStr(element), value=element.value, emoji=get_element_emoji(element)
             )
             for element in elements
         ]
@@ -777,9 +750,7 @@ class SorterSelector(Select[CharactersView]):
 class UpdateTalentData(Button[CharactersView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr(key="characters.update_talent_data"),
-            style=ButtonStyle.blurple,
-            row=3,
+            label=LocaleStr(key="characters.update_talent_data"), style=ButtonStyle.blurple, row=3
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -789,7 +760,7 @@ class UpdateTalentData(Button[CharactersView]):
             updated_at = datetime.datetime.fromisoformat(talent_level_data["updated_at"])
             if get_now() - updated_at < datetime.timedelta(minutes=30):
                 raise ActionInCooldownError(
-                    available_time=updated_at + datetime.timedelta(minutes=30),
+                    available_time=updated_at + datetime.timedelta(minutes=30)
                 )
 
         embed = DefaultEmbed(
@@ -797,8 +768,7 @@ class UpdateTalentData(Button[CharactersView]):
             self.view.translator,
             description=LocaleStr(key="characters.update_talent_data.embed.description"),
         ).set_author(
-            icon_url=LOADING_ICON,
-            name=LocaleStr(key="characters.update_talent_data.title"),
+            icon_url=LOADING_ICON, name=LocaleStr(key="characters.update_talent_data.title")
         )
         self.view.clear_items()
         await i.response.edit_message(embed=embed, view=self.view, attachments=[])
@@ -811,9 +781,7 @@ class UpdateTalentData(Button[CharactersView]):
 class ShowOwnedOnly(ToggleButton[CharactersView]):
     def __init__(self) -> None:
         super().__init__(
-            current_toggle=True,
-            toggle_label=LocaleStr(key="characters.show_owned_only"),
-            row=4,
+            current_toggle=True, toggle_label=LocaleStr(key="characters.show_owned_only"), row=4
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -854,8 +822,8 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
 
                     self.view._gi_characters.append(
                         UnownedCharacter(
-                            id=chara.id, rarity=chara.rarity, element=chara.element.name,
-                        ),
+                            id=chara.id, rarity=chara.rarity, element=chara.element.name
+                        )
                     )
 
             elif self.view._game is Game.STARRAIL:
@@ -884,7 +852,7 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
                             rarity=chara.rarity,
                             element=chara.types.combat_type.name,
                             path=YATTA_PATH_TO_GPY_PATH[chara.types.path_type],
-                        ),
+                        )
                     )
 
         await self.view.item_callback(i, self, set_loading_state=False)

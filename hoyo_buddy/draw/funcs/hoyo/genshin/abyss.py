@@ -35,7 +35,7 @@ class AbyssCard:
         return Locale(self._locale)
 
     def _draw_rank_pill(
-        self, chara: genshin.models.AbyssRankCharacter, title: LocaleStr,
+        self, chara: genshin.models.AbyssRankCharacter, title: LocaleStr
     ) -> Image.Image:
         textbbox = self._drawer.write(title, size=48, position=(0, 55), no_write=True)
         text_width = textbbox[2] - textbbox[0]
@@ -52,7 +52,7 @@ class AbyssCard:
         pill.paste(shadow, (7, 7), shadow)
         draw = ImageDraw.Draw(pill)
         draw.rounded_rectangle(
-            (0, 0, text_width + 170, 110), 100, fill=BLACK if self._dark_mode else WHITE,
+            (0, 0, text_width + 170, 110), 100, fill=BLACK if self._dark_mode else WHITE
         )
         drawer = Drawer(
             draw,
@@ -81,42 +81,25 @@ class AbyssCard:
 
         return [
             self._draw_rank_pill(
-                most_defeats,
-                LocaleStr(key="abyss.most_defeats", val=most_defeats.value),
+                most_defeats, LocaleStr(key="abyss.most_defeats", val=most_defeats.value)
             ),
             self._draw_rank_pill(
                 strongest_strike,
-                LocaleStr(
-                    key="abyss.strongest_strike",
-                    val=strongest_strike.value,
-                ),
+                LocaleStr(key="abyss.strongest_strike", val=strongest_strike.value),
             ),
             self._draw_rank_pill(
-                most_dmg_taken,
-                LocaleStr(
-                    key="abyss.most_dmg_taken",
-                    val=most_dmg_taken.value,
-                ),
+                most_dmg_taken, LocaleStr(key="abyss.most_dmg_taken", val=most_dmg_taken.value)
             ),
+            self._draw_rank_pill(most_ults, LocaleStr(key="abyss.most_ults", val=most_ults.value)),
             self._draw_rank_pill(
-                most_ults,
-                LocaleStr(key="abyss.most_ults", val=most_ults.value),
-            ),
-            self._draw_rank_pill(
-                most_skills,
-                LocaleStr(key="abyss.most_skills", val=most_skills.value),
+                most_skills, LocaleStr(key="abyss.most_skills", val=most_skills.value)
             ),
         ]
-
 
     def _write_overview_texts(self) -> None:
         drawer = self._drawer
         textbbox = drawer.write(
-            LocaleStr(key="abyss.overview"),
-            position=(2425, 40),
-            size=90,
-            style="bold",
-            anchor="rt",
+            LocaleStr(key="abyss.overview"), position=(2425, 40), size=90, style="bold", anchor="rt"
         )
         textbbox = drawer.write(
             f"{self._abyss.start_time.strftime('%m/%d/%Y')} ~ {self._abyss.end_time.strftime('%m/%d/%Y')}",
@@ -135,19 +118,13 @@ class AbyssCard:
             anchor="rt",
         )
         textbbox = drawer.write(
-            LocaleStr(
-                key="abyss.deepest_descent",
-                val=self._abyss.max_floor,
-            ),
+            LocaleStr(key="abyss.deepest_descent", val=self._abyss.max_floor),
             position=(2425, textbbox[3] + 60),
             size=48,
             anchor="rt",
         )
         textbbox = drawer.write(
-            LocaleStr(
-                key="abyss.total_stars",
-                val=self._abyss.total_stars,
-            ),
+            LocaleStr(key="abyss.total_stars", val=self._abyss.total_stars),
             position=(2425, textbbox[3] + 60),
             size=48,
             anchor="rt",
@@ -156,12 +133,7 @@ class AbyssCard:
     def _write_floor_texts(self) -> None:
         drawer = self._drawer
         stars = {floor.floor: floor.stars for floor in self._abyss.floors}
-        pos = {
-            9: (65, 812),
-            10: (65, 1551),
-            11: (1288, 812),
-            12: (1288, 1551),
-        }
+        pos = {9: (65, 812), 10: (65, 1551), 11: (1288, 812), 12: (1288, 1551)}
         for floor in range(9, 13):
             start_pos = pos[floor]
             drawer.write(
@@ -188,24 +160,12 @@ class AbyssCard:
 
         mode = "dark" if self._dark_mode else "light"
         text_bk_colors = {
-            "light": {
-                4: (181, 172, 238),
-                5: (231, 179, 151),
-            },
-            "dark": {
-                4: (43, 35, 90),
-                5: (85, 63, 51),
-            },
+            "light": {4: (181, 172, 238), 5: (231, 179, 151)},
+            "dark": {4: (43, 35, 90), 5: (85, 63, 51)},
         }
         bk_colors = {
-            "light": {
-                4: (233, 215, 255),
-                5: (255, 218, 197),
-            },
-            "dark": {
-                4: (95, 82, 147),
-                5: (134, 89, 64),
-            },
+            "light": {4: (233, 215, 255), 5: (255, 218, 197)},
+            "dark": {4: (95, 82, 147), 5: (134, 89, 64)},
         }
 
         padding = 19
@@ -219,16 +179,8 @@ class AbyssCard:
             bk = Image.new("RGBA", (130, 160), TRANSPARENT)
             bk.paste(shadow, (6, 6), shadow)
             bk_draw = ImageDraw.Draw(bk)
-            bk_draw.rounded_rectangle(
-                (0, 0, 116, 147),
-                13,
-                fill=text_bk_colors[mode][chara.rarity],
-            )
-            bk_draw.rounded_rectangle(
-                (0, 0, 116, 117),
-                13,
-                fill=bk_colors[mode][chara.rarity],
-            )
+            bk_draw.rounded_rectangle((0, 0, 116, 147), 13, fill=text_bk_colors[mode][chara.rarity])
+            bk_draw.rounded_rectangle((0, 0, 116, 117), 13, fill=bk_colors[mode][chara.rarity])
 
             chara_im = drawer.open_static(chara.icon, size=(116, 116))
             chara_im = drawer.mask_image_with_image(chara_im, chara_mask)
@@ -250,11 +202,7 @@ class AbyssCard:
 
             abyss_chara = self._abyss_characters[str(chara.id)]
             bk_drawer.write(
-                f"C{abyss_chara.const}",
-                position=(102, 14),
-                size=18,
-                style="medium",
-                anchor="mm",
+                f"C{abyss_chara.const}", position=(102, 14), size=18, style="medium", anchor="mm"
             )
             bk_drawer.write(
                 LevelStr(abyss_chara.level),
@@ -269,12 +217,7 @@ class AbyssCard:
         return im
 
     def _write_chamber_star_counts(self) -> None:
-        star_pos = {
-            9: (594, 990),
-            10: (594, 1729),
-            11: (1817, 990),
-            12: (1817, 1729),
-        }
+        star_pos = {9: (594, 990), 10: (594, 1729), 11: (1817, 990), 12: (1817, 1729)}
         chamber_padding = 183
 
         for floor_i in range(9, 13):
@@ -294,10 +237,7 @@ class AbyssCard:
                     locale=Locale.american_english,
                     anchor="mm",
                 )
-                star_pos[floor_i] = (
-                    star_pos[floor_i][0],
-                    star_pos[floor_i][1] + chamber_padding,
-                )
+                star_pos[floor_i] = (star_pos[floor_i][0], star_pos[floor_i][1] + chamber_padding)
 
     def draw(self) -> BytesIO:
         mode = "dark" if self._dark_mode else "light"
@@ -321,12 +261,7 @@ class AbyssCard:
         self._write_overview_texts()
         self._write_floor_texts()
 
-        floor_pos = {
-            9: (26, 912),
-            10: (26, 1651),
-            11: (1249, 912),
-            12: (1249, 1651),
-        }
+        floor_pos = {9: (26, 912), 10: (26, 1651), 11: (1249, 912), 12: (1249, 1651)}
         for floor_i in range(9, 13):
             floor = next((f for f in self._abyss.floors if f.floor == floor_i), None)
 

@@ -50,18 +50,15 @@ class BookUI(View):
                     options=[
                         SelectOption(label=series.name, value=str(series.id), default=index == 0)
                         for index, series in enumerate(book_detail.series)
-                    ],
-                ),
+                    ]
+                )
             )
         await i.edit_original_response(embed=next(iter(self.series_embeds.values())), view=self)
 
 
 class SeriesSelector(Select["BookUI"]):
     def __init__(
-        self,
-        *,
-        placeholder: LocaleStr | str | None = None,
-        options: list[SelectOption],
+        self, *, placeholder: LocaleStr | str | None = None, options: list[SelectOption]
     ) -> None:
         super().__init__(placeholder=placeholder, options=options)
 

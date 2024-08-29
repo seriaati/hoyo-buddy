@@ -51,15 +51,15 @@ class ZZZTeamCard:
         left_blob = drawer.open_asset("left_blob.png")
 
         right_blob = drawer.create_pattern_blob(
-            color=blob_color, rotation=30, pattern=pattern, blob=right_blob,
+            color=blob_color, rotation=30, pattern=pattern, blob=right_blob
         )
         card.alpha_composite(right_blob, (880, -100))
         middle_blob = drawer.create_pattern_blob(
-            color=blob_color, rotation=90, pattern=pattern, blob=middle_blob,
+            color=blob_color, rotation=90, pattern=pattern, blob=middle_blob
         )
         card.alpha_composite(middle_blob, (570, -100))
         left_blob = drawer.create_pattern_blob(
-            color=blob_color, rotation=0, pattern=pattern, blob=left_blob,
+            color=blob_color, rotation=0, pattern=pattern, blob=left_blob
         )
         card.alpha_composite(left_blob, (13, -30))
 
@@ -160,9 +160,7 @@ class ZZZTeamCard:
                     stat = disc.properties[j]
                 except IndexError:
                     stat_icon = drawer.open_asset(
-                        "stat_icons/PLACEHOLDER.png",
-                        folder="zzz-build-card",
-                        size=(16, 16),
+                        "stat_icons/PLACEHOLDER.png", folder="zzz-build-card", size=(16, 16)
                     )
                     text = "N/A"
                 else:
@@ -174,9 +172,7 @@ class ZZZTeamCard:
                         )
                     else:
                         stat_icon = drawer.open_asset(
-                            "stat_icons/PLACEHOLDER.png",
-                            folder="zzz-build-card",
-                            size=(16, 16),
+                            "stat_icons/PLACEHOLDER.png", folder="zzz-build-card", size=(16, 16)
                         )
                     text = stat.value
 
@@ -184,10 +180,7 @@ class ZZZTeamCard:
                 drawer.write(
                     text,
                     size=12,
-                    position=(
-                        stat_start_pos[0] + 20,
-                        icon.height // 2 + stat_start_pos[1],
-                    ),
+                    position=(stat_start_pos[0] + 20, icon.height // 2 + stat_start_pos[1]),
                     style="medium",
                     sans=True,
                     anchor="lm",
@@ -237,7 +230,7 @@ class ZZZTeamCard:
             if not isinstance(stat.type, PropType):
                 continue
             icon = drawer.open_asset(
-                f"stat_icons/{STAT_ICONS[stat.type]}", folder="zzz-build-card", size=(23, 23),
+                f"stat_icons/{STAT_ICONS[stat.type]}", folder="zzz-build-card", size=(23, 23)
             )
             im.alpha_composite(icon, start_pos)
             text = stat.value
@@ -290,36 +283,21 @@ class ZZZTeamCard:
     def _render_rotated_text(self, drawer: Drawer, name_data: AgentNameData) -> Image.Image:
         text = name_data.full_name.upper()
         textbbox = drawer.write(
-            text,
-            size=42,
-            position=(0, 0),
-            style="black_italic",
-            sans=True,
-            no_write=True,
+            text, size=42, position=(0, 0), style="black_italic", sans=True, no_write=True
         )
         if textbbox.width > 280:
             text = name_data.short_name.upper()
             textbbox = drawer.write(
-                text,
-                size=42,
-                position=(0, 0),
-                style="black_italic",
-                sans=True,
-                no_write=True,
+                text, size=42, position=(0, 0), style="black_italic", sans=True, no_write=True
             )
         text_im = Image.new(
-            "RGBA", (textbbox.right - textbbox.left, (textbbox.bottom - textbbox.top) * 2),
+            "RGBA", (textbbox.right - textbbox.left, (textbbox.bottom - textbbox.top) * 2)
         )
         text_drawer = Drawer(
-            ImageDraw.Draw(text_im), folder="zzz-team-card", dark_mode=self._dark_mode,
+            ImageDraw.Draw(text_im), folder="zzz-team-card", dark_mode=self._dark_mode
         )
         text_drawer.write(
-            text,
-            size=42,
-            position=(0, 0),
-            style="black_italic",
-            sans=True,
-            color=BLACK,
+            text, size=42, position=(0, 0), style="black_italic", sans=True, color=BLACK
         )
         return text_im.rotate(-90, expand=True, resample=Image.Resampling.BICUBIC)
 

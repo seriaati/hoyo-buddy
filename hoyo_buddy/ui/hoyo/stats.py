@@ -44,10 +44,7 @@ class StatsView(View):
 
     def get_card_embed(self, card: RecordCard) -> DefaultEmbed:
         embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=get_label(card),
-            description=LevelStr(card.level),
+            self.locale, self.translator, title=get_label(card), description=LevelStr(card.level)
         )
         for d in card.data:
             embed.add_field(name=d.name, value=d.value)

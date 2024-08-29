@@ -41,17 +41,9 @@ if TYPE_CHECKING:
 
 __all__ = ("HoyoBuddy",)
 
-intents = discord.Intents(
-    guilds=True,
-    members=True,
-    emojis=True,
-    messages=True,
-)
+intents = discord.Intents(guilds=True, members=True, emojis=True, messages=True)
 allowed_mentions = discord.AllowedMentions(
-    users=True,
-    everyone=False,
-    roles=False,
-    replied_user=False,
+    users=True, everyone=False, roles=False, replied_user=False
 )
 
 
@@ -81,7 +73,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             tree_cls=CommandTree,
             activity=discord.CustomActivity(f"{version} | hb.seriaati.xyz"),
             allowed_contexts=discord.app_commands.AppCommandContext(
-                guild=True, dm_channel=True, private_channel=True,
+                guild=True, dm_channel=True, private_channel=True
             ),
             allowed_installs=discord.app_commands.AppInstallationType(guild=True, user=True),
         )
@@ -90,7 +82,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.translator = translator
         self.env = env
         self.nai_client = NAIClient(
-            token=os.environ["NAI_TOKEN"], host_url=os.environ["NAI_HOST_URL"],
+            token=os.environ["NAI_TOKEN"], host_url=os.environ["NAI_HOST_URL"]
         )
         self.owner_id = 410036441129943050
         self.repo = repo
@@ -102,11 +94,11 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.user_ids: set[int] = set()
 
         self.autocomplete_choices: AutocompleteChoices = defaultdict(
-            lambda: defaultdict(defaultdict),
+            lambda: defaultdict(defaultdict)
         )
         """[game][category][locale][item_name] -> item_id"""
         self.beta_autocomplete_choices: BetaAutocompleteChoices = defaultdict(
-            lambda: defaultdict(dict),
+            lambda: defaultdict(dict)
         )
         """[game][locale][item_name] -> item_id"""
 
@@ -167,21 +159,18 @@ class HoyoBuddy(commands.AutoShardedBot):
         return message
 
     def get_error_autocomplete(
-        self, error_message: LocaleStr, locale: discord.Locale,
+        self, error_message: LocaleStr, locale: discord.Locale
     ) -> list[app_commands.Choice[str]]:
         return [
-            app_commands.Choice(
-                name=error_message.translate(self.translator, locale),
-                value="none",
-            ),
+            app_commands.Choice(name=error_message.translate(self.translator, locale), value="none")
         ]
 
     def get_enum_autocomplete(
-        self, enums: Sequence[StrEnum], locale: discord.Locale, current: str,
+        self, enums: Sequence[StrEnum], locale: discord.Locale, current: str
     ) -> list[discord.app_commands.Choice[str]]:
         return [
             discord.app_commands.Choice(
-                name=EnumStr(enum).translate(self.translator, locale), value=enum.value,
+                name=EnumStr(enum).translate(self.translator, locale), value=enum.value
             )
             for enum in enums
             if current.lower() in EnumStr(enum).translate(self.translator, locale).lower()
@@ -230,7 +219,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         is_author = user is None or user.id == author_id
         game_query = Q(*[Q(game=game) for game in games], join_type="OR")
         accounts = await models.HoyoAccount.filter(
-            game_query, user_id=author_id if user is None else user.id,
+            game_query, user_id=author_id if user is None else user.id
         ).all()
         if not is_author:
             accounts = [account for account in accounts if account.public]
@@ -241,16 +230,16 @@ class HoyoBuddy(commands.AutoShardedBot):
         if not accounts:
             if is_author:
                 return self.get_error_autocomplete(
-                    LocaleStr(key="no_accounts_autocomplete_choice"), locale,
+                    LocaleStr(key="no_accounts_autocomplete_choice"), locale
                 )
             return self.get_error_autocomplete(
-                LocaleStr(key="user_no_accounts_autocomplete_choice"), locale,
+                LocaleStr(key="user_no_accounts_autocomplete_choice"), locale
             )
 
         return [
             discord.app_commands.Choice(
                 name=self._get_account_choice_name(
-                    account, locale, translator, is_author=is_author, show_id=show_id,
+                    account, locale, translator, is_author=is_author, show_id=show_id
                 ),
                 value=str(account.id),
             )
@@ -314,7 +303,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         await genshin.utility.update_characters_any()
 
     async def on_command_error(
-        self, context: commands.Context, exception: commands.CommandError,
+        self, context: commands.Context, exception: commands.CommandError
     ) -> None:
         if isinstance(exception, commands.CommandNotFound):
             return None

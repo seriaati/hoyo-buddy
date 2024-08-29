@@ -73,7 +73,7 @@ class GITempTwoBuildCard:
         )
         text_im = Image.new("RGBA", (tbox.width, tbox.height * 2))
         text_im_drawer = Drawer(
-            ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode,
+            ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode
         )
         text_im_drawer.write(
             f"Lv.{character.level}",
@@ -93,7 +93,7 @@ class GITempTwoBuildCard:
 
         # Name
         size = drawer.calc_dynamic_fontsize(
-            self._english_name, 935, 251, drawer._get_font(251, "light", gothic=True),
+            self._english_name, 935, 251, drawer._get_font(251, "light", gothic=True)
         )
         tbox = drawer.write(
             self._english_name,
@@ -105,7 +105,7 @@ class GITempTwoBuildCard:
         )
         text_im = Image.new("RGBA", (tbox.width, tbox.height))
         text_im_drawer = Drawer(
-            ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode,
+            ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode
         )
         text_im_drawer.write(
             self._english_name,
@@ -177,11 +177,7 @@ class GITempTwoBuildCard:
         # Weapon stats
         stat1 = weapon.stats[1] if len(weapon.stats) > 1 else weapon.stats[0]
         stat1_tbox = drawer.write(
-            f"{stat1.formatted_value}",
-            size=35,
-            style="medium",
-            position=(0, 0),
-            no_write=True,
+            f"{stat1.formatted_value}", size=35, style="medium", position=(0, 0), no_write=True
         )
         stat1_tbox = drawer.write(
             f"{stat1.formatted_value}",
@@ -198,11 +194,7 @@ class GITempTwoBuildCard:
         if len(weapon.stats) > 1:
             stat2 = weapon.stats[0]
             stat2_tbox = drawer.write(
-                f"{stat2.formatted_value}",
-                size=35,
-                style="medium",
-                position=(0, 0),
-                no_write=True,
+                f"{stat2.formatted_value}", size=35, style="medium", position=(0, 0), no_write=True
             )
             stat2_tbox = drawer.write(
                 f"{stat2.formatted_value}",
@@ -212,7 +204,7 @@ class GITempTwoBuildCard:
                 color=color_1,
             )
             stat2_icon = drawer.open_asset(
-                f"stats/{stat2.type}.png", mask_color=color_1, size=(35, 35),
+                f"stats/{stat2.type}.png", mask_color=color_1, size=(35, 35)
             )
             stat2_icon_x = stat2_tbox.left - 50
             stat2_icon_y = stat2_tbox.top + (stat2_tbox.height - stat2_icon.height) // 2
@@ -266,11 +258,7 @@ class GITempTwoBuildCard:
         dmg_icon = drawer.open_asset(f"elements/{icon_path}.png", size=(55, 55), mask_color=color_1)
         im.alpha_composite(dmg_icon, (1145, 1743))
         drawer.write(
-            dmg_stat.formatted_value,
-            size=42,
-            style="medium",
-            color=color_1,
-            position=start_pos,
+            dmg_stat.formatted_value, size=42, style="medium", color=color_1, position=start_pos
         )
 
         # Artifacts
@@ -303,7 +291,7 @@ class GITempTwoBuildCard:
             ss_start_pos = (start_pos[0] + 39, start_pos[1] + 212)
             for j, sub_stat in enumerate(artifact.sub_stats):
                 icon = drawer.open_asset(
-                    f"stats/{sub_stat.type}.png", size=(35, 35), mask_color=color_3,
+                    f"stats/{sub_stat.type}.png", size=(35, 35), mask_color=color_3
                 )
                 im.alpha_composite(icon, ss_start_pos)
                 drawer.write(

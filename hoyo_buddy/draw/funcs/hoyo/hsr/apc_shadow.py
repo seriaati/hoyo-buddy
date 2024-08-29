@@ -40,27 +40,15 @@ class APCShadowCard:
 
     def _write_title(self) -> None:
         self._drawer.write(
-            EnumStr(ChallengeType.APC_SHADOW),
-            size=80,
-            position=(76, 75),
-            style="bold",
+            EnumStr(ChallengeType.APC_SHADOW), size=80, position=(76, 75), style="bold"
         )
 
     def _write_apc_shadow_name(self) -> None:
-        self._drawer.write(
-            self._season.name,
-            size=64,
-            position=(76, 197),
-            style="medium",
-        )
+        self._drawer.write(self._season.name, size=64, position=(76, 197), style="medium")
 
     def _write_max_stars(self) -> None:
         self._drawer.write(
-            str(self._data.total_stars),
-            size=50,
-            position=(193, 374),
-            style="medium",
-            anchor="mm",
+            str(self._data.total_stars), size=50, position=(193, 374), style="medium", anchor="mm"
         )
 
     def _write_farthest_stage(self) -> None:
@@ -75,10 +63,7 @@ class APCShadowCard:
 
     def _write_times_challenged(self) -> None:
         self._drawer.write(
-            LocaleStr(
-                key="apc_shadow.times_challenged",
-                times=self._data.total_battles,
-            ),
+            LocaleStr(key="apc_shadow.times_challenged", times=self._data.total_battles),
             size=25,
             position=(303, 374),
         )
@@ -107,23 +92,13 @@ class APCShadowCard:
         level_flair = drawer.open_asset("level_flair.png")
         block.paste(level_flair, (0, 96), level_flair)
         drawer.write(
-            str(chara.level),
-            size=18,
-            position=(31, 108),
-            style="bold",
-            anchor="mm",
-            color=WHITE,
+            str(chara.level), size=18, position=(31, 108), style="bold", anchor="mm", color=WHITE
         )
 
         const_flair = drawer.open_asset("const_flair.png")
         block.paste(const_flair, (90, 0), const_flair)
         drawer.write(
-            str(chara.rank),
-            size=18,
-            position=(105, 16),
-            style="bold",
-            anchor="mm",
-            color=WHITE,
+            str(chara.rank), size=18, position=(105, 16), style="bold", anchor="mm", color=WHITE
         )
 
         return block
@@ -139,13 +114,7 @@ class APCShadowCard:
         )
 
         stage_name = get_floor_difficulty(stage.name, self._season.name)
-        name_tbox = drawer.write(
-            stage_name,
-            size=44,
-            position=(0, 0),
-            style="bold",
-            color=WHITE,
-        )
+        name_tbox = drawer.write(stage_name, size=44, position=(0, 0), style="bold", color=WHITE)
         score_tbox = drawer.write(
             LocaleStr(
                 key="pf_card_total_score",
@@ -171,10 +140,10 @@ class APCShadowCard:
             pos = (pos[0] + 62, pos[1])
 
         defeated_text = LocaleStr(key="apc_shadow.boss_defeated").translate(
-            self._translator, self.locale,
+            self._translator, self.locale
         )
         not_defeated_text = LocaleStr(key="apc_shadow.boss_defeated_no").translate(
-            self._translator, self.locale,
+            self._translator, self.locale
         )
 
         if stage.node_1.boss_defeated and stage.node_2.boss_defeated:

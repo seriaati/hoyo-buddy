@@ -321,7 +321,7 @@ class ZZZAgentCard:
             if prop is None:
                 continue
             drawer.write(
-                prop.final if prop.final else prop.value,
+                prop.final or prop.value,
                 size=40,
                 position=start_pos,
                 color=(20, 20, 20),

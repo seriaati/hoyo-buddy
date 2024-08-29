@@ -276,7 +276,7 @@ class ZZZTeamCard:
             if prop is None:
                 continue
 
-            text = prop.final if prop.final else prop.value
+            text = prop.final or prop.value
             drawer.write(text, size=24, position=start_pos, sans=True)
             start_pos = (454, 48) if i == 4 else (start_pos[0], start_pos[1] + 45)
 

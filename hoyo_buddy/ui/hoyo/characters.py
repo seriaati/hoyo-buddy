@@ -799,60 +799,57 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
                 self.view._hsr_characters = [
                     c for c in self.view._hsr_characters if not isinstance(c, UnownedCharacter)
                 ]
-        else:
-            if self.view._game is Game.GENSHIN:
-                current_chara_ids = {
-                    str(c.id) for c in self.view._gi_characters if isinstance(c, GICharacter)
-                }
+        elif self.view._game is Game.GENSHIN:
+            current_chara_ids = {
+                str(c.id) for c in self.view._gi_characters if isinstance(c, GICharacter)
+            }
 
-                async with AmbrAPIClient(translator=self.view.translator) as client:
-                    ambr_charas = await client.fetch_characters()
+            async with AmbrAPIClient(translator=self.view.translator) as client:
+                ambr_charas = await client.fetch_characters()
 
-                for chara in ambr_charas:
-                    if (
-                        chara.beta
-                        or contains_traveler_id(chara.id)
-                        or chara.id in current_chara_ids
-                        or (
-                            chara.release is not None
-                            and chara.release.replace(tzinfo=UTC_8) > get_now()
-                        )
-                    ):
-                        continue
-
-                    self.view._gi_characters.append(
-                        UnownedCharacter(
-                            id=chara.id, rarity=chara.rarity, element=chara.element.name
-                        )
+            for chara in ambr_charas:
+                if (
+                    chara.beta
+                    or contains_traveler_id(chara.id)
+                    or chara.id in current_chara_ids
+                    or (
+                        chara.release is not None
+                        and chara.release.replace(tzinfo=UTC_8) > get_now()
                     )
+                ):
+                    continue
 
-            elif self.view._game is Game.STARRAIL:
-                current_chara_ids = {
-                    c.id for c in self.view._hsr_characters if isinstance(c, HSRCharacter)
-                }
+                self.view._gi_characters.append(
+                    UnownedCharacter(id=chara.id, rarity=chara.rarity, element=chara.element.name)
+                )
 
-                async with YattaAPIClient(translator=self.view.translator) as client:
-                    yatta_charas = await client.fetch_characters()
+        elif self.view._game is Game.STARRAIL:
+            current_chara_ids = {
+                c.id for c in self.view._hsr_characters if isinstance(c, HSRCharacter)
+            }
 
-                for chara in yatta_charas:
-                    if (
-                        chara.beta
-                        or chara.id in TRAILBLAZER_IDS
-                        or chara.id in current_chara_ids
-                        or (
-                            chara.release_at is not None
-                            and chara.release_at.replace(tzinfo=UTC_8) > get_now()
-                        )
-                    ):
-                        continue
+            async with YattaAPIClient(translator=self.view.translator) as client:
+                yatta_charas = await client.fetch_characters()
 
-                    self.view._hsr_characters.append(
-                        UnownedCharacter(
-                            id=str(chara.id),
-                            rarity=chara.rarity,
-                            element=chara.types.combat_type.name,
-                            path=YATTA_PATH_TO_GPY_PATH[chara.types.path_type],
-                        )
+            for chara in yatta_charas:
+                if (
+                    chara.beta
+                    or chara.id in TRAILBLAZER_IDS
+                    or chara.id in current_chara_ids
+                    or (
+                        chara.release_at is not None
+                        and chara.release_at.replace(tzinfo=UTC_8) > get_now()
                     )
+                ):
+                    continue
+
+                self.view._hsr_characters.append(
+                    UnownedCharacter(
+                        id=str(chara.id),
+                        rarity=chara.rarity,
+                        element=chara.types.combat_type.name,
+                        path=YATTA_PATH_TO_GPY_PATH[chara.types.path_type],
+                    )
+                )
 
         await self.view.item_callback(i, self, set_loading_state=False)

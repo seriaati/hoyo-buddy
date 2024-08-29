@@ -21,10 +21,10 @@ from ..enums import Game, GeetestType, Platform
 from ..exceptions import FeatureNotImplementedError, IncompleteParamError, InvalidQueryError
 from ..hoyo.clients.ambr import AmbrAPIClient
 from ..hoyo.clients.yatta import YattaAPIClient
-from ..hoyo.transformers import HoyoAccountTransformer
+from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from ..l10n import LocaleStr
 from ..models import DrawInput
-from ..types import User
+from ..types import User  # noqa: TCH001
 from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.notes.view import NotesView

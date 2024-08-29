@@ -93,7 +93,8 @@ class AbyssEnemyView(View):
     async def _get_embed_and_enemy_items(
         self,
     ) -> tuple[DefaultEmbed, tuple[list[ItemWithDescription], list[ItemWithDescription]]]:
-        assert self._abyss_data is not None and self._monster_curve is not None
+        assert self._abyss_data is not None
+        assert self._monster_curve is not None
 
         async with AmbrAPIClient(self.locale, self.translator) as client:
             abyss = self._abyss_data.abyss_items[self._season_index]

@@ -9,7 +9,7 @@ from ...components import Select, SelectOption
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager
+    from ..view import AccountManager  # noqa: F401
 
 
 class AccountSelect(Select["AccountManager"]):

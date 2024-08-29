@@ -147,7 +147,7 @@ def measure_time(
     end_time = time.time_ns()
     msg = f"{description} time: {(end_time - start_time) / 1e6:.6f} ms"
     if print_:
-        print(msg)
+        print(msg)  # noqa: T201
     else:
         logger.debug(msg)
 

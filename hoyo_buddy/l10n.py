@@ -4,7 +4,7 @@ import contextlib
 import pathlib
 import random
 import re
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Self
 
 import ambr
 import yatta
@@ -107,7 +107,7 @@ class Translator:
         self._synced_commands: dict[str, int] = {}
         self._localizations: dict[str, dict[str, str]] = {}
 
-    async def __aenter__(self) -> Translator:
+    async def __aenter__(self) -> Self:
         await self.load()
         return self
 

@@ -79,27 +79,21 @@ async def draw_hsr_build_card(
 ) -> BytesIO:
     urls: list[str] = []
     urls.append(image_url)
-
-    for trace in character.traces:
-        urls.append(trace.icon)
+    urls.extend(trace.icon for trace in character.traces)
 
     stats = (
         character.stats if isinstance(character, HoyolabHSRCharacter) else character.stats.values()
     )
-    for stat in stats:
-        urls.append(stat.icon)
+    urls.extend(stat.icon for stat in stats)
 
     for relic in character.relics:
-        urls.append(relic.icon)
-        urls.append(relic.main_stat.icon)
-        for sub_stat in relic.sub_stats:
-            urls.append(sub_stat.icon)
+        urls.extend((relic.icon, relic.main_stat.icon))
+        urls.extend(sub_stat.icon for sub_stat in relic.sub_stats)
 
     if character.light_cone is not None:
         urls.append(character.light_cone.icon.image)
         if isinstance(character, enka.hsr.Character):
-            for stat in character.light_cone.stats:
-                urls.append(stat.icon)
+            urls.extend(stat.icon for stat in character.light_cone.stats)
 
     await download_images(urls, "hsr-build-card", draw_input.session)
 
@@ -144,15 +138,10 @@ async def draw_gi_build_card(
     top_crop: bool,
 ) -> BytesIO:
     urls: list[str] = []
-    urls.append(image_url)
-    urls.append(character.weapon.icon)
-    urls.append(character.icon.gacha)
-    for artifact in character.artifacts:
-        urls.append(artifact.icon)
-    for talent in character.talents:
-        urls.append(talent.icon)
-    for constellation in character.constellations:
-        urls.append(constellation.icon)
+    urls.extend((image_url, character.weapon.icon, character.icon.gacha))
+    urls.extend(artifact.icon for artifact in character.artifacts)
+    urls.extend(talent.icon for talent in character.talents)
+    urls.extend(const.icon for const in character.constellations)
 
     if template == 2:
         async with ambr.AmbrAPI() as api:
@@ -309,14 +298,16 @@ async def draw_spiral_abyss_card(
         for chara in battle.characters
     ]
     with contextlib.suppress(IndexError):
-        for chara in [
-            abyss.ranks.most_bursts_used[0],
-            abyss.ranks.most_damage_taken[0],
-            abyss.ranks.most_kills[0],
-            abyss.ranks.most_skills_used[0],
-            abyss.ranks.strongest_strike[0],
-        ]:
-            urls.append(chara.icon)
+        urls.extend(
+            chara.icon
+            for chara in (
+                abyss.ranks.most_bursts_used[0],
+                abyss.ranks.most_damage_taken[0],
+                abyss.ranks.most_kills[0],
+                abyss.ranks.most_skills_used[0],
+                abyss.ranks.strongest_strike[0],
+            )
+        )
 
     await download_images(urls, "abyss", draw_input.session)
     with timing("draw", tags={"type": "spiral_abyss_card"}):
@@ -528,10 +519,8 @@ async def draw_honkai_suits_card(
 ) -> File:
     urls: list[str] = []
     for suit in suits:
-        urls.append(suit.tall_icon.replace(" ", ""))
-        urls.append(suit.weapon.icon)
-        for stig in suit.stigmata:
-            urls.append(stig.icon)
+        urls.extend((suit.tall_icon.replace(" ", ""), suit.weapon.icon))
+        urls.extend(stig.icon for stig in suit.stigmata)
 
     await download_images(urls, "honkai-characters", draw_input.session, ignore_error=True)
 

@@ -568,7 +568,7 @@ class ReminderButton(Button[NotesView]):
         self.view.add_item(go_back_button)
 
         if self.view._account.game is Game.GENSHIN:
-            from .buttons import (
+            from .buttons import (  # noqa: PLC0415
                 DailyReminder,
                 ExpeditionReminder,
                 PTReminder,
@@ -584,7 +584,7 @@ class ReminderButton(Button[NotesView]):
             self.view.add_item(DailyReminder(row=2))
             self.view.add_item(WeekBossReminder(row=2))
         elif self.view._account.game is Game.STARRAIL:
-            from .buttons import (
+            from .buttons import (  # noqa: PLC0415
                 DailyReminder,
                 ExpeditionReminder,
                 ReservedTBPReminder,
@@ -598,7 +598,7 @@ class ReminderButton(Button[NotesView]):
             self.view.add_item(DailyReminder(row=1))
             self.view.add_item(WeekBossReminder(row=2))
         elif self.view._account.game is Game.ZZZ:
-            from .buttons import (
+            from .buttons import (  # noqa: PLC0415
                 BatteryReminder,
                 DailyReminder,
                 ScratchCardReminder,

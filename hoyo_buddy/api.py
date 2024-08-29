@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 from typing import TYPE_CHECKING
 
@@ -10,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class BotAPI:
-    def __init__(self, bot: "HoyoBuddy") -> None:
+    def __init__(self, bot: HoyoBuddy) -> None:
         self._bot = bot
 
     async def index(self, _: web.Request) -> web.Response:

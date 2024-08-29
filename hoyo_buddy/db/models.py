@@ -88,7 +88,7 @@ class HoyoAccount(Model):
 
     @cached_property
     def client(self) -> GenshinClient:
-        from ..hoyo.clients.gpy import GenshinClient
+        from ..hoyo.clients.gpy import GenshinClient  # noqa: PLC0415
 
         return GenshinClient(self)
 

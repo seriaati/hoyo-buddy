@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import os
+import pathlib
 from typing import TYPE_CHECKING, Any
 
 import discord
@@ -34,7 +34,7 @@ class SettingsUI(View):
     @staticmethod
     def get_brand_img_filename(theme: str, locale: discord.Locale) -> str:
         filename = f"hoyo-buddy-assets/assets/brand/{theme}-{locale.value.replace('-', '_')}.png"
-        if not os.path.exists(filename):
+        if not pathlib.Path(filename).exists():
             return f"hoyo-buddy-assets/assets/brand/{theme}-en_US.png"
         return filename
 

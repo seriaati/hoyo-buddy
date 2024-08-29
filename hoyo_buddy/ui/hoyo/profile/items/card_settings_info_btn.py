@@ -10,7 +10,7 @@ from hoyo_buddy.ui import Button
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import ProfileView
+    from ..view import ProfileView  # noqa: F401
 
 
 class CardSettingsInfoButton(Button["ProfileView"]):

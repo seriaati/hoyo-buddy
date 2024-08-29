@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .battery import BatteryReminder
 from .daily import DailyReminder
 from .expedition import ExpeditionReminder

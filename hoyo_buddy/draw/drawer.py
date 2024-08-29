@@ -9,7 +9,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from ..models import DynamicBKInput, TopPadding
 from ..utils import get_static_img_path
-from .fonts import *
+from .fonts import *  # noqa: F403
 
 if TYPE_CHECKING:
     from ..l10n import LocaleStr, Translator

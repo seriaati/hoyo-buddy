@@ -476,7 +476,7 @@ class NotesChecker:
         ):
             return True
 
-        if (
+        if (  # noqa: SIM103
             notify.notify_time is not None
             and get_now()
             < notify.account.server_reset_datetime - datetime.timedelta(hours=notify.notify_time)

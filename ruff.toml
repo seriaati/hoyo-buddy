@@ -13,46 +13,37 @@ ignore = [
   "PLR6301",
   "ANN002",
   "ERA001",
-  "D100",
-  "D101",
-  "D102",
-  "D103",
-  "D104",
-  "D105",
-  "D106",
-  "D107",
-  "RUF100",
   "RUF006",
+  "D",
+  "CPY",
+  "DOC",
+  "TID",
+  "INP",
+  "S101",
+  "SLF001",
+  "FBT",
+  "COM812",
+  "ISC001",
+  "S311",
+  "BLE001",
+  "PLR0912",
+  "PLR0915",
+  "C901",
+  "PLR0911",
+  "PLR0916",
+  "PLR0904",
+  "PLR0914",
+  "PLR0904",
+  "FIX",
+  "TD",
+  "S105",
+  "S301",
+  "RUF012",
+  "S403",
 ]
 preview = true
 select = [
-  "E",
-  "W",
-  "C90",
-  "F",
-  "UP",
-  "B",
-  "SIM",
-  "I",
-  "N",
-  "TCH",
-  "ANN",
-  "ASYNC",
-  "A",
-  "C4",
-  "EM",
-  "FA",
-  "ICN",
-  "G",
-  "PIE",
-  "T20",
-  "ARG",
-  "ERA",
-  "LOG",
-  "PL",
-  "TRY",
-  "D",
-  "RUF",
+  "ALL",
 ]
 
 [lint.per-file-ignores]
@@ -71,3 +62,10 @@ max-complexity = 15
 
 [lint.pydocstyle]
 convention = "google"
+
+[lint.isort]
+required-imports = ["from __future__ import annotations"]
+split-on-trailing-comma = false
+
+[format]
+skip-magic-trailing-comma = true

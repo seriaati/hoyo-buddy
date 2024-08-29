@@ -13,7 +13,7 @@ from ...components import Button, GoBackButton, Modal, TextInput
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager
+    from ..view import AccountManager  # noqa: F401
 
 
 class WithModApp(Button["AccountManager"]):

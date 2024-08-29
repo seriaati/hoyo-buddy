@@ -321,8 +321,7 @@ class ZZZTeamCard:
             sans=True,
             color=BLACK,
         )
-        text_im = text_im.rotate(-90, expand=True, resample=Image.Resampling.BICUBIC)
-        return text_im
+        return text_im.rotate(-90, expand=True, resample=Image.Resampling.BICUBIC)
 
     def draw(self) -> BytesIO:
         im = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/background.png")

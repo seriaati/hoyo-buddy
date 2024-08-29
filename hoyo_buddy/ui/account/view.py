@@ -54,13 +54,12 @@ class AccountManager(View):
         account = self.selected_account
 
         if account is None:
-            embed = DefaultEmbed(
+            return DefaultEmbed(
                 self.locale,
                 self.translator,
                 title=LocaleStr(key="account_manager_title"),
                 description=LocaleStr(key="account_manager_no_accounts_description"),
             )
-            return embed
 
         embed = DefaultEmbed(
             self.locale,

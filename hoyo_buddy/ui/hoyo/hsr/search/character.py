@@ -470,3 +470,4 @@ class VoiceSelector(PaginatorSelect[CharacterUI]):
 
         self.view._voice_index = int(self.values[0])
         await self.view.update(i)
+        return None

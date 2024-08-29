@@ -427,3 +427,4 @@ class QuoteSelector(PaginatorSelect[CharacterUI]):
 
         self.view.quote_index = int(self.values[0])
         await self.view.update(i)
+        return None

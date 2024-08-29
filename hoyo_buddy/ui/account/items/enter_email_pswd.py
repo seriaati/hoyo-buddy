@@ -94,7 +94,7 @@ class EnterEmailPassword(Button["AccountManager"]):
         await modal.wait()
 
         if modal.incomplete:
-            return
+            return None
 
         email = modal.email.value.strip()
         password = modal.password.value
@@ -144,3 +144,4 @@ class EnterEmailPassword(Button["AccountManager"]):
             await self.view.finish_cookie_setup(
                 result.to_dict(), platform=self._platform, interaction=i,
             )
+        return None

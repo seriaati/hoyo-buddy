@@ -203,8 +203,7 @@ class Translator:
         elif capitalize_first_word:
             translation = capitalize_first_word_(translation)
 
-        translation = self._replace_command_with_mentions(translation)
-        return translation
+        return self._replace_command_with_mentions(translation)
 
     def _translate_extras(self, extras: dict[str, Any], locale: Locale) -> dict[str, Any]:
         extras_: dict[str, Any] = {}

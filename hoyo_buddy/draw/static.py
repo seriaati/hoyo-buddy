@@ -36,7 +36,7 @@ async def download_image_task(
                 )
                 return await download_image_task(image_url, file_path, session)
             if ignore_error:
-                return
+                return None
             raise DownloadImageFailedError(image_url, resp.status)
 
         image = await resp.read()
@@ -46,6 +46,7 @@ async def download_image_task(
 
     async with aiofiles.open(file_path, "wb") as f:
         await f.write(image)
+    return None
 
 
 async def download_images(

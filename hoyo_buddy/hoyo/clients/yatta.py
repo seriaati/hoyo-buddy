@@ -348,13 +348,12 @@ class YattaAPIClient(yatta.YattaAPI):
             msg = "Translator is not set"
             raise RuntimeError(msg)
 
-        embed = DefaultEmbed(
+        return DefaultEmbed(
             self.locale,
             self.translator,
             title=story.title,
             description=story.text,
         )
-        return embed
 
     def get_character_voice_embed(
         self, voice: yatta.CharacterVoice, character_id: int,
@@ -371,10 +370,9 @@ class YattaAPIClient(yatta.YattaAPI):
             )
             description += f"\n\n{voice_str}"
 
-        embed = DefaultEmbed(
+        return DefaultEmbed(
             self.locale, self.translator, title=voice.title, description=description,
         )
-        return embed
 
     def get_item_embed(self, item: yatta.ItemDetail) -> DefaultEmbed:
         if self.translator is None:

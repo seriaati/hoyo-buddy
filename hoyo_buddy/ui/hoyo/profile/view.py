@@ -510,7 +510,7 @@ class ProfileView(View):
                 character,
                 card_settings,
             )
-        elif self.game is Game.GENSHIN:
+        if self.game is Game.GENSHIN:
             if "hb" in template:
                 return await self._draw_hb_gi_character_card(
                     i.client.session,
@@ -524,7 +524,7 @@ class ProfileView(View):
                 character,
                 card_settings,
             )
-        elif self.game is Game.ZZZ:
+        if self.game is Game.ZZZ:
             return await self._draw_hb_zzz_character_card(
                 i.client.session,
                 i.client.executor,

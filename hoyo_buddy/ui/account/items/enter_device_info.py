@@ -26,13 +26,12 @@ class EnterDeviceInfoButton(Button["AccountManager"]):
 
     @staticmethod
     def get_embed(view: "AccountManager") -> DefaultEmbed:
-        embed = DefaultEmbed(
+        return DefaultEmbed(
             view.locale,
             view.translator,
             title="需要补充设备信息",
             description="1. 点击下方按钮下载用于获取设备信息的应用程序\n2. 安装并启动该应用\n3. 点击「点击查看信息」\n4. 点击「点击复制」\n5. 点击下方的「提交设备信息」按钮并将复制的信息贴上",
         )
-        return embed
 
     async def callback(self, i: "Interaction") -> None:
         modal = DeviceInfoModal(title="提交设备信息")

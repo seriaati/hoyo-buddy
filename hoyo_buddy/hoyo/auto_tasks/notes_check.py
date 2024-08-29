@@ -239,6 +239,7 @@ class NotesChecker:
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
+        return None
 
     @classmethod
     async def _process_realm_currency_notify(cls, notify: NotesNotify, notes: Notes) -> None:
@@ -253,6 +254,7 @@ class NotesChecker:
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
+        return None
 
     @classmethod
     async def _process_tbp_notify(cls, notify: NotesNotify, notes: StarRailNote) -> None:
@@ -267,6 +269,7 @@ class NotesChecker:
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
+        return None
 
     @classmethod
     async def _process_rtbp_notify(cls, notify: NotesNotify, notes: StarRailNote) -> None:
@@ -280,6 +283,7 @@ class NotesChecker:
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
+        return None
 
     @classmethod
     async def _process_expedition_notify(
@@ -298,12 +302,13 @@ class NotesChecker:
             and notify.current_notif_count < notify.max_notif_count
         ):
             await cls._notify_user(notify, notes)
+        return None
 
     @classmethod
     async def _process_pt_notify(cls, notify: NotesNotify, notes: Notes) -> None:
         remaining_time = notes.remaining_transformer_recovery_time
         if remaining_time is None:
-            return
+            return None
 
         if remaining_time.seconds >= 0:
             est_time = get_now() + remaining_time
@@ -311,6 +316,7 @@ class NotesChecker:
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
+        return None
 
     @classmethod
     async def _process_daily_notify(
@@ -337,6 +343,7 @@ class NotesChecker:
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
+        return None
 
     @classmethod
     async def _process_week_boss_discount_notify(
@@ -346,12 +353,13 @@ class NotesChecker:
             return await cls._reset_notif_count(notify)
 
         if isinstance(notes, Notes) and notes.remaining_resin_discounts == 0:
-            return
+            return None
         if isinstance(notes, StarRailNote) and notes.remaining_weekly_discounts == 0:
-            return
+            return None
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
+        return None
 
     @classmethod
     async def _process_battery_charge_notify(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
@@ -365,6 +373,7 @@ class NotesChecker:
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
+        return None
 
     @classmethod
     async def _process_scratch_card_notify(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
@@ -375,6 +384,7 @@ class NotesChecker:
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
+        return None
 
     @classmethod
     async def _process_video_store_notify(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
@@ -386,6 +396,7 @@ class NotesChecker:
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
+        return None
 
     @classmethod
     async def _process_notify(

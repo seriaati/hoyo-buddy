@@ -190,8 +190,7 @@ class ExplorationCard:
                 reputation=0 if exploration is None else exploration.offerings[0].level,
             ): (75, 253),
         }
-        im = self._draw_exploration_card("mondstadt", exploration, texts)
-        return im
+        return self._draw_exploration_card("mondstadt", exploration, texts)
 
     def _draw_liyue_card(self) -> Image.Image:
         exploration = self._get_exploration(2)
@@ -209,8 +208,7 @@ class ExplorationCard:
                 reputation=0 if exploration is None else exploration.offerings[0].level,
             ): (75, 253),
         }
-        im = self._draw_exploration_card("liyue", exploration, texts)
-        return im
+        return self._draw_exploration_card("liyue", exploration, texts)
 
     def _draw_inazuma_card(self) -> Image.Image:
         exploration = self._get_exploration(4)
@@ -229,8 +227,7 @@ class ExplorationCard:
             ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
-        im = self._draw_exploration_card("inazuma", exploration, texts)
-        return im
+        return self._draw_exploration_card("inazuma", exploration, texts)
 
     def _draw_sumeru_card(self) -> Image.Image:
         exploration = self._get_exploration(8)
@@ -249,8 +246,7 @@ class ExplorationCard:
             ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
-        im = self._draw_exploration_card("sumeru", exploration, texts)
-        return im
+        return self._draw_exploration_card("sumeru", exploration, texts)
 
     def _draw_fontaine_card(self) -> Image.Image:
         exploration = self._get_exploration(9)
@@ -269,8 +265,7 @@ class ExplorationCard:
             ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
-        im = self._draw_exploration_card("fontaine", exploration, texts)
-        return im
+        return self._draw_exploration_card("fontaine", exploration, texts)
 
     def _draw_placeholder_card(self) -> Image.Image:
         im = self._get_card("placeholder")
@@ -303,8 +298,7 @@ class ExplorationCard:
                 progress=0 if exploration is None else exploration.explored,
             ): (75, 117),
         }
-        im = self._draw_exploration_card("seaOfBygoneEras", exploration, texts)
-        return im
+        return self._draw_exploration_card("seaOfBygoneEras", exploration, texts)
 
     def _draw_chenyu_value_card(self) -> Image.Image:
         exploration = self._get_exploration(10)
@@ -324,8 +318,7 @@ class ExplorationCard:
             texts[key] = (65, 134 + 45 * i)
         texts.update({self._get_offering_text(exploration): (65, 271)})
 
-        im = self._draw_exploration_card("chenyuVale", exploration, texts)
-        return im
+        return self._draw_exploration_card("chenyuVale", exploration, texts)
 
     def _draw_the_chasm_card(self) -> Image.Image:
         exploration = self._get_exploration(6)
@@ -343,8 +336,7 @@ class ExplorationCard:
             self._get_offering_text(exploration): (65, 272),
         }
 
-        im = self._draw_exploration_card("theChasm", exploration, texts)
-        return im
+        return self._draw_exploration_card("theChasm", exploration, texts)
 
     def _draw_dragonspine_card(self) -> Image.Image:
         exploration = self._get_exploration(3)
@@ -355,8 +347,7 @@ class ExplorationCard:
             ): (73, 120),
             self._get_offering_text(exploration): (73, 184),
         }
-        im = self._draw_exploration_card("dragonspine", exploration, texts)
-        return im
+        return self._draw_exploration_card("dragonspine", exploration, texts)
 
     def _draw_enkanomiya_card(self) -> Image.Image:
         exploration = self._get_exploration(5)
@@ -366,8 +357,7 @@ class ExplorationCard:
                 progress=0 if exploration is None else exploration.explored,
             ): (73, 123),
         }
-        im = self._draw_exploration_card("enkanomiya", exploration, texts)
-        return im
+        return self._draw_exploration_card("enkanomiya", exploration, texts)
 
     def draw(self) -> BytesIO:
         mode_str = "dark" if self._dark_mode else "light"

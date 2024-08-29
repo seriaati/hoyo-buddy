@@ -294,7 +294,7 @@ class ChallengeView(View):
                 self._characters,
                 self.translator,
             )
-        elif isinstance(self.challenge, StarRailChallenge):
+        if isinstance(self.challenge, StarRailChallenge):
             return await draw_moc_card(
                 DrawInput(
                     dark_mode=self._dark_mode,
@@ -308,7 +308,7 @@ class ChallengeView(View):
                 self._get_season(self.challenge),
                 self.translator,
             )
-        elif isinstance(self.challenge, StarRailPureFiction):
+        if isinstance(self.challenge, StarRailPureFiction):
             return await draw_pure_fiction_card(
                 DrawInput(
                     dark_mode=self._dark_mode,
@@ -322,7 +322,7 @@ class ChallengeView(View):
                 self._get_season(self.challenge),
                 self.translator,
             )
-        elif isinstance(self.challenge, StarRailAPCShadow):
+        if isinstance(self.challenge, StarRailAPCShadow):
             return await draw_apc_shadow_card(
                 DrawInput(
                     dark_mode=self._dark_mode,
@@ -336,7 +336,7 @@ class ChallengeView(View):
                 self._get_season(self.challenge),
                 self.translator,
             )
-        elif isinstance(self.challenge, ImgTheaterData):
+        if isinstance(self.challenge, ImgTheaterData):
             return await draw_img_theater_card(
                 DrawInput(
                     dark_mode=self._dark_mode,

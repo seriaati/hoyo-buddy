@@ -317,7 +317,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self, context: commands.Context, exception: commands.CommandError,
     ) -> None:
         if isinstance(exception, commands.CommandNotFound):
-            return
+            return None
         return await super().on_command_error(context, exception)
 
     def get_all_commands(self, locale: discord.Locale) -> dict[str, str]:

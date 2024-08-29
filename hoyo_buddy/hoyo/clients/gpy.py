@@ -80,7 +80,7 @@ class GenshinClient(genshin.Client):
         *,
         blur: bool,
     ) -> DefaultEmbed:
-        embed = (
+        return (
             DefaultEmbed(
                 locale,
                 translator,
@@ -90,7 +90,6 @@ class GenshinClient(genshin.Client):
             .set_thumbnail(url=daily_reward.icon)
             .add_acc_info(self._account, blur=blur)
         )
-        return embed
 
     @staticmethod
     def convert_chara_id_to_ambr_format(character: genshin.models.Character) -> str:
@@ -235,7 +234,7 @@ class GenshinClient(genshin.Client):
             )
             for relic in list(character.relics) + list(character.ornaments)
         ]
-        hsr_chara = HoyolabHSRCharacter(
+        return HoyolabHSRCharacter(
             id=str(character.id),
             element=character.element,
             name=character.name,
@@ -260,7 +259,6 @@ class GenshinClient(genshin.Client):
                 hakushin.Game.HSR,
             ),
         )
-        return hsr_chara
 
     def _update_live_status(
         self,
@@ -340,8 +338,7 @@ class GenshinClient(genshin.Client):
                 self._update_live_status(live_data, cache.extras, True, zzz=True)
                 await cache.save(update_fields=("hoyolab_zzz", "extras"))
 
-            parsed = genshin.models.ZZZFullAgent(**cache.hoyolab_zzz[str(character_id)])
-            return parsed
+            return genshin.models.ZZZFullAgent(**cache.hoyolab_zzz[str(character_id)])
         return await super().get_zzz_agent_info(character_id)
 
     async def update_cookie_token(self) -> None:
@@ -436,7 +433,7 @@ class GenshinClient(genshin.Client):
     async def update_cookies_for_checkin(self) -> dict[str, str] | None:
         """Update client cookies for check-in if the client region is CN."""
         if self.region is genshin.Region.OVERSEAS:
-            return
+            return None
 
         cookies = genshin.parse_cookie(self._account.cookies)
         cookie_token = (await genshin.cn_fetch_cookie_token_with_stoken_v2(cookies))["cookie_token"]

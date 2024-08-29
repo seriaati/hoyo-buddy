@@ -175,9 +175,8 @@ class Drawer:
         bottom = round(top + size[1])
 
         image = image.resize((new_width, new_height), resample=Image.Resampling.LANCZOS)
-        image = image.crop((left, top, right, bottom))
+        return image.crop((left, top, right, bottom))
 
-        return image
 
     @staticmethod
     def ratio_resize(
@@ -198,8 +197,7 @@ class Drawer:
             msg = "Either width or height must be provided"
             raise ValueError(msg)
 
-        image = image.resize((im_width, im_height), resample=Image.Resampling.LANCZOS)
-        return image
+        return image.resize((im_width, im_height), resample=Image.Resampling.LANCZOS)
 
     @staticmethod
     def top_crop(image: Image.Image, height: int) -> Image.Image:
@@ -208,8 +206,7 @@ class Drawer:
         top = 0
         right = image.width
         bottom = height
-        image = image.crop((left, top, right, bottom))
-        return image
+        return image.crop((left, top, right, bottom))
 
     @staticmethod
     def middle_crop(image: Image.Image, size: tuple[int, int]) -> Image.Image:
@@ -220,8 +217,7 @@ class Drawer:
         right = left + size[0]
         bottom = top + size[1]
 
-        image = image.crop((left, top, right, bottom))
-        return image
+        return image.crop((left, top, right, bottom))
 
     @staticmethod
     def hex_to_rgb(hex_color_code: str) -> tuple[int, int, int]:
@@ -297,8 +293,7 @@ class Drawer:
     ) -> Image.Image:
         if opacity != 1.0:
             mask = Image.new("RGBA", image.size, cls.apply_color_opacity(color, opacity))
-            image = ImageChops.multiply(image, mask)
-            return image
+            return ImageChops.multiply(image, mask)
         colored_image = Image.new("RGBA", image.size, color)
         colored_image.putalpha(image.getchannel("A"))
         return colored_image
@@ -514,11 +509,9 @@ class Drawer:
         if background_color is not None:
             new_im = Image.new("RGBA", (target_width, target_height), background_color)
             new_im.alpha_composite(image)
-            new_im = self.mask_image_with_image(new_im, mask)
-            return new_im
+            return self.mask_image_with_image(new_im, mask)
 
-        image = self.mask_image_with_image(image, mask)
-        return image
+        return self.mask_image_with_image(image, mask)
 
     @staticmethod
     def mask_image_with_image(image: Image.Image, mask: Image.Image) -> Image.Image:
@@ -549,6 +542,5 @@ class Drawer:
         result = Image.new("RGBA", blob.size)
         result.alpha_composite(colored_blob)
         result.alpha_composite(colored_pattern)
-        result = result.rotate(rotation, resample=Image.Resampling.BICUBIC, expand=True)
+        return result.rotate(rotation, resample=Image.Resampling.BICUBIC, expand=True)
 
-        return result

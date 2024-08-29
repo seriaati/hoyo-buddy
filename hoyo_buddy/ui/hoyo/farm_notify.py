@@ -140,6 +140,7 @@ class FarmNotifyView(PaginatorView):
         await self._fetch_item_icons()
         await super().start(i)
         self.message = await i.original_response()
+        return None
 
 
 class AddItemButton(Button[FarmNotifyView]):

@@ -377,6 +377,7 @@ class CharacterSelect(PaginatorSelect[CardSettingsView]):
 
         embed = self.view.get_settings_embed()
         await i.response.edit_message(embed=embed, view=self.view)
+        return None
 
 
 class DarkModeButton(ToggleButton[CardSettingsView]):
@@ -512,12 +513,11 @@ class ImageSelect(PaginatorSelect[CardSettingsView]):
             if image_url in self.default_collection
             else LocaleStr(key="profile.image_select.custom_image.label", num=num)
         )
-        option = SelectOption(
+        return SelectOption(
             label=label,
             value=image_url,
             default=image_url == self.current_image_url,
         )
-        return option
 
     async def callback(self, i: Interaction) -> None:
         changed = self.update_page()
@@ -538,6 +538,7 @@ class ImageSelect(PaginatorSelect[CardSettingsView]):
 
         embed = self.view.get_settings_embed()
         await i.response.edit_message(embed=embed, view=self.view)
+        return None
 
 
 class PrimaryColorModal(Modal):

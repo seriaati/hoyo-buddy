@@ -160,6 +160,7 @@ def get_game_emoji(game: genshin.Game | Game) -> str:
         return ZZZ_EMOJI
     if game is genshin.Game.TOT or game is Game.TOT:
         return TOT_EMOJI
+    return None
 
 
 def get_gi_element_emoji(element: str) -> str:

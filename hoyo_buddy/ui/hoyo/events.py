@@ -124,6 +124,7 @@ class EventSelector(PaginatorSelect[EventsView]):
 
         self.update_options_defaults()
         await i.response.edit_message(embed=embed, view=self.view)
+        return None
 
 
 class EventTypeSelector(Select[EventsView]):

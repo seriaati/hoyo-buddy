@@ -176,3 +176,4 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
 
         # Redraw the card
         await self.view.update(i, self)
+        return None

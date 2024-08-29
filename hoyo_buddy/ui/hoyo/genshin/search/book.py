@@ -38,8 +38,7 @@ class BookVolumeUI(View):
     async def _fetch_volume_embed(self) -> DefaultEmbed:
         async with AmbrAPIClient(self.locale, self.translator) as api:
             readable = await api.fetch_readable(f"Book{self.selected_volume.story_id}")
-            embed = api.get_volume_embed(self.book, self.selected_volume, readable)
-            return embed
+            return api.get_volume_embed(self.book, self.selected_volume, readable)
 
     def _setup_items(self) -> None:
         self.clear_items()

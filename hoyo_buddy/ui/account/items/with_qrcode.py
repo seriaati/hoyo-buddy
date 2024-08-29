@@ -62,14 +62,13 @@ class WithQRCode(Button["AccountManager"]):
             game_token=raw_data.game_token, account_id=int(raw_data.account_id),
         )
 
-        cookies = {
+        return {
             "stoken_v2": stoken.token,
             "ltuid": stoken.aid,
             "account_id": stoken.aid,
             "ltmid": stoken.mid,
             "cookie_token": cookie_token,
         }
-        return cookies
 
     async def callback(self, i: Interaction) -> Any:
         await self.set_loading_state(i)
@@ -123,3 +122,4 @@ class WithQRCode(Button["AccountManager"]):
         assert check_result.payload.raw is not None
         cookies = await self._fetch_cookies(check_result.payload.raw)
         await self.view.finish_cookie_setup(cookies, platform=Platform.MIYOUSHE, interaction=i)
+        return None

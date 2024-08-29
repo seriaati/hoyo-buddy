@@ -102,8 +102,7 @@ def convert_to_title_case(s: str) -> str:
     # Capitalize first word
     s = capitalize_first_word(s)
     # Capitalize the first word after a colon
-    s = re.sub(r"(?<=:)\s*\w+", lambda m: m.group().capitalize(), s)
-    return s
+    return re.sub(r"(?<=:)\s*\w+", lambda m: m.group().capitalize(), s)
 
 
 def capitalize_first_word(s: str) -> str:
@@ -177,9 +176,8 @@ def format_ann_content(content: str) -> str:
     # remove time tags from mihoyo
     content = content.replace('t class="t_gl"', "")
     content = content.replace('t class="t_lc"', "")
-    content = content.replace("/t", "")
+    return content.replace("/t", "")
 
-    return content
 
 
 _tasks_set: set[asyncio.Task[Any] | asyncio.Future[Any]] = set()

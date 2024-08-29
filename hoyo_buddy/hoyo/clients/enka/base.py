@@ -92,7 +92,7 @@ class BaseClient:
                 cache["avatarInfoList"].append(chara)
 
             return cache
-        elif game is enka.Game.HSR:
+        if game is enka.Game.HSR:
             # Update player
             keys_to_update = (
                 "nickname",
@@ -120,6 +120,7 @@ class BaseClient:
                 cache["detailInfo"]["avatarDetailList"].append(chara)
 
             return cache
+        return None
 
     @overload
     async def fetch_showcase(

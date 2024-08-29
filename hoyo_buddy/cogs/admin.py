@@ -163,6 +163,7 @@ class Admin(commands.Cog):
             await ctx.send(f"device_fp:\n```{account.device_fp}```")
         if account.device_id is not None:
             await ctx.send(f"device_id:\n```{account.device_id}```")
+        return None
 
 
 async def setup(bot: HoyoBuddy) -> None:

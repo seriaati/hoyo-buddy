@@ -79,7 +79,7 @@ class AbyssCard:
         except IndexError:
             return []
 
-        pills = [
+        return [
             self._draw_rank_pill(
                 most_defeats,
                 LocaleStr(key="abyss.most_defeats", val=most_defeats.value),
@@ -108,7 +108,6 @@ class AbyssCard:
             ),
         ]
 
-        return pills
 
     def _write_overview_texts(self) -> None:
         drawer = self._drawer

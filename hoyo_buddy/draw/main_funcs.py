@@ -69,13 +69,12 @@ async def draw_item_list_card(
 async def draw_checkin_card(draw_input: DrawInput, rewards: list[Reward]) -> BytesIO:
     await download_images([r.icon for r in rewards], "check-in", draw_input.session)
     with timing("draw", tags={"type": "checkin_card"}):
-        buffer = await draw_input.loop.run_in_executor(
+        return await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.draw_checkin_card,
             rewards,
             draw_input.dark_mode,
         )
-    return buffer
 
 
 async def draw_hsr_build_card(
@@ -111,7 +110,7 @@ async def draw_hsr_build_card(
     await download_images(urls, "hsr-build-card", draw_input.session)
 
     with timing("draw", tags={"type": "hsr_build_card"}):
-        buffer = await draw_input.loop.run_in_executor(
+        return await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.hsr.draw_hsr_build_card,
             character,
@@ -120,7 +119,6 @@ async def draw_hsr_build_card(
             image_url,
             primary_hex,
         )
-    return buffer
 
 
 async def draw_hsr_notes_card(
@@ -132,7 +130,7 @@ async def draw_hsr_notes_card(
         session=draw_input.session,
     )
     with timing("draw", tags={"type": "hsr_notes_card"}):
-        buffer = await draw_input.loop.run_in_executor(
+        return await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.hsr.draw_hsr_notes_card,
             notes,
@@ -140,7 +138,6 @@ async def draw_hsr_notes_card(
             translator,
             draw_input.dark_mode,
         )
-    return buffer
 
 
 async def draw_gi_build_card(
@@ -207,7 +204,7 @@ async def draw_gi_notes_card(
         session=draw_input.session,
     )
     with timing("draw", tags={"type": "gi_notes_card"}):
-        buffer = await draw_input.loop.run_in_executor(
+        return await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.genshin.draw_genshin_notes_card,
             notes,
@@ -215,7 +212,6 @@ async def draw_gi_notes_card(
             translator,
             draw_input.dark_mode,
         )
-    return buffer
 
 
 async def draw_farm_card(
@@ -451,7 +447,7 @@ async def draw_zzz_notes_card(
     translator: Translator,
 ) -> BytesIO:
     with timing("draw", tags={"type": "zzz_notes_card"}):
-        buffer = await draw_input.loop.run_in_executor(
+        return await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.zzz.draw_zzz_notes,
             notes,
@@ -459,7 +455,6 @@ async def draw_zzz_notes_card(
             translator,
             draw_input.dark_mode,
         )
-    return buffer
 
 
 async def fetch_zzz_draw_data(
@@ -519,11 +514,10 @@ async def draw_zzz_build_card(
             disc_icons=draw_data.disc_icons,
             color=color,
         )
-        buffer = await draw_input.loop.run_in_executor(
+        return await draw_input.loop.run_in_executor(
             draw_input.executor,
             card.draw,
         )
-    return buffer
 
 
 async def draw_zzz_characters_card(
@@ -599,8 +593,7 @@ async def draw_zzz_team_card(
         disc_icons=draw_data.disc_icons,
     )
     with timing("draw", tags={"type": "zzz_team_card"}):
-        buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
-    return buffer
+        return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
 
 async def draw_hsr_team_card(
@@ -631,8 +624,7 @@ async def draw_hsr_team_card(
             character_images=character_images,
             character_colors=character_colors,
         )
-        buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
-    return buffer
+        return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
 
 async def draw_gi_team_card(
@@ -656,6 +648,5 @@ async def draw_gi_team_card(
         character_images=character_images,
     )
     with timing("draw", tags={"type": "gi_team_card"}):
-        buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
+        return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
-    return buffer

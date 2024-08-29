@@ -128,21 +128,18 @@ class ZZZAgentCard:
 
         # Media rank
         rank_text = drawer.open_asset(f"rank/M{self._agent.rank}.png")
-        if self._card_data.get("level_flip", False):
-            im.paste(
-                rank_text,
-                (
-                    self._card_data["level_x"] + tbox.width - rank_text.width,
-                    self._card_data["level_y"] + 260,
-                ),
-                rank_text,
+        level_flip = self._card_data.get("level_flip", False)
+        rank_text_pos = (
+            (
+                self._card_data["level_x"] + tbox.width - rank_text.width,
+                self._card_data["level_y"] + 260,
             )
-        else:
-            im.paste(
-                rank_text, (self._card_data["level_x"], self._card_data["level_y"] + 260), rank_text
-            )
+            if level_flip
+            else (self._card_data["level_x"], self._card_data["level_y"] + 260)
+        )
+        im.paste(rank_text, rank_text_pos, rank_text)
 
-        if self._name_data is not None:
+        if not level_flip and self._name_data is not None:
             # Agent full name
             text = self._name_data.full_name.split(" ", maxsplit=1)
             if len(text) > 1:

@@ -57,28 +57,6 @@ reportUnnecessaryContains = true
 reportUnnecessaryIsInstance = true
 reportUnnecessaryTypeIgnoreComment = true
 
-[tool.vulture]
-ignore_decorators = ["@app_commands.command", "@*.autocomplete", "@ui.button", "@commands.command"]
-ignore_names = [
-  "exc_type",
-  "exc_value",
-  "traceback",
-  "setup_hook",
-  "interaction_check",
-  "on_error",
-  "on_submit",
-  "on_guild_*",
-  "on_interaction",
-  "on_timeout",
-  "ordering",
-  "cog_*",
-  "last_interaction",
-  "before_schedule",
-  "Meta",
-  "unique_together",
-]
-paths = ["hoyo_buddy/", "run.py"]
-
 [tool.aerich]
 location = "./migrations"
 src_folder = "./."

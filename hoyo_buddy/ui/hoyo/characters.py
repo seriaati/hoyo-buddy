@@ -816,7 +816,7 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
             row=4,
         )
 
-    async def callback(self, i: Interaction) -> None:  # noqa: C901, PLR0912
+    async def callback(self, i: Interaction) -> None:
         await super().callback(i)
         await self.set_loading_state(i)
 
@@ -831,7 +831,7 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
                 self.view._hsr_characters = [
                     c for c in self.view._hsr_characters if not isinstance(c, UnownedCharacter)
                 ]
-        else:  # noqa: PLR5501
+        else:
             if self.view._game is Game.GENSHIN:
                 current_chara_ids = {
                     str(c.id) for c in self.view._gi_characters if isinstance(c, GICharacter)

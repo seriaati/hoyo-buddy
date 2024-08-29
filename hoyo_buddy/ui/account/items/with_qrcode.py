@@ -17,7 +17,7 @@ from ...components import Button, GoBackButton
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
 
 
 class WithQRCode(Button["AccountManager"]):

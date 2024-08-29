@@ -127,7 +127,7 @@ class ProfileView(View):
             if char_id not in self._card_data:
                 raise CardNotReadyError(self.characters[char_id].name)
 
-    def _set_characters(self) -> None:  # noqa: PLR0912
+    def _set_characters(self) -> None:
         characters: dict[str, Character] = {}
 
         if self.game is Game.STARRAIL:

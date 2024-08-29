@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 
 from discord import ButtonStyle, TextStyle, ui
 from discord.ext import commands
-from genshin import Game  # noqa: TCH002
+from genshin import Game
 from seria.utils import write_json
 
 from hoyo_buddy.db.models import HoyoAccount

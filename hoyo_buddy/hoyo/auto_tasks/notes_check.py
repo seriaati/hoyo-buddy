@@ -58,7 +58,7 @@ class NotesChecker:
         return embed
 
     @classmethod
-    def _get_notify_embed(cls, notify: NotesNotify, locale: Locale) -> DefaultEmbed:  # noqa: PLR0912
+    def _get_notify_embed(cls, notify: NotesNotify, locale: Locale) -> DefaultEmbed:
         translator = cls._bot.translator
 
         match notify.type:
@@ -454,7 +454,7 @@ class NotesChecker:
         await notify.save(update_fields=("enabled",))
 
     @classmethod
-    def _determine_skip(cls, notify: NotesNotify) -> bool:  # noqa: PLR0911
+    def _determine_skip(cls, notify: NotesNotify) -> bool:
         """Determine if the notification should be skipped."""
         if notify.est_time is not None and get_now() < notify.est_time:
             return True
@@ -476,7 +476,7 @@ class NotesChecker:
         ):
             return True
 
-        if (  # noqa: SIM103
+        if (
             notify.notify_time is not None
             and get_now()
             < notify.account.server_reset_datetime - datetime.timedelta(hours=notify.notify_time)
@@ -505,7 +505,7 @@ class NotesChecker:
         return notify
 
     @classmethod
-    async def execute(cls, bot: HoyoBuddy) -> None:  # noqa: PLR0912
+    async def execute(cls, bot: HoyoBuddy) -> None:
         if cls._lock.locked():
             return
 

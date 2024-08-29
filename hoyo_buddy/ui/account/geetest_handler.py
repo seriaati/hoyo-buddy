@@ -104,7 +104,7 @@ class GeetestHandler:
             name=listener_name,
         )
 
-    async def handle_geetest_notifs(self, notif: asyncpg_listen.NotificationOrTimeout) -> None:  # noqa: PLR0912
+    async def handle_geetest_notifs(self, notif: asyncpg_listen.NotificationOrTimeout) -> None:
         """Notification handler for geetest triggers."""
         if isinstance(notif, asyncpg_listen.Timeout):
             self._total_timeout += 2

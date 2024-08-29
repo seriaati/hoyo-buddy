@@ -10,7 +10,7 @@ from ..commands.farm import Action, FarmCommand
 from ..db.models import FarmNotify, HoyoAccount, Settings, get_locale
 from ..enums import Game
 from ..hoyo.clients.ambr import ItemCategory
-from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
+from ..hoyo.transformers import HoyoAccountTransformer
 from ..l10n import LocaleStr
 from ..ui.hoyo.farm import FarmView
 

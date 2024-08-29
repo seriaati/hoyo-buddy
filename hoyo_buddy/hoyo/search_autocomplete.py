@@ -53,7 +53,7 @@ class AutocompleteSetup:
     _tasks: ClassVar[Tasks] = defaultdict(lambda: defaultdict(defaultdict))
 
     @classmethod
-    def _get_ambr_task(  # noqa: PLR0911
+    def _get_ambr_task(
         cls, api: ambr.AmbrAPIClient, category: ambr.ItemCategory, tg: asyncio.TaskGroup,
     ) -> asyncio.Task[list[Any]] | None:
         match category:
@@ -99,7 +99,7 @@ class AutocompleteSetup:
                 return tg.create_task(api.fetch_books())
 
     @classmethod
-    def _get_hakushin_gi_task(  # noqa: PLR0911
+    def _get_hakushin_gi_task(
         cls, api: hakushin.clients.GIClient, category: HakushinItemCategory, tg: asyncio.TaskGroup,
     ) -> asyncio.Task[list[Any]] | None:
         match category:

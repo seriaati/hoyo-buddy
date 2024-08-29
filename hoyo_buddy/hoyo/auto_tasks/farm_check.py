@@ -59,7 +59,7 @@ class FarmChecker:
         return False
 
     @classmethod
-    async def execute(cls, bot: HoyoBuddy, uid_start: str) -> None:  # noqa: C901
+    async def execute(cls, bot: HoyoBuddy, uid_start: str) -> None:
         logger.info(f"Starting farm check task for uid_start {uid_start}")
 
         cls._bot = bot

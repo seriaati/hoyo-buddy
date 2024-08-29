@@ -90,7 +90,7 @@ class YattaAPIClient(yatta.YattaAPI):
 
         return description
 
-    def _calc_upgrade_stats(  # noqa: C901
+    def _calc_upgrade_stats(
         self, upgrades: list[yatta.models.LightConeUpgrade] | list[yatta.models.CharacterUpgrade],
     ) -> dict[str, Any]:
         result: list[dict[str, list[float]]] = []

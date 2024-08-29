@@ -109,7 +109,7 @@ class DailyCheckin:
                 queue.task_done()
 
     @classmethod
-    async def _daily_checkin(  # noqa: PLR0912
+    async def _daily_checkin(
         cls,
         api_name: Literal["VERCEL", "DETA", "RENDER", "LOCAL"],
         account: HoyoAccount,

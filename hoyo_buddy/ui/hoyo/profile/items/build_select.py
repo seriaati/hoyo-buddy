@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.types import Interaction
 
-    from ..view import ProfileView  # noqa: F401
+    from ..view import ProfileView
 
 
 class BuildSelect(Select["ProfileView"]):

@@ -136,7 +136,7 @@ class CharacterUI(View):
         await self.update(i)
         self.message = await i.original_response()
 
-    async def update(self, i: Interaction) -> None:  # noqa: PLR0912, PLR0915, C901
+    async def update(self, i: Interaction) -> None:
         if self._character_detail is None:
             msg = "Character detail not fetched"
             raise RuntimeError(msg)
@@ -359,7 +359,7 @@ class ItemSelector(Select["CharacterUI"]):
         self._index_name = index_name
 
     async def callback(self, i: Interaction) -> Any:
-        self.view.__setattr__(self._index_name, int(self.values[0]))  # noqa: PLC2801
+        self.view.__setattr__(self._index_name, int(self.values[0]))
         await self.view.update(i)
 
 

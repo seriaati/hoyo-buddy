@@ -89,7 +89,7 @@ class Search(commands.Cog):
             "Query to search for", key="search_command_query_param_description",
         ),
     )
-    async def search_command(  # noqa: C901, PLR0911, PLR0912, PLR0914, PLR0915
+    async def search_command(
         self,
         i: Interaction,
         game_value: str,
@@ -389,7 +389,7 @@ class Search(commands.Cog):
         )
 
     @search_command.autocomplete("query")
-    async def search_command_query_autocomplete(  # noqa: PLR0912, PLR0911
+    async def search_command_query_autocomplete(
         self, i: Interaction, current: str,
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)

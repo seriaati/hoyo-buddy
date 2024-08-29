@@ -172,7 +172,7 @@ class GenshinClient(genshin.Client):
 
             c3 = character.constellations[2]
 
-            if (  # noqa: PLR0916
+            if (
                 i == 1 and talent_boost is TalentBoost.BOOST_E and c3.activated
             ) or (i == 2 and talent_boost is TalentBoost.BOOST_Q and c3.activated):
                 talent_levels.append(talent.level + 3)

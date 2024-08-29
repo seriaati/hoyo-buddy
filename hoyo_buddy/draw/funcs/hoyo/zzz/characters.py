@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from genshin.models.zzz.character import ZZZFullAgent
 
 
-def cache_key(agent: ZZZFullAgent, dark_mode: bool, locale: str, **kwargs: Any) -> str:  # noqa: ARG001
+def cache_key(agent: ZZZFullAgent, dark_mode: bool, locale: str, **kwargs: Any) -> str:
     return f"{agent.id}-{dark_mode}-{locale}"
 
 

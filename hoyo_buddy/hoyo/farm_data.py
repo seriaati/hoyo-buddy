@@ -19,7 +19,7 @@ class FarmDataFetcher:
     _weekday: int
 
     @classmethod
-    def _get_domains(cls, domains: ambr.Domains) -> list[ambr.Domain]:  # noqa: PLR0911
+    def _get_domains(cls, domains: ambr.Domains) -> list[ambr.Domain]:
         match cls._weekday:
             case 0:
                 return domains.monday

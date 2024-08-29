@@ -149,7 +149,7 @@ class CharacterUI(View):
             character_detail.constellations,
         )
 
-    async def update(self, i: Interaction) -> None:  # noqa: PLR0912, PLR0915
+    async def update(self, i: Interaction) -> None:
         if not i.response.is_done():
             await i.response.defer(ephemeral=ephemeral(i))
 
@@ -415,7 +415,7 @@ class ItemSelector(Select[CharacterUI]):
         self.index_name = index_name
 
     async def callback(self, i: Interaction) -> Any:
-        self.view.__setattr__(self.index_name, int(self.values[0]))  # noqa: PLC2801
+        self.view.__setattr__(self.index_name, int(self.values[0]))
         await self.view.update(i)
 
 

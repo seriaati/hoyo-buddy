@@ -14,7 +14,7 @@ from hoyo_buddy.ui.hoyo.profile.card_settings import CardSettingsView, get_card_
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import ProfileView  # noqa: F401
+    from ..view import ProfileView
 
 
 class CardSettingsButton(Button["ProfileView"]):

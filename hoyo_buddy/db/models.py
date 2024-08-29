@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 
 class User(Model):
-    id = fields.BigIntField(pk=True, index=True, generated=False)  # noqa: A003
+    id = fields.BigIntField(pk=True, index=True, generated=False)
     settings: fields.BackwardOneToOneRelation[Settings]
     temp_data: fields.Field[dict[str, Any]] = fields.JSONField(default=dict)
     last_interaction: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
@@ -72,7 +72,7 @@ class HoyoAccount(Model):
 
     class Meta:
         unique_together = ("uid", "game", "user")
-        ordering = ["uid"]  # noqa: RUF012
+        ordering = ["uid"]
 
     def __str__(self) -> str:
         return f"{self.nickname or self.username} ({self.uid})"
@@ -88,7 +88,7 @@ class HoyoAccount(Model):
 
     @cached_property
     def client(self) -> GenshinClient:
-        from ..hoyo.clients.gpy import GenshinClient  # noqa: PLC0415
+        from ..hoyo.clients.gpy import GenshinClient
 
         return GenshinClient(self)
 
@@ -155,7 +155,7 @@ class CardSettings(Model):
 
     class Meta:
         unique_together = ("character_id", "user")
-        ordering = ["character_id"]  # noqa: RUF012
+        ordering = ["character_id"]
 
 
 class EnkaCache(Model):
@@ -167,7 +167,7 @@ class EnkaCache(Model):
     extras: fields.Field[dict[str, dict[str, Any]]] = fields.JSONField(default={})
 
     class Meta:
-        ordering = ["uid"]  # noqa: RUF012
+        ordering = ["uid"]
 
 
 class NotesNotify(Model):
@@ -199,7 +199,7 @@ class NotesNotify(Model):
 
     class Meta:
         unique_together = ("type", "account")
-        ordering = ["type"]  # noqa: RUF012
+        ordering = ["type"]
 
 
 class FarmNotify(Model):
@@ -253,7 +253,7 @@ class ChallengeHistory(Model):
 
     class Meta:
         unique_together = ("uid", "season_id", "challenge_type")
-        ordering = ["-end_time"]  # noqa: RUF012
+        ordering = ["-end_time"]
 
     @property
     def duration_str(self) -> str:

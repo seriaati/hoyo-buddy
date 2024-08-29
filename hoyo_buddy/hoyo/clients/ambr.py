@@ -41,7 +41,7 @@ class ItemCategory(StrEnum):
     SPIRAL_ABYSS = "Spiral Abyss"
 
 
-class AmbrAPIClient(ambr.AmbrAPI):  # noqa: PLR0904
+class AmbrAPIClient(ambr.AmbrAPI):
     def __init__(
         self,
         locale: Locale = Locale.american_english,

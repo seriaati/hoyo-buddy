@@ -532,7 +532,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.1"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#7f8d70bf40b404596c28f911aa4ab4d1410ccdc4" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=dev#94226b08f29db76d415ceef82efe38366b6cb363" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },
@@ -598,7 +598,7 @@ wheels = [
 [[package]]
 name = "hoyo-buddy"
 version = "1.8.6"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "aerich" },
     { name = "aiocache" },
@@ -648,7 +648,7 @@ requires-dist = [
     { name = "discord-py", specifier = ">=2.4.0" },
     { name = "enka-api", specifier = ">=2.2.5" },
     { name = "fake-useragent", specifier = ">=1.5.1" },
-    { name = "genshin", extras = ["all"], git = "https://github.com/thesadru/genshin.py?branch=master" },
+    { name = "genshin", extras = ["all"], git = "https://github.com/thesadru/genshin.py?branch=dev" },
     { name = "gitpython", specifier = ">=3.1.43" },
     { name = "hakushin-py", specifier = ">=0.4.4" },
     { name = "jishaku", specifier = ">=2.5.2" },

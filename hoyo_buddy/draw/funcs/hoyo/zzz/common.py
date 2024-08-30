@@ -26,6 +26,7 @@ STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     ZZZPropertyType.CRIT_DMG: "CRIT_DMG.png",
     ZZZPropertyType.CRIT_RATE: "CRIT_RATE.png",
     ZZZPropertyType.ANOMALY_PROFICIENCY: "ANOMALY_PRO.png",
+    ZZZPropertyType.ANOMALY_MASTERY: "ANOMALY_MASTER.png",
     ZZZPropertyType.PEN_RATIO: "PEN_RATIO.png",
     ZZZPropertyType.IMPACT: "IMPACT.png",
 }

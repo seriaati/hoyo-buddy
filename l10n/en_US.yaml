@@ -161,7 +161,7 @@ error_title: An Error Occurred
 erudition: Erudition
 exceptions.card_not_ready_error.message: "When new characters are released, I need to spend time to gather fanarts and optimize colors for their cards.\nIf you'd like to speed up this process, you can contribute to the card data by reaching me in the [Discord Server](https://dsc.gg/hoyo-buddy)."
 exceptions.card_not_ready_error.title: "Card data for {character_name} is not ready yet."
-exped.embed.description: One (or more) expedetions are finished
+exped.embed.description: One (or more) expeditions are finished
 exped_button.label: Expedition reminder
 exped_modal.title: Expedition Reminder Settings
 exploration.anemoculi: "Anemoculi: {anemoculi}"

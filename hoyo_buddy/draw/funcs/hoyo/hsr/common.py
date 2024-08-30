@@ -39,7 +39,7 @@ def get_character_stats(
         max_dmg_add = character.highest_dmg_bonus_stat
         stats[max_dmg_add.icon] = max_dmg_add.formatted_value
     else:
-        attr_types = (1, 2, 5, 58, 9, 10, 3, 4, 6, 7, 11)
+        attr_types = (1, 2, 5, 10, 58, 9, 3, 4, 6, 11, 7)
         for attr_type in attr_types:
             stat = next((s for s in character.stats if s.type == attr_type), None)
             if stat is None:

@@ -33,9 +33,11 @@ ItemCategory: TypeAlias = (
     ambr.ItemCategory | yatta.ItemCategory | hakushin.ItemCategory | hakushin.ZZZItemCategory
 )
 AutocompleteChoices: TypeAlias = defaultdict[
-    Game, defaultdict[ItemCategory, defaultdict[discord.Locale, dict[str, str]]]
+    Game, defaultdict[ItemCategory, defaultdict[discord.Locale, list[discord.app_commands.Choice[str]]]]
 ]
-BetaAutocompleteChoices: TypeAlias = defaultdict[Game, defaultdict[discord.Locale, dict[str, str]]]
+BetaAutocompleteChoices: TypeAlias = defaultdict[
+    Game, defaultdict[discord.Locale, list[discord.app_commands.Choice[str]]]
+]
 Tasks: TypeAlias = defaultdict[
-    Game, defaultdict[ItemCategory, defaultdict[discord.Locale, asyncio.Task[list[Any]]]]
+    Game, defaultdict[ItemCategory, dict[discord.Locale, asyncio.Task[list[Any]]]]
 ]

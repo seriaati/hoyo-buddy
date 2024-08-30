@@ -398,10 +398,10 @@ class Search(commands.Cog):
 
         if i.namespace.category == BetaItemCategory.UNRELEASED_CONTENT.value:
             try:
-                choice_dict = self.bot.beta_autocomplete_choices[game][locale]
+                choices = self.bot.beta_autocomplete_choices[game][locale]
             except KeyError:
                 try:
-                    choice_dict = self.bot.beta_autocomplete_choices[game][Locale.american_english]
+                    choices = self.bot.beta_autocomplete_choices[game][Locale.american_english]
                 except KeyError:
                     return self.bot.get_error_autocomplete(
                         LocaleStr(key="search_autocomplete_no_results"), locale
@@ -428,23 +428,16 @@ class Search(commands.Cog):
                 return await AbyssEnemyView.get_autocomplete_choices()
 
             try:
-                choice_dict = self.bot.autocomplete_choices[game][category][locale]
+                choices = self.bot.autocomplete_choices[game][category][locale]
             except KeyError:
                 try:
-                    choice_dict = self.bot.autocomplete_choices[game][category][
-                        Locale.american_english
-                    ]
+                    choices = self.bot.autocomplete_choices[game][category][Locale.american_english]
                 except KeyError:
                     return self.bot.get_error_autocomplete(
                         LocaleStr(key="search_autocomplete_no_results"), locale
                     )
 
-        choices = [
-            app_commands.Choice(name=choice, value=item_id)
-            for choice, item_id in choice_dict.items()
-            if current.lower() in choice.lower()
-        ]
-
+        choices = [c for c in choices if current.lower() in c.name.lower()]
         if not choices:
             return self.bot.get_error_autocomplete(
                 LocaleStr(key="search_autocomplete_no_results"), locale

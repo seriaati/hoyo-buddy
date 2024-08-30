@@ -94,12 +94,13 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.user_ids: set[int] = set()
 
         self.autocomplete_choices: AutocompleteChoices = defaultdict(
-            lambda: defaultdict(defaultdict)
+            lambda: defaultdict(lambda: defaultdict(list))
         )
         """[game][category][locale][item_name] -> item_id"""
         self.beta_autocomplete_choices: BetaAutocompleteChoices = defaultdict(
-            lambda: defaultdict(dict)
+            lambda: defaultdict(list)
         )
+
         """[game][locale][item_name] -> item_id"""
 
         self.login_notif_tasks: dict[int, asyncio.Task] = {}

@@ -65,8 +65,8 @@ class FarmNotifyView(PaginatorView):
         self._notify = farm_notify
         self._dark_mode = dark_mode
         self._session = session
-        self._item_names: dict[str, str] = {}
-        self._item_icons: dict[str, str] = {}
+        self._item_names: dict[str, str] = {}  # Item id to name
+        self._item_icons: dict[str, str] = {}  # Item id to icon
 
         super().__init__(pages, author=author, locale=locale, translator=translator)
 
@@ -130,10 +130,10 @@ class FarmNotifyView(PaginatorView):
         except KeyError:
             weapons = weapon_choices[Locale.american_english]
 
-        for name, id_ in characters.items():
-            self._item_names[id_] = name
-        for name, id_ in weapons.items():
-            self._item_names[id_] = name
+        for choice in characters:
+            self._item_names[choice.value] = choice.name
+        for choice in weapons:
+            self._item_names[choice.value] = choice.name
 
         await self._fetch_item_icons()
         await super().start(i)

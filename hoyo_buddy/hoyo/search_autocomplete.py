@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, Final
 
 import hakushin
 import hakushin.clients
+from discord.app_commands import Choice
 
 from ..constants import LOCALE_TO_AMBR_LANG, LOCALE_TO_HAKUSHIN_LANG, LOCALE_TO_YATTA_LANG
 from ..enums import Game
@@ -44,13 +45,15 @@ HAKUSHIN_HSR_ITEM_CATEGORY_MAP: Final[dict[yatta.ItemCategory, HakushinItemCateg
 
 
 class AutocompleteSetup:
-    _result: ClassVar[AutocompleteChoices] = defaultdict(lambda: defaultdict(defaultdict))
-    _beta_result: ClassVar[BetaAutocompleteChoices] = defaultdict(lambda: defaultdict(dict))
+    _result: ClassVar[AutocompleteChoices] = defaultdict(
+        lambda: defaultdict(lambda: defaultdict(list))
+    )
+    _beta_result: ClassVar[BetaAutocompleteChoices] = defaultdict(lambda: defaultdict(list))
     _beta_id_to_category: ClassVar[dict[str, str]] = {}
     """Item ID to ItemCategory.value."""
     _category_beta_ids: ClassVar[dict[tuple[Game, ItemCategory], list[int]]] = {}
     _translator: ClassVar[Translator]
-    _tasks: ClassVar[Tasks] = defaultdict(lambda: defaultdict(defaultdict))
+    _tasks: ClassVar[Tasks] = defaultdict(lambda: defaultdict(dict))
 
     @classmethod
     def _get_ambr_task(
@@ -231,7 +234,7 @@ class AutocompleteSetup:
             if item is None:
                 continue
 
-            cls._beta_result[game][locale][item.name] = str(item.id)
+            cls._beta_result[game][locale].append(Choice(name=item.name, value=str(item.id)))
             cls._beta_id_to_category[str(item.id)] = category.value
 
     @classmethod
@@ -276,8 +279,8 @@ class AutocompleteSetup:
                         cls._inject_hakushin_items(game, category, locale, items)
 
                     cls._add_to_beta_results(game, category, locale, items)
-                    cls._result[game][category][locale] = {
-                        item.name: str(item.id) for item in items if item.name
-                    }
+                    cls._result[game][category][locale] = [
+                        Choice(name=item.name, value=str(item.id)) for item in items
+                    ]
 
         return cls._result, cls._beta_id_to_category, cls._beta_result

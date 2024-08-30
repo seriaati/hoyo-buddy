@@ -46,8 +46,8 @@ class FarmCommand:
         except KeyError as e:
             raise AutocompleteNotDoneYetError from e
 
-        self._valid_item_ids = {id_ for c in characters.values() for id_ in c.values()} | {
-            id_ for w in weapons.values() for id_ in w.values()
+        self._valid_item_ids = {c.value for c_choices in characters.values() for c in c_choices} | {
+            c.value for w_choices in weapons.values() for c in w_choices
         }
 
     @property

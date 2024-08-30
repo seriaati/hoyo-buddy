@@ -27,6 +27,23 @@ class Farm(
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
+    def _get_choices(self, locale: Locale) -> list[app_commands.Choice[str]]:
+        """Get characters and weapons autocomplete choices."""
+        try:
+            characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
+            weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
+        except KeyError:
+            return self.bot.get_error_autocomplete(
+                LocaleStr(key="search_autocomplete_not_setup"), locale
+            )
+
+        try:
+            choices = characters[locale] + weapons[locale]
+        except KeyError:
+            choices = characters[Locale.american_english] + weapons[Locale.american_english]
+
+        return choices
+
     @app_commands.command(
         name=app_commands.locale_str("view"),
         description=app_commands.locale_str(
@@ -182,25 +199,7 @@ class Farm(
     @farm_add_command.autocomplete("query")
     async def query_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:
         locale = await get_locale(i)
-
-        try:
-            characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
-            weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
-        except KeyError:
-            return self.bot.get_error_autocomplete(
-                LocaleStr(key="search_autocomplete_not_setup"), locale
-            )
-
-        choice_dict = dict(
-            characters.get(locale, characters[Locale.american_english]).items()
-        ) | dict(weapons.get(locale, weapons[Locale.american_english]).items())
-
-        choices = [
-            app_commands.Choice(name=name, value=value)
-            for name, value in choice_dict.items()
-            if current.lower() in name.lower()
-        ]
-
+        choices = [c for c in self._get_choices(locale) if current.lower() in c.name.lower()]
         random.shuffle(choices)
         return choices[:25]
 
@@ -224,25 +223,11 @@ class Farm(
                 LocaleStr(key="search_autocomplete_no_results"), locale
             )
 
-        characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
-        weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
-
-        if Locale.american_english not in characters:
-            return self.bot.get_error_autocomplete(
-                LocaleStr(key="search_autocomplete_not_setup"), locale
-            )
-
-        try:
-            choice_dict = dict(characters[locale].items()) | dict(weapons[locale].items())
-        except KeyError:
-            choice_dict = dict(characters[Locale.american_english].items()) | dict(
-                weapons[Locale.american_english].items()
-            )
-
+        choices = self._get_choices(locale)
         choices = [
-            app_commands.Choice(name=name, value=value)
-            for name, value in choice_dict.items()
-            if current.lower() in name.lower() and value in farm_notify.item_ids
+            c
+            for c in choices
+            if current.lower() in c.name.lower() and c.value in farm_notify.item_ids
         ]
 
         if not choices:

@@ -63,8 +63,8 @@ class BuffView(View):
         super().__init__(author=author, locale=locale, translator=translator)
         self._challenge = challenge
         self._season = season
-        self._buffs, self._buff_usage = self._calc_buff_usage()
-        self.add_item(BuffSelector(list(self._buffs.values())))
+        self.buffs, self._buff_usage = self.calc_buff_usage()
+        self.add_item(BuffSelector(list(self.buffs.values())))
 
     def get_buff_embed(self, buff: ChallengeBuff | TheaterBuff, floors: str) -> DefaultEmbed:
         embed = DefaultEmbed(
@@ -77,7 +77,7 @@ class BuffView(View):
         embed.set_thumbnail(url=buff.icon)
         return embed
 
-    def _calc_buff_usage(
+    def calc_buff_usage(
         self,
     ) -> tuple[dict[str, ChallengeBuff | TheaterBuff], defaultdict[str, list[str]]]:
         buffs: dict[str, ChallengeBuff | TheaterBuff] = {}  # Buff name to buff object
@@ -138,7 +138,7 @@ class BuffSelector(Select[BuffView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        buff = self.view._buffs[self.values[0]]
+        buff = self.view.buffs[self.values[0]]
         embed = self.view.get_buff_embed(buff, ", ".join(self.view._buff_usage[buff.name]))
         await i.response.edit_message(embed=embed)
 
@@ -421,13 +421,9 @@ class ChallengeTypeSelect(Select[ChallengeView]):
         self.view._challenge_type = ChallengeType(self.values[0])
 
         view_buff_btn = self.view.get_item("challenge_view.view_buffs")
-        view_buff_btn.disabled = self.view.challenge_type not in {
-            ChallengeType.APC_SHADOW,
-            ChallengeType.PURE_FICTION,
-            ChallengeType.IMG_THEATER,
-        }
+        view_buff_btn.disabled = not isinstance(self.view.challenge, ChallengeWithBuff)
 
-        phase_select: PhaseSelect = self.view.get_item("challenge_view.phase_select")
+        phase_select = self.view.get_item("challenge_view.phase_select")
         phase_select.disabled = False
 
         await self.set_loading_state(i)
@@ -465,8 +461,7 @@ class ViewBuffs(Button[ChallengeView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        if not isinstance(self.view.challenge, ChallengeWithBuff):
-            return
+        assert isinstance(self.view.challenge, ChallengeWithBuff)
 
         season = (
             None
@@ -480,7 +475,12 @@ class ViewBuffs(Button[ChallengeView]):
             locale=self.view.locale,
             translator=self.view.translator,
         )
-        first_buff = next(iter(view._buffs.values()))
+        if not view.buffs:
+            self.disabled = True
+            return await i.response.edit_message(view=self.view)
+
+        first_buff = next(iter(view.buffs.values()))
         embed = view.get_buff_embed(first_buff, ", ".join(view._buff_usage[first_buff.name]))
         await i.response.send_message(embed=embed, view=view, ephemeral=True)
         view.message = await i.original_response()
+        return None

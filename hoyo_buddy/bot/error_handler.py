@@ -131,6 +131,8 @@ def get_error_embed(
                 if retcode in codes:
                     err_info = info
                     break
+            if err_info is None:
+                err_info = {"title": f"[{error.retcode}] HoYo API Error", "description": error.msg}
         else:
             err_info = ENKA_ERROR_CONVERTER.get(type(error))
 

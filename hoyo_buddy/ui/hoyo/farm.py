@@ -54,8 +54,8 @@ class FarmView(View):
 
         self.clear_items()
         self.add_item(WeekdaySelect(self._weekday))
-        for city in GenshinCity:
-            self.add_item(CityButton(city, self._city))
+        for index, city in enumerate(list(GenshinCity)):
+            self.add_item(CityButton(city=city, current=self._city, row=index % 3 + 1))
         self.add_item(ReminderButton())
 
         if self._weekday == 6:
@@ -116,7 +116,7 @@ class ReminderButton(Button[FarmView]):
             label=LocaleStr(key="farm_view.set_reminder"),
             style=ButtonStyle.green,
             emoji=BELL_OUTLINE,
-            row=2,
+            row=4,
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -129,13 +129,13 @@ class ReminderButton(Button[FarmView]):
 
 
 class CityButton(Button[FarmView]):
-    def __init__(self, city: GenshinCity, current: GenshinCity) -> None:
+    def __init__(self, *, city: GenshinCity, current: GenshinCity, row: int) -> None:
         super().__init__(
             label=EnumStr(city),
             style=ButtonStyle.blurple if city == current else ButtonStyle.secondary,
             emoji=GENSHIN_CITY_EMOJIS[city],
             custom_id=f"city_{city.value.lower()}_btn",
-            row=1,
+            row=row,
         )
         self._city = city
 

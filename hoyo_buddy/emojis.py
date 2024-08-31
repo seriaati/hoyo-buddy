@@ -58,6 +58,7 @@ GENSHIN_CITY_EMOJIS: dict[GenshinCity, str] = {
     GenshinCity.INAZUMA: "<:Emblem_Inazuma:982449409117806674>",
     GenshinCity.SUMERU: "<:Emblem_Sumeru:1217359294736105472>",
     GenshinCity.FONTAINE: "<:Emblem_Fontaine:1217359292966109205>",
+    GenshinCity.NATLAN: "<:NatlanCity:1279223382378020874>",
 }
 HSR_ELEMENT_EMOJIS: dict[str, str] = {
     HSRElement.FIRE: "<:IconAttributeFire:1211302768862695475>",

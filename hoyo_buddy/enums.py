@@ -65,6 +65,7 @@ class GenshinCity(StrEnum):
     INAZUMA = "Inazuma"
     SUMERU = "Sumeru"
     FONTAINE = "Fontaine"
+    NATLAN = "Natlan"
 
 
 class HSRElement(StrEnum):

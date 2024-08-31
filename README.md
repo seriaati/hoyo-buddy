@@ -12,20 +12,17 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 Hoyo Buddy is a feature rich, easy to use, and beautifully designed Discord bot specifically made for Hoyoverse gamers.  
+  
+- [Try it Out](https://github.com/seriaati/hoyo-buddy/wiki/Getting-Started)  
+- [Is Hoyo Buddy Safe?](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security)  
+- [Frequently Asked Questions](<https://github.com/seriaati/hoyo-buddy/wiki/Frequently-Asked-Questions>)  
+- [Discord Server](https://dsc.gg/hoyo-buddy)  
 
 ## Nice Images
 | | |
 |:-------------------------:|:-------------------------:|
 ![](https://github.com/seriaati/hoyo-buddy/blob/assets/app-directory/nav-2.png?raw=true)  |  ![](https://github.com/seriaati/hoyo-buddy/blob/assets/app-directory/nav-3.png?raw=true)
 ![](https://github.com/seriaati/hoyo-buddy/blob/assets/app-directory/nav-4.png?raw=true)  |  ![](https://github.com/seriaati/hoyo-buddy/blob/assets/app-directory/nav-5.png?raw=true)
-
-## Quick Links
-
-[Try it Out](https://github.com/seriaati/hoyo-buddy/wiki/Getting-Started)  
-[Discord Server](https://dsc.gg/hoyo-buddy)  
-[Official Website](https://hb.seriaati.xyz/)  
-[Privacy Policy](<https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md>)  
-[FAQ](<https://github.com/seriaati/hoyo-buddy/wiki/Frequently-Asked-Questions>)  
 
 ## Powered By
 

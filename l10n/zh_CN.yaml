@@ -368,6 +368,7 @@ profile.generate_ai_art_modal.negative_prompt.label: 负面提示
 profile.generate_ai_art_modal.prompt.label: 提示
 profile.generate_ai_art_modal.title: 生成 AI 绘图
 profile.genshin.character_select.description: "{c}命{r}精 | {d}"
+profile.genshin.character_select.hoyolab.description: "{c}命{r}精 | {d} | {platform}"
 profile.image_select.custom_image.label: "自定义图片（{num}）"
 profile.image_select.default_collection.label: "Hoyo Buddy 系列 ({num})"
 profile.image_select.none.label: 官方绘图
@@ -617,3 +618,4 @@ events_command_description: 查看正在进行中的游戏活动
 events_view_ann_type_select_placeholder: 选择一个活动分类…
 events_view_content_label: 查看内容
 events_command_game_param_description: 用于查看活动的游戏
+natlan: 納塔

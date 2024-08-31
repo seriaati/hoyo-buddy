@@ -29,7 +29,7 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.exceptions import NoChallengeDataError
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.models import DrawInput
-from hoyo_buddy.types import ChallengeWithBuff
+from hoyo_buddy.types import ChallengeWithBuff, ChallengeWithLang
 
 from ...bot.error_handler import get_error_embed
 from ...db.models import ChallengeHistory, get_dyk
@@ -161,7 +161,7 @@ class ChallengeView(View):
         self._challenge_type: ChallengeType | None = None
         self._season_ids: dict[ChallengeType, int] = {}
         """The user's selected season ID for a challange type"""
-        self._challenge_cache: defaultdict[ChallengeType, dict[int, Challenge]] = defaultdict(dict)
+        self._challenge_cache: defaultdict[ChallengeType, dict[int, ChallengeWithLang]] = defaultdict(dict)
         """Cache of challenges for each season ID and challange type"""
         self._characters: list[GICharacter] = []
 
@@ -173,7 +173,7 @@ class ChallengeView(View):
         return self._challenge_type
 
     @property
-    def challenge(self) -> Challenge | None:
+    def challenge(self) -> ChallengeWithLang | None:
         if self.challenge_type not in self._season_ids:
             return None
         return self._challenge_cache[self.challenge_type].get(self.season_id)
@@ -245,7 +245,11 @@ class ChallengeView(View):
 
             # Save data to db
             await ChallengeHistory.add_data(
-                self._account.uid, self.challenge_type, season_id, challenge
+                uid=self._account.uid,
+                challenge_type=self.challenge_type,
+                season_id=season_id,
+                data=challenge,
+                lang=client.lang,
             )
 
     def _check_challlenge_data(self, challenge: Challenge | None) -> None:

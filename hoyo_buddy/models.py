@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING, NamedTuple
 import aiohttp
 import ambr.models
 import enka
+import genshin.models
 from attr import dataclass
 from discord import Locale
-from genshin.models import StarRailPath
 from pydantic import BaseModel, field_validator
 
 from .constants import STARRAIL_RES
@@ -186,7 +186,7 @@ class UnownedCharacter(BaseModel):
     id: str
     element: str
     rarity: int
-    path: StarRailPath = StarRailPath.ABUNDANCE
+    path: genshin.models.StarRailPath = genshin.models.StarRailPath.ABUNDANCE
     level: int = 0
     friendship: int = 0
     constellation: int = 0
@@ -267,3 +267,23 @@ class HoyolabGICharacter(BaseModel):
     level: int
     max_level: int
     icon: HoyolabGICharacterIcon
+
+
+class ImgTheaterData(genshin.models.ImgTheaterData):
+    lang: str
+
+
+class StarRailChallenge(genshin.models.StarRailChallenge):
+    lang: str
+
+
+class SpiralAbyss(genshin.models.SpiralAbyss):
+    lang: str
+
+
+class StarRailPureFiction(genshin.models.StarRailPureFiction):
+    lang: str
+
+
+class StarRailAPCShadow(genshin.models.StarRailAPCShadow):
+    lang: str

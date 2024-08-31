@@ -8,6 +8,7 @@ import discord
 import enka
 import genshin
 
+from . import models
 from .bot import HoyoBuddy
 from .enums import Game
 from .hoyo.clients import ambr, hakushin, yatta
@@ -18,6 +19,13 @@ Challenge: TypeAlias = (
     | genshin.models.StarRailPureFiction
     | genshin.models.StarRailAPCShadow
     | genshin.models.ImgTheaterData
+)
+ChallengeWithLang: TypeAlias = (
+    models.StarRailChallenge
+    | models.SpiralAbyss
+    | models.StarRailPureFiction
+    | models.StarRailAPCShadow
+    | models.ImgTheaterData
 )
 ChallengeWithBuff: TypeAlias = (
     genshin.models.StarRailAPCShadow

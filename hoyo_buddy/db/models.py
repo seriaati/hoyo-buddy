@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any
 import genshin
 import orjson
 from discord import Locale
+from loguru import logger
 from seria.tortoise.model import Model
 from tortoise import exceptions, fields
 
@@ -20,6 +21,8 @@ from ..utils import blur_uid, get_now
 
 if TYPE_CHECKING:
     import aiohttp
+
+    from hoyo_buddy.types import ChallengeWithLang
 
     from ..hoyo.clients.gpy import GenshinClient
     from ..types import Challenge, Interaction
@@ -250,6 +253,7 @@ class ChallengeHistory(Model):
     data = fields.BinaryField()
     start_time = fields.DatetimeField()
     end_time = fields.DatetimeField()
+    lang = fields.CharField(max_length=5, null=True)
 
     class Meta:
         unique_together = ("uid", "season_id", "challenge_type")
@@ -262,13 +266,19 @@ class ChallengeHistory(Model):
         return f"{start_time:%Y-%m-%d} ~ {end_time:%Y-%m-%d}"
 
     @property
-    def parsed_data(self) -> Challenge:
+    def parsed_data(self) -> ChallengeWithLang:
         """Parsed challenge data from binary pickled data."""
-        return pickle.loads(self.data)
+        challenge = pickle.loads(self.data)
+        lang = getattr(challenge, "lang", None)
+        if lang is None:
+            # NOTE: Backward compatibility, old data has lang attr, new data doesn't
+            logger.debug("No lang found in challenge data")
+            challenge.__dict__["lang"] = self.lang
+        return challenge
 
     @classmethod
     async def add_data(
-        cls, uid: int, challenge_type: ChallengeType, season_id: int, data: Challenge
+        cls, *, uid: int, challenge_type: ChallengeType, season_id: int, data: Challenge, lang: str
     ) -> None:
         if isinstance(data, genshin.models.SpiralAbyss):
             start_time = data.start_time
@@ -293,10 +303,11 @@ class ChallengeHistory(Model):
                 start_time=start_time,
                 end_time=end_time,
                 name=name,
+                lang=lang,
             )
         except exceptions.IntegrityError:
             await cls.filter(uid=uid, season_id=season_id, challenge_type=challenge_type).update(
-                data=pickle.dumps(data), name=name
+                data=pickle.dumps(data), name=name, lang=lang
             )
 
 

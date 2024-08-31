@@ -608,6 +608,7 @@ dyk_github: "Hoyo Buddy is open-sourced on [GitHub](<https://github.com/seriaati
 dyk_python: Hoyo Buddy is written in pure Python
 dyk_unreleased: You can view unreleased game content using /search
 dyk_team_card: You can generate a team card in /profile by selecting multiple characters
+dyk_set_default_acc: You can set a default account that is used to run all commands in /accounts
 title_dyk: "Did you know?"
 new_zzz_temp: NEW! Try out Hoyo Buddy template 2 for your ZZZ agents
 button_label_dyk: Did you know messages

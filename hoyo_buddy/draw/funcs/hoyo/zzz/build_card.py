@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from io import BytesIO
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 import discord
 from discord import utils as dutils
@@ -29,6 +29,7 @@ class ZZZAgentCard:
         disc_icons: dict[str, str],
         name_data: AgentNameData | None,
         color: str | None,
+        template: Literal[1, 2],
     ) -> None:
         self._agent = agent
         self._locale = locale
@@ -37,9 +38,10 @@ class ZZZAgentCard:
         self._disc_icons = disc_icons
         self._name_data = name_data
         self._color = color
+        self._template = template
 
     def _draw_background(self) -> Image.Image:
-        card = Drawer.open_image("hoyo-buddy-assets/assets/zzz-build-card/card_base.png")
+        card = Drawer.open_image(f"hoyo-buddy-assets/assets/zzz-build-card/card_base{self._template}.png")
         draw = ImageDraw.Draw(card)
         drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False)
 
@@ -139,7 +141,7 @@ class ZZZAgentCard:
         )
         im.paste(rank_text, rank_text_pos, rank_text)
 
-        if not level_flip and self._name_data is not None:
+        if not level_flip and self._name_data is not None and self._template == 1:
             # Agent full name
             text = self._name_data.full_name.split(" ", maxsplit=1)
             if len(text) > 1:

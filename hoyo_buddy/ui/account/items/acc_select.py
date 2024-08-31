@@ -9,10 +9,12 @@ from ...components import Select, SelectOption
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
-class AccountSelect(Select["AccountManager"]):
+class AccountSelect(Select[AccountManager]):
     def __init__(self, options: list[SelectOption]) -> None:
         super().__init__(custom_id="account_selector", options=options)
 

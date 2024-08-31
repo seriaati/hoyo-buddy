@@ -9,10 +9,12 @@ from ...components import ToggleButton
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
-class AutoRedeemToggle(ToggleButton["AccountManager"]):
+class AutoRedeemToggle(ToggleButton[AccountManager]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
@@ -29,7 +31,7 @@ class AutoRedeemToggle(ToggleButton["AccountManager"]):
         await self.view.selected_account.save(update_fields=("auto_redeem",))
 
 
-class AutoCheckinToggle(ToggleButton["AccountManager"]):
+class AutoCheckinToggle(ToggleButton[AccountManager]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,
@@ -46,7 +48,7 @@ class AutoCheckinToggle(ToggleButton["AccountManager"]):
         await self.view.selected_account.save(update_fields=("daily_checkin",))
 
 
-class AccountPublicToggle(ToggleButton["AccountManager"]):
+class AccountPublicToggle(ToggleButton[AccountManager]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
             current_toggle,

@@ -12,7 +12,9 @@ from ...components import Button, Modal, TextInput
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
 class NicknameModal(Modal):
@@ -29,7 +31,7 @@ class NicknameModal(Modal):
         self.nickname.default = current_nickname
 
 
-class EditNicknameButton(Button["AccountManager"]):
+class EditNicknameButton(Button[AccountManager]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="edit_nickname", emoji=EDIT, label=LocaleStr(key="edit_nickname_modal_title")

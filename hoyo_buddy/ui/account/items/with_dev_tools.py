@@ -12,10 +12,12 @@ if TYPE_CHECKING:
     from hoyo_buddy.enums import Platform
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
-class WithDevTools(Button["AccountManager"]):
+class WithDevTools(Button[AccountManager]):
     def __init__(self, platform: Platform) -> None:
         super().__init__(label=LocaleStr(key="devtools_button_label"))
         self._platform = platform

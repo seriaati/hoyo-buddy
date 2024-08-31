@@ -15,13 +15,15 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
     from ..view import AccountManager
+else:
+    AccountManager = None
 
 
 class DeviceInfoModal(Modal):
     device_info = TextInput(label="设备信息", style=TextStyle.long)
 
 
-class EnterDeviceInfoButton(Button["AccountManager"]):
+class EnterDeviceInfoButton(Button[AccountManager]):
     def __init__(self, cookies: dict[str, Any]) -> None:
         super().__init__(label="提交设备信息", style=ButtonStyle.blurple)
         self._cookies = cookies

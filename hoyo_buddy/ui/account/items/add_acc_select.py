@@ -22,10 +22,12 @@ if TYPE_CHECKING:
     from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
-class AddAccountSelect(Select["AccountManager"]):
+class AddAccountSelect(Select[AccountManager]):
     def __init__(
         self,
         locale: discord.Locale,

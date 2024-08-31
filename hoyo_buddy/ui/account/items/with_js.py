@@ -12,10 +12,12 @@ from .enter_cookies_btn import EnterCookiesButton
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
-class WithJavaScript(Button["AccountManager"]):
+class WithJavaScript(Button[AccountManager]):
     def __init__(self) -> None:
         super().__init__(label=LocaleStr(key="javascript_button_label"))
 

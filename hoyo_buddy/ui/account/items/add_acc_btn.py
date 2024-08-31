@@ -20,10 +20,12 @@ from .with_qrcode import WithQRCode
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
-class AddMiyousheAccount(Button["AccountManager"]):
+class AddMiyousheAccount(Button[AccountManager]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="add_miyoushe_account", emoji=MIYOUSHE, label=EnumStr(Platform.MIYOUSHE)
@@ -49,7 +51,7 @@ class AddMiyousheAccount(Button["AccountManager"]):
         await i.response.edit_message(embed=embed, view=self.view)
 
 
-class AddHoyolabAccount(Button["AccountManager"]):
+class AddHoyolabAccount(Button[AccountManager]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="add_hoyolab_account", emoji=HOYOLAB, label=EnumStr(Platform.HOYOLAB)
@@ -73,7 +75,7 @@ class AddHoyolabAccount(Button["AccountManager"]):
         await i.response.edit_message(embed=embed, view=self.view)
 
 
-class AddAccountButton(Button["AccountManager"]):
+class AddAccountButton(Button[AccountManager]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="add_account",

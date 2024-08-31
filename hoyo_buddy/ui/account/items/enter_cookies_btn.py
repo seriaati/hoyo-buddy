@@ -14,7 +14,9 @@ if TYPE_CHECKING:
     from hoyo_buddy.enums import Platform
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
 class CookiesModal(Modal):
@@ -41,7 +43,7 @@ class DevToolCookiesModal(Modal):
         return "; ".join(f"{child.label}={child.value.strip()}" for child in self.children)  # pyright: ignore[reportAttributeAccessIssue]
 
 
-class EnterCookiesButton(Button["AccountManager"]):
+class EnterCookiesButton(Button[AccountManager]):
     def __init__(self, *, platform: Platform, dev_tools: bool = False) -> None:
         super().__init__(
             label=LocaleStr(key="cookies_button_label"), style=ButtonStyle.blurple, emoji=COOKIE

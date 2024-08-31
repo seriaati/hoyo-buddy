@@ -14,10 +14,12 @@ from ...components import Button
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
-class DeleteAccountContinue(Button["AccountManager"]):
+class DeleteAccountContinue(Button[AccountManager]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="delete_account_continue",
@@ -30,7 +32,7 @@ class DeleteAccountContinue(Button["AccountManager"]):
         await self.view.refresh(i, soft=False)
 
 
-class DeleteAccountButton(Button["AccountManager"]):
+class DeleteAccountButton(Button[AccountManager]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="delete_account",

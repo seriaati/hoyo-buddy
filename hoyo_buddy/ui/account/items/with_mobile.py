@@ -10,10 +10,12 @@ from .enter_mobile import EnterPhoneNumber
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
-class WithMobileNumber(Button["AccountManager"]):
+class WithMobileNumber(Button[AccountManager]):
     def __init__(self) -> None:
         super().__init__(custom_id="with_mobile_number", label="通过手机号")
 

@@ -17,10 +17,12 @@ from ...components import Button, GoBackButton
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
-class WithQRCode(Button["AccountManager"]):
+class WithQRCode(Button[AccountManager]):
     def __init__(self) -> None:
         super().__init__(label="通过扫描二维码")
 

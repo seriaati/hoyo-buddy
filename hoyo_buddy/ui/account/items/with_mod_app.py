@@ -13,10 +13,12 @@ from ...components import Button, GoBackButton, Modal, TextInput
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
-class WithModApp(Button["AccountManager"]):
+class WithModApp(Button[AccountManager]):
     def __init__(self) -> None:
         super().__init__(label="通过改装过的米游社应用程序")
 
@@ -56,7 +58,7 @@ class LoginDetailModal(Modal):
     login_detail = TextInput(label="登录信息", style=TextStyle.long)
 
 
-class EnterLoginDetails(Button["AccountManager"]):
+class EnterLoginDetails(Button[AccountManager]):
     def __init__(self) -> None:
         super().__init__(label="输入登录信息", style=ButtonStyle.primary)
 

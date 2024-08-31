@@ -14,7 +14,9 @@ from ..geetest_handler import GeetestHandler, SendMobileOTPData
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
 class VerifyCodeInput(Modal):
@@ -25,7 +27,7 @@ class PhoneNumberInput(Modal):
     mobile = TextInput(label="手机号", placeholder="1234567890")
 
 
-class EnterVerificationCode(Button["AccountManager"]):
+class EnterVerificationCode(Button[AccountManager]):
     def __init__(self, mobile: str) -> None:
         super().__init__(
             custom_id="enter_verification_code",
@@ -50,7 +52,7 @@ class EnterVerificationCode(Button["AccountManager"]):
         )
 
 
-class EnterPhoneNumber(Button["AccountManager"]):
+class EnterPhoneNumber(Button[AccountManager]):
     def __init__(self) -> None:
         super().__init__(
             custom_id="enter_mobile_number",

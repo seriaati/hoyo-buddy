@@ -16,7 +16,9 @@ from ..geetest_handler import EmailPswdLoginData, GeetestHandler, SendEmailCodeD
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import AccountManager  # noqa: F401
+    from ..view import AccountManager
+else:
+    AccountManager = None
 
 
 class EmailVerificationCodeModal(Modal):
@@ -28,7 +30,7 @@ class EmailVerificationCodeModal(Modal):
     )
 
 
-class EnterEmailVerificationCode(Button["AccountManager"]):
+class EnterEmailVerificationCode(Button[AccountManager]):
     def __init__(
         self, email: str, password: str, action_ticket: genshin.models.ActionTicket
     ) -> None:
@@ -75,7 +77,7 @@ class EmailPasswordModal(Modal):
     )
 
 
-class EnterEmailPassword(Button["AccountManager"]):
+class EnterEmailPassword(Button[AccountManager]):
     def __init__(self, platform: Platform) -> None:
         super().__init__(
             label=LocaleStr(key="enter_email_password_button_label"),

@@ -117,6 +117,9 @@ def get_error_embed(
     recognized = True
     embed = None
 
+    if isinstance(error, ExceptionGroup):
+        error = error.exceptions[0]
+
     if isinstance(error, AmbrDataNotFoundError | YattaDataNotFoundError | HakushinNotFoundError):
         error = InvalidQueryError()
 

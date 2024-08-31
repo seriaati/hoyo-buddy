@@ -7,7 +7,9 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw
 
+from hoyo_buddy.constants import convert_gi_element_to_enka
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.enums import GenshinElement
 from hoyo_buddy.ui.hoyo.profile.card_settings import get_default_art
 
 from .common import ADD_HURT_ELEMENTS, ELEMENT_BG_COLORS, ELEMENT_COLORS, STATS_ORDER
@@ -16,6 +18,8 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     import enka
+
+    from hoyo_buddy.models import HoyolabGICharacter
 
 __all__ = ("GITeamCard",)
 
@@ -26,7 +30,7 @@ class GITeamCard:
         *,
         locale: str,
         dark_mode: bool,
-        characters: Sequence[enka.gi.Character],
+        characters: Sequence[enka.gi.Character | HoyolabGICharacter],
         character_images: dict[str, str],
     ) -> None:
         self._locale = locale
@@ -35,7 +39,9 @@ class GITeamCard:
         self._character_images = character_images
         self._theme = "dark" if dark_mode else "light"
 
-    def _draw_character_card(self, character: enka.gi.Character) -> Image.Image:
+    def _draw_character_card(
+        self, character: enka.gi.Character | HoyolabGICharacter
+    ) -> Image.Image:
         # Colors
         color_1 = (237, 237, 237) if self._dark_mode else (95, 95, 95)
         color_2 = (237, 237, 237) if self._dark_mode else (131, 131, 131)
@@ -45,7 +51,12 @@ class GITeamCard:
         im = Drawer.open_image(f"hoyo-buddy-assets/assets/gi-team-card/{self._theme}_card.png")
         drawer = Drawer(ImageDraw.Draw(im), folder="gi-team-card", dark_mode=self._dark_mode)
 
-        element_color = drawer.hex_to_rgb(ELEMENT_BG_COLORS[self._dark_mode][character.element])
+        element = (
+            convert_gi_element_to_enka(character.element)
+            if isinstance(character.element, GenshinElement)
+            else character.element
+        )
+        element_color = drawer.hex_to_rgb(ELEMENT_BG_COLORS[self._dark_mode][element])
 
         # Character image
         img_mask = drawer.open_asset("img_mask.png")
@@ -65,7 +76,7 @@ class GITeamCard:
         # Character element
         element_icon = drawer.open_asset(f"elements/{character.element.name.title()}.png")
         element_icon = drawer.mask_image_with_color(
-            element_icon, drawer.hex_to_rgb(ELEMENT_COLORS[character.element])
+            element_icon, drawer.hex_to_rgb(ELEMENT_COLORS[element])
         )
         im.alpha_composite(element_icon, (34, 36))
 

@@ -8,6 +8,7 @@ from hoyo_buddy.db.models import Settings
 from hoyo_buddy.emojis import SETTINGS
 from hoyo_buddy.enums import CharacterType
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.models import HoyolabGICharacter
 from hoyo_buddy.ui import Button
 from hoyo_buddy.ui.hoyo.profile.card_settings import CardSettingsView, get_card_settings
 
@@ -31,13 +32,15 @@ class CardSettingsButton(Button["ProfileView"]):
         character_id = self.view.character_ids[0]
         card_settings = await get_card_settings(i.user.id, character_id, game=self.view.game)
         settings = await Settings.get(user_id=i.user.id)
+        character = self.view.characters[character_id]
         view = CardSettingsView(
             list(self.view.characters.values()),
             character_id,
             self.view._card_data,
             card_settings,
             self.view.game,
-            self.view.character_type is CharacterType.CACHE,
+            self.view.character_type is CharacterType.CACHE
+            or isinstance(character, HoyolabGICharacter),
             len(self.view.character_ids) > 1,
             settings,
             author=i.user,

@@ -27,6 +27,7 @@ from hoyo_buddy.exceptions import (
     NSFWPromptError,
 )
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.models import HoyolabGICharacter
 from hoyo_buddy.ui import (
     Button,
     Modal,
@@ -111,6 +112,8 @@ def get_default_art(character: Character) -> str:
         if character.costume is not None:
             return character.costume.icon.gacha
         return character.icon.gacha
+    if isinstance(character, HoyolabGICharacter):
+        return character.icon.gacha
     return HSR_DEFAULT_ART_URL.format(char_id=character.id)
 
 
@@ -144,7 +147,7 @@ def get_default_collection(
     data = card_data.get(character_id)
     if data is None:
         return []
-    return data["arts"]
+    return data.get("arts", [])
 
 
 class CardSettingsView(View):
@@ -314,7 +317,7 @@ class CharacterSelect(PaginatorSelect[CardSettingsView]):
     def _get_chara_emoji(chara: Character) -> str:
         if isinstance(chara, ZZZPartialAgent):
             return get_zzz_element_emoji(chara.element)
-        if isinstance(chara, enka.gi.Character):
+        if isinstance(chara, enka.gi.Character | HoyolabGICharacter):
             return get_gi_element_emoji(chara.element.name)
         return get_hsr_element_emoji(str(chara.element))
 

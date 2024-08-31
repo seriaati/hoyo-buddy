@@ -6,12 +6,16 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw
 
+from hoyo_buddy.constants import convert_gi_element_to_enka
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.enums import GenshinElement
 
 from .common import ADD_HURT_ELEMENTS, ELEMENT_BG_COLORS, STATS_ORDER
 
 if TYPE_CHECKING:
     import enka
+
+    from hoyo_buddy.models import HoyolabGICharacter
 
 __all__ = ("GITempTwoBuildCard",)
 
@@ -22,7 +26,7 @@ class GITempTwoBuildCard:
         *,
         locale: str,
         dark_mode: bool,
-        character: enka.gi.Character,
+        character: enka.gi.Character | HoyolabGICharacter,
         character_image: str,
         english_name: str,
         top_crop: bool,
@@ -47,7 +51,13 @@ class GITempTwoBuildCard:
         drawer = Drawer(ImageDraw.Draw(im), folder="gi-build-card2", dark_mode=self._dark_mode)
 
         # Character image
-        element_color = drawer.hex_to_rgb(ELEMENT_BG_COLORS[self._dark_mode][character.element])
+        element = (
+            convert_gi_element_to_enka(character.element)
+            if isinstance(character.element, GenshinElement)
+            else character.element
+        )
+        element_color = drawer.hex_to_rgb(ELEMENT_BG_COLORS[self._dark_mode][element])
+
         img_mask = drawer.open_asset("img_mask.png")
         img = drawer.open_static(self._character_image)
         img = drawer.modify_image_for_build_card(
@@ -186,7 +196,9 @@ class GITempTwoBuildCard:
             position=(level_tbox.right - stat1_tbox.width, 1537),
             color=color_1,
         )
-        stat1_icon = drawer.open_asset(f"stats/{stat1.type}.png", mask_color=color_1, size=(35, 35))
+        stat1_icon = drawer.open_asset(
+            f"stats/{stat1.type.name}.png", mask_color=color_1, size=(35, 35)
+        )
         stat1_icon_x = stat1_tbox.left - stat1_icon.width - 31
         stat1_icon_y = stat1_tbox.top + (stat1_tbox.height - stat1_icon.height) // 2
         im.alpha_composite(stat1_icon, (stat1_icon_x, stat1_icon_y))
@@ -204,7 +216,7 @@ class GITempTwoBuildCard:
                 color=color_1,
             )
             stat2_icon = drawer.open_asset(
-                f"stats/{stat2.type}.png", mask_color=color_1, size=(35, 35)
+                f"stats/{stat2.type.name}.png", mask_color=color_1, size=(35, 35)
             )
             stat2_icon_x = stat2_tbox.left - 50
             stat2_icon_y = stat2_tbox.top + (stat2_tbox.height - stat2_icon.height) // 2
@@ -213,11 +225,10 @@ class GITempTwoBuildCard:
         # Talents
         start_pos = (316, 1679)
         x_diff = 150
-        talents = character.talents
-        if character.id == 10000002:  # Ayaka
-            talents.pop(0)
-        elif character.id == 10000041:  # Mona
-            talents.pop(2)
+        talent_order = character.talent_order
+        talents = [
+            next(t for t in character.talents if t.id == talent_id) for talent_id in talent_order
+        ]
 
         for i, talent in enumerate(talents):
             icon = drawer.open_static(talent.icon, size=(98, 98), mask_color=color_1)
@@ -277,7 +288,9 @@ class GITempTwoBuildCard:
             )
 
             stat = artifact.main_stat
-            icon = drawer.open_asset(f"stats/{stat.type}.png", size=(42, 42), mask_color=color_1)
+            icon = drawer.open_asset(
+                f"stats/{stat.type.name}.png", size=(42, 42), mask_color=color_1
+            )
             tbox = drawer.write(
                 stat.formatted_value,
                 size=42,
@@ -291,7 +304,7 @@ class GITempTwoBuildCard:
             ss_start_pos = (start_pos[0] + 39, start_pos[1] + 212)
             for j, sub_stat in enumerate(artifact.sub_stats):
                 icon = drawer.open_asset(
-                    f"stats/{sub_stat.type}.png", size=(35, 35), mask_color=color_3
+                    f"stats/{sub_stat.type.name}.png", size=(35, 35), mask_color=color_3
                 )
                 im.alpha_composite(icon, ss_start_pos)
                 drawer.write(

@@ -9,7 +9,7 @@ from genshin.models import ZZZPartialAgent
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji, get_zzz_element_emoji
 from hoyo_buddy.enums import CharacterType, Game, Platform
 from hoyo_buddy.l10n import EnumStr, LevelStr, LocaleStr
-from hoyo_buddy.models import HoyolabHSRCharacter
+from hoyo_buddy.models import HoyolabGICharacter, HoyolabHSRCharacter
 from hoyo_buddy.ui import PaginatorSelect, SelectOption
 
 if TYPE_CHECKING:
@@ -58,7 +58,9 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                 str(character.id),
                 cache_extras=cache_extras,
                 builds=builds,
-                is_hoyolab=isinstance(character, HoyolabHSRCharacter | ZZZPartialAgent),
+                is_hoyolab=isinstance(
+                    character, HoyolabHSRCharacter | ZZZPartialAgent | HoyolabGICharacter
+                ),
             )
             data_type = DATA_TYPES[character_type]
 
@@ -87,13 +89,22 @@ class CharacterSelect(PaginatorSelect["ProfileView"]):
                     d=data_type,
                 )
                 emoji = get_gi_element_emoji(character.element.name)
-            else:  # ZZZPartialAgent
+            elif isinstance(character, ZZZPartialAgent):
                 description = LocaleStr(
                     key="profile.zzz_hoyolab.character_select.description",
                     m=character.rank,
                     platform=EnumStr(account.platform if account is not None else Platform.HOYOLAB),
                 )
                 emoji = get_zzz_element_emoji(character.element)
+            else:
+                description = LocaleStr(
+                    key="profile.genshin.character_select.hoyolab.description",
+                    c=len([c for c in character.constellations if c.unlocked]),
+                    r=character.weapon.refinement,
+                    d=data_type,
+                    platform=EnumStr(account.platform if account is not None else Platform.HOYOLAB),
+                )
+                emoji = get_gi_element_emoji(character.element)
 
             options.append(
                 SelectOption(

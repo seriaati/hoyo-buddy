@@ -14,6 +14,9 @@ from ..ui.hoyo.profile.view import ProfileView
 
 if TYPE_CHECKING:
     import discord
+    from genshin.models import GenshinUserStats, StarRailUserStats
+
+    from hoyo_buddy.models import HoyolabGICharacter
 
     from ..enums import Game
     from ..l10n import Translator
@@ -39,12 +42,35 @@ class ProfileCommand:
         self._translator = translator
 
     async def run_genshin(self) -> ProfileView:
-        client = EnkaGIClient(locale=self._locale)
-        genshin_data, _ = await client.fetch_showcase(self._uid)
-
+        hoyolab_characters: list[HoyolabGICharacter] = []
+        enka_data: enka.gi.ShowcaseResponse | None = None
+        hoyolab_user: GenshinUserStats | None = None
+        errored = False
         builds = None
-        if genshin_data.owner is not None:
-            builds = await client.fetch_builds(genshin_data.owner)
+
+        client = EnkaGIClient(self._locale)
+
+        try:
+            enka_data, errored = await client.fetch_showcase(self._uid)
+        except enka.errors.GameMaintenanceError:
+            if self._account is None:
+                # enka fails and no hoyolab account provided, raise error
+                raise
+
+        if enka_data is not None and enka_data.owner is not None:
+            builds = await client.fetch_builds(enka_data.owner)
+
+        if self._account is not None:
+            client = self._account.client
+            client.set_lang(self._locale)
+            try:
+                if enka_data is None:
+                    hoyolab_user = await client.get_genshin_user(self._uid)
+                hoyolab_characters = await client.get_hoyolab_gi_characters()
+            except GenshinException:
+                if enka_data is None:
+                    # enka and hoyolab both failed, raise error
+                    raise
 
         cache = await EnkaCache.get(uid=self._uid)
         return ProfileView(
@@ -52,44 +78,46 @@ class ProfileCommand:
             self._game,
             cache.extras,
             await read_yaml("hoyo-buddy-assets/assets/gi-build-card/data.yaml"),
-            hoyolab_characters=[],
-            genshin_data=genshin_data,
+            hoyolab_gi_characters=hoyolab_characters,
+            hoyolab_gi_user=hoyolab_user,
+            hoyolab_over_enka=errored,
+            genshin_data=enka_data,
             account=self._account,
             builds=builds,
-            owner=genshin_data.owner,
+            owner=enka_data.owner if enka_data is not None else None,
             author=self._user,
             locale=self._locale,
             translator=self._translator,
         )
 
     async def run_hsr(self) -> ProfileView:
-        hoyolab_charas: list[HoyolabHSRCharacter] = []
-        starrail_data: enka.hsr.ShowcaseResponse | None = None
-        hoyolab_user = None
+        hoyolab_characters: list[HoyolabHSRCharacter] = []
+        enka_data: enka.hsr.ShowcaseResponse | None = None
+        hoyolab_user: StarRailUserStats | None = None
         errored = False
         builds = None
 
         client = EnkaHSRClient(self._locale)
 
         try:
-            starrail_data, errored = await client.fetch_showcase(self._uid)
+            enka_data, errored = await client.fetch_showcase(self._uid)
         except enka.errors.GameMaintenanceError:
             if self._account is None:
                 # enka fails and no hoyolab account provided, raise error
                 raise
 
-        if starrail_data is not None and starrail_data.owner is not None:
-            builds = await client.fetch_builds(starrail_data.owner)
+        if enka_data is not None and enka_data.owner is not None:
+            builds = await client.fetch_builds(enka_data.owner)
 
         if self._account is not None:
             client = self._account.client
             client.set_lang(self._locale)
             try:
-                if starrail_data is None:
+                if enka_data is None:
                     hoyolab_user = await client.get_starrail_user()
-                hoyolab_charas = await client.get_hoyolab_hsr_characters()
+                hoyolab_characters = await client.get_hoyolab_hsr_characters()
             except GenshinException:
-                if starrail_data is None:
+                if enka_data is None:
                     # enka and hoyolab both failed, raise error
                     raise
 
@@ -99,13 +127,13 @@ class ProfileCommand:
             self._game,
             cache.extras,
             await read_yaml("hoyo-buddy-assets/assets/hsr-build-card/data.yaml"),
-            hoyolab_characters=hoyolab_charas,
-            hoyolab_user=hoyolab_user,
-            starrail_data=starrail_data,
+            hoyolab_hsr_characters=hoyolab_characters,
+            hoyolab_hsr_user=hoyolab_user,
+            starrail_data=enka_data,
             account=self._account,
             hoyolab_over_enka=errored,
             builds=builds,
-            owner=starrail_data.owner if starrail_data is not None else None,
+            owner=enka_data.owner if enka_data is not None else None,
             author=self._user,
             locale=self._locale,
             translator=self._translator,
@@ -127,7 +155,6 @@ class ProfileCommand:
             cache.extras,
             await read_yaml("hoyo-buddy-assets/assets/zzz-build-card/agent_data.yaml"),
             account=self._account,
-            hoyolab_characters=[],
             zzz_data=zzz_data,
             zzz_user=zzz_user,
             author=self._user,

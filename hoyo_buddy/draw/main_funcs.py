@@ -14,6 +14,7 @@ from hoyo_buddy.draw import funcs
 from ..models import (
     AbyssCharacter,
     AgentNameData,
+    HoyolabGICharacter,
     HoyolabHSRCharacter,
     UnownedCharacter,
     ZZZDrawData,
@@ -130,15 +131,14 @@ async def draw_hsr_notes_card(
 
 async def draw_gi_build_card(
     draw_input: DrawInput,
-    character: enka.gi.Character,
+    character: enka.gi.Character | HoyolabGICharacter,
     *,
     image_url: str,
     zoom: float,
     template: Literal[1, 2],
     top_crop: bool,
 ) -> BytesIO:
-    urls: list[str] = []
-    urls.extend((image_url, character.weapon.icon, character.icon.gacha))
+    urls: list[str] = [image_url, character.weapon.icon, character.icon.gacha]
     urls.extend(artifact.icon for artifact in character.artifacts)
     urls.extend(talent.icon for talent in character.talents)
     urls.extend(const.icon for const in character.constellations)
@@ -594,7 +594,9 @@ async def draw_hsr_team_card(
 
 
 async def draw_gi_team_card(
-    draw_input: DrawInput, characters: Sequence[enka.gi.Character], character_images: dict[str, str]
+    draw_input: DrawInput,
+    characters: Sequence[enka.gi.Character | HoyolabGICharacter],
+    character_images: dict[str, str],
 ) -> BytesIO:
     urls: list[str] = list(character_images.values())
     for character in characters:

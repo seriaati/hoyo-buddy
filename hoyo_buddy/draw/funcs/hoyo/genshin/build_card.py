@@ -13,11 +13,17 @@ from hoyo_buddy.draw.funcs.hoyo.genshin.common import STATS_ORDER
 if TYPE_CHECKING:
     from enka.gi import Character
 
+    from hoyo_buddy.models import HoyolabGICharacter
+
 __all__ = ("draw_genshin_card",)
 
 
 def draw_genshin_card(
-    locale_: str, dark_mode: bool, character: Character, image_url: str, zoom: float
+    locale_: str,
+    dark_mode: bool,
+    character: Character | HoyolabGICharacter,
+    image_url: str,
+    zoom: float,
 ) -> io.BytesIO:
     locale = Locale(locale_)
     mode = "dark" if dark_mode else "light"

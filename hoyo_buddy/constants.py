@@ -300,6 +300,22 @@ HAKUSHIN_HSR_ELEMENT_TO_ELEMENT = {
     hakushin.enums.HSRElement.IMAGINARY: HSRElement.IMAGINARY,
 }
 
+ENKA_GI_ELEMENT_TO_ELEMENT = {
+    enka.gi.Element.ANEMO: GenshinElement.ANEMO,
+    enka.gi.Element.GEO: GenshinElement.GEO,
+    enka.gi.Element.ELECTRO: GenshinElement.ELECTRO,
+    enka.gi.Element.DENDRO: GenshinElement.DENDRO,
+    enka.gi.Element.PYRO: GenshinElement.PYRO,
+    enka.gi.Element.CRYO: GenshinElement.CRYO,
+    enka.gi.Element.HYDRO: GenshinElement.HYDRO,
+}
+ELEMENT_TO_ENKA_GI_ELEMENT = {v: k for k, v in ENKA_GI_ELEMENT_TO_ELEMENT.items()}
+
+
+def convert_gi_element_to_enka(element: GenshinElement) -> enka.gi.Element:
+    return ELEMENT_TO_ENKA_GI_ELEMENT[element]
+
+
 AMBR_ELEMENT_TO_ELEMENT = {
     ambr.Element.ANEMO: GenshinElement.ANEMO,
     ambr.Element.GEO: GenshinElement.GEO,
@@ -316,6 +332,62 @@ AMBR_CITY_TO_CITY = {
     ambr.City.INAZUMA: GenshinCity.INAZUMA,
     ambr.City.SUMERU: GenshinCity.SUMERU,
     ambr.City.FONTAINE: GenshinCity.FONTAINE,
+    ambr.City.NATLAN: GenshinCity.NATLAN,
+}
+
+FIGHT_PROP_CONVERTER: Final[dict[int, enka.gi.FightPropType]] = {
+    # Base properties
+    2000: enka.gi.FightPropType.FIGHT_PROP_MAX_HP,
+    2001: enka.gi.FightPropType.FIGHT_PROP_CUR_ATTACK,
+    2002: enka.gi.FightPropType.FIGHT_PROP_CUR_DEFENSE,
+    28: enka.gi.FightPropType.FIGHT_PROP_ELEMENT_MASTERY,
+    # Extra properties
+    20: enka.gi.FightPropType.FIGHT_PROP_CRITICAL,
+    22: enka.gi.FightPropType.FIGHT_PROP_CRITICAL_HURT,
+    26: enka.gi.FightPropType.FIGHT_PROP_HEAL_ADD,
+    27: enka.gi.FightPropType.FIGHT_PROP_HEALED_ADD,
+    23: enka.gi.FightPropType.FIGHT_PROP_CHARGE_EFFICIENCY,
+    # Element properties
+    40: enka.gi.FightPropType.FIGHT_PROP_FIRE_ADD_HURT,
+    42: enka.gi.FightPropType.FIGHT_PROP_WATER_ADD_HURT,
+    43: enka.gi.FightPropType.FIGHT_PROP_GRASS_ADD_HURT,
+    41: enka.gi.FightPropType.FIGHT_PROP_ELEC_ADD_HURT,
+    44: enka.gi.FightPropType.FIGHT_PROP_WIND_ADD_HURT,
+    46: enka.gi.FightPropType.FIGHT_PROP_ICE_ADD_HURT,
+    45: enka.gi.FightPropType.FIGHT_PROP_ROCK_ADD_HURT,
+    30: enka.gi.FightPropType.FIGHT_PROP_PHYSICAL_ADD_HURT,
+    # Artifact properties
+    2: enka.gi.FightPropType.FIGHT_PROP_HP,
+    3: enka.gi.FightPropType.FIGHT_PROP_HP_PERCENT,
+    4: enka.gi.FightPropType.FIGHT_PROP_BASE_ATTACK,
+    5: enka.gi.FightPropType.FIGHT_PROP_ATTACK,
+    6: enka.gi.FightPropType.FIGHT_PROP_ATTACK_PERCENT,
+    8: enka.gi.FightPropType.FIGHT_PROP_DEFENSE,
+    9: enka.gi.FightPropType.FIGHT_PROP_DEFENSE_PERCENT,
+}
+"""Mapping of hoyolab API property types to enka property types."""
+
+
+def convert_fight_prop(prop_id: int) -> enka.gi.FightPropType:
+    """Convert a hoyolab API property type to an enka property type.
+
+    This function may return the input if the property type is not recognized, but we dont type hint it to do so.
+    This is to prevent crashes in case of an unknown property type.
+    """
+    return FIGHT_PROP_CONVERTER.get(prop_id, prop_id)  # pyright: ignore[reportReturnType]
+
+
+DMG_BONUS_IDS: Final[set[int]] = {40, 42, 43, 41, 44, 46, 45, 30}
+"""IDs of damage bonus properties."""
+
+ELEMENT_TO_BONUS_PROP_ID: Final[dict[GenshinElement, int]] = {
+    GenshinElement.PYRO: 40,
+    GenshinElement.HYDRO: 42,
+    GenshinElement.DENDRO: 43,
+    GenshinElement.ELECTRO: 41,
+    GenshinElement.ANEMO: 44,
+    GenshinElement.CRYO: 46,
+    GenshinElement.GEO: 45,
 }
 
 STARRAIL_RES = "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master"

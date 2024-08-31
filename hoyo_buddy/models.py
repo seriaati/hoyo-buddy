@@ -4,12 +4,14 @@ from typing import TYPE_CHECKING, NamedTuple
 
 import aiohttp
 import ambr.models
+import enka
 from attr import dataclass
 from discord import Locale
 from genshin.models import StarRailPath
 from pydantic import BaseModel, field_validator
 
 from .constants import STARRAIL_RES
+from .enums import GenshinElement
 
 if TYPE_CHECKING:
     import argparse
@@ -207,3 +209,61 @@ class ZZZDrawData(NamedTuple):
     name_data: dict[str, AgentNameData]
     agent_images: dict[str, str]
     disc_icons: dict[str, str]
+
+
+class HoyolabGIStat(BaseModel):
+    type: enka.gi.FightPropType
+    formatted_value: str
+
+
+class HoyolabGIWeapon(BaseModel):
+    name: str
+    stats: list[HoyolabGIStat]
+    icon: str
+    refinement: int
+    level: int
+    max_level: int
+    rarity: int
+
+
+class HoyolabGIConst(BaseModel):
+    icon: str
+    unlocked: bool
+
+
+class HoyolabGITalent(BaseModel):
+    icon: str
+    level: int
+    id: int
+
+
+class HoyolabGIArtifact(BaseModel):
+    icon: str
+    rarity: int
+    level: int
+    main_stat: HoyolabGIStat
+    sub_stats: list[HoyolabGIStat]
+
+
+class HoyolabGICharacterIcon(BaseModel):
+    gacha: str
+
+
+class HoyolabGICharacter(BaseModel):
+    id: int
+    name: str
+    element: GenshinElement
+    highest_dmg_bonus_stat: HoyolabGIStat
+    stats: dict[enka.gi.FightPropType, HoyolabGIStat]
+    rarity: int
+
+    weapon: HoyolabGIWeapon
+    constellations: list[HoyolabGIConst]
+    talent_order: list[int]
+    talents: list[HoyolabGITalent]
+    artifacts: list[HoyolabGIArtifact]
+
+    friendship_level: int
+    level: int
+    max_level: int
+    icon: HoyolabGICharacterIcon

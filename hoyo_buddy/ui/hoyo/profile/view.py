@@ -29,7 +29,7 @@ from hoyo_buddy.exceptions import (
 )
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LevelStr, LocaleStr
-from hoyo_buddy.models import DrawInput, HoyolabHSRCharacter
+from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
 from hoyo_buddy.ui.hoyo.profile.card_settings import (
     get_art_url,
@@ -55,7 +55,7 @@ if TYPE_CHECKING:
 
     import aiohttp
     from discord import Member, User
-    from genshin.models import RecordCard, StarRailUserStats
+    from genshin.models import GenshinUserStats, RecordCard, StarRailUserStats
 
     from hoyo_buddy.db.models import CardSettings, HoyoAccount
     from hoyo_buddy.l10n import Translator
@@ -63,7 +63,11 @@ if TYPE_CHECKING:
 
 
 Character: TypeAlias = (
-    HoyolabHSRCharacter | enka.gi.Character | enka.hsr.Character | ZZZPartialAgent
+    HoyolabHSRCharacter
+    | enka.gi.Character
+    | enka.hsr.Character
+    | ZZZPartialAgent
+    | HoyolabGICharacter
 )
 GI_CARD_ENDPOINTS = {
     "hattvr": "http://localhost:7652/hattvr-enka-card",
@@ -80,8 +84,10 @@ class ProfileView(View):
         cache_extras: dict[str, dict[str, Any]],
         card_data: dict[str, Any],
         *,
-        hoyolab_characters: list[HoyolabHSRCharacter],
-        hoyolab_user: StarRailUserStats | None = None,
+        hoyolab_hsr_characters: list[HoyolabHSRCharacter] | None = None,
+        hoyolab_hsr_user: StarRailUserStats | None = None,
+        hoyolab_gi_characters: list[HoyolabGICharacter] | None = None,
+        hoyolab_gi_user: GenshinUserStats | None = None,
         starrail_data: enka.hsr.ShowcaseResponse | None = None,
         genshin_data: enka.gi.ShowcaseResponse | None = None,
         zzz_data: Sequence[ZZZPartialAgent] | None = None,
@@ -96,8 +102,11 @@ class ProfileView(View):
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
-        self.hoyolab_characters = hoyolab_characters
-        self.hoyolab_user = hoyolab_user
+        self.hoyolab_hsr_characters = hoyolab_hsr_characters or []
+        self.hoyolab_hsr_user = hoyolab_hsr_user
+        self.hoyolab_gi_characters = hoyolab_gi_characters or []
+        self.hoyolab_gi_user = hoyolab_gi_user
+
         self.starrail_data = starrail_data
         self.genshin_data = genshin_data
         self.zzz_data = zzz_data
@@ -124,53 +133,49 @@ class ProfileView(View):
             if char_id not in self._card_data:
                 raise CardNotReadyError(self.characters[char_id].name)
 
+    def _set_character_for_hoyolab(self, game: Literal[Game.STARRAIL, Game.GENSHIN]) -> None:
+        hoyolab_characters = (
+            self.hoyolab_hsr_characters if game is Game.STARRAIL else self.hoyolab_gi_characters
+        )
+        data = self.starrail_data if game is Game.STARRAIL else self.genshin_data
+
+        if self._hoyolab_over_enka and hoyolab_characters:
+            self.characters = {str(chara.id): chara for chara in hoyolab_characters}
+            return
+
+        enka_chara_ids: list[str] = []
+        if data is not None:
+            for chara in data.characters:
+                chara_type = determine_chara_type(
+                    str(chara.id),
+                    cache_extras=self.cache_extras,
+                    builds=self._builds,
+                    is_hoyolab=False,
+                )
+                if chara_type is CharacterType.CACHE:
+                    continue
+                enka_chara_ids.append(str(chara.id))
+                self.characters[str(chara.id)] = chara
+
+        for chara in hoyolab_characters:
+            if str(chara.id) not in enka_chara_ids:
+                enka_chara_ids.append(str(chara.id))
+                self.characters[str(chara.id)] = chara
+
+        for builds in self._builds.values():
+            character = builds[0].character
+            if str(character.id) not in enka_chara_ids:
+                self.characters[str(character.id)] = character
+
     def _set_characters(self) -> None:
-        characters: dict[str, Character] = {}
-
         if self.game is Game.STARRAIL:
-            if self._hoyolab_over_enka and self.hoyolab_characters:
-                self.characters = {str(chara.id): chara for chara in self.hoyolab_characters}
-                return
-
-            enka_chara_ids: list[str] = []
-            if self.starrail_data is not None:
-                for chara in self.starrail_data.characters:
-                    chara_type = determine_chara_type(
-                        str(chara.id),
-                        cache_extras=self.cache_extras,
-                        builds=self._builds,
-                        is_hoyolab=False,
-                    )
-                    if chara_type is CharacterType.CACHE:
-                        continue
-                    enka_chara_ids.append(str(chara.id))
-                    characters[str(chara.id)] = chara
-
-            for chara in self.hoyolab_characters:
-                if str(chara.id) not in enka_chara_ids:
-                    enka_chara_ids.append(str(chara.id))
-                    characters[str(chara.id)] = chara
-
-            for builds in self._builds.values():
-                character = builds[0].character
-                if str(character.id) not in enka_chara_ids:
-                    characters[str(character.id)] = character
-
+            self._set_character_for_hoyolab(Game.STARRAIL)
         elif self.game is Game.GENSHIN:
-            assert self.genshin_data is not None
-            for chara in self.genshin_data.characters:
-                characters[str(chara.id)] = chara
-
-            for builds in self._builds.values():
-                character = builds[0].character
-                characters[str(character.id)] = character
-
+            self._set_character_for_hoyolab(Game.GENSHIN)
         elif self.game is Game.ZZZ:
             assert self.zzz_data is not None
             for chara in self.zzz_data:
-                characters[str(chara.id)] = chara
-
-        self.characters = characters
+                self.characters[str(chara.id)] = chara
 
     @property
     def player_embed(self) -> DefaultEmbed:
@@ -212,10 +217,10 @@ class ProfileView(View):
             embed.set_image(url=player.namecard.full)
             if player.signature:
                 embed.set_footer(text=player.signature)
-        elif self.hoyolab_user is not None:
+        elif self.hoyolab_hsr_user is not None:
             # There is no hsr cache, enka isnt working, but hoyolab is working
-            player = self.hoyolab_user.info
-            stats = self.hoyolab_user.stats
+            player = self.hoyolab_hsr_user.info
+            stats = self.hoyolab_hsr_user.stats
             embed = DefaultEmbed(
                 self.locale,
                 self.translator,
@@ -397,7 +402,7 @@ class ProfileView(View):
         card_settings: CardSettings,
     ) -> BytesIO:
         """Draw Genshin Impact character card in Hoyo Buddy template."""
-        assert isinstance(character, enka.gi.Character)
+        assert isinstance(character, enka.gi.Character | HoyolabGICharacter)
 
         image_url = card_settings.current_image or get_default_art(character)
 

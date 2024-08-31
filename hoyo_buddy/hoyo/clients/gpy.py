@@ -6,25 +6,29 @@ from operator import attrgetter
 from random import uniform
 from typing import TYPE_CHECKING, Any, overload
 
+import enka
 import genshin
 import hakushin
 import python_socks
 
+from ... import models
 from ...bot.error_handler import get_error_embed
 from ...constants import (
     AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID,
+    DMG_BONUS_IDS,
+    ELEMENT_TO_BONUS_PROP_ID,
     GPY_LANG_TO_LOCALE,
     HB_GAME_TO_GPY_GAME,
     LOCALE_TO_GPY_LANG,
     TRAVELER_IDS,
     contains_traveler_id,
+    convert_fight_prop,
 )
 from ...db.models import EnkaCache, HoyoAccount, JSONFile
 from ...embeds import DefaultEmbed
-from ...enums import TalentBoost
+from ...enums import Game, GenshinElement, TalentBoost
 from ...l10n import LocaleStr, Translator
-from ...models import HoyolabHSRCharacter, LightCone, Relic, Stat, Trace
-from ...utils import get_now
+from ...utils import get_now, set_or_update_dict
 from .ambr import AmbrAPIClient
 from .enka.gi import EnkaGIClient
 
@@ -64,10 +68,11 @@ class GenshinClient(genshin.Client):
             return await super().request(*args, **kwargs)
 
     def set_lang(self, locale: Locale) -> None:
-        if self.region is genshin.Region.CHINESE:
-            self.lang = "zh-cn"
-        else:
-            self.lang = LOCALE_TO_GPY_LANG.get(locale, "en-us")
+        self.lang = (
+            "zh-cn"
+            if self.region is genshin.Region.CHINESE
+            else LOCALE_TO_GPY_LANG.get(locale, "en-us")
+        )
 
     def get_daily_reward_embed(
         self,
@@ -184,17 +189,122 @@ class GenshinClient(genshin.Client):
         await JSONFile.write(f"talent_levels/gi_{self.uid}.json", talent_level_data)
 
     @staticmethod
+    async def convert_gi_character(
+        character: genshin.models.GenshinDetailCharacter,
+    ) -> models.HoyolabGICharacter:
+        """Convert GenshinDetailCharacter from gpy to HoyolabGICharacter that's used for drawing cards."""
+        weapon = models.HoyolabGIWeapon(
+            name=character.weapon.name,
+            icon=character.weapon.icon,
+            refinement=character.weapon.refinement,
+            level=character.weapon.level,
+            max_level=hakushin.utils.get_max_level_from_ascension(
+                character.weapon.ascension, hakushin.Game.GI
+            ),
+            rarity=character.weapon.rarity,
+            stats=[
+                models.HoyolabGIStat(
+                    type=convert_fight_prop(character.weapon.main_stat.info.type),
+                    formatted_value=character.weapon.main_stat.final,
+                )
+            ],
+        )
+        if character.weapon.sub_stat is not None:
+            weapon.stats.append(
+                models.HoyolabGIStat(
+                    type=convert_fight_prop(character.weapon.sub_stat.info.type),
+                    formatted_value=character.weapon.sub_stat.final,
+                )
+            )
+
+        constellations = [
+            models.HoyolabGIConst(icon=const.icon, unlocked=const.activated)
+            for const in character.constellations
+        ]
+
+        artifacts = [
+            models.HoyolabGIArtifact(
+                icon=artifact.icon,
+                rarity=artifact.rarity,
+                level=artifact.level,
+                main_stat=models.HoyolabGIStat(
+                    type=convert_fight_prop(artifact.main_stat.info.type),
+                    formatted_value=artifact.main_stat.value,
+                ),
+                sub_stats=[
+                    models.HoyolabGIStat(
+                        type=convert_fight_prop(sub_stat.info.type), formatted_value=sub_stat.value
+                    )
+                    for sub_stat in artifact.sub_stats
+                ],
+            )
+            for artifact in character.artifacts
+        ]
+
+        highest_dmg_bonus_stat = None
+        for prop in character.selected_properties:
+            if prop.info.type in DMG_BONUS_IDS:
+                highest_dmg_bonus_stat = models.HoyolabGIStat(
+                    type=convert_fight_prop(prop.info.type), formatted_value=prop.final
+                )
+            break
+        if highest_dmg_bonus_stat is None:
+            prop_id = ELEMENT_TO_BONUS_PROP_ID[GenshinElement(character.element)]
+            prop = next(
+                (prop for prop in character.element_properties if prop.info.type == prop_id), None
+            )
+            if prop is None:
+                msg = f"Couldn't find the highest damage bonus stat for {character.name} ({character.element})"
+                raise ValueError(msg)
+
+            highest_dmg_bonus_stat = models.HoyolabGIStat(
+                type=convert_fight_prop(prop_id), formatted_value=prop.final
+            )
+
+        async with enka.GenshinClient() as client:
+            talent_order = client._assets.character_data[str(character.id)]["SkillOrder"]
+
+        return models.HoyolabGICharacter(
+            id=character.id,
+            name=character.name,
+            element=GenshinElement(character.element),
+            highest_dmg_bonus_stat=highest_dmg_bonus_stat,
+            stats={
+                convert_fight_prop(prop.info.type): models.HoyolabGIStat(
+                    type=convert_fight_prop(prop.info.type), formatted_value=prop.final
+                )
+                for prop in character.selected_properties
+            },
+            rarity=character.rarity,
+            weapon=weapon,
+            constellations=constellations,
+            talent_order=talent_order,
+            talents=[
+                models.HoyolabGITalent(icon=talent.icon, level=talent.level, id=talent.id)
+                for talent in character.skills
+            ],
+            artifacts=artifacts,
+            friendship_level=character.friendship,
+            level=character.level,
+            max_level=hakushin.utils.get_max_level_from_ascension(
+                hakushin.utils.get_ascension_from_level(character.level, True, hakushin.Game.GI),
+                hakushin.Game.GI,
+            ),
+            icon=models.HoyolabGICharacterIcon(gacha=character.gacha_art),
+        )
+
+    @staticmethod
     def convert_hsr_character(
         character: genshin.models.StarRailDetailCharacter,
         property_info: dict[str, genshin.models.PropertyInfo],
-    ) -> HoyolabHSRCharacter:
+    ) -> models.HoyolabHSRCharacter:
         """Convert StarRailDetailCharacter from gpy to HoyolabHSRCharacter that's used for drawing cards."""
         prop_icons: dict[int, str] = {
             prop.property_type: prop.icon for prop in property_info.values()
         }
 
         light_cone = (
-            LightCone(
+            models.LightCone(
                 id=character.equip.id,
                 level=character.equip.level,
                 superimpose=character.equip.rank,
@@ -210,18 +320,18 @@ class GenshinClient(genshin.Client):
             else None
         )
         relics = [
-            Relic(
+            models.Relic(
                 id=relic.id,
                 level=relic.level,
                 rarity=relic.rarity,
                 icon=relic.icon,
-                main_stat=Stat(
+                main_stat=models.Stat(
                     type=relic.main_property.property_type,
                     icon=prop_icons[relic.main_property.property_type],
                     formatted_value=relic.main_property.value,
                 ),
                 sub_stats=[
-                    Stat(
+                    models.Stat(
                         type=sub_property.property_type,
                         icon=prop_icons[sub_property.property_type],
                         formatted_value=sub_property.value,
@@ -231,7 +341,7 @@ class GenshinClient(genshin.Client):
             )
             for relic in list(character.relics) + list(character.ornaments)
         ]
-        return HoyolabHSRCharacter(
+        return models.HoyolabHSRCharacter(
             id=str(character.id),
             element=character.element,
             name=character.name,
@@ -240,7 +350,7 @@ class GenshinClient(genshin.Client):
             light_cone=light_cone,
             relics=relics,
             stats=[
-                Stat(
+                models.Stat(
                     icon=prop_icons[prop.property_type],
                     formatted_value=prop.final,
                     type=prop.property_type,
@@ -248,7 +358,7 @@ class GenshinClient(genshin.Client):
                 for prop in character.properties
             ],
             traces=[
-                Trace(anchor=skill.anchor, icon=skill.item_url, level=skill.level)
+                models.Trace(anchor=skill.anchor, icon=skill.item_url, level=skill.level)
                 for skill in character.skills
             ],
             max_level=hakushin.utils.get_max_level_from_ascension(
@@ -258,40 +368,61 @@ class GenshinClient(genshin.Client):
         )
 
     def _update_live_status(
-        self, data: dict[str, Any], extras: dict[str, dict[str, Any]], live: bool, *, zzz: bool
+        self, data: dict[str, Any], extras: dict[str, dict[str, Any]], *, live: bool, game: Game
     ) -> None:
-        cache_data = {"live": live, "locale": GPY_LANG_TO_LOCALE[self.lang].value}
-        if zzz:
+        cache_data: dict[str, Any] = {"live": live, "locale": GPY_LANG_TO_LOCALE[self.lang].value}
+        if game is Game.ZZZ:
             parsed = genshin.models.ZZZFullAgent(**data)
             key = f"{parsed.id}-hoyolab"
-            if key not in extras:
-                extras[key] = cache_data
-            else:
-                extras[key].update(cache_data)
-        else:
+            set_or_update_dict(extras, key, cache_data)
+        elif game is Game.STARRAIL:
             parsed = genshin.models.StarRailDetailCharacters(**data)
             for character in parsed.avatar_list:
                 key = f"{character.id}-hoyolab"
-                if key not in extras:
-                    extras[key] = cache_data
-                else:
-                    extras[key].update(cache_data)
+                set_or_update_dict(extras, key, cache_data)
+        elif game is Game.GENSHIN:
+            parsed = genshin.models.GenshinDetailCharacters(**data)
+            for character in parsed.characters:
+                key = f"{character.id}-hoyolab"
+                set_or_update_dict(extras, key, cache_data)
 
-    async def get_hoyolab_hsr_characters(self) -> list[HoyolabHSRCharacter]:
-        """Get characters in HoyolabHSR format."""
+    async def get_hoyolab_gi_characters(self) -> list[models.HoyolabGICharacter]:
+        """Get Genshin Impact detailed characters in HoyolabGI format."""
         cache, _ = await EnkaCache.get_or_create(uid=self.uid)
 
         try:
-            live_data = (await self.get_starrail_characters(self.uid)).dict()
+            live_data = dict(
+                await self.get_genshin_detailed_characters(self._account.uid, return_raw_data=True)
+            )
         except genshin.GenshinException as e:
             if not cache.hoyolab or e.retcode != 1005:
                 raise
 
-            self._update_live_status(cache.hoyolab, cache.extras, False, zzz=False)
+            self._update_live_status(cache.hoyolab, cache.extras, live=False, game=Game.GENSHIN)
             await cache.save(update_fields=("extras"))
         else:
             cache.hoyolab = live_data
-            self._update_live_status(live_data, cache.extras, True, zzz=False)
+            self._update_live_status(live_data, cache.extras, live=True, game=Game.GENSHIN)
+            await cache.save(update_fields=("hoyolab", "extras"))
+
+        parsed = genshin.models.GenshinDetailCharacters(**cache.hoyolab)
+        return [await self.convert_gi_character(chara) for chara in parsed.characters]
+
+    async def get_hoyolab_hsr_characters(self) -> list[models.HoyolabHSRCharacter]:
+        """Get characters in HoyolabHSR format."""
+        cache, _ = await EnkaCache.get_or_create(uid=self.uid)
+
+        try:
+            live_data = (await self.get_starrail_characters(self.uid)).dict(by_alias=True)
+        except genshin.GenshinException as e:
+            if not cache.hoyolab or e.retcode != 1005:
+                raise
+
+            self._update_live_status(cache.hoyolab, cache.extras, live=False, game=Game.STARRAIL)
+            await cache.save(update_fields=("extras"))
+        else:
+            cache.hoyolab = live_data
+            self._update_live_status(live_data, cache.extras, live=True, game=Game.STARRAIL)
             await cache.save(update_fields=("hoyolab", "extras"))
 
         parsed = genshin.models.StarRailDetailCharacters(**cache.hoyolab)
@@ -314,17 +445,17 @@ class GenshinClient(genshin.Client):
             cache, _ = await EnkaCache.get_or_create(uid=self.uid)
 
             try:
-                live_data = (await super().get_zzz_agent_info(character_id)).dict()
+                live_data = (await super().get_zzz_agent_info(character_id)).dict(by_alias=True)
             except genshin.GenshinException as e:
                 if not cache.hoyolab_zzz or e.retcode != 1005:
                     raise
 
-                self._update_live_status(cache.hoyolab_zzz, cache.extras, False, zzz=True)
+                self._update_live_status(cache.hoyolab_zzz, cache.extras, live=False, game=Game.ZZZ)
                 await cache.save(update_fields=("extras"))
             else:
                 cache.hoyolab_zzz = cache.hoyolab_zzz or {}
                 cache.hoyolab_zzz.update({str(character_id): live_data})
-                self._update_live_status(live_data, cache.extras, True, zzz=True)
+                self._update_live_status(live_data, cache.extras, live=False, game=Game.ZZZ)
                 await cache.save(update_fields=("hoyolab_zzz", "extras"))
 
             return genshin.models.ZZZFullAgent(**cache.hoyolab_zzz[str(character_id)])

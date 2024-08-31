@@ -194,3 +194,11 @@ def wrap_task_factory() -> None:
         return t
 
     loop.set_task_factory(new_factory)
+
+
+def set_or_update_dict(d: dict[str, Any], key: str, value: Any) -> None:
+    """Set or update a value in a dictionary."""
+    if key in d:
+        d[key] = value
+    else:
+        d.update({key: value})

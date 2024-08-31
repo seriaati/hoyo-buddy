@@ -193,7 +193,7 @@ class ZZZAgentCard:
 
             # Engine name
             name_tbox = drawer.write(
-                engine.name.upper(),
+                engine.name.upper().replace("-", " "),
                 size=64,
                 position=(94, 267),
                 max_width=392,

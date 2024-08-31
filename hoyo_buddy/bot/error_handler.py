@@ -22,7 +22,9 @@ if TYPE_CHECKING:
 
 __all__ = ("get_error_embed",)
 
-GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "description"], LocaleStr]] = {
+GENSHIN_ERROR_CONVERTER: dict[
+    tuple[int, ...], dict[Literal["title", "description", "image"], LocaleStr | str]
+] = {
     (-5003,): {
         "title": LocaleStr(key="already_claimed_title"),
         "description": LocaleStr(key="already_claimed_description"),
@@ -62,6 +64,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
     (10102,): {
         "title": LocaleStr(key="data_not_public.title"),
         "description": LocaleStr(key="data_not_public.description"),
+        "image": "https://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/DataNotPublicTutorial.gif",
     },
     (-2021, -2011): {"title": LocaleStr(key="redeem_code.ar_too_low")},
     (30001,): {
@@ -94,7 +97,7 @@ GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "descriptio
 
 
 ENKA_ERROR_CONVERTER: dict[
-    type[enka_errors.EnkaAPIError], dict[Literal["title", "description"], LocaleStr]
+    type[enka_errors.EnkaAPIError], dict[Literal["title", "description", "image"], LocaleStr]
 ] = {
     enka_errors.PlayerDoesNotExistError: {
         "title": LocaleStr(key="player_not_found_title"),
@@ -140,8 +143,14 @@ def get_error_embed(
             err_info = ENKA_ERROR_CONVERTER.get(type(error))
 
         if err_info is not None:
-            title, description = err_info["title"], err_info.get("description", None)
+            title, description, image = (
+                err_info["title"],
+                err_info.get("description", None),
+                err_info.get("image", None),
+            )
             embed = ErrorEmbed(locale, translator, title=title, description=description)
+            if image is not None:
+                embed.set_image(url=image)
 
     if embed is None:
         recognized = False

@@ -498,7 +498,7 @@ yatta_light_cone_ability_field_name: Ability
 characters.show_owned_only: Show owned characters only
 redeem_code.ar_too_low: Adventure rank too low
 data_not_public.title: Data is not Public
-data_not_public.description: "Enable the data sharing option in your battle chronicle settings\nhttps://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/DataNotPublicTutorial.gif"
+data_not_public.description: "Enable the data sharing option in your battle chronicle settings"
 not_implemented_error_title: Feature not Implemented Yet
 not_implemented_error_only_game_message: "This feature is not implemented for `{game}` accounts yet."
 not_implemented_error_message: "This feature is not implemented for `{game}` accounts on `{platform}` yet."

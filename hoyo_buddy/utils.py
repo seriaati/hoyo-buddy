@@ -172,6 +172,7 @@ def format_ann_content(content: str) -> str:
     # remove time tags from mihoyo
     content = content.replace('t class="t_gl"', "")
     content = content.replace('t class="t_lc"', "")
+    content = content.replace('contenteditable="false"', "")
     return content.replace("/t", "")
 
 

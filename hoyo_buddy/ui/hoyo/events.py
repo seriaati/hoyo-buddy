@@ -30,6 +30,7 @@ class EventsView(View):
 
         self._game = game
         self.anns: Sequence[genshin.models.Announcement] = []
+        self.banner_ann_ids: list[int] = []
         self.ann_id: int = 0
         self.ann_type: str = ""
 
@@ -42,9 +43,14 @@ class EventsView(View):
         return next(ann for ann in self.anns if ann.id == ann_id)
 
     def _get_ann_embed(self, ann: genshin.models.Announcement) -> DefaultEmbed:
-        embed = DefaultEmbed(self.locale, self.translator, title=format_ann_content(ann.title))
+        embed = DefaultEmbed(
+            self.locale,
+            self.translator,
+            title=format_ann_content(ann.title),
+            description=format_ann_content(ann.content)[:200] + "...",
+        )
         embed.set_author(name=ann.subtitle)
-        embed.set_image(url=ann.banner)
+        embed.set_image(url=ann.banner or ann.img)
         embed.add_field(
             name=LocaleStr(key="events_view_start_date_embed_field"),
             value=format_dt(ann.start_time.replace(tzinfo=UTC_8), "R"),
@@ -57,20 +63,33 @@ class EventsView(View):
 
     @property
     def first_ann(self) -> genshin.models.Announcement:
-        anns = [ann for ann in self.anns if ann.type_label == self.ann_type]
+        anns = (
+            [ann for ann in self.anns if ann.type_label == self.ann_type]
+            if self.ann_type != "banners"
+            else [ann for ann in self.anns if ann.id in self.banner_ann_ids]
+        )
         return anns[0]
 
     async def _fetch_anns(self) -> None:
         client = genshin.Client(lang=locale_to_gpy_lang(self.locale))
+        zh_client = genshin.Client(lang="zh-tw")
+
         if self._game is Game.GENSHIN:
             self.anns = await client.get_genshin_announcements()
+            zh_anns = await zh_client.get_genshin_announcements()
+            keyword = "祈願："  # noqa: RUF001
         elif self._game is Game.STARRAIL:
             self.anns = await client.get_starrail_announcements()
+            zh_anns = await zh_client.get_starrail_announcements()
+            keyword = "活動躍遷"
         elif self._game is Game.ZZZ:
             self.anns = await client.get_zzz_announcements()
+            zh_anns = await zh_client.get_zzz_announcements()
+            keyword = "調頻"
         else:
             raise FeatureNotImplementedError(game=self._game)
 
+        self.banner_ann_ids = [ann.id for ann in zh_anns if keyword in ann.title]
         self.ann_type = self.anns[0].type_label
         self.ann_id = self.anns[0].id
 
@@ -90,7 +109,7 @@ class EventSelector(PaginatorSelect[EventsView]):
         super().__init__(
             custom_id="events_view_ann_select",
             placeholder=LocaleStr(key="events_view_ann_select_placeholder"),
-            options=[self._get_ann_option(ann, i == 0) for i, ann in enumerate(anns)],
+            options=[self._get_ann_option(ann, i == 0) for i, ann in enumerate(anns) if ann.title],
         )
 
     def _get_ann_option(self, ann: genshin.models.Announcement, default: bool) -> SelectOption:
@@ -104,7 +123,9 @@ class EventSelector(PaginatorSelect[EventsView]):
         )
 
     def set_options(self, anns: Sequence[genshin.models.Announcement]) -> None:
-        self.options = [self._get_ann_option(ann, i == 0) for i, ann in enumerate(anns)]
+        self.options = [
+            self._get_ann_option(ann, i == 0) for i, ann in enumerate(anns) if ann.title
+        ]
 
     async def callback(self, i: Interaction) -> None:
         changed = self.update_page()
@@ -122,25 +143,39 @@ class EventSelector(PaginatorSelect[EventsView]):
 
 class EventTypeSelector(Select[EventsView]):
     def __init__(self, anns: Sequence[genshin.models.Announcement], current: str) -> None:
-        ann_types = self._get_ann_types(anns)
         super().__init__(
             placeholder=LocaleStr(key="events_view_ann_type_select_placeholder"),
             options=[
                 SelectOption(label=ann_type, value=ann_type, default=ann_type == current)
-                for ann_type in ann_types
+                for ann_type in self._get_ann_types(anns)
+            ]
+            + [
+                SelectOption(
+                    label=LocaleStr(key="events_view_banner_type_label"),
+                    value="banners",
+                    default=current == "banners",
+                )
             ],
         )
 
-    def _get_ann_types(self, anns: Sequence[genshin.models.Announcement]) -> list[str]:
-        return list({ann.type_label for ann in anns})
+    @staticmethod
+    def _get_ann_types(anns: Sequence[genshin.models.Announcement]) -> list[str]:
+        types = list({ann.type_label for ann in anns})
+        types.sort()
+        return types
 
     async def callback(self, i: Interaction) -> None:
         ann_type = self.values[0]
         self.view.ann_type = ann_type
 
-        anns = [ann for ann in self.view.anns if ann.type_label == ann_type]
+        anns = (
+            [ann for ann in self.view.anns if ann.type_label == ann_type]
+            if ann_type != "banners"
+            else [ann for ann in self.view.anns if ann.id in self.view.banner_ann_ids]
+        )
         event_selector: EventSelector = self.view.get_item("events_view_ann_select")
         event_selector.set_options(anns)
+        event_selector.translate(self.view.locale, self.view.translator)
 
         self.update_options_defaults()
         embed = self.view._get_ann_embed(self.view.first_ann)
@@ -155,11 +190,16 @@ class ViewContentButton(Button[EventsView]):
 
     async def callback(self, i: Interaction) -> None:
         ann = self.view._get_ann(self.view.ann_id)
-        # Split ann content by 2000 characters
         content = format_ann_content(ann.content)
+        if not content:
+            self.disabled = True
+            return await i.response.edit_message(view=self.view)
+
+        # Split ann content by 2000 characters
         contents: list[str] = [content[i : i + 2000] for i in range(0, len(content), 2000)]
         pages = [Page(content=content) for content in contents]
         view = PaginatorView(
             pages, author=i.user, locale=self.view.locale, translator=self.view.translator
         )
         await view.start(i, ephemeral=True, followup=True)
+        return None

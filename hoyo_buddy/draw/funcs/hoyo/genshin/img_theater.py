@@ -133,7 +133,7 @@ class ImgTheaterCard:
             start_pos = (start_pos[0] + padding, start_pos[1])
 
     def draw(self) -> io.BytesIO:
-        self._im = self._open_asset("bg.png")
+        self._im = self._open_asset(f"bg_{self._theater.stats.difficulty.value}.png")
         self._drawer = Drawer(
             ImageDraw.Draw(self._im),
             folder="img-theater",

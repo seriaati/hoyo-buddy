@@ -230,9 +230,10 @@ class ChallengeView(View):
                     self._account.uid, previous=previous
                 )
             elif self.challenge_type is ChallengeType.IMG_THEATER:
-                challenge = (
+                challenges = (
                     await client.get_imaginarium_theater(self._account.uid, previous=previous)
-                ).datas[0]
+                ).datas
+                challenge = max(challenges, key=lambda c: c.stats.difficulty.value)
             else:
                 msg = f"Invalid challenge type: {self._challenge_type}"
                 raise ValueError(msg)

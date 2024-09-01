@@ -616,8 +616,9 @@ button_label_dyk: 「你知道吗」讯息
 events_view_start_date_embed_field: 开始时间
 events_view_end_date_embed_field: 结束时间
 events_view_ann_select_placeholder: 选择一个活动…
+events_view_banner_type_label: 卡池
 events_command_description: 查看正在进行中的游戏活动
 events_view_ann_type_select_placeholder: 选择一个活动分类…
-events_view_content_label: 查看内容
+events_view_content_label: 查看完整内容
 events_command_game_param_description: 用于查看活动的游戏
 natlan: 納塔

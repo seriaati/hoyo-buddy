@@ -452,7 +452,7 @@ class ProfileView(View):
         cache_extra = self.cache_extras.get(str(character.id))
         locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
 
-        template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
+        template_num: Literal[1, 2, 3] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
         if template_num == 2:
             temp2_card_data = await read_yaml(
                 "hoyo-buddy-assets/assets/zzz-build-card/agent_data_temp2.yaml"
@@ -464,6 +464,7 @@ class ProfileView(View):
             agent_temp2_data["color"] = agent_temp1_data["color"]
             agent_temp_data = agent_temp2_data
         else:
+            # 1 or 3
             agent_temp_data = self._card_data.get(str(character.id))
 
         if agent_temp_data is None:

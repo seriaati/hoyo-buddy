@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Final
 
 import enka
 from discord import ButtonStyle, TextStyle
-from genshin.models import ZZZPartialAgent
+from genshin.models import ZZZFullAgent, ZZZPartialAgent
 from seria.utils import read_json, read_yaml
 
 from hoyo_buddy.constants import HSR_DEFAULT_ART_URL
@@ -61,7 +61,7 @@ if TYPE_CHECKING:
 CARD_TEMPLATES: Final[dict[Game, tuple[str, ...]]] = {
     Game.GENSHIN: ("hb1", "hb2", "hattvr1", "encard1", "enkacard1", "enkacard2"),
     Game.STARRAIL: ("hb1", "src1", "src2", "src3"),
-    Game.ZZZ: ("hb1", "hb2"),
+    Game.ZZZ: ("hb1", "hb2", "hb3"),
 }
 CARD_TEMPLATE_AUTHORS: Final[dict[str, tuple[str, str]]] = {
     "hb": ("@ayasaku_", "@seriaati"),
@@ -105,8 +105,8 @@ async def get_art_url(user_id: int, character_id: str, *, game: Game) -> str | N
     return card_settings.current_image
 
 
-def get_default_art(character: Character) -> str:
-    if isinstance(character, ZZZPartialAgent):
+def get_default_art(character: Character | ZZZFullAgent) -> str:
+    if isinstance(character, ZZZPartialAgent | ZZZFullAgent):
         return character.banner_icon
     if isinstance(character, enka.gi.Character):
         if character.costume is not None:

@@ -10,6 +10,7 @@ from discord import File
 from sentry_sdk.metrics import timing
 
 from hoyo_buddy.draw import funcs
+from hoyo_buddy.ui.hoyo.profile.card_settings import get_default_art
 
 from ..models import (
     AbyssCharacter,
@@ -431,7 +432,7 @@ async def draw_zzz_notes_card(
 
 
 async def fetch_zzz_draw_data(
-    agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2]
+    agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2, 3]
 ) -> ZZZDrawData:
     agent_full_names: dict[str, AgentNameData] = {}
 
@@ -448,6 +449,7 @@ async def fetch_zzz_draw_data(
         if template == 2:
             agent_images = {str(char.id): char.phase_3_cinema_art for char in characters}
         else:
+            # 1 or 3
             agent_images = {str(char.id): char.image for char in characters}
 
         items = await api.fetch_items()
@@ -465,29 +467,40 @@ async def draw_zzz_build_card(
     *,
     card_data: dict[str, Any],
     color: str | None,
-    template: Literal[1, 2],
+    template: Literal[1, 2, 3],
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data([agent], template=template)
 
-    image = draw_data.agent_images[str(agent.id)]
-    urls: list[str] = []
-    urls.append(image)
+    image = get_default_art(agent) if template == 3 else draw_data.agent_images[str(agent.id)]
+    urls: list[str] = [image]
     urls.extend(draw_data.disc_icons.values())
     if agent.w_engine is not None:
         urls.append(agent.w_engine.icon)
-    await download_images(urls, "zzz-build-card", draw_input.session)
+    await download_images(
+        urls, "zzz-team-card" if template == 3 else "zzz-build-card", draw_input.session
+    )
 
-    with timing("draw", tags={"type": "zzz_build_card"}):
-        card = funcs.zzz.ZZZAgentCard(
-            agent,
-            locale=draw_input.locale.value,
-            name_data=draw_data.name_data.get(str(agent.id)),
-            image_url=image,
-            card_data=card_data,
-            disc_icons=draw_data.disc_icons,
-            color=color,
-            template=template,
-        )
+    with timing("draw", tags={"type": f"zzz_build_card_{template}"}):
+        if template == 3:
+            card = funcs.zzz.ZZZTeamCard(
+                locale=draw_input.locale.value,
+                agents=[agent],
+                agent_colors={str(agent.id): color or card_data["color"]},
+                agent_images={str(agent.id): image},
+                name_datas=draw_data.name_data,
+                disc_icons=draw_data.disc_icons,
+            )
+        else:
+            card = funcs.zzz.ZZZAgentCard(
+                agent,
+                locale=draw_input.locale.value,
+                name_data=draw_data.name_data.get(str(agent.id)),
+                image_url=image,
+                card_data=card_data,
+                disc_icons=draw_data.disc_icons,
+                color=color,
+                template=template,
+            )
         return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
 

@@ -313,6 +313,10 @@ class ZZZTeamCard:
             im.paste(agent_im, start_pos, agent_im)
             start_pos = (start_pos[0], start_pos[1] + y_diff)
 
+        if len(self._agents) == 1:
+            # Template 3
+            im = im.crop((54, 48, 1395, 357))
+
         buffer = BytesIO()
         im.save(buffer, format="WEBP", loseless=True)
         return buffer

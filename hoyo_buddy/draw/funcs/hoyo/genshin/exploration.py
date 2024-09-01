@@ -323,6 +323,22 @@ class ExplorationCard:
         }
         return self._draw_exploration_card("enkanomiya", exploration, texts)
 
+    def _draw_natlan_card(self) -> Image.Image:
+        exploration = self._get_exploration(15)
+        texts = {
+            LocaleStr(
+                key="exploration.progress",
+                progress=0 if exploration is None else exploration.explored,
+            ): (75, 117),
+            LocaleStr(key="exploration.pyroculi", pyroculi=self._user.stats.pyroculi): (75, 163),
+            LocaleStr(
+                key="exploration.reputation",
+                reputation=0 if exploration is None else exploration.offerings[1].level,
+            ): (75, 209),
+            self._get_offering_text(exploration): (75, 252),
+        }
+        return self._draw_exploration_card("natlan", exploration, texts)
+
     def draw(self) -> BytesIO:
         mode_str = "dark" if self._dark_mode else "light"
         self._im = Drawer.open_image(
@@ -377,35 +393,40 @@ class ExplorationCard:
         self._im.paste(shadow, (114 - shadow_offset, 1183 - shadow_offset), shadow)
         self._im.paste(fontaine, (114, 1183), fontaine)
 
+        natlan = self._draw_natlan_card()
+        shadow = self._get_shadow("natlan")
+        self._im.paste(shadow, (868 - shadow_offset, 1183 - shadow_offset), shadow)
+        self._im.paste(natlan, (868, 1183), natlan)
+
+        placeholder = self._draw_placeholder_card()
+        shadow = self._get_shadow("placeholder")
+        self._im.paste(shadow, (114 - shadow_offset, 1501 - shadow_offset), shadow)
+        self._im.paste(placeholder, (114, 1501), placeholder)
+
         sea_of_bygone_eras = self._draw_sea_of_bygone_eras_card()
         shadow = self._get_shadow("seaOfBygoneEras")
-        self._im.paste(shadow, (868 - shadow_offset, 1183 - shadow_offset), shadow)
-        self._im.paste(sea_of_bygone_eras, (868, 1183), sea_of_bygone_eras)
-
-        # placeholder = self._draw_placeholder_card()
-        # shadow = self._get_shadow("placeholder")
-        # self._im.paste(shadow, (868 - shadow_offset, 1183 - shadow_offset), shadow)
-        # self._im.paste(placeholder, (868, 1183), placeholder)
+        self._im.paste(shadow, (868 - shadow_offset, 1501 - shadow_offset), shadow)
+        self._im.paste(sea_of_bygone_eras, (868, 1501), sea_of_bygone_eras)
 
         chenyu_vale = self._draw_chenyu_value_card()
         shadow = self._get_shadow("chenyuVale")
-        self._im.paste(shadow, (114 - shadow_offset, 1533 - shadow_offset), shadow)
-        self._im.paste(chenyu_vale, (114, 1533), chenyu_vale)
+        self._im.paste(shadow, (114 - shadow_offset, 1819 - shadow_offset), shadow)
+        self._im.paste(chenyu_vale, (114, 1819), chenyu_vale)
 
         chasm = self._draw_the_chasm_card()
         shadow = self._get_shadow("theChasm")
-        self._im.paste(shadow, (868 - shadow_offset, 1533 - shadow_offset), shadow)
-        self._im.paste(chasm, (868, 1533), chasm)
+        self._im.paste(shadow, (868 - shadow_offset, 1819 - shadow_offset), shadow)
+        self._im.paste(chasm, (868, 1819), chasm)
 
         dragonspine = self._draw_dragonspine_card()
         shadow = self._get_shadow("dragonspine")
-        self._im.paste(shadow, (114 - shadow_offset, 1884 - shadow_offset), shadow)
-        self._im.paste(dragonspine, (114, 1884), dragonspine)
+        self._im.paste(shadow, (114 - shadow_offset, 2170 - shadow_offset), shadow)
+        self._im.paste(dragonspine, (114, 2170), dragonspine)
 
         enka = self._draw_enkanomiya_card()
         shadow = self._get_shadow("enkanomiya")
-        self._im.paste(shadow, (868 - shadow_offset, 1884 - shadow_offset), shadow)
-        self._im.paste(enka, (868, 1884), enka)
+        self._im.paste(shadow, (868 - shadow_offset, 2170 - shadow_offset), shadow)
+        self._im.paste(enka, (868, 2170), enka)
 
         buffer = BytesIO()
         self._im.save(buffer, format="WEBP", loseless=True)

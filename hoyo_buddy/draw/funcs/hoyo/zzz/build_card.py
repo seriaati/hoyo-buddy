@@ -41,7 +41,10 @@ class ZZZAgentCard:
         self._template = template
 
     def _draw_background(self) -> Image.Image:
-        card = Drawer.open_image(f"hoyo-buddy-assets/assets/zzz-build-card/card_base{self._template}.png")
+        base_card_temp = 2 if self._card_data.get("zzz_text", False) else 1
+        card = Drawer.open_image(
+            f"hoyo-buddy-assets/assets/zzz-build-card/card_base{base_card_temp}.png"
+        )
         draw = ImageDraw.Draw(card)
         drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False)
 

@@ -172,6 +172,7 @@ exploration.electroculi: "雷神瞳: {electroculi}"
 exploration.exquisite_chests: 精緻
 exploration.geoculi: "岩神瞳: {geoculi}"
 exploration.hydroculi: "水神瞳: {hydroculi}"
+exploration.pyroculi: "火神瞳: {pyroculi}"
 exploration.luxurious_chests: 華麗
 exploration.placeholder: 尚未釋出
 exploration.placeholder_quote: '「旅程總有一天會迎來終點，不必匆忙。」
@@ -498,7 +499,7 @@ yatta_light_cone_ability_field_name: 技能
 characters.show_owned_only: 僅顯示已擁有的角色
 redeem_code.ar_too_low: 冒險等階過低
 data_not_public.title: 資料沒有公開
-data_not_public.description: "在你的戰績設定中打開資料分享的選項\nhttps://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/DataNotPublicTutorial.gif"
+data_not_public.description: "在戰績設定中啟用資料分享"
 not_implemented_error_title: 功能尚未實裝
 not_implemented_error_only_game_message: "此功能尚未在 `{game}` 帳戶上實裝。"
 not_implemented_error_message: "此功能尚未在 `{platform}` 上的 `{game}` 帳戶上實裝。"
@@ -608,6 +609,7 @@ dyk_github: "Hoyo Buddy 於 [GitHub](<https://github.com/seriaati/hoyo-buddy>) �
 dyk_python: Hoyo Buddy 使用純 Python 撰寫而成
 dyk_unreleased: 你可以使用 /search 查看尚未釋出的遊戲內容
 dyk_team_card: 你可以透過選擇多個角色的方式在 /profile 產生隊伍卡片
+dyk_set_default_acc: 你可以用 /accounts 設置一個預設帳戶，用於運行所有指令
 title_dyk: "你知道嗎？"
 new_zzz_temp: 全新！讓你的絕區零代理人試試 Hoyo Buddy 卡片樣式 2
 button_label_dyk: 「你知道嗎」訊息

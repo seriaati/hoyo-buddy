@@ -17,7 +17,7 @@ from ...components import Select, SelectOption
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from genshin.models import RecordCard
+    from genshin.models import GenshinAccount
 
     from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
@@ -33,7 +33,7 @@ class AddAccountSelect(Select[AccountManager]):
         locale: discord.Locale,
         translator: Translator,
         *,
-        accounts: Sequence[RecordCard],
+        accounts: Sequence[GenshinAccount],
         cookies: str,
         platform: Platform,
         device_id: str | None,

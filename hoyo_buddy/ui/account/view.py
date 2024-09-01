@@ -153,7 +153,7 @@ class AccountManager(View):
         )
 
         try:
-            accounts = await client.get_record_cards()
+            accounts = await client.get_game_accounts()
         except genshin.errors.InvalidCookies as e:
             raise TryOtherMethodError from e
 

@@ -486,6 +486,7 @@ async def draw_zzz_build_card(
             card_data=card_data,
             disc_icons=draw_data.disc_icons,
             color=color,
+            template=template,
         )
         return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 

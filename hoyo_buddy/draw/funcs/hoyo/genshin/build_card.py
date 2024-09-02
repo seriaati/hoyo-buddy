@@ -197,6 +197,7 @@ def draw_genshin_card(
             align_center=True,
             textbox_size=(448, 76),
             max_lines=2,
+            locale=locale,
         )
 
     # artifacts

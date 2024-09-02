@@ -427,10 +427,7 @@ class ChallengeTypeSelect(Select[ChallengeView]):
     async def callback(self, i: Interaction) -> None:
         self.view._challenge_type = ChallengeType(self.values[0])
 
-        view_buff_btn = self.view.get_item("challenge_view.view_buffs")
-        view_buff_btn.disabled = not isinstance(self.view.challenge, ChallengeWithBuff)
-
-        phase_select = self.view.get_item("challenge_view.phase_select")
+        phase_select: PhaseSelect = self.view.get_item("challenge_view.phase_select")
         phase_select.disabled = False
 
         await self.set_loading_state(i)
@@ -454,6 +451,10 @@ class ChallengeTypeSelect(Select[ChallengeView]):
         phase_select.set_options(histories)
         phase_select.translate(self.view.locale, self.view.translator)
         phase_select.update_options_defaults(values=[str(self.view.season_id)])
+
+        self.view._item_states["challenge_view.view_buffs"] = not isinstance(
+            self.view.challenge, ChallengeWithBuff
+        )
 
         await self.view.update(self, i)
 

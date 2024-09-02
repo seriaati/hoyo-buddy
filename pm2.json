@@ -3,10 +3,7 @@
         {
             "name": "hoyo-buddy-test",
             "script": "./run.py",
-            "interpreter": "./.venv/bin/python",
-            "args": [
-                "-OO"
-            ]
+            "interpreter": "./.venv/bin/python"
         }
     ]
 }

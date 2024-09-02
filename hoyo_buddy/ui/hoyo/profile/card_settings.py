@@ -203,6 +203,10 @@ class CardSettingsView(View):
     def disable_dark_mode_features(self) -> bool:
         return self.game is Game.ZZZ or self.card_settings.template in DISABLE_DARK_MODE
 
+    @property
+    def disable_show_rank_button(self) -> bool:
+        return self.game is not Game.GENSHIN or "hb" not in self.card_settings.template
+
     def _add_items(self) -> None:
         character = self._get_current_character()
         default_collection = get_default_collection(
@@ -262,7 +266,7 @@ class CardSettingsView(View):
         self.add_item(
             ShowRankButton(
                 current_toggle=self.card_settings.show_rank,
-                disabled=self.game is not Game.GENSHIN or "hb" not in self.card_settings.template,
+                disabled=self.disable_show_rank_button,
                 row=4,
             )
         )

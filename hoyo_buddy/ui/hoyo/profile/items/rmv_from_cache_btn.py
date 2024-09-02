@@ -15,11 +15,13 @@ from hoyo_buddy.ui import Button
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import ProfileView  # noqa: F401
+    from ..view import ProfileView
     from .chara_select import CharacterSelect
+else:
+    ProfileView = None
 
 
-class RemoveFromCacheButton(Button["ProfileView"]):
+class RemoveFromCacheButton(Button[ProfileView]):
     def __init__(self) -> None:
         super().__init__(
             label=LocaleStr(key="profile.remove_from_cache.button.label"),

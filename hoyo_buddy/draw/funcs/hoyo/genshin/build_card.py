@@ -24,6 +24,7 @@ def draw_genshin_card(
     character: Character | HoyolabGICharacter,
     image_url: str,
     zoom: float,
+    rank: str | None,
 ) -> io.BytesIO:
     locale = Locale(locale_)
     mode = "dark" if dark_mode else "light"
@@ -164,22 +165,39 @@ def draw_genshin_card(
         )
 
     # friendship level
+    friendship = drawer.open_asset(f"{mode}_friendship.png")
+    im.alpha_composite(friendship, (35, 5))
     drawer.write(
         str(character.friendship_level),
         size=30,
-        style="medium",
-        position=(1132, 840),
+        style="bold",
+        position=(113, 50),
         color=text_color,
+        anchor="mm",
     )
 
     # level
+    level = drawer.open_asset(f"{mode}_level.png")
+    im.alpha_composite(level, (414, 815))
     drawer.write(
-        f"Lv.{character.level}/{character.max_level}",
-        size=30,
-        style="medium",
-        position=(1215, 840),
+        f"Lv.{character.level}",
+        size=40,
+        style="bold",
+        position=(485, 859),
         color=text_color,
+        anchor="mm",
     )
+
+    # rank
+    if rank is not None:
+        drawer.write(
+            rank,
+            position=(989, 825),
+            size=26,
+            align_center=True,
+            textbox_size=(448, 76),
+            max_lines=2,
+        )
 
     # artifacts
     # start pos (68, 970)

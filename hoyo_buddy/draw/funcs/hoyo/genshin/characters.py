@@ -8,9 +8,9 @@ from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import BLACK, DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
-from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DynamicBKInput, UnownedCharacter
+from hoyo_buddy.utils import convert_chara_id_to_ambr_format
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -40,7 +40,9 @@ def draw_character_card(
         talent = (
             ""
             if isinstance(character, UnownedCharacter)
-            else talents.get(GenshinClient.convert_chara_id_to_ambr_format(character), "?/?/?")
+            else talents.get(
+                convert_chara_id_to_ambr_format(character.id, character.element), "?/?/?"
+            )
         )
         card = draw_small_gi_chara_card(talent, dark_mode, character, translator, locale)
         c_cards[str(character.id)] = card

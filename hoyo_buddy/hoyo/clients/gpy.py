@@ -20,7 +20,6 @@ from ...constants import (
     GPY_LANG_TO_LOCALE,
     HB_GAME_TO_GPY_GAME,
     LOCALE_TO_GPY_LANG,
-    TRAVELER_IDS,
     contains_traveler_id,
     convert_fight_prop,
 )
@@ -28,7 +27,7 @@ from ...db.models import EnkaCache, HoyoAccount, JSONFile
 from ...embeds import DefaultEmbed
 from ...enums import Game, GenshinElement, TalentBoost
 from ...l10n import LocaleStr, Translator
-from ...utils import get_now, set_or_update_dict
+from ...utils import convert_chara_id_to_ambr_format, get_now, set_or_update_dict
 from .ambr import AmbrAPIClient
 from .enka.gi import EnkaGIClient
 
@@ -94,15 +93,6 @@ class GenshinClient(genshin.Client):
         )
 
     @staticmethod
-    def convert_chara_id_to_ambr_format(character: genshin.models.Character) -> str:
-        """Convert character ID to the format used by AmbrAPI (traveler ID contains element)."""
-        return (
-            f"{character.id}-{character.element.lower()}"
-            if character.id in TRAVELER_IDS
-            else str(character.id)
-        )
-
-    @staticmethod
     def _convert_character_id_to_enka_format(character_id: str) -> str:
         """Convert character ID to the format used by EnkaAPI."""
         return (
@@ -150,7 +140,7 @@ class GenshinClient(genshin.Client):
             else:
                 raise
 
-        character_id = self.convert_chara_id_to_ambr_format(character)
+        character_id = convert_chara_id_to_ambr_format(character.id, character.element)
 
         # Get talent boost type
         if character_id not in talent_boost_data:

@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import base64
 import datetime
+import math
 import re
 import time
 from contextlib import contextmanager
@@ -12,7 +13,7 @@ import aiohttp
 from loguru import logger
 from seria.utils import clean_url
 
-from .constants import IMAGE_EXTENSIONS, STATIC_FOLDER, UTC_8
+from .constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
 
 if TYPE_CHECKING:
     import pathlib
@@ -203,3 +204,25 @@ def set_or_update_dict(d: dict[str, Any], key: str, value: Any) -> None:
         d[key] = value
     else:
         d.update({key: value})
+
+
+def convert_chara_id_to_ambr_format(character_id: int, element: str) -> str:
+    """Convert character ID to the format used by AmbrAPI (traveler ID contains element)."""
+    return (
+        f"{character_id}-{element.lower()}" if character_id in TRAVELER_IDS else str(character_id)
+    )
+
+
+def human_format_number(number: int, decimal_places: int = 1) -> str:
+    """Convert a number to a human-readable format."""
+    millnames = ("", "k", "M", "B", "T")
+    n = float(number)
+    millidx = max(
+        0,
+        min(
+            len(millnames) - 1,
+            int(0 if n == 0 else math.floor(0 if n < 0 else math.log10(abs(n)) / 3)),
+        ),
+    )
+
+    return f"{n / 10 ** (3 * millidx):.{decimal_places}f}{millnames[millidx]}"

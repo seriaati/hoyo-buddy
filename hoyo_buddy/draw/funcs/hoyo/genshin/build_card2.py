@@ -30,6 +30,7 @@ class GITempTwoBuildCard:
         character_image: str,
         english_name: str,
         top_crop: bool,
+        rank: str | None,
         zoom: float = 1.0,
     ) -> None:
         self._locale = locale
@@ -40,12 +41,14 @@ class GITempTwoBuildCard:
         self._theme = "dark" if dark_mode else "light"
         self._zoom = zoom
         self._top_crop = top_crop
+        self._rank = rank
 
     def draw(self) -> BytesIO:
         character = self._character
         color_1 = (230, 230, 230) if self._dark_mode else (94, 94, 94)
         color_2 = (141, 141, 141) if self._dark_mode else (206, 206, 206)
         color_3 = (243, 243, 243) if self._dark_mode else (156, 156, 156)
+        color_4 = (110, 110, 110) if self._dark_mode else (238, 238, 238)
 
         im = Drawer.open_image(f"hoyo-buddy-assets/assets/gi-build-card2/{self._theme}_card.png")
         drawer = Drawer(ImageDraw.Draw(im), folder="gi-build-card2", dark_mode=self._dark_mode)
@@ -96,10 +99,49 @@ class GITempTwoBuildCard:
         text_im = text_im.rotate(-90, expand=True)
         im.alpha_composite(text_im, (2414, 83))
 
-        # Stars
-        stars = drawer.open_asset(f"stars_{character.rarity}.png")
-        stars = drawer.mask_image_with_color(stars, color_3)
-        im.alpha_composite(stars, (2426, 378))
+        if self._rank is not None:
+            # Rank
+            tbox = drawer.write(
+                self._rank,
+                size=46,
+                style="regular",
+                position=(0, 0),
+                gothic=True,
+                no_write=True,
+                anchor="lt",
+            )
+            text_im = Image.new("RGBA", (tbox.width, tbox.height))
+            text_im_drawer = Drawer(
+                ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode
+            )
+            text_im_drawer.write(
+                self._rank,
+                size=46,
+                style="regular",
+                position=(0, 0),
+                gothic=True,
+                color=color_1,
+                anchor="lt",
+            )
+            text_im = text_im.rotate(-90, expand=True)
+            # Draw rounded rectangle that surrounds the text
+            text_pos = (2451, 376)
+            drawer.draw.rounded_rectangle(
+                (
+                    text_pos[0] - 11,
+                    text_pos[1] - 17,
+                    text_pos[0] + text_im.width + 11,
+                    text_pos[1] + text_im.height + 17,
+                ),
+                radius=50,
+                fill=color_4,
+            )
+            im.alpha_composite(text_im, text_pos)
+        else:
+            # Stars
+            stars = drawer.open_asset(f"stars_{character.rarity}.png")
+            stars = drawer.mask_image_with_color(stars, color_3)
+            im.alpha_composite(stars, (2426, 378))
 
         # Name
         size = drawer.calc_dynamic_fontsize(

@@ -10,10 +10,12 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.types import Interaction
 
-    from ..view import ProfileView  # noqa: F401
+    from ..view import ProfileView
+else:
+    ProfileView = None
 
 
-class BuildSelect(Select["ProfileView"]):
+class BuildSelect(Select[ProfileView]):
     def __init__(self) -> None:
         super().__init__(
             placeholder=LocaleStr(key="profile.build.select.placeholder"),

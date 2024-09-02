@@ -161,7 +161,9 @@ class ChallengeView(View):
         self._challenge_type: ChallengeType | None = None
         self._season_ids: dict[ChallengeType, int] = {}
         """The user's selected season ID for a challange type"""
-        self._challenge_cache: defaultdict[ChallengeType, dict[int, ChallengeWithLang]] = defaultdict(dict)
+        self._challenge_cache: defaultdict[ChallengeType, dict[int, ChallengeWithLang]] = (
+            defaultdict(dict)
+        )
         """Cache of challenges for each season ID and challange type"""
         self._characters: list[GICharacter] = []
 

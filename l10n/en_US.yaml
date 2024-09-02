@@ -622,3 +622,5 @@ events_view_ann_type_select_placeholder: Select an event type...
 events_view_content_label: View full content
 events_command_game_param_description: Game to view events for
 natlan: Natlan
+top_percent: Top {percent}%
+profile_view_show_rank_button_label: Show rank

@@ -18,9 +18,10 @@ if TYPE_CHECKING:
     from hoyo_buddy.db.models import HoyoAccount
     from hoyo_buddy.types import Builds, Interaction
 
-    from ..view import Character, ProfileView  # noqa: F401
+    from ..view import Character, ProfileView
     from .build_select import BuildSelect
-
+else:
+    ProfileView = None
 
 DATA_TYPES: Final[dict[CharacterType, LocaleStr]] = {
     CharacterType.BUILD: LocaleStr(key="profile.character_select.enka_network.description"),
@@ -42,7 +43,7 @@ def determine_chara_type(
     return CharacterType.CACHE
 
 
-class CharacterSelect(PaginatorSelect["ProfileView"]):
+class CharacterSelect(PaginatorSelect[ProfileView]):
     def __init__(
         self,
         game: Game,

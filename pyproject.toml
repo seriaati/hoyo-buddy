@@ -30,6 +30,7 @@ dependencies = [
   "seria-library[files]>=1.5.4",
   "aerich>=0.7.2",
   "uvloop>=0.20.0; platform_system == 'Linux'",
+  "akasha-py>=0.1.3",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = "GPL-3.0-only"

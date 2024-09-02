@@ -10,10 +10,12 @@ from hoyo_buddy.ui import Button
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
-    from ..view import ProfileView  # noqa: F401
+    from ..view import ProfileView
+else:
+    ProfileView = None
 
 
-class CardInfoButton(Button["ProfileView"]):
+class CardInfoButton(Button[ProfileView]):
     def __init__(self) -> None:
         super().__init__(emoji=INFO, row=0)
 

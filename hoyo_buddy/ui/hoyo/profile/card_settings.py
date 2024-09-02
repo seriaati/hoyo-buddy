@@ -254,7 +254,16 @@ class CardSettingsView(View):
         )
         self.add_item(
             TeamCardDarkModeButton(
-                self.settings.team_card_dark_mode, self.disable_dark_mode_features, row=4
+                current_toggle=self.settings.team_card_dark_mode,
+                disabled=self.disable_dark_mode_features,
+                row=4,
+            )
+        )
+        self.add_item(
+            ShowRankButton(
+                current_toggle=self.card_settings.show_rank,
+                disabled=self.game is not Game.GENSHIN or "hb" not in self.card_settings.template,
+                row=4,
             )
         )
         self.add_item(SetCurTempAsDefaultButton(row=4))
@@ -830,3 +839,19 @@ class SetCurTempAsDefaultButton(Button[CardSettingsView]):
             description=LocaleStr(key="set_cur_temp_as_default.done_desc"),
         )
         await i.response.send_message(embed=embed, ephemeral=True)
+
+
+class ShowRankButton(ToggleButton[CardSettingsView]):
+    def __init__(self, current_toggle: bool, disabled: bool, row: int) -> None:
+        super().__init__(
+            current_toggle,
+            LocaleStr(key="profile_view_show_rank_button_label"),
+            custom_id="profile_show_rank",
+            disabled=disabled,
+            row=row,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i, edit=True)
+        self.view.card_settings.show_rank = self.current_toggle
+        await self.view.card_settings.save(update_fields=("show_rank",))

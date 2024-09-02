@@ -155,6 +155,8 @@ class CardSettings(Model):
     custom_primary_color: fields.Field[str | None] = fields.CharField(max_length=7, null=True)
     current_image: fields.Field[str | None] = fields.TextField(null=True)
     template = fields.CharField(max_length=32, default="hb1")
+    show_rank = fields.BooleanField(default=True)
+    """Whether to show the akasha rank of the character, only applies to genshin."""
 
     class Meta:
         unique_together = ("character_id", "user")

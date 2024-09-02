@@ -138,6 +138,7 @@ async def draw_gi_build_card(
     zoom: float,
     template: Literal[1, 2],
     top_crop: bool,
+    rank: str | None,
 ) -> BytesIO:
     urls: list[str] = [image_url, character.weapon.icon, character.icon.gacha]
     urls.extend(artifact.icon for artifact in character.artifacts)
@@ -161,6 +162,7 @@ async def draw_gi_build_card(
             character_image=image_url,
             english_name=ambr_char.name,
             top_crop=top_crop,
+            rank=rank,
         )
         with timing("draw", tags={"type": "gi_build_card2"}):
             buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
@@ -175,6 +177,7 @@ async def draw_gi_build_card(
                 character,
                 image_url,
                 zoom,
+                rank,
             )
     return buffer
 

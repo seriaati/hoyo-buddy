@@ -3,6 +3,7 @@ from __future__ import annotations
 from io import BytesIO
 from typing import TYPE_CHECKING, Any, Literal, TypeAlias
 
+import akasha
 import enka
 from discord import File, Locale
 from genshin.models import ZZZPartialAgent
@@ -38,7 +39,7 @@ from hoyo_buddy.ui.hoyo.profile.card_settings import (
     get_default_collection,
 )
 from hoyo_buddy.ui.hoyo.profile.items.redraw_card_btn import RedrawCardButton
-from hoyo_buddy.utils import blur_uid
+from hoyo_buddy.utils import blur_uid, human_format_number
 
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
@@ -127,6 +128,32 @@ class ProfileView(View):
         self._owner_username: str | None = owner.username if owner is not None else None
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | None = None
+
+    async def _get_character_rank(
+        self, character: Character, *, with_detail: bool = False
+    ) -> str | None:
+        async with akasha.AkashaAPI() as api:
+            await api.refresh_user(self.uid)
+            user_calcs = await api.get_calculations_for_user(self.uid)
+            user_calc = next(
+                (calc for calc in user_calcs if calc.character_id == character.id), None
+            )
+            if user_calc is None:
+                return None
+
+        if not user_calc.calculations:
+            return None
+
+        character_calc = user_calc.calculations[0]
+        top_percent = LocaleStr(
+            key="top_percent", percent=round(character_calc.top_percent, 1)
+        ).translate(self.translator, self.locale)
+        ranking = (
+            f"{top_percent} ({character_calc.ranking}/{human_format_number(character_calc.out_of)})"
+        )
+        if not with_detail:
+            return ranking
+        return f"{character_calc.name}\n{ranking}"
 
     def _check_card_data(self) -> None:
         for char_id in self.character_ids:
@@ -415,6 +442,12 @@ class ProfileView(View):
         else:
             zoom = 0.8 if card_settings.current_image is None else 1.0
 
+        rank = (
+            None
+            if not card_settings.show_rank
+            else await self._get_character_rank(character, with_detail=template_num == 1)
+        )
+
         return await draw_gi_build_card(
             DrawInput(
                 dark_mode=card_settings.dark_mode,
@@ -431,6 +464,7 @@ class ProfileView(View):
             top_crop=template_num == 2
             and card_settings.current_image
             in get_default_collection(str(character.id), self._card_data, game=Game.GENSHIN),
+            rank=rank,
         )
 
     async def _draw_hb_zzz_character_card(

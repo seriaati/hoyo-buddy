@@ -400,6 +400,8 @@ class Drawer:
         gothic: bool = False,
         stroke_width: int = 0,
         stroke_color: tuple[int, int, int] | None = None,
+        align_center: bool = False,
+        textbox_size: tuple[int, int] = (0, 0),
     ) -> TextBBox:
         """Returns (left, top, right, bottom) of the text bounding box."""
         if not text:
@@ -426,7 +428,26 @@ class Drawer:
                     translated_text, max_width=max_width, max_lines=max_lines, font=font
                 )
 
-        if not no_write:
+        if align_center:
+            y_text = position[1]
+            lines = translated_text.split("\n")
+
+            for line in lines:
+                line_textbbox = self.draw.textbbox(
+                    (0, 0), line, font=font, anchor="lt", font_size=size
+                )
+                line_width, line_height = (
+                    line_textbbox[2] - line_textbbox[0],
+                    line_textbbox[3] - line_textbbox[1],
+                )
+                self.draw.text(
+                    (position[0] + (textbox_size[0] - line_width) / 2, y_text),
+                    line,
+                    font=font,
+                    fill=self._get_text_color(color, emphasis),
+                )
+                y_text += line_height + 10
+        elif not no_write:
             self.draw.text(
                 position,
                 translated_text,
@@ -440,6 +461,7 @@ class Drawer:
         textbbox = self.draw.textbbox(
             position, translated_text, font=font, anchor=anchor, font_size=size
         )
+
         # There is a bug where the textbbox may return a float value
         textbbox = (int(i) for i in textbbox)
         return TextBBox(*textbbox)

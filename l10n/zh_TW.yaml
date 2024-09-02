@@ -622,3 +622,5 @@ events_view_ann_type_select_placeholder: 選擇一個活動類別…
 events_view_content_label: 查看完整內容
 events_command_game_param_description: 用於查看活動的遊戲
 natlan: 納塔
+top_percent: "前 {percent}%"
+profile_view_show_rank_button_label: 顯示排名

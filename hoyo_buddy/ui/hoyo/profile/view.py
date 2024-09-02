@@ -39,7 +39,7 @@ from hoyo_buddy.ui.hoyo.profile.card_settings import (
     get_default_collection,
 )
 from hoyo_buddy.ui.hoyo.profile.items.redraw_card_btn import RedrawCardButton
-from hoyo_buddy.utils import blur_uid, human_format_number
+from hoyo_buddy.utils import blur_uid, format_float, human_format_number
 
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
@@ -146,14 +146,17 @@ class ProfileView(View):
 
         character_calc = user_calc.calculations[0]
         top_percent = LocaleStr(
-            key="top_percent", percent=round(character_calc.top_percent, 1)
+            key="top_percent", percent=format_float(character_calc.top_percent)
         ).translate(self.translator, self.locale)
         ranking = (
             f"{top_percent} ({character_calc.ranking}/{human_format_number(character_calc.out_of)})"
         )
         if not with_detail:
             return ranking
-        return f"{character_calc.name}\n{ranking}"
+        variant_str = (
+            f" {character_calc.variant.display_name if character_calc.variant is not None else ''}"
+        )
+        return f"{character_calc.short}{variant_str}\n{ranking}"
 
     def _check_card_data(self) -> None:
         for char_id in self.character_ids:

@@ -48,6 +48,7 @@ dev-dependencies = [
 [tool.uv.sources]
 genshin = {git = "https://github.com/thesadru/genshin.py", branch = "dev"}
 novelai = {git = "https://github.com/kokosensei/NovelAI-API"}
+akasha-py = { git = "https://github.com/seriaati/akasha-py" }
 
 [tool.pyright]
 enableTypeIgnoreComments = false

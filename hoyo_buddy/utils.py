@@ -226,3 +226,31 @@ def human_format_number(number: int, decimal_places: int = 1) -> str:
     )
 
     return f"{n / 10 ** (3 * millidx):.{decimal_places}f}{millnames[millidx]}"
+
+
+def format_float(num: float, *, decimals: int = 2) -> str:
+    """
+    Formats a float number to the last non-zero decimal place, while rounding numbers
+    larger than 0 to 2 decimal places.
+
+    Args:
+        num: The number to be formatted.
+        deimals: The number of decimal places to round to when the number is larger than 0.
+
+    Returns:
+        The formatted number as a string.
+    """
+    if num == 0:
+        return "0"
+
+    if abs(num) > 0:
+        return f"{num:.{decimals}f}"
+
+    # Find the last non-zero decimal place
+    str_num = str(num)
+    decimal_places = len(str_num.split(".")[1]) - 1
+    while str_num[-1] == "0":
+        decimal_places -= 1
+        str_num = str_num[:-1]
+
+    return f"{num:.{decimal_places}f}"

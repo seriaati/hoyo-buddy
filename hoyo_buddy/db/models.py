@@ -85,6 +85,9 @@ class HoyoAccount(BaseModel):
         unique_together = ("uid", "game", "user")
         ordering = ["uid"]
 
+    def __str__(self) -> str:
+        return f"{self.nickname or self.username} ({self.uid})"
+
     @property
     def blurred_display(self) -> str:
         return f"{self.nickname or self.username} ({blur_uid(self.uid)})"

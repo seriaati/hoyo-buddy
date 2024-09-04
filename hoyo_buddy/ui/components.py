@@ -368,18 +368,28 @@ class Select(discord.ui.Select, Generic[V_co]):
         if self.locale_str_placeholder:
             self.placeholder = translator.translate(
                 self.locale_str_placeholder, locale, capitalize_first_word=True
-            )
+            )[:100]
         for option in self.options:
             # NOTE: This is a workaround for a bug(?) in discord.py where options somehow get converted to discord.components.SelectOption internally
             if not isinstance(option, SelectOption):  # pyright: ignore[reportUnnecessaryIsInstance]
                 continue
+
             option.label = translator.translate(
                 option.locale_str_label, locale, capitalize_first_word=True
-            )
+            )[:100]
+            if not option.label:
+                logger.warning(f"Empty label for option in {self.__class__.__name__}")
+                continue
+
+            option.value = option.value[:100]
+            if not option.value:
+                logger.warning(f"Empty value for option in {self.__class__.__name__}")
+                continue
+
             if option.locale_str_description:
                 option.description = translator.translate(
                     option.locale_str_description, locale, capitalize_first_word=True
-                )
+                )[:100]
 
     async def set_loading_state(self, i: Interaction) -> None:
         self.original_options = self.options.copy()

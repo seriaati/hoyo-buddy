@@ -13,7 +13,6 @@ about_command_description: A propos du bot
 about_embed.description: "Un bot Discord riche en fonctionnalités, facile à utiliser et magnifiquement conçu pour les joueurs de Hoyoverse."
 abundance: ""
 abyss.battles_won_fought: ""
-abyss.current: ""
 abyss.deepest_descent: ""
 abyss.floor: ""
 abyss.most_defeats: ""
@@ -22,14 +21,12 @@ abyss.most_skills: ""
 abyss.most_ults: ""
 abyss.overview: ""
 abyss.phase_select.placeholder: ""
-abyss.previous: ""
 abyss.strongest_strike: ""
 abyss.total_stars: ""
 abyss_chamber.challenge_target.embed.field.name: Cible du challenge
 abyss_chamber.embed.title: "Étage {floor_index} - Chambre {chamber_index}"
 abyss_chamber.enemy_level.embed.field.name: Niveau des ennemis
 abyss_chamber.ley_line_disorder.embed.field.name: ""
-abyss_command_description: Voir les ennemis actuels de l'abysse
 abyss_enemy.item_description: "PV: {HP}"
 acc_no_default_param_desc: ""
 account_autocomplete_param_description: "Compte avec lequel exécuter cette commande, par défaut le compte sélectionné dans /accounts"
@@ -41,7 +38,6 @@ account_manager_no_accounts_description: Vous n'avez pas encore de compte
 account_manager_title: Gestionnaire de compte
 account_not_found_error_message: "Impossible de trouver un compte avec la requête fournie, veuillez sélectionner des choix à partir de l'autocomplétion au lieu de taper votre propre requête."
 account_not_found_error_title: Compte introuvable
-account_server: Serveur
 account_username: Nom d'utilisateur
 accounts_command_description: Gérez vos comptes
 action_in_cooldown_error_message: ""
@@ -128,7 +124,6 @@ complete_geetest_button_description: ""
 complete_geetest_button_label: ""
 const_refine_str: ""
 continue_button_label: Continuer
-cookies_button_label: Saisir les cookies
 cookies_modal_placeholder: Collez vos Cookies ici
 cryo: ""
 daily_button.label: Rappel quotidien
@@ -136,24 +131,25 @@ daily_check_in: ""
 daily_checkin_embed_description: "Vérifié {day} jour(s) ce mois-ci\nL'enregistrement pour {missed} jour(s) a / ont été manqué\n"
 daily_modal.title: Paramètres du rappel quotidien
 daily_training_button.label: ""
-dark_mode_button_label: Mode sombre
 delete_account_button_label: Supprimer le compte sélectionné
 dendro: ""
 destruction: ""
 devtools_button_label: Avec DevTools (ordinateur uniquement)
-devtools_instructions_description: "1. Se connecter à [HoYoLAB](https://www.hoyolab.com/home) ou [Miyoushe](https://www.miyoushe.com/ys/) (pour les joueurs CN)\n2. Ouvrez le DevTools en appuyant sur F12 ou Ctrl+Shift+I.\n3. Appuyez sur l'icône >> dans la barre de navigation supérieure\n4. Cliquez sur l'onglet `Application`.\n5. Cliquez sur \"Cookies\" dans la barre latérale gauche.\n6. Cliquez sur le site web sur lequel vous vous trouvez (par exemple https://www.hoyolab.com).\n7. Tapez `v2` dans la case `Filter`.\n8. Cliquez sur le bouton ci-dessous\n9. Copiez la `Valeur` de chaque cookie et collez-la dans les cases\n"
+devtools_instructions_description: ""
 dice_cost_embed_field_name: Coût des dés
 download_image_failed_error_message: ""
 download_image_failed_error_title: ""
 edit_nickname_modal_title: Modifier le pseudonyme
 eidolon_superimpose_str: ""
 electro: ""
+email_verification_dialog_title: ""
+email_verification_dialog_content: ""
+email_verification_dialog_action: ""
+email_verification_field_label: ""
 email-geetest.embed.title: ""
 email_password_button_label: ""
-email_password_instructions_description: "<:INFO:1166743144889602190>Note : Cette méthode **NE FONCTIONNE PAS** pour les utilisateurs de Miyoushe, seuls les utilisateurs de HoYoLAB peuvent utiliser cette méthode\n\n1. Cliquez sur le bouton `Compléter le CAPTCHA` ci-dessous\n2. Vous serez redirigé vers un site web, cliquez sur le bouton et complétez le CAPTCHA\n3. Après avoir terminé, cliquez sur le bouton `Continuer` ci-dessous"
 email_password_modal_email_input_label: ""
 email_password_modal_password_input_label: mot de passe
-enter_email_password_button_label: ""
 enter_email_password_instructions_description: ""
 enter_light_cone_level.button.label: ""
 error_footer: ""
@@ -172,6 +168,7 @@ exploration.electroculi: ""
 exploration.exquisite_chests: ""
 exploration.geoculi: ""
 exploration.hydroculi: ""
+exploration.pyroculi: ""
 exploration.luxurious_chests: ""
 exploration.placeholder: ""
 exploration.placeholder_quote: ''
@@ -274,7 +271,7 @@ invalid_verification_code_description: Veuillez vérifier le code de vérificati
 invalid_verification_code_title: Code de vérification invalide
 items: Objects
 javascript_button_label: Avec JavaScript
-javascript_instructions_description: "<:INFO:1166743144889602190>Note: Cette méthode devrait fonctionner sur tous les principaux navigateurs sur ordinateur, mais sur mobile, elle ne fonctionne que sur **Chrome** et **Edge**.\n\n1. Connectez-vous à  [HoYoLAB](https://www.hoyolab.com/home) ou [Miyoushe](https://www.miyoushe.com/ys/)(pour les joueurs Chine)\n2. Copiez le code ci-dessous\n3. Cliquez sur la barre d'adresse et saisissez `java`\n4. Collez le code et appuyez sur Entrée. Assurez-vous de **NE PAS METTRE D'ESPACES** entre `java` et `script`\n5. Sélectionnez tout et copiez le texte qui apparaît\n6. Cliquez sur le bouton ci-dessous et collez le texte dans la zone prévue."
+javascript_instructions_description: ""
 level_str: "Nv.{level}"
 light_cones: Cônes de lumières
 living_beings: Êtres vivants
@@ -303,7 +300,6 @@ no_challenge_data_err_title: ""
 no_characters_found_error_message: ""
 no_characters_found_error_title: ""
 no_game_accounts_error_message: ""
-no_game_accounts_error_title: ""
 notes-card.gi.completed: Terminé
 notes-card.gi.daily-commissions: Commissions journalières
 notes-card.gi.expedition-finished: Fini
@@ -339,7 +335,6 @@ player_not_found_description: ""
 player_not_found_title: ""
 preservation: ""
 prev_page_option_label: ""
-primogems: primo-gemmes
 process_notify_error.content: ""
 profile.add_image.button.label: Ajouter une image customisée
 profile.add_image_modal.image_url.label: URL de l'image
@@ -364,20 +359,12 @@ profile.character_select.placeholder: Sélectionner un personnage
 profile.generate_ai_art.button.label: Generer des art par IA
 profile.generate_ai_art_modal.negative_prompt.label: ""
 profile.generate_ai_art_modal.prompt.label: Invite
-profile.generate_ai_art_modal.title: Generer des art par IA
 profile.genshin.character_select.description: ""
+profile.genshin.character_select.hoyolab.description: ""
 profile.image_select.custom_image.label: "Image personalisée  ({num})"
 profile.image_select.default_collection.label: "Collection Hoyo Buddy ({num})"
 profile.image_select.none.label: Art officiel
 profile.image_select.placeholder: Sélectionner une image
-profile.info.embed.custom_images.name: Images personnalisées
-profile.info.embed.custom_images.value: "- Hoyo Buddy est livré avec des images prédéfinies que j'ai appréciées, mais vous pouvez également ajouter vos propres images.\n- Seules les URL d'images directes sont prises en charge, et elles doivent être accessibles au public ; les GIF ne sont pas pris en charge.\n- Pour les modèles de Hoyo Buddy, les images verticales sont recommandées.\n- Pour les propriétaires de serveurs, je ne suis pas responsable des images NSFW que vous ou vos membres ajoutez.\n- Le bouton rouge supprime l'image personnalisée actuelle et revient à l'image par défaut."
-profile.info.embed.dark_mode.value: ""
-profile.info.embed.primary_color.name: Couleur primaire
-profile.info.embed.primary_color.value: "- Seuls les codes de couleur hexadécimales sont pris en charge."
-profile.info.embed.templates.name: Modèles
-profile.info.embed.templates.value: ""
-profile.info.embed.title: À propos des paramètres de la carte
 profile.player_info.button.label: Informations sur le joueur
 profile.player_info.embed.description: "Niveau Trailblaze : {level}\nNiveau Equilibrium : {world_level}\nNombre d'amis : {friend_count}\nCones de lumière : {light_cones}\nPersonnages : {characters}\nSuccès: {achievements}\n"
 profile.player_info.gi.embed.description: ""
@@ -441,9 +428,8 @@ search_command_game_param_description: Dans quelle jeux rechercher
 search_command_game_param_name: jeux
 search_command_query_param_description: Requête à rechercher
 search_command_query_param_name: requête
-select_account.embed.description: Sélectionnez les comptes que vous souhaitez ajouter.
+select_account.embed.description: ""
 select_account.embed.title: 🎉 Bienvenue chez Hoyo Buddy!
-select_accounts_to_add_placeholder: Sélectionnez les comptes que vous souhaitez ajouter...
 settings_command_description: Configurez vos paramètres d'utilisateur
 skill_attributes_embed_field_name: ""
 skill_level.modal.title: ""
@@ -460,10 +446,6 @@ the_hunt: ""
 threshold.embed.description: ""
 thunder: ""
 thursday: Jeudi
-toggle_off_text: "arrêt"
-toggle_on_text: "marche"
-traditional_chinese_server: Serveur chinois traditionnel
-try_other_method_error_message: ""
 tuesday: Mardi
 unreleased_content: ""
 user_autocomplete_param_description: "Utilisateur avec lequel effectuer la recherche dans les comptes, par défaut : vous"
@@ -491,7 +473,6 @@ yatta_character_skill_spread_weakness_break_field_value: "Propagation: {spread_w
 yatta_character_skill_weakness_break_field_name: Effect de rupture
 yatta_character_trace_page_label: Trace
 yatta_item_sources_field_name: Sources
-yatta_light_cone_ability_field_name: Capacité
 characters.show_owned_only: ""
 redeem_code.ar_too_low: ""
 data_not_public.title: ""
@@ -605,13 +586,28 @@ dyk_github: ""
 dyk_python: ""
 dyk_unreleased: ""
 dyk_team_card: ""
+dyk_set_default_acc: ""
 title_dyk: ""
 new_zzz_temp: ""
 button_label_dyk: ""
 events_view_start_date_embed_field: ""
 events_view_end_date_embed_field: ""
 events_view_ann_select_placeholder: ""
+events_view_banner_type_label: ""
 events_command_description: ""
 events_view_ann_type_select_placeholder: ""
 events_view_content_label: ""
 events_command_game_param_description: ""
+natlan: ""
+top_percent: ""
+profile_view_show_rank_button_label: ""
+submit_button_label: ""
+show_tutorial_button_label: ""
+close_button_label: ""
+copy_code_button_label: ""
+copied_to_clipboard: ""
+required_field_error_message: ""
+accounts_added_snackbar_message: ""
+account_add_start_title: ""
+account_add_start_message: ""
+hbls_button_label: ""

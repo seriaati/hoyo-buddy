@@ -152,6 +152,7 @@ email_password_modal_email_input_label: email or username
 email_password_modal_password_input_label: password
 enter_email_password_instructions_description: "This method requires you to enter your private information.\n\n- In exchange, your `cookie_token` can be refreshed automatically, which is used in features related to code redemption (for HoYoLAB users only).\n- Your email and password are **NOT** saved in the database **AT ALL**, so it's practically impossible for them to be leaked.\n- Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy), so you can verify that yourself.\n- It is ultimately your choice to decide whether to trust this bot or not."
 enter_light_cone_level.button.label: Change light cone level
+dark_mode_button_label: Dark mode
 error_footer: Please report this error to the developer via /feedback
 error_title: An Error Occurred
 erudition: Erudition

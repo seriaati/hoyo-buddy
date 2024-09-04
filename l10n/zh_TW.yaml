@@ -152,6 +152,7 @@ email_password_modal_email_input_label: 電子郵件或使用者名稱
 email_password_modal_password_input_label: 密碼
 enter_email_password_instructions_description: "此方式需輸入私人資訊。\n\n- 作為交換，你的 `cookie_token` 將能被自動刷新，這在兌換碼相關的功能中會有用處（只有 HoYoLAB 使用者受益）。\n- 你的電子郵件和密碼 **完全不會** 被保存在資料庫中，所以它們幾乎不可能被洩漏。\n- 此外，這個機器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上是開源的，所以你可以自行驗證這點。\n- 你保有是否信任此機器人的最終決定權"
 enter_light_cone_level.button.label: 變更光錐等級
+dark_mode_button_label: 深色模式
 error_footer: 請透過 /feedback 向開發者回報這個錯誤
 error_title: 發生了一個錯誤
 erudition: 智識
@@ -609,7 +610,7 @@ close_button_label: 關閉
 copy_code_button_label: 複製程式碼
 copied_to_clipboard: 已複製到剪貼簿
 required_field_error_message: 此欄位為必填欄位
-accounts_added_snackbar_message: 帳戶新增成功，正在將你重新導向至 Discord...
+accounts_added_snackbar_message: "帳戶新增成功，正在將你重新導向至 Discord..."
 account_add_start_title: 新增帳戶
-account_add_start_message: 點擊下方按鈕將會啟動 Hoyo Buddy 登入系統，跟隨指引完成帳戶設定。當你完成後，使用 </accounts> 指令來查看你新增的帳戶。
+account_add_start_message: "點擊下方按鈕將會啟動 Hoyo Buddy 登入系統，跟隨指引完成帳戶設定。當你完成後，使用 </accounts> 指令來查看你新增的帳戶。"
 hbls_button_label: 開始！

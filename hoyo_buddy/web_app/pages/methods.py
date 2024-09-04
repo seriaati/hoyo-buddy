@@ -80,8 +80,8 @@ class MethodsPage(ft.View):
                 ),
             ]
         return [
-            MethodButton(params=params, label="通过改装过的米游社应用程序", to_page="mod_app"),
-            MethodButton(params=params, label="通过扫描二维码", to_page="dev_tools"),
+            # MethodButton(params=params, label="通过改装过的米游社应用程序", to_page="mod_app"),
+            MethodButton(params=params, label="通过扫描二维码", to_page="qrcode"),
             MethodButton(params=params, label="通过手机号", to_page="mobile"),
             MethodButton(params=params, label="通过邮箱密码", to_page="email_password"),
             MethodButton(params=params, label="通过开发者工具", to_page="dev_tools"),

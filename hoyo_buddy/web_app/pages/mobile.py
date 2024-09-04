@@ -3,6 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import flet as ft
+import genshin
+from loguru import logger
+
+from hoyo_buddy.web_app.login_handler import handle_mobile_otp, handle_session_mmt
+from hoyo_buddy.web_app.utils import show_error_banner, show_loading_banner
 
 if TYPE_CHECKING:
     from ..schema import Params
@@ -26,9 +31,6 @@ class MobilePage(ft.View):
                             ft.Container(
                                 MobileNumberForm(params=params), margin=ft.margin.only(top=16)
                             ),
-                            ft.Container(
-                                VerificationCodeForm(params=params), margin=ft.margin.only(top=16)
-                            ),
                         ]
                     )
                 )
@@ -47,11 +49,33 @@ class MobileNumberForm(ft.Column):
             spacing=16,
         )
 
-    async def on_submit(self, _: ft.ControlEvent) -> None:
+    async def on_submit(self, e: ft.ControlEvent) -> None:
+        page: ft.Page = e.page
         login_details = self._mobile_number_ref.current
+
         if not login_details.value:
             login_details.error_text = "此栏位为必填栏位"
             await login_details.update_async()
+        else:
+            await show_loading_banner(page, message="正在发送验证码...")
+            mobile = login_details.value
+            client = genshin.Client(region=genshin.Region.CHINESE)
+
+            try:
+                result = await client._send_mobile_otp(mobile)
+            except Exception as exc:
+                logger.exception("Failed to send mobile OTP")
+                await page.close_banner_async()
+                await show_error_banner(page=page, message=str(exc))
+                return
+
+            await page.close_banner_async()
+            if isinstance(result, genshin.models.SessionMMT):
+                await handle_session_mmt(
+                    result, page=page, params=self._params, mmt_type="on_otp_send", mobile=mobile
+                )
+            else:
+                await handle_mobile_otp(mobile=mobile, page=page, params=self._params)
 
     @property
     def submit_button(self) -> ft.FilledButton:
@@ -80,53 +104,4 @@ class MobileNumberField(ft.TextField):
     async def on_field_blur(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
         control.error_text = "此栏位为必填栏位" if not control.value else None
-        await control.update_async()
-
-
-class VerificationCodeForm(ft.Column):
-    def __init__(self, *, params: Params) -> None:
-        self._params = params
-        self._verification_code_ref = ft.Ref[ft.TextField]()
-
-        super().__init__(
-            [VerificationCodeField(ref=self._verification_code_ref), self.submit_button],
-            wrap=True,
-            spacing=16,
-        )
-
-    async def on_submit(self, _: ft.ControlEvent) -> None:
-        login_details = self._verification_code_ref.current
-        if not login_details.value:
-            login_details.error_text = "此栏位为必填栏位"
-            await login_details.update_async()
-
-    @property
-    def submit_button(self) -> ft.FilledButton:
-        return ft.FilledButton(text="提交", on_click=self.on_submit)
-
-
-class VerificationCodeField(ft.TextField):
-    def __init__(self, *, ref: ft.Ref) -> None:
-        super().__init__(
-            keyboard_type=ft.KeyboardType.PHONE,
-            label="验证码",
-            hint_text="请输入验证码",
-            ref=ref,
-            on_blur=self.on_field_blur,
-            on_focus=self.on_field_focus,
-            prefix_icon=ft.icons.NUMBERS,
-            max_length=6,
-        )
-
-    async def on_field_focus(self, e: ft.ControlEvent) -> None:
-        control: ft.TextField = e.control
-        control.error_text = None
-        await control.update_async()
-
-    async def on_field_blur(self, e: ft.ControlEvent) -> None:
-        control: ft.TextField = e.control
-        control.error_text = "此栏位为必填栏位" if not control.value else None
-        control.error_text = (
-            "验证码应为6位数字" if control.value and len(control.value) != 6 else None
-        )
         await control.update_async()

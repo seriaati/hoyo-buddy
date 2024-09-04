@@ -4,10 +4,12 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
 
+from hoyo_buddy.constants import WEB_APP_URLS
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, HOYOLAB, MIYOUSHE
 from hoyo_buddy.enums import Platform
 from hoyo_buddy.l10n import EnumStr, LocaleStr
+from hoyo_buddy.web_app.schema import Params
 
 from ...components import Button, GoBackButton
 from .with_dev_tools import WithDevTools
@@ -88,14 +90,20 @@ class AddAccountButton(Button[AccountManager]):
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
-            title=LocaleStr(key="adding_accounts_title"),
-            description=LocaleStr(key="adding_accounts_description"),
+            title=LocaleStr(key="account_add_start_title"),
+            description=LocaleStr(key="account_add_start_message"),
         )
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
         self.view.clear_items()
-
-        self.view.add_item(AddMiyousheAccount())
-        self.view.add_item(AddHoyolabAccount())
-        self.view.add_item(go_back_button)
-
+        params = Params(
+            locale=self.view.locale.value,
+            user_id=i.user.id,
+            channel_id=i.channel.id if i.channel is not None else 0,
+            guild_id=i.guild.id if i.guild is not None else None,
+        )
+        self.view.add_item(
+            Button(
+                label=LocaleStr(key="hbls_button_label"),
+                url=WEB_APP_URLS[i.client.env] + f"/platforms?{params.to_query_string()}",
+            )
+        )
         await i.response.edit_message(embed=embed, view=self.view)

@@ -321,7 +321,4 @@ def dict_cookie_to_str(cookie_dict: dict[str, str]) -> str:
         The cookie string.
     """
 
-    cookies = http.cookies.SimpleCookie()
-    for key, value in cookie_dict.items():
-        cookies[key] = value
-    return cookies.output(header="")
+    return "; ".join([f"{key}={value}" for key, value in cookie_dict.items()])

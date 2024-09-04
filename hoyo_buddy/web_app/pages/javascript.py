@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import flet as ft
 
 from ...l10n import LocaleStr, Translator
-from ..utils import encrypt_string
+from ..utils import encrypt_string, show_loading_banner
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -41,12 +41,15 @@ class JavascriptPage(ft.View):
                             ft.Container(
                                 ft.Column(
                                     [
-                                        ft.TextField(
-                                            label="code",
-                                            keyboard_type=ft.KeyboardType.TEXT,
-                                            read_only=True,
-                                            multiline=True,
-                                            value=self._code,
+                                        ft.ElevatedButton(
+                                            translator.translate(
+                                                LocaleStr(key="show_tutorial_button_label"), locale
+                                            ),
+                                            on_click=lambda e: e.page.open(
+                                                ShowImageDialog(
+                                                    translator=translator, locale=locale
+                                                )
+                                            ),
                                         ),
                                         ft.FilledTonalButton(
                                             text=translator.translate(
@@ -117,6 +120,7 @@ class CookiesForm(ft.Column):
             await self._cookies_ref.current.update_async()
             return
 
+        await show_loading_banner(page, translator=self._translator, locale=self._locale)
         encrypted_cookies = encrypt_string(cookies.value)
         await page.client_storage.set_async(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
         await page.go_async(f"/finish?{self._params.to_query_string()}")
@@ -149,3 +153,16 @@ class CookiesTextField(ft.TextField):
         control: ft.TextField = e.control
         control.error_text = None
         await control.update_async()
+
+
+class ShowImageDialog(ft.AlertDialog):
+    def __init__(self, *, translator: Translator, locale: Locale) -> None:
+        super().__init__(
+            content=ft.Image(src="/images/js_tutorial.gif", border_radius=8),
+            actions=[
+                ft.TextButton(
+                    translator.translate(LocaleStr(key="close_button_label"), locale),
+                    on_click=lambda e: e.page.close(self),
+                )
+            ],
+        )

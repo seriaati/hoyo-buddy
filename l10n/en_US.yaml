@@ -148,11 +148,11 @@ download_image_failed_error_title: Image Download Failed
 edit_nickname_modal_title: Edit nickname
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
-email_verification_dialog_title: Email Verification Required
+email_verification_dialog_title: Verification Required
 email_verification_dialog_content: Please enter the verification code sent to your email
 email_verification_dialog_action: Verify
 email_verification_field_label: Verification code
-email-geetest.embed.title: 😥 Need to solve CAPTCHA before sending the verification code
+email-geetest.embed.title: CAPTCHA verification required for sending email verification code
 email_password_button_label: With email and password
 email_password_modal_email_input_label: email or username
 email_password_modal_password_input_label: password
@@ -231,7 +231,7 @@ game_value_incomplete_param_error_message: You must specify the game of the UID
 geeetest_verification_complete: Verification complete
 geeetest_verification_timeout: Verification timeout
 geeetest_verification_timeout_description: The verification has timed out. Please use the </geetest> comand to try again.
-geetest.embed.title: 😅 Need to solve CAPTCHA before logging in
+geetest.embed.title: CAPTCHA verification required before logging in
 geetest.no_need: No need for geetest
 geetest.no_need.description: "You never needed to do a geetest! What are you here for?!"
 geetest.required: Geetest Verification Required
@@ -280,7 +280,7 @@ invalid_verification_code_description: Please check the verification code and tr
 invalid_verification_code_title: Invalid Verification Code
 items: Items
 javascript_button_label: With JavaScript
-javascript_instructions_description: "Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Copy the code below\n3. Click on the address bar and type `java`\n4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n5. Select all and copy the text that appears\n6. Paste the text into the text box labeled 'cookies' below\n"
+javascript_instructions_description: "Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Click the button below to copy code\n3. Click on the address bar and type `java`\n4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n5. Select all and copy the text that appears\n6. Paste the text into the text box labeled 'cookies' below\n"
 level_str: "Lv.{level}"
 light_cones: Light Cones
 living_beings: Living Beings
@@ -448,7 +448,7 @@ search_command_game_param_description: Game to search in
 search_command_game_param_name: game
 search_command_query_param_description: Query to search for
 search_command_query_param_name: query
-select_account.embed.description: Select the accounts you want to add.
+select_account.embed.description: Selects accounts you want to add to Hoyo Buddy
 select_account.embed.title: 🎉 Welcome to Hoyo Buddy!
 select_accounts_to_add_placeholder: Select the accounts you want to add...
 settings_command_description: Configure your user settings
@@ -634,3 +634,6 @@ copy_code_button_label: Copy code
 copied_to_clipboard: Copied to clipboard
 required_field_error_message: This field is required
 accounts_added_snackbar_message: Accounts added successfully, redirecting you back to Discord...
+account_add_start_title: Add Accounts
+account_add_start_message: Clicking the button below opens the Hoyo Buddy Login System, follow the instructions to add your accounts. When you're done, use the </accounts> command to view the accounts you have added.
+hbls_button_label: Let's start!

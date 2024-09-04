@@ -5,10 +5,12 @@ from typing import TYPE_CHECKING, Any
 import flet as ft
 import genshin
 
+from hoyo_buddy.constants import locale_to_gpy_lang
+
 from ...enums import Platform
 from ...l10n import LocaleStr, Translator
 from ..login_handler import handle_action_ticket, handle_session_mmt
-from ..utils import encrypt_string
+from ..utils import encrypt_string, show_error_banner, show_loading_banner
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -111,24 +113,27 @@ class EmailPassWordForm(ft.Column):
             return
 
         if self._params.platform is None:
-            await page.show_snack_bar_async(
-                ft.SnackBar(
-                    content=ft.Text("Invalid platform", color=ft.colors.ON_ERROR_CONTAINER),
-                    bgcolor=ft.colors.ERROR_CONTAINER,
-                )
-            )
+            await show_error_banner(page, message="Invalid platform")
             return
+
+        await show_loading_banner(page, translator=self._translator, locale=self._locale)
 
         client = genshin.Client(
             region=genshin.Region.CHINESE
             if self._params.platform is Platform.MIYOUSHE
-            else genshin.Region.OVERSEAS
+            else genshin.Region.OVERSEAS,
+            lang=locale_to_gpy_lang(self._locale),
         )
-        result = (
-            await client._app_login(email.strip(), password)
-            if self._params.platform is Platform.HOYOLAB
-            else await client._cn_web_login(email.strip(), password)
-        )
+        try:
+            result = (
+                await client._app_login(email.strip(), password)
+                if self._params.platform is Platform.HOYOLAB
+                else await client._cn_web_login(email.strip(), password)
+            )
+        except Exception as exc:
+            await show_error_banner(page, message=str(exc))
+            return
+
         if isinstance(result, genshin.models.SessionMMT):
             await handle_session_mmt(
                 result,
@@ -138,7 +143,7 @@ class EmailPassWordForm(ft.Column):
                 params=self._params,
                 translator=self._translator,
                 locale=self._locale,
-                on_email_send=False,
+                mmt_type="on_login",
             )
         elif isinstance(result, genshin.models.ActionTicket):
             email_result = await client._send_verification_email(result)
@@ -151,7 +156,7 @@ class EmailPassWordForm(ft.Column):
                     params=self._params,
                     translator=self._translator,
                     locale=self._locale,
-                    on_email_send=True,
+                    mmt_type="on_email_send",
                 )
             else:
                 await handle_action_ticket(

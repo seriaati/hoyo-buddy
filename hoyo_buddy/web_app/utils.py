@@ -12,43 +12,73 @@ if TYPE_CHECKING:
     from discord import Locale
 
 
-class LoadingSnackBar(ft.SnackBar):
-    def __init__(self, *, translator: Translator, locale: Locale) -> None:
+class LoadingBanner(ft.Banner):
+    def __init__(
+        self,
+        *,
+        message: str | None = None,
+        translator: Translator | None = None,
+        locale: Locale | None = None,
+    ) -> None:
+        if translator is not None and locale is not None:
+            text = translator.translate(LocaleStr(key="loading_text"), locale)
+        else:
+            text = message or "Loading..."
+
         super().__init__(
-            ft.Row(
-                [
-                    ft.ProgressRing(
-                        width=16, height=16, stroke_width=2, color=ft.colors.ON_SECONDARY_CONTAINER
-                    ),
-                    ft.Text(
-                        translator.translate(LocaleStr(key="loading_text"), locale),
-                        color=ft.colors.ON_SECONDARY_CONTAINER,
-                    ),
-                ]
+            leading=ft.ProgressRing(
+                width=16, height=16, stroke_width=2, color=ft.colors.ON_SECONDARY_CONTAINER
             ),
+            content=ft.Text(text, color=ft.colors.ON_SECONDARY_CONTAINER),
             bgcolor=ft.colors.SECONDARY_CONTAINER,
+            actions=[
+                ft.IconButton(
+                    ft.icons.CLOSE,
+                    on_click=self.on_action_click,
+                    icon_color=ft.colors.ON_ERROR_CONTAINER,
+                )
+            ],
         )
 
+    async def on_action_click(self, e: ft.ControlEvent) -> None:
+        page: ft.Page = e.page
+        await page.close_banner_async()
 
-class ErrorSnackBar(ft.SnackBar):
+
+class ErrorBanner(ft.Banner):
     def __init__(self, message: str) -> None:
         super().__init__(
-            ft.Row(
-                [
-                    ft.Icon(ft.icons.ERROR, color=ft.colors.ON_ERROR_CONTAINER),
-                    ft.Text(message, color=ft.colors.ON_ERROR_CONTAINER),
-                ]
-            ),
+            leading=ft.Icon(ft.icons.ERROR, color=ft.colors.ON_ERROR_CONTAINER),
+            content=ft.Text(message, color=ft.colors.ON_ERROR_CONTAINER),
             bgcolor=ft.colors.ERROR_CONTAINER,
+            actions=[
+                ft.IconButton(
+                    ft.icons.CLOSE,
+                    on_click=self.on_action_click,
+                    icon_color=ft.colors.ON_ERROR_CONTAINER,
+                )
+            ],
         )
 
+    async def on_action_click(self, e: ft.ControlEvent) -> None:
+        page: ft.Page = e.page
+        await page.close_banner_async()
 
-async def show_loading_snack_bar(page: ft.Page, *, translator: Translator, locale: Locale) -> None:
-    await page.show_snack_bar_async(LoadingSnackBar(translator=translator, locale=locale))
+
+async def show_loading_banner(
+    page: ft.Page,
+    *,
+    message: str | None = None,
+    translator: Translator | None = None,
+    locale: Locale | None = None,
+) -> None:
+    await page.show_banner_async(
+        LoadingBanner(message=message, translator=translator, locale=locale)
+    )
 
 
-async def show_error_snack_bar(page: ft.Page, *, message: str) -> None:
-    await page.show_snack_bar_async(ErrorSnackBar(message))
+async def show_error_banner(page: ft.Page, *, message: str) -> None:
+    await page.show_banner_async(ErrorBanner(message))
 
 
 def decrypt_string(encrypted: str) -> str:

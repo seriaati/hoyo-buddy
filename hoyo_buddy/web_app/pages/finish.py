@@ -10,9 +10,9 @@ import genshin
 
 from ...constants import GPY_GAME_TO_HB_GAME
 from ...enums import Platform
-from ...l10n import EnumStr, LocaleStr, Translator
+from ...l10n import LocaleStr, Translator
 from ...utils import get_discord_protocol_url, get_discord_url
-from ..utils import show_error_snack_bar
+from ..utils import show_error_banner
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -66,34 +66,51 @@ class FinishPage(ft.View):
             ],
         )
         for account in accounts:
-            hb_game = GPY_GAME_TO_HB_GAME[account.game]
-            game_name = translator.translate(EnumStr(hb_game), locale)
+            # account.game can be a str if the game is not recognized
+            if not isinstance(account.game, genshin.Game):  # pyright: ignore[reportUnnecessaryIsInstance]
+                continue
+
             self.controls.append(
-                ft.Checkbox(
-                    label=f"[{game_name}] {account.nickname} | UID: {account.uid} | {account.server_name} | Lv.{account.level}",
-                    data=f"{account.game.value}_{account.uid}",
-                    on_change=self.on_checkbox_click,
+                ft.ListTile(
+                    leading=ft.CircleAvatar(
+                        foreground_image_src=f"/images/{account.game.value}.png"
+                    ),
+                    title=ft.Text(f"[{account.uid}] {account.nickname}"),
+                    subtitle=ft.Text(f"{account.server_name}, Lv.{account.level}"),
+                    trailing=ft.Checkbox(
+                        on_change=self.on_checkbox_click, data=f"{account.game.value}_{account.uid}"
+                    ),
+                    toggle_inputs=True,
                 )
             )
         self.controls.append(
-            SubmitButton(
-                params=params,
-                accounts=self._selected_accounts,
-                cookies=cookies,
-                translator=translator,
-                locale=locale,
-                device_id=device_id,
-                device_fp=device_fp,
+            ft.Container(
+                SubmitButton(
+                    params=params,
+                    accounts=self._selected_accounts,
+                    cookies=cookies,
+                    translator=translator,
+                    locale=locale,
+                    device_id=device_id,
+                    device_fp=device_fp,
+                ),
+                margin=ft.margin.only(top=16),
             )
         )
 
     async def on_checkbox_click(self, e: ft.ControlEvent) -> None:
         control: ft.Checkbox = e.control
         account = next(
-            (acc for acc in self._accounts if f"{acc.game.value}_{acc.uid}" == control.data), None
+            (
+                acc
+                for acc in self._accounts
+                if isinstance(acc.game, genshin.Game)  # pyright: ignore[reportUnnecessaryIsInstance]
+                and f"{acc.game.value}_{acc.uid}" == control.data
+            ),
+            None,
         )
         if account is None:
-            await show_error_snack_bar(e.page, message="Could not find account")
+            await show_error_banner(e.page, message="Could not find account")
             return
 
         if control.value is True:
@@ -128,6 +145,10 @@ class SubmitButton(ft.FilledButton):
 
     async def add_accounts_to_db(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
+
+        if not self._accounts:
+            await show_error_banner(page, message="Please select at least one account")
+            return
 
         user_id = self._params.user_id
         region = (
@@ -174,11 +195,21 @@ class SubmitButton(ft.FilledButton):
 
         await page.show_snack_bar_async(
             ft.SnackBar(
-                ft.Text(
-                    self._translator.translate(
-                        LocaleStr(key="accounts_added_snackbar_message"), self._locale
-                    ),
-                    color=ft.colors.ON_PRIMARY_CONTAINER,
+                ft.Row(
+                    [
+                        ft.ProgressRing(
+                            width=16,
+                            height=16,
+                            stroke_width=2,
+                            color=ft.colors.ON_SECONDARY_CONTAINER,
+                        ),
+                        ft.Text(
+                            self._translator.translate(
+                                LocaleStr(key="accounts_added_snackbar_message"), self._locale
+                            ),
+                            color=ft.colors.ON_PRIMARY_CONTAINER,
+                        ),
+                    ]
                 ),
                 bgcolor=ft.colors.PRIMARY_CONTAINER,
             )
@@ -190,9 +221,9 @@ class SubmitButton(ft.FilledButton):
             channel_id=str(self._params.channel_id), guild_id=str(self._params.guild_id)
         )
         if await page.can_launch_url_async(url):
-            await page.launch_url_async(url)
+            await page.launch_url_async(url, web_window_name=ft.UrlTarget.SELF.value)
         else:
             url = get_discord_url(
                 channel_id=str(self._params.channel_id), guild_id=str(self._params.guild_id)
             )
-            await page.launch_url_async(url)
+            await page.launch_url_async(url, web_window_name=ft.UrlTarget.SELF.value)

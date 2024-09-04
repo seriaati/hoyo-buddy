@@ -212,7 +212,8 @@ class SubmitButton(ft.FilledButton):
                             ),
                             color=ft.colors.ON_PRIMARY_CONTAINER,
                         ),
-                    ]
+                    ],
+                    wrap=True,
                 ),
                 bgcolor=ft.colors.PRIMARY_CONTAINER,
             )

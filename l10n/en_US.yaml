@@ -13,7 +13,6 @@ about_command_description: About the bot
 about_embed.description: "A feature rich, easy to use, and beautifully designed Discord bot specifically made for Hoyoverse gamers."
 abundance: Abundance
 abyss.battles_won_fought: "Battles Won/Fought: {val1}/{val2}"
-abyss.current: Current phase
 abyss.deepest_descent: "Deepest Descent: {val}"
 abyss.floor: "Floor {val}"
 abyss.most_defeats: "Most Defeats: {val}"
@@ -22,14 +21,12 @@ abyss.most_skills: "Most Skills Casted: {val}"
 abyss.most_ults: "Most Bursts Unleashed: {val}"
 abyss.overview: Spiral Abyss Overview
 abyss.phase_select.placeholder: Select a phase
-abyss.previous: Previous phase
 abyss.strongest_strike: "Strongest Single Strike: {val}"
 abyss.total_stars: "Total Stars: {val}"
 abyss_chamber.challenge_target.embed.field.name: Challenge Target
 abyss_chamber.embed.title: "Floor {floor_index} - Chamber {chamber_index}"
 abyss_chamber.enemy_level.embed.field.name: Enemy Level
 abyss_chamber.ley_line_disorder.embed.field.name: Ley Line Disorder
-abyss_command_description: View the current abyss enemies
 abyss_enemy.item_description: "HP: {HP}"
 acc_no_default_param_desc: Account to run this command with
 account_autocomplete_param_description: "Account to run this command with, defaults to the selected one in /accounts"
@@ -41,7 +38,6 @@ account_manager_no_accounts_description: You don't have any accounts yet.
 account_manager_title: Account Manager
 account_not_found_error_message: "Unable to find an account with the provided query, please select choices from the autocomplete instead of typing your own query."
 account_not_found_error_title: Account not found
-account_server: Server
 account_username: Username
 accounts_command_description: Manage your accounts
 action_in_cooldown_error_message: "Please try again at {available_time}."
@@ -306,7 +302,6 @@ no_challenge_data_err_title: "No {challenge} Data"
 no_characters_found_error_message: Please try again with a different filter
 no_characters_found_error_title: No characters found with the selected filter
 no_game_accounts_error_message: "This {platform} account has no game accounts."
-no_game_accounts_error_title: No Game Accounts
 notes-card.gi.completed: Completed
 notes-card.gi.daily-commissions: Daily Commissions
 notes-card.gi.expedition-finished: Finished
@@ -342,7 +337,6 @@ player_not_found_description: Please check the provided UID
 player_not_found_title: Player Does Not Exist
 preservation: Preservation
 prev_page_option_label: Previous page
-primogems: primogems
 process_notify_error.content: "An error occurred while processing your real-time notes reminder.\nHoyo Buddy has disabled this reminder for this account, you can turn it back on using </notes>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n"
 profile.add_image.button.label: Add custom image
 profile.add_image_modal.image_url.label: Image URL
@@ -367,7 +361,6 @@ profile.character_select.placeholder: Select a character
 profile.generate_ai_art.button.label: Generate AI art
 profile.generate_ai_art_modal.negative_prompt.label: Negative Prompt
 profile.generate_ai_art_modal.prompt.label: Prompt
-profile.generate_ai_art_modal.title: Generate AI Art
 profile.genshin.character_select.description: "C{c}R{r} | {d}"
 profile.genshin.character_select.hoyolab.description: "C{c}R{r} | {d} | {platform}"
 profile.image_select.custom_image.label: "Custom Image ({num})"
@@ -455,10 +448,6 @@ the_hunt: The Hunt
 threshold.embed.description: "Threshold ({threshold}) is reached"
 thunder: Thunder
 thursday: Thursday
-toggle_off_text: "off"
-toggle_on_text: "on"
-traditional_chinese_server: Traditional Chinese Server
-try_other_method_error_message: "Please try other methods to login.\nIf you are entering cookies manually through DevTools, make sure you are copying them correctly."
 tuesday: Tuesday
 unreleased_content: Unreleased Content
 user_autocomplete_param_description: "User to search the accounts with, defaults to you"
@@ -486,7 +475,6 @@ yatta_character_skill_spread_weakness_break_field_value: "Spread: {spread_weakne
 yatta_character_skill_weakness_break_field_name: Weakness Break
 yatta_character_trace_page_label: Traces
 yatta_item_sources_field_name: Sources
-yatta_light_cone_ability_field_name: Ability
 characters.show_owned_only: Show owned characters only
 redeem_code.ar_too_low: Adventure rank too low
 data_not_public.title: Data is not Public

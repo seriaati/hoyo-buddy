@@ -26,7 +26,7 @@ class LoadingSnackBar(ft.SnackBar):
             text = message or "Loading..."
 
         super().__init__(
-            content=ft.Column(
+            content=ft.Row(
                 [
                     ft.ProgressRing(
                         width=16, height=16, stroke_width=2, color=ft.colors.ON_SECONDARY_CONTAINER

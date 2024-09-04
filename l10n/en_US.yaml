@@ -128,7 +128,6 @@ complete_geetest_button_description: Click the button below to complete the geet
 complete_geetest_button_label: Complete geetest
 const_refine_str: "C{const}R{refine}"
 continue_button_label: Continue
-cookies_button_label: Enter cookies
 cookies_modal_placeholder: Paste your cookies here...
 cryo: Cryo
 daily_button.label: Daily reminder
@@ -156,7 +155,6 @@ email-geetest.embed.title: CAPTCHA verification required for sending email verif
 email_password_button_label: With email and password
 email_password_modal_email_input_label: email or username
 email_password_modal_password_input_label: password
-enter_email_password_button_label: Enter email/username and password
 enter_email_password_instructions_description: "This method requires you to enter your private information.\n\n- In exchange, your `cookie_token` can be refreshed automatically, which is used in features related to code redemption (for HoYoLAB users only).\n- Your email and password are **NOT** saved in the database **AT ALL**, so it's practically impossible for them to be leaked.\n- Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy), so you can verify that yourself.\n- It is ultimately your choice to decide whether to trust this bot or not."
 enter_light_cone_level.button.label: Change light cone level
 error_footer: Please report this error to the developer via /feedback
@@ -450,7 +448,6 @@ search_command_query_param_description: Query to search for
 search_command_query_param_name: query
 select_account.embed.description: Selects accounts you want to add to Hoyo Buddy
 select_account.embed.title: 🎉 Welcome to Hoyo Buddy!
-select_accounts_to_add_placeholder: Select the accounts you want to add...
 settings_command_description: Configure your user settings
 skill_attributes_embed_field_name: "Skill Attributes (Lv.{level})"
 skill_level.modal.title: Enter Skill Level

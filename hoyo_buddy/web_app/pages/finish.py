@@ -12,7 +12,7 @@ from ...constants import GPY_GAME_TO_HB_GAME
 from ...enums import Platform
 from ...l10n import LocaleStr, Translator
 from ...utils import get_discord_protocol_url, get_discord_url
-from ..utils import show_error_banner
+from ..utils import reset_storage, show_error_banner
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -159,6 +159,8 @@ class SubmitButton(ft.FilledButton):
 
         conn = await asyncpg.connect(os.environ["DB_URL"])
         try:
+            account_id = None
+
             for account in self._accounts:
                 await conn.execute(
                     "INSERT INTO hoyoaccount (uid, username, game, cookies, user_id, server, device_id, device_fp, region, redeemed_codes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ON CONFLICT (uid, game, user_id) DO UPDATE SET cookies = $4, username = $2, device_id = $7, device_fp = $8, region = $9",
@@ -183,15 +185,16 @@ class SubmitButton(ft.FilledButton):
                     "INSERT INTO accountnotifsettings (account_id) VALUES ($1) ON CONFLICT DO NOTHING",
                     account_id,
                 )
+
+            if account_id is not None:
+                await conn.execute(
+                    'UPDATE "hoyoaccount" SET current = true WHERE id = $1', account_id
+                )
         finally:
             await conn.close()
 
         # Delete cookies and device info from client storage
-        await page.client_storage.remove_async(f"hb.{user_id}.cookies")
-        if await page.client_storage.contains_key_async(f"hb.{user_id}.device_id"):
-            await page.client_storage.remove_async(f"hb.{user_id}.device_id")
-        if await page.client_storage.contains_key_async(f"hb.{user_id}.device_fp"):
-            await page.client_storage.remove_async(f"hb.{user_id}.device_fp")
+        await reset_storage(page, user_id=user_id)
 
         await page.show_snack_bar_async(
             ft.SnackBar(

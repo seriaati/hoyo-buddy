@@ -18,7 +18,13 @@ from ..constants import locale_to_gpy_lang
 from ..enums import Platform
 from ..utils import dict_cookie_to_str, str_cookie_to_dict
 from ..web_app.login_handler import handle_action_ticket, handle_mobile_otp, handle_session_mmt
-from ..web_app.utils import decrypt_string, encrypt_string, show_error_banner, show_loading_banner
+from ..web_app.utils import (
+    decrypt_string,
+    encrypt_string,
+    reset_storage,
+    show_error_banner,
+    show_loading_banner,
+)
 from . import pages
 from .schema import Params
 
@@ -60,6 +66,7 @@ class WebApp:
         else:
             match route:
                 case "/platforms":
+                    await reset_storage(page, user_id=params.user_id)
                     view = pages.PlatformsPage(
                         params=params, translator=self._translator, locale=locale
                     )
@@ -320,7 +327,7 @@ class WebApp:
                 translator=self._translator,
                 locale=locale,
                 accounts=accounts,
-                cookies=encrypted_cookies,
+                cookies=cookies,
                 device_id=device_id,
                 device_fp=device_fp,
             )

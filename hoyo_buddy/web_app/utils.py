@@ -89,3 +89,11 @@ def decrypt_string(encrypted: str) -> str:
 def encrypt_string(string: str) -> str:
     key = Fernet(os.environ["FERNET_KEY"])
     return key.encrypt(string.encode()).decode()
+
+
+async def reset_storage(page: ft.Page, *, user_id: int) -> None:
+    await page.client_storage.remove_async(f"hb.{user_id}.cookies")
+    if await page.client_storage.contains_key_async(f"hb.{user_id}.device_id"):
+        await page.client_storage.remove_async(f"hb.{user_id}.device_id")
+    if await page.client_storage.contains_key_async(f"hb.{user_id}.device_fp"):
+        await page.client_storage.remove_async(f"hb.{user_id}.device_fp")

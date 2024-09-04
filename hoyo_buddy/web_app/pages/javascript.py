@@ -138,6 +138,9 @@ class CookiesTextField(ft.TextField):
             on_focus=self.on_field_focus,
             prefix_icon=ft.icons.COOKIE,
             ref=ref,
+            hint_text=self._translator.translate(
+                LocaleStr(key="cookies_modal_placeholder"), self._locale
+            ),
         )
 
     async def on_field_blur(self, e: ft.ControlEvent) -> None:

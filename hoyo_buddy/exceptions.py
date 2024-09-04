@@ -128,22 +128,6 @@ class NoChallengeDataError(HoyoBuddyError):
         )
 
 
-class NoGameAccountsError(HoyoBuddyError):
-    def __init__(self, platform: Platform) -> None:
-        super().__init__(
-            title=LocaleStr(key="no_game_accounts_error_title"),
-            message=LocaleStr(key="no_game_accounts_error_message", platform=EnumStr(platform)),
-        )
-
-
-class TryOtherMethodError(HoyoBuddyError):
-    def __init__(self) -> None:
-        super().__init__(
-            title=LocaleStr(key="invalid_cookies_title"),
-            message=LocaleStr(key="try_other_method_error_message"),
-        )
-
-
 class AIGenImageError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(

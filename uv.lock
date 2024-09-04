@@ -169,7 +169,7 @@ wheels = [
 [[package]]
 name = "akasha-py"
 version = "0.2.1"
-source = { git = "https://github.com/seriaati/akasha-py#76f2cf48c0398cc755b4ee9a5a78e285c97ee0cc" }
+source = { git = "https://github.com/seriaati/akasha-py#9b01ca66942124536285f68e4e57213964a86cef" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },

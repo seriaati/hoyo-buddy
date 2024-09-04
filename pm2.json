@@ -7,7 +7,7 @@
             "interpreter_args": "-OO"
         },
         {
-            "name": "hb-web-app",
+            "name": "hb-login",
             "script": "./run_web_app.py",
             "interpreter": "./.venv/bin/python",
             "interpreter_args": "-OO"

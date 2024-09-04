@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import flet as ft
 
 from ...l10n import LocaleStr, Translator
-from ..utils import encrypt_string, show_loading_banner
+from ..utils import encrypt_string, show_loading_snack_bar
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -143,7 +143,7 @@ class DevToolsCookieForm(ft.Column):
                 await ref.update_async()
 
         if all(ref.value for ref in refs):
-            await show_loading_banner(page, translator=self._translator, locale=self._locale)
+            await show_loading_snack_bar(page, translator=self._translator, locale=self._locale)
             cookies = f"ltuid_v2={ltuid_v2.value}; account_id_v2={account_id_v2.value}; ltoken_v2={ltoken_v2.value}; ltmid_v2={ltmid_v2.value}; account_mid_v2={account_mid_v2.value}"
             encrypted_cookies = encrypt_string(cookies)
             await page.client_storage.set_async(

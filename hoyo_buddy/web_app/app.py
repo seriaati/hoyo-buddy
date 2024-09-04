@@ -23,7 +23,7 @@ from ..web_app.utils import (
     encrypt_string,
     reset_storage,
     show_error_banner,
-    show_loading_banner,
+    show_loading_snack_bar,
 )
 from . import pages
 from .schema import Params
@@ -116,7 +116,7 @@ class WebApp:
         self, page: ft.Page, params: Params, translator: Translator, locale: Locale
     ) -> ft.View | None:
         await page.close_dialog_async()
-        await show_loading_banner(page, translator=translator, locale=locale)
+        await show_loading_snack_bar(page, translator=translator, locale=locale)
 
         gt_type: Literal[
             "on_login", "on_email_send", "on_otp_send"

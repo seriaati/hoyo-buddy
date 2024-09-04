@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import flet as ft
 
 from ...l10n import LocaleStr, Translator
-from ..utils import encrypt_string, show_loading_banner
+from ..utils import encrypt_string, show_loading_snack_bar
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -120,7 +120,7 @@ class CookiesForm(ft.Column):
             await self._cookies_ref.current.update_async()
             return
 
-        await show_loading_banner(page, translator=self._translator, locale=self._locale)
+        await show_loading_snack_bar(page, translator=self._translator, locale=self._locale)
         encrypted_cookies = encrypt_string(cookies.value)
         await page.client_storage.set_async(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
         await page.go_async(f"/finish?{self._params.to_query_string()}")

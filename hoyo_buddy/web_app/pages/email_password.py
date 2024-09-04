@@ -10,7 +10,7 @@ from hoyo_buddy.constants import locale_to_gpy_lang
 from ...enums import Platform
 from ...l10n import LocaleStr, Translator
 from ..login_handler import handle_action_ticket, handle_session_mmt
-from ..utils import encrypt_string, show_error_banner, show_loading_banner
+from ..utils import encrypt_string, show_error_banner, show_loading_snack_bar
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -116,7 +116,7 @@ class EmailPassWordForm(ft.Column):
             await show_error_banner(page, message="Invalid platform")
             return
 
-        await show_loading_banner(page, translator=self._translator, locale=self._locale)
+        await show_loading_snack_bar(page, translator=self._translator, locale=self._locale)
 
         client = genshin.Client(
             region=genshin.Region.CHINESE

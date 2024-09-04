@@ -10,7 +10,7 @@ import genshin
 import qrcode
 
 from hoyo_buddy.utils import dict_cookie_to_str
-from hoyo_buddy.web_app.utils import encrypt_string, show_error_banner, show_loading_banner
+from hoyo_buddy.web_app.utils import encrypt_string, show_error_banner, show_loading_snack_bar
 
 if TYPE_CHECKING:
     from ..schema import Params
@@ -46,11 +46,10 @@ class GenQRCodeButton(ft.FilledButton):
 
     async def generate_qrcode(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        await show_loading_banner(page, message="正在生成二维码...")
+        await show_loading_snack_bar(page, message="正在生成二维码...")
 
         client = genshin.Client(region=genshin.Region.CHINESE)
         result = await client._create_qrcode()
-        await page.close_banner_async()
 
         im = qrcode.make(result.url)
         filename = uuid.uuid4().hex

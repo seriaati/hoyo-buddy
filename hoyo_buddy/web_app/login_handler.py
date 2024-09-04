@@ -12,7 +12,7 @@ from ..constants import GEETEST_SERVERS
 from ..enums import GeetestNotifyType
 from ..l10n import LocaleStr, Translator
 from ..models import GeetestPayload
-from .utils import decrypt_string, encrypt_string, show_error_banner, show_loading_banner
+from .utils import decrypt_string, encrypt_string, show_error_banner, show_loading_snack_bar
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -175,7 +175,7 @@ class EmailVerifyCodeButton(ft.FilledButton):
             return
 
         await page.close_dialog_async()
-        await show_loading_banner(page, translator=self._translator, locale=self._locale)
+        await show_loading_snack_bar(page, translator=self._translator, locale=self._locale)
 
         client = genshin.Client()
         try:

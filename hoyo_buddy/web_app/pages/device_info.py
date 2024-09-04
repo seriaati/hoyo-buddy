@@ -7,7 +7,7 @@ import flet as ft
 import genshin
 import orjson
 
-from hoyo_buddy.web_app.utils import show_error_banner, show_loading_banner
+from hoyo_buddy.web_app.utils import show_error_banner, show_loading_snack_bar
 
 if TYPE_CHECKING:
     from ..schema import Params
@@ -82,7 +82,7 @@ class DeviceInfoForm(ft.Column):
             await show_error_banner(page, message="无效的 JSON 格式")
             return
 
-        await show_loading_banner(page, message="正在提交设备信息...")
+        await show_loading_snack_bar(page, message="正在提交设备信息...")
         client = genshin.Client(region=genshin.Region.CHINESE)
         device_id = str(uuid.uuid4()).lower()
         try:
@@ -92,11 +92,8 @@ class DeviceInfoForm(ft.Column):
                 oaid=device_info["oaid"],
             )
         except Exception as exc:
-            await page.close_banner_async()
             await show_error_banner(page, message=str(exc))
             return
-
-        await page.close_banner_async()
 
         await page.client_storage.set_async(f"hb.{self._params.user_id}.device_id", device_id)
         await page.client_storage.set_async(f"hb.{self._params.user_id}.device_fp", device_fp)

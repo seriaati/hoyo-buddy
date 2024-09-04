@@ -7,7 +7,7 @@ import genshin
 from loguru import logger
 
 from hoyo_buddy.web_app.login_handler import handle_mobile_otp, handle_session_mmt
-from hoyo_buddy.web_app.utils import show_error_banner, show_loading_banner
+from hoyo_buddy.web_app.utils import show_error_banner, show_loading_snack_bar
 
 if TYPE_CHECKING:
     from ..schema import Params
@@ -57,7 +57,7 @@ class MobileNumberForm(ft.Column):
             login_details.error_text = "此栏位为必填栏位"
             await login_details.update_async()
         else:
-            await show_loading_banner(page, message="正在发送验证码...")
+            await show_loading_snack_bar(page, message="正在发送验证码...")
             mobile = login_details.value
             client = genshin.Client(region=genshin.Region.CHINESE)
 
@@ -65,11 +65,9 @@ class MobileNumberForm(ft.Column):
                 result = await client._send_mobile_otp(mobile)
             except Exception as exc:
                 logger.exception("Failed to send mobile OTP")
-                await page.close_banner_async()
                 await show_error_banner(page=page, message=str(exc))
                 return
 
-            await page.close_banner_async()
             if isinstance(result, genshin.models.SessionMMT):
                 await handle_session_mmt(
                     result, page=page, params=self._params, mmt_type="on_otp_send", mobile=mobile

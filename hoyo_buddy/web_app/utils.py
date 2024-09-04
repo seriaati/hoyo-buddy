@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from discord import Locale
 
 
-class LoadingBanner(ft.Banner):
+class LoadingSnackBar(ft.SnackBar):
     def __init__(
         self,
         *,
@@ -26,18 +26,15 @@ class LoadingBanner(ft.Banner):
             text = message or "Loading..."
 
         super().__init__(
-            leading=ft.ProgressRing(
-                width=16, height=16, stroke_width=2, color=ft.colors.ON_SECONDARY_CONTAINER
+            content=ft.Column(
+                [
+                    ft.ProgressRing(
+                        width=16, height=16, stroke_width=2, color=ft.colors.ON_SECONDARY_CONTAINER
+                    ),
+                    ft.Text(text, color=ft.colors.ON_SECONDARY_CONTAINER),
+                ]
             ),
-            content=ft.Text(text, color=ft.colors.ON_SECONDARY_CONTAINER),
             bgcolor=ft.colors.SECONDARY_CONTAINER,
-            actions=[
-                ft.IconButton(
-                    ft.icons.CLOSE,
-                    on_click=self.on_action_click,
-                    icon_color=ft.colors.ON_ERROR_CONTAINER,
-                )
-            ],
         )
 
     async def on_action_click(self, e: ft.ControlEvent) -> None:
@@ -65,15 +62,15 @@ class ErrorBanner(ft.Banner):
         await page.close_banner_async()
 
 
-async def show_loading_banner(
+async def show_loading_snack_bar(
     page: ft.Page,
     *,
     message: str | None = None,
     translator: Translator | None = None,
     locale: Locale | None = None,
 ) -> None:
-    await page.show_banner_async(
-        LoadingBanner(message=message, translator=translator, locale=locale)
+    await page.show_snack_bar_async(
+        LoadingSnackBar(message=message, translator=translator, locale=locale)
     )
 
 

@@ -410,6 +410,12 @@ GEETEST_SERVERS = {
     "dev": "http://localhost:5000",
 }
 
+WEB_APP_URLS = {
+    "prod": "https://hb-login.seriaati.xyz",
+    "test": "https://hb-login.seriaati.xyz",
+    "dev": "http://localhost:8645",
+}
+
 UTC_8 = datetime.timezone(datetime.timedelta(hours=8))
 
 HAKUSHIN_HSR_SKILL_TYPE_NAMES = {

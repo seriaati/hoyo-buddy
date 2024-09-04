@@ -3,21 +3,18 @@ from __future__ import annotations
 import asyncio
 import base64
 import datetime
+import http.cookies
 import math
 import re
-import time
-from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any
 
 import aiohttp
-from loguru import logger
 from seria.utils import clean_url
 
 from .constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
 
 if TYPE_CHECKING:
     import pathlib
-    from collections.abc import Generator
 
     from discord import Interaction, Member, User
 
@@ -139,20 +136,6 @@ def ephemeral(i: Interaction) -> bool:
     return not i.app_permissions.send_messages
 
 
-@contextmanager
-def measure_time(
-    description: str = "Execution", *, print_: bool = False
-) -> Generator[None, Any, None]:
-    start_time = time.time_ns()
-    yield
-    end_time = time.time_ns()
-    msg = f"{description} time: {(end_time - start_time) / 1e6:.6f} ms"
-    if print_:
-        print(msg)  # noqa: T201
-    else:
-        logger.debug(msg)
-
-
 def get_static_img_path(image_url: str, folder: str) -> pathlib.Path:
     extra_folder = image_url.split("/")[-2]
     filename = clean_url(image_url).split("/")[-1]
@@ -254,3 +237,70 @@ def format_float(num: float, *, decimals: int = 2) -> str:
         str_num = str_num[:-1]
 
     return f"{num:.{decimal_places}f}"
+
+
+def get_discord_protocol_url(
+    *, channel_id: str, guild_id: str, message_id: str | None = None
+) -> str:
+    """
+    Generate a Discord protocol URL.
+    Args:
+        channel_id (str): The ID of the Discord channel.
+        guild_id (str): The ID of the Discord guild (server). Use "None" for direct messages.
+        message_id (str | None, optional): The ID of the specific message. Defaults to None.
+    Returns:
+        str: The generated Discord protocol URL.
+    """
+    protocol = (
+        f"discord://-/channels/@me/{channel_id}"
+        if guild_id == "None"
+        else f"discord://-/channels/{guild_id}/{channel_id}"
+    )
+    if str(message_id) != "None":
+        protocol += f"/{message_id}"
+
+    return protocol
+
+
+def get_discord_url(*, channel_id: str, guild_id: str) -> str:
+    """
+    Generates a Discord URL for a given channel and guild.
+
+    Args:
+        channel_id (str): The ID of the Discord channel.
+        guild_id (str): The ID of the Discord guild. If "None", the URL will point to a direct message channel.
+
+    Returns:
+        str: The generated Discord URL.
+    """
+    if guild_id == "None":
+        return f"https://discord.com/channels/@me/{channel_id}"
+    return f"https://discord.com/channels/{guild_id}/{channel_id}"
+
+
+def str_cookie_to_dict(cookie_string: str) -> dict[str, str]:
+    """Convert a string cookie to a dictionary.
+
+    Args:
+        cookie_string: The cookie string.
+
+    Returns:
+        The cookie dictionary.
+    """
+
+    cookies = http.cookies.SimpleCookie()
+    cookies.load(cookie_string)
+    return {cookie.key: cookie.value for cookie in cookies.values()}
+
+
+def dict_cookie_to_str(cookie_dict: dict[str, str]) -> str:
+    """Convert a dictionary cookie to a string.
+
+    Args:
+        cookie_dict: The cookie dictionary.
+
+    Returns:
+        The cookie string.
+    """
+
+    return "; ".join([f"{key}={value}" for key, value in cookie_dict.items()])

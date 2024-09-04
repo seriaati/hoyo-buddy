@@ -109,10 +109,6 @@ class PaginatorView(View):
         self._current_page = self._max_page
         await self._update_page(i)
 
-    async def _go_to_page(self, i: Interaction, page: int) -> None:
-        self._current_page = max(0, min(page, self._max_page))
-        await self._update_page(i)
-
     async def start(
         self, i: Interaction, *, followup: bool = False, ephemeral: bool = False
     ) -> None:

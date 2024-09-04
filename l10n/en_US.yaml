@@ -13,7 +13,6 @@ about_command_description: About the bot
 about_embed.description: "A feature rich, easy to use, and beautifully designed Discord bot specifically made for Hoyoverse gamers."
 abundance: Abundance
 abyss.battles_won_fought: "Battles Won/Fought: {val1}/{val2}"
-abyss.current: Current phase
 abyss.deepest_descent: "Deepest Descent: {val}"
 abyss.floor: "Floor {val}"
 abyss.most_defeats: "Most Defeats: {val}"
@@ -22,14 +21,12 @@ abyss.most_skills: "Most Skills Casted: {val}"
 abyss.most_ults: "Most Bursts Unleashed: {val}"
 abyss.overview: Spiral Abyss Overview
 abyss.phase_select.placeholder: Select a phase
-abyss.previous: Previous phase
 abyss.strongest_strike: "Strongest Single Strike: {val}"
 abyss.total_stars: "Total Stars: {val}"
 abyss_chamber.challenge_target.embed.field.name: Challenge Target
 abyss_chamber.embed.title: "Floor {floor_index} - Chamber {chamber_index}"
 abyss_chamber.enemy_level.embed.field.name: Enemy Level
 abyss_chamber.ley_line_disorder.embed.field.name: Ley Line Disorder
-abyss_command_description: View the current abyss enemies
 abyss_enemy.item_description: "HP: {HP}"
 acc_no_default_param_desc: Account to run this command with
 account_autocomplete_param_description: "Account to run this command with, defaults to the selected one in /accounts"
@@ -41,13 +38,12 @@ account_manager_no_accounts_description: You don't have any accounts yet.
 account_manager_title: Account Manager
 account_not_found_error_message: "Unable to find an account with the provided query, please select choices from the autocomplete instead of typing your own query."
 account_not_found_error_title: Account not found
-account_server: Server
 account_username: Username
 accounts_command_description: Manage your accounts
 action_in_cooldown_error_message: "Please try again at {available_time}."
 action_in_cooldown_error_title: Action in Cooldown
 add_account_button_label: Add accounts
-add_hoyolab_acc.embed.description: "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one\n3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile\n\n"
+add_hoyolab_acc.embed.description: "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one\n3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile"
 add_hoyolab_acc.embed.title: Select a Method to add Your Accounts
 adding_accounts_description: "Welcome to Hoyo Buddy! Enjoy various features by spending less than 1 minute to add your accounts.\n\nRegarding account security, please read the [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Select Your Account's Platform
@@ -128,7 +124,6 @@ complete_geetest_button_description: Click the button below to complete the geet
 complete_geetest_button_label: Complete geetest
 const_refine_str: "C{const}R{refine}"
 continue_button_label: Continue
-cookies_button_label: Enter cookies
 cookies_modal_placeholder: Paste your cookies here...
 cryo: Cryo
 daily_button.label: Daily reminder
@@ -136,7 +131,6 @@ daily_check_in: Daily check-in
 daily_checkin_embed_description: "Checked in {day} day(s) this month\nMissed check-in for {missed} day(s)\n"
 daily_modal.title: Daily Reminder Settings
 daily_training_button.label: Daily Training Reminder
-dark_mode_button_label: Dark mode
 delete_account_button_label: Delete selected account
 dendro: Dendro
 destruction: Destruction
@@ -148,13 +142,15 @@ download_image_failed_error_title: Image Download Failed
 edit_nickname_modal_title: Edit nickname
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
-email-geetest.embed.title: 😥 Need to solve CAPTCHA before sending the verification code
+email_verification_dialog_title: Verification Required
+email_verification_dialog_content: Please enter the verification code sent to your email
+email_verification_dialog_action: Verify
+email_verification_field_label: Verification code
+email-geetest.embed.title: CAPTCHA verification required for sending email verification code
 email_password_button_label: With email and password
-email_password_instructions_description: "<:INFO:1166743144889602190> Note: This method **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.\n\n1. Click the `Complete CAPTCHA` button below\n2. You will be redirected to a website, click the button and complete the CAPTCHA\n3. After completing, click on the `Continue` button below\n"
 email_password_modal_email_input_label: email or username
 email_password_modal_password_input_label: password
-enter_email_password_button_label: Enter email/username and password
-enter_email_password_instructions_description: "<:INFO:1166743144889602190> This method requires you to enter your private information.\n\n• In exchange, your `cookie_token` can be refreshed automatically, which is used in features related to code redemption (for HoYoLAB users only).\n• Your email and password are **NOT** saved in the database **AT ALL**, so it's practically impossible for them to be leaked.\n• Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy), so you can verify that yourself.\n• It is ultimately your choice to decide whether to trust this bot or not.\n\nClick on the button below to start.\n"
+enter_email_password_instructions_description: "This method requires you to enter your private information.\n\n- In exchange, your `cookie_token` can be refreshed automatically, which is used in features related to code redemption (for HoYoLAB users only).\n- Your email and password are **NOT** saved in the database **AT ALL**, so it's practically impossible for them to be leaked.\n- Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy), so you can verify that yourself.\n- It is ultimately your choice to decide whether to trust this bot or not."
 enter_light_cone_level.button.label: Change light cone level
 error_footer: Please report this error to the developer via /feedback
 error_title: An Error Occurred
@@ -228,7 +224,7 @@ game_value_incomplete_param_error_message: You must specify the game of the UID
 geeetest_verification_complete: Verification complete
 geeetest_verification_timeout: Verification timeout
 geeetest_verification_timeout_description: The verification has timed out. Please use the </geetest> comand to try again.
-geetest.embed.title: 😅 Need to solve CAPTCHA before logging in
+geetest.embed.title: CAPTCHA verification required before logging in
 geetest.no_need: No need for geetest
 geetest.no_need.description: "You never needed to do a geetest! What are you here for?!"
 geetest.required: Geetest Verification Required
@@ -277,7 +273,7 @@ invalid_verification_code_description: Please check the verification code and tr
 invalid_verification_code_title: Invalid Verification Code
 items: Items
 javascript_button_label: With JavaScript
-javascript_instructions_description: "<:INFO:1166743144889602190> Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Copy the code below\n3. Click on the address bar and type `java`\n4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n5. Select all and copy the text that appears\n6. Click the button below and paste the text in the box\n"
+javascript_instructions_description: "Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Click the button below to copy code\n3. Click on the address bar and type `java`\n4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n5. Select all and copy the text that appears\n6. Paste the text into the text box labeled 'cookies' below\n"
 level_str: "Lv.{level}"
 light_cones: Light Cones
 living_beings: Living Beings
@@ -306,7 +302,6 @@ no_challenge_data_err_title: "No {challenge} Data"
 no_characters_found_error_message: Please try again with a different filter
 no_characters_found_error_title: No characters found with the selected filter
 no_game_accounts_error_message: "This {platform} account has no game accounts."
-no_game_accounts_error_title: No Game Accounts
 notes-card.gi.completed: Completed
 notes-card.gi.daily-commissions: Daily Commissions
 notes-card.gi.expedition-finished: Finished
@@ -342,7 +337,6 @@ player_not_found_description: Please check the provided UID
 player_not_found_title: Player Does Not Exist
 preservation: Preservation
 prev_page_option_label: Previous page
-primogems: primogems
 process_notify_error.content: "An error occurred while processing your real-time notes reminder.\nHoyo Buddy has disabled this reminder for this account, you can turn it back on using </notes>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n"
 profile.add_image.button.label: Add custom image
 profile.add_image_modal.image_url.label: Image URL
@@ -367,21 +361,12 @@ profile.character_select.placeholder: Select a character
 profile.generate_ai_art.button.label: Generate AI art
 profile.generate_ai_art_modal.negative_prompt.label: Negative Prompt
 profile.generate_ai_art_modal.prompt.label: Prompt
-profile.generate_ai_art_modal.title: Generate AI Art
 profile.genshin.character_select.description: "C{c}R{r} | {d}"
 profile.genshin.character_select.hoyolab.description: "C{c}R{r} | {d} | {platform}"
 profile.image_select.custom_image.label: "Custom Image ({num})"
 profile.image_select.default_collection.label: "Hoyo Buddy Collection ({num})"
 profile.image_select.none.label: Official art
 profile.image_select.placeholder: Select an image
-profile.info.embed.custom_images.name: Custom Images
-profile.info.embed.custom_images.value: "- Hoyo Buddy comes with some preset arts that I liked, but you can add your own images too.\n- Only direct image URLs are supported, and they must be publicly accessible; GIFs are not supported.\n- For Hoyo Buddy's templates, vertical images are recommended.\n- For server owners, I am not responsible for any NSFW images that you or your members add.\n- The red button removes the current custom image and reverts to the default one."
-profile.info.embed.dark_mode.value: "- This setting is independent from the one in </settings>, defaults to light mode.\n- Light mode cards tend to look better because the colors are not optimized for dark mode.\n- Suggestions for dark mode colors are welcome!"
-profile.info.embed.primary_color.name: Primary Color
-profile.info.embed.primary_color.value: "- Only hex color codes are supported."
-profile.info.embed.templates.name: Templates
-profile.info.embed.templates.value: "- Hoyo Buddy has its own template made by me, but I also added templates made by other developers.\n- Code of 3rd party templates are not maintained by me, so I cannot guarantee their quality; I am also not responsible for any issues with them.\n- 3rd party templates may have feature limitations compared to Hoyo Buddy's.\n- Cached data characters can only use Hoyo Buddy's templates."
-profile.info.embed.title: About Card Settings
 profile.player_info.button.label: Player info
 profile.player_info.embed.description: "Trailblaze Level: {level}\nEquilibrium Level: {world_level}\nFriend Count: {friend_count}\nLight Cones: {light_cones}\nCharacters: {characters}\nAchievements: {achievements}\n"
 profile.player_info.gi.embed.description: "Adventure Rank: {adventure_rank}\nSpiral Abyss: {spiral_abyss}\nAchievements: {achievements}\n"
@@ -445,9 +430,8 @@ search_command_game_param_description: Game to search in
 search_command_game_param_name: game
 search_command_query_param_description: Query to search for
 search_command_query_param_name: query
-select_account.embed.description: Select the accounts you want to add.
+select_account.embed.description: Selects accounts you want to add to Hoyo Buddy
 select_account.embed.title: 🎉 Welcome to Hoyo Buddy!
-select_accounts_to_add_placeholder: Select the accounts you want to add...
 settings_command_description: Configure your user settings
 skill_attributes_embed_field_name: "Skill Attributes (Lv.{level})"
 skill_level.modal.title: Enter Skill Level
@@ -464,10 +448,6 @@ the_hunt: The Hunt
 threshold.embed.description: "Threshold ({threshold}) is reached"
 thunder: Thunder
 thursday: Thursday
-toggle_off_text: "off"
-toggle_on_text: "on"
-traditional_chinese_server: Traditional Chinese Server
-try_other_method_error_message: "Please try other methods to login.\nIf you are entering cookies manually through DevTools, make sure you are copying them correctly."
 tuesday: Tuesday
 unreleased_content: Unreleased Content
 user_autocomplete_param_description: "User to search the accounts with, defaults to you"
@@ -495,7 +475,6 @@ yatta_character_skill_spread_weakness_break_field_value: "Spread: {spread_weakne
 yatta_character_skill_weakness_break_field_name: Weakness Break
 yatta_character_trace_page_label: Traces
 yatta_item_sources_field_name: Sources
-yatta_light_cone_ability_field_name: Ability
 characters.show_owned_only: Show owned characters only
 redeem_code.ar_too_low: Adventure rank too low
 data_not_public.title: Data is not Public
@@ -624,3 +603,13 @@ events_command_game_param_description: Game to view events for
 natlan: Natlan
 top_percent: "Top {percent}%"
 profile_view_show_rank_button_label: Show rank
+submit_button_label: Submit
+show_tutorial_button_label: Show tutorial
+close_button_label: Close
+copy_code_button_label: Copy code
+copied_to_clipboard: Copied to clipboard
+required_field_error_message: This field is required
+accounts_added_snackbar_message: Accounts added successfully, redirecting you back to Discord...
+account_add_start_title: Add Accounts
+account_add_start_message: Clicking the button below opens the Hoyo Buddy Login System, follow the instructions to add your accounts. When you're done, use the </accounts> command to view the accounts you have added.
+hbls_button_label: Let's start!

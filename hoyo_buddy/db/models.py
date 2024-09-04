@@ -28,15 +28,23 @@ if TYPE_CHECKING:
     from ..types import Challenge, Interaction
 
 
-class User(Model):
+class BaseModel(Model):
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}({', '.join(f'{field}={getattr(self, field)!r}' for field in self._meta.db_fields)})"
+
+    def __repr__(self) -> str:
+        return str(self)
+
+    class Meta:
+        abstract = True
+
+
+class User(BaseModel):
     id = fields.BigIntField(pk=True, index=True, generated=False)
     settings: fields.BackwardOneToOneRelation[Settings]
     temp_data: fields.Field[dict[str, Any]] = fields.JSONField(default=dict)
     last_interaction: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
     accounts: fields.ReverseRelation[HoyoAccount]
-
-    def __str__(self) -> str:
-        return str(self.id)
 
     async def set_acc_as_current(self, acc: HoyoAccount) -> None:
         """Set the given account as the current account.
@@ -49,7 +57,7 @@ class User(Model):
         await acc.save(update_fields=("current",))
 
 
-class HoyoAccount(Model):
+class HoyoAccount(BaseModel):
     id = fields.IntField(pk=True, generated=True)
     uid = fields.BigIntField(index=True)
     username = fields.CharField(max_length=32)
@@ -76,14 +84,6 @@ class HoyoAccount(Model):
     class Meta:
         unique_together = ("uid", "game", "user")
         ordering = ["uid"]
-
-    def __str__(self) -> str:
-        return f"{self.nickname or self.username} ({self.uid})"
-
-    def __repr__(self) -> str:
-        return (
-            f"<HoyoAccount id={self.id} uid={self.uid} username={self.username!r} game={self.game}>"
-        )
 
     @property
     def blurred_display(self) -> str:
@@ -119,7 +119,7 @@ class HoyoAccount(Model):
         return Platform.HOYOLAB if region is genshin.Region.OVERSEAS else Platform.MIYOUSHE
 
 
-class AccountNotifSettings(Model):
+class AccountNotifSettings(BaseModel):
     notify_on_checkin_failure = fields.BooleanField(default=True)
     notify_on_checkin_success = fields.BooleanField(default=True)
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
@@ -127,7 +127,7 @@ class AccountNotifSettings(Model):
     )
 
 
-class Settings(Model):
+class Settings(BaseModel):
     lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)
     dark_mode = fields.BooleanField(default=True)
     user: fields.OneToOneRelation[User] = fields.OneToOneField(
@@ -144,7 +144,7 @@ class Settings(Model):
         return Locale(self.lang) if self.lang else None
 
 
-class CardSettings(Model):
+class CardSettings(BaseModel):
     character_id = fields.CharField(max_length=8)
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
         "models.User", related_name="card_settings"
@@ -163,7 +163,7 @@ class CardSettings(Model):
         ordering = ["character_id"]
 
 
-class EnkaCache(Model):
+class EnkaCache(BaseModel):
     uid = fields.BigIntField(pk=True, index=True)
     hsr: fields.Field[dict[str, Any]] = fields.JSONField(default={})
     genshin: fields.Field[dict[str, Any]] = fields.JSONField(default={})
@@ -175,7 +175,7 @@ class EnkaCache(Model):
         ordering = ["uid"]
 
 
-class NotesNotify(Model):
+class NotesNotify(BaseModel):
     type = fields.IntEnumField(NotesNotifyType)
     enabled = fields.BooleanField(default=True)
     account: fields.ForeignKeyRelation[HoyoAccount] = fields.ForeignKeyField(
@@ -207,7 +207,7 @@ class NotesNotify(Model):
         ordering = ["type"]
 
 
-class FarmNotify(Model):
+class FarmNotify(BaseModel):
     enabled = fields.BooleanField(default=True)
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
         "models.HoyoAccount", related_name="farm_notifs", pk=True
@@ -215,7 +215,7 @@ class FarmNotify(Model):
     item_ids: fields.Field[list[str]] = fields.JSONField(default=[])
 
 
-class JSONFile(Model):
+class JSONFile(BaseModel):
     name = fields.CharField(max_length=100, index=True)
     data: fields.Field[Any] = fields.JSONField()
 
@@ -247,7 +247,7 @@ class JSONFile(Model):
             return data
 
 
-class ChallengeHistory(Model):
+class ChallengeHistory(BaseModel):
     uid = fields.BigIntField(index=True)
     season_id = fields.IntField()
     name: fields.Field[str | None] = fields.CharField(max_length=64, null=True)

@@ -2,28 +2,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-import genshin
-
-from hoyo_buddy.ui.account.items.enter_device_info import EnterDeviceInfoButton
-
-from ...constants import GEETEST_SERVERS
 from ...db.models import HoyoAccount, User, get_dyk
 from ...embeds import DefaultEmbed
 from ...emojis import get_game_emoji
-from ...enums import GeetestNotifyType, Platform
-from ...exceptions import NoGameAccountsError, TryOtherMethodError
 from ...l10n import EnumStr, LocaleStr, Translator
-from ...models import LoginNotifPayload
 from .. import SelectOption
-from ..components import Button, GoBackButton, View
+from ..components import View
 from .items.acc_select import AccountSelect
 from .items.acc_settings import AccountPublicToggle, AutoCheckinToggle, AutoRedeemToggle
 from .items.add_acc_btn import AddAccountButton
-from .items.add_acc_select import AddAccountSelect
 from .items.del_acc_btn import DeleteAccountButton
 from .items.edit_nickname_btn import EditNicknameButton
-from .items.enter_email_pswd import EnterEmailVerificationCode
-from .items.enter_mobile import EnterVerificationCode
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -136,153 +125,3 @@ class AccountManager(View):
             acc_public_toggle.update_style()
 
             await self.absolute_edit(i, embed=self._acc_embed, view=self)
-
-    async def finish_cookie_setup(
-        self, cookies: dict[str, Any], *, platform: Platform, interaction: Interaction
-    ) -> None:
-        if platform is Platform.HOYOLAB and ("stoken" in cookies or "stoken_v2" in cookies):
-            # Get ltoken_v2 and cookie_token_v2
-            cookie = await genshin.fetch_cookie_with_stoken_v2(cookies, token_types=[2, 4])
-            cookies.update(cookie)
-
-        client = genshin.Client(
-            cookies,
-            region=genshin.Region.OVERSEAS
-            if platform is Platform.HOYOLAB
-            else genshin.Region.CHINESE,
-        )
-
-        try:
-            accounts = await client.get_game_accounts()
-        except genshin.errors.InvalidCookies as e:
-            raise TryOtherMethodError from e
-
-        if not accounts:
-            raise NoGameAccountsError(platform)
-
-        embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=LocaleStr(key="select_account.embed.title"),
-            description=LocaleStr(key="select_account.embed.description"),
-        )
-
-        device_id = cookies.pop("x-rpc-device_id", None)
-        device_fp = cookies.pop("x-rpc-device_fp", None)
-
-        if platform is Platform.MIYOUSHE and (device_id is None or device_fp is None):
-            enter_device_info_btn = EnterDeviceInfoButton(cookies)
-            embed = enter_device_info_btn.get_embed(self)
-            self.clear_items()
-            self.add_item(enter_device_info_btn)
-            self.add_item(
-                Button(
-                    label="下载应用程序",
-                    url="https://mirror.ghproxy.com/https://raw.githubusercontent.com/forchannot/get_device_info/main/app/build/outputs/apk/debug/app-debug.apk",
-                )
-            )
-            await interaction.edit_original_response(embed=embed, view=self)
-            return
-
-        self.clear_items()
-        self.add_item(
-            AddAccountSelect(
-                self.locale,
-                self.translator,
-                accounts=accounts,
-                cookies="; ".join(f"{k}={v}" for k, v in cookies.items()),
-                platform=platform,
-                device_id=device_id,
-                device_fp=device_fp,
-            )
-        )
-
-        await interaction.edit_original_response(embed=embed, view=self)
-
-    async def prompt_user_to_solve_geetest(
-        self,
-        i: Interaction,
-        *,
-        for_code: bool,
-        gt_version: int = 3,
-        api_server: str = "api-na.geetest.com",
-    ) -> None:
-        """Prompt the user to solve CAPTCHA before sending the verification code or logging in.
-
-        Args:
-            i: The interaction object.
-            for_code: Whether the CAPTCHA is triggered for sending the verification code.
-            gt_version: The version of the geetest CAPTCHA (3 or 4).
-            api_server: The server to request the CAPTCHA from.
-            proxy_geetest: Whether to proxy the geetest CAPTCHA.
-        """
-        assert i.channel
-
-        # geetest info is trasmitted through user.temp_data
-        payload = LoginNotifPayload(
-            user_id=i.user.id,
-            guild_id=i.guild.id if i.guild is not None else None,
-            channel_id=i.channel.id,
-            message_id=i.message.id if i.message is not None else None,
-            gt_version=gt_version,
-            api_server=api_server,
-        )
-        url = f"{GEETEST_SERVERS[i.client.env]}/captcha?{payload.to_query_string()}&gt_type={GeetestNotifyType.LOGIN.value}"
-
-        go_back_button = GoBackButton(self.children, self.get_embeds(i.message))
-        self.clear_items()
-        self.add_item(Button(label=LocaleStr(key="complete_captcha_button_label"), url=url))
-        self.add_item(go_back_button)
-
-        embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=LocaleStr(key="email-geetest.embed.title")
-            if for_code
-            else LocaleStr(key="geetest.embed.title"),
-            description=LocaleStr(key="captcha.embed.description"),
-        )
-        await i.edit_original_response(embed=embed, view=self)
-
-    async def prompt_user_to_enter_email_code(
-        self,
-        i: Interaction,
-        *,
-        email: str,
-        password: str,
-        action_ticket: genshin.models.ActionTicket,
-    ) -> None:
-        """Prompt the user to enter the email verification code."""
-        go_back_button = GoBackButton(self.children, self.get_embeds(i.message))
-        self.clear_items()
-        self.add_item(EnterEmailVerificationCode(email, password, action_ticket))
-        self.add_item(go_back_button)
-
-        embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=LocaleStr(key="email-verification.embed.title"),
-            description=LocaleStr(key="email-verification.embed.description"),
-        )
-
-        await i.edit_original_response(embed=embed, view=self)
-
-    async def prompt_user_to_enter_mobile_otp(self, i: Interaction, mobile: str) -> None:
-        """Prompt the user to enter the mobile OTP code.
-
-        Args:
-            i: The interaction object.
-            mobile: The mobile number to send the OTP to.
-        """
-        go_back_button = GoBackButton(self.children, self.get_embeds(i.message))
-        self.add_item(go_back_button)
-        self.clear_items()
-        self.add_item(EnterVerificationCode(mobile))
-
-        embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=LocaleStr(key="add_miyoushe_acc.verification_code_sent"),
-            description=LocaleStr(key="add_miyoushe_acc.verification_code_sent_description"),
-        )
-        await i.edit_original_response(embed=embed, view=self)

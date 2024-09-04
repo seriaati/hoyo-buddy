@@ -135,7 +135,7 @@ delete_account_button_label: Delete selected account
 dendro: Dendro
 destruction: Destruction
 devtools_button_label: With DevTools (desktop only)
-devtools_instructions_description: "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Open the DevTools by pressing F12 or Ctrl+Shift+I\n3. Press the >> icon on the top navigation bar\n4. Click on the `Application` tab\n5. Click on `Cookies` on the left sidebar\n6. Click on the website you're on (e.g. https://www.hoyolab.com)\n7. Type `v2` in the `Filter` box\n8. Click the button below\n9. Copy the `Value` of each cookie and paste them in the boxes\n"
+devtools_instructions_description: "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Open the DevTools by pressing F12 or Ctrl+Shift+I\n3. Press the >> icon on the top navigation bar\n4. Click on the `Application` tab\n5. Click on `Cookies` on the left sidebar\n6. Click on the website you're on (e.g. https://www.hoyolab.com)\n7. Type `v2` in the `Filter` box\n8. Click the button below\n9. Copy the `Value` of each cookie and paste them in the boxes"
 dice_cost_embed_field_name: Dice Cost
 download_image_failed_error_message: "Unable to download image {url} with status code {status}.\nTry again later, try with a different image, or check if the image URL is valid."
 download_image_failed_error_title: Image Download Failed
@@ -143,7 +143,7 @@ edit_nickname_modal_title: Edit nickname
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
 email_verification_dialog_title: Verification Required
-email_verification_dialog_content: Please enter the verification code sent to your email
+email_verification_dialog_content: Please enter the verification code received
 email_verification_dialog_action: Verify
 email_verification_field_label: Verification code
 email-geetest.embed.title: CAPTCHA verification required for sending email verification code
@@ -273,7 +273,7 @@ invalid_verification_code_description: Please check the verification code and tr
 invalid_verification_code_title: Invalid Verification Code
 items: Items
 javascript_button_label: With JavaScript
-javascript_instructions_description: "Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Click the button below to copy code\n3. Click on the address bar and type `java`\n4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n5. Select all and copy the text that appears\n6. Paste the text into the text box labeled 'cookies' below\n"
+javascript_instructions_description: "Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Click the button below to copy code\n3. Click on the address bar and type `java`\n4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n5. Select all and copy the text that appears\n6. Paste the text into the text box labeled 'cookies' below"
 level_str: "Lv.{level}"
 light_cones: Light Cones
 living_beings: Living Beings

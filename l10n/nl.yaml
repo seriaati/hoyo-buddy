@@ -13,7 +13,6 @@ about_command_description: Over de bot
 about_embed.description: "Een uitgebreide, gebruiksvriendelijke en prachtig ontworpen Discord-bot, speciaal gemaakt voor Hoyoverse gamers."
 abundance: Abundance
 abyss.battles_won_fought: "Gewonnen/gevochten gevechten: {val1}/{val2}"
-abyss.current: ""
 abyss.deepest_descent: "Diepste Afdaling: {val}"
 abyss.floor: "Vloer {val}"
 abyss.most_defeats: "Meeste Nederlagen: {val}"
@@ -22,14 +21,12 @@ abyss.most_skills: "Meeste Vaardigheden: {val}"
 abyss.most_ults: "Meeste Uitbarstingen: {val}"
 abyss.overview: Spiral Abyss Overzicht
 abyss.phase_select.placeholder: ""
-abyss.previous: ""
 abyss.strongest_strike: "Sterkste Enkele Slag: {val}"
 abyss.total_stars: "Aantal Sterren: {val}"
 abyss_chamber.challenge_target.embed.field.name: Uitdaging Doel
 abyss_chamber.embed.title: "Vloer {floor_index} - Kamer {chamber_index}"
 abyss_chamber.enemy_level.embed.field.name: Vijand Niveau
 abyss_chamber.ley_line_disorder.embed.field.name: Ley Lijn Stoornis
-abyss_command_description: Bekijk de huidige vijanden van de abyss
 abyss_enemy.item_description: "HP: {HP}"
 acc_no_default_param_desc: ""
 account_autocomplete_param_description: "Account om deze commando mee uit te voeren, standaard de geselecteerde account in /accounts"
@@ -41,13 +38,12 @@ account_manager_no_accounts_description: Je hebt nog geen accounts.
 account_manager_title: Account Manager
 account_not_found_error_message: "Er kan geen account worden gevonden met de opgegeven query. Selecteer keuzes uit de autoaanvulling in plaats van je eigen query te typen."
 account_not_found_error_title: Account niet gevonden
-account_server: Server
 account_username: Gebruikersnaam
 accounts_command_description: Beheer je accounts
 action_in_cooldown_error_message: "Probeer het opnieuw op {available_time}."
 action_in_cooldown_error_title: Actie in Cooldown
 add_account_button_label: Accounts toegoeven
-add_hoyolab_acc.embed.description: "1. Met email en wachtwoord: wordt het meest aanbevolen, het is het gemakkelijkst.\n2. Met DevTools: Werkt alleen op desktop, een veiligere optie als je je zorgen maakt over de beveiliging met de eerste\n3. Met JavaScript: Verouderde methode, werkt niet voor de meeste accounts. Werkt op Google Chrome of Microsoft Edge op zowel desktop als mobiel\n\n"
+add_hoyolab_acc.embed.description: "1. Met e-mail en wachtwoord: Meest aanbevolen, het is de eenvoudigste optie. \n2. Met DevTools: Werkt alleen op desktop, een veiligere optie als je beveiligingszorgen hebt bij de eerste methode. \n3. Met JavaScript: Verouderde methode, werkt niet voor de meeste accounts. Werkt op Google Chrome of Microsoft Edge, zowel op desktop als mobiel."
 add_hoyolab_acc.embed.title: Selecteer een Methode om je Accounts toe te Voegen
 adding_accounts_description: "Welkom bij Hoyo Buddy! Geniet van verschillende functies door minder dan 1 minuut te besteden aan het toevoegen van je accounts.\n\nWat betreft accountbeveiliging, lees de [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Selecteer het Platform van je Account
@@ -128,7 +124,6 @@ complete_geetest_button_description: ""
 complete_geetest_button_label: ""
 const_refine_str: "C{const}R{refine}"
 continue_button_label: Ga verder
-cookies_button_label: Voer Cookies in
 cookies_modal_placeholder: Plak je cookies hier...
 cryo: Cryo
 daily_button.label: Dagelijkse herinnering
@@ -136,32 +131,33 @@ daily_check_in: ""
 daily_checkin_embed_description: "Ingecheckt op {day} dag(en) deze maand\nInchecken gemist voor {missed} dag(en)\n"
 daily_modal.title: Instellingen Dagelijkse Herinnering
 daily_training_button.label: Dagelijkse Trainings Herinnering
-dark_mode_button_label: Donkere modus
 delete_account_button_label: Verwijder geselecteerde account
 dendro: Dendro
 destruction: Destruction
 devtools_button_label: Met DevTools (alleen desktop)
-devtools_instructions_description: "1. Inloggen op [HoYoLAB](https://www.hoyolab.com/home) of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN spelers)\n2. Open de DevTools door op F12 of Ctrl+Shift+I te drukken\n3. Druk op het >> pictogram op de bovenste navigatiebalk\n4. Klik op het tabblad `Toepassing\n5. Klik op `Kookies` in de linker zijbalk\n6. Klik op de website waar je bent (bijv. https://www.hoyolab.com)\n7. Typ `v2` in het vak `Filter`\n8. Klik op de knop hieronder\n9. Kopieer de `waarde` van elk cookie en plak ze in de vakjes\n"
+devtools_instructions_description: "1. Inloggen op [HoYoLAB](https://www.hoyolab.com/home) of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN spelers)\n2. Open de DevTools door op F12 of Ctrl+Shift+I te drukken\n3. Druk op het >> pictogram op de bovenste navigatiebalk\n4. Klik op het tabblad `Toepassing\n5. Klik op `Kookies` in de linker zijbalk\n6. Klik op de website waar je bent (bijv. https://www.hoyolab.com)\n7. Typ `v2` in het vak `Filter`\n8. Klik op de knop hieronder\n9. Kopieer de `waarde` van elk cookie en plak ze in de vakjes"
 dice_cost_embed_field_name: Kosten Dobbelstenen
 download_image_failed_error_message: "Kan afbeelding {url} met status code {status}niet downloaden.\nProbeer het later nog eens, probeer het met een andere afbeelding of controleer of de URL van de afbeelding geldig is."
 download_image_failed_error_title: Afbeelding Downloaden Mislukte
 edit_nickname_modal_title: Bijnaam bewerken
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
-email-geetest.embed.title: 😥 CAPTCHA moet worden opgelost voordat de verificatiecode wordt verzonden
+email_verification_dialog_title: ""
+email_verification_dialog_content: Voer alstublieft de verificatiecode in die u heeft ontvangen.
+email_verification_dialog_action: ""
+email_verification_field_label: ""
+email-geetest.embed.title: CAPTCHA-verificatie vereist voor het verzenden van de e-mail verificatiecode.
 email_password_button_label: Met email en wachtwoord
-email_password_instructions_description: "<:INFO:1166743144889602190> Note: This method **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.\n\n1. Click the `Complete CAPTCHA` button below\n2. You will be redirected to a website, click the button and complete the CAPTCHA\n3. After completing, click on the `Continue` button below\n"
 email_password_modal_email_input_label: ""
 email_password_modal_password_input_label: wachtwoord
-enter_email_password_button_label: Voer email/gebruikersnaam en wachtwoord in
-enter_email_password_instructions_description: "<:INFO:1166743144889602190> Deze methode vereist dat je je privégegevens invoert.\n\n- In ruil daarvoor kan je `cookie_token` automatisch worden vernieuwd, die wordt gebruikt in functies met betrekking tot het inwisselen van codes (alleen voor HoYoLAB-gebruikers).\n- Je e-mailadres en wachtwoord worden **NIET** opgeslagen in de database, dus het is praktisch onmogelijk dat ze uitlekken.\n- Bovendien is deze bot open-sourced op [GitHub](https://github.com/seriaati/hoyo-buddy), dus je kunt dat zelf controleren.\n- Het is uiteindelijk aan jou om te beslissen of je deze bot vertrouwt of niet.\n\nKlik op de knop hieronder om te beginnen.\n"
+enter_email_password_instructions_description: "Deze methode vereist dat je je privégegevens invoert.\n\n- In ruil daarvoor kan je `cookie_token` automatisch worden vernieuwd, die wordt gebruikt in functies met betrekking tot het inwisselen van codes (alleen voor HoYoLAB-gebruikers).\n- Je e-mailadres en wachtwoord worden **NIET** opgeslagen in de database, dus het is praktisch onmogelijk dat ze uitlekken.\n- Bovendien is deze bot open-sourced op [GitHub](https://github.com/seriaati/hoyo-buddy), dus je kunt dat zelf controleren.\n- Het is uiteindelijk aan jou om te beslissen of je deze bot vertrouwt of niet."
 enter_light_cone_level.button.label: Light cone niveau wijzigen
 error_footer: Meld deze fout aan de ontwikkelaar via /feedback
 error_title: Er is een Fout Opgetreden
 erudition: Erudition
 exceptions.card_not_ready_error.message: "Als er nieuwe personages worden uitgebracht, moet ik tijd besteden aan het verzamelen van fanarts en het optimaliseren van kleuren voor hun kaarten.\nAls je dit proces wilt versnellen, kun je bijdragen aan de kaartgegevens door me te bereiken op de [Discord Server](https://dsc.gg/hoyo-buddy)."
 exceptions.card_not_ready_error.title: "Kaart gegevens voor {character_name} zijn nog niet klaar."
-exped.embed.description: Een (of meer) expedities zijn klaar
+exped.embed.description: ""
 exped_button.label: Expeditie herinnering
 exped_modal.title: Instellingen Herinnering Expeditie
 exploration.anemoculi: "Anemoculi: {anemoculi}"
@@ -172,6 +168,7 @@ exploration.electroculi: "Electroculi: {electroculi}"
 exploration.exquisite_chests: Uitstekend
 exploration.geoculi: "Geoculi: {geoculi}"
 exploration.hydroculi: "Hydroculi: {hydroculi}"
+exploration.pyroculi: ""
 exploration.luxurious_chests: Luxe
 exploration.placeholder: Wordt nog vrijgegeven
 exploration.placeholder_quote: '"Elke reis heeft zijn laatste dag. Haast je niet."
@@ -227,7 +224,7 @@ game_value_incomplete_param_error_message: Je moet het spel van de UID specifice
 geeetest_verification_complete: ""
 geeetest_verification_timeout: ""
 geeetest_verification_timeout_description: ""
-geetest.embed.title: 😅 CAPTCHA oplossen voor aanmelden
+geetest.embed.title: CAPTCHA-verificatie vereist voordat je kunt inloggen.
 geetest.no_need: ""
 geetest.no_need.description: ""
 geetest.required: ""
@@ -276,7 +273,7 @@ invalid_verification_code_description: Controleer de verificatiecode en probeer 
 invalid_verification_code_title: Ongeldige Verificatiecode
 items: Items
 javascript_button_label: Met JavaScript
-javascript_instructions_description: "<:INFO:1166743144889602190> Opmerking: Deze methode zou moeten werken voor alle grote browsers op desktop, maar op mobiel werkt het alleen voor **Chrome** en **Edge**.\n\n1. Log in op [HoYoLAB](https://www.hoyolab.com/home) of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN spelers).\n2. Kopieer de onderstaande code\n3. Klik op de adresbalk en typ `java`\n4. Plak de code en druk op enter. Zorg ervoor dat er **Geen spaties** staan tussen `java` en `script`\n5. Selecteer alles en kopieer de tekst die verschijnt\n6. Klik op de knop hieronder en plak de tekst in het vak\n"
+javascript_instructions_description: "Opmerking: Deze methode zou moeten werken voor alle grote browsers op desktop, maar op mobiel werkt het alleen voor **Chrome** en **Edge**.\n\n1. Log in op [HoYoLAB](https://www.hoyolab.com/home) of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN-spelers)\n2. Klik op de knop hieronder om de code te kopiëren\n3. Klik op de adresbalk en typ `java`\n4. Plak de code en druk op enter. Zorg ervoor dat er **GEEN SPATIES** zijn tussen `java` en `script`\n5. Selecteer alles en kopieer de tekst die verschijnt\n6. Plak de tekst in het tekstvak met het label 'cookies' hieronder"
 level_str: "Nv.{level}"
 light_cones: Licht Kegels
 living_beings: Levende Wezens
@@ -305,7 +302,6 @@ no_challenge_data_err_title: ""
 no_characters_found_error_message: Probeer het opnieuw met een ander filter
 no_characters_found_error_title: Geen tkarakters gevonden met het geselecteerde filter
 no_game_accounts_error_message: ""
-no_game_accounts_error_title: ""
 notes-card.gi.completed: Afgerond
 notes-card.gi.daily-commissions: Dagelijkse Commissies
 notes-card.gi.expedition-finished: Klaar
@@ -341,7 +337,6 @@ player_not_found_description: Controleer de meegeleverde UID
 player_not_found_title: Speler Bestaat Niet
 preservation: Preservation
 prev_page_option_label: Vorige pagina
-primogems: primogems
 process_notify_error.content: ""
 profile.add_image.button.label: Afbeelding toevoegen
 profile.add_image_modal.image_url.label: Afbeelding URL
@@ -366,20 +361,12 @@ profile.character_select.placeholder: Selecteer een karakter
 profile.generate_ai_art.button.label: Genereer AI kunst
 profile.generate_ai_art_modal.negative_prompt.label: Negatieve Prompt
 profile.generate_ai_art_modal.prompt.label: Prompt
-profile.generate_ai_art_modal.title: Genereer AI kunst
 profile.genshin.character_select.description: ""
+profile.genshin.character_select.hoyolab.description: ""
 profile.image_select.custom_image.label: "Afbeelding ({num})"
 profile.image_select.default_collection.label: "Hoyo Buddy Collectie ({num})"
 profile.image_select.none.label: Officiële kunst
 profile.image_select.placeholder: Selecteer een afbeelding
-profile.info.embed.custom_images.name: Afbeeldingen
-profile.info.embed.custom_images.value: "- Hoyo Buddy wordt geleverd met een aantal vooraf ingestelde afbeeldingen die ik leuk vond, maar je kunt ook je eigen afbeeldingen toevoegen.\n- Alleen directe URL's van afbeeldingen worden ondersteund en ze moeten publiek toegankelijk zijn; GIF's worden niet ondersteund.\n- Voor de sjablonen van Hoyo Buddy worden verticale afbeeldingen aanbevolen.\n- Voor server eigenaren, ik ben niet verantwoordelijk voor NSFW afbeeldingen die jij of je leden toevoegen.\n- De rode knop verwijdert de huidige aangepaste afbeelding en keert terug naar de standaardafbeelding."
-profile.info.embed.dark_mode.value: ""
-profile.info.embed.primary_color.name: Primaire Kleur
-profile.info.embed.primary_color.value: "- Alleen hex kleurcodes worden ondersteund."
-profile.info.embed.templates.name: Sjablonen
-profile.info.embed.templates.value: "- Hoyo Buddy heeft zijn eigen sjabloon gemaakt door mij, maar ik heb ook sjablonen toegevoegd die gemaakt zijn door andere ontwikkelaars.\n- De code van templates van 3e partijen wordt niet door mij onderhouden, dus ik kan de kwaliteit ervan niet garanderen; ik ben ook niet verantwoordelijk voor eventuele problemen ermee.\n- Sjablonen van 3e partijen kunnen functiebeperkingen hebben in vergelijking met die van Hoyo Buddy.\n- Cached data karakters kunnen alleen Hoyo Buddy's sjablonen gebruiken."
-profile.info.embed.title: Over Kaart Instellingen
 profile.player_info.button.label: Spelers info
 profile.player_info.embed.description: "Trailblaze Niveau: {level}\nEquilibrium Niveau: {world_level}\nAantal Vrienden: {friend_count}\nLicht Kegels: {light_cones}\nKarakters: {characters}\nPrestaties: {achievements}\n"
 profile.player_info.gi.embed.description: "Adventure Rank: {adventure_rank}\nSpiral Abyss: {spiral_abyss}\nPrestaties: {achievements}\n"
@@ -443,9 +430,8 @@ search_command_game_param_description: Spel om in te zoeken
 search_command_game_param_name: spel
 search_command_query_param_description: Query om naar te zoeken
 search_command_query_param_name: query
-select_account.embed.description: Selecteer de accounts die je wilt toevoegen.
+select_account.embed.description: Selecteer de accounts die je wilt toevoegen aan Hoyo Buddy.
 select_account.embed.title: 🎉 Welkom bij Hoyo Buddy!
-select_accounts_to_add_placeholder: Selecteer de accounts die je wilt toevoegen...
 settings_command_description: Je gebruikersinstellingen configureren
 skill_attributes_embed_field_name: "Vaardigheids Attributen (Nv.{level})"
 skill_level.modal.title: Voer Vaardigheids Niveau in
@@ -462,10 +448,6 @@ the_hunt: The Hunt
 threshold.embed.description: "Drempel ({threshold}) is bereikt"
 thunder: Thunder
 thursday: Donderdag
-toggle_off_text: "uit"
-toggle_on_text: "op"
-traditional_chinese_server: Traditioneel Chinees Server
-try_other_method_error_message: "Probeer andere methoden om in te loggen.\nAls je cookies handmatig invoert via DevTools, zorg er dan voor dat je ze correct kopieert."
 tuesday: Dinsdag
 unreleased_content: ""
 user_autocomplete_param_description: "Gebruiker om de accounts mee te doorzoeken, standaard jezelf"
@@ -493,7 +475,6 @@ yatta_character_skill_spread_weakness_break_field_value: "Verspreid: {spread_wea
 yatta_character_skill_weakness_break_field_name: Zwakte Breuk
 yatta_character_trace_page_label: Sporen
 yatta_item_sources_field_name: Bronnen
-yatta_light_cone_ability_field_name: Vermogen
 characters.show_owned_only: ""
 redeem_code.ar_too_low: ""
 data_not_public.title: ""
@@ -607,13 +588,28 @@ dyk_github: ""
 dyk_python: ""
 dyk_unreleased: ""
 dyk_team_card: ""
+dyk_set_default_acc: ""
 title_dyk: ""
 new_zzz_temp: ""
 button_label_dyk: ""
 events_view_start_date_embed_field: ""
 events_view_end_date_embed_field: ""
 events_view_ann_select_placeholder: ""
+events_view_banner_type_label: ""
 events_command_description: ""
 events_view_ann_type_select_placeholder: ""
 events_view_content_label: ""
 events_command_game_param_description: ""
+natlan: ""
+top_percent: ""
+profile_view_show_rank_button_label: ""
+submit_button_label: ""
+show_tutorial_button_label: ""
+close_button_label: ""
+copy_code_button_label: ""
+copied_to_clipboard: ""
+required_field_error_message: ""
+accounts_added_snackbar_message: ""
+account_add_start_title: ""
+account_add_start_message: "Door op de knop hieronder te klikken, wordt het Hoyo Buddy Login-systeem geopend. Volg de instructies om je accounts toe te voegen. Als je klaar bent, gebruik dan het 1-commando om de accounts te bekijken die je hebt toegevoegd."
+hbls_button_label: ""

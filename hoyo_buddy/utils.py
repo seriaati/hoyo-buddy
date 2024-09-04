@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import base64
 import datetime
+import http.cookies
 import math
 import re
 import time
@@ -254,3 +255,73 @@ def format_float(num: float, *, decimals: int = 2) -> str:
         str_num = str_num[:-1]
 
     return f"{num:.{decimal_places}f}"
+
+
+def get_discord_protocol_url(
+    *, channel_id: str, guild_id: str, message_id: str | None = None
+) -> str:
+    """
+    Generate a Discord protocol URL.
+    Args:
+        channel_id (str): The ID of the Discord channel.
+        guild_id (str): The ID of the Discord guild (server). Use "None" for direct messages.
+        message_id (str | None, optional): The ID of the specific message. Defaults to None.
+    Returns:
+        str: The generated Discord protocol URL.
+    """
+    protocol = (
+        f"discord://-/channels/@me/{channel_id}"
+        if guild_id == "None"
+        else f"discord://-/channels/{guild_id}/{channel_id}"
+    )
+    if str(message_id) != "None":
+        protocol += f"/{message_id}"
+
+    return protocol
+
+
+def get_discord_url(*, channel_id: str, guild_id: str) -> str:
+    """
+    Generates a Discord URL for a given channel and guild.
+
+    Args:
+        channel_id (str): The ID of the Discord channel.
+        guild_id (str): The ID of the Discord guild. If "None", the URL will point to a direct message channel.
+
+    Returns:
+        str: The generated Discord URL.
+    """
+    if guild_id == "None":
+        return f"https://discord.com/channels/@me/{channel_id}"
+    return f"https://discord.com/channels/{guild_id}/{channel_id}"
+
+
+def str_cookie_to_dict(cookie_string: str) -> dict[str, str]:
+    """Convert a string cookie to a dictionary.
+
+    Args:
+        cookie_string: The cookie string.
+
+    Returns:
+        The cookie dictionary.
+    """
+
+    cookies = http.cookies.SimpleCookie()
+    cookies.load(cookie_string)
+    return {cookie.key: cookie.value for cookie in cookies.values()}
+
+
+def dict_cookie_to_str(cookie_dict: dict[str, str]) -> str:
+    """Convert a dictionary cookie to a string.
+
+    Args:
+        cookie_dict: The cookie dictionary.
+
+    Returns:
+        The cookie string.
+    """
+
+    cookies = http.cookies.SimpleCookie()
+    for key, value in cookie_dict.items():
+        cookies[key] = value
+    return cookies.output(header="")

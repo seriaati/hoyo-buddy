@@ -11,7 +11,7 @@ from discord import Locale
 from pydantic import BaseModel, field_validator
 
 from .constants import STARRAIL_RES
-from .enums import GenshinElement
+from .enums import GeetestNotifyType, GenshinElement
 
 if TYPE_CHECKING:
     import argparse
@@ -54,6 +54,25 @@ class LoginNotifPayload(BaseModel):
 
     def to_query_string(self) -> str:
         return "&".join(f"{k}={v}" for k, v in self.model_dump().items() if v is not None)
+
+
+class GeetestPayload(BaseModel):
+    user_id: int
+    gt_version: int
+    api_server: str = "api-na.geetest.com"
+    gt_type: GeetestNotifyType
+
+    @classmethod
+    def parse_from_request(cls, query: Mapping[str, str]) -> GeetestPayload:
+        return cls(
+            user_id=int(query["user_id"]),
+            gt_version=int(query["gt_version"]),
+            api_server=query["api_server"],
+            gt_type=GeetestNotifyType(query["gt_type"]),
+        )
+
+    def to_query_string(self) -> str:
+        return "&".join(f"{k}={v}" for k, v in self.model_dump().items())
 
 
 class ItemWithDescription(BaseModel):

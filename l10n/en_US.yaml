@@ -47,7 +47,7 @@ accounts_command_description: Manage your accounts
 action_in_cooldown_error_message: "Please try again at {available_time}."
 action_in_cooldown_error_title: Action in Cooldown
 add_account_button_label: Add accounts
-add_hoyolab_acc.embed.description: "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one\n3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile\n\n"
+add_hoyolab_acc.embed.description: "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one\n3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile"
 add_hoyolab_acc.embed.title: Select a Method to add Your Accounts
 adding_accounts_description: "Welcome to Hoyo Buddy! Enjoy various features by spending less than 1 minute to add your accounts.\n\nRegarding account security, please read the [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Select Your Account's Platform
@@ -148,13 +148,16 @@ download_image_failed_error_title: Image Download Failed
 edit_nickname_modal_title: Edit nickname
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
+email_verification_dialog_title: Email Verification Required
+email_verification_dialog_content: Please enter the verification code sent to your email
+email_verification_dialog_action: Verify
+email_verification_field_label: Verification code
 email-geetest.embed.title: 😥 Need to solve CAPTCHA before sending the verification code
 email_password_button_label: With email and password
-email_password_instructions_description: "<:INFO:1166743144889602190> Note: This method **DOESN'T WORK** for Miyoushe users, only HoYoLAB users can use this method.\n\n1. Click the `Complete CAPTCHA` button below\n2. You will be redirected to a website, click the button and complete the CAPTCHA\n3. After completing, click on the `Continue` button below\n"
 email_password_modal_email_input_label: email or username
 email_password_modal_password_input_label: password
 enter_email_password_button_label: Enter email/username and password
-enter_email_password_instructions_description: "<:INFO:1166743144889602190> This method requires you to enter your private information.\n\n• In exchange, your `cookie_token` can be refreshed automatically, which is used in features related to code redemption (for HoYoLAB users only).\n• Your email and password are **NOT** saved in the database **AT ALL**, so it's practically impossible for them to be leaked.\n• Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy), so you can verify that yourself.\n• It is ultimately your choice to decide whether to trust this bot or not.\n\nClick on the button below to start.\n"
+enter_email_password_instructions_description: "This method requires you to enter your private information.\n\n- In exchange, your `cookie_token` can be refreshed automatically, which is used in features related to code redemption (for HoYoLAB users only).\n- Your email and password are **NOT** saved in the database **AT ALL**, so it's practically impossible for them to be leaked.\n- Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy), so you can verify that yourself.\n- It is ultimately your choice to decide whether to trust this bot or not."
 enter_light_cone_level.button.label: Change light cone level
 error_footer: Please report this error to the developer via /feedback
 error_title: An Error Occurred
@@ -277,7 +280,7 @@ invalid_verification_code_description: Please check the verification code and tr
 invalid_verification_code_title: Invalid Verification Code
 items: Items
 javascript_button_label: With JavaScript
-javascript_instructions_description: "<:INFO:1166743144889602190> Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Copy the code below\n3. Click on the address bar and type `java`\n4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n5. Select all and copy the text that appears\n6. Click the button below and paste the text in the box\n"
+javascript_instructions_description: "Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Copy the code below\n3. Click on the address bar and type `java`\n4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n5. Select all and copy the text that appears\n6. Paste the text into the text box labeled 'cookies' below\n"
 level_str: "Lv.{level}"
 light_cones: Light Cones
 living_beings: Living Beings
@@ -624,3 +627,10 @@ events_command_game_param_description: Game to view events for
 natlan: Natlan
 top_percent: "Top {percent}%"
 profile_view_show_rank_button_label: Show rank
+submit_button_label: Submit
+show_tutorial_button_label: Show tutorial
+close_button_label: Close
+copy_code_button_label: Copy code
+copied_to_clipboard: Copied to clipboard
+required_field_error_message: This field is required
+accounts_added_snackbar_message: Accounts added successfully, redirecting you back to Discord...

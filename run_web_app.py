@@ -5,6 +5,7 @@ import logging
 import sys
 
 import flet as ft
+from dotenv import load_dotenv
 from loguru import logger
 
 from hoyo_buddy.l10n import Translator
@@ -22,6 +23,8 @@ async def web_app_entry(page: ft.Page) -> None:
 
 
 if __name__ == "__main__":
+    load_dotenv()
+
     logger.remove()
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
     logger.add(sys.stderr, level="INFO")

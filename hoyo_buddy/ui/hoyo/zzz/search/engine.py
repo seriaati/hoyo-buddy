@@ -50,6 +50,7 @@ class EngineSearchView(View):
         await self._fetch_data()
         self._add_items()
         await self.update(i)
+        self.message = await i.original_response()
 
 
 class RefinementSelect(Select[EngineSearchView]):

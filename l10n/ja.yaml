@@ -13,7 +13,6 @@ about_command_description: botについて
 about_embed.description: "Hoyoverseゲーマーのために特別に作られた、機能豊富で使いやすく、美しいデザインのDiscordボットです。"
 abundance: 豊富
 abyss.battles_won_fought: "勝利数/戦闘数: {val1}/{val2}"
-abyss.current: 今期
 abyss.deepest_descent: "最淵部: {val}"
 abyss.floor: "{val}層"
 abyss.most_defeats: "最多撃破数: {val}"
@@ -22,14 +21,12 @@ abyss.most_skills: "元素スキル使用回数:{val}"
 abyss.most_ults: "元素爆発使用回数 {val}"
 abyss.overview: 深境螺旋戦績
 abyss.phase_select.placeholder: 周期を選択
-abyss.previous: 前期
 abyss.strongest_strike: "最大ダメージ {val}"
 abyss.total_stars: "合計星数: {val}"
 abyss_chamber.challenge_target.embed.field.name: 挑戦目標
 abyss_chamber.embed.title: "{floor_index}層 - {chamber_index}間"
 abyss_chamber.enemy_level.embed.field.name: 敵レベル
 abyss_chamber.ley_line_disorder.embed.field.name: 地脈異常
-abyss_command_description: 現在の深境螺旋の敵を見る
 abyss_enemy.item_description: "HP：{HP}"
 acc_no_default_param_desc: ""
 account_autocomplete_param_description: "このコマンドを実行するアカウント。デフォルトは/accountsで選択したアカウントです。"
@@ -41,7 +38,6 @@ account_manager_no_accounts_description: まだアカウントがありません
 account_manager_title: アカウント管理
 account_not_found_error_message: "入力されたクエリからはアカウントを見つけることができませんでした。クエリを入力する代わりにオートコンプリートから選択してください。"
 account_not_found_error_title: アカウントが見つかりません
-account_server: サーバー
 account_username: ユーザーネーム
 accounts_command_description: あなたのアカウントを管理
 action_in_cooldown_error_message: ""
@@ -128,7 +124,6 @@ complete_geetest_button_description: ""
 complete_geetest_button_label: ""
 const_refine_str: ""
 continue_button_label: 続行
-cookies_button_label: ""
 cookies_modal_placeholder: ここにあなたのCookieをペーストしてください
 cryo: ""
 daily_button.label: ""
@@ -136,24 +131,25 @@ daily_check_in: ""
 daily_checkin_embed_description: "今月は{day}日チェックイン\n{missed}日チェックイン漏れ\n"
 daily_modal.title: ""
 daily_training_button.label: ""
-dark_mode_button_label: ダークモード
 delete_account_button_label: 選択したアカウントを削除
 dendro: ""
 destruction: ""
 devtools_button_label: ""
-devtools_instructions_description: "1. [HoYoLAB](https://www.hoyolab.com/home)または[Miyoushe](https://www.miyoushe.com/ys/)(中国版プレーヤー用)にログインする。\n2. F12またはCtrl+Shift+IでDevToolsを開く。\n3. 上部のナビゲーションバーにある >> アイコンを押します。\n4. アプリケーション」タブをクリックする。\n5. 左サイドバーの「クッキー」をクリックする。\n6. 今いるウェブサイト（例：https://www.hoyolab.com）をクリックする。\n7. 「フィルター」ボックスに「v2」と入力する。\n8. 下のボタンをクリックする。\n9. それぞれのクッキーの`値`をコピーし、ボックスに貼り付けます。\n"
+devtools_instructions_description: ""
 dice_cost_embed_field_name: サイコロコスト
 download_image_failed_error_message: ""
 download_image_failed_error_title: ""
 edit_nickname_modal_title: ニックネームを編集
 eidolon_superimpose_str: ""
 electro: 雷
+email_verification_dialog_title: ""
+email_verification_dialog_content: ""
+email_verification_dialog_action: ""
+email_verification_field_label: ""
 email-geetest.embed.title: ""
 email_password_button_label: ""
-email_password_instructions_description: "<:INFO:1166743144889602190>注意：この方法はMiyousheユーザーには使えません。\n\n1. 下の`CAPTCHA認証`ボタンをクリックしてください。\n2. ウェブサイトにリダイレクトされますので、ボタンをクリックしてCAPTCHA認証を完了してください。\n3. 完了後、下の「Continue」ボタンをクリックしてください。\n"
 email_password_modal_email_input_label: ""
 email_password_modal_password_input_label: パスワード
-enter_email_password_button_label: ""
 enter_email_password_instructions_description: ""
 enter_light_cone_level.button.label: ""
 error_footer: ""
@@ -172,6 +168,7 @@ exploration.electroculi: ""
 exploration.exquisite_chests: ""
 exploration.geoculi: ""
 exploration.hydroculi: ""
+exploration.pyroculi: ""
 exploration.luxurious_chests: ""
 exploration.placeholder: ""
 exploration.placeholder_quote: ''
@@ -274,7 +271,7 @@ invalid_verification_code_description: ""
 invalid_verification_code_title: ""
 items: アイテム
 javascript_button_label: JavaScriptで続行
-javascript_instructions_description: "<:INFO:1166743144889602190>注意t：この方法はほとんどの主要なPCブラウザで可能ですが、スマートフォンでは*Chrome** と**Edge**のみで使用可能です。\n\n1.  [HoYoLAB](https://www.hoyolab.com/home)か[Miyoushe](https://www.miyoushe.com/ys/) (中国版プレイヤー用)にログイン\n2. 下のコードをコピー\n3. アドレス欄をクリックし、'java'と入力\n4. コードをペーストし、'java'と'script'の文字の間に**スペースがないこと**を確認してください。そして、 Enterを押して続行します\n5. 出力されたすべての文字列を選択、コピーします\n6. 下にあるボタンをクリックし、テキストボックスにペーストしてください。\n"
+javascript_instructions_description: ""
 level_str: "Lv.{level}"
 light_cones: 光円錐
 living_beings: 生き物
@@ -303,7 +300,6 @@ no_challenge_data_err_title: ""
 no_characters_found_error_message: ""
 no_characters_found_error_title: ""
 no_game_accounts_error_message: ""
-no_game_accounts_error_title: ""
 notes-card.gi.completed: ""
 notes-card.gi.daily-commissions: ""
 notes-card.gi.expedition-finished: ""
@@ -339,7 +335,6 @@ player_not_found_description: ""
 player_not_found_title: ""
 preservation: ""
 prev_page_option_label: ""
-primogems: 原石
 process_notify_error.content: ""
 profile.add_image.button.label: ""
 profile.add_image_modal.image_url.label: ""
@@ -364,20 +359,12 @@ profile.character_select.placeholder: ""
 profile.generate_ai_art.button.label: ""
 profile.generate_ai_art_modal.negative_prompt.label: ""
 profile.generate_ai_art_modal.prompt.label: ""
-profile.generate_ai_art_modal.title: ""
 profile.genshin.character_select.description: ""
+profile.genshin.character_select.hoyolab.description: ""
 profile.image_select.custom_image.label: ""
 profile.image_select.default_collection.label: ""
 profile.image_select.none.label: ""
 profile.image_select.placeholder: ""
-profile.info.embed.custom_images.name: ""
-profile.info.embed.custom_images.value: ""
-profile.info.embed.dark_mode.value: ""
-profile.info.embed.primary_color.name: ""
-profile.info.embed.primary_color.value: ""
-profile.info.embed.templates.name: ""
-profile.info.embed.templates.value: ""
-profile.info.embed.title: ""
 profile.player_info.button.label: ""
 profile.player_info.embed.description: ""
 profile.player_info.gi.embed.description: ""
@@ -443,7 +430,6 @@ search_command_query_param_description: 検索対象のクエリ
 search_command_query_param_name: クエリ
 select_account.embed.description: ""
 select_account.embed.title: ""
-select_accounts_to_add_placeholder: 追加したいアカウントを選択してください
 settings_command_description: ユーザー設定を行う
 skill_attributes_embed_field_name: ""
 skill_level.modal.title: ""
@@ -460,10 +446,6 @@ the_hunt: ""
 threshold.embed.description: ""
 thunder: ""
 thursday: ""
-toggle_off_text: ""
-toggle_on_text: ""
-traditional_chinese_server: ""
-try_other_method_error_message: ""
 tuesday: ""
 unreleased_content: ""
 user_autocomplete_param_description: ""
@@ -491,7 +473,6 @@ yatta_character_skill_spread_weakness_break_field_value: "拡散：{spread_weakn
 yatta_character_skill_weakness_break_field_name: 弱点撃破
 yatta_character_trace_page_label: 種族
 yatta_item_sources_field_name: ソース
-yatta_light_cone_ability_field_name: 能力
 characters.show_owned_only: ""
 redeem_code.ar_too_low: ""
 data_not_public.title: ""
@@ -605,13 +586,28 @@ dyk_github: ""
 dyk_python: ""
 dyk_unreleased: ""
 dyk_team_card: ""
+dyk_set_default_acc: ""
 title_dyk: ""
 new_zzz_temp: ""
 button_label_dyk: ""
 events_view_start_date_embed_field: ""
 events_view_end_date_embed_field: ""
 events_view_ann_select_placeholder: ""
+events_view_banner_type_label: ""
 events_command_description: ""
 events_view_ann_type_select_placeholder: ""
 events_view_content_label: ""
 events_command_game_param_description: ""
+natlan: ""
+top_percent: ""
+profile_view_show_rank_button_label: ""
+submit_button_label: ""
+show_tutorial_button_label: ""
+close_button_label: ""
+copy_code_button_label: ""
+copied_to_clipboard: ""
+required_field_error_message: ""
+accounts_added_snackbar_message: ""
+account_add_start_title: ""
+account_add_start_message: ""
+hbls_button_label: ""

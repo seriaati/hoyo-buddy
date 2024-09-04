@@ -13,7 +13,6 @@ about_command_description: 關於機器人
 about_embed.description: "一個為 Hoyoverse 遊戲玩家量身訂做的 Discord 機器人, 功能豐富、易於使用且設計精美。"
 abundance: 豐饒
 abyss.battles_won_fought: "獲勝次數/戰鬥次數: {val1}/{val2}"
-abyss.current: 當期
 abyss.deepest_descent: "最深抵達: {val}"
 abyss.floor: "第 {val} 層"
 abyss.most_defeats: "最多擊破數: {val}"
@@ -22,14 +21,12 @@ abyss.most_skills: "最多元素戰技施放次數: {val}"
 abyss.most_ults: "最多元素爆發施放次數: {val}"
 abyss.overview: 深境螺旋總覽
 abyss.phase_select.placeholder: 選擇階段
-abyss.previous: 上期
 abyss.strongest_strike: "最強一擊: {val}"
 abyss.total_stars: "總星數: {val}"
 abyss_chamber.challenge_target.embed.field.name: 挑戰目標
 abyss_chamber.embed.title: "第 {floor_index} 層 - 第 {chamber_index} 間"
 abyss_chamber.enemy_level.embed.field.name: 敵人等級
 abyss_chamber.ley_line_disorder.embed.field.name: 地脈異常
-abyss_command_description: 查看當前深境螺旋的敵人
 abyss_enemy.item_description: "血量: {HP}"
 acc_no_default_param_desc: 用於運行此指令的帳戶
 account_autocomplete_param_description: "選擇用來運行指令的帳戶，默認為在 /accounts 中選擇的"
@@ -41,13 +38,12 @@ account_manager_no_accounts_description: 你目前沒有任何帳戶。
 account_manager_title: 帳戶管理
 account_not_found_error_message: "無法透過提供的關鍵字找到任何帳戶，請從自動完成中選擇選項，而不是輸入自己的關鍵字。"
 account_not_found_error_title: 找不到該帳戶
-account_server: 伺服器
 account_username: 使用者名稱
 accounts_command_description: 管理您的帳戶
 action_in_cooldown_error_message: "請在 {available_time}  時再試一次。 "
 action_in_cooldown_error_title: 操作正在冷卻
 add_account_button_label: 新增帳戶
-add_hoyolab_acc.embed.description: "1. 透過電子郵件和密碼：最推薦的方式，它最簡單\n2. 透過開發者工具：只能在電腦上運作，如果你對第一個方式有安全疑慮的話，這是一個比較安全的選擇\n3. 透過 JavaScript：過期的方式，大多數帳戶已經無法使用了。可以在電腦和手機上的 Google Chrome 或 Microsoft Edge 運作。\n\n"
+add_hoyolab_acc.embed.description: "1. 透過電子郵件和密碼：最推薦的方式，它最簡單\n2. 透過開發者工具：只能在電腦上運作，如果你對第一個方式有安全疑慮的話，這是一個比較安全的選擇\n3. 透過 JavaScript：過期的方式，大多數帳戶已經無法使用了。可以在電腦和手機上的 Google Chrome 或 Microsoft Edge 運作。"
 add_hoyolab_acc.embed.title: 選擇一個新增帳戶的方式
 adding_accounts_description: "歡迎使用 Hoyo Buddy! 僅需花費 1 分鐘的時間即可快速新增帳戶並開始享受各式功能。\n\n關於帳戶安全問題，請詳閱 [維基頁面](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security) ，關於我們如何使用及蒐集你的資料，請參閱 [隱私權政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: 選擇帳戶的所屬平台
@@ -128,7 +124,6 @@ complete_geetest_button_description: 點擊下方按鈕來完成 Geetest 驗證
 complete_geetest_button_label: 完成 Geetest 驗證
 const_refine_str: "{const}命{refine}精"
 continue_button_label: 繼續
-cookies_button_label: 輸入 Cookies
 cookies_modal_placeholder: 在此貼上你的 Cookies...
 cryo: 冰
 daily_button.label: 每日任務通知
@@ -136,25 +131,26 @@ daily_check_in: 每日簽到
 daily_checkin_embed_description: "本月已簽到 {day} 天\n錯過簽到 {missed} 天\n"
 daily_modal.title: 每日任務通知設定
 daily_training_button.label: 每日實訓通知
-dark_mode_button_label: 深色模式
 delete_account_button_label: 刪除所選帳戶
 dendro: 草
 destruction: 毀滅
 devtools_button_label: 透過開發者工具（電腦限定）
-devtools_instructions_description: "1. 登入 [HoYoLAB](https://www.hoyolab.com/home) 或 [米遊社](https://www.miyoushe.com/ys/) （中國玩家適用）\n2. 透過 F12 或 Ctrl+Shift+I 打開開發者工具\n3. 點擊 >> 按鈕\n4. 點擊 `Application` 頁面\n5. 點擊位於左方的 `Cookies`\n6. 點擊你當前位於的網站（例如 https://www.hoyolab.com）\n7. 在 `Filter` 欄位中輸入 `v2`\n8, 點擊下方的按鈕\n9. 複製每個 Cookie 的值並將它們黏貼於框中\n"
+devtools_instructions_description: "1. 登入 [HoYoLAB](https://www.hoyolab.com/home) 或 [米遊社](https://www.miyoushe.com/ys/) （中國玩家適用）\n2. 透過 F12 或 Ctrl+Shift+I 打開開發者工具\n3. 點擊 >> 按鈕\n4. 點擊 `Application` 頁面\n5. 點擊位於左方的 `Cookies`\n6. 點擊你當前位於的網站（例如 https://www.hoyolab.com）\n7. 在 `Filter` 欄位中輸入 `v2`\n8, 點擊下方的按鈕\n9. 複製每個 Cookie 的值並將它們黏貼於框中"
 dice_cost_embed_field_name: 骰子花費
 download_image_failed_error_message: "無法下載圖片 {url}，狀態碼 {status}。\n稍後再試、使用其他圖片或檢查圖片網址是否有效。"
 download_image_failed_error_title: 圖片下載失敗
 edit_nickname_modal_title: 編輯暱稱
 eidolon_superimpose_str: "魂{eidolon}疊{superimpose}"
 electro: 雷
-email-geetest.embed.title: 😥 需要完成 CAPTCHA 驗證後才能寄送驗證碼
+email_verification_dialog_title: 需要驗證
+email_verification_dialog_content: 請輸入收到的驗證碼
+email_verification_dialog_action: 驗證
+email_verification_field_label: 驗證碼
+email-geetest.embed.title: 在寄送驗證碼前需要進行 CAPTCHA 驗證
 email_password_button_label: 透過電子郵件和密碼
-email_password_instructions_description: "<:INFO:1166743144889602190> 注意: 此方式 **不適用於** 米遊社的使用者，只有 Hoyolab 的使用者可以使用這個方式。\n\n1. 選擇下方的「完成 CAPTCHA」選項\n2. 你會被重新導向至一個網站，點擊按鈕來完成 CAPTCHA\n3. 完成後，選擇下方的「繼續」選項\n"
 email_password_modal_email_input_label: 電子郵件或使用者名稱
 email_password_modal_password_input_label: 密碼
-enter_email_password_button_label: 輸入電子郵件/使用者名稱和密碼
-enter_email_password_instructions_description: "<:INFO:1166743144889602190> 此方式需輸入私人資訊。\n\n• 作為交換，你的 `cookie_token` 將能被自動刷新，這在兌換碼相關的功能中會有用處（只有 HoYoLAB 使用者受益）。\n• 你的電子郵件和密碼 **完全不會** 被保存在資料庫中，所以它們幾乎不可能被洩漏。\n• 此外，這個機器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上是開源的，所以你可以自行驗證這點。\n• 你保有是否信任此機器人的最終決定權\n\n點擊下方的按鈕開始。\n"
+enter_email_password_instructions_description: "此方式需輸入私人資訊。\n\n- 作為交換，你的 `cookie_token` 將能被自動刷新，這在兌換碼相關的功能中會有用處（只有 HoYoLAB 使用者受益）。\n- 你的電子郵件和密碼 **完全不會** 被保存在資料庫中，所以它們幾乎不可能被洩漏。\n- 此外，這個機器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上是開源的，所以你可以自行驗證這點。\n- 你保有是否信任此機器人的最終決定權"
 enter_light_cone_level.button.label: 變更光錐等級
 error_footer: 請透過 /feedback 向開發者回報這個錯誤
 error_title: 發生了一個錯誤
@@ -228,7 +224,7 @@ game_value_incomplete_param_error_message: 你必須指定 UID 所屬的遊戲
 geeetest_verification_complete: 驗證完成
 geeetest_verification_timeout: 驗證已過期
 geeetest_verification_timeout_description: 驗證已過期。請使用</geetest>指令再試一次。
-geetest.embed.title: 😅 需要完成 CAPTCHA 驗證後才能登入
+geetest.embed.title: 在登入前需要進行 CAPTCHA 驗證
 geetest.no_need: 無需進行 Geetest 驗證
 geetest.no_need.description: "你從來不需要做 geetest 驗證！你為什麼在這裡？！"
 geetest.required: 需要進行 Geetest 驗證
@@ -277,7 +273,7 @@ invalid_verification_code_description: 請檢查驗證碼後再試一次
 invalid_verification_code_title: 無效的驗證碼
 items: 物品
 javascript_button_label: 透過 JavaScript
-javascript_instructions_description: "<:INFO:1166743144889602190> 注意: 此方式在電腦上理應適用於所有主流瀏覽器，但在手機上只適用於 **Chrome** 和 **Edge**。\n\n1. 登入 [HoYoLAB](https://www.hoyolab.com/home) 或 [米遊社](https://www.miyoushe.com/ys/) （中國玩家適用）\n2. 複製下方的程式碼\n3. 點擊網址列並輸入 `java`\n4. 將程式碼貼上後按 ENTER。確保 `java` 和 `script` 之間 **沒有任何空格**。\n5. 全選並複製出現的文字\n6. 點擊下方按鈕並將文字貼在框內\n"
+javascript_instructions_description: "注意: 此方式在電腦上理應適用於所有主流瀏覽器，但在手機上只適用於 **Chrome** 和 **Edge**。\n\n1. 登入 [HoYoLAB](https://www.hoyolab.com/home) 或 [米遊社](https://www.miyoushe.com/ys/) （中國玩家適用）\n2. 複製下方的程式碼\n3. 點擊網址列並輸入 `java`\n4. 將程式碼貼上後按 ENTER。確保 `java` 和 `script` 之間 **沒有任何空格**。\n5. 全選並複製出現的文字\n6. 將複製的內容黏貼在下方的文字框內"
 level_str: "{level}等"
 light_cones: 光錐
 living_beings: 生物
@@ -306,7 +302,6 @@ no_challenge_data_err_title: "沒有 {challenge} 資料"
 no_characters_found_error_message: 請在選擇其他篩選條件後重新嘗試。
 no_characters_found_error_title: 無法找到任何符合篩選條件的角色
 no_game_accounts_error_message: "此{platform}帳戶沒有任何遊戲帳戶。"
-no_game_accounts_error_title: 沒有遊戲帳戶
 notes-card.gi.completed: 已完成
 notes-card.gi.daily-commissions: 每日委託
 notes-card.gi.expedition-finished: 已完成
@@ -342,7 +337,6 @@ player_not_found_description: 請檢查提供的 UID
 player_not_found_title: 玩家不存在
 preservation: 存護
 prev_page_option_label: 上一頁
-primogems: 原石
 process_notify_error.content: "在處理你的即時便籤通知時發生了錯誤。\nHoyo Buddy 已經將此帳號的此通知功能關閉，你可以使用</notes>將它重新開啟。\n如果這個錯誤持續發生，或是你不知道如何處理，請透過</feedback>與開發者聯繫。\n"
 profile.add_image.button.label: 新增自定義圖片
 profile.add_image_modal.image_url.label: 圖片網址
@@ -367,21 +361,12 @@ profile.character_select.placeholder: 選擇一個角色
 profile.generate_ai_art.button.label: 生成 AI 繪圖
 profile.generate_ai_art_modal.negative_prompt.label: 負面提示
 profile.generate_ai_art_modal.prompt.label: 提示
-profile.generate_ai_art_modal.title: 生成 AI 繪圖
 profile.genshin.character_select.description: "{c}命{r}精 | {d}"
 profile.genshin.character_select.hoyolab.description: "{c}命{r}精 | {d} | {platform}"
 profile.image_select.custom_image.label: "自訂圖片 ({num})"
 profile.image_select.default_collection.label: "Hoyo Buddy 收藏 ({num})"
 profile.image_select.none.label: 官方繪圖
 profile.image_select.placeholder: 選擇一張圖片
-profile.info.embed.custom_images.name: 自定義圖片
-profile.info.embed.custom_images.value: "- Hoyo Buddy 附帶了一些我喜歡的預設繪圖，但你也可以添加自己的圖片。\n- 只支援圖片網址，且必須是公開可訪問的；不支援GIF圖片。\n- 對於Hoyo Buddy的樣式，建議使用垂直圖片。\n- 對於伺服器擁有者，我不對您或您的成員添加的任何不適宜的圖片負責。\n- 紅色按鈕將刪除當前自定義圖片並恢復為默認圖片。"
-profile.info.embed.dark_mode.value: "- 此設定與</settings>中的設定分別儲存，預設為亮色模式。\n- 亮色模式的卡片通常看起來更好，因為顏色並未針對深色模式進行優化。\n- 歡迎提供關於深色模式卡片顏色的建議！"
-profile.info.embed.primary_color.name: 主色
-profile.info.embed.primary_color.value: "- 僅支援十六進位色碼。"
-profile.info.embed.templates.name: 樣式
-profile.info.embed.templates.value: "- Hoyo Buddy 有我自己製作的卡片樣式，但我也加入了其他開發者製作的樣式。\n- 第3方樣式的程式碼並非由我維護，所以我無法保證其品質；對於任何與它們相關的問題，我也不負責任。\n- 第3方樣式可能會有功能上的限制。\n- 快取資料的角色只能使用 Hoyo Buddy 的樣式。"
-profile.info.embed.title: 關於卡片設定
 profile.player_info.button.label: 玩家資訊
 profile.player_info.embed.description: "開拓等級: {level}\n均衡等級: {world_level}\n好友數量: {friend_count}\n光錐: {light_cones}\n角色: {characters}\n成就: {achievements}\n"
 profile.player_info.gi.embed.description: "冒險等階: {adventure_rank}\n深境螺旋: {spiral_abyss}\n成就: {achievements}\n"
@@ -445,9 +430,8 @@ search_command_game_param_description: 欲搜尋的遊戲
 search_command_game_param_name: 遊戲
 search_command_query_param_description: 欲搜尋的關鍵字
 search_command_query_param_name: 關鍵字
-select_account.embed.description: 選擇你想要添加的帳戶
+select_account.embed.description: 選擇欲添加至 Hoyo Buddy 的帳戶
 select_account.embed.title: 🎉 歡迎來到 Hoyo Buddy！
-select_accounts_to_add_placeholder: 選擇欲新增的帳戶…
 settings_command_description: 配置使用者設定
 skill_attributes_embed_field_name: "技能屬性 ({level}等)"
 skill_level.modal.title: 輸入技能等級
@@ -464,10 +448,6 @@ the_hunt: 巡獵
 threshold.embed.description: "已達閥值 ({threshold})"
 thunder: 雷
 thursday: 星期四
-toggle_off_text: "關"
-toggle_on_text: "開"
-traditional_chinese_server: 繁體中文伺服器
-try_other_method_error_message: "請嘗試使用其他方式登入。\n如果你正在使用開發者工具手動輸入你的 cookies，請確保你有正確的將他們複製過去。"
 tuesday: 星期二
 unreleased_content: 尚未釋出的內容
 user_autocomplete_param_description: "用於搜尋帳戶的使用者，預設為自己"
@@ -495,7 +475,6 @@ yatta_character_skill_spread_weakness_break_field_value: "範圍: {spread_weakne
 yatta_character_skill_weakness_break_field_name: 弱點擊破
 yatta_character_trace_page_label: 行跡
 yatta_item_sources_field_name: 來源
-yatta_light_cone_ability_field_name: 技能
 characters.show_owned_only: 僅顯示已擁有的角色
 redeem_code.ar_too_low: 冒險等階過低
 data_not_public.title: 資料沒有公開
@@ -624,3 +603,13 @@ events_command_game_param_description: 用於查看活動的遊戲
 natlan: 納塔
 top_percent: "前 {percent}%"
 profile_view_show_rank_button_label: 顯示排名
+submit_button_label: 提交
+show_tutorial_button_label: 顯示教學
+close_button_label: 關閉
+copy_code_button_label: 複製程式碼
+copied_to_clipboard: 已複製到剪貼簿
+required_field_error_message: 此欄位為必填欄位
+accounts_added_snackbar_message: 帳戶新增成功，正在將你重新導向至 Discord...
+account_add_start_title: 新增帳戶
+account_add_start_message: 點擊下方按鈕將會啟動 Hoyo Buddy 登入系統，跟隨指引完成帳戶設定。當你完成後，使用 </accounts> 指令來查看你新增的帳戶。
+hbls_button_label: 開始！

@@ -13,7 +13,6 @@ about_command_description: Tentang bot
 about_embed.description: "Bot discord yang kaya fitur, mudah digunakan, dan dirancang dengan baik, khusus dibuat untuk game Hoyoverse."
 abundance: Abundance
 abyss.battles_won_fought: "Jumlah Pertarungan {val1}/{val2}"
-abyss.current: Fase saat ini
 abyss.deepest_descent: "Pencapaian Tertinggi: {val}"
 abyss.floor: "Lantai {val}"
 abyss.most_defeats: "Mengalahkan Terbanyak: {val}"
@@ -22,14 +21,12 @@ abyss.most_skills: "Menggunakan Skill Terbanyak: {val}"
 abyss.most_ults: "Menggunakan Burst Terbanyak: {val}"
 abyss.overview: Ringkasan Spiral Abyss
 abyss.phase_select.placeholder: Pilih fase
-abyss.previous: Fase sebelumnya
 abyss.strongest_strike: "Serangan Tunggal Terkuat: {val}"
 abyss.total_stars: "Total Bintang: {val}"
 abyss_chamber.challenge_target.embed.field.name: Target Tantangan
 abyss_chamber.embed.title: "Lantai {floor_index} - Ruang {chamber_index}"
 abyss_chamber.enemy_level.embed.field.name: Level Musuh
 abyss_chamber.ley_line_disorder.embed.field.name: Gangguan Ley Line
-abyss_command_description: Lihat musuh abyss saat ini
 abyss_enemy.item_description: "HP: {HP}"
 acc_no_default_param_desc: Akun untuk menjalankan perintah ini
 account_autocomplete_param_description: "Akun untuk menjalankan perintah ini, defaultnya adalah akun yang dipilih di /accounts"
@@ -41,13 +38,12 @@ account_manager_no_accounts_description: Kamu belum memiliki akun apa pun.
 account_manager_title: Kelola Akun
 account_not_found_error_message: "Tidak dapat menemukan akun dengan kueri yang diberikan, harap pilih pilihan dari pelengkapan otomatis alih-alih mengetik kueri kamu sendiri."
 account_not_found_error_title: Akun tidak ditemukan
-account_server: Server
 account_username: Username
 accounts_command_description: Kelola akunmu
 action_in_cooldown_error_message: "Silakan coba lagi di {available_time}."
 action_in_cooldown_error_title: Aksi dalam Cooldown
 add_account_button_label: Tambah akun
-add_hoyolab_acc.embed.description: "1. Dengan email dan kata sandi: Paling direkomendasikan, dan paling mudah\n2. Dengan DevTools: Hanya berfungsi pada desktop, opsi yang lebih aman jika kamu memiliki kekhawatiran keamanan dengan yang pertama\n3. Dengan JavaScript: Metode yang ketinggalan jaman, tidak akan berfungsi untuk sebagian besar akun. Berfungsi di Google Chrome atau Microsoft Edge pada desktop dan mobile\n\n"
+add_hoyolab_acc.embed.description: "1. Dengan email dan kata sandi: Paling direkomendasikan, dan paling mudah\n2. Dengan DevTools: Hanya berfungsi pada desktop, opsi yang lebih aman jika kamu memiliki kekhawatiran keamanan dengan yang pertama\n3. Dengan JavaScript: Metode yang ketinggalan jaman, tidak akan berfungsi untuk sebagian besar akun. Berfungsi di Google Chrome atau Microsoft Edge pada desktop dan mobile"
 add_hoyolab_acc.embed.title: Pilih metode untuk menambahkan akun kamu
 adding_accounts_description: "Selamat datang di Hoyo Buddy! Nikmati berbagai fitur keren dengan meluangkan waktu kurang dari 1 menit untuk menambahkan akun kamu.\n\nMengenai keamanan akun, silakan baca [Halaman Wiki](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), untuk cara kami menggunakan dan mengumpulkan data kamu, silakan baca [Kebijakan Privasi]( https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Pilih Platform Akun Kamu
@@ -100,7 +96,7 @@ characters.filter.placeholder: Pilih filter...
 characters.first_time.embed.description: "Jika ini pertama kali kamu menggunakan perintah ini, maka ini membutuhkan waktu beberapa saat.\nIni dikarenakan suatu perintah mengambil data dari banyak sumber.\nIni akan lebih cepat saat kamu menggunakan perintah ini lagi.\nHarap bersabar dan tunggu hingga sumber daya selesai diambil"
 characters.first_time.title: Mengambil sumber daya...
 characters.level_order.footer: ""
-characters.extra_detail.footer: ""
+characters.extra_detail.footer: "Gunakan /profile untuk melihat detail karakter"
 hsr.ultimate: Ultimate
 hsr.normal_attack: Normal attack
 hsr.skill: Skill
@@ -128,7 +124,6 @@ complete_geetest_button_description: Klik tombol di bawah ini untuk melengkapi v
 complete_geetest_button_label: Lengkapi geetest
 const_refine_str: "C{const}R{refine}"
 continue_button_label: Selanjutnya
-cookies_button_label: Masukkan cookies
 cookies_modal_placeholder: Tempel cookies kamu disini...
 cryo: Cryo
 daily_button.label: Pengingat harian
@@ -136,32 +131,33 @@ daily_check_in: Absen harian
 daily_checkin_embed_description: "Absen {day} hari bulan ini\nTidak absen {missed} hari\n"
 daily_modal.title: Pengaturan Pengingat Harian
 daily_training_button.label: Pengingat Pelatihan Harian
-dark_mode_button_label: Mode gelap
 delete_account_button_label: Hapus akun yang dipilih
 dendro: Dendro
 destruction: Destruction
 devtools_button_label: Dengan DevTools (Hanya pada Dekstop)
-devtools_instructions_description: "1. Masuk ke [HoYoLAB](https://www.hoyolab.com/home) atau [Miyoushe](https://www.miyoushe.com/ys/) (untuk pemain CN)\n2. Buka DevTools dengan menekan F12 atau Ctrl+Shift+I\n3. Tekan ikon >> pada bilah navigasi atas\n4. Klik pada tab `Application`\n5. Klik `Cookie` di sidebar kiri\n6. Klik situs web yang kamu buka (misalnya https://www.hoyolab.com)\n7. Ketik `v2` di kotak `Filter`\n8. Klik tombol di bawah\n9. Salin `Value` setiap cookie dan tempelkan ke dalam kotak\n"
+devtools_instructions_description: "1. Masuk ke [HoYoLAB](https://www.hoyolab.com/home) atau [Miyoushe](https://www.miyoushe.com/ys/) (untuk pemain CN)\n2. Buka DevTools dengan menekan F12 atau Ctrl+Shift+I\n3. Tekan ikon >> pada bilah navigasi atas\n4. Klik pada tab `Application`\n5. Klik `Cookie` di sidebar kiri\n6. Klik situs web yang kamu buka (misalnya https://www.hoyolab.com)\n7. Ketik `v2` di kotak `Filter`\n8. Klik tombol di bawah\n9. Salin `Value` setiap cookie dan tempelkan ke dalam kotak"
 dice_cost_embed_field_name: Biaya Dadu
 download_image_failed_error_message: "Tidak dapat mengunduh gambar {url} dengan status kode{status}.\ncoba lagi nanti, coba dengan gambar berbeda, atau cek apakah URL gambar valid."
 download_image_failed_error_title: Gambar gagal diunduh
 edit_nickname_modal_title: Edit nickname
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
-email-geetest.embed.title: 😥 Perlu menyelesaikan CAPTCHA sebelum mengirim kode verifikasi
+email_verification_dialog_title: ""
+email_verification_dialog_content: ""
+email_verification_dialog_action: ""
+email_verification_field_label: ""
+email-geetest.embed.title: ""
 email_password_button_label: Dengan email dan password
-email_password_instructions_description: "<:INFO:1166743144889602190> Catatan: Cara ini **TIDAK BEKERJA** untuk pengguna Miyoushe, hanya pengguna HoYoLAB yang bisa menggunakan cara ini.\n\n1. Klik tombol `Lengkapi CAPTCHA` di bawah\n2. kamu akan diarahkan ke sebuah situs web, klik tombol dan lengkapi CAPTCHA\n3. Setelah selesai, klik tombol `Lanjutkan` di bawah\n"
 email_password_modal_email_input_label: email atau username
 email_password_modal_password_input_label: password
-enter_email_password_button_label: Masukkan email/username dan kata sandi
-enter_email_password_instructions_description: "<:INFO:1166743144889602190> Metode ini mengharuskan kamu memasukkan informasi pribadi kamu.\n\n• Sebagai gantinya, `cookie_token` kamu dapat diperbarui secara otomatis, yang digunakan dalam fitur yang terkait dengan penukaran kode (hanya untuk pengguna HoYoLAB).\n• Email dan kata sandi kamu **TIDAK** disimpan dalam database **SAMA SEKALI**, sehingga hampir tidak mungkin untuk terjadi kebocoran data.\n• Selain itu, bot ini open source di [GitHub](https://github.com/seriaati/hoyo-buddy), sehingga kamu dapat memverifikasi sendiri.\n• Pada akhirnya, itu adalah pilihan kamu sendiri untuk memutuskan apakah kamu ingin percaya bot ini atau tidak.\n\nKlik tombol di bawah untuk memulai.\n"
+enter_email_password_instructions_description: "Metode ini mengharuskan kamu memasukkan informasi pribadi kamu.\n\n• Sebagai gantinya, `cookie_token` kamu dapat diperbarui secara otomatis, yang digunakan dalam fitur yang terkait dengan penukaran kode (hanya untuk pengguna HoYoLAB).\n• Email dan kata sandi kamu **TIDAK** disimpan dalam database **SAMA SEKALI**, sehingga hampir tidak mungkin untuk terjadi kebocoran data.\n• Selain itu, bot ini open source di [GitHub](https://github.com/seriaati/hoyo-buddy), sehingga kamu dapat memverifikasi sendiri.\n• Pada akhirnya, itu adalah pilihan kamu sendiri untuk memutuskan apakah kamu ingin percaya bot ini atau tidak."
 enter_light_cone_level.button.label: Ubah level light cone
 error_footer: Silakan laporkan kesalahan ini kepada pengembang melalui /feedback
 error_title: Terjadi kesalahan
 erudition: Erudition
 exceptions.card_not_ready_error.message: "Saat karakter baru dirilis, saya perlu meluangkan waktu untuk mengumpulkan fanart dan mengoptimalkan warna untuk kartu mereka.\nJika kamu ingin mempercepat proses ini, kamu dapat berkontribusi pada data kartu dengan menghubungi saya di [Server Discord](https://dsc.gg/hoyo-buddy)."
 exceptions.card_not_ready_error.title: "Data kartu untuk {character_name} belum siap."
-exped.embed.description: Satu (atau lebih) ekspedisi selesai
+exped.embed.description: ""
 exped_button.label: Pengingat ekspedisi
 exped_modal.title: Pengaturan Pengingat Ekspedisi
 exploration.anemoculi: "Anemoculus: {anemoculi}"
@@ -172,6 +168,7 @@ exploration.electroculi: "Electroculus: {electroculi}"
 exploration.exquisite_chests: Exquisite
 exploration.geoculi: "Geoculus: {geoculi}"
 exploration.hydroculi: "Hydroculus: {hydroculi}"
+exploration.pyroculi: ""
 exploration.luxurious_chests: Luxurious
 exploration.placeholder: Belum rilis
 exploration.placeholder_quote: '"Setiap perjalanan pasti ada akhirnya, tidak perlu terburu-buru."
@@ -187,7 +184,7 @@ exploration_command_description: Lihat statistik eksplorasimu di Genshin Impact
 farm_add_command.item_already_in_list: Item sudah ada dalam daftar
 farm_add_command.item_already_in_list_description: Item ini sudah ada di dalam daftar pengingat farming kamu
 farm_add_command_description: Tambah karakter/senjata untuk diberitahu ketika materialnya dapat difarming
-farm_check.farmable_today: ""
+farm_check.farmable_today: "Material {name} dapat diambil hari ini"
 farm_check.use_farm_notify: "Gunakan /farm reminder untuk konfigurasikan pengaturan pengingat\nGunakan /farm view untuk melihat semua item yang bisa difarming hari ini"
 farm_notify.add_item: Tambahkan item
 farm_notify.add_item.embed.description: "Untuk menambahkan item, gunakan perintah </farm add>"
@@ -227,7 +224,7 @@ game_value_incomplete_param_error_message: Kamu harus menentukan UID dari game
 geeetest_verification_complete: Verifikasi selesai
 geeetest_verification_timeout: Batas waktu verfikasi
 geeetest_verification_timeout_description: Batas waktu verifikasi telah habis. Silakan gunakan perintah </geetest> untuk mengulanginya lagi.
-geetest.embed.title: 😅 Perlu menyelesaikan CAPTCHA sebelum masuk
+geetest.embed.title: ""
 geetest.no_need: Tidak perlu geetest
 geetest.no_need.description: "Kamu tidak perlu melalukan geetest! Kenapa kamu di sini?!"
 geetest.required: Diperlukan Verifikasi Geetest
@@ -276,7 +273,7 @@ invalid_verification_code_description: Silakan periksa kode verifikasi dan coba 
 invalid_verification_code_title: Kode verifikasi tidak valid
 items: Item
 javascript_button_label: Dengan JavaScript
-javascript_instructions_description: "<:INFO:1166743144889602190> Catatan: Metode ini dapat digunakan pada semua browser utama di desktop, namun pada perangkat seluler, metode ini hanya dapat digunakan pada **Chrome** dan **Edge**.\n\n1. Login ke [HoYoLAB](https://www.hoyolab.com/home) atau [Miyoushe](https://www.miyoushe.com/ys/) (untuk pemain CN)\n2. Salin kode di bawah\n3. Klik pada bilah alamat dan ketik `java`\n4. Tempelkan kodenya dan tekan enter. Pastikan **TIDAK ADA SPASI** antara `java` dan `script`\n5. Pilih semua dan salin teks yang muncul\n6. Klik tombol di bawah dan tempel teks di dalam kotak\n"
+javascript_instructions_description: ""
 level_str: "Lv.{level}"
 light_cones: Light Cone
 living_beings: Makhluk Hidup
@@ -305,7 +302,6 @@ no_challenge_data_err_title: "Tidak ada Data {challenge}"
 no_characters_found_error_message: Silakan coba lagi dengan filter yang berbeda
 no_characters_found_error_title: Tidak ada karakter yang ditemukan dengan filter yang dipilih
 no_game_accounts_error_message: "Tidak ada akun game di akun {platform}. "
-no_game_accounts_error_title: Tidak Ada Akun
 notes-card.gi.completed: Selesai
 notes-card.gi.daily-commissions: Komisi Harian
 notes-card.gi.expedition-finished: Selesai
@@ -341,7 +337,6 @@ player_not_found_description: Silakan periksa kembali UID yang diberikan
 player_not_found_title: Pemain tidak ditemukan
 preservation: Preservation
 prev_page_option_label: Halaman Sebelumnya
-primogems: primogems
 process_notify_error.content: "Terjadi kesalahan saat memproses pengingat catatan real-timemu\nHoyo Buddy telah menonaktifkan pengingat untuk akun ini, kamu dapat mengaktifkannya kembali menggunakan </notes>\nJika kesalahan ini masih terjadi atau kamu tidak tahu cara memperbaikinya, silakan hubungi pengembang melalui </feedback>.\n"
 profile.add_image.button.label: Tambah gambar kustom
 profile.add_image_modal.image_url.label: URL Gambar
@@ -366,20 +361,12 @@ profile.character_select.placeholder: Pilih karakter
 profile.generate_ai_art.button.label: Buat gambar AI
 profile.generate_ai_art_modal.negative_prompt.label: Perintah Negatif
 profile.generate_ai_art_modal.prompt.label: Perintah
-profile.generate_ai_art_modal.title: Generate AI Art
 profile.genshin.character_select.description: ""
+profile.genshin.character_select.hoyolab.description: ""
 profile.image_select.custom_image.label: "Gambar Kustom ({num})"
 profile.image_select.default_collection.label: "Koleksi Hoyo Buddy ({num})"
 profile.image_select.none.label: Gambar resmi
 profile.image_select.placeholder: Pilih gambar
-profile.info.embed.custom_images.name: Gambar Kustom
-profile.info.embed.custom_images.value: "- Hoyo Buddy hadir dengan beberapa seni preset yang saya suka, tetapi kamu juga dapat menambahkan gambar kamu sendiri.\n- Hanya URL gambar langsung yang didukung, dan harus dapat diakses publik; GIF tidak didukung.\n- Untuk template Hoyo Buddy, disarankan menggunakan gambar vertikal.\n- Bagi pemilik server, saya tidak bertanggung jawab atas gambar NSFW apa pun yang kamu atau anggota kamu tambahkan.\n- Tombol merah menghapus gambar khusus saat ini dan kembali ke gambar default."
-profile.info.embed.dark_mode.value: ""
-profile.info.embed.primary_color.name: Warna Primer
-profile.info.embed.primary_color.value: "- Hanya kode warna hex yang didukung."
-profile.info.embed.templates.name: Template
-profile.info.embed.templates.value: "- Hoyo Buddy mempunyai template buatan saya sendiri, namun saya juga menambahkan template buatan developer lain.\n- Kode templat pihak ke 3 tidak saya kelola, jadi saya tidak dapat menjamin kualitasnya; Saya juga tidak bertanggung jawab atas masalah apa pun dengan mereka.\n- Templat pihak ketiga mungkin memiliki keterbatasan fitur dibandingkan dengan milik Hoyo Buddy.\n- Karakter data yang di-cache hanya dapat menggunakan template Hoyo Buddy."
-profile.info.embed.title: Tentang Pengaturan Kartu
 profile.player_info.button.label: Info pemain
 profile.player_info.embed.description: "Level Trailblaze: {level}\nLevel Equilibrium: {world_level}\nJumlah Teman: {friend_count}\nLight Cone: {light_cones}\nKarakter: {characters}\nAchievement: {achievements}\n"
 profile.player_info.gi.embed.description: "Rank Adventure: {adventure_rank}\nSpiral Abyss: {spiral_abyss}\nAchievement: {achievements}\n"
@@ -402,9 +389,9 @@ read_story.button.label: Baca Kisah
 real_time_notes: Catatan real-time
 realm_curr_button.label: Pengingat realm currency
 realm_curr_modal.title: Pengaturan Pengingat Realm Currency
-redeeem_code.cookie_token_expired_description: ""
+redeeem_code.cookie_token_expired_description: "Refresh token cookie kamu dengan menambahkan akunmu lagi menggunakan </accounts>.\nJika kamu menggunakan metode email dan kata sandi untuk menambahkan akun, token cookie dapat direfresh secara otomatis."
 redeeem_code.cookie_token_expired_title: Batas waktu token cookie berakhir
-redeeem_code.cookie_token_refresh_failed_description: ""
+redeeem_code.cookie_token_refresh_failed_description: "Mungkin kamu telah mengubah kata sandi akun sejak terakhir kali kmau menambahkan akun.\nSilakan tambahkan akun kamu lagi menggunakan </accounts> dengan metode email dan kata sandi."
 redeeem_code.cookie_token_refresh_failed_title: Gagal memperbarui token cookie
 redeem_code.already_claimed: Kode penukaran telah digunakan
 redeem_code.cooldown: Penukaran kode sedang cooldown
@@ -437,15 +424,14 @@ saturday: Sabtu
 search_autocomplete_no_results: Hasil tidak ditemukan
 search_autocomplete_not_setup: "Pilihan pelengkapan otomatis penelusuran belum disiapkan, coba lagi nanti."
 search_command_category_param_description: Pencarian kategori
-search_cmd_category_param_name: ""
+search_cmd_category_param_name: kategori
 search_command_description: Cari apa pun yang berhubungan dengan game
 search_command_game_param_description: Pencarian game
 search_command_game_param_name: game
 search_command_query_param_description: Pencarian pertanyaan
 search_command_query_param_name: pertanyaan
-select_account.embed.description: Pilih akun yang ingin kamu tambahkan.
+select_account.embed.description: ""
 select_account.embed.title: 🎉 Selamat datang di Hoyo Buddy!
-select_accounts_to_add_placeholder: Pilih akun yang ingin kamu tambahkan...
 settings_command_description: Konfigurasikan pengaturan pengguna kamu
 skill_attributes_embed_field_name: "Skill Attributes (Lv.{level})"
 skill_level.modal.title: Masukkan level skill
@@ -462,10 +448,6 @@ the_hunt: The Hunt
 threshold.embed.description: "Ambang batas ({threshold}) tercapai"
 thunder: Thunder
 thursday: Kamis
-toggle_off_text: "mati"
-toggle_on_text: "nyala"
-traditional_chinese_server: Server Cina Tradisional
-try_other_method_error_message: "Silakan coba metode lain untuk login.\nJika kamu memasukkan cookie secara manual melalui DevTools, pastikan kamu menyalinnya dengan benar."
 tuesday: Kamis
 unreleased_content: Konten yang belum rilis
 user_autocomplete_param_description: "Untuk mencari akun dengan user terkait, secara default ke kamu"
@@ -493,12 +475,11 @@ yatta_character_skill_spread_weakness_break_field_value: "Spread: {spread_weakne
 yatta_character_skill_weakness_break_field_name: Weakness Break
 yatta_character_trace_page_label: Trace
 yatta_item_sources_field_name: Sumber
-yatta_light_cone_ability_field_name: Kemampuan
-characters.show_owned_only: ""
-redeem_code.ar_too_low: ""
-data_not_public.title: ""
+characters.show_owned_only: Hanya tunjukan karakter yang dimiliki
+redeem_code.ar_too_low: Adventure rank terlalu rendah
+data_not_public.title: Data tidak Publik
 data_not_public.description: ""
-not_implemented_error_title: ""
+not_implemented_error_title: Fitur belum diterapkan
 not_implemented_error_only_game_message: ""
 not_implemented_error_message: ""
 profile.build.current.label: ""
@@ -535,18 +516,18 @@ video_store.revenue_available: ""
 video_store.waiting_to_open: ""
 notes-card.zzz.title: Catatan Real-Time
 reminder_modal.title: ""
-redeem_code.reached_max_limit: ""
-profile_view.set_cur_temp_as_default: ""
-set_cur_temp_as_default.done: ""
-set_cur_temp_as_default.done_desc: ""
+redeem_code.reached_max_limit: Kode redeem ini telah mencapai batas penggunaan maksimal
+profile_view.set_cur_temp_as_default: Gunakan template ini sebagai default
+set_cur_temp_as_default.done: Selesai
+set_cur_temp_as_default.done_desc: Kamu telah menetapkan template kartu default ke yang saat ini.
 third_party_card_temp_error_title: ""
-third_party_card_temp_error_message: ""
-account_locked_title: ""
-account_locked_description: ""
+third_party_card_temp_error_message: "Template kartu untuk karakter ini telah diatur ulang ke template Hoyo Buddy, jadi kamu setidaknya bisa melihat kartu tersebut. Jika kesalahan ini terus ada, silakan hubungi developer melalui </feedback>."
+account_locked_title: Akun telah terkunci selama 20 menit
+account_locked_description: "Kamu memasukkan kata sandi yang salah terlalu sering. Harap tunggu 20 menit dan coba lagi. Jika kamu yakin ini adalah kesalahan, harap hubungi developper melalui </feedback> ."
 ether: ""
 electric: ""
-profile.no_data.title: ""
-profile.no_data.description: ""
+profile.no_data.title: Tidak ada data player tersedia
+profile.no_data.description: "Percaya atau tidak, tidak ada yang ditampilkan di sini."
 profile.zzz_hoyolab.character_select.description: ""
 characters.filter.specialty.placeholder: ""
 zzz.basic: ""
@@ -591,29 +572,44 @@ search.agent_page.placeholder: ""
 zzz.skill_type.placeholder: ""
 zzz.cinema.placeholder: ""
 zzz.engine.refinement_select.placeholder: ""
-dyk_discord_server_updates: ""
-dyk_discord_server_feedback: ""
-dyk_something_wrong: ""
-dyk_contact_me: ""
-dyk_donate_no_title: ""
-dyk_easter_egg1_no_title: ""
-dyk_team: ""
-dyk_disable: ""
-dyk_settings_lang: ""
-dyk_settings_theme: ""
-dyk_suggest_light: ""
-dyk_security: ""
-dyk_github: ""
-dyk_python: ""
-dyk_unreleased: ""
-dyk_team_card: ""
-title_dyk: ""
-new_zzz_temp: ""
+dyk_discord_server_updates: "Kami memposting catatan rilis Hoyo Buddy di [server Discord](<https://dsc.gg/hoyo-buddy>)"
+dyk_discord_server_feedback: "Kamu bisa bergabung di [Discord server](<https://dsc.gg/hoyo-buddy>) kami untuk memberikan masukan"
+dyk_something_wrong: Kamu bisa gunakan perintah /feedback untuk melaporkan masalah apapun
+dyk_contact_me: "Kamu bisa langsung menghubungi kami di [Discord server](<https://dsc.gg/hoyo-buddy>)"
+dyk_donate_no_title: "Senang menggunakan Hoyo Buddy? Pertimbangkan  [making a donation](<https://github.com/seriaati#support-my-work>) untuk mendukung kami"
+dyk_easter_egg1_no_title: TOLONG SAYA TERJEBAK DALAM TEKS INI-
+dyk_team: "Hoyo Buddy dikembangkan oleh tim kecil yang terdiri dari 1 programmer, 1 designer, dan 1 project manager"
+dyk_disable: Kamu bisa menonaktifkan pesan ini menggunakan /settings
+dyk_settings_lang: Kamu bisa merubah bahasa bot menggunakan /settings
+dyk_settings_theme: Kamu bisa beralih antara mode terang dan gelap menggunakan /settings
+dyk_suggest_light: Kami merekomendasikan untuk menggunakan mode terang untuk pengalaman yang lebih baik
+dyk_security: "Kami punya [dedicated article](<https://github.com/seriaati/hoyo-buddy/wiki/Account-Security>) tentang keamanan akun"
+dyk_github: "Hoyo Buddy adalah open-sourced di [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
+dyk_python: Hoyo Buddy ditulis murni dengan Python
+dyk_unreleased: Kamu bisa melihat konten yang belum rilis menggunakan /search
+dyk_team_card: Kamu bisa membuat kartu tim di /profile dengan memilih beberapa karakter
+dyk_set_default_acc: ""
+title_dyk: "Tahukah kamu?"
+new_zzz_temp: BARU! Cobalah template Hoyo Buddy 2 untuk agen ZZZ kamu
 button_label_dyk: ""
 events_view_start_date_embed_field: ""
 events_view_end_date_embed_field: ""
 events_view_ann_select_placeholder: ""
+events_view_banner_type_label: ""
 events_command_description: ""
 events_view_ann_type_select_placeholder: ""
 events_view_content_label: ""
 events_command_game_param_description: ""
+natlan: ""
+top_percent: ""
+profile_view_show_rank_button_label: ""
+submit_button_label: ""
+show_tutorial_button_label: ""
+close_button_label: ""
+copy_code_button_label: ""
+copied_to_clipboard: ""
+required_field_error_message: ""
+accounts_added_snackbar_message: ""
+account_add_start_title: ""
+account_add_start_message: ""
+hbls_button_label: ""

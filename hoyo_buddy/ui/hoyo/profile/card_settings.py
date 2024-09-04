@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Final
 import enka
 from discord import ButtonStyle, TextStyle
 from genshin.models import ZZZFullAgent, ZZZPartialAgent
-from seria.utils import read_json, read_yaml
+from seria.utils import read_json
 
 from hoyo_buddy.constants import HSR_DEFAULT_ART_URL
 from hoyo_buddy.db.models import CardSettings, Settings
@@ -115,19 +115,6 @@ def get_default_art(character: Character | ZZZFullAgent) -> str:
     if isinstance(character, HoyolabGICharacter):
         return character.icon.gacha
     return HSR_DEFAULT_ART_URL.format(char_id=character.id)
-
-
-async def get_card_data(game: Game) -> dict[str, Any]:
-    asset_path = "hoyo-buddy-assets/assets"
-    if game is Game.GENSHIN:
-        return await read_yaml(f"{asset_path}/gi-build-card/data.yaml")
-    if game is Game.STARRAIL:
-        return await read_yaml(f"{asset_path}/hsr-build-card/data.yaml")
-    if game is Game.ZZZ:
-        return await read_yaml(f"{asset_path}/zzz-build-card/agent_data.yaml")
-
-    msg = f"Game {game!r} does not have card data."
-    raise ValueError(msg)
 
 
 def get_default_color(character: Character, card_data: dict[str, Any]) -> str | None:

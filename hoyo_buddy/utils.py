@@ -6,19 +6,15 @@ import datetime
 import http.cookies
 import math
 import re
-import time
-from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any
 
 import aiohttp
-from loguru import logger
 from seria.utils import clean_url
 
 from .constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
 
 if TYPE_CHECKING:
     import pathlib
-    from collections.abc import Generator
 
     from discord import Interaction, Member, User
 
@@ -138,20 +134,6 @@ def ephemeral(i: Interaction) -> bool:
     if i.guild is None:
         return False
     return not i.app_permissions.send_messages
-
-
-@contextmanager
-def measure_time(
-    description: str = "Execution", *, print_: bool = False
-) -> Generator[None, Any, None]:
-    start_time = time.time_ns()
-    yield
-    end_time = time.time_ns()
-    msg = f"{description} time: {(end_time - start_time) / 1e6:.6f} ms"
-    if print_:
-        print(msg)  # noqa: T201
-    else:
-        logger.debug(msg)
 
 
 def get_static_img_path(image_url: str, folder: str) -> pathlib.Path:

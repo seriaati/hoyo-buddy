@@ -273,7 +273,7 @@ invalid_verification_code_description: 请检查验证码后重试。
 invalid_verification_code_title: 验证码错误
 items: 物品
 javascript_button_label: 通过 JavaScript
-javascript_instructions_description: "<:INFO:1166743144889602190> 注意：此方法在电脑上应该适用于所有主流浏览器，但在手机上只适用于 **Chrome** 和 **Edge**.\n\n1. 登录 [HoYoLAB](https://www.hoyolab.com/home) 或 [米游社] (https://www.miyoushe.com/ys/) （中国玩家适用）\n2. 复制以下代码\n3. 点击浏览器地址栏然后输入 `java`\n4. 粘贴代码后按回车键。请确保 `java` 和 `script` 之间**没有空格**\n5. 全选并复制所出现的文字\n6. 点击下方按钮，粘贴在文本框中"
+javascript_instructions_description: "<:INFO:1166743144889602190> 注意：此方法在电脑上应该适用于所有主流浏览器，但在手机上只适用于 **Chrome** 和 **Edge**.\n\n1. 登录 [HoYoLAB](https://www.hoyolab.com/home) 或 [米游社] (https://www.miyoushe.com/ys/) （中国玩家适用）\n2. 复制以下代码\n3. 点击浏览器地址栏然后输入 `java`\n4. 粘贴代码后按回车键。请确保 `java` 和 `script` 之间**没有空格**\n5. 全选并复制所出现的文字\n6. 將文字粘贴在下方的文本框中"
 level_str: "Lv.{level}"
 light_cones: 光锥
 living_beings: 生物

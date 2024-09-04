@@ -446,7 +446,7 @@ class CharactersView(View):
 
         if self._path_filters and self._filter is GIFilter.NONE:
             total_chars = sum(
-                self._path_char_counts[path.value.lower()] for path in self._path_filters
+                self._path_char_counts[path.name.lower()] for path in self._path_filters
             )
             embed.add_field(
                 name=LocaleStr(

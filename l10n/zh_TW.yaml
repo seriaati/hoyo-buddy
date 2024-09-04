@@ -273,7 +273,7 @@ invalid_verification_code_description: 請檢查驗證碼後再試一次
 invalid_verification_code_title: 無效的驗證碼
 items: 物品
 javascript_button_label: 透過 JavaScript
-javascript_instructions_description: "注意: 此方式在電腦上理應適用於所有主流瀏覽器，但在手機上只適用於 **Chrome** 和 **Edge**。\n\n1. 登入 [HoYoLAB](https://www.hoyolab.com/home) 或 [米遊社](https://www.miyoushe.com/ys/) （中國玩家適用）\n2. 複製下方的程式碼\n3. 點擊網址列並輸入 `java`\n4. 將程式碼貼上後按 ENTER。確保 `java` 和 `script` 之間 **沒有任何空格**。\n5. 全選並複製出現的文字\n6. 點擊下方按鈕並將文字貼在框內"
+javascript_instructions_description: "注意: 此方式在電腦上理應適用於所有主流瀏覽器，但在手機上只適用於 **Chrome** 和 **Edge**。\n\n1. 登入 [HoYoLAB](https://www.hoyolab.com/home) 或 [米遊社](https://www.miyoushe.com/ys/) （中國玩家適用）\n2. 複製下方的程式碼\n3. 點擊網址列並輸入 `java`\n4. 將程式碼貼上後按 ENTER。確保 `java` 和 `script` 之間 **沒有任何空格**。\n5. 全選並複製出現的文字\n6. 將複製的內容黏貼在下方的文字框內"
 level_str: "{level}等"
 light_cones: 光錐
 living_beings: 生物

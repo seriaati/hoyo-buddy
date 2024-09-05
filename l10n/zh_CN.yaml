@@ -93,8 +93,6 @@ characters.filter.none: 无
 characters.filter.not_max_friendship: 未达到满好感度
 characters.filter.path.placeholder: 选择命途
 characters.filter.placeholder: 选择一个筛选器
-characters.first_time.embed.description: "如果这是你首次使用此指令，可能需要一点时间。\n这是因为此指令需要从各来源来获取数据。\n下次使用此命令时，应该会更快。\n请耐心等待数据获取完成。"
-characters.first_time.title: 获取资料中...
 characters.level_order.footer: "等级顺序: {order}"
 characters.extra_detail.footer: "使用 /profile 查看角色详情"
 hsr.ultimate: 终结技
@@ -113,9 +111,6 @@ characters.sorter.level: 等级
 characters.sorter.path: 命途
 characters.sorter.placeholder: 选择排序
 characters.sorter.rarity: 稀有度
-characters.update_talent_data: 更新天赋等级数据
-characters.update_talent_data.embed.description: "这个可能会花费一些时间，如果你有很多角色，会需要更久。 请耐心等候。"
-characters.update_talent_data.title: 正在更新天赋等级数据…
 characters_command_description: 查看你所拥有的全部角色
 checkin_button_label: 签到
 checkin_command_description: 游戏每日签到

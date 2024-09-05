@@ -284,13 +284,12 @@ class HoyoBuddy(commands.AutoShardedBot):
         accounts = await models.HoyoAccount.filter(user_id=user_id).all()
         current_accounts = [account for account in accounts if account.current]
         if not current_accounts and accounts:
-            accounts[0].current = True
-            await accounts[0].save()
+            await models.HoyoAccount.filter(id=accounts[0].id).update(current=True)
             return
+
         if len(current_accounts) > 1:
-            for account in current_accounts[1:]:
-                account.current = False
-                await account.save()
+            await models.HoyoAccount.filter(user_id=user_id).update(current=False)
+            await models.HoyoAccount.filter(id=current_accounts[0].id).update(current=True)
 
     async def update_assets(self) -> None:
         # Update EnkaAPI assets

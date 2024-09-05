@@ -316,13 +316,14 @@ class ChallengeHistory(BaseModel):
 
 
 class GachaHistory(BaseModel):
-    id = fields.BigIntField(pk=True, generated=False)
-    name: fields.Field[str | None] = fields.CharField(max_length=128, null=True)
-    """No need to save item name for GI and HSR as the UIGF API can be used."""
+    id = fields.IntField(pk=True, generated=True)
+
+    wish_id = fields.BigIntField()
     rarity = fields.IntField()
     time = fields.DatetimeField()
     item_id = fields.IntField()
     banner_type = fields.IntField()
+    num = fields.IntField()
 
     game = fields.CharEnumField(Game, max_length=32)
     account: fields.ForeignKeyRelation[HoyoAccount] = fields.ForeignKeyField(
@@ -331,7 +332,8 @@ class GachaHistory(BaseModel):
     account_id: fields.Field[int]
 
     class Meta:
-        ordering = ["id"]
+        unique_together = ("wish_id", "game")
+        ordering = ["-wish_id"]
 
 
 async def get_locale(i: Interaction) -> Locale:
@@ -362,3 +364,19 @@ async def get_dyk(i: Interaction) -> str:
     if not enable_dyk:
         return ""
     return i.client.translator.get_dyk(locale)
+
+
+async def get_last_gacha_num(
+    account: HoyoAccount, *, banner: int, rarity: int | None = None
+) -> int:
+    if rarity is not None:
+        last_gacha = (
+            await GachaHistory.filter(account=account, banner_type=banner, rarity=rarity)
+            .first()
+            .only("num")
+        )
+    else:
+        last_gacha = (
+            await GachaHistory.filter(account=account, banner_type=banner).first().only("num")
+        )
+    return last_gacha.num if last_gacha else 0

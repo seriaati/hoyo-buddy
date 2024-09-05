@@ -344,6 +344,11 @@ class StarDBRecord(BaseModel):
     time: datetime.datetime = Field(alias="timestamp")
     banner_type: int
 
+    @field_validator("banner_type")
+    @classmethod
+    def __unify_banner_type(cls, value: int) -> int:
+        return 301 if value == 400 else value
+
 
 class UIGFRecord(BaseModel):
     banner_type: int = Field(alias="uigf_gacha_type")

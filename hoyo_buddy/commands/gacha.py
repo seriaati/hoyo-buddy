@@ -12,11 +12,11 @@ import yatta
 from tortoise.exceptions import IntegrityError
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_locale
+from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_last_gacha_num, get_locale
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LOADING
 from hoyo_buddy.enums import GachaImportSource, Game
-from hoyo_buddy.exceptions import InvalidFileExtError, UIDMismatchError
+from hoyo_buddy.exceptions import FeatureNotImplementedError, InvalidFileExtError, UIDMismatchError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import (
     SRGFRecord,
@@ -53,16 +53,24 @@ class GachaCommand:
         data: list[dict[str, Any]] = records_df.to_dict(orient="records")  # pyright: ignore[reportAssignmentType]
         records = [StarRailStationRecord(**record) for record in data]
 
+        record_banners = {record.banner_type for record in records}
+        banner_last_nums = {
+            banner_type: await get_last_gacha_num(account, banner=banner_type)
+            for banner_type in record_banners
+        }
+
         for record in records:
             with contextlib.suppress(IntegrityError):
                 await GachaHistory.create(
-                    id=record.id,
+                    wish_id=record.id,
                     rarity=record.rarity,
                     item_id=record.item_id,
                     banner_type=record.banner_type,
                     account=account,
                     game=Game.STARRAIL,
+                    num=banner_last_nums[record.banner_type] + 1,
                 )
+                banner_last_nums[record.banner_type] += 1
 
         return len(records)
 
@@ -95,16 +103,24 @@ class GachaCommand:
                 ]
             )
 
+        record_banners = {record.banner_type for record in records}
+        banner_last_nums = {
+            banner_type: await get_last_gacha_num(account, banner=banner_type)
+            for banner_type in record_banners
+        }
+
         for record in records:
             with contextlib.suppress(IntegrityError):
                 await GachaHistory.create(
-                    id=record.id,
+                    wish_id=record.id,
                     rarity=record.rarity,
                     item_id=record.item_id,
                     banner_type=record.banner_type,
                     account=account,
                     game=Game.ZZZ,
+                    num=banner_last_nums[record.banner_type] + 1,
                 )
+                banner_last_nums[record.banner_type] += 1
 
         return len(records)
 
@@ -116,10 +132,20 @@ class GachaCommand:
 
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
-        count = 0
 
-        # hsr
-        hsr_data = next((d["warps"] for d in data["user"]["hsr"]["uids"] if d["uid"] == account.uid), None)
+        if account.game is Game.STARRAIL:
+            return await self._stardb_hsr_import(account, data)
+        if account.game is Game.GENSHIN:
+            return await self._stardb_gi_import(account, data)
+        if account.game is Game.ZZZ:
+            return await self._stardb_zzz_import(account, data)
+
+        raise FeatureNotImplementedError(game=account.game)
+
+    async def _stardb_hsr_import(self, account: HoyoAccount, data: dict[str, Any]) -> int:
+        hsr_data = next(
+            (d["warps"] for d in data["user"]["hsr"]["uids"] if d["uid"] == account.uid), None
+        )
         if hsr_data is not None:
             banner_types: dict[str, int] = {
                 "departure": 2,
@@ -146,20 +172,88 @@ class GachaCommand:
                     character.id: character.rarity for character in characters
                 } | {lc.id: lc.rarity for lc in lcs}
 
+                record_banners = {record.banner_type for record in records}
+                banner_last_nums = {
+                    banner_type: await get_last_gacha_num(account, banner=banner_type)
+                    for banner_type in record_banners
+                }
+
                 for record in records:
                     with contextlib.suppress(IntegrityError):
                         await GachaHistory.create(
-                            id=record.id,
+                            wish_id=record.id,
                             rarity=rarity_map[record.item_id],
                             item_id=record.item_id,
                             banner_type=record.banner_type,
                             account=account,
                             game=Game.STARRAIL,
+                            num=banner_last_nums[record.banner_type] + 1,
                         )
+                        banner_last_nums[record.banner_type] += 1
 
-            count += len(records)
+            return len(records)
 
-        # zzz
+        return 0
+
+    async def _stardb_gi_import(self, account: HoyoAccount, data: dict[str, Any]) -> int:
+        gi_data = next(
+            (d["wishes"] for d in data["user"]["gi"]["uids"] if d["uid"] == account.uid), None
+        )
+        if gi_data is not None:
+            banner_types: dict[str, int] = {
+                "beginner": 100,
+                "standard": 200,
+                "character": 301,
+                "weapon": 302,
+                "chronicled": 500,
+            }
+
+            records: list[StarDBRecord] = []
+            for banner_name, banner_type in banner_types.items():
+                records.extend(
+                    [
+                        StarDBRecord(banner_type=banner_type, **record)
+                        for record in gi_data[banner_name]
+                    ]
+                )
+
+            if records:
+                # Fetch rarity map with Ambr API
+                async with ambr.AmbrAPI() as api:
+                    characters = await api.fetch_characters()
+                    weapons = await api.fetch_weapons()
+
+                items = characters + weapons
+                rarity_map: dict[int, int] = {}
+                for item in items:
+                    if isinstance(item.id, str) and not item.id.isdigit():
+                        continue
+                    rarity_map[int(item.id)] = item.rarity
+
+                record_banners = {record.banner_type for record in records}
+                banner_last_nums = {
+                    banner_type: await get_last_gacha_num(account, banner=banner_type)
+                    for banner_type in record_banners
+                }
+
+                for record in records:
+                    with contextlib.suppress(IntegrityError):
+                        await GachaHistory.create(
+                            wish_id=record.id,
+                            rarity=rarity_map[record.item_id],
+                            item_id=record.item_id,
+                            banner_type=record.banner_type,
+                            account=account,
+                            game=Game.GENSHIN,
+                            num=banner_last_nums[record.banner_type] + 1,
+                        )
+                        banner_last_nums[record.banner_type] += 1
+
+            return len(records)
+
+        return 0
+
+    async def _stardb_zzz_import(self, account: HoyoAccount, data: dict[str, Any]) -> int:
         zzz_data = next(
             (d["signals"] for d in data["user"]["zzz"]["uids"] if d["uid"] == account.uid), None
         )
@@ -194,66 +288,28 @@ class GachaCommand:
                         continue
                     rarity_map[item.id] = rarity_converter[item.rarity]
 
+                record_banners = {record.banner_type for record in records}
+                banner_last_nums = {
+                    banner_type: await get_last_gacha_num(account, banner=banner_type)
+                    for banner_type in record_banners
+                }
+
                 for record in records:
                     with contextlib.suppress(IntegrityError):
                         await GachaHistory.create(
-                            id=record.id,
+                            wish_id=record.id,
                             rarity=rarity_map[record.item_id],
                             item_id=record.item_id,
                             banner_type=record.banner_type,
                             account=account,
                             game=Game.ZZZ,
+                            num=banner_last_nums[record.banner_type] + 1,
                         )
+                        banner_last_nums[record.banner_type] += 1
 
-            count += len(records)
+            return len(records)
 
-        # gi
-        gi_data = next((d["wishes"] for d in data["user"]["gi"]["uids"] if d["uid"] == account.uid), None)
-        if gi_data is not None:
-            banner_types: dict[str, int] = {
-                "beginner": 100,
-                "standard": 200,
-                "character": 301,
-                "weapon": 302,
-                "chronicled": 500,
-            }
-
-            records: list[StarDBRecord] = []
-            for banner_name, banner_type in banner_types.items():
-                records.extend(
-                    [
-                        StarDBRecord(banner_type=banner_type, **record)
-                        for record in gi_data[banner_name]
-                    ]
-                )
-
-            if records:
-                # Fetch rarity map with Ambr API
-                async with ambr.AmbrAPI() as api:
-                    characters = await api.fetch_characters()
-                    weapons = await api.fetch_weapons()
-
-                items = characters + weapons
-                rarity_map: dict[int, int] = {}
-                for item in items:
-                    if isinstance(item.id, str) and not item.id.isdigit():
-                        continue
-                    rarity_map[int(item.id)] = item.rarity
-
-                for record in records:
-                    with contextlib.suppress(IntegrityError):
-                        await GachaHistory.create(
-                            id=record.id,
-                            rarity=rarity_map[record.item_id],
-                            item_id=record.item_id,
-                            banner_type=record.banner_type,
-                            account=account,
-                            game=Game.GENSHIN,
-                        )
-
-            count += len(records)
-
-        return count
+        return 0
 
     async def _uigf_import(
         self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
@@ -284,16 +340,24 @@ class GachaCommand:
         else:
             records = [UIGFRecord(timezone=tz_hour, **record) for record in data["list"]]
 
+        record_banners = {record.banner_type for record in records}
+        banner_last_nums = {
+            banner_type: await get_last_gacha_num(account, banner=banner_type)
+            for banner_type in record_banners
+        }
+
         for record in records:
             with contextlib.suppress(IntegrityError):
                 await GachaHistory.create(
-                    id=record.id,
+                    wish_id=record.id,
                     rarity=record.rarity,
                     item_id=record.item_id,
                     banner_type=record.banner_type,
                     account=account,
                     game=Game.GENSHIN,
+                    num=banner_last_nums[record.banner_type] + 1,
                 )
+                banner_last_nums[record.banner_type] += 1
 
         return len(records)
 
@@ -313,16 +377,24 @@ class GachaCommand:
         tz_hour = data["info"]["region_time_zone"]
         records = [SRGFRecord(timezone=tz_hour, **record) for record in data["list"]]
 
+        record_banners = {record.banner_type for record in records}
+        banner_last_nums = {
+            banner_type: await get_last_gacha_num(account, banner=banner_type)
+            for banner_type in record_banners
+        }
+
         for record in records:
             with contextlib.suppress(IntegrityError):
                 await GachaHistory.create(
-                    id=record.id,
+                    wish_id=record.id,
                     rarity=record.rarity,
                     item_id=record.item_id,
                     banner_type=record.banner_type,
                     account=account,
                     game=Game.STARRAIL,
+                    num=banner_last_nums[record.banner_type] + 1,
                 )
+                banner_last_nums[record.banner_type] += 1
 
         return len(records)
 

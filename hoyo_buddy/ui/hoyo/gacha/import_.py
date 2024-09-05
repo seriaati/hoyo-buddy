@@ -7,7 +7,7 @@ import discord
 import genshin
 from tortoise.exceptions import IntegrityError
 
-from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_dyk
+from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_dyk, get_last_gacha_num
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LINK, LOADING
 from hoyo_buddy.enums import Game
@@ -96,6 +96,12 @@ class URLImport(Button[GachaImportView]):
 
         if self.account.game is Game.GENSHIN:
             id_cache: dict[str, str] = {}
+
+            banner_last_nums = {
+                banner_type: await get_last_gacha_num(self.account, banner=banner_type)
+                for banner_type in (100, 200, 301, 302, 500)
+            }
+
             async for history in client.wish_history(authkey=authkey):
                 if history.name not in id_cache:
                     item_id = id_cache[history.name] = await item_name_to_id(
@@ -107,18 +113,28 @@ class URLImport(Button[GachaImportView]):
                 else:
                     item_id = id_cache[history.name]
 
+                banner_type = 301 if history.banner_type == 400 else history.banner_type
+
                 with contextlib.suppress(IntegrityError):
                     await GachaHistory.create(
-                        id=history.id,
+                        wish_id=history.id,
                         rarity=history.rarity,
                         time=history.time,
-                        banner_type=history.banner_type,
+                        banner_type=banner_type,
                         item_id=item_id,
                         account=self.account,
                         game=Game.GENSHIN,
+                        num=banner_last_nums[banner_type] + 1,
                     )
                     count += 1
+                    banner_last_nums[banner_type] += 1
+
         elif self.account.game is Game.STARRAIL:
+            banner_last_nums = {
+                banner_type: await get_last_gacha_num(self.account, banner=banner_type)
+                for banner_type in (1, 2, 11, 12)
+            }
+
             async for history in client.warp_history(authkey=authkey):
                 with contextlib.suppress(IntegrityError):
                     await GachaHistory.create(
@@ -129,9 +145,17 @@ class URLImport(Button[GachaImportView]):
                         item_id=history.item_id,
                         account=self.account,
                         game=Game.STARRAIL,
+                        num=banner_last_nums[history.banner_type] + 1,
                     )
                     count += 1
+                    banner_last_nums[history.banner_type] += 1
+
         elif self.account.game is Game.ZZZ:
+            banner_last_nums = {
+                banner_type: await get_last_gacha_num(self.account, banner=banner_type)
+                for banner_type in (1, 2, 3, 5)
+            }
+
             async for history in client.signal_history(authkey=authkey):
                 with contextlib.suppress(IntegrityError):
                     await GachaHistory.create(
@@ -143,8 +167,10 @@ class URLImport(Button[GachaImportView]):
                         item_id=history.item_id,
                         account=self.account,
                         game=Game.ZZZ,
+                        num=banner_last_nums[history.banner_type] + 1,
                     )
                     count += 1
+                    banner_last_nums[history.banner_type] += 1
         else:
             raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
 

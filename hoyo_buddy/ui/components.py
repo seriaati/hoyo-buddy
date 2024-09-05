@@ -342,7 +342,7 @@ class Select(discord.ui.Select, Generic[V_co]):
             custom_id=custom_id,
             min_values=min_values,
             max_values=max_values,
-            options=options,  # pyright: ignore [reportArgumentType]
+            options=options,  # pyright: ignore[reportArgumentType]
             disabled=disabled,
             row=row,
         )
@@ -377,14 +377,7 @@ class Select(discord.ui.Select, Generic[V_co]):
             option.label = translator.translate(
                 option.locale_str_label, locale, capitalize_first_word=True
             )[:100]
-            if not option.label:
-                logger.warning(f"Empty label for option in {self.__class__.__name__}")
-                continue
-
             option.value = option.value[:100]
-            if not option.value:
-                logger.warning(f"Empty value for option in {self.__class__.__name__}")
-                continue
 
             if option.locale_str_description:
                 option.description = translator.translate(

@@ -50,7 +50,7 @@ class FeedbackButton(Button[FeedbackView]):
             title="New Feedback Received",
             description=feedback,
         )
-        embed.set_author(name=i.user.display_name, icon_url=i.user.display_avatar.url)
+        embed.set_author(name=i.user.name, icon_url=i.user.display_avatar.url)
         embed.set_footer(text=f"User ID: {i.user.id}")
 
         feedback_channel = await i.client.fetch_channel(1273772399925399633)

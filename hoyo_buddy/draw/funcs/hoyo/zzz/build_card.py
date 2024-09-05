@@ -92,7 +92,7 @@ class ZZZAgentCard:
                 self._card_data.get("name_y", -64),
             )
             drawer.write(
-                self._name_data.full_name,
+                self._name_data.short_name,
                 size=460,
                 style="black_italic",
                 position=name_position,

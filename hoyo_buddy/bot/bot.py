@@ -10,6 +10,7 @@ import aiohttp
 import discord
 import enka
 import genshin
+import git
 import sentry_sdk
 from asyncache import cached
 from cachetools import TTLCache
@@ -23,7 +24,7 @@ from ..enums import Game, Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
 from ..l10n import AppCommandTranslator, EnumStr, LocaleStr, Translator
-from ..utils import get_now
+from ..utils import get_now, get_repo_version
 from .cache import LFUCache
 from .command_tree import CommandTree
 
@@ -33,7 +34,6 @@ if TYPE_CHECKING:
     from enum import StrEnum
 
     import asyncpg
-    import git
     from aiohttp import ClientSession
 
     from ..models import Config
@@ -56,11 +56,12 @@ class HoyoBuddy(commands.AutoShardedBot):
         session: ClientSession,
         env: str,
         translator: Translator,
-        repo: git.Repo,
-        version: str,
         pool: asyncpg.Pool,
         config: Config,
     ) -> None:
+        self.repo = git.Repo()
+        self.version = get_repo_version(self.repo)
+
         super().__init__(
             command_prefix=commands.when_mentioned,
             intents=intents,
@@ -71,7 +72,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             max_messages=None,
             member_cache_flags=discord.MemberCacheFlags.none(),
             tree_cls=CommandTree,
-            activity=discord.CustomActivity(f"{version} | hb.seriaati.xyz"),
+            activity=discord.CustomActivity(f"{self.version} | hb.seriaati.xyz"),
             allowed_contexts=discord.app_commands.AppCommandContext(
                 guild=True, dm_channel=True, private_channel=True
             ),
@@ -85,8 +86,6 @@ class HoyoBuddy(commands.AutoShardedBot):
             token=os.environ["NAI_TOKEN"], host_url=os.environ["NAI_HOST_URL"]
         )
         self.owner_id = 410036441129943050
-        self.repo = repo
-        self.version = version
         self.pool = pool
         self.executor = concurrent.futures.ProcessPoolExecutor()
         self.config = config

@@ -10,6 +10,7 @@ from loguru import logger
 
 from hoyo_buddy.l10n import Translator
 from hoyo_buddy.logging import InterceptHandler
+from hoyo_buddy.utils import init_sentry
 from hoyo_buddy.web_app.app import WebApp
 
 translator = Translator()
@@ -26,6 +27,8 @@ if __name__ == "__main__":
     load_dotenv()
 
     logger.remove()
+    init_sentry()
+
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
     logger.add(sys.stderr, level="INFO")
     ft.app(web_app_entry, port=8645, view=None, assets_dir="hoyo_buddy/web_app/assets")

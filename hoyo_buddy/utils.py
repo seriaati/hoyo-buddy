@@ -5,10 +5,18 @@ import base64
 import datetime
 import http.cookies
 import math
+import os
 import re
 from typing import TYPE_CHECKING, Any
 
 import aiohttp
+import git
+import sentry_sdk
+from sentry_sdk.integrations.aiohttp import AioHttpIntegration
+from sentry_sdk.integrations.asyncio import AsyncioIntegration
+from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
+from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 from seria.utils import clean_url
 
 from .constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
@@ -304,3 +312,26 @@ def dict_cookie_to_str(cookie_dict: dict[str, str]) -> str:
     """
 
     return "; ".join([f"{key}={value}" for key, value in cookie_dict.items()])
+
+
+def get_repo_version(repo: git.Repo | None = None) -> str:
+    repo = repo or git.Repo()
+    tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
+    return tags[-1].name
+
+
+def init_sentry() -> None:
+    sentry_sdk.init(
+        dsn=os.getenv("SENTRY_DSN"),
+        integrations=[
+            AsyncioIntegration(),
+            LoguruIntegration(
+                level=LoggingLevels.INFO.value, event_level=LoggingLevels.ERROR.value
+            ),
+        ],
+        disabled_integrations=[AsyncPGIntegration(), AioHttpIntegration(), LoggingIntegration()],
+        traces_sample_rate=1.0,
+        environment=os.environ["ENV"],
+        enable_tracing=True,
+        release=get_repo_version(),
+    )

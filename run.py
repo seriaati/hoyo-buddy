@@ -11,15 +11,8 @@ import aiohttp
 import aiohttp.http_websocket
 import asyncpg
 import discord
-import git
-import sentry_sdk
 from dotenv import load_dotenv
 from loguru import logger
-from sentry_sdk.integrations.aiohttp import AioHttpIntegration
-from sentry_sdk.integrations.asyncio import AsyncioIntegration
-from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
-from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 
 from hoyo_buddy.api import BotAPI
 from hoyo_buddy.bot import HoyoBuddy
@@ -27,16 +20,13 @@ from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.l10n import Translator
 from hoyo_buddy.logging import InterceptHandler
 from hoyo_buddy.models import Config
-from hoyo_buddy.utils import wrap_task_factory
+from hoyo_buddy.utils import init_sentry, wrap_task_factory
 from hoyo_buddy.web_server.server import GeetestWebServer
 
 load_dotenv()
 env = os.environ["ENV"]  # dev, prod, test
 is_dev = env == "dev"
 
-repo = git.Repo()
-tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
-version = tags[-1].name
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--sentry", action="store_true", default=not is_dev)
@@ -46,23 +36,6 @@ parser.add_argument("--schedule", action="store_true", default=not is_dev)
 
 config = Config(parser.parse_args())
 discord.VoiceClient.warn_nacl = False
-
-
-def init_sentry() -> None:
-    sentry_sdk.init(
-        dsn=os.getenv("SENTRY_DSN"),
-        integrations=[
-            AsyncioIntegration(),
-            LoguruIntegration(
-                level=LoggingLevels.INFO.value, event_level=LoggingLevels.ERROR.value
-            ),
-        ],
-        disabled_integrations=[AsyncPGIntegration(), AioHttpIntegration(), LoggingIntegration()],
-        traces_sample_rate=1.0,
-        environment=env,
-        enable_tracing=True,
-        release=version,
-    )
 
 
 async def main() -> None:
@@ -77,15 +50,7 @@ async def main() -> None:
         aiohttp.ClientSession() as session,
         Database(),
         Translator() as translator,
-        HoyoBuddy(
-            session=session,
-            env=env,
-            translator=translator,
-            repo=repo,
-            version=version,
-            pool=pool,
-            config=config,
-        ) as bot,
+        HoyoBuddy(session=session, env=env, translator=translator, pool=pool, config=config) as bot,
     ):
         with contextlib.suppress(
             KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError

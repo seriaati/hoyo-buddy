@@ -21,7 +21,7 @@ from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath, Platform
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 
 from ...constants import (
-    HSR_DEFAULT_ART_URL,
+    HSR_ICON_TEMA_URL,
     TRAILBLAZER_IDS,
     TRAVELER_IDS,
     UTC_8,
@@ -346,7 +346,7 @@ class CharactersView(View):
                 self.translator,
             )
         elif self._game is Game.STARRAIL:
-            pc_icons = {str(c.id): HSR_DEFAULT_ART_URL.format(char_id=c.id) for c in characters}
+            pc_icons = {str(c.id): HSR_ICON_TEMA_URL.format(char_id=c.id) for c in characters}
             file_ = await draw_hsr_characters_card(
                 DrawInput(
                     dark_mode=self._dark_mode,

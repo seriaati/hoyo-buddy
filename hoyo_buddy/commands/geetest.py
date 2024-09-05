@@ -120,9 +120,7 @@ class GeetestCommand:
         mmt = await client.create_mmt()
 
         # Save mmt to db
-        user = await User.get(id=i.user.id)
-        user.temp_data = mmt.dict()
-        await user.save()
+        await User.filter(id=i.user.id).update(temp_data=mmt.dict())
 
         payload = LoginNotifPayload(
             user_id=i.user.id,

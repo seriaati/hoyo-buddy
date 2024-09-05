@@ -53,8 +53,7 @@ class User(BaseModel):
             acc: The account to set as current.
         """
         await HoyoAccount.filter(user=self).update(current=False)
-        acc.current = True
-        await acc.save(update_fields=("current",))
+        await HoyoAccount.filter(id=acc.id).update(current=True)
 
 
 class HoyoAccount(BaseModel):

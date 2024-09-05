@@ -9,7 +9,7 @@ import genshin
 from loguru import logger
 
 from ...bot.error_handler import get_error_embed
-from ...db.models import AccountNotifSettings, HoyoAccount
+from ...db.models import AccountNotifSettings, HoyoAccount, User
 from ...embeds import DefaultEmbed, Embed, ErrorEmbed
 
 if TYPE_CHECKING:
@@ -138,8 +138,9 @@ class DailyCheckin:
                 reward = await client.claim_daily_reward()
             except Exception as e:
                 if isinstance(e, genshin.DailyGeetestTriggered):
-                    account.user.temp_data = {"geetest": e.gt, "challenge": e.challenge}
-                    await account.user.save()
+                    await User.filter(id=account.user.id).update(
+                        temp_data={"geetest": e.gt, "challenge": e.challenge}
+                    )
                 embed, recognized = get_error_embed(e, locale, translator)
                 if not recognized:
                     cls._bot.capture_exception(e)
@@ -166,8 +167,7 @@ class DailyCheckin:
                 embed = client.get_daily_reward_embed(reward, locale, translator, blur=False)
             elif resp.status == 400:
                 if data["retcode"] == -9999:
-                    account.user.temp_data = data["data"]
-                    await account.user.save()
+                    await User.filter(id=account.user.id).update(temp_data=data["data"])
                 try:
                     genshin.raise_for_retcode(data)
                 except genshin.GenshinException as e:

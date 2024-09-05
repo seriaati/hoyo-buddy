@@ -694,7 +694,9 @@ class FactionFilterSelector(Select[CharactersView]):
     def __init__(self, characters: Sequence[ZZZCharacter]) -> None:
         options = [
             SelectOption(label=faction, value=faction)
-            for faction in {character.faction_name for character in characters}
+            for faction in {
+                character.faction_name for character in characters if character.faction_name
+            }
         ]
         super().__init__(
             placeholder=LocaleStr(key="characters.filter.faction.placeholder"),

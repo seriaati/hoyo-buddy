@@ -39,7 +39,7 @@ license = "GPL-3.0-only"
 name = "hoyo-buddy"
 readme = "README.md"
 requires-python = ">=3.11"
-version = "1.9.3"
+version = "1.10.0"
 
 [tool.uv]
 dev-dependencies = [
@@ -48,9 +48,9 @@ dev-dependencies = [
 ]
 
 [tool.uv.sources]
+akasha-py = {git = "https://github.com/seriaati/akasha-py"}
 genshin = {git = "https://github.com/thesadru/genshin.py", branch = "dev"}
 novelai = {git = "https://github.com/kokosensei/NovelAI-API"}
-akasha-py = { git = "https://github.com/seriaati/akasha-py" }
 
 [tool.pyright]
 enableTypeIgnoreComments = false

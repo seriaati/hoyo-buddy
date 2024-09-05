@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import os
 from random import uniform
-from typing import TYPE_CHECKING, Any, overload
+from typing import TYPE_CHECKING, Any, Literal, overload
 
 import enka
 import genshin
@@ -42,6 +42,7 @@ class GenshinClient(genshin.Client):
             or genshin.utility.recognize_region(account.uid, game=game)
             or genshin.Region.OVERSEAS
         )
+        env: Literal["dev", "prod", "test"] = os.environ["ENV"]  # pyright: ignore[reportAssignmentType]
         super().__init__(
             account.cookies,
             game=game,
@@ -50,9 +51,10 @@ class GenshinClient(genshin.Client):
             device_id=account.device_id,
             device_fp=account.device_fp,
             proxy="socks5://127.0.0.1:9091"
-            if os.environ["ENV"] == "prod" and region is genshin.Region.OVERSEAS
+            if env == "prod" and region is genshin.Region.OVERSEAS
             else None,
-            debug=True,
+            debug=env == "dev",
+            cache=genshin.SQLiteCache(static_ttl=3600 * 24 * 31),
         )
         self._account = account
 

@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import aiohttp
+import aiosqlite
 import discord
 import enka
 import genshin
@@ -106,6 +107,11 @@ class HoyoBuddy(commands.AutoShardedBot):
         """user_id -> task"""
 
     async def setup_hook(self) -> None:
+        # Initialize genshin.py sqlite cache
+        async with aiosqlite.connect("genshin_py.db") as conn:
+            cache = genshin.SQLiteCache(conn)
+            await cache.initialize()
+
         await self.tree.set_translator(AppCommandTranslator(self.translator))
 
         for filepath in Path("hoyo_buddy/cogs").glob("**/*.py"):

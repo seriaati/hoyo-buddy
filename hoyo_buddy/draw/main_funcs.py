@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
 
-    from genshin.models import Character as GenshinCharacter
+    import genshin
     from genshin.models import (
         FullBattlesuit,
         ImgTheaterData,
@@ -40,8 +40,6 @@ if TYPE_CHECKING:
         ZZZFullAgent,
         ZZZNotes,
     )
-    from genshin.models import Notes as GenshinNote
-    from genshin.models import StarRailDetailCharacter as StarRailCharacter
 
     from ..l10n import Translator
     from ..models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
@@ -183,7 +181,7 @@ async def draw_gi_build_card(
 
 
 async def draw_gi_notes_card(
-    draw_input: DrawInput, notes: GenshinNote, translator: Translator
+    draw_input: DrawInput, notes: genshin.models.Notes, translator: Translator
 ) -> BytesIO:
     await download_images(
         [exped.character_icon for exped in notes.expeditions],
@@ -225,9 +223,9 @@ async def draw_farm_card(
 
 async def draw_gi_characters_card(
     draw_input: DrawInput,
-    characters: Sequence[GenshinCharacter | UnownedCharacter],
-    talents: dict[str, str],
+    characters: Sequence[genshin.models.GenshinDetailCharacter | UnownedCharacter],
     pc_icons: dict[str, str],
+    talent_orders: dict[int, list[int]],
     translator: Translator,
 ) -> File:
     urls: list[str] = []
@@ -243,8 +241,8 @@ async def draw_gi_characters_card(
             draw_input.executor,
             funcs.genshin.draw_character_card,
             characters,
-            talents,
             pc_icons,
+            talent_orders,
             draw_input.dark_mode,
             translator,
             draw_input.locale.value,
@@ -256,7 +254,7 @@ async def draw_gi_characters_card(
 
 async def draw_hsr_characters_card(
     draw_input: DrawInput,
-    characters: Sequence[StarRailCharacter | UnownedCharacter],
+    characters: Sequence[genshin.models.StarRailDetailCharacter | UnownedCharacter],
     pc_icons: dict[str, str],
     translator: Translator,
 ) -> File:
@@ -286,7 +284,7 @@ async def draw_hsr_characters_card(
 async def draw_spiral_abyss_card(
     draw_input: DrawInput,
     abyss: SpiralAbyss,
-    characters: Sequence[GenshinCharacter],
+    characters: Sequence[genshin.models.Character],
     translator: Translator,
 ) -> File:
     abyss_characters: dict[str, AbyssCharacter] = {

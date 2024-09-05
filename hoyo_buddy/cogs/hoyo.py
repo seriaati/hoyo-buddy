@@ -301,7 +301,7 @@ class Hoyo(commands.Cog):
             locale=settings.locale or i.locale,
             translator=self.bot.translator,
         )
-        await view.start(i, show_first_time_msg=account_.game is Game.GENSHIN)
+        await view.start(i)
 
     @app_commands.command(
         name=app_commands.locale_str("challenge"),

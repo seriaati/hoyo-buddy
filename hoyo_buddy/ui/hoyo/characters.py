@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import datetime
 from enum import StrEnum
 from typing import TYPE_CHECKING, Final, TypeAlias
 
-from discord import ButtonStyle, Locale
-from genshin.models import Character as GICharacter
+import enka
+from discord import Locale
 from genshin.models import FullBattlesuit as HonkaiCharacter
+from genshin.models import GenshinDetailCharacter as GICharacter
 from genshin.models import StarRailDetailCharacter as HSRCharacter
 from genshin.models import ZZZFullAgent as ZZZCharacter
 from genshin.models import ZZZSpecialty
@@ -28,7 +28,7 @@ from ...constants import (
     YATTA_PATH_TO_GPY_PATH,
     contains_traveler_id,
 )
-from ...db.models import JSONFile, get_dyk
+from ...db.models import JSONFile
 from ...embeds import DefaultEmbed
 from ...emojis import (
     ZZZ_SPECIALTY_EMOJIS,
@@ -37,10 +37,9 @@ from ...emojis import (
     get_hsr_path_emoji,
     get_zzz_element_emoji,
 )
-from ...exceptions import ActionInCooldownError, FeatureNotImplementedError, NoCharsFoundError
+from ...exceptions import FeatureNotImplementedError, NoCharsFoundError
 from ...hoyo.clients.ambr import AmbrAPIClient
 from ...hoyo.clients.yatta import YattaAPIClient
-from ...icons import LOADING_ICON
 from ...models import DrawInput, UnownedCharacter
 from ...utils import get_now
 from ..components import Button, Select, SelectOption, ToggleButton, View
@@ -325,7 +324,12 @@ class CharactersView(View):
     ) -> File:
         if self._game is Game.GENSHIN:
             pc_icons = await self._get_gi_pc_icons()
-            talent_level_data = await JSONFile.read(f"talent_levels/gi_{self._account.uid}.json")
+
+            async with enka.GenshinClient() as client:
+                talent_orders = {
+                    character_id: character_info["SkillOrder"]
+                    for character_id, character_info in client._assets.character_data.items()
+                }
 
             file_ = await draw_gi_characters_card(
                 DrawInput(
@@ -337,8 +341,8 @@ class CharactersView(View):
                     loop=loop,
                 ),
                 characters,  # pyright: ignore [reportArgumentType]
-                talent_level_data,
                 pc_icons,
+                talent_orders,
                 self.translator,
             )
         elif self._game is Game.STARRAIL:
@@ -506,7 +510,6 @@ class CharactersView(View):
             self.add_item(GIFilterSelector())
             self.add_item(ElementFilterSelector(GenshinElement))
             self.add_item(SorterSelector(self._sorter, self._game))
-            self.add_item(UpdateTalentData())
         elif self._game is Game.STARRAIL:
             self.add_item(ShowOwnedOnly())
             self.add_item(PathFilterSelector())
@@ -520,20 +523,14 @@ class CharactersView(View):
         elif self._game is Game.HONKAI:
             self.add_item(SorterSelector(self._sorter, self._game))
 
-    async def start(self, i: Interaction, *, show_first_time_msg: bool = False) -> None:
-        if show_first_time_msg:
-            embed = DefaultEmbed(
-                self.locale,
-                self.translator,
-                description=LocaleStr(key="characters.first_time.embed.description"),
-            ).set_author(icon_url=LOADING_ICON, name=LocaleStr(key="characters.first_time.title"))
-            await i.edit_original_response(embed=embed, content=await get_dyk(i))
-
+    async def start(self, i: Interaction) -> None:
         client = self._account.client
         client.set_lang(self.locale)
 
         if self._game is Game.GENSHIN:
-            self._gi_characters = list(await client.get_genshin_characters(self._account.uid))
+            self._gi_characters = list(
+                (await client.get_genshin_detailed_characters(self._account.uid)).characters
+            )
 
             # Find traveler element and add 1 to the element char count
             for character in self._gi_characters:
@@ -741,37 +738,6 @@ class SorterSelector(Select[CharactersView]):
     async def callback(self, i: Interaction) -> None:
         self.view._sorter = self._sorter(self.values[0])
         await self.view.item_callback(i, self)
-
-
-class UpdateTalentData(Button[CharactersView]):
-    def __init__(self) -> None:
-        super().__init__(
-            label=LocaleStr(key="characters.update_talent_data"), style=ButtonStyle.blurple, row=3
-        )
-
-    async def callback(self, i: Interaction) -> None:
-        filename = f"talent_levels/gi_{self.view._account.uid}.json"
-        talent_level_data: dict[str, str] = await JSONFile.read(filename)
-        if talent_level_data:
-            updated_at = datetime.datetime.fromisoformat(talent_level_data["updated_at"])
-            if get_now() - updated_at < datetime.timedelta(minutes=30):
-                raise ActionInCooldownError(
-                    available_time=updated_at + datetime.timedelta(minutes=30)
-                )
-
-        embed = DefaultEmbed(
-            self.view.locale,
-            self.view.translator,
-            description=LocaleStr(key="characters.update_talent_data.embed.description"),
-        ).set_author(
-            icon_url=LOADING_ICON, name=LocaleStr(key="characters.update_talent_data.title")
-        )
-        self.view.clear_items()
-        await i.response.edit_message(embed=embed, view=self.view, attachments=[])
-
-        characters = [c for c in self.view._gi_characters if not isinstance(c, UnownedCharacter)]
-        await self.view._account.client.update_gi_chara_talent_levels(characters)
-        await self.view.start(i)
 
 
 class ShowOwnedOnly(ToggleButton[CharactersView]):

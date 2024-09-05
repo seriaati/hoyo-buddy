@@ -93,8 +93,6 @@ characters.filter.none: None
 characters.filter.not_max_friendship: Not max friendship
 characters.filter.path.placeholder: Select path filters...
 characters.filter.placeholder: Select a filter...
-characters.first_time.embed.description: "If this is your first time using this command, this may take a while.\nThis is because the command needs to fetch data from many sources.\nIt should be faster next time you use this command.\nPlease be patient and wait for the resources to be fetched."
-characters.first_time.title: Fetching resources...
 characters.level_order.footer: "Level order: {order}"
 characters.extra_detail.footer: "Use /profile to view details of a character"
 hsr.ultimate: Ultimate
@@ -113,9 +111,6 @@ characters.sorter.level: Level
 characters.sorter.path: Path
 characters.sorter.placeholder: Select a sorter...
 characters.sorter.rarity: Rarity
-characters.update_talent_data: Update talent level data
-characters.update_talent_data.embed.description: "This may take a while, if you own a lot of characters, this can take even longer. Please be patient."
-characters.update_talent_data.title: Updating talent level data...
 characters_command_description: View all of your characters
 checkin_button_label: Check-in
 checkin_command_description: Game daily check-in

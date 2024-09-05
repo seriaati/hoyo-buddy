@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import os
-from operator import attrgetter
 from random import uniform
 from typing import TYPE_CHECKING, Any, overload
 
@@ -25,11 +24,9 @@ from ...constants import (
 )
 from ...db.models import EnkaCache, HoyoAccount, JSONFile
 from ...embeds import DefaultEmbed
-from ...enums import Game, GenshinElement, TalentBoost
+from ...enums import Game, GenshinElement
 from ...l10n import LocaleStr, Translator
-from ...utils import convert_chara_id_to_ambr_format, get_now, set_or_update_dict
-from .ambr import AmbrAPIClient
-from .enka.gi import EnkaGIClient
+from ...utils import set_or_update_dict
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -105,78 +102,6 @@ class GenshinClient(genshin.Client):
         fields = await self.get_lineup_fields()
         pc_icons = {str(character.id): character.pc_icon for character in fields.characters}
         await JSONFile.write("pc_icons.json", pc_icons)
-
-    async def update_gi_chara_talent_levels(
-        self, characters: Sequence[genshin.models.Character]
-    ) -> None:
-        """Update multiple GI character talent levels.
-
-        Args:
-            characters: The characters to update.
-        """
-        # Sort characters by level in descending order
-        characters = sorted(characters, key=attrgetter("level"), reverse=True)
-
-        for i, character in enumerate(characters):
-            try:
-                await self.update_gi_chara_talent_level(character)
-            except genshin.GenshinException:
-                await asyncio.sleep(15.0)
-            else:
-                await asyncio.sleep(3.0 if i % 15 == 0 else uniform(0.5, 0.8))
-
-    async def update_gi_chara_talent_level(self, character: genshin.models.Character) -> None:
-        """Update GI character talent level."""
-        talent_level_data: dict[str, str] = await JSONFile.read(f"talent_levels/gi_{self.uid}.json")
-        talent_boost_data: dict[str, int] = await JSONFile.read("talent_boost.json")
-
-        try:
-            details = await self.get_character_details(character.id)
-        except genshin.GenshinException as e:
-            if e.retcode == -502002:  # Calculator sync not enabled
-                await self._enable_calculator_sync()
-                await asyncio.sleep(uniform(0.5, 0.8))
-                details = await self.get_character_details(character.id)
-            else:
-                raise
-
-        character_id = convert_chara_id_to_ambr_format(character.id, character.element)
-
-        # Get talent boost type
-        if character_id not in talent_boost_data:
-            async with AmbrAPIClient() as client:
-                talent_boost = await client.fetch_talent_boost(character_id)
-            talent_boost_data[character_id] = talent_boost.value
-            await JSONFile.write("talent_boost.json", talent_boost_data)
-        else:
-            talent_boost = TalentBoost(talent_boost_data[character_id])
-
-        # Get talent order
-        client = EnkaGIClient()
-        talent_order = await client.get_character_talent_order(
-            self._convert_character_id_to_enka_format(character_id)
-        )
-
-        # Get talent levels
-        talent_levels: list[int] = []
-        for i, talent_id in enumerate(talent_order):
-            talent = next(talent for talent in details.talents if talent.id == talent_id)
-
-            c3 = character.constellations[2]
-
-            if (i == 1 and talent_boost is TalentBoost.BOOST_E and c3.activated) or (
-                i == 2 and talent_boost is TalentBoost.BOOST_Q and c3.activated
-            ):
-                talent_levels.append(talent.level + 3)
-            else:
-                talent_levels.append(talent.level)
-
-        talent_str = "/".join(str(level) for level in talent_levels)
-        talent_level_data[character_id] = talent_str
-
-        talent_level_data["updated_at"] = get_now().isoformat()
-
-        await JSONFile.write(f"talent_levels/gi_{self.uid}.json", talent_level_data)
 
     @staticmethod
     async def convert_gi_character(

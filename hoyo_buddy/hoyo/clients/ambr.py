@@ -14,7 +14,6 @@ from hoyo_buddy.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_gi_eleme
 
 from ...constants import LOCALE_TO_AMBR_LANG, contains_traveler_id
 from ...embeds import DefaultEmbed
-from ...enums import TalentBoost
 from ...l10n import LevelStr, LocaleStr, Translator, WeekdayStr
 from ...models import ItemWithDescription
 
@@ -51,23 +50,6 @@ class AmbrAPIClient(ambr.AmbrAPI):
         super().__init__(lang=LOCALE_TO_AMBR_LANG.get(locale, ambr.Language.EN), session=session)
         self.locale = locale
         self.translator = translator
-
-    async def fetch_talent_boost(self, character_id: str) -> TalentBoost:
-        """Fetches the character's talent boost type from their C3 extra level data."""
-        character = await self.fetch_character_detail(character_id)
-        c3 = character.constellations[2]
-        if c3.extra_level is None:
-            # guess with constellation description
-            e_skill = character.talents[1]
-            if e_skill.name in c3.description:
-                return TalentBoost.BOOST_E
-            return TalentBoost.BOOST_Q
-
-        return (
-            TalentBoost.BOOST_E
-            if c3.extra_level.talent_type is ambr.ExtraLevelType.SKILL
-            else TalentBoost.BOOST_Q
-        )
 
     async def fetch_element_char_counts(self) -> dict[str, int]:
         """Fetches the number of characters for each element, does not include beta characters and Traveler."""

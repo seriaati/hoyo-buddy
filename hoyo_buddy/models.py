@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from typing import TYPE_CHECKING, NamedTuple
 
 import aiohttp
@@ -8,7 +9,7 @@ import enka
 import genshin.models
 from attr import dataclass
 from discord import Locale
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 from .constants import STARRAIL_RES
 from .enums import GeetestNotifyType, GenshinElement
@@ -306,3 +307,71 @@ class StarRailPureFiction(genshin.models.StarRailPureFiction):
 
 class StarRailAPCShadow(genshin.models.StarRailAPCShadow):
     lang: str
+
+
+class StarRailStationRecord(BaseModel):
+    id: int = Field(alias="uid")
+    item_id: int = Field(alias="id")
+    rarity: int
+    time: datetime.datetime
+    banner_type: int = Field(alias="type")
+
+
+class ZZZRngMoeRecord(BaseModel):
+    id: int = Field(alias="uid")
+    item_id: int = Field(alias="id")
+    rarity: int
+    tz_hour: int
+    time: datetime.datetime = Field(alias="timestamp")
+    banner_type: int = Field(alias="gachaType")
+
+    @field_validator("time")
+    @classmethod
+    def __add_timezone(cls, value: datetime.datetime, info: ValidationInfo) -> datetime.datetime:
+        return value.replace(
+            tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
+        )
+
+    @field_validator("banner_type")
+    @classmethod
+    def __transform_banner_type(cls, value: int) -> int:
+        return value // 1000
+
+
+class StarDBRecord(BaseModel):
+    id: int
+    item_id: int
+    time: datetime.datetime = Field(alias="timestamp")
+    banner_type: int
+
+
+class UIGFRecord(BaseModel):
+    banner_type: int = Field(alias="uigf_gacha_type")
+    item_id: int
+    tz_hour: int = Field(alias="timezone")
+    time: datetime.datetime
+    id: int
+    rarity: int = Field(alias="rank_type")
+
+    @field_validator("time")
+    @classmethod
+    def __add_timezone(cls, value: datetime.datetime, info: ValidationInfo) -> datetime.datetime:
+        return value.replace(
+            tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
+        )
+
+
+class SRGFRecord(BaseModel):
+    banner_type: int = Field(alias="gacha_type")
+    item_id: int
+    tz_hour: int = Field(alias="timezone")
+    time: datetime.datetime
+    id: int
+    rarity: int = Field(alias="rank_type")
+
+    @field_validator("time")
+    @classmethod
+    def __add_timezone(cls, value: datetime.datetime, info: ValidationInfo) -> datetime.datetime:
+        return value.replace(
+            tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
+        )

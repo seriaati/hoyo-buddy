@@ -315,6 +315,25 @@ class ChallengeHistory(BaseModel):
             )
 
 
+class GachaHistory(BaseModel):
+    id = fields.BigIntField(pk=True, generated=False)
+    name: fields.Field[str | None] = fields.CharField(max_length=128, null=True)
+    """No need to save item name for GI and HSR as the UIGF API can be used."""
+    rarity = fields.IntField()
+    time = fields.DatetimeField()
+    item_id = fields.IntField()
+    banner_type = fields.IntField()
+
+    game = fields.CharEnumField(Game, max_length=32)
+    account: fields.ForeignKeyRelation[HoyoAccount] = fields.ForeignKeyField(
+        "models.HoyoAccount", related_name="wishes", index=True
+    )
+    account_id: fields.Field[int]
+
+    class Meta:
+        ordering = ["id"]
+
+
 async def get_locale(i: Interaction) -> Locale:
     cache = i.client.cache
     key = f"{i.user.id}:lang"

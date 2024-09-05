@@ -445,6 +445,8 @@ ZZZ_AGENT_DATA_URL = f"{ZENLESS_DATA_URL}/agent_data.json"
 HSR_DEFAULT_ART_URL = "https://raw.githubusercontent.com/FortOfFans/HSR/main/spriteoutput/avatardrawcardresult/{char_id}.png"
 HSR_ICON_TEMA_URL = "https://raw.githubusercontent.com/FortOfFans/HSR/main/spriteoutput/avatariconteam/{char_id}.png"
 
+UIGF_GAMES: Final[dict[Game, str]] = {Game.GENSHIN: "genshin", Game.STARRAIL: "starrail"}
+
 
 def locale_to_hakushin_lang(locale: discord.Locale) -> hakushin.Language:
     return LOCALE_TO_HAKUSHIN_LANG.get(locale, hakushin.Language.EN)

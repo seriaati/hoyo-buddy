@@ -609,3 +609,22 @@ accounts_added_snackbar_message: "Accounts added successfully, redirecting you b
 account_add_start_title: Add Accounts
 account_add_start_message: "Clicking the button below opens the Hoyo Buddy Login System, follow the instructions to add your accounts. When you're done, use the </accounts> command to view the accounts you have added."
 hbls_button_label: Let's start!
+gacha_import_url_modal_title: Enter gacha history URL
+gacha_import_embed_title: Importing Gacha History
+gacha_import_embed_description: "Gacha history URL: Obtain a very long URL from the game to import your gacha records, guides for different games are below:\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import)\n\nFor services below, export your gacha records as the specified file format and upload it via </gacha upload>\n1. Star Rail Station: **csv** file\n2. Star DB: **json** file\n3. zzz.rng.moe: **json** file\n4. UIGF: **json** file\n5. SRGF: **json** file"
+extract_authkey_error_message: "Unable to extract authkey from the URL, please try again with a valid URL."
+extract_authkey_error_title: Authkey Extraction Failed
+gacha_import_loading_embed_title: Importing Gacha History
+gacha_import_loading_embed_description: "{loading_emoji} This can take a while, please be patient..."
+gacha_upload_invalid_file_error_title: Invalid file format
+gacha_upload_invalid_file_error_message: "Only accepts **{file_format}** files, please try again with a valid file."
+uid_mismatch_error_title: UID Mismatch
+uid_mismatch_error_message: "The UID of the selected account does not match the UID in the data ({uid})"
+gacha_import_command_description: Import gacha history from the game
+source_param_name: source
+source_param_description: Source of the gacha history
+gacha_upload_command_description: Upload gacha history file from other sources to import to Hoyo Buddy
+file_param_name: file
+file_param_description: Gacha history file to upload
+gacha_import_success_title: Gacha History Imported
+gacha_import_success_message: "{count} gacha records have been imported successfully. Use the </gacha view> command to view them."

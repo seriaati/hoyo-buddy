@@ -7,7 +7,7 @@ import http.cookies
 import math
 import os
 import re
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal, overload
 
 import aiohttp
 import git
@@ -19,12 +19,15 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 from seria.utils import clean_url
 
-from .constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
+from .constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UIGF_GAMES, UTC_8
 
 if TYPE_CHECKING:
     import pathlib
+    from collections.abc import Sequence
 
     from discord import Interaction, Member, User
+
+    from hoyo_buddy.enums import Game
 
 
 def get_now() -> datetime.datetime:
@@ -335,3 +338,50 @@ def init_sentry() -> None:
         enable_tracing=True,
         release=get_repo_version(),
     )
+
+
+@overload
+async def item_name_to_id(
+    session: aiohttp.ClientSession,
+    *,
+    item_names: str,
+    game: Literal[Game.GENSHIN, Game.STARRAIL],
+    lang: str,
+) -> str: ...
+@overload
+async def item_name_to_id(
+    session: aiohttp.ClientSession,
+    *,
+    item_names: Sequence[str],
+    game: Literal[Game.GENSHIN, Game.STARRAIL],
+    lang: str,
+) -> Sequence[str]: ...
+async def item_name_to_id(
+    session: aiohttp.ClientSession,
+    *,
+    item_names: Sequence[str] | str,
+    game: Literal[Game.GENSHIN, Game.STARRAIL],
+    lang: str,
+) -> Sequence[str] | str:
+    if not isinstance(item_names, str):
+        if len(item_names) == 1:
+            item_names_query = item_names[0]
+        else:
+            item_names_query = ",".join(item_names)
+            item_names_query = f"[{item_names_query}]"
+    else:
+        item_names_query = item_names
+
+    async with session.post(
+        "https://api.uigf.org/translate/",
+        json={
+            "type": "normal",
+            "item_name": item_names_query,
+            "game": UIGF_GAMES[game],
+            "lang": lang,
+        },
+    ) as resp:
+        resp.raise_for_status()
+        data = await resp.json()
+
+    return data["item_id"]

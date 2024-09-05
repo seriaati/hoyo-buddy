@@ -188,6 +188,9 @@ class SubmitButton(ft.FilledButton):
 
             if account_id is not None:
                 await conn.execute(
+                    'UPDATE "hoyoaccount" SET current = false WHERE user_id = $1', user_id
+                )
+                await conn.execute(
                     'UPDATE "hoyoaccount" SET current = true WHERE id = $1', account_id
                 )
         finally:

@@ -100,23 +100,25 @@ class URLImport(Button[GachaImportView]):
                 for banner_type in (100, 200, 301, 302, 500)
             }
 
-            async for history in client.wish_history(authkey=authkey):
-                if history.name not in id_cache:
-                    item_id = id_cache[history.name] = await item_name_to_id(
-                        i.client.session,
-                        item_names=history.name,
-                        game=Game.GENSHIN,
-                        lang=client.lang,
+            wishes: list[genshin.models.Wish] = [
+                history async for history in client.wish_history(authkey=authkey)
+            ]
+            wishes.sort(key=lambda x: x.id)
+
+            for wish in wishes:
+                if wish.name not in id_cache:
+                    item_id = id_cache[wish.name] = await item_name_to_id(
+                        i.client.session, item_names=wish.name, game=Game.GENSHIN, lang=client.lang
                     )
                 else:
-                    item_id = id_cache[history.name]
+                    item_id = id_cache[wish.name]
 
-                banner_type = 301 if history.banner_type == 400 else history.banner_type
+                banner_type = 301 if wish.banner_type == 400 else wish.banner_type
 
                 created = await GachaHistory.create(
-                    wish_id=history.id,
-                    rarity=history.rarity,
-                    time=history.time,
+                    wish_id=wish.id,
+                    rarity=wish.rarity,
+                    time=wish.time,
                     banner_type=banner_type,
                     item_id=int(item_id),
                     account=self.account,
@@ -132,19 +134,24 @@ class URLImport(Button[GachaImportView]):
                 for banner_type in (1, 2, 11, 12)
             }
 
-            async for history in client.warp_history(authkey=authkey):
+            warps: list[genshin.models.Warp] = [
+                history async for history in client.warp_history(authkey=authkey)
+            ]
+            warps.sort(key=lambda x: x.id)
+
+            for warp in warps:
                 created = await GachaHistory.create(
-                    wish_id=history.id,
-                    rarity=history.rarity,
-                    time=history.time,
-                    banner_type=history.banner_type,
-                    item_id=history.item_id,
+                    wish_id=warp.id,
+                    rarity=warp.rarity,
+                    time=warp.time,
+                    banner_type=warp.banner_type,
+                    item_id=warp.item_id,
                     account=self.account,
-                    num=banner_last_nums[history.banner_type] + 1,
+                    num=banner_last_nums[warp.banner_type] + 1,
                 )
                 if created:
                     count += 1
-                    banner_last_nums[history.banner_type] += 1
+                    banner_last_nums[warp.banner_type] += 1
 
         elif self.account.game is Game.ZZZ:
             banner_last_nums = {
@@ -152,19 +159,24 @@ class URLImport(Button[GachaImportView]):
                 for banner_type in (1, 2, 3, 5)
             }
 
-            async for history in client.signal_history(authkey=authkey):
+            signals: list[genshin.models.SignalSearch] = [
+                history async for history in client.signal_history(authkey=authkey)
+            ]
+            signals.sort(key=lambda x: x.id)
+
+            for signal in signals:
                 created = await GachaHistory.create(
-                    wish_id=history.id,
-                    rarity=history.rarity,
-                    time=history.time,
-                    banner_type=history.banner_type,
-                    item_id=history.item_id,
+                    wish_id=signal.id,
+                    rarity=signal.rarity + 1,
+                    time=signal.time,
+                    banner_type=signal.banner_type,
+                    item_id=signal.item_id,
                     account=self.account,
-                    num=banner_last_nums[history.banner_type] + 1,
+                    num=banner_last_nums[signal.banner_type] + 1,
                 )
                 if created:
                     count += 1
-                    banner_last_nums[history.banner_type] += 1
+                    banner_last_nums[signal.banner_type] += 1
         else:
             raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
 

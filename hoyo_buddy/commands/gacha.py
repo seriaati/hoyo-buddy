@@ -53,6 +53,7 @@ class GachaCommand:
         )
         data: list[dict[str, Any]] = records_df.to_dict(orient="records")  # pyright: ignore[reportAssignmentType]
         records = [StarRailStationRecord(**record) for record in data]
+        records.sort(key=lambda x: x.id)
 
         record_banners = {record.banner_type for record in records}
         banner_last_nums = {
@@ -106,6 +107,7 @@ class GachaCommand:
                     for record in data["data"]["profiles"]["1"]["stores"]["0"]["items"][gacha_type]
                 ]
             )
+        records.sort(key=lambda x: x.id)
 
         record_banners = {record.banner_type for record in records}
         banner_last_nums = {
@@ -168,6 +170,7 @@ class GachaCommand:
                         for record in hsr_data[banner_name]
                     ]
                 )
+            records.sort(key=lambda x: x.id)
 
             if records:
                 # Fetch rarity map with Yatta API
@@ -226,6 +229,7 @@ class GachaCommand:
                         for record in gi_data[banner_name]
                     ]
                 )
+            records.sort(key=lambda x: x.id)
 
             if records:
                 # Fetch rarity map with Ambr API
@@ -284,6 +288,7 @@ class GachaCommand:
                         for record in zzz_data[banner_name]
                     ]
                 )
+            records.sort(key=lambda x: x.id)
 
             if records:
                 # Fetch rarity map with Hakushin API
@@ -365,6 +370,8 @@ class GachaCommand:
 
             records = [UIGFRecord(timezone=tz_hour, **record) for record in data["list"]]
 
+        records.sort(key=lambda x: x.id)
+
         record_banners = {record.banner_type for record in records}
         banner_last_nums = {
             banner_type: await get_last_gacha_num(account, banner=banner_type)
@@ -404,6 +411,7 @@ class GachaCommand:
 
         tz_hour = data["info"]["region_time_zone"]
         records = [SRGFRecord(timezone=tz_hour, **record) for record in data["list"]]
+        records.sort(key=lambda x: x.id)
 
         record_banners = {record.banner_type for record in records}
         banner_last_nums = {

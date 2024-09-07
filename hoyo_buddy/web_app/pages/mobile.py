@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 import flet as ft
 import genshin
-from loguru import logger
 
 from hoyo_buddy.web_app.login_handler import handle_mobile_otp, handle_session_mmt
 from hoyo_buddy.web_app.utils import show_error_banner, show_loading_snack_bar
@@ -64,7 +63,6 @@ class MobileNumberForm(ft.Column):
             try:
                 result = await client._send_mobile_otp(mobile)
             except Exception as exc:
-                logger.exception("Failed to send mobile OTP")
                 await show_error_banner(page=page, message=str(exc))
                 return
 

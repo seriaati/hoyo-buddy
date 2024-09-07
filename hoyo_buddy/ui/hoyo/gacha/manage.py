@@ -41,6 +41,7 @@ class GachaLogManageView(View):
         self.add_item(ExportButton())
         self.add_item(DeleteButton())
         await i.response.send_message(embed=embed, view=self)
+        self.message = await i.original_response()
 
 
 class DeleteButton(Button[GachaLogManageView]):

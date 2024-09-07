@@ -197,7 +197,7 @@ class SubmitButton(ft.FilledButton):
             await conn.close()
 
         # Delete cookies and device info from client storage
-        await reset_storage(page, user_id=user_id)
+        reset_storage(page, user_id=user_id)
 
         await page.show_snack_bar_async(
             ft.SnackBar(

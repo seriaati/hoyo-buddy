@@ -323,7 +323,7 @@ class WebApp:
         else:
             match route:
                 case "/platforms":
-                    await reset_storage(page, user_id=params.user_id)
+                    reset_storage(page, user_id=params.user_id)
                     view = pages.PlatformsPage(
                         params=params, translator=self._translator, locale=locale
                     )

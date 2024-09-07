@@ -60,6 +60,9 @@ class ViewGachaLogView(View):
             filter_kwargs["banner_type"] = self.banner_type
 
         five_stars = await GachaHistory.filter(**filter_kwargs).order_by("wish_id").only("item_id")
+        if len(five_stars) < 2:
+            return 0
+
         is_standards: list[bool] = [
             item.item_id in STANDARD_ITEMS[self.account.game] for item in five_stars
         ]

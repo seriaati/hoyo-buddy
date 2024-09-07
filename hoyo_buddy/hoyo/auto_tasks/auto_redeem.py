@@ -16,9 +16,8 @@ from ...l10n import LocaleStr
 if TYPE_CHECKING:
     import aiohttp
 
-    from hoyo_buddy.embeds import ErrorEmbed
-
     from ...bot import HoyoBuddy
+    from ...embeds import ErrorEmbed
 
 
 class AutoRedeem:

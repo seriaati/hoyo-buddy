@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import concurrent.futures
 import os
 from collections import defaultdict
@@ -20,17 +21,23 @@ from discord.ext import commands
 from loguru import logger
 from tortoise.expressions import Q
 
+from hoyo_buddy.constants import (
+    ZENLESS_DATA_LANGS,
+    ZZZ_AVATAR_TEMPLATE_URL,
+    ZZZ_ITEM_TEMPLATE_URL,
+    ZZZ_TEXT_MAP_URL,
+)
+
 from ..db import models
 from ..enums import Game, Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
 from ..l10n import AppCommandTranslator, EnumStr, LocaleStr, Translator
-from ..utils import get_now, get_repo_version
+from ..utils import fetch_json, get_now, get_repo_version
 from .cache import LFUCache
 from .command_tree import CommandTree
 
 if TYPE_CHECKING:
-    import asyncio
     from collections.abc import Sequence
     from enum import StrEnum
 
@@ -306,6 +313,42 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         # Update genshin.py assets
         await genshin.utility.update_characters_any()
+
+        # Update zenless data
+        await self.update_zzz_item_id_name_map()
+
+    async def update_zzz_item_id_name_map(self) -> None:
+        result: dict[str, dict[str, str]] = {}
+
+        async with asyncio.TaskGroup() as tg:
+            item_temp_task = tg.create_task(fetch_json(self.session, ZZZ_ITEM_TEMPLATE_URL))
+            avatar_temp_task = tg.create_task(fetch_json(self.session, ZZZ_AVATAR_TEMPLATE_URL))
+            text_map_tasks = {
+                lang: tg.create_task(fetch_json(self.session, ZZZ_TEXT_MAP_URL.format(lang=lang)))
+                for lang in ZENLESS_DATA_LANGS
+            }
+
+        item_template = item_temp_task.result()
+        avatar_template = avatar_temp_task.result()
+        text_maps = {lang: task.result() for lang, task in text_map_tasks.items()}
+
+        item_id_mapping: dict[int, str] = {}  # item ID -> text map key
+
+        for item in item_template["KHHABHLHAFG"]:
+            if any(keyword in item["EAAFCGPDFAA"] for keyword in ("Bangboo_Name", "Item_Weapon")):
+                item_id_mapping[item["NGPCCDGBLLK"]] = item["EAAFCGPDFAA"]
+
+        for avatar in avatar_template["KHHABHLHAFG"]:
+            item_id_mapping[avatar["NGPCCDGBLLK"]] = avatar["EAAFCGPDFAA"]
+
+        for lang, text_map in text_maps.items():
+            result[lang] = {
+                str(item_id): text_map.get(text_map_key, "")
+                for item_id, text_map_key in item_id_mapping.items()
+            }
+
+        for lang, text_map in result.items():
+            await models.JSONFile.write(f"zzz_item_names_{lang}.json", text_map)
 
     async def on_command_error(
         self, context: commands.Context, exception: commands.CommandError

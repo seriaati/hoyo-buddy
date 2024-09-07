@@ -14,7 +14,7 @@ DB_CONFIG = {
             "default_connection": "default",
         }
     },
-    "use_tz": False,
+    "use_tz": True,
     "minsize": 1,
     "maxsize": 20,
 }

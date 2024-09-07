@@ -471,6 +471,9 @@ class GenshinClient(genshin.Client):
             return None
 
         cookies = genshin.parse_cookie(self._account.cookies)
+        if "stoken" not in cookies or "mid" not in cookies:
+            return None
+
         cookie_token = (await genshin.cn_fetch_cookie_token_with_stoken_v2(cookies))["cookie_token"]
         cookies["cookie_token"] = cookie_token
         cookies["account_id"] = cookies["ltuid"]

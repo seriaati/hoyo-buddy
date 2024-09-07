@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import contextlib
 import io
 from typing import TYPE_CHECKING, Any
 
@@ -9,7 +8,6 @@ import hakushin
 import orjson
 import pandas as pd
 import yatta
-from tortoise.exceptions import IntegrityError
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_last_gacha_num, get_locale
@@ -26,6 +24,7 @@ from hoyo_buddy.models import (
     ZZZRngMoeRecord,
 )
 from hoyo_buddy.ui.hoyo.gacha.import_ import GachaImportView
+from hoyo_buddy.ui.hoyo.gacha.view import ViewGachaLogView
 
 if TYPE_CHECKING:
     import discord
@@ -59,20 +58,24 @@ class GachaCommand:
             for banner_type in record_banners
         }
 
+        count = 0
+
         for record in records:
-            with contextlib.suppress(IntegrityError):
-                await GachaHistory.create(
-                    wish_id=record.id,
-                    rarity=record.rarity,
-                    item_id=record.item_id,
-                    banner_type=record.banner_type,
-                    account=account,
-                    game=Game.STARRAIL,
-                    num=banner_last_nums[record.banner_type] + 1,
-                )
+            created = await GachaHistory.create(
+                wish_id=record.id,
+                rarity=record.rarity,
+                item_id=record.item_id,
+                banner_type=record.banner_type,
+                account=account,
+                game=Game.STARRAIL,
+                num=banner_last_nums[record.banner_type] + 1,
+                time=record.time,
+            )
+            if created:
+                count += 1
                 banner_last_nums[record.banner_type] += 1
 
-        return len(records)
+        return count
 
     async def _zzz_rng_moe_import(
         self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
@@ -109,20 +112,24 @@ class GachaCommand:
             for banner_type in record_banners
         }
 
+        count = 0
+
         for record in records:
-            with contextlib.suppress(IntegrityError):
-                await GachaHistory.create(
-                    wish_id=record.id,
-                    rarity=record.rarity,
-                    item_id=record.item_id,
-                    banner_type=record.banner_type,
-                    account=account,
-                    game=Game.ZZZ,
-                    num=banner_last_nums[record.banner_type] + 1,
-                )
+            created = await GachaHistory.create(
+                wish_id=record.id,
+                rarity=record.rarity,
+                item_id=record.item_id,
+                banner_type=record.banner_type,
+                account=account,
+                game=Game.ZZZ,
+                num=banner_last_nums[record.banner_type] + 1,
+                time=record.time,
+            )
+            if created:
+                count += 1
                 banner_last_nums[record.banner_type] += 1
 
-        return len(records)
+        return count
 
     async def _stardb_import(
         self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
@@ -178,20 +185,24 @@ class GachaCommand:
                     for banner_type in record_banners
                 }
 
+                count = 0
+
                 for record in records:
-                    with contextlib.suppress(IntegrityError):
-                        await GachaHistory.create(
-                            wish_id=record.id,
-                            rarity=rarity_map[record.item_id],
-                            item_id=record.item_id,
-                            banner_type=record.banner_type,
-                            account=account,
-                            game=Game.STARRAIL,
-                            num=banner_last_nums[record.banner_type] + 1,
-                        )
+                    created = await GachaHistory.create(
+                        wish_id=record.id,
+                        rarity=rarity_map[record.item_id],
+                        item_id=record.item_id,
+                        banner_type=record.banner_type,
+                        account=account,
+                        game=Game.STARRAIL,
+                        num=banner_last_nums[record.banner_type] + 1,
+                        time=record.time,
+                    )
+                    if created:
+                        count += 1
                         banner_last_nums[record.banner_type] += 1
 
-            return len(records)
+                return count
 
         return 0
 
@@ -230,26 +241,29 @@ class GachaCommand:
                         continue
                     rarity_map[int(item.id)] = item.rarity
 
-                record_banners = {record.banner_type for record in records}
                 banner_last_nums = {
                     banner_type: await get_last_gacha_num(account, banner=banner_type)
-                    for banner_type in record_banners
+                    for banner_type in banner_types.values()
                 }
 
+                count = 0
+
                 for record in records:
-                    with contextlib.suppress(IntegrityError):
-                        await GachaHistory.create(
-                            wish_id=record.id,
-                            rarity=rarity_map[record.item_id],
-                            item_id=record.item_id,
-                            banner_type=record.banner_type,
-                            account=account,
-                            game=Game.GENSHIN,
-                            num=banner_last_nums[record.banner_type] + 1,
-                        )
+                    created = await GachaHistory.create(
+                        wish_id=record.id,
+                        rarity=rarity_map[record.item_id],
+                        item_id=record.item_id,
+                        banner_type=record.banner_type,
+                        account=account,
+                        time=record.time,
+                        game=Game.GENSHIN,
+                        num=banner_last_nums[record.banner_type] + 1,
+                    )
+                    if created:
+                        count += 1
                         banner_last_nums[record.banner_type] += 1
 
-            return len(records)
+                return count
 
         return 0
 
@@ -294,20 +308,24 @@ class GachaCommand:
                     for banner_type in record_banners
                 }
 
+                count = 0
+
                 for record in records:
-                    with contextlib.suppress(IntegrityError):
-                        await GachaHistory.create(
-                            wish_id=record.id,
-                            rarity=rarity_map[record.item_id],
-                            item_id=record.item_id,
-                            banner_type=record.banner_type,
-                            account=account,
-                            game=Game.ZZZ,
-                            num=banner_last_nums[record.banner_type] + 1,
-                        )
+                    created = await GachaHistory.create(
+                        wish_id=record.id,
+                        rarity=rarity_map[record.item_id],
+                        item_id=record.item_id,
+                        banner_type=record.banner_type,
+                        account=account,
+                        game=Game.ZZZ,
+                        num=banner_last_nums[record.banner_type] + 1,
+                        time=record.time,
+                    )
+                    if created:
+                        count += 1
                         banner_last_nums[record.banner_type] += 1
 
-            return len(records)
+                return count
 
         return 0
 
@@ -346,20 +364,24 @@ class GachaCommand:
             for banner_type in record_banners
         }
 
+        count = 0
+
         for record in records:
-            with contextlib.suppress(IntegrityError):
-                await GachaHistory.create(
-                    wish_id=record.id,
-                    rarity=record.rarity,
-                    item_id=record.item_id,
-                    banner_type=record.banner_type,
-                    account=account,
-                    game=Game.GENSHIN,
-                    num=banner_last_nums[record.banner_type] + 1,
-                )
+            created = await GachaHistory.create(
+                wish_id=record.id,
+                rarity=record.rarity,
+                item_id=record.item_id,
+                banner_type=record.banner_type,
+                account=account,
+                game=Game.GENSHIN,
+                num=banner_last_nums[record.banner_type] + 1,
+                time=record.time,
+            )
+            if created:
+                count += 1
                 banner_last_nums[record.banner_type] += 1
 
-        return len(records)
+        return count
 
     async def _srgf_import(
         self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
@@ -383,24 +405,29 @@ class GachaCommand:
             for banner_type in record_banners
         }
 
+        count = 0
+
         for record in records:
-            with contextlib.suppress(IntegrityError):
-                await GachaHistory.create(
-                    wish_id=record.id,
-                    rarity=record.rarity,
-                    item_id=record.item_id,
-                    banner_type=record.banner_type,
-                    account=account,
-                    game=Game.STARRAIL,
-                    num=banner_last_nums[record.banner_type] + 1,
-                )
+            created = await GachaHistory.create(
+                wish_id=record.id,
+                rarity=record.rarity,
+                item_id=record.item_id,
+                banner_type=record.banner_type,
+                account=account,
+                game=Game.STARRAIL,
+                num=banner_last_nums[record.banner_type] + 1,
+                time=record.time,
+            )
+            if created:
+                count += 1
                 banner_last_nums[record.banner_type] += 1
 
-        return len(records)
+        return count
 
     async def run_import(self, i: Interaction, account: HoyoAccount) -> None:
+        locale = await get_locale(i)
         view = GachaImportView(
-            account, author=i.user, locale=i.locale, translator=i.client.translator
+            account, author=i.user, locale=locale, translator=i.client.translator
         )
         await view.start(i)
 
@@ -444,3 +471,10 @@ class GachaCommand:
                 description=LocaleStr(key="gacha_import_success_message", count=count),
             ).add_acc_info(account)
             await i.edit_original_response(embed=embed)
+
+    async def run_view(self, i: Interaction, account: HoyoAccount) -> None:
+        locale = await get_locale(i)
+        view = ViewGachaLogView(
+            account, author=i.user, locale=locale, translator=i.client.translator
+        )
+        await view.start(i)

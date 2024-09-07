@@ -609,22 +609,54 @@ accounts_added_snackbar_message: "Accounts added successfully, redirecting you b
 account_add_start_title: Add Accounts
 account_add_start_message: "Clicking the button below opens the Hoyo Buddy Login System, follow the instructions to add your accounts. When you're done, use the </accounts> command to view the accounts you have added."
 hbls_button_label: Let's start!
-gacha_import_url_modal_title: Enter gacha history URL
-gacha_import_embed_title: Importing Gacha History
-gacha_import_embed_description: "Gacha history URL: Obtain a very long URL from the game to import your gacha records, guides for different games are below:\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import)\n\nFor services below, export your gacha records as the specified file format and upload it via </gacha upload>\n1. Star Rail Station: **csv** file\n2. Star DB: **json** file\n3. zzz.rng.moe: **json** file\n4. UIGF: **json** file\n5. SRGF: **json** file"
+gacha_import_url_modal_title: Enter gacha log URL
+gacha_import_embed_title: Importing Gacha Logs
+gacha_import_embed_description: "Gacha log URL: Obtain a very long URL from the game to import your gacha records, guides for different games are below:\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/signal-import)\n\nFor services below, export your gacha records as the specified file format and upload it via </gacha upload>\n1. Star Rail Station: **csv** file\n2. stardb.gg: **json** file\n3. zzz.rng.moe: **json** file\n4. UIGF: **json** file\n5. SRGF: **json** file"
 extract_authkey_error_message: "Unable to extract authkey from the URL, please try again with a valid URL."
 extract_authkey_error_title: Authkey Extraction Failed
-gacha_import_loading_embed_title: Importing Gacha History
+gacha_import_loading_embed_title: Importing Gacha Logs
 gacha_import_loading_embed_description: "{loading_emoji} This can take a while, please be patient..."
 gacha_upload_invalid_file_error_title: Invalid file format
 gacha_upload_invalid_file_error_message: "Only accepts **{file_format}** files, please try again with a valid file."
 uid_mismatch_error_title: UID Mismatch
 uid_mismatch_error_message: "The UID of the selected account does not match the UID in the data ({uid})"
-gacha_import_command_description: Import gacha history from the game
+gacha_import_command_description: Import gacha logs from the game
 source_param_name: source
-source_param_description: Source of the gacha history
-gacha_upload_command_description: Upload gacha history file from other sources to import to Hoyo Buddy
+source_param_description: Source of the gacha logs
+gacha_upload_command_description: Upload gacha log file from other sources to import to Hoyo Buddy
 file_param_name: file
-file_param_description: Gacha history file to upload
-gacha_import_success_title: Gacha History Imported
-gacha_import_success_message: "{count} gacha records have been imported successfully. Use the </gacha view> command to view them."
+file_param_description: Gacha log file to upload
+gacha_import_success_title: Gacha Logs Imported
+gacha_import_success_message: "{count} gacha records have been imported successfully. Use the </gacha-log view> command to view them."
+gacha_view_filter_button_label: Filters
+gacha_view_search_field_label: Search
+gacha_view_gacha_detail_title: Gacha Item Details
+gacha_view_gacha_detail: "ID: {id}\nName: {name}\nPull time: {time}"
+gacha_view_num_since_last: "{pull} pulls since last {rarity} ★"
+gacha_view_filter_dialog_title: Gacha Logs Filters
+banner_type_beginners_wish: Beginner's Wish
+banner_type_standard_banner: Standard Banner
+banner_type_character_event: Character Event
+banner_type_weapon_event: Weapon Event
+banner_type_chronicled_wish: Chronicled Wish
+banner_type_stellar_warp: Stellar Warp
+banner_type_departure_warp: Departure Warp
+banner_type_character_warp: Character Warp
+banner_type_light_cone_warp: Light Cone Warp
+banner_type_standard_channel: Standard Channel
+banner_type_exclusive_channel: Exclusive Channel
+banner_type_w_engine_channel: W-Engine Channel
+banner_type_bangboo_channel: Bangboo Channel
+cancel_button_label: Cancel
+gacha_view_filter_size_field_label: Items per page
+gacha_view_page_field_label: Page
+gacha_log_stats_title: Gacha Log Stats
+gacha_log_personal_stats_title: Personal Stats
+gacha_log_personal_stats: "Lifetime pulls: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\nTotal pulls for this banner: {total_pulls} ({total_currency} {currency_emoji})\n5★ pity: {star5_pity_cur}/{star5_pity_max}\n4★ pity: {star4_pity_cur}/10\n50/50 Win rate: {win_rate}%\nTotal 5★: {total_star5}\nTotal 4★: {total_star4}\nAverage pulls per 5★: {avg_pulls_per_star5}\nAverage pulls per 4★: {avg_pulls_per_star4}"
+gacha_log_global_stats_title: Global Stats
+gacha_log_global_stats: "Lifetime pulls: Top {lifetime}%\n5★ luck: Top {star5_luck}%\n4★ luck: Top {star4_luck}%\n50/50 Win rate: Top {win_rate}%"
+gacha_log_view_full: View gacha logs
+gacha_view_command_description: View imported gacha logs
+gacha_log_view_banner_type_selector_placeholder: Select a banner type...
+no_gacha_log_found_error_title: No Gacha Logs Found
+no_gacha_log_found_error_message: "Use </gacha-log import> or </gacha-log upload> to import your gacha logs."

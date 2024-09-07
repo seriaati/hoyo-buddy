@@ -94,6 +94,7 @@ async def handle_session_mmt(
                     url_target=ft.UrlTarget.SELF,
                 )
             ],
+            modal=True,
         )
     )
 
@@ -137,8 +138,9 @@ class EmailVerifyDialog(ft.AlertDialog):
                         params=params,
                     ),
                 ],
-                wrap=True,
+                tight=True,
             ),
+            modal=True,
         )
 
 
@@ -246,13 +248,14 @@ class MobileVerifyDialog(ft.AlertDialog):
                         hint_text="123456",
                     ),
                 ],
-                wrap=True,
+                tight=True,
             ),
             actions=[
                 MobileVerifyCodeButton(
                     mobile=mobile, field_ref=field_ref, user_id=user_id, params=params
                 )
             ],
+            modal=True,
         )
 
 

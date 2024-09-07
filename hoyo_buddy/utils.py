@@ -7,10 +7,12 @@ import http.cookies
 import math
 import os
 import re
-from typing import TYPE_CHECKING, Any, Literal, overload
+from typing import TYPE_CHECKING, Any, overload
 
 import aiohttp
+import ambr
 import git
+import orjson
 import sentry_sdk
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
@@ -19,6 +21,8 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 from seria.utils import clean_url
 
+from hoyo_buddy.enums import Game
+
 from .constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UIGF_GAMES, UTC_8
 
 if TYPE_CHECKING:
@@ -26,8 +30,6 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from discord import Interaction, Member, User
-
-    from hoyo_buddy.enums import Game
 
 
 def get_now() -> datetime.datetime:
@@ -340,37 +342,32 @@ def init_sentry() -> None:
     )
 
 
+def _process_query(item_ids_or_names: Sequence[str | int] | int | str) -> str:
+    if not isinstance(item_ids_or_names, str | int):
+        if len(item_ids_or_names) == 1:
+            item_ids_or_names_query = item_ids_or_names[0]
+        else:
+            item_ids_or_names = [str(item) for item in item_ids_or_names]
+            item_ids_or_names_query = ",".join(item_ids_or_names)
+            item_ids_or_names_query = f"[{item_ids_or_names_query}]"
+    else:
+        item_ids_or_names_query = item_ids_or_names
+
+    return str(item_ids_or_names_query)
+
+
 @overload
 async def item_name_to_id(
-    session: aiohttp.ClientSession,
-    *,
-    item_names: str,
-    game: Literal[Game.GENSHIN, Game.STARRAIL],
-    lang: str,
+    session: aiohttp.ClientSession, *, item_names: str, game: Game, lang: str
 ) -> str: ...
 @overload
 async def item_name_to_id(
-    session: aiohttp.ClientSession,
-    *,
-    item_names: Sequence[str],
-    game: Literal[Game.GENSHIN, Game.STARRAIL],
-    lang: str,
+    session: aiohttp.ClientSession, *, item_names: Sequence[str], game: Game, lang: str
 ) -> Sequence[str]: ...
 async def item_name_to_id(
-    session: aiohttp.ClientSession,
-    *,
-    item_names: Sequence[str] | str,
-    game: Literal[Game.GENSHIN, Game.STARRAIL],
-    lang: str,
+    session: aiohttp.ClientSession, *, item_names: Sequence[str] | str, game: Game, lang: str
 ) -> Sequence[str] | str:
-    if not isinstance(item_names, str):
-        if len(item_names) == 1:
-            item_names_query = item_names[0]
-        else:
-            item_names_query = ",".join(item_names)
-            item_names_query = f"[{item_names_query}]"
-    else:
-        item_names_query = item_names
+    item_names_query = _process_query(item_names)
 
     async with session.post(
         "https://api.uigf.org/translate/",
@@ -385,3 +382,83 @@ async def item_name_to_id(
         data = await resp.json()
 
     return data["item_id"]
+
+
+@overload
+async def item_id_to_name(
+    session: aiohttp.ClientSession, *, item_ids: int, game: Game, lang: str
+) -> str: ...
+@overload
+async def item_id_to_name(
+    session: aiohttp.ClientSession, *, item_ids: Sequence[int], game: Game, lang: str
+) -> Sequence[str]: ...
+async def item_id_to_name(
+    session: aiohttp.ClientSession, *, item_ids: Sequence[int] | int, game: Game, lang: str
+) -> Sequence[str] | str:
+    item_ids_query = _process_query(item_ids)
+
+    async with session.post(
+        "https://api.uigf.org/translate/",
+        json={"type": "reverse", "item_id": item_ids_query, "game": UIGF_GAMES[game], "lang": lang},
+    ) as resp:
+        resp.raise_for_status()
+        data = await resp.json()
+
+    return data["item_name"]
+
+
+async def get_gacha_icon(*, game: Game, item_id: int) -> str:
+    """Get the icon URL for a gacha item."""
+    if game is Game.ZZZ:
+        return f"https://stardb.gg/api/static/zzz/{item_id}.png"
+
+    if game is Game.GENSHIN:
+        async with ambr.AmbrAPI() as api:
+            if len(str(item_id)) == 5:  # weapon
+                weapons = await api.fetch_weapons()
+                weapon_icon_map: dict[int, str] = {weapon.id: weapon.icon for weapon in weapons}
+                return weapon_icon_map[item_id]
+
+            # character
+            characters = await api.fetch_characters()
+            character_icon_map: dict[int, str] = {
+                int(character.id): character.icon
+                for character in characters
+                if character.id.isdigit()
+            }
+            return character_icon_map[item_id]
+
+    if game is Game.STARRAIL:
+        if len(str(item_id)) == 5:  # light cone
+            return f"https://stardb.gg/api/static/StarRailResWebp/icon/light_cone/{item_id}.webp"
+
+        # character
+        return f"https://stardb.gg/api/static/StarRailResWebp/icon/character/{item_id}.webp"
+
+    msg = f"Unsupported game: {game}"
+    raise ValueError(msg)
+
+
+async def fetch_json(session: aiohttp.ClientSession, url: str) -> Any:
+    async with session.get(url) as resp:
+        resp.raise_for_status()
+        return orjson.loads(await resp.read())
+
+
+def calc_top_percentage(number: float, number_list: list[float], *, reverse: bool) -> float:
+    sorted_unique_list = sorted(set(number_list), reverse=reverse)
+
+    try:
+        # Find the position of the number (add 1 because index starts at 0)
+        position = sorted_unique_list.index(number) + 1
+    except ValueError:
+        # If the number is not in the list, find where it would be inserted
+        position = (
+            next(
+                (i for i, x in enumerate(sorted_unique_list) if x < number), len(sorted_unique_list)
+            )
+            + 1
+        )
+
+    # Calculate the percentage
+    return round((position / len(sorted_unique_list) * 100), 2)

@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-import contextlib
 from typing import TYPE_CHECKING, Any
 
 import discord
 import genshin
-from tortoise.exceptions import IntegrityError
 
 from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_dyk, get_last_gacha_num
 from hoyo_buddy.embeds import DefaultEmbed
@@ -115,17 +113,17 @@ class URLImport(Button[GachaImportView]):
 
                 banner_type = 301 if history.banner_type == 400 else history.banner_type
 
-                with contextlib.suppress(IntegrityError):
-                    await GachaHistory.create(
-                        wish_id=history.id,
-                        rarity=history.rarity,
-                        time=history.time,
-                        banner_type=banner_type,
-                        item_id=item_id,
-                        account=self.account,
-                        game=Game.GENSHIN,
-                        num=banner_last_nums[banner_type] + 1,
-                    )
+                created = await GachaHistory.create(
+                    wish_id=history.id,
+                    rarity=history.rarity,
+                    time=history.time,
+                    banner_type=banner_type,
+                    item_id=int(item_id),
+                    account=self.account,
+                    game=Game.GENSHIN,
+                    num=banner_last_nums[banner_type] + 1,
+                )
+                if created:
                     count += 1
                     banner_last_nums[banner_type] += 1
 
@@ -136,17 +134,17 @@ class URLImport(Button[GachaImportView]):
             }
 
             async for history in client.warp_history(authkey=authkey):
-                with contextlib.suppress(IntegrityError):
-                    await GachaHistory.create(
-                        id=history.id,
-                        rarity=history.rarity,
-                        time=history.time,
-                        banner_type=history.banner_type,
-                        item_id=history.item_id,
-                        account=self.account,
-                        game=Game.STARRAIL,
-                        num=banner_last_nums[history.banner_type] + 1,
-                    )
+                created = await GachaHistory.create(
+                    wish_id=history.id,
+                    rarity=history.rarity,
+                    time=history.time,
+                    banner_type=history.banner_type,
+                    item_id=history.item_id,
+                    account=self.account,
+                    game=Game.STARRAIL,
+                    num=banner_last_nums[history.banner_type] + 1,
+                )
+                if created:
                     count += 1
                     banner_last_nums[history.banner_type] += 1
 
@@ -157,18 +155,17 @@ class URLImport(Button[GachaImportView]):
             }
 
             async for history in client.signal_history(authkey=authkey):
-                with contextlib.suppress(IntegrityError):
-                    await GachaHistory.create(
-                        id=history.id,
-                        rarity=history.rarity,
-                        time=history.time,
-                        banner_type=history.banner_type,
-                        name=history.name,
-                        item_id=history.item_id,
-                        account=self.account,
-                        game=Game.ZZZ,
-                        num=banner_last_nums[history.banner_type] + 1,
-                    )
+                created = await GachaHistory.create(
+                    wish_id=history.id,
+                    rarity=history.rarity,
+                    time=history.time,
+                    banner_type=history.banner_type,
+                    item_id=history.item_id,
+                    account=self.account,
+                    game=Game.ZZZ,
+                    num=banner_last_nums[history.banner_type] + 1,
+                )
+                if created:
                     count += 1
                     banner_last_nums[history.banner_type] += 1
         else:

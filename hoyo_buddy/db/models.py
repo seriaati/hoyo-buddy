@@ -324,6 +324,8 @@ class GachaHistory(BaseModel):
     item_id = fields.IntField()
     banner_type = fields.IntField()
     num = fields.IntField()
+    num_since_last = fields.IntField()
+    """Number of pulls since the last 5 or 4 star pull."""
 
     game = fields.CharEnumField(Game, max_length=32)
     account: fields.ForeignKeyRelation[HoyoAccount] = fields.ForeignKeyField(
@@ -334,6 +336,76 @@ class GachaHistory(BaseModel):
     class Meta:
         unique_together = ("wish_id", "game")
         ordering = ["-wish_id"]
+
+    @classmethod
+    async def create(
+        cls,
+        *,
+        wish_id: int,
+        rarity: int,
+        time: datetime.datetime,
+        item_id: int,
+        banner_type: int,
+        num: int,
+        game: Game,
+        account: HoyoAccount,
+    ) -> bool:
+        num_since_last = await get_num_since_last(
+            account, banner=banner_type, num=num, rarity=rarity
+        )
+        try:
+            await super().create(
+                wish_id=wish_id,
+                rarity=rarity,
+                time=time,
+                item_id=item_id,
+                banner_type=banner_type,
+                num=num,
+                num_since_last=num_since_last,
+                game=game,
+                account=account,
+                account_id=account.id,
+            )
+        except exceptions.IntegrityError:
+            return False
+        return True
+
+
+class GachaStats(BaseModel):
+    account_id = fields.IntField(pk=True, generated=False)
+    lifetime_pulls = fields.IntField()
+    avg_5star_pulls = fields.FloatField()
+    avg_4star_pulls = fields.FloatField()
+    win_rate = fields.FloatField()
+    """50/50 win rate, before multiplying 100."""
+    game = fields.CharEnumField(Game, max_length=32)
+
+    @classmethod
+    async def create_or_update(
+        cls,
+        *,
+        account: HoyoAccount,
+        lifetime_pulls: int,
+        avg_5star_pulls: float,
+        avg_4star_pulls: float,
+        win_rate: float,
+    ) -> None:
+        try:
+            await super().create(
+                account_id=account.id,
+                lifetime_pulls=lifetime_pulls,
+                avg_5star_pulls=avg_5star_pulls,
+                avg_4star_pulls=avg_4star_pulls,
+                win_rate=win_rate,
+                game=account.game,
+            )
+        except exceptions.IntegrityError:
+            await cls.filter(account_id=account.id).update(
+                lifetime_pulls=lifetime_pulls,
+                avg_5star_pulls=avg_5star_pulls,
+                avg_4star_pulls=avg_4star_pulls,
+                win_rate=win_rate,
+            )
 
 
 async def get_locale(i: Interaction) -> Locale:
@@ -367,16 +439,21 @@ async def get_dyk(i: Interaction) -> str:
 
 
 async def get_last_gacha_num(
-    account: HoyoAccount, *, banner: int, rarity: int | None = None
+    account: HoyoAccount, *, banner: int, rarity: int | None = None, num_lt: int | None = None
 ) -> int:
+    filter_kwrargs = {"account": account, "banner_type": banner}
     if rarity is not None:
-        last_gacha = (
-            await GachaHistory.filter(account=account, banner_type=banner, rarity=rarity)
-            .first()
-            .only("num")
-        )
-    else:
-        last_gacha = (
-            await GachaHistory.filter(account=account, banner_type=banner).first().only("num")
-        )
+        filter_kwrargs["rarity"] = rarity
+    if num_lt is not None:
+        filter_kwrargs["num__lt"] = num_lt
+
+    last_gacha = await GachaHistory.filter(**filter_kwrargs).first().only("num")
     return last_gacha.num if last_gacha else 0
+
+
+async def get_num_since_last(account: HoyoAccount, *, banner: int, num: int, rarity: int) -> int:
+    """Return the number of pulls since the last 5 or 4 star pull."""
+    if rarity == 3:
+        return 0
+    last_num = await get_last_gacha_num(account, banner=banner, rarity=rarity, num_lt=num)
+    return num - last_num

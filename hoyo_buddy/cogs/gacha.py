@@ -19,8 +19,8 @@ if TYPE_CHECKING:
 
 class Gacha(
     commands.GroupCog,
-    name=app_commands.locale_str("gacha"),
-    description=app_commands.locale_str("Gacha commands"),
+    name=app_commands.locale_str("gacha-log"),
+    description=app_commands.locale_str("Gacha log commands"),
 ):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
@@ -49,6 +49,31 @@ class Gacha(
             i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
         )
         await GachaCommand().run_import(i, account_)
+
+    @app_commands.command(
+        name=app_commands.locale_str("view"),
+        description=app_commands.locale_str(
+            "View imported gacha logs", key="gacha_view_command_description"
+        ),
+    )
+    @app_commands.rename(
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+    )
+    @app_commands.describe(
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        )
+    )
+    async def view_logs(
+        self,
+        i: Interaction,
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+    ) -> Any:
+        account_ = account or await self.bot.get_account(
+            i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
+        )
+        await GachaCommand().run_view(i, account_)
 
     @app_commands.command(
         name=app_commands.locale_str("upload"),
@@ -89,6 +114,7 @@ class Gacha(
 
     @import_.autocomplete("account")
     @upload.autocomplete("account")
+    @view_logs.autocomplete("account")
     async def account_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:

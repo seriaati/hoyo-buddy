@@ -141,6 +141,6 @@ class BetaItemCategory(StrEnum):
 class GachaImportSource(StrEnum):
     STAR_RAIL_STATION = "Star Rail Station"
     ZZZ_RNG_MOE = "zzz.rng.moe"
-    STAR_DB = "Star DB"
+    STAR_DB = "stardb.gg"
     UIGF = "UIGF"
     SRGF = "SRGF"

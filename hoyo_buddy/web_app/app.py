@@ -25,6 +25,7 @@ from .schema import GachaParams, Params
 from .utils import (
     decrypt_string,
     encrypt_string,
+    fetch_json_file,
     reset_storage,
     show_error_banner,
     show_loading_snack_bar,
@@ -380,14 +381,16 @@ class WebApp:
                 asyncio.create_task(page.client_storage.set_async("hb.gacha_icons", gacha_icons))
 
                 game = await self._get_account_game(params.account_id)
-                gacha_names = await self._get_gacha_names(
-                    gachas=gacha_logs, locale=locale, game=game
-                )
-                asyncio.create_task(
-                    page.client_storage.set_async(f"hb.{params.locale}.gacha_names", gacha_names)
-                )
 
                 if params.name_contains:
+                    gacha_names = await self._get_gacha_names(
+                        gachas=gacha_logs, locale=locale, game=game
+                    )
+                    asyncio.create_task(
+                        page.client_storage.set_async(
+                            f"hb.{params.locale}.gacha_names", gacha_names
+                        )
+                    )
                     gacha_logs = [
                         g
                         for g in gacha_logs
@@ -399,7 +402,6 @@ class WebApp:
                     locale=locale,
                     gacha_histories=gacha_logs,
                     gacha_icons=gacha_icons,
-                    gacha_names=gacha_names,
                     game=game,
                     params=params,
                     max_page=(total_row + params.size - 1) // params.size,
@@ -470,16 +472,6 @@ class WebApp:
         asyncio.create_task(self._page.client_storage.set_async("gacha_icons", cached_gacha_icons))
         return result
 
-    async def _get_json_file(self, filename: str) -> dict[str, str]:
-        conn = await asyncpg.connect(os.environ["DB_URL"])
-        try:
-            json_string = await conn.fetchval(
-                'SELECT data FROM "jsonfile" WHERE name = $1', filename
-            )
-            return orjson.loads(json_string)
-        finally:
-            await conn.close()
-
     async def _get_gacha_names(
         self, *, gachas: Sequence[GachaHistory], locale: Locale, game: Game
     ) -> dict[int, str]:
@@ -498,7 +490,7 @@ class WebApp:
                 non_cached_item_ids.append(item_id)
 
         if game is Game.ZZZ:
-            item_names = await self._get_json_file(
+            item_names = await fetch_json_file(
                 f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json"
             )
             for item_id in item_ids:

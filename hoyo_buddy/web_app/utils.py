@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import asyncio
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
+import asyncpg
 import flet as ft
+import orjson
 from cryptography.fernet import Fernet
 
 from ..l10n import LocaleStr, Translator
@@ -89,3 +91,12 @@ def reset_storage(page: ft.Page, *, user_id: int) -> None:
     asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.cookies"))
     asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.device_id"))
     asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.device_fp"))
+
+
+async def fetch_json_file(filename: str) -> Any:
+    conn = await asyncpg.connect(os.environ["DB_URL"])
+    try:
+        json_string = await conn.fetchval('SELECT data FROM "jsonfile" WHERE name = $1', filename)
+        return orjson.loads(json_string)
+    finally:
+        await conn.close()

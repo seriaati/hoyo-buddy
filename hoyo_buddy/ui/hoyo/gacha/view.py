@@ -116,10 +116,10 @@ class ViewGachaLogView(View):
             value=LocaleStr(
                 key="gacha_log_personal_stats",
                 lifetime_pulls=lifetime_pulls,
-                lifetime_currency=lifetime_pulls * 160,
+                lifetime_currency=f"{lifetime_pulls * 160:,}",
                 currency_emoji=CURRENCY_EMOJIS[self.account.game],
                 total_pulls=banner_total_pulls,
-                total_currency=banner_total_pulls * 160,
+                total_currency=f"{banner_total_pulls * 160:,}",
                 star5_pity_cur=star5_pity_cur,
                 star5_pity_max=star5_pity_max,
                 star4_pity_cur=star4_pity_cur,

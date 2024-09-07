@@ -558,7 +558,8 @@ class ProfileView(View):
 
     async def draw_team_card(self, i: Interaction) -> io.BytesIO:
         """Draw team card for multiple characters."""
-        self._check_card_data()
+        if self.game is not Game.GENSHIN:
+            self._check_card_data()
 
         settings = await Settings.get(user_id=i.user.id)
         draw_input = DrawInput(

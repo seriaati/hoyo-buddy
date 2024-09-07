@@ -37,10 +37,6 @@ class LoadingSnackBar(ft.SnackBar):
             bgcolor=ft.colors.SECONDARY_CONTAINER,
         )
 
-    async def on_action_click(self, e: ft.ControlEvent) -> None:
-        page: ft.Page = e.page
-        await page.close_banner_async()
-
 
 class ErrorBanner(ft.Banner):
     def __init__(self, message: str) -> None:

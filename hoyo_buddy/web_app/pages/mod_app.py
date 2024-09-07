@@ -83,7 +83,7 @@ class ShowImageDialog(ft.AlertDialog):
                         border_radius=8,
                     ),
                 ],
-                wrap=True,
+                tight=True,
             ),
             actions=[ft.TextButton("关闭", on_click=lambda e: e.page.close(self))],
         )

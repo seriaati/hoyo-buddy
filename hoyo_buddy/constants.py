@@ -411,8 +411,8 @@ GEETEST_SERVERS = {
 }
 
 WEB_APP_URLS = {
-    "prod": "https://hb-login.seriaati.xyz",
-    "test": "https://hb-login.seriaati.xyz",
+    "prod": "https://hb-app.seriaati.xyz",
+    "test": "https://hb-app.seriaati.xyz",
     "dev": "http://localhost:8645",
 }
 
@@ -439,11 +439,141 @@ GAME_CHALLENGE_TYPES: Final[dict[Game, tuple[ChallengeType, ...]]] = {
     Game.STARRAIL: (ChallengeType.MOC, ChallengeType.PURE_FICTION, ChallengeType.APC_SHADOW),
 }
 
-ZENLESS_DATA_URL = "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite"
-ZZZ_AGENT_DATA_URL = f"{ZENLESS_DATA_URL}/agent_data.json"
+ZENLESS_ASSET_SCRAPE_URL = (
+    "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite"
+)
+ZZZ_AGENT_DATA_URL = f"{ZENLESS_ASSET_SCRAPE_URL}/agent_data.json"
 
-HSR_DEFAULT_ART_URL = "https://raw.githubusercontent.com/FortOfFans/HSR/main/spriteoutput/avatardrawcardresult/{char_id}.png"
-HSR_ICON_TEMA_URL = "https://raw.githubusercontent.com/FortOfFans/HSR/main/spriteoutput/avatariconteam/{char_id}.png"
+ZENLESS_DATA_URL = "https://git.mero.moe/dimbreath/ZenlessData/raw/branch/master"
+ZENLESS_DATA_LANGS = ("CHT", "DE", "EN", "ES", "FR", "ID", "JA", "KO", "PT", "RU", "TH", "VI")
+ZZZ_ITEM_TEMPLATE_URL = f"{ZENLESS_DATA_URL}//FileCfg/ItemTemplateTb.json"
+ZZZ_AVATAR_TEMPLATE_URL = f"{ZENLESS_DATA_URL}/FileCfg/AvatarBaseTemplateTb.json"
+ZZZ_TEXT_MAP_URL = f"{ZENLESS_DATA_URL}/TextMap/TextMap_{{lang}}TemplateTb.json"
+
+LOCALE_TO_ZENLESS_DATA_LANG: dict[discord.Locale, str] = {
+    discord.Locale.taiwan_chinese: "CHT",
+    discord.Locale.chinese: "CHS",
+    discord.Locale.german: "DE",
+    discord.Locale.american_english: "EN",
+    discord.Locale.spain_spanish: "ES",
+    discord.Locale.french: "FR",
+    discord.Locale.indonesian: "ID",
+    discord.Locale.japanese: "JA",
+    discord.Locale.korean: "KO",
+    discord.Locale.brazil_portuguese: "PT",
+    discord.Locale.russian: "RU",
+    discord.Locale.thai: "TH",
+    discord.Locale.vietnamese: "VI",
+}
+
+
+def locale_to_zenless_data_lang(locale: discord.Locale) -> str:
+    return LOCALE_TO_ZENLESS_DATA_LANG.get(locale, "EN")
+
+
+FORT_OF_FANS_URL = "https://raw.githubusercontent.com/FortOfFans/HSR/main"
+HSR_DEFAULT_ART_URL = f"{FORT_OF_FANS_URL}/spriteoutput/avatardrawcardresult/{{char_id}}.png"
+HSR_ICON_TEMA_URL = f"{FORT_OF_FANS_URL}/spriteoutput/avatariconteam/{{char_id}}.png"
+
+UIGF_GAMES: Final[dict[Game, str]] = {Game.GENSHIN: "genshin", Game.STARRAIL: "starrail"}
+UIGF_GAME_KEYS: Final[dict[Game, str]] = {
+    Game.GENSHIN: "hk4e",
+    Game.STARRAIL: "hkrpg",
+    Game.ZZZ: "nap",
+}
+
+BANNER_TYPE_NAMES: Final[dict[Game, dict[int, str]]] = {
+    Game.GENSHIN: {
+        301: "banner_type_character_event",
+        302: "banner_type_weapon_event",
+        200: "banner_type_standard_banner",
+        500: "banner_type_chronicled_wish",
+        100: "banner_type_beginners_wish",
+    },
+    Game.STARRAIL: {
+        11: "banner_type_character_warp",
+        12: "banner_type_light_cone_warp",
+        1: "banner_type_stellar_warp",
+        2: "banner_type_departure_warp",
+    },
+    Game.ZZZ: {
+        2: "banner_type_exclusive_channel",
+        3: "banner_type_w_engine_channel",
+        1: "banner_type_standard_channel",
+        5: "banner_type_bangboo_channel",
+    },
+}
+
+BANNER_GUARANTEES: Final[dict[Game, dict[int, int]]] = {
+    Game.GENSHIN: {301: 90, 302: 80, 200: 90, 500: 90, 100: 20},
+    Game.STARRAIL: {11: 90, 12: 80, 1: 90, 2: 50},
+    Game.ZZZ: {2: 90, 3: 80, 1: 90, 5: 80},
+}
+
+STANDARD_ITEMS: Final[dict[Game, set[int]]] = {
+    Game.GENSHIN: {
+        # Characters
+        10000079,  # Dehya
+        10000016,  # Diluc
+        10000003,  # Jean
+        10000042,  # Keqing
+        10000041,  # Mona
+        10000035,  # Qiqi
+        10000069,  # Tighnari
+        # Weapons
+        15502,  # Amo's Bow
+        11501,  # Aquila Favonia
+        14502,  # Lost Prayer to the Sacred Winds
+        13505,  # Primordial Jade Winged-Spear
+        14501,  # Skyward Atlas
+        11502,  # Skyward Blade
+        15501,  # Skyward Harp
+        12501,  # Skyward Pride
+        13502,  # Skyward Spine
+        12502,  # Wolf's Gravestone
+    },
+    Game.STARRAIL: {
+        # Characters
+        1211,  # Bailu
+        1101,  # Bronya
+        1107,  # Clara
+        1104,  # Gepard
+        1003,  # Himeko
+        1004,  # Welt
+        1209,  # Yanqing
+        # Light Cones
+        23003,  # But the Battle Isn't Over
+        23004,  # In the Name of the World
+        23005,  # Moment of Victory
+        23000,  # Night on the Milky Way
+        23012,  # Sleep Like the Dead
+        23002,  # Something Irreplaceable
+        23013,  # Time Waits for No One
+    },
+    Game.ZZZ: {
+        # Agents
+        1181,  # Grace
+        1101,  # Koleda
+        1141,  # Lycaon
+        1021,  # Nekomata
+        1211,  # Rina
+        1041,  # Soldier 11
+        # W-Engines
+        14102,  # Steel Cushion
+        14110,  # Hellfire Gears
+        14114,  # The Restrained
+        14104,  # The Brimstone
+        14118,  # Fusion Compiler
+        14121,  # Weeping Cradle
+    },
+}
+
+
+def is_standard_item(game: Game, item_id: int) -> bool:
+    if game not in STANDARD_ITEMS:
+        msg = f"Game {game} is missing from the standard items list."
+        raise ValueError(msg)
+    return item_id in STANDARD_ITEMS[game]
 
 
 def locale_to_hakushin_lang(locale: discord.Locale) -> hakushin.Language:

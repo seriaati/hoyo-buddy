@@ -167,3 +167,37 @@ class ThirdPartyCardTempError(HoyoBuddyError):
             title=LocaleStr(key="third_party_card_temp_error_title"),
             message=LocaleStr(key="third_party_card_temp_error_message"),
         )
+
+
+class AuthkeyExtractError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr(key="extract_authkey_error_title"),
+            message=LocaleStr(key="extract_authkey_error_message"),
+        )
+
+
+class InvalidFileExtError(HoyoBuddyError):
+    def __init__(self, file_format: str) -> None:
+        super().__init__(
+            title=LocaleStr(key="gacha_upload_invalid_file_error_title"),
+            message=LocaleStr(
+                key="gacha_upload_invalid_file_error_message", file_format=file_format
+            ),
+        )
+
+
+class UIDMismatchError(HoyoBuddyError):
+    def __init__(self, uid: int | str) -> None:
+        super().__init__(
+            title=LocaleStr(key="uid_mismatch_error_title"),
+            message=LocaleStr(key="uid_mismatch_error_message", uid=uid),
+        )
+
+
+class NoGachaLogFoundError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr(key="no_gacha_log_found_error_title"),
+            message=LocaleStr(key="no_gacha_log_found_error_message"),
+        )

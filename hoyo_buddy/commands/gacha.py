@@ -372,12 +372,15 @@ class GachaCommand:
             # Fetching item IDs
             id_cache: dict[str, str] = {}
             for record in data["list"]:
+                if record["item_id"]:  # Has item_id
+                    continue
+
                 if record["name"] not in id_cache:
                     record["item_id"] = await item_name_to_id(
                         i.client.session,
                         item_names=record["name"],
                         game=Game.GENSHIN,
-                        lang=data["lang"],
+                        lang=data["info"]["lang"],
                     )
                     id_cache[record["name"]] = record["item_id"]
                 else:

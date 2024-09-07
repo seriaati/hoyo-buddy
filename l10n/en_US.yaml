@@ -665,7 +665,7 @@ gacha_log_manage_embed_description: "{count} gacha logs belong to this account.\
 gacha_log_export_button_label: Export in UIGF format
 gacha_log_delete_button_label: Delete all logs
 gacha_log_delete_confirm_embed_title: Confirm Deletion
-gacha_log_delete_confirm_embed_description: Are you sure you want to **DELETE ALL** gacha logs for this account? This action cannot be undone.
+gacha_log_delete_confirm_embed_description: "Are you sure you want to **DELETE ALL** gacha logs for this account? This action cannot be undone."
 gacha_log_delete_confirm_button_label: Confirm
 gacha_log_delete_done_embed_title: Deletion Complete
 gacha_log_delete_done_embed_description: All gacha logs belonging to this account have been deleted successfully.

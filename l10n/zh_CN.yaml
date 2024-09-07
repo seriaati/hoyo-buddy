@@ -609,3 +609,64 @@ accounts_added_snackbar_message: "帐户新增成功，正在将你重新导向�
 account_add_start_title: 新增帐户
 account_add_start_message: "点击下方按钮将会启动 Hoyo Buddy 登入系统，跟随指引完成帐户设定。当你完成后，使用 1 指令来查看你新增的帐户。"
 hbls_button_label: 开始！
+gacha_import_url_modal_title: 输入抽卡纪录连结
+gacha_import_embed_title: 导入抽卡纪录
+gacha_import_embed_description: "抽卡纪录连结: 从游戏内获取一串很长的连结来导入你的抽卡纪录, 不同游戏的获取方式如下:\n- 原神: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/wish-import)\n- 崩坏: 星穹铁道: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- 绝区零: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/signal-import)\n\n如果你有使用下列的服务之一, 将你的抽卡纪录导出至指定的档案格式后即可使用 1 指令将其上传并导入\n1. Star Rail Station: **csv** file\n2. stardb.gg: **json** file\n3. zzz.rng.moe: **json** file\n4. UIGF: **json** file\n5. SRGF: **json** file"
+extract_authkey_error_message: "无法从连结内提取 authkey, 请尝试其他连结。"
+extract_authkey_error_title: Authkey 提取失败
+gacha_import_loading_embed_title: 正在导入抽卡纪录
+gacha_import_loading_embed_description: "{loading_emoji} 这需要花费一些时间, 请耐心等候..."
+gacha_upload_invalid_file_error_title: 无效的档案格式
+gacha_upload_invalid_file_error_message: "只接受 **{file_format}** 档案, 请使用正确的档案重试。"
+uid_mismatch_error_title: UID 不符合
+uid_mismatch_error_message: "选择的帐户的 UID 与资料中的 UID ({uid}) 不符"
+gacha_import_command_description: 从游戏内导入抽卡纪录
+source_param_name: 来源
+source_param_description: 抽卡纪录档案的来源
+gacha_upload_command_description: 将其他来源的抽卡纪录上传并导入至 Hoyo Buddy
+file_param_name: 档案
+file_param_description: 要上传的抽卡纪录档案
+gacha_import_success_title: 抽卡纪录导入完成
+gacha_import_success_message: "{count} 笔抽卡纪录已经被导入成功。使用 </gacha-log view> 指令来查看它们。"
+gacha_view_filter_button_label: 筛选条件
+gacha_view_search_field_label: 搜索
+gacha_view_gacha_detail_title: 抽卡物品详情
+gacha_view_gacha_detail: "ID: {id}\n名称: {name}\n抽取时间: {time}"
+gacha_view_num_since_last: "自上个 {rarity} ★ 物品 {pull} 抽"
+gacha_view_filter_dialog_title: 抽卡纪录筛选条件
+banner_type_beginners_wish: 初行者推荐祈愿
+banner_type_standard_banner: 常驻祈愿
+banner_type_character_event: 角色活动祈愿
+banner_type_weapon_event: 武器活动祈愿
+banner_type_chronicled_wish: 集录祈愿
+banner_type_stellar_warp: 群星跃迁
+banner_type_departure_warp: 始发跃迁
+banner_type_character_warp: 角色跃迁
+banner_type_light_cone_warp: 光锥跃迁
+banner_type_standard_channel: 常驻调频
+banner_type_exclusive_channel: 独家调频
+banner_type_w_engine_channel: 音擎调频
+banner_type_bangboo_channel: 邦布调频
+cancel_button_label: 取消
+gacha_view_filter_size_field_label: 每页物品数
+gacha_view_page_field_label: 页数
+gacha_log_stats_title: 抽卡纪录数据
+gacha_log_personal_stats_title: 个人数据
+gacha_log_personal_stats: "生涯抽数: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\n当前卡池总抽数: {total_pulls} ({total_currency} {currency_emoji})\n5★ 保底: {star5_pity_cur}/{star5_pity_max}\n4★ 保底: {star4_pity_cur}/10\n50/50 胜率: {win_rate}%\n总 5★ 数: {total_star5}\n总 4★ 数: {total_star4}\n5★ 平均抽数: {avg_pulls_per_star5}\n4★ 平均抽数: {avg_pulls_per_star4}"
+gacha_log_global_stats_title: 全服数据
+gacha_log_global_stats: "生涯抽数: 前 {lifetime}%\n5★ 幸运程度: 前 {star5_luck}%\n4★ 幸运程度: 前 {star4_luck}%\n50/50 胜率: 前 {win_rate}%"
+gacha_log_view_full: 查看抽卡纪录
+gacha_view_command_description: 查看导入的抽卡纪录
+gacha_log_view_banner_type_selector_placeholder: 选择一个卡池...
+no_gacha_log_found_error_title: 没有找到任何抽卡纪录
+no_gacha_log_found_error_message: "使用 </gacha-log import> 或 </gacha-log upload> 来导入你的抽卡纪录。"
+gacha_log_manage_embed_title: 管理抽卡纪录
+gacha_log_manage_embed_description: "{count} 笔抽卡纪录属于此帐户。\n你可以将它们导出至 [UIGF](https://uigf.org) 格式。"
+gacha_log_export_button_label: 导出至 UIGF 格式
+gacha_log_delete_button_label: 删除所有纪录
+gacha_log_delete_confirm_embed_title: 确认删除
+gacha_log_delete_confirm_embed_description: 你确定要 **删除所有** 属于此帐户的抽卡纪录吗？此操作无法撤销。
+gacha_log_delete_confirm_button_label: 确认
+gacha_log_delete_done_embed_title: 删除完成
+gacha_log_delete_done_embed_description: 所有属于此帐户的抽卡纪录都已经被删除完毕。
+gacha_manage_command_description: 管理导入的抽卡纪录

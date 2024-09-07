@@ -91,9 +91,7 @@ class DailyCheckin:
             else:
                 cls._total_checkin_count += 1
                 try:
-                    notif_settings = await AccountNotifSettings.get_or_none(account=account)
-                    if notif_settings is None:
-                        notif_settings = await AccountNotifSettings.create(account=account)
+                    notif_settings, _ = await AccountNotifSettings.get_or_create(account=account)
                     if (
                         isinstance(embed, ErrorEmbed) and notif_settings.notify_on_checkin_failure
                     ) or (

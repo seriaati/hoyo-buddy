@@ -13,8 +13,7 @@ from ..bot.error_handler import get_error_embed
 from ..constants import GEETEST_SERVERS
 from ..db.models import HoyoAccount, User, get_locale
 from ..embeds import DefaultEmbed
-from ..enums import GeetestNotifyType, GeetestType, Platform
-from ..exceptions import FeatureNotImplementedError
+from ..enums import GeetestNotifyType, GeetestType
 from ..l10n import LocaleStr
 from ..models import LoginNotifPayload
 from ..ui import URLButtonView
@@ -105,11 +104,6 @@ class GeetestCommand:
             self._bot.login_notif_tasks.pop(self._user_id).cancel()
 
     async def run(self) -> None:
-        if self._account.platform is not Platform.HOYOLAB:
-            raise FeatureNotImplementedError(
-                platform=self._account.platform, game=self._account.game
-            )
-
         i = self._interaction
         assert i.channel is not None
 

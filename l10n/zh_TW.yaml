@@ -611,7 +611,7 @@ account_add_start_message: "點擊下方按鈕將會啟動 Hoyo Buddy 登入系�
 hbls_button_label: 開始！
 gacha_import_url_modal_title: 輸入抽卡紀錄連結
 gacha_import_embed_title: 正在導入抽卡紀錄
-gacha_import_embed_description: "抽卡紀錄連結: 從遊戲內獲取一串很長的連結來導入你的抽卡紀錄, 不同遊戲的獲取方式如下:\n- 原神: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-tw/genshin/wish-import)\n- 崩壞: 星穹鐵道: [Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-tw/warp-import)\n- 絕區零: [zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-tw/zzz/signal-import)\n\n如果你有使用下列的服務之一, 將你的抽卡紀錄導出至指定的檔案格式後即可使用 </gacha upload> 指令將其上傳並導入\n1. Star Rail Station: **csv** 檔案\n2. stardb.gg: **json** 檔案\n3. zzz.rng.moe: **json** 檔案\n4. UIGF: **json** 檔案\n5. SRGF: **json** 檔案"
+gacha_import_embed_description: "抽卡紀錄連結: 從遊戲內獲取一串很長的連結來導入你的抽卡紀錄, 不同遊戲的獲取方式如下:\n- 原神: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/wish-import)\n- 崩壞: 星穹鐵道: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- 絕區零: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/signal-import)\n\n如果你有使用下列的服務之一, 將你的抽卡紀錄導出至指定的檔案格式後即可使用 </gacha upload> 指令將其上傳並導入\n1. Star Rail Station: **csv** file\n2. stardb.gg: **json** file\n3. zzz.rng.moe: **json** file\n4. UIGF: **json** file\n5. SRGF: **json** file"
 extract_authkey_error_message: "無法從連結內提取 authkey, 請嘗試其他連結。"
 extract_authkey_error_title: Authkey 提取失敗
 gacha_import_loading_embed_title: 導入抽卡紀錄
@@ -665,7 +665,7 @@ gacha_log_manage_embed_description: "{count} 筆抽卡紀錄屬於此帳戶。\n
 gacha_log_export_button_label: 導出至 UIGF 格式
 gacha_log_delete_button_label: 刪除所有紀錄
 gacha_log_delete_confirm_embed_title: 確認刪除
-gacha_log_delete_confirm_embed_description: "你確定要 **刪除所有** 屬於此帳戶的抽卡紀錄嗎？此操作無法撤銷。"
+gacha_log_delete_confirm_embed_description: 你確定要 **刪除所有** 屬於此帳戶的抽卡紀錄嗎？此操作無法撤銷。
 gacha_log_delete_confirm_button_label: 確認
 gacha_log_delete_done_embed_title: 刪除完成
 gacha_log_delete_done_embed_description: 所有屬於此帳戶的抽卡紀錄都已經被刪除完畢。

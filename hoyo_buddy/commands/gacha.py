@@ -69,7 +69,6 @@ class GachaCommand:
                 item_id=record.item_id,
                 banner_type=record.banner_type,
                 account=account,
-                game=Game.STARRAIL,
                 num=banner_last_nums[record.banner_type] + 1,
                 time=record.time,
             )
@@ -123,7 +122,6 @@ class GachaCommand:
                 item_id=record.item_id,
                 banner_type=record.banner_type,
                 account=account,
-                game=Game.ZZZ,
                 num=banner_last_nums[record.banner_type] + 1,
                 time=record.time,
             )
@@ -196,7 +194,6 @@ class GachaCommand:
                         item_id=record.item_id,
                         banner_type=record.banner_type,
                         account=account,
-                        game=Game.STARRAIL,
                         num=banner_last_nums[record.banner_type] + 1,
                         time=record.time,
                     )
@@ -258,7 +255,6 @@ class GachaCommand:
                         banner_type=record.banner_type,
                         account=account,
                         time=record.time,
-                        game=Game.GENSHIN,
                         num=banner_last_nums[record.banner_type] + 1,
                     )
                     if created:
@@ -319,7 +315,6 @@ class GachaCommand:
                         item_id=record.item_id,
                         banner_type=record.banner_type,
                         account=account,
-                        game=Game.ZZZ,
                         num=banner_last_nums[record.banner_type] + 1,
                         time=record.time,
                     )
@@ -385,7 +380,6 @@ class GachaCommand:
                 item_id=record.item_id,
                 banner_type=record.banner_type,
                 account=account,
-                game=Game.GENSHIN,
                 num=banner_last_nums[record.banner_type] + 1,
                 time=record.time,
             )
@@ -426,7 +420,6 @@ class GachaCommand:
                 item_id=record.item_id,
                 banner_type=record.banner_type,
                 account=account,
-                game=Game.STARRAIL,
                 num=banner_last_nums[record.banner_type] + 1,
                 time=record.time,
             )

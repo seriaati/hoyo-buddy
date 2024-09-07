@@ -347,7 +347,6 @@ class GachaHistory(BaseModel):
         item_id: int,
         banner_type: int,
         num: int,
-        game: Game,
         account: HoyoAccount,
     ) -> bool:
         num_since_last = await get_num_since_last(
@@ -362,7 +361,7 @@ class GachaHistory(BaseModel):
                 banner_type=banner_type,
                 num=num,
                 num_since_last=num_since_last,
-                game=game,
+                game=account.game,
                 account=account,
                 account_id=account.id,
             )

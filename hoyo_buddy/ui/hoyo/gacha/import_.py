@@ -120,7 +120,6 @@ class URLImport(Button[GachaImportView]):
                     banner_type=banner_type,
                     item_id=int(item_id),
                     account=self.account,
-                    game=Game.GENSHIN,
                     num=banner_last_nums[banner_type] + 1,
                 )
                 if created:
@@ -141,7 +140,6 @@ class URLImport(Button[GachaImportView]):
                     banner_type=history.banner_type,
                     item_id=history.item_id,
                     account=self.account,
-                    game=Game.STARRAIL,
                     num=banner_last_nums[history.banner_type] + 1,
                 )
                 if created:
@@ -162,7 +160,6 @@ class URLImport(Button[GachaImportView]):
                     banner_type=history.banner_type,
                     item_id=history.item_id,
                     account=self.account,
-                    game=Game.ZZZ,
                     num=banner_last_nums[history.banner_type] + 1,
                 )
                 if created:

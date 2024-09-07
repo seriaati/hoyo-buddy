@@ -27,6 +27,7 @@ from hoyo_buddy.models import (
 from hoyo_buddy.ui.hoyo.gacha.import_ import GachaImportView
 from hoyo_buddy.ui.hoyo.gacha.manage import GachaLogManageView
 from hoyo_buddy.ui.hoyo.gacha.view import ViewGachaLogView
+from hoyo_buddy.utils import item_name_to_id
 
 if TYPE_CHECKING:
     import discord
@@ -367,6 +368,20 @@ class GachaCommand:
                     tz_hour = 1
                 else:
                     tz_hour = 8
+
+            # Fetching item IDs
+            id_cache: dict[str, str] = {}
+            for record in data["list"]:
+                if record["name"] not in id_cache:
+                    record["item_id"] = await item_name_to_id(
+                        i.client.session,
+                        item_names=record["name"],
+                        game=Game.GENSHIN,
+                        lang=data["lang"],
+                    )
+                    id_cache[record["name"]] = record["item_id"]
+                else:
+                    record["item_id"] = id_cache[record["name"]]
 
             records = [UIGFRecord(timezone=tz_hour, **record) for record in data["list"]]
 

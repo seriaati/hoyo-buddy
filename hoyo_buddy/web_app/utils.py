@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import os
 from typing import TYPE_CHECKING
 
@@ -84,9 +85,7 @@ def encrypt_string(string: str) -> str:
     return key.encrypt(string.encode()).decode()
 
 
-async def reset_storage(page: ft.Page, *, user_id: int) -> None:
-    await page.client_storage.remove_async(f"hb.{user_id}.cookies")
-    if await page.client_storage.contains_key_async(f"hb.{user_id}.device_id"):
-        await page.client_storage.remove_async(f"hb.{user_id}.device_id")
-    if await page.client_storage.contains_key_async(f"hb.{user_id}.device_fp"):
-        await page.client_storage.remove_async(f"hb.{user_id}.device_fp")
+def reset_storage(page: ft.Page, *, user_id: int) -> None:
+    asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.cookies"))
+    asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.device_id"))
+    asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.device_fp"))

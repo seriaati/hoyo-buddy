@@ -106,6 +106,7 @@ class EventsView(View):
 
 class EventSelector(PaginatorSelect[EventsView]):
     def __init__(self, anns: Sequence[genshin.models.Announcement]) -> None:
+        anns = list({ann.id: ann for ann in anns}.values())
         super().__init__(
             custom_id="events_view_ann_select",
             placeholder=LocaleStr(key="events_view_ann_select_placeholder"),

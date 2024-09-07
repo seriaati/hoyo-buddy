@@ -227,7 +227,12 @@ class SubmitButton(ft.FilledButton):
         url = get_discord_protocol_url(
             channel_id=str(self._params.channel_id), guild_id=str(self._params.guild_id)
         )
-        if await page.can_launch_url_async(url):
+        try:
+            can_launch = await page.can_launch_url_async(url)
+        except TimeoutError:
+            can_launch = False
+
+        if can_launch:
             await page.launch_url_async(url, web_window_name=ft.UrlTarget.SELF.value)
         else:
             url = get_discord_url(

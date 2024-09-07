@@ -476,6 +476,11 @@ HSR_DEFAULT_ART_URL = f"{FORT_OF_FANS_URL}/spriteoutput/avatardrawcardresult/{{c
 HSR_ICON_TEMA_URL = f"{FORT_OF_FANS_URL}/spriteoutput/avatariconteam/{{char_id}}.png"
 
 UIGF_GAMES: Final[dict[Game, str]] = {Game.GENSHIN: "genshin", Game.STARRAIL: "starrail"}
+UIGF_GAME_KEYS: Final[dict[Game, str]] = {
+    Game.GENSHIN: "hk4e",
+    Game.STARRAIL: "hkrpg",
+    Game.ZZZ: "nap",
+}
 
 BANNER_TYPE_NAMES: Final[dict[Game, dict[int, str]]] = {
     Game.GENSHIN: {

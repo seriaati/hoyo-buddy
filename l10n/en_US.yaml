@@ -660,3 +660,13 @@ gacha_view_command_description: View imported gacha logs
 gacha_log_view_banner_type_selector_placeholder: Select a banner type...
 no_gacha_log_found_error_title: No Gacha Logs Found
 no_gacha_log_found_error_message: "Use </gacha-log import> or </gacha-log upload> to import your gacha logs."
+gacha_log_manage_embed_title: Manage Gacha Logs
+gacha_log_manage_embed_description: "{count} gacha logs belong to this account.\nYou can export them in the [UIGF](https://uigf.org) format."
+gacha_log_export_button_label: Export in UIGF format
+gacha_log_delete_button_label: Delete all logs
+gacha_log_delete_confirm_embed_title: Confirm Deletion
+gacha_log_delete_confirm_embed_description: Are you sure you want to **DELETE ALL** gacha logs for this account? This action cannot be undone.
+gacha_log_delete_confirm_button_label: Confirm
+gacha_log_delete_done_embed_title: Deletion Complete
+gacha_log_delete_done_embed_description: All gacha logs belonging to this account have been deleted successfully.
+gacha_manage_command_description: Manage imported gacha logs

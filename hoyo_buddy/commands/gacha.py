@@ -10,6 +10,7 @@ import pandas as pd
 import yatta
 
 from hoyo_buddy.bot.error_handler import get_error_embed
+from hoyo_buddy.constants import UIGF_GAME_KEYS
 from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_last_gacha_num, get_locale
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LOADING
@@ -24,6 +25,7 @@ from hoyo_buddy.models import (
     ZZZRngMoeRecord,
 )
 from hoyo_buddy.ui.hoyo.gacha.import_ import GachaImportView
+from hoyo_buddy.ui.hoyo.gacha.manage import GachaLogManageView
 from hoyo_buddy.ui.hoyo.gacha.view import ViewGachaLogView
 
 if TYPE_CHECKING:
@@ -338,24 +340,34 @@ class GachaCommand:
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
 
-        uid = str(data["info"]["uid"])
-        if uid != str(account.uid):
-            raise UIDMismatchError(uid)
+        # Determine UIGF v4.0
+        is_v4 = data["info"].get("version") == "v4.0"
 
-        # Timezone handling
-        tz_hour = data["info"].get("region_time_zone")
-        if tz_hour is None:
-            if uid.startswith("6"):  # us
-                tz_hour = -5
-            elif uid.startswith("7"):  # eu
-                tz_hour = 1
-            else:
-                tz_hour = 8
+        if is_v4:
+            game_data = next(
+                (d for d in data[UIGF_GAME_KEYS[account.game]] if int(d["uid"]) == account.uid),
+                None,
+            )
+            if game_data is None:
+                raise UIDMismatchError(account.uid)
 
-        version = data["info"]["uigf_version"]
-        if version == "v4.0":
-            records = [UIGFRecord(**record) for record in data["list"]]
+            tz_hour = game_data["timezone"]
+            records = [UIGFRecord(timezone=tz_hour, **record) for record in game_data["list"]]
         else:
+            uid = str(data["info"]["uid"])
+            if uid != str(account.uid):
+                raise UIDMismatchError(uid)
+
+            # Timezone handling
+            tz_hour = data["info"].get("region_time_zone")
+            if tz_hour is None:
+                if uid.startswith("6"):  # us
+                    tz_hour = -5
+                elif uid.startswith("7"):  # eu
+                    tz_hour = 1
+                else:
+                    tz_hour = 8
+
             records = [UIGFRecord(timezone=tz_hour, **record) for record in data["list"]]
 
         record_banners = {record.banner_type for record in records}
@@ -475,6 +487,13 @@ class GachaCommand:
     async def run_view(self, i: Interaction, account: HoyoAccount) -> None:
         locale = await get_locale(i)
         view = ViewGachaLogView(
+            account, author=i.user, locale=locale, translator=i.client.translator
+        )
+        await view.start(i)
+
+    async def run_manage(self, i: Interaction, account: HoyoAccount) -> None:
+        locale = await get_locale(i)
+        view = GachaLogManageView(
             account, author=i.user, locale=locale, translator=i.client.translator
         )
         await view.start(i)

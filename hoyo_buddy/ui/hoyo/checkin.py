@@ -3,10 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 import discord
+import genshin
 from genshin import Game
 
 from ... import emojis
-from ...db.models import AccountNotifSettings, get_dyk
+from ...db.models import AccountNotifSettings, User, get_dyk
 from ...draw.main_funcs import draw_checkin_card
 from ...embeds import DefaultEmbed
 from ...enums import Platform
@@ -165,7 +166,13 @@ class CheckInButton(Button[CheckInUI]):
         assert client.game is not None
 
         await i.response.defer()
-        daily_reward = await client.claim_daily_reward()
+        try:
+            daily_reward = await client.claim_daily_reward()
+        except genshin.DailyGeetestTriggered as e:
+            await User.filter(id=i.user.id).update(
+                temp_data={"geetest": e.gt, "challenge": e.challenge}
+            )
+            raise
 
         embed, self.view._bytes_obj = await self.view.get_embed_and_image(
             i.client.session, i.client.executor, i.client.loop

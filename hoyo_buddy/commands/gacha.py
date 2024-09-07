@@ -120,7 +120,7 @@ class GachaCommand:
         for record in records:
             created = await GachaHistory.create(
                 wish_id=record.id,
-                rarity=record.rarity,
+                rarity=record.rarity + 1,
                 item_id=record.item_id,
                 banner_type=record.banner_type,
                 account=account,

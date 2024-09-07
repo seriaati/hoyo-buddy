@@ -665,7 +665,7 @@ gacha_log_manage_embed_description: "{count} 笔抽卡纪录属于此帐户。\n
 gacha_log_export_button_label: 导出至 UIGF 格式
 gacha_log_delete_button_label: 删除所有纪录
 gacha_log_delete_confirm_embed_title: 确认删除
-gacha_log_delete_confirm_embed_description: "你确定要 **删除所有** 属于此帐户的抽卡纪录吗？此操作无法撤销。"
+gacha_log_delete_confirm_embed_description: "你确定要**删除所有**属于此帐户的抽卡纪录吗？此操作无法撤销。"
 gacha_log_delete_confirm_button_label: 确认
 gacha_log_delete_done_embed_title: 删除完成
 gacha_log_delete_done_embed_description: 所有属于此帐户的抽卡纪录都已经被删除完毕。

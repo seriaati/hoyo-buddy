@@ -122,7 +122,7 @@ class ExportButton(Button[GachaLogManageView]):
                     "gacha_type": str(x.banner_type),
                     "item_id": str(x.item_id),
                     "time": x.time.astimezone().isoformat(),
-                    "rank_type": x.rarity,
+                    "rank_type": str(x.rarity),
                 }
                 for x in await GachaHistory.filter(account=self.view.account).all()
             ],

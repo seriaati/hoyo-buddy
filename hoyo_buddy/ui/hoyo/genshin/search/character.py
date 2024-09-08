@@ -243,6 +243,7 @@ class CharacterUI(View):
                                 label=p.name, value=str(i), default=i == self.passive_index
                             )
                             for i, p in enumerate(passives)
+                            if p.name
                         ],
                         "passive_index",
                     )

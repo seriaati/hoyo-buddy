@@ -13,6 +13,7 @@ from discord import Locale
 from loguru import logger
 from seria.tortoise.model import Model
 from tortoise import exceptions, fields
+from tortoise.expressions import F
 
 from ..constants import HB_GAME_TO_GPY_GAME, SERVER_RESET_HOURS, UTC_8
 from ..enums import ChallengeType, Game, NotesNotifyType, Platform
@@ -405,6 +406,19 @@ class GachaStats(BaseModel):
                 avg_4star_pulls=avg_4star_pulls,
                 win_rate=win_rate,
             )
+
+
+class CommandMetric(BaseModel):
+    name = fields.CharField(max_length=32)
+    count = fields.IntField()
+    last_time = fields.DatetimeField(auto_now=True)
+
+    @classmethod
+    async def increment(cls, name: str) -> None:
+        try:
+            await cls.create(name=name, count=1)
+        except exceptions.IntegrityError:
+            await cls.filter(name=name).update(count=F("count") + 1)
 
 
 async def get_locale(i: Interaction) -> Locale:

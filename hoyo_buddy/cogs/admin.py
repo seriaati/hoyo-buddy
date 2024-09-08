@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 import asyncio
+from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
+import genshin  # noqa: TCH002
 from discord import ButtonStyle, TextStyle, ui
 from discord.ext import commands
-from genshin import Game  # noqa: TCH002
 from seria.utils import write_json
 
-from hoyo_buddy.db.models import HoyoAccount
+from hoyo_buddy.db.models import CommandMetric, HoyoAccount
 from hoyo_buddy.emojis import get_game_emoji
 
 from ..constants import UID_STARTS
@@ -20,6 +21,8 @@ from .search import Search
 
 if TYPE_CHECKING:
     from discord.ext.commands.context import Context
+
+    from hoyo_buddy.enums import Game
 
     from ..bot import HoyoBuddy
     from ..types import Interaction
@@ -125,7 +128,7 @@ class Admin(commands.Cog):
         await message.edit(content="Search autocomplete update task started.")
 
     @commands.command(name="add-codes", aliases=["ac"])
-    async def add_codes_command(self, ctx: commands.Context, game: Game, codes: str) -> Any:
+    async def add_codes_command(self, ctx: commands.Context, game: genshin.Game, codes: str) -> Any:
         codes_: set[str] = set()
         for code in codes.split(","):
             code_ = code.split("/")[-1] if "https" in code else code
@@ -164,6 +167,34 @@ class Admin(commands.Cog):
         if account.device_id is not None:
             await ctx.send(f"device_id:\n```{account.device_id}```")
         return None
+
+    @commands.command(name="stats")
+    async def stats_command(self, ctx: commands.Context) -> Any:
+        # Account metrics
+        accs = await HoyoAccount.all()
+        acc_region_count: defaultdict[genshin.Region, int] = defaultdict(int)
+        acc_game_count: defaultdict[Game, int] = defaultdict(int)
+
+        for acc in accs:
+            acc_region_count[acc.client.region] += 1
+            acc_game_count[acc.game] += 1
+
+        acc_region_msg = "\n".join(
+            [f"{region.name}: {count}" for region, count in acc_region_count.items()]
+        )
+        acc_game_msg = "\n".join(
+            [f"{game.name}: {count}" for game, count in acc_game_count.items()]
+        )
+
+        guild_count = len(self.bot.guilds)
+        await ctx.send(
+            f"Guilds: {guild_count}\nAccounts by region:\n```{acc_region_msg}```\nAccounts by game:\n```{acc_game_msg}```"
+        )
+
+        # Command metrics
+        metrics = await CommandMetric.all().order_by("count")
+        metrics_msg = "\n".join([f"/{metric.name}: {metric.count}" for metric in metrics])
+        await ctx.send(f"Command metrics:\n```{metrics_msg}```")
 
 
 async def setup(bot: HoyoBuddy) -> None:

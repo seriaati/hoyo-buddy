@@ -573,7 +573,6 @@ dyk_discord_server_feedback: "You can join our [Discord server](<https://dsc.gg/
 dyk_something_wrong: You can use the /feedback command to report any issues
 dyk_contact_me: "You can directly contact us in our [Discord server](<https://dsc.gg/hoyo-buddy>)"
 dyk_donate_no_title: "Enjoy using Hoyo Buddy? Consider [making a donation](<https://github.com/seriaati#support-my-work>) to support us"
-dyk_easter_egg1_no_title: HELP I'M STUCK IN THIS TEXT-
 dyk_team: "Hoyo Buddy is built by a small team of 1 programmer, 1 designer, and 1 project manager"
 dyk_disable: You can disable this message using /settings
 dyk_settings_lang: You can change the language of the bot using /settings

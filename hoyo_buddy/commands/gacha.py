@@ -11,7 +11,7 @@ import yatta
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import UIGF_GAME_KEYS
-from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_last_gacha_num, get_locale
+from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_dyk, get_last_gacha_num, get_locale
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LOADING
 from hoyo_buddy.enums import GachaImportSource, Game
@@ -27,7 +27,7 @@ from hoyo_buddy.models import (
 from hoyo_buddy.ui.hoyo.gacha.import_ import GachaImportView
 from hoyo_buddy.ui.hoyo.gacha.manage import GachaLogManageView
 from hoyo_buddy.ui.hoyo.gacha.view import ViewGachaLogView
-from hoyo_buddy.utils import item_name_to_id
+from hoyo_buddy.utils import ephemeral, item_name_to_id
 
 if TYPE_CHECKING:
     import discord
@@ -478,7 +478,7 @@ class GachaCommand:
                 key="gacha_import_loading_embed_description", loading_emoji=LOADING
             ),
         ).add_acc_info(account)
-        await i.response.send_message(embed=embed)
+        await i.response.send_message(embed=embed, ephemeral=ephemeral(i), content=await get_dyk(i))
 
         try:
             if source is GachaImportSource.STAR_RAIL_STATION:

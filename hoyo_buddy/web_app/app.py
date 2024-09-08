@@ -520,7 +520,8 @@ class WebApp:
     @property
     def login_app_bar(self) -> ft.AppBar:
         return ft.AppBar(
-            title=ft.Text("Hoyo Buddy Login System"),
+            title=ft.Text("Login System"),
+            leading=ft.Image(src="/favicon.png", width=32, height=32),
             bgcolor=ft.colors.SURFACE_VARIANT,
             actions=[
                 ft.IconButton(ft.icons.QUESTION_MARK, url="https://discord.com/invite/ryfamUykRw")
@@ -530,7 +531,12 @@ class WebApp:
     @property
     def gacha_app_bar(self) -> ft.AppBar:
         return ft.AppBar(
-            title=ft.Text("Hoyo Buddy GachaLog System"),
+            title=ft.Row(
+                [
+                    ft.Image(src="/images/logo.png", width=32, height=32),
+                    ft.Container(ft.Text("GachaLog System"), margin=ft.margin.only(left=4)),
+                ]
+            ),
             bgcolor=ft.colors.SURFACE_VARIANT,
             actions=[
                 ft.IconButton(ft.icons.QUESTION_MARK, url="https://discord.com/invite/ryfamUykRw")

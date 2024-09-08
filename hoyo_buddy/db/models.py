@@ -415,9 +415,10 @@ class CommandMetric(BaseModel):
 
     @classmethod
     async def increment(cls, name: str) -> None:
-        try:
+        metric = await cls.get_or_none(name=name)
+        if metric is None:
             await cls.create(name=name, count=1)
-        except exceptions.IntegrityError:
+        else:
             await cls.filter(name=name).update(count=F("count") + 1)
 
 

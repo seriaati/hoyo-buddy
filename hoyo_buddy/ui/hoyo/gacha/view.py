@@ -4,7 +4,7 @@ import os
 from typing import TYPE_CHECKING, Any
 
 from hoyo_buddy.constants import BANNER_GUARANTEES, BANNER_TYPE_NAMES, STANDARD_ITEMS, WEB_APP_URLS
-from hoyo_buddy.db.models import GachaHistory, GachaStats, HoyoAccount, get_last_gacha_num
+from hoyo_buddy.db.models import GachaHistory, GachaStats, HoyoAccount, get_dyk, get_last_gacha_num
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import CURRENCY_EMOJIS
 from hoyo_buddy.exceptions import NoGachaLogFoundError
@@ -168,7 +168,7 @@ class ViewGachaLogView(View):
     async def start(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
         embed = await self.get_stats_embed()
-        await i.followup.send(embed=embed, view=self)
+        await i.followup.send(embed=embed, view=self, content=await get_dyk(i))
         self.message = await i.original_response()
 
 

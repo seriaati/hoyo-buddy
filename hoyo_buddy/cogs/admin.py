@@ -9,7 +9,7 @@ from discord import ButtonStyle, TextStyle, ui
 from discord.ext import commands
 from seria.utils import write_json
 
-from hoyo_buddy.db.models import CommandMetric, HoyoAccount
+from hoyo_buddy.db.models import CommandMetric, HoyoAccount, Settings, User
 from hoyo_buddy.emojis import get_game_emoji
 
 from ..constants import UID_STARTS
@@ -191,8 +191,21 @@ class Admin(commands.Cog):
             f"Guilds: {guild_count}\nAccounts by region:\n```{acc_region_msg}```\nAccounts by game:\n```{acc_game_msg}```"
         )
 
+        # User metrics
+        users = await User.all()
+        settings = await Settings.all()
+        locale_count: defaultdict[str, int] = defaultdict(int)
+        for setting in settings:
+            if setting.locale is None:
+                continue
+            locale_count[setting.locale.value] += 1
+
+        user_count = len(users)
+        locale_msg = "\n".join([f"{locale}: {count}" for locale, count in locale_count.items()])
+        await ctx.send(f"Users: {user_count}\nLocales:\n```{locale_msg}```")
+
         # Command metrics
-        metrics = await CommandMetric.all().order_by("count")
+        metrics = await CommandMetric.all().order_by("-count")
         metrics_msg = "\n".join([f"/{metric.name}: {metric.count}" for metric in metrics])
         await ctx.send(f"Command metrics:\n```{metrics_msg}```")
 

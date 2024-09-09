@@ -610,7 +610,7 @@ account_add_start_message: "点击下方按钮将会启动 Hoyo Buddy 登入系�
 hbls_button_label: 开始！
 gacha_import_url_modal_title: 输入抽卡纪录连结
 gacha_import_embed_title: 导入抽卡纪录
-gacha_import_embed_description: "抽卡纪录连结: 从游戏内获取一串很长的连结来导入你的抽卡纪录, 不同游戏的获取方式如下:\n- 安卓: [YouTube 视频](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-cn/genshin/wish-import)\n- 崩坏: 星穹铁道: [Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-cn/warp-import)\n- 绝区零: [zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-cn/zzz/signal-import)\n\n如果你有使用下列的服务之一, 将你的抽卡纪录导出至指定的档案格式后即可使用 1 指令将其上传并导入\n1. Star Rail Station: **csv** 檔案\n2. stardb.gg: **json** 檔案\n3. zzz.rng.moe: **json** 檔案\n4. UIGF: **json** 檔案\n5. SRGF: **json** 檔案"
+gacha_import_embed_description: "抽卡纪录连结: 从游戏内获取一串很长的连结来导入你的抽卡纪录, 不同游戏的获取方式如下:\n- 安卓: [YouTube 视频](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-cn/genshin/wish-import)\n- 崩坏: 星穹铁道: [Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-cn/warp-import)\n- 绝区零: [zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-cn/zzz/signal-import)\n\n如果你有使用下列的服务之一, 将你的抽卡纪录导出至指定的档案格式后即可使用 1 指令将其上传并导入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json\n6. Genshin Wizard: csv"
 extract_authkey_error_message: "无法从连结内提取 authkey, 请尝试其他连结。"
 extract_authkey_error_title: Authkey 提取失败
 gacha_import_loading_embed_title: 正在导入抽卡纪录
@@ -669,3 +669,4 @@ gacha_log_delete_confirm_button_label: 确认
 gacha_log_delete_done_embed_title: 删除完成
 gacha_log_delete_done_embed_description: 所有属于此帐户的抽卡纪录都已经被删除完毕。
 gacha_manage_command_description: 管理导入的抽卡纪录
+login_button_label: 使用 Discord 登入

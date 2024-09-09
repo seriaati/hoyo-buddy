@@ -452,7 +452,6 @@ ZZZ_TEXT_MAP_URL = f"{ZENLESS_DATA_URL}/TextMap/TextMap_{{lang}}TemplateTb.json"
 
 LOCALE_TO_ZENLESS_DATA_LANG: dict[discord.Locale, str] = {
     discord.Locale.taiwan_chinese: "CHT",
-    discord.Locale.chinese: "CHS",
     discord.Locale.german: "DE",
     discord.Locale.american_english: "EN",
     discord.Locale.spain_spanish: "ES",
@@ -471,11 +470,52 @@ def locale_to_zenless_data_lang(locale: discord.Locale) -> str:
     return LOCALE_TO_ZENLESS_DATA_LANG.get(locale, "EN")
 
 
+STARRAIL_DATA_URL = "https://raw.githubusercontent.com/Dimbreath/StarRailData/master"
+HSR_AVATAR_CONFIG_URL = f"{STARRAIL_DATA_URL}/ExcelOutput/AvatarConfig.json"
+HSR_EQUIPMENT_CONFIG_URL = f"{STARRAIL_DATA_URL}/ExcelOutput/EquipmentConfig.json"
+HSR_TEXT_MAP_URL = f"{STARRAIL_DATA_URL}/TextMap/TextMap{{lang}}.json"
+
+STARRAIL_DATA_LANGS = (
+    "CHS",
+    "CHT",
+    "DE",
+    "EN",
+    "ES",
+    "FR",
+    "ID",
+    "JP",
+    "KR",
+    "PT",
+    "RU",
+    "TH",
+    "VI",
+)
+
+LOCALE_TO_STARRAIL_DATA_LANG: dict[discord.Locale, str] = {
+    discord.Locale.chinese: "CHS",
+    discord.Locale.taiwan_chinese: "CHT",
+    discord.Locale.german: "DE",
+    discord.Locale.american_english: "EN",
+    discord.Locale.spain_spanish: "ES",
+    discord.Locale.french: "FR",
+    discord.Locale.indonesian: "ID",
+    discord.Locale.japanese: "JP",
+    discord.Locale.korean: "KR",
+    discord.Locale.brazil_portuguese: "PT",
+    discord.Locale.russian: "RU",
+    discord.Locale.thai: "TH",
+    discord.Locale.vietnamese: "VI",
+}
+
+
+def locale_to_starrail_data_lang(locale: discord.Locale) -> str:
+    return LOCALE_TO_STARRAIL_DATA_LANG.get(locale, "EN")
+
+
 FORT_OF_FANS_URL = "https://raw.githubusercontent.com/FortOfFans/HSR/main"
 HSR_DEFAULT_ART_URL = f"{FORT_OF_FANS_URL}/spriteoutput/avatardrawcardresult/{{char_id}}.png"
 HSR_ICON_TEMA_URL = f"{FORT_OF_FANS_URL}/spriteoutput/avatariconteam/{{char_id}}.png"
 
-UIGF_GAMES: Final[dict[Game, str]] = {Game.GENSHIN: "genshin", Game.STARRAIL: "starrail"}
 UIGF_GAME_KEYS: Final[dict[Game, str]] = {
     Game.GENSHIN: "hk4e",
     Game.STARRAIL: "hkrpg",

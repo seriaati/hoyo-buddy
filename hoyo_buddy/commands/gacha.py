@@ -377,10 +377,7 @@ class GachaCommand:
 
                 if record["name"] not in id_cache:
                     record["item_id"] = await item_name_to_id(
-                        i.client.session,
-                        item_names=record["name"],
-                        game=Game.GENSHIN,
-                        lang=data["info"]["lang"],
+                        i.client.session, item_names=record["name"], lang=data["info"]["lang"]
                     )
                     id_cache[record["name"]] = record["item_id"]
                 else:

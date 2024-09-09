@@ -7,7 +7,12 @@ from typing import TYPE_CHECKING
 import aiohttp
 import flet as ft
 
-from hoyo_buddy.constants import BANNER_TYPE_NAMES, locale_to_gpy_lang, locale_to_zenless_data_lang
+from hoyo_buddy.constants import (
+    BANNER_TYPE_NAMES,
+    locale_to_gpy_lang,
+    locale_to_starrail_data_lang,
+    locale_to_zenless_data_lang,
+)
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr, Translator
 from hoyo_buddy.utils import item_id_to_name
@@ -180,10 +185,15 @@ class GachaLogPage(ft.View):
                 f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json"
             )
             item_name = item_names.get(str(gacha.item_id))
+        elif game is Game.STARRAIL:
+            item_names = await fetch_json_file(
+                f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json"
+            )
+            item_name = item_names.get(str(gacha.item_id))
         else:
             async with aiohttp.ClientSession() as session:
                 item_name = await item_id_to_name(
-                    session, item_ids=gacha.item_id, game=game, lang=locale_to_gpy_lang(locale)
+                    session, item_ids=gacha.item_id, lang=locale_to_gpy_lang(locale)
                 )
 
         if item_name is not None:

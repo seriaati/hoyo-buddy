@@ -23,7 +23,7 @@ from seria.utils import clean_url
 
 from hoyo_buddy.enums import Game
 
-from .constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UIGF_GAMES, UTC_8
+from .constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
 
 if TYPE_CHECKING:
     import pathlib
@@ -357,26 +357,19 @@ def _process_query(item_ids_or_names: Sequence[str | int] | int | str) -> str:
 
 
 @overload
-async def item_name_to_id(
-    session: aiohttp.ClientSession, *, item_names: str, game: Game, lang: str
-) -> str: ...
+async def item_name_to_id(session: aiohttp.ClientSession, *, item_names: str, lang: str) -> str: ...
 @overload
 async def item_name_to_id(
-    session: aiohttp.ClientSession, *, item_names: Sequence[str], game: Game, lang: str
-) -> Sequence[str]: ...
+    session: aiohttp.ClientSession, *, item_names: list[str], lang: str
+) -> list[str]: ...
 async def item_name_to_id(
-    session: aiohttp.ClientSession, *, item_names: Sequence[str] | str, game: Game, lang: str
-) -> Sequence[str] | str:
+    session: aiohttp.ClientSession, *, item_names: list[str] | str, lang: str
+) -> list[str] | str:
     item_names_query = _process_query(item_names)
 
     async with session.post(
         "https://api.uigf.org/translate/",
-        json={
-            "type": "normal",
-            "item_name": item_names_query,
-            "game": UIGF_GAMES[game],
-            "lang": lang,
-        },
+        json={"type": "normal", "item_name": item_names_query, "game": "genshin", "lang": lang},
     ) as resp:
         resp.raise_for_status()
         data = await resp.json()
@@ -385,21 +378,19 @@ async def item_name_to_id(
 
 
 @overload
-async def item_id_to_name(
-    session: aiohttp.ClientSession, *, item_ids: int, game: Game, lang: str
-) -> str: ...
+async def item_id_to_name(session: aiohttp.ClientSession, *, item_ids: int, lang: str) -> str: ...
 @overload
 async def item_id_to_name(
-    session: aiohttp.ClientSession, *, item_ids: Sequence[int], game: Game, lang: str
-) -> Sequence[str]: ...
+    session: aiohttp.ClientSession, *, item_ids: list[int], lang: str
+) -> list[str]: ...
 async def item_id_to_name(
-    session: aiohttp.ClientSession, *, item_ids: Sequence[int] | int, game: Game, lang: str
-) -> Sequence[str] | str:
+    session: aiohttp.ClientSession, *, item_ids: list[int] | int, lang: str
+) -> list[str] | str:
     item_ids_query = _process_query(item_ids)
 
     async with session.post(
         "https://api.uigf.org/translate/",
-        json={"type": "reverse", "item_id": item_ids_query, "game": UIGF_GAMES[game], "lang": lang},
+        json={"type": "reverse", "item_id": item_ids_query, "game": "genshin", "lang": lang},
     ) as resp:
         resp.raise_for_status()
         data = await resp.json()

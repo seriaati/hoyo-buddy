@@ -22,6 +22,10 @@ from loguru import logger
 from tortoise.expressions import Q
 
 from hoyo_buddy.constants import (
+    HSR_AVATAR_CONFIG_URL,
+    HSR_EQUIPMENT_CONFIG_URL,
+    HSR_TEXT_MAP_URL,
+    STARRAIL_DATA_LANGS,
     ZENLESS_DATA_LANGS,
     ZZZ_AVATAR_TEMPLATE_URL,
     ZZZ_ITEM_TEMPLATE_URL,
@@ -304,7 +308,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             await models.HoyoAccount.filter(id=current_accounts[0].id).update(current=True)
 
     async def update_assets(self) -> None:
-        # Update EnkaAPI assets
+        # Update enka.py assets
         async with enka.GenshinClient() as api:
             await api.update_assets()
 
@@ -314,8 +318,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         # Update genshin.py assets
         await genshin.utility.update_characters_any()
 
-        # Update zenless data
+        # Update item ID -> name mappings
         await self.update_zzz_item_id_name_map()
+        await self.update_hsr_item_id_name_map()
 
     async def update_zzz_item_id_name_map(self) -> None:
         result: dict[str, dict[str, str]] = {}
@@ -349,6 +354,40 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         for lang, text_map in result.items():
             await models.JSONFile.write(f"zzz_item_names_{lang}.json", text_map)
+
+    async def update_hsr_item_id_name_map(self) -> None:
+        result: dict[str, dict[str, str]] = {}
+
+        async with asyncio.TaskGroup() as tg:
+            avatar_config_task = tg.create_task(fetch_json(self.session, HSR_AVATAR_CONFIG_URL))
+            equipment_config_task = tg.create_task(
+                fetch_json(self.session, HSR_EQUIPMENT_CONFIG_URL)
+            )
+            text_map_tasks = {
+                lang: tg.create_task(fetch_json(self.session, HSR_TEXT_MAP_URL.format(lang=lang)))
+                for lang in STARRAIL_DATA_LANGS
+            }
+
+        avatar_config = avatar_config_task.result()
+        equipment_config = equipment_config_task.result()
+        text_maps = {lang: task.result() for lang, task in text_map_tasks.items()}
+
+        item_id_mapping: dict[int, int] = {}  # item ID -> text map key
+
+        for avatar in avatar_config:
+            item_id_mapping[avatar["AvatarID"]] = avatar["AvatarName"]["Hash"]
+
+        for equipment in equipment_config:
+            item_id_mapping[equipment["EquipmentID"]] = equipment["EquipmentName"]["Hash"]
+
+        for lang, text_map in text_maps.items():
+            result[lang] = {
+                str(item_id): text_map.get(str(text_map_key), "")
+                for item_id, text_map_key in item_id_mapping.items()
+            }
+
+        for lang, text_map in result.items():
+            await models.JSONFile.write(f"hsr_item_names_{lang}.json", text_map)
 
     async def on_command_error(
         self, context: commands.Context, exception: commands.CommandError

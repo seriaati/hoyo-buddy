@@ -13,7 +13,11 @@ import orjson
 from discord import Locale
 from pydantic import ValidationError
 
-from hoyo_buddy.constants import locale_to_gpy_lang, locale_to_zenless_data_lang
+from hoyo_buddy.constants import (
+    locale_to_gpy_lang,
+    locale_to_starrail_data_lang,
+    locale_to_zenless_data_lang,
+)
 from hoyo_buddy.db.models import GachaHistory
 from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.l10n import EnumStr, LocaleStr
@@ -489,20 +493,23 @@ class WebApp:
             else:
                 non_cached_item_ids.append(item_id)
 
-        if game is Game.ZZZ:
-            item_names = await fetch_json_file(
-                f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json"
-            )
+        if game in {Game.ZZZ, Game.STARRAIL}:
+            if game is Game.ZZZ:
+                item_names = await fetch_json_file(
+                    f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json"
+                )
+            else:
+                item_names = await fetch_json_file(
+                    f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json"
+                )
+
             for item_id in item_ids:
                 result[item_id] = item_names.get(str(item_id), str(item_id))
                 cached_gacha_names[item_id] = result[item_id]
         else:
             async with aiohttp.ClientSession() as session:
                 item_names = await item_id_to_name(
-                    session,
-                    item_ids=non_cached_item_ids,
-                    game=game,
-                    lang=locale_to_gpy_lang(locale),
+                    session, item_ids=non_cached_item_ids, lang=locale_to_gpy_lang(locale)
                 )
             for item_id in item_ids:
                 index = item_ids.index(item_id)

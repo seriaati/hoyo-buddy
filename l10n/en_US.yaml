@@ -669,3 +669,4 @@ gacha_log_delete_confirm_button_label: Confirm
 gacha_log_delete_done_embed_title: Deletion Complete
 gacha_log_delete_done_embed_description: All gacha logs belonging to this account have been deleted successfully.
 gacha_manage_command_description: Manage imported gacha logs
+login_button_label: Login with Discord

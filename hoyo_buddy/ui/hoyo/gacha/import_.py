@@ -108,7 +108,7 @@ class URLImport(Button[GachaImportView]):
             for wish in wishes:
                 if wish.name not in id_cache:
                     item_id = id_cache[wish.name] = await item_name_to_id(
-                        i.client.session, item_names=wish.name, game=Game.GENSHIN, lang=client.lang
+                        i.client.session, item_names=wish.name, lang=client.lang
                     )
                 else:
                     item_id = id_cache[wish.name]

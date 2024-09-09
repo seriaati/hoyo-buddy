@@ -357,14 +357,32 @@ def _process_query(item_ids_or_names: Sequence[str | int] | int | str) -> str:
 
 
 @overload
-async def item_name_to_id(session: aiohttp.ClientSession, *, item_names: str, lang: str) -> str: ...
+async def item_name_to_id(
+    session: aiohttp.ClientSession, *, item_names: str, lang: str | None = ...
+) -> int: ...
 @overload
 async def item_name_to_id(
-    session: aiohttp.ClientSession, *, item_names: list[str], lang: str
-) -> list[str]: ...
+    session: aiohttp.ClientSession, *, item_names: list[str], lang: str | None = ...
+) -> list[int]: ...
 async def item_name_to_id(
-    session: aiohttp.ClientSession, *, item_names: list[str] | str, lang: str
-) -> list[str] | str:
+    session: aiohttp.ClientSession, *, item_names: list[str] | str, lang: str | None = None
+) -> list[int] | int:
+    if lang is None:
+        if isinstance(item_names, str):
+            async with session.get(f"https://api.uigf.org/identify/genshin/{item_names}") as resp:
+                resp.raise_for_status()
+                data = await resp.json()
+                return data["item_id"]
+
+        result: list[int] = []
+        for item_name in item_names:
+            async with session.get(f"https://api.uigf.org/identify/genshin/{item_name}") as resp:
+                resp.raise_for_status()
+                data = await resp.json()
+                result.append(data["item_id"])
+
+        return result
+
     item_names_query = _process_query(item_names)
 
     async with session.post(
@@ -375,6 +393,23 @@ async def item_name_to_id(
         data = await resp.json()
 
     return data["item_id"]
+
+
+async def get_item_ids(
+    session: aiohttp.ClientSession, *, item_names: list[str], lang: str | None = None
+) -> dict[str, int]:
+    item_name_tasks: dict[str, asyncio.Task] = {}
+
+    async with asyncio.TaskGroup() as tg:
+        for item_name in item_names:
+            if item_name in item_name_tasks:
+                continue
+
+            item_name_tasks[item_name] = tg.create_task(
+                item_name_to_id(session, item_names=item_name, lang=lang)
+            )
+
+    return {item_name: task.result() for item_name, task in item_name_tasks.items()}
 
 
 @overload

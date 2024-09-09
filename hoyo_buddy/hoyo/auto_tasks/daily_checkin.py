@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 CHECKIN_APIS: dict[Literal["VERCEL", "DETA", "FLY"], str] = {
     "VERCEL": "https://daily-checkin-api.vercel.app",
     "DETA": "https://dailycheckin-1-e3972598.deta.app",
-    "FLY": "https://daily-checkin-api.fly.dev"
+    "FLY": "https://daily-checkin-api.fly.dev",
 }
 API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
 MAX_API_ERROR_COUNT = 10

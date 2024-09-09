@@ -13,7 +13,7 @@ from hoyo_buddy.exceptions import AuthkeyExtractError, FeatureNotImplementedErro
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.l10n import LocaleStr, Translator
 from hoyo_buddy.ui.components import Button, Modal, TextInput, View
-from hoyo_buddy.utils import ephemeral, item_name_to_id
+from hoyo_buddy.utils import ephemeral, get_item_ids
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -93,8 +93,6 @@ class URLImport(Button[GachaImportView]):
         count = 0
 
         if self.account.game is Game.GENSHIN:
-            id_cache: dict[str, str] = {}
-
             banner_last_nums = {
                 banner_type: await get_last_gacha_num(self.account, banner=banner_type)
                 for banner_type in (100, 200, 301, 302, 500)
@@ -105,14 +103,11 @@ class URLImport(Button[GachaImportView]):
             ]
             wishes.sort(key=lambda x: x.id)
 
-            for wish in wishes:
-                if wish.name not in id_cache:
-                    item_id = id_cache[wish.name] = await item_name_to_id(
-                        i.client.session, item_names=wish.name, lang=client.lang
-                    )
-                else:
-                    item_id = id_cache[wish.name]
+            item_ids = await get_item_ids(
+                i.client.session, item_names=[wish.name for wish in wishes], lang=client.lang
+            )
 
+            for wish in wishes:
                 banner_type = 301 if wish.banner_type == 400 else wish.banner_type
 
                 created = await GachaHistory.create(
@@ -120,7 +115,7 @@ class URLImport(Button[GachaImportView]):
                     rarity=wish.rarity,
                     time=wish.time,
                     banner_type=banner_type,
-                    item_id=int(item_id),
+                    item_id=item_ids[wish.name],
                     account=self.account,
                     num=banner_last_nums[banner_type] + 1,
                 )

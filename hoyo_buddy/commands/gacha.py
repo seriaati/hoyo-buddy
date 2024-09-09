@@ -18,6 +18,7 @@ from hoyo_buddy.enums import GachaImportSource, Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError, InvalidFileExtError, UIDMismatchError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import (
+    GWRecord,
     SRGFRecord,
     StarDBRecord,
     StarRailStationRecord,
@@ -27,7 +28,7 @@ from hoyo_buddy.models import (
 from hoyo_buddy.ui.hoyo.gacha.import_ import GachaImportView
 from hoyo_buddy.ui.hoyo.gacha.manage import GachaLogManageView
 from hoyo_buddy.ui.hoyo.gacha.view import ViewGachaLogView
-from hoyo_buddy.utils import ephemeral, item_name_to_id
+from hoyo_buddy.utils import ephemeral, get_item_ids
 
 if TYPE_CHECKING:
     import discord
@@ -77,6 +78,47 @@ class GachaCommand:
             if created:
                 count += 1
                 banner_last_nums[record.banner_type] += 1
+
+        return count
+
+    async def _gw_import(
+        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
+    ) -> int:
+        """Genshin Wizard import."""
+        self._validate_file_extension(file, "csv")
+
+        bytes_ = await file.read()
+        records_df = await i.client.loop.run_in_executor(
+            i.client.executor, pd.read_csv, io.BytesIO(bytes_)
+        )
+        data: list[dict[str, Any]] = records_df.to_dict(orient="records")  # pyright: ignore[reportAssignmentType]
+        records = [GWRecord(**record) for record in data]
+        records.sort(key=lambda x: x.id)
+
+        item_ids = await get_item_ids(
+            i.client.session, item_names=[record.name for record in records]
+        )
+
+        record_banners = {record.banner for record in records}
+        banner_last_nums = {
+            banner_type: await get_last_gacha_num(account, banner=banner_type)
+            for banner_type in record_banners
+        }
+
+        count = 0
+
+        for record in records:
+            created = await GachaHistory.create(
+                wish_id=record.id,
+                rarity=record.rarity,
+                item_id=item_ids[record.name],
+                banner_type=record.banner,
+                account=account,
+                num=banner_last_nums[record.banner] + 1,
+                time=record.time,
+            )
+            if created:
+                count += 1
 
         return count
 
@@ -369,19 +411,16 @@ class GachaCommand:
                 else:
                     tz_hour = 8
 
-            # Fetching item IDs
-            id_cache: dict[str, str] = {}
-            for record in data["list"]:
-                if record["item_id"]:  # Has item_id
-                    continue
+            if not all(record["item_id"] for record in data["list"]):
+                # Fetch item IDs
+                item_ids = await get_item_ids(
+                    i.client.session,
+                    item_names=[record["name"] for record in data["list"]],
+                    lang=data["info"]["lang"],
+                )
 
-                if record["name"] not in id_cache:
-                    record["item_id"] = await item_name_to_id(
-                        i.client.session, item_names=record["name"], lang=data["info"]["lang"]
-                    )
-                    id_cache[record["name"]] = record["item_id"]
-                else:
-                    record["item_id"] = id_cache[record["name"]]
+                for record in data["list"]:
+                    record["item_id"] = item_ids[record["name"]]
 
             records = [UIGFRecord(timezone=tz_hour, **record) for record in data["list"]]
 
@@ -486,6 +525,8 @@ class GachaCommand:
                 count = await self._stardb_import(i, account=account, file=file)
             elif source is GachaImportSource.UIGF:
                 count = await self._uigf_import(i, account=account, file=file)
+            elif source is GachaImportSource.GENSHIN_WIZARD:
+                count = await self._gw_import(i, account=account, file=file)
             else:  # SRGF
                 count = await self._srgf_import(i, account=account, file=file)
         except Exception as e:

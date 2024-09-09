@@ -96,7 +96,7 @@ class CookiesForm(ft.Column):
         super().__init__(
             [
                 CookiesTextField(translator=translator, locale=locale, ref=self._cookies_ref),
-                ft.Container(self.submit_button, margin=ft.margin.only(top=16)),
+                self.submit_button,
             ],
             wrap=True,
             spacing=16,

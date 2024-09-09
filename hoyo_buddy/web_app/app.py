@@ -11,6 +11,7 @@ import flet as ft
 import genshin
 import orjson
 from discord import Locale
+from flet.auth import Authorization
 from pydantic import ValidationError
 
 from hoyo_buddy.constants import (
@@ -46,6 +47,7 @@ class WebApp:
         self._page = page
         self._translator = translator
         self._page.on_route_change = self.on_route_change
+        self._page.on_login = self.on_login
 
     async def initialize(self) -> None:
         self._page.theme_mode = ft.ThemeMode.DARK
@@ -64,6 +66,12 @@ class WebApp:
             if view is not None:
                 view.appbar = self.gacha_app_bar
         else:
+            if not page.session.contains_key("hb.user_id") and route != "/login":
+                asyncio.create_task(page.client_storage.set_async("hb.original_route", e.route))
+                locale = parsed_params.get("locale", "en-US")
+                await page.go_async(f"/login?locale={locale}")
+                return
+
             view = await self._handle_login_routes(route, parsed_params)
             page.title = "Login System"
             if view is not None:
@@ -311,6 +319,11 @@ class WebApp:
     ) -> ft.View | None:
         page = self._page
 
+        if route == "/login":
+            return pages.LoginPage(
+                translator=self._translator, locale=Locale(parsed_params["locale"])
+            )
+
         if route == "/geetest":
             query: str | None = await page.client_storage.get_async(
                 f"hb.{parsed_params['user_id']}.params"
@@ -319,6 +332,12 @@ class WebApp:
                 return pages.ErrorPage(code=400, message="Cannot find params in client storage.")
 
             parsed_params = {k: v[0] for k, v in urllib.parse.parse_qs(query).items()}
+
+        user_id = page.session.get("hb.user_id")
+        if user_id is None:
+            return pages.ErrorPage(code=400, message="Cannot find user_id in client storage.")
+
+        parsed_params["user_id"] = user_id
 
         try:
             params = Params(**parsed_params)  # pyright: ignore[reportArgumentType]
@@ -524,11 +543,37 @@ class WebApp:
 
         return result
 
+    async def on_login(self, e: ft.LoginEvent) -> None:
+        page: ft.Page = e.page
+
+        if e.error:
+            await show_error_banner(page, message=f"Login failed: {e.error}")
+            return
+
+        page: ft.Page = e.page
+        if not isinstance(page.auth, Authorization):
+            await show_error_banner(page, message="Login failed: No auth data")
+            return
+
+        if page.auth.user is None:
+            await show_error_banner(page, message="Login failed: No user data")
+            return
+
+        page.session.set("hb.user_id", page.auth.user.id)
+        original_route = await page.client_storage.get_async("hb.original_route")
+        if original_route:
+            asyncio.create_task(page.client_storage.remove_async("hb.original_route"))
+            await page.go_async(original_route)
+
     @property
     def login_app_bar(self) -> ft.AppBar:
         return ft.AppBar(
-            title=ft.Text("Login System"),
-            leading=ft.Image(src="/favicon.png", width=32, height=32),
+            title=ft.Row(
+                [
+                    ft.Image(src="/images/logo.png", width=32, height=32),
+                    ft.Container(ft.Text("Login System"), margin=ft.margin.only(left=4)),
+                ]
+            ),
             bgcolor=ft.colors.SURFACE_VARIANT,
             actions=[
                 ft.IconButton(ft.icons.QUESTION_MARK, url="https://discord.com/invite/ryfamUykRw")

@@ -7,7 +7,7 @@ from .error import *
 from .finish import *
 from .gacha_log import *
 from .javascript import *
-from .loading import *
+from .login import *
 from .methods import *
 from .mobile import *
 from .mod_app import *

@@ -5,25 +5,20 @@ from pydantic import BaseModel, Field, field_validator
 from ..enums import Platform
 
 
-class BaseParams(BaseModel):
-    def to_query_string(self) -> str:
-        dict_model = self.model_dump()
-        for key, value in dict_model.items():
-            if isinstance(value, list):
-                dict_model[key] = "" if not value else ",".join(str(v) for v in value)
-
-        return "&".join(f"{k}={v}" for k, v in dict_model.items() if v is not None)
-
-
-class Params(BaseParams):
+class Params(BaseModel):
     locale: str
     user_id: int
     platform: Platform | None = None
     channel_id: int
     guild_id: int | None = None
 
+    def to_query_string(self) -> str:
+        return "&".join(
+            f"{k}={v}" for k, v in self.model_dump().items() if v is not None and k != "user_id"
+        )
 
-class GachaParams(BaseParams):
+
+class GachaParams(BaseModel):
     locale: str
     account_id: int
     banner_type: int
@@ -40,3 +35,11 @@ class GachaParams(BaseParams):
         if not value:
             return []
         return [int(rarity) for rarity in value.split(",")]
+
+    def to_query_string(self) -> str:
+        dict_model = self.model_dump()
+        for key, value in dict_model.items():
+            if isinstance(value, list):
+                dict_model[key] = "" if not value else ",".join(str(v) for v in value)
+
+        return "&".join(f"{k}={v}" for k, v in dict_model.items() if v is not None)

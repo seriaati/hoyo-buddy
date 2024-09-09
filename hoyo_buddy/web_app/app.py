@@ -397,6 +397,10 @@ class WebApp:
 
         match route:
             case "/gacha_log":
+                account_exists = await self._check_account_exists(params.account_id)
+                if not account_exists:
+                    return pages.ErrorPage(code=404, message="Account not found")
+
                 total_row = await self._get_gacha_log_row_num(params)
                 gacha_logs = await self._get_gacha_logs(params)
 
@@ -452,6 +456,16 @@ class WebApp:
                 params.account_id,
                 params.banner_type,
                 params.rarities,
+            )
+        finally:
+            await conn.close()
+
+    @staticmethod
+    async def _check_account_exists(account_id: int) -> bool:
+        conn = await asyncpg.connect(os.environ["DB_URL"])
+        try:
+            return await conn.fetchval(
+                'SELECT EXISTS(SELECT 1 FROM "hoyoaccount" WHERE id = $1)', account_id
             )
         finally:
             await conn.close()

@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 CHECKIN_APIS: dict[Literal["VERCEL", "DETA", "FLY"], str] = {
     "VERCEL": "https://daily-checkin-api.vercel.app",
     "DETA": "https://dailycheckin-1-e3972598.deta.app",
-    "FLY": "https://daily-checkin-api.fly.dev/",
+    "FLY": "https://daily-checkin-api.fly.dev"
 }
 API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
 MAX_API_ERROR_COUNT = 10
@@ -57,7 +57,7 @@ class DailyCheckin:
             bot.capture_exception(e)
         finally:
             logger.info(
-                "Daily check-in finished, total check-in count: %d", cls._total_checkin_count
+                f"Daily check-in finished, total check-in count: {cls._total_checkin_count}"
             )
 
     @classmethod
@@ -156,8 +156,13 @@ class DailyCheckin:
             "region": client.region.value,
         }
         api_url = CHECKIN_APIS[api_name]
+        logger.debug(f"Check-in payload: {payload}")
+        logger.debug(f"Check-in API URL: {api_url}/checkin/")
+
         async with session.post(f"{api_url}/checkin/", json=payload) as resp:
             data = await resp.json()
+            logger.debug(data)
+
             if resp.status == 200:
                 # Correct reward amount
                 monthly_rewards = await client.get_monthly_rewards()

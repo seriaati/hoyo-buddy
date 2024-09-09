@@ -86,7 +86,10 @@ class ZZZTeamCard:
         name_data = self._name_datas.get(str(agent.id))
         if name_data is not None:
             text_im = self._render_rotated_text(drawer, name_data)
-            im.alpha_composite(text_im, (170, 20))
+            offset = {
+                1251: -10  # Qingyi
+            }
+            im.alpha_composite(text_im, (188 + offset.get(agent.id, 0), 9))
 
         # Agent level and rank
         text = f"Lv.{agent.level} M{agent.rank}"
@@ -283,21 +286,39 @@ class ZZZTeamCard:
     def _render_rotated_text(self, drawer: Drawer, name_data: AgentNameData) -> Image.Image:
         text = name_data.full_name.upper()
         textbbox = drawer.write(
-            text, size=42, position=(0, 0), style="black_italic", sans=True, no_write=True
+            text,
+            size=42,
+            position=(0, 0),
+            style="black_italic",
+            sans=True,
+            no_write=True,
+            anchor="lt",
         )
         if textbbox.width > 280:
             text = name_data.short_name.upper()
             textbbox = drawer.write(
-                text, size=42, position=(0, 0), style="black_italic", sans=True, no_write=True
+                text,
+                size=42,
+                position=(0, 0),
+                style="black_italic",
+                sans=True,
+                no_write=True,
+                anchor="lt",
             )
         text_im = Image.new(
-            "RGBA", (textbbox.right - textbbox.left, (textbbox.bottom - textbbox.top) * 2)
+            "RGBA", (textbbox.right - textbbox.left, textbbox.bottom - textbbox.top)
         )
         text_drawer = Drawer(
             ImageDraw.Draw(text_im), folder="zzz-team-card", dark_mode=self._dark_mode
         )
         text_drawer.write(
-            text, size=42, position=(0, 0), style="black_italic", sans=True, color=BLACK
+            text,
+            size=42,
+            position=(0, 0),
+            style="black_italic",
+            sans=True,
+            color=BLACK,
+            anchor="lt",
         )
         return text_im.rotate(-90, expand=True, resample=Image.Resampling.BICUBIC)
 

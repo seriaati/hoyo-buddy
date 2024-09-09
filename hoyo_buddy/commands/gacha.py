@@ -119,6 +119,7 @@ class GachaCommand:
             )
             if created:
                 count += 1
+                banner_last_nums[record.banner] += 1
 
         return count
 

@@ -63,9 +63,9 @@ class ImgTheaterCard:
         stats = self._theater.battle_stats
 
         characters = (
-            (stats.max_defeat_character, "img_theater_max_defeat"),
+            (stats.max_defeat_character, "abyss.most_defeats"),
             (stats.max_damage_character, "img_theater_max_damage"),
-            (stats.max_take_damage_character, "img_theater_max_take_damage"),
+            (stats.max_take_damage_character, "abyss.most_dmg_taken"),
         )
         start_pos = (870, 76)
 

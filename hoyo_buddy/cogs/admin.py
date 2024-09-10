@@ -147,6 +147,10 @@ class Admin(commands.Cog):
     @commands.command(name="get-accounts", aliases=["ga"])
     async def get_accounts_command(self, ctx: commands.Context, user_id: int) -> Any:
         accounts = await HoyoAccount.filter(user_id=user_id).all()
+        if not accounts:
+            await ctx.send("No accounts found for this user.")
+            return
+
         msg = "\n".join(
             [
                 f"- [{account.id}] {get_game_emoji(account.game)} {account.uid}, {account.username}, {account.region}"

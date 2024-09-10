@@ -62,7 +62,9 @@ class DailyCheckin:
 
     @classmethod
     async def _daily_checkin_task(
-        cls, queue: asyncio.Queue[HoyoAccount], api_name: Literal["VERCEL", "RENDER", "FLY", "LOCAL"]
+        cls,
+        queue: asyncio.Queue[HoyoAccount],
+        api_name: Literal["VERCEL", "RENDER", "FLY", "LOCAL"],
     ) -> None:
         logger.info(f"Daily check-in task started for api: {api_name}")
 

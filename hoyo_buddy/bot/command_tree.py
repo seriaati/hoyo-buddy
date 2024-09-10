@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Literal
 from discord import InteractionType, NotFound, app_commands
 
 from ..db.models import get_locale
-from ..utils import get_now
 from .error_handler import get_error_embed
 
 if TYPE_CHECKING:

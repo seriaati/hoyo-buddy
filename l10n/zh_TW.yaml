@@ -494,7 +494,7 @@ img_theater_stats_line_one: "最佳紀錄: 第 {act} 幕"
 img_theater_stats_line_two: "消耗幻劇之花: {flower}"
 img_theater_stats_line_three: "觸發場外觀眾聲援: {support} 次"
 img_theater_stats_line_four: "表演助理角色支援其他玩家: {assist} 次"
-img_theater_stats_line_five: "總演出時數: {time}"
+img_theater_stats_line_five: "演出總時長: {time}"
 img_theater_legend_block_support_chara: 表演助理
 img_theater_legend_block_trial_chara: 試用角色
 img_theater_act_block_title: "第 {act} 幕"

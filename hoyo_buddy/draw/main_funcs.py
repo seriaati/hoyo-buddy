@@ -602,13 +602,15 @@ async def draw_hsr_team_card(
         if character.light_cone is not None:
             urls.append(character.light_cone.icon.image)
             if isinstance(character, enka.hsr.Character):
-                urls.extend([stat.icon for stat in character.light_cone.stats])
-        urls.extend([trace.icon for trace in character.traces])
-        urls.extend([relic.icon for relic in character.relics])
+                urls.extend(stat.icon for stat in character.light_cone.stats)
+
+        urls.extend(trace.icon for trace in character.traces)
+        urls.extend(relic.icon for relic in character.relics)
+
         if isinstance(character, enka.hsr.Character):
-            urls.extend([stat.icon for stat in character.stats.values()])
+            urls.extend(stat.icon for stat in character.stats.values())
         else:
-            urls.extend([stat.icon for stat in character.stats])
+            urls.extend(stat.icon for stat in character.stats)
 
     await download_images(urls, "hsr-team-card", draw_input.session)
 
@@ -629,9 +631,9 @@ async def draw_gi_team_card(
 ) -> BytesIO:
     urls: list[str] = list(character_images.values())
     for character in characters:
-        urls.extend([talent.icon for talent in character.talents])
-        urls.extend([const.icon for const in character.constellations])
-        urls.extend([artifact.icon for artifact in character.artifacts])
+        urls.extend(talent.icon for talent in character.talents)
+        urls.extend(const.icon for const in character.constellations)
+        urls.extend(artifact.icon for artifact in character.artifacts)
         urls.append(character.weapon.icon)
 
     await download_images(urls, "gi-team-card", draw_input.session)

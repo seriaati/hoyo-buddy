@@ -651,9 +651,9 @@ gacha_view_filter_size_field_label: Items per page
 gacha_view_page_field_label: Page
 gacha_log_stats_title: Gacha Log Stats
 gacha_log_personal_stats_title: Personal Stats
-gacha_log_personal_stats: "Lifetime pulls: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\nTotal pulls for this banner: {total_pulls} ({total_currency} {currency_emoji})\n5★ pity: {star5_pity_cur}/{star5_pity_max}\n4★ pity: {star4_pity_cur}/10\n50/50 Win rate: {win_rate}%\nTotal 5★: {total_star5}\nTotal 4★: {total_star4}\nAverage pulls per 5★: {avg_pulls_per_star5}\nAverage pulls per 4★: {avg_pulls_per_star4}"
+gacha_log_personal_stats: "Lifetime pulls: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\nTotal pulls for this banner: {total_pulls} ({total_currency} {currency_emoji})\n5★ pity: {star5_pity_cur}/{star5_pity_max}\n4★ pity: {star4_pity_cur}/10\n50/50 Win rate: {win_rate}% ({win_time}/{total_time})\nTotal 5★: {total_star5}\nTotal 4★: {total_star4}\nAverage pulls per 5★: {avg_pulls_per_star5}\nAverage pulls per 4★: {avg_pulls_per_star4}"
 gacha_log_global_stats_title: Global Stats
-gacha_log_global_stats: "Lifetime pulls: Top {lifetime}%\n5★ luck: Top {star5_luck}%\n4★ luck: Top {star4_luck}%\n50/50 Win rate: Top {win_rate}%"
+gacha_log_global_stats: "Lifetime pulls: {lifetime}\n5★ luck: {star5_luck}\n4★ luck: {star4_luck}\n50/50 Win rate: {win_rate}"
 gacha_log_view_full: View gacha logs
 gacha_view_command_description: View imported gacha logs
 gacha_log_view_banner_type_selector_placeholder: Select a banner type...
@@ -670,3 +670,5 @@ gacha_log_delete_done_embed_title: Deletion Complete
 gacha_log_delete_done_embed_description: All gacha logs belonging to this account have been deleted successfully.
 gacha_manage_command_description: Manage imported gacha logs
 login_button_label: Login with Discord
+star5_guaranteed: 5★ Guaranteed
+star5_no_guaranteed: 5★ Not Guaranteed

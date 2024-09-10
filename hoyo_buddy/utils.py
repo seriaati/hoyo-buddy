@@ -75,9 +75,36 @@ async def upload_image(
 
 
 def format_timedelta(td: datetime.timedelta) -> str:
+    """
+    Format a timedelta object into a string in the format HH:MM:SS.
+
+    Args:
+        td: A timedelta object representing the duration to format.
+
+    Returns:
+        A string representing the formatted duration in the format HH:MM:SS.
+    """
     hours, remainder = divmod(td.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     return f"{hours:02}:{minutes:02}:{seconds:02}"
+
+
+def seconds_to_time(seconds: int) -> str:
+    """
+    Convert a number of seconds into a time string formatted as HH:MM:SS.
+
+    Args:
+        seconds: The number of seconds to convert.
+
+    Returns:
+        The formatted time string in HH:MM:SS format.
+    """
+    hours, remainder = divmod(seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    if hours == 0:
+        return f"{minutes:02}:{seconds:02}"
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
 
 def blur_uid(uid: int) -> str:

@@ -8,6 +8,7 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.utils import seconds_to_time
 
 
 class ImgTheaterCard:
@@ -37,7 +38,7 @@ class ImgTheaterCard:
         self._drawer.write(
             LocaleStr(key="img_theater_large_block_title"),
             size=64,
-            position=(112, 98),
+            position=(112, 83),
             style="bold",
         )
 
@@ -49,10 +50,35 @@ class ImgTheaterCard:
                 key="img_theater_stats_line_three", support=stats.audience_support_trigger_num
             ),
             LocaleStr(key="img_theater_stats_line_four", assist=stats.player_assists),
+            LocaleStr(
+                key="img_theater_stats_line_five",
+                time=seconds_to_time(self._theater.battle_stats.total_cast_seconds),
+            ),
         )
-        line_height = 45
+        line_height = 40
         for i, line in enumerate(lines):
-            self._drawer.write(line, size=24, position=(112, 190 + i * line_height))
+            self._drawer.write(line, size=24, position=(112, 175 + i * line_height))
+
+    def _draw_battle_stats(self) -> None:
+        stats = self._theater.battle_stats
+
+        characters = (
+            (stats.max_defeat_character, "img_theater_max_defeat"),
+            (stats.max_damage_character, "img_theater_max_damage"),
+            (stats.max_take_damage_character, "img_theater_max_take_damage"),
+        )
+        start_pos = (870, 76)
+
+        for character, key in characters:
+            icon = self._drawer.open_static(character.icon, size=(55, 55))
+            self._im.alpha_composite(icon, start_pos)
+            self._drawer.write(
+                LocaleStr(key=key, value=character.value),
+                size=20,
+                position=(start_pos[0] + 67, start_pos[1] + 34),
+                anchor="lm",
+            )
+            start_pos = (start_pos[0], start_pos[1] + 55)
 
     def _write_legend_block_texts(self) -> None:
         self._drawer.write(
@@ -143,6 +169,7 @@ class ImgTheaterCard:
         )
 
         self._write_large_block_texts()
+        self._draw_battle_stats()
         self._write_legend_block_texts()
 
         start_pos = (76, 431)

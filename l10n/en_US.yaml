@@ -494,9 +494,13 @@ img_theater_stats_line_one: "Best Record: Act {act}"
 img_theater_stats_line_two: "Fantasia Flowers Used: {flower}"
 img_theater_stats_line_three: "Triggered External Audience Support: {support} times"
 img_theater_stats_line_four: "Supporting Cast Characters Assist Other Players: {assist} times"
+img_theater_stats_line_five: "Total Cast Time: {time}"
 img_theater_legend_block_support_chara: Support Character
 img_theater_legend_block_trial_chara: Trial Character
 img_theater_act_block_title: "Act {act}"
+img_theater_max_defeat: "Most Defeats: {value}"
+img_theater_max_damage: "Most Damage Dealt: {value}"
+img_theater_max_take_damage: "Most Damage Taken: {value}"
 challenge_view.view_buffs: View buffs
 challenge_view.buff_select.placeholder: Select a buff to view...
 battery_charge_button.label: Battery charge

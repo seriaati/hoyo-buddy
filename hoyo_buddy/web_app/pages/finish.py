@@ -159,6 +159,16 @@ class SubmitButton(ft.FilledButton):
 
         conn = await asyncpg.connect(os.environ["DB_URL"])
         try:
+            await conn.execute(
+                'INSERT INTO "user" (id, temp_data) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING',
+                user_id,
+                "{}",
+            )
+            await conn.execute(
+                'INSERT INTO "settings" (user_id) VALUES ($1) ON CONFLICT (user_id) DO NOTHING',
+                user_id,
+            )
+
             account_id = None
 
             for account in self._accounts:

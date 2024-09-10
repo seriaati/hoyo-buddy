@@ -25,17 +25,13 @@ class CommandTree(app_commands.CommandTree):
 
         async with i.client.pool.acquire() as conn:
             await conn.execute(
-                'INSERT INTO "user" (id, last_interaction, temp_data) VALUES ($1, $2, $3)'
-                "ON CONFLICT (id) DO UPDATE SET last_interaction = $2;",
+                'INSERT INTO "user" (id, temp_data) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING;',
                 i.user.id,
-                get_now(),
                 "{}",
             )
             await conn.execute(
-                'INSERT INTO "settings" (user_id, dark_mode) VALUES ($1, $2)'
-                "ON CONFLICT (user_id) DO NOTHING;",
+                'INSERT INTO "settings" (user_id) VALUES ($1) ON CONFLICT (user_id) DO NOTHING;',
                 i.user.id,
-                True,
             )
             i.client.user_ids.add(i.user.id)
 

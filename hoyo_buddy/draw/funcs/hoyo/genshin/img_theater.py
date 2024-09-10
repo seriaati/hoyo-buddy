@@ -70,10 +70,12 @@ class ImgTheaterCard:
         start_pos = (870, 76)
 
         for character, key in characters:
-            icon = self._drawer.open_static(character.icon, size=(55, 55))
-            self._im.alpha_composite(icon, start_pos)
+            if character is not None:
+                icon = self._drawer.open_static(character.icon, size=(55, 55))
+                self._im.alpha_composite(icon, start_pos)
+
             self._drawer.write(
-                LocaleStr(key=key, value=character.value),
+                LocaleStr(key=key, val=0 if character is None else character.value),
                 size=20,
                 position=(start_pos[0] + 67, start_pos[1] + 34),
                 anchor="lm",

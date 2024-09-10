@@ -404,13 +404,17 @@ async def draw_img_theater_card(
     chara_consts: dict[int, int],
     translator: Translator,
 ) -> File:
-    icons: list[str] = [
-        data.battle_stats.max_damage_character.icon,
-        data.battle_stats.max_defeat_character.icon,
-        data.battle_stats.max_take_damage_character.icon,
-    ]
+    icons: list[str] = []
+
+    characters = (
+        data.battle_stats.max_damage_character,
+        data.battle_stats.max_defeat_character,
+        data.battle_stats.max_take_damage_character,
+    )
+    icons.extend(chara.icon for chara in characters if chara is not None)
+
     for act in data.acts:
-        icons.extend([chara.icon for chara in act.characters])
+        icons.extend(chara.icon for chara in act.characters)
 
     await download_images(icons, "img-theater", draw_input.session)
 

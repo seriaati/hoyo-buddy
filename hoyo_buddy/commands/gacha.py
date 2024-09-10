@@ -11,7 +11,7 @@ import yatta
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import UIGF_GAME_KEYS
-from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_dyk, get_last_gacha_num, get_locale
+from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_dyk, get_locale, update_gacha_nums
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LOADING
 from hoyo_buddy.enums import GachaImportSource, Game
@@ -57,12 +57,6 @@ class GachaCommand:
         records = [StarRailStationRecord(**record) for record in data]
         records.sort(key=lambda x: x.id)
 
-        record_banners = {record.banner_type for record in records}
-        banner_last_nums = {
-            banner_type: await get_last_gacha_num(account, banner=banner_type)
-            for banner_type in record_banners
-        }
-
         count = 0
 
         for record in records:
@@ -72,12 +66,10 @@ class GachaCommand:
                 item_id=record.item_id,
                 banner_type=record.banner_type,
                 account=account,
-                num=banner_last_nums[record.banner_type] + 1,
                 time=record.time,
             )
             if created:
                 count += 1
-                banner_last_nums[record.banner_type] += 1
 
         return count
 
@@ -99,12 +91,6 @@ class GachaCommand:
             i.client.session, item_names=[record.name for record in records]
         )
 
-        record_banners = {record.banner for record in records}
-        banner_last_nums = {
-            banner_type: await get_last_gacha_num(account, banner=banner_type)
-            for banner_type in record_banners
-        }
-
         count = 0
 
         for record in records:
@@ -114,12 +100,10 @@ class GachaCommand:
                 item_id=item_ids[record.name],
                 banner_type=record.banner,
                 account=account,
-                num=banner_last_nums[record.banner] + 1,
                 time=record.time,
             )
             if created:
                 count += 1
-                banner_last_nums[record.banner] += 1
 
         return count
 
@@ -153,12 +137,6 @@ class GachaCommand:
             )
         records.sort(key=lambda x: x.id)
 
-        record_banners = {record.banner_type for record in records}
-        banner_last_nums = {
-            banner_type: await get_last_gacha_num(account, banner=banner_type)
-            for banner_type in record_banners
-        }
-
         count = 0
 
         for record in records:
@@ -168,12 +146,10 @@ class GachaCommand:
                 item_id=record.item_id,
                 banner_type=record.banner_type,
                 account=account,
-                num=banner_last_nums[record.banner_type] + 1,
                 time=record.time,
             )
             if created:
                 count += 1
-                banner_last_nums[record.banner_type] += 1
 
         return count
 
@@ -226,12 +202,6 @@ class GachaCommand:
                     character.id: character.rarity for character in characters
                 } | {lc.id: lc.rarity for lc in lcs}
 
-                record_banners = {record.banner_type for record in records}
-                banner_last_nums = {
-                    banner_type: await get_last_gacha_num(account, banner=banner_type)
-                    for banner_type in record_banners
-                }
-
                 count = 0
 
                 for record in records:
@@ -241,12 +211,10 @@ class GachaCommand:
                         item_id=record.item_id,
                         banner_type=record.banner_type,
                         account=account,
-                        num=banner_last_nums[record.banner_type] + 1,
                         time=record.time,
                     )
                     if created:
                         count += 1
-                        banner_last_nums[record.banner_type] += 1
 
                 return count
 
@@ -288,11 +256,6 @@ class GachaCommand:
                         continue
                     rarity_map[int(item.id)] = item.rarity
 
-                banner_last_nums = {
-                    banner_type: await get_last_gacha_num(account, banner=banner_type)
-                    for banner_type in banner_types.values()
-                }
-
                 count = 0
 
                 for record in records:
@@ -303,11 +266,9 @@ class GachaCommand:
                         banner_type=record.banner_type,
                         account=account,
                         time=record.time,
-                        num=banner_last_nums[record.banner_type] + 1,
                     )
                     if created:
                         count += 1
-                        banner_last_nums[record.banner_type] += 1
 
                 return count
 
@@ -349,12 +310,6 @@ class GachaCommand:
                         continue
                     rarity_map[item.id] = rarity_converter[item.rarity]
 
-                record_banners = {record.banner_type for record in records}
-                banner_last_nums = {
-                    banner_type: await get_last_gacha_num(account, banner=banner_type)
-                    for banner_type in record_banners
-                }
-
                 count = 0
 
                 for record in records:
@@ -364,12 +319,10 @@ class GachaCommand:
                         item_id=record.item_id,
                         banner_type=record.banner_type,
                         account=account,
-                        num=banner_last_nums[record.banner_type] + 1,
                         time=record.time,
                     )
                     if created:
                         count += 1
-                        banner_last_nums[record.banner_type] += 1
 
                 return count
 
@@ -427,12 +380,6 @@ class GachaCommand:
 
         records.sort(key=lambda x: x.id)
 
-        record_banners = {record.banner_type for record in records}
-        banner_last_nums = {
-            banner_type: await get_last_gacha_num(account, banner=banner_type)
-            for banner_type in record_banners
-        }
-
         count = 0
 
         for record in records:
@@ -442,12 +389,10 @@ class GachaCommand:
                 item_id=record.item_id,
                 banner_type=record.banner_type,
                 account=account,
-                num=banner_last_nums[record.banner_type] + 1,
                 time=record.time,
             )
             if created:
                 count += 1
-                banner_last_nums[record.banner_type] += 1
 
         return count
 
@@ -468,12 +413,6 @@ class GachaCommand:
         records = [SRGFRecord(timezone=tz_hour, **record) for record in data["list"]]
         records.sort(key=lambda x: x.id)
 
-        record_banners = {record.banner_type for record in records}
-        banner_last_nums = {
-            banner_type: await get_last_gacha_num(account, banner=banner_type)
-            for banner_type in record_banners
-        }
-
         count = 0
 
         for record in records:
@@ -483,12 +422,10 @@ class GachaCommand:
                 item_id=record.item_id,
                 banner_type=record.banner_type,
                 account=account,
-                num=banner_last_nums[record.banner_type] + 1,
                 time=record.time,
             )
             if created:
                 count += 1
-                banner_last_nums[record.banner_type] += 1
 
         return count
 
@@ -534,6 +471,8 @@ class GachaCommand:
             error_embed, _ = get_error_embed(e, locale, i.client.translator)
             await i.edit_original_response(embed=error_embed)
         else:
+            await update_gacha_nums(i.client.pool, account=account)
+
             embed = DefaultEmbed(
                 locale,
                 i.client.translator,

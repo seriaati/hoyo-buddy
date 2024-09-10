@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 import discord
 import genshin
 
-from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_dyk, get_last_gacha_num
+from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_dyk, update_gacha_nums
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LINK, LOADING
 from hoyo_buddy.enums import Game
@@ -93,11 +93,6 @@ class URLImport(Button[GachaImportView]):
         count = 0
 
         if self.account.game is Game.GENSHIN:
-            banner_last_nums = {
-                banner_type: await get_last_gacha_num(self.account, banner=banner_type)
-                for banner_type in (100, 200, 301, 302, 500)
-            }
-
             wishes: list[genshin.models.Wish] = [
                 history async for history in client.wish_history(authkey=authkey)
             ]
@@ -117,18 +112,11 @@ class URLImport(Button[GachaImportView]):
                     banner_type=banner_type,
                     item_id=item_ids[wish.name],
                     account=self.account,
-                    num=banner_last_nums[banner_type] + 1,
                 )
                 if created:
                     count += 1
-                    banner_last_nums[banner_type] += 1
 
         elif self.account.game is Game.STARRAIL:
-            banner_last_nums = {
-                banner_type: await get_last_gacha_num(self.account, banner=banner_type)
-                for banner_type in (1, 2, 11, 12)
-            }
-
             warps: list[genshin.models.Warp] = [
                 history async for history in client.warp_history(authkey=authkey)
             ]
@@ -142,18 +130,11 @@ class URLImport(Button[GachaImportView]):
                     banner_type=warp.banner_type,
                     item_id=warp.item_id,
                     account=self.account,
-                    num=banner_last_nums[warp.banner_type] + 1,
                 )
                 if created:
                     count += 1
-                    banner_last_nums[warp.banner_type] += 1
 
         elif self.account.game is Game.ZZZ:
-            banner_last_nums = {
-                banner_type: await get_last_gacha_num(self.account, banner=banner_type)
-                for banner_type in (1, 2, 3, 5)
-            }
-
             signals: list[genshin.models.SignalSearch] = [
                 history async for history in client.signal_history(authkey=authkey)
             ]
@@ -167,13 +148,13 @@ class URLImport(Button[GachaImportView]):
                     banner_type=signal.banner_type,
                     item_id=signal.item_id,
                     account=self.account,
-                    num=banner_last_nums[signal.banner_type] + 1,
                 )
                 if created:
                     count += 1
-                    banner_last_nums[signal.banner_type] += 1
         else:
             raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
+
+        await update_gacha_nums(i.client.pool, account=self.account)
 
         embed = DefaultEmbed(
             self.view.locale,

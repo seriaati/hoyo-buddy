@@ -22,6 +22,7 @@ from ..utils import blur_uid, get_now
 
 if TYPE_CHECKING:
     import aiohttp
+    import asyncpg
 
     from hoyo_buddy.types import ChallengeWithLang
 
@@ -347,12 +348,8 @@ class GachaHistory(BaseModel):
         time: datetime.datetime,
         item_id: int,
         banner_type: int,
-        num: int,
         account: HoyoAccount,
     ) -> bool:
-        num_since_last = await get_num_since_last(
-            account, banner=banner_type, num=num, rarity=rarity
-        )
         try:
             await super().create(
                 wish_id=wish_id,
@@ -360,8 +357,8 @@ class GachaHistory(BaseModel):
                 time=time,
                 item_id=item_id,
                 banner_type=banner_type,
-                num=num,
-                num_since_last=num_since_last,
+                num=1,
+                num_since_last=1,
                 game=account.game,
                 account=account,
                 account_id=account.id,
@@ -471,3 +468,50 @@ async def get_num_since_last(account: HoyoAccount, *, banner: int, num: int, rar
         return 0
     last_num = await get_last_gacha_num(account, banner=banner, rarity=rarity, num_lt=num)
     return num - last_num
+
+
+UPDATE_NUM_SQL = """
+WITH ranked_wishes AS (
+  SELECT
+    wish_id,
+    banner_type,
+    ROW_NUMBER() OVER (PARTITION BY banner_type ORDER BY wish_id) AS new_num
+  FROM gachahistory
+  WHERE account_id = $1
+)
+UPDATE gachahistory w
+SET num = r.new_num
+FROM ranked_wishes r
+WHERE w.wish_id = r.wish_id
+  AND w.account_id = $1;
+"""
+
+UPDATE_NUM_SINCE_LAST_SQL = """
+WITH sorted_wishes AS (
+  SELECT *,
+         ROW_NUMBER() OVER (PARTITION BY banner_type ORDER BY wish_id) AS row_num
+  FROM gachahistory
+  WHERE account_id = $1
+),
+previous_wishes AS (
+  SELECT *,
+         LAG(num) OVER (PARTITION BY banner_type, rarity ORDER BY row_num) AS prev_num
+  FROM sorted_wishes
+)
+UPDATE gachahistory
+SET num_since_last =
+  CASE
+    WHEN pw.prev_num IS NULL THEN pw.num - 1
+    ELSE pw.num - pw.prev_num
+  END
+FROM previous_wishes pw
+WHERE gachahistory.wish_id = pw.wish_id
+  AND gachahistory.account_id = $1;
+"""
+
+
+async def update_gacha_nums(pool: asyncpg.Pool, *, account: HoyoAccount) -> None:
+    """Update the num and num_since_last fields of the gacha histories."""
+    async with pool.acquire() as conn:
+        await conn.execute(UPDATE_NUM_SQL, account.id)
+        await conn.execute(UPDATE_NUM_SINCE_LAST_SQL, account.id)

@@ -471,7 +471,7 @@ async def fetch_json(session: aiohttp.ClientSession, url: str) -> Any:
         return orjson.loads(await resp.read())
 
 
-def calc_top_percentage(number: float, number_list: list[float], *, reverse: bool) -> float:
+def get_ranking(number: float, number_list: list[float], *, reverse: bool) -> tuple[int, int]:
     sorted_unique_list = sorted(set(number_list), reverse=reverse)
 
     try:
@@ -486,5 +486,4 @@ def calc_top_percentage(number: float, number_list: list[float], *, reverse: boo
             + 1
         )
 
-    # Calculate the percentage
-    return round((position / len(sorted_unique_list) * 100), 2)
+    return position, len(sorted_unique_list)

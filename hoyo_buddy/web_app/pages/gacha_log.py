@@ -138,7 +138,7 @@ class GachaLogPage(ft.View):
                     alignment=ft.MainAxisAlignment.END,
                 ),
             ]
-            if gacha.num_since_last:
+            if gacha.rarity != 3:
                 stack_controls.append(
                     ft.Column(
                         [

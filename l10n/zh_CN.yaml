@@ -494,9 +494,11 @@ img_theater_stats_line_one: "最佳记录: 第 {act} 幕"
 img_theater_stats_line_two: "消耗幻剧之花: {flower}"
 img_theater_stats_line_three: "触发场外观众声援: {support} 次"
 img_theater_stats_line_four: "助演角色支援其他玩家: {assist} 次"
+img_theater_stats_line_five: "演出总时长: {time}"
 img_theater_legend_block_support_chara: 助演角色
 img_theater_legend_block_trial_chara: 试用角色
 img_theater_act_block_title: "第 {act} 幕"
+img_theater_max_damage: "最高伤害输出: {val}"
 challenge_view.view_buffs: 查看增益
 challenge_view.buff_select.placeholder: 选择一项增益来查看…
 battery_charge_button.label: 电量
@@ -672,3 +674,6 @@ gacha_manage_command_description: 管理导入的抽卡纪录
 login_button_label: 使用 Discord 登入
 star5_guaranteed: "当前保底情况: 必定得到 UP 池物品"
 star5_no_guaranteed: "当前保底情况: **不一定**得到 UP 池物品"
+characters_view_show_max_level_only: 仅显示满级角色
+characters_embed_max_level_characters: 满级角色
+natlan_reputation: "声望: Lv.{reputation}, 部落: {tribes}"

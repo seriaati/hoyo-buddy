@@ -498,7 +498,7 @@ img_theater_stats_line_five: "總演出時數: {time}"
 img_theater_legend_block_support_chara: 表演助理
 img_theater_legend_block_trial_chara: 試用角色
 img_theater_act_block_title: "第 {act} 幕"
-img_theater_max_damage: "造成最多傷害: {val}"
+img_theater_max_damage: "最高傷害輸出: {val}"
 challenge_view.view_buffs: 查看增益
 challenge_view.buff_select.placeholder: 選擇一項增益來查看…
 battery_charge_button.label: 電量
@@ -674,6 +674,6 @@ gacha_manage_command_description: 管理已導入的抽卡紀錄
 login_button_label: 使用 Discord 登入
 star5_guaranteed: "當前保底情況: 必定得到 UP 池物品"
 star5_no_guaranteed: "當前保底情況: **不一定**得到 UP 池物品"
-characters_view_show_max_level_only: 僅顯示滿等角色
-characters_embed_max_level_characters: 滿等角色
+characters_view_show_max_level_only: 僅顯示滿級角色
+characters_embed_max_level_characters: 滿級角色
 natlan_reputation: "聲望: Lv.{reputation}, 部落: {tribes}"

@@ -19,9 +19,9 @@ if TYPE_CHECKING:
     from ...l10n import Translator
 
 
-CHECKIN_APIS: dict[Literal["VERCEL", "DETA", "FLY"], str] = {
+CHECKIN_APIS: dict[Literal["VERCEL", "RENDER", "FLY"], str] = {
     "VERCEL": "https://daily-checkin-api.vercel.app",
-    "DETA": "https://dailycheckin-1-e3972598.deta.app",
+    "RENDER": "https://daily-checkin-api.onrender.com",
     "FLY": "https://daily-checkin-api.fly.dev",
 }
 API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
@@ -62,7 +62,7 @@ class DailyCheckin:
 
     @classmethod
     async def _daily_checkin_task(
-        cls, queue: asyncio.Queue[HoyoAccount], api_name: Literal["VERCEL", "DETA", "FLY", "LOCAL"]
+        cls, queue: asyncio.Queue[HoyoAccount], api_name: Literal["VERCEL", "RENDER", "FLY", "LOCAL"]
     ) -> None:
         logger.info(f"Daily check-in task started for api: {api_name}")
 
@@ -107,7 +107,7 @@ class DailyCheckin:
     @classmethod
     async def _daily_checkin(
         cls,
-        api_name: Literal["VERCEL", "DETA", "FLY", "LOCAL"],
+        api_name: Literal["VERCEL", "RENDER", "FLY", "LOCAL"],
         account: HoyoAccount,
         translator: Translator,
         session: aiohttp.ClientSession,

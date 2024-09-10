@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import DARK_SURFACE, LIGHT_SURFACE, Drawer
 from hoyo_buddy.l10n import LevelStr, LocaleStr
-from hoyo_buddy.models import DynamicBKInput, UnownedCharacter
+from hoyo_buddy.models import DynamicBKInput, UnownedHSRCharacter
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -24,7 +24,7 @@ WEAPON_ICON_SIZES = (102, 102)
 
 
 def draw_character_card(
-    characters: Sequence[HSRCharacter | UnownedCharacter],
+    characters: Sequence[HSRCharacter | UnownedHSRCharacter],
     pc_icons: dict[str, str],
     dark_mode: bool,
     translator: Translator,
@@ -86,11 +86,11 @@ def draw_character_card(
 def hsr_cache_key(
     talent_str: str,
     dark_mode: bool,
-    character: HSRCharacter | UnownedCharacter,
+    character: HSRCharacter | UnownedHSRCharacter,
     _: Translator,
     locale: Locale,
 ) -> str:
-    if isinstance(character, UnownedCharacter):
+    if isinstance(character, UnownedHSRCharacter):
         return f"{dark_mode}_{character.id}_{character.element}"
     return (
         f"{talent_str}_"
@@ -109,7 +109,7 @@ def hsr_cache_key(
 def draw_small_hsr_chara_card(
     talent_str: str,
     dark_mode: bool,
-    character: HSRCharacter | UnownedCharacter,
+    character: HSRCharacter | UnownedHSRCharacter,
     translator: Translator,
     locale: Locale,
 ) -> Image.Image:
@@ -120,7 +120,7 @@ def draw_small_hsr_chara_card(
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="hsr-characters", dark_mode=dark_mode, translator=translator)
 
-    if isinstance(character, UnownedCharacter):
+    if isinstance(character, UnownedHSRCharacter):
         return im
 
     text = LevelStr(character.level)

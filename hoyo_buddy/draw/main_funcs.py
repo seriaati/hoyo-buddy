@@ -7,6 +7,7 @@ import ambr
 import enka
 import hakushin
 from discord import File
+from genshin.models import ZZZFullAgent
 from sentry_sdk.metrics import timing
 
 from hoyo_buddy.draw import funcs
@@ -17,7 +18,9 @@ from ..models import (
     AgentNameData,
     HoyolabGICharacter,
     HoyolabHSRCharacter,
-    UnownedCharacter,
+    UnownedGICharacter,
+    UnownedHSRCharacter,
+    UnownedZZZCharacter,
     ZZZDrawData,
 )
 from .static import download_images
@@ -37,7 +40,6 @@ if TYPE_CHECKING:
         StarRailChallengeSeason,
         StarRailNote,
         StarRailPureFiction,
-        ZZZFullAgent,
         ZZZNotes,
     )
 
@@ -223,14 +225,14 @@ async def draw_farm_card(
 
 async def draw_gi_characters_card(
     draw_input: DrawInput,
-    characters: Sequence[genshin.models.GenshinDetailCharacter | UnownedCharacter],
+    characters: Sequence[genshin.models.GenshinDetailCharacter | UnownedGICharacter],
     pc_icons: dict[str, str],
     talent_orders: dict[int, list[int]],
     translator: Translator,
 ) -> File:
     urls: list[str] = []
     for c in characters:
-        if isinstance(c, UnownedCharacter):
+        if isinstance(c, UnownedGICharacter):
             continue
         urls.append(c.weapon.icon)
     urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
@@ -254,13 +256,13 @@ async def draw_gi_characters_card(
 
 async def draw_hsr_characters_card(
     draw_input: DrawInput,
-    characters: Sequence[genshin.models.StarRailDetailCharacter | UnownedCharacter],
+    characters: Sequence[genshin.models.StarRailDetailCharacter | UnownedHSRCharacter],
     pc_icons: dict[str, str],
     translator: Translator,
 ) -> File:
     urls: list[str] = []
     for c in characters:
-        if isinstance(c, UnownedCharacter) or c.equip is None:
+        if isinstance(c, UnownedHSRCharacter) or c.equip is None:
             continue
         urls.append(c.equip.icon)
     urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
@@ -506,12 +508,14 @@ async def draw_zzz_build_card(
 
 
 async def draw_zzz_characters_card(
-    draw_input: DrawInput, agents: Sequence[ZZZFullAgent], translator: Translator
+    draw_input: DrawInput,
+    agents: Sequence[ZZZFullAgent | UnownedZZZCharacter],
+    translator: Translator,
 ) -> File:
     urls: list[str] = []
     for agent in agents:
         urls.append(agent.banner_icon)
-        if agent.w_engine is not None:
+        if isinstance(agent, ZZZFullAgent) and agent.w_engine is not None:
             urls.append(agent.w_engine.icon)
 
     await download_images(urls, "zzz-characters", draw_input.session)

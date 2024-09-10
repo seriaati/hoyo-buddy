@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import BLACK, DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
 from hoyo_buddy.l10n import LevelStr, LocaleStr
-from hoyo_buddy.models import DynamicBKInput, UnownedCharacter
+from hoyo_buddy.models import DynamicBKInput, UnownedGICharacter
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -25,7 +25,7 @@ WEAPON_ICON_SIZES = (84, 84)
 
 
 def draw_character_card(
-    characters: Sequence[GICharacter | UnownedCharacter],
+    characters: Sequence[GICharacter | UnownedGICharacter],
     pc_icons: dict[str, str],
     talent_orders: dict[int, list[int]],
     dark_mode: bool,
@@ -36,7 +36,7 @@ def draw_character_card(
     c_cards: dict[str, Image.Image] = {}
 
     for character in characters:
-        if isinstance(character, UnownedCharacter):
+        if isinstance(character, UnownedGICharacter):
             talent_str = ""
         else:
             talent_order = talent_orders.get(character.id)
@@ -102,11 +102,11 @@ def draw_character_card(
 def gi_cache_key(
     talent_str: str,
     dark_mode: bool,
-    character: GICharacter | UnownedCharacter,
+    character: GICharacter | UnownedGICharacter,
     _: Translator,
     locale: Locale,
 ) -> str:
-    if isinstance(character, UnownedCharacter):
+    if isinstance(character, UnownedGICharacter):
         return f"{dark_mode}_{character.id}_{character.element}"
     return (
         f"{talent_str}_"
@@ -126,7 +126,7 @@ def gi_cache_key(
 def draw_small_gi_chara_card(
     talent_str: str,
     dark_mode: bool,
-    character: GICharacter | UnownedCharacter,
+    character: GICharacter | UnownedGICharacter,
     translator: Translator,
     locale: Locale,
 ) -> Image.Image:
@@ -137,7 +137,7 @@ def draw_small_gi_chara_card(
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="gi-characters", dark_mode=dark_mode, translator=translator)
 
-    if isinstance(character, UnownedCharacter):
+    if isinstance(character, UnownedGICharacter):
         return im
 
     text = LocaleStr(

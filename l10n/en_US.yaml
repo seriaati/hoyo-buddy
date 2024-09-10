@@ -673,3 +673,4 @@ login_button_label: Login with Discord
 star5_guaranteed: "Current guarantee status: Banner item guaranteed"
 star5_no_guaranteed: "Current guarantee status: Banner item **NOT** guaranteed"
 characters_view_show_max_level_only: Show max level characters only
+characters_embed_max_level_characters: Max Level Characters

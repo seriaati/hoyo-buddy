@@ -7,6 +7,7 @@ import discord
 from cachetools import TTLCache, cached
 from discord import utils as dutils
 from genshin.models import ZZZSkillType
+from genshin.models.zzz.character import ZZZFullAgent
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import WHITE, Drawer
@@ -15,7 +16,7 @@ from hoyo_buddy.l10n import LevelStr, Translator
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from genshin.models.zzz.character import ZZZFullAgent
+    from hoyo_buddy.models import UnownedZZZCharacter
 
 
 def cache_key(agent: ZZZFullAgent, dark_mode: bool, locale: str, **kwargs: Any) -> str:  # noqa: ARG001
@@ -24,7 +25,7 @@ def cache_key(agent: ZZZFullAgent, dark_mode: bool, locale: str, **kwargs: Any) 
 
 @cached(cache=TTLCache(maxsize=64, ttl=180), key=cache_key)
 def draw_agent_small_card(
-    agent: ZZZFullAgent,
+    agent: ZZZFullAgent | UnownedZZZCharacter,
     *,
     dark_mode: bool,
     locale: str,
@@ -70,7 +71,7 @@ def draw_agent_small_card(
 
     # W-engine
     im.paste(engine_block, (588, 45), engine_block)
-    if agent.w_engine is not None:
+    if isinstance(agent, ZZZFullAgent) and agent.w_engine is not None:
         icon = drawer.open_static(agent.w_engine.icon, size=(268, 268))
         im.paste(icon, (593, 49), icon)
 
@@ -86,35 +87,39 @@ def draw_agent_small_card(
 
     # Skill
     im.paste(skill_bar, (457, 362), skill_bar)
-    skill_order = (
-        ZZZSkillType.BASIC_ATTACK,
-        ZZZSkillType.DODGE,
-        ZZZSkillType.ASSIST,
-        ZZZSkillType.SPECIAL_ATTACK,
-        ZZZSkillType.CHAIN_ATTACK,
-        ZZZSkillType.CORE_SKILL,
-    )
-    skill_levels: list[int] = []
-    for skill_type in skill_order:
-        skill = dutils.get(agent.skills, type=skill_type)
-        if skill is None:
-            continue
-        skill_levels.append(skill.level)
-    text = "/".join(str(level) for level in skill_levels)
-    drawer.write(
-        text,
-        size=42,
-        position=(661, 394),
-        style="medium",
-        anchor="mm",
-        color=WHITE if dark_mode else (95, 95, 95),
-    )
+    if isinstance(agent, ZZZFullAgent):
+        skill_order = (
+            ZZZSkillType.BASIC_ATTACK,
+            ZZZSkillType.DODGE,
+            ZZZSkillType.ASSIST,
+            ZZZSkillType.SPECIAL_ATTACK,
+            ZZZSkillType.CHAIN_ATTACK,
+            ZZZSkillType.CORE_SKILL,
+        )
+        skill_levels: list[int] = []
+        for skill_type in skill_order:
+            skill = dutils.get(agent.skills, type=skill_type)
+            if skill is None:
+                continue
+            skill_levels.append(skill.level)
+        text = "/".join(str(level) for level in skill_levels)
+        drawer.write(
+            text,
+            size=42,
+            position=(661, 394),
+            style="medium",
+            anchor="mm",
+            color=WHITE if dark_mode else (95, 95, 95),
+        )
 
     return im
 
 
 def draw_big_agent_card(
-    agents: Sequence[ZZZFullAgent], dark_mode: bool, locale: str, translator: Translator
+    agents: Sequence[ZZZFullAgent | UnownedZZZCharacter],
+    dark_mode: bool,
+    locale: str,
+    translator: Translator,
 ) -> BytesIO:
     asset_path = "hoyo-buddy-assets/assets/zzz-characters"
     theme = "dark" if dark_mode else "light"

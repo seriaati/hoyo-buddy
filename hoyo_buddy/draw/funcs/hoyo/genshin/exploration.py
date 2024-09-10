@@ -27,6 +27,20 @@ class ExplorationCard:
     def locale(self) -> Locale:
         return Locale(self._locale)
 
+    @staticmethod
+    def _get_reputation_level(exploration: Exploration | None) -> str:
+        if exploration is None:
+            return "0"
+
+        offering = next((of.level for of in exploration.offerings if of.level > 0), 0)
+        return str(offering)
+
+    @staticmethod
+    def _get_tribe_levels(exploration: Exploration | None) -> str:
+        if exploration is None or exploration.natlan_reputation is None:
+            return "0"
+        return "/".join(f"Lv.{t.level}" for t in exploration.natlan_reputation.tribes)
+
     def _get_card(self, name: str) -> Image.Image:
         return self._drawer.open_asset(f"{name}_{'dark' if self._dark_mode else 'light'}.png")
 
@@ -160,8 +174,7 @@ class ExplorationCard:
             ): (75, 161),
             LocaleStr(key="exploration.anemoculi", anemoculi=self._user.stats.anemoculi): (75, 207),
             LocaleStr(
-                key="exploration.reputation",
-                reputation=0 if exploration is None else exploration.offerings[0].level,
+                key="exploration.reputation", reputation=self._get_reputation_level(exploration)
             ): (75, 253),
         }
         return self._draw_exploration_card("mondstadt", exploration, texts)
@@ -175,8 +188,7 @@ class ExplorationCard:
             ): (75, 161),
             LocaleStr(key="exploration.geoculi", geoculi=self._user.stats.geoculi): (75, 207),
             LocaleStr(
-                key="exploration.reputation",
-                reputation=0 if exploration is None else exploration.offerings[0].level,
+                key="exploration.reputation", reputation=self._get_reputation_level(exploration)
             ): (75, 253),
         }
         return self._draw_exploration_card("liyue", exploration, texts)
@@ -193,8 +205,7 @@ class ExplorationCard:
                 163,
             ),
             LocaleStr(
-                key="exploration.reputation",
-                reputation=0 if exploration is None else exploration.offerings[1].level,
+                key="exploration.reputation", reputation=self._get_reputation_level(exploration)
             ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
@@ -212,8 +223,7 @@ class ExplorationCard:
                 163,
             ),
             LocaleStr(
-                key="exploration.reputation",
-                reputation=0 if exploration is None else exploration.offerings[1].level,
+                key="exploration.reputation", reputation=self._get_reputation_level(exploration)
             ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
@@ -228,8 +238,7 @@ class ExplorationCard:
             ): (75, 117),
             LocaleStr(key="exploration.hydroculi", hydroculi=self._user.stats.hydroculi): (75, 163),
             LocaleStr(
-                key="exploration.reputation",
-                reputation=0 if exploration is None else exploration.offerings[1].level,
+                key="exploration.reputation", reputation=self._get_reputation_level(exploration)
             ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
@@ -332,8 +341,9 @@ class ExplorationCard:
             ): (75, 117),
             LocaleStr(key="exploration.pyroculi", pyroculi=self._user.stats.pyroculi): (75, 163),
             LocaleStr(
-                key="exploration.reputation",
-                reputation=0 if exploration is None else exploration.offerings[1].level,
+                key="natlan_reputation",
+                reputation=self._get_reputation_level(exploration),
+                tribes=self._get_tribe_levels(exploration),
             ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }

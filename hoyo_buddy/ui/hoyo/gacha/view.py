@@ -10,7 +10,7 @@ from hoyo_buddy.emojis import CURRENCY_EMOJIS
 from hoyo_buddy.exceptions import NoGachaLogFoundError
 from hoyo_buddy.l10n import LocaleStr, Translator
 from hoyo_buddy.ui.components import Button, Select, SelectOption, View
-from hoyo_buddy.utils import calc_top_percentage, ephemeral
+from hoyo_buddy.utils import ephemeral, get_ranking
 from hoyo_buddy.web_app.schema import GachaParams
 
 if TYPE_CHECKING:
@@ -54,14 +54,23 @@ class ViewGachaLogView(View):
 
         return await GachaHistory.filter(**filter_kwargs).count()
 
-    async def calculate_50_50_win_rate(self, *, cur_banner_only: bool) -> float:
+    async def calculate_50_50_stats(self, *, cur_banner_only: bool) -> tuple[int, int]:
+        """Calcualte the 50/50 stats for the current banner or all banners.
+        If the player pulls two 5-star non-standard items in a row, it is considered a win.
+
+        Args:
+            cur_banner_only: Whether to calculate the win rate for the current banner only.
+
+        Returns:
+            The number of 50/50 wins and the total number of 5-star pulls.
+        """
         filter_kwargs = {"account": self.account, "rarity": 5}
         if cur_banner_only:
             filter_kwargs["banner_type"] = self.banner_type
 
         five_stars = await GachaHistory.filter(**filter_kwargs).order_by("wish_id").only("item_id")
         if len(five_stars) < 2:
-            return 0
+            return 0, 1
 
         is_standards: list[bool] = [
             item.item_id in STANDARD_ITEMS[self.account.game] for item in five_stars
@@ -72,7 +81,23 @@ class ViewGachaLogView(View):
             if not is_standard and not is_standards[i - 1]:
                 win += 1
 
-        return win / (len(is_standards) - 1)
+        return win, len(five_stars)
+
+    async def guaranteed(self) -> bool:
+        gacha = (
+            await GachaHistory.filter(account=self.account, banner_type=self.banner_type, rarity=5)
+            .first()
+            .only("item_id")
+        )
+        if gacha is None:
+            return False
+        return gacha.item_id in STANDARD_ITEMS[self.account.game]
+
+    def get_ranking_str(self, rank: int, total: int) -> str:
+        top_percent = self.translator.translate(
+            LocaleStr(key="top_percent", percent=round(rank / total * 100, 2)), self.locale
+        )
+        return f"{top_percent} ({rank}/{total})"
 
     async def get_stats_embed(self) -> DefaultEmbed:
         lifetime_pulls = await self.get_lifetime_pulls()
@@ -89,28 +114,34 @@ class ViewGachaLogView(View):
         last_4star_num = await get_last_gacha_num(self.account, banner=self.banner_type, rarity=4)
         star4_pity_cur = last_num - last_4star_num
 
-        banner_win_rate = await self.calculate_50_50_win_rate(cur_banner_only=True)
-        total_star5 = await self.count_rarity_gacha_pulls(5, cur_banner_only=True)
-        total_star4 = await self.count_rarity_gacha_pulls(4, cur_banner_only=True)
-        avg_pulls_per_star5 = banner_total_pulls / total_star5 if total_star5 else 0
-        avg_pulls_per_star4 = banner_total_pulls / total_star4 if total_star4 else 0
+        banner_wins, banner_5stars = await self.calculate_50_50_stats(cur_banner_only=True)
+        banner_total_star5 = await self.count_rarity_gacha_pulls(5, cur_banner_only=True)
+        banner_total_star4 = await self.count_rarity_gacha_pulls(4, cur_banner_only=True)
+        avg_pulls_per_star5 = banner_total_pulls / banner_total_star5 if banner_total_star5 else 0
+        avg_pulls_per_star4 = banner_total_pulls / banner_total_star4 if banner_total_star4 else 0
 
         # Save gacha stats
-        total_win_rate = await self.calculate_50_50_win_rate(cur_banner_only=False)
+        total_wins, total_5stars = await self.calculate_50_50_stats(cur_banner_only=False)
         stat_star5 = await self.count_rarity_gacha_pulls(5, cur_banner_only=False)
-        stat_avg_star_5 = lifetime_pulls / stat_star5 if stat_star5 else 0
+        stat_avg_star5 = lifetime_pulls / stat_star5 if stat_star5 else 0
         stat_star4 = await self.count_rarity_gacha_pulls(4, cur_banner_only=False)
-        stat_avg_star_4 = lifetime_pulls / stat_star4 if stat_star4 else 0
+        stat_avg_star4 = lifetime_pulls / stat_star4 if stat_star4 else 0
+
         await GachaStats.create_or_update(
             account=self.account,
             lifetime_pulls=lifetime_pulls,
-            win_rate=total_win_rate,
-            avg_5star_pulls=stat_avg_star_5,
-            avg_4star_pulls=stat_avg_star_4,
+            win_rate=round(total_wins / total_5stars * 100, 2),
+            avg_5star_pulls=stat_avg_star5,
+            avg_4star_pulls=stat_avg_star4,
         )
 
         embed = DefaultEmbed(
-            self.locale, self.translator, title=LocaleStr(key="gacha_log_stats_title")
+            self.locale,
+            self.translator,
+            title=LocaleStr(key="gacha_log_stats_title"),
+            description=LocaleStr(
+                key="star5_guaranteed" if await self.guaranteed() else "star5_no_guaranteed"
+            ),
         )
 
         # Personal stats
@@ -126,9 +157,11 @@ class ViewGachaLogView(View):
                 star5_pity_cur=star5_pity_cur,
                 star5_pity_max=star5_pity_max,
                 star4_pity_cur=star4_pity_cur,
-                win_rate=round(banner_win_rate * 100, 2),
-                total_star5=total_star5,
-                total_star4=total_star4,
+                win_rate=round(banner_wins / banner_5stars * 100, 2),
+                win_time=banner_wins,
+                total_time=banner_5stars,
+                total_star5=banner_total_star5,
+                total_star4=banner_total_star4,
                 avg_pulls_per_star5=int(avg_pulls_per_star5),
                 avg_pulls_per_star4=int(avg_pulls_per_star4),
             ),
@@ -138,26 +171,27 @@ class ViewGachaLogView(View):
         # Global stats
         all_gacha_stats = await GachaStats.filter(game=self.account.game)
 
-        lifetime_pulls_percentage = calc_top_percentage(
+        lifetime_pull_rank, lifetime_total = get_ranking(
             lifetime_pulls, [x.lifetime_pulls for x in all_gacha_stats], reverse=True
         )
-        star_5_luck_percentage = calc_top_percentage(
-            stat_avg_star_5, [x.avg_5star_pulls for x in all_gacha_stats], reverse=False
+        star5_luck_rank, star5_luck_total = get_ranking(
+            stat_avg_star5, [x.avg_5star_pulls for x in all_gacha_stats], reverse=False
         )
-        star_4_luck_percentage = calc_top_percentage(
-            stat_avg_star_4, [x.avg_4star_pulls for x in all_gacha_stats], reverse=False
+        star4_luck_rank, star4_luck_total = get_ranking(
+            stat_avg_star4, [x.avg_4star_pulls for x in all_gacha_stats], reverse=False
         )
-        win_rate_percentage = calc_top_percentage(
-            total_win_rate, [x.win_rate for x in all_gacha_stats], reverse=True
+        win_rate_rank, win_rate_total = get_ranking(
+            total_wins / banner_total_star5, [x.win_rate for x in all_gacha_stats], reverse=True
         )
+
         embed.add_field(
             name=LocaleStr(key="gacha_log_global_stats_title"),
             value=LocaleStr(
                 key="gacha_log_global_stats",
-                lifetime=lifetime_pulls_percentage,
-                star5_luck=star_5_luck_percentage,
-                star4_luck=star_4_luck_percentage,
-                win_rate=win_rate_percentage,
+                lifetime=self.get_ranking_str(lifetime_pull_rank, lifetime_total),
+                star5_luck=self.get_ranking_str(star5_luck_rank, star5_luck_total),
+                star4_luck=self.get_ranking_str(star4_luck_rank, star4_luck_total),
+                win_rate=self.get_ranking_str(win_rate_rank, win_rate_total),
             ),
             inline=False,
         )

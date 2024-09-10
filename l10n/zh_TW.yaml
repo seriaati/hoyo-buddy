@@ -609,11 +609,11 @@ account_add_start_title: 新增帳戶
 account_add_start_message: "點擊下方按鈕將會啟動 Hoyo Buddy 登入系統，跟隨指引完成帳戶設定。當你完成後，使用 </accounts> 指令來查看你新增的帳戶。"
 hbls_button_label: 開始！
 gacha_import_url_modal_title: 輸入抽卡紀錄連結
-gacha_import_embed_title: 正在導入抽卡紀錄
+gacha_import_embed_title: 導入抽卡紀錄
 gacha_import_embed_description: "抽卡紀錄連結: 從遊戲內獲取一串很長的連結來導入你的抽卡紀錄, 不同遊戲的獲取方式如下:\n- 安卓: [YouTube 影片](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-tw/genshin/wish-import)\n- 崩壞: 星穹鐵道: [Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-tw/warp-import)\n- 絕區零: [zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-tw/zzz/signal-import)\n\n如果你有使用下列的服務之一, 將你的抽卡紀錄導出至指定的檔案格式後即可使用 </gacha upload> 指令將其上傳並導入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json\n6. Genshin Wizard: csv"
 extract_authkey_error_message: "無法從連結內提取 authkey, 請嘗試其他連結。"
 extract_authkey_error_title: Authkey 提取失敗
-gacha_import_loading_embed_title: 導入抽卡紀錄
+gacha_import_loading_embed_title: 正在導入抽卡紀錄
 gacha_import_loading_embed_description: "{loading_emoji} 這需要花費一些時間, 請耐心等候..."
 gacha_upload_invalid_file_error_title: 無效的檔案格式
 gacha_upload_invalid_file_error_message: "只接受 **{file_format}** 檔案, 請使用正確的檔案重試。"
@@ -651,9 +651,9 @@ gacha_view_filter_size_field_label: 每頁物品數
 gacha_view_page_field_label: 頁數
 gacha_log_stats_title: 抽卡紀錄數據
 gacha_log_personal_stats_title: 個人數據
-gacha_log_personal_stats: "生涯抽數: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\n當前卡池總抽數: {total_pulls} ({total_currency} {currency_emoji})\n5★ 保底: {star5_pity_cur}/{star5_pity_max}\n4★ 保底: {star4_pity_cur}/10\n50/50 勝率: {win_rate}%\n總 5★ 數: {total_star5}\n總 4★ 數: {total_star4}\n5★ 平均抽數: {avg_pulls_per_star5}\n4★ 平均抽數: {avg_pulls_per_star4}"
+gacha_log_personal_stats: "生涯抽數: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\n當前卡池總抽數: {total_pulls} ({total_currency} {currency_emoji})\n5★ 保底: {star5_pity_cur}/{star5_pity_max}\n4★ 保底: {star4_pity_cur}/10\n50/50 勝率: {win_rate}% ({win_time}/{total_time})\n總 5★ 數: {total_star5}\n總 4★ 數: {total_star4}\n5★ 平均抽數: {avg_pulls_per_star5}\n4★ 平均抽數: {avg_pulls_per_star4}"
 gacha_log_global_stats_title: 全服數據
-gacha_log_global_stats: "生涯抽數: 前 {lifetime}%\n5★ 幸運程度: 前 {star5_luck}%\n4★ 幸運程度: 前 {star4_luck}%\n50/50 勝率: 前 {win_rate}%"
+gacha_log_global_stats: "生涯抽數: {lifetime}\n5★ 幸運值: {star5_luck}\n4★ 幸運值: {star4_luck}\n50/50 勝率: {win_rate}"
 gacha_log_view_full: 查看抽卡紀錄
 gacha_view_command_description: 查看導入的抽卡紀錄
 gacha_log_view_banner_type_selector_placeholder: 選擇一個卡池...
@@ -668,5 +668,7 @@ gacha_log_delete_confirm_embed_description: "你確定要**刪除所有**屬於�
 gacha_log_delete_confirm_button_label: 確認
 gacha_log_delete_done_embed_title: 刪除完成
 gacha_log_delete_done_embed_description: 所有屬於此帳戶的抽卡紀錄都已經被刪除完畢。
-gacha_manage_command_description: 管理導入的抽卡紀錄
+gacha_manage_command_description: 管理已導入的抽卡紀錄
 login_button_label: 使用 Discord 登入
+star5_guaranteed: "當前保底情況: 必定得到 UP 池物品"
+star5_no_guaranteed: "當前保底情況: **不一定**得到 UP 池物品"

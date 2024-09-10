@@ -608,6 +608,13 @@ STANDARD_ITEMS: Final[dict[Game, set[int]]] = {
     },
 }
 
+CHARACTER_MAX_LEVEL: Final[dict[Game, int]] = {
+    Game.GENSHIN: 90,
+    Game.STARRAIL: 80,
+    Game.ZZZ: 60,
+    Game.HONKAI: 80,
+}
+
 
 def is_standard_item(game: Game, item_id: int) -> bool:
     if game not in STANDARD_ITEMS:

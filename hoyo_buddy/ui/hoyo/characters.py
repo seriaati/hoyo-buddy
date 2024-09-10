@@ -21,6 +21,7 @@ from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath, Platform
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 
 from ...constants import (
+    CHARACTER_MAX_LEVEL,
     HSR_ICON_TEMA_URL,
     TRAILBLAZER_IDS,
     TRAVELER_IDS,
@@ -149,6 +150,8 @@ class CharactersView(View):
             self._sorter = ZZZSorter.ELEMENT
         elif self._game is Game.HONKAI:
             self._sorter = HonkaiSorter.LEVEL
+
+        self.show_max_level_only = False
 
     async def _get_gi_pc_icons(self) -> dict[str, str]:
         if self._account.platform is Platform.HOYOLAB:
@@ -313,6 +316,15 @@ class CharactersView(View):
 
         if not characters:
             raise NoCharsFoundError
+
+        if self.show_max_level_only:
+            max_level = CHARACTER_MAX_LEVEL.get(self._game)
+            if max_level is None:
+                msg = f"Max level not found for game {self._game}"
+                raise KeyError(msg)
+
+            characters = [c for c in characters if c.level == max_level]
+
         return characters
 
     async def _draw_card(
@@ -507,20 +519,24 @@ class CharactersView(View):
     def _add_items(self) -> None:
         if self._game is Game.GENSHIN:
             self.add_item(ShowOwnedOnly())
+            self.add_item(ShowMaxLevelOnly())
             self.add_item(GIFilterSelector())
             self.add_item(ElementFilterSelector(GenshinElement))
             self.add_item(SorterSelector(self._sorter, self._game))
         elif self._game is Game.STARRAIL:
             self.add_item(ShowOwnedOnly())
+            self.add_item(ShowMaxLevelOnly())
             self.add_item(PathFilterSelector())
             self.add_item(ElementFilterSelector(HSRElement))
             self.add_item(SorterSelector(self._sorter, self._game))
         elif self._game is Game.ZZZ:
+            self.add_item(ShowMaxLevelOnly())
             self.add_item(ElementFilterSelector(ZZZElement))
             self.add_item(SpecialtyFilterSelector(self._zzz_characters))
             self.add_item(FactionFilterSelector(self._zzz_characters))
             self.add_item(SorterSelector(self._sorter, self._game))
         elif self._game is Game.HONKAI:
+            self.add_item(ShowMaxLevelOnly())
             self.add_item(SorterSelector(self._sorter, self._game))
 
     async def start(self, i: Interaction) -> None:
@@ -582,6 +598,7 @@ class CharactersView(View):
         characters = self._get_filtered_sorted_characters()
         if set_loading_state:
             await item.set_loading_state(i)
+
         file_ = await self._draw_card(
             i.client.session, characters, i.client.executor, i.client.loop
         )
@@ -817,3 +834,18 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
                 )
 
         await self.view.item_callback(i, self, set_loading_state=False)
+
+
+class ShowMaxLevelOnly(ToggleButton[CharactersView]):
+    def __init__(self) -> None:
+        super().__init__(
+            current_toggle=False,
+            toggle_label=LocaleStr(key="characters_view_show_max_level_only"),
+            row=4,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i)
+
+        self.view.show_max_level_only = self.current_toggle
+        await self.view.item_callback(i, self)

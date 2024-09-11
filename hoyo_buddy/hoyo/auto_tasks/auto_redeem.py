@@ -26,7 +26,7 @@ class AutoRedeem:
 
     @classmethod
     async def _get_codes(cls, session: aiohttp.ClientSession, game: genshin.Game) -> list[str]:
-        async with session.get(f"https://hoyo-codes.seriaati.xyz/codes?game={game.value}") as resp:
+        async with session.get(f"https://hoyo-codes.seria.moe/codes?game={game.value}") as resp:
             data = await resp.json()
             return [code["code"] for code in data["codes"]]
 

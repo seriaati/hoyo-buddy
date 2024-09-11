@@ -84,7 +84,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             max_messages=None,
             member_cache_flags=discord.MemberCacheFlags.none(),
             tree_cls=CommandTree,
-            activity=discord.CustomActivity(f"{self.version} | hb.seriaati.xyz"),
+            activity=discord.CustomActivity(f"{self.version} | hb.seria.moe"),
             allowed_contexts=discord.app_commands.AppCommandContext(
                 guild=True, dm_channel=True, private_channel=True
             ),

@@ -27,7 +27,7 @@ class LoginPage(ft.View):
             user_id_fn=operator.itemgetter("id"),
             redirect_url="http://localhost:8645/oauth_callback"
             if os.environ["ENV"] == "dev"
-            else "https://hb-app.seriaati.xyz/oauth_callback",
+            else "https://hb-app.seria.moe/oauth_callback",
         )
         super().__init__(
             "login",

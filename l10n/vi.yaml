@@ -1,0 +1,679 @@
+about_command.contribute: Đóng góp
+about_command.developer: Lập trình viên
+about_command.discord_server: Máy chủ Discord
+about_command.guild_count: Số lượng người dùng
+about_command.invite: Thêm bot
+about_command.latest_changes: Thay đổi mới nhất
+about_command.ram_usage: Lượng RAM
+about_command.support: Ủng hộ lập trình viên
+about_command.translators: Phiên dịch
+about_command.uptime: Thời gian hoạt động
+about_command.website: Trang web chính thức
+about_command_description: Về bot này
+about_embed.description: "Một Discord bot với tính năng phong phú, dễ sử dụng với những thiết kế dẹp danh riêng cho những game Hoyoverse"
+abundance: Trù Phú
+abyss.battles_won_fought: "Khiêu Chiến Thành Công/Đã Đánh: {val1}/{val2}"
+abyss.deepest_descent: "Đến nơi sâu nhất: {val}"
+abyss.floor: "Tầng: {val}"
+abyss.most_defeats: "Số lần đánh bại nhiều nhất: {val}"
+abyss.most_dmg_taken: "Chịu sát thương tối đa: {val}"
+abyss.most_skills: "Số lần thi triển Kỹ Năng Nguyên Tố: {val}"
+abyss.most_ults: "Số lần Kỹ Năng Nổ: {val}"
+abyss.overview: Chiến tích La Hoàn Thâm Cảnh
+abyss.phase_select.placeholder: Lựa chọn Kỳ
+abyss.strongest_strike: "Một kích mạnh nhất: {val}"
+abyss.total_stars: "Tổng Sao: {val}"
+abyss_chamber.challenge_target.embed.field.name: Mục Tiêu Thử Thách
+abyss_chamber.embed.title: "Tầng {floor_index} - Phòng {chamber_index}"
+abyss_chamber.enemy_level.embed.field.name: Cấp độ kẻ thù
+abyss_chamber.ley_line_disorder.embed.field.name: Địa Mạch Tắc Nghẽn
+abyss_enemy.item_description: "HP: {HP}"
+acc_no_default_param_desc: " Tài khoản để chạy lệnh này"
+account_autocomplete_param_description: "Tài khoản để chạy lệnh này, mặc định là tài khoản được chọn trong /accounts"
+account_autocomplete_param_name: tài khoản
+account_deleted_description: "{account} đã được xóa."
+account_deleted_title: Đã xóa tài khoản
+account_manager_footer: Tài khoản được chọn sẽ làm là mặc định dùng cho tất cả lệnh chạy.
+account_manager_no_accounts_description: Bạn chưa có bất kỳ tài khoản nào.
+account_manager_title: Quản lý tài khoản
+account_not_found_error_message: "Không thể tìm được tài khoản với truy vấn được cung cấp, vui lòng chọn từ những lựa chọn được cung cấp thay vì tự nhập truy vấn riêng."
+account_not_found_error_title: Không tìm thấy tài khoản
+account_username: Tên Người Dùng
+accounts_command_description: Quản lý tài khoản của bạn
+action_in_cooldown_error_message: "Vui lòng thử lại trong {available_time}."
+action_in_cooldown_error_title: Hành động trong thời gian chờ
+add_account_button_label: Thêm tài khoản
+add_hoyolab_acc.embed.description: "1. Với email và mật khẩu: Được khuyên dùng, là cách đễ nhất.\n2. Với DevTools: Chỉ làm được trên PC, là cách an toàn nếu bạn lo ngại về bảo mật với cách một\n3. Với JavaScript: Phương pháp lỗi thời, không hoạt động với hầu hết mọi tài khoản. Chỉ hoạt động trên Google Chrome hoặc MIcrosoft Edge on PC và thiết bị di động"
+add_hoyolab_acc.embed.title: Vui lòng chọn phương thức để thêm tài khoản
+adding_accounts_description: "Chào mừng đến Hoyo Buddy! Hãy tận hưởng những tính năng bằng cách dành dưới 1 phút để thêm tài khoản của bạn.\n\nVề bảo mật tài khoản, vui lòng đọc [Trang Wiki](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), về cách chúng tôi sử dụng và thu thập thông tin của bạn, vui lòng đọc [Chính sách Bảo Mật](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_title: Vui lòng chọn Nền tảng Tài Khoản
+ai_gen_image_error_message: Kiểm tra thông tin đã nhập và thử lại
+ai_gen_image_error_title: Đã xảy ra lỗi khi đang sáng tạo bằng AI
+already_claimed_description: Hãy quay lại ngày mai!
+already_claimed_title: Đã nhận Phần thưởng Điểm danh Hàng ngày
+anemo: Phong
+artifact_set_four_piece_embed_description: "Bộ 4 món: {bonus_4}"
+artifact_set_two_piece_embed_description: "Bộ 2 món: {bonus_2}"
+artifact_sets: Thánh Di Vật
+auto_checkin_button_label: Tự động Điểm danh Hàng ngày
+auto_locale_option_label: Theo Ngôn Ngữ Ứng Dụng
+auto_redeem_error.content: "Đã xảy ra lỗi khi tự động Đổi Mã Quà.\nHoyo Buddy dã vô hiệu hóa tính năng cho tài khoản này, bạn có thể bật lại bằng </redeem>\nNếu lỗi này vẫn tồn tại hoặc bạn không biết cách sữa, vui lòng liên hệ lập trình viên bằng </feedback>\n"
+auto_redeem_footer: Tắt Tự động Đỏi Mã Quà bằng /redeem
+auto_redeem_toggle.label: Tự động đổi mã quà
+books: Sách
+captcha.embed.description: "Nhấn nút bên dưới đê hoàn thành CAPTCHA.\n"
+challenge_command_description: "Xem thống kê nội dung Cuối trò chơi. như La Hoàn Thâm Cảnh, Hồi Ức Hỗn Độn, v.v"
+challenge_type_select.placeholder: Vui lòng chọn chế độ trò chơi
+challenge_view.buff_used_in: Được sử đụng
+challenge_view.team: "Đội {team}"
+chamber_button_label: "Phòng {value}"
+change_character_level_label: Đổi mức độ nhân vật
+change_skill_level_label: Thay đổi mức độ kỹ năng
+change_talent_level_label: Thay đổi mức độ tài năng
+change_weapon_level_label: Thay đổi mức độ vũ khí
+chara_level.modal.title: Nhập Mức độ nhân vật
+character_const_page_label: Các Cung Mệnh
+character_embed_description: "{rarity}★ {element}\nSinh Nhật: {birthday}\nCung Mệnh: {constellation}\nLiên kết: {affiliation}\n"
+character_passives_page_label: Những Kỹ Năng Cố Định
+character_profile_page_label: Hồ sơ
+character_quotes_page_label: Những Trích Dẫn
+character_stories_page_label: Những Câu Truyện
+character_talents_page_label: Những Thiên Phú
+character_voices_page_label: Lồng Tiếng
+characters: Các Nhân Vật
+characters.embed.element_max_friendship: "Độ Yêu Thích Tối Đa của Các Nhân vật {element}"
+characters.embed.element_not_max_friendship: "Độ Yêu Thích chưa Tối Đa của Các Nhân vật {element}"
+characters.embed.max_friendship: Các nhân vật với mức độ Yêu Thích Tối Đa
+characters.embed.not_max_friendship: Các nhân vật với mức độ Yêu Thích chưa Tối Đa
+characters.embed.owned_characters: Nhân Vật hiện có
+characters.embed.title: Tổng quan Nhân Vật
+characters.filter.element.placeholder: Chọn lọc Nguyên Tố...
+characters.filter.max_friendship: Mức độ Yêu Thích Tối đa
+characters.filter.none: Không có
+characters.filter.not_max_friendship: Mức độ Yêu Thích chưa Tối đa
+characters.filter.path.placeholder: Chọn lọc Vận Mệnh...
+characters.filter.placeholder: Chọn lọc...
+characters.level_order.footer: "Thứ tự Cấp độ: {order}"
+characters.extra_detail.footer: "Dùng /profile để xem những chi tiết của nhân vật"
+hsr.ultimate: Kỹ Năng Nổ
+hsr.normal_attack: Tấn Công Thường
+hsr.skill: Kỹ Năng
+hsr.talent: Tài Năng
+hsr.technique: Kỹ Thuật
+gi.skill: Kỹ năng Nguyên Tố
+gi.burst: Kỹ năng Nổ
+gi.passive: Kỹ Năng Cố Định
+characters.sorter.constellation: Cung Mệnh
+characters.sorter.eidolon: Tinh Hồn
+characters.sorter.element: Nguyên Tố
+characters.sorter.friendship: Độ Yêu Thích
+characters.sorter.level: Mức độ
+characters.sorter.path: Vận Mệnh
+characters.sorter.placeholder: Chọn một bộ lọc...
+characters.sorter.rarity: Độ Hiếm
+characters_command_description: Xem tất cả nhân vật của bạn
+checkin_button_label: Điểm danh
+checkin_command_description: Điểm danh trò chơi hàng ngày
+complete_captcha_button_label: Hoàn thành CAPTCHA
+complete_geetest_button_description: Nhấn nút bên dưới để hoàn thành xác minh geetest
+complete_geetest_button_label: Hoàn thành geetest
+const_refine_str: "C{const}R{refine}"
+continue_button_label: Tiếp tục
+cookies_modal_placeholder: Dán cookies của bạn vào đây
+cryo: Băng
+daily_button.label: Nhắc nhở hàng ngày
+daily_check_in: Điểm danh hàng ngày
+daily_checkin_embed_description: "Tháng này đã điểm danh {day} ngày\nĐiểm danh thiếu {missed} ngày\n"
+daily_modal.title: Cài đặt Lời nhắc hàng ngày
+daily_training_button.label: Lời nhắc Huấn Luyện Hàng ngày
+delete_account_button_label: Xóa tài khoản đã chọn
+dendro: Thảo
+destruction: Hủy Diệt
+devtools_button_label: Với DevTools (dành cho PC)
+devtools_instructions_description: "1. Đăng nhập vào [HoYoLAB](https://www.hoyolab.com/home) hoặc [Miyoushe](https://www.miyoushe.com/ys/) (Dành cho người Trung Quốc Đại lục)\n2. Mở DevTools bằng cách nhấn phím F12 hoặc tổ hợp Ctrl+Shift+I\n3. Nhấn vào icon >> ở trên thanh công cụ\n4. Nhấn vào tab `Application/Ứng Dụng`\n5. Nhấn vào `Cookies` ở thanh công cụ dọc\n6. Bấm vào trang web bạn đang truy cập (VD: https://www.hoyolab.com)\n7. Nhập `v2` vào thanh `Filter/Lọc`\n8. Bấm vào nút bên dưới\n9. Sao chép `Value/Giá trị` của từng cookie và dán chúng vào các hộp"
+dice_cost_embed_field_name: Chi phí xúc xắc
+download_image_failed_error_message: "Không thể tải xuống hình ảnh {url} có mã trạng thái {status}.\nHãy thử lại sau, thử với một hình ảnh khác hoặc kiểm tra xem URL hình ảnh có hợp lệ hay không."
+download_image_failed_error_title: Tải hình ảnh không thành công
+edit_nickname_modal_title: Chỉnh sửa biệt danh
+eidolon_superimpose_str: "E{eidolon}S{superimpose}"
+electro: Lôi
+email_verification_dialog_title: Yêu cầu xác minh
+email_verification_dialog_content: Xin vui lòng nhập mã xác minh được nhận.
+email_verification_dialog_action: Xác minh
+email_verification_field_label: Mã xác minh
+email-geetest.embed.title: Yêu cầu xác minh CAPTCHA để gửi Email Mã xác minh
+email_password_button_label: Với Email và Mật khẩu
+email_password_modal_email_input_label: Email hoặc tên người dùng
+email_password_modal_password_input_label: mật khẩu
+enter_email_password_instructions_description: "Phương pháp này yêu cầu bạn nhập thông tin cá nhân của bạn.\n\n- Đổi lại, `cookie_token` của bạn có thể được làm mới tự động, được sử dụng trong các tính năng liên quan đến đổi mã (chỉ dành cho người dùng HoYoLAB).\n- Email và mật khẩu của bạn **KHÔNG BAO GIỜ** được lưu trong cơ sở dữ liệu, nên thực tế là chúng không thể bị rò rỉ.\n- Ngoài ra, bot này có nguồn mở trên [GitHub](https://github.com/seriaati/hoyo-buddy), nên bạn có thể tự xác minh điều đó.\n- Lựa chọn cuối cùng của bạn là quyết định có nên tin tưởng bot này hay không."
+enter_light_cone_level.button.label: Thay đổi mức độ nón ánh sáng
+dark_mode_button_label: Chế độ Tối
+error_footer: Vui lòng báo cáo lỗi này tới lập trình viên bằng lệnh /feedback
+error_title: Đã xẩy ra lỗi
+erudition: Tri Thức
+exceptions.card_not_ready_error.message: ""
+exceptions.card_not_ready_error.title: ""
+exped.embed.description: ""
+exped_button.label: ""
+exped_modal.title: ""
+exploration.anemoculi: "Phong Thần Đồng: {anemoculi}"
+exploration.chests: Rương đã mở khóa
+exploration.common_chests: Thường
+exploration.dendroculi: "Thảo Thần Đồng: {dendroculi}"
+exploration.electroculi: "Lôi Thần Đồng: {electroculi}"
+exploration.exquisite_chests: Cao Cấp
+exploration.geoculi: "Nham Thần Đồng: {geoculi}"
+exploration.hydroculi: "Thủy Thần Đồng: {hydroculi}"
+exploration.pyroculi: "Hỏa Thần Đồng: {pryoculi}"
+exploration.luxurious_chests: Hiếm
+exploration.placeholder: Chưa được phát hành
+exploration.placeholder_quote: '"Cuộc hành trình rồi sẽ kết thúc, không cần phải vội vàng."
+
+  - Zhongli'
+exploration.precious_chests: Siêu Cấp
+exploration.progress: ""
+exploration.remarkable_chests: Kỳ Dị
+exploration.reputation: ""
+exploration.title: Thám hiểm Thế Giới
+exploration.waypoints: Mở khóa điểm dịch chuyển
+exploration_command_description: ""
+farm_add_command.item_already_in_list: ""
+farm_add_command.item_already_in_list_description: ""
+farm_add_command_description: ""
+farm_check.farmable_today: ""
+farm_check.use_farm_notify: ""
+farm_notify.add_item: ""
+farm_notify.add_item.embed.description: ""
+farm_notify.description: ""
+farm_notify.empty: ""
+farm_notify.empty_description: ""
+farm_notify.remove_item: ""
+farm_notify.remove_item.embed.description: ""
+farm_notify.title: ""
+farm_reminder_command_description: ""
+farm_remove_command.item_not_found: ""
+farm_remove_command.item_not_found_description: ""
+farm_remove_command_description: ""
+farm_view.happy_farming: ""
+farm_view.set_reminder: ""
+farm_view.set_reminder.embed.description: ""
+farm_view.sundays: ""
+farm_view.weekday_select.placeholder: ""
+farm_view_command_description: ""
+feedback_button.feedback_sent.description: ""
+feedback_button.feedback_sent.title: ""
+feedback_button.label: ""
+feedback_command.description: ""
+feedback_command_description: ""
+feedback_modal.feedback.label: ""
+fire: ""
+floor_select_label: ""
+fontaine: ""
+food: ""
+friday: ""
+furnishing_sets: ""
+furnishings: ""
+furniture_embed_description: ""
+game_maintenance_description: ""
+game_maintenance_title: ""
+game_value_incomplete_param_error_message: ""
+geeetest_verification_complete: ""
+geeetest_verification_timeout: ""
+geeetest_verification_timeout_description: ""
+geetest.embed.title: ""
+geetest.no_need: ""
+geetest.no_need.description: ""
+geetest.required: ""
+geetest.required.description: ""
+geetest_command_description: ""
+geetest_cmd_type_param_desc: ""
+geetest_command_type_param_name: ""
+genshin_impact: ""
+geo: Nham
+gi_daily.embed.description: ""
+gift_code_modal.code_input.label: ""
+gift_code_modal.title: ""
+guild_only_feature_error_message: ""
+guild_only_feature_error_title: ""
+harmony: Hòa Hợp
+honkai:_star_rail: ""
+honkai_impact_3rd: ""
+hoyolab: ""
+hsr_daily.embed.description: ""
+hydro: Thủy
+ice: ""
+imaginary: ""
+inazuma: ""
+incomplete_param_error_title: ""
+instructions_title: ""
+interaction_failed_description: ""
+interaction_failed_title: ""
+invalid_category_selected: ""
+invalid_color_error_message: ""
+invalid_color_error_title: ""
+invalid_cookies_description: ""
+invalid_cookies_title: ""
+invalid_email_password_description: ""
+invalid_email_password_title: ""
+invalid_game_selected: ""
+invalid_image_url_error_message: ""
+invalid_image_url_error_title: ""
+invalid_input.input_needs_to_be_bool: ""
+invalid_input.input_needs_to_be_int: ""
+invalid_input.input_out_of_range.max_value: ""
+invalid_input.input_out_of_range.min_value: ""
+invalid_input_error_title: ""
+invalid_query_error_message: ""
+invalid_query_error_title: ""
+invalid_verification_code_description: ""
+invalid_verification_code_title: ""
+items: ""
+javascript_button_label: ""
+javascript_instructions_description: ""
+level_str: ""
+light_cones: ""
+living_beings: ""
+liyue: ""
+loading_text: ""
+make_up_for_checkin_button_label: ""
+materials: ""
+memory_of_chaos: ""
+miyoushe: ""
+moc_card_battles_fought: ""
+moc_card_cycles_used: ""
+moc_card_farthest_stage: ""
+moc_quick_clear: ""
+monday: ""
+mondstadt: ""
+namecards: ""
+next_page_option_label: ""
+nickname_modal_label: ""
+nickname_modal_placeholder: ""
+nihility: Hư Vô
+no_account_found_for_games_error_message: ""
+no_account_found_for_games_error_title: ""
+no_accounts_autocomplete_choice: ""
+no_challenge_data_err_message: ""
+no_challenge_data_err_title: ""
+no_characters_found_error_message: ""
+no_characters_found_error_title: ""
+no_game_accounts_error_message: ""
+notes-card.gi.completed: ""
+notes-card.gi.daily-commissions: ""
+notes-card.gi.expedition-finished: ""
+notes-card.gi.expedition-remaining: ""
+notes-card.gi.realm-currency: ""
+notes-card.gi.realtime-notes: ""
+notes-card.gi.remaining: ""
+notes-card.gi.resin: ""
+notes-card.gi.resin-discounts: ""
+notes-card.hsr.daily-training: ""
+notes-card.hsr.echo-of-war-discounts: ""
+notes-card.hsr.reserved-power: ""
+notes-card.hsr.trailblaze-power: ""
+notes.item_full_in_time: ""
+notes_available: ""
+notes_command_description: ""
+notif.embed.footer: ""
+notif_modal.enabled.label: ""
+notif_modal.max_notif_count.label: ""
+notif_modal.notify_interval.label: ""
+notif_modal.notify_time.label: ""
+notif_modal.notify_weekday.label: ""
+notif_modal.threshold.label: ""
+notification_settings_button_label: ""
+notify_on_failure_button_label: ""
+notify_on_success_button_label: ""
+nsfw_prompt_error_message: ""
+nsfw_prompt_error_title: ""
+page_footer: ""
+pf_card_total_score: ""
+physical: ""
+player_not_found_description: ""
+player_not_found_title: ""
+preservation: Bảo Hộ
+prev_page_option_label: ""
+process_notify_error.content: ""
+profile.add_image.button.label: ""
+profile.add_image_modal.image_url.label: ""
+profile.build.select.placeholder: ""
+profile.card_info.embed.description: ""
+profile.card_info.embed.title: ""
+profile.card_settings.button.label: ""
+profile.card_template_select.diff_author.description: ""
+profile.card_template_select.encard.label: ""
+profile.card_template_select.enka_classic.label: ""
+profile.card_template_select.enkacard.label: ""
+profile.card_template_select.hb.label: ""
+profile.card_template_select.placeholder: ""
+profile.card_template_select.same_author.description: ""
+profile.card_template_select.src.label: ""
+profile.character_select.cached_data.description: ""
+profile.character_select.description: ""
+profile.character_select.enka_network.description: ""
+profile.character_select.hoyolab.description: ""
+profile.character_select.live_data.description: ""
+profile.character_select.placeholder: ""
+profile.generate_ai_art.button.label: ""
+profile.generate_ai_art_modal.negative_prompt.label: ""
+profile.generate_ai_art_modal.prompt.label: ""
+profile.genshin.character_select.description: ""
+profile.genshin.character_select.hoyolab.description: ""
+profile.image_select.custom_image.label: ""
+profile.image_select.default_collection.label: ""
+profile.image_select.none.label: ""
+profile.image_select.placeholder: ""
+profile.player_info.button.label: ""
+profile.player_info.embed.description: ""
+profile.player_info.gi.embed.description: ""
+profile.player_info.hoyolab.embed.description: ""
+profile.primary_color.button.label: ""
+profile.primary_color_modal.color.label: ""
+profile.primary_color_modal.title: ""
+profile.remove_from_cache.button.label: ""
+profile.remove_image.button.label: ""
+profile_command_description: ""
+profile_command_game_value_description: ""
+profile_command_uid_param_description: ""
+pt_button.label: ""
+pt_modal.title: ""
+public_account_toggle.label: ""
+pure_fiction: ""
+pyro: Hỏa
+quantum: ""
+read_story.button.label: ""
+real_time_notes: ""
+realm_curr_button.label: ""
+realm_curr_modal.title: ""
+redeeem_code.cookie_token_expired_description: ""
+redeeem_code.cookie_token_expired_title: ""
+redeeem_code.cookie_token_refresh_failed_description: ""
+redeeem_code.cookie_token_refresh_failed_title: ""
+redeem_code.already_claimed: ""
+redeem_code.cooldown: ""
+redeem_code.expired: ""
+redeem_code.invalid: ""
+redeem_code.success: ""
+redeem_codes_button.label: ""
+redeem_command_description: ""
+redeem_command_embed.description: ""
+redeem_command_embed.title: ""
+redeem_cooldown_embed.description: ""
+redeem_cooldown_embed.title: ""
+refinement_indicator: ""
+relics: ""
+reminder_button.label: ""
+reminder_settings.not_set: ""
+reminder_settings.reminde.set.type1: ""
+reminder_settings.reminde.set.type2: ""
+reminder_settings.reminde.set.type3: ""
+reminder_settings.reminde.set.type4: ""
+reminder_settings_title: ""
+reminder_toggle: ""
+resin_discount.embed.description: ""
+resin_reminder_button.label: ""
+resin_reminder_modal.title: ""
+reward_claimed_title: ""
+rtbp_reminder_button.label: ""
+rtbp_reminder_modal.title: ""
+saturday: ""
+search_autocomplete_no_results: ""
+search_autocomplete_not_setup: ""
+search_command_category_param_description: ""
+search_cmd_category_param_name: ""
+search_command_description: ""
+search_command_game_param_description: ""
+search_command_game_param_name: ""
+search_command_query_param_description: ""
+search_command_query_param_name: ""
+select_account.embed.description: ""
+select_account.embed.title: ""
+settings_command_description: ""
+skill_attributes_embed_field_name: ""
+skill_level.modal.title: ""
+spiral_abyss: ""
+stats_embed_field_name: ""
+sumeru: ""
+sunday: ""
+superimpose_indicator: ""
+talent_level.modal.title: ""
+tbp_reminder_button.label: ""
+tbp_reminder_modal.title: ""
+tcg: ""
+the_hunt: Săn Bắn
+threshold.embed.description: ""
+thunder: ""
+thursday: ""
+tuesday: ""
+unreleased_content: ""
+user_autocomplete_param_description: ""
+user_autocomplete_param_name: ""
+user_no_accounts_autocomplete_choice: ""
+view_card_button_label: ""
+view_dictionary_button_label: ""
+volume_selector_placeholder: ""
+wave_button_label: ""
+weapon_level.modal.title: ""
+weapons: ""
+wednesday: ""
+week_boss_button.label: ""
+week_boss_modal.title: ""
+wind: ""
+yatta_character_detail_page_label: ""
+yatta_character_eidolon_page_label: ""
+yatta_character_embed_description: ""
+yatta_character_skill_aoe_weakness_break_field_value: ""
+yatta_character_skill_energy_field_name: ""
+yatta_character_skill_energy_generation_field_value: ""
+yatta_character_skill_energy_need_field_value: ""
+yatta_character_skill_single_weakness_break_field_value: ""
+yatta_character_skill_spread_weakness_break_field_value: ""
+yatta_character_skill_weakness_break_field_name: ""
+yatta_character_trace_page_label: ""
+yatta_item_sources_field_name: ""
+characters.show_owned_only: ""
+redeem_code.ar_too_low: ""
+data_not_public.title: ""
+data_not_public.description: ""
+not_implemented_error_title: ""
+not_implemented_error_only_game_message: ""
+not_implemented_error_message: ""
+profile.build.current.label: ""
+abyss_chamber.blessing.embed.field.name: ""
+apocalyptic_shadow: ""
+apc_shadow.highest_diff_cleared: ""
+apc_shadow.times_challenged: ""
+apc_shadow.boss_defeated: ""
+apc_shadow.boss_defeated_no: ""
+notes.bonus_sync_points: ""
+invalid_uid_format_title: ""
+invalid_uid_format_description: ""
+zenless_zone_zero: ""
+img_theater_large_block_title: ""
+img_theater_stats_line_one: ""
+img_theater_stats_line_two: ""
+img_theater_stats_line_three: ""
+img_theater_stats_line_four: ""
+img_theater_stats_line_five: ""
+img_theater_legend_block_support_chara: ""
+img_theater_legend_block_trial_chara: ""
+img_theater_act_block_title: ""
+img_theater_max_damage: ""
+challenge_view.view_buffs: ""
+challenge_view.buff_select.placeholder: ""
+battery_charge_button.label: ""
+scratch_card_button.label: ""
+scratch_card.embed.description: ""
+zzz_engagement_button.label: ""
+zzz_engagement.embed.description: ""
+video_store_button.label: ""
+video_store.embed.description: ""
+scratch_card.incomplete: ""
+video_store.currently_open: ""
+video_store.revenue_available: ""
+video_store.waiting_to_open: ""
+notes-card.zzz.title: ""
+reminder_modal.title: ""
+redeem_code.reached_max_limit: ""
+profile_view.set_cur_temp_as_default: ""
+set_cur_temp_as_default.done: ""
+set_cur_temp_as_default.done_desc: ""
+third_party_card_temp_error_title: ""
+third_party_card_temp_error_message: ""
+account_locked_title: ""
+account_locked_description: ""
+ether: ""
+electric: ""
+profile.no_data.title: ""
+profile.no_data.description: ""
+profile.zzz_hoyolab.character_select.description: ""
+characters.filter.specialty.placeholder: ""
+zzz.basic: ""
+zzz.dodge: ""
+zzz.assist: ""
+zzz.special: ""
+zzz.chain: ""
+zzz.core: ""
+attack: ""
+stun: ""
+anomaly: ""
+support: ""
+defense: ""
+characters.filter.faction.placeholder: ""
+characters.sorter.speciality: ""
+characters.sorter.faction: ""
+characters.sorter.mindscape_cinema: ""
+characters.embed.filter_text: ""
+stats_command_description: ""
+stats.select_card: ""
+tears_of_themis: ""
+honkai_suit_rarity: ""
+about_command.designers: ""
+card_settings.modifying_for: ""
+card_settings.card_color: ""
+card_settings.no_color: ""
+card_settings.color_default: ""
+card_settings.current_image: ""
+profile.redraw_card_button_label: ""
+card_settings.footer: ""
+profile.team_dark_mode.button.label: ""
+profile.character_select.multi.placeholder: ""
+zzz_search.agent_info: ""
+cat_zzz_agents: ""
+cat_zzz_bangboos: ""
+cat_zzz_w_engines: ""
+cat_zzz_drive_discs: ""
+search.agent_page.info: ""
+search.agent_page.skills: ""
+search.agent_page.cinemas: ""
+search.agent_page.placeholder: ""
+zzz.skill_type.placeholder: ""
+zzz.cinema.placeholder: ""
+zzz.engine.refinement_select.placeholder: ""
+dyk_discord_server_updates: ""
+dyk_discord_server_feedback: ""
+dyk_something_wrong: ""
+dyk_contact_me: ""
+dyk_donate_no_title: ""
+dyk_team: ""
+dyk_disable: ""
+dyk_settings_lang: ""
+dyk_settings_theme: ""
+dyk_suggest_light: ""
+dyk_security: ""
+dyk_github: ""
+dyk_python: ""
+dyk_unreleased: ""
+dyk_team_card: ""
+dyk_set_default_acc: ""
+title_dyk: ""
+new_zzz_temp: ""
+button_label_dyk: ""
+events_view_start_date_embed_field: ""
+events_view_end_date_embed_field: ""
+events_view_ann_select_placeholder: ""
+events_view_banner_type_label: ""
+events_command_description: ""
+events_view_ann_type_select_placeholder: ""
+events_view_content_label: ""
+events_command_game_param_description: ""
+natlan: ""
+top_percent: ""
+profile_view_show_rank_button_label: ""
+submit_button_label: ""
+show_tutorial_button_label: ""
+close_button_label: ""
+copy_code_button_label: ""
+copied_to_clipboard: ""
+required_field_error_message: ""
+accounts_added_snackbar_message: ""
+account_add_start_title: ""
+account_add_start_message: ""
+hbls_button_label: ""
+gacha_import_url_modal_title: ""
+gacha_import_embed_title: ""
+gacha_import_embed_description: ""
+extract_authkey_error_message: ""
+extract_authkey_error_title: ""
+gacha_import_loading_embed_title: Đang nhập Nhật ký Gacha
+gacha_import_loading_embed_description: "{loading_emoji} Việc này có thể mất nhiều thời gian, vui lòng đợi"
+gacha_upload_invalid_file_error_title: Định dang File không hợp lệ
+gacha_upload_invalid_file_error_message: "Chỉ cho phép file **{file_format}, vui lòng thử lại bằng File hợp lệ"
+uid_mismatch_error_title: UID không khớp
+uid_mismatch_error_message: "UID của tài khoản được chọn không khớp với UID trong dữ liệu ({uid})"
+gacha_import_command_description: Nhập nhật ký gacha từ trong game.
+source_param_name: Nguồn
+source_param_description: Nguòn từ những nhật ký gacha.
+gacha_upload_command_description: Tải file nhật ký gacha từ nguồn khác để nhập vào Hoyo Buddy
+file_param_name: file
+file_param_description: Nhập file nhật ký Gacha
+gacha_import_success_title: Nhật Ký Gacha dã được nhập
+gacha_import_success_message: "{count} nhật ký gacha đã được nhập thành công. Sử dụng lệnh </gacha-log view> để xem."
+gacha_view_filter_button_label: Lọc
+gacha_view_search_field_label: Tìm Kiếm
+gacha_view_gacha_detail_title: Chi tiết vật Gacha
+gacha_view_gacha_detail: "ID: {id}\nTên: {name}\nThời gian quay: {time}"
+gacha_view_num_since_last: "{pull} lần quay từ khi {rarity} ★ cuối."
+gacha_view_filter_dialog_title: Lọc Nhật Ký Gacha
+banner_type_beginners_wish: Cầu Nguyện Người Mới
+banner_type_standard_banner: Cầu Nguyện Vĩnh Viễn
+banner_type_character_event: Cầu Nguyện Nhân Vật
+banner_type_weapon_event: Cầu Nguyện Vũ Khí
+banner_type_chronicled_wish: Sử Ký Cầu Nguyện
+banner_type_stellar_warp: Bước Nhảy Chòm Sao
+banner_type_departure_warp: Bước Nhảy Đầu Tiên
+banner_type_character_warp: Bước Nhảy Nhân Vật
+banner_type_light_cone_warp: Bước Nhảy Nón Ánh Sáng
+banner_type_standard_channel: Kênh Thường Trực
+banner_type_exclusive_channel: Kênh Độc Quyền
+banner_type_w_engine_channel: Kênh W-Engine
+banner_type_bangboo_channel: Kênh Bangboo
+cancel_button_label: Hủy bỏ
+gacha_view_filter_size_field_label: Các mục trên mỗi trang
+gacha_view_page_field_label: Trang
+gacha_log_stats_title: Thống kê nhật ký Gacha
+gacha_log_personal_stats_title: Thống kê cá nhân
+gacha_log_personal_stats: "Tổng số lượt quay: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\nTổng số lượt quay cho banner này: {total_pulls} ({total_currency} {currency_emoji})\nChỉ số 5★ may mắn: {star5_pity_cur}/{star5_pity_max}\nChỉ số 4★ may mắn: {star4_pity_cur}/10\nTỉ lệ thắng 50/50: {win_rate}% ({win_time}/{total_time})\nTổng 5★: {total_star5}\nTổng 4★: {total_star4}\nTrung bình lượt quay cho 5★: {avg_pulls_per_star5}\nTrung bình lượt quay cho 4★: {avg_pulls_per_star4}"
+gacha_log_global_stats_title: Thống kê toàn cầu
+gacha_log_global_stats: "Tổng số lượt quay: {lifetime}\nChỉ số 5★ may mắn: {star5_luck}\nChỉ số 4★ may mắn: {star4_luck}\nTỉ lệ thắng 50/50: {win_rate}"
+gacha_log_view_full: Xem nhật ký gacha
+gacha_view_command_description: Xem nhật ký gacha đã nhập
+gacha_log_view_banner_type_selector_placeholder: Hãy chọn loại Banner
+no_gacha_log_found_error_title: Không tìm thấy nhật ký Gacha.
+no_gacha_log_found_error_message: "Sử dụng </gacha-log import> hoặc </gacha-log upload>để nhập nhật ký gacha của bạn."
+gacha_log_manage_embed_title: Quản lý nhật ký gacha
+gacha_log_manage_embed_description: ""
+gacha_log_export_button_label: Xuất tệp bằng định dạng UIGF
+gacha_log_delete_button_label: Xóa tất cả nhật ký Gacha
+gacha_log_delete_confirm_embed_title: Xác nhận Xóa
+gacha_log_delete_confirm_embed_description: "Bạn có chắc chắn muốn XÓA TẤT CẢ nhật ký Gacha cho tài khoản này? Không thể hoàn tác hành động này."
+gacha_log_delete_confirm_button_label: Xác nhận
+gacha_log_delete_done_embed_title: Xóa Hoàn tất.
+gacha_log_delete_done_embed_description: Tất cả nhật ký Gacha của tài khoản này đã được xóa thành công.
+gacha_manage_command_description: Quản lý nhật ký gacha đã nhập
+login_button_label: Đăng nhập bằng Discord
+star5_guaranteed: ""
+star5_no_guaranteed: ""
+characters_view_show_max_level_only: ""
+characters_embed_max_level_characters: ""
+natlan_reputation: ""

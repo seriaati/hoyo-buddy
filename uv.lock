@@ -180,16 +180,16 @@ dependencies = [
 
 [[package]]
 name = "ambr-py"
-version = "1.7.12"
+version = "1.7.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c9/a1/dcdc4456c4e481d7cc2d531824e7aecd33eb9d752420b2f8cce8b74f4d82/ambr_py-1.7.12.tar.gz", hash = "sha256:bbb84853d1fcc00e09d6da487571d8f552c9200c755ff213b2b0ba47c211d4b7", size = 28986 }
+sdist = { url = "https://files.pythonhosted.org/packages/9d/c9/13024b795e832241d06ad0671bfd337db689299e0a2b9b904bd8aad998d2/ambr_py-1.7.13.tar.gz", hash = "sha256:fef08b76a936fc3076ee83cb9107b19083aa182c863369372e00e3c7dee73195", size = 28985 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a0/74/11ac004ae480b76af8e1b796b4725030769cff871869a96ff13aaccc9034/ambr_py-1.7.12-py3-none-any.whl", hash = "sha256:c1f20a56f6ff8e60962389913f241ae178e4432e877aa77046b37ed28cd06644", size = 36702 },
+    { url = "https://files.pythonhosted.org/packages/80/5f/03109dd51722891eae6584d5db83f68e6899229e00245f4d345e0f36dc87/ambr_py-1.7.13-py3-none-any.whl", hash = "sha256:ba4e6df77b350207c9cace3b347bbdd9e522f4f7485701c6da85519b10083746", size = 36709 },
 ]
 
 [[package]]
@@ -796,7 +796,7 @@ wheels = [
 
 [[package]]
 name = "hoyo-buddy"
-version = "1.11.2"
+version = "1.11.3"
 source = { virtual = "." }
 dependencies = [
     { name = "aerich" },

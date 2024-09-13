@@ -94,6 +94,9 @@ class ViewGachaLogView(View):
         return gacha.item_id in STANDARD_ITEMS[self.account.game]
 
     def get_ranking_str(self, rank: int, total: int) -> str:
+        if rank == 0:
+            return "N/A"
+
         top_percent = self.translator.translate(
             LocaleStr(key="top_percent", percent=round(rank / total * 100, 2)), self.locale
         )
@@ -130,7 +133,7 @@ class ViewGachaLogView(View):
         await GachaStats.create_or_update(
             account=self.account,
             lifetime_pulls=lifetime_pulls,
-            win_rate=round(total_wins / total_5stars * 100, 2),
+            win_rate=round(total_wins / total_5stars * 100, 2) if total_5stars else 0,
             avg_5star_pulls=stat_avg_star5,
             avg_4star_pulls=stat_avg_star4,
         )
@@ -157,7 +160,7 @@ class ViewGachaLogView(View):
                 star5_pity_cur=star5_pity_cur,
                 star5_pity_max=star5_pity_max,
                 star4_pity_cur=star4_pity_cur,
-                win_rate=round(banner_wins / banner_5stars * 100, 2),
+                win_rate=round(banner_wins / banner_5stars * 100, 2) if banner_5stars else 0,
                 win_time=banner_wins,
                 total_time=banner_5stars,
                 total_star5=banner_total_star5,
@@ -180,9 +183,12 @@ class ViewGachaLogView(View):
         star4_luck_rank, star4_luck_total = get_ranking(
             stat_avg_star4, [x.avg_4star_pulls for x in all_gacha_stats], reverse=False
         )
-        win_rate_rank, win_rate_total = get_ranking(
-            total_wins / banner_total_star5, [x.win_rate for x in all_gacha_stats], reverse=True
-        )
+        if banner_total_star5 == 0:
+            win_rate_rank, win_rate_total = 0, 1
+        else:
+            win_rate_rank, win_rate_total = get_ranking(
+                total_wins / banner_total_star5, [x.win_rate for x in all_gacha_stats], reverse=True
+            )
 
         embed.add_field(
             name=LocaleStr(key="gacha_log_global_stats_title"),

@@ -137,11 +137,15 @@ class Settings(BaseModel):
     user: fields.OneToOneRelation[User] = fields.OneToOneField(
         "models.User", related_name="settings", pk=True
     )
+
     gi_card_temp = fields.CharField(max_length=32, default="hb1")
     hsr_card_temp = fields.CharField(max_length=32, default="hb1")
     zzz_card_temp = fields.CharField(max_length=32, default="hb2")
-    team_card_dark_mode = fields.BooleanField(default=False)
+
     enable_dyk = fields.BooleanField(default=True)
+
+    team_card_dark_mode = fields.BooleanField(default=False)
+    # hsr_team_bg: fields.Field[str | None] = fields.TextField(null=True)
 
     @property
     def locale(self) -> Locale | None:
@@ -161,6 +165,7 @@ class CardSettings(BaseModel):
     template = fields.CharField(max_length=32, default="hb1")
     show_rank = fields.BooleanField(default=True)
     """Whether to show the akasha rank of the character, only applies to genshin."""
+    # team_card_image: fields.Field[str | None] = fields.TextField(null=True)
 
     class Meta:
         unique_together = ("character_id", "user")

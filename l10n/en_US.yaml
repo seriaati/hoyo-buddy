@@ -677,3 +677,7 @@ star5_no_guaranteed: "Current guarantee status: Banner item **NOT** guaranteed"
 characters_view_show_max_level_only: Show max level characters only
 characters_embed_max_level_characters: Max Level Characters
 natlan_reputation: "Reputation: Lv.{reputation}, Tribes: {tribes}"
+build_card: Build card
+team_card: Team card
+team_card_background: Team card background
+image_type_select_placeholder: Select an image type...

@@ -197,7 +197,6 @@ class HoyolabHSRCharacter:
 class Config:
     def __init__(self, args: argparse.Namespace) -> None:
         self.sentry = args.sentry
-        self.translator = args.translator
         self.search_autocomplete = args.search
         self.schedule = args.schedule
 

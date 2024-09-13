@@ -24,7 +24,6 @@ from hoyo_buddy.l10n import EnumStr, LocaleStr
 
 from ...constants import (
     CHARACTER_MAX_LEVEL,
-    HSR_ICON_TEMA_URL,
     TRAILBLAZER_IDS,
     TRAVELER_IDS,
     UTC_8,
@@ -369,7 +368,10 @@ class CharactersView(View):
                 self.translator,
             )
         elif self.game is Game.STARRAIL:
-            pc_icons = {str(c.id): HSR_ICON_TEMA_URL.format(char_id=c.id) for c in characters}
+            pc_icons = {
+                str(c.id): f"https://api.yatta.top/hsr/assets/UI//avatar/medium/{c.id}.png"
+                for c in characters
+            }
             file_ = await draw_hsr_characters_card(
                 DrawInput(
                     dark_mode=self.dark_mode,

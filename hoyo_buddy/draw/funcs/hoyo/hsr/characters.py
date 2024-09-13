@@ -17,8 +17,6 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.l10n import Translator
 
-PC_ICON_OFFSETS = (0, 38)
-PC_ICON_SIZES = (208, 146)
 WEAPON_ICON_POS = (356, 17)
 WEAPON_ICON_SIZES = (102, 102)
 
@@ -69,13 +67,15 @@ def draw_character_card(
             y = (index % max_card_num) * (
                 bk_input.card_height + bk_input.card_y_padding
             ) + bk_input.top_padding
+
         background.paste(card, (x, y), card)
         character_id = list(c_cards.keys())[index]
         pc_icon_url = pc_icons.get(character_id)
         if pc_icon_url:
-            offset = PC_ICON_OFFSETS
-            pos = (x + offset[0], y + offset[1])
-            icon = drawer.open_static(pc_icon_url, size=PC_ICON_SIZES)
+            pos = (x, y + 2)
+            icon = drawer.open_static(pc_icon_url)
+            icon = drawer.resize_crop(icon, (189, 184))
+            icon = drawer.mask_image_with_image(icon, drawer.open_asset("pc_icon_mask.png"))
             background.paste(icon, pos, icon)
 
     fp = io.BytesIO()

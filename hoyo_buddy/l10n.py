@@ -49,7 +49,7 @@ LANGUAGES = (
     "nl",
     # "de",
     # "ko",
-    # "vi",
+    "vi",
     # "ru",
     # "th",
     # "es_ES",

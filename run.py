@@ -30,7 +30,6 @@ is_dev = env == "dev"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--sentry", action="store_true", default=not is_dev)
-parser.add_argument("--translator", action="store_true", default=not is_dev)
 parser.add_argument("--search", action="store_true", default=not is_dev)
 parser.add_argument("--schedule", action="store_true", default=not is_dev)
 

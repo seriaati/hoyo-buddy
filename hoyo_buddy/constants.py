@@ -156,6 +156,7 @@ HOYO_BUDDY_LOCALES: dict[discord.Locale, dict[str, str]] = {
     discord.Locale.turkish: {"name": "Türkçe", "emoji": "🇹🇷"},
     discord.Locale.italian: {"name": "Italiano", "emoji": "🇮🇹"},
     discord.Locale.russian: {"name": "Русский", "emoji": "🇷🇺"},
+    discord.Locale.vietnamese: {"name": "Tiếng Việt", "emoji": "🇻🇳"},
 }
 
 LOCALE_TO_AMBR_LANG: dict[discord.Locale, ambr.Language] = {

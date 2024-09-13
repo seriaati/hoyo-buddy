@@ -93,8 +93,6 @@ characters.filter.none: Tidak ada
 characters.filter.not_max_friendship: Bukan Persahabatan maks
 characters.filter.path.placeholder: Pilih filter path...
 characters.filter.placeholder: Pilih filter...
-characters.first_time.embed.description: "Jika ini pertama kali kamu menggunakan perintah ini, maka ini membutuhkan waktu beberapa saat.\nIni dikarenakan suatu perintah mengambil data dari banyak sumber.\nIni akan lebih cepat saat kamu menggunakan perintah ini lagi.\nHarap bersabar dan tunggu hingga sumber daya selesai diambil"
-characters.first_time.title: Mengambil sumber daya...
 characters.level_order.footer: ""
 characters.extra_detail.footer: "Gunakan /profile untuk melihat detail karakter"
 hsr.ultimate: Ultimate
@@ -113,9 +111,6 @@ characters.sorter.level: Level
 characters.sorter.path: Path
 characters.sorter.placeholder: Pilih penyortir...
 characters.sorter.rarity: Rarity
-characters.update_talent_data: Perbarui data level talent
-characters.update_talent_data.embed.description: "Proses ini mungkin memerlukan waktu yang lebih lama, jika kamu memiliki banyak karakter, maka waktu yang dibutuhkan dapat lebih panjang. Mohon bersabar."
-characters.update_talent_data.title: Memperbarui data level talenta...
 characters_command_description: Lihat semua karakter milikmu
 checkin_button_label: Absen
 checkin_command_description: Absen harian game
@@ -152,6 +147,7 @@ email_password_modal_email_input_label: email atau username
 email_password_modal_password_input_label: password
 enter_email_password_instructions_description: "Metode ini mengharuskan kamu memasukkan informasi pribadi kamu.\n\n• Sebagai gantinya, `cookie_token` kamu dapat diperbarui secara otomatis, yang digunakan dalam fitur yang terkait dengan penukaran kode (hanya untuk pengguna HoYoLAB).\n• Email dan kata sandi kamu **TIDAK** disimpan dalam database **SAMA SEKALI**, sehingga hampir tidak mungkin untuk terjadi kebocoran data.\n• Selain itu, bot ini open source di [GitHub](https://github.com/seriaati/hoyo-buddy), sehingga kamu dapat memverifikasi sendiri.\n• Pada akhirnya, itu adalah pilihan kamu sendiri untuk memutuskan apakah kamu ingin percaya bot ini atau tidak."
 enter_light_cone_level.button.label: Ubah level light cone
+dark_mode_button_label: ""
 error_footer: Silakan laporkan kesalahan ini kepada pengembang melalui /feedback
 error_title: Terjadi kesalahan
 erudition: Erudition
@@ -498,9 +494,11 @@ img_theater_stats_line_one: ""
 img_theater_stats_line_two: ""
 img_theater_stats_line_three: ""
 img_theater_stats_line_four: ""
+img_theater_stats_line_five: ""
 img_theater_legend_block_support_chara: ""
 img_theater_legend_block_trial_chara: ""
 img_theater_act_block_title: ""
+img_theater_max_damage: ""
 challenge_view.view_buffs: ""
 challenge_view.buff_select.placeholder: ""
 battery_charge_button.label: Battery
@@ -577,7 +575,6 @@ dyk_discord_server_feedback: "Kamu bisa bergabung di [Discord server](<https://d
 dyk_something_wrong: Kamu bisa gunakan perintah /feedback untuk melaporkan masalah apapun
 dyk_contact_me: "Kamu bisa langsung menghubungi kami di [Discord server](<https://dsc.gg/hoyo-buddy>)"
 dyk_donate_no_title: "Senang menggunakan Hoyo Buddy? Pertimbangkan  [making a donation](<https://github.com/seriaati#support-my-work>) untuk mendukung kami"
-dyk_easter_egg1_no_title: TOLONG SAYA TERJEBAK DALAM TEKS INI-
 dyk_team: "Hoyo Buddy dikembangkan oleh tim kecil yang terdiri dari 1 programmer, 1 designer, dan 1 project manager"
 dyk_disable: Kamu bisa menonaktifkan pesan ini menggunakan /settings
 dyk_settings_lang: Kamu bisa merubah bahasa bot menggunakan /settings
@@ -613,3 +610,70 @@ accounts_added_snackbar_message: ""
 account_add_start_title: ""
 account_add_start_message: ""
 hbls_button_label: ""
+gacha_import_url_modal_title: ""
+gacha_import_embed_title: ""
+gacha_import_embed_description: ""
+extract_authkey_error_message: ""
+extract_authkey_error_title: ""
+gacha_import_loading_embed_title: ""
+gacha_import_loading_embed_description: ""
+gacha_upload_invalid_file_error_title: ""
+gacha_upload_invalid_file_error_message: ""
+uid_mismatch_error_title: ""
+uid_mismatch_error_message: ""
+gacha_import_command_description: ""
+source_param_name: ""
+source_param_description: ""
+gacha_upload_command_description: ""
+file_param_name: ""
+file_param_description: ""
+gacha_import_success_title: ""
+gacha_import_success_message: ""
+gacha_view_filter_button_label: ""
+gacha_view_search_field_label: ""
+gacha_view_gacha_detail_title: ""
+gacha_view_gacha_detail: ""
+gacha_view_num_since_last: ""
+gacha_view_filter_dialog_title: ""
+banner_type_beginners_wish: ""
+banner_type_standard_banner: ""
+banner_type_character_event: ""
+banner_type_weapon_event: ""
+banner_type_chronicled_wish: ""
+banner_type_stellar_warp: ""
+banner_type_departure_warp: ""
+banner_type_character_warp: ""
+banner_type_light_cone_warp: ""
+banner_type_standard_channel: ""
+banner_type_exclusive_channel: ""
+banner_type_w_engine_channel: ""
+banner_type_bangboo_channel: ""
+cancel_button_label: ""
+gacha_view_filter_size_field_label: ""
+gacha_view_page_field_label: ""
+gacha_log_stats_title: ""
+gacha_log_personal_stats_title: ""
+gacha_log_personal_stats: ""
+gacha_log_global_stats_title: ""
+gacha_log_global_stats: ""
+gacha_log_view_full: ""
+gacha_view_command_description: ""
+gacha_log_view_banner_type_selector_placeholder: ""
+no_gacha_log_found_error_title: ""
+no_gacha_log_found_error_message: ""
+gacha_log_manage_embed_title: ""
+gacha_log_manage_embed_description: ""
+gacha_log_export_button_label: ""
+gacha_log_delete_button_label: ""
+gacha_log_delete_confirm_embed_title: ""
+gacha_log_delete_confirm_embed_description: ""
+gacha_log_delete_confirm_button_label: ""
+gacha_log_delete_done_embed_title: ""
+gacha_log_delete_done_embed_description: ""
+gacha_manage_command_description: ""
+login_button_label: ""
+star5_guaranteed: ""
+star5_no_guaranteed: ""
+characters_view_show_max_level_only: ""
+characters_embed_max_level_characters: ""
+natlan_reputation: ""

@@ -39,7 +39,7 @@ from hoyo_buddy.ui.hoyo.profile.card_settings import (
     get_default_collection,
 )
 from hoyo_buddy.ui.hoyo.profile.items.redraw_card_btn import RedrawCardButton
-from hoyo_buddy.utils import blur_uid, format_float, human_format_number
+from hoyo_buddy.utils import blur_uid, contains_chinese, format_float, human_format_number
 
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
@@ -315,12 +315,13 @@ class ProfileView(View):
         self.add_item(BuildSelect())
 
     async def _draw_src_character_card(
-        self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
+        self,
+        session: aiohttp.ClientSession,
+        character: Character,
+        card_settings: CardSettings,
+        locale: Locale,
     ) -> BytesIO:
         """Draw character card in StarRailCard template."""
-        cache_extra = self.cache_extras.get(str(character.id))
-        locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
-
         template = card_settings.template
         payload = {
             "uid": self.uid,
@@ -350,11 +351,13 @@ class ProfileView(View):
             return BytesIO(await resp.read())
 
     async def _draw_enka_card(
-        self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
+        self,
+        session: aiohttp.ClientSession,
+        character: Character,
+        card_settings: CardSettings,
+        locale: Locale,
     ) -> BytesIO:
         """Draw GI character card in EnkaCard2, ENCard, enka-card templates."""
-        cache_extra = self.cache_extras.get(str(character.id))
-        locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
         template = card_settings.template
 
         payload = {
@@ -390,6 +393,7 @@ class ProfileView(View):
         loop: asyncio.AbstractEventLoop,
         character: Character,
         card_settings: CardSettings,
+        locale: Locale,
     ) -> BytesIO:
         """Draw Star Rail character card in Hoyo Buddy template."""
         assert isinstance(character, enka.hsr.Character | HoyolabHSRCharacter)
@@ -405,9 +409,6 @@ class ProfileView(View):
                 primary: str = character_data["primary-dark"]
         else:
             primary = card_settings.custom_primary_color
-
-        cache_extra = self.cache_extras.get(str(character.id))
-        locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
 
         return await draw_hsr_build_card(
             DrawInput(
@@ -430,14 +431,12 @@ class ProfileView(View):
         loop: asyncio.AbstractEventLoop,
         character: Character,
         card_settings: CardSettings,
+        locale: Locale,
     ) -> BytesIO:
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert isinstance(character, enka.gi.Character | HoyolabGICharacter)
 
         image_url = card_settings.current_image or get_default_art(character)
-
-        cache_extra = self.cache_extras.get(str(character.id))
-        locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
 
         template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
         if template_num == 2:
@@ -477,6 +476,7 @@ class ProfileView(View):
         loop: asyncio.AbstractEventLoop,
         character: Character,
         card_settings: CardSettings,
+        locale: Locale,
     ) -> BytesIO:
         """Draw ZZZ build card in Hoyo Buddy template."""
         assert isinstance(character, ZZZPartialAgent)
@@ -485,9 +485,6 @@ class ProfileView(View):
         client = self._account.client
         client.set_lang(self.locale)
         agent = await client.get_zzz_agent_info(character.id)
-
-        cache_extra = self.cache_extras.get(str(character.id))
-        locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
 
         template_num: Literal[1, 2, 3] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
         if template_num == 2:
@@ -536,21 +533,38 @@ class ProfileView(View):
 
         template = card_settings.template
 
+        cache_extra = self.cache_extras.get(str(character.id))
+        locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
+        if contains_chinese(character.name):
+            locale = Locale.chinese
+
         if self.game is Game.STARRAIL:
             if "hb" in template:
                 return await self._draw_hb_hsr_character_card(
-                    i.client.session, i.client.executor, i.client.loop, character, card_settings
+                    i.client.session,
+                    i.client.executor,
+                    i.client.loop,
+                    character,
+                    card_settings,
+                    locale,
                 )
-            return await self._draw_src_character_card(i.client.session, character, card_settings)
+            return await self._draw_src_character_card(
+                i.client.session, character, card_settings, locale
+            )
         if self.game is Game.GENSHIN:
             if "hb" in template:
                 return await self._draw_hb_gi_character_card(
-                    i.client.session, i.client.executor, i.client.loop, character, card_settings
+                    i.client.session,
+                    i.client.executor,
+                    i.client.loop,
+                    character,
+                    card_settings,
+                    locale,
                 )
-            return await self._draw_enka_card(i.client.session, character, card_settings)
+            return await self._draw_enka_card(i.client.session, character, card_settings, locale)
         if self.game is Game.ZZZ:
             return await self._draw_hb_zzz_character_card(
-                i.client.session, i.client.executor, i.client.loop, character, card_settings
+                i.client.session, i.client.executor, i.client.loop, character, card_settings, locale
             )
 
         msg = f"draw_card not implemented for game {self.game} template {template}"

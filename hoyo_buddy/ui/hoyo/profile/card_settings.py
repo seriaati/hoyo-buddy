@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 from typing import TYPE_CHECKING, Any, Final
 
 import enka
@@ -119,10 +120,11 @@ def get_default_art(character: Character | ZZZFullAgent) -> str:
 
 def get_default_color(character: Character, card_data: dict[str, Any]) -> str | None:
     chara_key = str(character.id)
-    if isinstance(character, ZZZPartialAgent):
-        return card_data[chara_key]["color"]
-    if isinstance(character, enka.hsr.Character):
-        return card_data[chara_key]["primary"]
+    with contextlib.suppress(KeyError):
+        if isinstance(character, ZZZPartialAgent):
+            return card_data[chara_key]["color"]
+        if isinstance(character, enka.hsr.Character):
+            return card_data[chara_key]["primary"]
     return None
 
 
@@ -131,10 +133,10 @@ def get_default_collection(
 ) -> list[str]:
     if game is Game.ZZZ:
         return []
-    data = card_data.get(character_id)
-    if data is None:
+    try:
+        return card_data[character_id]["arts"]
+    except KeyError:
         return []
-    return data.get("arts", [])
 
 
 class CardSettingsView(View):

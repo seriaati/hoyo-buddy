@@ -39,7 +39,7 @@ class LoginPage(ft.View):
         redirect_url = (
             "http://localhost:8645/custom_oauth_callback"
             if os.environ["ENV"] == "dev"
-            else "https://hb-app.seria.moe/oauth_callback"
+            else "https://hb-app.seria.moe/custom_oauth_callback"
         )
         oauth_url = f"https://discord.com/oauth2/authorize?response_type=code&client_id={os.environ['DISCORD_CLIENT_ID']}&redirect_uri={redirect_url}&scope=identify&state={state}"
         await page.launch_url_async(oauth_url, web_window_name=ft.UrlTarget.SELF.value)

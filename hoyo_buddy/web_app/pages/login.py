@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-import operator
 import os
+import secrets
 from typing import TYPE_CHECKING
 
 import flet as ft
-from flet.auth import OAuthProvider
 
 from hoyo_buddy.l10n import LocaleStr, Translator
 
@@ -17,18 +16,6 @@ __all__ = ("LoginPage",)
 
 class LoginPage(ft.View):
     def __init__(self, *, translator: Translator, locale: Locale) -> None:
-        self.provider = OAuthProvider(
-            client_id=os.environ["DISCORD_CLIENT_ID"],
-            client_secret=os.environ["DISCORD_CLIENT_SECRET"],
-            authorization_endpoint="https://discord.com/oauth2/authorize",
-            token_endpoint="https://discord.com/api/oauth2/token",  # noqa: S106
-            user_endpoint="https://discord.com/api/users/@me",
-            user_scopes=["identify"],
-            user_id_fn=operator.itemgetter("id"),
-            redirect_url="http://localhost:8645/oauth_callback"
-            if os.environ["ENV"] == "dev"
-            else "https://hb-app.seria.moe/oauth_callback",
-        )
         super().__init__(
             "login",
             [
@@ -47,4 +34,12 @@ class LoginPage(ft.View):
 
     async def on_login_button_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        await page.login_async(self.provider)  # pyright: ignore[reportArgumentType]
+        state = secrets.token_urlsafe(32)
+        await page.client_storage.set_async("hb.oauth_state", state)
+        redirect_url = (
+            "http://localhost:8645/custom_oauth_callback"
+            if os.environ["ENV"] == "dev"
+            else "https://hb-app.seria.moe/oauth_callback"
+        )
+        oauth_url = f"https://discord.com/oauth2/authorize?response_type=code&client_id={os.environ['DISCORD_CLIENT_ID']}&redirect_uri={redirect_url}&scope=identify&state={state}"
+        await page.launch_url_async(oauth_url, web_window_name=ft.UrlTarget.SELF.value)

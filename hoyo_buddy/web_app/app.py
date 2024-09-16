@@ -11,7 +11,6 @@ import flet as ft
 import genshin
 import orjson
 from discord import Locale
-from flet.auth import Authorization
 from pydantic import ValidationError
 
 from hoyo_buddy.constants import (
@@ -47,7 +46,6 @@ class WebApp:
         self._page = page
         self._translator = translator
         self._page.on_route_change = self.on_route_change
-        self._page.on_login = self.on_login
 
     async def initialize(self) -> None:
         self._page.theme_mode = ft.ThemeMode.DARK
@@ -65,6 +63,8 @@ class WebApp:
             page.title = "GachaLog System"
             if view is not None:
                 view.appbar = self.gacha_app_bar
+        elif route == "/custom_oauth_callback":
+            view = await self.oauth_callback(parsed_params)
         else:
             if not page.session.contains_key("hb.user_id") and route != "/login":
                 asyncio.create_task(page.client_storage.set_async("hb.original_route", e.route))
@@ -557,27 +557,65 @@ class WebApp:
 
         return result
 
-    async def on_login(self, e: ft.LoginEvent) -> None:
-        page: ft.Page = e.page
+    async def oauth_callback(self, params: dict[str, str]) -> ft.View | None:
+        page = self._page
 
-        if e.error:
-            await show_error_banner(page, message=f"Login failed: {e.error}")
-            return
+        state = await page.client_storage.get_async("hb.oauth_state")
+        if state != params.get("state"):
+            return pages.ErrorPage(code=403, message="Invalid state")
 
-        page: ft.Page = e.page
-        if not isinstance(page.auth, Authorization):
-            await show_error_banner(page, message="Login failed: No auth data")
-            return
+        code = params.get("code")
+        if code is None:
+            return pages.ErrorPage(code=400, message="Missing code")
 
-        if page.auth.user is None:
-            await show_error_banner(page, message="Login failed: No user data")
-            return
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                "https://discord.com/api/oauth2/token",
+                data={
+                    "client_id": os.environ["DISCORD_CLIENT_ID"],
+                    "client_secret": os.environ["DISCORD_CLIENT_SECRET"],
+                    "grant_type": "authorization_code",
+                    "code": code,
+                    "redirect_uri": (
+                        "http://localhost:8645/custom_oauth_callback"
+                        if os.environ["ENV"] == "dev"
+                        else "https://hb-app.seria.moe/oauth_callback"
+                    ),
+                    "scope": "identify",
+                },
+            ) as resp:
+                data = await resp.json()
+                if resp.status != 200:
+                    return pages.ErrorPage(
+                        code=resp.status, message=data.get("error") or "Unknown error"
+                    )
 
-        page.session.set("hb.user_id", page.auth.user.id)
+                access_token = data.get("access_token")
+                if access_token is None:
+                    return pages.ErrorPage(code=400, message="Missing access token")
+
+            async with session.get(
+                "https://discord.com/api/users/@me",
+                headers={"Authorization": f"Bearer {access_token}"},
+            ) as resp:
+                user_data = await resp.json()
+                if resp.status != 200:
+                    return pages.ErrorPage(
+                        code=resp.status, message=user_data.get("error") or "Unknown error"
+                    )
+
+                user_id = user_data.get("id")
+                if user_id is None:
+                    return pages.ErrorPage(code=400, message="Missing user ID")
+
+                page.session.set("hb.user_id", user_id)
+
         original_route = await page.client_storage.get_async("hb.original_route")
         if original_route:
             asyncio.create_task(page.client_storage.remove_async("hb.original_route"))
             await page.go_async(original_route)
+
+        return None
 
     @property
     def login_app_bar(self) -> ft.AppBar:

@@ -14,7 +14,6 @@ import discord
 from dotenv import load_dotenv
 from loguru import logger
 
-from hoyo_buddy.api import BotAPI
 from hoyo_buddy.bot import HoyoBuddy
 from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.l10n import Translator
@@ -55,10 +54,8 @@ async def main() -> None:
             KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError
         ):
             geetest_server = GeetestWebServer(translator=translator)
-            api_server = BotAPI(bot)
 
             asyncio.create_task(geetest_server.run())
-            asyncio.create_task(api_server.run())
 
             with bot.executor:
                 await bot.start(os.environ["DISCORD_TOKEN"])

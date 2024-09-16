@@ -579,7 +579,7 @@ class WebApp:
                     "redirect_uri": (
                         "http://localhost:8645/custom_oauth_callback"
                         if os.environ["ENV"] == "dev"
-                        else "https://hb-app.seria.moe/oauth_callback"
+                        else "https://hb-app.seria.moe/custom_oauth_callback"
                     ),
                     "scope": "identify",
                 },

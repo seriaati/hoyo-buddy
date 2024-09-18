@@ -39,7 +39,7 @@ from hoyo_buddy.ui.hoyo.profile.card_settings import (
     get_default_collection,
 )
 from hoyo_buddy.ui.hoyo.profile.items.redraw_card_btn import RedrawCardButton
-from hoyo_buddy.utils import blur_uid, contains_chinese, format_float, human_format_number
+from hoyo_buddy.utils import blur_uid, format_float, human_format_number
 
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
@@ -70,6 +70,7 @@ Character: TypeAlias = (
     | ZZZPartialAgent
     | HoyolabGICharacter
 )
+HoyolabCharacter: TypeAlias = HoyolabHSRCharacter | HoyolabGICharacter | ZZZPartialAgent
 GI_CARD_ENDPOINTS = {
     "hattvr": "http://localhost:7652/hattvr-enka-card",
     "encard": "http://localhost:7652/en-card",
@@ -533,10 +534,11 @@ class ProfileView(View):
 
         template = card_settings.template
 
-        cache_extra = self.cache_extras.get(str(character.id))
+        key = str(character.id)
+        if isinstance(character, HoyolabCharacter):
+            key += "-hoyolab"
+        cache_extra = self.cache_extras.get(key)
         locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
-        if contains_chinese(character.name):
-            locale = Locale.chinese
 
         if self.game is Game.STARRAIL:
             if "hb" in template:

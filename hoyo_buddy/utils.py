@@ -514,16 +514,3 @@ def get_ranking(number: float, number_list: list[float], *, reverse: bool) -> tu
         )
 
     return position, len(sorted_unique_list)
-
-
-def contains_chinese(text: str) -> bool:
-    """Check if a string contains Chinese characters.
-
-    Args:
-        text: The string to check.
-
-    Returns:
-        True if the string contains Chinese characters, False otherwise.
-    """
-    chinese_range = r"[\u4e00-\u9fff]"
-    return bool(re.search(chinese_range, text))

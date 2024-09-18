@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Final, Literal, NamedTuple, TypeAlias
 
 import discord
 from cachetools import LRUCache
+from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from ..models import DynamicBKInput, TopPadding
@@ -117,6 +118,23 @@ GOTHIC_FONT_MAPPING: Final[dict[FontStyle, str]] = {
     "medium": ZENMARUGOTHIC_MEDIUM,
     "bold": ZENMARUGOTHIC_BOLD,
     "black": ZENMARUGOTHIC_BLACK,
+}
+
+FALLBACK_FONT_MAPPING: Final[dict[discord.Locale, dict[FontStyle, str]]] = {
+    discord.Locale.taiwan_chinese: {
+        "light": NOTOSANSTC_LIGHT,
+        "regular": NOTOSANSTC_REGULAR,
+        "medium": NOTOSANSTC_MEDIUM,
+        "bold": NOTOSANSTC_BOLD,
+        "black": NOTOSANSTC_BLACK,
+    },
+    discord.Locale.chinese: {
+        "light": NOTOSANSSC_LIGHT,
+        "regular": NOTOSANSSC_REGULAR,
+        "medium": NOTOSANSSC_MEDIUM,
+        "bold": NOTOSANSSC_BOLD,
+        "black": NOTOSANSSC_BLACK,
+    },
 }
 
 image_cache: LRUCache[pathlib.Path, Image.Image] = LRUCache(maxsize=512)
@@ -325,15 +343,15 @@ class Drawer:
             WHITE if self.dark_mode else BLACK, EMPHASIS_OPACITY[emphasis]
         )
 
-    def _get_font(
+    def _get_font_path(
         self,
-        size: int,
         style: FontStyle,
         *,
         locale: discord.Locale | None = None,
         sans: bool = False,
         gothic: bool = False,
-    ) -> ImageFont.FreeTypeFont:
+        fallback: bool = False,
+    ) -> str:
         default_locale = discord.Locale.american_english
 
         locale = locale or self.locale
@@ -348,6 +366,8 @@ class Drawer:
             font_map = SANS_FONT_MAPPING
         elif gothic and locale is default_locale:
             font_map = GOTHIC_FONT_MAPPING
+        elif fallback:
+            font_map = FALLBACK_FONT_MAPPING[locale]
         else:
             font_map = FONT_MAPPING.get(locale, FONT_MAPPING[default_locale])
 
@@ -357,12 +377,27 @@ class Drawer:
             # Can't find italic version, use regular instead
             style = style.replace("_italic", "")  # pyright: ignore [reportAssignmentType]
 
-        font = font_map.get(style)
-        if font is None:
+        font_path = font_map.get(style)
+        if font_path is None:
             msg = f"Unable to find font style for {style} in {locale} locale"
             raise ValueError(msg)
 
-        return ImageFont.truetype(font, size)
+        return font_path
+
+    def _get_font(
+        self,
+        size: int,
+        style: FontStyle,
+        *,
+        locale: discord.Locale | None = None,
+        sans: bool = False,
+        gothic: bool = False,
+        fallback: bool = False,
+    ) -> ImageFont.FreeTypeFont:
+        return ImageFont.truetype(
+            self._get_font_path(style, locale=locale, sans=sans, gothic=gothic, fallback=fallback),
+            size,
+        )
 
     @staticmethod
     def open_image(
@@ -380,6 +415,10 @@ class Drawer:
         if size is not None:
             image = image.resize(size, Image.Resampling.LANCZOS)
         return image.copy()
+
+    @staticmethod
+    def has_glyph(font: TTFont, char: str) -> bool:
+        return any(ord(char) in table.cmap for table in font["cmap"].tables)  # pyright: ignore[reportAttributeAccessIssue]
 
     def write(
         self,
@@ -419,6 +458,10 @@ class Drawer:
             )
 
         font = self._get_font(size, style, locale=locale, sans=sans, gothic=gothic)
+        tt_font = TTFont(font.path)
+
+        if any(not self.has_glyph(tt_font, char) for char in translated_text):
+            font = self._get_font(size, style, locale=locale, fallback=True)
 
         if max_width is not None:
             if max_lines == 1:

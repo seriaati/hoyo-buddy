@@ -44,3 +44,15 @@ ZENMARUGOTHIC_REGULAR = "hoyo-buddy-assets/fonts/ZenMaruGothic/ZenMaruGothic-Reg
 ZENMARUGOTHIC_MEDIUM = "hoyo-buddy-assets/fonts/ZenMaruGothic/ZenMaruGothic-Medium.ttf"
 ZENMARUGOTHIC_BOLD = "hoyo-buddy-assets/fonts/ZenMaruGothic/ZenMaruGothic-Bold.ttf"
 ZENMARUGOTHIC_BLACK = "hoyo-buddy-assets/fonts/ZenMaruGothic/ZenMaruGothic-Black.ttf"
+
+NOTOSANSTC_LIGHT = "hoyo-buddy-assets/fonts/NotoSansTC/NotoSansTC-Light.ttf"
+NOTOSANSTC_REGULAR = "hoyo-buddy-assets/fonts/NotoSansTC/NotoSansTC-Regular.ttf"
+NOTOSANSTC_MEDIUM = "hoyo-buddy-assets/fonts/NotoSansTC/NotoSansTC-Medium.ttf"
+NOTOSANSTC_BOLD = "hoyo-buddy-assets/fonts/NotoSansTC/NotoSansTC-Bold.ttf"
+NOTOSANSTC_BLACK = "hoyo-buddy-assets/fonts/NotoSansTC/NotoSansTC-Black.ttf"
+
+NOTOSANSSC_LIGHT = "hoyo-buddy-assets/fonts/NotoSansSC/NotoSansSC-Light.ttf"
+NOTOSANSSC_REGULAR = "hoyo-buddy-assets/fonts/NotoSansSC/NotoSansSC-Regular.ttf"
+NOTOSANSSC_MEDIUM = "hoyo-buddy-assets/fonts/NotoSansSC/NotoSansSC-Medium.ttf"
+NOTOSANSSC_BOLD = "hoyo-buddy-assets/fonts/NotoSansSC/NotoSansSC-Bold.ttf"
+NOTOSANSSC_BLACK = "hoyo-buddy-assets/fonts/NotoSansSC/NotoSansSC-Black.ttf"

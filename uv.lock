@@ -694,6 +694,31 @@ wheels = [
 ]
 
 [[package]]
+name = "fonttools"
+version = "4.53.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c6/cb/cd80a0da995adde8ade6044a8744aee0da5efea01301cadf770f7fbe7dcc/fonttools-4.53.1.tar.gz", hash = "sha256:e128778a8e9bc11159ce5447f76766cefbd876f44bd79aff030287254e4752c4", size = 3452797 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8b/6a/206391c869ab22d1374e2575cad7cab36b93b9e3d37f48f4696eed2c6e9e/fonttools-4.53.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:da33440b1413bad53a8674393c5d29ce64d8c1a15ef8a77c642ffd900d07bfe1", size = 2762654 },
+    { url = "https://files.pythonhosted.org/packages/f5/7e/4060d88dbfaf446e1c9f0fe9cf13dba36ba47c4da85ce5c1df084ce47e7d/fonttools-4.53.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:5ff7e5e9bad94e3a70c5cd2fa27f20b9bb9385e10cddab567b85ce5d306ea923", size = 2247865 },
+    { url = "https://files.pythonhosted.org/packages/e1/67/fff766817e17d67208f8a1e72de15066149485acb5e4ff0816b11fd5fca3/fonttools-4.53.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c6e7170d675d12eac12ad1a981d90f118c06cf680b42a2d74c6c931e54b50719", size = 4873046 },
+    { url = "https://files.pythonhosted.org/packages/a4/22/0a0ad59d9367997fd74a00ad2e88d10559122e09f105e94d34c155aecc0a/fonttools-4.53.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bee32ea8765e859670c4447b0817514ca79054463b6b79784b08a8df3a4d78e3", size = 4920859 },
+    { url = "https://files.pythonhosted.org/packages/0b/c4/b4e2f1699a5e2244373a6e8175f862f49f377b444adc6c7b1fe1f5b3d04d/fonttools-4.53.1-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:6e08f572625a1ee682115223eabebc4c6a2035a6917eac6f60350aba297ccadb", size = 4885904 },
+    { url = "https://files.pythonhosted.org/packages/64/e7/b9a07c386adf8ad0348163fbcaab74daed6ef18ddb3f49b61b5c19900aeb/fonttools-4.53.1-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:b21952c092ffd827504de7e66b62aba26fdb5f9d1e435c52477e6486e9d128b2", size = 5054708 },
+    { url = "https://files.pythonhosted.org/packages/e9/53/2a79462ae38d7943e63290209c04fef89677c67b29cb329cdc549c18d4d5/fonttools-4.53.1-cp311-cp311-win32.whl", hash = "sha256:9dfdae43b7996af46ff9da520998a32b105c7f098aeea06b2226b30e74fbba88", size = 2158885 },
+    { url = "https://files.pythonhosted.org/packages/c8/e1/059700c154bd7170d1c37061239836d2e51ff608f47075450f06dd3c292a/fonttools-4.53.1-cp311-cp311-win_amd64.whl", hash = "sha256:d4d0096cb1ac7a77b3b41cd78c9b6bc4a400550e21dc7a92f2b5ab53ed74eb02", size = 2205133 },
+    { url = "https://files.pythonhosted.org/packages/87/63/8271f50f3e7bff8b78e03914c4c2893f2f21bd4db2975c60d11ecfbdd174/fonttools-4.53.1-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:d92d3c2a1b39631a6131c2fa25b5406855f97969b068e7e08413325bc0afba58", size = 2756146 },
+    { url = "https://files.pythonhosted.org/packages/dd/bd/cb8fd2dddd68089c112bf42a88afe188b8ace73f94406539857dcc9347a6/fonttools-4.53.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:3b3c8ebafbee8d9002bd8f1195d09ed2bd9ff134ddec37ee8f6a6375e6a4f0e8", size = 2244990 },
+    { url = "https://files.pythonhosted.org/packages/ae/71/2b9761e25697bdaf3dfe8269541bd4324f3eb0e4cc13f71d7f90cd272394/fonttools-4.53.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:32f029c095ad66c425b0ee85553d0dc326d45d7059dbc227330fc29b43e8ba60", size = 4787604 },
+    { url = "https://files.pythonhosted.org/packages/db/2b/5779cfd48625e013c2dfcf0c246474d5b1f5d061a5f1e476037bf9fff3a3/fonttools-4.53.1-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:10f5e6c3510b79ea27bb1ebfcc67048cde9ec67afa87c7dd7efa5c700491ac7f", size = 4871141 },
+    { url = "https://files.pythonhosted.org/packages/b8/3d/ac3cec35a503bf789d03e9d155a220c9e574f4f1573f00a3bea55695d535/fonttools-4.53.1-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:f677ce218976496a587ab17140da141557beb91d2a5c1a14212c994093f2eae2", size = 4764714 },
+    { url = "https://files.pythonhosted.org/packages/ac/9f/27135ac0328e22cca1ba23ee6a1a1f971c13e9f0387adc5598d4635c501d/fonttools-4.53.1-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:9e6ceba2a01b448e36754983d376064730690401da1dd104ddb543519470a15f", size = 5023568 },
+    { url = "https://files.pythonhosted.org/packages/04/40/44d6a94e52e91fe104f9ca95944466af34828992cbc66b666f541de137f1/fonttools-4.53.1-cp312-cp312-win32.whl", hash = "sha256:791b31ebbc05197d7aa096bbc7bd76d591f05905d2fd908bf103af4488e60670", size = 2147572 },
+    { url = "https://files.pythonhosted.org/packages/6d/9a/b695930e1b4e6929cc60e294489421632a05c105ac8c56ee63ef56a47872/fonttools-4.53.1-cp312-cp312-win_amd64.whl", hash = "sha256:6ed170b5e17da0264b9f6fae86073be3db15fa1bd74061c8331022bca6d09bab", size = 2193313 },
+    { url = "https://files.pythonhosted.org/packages/e4/b9/0394d67056d4ad36a3807b439571934b318f1df925593a95e9ec0516b1a7/fonttools-4.53.1-py3-none-any.whl", hash = "sha256:f1f8758a2ad110bd6432203a344269f445a2907dc24ef6bccfd0ac4e14e0d71d", size = 1090472 },
+]
+
+[[package]]
 name = "frozenlist"
 version = "1.4.1"
 source = { registry = "https://pypi.org/simple" }
@@ -735,7 +760,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.1"
-source = { git = "https://github.com/thesadru/genshin.py?branch=dev#05b4429b6c30445aa8c7eac3a753b8c1af797571" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#1f69f1ff7e82ad6968ef7743efcc8e2655da1151" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },
@@ -817,6 +842,7 @@ dependencies = [
     { name = "enka-api" },
     { name = "fake-useragent" },
     { name = "flet" },
+    { name = "fonttools" },
     { name = "genshin", extra = ["all"] },
     { name = "gitpython" },
     { name = "hakushin-py" },
@@ -857,7 +883,8 @@ requires-dist = [
     { name = "enka-api", specifier = ">=2.2.5" },
     { name = "fake-useragent", specifier = ">=1.5.1" },
     { name = "flet", specifier = ">=0.24.0" },
-    { name = "genshin", extras = ["all"], git = "https://github.com/thesadru/genshin.py?branch=dev" },
+    { name = "fonttools", specifier = ">=4.53.1" },
+    { name = "genshin", extras = ["all"], git = "https://github.com/thesadru/genshin.py?branch=master" },
     { name = "gitpython", specifier = ">=3.1.43" },
     { name = "hakushin-py", specifier = ">=0.4.4" },
     { name = "jishaku", specifier = ">=2.5.2" },

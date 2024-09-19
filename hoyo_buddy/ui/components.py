@@ -457,9 +457,11 @@ class PaginatorSelect(Select, Generic[V_co]):
     def process_options(self, *, selected_values: list[str] | None = None) -> list[SelectOption]:
         split_options = split_list_to_chunks(self.options_before_split, 23 - self._max_values + 1)
         selected_values = selected_values or []
+
         with contextlib.suppress(ValueError):
             selected_values.remove("next_page")
             selected_values.remove("prev_page")
+
         selected_options = [
             option for option in self.options_before_split if option.value in selected_values
         ]
@@ -468,8 +470,10 @@ class PaginatorSelect(Select, Generic[V_co]):
             if len(split_options) == 1:
                 return split_options[0]
             return split_options[0] + [NEXT_PAGE]
+
         if self.page_index == len(split_options) - 1:
             return [PREV_PAGE] + selected_options + split_options[-1]
+
         return [PREV_PAGE] + selected_options + split_options[self.page_index] + [NEXT_PAGE]
 
     def set_page_based_on_value(self, value: str) -> None:

@@ -207,6 +207,7 @@ class CardSettingsView(View):
                 characters=self._characters, character_id=self.selected_character_id, row=0
             )
         )
+
         self.add_item(
             ImageSelect(
                 current_image_url=self.card_settings.current_image,
@@ -309,11 +310,16 @@ class CharacterSelect(PaginatorSelect[CardSettingsView]):
         self._character_id = character_id
 
         options = self._get_options()
+
         super().__init__(
             options=options,
             placeholder=LocaleStr(key="profile.character_select.placeholder"),
             row=row,
         )
+
+        self.set_page_based_on_value(self._character_id)
+        self.options = self.process_options()
+        self.update_options_defaults(values=[self._character_id])
 
     @staticmethod
     def _get_chara_emoji(chara: Character) -> str:

@@ -61,7 +61,7 @@ class GenshinClient(genshin.Client):
     async def request(self, *args: Any, **kwargs: Any) -> Any:
         try:
             return await super().request(*args, **kwargs)
-        except python_socks.ProxyError:
+        except (python_socks.ProxyError, python_socks.ProxyTimeoutError):
             self.proxy = None
             return await super().request(*args, **kwargs)
 

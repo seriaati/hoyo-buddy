@@ -276,16 +276,16 @@ class WebApp:
             device_id = await page.client_storage.get_async(f"hb.{params.user_id}.device_id")
             device_fp = await page.client_storage.get_async(f"hb.{params.user_id}.device_fp")
 
-            client = genshin.Client(
-                cookies,
-                lang=locale_to_gpy_lang(locale),
-                region=genshin.Region.OVERSEAS
-                if params.platform is Platform.HOYOLAB
-                else genshin.Region.CHINESE,
-                device_id=device_id,
-                device_fp=device_fp,
-            )
             try:
+                client = genshin.Client(
+                    cookies,
+                    lang=locale_to_gpy_lang(locale),
+                    region=genshin.Region.OVERSEAS
+                    if params.platform is Platform.HOYOLAB
+                    else genshin.Region.CHINESE,
+                    device_id=device_id,
+                    device_fp=device_fp,
+                )
                 accounts = await client.get_game_accounts()
             except Exception as exc:
                 await show_error_banner(page, message=str(exc))

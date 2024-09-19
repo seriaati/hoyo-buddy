@@ -60,6 +60,7 @@ reportUnnecessaryComparison = true
 reportUnnecessaryContains = true
 reportUnnecessaryIsInstance = true
 reportUnnecessaryTypeIgnoreComment = true
+typeCheckingMode = "standard"
 
 [tool.aerich]
 location = "./migrations"

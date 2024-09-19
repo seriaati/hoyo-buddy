@@ -390,7 +390,7 @@ class ProfileView(View):
     async def _draw_hb_hsr_character_card(
         self,
         session: aiohttp.ClientSession,
-        executor: concurrent.futures.ProcessPoolExecutor,
+        executor: concurrent.futures.ThreadPoolExecutor,
         loop: asyncio.AbstractEventLoop,
         character: Character,
         card_settings: CardSettings,
@@ -428,7 +428,7 @@ class ProfileView(View):
     async def _draw_hb_gi_character_card(
         self,
         session: aiohttp.ClientSession,
-        executor: concurrent.futures.ProcessPoolExecutor,
+        executor: concurrent.futures.ThreadPoolExecutor,
         loop: asyncio.AbstractEventLoop,
         character: Character,
         card_settings: CardSettings,
@@ -473,7 +473,7 @@ class ProfileView(View):
     async def _draw_hb_zzz_character_card(
         self,
         session: aiohttp.ClientSession,
-        executor: concurrent.futures.ProcessPoolExecutor,
+        executor: concurrent.futures.ThreadPoolExecutor,
         loop: asyncio.AbstractEventLoop,
         character: Character,
         card_settings: CardSettings,

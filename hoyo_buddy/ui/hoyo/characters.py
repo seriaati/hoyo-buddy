@@ -341,7 +341,7 @@ class CharactersView(View):
         self,
         session: aiohttp.ClientSession,
         characters: Sequence[Character],
-        executor: concurrent.futures.ProcessPoolExecutor,
+        executor: concurrent.futures.ThreadPoolExecutor,
         loop: asyncio.AbstractEventLoop,
     ) -> File:
         if self.game is Game.GENSHIN:

@@ -35,7 +35,7 @@ class FarmNotifyView(PaginatorView):
         farm_notify: FarmNotify,
         dark_mode: bool,
         session: aiohttp.ClientSession,
-        executor: concurrent.futures.ProcessPoolExecutor,
+        executor: concurrent.futures.ThreadPoolExecutor,
         loop: asyncio.AbstractEventLoop,
         *,
         author: User | Member | None,

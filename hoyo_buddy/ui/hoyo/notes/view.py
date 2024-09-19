@@ -426,7 +426,7 @@ class NotesView(View):
         self,
         session: aiohttp.ClientSession,
         notes: genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes,
-        executor: concurrent.futures.ProcessPoolExecutor,
+        executor: concurrent.futures.ThreadPoolExecutor,
         loop: asyncio.AbstractEventLoop,
     ) -> io.BytesIO:
         if isinstance(notes, genshin.models.Notes):

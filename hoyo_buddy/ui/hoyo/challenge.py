@@ -278,7 +278,7 @@ class ChallengeView(View):
     async def _draw_card(
         self,
         session: aiohttp.ClientSession,
-        executor: concurrent.futures.ProcessPoolExecutor,
+        executor: concurrent.futures.ThreadPoolExecutor,
         loop: asyncio.AbstractEventLoop,
     ) -> File:
         if isinstance(self.challenge, SpiralAbyss):

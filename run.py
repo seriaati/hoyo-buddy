@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     logger.add(sys.stderr, level="DEBUG" if is_dev else "INFO")
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
-    logger.add("hoyo_buddy.log", rotation="32 MB", retention="5 days", level="INFO")
+    logger.add("logs/hoyo_buddy.log", rotation="1 day", retention="2 weeks", level="DEBUG")
 
     try:
         from icecream import install

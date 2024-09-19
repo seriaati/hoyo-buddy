@@ -527,8 +527,10 @@ class ProfileView(View):
         character_id = self.character_ids[0]
         character = character or self.characters[character_id]
 
-        # Change the template to hb1 character type is cache and current temp is not hb
-        if self.character_type is CharacterType.CACHE and "hb" not in card_settings.template:
+        force_hb_temp = self.character_type is CharacterType.CACHE or isinstance(
+            character, HoyolabCharacter
+        )
+        if force_hb_temp and "hb" not in card_settings.template:
             card_settings.template = "hb1"
             await card_settings.save(update_fields=("template",))
 

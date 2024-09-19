@@ -99,7 +99,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         )
         self.owner_id = 410036441129943050
         self.pool = pool
-        self.executor = concurrent.futures.ProcessPoolExecutor()
+        self.executor = concurrent.futures.ThreadPoolExecutor()
         self.config = config
         self.cache = LFUCache()
         self.user_ids: set[int] = set()
@@ -426,4 +426,5 @@ class HoyoBuddy(commands.AutoShardedBot):
         for task in self.login_notif_tasks.values():
             task.cancel()
 
+        self.executor.shutdown()
         await super().close()

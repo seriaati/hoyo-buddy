@@ -94,7 +94,7 @@ class DrawInput:
     locale: Locale
     session: aiohttp.ClientSession
     filename: str
-    executor: concurrent.futures.ProcessPoolExecutor
+    executor: concurrent.futures.ThreadPoolExecutor
     loop: asyncio.AbstractEventLoop
 
 

@@ -204,6 +204,7 @@ class GITempTwoBuildCard:
                 size=46,
                 style="medium",
                 position=start_pos,
+                locale=Locale(self._locale),
                 gothic=True,
                 color=color_1,
                 anchor="rt",

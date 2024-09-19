@@ -366,7 +366,7 @@ class Drawer:
             font_map = SANS_FONT_MAPPING
         elif gothic and locale is default_locale:
             font_map = GOTHIC_FONT_MAPPING
-        elif fallback:
+        elif fallback and locale in FALLBACK_FONT_MAPPING:
             font_map = FALLBACK_FONT_MAPPING[locale]
         else:
             font_map = FONT_MAPPING.get(locale, FONT_MAPPING[default_locale])

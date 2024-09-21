@@ -492,7 +492,7 @@ class ChallengeTypeSelect(Select[ChallengeView]):
         self.view._item_states["challenge_view.view_buffs"] = not isinstance(
             self.view.challenge, ChallengeWithBuff
         )
-        self.view._item_states["show_uid"] = False
+        self.view._item_states["show_uid"] = not isinstance(self.view.challenge, ShiyuDefense)
 
         await self.view.update(self, i)
 

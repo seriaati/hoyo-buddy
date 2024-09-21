@@ -528,7 +528,7 @@ class ProfileView(View):
         character = character or self.characters[character_id]
 
         force_hb_temp = self.character_type is CharacterType.CACHE or isinstance(
-            character, HoyolabCharacter
+            character, HoyolabGICharacter
         )
         if force_hb_temp and "hb" not in card_settings.template:
             card_settings.template = "hb1"

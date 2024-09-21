@@ -37,7 +37,7 @@ from ...bot.error_handler import get_error_embed
 from ...db.models import ChallengeHistory, get_dyk
 from ...enums import ChallengeType
 from ...utils import get_floor_difficulty
-from ..components import Button, Select, SelectOption, View
+from ..components import Button, Select, SelectOption, ToggleButton, View
 
 if TYPE_CHECKING:
     import asyncio
@@ -180,6 +180,7 @@ class ChallengeView(View):
 
         self.characters: list[GICharacter] = []
         self.agent_ranks: dict[int, int] = {}
+        self.uid: int | None = None
 
     @property
     def challenge_type(self) -> ChallengeType:
@@ -383,6 +384,7 @@ class ChallengeView(View):
                 ),
                 self.challenge,
                 self.agent_ranks,
+                self.uid,
                 self.translator,
             )
 
@@ -393,6 +395,7 @@ class ChallengeView(View):
         self.add_item(ChallengeTypeSelect(GAME_CHALLENGE_TYPES[self.account.game]))
         self.add_item(PhaseSelect())
         self.add_item(ViewBuffs())
+        self.add_item(ShowUID(current_toggle=self.uid is not None))
 
     async def update(
         self, item: Select[ChallengeView] | Button[ChallengeView], i: Interaction
@@ -489,6 +492,7 @@ class ChallengeTypeSelect(Select[ChallengeView]):
         self.view._item_states["challenge_view.view_buffs"] = not isinstance(
             self.view.challenge, ChallengeWithBuff
         )
+        self.view._item_states["show_uid"] = False
 
         await self.view.update(self, i)
 
@@ -500,6 +504,7 @@ class ViewBuffs(Button[ChallengeView]):
             style=discord.ButtonStyle.blurple,
             disabled=True,
             custom_id="challenge_view.view_buffs",
+            row=4,
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -526,3 +531,17 @@ class ViewBuffs(Button[ChallengeView]):
         await i.response.send_message(embed=embed, view=view, ephemeral=True)
         view.message = await i.original_response()
         return None
+
+
+class ShowUID(ToggleButton[ChallengeView]):
+    def __init__(self, *, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle, LocaleStr(key="show_uid"), row=4, disabled=True, custom_id="show_uid"
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i, edit=False)
+        self.view.uid = self.view.account.uid if self.current_toggle else None
+
+        await self.set_loading_state(i)
+        await self.view.update(self, i)

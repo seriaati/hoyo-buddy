@@ -20,12 +20,14 @@ class ShiyuDefenseCard:
         self,
         data: genshin.models.ShiyuDefense,
         agent_ranks: dict[int, int],
+        uid: int | None,
         *,
         translator: Translator,
         locale: str,
     ) -> None:
         self.data = data
         self.agent_ranks = agent_ranks
+        self.uid = uid
         self.translator = translator
         self.locale = Locale(locale)
 
@@ -41,6 +43,16 @@ class ShiyuDefenseCard:
             return None
 
     def write_stats(self, drawer: Drawer) -> None:
+        if self.uid is not None:
+            drawer.write(
+                f"UID: {self.uid}",
+                size=40,
+                position=(1970, 3387),
+                color=self.text_color,
+                style="medium_italic",
+                sans=True,
+            )
+
         drawer.write(
             LocaleStr(key="shiyu_overview"),
             size=70,

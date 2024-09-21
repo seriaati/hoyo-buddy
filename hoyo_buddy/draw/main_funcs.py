@@ -374,9 +374,7 @@ async def draw_apc_shadow_card(
 
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
-        funcs.hsr.apc_shadow.APCShadowCard(
-            data, season, draw_input.locale.value, translator
-        ).draw,
+        funcs.hsr.apc_shadow.APCShadowCard(data, season, draw_input.locale.value, translator).draw,
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
@@ -404,9 +402,7 @@ async def draw_img_theater_card(
 
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
-        funcs.genshin.ImgTheaterCard(
-            data, chara_consts, draw_input.locale.value, translator
-        ).draw,
+        funcs.genshin.ImgTheaterCard(data, chara_consts, draw_input.locale.value, translator).draw,
     )
 
     buffer.seek(0)
@@ -628,6 +624,7 @@ async def draw_shiyu_card(
     draw_input: DrawInput,
     shiyu: genshin.models.ShiyuDefense,
     agent_ranks: dict[int, int],
+    uid: int | None,
     translator: Translator,
 ) -> File:
     urls = [
@@ -643,7 +640,7 @@ async def draw_shiyu_card(
     await download_images(urls, "shiyu", draw_input.session)
 
     card = funcs.zzz.ShiyuDefenseCard(
-        shiyu, agent_ranks, translator=translator, locale=draw_input.locale.value
+        shiyu, agent_ranks, uid, translator=translator, locale=draw_input.locale.value
     )
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 

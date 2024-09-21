@@ -61,6 +61,10 @@ class GeetestWebServer:
         if self._login_template is None or self._command_template is None:
             raise web.HTTPInternalServerError(reason="Template not loaded")
 
+        user_exist = await User.filter(id=payload.user_id).exists()
+        if not user_exist:
+            raise web.HTTPNotFound(reason="User not found")
+
         if isinstance(payload, GeetestPayload):
             body = (
                 self._login_template.replace("{ user_id }", str(payload.user_id))

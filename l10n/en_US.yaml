@@ -677,3 +677,15 @@ star5_no_guaranteed: "Current guarantee status: Banner item **NOT** guaranteed"
 characters_view_show_max_level_only: Show max level characters only
 characters_embed_max_level_characters: Max Level Characters
 natlan_reputation: "Reputation: Lv.{reputation}, Tribes: {tribes}"
+shiyu_overview: Overview
+shiyu_fastest_clear_time: "Fastest Clear Time This Season:"
+shiyu_highest_frontier: "Highest Frontier Cleared:"
+shiyu_relevant_season: "Relevant Season:"
+shiyu_1_frontier: First Frontier
+shiyu_2_frontier: Second Frontier
+shiyu_3_frontier: Third Frontier
+shiyu_4_frontier: Fourth Frontier
+shiyu_5_frontier: Fifth Frontier
+shiyu_6_frontier: Sixth Frontier
+shiyu_7_frontier: Seventh Frontier
+shiyu_defense: Shiyu defense

@@ -117,6 +117,7 @@ class ChallengeType(StrEnum):
     PURE_FICTION = "Pure fiction"
     APC_SHADOW = "Apocalyptic shadow"
     IMG_THEATER = "img_theater_large_block_title"
+    SHIYU_DEFENSE = "Shiyu defense"
 
 
 class ZZZElement(StrEnum):

@@ -646,3 +646,31 @@ async def draw_gi_team_card(
     )
     with timing("draw", tags={"type": "gi_team_card"}):
         return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
+
+
+async def draw_shiyu_card(
+    draw_input: DrawInput,
+    shiyu: genshin.models.ShiyuDefense,
+    agent_ranks: dict[int, int],
+    translator: Translator,
+) -> File:
+    urls = [
+        character.icon
+        for floor in shiyu.floors
+        for character in floor.node_1.characters + floor.node_2.characters
+    ]
+    urls.extend(
+        bangboo.icon
+        for floor in shiyu.floors
+        for bangboo in (floor.node_1.bangboo, floor.node_2.bangboo)
+    )
+    await download_images(urls, "shiyu", draw_input.session)
+
+    card = funcs.zzz.ShiyuDefenseCard(
+        shiyu, agent_ranks, translator=translator, locale=draw_input.locale.value
+    )
+    with timing("draw", tags={"type": "shiyu_card"}):
+        buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
+
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)

@@ -539,13 +539,8 @@ class Hoyo(commands.Cog):
     ) -> list[app_commands.Choice[str]]:
         return await self.game_autocomplete(i, current, (Game.GENSHIN,))
 
-    @challenge_command.autocomplete("account")
-    async def gi_hsr_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.game_autocomplete(i, current, (Game.GENSHIN, Game.STARRAIL))
-
     @notes_command.autocomplete("account")
+    @challenge_command.autocomplete("account")
     @profile_command.autocomplete("account")
     async def gi_hsr_zzz_acc_autocomplete(
         self, i: Interaction, current: str

@@ -19,6 +19,7 @@ Challenge: TypeAlias = (
     | genshin.models.StarRailPureFiction
     | genshin.models.StarRailAPCShadow
     | genshin.models.ImgTheaterData
+    | genshin.models.ShiyuDefense
 )
 ChallengeWithLang: TypeAlias = (
     models.StarRailChallenge
@@ -31,6 +32,10 @@ ChallengeWithBuff: TypeAlias = (
     genshin.models.StarRailAPCShadow
     | genshin.models.ImgTheaterData
     | genshin.models.StarRailPureFiction
+    | genshin.models.ShiyuDefense
+)
+Buff: TypeAlias = (
+    genshin.models.TheaterBuff | genshin.models.ChallengeBuff | genshin.models.ShiyuDefenseBuff
 )
 
 Interaction: TypeAlias = discord.Interaction[HoyoBuddy]

@@ -251,6 +251,12 @@ def human_format_number(number: int, decimal_places: int = 1) -> str:
     return f"{n / 10 ** (3 * millidx):.{decimal_places}f}{millnames[millidx]}"
 
 
+def format_time(seconds: int) -> str:
+    hours, remainder = divmod(seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return f"{hours:02d}h {minutes:02d}m {seconds:02d}s"
+
+
 def format_float(num: float, *, decimals: int = 2) -> str:
     """
     Formats a float number to the last non-zero decimal place, while rounding numbers

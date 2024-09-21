@@ -291,8 +291,12 @@ class ChallengeHistory(BaseModel):
             end_time = data.end_time
             name = None
         elif isinstance(data, genshin.models.ImgTheaterData):
-            start_time = data.schedule.start_time
-            end_time = data.schedule.end_time
+            start_time = data.schedule.start_datetime
+            end_time = data.schedule.end_datetime
+            name = None
+        elif isinstance(data, genshin.models.ShiyuDefense):
+            start_time = data.begin_time
+            end_time = data.end_time
             name = None
         else:
             season = next(season for season in data.seasons if season.id == season_id)

@@ -38,24 +38,6 @@ __all__ = ("AppCommandTranslator", "LocaleStr", "Translator")
 COMMAND_REGEX = r"</[^>]+>"
 SOURCE_LANG = "en_US"
 L10N_PATH = pathlib.Path("./l10n")
-LANGUAGES = (
-    "en_US",
-    "zh_CN",
-    "zh_TW",
-    "ja",
-    "fr",
-    "pt_BR",
-    "id",
-    "nl",
-    # "de",
-    # "ko",
-    "vi",
-    # "ru",
-    # "th",
-    # "es_ES",
-    # "hi",
-    # "ro",
-)
 
 
 def gen_string_key(string: str) -> str:
@@ -126,11 +108,13 @@ class Translator:
         logger.info("Translator loaded")
 
     async def load_l10n_files(self) -> None:
-        for lang in LANGUAGES:
-            file_path = L10N_PATH / f"{lang}.yaml"
+        for file_path in L10N_PATH.glob("*.yaml"):
             if not file_path.exists():
                 continue
+
+            lang = file_path.stem
             self._localizations[lang] = await read_yaml(file_path.as_posix())
+            logger.info(f"Loaded {lang} lang file")
 
     async def unload(self) -> None:
         logger.info("Translator unloaded")

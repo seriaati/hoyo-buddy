@@ -677,3 +677,15 @@ star5_no_guaranteed: "當前保底情況: **不一定**得到 UP 池物品"
 characters_view_show_max_level_only: 僅顯示滿級角色
 characters_embed_max_level_characters: 滿級角色
 natlan_reputation: "聲望: Lv.{reputation}, 部落: {tribes}"
+shiyu_overview: 總覽
+shiyu_fastest_clear_time: "當期最快通關時間:"
+shiyu_highest_frontier: "最高通關防線:"
+shiyu_relevant_season: "統計周期:"
+shiyu_1_frontier: 劇變節點第一防線
+shiyu_2_frontier: 劇變節點第二防線
+shiyu_3_frontier: 劇變節點第三防線
+shiyu_4_frontier: 劇變節點第四防線
+shiyu_5_frontier: 劇變節點第五防線
+shiyu_6_frontier: 劇變節點第六防線
+shiyu_7_frontier: 劇變節點第七防線
+shiyu_defense: 式與防衛戰

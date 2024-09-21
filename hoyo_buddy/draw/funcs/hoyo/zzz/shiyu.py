@@ -140,24 +140,37 @@ class ShiyuDefenseCard:
                 genshin.models.ZZZElementType.PHYSICAL: "Physical.png",
                 None: "None.png",
             }
-            icon_start_pos = (tbox.right + 34, tbox.top - 10)
+            icon_start_pos = (tbox.right + 34, tbox.top + tbox.height // 2 - 50)
 
             for i, element in enumerate(elements):
-                icon = drawer.open_asset(f"{element_icons[element]}", size=(35, 35))
+                icon = drawer.open_asset(f"{element_icons[element]}", size=(45, 45))
                 im.alpha_composite(icon, icon_start_pos)
 
                 if i == 1:
-                    icon_start_pos = (tbox.right + 34, icon_start_pos[1] + 45)
+                    icon_start_pos = (tbox.right + 34, icon_start_pos[1] + icon.height + 10)
                 else:
-                    icon_start_pos = (icon_start_pos[0] + 45, icon_start_pos[1])
+                    icon_start_pos = (icon_start_pos[0] + icon.width + 10, icon_start_pos[1])
 
-            line = drawer.open_asset("line.png")
-            im.alpha_composite(line, (icon_start_pos[0] + 20, pos[1] + 20))
+            drawer.draw.line(
+                (
+                    icon_start_pos[0] + 24,
+                    icon_start_pos[1] - 55,
+                    icon_start_pos[0] + 24,
+                    icon_start_pos[1] + 45,
+                ),
+                fill=self.text_color,
+                width=5,
+            )
 
-            rating = drawer.open_asset(f"{frontier.rating}.png")
-            im.alpha_composite(rating, (icon_start_pos[0] + 54, pos[1] + 30))
-
-            start_pos = (pos[0], pos[1] + 192)
+            drawer.write(
+                frontier.rating,
+                size=110,
+                position=(icon_start_pos[0] + 54, tbox.top + tbox.height // 2),
+                color=self.text_color,
+                style="black_italic",
+                sans=True,
+                anchor="lm",
+            )
 
             bangboo_block = drawer.open_asset("bangboo_block.png")
             bangboo_level_flair = drawer.open_asset("bangboo_level_flair.png")
@@ -167,6 +180,8 @@ class ShiyuDefenseCard:
             level_flair = drawer.open_asset("level_flair.png")
             mind_flair = drawer.open_asset("mind_flair.png")
             block = drawer.open_asset("chara_block.png")
+
+            start_pos = (pos[0], pos[1] + 192)
 
             for node_index, node in enumerate((frontier.node_1, frontier.node_2)):
                 bangboo = node.bangboo

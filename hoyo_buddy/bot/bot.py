@@ -396,30 +396,6 @@ class HoyoBuddy(commands.AutoShardedBot):
             return None
         return await super().on_command_error(context, exception)
 
-    def get_all_commands(self, locale: discord.Locale) -> dict[str, str]:
-        if self.tree.translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
-
-        result: dict[str, str] = {}
-        for cog in self.cogs.values():
-            for command in cog.walk_app_commands():
-                if (string := command._locale_description) is None:
-                    continue
-                if (key := string.extras.get("key")) is None:
-                    desc = string.message
-                else:
-                    desc = self.translator.translate(LocaleStr(key=key), locale)
-
-                name = (
-                    f"/{cog.__cog_name__} {command.name}"
-                    if isinstance(cog, commands.GroupCog)
-                    else f"/{command.name}"
-                )
-                result[name] = desc
-
-        return result
-
     async def close(self) -> None:
         logger.info("Bot shutting down...")
 

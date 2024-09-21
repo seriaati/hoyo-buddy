@@ -218,8 +218,6 @@ game_maintenance_description: 请稍后再试
 game_maintenance_title: 游戏处于维护中。
 game_value_incomplete_param_error_message: 你必须指定所属游戏UID
 geeetest_verification_complete: 验证完成
-geeetest_verification_timeout: 验证已过期
-geeetest_verification_timeout_description: 验证已过期。请使用</geetest>再试一次。
 geetest.embed.title: 在登入前需要进行 CAPTCHA 验证
 geetest.no_need: 无需进行 Geetest 验证
 geetest.no_need.description: "从来不需要进行 geetest 验证！你怎么在这？！"
@@ -308,7 +306,7 @@ notes-card.gi.remaining: 剩余
 notes-card.gi.resin: 树脂
 notes-card.gi.resin-discounts: 树脂折扣
 notes-card.hsr.daily-training: 每日实训
-notes-card.hsr.echo-of-war-discounts: 历战余响剩余
+notes-card.hsr.echo-of-war-discounts: 历战余响次数
 notes-card.hsr.reserved-power: 后备开拓力
 notes-card.hsr.trailblaze-power: 开拓力
 notes.item_full_in_time: "{emoji} 在{in_time}溢出"

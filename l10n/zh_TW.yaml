@@ -678,7 +678,7 @@ characters_view_show_max_level_only: 僅顯示滿級角色
 characters_embed_max_level_characters: 滿級角色
 natlan_reputation: "聲望: Lv.{reputation}, 部落: {tribes}"
 shiyu_overview: 總覽
-shiyu_fastest_clear_time: "當季最快通關時間:"
+shiyu_fastest_clear_time: "當期最快通關時間:"
 shiyu_highest_frontier: "最高通關防線:"
 shiyu_relevant_season: "統計周期:"
 shiyu_1_frontier: 劇變節點第一防線

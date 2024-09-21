@@ -54,7 +54,7 @@
                                 ...(mmt.check_id && { check_id: mmt.check_id }),
                                 ...captcha.getValidate(),
                                 user_id: '{ user_id }',
-                                gt_type: '{ gt_type }',
+                                gt_notif_type: 'login',
                             }),
                         }).then(() => {
                             window.location.href = "/redirect?user_id={ user_id }";

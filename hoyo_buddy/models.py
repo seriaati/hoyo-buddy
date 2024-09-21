@@ -12,7 +12,7 @@ from discord import Locale
 from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 from .constants import STARRAIL_RES
-from .enums import GeetestNotifyType, GenshinElement
+from .enums import GeetestType, GenshinElement
 
 if TYPE_CHECKING:
     import argparse
@@ -30,46 +30,48 @@ class Reward:
     icon: str
 
 
-class LoginNotifPayload(BaseModel):
+class GeetestCommandPayload(BaseModel):
     user_id: int
+
     guild_id: int | None = None
+    message_id: int
     channel_id: int
-    message_id: int | None = None
+
     gt_version: int
     api_server: str
+    gt_type: GeetestType
+    account_id: int
+    locale: str
 
     @classmethod
-    def parse_from_request(cls, query: Mapping[str, str]) -> LoginNotifPayload:
-        try:
-            return cls(
-                user_id=int(query["user_id"]),
-                guild_id=int(query["guild_id"]) if "guild_id" in query else None,
-                channel_id=int(query["channel_id"]),
-                message_id=int(query["message_id"]) if "message_id" in query else None,
-                gt_version=int(query["gt_version"]),
-                api_server=query["api_server"],
-            )
-        except KeyError as e:
-            msg = f"Missing query parameter: {e}"
-            raise ValueError(msg) from e
+    def parse_from_request(cls, query: Mapping[str, str]) -> GeetestCommandPayload:
+        return cls(
+            user_id=int(query["user_id"]),
+            guild_id=int(query["guild_id"]) if "guild_id" in query else None,
+            channel_id=int(query["channel_id"]),
+            message_id=int(query["message_id"]),
+            gt_version=int(query["gt_version"]),
+            api_server=query["api_server"],
+            gt_type=GeetestType(query["gt_type"]),
+            account_id=int(query["account_id"]),
+            locale=query["locale"],
+        )
 
     def to_query_string(self) -> str:
         return "&".join(f"{k}={v}" for k, v in self.model_dump().items() if v is not None)
 
 
-class GeetestPayload(BaseModel):
+class GeetestLoginPayload(BaseModel):
     user_id: int
     gt_version: int
     api_server: str = "api-na.geetest.com"
-    gt_type: GeetestNotifyType
 
     @classmethod
-    def parse_from_request(cls, query: Mapping[str, str]) -> GeetestPayload:
+    def parse_from_request(cls, query: Mapping[str, str]) -> GeetestLoginPayload:
         return cls(
             user_id=int(query["user_id"]),
             gt_version=int(query["gt_version"]),
             api_server=query["api_server"],
-            gt_type=GeetestNotifyType(query["gt_type"]),
         )
 
     def to_query_string(self) -> str:

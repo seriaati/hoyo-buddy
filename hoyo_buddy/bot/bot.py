@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any
 
 import aiohttp
 import aiosqlite
+import asyncpg_listen
 import discord
 import enka
 import genshin
@@ -21,6 +22,7 @@ from discord.ext import commands
 from loguru import logger
 from tortoise.expressions import Q
 
+from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import (
     HSR_AVATAR_CONFIG_URL,
     HSR_EQUIPMENT_CONFIG_URL,
@@ -31,9 +33,10 @@ from hoyo_buddy.constants import (
     ZZZ_ITEM_TEMPLATE_URL,
     ZZZ_TEXT_MAP_URL,
 )
+from hoyo_buddy.embeds import DefaultEmbed
 
 from ..db import models
-from ..enums import Game, Platform
+from ..enums import Game, GeetestType, Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
 from ..l10n import AppCommandTranslator, EnumStr, LocaleStr, Translator
@@ -111,11 +114,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.beta_autocomplete_choices: BetaAutocompleteChoices = defaultdict(
             lambda: defaultdict(list)
         )
-
         """[game][locale][item_name] -> item_id"""
 
-        self.login_notif_tasks: dict[int, asyncio.Task] = {}
-        """user_id -> task"""
+        self.geetest_command_task: asyncio.Task | None = None
 
     async def setup_hook(self) -> None:
         # Initialize genshin.py sqlite cache
@@ -140,6 +141,13 @@ class HoyoBuddy(commands.AutoShardedBot):
         users = await models.User.all().only("id")
         for user in users:
             self.user_ids.add(user.id)
+
+        listener = asyncpg_listen.NotificationListener(
+            asyncpg_listen.connect_func(os.environ["DB_URL"])
+        )
+        self.geetest_command_task = asyncio.create_task(
+            listener.run({"geetest_command": self.handle_geetest_notify}, notification_timeout=2)
+        )
 
     def capture_exception(self, e: Exception) -> None:
         # Errors to suppress
@@ -396,11 +404,47 @@ class HoyoBuddy(commands.AutoShardedBot):
             return None
         return await super().on_command_error(context, exception)
 
+    async def handle_geetest_notify(self, notif: asyncpg_listen.NotificationOrTimeout) -> None:
+        if isinstance(notif, asyncpg_listen.Timeout) or notif.payload is None:
+            return
+
+        user_id, message_id, gt_type, account_id, locale, channel_id = notif.payload.split(";")
+        gt_type = GeetestType(gt_type)
+        locale = discord.Locale(locale)
+
+        message = self.get_partial_messageable(int(channel_id)).get_partial_message(int(message_id))
+
+        user = await models.User.get(id=user_id)
+        account = await models.HoyoAccount.get(id=account_id)
+        client = account.client
+
+        try:
+            if gt_type is GeetestType.DAILY_CHECKIN:
+                reward = await client.claim_daily_reward(
+                    challenge={
+                        "challenge": user.temp_data["geetest_challenge"],
+                        "seccode": user.temp_data["geetest_seccode"],
+                        "validate": user.temp_data["geetest_validate"],
+                    }
+                )
+                embed = client.get_daily_reward_embed(reward, locale, self.translator, blur=True)
+            else:
+                await client.verify_mmt(genshin.models.MMTResult(**user.temp_data))
+                embed = DefaultEmbed(
+                    locale, self.translator, title=LocaleStr(key="geeetest_verification_complete")
+                )
+
+            await message.edit(embed=embed, view=None)
+        except Exception as e:
+            embed, recognized = get_error_embed(e, locale, self.translator)
+            if not recognized:
+                self.capture_exception(e)
+            await message.edit(embed=embed, view=None)
+
     async def close(self) -> None:
         logger.info("Bot shutting down...")
-
-        for task in self.login_notif_tasks.values():
-            task.cancel()
+        if self.geetest_command_task is not None:
+            self.geetest_command_task.cancel()
 
         self.executor.shutdown()
         await super().close()

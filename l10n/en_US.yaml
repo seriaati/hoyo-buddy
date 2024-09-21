@@ -218,8 +218,6 @@ game_maintenance_description: Please try again later
 game_maintenance_title: Game is Under Maintenance
 game_value_incomplete_param_error_message: You must specify the game of the UID
 geeetest_verification_complete: Verification complete
-geeetest_verification_timeout: Verification timeout
-geeetest_verification_timeout_description: The verification has timed out. Please use the </geetest> comand to try again.
 geetest.embed.title: CAPTCHA verification required before logging in
 geetest.no_need: No need for geetest
 geetest.no_need.description: "You never needed to do a geetest! What are you here for?!"

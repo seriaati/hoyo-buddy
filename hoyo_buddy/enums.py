@@ -109,13 +109,6 @@ class GeetestType(StrEnum):
     REALTIME_NOTES = "Real-time notes"
 
 
-class GeetestNotifyType(StrEnum):
-    """Geetst NOTIFY type."""
-
-    LOGIN = "login"
-    COMMAND = "command"
-
-
 class ChallengeType(StrEnum):
     """Challenge type."""
 

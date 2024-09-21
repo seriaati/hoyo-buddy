@@ -455,9 +455,8 @@ class Hoyo(commands.Cog):
             raise InvalidQueryError from e
 
         await i.response.defer(ephemeral=ephemeral(i))
-        command = GeetestCommand(self.bot, i, account, type_)
-        await command.run()
-        command.start_listener()
+        command = GeetestCommand(self.bot, account, type_)
+        await command.run(i)
 
     @app_commands.command(
         name=app_commands.locale_str("stats"),

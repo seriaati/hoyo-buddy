@@ -12,10 +12,8 @@ from tortoise import Tortoise
 
 from hoyo_buddy.constants import WEB_APP_URLS
 from hoyo_buddy.db.models import User
+from hoyo_buddy.models import GeetestCommandPayload, GeetestLoginPayload
 from hoyo_buddy.utils import get_discord_protocol_url
-
-from ..enums import GeetestNotifyType
-from ..models import GeetestPayload, LoginNotifPayload
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -33,7 +31,7 @@ class GeetestWebServer:
         self._command_template: str | None = None
 
     @web.middleware
-    async def error_middleware(self, request: web.Request, handler: Callable) -> web.StreamResponse:
+    async def error_handler(self, request: web.Request, handler: Callable) -> web.StreamResponse:
         try:
             return await handler(request)
         except web.HTTPException as e:
@@ -49,28 +47,25 @@ class GeetestWebServer:
 
     async def captcha(self, request: web.Request) -> web.StreamResponse:
         try:
-            if request.query["gt_type"] == "login":
-                payload = GeetestPayload.parse_from_request(request.query)
-                gt_type = GeetestNotifyType.LOGIN
-            else:
-                payload = LoginNotifPayload.parse_from_request(request.query)
-                gt_type = GeetestNotifyType.COMMAND
-        except ValueError as e:
-            raise web.HTTPBadRequest(reason="Missing query parameter") from e
+            payload = GeetestCommandPayload.parse_from_request(request.query)
+        except KeyError:
+            try:
+                payload = GeetestLoginPayload.parse_from_request(request.query)
+            except KeyError as e:
+                raise web.HTTPBadRequest(reason="Missing query parameter") from e
 
         if self._login_template is None or self._command_template is None:
             raise web.HTTPInternalServerError(reason="Template not loaded")
 
-        user_exist = await User.filter(id=payload.user_id).exists()
-        if not user_exist:
+        user_exists = await User.filter(id=payload.user_id).exists()
+        if not user_exists:
             raise web.HTTPNotFound(reason="User not found")
 
-        if isinstance(payload, GeetestPayload):
+        if isinstance(payload, GeetestLoginPayload):
             body = (
                 self._login_template.replace("{ user_id }", str(payload.user_id))
                 .replace("{ gt_version }", str(payload.gt_version))
                 .replace("{ api_server }", payload.api_server)
-                .replace("{ gt_type }", gt_type.value)  # noqa: RUF027
             )
         else:
             body = (
@@ -80,7 +75,9 @@ class GeetestWebServer:
                 .replace("{ guild_id }", str(payload.guild_id))
                 .replace("{ channel_id }", str(payload.channel_id))
                 .replace("{ message_id }", str(payload.message_id))
-                .replace("{ gt_type }", gt_type.value)  # noqa: RUF027
+                .replace("{ gt_type }", payload.gt_type.value)
+                .replace("{ account_id }", str(payload.account_id))
+                .replace("{ locale }", payload.locale)
             )
         return web.Response(body=body, content_type="text/html")
 
@@ -103,13 +100,22 @@ class GeetestWebServer:
         """Update user's temp_data with the solved geetest mmt and send a NOTIFY to the database."""
         data: dict[str, Any] = await request.json()
 
-        geetest_type: Literal["login", "command"] = data.pop("gt_type")
+        gt_notif_type: Literal["login", "command"] = data.pop("gt_notif_type")
         user_id = data.pop("user_id")
+
         await User.filter(id=user_id).update(temp_data=data)
 
-        if geetest_type == "command":
+        if gt_notif_type == "command":
+            message_id = data.pop("message_id")
+            account_id = data.pop("account_id")
+            gt_type = data.pop("gt_type")
+            locale = data.pop("locale")
+            channel_id = data.pop("channel_id")
+
             conn = Tortoise.get_connection("default")
-            await conn.execute_query(f"NOTIFY geetest_{geetest_type}_{user_id}")
+            await conn.execute_query(
+                f"NOTIFY geetest_command, '{user_id};{message_id};{gt_type};{account_id};{locale};{channel_id}'"
+            )
 
         return web.Response(status=204)
 
@@ -138,7 +144,7 @@ class GeetestWebServer:
         async with aiofiles.open("hoyo_buddy/web_server/page_command.html") as f:
             self._command_template = await f.read()
 
-        app = web.Application(middlewares=[self.error_middleware])
+        app = web.Application(middlewares=[self.error_handler])
         app.add_routes(
             [
                 web.get("/captcha", self.captcha),

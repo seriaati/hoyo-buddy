@@ -9,9 +9,8 @@ import genshin
 import orjson
 
 from ..constants import GEETEST_SERVERS
-from ..enums import GeetestNotifyType
 from ..l10n import LocaleStr, Translator
-from ..models import GeetestPayload
+from ..models import GeetestLoginPayload
 from .utils import decrypt_string, encrypt_string, show_error_banner, show_loading_snack_bar
 
 if TYPE_CHECKING:
@@ -58,10 +57,8 @@ async def handle_session_mmt(
     # Save current params
     await page.client_storage.set_async(f"hb.{params.user_id}.params", params.to_query_string())
 
-    payload = GeetestPayload(
-        user_id=params.user_id,
-        gt_version=3 if mmt_type != "on_otp_send" else 4,
-        gt_type=GeetestNotifyType.LOGIN,
+    payload = GeetestLoginPayload(
+        user_id=params.user_id, gt_version=3 if mmt_type != "on_otp_send" else 4
     )
 
     titles: dict[Literal["on_login", "on_email_send", "on_otp_send"], LocaleStr | str] = {

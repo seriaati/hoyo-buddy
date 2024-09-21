@@ -159,3 +159,4 @@ hoyo_buddy/bot/data/synced_commands.json
 !.gitkeep
 *.log.*
 *.db
+.vscode/

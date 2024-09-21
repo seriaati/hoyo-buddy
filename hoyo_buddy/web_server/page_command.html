@@ -54,7 +54,12 @@
                                 ...(mmt.check_id && { check_id: mmt.check_id }),
                                 ...captcha.getValidate(),
                                 user_id: '{ user_id }',
+                                gt_notif_type: 'command',
                                 gt_type: '{ gt_type }',
+                                message_id: '{ message_id }',
+                                locale: '{ locale }',
+                                channel_id: '{ channel_id }',
+                                account_id: '{ account_id }',
                             }),
                         }).then(() => {
                             window.location.href = "/redirect?channel_id={ channel_id }&guild_id={ guild_id }&message_id={ message_id }";

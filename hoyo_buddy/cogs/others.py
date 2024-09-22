@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import discord
 import psutil
@@ -14,7 +14,6 @@ from ..embeds import DefaultEmbed
 from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
 from ..l10n import LocaleStr
 from ..ui import Button, View
-from ..ui.feedback import FeedbackView
 from ..ui.settings import SettingsUI
 from ..utils import ephemeral, get_discord_user_md_link
 
@@ -39,25 +38,6 @@ class Others(commands.Cog):
     def get_last_commits(self, count: int = 5) -> str:
         commits = list(self.bot.repo.iter_commits("main", max_count=count))
         return "\n".join(self.format_commit(commit) for commit in commits)
-
-    @app_commands.command(
-        name=locale_str("feedback"),
-        description=locale_str(
-            "Give feedback to the bot's developer", key="feedback_command_description"
-        ),
-    )
-    async def feedback_command(self, i: Interaction) -> Any:
-        await i.response.defer(ephemeral=ephemeral(i))
-        locale = (await UserSettings.get(user_id=i.user.id)).locale or i.locale
-        view = FeedbackView(author=i.user, locale=locale, translator=self.bot.translator)
-        embed = DefaultEmbed(
-            locale, self.bot.translator, description=LocaleStr(key="feedback_command.description")
-        )
-        owner = await i.client.fetch_user(i.client.owner_id)
-        if owner is not None:
-            embed.set_author(name=owner.name, icon_url=owner.display_avatar.url)
-        await i.followup.send(embed=embed, view=view)
-        view.message = await i.original_response()
 
     @app_commands.command(
         name=locale_str("about"),
@@ -141,7 +121,7 @@ class Others(commands.Cog):
         view.add_item(
             Button(
                 label=LocaleStr(key="about_command.discord_server"),
-                url="https://dsc.gg/hoyo-buddy",
+                url="https://link.seria.moe/hb-dc",
                 emoji=DISCORD_WHITE_ICON,
                 row=0,
             )
@@ -164,7 +144,7 @@ class Others(commands.Cog):
         view.add_item(
             Button(
                 label=LocaleStr(key="about_command.support"),
-                url="https://buymeacoffee.com/seria",
+                url="https://link.seria.moe/donate",
                 row=1,
             )
         )

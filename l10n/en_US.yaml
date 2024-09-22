@@ -5,7 +5,7 @@ about_command.guild_count: Guild count
 about_command.invite: Invite bot
 about_command.latest_changes: Latest changes
 about_command.ram_usage: RAM Usage
-about_command.support: Support developer
+about_command.support: Donate
 about_command.translators: Translators
 about_command.uptime: Uptime
 about_command.website: Official website
@@ -57,7 +57,7 @@ artifact_set_two_piece_embed_description: "2-Pieces: {bonus_2}"
 artifact_sets: Artifact Sets
 auto_checkin_button_label: Auto daily check-in
 auto_locale_option_label: Follow client language
-auto_redeem_error.content: "An error occurred while redeeming codes automatically.\nHoyo Buddy has disabled this feature for this account, you can turn it back on using </redeem>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n"
+auto_redeem_error.content: "Automatic code redemption has been disabled due to an error, you can enable it back using </redeem>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>).\n"
 auto_redeem_footer: Turn off auto code redemption with /redeem
 auto_redeem_toggle.label: Auto code redemption
 books: Books
@@ -148,10 +148,10 @@ email_password_modal_password_input_label: password
 enter_email_password_instructions_description: "This method requires you to enter your private information.\n\n- In exchange, your `cookie_token` can be refreshed automatically, which is used in features related to code redemption (for HoYoLAB users only).\n- Your email and password are **NOT** saved in the database **AT ALL**, so it's practically impossible for them to be leaked.\n- Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy), so you can verify that yourself.\n- It is ultimately your choice to decide whether to trust this bot or not."
 enter_light_cone_level.button.label: Change light cone level
 dark_mode_button_label: Dark mode
-error_footer: Please report this error to the developer via /feedback
+error_footer: You can find help in our Discord server, link in /about
 error_title: An Error Occurred
 erudition: Erudition
-exceptions.card_not_ready_error.message: "When new characters are released, I need to spend time to gather fanarts and optimize colors for their cards.\nIf you'd like to speed up this process, you can contribute to the card data by reaching me in the [Discord Server](https://dsc.gg/hoyo-buddy)."
+exceptions.card_not_ready_error.message: "When new characters are released, I need to spend time to gather fanarts and optimize colors for their cards.\nIf you'd like to speed up this process, you can contribute to the card data by reaching me in the [Discord Server](https://<https://link.seria.moe/hb-dc)."
 exceptions.card_not_ready_error.title: "Card data for {character_name} is not ready yet."
 exped.embed.description: One (or more) expeditions are finished
 exped_button.label: Expedition reminder
@@ -200,12 +200,6 @@ farm_view.set_reminder.embed.description: "To set reminders, use the </farm remi
 farm_view.sundays: Every Domain is Available on Sunday
 farm_view.weekday_select.placeholder: Select a weekday
 farm_view_command_description: View farmable domains in Genshin Impact
-feedback_button.feedback_sent.description: 🥰 Thank you very much for your feedback!
-feedback_button.feedback_sent.title: Feedback Sent
-feedback_button.label: Give Feedback
-feedback_command.description: "\U0001F917 Hi! Thanks for taking the time to give me feedback.\nClick on the button below to start.\n\nNote: I might contact you for more details. So please keep your DMs opened (or join the [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
-feedback_command_description: Give feedback to the bot's developer
-feedback_modal.feedback.label: Feedback
 fire: Fire
 floor_select_label: "Floor {value}"
 fontaine: Fontaine
@@ -331,7 +325,7 @@ player_not_found_description: Please check the provided UID
 player_not_found_title: Player Does Not Exist
 preservation: Preservation
 prev_page_option_label: Previous page
-process_notify_error.content: "An error occurred while processing your real-time notes reminder.\nHoyo Buddy has disabled this reminder for this account, you can turn it back on using </notes>\nIf this error persists or you don't know how to fix it, please contact the developer via </feedback>.\n"
+process_notify_error.content: "The reminder has been disabeld due to an error, you can enable it back using </notes>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>).\n"
 profile.add_image.button.label: Add custom image
 profile.add_image_modal.image_url.label: Image URL
 profile.build.select.placeholder: Select a build...
@@ -516,10 +510,10 @@ redeem_code.reached_max_limit: This redemption code has reached its max usage li
 profile_view.set_cur_temp_as_default: Set current template as default
 set_cur_temp_as_default.done: Done
 set_cur_temp_as_default.done_desc: Your have set your default card template to the current one.
-third_party_card_temp_error_title: An error occured while drawing the card with a 3rd party template
-third_party_card_temp_error_message: "The card template for this character has been reset to Hoyo Buddy's template, so that you can at least see the card. If this error persists, please contact the developer via </feedback>."
+third_party_card_temp_error_title: This 3rd Party Card Tempalte Errored
+third_party_card_temp_error_message: "The card template for this character has been reset to Hoyo Buddy's template. If this error persists, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Account has been locked for 20 minutes
-account_locked_description: "You have entered the incorrect password too many times. Please wait 20 minutes and try again. If you believe this is an error, please contact the developer via </feedback>."
+account_locked_description: "You have entered the incorrect password too many times. Please wait 20 minutes and try again. If you're unable to set up your account, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 ether: Ether
 electric: Electric
 profile.no_data.title: No player data available
@@ -568,20 +562,19 @@ search.agent_page.placeholder: Select a page...
 zzz.skill_type.placeholder: Select an agent skill...
 zzz.cinema.placeholder: Select a mindscape cinema...
 zzz.engine.refinement_select.placeholder: Select a refinement level...
-dyk_discord_server_updates: "We post release notes of Hoyo Buddy in our [Discord server](<https://dsc.gg/hoyo-buddy>)"
-dyk_discord_server_feedback: "You can join our [Discord server](<https://dsc.gg/hoyo-buddy>) to give feedback"
-dyk_something_wrong: You can use the /feedback command to report any issues
-dyk_contact_me: "You can directly contact us in our [Discord server](<https://dsc.gg/hoyo-buddy>)"
-dyk_donate_no_title: "Enjoy using Hoyo Buddy? Consider [making a donation](<https://github.com/seriaati#support-my-work>) to support us"
-dyk_team: "Hoyo Buddy is built by a small team of 1 programmer, 1 designer, and 1 project manager"
-dyk_disable: You can disable this message using /settings
-dyk_settings_lang: You can change the language of the bot using /settings
-dyk_settings_theme: You can switch between light and dark mode using /settings
-dyk_suggest_light: We recommend using light mode for the best experience
-dyk_security: "We have a [dedicated article](<https://github.com/seriaati/hoyo-buddy/wiki/Account-Security>) regarding account security"
+dyk_discord_server_updates: "We post update notes in our [Discord server](<https://link.seria.moe/hb-dc>)"
+dyk_discord_server_feedback: "You can join our [Discord server](<https://link.seria.moe/hb-dc>) to give feedback"
+dyk_contact_me: "You can contact us in our [Discord server](<https://link.seria.moe/hb-dc>)"
+dyk_need_help_no_title: "Need help? Join our [Discord server](<https://link.seria.moe/hb-dc>)"
+dyk_donate_no_title: "Enjoy using Hoyo Buddy? Consider [making a donation](<https://link.seria.moe/donate>) to support us"
+dyk_team: "Hoyo Buddy is made by a small team of 1 programmer and 1 designer"
+dyk_disable: You can disable this message with /settings
+dyk_settings_lang: You can change the language of the bot with /settings
+dyk_settings_theme: You can switch between light and dark theme using /settings
+dyk_security: "We have an [article](<https://github.com/seriaati/hoyo-buddy/wiki/Account-Security>) about account security"
 dyk_github: "Hoyo Buddy is open-sourced on [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
 dyk_python: Hoyo Buddy is written in pure Python
-dyk_unreleased: You can view unreleased game content using /search
+dyk_unreleased: You can view unreleased game content with /search
 dyk_team_card: You can generate a team card in /profile by selecting multiple characters
 dyk_set_default_acc: You can set a default account that is used to run all commands in /accounts
 title_dyk: "Did you know?"

@@ -5,7 +5,7 @@ about_command.guild_count: 伺服器數量
 about_command.invite: 邀請機器人
 about_command.latest_changes: 最近的變更
 about_command.ram_usage: 記憶體使用量
-about_command.support: 支持開發者
+about_command.support: 捐款
 about_command.translators: 翻譯員
 about_command.uptime: 上線時間
 about_command.website: 官方網站
@@ -57,7 +57,7 @@ artifact_set_two_piece_embed_description: "二件套: {bonus_2}"
 artifact_sets: 聖遺物套裝
 auto_checkin_button_label: 自動每日簽到
 auto_locale_option_label: 遵循客戶端語言
-auto_redeem_error.content: "在自動兌換時發生了錯誤。\nHoyo Buddy 已經停用此帳戶的自動兌換功能，你可以使用</redeem>將其重新打開。\n如果這個錯誤持續發生，或是你不知道如何解決它，請通過</feedback>聯絡開發者。\n"
+auto_redeem_error.content: "由於發生錯誤，自動兌換兌換碼功能已被停用，你可以使用</redeem> 將其重新啟動。\n如果這個錯誤持續發生，或是你不知道如何解決它，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)內尋求協助。"
 auto_redeem_footer: 使用 /redeem 關閉自動兌換兌換碼功能
 auto_redeem_toggle.label: 自動兌換兌換碼
 books: 書籍
@@ -148,10 +148,10 @@ email_password_modal_password_input_label: 密碼
 enter_email_password_instructions_description: "此方式需輸入私人資訊。\n\n- 作為交換，你的 `cookie_token` 將能被自動刷新，這在兌換碼相關的功能中會有用處（只有 HoYoLAB 使用者受益）。\n- 你的電子郵件和密碼 **完全不會** 被保存在資料庫中，所以它們幾乎不可能被洩漏。\n- 此外，這個機器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上是開源的，所以你可以自行驗證這點。\n- 你保有是否信任此機器人的最終決定權"
 enter_light_cone_level.button.label: 變更光錐等級
 dark_mode_button_label: 深色模式
-error_footer: 請透過 /feedback 向開發者回報這個錯誤
+error_footer: 你可以在我們的 Discord 伺服器內尋求幫助，連結在 /about
 error_title: 發生了一個錯誤
 erudition: 智識
-exceptions.card_not_ready_error.message: "當新的角色釋出時，我需要花費時間來收集同人繪圖和優化卡片的顏色。\n如果你想加快此過程，你可以在 [Discord 伺服器](https://dsc.gg/hoyo-buddy) 中聯繫我來為卡片資料做出貢獻。"
+exceptions.card_not_ready_error.message: "當新角色釋出時，我需要為他們指定面板卡片使用的顏色。\n如果你在遊戲更新後的幾天仍然看到這則訊息的話，請在 [Discord 伺服器](<https://link.seria.moe/hb-dc>) 內通知我，因為我可能忘記做了。"
 exceptions.card_not_ready_error.title: "{character_name} 的卡片資料尚未準備好。"
 exped.embed.description: 一或多個探索派遣已經完成了
 exped_button.label: 探索派遣通知
@@ -200,12 +200,6 @@ farm_view.set_reminder.embed.description: "使用</farm reminder>指令設定刷
 farm_view.sundays: 在星期日，所有副本皆可刷取
 farm_view.weekday_select.placeholder: 選擇一個星期
 farm_view_command_description: 查看原神中可以刷取的副本
-feedback_button.feedback_sent.description: 🥰 非常感謝你的反饋！
-feedback_button.feedback_sent.title: 反饋已寄出
-feedback_button.label: 給予反饋
-feedback_command.description: "\U0001F917 嗨！感謝你抽出時間給予我反饋。\n請點擊下面的按鈕開始。\n\n註:我可能會就更多細節與你聯繫，請將私訊保持開啟狀態（或加入 [Hoyo Buddy 的 Discord 伺服器](https://dsc.gg/hoyo-buddy)）。"
-feedback_command_description: 向機器人開發者提供反饋
-feedback_modal.feedback.label: 反饋
 fire: 火
 floor_select_label: "第 {value} 層"
 fontaine: 楓丹
@@ -331,7 +325,7 @@ player_not_found_description: 請檢查提供的 UID
 player_not_found_title: 玩家不存在
 preservation: 存護
 prev_page_option_label: 上一頁
-process_notify_error.content: "在處理你的即時便籤通知時發生了錯誤。\nHoyo Buddy 已經將此帳號的此通知功能關閉，你可以使用</notes>將它重新開啟。\n如果這個錯誤持續發生，或是你不知道如何處理，請透過</feedback>與開發者聯繫。\n"
+process_notify_error.content: "由於發生錯誤，便籤提醒功能已被關閉，你可以使用 </notes> 將其重新啟動\n如果這個錯誤持續發生，或是你不知道該如何解決，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)中尋求協助"
 profile.add_image.button.label: 新增自定義圖片
 profile.add_image_modal.image_url.label: 圖片網址
 profile.build.select.placeholder: 選擇一個角色配置…
@@ -383,7 +377,7 @@ read_story.button.label: 閱讀故事
 real_time_notes: 即時便籤
 realm_curr_button.label: 洞天寶錢通知
 realm_curr_modal.title: 洞天寶錢通知設定
-redeeem_code.cookie_token_expired_description: "使用</accounts>再次新增你的帳戶來刷新 cookie token。\n如果你使用電子郵件和密碼的方式來新增帳戶，cookie token 將可以被自動刷新。"
+redeeem_code.cookie_token_expired_description: "自動兌換兌換碼功能只有使用電子郵件和密碼登入的使用者才可以使用，你可以透過</accounts> 進行"
 redeeem_code.cookie_token_expired_title: Cookie Token 已過期
 redeeem_code.cookie_token_refresh_failed_description: "自上次新增帳戶以來，你可能已變更帳戶密碼。\n請使用</accounts>透過電子郵件和密碼的方式重新新增您的帳戶。"
 redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失敗
@@ -516,10 +510,10 @@ redeem_code.reached_max_limit: 此兌換碼已達使用上限
 profile_view.set_cur_temp_as_default: 設置當前樣式為預設
 set_cur_temp_as_default.done: 完成
 set_cur_temp_as_default.done_desc: 你已將當前的卡片樣式設置為預設樣式。
-third_party_card_temp_error_title: 在使用第3方樣式繪製卡片時發生錯誤
-third_party_card_temp_error_message: "為了使角色卡片能正常顯示，此角色的卡片樣式已被重置為 Hoyo Buddy 的樣式。如果此錯誤持續發生，請使用 </feedback> 聯繫開發者。"
+third_party_card_temp_error_title: 這個第三方卡片樣式出錯了
+third_party_card_temp_error_message: "此角色的卡片樣式已被重置為 Hoyo Buddy 的卡片樣式。如果此錯誤持續發生，請在我們的[Discord 伺服器](<https://link.seria.moe/hb-dc>)中尋求協助。"
 account_locked_title: 帳戶已被鎖定 20 分鐘
-account_locked_description: "輸入錯誤密碼的次數過多。請等待 20 分鐘，然後重試。如果你認為這是一個錯誤，請通過 </feedback> 聯繫開發人員。"
+account_locked_description: "輸入錯誤密碼的次數太多。請等待 20 分鐘，然後再試一次。如果你無法設定好你的帳戶，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)中尋求協助。"
 ether: 以太
 electric: 電屬性
 profile.no_data.title: 沒有可用的玩家資料
@@ -568,16 +562,15 @@ search.agent_page.placeholder: 選擇一頁…
 zzz.skill_type.placeholder: 選擇一個代理人技能…
 zzz.cinema.placeholder: 選擇一幅意象影畫…
 zzz.engine.refinement_select.placeholder: 選擇一個精鍊等級…
-dyk_discord_server_updates: "我們會在 [Discord 伺服器](<https://dsc.gg/hoyo-buddy>) 中發布更新日誌"
-dyk_discord_server_feedback: "你可以加入我們的 [Discord 伺服器](<https://dsc.gg/hoyo-buddy>) 來給予反饋"
-dyk_something_wrong: 你可以使用 /feedback 指令來回報任何問題
-dyk_contact_me: "你可以在 [Discord 伺服器](<https://dsc.gg/hoyo-buddy>) 和我們直接聯繫"
-dyk_donate_no_title: "喜歡 Hoyo Buddy 嗎？考慮透過[捐款](<https://github.com/seriaati/seriaati/blob/main/README_ZH.md#%E6%94%AF%E6%8C%81%E6%88%91>)來支持我們"
-dyk_team: "Hoyo Buddy 的小團隊由 1 位程式設計師、1 位平面設計師和 1 位公關組成"
-dyk_disable: 你可以在 /settings 中將這則訊息關閉
-dyk_settings_lang: 你可以在 /settings 中變更機器人使用的語言
-dyk_settings_theme: 你可以在 /settings 中切換成亮色或深色模式
-dyk_suggest_light: 我們推薦使用亮色模式來獲得最佳體驗
+dyk_discord_server_updates: "我們會在 [Discord 伺服器](<https://link.seria.moe/hb-dc>)中發布更新日誌"
+dyk_discord_server_feedback: "你可以加入我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)來給予回饋"
+dyk_contact_me: "你可以在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)中與我們取得聯繫"
+dyk_need_help_no_title: "需要幫助嗎？加入我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)"
+dyk_donate_no_title: "喜歡 Hoyo Buddy 嗎？考慮透過[捐款](<https://link.seria.moe/donate-zh>)來支持我們"
+dyk_team: "Hoyo Buddy 的小團隊由一位程式設計師和一位設計師組成"
+dyk_disable: 你可以使用 /settings 將這則訊息關閉
+dyk_settings_lang: 你可以使用 /settings 變更機器人使用的語言
+dyk_settings_theme: 你可以使用 /settings 切換為亮色或深色模式
 dyk_security: "我們有一則講解關於帳號安全的[文章](<https://github.com/seriaati/hoyo-buddy/wiki/Account-Security>)"
 dyk_github: "Hoyo Buddy 於 [GitHub](<https://github.com/seriaati/hoyo-buddy>) 上開源"
 dyk_python: Hoyo Buddy 使用純 Python 撰寫而成
@@ -689,4 +682,4 @@ shiyu_5_frontier: 第五防線
 shiyu_6_frontier: 第六防線
 shiyu_7_frontier: 第七防線
 shiyu_defense: 式與防衛戰
-show_uid: ""
+show_uid: 顯示 UID

@@ -225,7 +225,7 @@ geetest.required: Yêu câu Xác minh Geetest
 geetest.required.description: "Dùng lệnh </geetest>, chọn tài khoản yêu cầu geetest, và chọn loại `{geetest_type}` để hoàn thành bước xác minh"
 geetest_command_description: Hoàn thành xác minh geetest
 geetest_cmd_type_param_desc: Loại xác minh geetest
-geetest_command_type_param_name: Loại
+geetest_command_type_param_name: loại
 genshin_impact: Genshin Impact
 geo: Nham
 gi_daily.embed.description: Nhiệm vụ Ủy Thác hoặc Điểm Rèn Luyện chưa hoàn thành
@@ -620,7 +620,7 @@ gacha_upload_invalid_file_error_message: "Chỉ cho phép file **{file_format}, 
 uid_mismatch_error_title: UID không khớp
 uid_mismatch_error_message: "UID của tài khoản được chọn không khớp với UID trong dữ liệu ({uid})"
 gacha_import_command_description: Nhập nhật ký gacha từ trong game.
-source_param_name: Nguồn
+source_param_name: nguồn
 source_param_description: Nguòn từ những nhật ký gacha.
 gacha_upload_command_description: Tải file nhật ký gacha từ nguồn khác để nhập vào Hoyo Buddy
 file_param_name: file

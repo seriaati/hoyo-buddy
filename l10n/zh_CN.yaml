@@ -5,7 +5,7 @@ about_command.guild_count: 服务器数量
 about_command.invite: 邀请机器人
 about_command.latest_changes: 最新更改
 about_command.ram_usage: 内存使用量
-about_command.support: 支持开发者
+about_command.support: 捐款
 about_command.translators: 翻译员
 about_command.uptime: 运行时间
 about_command.website: 官方网站
@@ -57,7 +57,7 @@ artifact_set_two_piece_embed_description: "二件套：{bonus_2}"
 artifact_sets: 圣遗物套装
 auto_checkin_button_label: 自动每日签到
 auto_locale_option_label: 遵循Discord客户端语言
-auto_redeem_error.content: "在自动兑换兑换码时发生了错误。\nHoyo Buddy 已经为此帐户禁用了该功能，你可以使用</redeem>将其重新启用。\n如果该错误依旧存在或者你不知道如何应对，请透过</feedback>联系开发者。\n"
+auto_redeem_error.content: "由于发生错误，自动兑换兑换码功能已被关闭，你可以使用</redeem> 将其重新启动\n如果这个错误持续发生，或是你不知道如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。\n"
 auto_redeem_footer: 使用 /redeem 关闭自动兑换功能。
 auto_redeem_toggle.label: 自动兑换
 books: 书籍
@@ -148,10 +148,10 @@ email_password_modal_password_input_label: 密码
 enter_email_password_instructions_description: "这个方法需要输入你的个人信息。\n\n- 作为交换，你的 `cookie_token` 可以自动刷新，这在兑换码相关功能中会有用处（只有 HoYoLAB 使用者受益）。\n- 你的邮箱和密码**完全不会**被保存在数据库中，因此几乎不可能被泄露。\n- 此外，这个机器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上有开源，所以你可以自行验证这点。\n- 你可以自行决定是否信任该机器人。\n"
 enter_light_cone_level.button.label: 更改光锥等级
 dark_mode_button_label: 深色模式
-error_footer: 请通过 /feedback 向开发者回报这个错误。
+error_footer: "你可以在我们的 Discord 服务器中寻求帮助, /about 內有連結"
 error_title: 出现错误
 erudition: 智识
-exceptions.card_not_ready_error.message: "当新角色公布时，我需要花费时间来收集同人图和优化卡片的颜色。\n如果你想加快该进程，可以在[Discord 服务器](https://dsc.gg/hoyo-buddy) 中联系我来为卡片资料做出贡献。"
+exceptions.card_not_ready_error.message: "当新角色公布时，我需要花费时间来收集同人图和优化卡片的颜色。\n如果你想加快该进程，可以在[Discord 服务器](https://link.seria.moe/hb-dc)中联系我来为卡片资料做出贡献。"
 exceptions.card_not_ready_error.title: "{character_name} 的卡片数据还没有准备好呢。"
 exped.embed.description: 一个或者多个派遣已经完成了
 exped_button.label: 探索派遣提醒
@@ -200,12 +200,6 @@ farm_view.set_reminder.embed.description: "使用</farm reminder>指令设定刷
 farm_view.sundays: 在星期日，所有副本皆可刷取
 farm_view.weekday_select.placeholder: 选择一个星期
 farm_view_command_description: 查看原神中可以刷取的副本
-feedback_button.feedback_sent.description: 🥰 非常感谢你的反馈
-feedback_button.feedback_sent.title: 反馈已发送
-feedback_button.label: 给予反馈
-feedback_command.description: "\U0001F917 嗨！感谢你抽出时间给予我反馈。请点击下方按钮来开始吧。\n\n注：我可能就更多细节而言来与你联系，所以请保持私信为开启状态（或者加入[Hoyo Buddy 的 Discord 服务器](https://dsc.gg/hoyo-buddy)）。"
-feedback_command_description: 向机器人开发者提供反馈
-feedback_modal.feedback.label: 反馈
 fire: 火
 floor_select_label: "第 {value} 层"
 fontaine: 枫丹
@@ -331,7 +325,7 @@ player_not_found_description: 请检查所提供UID
 player_not_found_title: 玩家不存在
 preservation: 存护
 prev_page_option_label: 上一页
-process_notify_error.content: "在处理你的即时便签通知时发生了错误。\nHoyo Buddy 已为此帐户禁用了该功能，你可以使用</notes>将其重新启用。\n如果该错误依旧存在或者你不知道如何应对，请通过</feedback>联系开发者。\n"
+process_notify_error.content: "由于发生错误，便签提醒功能已被关闭，你可以使用</notes> 将其重新启动\n如果这个错误持续发生，或是你不知道该如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。\n"
 profile.add_image.button.label: 添加自定义图片
 profile.add_image_modal.image_url.label: 图像URL
 profile.build.select.placeholder: 选择一个角色配置…
@@ -516,10 +510,10 @@ redeem_code.reached_max_limit: 此兑换码已达使用上限
 profile_view.set_cur_temp_as_default: 设置当前样式为预设
 set_cur_temp_as_default.done: 完成
 set_cur_temp_as_default.done_desc: 你已将当前的卡片样式设置为预设样式。
-third_party_card_temp_error_title: 在使用第3方样式绘制卡片时发生错误
-third_party_card_temp_error_message: "为了使角色卡片能正常显示，此角色的卡片样式已被重置为 Hoyo Buddy 的样式。如果此错误持续发生，请使用 </feedback> 联系开发者。"
+third_party_card_temp_error_title: 这个第三方卡片样式出错了
+third_party_card_temp_error_message: "此角色的卡片样式已被重置为 的样式。如果此错误持续发生，请在我们的[Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 account_locked_title: 账户已被锁定20分钟
-account_locked_description: "输入错误密码的次数过多。请等待 20 分钟，然后重试。如果你认为这是一个错误，请通过 </feedback> 联系开发人员。"
+account_locked_description: "输入错误密码的次数过多。请等待 20 分钟，然后重试。如果你无法设定好你的帐户，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)中寻求帮助。"
 ether: 以太
 electric: 电属性
 profile.no_data.title: 没有可用的玩家数据
@@ -568,16 +562,15 @@ search.agent_page.placeholder: 选择一页…
 zzz.skill_type.placeholder: 选择一个代理人技能…
 zzz.cinema.placeholder: 选择一幅意象影画…
 zzz.engine.refinement_select.placeholder: 选择一个精炼等级…
-dyk_discord_server_updates: "我们会在 [Discord 伺服器](<https://dsc.gg/hoyo-buddy>) 中发布更新日志"
-dyk_discord_server_feedback: "你可以加入我们的 [Discord 伺服器](<https://dsc.gg/hoyo-buddy>) 来给予反馈"
-dyk_something_wrong: 你可以使用 /feedback 指令来回报任何问题
-dyk_contact_me: "你可以在 [Discord 伺服器](<https://dsc.gg/hoyo-buddy>) 和我们直接联系"
-dyk_donate_no_title: "喜欢 Hoyo Buddy 吗？考虑透过[捐款](<https://github.com/seriaati/seriaati/blob/main/README_ZH.md#%E6%94%AF%E6%8C%81%E6%88%91>)来支持我们"
-dyk_team: "Hoyo Buddy 的小团队由 1 位程式设计师、1 位平面设计师和 1 位公关组成"
-dyk_disable: 你可以在 /settings 中将这则讯息关闭
-dyk_settings_lang: 你可以在 /settings 中变更机器人使用的语言
-dyk_settings_theme: 你可以在 /settings 中切换成亮色或深色模式
-dyk_suggest_light: 我们建议使用亮色模式来获得最佳体验
+dyk_discord_server_updates: "我们会在 [Discord 服务器](<https://link.seria.moe/hb-dc>)中发布更新日志"
+dyk_discord_server_feedback: "你可以加入我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)来给予反馈"
+dyk_contact_me: "你可以在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)中与我们取得联系"
+dyk_need_help_no_title: "需要帮助吗？加入我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)"
+dyk_donate_no_title: "喜欢 Hoyo Buddy 吗？考虑透过[捐款](<https://link.seria.moe/donate-zh>)来支持我们"
+dyk_team: "Hoyo Buddy 的小团队由一位程式设计师和一位设计师组成"
+dyk_disable: 你可以使用 /settings 将这则讯息关闭
+dyk_settings_lang: 你可以使用 /settings 变更机器人使用的语言
+dyk_settings_theme: 你可以使用 /settings 切换为亮色或深色模式
 dyk_security: "我们有一则讲解关于帐户安全的[文章](<https://github.com/seriaati/hoyo-buddy/wiki/Account-Security>)"
 dyk_github: "Hoyo Buddy 于 [GitHub](<https://github.com/seriaati/hoyo-buddy>) 上开源"
 dyk_python: Hoyo Buddy 使用纯 Python 撰写而成
@@ -689,4 +682,4 @@ shiyu_5_frontier: 第五防线
 shiyu_6_frontier: 第六防线
 shiyu_7_frontier: 第七防线
 shiyu_defense: 式与防卫战
-show_uid: ""
+show_uid: 显示 UID

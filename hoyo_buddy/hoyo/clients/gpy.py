@@ -64,6 +64,9 @@ class GenshinClient(genshin.Client):
         except (python_socks.ProxyError, python_socks.ProxyTimeoutError):
             self.proxy = None
             return await super().request(*args, **kwargs)
+        except ConnectionResetError:
+            await asyncio.sleep(1.0)
+            return await super().request(*args, **kwargs)
 
     def set_lang(self, locale: Locale) -> None:
         self.lang = (

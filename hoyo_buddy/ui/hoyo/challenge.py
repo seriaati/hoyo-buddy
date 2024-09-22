@@ -267,6 +267,8 @@ class ChallengeView(View):
                 # No previous season
                 continue
 
+            self._challenge_has_data(challenge)
+
             # Save data to db
             await ChallengeHistory.add_data(
                 uid=self.account.uid,
@@ -276,7 +278,7 @@ class ChallengeView(View):
                 lang=client.lang,
             )
 
-    def _check_challlenge_data(self, challenge: Challenge | None) -> None:
+    def _challenge_has_data(self, challenge: Challenge | None) -> None:
         if challenge is None:
             raise NoChallengeDataError(self.challenge_type)
         if isinstance(challenge, SpiralAbyss):
@@ -401,7 +403,7 @@ class ChallengeView(View):
         self, item: Select[ChallengeView] | Button[ChallengeView], i: Interaction
     ) -> None:
         try:
-            self._check_challlenge_data(self.challenge)
+            self._challenge_has_data(self.challenge)
             file_ = await self._draw_card(i.client.session, i.client.executor, i.client.loop)
         except NoChallengeDataError as e:
             await item.unset_loading_state(i)
@@ -463,16 +465,15 @@ class ChallengeTypeSelect(Select[ChallengeView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view._challenge_type = ChallengeType(self.values[0])
-
-        phase_select: PhaseSelect = self.view.get_item("challenge_view.phase_select")
-        phase_select.disabled = False
-
         await self.set_loading_state(i)
+
         try:
             await self.view._fetch_data()
         except Exception:
             await self.unset_loading_state(i)
             raise
+
+        self.view._item_states["challenge_view.phase_select"] = False
 
         histories = await ChallengeHistory.filter(
             uid=self.view.account.uid, challenge_type=self.view.challenge_type
@@ -485,6 +486,7 @@ class ChallengeTypeSelect(Select[ChallengeView]):
         if self.view.challenge_type not in self.view.season_ids:
             self.view.season_id = histories[0].season_id
 
+        phase_select: PhaseSelect = self.view.get_item("challenge_view.phase_select")
         phase_select.set_options(histories)
         phase_select.translate(self.view.locale, self.view.translator)
         phase_select.update_options_defaults(values=[str(self.view.season_id)])

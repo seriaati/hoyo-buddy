@@ -510,7 +510,7 @@ redeem_code.reached_max_limit: This redemption code has reached its max usage li
 profile_view.set_cur_temp_as_default: Set current template as default
 set_cur_temp_as_default.done: Done
 set_cur_temp_as_default.done_desc: Your have set your default card template to the current one.
-third_party_card_temp_error_title: This 3rd Party Card Tempalte Errored
+third_party_card_temp_error_title: This 3rd Party Card Template Errored
 third_party_card_temp_error_message: "The card template for this character has been reset to Hoyo Buddy's template. If this error persists, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Account has been locked for 20 minutes
 account_locked_description: "You have entered the incorrect password too many times. Please wait 20 minutes and try again. If you're unable to set up your account, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."

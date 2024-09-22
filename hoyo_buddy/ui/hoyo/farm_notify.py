@@ -119,16 +119,10 @@ class FarmNotifyView(PaginatorView):
             return await i.followup.send(embed=embed)
 
         character_choices = i.client.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
-        try:
-            characters = character_choices[self.locale]
-        except KeyError:
-            characters = character_choices[Locale.american_english]
+        characters = character_choices.get(self.locale, character_choices[Locale.american_english])
 
         weapon_choices = i.client.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
-        try:
-            weapons = weapon_choices[self.locale]
-        except KeyError:
-            weapons = weapon_choices[Locale.american_english]
+        weapons = weapon_choices.get(self.locale, weapon_choices[Locale.american_english])
 
         for choice in characters:
             self._item_names[choice.value] = choice.name

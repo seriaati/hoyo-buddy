@@ -59,6 +59,12 @@ class Embed(discord.Embed):
             name=account.blurred_display if blur else str(account), icon_url=account.game_icon
         )
 
+    def copy(self) -> Self:
+        copy = super().copy()
+        copy.locale = self.locale
+        copy.translator = self.translator
+        return copy
+
 
 class DefaultEmbed(Embed):
     def __init__(

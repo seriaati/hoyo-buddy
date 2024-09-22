@@ -40,11 +40,10 @@ class FarmCommand:
         self._translator = interaction.client.translator
         self._action = action
 
-        try:
-            characters = self._choices[Game.GENSHIN][ambr.ItemCategory.CHARACTERS]
-            weapons = self._choices[Game.GENSHIN][ambr.ItemCategory.WEAPONS]
-        except KeyError as e:
-            raise AutocompleteNotDoneYetError from e
+        characters = self._choices[Game.GENSHIN][ambr.ItemCategory.CHARACTERS]
+        weapons = self._choices[Game.GENSHIN][ambr.ItemCategory.WEAPONS]
+        if not characters or not weapons:
+            raise AutocompleteNotDoneYetError
 
         self._valid_item_ids = {c.value for c_choices in characters.values() for c in c_choices} | {
             c.value for w_choices in weapons.values() for c in w_choices

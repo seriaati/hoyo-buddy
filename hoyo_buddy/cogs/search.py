@@ -397,15 +397,13 @@ class Search(commands.Cog):
             )
 
         if i.namespace.category == BetaItemCategory.UNRELEASED_CONTENT.value:
-            try:
-                choices = self.bot.beta_autocomplete_choices[game][locale]
-            except KeyError:
-                try:
-                    choices = self.bot.beta_autocomplete_choices[game][Locale.american_english]
-                except KeyError:
-                    return self.bot.get_error_autocomplete(
-                        LocaleStr(key="search_autocomplete_no_results"), locale
-                    )
+            choices = self.bot.beta_autocomplete_choices[game].get(
+                locale, self.bot.beta_autocomplete_choices[game][Locale.american_english]
+            )
+            if not choices:
+                return self.bot.get_error_autocomplete(
+                    LocaleStr(key="search_autocomplete_no_results"), locale
+                )
         else:
             try:
                 if game is Game.GENSHIN:
@@ -427,15 +425,13 @@ class Search(commands.Cog):
             if category is ambr.ItemCategory.SPIRAL_ABYSS:
                 return await AbyssEnemyView.get_autocomplete_choices()
 
-            try:
-                choices = self.bot.autocomplete_choices[game][category][locale]
-            except KeyError:
-                try:
-                    choices = self.bot.autocomplete_choices[game][category][Locale.american_english]
-                except KeyError:
-                    return self.bot.get_error_autocomplete(
-                        LocaleStr(key="search_autocomplete_no_results"), locale
-                    )
+            choices = self.bot.autocomplete_choices[game][category].get(
+                locale, self.bot.autocomplete_choices[game][category][Locale.american_english]
+            )
+            if not choices:
+                return self.bot.get_error_autocomplete(
+                    LocaleStr(key="search_autocomplete_no_results"), locale
+                )
 
         choices = [c for c in choices if current.lower() in c.name.lower()]
         if not choices:

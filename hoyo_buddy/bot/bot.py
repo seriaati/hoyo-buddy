@@ -56,11 +56,6 @@ if TYPE_CHECKING:
 
 __all__ = ("HoyoBuddy",)
 
-intents = discord.Intents(guilds=True, members=True, emojis=True, messages=True)
-allowed_mentions = discord.AllowedMentions(
-    users=True, everyone=False, roles=False, replied_user=False
-)
-
 
 class HoyoBuddy(commands.AutoShardedBot):
     owner_id: int
@@ -79,9 +74,11 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         super().__init__(
             command_prefix=commands.when_mentioned,
-            intents=intents,
+            intents=discord.Intents(guilds=True, members=True, emojis=True, messages=True),
             case_insensitive=True,
-            allowed_mentions=allowed_mentions,
+            allowed_mentions=discord.AllowedMentions(
+                users=True, everyone=False, roles=False, replied_user=False
+            ),
             help_command=None,
             chunk_guilds_at_startup=False,
             max_messages=None,

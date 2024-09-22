@@ -218,8 +218,6 @@ game_maintenance_description: Probeer het later nog eens
 game_maintenance_title: Spel is Onder Onderhoud
 game_value_incomplete_param_error_message: Je moet het spel van de UID specificeren
 geeetest_verification_complete: ""
-geeetest_verification_timeout: ""
-geeetest_verification_timeout_description: ""
 geetest.embed.title: CAPTCHA-verificatie vereist voordat je kunt inloggen.
 geetest.no_need: ""
 geetest.no_need.description: ""
@@ -308,7 +306,7 @@ notes-card.gi.remaining: Overig
 notes-card.gi.resin: Resin
 notes-card.gi.resin-discounts: Resin Kortingen
 notes-card.hsr.daily-training: Dagelijkse Training
-notes-card.hsr.echo-of-war-discounts: Echo of War Kortingen
+notes-card.hsr.echo-of-war-discounts: ""
 notes-card.hsr.reserved-power: Gereserveerd Kracht
 notes-card.hsr.trailblaze-power: Trailblaze Kracht
 notes.item_full_in_time: "{emoji} full {in_time}"
@@ -654,8 +652,10 @@ gacha_view_page_field_label: ""
 gacha_log_stats_title: ""
 gacha_log_personal_stats_title: ""
 gacha_log_personal_stats: ""
+win_rate_stats: ""
 gacha_log_global_stats_title: ""
 gacha_log_global_stats: ""
+win_rate_global_stats: ""
 gacha_log_view_full: ""
 gacha_view_command_description: ""
 gacha_log_view_banner_type_selector_placeholder: ""
@@ -677,3 +677,16 @@ star5_no_guaranteed: ""
 characters_view_show_max_level_only: ""
 characters_embed_max_level_characters: ""
 natlan_reputation: ""
+shiyu_overview: ""
+shiyu_fastest_clear_time: ""
+shiyu_highest_frontier: ""
+shiyu_relevant_season: ""
+shiyu_1_frontier: ""
+shiyu_2_frontier: ""
+shiyu_3_frontier: ""
+shiyu_4_frontier: ""
+shiyu_5_frontier: ""
+shiyu_6_frontier: ""
+shiyu_7_frontier: ""
+shiyu_defense: ""
+show_uid: ""

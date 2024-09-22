@@ -57,7 +57,7 @@ artifact_set_two_piece_embed_description: "2-Pieces: {bonus_2}"
 artifact_sets: Artifact Sets
 auto_checkin_button_label: Auto daily check-in
 auto_locale_option_label: Follow client language
-auto_redeem_error.content: "Automatic code redemption has been disabled due to an error, you can enable it back using </redeem>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>).\n"
+auto_redeem_error.content: "Automatic code redemption has been disabled due to an error, you can enable it back using </redeem>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 auto_redeem_footer: Turn off auto code redemption with /redeem
 auto_redeem_toggle.label: Auto code redemption
 books: Books
@@ -151,7 +151,7 @@ dark_mode_button_label: Dark mode
 error_footer: You can find help in our Discord server, link in /about
 error_title: An Error Occurred
 erudition: Erudition
-exceptions.card_not_ready_error.message: "When new characters are released, I need to spend time to gather fanarts and optimize colors for their cards.\nIf you'd like to speed up this process, you can contribute to the card data by reaching me in the [Discord Server](https://<https://link.seria.moe/hb-dc)."
+exceptions.card_not_ready_error.message: "When new characters are released, I need to specify the colors for their build cards.\nIf you see this message several days after a game update, please notify me in the [Discord Server](https://<https://link.seria.moe/hb-dc) as I might have forgot to do it."
 exceptions.card_not_ready_error.title: "Card data for {character_name} is not ready yet."
 exped.embed.description: One (or more) expeditions are finished
 exped_button.label: Expedition reminder
@@ -325,7 +325,7 @@ player_not_found_description: Please check the provided UID
 player_not_found_title: Player Does Not Exist
 preservation: Preservation
 prev_page_option_label: Previous page
-process_notify_error.content: "The reminder has been disabeld due to an error, you can enable it back using </notes>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>).\n"
+process_notify_error.content: "The reminder has been disabeld due to an error, you can enable it back using </notes>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 profile.add_image.button.label: Add custom image
 profile.add_image_modal.image_url.label: Image URL
 profile.build.select.placeholder: Select a build...
@@ -377,7 +377,7 @@ read_story.button.label: Read Story
 real_time_notes: Real-time notes
 realm_curr_button.label: Realm currency reminder
 realm_curr_modal.title: Realm Currency Reminder Settings
-redeeem_code.cookie_token_expired_description: "Refresh your cookie token by adding your accounts again using </accounts>.\nIf you use the email and password method to add your accounts, cookie token can be refreshed automatically."
+redeeem_code.cookie_token_expired_description: "The automatic code redemption feature is only available for users that logged in with their email and password, you can do so with </accounts>"
 redeeem_code.cookie_token_expired_title: Cookie Token Expired
 redeeem_code.cookie_token_refresh_failed_description: "It is likely that you have changed your account's password since the last time you add your accounts.\nPlease add your accounts again using </accounts> with the email and password method."
 redeeem_code.cookie_token_refresh_failed_title: Failed to refresh cookie token

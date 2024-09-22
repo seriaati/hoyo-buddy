@@ -690,3 +690,10 @@ shiyu_6_frontier: Sixth Frontier
 shiyu_7_frontier: Seventh Frontier
 shiyu_defense: Shiyu defense
 show_uid: Show UID
+no_leaderboard_found: No leaderboard found
+akasha_character_param: character
+akasha_calculation_param: leaderboard
+akasha_character_param_desc: Character to view the leaderboard for
+akasha_calculation_param_desc: Leaderboard to view
+akasha_total_entries: "Total entries: {total}"
+akasha_entries: Entries

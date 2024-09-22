@@ -4,6 +4,7 @@ import datetime
 import pathlib
 from typing import Final
 
+import akasha
 import ambr
 import discord
 import enka
@@ -82,6 +83,30 @@ EQUIP_ID_TO_ARTIFACT_POS: dict[str, str] = {
     "EQUIP_RING": "goblet",
     "EQUIP_DRESS": "circlet",
 }
+
+LOCALE_TO_AKASHA_LANG = {
+    discord.Locale.american_english: akasha.Language.ENGLISH,
+    discord.Locale.taiwan_chinese: akasha.Language.CHINESE_TRADITIONAL,
+    discord.Locale.chinese: akasha.Language.CHINESE_SIMPLIFIED,
+    discord.Locale.german: akasha.Language.GERMAN,
+    discord.Locale.spain_spanish: akasha.Language.SPANISH,
+    discord.Locale.french: akasha.Language.FRENCH,
+    discord.Locale.italian: akasha.Language.ITALIAN,
+    discord.Locale.japanese: akasha.Language.JAPANESE,
+    discord.Locale.korean: akasha.Language.KOREAN,
+    discord.Locale.brazil_portuguese: akasha.Language.PORTUGUESE,
+    discord.Locale.russian: akasha.Language.RUSSIAN,
+    discord.Locale.thai: akasha.Language.THAI,
+    discord.Locale.vietnamese: akasha.Language.VIETNAMESE,
+    discord.Locale.turkish: akasha.Language.TURKISH,
+    discord.Locale.ukrainian: akasha.Language.RUSSIAN,
+}
+AKASHA_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_AKASHA_LANG.items()}
+
+
+def locale_to_akasha_lang(locale: discord.Locale) -> akasha.Language:
+    return LOCALE_TO_AKASHA_LANG.get(locale, akasha.Language.ENGLISH)
+
 
 LOCALE_TO_HSR_ENKA_LANG: dict[discord.Locale, enka.hsr.Language] = {
     discord.Locale.taiwan_chinese: enka.hsr.Language.TRADITIONAL_CHINESE,

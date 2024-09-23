@@ -148,7 +148,7 @@ email_password_modal_password_input_label: 密碼
 enter_email_password_instructions_description: "此方式需輸入私人資訊。\n\n- 作為交換，你的 `cookie_token` 將能被自動刷新，這在兌換碼相關的功能中會有用處（只有 HoYoLAB 使用者受益）。\n- 你的電子郵件和密碼 **完全不會** 被保存在資料庫中，所以它們幾乎不可能被洩漏。\n- 此外，這個機器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上是開源的，所以你可以自行驗證這點。\n- 你保有是否信任此機器人的最終決定權"
 enter_light_cone_level.button.label: 變更光錐等級
 dark_mode_button_label: 深色模式
-error_footer: 你可以在我們的 Discord 伺服器內尋求幫助，連結在 /about
+error_footer: "你可以在我們的 Discord 伺服器內尋求幫助，連結在 /about"
 error_title: 發生了一個錯誤
 erudition: 智識
 exceptions.card_not_ready_error.message: "當新角色釋出時，我需要為他們指定面板卡片使用的顏色。\n如果你在遊戲更新後的幾天仍然看到這則訊息的話，請在 [Discord 伺服器](<https://link.seria.moe/hb-dc>) 內通知我，因為我可能忘記做了。"
@@ -683,3 +683,14 @@ shiyu_6_frontier: 第六防線
 shiyu_7_frontier: 第七防線
 shiyu_defense: 式與防衛戰
 show_uid: 顯示 UID
+no_leaderboard_found: 未能找到任何排行榜
+akasha_character_param: 角色
+akasha_calculation_param: 排行榜
+akasha_character_param_desc: 要查看哪個角色的排行榜？
+akasha_calculation_param_desc: 要查看哪個排行榜？
+akasha_total_entries: "總條目數量: {total}"
+leaderboard_akasha_command_description: 查看原神角色傷害排行榜（由 Akasha System 提供技術支持）
+akasha_you: 你
+akasha_uid_param_desc: 你的 UID
+achievement_lb_title: 成就數量排行榜
+lb_achievement_cmd_desc: 查看成就數量排行榜

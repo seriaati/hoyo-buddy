@@ -683,3 +683,14 @@ shiyu_6_frontier: 第六防线
 shiyu_7_frontier: 第七防线
 shiyu_defense: 式与防卫战
 show_uid: 显示 UID
+no_leaderboard_found: 未能找到任何排行榜
+akasha_character_param: 角色
+akasha_calculation_param: 排行榜
+akasha_character_param_desc: 要查看哪个角色的排行榜？
+akasha_calculation_param_desc: 要查看哪个排行榜？
+akasha_total_entries: "总条目数量: {total}"
+leaderboard_akasha_command_description: 查看原神角色伤害排行榜（由 Akasha System 提供技术支持）
+akasha_you: 你
+akasha_uid_param_desc: 你的 UID
+achievement_lb_title: 成就数量排行榜
+lb_achievement_cmd_desc: 查看成就数量排行榜

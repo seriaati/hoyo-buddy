@@ -480,21 +480,17 @@ class Hoyo(commands.Cog):
         ),
     )
     @app_commands.rename(
-        game_value=app_commands.locale_str("game", key="search_command_game_param_name")
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
     )
     @app_commands.describe(
-        game_value=app_commands.locale_str(
-            "Game to view events for", key="events_command_game_param_description"
+        account=app_commands.locale_str(
+            "Account to run this command with", key="acc_no_default_param_desc"
         )
     )
-    async def events_command(self, i: Interaction, game_value: str) -> None:
-        try:
-            game = Game(game_value)
-        except ValueError as e:
-            raise InvalidQueryError from e
-
-        command = EventsCommand(game)
-        await command.run(i)
+    async def events_command(
+        self, i: Interaction, account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer]
+    ) -> None:
+        await EventsCommand.run(i, account=account)
 
     @geetest_command.autocomplete("type_")
     async def geetest_type_autocomplete(
@@ -512,13 +508,6 @@ class Hoyo(commands.Cog):
         locale = await get_locale(i)
         return self.bot.get_enum_choices((Game.GENSHIN, Game.STARRAIL), locale, current)
 
-    @events_command.autocomplete("game_value")
-    async def events_game_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        locale = await get_locale(i)
-        return self.bot.get_enum_choices((Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current)
-
     @exploration_command.autocomplete("account")
     async def gi_acc_autocomplete(
         self, i: Interaction, current: str
@@ -528,6 +517,7 @@ class Hoyo(commands.Cog):
     @notes_command.autocomplete("account")
     @challenge_command.autocomplete("account")
     @profile_command.autocomplete("account")
+    @events_command.autocomplete("account")
     async def gi_hsr_zzz_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:

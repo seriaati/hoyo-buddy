@@ -6,8 +6,8 @@ import genshin
 from discord import ButtonStyle
 from discord.utils import format_dt
 
-from hoyo_buddy.constants import UTC_8, locale_to_gpy_lang
-from hoyo_buddy.db.models import get_dyk
+from hoyo_buddy.constants import UTC_8
+from hoyo_buddy.db.models import HoyoAccount, get_dyk
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
@@ -25,10 +25,12 @@ if TYPE_CHECKING:
 
 
 class EventsView(View):
-    def __init__(self, game: Game, *, author: User, locale: Locale, translator: Translator) -> None:
+    def __init__(
+        self, account: HoyoAccount, *, author: User, locale: Locale, translator: Translator
+    ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
-        self._game = game
+        self.account = account
         self.anns: Sequence[genshin.models.Announcement] = []
         self.banner_ann_ids: list[int] = []
         self.ann_id: int = 0
@@ -71,23 +73,24 @@ class EventsView(View):
         return anns[0]
 
     async def _fetch_anns(self) -> None:
-        client = genshin.Client(lang=locale_to_gpy_lang(self.locale))
+        client = self.account.client
+        client.set_lang(self.locale)
         zh_client = genshin.Client(lang="zh-tw")
 
-        if self._game is Game.GENSHIN:
+        if self.account.game is Game.GENSHIN:
             self.anns = await client.get_genshin_announcements()
             zh_anns = await zh_client.get_genshin_announcements()
             keyword = "祈願："  # noqa: RUF001
-        elif self._game is Game.STARRAIL:
+        elif self.account.game is Game.STARRAIL:
             self.anns = await client.get_starrail_announcements()
             zh_anns = await zh_client.get_starrail_announcements()
             keyword = "活動躍遷"
-        elif self._game is Game.ZZZ:
+        elif self.account.game is Game.ZZZ:
             self.anns = await client.get_zzz_announcements()
             zh_anns = await zh_client.get_zzz_announcements()
             keyword = "調頻"
         else:
-            raise FeatureNotImplementedError(game=self._game)
+            raise FeatureNotImplementedError(game=self.account.game)
 
         self.banner_ann_ids = [ann.id for ann in zh_anns if keyword in ann.title]
         self.ann_type = self.anns[0].type_label

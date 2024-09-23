@@ -694,3 +694,7 @@ akasha_you: 你
 akasha_uid_param_desc: 你的 UID
 achievement_lb_title: 成就數量排行榜
 lb_achievement_cmd_desc: 查看成就數量排行榜
+planar_fissure_label: 次元分裂
+planar_fissure_desc: "次元分裂活動將在 {hours} 小時候開始，記得保存好你的開拓力！"
+notif_modal.hours_before.label: 在活動開始的 X 小時前通知
+reminder_settings.reminde.set.type5: "狀態: {status}\n通知間隔: {notify_inverval} 分鐘\n最大通知數: {max_notif_count}\n通知時間: 活動開始的 {hours_before} 前"

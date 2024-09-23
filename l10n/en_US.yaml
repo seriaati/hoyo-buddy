@@ -599,7 +599,7 @@ copied_to_clipboard: Copied to clipboard
 required_field_error_message: This field is required
 accounts_added_snackbar_message: "Accounts added successfully, redirecting you back to Discord..."
 account_add_start_title: Add Accounts
-account_add_start_message: "Clicking the button below opens the Hoyo Buddy Login System, follow the instructions to add your accounts. When you're done, use the </accounts> command to view the accounts you have added."
+account_add_start_message: "Click the button below and follow the instructions to add your accounts. When you're done, use the </accounts> command to view the accounts you have added. If you face issues or need help, join our [Discord server](<https://link.seria.moe/hb-dc>)."
 hbls_button_label: Let's start!
 gacha_import_url_modal_title: Enter gacha log URL
 gacha_import_embed_title: Importing Gacha Logs

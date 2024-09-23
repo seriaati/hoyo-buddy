@@ -1,13 +1,13 @@
 {
     "apps": [
         {
-            "name": "hoyo-buddy-test",
+            "name": "hoyo-buddy",
             "script": "./run.py",
             "interpreter": "./.venv/bin/python",
             "interpreter_args": "-OO"
         },
         {
-            "name": "hb-login",
+            "name": "hb-app",
             "script": "./run_web_app.py",
             "interpreter": "./.venv/bin/python",
             "interpreter_args": "-OO"

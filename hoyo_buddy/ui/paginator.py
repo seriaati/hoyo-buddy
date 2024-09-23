@@ -68,7 +68,11 @@ class PaginatorView(View):
         if not i.response.is_done():
             await i.response.defer(ephemeral=ephemeral)
 
-        page = self._pages[self._current_page]
+        try:
+            page = self._pages[self._current_page]
+        except IndexError:
+            return
+
         file_ = await self._create_file()
         if isinstance(file_, discord.File):
             page.file = file_

@@ -44,7 +44,7 @@ class LbPaginator(PaginatorView):
 
     def get_lb_line(self, lb: Leaderboard) -> str:
         value = self.process_value(lb.value)
-        return f"{lb.rank}. {lb.username} ({blur_uid(lb.uid, arterisk='X')}) - **{value}**"
+        return f"{lb.rank}. {lb.username} ({blur_uid(lb.uid, arterisk='x')}) - **{value}**"
 
     def get_page_embed(self, lbs: list[Leaderboard]) -> DefaultEmbed:
         embed = self.lb_embed.copy()

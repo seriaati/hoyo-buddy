@@ -6,6 +6,7 @@ import contextlib
 import logging
 import os
 import sys
+import tracemalloc
 
 import aiohttp
 import aiohttp.http_websocket
@@ -62,6 +63,8 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
+    tracemalloc.start()
+
     logger.remove()
 
     if config.sentry:

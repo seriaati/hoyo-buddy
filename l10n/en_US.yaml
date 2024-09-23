@@ -693,8 +693,13 @@ leaderboard_akasha_command_description: View Genshin Impact character damage lea
 akasha_you: You
 akasha_uid_param_desc: Your UID
 achievement_lb_title: Achievement Count Leaderboard
-lb_achievement_cmd_desc: View the achievement count leaderboard
 planar_fissure_label: Planar Fissure
 planar_fissure_desc: "The Planar Fissure event is happening in {hour} hours, remember to save your trailblazer power!"
 notif_modal.hours_before.label: Notify X hours before the event starts
 reminder_settings.reminde.set.type5: "Status: {status}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}\nNotify Time: {hours_before} hours before the event starts"
+invalid_lb_selected_error_msg: Invalid leaderboard selected
+chest_lb_title: Opened Chests Leaderboard
+abyss_dmg_lb_title: Spiral Abyss Strongest Single Strike Leaderboard
+theater_dmg_lb_title: Imaginarium Theater Strongest Single Strike Leaderboard
+max_friendship_lb_title: Number of Characters at Max Friendship Leaderboard
+lb_view_command_description: View leaderboards

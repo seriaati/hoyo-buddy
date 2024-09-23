@@ -11,12 +11,11 @@ from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.constants import locale_to_akasha_lang
 from hoyo_buddy.db.models import HoyoAccount, get_locale
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.exceptions import LeaderboardNotFoundError
 from hoyo_buddy.hoyo.clients.ambr import ItemCategory
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.types import User  # noqa: TCH001
 from hoyo_buddy.ui.hoyo.leaderboard.akasha import AkashaLbPaginator
 from hoyo_buddy.utils import ephemeral
 
@@ -117,9 +116,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
 
         if not characters:
-            return self.bot.get_error_autocomplete(
-                LocaleStr(key="search_autocomplete_not_setup"), locale
-            )
+            return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_not_setup"), locale)
 
         choices = characters.get(locale, characters[Locale.american_english])
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
@@ -131,13 +128,13 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         locale = await get_locale(i)
 
         if not (character_id := i.namespace.character) or character_id == "none":
-            return self.bot.get_error_autocomplete(LocaleStr(key="no_leaderboard_found"), locale)
+            return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
 
         async with akasha.AkashaAPI(locale_to_akasha_lang(locale)) as api:
             categories = await api.get_categories(character_id)
 
         if not categories:
-            return self.bot.get_error_autocomplete(LocaleStr(key="no_leaderboard_found"), locale)
+            return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
 
         choices: list[app_commands.Choice[str]] = [
             app_commands.Choice(
@@ -149,41 +146,55 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
 
     @app_commands.command(
-        name=app_commands.locale_str("achievement"),
-        description=app_commands.locale_str(
-            "View achievement count leaderboard", key="lb_achievement_cmd_desc"
-        ),
+        name=app_commands.locale_str("view"),
+        description=app_commands.locale_str("View leaderboards", key="lb_view_command_description"),
     )
     @app_commands.rename(
-        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
+        lb=app_commands.locale_str("leaderboard", key="akasha_calculation_param"),
         account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
-        user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
-        ),
+        lb=app_commands.locale_str("Leaderboard to view", key="akasha_calculation_param_desc"),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
         ),
     )
-    async def lb_achievement_command(
+    async def lb_view_command(
         self,
         i: Interaction,
-        user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        lb: str,
+        account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer],
     ) -> None:
-        command = LeaderboardCommand()
-        await command.achievement(i, user=user, account=account)
+        try:
+            lb_type = LeaderboardType(lb)
+        except ValueError as e:
+            raise LeaderboardNotFoundError from e
 
-    @lb_achievement_command.autocomplete("account")
+        command = LeaderboardCommand()
+        await command.run(i, lb_type=lb_type, account=account)
+
+    @lb_view_command.autocomplete("lb")
+    async def lb_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+        locale = await get_locale(i)
+        return self.bot.get_enum_choices(list(LeaderboardType), locale, current)
+
+    @lb_view_command.autocomplete("account")
     async def gi_hsr_zzz_honkai_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(
-            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
-        )
+        locale = await get_locale(i)
+
+        try:
+            lb = LeaderboardType(i.namespace.leaderboard)
+        except ValueError:
+            return self.bot.get_error_choice(LocaleStr(key="invalid_lb_selected_error_msg"), locale)
+
+        games = LeaderboardCommand.get_games_by_lb_type(lb)
+        if not games:
+            return self.bot.get_error_choice(LocaleStr(key="no_game_found"), locale)
+
+        return await self.bot.get_game_account_choices(i, current, games)
 
 
 async def setup(bot: HoyoBuddy) -> None:

@@ -33,9 +33,7 @@ class Farm(
         weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
 
         if not characters or not weapons:
-            return self.bot.get_error_autocomplete(
-                LocaleStr(key="search_autocomplete_not_setup"), locale
-            )
+            return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_not_setup"), locale)
 
         return characters.get(locale, characters[Locale.american_english]) + weapons.get(
             locale, weapons[Locale.american_english]
@@ -207,7 +205,7 @@ class Farm(
         account_namespace: str | None = i.namespace.account
 
         if account_namespace is None:
-            return self.bot.get_error_autocomplete(
+            return self.bot.get_error_choice(
                 LocaleStr(key="search_autocomplete_no_results"), await get_locale(i)
             )
         # Find [account_id] from account_namespace
@@ -216,7 +214,7 @@ class Farm(
 
         farm_notify = await FarmNotify.get_or_none(account_id=account_id)
         if farm_notify is None:
-            return self.bot.get_error_autocomplete(
+            return self.bot.get_error_choice(
                 LocaleStr(key="search_autocomplete_no_results"), locale
             )
 
@@ -228,7 +226,7 @@ class Farm(
         ]
 
         if not choices:
-            return self.bot.get_error_autocomplete(
+            return self.bot.get_error_choice(
                 LocaleStr(key="search_autocomplete_no_results"), locale
             )
 

@@ -372,7 +372,7 @@ class Search(commands.Cog):
         try:
             game = Game(i.namespace.game)
         except ValueError:
-            return self.bot.get_error_autocomplete(LocaleStr(key="invalid_game_selected"), locale)
+            return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
 
         categories = self._search_categories[game]
         return self.bot.get_enum_choices(
@@ -387,19 +387,17 @@ class Search(commands.Cog):
         try:
             game = Game(i.namespace.game)
         except ValueError:
-            return self.bot.get_error_autocomplete(LocaleStr(key="invalid_game_selected"), locale)
+            return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
 
         if not self.bot.autocomplete_choices or game not in self.bot.autocomplete_choices:
-            return self.bot.get_error_autocomplete(
-                LocaleStr(key="search_autocomplete_not_setup"), locale
-            )
+            return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_not_setup"), locale)
 
         if i.namespace.category == BetaItemCategory.UNRELEASED_CONTENT.value:
             choices = self.bot.beta_autocomplete_choices[game].get(
                 locale, self.bot.beta_autocomplete_choices[game][Locale.american_english]
             )
             if not choices:
-                return self.bot.get_error_autocomplete(
+                return self.bot.get_error_choice(
                     LocaleStr(key="search_autocomplete_no_results"), locale
                 )
         else:
@@ -411,13 +409,9 @@ class Search(commands.Cog):
                 elif game is Game.ZZZ:
                     category = hakushin.ZZZItemCategory(i.namespace.category)
                 else:
-                    return self.bot.get_error_autocomplete(
-                        LocaleStr(key="invalid_game_selected"), locale
-                    )
+                    return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
             except ValueError:
-                return self.bot.get_error_autocomplete(
-                    LocaleStr(key="invalid_category_selected"), locale
-                )
+                return self.bot.get_error_choice(LocaleStr(key="invalid_category_selected"), locale)
 
             # Special handling for spiral abyss
             if category is ambr.ItemCategory.SPIRAL_ABYSS:
@@ -427,13 +421,13 @@ class Search(commands.Cog):
                 locale, self.bot.autocomplete_choices[game][category][Locale.american_english]
             )
             if not choices:
-                return self.bot.get_error_autocomplete(
+                return self.bot.get_error_choice(
                     LocaleStr(key="search_autocomplete_no_results"), locale
                 )
 
         choices = [c for c in choices if current.lower() in c.name.lower()]
         if not choices:
-            return self.bot.get_error_autocomplete(
+            return self.bot.get_error_choice(
                 LocaleStr(key="search_autocomplete_no_results"), locale
             )
 

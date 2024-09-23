@@ -144,4 +144,8 @@ class GachaImportSource(StrEnum):
 
 
 class LeaderboardType(StrEnum):
-    ACHIEVEMENT = "achievement"
+    ACHIEVEMENT = "achievement_lb_title"
+    CHEST = "chest_lb_title"
+    MAX_FRIENDSHIP = "max_friendship_lb_title"
+    ABYSS_DMG = "abyss_dmg_lb_title"
+    THEATER_DMG = "theater_dmg_lb_title"

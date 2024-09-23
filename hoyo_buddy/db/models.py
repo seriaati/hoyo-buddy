@@ -439,18 +439,40 @@ class Leaderboard(BaseModel):
     uid = fields.BigIntField()
     rank = fields.IntField()
     username = fields.CharField(max_length=32)
+    extra_info: fields.Field[dict[str, Any]] = fields.JSONField(default={}, null=True)
 
     class Meta:
         unique_together = ("type", "game", "uid")
 
     @classmethod
     async def update_or_create(
-        cls, *, type_: LeaderboardType, game: Game, uid: int, value: float, username: str
+        cls,
+        *,
+        type_: LeaderboardType,
+        game: Game,
+        uid: int,
+        value: float,
+        username: str,
+        extra_info: dict[str, Any] | None,
     ) -> None:
+        extra_info = extra_info or {}
+
         try:
-            await cls.create(type=type_, game=game, uid=uid, value=value, username=username, rank=0)
+            await cls.create(
+                type=type_,
+                game=game,
+                uid=uid,
+                value=value,
+                username=username,
+                rank=0,
+                extra_info=extra_info,
+            )
         except exceptions.IntegrityError:
-            await cls.filter(type=type_, game=game, uid=uid).update(value=value, username=username)
+            lb = await cls.get(type=type_, game=game, uid=uid)
+            if lb.value < value:
+                await cls.filter(type=type_, game=game, uid=uid).update(
+                    value=value, username=username, extra_info=extra_info
+                )
 
 
 async def get_locale(i: Interaction) -> Locale:

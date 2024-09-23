@@ -180,7 +180,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         return message
 
-    def get_error_autocomplete(
+    def get_error_choice(
         self, error_message: LocaleStr, locale: discord.Locale
     ) -> list[app_commands.Choice[str]]:
         return [
@@ -251,10 +251,10 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         if not accounts:
             if is_author:
-                return self.get_error_autocomplete(
+                return self.get_error_choice(
                     LocaleStr(key="no_accounts_autocomplete_choice"), locale
                 )
-            return self.get_error_autocomplete(
+            return self.get_error_choice(
                 LocaleStr(key="user_no_accounts_autocomplete_choice"), locale
             )
 

@@ -27,7 +27,7 @@ class TypeFiveModal(Modal):
         label=LocaleStr(key="notif_modal.hours_before.label"),
         is_digit=True,
         min_value=1,
-        max_value=24,
+        max_value=DB_SMALLINT_MAX,
     )
 
     def __init__(

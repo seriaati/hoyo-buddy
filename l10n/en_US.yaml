@@ -692,3 +692,5 @@ akasha_total_entries: "Total entries: {total}"
 leaderboard_akasha_command_description: View Genshin Impact character damage leaderboard (powered by Akasha System)
 akasha_you: You
 akasha_uid_param_desc: Your UID
+achievement_lb_title: Achievement Count Leaderboard
+lb_achievement_cmd_desc: View the achievement count leaderboard

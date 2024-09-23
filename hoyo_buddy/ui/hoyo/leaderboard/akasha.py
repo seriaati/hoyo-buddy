@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from typing import TYPE_CHECKING
 
 import akasha
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction, User
 
 
-class LeaderboardPaginator(PaginatorView):
+class AkashaLbPaginator(PaginatorView):
     def __init__(
         self,
         calculation_id: str,
@@ -35,7 +36,7 @@ class LeaderboardPaginator(PaginatorView):
         self.lb_size = lb_size
 
         self.lbs: list[akasha.Leaderboard] = []
-        self._max_page = lb_size // 10 + 1
+        self._max_page = math.ceil(lb_size / 10)
 
     def get_lb_line(self, lb: akasha.Leaderboard) -> str:
         profile_url = f"https://akasha.cv/profile/{lb.uid}"
@@ -43,7 +44,7 @@ class LeaderboardPaginator(PaginatorView):
         crit_dmg = round(lb.stats[akasha.CharaStatType.CRIT_DMG].value * 100, 1)
         crit_value = round(lb.crit_value, 1)
         damage = round(lb.calculation.result, 1)
-        return f"{lb.rank}. [{lb.owner.nickname}]({profile_url}) - {damage} - {crit_value} CV ({crit_rate}/{crit_dmg})"
+        return f"{lb.rank}. [{lb.owner.nickname}]({profile_url}) - **{damage}** - {crit_value} CV ({crit_rate}/{crit_dmg})"
 
     def get_page_embed(self, lbs: list[akasha.Leaderboard]) -> DefaultEmbed:
         embed = self.lb_embed.copy()

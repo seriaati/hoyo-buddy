@@ -362,9 +362,7 @@ class Search(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
-        return self.bot.get_enum_autocomplete(
-            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current
-        )
+        return self.bot.get_enum_choices((Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current)
 
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
@@ -377,7 +375,7 @@ class Search(commands.Cog):
             return self.bot.get_error_autocomplete(LocaleStr(key="invalid_game_selected"), locale)
 
         categories = self._search_categories[game]
-        return self.bot.get_enum_autocomplete(
+        return self.bot.get_enum_choices(
             [BetaItemCategory.UNRELEASED_CONTENT, *categories], locale, current
         )
 

@@ -7,14 +7,17 @@ from discord import Locale, app_commands
 from discord.ext import commands
 from enka.errors import WrongUIDFormatError
 
+from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.constants import locale_to_akasha_lang
-from hoyo_buddy.db.models import get_locale
+from hoyo_buddy.db.models import HoyoAccount, get_locale
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import LeaderboardNotFoundError
 from hoyo_buddy.hoyo.clients.ambr import ItemCategory
+from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui.hoyo.leaderboard.akasha import LeaderboardPaginator
+from hoyo_buddy.types import User  # noqa: TCH001
+from hoyo_buddy.ui.hoyo.leaderboard.akasha import AkashaLbPaginator
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
@@ -95,7 +98,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             .set_thumbnail(url=category.character_icon)
             .set_footer(text=LocaleStr(key="akasha_total_entries", total=category.count))
         )
-        view = LeaderboardPaginator(
+        view = AkashaLbPaginator(
             calculation_id,
             lb_embed,
             you,
@@ -144,6 +147,29 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             for weapon in category.weapons
         ]
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
+
+    @app_commands.command(
+        name=app_commands.locale_str("achievement"),
+        description=app_commands.locale_str(
+            "View achievement count leaderboard", key="lb_achievement_cmd_desc"
+        ),
+    )
+    async def lb_achievement_command(
+        self,
+        i: Interaction,
+        user: User = None,
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+    ) -> None:
+        command = LeaderboardCommand()
+        await command.achievement(i, user=user, account=account)
+
+    @lb_achievement_command.autocomplete("account")
+    async def gi_hsr_zzz_honkai_acc_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        return await self.bot.get_game_account_choices(
+            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
+        )
 
 
 async def setup(bot: HoyoBuddy) -> None:

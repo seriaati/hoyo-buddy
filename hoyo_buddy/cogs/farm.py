@@ -173,7 +173,7 @@ class Farm(
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         user: User = i.namespace.user
-        return await self.bot.get_account_autocomplete(
+        return await self.bot.get_account_choices(
             user, i.user.id, current, locale, self.bot.translator, games=(Game.GENSHIN,)
         )
 
@@ -183,7 +183,7 @@ class Farm(
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         user: User = i.namespace.user
-        return await self.bot.get_account_autocomplete(
+        return await self.bot.get_account_choices(
             user,
             i.user.id,
             current,

@@ -5,7 +5,7 @@ from __future__ import annotations
 import datetime
 import pickle
 from functools import cached_property
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 import genshin
 import orjson
@@ -16,7 +16,7 @@ from tortoise import exceptions, fields
 from tortoise.expressions import F
 
 from ..constants import HB_GAME_TO_GPY_GAME, SERVER_RESET_HOURS, UTC_8
-from ..enums import ChallengeType, Game, NotesNotifyType, Platform
+from ..enums import ChallengeType, Game, LeaderboardType, NotesNotifyType, Platform
 from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
 
@@ -32,7 +32,7 @@ if TYPE_CHECKING:
 
 class BaseModel(Model):
     def __str__(self) -> str:
-        return f"{self.__class__.__name__}({', '.join(f'{field}={getattr(self, field)!r}' for field in self._meta.db_fields)})"
+        return f"{self.__class__.__name__}({', '.join(f'{field}={getattr(self, field)!r}' for field in self._meta.db_fields if hasattr(self, field))})"
 
     def __repr__(self) -> str:
         return str(self)
@@ -429,6 +429,27 @@ class CommandMetric(BaseModel):
             await cls.filter(name=name).update(count=F("count") + 1)
 
 
+class Leaderboard(BaseModel):
+    type = fields.CharEnumField(LeaderboardType, max_length=32)
+    game = fields.CharEnumField(Game, max_length=32)
+    value = fields.FloatField()
+    uid = fields.BigIntField()
+    rank = fields.IntField()
+    username = fields.CharField(max_length=32)
+
+    class Meta:
+        unique_together = ("type", "game", "uid")
+
+    @classmethod
+    async def update_or_create(
+        cls, *, type_: LeaderboardType, game: Game, uid: int, value: float, username: str
+    ) -> None:
+        try:
+            await cls.create(type=type_, game=game, uid=uid, value=value, username=username, rank=0)
+        except exceptions.IntegrityError:
+            await cls.filter(type=type_, game=game, uid=uid).update(value=value, username=username)
+
+
 async def get_locale(i: Interaction) -> Locale:
     cache = i.client.cache
     key = f"{i.user.id}:lang"
@@ -525,3 +546,34 @@ async def update_gacha_nums(pool: asyncpg.Pool, *, account: HoyoAccount) -> None
     async with pool.acquire() as conn:
         await conn.execute(UPDATE_NUM_SQL, account.id)
         await conn.execute(UPDATE_NUM_SINCE_LAST_SQL, account.id)
+
+
+UPDATE_LB_RANK_SQL = """
+WITH ranked_leaderboard AS (
+  SELECT
+    uid,
+    type,
+    game,
+    value,
+    ROW_NUMBER() OVER (
+      PARTITION BY type, game
+      ORDER BY value {order}
+    ) AS new_rank
+  FROM Leaderboard
+  WHERE game = $1 AND type = $2
+)
+UPDATE Leaderboard l
+SET rank = r.new_rank
+FROM ranked_leaderboard r
+WHERE l.uid = r.uid
+  AND l.type = r.type
+  AND l.game = r.game;
+"""
+
+
+async def update_lb_ranks(
+    pool: asyncpg.Pool, *, game: Game, type_: LeaderboardType, order: Literal["ASC", "DESC"]
+) -> None:
+    """Update the ranks of the leaderboards."""
+    async with pool.acquire() as conn:
+        await conn.execute(UPDATE_LB_RANK_SQL.format(order=order), game, type_)

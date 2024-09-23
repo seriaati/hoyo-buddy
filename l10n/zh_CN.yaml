@@ -694,3 +694,7 @@ akasha_you: 你
 akasha_uid_param_desc: 你的 UID
 achievement_lb_title: 成就数量排行榜
 lb_achievement_cmd_desc: 查看成就数量排行榜
+planar_fissure_label: 位面分裂
+planar_fissure_desc: "位面分裂活动将在 {hours} 小时候开始，记得保存好你的开拓力！"
+notif_modal.hours_before.label: 在活动开始的 X 小时前通知
+reminder_settings.reminde.set.type5: "状态: {status}\n通知间隔: {notify_inverval} 分钟\n最大通知数: {max_notif_count}\n通知时间: 活动开始的 {hours_before} 前"

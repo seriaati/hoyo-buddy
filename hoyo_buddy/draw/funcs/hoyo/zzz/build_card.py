@@ -162,36 +162,37 @@ class ZZZAgentCard:
 
         # Equip section
         equip_section = drawer.open_asset("equip_section.png")
-        im.paste(equip_section, (71, 244), equip_section)
+        im.paste(equip_section, (51, 183), equip_section)
+
         # W-engine
         engine = self._agent.w_engine
         if engine is not None:
             # Engine icon
             icon = drawer.open_static(engine.icon, size=(317, 317))
-            im.paste(icon, (480, 263), icon)
+            im.paste(icon, (460, 202), icon)
 
             # Engine level
             level_flair = drawer.open_asset("engine_level_flair.png")
-            im.paste(level_flair, (663, 510), level_flair)
+            im.paste(level_flair, (617, 447), level_flair)
             drawer.write(
                 f"Lv.{engine.level}",
-                size=36,
-                position=(720, 536),
+                size=43,
+                position=(685, 478),
                 color=(255, 255, 255),
-                style="medium",
+                style="bold",
                 sans=True,
                 anchor="mm",
             )
 
             # Engine star
             star_flair = drawer.open_asset("engine_star_flair.png")
-            im.paste(star_flair, (498, 284), star_flair)
+            im.paste(star_flair, (478, 223), star_flair)
             drawer.write(
                 str(engine.refinement),
                 size=46,
-                position=(533, 318),
+                position=(513, 258),
                 color=(255, 255, 255),
-                style="medium",
+                style="bold",
                 sans=True,
                 anchor="mm",
             )
@@ -200,7 +201,7 @@ class ZZZAgentCard:
             name_tbox = drawer.write(
                 engine.name.upper().replace("-", " "),
                 size=64,
-                position=(94, 267),
+                position=(74, 206),
                 max_width=392,
                 max_lines=2,
                 style="black",
@@ -212,7 +213,7 @@ class ZZZAgentCard:
 
             # Engine stats
             stats = (engine.main_properties[0], engine.properties[0])
-            stat_positions = {0: (94, bottom + 40), 1: (94, bottom + 40 + 60)}
+            stat_positions = {0: (74, bottom + 40), 1: (74, bottom + 40 + 60)}
             for i, stat in enumerate(stats):
                 if isinstance(stat.type, PropType):
                     icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[stat.type]}", size=(40, 40))
@@ -220,7 +221,7 @@ class ZZZAgentCard:
                     drawer.write(
                         f"{stat.name}  {stat.value}",
                         size=28,
-                        style="medium",
+                        style="bold",
                         sans=True,
                         color=(20, 20, 20),
                         position=(
@@ -232,92 +233,96 @@ class ZZZAgentCard:
                     )
 
         # Discs
-        start_pos = (74, 670)
-        disc_mask = drawer.open_asset("disc_mask.png", size=(125, 152))
+        start_pos = (55, 597)
+        disc_mask = drawer.open_asset("disc_mask.png", size=(151, 184))
         for i, disc in enumerate(self._agent.discs):
-            icon = drawer.open_static(self._disc_icons[str(disc.id)])
-            icon = drawer.middle_crop(icon, (125, 152))
+            icon = drawer.open_static(self._disc_icons[str(disc.id)], size=(184, 184))
+            icon = drawer.middle_crop(icon, (151, 184))
             icon = drawer.mask_image_with_image(icon, disc_mask)
             im.paste(icon, start_pos, icon)
 
             drawer.write(
                 f"+{disc.level}",
-                size=20,
+                size=24,
                 color=(255, 255, 255),
-                position=(start_pos[0] + 301, start_pos[1] + 30),
+                position=(start_pos[0] + 363, start_pos[1] + 37),
+                style="bold",
                 anchor="mm",
             )
 
             main_stat = disc.main_properties[0]
             if isinstance(main_stat.type, PropType):
                 main_stat_icon = drawer.open_asset(
-                    f"stat_icons/{STAT_ICONS[main_stat.type]}", size=(35, 35)
+                    f"stat_icons/{STAT_ICONS[main_stat.type]}", size=(37, 37)
                 )
-                im.paste(main_stat_icon, (start_pos[0] + 140, start_pos[1] + 15), main_stat_icon)
+                im.paste(main_stat_icon, (start_pos[0] + 168, start_pos[1] + 18), main_stat_icon)
                 drawer.write(
                     main_stat.value,
-                    size=28,
-                    position=(start_pos[0] + 185, start_pos[1] + 15 + main_stat_icon.height // 2),
-                    style="medium",
+                    size=34,
+                    position=(start_pos[0] + 220, start_pos[1] + 18 + main_stat_icon.height // 2),
+                    style="bold",
                     sans=True,
                     anchor="lm",
                 )
 
-            sub_stat_pos = (start_pos[0] + 144, start_pos[1] + 70)
+            sub_stat_pos = (start_pos[0] + 174, start_pos[1] + 89)
             for j in range(4):
                 try:
                     sub_stat = disc.properties[j]
                 except IndexError:
-                    sub_stat_icon = drawer.open_asset("stat_icons/PLACEHOLDER.png", size=(25, 25))
+                    sub_stat_icon = drawer.open_asset("stat_icons/PLACEHOLDER.png", size=(28, 28))
                     text = "N/A"
                 else:
                     if isinstance(sub_stat.type, PropType):
                         sub_stat_icon = drawer.open_asset(
-                            f"stat_icons/{STAT_ICONS[sub_stat.type]}", size=(25, 25)
+                            f"stat_icons/{STAT_ICONS[sub_stat.type]}", size=(28, 28)
                         )
                     else:
                         sub_stat_icon = drawer.open_asset(
-                            "stat_icons/PLACEHOLDER.png", size=(25, 25)
+                            "stat_icons/PLACEHOLDER.png", size=(28, 28)
                         )
                     text = sub_stat.value
 
                 im.paste(sub_stat_icon, sub_stat_pos, sub_stat_icon)
                 drawer.write(
                     text,
-                    size=18,
-                    position=(sub_stat_pos[0] + 30, sub_stat_pos[1] + sub_stat_icon.height // 2),
+                    size=22,
+                    position=(sub_stat_pos[0] + 38, sub_stat_pos[1] + sub_stat_icon.height // 2),
                     sans=True,
+                    style="medium",
                     anchor="lm",
                 )
 
                 if j == 1:
-                    sub_stat_pos = (start_pos[0] + 144, start_pos[1] + 115)
+                    sub_stat_pos = (start_pos[0] + 174, start_pos[1] + 134)
                 else:
-                    sub_stat_pos = (sub_stat_pos[0] + 102, sub_stat_pos[1])
+                    sub_stat_pos = (sub_stat_pos[0] + 123, sub_stat_pos[1])
 
-            start_pos = (461, 670) if i == 2 else (start_pos[0], start_pos[1] + 193)
+            start_pos = (521, 597) if i == 2 else (start_pos[0], start_pos[1] + 233)
 
         # Stats section
         stats_section = drawer.open_asset("stats_section.png")
-        im.paste(stats_section, (2743, 519), stats_section)
+        im.paste(stats_section, (2685, 424), stats_section)
+
         # Skill levels
-        start_pos = (2852, 554)
+        start_pos = (2811, 466)
         for i, skill_type in enumerate(SKILL_ORDER):
             skill = dutils.get(self._agent.skills, type=skill_type)
             if skill is None:
                 continue
             drawer.write(
                 str(skill.level),
-                size=48,
+                size=55,
                 position=start_pos,
                 color=(20, 20, 20),
-                style="medium",
+                style="bold",
                 sans=True,
                 anchor="mm",
             )
-            start_pos = (2852, 554 + 86) if i == 2 else (start_pos[0] + 180, start_pos[1])
+            start_pos = (2811, 466 + 98) if i == 2 else (start_pos[0] + 205, start_pos[1])
+
         # Stats
-        start_pos = (2851, 769)
+        start_pos = (2808, 709)
         props = get_props(self._agent)
         for i, prop in enumerate(props):
             if prop is None:
@@ -327,10 +332,10 @@ class ZZZAgentCard:
                 size=40,
                 position=start_pos,
                 color=(20, 20, 20),
-                style="regular",
+                style="medium",
                 sans=True,
             )
-            start_pos = (3100, 769) if i == 4 else (start_pos[0], start_pos[1] + 93)
+            start_pos = (3091, 709) if i == 4 else (start_pos[0], start_pos[1] + 106)
 
         buffer = BytesIO()
         im.save(buffer, "WEBP", loseless=True)

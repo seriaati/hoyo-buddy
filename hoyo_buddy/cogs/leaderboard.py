@@ -154,6 +154,20 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             "View achievement count leaderboard", key="lb_achievement_cmd_desc"
         ),
     )
+    @app_commands.rename(
+        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
+    )
+    @app_commands.describe(
+        user=app_commands.locale_str(
+            "User to search the accounts with, defaults to you",
+            key="user_autocomplete_param_description",
+        ),
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        ),
+    )
     async def lb_achievement_command(
         self,
         i: Interaction,

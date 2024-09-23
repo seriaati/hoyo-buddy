@@ -169,13 +169,17 @@ wheels = [
 
 [[package]]
 name = "akasha-py"
-version = "0.2.2"
-source = { git = "https://github.com/seriaati/akasha-py#540419c135a0fcb07d6f55338c8d5b271ad7c953" }
+version = "0.2.3"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
     { name = "loguru" },
     { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ec/dc/b6b7d2d58a1eec7e1e6ac96a8ace3001c90027bc7987f46913c59d7ff68e/akasha_py-0.2.3.tar.gz", hash = "sha256:0e341cdf5ab1e8632d597e455af7eedddbcee059f890764bbcd83b3043ba44d3", size = 22171 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2e/c1/f91f117baab5f9a924c7d6ad625aa060d62dafc7f2b7dde7f0d8aafa5794/akasha_py-0.2.3-py3-none-any.whl", hash = "sha256:43f9bf5df9ba750c73175a7f8e334a494a4d42c02021224dfed7911651ee5ea6", size = 23544 },
 ]
 
 [[package]]
@@ -869,7 +873,7 @@ requires-dist = [
     { name = "aerich", specifier = ">=0.7.2" },
     { name = "aiocache", specifier = ">=0.12.2" },
     { name = "aiofiles", specifier = ">=24.1.0" },
-    { name = "akasha-py", git = "https://github.com/seriaati/akasha-py" },
+    { name = "akasha-py", specifier = ">=0.2.3" },
     { name = "ambr-py", specifier = ">=1.7.11" },
     { name = "asyncache", specifier = ">=0.3.1" },
     { name = "asyncpg", specifier = ">=0.29.0" },

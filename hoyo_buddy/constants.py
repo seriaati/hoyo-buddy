@@ -541,6 +541,7 @@ def locale_to_starrail_data_lang(locale: discord.Locale) -> str:
 
 FORT_OF_FANS_URL = "https://raw.githubusercontent.com/FortOfFans/HSR/main"
 HSR_DEFAULT_ART_URL = f"{FORT_OF_FANS_URL}/spriteoutput/avatardrawcardresult/{{char_id}}.png"
+HSR_TEAM_ICON_URL = f"{FORT_OF_FANS_URL}/spriteoutput/avatariconteam/{{char_id}}.png"
 
 UIGF_GAME_KEYS: Final[dict[Game, str]] = {
     Game.GENSHIN: "hk4e",

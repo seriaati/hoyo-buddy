@@ -13,7 +13,7 @@ from seria.utils import write_json
 from hoyo_buddy.db.models import CommandMetric, HoyoAccount, Settings, User
 from hoyo_buddy.emojis import get_game_emoji
 
-from ..constants import UID_STARTS
+from ..constants import GI_UID_PREFIXES
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
@@ -76,7 +76,7 @@ class TaskView(ui.View):
     @ui.button(label="Farm check", style=ButtonStyle.blurple)
     async def farm_check(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Farm check tasks started.")
-        for uid_start in UID_STARTS:
+        for uid_start in GI_UID_PREFIXES:
             asyncio.create_task(FarmChecker.execute(i.client, uid_start))
 
     @ui.button(label="Auto redeem", style=ButtonStyle.blurple)

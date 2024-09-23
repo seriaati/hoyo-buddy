@@ -694,3 +694,7 @@ akasha_you: You
 akasha_uid_param_desc: Your UID
 achievement_lb_title: Achievement Count Leaderboard
 lb_achievement_cmd_desc: View the achievement count leaderboard
+planar_fissure_label: Planar Fissure
+planar_fissure_desc: The Planar Fissure event is happening in {hour} hours, remember to save your trailblazer power!
+notif_modal.hours_before.label: Notify X hours before the event starts
+reminder_settings.reminde.set.type5: "Status: {status}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}\nNotify Time: {hours_before} hours before the event starts"

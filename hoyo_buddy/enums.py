@@ -42,6 +42,8 @@ class NotesNotifyType(IntEnum):
     """ZZZ Scratch Card Mania"""
     VIDEO_STORE = 15
     """ZZZ Video Store Management"""
+    PLANAR_FISSURE = 16
+    """Planar Fissur Double Drop Rate"""
 
 
 class TalentBoost(IntEnum):

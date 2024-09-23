@@ -4,6 +4,7 @@ from .battery import BatteryReminder
 from .daily import DailyReminder
 from .expedition import ExpeditionReminder
 from .parametric_transformer import PTReminder
+from .planar_fissure import PlanarFissureReminder
 from .realm_currency import RealmCurrencyReminder
 from .reserved_tbp import ReservedTBPReminder
 from .resin import ResinReminder

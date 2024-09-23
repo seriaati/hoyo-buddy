@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from discord.ext import commands, tasks
 
-from ..constants import UID_STARTS
+from ..constants import GI_UID_PREFIXES
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
@@ -53,7 +53,7 @@ class Schedule(commands.Cog):
                     asyncio.create_task(FarmChecker.execute(self.bot, "6"))
                 case _:
                     # Asia, China, and TW/HK/MO servers
-                    for uid_start in UID_STARTS:
+                    for uid_start in GI_UID_PREFIXES:
                         if uid_start in {"7", "6"}:
                             continue
                         asyncio.create_task(FarmChecker.execute(self.bot, uid_start))

@@ -15,7 +15,7 @@ from seria.tortoise.model import Model
 from tortoise import exceptions, fields
 from tortoise.expressions import F
 
-from ..constants import HB_GAME_TO_GPY_GAME, SERVER_RESET_HOURS, UTC_8
+from ..constants import GI_SERVER_RESET_HOURS, HB_GAME_TO_GPY_GAME, UTC_8
 from ..enums import ChallengeType, Game, LeaderboardType, NotesNotifyType, Platform
 from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
@@ -103,7 +103,7 @@ class HoyoAccount(BaseModel):
     def server_reset_datetime(self) -> datetime.datetime:
         """Server reset time in UTC+8."""
         server = genshin.utility.recognize_server(self.uid, HB_GAME_TO_GPY_GAME[self.game])
-        reset_hour = SERVER_RESET_HOURS.get(server, 4)
+        reset_hour = GI_SERVER_RESET_HOURS.get(server, 4)
         reset_time = get_now().replace(hour=reset_hour, minute=0, second=0, microsecond=0)
         if reset_time < get_now():
             reset_time += datetime.timedelta(days=1)
@@ -205,6 +205,9 @@ class NotesNotify(BaseModel):
     """X hour before server resets. For dailies, resin discount, and echo of war."""
     notify_weekday: fields.Field[int | None] = fields.SmallIntField(null=True)
     """For resin discount and echo of war, 1~7, 1 is Monday."""
+
+    hours_before: fields.Field[int | None] = fields.SmallIntField(null=True)
+    """Notify X hours before the event. For plannar fissure."""
 
     class Meta:
         unique_together = ("type", "account")

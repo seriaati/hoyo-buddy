@@ -7,7 +7,9 @@ from typing import TYPE_CHECKING, ClassVar
 
 import discord
 from discord import Locale
-from genshin.models import Notes, StarRailNote, VideoStoreState, ZZZNotes
+from genshin.models import Announcement, Notes, StarRailNote, VideoStoreState, ZZZNotes
+
+from hoyo_buddy.constants import UID_TZ_OFFSET
 
 from ...bot.error_handler import get_error_embed
 from ...db.models import NotesNotify
@@ -30,6 +32,8 @@ from ...ui.hoyo.notes.view import NotesView
 from ...utils import get_now
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from ...bot import HoyoBuddy
 
 
@@ -171,6 +175,14 @@ class NotesChecker:
                     title=LocaleStr(key="video_store_button.label"),
                     description=LocaleStr(key="video_store.embed.description"),
                 )
+            case NotesNotifyType.PLANAR_FISSURE:
+                assert notify.hours_before is not None
+                embed = DefaultEmbed(
+                    locale,
+                    translator,
+                    title=LocaleStr(key="planar_fissure_label"),
+                    description=LocaleStr(key="planar_fissure_desc", hour=notify.hours_before),
+                )
 
         embed.add_acc_info(notify.account, blur=False)
         embed.set_footer(text=LocaleStr(key="notif.embed.footer"))
@@ -188,7 +200,7 @@ class NotesChecker:
 
     @classmethod
     async def _notify_user(
-        cls, notify: NotesNotify, notes: StarRailNote | Notes | ZZZNotes
+        cls, notify: NotesNotify, notes: StarRailNote | Notes | ZZZNotes | None
     ) -> None:
         locale = await cls._get_locale(notify)
         embed = cls._get_notify_embed(notify, locale)
@@ -205,10 +217,16 @@ class NotesChecker:
             buffer = await draw_zzz_notes_card(draw_input, notes, cls._bot.translator)
         elif isinstance(notes, StarRailNote):
             buffer = await draw_hsr_notes_card(draw_input, notes, cls._bot.translator)
-        else:
+        elif isinstance(notes, Notes):
             buffer = await draw_gi_notes_card(draw_input, notes, cls._bot.translator)
-        buffer.seek(0)
-        file_ = discord.File(buffer, filename="notes.webp")
+        else:
+            buffer = None
+
+        if buffer is None:
+            file_ = None
+        else:
+            buffer.seek(0)
+            file_ = discord.File(buffer, filename="notes.webp")
 
         view = NotesView(
             notify.account,
@@ -399,8 +417,39 @@ class NotesChecker:
         return None
 
     @classmethod
+    async def _process_planar_fissure_notify(
+        cls, notify: NotesNotify, anns: Sequence[Announcement]
+    ) -> None:
+        assert notify.hours_before is not None
+
+        for ann in anns:
+            if "Planar Fissure Event" in ann.title:
+                planar_ann = ann
+                break
+        else:
+            return None
+
+        # Get now in the timezone of the accounts's server
+        now = get_now() + datetime.timedelta(hours=UID_TZ_OFFSET.get(str(notify.account.uid)[0], 0))
+        now = now.replace(tzinfo=None)
+
+        if planar_ann.start_time <= now <= planar_ann.end_time:
+            return await cls._reset_notif_count(notify)
+
+        if (
+            notify.current_notif_count < notify.max_notif_count
+            and planar_ann.start_time - now <= datetime.timedelta(hours=notify.hours_before)
+        ):
+            await cls._notify_user(notify, notes=None)
+
+        return None
+
+    @classmethod
     async def _process_notify(
-        cls, notify: NotesNotify, notes: Notes | StarRailNote | ZZZNotes
+        cls,
+        notify: NotesNotify,
+        notes: Notes | StarRailNote | ZZZNotes | None,
+        anns: Sequence[Announcement] | None,
     ) -> None:
         """Proces notification."""
         match notify.type:
@@ -423,6 +472,7 @@ class NotesChecker:
                 assert isinstance(notes, Notes)
                 await cls._process_realm_currency_notify(notify, notes)
             case NotesNotifyType.GI_DAILY | NotesNotifyType.HSR_DAILY | NotesNotifyType.ZZZ_DAILY:
+                assert notes is not None
                 await cls._process_daily_notify(notify, notes)
             case NotesNotifyType.RESIN_DISCOUNT | NotesNotifyType.ECHO_OF_WAR:
                 assert isinstance(notes, Notes | StarRailNote)
@@ -436,6 +486,9 @@ class NotesChecker:
             case NotesNotifyType.VIDEO_STORE:
                 assert isinstance(notes, ZZZNotes)
                 await cls._process_video_store_notify(notify, notes)
+            case NotesNotifyType.PLANAR_FISSURE:
+                assert anns is not None
+                await cls._process_planar_fissure_notify(notify, anns)
 
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:
@@ -526,13 +579,18 @@ class NotesChecker:
                 await notify.fetch_related("account__user", "account__user__settings")
 
                 try:
-                    if notify.account.uid not in notes_cache[notify.account.game]:
-                        notes = await cls._get_notes(notify)
-                        notes_cache[notify.account.game][notify.account.uid] = notes
+                    if notify.type is NotesNotifyType.PLANAR_FISSURE:
+                        anns = await notify.account.client.get_starrail_announcements()
+                        notes = None
                     else:
-                        notes = notes_cache[notify.account.game][notify.account.uid]
+                        anns = None
+                        if notify.account.uid not in notes_cache[notify.account.game]:
+                            notes = await cls._get_notes(notify)
+                            notes_cache[notify.account.game][notify.account.uid] = notes
+                        else:
+                            notes = notes_cache[notify.account.game][notify.account.uid]
 
-                    await cls._process_notify(notify, notes)
+                    await cls._process_notify(notify, notes, anns)
                 except Exception as e:
                     await cls._handle_notify_error(notify, e)
                 finally:

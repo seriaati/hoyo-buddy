@@ -34,6 +34,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.db.models import HoyoAccount
     from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
+    from hoyo_buddy.ui.hoyo.notes.modals.type_five import TypeFiveModal
 
     from .modals.type_four import TypeFourModal
     from .modals.type_one import TypeOneModal
@@ -109,6 +110,19 @@ class NotesView(View):
             max_notif_count=notify.max_notif_count,
             notify_time=notify.notify_time,
             notify_weekday=WeekdayStr(notify.notify_weekday - 1),
+        )
+
+    @staticmethod
+    def _get_type5_value(notify: NotesNotify | None) -> LocaleStr:
+        if notify is None:
+            return LocaleStr(key="reminder_settings.not_set")
+
+        return LocaleStr(
+            key="reminder_settings.reminde.set.type5",
+            status=TOGGLE_EMOJIS[notify.enabled],
+            notify_interval=notify.notify_interval,
+            max_notif_count=notify.max_notif_count,
+            hours_before=notify.hours_before,
         )
 
     async def _get_reminder_embed(self) -> DefaultEmbed:
@@ -214,6 +228,15 @@ class NotesView(View):
             embed.add_field(
                 name=LocaleStr(key="week_boss_button.label"),
                 value=self._get_type4_value(echo_of_war_notify),
+                inline=False,
+            )
+
+            planar_fissure_notify = await NotesNotify.get_or_none(
+                account=self._account, type=NotesNotifyType.PLANAR_FISSURE
+            )
+            embed.add_field(
+                name=LocaleStr(key="planar_fissure_label"),
+                value=self._get_type5_value(planar_fissure_notify),
                 inline=False,
             )
 
@@ -410,6 +433,40 @@ class NotesView(View):
 
         return await self._get_reminder_embed()
 
+    async def process_type_five_modal(
+        self,
+        *,
+        modal: TypeFiveModal,
+        notify: NotesNotify | None,
+        notify_type: NotesNotifyType,
+        check_interval: int,
+    ) -> DefaultEmbed:
+        enabled = bool(int(modal.enabled.value))
+        notify_interval = int(modal.notify_interval.value)
+        max_notif_count = int(modal.max_notif_count.value)
+        hours_before = int(modal.hours_before.value)
+
+        if notify is None:
+            await NotesNotify.create(
+                type=notify_type,
+                account=self._account,
+                check_interval=check_interval,
+                notify_interval=notify_interval,
+                max_notif_count=max_notif_count,
+                enabled=enabled,
+                hours_before=hours_before,
+            )
+        else:
+            notify.enabled = enabled
+            notify.notify_interval = notify_interval
+            notify.max_notif_count = max_notif_count
+            notify.hours_before = hours_before
+            await notify.save(
+                update_fields=("enabled", "notify_interval", "max_notif_count", "hours_before")
+            )
+
+        return await self._get_reminder_embed()
+
     async def _get_notes(
         self,
     ) -> genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes:
@@ -586,6 +643,7 @@ class ReminderButton(Button[NotesView]):
             from .buttons import (  # noqa: PLC0415
                 DailyReminder,
                 ExpeditionReminder,
+                PlanarFissureReminder,
                 ReservedTBPReminder,
                 TBPReminder,
                 WeekBossReminder,
@@ -596,6 +654,7 @@ class ReminderButton(Button[NotesView]):
             self.view.add_item(ExpeditionReminder(row=1))
             self.view.add_item(DailyReminder(row=1))
             self.view.add_item(WeekBossReminder(row=2))
+            self.view.add_item(PlanarFissureReminder(row=2))
         elif self.view._account.game is Game.ZZZ:
             from .buttons import (  # noqa: PLC0415
                 BatteryReminder,

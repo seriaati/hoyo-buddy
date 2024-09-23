@@ -32,8 +32,6 @@ from ..ui.hoyo.redeem import RedeemUI
 from ..utils import ephemeral
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
-
     from ..bot import HoyoBuddy
     from ..types import Interaction
 
@@ -503,7 +501,7 @@ class Hoyo(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
-        return self.bot.get_enum_autocomplete(
+        return self.bot.get_enum_choices(
             (GeetestType.DAILY_CHECKIN, GeetestType.REALTIME_NOTES), locale, current
         )
 
@@ -512,32 +510,20 @@ class Hoyo(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
-        return self.bot.get_enum_autocomplete((Game.GENSHIN, Game.STARRAIL), locale, current)
+        return self.bot.get_enum_choices((Game.GENSHIN, Game.STARRAIL), locale, current)
 
     @events_command.autocomplete("game_value")
     async def events_game_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
-        return self.bot.get_enum_autocomplete(
-            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current
-        )
-
-    async def game_autocomplete(
-        self, i: Interaction, current: str, games: Sequence[Game] | None = None
-    ) -> list[app_commands.Choice[str]]:
-        games = games or list(Game)
-        locale = await get_locale(i)
-        user: User = i.namespace.user
-        return await self.bot.get_account_autocomplete(
-            user, i.user.id, current, locale, self.bot.translator, games=games
-        )
+        return self.bot.get_enum_choices((Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current)
 
     @exploration_command.autocomplete("account")
     async def gi_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.game_autocomplete(i, current, (Game.GENSHIN,))
+        return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN,))
 
     @notes_command.autocomplete("account")
     @challenge_command.autocomplete("account")
@@ -545,13 +531,15 @@ class Hoyo(commands.Cog):
     async def gi_hsr_zzz_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.game_autocomplete(i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ))
+        return await self.bot.get_game_account_choices(
+            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
+        )
 
     @characters_command.autocomplete("account")
     async def gi_hsr_zzz_honkai_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.game_autocomplete(
+        return await self.bot.get_game_account_choices(
             i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
         )
 
@@ -559,7 +547,7 @@ class Hoyo(commands.Cog):
     async def gi_hsr_zzz_tot_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.game_autocomplete(
+        return await self.bot.get_game_account_choices(
             i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT)
         )
 
@@ -568,7 +556,7 @@ class Hoyo(commands.Cog):
     async def all_game_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.game_autocomplete(i, current)
+        return await self.bot.get_game_account_choices(i, current)
 
 
 async def setup(bot: HoyoBuddy) -> None:

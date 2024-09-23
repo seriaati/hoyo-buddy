@@ -362,9 +362,7 @@ class Search(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
-        return self.bot.get_enum_autocomplete(
-            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current
-        )
+        return self.bot.get_enum_choices((Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current)
 
     @search_command.autocomplete("category_value")
     async def search_command_category_autocomplete(
@@ -377,7 +375,7 @@ class Search(commands.Cog):
             return self.bot.get_error_autocomplete(LocaleStr(key="invalid_game_selected"), locale)
 
         categories = self._search_categories[game]
-        return self.bot.get_enum_autocomplete(
+        return self.bot.get_enum_choices(
             [BetaItemCategory.UNRELEASED_CONTENT, *categories], locale, current
         )
 
@@ -397,15 +395,13 @@ class Search(commands.Cog):
             )
 
         if i.namespace.category == BetaItemCategory.UNRELEASED_CONTENT.value:
-            try:
-                choices = self.bot.beta_autocomplete_choices[game][locale]
-            except KeyError:
-                try:
-                    choices = self.bot.beta_autocomplete_choices[game][Locale.american_english]
-                except KeyError:
-                    return self.bot.get_error_autocomplete(
-                        LocaleStr(key="search_autocomplete_no_results"), locale
-                    )
+            choices = self.bot.beta_autocomplete_choices[game].get(
+                locale, self.bot.beta_autocomplete_choices[game][Locale.american_english]
+            )
+            if not choices:
+                return self.bot.get_error_autocomplete(
+                    LocaleStr(key="search_autocomplete_no_results"), locale
+                )
         else:
             try:
                 if game is Game.GENSHIN:
@@ -427,15 +423,13 @@ class Search(commands.Cog):
             if category is ambr.ItemCategory.SPIRAL_ABYSS:
                 return await AbyssEnemyView.get_autocomplete_choices()
 
-            try:
-                choices = self.bot.autocomplete_choices[game][category][locale]
-            except KeyError:
-                try:
-                    choices = self.bot.autocomplete_choices[game][category][Locale.american_english]
-                except KeyError:
-                    return self.bot.get_error_autocomplete(
-                        LocaleStr(key="search_autocomplete_no_results"), locale
-                    )
+            choices = self.bot.autocomplete_choices[game][category].get(
+                locale, self.bot.autocomplete_choices[game][category][Locale.american_english]
+            )
+            if not choices:
+                return self.bot.get_error_autocomplete(
+                    LocaleStr(key="search_autocomplete_no_results"), locale
+                )
 
         choices = [c for c in choices if current.lower() in c.name.lower()]
         if not choices:

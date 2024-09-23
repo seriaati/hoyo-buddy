@@ -139,3 +139,7 @@ class GachaImportSource(StrEnum):
     UIGF = "UIGF"
     SRGF = "SRGF"
     GENSHIN_WIZARD = "Genshin Wizard"
+
+
+class LeaderboardType(StrEnum):
+    ACHIEVEMENT = "achievement"

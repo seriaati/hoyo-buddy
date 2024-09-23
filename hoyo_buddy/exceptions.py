@@ -201,3 +201,8 @@ class NoGachaLogFoundError(HoyoBuddyError):
             title=LocaleStr(key="no_gacha_log_found_error_title"),
             message=LocaleStr(key="no_gacha_log_found_error_message"),
         )
+
+
+class LeaderboardNotFoundError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(title=LocaleStr(key="leaderboard_not_found"))

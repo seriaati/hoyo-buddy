@@ -35,7 +35,7 @@ class PaginatorView(View):
 
         self._pages = pages
         self._current_page = 0
-        self._max_page = len(pages) - 1
+        self._max_page = len(pages)
 
         self._add_buttons()
 
@@ -56,8 +56,8 @@ class PaginatorView(View):
 
         first_button.disabled = self._current_page == 0
         previous_button.disabled = self._current_page == 0
-        next_button.disabled = self._current_page == self._max_page
-        last_button.disabled = self._current_page == self._max_page
+        next_button.disabled = self._current_page == self._max_page - 1
+        last_button.disabled = self._current_page == self._max_page - 1
 
     async def _create_file(self) -> discord.File | None:
         """Method to create a file for the current page. Implemented by subclasses."""

@@ -52,7 +52,7 @@ if TYPE_CHECKING:
     from aiohttp import ClientSession
 
     from ..models import Config
-    from ..types import AutocompleteChoices, BetaAutocompleteChoices, User
+    from ..types import AutocompleteChoices, BetaAutocompleteChoices, Interaction, User
 
 __all__ = ("HoyoBuddy",)
 
@@ -187,7 +187,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             app_commands.Choice(name=error_message.translate(self.translator, locale), value="none")
         ]
 
-    def get_enum_autocomplete(
+    def get_enum_choices(
         self, enums: Sequence[StrEnum], locale: discord.Locale, current: str
     ) -> list[discord.app_commands.Choice[str]]:
         return [
@@ -213,7 +213,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         current_str = " (✦)" if account.current else ""
         return f"{account_id_str}{account_display} | {game_str}{current_str}"
 
-    async def get_account_autocomplete(
+    async def get_account_choices(
         self,
         user: User,
         author_id: int,
@@ -268,6 +268,16 @@ class HoyoBuddy(commands.AutoShardedBot):
             for account in accounts
             if current.lower() in str(account).lower()
         ]
+
+    async def get_game_account_choices(
+        self, i: Interaction, current: str, games: Sequence[Game] | None = None
+    ) -> list[app_commands.Choice[str]]:
+        games = games or list(Game)
+        locale = await models.get_locale(i)
+        user: User = i.namespace.user
+        return await self.get_account_choices(
+            user, i.user.id, current, locale, self.translator, games=games
+        )
 
     async def get_account(
         self,

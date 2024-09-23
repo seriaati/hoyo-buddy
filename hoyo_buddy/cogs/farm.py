@@ -29,20 +29,17 @@ class Farm(
 
     def _get_choices(self, locale: Locale) -> list[app_commands.Choice[str]]:
         """Get characters and weapons autocomplete choices."""
-        try:
-            characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
-            weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
-        except KeyError:
+        characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
+        weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
+
+        if not characters or not weapons:
             return self.bot.get_error_autocomplete(
                 LocaleStr(key="search_autocomplete_not_setup"), locale
             )
 
-        try:
-            choices = characters[locale] + weapons[locale]
-        except KeyError:
-            choices = characters[Locale.american_english] + weapons[Locale.american_english]
-
-        return choices
+        return characters.get(locale, characters[Locale.american_english]) + weapons.get(
+            locale, weapons[Locale.american_english]
+        )
 
     @app_commands.command(
         name=app_commands.locale_str("view"),
@@ -176,7 +173,7 @@ class Farm(
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         user: User = i.namespace.user
-        return await self.bot.get_account_autocomplete(
+        return await self.bot.get_account_choices(
             user, i.user.id, current, locale, self.bot.translator, games=(Game.GENSHIN,)
         )
 
@@ -186,7 +183,7 @@ class Farm(
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         user: User = i.namespace.user
-        return await self.bot.get_account_autocomplete(
+        return await self.bot.get_account_choices(
             user,
             i.user.id,
             current,

@@ -1,17 +1,18 @@
 from __future__ import annotations
 
 import asyncio
-import tracemalloc
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
 import genshin  # noqa: TCH002
 from discord import ButtonStyle, TextStyle, ui
 from discord.ext import commands
+from loguru import logger
 from seria.utils import write_json
 
-from hoyo_buddy.db.models import CommandMetric, HoyoAccount, Settings, User
+from hoyo_buddy.db.models import CardSettings, CommandMetric, HoyoAccount, Settings, User
 from hoyo_buddy.emojis import get_game_emoji
+from hoyo_buddy.utils import upload_image
 
 from ..constants import GI_UID_PREFIXES
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
@@ -213,6 +214,22 @@ class Admin(commands.Cog):
         metrics = await CommandMetric.all().order_by("-count")
         metrics_msg = "\n".join([f"/{metric.name}: {metric.count}" for metric in metrics])
         await ctx.send(f"Command metrics:\n```{metrics_msg}```")
+
+    @commands.command(name="kill-imgur")
+    async def kill_imgur_command(self, ctx: commands.Context) -> Any:
+        await ctx.send("Starting...")
+
+        settings = await CardSettings.all()
+        logger.info(f"Checking {len(settings)} settings...")
+
+        for setting in settings:
+            if setting.current_image and "i.imgur" in setting.current_image:
+                logger.info(f"Uploading {setting.current_image}...")
+                new_url = await upload_image(self.bot.session, image_url=setting.current_image)
+                setting.current_image = new_url
+                await setting.save(update_fields=("current_image",))
+
+        await ctx.send("Done.")
 
 
 async def setup(bot: HoyoBuddy) -> None:

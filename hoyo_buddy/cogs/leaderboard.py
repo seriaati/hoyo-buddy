@@ -16,7 +16,7 @@ from hoyo_buddy.exceptions import AccountNotFoundError, LeaderboardNotFoundError
 from hoyo_buddy.hoyo.clients.ambr import ItemCategory
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.types import User
+from hoyo_buddy.types import User  # noqa: TCH001
 from hoyo_buddy.ui.hoyo.leaderboard.akasha import AkashaLbPaginator
 from hoyo_buddy.utils import ephemeral
 

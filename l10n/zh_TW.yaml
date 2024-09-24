@@ -704,4 +704,4 @@ max_friendship_lb_title: 滿好感度角色數量排行榜
 lb_view_command_description: 查看排行榜
 leaderboard_not_found: 未能找到該排行榜
 not_supported_by_enka_error_title: 尚未受到 Enka Network 支援
-not_supported_by_enka_error_message: "{game}尚未受到 [Enka Network](https://enka.cc) 支援，因此你無法單靠 UID 來搜尋一個玩家的資料。請使用 </accounts> 指令新增一個{game}帳號並再試一次。"
+not_supported_by_enka_error_message: "{game}尚未受到 [Enka Network](https://enka.cc) 支援，因此你無法單靠 UID 來搜尋一個玩家的資料。請使用 </accounts> 指令新增一個{game}帳號，並再試一次。"

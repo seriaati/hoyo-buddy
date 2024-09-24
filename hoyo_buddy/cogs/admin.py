@@ -214,17 +214,6 @@ class Admin(commands.Cog):
         metrics_msg = "\n".join([f"/{metric.name}: {metric.count}" for metric in metrics])
         await ctx.send(f"Command metrics:\n```{metrics_msg}```")
 
-    @commands.command(name="profiler")
-    async def profiler_command(self, ctx: commands.Context) -> None:
-        snapshot = tracemalloc.take_snapshot()
-        top_stats = snapshot.statistics("lineno")
-
-        msg = "Top 10 memory usage:\n"
-        for index, stat in enumerate(top_stats[:10], 1):
-            msg += f"{index}. {stat}\n"
-
-        await ctx.send(f"```{msg}```")
-
 
 async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Admin(bot))

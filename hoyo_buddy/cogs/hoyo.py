@@ -127,7 +127,6 @@ class Hoyo(commands.Cog):
     @app_commands.rename(
         user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
         account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
-        uid=app_commands.locale_str("uid"),
         game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
     )
     @app_commands.describe(

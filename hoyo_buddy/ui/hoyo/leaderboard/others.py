@@ -4,7 +4,6 @@ import math
 from typing import TYPE_CHECKING, Any, Literal
 
 from hoyo_buddy.db.models import Leaderboard
-from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.paginator import Page, PaginatorView
 from hoyo_buddy.utils import blur_uid
@@ -15,6 +14,7 @@ if TYPE_CHECKING:
     from discord import Locale
 
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.enums import Game, LeaderboardType
     from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction, User
 

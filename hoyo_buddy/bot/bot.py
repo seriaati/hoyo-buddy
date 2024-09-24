@@ -354,12 +354,16 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         item_id_mapping: dict[int, str] = {}  # item ID -> text map key
 
-        for item in item_template["KHHABHLHAFG"]:
-            if any(keyword in item["EAAFCGPDFAA"] for keyword in ("Bangboo_Name", "Item_Weapon")):
-                item_id_mapping[item["NGPCCDGBLLK"]] = item["EAAFCGPDFAA"]
+        first_key = next(iter(item_template.keys()))
+        id_key = "DKDDFEIAMIF"
+        name_key = "DEPJKIPACJK"
 
-        for avatar in avatar_template["KHHABHLHAFG"]:
-            item_id_mapping[avatar["NGPCCDGBLLK"]] = avatar["EAAFCGPDFAA"]
+        for item in item_template[first_key]:
+            if any(keyword in item[name_key] for keyword in ("Bangboo_Name", "Item_Weapon")):
+                item_id_mapping[item[id_key]] = item[name_key]
+
+        for avatar in avatar_template[first_key]:
+            item_id_mapping[avatar[id_key]] = avatar[name_key]
 
         for lang, text_map in text_maps.items():
             result[lang] = {

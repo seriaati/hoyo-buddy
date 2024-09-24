@@ -12,10 +12,11 @@ from hoyo_buddy.constants import locale_to_akasha_lang
 from hoyo_buddy.db.models import HoyoAccount, get_locale
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, LeaderboardType
-from hoyo_buddy.exceptions import LeaderboardNotFoundError
+from hoyo_buddy.exceptions import AccountNotFoundError, LeaderboardNotFoundError
 from hoyo_buddy.hoyo.clients.ambr import ItemCategory
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.types import User
 from hoyo_buddy.ui.hoyo.leaderboard.akasha import AkashaLbPaginator
 from hoyo_buddy.utils import ephemeral
 
@@ -38,6 +39,8 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
     @app_commands.rename(
         character_id=app_commands.locale_str("character", key="akasha_character_param"),
         calculation_id=app_commands.locale_str("leaderboard", key="akasha_calculation_param"),
+        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
         character_id=app_commands.locale_str(
@@ -46,13 +49,26 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         calculation_id=app_commands.locale_str(
             "Leaderboard to view", key="akasha_calculation_param_desc"
         ),
-        uid=app_commands.locale_str("Your UID", key="akasha_uid_param_desc"),
+        user=app_commands.locale_str(
+            "User to search the accounts with, defaults to you",
+            key="user_autocomplete_param_description",
+        ),
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        ),
+        uid=app_commands.locale_str(
+            "UID of the player, this overrides the account parameter if provided",
+            key="profile_command_uid_param_description",
+        ),
     )
     async def akasha_command(
         self,
         i: Interaction,
         character_id: str,
         calculation_id: str,
+        user: User = None,
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
         uid: app_commands.Range[str, 9, 10] | None = None,
     ) -> None:
         if character_id == "none" or calculation_id == "none":
@@ -60,6 +76,15 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
 
         if uid is not None and not uid.isdigit():
             raise WrongUIDFormatError
+
+        if uid is None:
+            user = user or i.user
+            try:
+                account = account or await self.bot.get_account(user.id, (Game.GENSHIN,))
+            except AccountNotFoundError:
+                uid = None
+            else:
+                uid = str(account.uid)
 
         await i.response.defer(ephemeral=ephemeral(i))
         locale = await get_locale(i)
@@ -145,6 +170,12 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         ]
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
 
+    @akasha_command.autocomplete("account")
+    async def gi_acc_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN,))
+
     @app_commands.command(
         name=app_commands.locale_str("view"),
         description=app_commands.locale_str("View leaderboards", key="lb_view_command_description"),
@@ -156,8 +187,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
     @app_commands.describe(
         lb=app_commands.locale_str("Leaderboard to view", key="akasha_calculation_param_desc"),
         account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
+            "Account to run this command with", key="acc_no_default_param_desc"
         ),
     )
     async def lb_view_command(

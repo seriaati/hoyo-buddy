@@ -691,7 +691,6 @@ akasha_calculation_param_desc: Leaderboard to view
 akasha_total_entries: "Total entries: {total}"
 leaderboard_akasha_command_description: View Genshin Impact character damage leaderboard (powered by Akasha System)
 akasha_you: You
-akasha_uid_param_desc: Your UID
 achievement_lb_title: Achievement Count Leaderboard
 planar_fissure_label: Planar Fissure
 planar_fissure_desc: "The Planar Fissure event is happening in {hour} hours, remember to save your trailblazer power!"

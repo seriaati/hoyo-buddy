@@ -599,7 +599,7 @@ copied_to_clipboard: 已复制到剪贴簿
 required_field_error_message: 此栏位为必填栏位
 accounts_added_snackbar_message: "帐户新增成功，正在将你重新导向至 Discord..."
 account_add_start_title: 新增帐户
-account_add_start_message: "点击下方按钮将会启动 Hoyo Buddy 登入系统，跟随指引完成帐户设定。当你完成后，使用 1 指令来查看你新增的帐户。"
+account_add_start_message: "点击下方按钮并遵循指示来新增你的帐户。当你完成的时候，使用 </accounts> 指令来查看你刚才新增的帐户。如果你遇到任何问题或需要帮助，加入我们的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)。"
 hbls_button_label: 开始！
 gacha_import_url_modal_title: 输入抽卡纪录连结
 gacha_import_embed_title: 导入抽卡纪录
@@ -691,10 +691,17 @@ akasha_calculation_param_desc: 要查看哪个排行榜？
 akasha_total_entries: "总条目数量: {total}"
 leaderboard_akasha_command_description: 查看原神角色伤害排行榜（由 Akasha System 提供技术支持）
 akasha_you: 你
-akasha_uid_param_desc: 你的 UID
 achievement_lb_title: 成就数量排行榜
-lb_achievement_cmd_desc: 查看成就数量排行榜
 planar_fissure_label: 位面分裂
 planar_fissure_desc: "位面分裂活动将在 {hours} 小时候开始，记得保存好你的开拓力！"
 notif_modal.hours_before.label: 在活动开始的 X 小时前通知
 reminder_settings.reminde.set.type5: "状态: {status}\n通知间隔: {notify_inverval} 分钟\n最大通知数: {max_notif_count}\n通知时间: 活动开始的 {hours_before} 前"
+invalid_lb_selected_error_msg: 选择了无效的排行榜
+chest_lb_title: 宝箱开启数量排行榜
+abyss_dmg_lb_title: 深境螺旋最强一击排行榜
+theater_dmg_lb_title: 幻想真境剧诗最强一击排行榜
+max_friendship_lb_title: 满好感度角色数量排行榜
+lb_view_command_description: 查看排行榜
+leaderboard_not_found: 未能找到该排行榜
+not_supported_by_enka_error_title: 尚未受到 Enka Network 支援
+not_supported_by_enka_error_message: "{game}尚未受到 [Enka Network](https://enka.cc) 支援，因此你无法单靠 UID 来搜寻一个玩家的资料。请使用 </accounts> 指令新增一个{game}帐号，并再试一次。"

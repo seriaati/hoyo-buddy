@@ -703,3 +703,5 @@ theater_dmg_lb_title: Imaginarium Theater Strongest Single Strike Leaderboard
 max_friendship_lb_title: Number of Characters at Max Friendship Leaderboard
 lb_view_command_description: View leaderboards
 leaderboard_not_found: Leaderboard not found
+not_supported_by_enka_error_title: Not Supported by Enka Network Yet
+not_supported_by_enka_error_message: "{game} is not supported by [Enka Network](https://enka.cc) yet, so you cannot query a player's data with only the UID. Please add a {game} account with </accounts> and try again."

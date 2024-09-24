@@ -18,7 +18,12 @@ from ..db.models import HoyoAccount, JSONFile, Settings, get_dyk, get_locale
 from ..draw.main_funcs import draw_exploration_card
 from ..embeds import DefaultEmbed
 from ..enums import Game, GeetestType, Platform
-from ..exceptions import FeatureNotImplementedError, IncompleteParamError, InvalidQueryError
+from ..exceptions import (
+    FeatureNotImplementedError,
+    IncompleteParamError,
+    InvalidQueryError,
+    NotSupportedByEnkaError,
+)
 from ..hoyo.clients.ambr import AmbrAPIClient
 from ..hoyo.clients.yatta import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
@@ -50,6 +55,7 @@ class Hoyo(commands.Cog):
                 raise IncompleteParamError(
                     LocaleStr(key="game_value_incomplete_param_error_message")
                 )
+
             try:
                 uid_ = int(uid)
             except ValueError as e:
@@ -59,6 +65,9 @@ class Hoyo(commands.Cog):
                 game = Game(game_value)
             except ValueError as e:
                 raise InvalidQueryError from e
+
+            if game is Game.ZZZ:
+                raise NotSupportedByEnkaError(game)
         else:
             try:
                 games = (
@@ -505,7 +514,7 @@ class Hoyo(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
-        return self.bot.get_enum_choices((Game.GENSHIN, Game.STARRAIL), locale, current)
+        return self.bot.get_enum_choices((Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current)
 
     @exploration_command.autocomplete("account")
     async def gi_acc_autocomplete(

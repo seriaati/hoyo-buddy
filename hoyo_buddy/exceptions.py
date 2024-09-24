@@ -206,3 +206,11 @@ class NoGachaLogFoundError(HoyoBuddyError):
 class LeaderboardNotFoundError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(title=LocaleStr(key="leaderboard_not_found"))
+
+
+class NotSupportedByEnkaError(HoyoBuddyError):
+    def __init__(self, game: Game) -> None:
+        super().__init__(
+            title=LocaleStr(key="not_supported_by_enka_error_title"),
+            message=LocaleStr(key="not_supported_by_enka_error_message", game=EnumStr(game)),
+        )

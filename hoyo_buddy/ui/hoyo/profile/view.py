@@ -483,6 +483,9 @@ class ProfileView(View):
         assert isinstance(character, ZZZPartialAgent)
         assert self._account is not None
 
+        # NOTE: This line is for testing new characters' templates
+        character_id = character.id
+
         client = self._account.client
         client.set_lang(self.locale)
         agent = await client.get_zzz_agent_info(character.id)
@@ -492,15 +495,15 @@ class ProfileView(View):
             temp2_card_data = await read_yaml(
                 "hoyo-buddy-assets/assets/zzz-build-card/agent_data_temp2.yaml"
             )
-            agent_temp1_data = self._card_data.get(str(character.id))
-            agent_temp2_data = temp2_card_data.get(str(character.id))
+            agent_temp1_data = self._card_data.get(str(character_id))
+            agent_temp2_data = temp2_card_data.get(str(character_id))
             if agent_temp1_data is None or agent_temp2_data is None:
                 raise CardNotReadyError(character.name)
             agent_temp2_data["color"] = agent_temp1_data["color"]
             agent_temp_data = agent_temp2_data
         else:
             # 1 or 3
-            agent_temp_data = self._card_data.get(str(character.id))
+            agent_temp_data = self._card_data.get(str(character_id))
 
         if agent_temp_data is None:
             raise CardNotReadyError(character.name)

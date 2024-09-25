@@ -145,6 +145,11 @@ class LeaderboardCommand:
             return (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
         return ()
 
+    @staticmethod
+    def process_value(value: float) -> str:
+        value = int(value)
+        return f"{value:,}"
+
     async def run(
         self, i: Interaction, *, lb_type: LeaderboardType, account: HoyoAccount | None
     ) -> None:
@@ -198,7 +203,7 @@ class LeaderboardCommand:
             you,
             lb_size=lb_size,
             order=LB_ORDERS[lb_type],
-            process_value=int,
+            process_value=self.process_value,
             character_names=character_names,
             game=account.game,
             lb_type=lb_type,

@@ -333,7 +333,7 @@ class GenshinClient(genshin.Client):
         cache, _ = await EnkaCache.get_or_create(uid=self.uid)
 
         try:
-            live_data = (await self.get_starrail_characters(self.uid)).dict(by_alias=True)
+            live_data = (await self.get_starrail_characters(self.uid)).model_dump(by_alias=True)
         except genshin.GenshinException as e:
             if not cache.hoyolab or e.retcode != 1005:
                 raise
@@ -365,7 +365,9 @@ class GenshinClient(genshin.Client):
             cache, _ = await EnkaCache.get_or_create(uid=self.uid)
 
             try:
-                live_data = (await super().get_zzz_agent_info(character_id)).dict(by_alias=True)
+                live_data = (await super().get_zzz_agent_info(character_id)).model_dump(
+                    by_alias=True
+                )
             except genshin.GenshinException as e:
                 if not cache.hoyolab_zzz or e.retcode != 1005:
                     raise

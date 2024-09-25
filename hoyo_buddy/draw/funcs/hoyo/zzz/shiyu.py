@@ -50,7 +50,6 @@ class ShiyuDefenseCard:
                 position=(1970, 3387),
                 color=self.text_color,
                 style="medium_italic",
-                sans=True,
             )
 
         drawer.write(
@@ -59,7 +58,6 @@ class ShiyuDefenseCard:
             position=(126, 665),
             color=self.text_color,
             style="bold",
-            sans=True,
             locale=self.locale,
         )
 
@@ -80,7 +78,6 @@ class ShiyuDefenseCard:
                 position=(tbox.right, y - 5),
                 color=self.text_color,
                 style="black_italic",
-                sans=True,
             )
 
         stats = {
@@ -99,7 +96,6 @@ class ShiyuDefenseCard:
                 position=start_pos,
                 color=self.text_color,
                 style="medium_italic",
-                sans=True,
                 locale=self.locale,
             )
             drawer.write(
@@ -108,7 +104,6 @@ class ShiyuDefenseCard:
                 position=(start_pos[0], tbox.bottom + 5),
                 color=self.text_color,
                 style="bold",
-                sans=True,
                 locale=self.locale,
             )
 
@@ -134,7 +129,6 @@ class ShiyuDefenseCard:
                 position=(pos[0], pos[1] + 13),
                 color=self.text_color,
                 style="bold",
-                sans=True,
                 locale=self.locale,
             )
 
@@ -180,7 +174,6 @@ class ShiyuDefenseCard:
                 position=(icon_start_pos[0] + 54, tbox.top + tbox.height // 2),
                 color=self.text_color,
                 style="black_italic",
-                sans=True,
                 anchor="lm",
             )
 
@@ -212,7 +205,6 @@ class ShiyuDefenseCard:
                     position=(bangboo_pos[0] + 51, bangboo_pos[1] + 103),
                     color=self.white,
                     style="bold",
-                    sans=True,
                     anchor="mm",
                 )
 
@@ -239,7 +231,6 @@ class ShiyuDefenseCard:
                             position=(start_pos[0] + 51, start_pos[1] + 163),
                             color=self.white,
                             style="bold",
-                            sans=True,
                             anchor="mm",
                         )
                         drawer.write(
@@ -248,7 +239,6 @@ class ShiyuDefenseCard:
                             position=(start_pos[0] + 158, start_pos[1] + 22),
                             color=self.white,
                             style="bold",
-                            sans=True,
                             anchor="mm",
                         )
 
@@ -259,7 +249,11 @@ class ShiyuDefenseCard:
     def draw(self) -> BytesIO:
         im = Drawer.open_image("hoyo-buddy-assets/assets/shiyu/background.png")
         drawer = Drawer(
-            ImageDraw.Draw(im), folder="shiyu", dark_mode=False, translator=self.translator
+            ImageDraw.Draw(im),
+            folder="shiyu",
+            dark_mode=False,
+            translator=self.translator,
+            sans=True,
         )
         self.write_stats(drawer)
         self.draw_frontiers(im, drawer)

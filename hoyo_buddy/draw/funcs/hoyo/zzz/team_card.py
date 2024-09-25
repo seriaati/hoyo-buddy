@@ -42,7 +42,7 @@ class ZZZTeamCard:
     def _draw_card(self, *, image_url: str, blob_color: tuple[int, int, int]) -> Image.Image:
         card = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/card.png")
         draw = ImageDraw.Draw(card)
-        drawer = Drawer(draw, folder="zzz-team-card", dark_mode=self._dark_mode)
+        drawer = Drawer(draw, folder="zzz-team-card", dark_mode=self._dark_mode, sans=True)
 
         # Open images
         pattern = drawer.open_asset("pattern.png")
@@ -80,7 +80,7 @@ class ZZZTeamCard:
             image_url=self._agent_images[str(agent.id)],
             blob_color=Drawer.hex_to_rgb(self._agent_colors[str(agent.id)]),
         )
-        drawer = Drawer(ImageDraw.Draw(im), folder="zzz-team-card", dark_mode=self._dark_mode)
+        drawer = Drawer(ImageDraw.Draw(im), folder="zzz-team-card", dark_mode=self._dark_mode, sans=True)
 
         # Agent long name
         name_data = self._name_datas.get(str(agent.id))
@@ -98,7 +98,6 @@ class ZZZTeamCard:
             size=32,
             position=(12, 267),
             style="black_italic",
-            sans=True,
             stroke_color=WHITE,
             stroke_width=1,
         )
@@ -142,7 +141,6 @@ class ZZZTeamCard:
                     size=14,
                     position=(start_pos[0] + 72 + 20, icon.height // 2 + start_pos[1] + 8),
                     style="medium",
-                    sans=True,
                     anchor="lm",
                 )
 
@@ -152,7 +150,6 @@ class ZZZTeamCard:
                 size=12,
                 position=(start_pos[0] + 167, start_pos[1] + 14),
                 style="medium",
-                sans=True,
                 anchor="mm",
                 color=WHITE,
             )
@@ -185,7 +182,6 @@ class ZZZTeamCard:
                     size=12,
                     position=(stat_start_pos[0] + 20, icon.height // 2 + stat_start_pos[1]),
                     style="medium",
-                    sans=True,
                     anchor="lm",
                 )
 
@@ -204,7 +200,7 @@ class ZZZTeamCard:
                 continue
 
             text = str(skill.level)
-            drawer.write(text, size=26, position=start_pos, style="bold", sans=True, anchor="mm")
+            drawer.write(text, size=26, position=start_pos, style="bold", anchor="mm")
             start_pos = (669, 214 + 53) if i == 2 else (start_pos[0] + 99, start_pos[1])
 
     def _draw_w_engine(self, agent: ZZZFullAgent, im: Image.Image, drawer: Drawer) -> None:
@@ -220,7 +216,6 @@ class ZZZTeamCard:
             size=22,
             position=(621, 30),
             style="black_italic",
-            sans=True,
             max_width=158,
             max_lines=2,
             locale=Locale(self._locale),
@@ -241,7 +236,6 @@ class ZZZTeamCard:
                 text,
                 size=20,
                 position=(start_pos[0] + 30, start_pos[1] + icon.height // 2),
-                sans=True,
                 anchor="lm",
             )
             start_pos = (start_pos[0], start_pos[1] + y_diff)
@@ -253,23 +247,11 @@ class ZZZTeamCard:
 
         text = str(engine.refinement)
         drawer.write(
-            text,
-            size=16,
-            position=(796, 69),
-            anchor="mm",
-            style="bold_italic",
-            sans=True,
-            color=WHITE,
+            text, size=16, position=(796, 69), anchor="mm", style="bold_italic", color=WHITE
         )
         text = f"Lv.{engine.level}"
         drawer.write(
-            text,
-            size=16,
-            position=(849, 140),
-            anchor="mm",
-            style="bold_italic",
-            sans=True,
-            color=WHITE,
+            text, size=16, position=(849, 140), anchor="mm", style="bold_italic", color=WHITE
         )
 
     def _draw_stats(self, agent: ZZZFullAgent, drawer: Drawer) -> None:
@@ -286,39 +268,21 @@ class ZZZTeamCard:
     def _render_rotated_text(self, drawer: Drawer, name_data: AgentNameData) -> Image.Image:
         text = name_data.full_name.upper()
         textbbox = drawer.write(
-            text,
-            size=42,
-            position=(0, 0),
-            style="black_italic",
-            sans=True,
-            no_write=True,
-            anchor="lt",
+            text, size=42, position=(0, 0), style="black_italic", no_write=True, anchor="lt"
         )
         if textbbox.width > 280:
             text = name_data.short_name.upper()
             textbbox = drawer.write(
-                text,
-                size=42,
-                position=(0, 0),
-                style="black_italic",
-                sans=True,
-                no_write=True,
-                anchor="lt",
+                text, size=42, position=(0, 0), style="black_italic", no_write=True, anchor="lt"
             )
         text_im = Image.new(
             "RGBA", (textbbox.right - textbbox.left, textbbox.bottom - textbbox.top)
         )
         text_drawer = Drawer(
-            ImageDraw.Draw(text_im), folder="zzz-team-card", dark_mode=self._dark_mode
+            ImageDraw.Draw(text_im), folder="zzz-team-card", dark_mode=self._dark_mode, sans=True
         )
         text_drawer.write(
-            text,
-            size=42,
-            position=(0, 0),
-            style="black_italic",
-            sans=True,
-            color=BLACK,
-            anchor="lt",
+            text, size=42, position=(0, 0), style="black_italic", color=BLACK, anchor="lt"
         )
         return text_im.rotate(-90, expand=True, resample=Image.Resampling.BICUBIC)
 

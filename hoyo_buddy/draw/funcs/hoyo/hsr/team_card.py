@@ -34,7 +34,7 @@ class HSRTeamCard:
 
     def _draw_character_card(self, character: HSRCharacter | enka.hsr.Character) -> Image.Image:
         im = Drawer.open_image("hoyo-buddy-assets/assets/hsr-team-card/card.png")
-        drawer = Drawer(ImageDraw.Draw(im), folder="hsr-team-card", dark_mode=True)
+        drawer = Drawer(ImageDraw.Draw(im), folder="hsr-team-card", dark_mode=True, sans=True)
 
         primary = drawer.hex_to_rgb(self._character_colors[str(character.id)])
 
@@ -52,12 +52,7 @@ class HSRTeamCard:
         level_block = drawer.open_asset("level_block.png", mask_color=primary)
         im.alpha_composite(level_block, (100, 16))
         drawer.write(
-            f"Lv.{character.level}",
-            size=32,
-            position=(161, 39),
-            style="medium",
-            sans=True,
-            anchor="mm",
+            f"Lv.{character.level}", size=32, position=(161, 39), style="medium", anchor="mm"
         )
 
         eidolon_block = drawer.open_asset("eidolon_block.png", mask_color=primary)
@@ -67,7 +62,6 @@ class HSRTeamCard:
             size=32,
             position=(258, 39),
             style="medium",
-            sans=True,
             anchor="mm",
         )
 
@@ -76,7 +70,6 @@ class HSRTeamCard:
             size=52,
             position=(307, 65),
             style="bold",
-            sans=True,
             anchor="lm",
             locale=Locale(self._locale),
             max_width=363,
@@ -96,7 +89,7 @@ class HSRTeamCard:
                 icon = drawer.open_static(max_dmg_add.icon, size=(52, 48), mask_color=WHITE)
                 im.alpha_composite(icon, (494, 402))
 
-            drawer.write(stat, size=26, position=start_pos, style="regular", sans=True, anchor="lm")
+            drawer.write(stat, size=26, position=start_pos, style="regular", anchor="lm")
 
             start_pos = (387 + x_diff, 143) if i == 5 else (start_pos[0], start_pos[1] + y_diff)
 
@@ -120,7 +113,6 @@ class HSRTeamCard:
                 size=26,
                 position=(start_pos[0] + icon.width + 24, start_pos[1] + 2 + icon.height // 2),
                 style="medium",
-                sans=True,
                 anchor="mm",
             )
 
@@ -198,7 +190,6 @@ class HSRTeamCard:
                     level_pos[1] + relic_level.height // 2,
                 ),
                 style="medium",
-                sans=True,
                 anchor="mm",
             )
 
@@ -215,7 +206,6 @@ class HSRTeamCard:
                     main_stat_pos[1] + main_stat_icon.height // 2,
                 ),
                 style="medium",
-                sans=True,
                 anchor="lm",
             )
 
@@ -232,7 +222,6 @@ class HSRTeamCard:
                         sub_start_pos[1] + icon.height // 2,
                     ),
                     style="regular",
-                    sans=True,
                     anchor="lm",
                 )
 
@@ -271,19 +260,12 @@ class HSRTeamCard:
         lc_super = drawer.open_asset("lc_super.png", mask_color=primary)
         im.alpha_composite(lc_super, (121, 632))
         drawer.write(
-            f"S{lc.superimpose}",
-            size=19,
-            position=(138, 645),
-            style="medium",
-            sans=True,
-            anchor="mm",
+            f"S{lc.superimpose}", size=19, position=(138, 645), style="medium", anchor="mm"
         )
 
         lc_level = drawer.open_asset("lc_level.png", mask_color=primary)
         im.alpha_composite(lc_level, (89, 663))
-        drawer.write(
-            f"Lv.{lc.level}", size=19, position=(122, 676), style="medium", sans=True, anchor="mm"
-        )
+        drawer.write(f"Lv.{lc.level}", size=19, position=(122, 676), style="medium", anchor="mm")
 
         # Light cone name
         drawer.write(
@@ -291,7 +273,6 @@ class HSRTeamCard:
             size=26,
             position=(168, 500),
             style="bold",
-            sans=True,
             max_width=180,
             max_lines=3,
             locale=Locale(self._locale),
@@ -311,7 +292,6 @@ class HSRTeamCard:
                         start_pos[1] + stat_icon.height // 2,
                     ),
                     style="regular",
-                    sans=True,
                     anchor="lm",
                 )
                 start_pos = (168, 655) if i == 1 else (tbox.right + 20, start_pos[1])

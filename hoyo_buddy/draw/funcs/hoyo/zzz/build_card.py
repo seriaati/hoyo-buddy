@@ -47,7 +47,7 @@ class ZZZAgentCard:
             f"hoyo-buddy-assets/assets/zzz-build-card/card_base{base_card_temp}.png"
         )
         draw = ImageDraw.Draw(card)
-        drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False)
+        drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False, sans=True)
 
         # Open images
         pattern = drawer.open_asset("pattern.png")
@@ -98,7 +98,6 @@ class ZZZAgentCard:
                 style="black_italic",
                 position=name_position,
                 color=BLACK,
-                sans=True,
             )
 
         bangboo = drawer.open_asset("bangboo.png")
@@ -109,7 +108,7 @@ class ZZZAgentCard:
     def draw(self) -> BytesIO:
         im = self._draw_background()
         draw = ImageDraw.Draw(im)
-        drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False)
+        drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False, sans=True)
 
         # Agent image
         agent_image = drawer.open_static(self._image_url)
@@ -129,7 +128,6 @@ class ZZZAgentCard:
             size=250,
             color=(41, 41, 41),
             style="black_italic",
-            sans=True,
         )
 
         # Media rank
@@ -158,7 +156,6 @@ class ZZZAgentCard:
                     size=72,
                     color=(41, 41, 41),
                     style="black_italic",
-                    sans=True,
                 )
 
         # Equip section
@@ -181,7 +178,6 @@ class ZZZAgentCard:
                 position=(685, 478),
                 color=(255, 255, 255),
                 style="bold",
-                sans=True,
                 anchor="mm",
             )
 
@@ -194,7 +190,6 @@ class ZZZAgentCard:
                 position=(513, 258),
                 color=(255, 255, 255),
                 style="bold",
-                sans=True,
                 anchor="mm",
             )
 
@@ -207,7 +202,6 @@ class ZZZAgentCard:
                 max_lines=2,
                 style="black",
                 color=(20, 20, 20),
-                sans=True,
                 locale=discord.Locale(self._locale),
             )
             bottom = name_tbox[3]
@@ -223,7 +217,6 @@ class ZZZAgentCard:
                         f"{stat.name}  {stat.value}",
                         size=28,
                         style="bold",
-                        sans=True,
                         color=(20, 20, 20),
                         position=(
                             stat_positions[i][0] + 60,
@@ -262,7 +255,6 @@ class ZZZAgentCard:
                     size=34,
                     position=(start_pos[0] + 220, start_pos[1] + 18 + main_stat_icon.height // 2),
                     style="bold",
-                    sans=True,
                     anchor="lm",
                 )
 
@@ -289,7 +281,6 @@ class ZZZAgentCard:
                     text,
                     size=22,
                     position=(sub_stat_pos[0] + 38, sub_stat_pos[1] + sub_stat_icon.height // 2),
-                    sans=True,
                     style="medium",
                     anchor="lm",
                 )
@@ -317,7 +308,6 @@ class ZZZAgentCard:
                 position=start_pos,
                 color=(20, 20, 20),
                 style="bold",
-                sans=True,
                 anchor="mm",
             )
             start_pos = (2811, 466 + 98) if i == 2 else (start_pos[0] + 205, start_pos[1])
@@ -334,7 +324,6 @@ class ZZZAgentCard:
                 position=start_pos,
                 color=(20, 20, 20),
                 style="medium",
-                sans=True,
             )
             start_pos = (3091, 709) if i == 4 else (start_pos[0], start_pos[1] + 106)
 

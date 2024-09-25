@@ -149,12 +149,14 @@ class Drawer:
         dark_mode: bool,
         locale: discord.Locale = discord.Locale.american_english,
         translator: Translator | None = None,
+        sans: bool | None = None,
     ) -> None:
         self.draw = draw
         self.folder = folder
         self.dark_mode = dark_mode
         self.locale = locale
         self.translator = translator
+        self.sans = sans
 
     @classmethod
     def calc_dynamic_fontsize(
@@ -353,6 +355,7 @@ class Drawer:
         fallback: bool = False,
     ) -> str:
         default_locale = discord.Locale.american_english
+        sans = self.sans or sans
 
         locale = locale or self.locale
         if locale is discord.Locale.british_english:

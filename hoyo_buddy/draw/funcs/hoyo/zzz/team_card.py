@@ -80,7 +80,9 @@ class ZZZTeamCard:
             image_url=self._agent_images[str(agent.id)],
             blob_color=Drawer.hex_to_rgb(self._agent_colors[str(agent.id)]),
         )
-        drawer = Drawer(ImageDraw.Draw(im), folder="zzz-team-card", dark_mode=self._dark_mode, sans=True)
+        drawer = Drawer(
+            ImageDraw.Draw(im), folder="zzz-team-card", dark_mode=self._dark_mode, sans=True
+        )
 
         # Agent long name
         name_data = self._name_datas.get(str(agent.id))

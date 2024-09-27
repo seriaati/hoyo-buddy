@@ -90,7 +90,7 @@ class AutoRedeem:
                     asyncio.create_task(cls._redeem_code_task(queue, api, game_codes))
                     for api in REDEEM_APIS
                 ]
-                # tasks.append(asyncio.create_task(cls._redeem_code_task(queue, "LOCAL", game_codes)))
+                tasks.append(asyncio.create_task(cls._redeem_code_task(queue, "LOCAL", game_codes)))
 
                 await queue.join()
                 for task in tasks:

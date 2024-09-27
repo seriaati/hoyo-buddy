@@ -47,12 +47,12 @@ class GeetestWebServer:
 
     async def captcha(self, request: web.Request) -> web.StreamResponse:
         try:
-            payload = GeetestCommandPayload.parse_from_request(request.query)
-        except KeyError:
-            try:
+            if "gt_type" in request.query:
+                payload = GeetestCommandPayload.parse_from_request(request.query)
+            else:
                 payload = GeetestLoginPayload.parse_from_request(request.query)
-            except KeyError as e:
-                raise web.HTTPBadRequest(reason="Missing query parameter") from e
+        except Exception as e:
+            raise web.HTTPBadRequest(reason="Invalid query parameters") from e
 
         if self._login_template is None or self._command_template is None:
             raise web.HTTPInternalServerError(reason="Template not loaded")

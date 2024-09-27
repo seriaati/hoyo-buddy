@@ -48,7 +48,7 @@ async def handle_session_mmt(
     try:
         await conn.execute(
             'UPDATE "user" SET temp_data = $1 WHERE id = $2',
-            orjson.dumps(result.dict()).decode(),
+            orjson.dumps(result.model_dump()).decode(),
             params.user_id,
         )
     finally:

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import os
-from random import uniform
 from typing import TYPE_CHECKING, Any, Literal, overload
 
 import enka
@@ -417,8 +416,21 @@ class GenshinClient(genshin.Client):
 
             if len(codes) > 1:
                 # only sleep if there are more than 1 code
-                await asyncio.sleep(uniform(5.5, 6.5))
+                await asyncio.sleep(6)
 
+        return self.get_redeem_codes_embed(
+            results, locale=locale, translator=translator, inline=inline, blur=blur
+        )
+
+    def get_redeem_codes_embed(
+        self,
+        results: list[tuple[str, str, bool]],
+        *,
+        locale: Locale,
+        translator: Translator,
+        inline: bool,
+        blur: bool,
+    ) -> DefaultEmbed:
         # get the first 25 results
         results = results[:25]
         embed = DefaultEmbed(
@@ -454,7 +466,7 @@ class GenshinClient(genshin.Client):
                 raise genshin.GenshinException({"retcode": 999}) from e
         except genshin.RedemptionCooldown:
             # sleep then retry
-            await asyncio.sleep(60.0)
+            await asyncio.sleep(20)
             return await self.redeem_code(code, locale=locale, translator=translator)
         except Exception as e:
             embed, recognized = get_error_embed(e, locale, translator)

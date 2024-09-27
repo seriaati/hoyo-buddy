@@ -131,15 +131,12 @@ class Admin(commands.Cog):
 
     @commands.command(name="add-codes", aliases=["ac"])
     async def add_codes_command(self, ctx: commands.Context, game: genshin.Game, codes: str) -> Any:
-        codes_: set[str] = set()
-        for code in codes.split(","):
-            code_ = code.split("/")[-1] if "https" in code else code
-            codes_.add(code_)
-
-        message = await ctx.send("Adding codes...")
-        task_ran = await AutoRedeem.execute(self.bot, game, codes.split(","))
-        if not task_ran:
-            await message.edit(content="Auto redeem task is already running.")
+        if AutoRedeem._lock.locked():
+            await ctx.send("Auto redeem task is already running.")
+        else:
+            codes_ = list(set(codes.split(",")))
+            await ctx.send(f"Auto redeem task started for {game.name}.")
+            await AutoRedeem.execute(self.bot, game, codes_)
 
     @commands.command(name="dm")
     async def dm_command(self, ctx: commands.Context) -> Any:

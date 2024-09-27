@@ -8,15 +8,12 @@ import discord
 import genshin
 from loguru import logger
 
-from ...bot.error_handler import get_error_embed
-from ...db.models import AccountNotifSettings, HoyoAccount, User
-from ...embeds import DefaultEmbed, Embed, ErrorEmbed
+from hoyo_buddy.bot.error_handler import get_error_embed
+from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount, User
+from hoyo_buddy.embeds import DefaultEmbed, Embed, ErrorEmbed
 
 if TYPE_CHECKING:
-    import aiohttp
-
-    from ...bot import HoyoBuddy
-    from ...l10n import Translator
+    from hoyo_buddy.bot import HoyoBuddy
 
 
 CHECKIN_APIS: dict[Literal["VERCEL", "RENDER", "FLY"], str] = {
@@ -30,6 +27,7 @@ MAX_API_ERROR_COUNT = 10
 
 class DailyCheckin:
     _total_checkin_count: ClassVar[int]
+    _bot: ClassVar[HoyoBuddy]
 
     @classmethod
     async def execute(cls, bot: HoyoBuddy) -> None:
@@ -82,7 +80,7 @@ class DailyCheckin:
             account = await queue.get()
             try:
                 await account.fetch_related("user")
-                embed = await cls._daily_checkin(api_name, account, bot.translator, bot.session)
+                embed = await cls._daily_checkin(api_name, account)
             except Exception:
                 await queue.put(account)
                 api_error_count += 1
@@ -108,12 +106,11 @@ class DailyCheckin:
 
     @classmethod
     async def _daily_checkin(
-        cls,
-        api_name: Literal["VERCEL", "RENDER", "FLY", "LOCAL"],
-        account: HoyoAccount,
-        translator: Translator,
-        session: aiohttp.ClientSession,
+        cls, api_name: Literal["VERCEL", "RENDER", "FLY", "LOCAL"], account: HoyoAccount
     ) -> Embed:
+        session = cls._bot.session
+        translator = cls._bot.translator
+
         await account.user.fetch_related("settings")
         locale = account.user.settings.locale or discord.Locale.american_english
         client = account.client
@@ -159,11 +156,10 @@ class DailyCheckin:
         }
         api_url = CHECKIN_APIS[api_name]
         logger.debug(f"Check-in payload: {payload}")
-        logger.debug(f"Check-in API URL: {api_url}/checkin/")
 
         async with session.post(f"{api_url}/checkin/", json=payload) as resp:
             data = await resp.json()
-            logger.debug(data)
+            logger.debug(f"Check-in response: {data}")
 
             if resp.status == 200:
                 # Correct reward amount

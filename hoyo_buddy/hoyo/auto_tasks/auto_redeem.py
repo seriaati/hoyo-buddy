@@ -16,7 +16,7 @@ from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
-    from hoyo_buddy.embeds import Embed, ErrorEmbed
+    from hoyo_buddy.embeds import Embed
 
 
 REDEEM_APIS: dict[Literal["VERCEL", "RENDER", "FLY"], str] = {
@@ -145,6 +145,10 @@ class AutoRedeem:
                     msg = f"Auto redeem API {api_name} failed for {api_error_count} accounts"
                     raise RuntimeError(msg) from None
             else:
+                if embed is None:
+                    queue.task_done()
+                    continue
+
                 cls._total_redeem_count += 1
                 try:
                     await cls._bot.dm_user(account.user.id, embed=embed)
@@ -156,7 +160,7 @@ class AutoRedeem:
     @classmethod
     async def _handle_error(
         cls, account: HoyoAccount, locale: discord.Locale, e: Exception
-    ) -> ErrorEmbed:
+    ) -> None:
         embed, recognized = get_error_embed(e, locale, cls._bot.translator)
         embed.add_acc_info(account, blur=False)
         if not recognized:
@@ -170,16 +174,18 @@ class AutoRedeem:
         account.auto_redeem = False
         await account.save(update_fields=("auto_redeem",))
 
-        return embed
-
     @classmethod
     async def _redeem_codes(
         cls,
         api_name: Literal["VERCEL", "RENDER", "FLY", "LOCAL"],
         account: HoyoAccount,
         codes: list[str],
-    ) -> Embed:
+    ) -> Embed | None:
         translator = cls._bot.translator
+        codes_ = [code for code in codes if code not in account.redeemed_codes]
+
+        if not codes_:
+            return None
 
         await account.user.fetch_related("settings")
         locale = account.user.settings.locale or discord.Locale.american_english
@@ -189,24 +195,25 @@ class AutoRedeem:
         if api_name == "LOCAL":
             try:
                 embed = await account.client.redeem_codes(
-                    codes, locale=locale, translator=cls._bot.translator, inline=True, blur=False
+                    codes_, locale=locale, translator=cls._bot.translator, inline=True, blur=False
                 )
                 embed.set_footer(text=LocaleStr(key="auto_redeem_footer"))
             except Exception as e:
-                embed = await cls._handle_error(account, locale, e)
+                await cls._handle_error(account, locale, e)
+                return None
             else:
                 account.redeemed_codes.extend(codes)
                 # remove duplicates
                 account.redeemed_codes = list(set(account.redeemed_codes))
                 await account.save(update_fields=("redeemed_codes",))
 
-            return embed
+                return embed
 
         # API redeem
         assert client.game is not None
         results: list[tuple[str, str, bool]] = []
 
-        for code in codes:
+        for code in codes_:
             payload = {
                 "token": API_TOKEN,
                 "cookies": account.cookies,
@@ -214,9 +221,13 @@ class AutoRedeem:
                 "code": code,
                 "uid": account.uid,
             }
-            results.append(await cls._redeem_code(api_name, account, locale, code, payload))
+            try:
+                results.append(await cls._redeem_code(api_name, account, locale, code, payload))
+            except Exception as e:
+                await cls._handle_error(account, locale, e)
+                return None
 
-            if len(codes) > 1:
+            if len(codes_) > 1:
                 await asyncio.sleep(6)
 
         return client.get_redeem_codes_embed(
@@ -240,12 +251,13 @@ class AutoRedeem:
             data = await resp.json()
             logger.debug(f"Redeem response: {data}")
 
-            if resp.status == 200:
-                if "cookies" in data:
-                    cookies = data["cookies"]
-                    account.cookies = cookies
-                    await account.save(update_fields=("cookies",))
+            if "cookies" in data:
+                cookies = data["cookies"]
+                account.cookies = cookies
+                await account.save(update_fields=("cookies",))
 
+            if resp.status == 200:
+                await cls._add_to_redeemed_codes(account, code)
                 return (
                     code,
                     LocaleStr(key="redeem_code.success").translate(cls._bot.translator, locale),
@@ -259,10 +271,15 @@ class AutoRedeem:
                     return await cls._redeem_code(api_name, account, locale, code, payload)
 
                 e = genshin.GenshinException(data)
+                if e.retcode in {999, 1000}:
+                    # Cookie token expired or refresh failed
+                    raise e
+
                 embed, recognized = get_error_embed(e, locale, cls._bot.translator)
                 if not recognized:
                     raise e
 
+                await cls._add_to_redeemed_codes(account, code)
                 assert embed.title is not None
 
                 if embed.description is None:
@@ -271,3 +288,9 @@ class AutoRedeem:
 
             msg = f"API {api_name} returned {resp.status}"
             raise RuntimeError(msg)
+
+    @classmethod
+    async def _add_to_redeemed_codes(cls, account: HoyoAccount, code: str) -> None:
+        account.redeemed_codes.append(code)
+        account.redeemed_codes = list(set(account.redeemed_codes))
+        await account.save(update_fields=("redeemed_codes",))

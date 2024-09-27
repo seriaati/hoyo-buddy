@@ -137,10 +137,12 @@ class AutoRedeem:
             try:
                 await account.fetch_related("user")
                 embed = await cls._redeem_codes(api_name, account, codes)
-            except Exception:
+            except Exception as e:
                 await queue.put(account)
                 api_error_count += 1
-                logger.exception(f"Auto redeem failed for {account}")
+
+                logger.error(f"Auto redeem failed for {account}")
+                cls._bot.capture_exception(e)
                 if api_error_count >= MAX_API_ERROR_COUNT:
                     msg = f"Auto redeem API {api_name} failed for {api_error_count} accounts"
                     raise RuntimeError(msg) from None
@@ -162,9 +164,10 @@ class AutoRedeem:
         cls, account: HoyoAccount, locale: discord.Locale, e: Exception
     ) -> None:
         embed, recognized = get_error_embed(e, locale, cls._bot.translator)
-        embed.add_acc_info(account, blur=False)
         if not recognized:
-            cls._bot.capture_exception(e)
+            raise e
+
+        embed.add_acc_info(account, blur=False)
 
         content = LocaleStr(key="auto_redeem_error.content")
         await cls._bot.dm_user(
@@ -248,43 +251,47 @@ class AutoRedeem:
         logger.debug(f"Redeem payload: {payload}")
 
         async with cls._bot.session.post(f"{api_url}/redeem/", json=payload) as resp:
-            data = await resp.json()
-            logger.debug(f"Redeem response: {data}")
+            if resp.status in {200, 400, 500}:
+                data = await resp.json()
+                logger.debug(f"Redeem response: {data}")
 
-            if "cookies" in data:
-                cookies = data["cookies"]
-                account.cookies = cookies
-                await account.save(update_fields=("cookies",))
+                if (cookies := data.get("cookies")) and account.cookies != cookies:
+                    account.cookies = cookies
+                    await account.save(update_fields=("cookies",))
 
-            if resp.status == 200:
-                await cls._add_to_redeemed_codes(account, code)
-                return (
-                    code,
-                    LocaleStr(key="redeem_code.success").translate(cls._bot.translator, locale),
-                    True,
-                )
+                if resp.status == 200:
+                    await cls._add_to_redeemed_codes(account, code)
+                    return (
+                        code,
+                        LocaleStr(key="redeem_code.success").translate(cls._bot.translator, locale),
+                        True,
+                    )
 
-            if resp.status == 400:
-                if data["retcode"] == 1001:
-                    # Redemption cooldown
-                    await asyncio.sleep(20)
-                    return await cls._redeem_code(api_name, account, locale, code, payload)
+                if resp.status == 400:
+                    if data["retcode"] == 1001:
+                        # Redemption cooldown
+                        await asyncio.sleep(20)
+                        return await cls._redeem_code(api_name, account, locale, code, payload)
 
-                e = genshin.GenshinException(data)
-                if e.retcode in {999, 1000}:
-                    # Cookie token expired or refresh failed
-                    raise e
+                    e = genshin.GenshinException(data)
+                    if e.retcode in {999, 1000}:
+                        # Cookie token expired or refresh failed
+                        raise e
 
-                embed, recognized = get_error_embed(e, locale, cls._bot.translator)
-                if not recognized:
-                    raise e
+                    embed, recognized = get_error_embed(e, locale, cls._bot.translator)
+                    if not recognized:
+                        raise e
 
-                await cls._add_to_redeemed_codes(account, code)
-                assert embed.title is not None
+                    await cls._add_to_redeemed_codes(account, code)
+                    assert embed.title is not None
 
-                if embed.description is None:
-                    return (code, embed.title, False)
-                return (code, f"{embed.title}\n{embed.description}", False)
+                    if embed.description is None:
+                        return (code, embed.title, False)
+                    return (code, f"{embed.title}\n{embed.description}", False)
+
+                # 500
+                msg = f"API {api_name} errored: {data['message']}"
+                raise RuntimeError(msg)
 
             msg = f"API {api_name} returned {resp.status}"
             raise RuntimeError(msg)

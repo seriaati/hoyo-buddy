@@ -158,27 +158,32 @@ class DailyCheckin:
         logger.debug(f"Check-in payload: {payload}")
 
         async with session.post(f"{api_url}/checkin/", json=payload) as resp:
-            data = await resp.json()
-            logger.debug(f"Check-in response: {data}")
+            if resp.status in {200, 400, 500}:
+                data = await resp.json()
+                logger.debug(f"Check-in response: {data}")
 
-            if resp.status == 200:
-                # Correct reward amount
-                monthly_rewards = await client.get_monthly_rewards()
-                reward = next((r for r in monthly_rewards if r.icon == data["data"]["icon"]), None)
-                if reward is None:
-                    reward = genshin.models.DailyReward(**data["data"])
-                embed = client.get_daily_reward_embed(reward, locale, translator, blur=False)
-            elif resp.status == 400:
-                if data["retcode"] == -9999:
-                    await User.filter(id=account.user.id).update(temp_data=data["data"])
-                try:
-                    genshin.raise_for_retcode(data)
-                except genshin.GenshinException as e:
+                if resp.status == 200:
+                    # Correct reward amount
+                    monthly_rewards = await client.get_monthly_rewards()
+                    reward = next(
+                        (r for r in monthly_rewards if r.icon == data["data"]["icon"]), None
+                    )
+                    if reward is None:
+                        reward = genshin.models.DailyReward(**data["data"])
+                    embed = client.get_daily_reward_embed(reward, locale, translator, blur=False)
+                elif resp.status == 400:
+                    if data["retcode"] == -9999:
+                        await User.filter(id=account.user.id).update(temp_data=data["data"])
+
+                    e = genshin.GenshinException(data)
                     embed, recognized = get_error_embed(e, locale, translator)
                     if not recognized:
                         cls._bot.capture_exception(e)
 
                     embed.add_acc_info(account, blur=False)
+                else:  # 500
+                    msg = f"API {api_name} errored: {data['message']}"
+                    raise RuntimeError(msg)
             else:
                 msg = f"API {api_name} returned {resp.status}"
                 raise RuntimeError(msg)

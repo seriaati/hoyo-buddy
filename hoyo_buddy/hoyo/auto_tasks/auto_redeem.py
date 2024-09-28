@@ -230,8 +230,7 @@ class AutoRedeem:
                 await cls._handle_error(account, locale, e)
                 return None
 
-            if len(codes_) > 1:
-                await asyncio.sleep(6)
+            await asyncio.sleep(6)
 
         return client.get_redeem_codes_embed(
             results, locale=locale, translator=translator, inline=True, blur=False

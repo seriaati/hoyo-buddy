@@ -414,9 +414,7 @@ class GenshinClient(genshin.Client):
             )
             results.append((code, msg, success))
 
-            if len(codes) > 1:
-                # only sleep if there are more than 1 code
-                await asyncio.sleep(6)
+            await asyncio.sleep(6)
 
         return self.get_redeem_codes_embed(
             results, locale=locale, translator=translator, inline=inline, blur=blur

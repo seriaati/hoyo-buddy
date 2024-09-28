@@ -316,17 +316,13 @@ class ProfileView(View):
         self.add_item(BuildSelect())
 
     async def _draw_src_character_card(
-        self,
-        session: aiohttp.ClientSession,
-        character: Character,
-        card_settings: CardSettings,
-        locale: Locale,
+        self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
     ) -> BytesIO:
         """Draw character card in StarRailCard template."""
         template = card_settings.template
         payload = {
             "uid": self.uid,
-            "lang": LOCALE_TO_HSR_CARD_API_LANG.get(locale, "en"),
+            "lang": LOCALE_TO_HSR_CARD_API_LANG.get(self.get_character_locale(character), "en"),
             "template": int(template[-1]),
             "character_id": str(character.id),
             "character_art": card_settings.current_image,
@@ -352,18 +348,14 @@ class ProfileView(View):
             return BytesIO(await resp.read())
 
     async def _draw_enka_card(
-        self,
-        session: aiohttp.ClientSession,
-        character: Character,
-        card_settings: CardSettings,
-        locale: Locale,
+        self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
     ) -> BytesIO:
         """Draw GI character card in EnkaCard2, ENCard, enka-card templates."""
         template = card_settings.template
 
         payload = {
             "uid": self.uid,
-            "lang": LOCALE_TO_GI_CARD_API_LANG.get(locale, "en"),
+            "lang": LOCALE_TO_GI_CARD_API_LANG.get(self.get_character_locale(character), "en"),
             "character_id": str(character.id),
             "character_art": card_settings.current_image,
             "color": card_settings.custom_primary_color,
@@ -394,7 +386,6 @@ class ProfileView(View):
         loop: asyncio.AbstractEventLoop,
         character: Character,
         card_settings: CardSettings,
-        locale: Locale,
     ) -> BytesIO:
         """Draw Star Rail character card in Hoyo Buddy template."""
         assert isinstance(character, enka.hsr.Character | HoyolabHSRCharacter)
@@ -414,7 +405,7 @@ class ProfileView(View):
         return await draw_hsr_build_card(
             DrawInput(
                 dark_mode=card_settings.dark_mode,
-                locale=locale,
+                locale=self.get_character_locale(character),
                 session=session,
                 filename="card.webp",
                 executor=executor,
@@ -432,7 +423,6 @@ class ProfileView(View):
         loop: asyncio.AbstractEventLoop,
         character: Character,
         card_settings: CardSettings,
-        locale: Locale,
     ) -> BytesIO:
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert isinstance(character, enka.gi.Character | HoyolabGICharacter)
@@ -454,7 +444,7 @@ class ProfileView(View):
         return await draw_gi_build_card(
             DrawInput(
                 dark_mode=card_settings.dark_mode,
-                locale=locale,
+                locale=self.get_character_locale(character),
                 session=session,
                 filename="card.webp",
                 executor=executor,
@@ -477,7 +467,6 @@ class ProfileView(View):
         loop: asyncio.AbstractEventLoop,
         character: Character,
         card_settings: CardSettings,
-        locale: Locale,
     ) -> BytesIO:
         """Draw ZZZ build card in Hoyo Buddy template."""
         assert isinstance(character, ZZZPartialAgent)
@@ -511,7 +500,7 @@ class ProfileView(View):
         return await draw_zzz_build_card(
             DrawInput(
                 dark_mode=True,
-                locale=locale,
+                locale=self.get_character_locale(character),
                 session=session,
                 filename="card.webp",
                 executor=executor,
@@ -539,43 +528,32 @@ class ProfileView(View):
 
         template = card_settings.template
 
-        key = str(character.id)
-        if isinstance(character, HoyolabCharacter):
-            key += "-hoyolab"
-        cache_extra = self.cache_extras.get(key)
-        locale = self.locale if cache_extra is None else Locale(cache_extra["locale"])
-
         if self.game is Game.STARRAIL:
             if "hb" in template:
                 return await self._draw_hb_hsr_character_card(
-                    i.client.session,
-                    i.client.executor,
-                    i.client.loop,
-                    character,
-                    card_settings,
-                    locale,
+                    i.client.session, i.client.executor, i.client.loop, character, card_settings
                 )
-            return await self._draw_src_character_card(
-                i.client.session, character, card_settings, locale
-            )
+            return await self._draw_src_character_card(i.client.session, character, card_settings)
         if self.game is Game.GENSHIN:
             if "hb" in template:
                 return await self._draw_hb_gi_character_card(
-                    i.client.session,
-                    i.client.executor,
-                    i.client.loop,
-                    character,
-                    card_settings,
-                    locale,
+                    i.client.session, i.client.executor, i.client.loop, character, card_settings
                 )
-            return await self._draw_enka_card(i.client.session, character, card_settings, locale)
+            return await self._draw_enka_card(i.client.session, character, card_settings)
         if self.game is Game.ZZZ:
             return await self._draw_hb_zzz_character_card(
-                i.client.session, i.client.executor, i.client.loop, character, card_settings, locale
+                i.client.session, i.client.executor, i.client.loop, character, card_settings
             )
 
         msg = f"draw_card not implemented for game {self.game} template {template}"
         raise ValueError(msg)
+
+    def get_character_locale(self, character: Character) -> Locale:
+        key = str(character.id)
+        if isinstance(character, HoyolabCharacter):
+            key += "-hoyolab"
+        cache_extra = self.cache_extras.get(key)
+        return self.locale if cache_extra is None else Locale(cache_extra["locale"])
 
     async def draw_team_card(self, i: Interaction) -> io.BytesIO:
         """Draw team card for multiple characters."""

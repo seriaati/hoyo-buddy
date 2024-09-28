@@ -78,6 +78,12 @@ class DailyCheckin:
 
         while True:
             account = await queue.get()
+            if api_name != "LOCAL" and account.region is genshin.Region.CHINESE:
+                # Skip Chinese accounts for API check-in
+                await queue.put(account)
+                queue.task_done()
+                continue
+
             try:
                 await account.fetch_related("user")
                 embed = await cls._daily_checkin(api_name, account)

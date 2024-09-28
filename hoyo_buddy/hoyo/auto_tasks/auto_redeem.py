@@ -31,6 +31,7 @@ MAX_API_ERROR_COUNT = 10
 class AutoRedeem:
     _total_redeem_count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
+    _dead_codes: ClassVar[set[str]]
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
 
     @classmethod
@@ -52,6 +53,7 @@ class AutoRedeem:
 
                 cls._total_redeem_count = 0
                 cls._bot = bot
+                cls._dead_codes = set()
 
                 games_to_redeem = (
                     genshin.Game.GENSHIN,
@@ -185,7 +187,11 @@ class AutoRedeem:
         codes: list[str],
     ) -> Embed | None:
         translator = cls._bot.translator
-        codes_ = [code for code in codes if code not in account.redeemed_codes]
+        codes_ = [
+            code
+            for code in codes
+            if code not in account.redeemed_codes and code not in cls._dead_codes
+        ]
 
         if not codes_:
             return None
@@ -276,6 +282,10 @@ class AutoRedeem:
                     if e.retcode in {999, 1000}:
                         # Cookie token expired or refresh failed
                         raise e
+
+                    if e.retcode == -2006:
+                        # Code reached max redemption limit
+                        cls._dead_codes.add(code)
 
                     embed, recognized = get_error_embed(e, locale, cls._bot.translator)
                     if not recognized:

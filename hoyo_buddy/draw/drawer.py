@@ -250,15 +250,6 @@ class Drawer:
         return (*color, round(255 * opacity))
 
     @staticmethod
-    def _shorten_text(text: str, max_width: int, font: ImageFont.FreeTypeFont) -> str:
-        if font.getlength(text) <= max_width:
-            return text
-        shortened = text[: max_width - 3] + "..."
-        while font.getlength(shortened) > max_width and len(shortened) > 3:
-            shortened = shortened[:-4] + "..."
-        return shortened
-
-    @staticmethod
     def draw_dynamic_background(input_: DynamicBKInput) -> tuple[Image.Image, int]:
         """Draw a dynamic background with a variable number of cards."""
         card_num = input_.card_num
@@ -317,23 +308,55 @@ class Drawer:
         colored_image.putalpha(image.getchannel("A"))
         return colored_image
 
-    @classmethod
-    def _wrap_text(
-        cls, text: str, *, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont
-    ) -> str:
-        lines: list[str] = [""]
-        for word in text.split():
-            line = f"{lines[-1]} {word}".strip()
-            if font.getlength(line) <= max_width:
-                lines[-1] = line
+    @staticmethod
+    def _wrap_text(text: str, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont) -> str:
+        def truncate_line(line: str, width: int, ellipsis: str = "...") -> str:
+            if font.getlength(line) <= width:
+                return line
+
+            ellipsis_width = font.getlength(ellipsis)
+            available_width = width - ellipsis_width
+
+            for i in range(len(line), 0, -1):
+                if font.getlength(line[:i]) <= available_width:
+                    return line[:i] + ellipsis
+
+            return ellipsis
+
+        words = text.split()
+        result = []
+        current_line = ""
+
+        for word in words:
+            test_line = word if not current_line else current_line + " " + word
+
+            if font.getlength(test_line) <= max_width:
+                current_line = test_line
             else:
-                lines.append(word)
-                if len(lines) > max_lines:
-                    del lines[-1]
-                    lines[-1] = cls._shorten_text(lines[-1], max_width, font)
-                    break
-        lines = [line for line in lines if line]
-        return "\n".join(lines)
+                if current_line:
+                    result.append(current_line)
+                    current_line = word
+                else:
+                    result.append(truncate_line(word, max_width))
+
+            if len(result) == max_lines - 1 and current_line:
+                result.append(truncate_line(current_line, max_width))
+                break
+
+            if len(result) == max_lines:
+                break
+
+        if current_line and len(result) < max_lines:
+            result.append(current_line)
+
+        if len(result) > max_lines:
+            result = result[:max_lines]
+            result[-1] = truncate_line(result[-1], max_width)
+
+        if max_lines == 1:
+            return truncate_line(text, max_width)
+
+        return "\n".join(result)
 
     def _get_text_color(
         self, color: tuple[int, int, int] | None, emphasis: Literal["high", "medium", "low"]
@@ -467,12 +490,9 @@ class Drawer:
             font = self._get_font(size, style, locale=locale, fallback=True)
 
         if max_width is not None:
-            if max_lines == 1:
-                translated_text = self._shorten_text(translated_text, max_width, font)
-            else:
-                translated_text = self._wrap_text(
-                    translated_text, max_width=max_width, max_lines=max_lines, font=font
-                )
+            translated_text = self._wrap_text(
+                translated_text, max_width=max_width, max_lines=max_lines, font=font
+            )
 
         if align_center:
             y_text = position[1]

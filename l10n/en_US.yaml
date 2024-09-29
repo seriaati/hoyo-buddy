@@ -151,7 +151,7 @@ dark_mode_button_label: Dark mode
 error_footer: "You can find help in our Discord server, link in /about"
 error_title: An Error Occurred
 erudition: Erudition
-exceptions.card_not_ready_error.message: "When new characters are released, I need to specify the colors for their build cards.\nIf you see this message several days after a game update, please notify me in the [Discord Server](https://<https://link.seria.moe/hb-dc) as I might have forgot to do it."
+exceptions.card_not_ready_error.message: "When new characters are released, I need to specify the colors for their build cards.\nIf you see this message several days after a game update, please notify me in the [Discord Server](https://link.seria.moe/hb-dc) as I might have forgot to do it."
 exceptions.card_not_ready_error.title: "Card data for {character_name} is not ready yet."
 exped.embed.description: One (or more) expeditions are finished
 exped_button.label: Expedition reminder

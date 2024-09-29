@@ -11,7 +11,7 @@ from loguru import logger
 from seria.utils import read_yaml
 
 from hoyo_buddy.constants import LOCALE_TO_GI_CARD_API_LANG, LOCALE_TO_HSR_CARD_API_LANG
-from hoyo_buddy.db.models import Settings, get_dyk
+from hoyo_buddy.db.models import EnkaCache, Settings, get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
     draw_gi_team_card,
@@ -129,6 +129,11 @@ class ProfileView(View):
         self._owner_username: str | None = owner.username if owner is not None else None
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | None = None
+
+    async def fetch_cache_extras(self) -> dict[str, Any]:
+        cache = await EnkaCache.get(uid=self.uid)
+        self.cache_extras = cache.extras
+        return cache.extras
 
     async def _get_character_rank(
         self, character: Character, *, with_detail: bool = False
@@ -322,7 +327,9 @@ class ProfileView(View):
         template = card_settings.template
         payload = {
             "uid": self.uid,
-            "lang": LOCALE_TO_HSR_CARD_API_LANG.get(self.get_character_locale(character), "en"),
+            "lang": LOCALE_TO_HSR_CARD_API_LANG.get(
+                await self.get_character_locale(character), "en"
+            ),
             "template": int(template[-1]),
             "character_id": str(character.id),
             "character_art": card_settings.current_image,
@@ -355,7 +362,9 @@ class ProfileView(View):
 
         payload = {
             "uid": self.uid,
-            "lang": LOCALE_TO_GI_CARD_API_LANG.get(self.get_character_locale(character), "en"),
+            "lang": LOCALE_TO_GI_CARD_API_LANG.get(
+                await self.get_character_locale(character), "en"
+            ),
             "character_id": str(character.id),
             "character_art": card_settings.current_image,
             "color": card_settings.custom_primary_color,
@@ -405,7 +414,7 @@ class ProfileView(View):
         return await draw_hsr_build_card(
             DrawInput(
                 dark_mode=card_settings.dark_mode,
-                locale=self.get_character_locale(character),
+                locale=await self.get_character_locale(character),
                 session=session,
                 filename="card.webp",
                 executor=executor,
@@ -444,7 +453,7 @@ class ProfileView(View):
         return await draw_gi_build_card(
             DrawInput(
                 dark_mode=card_settings.dark_mode,
-                locale=self.get_character_locale(character),
+                locale=await self.get_character_locale(character),
                 session=session,
                 filename="card.webp",
                 executor=executor,
@@ -500,7 +509,7 @@ class ProfileView(View):
         return await draw_zzz_build_card(
             DrawInput(
                 dark_mode=True,
-                locale=self.get_character_locale(character),
+                locale=await self.get_character_locale(character),
                 session=session,
                 filename="card.webp",
                 executor=executor,
@@ -548,11 +557,13 @@ class ProfileView(View):
         msg = f"draw_card not implemented for game {self.game} template {template}"
         raise ValueError(msg)
 
-    def get_character_locale(self, character: Character) -> Locale:
+    async def get_character_locale(self, character: Character) -> Locale:
         key = str(character.id)
         if isinstance(character, HoyolabCharacter):
             key += "-hoyolab"
-        cache_extra = self.cache_extras.get(key)
+
+        cache_extras = await self.fetch_cache_extras()
+        cache_extra = cache_extras.get(key)
         return self.locale if cache_extra is None else Locale(cache_extra["locale"])
 
     async def draw_team_card(self, i: Interaction) -> io.BytesIO:

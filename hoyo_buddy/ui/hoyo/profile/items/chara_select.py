@@ -138,9 +138,10 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
 
         character_id = self.view.character_ids[0]
         character = self.view.characters[character_id]
+        cache_extras = await self.view.fetch_cache_extras()
         self.view.character_type = determine_chara_type(
             character_id,
-            cache_extras=self.view.cache_extras,
+            cache_extras=cache_extras,
             builds=self.view._builds,
             is_hoyolab=isinstance(character, HoyolabHSRCharacter),
         )

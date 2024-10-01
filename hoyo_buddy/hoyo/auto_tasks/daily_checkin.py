@@ -38,9 +38,14 @@ class DailyCheckin:
             cls._bot = bot
 
             queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
+            the_rest: list[HoyoAccount] = []
             accounts = await HoyoAccount.filter(daily_checkin=True).all()
             for account in accounts:
-                await queue.put(account)
+                if account.region is genshin.Region.OVERSEAS:
+                    await queue.put(account)
+                else:
+                    # Region is None or CN
+                    the_rest.append(account)
 
             tasks = [
                 asyncio.create_task(cls._daily_checkin_task(queue, api)) for api in CHECKIN_APIS
@@ -51,6 +56,10 @@ class DailyCheckin:
             for task in tasks:
                 task.cancel()
             await asyncio.gather(*tasks, return_exceptions=True)
+
+            # Claim for the rest of the accounts
+            for account in the_rest:
+                await cls._daily_checkin("LOCAL", account)
         except Exception as e:
             bot.capture_exception(e)
         finally:
@@ -78,11 +87,6 @@ class DailyCheckin:
 
         while True:
             account = await queue.get()
-            if api_name != "LOCAL" and account.region is genshin.Region.CHINESE:
-                # Skip Chinese accounts for API check-in
-                await queue.put(account)
-                queue.task_done()
-                continue
 
             try:
                 await account.fetch_related("user")

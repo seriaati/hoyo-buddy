@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 
+from attr import has
 import discord
 import genshin
 from PIL import Image, ImageDraw
@@ -43,6 +44,11 @@ class ImgTheaterCard:
         )
 
         stats = self._theater.stats
+        if hasattr(self._theater, "battle_stats"):
+            total_cast_time = seconds_to_time(self._theater.battle_stats.total_cast_seconds)
+        else:
+            total_cast_time = "N/A"
+
         lines = (
             LocaleStr(key="img_theater_stats_line_one", act=stats.best_record),
             LocaleStr(key="img_theater_stats_line_two", flower=stats.fantasia_flowers_used),
@@ -50,16 +56,16 @@ class ImgTheaterCard:
                 key="img_theater_stats_line_three", support=stats.audience_support_trigger_num
             ),
             LocaleStr(key="img_theater_stats_line_four", assist=stats.player_assists),
-            LocaleStr(
-                key="img_theater_stats_line_five",
-                time=seconds_to_time(self._theater.battle_stats.total_cast_seconds),
-            ),
+            LocaleStr(key="img_theater_stats_line_five", time=total_cast_time),
         )
         line_height = 40
         for i, line in enumerate(lines):
             self._drawer.write(line, size=24, position=(112, 175 + i * line_height))
 
     def _draw_battle_stats(self) -> None:
+        if not hasattr(self._theater, "battle_stats"):
+            return
+
         stats = self._theater.battle_stats
 
         characters = (

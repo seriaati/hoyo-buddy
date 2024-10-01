@@ -388,12 +388,13 @@ async def draw_img_theater_card(
 ) -> File:
     icons: list[str] = []
 
-    characters = (
-        data.battle_stats.max_damage_character,
-        data.battle_stats.max_defeat_character,
-        data.battle_stats.max_take_damage_character,
-    )
-    icons.extend(chara.icon for chara in characters if chara is not None)
+    if hasattr(data, "battle_stats"):
+        characters = (
+            data.battle_stats.max_damage_character,
+            data.battle_stats.max_defeat_character,
+            data.battle_stats.max_take_damage_character,
+        )
+        icons.extend(chara.icon for chara in characters if chara is not None)
 
     for act in data.acts:
         icons.extend(chara.icon for chara in act.characters)

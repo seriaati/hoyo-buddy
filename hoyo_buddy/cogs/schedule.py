@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import asyncio
+import datetime
 from typing import TYPE_CHECKING
 
 from discord.ext import commands, tasks
 
-from ..constants import GI_UID_PREFIXES
+from ..constants import GI_UID_PREFIXES, UTC_8
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
@@ -24,60 +24,64 @@ class Schedule(commands.Cog):
     async def cog_load(self) -> None:
         if not self.bot.config.schedule:
             return
-        self.schedule.start()
+
+        self.run_at_0am.start()
+        self.run_farm_checks.start()
+        self.update_search_autofill.start()
+        self.run_notes_check.start()
+        self.run_auto_redeem.start()
 
     async def cog_unload(self) -> None:
         if not self.bot.config.schedule:
             return
-        self.schedule.cancel()
 
-    loop_interval = 1
+        self.run_at_0am.cancel()
+        self.run_farm_checks.cancel()
+        self.update_search_autofill.cancel()
+        self.run_notes_check.cancel()
+        self.run_auto_redeem.cancel()
 
-    @tasks.loop(minutes=loop_interval)
-    async def schedule(self) -> None:
-        now = get_now()
+    @tasks.loop(time=datetime.time(0, 0, 0, tzinfo=UTC_8))
+    async def run_at_0am(self) -> None:
+        await DailyCheckin.execute(self.bot)
+        await self.bot.update_assets()
 
-        # Every day at 00:00
-        if now.hour == 0 and now.minute < self.loop_interval:
-            asyncio.create_task(DailyCheckin.execute(self.bot))
-            asyncio.create_task(self.bot.update_assets())
+    @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)])
+    async def run_farm_checks(self) -> None:
+        hour = get_now().hour
+        if hour == 11:
+            await FarmChecker.execute(self.bot, "7")
+        elif hour == 17:
+            await FarmChecker.execute(self.bot, "6")
+        else:
+            for uid_start in GI_UID_PREFIXES:
+                if uid_start in {"7", "6"}:
+                    continue
+                await FarmChecker.execute(self.bot, uid_start)
 
-        # Every day at 04:00, 11:00, 17:00
-        if now.hour in {4, 11, 17} and now.minute < self.loop_interval:
-            match now.hour:
-                case 11:
-                    # Europe server
-                    asyncio.create_task(FarmChecker.execute(self.bot, "7"))
-                case 17:
-                    # America server
-                    asyncio.create_task(FarmChecker.execute(self.bot, "6"))
-                case _:
-                    # Asia, China, and TW/HK/MO servers
-                    for uid_start in GI_UID_PREFIXES:
-                        if uid_start in {"7", "6"}:
-                            continue
-                        asyncio.create_task(FarmChecker.execute(self.bot, uid_start))
+    @tasks.loop(time=datetime.time(11, 0, 0, tzinfo=UTC_8))
+    async def update_search_autofill(self) -> None:
+        if not self.bot.config.search_autocomplete:
+            return
 
-        # Every day at 11:00
-        if (
-            now.hour == 11
-            and now.minute < self.loop_interval
-            and self.bot.config.search_autocomplete
-        ):
-            search_cog = self.bot.get_cog("Search")
-            if isinstance(search_cog, Search):
-                asyncio.create_task(search_cog._setup_search_autocomplete_choices())
+        search_cog = self.bot.get_cog("Search")
+        if isinstance(search_cog, Search):
+            await search_cog._setup_search_autofill()
 
-        # Every minute
-        if now.minute % 1 < self.loop_interval:
-            asyncio.create_task(NotesChecker.execute(self.bot))
+    @tasks.loop(minutes=1)
+    async def run_notes_check(self) -> None:
+        await NotesChecker.execute(self.bot)
 
-        # Every hour
-        if now.minute < self.loop_interval:
-            asyncio.create_task(AutoRedeem.execute(self.bot))
+    @tasks.loop(hours=1)
+    async def run_auto_redeem(self) -> None:
+        await AutoRedeem.execute(self.bot)
 
-    @schedule.before_loop
-    async def before_schedule(self) -> None:
+    @run_at_0am.before_loop
+    @run_farm_checks.before_loop
+    @update_search_autofill.before_loop
+    @run_notes_check.before_loop
+    @run_auto_redeem.before_loop
+    async def before_loops(self) -> None:
         await self.bot.wait_until_ready()
 
 

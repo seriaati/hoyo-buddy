@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import io
 
-from attr import has
 import discord
 import genshin
 from PIL import Image, ImageDraw

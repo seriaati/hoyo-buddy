@@ -119,7 +119,10 @@ class DailyCheckin:
     @classmethod
     async def _notify_checkin_result(cls, account: HoyoAccount, embed: Embed) -> None:
         try:
-            notif_settings, _ = await AccountNotifSettings.get_or_create(account=account)
+            notif_settings = await AccountNotifSettings.get_or_none(account=account)
+            if notif_settings is None:
+                notif_settings = await AccountNotifSettings.create(account=account)
+
             if (isinstance(embed, ErrorEmbed) and notif_settings.notify_on_checkin_failure) or (
                 isinstance(embed, DefaultEmbed) and notif_settings.notify_on_checkin_success
             ):

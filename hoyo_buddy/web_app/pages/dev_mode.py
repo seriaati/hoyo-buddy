@@ -12,58 +12,24 @@ if TYPE_CHECKING:
 
     from ..schema import Params
 
-__all__ = ("JavascriptPage",)
+__all__ = ("DevModePage",)
 
 
-class JavascriptPage(ft.View):
+class DevModePage(ft.View):
     def __init__(self, *, params: Params, translator: Translator, locale: Locale) -> None:
         self._params = params
         self._translator = translator
         self._locale = locale
-        self._code = "script:document.write(document.cookie)"
         super().__init__(
-            route="/javascript",
+            route="/dev",
             controls=[
                 ft.SafeArea(
                     ft.Column(
                         [
-                            ft.Text(
-                                translator.translate(LocaleStr(key="instructions_title"), locale),
-                                size=24,
-                            ),
-                            ft.Markdown(
-                                translator.translate(
-                                    LocaleStr(key="javascript_instructions_description"), locale
-                                ),
-                                auto_follow_links=True,
-                                auto_follow_links_target=ft.UrlTarget.BLANK.value,
-                            ),
+                            ft.Text("Developer Mode", size=24),
+                            ft.Text("This page is only for development purposes.", size=16),
                             ft.Container(
-                                ft.Column(
-                                    [
-                                        ft.ElevatedButton(
-                                            translator.translate(
-                                                LocaleStr(key="show_tutorial_button_label"), locale
-                                            ),
-                                            on_click=lambda e: e.page.open(
-                                                ShowImageDialog(
-                                                    translator=translator, locale=locale
-                                                )
-                                            ),
-                                        ),
-                                        ft.FilledTonalButton(
-                                            text=translator.translate(
-                                                LocaleStr(key="copy_code_button_label"), locale
-                                            ),
-                                            on_click=self.on_button_click,
-                                            icon=ft.icons.COPY,
-                                        ),
-                                        CookiesForm(
-                                            params=params, translator=translator, locale=locale
-                                        ),
-                                    ],
-                                    spacing=16,
-                                ),
+                                CookiesForm(params=params, translator=translator, locale=locale),
                                 margin=ft.margin.only(top=16),
                             ),
                         ],
@@ -71,19 +37,6 @@ class JavascriptPage(ft.View):
                     )
                 )
             ],
-        )
-
-    async def on_button_click(self, e: ft.ControlEvent) -> None:
-        page: ft.Page = e.page
-        await page.set_clipboard_async(self._code)
-        await page.show_snack_bar_async(
-            ft.SnackBar(
-                ft.Text(
-                    self._translator.translate(LocaleStr(key="copied_to_clipboard"), self._locale),
-                    color=ft.colors.ON_PRIMARY_CONTAINER,
-                ),
-                bgcolor=ft.colors.PRIMARY_CONTAINER,
-            )
         )
 
 
@@ -138,9 +91,7 @@ class CookiesTextField(ft.TextField):
             on_focus=self.on_field_focus,
             prefix_icon=ft.icons.COOKIE,
             ref=ref,
-            hint_text=self._translator.translate(
-                LocaleStr(key="cookies_modal_placeholder"), self._locale
-            ),
+            hint_text="Paste your cookies here",
         )
 
     async def on_field_blur(self, e: ft.ControlEvent) -> None:
@@ -156,16 +107,3 @@ class CookiesTextField(ft.TextField):
         control: ft.TextField = e.control
         control.error_text = None
         await control.update_async()
-
-
-class ShowImageDialog(ft.AlertDialog):
-    def __init__(self, *, translator: Translator, locale: Locale) -> None:
-        super().__init__(
-            content=ft.Image(src="/images/js_tutorial.gif", border_radius=8),
-            actions=[
-                ft.TextButton(
-                    translator.translate(LocaleStr(key="close_button_label"), locale),
-                    on_click=lambda e: e.page.close(self),
-                )
-            ],
-        )

@@ -73,11 +73,6 @@ class MethodsPage(ft.View):
                     label=translator.translate(LocaleStr(key="devtools_button_label"), locale),
                     to_page="dev_tools",
                 ),
-                MethodButton(
-                    params=params,
-                    label=translator.translate(LocaleStr(key="javascript_button_label"), locale),
-                    to_page="javascript",
-                ),
             ]
         return [
             # MethodButton(params=params, label="通过改装过的米游社应用程序", to_page="mod_app"),

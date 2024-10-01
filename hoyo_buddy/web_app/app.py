@@ -363,8 +363,8 @@ class WebApp:
                     view = pages.DevToolsPage(
                         params=params, translator=self._translator, locale=locale
                     )
-                case "/javascript":
-                    view = pages.JavascriptPage(
+                case "/dev":
+                    view = pages.DevModePage(
                         params=params, translator=self._translator, locale=locale
                     )
                 case "/mod_app":

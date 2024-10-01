@@ -43,7 +43,7 @@ accounts_command_description: Manage your accounts
 action_in_cooldown_error_message: "Please try again at {available_time}."
 action_in_cooldown_error_title: Action in Cooldown
 add_account_button_label: Add accounts
-add_hoyolab_acc.embed.description: "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one\n3. With JavaScript: Outdated method, won't work for most accounts. Works on Google Chrome or Microsoft Edge on both desktop and mobile"
+add_hoyolab_acc.embed.description: "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one"
 add_hoyolab_acc.embed.title: Select a Method to add Your Accounts
 adding_accounts_description: "Welcome to Hoyo Buddy! Enjoy various features by spending less than 1 minute to add your accounts.\n\nRegarding account security, please read the [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Select Your Account's Platform
@@ -119,7 +119,6 @@ complete_geetest_button_description: Click the button below to complete the geet
 complete_geetest_button_label: Complete geetest
 const_refine_str: "C{const}R{refine}"
 continue_button_label: Continue
-cookies_modal_placeholder: Paste your cookies here...
 cryo: Cryo
 daily_button.label: Daily reminder
 daily_check_in: Daily check-in
@@ -260,8 +259,6 @@ invalid_query_error_title: Invalid query
 invalid_verification_code_description: Please check the verification code and try again.
 invalid_verification_code_title: Invalid Verification Code
 items: Items
-javascript_button_label: With JavaScript
-javascript_instructions_description: "Note: This method should work for all major browsers on desktop, but on mobile, it only works for **Chrome** and **Edge**.\n\n1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Click the button below to copy code\n3. Click on the address bar and type `java`\n4. Paste the code and press enter. Make sure there are **NO SPACES** between `java` and `script`\n5. Select all and copy the text that appears\n6. Paste the text into the text box labeled 'cookies' below"
 level_str: "Lv.{level}"
 light_cones: Light Cones
 living_beings: Living Beings
@@ -594,8 +591,6 @@ profile_view_show_rank_button_label: Show rank
 submit_button_label: Submit
 show_tutorial_button_label: Show tutorial
 close_button_label: Close
-copy_code_button_label: Copy code
-copied_to_clipboard: Copied to clipboard
 required_field_error_message: This field is required
 accounts_added_snackbar_message: "Accounts added successfully, redirecting you back to Discord..."
 account_add_start_title: Add Accounts

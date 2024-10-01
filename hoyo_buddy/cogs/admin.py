@@ -126,7 +126,7 @@ class Admin(commands.Cog):
         search_cog = self.bot.get_cog("Search")
 
         if isinstance(search_cog, Search):
-            asyncio.create_task(search_cog._setup_search_autocomplete_choices())
+            asyncio.create_task(search_cog._setup_search_autofill())
         await message.edit(content="Search autocomplete update task started.")
 
     @commands.command(name="add-codes", aliases=["ac"])

@@ -62,7 +62,7 @@ class DailyCheckin:
                 try:
                     embed = await cls._daily_checkin("LOCAL", account)
                 except Exception as e:
-                    logger.error(f"Daily check-in failed for {account}")
+                    logger.warning(f"Daily check-in failed for {account}")
                     cls._bot.capture_exception(e)
                 else:
                     cls._total_checkin_count += 1
@@ -100,10 +100,12 @@ class DailyCheckin:
 
             try:
                 embed = await cls._daily_checkin(api_name, account)
-            except Exception:
+            except Exception as e:
                 await queue.put(account)
                 api_error_count += 1
-                logger.exception(f"Daily check-in failed for {account}")
+
+                logger.warning(f"Daily check-in failed for {account}")
+                cls._bot.capture_exception(e)
                 if api_error_count >= MAX_API_ERROR_COUNT:
                     msg = f"Daily check-in API {api_name} failed for {api_error_count} accounts"
                     raise RuntimeError(msg) from None

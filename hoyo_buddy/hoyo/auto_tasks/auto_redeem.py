@@ -143,7 +143,7 @@ class AutoRedeem:
                 await queue.put(account)
                 api_error_count += 1
 
-                logger.error(f"Auto redeem failed for {account}")
+                logger.warning(f"Auto redeem failed for {account}")
                 cls._bot.capture_exception(e)
                 if api_error_count >= MAX_API_ERROR_COUNT:
                     msg = f"Auto redeem API {api_name} failed for {api_error_count} accounts"

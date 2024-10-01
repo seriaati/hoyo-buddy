@@ -652,7 +652,9 @@ class ProfileView(View):
                 await item.unset_loading_state(i)
 
             if "hb" not in card_settings.template:
-                logger.exception("Failed to draw card")
+                logger.warning("Failed to draw card")
+                i.client.capture_exception(e)
+
                 card_settings.template = "hb1"
                 await card_settings.save(update_fields=("template",))
                 raise ThirdPartyCardTempError from e

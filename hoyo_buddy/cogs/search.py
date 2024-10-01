@@ -48,9 +48,9 @@ class Search(commands.Cog):
         if not self.bot.config.search_autocomplete:
             return
 
-        asyncio.create_task(self._setup_search_autocomplete_choices())
+        asyncio.create_task(self._setup_search_autofill())
 
-    async def _setup_search_autocomplete_choices(self) -> None:
+    async def _setup_search_autofill(self) -> None:
         logger.info("Setting up search autocomplete choices")
         start = self.bot.loop.time()
 
@@ -60,8 +60,9 @@ class Search(commands.Cog):
                 self._beta_id_to_category,
                 self.bot.beta_autocomplete_choices,
             ) = await AutocompleteSetup.start(self.bot.translator, self.bot.session)
-        except Exception:
-            logger.exception("Failed to set up search autocomplete choices")
+        except Exception as e:
+            logger.warning("Failed to set up search autocomplete choices")
+            self.bot.capture_exception(e)
 
         logger.info(
             f"Finished setting up search autocomplete choices, took {self.bot.loop.time() - start:.2f} seconds"

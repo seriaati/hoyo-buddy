@@ -68,7 +68,7 @@ class View(discord.ui.View):
             with contextlib.suppress(discord.NotFound, discord.HTTPException):
                 await self.message.edit(view=self)
         else:
-            logger.error(f"View {self!r} timed out without a set message")
+            logger.warning(f"View {self!r} timed out without a set message")
 
     async def on_error(self, i: Interaction, error: Exception, _: discord.ui.Item[Any]) -> None:
         locale = await get_locale(i)

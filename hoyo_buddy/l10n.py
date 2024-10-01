@@ -173,7 +173,7 @@ class Translator:
         source_string = self._localizations[SOURCE_LANG].get(string_key)
         if string.translate_ and source_string is None and string_key not in self._not_translated:
             self._not_translated.add(string_key)
-            logger.error(f"String {string_key!r} is missing in source lang file")
+            logger.warning(f"String {string_key!r} is missing in source lang file")
 
         lang = locale.value.replace("-", "_")
         translation = self._localizations.get(lang, {}).get(string_key)

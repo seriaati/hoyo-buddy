@@ -59,7 +59,17 @@ class DailyCheckin:
 
             # Claim for the rest of the accounts
             for account in the_rest:
-                await cls._daily_checkin("LOCAL", account)
+                try:
+                    embed = await cls._daily_checkin("LOCAL", account)
+                except Exception as e:
+                    logger.error(f"Daily check-in failed for {account}")
+                    cls._bot.capture_exception(e)
+                else:
+                    cls._total_checkin_count += 1
+                    await cls._notify_checkin_result(account, embed)
+                finally:
+                    await asyncio.sleep(2.3)
+
         except Exception as e:
             bot.capture_exception(e)
         finally:
@@ -100,19 +110,21 @@ class DailyCheckin:
                     raise RuntimeError(msg) from None
             else:
                 cls._total_checkin_count += 1
-                try:
-                    notif_settings, _ = await AccountNotifSettings.get_or_create(account=account)
-                    if (
-                        isinstance(embed, ErrorEmbed) and notif_settings.notify_on_checkin_failure
-                    ) or (
-                        isinstance(embed, DefaultEmbed) and notif_settings.notify_on_checkin_success
-                    ):
-                        await cls._bot.dm_user(account.user.id, embed=embed)
-                except Exception as e:
-                    cls._bot.capture_exception(e)
+                await cls._notify_checkin_result(account, embed)
             finally:
                 await asyncio.sleep(2.3)
                 queue.task_done()
+
+    @classmethod
+    async def _notify_checkin_result(cls, account: HoyoAccount, embed: Embed) -> None:
+        try:
+            notif_settings, _ = await AccountNotifSettings.get_or_create(account=account)
+            if (isinstance(embed, ErrorEmbed) and notif_settings.notify_on_checkin_failure) or (
+                isinstance(embed, DefaultEmbed) and notif_settings.notify_on_checkin_success
+            ):
+                await cls._bot.dm_user(account.user.id, embed=embed)
+        except Exception as e:
+            cls._bot.capture_exception(e)
 
     @classmethod
     async def _daily_checkin(

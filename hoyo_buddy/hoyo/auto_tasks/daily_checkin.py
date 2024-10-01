@@ -99,7 +99,6 @@ class DailyCheckin:
             account = await queue.get()
 
             try:
-                await account.fetch_related("user")
                 embed = await cls._daily_checkin(api_name, account)
             except Exception:
                 await queue.put(account)
@@ -133,7 +132,7 @@ class DailyCheckin:
         session = cls._bot.session
         translator = cls._bot.translator
 
-        await account.user.fetch_related("settings")
+        await account.fetch_related("user", "user__settings")
         locale = account.user.settings.locale or discord.Locale.american_english
         client = account.client
         client.set_lang(locale)

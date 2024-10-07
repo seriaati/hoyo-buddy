@@ -47,6 +47,7 @@ dev-dependencies = ["icecream>=2.1.3"]
 [tool.uv.sources]
 novelai = { git = "https://github.com/kokosensei/NovelAI-API" }
 genshin = { git = "https://github.com/thesadru/genshin.py", branch = "master" }
+tortoise-orm = { git = "https://github.com/seriaati/tortoise-orm" }
 
 [tool.pyright]
 enableTypeIgnoreComments = false

@@ -43,7 +43,7 @@ accounts_command_description: 管理账户
 action_in_cooldown_error_message: "请在 {available_time} 时再试一次。"
 action_in_cooldown_error_title: 操作冷却中
 add_account_button_label: 添加账号
-add_hoyolab_acc.embed.description: "1.通过邮箱和密码：最为推荐、最简单的方式。\n2.通过开发者工具：仅在电脑生效，如果你对第一种方式存有安全顾虑，该方式更安全些。\n3.通过JavaScript：过时的方式，不适用于大多数账号。可以在电脑或移动设备上的Google Chrome或者Microsoft Edge 使用。"
+add_hoyolab_acc.embed.description: "1.通过邮箱和密码：最为推荐、最简单的方式。\n2.通过开发者工具：仅在电脑生效，如果你对第一种方式存有安全顾虑，该方式更安全些。"
 add_hoyolab_acc.embed.title: 选择一个添加账号的方式
 adding_accounts_description: "欢迎来到Hoyo Buddy！只需要花费1分钟添加账号的时间，即可享受各种功能。\n关于账号安全，请阅读[Wiki页面](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security)，关于我们如何使用和收集你的数据，请阅读[隐私政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: 选择账号所属平台
@@ -119,7 +119,6 @@ complete_geetest_button_description: 点击下方按钮来完成 geetest 验证
 complete_geetest_button_label: 完成 geetest 验证
 const_refine_str: "{const}命 精{refine}"
 continue_button_label: 继续
-cookies_modal_placeholder: 在此粘贴你的 Cookie...
 cryo: 冰
 daily_button.label: 每日任务提醒
 daily_check_in: 每日签到
@@ -151,7 +150,7 @@ dark_mode_button_label: 深色模式
 error_footer: "你可以在我们的 Discord 服务器中寻求帮助, /about 內有連結"
 error_title: 出现错误
 erudition: 智识
-exceptions.card_not_ready_error.message: "当新角色释出时，我需要为他们指定面板卡片使用的颜色。\n如果你在游戏更新后的几天仍然看到这则讯息的话，请在[Discord 服务器](<https://link.seria.moe/hb-dc>) 内通知我，因为我可能忘记做了。"
+exceptions.card_not_ready_error.message: "当新角色释出时，我需要为他们指定面板卡片使用的颜色。\n如果你在游戏更新后的几天仍然看到这则讯息的话，请在[Discord 服务器](https://link.seria.moe/hb-dc) 内通知我，因为我可能忘记做了。"
 exceptions.card_not_ready_error.title: "{character_name} 的卡片数据还没有准备好呢。"
 exped.embed.description: 一个或者多个派遣已经完成了
 exped_button.label: 探索派遣提醒
@@ -260,8 +259,6 @@ invalid_query_error_title: 无效关键字
 invalid_verification_code_description: 请检查验证码后重试。
 invalid_verification_code_title: 验证码错误
 items: 物品
-javascript_button_label: 通过 JavaScript
-javascript_instructions_description: "<:INFO:1166743144889602190> 注意：此方法在电脑上应该适用于所有主流浏览器，但在手机上只适用于 **Chrome** 和 **Edge**.\n\n1. 登录 [HoYoLAB](https://www.hoyolab.com/home) 或 [米游社] (https://www.miyoushe.com/ys/) （中国玩家适用）\n2. 复制以下代码\n3. 点击浏览器地址栏然后输入 `java`\n4. 粘贴代码后按回车键。请确保 `java` 和 `script` 之间**没有空格**\n5. 全选并复制所出现的文字\n6. 將文字粘贴在下方的文本框中"
 level_str: "Lv.{level}"
 light_cones: 光锥
 living_beings: 生物
@@ -282,7 +279,8 @@ next_page_option_label: 下一页
 nickname_modal_label: 昵称
 nickname_modal_placeholder: "主账号、亚服账号..."
 nihility: 虚无
-no_account_found_for_games_error_message: "你没有任何在 `{platforms}` 上的 `{games}` 帐户。使用</accounts> 来新增。"
+no_account_found_for_games_error_message: "你没有以下任一游戏的帐户。请透过 </accounts> 新增"
+no_account_found_for_games_platform_error_message: "在 {platform} 平台上，你没有以下任一游戏的帐户。请透过 1 新增"
 no_account_found_for_games_error_title: 账号未发现
 no_accounts_autocomplete_choice: 您还未持有账号。通过/accounts来添加吧。
 no_challenge_data_err_message: "无法找到任何此阶段的 {challenge} 数据。可能你尚未开始进行 {challenge} 或是资料尚未刷新。请稍后再试"
@@ -509,7 +507,7 @@ reminder_modal.title: "{notify}提醒设置"
 redeem_code.reached_max_limit: 此兑换码已达使用上限
 profile_view.set_cur_temp_as_default: 设置当前样式为预设
 set_cur_temp_as_default.done: 完成
-set_cur_temp_as_default.done_desc: 你已将当前的卡片样式设置为预设样式。
+set_cur_temp_as_default.done_desc: "你的 {game} 预设卡片样式已被设置为 {template}"
 third_party_card_temp_error_title: 这个第三方卡片样式出错了
 third_party_card_temp_error_message: "此角色的卡片样式已被重置为 的样式。如果此错误持续发生，请在我们的[Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 account_locked_title: 账户已被锁定20分钟
@@ -594,8 +592,6 @@ profile_view_show_rank_button_label: 显示排名
 submit_button_label: 提交
 show_tutorial_button_label: 显示教程
 close_button_label: 关闭
-copy_code_button_label: 复制程式码
-copied_to_clipboard: 已复制到剪贴簿
 required_field_error_message: 此栏位为必填栏位
 accounts_added_snackbar_message: "帐户新增成功，正在将你重新导向至 Discord..."
 account_add_start_title: 新增帐户

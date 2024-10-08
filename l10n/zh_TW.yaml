@@ -43,7 +43,7 @@ accounts_command_description: 管理您的帳戶
 action_in_cooldown_error_message: "請在 {available_time}  時再試一次。 "
 action_in_cooldown_error_title: 操作正在冷卻
 add_account_button_label: 新增帳戶
-add_hoyolab_acc.embed.description: "1. 透過電子郵件和密碼：最推薦的方式，它最簡單\n2. 透過開發者工具：只能在電腦上運作，如果你對第一個方式有安全疑慮的話，這是一個比較安全的選擇\n3. 透過 JavaScript：過期的方式，大多數帳戶已經無法使用了。可以在電腦和手機上的 Google Chrome 或 Microsoft Edge 運作。"
+add_hoyolab_acc.embed.description: "1. 透過電子郵件和密碼：最推薦的方式，它最簡單\n2. 透過開發者工具：只能在電腦上運作，如果你對第一個方式有安全疑慮的話，這是一個比較安全的選擇"
 add_hoyolab_acc.embed.title: 選擇一個新增帳戶的方式
 adding_accounts_description: "歡迎使用 Hoyo Buddy! 僅需花費 1 分鐘的時間即可快速新增帳戶並開始享受各式功能。\n\n關於帳戶安全問題，請詳閱 [維基頁面](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security) ，關於我們如何使用及蒐集你的資料，請參閱 [隱私權政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: 選擇帳戶的所屬平台
@@ -119,7 +119,6 @@ complete_geetest_button_description: 點擊下方按鈕來完成 Geetest 驗證
 complete_geetest_button_label: 完成 Geetest 驗證
 const_refine_str: "{const}命{refine}精"
 continue_button_label: 繼續
-cookies_modal_placeholder: 在此貼上你的 Cookies...
 cryo: 冰
 daily_button.label: 每日任務通知
 daily_check_in: 每日簽到
@@ -151,7 +150,7 @@ dark_mode_button_label: 深色模式
 error_footer: "你可以在我們的 Discord 伺服器內尋求幫助，連結在 /about"
 error_title: 發生了一個錯誤
 erudition: 智識
-exceptions.card_not_ready_error.message: "當新角色釋出時，我需要為他們指定面板卡片使用的顏色。\n如果你在遊戲更新後的幾天仍然看到這則訊息的話，請在 [Discord 伺服器](<https://link.seria.moe/hb-dc>) 內通知我，因為我可能忘記做了。"
+exceptions.card_not_ready_error.message: "當新角色釋出時，我需要為他們指定面板卡片使用的顏色。\n如果你在遊戲更新後的幾天仍然看到這則訊息的話，請在 [Discord 伺服器](https://link.seria.moe/hb-dc) 內通知我，因為我可能忘記做了。"
 exceptions.card_not_ready_error.title: "{character_name} 的卡片資料尚未準備好。"
 exped.embed.description: 一或多個探索派遣已經完成了
 exped_button.label: 探索派遣通知
@@ -260,8 +259,6 @@ invalid_query_error_title: 無效的關鍵字
 invalid_verification_code_description: 請檢查驗證碼後再試一次
 invalid_verification_code_title: 無效的驗證碼
 items: 物品
-javascript_button_label: 透過 JavaScript
-javascript_instructions_description: "注意: 此方式在電腦上理應適用於所有主流瀏覽器，但在手機上只適用於 **Chrome** 和 **Edge**。\n\n1. 登入 [HoYoLAB](https://www.hoyolab.com/home) 或 [米遊社](https://www.miyoushe.com/ys/) （中國玩家適用）\n2. 複製下方的程式碼\n3. 點擊網址列並輸入 `java`\n4. 將程式碼貼上後按 ENTER。確保 `java` 和 `script` 之間 **沒有任何空格**。\n5. 全選並複製出現的文字\n6. 將複製的內容黏貼在下方的文字框內"
 level_str: "{level}等"
 light_cones: 光錐
 living_beings: 生物
@@ -282,7 +279,8 @@ next_page_option_label: 下一頁
 nickname_modal_label: 暱稱
 nickname_modal_placeholder: "主帳戶、亞洲帳戶…"
 nihility: 虛無
-no_account_found_for_games_error_message: "你們有任何在 `{platforms}` 上的 `{games}` 帳戶。使用</accounts>來新增"
+no_account_found_for_games_error_message: "你沒有以下任一遊戲的帳戶。請透過 </accounts> 新增"
+no_account_found_for_games_platform_error_message: "你沒有 {platform} 平台上以下任一遊戲的帳戶。請透過 </accounts> 新增"
 no_account_found_for_games_error_title: 找不到任何帳戶
 no_accounts_autocomplete_choice: 你尚未擁有任何賬戶。請透過 /accounts 來添加
 no_challenge_data_err_message: "無法找到任何此階段的 {challenge} 資料。可能你還沒開始進行 {challenge} 或是資料尚未刷新。請稍後再試。"
@@ -509,7 +507,7 @@ reminder_modal.title: "{notify}通知設定"
 redeem_code.reached_max_limit: 此兌換碼已達使用上限
 profile_view.set_cur_temp_as_default: 設置當前樣式為預設
 set_cur_temp_as_default.done: 完成
-set_cur_temp_as_default.done_desc: 你已將當前的卡片樣式設置為預設樣式。
+set_cur_temp_as_default.done_desc: "你的 {game} 預設卡片樣式已被設置為 {template}"
 third_party_card_temp_error_title: 這個第三方卡片樣式出錯了
 third_party_card_temp_error_message: "此角色的卡片樣式已被重置為 Hoyo Buddy 的卡片樣式。如果此錯誤持續發生，請在我們的[Discord 伺服器](<https://link.seria.moe/hb-dc>)中尋求協助。"
 account_locked_title: 帳戶已被鎖定 20 分鐘
@@ -594,8 +592,6 @@ profile_view_show_rank_button_label: 顯示排名
 submit_button_label: 提交
 show_tutorial_button_label: 顯示教學
 close_button_label: 關閉
-copy_code_button_label: 複製程式碼
-copied_to_clipboard: 已複製到剪貼簿
 required_field_error_message: 此欄位為必填欄位
 accounts_added_snackbar_message: "帳戶新增成功，正在將你重新導向至 Discord..."
 account_add_start_title: 新增帳戶

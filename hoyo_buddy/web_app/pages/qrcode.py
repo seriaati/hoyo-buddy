@@ -5,6 +5,7 @@ import pathlib
 import uuid
 from typing import TYPE_CHECKING
 
+import aiofiles
 import flet as ft
 import genshin
 import qrcode
@@ -53,7 +54,9 @@ class GenQRCodeButton(ft.FilledButton):
 
         im = qrcode.make(result.url)
         filename = uuid.uuid4().hex
-        im.save(f"hoyo_buddy/web_app/assets/images/{filename}.webp")
+        path = f"hoyo_buddy/web_app/assets/images/{filename}.webp"
+        async with aiofiles.open(path, "wb") as f:
+            im.save(f)
         await page.show_dialog_async(QRCodeDialog(filename))
 
         scanned = False

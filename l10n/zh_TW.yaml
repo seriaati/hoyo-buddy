@@ -280,7 +280,7 @@ nickname_modal_label: 暱稱
 nickname_modal_placeholder: "主帳戶、亞洲帳戶…"
 nihility: 虛無
 no_account_found_for_games_error_message: "你沒有以下任一遊戲的帳戶。請透過 </accounts> 新增"
-no_account_found_for_games_platform_error_message: "你沒有 {platform} 平台上以下任一遊戲的帳戶。請透過 </accounts> 新增"
+no_account_found_for_games_platform_error_message: "在 {platform} 平台上，你沒有以下任一遊戲的帳戶。請透過 </accounts> 新增"
 no_account_found_for_games_error_title: 找不到任何帳戶
 no_accounts_autocomplete_choice: 你尚未擁有任何賬戶。請透過 /accounts 來添加
 no_challenge_data_err_message: "無法找到任何此階段的 {challenge} 資料。可能你還沒開始進行 {challenge} 或是資料尚未刷新。請稍後再試。"

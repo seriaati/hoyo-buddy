@@ -27,7 +27,7 @@ from hoyo_buddy.exceptions import (
     InvalidImageURLError,
     NSFWPromptError,
 )
-from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.models import HoyolabGICharacter
 from hoyo_buddy.ui import (
     Button,
@@ -831,11 +831,18 @@ class SetCurTempAsDefaultButton(Button[CardSettingsView]):
             **{column_name: self.view.card_settings.template}
         )
 
+        template = self.view.card_settings.template.rstrip("1234567890")
+        template_num = self.view.card_settings.template[len(template) :]
+
         embed = DefaultEmbed(
             self.view.locale,
             self.view.translator,
             title=LocaleStr(key="set_cur_temp_as_default.done"),
-            description=LocaleStr(key="set_cur_temp_as_default.done_desc"),
+            description=LocaleStr(
+                key="set_cur_temp_as_default.done_desc",
+                game=EnumStr(self.view.game),
+                template=LocaleStr(key=CARD_TEMPLATE_NAMES[template], num=template_num),
+            ),
         )
         await i.response.send_message(embed=embed, ephemeral=True)
 

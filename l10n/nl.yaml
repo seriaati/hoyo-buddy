@@ -5,7 +5,7 @@ about_command.guild_count: Aantal gilden
 about_command.invite: Bot uitnodigen
 about_command.latest_changes: Laatste wijzigingen
 about_command.ram_usage: RAM Gebruik
-about_command.support: Ontwikkelaar ondersteunen
+about_command.support: ""
 about_command.translators: Vertalers
 about_command.uptime: Uptime
 about_command.website: Officiële website
@@ -43,7 +43,7 @@ accounts_command_description: Beheer je accounts
 action_in_cooldown_error_message: "Probeer het opnieuw op {available_time}."
 action_in_cooldown_error_title: Actie in Cooldown
 add_account_button_label: Accounts toegoeven
-add_hoyolab_acc.embed.description: "1. Met e-mail en wachtwoord: Meest aanbevolen, het is de eenvoudigste optie. \n2. Met DevTools: Werkt alleen op desktop, een veiligere optie als je beveiligingszorgen hebt bij de eerste methode. \n3. Met JavaScript: Verouderde methode, werkt niet voor de meeste accounts. Werkt op Google Chrome of Microsoft Edge, zowel op desktop als mobiel."
+add_hoyolab_acc.embed.description: ""
 add_hoyolab_acc.embed.title: Selecteer een Methode om je Accounts toe te Voegen
 adding_accounts_description: "Welkom bij Hoyo Buddy! Geniet van verschillende functies door minder dan 1 minuut te besteden aan het toevoegen van je accounts.\n\nWat betreft accountbeveiliging, lees de [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Selecteer het Platform van je Account
@@ -119,7 +119,6 @@ complete_geetest_button_description: ""
 complete_geetest_button_label: ""
 const_refine_str: "C{const}R{refine}"
 continue_button_label: Ga verder
-cookies_modal_placeholder: Plak je cookies hier...
 cryo: Cryo
 daily_button.label: Dagelijkse herinnering
 daily_check_in: ""
@@ -148,10 +147,10 @@ email_password_modal_password_input_label: wachtwoord
 enter_email_password_instructions_description: "Deze methode vereist dat je je privégegevens invoert.\n\n- In ruil daarvoor kan je `cookie_token` automatisch worden vernieuwd, die wordt gebruikt in functies met betrekking tot het inwisselen van codes (alleen voor HoYoLAB-gebruikers).\n- Je e-mailadres en wachtwoord worden **NIET** opgeslagen in de database, dus het is praktisch onmogelijk dat ze uitlekken.\n- Bovendien is deze bot open-sourced op [GitHub](https://github.com/seriaati/hoyo-buddy), dus je kunt dat zelf controleren.\n- Het is uiteindelijk aan jou om te beslissen of je deze bot vertrouwt of niet."
 enter_light_cone_level.button.label: Light cone niveau wijzigen
 dark_mode_button_label: ""
-error_footer: Meld deze fout aan de ontwikkelaar via /feedback
+error_footer: ""
 error_title: Er is een Fout Opgetreden
 erudition: Erudition
-exceptions.card_not_ready_error.message: "Als er nieuwe personages worden uitgebracht, moet ik tijd besteden aan het verzamelen van fanarts en het optimaliseren van kleuren voor hun kaarten.\nAls je dit proces wilt versnellen, kun je bijdragen aan de kaartgegevens door me te bereiken op de [Discord Server](https://dsc.gg/hoyo-buddy)."
+exceptions.card_not_ready_error.message: ""
 exceptions.card_not_ready_error.title: "Kaart gegevens voor {character_name} zijn nog niet klaar."
 exped.embed.description: ""
 exped_button.label: Expeditie herinnering
@@ -200,12 +199,6 @@ farm_view.set_reminder.embed.description: ""
 farm_view.sundays: ""
 farm_view.weekday_select.placeholder: Selecteer een weekdag
 farm_view_command_description: Bekijk bewerkbare domeinen in Genshin Impact
-feedback_button.feedback_sent.description: 🥰 Hartelijk dank voor je feedback!
-feedback_button.feedback_sent.title: Feedback Gestuurd
-feedback_button.label: Geef Feedback
-feedback_command.description: "\U0001F917 Hoi! Bedankt dat je de tijd neemt om me feedback te geven.\nKlik op de knop hieronder om te beginnen.\n\nOpmerking: het kan zijn dat ik contact met je opneem voor meer details. Dus houd je DM's open (of word lid van de  [Hoyo Buddy Discord server](https://dsc.gg/hoyo-buddy))."
-feedback_command_description: Geef feedback aan de botontwikkelaar
-feedback_modal.feedback.label: Feedback
 fire: Fire
 floor_select_label: "Vloer {value}"
 fontaine: Fontaine
@@ -266,8 +259,6 @@ invalid_query_error_title: Ongeldige query
 invalid_verification_code_description: Controleer de verificatiecode en probeer het opnieuw.
 invalid_verification_code_title: Ongeldige Verificatiecode
 items: Items
-javascript_button_label: Met JavaScript
-javascript_instructions_description: "Opmerking: Deze methode zou moeten werken voor alle grote browsers op desktop, maar op mobiel werkt het alleen voor **Chrome** en **Edge**.\n\n1. Log in op [HoYoLAB](https://www.hoyolab.com/home) of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN-spelers)\n2. Klik op de knop hieronder om de code te kopiëren\n3. Klik op de adresbalk en typ `java`\n4. Plak de code en druk op enter. Zorg ervoor dat er **GEEN SPATIES** zijn tussen `java` en `script`\n5. Selecteer alles en kopieer de tekst die verschijnt\n6. Plak de tekst in het tekstvak met het label 'cookies' hieronder"
 level_str: "Nv.{level}"
 light_cones: Licht Kegels
 living_beings: Levende Wezens
@@ -289,6 +280,7 @@ nickname_modal_label: Bijnaam
 nickname_modal_placeholder: "Hoofd account, Azië account..."
 nihility: Nihility
 no_account_found_for_games_error_message: ""
+no_account_found_for_games_platform_error_message: ""
 no_account_found_for_games_error_title: Geen Account Gevonden
 no_accounts_autocomplete_choice: Je hebt nog geen accounts. Voeg er een toe met /accounts
 no_challenge_data_err_message: ""
@@ -570,14 +562,13 @@ zzz.cinema.placeholder: ""
 zzz.engine.refinement_select.placeholder: ""
 dyk_discord_server_updates: ""
 dyk_discord_server_feedback: ""
-dyk_something_wrong: ""
 dyk_contact_me: ""
+dyk_need_help_no_title: ""
 dyk_donate_no_title: ""
 dyk_team: ""
 dyk_disable: ""
 dyk_settings_lang: ""
 dyk_settings_theme: ""
-dyk_suggest_light: ""
 dyk_security: ""
 dyk_github: ""
 dyk_python: ""
@@ -601,12 +592,10 @@ profile_view_show_rank_button_label: ""
 submit_button_label: ""
 show_tutorial_button_label: ""
 close_button_label: ""
-copy_code_button_label: ""
-copied_to_clipboard: ""
 required_field_error_message: ""
 accounts_added_snackbar_message: ""
 account_add_start_title: ""
-account_add_start_message: "Door op de knop hieronder te klikken, wordt het Hoyo Buddy Login-systeem geopend. Volg de instructies om je accounts toe te voegen. Als je klaar bent, gebruik dan het 1-commando om de accounts te bekijken die je hebt toegevoegd."
+account_add_start_message: ""
 hbls_button_label: ""
 gacha_import_url_modal_title: ""
 gacha_import_embed_title: ""
@@ -690,3 +679,25 @@ shiyu_6_frontier: ""
 shiyu_7_frontier: ""
 shiyu_defense: ""
 show_uid: ""
+no_leaderboard_found: ""
+akasha_character_param: ""
+akasha_calculation_param: ""
+akasha_character_param_desc: ""
+akasha_calculation_param_desc: ""
+akasha_total_entries: ""
+leaderboard_akasha_command_description: ""
+akasha_you: ""
+achievement_lb_title: ""
+planar_fissure_label: ""
+planar_fissure_desc: ""
+notif_modal.hours_before.label: ""
+reminder_settings.reminde.set.type5: ""
+invalid_lb_selected_error_msg: ""
+chest_lb_title: ""
+abyss_dmg_lb_title: ""
+theater_dmg_lb_title: ""
+max_friendship_lb_title: ""
+lb_view_command_description: ""
+leaderboard_not_found: ""
+not_supported_by_enka_error_title: ""
+not_supported_by_enka_error_message: ""

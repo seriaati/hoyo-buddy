@@ -279,8 +279,8 @@ next_page_option_label: Trang tiếp theo
 nickname_modal_label: Biệt danh
 nickname_modal_placeholder: "Tài khoản chính, Tài khoản Asia"
 nihility: Hư Vô
-no_account_found_for_games_error_message: ""
-no_account_found_for_games_platform_error_message: ""
+no_account_found_for_games_error_message: "Bạn không có tài khoản từ một trong những trò chơi này. Thêm một tài khoản bằng </accounts>"
+no_account_found_for_games_platform_error_message: "Bạn không có tài khoản từ một trong những trò chơi này trên {platform}. Thêm một tài khoản bằng </accounts>"
 no_account_found_for_games_error_title: Không tìm thấy tài khoản nào
 no_accounts_autocomplete_choice: Bạn không có tài khoản nào. Thêm bằng lệnh /accounts
 no_challenge_data_err_message: "Không tìm thấy dữ liệu {challenge} cho gian đoạn này. Có thể bạn chưa bắt đầu {challenge} hoặc dữ liệu chưa sản sàng. Vui lòng thử lại sau"
@@ -507,7 +507,7 @@ reminder_modal.title: "Cài đặt Lời nhắc {notify}"
 redeem_code.reached_max_limit: Mã đổi này đã vượt qua giới hạn sử dụng
 profile_view.set_cur_temp_as_default: Sử dụng mẫu này là mặc định
 set_cur_temp_as_default.done: Xong
-set_cur_temp_as_default.done_desc: ""
+set_cur_temp_as_default.done_desc: "Mẫu thẻ mặc định của bạn cho {game} được đặt thành {template}"
 third_party_card_temp_error_title: Mẫu Thẻ Bên Thứ 3 Bị Lỗi
 third_party_card_temp_error_message: "Mẫu thẻ cho nhân vật này đã bị đặt lại sang Mẫu thẻ Hoyo Buddy. Nếu lỗi này tiếp tục điễn ra, vui lòng tìm trợ giúp trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Tài khoản của bạn đã bị khóa trong vòng 20 phút

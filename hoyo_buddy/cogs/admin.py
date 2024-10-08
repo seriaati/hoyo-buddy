@@ -97,7 +97,12 @@ class Admin(commands.Cog):
     @commands.command(name="sync")
     async def sync_command(self, ctx: commands.Context) -> Any:
         message = await ctx.send("Syncing commands...")
-        synced_commands = await self.bot.tree.sync()
+        try:
+            synced_commands = await self.bot.tree.sync()
+        except Exception:
+            await message.edit(content="An error occurred while syncing commands.")
+            raise
+
         await write_json(
             "hoyo_buddy/bot/data/synced_commands.json", {c.name: c.id for c in synced_commands}
         )

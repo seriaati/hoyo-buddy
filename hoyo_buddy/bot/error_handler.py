@@ -12,8 +12,9 @@ from hakushin.errors import NotFoundError as HakushinNotFoundError
 from yatta.exceptions import DataNotFoundError as YattaDataNotFoundError
 
 from ..embeds import ErrorEmbed
+from ..emojis import get_game_emoji
 from ..enums import GeetestType
-from ..exceptions import HoyoBuddyError, InvalidQueryError
+from ..exceptions import HoyoBuddyError, InvalidQueryError, NoAccountFoundError
 from ..l10n import EnumStr, LocaleStr, Translator
 from ..utils import get_now
 
@@ -128,6 +129,14 @@ def get_error_embed(
 
     if isinstance(error, HoyoBuddyError):
         embed = ErrorEmbed(locale, translator, title=error.title, description=error.message)
+        if isinstance(error, NoAccountFoundError):
+            game_strs = [
+                f"- {get_game_emoji(game)} {EnumStr(game).translate(translator, locale)}"
+                for game in error.games
+            ]
+            if embed.description is None:
+                embed.description = ""
+            embed.description += f"\n{'\n'.join(game_strs)}"
     elif isinstance(error, genshin_errors.GenshinException | enka_errors.EnkaAPIError):
         err_info = None
 

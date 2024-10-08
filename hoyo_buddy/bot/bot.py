@@ -280,10 +280,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         )
 
     async def get_account(
-        self,
-        user_id: int,
-        games: Sequence[Game] | None = None,
-        platforms: Sequence[Platform] | None = None,
+        self, user_id: int, games: Sequence[Game] | None = None, platform: Platform | None = None
     ) -> models.HoyoAccount:
         """Get an account by user ID and games.
 
@@ -293,13 +290,13 @@ class HoyoBuddy(commands.AutoShardedBot):
             platforms: The platforms to filter by.
         """
         games = games or list(Game)
-        platforms = platforms or list(Platform)
+        platforms = [platform] if platform else list(Platform)
 
         game_query = Q(*[Q(game=game) for game in games], join_type="OR")
         accounts = await models.HoyoAccount.filter(game_query, user_id=user_id).all()
         accounts = [account for account in accounts if account.platform in platforms]
         if not accounts:
-            raise NoAccountFoundError(games, platforms)
+            raise NoAccountFoundError(games, platform)
 
         current_accounts = [account for account in accounts if account.current]
         await self.sanitize_accounts(user_id)

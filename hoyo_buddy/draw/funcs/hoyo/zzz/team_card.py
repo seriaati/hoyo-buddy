@@ -123,74 +123,79 @@ class ZZZTeamCard:
         start_pos = (926, 21)
         y_diff = 94
         disc_mask = drawer.open_asset("disc_mask.png")
-        for i, disc in enumerate(agent.discs):
-            icon = drawer.open_static(self._disc_icons[str(disc.id)])
-            icon = drawer.resize_crop(icon, disc_mask.size)
-            icon = drawer.mask_image_with_image(icon, disc_mask)
-            im.alpha_composite(icon, start_pos)
+        for i in range(6):
+            try:
+                disc = next(d for d in agent.discs if d.position == i + 1)
+            except StopIteration:
+                pass
+            else:
+                icon = drawer.open_static(self._disc_icons[str(disc.id)])
+                icon = drawer.resize_crop(icon, disc_mask.size)
+                icon = drawer.mask_image_with_image(icon, disc_mask)
+                im.alpha_composite(icon, start_pos)
 
-            main_stat = disc.main_properties[0]
-            if isinstance(main_stat.type, PropType):
-                icon = drawer.open_asset(
-                    f"stat_icons/{STAT_ICONS[main_stat.type]}",
-                    folder="zzz-build-card",
-                    size=(16, 16),
-                )
-                im.alpha_composite(icon, (start_pos[0] + 72, start_pos[1] + 8))
-                text = main_stat.value
-                drawer.write(
-                    text,
-                    size=14,
-                    position=(start_pos[0] + 72 + 20, icon.height // 2 + start_pos[1] + 8),
-                    style="medium",
-                    anchor="lm",
-                )
-
-            text = f"+{disc.level}"
-            drawer.write(
-                text,
-                size=12,
-                position=(start_pos[0] + 167, start_pos[1] + 14),
-                style="medium",
-                anchor="mm",
-                color=WHITE,
-            )
-
-            stat_start_pos = (start_pos[0] + 72, start_pos[1] + 35)
-            for j in range(4):
-                try:
-                    stat = disc.properties[j]
-                except IndexError:
-                    stat_icon = drawer.open_asset(
-                        "stat_icons/PLACEHOLDER.png", folder="zzz-build-card", size=(16, 16)
+                main_stat = disc.main_properties[0]
+                if isinstance(main_stat.type, PropType):
+                    icon = drawer.open_asset(
+                        f"stat_icons/{STAT_ICONS[main_stat.type]}",
+                        folder="zzz-build-card",
+                        size=(16, 16),
                     )
-                    text = "N/A"
-                else:
-                    if isinstance(stat.type, PropType):
-                        stat_icon = drawer.open_asset(
-                            f"stat_icons/{STAT_ICONS[stat.type]}",
-                            folder="zzz-build-card",
-                            size=(16, 16),
-                        )
-                    else:
-                        stat_icon = drawer.open_asset(
-                            "stat_icons/PLACEHOLDER.png", folder="zzz-build-card", size=(16, 16)
-                        )
-                    text = stat.value
+                    im.alpha_composite(icon, (start_pos[0] + 68, start_pos[1] + 8))
+                    text = main_stat.value
+                    drawer.write(
+                        text,
+                        size=14,
+                        position=(start_pos[0] + 68 + 20, icon.height // 2 + start_pos[1] + 8),
+                        style="medium",
+                        anchor="lm",
+                    )
 
-                im.alpha_composite(stat_icon, stat_start_pos)
+                text = f"+{disc.level}"
                 drawer.write(
                     text,
                     size=12,
-                    position=(stat_start_pos[0] + 20, icon.height // 2 + stat_start_pos[1]),
+                    position=(start_pos[0] + 167, start_pos[1] + 14),
                     style="medium",
-                    anchor="lm",
+                    anchor="mm",
+                    color=WHITE,
                 )
 
-                if j == 1:
-                    stat_start_pos = (start_pos[0] + 72 + 55, start_pos[1] + 35)
-                else:
-                    stat_start_pos = (stat_start_pos[0], stat_start_pos[1] + 20)
+                stat_start_pos = (start_pos[0] + 68, start_pos[1] + 35)
+                for j in range(4):
+                    try:
+                        stat = disc.properties[j]
+                    except IndexError:
+                        stat_icon = drawer.open_asset(
+                            "stat_icons/PLACEHOLDER.png", folder="zzz-build-card", size=(16, 16)
+                        )
+                        text = "N/A"
+                    else:
+                        if isinstance(stat.type, PropType):
+                            stat_icon = drawer.open_asset(
+                                f"stat_icons/{STAT_ICONS[stat.type]}",
+                                folder="zzz-build-card",
+                                size=(16, 16),
+                            )
+                        else:
+                            stat_icon = drawer.open_asset(
+                                "stat_icons/PLACEHOLDER.png", folder="zzz-build-card", size=(16, 16)
+                            )
+                        text = stat.value
+
+                    im.alpha_composite(stat_icon, stat_start_pos)
+                    drawer.write(
+                        text,
+                        size=12,
+                        position=(stat_start_pos[0] + 20, icon.height // 2 + stat_start_pos[1]),
+                        style="medium",
+                        anchor="lm",
+                    )
+
+                    if j == 1:
+                        stat_start_pos = (start_pos[0] + 68 + 60, start_pos[1] + 35)
+                    else:
+                        stat_start_pos = (stat_start_pos[0], stat_start_pos[1] + 20)
 
             start_pos = (1132, 21) if i == 2 else (start_pos[0], start_pos[1] + y_diff)
 

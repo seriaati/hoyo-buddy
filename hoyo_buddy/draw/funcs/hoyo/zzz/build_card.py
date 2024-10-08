@@ -229,66 +229,81 @@ class ZZZAgentCard:
         # Discs
         start_pos = (55, 597)
         disc_mask = drawer.open_asset("disc_mask.png", size=(151, 184))
-        for i, disc in enumerate(self._agent.discs):
-            icon = drawer.open_static(self._disc_icons[str(disc.id)], size=(184, 184))
-            icon = drawer.middle_crop(icon, (151, 184))
-            icon = drawer.mask_image_with_image(icon, disc_mask)
-            im.paste(icon, start_pos, icon)
+        for i in range(6):
+            try:
+                disc = next(d for d in self._agent.discs if d.position == i + 1)
+            except StopIteration:
+                pass
+            else:
+                icon = drawer.open_static(self._disc_icons[str(disc.id)], size=(184, 184))
+                icon = drawer.middle_crop(icon, (151, 184))
+                icon = drawer.mask_image_with_image(icon, disc_mask)
+                im.paste(icon, start_pos, icon)
 
-            drawer.write(
-                f"+{disc.level}",
-                size=24,
-                color=(255, 255, 255),
-                position=(start_pos[0] + 363, start_pos[1] + 37),
-                style="bold",
-                anchor="mm",
-            )
-
-            main_stat = disc.main_properties[0]
-            if isinstance(main_stat.type, PropType):
-                main_stat_icon = drawer.open_asset(
-                    f"stat_icons/{STAT_ICONS[main_stat.type]}", size=(37, 37)
-                )
-                im.paste(main_stat_icon, (start_pos[0] + 168, start_pos[1] + 18), main_stat_icon)
                 drawer.write(
-                    main_stat.value,
-                    size=34,
-                    position=(start_pos[0] + 220, start_pos[1] + 18 + main_stat_icon.height // 2),
+                    f"+{disc.level}",
+                    size=24,
+                    color=(255, 255, 255),
+                    position=(start_pos[0] + 363, start_pos[1] + 37),
                     style="bold",
-                    anchor="lm",
+                    anchor="mm",
                 )
 
-            sub_stat_pos = (start_pos[0] + 174, start_pos[1] + 89)
-            for j in range(4):
-                try:
-                    sub_stat = disc.properties[j]
-                except IndexError:
-                    sub_stat_icon = drawer.open_asset("stat_icons/PLACEHOLDER.png", size=(28, 28))
-                    text = "N/A"
-                else:
-                    if isinstance(sub_stat.type, PropType):
-                        sub_stat_icon = drawer.open_asset(
-                            f"stat_icons/{STAT_ICONS[sub_stat.type]}", size=(28, 28)
-                        )
-                    else:
+                main_stat = disc.main_properties[0]
+                if isinstance(main_stat.type, PropType):
+                    main_stat_icon = drawer.open_asset(
+                        f"stat_icons/{STAT_ICONS[main_stat.type]}", size=(37, 37)
+                    )
+                    im.paste(
+                        main_stat_icon, (start_pos[0] + 168, start_pos[1] + 18), main_stat_icon
+                    )
+                    drawer.write(
+                        main_stat.value,
+                        size=34,
+                        position=(
+                            start_pos[0] + 210,
+                            start_pos[1] + 18 + main_stat_icon.height // 2,
+                        ),
+                        style="bold",
+                        anchor="lm",
+                    )
+
+                sub_stat_pos = (start_pos[0] + 174, start_pos[1] + 89)
+                for j in range(4):
+                    try:
+                        sub_stat = disc.properties[j]
+                    except IndexError:
                         sub_stat_icon = drawer.open_asset(
                             "stat_icons/PLACEHOLDER.png", size=(28, 28)
                         )
-                    text = sub_stat.value
+                        text = "N/A"
+                    else:
+                        if isinstance(sub_stat.type, PropType):
+                            sub_stat_icon = drawer.open_asset(
+                                f"stat_icons/{STAT_ICONS[sub_stat.type]}", size=(28, 28)
+                            )
+                        else:
+                            sub_stat_icon = drawer.open_asset(
+                                "stat_icons/PLACEHOLDER.png", size=(28, 28)
+                            )
+                        text = sub_stat.value
 
-                im.paste(sub_stat_icon, sub_stat_pos, sub_stat_icon)
-                drawer.write(
-                    text,
-                    size=22,
-                    position=(sub_stat_pos[0] + 38, sub_stat_pos[1] + sub_stat_icon.height // 2),
-                    style="medium",
-                    anchor="lm",
-                )
+                    im.paste(sub_stat_icon, sub_stat_pos, sub_stat_icon)
+                    drawer.write(
+                        text,
+                        size=22,
+                        position=(
+                            sub_stat_pos[0] + 38,
+                            sub_stat_pos[1] + sub_stat_icon.height // 2,
+                        ),
+                        style="medium",
+                        anchor="lm",
+                    )
 
-                if j == 1:
-                    sub_stat_pos = (start_pos[0] + 174, start_pos[1] + 134)
-                else:
-                    sub_stat_pos = (sub_stat_pos[0] + 123, sub_stat_pos[1])
+                    if j == 1:
+                        sub_stat_pos = (start_pos[0] + 174, start_pos[1] + 134)
+                    else:
+                        sub_stat_pos = (sub_stat_pos[0] + 123, sub_stat_pos[1])
 
             start_pos = (521, 597) if i == 2 else (start_pos[0], start_pos[1] + 233)
 

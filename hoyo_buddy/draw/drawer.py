@@ -4,7 +4,7 @@ import pathlib
 from typing import TYPE_CHECKING, Final, Literal, NamedTuple, TypeAlias
 
 import discord
-from cachetools import LRUCache
+from cachetools import TTLCache
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
@@ -137,7 +137,7 @@ FALLBACK_FONT_MAPPING: Final[dict[discord.Locale, dict[FontStyle, str]]] = {
     },
 }
 
-image_cache: LRUCache[pathlib.Path, Image.Image] = LRUCache(maxsize=512)
+image_cache: TTLCache[pathlib.Path, Image.Image] = TTLCache(maxsize=128, ttl=300)
 
 
 class Drawer:

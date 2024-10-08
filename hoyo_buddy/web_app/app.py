@@ -259,60 +259,54 @@ class WebApp:
         encrypted_cookies = await page.client_storage.get_async(f"hb.{params.user_id}.cookies")
 
         if encrypted_cookies is None:
-            view = pages.ErrorPage(code=400, message="Cannot find cookies in client storage.")
-        else:
-            cookies = decrypt_string(encrypted_cookies)
-            if params.platform is Platform.HOYOLAB and (
-                "stoken" in cookies or "stoken_v2" in cookies
-            ):
-                # Get ltoken_v2 and cookie_token_v2
-                new_dict_cookie = await genshin.fetch_cookie_with_stoken_v2(
-                    cookies, token_types=[2, 4]
-                )
-                dict_cookie = str_cookie_to_dict(cookies)
-                dict_cookie.update(new_dict_cookie)
-                cookies = dict_cookie_to_str(dict_cookie)
+            return pages.ErrorPage(code=400, message="Cannot find cookies in client storage.")
 
-            device_id = await page.client_storage.get_async(f"hb.{params.user_id}.device_id")
-            device_fp = await page.client_storage.get_async(f"hb.{params.user_id}.device_fp")
+        cookies = decrypt_string(encrypted_cookies)
+        if params.platform is Platform.HOYOLAB and ("stoken" in cookies or "stoken_v2" in cookies):
+            # Get ltoken_v2 and cookie_token_v2
+            new_dict_cookie = await genshin.fetch_cookie_with_stoken_v2(cookies, token_types=[2, 4])
+            dict_cookie = str_cookie_to_dict(cookies)
+            dict_cookie.update(new_dict_cookie)
+            cookies = dict_cookie_to_str(dict_cookie)
 
-            try:
-                client = genshin.Client(
-                    cookies,
-                    lang=locale_to_gpy_lang(locale),
-                    region=genshin.Region.OVERSEAS
-                    if params.platform is Platform.HOYOLAB
-                    else genshin.Region.CHINESE,
-                    device_id=device_id,
-                    device_fp=device_fp,
-                )
-                accounts = await client.get_game_accounts()
-            except Exception as exc:
-                await show_error_banner(page, message=str(exc))
-                return None
+        device_id = await page.client_storage.get_async(f"hb.{params.user_id}.device_id")
+        device_fp = await page.client_storage.get_async(f"hb.{params.user_id}.device_fp")
 
-            if not accounts:
-                message = translator.translate(
-                    LocaleStr(
-                        key="no_game_accounts_error_message",
-                        platform=EnumStr(params.platform or Platform.HOYOLAB),
-                    ),
-                    locale,
-                )
-                await show_error_banner(page, message=message)
-                return None
-
-            view = pages.FinishPage(
-                params=params,
-                translator=self._translator,
-                locale=locale,
-                accounts=accounts,
-                cookies=cookies,
+        try:
+            client = genshin.Client(
+                cookies,
+                lang=locale_to_gpy_lang(locale),
+                region=genshin.Region.OVERSEAS
+                if params.platform is Platform.HOYOLAB
+                else genshin.Region.CHINESE,
                 device_id=device_id,
                 device_fp=device_fp,
             )
+            accounts = await client.get_game_accounts()
+        except Exception as exc:
+            await show_error_banner(page, message=str(exc))
+            return None
 
-        return view
+        if not accounts:
+            message = translator.translate(
+                LocaleStr(
+                    key="no_game_accounts_error_message",
+                    platform=EnumStr(params.platform or Platform.HOYOLAB),
+                ),
+                locale,
+            )
+            await show_error_banner(page, message=message)
+            return None
+
+        return pages.FinishPage(
+            params=params,
+            translator=self._translator,
+            locale=locale,
+            accounts=accounts,
+            cookies=cookies,
+            device_id=device_id,
+            device_fp=device_fp,
+        )
 
     async def _handle_login_routes(
         self, route: str, parsed_params: dict[str, str]

@@ -262,7 +262,14 @@ class WebApp:
             return pages.ErrorPage(code=400, message="Cannot find cookies in client storage.")
 
         cookies = decrypt_string(encrypted_cookies)
-        if params.platform is Platform.HOYOLAB and ("stoken" in cookies or "stoken_v2" in cookies):
+        fetch_cookie = (
+            params.platform is Platform.HOYOLAB
+            and "stoken" in cookies
+            and "ltmid" in cookies
+            and "ltoken" not in cookies
+            and "cookie_token" not in cookies
+        )
+        if fetch_cookie:
             # Get ltoken_v2 and cookie_token_v2
             new_dict_cookie = await genshin.fetch_cookie_with_stoken_v2(cookies, token_types=[2, 4])
             dict_cookie = str_cookie_to_dict(cookies)

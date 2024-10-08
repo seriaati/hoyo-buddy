@@ -24,10 +24,8 @@ if TYPE_CHECKING:
     import aiohttp
     import asyncpg
 
-    from hoyo_buddy.types import ChallengeWithLang
-
     from ..hoyo.clients.gpy import GenshinClient
-    from ..types import Challenge, Interaction
+    from ..types import Challenge, ChallengeWithLang, Interaction
 
 
 class BaseModel(Model):
@@ -262,7 +260,7 @@ class ChallengeHistory(BaseModel):
     data = fields.BinaryField()
     start_time = fields.DatetimeField()
     end_time = fields.DatetimeField()
-    lang = fields.CharField(max_length=5, null=True)
+    lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)
 
     class Meta:
         unique_together = ("uid", "season_id", "challenge_type")

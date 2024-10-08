@@ -27,6 +27,7 @@ ChallengeWithLang: TypeAlias = (
     | models.StarRailPureFiction
     | models.StarRailAPCShadow
     | models.ImgTheaterData
+    | models.ShiyuDefense
 )
 ChallengeWithBuff: TypeAlias = (
     genshin.models.StarRailAPCShadow

@@ -31,7 +31,7 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.exceptions import NoChallengeDataError
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.models import DrawInput
-from hoyo_buddy.types import Buff, ChallengeWithBuff, ChallengeWithLang
+from hoyo_buddy.types import Buff, Challenge, ChallengeWithBuff
 
 from ...bot.error_handler import get_error_embed
 from ...db.models import ChallengeHistory, get_dyk
@@ -49,7 +49,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.db.models import HoyoAccount
     from hoyo_buddy.l10n import Translator
-    from hoyo_buddy.types import Challenge, Interaction
+    from hoyo_buddy.types import Challenge, ChallengeWithLang, Interaction
 
 
 class BuffView(View):
@@ -215,7 +215,7 @@ class ChallengeView(View):
         index = 1 if previous else 0
         return challenge.seasons[index].id
 
-    async def _fetch_data(self) -> None:
+    async def fetch_data(self) -> None:
         if self.challenge is not None:
             return
 
@@ -267,7 +267,7 @@ class ChallengeView(View):
                 # No previous season
                 continue
 
-            self._challenge_has_data(challenge)
+            self._check_challenge_data(challenge)
 
             # Save data to db
             await ChallengeHistory.add_data(
@@ -278,7 +278,7 @@ class ChallengeView(View):
                 lang=client.lang,
             )
 
-    def _challenge_has_data(self, challenge: Challenge | None) -> None:
+    def _check_challenge_data(self, challenge: Challenge | None) -> None:
         if challenge is None:
             raise NoChallengeDataError(self.challenge_type)
         if isinstance(challenge, SpiralAbyss):
@@ -403,7 +403,7 @@ class ChallengeView(View):
         self, item: Select[ChallengeView] | Button[ChallengeView], i: Interaction
     ) -> None:
         try:
-            self._challenge_has_data(self.challenge)
+            self._check_challenge_data(self.challenge)
             file_ = await self._draw_card(i.client.session, i.client.executor, i.client.loop)
         except NoChallengeDataError as e:
             await item.unset_loading_state(i)
@@ -468,7 +468,7 @@ class ChallengeTypeSelect(Select[ChallengeView]):
         await self.set_loading_state(i)
 
         try:
-            await self.view._fetch_data()
+            await self.view.fetch_data()
         except Exception:
             await self.unset_loading_state(i)
             raise

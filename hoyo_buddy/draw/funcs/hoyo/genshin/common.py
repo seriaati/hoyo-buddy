@@ -51,3 +51,10 @@ ADD_HURT_ELEMENTS: Final[dict[enka.gi.FightPropType, str]] = {
     enka.gi.FightPropType.FIGHT_PROP_ELEC_ADD_HURT: "Electro",
     enka.gi.FightPropType.FIGHT_PROP_GRASS_ADD_HURT: "Dendro",
 }
+ARTIFACT_POS: Final[dict[enka.gi.EquipmentType, int]] = {
+    enka.gi.EquipmentType.FLOWER: 1,
+    enka.gi.EquipmentType.FEATHER: 2,
+    enka.gi.EquipmentType.SANDS: 3,
+    enka.gi.EquipmentType.GOBLET: 4,
+    enka.gi.EquipmentType.CIRCLET: 5,
+}

@@ -9,13 +9,13 @@ from PIL import Image, ImageDraw
 from hoyo_buddy.constants import convert_gi_element_to_enka
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import GenshinElement
+from hoyo_buddy.models import HoyolabGICharacter
 
-from .common import ADD_HURT_ELEMENTS, ELEMENT_BG_COLORS, STATS_ORDER
+from .common import ADD_HURT_ELEMENTS, ARTIFACT_POS, ELEMENT_BG_COLORS, STATS_ORDER
 
 if TYPE_CHECKING:
     import enka
 
-    from hoyo_buddy.models import HoyolabGICharacter
 
 __all__ = ("GITempTwoBuildCard",)
 
@@ -318,54 +318,62 @@ class GITempTwoBuildCard:
         # Artifacts
         start_pos = (1938, 1046)
         x_diff = 438
-        for i, artifact in enumerate(character.artifacts):
-            icon = drawer.open_static(artifact.icon, size=(148, 148))
-            im.alpha_composite(icon, (start_pos[0] + 2, start_pos[1]))
-            drawer.write(
-                f"+{artifact.level}",
-                size=42,
-                style="medium",
-                color=color_1,
-                position=(start_pos[0] + 347, start_pos[1] + 39),
-                anchor="mm",
-            )
-
-            stat = artifact.main_stat
-            icon = drawer.open_asset(
-                f"stats/{stat.type.name}.png", size=(42, 42), mask_color=color_1
-            )
-            tbox = drawer.write(
-                stat.formatted_value,
-                size=42,
-                style="medium",
-                color=color_1,
-                position=(start_pos[0] + 369, start_pos[1] + 125 + icon.height // 2),
-                anchor="rm",
-            )
-            im.alpha_composite(icon, (tbox.left - icon.width - 10, start_pos[1] + 125))
-
-            ss_start_pos = (start_pos[0] + 39, start_pos[1] + 212)
-            for j, sub_stat in enumerate(artifact.sub_stats):
-                icon = drawer.open_asset(
-                    f"stats/{sub_stat.type.name}.png", size=(35, 35), mask_color=color_3
+        for i in range(5):
+            if isinstance(character, HoyolabGICharacter):
+                artifact = next((a for a in character.artifacts if a.pos == i + 1), None)
+            else:
+                artifact = next(
+                    (a for a in character.artifacts if ARTIFACT_POS[a.equip_type] == i + 1), None
                 )
-                im.alpha_composite(icon, ss_start_pos)
+
+            if artifact is not None:
+                icon = drawer.open_static(artifact.icon, size=(148, 148))
+                im.alpha_composite(icon, (start_pos[0] + 2, start_pos[1]))
                 drawer.write(
-                    sub_stat.formatted_value,
-                    size=35,
+                    f"+{artifact.level}",
+                    size=42,
                     style="medium",
-                    color=color_3,
-                    position=(
-                        ss_start_pos[0] + icon.width + 20,
-                        ss_start_pos[1] + icon.height // 2,
-                    ),
-                    anchor="lm",
+                    color=color_1,
+                    position=(start_pos[0] + 347, start_pos[1] + 39),
+                    anchor="mm",
                 )
-                ss_start_pos = (
-                    (start_pos[0] + 39, start_pos[1] + 291)
-                    if j == 1
-                    else (ss_start_pos[0] + 181, ss_start_pos[1])
+
+                stat = artifact.main_stat
+                icon = drawer.open_asset(
+                    f"stats/{stat.type.name}.png", size=(42, 42), mask_color=color_1
                 )
+                tbox = drawer.write(
+                    stat.formatted_value,
+                    size=42,
+                    style="medium",
+                    color=color_1,
+                    position=(start_pos[0] + 369, start_pos[1] + 125 + icon.height // 2),
+                    anchor="rm",
+                )
+                im.alpha_composite(icon, (tbox.left - icon.width - 10, start_pos[1] + 125))
+
+                ss_start_pos = (start_pos[0] + 39, start_pos[1] + 212)
+                for j, sub_stat in enumerate(artifact.sub_stats):
+                    icon = drawer.open_asset(
+                        f"stats/{sub_stat.type.name}.png", size=(35, 35), mask_color=color_3
+                    )
+                    im.alpha_composite(icon, ss_start_pos)
+                    drawer.write(
+                        sub_stat.formatted_value,
+                        size=35,
+                        style="medium",
+                        color=color_3,
+                        position=(
+                            ss_start_pos[0] + icon.width + 20,
+                            ss_start_pos[1] + icon.height // 2,
+                        ),
+                        anchor="lm",
+                    )
+                    ss_start_pos = (
+                        (start_pos[0] + 39, start_pos[1] + 291)
+                        if j == 1
+                        else (ss_start_pos[0] + 181, ss_start_pos[1])
+                    )
 
             start_pos = (1500, 1470) if i == 1 else (start_pos[0] + x_diff, start_pos[1])
 

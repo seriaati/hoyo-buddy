@@ -173,6 +173,7 @@ class Relic:
     icon: str
     main_stat: Stat
     sub_stats: list[Stat]
+    type: enka.hsr.RelicType
 
 
 @dataclass(kw_only=True)
@@ -282,6 +283,7 @@ class HoyolabGIArtifact(BaseModel):
     level: int
     main_stat: HoyolabGIStat
     sub_stats: list[HoyolabGIStat]
+    pos: int
 
 
 class HoyolabGICharacterIcon(BaseModel):

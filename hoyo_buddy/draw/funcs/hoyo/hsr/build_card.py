@@ -221,14 +221,14 @@ def draw_hsr_build_card(
 
     # light cone
     cone = character.light_cone
-    if cone is not None:
-        width = 837
-        height = 377
-        box_x = 1375
-        box_y = 252
-        radius = 25
-        draw.rounded_rectangle((box_x, box_y, box_x + width, box_y + height), radius, light_primary)
+    width = 837
+    height = 377
+    box_x = 1375
+    box_y = 252
+    radius = 25
+    draw.rounded_rectangle((box_x, box_y, box_x + width, box_y + height), radius, light_primary)
 
+    if cone is not None:
         # light cone icon
         icon = drawer.open_static(cone.icon.image, size=(221, 314))
         im.paste(icon, (box_x + 27, box_y + 25), icon)
@@ -319,84 +319,88 @@ def draw_hsr_build_card(
     x_padding = 40
     y_padding = 24
 
-    for index, relic in enumerate(relics):
+    for index in range(7):
         draw.rounded_rectangle((x, y, x + width, y + height), radius, light_primary)
 
-        # relic icon
-        icon = drawer.open_static(relic.icon, size=(128, 128))
-        im.paste(icon, (x + 14, y + 15), icon)
-        relic_icon_right_pos = x + 14 + icon.width
+        relic = next((relic for relic in relics if relic.type.value == index + 1), None)
+        if relic is not None:
+            # relic icon
+            icon = drawer.open_static(relic.icon, size=(128, 128))
+            im.paste(icon, (x + 14, y + 15), icon)
+            relic_icon_right_pos = x + 14 + icon.width
 
-        # rarity
-        star_icon = drawer.open_asset("img/star.png", size=(20, 20), mask_color=primary)
-        # align with the middle of relic icon
+            # rarity
+            star_icon = drawer.open_asset("img/star.png", size=(20, 20), mask_color=primary)
+            # align with the middle of relic icon
 
-        pos = (x + 68 + star_icon.height // 2, y + 150 + star_icon.height // 2)
-        rarity = relic.rarity
-        size = star_icon.size
-        upper_left = (pos[0] - rarity / 2 * size[0], pos[1] - size[1] / 2)
-        for i in range(rarity):
-            im.paste(star_icon, (int(upper_left[0] + i * (size[0])), int(upper_left[1])), star_icon)
+            pos = (x + 68 + star_icon.height // 2, y + 150 + star_icon.height // 2)
+            rarity = relic.rarity
+            size = star_icon.size
+            upper_left = (pos[0] - rarity / 2 * size[0], pos[1] - size[1] / 2)
+            for i in range(rarity):
+                im.paste(
+                    star_icon, (int(upper_left[0] + i * (size[0])), int(upper_left[1])), star_icon
+                )
 
-        # main stat
-        icon = drawer.open_static(relic.main_stat.icon, size=(50, 50), mask_color=dark_primary)
-        icon_y = y + 15
-        im.paste(icon, (relic_icon_right_pos + 5, icon_y), icon)
-        # text
-        textbbox = drawer.write(
-            relic.main_stat.formatted_value,
-            position=(
-                relic_icon_right_pos + 5 + icon.width + 2,
-                round(icon.height / 2) + icon_y - 1,
-            ),
-            size=36,
-            color=dark_primary,
-            style="medium",
-            anchor="lm",
-        )
-        main_stat_text_height = textbbox[3] - textbbox[1]
-
-        # level
-        level_width = 58
-        level_height = main_stat_text_height + 10
-        radius = 10
-        padding = 10
-        box_x = relic_icon_right_pos + 183
-        box_y = round(main_stat_text_height / 2) - round(level_height / 2) + textbbox[1] - 2
-        draw.rounded_rectangle(
-            (box_x, box_y, box_x + level_width, box_y + level_height), radius, primary
-        )
-        drawer.write(
-            f"+{relic.level}",
-            position=(box_x + level_width // 2, box_y + level_height // 2),
-            size=24,
-            color=BLACK if dark_mode else WHITE,
-            anchor="mm",
-            style="medium",
-        )
-
-        # sub stats
-        stat_x = relic_icon_right_pos + 8  # main stat icon right pos
-        stat_y = icon_y + icon.height + 10  # main stat icon bottom pos
-        stat_y_padding = 10
-
-        for i, stat in enumerate(relic.sub_stats):
-            icon = drawer.open_static(stat.icon, size=(40, 40), mask_color=dark_primary)
-            im.paste(icon, (stat_x, stat_y), icon)
-            sub_stat_icon_right_pos = stat_x + icon.width
-
-            text = stat.formatted_value
-
-            drawer.write(
-                text,
-                position=(sub_stat_icon_right_pos + 5, stat_y + 3),
-                size=24,
+            # main stat
+            icon = drawer.open_static(relic.main_stat.icon, size=(50, 50), mask_color=dark_primary)
+            icon_y = y + 15
+            im.paste(icon, (relic_icon_right_pos + 5, icon_y), icon)
+            # text
+            textbbox = drawer.write(
+                relic.main_stat.formatted_value,
+                position=(
+                    relic_icon_right_pos + 5 + icon.width + 2,
+                    round(icon.height / 2) + icon_y - 1,
+                ),
+                size=36,
                 color=dark_primary,
+                style="medium",
+                anchor="lm",
             )
-            stat_x = sub_stat_icon_right_pos + 81
-            if i == 1:
-                stat_x = relic_icon_right_pos + 8
-                stat_y += icon.height + stat_y_padding
+            main_stat_text_height = textbbox[3] - textbbox[1]
+
+            # level
+            level_width = 58
+            level_height = main_stat_text_height + 10
+            radius = 10
+            padding = 10
+            box_x = relic_icon_right_pos + 183
+            box_y = round(main_stat_text_height / 2) - round(level_height / 2) + textbbox[1] - 2
+            draw.rounded_rectangle(
+                (box_x, box_y, box_x + level_width, box_y + level_height), radius, primary
+            )
+            drawer.write(
+                f"+{relic.level}",
+                position=(box_x + level_width // 2, box_y + level_height // 2),
+                size=24,
+                color=BLACK if dark_mode else WHITE,
+                anchor="mm",
+                style="medium",
+            )
+
+            # sub stats
+            stat_x = relic_icon_right_pos + 8  # main stat icon right pos
+            stat_y = icon_y + icon.height + 10  # main stat icon bottom pos
+            stat_y_padding = 10
+
+            for i, stat in enumerate(relic.sub_stats):
+                icon = drawer.open_static(stat.icon, size=(40, 40), mask_color=dark_primary)
+                im.paste(icon, (stat_x, stat_y), icon)
+                sub_stat_icon_right_pos = stat_x + icon.width
+
+                text = stat.formatted_value
+
+                drawer.write(
+                    text,
+                    position=(sub_stat_icon_right_pos + 5, stat_y + 3),
+                    size=24,
+                    color=dark_primary,
+                )
+                stat_x = sub_stat_icon_right_pos + 81
+                if i == 1:
+                    stat_x = relic_icon_right_pos + 8
+                    stat_y += icon.height + stat_y_padding
 
         x += width + x_padding
         if index in {1, 3}:

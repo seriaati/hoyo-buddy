@@ -156,6 +156,7 @@ class GenshinClient(genshin.Client):
                     )
                     for sub_stat in artifact.sub_stats
                 ],
+                pos=artifact.pos,
             )
             for artifact in character.artifacts
         ]
@@ -257,6 +258,7 @@ class GenshinClient(genshin.Client):
                     )
                     for sub_property in relic.properties
                 ],
+                type=enka.hsr.RelicType(relic.pos),
             )
             for relic in list(character.relics) + list(character.ornaments)
         ]

@@ -8,12 +8,12 @@ from enka.gi import FightPropType
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
-from hoyo_buddy.draw.funcs.hoyo.genshin.common import STATS_ORDER
+from hoyo_buddy.draw.funcs.hoyo.genshin.common import ARTIFACT_POS, STATS_ORDER
+from hoyo_buddy.models import HoyolabGICharacter
 
 if TYPE_CHECKING:
     from enka.gi import Character
 
-    from hoyo_buddy.models import HoyolabGICharacter
 
 __all__ = ("draw_genshin_card",)
 
@@ -203,8 +203,18 @@ def draw_genshin_card(
     # artifacts
     # start pos (68, 970)
     # 5x1 grid, x offset between each item is 296
-    for index, artifact in enumerate(character.artifacts):
+    for index in range(5):
         x_pos = 68 + 296 * index
+
+        if isinstance(character, HoyolabGICharacter):
+            artifact = next((a for a in character.artifacts if a.pos == index + 1), None)
+        else:
+            artifact = next(
+                (a for a in character.artifacts if ARTIFACT_POS[a.equip_type] == index + 1), None
+            )
+
+        if artifact is None:
+            continue
 
         # icon
         artifact_icon = drawer.open_static(artifact.icon, size=(90, 90))

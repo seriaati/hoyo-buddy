@@ -174,62 +174,66 @@ class HSRTeamCard:
     ) -> None:
         relic_level = drawer.open_asset("relic_level.png", mask_color=primary)
         start_pos = (146, 739)
-        for i, relic in enumerate(character.relics):
-            icon = drawer.open_static(relic.icon, size=(72, 72))
-            im.alpha_composite(icon, start_pos)
 
-            # Relic level
-            text = f"+{relic.level}"
-            level_pos = (start_pos[0] + 42, start_pos[1] - 3)
-            im.alpha_composite(relic_level, level_pos)
-            drawer.write(
-                text,
-                size=11,
-                position=(
-                    level_pos[0] + relic_level.width // 2,
-                    level_pos[1] + relic_level.height // 2,
-                ),
-                style="medium",
-                anchor="mm",
-            )
+        for i in range(6):
+            relic = next((r for r in character.relics if r.type.value == i + 1), None)
 
-            # Relic main stat
-            main_stat = relic.main_stat
-            main_stat_icon = drawer.open_static(main_stat.icon, size=(30, 30))
-            main_stat_pos = (start_pos[0] - 133, start_pos[1] - 11)
-            im.alpha_composite(main_stat_icon, main_stat_pos)
-            drawer.write(
-                main_stat.formatted_value,
-                size=20,
-                position=(
-                    main_stat_pos[0] + main_stat_icon.width + 3,
-                    main_stat_pos[1] + main_stat_icon.height // 2,
-                ),
-                style="medium",
-                anchor="lm",
-            )
+            if relic is not None:
+                icon = drawer.open_static(relic.icon, size=(72, 72))
+                im.alpha_composite(icon, start_pos)
 
-            # Relic sub stats
-            sub_start_pos = (start_pos[0] - 133, start_pos[1] + 27)
-            for j, sub_stat in enumerate(relic.sub_stats):
-                icon = drawer.open_static(sub_stat.icon, size=(20, 20))
-                im.alpha_composite(icon, sub_start_pos)
+                # Relic level
+                text = f"+{relic.level}"
+                level_pos = (start_pos[0] + 42, start_pos[1] - 3)
+                im.alpha_composite(relic_level, level_pos)
                 drawer.write(
-                    sub_stat.formatted_value,
-                    size=13,
+                    text,
+                    size=11,
                     position=(
-                        sub_start_pos[0] + icon.width + 3,
-                        sub_start_pos[1] + icon.height // 2,
+                        level_pos[0] + relic_level.width // 2,
+                        level_pos[1] + relic_level.height // 2,
                     ),
-                    style="regular",
+                    style="medium",
+                    anchor="mm",
+                )
+
+                # Relic main stat
+                main_stat = relic.main_stat
+                main_stat_icon = drawer.open_static(main_stat.icon, size=(30, 30))
+                main_stat_pos = (start_pos[0] - 133, start_pos[1] - 11)
+                im.alpha_composite(main_stat_icon, main_stat_pos)
+                drawer.write(
+                    main_stat.formatted_value,
+                    size=20,
+                    position=(
+                        main_stat_pos[0] + main_stat_icon.width + 3,
+                        main_stat_pos[1] + main_stat_icon.height // 2,
+                    ),
+                    style="medium",
                     anchor="lm",
                 )
 
-                sub_start_pos = (
-                    (start_pos[0] - 133, sub_start_pos[1] + 25)
-                    if j == 1
-                    else (sub_start_pos[0] + 70, sub_start_pos[1])
-                )
+                # Relic sub stats
+                sub_start_pos = (start_pos[0] - 133, start_pos[1] + 27)
+                for j, sub_stat in enumerate(relic.sub_stats):
+                    icon = drawer.open_static(sub_stat.icon, size=(20, 20))
+                    im.alpha_composite(icon, sub_start_pos)
+                    drawer.write(
+                        sub_stat.formatted_value,
+                        size=13,
+                        position=(
+                            sub_start_pos[0] + icon.width + 3,
+                            sub_start_pos[1] + icon.height // 2,
+                        ),
+                        style="regular",
+                        anchor="lm",
+                    )
+
+                    sub_start_pos = (
+                        (start_pos[0] - 133, sub_start_pos[1] + 25)
+                        if j == 1
+                        else (sub_start_pos[0] + 70, sub_start_pos[1])
+                    )
 
             start_pos = (146, 844) if i == 2 else (start_pos[0] + 226, start_pos[1])
 

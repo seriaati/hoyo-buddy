@@ -280,11 +280,12 @@ class WebApp:
         device_fp = await page.client_storage.get_async(f"hb.{params.user_id}.device_fp")
 
         try:
+            platform = params.platform or Platform.HOYOLAB
             client = genshin.Client(
                 cookies,
                 lang=locale_to_gpy_lang(locale),
                 region=genshin.Region.OVERSEAS
-                if params.platform is Platform.HOYOLAB
+                if platform is Platform.HOYOLAB
                 else genshin.Region.CHINESE,
                 device_id=device_id,
                 device_fp=device_fp,

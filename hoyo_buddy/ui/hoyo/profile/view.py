@@ -444,11 +444,12 @@ class ProfileView(View):
         else:
             zoom = 0.8 if card_settings.current_image is None else 1.0
 
-        rank = (
-            None
-            if not card_settings.show_rank
-            else await self._get_character_rank(character, with_detail=template_num == 1)
-        )
+        rank = None
+        if card_settings.show_rank:
+            try:
+                rank = await self._get_character_rank(character)
+            except akasha.AkashaAPIError:
+                rank = None
 
         return await draw_gi_build_card(
             DrawInput(

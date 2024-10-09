@@ -25,9 +25,10 @@ class Schedule(commands.Cog):
         if not self.bot.config.schedule:
             return
 
-        self.run_at_0am.start()
+        self.run_daily_checkin.start()
         self.run_farm_checks.start()
         self.update_search_autofill.start()
+        self.update_assets.start()
         self.run_notes_check.start()
         self.run_auto_redeem.start()
 
@@ -35,16 +36,16 @@ class Schedule(commands.Cog):
         if not self.bot.config.schedule:
             return
 
-        self.run_at_0am.cancel()
+        self.run_daily_checkin.cancel()
         self.run_farm_checks.cancel()
         self.update_search_autofill.cancel()
+        self.update_assets.cancel()
         self.run_notes_check.cancel()
         self.run_auto_redeem.cancel()
 
     @tasks.loop(time=datetime.time(0, 0, 0, tzinfo=UTC_8))
-    async def run_at_0am(self) -> None:
+    async def run_daily_checkin(self) -> None:
         await DailyCheckin.execute(self.bot)
-        await self.bot.update_assets()
 
     @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)])
     async def run_farm_checks(self) -> None:
@@ -68,6 +69,10 @@ class Schedule(commands.Cog):
         if isinstance(search_cog, Search):
             await search_cog._setup_search_autofill()
 
+    @tasks.loop(time=datetime.time(11, 0, 0, tzinfo=UTC_8))
+    async def update_assets(self) -> None:
+        await self.bot.update_assets()
+
     @tasks.loop(minutes=1)
     async def run_notes_check(self) -> None:
         await NotesChecker.execute(self.bot)
@@ -76,9 +81,10 @@ class Schedule(commands.Cog):
     async def run_auto_redeem(self) -> None:
         await AutoRedeem.execute(self.bot)
 
-    @run_at_0am.before_loop
+    @run_daily_checkin.before_loop
     @run_farm_checks.before_loop
     @update_search_autofill.before_loop
+    @update_assets.before_loop
     @run_notes_check.before_loop
     @run_auto_redeem.before_loop
     async def before_loops(self) -> None:

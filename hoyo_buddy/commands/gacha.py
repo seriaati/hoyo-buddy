@@ -38,7 +38,7 @@ if TYPE_CHECKING:
 
 class GachaCommand:
     @staticmethod
-    def _validate_file_extension(file: discord.Attachment, accept_ext: str) -> None:
+    def _validate_file_ext(file: discord.Attachment, accept_ext: str) -> None:
         extension = file.filename.split(".")[-1]
         if extension != accept_ext:
             raise InvalidFileExtError(accept_ext)
@@ -47,7 +47,7 @@ class GachaCommand:
         self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
     ) -> int:
         """Star Rail Station import."""
-        self._validate_file_extension(file, "csv")
+        self._validate_file_ext(file, "csv")
 
         bytes_ = await file.read()
         records_df = await i.client.loop.run_in_executor(
@@ -77,14 +77,14 @@ class GachaCommand:
         self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
     ) -> int:
         """Genshin Wizard import."""
-        self._validate_file_extension(file, "csv")
+        self._validate_file_ext(file, "csv")
 
         bytes_ = await file.read()
         records_df = await i.client.loop.run_in_executor(
             i.client.executor, pd.read_csv, io.BytesIO(bytes_)
         )
         data: list[dict[str, Any]] = records_df.to_dict(orient="records")  # pyright: ignore[reportAssignmentType]
-        records = [GWRecord(**record) for record in data]
+        records = [GWRecord(**record) for record in data[:-1]]
         records.sort(key=lambda x: x.id)
 
         item_ids = await get_item_ids(
@@ -111,7 +111,7 @@ class GachaCommand:
         self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
     ) -> int:
         """zzz.rng.moe import."""
-        self._validate_file_extension(file, "json")
+        self._validate_file_ext(file, "json")
 
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
@@ -157,7 +157,7 @@ class GachaCommand:
         self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
     ) -> int:
         """stardb import."""
-        self._validate_file_extension(file, "json")
+        self._validate_file_ext(file, "json")
 
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
@@ -332,7 +332,7 @@ class GachaCommand:
         self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
     ) -> int:
         """UIGF import."""
-        self._validate_file_extension(file, "json")
+        self._validate_file_ext(file, "json")
 
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
@@ -400,7 +400,7 @@ class GachaCommand:
         self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
     ) -> int:
         """SRGF import."""
-        self._validate_file_extension(file, "json")
+        self._validate_file_ext(file, "json")
 
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)

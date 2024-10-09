@@ -136,7 +136,8 @@ def get_error_embed(
             ]
             if embed.description is None:
                 embed.description = ""
-            embed.description += f"\n{'\n'.join(game_strs)}"
+            joined_str = "\n".join(game_strs)
+            embed.description += f"\n{joined_str}"
     elif isinstance(error, genshin_errors.GenshinException | enka_errors.EnkaAPIError):
         err_info = None
 

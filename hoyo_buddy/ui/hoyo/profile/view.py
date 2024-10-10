@@ -447,7 +447,7 @@ class ProfileView(View):
         rank = None
         if card_settings.show_rank:
             try:
-                rank = await self._get_character_rank(character)
+                rank = await self._get_character_rank(character, with_detail=template_num == 1)
             except akasha.AkashaAPIError:
                 rank = None
 

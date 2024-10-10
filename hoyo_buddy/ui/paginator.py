@@ -110,7 +110,7 @@ class PaginatorView(View):
         await self._update_page(i)
 
     async def _last_page(self, i: Interaction) -> None:
-        self._current_page = self._max_page
+        self._current_page = self._max_page - 1
         await self._update_page(i)
 
     async def start(

@@ -15,7 +15,12 @@ from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_dyk, get_locale,
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LOADING
 from hoyo_buddy.enums import GachaImportSource, Game
-from hoyo_buddy.exceptions import FeatureNotImplementedError, InvalidFileExtError, UIDMismatchError
+from hoyo_buddy.exceptions import (
+    FeatureNotImplementedError,
+    InvalidFileExtError,
+    NoGachaLogFoundError,
+    UIDMismatchError,
+)
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import (
     GWRecord,
@@ -115,7 +120,11 @@ class GachaCommand:
 
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
-        uid = str(data["data"]["profiles"]["1"]["bindUid"])
+        first_profile = next(iter(data["data"]["profiles"].values()), None)
+        if first_profile is None:
+            raise NoGachaLogFoundError
+
+        uid = str(first_profile["bindUid"])
         if uid != str(account.uid):
             raise UIDMismatchError(uid)
 
@@ -132,7 +141,7 @@ class GachaCommand:
             records.extend(
                 [
                     ZZZRngMoeRecord(tz_hour=tz_hour, **record)
-                    for record in data["data"]["profiles"]["1"]["stores"]["0"]["items"][gacha_type]
+                    for record in first_profile["stores"]["0"]["items"][gacha_type]
                 ]
             )
         records.sort(key=lambda x: x.id)

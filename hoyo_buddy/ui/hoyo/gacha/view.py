@@ -125,7 +125,7 @@ class ViewGachaLogView(View):
             is_standard = item.item_id in STANDARD_ITEMS[self.account.game]
             if self.account.game in STANDARD_END_DATES:
                 end_date = STANDARD_END_DATES[self.account.game].get(item.item_id)
-                if end_date and item.time.date() < end_date:
+                if end_date is not None and item.time.date() < end_date:
                     is_standard = False
             is_standards.append(is_standard)
 

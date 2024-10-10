@@ -5,13 +5,15 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
 import genshin  # noqa: TCH002
-from discord import ButtonStyle, TextStyle, ui
+from discord import ButtonStyle, Locale, TextStyle, ui
 from discord.ext import commands
 from loguru import logger
 from seria.utils import write_json
 
+from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.db.models import CardSettings, CommandMetric, HoyoAccount, Settings, User
 from hoyo_buddy.emojis import get_game_emoji
+from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.utils import upload_image
 
 from ..constants import GI_UID_PREFIXES
@@ -23,8 +25,6 @@ from .search import Search
 
 if TYPE_CHECKING:
     from discord.ext.commands.context import Context
-
-    from hoyo_buddy.enums import Game
 
     from ..bot import HoyoBuddy
     from ..types import Interaction
@@ -230,6 +230,44 @@ class Admin(commands.Cog):
                 new_url = await upload_image(self.bot.session, image_url=setting.current_image)
                 setting.current_image = new_url
                 await setting.save(update_fields=("current_image",))
+
+        await ctx.send("Done.")
+
+    @commands.command(name="fill-lb")
+    async def fill_lb_command(self, ctx: commands.Context) -> Any:
+        await ctx.send("Filling leaderboard...")
+
+        cmd = LeaderboardCommand()
+        accounts = await HoyoAccount.all()
+
+        game_lb_types = {
+            Game.GENSHIN: (
+                LeaderboardType.ABYSS_DMG,
+                LeaderboardType.THEATER_DMG,
+                LeaderboardType.MAX_FRIENDSHIP,
+                LeaderboardType.CHEST,
+                LeaderboardType.ACHIEVEMENT,
+            ),
+            Game.STARRAIL: (LeaderboardType.CHEST, LeaderboardType.ACHIEVEMENT),
+            Game.ZZZ: (LeaderboardType.ACHIEVEMENT,),
+            Game.HONKAI: (LeaderboardType.ACHIEVEMENT,),
+        }
+
+        for account in accounts:
+            logger.info(f"Updating leaderboard data for {account}")
+            for lb_type in game_lb_types.get(account.game, ()):
+                try:
+                    await cmd.update_lb_data(
+                        translator=self.bot.translator,
+                        pool=self.bot.pool,
+                        lb_type=lb_type,
+                        account=account,
+                        locale=Locale.american_english,
+                    )
+                except Exception as e:
+                    self.bot.capture_exception(e)
+
+                await asyncio.sleep(0.5)
 
         await ctx.send("Done.")
 

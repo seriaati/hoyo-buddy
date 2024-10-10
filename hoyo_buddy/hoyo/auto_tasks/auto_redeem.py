@@ -184,11 +184,11 @@ class AutoRedeem:
         codes: list[str],
     ) -> Embed | None:
         translator = cls._bot.translator
-        codes_ = [
-            code
-            for code in codes
-            if code not in account.redeemed_codes and code not in cls._dead_codes
-        ]
+        codes_: list[str] = []
+        for code in codes:
+            if code in account.redeemed_codes or code in cls._dead_codes:
+                continue
+            codes_.append(code)
 
         if not codes_:
             return None

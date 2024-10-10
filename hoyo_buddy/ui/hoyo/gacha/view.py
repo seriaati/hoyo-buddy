@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 import os
 from typing import TYPE_CHECKING, Any, Final, Literal, TypeAlias
 
@@ -7,6 +8,7 @@ from hoyo_buddy.constants import (
     BANNER_GUARANTEE_NUMS,
     BANNER_TYPE_NAMES,
     BANNER_WIN_RATE_TITLES,
+    STANDARD_END_DATES,
     STANDARD_ITEMS,
     WEB_APP_URLS,
 )
@@ -107,7 +109,7 @@ class ViewGachaLogView(View):
         five_stars = (
             await GachaHistory.filter(account=self.account, rarity=5, banner_type=self.banner_type)
             .order_by("wish_id")
-            .only("item_id")
+            .only("item_id", "time")
         )
         if not five_stars:
             return 0, 0
@@ -118,16 +120,22 @@ class ViewGachaLogView(View):
             # If the only 5-star is not a standard item, it is considered a win
             return 1, 1
 
-        is_standards: list[bool] = [
-            item.item_id in STANDARD_ITEMS[self.account.game] for item in five_stars
-        ]
+        is_standards: list[bool] = []
+        for item in five_stars:
+            is_standard = item.item_id in STANDARD_ITEMS[self.account.game]
+            if self.account.game in STANDARD_END_DATES:
+                end_date = STANDARD_END_DATES[self.account.game].get(item.item_id)
+                if end_date and item.time.date() < end_date:
+                    is_standard = False
+            is_standards.append(is_standard)
+
         win = 0
         for i, is_standard in enumerate(is_standards[1:], start=1):
             # Current one and previous one are both not standard items: win 50/50
             if not is_standard and not is_standards[i - 1]:
                 win += 1
 
-        return win, sum(is_standards)
+        return win, is_standards.count(False)
 
     async def guaranteed(self) -> bool:
         gacha = (

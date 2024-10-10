@@ -296,5 +296,5 @@ class AbyssCard:
         background.paste(self._im, (padding, padding), self._im)
 
         buffer = BytesIO()
-        background.save(buffer, format="WEBP", lossless=True)
+        background.save(buffer, format="PNG")
         return buffer

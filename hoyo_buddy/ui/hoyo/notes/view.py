@@ -283,7 +283,7 @@ class NotesView(View):
             )
 
         embed.add_acc_info(self._account)
-        embed.set_image(url="attachment://notes.webp")
+        embed.set_image(url="attachment://notes.png")
         return embed
 
     async def process_type_one_modal(
@@ -491,7 +491,7 @@ class NotesView(View):
                     dark_mode=self._dark_mode,
                     locale=self.locale,
                     session=session,
-                    filename="notes.webp",
+                    filename="notes.png",
                     executor=executor,
                     loop=loop,
                 ),
@@ -504,7 +504,7 @@ class NotesView(View):
                     dark_mode=self._dark_mode,
                     locale=self.locale,
                     session=session,
-                    filename="notes.webp",
+                    filename="notes.png",
                     executor=executor,
                     loop=loop,
                 ),
@@ -516,7 +516,7 @@ class NotesView(View):
                 dark_mode=self._dark_mode,
                 locale=self.locale,
                 session=session,
-                filename="notes.webp",
+                filename="notes.png",
                 executor=executor,
                 loop=loop,
             ),
@@ -591,7 +591,7 @@ class NotesView(View):
 
         return (
             DefaultEmbed(self.locale, self.translator, description=translated_description)
-            .set_image(url="attachment://notes.webp")
+            .set_image(url="attachment://notes.png")
             .add_acc_info(self._account)
         )
 
@@ -603,7 +603,7 @@ class NotesView(View):
         )
 
         self.bytes_obj.seek(0)
-        file_ = File(self.bytes_obj, filename="notes.webp")
+        file_ = File(self.bytes_obj, filename="notes.png")
         await i.followup.send(embed=embed, file=file_, view=self, content=await get_dyk(i))
         self.message = await i.original_response()
 

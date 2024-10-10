@@ -382,7 +382,7 @@ class Hoyo(commands.Cog):
                 dark_mode=settings.dark_mode,
                 locale=locale,
                 session=self.bot.session,
-                filename="exploration.webp",
+                filename="exploration.png",
                 executor=i.client.executor,
                 loop=i.client.loop,
             ),
@@ -390,7 +390,7 @@ class Hoyo(commands.Cog):
             self.bot.translator,
         )
         embed = DefaultEmbed(locale, self.bot.translator).add_acc_info(account_)
-        embed.set_image(url="attachment://exploration.webp")
+        embed.set_image(url="attachment://exploration.png")
         await i.followup.send(embed=embed, files=[file_], content=await get_dyk(i))
 
     @app_commands.command(

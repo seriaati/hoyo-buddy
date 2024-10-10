@@ -269,5 +269,5 @@ def draw_genshin_card(
             )
 
     fp = io.BytesIO()
-    im.save(fp, format="WEBP", loesless=True)
+    im.save(fp, format="PNG", loesless=True)
     return fp

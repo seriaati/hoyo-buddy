@@ -348,5 +348,5 @@ class GITeamCard:
             start_pos = (50, 60 + y_diff) if i == 1 else (start_pos[0] + x_diff, start_pos[1])
 
         buffer = BytesIO()
-        im.save(buffer, format="WEBP", lossless=True)
+        im.save(buffer, format="PNG")
         return buffer

@@ -129,5 +129,5 @@ def draw_big_suit_card(
         im.paste(card, (x, y), card)
 
     buffer = BytesIO()
-    im.save(buffer, format="WEBP", quality=80)
+    im.save(buffer, format="PNG", quality=80)
     return buffer

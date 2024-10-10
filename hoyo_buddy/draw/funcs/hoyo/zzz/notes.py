@@ -115,5 +115,5 @@ def draw_zzz_notes(
 
     # Save image
     buffer = BytesIO()
-    im.save(buffer, format="WEBP", loseless=True)
+    im.save(buffer, format="PNG")
     return buffer

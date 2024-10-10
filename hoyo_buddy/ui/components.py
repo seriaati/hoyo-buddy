@@ -271,7 +271,7 @@ class GoBackButton(Button, Generic[V_co]):
                 if original_image is not None:
                     embed.set_image(url=f"attachment://{original_image}")
 
-            original_image = original_image or "image.webp"
+            original_image = original_image or "image.png"
             kwargs["attachments"] = [discord.File(self.byte_obj, filename=original_image)]
 
         await i.response.edit_message(**kwargs)

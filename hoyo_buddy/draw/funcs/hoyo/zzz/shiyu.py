@@ -259,5 +259,5 @@ class ShiyuDefenseCard:
         self.draw_frontiers(im, drawer)
 
         buffer = BytesIO()
-        im.save(buffer, format="WEBP")
+        im.save(buffer, format="PNG")
         return buffer

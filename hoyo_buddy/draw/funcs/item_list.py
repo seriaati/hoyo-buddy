@@ -80,5 +80,5 @@ def draw_item_list(
             )
 
     buffer = BytesIO()
-    im.save(buffer, format="WEBP", loseless=True)
+    im.save(buffer, format="PNG")
     return buffer

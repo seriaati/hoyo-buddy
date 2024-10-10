@@ -200,5 +200,5 @@ class APCShadowCard:
                 pos = (83, 980)
 
         buffer = BytesIO()
-        self._im.save(buffer, format="WEBP", loseless=True)
+        self._im.save(buffer, format="PNG")
         return buffer

@@ -115,6 +115,6 @@ def draw_hsr_notes_card(
         )
 
     buffer = BytesIO()
-    im.save(buffer, format="WEBP", loseless=True)
+    im.save(buffer, format="PNG")
 
     return buffer

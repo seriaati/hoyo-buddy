@@ -310,5 +310,5 @@ class ZZZTeamCard:
             im = im.crop((54, 48, 1395, 357))
 
         buffer = BytesIO()
-        im.save(buffer, format="WEBP", loseless=True)
+        im.save(buffer, format="PNG")
         return buffer

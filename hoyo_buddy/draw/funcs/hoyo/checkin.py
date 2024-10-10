@@ -66,6 +66,6 @@ def draw_checkin_card(daily_rewards: list[Reward], dark_mode: bool) -> io.BytesI
     combined = Image.alpha_composite(im, text)
 
     bytes_io = io.BytesIO()
-    combined.save(bytes_io, format="WEBP", loseless=True)
+    combined.save(bytes_io, format="PNG")
 
     return bytes_io

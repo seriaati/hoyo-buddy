@@ -57,7 +57,7 @@ class FarmNotifyView(PaginatorView):
                     )
                 )
                 .add_acc_info(farm_notify.account)
-                .set_image(url="attachment://farm_notify.webp")
+                .set_image(url="attachment://farm_notify.png")
             )
             for i in range(len(self._split_item_ids))
         ]
@@ -100,7 +100,7 @@ class FarmNotifyView(PaginatorView):
                 dark_mode=self._dark_mode,
                 locale=self.locale,
                 session=self._session,
-                filename="farm_notify.webp",
+                filename="farm_notify.png",
                 executor=self._executor,
                 loop=self._loop,
             ),

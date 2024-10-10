@@ -359,7 +359,7 @@ class CharactersView(View):
                     dark_mode=self.dark_mode,
                     locale=self.locale,
                     session=session,
-                    filename="characters.webp",
+                    filename="characters.png",
                     executor=executor,
                     loop=loop,
                 ),
@@ -375,7 +375,7 @@ class CharactersView(View):
                     dark_mode=self.dark_mode,
                     locale=self.locale,
                     session=session,
-                    filename="characters.webp",
+                    filename="characters.png",
                     executor=executor,
                     loop=loop,
                 ),
@@ -389,7 +389,7 @@ class CharactersView(View):
                     dark_mode=self.dark_mode,
                     locale=self.locale,
                     session=session,
-                    filename="characters.webp",
+                    filename="characters.png",
                     executor=executor,
                     loop=loop,
                 ),
@@ -402,7 +402,7 @@ class CharactersView(View):
                     dark_mode=self.dark_mode,
                     locale=self.locale,
                     session=session,
-                    filename="characters.webp",
+                    filename="characters.png",
                     executor=executor,
                     loop=loop,
                 ),
@@ -418,7 +418,7 @@ class CharactersView(View):
         embed = DefaultEmbed(
             self.locale, self.translator, title=LocaleStr(key="characters.embed.title")
         )
-        embed.set_image(url="attachment://characters.webp")
+        embed.set_image(url="attachment://characters.png")
         embed.add_acc_info(self._account)
 
         if self.game is Game.HONKAI:

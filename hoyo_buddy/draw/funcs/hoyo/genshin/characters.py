@@ -95,7 +95,7 @@ def draw_character_card(
             background.paste(icon, pos, icon)
 
     fp = io.BytesIO()
-    background.save(fp, format="WEBP", loseless=True)
+    background.save(fp, format="PNG")
     return fp
 
 

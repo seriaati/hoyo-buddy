@@ -314,5 +314,5 @@ class HSRTeamCard:
             start_pos = (51, 58 + y_diff) if i == 1 else (start_pos[0] + x_diff, start_pos[1])
 
         buffer = BytesIO()
-        im.save(buffer, format="WEBP", loseless=True)
+        im.save(buffer, format="PNG")
         return buffer

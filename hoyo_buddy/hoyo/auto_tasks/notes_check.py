@@ -186,7 +186,7 @@ class NotesChecker:
 
         embed.add_acc_info(notify.account, blur=False)
         embed.set_footer(text=LocaleStr(key="notif.embed.footer"))
-        embed.set_image(url="attachment://notes.webp")
+        embed.set_image(url="attachment://notes.png")
         return embed
 
     @classmethod
@@ -208,7 +208,7 @@ class NotesChecker:
             dark_mode=notify.account.user.settings.dark_mode,
             locale=locale,
             session=cls._bot.session,
-            filename="notes.webp",
+            filename="notes.png",
             executor=cls._bot.executor,
             loop=cls._bot.loop,
         )
@@ -226,7 +226,7 @@ class NotesChecker:
             file_ = None
         else:
             buffer.seek(0)
-            file_ = discord.File(buffer, filename="notes.webp")
+            file_ = discord.File(buffer, filename="notes.png")
 
         view = NotesView(
             notify.account,

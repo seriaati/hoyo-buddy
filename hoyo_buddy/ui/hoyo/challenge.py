@@ -310,7 +310,7 @@ class ChallengeView(View):
                     dark_mode=self.dark_mode,
                     locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
                     session=session,
-                    filename="challenge.webp",
+                    filename="challenge.png",
                     executor=executor,
                     loop=loop,
                 ),
@@ -324,7 +324,7 @@ class ChallengeView(View):
                     dark_mode=self.dark_mode,
                     locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
                     session=session,
-                    filename="challenge.webp",
+                    filename="challenge.png",
                     executor=executor,
                     loop=loop,
                 ),
@@ -338,7 +338,7 @@ class ChallengeView(View):
                     dark_mode=self.dark_mode,
                     locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
                     session=session,
-                    filename="challenge.webp",
+                    filename="challenge.png",
                     executor=executor,
                     loop=loop,
                 ),
@@ -352,7 +352,7 @@ class ChallengeView(View):
                     dark_mode=self.dark_mode,
                     locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
                     session=session,
-                    filename="challenge.webp",
+                    filename="challenge.png",
                     executor=executor,
                     loop=loop,
                 ),
@@ -366,7 +366,7 @@ class ChallengeView(View):
                     dark_mode=self.dark_mode,
                     locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
                     session=session,
-                    filename="challenge.webp",
+                    filename="challenge.png",
                     executor=executor,
                     loop=loop,
                 ),
@@ -380,7 +380,7 @@ class ChallengeView(View):
                     dark_mode=self.dark_mode,
                     locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
                     session=session,
-                    filename="challenge.webp",
+                    filename="challenge.png",
                     executor=executor,
                     loop=loop,
                 ),
@@ -415,7 +415,7 @@ class ChallengeView(View):
             raise
 
         embed = DefaultEmbed(self.locale, self.translator).add_acc_info(self.account)
-        embed.set_image(url="attachment://challenge.webp")
+        embed.set_image(url="attachment://challenge.png")
 
         await item.unset_loading_state(i, embed=embed, attachments=[file_])
 

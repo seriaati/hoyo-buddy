@@ -293,7 +293,7 @@ class ProfileView(View):
     @property
     def card_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale, self.translator)
-        embed.set_image(url="attachment://card.webp")
+        embed.set_image(url="attachment://card.png")
         if self._account is not None:
             embed.add_acc_info(self._account)
         else:
@@ -349,7 +349,7 @@ class ProfileView(View):
         endpoint = "http://localhost:7652/star-rail-card"
 
         async with session.post(endpoint, json=payload) as resp:
-            # API returns a WebP image
+            # API returns a png image
             if resp.status != 200:
                 raise ValueError(await resp.text())
             return BytesIO(await resp.read())
@@ -383,7 +383,7 @@ class ProfileView(View):
             raise ValueError(msg)
 
         async with session.post(endpoint, json=payload) as resp:
-            # API returns a WebP image
+            # API returns a png image
             if resp.status != 200:
                 raise ValueError(await resp.text())
             return BytesIO(await resp.read())
@@ -416,7 +416,7 @@ class ProfileView(View):
                 dark_mode=card_settings.dark_mode,
                 locale=await self.get_character_locale(character),
                 session=session,
-                filename="card.webp",
+                filename="card.png",
                 executor=executor,
                 loop=loop,
             ),
@@ -456,7 +456,7 @@ class ProfileView(View):
                 dark_mode=card_settings.dark_mode,
                 locale=await self.get_character_locale(character),
                 session=session,
-                filename="card.webp",
+                filename="card.png",
                 executor=executor,
                 loop=loop,
             ),
@@ -512,7 +512,7 @@ class ProfileView(View):
                 dark_mode=True,
                 locale=await self.get_character_locale(character),
                 session=session,
-                filename="card.webp",
+                filename="card.png",
                 executor=executor,
                 loop=loop,
             ),
@@ -577,7 +577,7 @@ class ProfileView(View):
             dark_mode=settings.team_card_dark_mode,
             locale=self.locale,
             session=i.client.session,
-            filename="card.webp",
+            filename="card.png",
             executor=i.client.executor,
             loop=i.client.loop,
         )
@@ -661,7 +661,7 @@ class ProfileView(View):
                 raise ThirdPartyCardTempError from e
             raise
 
-        attachments = [File(bytes_obj, filename="card.webp")]
+        attachments = [File(bytes_obj, filename="card.png")]
 
         if unset_loading_state:
             await item.unset_loading_state(i, attachments=attachments, embed=self.card_embed)

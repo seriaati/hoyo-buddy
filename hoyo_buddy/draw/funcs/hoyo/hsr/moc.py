@@ -196,5 +196,5 @@ class MOCCard:
                 pos = (83, 990)
 
         buffer = BytesIO()
-        self._im.save(buffer, format="WEBP", loseless=True)
+        self._im.save(buffer, format="PNG")
         return buffer

@@ -121,7 +121,7 @@ class CheckInUI(View):
                 dark_mode=self.dark_mode,
                 locale=self.locale,
                 session=session,
-                filename="check-in.webp",
+                filename="check-in.png",
                 executor=executor,
                 loop=loop,
             ),
@@ -138,7 +138,7 @@ class CheckInUI(View):
                 missed=info.missed_rewards,
             ),
         )
-        embed.set_image(url="attachment://check-in.webp")
+        embed.set_image(url="attachment://check-in.png")
         embed.add_acc_info(self.account)
         return embed, bytes_obj
 
@@ -148,7 +148,7 @@ class CheckInUI(View):
         )
 
         self._bytes_obj.seek(0)
-        file_ = discord.File(self._bytes_obj, filename="check-in.webp")
+        file_ = discord.File(self._bytes_obj, filename="check-in.png")
         await i.followup.send(embed=embed, file=file_, view=self, content=await get_dyk(i))
         self.message = await i.original_response()
 
@@ -179,7 +179,7 @@ class CheckInButton(Button[CheckInUI]):
         )
 
         self.view._bytes_obj.seek(0)
-        file_ = discord.File(self.view._bytes_obj, filename="check-in.webp")
+        file_ = discord.File(self.view._bytes_obj, filename="check-in.png")
 
         await i.edit_original_response(embed=embed, attachments=[file_])
         embed = client.get_daily_reward_embed(

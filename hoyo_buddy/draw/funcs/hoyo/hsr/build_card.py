@@ -413,5 +413,5 @@ def draw_hsr_build_card(
     # im.paste(logo, (2075, 84), logo)
 
     bytes_obj = io.BytesIO()
-    im.save(bytes_obj, "WEBP", loseless=True)
+    im.save(bytes_obj, "PNG")
     return bytes_obj

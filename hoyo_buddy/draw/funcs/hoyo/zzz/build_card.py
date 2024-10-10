@@ -343,5 +343,5 @@ class ZZZAgentCard:
             start_pos = (3091, 709) if i == 4 else (start_pos[0], start_pos[1] + 106)
 
         buffer = BytesIO()
-        im.save(buffer, "WEBP", loseless=True)
+        im.save(buffer, "PNG")
         return buffer

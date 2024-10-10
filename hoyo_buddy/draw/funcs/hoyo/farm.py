@@ -134,5 +134,5 @@ def draw_farm_card(
         y += card.height + card_height_offset + y_padding_between_cards
 
     buffer = io.BytesIO()
-    background.save(buffer, format="WEBP", loseless=True)
+    background.save(buffer, format="PNG")
     return buffer

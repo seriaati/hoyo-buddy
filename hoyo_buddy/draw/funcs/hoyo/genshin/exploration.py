@@ -439,5 +439,5 @@ class ExplorationCard:
         self._im.paste(enka, (868, 2170), enka)
 
         buffer = BytesIO()
-        self._im.save(buffer, format="WEBP", loseless=True)
+        self._im.save(buffer, format="PNG")
         return buffer

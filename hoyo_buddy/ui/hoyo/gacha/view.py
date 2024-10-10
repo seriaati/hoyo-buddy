@@ -114,7 +114,7 @@ class ViewGachaLogView(View):
 
         if len(five_stars) == 1:
             if five_stars[0].item_id in STANDARD_ITEMS[self.account.game]:
-                return 0, 1
+                return 0, 0
             # If the only 5-star is not a standard item, it is considered a win
             return 1, 1
 
@@ -127,7 +127,7 @@ class ViewGachaLogView(View):
             if not is_standard and not is_standards[i - 1]:
                 win += 1
 
-        return win, len(five_stars) - 1
+        return win, sum(is_standards)
 
     async def guaranteed(self) -> bool:
         gacha = (

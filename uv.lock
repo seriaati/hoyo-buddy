@@ -752,11 +752,15 @@ wheels = [
 
 [[package]]
 name = "genshin"
-version = "1.7.1"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#7759703e954e91c01564a05a4aa0bfd49ca75efc" }
+version = "1.7.2"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/02/2d/d45472ab315da2d2a99f14d33ff14f283203b6105b1b7629ed7ff2de37f0/genshin-1.7.2.tar.gz", hash = "sha256:e960636a1c695f3acff3eee6658a3eaa28f19506fbfb3e9ee49f0a660d8088b8", size = 223850 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a9/6b/2e14b4fc869be952af43f2e246e10dab9df297599608692c8e9aaa5ac03c/genshin-1.7.2-py3-none-any.whl", hash = "sha256:585dd9d1454f8b8f7d14bcf64af809b87ec95dbcfd613195e07ec98d08b680f0", size = 147815 },
 ]
 
 [package.optional-dependencies]
@@ -880,7 +884,7 @@ requires-dist = [
     { name = "fake-useragent", specifier = ">=1.5.1" },
     { name = "flet", specifier = ">=0.24.0" },
     { name = "fonttools", specifier = ">=4.53.1" },
-    { name = "genshin", extras = ["auth", "socks-proxy", "sqlite"], git = "https://github.com/thesadru/genshin.py?branch=master" },
+    { name = "genshin", extras = ["auth", "socks-proxy", "sqlite"], specifier = ">=1.7.2" },
     { name = "gitpython", specifier = ">=3.1.43" },
     { name = "hakushin-py", specifier = ">=0.4.4" },
     { name = "jishaku", specifier = ">=2.5.2" },

@@ -169,12 +169,14 @@ class LeaderboardCommand:
             locale=locale,
         )
 
-        embed = DefaultEmbed(
-            locale, i.client.translator, title=LocaleStr(key=lb_type.value)
-        ).set_author(name=EnumStr(account.game), icon_url=get_game_icon(account.game))
+        lb_size = await self.get_lb_size(lb_type, account.game)
+        embed = (
+            DefaultEmbed(locale, i.client.translator, title=EnumStr(lb_type))
+            .set_author(name=EnumStr(account.game), icon_url=get_game_icon(account.game))
+            .set_footer(text=LocaleStr(key="akasha_total_entries", total=lb_size))
+        )
 
         you = await Leaderboard.get_or_none(type=lb_type, game=account.game, uid=account.uid)
-        lb_size = await self.get_lb_size(lb_type, account.game)
 
         view = LbPaginator(
             embed,

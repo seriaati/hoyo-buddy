@@ -9,6 +9,7 @@ import genshin
 from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
+from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME
 from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount, User
 from hoyo_buddy.embeds import DefaultEmbed, Embed, ErrorEmbed
 
@@ -28,18 +29,28 @@ MAX_API_ERROR_COUNT = 10
 class DailyCheckin:
     _total_checkin_count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
+    _no_error_notify: ClassVar[bool]
 
     @classmethod
-    async def execute(cls, bot: HoyoBuddy) -> None:
+    async def execute(
+        cls, bot: HoyoBuddy, *, game: genshin.Game | None = None, no_error_notify: bool = False
+    ) -> None:
         try:
             logger.info("Daily check-in started")
 
             cls._total_checkin_count = 0
             cls._bot = bot
+            cls._no_error_notify = no_error_notify
 
             queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
             the_rest: list[HoyoAccount] = []
-            accounts = await HoyoAccount.filter(daily_checkin=True).all()
+            if game is None:
+                accounts = await HoyoAccount.filter(daily_checkin=True).all()
+            else:
+                accounts = await HoyoAccount.filter(
+                    daily_checkin=True, game=GPY_GAME_TO_HB_GAME[game]
+                )
+
             for account in accounts:
                 if account.region is genshin.Region.OVERSEAS:
                     await queue.put(account)
@@ -123,9 +134,11 @@ class DailyCheckin:
             if notif_settings is None:
                 notif_settings = await AccountNotifSettings.create(account=account)
 
-            if (isinstance(embed, ErrorEmbed) and notif_settings.notify_on_checkin_failure) or (
-                isinstance(embed, DefaultEmbed) and notif_settings.notify_on_checkin_success
-            ):
+            if (
+                isinstance(embed, ErrorEmbed)
+                and notif_settings.notify_on_checkin_failure
+                and not cls._no_error_notify
+            ) or (isinstance(embed, DefaultEmbed) and notif_settings.notify_on_checkin_success):
                 await cls._bot.dm_user(account.user.id, embed=embed)
         except Exception as e:
             cls._bot.capture_exception(e)

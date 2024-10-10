@@ -35,7 +35,7 @@ class LbPaginator(PaginatorView):
         locale: Locale,
         translator: Translator,
     ) -> None:
-        super().__init__([], author=author, locale=locale, translator=translator)
+        super().__init__({}, author=author, locale=locale, translator=translator)
 
         self.lb_embed = embed
         self.you = you
@@ -94,9 +94,7 @@ class LbPaginator(PaginatorView):
         if not i.response.is_done():
             await i.response.defer(ephemeral=ephemeral)
 
-        try:
-            self._pages[self._current_page]
-        except IndexError:
-            self._pages.insert(self._current_page, await self.fetch_page())
+        if self._current_page not in self._pages:
+            self._pages[self._current_page] = await self.fetch_page()
 
         return await super()._update_page(i, followup=followup, ephemeral=ephemeral)

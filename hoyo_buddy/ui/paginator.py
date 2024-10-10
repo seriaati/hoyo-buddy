@@ -25,7 +25,7 @@ class Page:
 class PaginatorView(View):
     def __init__(
         self,
-        pages: list[Page],
+        pages: dict[int, Page] | list[Page],
         *,
         author: discord.User | discord.Member | None,
         locale: discord.Locale,

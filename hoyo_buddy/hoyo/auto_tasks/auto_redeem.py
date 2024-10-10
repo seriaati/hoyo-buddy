@@ -149,15 +149,12 @@ class AutoRedeem:
                     msg = f"Auto redeem API {api_name} failed for {api_error_count} accounts"
                     raise RuntimeError(msg) from None
             else:
-                if embed is None:
-                    queue.task_done()
-                    continue
-
-                cls._total_redeem_count += 1
-                try:
-                    await cls._bot.dm_user(account.user.id, embed=embed)
-                except Exception as e:
-                    cls._bot.capture_exception(e)
+                if embed is not None:
+                    cls._total_redeem_count += 1
+                    try:
+                        await cls._bot.dm_user(account.user.id, embed=embed)
+                    except Exception as e:
+                        cls._bot.capture_exception(e)
             finally:
                 queue.task_done()
 

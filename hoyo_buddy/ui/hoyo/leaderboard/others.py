@@ -89,12 +89,15 @@ class LbPaginator(PaginatorView):
         return Page(embed=self.get_page_embed(self.lbs))
 
     async def _update_page(
-        self, i: Interaction, *, followup: bool = False, ephemeral: bool = False
+        self,
+        i: Interaction,
+        *,
+        type_: Literal["next", "prev", "first", "last", "start"],
+        followup: bool = False,
+        ephemeral: bool = False,
     ) -> None:
         if not i.response.is_done():
             await i.response.defer(ephemeral=ephemeral)
 
-        if self._current_page not in self._pages:
-            self._pages[self._current_page] = await self.fetch_page()
-
-        return await super()._update_page(i, followup=followup, ephemeral=ephemeral)
+        self._pages[self._current_page] = await self.fetch_page()
+        return await super()._update_page(i, type_=type_, followup=followup, ephemeral=ephemeral)

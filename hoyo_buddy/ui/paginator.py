@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 import discord
 from attr import dataclass
@@ -63,7 +63,12 @@ class PaginatorView(View):
         """Method to create a file for the current page. Implemented by subclasses."""
 
     async def _update_page(
-        self, i: Interaction, *, followup: bool = False, ephemeral: bool = False
+        self,
+        i: Interaction,
+        *,
+        type_: Literal["next", "prev", "first", "last", "start"],  # noqa: ARG002
+        followup: bool = False,
+        ephemeral: bool = False,
     ) -> None:
         if not i.response.is_done():
             await i.response.defer(ephemeral=ephemeral)
@@ -99,24 +104,24 @@ class PaginatorView(View):
 
     async def _next_page(self, i: Interaction) -> None:
         self._current_page = min(self._current_page + 1, self._max_page)
-        await self._update_page(i)
+        await self._update_page(i, type_="next")
 
     async def _previous_page(self, i: Interaction) -> None:
         self._current_page = max(self._current_page - 1, 0)
-        await self._update_page(i)
+        await self._update_page(i, type_="prev")
 
     async def _first_page(self, i: Interaction) -> None:
         self._current_page = 0
-        await self._update_page(i)
+        await self._update_page(i, type_="first")
 
     async def _last_page(self, i: Interaction) -> None:
         self._current_page = self._max_page - 1
-        await self._update_page(i)
+        await self._update_page(i, type_="last")
 
     async def start(
         self, i: Interaction, *, followup: bool = False, ephemeral: bool = False
     ) -> None:
-        await self._update_page(i, followup=followup, ephemeral=ephemeral)
+        await self._update_page(i, type_="start", followup=followup, ephemeral=ephemeral)
 
 
 class NextButton(Button[PaginatorView]):

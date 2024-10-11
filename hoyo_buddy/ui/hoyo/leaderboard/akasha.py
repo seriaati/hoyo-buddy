@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 import akasha
 
@@ -28,7 +28,7 @@ class AkashaLbPaginator(PaginatorView):
         locale: Locale,
         translator: Translator,
     ) -> None:
-        super().__init__([], author=author, locale=locale, translator=translator)
+        super().__init__({}, author=author, locale=locale, translator=translator)
 
         self.calculation_id = calculation_id
         self.lb_embed = lb_embed
@@ -63,27 +63,33 @@ class AkashaLbPaginator(PaginatorView):
             name="---", value="\n".join(self.get_lb_line(lb) for lb in lbs), inline=False
         )
 
-    async def fetch_page(self) -> Page:
+    async def fetch_page(self, type_: Literal["next", "prev", "first", "last", "start"]) -> Page:
+        if type_ in {"first", "start"}:
+            p = ""
+        elif type_ == "last":
+            p = "gt|-100000000"
+        elif type_ == "prev":
+            p = f"gt|{self.lbs[0].calculation.result}"
+        else:
+            p = f"lt|{self.lbs[-1].calculation.result}"
+
         async with akasha.AkashaAPI() as api:
             self.lbs = await api._fetch_leaderboards(
-                int(self.calculation_id),
-                self._current_page + 1,
-                10,
-                f"lt|{self.lbs[-1].calculation.result}" if self.lbs else "",
-                True,
+                int(self.calculation_id), self._current_page + 1, 10, p, True
             )
 
         return Page(embed=self.get_page_embed(self.lbs))
 
     async def _update_page(
-        self, i: Interaction, *, followup: bool = False, ephemeral: bool = False
+        self,
+        i: Interaction,
+        *,
+        type_: Literal["next", "prev", "first", "last", "start"],
+        followup: bool = False,
+        ephemeral: bool = False,
     ) -> None:
         if not i.response.is_done():
             await i.response.defer(ephemeral=ephemeral)
 
-        try:
-            self._pages[self._current_page]
-        except IndexError:
-            self._pages.insert(self._current_page, await self.fetch_page())
-
-        return await super()._update_page(i, followup=followup, ephemeral=ephemeral)
+        self._pages[self._current_page] = await self.fetch_page(type_)
+        return await super()._update_page(i, type_=type_, followup=followup, ephemeral=ephemeral)

@@ -5,7 +5,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
 import genshin  # noqa: TCH002
-from discord import ButtonStyle, Locale, TextStyle, ui
+from discord import ButtonStyle, TextStyle, ui
 from discord.ext import commands
 from loguru import logger
 from seria.utils import write_json
@@ -257,13 +257,7 @@ class Admin(commands.Cog):
             logger.info(f"Updating leaderboard data for {account}")
             for lb_type in game_lb_types.get(account.game, ()):
                 try:
-                    await cmd.update_lb_data(
-                        translator=self.bot.translator,
-                        pool=self.bot.pool,
-                        lb_type=lb_type,
-                        account=account,
-                        locale=Locale.american_english,
-                    )
+                    await cmd.update_lb_data(pool=self.bot.pool, lb_type=lb_type, account=account)
                 except Exception as e:
                     self.bot.capture_exception(e)
 

@@ -8,7 +8,7 @@ from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.exceptions import FeatureNotImplementedError, LeaderboardNotFoundError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.icons import get_game_icon
-from hoyo_buddy.l10n import EnumStr, LocaleStr, Translator
+from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.ui.hoyo.leaderboard.others import LbPaginator
 from hoyo_buddy.utils import ephemeral
 
@@ -17,7 +17,6 @@ if TYPE_CHECKING:
 
     import genshin
     from asyncpg import Pool
-    from discord import Locale
 
     from hoyo_buddy.types import Interaction
 
@@ -161,13 +160,7 @@ class LeaderboardCommand:
         account = account or await i.client.get_account(
             i.user.id, self.get_games_by_lb_type(lb_type)
         )
-        character_names = await self.update_lb_data(
-            translator=i.client.translator,
-            pool=i.client.pool,
-            lb_type=lb_type,
-            account=account,
-            locale=locale,
-        )
+        await self.update_lb_data(pool=i.client.pool, lb_type=lb_type, account=account)
 
         lb_size = await self.get_lb_size(lb_type, account.game)
         embed = (
@@ -177,6 +170,10 @@ class LeaderboardCommand:
         )
 
         you = await Leaderboard.get_or_none(type=lb_type, game=account.game, uid=account.uid)
+
+        async with AmbrAPIClient(locale, i.client.translator) as api:
+            characters = await api.fetch_characters()
+            character_names = {char.id: char.name for char in characters}
 
         view = LbPaginator(
             embed,
@@ -194,13 +191,7 @@ class LeaderboardCommand:
         await view.start(i)
 
     async def update_lb_data(
-        self,
-        *,
-        translator: Translator,
-        pool: Pool,
-        lb_type: LeaderboardType,
-        account: HoyoAccount,
-        locale: Locale,
+        self, *, pool: Pool, lb_type: LeaderboardType, account: HoyoAccount
     ) -> dict[str, str] | None:
         if lb_type in {LeaderboardType.ABYSS_DMG, LeaderboardType.THEATER_DMG}:
             character = await self.fetch_character_by_lb_type(account, lb_type)
@@ -208,18 +199,13 @@ class LeaderboardCommand:
             if character is None:
                 value = 0
                 extra_info = None
-                character_names = None
             else:
                 value = character.value
                 extra_info = {"id": character.id, "icon": character.icon}
 
-                async with AmbrAPIClient(locale, translator) as api:
-                    characters = await api.fetch_characters()
-                    character_names = {char.id: char.name for char in characters}
         else:
             value = await self.fetch_value_by_lb_type(account, lb_type)
             extra_info = None
-            character_names = None
 
         if value > 0:
             await Leaderboard.update_or_create(
@@ -231,5 +217,3 @@ class LeaderboardCommand:
                 extra_info=extra_info,
             )
             await update_lb_ranks(pool, game=account.game, type_=lb_type, order=LB_ORDERS[lb_type])
-
-        return character_names

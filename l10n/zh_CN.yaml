@@ -489,6 +489,7 @@ img_theater_legend_block_support_chara: 助演角色
 img_theater_legend_block_trial_chara: 试用角色
 img_theater_act_block_title: "第 {act} 幕"
 img_theater_max_damage: "最高伤害输出: {val}"
+img_theater_fastest_team: " (最快)"
 challenge_view.view_buffs: 查看增益
 challenge_view.buff_select.placeholder: 选择一项增益来查看…
 battery_charge_button.label: 电量
@@ -701,3 +702,5 @@ lb_view_command_description: 查看排行榜
 leaderboard_not_found: 未能找到该排行榜
 not_supported_by_enka_error_title: 尚未受到 Enka Network 支援
 not_supported_by_enka_error_message: "{game}尚未受到 [Enka Network](https://enka.cc) 支援，因此你无法单靠 UID 来搜寻一个玩家的资料。请使用 </accounts> 指令新增一个{game}帐号，并再试一次。"
+currently_logged_in_as: "你目前登入的身份为:"
+not_you_label: "不是你吗? 点击以使用其他帐户登入"

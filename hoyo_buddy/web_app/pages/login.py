@@ -56,22 +56,25 @@ class LoginPage(ft.View):
                                     ),
                                     title=ft.Text(user_data["username"]),
                                 ),
-                                ft.Row(
-                                    [
-                                        ft.FilledButton(
-                                            translator.translate(
-                                                LocaleStr(key="continue_button_label"), locale
+                                ft.Container(
+                                    ft.Column(
+                                        [
+                                            ft.FilledButton(
+                                                translator.translate(
+                                                    LocaleStr(key="continue_button_label"), locale
+                                                ),
+                                                on_click=self.on_continue_button_click,
                                             ),
-                                            on_click=self.on_continue_button_click,
-                                        ),
-                                        ft.FilledTonalButton(
-                                            translator.translate(
-                                                LocaleStr(key="not_you_label"), locale
+                                            ft.TextButton(
+                                                translator.translate(
+                                                    LocaleStr(key="not_you_label"), locale
+                                                ),
+                                                on_click=self.on_login_button_click,
                                             ),
-                                            on_click=self.on_login_button_click,
-                                            icon=ft.icons.DISCORD,
-                                        ),
-                                    ]
+                                        ],
+                                        spacing=8,
+                                    ),
+                                    margin=ft.margin.only(top=8),
                                 ),
                             ]
                         )

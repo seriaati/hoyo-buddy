@@ -197,7 +197,7 @@ class GITeamCard:
                 )
 
                 # Weapon name
-                font = drawer._get_font(19, "medium", locale=Locale(self._locale))
+                font = drawer.get_font(19, "medium", locale=Locale(self._locale))
                 texts = drawer._wrap_text(weapon.name, max_width=74, max_lines=2, font=font).split(
                     "\n"
                 )

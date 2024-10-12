@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import pathlib
-from typing import TYPE_CHECKING, Final, Literal, NamedTuple, TypeAlias
+from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
 
-import discord
 from cachetools import TTLCache
+from discord import Locale
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
@@ -60,32 +60,83 @@ class TextBBox(NamedTuple):
         return self.bottom - self.top
 
 
-FONT_MAPPING: dict[discord.Locale, dict[FontStyle, str]] = {
-    discord.Locale.chinese: {
+SUPPORTED_BY_NUNITO: tuple[Locale, ...] = (
+    Locale.american_english,
+    Locale.british_english,
+    Locale.bulgarian,
+    Locale.croatian,
+    Locale.czech,
+    Locale.indonesian,
+    Locale.danish,
+    Locale.dutch,
+    Locale.finnish,
+    Locale.french,
+    Locale.german,
+    Locale.hungarian,
+    Locale.italian,
+    Locale.latin_american_spanish,
+    Locale.lithuanian,
+    Locale.norwegian,
+    Locale.polish,
+    Locale.brazil_portuguese,
+    Locale.romanian,
+    Locale.russian,
+    Locale.spain_spanish,
+    Locale.swedish,
+    Locale.turkish,
+    Locale.ukrainian,
+    Locale.vietnamese,
+)
+SUPPORTED_BY_GOTHIC: tuple[Locale, ...] = (
+    Locale.american_english,
+    Locale.british_english,
+    Locale.bulgarian,
+    Locale.indonesian,
+    Locale.danish,
+    Locale.dutch,
+    Locale.finnish,
+    Locale.french,
+    Locale.german,
+    Locale.italian,
+    Locale.latin_american_spanish,
+    Locale.norwegian,
+    Locale.brazil_portuguese,
+    Locale.russian,
+    Locale.spain_spanish,
+    Locale.swedish,
+)
+
+FontMapping: TypeAlias = dict[tuple[Locale, ...] | Locale, dict[FontStyle, str]]
+
+DEFAULT_FONT_MAPPING: FontMapping = {
+    (Locale.chinese, Locale.taiwan_chinese): {
         "light": GENSENROUNDEDTW_LIGHT,
         "regular": GENSENROUNDEDTW_REGULAR,
         "medium": GENSENROUNDEDTW_MEDIUM,
         "bold": GENSENROUNDEDTW_BOLD,
     },
-    discord.Locale.taiwan_chinese: {
-        "light": GENSENROUNDEDTW_LIGHT,
-        "regular": GENSENROUNDEDTW_REGULAR,
-        "medium": GENSENROUNDEDTW_MEDIUM,
-        "bold": GENSENROUNDEDTW_BOLD,
-    },
-    discord.Locale.japanese: {
+    Locale.japanese: {
         "light": MPLUSROUNDED1C_LIGHT,
         "regular": MPLUSROUNDED1C_REGULAR,
         "medium": MPLUSROUNDED1C_MEDIUM,
         "bold": MPLUSROUNDED1C_BOLD,
+        "black": MPLUSROUNDED1C_BLACK,
     },
-    discord.Locale.korean: {
+    Locale.korean: {
         "light": NOTOSANSKR_LIGHT,
         "regular": NOTOSANSKR_REGULAR,
         "medium": NOTOSANSKR_MEDIUM,
         "bold": NOTOSANSKR_BOLD,
+        "black": NOTOSANSKR_BLACK,
     },
-    discord.Locale.american_english: {
+    Locale.thai: {
+        "light": NOTOSANSTHAI_LIGHT,
+        "regular": NOTOSANSTHAI_REGULAR,
+        "medium": NOTOSANSTHAI_MEDIUM,
+        "bold": NOTOSANSTHAI_BOLD,
+        "black": NOTOSANSTHAI_BLACK,
+    },
+    SUPPORTED_BY_NUNITO: {
         "light": NUNITO_LIGHT,
         "regular": NUNITO_REGULAR,
         "medium": NUNITO_MEDIUM,
@@ -99,42 +150,64 @@ FONT_MAPPING: dict[discord.Locale, dict[FontStyle, str]] = {
     },
 }
 
-SANS_FONT_MAPPING: Final[dict[FontStyle, str]] = {
-    "light": NUNITO_SANS_LIGHT,
-    "regular": NUNITO_SANS_REGULAR,
-    "medium": NUNITO_SANS_MEDIUM,
-    "bold": NUNITO_SANS_BOLD,
-    "black": NUNITO_SANS_BLACK,
-    "light_italic": NUNITO_SANS_LIGHT_ITALIC,
-    "regular_italic": NUNITO_SANS_REGULAR_ITALIC,
-    "medium_italic": NUNITO_SANS_MEDIUM_ITALIC,
-    "bold_italic": NUNITO_SANS_BOLD_ITALIC,
-    "black_italic": NUNITO_SANS_BLACK_ITALIC,
-}
-
-GOTHIC_FONT_MAPPING: Final[dict[FontStyle, str]] = {
-    "light": ZENMARUGOTHIC_LIGHT,
-    "regular": ZENMARUGOTHIC_REGULAR,
-    "medium": ZENMARUGOTHIC_MEDIUM,
-    "bold": ZENMARUGOTHIC_BOLD,
-    "black": ZENMARUGOTHIC_BLACK,
-}
-
-FALLBACK_FONT_MAPPING: Final[dict[discord.Locale, dict[FontStyle, str]]] = {
-    discord.Locale.taiwan_chinese: {
-        "light": NOTOSANSTC_LIGHT,
-        "regular": NOTOSANSTC_REGULAR,
-        "medium": NOTOSANSTC_MEDIUM,
-        "bold": NOTOSANSTC_BOLD,
-        "black": NOTOSANSTC_BLACK,
-    },
-    discord.Locale.chinese: {
+SANS_FONT_MAPPING: FontMapping = {
+    Locale.chinese: {
         "light": NOTOSANSSC_LIGHT,
         "regular": NOTOSANSSC_REGULAR,
         "medium": NOTOSANSSC_MEDIUM,
         "bold": NOTOSANSSC_BOLD,
         "black": NOTOSANSSC_BLACK,
     },
+    Locale.taiwan_chinese: {
+        "light": NOTOSANSTC_LIGHT,
+        "regular": NOTOSANSTC_REGULAR,
+        "medium": NOTOSANSTC_MEDIUM,
+        "bold": NOTOSANSTC_BOLD,
+        "black": NOTOSANSTC_BLACK,
+    },
+    Locale.japanese: {
+        "light": NOTOSANSJP_LIGHT,
+        "regular": NOTOSANSJP_REGULAR,
+        "medium": NOTOSANSJP_MEDIUM,
+        "bold": NOTOSANSJP_BOLD,
+        "black": NOTOSANSJP_BLACK,
+    },
+    Locale.korean: {
+        "light": NOTOSANSKR_LIGHT,
+        "regular": NOTOSANSKR_REGULAR,
+        "medium": NOTOSANSKR_MEDIUM,
+        "bold": NOTOSANSKR_BOLD,
+        "black": NOTOSANSKR_BLACK,
+    },
+    Locale.thai: {
+        "light": NOTOSANSTHAI_LIGHT,
+        "regular": NOTOSANSTHAI_REGULAR,
+        "medium": NOTOSANSTHAI_MEDIUM,
+        "bold": NOTOSANSTHAI_BOLD,
+        "black": NOTOSANSTHAI_BLACK,
+    },
+    SUPPORTED_BY_NUNITO: {
+        "light": NUNITO_SANS_LIGHT,
+        "regular": NUNITO_SANS_REGULAR,
+        "medium": NUNITO_SANS_MEDIUM,
+        "bold": NUNITO_SANS_BOLD,
+        "black": NUNITO_SANS_BLACK,
+        "light_italic": NUNITO_SANS_LIGHT_ITALIC,
+        "regular_italic": NUNITO_SANS_REGULAR_ITALIC,
+        "medium_italic": NUNITO_SANS_MEDIUM_ITALIC,
+        "bold_italic": NUNITO_SANS_BOLD_ITALIC,
+        "black_italic": NUNITO_SANS_BLACK_ITALIC,
+    },
+}
+
+GOTHIC_FONT_MAPPING: FontMapping = {
+    SUPPORTED_BY_GOTHIC: {
+        "light": ZENMARUGOTHIC_LIGHT,
+        "regular": ZENMARUGOTHIC_REGULAR,
+        "medium": ZENMARUGOTHIC_MEDIUM,
+        "bold": ZENMARUGOTHIC_BOLD,
+        "black": ZENMARUGOTHIC_BLACK,
+    }
 }
 
 image_cache: TTLCache[pathlib.Path, Image.Image] = TTLCache(maxsize=128, ttl=300)
@@ -147,7 +220,7 @@ class Drawer:
         *,
         folder: str,
         dark_mode: bool,
-        locale: discord.Locale = discord.Locale.american_english,
+        locale: Locale = Locale.american_english,
         translator: Translator | None = None,
         sans: bool | None = None,
     ) -> None:
@@ -368,62 +441,57 @@ class Drawer:
             WHITE if self.dark_mode else BLACK, EMPHASIS_OPACITY[emphasis]
         )
 
-    def _get_font_path(
+    def get_font(
         self,
+        size: int,
         style: FontStyle,
         *,
-        locale: discord.Locale | None = None,
+        locale: Locale | None = None,
         sans: bool = False,
         gothic: bool = False,
-        fallback: bool = False,
-    ) -> str:
-        default_locale = discord.Locale.american_english
+    ) -> ImageFont.FreeTypeFont:
         sans = self.sans or sans
-
         locale = locale or self.locale
-        if locale is discord.Locale.british_english:
-            locale = discord.Locale.american_english
 
         if sans and gothic:
             msg = "Cannot use sans and gothic fonts at the same time"
             raise ValueError(msg)
 
-        if sans and locale is default_locale:
-            font_map = SANS_FONT_MAPPING
-        elif gothic and locale is default_locale:
-            font_map = GOTHIC_FONT_MAPPING
-        elif fallback and locale in FALLBACK_FONT_MAPPING:
-            font_map = FALLBACK_FONT_MAPPING[locale]
+        if sans:
+            mapping = SANS_FONT_MAPPING
+        elif gothic:
+            mapping = GOTHIC_FONT_MAPPING
         else:
-            font_map = FONT_MAPPING.get(locale, FONT_MAPPING[default_locale])
+            mapping = DEFAULT_FONT_MAPPING
 
-        if style.startswith("black") and style not in font_map:
-            style = style.replace("black", "bold")  # pyright: ignore [reportAssignmentType]
-        if style.endswith("_italic") and style not in font_map:
-            # Can't find italic version, use regular instead
-            style = style.replace("_italic", "")  # pyright: ignore [reportAssignmentType]
+        font_map = None
+        font_map = self.find_font_mapping(locale, mapping)
 
-        font_path = font_map.get(style)
-        if font_path is None:
-            msg = f"Unable to find font style for {style} in {locale} locale"
+        if font_map is None:
+            font_map = self.find_font_mapping(locale, DEFAULT_FONT_MAPPING)
+
+        if font_map is None:
+            msg = f"Unable to find font mapping for locale={locale}, sans={sans}, gothic={gothic}"
             raise ValueError(msg)
 
-        return font_path
+        if style.startswith("black") and style not in font_map:
+            # Can't find black variant, use bold instead
+            style = style.replace("black", "bold")  # pyright: ignore [reportAssignmentType]
+        if style.endswith("_italic") and style not in font_map:
+            # Can't find italic variant, use regular instead
+            style = style.replace("_italic", "")  # pyright: ignore [reportAssignmentType]
 
-    def _get_font(
-        self,
-        size: int,
-        style: FontStyle,
-        *,
-        locale: discord.Locale | None = None,
-        sans: bool = False,
-        gothic: bool = False,
-        fallback: bool = False,
-    ) -> ImageFont.FreeTypeFont:
-        return ImageFont.truetype(
-            self._get_font_path(style, locale=locale, sans=sans, gothic=gothic, fallback=fallback),
-            size,
-        )
+        return ImageFont.truetype(font_map[style], size)
+
+    def find_font_mapping(
+        self, locale: Locale, mapping: FontMapping
+    ) -> dict[FontStyle, str] | None:
+        font_map = None
+        for locales, font_map_ in mapping.items():
+            if (isinstance(locales, tuple) and locale in locales) or locale == locales:
+                font_map = font_map_
+                break
+        return font_map
 
     @staticmethod
     def open_image(
@@ -458,7 +526,7 @@ class Drawer:
         anchor: str | None = None,
         max_width: int | None = None,
         max_lines: int = 1,
-        locale: discord.Locale | None = None,
+        locale: Locale | None = None,
         no_write: bool = False,
         title_case: bool = False,
         sans: bool = False,
@@ -483,11 +551,11 @@ class Drawer:
                 text, locale or self.locale, title_case=title_case
             )
 
-        font = self._get_font(size, style, locale=locale, sans=sans, gothic=gothic)
+        font = self.get_font(size, style, locale=locale, sans=sans, gothic=gothic)
         tt_font = TTFont(font.path)
 
         if any(not self.has_glyph(tt_font, char) for char in translated_text):
-            font = self._get_font(size, style, locale=locale, fallback=True)
+            font = self.get_font(size, style, locale=locale)
 
         if max_width is not None:
             translated_text = self._wrap_text(

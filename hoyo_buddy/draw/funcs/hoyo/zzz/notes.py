@@ -35,12 +35,13 @@ def draw_zzz_notes(
         dark_mode=dark_mode,
         translator=translator,
         locale=discord.Locale(locale_),
+        sans=True,
     )
 
     # Title
-    drawer.write(
-        LocaleStr(key="notes-card.zzz.title"), size=84, style="black_italic", position=(76, 44)
-    )
+    title = LocaleStr(key="notes-card.zzz.title").translate(translator, discord.Locale(locale_))
+    size = drawer.calc_dynamic_fontsize(title, 899, 84, drawer.get_font(84, "black_italic"))
+    drawer.write(title, size=size, style="black_italic", position=(76, 44))
 
     # Battery charge
     drawer.write(

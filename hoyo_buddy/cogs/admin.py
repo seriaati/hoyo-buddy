@@ -196,7 +196,7 @@ class Admin(commands.Cog):
 
         guild_count = len(self.bot.guilds)
         await ctx.send(
-            f"Guilds: {guild_count}\nAccounts by region:\n```{acc_region_msg}```\nAccounts by game:\n```{acc_game_msg}```"
+            f"Guilds: {guild_count}\nAccounts by region:\n```{acc_region_msg}```\nAccounts by game:\n```{acc_game_msg}```\nTotal accounts: {len(accs)}"
         )
 
         # User metrics

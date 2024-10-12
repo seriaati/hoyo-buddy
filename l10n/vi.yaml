@@ -489,6 +489,7 @@ img_theater_legend_block_support_chara: Nhân Vật Hỗ Trợ
 img_theater_legend_block_trial_chara: Nhân Vật Dùng Thử
 img_theater_act_block_title: "Màn {act}"
 img_theater_max_damage: "Gây Nhiều Sát Thương Nhất: {val}"
+img_theater_fastest_team: "(nhanh nhất)"
 challenge_view.view_buffs: Xem Buff
 challenge_view.buff_select.placeholder: Chọn Buff để xem
 battery_charge_button.label: Điện Lượng
@@ -701,3 +702,5 @@ lb_view_command_description: Xem bảng xếp hạng
 leaderboard_not_found: Bảng xếp hạng không tìm thấy
 not_supported_by_enka_error_title: Chưa hỗ trợ bởi Enka Network
 not_supported_by_enka_error_message: "{game} chưa được hỗ trợ bỡi [Enka Network](https://enka.cc), snên bạn không thể truy vấn dữ liệu của người chơi chỉ bằng UID. Vui lòng thêm tài khoản {game} bằng lệnh </accounts> và thử lại."
+currently_logged_in_as: "Bạn hiện đang đăng nhập với tư cách:"
+not_you_label: "Không phải bạn? Nhấn để đăng nhập bằng tài khoản khác"

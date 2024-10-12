@@ -703,4 +703,4 @@ leaderboard_not_found: Leaderboard not found
 not_supported_by_enka_error_title: Not Supported by Enka Network Yet
 not_supported_by_enka_error_message: "{game} is not supported by [Enka Network](https://enka.cc) yet, so you cannot query a player's data with only the UID. Please add a {game} account with </accounts> and try again."
 currently_logged_in_as: "You are currently signed in as:"
-not_you_label: Not you? Sign in with a different account
+not_you_label: "Not you? Sign in with a different account"

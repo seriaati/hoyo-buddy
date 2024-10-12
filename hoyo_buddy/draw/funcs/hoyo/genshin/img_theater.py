@@ -102,11 +102,25 @@ class ImgTheaterCard:
         )
 
     def _draw_act_block(self, act: genshin.models.Act, pos: tuple[int, int]) -> None:
+        if hasattr(self._theater, "battle_stats"):
+            fastest_charas = self._theater.battle_stats.fastest_character_list
+            is_fastest = [chara.id for chara in fastest_charas] == [
+                chara.id for chara in act.characters
+            ]
+            if is_fastest:
+                fastest_text = LocaleStr(key="img_theater_fastest_team").translate(
+                    self._translator, self.locale
+                )
+            else:
+                fastest_text = ""
+        else:
+            fastest_text = ""
+
+        title = LocaleStr(key="img_theater_act_block_title", act=act.round_id).translate(
+            self._translator, self.locale
+        )
         self._drawer.write(
-            LocaleStr(key="img_theater_act_block_title", act=act.round_id),
-            size=32,
-            style="bold",
-            position=(pos[0] + 21, pos[1] + 10),
+            title + fastest_text, size=32, style="bold", position=(pos[0] + 21, pos[1] + 10)
         )
 
         medal = (

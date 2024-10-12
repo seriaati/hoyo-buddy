@@ -489,6 +489,7 @@ img_theater_legend_block_support_chara: Support Character
 img_theater_legend_block_trial_chara: Trial Character
 img_theater_act_block_title: "Act {act}"
 img_theater_max_damage: "Most Damage Dealt: {val}"
+img_theater_fastest_team: " (fastest)"
 challenge_view.view_buffs: View buffs
 challenge_view.buff_select.placeholder: Select a buff to view...
 battery_charge_button.label: Battery charge

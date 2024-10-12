@@ -322,8 +322,9 @@ class WebApp:
         page = self._page
 
         if route == "/login":
+            user_data = await self.fetch_user_data()
             return pages.LoginPage(
-                translator=self._translator, locale=Locale(parsed_params["locale"])
+                user_data, translator=self._translator, locale=Locale(parsed_params["locale"])
             )
 
         if route == "/geetest":
@@ -559,6 +560,47 @@ class WebApp:
 
         return result
 
+    async def fetch_user_data(self) -> dict[str, Any] | None:
+        page = self._page
+        access_token = await page.client_storage.get_async("hb.oauth_access_token")
+        if access_token is None:
+            return None
+
+        async with (
+            aiohttp.ClientSession() as session,
+            session.get(
+                "https://discord.com/api/users/@me",
+                headers={"Authorization": f"Bearer {access_token}"},
+            ) as resp,
+        ):
+            if resp.status != 200:
+                refresh_token = await page.client_storage.get_async("hb.oauth_refresh_token")
+                if refresh_token is None:
+                    return None
+
+                async with session.post(
+                    "https://discord.com/api/oauth2/token",
+                    data={
+                        "grant_type": "refresh_token",
+                        "refresh_token": refresh_token,
+                        "client_id": os.environ["DISCORD_CLIENT_ID"],
+                        "client_secret": os.environ["DISCORD_CLIENT_SECRET"],
+                    },
+                ) as refresh_resp:
+                    data = await refresh_resp.json()
+                    if refresh_resp.status != 200:
+                        return None
+
+                    access_token = data.get("access_token")
+                    if access_token is None:
+                        return None
+
+                    await page.client_storage.set_async("hb.oauth_access_token", access_token)
+
+                return await self.fetch_user_data()
+
+            return await resp.json()
+
     async def oauth_callback(self, params: dict[str, str]) -> ft.View | None:
         page = self._page
 
@@ -596,21 +638,22 @@ class WebApp:
                 if access_token is None:
                     return pages.ErrorPage(code=400, message="Missing access token")
 
-            async with session.get(
-                "https://discord.com/api/users/@me",
-                headers={"Authorization": f"Bearer {access_token}"},
-            ) as resp:
-                user_data = await resp.json()
-                if resp.status != 200:
-                    return pages.ErrorPage(
-                        code=resp.status, message=user_data.get("error") or "Unknown error"
-                    )
+                refresh_token = data.get("refresh_token")
+                if refresh_token is None:
+                    return pages.ErrorPage(code=400, message="Missing refresh token")
 
-                user_id = user_data.get("id")
-                if user_id is None:
-                    return pages.ErrorPage(code=400, message="Missing user ID")
+                await page.client_storage.set_async("hb.oauth_access_token", access_token)
+                await page.client_storage.set_async("hb.oauth_refresh_token", refresh_token)
 
-                page.session.set("hb.user_id", user_id)
+            user_data = await self.fetch_user_data()
+            if user_data is None:
+                return pages.ErrorPage(code=400, message="Failed to fetch user data")
+
+            user_id = user_data.get("id")
+            if user_id is None:
+                return pages.ErrorPage(code=400, message="Missing user ID")
+
+            page.session.set("hb.user_id", user_id)
 
         original_route = await page.client_storage.get_async("hb.original_route")
         if original_route:

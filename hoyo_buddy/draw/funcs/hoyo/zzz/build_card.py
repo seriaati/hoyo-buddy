@@ -309,10 +309,10 @@ class ZZZAgentCard:
 
         # Stats section
         stats_section = drawer.open_asset("stats_section.png")
-        im.paste(stats_section, (2685, 424), stats_section)
+        im.paste(stats_section, (2685, 360), stats_section)
 
         # Skill levels
-        start_pos = (2811, 466)
+        start_pos = (2809, 397)
         for i, skill_type in enumerate(SKILL_ORDER):
             skill = dutils.get(self._agent.skills, type=skill_type)
             if skill is None:
@@ -325,10 +325,10 @@ class ZZZAgentCard:
                 style="bold",
                 anchor="mm",
             )
-            start_pos = (2811, 466 + 98) if i == 2 else (start_pos[0] + 205, start_pos[1])
+            start_pos = (2809, 397 + 98) if i == 2 else (start_pos[0] + 205, start_pos[1])
 
         # Stats
-        start_pos = (2808, 709)
+        start_pos = (2808, 615)
         props = get_props(self._agent)
         for i, prop in enumerate(props):
             if prop is None:
@@ -340,7 +340,12 @@ class ZZZAgentCard:
                 color=(20, 20, 20),
                 style="medium",
             )
-            start_pos = (3091, 709) if i == 4 else (start_pos[0], start_pos[1] + 106)
+            start_pos = (3092, 615) if i == 5 else (start_pos[0], start_pos[1] + 106)
+        
+        dmg_bonus_prop = props[-1]
+        if dmg_bonus_prop is not None and isinstance(dmg_bonus_prop.type, PropType):
+            prop_icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[dmg_bonus_prop.type]}", size=(59, 59))
+            im.alpha_composite(prop_icon, (3004, 1145))
 
         buffer = BytesIO()
         im.save(buffer, "PNG")

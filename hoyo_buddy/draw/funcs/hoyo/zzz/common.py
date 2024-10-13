@@ -3,7 +3,13 @@ from __future__ import annotations
 from typing import Final
 
 from discord import utils as dutils
-from genshin.models import ZZZAgentProperty, ZZZFullAgent, ZZZPropertyType, ZZZSkillType
+from genshin.models import (
+    ZZZAgentProperty,
+    ZZZElementType,
+    ZZZFullAgent,
+    ZZZPropertyType,
+    ZZZSkillType,
+)
 
 STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     # Disc
@@ -29,6 +35,12 @@ STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     ZZZPropertyType.ANOMALY_MASTERY: "ANOMALY_MASTER.png",
     ZZZPropertyType.PEN_RATIO: "PEN_RATIO.png",
     ZZZPropertyType.IMPACT: "IMPACT.png",
+    # Agent DMG Bonus
+    ZZZPropertyType.PHYSICAL_DMG_BONUS: "PHYSICAL.png",
+    ZZZPropertyType.FIRE_DMG_BONUS: "FIRE.png",
+    ZZZPropertyType.ICE_DMG_BONUS: "ICE.png",
+    ZZZPropertyType.ELECTRIC_DMG_BONUS: "ELECTRIC.png",
+    ZZZPropertyType.ETHER_DMG_BONUS: "ETHER.png",
 }
 
 SKILL_ORDER: Final[tuple[ZZZSkillType, ...]] = (
@@ -41,16 +53,31 @@ SKILL_ORDER: Final[tuple[ZZZSkillType, ...]] = (
 )
 
 
-def get_props(agent: ZZZFullAgent) -> tuple[ZZZAgentProperty | None, ...]:
-    return (
+def get_props(agent: ZZZFullAgent) -> list[ZZZAgentProperty | None]:
+    result = [
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_HP),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ATK),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_DEF),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_IMPACT),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_CRIT_RATE),
+        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ANOMALY_MASTERY),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ANOMALY_PROFICIENCY),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN_RATIO),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ENERGY_GEN),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_CRIT_DMG),
-    )
+    ]
+
+    match agent.element:
+        case ZZZElementType.PHYSICAL:
+            result.append(dutils.get(agent.properties, type=ZZZPropertyType.PHYSICAL_DMG_BONUS))
+        case ZZZElementType.FIRE:
+            result.append(dutils.get(agent.properties, type=ZZZPropertyType.FIRE_DMG_BONUS))
+        case ZZZElementType.ICE:
+            result.append(dutils.get(agent.properties, type=ZZZPropertyType.ICE_DMG_BONUS))
+        case ZZZElementType.ELECTRIC:
+            result.append(dutils.get(agent.properties, type=ZZZPropertyType.ELECTRIC_DMG_BONUS))
+        case ZZZElementType.ETHER:
+            result.append(dutils.get(agent.properties, type=ZZZPropertyType.ETHER_DMG_BONUS))
+
+    return result

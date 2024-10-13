@@ -330,6 +330,7 @@ profile.build.select.placeholder: 选择一个角色配置…
 profile.card_info.embed.description: "—— 卡片中所使用的素材均归Hoyoverse所有，我并未其拥有权。\n—— 卡片中所使用的同人作品均隶属于各自画师。\n—— Hoyo Buddy 样式为原创，未经我的许可，严禁修改或声称它们是出自于你之手。\n—— 游戏数据由{provider}提供。"
 profile.card_info.embed.title: 关于角色面板卡片
 profile.card_settings.button.label: 卡片设置
+profile.image_settings.button.label: 图片设置
 profile.card_template_select.diff_author.description: "由{author1}设计，{author2}制作"
 profile.card_template_select.encard.label: "ENCard 样式 {num}"
 profile.card_template_select.enka_classic.label: 经典 Enka 样式
@@ -545,6 +546,8 @@ card_settings.card_color: 卡片颜色
 card_settings.no_color: 此卡片样式不支持修改卡片颜色
 card_settings.color_default: 默认
 card_settings.current_image: 当前图片
+card_settings.build_card_image: 面板卡片图片
+card_settings.team_card_image: 队伍卡片图片
 profile.redraw_card_button_label: 重新绘制卡片
 card_settings.footer: "修改完毕后, 点击上方信息中的绿色按钮来重新绘制卡片"
 profile.team_dark_mode.button.label: 队伍卡片深色模式

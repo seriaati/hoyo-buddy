@@ -39,14 +39,13 @@ Before contributing, make sure you have basic understandings of the following:
 
 - Any IDE, ones that support language server protocols are preferred
 - Git
-- [Poetry](https://python-poetry.org/)
+- [uv](https://docs.astral.sh/uv/)
 
 ### Setting Up
 
 1. Fork this repo and clone it to your environment using `git clone`
-2. Install the dependencies with `poetry install --with dev --no-root`
-3. Instal the pre-commits with `pre-commit install`
-4. (Optional) Install the [ruff VSCode extension](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff)
+2. Install the dependencies with `uv sync`
+3. (Optional) Install the [ruff VSCode extension](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff)
 
 And you should be good to go!  
 After making your changes, open a pull request and I will review your code.

@@ -28,6 +28,27 @@ Hoyo Buddy is a feature rich, easy to use, and beautifully designed Discord bot 
 |![Create beautiful character cards](https://github.com/seriaati/hoyo-buddy/blob/assets/app-directory/nav-2.png?raw=true)  |  ![Make your life easier](https://github.com/seriaati/hoyo-buddy/blob/assets/app-directory/nav-3.png?raw=true)|
 |![Information at your fingertips](https://github.com/seriaati/hoyo-buddy/blob/assets/app-directory/nav-4.png?raw=true)  |  ![Beauty blends with functionality](https://github.com/seriaati/hoyo-buddy/blob/assets/app-directory/nav-5.png?raw=true)|
 
+## Features
+
+Hoyo Buddy integrates features from all Hoyoverse games, supporting both HoYoLAB and Miyoushe.
+
+| Command | Description | Genshin Impact | Honkai: Star Rail | Zenless Zone Zero | Honkai Impact 3rd | Tears of Themis |
+|---|---|---|---|---|---|---|
+| /profile | Generate character build cards and team cards. | ✅ | ✅ | ✅ | ❌ | ❌ |
+| /notes | View real-time notes and set reminders. | ✅ | ✅ | ✅ | ❌ | ❌ |
+| /redeem | Automatic and manual gift code redemption. | ✅ | ✅ | ✅ | ❌ | ✅ |
+| /check-in | Automatic HoYoLAB/Miyoushe daily reward check-in. | ✅ | ✅ | ✅ | ✅ | ✅ |
+| /characters | View and filter all owned characters.  | ✅ | ✅ | ✅ | ✅ | ❌ |
+| /challenge | View statistics/overview of end-game content. | ✅ | ✅ | ✅ | ❌ | ❌ |
+| /search | Search anything game-related, including unreleased content. | ✅ | ✅ | ✅ | ❌ | ❌ |
+| /gacha-log | Import, view, and analyze your gacha records. | ✅ | ✅ | ✅ | ❌ | ❌ |
+| /farm reminder | Set reminders for farming materials for a character/weapon. | ✅ | ❌ | ❌ | ❌ | ❌ |
+| /exploration | View area exploration statistics. | ✅ | ❌ | ❌ | ❌ | ❌ |
+| /events | View on-going in-game events and banners. | ✅ | ✅ | ✅ | ❌ | ❌ |
+| /lb view | View leaderboards. | ✅ | ✅ | ✅ | ❌ | ❌ |
+| /farm view | View farmable domain materials in different weekdays. | ✅ | ❌ | ❌ | ❌ | ❌ |
+| /lb akasha | View character damage leaderboard. | ✅ | ❌ | ❌ | ❌ | ❌ |
+
 ## Goals
 
 The community has been missing a Discord bot that provides support for all Hoyoverse games, and Hoyo Buddy is here to change that. We try to create **ONE** bot that can do **EVERYTHING** for all Hoyoverse games, with beautfiul designs and intuitive interfaces, all for free. Hoyo Buddy is currently the only Discord bot in the market that provides multi-game, multi-account, and multi-language support. For more details, read this [article](https://github.com/seriaati/hoyo-buddy/wiki/Why-Hoyo-Buddy%3F).

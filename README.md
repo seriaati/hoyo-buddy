@@ -60,3 +60,4 @@ Please read the [Contribution Guidelines](https://github.com/seriaati/hoyo-buddy
 ## Acknowledgements
 
 This project can't be made without all of the [dependencies](https://github.com/seriaati/hoyo-buddy/blob/main/pyproject.toml) made by the awesome open source community.  
+r

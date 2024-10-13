@@ -352,8 +352,8 @@ def dict_cookie_to_str(cookie_dict: dict[str, str]) -> str:
     return "; ".join([f"{key}={value}" for key, value in cookie_dict.items()])
 
 
-def get_repo_version(repo: git.Repo | None = None) -> str:
-    repo = repo or git.Repo()
+def get_repo_version() -> str:
+    repo = git.Repo()
     tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
     return tags[-1].name
 

@@ -16,8 +16,8 @@ else:
 
 
 class CardInfoButton(Button[ProfileView]):
-    def __init__(self) -> None:
-        super().__init__(emoji=INFO, row=0)
+    def __init__(self, *, row: int) -> None:
+        super().__init__(emoji=INFO, row=row)
 
     async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(

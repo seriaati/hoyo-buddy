@@ -32,20 +32,17 @@ from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
-from hoyo_buddy.ui.hoyo.profile.card_settings import (
-    get_art_url,
-    get_card_settings,
-    get_default_art,
-    get_default_collection,
-)
-from hoyo_buddy.ui.hoyo.profile.items.redraw_card_btn import RedrawCardButton
+from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
 from hoyo_buddy.utils import blur_uid, format_float, human_format_number
 
+from .card_settings import get_card_settings
+from .image_settings import get_default_art, get_default_collection, get_team_image
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
 from .items.card_settings_btn import CardSettingsButton
 from .items.chara_select import CharacterSelect, determine_chara_type
 from .items.player_btn import PlayerInfoButton
+from .items.redraw_card_btn import RedrawCardButton
 from .items.rmv_from_cache_btn import RemoveFromCacheButton
 
 if TYPE_CHECKING:
@@ -301,13 +298,11 @@ class ProfileView(View):
         return embed
 
     def _add_items(self) -> None:
-        self.add_item(PlayerInfoButton())
-        self.add_item(CardSettingsButton())
-        self.add_item(RedrawCardButton())
-        self.add_item(CardInfoButton())
+        self.add_item(PlayerInfoButton(row=0))
+        self.add_item(CardSettingsButton(row=0))
+        self.add_item(ImageSettingsButton(row=0))
+        self.add_item(RedrawCardButton(row=0))
 
-        if self._account is not None:
-            self.add_item(RemoveFromCacheButton())
         if self.characters:
             self.add_item(
                 CharacterSelect(
@@ -316,9 +311,14 @@ class ProfileView(View):
                     self.cache_extras,
                     self._builds,
                     self._account,
+                    row=1,
                 )
             )
-        self.add_item(BuildSelect())
+        self.add_item(BuildSelect(row=2))
+
+        if self._account is not None:
+            self.add_item(RemoveFromCacheButton(row=3))
+        self.add_item(CardInfoButton(row=3))
 
     async def _draw_src_character_card(
         self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
@@ -583,7 +583,7 @@ class ProfileView(View):
         )
         characters = [self.characters[char_id] for char_id in self.character_ids]
         images = {
-            str(char.id): await get_art_url(i.user.id, str(char.id), game=self.game)
+            str(char.id): await get_team_image(i.user.id, str(char.id), game=self.game)
             or get_default_art(char)
             for char in characters
         }
@@ -637,18 +637,20 @@ class ProfileView(View):
         character: Character | None = None,
     ) -> None:
         card_settings = await get_card_settings(i.user.id, self.character_ids[0], game=self.game)
+        is_team = len(self.character_ids) > 1
 
         try:
             bytes_obj = (
                 await self.draw_team_card(i)
-                if len(self.character_ids) > 1
+                if is_team
                 else await self.draw_card(i, card_settings, character=character)
             )
             bytes_obj.seek(0)
         except Exception as e:
             if isinstance(e, DownloadImageFailedError):
-                card_settings.current_image = None
-                await card_settings.save(update_fields=("current_image",))
+                attr = "current_team_image" if is_team else "current_image"
+                setattr(card_settings, attr, None)
+                await card_settings.save(update_fields=(attr,))
             if unset_loading_state:
                 await item.unset_loading_state(i)
 

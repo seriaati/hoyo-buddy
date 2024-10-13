@@ -16,12 +16,13 @@ else:
 
 
 class BuildSelect(Select[ProfileView]):
-    def __init__(self) -> None:
+    def __init__(self, *, row: int) -> None:
         super().__init__(
             placeholder=LocaleStr(key="profile.build.select.placeholder"),
             options=[SelectOption(label="Placeholder", value="0")],
             disabled=True,
             custom_id="profile_build_select",
+            row=row,
         )
         self._builds: list[enka.gi.Build] | list[enka.hsr.Build] = []
 

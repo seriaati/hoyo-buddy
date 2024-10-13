@@ -12,27 +12,30 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
     from ..view import ProfileView
-    from .card_settings_btn import CardSettingsButton
     from .chara_select import CharacterSelect
 else:
     ProfileView = None
 
 
 class PlayerInfoButton(Button[ProfileView]):
-    def __init__(self) -> None:
+    def __init__(self, *, row: int) -> None:
         super().__init__(
             label=LocaleStr(key="profile.player_info.button.label"),
             style=ButtonStyle.blurple,
             emoji=BOOK_MULTIPLE,
             disabled=True,
             custom_id="profile_player_info",
+            row=row,
         )
 
     async def callback(self, i: Interaction) -> None:
         self.disabled = True
 
-        card_settings_btn: CardSettingsButton = self.view.get_item("profile_card_settings")
+        card_settings_btn = self.view.get_item("profile_card_settings")
         card_settings_btn.disabled = True
+
+        image_settings_btn = self.view.get_item("profile_image_settings")
+        image_settings_btn.disabled = True
 
         chara_select: CharacterSelect = self.view.get_item("profile_character_select")
         chara_select.update_options_defaults(values=["none"])

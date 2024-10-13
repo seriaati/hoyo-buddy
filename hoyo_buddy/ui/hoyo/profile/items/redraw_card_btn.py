@@ -17,13 +17,14 @@ else:
 
 
 class RedrawCardButton(Button[ProfileView]):
-    def __init__(self) -> None:
+    def __init__(self, *, row: int) -> None:
         super().__init__(
             label=LocaleStr(key="profile.redraw_card_button_label"),
             disabled=True,
             custom_id="profile_redraw_card",
             emoji=REFRESH,
             style=ButtonStyle.green,
+            row=row,
         )
 
     async def callback(self, i: Interaction) -> None:

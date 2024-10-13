@@ -22,14 +22,14 @@ else:
 
 
 class RemoveFromCacheButton(Button[ProfileView]):
-    def __init__(self) -> None:
+    def __init__(self, *, row: int) -> None:
         super().__init__(
             label=LocaleStr(key="profile.remove_from_cache.button.label"),
             style=ButtonStyle.red,
             emoji=DELETE,
-            row=3,
             disabled=True,
             custom_id="profile_remove_from_cache",
+            row=row,
         )
 
     async def callback(self, i: Interaction) -> None:

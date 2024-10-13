@@ -51,6 +51,8 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         cache_extras: dict[str, dict[str, Any]],
         builds: Builds,
         account: HoyoAccount | None,
+        *,
+        row: int,
     ) -> None:
         options: list[SelectOption] = []
 
@@ -126,6 +128,7 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
             placeholder=LocaleStr(key="profile.character_select.multi.placeholder"),
             custom_id="profile_character_select",
             max_values=min(MAX_VALUES[game], len(options)),
+            row=row,
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -161,6 +164,10 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         # Enable the card settings button
         card_settings_btn = self.view.get_item("profile_card_settings")
         card_settings_btn.disabled = False
+
+        # Enable the image settings button
+        image_settings_btn = self.view.get_item("profile_image_settings")
+        image_settings_btn.disabled = False
 
         # Enable the redraw card button
         redraw_card_btn = self.view.get_item("profile_redraw_card")

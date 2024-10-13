@@ -10,7 +10,7 @@ from discord import File
 from genshin.models import ZZZFullAgent
 
 from hoyo_buddy.draw import funcs
-from hoyo_buddy.ui.hoyo.profile.card_settings import get_default_art
+from hoyo_buddy.ui.hoyo.profile.image_settings import get_default_art
 
 from ..models import (
     AbyssCharacter,

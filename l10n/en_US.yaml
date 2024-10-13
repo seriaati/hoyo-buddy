@@ -330,6 +330,7 @@ profile.build.select.placeholder: Select a build...
 profile.card_info.embed.description: "- All assets used in the cards belong to Hoyoverse, I do not own them.\n- All fanarts used in the cards are credited to their respective artists.\n- The Hoyo Buddy templates' designs are original, you are not allowed to modify them or claim that you made them without my permission.\n- Game data is provided by {provider}.\n"
 profile.card_info.embed.title: About Character Build Cards
 profile.card_settings.button.label: Card settings
+profile.image_settings.button.label: Image settings
 profile.card_template_select.diff_author.description: "Designed by {author1} and programmed by {author2}"
 profile.card_template_select.encard.label: "ENCard template {num}"
 profile.card_template_select.enka_classic.label: Classic Enka template
@@ -545,6 +546,8 @@ card_settings.card_color: Card color
 card_settings.no_color: This card template does not support color modification
 card_settings.color_default: Default
 card_settings.current_image: Current image
+card_settings.build_card_image: Build card image
+card_settings.team_card_image: Team card image
 profile.redraw_card_button_label: Redraw card
 card_settings.footer: "When you're done, click the green button in the message above to redraw the card"
 profile.team_dark_mode.button.label: Team card dark mode

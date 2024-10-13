@@ -33,6 +33,7 @@ __all__ = (
     "TextInput",
     "ToggleButton",
     "URLButtonView",
+    "V_co",
     "View",
 )
 

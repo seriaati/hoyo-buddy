@@ -341,10 +341,12 @@ class ZZZAgentCard:
                 style="medium",
             )
             start_pos = (3092, 615) if i == 5 else (start_pos[0], start_pos[1] + 106)
-        
+
         dmg_bonus_prop = props[-1]
         if dmg_bonus_prop is not None and isinstance(dmg_bonus_prop.type, PropType):
-            prop_icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[dmg_bonus_prop.type]}", size=(59, 59))
+            prop_icon = drawer.open_asset(
+                f"stat_icons/{STAT_ICONS[dmg_bonus_prop.type]}", size=(59, 59)
+            )
             im.alpha_composite(prop_icon, (3004, 1145))
 
         buffer = BytesIO()

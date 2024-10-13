@@ -23,14 +23,16 @@ class Metrics(commands.Cog):
             case InteractionType.application_command:
                 if isinstance(i.command, app_commands.Command):
                     parameters = i.namespace.__dict__
+                    guild_str = f"[{i.guild.id}]" if i.guild else ""
                     if i.command.parent is None:
                         logger.info(
-                            f"[Command][{i.user.id}] {i.command.name}", parameters=parameters
+                            f"[Command]{guild_str}[{i.user.id}] {i.command.name}",
+                            parameters=parameters,
                         )
                         await CommandMetric.increment(i.command.name)
                     else:
                         logger.info(
-                            f"[Command][{i.user.id}] {i.command.parent.name} {i.command.name}",
+                            f"[Command]{guild_str}[{i.user.id}] {i.command.parent.name} {i.command.name}",
                             parameters=parameters,
                         )
                         await CommandMetric.increment(f"{i.command.parent.name} {i.command.name}")

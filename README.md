@@ -49,14 +49,15 @@ Hoyo Buddy integrates features from all Hoyoverse games, supporting both HoYoLAB
 | /farm view | View farmable domain materials in different weekdays. | ✅ | ❌ | ❌ | ❌ | ❌ |
 | /lb akasha | View character damage leaderboard. | ✅ | ❌ | ❌ | ❌ | ❌ |
 
-## Goals
+## Goal
 
 The community has been missing a Discord bot that provides support for all Hoyoverse games, and Hoyo Buddy is here to change that. We try to create **ONE** bot that can do **EVERYTHING** for all Hoyoverse games, with beautfiul designs and intuitive interfaces, all for free. Hoyo Buddy is currently the only Discord bot in the market that provides multi-game, multi-account, and multi-language support. For more details, read this [article](https://github.com/seriaati/hoyo-buddy/wiki/Why-Hoyo-Buddy%3F).
 
-## Recruitment
+## Contributing
 
 I'm a passionate developer that loves to create open source and high quality software :)  
-Wanna join us? We're looking for Python programmers, translators, and designers; join our [Discord server](https://link.seria.moe/hb-dc) to contact us.
+Wanna join us? We're looking for Python programmers, translators, and designers; join our [Discord server](https://link.seria.moe/hb-dc) to contact us.  
+You can read the [Contribution Guidelines](https://github.com/seriaati/hoyo-buddy/blob/main/CONTRIBUTING.md) for more info.
 
 ## Powered By
 
@@ -73,10 +74,6 @@ Other projects made by me that are used in Hoyo Buddy
 - [daily-checkin-api](https://github.com/seriaati/daily_checkin_api) (private): API to perform daily check-in, used in the automatic daily check-in feature.
 - [hoyo-buddy-assets](https://github.com/seriaati/hoyo-buddy-assets) (private): Hoyo Buddy assets, used in image generation features.
 - [ZenlessAssetScrape](https://github.com/seriaati/ZenlessAssetScrape): Zenless Zone Zero assets/data scraped from various database websites, used in ZZZ build card feature.
-
-## Contributing
-
-Please read the [Contribution Guidelines](https://github.com/seriaati/hoyo-buddy/blob/main/CONTRIBUTING.md) for more info.
 
 ## Acknowledgements
 

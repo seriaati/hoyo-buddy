@@ -103,7 +103,7 @@ class GenshinClient(genshin.Client):
         )
 
     async def update_pc_icons(self) -> None:
-        fields = await self.get_lineup_fields()
+        fields = await self.get_lineup_fields(use_cache=False)
         pc_icons = {str(character.id): character.pc_icon for character in fields.characters}
         await JSONFile.write("pc_icons.json", pc_icons)
 

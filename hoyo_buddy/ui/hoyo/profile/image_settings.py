@@ -11,7 +11,7 @@ from hoyo_buddy.constants import HSR_DEFAULT_ART_URL
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, DELETE, PHOTO_ADD
 from hoyo_buddy.enums import Game
-from hoyo_buddy.exceptions import GuildOnlyFeatureError, InvalidImageURLError, NSFWPromptError
+from hoyo_buddy.exceptions import InvalidImageURLError, NSFWPromptError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import HoyolabGICharacter
 from hoyo_buddy.ui import Button, Modal, PaginatorSelect, SelectOption, TextInput, View
@@ -363,9 +363,6 @@ class GenerateAIArtButton(Button[ImageSettingsView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        if i.guild is None:
-            raise GuildOnlyFeatureError
-
         modal = GenerateAIArtModal(title=LocaleStr(key="profile.generate_ai_art.button.label"))
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)

@@ -224,8 +224,6 @@ geo: Geo
 gi_daily.embed.description: Daily commisions or adventure encounters are not completed yet
 gift_code_modal.code_input.label: "Code {num}"
 gift_code_modal.title: Enter redemption codes
-guild_only_feature_error_message: "This feature is only available in guilds, please try again in a guild."
-guild_only_feature_error_title: Guild Only Feature
 harmony: Harmony
 honkai:_star_rail: "Honkai: Star Rail"
 honkai_impact_3rd: Honkai Impact 3rd

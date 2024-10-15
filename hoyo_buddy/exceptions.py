@@ -95,14 +95,6 @@ class NSFWPromptError(HoyoBuddyError):
         )
 
 
-class GuildOnlyFeatureError(HoyoBuddyError):
-    def __init__(self) -> None:
-        super().__init__(
-            title=LocaleStr(key="guild_only_feature_error_title"),
-            message=LocaleStr(key="guild_only_feature_error_message"),
-        )
-
-
 class NoCharsFoundError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(

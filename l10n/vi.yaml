@@ -224,8 +224,6 @@ geo: Nham
 gi_daily.embed.description: Nhiệm vụ Ủy Thác hoặc Điểm Rèn Luyện chưa hoàn thành
 gift_code_modal.code_input.label: "Mã {num}"
 gift_code_modal.title: Nhập Mã Đổi
-guild_only_feature_error_message: "Tính năng này chỉ có ở trong máy chủ, vui lòng chạy lại trong máy chủ."
-guild_only_feature_error_title: Tính năng dùng trong máy chủ
 harmony: Hòa Hợp
 honkai:_star_rail: "Honkai: Star Rail"
 honkai_impact_3rd: Honkai Impact 3rd
@@ -330,6 +328,7 @@ profile.build.select.placeholder: Hãy chọn Build…
 profile.card_info.embed.description: "- Tất cả nội dung và hình ảnh được sử dụng trong thẻ đều thuộc về Hoyoverse, tôi không sở hữu chúng.\n- Tất cả các fanart được sử dụng trong thẻ đều được ghi có tên các nghệ sĩ đã làm.\n- Các thiết kế của mẫu Hoyo Buddy là bản gốc, bạn không được phép sửa đổi chúng hoặc tuyên bố rằng bạn đã tạo ra chúng mà không có sự cho phép của tôi.\n- Dữ liệu trò chơi được cung cấp bởi {provider}.\n"
 profile.card_info.embed.title: Về thẻ xây dựng nhân vật
 profile.card_settings.button.label: Cài đặt thẻ
+profile.image_settings.button.label: Cài đặt hình ảnh
 profile.card_template_select.diff_author.description: "Thiết kế bởi {author1} và lập trình bởi {author2}"
 profile.card_template_select.encard.label: "Mẫu thẻ ENCard {num}"
 profile.card_template_select.enka_classic.label: Mẫu Enka cổ điển
@@ -545,6 +544,8 @@ card_settings.card_color: Màu thẻ
 card_settings.no_color: Mẫu thẻ này không hỗ trợ đổi màu
 card_settings.color_default: Mặc định
 card_settings.current_image: Hình hiện tại
+card_settings.build_card_image: Hình ảnh thẻ Build
+card_settings.team_card_image: Hình ảnh thẻ đội hình
 profile.redraw_card_button_label: Làm mới thẻ
 card_settings.footer: "Khi bạn xong, nhấn nút màu xanh ở tin nhắn trên để làm mới thẻ"
 profile.team_dark_mode.button.label: Thẻ đội chế độ tới

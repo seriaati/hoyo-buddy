@@ -12,9 +12,9 @@
 ![GitHub](https://img.shields.io/github/license/seriaati/hoyo-buddy)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-Hoyo Buddy is a feature rich, easy to use, and beautifully designed Discord bot made for Hoyoverse gamers.  
+Hoyo Buddy is a feature rich, easy to use, and beautifully designed Discord bot made for Hoyoverse gamers. It is developed under the [user app](https://support.discord.com/hc/en-us/articles/21334461140375-Using-Apps-on-Discord) standard, so you can use it without inviting it into any Discord servers, and can use it anywhere you want.  
   
-- [Try it Out](https://github.com/seriaati/hoyo-buddy/wiki/Getting-Started)
+- [Try it Out](https://link.seria.moe/hb-start)
 - [Official Website](https://hb.seria.moe/)
 - [Is Hoyo Buddy Safe?](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security)
 - [Why Hoyo Buddy?](https://github.com/seriaati/hoyo-buddy/wiki/Why-Hoyo-Buddy%3F)

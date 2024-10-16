@@ -224,8 +224,6 @@ geo: 岩
 gi_daily.embed.description: 每日委托或冒险历练尚未全部完成
 gift_code_modal.code_input.label: "兑换码 {num}"
 gift_code_modal.title: 输入兑换码
-guild_only_feature_error_message: "这个功能只能在服务器中使用，请在服务器中重试。"
-guild_only_feature_error_title: 服务器专属功能
 harmony: 同谐
 honkai:_star_rail: "崩坏：星穹铁道"
 honkai_impact_3rd: 崩坏3

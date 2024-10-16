@@ -145,8 +145,13 @@ class APCShadowCard:
         not_defeated_text = LocaleStr(key="apc_shadow.boss_defeated_no").translate(
             self._translator, self.locale
         )
+        quick_clear_text = LocaleStr(key="moc_quick_clear").translate(
+            self._translator, self.locale
+        )
 
-        if stage.node_1.boss_defeated and stage.node_2.boss_defeated:
+        if stage.is_quick_clear:
+            text = quick_clear_text
+        elif stage.node_1.boss_defeated and stage.node_2.boss_defeated:
             text = defeated_text
         elif not stage.node_1.boss_defeated and not stage.node_2.boss_defeated:
             text = not_defeated_text

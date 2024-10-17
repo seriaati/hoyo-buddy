@@ -189,6 +189,8 @@ class ZZZAgentCard:
         # Discs
         start_pos = (55, 597)
         disc_mask = drawer.open_asset("disc_mask.png", size=(151, 184))
+        disc_num_flair = drawer.open_asset("disc_num_flair.png")
+
         for i in range(6):
             try:
                 disc = next(d for d in self._agent.discs if d.position == i + 1)
@@ -198,7 +200,17 @@ class ZZZAgentCard:
                 icon = drawer.open_static(self._disc_icons[str(disc.id)], size=(184, 184))
                 icon = drawer.middle_crop(icon, (151, 184))
                 icon = drawer.mask_image_with_image(icon, disc_mask)
-                im.paste(icon, start_pos, icon)
+                im.alpha_composite(icon, start_pos)
+
+                im.alpha_composite(disc_num_flair, (start_pos[0], start_pos[1] + 120))
+                drawer.write(
+                    str(i + 1),
+                    size=36,
+                    position=(start_pos[0] + 32, start_pos[1] + 151),
+                    style="bold",
+                    anchor="mm",
+                    color=(107, 107, 107),
+                )
 
                 drawer.write(
                     f"+{disc.level}",

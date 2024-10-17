@@ -107,6 +107,8 @@ class ZZZTeamCard:
         start_pos = (926, 21)
         y_diff = 94
         disc_mask = drawer.open_asset("disc_mask.png")
+        disc_num_flair = drawer.open_asset("disc_num_flair.png")
+
         for i in range(6):
             try:
                 disc = next(d for d in agent.discs if d.position == i + 1)
@@ -117,6 +119,16 @@ class ZZZTeamCard:
                 icon = drawer.resize_crop(icon, disc_mask.size)
                 icon = drawer.mask_image_with_image(icon, disc_mask)
                 im.alpha_composite(icon, start_pos)
+
+                im.alpha_composite(disc_num_flair, (start_pos[0], start_pos[1] + 61))
+                drawer.write(
+                    str(i + 1),
+                    size=12,
+                    position=(start_pos[0] + 8, start_pos[1] + 70),
+                    style="medium",
+                    anchor="mm",
+                    color=(107, 107, 107),
+                )
 
                 main_stat = disc.main_properties[0]
                 if isinstance(main_stat.type, PropType):

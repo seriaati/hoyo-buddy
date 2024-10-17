@@ -306,7 +306,7 @@ notif.embed.footer: "Nhấn nút bên dưới để thay đổi cài đặt thô
 notif_modal.enabled.label: Đã bật
 notif_modal.max_notif_count.label: Số lượng thông báo tối đa
 notif_modal.notify_interval.label: Khoảng thời gian thông báo (bằng phút)
-notif_modal.notify_time.label: "Thông báo X giờ trước khi máy chủ đặt lại (3:00 SA)"
+notif_modal.notify_time.label: "Thông báo X giờ trước khi máy chủ đặt lại"
 notif_modal.notify_weekday.label: Ngày trong tuần để thông báo
 notif_modal.threshold.label: Ngưỡng
 notification_settings_button_label: Cài đặt thông báo

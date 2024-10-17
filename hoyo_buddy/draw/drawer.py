@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import pathlib
+import threading
 from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
 
-from cachetools import TTLCache
+import cachetools
 from discord import Locale
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageDraw, ImageFont
@@ -210,7 +211,8 @@ GOTHIC_FONT_MAPPING: FontMapping = {
     }
 }
 
-image_cache: TTLCache[pathlib.Path, Image.Image] = TTLCache(maxsize=128, ttl=300)
+deco = cachetools.cached(cachetools.TTLCache(maxsize=128, ttl=300), lock=threading.Lock())
+image_read = deco(Image.open)
 
 
 class Drawer:
@@ -232,7 +234,6 @@ class Drawer:
         self.sans = sans
 
     @classmethod
-    def calc_dynamic_fontsize(
         cls, text: str, max_width: int, max_size: int, font: ImageFont.FreeTypeFont
     ) -> int:
         size = max_size
@@ -271,7 +272,6 @@ class Drawer:
         return image.crop((left, top, right, bottom))
 
     @staticmethod
-    def ratio_resize(
         image: Image.Image, *, width: int | None = None, height: int | None = None
     ) -> Image.Image:
         """Resize an image to a targeted width/height while maintaining the aspect ratio."""
@@ -317,7 +317,6 @@ class Drawer:
         return tuple(int(hex_color_code[i : i + 2], 16) for i in (0, 2, 4))  # pyright: ignore [reportReturnType]
 
     @staticmethod
-    def apply_color_opacity(
         color: tuple[int, int, int], opacity: float
     ) -> tuple[int, int, int, int]:
         return (*color, round(255 * opacity))
@@ -337,7 +336,6 @@ class Drawer:
         max_card_num = input_.max_card_num or min(max_card_num, 8)
 
         # Calculate the number of columns
-        cols = (
             card_num // max_card_num + 1
             if card_num % max_card_num != 0
             else card_num // max_card_num
@@ -345,13 +343,11 @@ class Drawer:
 
         # Calculate the width and height of the image
         width = (
-            input_.left_padding
             + input_.right_padding
             + input_.card_width * cols
             + input_.card_x_padding * (cols - 1)
         )
         height = (
-            (
                 input_.top_padding.with_title
                 if input_.draw_title
                 else input_.top_padding.without_title
@@ -359,7 +355,6 @@ class Drawer:
             if isinstance(input_.top_padding, TopPadding)
             else input_.top_padding
         )
-        height += (
             input_.bottom_padding
             + input_.card_height * max_card_num
             + input_.card_y_padding * (max_card_num - 1)
@@ -437,12 +432,10 @@ class Drawer:
         if color is not None:
             return self.apply_color_opacity(color, EMPHASIS_OPACITY[emphasis])
 
-        return self.apply_color_opacity(
             WHITE if self.dark_mode else BLACK, EMPHASIS_OPACITY[emphasis]
         )
 
     def get_font(
-        self,
         size: int,
         style: FontStyle,
         *,
@@ -483,7 +476,6 @@ class Drawer:
 
         return ImageFont.truetype(font_map[style], size)
 
-    def find_font_mapping(
         self, locale: Locale, mapping: FontMapping
     ) -> dict[FontStyle, str] | None:
         font_map = None
@@ -494,16 +486,8 @@ class Drawer:
         return font_map
 
     @staticmethod
-    def open_image(
-        file_path: pathlib.Path | str, size: tuple[int, int] | None = None
-    ) -> Image.Image:
-        if isinstance(file_path, str):
-            file_path = pathlib.Path(file_path)
-
-        image = image_cache.get(file_path)
-        if image is None:
-            image = Image.open(file_path)
-            image_cache[file_path] = image
+    def open_image(file_path: pathlib.Path | str, size: tuple[int, int] | None = None) -> Image.Image:
+        image = image_read(file_path)
         image = image.convert("RGBA")
 
         if size is not None:
@@ -547,7 +531,6 @@ class Drawer:
                 msg = "Translator is not set"
                 raise RuntimeError(msg)
 
-            translated_text = self.translator.translate(
                 text, locale or self.locale, title_case=title_case
             )
 
@@ -558,7 +541,6 @@ class Drawer:
             font = self.get_font(size, style, locale=locale)
 
         if max_width is not None:
-            translated_text = self._wrap_text(
                 translated_text, max_width=max_width, max_lines=max_lines, font=font
             )
 
@@ -567,7 +549,6 @@ class Drawer:
             lines = translated_text.split("\n")
 
             for line in lines:
-                line_textbbox = self.draw.textbbox(
                     (0, 0), line, font=font, anchor="lt", font_size=size
                 )
                 line_width, line_height = (
@@ -592,7 +573,6 @@ class Drawer:
                 stroke_fill=stroke_color,
             )
 
-        textbbox = self.draw.textbbox(
             position, translated_text, font=font, anchor=anchor, font_size=size
         )
 

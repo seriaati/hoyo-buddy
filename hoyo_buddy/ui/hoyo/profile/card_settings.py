@@ -116,6 +116,10 @@ class CardSettingsView(View):
     def _get_color_markdown(color: str) -> str:
         return f"[{color}](https://www.colorhexa.com/{color[1:]})"
 
+    @staticmethod
+    def _get_color_image(color: str) -> str:
+        return f"https://singlecolorimage.com/get/{color[1:]}/100x100"
+
     @property
     def disable_ai_features(self) -> bool:
         return self.game is Game.ZZZ or self.card_settings.template in DISABLE_IMAGE
@@ -173,7 +177,7 @@ class CardSettingsView(View):
             value = self._get_color_markdown(color)
             if card_settings.custom_primary_color is None:
                 value += f" ({default_str})"
-            embed.set_thumbnail(url=f"https://singlecolorimage.com/get/{color[1:]}/100x100")
+            embed.set_thumbnail(url=self._get_color_image(color))
         else:
             value = LocaleStr(key="card_settings.no_color")
 

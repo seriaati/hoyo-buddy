@@ -7,7 +7,7 @@ from discord import ButtonStyle, TextStyle
 from genshin.models import ZZZFullAgent, ZZZPartialAgent
 from seria.utils import read_json
 
-from hoyo_buddy.constants import HSR_DEFAULT_ART_URL
+from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, ZZZ_DEFAULT_ART_URL
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, DELETE, PHOTO_ADD
 from hoyo_buddy.enums import Game
@@ -18,7 +18,7 @@ from hoyo_buddy.ui import Button, Modal, PaginatorSelect, SelectOption, TextInpu
 from hoyo_buddy.ui.components import Select
 from hoyo_buddy.utils import get_pixiv_proxy_img, is_image_url, test_url_validity, upload_image
 
-from .btn_states import DISABLE_IMAGE
+from .btn_states import DISABLE_IMAGE, ZZZ_DISABLE_IMAGE
 from .card_settings import get_card_settings
 from .items.settings_chara_select import CharacterSelect as SettingsCharacterSelect
 
@@ -39,9 +39,11 @@ async def get_team_image(user_id: int, character_id: str, *, game: Game) -> str 
     return card_settings.current_team_image
 
 
-def get_default_art(character: Character | ZZZFullAgent) -> str:
+def get_default_art(character: Character | ZZZFullAgent, *, is_team: bool) -> str:
     if isinstance(character, ZZZPartialAgent | ZZZFullAgent):
-        return character.banner_icon
+        if is_team:
+            return character.banner_icon
+        return ZZZ_DEFAULT_ART_URL.format(char_id=character.id)
     if isinstance(character, enka.gi.Character):
         if character.costume is not None:
             return character.costume.icon.gacha
@@ -92,13 +94,13 @@ class ImageSettingsView(View):
 
         self._add_items()
 
-    @staticmethod
-    def _get_color_markdown(color: str) -> str:
-        return f"[{color}](https://www.colorhexa.com/{color[1:]})"
-
     @property
     def disable_image_features(self) -> bool:
-        return (self.game is Game.ZZZ and not self.is_team) or self.card_settings.template in DISABLE_IMAGE
+        return self.card_settings.template in DISABLE_IMAGE or (
+            self.image_type == "build_card_image"
+            and self.game is Game.ZZZ
+            and self.card_settings.template in ZZZ_DISABLE_IMAGE
+        )
 
     @property
     def disable_ai_features(self) -> bool:
@@ -152,7 +154,7 @@ class ImageSettingsView(View):
             title=LocaleStr(key="card_settings.modifying_for", name=character.name),
         )
 
-        image_url = self.get_current_image() or get_default_art(character)
+        image_url = self.get_current_image() or get_default_art(character, is_team=self.image_type == "team_card_image")
         embed.add_field(name=LocaleStr(key="card_settings.current_image"), value=image_url, inline=False)
         embed.set_image(url=image_url)
         embed.set_footer(text=LocaleStr(key="card_settings.footer"))
@@ -396,6 +398,7 @@ class AddImageButton(Button[ImageSettingsView]):
             emoji=ADD,
             row=row,
             disabled=disabled,
+            custom_id="profile_add_image",
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -475,12 +478,21 @@ class ImageTypeSelect(Select[ImageSettingsView]):
         self.update_options_defaults()
 
         image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.update(
-            current_image=self.view.get_current_image(),
-            custom_images=self.view.card_settings.custom_images,
-            default_collection=get_default_collection(
-                self.view.selected_character_id, self.view.card_data, game=self.view.game
-            ),
+        current_image = self.view.get_current_image()
+        default_collection = get_default_collection(
+            self.view.selected_character_id, self.view.card_data, game=self.view.game
         )
+        image_select.update(
+            current_image=current_image,
+            custom_images=self.view.card_settings.custom_images,
+            default_collection=default_collection,
+        )
+        image_select.disabled = self.view.disable_image_features
+
+        add_image_btn: AddImageButton = self.view.get_item("profile_add_image")
+        add_image_btn.disabled = self.view.disable_image_features
+
+        remove_image_btn: RemoveImageButton = self.view.get_item("profile_remove_image")
+        remove_image_btn.disabled = current_image is None or current_image in default_collection
 
         await i.response.edit_message(embed=embed, view=self.view)

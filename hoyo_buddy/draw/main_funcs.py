@@ -399,7 +399,7 @@ async def draw_zzz_build_card(
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data([agent], template=template)
 
-    image = get_default_art(agent) if template == 3 else draw_data.agent_images[str(agent.id)]
+    image = get_default_art(agent, is_team=False) if template == 3 else draw_data.agent_images[str(agent.id)]
     urls: list[str] = [image]
     urls.extend(draw_data.disc_icons.values())
     if agent.w_engine is not None:

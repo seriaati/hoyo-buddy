@@ -66,7 +66,7 @@ class GITeamCard:
             target_height=img_mask.height,
             mask=img_mask,
             background_color=element_color,
-            zoom=0.7 if img_url == get_default_art(character) else 1.0,
+            zoom=0.7 if img_url == get_default_art(character, is_team=False) else 1.0,
         )
         img = drawer.mask_image_with_image(img, img_mask)
         im.alpha_composite(img, (37, 44))

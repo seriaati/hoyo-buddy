@@ -368,7 +368,7 @@ class ProfileView(View):
         if character_data is None:
             raise CardNotReadyError(character.name)
 
-        image_url = card_settings.current_image or get_default_art(character)
+        image_url = card_settings.current_image or get_default_art(character, is_team=False)
 
         if card_settings.custom_primary_color is None:
             primary: str = character_data["primary"]
@@ -402,7 +402,7 @@ class ProfileView(View):
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert isinstance(character, enka.gi.Character | HoyolabGICharacter)
 
-        image_url = card_settings.current_image or get_default_art(character)
+        image_url = card_settings.current_image or get_default_art(character, is_team=False)
 
         template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
         if template_num == 2:
@@ -545,7 +545,8 @@ class ProfileView(View):
         )
         characters = [self.characters[char_id] for char_id in self.character_ids]
         images = {
-            str(char.id): await get_team_image(i.user.id, str(char.id), game=self.game) or get_default_art(char)
+            str(char.id): await get_team_image(i.user.id, str(char.id), game=self.game)
+            or get_default_art(char, is_team=True)
             for char in characters
         }
 

@@ -76,7 +76,7 @@ class LoginPage(ft.View):
         base_url = "https://cdn.discordapp.com"
         avatar = user_data.get("avatar")
         if avatar is None:
-            migrated = user_data["discriminator"] == 0
+            migrated = user_data["discriminator"] == "0"
             index = (user_data["id"] >> 22) % 6 if migrated else user_data["discriminator"] % 5
             return f"{base_url}/embed/avatars/{index}.webp"
 

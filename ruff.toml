@@ -40,11 +40,10 @@ ignore = [
   "S301",
   "RUF012",
   "S403",
+  "UP040",
 ]
 preview = true
-select = [
-  "ALL",
-]
+select = ["ALL"]
 
 [lint.per-file-ignores]
 "**/__init__.py" = ["F403", "F401"]

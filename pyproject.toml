@@ -30,9 +30,9 @@ dependencies = [
   "cryptography>=43.0.0",
   "pandas>=2.2.2",
   "fonttools>=4.53.1",
-  "akasha-py>=0.2.3",
-  "genshin[auth,socks-proxy,sqlite]>=1.7.2",
   "tortoise-orm>=0.21.7",
+  "akasha-py>=0.2.7",
+  "genshin[auth,socks-proxy,sqlite]",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = { file = "LICENSE" }
@@ -46,8 +46,7 @@ dev-dependencies = ["icecream>=2.1.3"]
 
 [tool.uv.sources]
 novelai = { git = "https://github.com/kokosensei/NovelAI-API" }
-akasha-py = { git = "https://github.com/seriaati/akasha-py" }
-genshin = { git = "https://github.com/thesadru/genshin.py" }
+genshin = { git = "https://github.com/thesadru/genshin.py", branch = "master" }
 
 [tool.pyright]
 enableTypeIgnoreComments = false

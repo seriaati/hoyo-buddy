@@ -407,6 +407,9 @@ class HoyoBuddy(commands.AutoShardedBot):
 
             await message.edit(embed=embed, view=None)
         except Exception as e:
+            if isinstance(e, discord.Forbidden):
+                return
+
             embed, recognized = get_error_embed(e, locale, self.translator)
             if not recognized:
                 self.capture_exception(e)

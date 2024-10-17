@@ -279,10 +279,11 @@ class WebApp:
 
     async def _handle_login_routes(self, route: str, parsed_params: dict[str, str]) -> ft.View | None:
         page = self._page
+        locale = parsed_params.get("locale", "en-US")
 
         if route == "/login":
             user_data = await self.fetch_user_data()
-            return pages.LoginPage(user_data, translator=self._translator, locale=Locale(parsed_params["locale"]))
+            return pages.LoginPage(user_data, translator=self._translator, locale=Locale(locale))
 
         if route == "/geetest":
             query: str | None = await page.client_storage.get_async(f"hb.{parsed_params['user_id']}.params")

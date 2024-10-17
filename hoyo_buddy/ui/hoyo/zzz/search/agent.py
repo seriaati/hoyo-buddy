@@ -31,9 +31,7 @@ SKILL_TYPE_LOCALE_STRS: Final[dict[hakushin.enums.ZZZSkillType, LocaleStr]] = {
 
 
 class AgentSearchView(View):
-    def __init__(
-        self, agent_id: int, *, author: User, locale: Locale, translator: Translator
-    ) -> None:
+    def __init__(self, agent_id: int, *, author: User, locale: Locale, translator: Translator) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self._agent_id = agent_id
         self._agent: hakushin.zzz.CharacterDetail
@@ -48,17 +46,13 @@ class AgentSearchView(View):
     def _update_items(self) -> None:
         self.clear_items()
         if self._page in {"skills", "core"}:
-            self.add_item(
-                SkillSelect(list(self._agent.skills.keys()), self._skill_type, self._page)
-            )
+            self.add_item(SkillSelect(list(self._agent.skills.keys()), self._skill_type, self._page))
         elif self._page == "cinemas":
             self.add_item(CinemaSelect(self._agent.mindscape_cinemas, self._cinema_index))
         self.add_item(PageSelect(self._page))
 
     async def _fetch_data(self) -> None:
-        async with hakushin.HakushinAPI(
-            hakushin.Game.ZZZ, locale_to_hakushin_lang(self.locale)
-        ) as api:
+        async with hakushin.HakushinAPI(hakushin.Game.ZZZ, locale_to_hakushin_lang(self.locale)) as api:
             self._agent = await api.fetch_character_detail(self._agent_id)
 
     async def update(self, i: Interaction) -> None:
@@ -113,10 +107,7 @@ class PageSelect(Select[AgentSearchView]):
 
 class SkillSelect(Select[AgentSearchView]):
     def __init__(
-        self,
-        skill_types: Sequence[hakushin.enums.ZZZSkillType],
-        current: hakushin.enums.ZZZSkillType,
-        page: str,
+        self, skill_types: Sequence[hakushin.enums.ZZZSkillType], current: hakushin.enums.ZZZSkillType, page: str
     ) -> None:
         options = [
             SelectOption(
@@ -129,10 +120,7 @@ class SkillSelect(Select[AgentSearchView]):
         ]
         options.append(
             SelectOption(
-                label=LocaleStr(key="zzz.core"),
-                value="core",
-                emoji=ZZZ_SKILL_TYPE_CORE,
-                default=page == "core",
+                label=LocaleStr(key="zzz.core"), value="core", emoji=ZZZ_SKILL_TYPE_CORE, default=page == "core"
             )
         )
         super().__init__(options=options, placeholder=LocaleStr(key="zzz.skill_type.placeholder"))

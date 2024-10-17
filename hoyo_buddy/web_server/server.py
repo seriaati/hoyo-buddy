@@ -131,9 +131,7 @@ class GeetestWebServer:
             guild_id = request.query["guild_id"]
             message_id = request.query["message_id"]
 
-            url = get_discord_protocol_url(
-                channel_id=channel_id, guild_id=guild_id, message_id=message_id
-            )
+            url = get_discord_protocol_url(channel_id=channel_id, guild_id=guild_id, message_id=message_id)
         return web.Response(status=302, headers={"Location": url})
 
     async def run(self, port: int = 5000) -> None:

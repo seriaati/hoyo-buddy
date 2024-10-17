@@ -47,10 +47,7 @@ class CookiesForm(ft.Column):
         self._locale = locale
         self._cookies_ref = ft.Ref[ft.TextField]()
         super().__init__(
-            [
-                CookiesTextField(translator=translator, locale=locale, ref=self._cookies_ref),
-                self.submit_button,
-            ],
+            [CookiesTextField(translator=translator, locale=locale, ref=self._cookies_ref), self.submit_button],
             wrap=True,
             spacing=16,
         )
@@ -58,8 +55,7 @@ class CookiesForm(ft.Column):
     @property
     def submit_button(self) -> ft.FilledButton:
         return ft.FilledButton(
-            text=self._translator.translate(LocaleStr(key="submit_button_label"), self._locale),
-            on_click=self.on_submit,
+            text=self._translator.translate(LocaleStr(key="submit_button_label"), self._locale), on_click=self.on_submit
         )
 
     async def on_submit(self, e: ft.ControlEvent) -> None:

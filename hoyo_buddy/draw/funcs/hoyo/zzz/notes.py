@@ -19,23 +19,14 @@ def get_nearest_battery_level(current: int, max_battery: int) -> int:
     return battery_levels[bisect.bisect_left(battery_levels, percentage)]
 
 
-def draw_zzz_notes(
-    notes: ZZZNotes, locale_: str, translator: Translator, dark_mode: bool
-) -> BytesIO:
-    battery_level = get_nearest_battery_level(
-        notes.battery_charge.current, notes.battery_charge.max
-    )
+def draw_zzz_notes(notes: ZZZNotes, locale_: str, translator: Translator, dark_mode: bool) -> BytesIO:
+    battery_level = get_nearest_battery_level(notes.battery_charge.current, notes.battery_charge.max)
 
     filename = f"{'dark' if dark_mode else 'light'}_notes_{battery_level}"
     im = Drawer.open_image(f"hoyo-buddy-assets/assets/zzz-notes/{filename}.png")
     draw = ImageDraw.Draw(im)
     drawer = Drawer(
-        draw,
-        folder="zzz-notes",
-        dark_mode=dark_mode,
-        translator=translator,
-        locale=discord.Locale(locale_),
-        sans=True,
+        draw, folder="zzz-notes", dark_mode=dark_mode, translator=translator, locale=discord.Locale(locale_), sans=True
     )
 
     # Title
@@ -54,10 +45,7 @@ def draw_zzz_notes(
         max_lines=2,
     )
     drawer.write(
-        f"{notes.battery_charge.current}/{notes.battery_charge.max}",
-        size=32,
-        style="medium",
-        position=(112, 487),
+        f"{notes.battery_charge.current}/{notes.battery_charge.max}", size=32, style="medium", position=(112, 487)
     )
 
     # Scratch card
@@ -70,11 +58,7 @@ def draw_zzz_notes(
         max_width=354,
         max_lines=2,
     )
-    text = LocaleStr(
-        key="scratch_card.incomplete"
-        if not notes.scratch_card_completed
-        else "notes-card.gi.completed"
-    )
+    text = LocaleStr(key="scratch_card.incomplete" if not notes.scratch_card_completed else "notes-card.gi.completed")
 
     drawer.write(text, size=32, style="medium", position=(598, 487))
 
@@ -107,12 +91,7 @@ def draw_zzz_notes(
         max_width=354,
         max_lines=2,
     )
-    drawer.write(
-        f"{notes.engagement.current}/{notes.engagement.max}",
-        size=32,
-        style="medium",
-        position=(598, 890),
-    )
+    drawer.write(f"{notes.engagement.current}/{notes.engagement.max}", size=32, style="medium", position=(598, 890))
 
     # Save image
     buffer = BytesIO()

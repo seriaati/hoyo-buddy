@@ -435,11 +435,7 @@ GEETEST_SERVERS = {
     "dev": "http://localhost:5000",
 }
 
-WEB_APP_URLS = {
-    "prod": "https://hb-app.seria.moe",
-    "test": "https://hb-app.seria.moe",
-    "dev": "http://localhost:8645",
-}
+WEB_APP_URLS = {"prod": "https://hb-app.seria.moe", "test": "https://hb-app.seria.moe", "dev": "http://localhost:8645"}
 
 UTC_8 = datetime.timezone(datetime.timedelta(hours=8))
 
@@ -451,13 +447,7 @@ HAKUSHIN_HSR_SKILL_TYPE_NAMES = {
     "MazeNormal": "hsr.technique",
     "Talent": "hsr.talent",
 }
-GI_SKILL_TYPE_KEYS = {
-    1: "gi.skill",
-    2: "gi.burst",
-    3: "gi.passive",
-    4: "gi.passive",
-    5: "gi.passive",
-}
+GI_SKILL_TYPE_KEYS = {1: "gi.skill", 2: "gi.burst", 3: "gi.passive", 4: "gi.passive", 5: "gi.passive"}
 
 GAME_CHALLENGE_TYPES: Final[dict[Game, tuple[ChallengeType, ...]]] = {
     Game.GENSHIN: (ChallengeType.SPIRAL_ABYSS, ChallengeType.IMG_THEATER),
@@ -465,9 +455,7 @@ GAME_CHALLENGE_TYPES: Final[dict[Game, tuple[ChallengeType, ...]]] = {
     Game.ZZZ: (ChallengeType.SHIYU_DEFENSE,),
 }
 
-ZENLESS_ASSET_SCRAPE_URL = (
-    "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite"
-)
+ZENLESS_ASSET_SCRAPE_URL = "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite"
 ZZZ_AGENT_DATA_URL = f"{ZENLESS_ASSET_SCRAPE_URL}/agent_data.json"
 
 ZENLESS_DATA_URL = "https://git.mero.moe/dimbreath/ZenlessData/raw/branch/master"
@@ -501,21 +489,7 @@ HSR_AVATAR_CONFIG_URL = f"{STARRAIL_DATA_URL}/ExcelOutput/AvatarConfig.json"
 HSR_EQUIPMENT_CONFIG_URL = f"{STARRAIL_DATA_URL}/ExcelOutput/EquipmentConfig.json"
 HSR_TEXT_MAP_URL = f"{STARRAIL_DATA_URL}/TextMap/TextMap{{lang}}.json"
 
-STARRAIL_DATA_LANGS = (
-    "CHS",
-    "CHT",
-    "DE",
-    "EN",
-    "ES",
-    "FR",
-    "ID",
-    "JP",
-    "KR",
-    "PT",
-    "RU",
-    "TH",
-    "VI",
-)
+STARRAIL_DATA_LANGS = ("CHS", "CHT", "DE", "EN", "ES", "FR", "ID", "JP", "KR", "PT", "RU", "TH", "VI")
 
 LOCALE_TO_STARRAIL_DATA_LANG: dict[discord.Locale, str] = {
     discord.Locale.chinese: "CHS",
@@ -542,11 +516,7 @@ FORT_OF_FANS_URL = "https://raw.githubusercontent.com/FortOfFans/HSR/main"
 HSR_DEFAULT_ART_URL = f"{FORT_OF_FANS_URL}/spriteoutput/avatardrawcardresult/{{char_id}}.png"
 HSR_TEAM_ICON_URL = f"{FORT_OF_FANS_URL}/spriteoutput/avatariconteam/{{char_id}}.png"
 
-UIGF_GAME_KEYS: Final[dict[Game, str]] = {
-    Game.GENSHIN: "hk4e",
-    Game.STARRAIL: "hkrpg",
-    Game.ZZZ: "nap",
-}
+UIGF_GAME_KEYS: Final[dict[Game, str]] = {Game.GENSHIN: "hk4e", Game.STARRAIL: "hkrpg", Game.ZZZ: "nap"}
 
 BANNER_TYPE_NAMES: Final[dict[Game, dict[int, str]]] = {
     Game.GENSHIN: {
@@ -648,12 +618,7 @@ STANDARD_ITEMS: Final[dict[Game, set[int]]] = {
     },
 }
 
-CHARACTER_MAX_LEVEL: Final[dict[Game, int]] = {
-    Game.GENSHIN: 90,
-    Game.STARRAIL: 80,
-    Game.ZZZ: 60,
-    Game.HONKAI: 80,
-}
+CHARACTER_MAX_LEVEL: Final[dict[Game, int]] = {Game.GENSHIN: 90, Game.STARRAIL: 80, Game.ZZZ: 60, Game.HONKAI: 80}
 
 
 def is_standard_item(game: Game, item_id: int) -> bool:

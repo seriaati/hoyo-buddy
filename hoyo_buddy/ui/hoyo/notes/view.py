@@ -126,14 +126,10 @@ class NotesView(View):
         )
 
     async def _get_reminder_embed(self) -> DefaultEmbed:
-        embed = DefaultEmbed(
-            self.locale, self.translator, title=LocaleStr(key="reminder_settings_title")
-        )
+        embed = DefaultEmbed(self.locale, self.translator, title=LocaleStr(key="reminder_settings_title"))
 
         if self._account.game is Game.GENSHIN:
-            resin_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.RESIN
-            )
+            resin_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.RESIN)
             embed.add_field(
                 name=LocaleStr(key="resin_reminder_button.label"),
                 value=self._get_type1_value(resin_notify),
@@ -149,31 +145,17 @@ class NotesView(View):
                 inline=False,
             )
 
-            pt_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.PT
-            )
+            pt_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.PT)
+            embed.add_field(name=LocaleStr(key="pt_button.label"), value=self._get_type2_value(pt_notify), inline=False)
+
+            expedition_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.GI_EXPED)
             embed.add_field(
-                name=LocaleStr(key="pt_button.label"),
-                value=self._get_type2_value(pt_notify),
-                inline=False,
+                name=LocaleStr(key="exped_button.label"), value=self._get_type2_value(expedition_notify), inline=False
             )
 
-            expedition_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.GI_EXPED
-            )
+            daily_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.GI_DAILY)
             embed.add_field(
-                name=LocaleStr(key="exped_button.label"),
-                value=self._get_type2_value(expedition_notify),
-                inline=False,
-            )
-
-            daily_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.GI_DAILY
-            )
-            embed.add_field(
-                name=LocaleStr(key="daily_button.label"),
-                value=self._get_type3_value(daily_notify),
-                inline=False,
+                name=LocaleStr(key="daily_button.label"), value=self._get_type3_value(daily_notify), inline=False
             )
 
             resin_discount_notify = await NotesNotify.get_or_none(
@@ -186,13 +168,9 @@ class NotesView(View):
             )
 
         elif self._account.game is Game.STARRAIL:
-            tbp_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.TB_POWER
-            )
+            tbp_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.TB_POWER)
             embed.add_field(
-                name=LocaleStr(key="tbp_reminder_button.label"),
-                value=self._get_type1_value(tbp_notify),
-                inline=False,
+                name=LocaleStr(key="tbp_reminder_button.label"), value=self._get_type1_value(tbp_notify), inline=False
             )
 
             reserved_tbp_notify = await NotesNotify.get_or_none(
@@ -204,27 +182,17 @@ class NotesView(View):
                 inline=False,
             )
 
-            expedition_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.HSR_EXPED
-            )
+            expedition_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.HSR_EXPED)
             embed.add_field(
-                name=LocaleStr(key="exped_button.label"),
-                value=self._get_type2_value(expedition_notify),
-                inline=False,
+                name=LocaleStr(key="exped_button.label"), value=self._get_type2_value(expedition_notify), inline=False
             )
 
-            daily_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.HSR_DAILY
-            )
+            daily_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.HSR_DAILY)
             embed.add_field(
-                name=LocaleStr(key="daily_button.label"),
-                value=self._get_type3_value(daily_notify),
-                inline=False,
+                name=LocaleStr(key="daily_button.label"), value=self._get_type3_value(daily_notify), inline=False
             )
 
-            echo_of_war_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.ECHO_OF_WAR
-            )
+            echo_of_war_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.ECHO_OF_WAR)
             embed.add_field(
                 name=LocaleStr(key="week_boss_button.label"),
                 value=self._get_type4_value(echo_of_war_notify),
@@ -241,22 +209,16 @@ class NotesView(View):
             )
 
         elif self._account.game is Game.ZZZ:
-            battery_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.BATTERY
-            )
+            battery_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.BATTERY)
             embed.add_field(
                 name=LocaleStr(key="battery_charge_button.label"),
                 value=self._get_type1_value(battery_notify),
                 inline=False,
             )
 
-            daily_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.ZZZ_DAILY
-            )
+            daily_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.ZZZ_DAILY)
             embed.add_field(
-                name=LocaleStr(key="daily_button.label"),
-                value=self._get_type3_value(daily_notify),
-                inline=False,
+                name=LocaleStr(key="daily_button.label"), value=self._get_type3_value(daily_notify), inline=False
             )
 
             scratch_card_notify = await NotesNotify.get_or_none(
@@ -268,9 +230,7 @@ class NotesView(View):
                 inline=False,
             )
 
-            video_store_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.VIDEO_STORE
-            )
+            video_store_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.VIDEO_STORE)
             embed.add_field(
                 name=LocaleStr(key="video_store_button.label"),
                 value=self._get_type2_value(video_store_notify),
@@ -278,21 +238,14 @@ class NotesView(View):
             )
 
         else:
-            raise FeatureNotImplementedError(
-                platform=self._account.platform, game=self._account.game
-            )
+            raise FeatureNotImplementedError(platform=self._account.platform, game=self._account.game)
 
         embed.add_acc_info(self._account)
         embed.set_image(url="attachment://notes.png")
         return embed
 
     async def process_type_one_modal(
-        self,
-        *,
-        modal: TypeOneModal,
-        notify: NotesNotify | None,
-        notify_type: NotesNotifyType,
-        check_interval: int,
+        self, *, modal: TypeOneModal, notify: NotesNotify | None, notify_type: NotesNotifyType, check_interval: int
     ) -> DefaultEmbed:
         enabled = bool(int(modal.enabled.value))
         threshold = int(modal.threshold.value)
@@ -315,25 +268,12 @@ class NotesView(View):
             notify.max_notif_count = max_notif_count
             notify.enabled = enabled
             notify.est_time = None
-            await notify.save(
-                update_fields=(
-                    "threshold",
-                    "notify_interval",
-                    "max_notif_count",
-                    "enabled",
-                    "est_time",
-                )
-            )
+            await notify.save(update_fields=("threshold", "notify_interval", "max_notif_count", "enabled", "est_time"))
 
         return await self._get_reminder_embed()
 
     async def process_type_two_modal(
-        self,
-        *,
-        modal: TypeTwoModal,
-        notify: NotesNotify | None,
-        notify_type: NotesNotifyType,
-        check_interval: int,
+        self, *, modal: TypeTwoModal, notify: NotesNotify | None, notify_type: NotesNotifyType, check_interval: int
     ) -> DefaultEmbed:
         enabled = bool(int(modal.enabled.value))
         notify_interval = int(modal.notify_interval.value)
@@ -357,12 +297,7 @@ class NotesView(View):
         return await self._get_reminder_embed()
 
     async def process_type_three_modal(
-        self,
-        *,
-        modal: TypeThreeModal,
-        notify: NotesNotify | None,
-        notify_type: NotesNotifyType,
-        check_interval: int,
+        self, *, modal: TypeThreeModal, notify: NotesNotify | None, notify_type: NotesNotifyType, check_interval: int
     ) -> DefaultEmbed:
         enabled = bool(int(modal.enabled.value))
         notify_interval = int(modal.notify_interval.value)
@@ -384,19 +319,12 @@ class NotesView(View):
             notify.notify_interval = notify_interval
             notify.max_notif_count = max_notif_count
             notify.notify_time = notify_time
-            await notify.save(
-                update_fields=("enabled", "notify_interval", "max_notif_count", "notify_time")
-            )
+            await notify.save(update_fields=("enabled", "notify_interval", "max_notif_count", "notify_time"))
 
         return await self._get_reminder_embed()
 
     async def process_type_four_modal(
-        self,
-        *,
-        modal: TypeFourModal,
-        notify: NotesNotify | None,
-        notify_type: NotesNotifyType,
-        check_interval: int,
+        self, *, modal: TypeFourModal, notify: NotesNotify | None, notify_type: NotesNotifyType, check_interval: int
     ) -> DefaultEmbed:
         enabled = bool(int(modal.enabled.value))
         notify_interval = int(modal.notify_interval.value)
@@ -422,24 +350,13 @@ class NotesView(View):
             notify.notify_time = notify_time
             notify.notify_weekday = notify_weekday
             await notify.save(
-                update_fields=(
-                    "enabled",
-                    "notify_interval",
-                    "max_notif_count",
-                    "notify_time",
-                    "notify_weekday",
-                )
+                update_fields=("enabled", "notify_interval", "max_notif_count", "notify_time", "notify_weekday")
             )
 
         return await self._get_reminder_embed()
 
     async def process_type_five_modal(
-        self,
-        *,
-        modal: TypeFiveModal,
-        notify: NotesNotify | None,
-        notify_type: NotesNotifyType,
-        check_interval: int,
+        self, *, modal: TypeFiveModal, notify: NotesNotify | None, notify_type: NotesNotifyType, check_interval: int
     ) -> DefaultEmbed:
         enabled = bool(int(modal.enabled.value))
         notify_interval = int(modal.notify_interval.value)
@@ -461,15 +378,11 @@ class NotesView(View):
             notify.notify_interval = notify_interval
             notify.max_notif_count = max_notif_count
             notify.hours_before = hours_before
-            await notify.save(
-                update_fields=("enabled", "notify_interval", "max_notif_count", "hours_before")
-            )
+            await notify.save(update_fields=("enabled", "notify_interval", "max_notif_count", "hours_before"))
 
         return await self._get_reminder_embed()
 
-    async def _get_notes(
-        self,
-    ) -> genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes:
+    async def _get_notes(self) -> genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes:
         if self._account.game is Game.GENSHIN:
             return await self._account.client.get_genshin_notes()
         if self._account.game is Game.ZZZ:
@@ -598,9 +511,7 @@ class NotesView(View):
     async def start(self, i: Interaction) -> None:
         notes = await self._get_notes()
         embed = self._get_notes_embed(notes)
-        self.bytes_obj = await self._draw_notes_card(
-            i.client.session, notes, i.client.executor, i.client.loop
-        )
+        self.bytes_obj = await self._draw_notes_card(i.client.session, notes, i.client.executor, i.client.loop)
 
         self.bytes_obj.seek(0)
         file_ = File(self.bytes_obj, filename="notes.png")
@@ -610,16 +521,10 @@ class NotesView(View):
 
 class ReminderButton(Button[NotesView]):
     def __init__(self) -> None:
-        super().__init__(
-            style=ButtonStyle.blurple,
-            emoji=BELL_OUTLINE,
-            label=LocaleStr(key="reminder_button.label"),
-        )
+        super().__init__(style=ButtonStyle.blurple, emoji=BELL_OUTLINE, label=LocaleStr(key="reminder_button.label"))
 
     async def callback(self, i: Interaction) -> None:
-        go_back_button = GoBackButton(
-            self.view.children, self.view.get_embeds(i.message), self.view.bytes_obj
-        )
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message), self.view.bytes_obj)
         self.view.clear_items()
         self.view.add_item(go_back_button)
 
@@ -668,9 +573,7 @@ class ReminderButton(Button[NotesView]):
             self.view.add_item(ScratchCardReminder(row=1))
             self.view.add_item(VideoStoreReminder(row=1))
         else:
-            raise FeatureNotImplementedError(
-                platform=self.view._account.platform, game=self.view._account.game
-            )
+            raise FeatureNotImplementedError(platform=self.view._account.platform, game=self.view._account.game)
 
         embed = await self.view._get_reminder_embed()
         await i.response.edit_message(embed=embed, view=self.view, attachments=[])

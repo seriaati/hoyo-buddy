@@ -63,18 +63,14 @@ class LbPaginator(PaginatorView):
         embed = self.lb_embed.copy()
 
         if self.you is not None:
-            top_percent = LocaleStr(
-                key="top_percent", percent=round(self.you.rank / self.lb_size * 100, 1)
-            ).translate(self.translator, self.locale)
+            top_percent = LocaleStr(key="top_percent", percent=round(self.you.rank / self.lb_size * 100, 1)).translate(
+                self.translator, self.locale
+            )
             you_str = LocaleStr(key="akasha_you").translate(self.translator, self.locale)
 
-            embed.add_field(
-                name=f"{you_str} ({top_percent})", value=self.get_lb_line(self.you), inline=False
-            )
+            embed.add_field(name=f"{you_str} ({top_percent})", value=self.get_lb_line(self.you), inline=False)
 
-        return embed.add_field(
-            name="---", value="\n".join(self.get_lb_line(lb) for lb in lbs), inline=False
-        )
+        return embed.add_field(name="---", value="\n".join(self.get_lb_line(lb) for lb in lbs), inline=False)
 
     async def fetch_page(self) -> Page:
         self.lbs = (

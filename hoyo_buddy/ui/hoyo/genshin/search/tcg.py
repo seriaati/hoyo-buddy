@@ -19,9 +19,7 @@ if TYPE_CHECKING:
 
 
 class TCGCardUI(View):
-    def __init__(
-        self, card_id: int, *, author: User | Member, locale: Locale, translator: Translator
-    ) -> None:
+    def __init__(self, card_id: int, *, author: User | Member, locale: Locale, translator: Translator) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.card_id = card_id
         self.card_embed: DefaultEmbed | None = None
@@ -52,9 +50,7 @@ class TCGCardUI(View):
             self.card = card
             if card.talents:
                 for talent in card.talents:
-                    self.talent_embeds[talent.id] = api.get_tcg_card_talent_embed(
-                        talent, card.dictionaries
-                    )
+                    self.talent_embeds[talent.id] = api.get_tcg_card_talent_embed(talent, card.dictionaries)
             if card.dictionaries:
                 self.dictionary_embed = api.get_tcg_card_dictionaries_embed(card.dictionaries)
             self.card_embed = api.get_tcg_card_embed(card)
@@ -78,9 +74,7 @@ class ViewCardButton(Button[TCGCardUI]):
 
 class ViewDictionaryButton(Button[TCGCardUI]):
     def __init__(self) -> None:
-        super().__init__(
-            label=LocaleStr(key="view_dictionary_button_label"), style=ButtonStyle.primary
-        )
+        super().__init__(label=LocaleStr(key="view_dictionary_button_label"), style=ButtonStyle.primary)
 
     async def callback(self, i: Interaction) -> None:
         if self.view.dictionary_embed is None:
@@ -96,8 +90,7 @@ class CardTalentSelector(Select[TCGCardUI]):
         super().__init__(
             placeholder="Select a talent to view",
             options=[
-                SelectOption(label=t.name or "???", value=t.id, default=current_talent_id == t.id)
-                for t in talents
+                SelectOption(label=t.name or "???", value=t.id, default=current_talent_id == t.id) for t in talents
             ],
         )
         self.talents = talents

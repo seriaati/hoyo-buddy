@@ -45,9 +45,7 @@ HAKUSHIN_HSR_ITEM_CATEGORY_MAP: Final[dict[yatta.ItemCategory, HakushinItemCateg
 
 
 class AutocompleteSetup:
-    _result: ClassVar[AutocompleteChoices] = defaultdict(
-        lambda: defaultdict(lambda: defaultdict(list))
-    )
+    _result: ClassVar[AutocompleteChoices] = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
     _beta_result: ClassVar[BetaAutocompleteChoices] = defaultdict(lambda: defaultdict(list))
     _beta_id_to_category: ClassVar[dict[str, str]] = {}
     """Item ID to ItemCategory.value."""
@@ -191,11 +189,7 @@ class AutocompleteSetup:
 
     @classmethod
     def _inject_hakushin_items(
-        cls,
-        game: Game,
-        category: ambr.ItemCategory | yatta.ItemCategory,
-        locale: Locale,
-        items: list[Any],
+        cls, game: Game, category: ambr.ItemCategory | yatta.ItemCategory, locale: Locale, items: list[Any]
     ) -> None:
         hakushin_category = (
             HAKUSHIN_GI_ITEM_CATEGORY_MAP.get(category)
@@ -224,9 +218,7 @@ class AutocompleteSetup:
             items.append(hakushin_item)
 
     @classmethod
-    def _add_to_beta_results(
-        cls, game: Game, category: ItemCategory, locale: Locale, items: list[Any]
-    ) -> None:
+    def _add_to_beta_results(cls, game: Game, category: ItemCategory, locale: Locale, items: list[Any]) -> None:
         beta_ids = cls._category_beta_ids.get((game, category), [])
 
         for beta_id in beta_ids:
@@ -279,8 +271,6 @@ class AutocompleteSetup:
                         cls._inject_hakushin_items(game, category, locale, items)
 
                     cls._add_to_beta_results(game, category, locale, items)
-                    cls._result[game][category][locale] = [
-                        Choice(name=item.name, value=str(item.id)) for item in items
-                    ]
+                    cls._result[game][category][locale] = [Choice(name=item.name, value=str(item.id)) for item in items]
 
         return cls._result, cls._beta_id_to_category, cls._beta_result

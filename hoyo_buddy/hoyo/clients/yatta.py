@@ -108,9 +108,7 @@ class YattaAPIClient(yatta.YattaAPI):
                 for _ in range(upgrade.max_level):
                     latest_stat = level_stats[key_replace][-1]
                     level_stats[key_replace].append(latest_stat + upgrade.skill_add[key])
-                level_stats[key_replace] = level_stats[key_replace][
-                    previous_max_level - 1 : upgrade.max_level
-                ]
+                level_stats[key_replace] = level_stats[key_replace][previous_max_level - 1 : upgrade.max_level]
 
             for skill in upgrade.skill_base:
                 if skill.replace("Base", "Add") not in upgrade.skill_add:
@@ -134,12 +132,7 @@ class YattaAPIClient(yatta.YattaAPI):
         levels_map = [str(step) for step in range(1, upgrade_max_level + 1)]
         levels_map.extend([f"{step}+" for step in range(1, upgrade_max_level) if step in range_add])
 
-        return {
-            "levels": levels_map,
-            "stats": all_levels,
-            "cost": cost_count,
-            "fullCost": full_upgrade,
-        }
+        return {"levels": levels_map, "stats": all_levels, "cost": cost_count, "fullCost": full_upgrade}
 
     def _convert_upgrade_stat_key(self, key: str) -> str:
         return KEY_DICT.get(key, key)
@@ -214,9 +207,7 @@ class YattaAPIClient(yatta.YattaAPI):
 
         return embed
 
-    def get_character_main_skill_embed(
-        self, skill: yatta.SkillListSkill, level: int
-    ) -> DefaultEmbed:
+    def get_character_main_skill_embed(self, skill: yatta.SkillListSkill, level: int) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
             raise RuntimeError(msg)
@@ -227,9 +218,7 @@ class YattaAPIClient(yatta.YattaAPI):
             self.locale,
             self.translator,
             title=f"{skill.type}: {skill.name} ({level_str})",
-            description=self._process_description_params(
-                skill.description, skill.params, param_index=level - 1
-            )
+            description=self._process_description_params(skill.description, skill.params, param_index=level - 1)
             if skill.description
             else None,
         )
@@ -251,17 +240,13 @@ class YattaAPIClient(yatta.YattaAPI):
         if energy_need and energy_need.value:
             energy_value_strs.append(
                 self.translator.translate(
-                    LocaleStr(
-                        key="yatta_character_skill_energy_need_field_value",
-                        energy_need=energy_need.value,
-                    ),
+                    LocaleStr(key="yatta_character_skill_energy_need_field_value", energy_need=energy_need.value),
                     self.locale,
                 )
             )
         if energy_value_strs:
             embed.add_field(
-                name=LocaleStr(key="yatta_character_skill_energy_field_name"),
-                value="/".join(energy_value_strs),
+                name=LocaleStr(key="yatta_character_skill_energy_field_name"), value="/".join(energy_value_strs)
             )
 
         single_weakness_break = dutils.get(skill.weakness_break, type="one")
@@ -350,9 +335,7 @@ class YattaAPIClient(yatta.YattaAPI):
 
         return DefaultEmbed(self.locale, self.translator, title=story.title, description=story.text)
 
-    def get_character_voice_embed(
-        self, voice: yatta.CharacterVoice, character_id: int
-    ) -> DefaultEmbed:
+    def get_character_voice_embed(self, voice: yatta.CharacterVoice, character_id: int) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
             raise RuntimeError(msg)
@@ -365,9 +348,7 @@ class YattaAPIClient(yatta.YattaAPI):
             )
             description += f"\n\n{voice_str}"
 
-        return DefaultEmbed(
-            self.locale, self.translator, title=voice.title, description=description
-        )
+        return DefaultEmbed(self.locale, self.translator, title=voice.title, description=description)
 
     def get_item_embed(self, item: yatta.ItemDetail) -> DefaultEmbed:
         if self.translator is None:
@@ -375,10 +356,7 @@ class YattaAPIClient(yatta.YattaAPI):
             raise RuntimeError(msg)
 
         embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=f"{item.name}\n{'★' * item.rarity}",
-            description=item.description,
+            self.locale, self.translator, title=f"{item.name}\n{'★' * item.rarity}", description=item.description
         )
         if item.sources:
             embed.add_field(
@@ -392,11 +370,7 @@ class YattaAPIClient(yatta.YattaAPI):
         return embed
 
     def get_light_cone_embed(
-        self,
-        light_cone: yatta.LightConeDetail,
-        level: int,
-        superimpose: int,
-        manual_avatar: dict[str, Any],
+        self, light_cone: yatta.LightConeDetail, level: int, superimpose: int, manual_avatar: dict[str, Any]
     ) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
@@ -437,16 +411,12 @@ class YattaAPIClient(yatta.YattaAPI):
 
         return embed
 
-    def get_book_series_embed(
-        self, book: yatta.BookDetail, series: yatta.BookSeries
-    ) -> DefaultEmbed:
+    def get_book_series_embed(self, book: yatta.BookDetail, series: yatta.BookSeries) -> DefaultEmbed:
         if self.translator is None:
             msg = "Translator is not set"
             raise RuntimeError(msg)
 
-        embed = DefaultEmbed(
-            self.locale, self.translator, title=series.name, description=series.story
-        )
+        embed = DefaultEmbed(self.locale, self.translator, title=series.name, description=series.story)
         embed.set_author(name=book.name, icon_url=book.icon)
         embed.set_footer(text=book.description)
 
@@ -476,9 +446,7 @@ class YattaAPIClient(yatta.YattaAPI):
             )
             description += "\n" + self.translator.translate(four_piece, self.locale)
 
-        embed = DefaultEmbed(
-            self.locale, self.translator, title=relic.name, description=description
-        )
+        embed = DefaultEmbed(self.locale, self.translator, title=relic.name, description=description)
         embed.set_author(name=relic_set.name, icon_url=relic_set.icon)
         embed.set_footer(text=relic.description)
         embed.set_thumbnail(url=relic.icon)

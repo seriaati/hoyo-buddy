@@ -77,24 +77,12 @@ class GITempTwoBuildCard:
 
         # Character level
         tbox = drawer.write(
-            f"Lv.{character.level}",
-            size=104,
-            style="regular",
-            position=(0, 0),
-            gothic=True,
-            no_write=True,
+            f"Lv.{character.level}", size=104, style="regular", position=(0, 0), gothic=True, no_write=True
         )
         text_im = Image.new("RGBA", (tbox.width, tbox.height * 2))
-        text_im_drawer = Drawer(
-            ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode
-        )
+        text_im_drawer = Drawer(ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode)
         text_im_drawer.write(
-            f"Lv.{character.level}",
-            size=104,
-            style="regular",
-            position=(0, 0),
-            gothic=True,
-            color=color_1,
+            f"Lv.{character.level}", size=104, style="regular", position=(0, 0), gothic=True, color=color_1
         )
         text_im = text_im.rotate(-90, expand=True)
         im.alpha_composite(text_im, (2414, 83))
@@ -102,26 +90,12 @@ class GITempTwoBuildCard:
         if self._rank is not None:
             # Rank
             tbox = drawer.write(
-                self._rank,
-                size=46,
-                style="regular",
-                position=(0, 0),
-                gothic=True,
-                no_write=True,
-                anchor="lt",
+                self._rank, size=46, style="regular", position=(0, 0), gothic=True, no_write=True, anchor="lt"
             )
             text_im = Image.new("RGBA", (tbox.width, tbox.height))
-            text_im_drawer = Drawer(
-                ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode
-            )
+            text_im_drawer = Drawer(ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode)
             text_im_drawer.write(
-                self._rank,
-                size=46,
-                style="regular",
-                position=(0, 0),
-                gothic=True,
-                color=color_1,
-                anchor="lt",
+                self._rank, size=46, style="regular", position=(0, 0), gothic=True, color=color_1, anchor="lt"
             )
             text_im = text_im.rotate(-90, expand=True)
             # Draw rounded rectangle that surrounds the text
@@ -144,29 +118,12 @@ class GITempTwoBuildCard:
             im.alpha_composite(stars, (2426, 378))
 
         # Name
-        size = drawer.calc_dynamic_fontsize(
-            self._english_name, 935, 251, drawer.get_font(251, "light", gothic=True)
-        )
-        tbox = drawer.write(
-            self._english_name,
-            size=size,
-            style="light",
-            position=(0, 0),
-            gothic=True,
-            no_write=True,
-        )
+        size = drawer.calc_dynamic_fontsize(self._english_name, 935, 251, drawer.get_font(251, "light", gothic=True))
+        tbox = drawer.write(self._english_name, size=size, style="light", position=(0, 0), gothic=True, no_write=True)
         text_im = Image.new("RGBA", (tbox.width, tbox.height))
-        text_im_drawer = Drawer(
-            ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode
-        )
+        text_im_drawer = Drawer(ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode)
         text_im_drawer.write(
-            self._english_name,
-            size=size,
-            style="light",
-            position=(0, 0),
-            gothic=True,
-            color=color_1,
-            anchor="lt",
+            self._english_name, size=size, style="light", position=(0, 0), gothic=True, color=color_1, anchor="lt"
         )
         text_im = text_im.rotate(-90, expand=True)
         im.alpha_composite(text_im, (2685 - text_im.width // 2, 66))
@@ -213,11 +170,7 @@ class GITempTwoBuildCard:
 
         # Weapon level
         level_tbox = drawer.write(
-            f"Lv.{weapon.level} R{weapon.refinement}",
-            size=35,
-            style="medium",
-            position=(0, 0),
-            no_write=True,
+            f"Lv.{weapon.level} R{weapon.refinement}", size=35, style="medium", position=(0, 0), no_write=True
         )
         level_tbox = drawer.write(
             f"Lv.{weapon.level} R{weapon.refinement}",
@@ -229,9 +182,7 @@ class GITempTwoBuildCard:
 
         # Weapon stats
         stat1 = weapon.stats[1] if len(weapon.stats) > 1 else weapon.stats[0]
-        stat1_tbox = drawer.write(
-            f"{stat1.formatted_value}", size=35, style="medium", position=(0, 0), no_write=True
-        )
+        stat1_tbox = drawer.write(f"{stat1.formatted_value}", size=35, style="medium", position=(0, 0), no_write=True)
         stat1_tbox = drawer.write(
             f"{stat1.formatted_value}",
             size=35,
@@ -239,9 +190,7 @@ class GITempTwoBuildCard:
             position=(level_tbox.right - stat1_tbox.width, 1537),
             color=color_1,
         )
-        stat1_icon = drawer.open_asset(
-            f"stats/{stat1.type.name}.png", mask_color=color_1, size=(35, 35)
-        )
+        stat1_icon = drawer.open_asset(f"stats/{stat1.type.name}.png", mask_color=color_1, size=(35, 35))
         stat1_icon_x = stat1_tbox.left - stat1_icon.width - 31
         stat1_icon_y = stat1_tbox.top + (stat1_tbox.height - stat1_icon.height) // 2
         im.alpha_composite(stat1_icon, (stat1_icon_x, stat1_icon_y))
@@ -258,9 +207,7 @@ class GITempTwoBuildCard:
                 position=(stat1_icon_x - stat2_tbox.width - 50, 1537),
                 color=color_1,
             )
-            stat2_icon = drawer.open_asset(
-                f"stats/{stat2.type.name}.png", mask_color=color_1, size=(35, 35)
-            )
+            stat2_icon = drawer.open_asset(f"stats/{stat2.type.name}.png", mask_color=color_1, size=(35, 35))
             stat2_icon_x = stat2_tbox.left - 50
             stat2_icon_y = stat2_tbox.top + (stat2_tbox.height - stat2_icon.height) // 2
             im.alpha_composite(stat2_icon, (stat2_icon_x, stat2_icon_y))
@@ -269,9 +216,7 @@ class GITempTwoBuildCard:
         start_pos = (316, 1679)
         x_diff = 150
         talent_order = character.talent_order
-        talents = [
-            next(t for t in character.talents if t.id == talent_id) for talent_id in talent_order
-        ]
+        talents = [next(t for t in character.talents if t.id == talent_id) for talent_id in talent_order]
 
         for i, talent in enumerate(talents):
             icon = drawer.open_static(talent.icon, size=(98, 98), mask_color=color_1)
@@ -280,10 +225,7 @@ class GITempTwoBuildCard:
                 str(talent.level),
                 size=39,
                 style="medium",
-                position=(
-                    start_pos[0] + x_diff * i + icon.width // 2,
-                    start_pos[1] + icon.height + 30,
-                ),
+                position=(start_pos[0] + x_diff * i + icon.width // 2, start_pos[1] + icon.height + 30),
                 color=color_1,
                 anchor="mm",
             )
@@ -311,9 +253,7 @@ class GITempTwoBuildCard:
             icon_path = ADD_HURT_ELEMENTS[dmg_stat.type]
         dmg_icon = drawer.open_asset(f"elements/{icon_path}.png", size=(55, 55), mask_color=color_1)
         im.alpha_composite(dmg_icon, (1145, 1743))
-        drawer.write(
-            dmg_stat.formatted_value, size=42, style="medium", color=color_1, position=start_pos
-        )
+        drawer.write(dmg_stat.formatted_value, size=42, style="medium", color=color_1, position=start_pos)
 
         # Artifacts
         start_pos = (1938, 1046)
@@ -322,9 +262,7 @@ class GITempTwoBuildCard:
             if isinstance(character, HoyolabGICharacter):
                 artifact = next((a for a in character.artifacts if a.pos == i + 1), None)
             else:
-                artifact = next(
-                    (a for a in character.artifacts if ARTIFACT_POS[a.equip_type] == i + 1), None
-                )
+                artifact = next((a for a in character.artifacts if ARTIFACT_POS[a.equip_type] == i + 1), None)
 
             if artifact is not None:
                 icon = drawer.open_static(artifact.icon, size=(148, 148))
@@ -339,9 +277,7 @@ class GITempTwoBuildCard:
                 )
 
                 stat = artifact.main_stat
-                icon = drawer.open_asset(
-                    f"stats/{stat.type.name}.png", size=(42, 42), mask_color=color_1
-                )
+                icon = drawer.open_asset(f"stats/{stat.type.name}.png", size=(42, 42), mask_color=color_1)
                 tbox = drawer.write(
                     stat.formatted_value,
                     size=42,
@@ -354,25 +290,18 @@ class GITempTwoBuildCard:
 
                 ss_start_pos = (start_pos[0] + 39, start_pos[1] + 212)
                 for j, sub_stat in enumerate(artifact.sub_stats):
-                    icon = drawer.open_asset(
-                        f"stats/{sub_stat.type.name}.png", size=(35, 35), mask_color=color_3
-                    )
+                    icon = drawer.open_asset(f"stats/{sub_stat.type.name}.png", size=(35, 35), mask_color=color_3)
                     im.alpha_composite(icon, ss_start_pos)
                     drawer.write(
                         sub_stat.formatted_value,
                         size=35,
                         style="medium",
                         color=color_3,
-                        position=(
-                            ss_start_pos[0] + icon.width + 20,
-                            ss_start_pos[1] + icon.height // 2,
-                        ),
+                        position=(ss_start_pos[0] + icon.width + 20, ss_start_pos[1] + icon.height // 2),
                         anchor="lm",
                     )
                     ss_start_pos = (
-                        (start_pos[0] + 39, start_pos[1] + 291)
-                        if j == 1
-                        else (ss_start_pos[0] + 181, ss_start_pos[1])
+                        (start_pos[0] + 39, start_pos[1] + 291) if j == 1 else (ss_start_pos[0] + 181, ss_start_pos[1])
                     )
 
             start_pos = (1500, 1470) if i == 1 else (start_pos[0] + x_diff, start_pos[1])

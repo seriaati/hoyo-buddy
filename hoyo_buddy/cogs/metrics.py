@@ -25,10 +25,7 @@ class Metrics(commands.Cog):
                     parameters = i.namespace.__dict__
                     guild_str = f"[{i.guild.id}]" if i.guild else ""
                     if i.command.parent is None:
-                        logger.info(
-                            f"[Command]{guild_str}[{i.user.id}] {i.command.name}",
-                            parameters=parameters,
-                        )
+                        logger.info(f"[Command]{guild_str}[{i.user.id}] {i.command.name}", parameters=parameters)
                         await CommandMetric.increment(i.command.name)
                     else:
                         logger.info(

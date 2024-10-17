@@ -6,19 +6,10 @@ from discord import Locale
 from PIL import Image, ImageDraw
 
 from ...models import ItemWithDescription, ItemWithTrailing
-from ..drawer import (
-    DARK_ON_SURFACE,
-    DARK_ON_SURFACE_VARIANT,
-    DARK_SURFACE,
-    LIGHT_ON_SURFACE,
-    LIGHT_SURFACE,
-    Drawer,
-)
+from ..drawer import DARK_ON_SURFACE, DARK_ON_SURFACE_VARIANT, DARK_SURFACE, LIGHT_ON_SURFACE, LIGHT_SURFACE, Drawer
 
 
-def draw_item_list(
-    items: list[ItemWithDescription] | list[ItemWithTrailing], dark_mode: bool, locale_: str
-) -> BytesIO:
+def draw_item_list(items: list[ItemWithDescription] | list[ItemWithTrailing], dark_mode: bool, locale_: str) -> BytesIO:
     locale = Locale(locale_)
     is_trailing = any(isinstance(item, ItemWithTrailing) for item in items)
 
@@ -46,10 +37,7 @@ def draw_item_list(
     drawer = Drawer(draw, folder="item-list", dark_mode=dark_mode, locale=locale)
 
     for index, item in enumerate(items):
-        pos = (
-            card_size[0] if index >= rows else 0,
-            card_size[1] * (index % rows) + overall_top_bottom_padding,
-        )
+        pos = (card_size[0] if index >= rows else 0, card_size[1] * (index % rows) + overall_top_bottom_padding)
         if item.icon is not None:
             icon = drawer.open_static(item.icon, size=icon_size)
             icon = drawer.circular_crop(icon)

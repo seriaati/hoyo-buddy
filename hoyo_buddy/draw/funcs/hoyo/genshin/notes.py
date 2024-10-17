@@ -16,42 +16,23 @@ if TYPE_CHECKING:
 __all__ = ("draw_genshin_notes_card",)
 
 
-def draw_genshin_notes_card(
-    notes: Notes, locale_: str, translator: Translator, dark_mode: bool
-) -> BytesIO:
+def draw_genshin_notes_card(notes: Notes, locale_: str, translator: Translator, dark_mode: bool) -> BytesIO:
     filename = f"{'dark' if dark_mode else 'light'}-gi"
     locale = Locale(locale_)
     im = Drawer.open_image(f"hoyo-buddy-assets/assets/notes/{filename}.png")
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="gi-notes", dark_mode=dark_mode, translator=translator)
 
-    drawer.write(
-        LocaleStr(key="real_time_notes"), size=64, position=(76, 67), style="bold", locale=locale
-    )
+    drawer.write(LocaleStr(key="real_time_notes"), size=64, position=(76, 67), style="bold", locale=locale)
+
+    drawer.write(LocaleStr(key="notes-card.gi.resin"), size=35, position=(110, 400), style="light", locale=locale)
+    drawer.write(f"{notes.current_resin}/{notes.max_resin}", size=60, position=(110, 460), style="medium")
 
     drawer.write(
-        LocaleStr(key="notes-card.gi.resin"),
-        size=35,
-        position=(110, 400),
-        style="light",
-        locale=locale,
-    )
-    drawer.write(
-        f"{notes.current_resin}/{notes.max_resin}", size=60, position=(110, 460), style="medium"
-    )
-
-    drawer.write(
-        LocaleStr(key="notes-card.gi.daily-commissions"),
-        size=35,
-        position=(110, 800),
-        style="light",
-        locale=locale,
+        LocaleStr(key="notes-card.gi.daily-commissions"), size=35, position=(110, 800), style="light", locale=locale
     )
     textbbox = drawer.write(
-        f"{notes.completed_commissions}/{notes.max_commissions}",
-        size=60,
-        position=(110, 860),
-        style="medium",
+        f"{notes.completed_commissions}/{notes.max_commissions}", size=60, position=(110, 860), style="medium"
     )
     drawer.write(
         LocaleStr(key="notes-card.gi.completed"),
@@ -62,31 +43,17 @@ def draw_genshin_notes_card(
     )
 
     drawer.write(
-        LocaleStr(key="notes-card.gi.realm-currency"),
-        size=35,
-        position=(596, 400),
-        style="light",
-        locale=locale,
+        LocaleStr(key="notes-card.gi.realm-currency"), size=35, position=(596, 400), style="light", locale=locale
     )
     drawer.write(
-        f"{notes.current_realm_currency}/{notes.max_realm_currency}",
-        size=60,
-        position=(596, 460),
-        style="medium",
+        f"{notes.current_realm_currency}/{notes.max_realm_currency}", size=60, position=(596, 460), style="medium"
     )
 
     drawer.write(
-        LocaleStr(key="notes-card.gi.resin-discounts"),
-        size=35,
-        position=(596, 800),
-        style="light",
-        locale=locale,
+        LocaleStr(key="notes-card.gi.resin-discounts"), size=35, position=(596, 800), style="light", locale=locale
     )
     textbbox = drawer.write(
-        f"{notes.remaining_resin_discounts}/{notes.max_resin_discounts}",
-        size=60,
-        position=(596, 860),
-        style="medium",
+        f"{notes.remaining_resin_discounts}/{notes.max_resin_discounts}", size=60, position=(596, 860), style="medium"
     )
     drawer.write(
         LocaleStr(key="notes-card.gi.remaining"),
@@ -110,10 +77,7 @@ def draw_genshin_notes_card(
         text = (
             LocaleStr(key="notes-card.gi.expedition-finished")
             if exped.finished
-            else LocaleStr(
-                key="notes-card.gi.expedition-remaining",
-                time=format_timedelta(exped.remaining_time),
-            )
+            else LocaleStr(key="notes-card.gi.expedition-remaining", time=format_timedelta(exped.remaining_time))
         )
 
         drawer.write(

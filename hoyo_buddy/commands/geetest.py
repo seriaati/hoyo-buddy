@@ -47,12 +47,7 @@ class GeetestCommand:
         url = f"{GEETEST_SERVERS[i.client.env]}/captcha?{payload.to_query_string()}"
         url = urllib.parse.quote(url, safe=":/?&=")
 
-        view = URLButtonView(
-            i.client.translator,
-            locale,
-            url=url,
-            label=LocaleStr(key="complete_geetest_button_label"),
-        )
+        view = URLButtonView(i.client.translator, locale, url=url, label=LocaleStr(key="complete_geetest_button_label"))
 
         embed = DefaultEmbed(
             locale,

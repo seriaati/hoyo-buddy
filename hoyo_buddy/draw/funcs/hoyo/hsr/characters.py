@@ -32,11 +32,7 @@ def draw_character_card(
     c_cards: dict[str, Image.Image] = {}
 
     for character in characters:
-        talent = (
-            "/".join(str(s.level) for s in character.skills[:4])
-            if isinstance(character, HSRCharacter)
-            else ""
-        )
+        talent = "/".join(str(s.level) for s in character.skills[:4]) if isinstance(character, HSRCharacter) else ""
         card = draw_small_hsr_chara_card(talent, dark_mode, character, translator, locale)
         c_cards[str(character.id)] = card
 
@@ -59,14 +55,10 @@ def draw_character_card(
     drawer = Drawer(draw, folder="hsr-characters", dark_mode=dark_mode)
 
     for index, card in enumerate(c_cards.values()):
-        x = (index // max_card_num) * (
-            bk_input.card_width + bk_input.card_x_padding
-        ) + bk_input.left_padding
+        x = (index // max_card_num) * (bk_input.card_width + bk_input.card_x_padding) + bk_input.left_padding
         y = 0
         if isinstance(bk_input.top_padding, int):
-            y = (index % max_card_num) * (
-                bk_input.card_height + bk_input.card_y_padding
-            ) + bk_input.top_padding
+            y = (index % max_card_num) * (bk_input.card_height + bk_input.card_y_padding) + bk_input.top_padding
 
         background.paste(card, (x, y), card)
         character_id = list(c_cards.keys())[index]
@@ -84,11 +76,7 @@ def draw_character_card(
 
 
 def hsr_cache_key(
-    talent_str: str,
-    dark_mode: bool,
-    character: HSRCharacter | UnownedHSRCharacter,
-    _: Translator,
-    locale: Locale,
+    talent_str: str, dark_mode: bool, character: HSRCharacter | UnownedHSRCharacter, _: Translator, locale: Locale
 ) -> str:
     if isinstance(character, UnownedHSRCharacter):
         return f"{dark_mode}_{character.id}_{character.element}"

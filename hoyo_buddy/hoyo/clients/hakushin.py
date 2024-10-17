@@ -62,9 +62,7 @@ class HakushinTranslator:
         )
 
         formatted_stat_values = hakushin.utils.format_stat_values(stat_values)
-        named_stat_values = hakushin.utils.replace_fight_prop_with_name(
-            formatted_stat_values, manual_weapon
-        )
+        named_stat_values = hakushin.utils.replace_fight_prop_with_name(formatted_stat_values, manual_weapon)
 
         level_str = self._translator.translate(LevelStr(level), self._locale)
         embed = DefaultEmbed(
@@ -100,9 +98,7 @@ class HakushinTranslator:
             level_upgrade = skill.upgrade_info[str(level - 1)]
             embed.add_field(
                 name=LocaleStr(key="skill_attributes_embed_field_name", level=level),
-                value=hakushin.utils.get_skill_attributes(
-                    level_upgrade.attributes, level_upgrade.parameters
-                ),
+                value=hakushin.utils.get_skill_attributes(level_upgrade.attributes, level_upgrade.parameters),
             )
             embed.set_thumbnail(url=level_upgrade.icon)
         else:
@@ -110,9 +106,7 @@ class HakushinTranslator:
             if skill.description is not None:
                 embed.add_field(
                     name=LocaleStr(key="skill_attributes_embed_field_name", level=level),
-                    value=hakushin.utils.replace_placeholders(
-                        skill.description, level_upgrade.parameters
-                    ),
+                    value=hakushin.utils.replace_placeholders(skill.description, level_upgrade.parameters),
                 )
         return embed
 
@@ -127,9 +121,7 @@ class HakushinTranslator:
         return embed
 
     def get_character_const_embed(self, const: hakushin.gi.CharacterConstellation) -> DefaultEmbed:
-        embed = DefaultEmbed(
-            self._locale, self._translator, title=const.name, description=const.description
-        )
+        embed = DefaultEmbed(self._locale, self._translator, title=const.name, description=const.description)
         embed.set_thumbnail(url=const.icon)
         return embed
 
@@ -138,32 +130,21 @@ class HakushinTranslator:
             self._locale,
             self._translator,
             title=eidolon.name,
-            description=hakushin.utils.replace_placeholders(
-                eidolon.description, eidolon.parameters
-            ),
+            description=hakushin.utils.replace_placeholders(eidolon.description, eidolon.parameters),
         )
         embed.set_thumbnail(url=eidolon.image)
         return embed
 
     def get_weapon_embed(
-        self,
-        weapon: hakushin.gi.WeaponDetail,
-        level: int,
-        refinement: int,
-        manual_weapon: dict[str, str],
+        self, weapon: hakushin.gi.WeaponDetail, level: int, refinement: int, manual_weapon: dict[str, str]
     ) -> DefaultEmbed:
         stat_values = hakushin.utils.calc_weapon_upgrade_stat_values(weapon, level, True)
         formatted_stat_values = hakushin.utils.format_stat_values(stat_values)
-        named_stat_values = hakushin.utils.replace_fight_prop_with_name(
-            formatted_stat_values, manual_weapon
-        )
+        named_stat_values = hakushin.utils.replace_fight_prop_with_name(formatted_stat_values, manual_weapon)
 
         level_str = self._translator.translate(LevelStr(level), self._locale)
         embed = DefaultEmbed(
-            self._locale,
-            self._translator,
-            title=f"{weapon.name} ({level_str})",
-            description=f"{weapon.rarity}★\n",
+            self._locale, self._translator, title=f"{weapon.name} ({level_str})", description=f"{weapon.rarity}★\n"
         )
 
         if weapon.refinments:
@@ -192,9 +173,7 @@ class HakushinTranslator:
         lang: hakushin.Language,
     ) -> DefaultEmbed:
         level_str = self._translator.translate(LevelStr(level), self._locale)
-        embed = DefaultEmbed(
-            self._locale, self._translator, title=f"{light_cone.name} ({level_str})"
-        )
+        embed = DefaultEmbed(self._locale, self._translator, title=f"{light_cone.name} ({level_str})")
         lc_path = yatta.PathType(light_cone.path.value)
         path_emoji = get_hsr_path_emoji(YATTA_PATH_TO_HSR_PATH[lc_path].value)
         path_name = hakushin.constants.HSR_PATH_NAMES[lang][light_cone.path]
@@ -217,8 +196,7 @@ class HakushinTranslator:
         embed.add_field(
             name=f"{light_cone.superimpose_info.name} ({superimpose})",
             value=hakushin.utils.replace_placeholders(
-                light_cone.superimpose_info.description,
-                light_cone.superimpose_info.parameters[str(superimpose)],
+                light_cone.superimpose_info.description, light_cone.superimpose_info.parameters[str(superimpose)]
             ),
             inline=False,
         )
@@ -226,9 +204,7 @@ class HakushinTranslator:
 
         return embed
 
-    def get_relic_embed(
-        self, relic_set: hakushin.hsr.RelicSetDetail, relic: hakushin.hsr.Relic
-    ) -> DefaultEmbed:
+    def get_relic_embed(self, relic_set: hakushin.hsr.RelicSetDetail, relic: hakushin.hsr.Relic) -> DefaultEmbed:
         set_effects = relic_set.set_effects
         description = self._translator.translate(
             LocaleStr(
@@ -248,9 +224,7 @@ class HakushinTranslator:
             )
             description += "\n" + self._translator.translate(four_piece, self._locale)
 
-        embed = DefaultEmbed(
-            self._locale, self._translator, title=relic.name, description=description
-        )
+        embed = DefaultEmbed(self._locale, self._translator, title=relic.name, description=description)
         embed.set_author(name=relic_set.name, icon_url=relic_set.icon)
         embed.set_footer(text=relic.description)
         embed.set_thumbnail(url=relic.icon)
@@ -262,21 +236,17 @@ class HakushinTranslator:
     ) -> DefaultEmbed:
         description = self._translator.translate(
             LocaleStr(
-                bonus_2=artifact_set.set_effect.two_piece.description,
-                key="artifact_set_two_piece_embed_description",
+                bonus_2=artifact_set.set_effect.two_piece.description, key="artifact_set_two_piece_embed_description"
             ),
             self._locale,
         )
         if artifact_set.set_effect.four_piece is not None:
             four_piece = LocaleStr(
-                bonus_4=artifact_set.set_effect.four_piece.description,
-                key="artifact_set_four_piece_embed_description",
+                bonus_4=artifact_set.set_effect.four_piece.description, key="artifact_set_four_piece_embed_description"
             )
             description += "\n" + self._translator.translate(four_piece, self._locale)
 
-        embed = DefaultEmbed(
-            self._locale, self._translator, title=artifact.name, description=description
-        )
+        embed = DefaultEmbed(self._locale, self._translator, title=artifact.name, description=description)
         embed.set_author(name=artifact_set.set_effect.two_piece.name, icon_url=artifact_set.icon)
         embed.set_footer(text=artifact.description)
         embed.set_thumbnail(url=artifact.icon)
@@ -290,9 +260,7 @@ class HakushinTranslator:
     ) -> Sequence[hakushin.gi.Character] | Sequence[hakushin.hsr.Character]:
         """Translate the name of the main characters in GI and HSR."""
         for character in characters:
-            if isinstance(character, hakushin.gi.Character) and contains_traveler_id(
-                str(character.id)
-            ):
+            if isinstance(character, hakushin.gi.Character) and contains_traveler_id(str(character.id)):
                 character.name = self._translator.get_traveler_name(
                     character, self._locale, gender_symbol=gender_symbol
                 )
@@ -344,15 +312,9 @@ class HakushinTranslator:
         return embed
 
     def get_agent_cinema_embed(
-        self,
-        cinema: hakushin.zzz.MindscapeCinema,
-        agent_id: int,
-        index: int,
-        agent: hakushin.zzz.CharacterDetail,
+        self, cinema: hakushin.zzz.MindscapeCinema, agent_id: int, index: int, agent: hakushin.zzz.CharacterDetail
     ) -> DefaultEmbed:
-        embed = DefaultEmbed(
-            self._locale, self._translator, title=cinema.name, description=cinema.description
-        )
+        embed = DefaultEmbed(self._locale, self._translator, title=cinema.name, description=cinema.description)
         embed.set_footer(text=cinema.description2)
 
         phases = {0: 1, 1: 1, 2: 2, 3: 2, 4: 3, 5: 3}
@@ -389,9 +351,9 @@ class HakushinTranslator:
     def get_disc_embed(self, disc: hakushin.zzz.DriveDiscDetail) -> DefaultEmbed:
         embed = DefaultEmbed(self._locale, self._translator, title=disc.name)
 
-        two_piece = LocaleStr(
-            key="artifact_set_two_piece_embed_description", bonus_2=disc.two_piece_effect
-        ).translate(self._translator, self._locale)
+        two_piece = LocaleStr(key="artifact_set_two_piece_embed_description", bonus_2=disc.two_piece_effect).translate(
+            self._translator, self._locale
+        )
         four_piece = LocaleStr(
             key="artifact_set_four_piece_embed_description", bonus_4=disc.four_piece_effect
         ).translate(self._translator, self._locale)

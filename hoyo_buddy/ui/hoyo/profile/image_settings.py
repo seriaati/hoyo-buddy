@@ -51,9 +51,7 @@ def get_default_art(character: Character | ZZZFullAgent) -> str:
     return HSR_DEFAULT_ART_URL.format(char_id=character.id)
 
 
-def get_default_collection(
-    character_id: str, card_data: dict[str, Any], *, game: Game
-) -> list[str]:
+def get_default_collection(character_id: str, card_data: dict[str, Any], *, game: Game) -> list[str]:
     if game is Game.ZZZ:
         return []
     try:
@@ -100,9 +98,7 @@ class ImageSettingsView(View):
 
     @property
     def disable_image_features(self) -> bool:
-        return (
-            self.game is Game.ZZZ and not self.is_team
-        ) or self.card_settings.template in DISABLE_IMAGE
+        return (self.game is Game.ZZZ and not self.is_team) or self.card_settings.template in DISABLE_IMAGE
 
     @property
     def disable_ai_features(self) -> bool:
@@ -110,9 +106,7 @@ class ImageSettingsView(View):
 
     def _add_items(self) -> None:
         character = self._get_current_character()
-        default_collection = get_default_collection(
-            str(character.id), self.card_data, game=self.game
-        )
+        default_collection = get_default_collection(str(character.id), self.card_data, game=self.game)
 
         self.add_item(CharacterSelect(self.characters, self.selected_character_id, row=0))
         self.add_item(ImageTypeSelect(self.image_type, row=1))
@@ -137,9 +131,7 @@ class ImageSettingsView(View):
         )
 
     def _get_current_character(self) -> Character:
-        return next(
-            chara for chara in self.characters if str(chara.id) == self.selected_character_id
-        )
+        return next(chara for chara in self.characters if str(chara.id) == self.selected_character_id)
 
     def get_current_image(self) -> str | None:
         if self.image_type == "build_card_image":
@@ -161,9 +153,7 @@ class ImageSettingsView(View):
         )
 
         image_url = self.get_current_image() or get_default_art(character)
-        embed.add_field(
-            name=LocaleStr(key="card_settings.current_image"), value=image_url, inline=False
-        )
+        embed.add_field(name=LocaleStr(key="card_settings.current_image"), value=image_url, inline=False)
         embed.set_image(url=image_url)
         embed.set_footer(text=LocaleStr(key="card_settings.footer"))
         return embed
@@ -182,20 +172,14 @@ class CharacterSelect(SettingsCharacterSelect[ImageSettingsView]):
 
         self.update_options_defaults()
         self.view.selected_character_id = self.values[0]
-        self.view.card_settings = await get_card_settings(
-            self.view.user_id, self.values[0], game=self.view.game
-        )
-        default_arts = get_default_collection(
-            self.values[0], self.view.card_data, game=self.view.game
-        )
+        self.view.card_settings = await get_card_settings(self.view.user_id, self.values[0], game=self.view.game)
+        default_arts = get_default_collection(self.values[0], self.view.card_data, game=self.view.game)
         custom_arts = self.view.card_settings.custom_images
         current_image = self.view.get_current_image()
 
         # Update other item styles
         image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.update(
-            current_image=current_image, custom_images=custom_arts, default_collection=default_arts
-        )
+        image_select.update(current_image=current_image, custom_images=custom_arts, default_collection=default_arts)
 
         remove_image_button: RemoveImageButton = self.view.get_item("profile_remove_image")
         remove_image_button.disabled = current_image is None or current_image in default_arts
@@ -232,9 +216,7 @@ class RemoveImageButton(Button[ImageSettingsView]):
         # Update the current image URL
         self.view.set_current_image(None)
         self.view.card_settings.custom_images = list(set(self.view.card_settings.custom_images))
-        await self.view.card_settings.save(
-            update_fields=("custom_images", "current_image", "current_team_image")
-        )
+        await self.view.card_settings.save(update_fields=("custom_images", "current_image", "current_team_image"))
 
         # Update image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")
@@ -268,11 +250,7 @@ class ImageSelect(PaginatorSelect[ImageSettingsView]):
         )
 
     def update(
-        self,
-        *,
-        current_image: str | None,
-        custom_images: list[str],
-        default_collection: list[str] | None = None,
+        self, *, current_image: str | None, custom_images: list[str], default_collection: list[str] | None = None
     ) -> None:
         self.current_image_url = current_image
         self.custom_images = custom_images
@@ -290,9 +268,7 @@ class ImageSelect(PaginatorSelect[ImageSettingsView]):
             if image_url in self.default_collection
             else LocaleStr(key="profile.image_select.custom_image.label", num=num)
         )
-        return SelectOption(
-            label=label, value=image_url, default=image_url == self.current_image_url
-        )
+        return SelectOption(label=label, value=image_url, default=image_url == self.current_image_url)
 
     def get_options(self) -> list[SelectOption]:
         options: list[SelectOption] = [
@@ -325,9 +301,7 @@ class ImageSelect(PaginatorSelect[ImageSettingsView]):
 
         # Enable the remove image button if the image is custom
         remove_image_button: RemoveImageButton = self.view.get_item("profile_remove_image")
-        remove_image_button.disabled = (
-            self.values[0] in self.default_collection or self.values[0] == "none"
-        )
+        remove_image_button.disabled = self.values[0] in self.default_collection or self.values[0] == "none"
 
         embed = self.view.get_settings_embed()
         await i.response.edit_message(embed=embed, view=self.view)
@@ -389,9 +363,7 @@ class GenerateAIArtButton(Button[ImageSettingsView]):
         # Add the image URL to db
         self.view.card_settings.custom_images.append(url)
         self.view.set_current_image(url)
-        await self.view.card_settings.save(
-            update_fields=("custom_images", "current_image", "current_team_image")
-        )
+        await self.view.card_settings.save(update_fields=("custom_images", "current_image", "current_team_image"))
 
         # Add the new image URL to the image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")
@@ -466,15 +438,11 @@ class AddImageButton(Button[ImageSettingsView]):
         self.view.card_settings.custom_images.append(image_url)
         self.view.card_settings.custom_images = list(set(self.view.card_settings.custom_images))
         self.view.set_current_image(image_url)
-        await self.view.card_settings.save(
-            update_fields=("custom_images", "current_image", "current_team_image")
-        )
+        await self.view.card_settings.save(update_fields=("custom_images", "current_image", "current_team_image"))
 
         # Add the new image URL to the image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.update(
-            current_image=image_url, custom_images=self.view.card_settings.custom_images
-        )
+        image_select.update(current_image=image_url, custom_images=self.view.card_settings.custom_images)
 
         # Enable the remove image button
         self.view._item_states["profile_remove_image"] = False
@@ -484,9 +452,7 @@ class AddImageButton(Button[ImageSettingsView]):
 
 
 class ImageTypeSelect(Select[ImageSettingsView]):
-    def __init__(
-        self, current: Literal["build_card_image", "team_card_image"], *, row: int
-    ) -> None:
+    def __init__(self, current: Literal["build_card_image", "team_card_image"], *, row: int) -> None:
         super().__init__(
             options=[
                 SelectOption(

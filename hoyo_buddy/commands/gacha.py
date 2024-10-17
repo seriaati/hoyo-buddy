@@ -22,14 +22,7 @@ from hoyo_buddy.exceptions import (
     UIDMismatchError,
 )
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.models import (
-    GWRecord,
-    SRGFRecord,
-    StarDBRecord,
-    StarRailStationRecord,
-    UIGFRecord,
-    ZZZRngMoeRecord,
-)
+from hoyo_buddy.models import GWRecord, SRGFRecord, StarDBRecord, StarRailStationRecord, UIGFRecord, ZZZRngMoeRecord
 from hoyo_buddy.ui.hoyo.gacha.import_ import GachaImportView
 from hoyo_buddy.ui.hoyo.gacha.manage import GachaLogManageView
 from hoyo_buddy.ui.hoyo.gacha.view import ViewGachaLogView
@@ -48,16 +41,12 @@ class GachaCommand:
         if extension != accept_ext:
             raise InvalidFileExtError(accept_ext)
 
-    async def _srs_import(
-        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
-    ) -> int:
+    async def _srs_import(self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment) -> int:
         """Star Rail Station import."""
         self._validate_file_ext(file, "csv")
 
         bytes_ = await file.read()
-        records_df = await i.client.loop.run_in_executor(
-            i.client.executor, pd.read_csv, io.BytesIO(bytes_)
-        )
+        records_df = await i.client.loop.run_in_executor(i.client.executor, pd.read_csv, io.BytesIO(bytes_))
         data: list[dict[str, Any]] = records_df.to_dict(orient="records")  # pyright: ignore[reportAssignmentType]
         records = [StarRailStationRecord(**record) for record in data]
         records.sort(key=lambda x: x.id)
@@ -78,23 +67,17 @@ class GachaCommand:
 
         return count
 
-    async def _gw_import(
-        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
-    ) -> int:
+    async def _gw_import(self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment) -> int:
         """Genshin Wizard import."""
         self._validate_file_ext(file, "csv")
 
         bytes_ = await file.read()
-        records_df = await i.client.loop.run_in_executor(
-            i.client.executor, pd.read_csv, io.BytesIO(bytes_)
-        )
+        records_df = await i.client.loop.run_in_executor(i.client.executor, pd.read_csv, io.BytesIO(bytes_))
         data: list[dict[str, Any]] = records_df.to_dict(orient="records")  # pyright: ignore[reportAssignmentType]
         records = [GWRecord(**record) for record in data[:-1]]
         records.sort(key=lambda x: x.id)
 
-        item_ids = await get_item_ids(
-            i.client.session, item_names=[record.name for record in records]
-        )
+        item_ids = await get_item_ids(i.client.session, item_names=[record.name for record in records])
 
         count = 0
 
@@ -112,9 +95,7 @@ class GachaCommand:
 
         return count
 
-    async def _zzz_rng_moe_import(
-        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
-    ) -> int:
+    async def _zzz_rng_moe_import(self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment) -> int:
         """zzz.rng.moe import."""
         self._validate_file_ext(file, "json")
 
@@ -162,9 +143,7 @@ class GachaCommand:
 
         return count
 
-    async def _stardb_import(
-        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
-    ) -> int:
+    async def _stardb_import(self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment) -> int:
         """stardb import."""
         self._validate_file_ext(file, "json")
 
@@ -181,24 +160,12 @@ class GachaCommand:
         raise FeatureNotImplementedError(game=account.game)
 
     async def _stardb_hsr_import(self, account: HoyoAccount, data: dict[str, Any]) -> int:
-        hsr_data = next(
-            (d["warps"] for d in data["user"]["hsr"]["uids"] if d["uid"] == account.uid), None
-        )
+        hsr_data = next((d["warps"] for d in data["user"]["hsr"]["uids"] if d["uid"] == account.uid), None)
         if hsr_data is not None:
-            banner_types: dict[str, int] = {
-                "departure": 2,
-                "standard": 1,
-                "character": 11,
-                "light_cone": 12,
-            }
+            banner_types: dict[str, int] = {"departure": 2, "standard": 1, "character": 11, "light_cone": 12}
             records: list[StarDBRecord] = []
             for banner_name, banner_type in banner_types.items():
-                records.extend(
-                    [
-                        StarDBRecord(banner_type=banner_type, **record)
-                        for record in hsr_data[banner_name]
-                    ]
-                )
+                records.extend([StarDBRecord(banner_type=banner_type, **record) for record in hsr_data[banner_name]])
             records.sort(key=lambda x: x.id)
 
             if records:
@@ -207,9 +174,9 @@ class GachaCommand:
                     characters = await api.fetch_characters()
                     lcs = await api.fetch_light_cones()
 
-                rarity_map: dict[int, int] = {
-                    character.id: character.rarity for character in characters
-                } | {lc.id: lc.rarity for lc in lcs}
+                rarity_map: dict[int, int] = {character.id: character.rarity for character in characters} | {
+                    lc.id: lc.rarity for lc in lcs
+                }
 
                 count = 0
 
@@ -230,9 +197,7 @@ class GachaCommand:
         return 0
 
     async def _stardb_gi_import(self, account: HoyoAccount, data: dict[str, Any]) -> int:
-        gi_data = next(
-            (d["wishes"] for d in data["user"]["gi"]["uids"] if d["uid"] == account.uid), None
-        )
+        gi_data = next((d["wishes"] for d in data["user"]["gi"]["uids"] if d["uid"] == account.uid), None)
         if gi_data is not None:
             banner_types: dict[str, int] = {
                 "beginner": 100,
@@ -244,12 +209,7 @@ class GachaCommand:
 
             records: list[StarDBRecord] = []
             for banner_name, banner_type in banner_types.items():
-                records.extend(
-                    [
-                        StarDBRecord(banner_type=banner_type, **record)
-                        for record in gi_data[banner_name]
-                    ]
-                )
+                records.extend([StarDBRecord(banner_type=banner_type, **record) for record in gi_data[banner_name]])
             records.sort(key=lambda x: x.id)
 
             if records:
@@ -284,24 +244,12 @@ class GachaCommand:
         return 0
 
     async def _stardb_zzz_import(self, account: HoyoAccount, data: dict[str, Any]) -> int:
-        zzz_data = next(
-            (d["signals"] for d in data["user"]["zzz"]["uids"] if d["uid"] == account.uid), None
-        )
+        zzz_data = next((d["signals"] for d in data["user"]["zzz"]["uids"] if d["uid"] == account.uid), None)
         if zzz_data is not None:
-            banner_types: dict[str, int] = {
-                "standard": 1,
-                "character": 2,
-                "w_engine": 3,
-                "bangboo": 5,
-            }
+            banner_types: dict[str, int] = {"standard": 1, "character": 2, "w_engine": 3, "bangboo": 5}
             records: list[StarDBRecord] = []
             for banner_name, banner_type in banner_types.items():
-                records.extend(
-                    [
-                        StarDBRecord(banner_type=banner_type, **record)
-                        for record in zzz_data[banner_name]
-                    ]
-                )
+                records.extend([StarDBRecord(banner_type=banner_type, **record) for record in zzz_data[banner_name]])
             records.sort(key=lambda x: x.id)
 
             if records:
@@ -337,9 +285,7 @@ class GachaCommand:
 
         return 0
 
-    async def _uigf_import(
-        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
-    ) -> int:
+    async def _uigf_import(self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment) -> int:
         """UIGF import."""
         self._validate_file_ext(file, "json")
 
@@ -350,10 +296,7 @@ class GachaCommand:
         is_v4 = data["info"].get("version") == "v4.0"
 
         if is_v4:
-            game_data = next(
-                (d for d in data[UIGF_GAME_KEYS[account.game]] if int(d["uid"]) == account.uid),
-                None,
-            )
+            game_data = next((d for d in data[UIGF_GAME_KEYS[account.game]] if int(d["uid"]) == account.uid), None)
             if game_data is None:
                 raise UIDMismatchError(account.uid)
 
@@ -377,9 +320,7 @@ class GachaCommand:
             if not all(record["item_id"] for record in data["list"]):
                 # Fetch item IDs
                 item_ids = await get_item_ids(
-                    i.client.session,
-                    item_names=[record["name"] for record in data["list"]],
-                    lang=data["info"]["lang"],
+                    i.client.session, item_names=[record["name"] for record in data["list"]], lang=data["info"]["lang"]
                 )
 
                 for record in data["list"]:
@@ -405,9 +346,7 @@ class GachaCommand:
 
         return count
 
-    async def _srgf_import(
-        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
-    ) -> int:
+    async def _srgf_import(self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment) -> int:
         """SRGF import."""
         self._validate_file_ext(file, "json")
 
@@ -440,26 +379,18 @@ class GachaCommand:
 
     async def run_import(self, i: Interaction, account: HoyoAccount) -> None:
         locale = await get_locale(i)
-        view = GachaImportView(
-            account, author=i.user, locale=locale, translator=i.client.translator
-        )
+        view = GachaImportView(account, author=i.user, locale=locale, translator=i.client.translator)
         await view.start(i)
 
     async def run_upload(
-        self,
-        i: Interaction,
-        account: HoyoAccount,
-        source: GachaImportSource,
-        file: discord.Attachment,
+        self, i: Interaction, account: HoyoAccount, source: GachaImportSource, file: discord.Attachment
     ) -> None:
         locale = await get_locale(i)
         embed = DefaultEmbed(
             locale,
             i.client.translator,
             title=LocaleStr(key="gacha_import_loading_embed_title"),
-            description=LocaleStr(
-                key="gacha_import_loading_embed_description", loading_emoji=LOADING
-            ),
+            description=LocaleStr(key="gacha_import_loading_embed_description", loading_emoji=LOADING),
         ).add_acc_info(account)
         await i.response.send_message(embed=embed, ephemeral=ephemeral(i), content=await get_dyk(i))
 
@@ -492,14 +423,10 @@ class GachaCommand:
 
     async def run_view(self, i: Interaction, account: HoyoAccount) -> None:
         locale = await get_locale(i)
-        view = ViewGachaLogView(
-            account, author=i.user, locale=locale, translator=i.client.translator
-        )
+        view = ViewGachaLogView(account, author=i.user, locale=locale, translator=i.client.translator)
         await view.start(i)
 
     async def run_manage(self, i: Interaction, account: HoyoAccount) -> None:
         locale = await get_locale(i)
-        view = GachaLogManageView(
-            account, author=i.user, locale=locale, translator=i.client.translator
-        )
+        view = GachaLogManageView(account, author=i.user, locale=locale, translator=i.client.translator)
         await view.start(i)

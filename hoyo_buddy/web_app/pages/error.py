@@ -11,10 +11,7 @@ class ErrorPage(ft.View):
             controls=[
                 ft.SafeArea(
                     ft.Column(
-                        [
-                            ft.Text(str(code), size=100),
-                            ft.Text(message, text_align=ft.TextAlign.CENTER, size=30),
-                        ],
+                        [ft.Text(str(code), size=100), ft.Text(message, text_align=ft.TextAlign.CENTER, size=30)],
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                     )
                 )

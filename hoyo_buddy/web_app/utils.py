@@ -17,11 +17,7 @@ if TYPE_CHECKING:
 
 class LoadingSnackBar(ft.SnackBar):
     def __init__(
-        self,
-        *,
-        message: str | None = None,
-        translator: Translator | None = None,
-        locale: Locale | None = None,
+        self, *, message: str | None = None, translator: Translator | None = None, locale: Locale | None = None
     ) -> None:
         if translator is not None and locale is not None:
             text = translator.translate(LocaleStr(key="loading_text"), locale)
@@ -31,9 +27,7 @@ class LoadingSnackBar(ft.SnackBar):
         super().__init__(
             content=ft.Row(
                 [
-                    ft.ProgressRing(
-                        width=16, height=16, stroke_width=2, color=ft.colors.ON_SECONDARY_CONTAINER
-                    ),
+                    ft.ProgressRing(width=16, height=16, stroke_width=2, color=ft.colors.ON_SECONDARY_CONTAINER),
                     ft.Text(text, color=ft.colors.ON_SECONDARY_CONTAINER),
                 ]
             ),
@@ -48,11 +42,7 @@ class ErrorBanner(ft.Banner):
             content=ft.Text(message, color=ft.colors.ON_ERROR_CONTAINER),
             bgcolor=ft.colors.ERROR_CONTAINER,
             actions=[
-                ft.IconButton(
-                    ft.icons.CLOSE,
-                    on_click=self.on_action_click,
-                    icon_color=ft.colors.ON_ERROR_CONTAINER,
-                )
+                ft.IconButton(ft.icons.CLOSE, on_click=self.on_action_click, icon_color=ft.colors.ON_ERROR_CONTAINER)
             ],
         )
 
@@ -62,15 +52,9 @@ class ErrorBanner(ft.Banner):
 
 
 async def show_loading_snack_bar(
-    page: ft.Page,
-    *,
-    message: str | None = None,
-    translator: Translator | None = None,
-    locale: Locale | None = None,
+    page: ft.Page, *, message: str | None = None, translator: Translator | None = None, locale: Locale | None = None
 ) -> None:
-    await page.show_snack_bar_async(
-        LoadingSnackBar(message=message, translator=translator, locale=locale)
-    )
+    await page.show_snack_bar_async(LoadingSnackBar(message=message, translator=translator, locale=locale))
 
 
 async def show_error_banner(page: ft.Page, *, message: str) -> None:

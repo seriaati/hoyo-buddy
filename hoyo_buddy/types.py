@@ -35,24 +35,17 @@ ChallengeWithBuff: TypeAlias = (
     | genshin.models.StarRailPureFiction
     | genshin.models.ShiyuDefense
 )
-Buff: TypeAlias = (
-    genshin.models.TheaterBuff | genshin.models.ChallengeBuff | genshin.models.ShiyuDefenseBuff
-)
+Buff: TypeAlias = genshin.models.TheaterBuff | genshin.models.ChallengeBuff | genshin.models.ShiyuDefenseBuff
 
 Interaction: TypeAlias = discord.Interaction[HoyoBuddy]
 User: TypeAlias = discord.User | discord.Member | None
 Builds: TypeAlias = dict[str, list[enka.gi.Build]] | dict[str, list[enka.hsr.Build]]
 
-ItemCategory: TypeAlias = (
-    ambr.ItemCategory | yatta.ItemCategory | hakushin.ItemCategory | hakushin.ZZZItemCategory
-)
+ItemCategory: TypeAlias = ambr.ItemCategory | yatta.ItemCategory | hakushin.ItemCategory | hakushin.ZZZItemCategory
 AutocompleteChoices: TypeAlias = defaultdict[
-    Game,
-    defaultdict[ItemCategory, defaultdict[discord.Locale, list[discord.app_commands.Choice[str]]]],
+    Game, defaultdict[ItemCategory, defaultdict[discord.Locale, list[discord.app_commands.Choice[str]]]]
 ]
 BetaAutocompleteChoices: TypeAlias = defaultdict[
     Game, defaultdict[discord.Locale, list[discord.app_commands.Choice[str]]]
 ]
-Tasks: TypeAlias = defaultdict[
-    Game, defaultdict[ItemCategory, dict[discord.Locale, asyncio.Task[list[Any]]]]
-]
+Tasks: TypeAlias = defaultdict[Game, defaultdict[ItemCategory, dict[discord.Locale, asyncio.Task[list[Any]]]]]

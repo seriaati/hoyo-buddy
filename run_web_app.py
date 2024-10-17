@@ -42,13 +42,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
     logger.add(sys.stderr, level="INFO")
-    ft.app(
-        web_app_entry,
-        port=8645,
-        view=None,
-        assets_dir="hoyo_buddy/web_app/assets",
-        use_color_emoji=True,
-    )
+    ft.app(web_app_entry, port=8645, view=None, assets_dir="hoyo_buddy/web_app/assets", use_color_emoji=True)
 
     loop.run_until_complete(translator.unload())
     loop.close()

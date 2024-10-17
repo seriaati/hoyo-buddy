@@ -23,9 +23,7 @@ if TYPE_CHECKING:
 
 __all__ = ("get_error_embed",)
 
-GENSHIN_ERROR_CONVERTER: dict[
-    tuple[int, ...], dict[Literal["title", "description", "image"], LocaleStr | str]
-] = {
+GENSHIN_ERROR_CONVERTER: dict[tuple[int, ...], dict[Literal["title", "description", "image"], LocaleStr | str]] = {
     (-5003,): {
         "title": LocaleStr(key="already_claimed_title"),
         "description": LocaleStr(key="already_claimed_description"),
@@ -49,8 +47,7 @@ GENSHIN_ERROR_CONVERTER: dict[
     (-3101, -1004): {
         "title": LocaleStr(key="action_in_cooldown_error_title"),
         "description": LocaleStr(
-            key="action_in_cooldown_error_message",
-            available_time=format_dt(get_now() + timedelta(minutes=1), "T"),
+            key="action_in_cooldown_error_message", available_time=format_dt(get_now() + timedelta(minutes=1), "T")
         ),
     },
     (-2017, -2018): {"title": LocaleStr(key="redeem_code.already_claimed")},
@@ -68,15 +65,10 @@ GENSHIN_ERROR_CONVERTER: dict[
         "image": "https://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/DataNotPublicTutorial.gif",
     },
     (-2021, -2011): {"title": LocaleStr(key="redeem_code.ar_too_low")},
-    (30001,): {
-        "title": LocaleStr(key="geetest.no_need"),
-        "description": LocaleStr(key="geetest.no_need.description"),
-    },
+    (30001,): {"title": LocaleStr(key="geetest.no_need"), "description": LocaleStr(key="geetest.no_need.description")},
     tuple(genshin.constants.GEETEST_RETCODES): {
         "title": LocaleStr(key="geetest.required"),
-        "description": LocaleStr(
-            geetest_type=EnumStr(GeetestType.REALTIME_NOTES), key="geetest.required.description"
-        ),
+        "description": LocaleStr(geetest_type=EnumStr(GeetestType.REALTIME_NOTES), key="geetest.required.description"),
     },
     (-1,): {"title": LocaleStr(key="game_maintenance_title")},
     # Below are custom retcodes for Hoyo Buddy, they don't exist in Hoyo's API
@@ -90,9 +82,7 @@ GENSHIN_ERROR_CONVERTER: dict[
     },
     (-9999,): {
         "title": LocaleStr(key="geetest.required"),
-        "description": LocaleStr(
-            geetest_type=EnumStr(GeetestType.DAILY_CHECKIN), key="geetest.required.description"
-        ),
+        "description": LocaleStr(geetest_type=EnumStr(GeetestType.DAILY_CHECKIN), key="geetest.required.description"),
     },
 }
 
@@ -115,9 +105,7 @@ ENKA_ERROR_CONVERTER: dict[
 }
 
 
-def get_error_embed(
-    error: Exception, locale: discord.Locale, translator: Translator
-) -> tuple[ErrorEmbed, bool]:
+def get_error_embed(error: Exception, locale: discord.Locale, translator: Translator) -> tuple[ErrorEmbed, bool]:
     recognized = True
     embed = None
 
@@ -131,8 +119,7 @@ def get_error_embed(
         embed = ErrorEmbed(locale, translator, title=error.title, description=error.message)
         if isinstance(error, NoAccountFoundError):
             game_strs = [
-                f"- {get_game_emoji(game)} {EnumStr(game).translate(translator, locale)}"
-                for game in error.games
+                f"- {get_game_emoji(game)} {EnumStr(game).translate(translator, locale)}" for game in error.games
             ]
             if embed.description is None:
                 embed.description = ""
@@ -165,9 +152,7 @@ def get_error_embed(
     if embed is None:
         recognized = False
         description = f"{type(error).__name__}: {error}" if error else type(error).__name__
-        embed = ErrorEmbed(
-            locale, translator, title=LocaleStr(key="error_title"), description=description
-        )
+        embed = ErrorEmbed(locale, translator, title=LocaleStr(key="error_title"), description=description)
         embed.set_footer(text=LocaleStr(key="error_footer"))
 
     return embed, recognized

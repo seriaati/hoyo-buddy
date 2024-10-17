@@ -13,11 +13,7 @@ import orjson
 from discord import Locale
 from pydantic import ValidationError
 
-from hoyo_buddy.constants import (
-    locale_to_gpy_lang,
-    locale_to_starrail_data_lang,
-    locale_to_zenless_data_lang,
-)
+from hoyo_buddy.constants import locale_to_gpy_lang, locale_to_starrail_data_lang, locale_to_zenless_data_lang
 from hoyo_buddy.db.models import GachaHistory
 from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.l10n import EnumStr, LocaleStr
@@ -93,18 +89,14 @@ class WebApp:
         await page.close_dialog_async()
         await show_loading_snack_bar(page, translator=translator, locale=locale)
 
-        gt_type: Literal[
-            "on_login", "on_email_send", "on_otp_send"
-        ] = await page.client_storage.get_async(f"hb.{params.user_id}.gt_type")  # pyright: ignore[reportAssignmentType]
+        gt_type: Literal["on_login", "on_email_send", "on_otp_send"] = await page.client_storage.get_async(
+            f"hb.{params.user_id}.gt_type"
+        )  # pyright: ignore[reportAssignmentType]
 
         if gt_type == "on_login":
-            encrypted_email, encrypted_password = await self._get_encrypted_email_password(
-                page, params.user_id
-            )
+            encrypted_email, encrypted_password = await self._get_encrypted_email_password(page, params.user_id)
             if not encrypted_email or not encrypted_password:
-                return pages.ErrorPage(
-                    code=400, message="Cannot find email or password in client storage."
-                )
+                return pages.ErrorPage(code=400, message="Cannot find email or password in client storage.")
 
             mmt_result = await self._get_user_temp_data(params.user_id)
             email, password = decrypt_string(encrypted_email), decrypt_string(encrypted_password)
@@ -128,9 +120,7 @@ class WebApp:
 
                 if isinstance(email_result, genshin.models.SessionMMT):
                     # Geetest triggered for sending email verification code
-                    await page.client_storage.set_async(
-                        f"hb.{params.user_id}.gt_type", "on_email_send"
-                    )
+                    await page.client_storage.set_async(f"hb.{params.user_id}.gt_type", "on_email_send")
                     await page.client_storage.set_async(
                         f"hb.{params.user_id}.action_ticket", orjson.dumps(result.dict()).decode()
                     )
@@ -156,26 +146,16 @@ class WebApp:
                     )
             else:
                 encrypted_cookies = encrypt_string(result.to_str())
-                await page.client_storage.set_async(
-                    f"hb.{params.user_id}.cookies", encrypted_cookies
-                )
+                await page.client_storage.set_async(f"hb.{params.user_id}.cookies", encrypted_cookies)
                 await page.go_async(f"/finish?{params.to_query_string()}")
         elif gt_type == "on_email_send":
-            encrypted_email, encrypted_password = await self._get_encrypted_email_password(
-                page, params.user_id
-            )
+            encrypted_email, encrypted_password = await self._get_encrypted_email_password(page, params.user_id)
             if not encrypted_email or not encrypted_password:
-                return pages.ErrorPage(
-                    code=400, message="Cannot find email or password in client storage."
-                )
+                return pages.ErrorPage(code=400, message="Cannot find email or password in client storage.")
 
-            str_action_ticket: str | None = await page.client_storage.get_async(
-                f"hb.{params.user_id}.action_ticket"
-            )
+            str_action_ticket: str | None = await page.client_storage.get_async(f"hb.{params.user_id}.action_ticket")
             if str_action_ticket is None:
-                return pages.ErrorPage(
-                    code=400, message="Cannot find action ticket in client storage."
-                )
+                return pages.ErrorPage(code=400, message="Cannot find action ticket in client storage.")
             action_ticket = genshin.models.ActionTicket(**orjson.loads(str_action_ticket.encode()))
             mmt_result = await self._get_user_temp_data(params.user_id)
             email, password = decrypt_string(encrypted_email), decrypt_string(encrypted_password)
@@ -201,17 +181,13 @@ class WebApp:
         else:  # on_otp_send
             encrypted_mobile = await page.client_storage.get_async(f"hb.{params.user_id}.mobile")
             if encrypted_mobile is None:
-                return pages.ErrorPage(
-                    code=400, message="Cannot find mobile number in client storage."
-                )
+                return pages.ErrorPage(code=400, message="Cannot find mobile number in client storage.")
 
             mobile = decrypt_string(encrypted_mobile)
             client = genshin.Client(region=genshin.Region.CHINESE)
             mmt_result = await self._get_user_temp_data(params.user_id)
             try:
-                await client._send_mobile_otp(
-                    mobile, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
-                )
+                await client._send_mobile_otp(mobile, mmt_result=genshin.models.SessionMMTResult(**mmt_result))
             except Exception as exc:
                 await show_error_banner(page, message=str(exc))
                 return None
@@ -220,21 +196,15 @@ class WebApp:
 
         return None
 
-    async def _get_encrypted_email_password(
-        self, page: ft.Page, user_id: int
-    ) -> tuple[str | None, str | None]:
+    async def _get_encrypted_email_password(self, page: ft.Page, user_id: int) -> tuple[str | None, str | None]:
         encrypted_email: str | None = await page.client_storage.get_async(f"hb.{user_id}.email")
-        encrypted_password: str | None = await page.client_storage.get_async(
-            f"hb.{user_id}.password"
-        )
+        encrypted_password: str | None = await page.client_storage.get_async(f"hb.{user_id}.password")
         return encrypted_email, encrypted_password
 
     async def _get_user_temp_data(self, user_id: int) -> dict[str, Any]:
         conn = await asyncpg.connect(os.environ["DB_URL"])
         try:
-            mmt_result: str = await conn.fetchval(
-                'SELECT temp_data FROM "user" WHERE id = $1', user_id
-            )
+            mmt_result: str = await conn.fetchval('SELECT temp_data FROM "user" WHERE id = $1', user_id)
         finally:
             await conn.close()
         return orjson.loads(mmt_result)
@@ -246,12 +216,8 @@ class WebApp:
         await page.close_dialog_async()
         await page.close_banner_async()
 
-        device_id_exists = await page.client_storage.contains_key_async(
-            f"hb.{params.user_id}.device_id"
-        )
-        device_fp_exists = await page.client_storage.contains_key_async(
-            f"hb.{params.user_id}.device_fp"
-        )
+        device_id_exists = await page.client_storage.contains_key_async(f"hb.{params.user_id}.device_id")
+        device_fp_exists = await page.client_storage.contains_key_async(f"hb.{params.user_id}.device_fp")
         if params.platform is Platform.MIYOUSHE and (not device_id_exists or not device_fp_exists):
             await page.go_async(f"/device_info?{params.to_query_string()}")
             return None
@@ -284,9 +250,7 @@ class WebApp:
             client = genshin.Client(
                 cookies,
                 lang=locale_to_gpy_lang(locale),
-                region=genshin.Region.OVERSEAS
-                if platform is Platform.HOYOLAB
-                else genshin.Region.CHINESE,
+                region=genshin.Region.OVERSEAS if platform is Platform.HOYOLAB else genshin.Region.CHINESE,
                 device_id=device_id,
                 device_fp=device_fp,
             )
@@ -297,10 +261,7 @@ class WebApp:
 
         if not accounts:
             message = translator.translate(
-                LocaleStr(
-                    key="no_game_accounts_error_message",
-                    platform=EnumStr(params.platform or Platform.HOYOLAB),
-                ),
+                LocaleStr(key="no_game_accounts_error_message", platform=EnumStr(params.platform or Platform.HOYOLAB)),
                 locale,
             )
             await show_error_banner(page, message=message)
@@ -316,21 +277,15 @@ class WebApp:
             device_fp=device_fp,
         )
 
-    async def _handle_login_routes(
-        self, route: str, parsed_params: dict[str, str]
-    ) -> ft.View | None:
+    async def _handle_login_routes(self, route: str, parsed_params: dict[str, str]) -> ft.View | None:
         page = self._page
 
         if route == "/login":
             user_data = await self.fetch_user_data()
-            return pages.LoginPage(
-                user_data, translator=self._translator, locale=Locale(parsed_params["locale"])
-            )
+            return pages.LoginPage(user_data, translator=self._translator, locale=Locale(parsed_params["locale"]))
 
         if route == "/geetest":
-            query: str | None = await page.client_storage.get_async(
-                f"hb.{parsed_params['user_id']}.params"
-            )
+            query: str | None = await page.client_storage.get_async(f"hb.{parsed_params['user_id']}.params")
             if query is None:
                 return pages.ErrorPage(code=400, message="Cannot find params in client storage.")
 
@@ -351,25 +306,15 @@ class WebApp:
             match route:
                 case "/platforms":
                     reset_storage(page, user_id=params.user_id)
-                    view = pages.PlatformsPage(
-                        params=params, translator=self._translator, locale=locale
-                    )
+                    view = pages.PlatformsPage(params=params, translator=self._translator, locale=locale)
                 case "/methods":
-                    view = pages.MethodsPage(
-                        params=params, translator=self._translator, locale=locale
-                    )
+                    view = pages.MethodsPage(params=params, translator=self._translator, locale=locale)
                 case "/email_password":
-                    view = pages.EmailPasswordPage(
-                        params=params, translator=self._translator, locale=locale
-                    )
+                    view = pages.EmailPasswordPage(params=params, translator=self._translator, locale=locale)
                 case "/dev_tools":
-                    view = pages.DevToolsPage(
-                        params=params, translator=self._translator, locale=locale
-                    )
+                    view = pages.DevToolsPage(params=params, translator=self._translator, locale=locale)
                 case "/dev":
-                    view = pages.DevModePage(
-                        params=params, translator=self._translator, locale=locale
-                    )
+                    view = pages.DevModePage(params=params, translator=self._translator, locale=locale)
                 case "/mod_app":
                     view = pages.ModAppPage(params=params)
                 case "/mobile":
@@ -387,9 +332,7 @@ class WebApp:
 
         return view
 
-    async def _handle_gacha_routes(
-        self, route: str, parsed_params: dict[str, str]
-    ) -> ft.View | None:
+    async def _handle_gacha_routes(self, route: str, parsed_params: dict[str, str]) -> ft.View | None:
         page = self._page
 
         try:
@@ -413,19 +356,11 @@ class WebApp:
                 game = await self._get_account_game(params.account_id)
 
                 if params.name_contains:
-                    gacha_names = await self._get_gacha_names(
-                        gachas=gacha_logs, locale=locale, game=game
-                    )
-                    asyncio.create_task(
-                        page.client_storage.set_async(
-                            f"hb.{params.locale}.gacha_names", gacha_names
-                        )
-                    )
-                    gacha_logs = [
-                        g
-                        for g in gacha_logs
-                        if params.name_contains in gacha_names[g.item_id].lower()
-                    ][(params.page - 1) * params.size : params.page * params.size]
+                    gacha_names = await self._get_gacha_names(gachas=gacha_logs, locale=locale, game=game)
+                    asyncio.create_task(page.client_storage.set_async(f"hb.{params.locale}.gacha_names", gacha_names))
+                    gacha_logs = [g for g in gacha_logs if params.name_contains in gacha_names[g.item_id].lower()][
+                        (params.page - 1) * params.size : params.page * params.size
+                    ]
 
                 view = pages.GachaLogPage(
                     translator=self._translator,
@@ -467,9 +402,7 @@ class WebApp:
     async def _check_account_exists(account_id: int) -> bool:
         conn = await asyncpg.connect(os.environ["DB_URL"])
         try:
-            return await conn.fetchval(
-                'SELECT EXISTS(SELECT 1 FROM "hoyoaccount" WHERE id = $1)', account_id
-            )
+            return await conn.fetchval('SELECT EXISTS(SELECT 1 FROM "hoyoaccount" WHERE id = $1)', account_id)
         finally:
             await conn.close()
 
@@ -498,9 +431,7 @@ class WebApp:
             await conn.close()
 
     async def _get_gacha_icons(self, gachas: Sequence[GachaHistory]) -> dict[int, str]:
-        cached_gacha_icons: dict[int, str] = (
-            await self._page.client_storage.get_async("hb.gacha_icons") or {}
-        )
+        cached_gacha_icons: dict[int, str] = await self._page.client_storage.get_async("hb.gacha_icons") or {}
         result: dict[int, str] = {}
         for gacha in gachas:
             if gacha.item_id in cached_gacha_icons:
@@ -512,9 +443,7 @@ class WebApp:
         asyncio.create_task(self._page.client_storage.set_async("gacha_icons", cached_gacha_icons))
         return result
 
-    async def _get_gacha_names(
-        self, *, gachas: Sequence[GachaHistory], locale: Locale, game: Game
-    ) -> dict[int, str]:
+    async def _get_gacha_names(self, *, gachas: Sequence[GachaHistory], locale: Locale, game: Game) -> dict[int, str]:
         cached_gacha_names: dict[int, str] = (
             await self._page.client_storage.get_async(f"hb.{locale}.{game.name}.gacha_names") or {}
         )
@@ -531,13 +460,9 @@ class WebApp:
 
         if game in {Game.ZZZ, Game.STARRAIL}:
             if game is Game.ZZZ:
-                item_names = await fetch_json_file(
-                    f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json"
-                )
+                item_names = await fetch_json_file(f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json")
             else:
-                item_names = await fetch_json_file(
-                    f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json"
-                )
+                item_names = await fetch_json_file(f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json")
 
             for item_id in item_ids:
                 result[item_id] = item_names.get(str(item_id), str(item_id))
@@ -553,9 +478,7 @@ class WebApp:
                 cached_gacha_names[item_id] = item_names[index]
 
         asyncio.create_task(
-            self._page.client_storage.set_async(
-                f"hb.{locale}.{game.name}.gacha_names", cached_gacha_names
-            )
+            self._page.client_storage.set_async(f"hb.{locale}.{game.name}.gacha_names", cached_gacha_names)
         )
 
         return result
@@ -569,8 +492,7 @@ class WebApp:
         async with (
             aiohttp.ClientSession() as session,
             session.get(
-                "https://discord.com/api/users/@me",
-                headers={"Authorization": f"Bearer {access_token}"},
+                "https://discord.com/api/users/@me", headers={"Authorization": f"Bearer {access_token}"}
             ) as resp,
         ):
             if resp.status != 200:
@@ -630,9 +552,7 @@ class WebApp:
             ) as resp:
                 data = await resp.json()
                 if resp.status != 200:
-                    return pages.ErrorPage(
-                        code=resp.status, message=data.get("error") or "Unknown error"
-                    )
+                    return pages.ErrorPage(code=resp.status, message=data.get("error") or "Unknown error")
 
                 access_token = data.get("access_token")
                 if access_token is None:
@@ -672,9 +592,7 @@ class WebApp:
                 ]
             ),
             bgcolor=ft.colors.SURFACE_VARIANT,
-            actions=[
-                ft.IconButton(ft.icons.QUESTION_MARK, url="https://discord.com/invite/ryfamUykRw")
-            ],
+            actions=[ft.IconButton(ft.icons.QUESTION_MARK, url="https://discord.com/invite/ryfamUykRw")],
         )
 
     @property
@@ -687,7 +605,5 @@ class WebApp:
                 ]
             ),
             bgcolor=ft.colors.SURFACE_VARIANT,
-            actions=[
-                ft.IconButton(ft.icons.QUESTION_MARK, url="https://discord.com/invite/ryfamUykRw")
-            ],
+            actions=[ft.IconButton(ft.icons.QUESTION_MARK, url="https://discord.com/invite/ryfamUykRw")],
         )

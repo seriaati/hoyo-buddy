@@ -64,9 +64,7 @@ class HoyoAccount(BaseModel):
     game = fields.CharEnumField(Game, max_length=32)
     cookies = fields.TextField()
     server = fields.CharField(max_length=32)
-    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
-        "models.User", related_name="accounts"
-    )
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField("models.User", related_name="accounts")
     daily_checkin = fields.BooleanField(default=True)
     current = fields.BooleanField(default=False)
     notif_settings: fields.BackwardOneToOneRelation[AccountNotifSettings]
@@ -113,9 +111,7 @@ class HoyoAccount(BaseModel):
 
     @property
     def platform(self) -> Platform:
-        region = self.region or genshin.utility.recognize_region(
-            self.uid, HB_GAME_TO_GPY_GAME[self.game]
-        )
+        region = self.region or genshin.utility.recognize_region(self.uid, HB_GAME_TO_GPY_GAME[self.game])
         if region is None:
             return Platform.HOYOLAB
         return Platform.HOYOLAB if region is genshin.Region.OVERSEAS else Platform.MIYOUSHE
@@ -132,9 +128,7 @@ class AccountNotifSettings(BaseModel):
 class Settings(BaseModel):
     lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)
     dark_mode = fields.BooleanField(default=True)
-    user: fields.OneToOneRelation[User] = fields.OneToOneField(
-        "models.User", related_name="settings", pk=True
-    )
+    user: fields.OneToOneRelation[User] = fields.OneToOneField("models.User", related_name="settings", pk=True)
     gi_card_temp = fields.CharField(max_length=32, default="hb1")
     hsr_card_temp = fields.CharField(max_length=32, default="hb1")
     zzz_card_temp = fields.CharField(max_length=32, default="hb2")
@@ -148,9 +142,7 @@ class Settings(BaseModel):
 
 class CardSettings(BaseModel):
     character_id = fields.CharField(max_length=8)
-    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
-        "models.User", related_name="card_settings"
-    )
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField("models.User", related_name="card_settings")
     dark_mode = fields.BooleanField()
     custom_images: fields.Field[list[str]] = fields.JSONField(default=[])
     """URLs of custom images."""
@@ -347,14 +339,7 @@ class GachaHistory(BaseModel):
 
     @classmethod
     async def create(
-        cls,
-        *,
-        wish_id: int,
-        rarity: int,
-        time: datetime.datetime,
-        item_id: int,
-        banner_type: int,
-        account: HoyoAccount,
+        cls, *, wish_id: int, rarity: int, time: datetime.datetime, item_id: int, banner_type: int, account: HoyoAccount
     ) -> bool:
         try:
             await super().create(
@@ -458,13 +443,7 @@ class Leaderboard(BaseModel):
 
         try:
             await cls.create(
-                type=type_,
-                game=game,
-                uid=uid,
-                value=value,
-                username=username,
-                rank=0,
-                extra_info=extra_info,
+                type=type_, game=game, uid=uid, value=value, username=username, rank=0, extra_info=extra_info
             )
         except exceptions.IntegrityError:
             lb = await cls.get(type=type_, game=game, uid=uid)

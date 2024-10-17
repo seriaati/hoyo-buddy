@@ -52,24 +52,14 @@ RANK_ORDERS: Final[dict[GlobalStat, Literal["ASC", "DESC"]]] = {
 
 
 async def get_ranking(
-    pool: asyncpg.Pool,
-    *,
-    game: Game,
-    row: GlobalStat,
-    order: Literal["ASC", "DESC"],
-    account_id: int,
-    banner_type: int,
+    pool: asyncpg.Pool, *, game: Game, row: GlobalStat, order: Literal["ASC", "DESC"], account_id: int, banner_type: int
 ) -> tuple[int, int]:
     async with pool.acquire() as conn:
-        return await conn.fetchrow(
-            GET_RANKING_SQL.format(row=row, order=order), game.value, account_id, banner_type
-        )
+        return await conn.fetchrow(GET_RANKING_SQL.format(row=row, order=order), game.value, account_id, banner_type)
 
 
 class ViewGachaLogView(View):
-    def __init__(
-        self, account: HoyoAccount, *, author: User, locale: Locale, translator: Translator
-    ) -> None:
+    def __init__(self, account: HoyoAccount, *, author: User, locale: Locale, translator: Translator) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.account = account
         self.banner_type = next(iter(BANNER_TYPE_NAMES[account.game]))
@@ -80,16 +70,11 @@ class ViewGachaLogView(View):
 
     def get_web_app_url(self) -> str:
         params = GachaParams(
-            locale=self.locale.value,
-            account_id=self.account.id,
-            banner_type=self.banner_type,
-            rarities=[3, 4, 5],
+            locale=self.locale.value, account_id=self.account.id, banner_type=self.banner_type, rarities=[3, 4, 5]
         )
         return f"{WEB_APP_URLS[os.environ['ENV']]}/gacha_log?{params.to_query_string()}"
 
-    async def get_pulls_count(
-        self, *, banner_type: int | None = None, rarity: int | None = None
-    ) -> int:
+    async def get_pulls_count(self, *, banner_type: int | None = None, rarity: int | None = None) -> int:
         filter_kwargs: dict[str, Any] = {"account": self.account}
         if banner_type is not None:
             filter_kwargs["banner_type"] = banner_type
@@ -170,17 +155,13 @@ class ViewGachaLogView(View):
             raise NoGachaLogFoundError
 
         # Five star pity
-        last_five_star_num = await get_last_gacha_num(
-            self.account, banner=self.banner_type, rarity=5
-        )
+        last_five_star_num = await get_last_gacha_num(self.account, banner=self.banner_type, rarity=5)
         last_gacha_num = await get_last_gacha_num(self.account, banner=self.banner_type)
         current_five_star_pity = last_gacha_num - last_five_star_num
         max_five_star_pity = BANNER_GUARANTEE_NUMS[self.account.game][self.banner_type]
 
         # Four star pity
-        last_four_star_num = await get_last_gacha_num(
-            self.account, banner=self.banner_type, rarity=4
-        )
+        last_four_star_num = await get_last_gacha_num(self.account, banner=self.banner_type, rarity=4)
         current_four_star_pity = last_gacha_num - last_four_star_num
 
         # 50/50 win rate
@@ -206,9 +187,7 @@ class ViewGachaLogView(View):
             self.locale,
             self.translator,
             title=LocaleStr(key="gacha_log_stats_title"),
-            description=LocaleStr(
-                key="star5_guaranteed" if await self.guaranteed() else "star5_no_guaranteed"
-            )
+            description=LocaleStr(key="star5_guaranteed" if await self.guaranteed() else "star5_no_guaranteed")
             if self.banner_type in BANNER_WIN_RATE_TITLES[self.account.game]
             else None,
         )
@@ -247,18 +226,12 @@ class ViewGachaLogView(View):
             personal_stats += f"\n{personal_win_rate_stats}"
 
             global_win_rate_stats = LocaleStr(
-                key="win_rate_global_stats",
-                title=title,
-                win_rate=await self.get_ranking_str(pool, stat="win_rate"),
+                key="win_rate_global_stats", title=title, win_rate=await self.get_ranking_str(pool, stat="win_rate")
             ).translate(self.translator, self.locale)
             global_stats += f"\n{global_win_rate_stats}"
 
-        embed.add_field(
-            name=LocaleStr(key="gacha_log_personal_stats_title"), value=personal_stats, inline=False
-        )
-        embed.add_field(
-            name=LocaleStr(key="gacha_log_global_stats_title"), value=global_stats, inline=False
-        )
+        embed.add_field(name=LocaleStr(key="gacha_log_personal_stats_title"), value=personal_stats, inline=False)
+        embed.add_field(name=LocaleStr(key="gacha_log_global_stats_title"), value=global_stats, inline=False)
 
         embed.add_acc_info(self.account)
         return embed
@@ -275,9 +248,7 @@ class BannerTypeSelector(Select[ViewGachaLogView]):
         super().__init__(
             placeholder=LocaleStr(key="gacha_log_view_banner_type_selector_placeholder"),
             options=[
-                SelectOption(
-                    label=LocaleStr(key=key), value=str(banner_type), default=banner_type == current
-                )
+                SelectOption(label=LocaleStr(key=key), value=str(banner_type), default=banner_type == current)
                 for banner_type, key in BANNER_TYPE_NAMES[game].items()
             ],
         )

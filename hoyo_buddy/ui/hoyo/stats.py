@@ -28,12 +28,7 @@ def get_label(card: RecordCard) -> str:
 
 class StatsView(View):
     def __init__(
-        self,
-        record_cards: Sequence[RecordCard],
-        *,
-        author: User,
-        locale: Locale,
-        translator: Translator,
+        self, record_cards: Sequence[RecordCard], *, author: User, locale: Locale, translator: Translator
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self._record_cards = record_cards
@@ -43,9 +38,7 @@ class StatsView(View):
         return next(card for card in self._record_cards if card.uid == uid)
 
     def get_card_embed(self, card: RecordCard) -> DefaultEmbed:
-        embed = DefaultEmbed(
-            self.locale, self.translator, title=get_label(card), description=LevelStr(card.level)
-        )
+        embed = DefaultEmbed(self.locale, self.translator, title=get_label(card), description=LevelStr(card.level))
         for d in card.data:
             embed.add_field(name=d.name, value=d.value)
         embed.set_author(name=card.game_name, icon_url=card.game_logo)

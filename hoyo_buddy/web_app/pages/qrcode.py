@@ -77,9 +77,7 @@ class GenQRCodeButton(ft.FilledButton):
                 await page.close_dialog_async()
                 await page.show_snack_bar_async(
                     ft.SnackBar(
-                        ft.Text(
-                            "扫描成功, 请点击「确认登录」", color=ft.colors.ON_PRIMARY_CONTAINER
-                        ),
+                        ft.Text("扫描成功, 请点击「确认登录」", color=ft.colors.ON_PRIMARY_CONTAINER),
                         bgcolor=ft.colors.PRIMARY_CONTAINER,
                     )
                 )
@@ -87,9 +85,7 @@ class GenQRCodeButton(ft.FilledButton):
             elif status is genshin.models.QRCodeStatus.CONFIRMED:
                 dict_cookies = {key: morsel.value for key, morsel in cookies.items()}
                 encrypted_cookies = encrypt_string(dict_cookie_to_str(dict_cookies))
-                await page.client_storage.set_async(
-                    f"hb.{self._params.user_id}.cookies", encrypted_cookies
-                )
+                await page.client_storage.set_async(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
                 await page.go_async(f"/finish?{self._params.to_query_string()}")
                 break
 

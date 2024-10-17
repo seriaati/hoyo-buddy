@@ -133,10 +133,7 @@ RELIC_POS_EMOJIS: dict[str, str] = {
     "foot": "<:IconRelicFoot:1196077185933508709>",
     "body": "<:IconRelicBody:1196077184394219600>",
 }
-TOGGLE_EMOJIS: dict[bool, str] = {
-    False: "<:TOGGLE_OFF:1215446301202980914>",
-    True: "<:TOGGLE_ON:1215289748415844382>",
-}
+TOGGLE_EMOJIS: dict[bool, str] = {False: "<:TOGGLE_OFF:1215446301202980914>", True: "<:TOGGLE_ON:1215289748415844382>"}
 
 ZZZ_SKILL_TYPE_EMOJIS: dict[hakushin.enums.ZZZSkillType, str] = {
     hakushin.enums.ZZZSkillType.ASSIST: "<:Icon_Switch:1271096975131021426>",
@@ -187,10 +184,7 @@ def get_hsr_element_emoji(element: str) -> str:
 
 
 def get_zzz_element_emoji(
-    element: ZZZElement
-    | hakushin.enums.ZZZElement
-    | hakushin.zzz.CharacterProp
-    | genshin.models.ZZZElementType,
+    element: ZZZElement | hakushin.enums.ZZZElement | hakushin.zzz.CharacterProp | genshin.models.ZZZElementType,
 ) -> str:
     name = (
         genshin.models.ZZZElementType(element.id).name

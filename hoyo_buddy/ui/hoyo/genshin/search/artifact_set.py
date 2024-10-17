@@ -21,13 +21,7 @@ if TYPE_CHECKING:
 
 class ArtifactSetUI(View):
     def __init__(
-        self,
-        artifact_set_id: str,
-        *,
-        hakushin: bool,
-        author: User | Member,
-        locale: Locale,
-        translator: Translator,
+        self, artifact_set_id: str, *, hakushin: bool, author: User | Member, locale: Locale, translator: Translator
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self._artifact_id = artifact_set_id
@@ -44,9 +38,7 @@ class ArtifactSetUI(View):
             raise InvalidQueryError from e
 
         if self._hakushin:
-            async with hakushin.HakushinAPI(
-                hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
-            ) as api:
+            async with hakushin.HakushinAPI(hakushin.Game.GI, locale_to_hakushin_lang(self.locale)) as api:
                 artifact_set_detail = await api.fetch_artifact_set_detail(artifact_id)
 
                 translator = HakushinTranslator(self.locale, self.translator)
@@ -66,16 +58,12 @@ class ArtifactSetUI(View):
         for pos in self._artifact_embeds:
             self.add_item(ArtifactPosButton(pos))
 
-        self.message = await i.edit_original_response(
-            embed=next(iter(self._artifact_embeds.values())), view=self
-        )
+        self.message = await i.edit_original_response(embed=next(iter(self._artifact_embeds.values())), view=self)
 
 
 class ArtifactPosButton(Button["ArtifactSetUI"]):
     def __init__(self, pos: str) -> None:
-        super().__init__(
-            style=ButtonStyle.blurple, emoji=get_artifact_pos_emoji(EQUIP_ID_TO_ARTIFACT_POS[pos])
-        )
+        super().__init__(style=ButtonStyle.blurple, emoji=get_artifact_pos_emoji(EQUIP_ID_TO_ARTIFACT_POS[pos]))
         self.pos = pos
 
     async def callback(self, i: Interaction) -> None:

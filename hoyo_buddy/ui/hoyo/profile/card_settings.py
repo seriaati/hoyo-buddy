@@ -135,43 +135,27 @@ class CardSettingsView(View):
     def _add_items(self) -> None:
         self.add_item(CharacterSelect(self._characters, self.selected_character_id, row=0))
         self.add_item(
-            CardTemplateSelect(
-                self.card_settings.template, hb_only=self._hb_template_only, game=self.game, row=1
-            )
+            CardTemplateSelect(self.card_settings.template, hb_only=self._hb_template_only, game=self.game, row=1)
         )
         self.add_item(
-            PrimaryColorButton(
-                self.card_settings.custom_primary_color, disabled=self.disable_color_features, row=2
-            )
+            PrimaryColorButton(self.card_settings.custom_primary_color, disabled=self.disable_color_features, row=2)
         )
         self.add_item(SetCurTempAsDefaultButton(row=2))
 
         self.add_item(
-            DarkModeButton(
-                current_toggle=self.card_settings.dark_mode,
-                disabled=self.disable_dark_mode_features,
-                row=3,
-            )
+            DarkModeButton(current_toggle=self.card_settings.dark_mode, disabled=self.disable_dark_mode_features, row=3)
         )
         self.add_item(
             TeamCardDarkModeButton(
-                current_toggle=self.settings.team_card_dark_mode,
-                disabled=self.disable_dark_mode_features,
-                row=3,
+                current_toggle=self.settings.team_card_dark_mode, disabled=self.disable_dark_mode_features, row=3
             )
         )
         self.add_item(
-            ShowRankButton(
-                current_toggle=self.card_settings.show_rank,
-                disabled=self.disable_show_rank_button,
-                row=3,
-            )
+            ShowRankButton(current_toggle=self.card_settings.show_rank, disabled=self.disable_show_rank_button, row=3)
         )
 
     def _get_current_character(self) -> Character:
-        return next(
-            chara for chara in self._characters if str(chara.id) == self.selected_character_id
-        )
+        return next(chara for chara in self._characters if str(chara.id) == self.selected_character_id)
 
     def get_settings_embed(self) -> Embed:
         card_settings = self.card_settings
@@ -184,9 +168,7 @@ class CardSettingsView(View):
             title=LocaleStr(key="card_settings.modifying_for", name=character.name),
             color=int(color.lstrip("#"), 16) if color is not None else 6649080,
         )
-        default_str = LocaleStr(key="card_settings.color_default").translate(
-            self.translator, self.locale
-        )
+        default_str = LocaleStr(key="card_settings.color_default").translate(self.translator, self.locale)
         if color is not None:
             value = self._get_color_markdown(color)
             if card_settings.custom_primary_color is None:
@@ -213,9 +195,7 @@ class CharacterSelect(SettingsCharacterSelect[CardSettingsView]):
 
         self.update_options_defaults()
         self.view.selected_character_id = self.values[0]
-        self.view.card_settings = await get_card_settings(
-            self.view._user_id, self.values[0], game=self.view.game
-        )
+        self.view.card_settings = await get_card_settings(self.view._user_id, self.values[0], game=self.view.game)
 
         # Update other item styles
         template_select: CardTemplateSelect = self.view.get_item("profile_card_template_select")
@@ -325,24 +305,17 @@ class CardTemplateSelect(Select[CardSettingsView]):
 
             author1, author2 = CARD_TEMPLATE_AUTHORS[template_id]
             if author1 == author2:
-                description = LocaleStr(
-                    key="profile.card_template_select.same_author.description", author=author1
-                )
+                description = LocaleStr(key="profile.card_template_select.same_author.description", author=author1)
             else:
                 description = LocaleStr(
-                    key="profile.card_template_select.diff_author.description",
-                    author1=author1,
-                    author2=author2,
+                    key="profile.card_template_select.diff_author.description", author1=author1, author2=author2
                 )
 
             template_name = CARD_TEMPLATE_NAMES[template_id]
             label = LocaleStr(key=template_name, num=int(template[-1]))
 
             select_option = SelectOption(
-                label=label,
-                description=description,
-                value=template,
-                default=current_template == template,
+                label=label, description=description, value=template, default=current_template == template
             )
             options.append(select_option)
 
@@ -385,19 +358,13 @@ class SetCurTempAsDefaultButton(Button[CardSettingsView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        game_column_map = {
-            Game.GENSHIN: "gi_card_temp",
-            Game.STARRAIL: "hsr_card_temp",
-            Game.ZZZ: "zzz_card_temp",
-        }
+        game_column_map = {Game.GENSHIN: "gi_card_temp", Game.STARRAIL: "hsr_card_temp", Game.ZZZ: "zzz_card_temp"}
         column_name = game_column_map.get(self.view.game)
         if column_name is None:
             msg = f"Game {self.view.game!r} does not have a column for card template"
             raise ValueError(msg)
 
-        await Settings.filter(user_id=i.user.id).update(
-            **{column_name: self.view.card_settings.template}
-        )
+        await Settings.filter(user_id=i.user.id).update(**{column_name: self.view.card_settings.template})
 
         template = self.view.card_settings.template.rstrip("1234567890")
         template_num = self.view.card_settings.template[len(template) :]

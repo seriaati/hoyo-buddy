@@ -29,9 +29,7 @@ class DeviceInfoPage(ft.View):
                                 "1. 点击下方按钮下载用于获取设备信息的应用程序\n2. 安装并启动该应用\n3. 点击「点击查看信息」\n4. 点击「点击复制」\n5. 点击下方的「提交设备信息」按钮并将复制的信息贴上"
                             ),
                             DownloadAppButton(),
-                            ft.Container(
-                                DeviceInfoForm(params=params), margin=ft.margin.only(top=16)
-                            ),
+                            ft.Container(DeviceInfoForm(params=params), margin=ft.margin.only(top=16)),
                         ]
                     )
                 )
@@ -41,9 +39,7 @@ class DeviceInfoPage(ft.View):
 
 class DownloadAppButton(ft.ElevatedButton):
     def __init__(self) -> None:
-        super().__init__(
-            text="下载应用程序", icon=ft.icons.DOWNLOAD, on_click=self.goto_download_page
-        )
+        super().__init__(text="下载应用程序", icon=ft.icons.DOWNLOAD, on_click=self.goto_download_page)
 
     async def goto_download_page(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
@@ -87,9 +83,7 @@ class DeviceInfoForm(ft.Column):
         device_id = str(uuid.uuid4()).lower()
         try:
             device_fp = await client.generate_fp(
-                device_id=device_id,
-                device_board=device_info["deviceBoard"],
-                oaid=device_info["oaid"],
+                device_id=device_id, device_board=device_info["deviceBoard"], oaid=device_info["oaid"]
             )
         except Exception as exc:
             await show_error_banner(page, message=str(exc))

@@ -20,9 +20,7 @@ __all__ = ("EngineSearchView",)
 
 
 class EngineSearchView(View):
-    def __init__(
-        self, engine_id: int, *, author: User, locale: Locale, translator: Translator
-    ) -> None:
+    def __init__(self, engine_id: int, *, author: User, locale: Locale, translator: Translator) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self._engine_id = engine_id
         self._engine: hakushin.zzz.WeaponDetail
@@ -33,9 +31,7 @@ class EngineSearchView(View):
         self.add_item(RefinementSelect(self._refinement))
 
     async def _fetch_data(self) -> None:
-        async with hakushin.HakushinAPI(
-            hakushin.Game.ZZZ, locale_to_hakushin_lang(self.locale)
-        ) as api:
+        async with hakushin.HakushinAPI(hakushin.Game.ZZZ, locale_to_hakushin_lang(self.locale)) as api:
             self._engine = await api.fetch_weapon_detail(self._engine_id)
 
     async def update(self, i: Interaction) -> None:
@@ -58,11 +54,7 @@ class RefinementSelect(Select[EngineSearchView]):
         refinements = (1, 2, 3, 4, 5)
         super().__init__(
             options=[
-                SelectOption(
-                    label=LocaleStr(key="refinement_indicator", r=r),
-                    value=str(r),
-                    default=r == int(current),
-                )
+                SelectOption(label=LocaleStr(key="refinement_indicator", r=r), value=str(r), default=r == int(current))
                 for r in refinements
             ],
             placeholder=LocaleStr(key="zzz.engine.refinement_select.placeholder"),

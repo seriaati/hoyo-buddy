@@ -20,9 +20,7 @@ if TYPE_CHECKING:
 
 
 class Farm(
-    commands.GroupCog,
-    name=app_commands.locale_str("farm"),
-    description=app_commands.locale_str("Farm commands"),
+    commands.GroupCog, name=app_commands.locale_str("farm"), description=app_commands.locale_str("Farm commands")
 ):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
@@ -45,9 +43,7 @@ class Farm(
             "View farmable domains in Genshin Impact", key="farm_view_command_description"
         ),
     )
-    @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
-    )
+    @app_commands.rename(account=app_commands.locale_str("account", key="account_autocomplete_param_name"))
     @app_commands.describe(
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -55,9 +51,7 @@ class Farm(
         )
     )
     async def farm_view_command(
-        self,
-        i: Interaction,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        self, i: Interaction, account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None
     ) -> None:
         settings = await Settings.get(user_id=i.user.id)
         account = (
@@ -68,19 +62,14 @@ class Farm(
         uid = None if account is None else account.uid
 
         view = FarmView(
-            uid,
-            settings.dark_mode,
-            author=i.user,
-            locale=settings.locale or i.locale,
-            translator=self.bot.translator,
+            uid, settings.dark_mode, author=i.user, locale=settings.locale or i.locale, translator=self.bot.translator
         )
         await view.start(i)
 
     @app_commands.command(
         name=app_commands.locale_str("add"),
         description=app_commands.locale_str(
-            "Add character/weapon to be notified when its materials are farmable",
-            key="farm_add_command_description",
+            "Add character/weapon to be notified when its materials are farmable", key="farm_add_command_description"
         ),
     )
     @app_commands.rename(
@@ -88,19 +77,14 @@ class Farm(
         account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
-        query=app_commands.locale_str(
-            "Query to search for", key="search_command_query_param_description"
-        ),
+        query=app_commands.locale_str("Query to search for", key="search_command_query_param_description"),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
         ),
     )
     async def farm_add_command(
-        self,
-        i: Interaction,
-        account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer],
-        query: str,
+        self, i: Interaction, account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer], query: str
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
@@ -118,19 +102,14 @@ class Farm(
         account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
-        query=app_commands.locale_str(
-            "Query to search for", key="search_command_query_param_description"
-        ),
+        query=app_commands.locale_str("Query to search for", key="search_command_query_param_description"),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
             key="account_autocomplete_param_description",
         ),
     )
     async def farm_remove_command(
-        self,
-        i: Interaction,
-        account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer],
-        query: str,
+        self, i: Interaction, account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer], query: str
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
@@ -140,13 +119,10 @@ class Farm(
     @app_commands.command(
         name=app_commands.locale_str("reminder"),
         description=app_commands.locale_str(
-            "Notify you when materials of characters/weapons are farmable",
-            key="farm_reminder_command_description",
+            "Notify you when materials of characters/weapons are farmable", key="farm_reminder_command_description"
         ),
     )
-    @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
-    )
+    @app_commands.rename(account=app_commands.locale_str("account", key="account_autocomplete_param_name"))
     @app_commands.describe(
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -154,9 +130,7 @@ class Farm(
         )
     )
     async def farm_reminder_command(
-        self,
-        i: Interaction,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        self, i: Interaction, account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
@@ -166,9 +140,7 @@ class Farm(
     @farm_view_command.autocomplete("account")
     @farm_add_command.autocomplete("account")
     @farm_reminder_command.autocomplete("account")
-    async def account_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
+    async def account_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         user: User = i.namespace.user
         return await self.bot.get_account_choices(
@@ -176,19 +148,11 @@ class Farm(
         )
 
     @farm_remove_command.autocomplete("account")
-    async def account_with_id_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
+    async def account_with_id_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         user: User = i.namespace.user
         return await self.bot.get_account_choices(
-            user,
-            i.user.id,
-            current,
-            locale,
-            self.bot.translator,
-            games=(Game.GENSHIN,),
-            show_id=True,
+            user, i.user.id, current, locale, self.bot.translator, games=(Game.GENSHIN,), show_id=True
         )
 
     @farm_add_command.autocomplete("query")
@@ -199,36 +163,24 @@ class Farm(
         return choices[:25]
 
     @farm_remove_command.autocomplete("query")
-    async def user_query_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice]:
+    async def user_query_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:
         account_namespace: str | None = i.namespace.account
 
         if account_namespace is None:
-            return self.bot.get_error_choice(
-                LocaleStr(key="search_autocomplete_no_results"), await get_locale(i)
-            )
+            return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_no_results"), await get_locale(i))
         # Find [account_id] from account_namespace
         account_id = int(account_namespace.split("]")[0].strip("["))
         locale = await get_locale(i)
 
         farm_notify = await FarmNotify.get_or_none(account_id=account_id)
         if farm_notify is None:
-            return self.bot.get_error_choice(
-                LocaleStr(key="search_autocomplete_no_results"), locale
-            )
+            return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_no_results"), locale)
 
         choices = self._get_choices(locale)
-        choices = [
-            c
-            for c in choices
-            if current.lower() in c.name.lower() and c.value in farm_notify.item_ids
-        ]
+        choices = [c for c in choices if current.lower() in c.name.lower() and c.value in farm_notify.item_ids]
 
         if not choices:
-            return self.bot.get_error_choice(
-                LocaleStr(key="search_autocomplete_no_results"), locale
-            )
+            return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_no_results"), locale)
 
         return choices[:25]
 

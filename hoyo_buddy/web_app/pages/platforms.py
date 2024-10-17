@@ -31,23 +31,13 @@ class PlatformsPage(ft.View):
                 ft.SafeArea(
                     ft.Column(
                         [
-                            ft.Text(
-                                translator.translate(
-                                    LocaleStr(key="adding_accounts_title"), locale
-                                ),
-                                size=24,
-                            ),
+                            ft.Text(translator.translate(LocaleStr(key="adding_accounts_title"), locale), size=24),
                             ft.Markdown(
-                                translator.translate(
-                                    LocaleStr(key="adding_accounts_description"), locale
-                                ),
+                                translator.translate(LocaleStr(key="adding_accounts_description"), locale),
                                 auto_follow_links=True,
                                 auto_follow_links_target=ft.UrlTarget.BLANK.value,
                             ),
-                            ft.Container(
-                                ft.Row(self.platform_groups, spacing=20),
-                                margin=ft.margin.only(top=20),
-                            ),
+                            ft.Container(ft.Row(self.platform_groups, spacing=20), margin=ft.margin.only(top=20)),
                         ]
                     )
                 )
@@ -57,12 +47,7 @@ class PlatformsPage(ft.View):
     @property
     def platform_groups(self) -> list[PlatformGroup]:
         return [
-            PlatformGroup(
-                params=self._params,
-                platform=platform,
-                translator=self._translator,
-                locale=self._locale,
-            )
+            PlatformGroup(params=self._params, platform=platform, translator=self._translator, locale=self._locale)
             for platform in Platform
         ]
 
@@ -70,29 +55,21 @@ class PlatformsPage(ft.View):
 class PlatformGroup(ft.Column):
     """A platform image and a button."""
 
-    def __init__(
-        self, *, params: Params, platform: Platform, translator: Translator, locale: Locale
-    ) -> None:
+    def __init__(self, *, params: Params, platform: Platform, translator: Translator, locale: Locale) -> None:
         self._params = params
         self._platform = platform
         self._platform_name = translator.translate(EnumStr(platform), locale)
         super().__init__(
-            controls=[self.image, self.button],
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-            spacing=20,
+            controls=[self.image, self.button], horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=20
         )
 
     @property
     def image(self) -> ft.Image:
-        return ft.Image(
-            src=PLATFORM_IMAGES[self._platform], tooltip=self._platform_name, width=100, height=100
-        )
+        return ft.Image(src=PLATFORM_IMAGES[self._platform], tooltip=self._platform_name, width=100, height=100)
 
     @property
     def button(self) -> PlatformButton:
-        return PlatformButton(
-            params=self._params, platform=self._platform, label=self._platform_name
-        )
+        return PlatformButton(params=self._params, platform=self._platform, label=self._platform_name)
 
 
 class PlatformButton(ft.FilledTonalButton):

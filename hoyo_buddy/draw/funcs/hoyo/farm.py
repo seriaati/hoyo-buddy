@@ -23,15 +23,11 @@ def cache_key(farm_data: list[FarmData], locale: str, dark_mode: bool, _: Transl
 
 
 @cached(LRUCache(maxsize=32), key=cache_key)
-def draw_farm_card(
-    farm_data: list[FarmData], locale_: str, dark_mode: bool, translator: Translator
-) -> io.BytesIO:
+def draw_farm_card(farm_data: list[FarmData], locale_: str, dark_mode: bool, translator: Translator) -> io.BytesIO:
     def get_domain_title(domain: ambr.Domain, locale: Locale, translator: Translator) -> str:
         """Get the title of a GI domain based on its name and city, assuming the language is English."""
         city_name = translator.translate(LocaleStr(custom_str=domain.city.name.title()), locale)
-        domain_type = (
-            LocaleStr(key="characters") if "Mastery" in domain.name else LocaleStr(key="weapons")
-        )
+        domain_type = LocaleStr(key="characters") if "Mastery" in domain.name else LocaleStr(key="weapons")
         domain_type_name = translator.translate(domain_type, locale)
         return f"{domain_type_name} ({city_name})"
 
@@ -40,26 +36,20 @@ def draw_farm_card(
     basic_cards: list[Image.Image] = []
 
     for data in farm_data:
-        basic_card: Image.Image = Drawer.open_image(
-            f"hoyo-buddy-assets/assets/farm/{mode}_card.png"
-        )
+        basic_card: Image.Image = Drawer.open_image(f"hoyo-buddy-assets/assets/farm/{mode}_card.png")
         draw = ImageDraw.Draw(basic_card)
         drawer = Drawer(draw, folder="farm", dark_mode=dark_mode, translator=translator)
 
         item_per_row = 9
         height_per_row = 199
-        new_height = basic_card.height + height_per_row * (
-            len(data.characters + data.weapons) // (item_per_row + 1)
-        )
+        new_height = basic_card.height + height_per_row * (len(data.characters + data.weapons) // (item_per_row + 1))
         basic_card = basic_card.resize((basic_card.width, new_height))
 
         lid = drawer.open_asset(f"{data.domain.city.name.lower()}.png")
         basic_card.paste(lid, (8, 3), lid)
 
         draw = ImageDraw.Draw(basic_card)
-        drawer = Drawer(
-            draw, folder="farm", dark_mode=dark_mode, translator=translator, locale=locale
-        )
+        drawer = Drawer(draw, folder="farm", dark_mode=dark_mode, translator=translator, locale=locale)
 
         drawer.write(
             get_domain_title(data.domain, locale, translator),
@@ -118,9 +108,7 @@ def draw_farm_card(
         card_height_offset = -114 + (-55 * (item_row_num - 1))
         background_height += card.height + card_height_offset + y_padding_between_cards - 15
 
-    background = Image.new(
-        "RGBA", (background_width, background_height), DARK_SURFACE if dark_mode else LIGHT_SURFACE
-    )
+    background = Image.new("RGBA", (background_width, background_height), DARK_SURFACE if dark_mode else LIGHT_SURFACE)
 
     x = right_left_margin
     y = top_bot_margin

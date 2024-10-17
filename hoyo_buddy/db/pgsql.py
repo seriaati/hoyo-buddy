@@ -21,9 +21,6 @@ class Database:
         await Tortoise.generate_schemas()
 
     async def __aexit__(
-        self,
-        exc_type: type[BaseException] | None,
-        exc_value: BaseException | None,
-        traceback: TracebackType | None,
+        self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None
     ) -> None:
         await Tortoise.close_connections()

@@ -40,11 +40,7 @@ def draw_agent_small_card(
     im = card.copy()
     draw = ImageDraw.Draw(im)
     drawer = Drawer(
-        draw,
-        folder="zzz-characters",
-        dark_mode=dark_mode,
-        locale=discord.Locale(locale),
-        translator=translator,
+        draw, folder="zzz-characters", dark_mode=dark_mode, locale=discord.Locale(locale), translator=translator
     )
 
     # Banner icon
@@ -54,20 +50,11 @@ def draw_agent_small_card(
 
     # Rank
     im.paste(circle, (29, 29), circle)
-    drawer.write(
-        str(agent.rank), size=58, position=(69, 69), style="medium", anchor="mm", color=WHITE
-    )
+    drawer.write(str(agent.rank), size=58, position=(69, 69), style="medium", anchor="mm", color=WHITE)
 
     # Level
     im.paste(level_bar, (29, 362), level_bar)
-    drawer.write(
-        LevelStr(agent.level),
-        size=42,
-        position=(107, 394),
-        style="medium",
-        anchor="mm",
-        color=WHITE,
-    )
+    drawer.write(LevelStr(agent.level), size=42, position=(107, 394), style="medium", anchor="mm", color=WHITE)
 
     # W-engine
     im.paste(engine_block, (588, 45), engine_block)
@@ -77,12 +64,7 @@ def draw_agent_small_card(
 
         im.paste(circle, (765, 214), circle)
         drawer.write(
-            str(agent.w_engine.refinement),
-            size=58,
-            position=(805, 254),
-            style="medium",
-            anchor="mm",
-            color=WHITE,
+            str(agent.w_engine.refinement), size=58, position=(805, 254), style="medium", anchor="mm", color=WHITE
         )
 
     # Skill
@@ -104,22 +86,14 @@ def draw_agent_small_card(
             skill_levels.append(skill.level)
         text = "/".join(str(level) for level in skill_levels)
         drawer.write(
-            text,
-            size=42,
-            position=(661, 394),
-            style="medium",
-            anchor="mm",
-            color=WHITE if dark_mode else (95, 95, 95),
+            text, size=42, position=(661, 394), style="medium", anchor="mm", color=WHITE if dark_mode else (95, 95, 95)
         )
 
     return im
 
 
 def draw_big_agent_card(
-    agents: Sequence[ZZZFullAgent | UnownedZZZCharacter],
-    dark_mode: bool,
-    locale: str,
-    translator: Translator,
+    agents: Sequence[ZZZFullAgent | UnownedZZZCharacter], dark_mode: bool, locale: str, translator: Translator
 ) -> BytesIO:
     asset_path = "hoyo-buddy-assets/assets/zzz-characters"
     theme = "dark" if dark_mode else "light"
@@ -162,16 +136,10 @@ def draw_big_agent_card(
     if total_card % max_card_per_col == 0:
         col_num -= 1
 
-    big_card_height = (
-        card_height * max_card_per_col
-        + card_y_padding * (max_card_per_col - 1)
-        + card_start_pos[1] * 2
-    )
+    big_card_height = card_height * max_card_per_col + card_y_padding * (max_card_per_col - 1) + card_start_pos[1] * 2
     big_card_width = card_width * col_num + card_x_padding * (col_num - 1) + card_start_pos[0] * 2
 
-    im = Image.new(
-        "RGBA", (big_card_width, big_card_height), (33, 33, 33) if dark_mode else (239, 239, 239)
-    )
+    im = Image.new("RGBA", (big_card_width, big_card_height), (33, 33, 33) if dark_mode else (239, 239, 239))
 
     for i, card in enumerate(cards):
         col = i // max_card_per_col

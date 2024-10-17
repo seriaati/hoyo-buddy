@@ -12,21 +12,12 @@ from hoyo_buddy.l10n import EnumStr, LocaleStr, Translator
 from hoyo_buddy.utils import get_floor_difficulty
 
 if TYPE_CHECKING:
-    from genshin.models.starrail import (
-        FictionFloor,
-        FloorCharacter,
-        StarRailChallengeSeason,
-        StarRailPureFiction,
-    )
+    from genshin.models.starrail import FictionFloor, FloorCharacter, StarRailChallengeSeason, StarRailPureFiction
 
 
 class PureFictionCard:
     def __init__(
-        self,
-        data: StarRailPureFiction,
-        season: StarRailChallengeSeason,
-        locale: str,
-        translator: Translator,
+        self, data: StarRailPureFiction, season: StarRailChallengeSeason, locale: str, translator: Translator
     ) -> None:
         self._data = data
         self._season = season
@@ -39,23 +30,18 @@ class PureFictionCard:
         return Locale(self._locale)
 
     def _write_title(self) -> None:
-        self._drawer.write(
-            EnumStr(ChallengeType.PURE_FICTION), size=80, position=(76, 75), style="bold"
-        )
+        self._drawer.write(EnumStr(ChallengeType.PURE_FICTION), size=80, position=(76, 75), style="bold")
 
     def _write_pf_name(self) -> None:
         self._drawer.write(self._season.name, size=64, position=(76, 197), style="medium")
 
     def _write_max_stars(self) -> None:
-        self._drawer.write(
-            str(self._data.total_stars), size=50, position=(193, 374), style="medium", anchor="mm"
-        )
+        self._drawer.write(str(self._data.total_stars), size=50, position=(193, 374), style="medium", anchor="mm")
 
     def _write_farthest_stage(self) -> None:
         self._drawer.write(
             LocaleStr(
-                key="moc_card_farthest_stage",
-                stage=get_floor_difficulty(self._data.max_floor, self._season.name),
+                key="moc_card_farthest_stage", stage=get_floor_difficulty(self._data.max_floor, self._season.name)
             ),
             size=25,
             position=(303, 340),
@@ -63,9 +49,7 @@ class PureFictionCard:
 
     def _write_battles_fought(self) -> None:
         self._drawer.write(
-            LocaleStr(key="moc_card_battles_fought", battles=self._data.total_battles),
-            size=25,
-            position=(303, 374),
+            LocaleStr(key="moc_card_battles_fought", battles=self._data.total_battles), size=25, position=(303, 374)
         )
 
     def _draw_block(self, chara: FloorCharacter | None = None) -> Image.Image:
@@ -76,11 +60,7 @@ class PureFictionCard:
             return block
 
         drawer = Drawer(
-            ImageDraw.Draw(block),
-            folder="pf",
-            dark_mode=True,
-            locale=self.locale,
-            translator=self._translator,
+            ImageDraw.Draw(block), folder="pf", dark_mode=True, locale=self.locale, translator=self._translator
         )
 
         icon = drawer.open_static(chara.icon)
@@ -91,37 +71,25 @@ class PureFictionCard:
 
         level_flair = drawer.open_asset("level_flair.png")
         block.paste(level_flair, (0, 96), level_flair)
-        drawer.write(
-            str(chara.level), size=18, position=(31, 108), style="bold", anchor="mm", color=WHITE
-        )
+        drawer.write(str(chara.level), size=18, position=(31, 108), style="bold", anchor="mm", color=WHITE)
 
         const_flair = drawer.open_asset("const_flair.png")
         block.paste(const_flair, (90, 0), const_flair)
-        drawer.write(
-            str(chara.rank), size=18, position=(105, 16), style="bold", anchor="mm", color=WHITE
-        )
+        drawer.write(str(chara.rank), size=18, position=(105, 16), style="bold", anchor="mm", color=WHITE)
 
         return block
 
     def _draw_stage(self, stage: FictionFloor) -> Image.Image:
         im = Image.new("RGBA", (639, 421), TRANSPARENT)
         drawer = Drawer(
-            ImageDraw.Draw(im),
-            folder="pf",
-            dark_mode=True,
-            locale=self.locale,
-            translator=self._translator,
+            ImageDraw.Draw(im), folder="pf", dark_mode=True, locale=self.locale, translator=self._translator
         )
 
         stage_name = get_floor_difficulty(stage.name, self._season.name)
         name_tbox = drawer.write(stage_name, size=44, position=(0, 0), style="bold", color=WHITE)
         if stage.is_quick_clear:
             cycle_tbox = drawer.write(
-                LocaleStr(key="moc_quick_clear"),
-                size=25,
-                position=(0, 60),
-                color=WHITE,
-                style="medium",
+                LocaleStr(key="moc_quick_clear"), size=25, position=(0, 60), color=WHITE, style="medium"
             )
         else:
             cycle_tbox = drawer.write(
@@ -146,9 +114,7 @@ class PureFictionCard:
         drawer.write(
             LocaleStr(
                 key="pf_card_total_score",
-                score=f"{stage.node_1.score}+{stage.node_2.score}={stage.score}"
-                if not stage.is_quick_clear
-                else 80000,
+                score=f"{stage.node_1.score}+{stage.node_2.score}={stage.score}" if not stage.is_quick_clear else 80000,
             ),
             size=25,
             position=(rightmost + padding + 37, 60),
@@ -176,11 +142,7 @@ class PureFictionCard:
     def draw(self) -> BytesIO:
         self._im = Drawer.open_image("hoyo-buddy-assets/assets/pf/pf.png")
         self._drawer = Drawer(
-            ImageDraw.Draw(self._im),
-            folder="pf",
-            locale=self.locale,
-            dark_mode=True,
-            translator=self._translator,
+            ImageDraw.Draw(self._im), folder="pf", locale=self.locale, dark_mode=True, translator=self._translator
         )
 
         self._write_title()

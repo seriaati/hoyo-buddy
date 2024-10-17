@@ -32,9 +32,7 @@ class DailyCheckin:
     _no_error_notify: ClassVar[bool]
 
     @classmethod
-    async def execute(
-        cls, bot: HoyoBuddy, *, game: genshin.Game | None = None, no_error_notify: bool = False
-    ) -> None:
+    async def execute(cls, bot: HoyoBuddy, *, game: genshin.Game | None = None, no_error_notify: bool = False) -> None:
         try:
             logger.info("Daily check-in started")
 
@@ -47,9 +45,7 @@ class DailyCheckin:
             if game is None:
                 accounts = await HoyoAccount.filter(daily_checkin=True).all()
             else:
-                accounts = await HoyoAccount.filter(
-                    daily_checkin=True, game=GPY_GAME_TO_HB_GAME[game]
-                )
+                accounts = await HoyoAccount.filter(daily_checkin=True, game=GPY_GAME_TO_HB_GAME[game])
 
             for account in accounts:
                 if account.region is genshin.Region.OVERSEAS:
@@ -58,9 +54,7 @@ class DailyCheckin:
                     # Region is None or CN
                     the_rest.append(account)
 
-            tasks = [
-                asyncio.create_task(cls._daily_checkin_task(queue, api)) for api in CHECKIN_APIS
-            ]
+            tasks = [asyncio.create_task(cls._daily_checkin_task(queue, api)) for api in CHECKIN_APIS]
             tasks.append(asyncio.create_task(cls._daily_checkin_task(queue, "LOCAL")))
 
             await queue.join()
@@ -84,15 +78,11 @@ class DailyCheckin:
         except Exception as e:
             bot.capture_exception(e)
         finally:
-            logger.info(
-                f"Daily check-in finished, total check-in count: {cls._total_checkin_count}"
-            )
+            logger.info(f"Daily check-in finished, total check-in count: {cls._total_checkin_count}")
 
     @classmethod
     async def _daily_checkin_task(
-        cls,
-        queue: asyncio.Queue[HoyoAccount],
-        api_name: Literal["VERCEL", "RENDER", "FLY", "LOCAL"],
+        cls, queue: asyncio.Queue[HoyoAccount], api_name: Literal["VERCEL", "RENDER", "FLY", "LOCAL"]
     ) -> None:
         logger.info(f"Daily check-in task started for api: {api_name}")
 
@@ -135,18 +125,14 @@ class DailyCheckin:
                 notif_settings = await AccountNotifSettings.create(account=account)
 
             if (
-                isinstance(embed, ErrorEmbed)
-                and notif_settings.notify_on_checkin_failure
-                and not cls._no_error_notify
+                isinstance(embed, ErrorEmbed) and notif_settings.notify_on_checkin_failure and not cls._no_error_notify
             ) or (isinstance(embed, DefaultEmbed) and notif_settings.notify_on_checkin_success):
                 await cls._bot.dm_user(account.user.id, embed=embed)
         except Exception as e:
             cls._bot.capture_exception(e)
 
     @classmethod
-    async def _daily_checkin(
-        cls, api_name: Literal["VERCEL", "RENDER", "FLY", "LOCAL"], account: HoyoAccount
-    ) -> Embed:
+    async def _daily_checkin(cls, api_name: Literal["VERCEL", "RENDER", "FLY", "LOCAL"], account: HoyoAccount) -> Embed:
         session = cls._bot.session
         translator = cls._bot.translator
 
@@ -172,9 +158,7 @@ class DailyCheckin:
                 reward = await client.claim_daily_reward()
             except Exception as e:
                 if isinstance(e, genshin.DailyGeetestTriggered):
-                    await User.filter(id=account.user.id).update(
-                        temp_data={"geetest": e.gt, "challenge": e.challenge}
-                    )
+                    await User.filter(id=account.user.id).update(temp_data={"geetest": e.gt, "challenge": e.challenge})
                 embed, recognized = get_error_embed(e, locale, translator)
                 if not recognized:
                     cls._bot.capture_exception(e)
@@ -204,9 +188,7 @@ class DailyCheckin:
                 if resp.status == 200:
                     # Correct reward amount
                     monthly_rewards = await client.get_monthly_rewards()
-                    reward = next(
-                        (r for r in monthly_rewards if r.icon == data["data"]["icon"]), None
-                    )
+                    reward = next((r for r in monthly_rewards if r.icon == data["data"]["icon"]), None)
                     if reward is None:
                         reward = genshin.models.DailyReward(**data["data"])
                     embed = client.get_daily_reward_embed(reward, locale, translator, blur=False)

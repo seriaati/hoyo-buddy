@@ -13,11 +13,7 @@ from hoyo_buddy.utils import seconds_to_time
 
 class ImgTheaterCard:
     def __init__(
-        self,
-        theater: genshin.models.ImgTheaterData,
-        chara_consts: dict[int, int],
-        locale: str,
-        translator: Translator,
+        self, theater: genshin.models.ImgTheaterData, chara_consts: dict[int, int], locale: str, translator: Translator
     ) -> None:
         self._theater = theater
         self._chara_consts = chara_consts
@@ -35,12 +31,7 @@ class ImgTheaterCard:
         return Drawer.open_image(f"{self._asset_dir}/{asset}")
 
     def _write_large_block_texts(self) -> None:
-        self._drawer.write(
-            LocaleStr(key="img_theater_large_block_title"),
-            size=64,
-            position=(112, 83),
-            style="bold",
-        )
+        self._drawer.write(LocaleStr(key="img_theater_large_block_title"), size=64, position=(112, 83), style="bold")
 
         stats = self._theater.stats
         if hasattr(self._theater, "battle_stats"):
@@ -51,9 +42,7 @@ class ImgTheaterCard:
         lines = (
             LocaleStr(key="img_theater_stats_line_one", act=stats.best_record),
             LocaleStr(key="img_theater_stats_line_two", flower=stats.fantasia_flowers_used),
-            LocaleStr(
-                key="img_theater_stats_line_three", support=stats.audience_support_trigger_num
-            ),
+            LocaleStr(key="img_theater_stats_line_three", support=stats.audience_support_trigger_num),
             LocaleStr(key="img_theater_stats_line_four", assist=stats.player_assists),
             LocaleStr(key="img_theater_stats_line_five", time=total_cast_time),
         )
@@ -89,44 +78,28 @@ class ImgTheaterCard:
 
     def _write_legend_block_texts(self) -> None:
         self._drawer.write(
-            LocaleStr(key="img_theater_legend_block_support_chara"),
-            size=24,
-            position=(933, 310),
-            anchor="lm",
+            LocaleStr(key="img_theater_legend_block_support_chara"), size=24, position=(933, 310), anchor="lm"
         )
         self._drawer.write(
-            LocaleStr(key="img_theater_legend_block_trial_chara"),
-            size=24,
-            position=(933, 354),
-            anchor="lm",
+            LocaleStr(key="img_theater_legend_block_trial_chara"), size=24, position=(933, 354), anchor="lm"
         )
 
     def _draw_act_block(self, act: genshin.models.Act, pos: tuple[int, int]) -> None:
         if hasattr(self._theater, "battle_stats"):
             fastest_charas = self._theater.battle_stats.fastest_character_list
-            is_fastest = [chara.id for chara in fastest_charas] == [
-                chara.id for chara in act.characters
-            ]
+            is_fastest = [chara.id for chara in fastest_charas] == [chara.id for chara in act.characters]
             if is_fastest:
-                fastest_text = LocaleStr(key="img_theater_fastest_team").translate(
-                    self._translator, self.locale
-                )
+                fastest_text = LocaleStr(key="img_theater_fastest_team").translate(self._translator, self.locale)
             else:
                 fastest_text = ""
         else:
             fastest_text = ""
 
-        title = LocaleStr(key="img_theater_act_block_title", act=act.round_id).translate(
-            self._translator, self.locale
-        )
-        self._drawer.write(
-            title + fastest_text, size=32, style="bold", position=(pos[0] + 21, pos[1] + 10)
-        )
+        title = LocaleStr(key="img_theater_act_block_title", act=act.round_id).translate(self._translator, self.locale)
+        self._drawer.write(title + fastest_text, size=32, style="bold", position=(pos[0] + 21, pos[1] + 10))
 
         medal = (
-            self._drawer.open_asset("medal.png")
-            if act.medal_obtained
-            else self._drawer.open_asset("medal_empty.png")
+            self._drawer.open_asset("medal.png") if act.medal_obtained else self._drawer.open_asset("medal_empty.png")
         )
         self._im.paste(medal, (pos[0] + 509, pos[1] + 10), medal)
 
@@ -162,9 +135,7 @@ class ImgTheaterCard:
 
             block.paste(const_flair, (92, 0), const_flair)
             const_text = {
-                genshin.models.TheaterCharaType.NORMAL: str(
-                    self._chara_consts.get(character.id, "?")
-                ),
+                genshin.models.TheaterCharaType.NORMAL: str(self._chara_consts.get(character.id, "?")),
                 genshin.models.TheaterCharaType.SUPPORT: "?",
                 genshin.models.TheaterCharaType.TRIAL: "0",
             }
@@ -172,9 +143,7 @@ class ImgTheaterCard:
             block_drawer.write(text, size=18, position=(107, 15), anchor="mm", style="bold")
 
             block.paste(level_flair, (2, 98), level_flair)
-            block_drawer.write(
-                str(character.level), size=18, position=(27, 110), anchor="mm", style="bold"
-            )
+            block_drawer.write(str(character.level), size=18, position=(27, 110), anchor="mm", style="bold")
 
             self._im.paste(block, start_pos, block)
             start_pos = (start_pos[0] + padding, start_pos[1])
@@ -198,9 +167,7 @@ class ImgTheaterCard:
         y_padding = 255
 
         for i, act in enumerate(self._theater.acts):
-            self._draw_act_block(
-                act, (start_pos[0] + i % 2 * x_padding, start_pos[1] + i // 2 * y_padding)
-            )
+            self._draw_act_block(act, (start_pos[0] + i % 2 * x_padding, start_pos[1] + i // 2 * y_padding))
 
         buffer = io.BytesIO()
         self._im.save(buffer, format="PNG")

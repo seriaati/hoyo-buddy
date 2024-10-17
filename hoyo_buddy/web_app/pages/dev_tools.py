@@ -26,29 +26,18 @@ class DevToolsPage(ft.View):
                 ft.SafeArea(
                     ft.Column(
                         [
-                            ft.Text(
-                                translator.translate(LocaleStr(key="instructions_title"), locale),
-                                size=24,
-                            ),
+                            ft.Text(translator.translate(LocaleStr(key="instructions_title"), locale), size=24),
                             ft.Markdown(
-                                translator.translate(
-                                    LocaleStr(key="devtools_instructions_description"), locale
-                                ),
+                                translator.translate(LocaleStr(key="devtools_instructions_description"), locale),
                                 auto_follow_links=True,
                                 auto_follow_links_target=ft.UrlTarget.BLANK.value,
                             ),
                             ft.ElevatedButton(
-                                translator.translate(
-                                    LocaleStr(key="show_tutorial_button_label"), locale
-                                ),
-                                on_click=lambda e: e.page.open(
-                                    ShowImageDialog(translator=translator, locale=locale)
-                                ),
+                                translator.translate(LocaleStr(key="show_tutorial_button_label"), locale),
+                                on_click=lambda e: e.page.open(ShowImageDialog(translator=translator, locale=locale)),
                             ),
                             ft.Container(
-                                DevToolsCookieForm(
-                                    params=params, translator=translator, locale=locale
-                                ),
+                                DevToolsCookieForm(params=params, translator=translator, locale=locale),
                                 margin=ft.margin.only(top=16),
                             ),
                         ]
@@ -85,11 +74,7 @@ class DevToolsCookieForm(ft.Column):
         super().__init__(
             [
                 CookieField(
-                    label="ltuid_v2",
-                    hint_text="1234567",
-                    ref=self._ltuid_v2_ref,
-                    translator=translator,
-                    locale=locale,
+                    label="ltuid_v2", hint_text="1234567", ref=self._ltuid_v2_ref, translator=translator, locale=locale
                 ),
                 CookieField(
                     label="account_id_v2",
@@ -106,11 +91,7 @@ class DevToolsCookieForm(ft.Column):
                     locale=locale,
                 ),
                 CookieField(
-                    label="ltmid_v2",
-                    hint_text="1k922_hy",
-                    ref=self._ltmid_v2_ref,
-                    translator=translator,
-                    locale=locale,
+                    label="ltmid_v2", hint_text="1k922_hy", ref=self._ltmid_v2_ref, translator=translator, locale=locale
                 ),
                 CookieField(
                     label="account_mid_v2",
@@ -137,32 +118,25 @@ class DevToolsCookieForm(ft.Column):
 
         for ref in refs:
             if not ref.value:
-                ref.error_text = self._translator.translate(
-                    LocaleStr(key="required_field_error_message"), self._locale
-                )
+                ref.error_text = self._translator.translate(LocaleStr(key="required_field_error_message"), self._locale)
                 await ref.update_async()
 
         if all(ref.value for ref in refs):
             await show_loading_snack_bar(page, translator=self._translator, locale=self._locale)
             cookies = f"ltuid_v2={ltuid_v2.value}; account_id_v2={account_id_v2.value}; ltoken_v2={ltoken_v2.value}; ltmid_v2={ltmid_v2.value}; account_mid_v2={account_mid_v2.value}"
             encrypted_cookies = encrypt_string(cookies)
-            await page.client_storage.set_async(
-                f"hb.{self._params.user_id}.cookies", encrypted_cookies
-            )
+            await page.client_storage.set_async(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
             await page.go_async(f"/finish?{self._params.to_query_string()}")
 
     @property
     def submit_button(self) -> ft.FilledButton:
         return ft.FilledButton(
-            text=self._translator.translate(LocaleStr(key="submit_button_label"), self._locale),
-            on_click=self.on_submit,
+            text=self._translator.translate(LocaleStr(key="submit_button_label"), self._locale), on_click=self.on_submit
         )
 
 
 class CookieField(ft.TextField):
-    def __init__(
-        self, *, label: str, hint_text: str, ref: ft.Ref, translator: Translator, locale: Locale
-    ) -> None:
+    def __init__(self, *, label: str, hint_text: str, ref: ft.Ref, translator: Translator, locale: Locale) -> None:
         self._translator = translator
         self._locale = locale
         super().__init__(

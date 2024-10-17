@@ -20,15 +20,10 @@ class ResinReminder(Button[NotesView]):
         super().__init__(emoji=RESIN, label=LocaleStr(key="resin_reminder_button.label"), row=row)
 
     async def callback(self, i: Interaction) -> None:
-        notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.RESIN
-        )
+        notify = await NotesNotify.get_or_none(account=self.view._account, type=NotesNotifyType.RESIN)
 
         modal = TypeOneModal(
-            notify,
-            title=LocaleStr(key="resin_reminder_modal.title"),
-            threshold_max_value=200,
-            min_notify_interval=10,
+            notify, title=LocaleStr(key="resin_reminder_modal.title"), threshold_max_value=200, min_notify_interval=10
         )
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)

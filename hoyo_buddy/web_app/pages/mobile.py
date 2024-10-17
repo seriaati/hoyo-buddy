@@ -24,12 +24,8 @@ class MobilePage(ft.View):
                     ft.Column(
                         [
                             ft.Text("指引", size=24),
-                            ft.Text(
-                                "1.点击下方按钮输入手机号\n2.你将会收到短信验证码\n3.点击下方按钮填写验证码"
-                            ),
-                            ft.Container(
-                                MobileNumberForm(params=params), margin=ft.margin.only(top=16)
-                            ),
+                            ft.Text("1.点击下方按钮输入手机号\n2.你将会收到短信验证码\n3.点击下方按钮填写验证码"),
+                            ft.Container(MobileNumberForm(params=params), margin=ft.margin.only(top=16)),
                         ]
                     )
                 )
@@ -42,11 +38,7 @@ class MobileNumberForm(ft.Column):
         self._params = params
         self._mobile_number_ref = ft.Ref[ft.TextField]()
 
-        super().__init__(
-            [MobileNumberField(ref=self._mobile_number_ref), self.submit_button],
-            wrap=True,
-            spacing=16,
-        )
+        super().__init__([MobileNumberField(ref=self._mobile_number_ref), self.submit_button], wrap=True, spacing=16)
 
     async def on_submit(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
@@ -67,9 +59,7 @@ class MobileNumberForm(ft.Column):
                 return
 
             if isinstance(result, genshin.models.SessionMMT):
-                await handle_session_mmt(
-                    result, page=page, params=self._params, mmt_type="on_otp_send", mobile=mobile
-                )
+                await handle_session_mmt(result, page=page, params=self._params, mmt_type="on_otp_send", mobile=mobile)
             else:
                 await handle_mobile_otp(mobile=mobile, page=page, params=self._params)
 

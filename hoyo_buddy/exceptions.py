@@ -28,8 +28,7 @@ class InvalidInputError(HoyoBuddyError):
 class InvalidQueryError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(
-            title=LocaleStr(key="invalid_query_error_title"),
-            message=LocaleStr(key="invalid_query_error_message"),
+            title=LocaleStr(key="invalid_query_error_title"), message=LocaleStr(key="invalid_query_error_message")
         )
 
 
@@ -44,24 +43,18 @@ class AccountNotFoundError(HoyoBuddyError, AppCommandError):
 class NoAccountFoundError(HoyoBuddyError):
     def __init__(self, games: Sequence[Game], platform: Platform | None) -> None:
         if platform is not None:
-            message = LocaleStr(
-                key="no_account_found_for_games_platform_error_message", platform=EnumStr(platform)
-            )
+            message = LocaleStr(key="no_account_found_for_games_platform_error_message", platform=EnumStr(platform))
         else:
             message = LocaleStr(key="no_account_found_for_games_error_message")
 
-        super().__init__(
-            title=LocaleStr(key="no_account_found_for_games_error_title"), message=message
-        )
+        super().__init__(title=LocaleStr(key="no_account_found_for_games_error_title"), message=message)
         self.games = games
 
 
 class CardNotReadyError(HoyoBuddyError):
     def __init__(self, character_name: str) -> None:
         super().__init__(
-            title=LocaleStr(
-                key="exceptions.card_not_ready_error.title", character_name=character_name
-            ),
+            title=LocaleStr(key="exceptions.card_not_ready_error.title", character_name=character_name),
             message=LocaleStr(key="exceptions.card_not_ready_error.message"),
         )
 
@@ -77,8 +70,7 @@ class InvalidImageURLError(HoyoBuddyError):
 class InvalidColorError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(
-            title=LocaleStr(key="invalid_color_error_title"),
-            message=LocaleStr(key="invalid_color_error_message"),
+            title=LocaleStr(key="invalid_color_error_title"), message=LocaleStr(key="invalid_color_error_message")
         )
 
 
@@ -90,8 +82,7 @@ class IncompleteParamError(HoyoBuddyError):
 class NSFWPromptError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(
-            title=LocaleStr(key="nsfw_prompt_error_title"),
-            message=LocaleStr(key="nsfw_prompt_error_message"),
+            title=LocaleStr(key="nsfw_prompt_error_title"), message=LocaleStr(key="nsfw_prompt_error_message")
         )
 
 
@@ -107,10 +98,7 @@ class ActionInCooldownError(HoyoBuddyError):
     def __init__(self, available_time: datetime) -> None:
         super().__init__(
             title=LocaleStr(key="action_in_cooldown_error_title"),
-            message=LocaleStr(
-                key="action_in_cooldown_error_message",
-                available_time=format_dt(available_time, "T"),
-            ),
+            message=LocaleStr(key="action_in_cooldown_error_message", available_time=format_dt(available_time, "T")),
         )
 
 
@@ -118,17 +106,14 @@ class NoChallengeDataError(HoyoBuddyError):
     def __init__(self, challenge_type: ChallengeType) -> None:
         super().__init__(
             title=LocaleStr(key="no_challenge_data_err_title", challenge=EnumStr(challenge_type)),
-            message=LocaleStr(
-                key="no_challenge_data_err_message", challenge=EnumStr(challenge_type)
-            ),
+            message=LocaleStr(key="no_challenge_data_err_message", challenge=EnumStr(challenge_type)),
         )
 
 
 class AIGenImageError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(
-            title=LocaleStr(key="ai_gen_image_error_title"),
-            message=LocaleStr(key="ai_gen_image_error_message"),
+            title=LocaleStr(key="ai_gen_image_error_title"), message=LocaleStr(key="ai_gen_image_error_message")
         )
 
 
@@ -150,9 +135,7 @@ class FeatureNotImplementedError(HoyoBuddyError):
         message = (
             LocaleStr(key="not_implemented_error_only_game_message", game=EnumStr(game))
             if platform is None
-            else LocaleStr(
-                key="not_implemented_error_message", game=EnumStr(game), platform=EnumStr(platform)
-            )
+            else LocaleStr(key="not_implemented_error_message", game=EnumStr(game), platform=EnumStr(platform))
         )
         super().__init__(title=LocaleStr(key="not_implemented_error_title"), message=message)
 
@@ -168,8 +151,7 @@ class ThirdPartyCardTempError(HoyoBuddyError):
 class AuthkeyExtractError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(
-            title=LocaleStr(key="extract_authkey_error_title"),
-            message=LocaleStr(key="extract_authkey_error_message"),
+            title=LocaleStr(key="extract_authkey_error_title"), message=LocaleStr(key="extract_authkey_error_message")
         )
 
 
@@ -177,9 +159,7 @@ class InvalidFileExtError(HoyoBuddyError):
     def __init__(self, file_format: str) -> None:
         super().__init__(
             title=LocaleStr(key="gacha_upload_invalid_file_error_title"),
-            message=LocaleStr(
-                key="gacha_upload_invalid_file_error_message", file_format=file_format
-            ),
+            message=LocaleStr(key="gacha_upload_invalid_file_error_message", file_format=file_format),
         )
 
 

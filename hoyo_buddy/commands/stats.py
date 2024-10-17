@@ -25,7 +25,5 @@ class StatsCommand:
         record_cards = await client.get_record_cards()
 
         view = StatsView(record_cards, author=user, locale=locale, translator=i.client.translator)
-        await i.followup.send(
-            embed=view.get_card_embed(record_cards[0]), view=view, content=await get_dyk(i)
-        )
+        await i.followup.send(embed=view.get_card_embed(record_cards[0]), view=view, content=await get_dyk(i))
         view.message = await i.original_response()

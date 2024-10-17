@@ -26,13 +26,7 @@ def draw_small_suit_card(
 ) -> Image.Image:
     im = card.copy()
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(
-        draw,
-        folder="honkai-characters",
-        locale=Locale(locale),
-        translator=translator,
-        dark_mode=True,
-    )
+    drawer = Drawer(draw, folder="honkai-characters", locale=Locale(locale), translator=translator, dark_mode=True)
 
     try:
         suit_icon = drawer.open_static(suit.tall_icon.replace(" ", ""), size=(146, 256))
@@ -61,23 +55,13 @@ def draw_small_suit_card(
         translator, Locale(locale)
     )
     level_text = LevelStr(suit.level).translate(translator, Locale(locale))
-    drawer.write(
-        f"{rarity_text}\n{level_text}",
-        size=30,
-        style="bold",
-        position=(290, 94),
-        sans=True,
-        anchor="lm",
-    )
+    drawer.write(f"{rarity_text}\n{level_text}", size=30, style="bold", position=(290, 94), sans=True, anchor="lm")
 
     return im
 
 
 def draw_big_suit_card(
-    suits: Sequence[genshin.models.FullBattlesuit],
-    locale: str,
-    dark_mode: bool,
-    translator: Translator,
+    suits: Sequence[genshin.models.FullBattlesuit], locale: str, dark_mode: bool, translator: Translator
 ) -> BytesIO:
     asset_path = "hoyo-buddy-assets/assets/honkai-characters"
     theme = "dark" if dark_mode else "light"
@@ -88,9 +72,7 @@ def draw_big_suit_card(
     card = Drawer.open_image(f"{asset_path}/card_{theme}.png")
 
     cards: Sequence[Image.Image] = [
-        draw_small_suit_card(
-            suit, card=card, mask=mask, suit_mask=suit_mask, locale=locale, translator=translator
-        )
+        draw_small_suit_card(suit, card=card, mask=mask, suit_mask=suit_mask, locale=locale, translator=translator)
         for suit in suits
     ]
 
@@ -110,16 +92,11 @@ def draw_big_suit_card(
         col_num -= 1
 
     big_card_height = (
-        card_height * max_card_per_col
-        + card_y_padding * (max_card_per_col - 1)
-        + card_start_pos[1] * 2
-        + 36
+        card_height * max_card_per_col + card_y_padding * (max_card_per_col - 1) + card_start_pos[1] * 2 + 36
     )
     big_card_width = card_width * col_num + card_x_padding * (col_num - 1) + card_start_pos[0] * 2
 
-    im = Image.new(
-        "RGBA", (big_card_width, big_card_height), (25, 29, 34) if dark_mode else (227, 239, 255)
-    )
+    im = Image.new("RGBA", (big_card_width, big_card_height), (25, 29, 34) if dark_mode else (227, 239, 255))
 
     for i, card in enumerate(cards):
         col = i // max_card_per_col

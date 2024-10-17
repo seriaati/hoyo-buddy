@@ -23,13 +23,7 @@ if TYPE_CHECKING:
 
 class CharacterUI(View):
     def __init__(
-        self,
-        character_id: int,
-        *,
-        hakushin: bool,
-        author: User | Member,
-        locale: Locale,
-        translator: Translator,
+        self, character_id: int, *, hakushin: bool, author: User | Member, locale: Locale, translator: Translator
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
@@ -69,9 +63,7 @@ class CharacterUI(View):
             async with YattaAPIClient(self.locale, self.translator) as api:
                 manual_avatar = await api.fetch_manual_avatar()
 
-            async with hakushin.HakushinAPI(
-                hakushin.Game.HSR, locale_to_hakushin_lang(self.locale)
-            ) as api:
+            async with hakushin.HakushinAPI(hakushin.Game.HSR, locale_to_hakushin_lang(self.locale)) as api:
                 character_detail = await api.fetch_character_detail(self._character_id)
 
             self._character_detail = character_detail
@@ -102,9 +94,7 @@ class CharacterUI(View):
                 self._manual_avatar = manual_avatar
 
                 self._main_skill_max_levels = self._main_skill_levels = [
-                    sk.max_level
-                    for skill in character_detail.traces.main_skills
-                    for sk in skill.skill_list
+                    sk.max_level for skill in character_detail.traces.main_skills for sk in skill.skill_list
                 ]
 
                 self._character_embed = api.get_character_details_embed(
@@ -116,19 +106,12 @@ class CharacterUI(View):
                     for sk in skill.skill_list
                 ]
                 self._sub_skill_embeds = [
-                    api.get_character_sub_skill_embed(skill)
-                    for skill in character_detail.traces.sub_skills
+                    api.get_character_sub_skill_embed(skill) for skill in character_detail.traces.sub_skills
                 ]
-                self._eidolon_embeds = [
-                    api.get_character_eidolon_embed(skill) for skill in character_detail.eidolons
-                ]
-                self._story_embeds = [
-                    api.get_character_story_embed(story)
-                    for story in character_detail.script.stories
-                ]
+                self._eidolon_embeds = [api.get_character_eidolon_embed(skill) for skill in character_detail.eidolons]
+                self._story_embeds = [api.get_character_story_embed(story) for story in character_detail.script.stories]
                 self._voice_embeds = [
-                    api.get_character_voice_embed(voice, self._character_id)
-                    for voice in character_detail.script.voices
+                    api.get_character_voice_embed(voice, self._character_id) for voice in character_detail.script.voices
                 ]
 
         await self.update(i)
@@ -146,9 +129,7 @@ class CharacterUI(View):
             match self.selected_page:
                 case 0:
                     embed = self._character_embed
-                    self.add_item(
-                        EnterCharacterLevel(LocaleStr(key="change_character_level_label"))
-                    )
+                    self.add_item(EnterCharacterLevel(LocaleStr(key="change_character_level_label")))
                 case 1:
                     embed = self._main_skill_embeds[self._main_skill_index]
                     self.add_item(
@@ -191,9 +172,7 @@ class CharacterUI(View):
                         ItemSelector(
                             [
                                 SelectOption(
-                                    label=f"{s.name}",
-                                    value=str(index),
-                                    default=index == self._sub_skill_index,
+                                    label=f"{s.name}", value=str(index), default=index == self._sub_skill_index
                                 )
                                 for index, s in enumerate(self._character_detail.traces.sub_skills)
                                 if s.point_type == "Special" and s.name is not None
@@ -206,11 +185,7 @@ class CharacterUI(View):
                     self.add_item(
                         ItemSelector(
                             [
-                                SelectOption(
-                                    label=s.title,
-                                    value=str(index),
-                                    default=index == self._story_index,
-                                )
+                                SelectOption(label=s.title, value=str(index), default=index == self._story_index)
                                 for index, s in enumerate(self._character_detail.script.stories)
                             ],
                             "_story_index",
@@ -221,11 +196,7 @@ class CharacterUI(View):
                     self.add_item(
                         VoiceSelector(
                             options=[
-                                SelectOption(
-                                    label=v.title,
-                                    value=str(index),
-                                    default=index == self._voice_index,
-                                )
+                                SelectOption(label=v.title, value=str(index), default=index == self._voice_index)
                                 for index, v in enumerate(self._character_detail.script.voices)
                             ]
                         )
@@ -237,9 +208,7 @@ class CharacterUI(View):
             match self.selected_page:
                 case 0:
                     embed = self._character_embed
-                    self.add_item(
-                        EnterCharacterLevel(LocaleStr(key="change_character_level_label"))
-                    )
+                    self.add_item(EnterCharacterLevel(LocaleStr(key="change_character_level_label")))
                 case 1:
                     embed = self._main_skill_embeds[self._main_skill_index]
                     self.add_item(
@@ -253,9 +222,7 @@ class CharacterUI(View):
                     skills = list(self._character_detail.skills.values())
                     for index, skill in enumerate(skills):
                         type_str_key = HAKUSHIN_HSR_SKILL_TYPE_NAMES.get(skill.type or "Talent")
-                        type_str = LocaleStr(key=type_str_key).translate(
-                            self.translator, self.locale
-                        )
+                        type_str = LocaleStr(key=type_str_key).translate(self.translator, self.locale)
                         options.append(
                             SelectOption(
                                 label=f"{type_str}: {skill.name}",
@@ -295,50 +262,22 @@ class PageSelector(Select["CharacterUI"]):
     def __init__(self, current: int, hakushin: bool) -> None:
         if hakushin:
             options = [
+                SelectOption(label=LocaleStr(key="yatta_character_detail_page_label"), value="0", default=current == 0),
+                SelectOption(label=LocaleStr(key="search.agent_page.skills"), value="1", default=current == 1),
                 SelectOption(
-                    label=LocaleStr(key="yatta_character_detail_page_label"),
-                    value="0",
-                    default=current == 0,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="search.agent_page.skills"), value="1", default=current == 1
-                ),
-                SelectOption(
-                    label=LocaleStr(key="yatta_character_eidolon_page_label"),
-                    value="2",
-                    default=current == 2,
+                    label=LocaleStr(key="yatta_character_eidolon_page_label"), value="2", default=current == 2
                 ),
             ]
         else:
             options = [
+                SelectOption(label=LocaleStr(key="yatta_character_detail_page_label"), value="0", default=current == 0),
+                SelectOption(label=LocaleStr(key="search.agent_page.skills"), value="1", default=current == 1),
                 SelectOption(
-                    label=LocaleStr(key="yatta_character_detail_page_label"),
-                    value="0",
-                    default=current == 0,
+                    label=LocaleStr(key="yatta_character_eidolon_page_label"), value="2", default=current == 2
                 ),
-                SelectOption(
-                    label=LocaleStr(key="search.agent_page.skills"), value="1", default=current == 1
-                ),
-                SelectOption(
-                    label=LocaleStr(key="yatta_character_eidolon_page_label"),
-                    value="2",
-                    default=current == 2,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="yatta_character_trace_page_label"),
-                    value="3",
-                    default=current == 3,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="character_stories_page_label"),
-                    value="4",
-                    default=current == 4,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="character_voices_page_label"),
-                    value="5",
-                    default=current == 5,
-                ),
+                SelectOption(label=LocaleStr(key="yatta_character_trace_page_label"), value="3", default=current == 3),
+                SelectOption(label=LocaleStr(key="character_stories_page_label"), value="4", default=current == 4),
+                SelectOption(label=LocaleStr(key="character_voices_page_label"), value="5", default=current == 5),
             ]
         super().__init__(options=options, row=4)
 
@@ -386,16 +325,9 @@ class EnterSkilLevel(Button[CharacterUI]):
 
         if isinstance(self.view._character_detail, yatta.CharacterDetail):
             async with YattaAPIClient(self.view.locale, self.view.translator) as api:
-                skills = [
-                    sk
-                    for skill in self.view._character_detail.traces.main_skills
-                    for sk in skill.skill_list
-                ]
-                self.view._main_skill_embeds[self.view._main_skill_index] = (
-                    api.get_character_main_skill_embed(
-                        skills[self.view._main_skill_index],
-                        self.view._main_skill_levels[self.view._main_skill_index],
-                    )
+                skills = [sk for skill in self.view._character_detail.traces.main_skills for sk in skill.skill_list]
+                self.view._main_skill_embeds[self.view._main_skill_index] = api.get_character_main_skill_embed(
+                    skills[self.view._main_skill_index], self.view._main_skill_levels[self.view._main_skill_index]
                 )
         else:
             self.view._main_skill_embeds[self.view._main_skill_index] = (
@@ -409,9 +341,7 @@ class EnterSkilLevel(Button[CharacterUI]):
 
 
 class CharacterLevelModal(Modal):
-    level = TextInput(
-        label=LocaleStr(key="characters.sorter.level"), is_digit=True, min_value=1, max_value=80
-    )
+    level = TextInput(label=LocaleStr(key="characters.sorter.level"), is_digit=True, min_value=1, max_value=80)
 
 
 class EnterCharacterLevel(Button[CharacterUI]):
@@ -435,9 +365,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
         if isinstance(self.view._character_detail, yatta.CharacterDetail):
             async with YattaAPIClient(self.view.locale, self.view.translator) as api:
                 self.view._character_embed = api.get_character_details_embed(
-                    self.view._character_detail,
-                    self.view._character_level,
-                    self.view._manual_avatar,
+                    self.view._character_detail, self.view._character_level, self.view._manual_avatar
                 )
         else:
             self.view._character_embed = self.view._hakushin_translator.get_character_embed(

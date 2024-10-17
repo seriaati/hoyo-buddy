@@ -3,13 +3,7 @@ from __future__ import annotations
 from typing import Final
 
 from discord import utils as dutils
-from genshin.models import (
-    ZZZAgentProperty,
-    ZZZElementType,
-    ZZZFullAgent,
-    ZZZPropertyType,
-    ZZZSkillType,
-)
+from genshin.models import ZZZAgentProperty, ZZZElementType, ZZZFullAgent, ZZZPropertyType, ZZZSkillType
 
 STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     # Disc

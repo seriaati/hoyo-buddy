@@ -19,8 +19,7 @@ class Login(commands.Cog):
         self.bot = bot
 
     @app_commands.command(
-        name=locale_str("accounts"),
-        description=locale_str("Manage your accounts", key="accounts_command_description"),
+        name=locale_str("accounts"), description=locale_str("Manage your accounts", key="accounts_command_description")
     )
     async def accounts(self, i: Interaction) -> Any:
         locale = await get_locale(i)
@@ -28,11 +27,7 @@ class Login(commands.Cog):
         accounts = await HoyoAccount.filter(user=user).all()
 
         view = AccountManager(
-            author=i.user,
-            locale=locale,
-            translator=i.client.translator,
-            user=user,
-            accounts=accounts,
+            author=i.user, locale=locale, translator=i.client.translator, user=user, accounts=accounts
         )
         await view.start(i)
 

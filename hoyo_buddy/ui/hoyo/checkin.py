@@ -63,10 +63,7 @@ class CheckInUI(View):
                 msg = f"Check-in URL for {self.client.game} is not available."
                 raise ValueError(msg)
             self.add_item(
-                Button(
-                    url=CHECK_IN_URLS[self.client.game],
-                    label=LocaleStr(key="make_up_for_checkin_button_label"),
-                )
+                Button(url=CHECK_IN_URLS[self.client.game], label=LocaleStr(key="make_up_for_checkin_button_label"))
             )
         self.add_item(AutoCheckInToggle(self.account.daily_checkin))
         self.add_item(NotificationSettingsButton())
@@ -96,9 +93,7 @@ class CheckInUI(View):
             result = monthly_rewards[:rewards_to_return]
             next_reward = monthly_rewards[rewards_to_return]
         else:
-            result = monthly_rewards[
-                this_month_claim_num - rewards_to_return : this_month_claim_num
-            ]
+            result = monthly_rewards[this_month_claim_num - rewards_to_return : this_month_claim_num]
 
             try:
                 next_reward = monthly_rewards[this_month_claim_num]
@@ -133,9 +128,7 @@ class CheckInUI(View):
             self.translator,
             title=LocaleStr(key="daily_check_in"),
             description=LocaleStr(
-                key="daily_checkin_embed_description",
-                day=info.claimed_rewards,
-                missed=info.missed_rewards,
+                key="daily_checkin_embed_description", day=info.claimed_rewards, missed=info.missed_rewards
             ),
         )
         embed.set_image(url="attachment://check-in.png")
@@ -143,9 +136,7 @@ class CheckInUI(View):
         return embed, bytes_obj
 
     async def start(self, i: Interaction) -> None:
-        embed, self._bytes_obj = await self.get_embed_and_image(
-            i.client.session, i.client.executor, i.client.loop
-        )
+        embed, self._bytes_obj = await self.get_embed_and_image(i.client.session, i.client.executor, i.client.loop)
 
         self._bytes_obj.seek(0)
         file_ = discord.File(self._bytes_obj, filename="check-in.png")
@@ -169,9 +160,7 @@ class CheckInButton(Button[CheckInUI]):
         try:
             daily_reward = await client.claim_daily_reward()
         except genshin.DailyGeetestTriggered as e:
-            await User.filter(id=i.user.id).update(
-                temp_data={"geetest": e.gt, "challenge": e.challenge}
-            )
+            await User.filter(id=i.user.id).update(temp_data={"geetest": e.gt, "challenge": e.challenge})
             raise
 
         embed, self.view._bytes_obj = await self.view.get_embed_and_image(
@@ -182,9 +171,7 @@ class CheckInButton(Button[CheckInUI]):
         file_ = discord.File(self.view._bytes_obj, filename="check-in.png")
 
         await i.edit_original_response(embed=embed, attachments=[file_])
-        embed = client.get_daily_reward_embed(
-            daily_reward, self.view.locale, self.view.translator, blur=True
-        )
+        embed = client.get_daily_reward_embed(daily_reward, self.view.locale, self.view.translator, blur=True)
         await i.followup.send(embed=embed)
 
 
@@ -200,23 +187,15 @@ class AutoCheckInToggle(ToggleButton[CheckInUI]):
 
 class NotificationSettingsButton(Button[CheckInUI]):
     def __init__(self) -> None:
-        super().__init__(
-            label=LocaleStr(key="notification_settings_button_label"), emoji=emojis.SETTINGS, row=1
-        )
+        super().__init__(label=LocaleStr(key="notification_settings_button_label"), emoji=emojis.SETTINGS, row=1)
 
     async def callback(self, i: Interaction) -> Any:
         await self.view.account.fetch_related("notif_settings")
-        go_back_button = GoBackButton(
-            self.view.children, self.view.get_embeds(i.message), self.view._bytes_obj
-        )
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message), self.view._bytes_obj)
         self.view.clear_items()
         self.view.add_item(go_back_button)
-        self.view.add_item(
-            NotifyOnFailureToggle(self.view.account.notif_settings.notify_on_checkin_failure)
-        )
-        self.view.add_item(
-            NotifyOnSuccessToggle(self.view.account.notif_settings.notify_on_checkin_success)
-        )
+        self.view.add_item(NotifyOnFailureToggle(self.view.account.notif_settings.notify_on_checkin_failure))
+        self.view.add_item(NotifyOnSuccessToggle(self.view.account.notif_settings.notify_on_checkin_success))
         await i.response.edit_message(view=self.view)
 
 

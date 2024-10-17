@@ -17,22 +17,13 @@ if TYPE_CHECKING:
 
 class ReservedTBPReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
-        super().__init__(
-            emoji=RESERVED_TRAILBLAZE_POWER,
-            label=LocaleStr(key="rtbp_reminder_button.label"),
-            row=row,
-        )
+        super().__init__(emoji=RESERVED_TRAILBLAZE_POWER, label=LocaleStr(key="rtbp_reminder_button.label"), row=row)
 
     async def callback(self, i: Interaction) -> None:
-        notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.RESERVED_TB_POWER
-        )
+        notify = await NotesNotify.get_or_none(account=self.view._account, type=NotesNotifyType.RESERVED_TB_POWER)
 
         modal = TypeOneModal(
-            notify,
-            title=LocaleStr(key="rtbp_reminder_modal.title"),
-            threshold_max_value=2400,
-            min_notify_interval=30,
+            notify, title=LocaleStr(key="rtbp_reminder_modal.title"), threshold_max_value=2400, min_notify_interval=30
         )
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
@@ -43,9 +34,6 @@ class ReservedTBPReminder(Button[NotesView]):
             return
 
         embed = await self.view.process_type_one_modal(
-            modal=modal,
-            notify=notify,
-            notify_type=NotesNotifyType.RESERVED_TB_POWER,
-            check_interval=30,
+            modal=modal, notify=notify, notify_type=NotesNotifyType.RESERVED_TB_POWER, check_interval=30
         )
         await i.edit_original_response(embed=embed)

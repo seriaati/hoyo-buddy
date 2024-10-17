@@ -16,9 +16,7 @@ __all__ = ("LoginPage",)
 
 
 class LoginPage(ft.View):
-    def __init__(
-        self, user_data: dict[str, Any] | None, *, translator: Translator, locale: Locale
-    ) -> None:
+    def __init__(self, user_data: dict[str, Any] | None, *, translator: Translator, locale: Locale) -> None:
         self.user_data = user_data
 
         if user_data is None:
@@ -44,31 +42,20 @@ class LoginPage(ft.View):
                     ft.SafeArea(
                         ft.Column(
                             [
-                                ft.Text(
-                                    translator.translate(
-                                        LocaleStr(key="currently_logged_in_as"), locale
-                                    ),
-                                    size=16,
-                                ),
+                                ft.Text(translator.translate(LocaleStr(key="currently_logged_in_as"), locale), size=16),
                                 ft.ListTile(
-                                    leading=ft.CircleAvatar(
-                                        foreground_image_src=self.get_user_avatar_url()
-                                    ),
+                                    leading=ft.CircleAvatar(foreground_image_src=self.get_user_avatar_url()),
                                     title=ft.Text(user_data["username"]),
                                 ),
                                 ft.Container(
                                     ft.Column(
                                         [
                                             ft.FilledButton(
-                                                translator.translate(
-                                                    LocaleStr(key="continue_button_label"), locale
-                                                ),
+                                                translator.translate(LocaleStr(key="continue_button_label"), locale),
                                                 on_click=self.on_continue_button_click,
                                             ),
                                             ft.TextButton(
-                                                translator.translate(
-                                                    LocaleStr(key="not_you_label"), locale
-                                                ),
+                                                translator.translate(LocaleStr(key="not_you_label"), locale),
                                                 on_click=self.on_login_button_click,
                                             ),
                                         ],

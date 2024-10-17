@@ -41,12 +41,7 @@ class FarmDataFetcher:
 
     @classmethod
     async def fetch(
-        cls,
-        weekday: int,
-        translator: Translator,
-        *,
-        locale: Locale | None = None,
-        city: GenshinCity | None = None,
+        cls, weekday: int, translator: Translator, *, locale: Locale | None = None, city: GenshinCity | None = None
     ) -> list[FarmData]:
         # Initialize class variables
         cls._weekday = weekday

@@ -41,9 +41,7 @@ class PaginatorView(View):
 
     def _add_buttons(self) -> None:
         self.add_item(FirstButton(emoji=DOUBLE_LEFT, custom_id="first_page"))
-        self.add_item(
-            PreviousButton(emoji=LEFT, style=ButtonStyle.blurple, custom_id="previous_page")
-        )
+        self.add_item(PreviousButton(emoji=LEFT, style=ButtonStyle.blurple, custom_id="previous_page"))
         self.add_item(NextButton(emoji=RIGHT, style=ButtonStyle.blurple, custom_id="next_page"))
         self.add_item(LastButton(emoji=DOUBLE_RIGHT, custom_id="last_page"))
 
@@ -90,16 +88,11 @@ class PaginatorView(View):
                 kwargs["content"] = page.content
             if page.embed is not None:
                 kwargs["embed"] = page.embed
-            await i.followup.send(
-                files=[page.file] if page.file else [], view=self, ephemeral=ephemeral, **kwargs
-            )
+            await i.followup.send(files=[page.file] if page.file else [], view=self, ephemeral=ephemeral, **kwargs)
             self.message = await i.original_response()
         else:
             self.message = await i.edit_original_response(
-                content=page.content,
-                embed=page.embed,
-                attachments=[page.file] if page.file else [],
-                view=self,
+                content=page.content, embed=page.embed, attachments=[page.file] if page.file else [], view=self
             )
 
     async def _next_page(self, i: Interaction) -> None:
@@ -118,9 +111,7 @@ class PaginatorView(View):
         self._current_page = self._max_page - 1
         await self._update_page(i, type_="last")
 
-    async def start(
-        self, i: Interaction, *, followup: bool = False, ephemeral: bool = False
-    ) -> None:
+    async def start(self, i: Interaction, *, followup: bool = False, ephemeral: bool = False) -> None:
         await self._update_page(i, type_="start", followup=followup, ephemeral=ephemeral)
 
 

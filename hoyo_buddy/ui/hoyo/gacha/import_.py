@@ -22,9 +22,7 @@ if TYPE_CHECKING:
 
 
 class GachaImportView(View):
-    def __init__(
-        self, account: HoyoAccount, *, author: User, locale: Locale, translator: Translator
-    ) -> None:
+    def __init__(self, account: HoyoAccount, *, author: User, locale: Locale, translator: Translator) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.account = account
 
@@ -39,9 +37,7 @@ class GachaImportView(View):
 
     async def start(self, i: Interaction) -> Any:
         self.add_item(URLImport(self.account))
-        await i.response.send_message(
-            embed=self.embed, view=self, content=await get_dyk(i), ephemeral=ephemeral(i)
-        )
+        await i.response.send_message(embed=self.embed, view=self, content=await get_dyk(i), ephemeral=ephemeral(i))
         self.message = await i.original_response()
 
 
@@ -55,9 +51,7 @@ class EnterURLModal(Modal):
 class URLImport(Button[GachaImportView]):
     def __init__(self, account: HoyoAccount) -> None:
         super().__init__(
-            label=LocaleStr(key="gacha_import_url_modal_title"),
-            emoji=LINK,
-            style=discord.ButtonStyle.primary,
+            label=LocaleStr(key="gacha_import_url_modal_title"), emoji=LINK, style=discord.ButtonStyle.primary
         )
         self.account = account
 
@@ -84,23 +78,17 @@ class URLImport(Button[GachaImportView]):
             self.view.locale,
             self.view.translator,
             title=LocaleStr(key="gacha_import_loading_embed_title"),
-            description=LocaleStr(
-                key="gacha_import_loading_embed_description", loading_emoji=LOADING
-            ),
+            description=LocaleStr(key="gacha_import_loading_embed_description", loading_emoji=LOADING),
         ).add_acc_info(self.account)
         await i.edit_original_response(embed=embed, view=None)
 
         count = 0
 
         if self.account.game is Game.GENSHIN:
-            wishes: list[genshin.models.Wish] = [
-                history async for history in client.wish_history(authkey=authkey)
-            ]
+            wishes: list[genshin.models.Wish] = [history async for history in client.wish_history(authkey=authkey)]
             wishes.sort(key=lambda x: x.id)
 
-            item_ids = await get_item_ids(
-                i.client.session, item_names=[wish.name for wish in wishes], lang=client.lang
-            )
+            item_ids = await get_item_ids(i.client.session, item_names=[wish.name for wish in wishes], lang=client.lang)
 
             for wish in wishes:
                 banner_type = 301 if wish.banner_type == 400 else wish.banner_type
@@ -117,9 +105,7 @@ class URLImport(Button[GachaImportView]):
                     count += 1
 
         elif self.account.game is Game.STARRAIL:
-            warps: list[genshin.models.Warp] = [
-                history async for history in client.warp_history(authkey=authkey)
-            ]
+            warps: list[genshin.models.Warp] = [history async for history in client.warp_history(authkey=authkey)]
             warps.sort(key=lambda x: x.id)
 
             for warp in warps:

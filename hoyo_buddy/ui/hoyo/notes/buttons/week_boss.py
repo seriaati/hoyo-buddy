@@ -20,15 +20,11 @@ class WeekBossReminder(Button[NotesView]):
 
     async def callback(self, i: Interaction) -> None:
         notify_type = (
-            NotesNotifyType.RESIN_DISCOUNT
-            if self.view._account.game is Game.GENSHIN
-            else NotesNotifyType.ECHO_OF_WAR
+            NotesNotifyType.RESIN_DISCOUNT if self.view._account.game is Game.GENSHIN else NotesNotifyType.ECHO_OF_WAR
         )
         notify = await NotesNotify.get_or_none(account=self.view._account, type=notify_type)
 
-        modal = TypeFourModal(
-            notify, title=LocaleStr(key="week_boss_modal.title"), min_notify_interval=30
-        )
+        modal = TypeFourModal(notify, title=LocaleStr(key="week_boss_modal.title"), min_notify_interval=30)
         modal.translate(self.view.locale, self.view.translator)
         await i.response.send_modal(modal)
         await modal.wait()

@@ -41,9 +41,7 @@ class BaseClient:
         return extras
 
     @staticmethod
-    def remove_character_from_cache(
-        cache: dict[str, Any], character_id: str, game: enka.Game
-    ) -> None:
+    def remove_character_from_cache(cache: dict[str, Any], character_id: str, game: enka.Game) -> None:
         """Remove the character from the cache.
 
         Args:
@@ -66,9 +64,7 @@ class BaseClient:
                     cache["detailInfo"]["avatarDetailList"].remove(character)
                     break
 
-    def _update_cache(
-        self, game: enka.Game, *, cache: dict[str, Any], data: dict[str, Any]
-    ) -> dict[str, Any]:
+    def _update_cache(self, game: enka.Game, *, cache: dict[str, Any], data: dict[str, Any]) -> dict[str, Any]:
         if not cache:
             return data
 
@@ -90,15 +86,7 @@ class BaseClient:
             return cache
         if game is enka.Game.HSR:
             # Update player
-            keys_to_update = (
-                "nickname",
-                "signature",
-                "headIcon",
-                "level",
-                "worldLevel",
-                "friendCount",
-                "recordInfo",
-            )
+            keys_to_update = ("nickname", "signature", "headIcon", "level", "worldLevel", "friendCount", "recordInfo")
             for key in keys_to_update:
                 if key not in data["detailInfo"]:
                     continue
@@ -119,13 +107,9 @@ class BaseClient:
         return None
 
     @overload
-    async def fetch_showcase(
-        self, client: enka.HSRClient, uid: int
-    ) -> tuple[enka.hsr.ShowcaseResponse, bool]: ...
+    async def fetch_showcase(self, client: enka.HSRClient, uid: int) -> tuple[enka.hsr.ShowcaseResponse, bool]: ...
     @overload
-    async def fetch_showcase(
-        self, client: enka.GenshinClient, uid: int
-    ) -> tuple[enka.gi.ShowcaseResponse, bool]: ...
+    async def fetch_showcase(self, client: enka.GenshinClient, uid: int) -> tuple[enka.gi.ShowcaseResponse, bool]: ...
     async def fetch_showcase(
         self, client: enka.HSRClient | enka.GenshinClient, uid: int
     ) -> tuple[enka.hsr.ShowcaseResponse | enka.gi.ShowcaseResponse, bool]:
@@ -170,9 +154,7 @@ class BaseClient:
                 msg = f"Game {client.game} is not supported."
                 raise NotImplementedError(msg)
 
-            update_fields = (
-                ("hsr", "extras") if client.game is enka.Game.HSR else ("genshin", "extras")
-            )
+            update_fields = ("hsr", "extras") if client.game is enka.Game.HSR else ("genshin", "extras")
             await cache.save(update_fields=update_fields)
 
         return client.parse_showcase(showcase_cache), errored

@@ -21,13 +21,7 @@ if TYPE_CHECKING:
 
 class BookVolumeUI(View):
     def __init__(
-        self,
-        book: BookDetail,
-        ambr_api_lang: str,
-        *,
-        author: User | Member,
-        locale: Locale,
-        translator: Translator,
+        self, book: BookDetail, ambr_api_lang: str, *, author: User | Member, locale: Locale, translator: Translator
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
@@ -63,9 +57,7 @@ class VolumeSelector(Select["BookVolumeUI"]):
             placeholder=LocaleStr(key="volume_selector_placeholder"),
             options=[
                 SelectOption(
-                    label=shorten(volume.name, 100),
-                    value=str(volume.id),
-                    default=volume.id == selected_volume.id,
+                    label=shorten(volume.name, 100), value=str(volume.id), default=volume.id == selected_volume.id
                 )
                 for volume in volumes
             ],

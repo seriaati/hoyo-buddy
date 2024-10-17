@@ -31,9 +31,7 @@ class Gacha(
             "Import gacha history from the game", key="gacha_import_command_description"
         ),
     )
-    @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
-    )
+    @app_commands.rename(account=app_commands.locale_str("account", key="account_autocomplete_param_name"))
     @app_commands.describe(
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -41,24 +39,16 @@ class Gacha(
         )
     )
     async def import_(
-        self,
-        i: Interaction,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        self, i: Interaction, account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None
     ) -> Any:
-        account_ = account or await self.bot.get_account(
-            i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
-        )
+        account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL))
         await GachaCommand().run_import(i, account_)
 
     @app_commands.command(
         name=app_commands.locale_str("view"),
-        description=app_commands.locale_str(
-            "View imported gacha logs", key="gacha_view_command_description"
-        ),
+        description=app_commands.locale_str("View imported gacha logs", key="gacha_view_command_description"),
     )
-    @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
-    )
+    @app_commands.rename(account=app_commands.locale_str("account", key="account_autocomplete_param_name"))
     @app_commands.describe(
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -66,24 +56,16 @@ class Gacha(
         )
     )
     async def view_logs(
-        self,
-        i: Interaction,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        self, i: Interaction, account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None
     ) -> Any:
-        account_ = account or await self.bot.get_account(
-            i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
-        )
+        account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL))
         await GachaCommand().run_view(i, account_)
 
     @app_commands.command(
         name=app_commands.locale_str("manage"),
-        description=app_commands.locale_str(
-            "Manage imported gacha logs", key="gacha_manage_command_description"
-        ),
+        description=app_commands.locale_str("Manage imported gacha logs", key="gacha_manage_command_description"),
     )
-    @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
-    )
+    @app_commands.rename(account=app_commands.locale_str("account", key="account_autocomplete_param_name"))
     @app_commands.describe(
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -91,13 +73,9 @@ class Gacha(
         )
     )
     async def manage_logs(
-        self,
-        i: Interaction,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        self, i: Interaction, account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None
     ) -> Any:
-        account_ = account or await self.bot.get_account(
-            i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
-        )
+        account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL))
         await GachaCommand().run_manage(i, account_)
 
     @app_commands.command(
@@ -113,9 +91,7 @@ class Gacha(
         account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
-        source=app_commands.locale_str(
-            "Source of the gacha history", key="source_param_description"
-        ),
+        source=app_commands.locale_str("Source of the gacha history", key="source_param_description"),
         file=app_commands.locale_str("Gacha history file to upload", key="file_param_description"),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -123,10 +99,7 @@ class Gacha(
         ),
     )
     @app_commands.choices(
-        source=[
-            app_commands.Choice(name=source.value, value=source.value)
-            for source in GachaImportSource
-        ]
+        source=[app_commands.Choice(name=source.value, value=source.value) for source in GachaImportSource]
     )
     async def upload(
         self,
@@ -141,18 +114,11 @@ class Gacha(
     @upload.autocomplete("account")
     @view_logs.autocomplete("account")
     @manage_logs.autocomplete("account")
-    async def account_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
+    async def account_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         user: User = i.namespace.user
         return await self.bot.get_account_choices(
-            user,
-            i.user.id,
-            current,
-            locale,
-            self.bot.translator,
-            games=(Game.GENSHIN, Game.ZZZ, Game.STARRAIL),
+            user, i.user.id, current, locale, self.bot.translator, games=(Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
         )
 
 

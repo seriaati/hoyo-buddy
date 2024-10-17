@@ -51,9 +51,7 @@ class AccountManager(View):
             )
 
         embed = DefaultEmbed(self.locale, self.translator, title=str(account))
-        embed.add_field(
-            name=LocaleStr(key="search_command_game_param_name"), value=EnumStr(account.game)
-        )
+        embed.add_field(name=LocaleStr(key="search_command_game_param_name"), value=EnumStr(account.game))
         if account.nickname:
             embed.add_field(name=LocaleStr(key="account_username"), value=account.username)
         embed.set_footer(text=LocaleStr(key="account_manager_footer"))
@@ -61,9 +59,7 @@ class AccountManager(View):
 
     def _add_items(self) -> None:
         if self.accounts:
-            self.selected_account = (
-                next((a for a in self.accounts if a.current), None) or self.accounts[0]
-            )
+            self.selected_account = next((a for a in self.accounts if a.current), None) or self.accounts[0]
             self.add_item(AccountSelect(self._get_account_options()))
             self.add_item(AddAccountButton())
             self.add_item(EditNicknameButton())
@@ -89,9 +85,7 @@ class AccountManager(View):
         self._add_items()
         embed = self._acc_embed
         await i.response.defer(ephemeral=True)
-        self.message = await i.edit_original_response(
-            embed=embed, view=self, content=await get_dyk(i)
-        )
+        self.message = await i.edit_original_response(embed=embed, view=self, content=await get_dyk(i))
 
     async def refresh(self, i: Interaction, *, soft: bool) -> Any:
         """Refresh the account manager view.
@@ -103,11 +97,7 @@ class AccountManager(View):
         if not soft:
             accounts = await HoyoAccount.filter(user=self.user).all()
             view = AccountManager(
-                author=self.author,
-                locale=self.locale,
-                translator=self.translator,
-                user=self.user,
-                accounts=accounts,
+                author=self.author, locale=self.locale, translator=self.translator, user=self.user, accounts=accounts
             )
             await view.start(i)
         else:

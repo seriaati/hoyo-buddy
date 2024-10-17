@@ -34,9 +34,7 @@ class AbyssCard:
     def locale(self) -> Locale:
         return Locale(self._locale)
 
-    def _draw_rank_pill(
-        self, chara: genshin.models.AbyssRankCharacter, title: LocaleStr
-    ) -> Image.Image:
+    def _draw_rank_pill(self, chara: genshin.models.AbyssRankCharacter, title: LocaleStr) -> Image.Image:
         textbbox = self._drawer.write(title, size=48, position=(0, 55), no_write=True)
         text_width = textbbox[2] - textbbox[0]
 
@@ -51,15 +49,9 @@ class AbyssCard:
         pill = Image.new("RGBA", (text_width + 180, 120), TRANSPARENT)
         pill.paste(shadow, (7, 7), shadow)
         draw = ImageDraw.Draw(pill)
-        draw.rounded_rectangle(
-            (0, 0, text_width + 170, 110), 100, fill=BLACK if self._dark_mode else WHITE
-        )
+        draw.rounded_rectangle((0, 0, text_width + 170, 110), 100, fill=BLACK if self._dark_mode else WHITE)
         drawer = Drawer(
-            draw,
-            folder="abyss",
-            dark_mode=self._dark_mode,
-            locale=self.locale,
-            translator=self._translator,
+            draw, folder="abyss", dark_mode=self._dark_mode, locale=self.locale, translator=self._translator
         )
 
         character_im = drawer.open_static(chara.icon, size=(110, 110))
@@ -80,20 +72,11 @@ class AbyssCard:
             return []
 
         return [
-            self._draw_rank_pill(
-                most_defeats, LocaleStr(key="abyss.most_defeats", val=most_defeats.value)
-            ),
-            self._draw_rank_pill(
-                strongest_strike,
-                LocaleStr(key="abyss.strongest_strike", val=strongest_strike.value),
-            ),
-            self._draw_rank_pill(
-                most_dmg_taken, LocaleStr(key="abyss.most_dmg_taken", val=most_dmg_taken.value)
-            ),
+            self._draw_rank_pill(most_defeats, LocaleStr(key="abyss.most_defeats", val=most_defeats.value)),
+            self._draw_rank_pill(strongest_strike, LocaleStr(key="abyss.strongest_strike", val=strongest_strike.value)),
+            self._draw_rank_pill(most_dmg_taken, LocaleStr(key="abyss.most_dmg_taken", val=most_dmg_taken.value)),
             self._draw_rank_pill(most_ults, LocaleStr(key="abyss.most_ults", val=most_ults.value)),
-            self._draw_rank_pill(
-                most_skills, LocaleStr(key="abyss.most_skills", val=most_skills.value)
-            ),
+            self._draw_rank_pill(most_skills, LocaleStr(key="abyss.most_skills", val=most_skills.value)),
         ]
 
     def _write_overview_texts(self) -> None:
@@ -108,11 +91,7 @@ class AbyssCard:
             anchor="rt",
         )
         textbbox = drawer.write(
-            LocaleStr(
-                key="abyss.battles_won_fought",
-                val1=self._abyss.total_wins,
-                val2=self._abyss.total_battles,
-            ),
+            LocaleStr(key="abyss.battles_won_fought", val1=self._abyss.total_wins, val2=self._abyss.total_battles),
             position=(2425, textbbox[3] + 60),
             size=48,
             anchor="rt",
@@ -137,11 +116,7 @@ class AbyssCard:
         for floor in range(9, 13):
             start_pos = pos[floor]
             drawer.write(
-                LocaleStr(key="abyss.floor", val=floor),
-                position=start_pos,
-                size=64,
-                style="medium",
-                anchor="lm",
+                LocaleStr(key="abyss.floor", val=floor), position=start_pos, size=64, style="medium", anchor="lm"
             )
             drawer.write(
                 f"{stars.get(floor, 0)}/9",
@@ -159,14 +134,8 @@ class AbyssCard:
         chara_mask = drawer.open_asset("chara_mask.png", size=(116, 116))
 
         mode = "dark" if self._dark_mode else "light"
-        text_bk_colors = {
-            "light": {4: (181, 172, 238), 5: (231, 179, 151)},
-            "dark": {4: (43, 35, 90), 5: (85, 63, 51)},
-        }
-        bk_colors = {
-            "light": {4: (233, 215, 255), 5: (255, 218, 197)},
-            "dark": {4: (95, 82, 147), 5: (134, 89, 64)},
-        }
+        text_bk_colors = {"light": {4: (181, 172, 238), 5: (231, 179, 151)}, "dark": {4: (43, 35, 90), 5: (85, 63, 51)}}
+        bk_colors = {"light": {4: (233, 215, 255), 5: (255, 218, 197)}, "dark": {4: (95, 82, 147), 5: (134, 89, 64)}}
 
         padding = 19
         for i, chara in enumerate(battle.characters):
@@ -187,30 +156,15 @@ class AbyssCard:
             bk.paste(chara_im, (0, 2), chara_im)
 
             bk_draw.rounded_rectangle(
-                (87, 0, 116, 29),
-                13,
-                fill=text_bk_colors[mode][chara.rarity],
-                corners=(False, True, False, True),
+                (87, 0, 116, 29), 13, fill=text_bk_colors[mode][chara.rarity], corners=(False, True, False, True)
             )
             bk_drawer = Drawer(
-                bk_draw,
-                folder="abyss",
-                dark_mode=self._dark_mode,
-                locale=self.locale,
-                translator=self._translator,
+                bk_draw, folder="abyss", dark_mode=self._dark_mode, locale=self.locale, translator=self._translator
             )
 
             abyss_chara = self._abyss_characters[str(chara.id)]
-            bk_drawer.write(
-                f"C{abyss_chara.const}", position=(102, 14), size=18, style="medium", anchor="mm"
-            )
-            bk_drawer.write(
-                LevelStr(abyss_chara.level),
-                position=(57, 132),
-                size=24,
-                style="medium",
-                anchor="mm",
-            )
+            bk_drawer.write(f"C{abyss_chara.const}", position=(102, 14), size=18, style="medium", anchor="mm")
+            bk_drawer.write(LevelStr(abyss_chara.level), position=(57, 132), size=24, style="medium", anchor="mm")
 
             im.paste(bk, (i * (padding + 116), 0), bk)
 
@@ -244,11 +198,7 @@ class AbyssCard:
         self._im = Drawer.open_image(f"hoyo-buddy-assets/assets/abyss/{mode}_abyss.png")
         draw = ImageDraw.Draw(self._im)
         self._drawer = Drawer(
-            draw,
-            folder="abyss",
-            dark_mode=self._dark_mode,
-            locale=self.locale,
-            translator=self._translator,
+            draw, folder="abyss", dark_mode=self._dark_mode, locale=self.locale, translator=self._translator
         )
 
         pills = self._get_pills()

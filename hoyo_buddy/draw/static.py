@@ -22,18 +22,12 @@ ZZZ_GAME_RECORD = "https://act-webstatic.hoyoverse.com/game_record/zzz/"
 
 
 async def download_image_task(
-    image_url: str,
-    file_path: pathlib.Path,
-    session: aiohttp.ClientSession,
-    *,
-    ignore_error: bool = False,
+    image_url: str, file_path: pathlib.Path, session: aiohttp.ClientSession, *, ignore_error: bool = False
 ) -> None:
     async with session.get(image_url, headers={"User-Agent": ua.random}) as resp:
         if resp.status != 200:
             if ZZZ_GAME_RECORD in image_url:
-                image_url = image_url.replace(
-                    ZZZ_GAME_RECORD, ZZZ_GAME_RECORD.replace("zzz", "nap")
-                )
+                image_url = image_url.replace(ZZZ_GAME_RECORD, ZZZ_GAME_RECORD.replace("zzz", "nap"))
                 return await download_image_task(image_url, file_path, session)
             if ignore_error:
                 return None
@@ -50,17 +44,11 @@ async def download_image_task(
 
 
 async def download_images(
-    image_urls: Sequence[str],
-    folder: str,
-    session: aiohttp.ClientSession,
-    *,
-    ignore_error: bool = False,
+    image_urls: Sequence[str], folder: str, session: aiohttp.ClientSession, *, ignore_error: bool = False
 ) -> None:
     async with asyncio.TaskGroup() as tg:
         for image_url in list(set(image_urls)):
             file_path = get_static_img_path(image_url, folder)
             if file_path.exists():
                 continue
-            tg.create_task(
-                download_image_task(image_url, file_path, session, ignore_error=ignore_error)
-            )
+            tg.create_task(download_image_task(image_url, file_path, session, ignore_error=ignore_error))

@@ -22,9 +22,7 @@ if TYPE_CHECKING:
 
 
 class GachaLogManageView(View):
-    def __init__(
-        self, account: HoyoAccount, *, author: User, locale: Locale, translator: Translator
-    ) -> None:
+    def __init__(self, account: HoyoAccount, *, author: User, locale: Locale, translator: Translator) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.account = account
 
@@ -41,19 +39,13 @@ class GachaLogManageView(View):
 
         self.add_item(ExportButton())
         self.add_item(DeleteButton())
-        await i.response.send_message(
-            embed=embed, view=self, content=await get_dyk(i), ephemeral=ephemeral(i)
-        )
+        await i.response.send_message(embed=embed, view=self, content=await get_dyk(i), ephemeral=ephemeral(i))
         self.message = await i.original_response()
 
 
 class DeleteButton(Button[GachaLogManageView]):
     def __init__(self) -> None:
-        super().__init__(
-            label=LocaleStr(key="gacha_log_delete_button_label"),
-            style=ButtonStyle.red,
-            emoji=DELETE,
-        )
+        super().__init__(label=LocaleStr(key="gacha_log_delete_button_label"), style=ButtonStyle.red, emoji=DELETE)
 
     async def callback(self, i: Interaction) -> Any:
         embed = ErrorEmbed(
@@ -73,9 +65,7 @@ class DeleteButton(Button[GachaLogManageView]):
 class DeleteConfirmButton(Button[GachaLogManageView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr(key="gacha_log_delete_confirm_button_label"),
-            style=ButtonStyle.red,
-            emoji=DELETE,
+            label=LocaleStr(key="gacha_log_delete_confirm_button_label"), style=ButtonStyle.red, emoji=DELETE
         )
 
     async def callback(self, i: Interaction) -> Any:
@@ -100,11 +90,7 @@ class DeleteCancelButton(Button[GachaLogManageView]):
 
 class ExportButton(Button[GachaLogManageView]):
     def __init__(self) -> None:
-        super().__init__(
-            label=LocaleStr(key="gacha_log_export_button_label"),
-            style=ButtonStyle.blurple,
-            emoji=EXPORT,
-        )
+        super().__init__(label=LocaleStr(key="gacha_log_export_button_label"), style=ButtonStyle.blurple, emoji=EXPORT)
 
     async def callback(self, i: Interaction) -> Any:
         await i.response.defer()
@@ -139,7 +125,6 @@ class ExportButton(Button[GachaLogManageView]):
 
         json_dump = orjson.dumps(result, option=orjson.OPT_INDENT_2)
         file_ = discord.File(
-            filename=f"{self.view.account.uid}_hoyo_buddy_gacha_log_export_uigf_v4_0.json",
-            fp=io.BytesIO(json_dump),
+            filename=f"{self.view.account.uid}_hoyo_buddy_gacha_log_export_uigf_v4_0.json", fp=io.BytesIO(json_dump)
         )
         await i.followup.send(file=file_, ephemeral=True)

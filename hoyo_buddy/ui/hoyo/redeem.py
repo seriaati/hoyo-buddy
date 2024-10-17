@@ -27,30 +27,19 @@ class GiftCodeModal(Modal):
         required=False,
     )
     code_3 = TextInput(
-        label=LocaleStr(key="gift_code_modal.code_input.label", num=3),
-        placeholder="GENSHINGIFT",
-        required=False,
+        label=LocaleStr(key="gift_code_modal.code_input.label", num=3), placeholder="GENSHINGIFT", required=False
     )
     code_4 = TextInput(
-        label=LocaleStr(key="gift_code_modal.code_input.label", num=4),
-        placeholder="HSR2024",
-        required=False,
+        label=LocaleStr(key="gift_code_modal.code_input.label", num=4), placeholder="HSR2024", required=False
     )
     code_5 = TextInput(
-        label=LocaleStr(key="gift_code_modal.code_input.label", num=5),
-        placeholder="HOYOBUDDY",
-        required=False,
+        label=LocaleStr(key="gift_code_modal.code_input.label", num=5), placeholder="HOYOBUDDY", required=False
     )
 
 
 class RedeemUI(View):
     def __init__(
-        self,
-        account: HoyoAccount,
-        *,
-        author: User | Member | None,
-        locale: Locale,
-        translator: Translator,
+        self, account: HoyoAccount, *, author: User | Member | None, locale: Locale, translator: Translator
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
         self.account = account
@@ -84,9 +73,7 @@ class RedeemUI(View):
 class RedeemCodesButton(Button[RedeemUI]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr(key="redeem_codes_button.label"),
-            emoji=GIFT_OUTLINE,
-            style=ButtonStyle.blurple,
+            label=LocaleStr(key="redeem_codes_button.label"), emoji=GIFT_OUTLINE, style=ButtonStyle.blurple
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -99,13 +86,7 @@ class RedeemCodesButton(Button[RedeemUI]):
             return
 
         await self.set_loading_state(i, embed=self.view.cooldown_embed)
-        codes = (
-            modal.code_1.value,
-            modal.code_2.value,
-            modal.code_3.value,
-            modal.code_4.value,
-            modal.code_5.value,
-        )
+        codes = (modal.code_1.value, modal.code_2.value, modal.code_3.value, modal.code_4.value, modal.code_5.value)
 
         # Extract codes from urls
         codes = [code.split("code=")[1] if "code=" in code else code for code in codes]

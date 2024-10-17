@@ -70,10 +70,7 @@ class BuffView(View):
 
     def get_buff_embed(self, buff: Buff, floors: str) -> DefaultEmbed:
         embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=buff.name,
-            description=remove_html_tags(buff.description),
+            self.locale, self.translator, title=buff.name, description=remove_html_tags(buff.description)
         )
         embed.add_field(name=LocaleStr(key="challenge_view.buff_used_in"), value=floors)
 
@@ -92,9 +89,7 @@ class BuffView(View):
             for floor in reversed(self._challenge.floors):
                 n1_buff = floor.node_1.buff
                 if n1_buff is not None:
-                    team_str = LocaleStr(key="challenge_view.team", team=1).translate(
-                        self.translator, self.locale
-                    )
+                    team_str = LocaleStr(key="challenge_view.team", team=1).translate(self.translator, self.locale)
 
                     floor_name = get_floor_difficulty(floor.name, self._season.name)
                     buff_usage[n1_buff.name].append(f"{floor_name} ({team_str})")
@@ -103,9 +98,7 @@ class BuffView(View):
 
                 n2_buff = floor.node_2.buff
                 if n2_buff is not None:
-                    team_str = LocaleStr(key="challenge_view.team", team=2).translate(
-                        self.translator, self.locale
-                    )
+                    team_str = LocaleStr(key="challenge_view.team", team=2).translate(self.translator, self.locale)
 
                     floor_name = get_floor_difficulty(floor.name, self._season.name)
                     buff_usage[n2_buff.name].append(f"{floor_name} ({team_str})")
@@ -114,9 +107,7 @@ class BuffView(View):
         elif isinstance(self._challenge, ShiyuDefense):
             for floor in reversed(self._challenge.floors):
                 for buff in floor.buffs:
-                    floor_name = LocaleStr(key=f"shiyu_{floor.index}_frontier").translate(
-                        self.translator, self.locale
-                    )
+                    floor_name = LocaleStr(key=f"shiyu_{floor.index}_frontier").translate(self.translator, self.locale)
                     buff_usage[buff.name].append(floor_name)
                     if buff.name not in buffs:
                         buffs[buff.name] = buff
@@ -124,9 +115,9 @@ class BuffView(View):
             for act in reversed(self._challenge.acts):
                 act_buffs = list(act.wondroud_booms) + list(act.mystery_caches)
                 for buff in act_buffs:
-                    act_name = LocaleStr(
-                        key="img_theater_act_block_title", act=act.round_id
-                    ).translate(self.translator, self.locale)
+                    act_name = LocaleStr(key="img_theater_act_block_title", act=act.round_id).translate(
+                        self.translator, self.locale
+                    )
                     buff_usage[buff.name].append(act_name)
                     if buff.name not in buffs:
                         buffs[buff.name] = buff
@@ -157,13 +148,7 @@ class BuffSelector(Select[BuffView]):
 
 class ChallengeView(View):
     def __init__(
-        self,
-        account: HoyoAccount,
-        dark_mode: bool,
-        *,
-        author: User | Member,
-        locale: Locale,
-        translator: Translator,
+        self, account: HoyoAccount, dark_mode: bool, *, author: User | Member, locale: Locale, translator: Translator
     ) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
@@ -173,9 +158,7 @@ class ChallengeView(View):
 
         self.season_ids: dict[ChallengeType, int] = {}
         """The user's selected season ID for a challange type"""
-        self.challenge_cache: defaultdict[ChallengeType, dict[int, ChallengeWithLang]] = (
-            defaultdict(dict)
-        )
+        self.challenge_cache: defaultdict[ChallengeType, dict[int, ChallengeWithLang]] = defaultdict(dict)
         """Cache of challenges for each season ID and challange type"""
 
         self.characters: Sequence[GICharacter] = []
@@ -222,38 +205,23 @@ class ChallengeView(View):
         client = self.account.client
         client.set_lang(self.locale)
 
-        if (
-            self.challenge_type in {ChallengeType.SPIRAL_ABYSS, ChallengeType.IMG_THEATER}
-            and not self.characters
-        ):
-            self.characters = (
-                await client.get_genshin_detailed_characters(self.account.uid)
-            ).characters
+        if self.challenge_type in {ChallengeType.SPIRAL_ABYSS, ChallengeType.IMG_THEATER} and not self.characters:
+            self.characters = (await client.get_genshin_detailed_characters(self.account.uid)).characters
 
         for previous in (False, True):
             if self.challenge_type is ChallengeType.SPIRAL_ABYSS:
-                challenge = await client.get_genshin_spiral_abyss(
-                    self.account.uid, previous=previous
-                )
+                challenge = await client.get_genshin_spiral_abyss(self.account.uid, previous=previous)
                 if not challenge.ranks:
                     await client.get_record_cards()
-                    challenge = await client.get_genshin_spiral_abyss(
-                        self.account.uid, previous=previous
-                    )
+                    challenge = await client.get_genshin_spiral_abyss(self.account.uid, previous=previous)
             elif self.challenge_type is ChallengeType.MOC:
                 challenge = await client.get_starrail_challenge(self.account.uid, previous=previous)
             elif self.challenge_type is ChallengeType.PURE_FICTION:
-                challenge = await client.get_starrail_pure_fiction(
-                    self.account.uid, previous=previous
-                )
+                challenge = await client.get_starrail_pure_fiction(self.account.uid, previous=previous)
             elif self.challenge_type is ChallengeType.APC_SHADOW:
-                challenge = await client.get_starrail_apc_shadow(
-                    self.account.uid, previous=previous
-                )
+                challenge = await client.get_starrail_apc_shadow(self.account.uid, previous=previous)
             elif self.challenge_type is ChallengeType.IMG_THEATER:
-                challenges = (
-                    await client.get_imaginarium_theater(self.account.uid, previous=previous)
-                ).datas
+                challenges = (await client.get_imaginarium_theater(self.account.uid, previous=previous)).datas
                 challenge = max(challenges, key=lambda c: c.stats.difficulty.value)
             elif self.challenge_type is ChallengeType.SHIYU_DEFENSE:
                 agents = await client.get_zzz_agents(self.account.uid)
@@ -401,9 +369,7 @@ class ChallengeView(View):
         self.add_item(ViewBuffs())
         self.add_item(ShowUID(current_toggle=self.uid is not None))
 
-    async def update(
-        self, item: Select[ChallengeView] | Button[ChallengeView], i: Interaction
-    ) -> None:
+    async def update(self, item: Select[ChallengeView] | Button[ChallengeView], i: Interaction) -> None:
         try:
             self._check_challenge_data(self.challenge)
             file_ = await self._draw_card(i.client.session, i.client.executor, i.client.loop)
@@ -440,16 +406,10 @@ class PhaseSelect(Select[ChallengeView]):
         for history in histories:
             if history.name is not None:
                 options.append(
-                    SelectOption(
-                        label=history.name,
-                        description=history.duration_str,
-                        value=str(history.season_id),
-                    )
+                    SelectOption(label=history.name, description=history.duration_str, value=str(history.season_id))
                 )
             else:
-                options.append(
-                    SelectOption(label=history.duration_str, value=str(history.season_id))
-                )
+                options.append(SelectOption(label=history.duration_str, value=str(history.season_id)))
         self.options = options
 
     async def callback(self, i: Interaction) -> None:
@@ -477,13 +437,9 @@ class ChallengeTypeSelect(Select[ChallengeView]):
 
         self.view._item_states["challenge_view.phase_select"] = False
 
-        histories = await ChallengeHistory.filter(
-            uid=self.view.account.uid, challenge_type=self.view.challenge_type
-        )
+        histories = await ChallengeHistory.filter(uid=self.view.account.uid, challenge_type=self.view.challenge_type)
         for history in histories:
-            self.view.challenge_cache[self.view.challenge_type][history.season_id] = (
-                history.parsed_data
-            )
+            self.view.challenge_cache[self.view.challenge_type][history.season_id] = history.parsed_data
 
         if self.view.challenge_type not in self.view.season_ids:
             self.view.season_id = histories[0].season_id
@@ -493,9 +449,7 @@ class ChallengeTypeSelect(Select[ChallengeView]):
         phase_select.translate(self.view.locale, self.view.translator)
         phase_select.update_options_defaults(values=[str(self.view.season_id)])
 
-        self.view._item_states["challenge_view.view_buffs"] = not isinstance(
-            self.view.challenge, ChallengeWithBuff
-        )
+        self.view._item_states["challenge_view.view_buffs"] = not isinstance(self.view.challenge, ChallengeWithBuff)
         self.view._item_states["show_uid"] = not isinstance(self.view.challenge, ShiyuDefense)
 
         await self.view.update(self, i)
@@ -520,11 +474,7 @@ class ViewBuffs(Button[ChallengeView]):
             season = None
 
         view = BuffView(
-            self.view.challenge,
-            season,
-            author=i.user,
-            locale=self.view.locale,
-            translator=self.view.translator,
+            self.view.challenge, season, author=i.user, locale=self.view.locale, translator=self.view.translator
         )
         if not view.buffs:
             self.disabled = True
@@ -539,9 +489,7 @@ class ViewBuffs(Button[ChallengeView]):
 
 class ShowUID(ToggleButton[ChallengeView]):
     def __init__(self, *, current_toggle: bool) -> None:
-        super().__init__(
-            current_toggle, LocaleStr(key="show_uid"), row=4, disabled=True, custom_id="show_uid"
-        )
+        super().__init__(current_toggle, LocaleStr(key="show_uid"), row=4, disabled=True, custom_id="show_uid")
 
     async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=False)

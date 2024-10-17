@@ -68,11 +68,7 @@ class GeetestLoginPayload(BaseModel):
 
     @classmethod
     def parse_from_request(cls, query: Mapping[str, str]) -> GeetestLoginPayload:
-        return cls(
-            user_id=int(query["user_id"]),
-            gt_version=int(query["gt_version"]),
-            api_server=query["api_server"],
-        )
+        return cls(user_id=int(query["user_id"]), gt_version=int(query["gt_version"]), api_server=query["api_server"])
 
     def to_query_string(self) -> str:
         return "&".join(f"{k}={v}" for k, v in self.model_dump().items())
@@ -353,9 +349,7 @@ class ZZZRngMoeRecord(BaseModel):
     @field_validator("time")
     @classmethod
     def __add_timezone(cls, value: datetime.datetime, info: ValidationInfo) -> datetime.datetime:
-        return value.replace(
-            tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
-        )
+        return value.replace(tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"])))
 
     @field_validator("banner_type")
     @classmethod
@@ -386,9 +380,7 @@ class UIGFRecord(BaseModel):
     @field_validator("time")
     @classmethod
     def __add_timezone(cls, value: datetime.datetime, info: ValidationInfo) -> datetime.datetime:
-        return value.replace(
-            tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
-        )
+        return value.replace(tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"])))
 
 
 class SRGFRecord(BaseModel):
@@ -402,9 +394,7 @@ class SRGFRecord(BaseModel):
     @field_validator("time")
     @classmethod
     def __add_timezone(cls, value: datetime.datetime, info: ValidationInfo) -> datetime.datetime:
-        return value.replace(
-            tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
-        )
+        return value.replace(tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"])))
 
 
 class GWRecord(BaseModel):
@@ -421,13 +411,5 @@ class GWRecord(BaseModel):
 
     @field_validator("banner", mode="before")
     @classmethod
-    def __convert_banner(
-        cls, value: Literal["Weapon", "Character", "Permanent", "Chronicled", "Novice"]
-    ) -> int:
-        return {
-            "Weapon": 302,
-            "Character": 301,
-            "Permanent": 200,
-            "Chronicled": 500,
-            "Novice": 100,
-        }[value]
+    def __convert_banner(cls, value: Literal["Weapon", "Character", "Permanent", "Chronicled", "Novice"]) -> int:
+        return {"Weapon": 302, "Character": 301, "Permanent": 200, "Chronicled": 500, "Novice": 100}[value]

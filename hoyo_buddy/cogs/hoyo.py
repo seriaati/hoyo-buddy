@@ -18,12 +18,7 @@ from ..db.models import HoyoAccount, JSONFile, Settings, get_dyk, get_locale
 from ..draw.main_funcs import draw_exploration_card
 from ..embeds import DefaultEmbed
 from ..enums import Game, GeetestType, Platform
-from ..exceptions import (
-    FeatureNotImplementedError,
-    IncompleteParamError,
-    InvalidQueryError,
-    NotSupportedByEnkaError,
-)
+from ..exceptions import FeatureNotImplementedError, IncompleteParamError, InvalidQueryError, NotSupportedByEnkaError
 from ..hoyo.clients.ambr import AmbrAPIClient
 from ..hoyo.clients.yatta import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
@@ -52,9 +47,7 @@ class Hoyo(commands.Cog):
         account_ = None
         if uid is not None:
             if game_value is None:
-                raise IncompleteParamError(
-                    LocaleStr(key="game_value_incomplete_param_error_message")
-                )
+                raise IncompleteParamError(LocaleStr(key="game_value_incomplete_param_error_message"))
 
             try:
                 uid_ = int(uid)
@@ -70,11 +63,7 @@ class Hoyo(commands.Cog):
                 raise NotSupportedByEnkaError(game)
         else:
             try:
-                games = (
-                    (Game(game_value),)
-                    if game_value is not None
-                    else (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
-                )
+                games = (Game(game_value),) if game_value is not None else (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
             except ValueError as e:
                 raise InvalidQueryError from e
 
@@ -86,9 +75,7 @@ class Hoyo(commands.Cog):
 
     @app_commands.command(
         name=app_commands.locale_str("check-in"),
-        description=app_commands.locale_str(
-            "Game daily check-in", key="checkin_command_description"
-        ),
+        description=app_commands.locale_str("Game daily check-in", key="checkin_command_description"),
     )
     @app_commands.rename(
         user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
@@ -96,8 +83,7 @@ class Hoyo(commands.Cog):
     )
     @app_commands.describe(
         user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
+            "User to search the accounts with, defaults to you", key="user_autocomplete_param_description"
         ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -129,8 +115,7 @@ class Hoyo(commands.Cog):
     @app_commands.command(
         name=app_commands.locale_str("profile"),
         description=app_commands.locale_str(
-            "View your in-game profile and generate character build cards",
-            key="profile_command_description",
+            "View your in-game profile and generate character build cards", key="profile_command_description"
         ),
     )
     @app_commands.rename(
@@ -140,8 +125,7 @@ class Hoyo(commands.Cog):
     )
     @app_commands.describe(
         user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
+            "User to search the accounts with, defaults to you", key="user_autocomplete_param_description"
         ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -151,9 +135,7 @@ class Hoyo(commands.Cog):
             "UID of the player, this overrides the account parameter if provided",
             key="profile_command_uid_param_description",
         ),
-        game_value=app_commands.locale_str(
-            "Game of the UID", key="profile_command_game_value_description"
-        ),
+        game_value=app_commands.locale_str("Game of the UID", key="profile_command_game_value_description"),
     )
     async def profile_command(
         self,
@@ -170,12 +152,7 @@ class Hoyo(commands.Cog):
         uid_, game, account_ = await self._parse_params(user.id, account, uid, game_value)
 
         handler = ProfileCommand(
-            uid=uid_,
-            game=game,
-            account=account_,
-            locale=locale,
-            user=i.user,
-            translator=self.bot.translator,
+            uid=uid_, game=game, account=account_, locale=locale, user=i.user, translator=self.bot.translator
         )
 
         if game is Game.GENSHIN:
@@ -191,9 +168,7 @@ class Hoyo(commands.Cog):
 
     @app_commands.command(
         name=app_commands.locale_str("notes"),
-        description=app_commands.locale_str(
-            "View real-time notes", key="notes_command_description"
-        ),
+        description=app_commands.locale_str("View real-time notes", key="notes_command_description"),
     )
     @app_commands.rename(
         user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
@@ -201,8 +176,7 @@ class Hoyo(commands.Cog):
     )
     @app_commands.describe(
         user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
+            "User to search the accounts with, defaults to you", key="user_autocomplete_param_description"
         ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -218,9 +192,7 @@ class Hoyo(commands.Cog):
         await i.response.defer(ephemeral=ephemeral(i))
 
         user = user or i.user
-        account_ = account or await self.bot.get_account(
-            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
-        )
+        account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ))
         settings = await Settings.get(user_id=i.user.id)
 
         view = NotesView(
@@ -234,9 +206,7 @@ class Hoyo(commands.Cog):
 
     @app_commands.command(
         name=app_commands.locale_str("characters"),
-        description=app_commands.locale_str(
-            "View all of your characters", key="characters_command_description"
-        ),
+        description=app_commands.locale_str("View all of your characters", key="characters_command_description"),
     )
     @app_commands.rename(
         user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
@@ -244,8 +214,7 @@ class Hoyo(commands.Cog):
     )
     @app_commands.describe(
         user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
+            "User to search the accounts with, defaults to you", key="user_autocomplete_param_description"
         ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -261,9 +230,7 @@ class Hoyo(commands.Cog):
         await i.response.defer(ephemeral=ephemeral(i))
 
         user = user or i.user
-        account_ = account or await self.bot.get_account(
-            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
-        )
+        account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI))
         settings = await Settings.get(user_id=i.user.id)
 
         if account_.game is Game.GENSHIN:
@@ -322,8 +289,7 @@ class Hoyo(commands.Cog):
     )
     @app_commands.describe(
         user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
+            "User to search the accounts with, defaults to you", key="user_autocomplete_param_description"
         ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -343,8 +309,7 @@ class Hoyo(commands.Cog):
     @app_commands.command(
         name=app_commands.locale_str("exploration"),
         description=app_commands.locale_str(
-            "View your exploration statistics in Genshin Impact",
-            key="exploration_command_description",
+            "View your exploration statistics in Genshin Impact", key="exploration_command_description"
         ),
     )
     @app_commands.rename(
@@ -353,8 +318,7 @@ class Hoyo(commands.Cog):
     )
     @app_commands.describe(
         user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
+            "User to search the accounts with, defaults to you", key="user_autocomplete_param_description"
         ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -395,9 +359,7 @@ class Hoyo(commands.Cog):
 
     @app_commands.command(
         name=app_commands.locale_str("redeem"),
-        description=app_commands.locale_str(
-            "Redeem codes for in-game rewards", key="redeem_command_description"
-        ),
+        description=app_commands.locale_str("Redeem codes for in-game rewards", key="redeem_command_description"),
     )
     @app_commands.rename(
         user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
@@ -405,8 +367,7 @@ class Hoyo(commands.Cog):
     )
     @app_commands.describe(
         user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
+            "User to search the accounts with, defaults to you", key="user_autocomplete_param_description"
         ),
         account=app_commands.locale_str(
             "Account to run this command with, defaults to the selected one in /accounts",
@@ -433,27 +394,18 @@ class Hoyo(commands.Cog):
 
     @app_commands.command(
         name=app_commands.locale_str("geetest"),
-        description=app_commands.locale_str(
-            "Complete geetest verification", key="geetest_command_description"
-        ),
+        description=app_commands.locale_str("Complete geetest verification", key="geetest_command_description"),
     )
     @app_commands.rename(
         account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
         type_=app_commands.locale_str("type", key="geetest_command_type_param_name"),
     )
     @app_commands.describe(
-        account=app_commands.locale_str(
-            "Account to run this command with", key="acc_no_default_param_desc"
-        ),
-        type_=app_commands.locale_str(
-            "Type of geetest verification", key="geetest_cmd_type_param_desc"
-        ),
+        account=app_commands.locale_str("Account to run this command with", key="acc_no_default_param_desc"),
+        type_=app_commands.locale_str("Type of geetest verification", key="geetest_cmd_type_param_desc"),
     )
     async def geetest_command(
-        self,
-        i: Interaction,
-        account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer],
-        type_: str,
+        self, i: Interaction, account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer], type_: str
     ) -> None:
         try:
             type_ = GeetestType(type_)
@@ -466,15 +418,12 @@ class Hoyo(commands.Cog):
 
     @app_commands.command(
         name=app_commands.locale_str("stats"),
-        description=app_commands.locale_str(
-            "View game account statistics", key="stats_command_description"
-        ),
+        description=app_commands.locale_str("View game account statistics", key="stats_command_description"),
     )
     @app_commands.rename(user=app_commands.locale_str("user", key="user_autocomplete_param_name"))
     @app_commands.describe(
         user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
+            "User to search the accounts with, defaults to you", key="user_autocomplete_param_description"
         )
     )
     async def stats_command(self, i: Interaction, user: User = None) -> None:
@@ -483,17 +432,11 @@ class Hoyo(commands.Cog):
 
     @app_commands.command(
         name=app_commands.locale_str("events"),
-        description=app_commands.locale_str(
-            "View ongoing game events", key="events_command_description"
-        ),
+        description=app_commands.locale_str("View ongoing game events", key="events_command_description"),
     )
-    @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
-    )
+    @app_commands.rename(account=app_commands.locale_str("account", key="account_autocomplete_param_name"))
     @app_commands.describe(
-        account=app_commands.locale_str(
-            "Account to run this command with", key="acc_no_default_param_desc"
-        )
+        account=app_commands.locale_str("Account to run this command with", key="acc_no_default_param_desc")
     )
     async def events_command(
         self, i: Interaction, account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer]
@@ -501,59 +444,37 @@ class Hoyo(commands.Cog):
         await EventsCommand.run(i, account=account)
 
     @geetest_command.autocomplete("type_")
-    async def geetest_type_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
+    async def geetest_type_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
-        return self.bot.get_enum_choices(
-            (GeetestType.DAILY_CHECKIN, GeetestType.REALTIME_NOTES), locale, current
-        )
+        return self.bot.get_enum_choices((GeetestType.DAILY_CHECKIN, GeetestType.REALTIME_NOTES), locale, current)
 
     @profile_command.autocomplete("game_value")
-    async def profile_game_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
+    async def profile_game_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         return self.bot.get_enum_choices((Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current)
 
     @exploration_command.autocomplete("account")
-    async def gi_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
+    async def gi_acc_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN,))
 
     @notes_command.autocomplete("account")
     @challenge_command.autocomplete("account")
     @profile_command.autocomplete("account")
     @events_command.autocomplete("account")
-    async def gi_hsr_zzz_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(
-            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
-        )
+    async def gi_hsr_zzz_acc_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+        return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ))
 
     @characters_command.autocomplete("account")
-    async def gi_hsr_zzz_honkai_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(
-            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
-        )
+    async def gi_hsr_zzz_honkai_acc_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+        return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI))
 
     @redeem_command.autocomplete("account")
-    async def gi_hsr_zzz_tot_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(
-            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT)
-        )
+    async def gi_hsr_zzz_tot_acc_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+        return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT))
 
     @checkin_command.autocomplete("account")
     @geetest_command.autocomplete("account")
-    async def all_game_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
+    async def all_game_acc_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(i, current)
 
 

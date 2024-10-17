@@ -25,9 +25,7 @@ if TYPE_CHECKING:
 
 
 class EventsView(View):
-    def __init__(
-        self, account: HoyoAccount, *, author: User, locale: Locale, translator: Translator
-    ) -> None:
+    def __init__(self, account: HoyoAccount, *, author: User, locale: Locale, translator: Translator) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
         self.account = account
@@ -101,9 +99,7 @@ class EventsView(View):
         await self._fetch_anns()
         self._add_items()
 
-        await i.followup.send(
-            embed=self._get_ann_embed(self.first_ann), view=self, content=await get_dyk(i)
-        )
+        await i.followup.send(embed=self._get_ann_embed(self.first_ann), view=self, content=await get_dyk(i))
         self.message = await i.original_response()
 
 
@@ -127,9 +123,7 @@ class EventSelector(PaginatorSelect[EventsView]):
         )
 
     def set_options(self, anns: Sequence[genshin.models.Announcement]) -> None:
-        self.options = [
-            self._get_ann_option(ann, i == 0) for i, ann in enumerate(anns) if ann.title
-        ]
+        self.options = [self._get_ann_option(ann, i == 0) for i, ann in enumerate(anns) if ann.title]
 
     async def callback(self, i: Interaction) -> None:
         changed = self.update_page()
@@ -155,9 +149,7 @@ class EventTypeSelector(Select[EventsView]):
             ]
             + [
                 SelectOption(
-                    label=LocaleStr(key="events_view_banner_type_label"),
-                    value="banners",
-                    default=current == "banners",
+                    label=LocaleStr(key="events_view_banner_type_label"), value="banners", default=current == "banners"
                 )
             ],
         )
@@ -188,9 +180,7 @@ class EventTypeSelector(Select[EventsView]):
 
 class ViewContentButton(Button[EventsView]):
     def __init__(self) -> None:
-        super().__init__(
-            label=LocaleStr(key="events_view_content_label"), style=ButtonStyle.blurple
-        )
+        super().__init__(label=LocaleStr(key="events_view_content_label"), style=ButtonStyle.blurple)
 
     async def callback(self, i: Interaction) -> None:
         ann = self.view._get_ann(self.view.ann_id)
@@ -202,8 +192,6 @@ class ViewContentButton(Button[EventsView]):
         # Split ann content by 2000 characters
         contents: list[str] = [content[i : i + 2000] for i in range(0, len(content), 2000)]
         pages = [Page(content=content) for content in contents]
-        view = PaginatorView(
-            pages, author=i.user, locale=self.view.locale, translator=self.view.translator
-        )
+        view = PaginatorView(pages, author=i.user, locale=self.view.locale, translator=self.view.translator)
         await view.start(i, ephemeral=True, followup=True)
         return None

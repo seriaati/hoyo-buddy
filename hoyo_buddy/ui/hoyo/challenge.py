@@ -222,6 +222,9 @@ class ChallengeView(View):
                 challenge = await client.get_starrail_apc_shadow(self.account.uid, previous=previous)
             elif self.challenge_type is ChallengeType.IMG_THEATER:
                 challenges = (await client.get_imaginarium_theater(self.account.uid, previous=previous)).datas
+                if not challenges:
+                    raise NoChallengeDataError(ChallengeType.IMG_THEATER)
+
                 challenge = max(challenges, key=lambda c: c.stats.difficulty.value)
             elif self.challenge_type is ChallengeType.SHIYU_DEFENSE:
                 agents = await client.get_zzz_agents(self.account.uid)

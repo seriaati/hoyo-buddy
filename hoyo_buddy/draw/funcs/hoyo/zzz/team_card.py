@@ -160,10 +160,7 @@ class ZZZTeamCard:
                     try:
                         stat = disc.properties[j]
                     except IndexError:
-                        stat_icon = drawer.open_asset(
-                            "stat_icons/PLACEHOLDER.png", folder="zzz-build-card", size=(16, 16)
-                        )
-                        text = "N/A"
+                        pass
                     else:
                         if isinstance(stat.type, PropType):
                             stat_icon = drawer.open_asset(
@@ -175,14 +172,14 @@ class ZZZTeamCard:
                             )
                         text = stat.value
 
-                    im.alpha_composite(stat_icon, stat_start_pos)
-                    drawer.write(
-                        text,
-                        size=12,
-                        position=(stat_start_pos[0] + 20, icon.height // 2 + stat_start_pos[1]),
-                        style="medium",
-                        anchor="lm",
-                    )
+                        im.alpha_composite(stat_icon, stat_start_pos)
+                        drawer.write(
+                            text,
+                            size=12,
+                            position=(stat_start_pos[0] + 20, icon.height // 2 + stat_start_pos[1]),
+                            style="medium",
+                            anchor="lm",
+                        )
 
                     if j == 1:
                         stat_start_pos = (start_pos[0] + 68 + 60, start_pos[1] + 35)

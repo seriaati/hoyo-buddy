@@ -238,8 +238,7 @@ class ZZZAgentCard:
                     try:
                         sub_stat = disc.properties[j]
                     except IndexError:
-                        sub_stat_icon = drawer.open_asset("stat_icons/PLACEHOLDER.png", size=(28, 28))
-                        text = "N/A"
+                        pass
                     else:
                         if isinstance(sub_stat.type, PropType):
                             sub_stat_icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[sub_stat.type]}", size=(28, 28))
@@ -247,14 +246,14 @@ class ZZZAgentCard:
                             sub_stat_icon = drawer.open_asset("stat_icons/PLACEHOLDER.png", size=(28, 28))
                         text = sub_stat.value
 
-                    im.paste(sub_stat_icon, sub_stat_pos, sub_stat_icon)
-                    drawer.write(
-                        text,
-                        size=22,
-                        position=(sub_stat_pos[0] + 38, sub_stat_pos[1] + sub_stat_icon.height // 2),
-                        style="medium",
-                        anchor="lm",
-                    )
+                        im.paste(sub_stat_icon, sub_stat_pos, sub_stat_icon)
+                        drawer.write(
+                            text,
+                            size=22,
+                            position=(sub_stat_pos[0] + 38, sub_stat_pos[1] + sub_stat_icon.height // 2),
+                            style="medium",
+                            anchor="lm",
+                        )
 
                     if j == 1:
                         sub_stat_pos = (start_pos[0] + 174, start_pos[1] + 134)

@@ -16,7 +16,7 @@ from genshin.models import (
     StarRailPureFiction,
     TheaterBuff,
 )
-from genshin.models import Character as GICharacter
+from genshin.models import GenshinDetailCharacter as GICharacter
 
 from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE
 from hoyo_buddy.draw.main_funcs import (
@@ -178,7 +178,7 @@ class ChallengeView(View):
         )
         """Cache of challenges for each season ID and challange type"""
 
-        self.characters: list[GICharacter] = []
+        self.characters: Sequence[GICharacter] = []
         self.agent_ranks: dict[int, int] = {}
         self.uid: int | None = None
 
@@ -226,7 +226,9 @@ class ChallengeView(View):
             self.challenge_type in {ChallengeType.SPIRAL_ABYSS, ChallengeType.IMG_THEATER}
             and not self.characters
         ):
-            self.characters = list(await client.get_genshin_characters(self.account.uid))
+            self.characters = (
+                await client.get_genshin_detailed_characters(self.account.uid)
+            ).characters
 
         for previous in (False, True):
             if self.challenge_type is ChallengeType.SPIRAL_ABYSS:

@@ -275,7 +275,7 @@ async def draw_hsr_characters_card(
 async def draw_spiral_abyss_card(
     draw_input: DrawInput,
     abyss: SpiralAbyss,
-    characters: Sequence[genshin.models.Character],
+    characters: Sequence[genshin.models.GenshinDetailCharacter],
     translator: Translator,
 ) -> File:
     abyss_characters: dict[str, AbyssCharacter] = {

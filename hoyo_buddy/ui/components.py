@@ -424,15 +424,21 @@ class PaginatorSelect(Select, Generic[V_co]):
 
         self.view: V_co
 
+    @staticmethod
+    def remove_duplicate_options(
+        options: list[SelectOption], existing_options: list[SelectOption]
+    ) -> list[SelectOption]:
+        existing_values = {option.value for option in existing_options}
+        return [option for option in options if option.value not in existing_values]
+
     def process_options(self, *, selected_values: list[str] | None = None) -> list[SelectOption]:
-        split_options = split_list_to_chunks(self.options_before_split, 23 - self._max_values + 1)
+        split_options = split_list_to_chunks(self.options_before_split, 23 - self._max_values)
         selected_values = selected_values or []
-
-        with contextlib.suppress(ValueError):
-            selected_values.remove("next_page")
-            selected_values.remove("prev_page")
-
-        selected_options = [option for option in self.options_before_split if option.value in selected_values]
+        selected_options = [
+            option
+            for option in self.options_before_split
+            if option.value in selected_values and option.value not in {NEXT_PAGE.value, PREV_PAGE.value}
+        ]
 
         if self.page_index == 0:
             if len(split_options) == 1:
@@ -440,8 +446,10 @@ class PaginatorSelect(Select, Generic[V_co]):
             return split_options[0] + [NEXT_PAGE]
 
         if self.page_index == len(split_options) - 1:
+            self.remove_duplicate_options(selected_options, split_options[-1])
             return [PREV_PAGE] + selected_options + split_options[-1]
 
+        self.remove_duplicate_options(selected_options, split_options[self.page_index])
         return [PREV_PAGE] + selected_options + split_options[self.page_index] + [NEXT_PAGE]
 
     def set_page_based_on_value(self, value: str) -> None:

@@ -283,7 +283,11 @@ class WebApp:
 
         if route == "/login":
             user_data = await self.fetch_user_data()
-            return pages.LoginPage(user_data, translator=self._translator, locale=Locale(locale))
+            try:
+                locale_ = Locale(locale)
+            except ValueError:
+                return pages.ErrorPage(code=422, message="Invalid locale")
+            return pages.LoginPage(user_data, translator=self._translator, locale=locale_)
 
         if route == "/geetest":
             query: str | None = await page.client_storage.get_async(f"hb.{parsed_params['user_id']}.params")

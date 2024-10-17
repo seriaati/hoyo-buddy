@@ -68,7 +68,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
         uid: app_commands.Range[str, 9, 10] | None = None,
     ) -> None:
-        if character_id == "none" or calculation_id == "none":
+        if character_id == "none" or calculation_id == "none" or not calculation_id.isdigit():
             raise LeaderboardNotFoundError
 
         if uid is not None and not uid.isdigit():

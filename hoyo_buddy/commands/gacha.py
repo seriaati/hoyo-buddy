@@ -21,6 +21,9 @@ from hoyo_buddy.exceptions import (
     NoGachaLogFoundError,
     UIDMismatchError,
 )
+from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
+from hoyo_buddy.hoyo.clients.hakushin import HakushinZZZClient
+from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import GWRecord, SRGFRecord, StarDBRecord, StarRailStationRecord, UIGFRecord, ZZZRngMoeRecord
 from hoyo_buddy.ui.hoyo.gacha.import_ import GachaImportView
@@ -40,6 +43,26 @@ class GachaCommand:
         extension = file.filename.split(".")[-1]
         if extension != accept_ext:
             raise InvalidFileExtError(accept_ext)
+
+    @staticmethod
+    async def _uigf_fill_item_rarities(records: list[dict[str, Any]], game: Game) -> list[dict[str, Any]]:
+        if game is Game.GENSHIN:
+            api = AmbrAPIClient()
+        elif game is Game.STARRAIL:
+            api = YattaAPIClient()
+        elif game is Game.ZZZ:
+            api = HakushinZZZClient()
+        else:
+            msg = f"Rarity fetching is not implemented for {game}"
+            raise ValueError(msg)
+
+        async with api:
+            for record in records:
+                if "rank_type" in record:
+                    continue
+                record["rank_type"] = await api.fetch_item_rarity(str(record["item_id"]))
+
+        return records
 
     async def _srs_import(self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment) -> int:
         """Star Rail Station import."""
@@ -293,7 +316,7 @@ class GachaCommand:
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
 
         # Determine UIGF v4.0
-        is_v4 = data["info"].get("version") == "v4.0"
+        is_v4 = data["info"]["version"] == "v4.0"
 
         if is_v4:
             game_data = next((d for d in data[UIGF_GAME_KEYS[account.game]] if int(d["uid"]) == account.uid), None)
@@ -301,7 +324,8 @@ class GachaCommand:
                 raise UIDMismatchError(account.uid)
 
             tz_hour = game_data["timezone"]
-            records = [UIGFRecord(timezone=tz_hour, **record) for record in game_data["list"]]
+            records = await self._uigf_fill_item_rarities(game_data["list"], account.game)
+            records = [UIGFRecord(timezone=tz_hour, **record) for record in records]
         else:
             uid = str(data["info"]["uid"])
             if uid != str(account.uid):
@@ -326,7 +350,8 @@ class GachaCommand:
                 for record in data["list"]:
                     record["item_id"] = item_ids[record["name"]]
 
-            records = [UIGFRecord(timezone=tz_hour, **record) for record in data["list"]]
+            records = await self._uigf_fill_item_rarities(data["list"], account.game)
+            records = [UIGFRecord(timezone=tz_hour, **record) for record in records]
 
         records.sort(key=lambda x: x.id)
 

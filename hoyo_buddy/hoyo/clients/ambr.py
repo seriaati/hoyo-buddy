@@ -538,3 +538,15 @@ class AmbrAPIClient(ambr.AmbrAPI):
                 )
 
         return characters
+
+    async def fetch_item_rarity(self, item_id: str) -> int:
+        characters = await super().fetch_characters()
+        weapons = await super().fetch_weapons()
+        items = characters + weapons
+
+        for item in items:
+            if str(item.id) == item_id:
+                return item.rarity
+
+        msg = f"Item with ID {item_id!r} not found"
+        raise ValueError(msg)

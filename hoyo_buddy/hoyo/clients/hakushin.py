@@ -4,6 +4,7 @@ from enum import StrEnum
 from typing import TYPE_CHECKING, Final, Literal
 
 import hakushin
+import hakushin.clients
 import yatta
 
 from ...constants import TRAILBLAZER_IDS, YATTA_PATH_TO_HSR_PATH, contains_traveler_id
@@ -361,3 +362,16 @@ class HakushinTranslator:
 
         embed.set_thumbnail(url=disc.icon)
         return embed
+
+
+class HakushinZZZClient(hakushin.clients.ZZZClient):
+    async def fetch_item_rarity(self, item_id: str) -> int:
+        agents = await self.fetch_characters()
+        engines = await self.fetch_weapons()
+        items = agents + engines
+
+        for item in items:
+            if str(item.id) == item_id and item.rarity is not None:
+                return STAR_NUMS[item.rarity]
+
+        return 0

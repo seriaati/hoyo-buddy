@@ -2,7 +2,6 @@ about_command.contribute: 贡献
 about_command.developer: 开发者
 about_command.discord_server: Discord 服务器
 about_command.guild_count: 服务器数量
-about_command.invite: 邀请机器人
 about_command.latest_changes: 最新更改
 about_command.ram_usage: 内存使用量
 about_command.support: 捐款

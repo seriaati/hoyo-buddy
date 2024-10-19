@@ -431,25 +431,30 @@ class PaginatorSelect(Select, Generic[V_co]):
         existing_values = {option.value for option in existing_options}
         return [option for option in options if option.value not in existing_values]
 
-    def process_options(self, *, selected_values: list[str] | None = None) -> list[SelectOption]:
+    def process_options(self) -> list[SelectOption]:
         split_options = split_list_to_chunks(self.options_before_split, 23 - self._max_values)
-        selected_values = selected_values or []
+        try:
+            values = self.values
+        except AttributeError:
+            values = []
+
         selected_options = [
             option
             for option in self.options_before_split
-            if option.value in selected_values and option.value not in {NEXT_PAGE.value, PREV_PAGE.value}
+            if option.value in values and option.value not in {NEXT_PAGE.value, PREV_PAGE.value}
         ]
 
         if self.page_index == 0:
             if len(split_options) == 1:
                 return split_options[0]
-            return split_options[0] + [NEXT_PAGE]
+            selected_options = self.remove_duplicate_options(selected_options, split_options[0])
+            return selected_options + split_options[0] + [NEXT_PAGE]
 
         if self.page_index == len(split_options) - 1:
-            self.remove_duplicate_options(selected_options, split_options[-1])
+            selected_options = self.remove_duplicate_options(selected_options, split_options[-1])
             return [PREV_PAGE] + selected_options + split_options[-1]
 
-        self.remove_duplicate_options(selected_options, split_options[self.page_index])
+        selected_options = self.remove_duplicate_options(selected_options, split_options[self.page_index])
         return [PREV_PAGE] + selected_options + split_options[self.page_index] + [NEXT_PAGE]
 
     def set_page_based_on_value(self, value: str) -> None:
@@ -465,16 +470,19 @@ class PaginatorSelect(Select, Generic[V_co]):
         if "next_page" in self.values:
             changed = True
             self.page_index += 1
-            self.options = self.process_options(selected_values=self.values)
+            self.options = self.process_options()
         elif "prev_page" in self.values:
             changed = True
             self.page_index -= 1
-            self.options = self.process_options(selected_values=self.values)
+            self.options = self.process_options()
 
         if changed:
             for option in self.options:
                 option.default = False
             self.update_options_defaults()
+            for option in self.options:
+                if option.value in {PREV_PAGE.value, NEXT_PAGE.value}:
+                    option.default = False
 
         self.translate(self.view.locale, self.view.translator)
         return changed

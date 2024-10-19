@@ -2,7 +2,6 @@ about_command.contribute: 貢獻
 about_command.developer: 開發者
 about_command.discord_server: Discord 伺服器
 about_command.guild_count: 伺服器數量
-about_command.invite: 邀請機器人
 about_command.latest_changes: 最近的變更
 about_command.ram_usage: 記憶體使用量
 about_command.support: 捐款

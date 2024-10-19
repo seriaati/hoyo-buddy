@@ -2,7 +2,6 @@ about_command.contribute: Contribute
 about_command.developer: Developer
 about_command.discord_server: Discord server
 about_command.guild_count: Guild count
-about_command.invite: Invite bot
 about_command.latest_changes: Latest changes
 about_command.ram_usage: RAM Usage
 about_command.support: Donate

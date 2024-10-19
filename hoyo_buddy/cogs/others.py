@@ -75,7 +75,6 @@ class Others(commands.Cog):
             embed.add_field(name=LocaleStr(key="about_command.designers"), value=" ".join(designers), inline=False)
 
         # translators
-
         translator_role = guild.get_role(1010181916642787503)
         if translator_role is not None:
             translators = [get_discord_user_md_link(translator) for translator in translator_role.members]
@@ -106,14 +105,6 @@ class Others(commands.Cog):
         view.add_item(
             Button(label=LocaleStr(key="about_command.website"), url="https://seria.is-a.dev/hoyo-buddy", row=1)
         )
-        if self.bot.user is not None:
-            view.add_item(
-                Button(
-                    label=LocaleStr(key="about_command.invite"),
-                    url=f"https://discord.com/oauth2/authorize?client_id={self.bot.user.id}",
-                    row=1,
-                )
-            )
         view.add_item(Button(label=LocaleStr(key="about_command.support"), url="https://link.seria.moe/donate", row=1))
         view.add_item(
             Button(

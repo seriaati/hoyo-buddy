@@ -578,7 +578,7 @@ class WebApp:
             if user_id is None:
                 return pages.ErrorPage(code=400, message="Missing user ID")
 
-            page.session.set("hb.user_id", user_id)
+            page.session.set("hb.user_id", int(user_id))
 
         original_route = await page.client_storage.get_async("hb.original_route")
         if original_route:

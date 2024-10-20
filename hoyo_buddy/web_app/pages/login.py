@@ -77,8 +77,8 @@ class LoginPage(ft.View):
         avatar = user_data.get("avatar")
         if avatar is None:
             migrated = user_data["discriminator"] == "0"
-            index = (user_data["id"] >> 22) % 6 if migrated else user_data["discriminator"] % 5
-            return f"{base_url}/embed/avatars/{index}.webp"
+            index = (int(user_data["id"]) >> 22) % 6 if migrated else int(user_data["discriminator"]) % 5
+            return f"{base_url}/embed/avatars/{index}.png"
 
         if avatar.startswith("a_"):
             return f"{base_url}/avatars/{user_data['id']}/{avatar}.gif"
@@ -88,7 +88,7 @@ class LoginPage(ft.View):
         assert self.user_data is not None
 
         page: ft.Page = e.page
-        page.session.set("hb.user_id", self.user_data["id"])
+        page.session.set("hb.user_id", int(self.user_data["id"]))
 
         original_route = await page.client_storage.get_async("hb.original_route")
         if original_route:

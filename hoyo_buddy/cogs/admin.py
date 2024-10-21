@@ -259,11 +259,6 @@ class Admin(commands.Cog):
 
         await ctx.send("Done.")
 
-    @commands.command(name="update-version")
-    async def update_version_command(self, ctx: commands.Context) -> Any:
-        await self.bot.set_version_status()
-        await ctx.send("Done.")
-
 
 async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Admin(bot))

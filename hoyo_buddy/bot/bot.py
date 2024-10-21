@@ -63,6 +63,9 @@ class HoyoBuddy(commands.AutoShardedBot):
     def __init__(
         self, *, session: ClientSession, env: str, translator: Translator, pool: asyncpg.Pool, config: Config
     ) -> None:
+        self.repo = git.Repo()
+        self.version = get_repo_version()
+
         super().__init__(
             command_prefix=commands.when_mentioned,
             intents=discord.Intents(guilds=True, members=True, emojis=True, messages=True),
@@ -75,7 +78,9 @@ class HoyoBuddy(commands.AutoShardedBot):
             tree_cls=CommandTree,
             allowed_contexts=discord.app_commands.AppCommandContext(guild=True, dm_channel=True, private_channel=True),
             allowed_installs=discord.app_commands.AppInstallationType(guild=True, user=True),
+            activity=discord.CustomActivity(f"{self.version} | hb.seria.moe"),
         )
+
         self.session = session
         self.uptime = get_now()
         self.translator = translator
@@ -94,17 +99,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         """[game][locale][item_name] -> item_id"""
 
         self.geetest_command_task: asyncio.Task | None = None
-
-    @property
-    def repo(self) -> git.Repo:
-        return git.Repo()
-
-    @property
-    def version(self) -> str:
-        return get_repo_version()
-
-    async def set_version_status(self) -> None:
-        await self.change_presence(activity=discord.CustomActivity(f"{self.version} | hb.seria.moe"))
 
     async def setup_hook(self) -> None:
         # Initialize genshin.py sqlite cache
@@ -134,9 +128,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.geetest_command_task = asyncio.create_task(
             listener.run({"geetest_command": self.handle_geetest_notify}, notification_timeout=2)
         )
-
-    async def on_ready(self) -> None:
-        await self.set_version_status()
 
     def capture_exception(self, e: Exception) -> None:
         # Errors to suppress

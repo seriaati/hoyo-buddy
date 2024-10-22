@@ -241,21 +241,23 @@ class ZZZTeamCard:
 
     def _draw_stats(self, agent: ZZZFullAgent, im: Image.Image, drawer: Drawer) -> None:
         props = get_props(agent)
-        start_pos = (336, 31)
+        start_pos = (299, 31)
         for i, prop in enumerate(props):
-            if prop is None:
+            if prop is None or not isinstance(prop.type, PropType):
                 continue
 
+            prop_icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[prop.type]}", folder="zzz-build-card", size=(25, 25))
+            im.alpha_composite(prop_icon, start_pos)
             text = prop.final or prop.value
-            drawer.write(text, size=19, position=start_pos)
-            start_pos = (471, 31) if i == 5 else (start_pos[0], start_pos[1] + 44)
-
-        dmg_bonus_prop = props[-1]
-        if dmg_bonus_prop is not None and isinstance(dmg_bonus_prop.type, PropType):
-            prop_icon = drawer.open_asset(
-                f"stat_icons/{STAT_ICONS[dmg_bonus_prop.type]}", folder="zzz-build-card", size=(25, 25)
+            drawer.write(
+                text,
+                size=19,
+                position=(start_pos[0] + prop_icon.width + 10, start_pos[1] + prop_icon.height // 2),
+                color=(20, 20, 20),
+                anchor="lm",
             )
-            im.alpha_composite(prop_icon, (434, 252))
+
+            start_pos = (433, 31) if i == 5 else (start_pos[0], start_pos[1] + 44)
 
     def _render_rotated_text(self, drawer: Drawer, name_data: AgentNameData) -> Image.Image:
         text = name_data.full_name.upper()

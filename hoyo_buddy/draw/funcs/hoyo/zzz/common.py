@@ -29,6 +29,18 @@ STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     ZZZPropertyType.ANOMALY_MASTERY: "ANOMALY_MASTER.png",
     ZZZPropertyType.PEN_RATIO: "PEN_RATIO.png",
     ZZZPropertyType.IMPACT: "IMPACT.png",
+    # Agent
+    ZZZPropertyType.AGENT_HP: "HP.png",
+    ZZZPropertyType.AGENT_ATK: "ATK.png",
+    ZZZPropertyType.AGENT_DEF: "DEF.png",
+    ZZZPropertyType.AGENT_PEN: "PEN.png",
+    ZZZPropertyType.AGENT_PEN_RATIO: "PEN_RATIO.png",
+    ZZZPropertyType.AGENT_CRIT_RATE: "CRIT_RATE.png",
+    ZZZPropertyType.AGENT_CRIT_DMG: "CRIT_DMG.png",
+    ZZZPropertyType.AGENT_ENERGY_GEN: "ENERGY_REGEN.png",
+    ZZZPropertyType.AGENT_ANOMALY_PROFICIENCY: "ANOMALY_PRO.png",
+    ZZZPropertyType.AGENT_ANOMALY_MASTERY: "ANOMALY_MASTER.png",
+    ZZZPropertyType.AGENT_IMPACT: "IMPACT.png",
     # Agent DMG Bonus
     ZZZPropertyType.PHYSICAL_DMG_BONUS: "PHYSICAL.png",
     ZZZPropertyType.FIRE_DMG_BONUS: "FIRE.png",
@@ -48,30 +60,30 @@ SKILL_ORDER: Final[tuple[ZZZSkillType, ...]] = (
 
 
 def get_props(agent: ZZZFullAgent) -> list[ZZZAgentProperty | None]:
-    result = [
+    props = [
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_HP),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ATK),
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_DEF),
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_IMPACT),
+        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ANOMALY_MASTERY),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_CRIT_RATE),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN),
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ANOMALY_MASTERY),
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ANOMALY_PROFICIENCY),
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN_RATIO),
+        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_DEF),
+        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_IMPACT),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ENERGY_GEN),
+        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ANOMALY_PROFICIENCY),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_CRIT_DMG),
+        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN_RATIO),
     ]
 
     match agent.element:
         case ZZZElementType.PHYSICAL:
-            result.append(dutils.get(agent.properties, type=ZZZPropertyType.PHYSICAL_DMG_BONUS))
+            props.insert(2, dutils.get(agent.properties, type=ZZZPropertyType.PHYSICAL_DMG_BONUS))
         case ZZZElementType.FIRE:
-            result.append(dutils.get(agent.properties, type=ZZZPropertyType.FIRE_DMG_BONUS))
+            props.insert(2, dutils.get(agent.properties, type=ZZZPropertyType.FIRE_DMG_BONUS))
         case ZZZElementType.ICE:
-            result.append(dutils.get(agent.properties, type=ZZZPropertyType.ICE_DMG_BONUS))
+            props.insert(2, dutils.get(agent.properties, type=ZZZPropertyType.ICE_DMG_BONUS))
         case ZZZElementType.ELECTRIC:
-            result.append(dutils.get(agent.properties, type=ZZZPropertyType.ELECTRIC_DMG_BONUS))
+            props.insert(2, dutils.get(agent.properties, type=ZZZPropertyType.ELECTRIC_DMG_BONUS))
         case ZZZElementType.ETHER:
-            result.append(dutils.get(agent.properties, type=ZZZPropertyType.ETHER_DMG_BONUS))
+            props.insert(2, dutils.get(agent.properties, type=ZZZPropertyType.ETHER_DMG_BONUS))
 
-    return result
+    return props

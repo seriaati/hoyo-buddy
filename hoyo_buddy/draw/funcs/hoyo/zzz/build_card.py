@@ -276,18 +276,24 @@ class ZZZAgentCard:
             start_pos = (2809, 397 + 98) if i == 2 else (start_pos[0] + 205, start_pos[1])
 
         # Stats
-        start_pos = (2808, 615)
+        start_pos = (2720, 616)
         props = get_props(self._agent)
         for i, prop in enumerate(props):
-            if prop is None:
+            if prop is None or not isinstance(prop.type, PropType):
                 continue
-            drawer.write(prop.final or prop.value, size=40, position=start_pos, color=(20, 20, 20), style="medium")
-            start_pos = (3092, 615) if i == 5 else (start_pos[0], start_pos[1] + 106)
 
-        dmg_bonus_prop = props[-1]
-        if dmg_bonus_prop is not None and isinstance(dmg_bonus_prop.type, PropType):
-            prop_icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[dmg_bonus_prop.type]}", size=(59, 59))
-            im.alpha_composite(prop_icon, (3004, 1145))
+            prop_icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[prop.type]}", size=(59, 59))
+            im.alpha_composite(prop_icon, start_pos)
+            drawer.write(
+                prop.final or prop.value,
+                size=40,
+                position=(start_pos[0] + prop_icon.width + 17, start_pos[1] + prop_icon.height // 2),
+                color=(20, 20, 20),
+                style="medium",
+                anchor="lm",
+            )
+
+            start_pos = (3003, 616) if i == 5 else (start_pos[0], start_pos[1] + 106)
 
         buffer = BytesIO()
         im.save(buffer, "PNG")

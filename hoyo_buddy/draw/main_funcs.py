@@ -250,9 +250,8 @@ async def draw_spiral_abyss_card(
     characters: Sequence[genshin.models.GenshinDetailCharacter],
     translator: Translator,
 ) -> File:
-    abyss_characters: dict[str, AbyssCharacter] = {
-        str(chara.id): AbyssCharacter(level=chara.level, const=chara.constellation, icon=chara.icon)
-        for chara in characters
+    abyss_characters: dict[int, AbyssCharacter] = {
+        chara.id: AbyssCharacter(level=chara.level, const=chara.constellation, icon=chara.icon) for chara in characters
     }
 
     urls = [

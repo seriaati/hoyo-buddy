@@ -22,13 +22,13 @@ class AbyssCard:
         locale: str,
         translator: Translator,
         abyss: genshin.models.SpiralAbyss,
-        charas: dict[str, AbyssCharacter],
+        characters: dict[int, AbyssCharacter],
     ) -> None:
         self._dark_mode = dark_mode
         self._locale = locale
         self._translator = translator
         self._abyss = abyss
-        self._abyss_characters = charas
+        self._characters = characters
 
     @property
     def locale(self) -> Locale:
@@ -162,9 +162,12 @@ class AbyssCard:
                 bk_draw, folder="abyss", dark_mode=self._dark_mode, locale=self.locale, translator=self._translator
             )
 
-            abyss_chara = self._abyss_characters[str(chara.id)]
-            bk_drawer.write(f"C{abyss_chara.const}", position=(102, 14), size=18, style="medium", anchor="mm")
-            bk_drawer.write(LevelStr(abyss_chara.level), position=(57, 132), size=24, style="medium", anchor="mm")
+            detailed_chara = self._characters.get(chara.id)
+            if detailed_chara is not None:
+                bk_drawer.write(f"C{detailed_chara.const}", position=(102, 14), size=18, style="medium", anchor="mm")
+                bk_drawer.write(
+                    LevelStr(detailed_chara.level), position=(57, 132), size=24, style="medium", anchor="mm"
+                )
 
             im.paste(bk, (i * (padding + 116), 0), bk)
 

@@ -10,7 +10,7 @@ STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     ZZZPropertyType.DISC_HP: "HP.png",
     ZZZPropertyType.DISC_ATK: "ATK.png",
     ZZZPropertyType.DISC_DEF: "DEF.png",
-    ZZZPropertyType.DISC_PEN: "PEN_RATIO.png",
+    ZZZPropertyType.DISC_PEN: "PEN.png",
     ZZZPropertyType.DISC_BONUS_PHYSICAL_DMG: "PHYSICAL.png",
     ZZZPropertyType.DISC_BONUS_FIRE_DMG: "FIRE.png",
     ZZZPropertyType.DISC_BONUS_ICE_DMG: "ICE.png",

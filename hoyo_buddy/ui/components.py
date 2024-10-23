@@ -480,9 +480,12 @@ class PaginatorSelect(Select, Generic[V_co]):
             for option in self.options:
                 option.default = False
             self.update_options_defaults()
+
             for option in self.options:
                 if option.value in {PREV_PAGE.value, NEXT_PAGE.value}:
                     option.default = False
+
+            self.max_values = min(self._max_values, len(self.options))
 
         self.translate(self.view.locale, self.view.translator)
         return changed

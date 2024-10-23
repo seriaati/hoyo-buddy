@@ -200,8 +200,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         )
 
         if sub_stat_name and sub_stat_value:
-            assert embed.description is not None
-            embed.description += f"\n{sub_stat_name}: {sub_stat_value}"
+            embed.add_description(f"{sub_stat_name}: {sub_stat_value}")
 
         if weapon.affix:
             embed.add_field(

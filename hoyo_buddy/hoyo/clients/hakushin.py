@@ -338,10 +338,9 @@ class HakushinTranslator:
 
     def get_engine_embed(self, engine: hakushin.zzz.WeaponDetail, refinement: str) -> DefaultEmbed:
         embed = DefaultEmbed(self._locale, self._translator, title=engine.name)
-        embed.description = ""
         if engine.rarity is not None:
             embed.description = "★" * STAR_NUMS[engine.rarity]
-        embed.description += f"\n{engine.description}\n\n{engine.description2}"
+        embed.add_description(f"{engine.description}\n\n{engine.description2}")
 
         effect = engine.refinements[refinement]
         embed.add_field(name=f"{effect.name} ({refinement})", value=effect.description)

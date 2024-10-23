@@ -55,6 +55,14 @@ class Embed(discord.Embed):
         copy.translator = self.translator
         return copy
 
+    def add_description(self, description: LocaleStr | str) -> Self:
+        translated_description = self.translator.translate(description, self.locale)
+        if self.description is None:
+            self.description = translated_description
+        else:
+            self.description += f"\n{translated_description}"
+        return self
+
 
 class DefaultEmbed(Embed):
     def __init__(

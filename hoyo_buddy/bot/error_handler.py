@@ -121,10 +121,8 @@ def get_error_embed(error: Exception, locale: discord.Locale, translator: Transl
             game_strs = [
                 f"- {get_game_emoji(game)} {EnumStr(game).translate(translator, locale)}" for game in error.games
             ]
-            if embed.description is None:
-                embed.description = ""
             joined_str = "\n".join(game_strs)
-            embed.description += f"\n{joined_str}"
+            embed.add_description(joined_str)
     elif isinstance(error, genshin_errors.GenshinException | enka_errors.EnkaAPIError):
         err_info = None
 

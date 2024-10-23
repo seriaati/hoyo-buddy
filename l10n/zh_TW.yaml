@@ -149,6 +149,7 @@ dark_mode_button_label: 深色模式
 error_footer: "你可以在我們的 Discord 伺服器內尋求幫助，連結在 /about"
 error_title: 發生了一個錯誤
 erudition: 智識
+days: 天
 exceptions.card_not_ready_error.message: "當新角色釋出時，我需要為他們指定面板卡片使用的顏色。\n如果你在遊戲更新後的幾天仍然看到這則訊息的話，請在 [Discord 伺服器](https://link.seria.moe/hb-dc) 內通知我，因為我可能忘記做了。"
 exceptions.card_not_ready_error.title: "{character_name} 的卡片資料尚未準備好。"
 exped.embed.description: 一或多個探索派遣已經完成了
@@ -298,8 +299,17 @@ notes-card.hsr.daily-training: 每日實訓
 notes-card.hsr.echo-of-war-discounts: 歷戰餘響次數
 notes-card.hsr.reserved-power: 後備開拓力
 notes-card.hsr.trailblaze-power: 開拓力
-notes.item_full_in_time: "{emoji} 在{in_time}額滿"
-notes_available: "{emoji} 在 {in_time} 可用"
+notes.item_full_in_time: "{emoji} 在 {in_time} 後溢出"
+notes.stamina_label: 體力提醒
+notes.stamina: "體力: {cur}/{max}, 在 {time} 後溢出"
+notes.train_score: "每日歷練值: {cur}/{max}"
+notes.superstring_dimension: 超弦空間
+notes.superstring_dimension_value: "當前積分: {score}"
+notes.memorial_arena: 記憶戰場
+notes.memorial_arena_value: "挑戰獎勵: {rewards_cur}/{rewards_max}\nSSS 獎勵: {sss_cur}/{sss_max}"
+notes.elysian_realm: 往世樂土
+notes.elysian_realm_value: "當前積分: {cur}/{max}"
+notes_available: "{emoji} 在 {in_time} 後可用"
 notes_command_description: 查看即時便籤
 notif.embed.footer: "點擊下方的按鈕更改通知設定。\n如果它已經過期了，使用 /notes 指令。"
 notif_modal.enabled.label: 已啟用
@@ -495,6 +505,8 @@ scratch_card_button.label: 刮刮樂
 scratch_card.embed.description: 還沒刮刮刮樂
 zzz_engagement_button.label: 活躍度
 zzz_engagement.embed.description: 今日的活躍度尚未完成
+honkai_daily_embed_title: 每日歷練值提醒
+honkai_daily_embed_description: "今日的每日歷練值尚未完成, {cur}/{max}"
 video_store_button.label: 錄影帶店經營
 video_store.embed.description: 錄影帶的收益尚未領取
 scratch_card.incomplete: 尚未完成

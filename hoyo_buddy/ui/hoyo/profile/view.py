@@ -366,7 +366,9 @@ class ProfileView(View):
     ) -> BytesIO:
         """Draw Star Rail character card in Hoyo Buddy template."""
         assert isinstance(character, enka.hsr.Character | HoyolabHSRCharacter)
-        character_data = self._card_data.get(str(character.id))
+
+        character_id = str(character.id)
+        character_data = self._card_data.get(character_id)
         if character_data is None:
             raise CardNotReadyError(character.name)
 

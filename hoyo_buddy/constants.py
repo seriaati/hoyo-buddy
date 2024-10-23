@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 import pathlib
-from typing import Final
+from typing import Final, Literal
 
 import akasha
 import ambr
@@ -631,3 +631,53 @@ def is_standard_item(game: Game, item_id: int) -> bool:
 
 def locale_to_hakushin_lang(locale: discord.Locale) -> hakushin.Language:
     return LOCALE_TO_HAKUSHIN_LANG.get(locale, hakushin.Language.EN)
+
+
+# From https://www.prydwen.gg/zenless/guides/disk-drives-stats/
+DISC_SUBSTAT_VALUES: dict[Literal["B", "A", "S"], dict[genshin.models.ZZZPropertyType, float]] = {
+    "B": {
+        genshin.models.ZZZPropertyType.FLAT_ATK: 7,
+        genshin.models.ZZZPropertyType.ATK_PERCENT: 1,
+        genshin.models.ZZZPropertyType.FLAT_HP: 39,
+        genshin.models.ZZZPropertyType.HP_PERCENT: 1,
+        genshin.models.ZZZPropertyType.FLAT_DEF: 5,
+        genshin.models.ZZZPropertyType.DEF_PERCENT: 1.6,
+        genshin.models.ZZZPropertyType.CRIT_RATE: 0.8,
+        genshin.models.ZZZPropertyType.CRIT_DMG: 1.6,
+        genshin.models.ZZZPropertyType.FLAT_PEN: 3,
+        genshin.models.ZZZPropertyType.ANOMALY_PROFICIENCY: 3,
+    },
+    "A": {
+        genshin.models.ZZZPropertyType.FLAT_ATK: 15,
+        genshin.models.ZZZPropertyType.ATK_PERCENT: 2,
+        genshin.models.ZZZPropertyType.FLAT_HP: 79,
+        genshin.models.ZZZPropertyType.HP_PERCENT: 2,
+        genshin.models.ZZZPropertyType.FLAT_DEF: 10,
+        genshin.models.ZZZPropertyType.DEF_PERCENT: 3.2,
+        genshin.models.ZZZPropertyType.CRIT_RATE: 1.6,
+        genshin.models.ZZZPropertyType.CRIT_DMG: 3.2,
+        genshin.models.ZZZPropertyType.FLAT_PEN: 6,
+        genshin.models.ZZZPropertyType.ANOMALY_PROFICIENCY: 6,
+    },
+    "S": {
+        genshin.models.ZZZPropertyType.FLAT_ATK: 19,
+        genshin.models.ZZZPropertyType.ATK_PERCENT: 3,
+        genshin.models.ZZZPropertyType.FLAT_HP: 112,
+        genshin.models.ZZZPropertyType.HP_PERCENT: 3,
+        genshin.models.ZZZPropertyType.FLAT_DEF: 15,
+        genshin.models.ZZZPropertyType.DEF_PERCENT: 4.8,
+        genshin.models.ZZZPropertyType.CRIT_RATE: 2.4,
+        genshin.models.ZZZPropertyType.CRIT_DMG: 4.8,
+        genshin.models.ZZZPropertyType.FLAT_PEN: 9,
+        genshin.models.ZZZPropertyType.ANOMALY_PROFICIENCY: 9,
+    },
+}
+
+
+def get_disc_substat_roll_num(disc_rarity: Literal["B", "A", "S"], prop: genshin.models.ZZZProperty) -> int:
+    if not isinstance(prop.type, genshin.models.ZZZPropertyType):
+        return 0
+
+    value = DISC_SUBSTAT_VALUES[disc_rarity][prop.type]
+    prop_value = float(prop.value.replace("%", ""))
+    return round(prop_value / value)

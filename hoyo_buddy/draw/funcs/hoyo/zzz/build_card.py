@@ -10,6 +10,7 @@ from genshin.models import ZZZPropertyType as PropType
 from PIL import Image, ImageDraw
 from PIL.Image import Transpose
 
+from hoyo_buddy.constants import get_disc_substat_roll_num
 from hoyo_buddy.draw.drawer import BLACK, Drawer
 
 from .common import SKILL_ORDER, STAT_ICONS, get_props
@@ -30,6 +31,7 @@ class ZZZAgentCard:
         name_data: AgentNameData | None,
         color: str | None,
         template: Literal[1, 2],
+        show_substat_rolls: bool,
     ) -> None:
         self._agent = agent
         self._locale = locale
@@ -39,6 +41,7 @@ class ZZZAgentCard:
         self._name_data = name_data
         self._color = color
         self._template = template
+        self._show_substat_rolls = show_substat_rolls
 
     def _draw_background(self) -> Image.Image:
         zzz_text = self._card_data.get("zzz_text", True)
@@ -254,6 +257,11 @@ class ZZZAgentCard:
                             style="medium",
                             anchor="lm",
                         )
+
+                        if self._show_substat_rolls:
+                            roll_num = get_disc_substat_roll_num(disc.rarity, sub_stat)
+                            roll_num_img = drawer.open_asset(f"rolls/{roll_num}.png")
+                            im.alpha_composite(roll_num_img, (sub_stat_pos[0], sub_stat_pos[1] + 32))
 
                     if j == 1:
                         sub_stat_pos = (start_pos[0] + 174, start_pos[1] + 134)

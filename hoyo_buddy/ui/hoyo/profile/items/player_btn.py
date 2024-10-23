@@ -37,6 +37,10 @@ class PlayerInfoButton(Button[ProfileView]):
         image_settings_btn = self.view.get_item("profile_image_settings")
         image_settings_btn.disabled = True
 
+        # Enable the team card settings button
+        team_card_settings_btn = self.view.get_item("profile_team_card_settings")
+        team_card_settings_btn.disabled = False
+
         chara_select: CharacterSelect = self.view.get_item("profile_character_select")
         chara_select.update_options_defaults(values=["none"])
 

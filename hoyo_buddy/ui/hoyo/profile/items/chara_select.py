@@ -161,6 +161,10 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         card_settings_btn = self.view.get_item("profile_card_settings")
         card_settings_btn.disabled = False
 
+        # Enable the team card settings button
+        team_card_settings_btn = self.view.get_item("profile_team_card_settings")
+        team_card_settings_btn.disabled = False
+
         # Enable the image settings button
         image_settings_btn = self.view.get_item("profile_image_settings")
         image_settings_btn.disabled = False

@@ -768,7 +768,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.2"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#a7f796c6c363fdefaf19e4a96422465c5c5cd012" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#bd47e155840e06ce4de95b4c158d917a967eb492" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },
@@ -836,7 +836,7 @@ wheels = [
 
 [[package]]
 name = "hoyo-buddy"
-version = "1.12.3"
+version = "1.13.0"
 source = { virtual = "." }
 dependencies = [
     { name = "aerich" },

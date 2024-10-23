@@ -134,6 +134,7 @@ class Settings(BaseModel):
     zzz_card_temp = fields.CharField(max_length=32, default="hb2")
     team_card_dark_mode = fields.BooleanField(default=False)
     enable_dyk = fields.BooleanField(default=True)
+    team_card_substat_rolls = fields.BooleanField(default=True)
 
     @property
     def locale(self) -> Locale | None:
@@ -152,6 +153,7 @@ class CardSettings(BaseModel):
     template = fields.CharField(max_length=32, default="hb1")
     show_rank = fields.BooleanField(default=True)
     """Whether to show the akasha rank of the character, only applies to genshin."""
+    show_substat_rolls = fields.BooleanField(default=True)
 
     class Meta:
         unique_together = ("character_id", "user")

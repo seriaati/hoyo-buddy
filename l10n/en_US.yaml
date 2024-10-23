@@ -704,3 +704,8 @@ not_supported_by_enka_error_title: Not Supported by Enka Network Yet
 not_supported_by_enka_error_message: "{game} is not supported by [Enka Network](https://enka.cc) yet, so you cannot query a player's data with only the UID. Please add a {game} account with </accounts> and try again."
 currently_logged_in_as: "You are currently logged in as:"
 not_you_label: "Not you? Click to login with a different account"
+profile_show_substat_rolls: Substat rolls
+profile_team_show_substat_rolls: Team card substat rolls
+team_card_settings_button_label: Team card settings
+team_card_settings_embed_title: Modifying Team Card Settings
+team_card_settings_embed_description: "Team card settings are shared accross different games and accounts, changes made to some settings may not be reflected on the card when they are not supported by the card template.\nWhen you're done, click the green button in the message above to redraw the card."

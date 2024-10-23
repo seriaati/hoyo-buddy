@@ -395,6 +395,7 @@ async def draw_zzz_build_card(
     card_data: dict[str, Any],
     color: str | None,
     template: Literal[1, 2, 3],
+    show_substat_rolls: bool,
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data([agent], template=template)
 
@@ -413,6 +414,7 @@ async def draw_zzz_build_card(
             agent_images={str(agent.id): image},
             name_datas=draw_data.name_data,
             disc_icons=draw_data.disc_icons,
+            show_substat_rolls=show_substat_rolls,
         )
     else:
         card = funcs.zzz.ZZZAgentCard(
@@ -424,6 +426,7 @@ async def draw_zzz_build_card(
             disc_icons=draw_data.disc_icons,
             color=color,
             template=template,
+            show_substat_rolls=show_substat_rolls,
         )
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
@@ -474,7 +477,11 @@ async def draw_honkai_suits_card(
 
 
 async def draw_zzz_team_card(
-    draw_input: DrawInput, agents: Sequence[ZZZFullAgent], agent_colors: dict[str, str], agent_images: dict[str, str]
+    draw_input: DrawInput,
+    agents: Sequence[ZZZFullAgent],
+    agent_colors: dict[str, str],
+    agent_images: dict[str, str],
+    show_substat_rolls: bool,
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data(agents, template=1)
 
@@ -490,6 +497,7 @@ async def draw_zzz_team_card(
         agent_images=agent_images,
         name_datas=draw_data.name_data,
         disc_icons=draw_data.disc_icons,
+        show_substat_rolls=show_substat_rolls,
     )
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 

@@ -33,6 +33,7 @@ from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
+from hoyo_buddy.ui.hoyo.profile.items.team_card_settings_btn import TeamCardSettingsButton
 from hoyo_buddy.utils import blur_uid, format_float, human_format_number
 
 from .card_settings import get_card_settings
@@ -283,20 +284,21 @@ class ProfileView(View):
     def _add_items(self) -> None:
         self.add_item(PlayerInfoButton(row=0))
         self.add_item(CardSettingsButton(row=0))
-        self.add_item(ImageSettingsButton(row=0))
-        self.add_item(RedrawCardButton(row=0))
+        self.add_item(TeamCardSettingsButton(row=1))
+        self.add_item(ImageSettingsButton(row=1))
+        self.add_item(RedrawCardButton(row=1))
 
         if self.characters:
             self.add_item(
                 CharacterSelect(
-                    self.game, list(self.characters.values()), self.cache_extras, self._builds, self._account, row=1
+                    self.game, list(self.characters.values()), self.cache_extras, self._builds, self._account, row=2
                 )
             )
-        self.add_item(BuildSelect(row=2))
+        self.add_item(BuildSelect(row=3))
 
         if self._account is not None:
-            self.add_item(RemoveFromCacheButton(row=3))
-        self.add_item(CardInfoButton(row=3))
+            self.add_item(RemoveFromCacheButton(row=4))
+        self.add_item(CardInfoButton(row=4))
 
     async def _draw_src_character_card(
         self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
@@ -484,6 +486,7 @@ class ProfileView(View):
             card_data=agent_temp_data,
             color=card_settings.custom_primary_color,
             template=template_num,
+            show_substat_rolls=card_settings.show_substat_rolls,
         )
 
     async def draw_card(
@@ -561,7 +564,10 @@ class ProfileView(View):
                 or self._card_data[char_id]["color"]
                 for char_id in self.character_ids
             }
-            return await draw_zzz_team_card(draw_input, agents, agent_colors, images)
+            return await draw_zzz_team_card(
+                draw_input, agents, agent_colors, images, show_substat_rolls=settings.team_card_substat_rolls
+            )
+
         if self.game is Game.STARRAIL:
             character_colors = {
                 char_id: (await get_card_settings(i.user.id, char_id, game=self.game)).custom_primary_color

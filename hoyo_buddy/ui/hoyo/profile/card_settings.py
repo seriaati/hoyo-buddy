@@ -16,7 +16,7 @@ from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, ToggleButton, View
 from hoyo_buddy.utils import is_valid_hex_color
 
-from .btn_states import DISABLE_COLOR, DISABLE_DARK_MODE, DISABLE_IMAGE
+from .btn_states import DISABLE_COLOR, DISABLE_DARK_MODE
 from .items.settings_chara_select import CharacterSelect as SettingsCharacterSelect
 
 if TYPE_CHECKING:
@@ -121,10 +121,6 @@ class CardSettingsView(View):
         return f"https://singlecolorimage.com/get/{color[1:]}/100x100"
 
     @property
-    def disable_ai_features(self) -> bool:
-        return self.game is Game.ZZZ or self.card_settings.template in DISABLE_IMAGE
-
-    @property
     def disable_color_features(self) -> bool:
         return self.game is Game.GENSHIN or self.card_settings.template in DISABLE_COLOR
 
@@ -136,11 +132,16 @@ class CardSettingsView(View):
     def disable_show_rank_button(self) -> bool:
         return self.game is not Game.GENSHIN or "hb" not in self.card_settings.template
 
+    @property
+    def disable_substat_roll_features(self) -> bool:
+        return self.game is not Game.ZZZ
+
     def _add_items(self) -> None:
         self.add_item(CharacterSelect(self._characters, self.selected_character_id, row=0))
         self.add_item(
             CardTemplateSelect(self.card_settings.template, hb_only=self._hb_template_only, game=self.game, row=1)
         )
+
         self.add_item(
             PrimaryColorButton(self.card_settings.custom_primary_color, disabled=self.disable_color_features, row=2)
         )
@@ -150,8 +151,8 @@ class CardSettingsView(View):
             DarkModeButton(current_toggle=self.card_settings.dark_mode, disabled=self.disable_dark_mode_features, row=3)
         )
         self.add_item(
-            TeamCardDarkModeButton(
-                current_toggle=self.settings.team_card_dark_mode, disabled=self.disable_dark_mode_features, row=3
+            SubstatRolls(
+                current_toggle=self.card_settings.show_substat_rolls, disabled=self.disable_substat_roll_features, row=3
             )
         )
         self.add_item(
@@ -228,22 +229,6 @@ class DarkModeButton(ToggleButton[CardSettingsView]):
         await super().callback(i, edit=True)
         self.view.card_settings.dark_mode = self.current_toggle
         await self.view.card_settings.save(update_fields=("dark_mode",))
-
-
-class TeamCardDarkModeButton(ToggleButton[CardSettingsView]):
-    def __init__(self, current_toggle: bool, disabled: bool, row: int) -> None:
-        super().__init__(
-            current_toggle,
-            LocaleStr(key="profile.team_dark_mode.button.label"),
-            custom_id="profile_team_dark_mode",
-            disabled=disabled,
-            row=row,
-        )
-
-    async def callback(self, i: Interaction) -> None:
-        await super().callback(i, edit=True)
-        self.view.settings.team_card_dark_mode = self.current_toggle
-        await Settings.filter(user_id=i.user.id).update(team_card_dark_mode=self.current_toggle)
 
 
 class PrimaryColorModal(Modal):
@@ -343,8 +328,8 @@ class CardTemplateSelect(Select[CardSettingsView]):
         dark_mode_btn: DarkModeButton = self.view.get_item("profile_dark_mode")
         dark_mode_btn.disabled = self.view.disable_dark_mode_features
 
-        team_dark_mode_btn: TeamCardDarkModeButton = self.view.get_item("profile_team_dark_mode")
-        team_dark_mode_btn.disabled = self.view.disable_dark_mode_features
+        show_rank_btn: ShowRankButton = self.view.get_item("profile_show_rank")
+        show_rank_btn.disabled = self.view.disable_show_rank_button
 
         embed = self.view.get_settings_embed()
         await i.response.edit_message(embed=embed, view=self.view)
@@ -400,3 +385,19 @@ class ShowRankButton(ToggleButton[CardSettingsView]):
         await super().callback(i, edit=True)
         self.view.card_settings.show_rank = self.current_toggle
         await self.view.card_settings.save(update_fields=("show_rank",))
+
+
+class SubstatRolls(ToggleButton[CardSettingsView]):
+    def __init__(self, *, current_toggle: bool, disabled: bool, row: int) -> None:
+        super().__init__(
+            current_toggle,
+            LocaleStr(key="profile_show_substat_rolls"),
+            custom_id="profile_show_substat_rolls",
+            disabled=disabled,
+            row=row,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i, edit=True)
+        self.view.card_settings.show_substat_rolls = self.current_toggle
+        await self.view.card_settings.save(update_fields=("show_substat_rolls",))

@@ -6,29 +6,27 @@ from discord import utils as dutils
 from genshin.models import ZZZAgentProperty, ZZZElementType, ZZZFullAgent, ZZZPropertyType, ZZZSkillType
 
 STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
-    # Disc
-    ZZZPropertyType.DISC_HP: "HP.png",
-    ZZZPropertyType.DISC_ATK: "ATK.png",
-    ZZZPropertyType.DISC_DEF: "DEF.png",
-    ZZZPropertyType.DISC_PEN: "PEN.png",
-    ZZZPropertyType.DISC_BONUS_PHYSICAL_DMG: "PHYSICAL.png",
-    ZZZPropertyType.DISC_BONUS_FIRE_DMG: "FIRE.png",
-    ZZZPropertyType.DISC_BONUS_ICE_DMG: "ICE.png",
-    ZZZPropertyType.DISC_BONUS_ELECTRIC_DMG: "ELECTRIC.png",
-    ZZZPropertyType.DISC_BONUS_ETHER_DMG: "ETHER.png",
-    # W-engine
-    ZZZPropertyType.ENGINE_HP: "HP.png",
-    ZZZPropertyType.ENGINE_BASE_ATK: "ATK.png",
-    ZZZPropertyType.ENGINE_ATK: "ATK.png",
-    ZZZPropertyType.ENGINE_DEF: "DEF.png",
-    ZZZPropertyType.ENGINE_ENERGY_REGEN: "ENERGY_REGEN.png",
-    # Common
+    # Disc and w-engine
+    ZZZPropertyType.BASE_ATK: "ATK.png",
+    ZZZPropertyType.FLAT_HP: "HP.png",
+    ZZZPropertyType.FLAT_ATK: "ATK.png",
+    ZZZPropertyType.FLAT_DEF: "DEF.png",
+    ZZZPropertyType.FLAT_PEN: "PEN.png",
+    ZZZPropertyType.HP_PERCENT: "HP.png",
+    ZZZPropertyType.ATK_PERCENT: "ATK.png",
+    ZZZPropertyType.DEF_PERCENT: "DEF.png",
+    ZZZPropertyType.PEN_PERCENT: "PEN_RATIO.png",
+    ZZZPropertyType.DISC_PHYSICAL_DMG_BONUS: "PHYSICAL.png",
+    ZZZPropertyType.DISC_FIRE_DMG_BONUS: "FIRE.png",
+    ZZZPropertyType.DISC_ICE_DMG_BONUS: "ICE.png",
+    ZZZPropertyType.DISC_ELECTRIC_DMG_BONUS: "ELECTRIC.png",
+    ZZZPropertyType.DISC_ETHER_DMG_BONUS: "ETHER.png",
     ZZZPropertyType.CRIT_DMG: "CRIT_DMG.png",
     ZZZPropertyType.CRIT_RATE: "CRIT_RATE.png",
     ZZZPropertyType.ANOMALY_PROFICIENCY: "ANOMALY_PRO.png",
     ZZZPropertyType.ANOMALY_MASTERY: "ANOMALY_MASTER.png",
-    ZZZPropertyType.PEN_RATIO: "PEN_RATIO.png",
     ZZZPropertyType.IMPACT: "IMPACT.png",
+    ZZZPropertyType.ENERGY_REGEN: "ENERGY_REGEN.png",
     # Agent
     ZZZPropertyType.AGENT_HP: "HP.png",
     ZZZPropertyType.AGENT_ATK: "ATK.png",

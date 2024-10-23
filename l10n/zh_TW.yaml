@@ -720,4 +720,4 @@ profile_show_substat_rolls: 副詞條檔次
 profile_team_show_substat_rolls: 隊伍卡片副詞條檔次
 team_card_settings_button_label: 隊伍卡片設定
 team_card_settings_embed_title: 正在修改隊伍卡片設定
-team_card_settings_embed_description: "隊伍卡片設定在不同遊戲和帳戶之間共享，當卡片樣式不支援時，對某些設定所做的更改可能不會反映在卡片上。\n完成後，點擊上方訊息中的綠色按鈕即可重新繪製卡片。"
+team_card_settings_embed_description: "队伍卡片设定在不同游戏和帐户之间共享，当卡片样式不支援时，对某些设定所做的更改可能不会反映在卡片上。\n完成后，点击上方讯息中的绿色按钮即可重新绘制卡片。"

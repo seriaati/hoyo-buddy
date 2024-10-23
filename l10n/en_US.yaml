@@ -506,7 +506,7 @@ scratch_card.embed.description: Scratch card not scratched yet
 zzz_engagement_button.label: Engagement
 zzz_engagement.embed.description: Today's engagement is not completed yet
 honkai_daily_embed_title: Daily BP Reminder
-honkai_daily_embed_description: Today's daily BP is not completed yet, {cur}/{max}
+honkai_daily_embed_description: "Today's daily BP is not completed yet, {cur}/{max}"
 video_store_button.label: Video store management
 video_store.embed.description: Video store revenue not claimed yet
 scratch_card.incomplete: Incomplete

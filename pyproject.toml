@@ -39,7 +39,7 @@ license = { file = "LICENSE" }
 name = "hoyo-buddy"
 readme = "README.md"
 requires-python = ">=3.11"
-version = "1.13.0"
+version = "1.14.0"
 
 [tool.uv]
 dev-dependencies = ["icecream>=2.1.3"]

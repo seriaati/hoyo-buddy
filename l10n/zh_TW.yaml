@@ -299,7 +299,7 @@ notes-card.hsr.daily-training: 每日實訓
 notes-card.hsr.echo-of-war-discounts: 歷戰餘響次數
 notes-card.hsr.reserved-power: 後備開拓力
 notes-card.hsr.trailblaze-power: 開拓力
-notes.item_full_in_time: "{emoji} 在 {in_time} 后溢出"
+notes.item_full_in_time: "{emoji} 在 {in_time} 後溢出"
 notes.stamina_label: 体力提醒
 notes.stamina: "体力: {cur}/{max}, 在 {time} 后溢出"
 notes.train_score: "每日历练值: {cur}/{max}"

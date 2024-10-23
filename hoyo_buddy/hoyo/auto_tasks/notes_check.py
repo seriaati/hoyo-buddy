@@ -3,11 +3,12 @@ from __future__ import annotations
 import asyncio
 import datetime
 from collections import defaultdict
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, TypeAlias
 
 import discord
 from discord import Locale
-from genshin.models import Announcement, Notes, StarRailNote, VideoStoreState, ZZZNotes
+from genshin.models import Announcement, HonkaiNotes, StarRailNote, VideoStoreState, ZZZNotes
+from genshin.models import Notes as GenshinNotes
 
 from hoyo_buddy.constants import UID_TZ_OFFSET
 
@@ -36,6 +37,8 @@ if TYPE_CHECKING:
 
     from ...bot import HoyoBuddy
 
+Notes: TypeAlias = GenshinNotes | HonkaiNotes | StarRailNote | ZZZNotes
+
 
 class NotesChecker:
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
@@ -46,7 +49,7 @@ class NotesChecker:
         """Calculate the estimated time for resin/trailblaze power to reach the threshold."""
         if game is Game.GENSHIN:
             return get_now() + datetime.timedelta(minutes=(threshold - current) * 8)
-        if game in {Game.STARRAIL, Game.ZZZ}:
+        if game in {Game.STARRAIL, Game.ZZZ, Game.HONKAI}:
             return get_now() + datetime.timedelta(minutes=(threshold - current) * 6)
         raise NotImplementedError
 
@@ -62,7 +65,7 @@ class NotesChecker:
         return embed
 
     @classmethod
-    def _get_notify_embed(cls, notify: NotesNotify, locale: Locale) -> DefaultEmbed:
+    def _get_notify_embed(cls, notify: NotesNotify, notes: Notes | None, locale: Locale) -> DefaultEmbed:
         translator = cls._bot.translator
 
         match notify.type:
@@ -173,6 +176,30 @@ class NotesChecker:
                     title=LocaleStr(key="planar_fissure_label"),
                     description=LocaleStr(key="planar_fissure_desc", hour=notify.hours_before),
                 )
+            case NotesNotifyType.HONKAI_DAILY:
+                assert isinstance(notes, HonkaiNotes)
+                embed = DefaultEmbed(
+                    locale,
+                    translator,
+                    title=LocaleStr(key="honkai_daily_embed_title"),
+                    description=LocaleStr(key="honkai_daily_embed_description", cur=notes.current_train_score, max=600),
+                )
+            case NotesNotifyType.STAMINA:
+                assert isinstance(notes, HonkaiNotes)
+                embed = DefaultEmbed(
+                    locale,
+                    translator,
+                    title=LocaleStr(key="notes.stamina_label"),
+                    description=LocaleStr(key="threshold.embed.description", threshold=notify.threshold),
+                )
+                embed.add_description(
+                    LocaleStr(
+                        key="notes.stamina",
+                        time=datetime.timedelta(seconds=notes.stamina_recover_time),
+                        cur=notes.current_stamina,
+                        max=notes.max_stamina,
+                    )
+                )
 
         embed.add_acc_info(notify.account, blur=False)
         embed.set_footer(text=LocaleStr(key="notif.embed.footer"))
@@ -187,9 +214,9 @@ class NotesChecker:
         await notify.save(update_fields=("current_notif_count", "est_time"))
 
     @classmethod
-    async def _notify_user(cls, notify: NotesNotify, notes: StarRailNote | Notes | ZZZNotes | None) -> None:
+    async def _notify_user(cls, notify: NotesNotify, notes: Notes | None) -> None:
         locale = await cls._get_locale(notify)
-        embed = cls._get_notify_embed(notify, locale)
+        embed = cls._get_notify_embed(notify, notes, locale)
         draw_input = DrawInput(
             dark_mode=notify.account.user.settings.dark_mode,
             locale=locale,
@@ -203,7 +230,7 @@ class NotesChecker:
             buffer = await draw_zzz_notes_card(draw_input, notes, cls._bot.translator)
         elif isinstance(notes, StarRailNote):
             buffer = await draw_hsr_notes_card(draw_input, notes, cls._bot.translator)
-        elif isinstance(notes, Notes):
+        elif isinstance(notes, GenshinNotes):
             buffer = await draw_gi_notes_card(draw_input, notes, cls._bot.translator)
         else:
             buffer = None
@@ -231,22 +258,7 @@ class NotesChecker:
         await notify.save(update_fields=("enabled", "last_notif_time", "current_notif_count"))
 
     @classmethod
-    async def _process_resin_notify(cls, notify: NotesNotify, notes: Notes) -> None:
-        """Process resin notification."""
-        current = notes.current_resin
-        threshold = notify.threshold
-        assert threshold is not None
-
-        if current < threshold:
-            est_time = cls._calc_est_time(Game.GENSHIN, threshold, current)
-            return await cls._reset_notif_count(notify, est_time=est_time)
-
-        if notify.current_notif_count < notify.max_notif_count:
-            await cls._notify_user(notify, notes)
-        return None
-
-    @classmethod
-    async def _process_realm_currency_notify(cls, notify: NotesNotify, notes: Notes) -> None:
+    async def _process_realm_currency_notify(cls, notify: NotesNotify, notes: GenshinNotes) -> None:
         """Process realm currency notification."""
         current = notes.current_realm_currency
         threshold = notify.threshold
@@ -254,21 +266,6 @@ class NotesChecker:
 
         if current < threshold:
             est_time = get_now() + notes.remaining_realm_currency_recovery_time
-            return await cls._reset_notif_count(notify, est_time=est_time)
-
-        if notify.current_notif_count < notify.max_notif_count:
-            await cls._notify_user(notify, notes)
-        return None
-
-    @classmethod
-    async def _process_tbp_notify(cls, notify: NotesNotify, notes: StarRailNote) -> None:
-        """Process trailblaze power notification."""
-        current = notes.current_stamina
-        threshold = notify.threshold
-        assert threshold is not None
-
-        if current < threshold:
-            est_time = cls._calc_est_time(Game.STARRAIL, threshold, current)
             return await cls._reset_notif_count(notify, est_time=est_time)
 
         if notify.current_notif_count < notify.max_notif_count:
@@ -290,7 +287,7 @@ class NotesChecker:
         return None
 
     @classmethod
-    async def _process_expedition_notify(cls, notify: NotesNotify, notes: Notes | StarRailNote) -> None:
+    async def _process_expedition_notify(cls, notify: NotesNotify, notes: GenshinNotes | StarRailNote) -> None:
         """Process expedition notification."""
         if any(not exped.finished for exped in notes.expeditions):
             min_remain_time = min(exped.remaining_time for exped in notes.expeditions if not exped.finished)
@@ -302,7 +299,7 @@ class NotesChecker:
         return None
 
     @classmethod
-    async def _process_pt_notify(cls, notify: NotesNotify, notes: Notes) -> None:
+    async def _process_pt_notify(cls, notify: NotesNotify, notes: GenshinNotes) -> None:
         remaining_time = notes.remaining_transformer_recovery_time
         if remaining_time is None:
             return None
@@ -316,15 +313,16 @@ class NotesChecker:
         return None
 
     @classmethod
-    async def _process_daily_notify(cls, notify: NotesNotify, notes: Notes | StarRailNote | ZZZNotes) -> None:
+    async def _process_daily_notify(cls, notify: NotesNotify, notes: Notes) -> None:
         if notify.last_check_time is not None and get_now().day != notify.last_check_time.day:
             return await cls._reset_notif_count(notify)
 
-        if isinstance(notes, Notes) and notes.completed_commissions + notes.daily_task.completed_tasks >= 4:
-            return await cls._reset_notif_count(notify, est_time=notify.account.server_reset_datetime)
-        if isinstance(notes, StarRailNote) and notes.current_train_score >= notes.max_train_score:
-            return await cls._reset_notif_count(notify, est_time=notify.account.server_reset_datetime)
-        if isinstance(notes, ZZZNotes) and notes.engagement.current >= notes.engagement.max:
+        gi = isinstance(notes, GenshinNotes) and notes.completed_commissions + notes.daily_task.completed_tasks >= 4
+        hsr = isinstance(notes, StarRailNote) and notes.current_train_score >= notes.max_train_score
+        zzz = isinstance(notes, ZZZNotes) and notes.engagement.current >= notes.engagement.max
+        honkai = isinstance(notes, HonkaiNotes) and notes.current_train_score >= 600
+
+        if gi or hsr or zzz or honkai:
             return await cls._reset_notif_count(notify, est_time=notify.account.server_reset_datetime)
 
         if notify.current_notif_count < notify.max_notif_count:
@@ -336,24 +334,10 @@ class NotesChecker:
         if notify.last_check_time is not None and get_now().day != notify.last_check_time.day:
             return await cls._reset_notif_count(notify)
 
-        if isinstance(notes, Notes) and notes.remaining_resin_discounts == 0:
+        if isinstance(notes, GenshinNotes) and notes.remaining_resin_discounts == 0:
             return None
         if isinstance(notes, StarRailNote) and notes.remaining_weekly_discounts == 0:
             return None
-
-        if notify.current_notif_count < notify.max_notif_count:
-            await cls._notify_user(notify, notes)
-        return None
-
-    @classmethod
-    async def _process_battery_charge_notify(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
-        current = notes.battery_charge.current
-        threshold = notify.threshold
-        assert threshold is not None
-
-        if current < threshold:
-            est_time = cls._calc_est_time(Game.ZZZ, threshold, current)
-            return await cls._reset_notif_count(notify, est_time=est_time)
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)
@@ -403,38 +387,64 @@ class NotesChecker:
         return None
 
     @classmethod
+    async def _process_stamina_notify(cls, notify: NotesNotify, notes: Notes) -> None:
+        """Process stamina notification."""
+        if isinstance(notes, HonkaiNotes):
+            current = notes.current_stamina
+            game = Game.HONKAI
+        elif isinstance(notes, GenshinNotes):
+            current = notes.current_resin
+            game = Game.GENSHIN
+        elif isinstance(notes, StarRailNote):
+            current = notes.current_stamina
+            game = Game.STARRAIL
+        else:
+            current = notes.battery_charge.current
+            game = Game.ZZZ
+
+        threshold = notify.threshold
+        assert threshold is not None
+
+        if current < threshold:
+            est_time = cls._calc_est_time(game, threshold, current)
+            return await cls._reset_notif_count(notify, est_time=est_time)
+
+        if notify.current_notif_count < notify.max_notif_count:
+            await cls._notify_user(notify, notes)
+        return None
+
+    @classmethod
     async def _process_notify(
         cls, notify: NotesNotify, notes: Notes | StarRailNote | ZZZNotes | None, anns: Sequence[Announcement] | None
     ) -> None:
         """Proces notification."""
         match notify.type:
-            case NotesNotifyType.RESIN:
-                assert isinstance(notes, Notes)
-                await cls._process_resin_notify(notify, notes)
-            case NotesNotifyType.TB_POWER:
-                assert isinstance(notes, StarRailNote)
-                await cls._process_tbp_notify(notify, notes)
             case NotesNotifyType.RESERVED_TB_POWER:
                 assert isinstance(notes, StarRailNote)
                 await cls._process_rtbp_notify(notify, notes)
             case NotesNotifyType.GI_EXPED | NotesNotifyType.HSR_EXPED:
-                assert isinstance(notes, Notes | StarRailNote)
+                assert isinstance(notes, GenshinNotes | StarRailNote)
                 await cls._process_expedition_notify(notify, notes)
             case NotesNotifyType.PT:
-                assert isinstance(notes, Notes)
+                assert isinstance(notes, GenshinNotes)
                 await cls._process_pt_notify(notify, notes)
             case NotesNotifyType.REALM_CURRENCY:
-                assert isinstance(notes, Notes)
+                assert isinstance(notes, GenshinNotes)
                 await cls._process_realm_currency_notify(notify, notes)
-            case NotesNotifyType.GI_DAILY | NotesNotifyType.HSR_DAILY | NotesNotifyType.ZZZ_DAILY:
+            case (
+                NotesNotifyType.GI_DAILY
+                | NotesNotifyType.HSR_DAILY
+                | NotesNotifyType.ZZZ_DAILY
+                | NotesNotifyType.HONKAI_DAILY
+            ):
                 assert notes is not None
                 await cls._process_daily_notify(notify, notes)
             case NotesNotifyType.RESIN_DISCOUNT | NotesNotifyType.ECHO_OF_WAR:
                 assert isinstance(notes, Notes | StarRailNote)
                 await cls._process_week_boss_discount_notify(notify, notes)
-            case NotesNotifyType.BATTERY:
-                assert isinstance(notes, ZZZNotes)
-                await cls._process_battery_charge_notify(notify, notes)
+            case NotesNotifyType.BATTERY | NotesNotifyType.STAMINA | NotesNotifyType.RESIN | NotesNotifyType.TB_POWER:
+                assert notes is not None
+                await cls._process_stamina_notify(notify, notes)
             case NotesNotifyType.SCRATCH_CARD:
                 assert isinstance(notes, ZZZNotes)
                 await cls._process_scratch_card_notify(notify, notes)
@@ -494,6 +504,8 @@ class NotesChecker:
             notes = await notify.account.client.get_starrail_notes()
         elif notify.account.game is Game.ZZZ:
             notes = await notify.account.client.get_zzz_notes()
+        elif notify.account.game is Game.HONKAI:
+            notes = await notify.account.client.get_honkai_notes(notify.account.uid)
         else:
             raise NotImplementedError
         return notes

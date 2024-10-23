@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import datetime
+from typing import TYPE_CHECKING, TypeAlias
 
 import genshin
 from discord import ButtonStyle, File, Locale, Member, User
-from discord.utils import format_dt
 
 from hoyo_buddy.db.models import NotesNotify, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
@@ -40,6 +40,8 @@ if TYPE_CHECKING:
     from .modals.type_one import TypeOneModal
     from .modals.type_three import TypeThreeModal
     from .modals.type_two import TypeTwoModal
+
+NotesWithCard: TypeAlias = genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes
 
 
 class NotesView(View):
@@ -237,6 +239,17 @@ class NotesView(View):
                 inline=False,
             )
 
+        elif self._account.game is Game.HONKAI:
+            stamina_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.STAMINA)
+            embed.add_field(
+                name=LocaleStr(key="notes.stamina_label"), value=self._get_type1_value(stamina_notify), inline=False
+            )
+
+            daily_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.HONKAI_DAILY)
+            embed.add_field(
+                name=LocaleStr(key="daily_button.label"), value=self._get_type3_value(daily_notify), inline=False
+            )
+
         else:
             raise FeatureNotImplementedError(platform=self._account.platform, game=self._account.game)
 
@@ -382,19 +395,23 @@ class NotesView(View):
 
         return await self._get_reminder_embed()
 
-    async def _get_notes(self) -> genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes:
+    async def _get_notes(
+        self,
+    ) -> genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes | genshin.models.HonkaiNotes:
         if self._account.game is Game.GENSHIN:
             return await self._account.client.get_genshin_notes()
         if self._account.game is Game.ZZZ:
             return await self._account.client.get_zzz_notes()
         if self._account.game is Game.STARRAIL:
             return await self._account.client.get_starrail_notes()
+        if self._account.game is Game.HONKAI:
+            return await self._account.client.get_honkai_notes(self._account.uid)
         raise FeatureNotImplementedError(platform=self._account.platform, game=self._account.game)
 
     async def _draw_notes_card(
         self,
         session: aiohttp.ClientSession,
-        notes: genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes,
+        notes: NotesWithCard,
         executor: concurrent.futures.ThreadPoolExecutor,
         loop: asyncio.AbstractEventLoop,
     ) -> io.BytesIO:
@@ -438,59 +455,84 @@ class NotesView(View):
         )
 
     def _get_notes_embed(
-        self, notes: genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes
+        self,
+        notes: genshin.models.Notes
+        | genshin.models.StarRailNote
+        | genshin.models.ZZZNotes
+        | genshin.models.HonkaiNotes,
     ) -> DefaultEmbed:
-        descriptions: list[LocaleStr] = []
+        embed = DefaultEmbed(self.locale, self.translator)
 
         if isinstance(notes, genshin.models.Notes):
-            if notes.remaining_resin_recovery_time.seconds > 0:
-                descriptions.append(
-                    LocaleStr(
-                        key="notes.item_full_in_time",
-                        emoji=RESIN,
-                        in_time=format_dt(notes.resin_recovery_time, style="R"),
-                    )
+            if notes.remaining_resin_recovery_time.total_seconds() > 0:
+                embed.add_description(
+                    LocaleStr(key="notes.item_full_in_time", emoji=RESIN, in_time=notes.remaining_resin_recovery_time)
                 )
-            if notes.remaining_realm_currency_recovery_time.seconds > 0:
-                descriptions.append(
+            if notes.remaining_realm_currency_recovery_time.total_seconds() > 0:
+                embed.add_description(
                     LocaleStr(
                         key="notes.item_full_in_time",
                         emoji=REALM_CURRENCY,
-                        in_time=format_dt(notes.realm_currency_recovery_time, style="R"),
+                        in_time=notes.remaining_realm_currency_recovery_time,
                     )
                 )
             if (
                 notes.remaining_transformer_recovery_time is not None
-                and notes.remaining_transformer_recovery_time.seconds > 0
+                and notes.remaining_transformer_recovery_time.total_seconds() > 0
             ):
-                assert notes.transformer_recovery_time is not None
-                descriptions.append(
-                    LocaleStr(
-                        key="notes_available",
-                        emoji=PT_EMOJI,
-                        in_time=format_dt(notes.transformer_recovery_time, style="R"),
-                    )
+                embed.add_description(
+                    LocaleStr(key="notes_available", emoji=PT_EMOJI, in_time=notes.remaining_transformer_recovery_time)
                 )
         elif isinstance(notes, genshin.models.ZZZNotes):
-            if notes.battery_charge.seconds_till_full > 0:
-                descriptions.append(
+            if (recover := notes.battery_charge.seconds_till_full) > 0:
+                embed.add_description(
                     LocaleStr(
                         key="notes.item_full_in_time",
                         emoji=BATTERY_CHARGE_EMOJI,
-                        in_time=format_dt(notes.battery_charge.full_datetime, style="R"),
+                        in_time=datetime.timedelta(seconds=recover),
                     )
                 )
+        elif isinstance(notes, genshin.models.HonkaiNotes):
+            embed.add_description(
+                LocaleStr(
+                    key="notes.stamina",
+                    time=datetime.timedelta(seconds=notes.stamina_recover_time),
+                    cur=notes.current_stamina,
+                    max=notes.max_stamina,
+                )
+            )
+            embed.add_description(LocaleStr(key="notes.train_score", cur=notes.current_train_score, max=600))
+
+            embed.add_field(
+                name=LocaleStr(key="notes.superstring_dimension"),
+                value=LocaleStr(key="notes.superstring_dimension_value", score=notes.ultra_endless.challenge_score),
+                inline=False,
+            )
+            embed.add_field(
+                name=LocaleStr(key="notes.memorial_arena"),
+                value=LocaleStr(
+                    key="notes.memorial_arena_value",
+                    rewards_cur=notes.battle_field.current_reward,
+                    rewards_max=notes.battle_field.max_reward,
+                    sss_cur=notes.battle_field.current_sss_reward,
+                    sss_max=notes.battle_field.max_sss_reward,
+                ),
+                inline=False,
+            )
+            embed.add_field(
+                name=LocaleStr(key="notes.elysian_realm"),
+                value=LocaleStr(
+                    key="notes.elysian_realm_value", cur=notes.god_war.current_reward, max=notes.god_war.max_reward
+                ),
+                inline=False,
+            )
         else:  # StarRailNotes
-            if notes.stamina_recover_time.seconds > 0:
-                descriptions.append(
-                    LocaleStr(
-                        key="notes.item_full_in_time",
-                        emoji=TRAILBLAZE_POWER,
-                        in_time=format_dt(notes.stamina_recovery_time, style="R"),
-                    )
+            if notes.stamina_recover_time.total_seconds() > 0:
+                embed.add_description(
+                    LocaleStr(key="notes.item_full_in_time", emoji=TRAILBLAZE_POWER, in_time=notes.stamina_recover_time)
                 )
             if notes.have_bonus_synchronicity_points:
-                descriptions.append(
+                embed.add_description(
                     LocaleStr(
                         key="notes.bonus_sync_points",
                         cur=notes.current_bonus_synchronicity_points,
@@ -498,24 +540,20 @@ class NotesView(View):
                     )
                 )
 
-        translated_description = "\n".join(
-            [description.translate(self.translator, self.locale) for description in descriptions]
-        )
-
-        return (
-            DefaultEmbed(self.locale, self.translator, description=translated_description)
-            .set_image(url="attachment://notes.png")
-            .add_acc_info(self._account)
-        )
+        return embed.set_image(url="attachment://notes.png").add_acc_info(self._account)
 
     async def start(self, i: Interaction) -> None:
         notes = await self._get_notes()
         embed = self._get_notes_embed(notes)
-        self.bytes_obj = await self._draw_notes_card(i.client.session, notes, i.client.executor, i.client.loop)
 
-        self.bytes_obj.seek(0)
-        file_ = File(self.bytes_obj, filename="notes.png")
-        await i.followup.send(embed=embed, file=file_, view=self, content=await get_dyk(i))
+        if isinstance(notes, NotesWithCard):
+            self.bytes_obj = await self._draw_notes_card(i.client.session, notes, i.client.executor, i.client.loop)
+            self.bytes_obj.seek(0)
+            file_ = File(self.bytes_obj, filename="notes.png")
+            await i.followup.send(embed=embed, file=file_, view=self, content=await get_dyk(i))
+        else:
+            await i.followup.send(embed=embed, view=self, content=await get_dyk(i))
+
         self.message = await i.original_response()
 
 
@@ -572,6 +610,11 @@ class ReminderButton(Button[NotesView]):
             self.view.add_item(DailyReminder(row=0))
             self.view.add_item(ScratchCardReminder(row=1))
             self.view.add_item(VideoStoreReminder(row=1))
+        elif self.view._account.game is Game.HONKAI:
+            from .buttons import DailyReminder, StaminaReminder  # noqa: PLC0415
+
+            self.view.add_item(StaminaReminder(row=0))
+            self.view.add_item(DailyReminder(row=0))
         else:
             raise FeatureNotImplementedError(platform=self.view._account.platform, game=self.view._account.game)
 

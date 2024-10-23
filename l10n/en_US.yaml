@@ -149,6 +149,7 @@ dark_mode_button_label: Dark mode
 error_footer: "You can find help in our Discord server, link in /about"
 error_title: An Error Occurred
 erudition: Erudition
+days: days
 exceptions.card_not_ready_error.message: "When new characters are released, I need to specify the colors for their build cards.\nIf you see this message several days after a game update, please notify me in the [Discord Server](https://link.seria.moe/hb-dc) as I might have forgot to do it."
 exceptions.card_not_ready_error.title: "Card data for {character_name} is not ready yet."
 exped.embed.description: One (or more) expeditions are finished
@@ -298,8 +299,17 @@ notes-card.hsr.daily-training: Daily Training
 notes-card.hsr.echo-of-war-discounts: Echo of War Limits
 notes-card.hsr.reserved-power: Reserved Power
 notes-card.hsr.trailblaze-power: Trailblaze Power
-notes.item_full_in_time: "{emoji} full {in_time}"
-notes_available: "{emoji} available {in_time}"
+notes.item_full_in_time: "{emoji} Full in {in_time}"
+notes.stamina_label: Stamina reminder
+notes.stamina: "Stamina: {cur}/{max}, full in {time}"
+notes.train_score: "Daily BP: {cur}/{max}"
+notes.superstring_dimension: Superstring Dimension
+notes.superstring_dimension_value: "Current score: {score}"
+notes.memorial_arena: Memorial Arena
+notes.memorial_arena_value: "Challenge rewards: {rewards_cur}/{rewards_max}\nSSS-rank rewards: {sss_cur}/{sss_max}"
+notes.elysian_realm: Elysian Realm
+notes.elysian_realm_value: "Current score: {cur}/{max}"
+notes_available: "{emoji} Available in {in_time}"
 notes_command_description: View real-time notes
 notif.embed.footer: "Click the button below to change notification settings.\nIf it is expired, use the /notes command."
 notif_modal.enabled.label: Enabled
@@ -495,6 +505,8 @@ scratch_card_button.label: Scratch card mania
 scratch_card.embed.description: Scratch card not scratched yet
 zzz_engagement_button.label: Engagement
 zzz_engagement.embed.description: Today's engagement is not completed yet
+honkai_daily_embed_title: Daily BP Reminder
+honkai_daily_embed_description: Today's daily BP is not completed yet, {cur}/{max}
 video_store_button.label: Video store management
 video_store.embed.description: Video store revenue not claimed yet
 scratch_card.incomplete: Incomplete

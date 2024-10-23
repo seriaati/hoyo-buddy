@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import datetime
 import pathlib
 import random
 import re
@@ -181,6 +182,8 @@ class Translator:
                 extras_[k] = self.translate(v, locale)
             elif isinstance(v, list) and isinstance(v[0], LocaleStr):
                 extras_[k] = "/".join([self.translate(i, locale) for i in v])
+            elif isinstance(v, datetime.timedelta):
+                extras_[k] = self.display_timedelta(v, locale)
             else:
                 extras_[k] = v
         return extras_
@@ -221,6 +224,10 @@ class Translator:
         gender_str = ("♂" if character.id % 2 != 0 else "♀") if gender_symbol and str(character.id)[0] == "8" else ""
 
         return f"{character.name} ({element_str}) ({gender_str})" if gender_str else f"{character.name} ({element_str})"
+
+    def display_timedelta(self, timedelta: datetime.timedelta, locale: Locale) -> str:
+        str_timedelta = str(timedelta)
+        return str_timedelta.replace("days", self.translate(LocaleStr(key="days"), locale), 1).replace(", 0:00:00", "")
 
 
 class AppCommandTranslator(app_commands.Translator):

@@ -191,7 +191,7 @@ class Hoyo(commands.Cog):
         await i.response.defer()
 
         user = user or i.user
-        account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ))
+        account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI))
         settings = await Settings.get(user_id=i.user.id)
 
         view = NotesView(
@@ -456,13 +456,13 @@ class Hoyo(commands.Cog):
     async def gi_acc_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN,))
 
-    @notes_command.autocomplete("account")
     @challenge_command.autocomplete("account")
     @profile_command.autocomplete("account")
     @events_command.autocomplete("account")
     async def gi_hsr_zzz_acc_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ))
 
+    @notes_command.autocomplete("account")
     @characters_command.autocomplete("account")
     async def gi_hsr_zzz_honkai_acc_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI))

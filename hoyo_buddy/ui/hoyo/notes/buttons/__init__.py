@@ -9,6 +9,7 @@ from .realm_currency import RealmCurrencyReminder
 from .reserved_tbp import ReservedTBPReminder
 from .resin import ResinReminder
 from .scratch_card import ScratchCardReminder
+from .stamina import StaminaReminder
 from .trailblaze_power import TBPReminder
 from .video_store import VideoStoreReminder
 from .week_boss import WeekBossReminder

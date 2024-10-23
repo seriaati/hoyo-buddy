@@ -505,8 +505,8 @@ scratch_card_button.label: 刮刮樂
 scratch_card.embed.description: 還沒刮刮刮樂
 zzz_engagement_button.label: 活躍度
 zzz_engagement.embed.description: 今日的活躍度尚未完成
-honkai_daily_embed_title: 每日歷練值提醒
-honkai_daily_embed_description: "今日的每日歷練值尚未完成, {cur}/{max}"
+honkai_daily_embed_title: 每日历练值提醒
+honkai_daily_embed_description: "今日的每日历练值尚未完成, {cur}/{max}"
 video_store_button.label: 錄影帶店經營
 video_store.embed.description: 錄影帶的收益尚未領取
 scratch_card.incomplete: 尚未完成

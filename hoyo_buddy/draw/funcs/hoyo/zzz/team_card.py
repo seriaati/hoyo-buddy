@@ -141,12 +141,12 @@ class ZZZTeamCard:
                 else:
                     icon = drawer.open_asset("stat_icons/PLACEHOLDER.png", folder="zzz-build-card", size=(16, 16))
 
-                im.alpha_composite(icon, (start_pos[0] + 68, start_pos[1] + 6))
+                im.alpha_composite(icon, (start_pos[0] + 65, start_pos[1] + 6))
                 text = main_stat.value
                 drawer.write(
                     text,
                     size=14,
-                    position=(start_pos[0] + 68 + 20, icon.height // 2 + start_pos[1] + 6),
+                    position=(start_pos[0] + 65 + 20, icon.height // 2 + start_pos[1] + 6),
                     style="medium",
                     anchor="lm",
                 )
@@ -161,7 +161,7 @@ class ZZZTeamCard:
                     color=WHITE,
                 )
 
-                stat_start_pos = (start_pos[0] + 68, start_pos[1] + 30)
+                stat_start_pos = (start_pos[0] + 65, start_pos[1] + 30)
                 for j in range(4):
                     try:
                         stat = disc.properties[j]
@@ -189,11 +189,13 @@ class ZZZTeamCard:
 
                         if self._show_substat_rolls:
                             roll_num = get_disc_substat_roll_num(disc.rarity, stat)
-                            roll_num_img = drawer.open_asset(f"rolls/{roll_num}.png")
+                            roll_num_img = drawer.open_asset(
+                                f"rolls/{roll_num}.png", size=(55, 1), folder="zzz-build-card"
+                            )
                             im.alpha_composite(roll_num_img, (stat_start_pos[0], stat_start_pos[1] + 18))
 
                     if j == 1:
-                        stat_start_pos = (start_pos[0] + 68 + 60, start_pos[1] + 30)
+                        stat_start_pos = (start_pos[0] + 65 + 60, start_pos[1] + 30)
                     else:
                         stat_start_pos = (stat_start_pos[0], stat_start_pos[1] + 25)
 

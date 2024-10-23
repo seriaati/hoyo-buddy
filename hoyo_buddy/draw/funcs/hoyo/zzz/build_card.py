@@ -190,7 +190,7 @@ class ZZZAgentCard:
                     )
 
         # Discs
-        start_pos = (55, 597)
+        start_pos = (50, 597)
         disc_mask = drawer.open_asset("disc_mask.png", size=(151, 184))
         disc_num_flair = drawer.open_asset("disc_num_flair.png")
 
@@ -236,7 +236,7 @@ class ZZZAgentCard:
                         anchor="lm",
                     )
 
-                sub_stat_pos = (start_pos[0] + 174, start_pos[1] + 89)
+                sub_stat_pos = (start_pos[0] + 170, start_pos[1] + 89)
                 for j in range(4):
                     try:
                         sub_stat = disc.properties[j]
@@ -260,13 +260,13 @@ class ZZZAgentCard:
 
                         if self._show_substat_rolls:
                             roll_num = get_disc_substat_roll_num(disc.rarity, sub_stat)
-                            roll_num_img = drawer.open_asset(f"rolls/{roll_num}.png")
+                            roll_num_img = drawer.open_asset(f"rolls/{roll_num}.png", size=(103, 2))
                             im.alpha_composite(roll_num_img, (sub_stat_pos[0], sub_stat_pos[1] + 32))
 
                     if j == 1:
-                        sub_stat_pos = (start_pos[0] + 174, start_pos[1] + 134)
+                        sub_stat_pos = (start_pos[0] + 170, start_pos[1] + 134)
                     else:
-                        sub_stat_pos = (sub_stat_pos[0] + 123, sub_stat_pos[1])
+                        sub_stat_pos = (sub_stat_pos[0] + 117, sub_stat_pos[1])
 
             start_pos = (521, 597) if i == 2 else (start_pos[0], start_pos[1] + 233)
 

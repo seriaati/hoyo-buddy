@@ -306,7 +306,7 @@ notes.train_score: "每日歷練值: {cur}/{max}"
 notes.superstring_dimension: 超弦空間
 notes.superstring_dimension_value: "目前積分: {score}"
 notes.memorial_arena: 記憶戰場
-notes.memorial_arena_value: "挑战奖励: {rewards_cur}/{rewards_max}\nSSS 奖励: {sss_cur}/{sss_max}"
+notes.memorial_arena_value: "挑戰獎勵: {rewards_cur}/{rewards_max}\nSSS 獎勵: {sss_cur}/{sss_max}"
 notes.elysian_realm: 往世乐土
 notes.elysian_realm_value: "当前积分: {cur}/{max}"
 notes_available: "{emoji} 在 {in_time} 后可用"

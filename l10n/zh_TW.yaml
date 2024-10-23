@@ -577,7 +577,7 @@ dyk_unreleased: 你可以使用 /search 查看尚未釋出的遊戲內容
 dyk_team_card: 你可以透過選擇多個角色的方式在 /profile 產生隊伍卡片
 dyk_set_default_acc: 你可以用 /accounts 設置一個預設帳戶，用於運行所有指令
 title_dyk: "你知道嗎？"
-new_zzz_temp: 全新！讓你的絕區零代理人試試 Hoyo Buddy 卡片樣式 2
+new_zzz_temp: 副詞條檔次顯示可在卡片設定中關閉
 button_label_dyk: 「你知道嗎」訊息
 events_view_start_date_embed_field: 開始時間
 events_view_end_date_embed_field: 結束時間
@@ -704,3 +704,8 @@ not_supported_by_enka_error_title: 尚未受到 Enka Network 支援
 not_supported_by_enka_error_message: "{game}尚未受到 [Enka Network](https://enka.cc) 支援，因此你無法單靠 UID 來搜尋一個玩家的資料。請使用 </accounts> 指令新增一個{game}帳號，並再試一次。"
 currently_logged_in_as: "你目前登入的身份為:"
 not_you_label: "不是你嗎? 點擊以使用其他帳戶登入"
+profile_show_substat_rolls: 副詞條檔次
+profile_team_show_substat_rolls: 隊伍卡片副詞條檔次
+team_card_settings_button_label: 隊伍卡片設定
+team_card_settings_embed_title: 正在修改隊伍卡片設定
+team_card_settings_embed_description: "隊伍卡片設定在不同遊戲和帳戶之間共享，當卡片樣式不支援時，對某些設定所做的更改可能不會反映在卡片上。\n完成後，點擊上方訊息中的綠色按鈕即可重新繪製卡片。"

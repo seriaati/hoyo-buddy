@@ -24,7 +24,6 @@ from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
 from ..ui.hoyo.hsr import search as hsr_search
 from ..ui.hoyo.hsr.search.light_cone import LightConeUI
 from ..ui.hoyo.zzz import search as zzz_search
-from ..utils import ephemeral
 
 if TYPE_CHECKING:
     from enum import StrEnum
@@ -118,7 +117,7 @@ class Search(commands.Cog):
 
                 case ambr.ItemCategory.NAMECARDS:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
+                        await i.response.defer()
                         namecard_detail = await api.fetch_namecard_detail(int(query))
                         embed = api.get_namecard_embed(namecard_detail)
                         await i.followup.send(embed=embed)
@@ -131,21 +130,21 @@ class Search(commands.Cog):
 
                 case ambr.ItemCategory.FOOD:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
+                        await i.response.defer()
                         food_detail = await api.fetch_food_detail(int(query))
                         embed = api.get_food_embed(food_detail)
                         await i.followup.send(embed=embed)
 
                 case ambr.ItemCategory.MATERIALS:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
+                        await i.response.defer()
                         material_detail = await api.fetch_material_detail(int(query))
                         embed = api.get_material_embed(material_detail)
                         await i.followup.send(embed=embed)
 
                 case ambr.ItemCategory.FURNISHINGS:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
+                        await i.response.defer()
                         furniture_detail = await api.fetch_furniture_detail(int(query))
                         embed = api.get_furniture_embed(furniture_detail)
                         await i.followup.send(
@@ -161,7 +160,7 @@ class Search(commands.Cog):
 
                 case ambr.ItemCategory.FURNISHING_SETS:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
+                        await i.response.defer()
                         furniture_set_detail = await api.fetch_furniture_set_detail(int(query))
                         embed = api.get_furniture_set_embed(furniture_set_detail)
                         await i.followup.send(
@@ -177,7 +176,7 @@ class Search(commands.Cog):
 
                 case ambr.ItemCategory.LIVING_BEINGS:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
+                        await i.response.defer()
                         monster_detail = await api.fetch_monster_detail(int(query))
                         embed = api.get_monster_embed(monster_detail)
                         await i.followup.send(
@@ -193,7 +192,7 @@ class Search(commands.Cog):
 
                 case ambr.ItemCategory.BOOKS:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
+                        await i.response.defer()
                         book = await api.fetch_book_detail(int(query))
                         book_volume_ui = gi_search.BookVolumeUI(
                             book, api.lang.value, author=i.user, locale=locale, translator=i.client.translator
@@ -226,7 +225,7 @@ class Search(commands.Cog):
             match category:
                 case yatta.ItemCategory.ITEMS:
                     async with yatta.YattaAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
+                        await i.response.defer()
                         item = await api.fetch_item_detail(int(query))
                         embed = api.get_item_embed(item)
                         await i.followup.send(embed=embed)
@@ -281,7 +280,7 @@ class Search(commands.Cog):
                     except ValueError as e:
                         raise InvalidQueryError from e
 
-                    await i.response.defer(ephemeral=ephemeral(i))
+                    await i.response.defer()
                     translator = hakushin.HakushinTranslator(locale, i.client.translator)
                     async with hakushin_api.HakushinAPI(hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)) as api:
                         disc = await api.fetch_bangboo_detail(bangboo_id)
@@ -303,7 +302,7 @@ class Search(commands.Cog):
                     except ValueError as e:
                         raise InvalidQueryError from e
 
-                    await i.response.defer(ephemeral=ephemeral(i))
+                    await i.response.defer()
                     translator = hakushin.HakushinTranslator(locale, i.client.translator)
                     async with hakushin_api.HakushinAPI(hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)) as api:
                         disc = await api.fetch_drive_disc_detail(disc_id)

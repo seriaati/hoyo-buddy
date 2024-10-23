@@ -10,7 +10,6 @@ from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.ui import Button, View
-from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from hoyo_buddy.embeds import DefaultEmbed
@@ -31,7 +30,7 @@ class RelicSetUI(View):
         self._hakushin = hakushin
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer(ephemeral=ephemeral(i))
+        await i.response.defer()
 
         try:
             relic_id = int(self._relic_set_id)

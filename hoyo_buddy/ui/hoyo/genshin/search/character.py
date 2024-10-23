@@ -10,7 +10,6 @@ from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Modal, PaginatorSelect, Select, SelectOption, TextInput, View
-from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     import ambr
@@ -106,7 +105,7 @@ class CharacterUI(View):
 
     async def update(self, i: Interaction) -> None:
         if not i.response.is_done():
-            await i.response.defer(ephemeral=ephemeral(i))
+            await i.response.defer()
 
         self.clear_items()
         self.add_item(PageSelector(self.selected_page, self.hakushin))

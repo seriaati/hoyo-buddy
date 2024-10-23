@@ -14,7 +14,7 @@ from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.l10n import LocaleStr, Translator
 from hoyo_buddy.ui.components import Button, PaginatorSelect, Select, SelectOption, View
 from hoyo_buddy.ui.paginator import Page, PaginatorView
-from hoyo_buddy.utils import ephemeral, format_ann_content
+from hoyo_buddy.utils import format_ann_content
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -95,7 +95,7 @@ class EventsView(View):
         self.ann_id = self.anns[0].id
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer(ephemeral=ephemeral(i))
+        await i.response.defer()
         await self._fetch_anns()
         self._add_items()
 

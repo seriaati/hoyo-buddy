@@ -29,7 +29,7 @@ from hoyo_buddy.models import GWRecord, SRGFRecord, StarDBRecord, StarRailStatio
 from hoyo_buddy.ui.hoyo.gacha.import_ import GachaImportView
 from hoyo_buddy.ui.hoyo.gacha.manage import GachaLogManageView
 from hoyo_buddy.ui.hoyo.gacha.view import ViewGachaLogView
-from hoyo_buddy.utils import ephemeral, get_item_ids
+from hoyo_buddy.utils import get_item_ids
 
 if TYPE_CHECKING:
     import discord
@@ -417,7 +417,7 @@ class GachaCommand:
             title=LocaleStr(key="gacha_import_loading_embed_title"),
             description=LocaleStr(key="gacha_import_loading_embed_description", loading_emoji=LOADING),
         ).add_acc_info(account)
-        await i.response.send_message(embed=embed, ephemeral=ephemeral(i), content=await get_dyk(i))
+        await i.response.send_message(embed=embed, content=await get_dyk(i))
 
         try:
             if source is GachaImportSource.STAR_RAIL_STATION:

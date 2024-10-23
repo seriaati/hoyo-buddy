@@ -12,7 +12,6 @@ from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
-from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from discord import Locale, Member, User
@@ -83,7 +82,7 @@ class LightConeUI(View):
         self.add_item(ShowStoryButton())
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer(ephemeral=ephemeral(i))
+        await i.response.defer()
         embed = await self._fetch_embed()
         self._setup_items()
         await i.edit_original_response(embed=embed, view=self)

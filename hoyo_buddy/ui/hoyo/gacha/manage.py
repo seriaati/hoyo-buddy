@@ -15,7 +15,6 @@ from hoyo_buddy.emojis import DELETE, EXPORT
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr, Translator
 from hoyo_buddy.ui.components import Button, View
-from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction, User
@@ -39,7 +38,7 @@ class GachaLogManageView(View):
 
         self.add_item(ExportButton())
         self.add_item(DeleteButton())
-        await i.response.send_message(embed=embed, view=self, content=await get_dyk(i), ephemeral=ephemeral(i))
+        await i.response.send_message(embed=embed, view=self, content=await get_dyk(i))
         self.message = await i.original_response()
 
 

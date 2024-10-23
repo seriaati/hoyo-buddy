@@ -10,7 +10,6 @@ from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.ui.hoyo.leaderboard.others import LbPaginator
-from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -148,7 +147,7 @@ class LeaderboardCommand:
         return f"{value:,}"
 
     async def run(self, i: Interaction, *, lb_type: LeaderboardType, account: HoyoAccount | None) -> None:
-        await i.response.defer(ephemeral=ephemeral(i))
+        await i.response.defer()
         locale = await get_locale(i)
 
         account = account or await i.client.get_account(i.user.id, self.get_games_by_lb_type(lb_type))

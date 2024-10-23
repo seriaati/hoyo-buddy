@@ -13,7 +13,7 @@ from hoyo_buddy.exceptions import AuthkeyExtractError, FeatureNotImplementedErro
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.l10n import LocaleStr, Translator
 from hoyo_buddy.ui.components import Button, Modal, TextInput, View
-from hoyo_buddy.utils import ephemeral, get_item_ids
+from hoyo_buddy.utils import get_item_ids
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -37,7 +37,7 @@ class GachaImportView(View):
 
     async def start(self, i: Interaction) -> Any:
         self.add_item(URLImport(self.account))
-        await i.response.send_message(embed=self.embed, view=self, content=await get_dyk(i), ephemeral=ephemeral(i))
+        await i.response.send_message(embed=self.embed, view=self, content=await get_dyk(i))
         self.message = await i.original_response()
 
 

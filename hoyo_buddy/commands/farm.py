@@ -10,7 +10,6 @@ from ..exceptions import AutocompleteNotDoneYetError, InvalidQueryError
 from ..hoyo.clients import ambr
 from ..l10n import LocaleStr
 from ..ui.hoyo.farm_notify import FarmNotifyView
-from ..utils import ephemeral
 
 if TYPE_CHECKING:
     import discord
@@ -67,7 +66,7 @@ class FarmCommand:
                 title=LocaleStr(key="farm_add_command.item_already_in_list"),
                 description=LocaleStr(key="farm_add_command.item_already_in_list_description"),
             )
-            await self._interaction.followup.send(embed=embed, ephemeral=ephemeral(self._interaction))
+            await self._interaction.followup.send(embed=embed)
             return True
         return False
 
@@ -93,7 +92,7 @@ class FarmCommand:
         await view.start(self._interaction)
 
     async def run(self) -> None:
-        await self._interaction.response.defer(ephemeral=ephemeral(self._interaction))
+        await self._interaction.response.defer()
 
         self._validate_query()
 

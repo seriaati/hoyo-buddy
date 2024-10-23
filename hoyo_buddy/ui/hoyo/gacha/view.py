@@ -17,7 +17,6 @@ from hoyo_buddy.emojis import CURRENCY_EMOJIS
 from hoyo_buddy.exceptions import NoGachaLogFoundError
 from hoyo_buddy.l10n import LocaleStr, Translator
 from hoyo_buddy.ui.components import Button, Select, SelectOption, View
-from hoyo_buddy.utils import ephemeral
 from hoyo_buddy.web_app.schema import GachaParams
 
 if TYPE_CHECKING:
@@ -237,7 +236,7 @@ class ViewGachaLogView(View):
         return embed
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer(ephemeral=ephemeral(i))
+        await i.response.defer()
         embed = await self.get_stats_embed(i.client.pool)
         await i.followup.send(embed=embed, view=self, content=await get_dyk(i))
         self.message = await i.original_response()

@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from ..db.models import get_dyk, get_locale
 from ..ui.hoyo.stats import StatsView
-from ..utils import ephemeral
 
 if TYPE_CHECKING:
     from ..types import Interaction, User
@@ -15,7 +14,7 @@ class StatsCommand:
         self._user = user
 
     async def run(self, i: Interaction) -> None:
-        await i.response.defer(ephemeral=ephemeral(i))
+        await i.response.defer()
 
         user = self._user or i.user
         account = await i.client.get_account(user.id)

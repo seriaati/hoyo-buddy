@@ -15,7 +15,7 @@ from ...enums import GenshinCity
 from ...hoyo.farm_data import FarmDataFetcher
 from ...l10n import EnumStr, LocaleStr, Translator, WeekdayStr
 from ...models import DrawInput
-from ...utils import ephemeral, get_now
+from ...utils import get_now
 from ..components import Button, Select, SelectOption, View
 
 if TYPE_CHECKING:
@@ -44,7 +44,7 @@ class FarmView(View):
             self._weekday = get_now().weekday()
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer(ephemeral=ephemeral(i))
+        await i.response.defer()
 
         self.clear_items()
         self.add_item(WeekdaySelect(self._weekday))

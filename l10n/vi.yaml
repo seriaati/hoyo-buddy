@@ -149,6 +149,7 @@ dark_mode_button_label: Chế độ Tối
 error_footer: "Bạn có thể tìm trợ giúp trên máy chủ Discord. Dùng lệnh /about để nhận link vào"
 error_title: Đã xẩy ra lỗi
 erudition: Tri Thức
+days: Ngày
 exceptions.card_not_ready_error.message: "Khi nhân vật mới được phát hành. Tôi cần phải chỉ rõ màu cho thẻ nhân vật của họ.\nNếu bạn thấy tin nhắn này trong một vài ngày sau khi trò chơi được cập nhật, vui long liên hệ tôi trên [máy chủ Discord](<https://link.seria.moe/hb-dc>) vì có thể tôi quên làm."
 exceptions.card_not_ready_error.title: "Dữ liệu thẻ cho nhân vật {character_name} chưa sản sàng."
 exped.embed.description: Một (hoặc nhiều) thám hiểm đã hoàn thành
@@ -298,8 +299,17 @@ notes-card.hsr.daily-training: Huấn Luyện Hàng ngày
 notes-card.hsr.echo-of-war-discounts: Dư Âm Chiến Đấu
 notes-card.hsr.reserved-power: Sức mạnh Dự bị
 notes-card.hsr.trailblaze-power: Sức mạnh Khai Phá
-notes.item_full_in_time: "{emoji} hồi đầy {in_time}"
-notes_available: "{emoji} có sẵn trong {in_time}"
+notes.item_full_in_time: "{emoji} Đầy trong {in_time}"
+notes.stamina_label: Nhắc nhở thể lực
+notes.stamina: "Thể lực: {cur}/{max}, đầy trong {time}"
+notes.train_score: "Nhật ký HT hàng ngày: {cur}/{max}"
+notes.superstring_dimension: Không Gian Siêu Huyền
+notes.superstring_dimension_value: "Điểm số hiện tại: {score}"
+notes.memorial_arena: Chiến Trường Ký Ức
+notes.memorial_arena_value: "Phần thưởng thử thách: {rewards_cur}/{rewards_max}\nPhần thưởng hạng SSS: {sss_cur}/{sss_max}"
+notes.elysian_realm: Vùng Đất Xưa Cũ
+notes.elysian_realm_value: "Điểm số hiện tại: {cur}/{max}"
+notes_available: "{emoji} Có sẵn trong {in_time}"
 notes_command_description: Xem Ghi Chép Thời Gian Thực
 notif.embed.footer: "Nhấn nút bên dưới để thay đổi cài đặt thông báo\nNếu nút bị vô hiệu hóa, hãy sử dụng lệnh /notes."
 notif_modal.enabled.label: Đã bật
@@ -495,6 +505,8 @@ scratch_card_button.label: Thẻ Cào
 scratch_card.embed.description: Thẻ Chưa cào
 zzz_engagement_button.label: Năng Động
 zzz_engagement.embed.description: Chưa hoàn thành Nhiệm vụ Năng Động.
+honkai_daily_embed_title: Nhắc nhở Nhật ký HT
+honkai_daily_embed_description: "Nhật ký HT ngày hôm nay chưa hoàn thành, {cur}/{max}"
 video_store_button.label: Kinh Doanh Tiệm Băng Hình
 video_store.embed.description: Doanh thu Tiệm Băng Hình chưa nhận
 scratch_card.incomplete: Chưa hoàn thành
@@ -577,7 +589,7 @@ dyk_unreleased: Bạn có thể xem nôi dung trò chơi chưa ra mắt bằng /
 dyk_team_card: Bạn có thể tạo một thẻ dội trong /profile bằng cách chọn nhiều nhân vật
 dyk_set_default_acc: Bạn có thể đặt một tài khoản mặc định dùng để chạy hết tất cả lệnh trong /accounts
 title_dyk: "Bạn có biết?"
-new_zzz_temp: MỚI! Thử dùng Mẫu thẻ Hoyo Buddy 2 cho Người Đại Diện ZZZ
+new_zzz_temp: Thuộc tính phụ có thể tắt trong phần cài đặt thẻ
 button_label_dyk: Tin Nhắn "Bạn có biết"
 events_view_start_date_embed_field: Thời gian bắt đầu
 events_view_end_date_embed_field: Thời gian kết thúc
@@ -704,3 +716,8 @@ not_supported_by_enka_error_title: Chưa hỗ trợ bởi Enka Network
 not_supported_by_enka_error_message: "{game} chưa được hỗ trợ bỡi [Enka Network](https://enka.cc), snên bạn không thể truy vấn dữ liệu của người chơi chỉ bằng UID. Vui lòng thêm tài khoản {game} bằng lệnh </accounts> và thử lại."
 currently_logged_in_as: "Bạn hiện đang đăng nhập với tư cách:"
 not_you_label: "Không phải bạn? Nhấn để đăng nhập bằng tài khoản khác"
+profile_show_substat_rolls: Thuộc tính phụ
+profile_team_show_substat_rolls: Thẻ nhóm Thuộc tính phụ
+team_card_settings_button_label: Thẻ Đội cài đặt
+team_card_settings_embed_title: Chỉnh sữa thẻ dội cài đặt
+team_card_settings_embed_description: "Cài đặt thẻ đội được chia sẻ trên các trò chơi và tài khoản khác nhau, những thay đổi được thực hiện đối với một số cài đặt có thể không được phản ánh trên thẻ khi chúng không được mẫu thẻ hỗ trợ.\nKhi hoàn tất, hãy nhấp vào nút màu xanh lá cây trong thông báo bên trên để làm mới thẻ."

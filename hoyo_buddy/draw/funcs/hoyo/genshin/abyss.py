@@ -4,250 +4,162 @@ from io import BytesIO
 from typing import TYPE_CHECKING
 
 from discord import Locale
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw
 
-from hoyo_buddy.draw.drawer import BLACK, TRANSPARENT, WHITE, Drawer
-from hoyo_buddy.l10n import LevelStr, LocaleStr, Translator
+from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.l10n import LocaleStr, Translator
 
 if TYPE_CHECKING:
     import genshin
 
-    from hoyo_buddy.models import AbyssCharacter
 
-
-class AbyssCard:
+class SpiralAbyssCard:
     def __init__(
         self,
-        dark_mode: bool,
+        data: genshin.models.SpiralAbyss,
+        *,
         locale: str,
         translator: Translator,
-        abyss: genshin.models.SpiralAbyss,
-        characters: dict[int, AbyssCharacter],
+        character_icons: dict[str, str],
+        character_ranks: dict[int, int],
     ) -> None:
-        self._dark_mode = dark_mode
+        self._data = data
         self._locale = locale
         self._translator = translator
-        self._abyss = abyss
-        self._characters = characters
+        self._character_icons = character_icons
+        self._character_ranks = character_ranks
 
-    @property
-    def locale(self) -> Locale:
-        return Locale(self._locale)
+        self.drawer: Drawer = None  # pyright: ignore[reportAttributeAccessIssue]
+        self.im: Image.Image = None  # pyright: ignore[reportAttributeAccessIssue]
 
-    def _draw_rank_pill(self, chara: genshin.models.AbyssRankCharacter, title: LocaleStr) -> Image.Image:
-        textbbox = self._drawer.write(title, size=48, position=(0, 55), no_write=True)
-        text_width = textbbox[2] - textbbox[0]
+    def write_title(self) -> None:
+        self.drawer.write(LocaleStr(key="abyss.overview"), size=154, style="bold", position=(1447, 83))
 
-        # Draw shadow
-        shadow = Image.new("RGBA", (text_width + 180, 120), TRANSPARENT)
-        shadow_draw = ImageDraw.Draw(shadow)
-        shadow_draw.rounded_rectangle((0, 0, text_width + 170, 110), 100, fill=(0, 0, 0, 80))
-        for _ in range(10):
-            shadow = shadow.filter(ImageFilter.BLUR)
+    def write_damage_info(self) -> None:
+        self.drawer.write(LocaleStr(key="abyss.damage"), size=82, style="bold", position=(193, 239))
 
-        # Paste shadow and draw pill
-        pill = Image.new("RGBA", (text_width + 180, 120), TRANSPARENT)
-        pill.paste(shadow, (7, 7), shadow)
-        draw = ImageDraw.Draw(pill)
-        draw.rounded_rectangle((0, 0, text_width + 170, 110), 100, fill=BLACK if self._dark_mode else WHITE)
-        drawer = Drawer(
-            draw, folder="abyss", dark_mode=self._dark_mode, locale=self.locale, translator=self._translator
-        )
-
-        character_im = drawer.open_static(chara.icon, size=(110, 110))
-        character_im = drawer.circular_crop(character_im)
-        pill.paste(character_im, (0, 0), character_im)
-        drawer.write(title, size=48, position=(125, 55), anchor="lm")
-
-        return pill
-
-    def _get_pills(self) -> list[Image.Image]:
         try:
-            most_defeats = self._abyss.ranks.most_kills[0]
-            strongest_strike = self._abyss.ranks.strongest_strike[0]
-            most_dmg_taken = self._abyss.ranks.most_damage_taken[0]
-            most_ults = self._abyss.ranks.most_bursts_used[0]
-            most_skills = self._abyss.ranks.most_skills_used[0]
-        except IndexError:
-            return []
-
-        return [
-            self._draw_rank_pill(most_defeats, LocaleStr(key="abyss.most_defeats", val=most_defeats.value)),
-            self._draw_rank_pill(strongest_strike, LocaleStr(key="abyss.strongest_strike", val=strongest_strike.value)),
-            self._draw_rank_pill(most_dmg_taken, LocaleStr(key="abyss.most_dmg_taken", val=most_dmg_taken.value)),
-            self._draw_rank_pill(most_ults, LocaleStr(key="abyss.most_ults", val=most_ults.value)),
-            self._draw_rank_pill(most_skills, LocaleStr(key="abyss.most_skills", val=most_skills.value)),
-        ]
-
-    def _write_overview_texts(self) -> None:
-        drawer = self._drawer
-        textbbox = drawer.write(
-            LocaleStr(key="abyss.overview"), position=(2425, 40), size=90, style="bold", anchor="rt"
-        )
-        textbbox = drawer.write(
-            f"{self._abyss.start_time.strftime('%m/%d/%Y')} ~ {self._abyss.end_time.strftime('%m/%d/%Y')}",
-            position=(2425, textbbox[3] + 40),
-            size=48,
-            anchor="rt",
-        )
-        textbbox = drawer.write(
-            LocaleStr(key="abyss.battles_won_fought", val1=self._abyss.total_wins, val2=self._abyss.total_battles),
-            position=(2425, textbbox[3] + 60),
-            size=48,
-            anchor="rt",
-        )
-        textbbox = drawer.write(
-            LocaleStr(key="abyss.deepest_descent", val=self._abyss.max_floor),
-            position=(2425, textbbox[3] + 60),
-            size=48,
-            anchor="rt",
-        )
-        textbbox = drawer.write(
-            LocaleStr(key="abyss.total_stars", val=self._abyss.total_stars),
-            position=(2425, textbbox[3] + 60),
-            size=48,
-            anchor="rt",
-        )
-
-    def _write_floor_texts(self) -> None:
-        drawer = self._drawer
-        stars = {floor.floor: floor.stars for floor in self._abyss.floors}
-        pos = {9: (65, 812), 10: (65, 1551), 11: (1288, 812), 12: (1288, 1551)}
-        for floor in range(9, 13):
-            start_pos = pos[floor]
-            drawer.write(
-                LocaleStr(key="abyss.floor", val=floor), position=start_pos, size=64, style="medium", anchor="lm"
+            damage_info: tuple[tuple[str, genshin.models.AbyssRankCharacter], ...] = (
+                ("abyss.most_defeats", self._data.ranks.most_kills[0]),
+                ("abyss.strongest_strike", self._data.ranks.strongest_strike[0]),
+                ("abyss.most_dmg_taken", self._data.ranks.most_damage_taken[0]),
+                ("abyss.most_ults", self._data.ranks.most_bursts_used[0]),
+                ("abyss.most_skills", self._data.ranks.most_skills_used[0]),
             )
-            drawer.write(
-                f"{stars.get(floor, 0)}/9",
-                position=(start_pos[0] + 932, start_pos[1]),
-                size=64,
-                style="medium",
-                locale=Locale.american_english,
+        except IndexError:
+            return
+
+        for i, (key, character) in enumerate(damage_info):
+            position = (193, 381 + 108 * i)
+            icon = self.drawer.open_static(self._character_icons[str(character.id)])
+            icon = self.drawer.circular_crop(self.drawer.resize_crop(icon, (95, 88)))
+            self.im.alpha_composite(icon, position)
+            self.drawer.write(
+                LocaleStr(key=key, val=character.value),
+                size=48,
+                position=(position[0] + icon.width + 23, position[1] + icon.width // 2),
                 anchor="lm",
             )
 
-    def _draw_battle_characters(self, battle: genshin.models.Battle) -> Image.Image:
-        im = Image.new("RGBA", (528, 158), TRANSPARENT)
+    def write_stats(self) -> None:
+        self.drawer.write(LocaleStr(key="abyss.stats"), size=82, style="bold", position=(2706, 404))
 
-        drawer = self._drawer
-        chara_mask = drawer.open_asset("chara_mask.png", size=(116, 116))
+        stats: tuple[LocaleStr | str, ...] = (
+            f"{self._data.start_time.strftime("%Y/%m/%d")} ~ {self._data.end_time.strftime("%Y/%m/%d")}",
+            LocaleStr(key="abyss.battles_won_fought", val1=self._data.total_wins, val2=self._data.total_battles),
+            LocaleStr(key="abyss.deepest_descent", val=self._data.max_floor),
+            LocaleStr(key="abyss.total_stars", val=self._data.total_stars),
+        )
 
-        mode = "dark" if self._dark_mode else "light"
-        text_bk_colors = {"light": {4: (181, 172, 238), 5: (231, 179, 151)}, "dark": {4: (43, 35, 90), 5: (85, 63, 51)}}
-        bk_colors = {"light": {4: (233, 215, 255), 5: (255, 218, 197)}, "dark": {4: (95, 82, 147), 5: (134, 89, 64)}}
+        for i, stat in enumerate(stats):
+            self.drawer.write(stat, size=48, position=(2957, 540 + 110 * i), anchor="rt")
 
-        padding = 19
-        for i, chara in enumerate(battle.characters):
-            shadow = Image.new("RGBA", (130, 160), TRANSPARENT)
-            shadow_draw = ImageDraw.Draw(shadow)
-            shadow_draw.rounded_rectangle((0, 0, 116, 147), 13, fill=(0, 0, 0, 155))
-            for _ in range(5):
-                shadow = shadow.filter(ImageFilter.BLUR)
+    def draw_character_block(self, character: genshin.models.AbyssCharacter | None) -> Image.Image:
+        if character is None:
+            return self.drawer.open_asset("block/placeholder.png")
 
-            bk = Image.new("RGBA", (130, 160), TRANSPARENT)
-            bk.paste(shadow, (6, 6), shadow)
-            bk_draw = ImageDraw.Draw(bk)
-            bk_draw.rounded_rectangle((0, 0, 116, 147), 13, fill=text_bk_colors[mode][chara.rarity])
-            bk_draw.rounded_rectangle((0, 0, 116, 117), 13, fill=bk_colors[mode][chara.rarity])
+        bk = self.drawer.open_asset(f"block/{character.rarity}_bk.png")
+        flair = self.drawer.open_asset(f"block/{character.rarity}_flair.png")
+        img = self.drawer.open_asset(f"block/{character.rarity}_img.png")
+        img_mask = self.drawer.open_asset("block/img_mask.png")
 
-            chara_im = drawer.open_static(chara.icon, size=(116, 116))
-            chara_im = drawer.mask_image_with_image(chara_im, chara_mask)
-            bk.paste(chara_im, (0, 2), chara_im)
+        bk_drawer = Drawer(
+            ImageDraw.Draw(bk), folder="abyss", dark_mode=True, locale=Locale(self._locale), translator=self._translator
+        )
 
-            bk_draw.rounded_rectangle(
-                (87, 0, 116, 29), 13, fill=text_bk_colors[mode][chara.rarity], corners=(False, True, False, True)
+        icon = self.drawer.open_static(self._character_icons[str(character.id)], size=(116, 116))
+        icon = self.drawer.mask_image_with_image(icon, img_mask)
+        bk.alpha_composite(img, (0, 0))
+        bk.alpha_composite(icon, (0, 0))
+
+        rank = self._character_ranks.get(character.id, "?")
+        bk.alpha_composite(flair, (87, 0))
+        bk_drawer.write(f"C{rank}", size=18, style="bold", position=(102, 16), anchor="mm")
+        bk_drawer.write(f"Lv.{character.level}", size=24, style="bold", position=(58, 132), anchor="mm")
+
+        return bk
+
+    def draw_floors(self) -> None:
+        floor_pos: dict[int, tuple[int, int]] = {0: (193, 1143), 1: (1727, 1143), 2: (193, 2053), 3: (1727, 2053)}
+
+        for f, floor in enumerate(self._data.floors):
+            position = floor_pos[f]
+
+            self.drawer.write(LocaleStr(key="abyss.floor", val=floor.floor), size=82, style="bold", position=position)
+
+            cleared = False
+            self.drawer.write(
+                f"{floor.stars}/{floor.max_stars}",
+                size=64,
+                style="medium",
+                position=(position[0] + 1132, position[1] + 12),
             )
-            bk_drawer = Drawer(
-                bk_draw, folder="abyss", dark_mode=self._dark_mode, locale=self.locale, translator=self._translator
-            )
 
-            detailed_chara = self._characters.get(chara.id)
-            if detailed_chara is not None:
-                bk_drawer.write(f"C{detailed_chara.const}", position=(102, 14), size=18, style="medium", anchor="mm")
-                bk_drawer.write(
-                    LevelStr(detailed_chara.level), position=(57, 132), size=24, style="medium", anchor="mm"
-                )
-
-            im.paste(bk, (i * (padding + 116), 0), bk)
-
-        return im
-
-    def _write_chamber_star_counts(self) -> None:
-        star_pos = {9: (594, 990), 10: (594, 1729), 11: (1817, 990), 12: (1817, 1729)}
-        chamber_padding = 183
-
-        for floor_i in range(9, 13):
-            floor = next((f for f in self._abyss.floors if f.floor == floor_i), None)
-
-            for chamber_i in range(3):
+            for c in range(3):
                 try:
-                    chamber = floor.chambers[chamber_i] if floor is not None else None
+                    chamber = floor.chambers[c]
                 except IndexError:
                     chamber = None
 
-                self._drawer.write(
-                    str(chamber.stars) if chamber is not None else "0",
-                    position=star_pos[floor_i],
+                chamber_stars = (3 if cleared else 0) if chamber is None else chamber.stars
+
+                self.drawer.write(
+                    str(chamber_stars),
                     size=48,
                     style="medium",
-                    locale=Locale.american_english,
+                    position=(position[0] + 590, position[1] + 221 + 191 * c),
                     anchor="mm",
                 )
-                star_pos[floor_i] = (star_pos[floor_i][0], star_pos[floor_i][1] + chamber_padding)
 
-    def draw(self) -> BytesIO:
-        mode = "dark" if self._dark_mode else "light"
-        self._im = Drawer.open_image(f"hoyo-buddy-assets/assets/abyss/{mode}_abyss.png")
-        draw = ImageDraw.Draw(self._im)
-        self._drawer = Drawer(
-            draw, folder="abyss", dark_mode=self._dark_mode, locale=self.locale, translator=self._translator
-        )
-
-        pills = self._get_pills()
-        start_pos = (27, 33)
-        y_padding = 10
-        for pill in pills:
-            self._im.paste(pill, start_pos, pill)
-            start_pos = (start_pos[0], start_pos[1] + pill.height + y_padding)
-
-        self._write_overview_texts()
-        self._write_floor_texts()
-
-        floor_pos = {9: (26, 912), 10: (26, 1651), 11: (1249, 912), 12: (1249, 1651)}
-        for floor_i in range(9, 13):
-            floor = next((f for f in self._abyss.floors if f.floor == floor_i), None)
-
-            original_pos = floor_pos[floor_i]
-            pos = original_pos
-            for chamber_i in range(3):
-                try:
-                    chamber = floor.chambers[chamber_i] if floor is not None else None
-                except IndexError:
-                    chamber = None
-                for battle_i in range(2):
+                for b in range(2):
                     try:
-                        battle = chamber.battles[battle_i] if chamber is not None else None
+                        battle = chamber.battles[b] if chamber is not None else None
                     except IndexError:
                         battle = None
-                    if battle is None:
-                        continue
-                    battle_im = self._draw_battle_characters(battle)
-                    self._im.paste(battle_im, pos, battle_im)
-                    pos = (pos[0] + 659, pos[1])
-                pos = (original_pos[0], pos[1] + 183)
 
-        self._write_chamber_star_counts()
+                    for ch in range(4):
+                        try:
+                            character = battle.characters[ch] if battle is not None else None
+                        except IndexError:
+                            character = None
 
-        padding = 80
-        background = Image.new(
-            "RGBA",
-            (self._im.width + padding * 2, self._im.height + padding * 2),
-            (23, 23, 23) if self._dark_mode else (237, 239, 252),
+                        block = self.draw_character_block(character)
+                        self.im.alpha_composite(
+                            block, (position[0] + 8 + 696 * b + 132 * ch, position[1] + 147 + 191 * c)
+                        )
+
+    def draw(self) -> BytesIO:
+        path = "abyss_bg.png" if len(self._data.floors) > 2 else "abyss_bg_2_floors.png"
+        self.im = im = Drawer.open_image(f"hoyo-buddy-assets/assets/abyss/{path}")
+        self.drawer = Drawer(
+            ImageDraw.Draw(im), folder="abyss", dark_mode=True, locale=Locale(self._locale), translator=self._translator
         )
-        # paste im in the middle of the background
-        background.paste(self._im, (padding, padding), self._im)
 
-        buffer = BytesIO()
-        background.save(buffer, format="PNG")
-        return buffer
+        self.write_title()
+        self.write_damage_info()
+        self.write_stats()
+        self.draw_floors()
+
+        buf = BytesIO()
+        im.save(buf, format="PNG")
+        return buf

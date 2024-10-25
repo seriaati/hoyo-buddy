@@ -13,7 +13,6 @@ from hoyo_buddy.draw import funcs
 from hoyo_buddy.ui.hoyo.profile.image_settings import get_default_art
 
 from ..models import (
-    AbyssCharacter,
     AgentNameData,
     HoyolabGICharacter,
     HoyolabHSRCharacter,
@@ -250,10 +249,10 @@ async def draw_spiral_abyss_card(
     characters: Sequence[genshin.models.GenshinDetailCharacter],
     translator: Translator,
 ) -> File:
-    abyss_characters: dict[int, AbyssCharacter] = {
-        chara.id: AbyssCharacter(level=chara.level, const=chara.constellation, icon=chara.icon) for chara in characters
-    }
+    async with ambr.AmbrAPI() as api:
+        character_icons = {character.id.split("-")[0]: character.icon for character in await api.fetch_characters()}
 
+    character_ranks = {char.id: char.constellation for char in characters}
     urls = [
         chara.icon
         for floor in abyss.floors
@@ -274,7 +273,13 @@ async def draw_spiral_abyss_card(
         )
 
     await download_images(urls, "abyss", draw_input.session)
-    card = funcs.genshin.AbyssCard(draw_input.dark_mode, draw_input.locale.value, translator, abyss, abyss_characters)
+    card = funcs.genshin.SpiralAbyssCard(
+        abyss,
+        locale=draw_input.locale.value,
+        translator=translator,
+        character_icons=character_icons,
+        character_ranks=character_ranks,
+    )
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

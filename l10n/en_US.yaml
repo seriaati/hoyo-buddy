@@ -19,6 +19,8 @@ abyss.most_dmg_taken: "Most Damage Taken: {val}"
 abyss.most_skills: "Most Skills Casted: {val}"
 abyss.most_ults: "Most Bursts Unleashed: {val}"
 abyss.overview: Spiral Abyss Overview
+abyss.damage: DAMAGE INFO
+abyss.stats: STATS
 abyss.phase_select.placeholder: Select a phase
 abyss.strongest_strike: "Strongest Single Strike: {val}"
 abyss.total_stars: "Total Stars: {val}"

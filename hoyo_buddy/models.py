@@ -125,13 +125,6 @@ class DynamicBKInput:
     draw_title: bool = True
 
 
-@dataclass(kw_only=True)
-class AbyssCharacter:
-    level: int
-    const: int
-    icon: str
-
-
 class LightConeIcon:
     def __init__(self, id_: int) -> None:
         self._id = id_

@@ -19,8 +19,6 @@ abyss.most_dmg_taken: "Chịu sát thương tối đa: {val}"
 abyss.most_skills: "Số lần thi triển Kỹ Năng Nguyên Tố: {val}"
 abyss.most_ults: "Số lần Kỹ Năng Nổ: {val}"
 abyss.overview: Chiến tích La Hoàn Thâm Cảnh
-abyss.damage: Thông Tin DMG
-abyss.stats: Thuộc Tính
 abyss.phase_select.placeholder: Lựa chọn Kỳ
 abyss.strongest_strike: "Một kích mạnh nhất: {val}"
 abyss.total_stars: "Tổng Sao: {val}"
@@ -723,15 +721,3 @@ profile_team_show_substat_rolls: Thẻ nhóm Thuộc tính phụ
 team_card_settings_button_label: Thẻ Đội cài đặt
 team_card_settings_embed_title: Chỉnh sữa thẻ dội cài đặt
 team_card_settings_embed_description: "Cài đặt thẻ đội được chia sẻ trên các trò chơi và tài khoản khác nhau, những thay đổi được thực hiện đối với một số cài đặt có thể không được phản ánh trên thẻ khi chúng không được mẫu thẻ hỗ trợ.\nKhi hoàn tất, hãy nhấp vào nút màu xanh lá cây trong thông báo bên trên để làm mới thẻ."
-zzz_agent_stats_hp: HP
-zzz_agent_stats_atk: Tấn Công
-zzz_agent_stats_def: Phòng Thủ
-zzz_agent_stats_pen: Xuyên Giáp
-zzz_agent_stats_pen_ratio: TL Xuyên Giáp
-zzz_agent_stats_crit_rate: TLệ Bạo Kích
-zzz_agent_stats_crit_dmg: DMG Bạo Kích
-zzz_agent_stats_energy_gen: TH Năng Lượng
-zzz_agent_stats_anomaly_pro: LC Dị Thương
-zzz_agent_stats_anomaly_master: TT Dị Thương
-zzz_agent_stats_impact: Lực Xung Kích
-zzz_agent_stats_dmg_bonus: Buff DMG

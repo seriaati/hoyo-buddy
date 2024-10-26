@@ -2,7 +2,6 @@ about_command.contribute: Kontribusi
 about_command.developer: Pengembang
 about_command.discord_server: Server discord
 about_command.guild_count: Jumlah guild
-about_command.invite: Undang bot
 about_command.latest_changes: Perubahan terbaru
 about_command.ram_usage: Penggunaan RAM
 about_command.support: ""
@@ -20,6 +19,8 @@ abyss.most_dmg_taken: "Menerima Damage Terbanyak: {val}"
 abyss.most_skills: "Menggunakan Skill Terbanyak: {val}"
 abyss.most_ults: "Menggunakan Burst Terbanyak: {val}"
 abyss.overview: Ringkasan Spiral Abyss
+abyss.damage: ""
+abyss.stats: ""
 abyss.phase_select.placeholder: Pilih fase
 abyss.strongest_strike: "Serangan Tunggal Terkuat: {val}"
 abyss.total_stars: "Total Bintang: {val}"
@@ -150,6 +151,7 @@ dark_mode_button_label: ""
 error_footer: ""
 error_title: Terjadi kesalahan
 erudition: Erudition
+days: ""
 exceptions.card_not_ready_error.message: ""
 exceptions.card_not_ready_error.title: "Data kartu untuk {character_name} belum siap."
 exped.embed.description: ""
@@ -224,8 +226,6 @@ geo: Geo
 gi_daily.embed.description: Komisi harian atau keahlian petualangan belum selesai
 gift_code_modal.code_input.label: "Kode {num}"
 gift_code_modal.title: Masukkan kode penukaran
-guild_only_feature_error_message: "Fitur ini hanya tersedia di dalam guild, silakan coba lagi di dalam guild."
-guild_only_feature_error_title: Fitur hanya untuk guild
 harmony: Harmony
 honkai:_star_rail: "Honkai: Star Rail"
 honkai_impact_3rd: Honkai Impact 3rd
@@ -301,8 +301,17 @@ notes-card.hsr.daily-training: Pelatihan Harian
 notes-card.hsr.echo-of-war-discounts: ""
 notes-card.hsr.reserved-power: Cadangan Power
 notes-card.hsr.trailblaze-power: Trailblaze Power
-notes.item_full_in_time: "{emoji} penuh {in_time}"
-notes_available: "{emoji} tersedia {in_time}"
+notes.item_full_in_time: ""
+notes.stamina_label: ""
+notes.stamina: ""
+notes.train_score: ""
+notes.superstring_dimension: ""
+notes.superstring_dimension_value: ""
+notes.memorial_arena: ""
+notes.memorial_arena_value: ""
+notes.elysian_realm: ""
+notes.elysian_realm_value: ""
+notes_available: ""
 notes_command_description: Lihat catatan real-time
 notif.embed.footer: "Klik tombol di bawah untuk mengubah pengaturan notifikasi.\nJika sudah habis masa berlakunya, gunakan perintah /notes."
 notif_modal.enabled.label: Diaktifkan
@@ -330,6 +339,7 @@ profile.build.select.placeholder: Pilih build...
 profile.card_info.embed.description: "- Semua aset yang digunakan dalam kartu adalah milik Hoyoverse, saya bukan pemiliknya.\n- Semua fanart yang digunakan dalam kartu dikreditkan ke artisnya masing-masing.\n- Desain template Hoyo Buddy adalah asli, kamu tidak diperbolehkan memodifikasinya atau mengklaim bahwa kamu membuatnya tanpa izin saya.\n- Data permainan disediakan oleh {provider}\n"
 profile.card_info.embed.title: Tentang Kartu Build Karakter
 profile.card_settings.button.label: Pengaturan kartu
+profile.image_settings.button.label: ""
 profile.card_template_select.diff_author.description: "Dirancang oleh {author1} dan diprogram oleh {author2}"
 profile.card_template_select.encard.label: "Template ENCard {num}"
 profile.card_template_select.enka_classic.label: Template Enka klasik
@@ -489,6 +499,7 @@ img_theater_legend_block_support_chara: ""
 img_theater_legend_block_trial_chara: ""
 img_theater_act_block_title: ""
 img_theater_max_damage: ""
+img_theater_fastest_team: ""
 challenge_view.view_buffs: ""
 challenge_view.buff_select.placeholder: ""
 battery_charge_button.label: Battery
@@ -496,6 +507,8 @@ scratch_card_button.label: Kartu Gosok
 scratch_card.embed.description: ""
 zzz_engagement_button.label: ""
 zzz_engagement.embed.description: ""
+honkai_daily_embed_title: ""
+honkai_daily_embed_description: ""
 video_store_button.label: Manajemen Toko Video
 video_store.embed.description: ""
 scratch_card.incomplete: ""
@@ -544,6 +557,8 @@ card_settings.card_color: ""
 card_settings.no_color: ""
 card_settings.color_default: ""
 card_settings.current_image: ""
+card_settings.build_card_image: ""
+card_settings.team_card_image: ""
 profile.redraw_card_button_label: ""
 card_settings.footer: ""
 profile.team_dark_mode.button.label: ""
@@ -576,7 +591,7 @@ dyk_unreleased: ""
 dyk_team_card: Kamu bisa membuat kartu tim di /profile dengan memilih beberapa karakter
 dyk_set_default_acc: ""
 title_dyk: "Tahukah kamu?"
-new_zzz_temp: BARU! Cobalah template Hoyo Buddy 2 untuk agen ZZZ kamu
+new_zzz_temp: ""
 button_label_dyk: ""
 events_view_start_date_embed_field: ""
 events_view_end_date_embed_field: ""
@@ -701,3 +716,23 @@ lb_view_command_description: ""
 leaderboard_not_found: ""
 not_supported_by_enka_error_title: ""
 not_supported_by_enka_error_message: ""
+currently_logged_in_as: ""
+not_you_label: ""
+profile_show_substat_rolls: ""
+profile_team_show_substat_rolls: ""
+team_card_settings_button_label: ""
+team_card_settings_embed_title: ""
+team_card_settings_embed_description: ""
+zzz_agent_stats_hp: ""
+zzz_agent_stats_atk: ""
+zzz_agent_stats_def: ""
+zzz_agent_stats_pen: ""
+zzz_agent_stats_pen_ratio: ""
+zzz_agent_stats_crit_rate: ""
+zzz_agent_stats_crit_dmg: ""
+zzz_agent_stats_energy_gen: ""
+zzz_agent_stats_anomaly_pro: ""
+zzz_agent_stats_anomaly_master: ""
+zzz_agent_stats_impact: ""
+zzz_agent_stats_dmg_bonus: ""
+characters.filter.rarity.placeholder: ""

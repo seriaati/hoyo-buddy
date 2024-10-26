@@ -447,6 +447,7 @@ class ProfileView(View):
         loop: asyncio.AbstractEventLoop,
         character: Character,
         card_settings: CardSettings,
+        translator: Translator,
     ) -> BytesIO:
         """Draw ZZZ build card in Hoyo Buddy template."""
         assert isinstance(character, ZZZPartialAgent)
@@ -459,7 +460,7 @@ class ProfileView(View):
         client.set_lang(self.locale)
         agent = await client.get_zzz_agent_info(character.id)
 
-        template_num: Literal[1, 2, 3] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
+        template_num: Literal[1, 2, 3, 4] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
         if template_num == 2:
             temp2_card_data = await read_yaml("hoyo-buddy-assets/assets/zzz-build-card/agent_data_temp2.yaml")
             agent_temp1_data = self._card_data.get(str(character_id))
@@ -469,7 +470,7 @@ class ProfileView(View):
             agent_temp2_data["color"] = agent_temp1_data["color"]
             agent_temp_data = agent_temp2_data
         else:
-            # 1 or 3
+            # 1, 3, 4
             agent_temp_data = self._card_data.get(str(character_id))
 
         if agent_temp_data is None:
@@ -486,9 +487,11 @@ class ProfileView(View):
             ),
             agent,
             card_data=agent_temp_data,
-            color=card_settings.custom_primary_color,
+            custom_color=card_settings.custom_primary_color,
+            custom_image=card_settings.current_image,
             template=template_num,
             show_substat_rolls=card_settings.show_substat_rolls,
+            translator=translator,
         )
 
     async def draw_card(
@@ -519,7 +522,7 @@ class ProfileView(View):
             return await self._draw_enka_card(i.client.session, character, card_settings)
         if self.game is Game.ZZZ:
             return await self._draw_hb_zzz_character_card(
-                i.client.session, i.client.executor, i.client.loop, character, card_settings
+                i.client.session, i.client.executor, i.client.loop, character, card_settings, i.client.translator
             )
 
         msg = f"draw_card not implemented for game {self.game} template {template}"
@@ -562,12 +565,16 @@ class ProfileView(View):
             agents = [await client.get_zzz_agent_info(int(char_id)) for char_id in self.character_ids]
 
             agent_colors = {
-                char_id: (await get_card_settings(i.user.id, char_id, game=self.game)).custom_primary_color
+                int(char_id): (await get_card_settings(i.user.id, char_id, game=self.game)).custom_primary_color
                 or self._card_data[char_id]["color"]
                 for char_id in self.character_ids
             }
             return await draw_zzz_team_card(
-                draw_input, agents, agent_colors, images, show_substat_rolls=settings.team_card_substat_rolls
+                draw_input,
+                agents,
+                agent_colors,
+                {int(k): v for k, v in images.items()},
+                show_substat_rolls=settings.team_card_substat_rolls,
             )
 
         if self.game is Game.STARRAIL:

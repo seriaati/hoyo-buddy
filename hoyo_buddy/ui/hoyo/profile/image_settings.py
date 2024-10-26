@@ -154,7 +154,11 @@ class ImageSettingsView(View):
             title=LocaleStr(key="card_settings.modifying_for", name=character.name),
         )
 
-        image_url = self.get_current_image() or get_default_art(character, is_team=self.image_type == "team_card_image")
+        image_url = self.get_current_image() or get_default_art(
+            character,
+            is_team=self.image_type == "team_card_image"
+            or (self.card_settings.template == "hb4" and self.game is Game.ZZZ),
+        )
         embed.add_field(name=LocaleStr(key="card_settings.current_image"), value=image_url, inline=False)
         embed.set_image(url=image_url)
         embed.set_footer(text=LocaleStr(key="card_settings.footer"))

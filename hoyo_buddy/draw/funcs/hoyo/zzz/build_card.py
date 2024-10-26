@@ -27,7 +27,7 @@ class ZZZAgentCard:
         locale: str,
         image_url: str,
         card_data: dict[str, Any],
-        disc_icons: dict[str, str],
+        disc_icons: dict[int, str],
         name_data: AgentNameData | None,
         color: str | None,
         template: Literal[1, 2],
@@ -195,12 +195,10 @@ class ZZZAgentCard:
         disc_num_flair = drawer.open_asset("disc_num_flair.png")
 
         for i in range(6):
-            try:
-                disc = next(d for d in self._agent.discs if d.position == i + 1)
-            except StopIteration:
-                pass
-            else:
-                icon = drawer.open_static(self._disc_icons[str(disc.id)], size=(184, 184))
+            disc = next((d for d in self._agent.discs if d.position == i + 1), None)
+
+            if disc is not None:
+                icon = drawer.open_static(self._disc_icons[disc.id], size=(184, 184))
                 icon = drawer.middle_crop(icon, (151, 184))
                 icon = drawer.mask_image_with_image(icon, disc_mask)
                 im.alpha_composite(icon, start_pos)
@@ -301,7 +299,7 @@ class ZZZAgentCard:
                 anchor="lm",
             )
 
-            start_pos = (3003, 616) if i == 5 else (start_pos[0], start_pos[1] + 106)
+            start_pos = (2720, start_pos[1] + 106) if i % 2 != 0 else (start_pos[0] + 283, start_pos[1])
 
         buffer = BytesIO()
         im.save(buffer, "PNG")

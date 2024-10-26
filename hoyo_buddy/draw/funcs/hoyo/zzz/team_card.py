@@ -27,10 +27,10 @@ class ZZZTeamCard:
         *,
         locale: str,
         agents: Sequence[ZZZFullAgent],
-        agent_colors: dict[str, str],
-        agent_images: dict[str, str],
-        name_datas: dict[str, AgentNameData],
-        disc_icons: dict[str, str],
+        agent_colors: dict[int, str],
+        agent_images: dict[int, str],
+        name_datas: dict[int, AgentNameData],
+        disc_icons: dict[int, str],
         show_substat_rolls: bool,
     ) -> None:
         self._locale = locale
@@ -74,12 +74,12 @@ class ZZZTeamCard:
 
     def _draw_agent_card(self, agent: ZZZFullAgent) -> Image.Image:
         im = self._draw_card(
-            image_url=self._agent_images[str(agent.id)], blob_color=Drawer.hex_to_rgb(self._agent_colors[str(agent.id)])
+            image_url=self._agent_images[agent.id], blob_color=Drawer.hex_to_rgb(self._agent_colors[agent.id])
         )
         drawer = Drawer(ImageDraw.Draw(im), folder="zzz-team-card", dark_mode=self._dark_mode, sans=True)
 
         # Agent long name
-        name_data = self._name_datas.get(str(agent.id))
+        name_data = self._name_datas.get(agent.id)
         if name_data is not None:
             text_im = self._render_rotated_text(drawer, name_data)
             offset = {
@@ -118,7 +118,7 @@ class ZZZTeamCard:
             except StopIteration:
                 pass
             else:
-                icon = drawer.open_static(self._disc_icons[str(disc.id)])
+                icon = drawer.open_static(self._disc_icons[disc.id])
                 icon = drawer.resize_crop(icon, disc_mask.size)
                 icon = drawer.mask_image_with_image(icon, disc_mask)
                 im.alpha_composite(icon, start_pos)
@@ -270,7 +270,7 @@ class ZZZTeamCard:
                 anchor="lm",
             )
 
-            start_pos = (433, 31) if i == 5 else (start_pos[0], start_pos[1] + 44)
+            start_pos = (299, start_pos[1] + 44) if i % 2 != 0 else (start_pos[0] + 134, start_pos[1])
 
     def _render_rotated_text(self, drawer: Drawer, name_data: AgentNameData) -> Image.Image:
         text = name_data.full_name.upper()

@@ -369,26 +369,30 @@ async def draw_zzz_notes_card(draw_input: DrawInput, notes: ZZZNotes, translator
     )
 
 
-async def fetch_zzz_draw_data(agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2, 3]) -> ZZZDrawData:
-    agent_full_names: dict[str, AgentNameData] = {}
+async def fetch_zzz_draw_data(agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2, 3, 4]) -> ZZZDrawData:
+    agent_full_names: dict[int, AgentNameData] = {}
 
     async with hakushin.HakushinAPI(hakushin.Game.ZZZ) as api:
         characters = await api.fetch_characters()
+
         for agent in agents:
             chara_detail = await api.fetch_character_detail(agent.id)
-            agent_full_names[str(agent.id)] = AgentNameData(
+            agent_full_names[agent.id] = AgentNameData(
                 short_name=chara_detail.name,
                 full_name=chara_detail.info.full_name if chara_detail.info is not None else chara_detail.name,
             )
+
         if template == 2:
-            agent_images = {str(char.id): char.phase_3_cinema_art for char in characters}
+            agent_images = {char.id: char.phase_3_cinema_art for char in characters}
+        elif template == 4:
+            agent_images = {agent.id: agent.banner_icon for agent in agents}
         else:
-            # 1 or 3
-            agent_images = {str(char.id): char.image for char in characters}
+            # 1, 3, 4
+            agent_images = {char.id: char.image for char in characters}
 
         items = await api.fetch_items()
         disc_pos = {"[1]", "[2]", "[3]", "[4]", "[5]", "[6]"}
-        disc_icons = {str(item.id): item.icon for item in items if any(pos in item.name for pos in disc_pos)}
+        disc_icons = {item.id: item.icon for item in items if any(pos in item.name for pos in disc_pos)}
 
     return ZZZDrawData(agent_full_names, agent_images, disc_icons)
 
@@ -398,38 +402,60 @@ async def draw_zzz_build_card(
     agent: ZZZFullAgent,
     *,
     card_data: dict[str, Any],
-    color: str | None,
-    template: Literal[1, 2, 3],
+    custom_color: str | None,
+    custom_image: str | None,
+    template: Literal[1, 2, 3, 4],
     show_substat_rolls: bool,
+    translator: Translator,
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data([agent], template=template)
 
-    image = get_default_art(agent, is_team=True) if template == 3 else draw_data.agent_images[str(agent.id)]
+    image = custom_image or (
+        get_default_art(agent, is_team=True) if template == 3 else draw_data.agent_images[agent.id]
+    )
     urls: list[str] = [image]
     urls.extend(draw_data.disc_icons.values())
     if agent.w_engine is not None:
         urls.append(agent.w_engine.icon)
-    await download_images(urls, "zzz-team-card" if template == 3 else "zzz-build-card", draw_input.session)
+
+    if template == 3:
+        folder = "zzz-team-card"
+    elif template == 4:
+        folder = "zzz-build-card4"
+    else:
+        folder = "zzz-build-card"
+    await download_images(urls, folder, draw_input.session)
 
     if template == 3:
         card = funcs.zzz.ZZZTeamCard(
             locale=draw_input.locale.value,
             agents=[agent],
-            agent_colors={str(agent.id): color or card_data["color"]},
-            agent_images={str(agent.id): image},
+            agent_colors={agent.id: custom_color or card_data["color"]},
+            agent_images={agent.id: image},
             name_datas=draw_data.name_data,
             disc_icons=draw_data.disc_icons,
             show_substat_rolls=show_substat_rolls,
+        )
+    elif template == 4:
+        card = funcs.zzz.ZZZAgentCard4(
+            agent,
+            locale=draw_input.locale.value,
+            name_data=draw_data.name_data.get(agent.id),
+            image_url=image,
+            disc_icons=draw_data.disc_icons,
+            color=custom_color or card_data["color"],
+            show_substat_rolls=show_substat_rolls,
+            translator=translator,
         )
     else:
         card = funcs.zzz.ZZZAgentCard(
             agent,
             locale=draw_input.locale.value,
-            name_data=draw_data.name_data.get(str(agent.id)),
+            name_data=draw_data.name_data.get(agent.id),
             image_url=image,
             card_data=card_data,
             disc_icons=draw_data.disc_icons,
-            color=color,
+            color=custom_color,
             template=template,
             show_substat_rolls=show_substat_rolls,
         )
@@ -484,8 +510,8 @@ async def draw_honkai_suits_card(
 async def draw_zzz_team_card(
     draw_input: DrawInput,
     agents: Sequence[ZZZFullAgent],
-    agent_colors: dict[str, str],
-    agent_images: dict[str, str],
+    agent_colors: dict[int, str],
+    agent_images: dict[int, str],
     show_substat_rolls: bool,
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data(agents, template=1)

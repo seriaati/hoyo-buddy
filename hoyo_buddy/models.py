@@ -235,9 +235,9 @@ class AgentNameData(NamedTuple):
 
 
 class ZZZDrawData(NamedTuple):
-    name_data: dict[str, AgentNameData]
-    agent_images: dict[str, str]
-    disc_icons: dict[str, str]
+    name_data: dict[int, AgentNameData]
+    agent_images: dict[int, str]
+    disc_icons: dict[int, str]
 
 
 class HoyolabGIStat(BaseModel):

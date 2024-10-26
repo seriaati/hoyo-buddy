@@ -47,6 +47,27 @@ STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     ZZZPropertyType.ETHER_DMG_BONUS: "ETHER.png",
 }
 
+STAT_NAMES: Final[dict[ZZZPropertyType, str]] = {
+    # Agent
+    ZZZPropertyType.AGENT_HP: "zzz_agent_stats_hp",
+    ZZZPropertyType.AGENT_ATK: "zzz_agent_stats_atk",
+    ZZZPropertyType.AGENT_DEF: "zzz_agent_stats_def",
+    ZZZPropertyType.AGENT_PEN: "zzz_agent_stats_pen",
+    ZZZPropertyType.AGENT_PEN_RATIO: "zzz_agent_stats_pen_ratio",
+    ZZZPropertyType.AGENT_CRIT_RATE: "zzz_agent_stats_crit_rate",
+    ZZZPropertyType.AGENT_CRIT_DMG: "zzz_agent_stats_crit_dmg",
+    ZZZPropertyType.AGENT_ENERGY_GEN: "zzz_agent_stats_energy_gen",
+    ZZZPropertyType.AGENT_ANOMALY_PROFICIENCY: "zzz_agent_stats_anomaly_pro",
+    ZZZPropertyType.AGENT_ANOMALY_MASTERY: "zzz_agent_stats_anomaly_master",
+    ZZZPropertyType.AGENT_IMPACT: "zzz_agent_stats_impact",
+    # Agent DMG Bonus
+    ZZZPropertyType.PHYSICAL_DMG_BONUS: "zzz_agent_stats_dmg_bonus",
+    ZZZPropertyType.FIRE_DMG_BONUS: "zzz_agent_stats_dmg_bonus",
+    ZZZPropertyType.ICE_DMG_BONUS: "zzz_agent_stats_dmg_bonus",
+    ZZZPropertyType.ELECTRIC_DMG_BONUS: "zzz_agent_stats_dmg_bonus",
+    ZZZPropertyType.ETHER_DMG_BONUS: "zzz_agent_stats_dmg_bonus",
+}
+
 SKILL_ORDER: Final[tuple[ZZZSkillType, ...]] = (
     ZZZSkillType.BASIC_ATTACK,
     ZZZSkillType.DODGE,
@@ -60,28 +81,29 @@ SKILL_ORDER: Final[tuple[ZZZSkillType, ...]] = (
 def get_props(agent: ZZZFullAgent) -> list[ZZZAgentProperty | None]:
     props = [
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_HP),
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ATK),
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ANOMALY_MASTERY),
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_CRIT_RATE),
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_DEF),
+        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ATK),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_IMPACT),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ENERGY_GEN),
+        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ANOMALY_MASTERY),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ANOMALY_PROFICIENCY),
+        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_CRIT_RATE),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_CRIT_DMG),
+        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN_RATIO),
     ]
 
+    dmg_index = 4
     match agent.element:
         case ZZZElementType.PHYSICAL:
-            props.insert(2, dutils.get(agent.properties, type=ZZZPropertyType.PHYSICAL_DMG_BONUS))
+            props.insert(dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.PHYSICAL_DMG_BONUS))
         case ZZZElementType.FIRE:
-            props.insert(2, dutils.get(agent.properties, type=ZZZPropertyType.FIRE_DMG_BONUS))
+            props.insert(dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.FIRE_DMG_BONUS))
         case ZZZElementType.ICE:
-            props.insert(2, dutils.get(agent.properties, type=ZZZPropertyType.ICE_DMG_BONUS))
+            props.insert(dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.ICE_DMG_BONUS))
         case ZZZElementType.ELECTRIC:
-            props.insert(2, dutils.get(agent.properties, type=ZZZPropertyType.ELECTRIC_DMG_BONUS))
+            props.insert(dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.ELECTRIC_DMG_BONUS))
         case ZZZElementType.ETHER:
-            props.insert(2, dutils.get(agent.properties, type=ZZZPropertyType.ETHER_DMG_BONUS))
+            props.insert(dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.ETHER_DMG_BONUS))
 
     return props

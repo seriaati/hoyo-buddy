@@ -33,10 +33,10 @@ class SpiralAbyssCard:
         self.im: Image.Image = None  # pyright: ignore[reportAttributeAccessIssue]
 
     def write_title(self) -> None:
-        self.drawer.write(LocaleStr(key="abyss.overview"), size=154, style="bold", position=(3026, 83), anchor="rt")
+        self.drawer.write(LocaleStr(key="abyss.overview"), size=154, style="bold", position=(3026, 188), anchor="rm")
 
     def write_damage_info(self) -> None:
-        self.drawer.write(LocaleStr(key="abyss.damage"), size=82, style="bold", position=(193, 239))
+        self.drawer.write(LocaleStr(key="abyss.damage"), size=82, style="bold", position=(193, 295), anchor="lm")
 
         try:
             damage_info: tuple[tuple[str, genshin.models.AbyssRankCharacter], ...] = (
@@ -62,7 +62,7 @@ class SpiralAbyssCard:
             )
 
     def write_stats(self) -> None:
-        self.drawer.write(LocaleStr(key="abyss.stats"), size=82, style="bold", position=(2706, 404))
+        self.drawer.write(LocaleStr(key="abyss.stats"), size=82, style="bold", position=(2957, 460), anchor="rm")
 
         stats: tuple[LocaleStr | str, ...] = (
             f"{self._data.start_time.strftime("%Y/%m/%d")} ~ {self._data.end_time.strftime("%Y/%m/%d")}",
@@ -109,11 +109,19 @@ class SpiralAbyssCard:
             floor_num = f + first_floor.floor if len(self._data.floors) <= 2 else f + 9
             floor = next((floor for floor in self._data.floors if floor.floor == floor_num), None)
 
-            self.drawer.write(LocaleStr(key="abyss.floor", val=floor_num), size=82, style="bold", position=position)
+            self.drawer.write(
+                LocaleStr(key="abyss.floor", val=floor_num),
+                size=82,
+                style="bold",
+                position=(position[0], position[1] + 56),
+                anchor="lm",
+            )
             cleared = floor_num <= int(self._data.max_floor.split("-")[0])
 
             stars = (9 if cleared else 0) if floor is None else floor.stars
-            self.drawer.write(f"{stars}/9", size=64, style="medium", position=(position[0] + 1132, position[1] + 12))
+            self.drawer.write(
+                f"{stars}/9", size=64, style="medium", position=(position[0] + 1132, position[1] + 56), anchor="lm"
+            )
 
             for c in range(3):
                 try:

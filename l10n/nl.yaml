@@ -2,7 +2,6 @@ about_command.contribute: Draag bij
 about_command.developer: Ontwikkelaar
 about_command.discord_server: Discord server
 about_command.guild_count: Aantal gilden
-about_command.invite: Bot uitnodigen
 about_command.latest_changes: Laatste wijzigingen
 about_command.ram_usage: RAM Gebruik
 about_command.support: ""
@@ -20,6 +19,8 @@ abyss.most_dmg_taken: "Meeste Schade Geleden: {val}"
 abyss.most_skills: "Meeste Vaardigheden: {val}"
 abyss.most_ults: "Meeste Uitbarstingen: {val}"
 abyss.overview: Spiral Abyss Overzicht
+abyss.damage: ""
+abyss.stats: ""
 abyss.phase_select.placeholder: ""
 abyss.strongest_strike: "Sterkste Enkele Slag: {val}"
 abyss.total_stars: "Aantal Sterren: {val}"
@@ -150,6 +151,7 @@ dark_mode_button_label: ""
 error_footer: ""
 error_title: Er is een Fout Opgetreden
 erudition: Erudition
+days: ""
 exceptions.card_not_ready_error.message: ""
 exceptions.card_not_ready_error.title: "Kaart gegevens voor {character_name} zijn nog niet klaar."
 exped.embed.description: ""
@@ -224,8 +226,6 @@ geo: Geo
 gi_daily.embed.description: Dagelijkse commissies of avontuurlijke ontmoetingen zijn nog niet voltooid
 gift_code_modal.code_input.label: "Code {num}"
 gift_code_modal.title: Voer Inwisselcodes in
-guild_only_feature_error_message: "Deze functie is alleen beschikbaar in gilden, probeer het opnieuw in een gilde."
-guild_only_feature_error_title: Functie Alleen Voor Gilde
 harmony: Harmony
 honkai:_star_rail: "Honkai: Star Rail"
 honkai_impact_3rd: Honkai Impact 3rd
@@ -301,8 +301,17 @@ notes-card.hsr.daily-training: Dagelijkse Training
 notes-card.hsr.echo-of-war-discounts: ""
 notes-card.hsr.reserved-power: Gereserveerd Kracht
 notes-card.hsr.trailblaze-power: Trailblaze Kracht
-notes.item_full_in_time: "{emoji} full {in_time}"
-notes_available: "{emoji} available {in_time}"
+notes.item_full_in_time: ""
+notes.stamina_label: ""
+notes.stamina: ""
+notes.train_score: ""
+notes.superstring_dimension: ""
+notes.superstring_dimension_value: ""
+notes.memorial_arena: ""
+notes.memorial_arena_value: ""
+notes.elysian_realm: ""
+notes.elysian_realm_value: ""
+notes_available: ""
 notes_command_description: Bekijk real-time notities
 notif.embed.footer: "Klik op de onderstaande knop om de notificatie instellingen te wijzigen.\nGebruik de commando /notes als deze is verlopen."
 notif_modal.enabled.label: Ingeschakeld
@@ -330,6 +339,7 @@ profile.build.select.placeholder: ""
 profile.card_info.embed.description: "- Alle assets die gebruikt zijn in de kaarten behoren toe aan Hoyoverse, ik bezit ze niet.\n- Alle fanarts die gebruikt zijn in de kaarten zijn gecrediteerd aan hun respectievelijke artiesten.\n- De ontwerpen van de Hoyo Buddy sjablonen zijn origineel, je mag ze niet aanpassen of beweren dat je ze gemaakt hebt zonder mijn toestemming.\n- Spelgegevens worden geleverd door {provider}.\n"
 profile.card_info.embed.title: Over Karakter Build Kaarten
 profile.card_settings.button.label: Kaart instellingen
+profile.image_settings.button.label: ""
 profile.card_template_select.diff_author.description: "Designed by {author1} and programmed by {author2}"
 profile.card_template_select.encard.label: "ENCard sjabloon {num}"
 profile.card_template_select.enka_classic.label: Klassiek Enka sjabloon
@@ -489,6 +499,7 @@ img_theater_legend_block_support_chara: ""
 img_theater_legend_block_trial_chara: ""
 img_theater_act_block_title: ""
 img_theater_max_damage: ""
+img_theater_fastest_team: ""
 challenge_view.view_buffs: ""
 challenge_view.buff_select.placeholder: ""
 battery_charge_button.label: ""
@@ -496,6 +507,8 @@ scratch_card_button.label: ""
 scratch_card.embed.description: ""
 zzz_engagement_button.label: ""
 zzz_engagement.embed.description: ""
+honkai_daily_embed_title: ""
+honkai_daily_embed_description: ""
 video_store_button.label: ""
 video_store.embed.description: ""
 scratch_card.incomplete: ""
@@ -544,6 +557,8 @@ card_settings.card_color: ""
 card_settings.no_color: ""
 card_settings.color_default: ""
 card_settings.current_image: ""
+card_settings.build_card_image: ""
+card_settings.team_card_image: ""
 profile.redraw_card_button_label: ""
 card_settings.footer: ""
 profile.team_dark_mode.button.label: ""
@@ -701,3 +716,23 @@ lb_view_command_description: ""
 leaderboard_not_found: ""
 not_supported_by_enka_error_title: ""
 not_supported_by_enka_error_message: ""
+currently_logged_in_as: ""
+not_you_label: ""
+profile_show_substat_rolls: ""
+profile_team_show_substat_rolls: ""
+team_card_settings_button_label: ""
+team_card_settings_embed_title: ""
+team_card_settings_embed_description: ""
+zzz_agent_stats_hp: ""
+zzz_agent_stats_atk: ""
+zzz_agent_stats_def: ""
+zzz_agent_stats_pen: ""
+zzz_agent_stats_pen_ratio: ""
+zzz_agent_stats_crit_rate: ""
+zzz_agent_stats_crit_dmg: ""
+zzz_agent_stats_energy_gen: ""
+zzz_agent_stats_anomaly_pro: ""
+zzz_agent_stats_anomaly_master: ""
+zzz_agent_stats_impact: ""
+zzz_agent_stats_dmg_bonus: ""
+characters.filter.rarity.placeholder: ""

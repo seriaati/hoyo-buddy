@@ -101,23 +101,23 @@ class SpiralAbyssCard:
 
     def draw_floors(self) -> None:
         floor_pos: dict[int, tuple[int, int]] = {0: (193, 1143), 1: (1727, 1143), 2: (193, 2053), 3: (1727, 2053)}
+        first_floor = self._data.floors[0]
 
-        for f, floor in enumerate(self._data.floors):
+        for f in range(2 if len(self._data.floors) <= 2 else 4):
             position = floor_pos[f]
 
-            self.drawer.write(LocaleStr(key="abyss.floor", val=floor.floor), size=82, style="bold", position=position)
+            floor_num = f + first_floor.floor if len(self._data.floors) <= 2 else f + 9
+            floor = next((floor for floor in self._data.floors if floor.floor == floor_num), None)
 
-            cleared = False
-            self.drawer.write(
-                f"{floor.stars}/{floor.max_stars}",
-                size=64,
-                style="medium",
-                position=(position[0] + 1132, position[1] + 12),
-            )
+            self.drawer.write(LocaleStr(key="abyss.floor", val=floor_num), size=82, style="bold", position=position)
+            cleared = floor_num <= int(self._data.max_floor.split("-")[0])
+
+            stars = (9 if cleared else 0) if floor is None else floor.stars
+            self.drawer.write(f"{stars}/9", size=64, style="medium", position=(position[0] + 1132, position[1] + 12))
 
             for c in range(3):
                 try:
-                    chamber = floor.chambers[c]
+                    chamber = floor.chambers[c] if floor is not None else None
                 except IndexError:
                     chamber = None
 

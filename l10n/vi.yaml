@@ -735,4 +735,4 @@ zzz_agent_stats_anomaly_pro: LC Dị Thương
 zzz_agent_stats_anomaly_master: TT Dị Thương
 zzz_agent_stats_impact: Lực Xung Kích
 zzz_agent_stats_dmg_bonus: Buff DMG
-characters.filter.rarity.placeholder: ""
+characters.filter.rarity.placeholder: Lọc theo độ hiếm...

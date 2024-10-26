@@ -735,3 +735,4 @@ zzz_agent_stats_anomaly_pro: A. PROFICIENCY
 zzz_agent_stats_anomaly_master: A. MASTERY
 zzz_agent_stats_impact: IMPACT
 zzz_agent_stats_dmg_bonus: DMG BONUS
+characters.filter.rarity.placeholder: Filter by rarity...

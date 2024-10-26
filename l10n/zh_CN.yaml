@@ -19,6 +19,8 @@ abyss.most_dmg_taken: "承受最多伤害：{val}"
 abyss.most_skills: "元素战技施放数：{val}"
 abyss.most_ults: "元素爆发次数：{val}"
 abyss.overview: 深境螺旋战绩
+abyss.damage: 伤害资讯
+abyss.stats: 数据
 abyss.phase_select.placeholder: 选择一个阶段
 abyss.strongest_strike: "最强一击：{val}"
 abyss.total_stars: "获取星数：{val}"
@@ -721,3 +723,16 @@ profile_team_show_substat_rolls: 队伍卡片副词条档次
 team_card_settings_button_label: 队伍卡片设置
 team_card_settings_embed_title: 正在修改队伍卡片设置
 team_card_settings_embed_description: "队伍卡片设置在不同游戏和帐户之间共享，当卡片样式不支援时，对某些设定所做的更改可能不会反映在卡片上。\n完成后，点击上方消息中的绿色按钮即可重新绘制卡片。"
+zzz_agent_stats_hp: 生命值
+zzz_agent_stats_atk: 攻击力
+zzz_agent_stats_def: 防御力
+zzz_agent_stats_pen: 穿透值
+zzz_agent_stats_pen_ratio: 穿透率
+zzz_agent_stats_crit_rate: 暴击率
+zzz_agent_stats_crit_dmg: 暴击伤害
+zzz_agent_stats_energy_gen: 能量自动恢复
+zzz_agent_stats_anomaly_pro: 异常掌控
+zzz_agent_stats_anomaly_master: 异常精通
+zzz_agent_stats_impact: 冲击力
+zzz_agent_stats_dmg_bonus: 物理伤害加成
+characters.filter.rarity.placeholder: 筛选稀有度…

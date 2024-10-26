@@ -33,7 +33,7 @@ class SpiralAbyssCard:
         self.im: Image.Image = None  # pyright: ignore[reportAttributeAccessIssue]
 
     def write_title(self) -> None:
-        self.drawer.write(LocaleStr(key="abyss.overview"), size=154, style="bold", position=(1447, 83))
+        self.drawer.write(LocaleStr(key="abyss.overview"), size=154, style="bold", position=(3026, 83), anchor="rt")
 
     def write_damage_info(self) -> None:
         self.drawer.write(LocaleStr(key="abyss.damage"), size=82, style="bold", position=(193, 239))

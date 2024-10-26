@@ -730,7 +730,7 @@ zzz_agent_stats_pen: 穿透值
 zzz_agent_stats_pen_ratio: 穿透率
 zzz_agent_stats_crit_rate: 暴擊率
 zzz_agent_stats_crit_dmg: 暴擊傷害
-zzz_agent_stats_energy_gen: 能量恢復
+zzz_agent_stats_energy_gen: 能量自動恢復
 zzz_agent_stats_anomaly_pro: 異常掌控
 zzz_agent_stats_anomaly_master: 異常精通
 zzz_agent_stats_impact: 衝擊力

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import genshin
 from discord import ButtonStyle
 from discord.utils import format_dt
 
@@ -20,6 +19,7 @@ from hoyo_buddy.utils import format_ann_content
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
+    import genshin
     from discord import Locale
 
     from hoyo_buddy.types import Interaction, User

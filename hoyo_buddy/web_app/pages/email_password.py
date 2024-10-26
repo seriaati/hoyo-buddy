@@ -6,6 +6,7 @@ import flet as ft
 import genshin
 
 from hoyo_buddy.constants import locale_to_gpy_lang
+from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 
 from ...enums import Platform
 from ...l10n import LocaleStr, Translator
@@ -108,16 +109,15 @@ class EmailPassWordForm(ft.Column):
 
         await show_loading_snack_bar(page, translator=self._translator, locale=self._locale)
 
-        client = genshin.Client(
+        client = ProxyGenshinClient(
             region=genshin.Region.CHINESE if self._params.platform is Platform.MIYOUSHE else genshin.Region.OVERSEAS,
             lang=locale_to_gpy_lang(self._locale),
         )
         try:
-            result = (
-                await client._app_login(email.strip(), password)
-                if self._params.platform is Platform.HOYOLAB
-                else await client._cn_web_login(email.strip(), password)
-            )
+            if self._params.platform is Platform.HOYOLAB:
+                result = await client._app_login(email.strip(), password)
+            else:
+                result = await client._cn_web_login(email.strip(), password)
         except Exception as exc:
             await show_error_banner(page, message=str(exc))
             return

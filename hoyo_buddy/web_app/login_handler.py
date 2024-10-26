@@ -8,6 +8,8 @@ import flet as ft
 import genshin
 import orjson
 
+from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
+
 from ..constants import GEETEST_SERVERS
 from ..l10n import LocaleStr, Translator
 from ..models import GeetestLoginPayload
@@ -152,7 +154,7 @@ class EmailVerifyCodeButton(ft.FilledButton):
         await page.close_dialog_async()
         await show_loading_snack_bar(page, translator=self._translator, locale=self._locale)
 
-        client = genshin.Client()
+        client = ProxyGenshinClient()
         try:
             await client._verify_email(field.value, self._ticket)
         except Exception as exc:
@@ -239,7 +241,7 @@ class MobileVerifyCodeButton(ft.TextButton):
 
         await page.close_dialog_async()
 
-        client = genshin.Client(region=genshin.Region.CHINESE)
+        client = ProxyGenshinClient(region=genshin.Region.CHINESE)
         try:
             result = await client._login_with_mobile_otp(self._mobile, field.value)
         except Exception as exc:

@@ -10,6 +10,7 @@ import flet as ft
 import genshin
 import qrcode
 
+from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.utils import dict_cookie_to_str
 from hoyo_buddy.web_app.utils import encrypt_string, show_error_banner, show_loading_snack_bar
 
@@ -49,7 +50,7 @@ class GenQRCodeButton(ft.FilledButton):
         page: ft.Page = e.page
         await show_loading_snack_bar(page, message="正在生成二维码...")
 
-        client = genshin.Client(region=genshin.Region.CHINESE)
+        client = ProxyGenshinClient(region=genshin.Region.CHINESE)
         result = await client._create_qrcode()
 
         im = qrcode.make(result.url)

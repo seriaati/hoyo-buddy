@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import os
-from typing import TYPE_CHECKING, Any, Literal, overload
+from typing import TYPE_CHECKING, Any, overload
 
 import enka
 import genshin
@@ -32,12 +32,25 @@ if TYPE_CHECKING:
 
     from discord import Locale
 
+env = os.environ["ENV"]
 
-class GenshinClient(genshin.Client):
+
+class ProxyGenshinClient(genshin.Client):
+    def __init__(self, *args: Any, region: genshin.Region = genshin.Region.OVERSEAS, **kwargs: Any) -> None:
+        super().__init__(
+            *args,
+            proxy="socks5://127.0.0.1:9091" if env == "prod" and region is genshin.Region.OVERSEAS else None,
+            debug=env == "dev",
+            cache=genshin.SQLiteCache(static_ttl=3600 * 24 * 31),
+            **kwargs,
+        )
+
+
+class GenshinClient(ProxyGenshinClient):
     def __init__(self, account: HoyoAccount) -> None:
         game = HB_GAME_TO_GPY_GAME[account.game]
         region = account.region or genshin.utility.recognize_region(account.uid, game=game) or genshin.Region.OVERSEAS
-        env: Literal["dev", "prod", "test"] = os.environ["ENV"]  # pyright: ignore[reportAssignmentType]
+
         super().__init__(
             account.cookies,
             game=game,
@@ -45,9 +58,6 @@ class GenshinClient(genshin.Client):
             region=region,
             device_id=account.device_id,
             device_fp=account.device_fp,
-            proxy="socks5://127.0.0.1:9091" if env == "prod" and region is genshin.Region.OVERSEAS else None,
-            debug=env == "dev",
-            cache=genshin.SQLiteCache(static_ttl=3600 * 24 * 31),
         )
         self._account = account
 

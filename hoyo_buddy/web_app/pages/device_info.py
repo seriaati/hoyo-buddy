@@ -7,6 +7,7 @@ import flet as ft
 import genshin
 import orjson
 
+from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.web_app.utils import show_error_banner, show_loading_snack_bar
 
 if TYPE_CHECKING:
@@ -79,7 +80,7 @@ class DeviceInfoForm(ft.Column):
             return
 
         await show_loading_snack_bar(page, message="正在提交设备信息...")
-        client = genshin.Client(region=genshin.Region.CHINESE)
+        client = ProxyGenshinClient(region=genshin.Region.CHINESE)
         device_id = str(uuid.uuid4()).lower()
         try:
             device_fp = await client.generate_fp(

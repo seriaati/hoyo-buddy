@@ -16,6 +16,7 @@ from pydantic import ValidationError
 from hoyo_buddy.constants import locale_to_gpy_lang, locale_to_starrail_data_lang, locale_to_zenless_data_lang
 from hoyo_buddy.db.models import GachaHistory
 from hoyo_buddy.enums import Game, Platform
+from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.utils import dict_cookie_to_str, get_gacha_icon, item_id_to_name, str_cookie_to_dict
 
@@ -101,7 +102,7 @@ class WebApp:
             mmt_result = await self._get_user_temp_data(params.user_id)
             email, password = decrypt_string(encrypted_email), decrypt_string(encrypted_password)
 
-            client = genshin.Client()
+            client = ProxyGenshinClient()
             try:
                 result = await client._app_login(
                     email, password, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
@@ -160,7 +161,7 @@ class WebApp:
             mmt_result = await self._get_user_temp_data(params.user_id)
             email, password = decrypt_string(encrypted_email), decrypt_string(encrypted_password)
 
-            client = genshin.Client()
+            client = ProxyGenshinClient()
             try:
                 await client._send_verification_email(
                     action_ticket, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
@@ -184,7 +185,7 @@ class WebApp:
                 return pages.ErrorPage(code=400, message="Cannot find mobile number in client storage.")
 
             mobile = decrypt_string(encrypted_mobile)
-            client = genshin.Client(region=genshin.Region.CHINESE)
+            client = ProxyGenshinClient(region=genshin.Region.CHINESE)
             mmt_result = await self._get_user_temp_data(params.user_id)
             try:
                 await client._send_mobile_otp(mobile, mmt_result=genshin.models.SessionMMTResult(**mmt_result))
@@ -247,7 +248,7 @@ class WebApp:
 
         try:
             platform = params.platform or Platform.HOYOLAB
-            client = genshin.Client(
+            client = ProxyGenshinClient(
                 cookies,
                 lang=locale_to_gpy_lang(locale),
                 region=genshin.Region.OVERSEAS if platform is Platform.HOYOLAB else genshin.Region.CHINESE,

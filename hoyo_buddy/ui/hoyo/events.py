@@ -11,6 +11,7 @@ from hoyo_buddy.db.models import HoyoAccount, get_dyk
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
+from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import LocaleStr, Translator
 from hoyo_buddy.ui.components import Button, PaginatorSelect, Select, SelectOption, View
 from hoyo_buddy.ui.paginator import Page, PaginatorView
@@ -73,7 +74,7 @@ class EventsView(View):
     async def _fetch_anns(self) -> None:
         client = self.account.client
         client.set_lang(self.locale)
-        zh_client = genshin.Client(lang="zh-tw")
+        zh_client = ProxyGenshinClient(lang="zh-tw")
 
         if self.account.game is Game.GENSHIN:
             self.anns = await client.get_genshin_announcements()

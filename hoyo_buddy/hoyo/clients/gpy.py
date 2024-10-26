@@ -8,6 +8,7 @@ import enka
 import genshin
 import hakushin
 import python_socks
+from dotenv import load_dotenv
 
 from ... import models
 from ...bot.error_handler import get_error_embed
@@ -32,6 +33,7 @@ if TYPE_CHECKING:
 
     from discord import Locale
 
+load_dotenv()
 env = os.environ["ENV"]
 
 

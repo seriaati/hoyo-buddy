@@ -254,7 +254,7 @@ async def draw_spiral_abyss_card(
 
     character_ranks = {char.id: char.constellation for char in characters}
     urls = [
-        chara.icon
+        character_icons[str(chara.id)]
         for floor in abyss.floors
         for chamber in floor.chambers
         for battle in chamber.battles
@@ -262,7 +262,7 @@ async def draw_spiral_abyss_card(
     ]
     with contextlib.suppress(IndexError):
         urls.extend(
-            chara.icon
+            character_icons[str(chara.id)]
             for chara in (
                 abyss.ranks.most_bursts_used[0],
                 abyss.ranks.most_damage_taken[0],
@@ -271,8 +271,8 @@ async def draw_spiral_abyss_card(
                 abyss.ranks.strongest_strike[0],
             )
         )
-
     await download_images(urls, "abyss", draw_input.session)
+
     card = funcs.genshin.SpiralAbyssCard(
         abyss,
         locale=draw_input.locale.value,

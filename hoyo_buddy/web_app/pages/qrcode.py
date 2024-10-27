@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import asyncio
-import pathlib
+import contextlib
+import io
 import uuid
 from typing import TYPE_CHECKING
 
 import aiofiles
+import aiofiles.os
 import flet as ft
 import genshin
 import qrcode
@@ -56,8 +58,11 @@ class GenQRCodeButton(ft.FilledButton):
         im = qrcode.make(result.url)
         filename = uuid.uuid4().hex
         path = f"hoyo_buddy/web_app/assets/images/{filename}.webp"
+        buffer = io.BytesIO()
+        im.save(buffer)
         async with aiofiles.open(path, "wb") as f:
-            im.save(f)
+            await f.write(buffer.getvalue())
+
         await page.show_dialog_async(QRCodeDialog(filename))
 
         scanned = False
@@ -92,9 +97,8 @@ class GenQRCodeButton(ft.FilledButton):
 
         # Clear the QR code image after 2 minutes
         await asyncio.sleep(2 * 60)
-        path = pathlib.Path(f"hoyo_buddy/web_app/assets/images/{filename}.webp")
-        if path.exists():
-            path.unlink()
+        with contextlib.suppress(FileNotFoundError):
+            await aiofiles.os.remove(path)
 
 
 class QRCodeDialog(ft.AlertDialog):

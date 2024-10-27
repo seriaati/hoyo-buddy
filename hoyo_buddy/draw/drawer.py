@@ -499,6 +499,7 @@ class Drawer:
         stroke_color: tuple[int, int, int] | None = None,
         align_center: bool = False,
         textbox_size: tuple[int, int] = (0, 0),
+        dynamic_fontsize: bool = False,
     ) -> TextBBox:
         """Returns (left, top, right, bottom) of the text bounding box."""
         if not text:
@@ -513,14 +514,26 @@ class Drawer:
 
             translated_text = self.translator.translate(text, locale or self.locale, title_case=title_case)
 
+        if dynamic_fontsize:
+            if max_width is None:
+                msg = "max_width must be provided when dynamic_fontsize is True"
+                raise ValueError(msg)
+
+            size = self.calc_dynamic_fontsize(
+                translated_text,
+                max_width=max_width,
+                max_size=size,
+                font=self.get_font(size, style, locale=locale, sans=sans, gothic=gothic),
+            )
+
         font = self.get_font(size, style, locale=locale, sans=sans, gothic=gothic)
         tt_font = TTFont(font.path)
 
         if any(not self.has_glyph(tt_font, char) for char in translated_text):
             font = self.get_font(size, style, locale=locale)
 
-        if max_width is not None:
-            translated_text = self._wrap_text(translated_text, max_width=max_width, max_lines=max_lines, font=font)
+        if max_width is not None and not dynamic_fontsize:
+            translated_text = self.wrap_text(translated_text, max_width=max_width, max_lines=max_lines, font=font)
 
         if align_center:
             y_text = position[1]

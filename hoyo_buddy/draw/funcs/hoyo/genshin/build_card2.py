@@ -118,12 +118,28 @@ class GITempTwoBuildCard:
             im.alpha_composite(stars, (2426, 378))
 
         # Name
-        size = drawer.calc_dynamic_fontsize(self._english_name, 935, 251, drawer.get_font(251, "light", gothic=True))
-        tbox = drawer.write(self._english_name, size=size, style="light", position=(0, 0), gothic=True, no_write=True)
+        tbox = drawer.write(
+            self._english_name,
+            size=251,
+            style="light",
+            position=(0, 0),
+            gothic=True,
+            max_width=935,
+            dynamic_fontsize=True,
+            no_write=True,
+        )
         text_im = Image.new("RGBA", (tbox.width, tbox.height))
         text_im_drawer = Drawer(ImageDraw.Draw(text_im), folder="gi-build-card2", dark_mode=self._dark_mode)
         text_im_drawer.write(
-            self._english_name, size=size, style="light", position=(0, 0), gothic=True, color=color_1, anchor="lt"
+            self._english_name,
+            size=251,
+            style="light",
+            position=(0, 0),
+            gothic=True,
+            color=color_1,
+            anchor="lt",
+            max_width=935,
+            dynamic_fontsize=True,
         )
         text_im = text_im.rotate(-90, expand=True)
         im.alpha_composite(text_im, (2685 - text_im.width // 2, 66))

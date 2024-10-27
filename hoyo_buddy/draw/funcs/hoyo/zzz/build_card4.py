@@ -104,32 +104,30 @@ class ZZZAgentCard4:
         if self._name_data is not None:
             name = self._name_data.short_name
 
-            size = drawer.calc_dynamic_fontsize(
-                name,
-                1233,
-                max_size=280,
-                font=drawer.get_font(280, "black_italic", locale=Locale.american_english, sans=True),
-            )
             tbox = drawer.write(
                 name,
-                size=size,
+                size=280,
                 style="black_italic",
                 color=(20, 20, 20),
                 position=(190, 99 + img.height + 20),
                 anchor="lt",
                 locale=Locale.american_english,
                 no_write=True,
+                dynamic_fontsize=True,
+                max_width=1233,
             )
             name_im = Image.new("RGBA", (tbox.width, tbox.height), (255, 255, 255, 0))
             name_drawer = Drawer(ImageDraw.Draw(name_im), folder="zzz-build-card4", dark_mode=False, sans=True)
             name_drawer.write(
                 name,
-                size=size,
+                size=280,
                 style="black_italic",
                 color=(20, 20, 20),
                 position=(0, 0),
                 anchor="lt",
                 locale=Locale.american_english,
+                dynamic_fontsize=True,
+                max_width=1233,
             )
             name_im = name_im.rotate(-90, expand=True)
             im.alpha_composite(name_im, (190 - name_im.width // 2, 73))

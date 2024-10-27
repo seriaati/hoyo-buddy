@@ -723,16 +723,4 @@ profile_team_show_substat_rolls: Team card substat rolls
 team_card_settings_button_label: Team card settings
 team_card_settings_embed_title: Modifying Team Card Settings
 team_card_settings_embed_description: "Team card settings are shared accross different games and accounts, changes made to some settings may not be reflected on the card when they are not supported by the card template.\nWhen you're done, click the green button in the message above to redraw the card."
-zzz_agent_stats_hp: HP
-zzz_agent_stats_atk: ATK
-zzz_agent_stats_def: DEF
-zzz_agent_stats_pen: FLAT PEN
-zzz_agent_stats_pen_ratio: PEN RATIO
-zzz_agent_stats_crit_rate: CRIT RATE
-zzz_agent_stats_crit_dmg: CRIT DMG
-zzz_agent_stats_energy_gen: ENERGY REGEN
-zzz_agent_stats_anomaly_pro: A. PROFICIENCY
-zzz_agent_stats_anomaly_master: A. MASTERY
-zzz_agent_stats_impact: IMPACT
-zzz_agent_stats_dmg_bonus: DMG BONUS
 characters.filter.rarity.placeholder: Filter by rarity...

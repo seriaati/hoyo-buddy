@@ -11,10 +11,10 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.constants import get_disc_substat_roll_num
 from hoyo_buddy.draw.drawer import WHITE, Drawer
-from hoyo_buddy.draw.funcs.hoyo.zzz.common import SKILL_ORDER, STAT_ICONS, STAT_NAMES, get_props
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.draw.funcs.hoyo.zzz.common import SKILL_ORDER, STAT_ICONS, get_props
 
 if TYPE_CHECKING:
+    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.models import AgentNameData
 
 
@@ -166,17 +166,17 @@ class ZZZAgentCard4:
             )
             im.alpha_composite(prop_icon, (1173, 161 + 122 * i))
 
-            prop_key = STAT_NAMES[prop.type]
             drawer.write(
-                LocaleStr(key=prop_key),
+                prop.name,
                 size=62,
                 position=(1286, 198 + 122 * i),
                 anchor="lm",
                 color=(20, 20, 20),
                 locale=self._locale,
                 style="bold",
+                dynamic_fontsize=True,
+                max_width=508,
             )
-
             drawer.write(
                 prop.final or prop.value,
                 size=62,
@@ -205,27 +205,27 @@ class ZZZAgentCard4:
             color=(20, 20, 20),
             style="black",
             locale=self._locale,
+            max_width=719,
             max_lines=2,
-            max_width=612,
         )
 
         level_flair = drawer.open_asset("engine_level_flair.png")
-        im.alpha_composite(level_flair, (2222, tbox.bottom + 45))
+        im.alpha_composite(level_flair, (2222, tbox.bottom + 80))
         drawer.write(
             f"Lv. {engine.level}",
             size=60,
-            position=(2222 + level_flair.width // 2, tbox.bottom + 45 + level_flair.height // 2),
+            position=(2222 + level_flair.width // 2, tbox.bottom + 80 + level_flair.height // 2),
             color=WHITE,
             style="bold",
             anchor="mm",
         )
 
         upgrade_flair = drawer.open_asset("upgrade_flair.png")
-        im.alpha_composite(upgrade_flair, (2464, tbox.bottom + 45))
+        im.alpha_composite(upgrade_flair, (2464, tbox.bottom + 80))
         drawer.write(
             f"U{engine.refinement}",
             size=60,
-            position=(2464 + upgrade_flair.width // 2, tbox.bottom + 45 + upgrade_flair.height // 2),
+            position=(2464 + upgrade_flair.width // 2, tbox.bottom + 80 + upgrade_flair.height // 2),
             color=WHITE,
             style="bold",
             anchor="mm",
@@ -242,19 +242,12 @@ class ZZZAgentCard4:
                     folder="zzz-build-card",
                 )
                 im.alpha_composite(icon, position)
-
-                stat_name = Drawer._wrap_text(
-                    stat.name,
-                    max_width=240,
-                    max_lines=1,
-                    font=drawer.get_font(46, "medium", locale=self._locale, sans=True),
-                )
                 drawer.write(
-                    f"{stat_name} {stat.value}",
+                    stat.value,
                     size=46,
                     style="medium",
                     color=(20, 20, 20),
-                    position=(position[0] + icon.width + 8, position[1] + icon.height // 2),
+                    position=(position[0] + icon.width + 26, position[1] + icon.height // 2),
                     anchor="lm",
                     locale=self._locale,
                 )

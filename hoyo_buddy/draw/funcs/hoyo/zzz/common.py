@@ -47,26 +47,6 @@ STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     ZZZPropertyType.ETHER_DMG_BONUS: "ETHER.png",
 }
 
-STAT_NAMES: Final[dict[ZZZPropertyType, str]] = {
-    # Agent
-    ZZZPropertyType.AGENT_HP: "zzz_agent_stats_hp",
-    ZZZPropertyType.AGENT_ATK: "zzz_agent_stats_atk",
-    ZZZPropertyType.AGENT_DEF: "zzz_agent_stats_def",
-    ZZZPropertyType.AGENT_PEN: "zzz_agent_stats_pen",
-    ZZZPropertyType.AGENT_PEN_RATIO: "zzz_agent_stats_pen_ratio",
-    ZZZPropertyType.AGENT_CRIT_RATE: "zzz_agent_stats_crit_rate",
-    ZZZPropertyType.AGENT_CRIT_DMG: "zzz_agent_stats_crit_dmg",
-    ZZZPropertyType.AGENT_ENERGY_GEN: "zzz_agent_stats_energy_gen",
-    ZZZPropertyType.AGENT_ANOMALY_PROFICIENCY: "zzz_agent_stats_anomaly_pro",
-    ZZZPropertyType.AGENT_ANOMALY_MASTERY: "zzz_agent_stats_anomaly_master",
-    ZZZPropertyType.AGENT_IMPACT: "zzz_agent_stats_impact",
-    # Agent DMG Bonus
-    ZZZPropertyType.PHYSICAL_DMG_BONUS: "zzz_agent_stats_dmg_bonus",
-    ZZZPropertyType.FIRE_DMG_BONUS: "zzz_agent_stats_dmg_bonus",
-    ZZZPropertyType.ICE_DMG_BONUS: "zzz_agent_stats_dmg_bonus",
-    ZZZPropertyType.ELECTRIC_DMG_BONUS: "zzz_agent_stats_dmg_bonus",
-    ZZZPropertyType.ETHER_DMG_BONUS: "zzz_agent_stats_dmg_bonus",
-}
 
 SKILL_ORDER: Final[tuple[ZZZSkillType, ...]] = (
     ZZZSkillType.BASIC_ATTACK,

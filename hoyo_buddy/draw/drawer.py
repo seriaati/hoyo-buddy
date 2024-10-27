@@ -363,7 +363,7 @@ class Drawer:
         return colored_image
 
     @staticmethod
-    def _wrap_text(text: str, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont) -> str:
+    def wrap_text(text: str, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont) -> str:
         def truncate_line(line: str, width: int, ellipsis: str = "...") -> str:
             if font.getlength(line) <= width:
                 return line
@@ -377,38 +377,39 @@ class Drawer:
 
             return ellipsis
 
+        if max_lines == 1:
+            return truncate_line(text, max_width)
+
         words = text.split()
-        result = []
+        result: list[str] = []
         current_line = ""
 
         for word in words:
             test_line = word if not current_line else current_line + " " + word
 
+            is_last_line = len(result) == max_lines - 1
+
             if font.getlength(test_line) <= max_width:
                 current_line = test_line
             else:
                 if current_line:
-                    result.append(current_line)
-                    current_line = word
+                    if is_last_line:
+                        result.append(truncate_line(test_line, max_width))
+                    else:
+                        result.append(current_line)
+                        current_line = word
                 else:
                     result.append(truncate_line(word, max_width))
-
-            if len(result) == max_lines - 1 and current_line:
-                result.append(truncate_line(current_line, max_width))
-                break
 
             if len(result) == max_lines:
                 break
 
         if current_line and len(result) < max_lines:
-            result.append(current_line)
+            result.append(truncate_line(current_line, max_width))
 
         if len(result) > max_lines:
             result = result[:max_lines]
             result[-1] = truncate_line(result[-1], max_width)
-
-        if max_lines == 1:
-            return truncate_line(text, max_width)
 
         return "\n".join(result)
 

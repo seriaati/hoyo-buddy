@@ -44,6 +44,7 @@ class ProxyGenshinClient(genshin.Client):
             proxy="socks5://127.0.0.1:9091" if env == "prod" and region is genshin.Region.OVERSEAS else None,
             debug=env == "dev",
             cache=genshin.SQLiteCache(static_ttl=3600 * 24 * 31),
+            region=region,
             **kwargs,
         )
 

@@ -591,7 +591,7 @@ dyk_unreleased: 你可以使用 /search 查看尚未释出的游戏内容
 dyk_team_card: 你可以透过选择多个角色的方式在 /profile 生成队伍卡片
 dyk_set_default_acc: 你可以用 /accounts 设置一个预设帐户，用于运行所有指令
 title_dyk: "你知道吗？"
-new_zzz_temp: 副词条档次显示可在卡片设置中关闭
+new_zzz_temp: ""
 button_label_dyk: 「你知道吗」讯息
 events_view_start_date_embed_field: 开始时间
 events_view_end_date_embed_field: 结束时间
@@ -723,16 +723,4 @@ profile_team_show_substat_rolls: 队伍卡片副词条档次
 team_card_settings_button_label: 队伍卡片设置
 team_card_settings_embed_title: 正在修改队伍卡片设置
 team_card_settings_embed_description: "队伍卡片设置在不同游戏和帐户之间共享，当卡片样式不支援时，对某些设定所做的更改可能不会反映在卡片上。\n完成后，点击上方消息中的绿色按钮即可重新绘制卡片。"
-zzz_agent_stats_hp: 生命值
-zzz_agent_stats_atk: 攻击力
-zzz_agent_stats_def: 防御力
-zzz_agent_stats_pen: 穿透值
-zzz_agent_stats_pen_ratio: 穿透率
-zzz_agent_stats_crit_rate: 暴击率
-zzz_agent_stats_crit_dmg: 暴击伤害
-zzz_agent_stats_energy_gen: 能量自动恢复
-zzz_agent_stats_anomaly_pro: 异常掌控
-zzz_agent_stats_anomaly_master: 异常精通
-zzz_agent_stats_impact: 冲击力
-zzz_agent_stats_dmg_bonus: 物理伤害加成
 characters.filter.rarity.placeholder: 筛选稀有度…

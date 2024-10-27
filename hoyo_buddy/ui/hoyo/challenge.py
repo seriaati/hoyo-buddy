@@ -255,7 +255,7 @@ class ChallengeView(View):
         if challenge is None:
             raise NoChallengeDataError(self.challenge_type)
         if isinstance(challenge, SpiralAbyss):
-            if challenge.max_floor == "0-0":
+            if not challenge.floors:
                 raise NoChallengeDataError(ChallengeType.SPIRAL_ABYSS)
         elif not challenge.has_data:
             raise NoChallengeDataError(self.challenge_type)

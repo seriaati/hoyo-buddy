@@ -9,6 +9,7 @@ from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.l10n import LocaleStr, Translator
 from hoyo_buddy.ui import View
 from hoyo_buddy.ui.components import Select, SelectOption
+from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -41,7 +42,7 @@ class EngineSearchView(View):
             await i.response.edit_message(embed=embed, view=self)
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
         await self._fetch_data()
         self._add_items()
         await self.update(i)

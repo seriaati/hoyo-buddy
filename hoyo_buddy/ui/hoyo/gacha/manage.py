@@ -15,6 +15,7 @@ from hoyo_buddy.emojis import DELETE, EXPORT
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr, Translator
 from hoyo_buddy.ui.components import Button, View
+from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction, User
@@ -92,7 +93,7 @@ class ExportButton(Button[GachaLogManageView]):
         super().__init__(label=LocaleStr(key="gacha_log_export_button_label"), style=ButtonStyle.blurple, emoji=EXPORT)
 
     async def callback(self, i: Interaction) -> Any:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         info = {
             "export_timestamp": int(time.time()),

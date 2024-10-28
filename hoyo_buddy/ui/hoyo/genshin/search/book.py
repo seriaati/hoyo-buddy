@@ -10,6 +10,7 @@ from hoyo_buddy.emojis import PROJECT_AMBER
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Select, SelectOption, View
+from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from ambr.models import BookDetail, BookVolume
@@ -65,7 +66,7 @@ class VolumeSelector(Select["BookVolumeUI"]):
         self.volumes = volumes
 
     async def callback(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         volume = dutils.get(self.volumes, id=int(self.values[0]))
         if volume is None:

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from hoyo_buddy.utils import ephemeral
+
 from ..db.models import HoyoAccount, get_dyk, get_locale
 from ..ui.hoyo.stats import StatsView
 
@@ -16,7 +18,7 @@ class StatsCommand:
         self._user = user
 
     async def run(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
         locale = await get_locale(i)
 
         user = self._user or i.user

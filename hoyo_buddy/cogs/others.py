@@ -15,7 +15,7 @@ from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
 from ..l10n import LocaleStr
 from ..ui import Button, View
 from ..ui.settings import SettingsUI
-from ..utils import get_discord_user_md_link
+from ..utils import ephemeral, get_discord_user_md_link
 
 if TYPE_CHECKING:
     import git
@@ -43,7 +43,7 @@ class Others(commands.Cog):
         name=locale_str("about"), description=locale_str("About the bot", key="about_command_description")
     )
     async def about_command(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         guild = self.bot.get_guild(1000727526194298910) or await i.client.fetch_guild(1000727526194298910)
         if not guild.chunked:

@@ -13,7 +13,7 @@ from ...embeds import DefaultEmbed
 from ...enums import Platform
 from ...l10n import LocaleStr, Translator
 from ...models import DrawInput, Reward
-from ...utils import get_now
+from ...utils import ephemeral, get_now
 from ..components import Button, GoBackButton, ToggleButton, View
 
 if TYPE_CHECKING:
@@ -156,7 +156,7 @@ class CheckInButton(Button[CheckInUI]):
         client = self.view.client
         assert client.game is not None
 
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
         try:
             daily_reward = await client.claim_daily_reward()
         except genshin.DailyGeetestTriggered as e:

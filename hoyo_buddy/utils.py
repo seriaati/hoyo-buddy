@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     import pathlib
     from collections.abc import Sequence
 
-    from discord import Member, User
+    from discord import Interaction, Member, User
 
 
 def get_now() -> datetime.datetime:
@@ -486,3 +486,7 @@ def get_ranking(number: float, number_list: list[float], *, reverse: bool) -> tu
         position = next((i for i, x in enumerate(sorted_unique_list) if x < number), len(sorted_unique_list)) + 1
 
     return position, len(sorted_unique_list)
+
+
+def ephemeral(i: Interaction) -> bool:
+    return not i.app_permissions.embed_links

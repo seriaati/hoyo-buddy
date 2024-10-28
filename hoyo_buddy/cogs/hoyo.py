@@ -8,6 +8,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from hoyo_buddy.commands.events import EventsCommand
+from hoyo_buddy.utils import ephemeral
 
 from ..commands.challenge import ChallengeCommand
 from ..commands.geetest import GeetestCommand
@@ -95,7 +96,7 @@ class Hoyo(commands.Cog):
         user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         user = user or i.user
         account_ = account or await self.bot.get_account(
@@ -144,7 +145,7 @@ class Hoyo(commands.Cog):
         uid: app_commands.Range[str, 9, 10] | None = None,
         game_value: str | None = None,
     ) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         locale = await get_locale(i)
         user = user or i.user
@@ -188,7 +189,7 @@ class Hoyo(commands.Cog):
         user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         user = user or i.user
         account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI))
@@ -226,7 +227,7 @@ class Hoyo(commands.Cog):
         user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         user = user or i.user
         account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI))
@@ -301,7 +302,7 @@ class Hoyo(commands.Cog):
         user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
         command = ChallengeCommand(i, user, account)
         await command.run()
 
@@ -330,7 +331,7 @@ class Hoyo(commands.Cog):
         user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         user = user or i.user
         account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN,))
@@ -379,7 +380,7 @@ class Hoyo(commands.Cog):
         user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         user = user or i.user
         account_ = account or await self.bot.get_account(
@@ -411,7 +412,7 @@ class Hoyo(commands.Cog):
         except ValueError as e:
             raise InvalidQueryError from e
 
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
         command = GeetestCommand(self.bot, account, type_)
         await command.run(i)
 

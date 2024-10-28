@@ -11,6 +11,7 @@ from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Modal, PaginatorSelect, Select, SelectOption, TextInput, View
+from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from discord import Locale, Member, User
@@ -56,7 +57,7 @@ class CharacterUI(View):
         return {stat_id: stat["name"] for stat_id, stat in manual_avatar.items()}
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         if self._hakushin:
             async with YattaAPIClient(self.locale, self.translator) as api:

@@ -10,6 +10,7 @@ from discord.ext import commands
 from loguru import logger
 
 from hoyo_buddy.constants import locale_to_hakushin_lang
+from hoyo_buddy.utils import ephemeral
 
 from ..db.models import Settings, get_locale
 from ..emojis import PROJECT_AMBER
@@ -117,7 +118,7 @@ class Search(commands.Cog):
 
                 case ambr.ItemCategory.NAMECARDS:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer()
+                        await i.response.defer(ephemeral=ephemeral(i))
                         namecard_detail = await api.fetch_namecard_detail(int(query))
                         embed = api.get_namecard_embed(namecard_detail)
                         await i.followup.send(embed=embed)
@@ -130,21 +131,21 @@ class Search(commands.Cog):
 
                 case ambr.ItemCategory.FOOD:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer()
+                        await i.response.defer(ephemeral=ephemeral(i))
                         food_detail = await api.fetch_food_detail(int(query))
                         embed = api.get_food_embed(food_detail)
                         await i.followup.send(embed=embed)
 
                 case ambr.ItemCategory.MATERIALS:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer()
+                        await i.response.defer(ephemeral=ephemeral(i))
                         material_detail = await api.fetch_material_detail(int(query))
                         embed = api.get_material_embed(material_detail)
                         await i.followup.send(embed=embed)
 
                 case ambr.ItemCategory.FURNISHINGS:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer()
+                        await i.response.defer(ephemeral=ephemeral(i))
                         furniture_detail = await api.fetch_furniture_detail(int(query))
                         embed = api.get_furniture_embed(furniture_detail)
                         await i.followup.send(
@@ -160,7 +161,7 @@ class Search(commands.Cog):
 
                 case ambr.ItemCategory.FURNISHING_SETS:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer()
+                        await i.response.defer(ephemeral=ephemeral(i))
                         furniture_set_detail = await api.fetch_furniture_set_detail(int(query))
                         embed = api.get_furniture_set_embed(furniture_set_detail)
                         await i.followup.send(
@@ -176,7 +177,7 @@ class Search(commands.Cog):
 
                 case ambr.ItemCategory.LIVING_BEINGS:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer()
+                        await i.response.defer(ephemeral=ephemeral(i))
                         monster_detail = await api.fetch_monster_detail(int(query))
                         embed = api.get_monster_embed(monster_detail)
                         await i.followup.send(
@@ -192,7 +193,7 @@ class Search(commands.Cog):
 
                 case ambr.ItemCategory.BOOKS:
                     async with ambr.AmbrAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer()
+                        await i.response.defer(ephemeral=ephemeral(i))
                         book = await api.fetch_book_detail(int(query))
                         book_volume_ui = gi_search.BookVolumeUI(
                             book, api.lang.value, author=i.user, locale=locale, translator=i.client.translator
@@ -225,7 +226,7 @@ class Search(commands.Cog):
             match category:
                 case yatta.ItemCategory.ITEMS:
                     async with yatta.YattaAPIClient(locale, i.client.translator) as api:
-                        await i.response.defer()
+                        await i.response.defer(ephemeral=ephemeral(i))
                         item = await api.fetch_item_detail(int(query))
                         embed = api.get_item_embed(item)
                         await i.followup.send(embed=embed)
@@ -280,7 +281,7 @@ class Search(commands.Cog):
                     except ValueError as e:
                         raise InvalidQueryError from e
 
-                    await i.response.defer()
+                    await i.response.defer(ephemeral=ephemeral(i))
                     translator = hakushin.HakushinTranslator(locale, i.client.translator)
                     async with hakushin_api.HakushinAPI(hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)) as api:
                         disc = await api.fetch_bangboo_detail(bangboo_id)
@@ -302,7 +303,7 @@ class Search(commands.Cog):
                     except ValueError as e:
                         raise InvalidQueryError from e
 
-                    await i.response.defer()
+                    await i.response.defer(ephemeral=ephemeral(i))
                     translator = hakushin.HakushinTranslator(locale, i.client.translator)
                     async with hakushin_api.HakushinAPI(hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)) as api:
                         disc = await api.fetch_drive_disc_detail(disc_id)

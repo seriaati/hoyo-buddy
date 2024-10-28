@@ -11,6 +11,7 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.enka.base import BaseClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
+from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
@@ -33,7 +34,7 @@ class RemoveFromCacheButton(Button[ProfileView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
 
         character_id = self.view.character_ids[0]
         cache = await EnkaCache.get(uid=self.view.uid)

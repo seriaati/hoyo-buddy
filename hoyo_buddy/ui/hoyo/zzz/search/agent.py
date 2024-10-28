@@ -9,6 +9,7 @@ from hoyo_buddy.emojis import ZZZ_SKILL_TYPE_CORE, ZZZ_SKILL_TYPE_EMOJIS
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Select, SelectOption, View
+from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -77,7 +78,7 @@ class AgentSearchView(View):
             await i.response.edit_message(embed=embed, view=self)
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
         await self._fetch_data()
         self._add_items()
         await self.update(i)

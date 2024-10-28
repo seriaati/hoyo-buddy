@@ -18,6 +18,7 @@ from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.types import User  # noqa: TCH001
 from hoyo_buddy.ui.hoyo.leaderboard.akasha import AkashaLbPaginator
+from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot.bot import HoyoBuddy
@@ -82,7 +83,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             else:
                 uid = str(account.uid)
 
-        await i.response.defer()
+        await i.response.defer(ephemeral=ephemeral(i))
         locale = await get_locale(i)
 
         async with akasha.AkashaAPI(locale_to_akasha_lang(locale)) as api:

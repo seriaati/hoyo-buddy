@@ -5,13 +5,14 @@ from typing import TYPE_CHECKING
 from discord.app_commands.errors import AppCommandError
 from discord.utils import format_dt
 
+from .enums import Game
 from .l10n import EnumStr, LocaleStr
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from datetime import datetime
 
-    from .enums import ChallengeType, Game, Platform
+    from .enums import ChallengeType, Platform
 
 
 class HoyoBuddyError(Exception):

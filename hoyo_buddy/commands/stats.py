@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.utils import ephemeral
 
 from ..db.models import HoyoAccount, get_dyk, get_locale
@@ -23,6 +24,9 @@ class StatsCommand:
 
         user = self._user or i.user
         accounts = await HoyoAccount.filter(user_id=user.id).all()
+        if not accounts:
+            raise NoAccountFoundError
+
         uids = {account.uid for account in accounts}
         record_cards: dict[int, genshin.models.RecordCard] = {}
 
@@ -40,6 +44,9 @@ class StatsCommand:
                 record_cards[card.uid] = card
 
         record_cards_ = list(record_cards.values())
+        if not record_cards_:
+            raise NoAccountFoundError
+
         view = StatsView(record_cards_, author=i.user, locale=locale, translator=i.client.translator)
         await i.followup.send(embed=view.get_card_embed(record_cards_[0]), view=view, content=await get_dyk(i))
         view.message = await i.original_response()

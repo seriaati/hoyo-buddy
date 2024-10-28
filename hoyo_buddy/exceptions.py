@@ -41,14 +41,14 @@ class AccountNotFoundError(HoyoBuddyError, AppCommandError):
 
 
 class NoAccountFoundError(HoyoBuddyError):
-    def __init__(self, games: Sequence[Game], platform: Platform | None) -> None:
+    def __init__(self, games: Sequence[Game] | None = None, platform: Platform | None = None) -> None:
         if platform is not None:
             message = LocaleStr(key="no_account_found_for_games_platform_error_message", platform=EnumStr(platform))
         else:
             message = LocaleStr(key="no_account_found_for_games_error_message")
 
         super().__init__(title=LocaleStr(key="no_account_found_for_games_error_title"), message=message)
-        self.games = games
+        self.games = games or list(Game)
 
 
 class CardNotReadyError(HoyoBuddyError):

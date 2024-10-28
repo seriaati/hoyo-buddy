@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Self
 
 import discord
+from seria.utils import shorten
 
 if TYPE_CHECKING:
     from .db.models import HoyoAccount
@@ -35,11 +36,13 @@ class Embed(discord.Embed):
     def add_field(self, *, name: LocaleStr | str, value: LocaleStr | str, inline: bool = True) -> Self:
         translated_name = self.translator.translate(name, self.locale, title_case=True)
         translated_value = self.translator.translate(value, self.locale)
-        return super().add_field(name=translated_name, value=translated_value, inline=inline)
+        return super().add_field(
+            name=shorten(translated_name, 256), value=shorten(translated_value, 1024), inline=inline
+        )
 
     def set_author(self, *, name: LocaleStr | str, url: str | None = None, icon_url: str | None = None) -> Self:
         translated_name = self.translator.translate(name, self.locale)
-        return super().set_author(name=translated_name, url=url, icon_url=icon_url)
+        return super().set_author(name=shorten(translated_name, 256), url=url, icon_url=icon_url)
 
     def set_footer(self, *, text: LocaleStr | str | None = None, icon_url: str | None = None) -> Self:
         translated_text = self.translator.translate(text, self.locale) if text else None

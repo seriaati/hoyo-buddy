@@ -39,12 +39,8 @@ discord.VoiceClient.warn_nacl = False
 async def main() -> None:
     wrap_task_factory()
 
-    pool = await asyncpg.create_pool(os.environ["DB_URL"])
-    if pool is None:
-        msg = "Failed to connect to database"
-        raise RuntimeError(msg)
-
     async with (
+        asyncpg.create_pool(os.environ["DB_URL"]) as pool,
         aiohttp.ClientSession() as session,
         Database(),
         Translator() as translator,

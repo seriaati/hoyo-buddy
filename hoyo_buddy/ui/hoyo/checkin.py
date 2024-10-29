@@ -7,7 +7,7 @@ import genshin
 from genshin import Game
 
 from ... import emojis
-from ...db.models import AccountNotifSettings, User, get_dyk
+from ...db.models import AccountNotifSettings, User, draw_locale, get_dyk
 from ...draw.main_funcs import draw_checkin_card
 from ...embeds import DefaultEmbed
 from ...enums import Platform
@@ -114,7 +114,7 @@ class CheckInUI(View):
         bytes_obj = await draw_checkin_card(
             DrawInput(
                 dark_mode=self.dark_mode,
-                locale=self.locale,
+                locale=draw_locale(self.locale, self.account),
                 session=session,
                 filename="check-in.png",
                 executor=executor,

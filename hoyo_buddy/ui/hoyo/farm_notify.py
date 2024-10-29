@@ -7,7 +7,7 @@ from seria.utils import split_list_to_chunks
 
 from hoyo_buddy.enums import Game
 
-from ...db.models import FarmNotify
+from ...db.models import FarmNotify, draw_locale
 from ...draw.main_funcs import draw_item_list_card
 from ...embeds import DefaultEmbed
 from ...emojis import ADD, DELETE
@@ -94,7 +94,7 @@ class FarmNotifyView(PaginatorView):
         return await draw_item_list_card(
             DrawInput(
                 dark_mode=self._dark_mode,
-                locale=self.locale,
+                locale=draw_locale(self.locale, self._notify.account),
                 session=self._session,
                 filename="farm_notify.png",
                 executor=self._executor,

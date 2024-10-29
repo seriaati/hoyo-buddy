@@ -582,3 +582,9 @@ async def update_lb_ranks(
     """Update the ranks of the leaderboards."""
     async with pool.acquire() as conn:
         await conn.execute(UPDATE_LB_RANK_SQL.format(order=order), game, type_)
+
+
+def draw_locale(locale: Locale, account: HoyoAccount) -> Locale:
+    if account.platform is Platform.MIYOUSHE:
+        return Locale.chinese
+    return locale

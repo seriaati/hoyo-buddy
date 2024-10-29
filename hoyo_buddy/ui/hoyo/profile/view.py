@@ -11,7 +11,7 @@ from loguru import logger
 from seria.utils import read_yaml
 
 from hoyo_buddy.constants import LOCALE_TO_GI_CARD_API_LANG, LOCALE_TO_HSR_CARD_API_LANG
-from hoyo_buddy.db.models import EnkaCache, Settings, get_dyk
+from hoyo_buddy.db.models import EnkaCache, Settings, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
     draw_gi_team_card,
@@ -21,7 +21,7 @@ from hoyo_buddy.draw.main_funcs import (
     draw_zzz_team_card,
 )
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import CharacterType, Game
+from hoyo_buddy.enums import CharacterType, Game, Platform
 from hoyo_buddy.exceptions import (
     CardNotReadyError,
     DownloadImageFailedError,
@@ -529,6 +529,9 @@ class ProfileView(View):
         raise ValueError(msg)
 
     async def get_character_locale(self, character: Character) -> Locale:
+        if self._account is not None and self._account.platform is Platform.MIYOUSHE:
+            return Locale.chinese
+
         key = str(character.id)
         if isinstance(character, HoyolabCharacter):
             key += "-hoyolab"
@@ -542,10 +545,12 @@ class ProfileView(View):
         if self.game is not Game.GENSHIN:
             self._check_card_data()
 
+        locale = draw_locale(self.locale, self._account) if self._account is not None else self.locale
         settings = await Settings.get(user_id=i.user.id)
+
         draw_input = DrawInput(
             dark_mode=settings.team_card_dark_mode,
-            locale=self.locale,
+            locale=locale,
             session=i.client.session,
             filename="card.png",
             executor=i.client.executor,

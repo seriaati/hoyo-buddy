@@ -31,7 +31,7 @@ from ...constants import (
     YATTA_PATH_TO_GPY_PATH,
     contains_traveler_id,
 )
-from ...db.models import JSONFile
+from ...db.models import JSONFile, draw_locale
 from ...embeds import DefaultEmbed
 from ...emojis import (
     ZZZ_SPECIALTY_EMOJIS,
@@ -340,6 +340,8 @@ class CharactersView(View):
         executor: concurrent.futures.ThreadPoolExecutor,
         loop: asyncio.AbstractEventLoop,
     ) -> File:
+        locale = draw_locale(self.locale, self._account)
+
         if self.game is Game.GENSHIN:
             pc_icons = await self._get_gi_pc_icons()
 
@@ -352,7 +354,7 @@ class CharactersView(View):
             file_ = await draw_gi_characters_card(
                 DrawInput(
                     dark_mode=self.dark_mode,
-                    locale=self.locale,
+                    locale=locale,
                     session=session,
                     filename="characters.png",
                     executor=executor,
@@ -368,7 +370,7 @@ class CharactersView(View):
             file_ = await draw_hsr_characters_card(
                 DrawInput(
                     dark_mode=self.dark_mode,
-                    locale=self.locale,
+                    locale=locale,
                     session=session,
                     filename="characters.png",
                     executor=executor,
@@ -382,7 +384,7 @@ class CharactersView(View):
             file_ = await draw_zzz_characters_card(
                 DrawInput(
                     dark_mode=self.dark_mode,
-                    locale=self.locale,
+                    locale=locale,
                     session=session,
                     filename="characters.png",
                     executor=executor,
@@ -395,7 +397,7 @@ class CharactersView(View):
             file_ = await draw_honkai_suits_card(
                 DrawInput(
                     dark_mode=self.dark_mode,
-                    locale=self.locale,
+                    locale=locale,
                     session=session,
                     filename="characters.png",
                     executor=executor,

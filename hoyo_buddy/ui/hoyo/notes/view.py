@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, TypeAlias
 import genshin
 from discord import ButtonStyle, File, Locale, Member, User
 
-from hoyo_buddy.db.models import NotesNotify, get_dyk
+from hoyo_buddy.db.models import NotesNotify, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import (
@@ -415,11 +415,13 @@ class NotesView(View):
         executor: concurrent.futures.ThreadPoolExecutor,
         loop: asyncio.AbstractEventLoop,
     ) -> io.BytesIO:
+        locale = draw_locale(self.locale, self._account)
+
         if isinstance(notes, genshin.models.Notes):
             return await draw_gi_notes_card(
                 DrawInput(
                     dark_mode=self._dark_mode,
-                    locale=self.locale,
+                    locale=locale,
                     session=session,
                     filename="notes.png",
                     executor=executor,
@@ -432,7 +434,7 @@ class NotesView(View):
             return await draw_zzz_notes_card(
                 DrawInput(
                     dark_mode=self._dark_mode,
-                    locale=self.locale,
+                    locale=locale,
                     session=session,
                     filename="notes.png",
                     executor=executor,
@@ -444,7 +446,7 @@ class NotesView(View):
         return await draw_hsr_notes_card(
             DrawInput(
                 dark_mode=self._dark_mode,
-                locale=self.locale,
+                locale=locale,
                 session=session,
                 filename="notes.png",
                 executor=executor,

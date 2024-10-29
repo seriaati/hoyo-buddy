@@ -34,7 +34,7 @@ from hoyo_buddy.models import DrawInput
 from hoyo_buddy.types import Buff, Challenge, ChallengeWithBuff
 
 from ...bot.error_handler import get_error_embed
-from ...db.models import ChallengeHistory, get_dyk
+from ...db.models import ChallengeHistory, draw_locale, get_dyk
 from ...enums import ChallengeType
 from ...utils import get_floor_difficulty
 from ..components import Button, Select, SelectOption, ToggleButton, View
@@ -277,11 +277,14 @@ class ChallengeView(View):
         executor: concurrent.futures.ThreadPoolExecutor,
         loop: asyncio.AbstractEventLoop,
     ) -> File:
+        assert self.challenge is not None
+        locale = draw_locale(GPY_LANG_TO_LOCALE[self.challenge.lang], self.account)
+
         if isinstance(self.challenge, SpiralAbyss):
             return await draw_spiral_abyss_card(
                 DrawInput(
                     dark_mode=self.dark_mode,
-                    locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
+                    locale=locale,
                     session=session,
                     filename="challenge.png",
                     executor=executor,
@@ -295,7 +298,7 @@ class ChallengeView(View):
             return await draw_moc_card(
                 DrawInput(
                     dark_mode=self.dark_mode,
-                    locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
+                    locale=locale,
                     session=session,
                     filename="challenge.png",
                     executor=executor,
@@ -309,7 +312,7 @@ class ChallengeView(View):
             return await draw_pure_fiction_card(
                 DrawInput(
                     dark_mode=self.dark_mode,
-                    locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
+                    locale=locale,
                     session=session,
                     filename="challenge.png",
                     executor=executor,
@@ -323,7 +326,7 @@ class ChallengeView(View):
             return await draw_apc_shadow_card(
                 DrawInput(
                     dark_mode=self.dark_mode,
-                    locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
+                    locale=locale,
                     session=session,
                     filename="challenge.png",
                     executor=executor,
@@ -337,7 +340,7 @@ class ChallengeView(View):
             return await draw_img_theater_card(
                 DrawInput(
                     dark_mode=self.dark_mode,
-                    locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
+                    locale=locale,
                     session=session,
                     filename="challenge.png",
                     executor=executor,
@@ -347,24 +350,21 @@ class ChallengeView(View):
                 {chara.id: chara.constellation for chara in self.characters},
                 self.translator,
             )
-        if isinstance(self.challenge, ShiyuDefense):
-            return await draw_shiyu_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=GPY_LANG_TO_LOCALE[self.challenge.lang],
-                    session=session,
-                    filename="challenge.png",
-                    executor=executor,
-                    loop=loop,
-                ),
-                self.challenge,
-                self.agent_ranks,
-                self.uid,
-                self.translator,
-            )
-
-        msg = f"Invalid challenge type: {self._challenge_type}"
-        raise ValueError(msg)
+        # ShiyuDefense
+        return await draw_shiyu_card(
+            DrawInput(
+                dark_mode=self.dark_mode,
+                locale=locale,
+                session=session,
+                filename="challenge.png",
+                executor=executor,
+                loop=loop,
+            ),
+            self.challenge,
+            self.agent_ranks,
+            self.uid,
+            self.translator,
+        )
 
     def _add_items(self) -> None:
         self.add_item(ChallengeTypeSelect(GAME_CHALLENGE_TYPES[self.account.game]))

@@ -15,7 +15,7 @@ from ..commands.geetest import GeetestCommand
 from ..commands.profile import ProfileCommand
 from ..commands.stats import StatsCommand
 from ..constants import ZZZ_AGENT_DATA_URL
-from ..db.models import HoyoAccount, JSONFile, Settings, get_dyk, get_locale
+from ..db.models import HoyoAccount, JSONFile, Settings, draw_locale, get_dyk, get_locale
 from ..draw.main_funcs import draw_exploration_card
 from ..embeds import DefaultEmbed
 from ..enums import Game, GeetestType, Platform
@@ -344,7 +344,7 @@ class Hoyo(commands.Cog):
         file_ = await draw_exploration_card(
             DrawInput(
                 dark_mode=settings.dark_mode,
-                locale=locale,
+                locale=draw_locale(locale, account_),
                 session=self.bot.session,
                 filename="exploration.png",
                 executor=i.client.executor,

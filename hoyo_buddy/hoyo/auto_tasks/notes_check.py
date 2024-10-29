@@ -13,7 +13,7 @@ from genshin.models import Notes as GenshinNotes
 from hoyo_buddy.constants import UID_TZ_OFFSET
 
 from ...bot.error_handler import get_error_embed
-from ...db.models import NotesNotify
+from ...db.models import NotesNotify, draw_locale
 from ...draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
 from ...embeds import DefaultEmbed, ErrorEmbed
 from ...enums import Game, NotesNotifyType
@@ -219,7 +219,7 @@ class NotesChecker:
         embed = cls._get_notify_embed(notify, notes, locale)
         draw_input = DrawInput(
             dark_mode=notify.account.user.settings.dark_mode,
-            locale=locale,
+            locale=draw_locale(locale, notify.account),
             session=cls._bot.session,
             filename="notes.png",
             executor=cls._bot.executor,

@@ -867,7 +867,7 @@ dependencies = [
     { name = "yatta-py" },
 ]
 
-[package.dependency-groups]
+[package.dev-dependencies]
 dev = [
     { name = "icecream" },
 ]
@@ -908,7 +908,7 @@ requires-dist = [
     { name = "yatta-py", specifier = ">=1.3.8" },
 ]
 
-[package.metadata.dependency-groups]
+[package.metadata.requires-dev]
 dev = [{ name = "icecream", specifier = ">=2.1.3" }]
 
 [[package]]

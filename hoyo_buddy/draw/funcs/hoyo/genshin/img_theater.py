@@ -39,8 +39,9 @@ class ImgTheaterCard:
         else:
             total_cast_time = "N/A"
 
+        schedule = self._theater.schedule
         lines = (
-            LocaleStr(key="img_theater_stats_line_one", act=stats.best_record),
+            f"{schedule.start_datetime.strftime('%Y/%m/%d')} ~ {schedule.end_datetime.strftime('%Y/%m/%d')}",
             LocaleStr(key="img_theater_stats_line_two", flower=stats.fantasia_flowers_used),
             LocaleStr(key="img_theater_stats_line_three", support=stats.audience_support_trigger_num),
             LocaleStr(key="img_theater_stats_line_four", assist=stats.player_assists),

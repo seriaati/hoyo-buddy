@@ -490,7 +490,6 @@ invalid_uid_format_title: Invalid UID Format
 invalid_uid_format_description: "UID must be a 9 to 10 digit number"
 zenless_zone_zero: Zenless Zone Zero
 img_theater_large_block_title: Imaginarium Theater
-img_theater_stats_line_one: "Best Record: Act {act}"
 img_theater_stats_line_two: "Fantasia Flowers Used: {flower}"
 img_theater_stats_line_three: "Triggered External Audience Support: {support} times"
 img_theater_stats_line_four: "Supporting Cast Characters Assist Other Players: {assist} times"

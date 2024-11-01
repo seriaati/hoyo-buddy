@@ -168,8 +168,8 @@ class ViewGachaLogView(View):
         banner_wins, banner_5stars = await self.calc_50_50_stats()
 
         # Average pulls per 5-star and 4-star
-        total_five_stars = await self.get_pulls_count(rarity=5)
-        total_four_stars = await self.get_pulls_count(rarity=4)
+        total_five_stars = await self.get_pulls_count(rarity=5, banner_type=self.banner_type)
+        total_four_stars = await self.get_pulls_count(rarity=4, banner_type=self.banner_type)
         banner_total_pulls = await self.get_pulls_count(banner_type=self.banner_type)
         five_star_avg_pulls = banner_total_pulls / total_five_stars if total_five_stars else 0
         four_star_avg_pulls = banner_total_pulls / total_four_stars if total_four_stars else 0

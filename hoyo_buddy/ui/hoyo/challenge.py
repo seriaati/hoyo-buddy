@@ -208,12 +208,11 @@ class ChallengeView(View):
         if self.challenge_type in {ChallengeType.SPIRAL_ABYSS, ChallengeType.IMG_THEATER} and not self.characters:
             self.characters = (await client.get_genshin_detailed_characters(self.account.uid)).characters
 
+        await client.get_record_cards()
+
         for previous in (False, True):
             if self.challenge_type is ChallengeType.SPIRAL_ABYSS:
                 challenge = await client.get_genshin_spiral_abyss(self.account.uid, previous=previous)
-                if not challenge.ranks:
-                    await client.get_record_cards()
-                    challenge = await client.get_genshin_spiral_abyss(self.account.uid, previous=previous)
             elif self.challenge_type is ChallengeType.MOC:
                 challenge = await client.get_starrail_challenge(self.account.uid, previous=previous)
             elif self.challenge_type is ChallengeType.PURE_FICTION:

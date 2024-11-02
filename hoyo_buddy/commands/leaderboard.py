@@ -105,7 +105,7 @@ class LeaderboardCommand:
 
     @staticmethod
     async def fetch_max_friendship(account: HoyoAccount) -> int:
-        characters = (await account.client.get_genshin_detailed_characters(account.uid)).characters
+        characters = await account.client.get_genshin_characters(account.uid)
         return sum(character.friendship == 10 for character in characters)
 
     async def fetch_character_by_lb_type(

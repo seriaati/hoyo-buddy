@@ -372,7 +372,7 @@ profile.primary_color_modal.color.label: Màu (hex code)
 profile.primary_color_modal.title: Đổi màu thẻ
 profile.remove_from_cache.button.label: Xóa khỏi bộ nhớ đệm
 profile.remove_image.button.label: Xóa hình tự chọn
-profile_command_description: Xem hồ sơ trong trò chơi và tạo những thẻ Build Nhân Vật
+profile_command_description: Tạo thẻ Build nhân vật và thẻ đội
 profile_command_game_value_description: Trò chơi của UID
 profile_command_uid_param_description: "UID của người chơi, sẽ ghi đè tham số tài khoản nếu được cung cấp"
 pt_button.label: Nhắc nhở Máy biến đổi Tham số
@@ -490,7 +490,6 @@ invalid_uid_format_title: Định dạng UID không hợp lệ
 invalid_uid_format_description: "UID phải là từ 9 đến 10 số"
 zenless_zone_zero: Zenless Zone Zero
 img_theater_large_block_title: Nhà Hát Giả Tưởng
-img_theater_stats_line_one: "Thành Tích Cao Nhất: Màn {act}"
 img_theater_stats_line_two: "Tiêu Hao Hoa Ảo Kịch: {flower}"
 img_theater_stats_line_three: "Kích hoạt cổ vũ từ khán giả ngoài sân khấu: {support} lần"
 img_theater_stats_line_four: "Diễn Viên Hỗ Trợ chi viện người chơi khác: {assist} times"
@@ -591,7 +590,7 @@ dyk_unreleased: Bạn có thể xem nôi dung trò chơi chưa ra mắt bằng /
 dyk_team_card: Bạn có thể tạo một thẻ dội trong /profile bằng cách chọn nhiều nhân vật
 dyk_set_default_acc: Bạn có thể đặt một tài khoản mặc định dùng để chạy hết tất cả lệnh trong /accounts
 title_dyk: "Bạn có biết?"
-new_zzz_temp: Thuộc tính phụ có thể tắt trong phần cài đặt thẻ
+new_zzz_temp: Mẫu thẻ ZZZ 4 đã ra mắt!
 button_label_dyk: Tin Nhắn "Bạn có biết"
 events_view_start_date_embed_field: Thời gian bắt đầu
 events_view_end_date_embed_field: Thời gian kết thúc
@@ -723,16 +722,6 @@ profile_team_show_substat_rolls: Thẻ nhóm Thuộc tính phụ
 team_card_settings_button_label: Thẻ Đội cài đặt
 team_card_settings_embed_title: Chỉnh sữa thẻ dội cài đặt
 team_card_settings_embed_description: "Cài đặt thẻ đội được chia sẻ trên các trò chơi và tài khoản khác nhau, những thay đổi được thực hiện đối với một số cài đặt có thể không được phản ánh trên thẻ khi chúng không được mẫu thẻ hỗ trợ.\nKhi hoàn tất, hãy nhấp vào nút màu xanh lá cây trong thông báo bên trên để làm mới thẻ."
-zzz_agent_stats_hp: HP
-zzz_agent_stats_atk: Tấn Công
-zzz_agent_stats_def: Phòng Thủ
-zzz_agent_stats_pen: Xuyên Giáp
-zzz_agent_stats_pen_ratio: TL Xuyên Giáp
-zzz_agent_stats_crit_rate: TLệ Bạo Kích
-zzz_agent_stats_crit_dmg: DMG Bạo Kích
-zzz_agent_stats_energy_gen: TH Năng Lượng
-zzz_agent_stats_anomaly_pro: LC Dị Thương
-zzz_agent_stats_anomaly_master: TT Dị Thương
-zzz_agent_stats_impact: Lực Xung Kích
-zzz_agent_stats_dmg_bonus: Buff DMG
 characters.filter.rarity.placeholder: Lọc theo độ hiếm...
+profile_command_character_param_desc: Chọn nhân vật để tạo thẻ cho
+weapon_type_filter_placeholder: Chọn lọc loại vũ khí...

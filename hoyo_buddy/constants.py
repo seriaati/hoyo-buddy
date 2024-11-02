@@ -350,7 +350,6 @@ AMBR_ELEMENT_TO_ELEMENT = {
     ambr.Element.CRYO: GenshinElement.CRYO,
     ambr.Element.HYDRO: GenshinElement.HYDRO,
 }
-
 AMBR_CITY_TO_CITY = {
     ambr.City.MONDSTADT: GenshinCity.MONDSTADT,
     ambr.City.LIYUE: GenshinCity.LIYUE,
@@ -358,6 +357,13 @@ AMBR_CITY_TO_CITY = {
     ambr.City.SUMERU: GenshinCity.SUMERU,
     ambr.City.FONTAINE: GenshinCity.FONTAINE,
     ambr.City.NATLAN: GenshinCity.NATLAN,
+}
+AMBR_WEAPON_TYPES = {
+    "WEAPON_SWORD_ONE_HAND": 1,
+    "WEAPON_CATALYST": 10,
+    "WEAPON_CLAYMORE": 11,
+    "WEAPON_BOW": 12,
+    "WEAPON_POLE": 13,
 }
 
 FIGHT_PROP_CONVERTER: Final[dict[int, enka.gi.FightPropType]] = {

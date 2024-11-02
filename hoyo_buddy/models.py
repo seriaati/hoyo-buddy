@@ -200,6 +200,7 @@ class UnownedGICharacter(BaseModel):
     level: int = 0
     friendship: int = 0
     constellation: int = 0
+    weapon_type: int
 
 
 class UnownedHSRCharacter(BaseModel):

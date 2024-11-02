@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import itertools
 from enum import StrEnum
 from typing import TYPE_CHECKING, Final, TypeAlias
 
 import enka
 import genshin
 import hakushin
-from discord import Locale
+from discord import ButtonStyle, Locale
 from genshin.models import FullBattlesuit as HonkaiCharacter
 from genshin.models import GenshinDetailCharacter as GICharacter
 from genshin.models import StarRailDetailCharacter as HSRCharacter
@@ -23,6 +24,7 @@ from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath, Platform
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 
 from ...constants import (
+    AMBR_WEAPON_TYPES,
     CHARACTER_MAX_LEVEL,
     HSR_TEAM_ICON_URL,
     TRAILBLAZER_IDS,
@@ -34,6 +36,7 @@ from ...constants import (
 from ...db.models import JSONFile, draw_locale
 from ...embeds import DefaultEmbed
 from ...emojis import (
+    FILTER,
     ZZZ_SPECIALTY_EMOJIS,
     get_gi_element_emoji,
     get_hsr_element_emoji,
@@ -45,12 +48,12 @@ from ...hoyo.clients.ambr import AmbrAPIClient
 from ...hoyo.clients.yatta import YattaAPIClient
 from ...models import DrawInput, UnownedGICharacter, UnownedHSRCharacter, UnownedZZZCharacter
 from ...utils import get_now
-from ..components import Button, Select, SelectOption, ToggleButton, View
+from ..components import Button, GoBackButton, Select, SelectOption, ToggleButton, View
 
 if TYPE_CHECKING:
     import asyncio
     import concurrent.futures
-    from collections.abc import Iterable, Sequence
+    from collections.abc import Iterable, Mapping, Sequence
 
     import aiohttp
     from discord import File, Member, User
@@ -139,6 +142,7 @@ class CharactersView(View):
         self.filter: GIFilter = GIFilter.NONE
         self.element_filters: list[GenshinElement | HSRElement | ZZZElement] = []
         self.path_filters: list[HSRPath] = []
+        self.weapon_type_filters: list[int] = []
 
         self.speciality_filters: list[ZZZSpecialty] = []
         self.faction_filters: list[str] = []
@@ -211,6 +215,14 @@ class CharactersView(View):
                 result.append(character)
 
         return result
+
+    def _apply_weapon_type_filters(
+        self, characters: Sequence[GICharacter | UnownedGICharacter]
+    ) -> Sequence[GICharacter | UnownedGICharacter]:
+        if not self.weapon_type_filters:
+            return characters
+
+        return [c for c in characters if int(c.weapon_type) in self.weapon_type_filters]
 
     def _apply_path_filters(
         self, characters: Sequence[HSRCharacter | UnownedHSRCharacter]
@@ -301,7 +313,7 @@ class CharactersView(View):
     def _get_filtered_sorted_characters(self) -> Sequence[Character]:
         if self.game is Game.GENSHIN:
             characters = self._apply_gi_sorter(
-                self._apply_element_filters(self._apply_gi_filter(self.gi_characters))  # pyright: ignore [reportArgumentType]
+                self._apply_element_filters(self._apply_weapon_type_filters(self._apply_gi_filter(self.gi_characters)))  # pyright: ignore [reportArgumentType]
             )
         elif self.game is Game.STARRAIL:
             characters = self._apply_hsr_sorter(
@@ -510,33 +522,47 @@ class CharactersView(View):
 
         return embed
 
-    def _add_items(self) -> None:
+    async def _add_items(self) -> None:
+        items: list[Select | Button] = [RarityFilterSelector(self.rarities)]
+
         if self.game is Game.GENSHIN:
-            self.add_item(ShowOwnedOnly(row=0))
-            self.add_item(ShowMaxLevelOnly(row=0))
-            self.add_item(GIFilterSelector(row=1))
-            self.add_item(ElementFilterSelector(GenshinElement, row=2))
-            self.add_item(SorterSelector(self.sorter, self.game, row=3))
-            self.add_item(RarityFilterSelector(self.rarities, row=4))
+            client = self._account.client
+            client.set_lang(self.locale)
+
+            mi18n = await client.fetch_mi18n("m11241040191111")
+            options = WeaponTypeFilter.generate_options(
+                {
+                    1: "genshin_weapon_type_name_sword_one_hand",
+                    11: "genshin_weapon_type_name_claymore",
+                    10: "genshin_weapon_type_name_catalyst",
+                    12: "genshin_weapon_type_name_bow",
+                    13: "genshin_weapon_type_name_pole",
+                },
+                mi18n,
+            )
+            items.extend([GIFilterSelector(), ElementFilterSelector(GenshinElement), WeaponTypeFilter(options)])
         elif self.game is Game.STARRAIL:
-            self.add_item(ShowOwnedOnly(row=0))
-            self.add_item(ShowMaxLevelOnly(row=0))
-            self.add_item(PathFilterSelector(row=1))
-            self.add_item(ElementFilterSelector(HSRElement, row=2))
-            self.add_item(SorterSelector(self.sorter, self.game, row=3))
-            self.add_item(RarityFilterSelector(self.rarities, row=4))
+            items.extend([ElementFilterSelector(HSRElement), PathFilterSelector()])
         elif self.game is Game.ZZZ:
-            self.add_item(ShowOwnedOnly(row=0))
-            self.add_item(ShowMaxLevelOnly(row=0))
-            self.add_item(ElementFilterSelector(ZZZElement, row=1))
-            self.add_item(SpecialtyFilterSelector(self.zzz_characters, row=2))
-            # self.add_item(FactionFilterSelector(self.zzz_characters, row=3))
-            self.add_item(SorterSelector(self.sorter, self.game, row=3))
-            self.add_item(RarityFilterSelector(self.rarities, row=4))
+            items.extend(
+                [
+                    ElementFilterSelector(ZZZElement),
+                    SpecialtyFilterSelector(self.zzz_characters),
+                    FactionFilterSelector(self.zzz_characters),
+                ]
+            )
+
+        chunked_items = itertools.batched(items, 4)
+        for num, chunk in enumerate(chunked_items, 1):
+            self.add_item(FilterButton(num, chunk))
+
+        if self.game in {Game.GENSHIN, Game.STARRAIL, Game.ZZZ}:
+            self.add_item(ShowOwnedOnly())
+            self.add_item(ShowMaxLevelOnly())
         elif self.game is Game.HONKAI:
-            self.add_item(ShowMaxLevelOnly(row=0))
-            self.add_item(SorterSelector(self.sorter, self.game, row=1))
-            self.add_item(RarityFilterSelector(self.rarities, row=2))
+            self.add_item(ShowMaxLevelOnly())
+
+        self.add_item(SorterSelector(self.sorter, self.game))
 
     async def start(self, i: Interaction) -> None:
         client = self._account.client
@@ -585,7 +611,7 @@ class CharactersView(View):
         file_ = await self._draw_card(i.client.session, characters, i.client.executor, i.client.loop)
         embed = self._get_embed(len([c for c in characters if not isinstance(c, UnownedCharacter)]))
 
-        self._add_items()
+        await self._add_items()
         await i.edit_original_response(attachments=[file_], view=self, embed=embed)
         self.message = await i.original_response()
 
@@ -600,7 +626,7 @@ class CharactersView(View):
 
 
 class GIFilterSelector(Select[CharactersView]):
-    def __init__(self, *, row: int) -> None:
+    def __init__(self) -> None:
         options = [
             SelectOption(label=LocaleStr(key="characters.filter.none"), value=GIFilter.NONE, default=True),
             SelectOption(label=LocaleStr(key="characters.filter.max_friendship"), value=GIFilter.MAX_FRIENDSHIP),
@@ -608,7 +634,7 @@ class GIFilterSelector(Select[CharactersView]):
                 label=LocaleStr(key="characters.filter.not_max_friendship"), value=GIFilter.NOT_MAX_FRIENDSHIP
             ),
         ]
-        super().__init__(placeholder=LocaleStr(key="characters.filter.placeholder"), options=options, row=row)
+        super().__init__(placeholder=LocaleStr(key="characters.filter.placeholder"), options=options)
 
     async def callback(self, i: Interaction) -> None:
         self.view.filter = GIFilter(self.values[0])
@@ -616,7 +642,7 @@ class GIFilterSelector(Select[CharactersView]):
 
 
 class ElementFilterSelector(Select[CharactersView]):
-    def __init__(self, elements: Iterable[GenshinElement | HSRElement | ZZZElement], *, row: int) -> None:
+    def __init__(self, elements: Iterable[GenshinElement | HSRElement | ZZZElement]) -> None:
         def get_element_emoji(element: GenshinElement | HSRElement | ZZZElement) -> str:
             if isinstance(element, GenshinElement):
                 return get_gi_element_emoji(element)
@@ -629,10 +655,7 @@ class ElementFilterSelector(Select[CharactersView]):
             for element in elements
         ]
         super().__init__(
-            placeholder=LocaleStr(key="characters.filter.element.placeholder"),
-            options=options,
-            max_values=len(options),
-            row=row,
+            placeholder=LocaleStr(key="characters.filter.element.placeholder"), options=options, max_values=len(options)
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -651,15 +674,12 @@ class ElementFilterSelector(Select[CharactersView]):
 
 
 class PathFilterSelector(Select[CharactersView]):
-    def __init__(self, row: int) -> None:
+    def __init__(self) -> None:
         options = [
             SelectOption(label=EnumStr(path), value=path.value, emoji=get_hsr_path_emoji(path)) for path in HSRPath
         ]
         super().__init__(
-            placeholder=LocaleStr(key="characters.filter.path.placeholder"),
-            options=options,
-            max_values=len(options),
-            row=row,
+            placeholder=LocaleStr(key="characters.filter.path.placeholder"), options=options, max_values=len(options)
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -668,7 +688,7 @@ class PathFilterSelector(Select[CharactersView]):
 
 
 class SpecialtyFilterSelector(Select[CharactersView]):
-    def __init__(self, characters: Sequence[ZZZCharacter | UnownedZZZCharacter], *, row: int) -> None:
+    def __init__(self, characters: Sequence[ZZZCharacter | UnownedZZZCharacter]) -> None:
         options = [
             SelectOption(
                 label=LocaleStr(key=speciality.name.lower()),
@@ -681,7 +701,6 @@ class SpecialtyFilterSelector(Select[CharactersView]):
             placeholder=LocaleStr(key="characters.filter.specialty.placeholder"),
             options=options,
             max_values=len(options),
-            row=row,
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -690,16 +709,13 @@ class SpecialtyFilterSelector(Select[CharactersView]):
 
 
 class FactionFilterSelector(Select[CharactersView]):
-    def __init__(self, characters: Sequence[ZZZCharacter | UnownedZZZCharacter], *, row: int) -> None:
+    def __init__(self, characters: Sequence[ZZZCharacter | UnownedZZZCharacter]) -> None:
         options = [
             SelectOption(label=faction, value=faction)
             for faction in {character.faction_name for character in characters if character.faction_name}
         ]
         super().__init__(
-            placeholder=LocaleStr(key="characters.filter.faction.placeholder"),
-            options=options,
-            max_values=len(options),
-            row=row,
+            placeholder=LocaleStr(key="characters.filter.faction.placeholder"), options=options, max_values=len(options)
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -708,7 +724,7 @@ class FactionFilterSelector(Select[CharactersView]):
 
 
 class SorterSelector(Select[CharactersView]):
-    def __init__(self, current: Sorter, game: Game, *, row: int) -> None:
+    def __init__(self, current: Sorter, game: Game) -> None:
         sorters: dict[Game, type[Sorter]] = {
             Game.GENSHIN: GISorter,
             Game.STARRAIL: HSRSorter,
@@ -732,7 +748,6 @@ class SorterSelector(Select[CharactersView]):
                 )
                 for sorter in self._sorter
             ],
-            row=row,
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -741,8 +756,8 @@ class SorterSelector(Select[CharactersView]):
 
 
 class ShowOwnedOnly(ToggleButton[CharactersView]):
-    def __init__(self, *, row: int) -> None:
-        super().__init__(current_toggle=True, toggle_label=LocaleStr(key="characters.show_owned_only"), row=row)
+    def __init__(self) -> None:
+        super().__init__(current_toggle=True, toggle_label=LocaleStr(key="characters.show_owned_only"))
 
     async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=False)
@@ -778,7 +793,12 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
                     continue
 
                 self.view.gi_characters.append(
-                    UnownedGICharacter(id=chara.id, rarity=chara.rarity, element=chara.element.name)
+                    UnownedGICharacter(
+                        id=chara.id,
+                        rarity=chara.rarity,
+                        element=chara.element.name,
+                        weapon_type=AMBR_WEAPON_TYPES[chara.weapon_type],
+                    )
                 )
 
         elif self.view.game is Game.STARRAIL:
@@ -838,10 +858,8 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
 
 
 class ShowMaxLevelOnly(ToggleButton[CharactersView]):
-    def __init__(self, *, row: int) -> None:
-        super().__init__(
-            current_toggle=False, toggle_label=LocaleStr(key="characters_view_show_max_level_only"), row=row
-        )
+    def __init__(self) -> None:
+        super().__init__(current_toggle=False, toggle_label=LocaleStr(key="characters_view_show_max_level_only"))
 
     async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=False)
@@ -851,18 +869,46 @@ class ShowMaxLevelOnly(ToggleButton[CharactersView]):
 
 
 class RarityFilterSelector(Select[CharactersView]):
-    def __init__(self, rarities: set[str], *, row: int) -> None:
+    def __init__(self, rarities: set[str]) -> None:
         options = [
             SelectOption(label=str(rarity), value=str(rarity), default=True)
             for rarity in sorted(rarities, reverse=True)
         ]
         super().__init__(
-            placeholder=LocaleStr(key="characters.filter.rarity.placeholder"),
-            options=options,
-            max_values=len(options),
-            row=row,
+            placeholder=LocaleStr(key="characters.filter.rarity.placeholder"), options=options, max_values=len(options)
         )
 
     async def callback(self, i: Interaction) -> None:
         self.view.rarities = set(self.values)
         await self.view.item_callback(i, self)
+
+
+class WeaponTypeFilter(Select[CharactersView]):
+    def __init__(self, options: list[SelectOption]) -> None:
+        super().__init__(
+            placeholder=LocaleStr(key="weapon_type_filter_placeholder"), options=options, max_values=len(options)
+        )
+
+    @staticmethod
+    def generate_options(types: dict[int, str], mi18n: Mapping[str, str]) -> list[SelectOption]:
+        return [SelectOption(label=mi18n[mi18n_key], value=str(type_)) for type_, mi18n_key in types.items()]
+
+    async def callback(self, i: Interaction) -> None:
+        self.view.weapon_type_filters = [int(value) for value in self.values]
+        await self.view.item_callback(i, self)
+
+
+class FilterButton(Button[CharactersView]):
+    def __init__(self, _: int, items: Sequence[Button | Select]) -> None:
+        super().__init__(label=LocaleStr(key="characters_filter_button_label"), style=ButtonStyle.blurple, emoji=FILTER)
+        self._items = items
+
+    async def callback(self, i: Interaction) -> None:
+        back_button = GoBackButton(self.view.children)
+        self.view.clear_items()
+
+        for item in self._items:
+            self.view.add_item(item)
+        self.view.add_item(back_button)
+
+        await i.response.edit_message(view=self.view)

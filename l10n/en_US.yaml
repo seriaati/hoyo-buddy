@@ -374,6 +374,7 @@ profile.remove_from_cache.button.label: Remove from cache
 profile.remove_image.button.label: Remove custom image
 profile_command_description: Generate character build cards and team cards
 profile_command_game_value_description: Game of the UID
+characters_filter_button_label: Filters
 profile_command_uid_param_description: "UID of the player, this overrides the account parameter if provided"
 pt_button.label: Parametric transformer reminder
 pt_modal.title: Parametric Transformer Reminder Settings
@@ -724,3 +725,4 @@ team_card_settings_embed_title: Modifying Team Card Settings
 team_card_settings_embed_description: "Team card settings are shared accross different games and accounts, changes made to some settings may not be reflected on the card when they are not supported by the card template.\nWhen you're done, click the green button in the message above to redraw the card."
 characters.filter.rarity.placeholder: Filter by rarity...
 profile_command_character_param_desc: Character to generate the card for
+weapon_type_filter_placeholder: Select weapon type filters...

@@ -16,7 +16,7 @@ from genshin.models import (
     StarRailPureFiction,
     TheaterBuff,
 )
-from genshin.models import GenshinDetailCharacter as GICharacter
+from genshin.models import Character as GICharacter
 
 from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE
 from hoyo_buddy.draw.main_funcs import (
@@ -206,7 +206,7 @@ class ChallengeView(View):
         client.set_lang(self.locale)
 
         if self.challenge_type in {ChallengeType.SPIRAL_ABYSS, ChallengeType.IMG_THEATER} and not self.characters:
-            self.characters = (await client.get_genshin_detailed_characters(self.account.uid)).characters
+            self.characters = await client.get_genshin_characters(self.account.uid)
 
         await client.get_record_cards()
 

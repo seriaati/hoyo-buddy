@@ -239,7 +239,10 @@ class ChallengeView(View):
                 # No previous season
                 continue
 
-            self._check_challenge_data(challenge)
+            try:
+                self._check_challenge_data(challenge)
+            except NoChallengeDataError:
+                continue
 
             # Save data to db
             await ChallengeHistory.add_data(

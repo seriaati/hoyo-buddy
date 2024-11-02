@@ -440,7 +440,7 @@ class ChallengeTypeSelect(Select[ChallengeView]):
             await self.unset_loading_state(i)
             raise
 
-        self.view._item_states["challenge_view.phase_select"] = False
+        self.view.item_states["challenge_view.phase_select"] = False
 
         histories = await ChallengeHistory.filter(uid=self.view.account.uid, challenge_type=self.view.challenge_type)
         for history in histories:
@@ -454,8 +454,8 @@ class ChallengeTypeSelect(Select[ChallengeView]):
         phase_select.translate(self.view.locale, self.view.translator)
         phase_select.update_options_defaults(values=[str(self.view.season_id)])
 
-        self.view._item_states["challenge_view.view_buffs"] = not isinstance(self.view.challenge, ChallengeWithBuff)
-        self.view._item_states["show_uid"] = not isinstance(self.view.challenge, ShiyuDefense)
+        self.view.item_states["challenge_view.view_buffs"] = not isinstance(self.view.challenge, ChallengeWithBuff)
+        self.view.item_states["show_uid"] = not isinstance(self.view.challenge, ShiyuDefense)
 
         await self.view.update(self, i)
 

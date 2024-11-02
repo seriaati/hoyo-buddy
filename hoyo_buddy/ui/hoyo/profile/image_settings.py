@@ -452,7 +452,7 @@ class AddImageButton(Button[ImageSettingsView]):
         image_select.update(current_image=image_url, custom_images=self.view.card_settings.custom_images)
 
         # Enable the remove image button
-        self.view._item_states["profile_remove_image"] = False
+        self.view.item_states["profile_remove_image"] = False
 
         embed = self.view.get_settings_embed()
         await self.unset_loading_state(i, embed=embed)

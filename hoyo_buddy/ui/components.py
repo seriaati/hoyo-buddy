@@ -47,9 +47,7 @@ class View(discord.ui.View):
         self.locale = locale
         self.translator = translator
         self.message: discord.Message | None = None
-
-        self._tasks: set[asyncio.Task] = set()
-        self._item_states: dict[str, bool] = {}
+        self.item_states: dict[str, bool] = {}
 
     def __repr__(self) -> str:
         return f"{self.__class__.__module__.replace('hoyo_buddy.ui.', '')}.{self.__class__.__name__}"
@@ -91,7 +89,7 @@ class View(discord.ui.View):
         for child in self.children:
             if isinstance(child, discord.ui.Button | discord.ui.Select):
                 if child.custom_id is not None:
-                    self._item_states[child.custom_id] = child.disabled
+                    self.item_states[child.custom_id] = child.disabled
 
                 if isinstance(child, discord.ui.Button) and child.url:
                     continue
@@ -105,7 +103,7 @@ class View(discord.ui.View):
                     continue
 
                 if child.custom_id is not None:
-                    child.disabled = self._item_states.get(child.custom_id, False)
+                    child.disabled = self.item_states.get(child.custom_id, False)
                 else:
                     # Cannot determine the original state of the item
                     child.disabled = False

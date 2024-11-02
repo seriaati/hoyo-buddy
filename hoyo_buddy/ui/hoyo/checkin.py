@@ -45,9 +45,8 @@ class CheckInUI(View):
         author: discord.User | discord.Member,
         locale: discord.Locale,
         translator: Translator,
-        timeout: float | None = 180,
     ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator, timeout=timeout)
+        super().__init__(author=author, locale=locale, translator=translator)
         self.account = account
         self.client = account.client
         self.client.set_lang(locale)

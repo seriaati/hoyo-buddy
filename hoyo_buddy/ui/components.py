@@ -41,10 +41,8 @@ V_co = TypeVar("V_co", bound="View", covariant=True)
 
 
 class View(discord.ui.View):
-    def __init__(
-        self, *, author: User, locale: discord.Locale, translator: Translator, timeout: float | None = 180
-    ) -> None:
-        super().__init__(timeout=timeout)
+    def __init__(self, *, author: User, locale: discord.Locale, translator: Translator) -> None:
+        super().__init__(timeout=600)
         self.author = author
         self.locale = locale
         self.translator = translator
@@ -529,10 +527,10 @@ class TextInput(discord.ui.TextInput):
 
 
 class Modal(discord.ui.Modal):
-    def __init__(self, *, title: LocaleStr | str, timeout: float | None = None, custom_id: str = MISSING) -> None:
+    def __init__(self, *, title: LocaleStr | str, custom_id: str = MISSING) -> None:
         super().__init__(
             title=title if isinstance(title, str) else "#NoTrans",
-            timeout=timeout,
+            timeout=600,
             custom_id=self.__class__.__name__ if custom_id is MISSING else custom_id,
         )
         self.locale_str_title = title

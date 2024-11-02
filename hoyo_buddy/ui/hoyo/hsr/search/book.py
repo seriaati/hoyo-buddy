@@ -23,9 +23,8 @@ class BookUI(View):
         author: User | Member,
         locale: Locale,
         translator: Translator,
-        timeout: float | None = 180,
     ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator, timeout=timeout)
+        super().__init__(author=author, locale=locale, translator=translator)
 
         self.book_id = book_id
         self.series_embeds: dict[str, DefaultEmbed] = {}

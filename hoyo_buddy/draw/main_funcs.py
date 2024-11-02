@@ -244,10 +244,7 @@ async def draw_hsr_characters_card(
 
 
 async def draw_spiral_abyss_card(
-    draw_input: DrawInput,
-    abyss: SpiralAbyss,
-    characters: Sequence[genshin.models.Character],
-    translator: Translator,
+    draw_input: DrawInput, abyss: SpiralAbyss, characters: Sequence[genshin.models.Character], translator: Translator
 ) -> File:
     async with ambr.AmbrAPI() as api:
         character_icons = {character.id.split("-")[0]: character.icon for character in await api.fetch_characters()}

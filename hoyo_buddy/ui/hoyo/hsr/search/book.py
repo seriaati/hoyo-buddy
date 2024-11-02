@@ -16,14 +16,7 @@ if TYPE_CHECKING:
 
 
 class BookUI(View):
-    def __init__(
-        self,
-        book_id: str,
-        *,
-        author: User | Member,
-        locale: Locale,
-        translator: Translator,
-    ) -> None:
+    def __init__(self, book_id: str, *, author: User | Member, locale: Locale, translator: Translator) -> None:
         super().__init__(author=author, locale=locale, translator=translator)
 
         self.book_id = book_id

@@ -16,7 +16,6 @@ from ..exceptions import InvalidInputError
 from ..l10n import LocaleStr, Translator
 
 if TYPE_CHECKING:
-    import asyncio
     import io
     from collections.abc import Sequence
 

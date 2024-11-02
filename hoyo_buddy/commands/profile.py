@@ -30,6 +30,7 @@ class ProfileCommand:
         uid: int,
         game: Game,
         account: HoyoAccount | None,
+        character_id: str | None,
         locale: discord.Locale,
         user: discord.User | discord.Member,
         translator: Translator,
@@ -37,6 +38,7 @@ class ProfileCommand:
         self._uid = uid
         self._game = game
         self._account = account
+        self._character_id = character_id
         self._locale = locale
         self._user = user
         self._translator = translator
@@ -78,6 +80,7 @@ class ProfileCommand:
             self._game,
             cache.extras,
             await read_yaml("hoyo-buddy-assets/assets/gi-build-card/data.yaml"),
+            character_id=self._character_id,
             hoyolab_gi_characters=hoyolab_characters,
             hoyolab_gi_user=hoyolab_user,
             hoyolab_over_enka=errored,
@@ -127,6 +130,7 @@ class ProfileCommand:
             self._game,
             cache.extras,
             await read_yaml("hoyo-buddy-assets/assets/hsr-build-card/data.yaml"),
+            character_id=self._character_id,
             hoyolab_hsr_characters=hoyolab_characters,
             hoyolab_hsr_user=hoyolab_user,
             starrail_data=enka_data,
@@ -154,6 +158,7 @@ class ProfileCommand:
             self._game,
             cache.extras,
             await read_yaml("hoyo-buddy-assets/assets/zzz-build-card/agent_data.yaml"),
+            character_id=self._character_id,
             account=self._account,
             zzz_data=zzz_data,
             zzz_user=zzz_user,

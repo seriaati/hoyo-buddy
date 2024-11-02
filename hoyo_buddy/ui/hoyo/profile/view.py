@@ -80,6 +80,7 @@ class ProfileView(View):
         cache_extras: dict[str, dict[str, Any]],
         card_data: dict[str, Any],
         *,
+        character_id: str | None,
         hoyolab_hsr_characters: list[HoyolabHSRCharacter] | None = None,
         hoyolab_hsr_user: StarRailUserStats | None = None,
         hoyolab_gi_characters: list[HoyolabGICharacter] | None = None,
@@ -114,6 +115,7 @@ class ProfileView(View):
         self.character_ids: list[str] = []
         self.character_type: CharacterType | None = None
         self.characters: dict[str, Character] = {}
+        self._character_id = character_id
 
         self._card_data = card_data
         self._account = account
@@ -155,7 +157,7 @@ class ProfileView(View):
             if char_id not in self._card_data:
                 raise CardNotReadyError(self.characters[char_id].name)
 
-    def _set_character_for_hoyolab(self, game: Literal[Game.STARRAIL, Game.GENSHIN]) -> None:
+    def _set_characters_with_enka(self, game: Literal[Game.STARRAIL, Game.GENSHIN]) -> None:
         hoyolab_characters = self.hoyolab_hsr_characters if game is Game.STARRAIL else self.hoyolab_gi_characters
         data = self.starrail_data if game is Game.STARRAIL else self.genshin_data
 
@@ -186,13 +188,18 @@ class ProfileView(View):
 
     def _set_characters(self) -> None:
         if self.game is Game.STARRAIL:
-            self._set_character_for_hoyolab(Game.STARRAIL)
+            self._set_characters_with_enka(Game.STARRAIL)
         elif self.game is Game.GENSHIN:
-            self._set_character_for_hoyolab(Game.GENSHIN)
+            self._set_characters_with_enka(Game.GENSHIN)
         elif self.game is Game.ZZZ:
             assert self.zzz_data is not None
             for chara in self.zzz_data:
                 self.characters[str(chara.id)] = chara
+
+        if self._character_id is not None:
+            chara = next((chara for chara in self.characters.values() if str(chara.id) == self._character_id), None)
+            if chara is not None:
+                self.character_ids = [self._character_id]
 
     @property
     def player_embed(self) -> DefaultEmbed:
@@ -291,7 +298,13 @@ class ProfileView(View):
         if self.characters:
             self.add_item(
                 CharacterSelect(
-                    self.game, list(self.characters.values()), self.cache_extras, self._builds, self._account, row=2
+                    self.game,
+                    list(self.characters.values()),
+                    self.cache_extras,
+                    self._builds,
+                    self._account,
+                    self.character_ids,
+                    row=2,
                 )
             )
         self.add_item(BuildSelect(row=3))
@@ -648,11 +661,24 @@ class ProfileView(View):
         self._set_characters()
         self._add_items()
 
+        if self.character_ids:
+            CharacterSelect.update_ui(self, character_id=self.character_ids[0], is_team=len(self.character_ids) > 1)
+            embed = self.card_embed
+            card = await self.draw_card(i, await get_card_settings(i.user.id, self.character_ids[0], game=self.game))
+            card.seek(0)
+            file_ = File(card, filename="card.png")
+        else:
+            embed = self.player_embed
+            file_ = None
+
         if self.game is Game.ZZZ:
             new_msg = LocaleStr(key="new_zzz_temp").translate(i.client.translator, self.locale)
             dyk = f"-# {new_msg}"
         else:
             dyk = await get_dyk(i)
 
-        await i.followup.send(embed=self.player_embed, view=self, content=dyk)
+        if file_ is None:
+            await i.followup.send(embed=embed, view=self, content=dyk)
+        else:
+            await i.followup.send(embed=embed, file=file_, view=self, content=dyk)
         self.message = await i.original_response()

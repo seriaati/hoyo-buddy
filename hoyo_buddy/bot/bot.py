@@ -163,8 +163,23 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         return message
 
-    def get_error_choice(self, error_message: LocaleStr, locale: discord.Locale) -> list[app_commands.Choice[str]]:
-        return [app_commands.Choice(name=error_message.translate(self.translator, locale), value="none")]
+    def get_error_choice(
+        self, error_message: LocaleStr | str | Exception, locale: discord.Locale
+    ) -> list[app_commands.Choice[str]]:
+        if isinstance(error_message, Exception):
+            embed, recognized = get_error_embed(error_message, locale, self.translator)
+            if not recognized:
+                self.capture_exception(error_message)
+
+            if embed.title is not None:
+                err_message = embed.title
+                if embed.description is not None:
+                    err_message += f": {embed.description}"
+                return self.get_error_choice(err_message, locale)
+
+            return self.get_error_choice(str(error_message), locale)
+
+        return [app_commands.Choice(name=self.translator.translate(error_message, locale), value="none")]
 
     def get_enum_choices(
         self, enums: Sequence[StrEnum], locale: discord.Locale, current: str

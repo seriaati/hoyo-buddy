@@ -51,6 +51,7 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         cache_extras: dict[str, dict[str, Any]],
         builds: Builds,
         account: HoyoAccount | None,
+        character_ids: list[str],
         *,
         row: int,
     ) -> None:
@@ -118,6 +119,7 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
                     description=description,
                     value=str(character.id),
                     emoji=emoji,
+                    default=str(character.id) in character_ids,
                 )
             )
 
@@ -128,6 +130,44 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
             max_values=min(MAX_VALUES[game], len(options)),
             row=row,
         )
+
+    @staticmethod
+    def update_ui(view: ProfileView, *, character_id: str, is_team: bool) -> None:
+        # Enable the remove from cache button if the character is in the cache
+        with contextlib.suppress(ValueError):
+            # The button is not present in the view if view._account is None
+            remove_from_cache_btn = view.get_item("profile_remove_from_cache")
+            remove_from_cache_btn.disabled = view.character_type is not CharacterType.CACHE and not is_team
+
+        # Enable the player info button
+        player_btn = view.get_item("profile_player_info")
+        player_btn.disabled = False
+
+        # Enable the card settings button
+        card_settings_btn = view.get_item("profile_card_settings")
+        card_settings_btn.disabled = False
+
+        # Enable the team card settings button
+        team_card_settings_btn = view.get_item("profile_team_card_settings")
+        team_card_settings_btn.disabled = False
+
+        # Enable the image settings button
+        image_settings_btn = view.get_item("profile_image_settings")
+        image_settings_btn.disabled = False
+
+        # Enable the redraw card button
+        redraw_card_btn = view.get_item("profile_redraw_card")
+        redraw_card_btn.disabled = False
+
+        # Set builds
+        build_select: BuildSelect = view.get_item("profile_build_select")
+        if not is_team and (builds := view._builds.get(character_id)):
+            view._build_id = builds[0].id
+            build_select.set_options(builds)
+            build_select.translate(view.locale, view.translator)
+            build_select.disabled = False
+        else:
+            build_select.disabled = True
 
     async def callback(self, i: Interaction) -> None:
         changed = self.update_page()
@@ -147,42 +187,7 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
             is_hoyolab=isinstance(character, HoyolabHSRCharacter),
         )
 
-        # Enable the remove from cache button if the character is in the cache
-        with contextlib.suppress(ValueError):
-            # The button is not present in the view if view._account is None
-            remove_from_cache_btn = self.view.get_item("profile_remove_from_cache")
-            remove_from_cache_btn.disabled = self.view.character_type is not CharacterType.CACHE and not is_team
-
-        # Enable the player info button
-        player_btn = self.view.get_item("profile_player_info")
-        player_btn.disabled = False
-
-        # Enable the card settings button
-        card_settings_btn = self.view.get_item("profile_card_settings")
-        card_settings_btn.disabled = False
-
-        # Enable the team card settings button
-        team_card_settings_btn = self.view.get_item("profile_team_card_settings")
-        team_card_settings_btn.disabled = False
-
-        # Enable the image settings button
-        image_settings_btn = self.view.get_item("profile_image_settings")
-        image_settings_btn.disabled = False
-
-        # Enable the redraw card button
-        redraw_card_btn = self.view.get_item("profile_redraw_card")
-        redraw_card_btn.disabled = False
-
-        # Set builds
-        build_select: BuildSelect = self.view.get_item("profile_build_select")
-        if not is_team and (builds := self.view._builds.get(character_id)):
-            self.view._build_id = builds[0].id
-            build_select.set_options(builds)
-            build_select.translate(self.view.locale, self.view.translator)
-            build_select.disabled = False
-        else:
-            build_select.disabled = True
-
+        self.update_ui(self.view, character_id=character_id, is_team=is_team)
         self.update_options_defaults()
         await self.set_loading_state(i)
 

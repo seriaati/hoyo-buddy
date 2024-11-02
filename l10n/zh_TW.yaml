@@ -372,7 +372,7 @@ profile.primary_color_modal.color.label: 顏色（十六進制代碼）
 profile.primary_color_modal.title: 變更卡片顏色
 profile.remove_from_cache.button.label: 從快取中移除
 profile.remove_image.button.label: 移除自定義圖片
-profile_command_description: 查看遊戲內的個人資料並生成角色面板卡片
+profile_command_description: 生成角色面板卡片和隊伍卡片
 profile_command_game_value_description: UID 所屬的遊戲
 profile_command_uid_param_description: "玩家的UID，如果提供了帳戶參數，则覆蓋該參數。"
 pt_button.label: 質變儀通知
@@ -490,7 +490,6 @@ invalid_uid_format_title: 錯誤的 UID 格式
 invalid_uid_format_description: "UID 需為一個 9 至 10 位數的數字"
 zenless_zone_zero: 絕區零
 img_theater_large_block_title: 幻想真境劇詩
-img_theater_stats_line_one: "最佳紀錄: 第 {act} 幕"
 img_theater_stats_line_two: "消耗幻劇之花: {flower}"
 img_theater_stats_line_three: "觸發場外觀眾聲援: {support} 次"
 img_theater_stats_line_four: "表演助理角色支援其他玩家: {assist} 次"
@@ -591,7 +590,7 @@ dyk_unreleased: 你可以使用 /search 查看尚未釋出的遊戲內容
 dyk_team_card: 你可以透過選擇多個角色的方式在 /profile 產生隊伍卡片
 dyk_set_default_acc: 你可以用 /accounts 設置一個預設帳戶，用於運行所有指令
 title_dyk: "你知道嗎？"
-new_zzz_temp: 副詞條檔次顯示可在卡片設定中關閉
+new_zzz_temp: 絕區零卡片樣式4來啦！
 button_label_dyk: 「你知道嗎」訊息
 events_view_start_date_embed_field: 開始時間
 events_view_end_date_embed_field: 結束時間
@@ -723,16 +722,6 @@ profile_team_show_substat_rolls: 隊伍卡片副詞條檔次
 team_card_settings_button_label: 隊伍卡片設定
 team_card_settings_embed_title: 正在修改隊伍卡片設定
 team_card_settings_embed_description: "隊伍卡片設定在不同遊戲和帳戶之間共享，當卡片樣式不支援時，對某些設定所做的更改可能不會反映在卡片上。\n完成後，點擊上方訊息中的綠色按鈕即可重新繪製卡片。"
-zzz_agent_stats_hp: 生命值
-zzz_agent_stats_atk: 攻擊力
-zzz_agent_stats_def: 防禦力
-zzz_agent_stats_pen: 穿透值
-zzz_agent_stats_pen_ratio: 穿透率
-zzz_agent_stats_crit_rate: 暴擊率
-zzz_agent_stats_crit_dmg: 暴擊傷害
-zzz_agent_stats_energy_gen: 能量自動恢復
-zzz_agent_stats_anomaly_pro: 異常掌控
-zzz_agent_stats_anomaly_master: 異常精通
-zzz_agent_stats_impact: 衝擊力
-zzz_agent_stats_dmg_bonus: 傷害加成
 characters.filter.rarity.placeholder: 篩選稀有度...
+profile_command_character_param_desc: 要生成哪個角色的卡片？
+weapon_type_filter_placeholder: 用武器類別篩選…

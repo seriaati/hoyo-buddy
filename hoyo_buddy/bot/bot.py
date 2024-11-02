@@ -175,6 +175,9 @@ class HoyoBuddy(commands.AutoShardedBot):
                 err_message = embed.title
                 if embed.description is not None:
                     err_message += f": {embed.description}"
+                    if len(err_message) > 100:
+                        err_message = embed.title
+
                 return self.get_error_choice(err_message, locale)
 
             return self.get_error_choice(str(error_message), locale)

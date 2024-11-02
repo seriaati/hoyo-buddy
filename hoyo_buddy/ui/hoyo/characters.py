@@ -900,7 +900,7 @@ class WeaponTypeFilter(Select[CharactersView]):
 
 class FilterButton(Button[CharactersView]):
     def __init__(self, _: int, items: Sequence[Button | Select]) -> None:
-        super().__init__(label=LocaleStr(key="characters_filter_button_label"), style=ButtonStyle.blurple, emoji=FILTER)
+        super().__init__(label=LocaleStr(key="gacha_view_filter_button_label"), style=ButtonStyle.blurple, emoji=FILTER)
         self._items = items
 
     async def callback(self, i: Interaction) -> None:

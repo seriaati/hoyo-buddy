@@ -484,7 +484,7 @@ def locale_to_zenless_data_lang(locale: discord.Locale) -> str:
     return LOCALE_TO_ZENLESS_DATA_LANG.get(locale, "EN")
 
 
-STARRAIL_DATA_URL = "https://raw.githubusercontent.com/Dimbreath/StarRailData/master"
+STARRAIL_DATA_URL = "https://gitlab.com/Dimbreath/turnbasedgamedata/-/raw/main"
 HSR_AVATAR_CONFIG_URL = f"{STARRAIL_DATA_URL}/ExcelOutput/AvatarConfig.json"
 HSR_EQUIPMENT_CONFIG_URL = f"{STARRAIL_DATA_URL}/ExcelOutput/EquipmentConfig.json"
 HSR_TEXT_MAP_URL = f"{STARRAIL_DATA_URL}/TextMap/TextMap{{lang}}.json"

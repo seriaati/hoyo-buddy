@@ -442,7 +442,12 @@ class ChallengeTypeSelect(Select[ChallengeView]):
 
         self.view.item_states["challenge_view.phase_select"] = False
 
-        histories = await ChallengeHistory.filter(uid=self.view.account.uid, challenge_type=self.view.challenge_type)
+        histories = await ChallengeHistory.filter(
+            uid=self.view.account.uid, challenge_type=self.view.challenge_type
+        ).all()
+        if not histories:
+            raise NoChallengeDataError(self.view.challenge_type)
+
         for history in histories:
             self.view.challenge_cache[self.view.challenge_type][history.season_id] = history.parsed_data
 

@@ -7,6 +7,8 @@ import http.cookies
 import math
 import os
 import re
+import time
+from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any, overload
 
 import aiohttp
@@ -27,7 +29,7 @@ from .constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
 
 if TYPE_CHECKING:
     import pathlib
-    from collections.abc import Sequence
+    from collections.abc import Generator, Sequence
 
     from discord import Interaction, Member, User
 
@@ -490,3 +492,14 @@ def get_ranking(number: float, number_list: list[float], *, reverse: bool) -> tu
 
 def ephemeral(i: Interaction) -> bool:
     return not i.app_permissions.embed_links
+
+
+@contextmanager
+def measure_time(name: str) -> Generator[Any, None, None]:
+    start_time = time.perf_counter()
+    try:
+        yield
+    finally:
+        end_time = time.perf_counter()
+        execution_time = end_time - start_time
+        print(f"Execution time of {name}: {execution_time:.8f} seconds")  # noqa: T201

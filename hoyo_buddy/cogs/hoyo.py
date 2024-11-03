@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 import discord
 import enka
@@ -10,6 +10,7 @@ from discord.ext import commands
 
 from hoyo_buddy.commands.events import EventsCommand
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
+from hoyo_buddy.ui.hoyo.profile.items.chara_select import MAX_VALUES
 from hoyo_buddy.utils import ephemeral
 
 from ..commands.challenge import ChallengeCommand
@@ -25,7 +26,7 @@ from ..exceptions import FeatureNotImplementedError, IncompleteParamError, Inval
 from ..hoyo.clients.ambr import AmbrAPIClient
 from ..hoyo.clients.yatta import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer
-from ..l10n import LocaleStr
+from ..l10n import EnumStr, LocaleStr
 from ..models import DrawInput
 from ..types import User  # noqa: TCH001
 from ..ui.hoyo.characters import CharactersView
@@ -124,7 +125,10 @@ class Hoyo(commands.Cog):
         user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
         account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
         game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
-        character_id=app_commands.locale_str("character", key="akasha_character_param"),
+        character_id1=app_commands.locale_str("character-1", key="profile_character_param_name", num=1),
+        character_id2=app_commands.locale_str("character-2", key="profile_character_param_name", num=2),
+        character_id3=app_commands.locale_str("character-3", key="profile_character_param_name", num=3),
+        character_id4=app_commands.locale_str("character-4", key="profile_character_param_name", num=4),
     )
     @app_commands.describe(
         user=app_commands.locale_str(
@@ -139,7 +143,16 @@ class Hoyo(commands.Cog):
             key="profile_command_uid_param_description",
         ),
         game_value=app_commands.locale_str("Game of the UID", key="profile_command_game_value_description"),
-        character_id=app_commands.locale_str(
+        character_id1=app_commands.locale_str(
+            "Character to generate the card for", key="profile_command_character_param_desc"
+        ),
+        character_id2=app_commands.locale_str(
+            "Character to generate the card for", key="profile_command_character_param_desc"
+        ),
+        character_id3=app_commands.locale_str(
+            "Character to generate the card for", key="profile_command_character_param_desc"
+        ),
+        character_id4=app_commands.locale_str(
             "Character to generate the card for", key="profile_command_character_param_desc"
         ),
     )
@@ -150,7 +163,10 @@ class Hoyo(commands.Cog):
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
         uid: app_commands.Range[str, 9, 10] | None = None,
         game_value: str | None = None,
-        character_id: str | None = None,
+        character_id1: str | None = None,
+        character_id2: str | None = None,
+        character_id3: str | None = None,
+        character_id4: str | None = None,
     ) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
@@ -163,7 +179,7 @@ class Hoyo(commands.Cog):
             uid=uid_,
             game=game,
             account=account_,
-            character_id=character_id,
+            character_ids=[character_id1, character_id2, character_id3, character_id4],
             locale=locale,
             user=i.user,
             translator=self.bot.translator,
@@ -491,8 +507,9 @@ class Hoyo(commands.Cog):
     async def all_game_acc_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(i, current)
 
-    @profile_command.autocomplete("character_id")
-    async def profile_character_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+    async def profile_character_autocomplete(
+        self, i: Interaction, current: str, *, num: Literal[1, 2, 3, 4]
+    ) -> list[app_commands.Choice[str]]:
         np = i.namespace
 
         locale = await get_locale(i)
@@ -510,6 +527,12 @@ class Hoyo(commands.Cog):
         except Exception as e:
             return self.bot.get_error_choice(e, locale)
 
+        max_value = MAX_VALUES[game]
+        if num > max_value:
+            return self.bot.get_error_choice(
+                LocaleStr(key="profile_character_max_value_error", num=max_value, game=EnumStr(game)), locale
+            )
+
         if game is Game.GENSHIN:
             category = ambr.ItemCategory.CHARACTERS
         elif game is Game.STARRAIL:
@@ -526,6 +549,22 @@ class Hoyo(commands.Cog):
             return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_no_results"), locale)
 
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
+
+    @profile_command.autocomplete("character_id1")
+    async def profile_character1_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+        return await self.profile_character_autocomplete(i, current, num=1)
+
+    @profile_command.autocomplete("character_id2")
+    async def profile_character2_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+        return await self.profile_character_autocomplete(i, current, num=2)
+
+    @profile_command.autocomplete("character_id3")
+    async def profile_character3_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+        return await self.profile_character_autocomplete(i, current, num=3)
+
+    @profile_command.autocomplete("character_id4")
+    async def profile_character4_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+        return await self.profile_character_autocomplete(i, current, num=4)
 
 
 async def setup(bot: HoyoBuddy) -> None:

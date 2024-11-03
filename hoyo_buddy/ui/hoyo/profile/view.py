@@ -41,7 +41,7 @@ from .image_settings import get_default_art, get_default_collection, get_team_im
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
 from .items.card_settings_btn import CardSettingsButton
-from .items.chara_select import CharacterSelect, determine_chara_type
+from .items.chara_select import MAX_VALUES, CharacterSelect, determine_chara_type
 from .items.player_btn import PlayerInfoButton
 from .items.redraw_card_btn import RedrawCardButton
 from .items.rmv_from_cache_btn import RemoveFromCacheButton
@@ -80,7 +80,7 @@ class ProfileView(View):
         cache_extras: dict[str, dict[str, Any]],
         card_data: dict[str, Any],
         *,
-        character_id: str | None,
+        character_ids: list[str],
         hoyolab_hsr_characters: list[HoyolabHSRCharacter] | None = None,
         hoyolab_hsr_user: StarRailUserStats | None = None,
         hoyolab_gi_characters: list[HoyolabGICharacter] | None = None,
@@ -115,7 +115,7 @@ class ProfileView(View):
         self.character_ids: list[str] = []
         self.character_type: CharacterType | None = None
         self.characters: dict[str, Character] = {}
-        self._character_id = character_id
+        self._param_character_ids = character_ids
 
         self._card_data = card_data
         self._account = account
@@ -196,10 +196,10 @@ class ProfileView(View):
             for chara in self.zzz_data:
                 self.characters[str(chara.id)] = chara
 
-        if self._character_id is not None:
-            chara = next((chara for chara in self.characters.values() if str(chara.id) == self._character_id), None)
-            if chara is not None:
-                self.character_ids = [self._character_id]
+        for character_id in self._param_character_ids:
+            if len(self.character_ids) >= MAX_VALUES[self.game] or character_id not in self.characters:
+                break
+            self.character_ids.append(character_id)
 
     @property
     def player_embed(self) -> DefaultEmbed:
@@ -620,10 +620,11 @@ class ProfileView(View):
     async def update(
         self,
         i: Interaction,
-        item: Select[ProfileView] | Button[ProfileView],
+        item: Select[ProfileView] | Button[ProfileView] | None = None,
         *,
         unset_loading_state: bool = True,
         character: Character | None = None,
+        content: str | None = None,
     ) -> None:
         card_settings = await get_card_settings(i.user.id, self.character_ids[0], game=self.game)
         is_team = len(self.character_ids) > 1
@@ -638,7 +639,7 @@ class ProfileView(View):
                 attr = "current_team_image" if is_team else "current_image"
                 setattr(card_settings, attr, None)
                 await card_settings.save(update_fields=(attr,))
-            if unset_loading_state:
+            if unset_loading_state and item is not None:
                 await item.unset_loading_state(i)
 
             if "hb" not in card_settings.template:
@@ -652,24 +653,20 @@ class ProfileView(View):
 
         attachments = [File(bytes_obj, filename="card.png")]
 
-        if unset_loading_state:
-            await item.unset_loading_state(i, attachments=attachments, embed=self.card_embed)
+        kwargs: dict[str, Any] = {}
+        if content is not None:
+            kwargs["content"] = content
+
+        if unset_loading_state and item is not None:
+            await item.unset_loading_state(i, attachments=attachments, embed=self.card_embed, view=self, **kwargs)
         else:
-            await i.edit_original_response(attachments=attachments, embed=self.card_embed)
+            self.message = await i.edit_original_response(
+                attachments=attachments, embed=self.card_embed, view=self, **kwargs
+            )
 
     async def start(self, i: Interaction) -> None:
         self._set_characters()
         self._add_items()
-
-        if self.character_ids:
-            CharacterSelect.update_ui(self, character_id=self.character_ids[0], is_team=len(self.character_ids) > 1)
-            embed = self.card_embed
-            card = await self.draw_card(i, await get_card_settings(i.user.id, self.character_ids[0], game=self.game))
-            card.seek(0)
-            file_ = File(card, filename="card.png")
-        else:
-            embed = self.player_embed
-            file_ = None
 
         if self.game is Game.ZZZ:
             new_msg = LocaleStr(key="new_zzz_temp").translate(i.client.translator, self.locale)
@@ -677,8 +674,10 @@ class ProfileView(View):
         else:
             dyk = await get_dyk(i)
 
-        if file_ is None:
-            await i.followup.send(embed=embed, view=self, content=dyk)
-        else:
-            await i.followup.send(embed=embed, file=file_, view=self, content=dyk)
+        if self.character_ids:
+            CharacterSelect.update_ui(self, character_id=self.character_ids[0], is_team=len(self.character_ids) > 1)
+            return await self.update(i, unset_loading_state=False, content=dyk)
+
+        await i.followup.send(embed=self.player_embed, view=self, content=dyk)
         self.message = await i.original_response()
+        return None

@@ -169,7 +169,7 @@ class Profile(
     ) -> None:
         await self.profile_command(
             i,
-            Game.GENSHIN,
+            Game.STARRAIL,
             user=user,
             account=account,
             uid=uid,

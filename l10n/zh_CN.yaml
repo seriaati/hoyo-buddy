@@ -360,8 +360,8 @@ profile.primary_color_modal.color.label: 颜色（十六进制代码）
 profile.primary_color_modal.title: 更改卡片颜色
 profile.remove_from_cache.button.label: 从缓存中移除
 profile.remove_image.button.label: 删除自定义图片
-profile_command_gi_description: 生成原神角色卡片面板卡片和队伍卡片
-profile_command_hsr_description: 生成崩坏星穹铁道角色面板卡片和队伍卡片
+profile_command_gi_description: 生成原神角色面板卡片和队伍卡片
+profile_command_hsr_description: 生成星穹铁道角色面板卡片和队伍卡片
 profile_command_zzz_description: 生成绝区零代理人面板卡片和队伍面板卡片
 profile_command_game_value_description: 所属游戏UID
 profile_command_uid_param_description: "玩家的UID，如果账号有提供，将会覆盖原先的UID"

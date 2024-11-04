@@ -337,6 +337,9 @@ async def draw_apc_shadow_card(
 async def draw_img_theater_card(
     draw_input: DrawInput, data: ImgTheaterData, chara_consts: dict[int, int], translator: Translator
 ) -> File:
+    async with ambr.AmbrAPI() as api:
+        character_icons = {character.id.split("-")[0]: character.icon for character in await api.fetch_characters()}
+
     icons: list[str] = []
 
     if hasattr(data, "battle_stats"):
@@ -345,15 +348,16 @@ async def draw_img_theater_card(
             data.battle_stats.max_defeat_character,
             data.battle_stats.max_take_damage_character,
         )
-        icons.extend(chara.icon for chara in characters if chara is not None)
+        icons.extend(character_icons[str(chara.id)] for chara in characters if chara is not None)
 
     for act in data.acts:
-        icons.extend(chara.icon for chara in act.characters)
+        icons.extend(character_icons[str(chara.id)] for chara in act.characters)
 
     await download_images(icons, "img-theater", draw_input.session)
 
     buffer = await draw_input.loop.run_in_executor(
-        draw_input.executor, funcs.genshin.ImgTheaterCard(data, chara_consts, draw_input.locale.value, translator).draw
+        draw_input.executor,
+        funcs.genshin.ImgTheaterCard(data, chara_consts, character_icons, draw_input.locale.value, translator).draw,
     )
 
     buffer.seek(0)

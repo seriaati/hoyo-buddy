@@ -7,16 +7,23 @@ import genshin
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr, Translator
 from hoyo_buddy.utils import seconds_to_time
 
 
 class ImgTheaterCard:
     def __init__(
-        self, theater: genshin.models.ImgTheaterData, chara_consts: dict[int, int], locale: str, translator: Translator
+        self,
+        theater: genshin.models.ImgTheaterData,
+        chara_consts: dict[int, int],
+        character_icons: dict[str, str],
+        locale: str,
+        translator: Translator,
     ) -> None:
         self._theater = theater
         self._chara_consts = chara_consts
+        self._character_icons = character_icons
         self._dark_mode = True  # To write white colored texts
         self._translator = translator
         self._locale = locale
@@ -42,9 +49,15 @@ class ImgTheaterCard:
         schedule = self._theater.schedule
         lines = (
             f"{schedule.start_datetime.strftime('%Y/%m/%d')} ~ {schedule.end_datetime.strftime('%Y/%m/%d')}",
-            LocaleStr(key="img_theater_stats_line_two", flower=stats.fantasia_flowers_used),
-            LocaleStr(key="img_theater_stats_line_three", support=stats.audience_support_trigger_num),
-            LocaleStr(key="img_theater_stats_line_four", assist=stats.player_assists),
+            LocaleStr(key="total_coin_consumed", mi18n_game=Game.GENSHIN, append=f": {stats.fantasia_flowers_used}"),
+            LocaleStr(
+                key="role_combat_avatar_bonus",
+                mi18n_game=Game.GENSHIN,
+                append=f": {stats.audience_support_trigger_num}",
+            ),
+            LocaleStr(
+                key="role_combat_explain_rent_cnt_title", mi18n_game=Game.GENSHIN, append=f": {stats.player_assists}"
+            ),
             LocaleStr(key="img_theater_stats_line_five", time=total_cast_time),
         )
         line_height = 40
@@ -58,24 +71,25 @@ class ImgTheaterCard:
         stats = self._theater.battle_stats
 
         characters = (
-            (stats.max_defeat_character, "abyss.most_defeats"),
-            (stats.max_damage_character, "img_theater_max_damage"),
-            (stats.max_take_damage_character, "abyss.most_dmg_taken"),
+            (stats.max_defeat_character, "max_rout_count"),
+            (stats.max_damage_character, "max_damage"),
+            (stats.max_take_damage_character, "max_take_damage"),
         )
-        start_pos = (870, 76)
+        start_pos = (870, 86)
 
         for character, key in characters:
             if character is not None:
-                icon = self._drawer.open_static(character.icon, size=(55, 55))
+                icon = self._drawer.open_static(self._character_icons[str(character.id)], size=(45, 45))
+                icon = self._drawer.circular_crop(icon)
                 self._im.alpha_composite(icon, start_pos)
 
-            self._drawer.write(
-                LocaleStr(key=key, val=0 if character is None else character.value),
-                size=20,
-                position=(start_pos[0] + 67, start_pos[1] + 34),
-                anchor="lm",
-            )
-            start_pos = (start_pos[0], start_pos[1] + 55)
+                self._drawer.write(
+                    LocaleStr(key=key, mi18n_game=Game.GENSHIN, append=f": {character.value}"),
+                    size=20,
+                    position=(start_pos[0] + 54, start_pos[1] + icon.height // 2),
+                    anchor="lm",
+                )
+            start_pos = (start_pos[0], start_pos[1] + 57)
 
     def _write_legend_block_texts(self) -> None:
         self._drawer.write(
@@ -96,7 +110,9 @@ class ImgTheaterCard:
         else:
             fastest_text = ""
 
-        title = LocaleStr(key="img_theater_act_block_title", act=act.round_id).translate(self._translator, self.locale)
+        title = LocaleStr(key="role_combat_round_count", mi18n_game=Game.GENSHIN, n=act.round_id).translate(
+            self._translator, self.locale
+        )
         self._drawer.write(title + fastest_text, size=32, style="bold", position=(pos[0] + 21, pos[1] + 10))
 
         medal = (
@@ -128,7 +144,7 @@ class ImgTheaterCard:
                 translator=self._translator,
             )
 
-            icon = block_drawer.open_static(character.icon)
+            icon = block_drawer.open_static(self._character_icons[str(character.id)])
             icon = self._drawer.resize_crop(icon, (120, 120))
             mask = self._drawer.open_asset("mask.png")
             icon = self._drawer.mask_image_with_image(icon, mask)

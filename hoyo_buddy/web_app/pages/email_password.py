@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any
 
 import flet as ft
 import genshin
+from loguru import logger
 
 from hoyo_buddy.constants import locale_to_gpy_lang
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
@@ -115,10 +116,11 @@ class EmailPassWordForm(ft.Column):
         )
         try:
             if self._params.platform is Platform.HOYOLAB:
-                result = await client._app_login(email.strip(), password)
+                result = await client.os_app_login(email.strip(), password)
             else:
                 result = await client._cn_web_login(email.strip(), password)
         except Exception as exc:
+            logger.exception("Error during login")
             await show_error_banner(page, message=str(exc))
             return
 

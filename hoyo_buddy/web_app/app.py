@@ -104,7 +104,7 @@ class WebApp:
 
             client = ProxyGenshinClient()
             try:
-                result = await client._app_login(
+                result = await client.os_app_login(
                     email, password, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
                 )
             except Exception as exc:

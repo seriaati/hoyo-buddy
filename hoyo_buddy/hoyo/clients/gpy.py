@@ -4,9 +4,11 @@ import asyncio
 import os
 from typing import TYPE_CHECKING, Any, overload
 
+import aiohttp
 import enka
 import genshin
 import hakushin
+import orjson
 import python_socks
 from dotenv import load_dotenv
 
@@ -35,6 +37,21 @@ if TYPE_CHECKING:
 
 load_dotenv()
 env = os.environ["ENV"]
+api_index = 0
+
+if env == "dev":
+    LOGIN_APIS = ("http://localhost:8000",)
+else:
+    LOGIN_APIS = (
+        "https://daily-checkin-api.vercel.app",
+        "https://daily-checkin-api.onrender.com",
+        "https://daily-checkin-api.fly.dev",
+        "LOCAL",
+    )
+
+
+def get_next_api_url() -> str:
+    return LOGIN_APIS[api_index % len(LOGIN_APIS)]
 
 
 class ProxyGenshinClient(genshin.Client):
@@ -47,6 +64,66 @@ class ProxyGenshinClient(genshin.Client):
             region=region,
             **kwargs,
         )
+
+    @overload
+    async def os_app_login(
+        self, email: str, password: str, *, mmt_result: genshin.models.SessionMMTResult, ticket: None = ...
+    ) -> genshin.models.AppLoginResult | genshin.models.ActionTicket: ...
+
+    @overload
+    async def os_app_login(
+        self, email: str, password: str, *, mmt_result: None = ..., ticket: genshin.models.ActionTicket
+    ) -> genshin.models.AppLoginResult: ...
+
+    @overload
+    async def os_app_login(
+        self, email: str, password: str, *, mmt_result: None = ..., ticket: None = ...
+    ) -> genshin.models.AppLoginResult | genshin.models.SessionMMT | genshin.models.ActionTicket: ...
+    async def os_app_login(
+        self,
+        email: str,
+        password: str,
+        *,
+        mmt_result: genshin.models.SessionMMTResult | None = None,
+        ticket: genshin.models.ActionTicket | None = None,
+    ) -> genshin.models.AppLoginResult | genshin.models.SessionMMT | genshin.models.ActionTicket:
+        api_url = get_next_api_url()
+
+        if api_url == "LOCAL":
+            if mmt_result is not None:
+                return await self._app_login(email, password, mmt_result=mmt_result)
+            if ticket is not None:
+                return await self._app_login(email, password, ticket=ticket)
+            return await self._app_login(email, password)
+
+        payload = {
+            "email": genshin.utility.encrypt_credentials(email, 1),
+            "password": genshin.utility.encrypt_credentials(password, 1),
+        }
+        if mmt_result is not None:
+            payload["mmt_result"] = mmt_result.model_dump_json(by_alias=True)
+        elif ticket is not None:
+            payload["ticket"] = ticket.model_dump_json(by_alias=True)
+
+        async with aiohttp.ClientSession() as session, session.post(f"{api_url}/login/", json=payload) as resp:
+            data = await resp.json()
+            retcode = data.get("retcode")
+
+            if resp.status == 200:
+                if retcode == -9999:
+                    return genshin.models.SessionMMT(**orjson.loads(data["data"]))
+                if retcode == -9998:
+                    return genshin.models.ActionTicket(**orjson.loads(data["data"]))
+                return genshin.models.AppLoginResult(**orjson.loads(data["data"]))
+
+            if retcode == -3006:  # Rate limited
+                if mmt_result is not None:
+                    return await self.os_app_login(email, password, mmt_result=mmt_result)
+                if ticket is not None:
+                    return await self.os_app_login(email, password, ticket=ticket)
+                return await self.os_app_login(email, password)
+
+            raise Exception(data["message"])  # noqa: TRY002
 
 
 class GenshinClient(ProxyGenshinClient):

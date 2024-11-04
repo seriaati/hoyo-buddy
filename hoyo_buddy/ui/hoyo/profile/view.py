@@ -658,7 +658,7 @@ class ProfileView(View):
             kwargs["content"] = content
 
         if unset_loading_state and item is not None:
-            await item.unset_loading_state(i, attachments=attachments, embed=self.card_embed, view=self, **kwargs)
+            await item.unset_loading_state(i, attachments=attachments, embed=self.card_embed, **kwargs)
         else:
             self.message = await i.edit_original_response(
                 attachments=attachments, embed=self.card_embed, view=self, **kwargs

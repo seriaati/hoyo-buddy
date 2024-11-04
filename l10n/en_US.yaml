@@ -223,7 +223,6 @@ hydro: Hydro
 ice: Ice
 imaginary: Imaginary
 inazuma: Inazuma
-incomplete_param_error_title: The Given Command Parameters are Incomplete
 instructions_title: Instructions
 interaction_failed_description: "This view is not initiated by you, therefore you cannot use it."
 interaction_failed_title: Interaction Failed
@@ -361,7 +360,9 @@ profile.primary_color_modal.color.label: Color (hex code)
 profile.primary_color_modal.title: Change Card Color
 profile.remove_from_cache.button.label: Remove from cache
 profile.remove_image.button.label: Remove custom image
-profile_command_description: Generate character build cards and team cards
+profile_command_gi_description: Generate Genshin Impact character build cards and team cards
+profile_command_hsr_description: Generate Honkai Star Rail character build cards and team cards
+profile_command_zzz_description: Generate Zenless Zone Zero agent build cards and team cards
 profile_command_game_value_description: Game of the UID
 profile_command_uid_param_description: "UID of the player, this overrides the account parameter if provided"
 pt_button.label: Parametric transformer reminder
@@ -698,8 +699,6 @@ theater_dmg_lb_title: Imaginarium Theater Strongest Single Strike Leaderboard
 max_friendship_lb_title: Number of Characters at Max Friendship Leaderboard
 lb_view_command_description: View leaderboards
 leaderboard_not_found: Leaderboard not found
-not_supported_by_enka_error_title: Not Supported by Enka Network Yet
-not_supported_by_enka_error_message: "{game} is not supported by [Enka Network](https://enka.cc) yet, so you cannot query a player's data with only the UID. Please add a {game} account with </accounts> and try again."
 currently_logged_in_as: "You are currently logged in as:"
 not_you_label: "Not you? Click to login with a different account"
 profile_show_substat_rolls: Substat rolls
@@ -710,4 +709,3 @@ team_card_settings_embed_description: "Team card settings are shared accross dif
 characters.filter.rarity.placeholder: Filter by rarity...
 profile_command_character_param_desc: Character to generate the card for
 weapon_type_filter_placeholder: Select weapon type filters...
-profile_character_max_value_error: Can't select more than {num} characters for {game}

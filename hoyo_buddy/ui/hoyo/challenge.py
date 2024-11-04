@@ -35,7 +35,7 @@ from hoyo_buddy.types import Buff, Challenge, ChallengeWithBuff
 
 from ...bot.error_handler import get_error_embed
 from ...db.models import ChallengeHistory, draw_locale, get_dyk
-from ...enums import ChallengeType
+from ...enums import ChallengeType, Game
 from ...utils import get_floor_difficulty
 from ..components import Button, Select, SelectOption, ToggleButton, View
 
@@ -115,9 +115,9 @@ class BuffView(View):
             for act in reversed(self._challenge.acts):
                 act_buffs = list(act.wondroud_booms) + list(act.mystery_caches)
                 for buff in act_buffs:
-                    act_name = LocaleStr(key="img_theater_act_block_title", act=act.round_id).translate(
-                        self.translator, self.locale
-                    )
+                    act_name = LocaleStr(
+                        key="role_combat_round_count", mi18n_game=Game.GENSHIN, n=act.round_id
+                    ).translate(self.translator, self.locale)
                     buff_usage[buff.name].append(act_name)
                     if buff.name not in buffs:
                         buffs[buff.name] = buff

@@ -7,6 +7,7 @@ from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LevelStr, LocaleStr, Translator
 
 if TYPE_CHECKING:
@@ -31,7 +32,7 @@ class ExplorationCard:
             return "0"
 
         offering = next((of.level for of in exploration.offerings if of.level > 0), 0)
-        return str(offering)
+        return f": {offering}"
 
     @staticmethod
     def _get_tribe_levels(exploration: Exploration | None) -> str:
@@ -140,8 +141,10 @@ class ExplorationCard:
                 75,
                 161,
             ),
-            LocaleStr(key="exploration.anemoculi", anemoculi=self._user.stats.anemoculi): (75, 207),
-            LocaleStr(key="exploration.reputation", reputation=self._get_reputation_level(exploration)): (75, 253),
+            LocaleStr(key="wind_god", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.anemoculi}"): (75, 207),
+            LocaleStr(
+                key="reputation_level", mi18n_game=Game.GENSHIN, append=self._get_reputation_level(exploration)
+            ): (75, 253),
         }
         return self._draw_exploration_card("mondstadt", exploration, texts)
 
@@ -152,8 +155,10 @@ class ExplorationCard:
                 75,
                 161,
             ),
-            LocaleStr(key="exploration.geoculi", geoculi=self._user.stats.geoculi): (75, 207),
-            LocaleStr(key="exploration.reputation", reputation=self._get_reputation_level(exploration)): (75, 253),
+            LocaleStr(key="geoculus", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.geoculi}"): (75, 207),
+            LocaleStr(
+                key="reputation_level", mi18n_game=Game.GENSHIN, append=self._get_reputation_level(exploration)
+            ): (75, 253),
         }
         return self._draw_exploration_card("liyue", exploration, texts)
 
@@ -164,8 +169,13 @@ class ExplorationCard:
                 75,
                 117,
             ),
-            LocaleStr(key="exploration.electroculi", electroculi=self._user.stats.electroculi): (75, 163),
-            LocaleStr(key="exploration.reputation", reputation=self._get_reputation_level(exploration)): (75, 209),
+            LocaleStr(key="electroculus", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.electroculi}"): (
+                75,
+                163,
+            ),
+            LocaleStr(
+                key="reputation_level", mi18n_game=Game.GENSHIN, append=self._get_reputation_level(exploration)
+            ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
         return self._draw_exploration_card("inazuma", exploration, texts)
@@ -177,8 +187,13 @@ class ExplorationCard:
                 75,
                 117,
             ),
-            LocaleStr(key="exploration.dendroculi", dendroculi=self._user.stats.dendroculi): (75, 163),
-            LocaleStr(key="exploration.reputation", reputation=self._get_reputation_level(exploration)): (75, 209),
+            LocaleStr(key="dendro_culus", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.dendroculi}"): (
+                75,
+                163,
+            ),
+            LocaleStr(
+                key="reputation_level", mi18n_game=Game.GENSHIN, append=self._get_reputation_level(exploration)
+            ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
         return self._draw_exploration_card("sumeru", exploration, texts)
@@ -190,8 +205,10 @@ class ExplorationCard:
                 75,
                 117,
             ),
-            LocaleStr(key="exploration.hydroculi", hydroculi=self._user.stats.hydroculi): (75, 163),
-            LocaleStr(key="exploration.reputation", reputation=self._get_reputation_level(exploration)): (75, 209),
+            LocaleStr(key="hydro_god", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.hydroculi}"): (75, 163),
+            LocaleStr(
+                key="reputation_level", mi18n_game=Game.GENSHIN, append=self._get_reputation_level(exploration)
+            ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
         return self._draw_exploration_card("fontaine", exploration, texts)
@@ -283,7 +300,10 @@ class ExplorationCard:
                 75,
                 117,
             ),
-            LocaleStr(key="exploration.pyroculi", pyroculi=self._user.stats.pyroculi): (75, 163),
+            LocaleStr(key="pyroculus_number", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.pyroculi}"): (
+                75,
+                163,
+            ),
             LocaleStr(
                 key="natlan_reputation",
                 reputation=self._get_reputation_level(exploration),

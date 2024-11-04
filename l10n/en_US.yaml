@@ -14,15 +14,10 @@ abundance: Abundance
 abyss.battles_won_fought: "Battles Won/Fought: {val1}/{val2}"
 abyss.deepest_descent: "Deepest Descent: {val}"
 abyss.floor: "Floor {val}"
-abyss.most_defeats: "Most Defeats: {val}"
-abyss.most_dmg_taken: "Most Damage Taken: {val}"
-abyss.most_skills: "Most Skills Casted: {val}"
-abyss.most_ults: "Most Bursts Unleashed: {val}"
 abyss.overview: Spiral Abyss Overview
 abyss.damage: DAMAGE INFO
 abyss.stats: STATS
 abyss.phase_select.placeholder: Select a phase
-abyss.strongest_strike: "Strongest Single Strike: {val}"
 abyss.total_stars: "Total Stars: {val}"
 abyss_chamber.challenge_target.embed.field.name: Challenge Target
 abyss_chamber.embed.title: "Floor {floor_index} - Chamber {chamber_index}"
@@ -157,15 +152,9 @@ exceptions.card_not_ready_error.title: "Card data for {character_name} is not re
 exped.embed.description: One (or more) expeditions are finished
 exped_button.label: Expedition reminder
 exped_modal.title: Expedition Reminder Settings
-exploration.anemoculi: "Anemoculi: {anemoculi}"
 exploration.chests: Chests Unlocked
 exploration.common_chests: Common
-exploration.dendroculi: "Dendroculi: {dendroculi}"
-exploration.electroculi: "Electroculi: {electroculi}"
 exploration.exquisite_chests: Exquisite
-exploration.geoculi: "Geoculi: {geoculi}"
-exploration.hydroculi: "Hydroculi: {hydroculi}"
-exploration.pyroculi: "Pyroculi: {pyroculi}"
 exploration.luxurious_chests: Luxurious
 exploration.placeholder: Yet to be released
 exploration.placeholder_quote: '"Every journey has its final day.Don''t rush."
@@ -174,7 +163,6 @@ exploration.placeholder_quote: '"Every journey has its final day.Don''t rush."
 exploration.precious_chests: Precious
 exploration.progress: "Exploration Progress: {progress}%"
 exploration.remarkable_chests: Remarkable
-exploration.reputation: "Reputation: Lv.{reputation}"
 exploration.title: World Exploration
 exploration.waypoints: Waypoints Unlocked
 exploration_command_description: View your exploration statistics in Genshin Impact
@@ -491,13 +479,9 @@ invalid_uid_format_title: Invalid UID Format
 invalid_uid_format_description: "UID must be a 9 to 10 digit number"
 zenless_zone_zero: Zenless Zone Zero
 img_theater_large_block_title: Imaginarium Theater
-img_theater_stats_line_two: "Fantasia Flowers Used: {flower}"
-img_theater_stats_line_three: "Triggered External Audience Support: {support} times"
-img_theater_stats_line_four: "Supporting Cast Characters Assist Other Players: {assist} times"
 img_theater_stats_line_five: "Total Cast Time: {time}"
 img_theater_legend_block_support_chara: Support Character
 img_theater_legend_block_trial_chara: Trial Character
-img_theater_act_block_title: "Act {act}"
 img_theater_max_damage: "Most Damage Dealt: {val}"
 img_theater_fastest_team: " (fastest)"
 challenge_view.view_buffs: View buffs

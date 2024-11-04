@@ -7,6 +7,7 @@ from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr, Translator
 
 if TYPE_CHECKING:
@@ -40,11 +41,11 @@ class SpiralAbyssCard:
 
         try:
             damage_info: tuple[tuple[str, genshin.models.AbyssRankCharacter], ...] = (
-                ("abyss.most_defeats", self._data.ranks.most_kills[0]),
-                ("abyss.strongest_strike", self._data.ranks.strongest_strike[0]),
-                ("abyss.most_dmg_taken", self._data.ranks.most_damage_taken[0]),
-                ("abyss.most_ults", self._data.ranks.most_bursts_used[0]),
-                ("abyss.most_skills", self._data.ranks.most_skills_used[0]),
+                ("max_rout_count", self._data.ranks.most_kills[0]),
+                ("powerful_attack", self._data.ranks.strongest_strike[0]),
+                ("max_take_damage", self._data.ranks.most_damage_taken[0]),
+                ("element_break_count", self._data.ranks.most_bursts_used[0]),
+                ("element_skill_use_count", self._data.ranks.most_skills_used[0]),
             )
         except IndexError:
             return
@@ -55,7 +56,7 @@ class SpiralAbyssCard:
             icon = self.drawer.circular_crop(self.drawer.resize_crop(icon, (95, 88)))
             self.im.alpha_composite(icon, position)
             self.drawer.write(
-                LocaleStr(key=key, val=character.value),
+                LocaleStr(key=key, mi18n_game=Game.GENSHIN, append=f": {character.value}"),
                 size=48,
                 position=(position[0] + icon.width + 23, position[1] + icon.width // 2),
                 anchor="lm",

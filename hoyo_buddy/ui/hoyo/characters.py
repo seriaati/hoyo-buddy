@@ -53,7 +53,7 @@ from ..components import Button, GoBackButton, Select, SelectOption, ToggleButto
 if TYPE_CHECKING:
     import asyncio
     import concurrent.futures
-    from collections.abc import Iterable, Mapping, Sequence
+    from collections.abc import Iterable, Sequence
 
     import aiohttp
     from discord import File, Member, User
@@ -526,10 +526,6 @@ class CharactersView(View):
         items: list[Select | Button] = [RarityFilterSelector(self.rarities)]
 
         if self.game is Game.GENSHIN:
-            client = self._account.client
-            client.set_lang(self.locale)
-
-            mi18n = await client.fetch_mi18n("m11241040191111")
             options = WeaponTypeFilter.generate_options(
                 {
                     1: "genshin_weapon_type_name_sword_one_hand",
@@ -537,8 +533,7 @@ class CharactersView(View):
                     10: "genshin_weapon_type_name_catalyst",
                     12: "genshin_weapon_type_name_bow",
                     13: "genshin_weapon_type_name_pole",
-                },
-                mi18n,
+                }
             )
             items.extend([GIFilterSelector(), ElementFilterSelector(GenshinElement), WeaponTypeFilter(options)])
         elif self.game is Game.STARRAIL:
@@ -890,8 +885,11 @@ class WeaponTypeFilter(Select[CharactersView]):
         )
 
     @staticmethod
-    def generate_options(types: dict[int, str], mi18n: Mapping[str, str]) -> list[SelectOption]:
-        return [SelectOption(label=mi18n[mi18n_key], value=str(type_)) for type_, mi18n_key in types.items()]
+    def generate_options(types: dict[int, str]) -> list[SelectOption]:
+        return [
+            SelectOption(label=LocaleStr(key=mi18n_key, mi18n_game=Game.GENSHIN), value=str(type_))
+            for type_, mi18n_key in types.items()
+        ]
 
     async def callback(self, i: Interaction) -> None:
         self.view.weapon_type_filters = [int(value) for value in self.values]

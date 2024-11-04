@@ -270,7 +270,7 @@ no_account_found_for_games_error_message: "You don't have an account from one of
 no_account_found_for_games_platform_error_message: "You don't have an account from one of the following games on {platform}. Add one with </accounts>"
 no_account_found_for_games_error_title: No Account Found
 no_accounts_autocomplete_choice: You don't have any accounts yet. Add one with /accounts
-profile_character_param_name: character-{num}
+profile_character_param_name: "character-{num}"
 no_challenge_data_err_message: "Unable to find any {challenge} data for this phase. Either you haven't started {challenge} yet or the data is not ready yet. Please try again later"
 no_challenge_data_err_title: "No {challenge} Data"
 no_characters_found_error_message: Please try again with a different filter

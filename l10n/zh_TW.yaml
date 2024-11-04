@@ -14,15 +14,10 @@ abundance: 豐饒
 abyss.battles_won_fought: "獲勝次數/戰鬥次數: {val1}/{val2}"
 abyss.deepest_descent: "最深抵達: {val}"
 abyss.floor: "第 {val} 層"
-abyss.most_defeats: "最多擊破數: {val}"
-abyss.most_dmg_taken: "承受最多傷害: {val}"
-abyss.most_skills: "最多元素戰技施放次數: {val}"
-abyss.most_ults: "最多元素爆發施放次數: {val}"
 abyss.overview: 深境螺旋總覽
 abyss.damage: 傷害資訊
 abyss.stats: 數據
 abyss.phase_select.placeholder: 選擇階段
-abyss.strongest_strike: "最強一擊: {val}"
 abyss.total_stars: "總星數: {val}"
 abyss_chamber.challenge_target.embed.field.name: 挑戰目標
 abyss_chamber.embed.title: "第 {floor_index} 層 - 第 {chamber_index} 間"
@@ -157,15 +152,9 @@ exceptions.card_not_ready_error.title: "{character_name} 的卡片資料尚未�
 exped.embed.description: 一或多個探索派遣已經完成了
 exped_button.label: 探索派遣通知
 exped_modal.title: 探索派遣通知設定
-exploration.anemoculi: "風神瞳: {anemoculi}"
 exploration.chests: 解鎖的寶箱
 exploration.common_chests: 普通
-exploration.dendroculi: "草神瞳: {dendroculi}"
-exploration.electroculi: "雷神瞳: {electroculi}"
 exploration.exquisite_chests: 精緻
-exploration.geoculi: "岩神瞳: {geoculi}"
-exploration.hydroculi: "水神瞳: {hydroculi}"
-exploration.pyroculi: "火神瞳: {pyroculi}"
 exploration.luxurious_chests: 華麗
 exploration.placeholder: 尚未釋出
 exploration.placeholder_quote: '「旅程總有一天會迎來終點，不必匆忙。」
@@ -174,7 +163,6 @@ exploration.placeholder_quote: '「旅程總有一天會迎來終點，不必匆
 exploration.precious_chests: 珍貴
 exploration.progress: "探索進度: {progress}%"
 exploration.remarkable_chests: 奇饋
-exploration.reputation: "聲望: {reputation} 等"
 exploration.title: 大世界探索
 exploration.waypoints: 解鎖的錨點
 exploration_command_description: 查看原神中的探索資料
@@ -235,7 +223,6 @@ hydro: 水
 ice: 冰
 imaginary: 虛數
 inazuma: 稻妻
-incomplete_param_error_title: 給予的指令參數不完整
 instructions_title: 指示
 interaction_failed_description: "此交互界面並不是由你觸發的，所以你無法使用它。"
 interaction_failed_title: 交互失敗
@@ -283,6 +270,7 @@ no_account_found_for_games_error_message: "你沒有以下任一遊戲的帳戶�
 no_account_found_for_games_platform_error_message: "在 {platform} 平台上，你沒有以下任一遊戲的帳戶。請透過 </accounts> 新增"
 no_account_found_for_games_error_title: 找不到任何帳戶
 no_accounts_autocomplete_choice: 你尚未擁有任何賬戶。請透過 /accounts 來添加
+profile_character_param_name: "角色-{num}"
 no_challenge_data_err_message: "無法找到任何此階段的 {challenge} 資料。可能你還沒開始進行 {challenge} 或是資料尚未刷新。請稍後再試。"
 no_challenge_data_err_title: "沒有 {challenge} 資料"
 no_characters_found_error_message: 請在選擇其他篩選條件後重新嘗試。
@@ -372,7 +360,9 @@ profile.primary_color_modal.color.label: 顏色（十六進制代碼）
 profile.primary_color_modal.title: 變更卡片顏色
 profile.remove_from_cache.button.label: 從快取中移除
 profile.remove_image.button.label: 移除自定義圖片
-profile_command_description: 生成角色面板卡片和隊伍卡片
+profile_command_gi_description: 生成原神角色面板卡片和隊伍卡片
+profile_command_hsr_description: 生成星穹鐵道角色面板卡片和隊伍卡片
+profile_command_zzz_description: 生成絕區零代理人面板卡片和隊伍卡片
 profile_command_game_value_description: UID 所屬的遊戲
 profile_command_uid_param_description: "玩家的UID，如果提供了帳戶參數，则覆蓋該參數。"
 pt_button.label: 質變儀通知
@@ -490,13 +480,9 @@ invalid_uid_format_title: 錯誤的 UID 格式
 invalid_uid_format_description: "UID 需為一個 9 至 10 位數的數字"
 zenless_zone_zero: 絕區零
 img_theater_large_block_title: 幻想真境劇詩
-img_theater_stats_line_two: "消耗幻劇之花: {flower}"
-img_theater_stats_line_three: "觸發場外觀眾聲援: {support} 次"
-img_theater_stats_line_four: "表演助理角色支援其他玩家: {assist} 次"
 img_theater_stats_line_five: "演出總時長: {time}"
 img_theater_legend_block_support_chara: 表演助理
 img_theater_legend_block_trial_chara: 試用角色
-img_theater_act_block_title: "第 {act} 幕"
 img_theater_max_damage: "最高傷害輸出: {val}"
 img_theater_fastest_team: " (最快)"
 challenge_view.view_buffs: 查看增益
@@ -713,8 +699,6 @@ theater_dmg_lb_title: 幻想真境劇詩最強一擊排行榜
 max_friendship_lb_title: 滿好感度角色數量排行榜
 lb_view_command_description: 查看排行榜
 leaderboard_not_found: 未能找到該排行榜
-not_supported_by_enka_error_title: 尚未受到 Enka Network 支援
-not_supported_by_enka_error_message: "{game}尚未受到 [Enka Network](https://enka.cc) 支援，因此你無法單靠 UID 來搜尋一個玩家的資料。請使用 </accounts> 指令新增一個{game}帳號，並再試一次。"
 currently_logged_in_as: "你目前登入的身份為:"
 not_you_label: "不是你嗎? 點擊以使用其他帳戶登入"
 profile_show_substat_rolls: 副詞條檔次

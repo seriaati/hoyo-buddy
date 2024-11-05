@@ -296,15 +296,10 @@ class ProfileView(View):
         self.add_item(RedrawCardButton(row=1))
 
         if self.characters:
+            characters = [i[1] for i in sorted(self.characters.items(), key=lambda x: (x[0] not in self.character_ids))]
             self.add_item(
                 CharacterSelect(
-                    self.game,
-                    list(self.characters.values()),
-                    self.cache_extras,
-                    self._builds,
-                    self._account,
-                    self.character_ids,
-                    row=2,
+                    self.game, characters, self.cache_extras, self._builds, self._account, self.character_ids, row=2
                 )
             )
         self.add_item(BuildSelect(row=3))

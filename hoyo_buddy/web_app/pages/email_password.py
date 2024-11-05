@@ -120,7 +120,6 @@ class EmailPassWordForm(ft.Column):
             else:
                 result = await client._cn_web_login(email.strip(), password)
         except Exception as exc:
-            logger.exception("Error during login")
             await show_error_banner(page, message=str(exc))
             return
 

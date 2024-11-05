@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import itertools
 import os
 from typing import TYPE_CHECKING, Any, overload
 
@@ -8,7 +9,6 @@ import aiohttp
 import enka
 import genshin
 import hakushin
-import itertools
 import orjson
 import python_socks
 from dotenv import load_dotenv

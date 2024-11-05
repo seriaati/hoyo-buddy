@@ -28,7 +28,7 @@ from ...db.models import EnkaCache, HoyoAccount, JSONFile
 from ...embeds import DefaultEmbed
 from ...enums import Game, GenshinElement
 from ...l10n import LocaleStr, Translator
-from ...utils import set_or_update_dict
+from ...utils import URLRotator, set_or_update_dict
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -49,9 +49,7 @@ else:
         "LOCAL",
     )
 
-
-def get_next_api_url() -> str:
-    return LOGIN_APIS[api_index % len(LOGIN_APIS)]
+rotator = URLRotator(LOGIN_APIS)
 
 
 class ProxyGenshinClient(genshin.Client):
@@ -87,7 +85,7 @@ class ProxyGenshinClient(genshin.Client):
         mmt_result: genshin.models.SessionMMTResult | None = None,
         ticket: genshin.models.ActionTicket | None = None,
     ) -> genshin.models.AppLoginResult | genshin.models.SessionMMT | genshin.models.ActionTicket:
-        api_url = get_next_api_url()
+        api_url = rotator.get_next_url()
 
         if api_url == "LOCAL":
             if mmt_result is not None:

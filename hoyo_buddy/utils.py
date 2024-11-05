@@ -23,9 +23,8 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 from seria.utils import clean_url
 
+from hoyo_buddy.constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
 from hoyo_buddy.enums import Game
-
-from .constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
 
 if TYPE_CHECKING:
     import pathlib
@@ -503,3 +502,18 @@ def measure_time(name: str) -> Generator[Any, None, None]:
         end_time = time.perf_counter()
         execution_time = end_time - start_time
         print(f"Execution time of {name}: {execution_time:.8f} seconds")  # noqa: T201
+
+
+class URLRotator:
+    def __init__(self, urls: Sequence[str]) -> None:
+        if not urls:
+            msg = "URLs list cannot be empty"
+            raise ValueError(msg)
+
+        self.urls = urls
+        self.current_index = 0
+
+    def get_next_url(self) -> str:
+        url = self.urls[self.current_index]
+        self.current_index = (self.current_index + 1) % len(self.urls)
+        return url

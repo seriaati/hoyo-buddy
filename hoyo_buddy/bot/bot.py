@@ -332,8 +332,8 @@ class HoyoBuddy(commands.AutoShardedBot):
         item_id_mapping: dict[int, str] = {}  # item ID -> text map key
 
         first_key = next(iter(item_template.keys()))
-        id_key = "DKDDFEIAMIF"
-        name_key = "DEPJKIPACJK"
+        id_key = "GKNMDKNIMHP"
+        name_key = "FJECNNMMDGH"
 
         for item in item_template[first_key]:
             if any(keyword in item[name_key] for keyword in ("Bangboo_Name", "Item_Weapon")):

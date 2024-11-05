@@ -12,7 +12,7 @@ from hoyo_buddy.utils import ephemeral
 from ..commands.challenge import ChallengeCommand
 from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand
-from ..constants import ZZZ_AGENT_DATA_URL
+from ..constants import HB_GAME_TO_GPY_GAME, ZZZ_AGENT_DATA_URL
 from ..db.models import HoyoAccount, JSONFile, Settings, draw_locale, get_dyk, get_locale
 from ..draw.main_funcs import draw_exploration_card
 from ..embeds import DefaultEmbed
@@ -298,7 +298,10 @@ class Hoyo(commands.Cog):
         )
         locale = await get_locale(i)
 
-        view = RedeemUI(account_, author=i.user, locale=locale, translator=self.bot.translator)
+        available_codes = await RedeemUI.fetch_available_codes(
+            i.client.session, game=HB_GAME_TO_GPY_GAME[account_.game]
+        )
+        view = RedeemUI(account_, available_codes, author=i.user, locale=locale, translator=self.bot.translator)
         await i.followup.send(embed=view.start_embed, view=view, content=await get_dyk(i))
         view.message = await i.original_response()
 

@@ -173,7 +173,7 @@ class AutoRedeem:
         if api_name == "LOCAL":
             try:
                 embed = await account.client.redeem_codes(
-                    codes_, locale=locale, translator=cls._bot.translator, inline=True, blur=False
+                    codes_, locale=locale, translator=cls._bot.translator, blur=False
                 )
                 embed.set_footer(text=LocaleStr(key="auto_redeem_footer"))
             except Exception as e:
@@ -207,7 +207,7 @@ class AutoRedeem:
 
             await asyncio.sleep(6)
 
-        return client.get_redeem_codes_embed(results, locale=locale, translator=translator, inline=True, blur=False)
+        return client.get_redeem_codes_embed(results, locale=locale, translator=translator, blur=False)
 
     @classmethod
     async def _redeem_code(

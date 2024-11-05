@@ -435,7 +435,7 @@ class GenshinClient(ProxyGenshinClient):
         await self._account.save(update_fields=("cookies",))
 
     async def redeem_codes(
-        self, codes: Sequence[str], *, locale: Locale, translator: Translator, inline: bool, blur: bool = True
+        self, codes: Sequence[str], *, locale: Locale, translator: Translator, blur: bool = True
     ) -> DefaultEmbed:
         """Redeem multiple codes and return an embed with the results."""
         results: list[tuple[str, str, bool]] = []
@@ -449,10 +449,10 @@ class GenshinClient(ProxyGenshinClient):
 
             await asyncio.sleep(6)
 
-        return self.get_redeem_codes_embed(results, locale=locale, translator=translator, inline=inline, blur=blur)
+        return self.get_redeem_codes_embed(results, locale=locale, translator=translator, blur=blur)
 
     def get_redeem_codes_embed(
-        self, results: list[tuple[str, str, bool]], *, locale: Locale, translator: Translator, inline: bool, blur: bool
+        self, results: list[tuple[str, str, bool]], *, locale: Locale, translator: Translator, blur: bool
     ) -> DefaultEmbed:
         # get the first 25 results
         results = results[:25]
@@ -461,7 +461,7 @@ class GenshinClient(ProxyGenshinClient):
         )
         for result in results:
             name = f"{'✅' if result[2] else '❌'} {result[0]}"
-            embed.add_field(name=name, value=result[1], inline=inline)
+            embed.add_field(name=name, value=result[1])
 
         return embed
 

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Literal
 import akasha
 
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.ui.components import Button
 from hoyo_buddy.ui.paginator import Page, PaginatorView
 
 if TYPE_CHECKING:
@@ -23,15 +24,18 @@ class AkashaLbPaginator(PaginatorView):
         lb_embed: DefaultEmbed,
         you: akasha.Leaderboard | None,
         lb_size: int,
+        lb_details: str,
         *,
         author: User,
         locale: Locale,
         translator: Translator,
     ) -> None:
         super().__init__({}, author=author, locale=locale, translator=translator)
+        self.add_item(ShowLbDetailsButton())
 
         self.calculation_id = calculation_id
         self.lb_embed = lb_embed
+        self.lb_details = lb_details
         self.you = you
         self.lb_size = lb_size
 
@@ -87,3 +91,11 @@ class AkashaLbPaginator(PaginatorView):
 
         self._pages[self._current_page] = await self.fetch_page(type_)
         return await super()._update_page(i, type_=type_, followup=followup, ephemeral=ephemeral)
+
+
+class ShowLbDetailsButton(Button[AkashaLbPaginator]):
+    def __init__(self) -> None:
+        super().__init__(label=LocaleStr(key="akasha_show_details"), row=1)
+
+    async def callback(self, i: Interaction) -> None:
+        await i.response.send_message(self.view.lb_details, ephemeral=True)

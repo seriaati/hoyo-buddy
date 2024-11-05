@@ -711,3 +711,4 @@ profile_command_character_param_desc: Character to generate the card for
 weapon_type_filter_placeholder: Select weapon type filters...
 redeem_cmd_available_codes: Available codes
 redeem_all_available_codes_button_label: Redeem all available codes
+akasha_show_details: Show leaderboard details

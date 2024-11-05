@@ -8,6 +8,7 @@ import aiohttp
 import enka
 import genshin
 import hakushin
+import itertools
 import orjson
 import python_socks
 from dotenv import load_dotenv
@@ -28,7 +29,7 @@ from ...db.models import EnkaCache, HoyoAccount, JSONFile
 from ...embeds import DefaultEmbed
 from ...enums import Game, GenshinElement
 from ...l10n import LocaleStr, Translator
-from ...utils import URLRotator, set_or_update_dict
+from ...utils import set_or_update_dict
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -49,7 +50,7 @@ else:
         "LOCAL",
     )
 
-rotator = URLRotator(LOGIN_APIS)
+login_api_rotator = itertools.cycle(LOGIN_APIS)
 
 
 class ProxyGenshinClient(genshin.Client):
@@ -85,7 +86,7 @@ class ProxyGenshinClient(genshin.Client):
         mmt_result: genshin.models.SessionMMTResult | None = None,
         ticket: genshin.models.ActionTicket | None = None,
     ) -> genshin.models.AppLoginResult | genshin.models.SessionMMT | genshin.models.ActionTicket:
-        api_url = rotator.get_next_url()
+        api_url = next(login_api_rotator)
 
         if api_url == "LOCAL":
             if mmt_result is not None:

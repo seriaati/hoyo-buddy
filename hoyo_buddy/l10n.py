@@ -23,6 +23,7 @@ from .constants import (
     GPY_LANG_TO_LOCALE,
     HAKUSHIN_GI_ELEMENT_TO_ELEMENT,
     HAKUSHIN_HSR_ELEMENT_TO_ELEMENT,
+    HB_GAME_TO_GPY_GAME,
     WEEKDAYS,
     YATTA_COMBAT_TYPE_TO_ELEMENT,
 )
@@ -125,20 +126,24 @@ class Translator:
             self._localizations[lang] = await read_yaml(file_path.as_posix())
             logger.info(f"Loaded {lang} lang file")
 
-    async def _fetch_mi18n_task(self, client: genshin.Client, *, lang: str, filename: str) -> None:
+    async def _fetch_mi18n_task(self, client: genshin.Client, *, lang: str, filename: str, game: genshin.Game) -> None:
         locale = GPY_LANG_TO_LOCALE.get(lang)
         if locale is None:
             logger.warning(f"Failed to convert gpy lang {lang!r} to locale")
             return
-        self._mi18n[locale.value.replace("-", "_"), filename] = dict(await client.fetch_mi18n(filename, lang=lang))
+        self._mi18n[locale.value.replace("-", "_"), filename] = dict(
+            await client.fetch_mi18n(filename, game, lang=lang)
+        )
 
     async def fetch_mi18n_files(self) -> None:
         client = genshin.Client()
 
         async with TaskGroup() as tg:
-            for filename in MI18N_FILES.values():
+            for game, filename in MI18N_FILES.items():
                 for lang in genshin.constants.LANGS:
-                    tg.create_task(self._fetch_mi18n_task(client, lang=lang, filename=filename))
+                    tg.create_task(
+                        self._fetch_mi18n_task(client, lang=lang, filename=filename, game=HB_GAME_TO_GPY_GAME[game])
+                    )
 
         logger.info("Fetched mi18n files")
 

@@ -14,15 +14,10 @@ abundance: Trù Phú
 abyss.battles_won_fought: "Khiêu Chiến Thành Công/Đã Đánh: {val1}/{val2}"
 abyss.deepest_descent: "Đến nơi sâu nhất: {val}"
 abyss.floor: "Tầng: {val}"
-abyss.most_defeats: "Số lần đánh bại nhiều nhất: {val}"
-abyss.most_dmg_taken: "Chịu sát thương tối đa: {val}"
-abyss.most_skills: "Số lần thi triển Kỹ Năng Nguyên Tố: {val}"
-abyss.most_ults: "Số lần Kỹ Năng Nổ: {val}"
 abyss.overview: Chiến tích La Hoàn Thâm Cảnh
 abyss.damage: Thông Tin DMG
 abyss.stats: Thuộc Tính
 abyss.phase_select.placeholder: Lựa chọn Kỳ
-abyss.strongest_strike: "Một kích mạnh nhất: {val}"
 abyss.total_stars: "Tổng Sao: {val}"
 abyss_chamber.challenge_target.embed.field.name: Mục Tiêu Thử Thách
 abyss_chamber.embed.title: "Tầng {floor_index} - Phòng {chamber_index}"
@@ -157,15 +152,9 @@ exceptions.card_not_ready_error.title: "Dữ liệu thẻ cho nhân vật {chara
 exped.embed.description: Một (hoặc nhiều) thám hiểm đã hoàn thành
 exped_button.label: Nhắc nhở Đi Thám Hiểm
 exped_modal.title: Cài đặt Lời nhắc Thám Hiểm
-exploration.anemoculi: "Phong Thần Đồng: {anemoculi}"
 exploration.chests: Rương đã mở khóa
 exploration.common_chests: Thường
-exploration.dendroculi: "Thảo Thần Đồng: {dendroculi}"
-exploration.electroculi: "Lôi Thần Đồng: {electroculi}"
 exploration.exquisite_chests: Cao Cấp
-exploration.geoculi: "Nham Thần Đồng: {geoculi}"
-exploration.hydroculi: "Thủy Thần Đồng: {hydroculi}"
-exploration.pyroculi: "Hỏa Thần Đồng: {pryoculi}"
 exploration.luxurious_chests: Hiếm
 exploration.placeholder: Chưa được phát hành
 exploration.placeholder_quote: '"Cuộc hành trình rồi sẽ kết thúc, không cần phải vội vàng."
@@ -174,7 +163,6 @@ exploration.placeholder_quote: '"Cuộc hành trình rồi sẽ kết thúc, kh�
 exploration.precious_chests: Siêu Cấp
 exploration.progress: "Độ Thám Hiểm: {progress}%"
 exploration.remarkable_chests: Kỳ Dị
-exploration.reputation: "Danh Vọng: Cấp {reputation}"
 exploration.title: Thám hiểm Thế Giới
 exploration.waypoints: Mở khóa điểm dịch chuyển
 exploration_command_description: Xem thông kê độ thám hiểm của bạn trong Genshin Impact
@@ -235,7 +223,6 @@ hydro: Thủy
 ice: Băng
 imaginary: Số Ảo
 inazuma: Inazuma
-incomplete_param_error_title: Các tham số lệnh đã cho không đầy đủ
 instructions_title: Hướng dẫn
 interaction_failed_description: "Chế độ xem này không phải do bạn khởi tạo nên bạn không thể sử dụng được."
 interaction_failed_title: Tương tác Thất bại
@@ -283,6 +270,7 @@ no_account_found_for_games_error_message: "Bạn không có tài khoản từ m�
 no_account_found_for_games_platform_error_message: "Bạn không có tài khoản từ một trong những trò chơi này trên {platform}. Thêm một tài khoản bằng </accounts>"
 no_account_found_for_games_error_title: Không tìm thấy tài khoản nào
 no_accounts_autocomplete_choice: Bạn không có tài khoản nào. Thêm bằng lệnh /accounts
+profile_character_param_name: "nhân vật-{num}"
 no_challenge_data_err_message: "Không tìm thấy dữ liệu {challenge} cho gian đoạn này. Có thể bạn chưa bắt đầu {challenge} hoặc dữ liệu chưa sản sàng. Vui lòng thử lại sau"
 no_challenge_data_err_title: "Không có dữ liệu cho {challenge}"
 no_characters_found_error_message: Vui lòng thử lại với bộ lọc khác
@@ -372,7 +360,9 @@ profile.primary_color_modal.color.label: Màu (hex code)
 profile.primary_color_modal.title: Đổi màu thẻ
 profile.remove_from_cache.button.label: Xóa khỏi bộ nhớ đệm
 profile.remove_image.button.label: Xóa hình tự chọn
-profile_command_description: Tạo thẻ Build nhân vật và thẻ đội
+profile_command_gi_description: Tạo thẻ Build nhân vật Genshin Impact và thẻ đội
+profile_command_hsr_description: "Tạo thẻ Build nhân vật Honkai: Star Rail và thẻ đội"
+profile_command_zzz_description: Tạo thẻ Build Người Đại Diện Zenless Zone Zero và thẻ đội
 profile_command_game_value_description: Trò chơi của UID
 profile_command_uid_param_description: "UID của người chơi, sẽ ghi đè tham số tài khoản nếu được cung cấp"
 pt_button.label: Nhắc nhở Máy biến đổi Tham số
@@ -490,13 +480,9 @@ invalid_uid_format_title: Định dạng UID không hợp lệ
 invalid_uid_format_description: "UID phải là từ 9 đến 10 số"
 zenless_zone_zero: Zenless Zone Zero
 img_theater_large_block_title: Nhà Hát Giả Tưởng
-img_theater_stats_line_two: "Tiêu Hao Hoa Ảo Kịch: {flower}"
-img_theater_stats_line_three: "Kích hoạt cổ vũ từ khán giả ngoài sân khấu: {support} lần"
-img_theater_stats_line_four: "Diễn Viên Hỗ Trợ chi viện người chơi khác: {assist} times"
 img_theater_stats_line_five: "Tổng Thời Gian Biểu Diễn: {time}"
 img_theater_legend_block_support_chara: Nhân Vật Hỗ Trợ
 img_theater_legend_block_trial_chara: Nhân Vật Dùng Thử
-img_theater_act_block_title: "Màn {act}"
 img_theater_max_damage: "Gây Nhiều Sát Thương Nhất: {val}"
 img_theater_fastest_team: "(nhanh nhất)"
 challenge_view.view_buffs: Xem Buff
@@ -713,8 +699,6 @@ theater_dmg_lb_title: Bảng Xếp Hạng Nhà Hát Giả Tưởng Một Kích M
 max_friendship_lb_title: Bảng Xếp Hạng Số Nhân Vật ở Mức Độ Yêu Thích Cao Nhất
 lb_view_command_description: Xem bảng xếp hạng
 leaderboard_not_found: Bảng xếp hạng không tìm thấy
-not_supported_by_enka_error_title: Chưa hỗ trợ bởi Enka Network
-not_supported_by_enka_error_message: "{game} chưa được hỗ trợ bỡi [Enka Network](https://enka.cc), snên bạn không thể truy vấn dữ liệu của người chơi chỉ bằng UID. Vui lòng thêm tài khoản {game} bằng lệnh </accounts> và thử lại."
 currently_logged_in_as: "Bạn hiện đang đăng nhập với tư cách:"
 not_you_label: "Không phải bạn? Nhấn để đăng nhập bằng tài khoản khác"
 profile_show_substat_rolls: Thuộc tính phụ
@@ -725,3 +709,6 @@ team_card_settings_embed_description: "Cài đặt thẻ đội được chia s�
 characters.filter.rarity.placeholder: Lọc theo độ hiếm...
 profile_command_character_param_desc: Chọn nhân vật để tạo thẻ cho
 weapon_type_filter_placeholder: Chọn lọc loại vũ khí...
+redeem_cmd_available_codes: Mã có sẵn
+redeem_all_available_codes_button_label: Đổi tất cả mã có sẵn
+akasha_show_details: Hiển thị bảng xếp hạng chi tiết

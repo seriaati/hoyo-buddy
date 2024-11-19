@@ -363,7 +363,7 @@ class Drawer:
         return colored_image
 
     @staticmethod
-    def wrap_text(text: str, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont) -> str:
+    def wrap_text(text: str, *, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont, locale: Locale) -> str:
         def truncate_line(line: str, width: int, ellipsis: str = "...") -> str:
             if font.getlength(line) <= width:
                 return line
@@ -380,13 +380,18 @@ class Drawer:
         if max_lines == 1:
             return truncate_line(text, max_width)
 
-        words = text.split()
+        if locale in {Locale.chinese, Locale.japanese, Locale.korean, Locale.taiwan_chinese}:
+            words = list(text)
+            space_char = ""
+        else:
+            words = text.split()
+            space_char = " "
+
         result: list[str] = []
         current_line = ""
 
         for word in words:
-            test_line = word if not current_line else current_line + " " + word
-
+            test_line = word if not current_line else current_line + space_char + word
             is_last_line = len(result) == max_lines - 1
 
             if font.getlength(test_line) <= max_width:
@@ -533,7 +538,9 @@ class Drawer:
             font = self.get_font(size, style, locale=locale)
 
         if max_width is not None and not dynamic_fontsize:
-            translated_text = self.wrap_text(translated_text, max_width=max_width, max_lines=max_lines, font=font)
+            translated_text = self.wrap_text(
+                translated_text, max_width=max_width, max_lines=max_lines, font=font, locale=locale or self.locale
+            )
 
         if align_center:
             y_text = position[1]

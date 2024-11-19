@@ -576,18 +576,19 @@ wheels = [
 
 [[package]]
 name = "enka-api"
-version = "2.2.7"
+version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
-    { name = "aiohttp-client-cache", extra = ["sqlite"] },
+    { name = "aiosqlite" },
+    { name = "loguru" },
     { name = "orjson" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0f/94/c05945db521d1e97804f8aacedbfc0777f7a8577eea8d5f11c409ee89684/enka_api-2.2.7.tar.gz", hash = "sha256:25b57fe95146edff9ccb6f75831480c770835ed54384314d5be4acee63112948", size = 77466 }
+sdist = { url = "https://files.pythonhosted.org/packages/7b/12/4e5eee16b6afa2f7145379c8916b4408bdfa43feb670dd7b904d98b00a94/enka_api-2.3.0.tar.gz", hash = "sha256:c37be8d6de02de1b1907388fa1ef0a753a575c7e5694802ccb18fb4d3184f4d8", size = 86916 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/94/86/1cd991c09bc9b6b0eba2d627b017cee8d8a8cdb7197843a971100a87d418/enka_api-2.2.7-py3-none-any.whl", hash = "sha256:50ae41dd3e182be2d79f612e3b7e48816dd3f660213d53e575a4ee8b793c635c", size = 58438 },
+    { url = "https://files.pythonhosted.org/packages/c0/ad/e748d1d2243820cf62a32ec42c6a7adec1f83d196605d62f406def094c8d/enka_api-2.3.0-py3-none-any.whl", hash = "sha256:03bf9ed81fa71394268bb03c609fdb7f22f4629a22cd770b29af4716c30ef743", size = 59489 },
 ]
 
 [[package]]

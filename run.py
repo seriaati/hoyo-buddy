@@ -10,6 +10,7 @@ import sys
 import aiohttp
 import aiohttp.http_websocket
 import asyncpg
+from fake_useragent import UserAgent
 import discord
 from dotenv import load_dotenv
 from loguru import logger
@@ -25,7 +26,7 @@ from hoyo_buddy.web_server.server import GeetestWebServer
 load_dotenv()
 env = os.environ["ENV"]  # dev, prod, test
 is_dev = env == "dev"
-
+ua = UserAgent()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--sentry", action="store_true", default=not is_dev)
@@ -41,7 +42,7 @@ async def main() -> None:
 
     async with (
         asyncpg.create_pool(os.environ["DB_URL"]) as pool,
-        aiohttp.ClientSession() as session,
+        aiohttp.ClientSession(headers={"User-Agent": ua.random}) as session,
         Database(),
         Translator() as translator,
         HoyoBuddy(session=session, env=env, translator=translator, pool=pool, config=config) as bot,

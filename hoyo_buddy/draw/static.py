@@ -4,7 +4,6 @@ import asyncio
 from typing import TYPE_CHECKING
 
 import aiofiles
-from fake_useragent import UserAgent
 
 from ..exceptions import DownloadImageFailedError
 from ..utils import get_static_img_path
@@ -17,14 +16,13 @@ if TYPE_CHECKING:
 
 __all__ = ("download_images",)
 
-ua = UserAgent()
 ZZZ_GAME_RECORD = "https://act-webstatic.hoyoverse.com/game_record/zzz/"
 
 
 async def download_image_task(
     image_url: str, file_path: pathlib.Path, session: aiohttp.ClientSession, *, ignore_error: bool = False
 ) -> None:
-    async with session.get(image_url, headers={"User-Agent": ua.random}) as resp:
+    async with session.get(image_url) as resp:
         if resp.status != 200:
             if ZZZ_GAME_RECORD in image_url:
                 image_url = image_url.replace(ZZZ_GAME_RECORD, ZZZ_GAME_RECORD.replace("zzz", "nap"))

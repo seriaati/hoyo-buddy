@@ -393,9 +393,7 @@ async def fetch_zzz_draw_data(agents: Sequence[ZZZFullAgent], *, template: Liter
 
         items = await api.fetch_items()
         disc_icons = {
-            disc.id: next(item.icon for item in items if item.id == disc.id)
-            for agent in agents
-            for disc in agent.discs
+            disc.id: next(item.icon for item in items if item.id == disc.id) for agent in agents for disc in agent.discs
         }
 
     return ZZZDrawData(agent_full_names, agent_images, disc_icons)

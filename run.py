@@ -10,9 +10,9 @@ import sys
 import aiohttp
 import aiohttp.http_websocket
 import asyncpg
-from fake_useragent import UserAgent
 import discord
 from dotenv import load_dotenv
+from fake_useragent import UserAgent
 from loguru import logger
 
 from hoyo_buddy.bot import HoyoBuddy

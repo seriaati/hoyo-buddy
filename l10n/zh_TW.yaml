@@ -127,7 +127,7 @@ destruction: 毀滅
 devtools_button_label: 透過開發者工具（電腦限定）
 devtools_instructions_description: "1. 登入 [HoYoLAB](https://www.hoyolab.com/home) 或 [米遊社](https://www.miyoushe.com/ys/) （中國玩家適用）\n2. 透過 F12 或 Ctrl+Shift+I 打開開發者工具\n3. 點擊 >> 按鈕\n4. 點擊 `Application` 頁面\n5. 點擊位於左方的 `Cookies`\n6. 點擊你當前位於的網站（例如 https://www.hoyolab.com）\n7. 在 `Filter` 欄位中輸入 `v2`\n8, 點擊下方的按鈕\n9. 複製每個 Cookie 的值並將它們黏貼於框中"
 dice_cost_embed_field_name: 骰子花費
-download_image_failed_error_message: "無法下載圖片 {url}，狀態碼 {status}。\n稍後再試、使用其他圖片或檢查圖片網址是否有效。"
+download_image_failed_error_message: "無法下載圖片 {url}, 狀態碼 {status}。\n稍後再試、使用其他圖片或檢查圖片網址是否有效。"
 download_image_failed_error_title: 圖片下載失敗
 edit_nickname_modal_title: 編輯暱稱
 eidolon_superimpose_str: "魂{eidolon}疊{superimpose}"
@@ -709,3 +709,6 @@ team_card_settings_embed_description: "隊伍卡片設定在不同遊戲和帳�
 characters.filter.rarity.placeholder: 篩選稀有度...
 profile_command_character_param_desc: 要生成哪個角色的卡片？
 weapon_type_filter_placeholder: 用武器類別篩選…
+redeem_cmd_available_codes: 可用的兌換碼
+redeem_all_available_codes_button_label: 兌換所有可用的兌換碼
+akasha_show_details: 顯示排行榜詳情

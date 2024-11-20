@@ -127,7 +127,7 @@ destruction: 毁灭
 devtools_button_label: 通过开发者工具（仅限桌面端）
 devtools_instructions_description: "1. 登录 [HoYoLAB](https://www.hoyolab.com/home) 或 [米游社](https://www.miyoushe.com/ys/) （中国玩家适用）\n2. 通过 F12 或 Ctrl+Shift+I 打开开发者工具\n3. 点击 >> 按钮\n4. 点击 `应用程序` 页面\n5. 点击位于左方的 `Cookies`\n6. 点开你目前处于的网站（例如 https://www.hoyolab.com）\n7. 在 `筛选器(Filter)` 一栏中输入 `v2`\n8, 点开下方的按钮\n9. 复制每个 Cookie 的 `值` ，并依次粘贴于对应输入框中。"
 dice_cost_embed_field_name: 骰子花费
-download_image_failed_error_message: "无法下载图片{url}，状态码{status}。\n请稍后再试，或者尝试用不同图片，或者检查该图片URL是否无效。"
+download_image_failed_error_message: "无法下载图片{url}, 状态码{status}。\n请稍后再试，或者尝试用不同图片，或者检查该图片URL是否无效。"
 download_image_failed_error_title: 图像下载失败
 edit_nickname_modal_title: 编辑昵称
 eidolon_superimpose_str: "{eidolon}魂  叠影{superimpose}阶"

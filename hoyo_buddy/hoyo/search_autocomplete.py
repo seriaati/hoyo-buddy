@@ -271,6 +271,12 @@ class AutocompleteSetup:
                         cls._inject_hakushin_items(game, category, locale, items)
 
                     cls._add_to_beta_results(game, category, locale, items)
-                    cls._result[game][category][locale] = [Choice(name=item.name, value=str(item.id)) for item in items]
+                    cls._result[game][category][locale] = [
+                        Choice(name=item.name, value=str(item.id))
+                        for item in items
+                        if hasattr(item, "id")
+                        and hasattr(item, "name")
+                        and (hasattr(item, "rarity") and item.rarity is not None)
+                    ]
 
         return cls._result, cls._beta_id_to_category, cls._beta_result

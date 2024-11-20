@@ -709,3 +709,6 @@ team_card_settings_embed_description: "隊伍卡片設定在不同遊戲和帳�
 characters.filter.rarity.placeholder: 篩選稀有度...
 profile_command_character_param_desc: 要生成哪個角色的卡片？
 weapon_type_filter_placeholder: 用武器類別篩選…
+redeem_cmd_available_codes: 可用的兌換碼
+redeem_all_available_codes_button_label: 兌換所有可用的兌換碼
+akasha_show_details: 顯示排行榜詳情

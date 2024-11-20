@@ -22,8 +22,6 @@ if TYPE_CHECKING:
     from ..types import AutocompleteChoices, BetaAutocompleteChoices, ItemCategory, Tasks
 
 
-HARD_EXCLUDE: Final[set[str]] = {"15012", "15004"}
-
 HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Final[dict[HakushinItemCategory, Game]] = {
     HakushinItemCategory.GI_CHARACTERS: Game.GENSHIN,
     HakushinItemCategory.HSR_CHARACTERS: Game.STARRAIL,
@@ -31,16 +29,6 @@ HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Final[dict[HakushinItemCategory, Game]] = {
     HakushinItemCategory.LIGHT_CONES: Game.STARRAIL,
     HakushinItemCategory.ARTIFACT_SETS: Game.GENSHIN,
     HakushinItemCategory.RELICS: Game.STARRAIL,
-}
-HAKUSHIN_GI_ITEM_CATEGORY_MAP: Final[dict[ambr.ItemCategory, HakushinItemCategory]] = {
-    ambr.ItemCategory.CHARACTERS: HakushinItemCategory.GI_CHARACTERS,
-    ambr.ItemCategory.WEAPONS: HakushinItemCategory.WEAPONS,
-    ambr.ItemCategory.ARTIFACT_SETS: HakushinItemCategory.ARTIFACT_SETS,
-}
-HAKUSHIN_HSR_ITEM_CATEGORY_MAP: Final[dict[yatta.ItemCategory, HakushinItemCategory]] = {
-    yatta.ItemCategory.CHARACTERS: HakushinItemCategory.HSR_CHARACTERS,
-    yatta.ItemCategory.LIGHT_CONES: HakushinItemCategory.LIGHT_CONES,
-    yatta.ItemCategory.RELICS: HakushinItemCategory.RELICS,
 }
 
 
@@ -188,36 +176,6 @@ class AutocompleteSetup:
                 await asyncio.sleep(0.1)
 
     @classmethod
-    def _inject_hakushin_items(
-        cls, game: Game, category: ambr.ItemCategory | yatta.ItemCategory, locale: Locale, items: list[Any]
-    ) -> None:
-        hakushin_category = (
-            HAKUSHIN_GI_ITEM_CATEGORY_MAP.get(category)
-            if isinstance(category, ambr.ItemCategory)
-            else HAKUSHIN_HSR_ITEM_CATEGORY_MAP.get(category)
-        )
-        if hakushin_category is None:
-            return
-
-        try:
-            hakushin_task = cls._tasks[game][hakushin_category][locale]
-        except KeyError:
-            return
-
-        hakushin_items = hakushin_task.result()
-        current_item_names: set[str] = {item.name for item in items}
-        current_item_ids: set[str] = {str(item.id) for item in items}
-
-        for hakushin_item in hakushin_items:
-            if (
-                hakushin_item.name in current_item_names
-                or hakushin_item.id in current_item_ids
-                or str(hakushin_item.id) in HARD_EXCLUDE
-            ):
-                continue
-            items.append(hakushin_item)
-
-    @classmethod
     def _add_to_beta_results(cls, game: Game, category: ItemCategory, locale: Locale, items: list[Any]) -> None:
         beta_ids = cls._category_beta_ids.get((game, category), [])
 
@@ -267,8 +225,6 @@ class AutocompleteSetup:
 
                 for locale, task in category_items.items():
                     items = task.result()
-                    if isinstance(category, ambr.ItemCategory | yatta.ItemCategory):
-                        cls._inject_hakushin_items(game, category, locale, items)
 
                     cls._add_to_beta_results(game, category, locale, items)
                     cls._result[game][category][locale] = [

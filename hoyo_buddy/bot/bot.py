@@ -308,7 +308,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             await api.update_assets()
 
         # Update genshin.py assets
-        await genshin.utility.update_characters_any()
+        await genshin.utility.update_characters_ambr()
 
         # Update item ID -> name mappings
         await self.update_zzz_item_id_name_map()

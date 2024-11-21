@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ..l10n import Translator
 from .app import WebApp
 
 if TYPE_CHECKING:
@@ -10,6 +9,5 @@ if TYPE_CHECKING:
 
 
 async def web_app_entry(page: ft.Page) -> None:
-    async with Translator():
-        app = WebApp(page)
+    app = WebApp(page)
     await app.initialize()

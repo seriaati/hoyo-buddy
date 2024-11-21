@@ -16,7 +16,6 @@ if TYPE_CHECKING:
 
     from genshin.models import GenshinDetailCharacter as GICharacter
 
-    from hoyo_buddy.l10n import Translator
 
 PC_ICON_OFFSETS = (0, -29)
 PC_ICON_SIZES = (214, 214)
@@ -91,9 +90,7 @@ def draw_character_card(
     return fp
 
 
-def gi_cache_key(
-    talent_str: str, dark_mode: bool, character: GICharacter | UnownedGICharacter, _: Translator, locale: Locale
-) -> str:
+def gi_cache_key(talent_str: str, dark_mode: bool, character: GICharacter | UnownedGICharacter, locale: Locale) -> str:
     if isinstance(character, UnownedGICharacter):
         return f"{dark_mode}_{character.id}_{character.element}"
     return (

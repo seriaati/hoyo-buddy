@@ -15,7 +15,6 @@ from hoyo_buddy.models import DynamicBKInput, UnownedHSRCharacter
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from hoyo_buddy.l10n import Translator
 
 WEAPON_ICON_POS = (356, 17)
 WEAPON_ICON_SIZES = (102, 102)
@@ -72,7 +71,7 @@ def draw_character_card(
 
 
 def hsr_cache_key(
-    talent_str: str, dark_mode: bool, character: HSRCharacter | UnownedHSRCharacter, _: Translator, locale: Locale
+    talent_str: str, dark_mode: bool, character: HSRCharacter | UnownedHSRCharacter, locale: Locale
 ) -> str:
     if isinstance(character, UnownedHSRCharacter):
         return f"{dark_mode}_{character.id}_{character.element}"

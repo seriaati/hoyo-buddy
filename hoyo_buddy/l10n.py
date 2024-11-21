@@ -193,7 +193,7 @@ class Translator:
 
         extras = self._translate_extras(string.extras, locale)
         string_key = self._get_string_key(string)
-        
+
         if string.mi18n_game is not None:
             source_string = self._mi18n[SOURCE_LANG, MI18N_FILES[string.mi18n_game]][string_key]
         else:

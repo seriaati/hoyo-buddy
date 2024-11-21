@@ -8,7 +8,7 @@ from genshin.models import VideoStoreState, ZZZNotes
 from PIL import ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.l10n import LocaleStr
 
 __all__ = ("draw_zzz_notes",)
 
@@ -19,18 +19,16 @@ def get_nearest_battery_level(current: int, max_battery: int) -> int:
     return battery_levels[bisect.bisect_left(battery_levels, percentage)]
 
 
-def draw_zzz_notes(notes: ZZZNotes, locale_: str, translator: Translator, dark_mode: bool) -> BytesIO:
+def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
     battery_level = get_nearest_battery_level(notes.battery_charge.current, notes.battery_charge.max)
 
     filename = f"{'dark' if dark_mode else 'light'}_notes_{battery_level}"
     im = Drawer.open_image(f"hoyo-buddy-assets/assets/zzz-notes/{filename}.png")
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(
-        draw, folder="zzz-notes", dark_mode=dark_mode, translator=translator, locale=discord.Locale(locale_), sans=True
-    )
+    drawer = Drawer(draw, folder="zzz-notes", dark_mode=dark_mode, locale=discord.Locale(locale_), sans=True)
 
     # Title
-    title = LocaleStr(key="notes-card.zzz.title").translate(translator, discord.Locale(locale_))
+    title = LocaleStr(key="notes-card.zzz.title").translate(discord.Locale(locale_))
     drawer.write(title, size=84, style="black_italic", position=(76, 44), dynamic_fontsize=True, max_width=899)
 
     # Battery charge

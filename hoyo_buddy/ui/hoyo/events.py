@@ -11,7 +11,7 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.components import Button, PaginatorSelect, Select, SelectOption, View
 from hoyo_buddy.ui.paginator import Page, PaginatorView
 from hoyo_buddy.utils import ephemeral, format_ann_content
@@ -26,8 +26,8 @@ if TYPE_CHECKING:
 
 
 class EventsView(View):
-    def __init__(self, account: HoyoAccount, *, author: User, locale: Locale, translator: Translator) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, account: HoyoAccount, *, author: User, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
 
         self.account = account
         self.anns: Sequence[genshin.models.Announcement] = []
@@ -45,10 +45,7 @@ class EventsView(View):
 
     def _get_ann_embed(self, ann: genshin.models.Announcement) -> DefaultEmbed:
         embed = DefaultEmbed(
-            self.locale,
-            self.translator,
-            title=format_ann_content(ann.title),
-            description=format_ann_content(ann.content)[:200] + "...",
+            self.locale, title=format_ann_content(ann.title), description=format_ann_content(ann.content)[:200] + "..."
         )
         embed.set_author(name=ann.subtitle)
         embed.set_image(url=ann.banner or ann.img)
@@ -172,7 +169,7 @@ class EventTypeSelector(Select[EventsView]):
         )
         event_selector: EventSelector = self.view.get_item("events_view_ann_select")
         event_selector.set_options(anns)
-        event_selector.translate(self.view.locale, self.view.translator)
+        event_selector.translate(self.view.locale)
 
         self.update_options_defaults()
         embed = self.view._get_ann_embed(self.view.first_ann)
@@ -193,6 +190,6 @@ class ViewContentButton(Button[EventsView]):
         # Split ann content by 2000 characters
         contents: list[str] = [content[i : i + 2000] for i in range(0, len(content), 2000)]
         pages = [Page(content=content) for content in contents]
-        view = PaginatorView(pages, author=i.user, locale=self.view.locale, translator=self.view.translator)
+        view = PaginatorView(pages, author=i.user, locale=self.view.locale)
         await view.start(i, ephemeral=True, followup=True)
         return None

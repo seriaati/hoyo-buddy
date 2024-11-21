@@ -15,7 +15,6 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.embeds import DefaultEmbed
     from hoyo_buddy.enums import Game, LeaderboardType
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction, User
 
 
@@ -33,9 +32,8 @@ class LbPaginator(PaginatorView):
         lb_type: LeaderboardType,
         author: User,
         locale: Locale,
-        translator: Translator,
     ) -> None:
-        super().__init__({}, author=author, locale=locale, translator=translator)
+        super().__init__({}, author=author, locale=locale)
 
         self.lb_embed = embed
         self.you = you
@@ -64,9 +62,9 @@ class LbPaginator(PaginatorView):
 
         if self.you is not None:
             top_percent = LocaleStr(key="top_percent", percent=round(self.you.rank / self.lb_size * 100, 1)).translate(
-                self.translator, self.locale
+                self.locale
             )
-            you_str = LocaleStr(key="akasha_you").translate(self.translator, self.locale)
+            you_str = LocaleStr(key="akasha_you").translate(self.locale)
 
             embed.add_field(name=f"{you_str} ({top_percent})", value=self.get_lb_line(self.you), inline=False)
 

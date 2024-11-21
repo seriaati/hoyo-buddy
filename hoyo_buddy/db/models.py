@@ -18,6 +18,7 @@ from tortoise.expressions import F
 from ..constants import GI_SERVER_RESET_HOURS, HB_GAME_TO_GPY_GAME, UTC_8
 from ..enums import ChallengeType, Game, LeaderboardType, NotesNotifyType, Platform
 from ..icons import get_game_icon
+from ..l10n import translator
 from ..utils import blur_uid, get_now
 
 if TYPE_CHECKING:
@@ -482,7 +483,7 @@ async def get_dyk(i: Interaction) -> str:
     locale = await get_locale(i)
     if not enable_dyk:
         return ""
-    return i.client.translator.get_dyk(locale)
+    return translator.get_dyk(locale)
 
 
 async def get_last_gacha_num(

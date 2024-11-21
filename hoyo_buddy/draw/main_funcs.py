@@ -41,7 +41,6 @@ if TYPE_CHECKING:
         ZZZNotes,
     )
 
-    from ..l10n import Translator
     from ..models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
 
 
@@ -93,17 +92,12 @@ async def draw_hsr_build_card(
     )
 
 
-async def draw_hsr_notes_card(draw_input: DrawInput, notes: StarRailNote, translator: Translator) -> BytesIO:
+async def draw_hsr_notes_card(draw_input: DrawInput, notes: StarRailNote) -> BytesIO:
     await download_images(
         [exped.item_url for exped in notes.expeditions], folder="hsr-notes", session=draw_input.session
     )
     return await draw_input.loop.run_in_executor(
-        draw_input.executor,
-        funcs.hsr.draw_hsr_notes_card,
-        notes,
-        draw_input.locale.value,
-        translator,
-        draw_input.dark_mode,
+        draw_input.executor, funcs.hsr.draw_hsr_notes_card, notes, draw_input.locale.value, draw_input.dark_mode
     )
 
 
@@ -157,21 +151,16 @@ async def draw_gi_build_card(
     return buffer
 
 
-async def draw_gi_notes_card(draw_input: DrawInput, notes: genshin.models.Notes, translator: Translator) -> BytesIO:
+async def draw_gi_notes_card(draw_input: DrawInput, notes: genshin.models.Notes) -> BytesIO:
     await download_images(
         [exped.character_icon for exped in notes.expeditions], folder="gi-notes", session=draw_input.session
     )
     return await draw_input.loop.run_in_executor(
-        draw_input.executor,
-        funcs.genshin.draw_genshin_notes_card,
-        notes,
-        draw_input.locale.value,
-        translator,
-        draw_input.dark_mode,
+        draw_input.executor, funcs.genshin.draw_genshin_notes_card, notes, draw_input.locale.value, draw_input.dark_mode
     )
 
 
-async def draw_farm_card(draw_input: DrawInput, farm_data: list[FarmData], translator: Translator) -> File:
+async def draw_farm_card(draw_input: DrawInput, farm_data: list[FarmData]) -> File:
     image_urls = (
         [r.icon for data in farm_data for r in data.domain.rewards]
         + [c.icon for data in farm_data for c in data.characters]
@@ -179,7 +168,7 @@ async def draw_farm_card(draw_input: DrawInput, farm_data: list[FarmData], trans
     )
     await download_images(image_urls, folder="farm", session=draw_input.session)
     buffer = await draw_input.loop.run_in_executor(
-        draw_input.executor, funcs.draw_farm_card, farm_data, draw_input.locale.value, draw_input.dark_mode, translator
+        draw_input.executor, funcs.draw_farm_card, farm_data, draw_input.locale.value, draw_input.dark_mode
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
@@ -190,7 +179,6 @@ async def draw_gi_characters_card(
     characters: Sequence[genshin.models.GenshinDetailCharacter | UnownedGICharacter],
     pc_icons: dict[str, str],
     talent_orders: dict[int, list[int]],
-    translator: Translator,
 ) -> File:
     urls: list[str] = []
     for c in characters:
@@ -207,7 +195,6 @@ async def draw_gi_characters_card(
         pc_icons,
         talent_orders,
         draw_input.dark_mode,
-        translator,
         draw_input.locale.value,
     )
     buffer.seek(0)
@@ -219,7 +206,6 @@ async def draw_hsr_characters_card(
     draw_input: DrawInput,
     characters: Sequence[genshin.models.StarRailDetailCharacter | UnownedHSRCharacter],
     pc_icons: dict[str, str],
-    translator: Translator,
 ) -> File:
     urls: list[str] = []
     for c in characters:
@@ -235,7 +221,6 @@ async def draw_hsr_characters_card(
         characters,
         pc_icons,
         draw_input.dark_mode,
-        translator,
         draw_input.locale.value,
     )
     buffer.seek(0)
@@ -244,7 +229,7 @@ async def draw_hsr_characters_card(
 
 
 async def draw_spiral_abyss_card(
-    draw_input: DrawInput, abyss: SpiralAbyss, characters: Sequence[genshin.models.Character], translator: Translator
+    draw_input: DrawInput, abyss: SpiralAbyss, characters: Sequence[genshin.models.Character]
 ) -> File:
     async with ambr.AmbrAPI() as api:
         character_icons = {character.id.split("-")[0]: character.icon for character in await api.fetch_characters()}
@@ -271,72 +256,60 @@ async def draw_spiral_abyss_card(
     await download_images(urls, "abyss", draw_input.session)
 
     card = funcs.genshin.SpiralAbyssCard(
-        abyss,
-        locale=draw_input.locale.value,
-        translator=translator,
-        character_icons=character_icons,
-        character_ranks=character_ranks,
+        abyss, locale=draw_input.locale.value, character_icons=character_icons, character_ranks=character_ranks
     )
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
 
-async def draw_exploration_card(draw_input: DrawInput, user: PartialGenshinUserStats, translator: Translator) -> File:
+async def draw_exploration_card(draw_input: DrawInput, user: PartialGenshinUserStats) -> File:
     buffer = await draw_input.loop.run_in_executor(
-        draw_input.executor,
-        funcs.genshin.ExplorationCard(user, draw_input.dark_mode, draw_input.locale.value, translator).draw,
+        draw_input.executor, funcs.genshin.ExplorationCard(user, draw_input.dark_mode, draw_input.locale.value).draw
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
 
-async def draw_moc_card(
-    draw_input: DrawInput, data: StarRailChallenge, season: StarRailChallengeSeason, translator: Translator
-) -> File:
+async def draw_moc_card(draw_input: DrawInput, data: StarRailChallenge, season: StarRailChallengeSeason) -> File:
     for floor in data.floors:
         icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
         await download_images(icons, "moc", draw_input.session)
 
     buffer = await draw_input.loop.run_in_executor(
-        draw_input.executor, funcs.hsr.moc.MOCCard(data, season, draw_input.locale.value, translator).draw
+        draw_input.executor, funcs.hsr.moc.MOCCard(data, season, draw_input.locale.value).draw
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
 
 async def draw_pure_fiction_card(
-    draw_input: DrawInput, data: StarRailPureFiction, season: StarRailChallengeSeason, translator: Translator
+    draw_input: DrawInput, data: StarRailPureFiction, season: StarRailChallengeSeason
 ) -> File:
     for floor in data.floors:
         icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
         await download_images(icons, "pf", draw_input.session)
 
     buffer = await draw_input.loop.run_in_executor(
-        draw_input.executor,
-        funcs.hsr.pure_fiction.PureFictionCard(data, season, draw_input.locale.value, translator).draw,
+        draw_input.executor, funcs.hsr.pure_fiction.PureFictionCard(data, season, draw_input.locale.value).draw
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
 
-async def draw_apc_shadow_card(
-    draw_input: DrawInput, data: StarRailAPCShadow, season: StarRailChallengeSeason, translator: Translator
-) -> File:
+async def draw_apc_shadow_card(draw_input: DrawInput, data: StarRailAPCShadow, season: StarRailChallengeSeason) -> File:
     for floor in data.floors:
         icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
         await download_images(icons, "apc-shadow", draw_input.session)
 
     buffer = await draw_input.loop.run_in_executor(
-        draw_input.executor, funcs.hsr.apc_shadow.APCShadowCard(data, season, draw_input.locale.value, translator).draw
+        draw_input.executor, funcs.hsr.apc_shadow.APCShadowCard(data, season, draw_input.locale.value).draw
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
 
-async def draw_img_theater_card(
-    draw_input: DrawInput, data: ImgTheaterData, chara_consts: dict[int, int], translator: Translator
-) -> File:
+async def draw_img_theater_card(draw_input: DrawInput, data: ImgTheaterData, chara_consts: dict[int, int]) -> File:
     async with ambr.AmbrAPI() as api:
         character_icons = {character.id.split("-")[0]: character.icon for character in await api.fetch_characters()}
 
@@ -357,16 +330,16 @@ async def draw_img_theater_card(
 
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
-        funcs.genshin.ImgTheaterCard(data, chara_consts, character_icons, draw_input.locale.value, translator).draw,
+        funcs.genshin.ImgTheaterCard(data, chara_consts, character_icons, draw_input.locale.value).draw,
     )
 
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
 
-async def draw_zzz_notes_card(draw_input: DrawInput, notes: ZZZNotes, translator: Translator) -> BytesIO:
+async def draw_zzz_notes_card(draw_input: DrawInput, notes: ZZZNotes) -> BytesIO:
     return await draw_input.loop.run_in_executor(
-        draw_input.executor, funcs.zzz.draw_zzz_notes, notes, draw_input.locale.value, translator, draw_input.dark_mode
+        draw_input.executor, funcs.zzz.draw_zzz_notes, notes, draw_input.locale.value, draw_input.dark_mode
     )
 
 
@@ -408,7 +381,6 @@ async def draw_zzz_build_card(
     custom_image: str | None,
     template: Literal[1, 2, 3, 4],
     show_substat_rolls: bool,
-    translator: Translator,
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data([agent], template=template)
 
@@ -447,7 +419,6 @@ async def draw_zzz_build_card(
             disc_icons=draw_data.disc_icons,
             color=custom_color or card_data["color"],
             show_substat_rolls=show_substat_rolls,
-            translator=translator,
         )
     else:
         card = funcs.zzz.ZZZAgentCard(
@@ -464,9 +435,7 @@ async def draw_zzz_build_card(
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
 
-async def draw_zzz_characters_card(
-    draw_input: DrawInput, agents: Sequence[ZZZFullAgent | UnownedZZZCharacter], translator: Translator
-) -> File:
+async def draw_zzz_characters_card(draw_input: DrawInput, agents: Sequence[ZZZFullAgent | UnownedZZZCharacter]) -> File:
     urls: list[str] = []
     for agent in agents:
         urls.append(agent.banner_icon)
@@ -475,21 +444,14 @@ async def draw_zzz_characters_card(
 
     await download_images(urls, "zzz-characters", draw_input.session)
     buffer = await draw_input.loop.run_in_executor(
-        draw_input.executor,
-        funcs.zzz.draw_big_agent_card,
-        agents,
-        draw_input.dark_mode,
-        draw_input.locale.value,
-        translator,
+        draw_input.executor, funcs.zzz.draw_big_agent_card, agents, draw_input.dark_mode, draw_input.locale.value
     )
     buffer.seek(0)
 
     return File(buffer, filename=draw_input.filename)
 
 
-async def draw_honkai_suits_card(
-    draw_input: DrawInput, suits: Sequence[FullBattlesuit], translator: Translator
-) -> File:
+async def draw_honkai_suits_card(draw_input: DrawInput, suits: Sequence[FullBattlesuit]) -> File:
     urls: list[str] = []
     for suit in suits:
         urls.extend((suit.tall_icon.replace(" ", ""), suit.weapon.icon))
@@ -498,12 +460,7 @@ async def draw_honkai_suits_card(
     await download_images(urls, "honkai-characters", draw_input.session, ignore_error=True)
 
     buffer = await draw_input.loop.run_in_executor(
-        draw_input.executor,
-        funcs.hoyo.honkai.draw_big_suit_card,
-        suits,
-        draw_input.locale.value,
-        draw_input.dark_mode,
-        translator,
+        draw_input.executor, funcs.hoyo.honkai.draw_big_suit_card, suits, draw_input.locale.value, draw_input.dark_mode
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
@@ -591,17 +548,13 @@ async def draw_gi_team_card(
 
 
 async def draw_shiyu_card(
-    draw_input: DrawInput,
-    shiyu: genshin.models.ShiyuDefense,
-    agent_ranks: dict[int, int],
-    uid: int | None,
-    translator: Translator,
+    draw_input: DrawInput, shiyu: genshin.models.ShiyuDefense, agent_ranks: dict[int, int], uid: int | None
 ) -> File:
     urls = [character.icon for floor in shiyu.floors for character in floor.node_1.characters + floor.node_2.characters]
     urls.extend(bangboo.icon for floor in shiyu.floors for bangboo in (floor.node_1.bangboo, floor.node_2.bangboo))
     await download_images(urls, "shiyu", draw_input.session)
 
-    card = funcs.zzz.ShiyuDefenseCard(shiyu, agent_ranks, uid, translator=translator, locale=draw_input.locale.value)
+    card = funcs.zzz.ShiyuDefenseCard(shiyu, agent_ranks, uid, locale=draw_input.locale.value)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
     buffer.seek(0)

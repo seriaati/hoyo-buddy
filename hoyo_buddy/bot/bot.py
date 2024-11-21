@@ -39,7 +39,7 @@ from ..db import models
 from ..enums import Game, GeetestType, Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
-from ..l10n import AppCommandTranslator, EnumStr, LocaleStr, Translator
+from ..l10n import AppCommandTranslator, EnumStr, LocaleStr, translator
 from ..utils import fetch_json, get_now, get_repo_version
 from .cache import LFUCache
 from .command_tree import CommandTree
@@ -60,9 +60,7 @@ __all__ = ("HoyoBuddy",)
 class HoyoBuddy(commands.AutoShardedBot):
     owner_id: int
 
-    def __init__(
-        self, *, session: ClientSession, env: str, translator: Translator, pool: asyncpg.Pool, config: Config
-    ) -> None:
+    def __init__(self, *, session: ClientSession, env: str, pool: asyncpg.Pool, config: Config) -> None:
         self.repo = git.Repo()
         self.version = get_repo_version()
 
@@ -83,7 +81,6 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         self.session = session
         self.uptime = get_now()
-        self.translator = translator
         self.env = env
         self.nai_client = NAIClient(token=os.environ["NAI_TOKEN"], host_url=os.environ["NAI_HOST_URL"])
         self.owner_id = 410036441129943050
@@ -106,7 +103,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             cache = genshin.SQLiteCache(conn)
             await cache.initialize()
 
-        await self.tree.set_translator(AppCommandTranslator(self.translator))
+        await self.tree.set_translator(AppCommandTranslator())
 
         for filepath in Path("hoyo_buddy/cogs").glob("**/*.py"):
             cog_name = Path(filepath).stem
@@ -167,7 +164,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self, error_message: LocaleStr | str | Exception, locale: discord.Locale
     ) -> list[app_commands.Choice[str]]:
         if isinstance(error_message, Exception):
-            embed, recognized = get_error_embed(error_message, locale, self.translator)
+            embed, recognized = get_error_embed(error_message, locale)
             if not recognized:
                 self.capture_exception(error_message)
 
@@ -182,20 +179,20 @@ class HoyoBuddy(commands.AutoShardedBot):
 
             return self.get_error_choice(str(error_message), locale)
 
-        return [app_commands.Choice(name=self.translator.translate(error_message, locale), value="none")]
+        return [app_commands.Choice(name=translator.translate(error_message, locale), value="none")]
 
     def get_enum_choices(
         self, enums: Sequence[StrEnum], locale: discord.Locale, current: str
     ) -> list[discord.app_commands.Choice[str]]:
         return [
-            discord.app_commands.Choice(name=EnumStr(enum).translate(self.translator, locale), value=enum.value)
+            discord.app_commands.Choice(name=EnumStr(enum).translate(locale), value=enum.value)
             for enum in enums
-            if current.lower() in EnumStr(enum).translate(self.translator, locale).lower()
+            if current.lower() in EnumStr(enum).translate(locale).lower()
         ]
 
     @staticmethod
     def _get_account_choice_name(
-        account: models.HoyoAccount, locale: discord.Locale, translator: Translator, *, is_author: bool, show_id: bool
+        account: models.HoyoAccount, locale: discord.Locale, *, is_author: bool, show_id: bool
     ) -> str:
         account_id_str = f"[{account.id}] " if show_id else ""
         account_display = account if is_author else account.blurred_display
@@ -209,7 +206,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         author_id: int,
         current: str,
         locale: discord.Locale,
-        translator: Translator,
         *,
         games: Sequence[Game] | None = None,
         platforms: Sequence[Platform] | None = None,
@@ -222,7 +218,6 @@ class HoyoBuddy(commands.AutoShardedBot):
             author_id: The interaction author's ID.
             current: The current input.
             locale: Discord locale.
-            translator: Bot's translator.
             games: The games to filter by
             platforms: The platforms to filter by.
             show_id: Whether to show the account ID.
@@ -244,7 +239,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         return [
             discord.app_commands.Choice(
-                name=self._get_account_choice_name(account, locale, translator, is_author=is_author, show_id=show_id),
+                name=self._get_account_choice_name(account, locale, is_author=is_author, show_id=show_id),
                 value=str(account.id),
             )
             for account in accounts
@@ -257,7 +252,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         games = games or list(Game)
         locale = await models.get_locale(i)
         user: User = i.namespace.user
-        return await self.get_account_choices(user, i.user.id, current, locale, self.translator, games=games)
+        return await self.get_account_choices(user, i.user.id, current, locale, games=games)
 
     async def get_account(
         self, user_id: int, games: Sequence[Game] | None = None, platform: Platform | None = None
@@ -409,17 +404,17 @@ class HoyoBuddy(commands.AutoShardedBot):
                         "validate": user.temp_data["geetest_validate"],
                     }
                 )
-                embed = client.get_daily_reward_embed(reward, locale, self.translator, blur=True)
+                embed = client.get_daily_reward_embed(reward, locale, blur=True)
             else:
                 await client.verify_mmt(genshin.models.MMTResult(**user.temp_data))
-                embed = DefaultEmbed(locale, self.translator, title=LocaleStr(key="geeetest_verification_complete"))
+                embed = DefaultEmbed(locale, title=LocaleStr(key="geeetest_verification_complete"))
 
             await message.edit(embed=embed, view=None)
         except Exception as e:
             if isinstance(e, discord.Forbidden):
                 return
 
-            embed, recognized = get_error_embed(e, locale, self.translator)
+            embed, recognized = get_error_embed(e, locale)
             if not recognized:
                 self.capture_exception(e)
             await message.edit(embed=embed, view=None)

@@ -44,6 +44,5 @@ class ImageSettingsButton(Button[ProfileView]):
             settings,
             author=i.user,
             locale=self.view.locale,
-            translator=self.view.translator,
         )
         await view.start(i)

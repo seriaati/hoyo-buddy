@@ -164,7 +164,7 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         if not is_team and (builds := view._builds.get(character_id)):
             view._build_id = builds[0].id
             build_select.set_options(builds)
-            build_select.translate(view.locale, view.translator)
+            build_select.translate(view.locale)
             build_select.disabled = False
         else:
             build_select.disabled = True

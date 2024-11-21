@@ -10,7 +10,7 @@ import flet as ft
 from dotenv import load_dotenv
 from loguru import logger
 
-from hoyo_buddy.l10n import Translator
+from hoyo_buddy.l10n import translator
 from hoyo_buddy.logging import InterceptHandler
 from hoyo_buddy.utils import init_sentry
 from hoyo_buddy.web_app.app import WebApp
@@ -23,13 +23,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--sentry", action="store_true", default=not is_dev)
 args = parser.parse_args()
 
-translator = Translator()
 loop = asyncio.get_event_loop()
 loop.run_until_complete(translator.load())
 
 
 async def web_app_entry(page: ft.Page) -> None:
-    app = WebApp(page, translator=translator)
+    app = WebApp(page)
     await app.initialize()
 
 

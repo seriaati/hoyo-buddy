@@ -11,13 +11,13 @@ if TYPE_CHECKING:
     from discord import Locale, Member, User
 
     from hoyo_buddy.embeds import DefaultEmbed
-    from hoyo_buddy.l10n import LocaleStr, Translator
+    from hoyo_buddy.l10n import LocaleStr
     from hoyo_buddy.types import Interaction
 
 
 class BookUI(View):
-    def __init__(self, book_id: str, *, author: User | Member, locale: Locale, translator: Translator) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, book_id: str, *, author: User | Member, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
 
         self.book_id = book_id
         self.series_embeds: dict[str, DefaultEmbed] = {}
@@ -25,7 +25,7 @@ class BookUI(View):
     async def start(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
-        async with YattaAPIClient(self.locale, self.translator) as api:
+        async with YattaAPIClient(self.locale) as api:
             try:
                 book_id = int(self.book_id)
             except ValueError as e:

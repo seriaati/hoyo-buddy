@@ -14,17 +14,14 @@ from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from hoyo_buddy.embeds import DefaultEmbed
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 RELIC_POS: tuple[str, ...] = ("neck", "head", "hand", "object", "foot", "body")
 
 
 class RelicSetUI(View):
-    def __init__(
-        self, relic_set_id: str, *, hakushin: bool, author: User | Member, locale: Locale, translator: Translator
-    ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, relic_set_id: str, *, hakushin: bool, author: User | Member, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
         self._relic_set_id = relic_set_id
         self._relic_embeds: dict[str, DefaultEmbed] = {}
 
@@ -42,13 +39,13 @@ class RelicSetUI(View):
             async with hakushin.HakushinAPI(hakushin.Game.HSR) as api:
                 relic_set_detail = await api.fetch_relic_set_detail(relic_id)
 
-            translator = HakushinTranslator(self.locale, self.translator)
+            translator = HakushinTranslator(self.locale)
             self._relic_embeds = {
                 RELIC_POS[index]: translator.get_relic_embed(relic_set_detail, relic)
                 for index, relic in enumerate(relic_set_detail.parts.values())
             }
         else:
-            async with YattaAPIClient(self.locale, self.translator) as api:
+            async with YattaAPIClient(self.locale) as api:
                 relic_set_detail = await api.fetch_relic_set_detail(relic_id)
 
                 self._relic_embeds = {

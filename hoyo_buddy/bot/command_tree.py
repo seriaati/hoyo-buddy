@@ -39,7 +39,7 @@ class CommandTree(app_commands.CommandTree):
             return
 
         locale = await get_locale(i)
-        embed, recognized = get_error_embed(error, locale, i.client.translator)
+        embed, recognized = get_error_embed(error, locale)
         if not recognized:
             i.client.capture_exception(error)
 

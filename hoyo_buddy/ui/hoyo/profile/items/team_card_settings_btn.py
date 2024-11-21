@@ -31,5 +31,5 @@ class TeamCardSettingsButton(Button[ProfileView]):
 
     async def callback(self, i: Interaction) -> None:
         settings = await Settings.get(user_id=i.user.id)
-        view = TeamCardSettingsView(settings, author=i.user, locale=self.view.locale, translator=self.view.translator)
+        view = TeamCardSettingsView(settings, author=i.user, locale=self.view.locale)
         await view.start(i)

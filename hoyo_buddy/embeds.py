@@ -5,9 +5,11 @@ from typing import TYPE_CHECKING, Self
 import discord
 from seria.utils import shorten
 
+from .l10n import translator
+
 if TYPE_CHECKING:
     from .db.models import HoyoAccount
-    from .l10n import LocaleStr, Translator
+    from .l10n import LocaleStr
 
 __all__ = ("DefaultEmbed", "Embed", "ErrorEmbed")
 
@@ -16,7 +18,6 @@ class Embed(discord.Embed):
     def __init__(
         self,
         locale: discord.Locale,
-        translator: Translator,
         *,
         color: int | None = None,
         title: LocaleStr | str | None = None,
@@ -28,24 +29,23 @@ class Embed(discord.Embed):
 
         super().__init__(color=color, title=translated_title, url=url, description=translated_description)
         self.locale = locale
-        self.translator = translator
 
     def __repr__(self) -> str:
         return f"<Embed title={self.title!r} description={self.description!r}>"
 
     def add_field(self, *, name: LocaleStr | str, value: LocaleStr | str, inline: bool = True) -> Self:
-        translated_name = self.translator.translate(name, self.locale, title_case=True)
-        translated_value = self.translator.translate(value, self.locale)
+        translated_name = translator.translate(name, self.locale, title_case=True)
+        translated_value = translator.translate(value, self.locale)
         return super().add_field(
             name=shorten(translated_name, 256), value=shorten(translated_value, 1024), inline=inline
         )
 
     def set_author(self, *, name: LocaleStr | str, url: str | None = None, icon_url: str | None = None) -> Self:
-        translated_name = self.translator.translate(name, self.locale)
+        translated_name = translator.translate(name, self.locale)
         return super().set_author(name=shorten(translated_name, 256), url=url, icon_url=icon_url)
 
     def set_footer(self, *, text: LocaleStr | str | None = None, icon_url: str | None = None) -> Self:
-        translated_text = self.translator.translate(text, self.locale) if text else None
+        translated_text = translator.translate(text, self.locale) if text else None
         return super().set_footer(text=translated_text, icon_url=icon_url)
 
     def add_acc_info(self, account: HoyoAccount, *, blur: bool = True) -> Self:
@@ -55,11 +55,10 @@ class Embed(discord.Embed):
     def copy(self) -> Self:
         copy = super().copy()
         copy.locale = self.locale
-        copy.translator = self.translator
         return copy
 
     def add_description(self, description: LocaleStr | str) -> Self:
-        translated_description = self.translator.translate(description, self.locale)
+        translated_description = translator.translate(description, self.locale)
         if self.description is None:
             self.description = translated_description
         else:
@@ -71,23 +70,21 @@ class DefaultEmbed(Embed):
     def __init__(
         self,
         locale: discord.Locale,
-        translator: Translator,
         *,
         title: LocaleStr | str | None = None,
         url: str | None = None,
         description: LocaleStr | str | None = None,
     ) -> None:
-        super().__init__(locale, translator, color=6649080, title=title, url=url, description=description)
+        super().__init__(locale, color=6649080, title=title, url=url, description=description)
 
 
 class ErrorEmbed(Embed):
     def __init__(
         self,
         locale: discord.Locale,
-        translator: Translator,
         *,
         title: LocaleStr | str | None = None,
         url: str | None = None,
         description: LocaleStr | str | None = None,
     ) -> None:
-        super().__init__(locale, translator, color=15169131, title=title, url=url, description=description)
+        super().__init__(locale, color=15169131, title=title, url=url, description=description)

@@ -14,13 +14,12 @@ if TYPE_CHECKING:
     from discord import Locale, Member, User
 
     from hoyo_buddy.embeds import DefaultEmbed
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 
 class TCGCardUI(View):
-    def __init__(self, card_id: int, *, author: User | Member, locale: Locale, translator: Translator) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, card_id: int, *, author: User | Member, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
         self.card_id = card_id
         self.card_embed: DefaultEmbed | None = None
         self.card: TCGCardDetail | None = None
@@ -45,7 +44,7 @@ class TCGCardUI(View):
     async def start(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
-        async with AmbrAPIClient(self.locale, self.translator) as api:
+        async with AmbrAPIClient(self.locale) as api:
             card = await api.fetch_tcg_card_detail(self.card_id)
             self.card = card
             if card.talents:

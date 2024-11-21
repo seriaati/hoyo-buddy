@@ -47,6 +47,6 @@ class StatsCommand:
         if not record_cards_:
             raise NoAccountFoundError
 
-        view = StatsView(record_cards_, author=i.user, locale=locale, translator=i.client.translator)
+        view = StatsView(record_cards_, author=i.user, locale=locale)
         await i.followup.send(embed=view.get_card_embed(record_cards_[0]), view=view, content=await get_dyk(i))
         view.message = await i.original_response()

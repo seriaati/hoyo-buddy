@@ -28,7 +28,7 @@ from ...constants import (
 from ...db.models import EnkaCache, HoyoAccount, JSONFile
 from ...embeds import DefaultEmbed
 from ...enums import Game, GenshinElement
-from ...l10n import LocaleStr, Translator
+from ...l10n import LocaleStr
 from ...utils import set_or_update_dict
 
 if TYPE_CHECKING:
@@ -154,12 +154,11 @@ class GenshinClient(ProxyGenshinClient):
         self.lang = "zh-cn" if self.region is genshin.Region.CHINESE else LOCALE_TO_GPY_LANG.get(locale, "en-us")
 
     def get_daily_reward_embed(
-        self, daily_reward: genshin.models.DailyReward, locale: Locale, translator: Translator, *, blur: bool
+        self, daily_reward: genshin.models.DailyReward, locale: Locale, *, blur: bool
     ) -> DefaultEmbed:
         return (
             DefaultEmbed(
                 locale,
-                translator,
                 title=LocaleStr(key="reward_claimed_title"),
                 description=f"{daily_reward.name} x{daily_reward.amount}",
             )
@@ -434,9 +433,7 @@ class GenshinClient(ProxyGenshinClient):
         self._account.cookies = new_str_cookies
         await self._account.save(update_fields=("cookies",))
 
-    async def redeem_codes(
-        self, codes: Sequence[str], *, locale: Locale, translator: Translator, blur: bool = True
-    ) -> DefaultEmbed:
+    async def redeem_codes(self, codes: Sequence[str], *, locale: Locale, blur: bool = True) -> DefaultEmbed:
         """Redeem multiple codes and return an embed with the results."""
         results: list[tuple[str, str, bool]] = []
 
@@ -444,19 +441,19 @@ class GenshinClient(ProxyGenshinClient):
             if not code:
                 continue
 
-            msg, success = await self.redeem_code(code.strip(), locale=locale, translator=translator)
+            msg, success = await self.redeem_code(code.strip(), locale=locale)
             results.append((code, msg, success))
 
             await asyncio.sleep(6)
 
-        return self.get_redeem_codes_embed(results, locale=locale, translator=translator, blur=blur)
+        return self.get_redeem_codes_embed(results, locale=locale, blur=blur)
 
     def get_redeem_codes_embed(
-        self, results: list[tuple[str, str, bool]], *, locale: Locale, translator: Translator, blur: bool
+        self, results: list[tuple[str, str, bool]], *, locale: Locale, blur: bool
     ) -> DefaultEmbed:
         # get the first 25 results
         results = results[:25]
-        embed = DefaultEmbed(locale, translator, title=LocaleStr(key="redeem_command_embed.title")).add_acc_info(
+        embed = DefaultEmbed(locale, title=LocaleStr(key="redeem_command_embed.title")).add_acc_info(
             self._account, blur=blur
         )
         for result in results:
@@ -465,7 +462,7 @@ class GenshinClient(ProxyGenshinClient):
 
         return embed
 
-    async def redeem_code(self, code: str, *, locale: Locale, translator: Translator) -> tuple[str, bool]:
+    async def redeem_code(self, code: str, *, locale: Locale) -> tuple[str, bool]:
         """Redeem a code, return a message and a boolean indicating success."""
         success = False
         try:
@@ -481,16 +478,16 @@ class GenshinClient(ProxyGenshinClient):
                     raise genshin.GenshinException({"retcode": 1000}) from e
                 else:
                     # cookie token refresh succeeded, redeem code again
-                    return await self.redeem_code(code, locale=locale, translator=translator)
+                    return await self.redeem_code(code, locale=locale)
             else:
                 # cookie token can't be refreshed
                 raise genshin.GenshinException({"retcode": 999}) from e
         except genshin.RedemptionCooldown:
             # sleep then retry
             await asyncio.sleep(20)
-            return await self.redeem_code(code, locale=locale, translator=translator)
+            return await self.redeem_code(code, locale=locale)
         except Exception as e:
-            embed, recognized = get_error_embed(e, locale, translator)
+            embed, recognized = get_error_embed(e, locale)
             if not recognized:
                 raise
             assert embed.title is not None
@@ -499,7 +496,7 @@ class GenshinClient(ProxyGenshinClient):
             return f"{embed.title}\n{embed.description}", success
         else:
             success = True
-            msg = LocaleStr(key="redeem_code.success").translate(translator, locale)
+            msg = LocaleStr(key="redeem_code.success").translate(locale)
 
         return msg, success
 

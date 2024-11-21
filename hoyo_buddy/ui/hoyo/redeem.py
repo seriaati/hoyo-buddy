@@ -15,7 +15,6 @@ if TYPE_CHECKING:
     from genshin import Game
 
     from hoyo_buddy.db.models import HoyoAccount
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 
@@ -42,15 +41,9 @@ class GiftCodeModal(Modal):
 
 class RedeemUI(View):
     def __init__(
-        self,
-        account: HoyoAccount,
-        available_codes: list[str],
-        *,
-        author: User | Member | None,
-        locale: Locale,
-        translator: Translator,
+        self, account: HoyoAccount, available_codes: list[str], *, author: User | Member | None, locale: Locale
     ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+        super().__init__(author=author, locale=locale)
         self.account = account
         self.account.client.set_lang(locale)
         self.available_codes = available_codes
@@ -70,7 +63,6 @@ class RedeemUI(View):
     def start_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
-            self.translator,
             title=LocaleStr(key="redeem_codes_button.label"),
             description=LocaleStr(key="redeem_command_embed.description"),
         ).add_acc_info(self.account)
@@ -85,7 +77,6 @@ class RedeemUI(View):
     def cooldown_embed(self) -> DefaultEmbed:
         return DefaultEmbed(
             self.locale,
-            self.translator,
             title=LocaleStr(key="redeem_cooldown_embed.title"),
             description=LocaleStr(key="redeem_cooldown_embed.description"),
         )
@@ -104,7 +95,7 @@ class RedeemCodesButton(Button[RedeemUI]):
 
     async def callback(self, i: Interaction) -> None:
         modal = GiftCodeModal(title=LocaleStr(key="gift_code_modal.title"))
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
 
         await modal.wait()
@@ -116,9 +107,7 @@ class RedeemCodesButton(Button[RedeemUI]):
 
         # Extract codes from urls
         codes = [code.split("code=")[1] if "code=" in code else code for code in codes]
-        embed = await self.view.account.client.redeem_codes(
-            codes, locale=self.view.locale, translator=self.view.translator
-        )
+        embed = await self.view.account.client.redeem_codes(codes, locale=self.view.locale)
         await self.unset_loading_state(i, embed=embed)
 
 
@@ -140,7 +129,5 @@ class RedeemAllAvailableCodesButton(Button[RedeemUI]):
 
     async def callback(self, i: Interaction) -> None:
         await self.set_loading_state(i, embed=self.view.cooldown_embed)
-        embed = await self.view.account.client.redeem_codes(
-            self.view.available_codes, locale=self.view.locale, translator=self.view.translator
-        )
+        embed = await self.view.account.client.redeem_codes(self.view.available_codes, locale=self.view.locale)
         await self.unset_loading_state(i, embed=embed)

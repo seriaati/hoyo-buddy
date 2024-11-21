@@ -8,7 +8,7 @@ from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import format_time
 
 if TYPE_CHECKING:
@@ -17,18 +17,11 @@ if TYPE_CHECKING:
 
 class ShiyuDefenseCard:
     def __init__(
-        self,
-        data: genshin.models.ShiyuDefense,
-        agent_ranks: dict[int, int],
-        uid: int | None,
-        *,
-        translator: Translator,
-        locale: str,
+        self, data: genshin.models.ShiyuDefense, agent_ranks: dict[int, int], uid: int | None, *, locale: str
     ) -> None:
         self.data = data
         self.agent_ranks = agent_ranks
         self.uid = uid
-        self.translator = translator
         self.locale = Locale(locale)
 
         self.text_color = (20, 20, 20)
@@ -72,9 +65,7 @@ class ShiyuDefenseCard:
 
         stats = {
             "shiyu_fastest_clear_time": format_time(self.data.fastest_clear_time),
-            "shiyu_highest_frontier": LocaleStr(key=f"shiyu_{self.data.max_floor}_frontier").translate(
-                self.translator, self.locale
-            ),
+            "shiyu_highest_frontier": LocaleStr(key=f"shiyu_{self.data.max_floor}_frontier").translate(self.locale),
             "shiyu_relevant_season": f"{self.data.begin_time:%Y-%m-%d} ~ {self.data.end_time:%Y-%m-%d}",
         }
         start_pos = (126, 907)
@@ -233,7 +224,7 @@ class ShiyuDefenseCard:
 
     def draw(self) -> BytesIO:
         im = Drawer.open_image("hoyo-buddy-assets/assets/shiyu/background.png")
-        drawer = Drawer(ImageDraw.Draw(im), folder="shiyu", dark_mode=False, translator=self.translator, sans=True)
+        drawer = Drawer(ImageDraw.Draw(im), folder="shiyu", dark_mode=False, sans=True)
         self.write_stats(drawer)
         self.draw_frontiers(im, drawer)
 

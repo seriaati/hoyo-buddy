@@ -26,9 +26,7 @@ class Login(commands.Cog):
         user = await User.get(id=i.user.id)
         accounts = await HoyoAccount.filter(user=user).all()
 
-        view = AccountManager(
-            author=i.user, locale=locale, translator=i.client.translator, user=user, accounts=accounts
-        )
+        view = AccountManager(author=i.user, locale=locale, user=user, accounts=accounts)
         await view.start(i)
 
 

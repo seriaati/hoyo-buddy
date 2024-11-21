@@ -8,17 +8,17 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import Game
-from hoyo_buddy.l10n import LevelStr, LocaleStr, Translator
+from hoyo_buddy.l10n import LevelStr, LocaleStr
 
 if TYPE_CHECKING:
     from genshin.models import Exploration, PartialGenshinUserStats
 
 
 class ExplorationCard:
-    def __init__(self, user: PartialGenshinUserStats, dark_mode: bool, locale: str, translator: Translator) -> None:
+    def __init__(self, user: PartialGenshinUserStats, dark_mode: bool, locale: str) -> None:
         self._user = user
         self._dark_mode = dark_mode
-        self._translator = translator
+
         self._locale = locale
         self._placeholder = "? ? ?"
 
@@ -56,9 +56,7 @@ class ExplorationCard:
         return next((e for e in self._user.explorations if e.id == exploration_id), None)
 
     def _get_offering_text(self, exploration: Exploration | None) -> str:
-        level_str = LevelStr(0 if exploration is None else exploration.offerings[0].level).translate(
-            self._translator, self.locale
-        )
+        level_str = LevelStr(0 if exploration is None else exploration.offerings[0].level).translate(self.locale)
         if exploration is None:
             return f"{self._placeholder}: {level_str}"
         return f"{exploration.offerings[0].name}: {level_str}"
@@ -66,11 +64,7 @@ class ExplorationCard:
     def _draw_waypoint_card(self) -> Image.Image:
         im = self._get_card("waypoint")
         drawer = Drawer(
-            ImageDraw.Draw(im),
-            folder="gi-exploration",
-            dark_mode=self._dark_mode,
-            locale=self._drawer.locale,
-            translator=self._drawer.translator,
+            ImageDraw.Draw(im), folder="gi-exploration", dark_mode=self._dark_mode, locale=self._drawer.locale
         )
         self._write_title(LocaleStr(key="exploration.waypoints"), position=(35, 20), drawer=drawer)
 
@@ -86,11 +80,7 @@ class ExplorationCard:
     def _draw_chest_card(self) -> Image.Image:
         im = self._get_card("chest")
         drawer = Drawer(
-            ImageDraw.Draw(im),
-            folder="gi-exploration",
-            dark_mode=self._dark_mode,
-            locale=self._drawer.locale,
-            translator=self._drawer.translator,
+            ImageDraw.Draw(im), folder="gi-exploration", dark_mode=self._dark_mode, locale=self._drawer.locale
         )
         self._write_title(LocaleStr(key="exploration.chests"), position=(21, 20), drawer=drawer)
 
@@ -120,11 +110,7 @@ class ExplorationCard:
     ) -> Image.Image:
         im = self._get_card(name)
         drawer = Drawer(
-            ImageDraw.Draw(im),
-            folder="gi-exploration",
-            dark_mode=self._dark_mode,
-            locale=self._drawer.locale,
-            translator=self._drawer.translator,
+            ImageDraw.Draw(im), folder="gi-exploration", dark_mode=self._dark_mode, locale=self._drawer.locale
         )
         self._write_title(
             self._placeholder if exploration is None else exploration.name, position=(34, 23), drawer=drawer
@@ -216,9 +202,7 @@ class ExplorationCard:
     def _draw_placeholder_card(self) -> Image.Image:
         im = self._get_card("placeholder")
         draw = ImageDraw.Draw(im)
-        drawer = Drawer(
-            draw, folder="gi-exploration", dark_mode=self._dark_mode, locale=self.locale, translator=self._translator
-        )
+        drawer = Drawer(draw, folder="gi-exploration", dark_mode=self._dark_mode, locale=self.locale)
         self._write_title(self._placeholder, position=(34, 23), drawer=drawer)
         self._write_small_text(LocaleStr(key="exploration.placeholder"), position=(35, 113), drawer=drawer)
         self._write_small_text(LocaleStr(key="exploration.placeholder_quote"), position=(34, 181), drawer=drawer)
@@ -317,9 +301,7 @@ class ExplorationCard:
         mode_str = "dark" if self._dark_mode else "light"
         self._im = Drawer.open_image(f"hoyo-buddy-assets/assets/gi-exploration/background_{mode_str}.png")
         draw = ImageDraw.Draw(self._im)
-        self._drawer = Drawer(
-            draw, folder="gi-exploration", dark_mode=self._dark_mode, locale=self.locale, translator=self._translator
-        )
+        self._drawer = Drawer(draw, folder="gi-exploration", dark_mode=self._dark_mode, locale=self.locale)
 
         self._drawer.write(LocaleStr(key="exploration.title"), position=(114, 81), size=72, style="bold")
         shadow_offset = 5

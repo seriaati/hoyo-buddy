@@ -25,7 +25,7 @@ class WeekBossReminder(Button[NotesView]):
         notify = await NotesNotify.get_or_none(account=self.view._account, type=notify_type)
 
         modal = TypeFourModal(notify, title=LocaleStr(key="week_boss_modal.title"), min_notify_interval=30)
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
 

@@ -15,15 +15,12 @@ from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from hoyo_buddy.embeds import DefaultEmbed
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 
 class ArtifactSetUI(View):
-    def __init__(
-        self, artifact_set_id: str, *, hakushin: bool, author: User | Member, locale: Locale, translator: Translator
-    ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, artifact_set_id: str, *, hakushin: bool, author: User | Member, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
         self._artifact_id = artifact_set_id
         self._artifact_embeds: dict[str, DefaultEmbed] = {}
 
@@ -41,13 +38,13 @@ class ArtifactSetUI(View):
             async with hakushin.HakushinAPI(hakushin.Game.GI, locale_to_hakushin_lang(self.locale)) as api:
                 artifact_set_detail = await api.fetch_artifact_set_detail(artifact_id)
 
-                translator = HakushinTranslator(self.locale, self.translator)
+                translator = HakushinTranslator(self.locale)
                 self._artifact_embeds = {
                     pos: translator.get_artifact_embed(artifact_set_detail, artifact)
                     for pos, artifact in artifact_set_detail.parts.items()
                 }
         else:
-            async with AmbrAPIClient(self.locale, self.translator) as api:
+            async with AmbrAPIClient(self.locale) as api:
                 artifact_set_detail = await api.fetch_artifact_set_detail(artifact_id)
 
                 self._artifact_embeds = {

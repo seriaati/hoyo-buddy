@@ -32,7 +32,6 @@ if TYPE_CHECKING:
     import aiohttp
 
     from hoyo_buddy.db.models import HoyoAccount
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
     from hoyo_buddy.ui.hoyo.notes.modals.type_five import TypeFiveModal
 
@@ -45,16 +44,8 @@ NotesWithCard: TypeAlias = genshin.models.Notes | genshin.models.StarRailNote | 
 
 
 class NotesView(View):
-    def __init__(
-        self,
-        account: HoyoAccount,
-        dark_mode: bool,
-        *,
-        author: User | Member | None,
-        locale: Locale,
-        translator: Translator,
-    ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, account: HoyoAccount, dark_mode: bool, *, author: User | Member | None, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
         self._account = account
         self._dark_mode = dark_mode
         self.bytes_obj: io.BytesIO | None = None
@@ -128,7 +119,7 @@ class NotesView(View):
         )
 
     async def _get_reminder_embed(self) -> DefaultEmbed:
-        embed = DefaultEmbed(self.locale, self.translator, title=LocaleStr(key="reminder_settings_title"))
+        embed = DefaultEmbed(self.locale, title=LocaleStr(key="reminder_settings_title"))
 
         if self._account.game is Game.GENSHIN:
             resin_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.RESIN)
@@ -428,7 +419,6 @@ class NotesView(View):
                     loop=loop,
                 ),
                 notes,
-                self.translator,
             )
         if isinstance(notes, genshin.models.ZZZNotes):
             return await draw_zzz_notes_card(
@@ -441,7 +431,6 @@ class NotesView(View):
                     loop=loop,
                 ),
                 notes,
-                self.translator,
             )
         return await draw_hsr_notes_card(
             DrawInput(
@@ -453,7 +442,6 @@ class NotesView(View):
                 loop=loop,
             ),
             notes,
-            self.translator,
         )
 
     def _get_notes_embed(
@@ -463,7 +451,7 @@ class NotesView(View):
         | genshin.models.ZZZNotes
         | genshin.models.HonkaiNotes,
     ) -> DefaultEmbed:
-        embed = DefaultEmbed(self.locale, self.translator)
+        embed = DefaultEmbed(self.locale)
 
         if isinstance(notes, genshin.models.Notes):
             if notes.remaining_resin_recovery_time.total_seconds() > 0:

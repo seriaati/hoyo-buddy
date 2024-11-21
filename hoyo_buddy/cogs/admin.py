@@ -14,6 +14,7 @@ from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.db.models import CardSettings, CommandMetric, HoyoAccount, Settings, User
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.enums import Game, LeaderboardType
+from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import upload_image
 
 from ..constants import GI_UID_PREFIXES
@@ -104,12 +105,12 @@ class Admin(commands.Cog):
             raise
 
         await write_json("hoyo_buddy/bot/data/synced_commands.json", {c.name: c.id for c in synced_commands})
-        await self.bot.translator.load_synced_commands_json()
+        await translator.load_synced_commands_json()
         await message.edit(content=f"Synced {len(synced_commands)} commands.")
 
     @commands.command(name="fetch-source-strings", aliases=["fss"])
     async def fetch_source_strings_command(self, ctx: commands.Context) -> Any:
-        await self.bot.translator.load_l10n_files()
+        await translator.load_l10n_files()
         await ctx.send(content="Fetched source strings.")
 
     @commands.command(name="run-tasks", aliases=["rt"])

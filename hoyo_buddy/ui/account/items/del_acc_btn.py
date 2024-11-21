@@ -54,7 +54,6 @@ class DeleteAccountButton(Button[AccountManager]):
 
         embed = DefaultEmbed(
             self.view.locale,
-            self.view.translator,
             title=LocaleStr(key="account_deleted_title"),
             description=LocaleStr(key="account_deleted_description", account=str(account)),
         )

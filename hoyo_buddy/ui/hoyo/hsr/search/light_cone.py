@@ -19,15 +19,12 @@ if TYPE_CHECKING:
     from hakushin.models.hsr import LightConeDetail as HakushinLCDetail
     from yatta import LightConeDetail
 
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 
 class LightConeUI(View):
-    def __init__(
-        self, light_cone_id: str, *, hakushin: bool, author: User | Member, locale: Locale, translator: Translator
-    ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, light_cone_id: str, *, hakushin: bool, author: User | Member, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
 
         self._light_cone_id = light_cone_id
         self._light_cone_level = 80
@@ -42,7 +39,7 @@ class LightConeUI(View):
 
     async def _fetch_embed(self) -> DefaultEmbed:
         if self._hakushin:
-            async with YattaAPIClient(self.locale, self.translator) as api:
+            async with YattaAPIClient(self.locale) as api:
                 manual_avatar = await api.fetch_manual_avatar()
 
             async with hakushin.HakushinAPI(hakushin.Game.HSR, locale_to_hakushin_lang(self.locale)) as api:
@@ -54,7 +51,7 @@ class LightConeUI(View):
                 lc_detail = await api.fetch_light_cone_detail(light_cone_id)
 
             self._lc_detail = lc_detail
-            translator = HakushinTranslator(self.locale, self.translator)
+            translator = HakushinTranslator(self.locale)
             embed = translator.get_light_cone_embed(
                 lc_detail,
                 self._light_cone_level,
@@ -63,7 +60,7 @@ class LightConeUI(View):
                 locale_to_hakushin_lang(self.locale),
             )
         else:
-            async with YattaAPIClient(self.locale, self.translator) as api:
+            async with YattaAPIClient(self.locale) as api:
                 try:
                     light_cone_id = int(self._light_cone_id)
                 except ValueError:
@@ -102,7 +99,7 @@ class EnterLightConeLevel(Button[LightConeUI]):
 
     async def callback(self, i: Interaction) -> Any:
         modal = LightConeLevelModal(title=LocaleStr(key="weapon_level.modal.title"))
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
         incomplete = modal.incomplete
@@ -140,9 +137,6 @@ class ShowStoryButton(Button[LightConeUI]):
     async def callback(self, i: Interaction) -> Any:
         assert self.view._lc_detail is not None
         embed = DefaultEmbed(
-            self.view.locale,
-            self.view.translator,
-            title=self.view._lc_detail.name,
-            description=self.view._lc_detail.description,
+            self.view.locale, title=self.view._lc_detail.name, description=self.view._lc_detail.description
         )
         await i.response.send_message(embed=embed, ephemeral=True)

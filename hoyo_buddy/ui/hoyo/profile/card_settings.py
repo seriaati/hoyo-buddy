@@ -24,7 +24,6 @@ if TYPE_CHECKING:
 
     from discord import Locale, Member, User
 
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
     from .view import Character
@@ -95,9 +94,8 @@ class CardSettingsView(View):
         *,
         author: User | Member,
         locale: Locale,
-        translator: Translator,
     ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+        super().__init__(author=author, locale=locale)
 
         self._characters = characters
         self._user_id = author.id
@@ -169,11 +167,10 @@ class CardSettingsView(View):
         color = card_settings.custom_primary_color or get_default_color(character, self._card_data)
         embed = Embed(
             locale=self.locale,
-            translator=self.translator,
             title=LocaleStr(key="card_settings.modifying_for", name=character.name),
             color=int(color.lstrip("#"), 16) if color is not None else 6649080,
         )
-        default_str = LocaleStr(key="card_settings.color_default").translate(self.translator, self.locale)
+        default_str = LocaleStr(key="card_settings.color_default").translate(self.locale)
         if color is not None:
             value = self._get_color_markdown(color)
             if card_settings.custom_primary_color is None:
@@ -261,7 +258,7 @@ class PrimaryColorButton(Button[CardSettingsView]):
     async def callback(self, i: Interaction) -> None:
         # Open the color modal
         modal = PrimaryColorModal(self.current_color)
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
         if modal.incomplete:
@@ -360,7 +357,6 @@ class SetCurTempAsDefaultButton(Button[CardSettingsView]):
 
         embed = DefaultEmbed(
             self.view.locale,
-            self.view.translator,
             title=LocaleStr(key="set_cur_temp_as_default.done"),
             description=LocaleStr(
                 key="set_cur_temp_as_default.done_desc",

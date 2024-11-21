@@ -404,7 +404,7 @@ class GachaCommand:
 
     async def run_import(self, i: Interaction, account: HoyoAccount) -> None:
         locale = await get_locale(i)
-        view = GachaImportView(account, author=i.user, locale=locale, translator=i.client.translator)
+        view = GachaImportView(account, author=i.user, locale=locale)
         await view.start(i)
 
     async def run_upload(
@@ -413,7 +413,6 @@ class GachaCommand:
         locale = await get_locale(i)
         embed = DefaultEmbed(
             locale,
-            i.client.translator,
             title=LocaleStr(key="gacha_import_loading_embed_title"),
             description=LocaleStr(key="gacha_import_loading_embed_description", loading_emoji=LOADING),
         ).add_acc_info(account)
@@ -433,14 +432,13 @@ class GachaCommand:
             else:  # SRGF
                 count = await self._srgf_import(i, account=account, file=file)
         except Exception as e:
-            error_embed, _ = get_error_embed(e, locale, i.client.translator)
+            error_embed, _ = get_error_embed(e, locale)
             await i.edit_original_response(embed=error_embed)
         else:
             await update_gacha_nums(i.client.pool, account=account)
 
             embed = DefaultEmbed(
                 locale,
-                i.client.translator,
                 title=LocaleStr(key="gacha_import_success_title"),
                 description=LocaleStr(key="gacha_import_success_message", count=count),
             ).add_acc_info(account)
@@ -448,10 +446,10 @@ class GachaCommand:
 
     async def run_view(self, i: Interaction, account: HoyoAccount) -> None:
         locale = await get_locale(i)
-        view = ViewGachaLogView(account, author=i.user, locale=locale, translator=i.client.translator)
+        view = ViewGachaLogView(account, author=i.user, locale=locale)
         await view.start(i)
 
     async def run_manage(self, i: Interaction, account: HoyoAccount) -> None:
         locale = await get_locale(i)
-        view = GachaLogManageView(account, author=i.user, locale=locale, translator=i.client.translator)
+        view = GachaLogManageView(account, author=i.user, locale=locale)
         await view.start(i)

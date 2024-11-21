@@ -13,5 +13,5 @@ class EventsCommand:
     @staticmethod
     async def run(i: Interaction, *, account: HoyoAccount) -> None:
         locale = await get_locale(i)
-        view = EventsView(account, author=i.user, locale=locale, translator=i.client.translator)
+        view = EventsView(account, author=i.user, locale=locale)
         await view.start(i)

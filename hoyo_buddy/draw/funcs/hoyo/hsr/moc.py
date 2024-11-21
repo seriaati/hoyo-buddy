@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
 from hoyo_buddy.enums import ChallengeType
-from hoyo_buddy.l10n import EnumStr, LocaleStr, Translator
+from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.utils import get_floor_difficulty
 
 if TYPE_CHECKING:
@@ -16,14 +16,11 @@ if TYPE_CHECKING:
 
 
 class MOCCard:
-    def __init__(
-        self, data: StarRailChallenge, season: StarRailChallengeSeason, locale: str, translator: Translator
-    ) -> None:
+    def __init__(self, data: StarRailChallenge, season: StarRailChallengeSeason, locale: str) -> None:
         self._data = data
         self._season = season
 
         self._locale = locale
-        self._translator = translator
 
     @property
     def locale(self) -> Locale:
@@ -65,9 +62,7 @@ class MOCCard:
             block.paste(empty, (27, 28), empty)
             return block
 
-        drawer = Drawer(
-            ImageDraw.Draw(block), folder="moc", dark_mode=True, locale=self.locale, translator=self._translator
-        )
+        drawer = Drawer(ImageDraw.Draw(block), folder="moc", dark_mode=True, locale=self.locale)
 
         icon = drawer.open_static(chara.icon)
         icon = drawer.resize_crop(icon, (120, 120))
@@ -87,9 +82,7 @@ class MOCCard:
 
     def _draw_stage(self, stage: StarRailFloor) -> Image.Image:
         im = Image.new("RGBA", (639, 421), TRANSPARENT)
-        drawer = Drawer(
-            ImageDraw.Draw(im), folder="moc", dark_mode=True, locale=self.locale, translator=self._translator
-        )
+        drawer = Drawer(ImageDraw.Draw(im), folder="moc", dark_mode=True, locale=self.locale)
 
         stage_name = get_floor_difficulty(stage.name, self._season.name)
         name_tbox = drawer.write(stage_name, size=44, position=(0, 0), style="bold", color=WHITE)
@@ -136,9 +129,7 @@ class MOCCard:
 
     def draw(self) -> BytesIO:
         self._im = Drawer.open_image("hoyo-buddy-assets/assets/moc/moc.png")
-        self._drawer = Drawer(
-            ImageDraw.Draw(self._im), locale=self.locale, folder="moc", dark_mode=True, translator=self._translator
-        )
+        self._drawer = Drawer(ImageDraw.Draw(self._im), locale=self.locale, folder="moc", dark_mode=True)
 
         self._write_title()
         self._write_moc_name()

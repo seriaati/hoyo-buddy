@@ -11,7 +11,7 @@ from genshin.models.zzz.character import ZZZFullAgent
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import WHITE, Drawer
-from hoyo_buddy.l10n import LevelStr, Translator
+from hoyo_buddy.l10n import LevelStr
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -29,7 +29,6 @@ def draw_agent_small_card(
     *,
     dark_mode: bool,
     locale: str,
-    translator: Translator,
     mask: Image.Image,
     card: Image.Image,
     circle: Image.Image,
@@ -39,9 +38,7 @@ def draw_agent_small_card(
 ) -> Image.Image:
     im = card.copy()
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(
-        draw, folder="zzz-characters", dark_mode=dark_mode, locale=discord.Locale(locale), translator=translator
-    )
+    drawer = Drawer(draw, folder="zzz-characters", dark_mode=dark_mode, locale=discord.Locale(locale))
 
     # Banner icon
     icon = drawer.open_static(agent.banner_icon, size=(880, 458))
@@ -92,9 +89,7 @@ def draw_agent_small_card(
     return im
 
 
-def draw_big_agent_card(
-    agents: Sequence[ZZZFullAgent | UnownedZZZCharacter], dark_mode: bool, locale: str, translator: Translator
-) -> BytesIO:
+def draw_big_agent_card(agents: Sequence[ZZZFullAgent | UnownedZZZCharacter], dark_mode: bool, locale: str) -> BytesIO:
     asset_path = "hoyo-buddy-assets/assets/zzz-characters"
     theme = "dark" if dark_mode else "light"
 
@@ -111,7 +106,6 @@ def draw_big_agent_card(
             agent,
             dark_mode=dark_mode,
             locale=locale,
-            translator=translator,
             mask=mask,
             card=card,
             circle=circle,

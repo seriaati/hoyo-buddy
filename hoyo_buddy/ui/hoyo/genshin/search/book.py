@@ -16,22 +16,19 @@ if TYPE_CHECKING:
     from ambr.models import BookDetail, BookVolume
 
     from hoyo_buddy.embeds import DefaultEmbed
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 
 class BookVolumeUI(View):
-    def __init__(
-        self, book: BookDetail, ambr_api_lang: str, *, author: User | Member, locale: Locale, translator: Translator
-    ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, book: BookDetail, ambr_api_lang: str, *, author: User | Member, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
 
         self.book = book
         self.selected_volume = book.volumes[0]
         self.ambr_api_lang = ambr_api_lang
 
     async def _fetch_volume_embed(self) -> DefaultEmbed:
-        async with AmbrAPIClient(self.locale, self.translator) as api:
+        async with AmbrAPIClient(self.locale) as api:
             readable = await api.fetch_readable(f"Book{self.selected_volume.story_id}")
             return api.get_volume_embed(self.book, self.selected_volume, readable)
 

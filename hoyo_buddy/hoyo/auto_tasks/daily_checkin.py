@@ -134,8 +134,6 @@ class DailyCheckin:
     @classmethod
     async def _daily_checkin(cls, api_name: Literal["VERCEL", "RENDER", "FLY", "LOCAL"], account: HoyoAccount) -> Embed:
         session = cls._bot.session
-        translator = cls._bot.translator
-
         await account.fetch_related("user", "user__settings")
         locale = account.user.settings.locale or discord.Locale.american_english
         client = account.client
@@ -144,7 +142,7 @@ class DailyCheckin:
         try:
             updated_cookies = await client.update_cookies_for_checkin()
         except Exception as e:
-            embed, recognized = get_error_embed(e, locale, translator)
+            embed, recognized = get_error_embed(e, locale)
             if not recognized:
                 cls._bot.capture_exception(e)
 
@@ -159,13 +157,13 @@ class DailyCheckin:
             except Exception as e:
                 if isinstance(e, genshin.DailyGeetestTriggered):
                     await User.filter(id=account.user.id).update(temp_data={"geetest": e.gt, "challenge": e.challenge})
-                embed, recognized = get_error_embed(e, locale, translator)
+                embed, recognized = get_error_embed(e, locale)
                 if not recognized:
                     cls._bot.capture_exception(e)
 
                 embed.add_acc_info(account, blur=False)
             else:
-                embed = client.get_daily_reward_embed(reward, locale, translator, blur=False)
+                embed = client.get_daily_reward_embed(reward, locale, blur=False)
             return embed
 
         # API check-in
@@ -191,13 +189,13 @@ class DailyCheckin:
                     reward = next((r for r in monthly_rewards if r.icon == data["data"]["icon"]), None)
                     if reward is None:
                         reward = genshin.models.DailyReward(**data["data"])
-                    embed = client.get_daily_reward_embed(reward, locale, translator, blur=False)
+                    embed = client.get_daily_reward_embed(reward, locale, blur=False)
                 elif resp.status == 400:
                     if data["retcode"] == -9999:
                         await User.filter(id=account.user.id).update(temp_data=data["data"])
 
                     e = genshin.GenshinException(data)
-                    embed, recognized = get_error_embed(e, locale, translator)
+                    embed, recognized = get_error_embed(e, locale)
                     if not recognized:
                         cls._bot.capture_exception(e)
 

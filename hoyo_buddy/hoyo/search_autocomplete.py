@@ -18,7 +18,6 @@ if TYPE_CHECKING:
     import aiohttp
     from discord import Locale
 
-    from ..l10n import Translator
     from ..types import AutocompleteChoices, BetaAutocompleteChoices, ItemCategory, Tasks
 
 
@@ -38,7 +37,6 @@ class AutocompleteSetup:
     _beta_id_to_category: ClassVar[dict[str, str]] = {}
     """Item ID to ItemCategory.value."""
     _category_beta_ids: ClassVar[dict[tuple[Game, ItemCategory], list[int]]] = {}
-    _translator: ClassVar[Translator]
     _tasks: ClassVar[Tasks] = defaultdict(lambda: defaultdict(dict))
 
     @classmethod
@@ -134,7 +132,7 @@ class AutocompleteSetup:
         game = Game.GENSHIN
 
         for locale in LOCALE_TO_AMBR_LANG:
-            api = ambr.AmbrAPIClient(locale, cls._translator, session=session)
+            api = ambr.AmbrAPIClient(locale, session=session)
             for category in ambr.ItemCategory:
                 task = cls._get_ambr_task(api, category, tg)
                 if task is not None:
@@ -146,7 +144,7 @@ class AutocompleteSetup:
         game = Game.STARRAIL
 
         for locale in LOCALE_TO_YATTA_LANG:
-            api = yatta.YattaAPIClient(locale, cls._translator, session=session)
+            api = yatta.YattaAPIClient(locale, session=session)
             for category in yatta.ItemCategory:
                 task = cls._get_yatta_task(api, category, tg)
                 cls._tasks[game][category][locale] = task
@@ -189,10 +187,8 @@ class AutocompleteSetup:
 
     @classmethod
     async def start(
-        cls, translator: Translator, session: aiohttp.ClientSession
+        cls, session: aiohttp.ClientSession
     ) -> tuple[AutocompleteChoices, dict[str, str], BetaAutocompleteChoices]:
-        cls._translator = translator
-
         async with asyncio.TaskGroup() as tg:
             tg.create_task(cls._setup_ambr(tg, session))
             tg.create_task(cls._setup_yatta(tg, session))

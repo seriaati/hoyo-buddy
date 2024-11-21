@@ -25,7 +25,7 @@ class ReservedTBPReminder(Button[NotesView]):
         modal = TypeOneModal(
             notify, title=LocaleStr(key="rtbp_reminder_modal.title"), threshold_max_value=2400, min_notify_interval=30
         )
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
 

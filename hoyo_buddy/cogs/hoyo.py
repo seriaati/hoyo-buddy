@@ -67,13 +67,7 @@ class Hoyo(commands.Cog):
             user.id, (Game.GENSHIN, Game.STARRAIL, Game.HONKAI, Game.ZZZ, Game.TOT)
         )
         settings = await Settings.get(user_id=i.user.id)
-        view = CheckInUI(
-            account_,
-            dark_mode=settings.dark_mode,
-            author=i.user,
-            locale=settings.locale or i.locale,
-            translator=self.bot.translator,
-        )
+        view = CheckInUI(account_, dark_mode=settings.dark_mode, author=i.user, locale=settings.locale or i.locale)
         await view.start(i)
 
     @app_commands.command(
@@ -105,13 +99,7 @@ class Hoyo(commands.Cog):
         account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI))
         settings = await Settings.get(user_id=i.user.id)
 
-        view = NotesView(
-            account_,
-            settings.dark_mode,
-            author=i.user,
-            locale=settings.locale or i.locale,
-            translator=self.bot.translator,
-        )
+        view = NotesView(account_, settings.dark_mode, author=i.user, locale=settings.locale or i.locale)
         await view.start(i)
 
     @app_commands.command(
@@ -144,12 +132,12 @@ class Hoyo(commands.Cog):
         settings = await Settings.get(user_id=i.user.id)
 
         if account_.game is Game.GENSHIN:
-            async with AmbrAPIClient(translator=self.bot.translator) as client:
+            async with AmbrAPIClient() as client:
                 element_char_counts = await client.fetch_element_char_counts()
                 path_char_counts = {}
                 faction_char_counts = {}
         elif account_.game is Game.STARRAIL:
-            async with YattaAPIClient(translator=self.bot.translator) as client:
+            async with YattaAPIClient() as client:
                 element_char_counts = await client.fetch_element_char_counts()
                 path_char_counts = await client.fetch_path_char_counts()
                 faction_char_counts = {}
@@ -182,7 +170,6 @@ class Hoyo(commands.Cog):
             faction_char_counts,
             author=i.user,
             locale=settings.locale or i.locale,
-            translator=self.bot.translator,
         )
         await view.start(i)
 
@@ -261,9 +248,8 @@ class Hoyo(commands.Cog):
                 loop=i.client.loop,
             ),
             genshin_user,
-            self.bot.translator,
         )
-        embed = DefaultEmbed(locale, self.bot.translator).add_acc_info(account_)
+        embed = DefaultEmbed(locale).add_acc_info(account_)
         embed.set_image(url="attachment://exploration.png")
         await i.followup.send(embed=embed, files=[file_], content=await get_dyk(i))
 
@@ -301,7 +287,7 @@ class Hoyo(commands.Cog):
         available_codes = await RedeemUI.fetch_available_codes(
             i.client.session, game=HB_GAME_TO_GPY_GAME[account_.game]
         )
-        view = RedeemUI(account_, available_codes, author=i.user, locale=locale, translator=self.bot.translator)
+        view = RedeemUI(account_, available_codes, author=i.user, locale=locale)
         await i.followup.send(embed=view.start_embed, view=view, content=await get_dyk(i))
         view.message = await i.original_response()
 

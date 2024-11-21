@@ -19,7 +19,6 @@ if TYPE_CHECKING:
     from hoyo_buddy.models import HoyolabGICharacter
 
     from ..enums import Game
-    from ..l10n import Translator
     from ..models import HoyolabHSRCharacter
 
 
@@ -33,7 +32,6 @@ class ProfileCommand:
         character_ids: list[str | None],
         locale: discord.Locale,
         user: discord.User | discord.Member,
-        translator: Translator,
     ) -> None:
         self._uid = uid
         self._game = game
@@ -41,7 +39,6 @@ class ProfileCommand:
         self._character_ids = list({id_ for id_ in character_ids if id_ is not None})
         self._locale = locale
         self._user = user
-        self._translator = translator
 
     async def run_genshin(self) -> ProfileView:
         hoyolab_characters: list[HoyolabGICharacter] = []
@@ -90,7 +87,6 @@ class ProfileCommand:
             owner=enka_data.owner if enka_data is not None else None,
             author=self._user,
             locale=self._locale,
-            translator=self._translator,
         )
 
     async def run_hsr(self) -> ProfileView:
@@ -140,7 +136,6 @@ class ProfileCommand:
             owner=enka_data.owner if enka_data is not None else None,
             author=self._user,
             locale=self._locale,
-            translator=self._translator,
         )
 
     async def run_zzz(self) -> ProfileView:
@@ -164,5 +159,4 @@ class ProfileCommand:
             zzz_user=zzz_user,
             author=self._user,
             locale=self._locale,
-            translator=self._translator,
         )

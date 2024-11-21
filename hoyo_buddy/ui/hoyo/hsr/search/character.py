@@ -17,15 +17,12 @@ if TYPE_CHECKING:
     from discord import Locale, Member, User
 
     from hoyo_buddy.embeds import DefaultEmbed
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 
 class CharacterUI(View):
-    def __init__(
-        self, character_id: int, *, hakushin: bool, author: User | Member, locale: Locale, translator: Translator
-    ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, character_id: int, *, hakushin: bool, author: User | Member, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
 
         self.selected_page = 0
         self._character_id = character_id
@@ -50,7 +47,7 @@ class CharacterUI(View):
         self._manual_avatar: dict[str, Any] | None = None
 
         self._hakushin = hakushin
-        self._hakushin_translator = HakushinTranslator(self.locale, self.translator)
+        self._hakushin_translator = HakushinTranslator(self.locale)
 
     @staticmethod
     def _convert_manual_avatar(manual_avatar: dict[str, dict[str, str]]) -> dict[str, str]:
@@ -60,7 +57,7 @@ class CharacterUI(View):
         await i.response.defer(ephemeral=ephemeral(i))
 
         if self._hakushin:
-            async with YattaAPIClient(self.locale, self.translator) as api:
+            async with YattaAPIClient(self.locale) as api:
                 manual_avatar = await api.fetch_manual_avatar()
 
             async with hakushin.HakushinAPI(hakushin.Game.HSR, locale_to_hakushin_lang(self.locale)) as api:
@@ -86,7 +83,7 @@ class CharacterUI(View):
                 for eidolon in character_detail.eidolons.values()
             ]
         else:
-            async with YattaAPIClient(self.locale, self.translator) as api:
+            async with YattaAPIClient(self.locale) as api:
                 character_detail = await api.fetch_character_detail(self._character_id)
                 manual_avatar = await api.fetch_manual_avatar()
 
@@ -222,7 +219,7 @@ class CharacterUI(View):
                     skills = list(self._character_detail.skills.values())
                     for index, skill in enumerate(skills):
                         type_str_key = HAKUSHIN_HSR_SKILL_TYPE_NAMES.get(skill.type or "Talent")
-                        type_str = LocaleStr(key=type_str_key).translate(self.translator, self.locale)
+                        type_str = LocaleStr(key=type_str_key).translate(self.locale)
                         options.append(
                             SelectOption(
                                 label=f"{type_str}: {skill.name}",
@@ -311,7 +308,7 @@ class EnterSkilLevel(Button[CharacterUI]):
 
     async def callback(self, i: Interaction) -> Any:
         modal = SkillLevelModal(self._skill_max_level)
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
         incomplete = modal.incomplete
@@ -324,7 +321,7 @@ class EnterSkilLevel(Button[CharacterUI]):
         self.view._main_skill_levels[self.view._main_skill_index] = int(modal.level.value)
 
         if isinstance(self.view._character_detail, yatta.CharacterDetail):
-            async with YattaAPIClient(self.view.locale, self.view.translator) as api:
+            async with YattaAPIClient(self.view.locale) as api:
                 skills = [sk for skill in self.view._character_detail.traces.main_skills for sk in skill.skill_list]
                 self.view._main_skill_embeds[self.view._main_skill_index] = api.get_character_main_skill_embed(
                     skills[self.view._main_skill_index], self.view._main_skill_levels[self.view._main_skill_index]
@@ -350,7 +347,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
 
     async def callback(self, i: Interaction) -> Any:
         modal = CharacterLevelModal(title=LocaleStr(key="chara_level.modal.title"))
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
         incomplete = modal.incomplete
@@ -363,7 +360,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
         self.view._character_level = int(modal.level.value)
 
         if isinstance(self.view._character_detail, yatta.CharacterDetail):
-            async with YattaAPIClient(self.view.locale, self.view.translator) as api:
+            async with YattaAPIClient(self.view.locale) as api:
                 self.view._character_embed = api.get_character_details_embed(
                     self.view._character_detail, self.view._character_level, self.view._manual_avatar
                 )

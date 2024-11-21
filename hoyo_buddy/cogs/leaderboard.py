@@ -106,20 +106,13 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             raise LeaderboardNotFoundError
 
         lb_embed = (
-            DefaultEmbed(locale, self.bot.translator, title=category.name)
+            DefaultEmbed(locale, title=category.name)
             .set_author(name=f"{category.character_name} | {weapon.name} R{weapon.refinement}", icon_url=weapon.icon)
             .set_thumbnail(url=category.character_icon)
             .set_footer(text=LocaleStr(key="akasha_total_entries", total=category.count))
         )
         view = AkashaLbPaginator(
-            calculation_id,
-            lb_embed,
-            you,
-            category.count,
-            category.details,
-            author=i.user,
-            locale=locale,
-            translator=self.bot.translator,
+            calculation_id, lb_embed, you, category.count, category.details, author=i.user, locale=locale
         )
         await view.start(i)
 

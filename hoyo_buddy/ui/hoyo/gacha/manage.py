@@ -13,7 +13,7 @@ from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_dyk
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import DELETE, EXPORT
 from hoyo_buddy.enums import Game
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.components import Button, View
 from hoyo_buddy.utils import ephemeral
 
@@ -22,8 +22,8 @@ if TYPE_CHECKING:
 
 
 class GachaLogManageView(View):
-    def __init__(self, account: HoyoAccount, *, author: User, locale: Locale, translator: Translator) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, account: HoyoAccount, *, author: User, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
         self.account = account
 
     async def start(self, i: Interaction) -> Any:
@@ -31,7 +31,6 @@ class GachaLogManageView(View):
 
         embed = DefaultEmbed(
             self.locale,
-            self.translator,
             title=LocaleStr(key="gacha_log_manage_embed_title"),
             description=LocaleStr(key="gacha_log_manage_embed_description", count=log_count),
         )
@@ -50,7 +49,6 @@ class DeleteButton(Button[GachaLogManageView]):
     async def callback(self, i: Interaction) -> Any:
         embed = ErrorEmbed(
             self.view.locale,
-            self.view.translator,
             title=LocaleStr(key="gacha_log_delete_confirm_embed_title"),
             description=LocaleStr(key="gacha_log_delete_confirm_embed_description"),
         )
@@ -72,7 +70,6 @@ class DeleteConfirmButton(Button[GachaLogManageView]):
         await GachaHistory.filter(account=self.view.account).delete()
         embed = ErrorEmbed(
             self.view.locale,
-            self.view.translator,
             title=LocaleStr(key="gacha_log_delete_done_embed_title"),
             description=LocaleStr(key="gacha_log_delete_done_embed_description"),
         )

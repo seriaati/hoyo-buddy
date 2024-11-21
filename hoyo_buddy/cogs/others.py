@@ -53,7 +53,6 @@ class Others(commands.Cog):
         locale = settings.locale or i.locale
         embed = DefaultEmbed(
             locale=locale,
-            translator=self.bot.translator,
             title=f"{self.bot.user.name if self.bot.user is not None else 'Hoyo Buddy'} {self.bot.version}",
             description=LocaleStr(key="about_embed.description"),
         )
@@ -92,7 +91,7 @@ class Others(commands.Cog):
         embed.add_field(name=LocaleStr(key="about_command.uptime"), value=uptime)
 
         # url buttons
-        view = View(locale=locale, translator=self.bot.translator, author=None)
+        view = View(locale=locale, author=None)
         view.add_item(Button(label="GitHub", url=self.repo_url, emoji=GITHUB_WHITE_ICON, row=0))
         view.add_item(
             Button(

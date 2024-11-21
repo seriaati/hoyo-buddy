@@ -17,15 +17,12 @@ if TYPE_CHECKING:
     from discord import Locale, Member, User
 
     from hoyo_buddy.embeds import DefaultEmbed
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 
 class WeaponUI(View):
-    def __init__(
-        self, weapon_id: str, *, hakushin: bool, author: User | Member, locale: Locale, translator: Translator
-    ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, weapon_id: str, *, hakushin: bool, author: User | Member, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
 
         self.weapon_id = weapon_id
         self.weapon_level = 90
@@ -34,7 +31,7 @@ class WeaponUI(View):
         self.hakushin = hakushin
 
     async def _fetch_weapon_embed(self) -> DefaultEmbed:
-        async with AmbrAPIClient(self.locale, self.translator) as api:
+        async with AmbrAPIClient(self.locale) as api:
             try:
                 weapon_id = int(self.weapon_id)
             except ValueError:
@@ -49,7 +46,7 @@ class WeaponUI(View):
             return embed
 
     async def _fetch_hakushin_weapon_embed(self) -> DefaultEmbed:
-        async with AmbrAPIClient(self.locale, self.translator) as api:
+        async with AmbrAPIClient(self.locale) as api:
             manual_weapon = await api.fetch_manual_weapon()
 
         async with hakushin.HakushinAPI(hakushin.Game.GI, locale_to_hakushin_lang(self.locale)) as api:
@@ -60,7 +57,7 @@ class WeaponUI(View):
 
             weapon_detail = await api.fetch_weapon_detail(weapon_id)
 
-        translator = HakushinTranslator(self.locale, self.translator)
+        translator = HakushinTranslator(self.locale)
         embed = translator.get_weapon_embed(weapon_detail, self.weapon_level, self.refinement, manual_weapon)
         self.max_refinement = len(weapon_detail.refinments)
 
@@ -98,7 +95,7 @@ class EnterWeaponLevel(Button[WeaponUI]):
 
     async def callback(self, i: Interaction) -> Any:
         modal = WeaponLevelModal(title=LocaleStr(key="weapon_level.modal.title"))
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
         incomplete = modal.incomplete

@@ -28,9 +28,7 @@ class Settings(commands.Cog):
         await i.response.defer(ephemeral=ephemeral(i))
 
         settings = await UserSettings.get(user_id=i.user.id)
-        view = SettingsUI(
-            author=i.user, locale=settings.locale or i.locale, translator=self.bot.translator, settings=settings
-        )
+        view = SettingsUI(author=i.user, locale=settings.locale or i.locale, settings=settings)
         await i.followup.send(embed=view.get_embed(), file=view.get_brand_image_file(i.locale), view=view)
         view.message = await i.original_response()
 

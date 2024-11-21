@@ -61,9 +61,7 @@ class Farm(
         )
         uid = None if account is None else account.uid
 
-        view = FarmView(
-            uid, settings.dark_mode, author=i.user, locale=settings.locale or i.locale, translator=self.bot.translator
-        )
+        view = FarmView(uid, settings.dark_mode, author=i.user, locale=settings.locale or i.locale)
         await view.start(i)
 
     @app_commands.command(
@@ -143,17 +141,13 @@ class Farm(
     async def account_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         user: User = i.namespace.user
-        return await self.bot.get_account_choices(
-            user, i.user.id, current, locale, self.bot.translator, games=(Game.GENSHIN,)
-        )
+        return await self.bot.get_account_choices(user, i.user.id, current, locale, games=(Game.GENSHIN,))
 
     @farm_remove_command.autocomplete("account")
     async def account_with_id_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         user: User = i.namespace.user
-        return await self.bot.get_account_choices(
-            user, i.user.id, current, locale, self.bot.translator, games=(Game.GENSHIN,), show_id=True
-        )
+        return await self.bot.get_account_choices(user, i.user.id, current, locale, games=(Game.GENSHIN,), show_id=True)
 
     @farm_add_command.autocomplete("query")
     async def query_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:

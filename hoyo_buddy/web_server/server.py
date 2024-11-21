@@ -18,15 +18,13 @@ from hoyo_buddy.utils import get_discord_protocol_url
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from hoyo_buddy.l10n import Translator
 
 GT_V3_URL = "https://static.geetest.com/static/js/gt.0.5.0.js"
 GT_V4_URL = "https://static.geetest.com/v4/gt4.js"
 
 
 class GeetestWebServer:
-    def __init__(self, translator: Translator) -> None:
-        self.translator = translator
+    def __init__(self) -> None:
         self._login_template: str | None = None
         self._command_template: str | None = None
 

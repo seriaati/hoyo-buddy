@@ -11,7 +11,7 @@ from ...db.models import AccountNotifSettings, User, draw_locale, get_dyk
 from ...draw.main_funcs import draw_checkin_card
 from ...embeds import DefaultEmbed
 from ...enums import Platform
-from ...l10n import LocaleStr, Translator
+from ...l10n import LocaleStr
 from ...models import DrawInput, Reward
 from ...utils import ephemeral, get_now
 from ..components import Button, GoBackButton, ToggleButton, View
@@ -38,15 +38,9 @@ CHECK_IN_URLS = {
 
 class CheckInUI(View):
     def __init__(
-        self,
-        account: HoyoAccount,
-        dark_mode: bool,
-        *,
-        author: discord.User | discord.Member,
-        locale: discord.Locale,
-        translator: Translator,
+        self, account: HoyoAccount, dark_mode: bool, *, author: discord.User | discord.Member, locale: discord.Locale
     ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+        super().__init__(author=author, locale=locale)
         self.account = account
         self.client = account.client
         self.client.set_lang(locale)
@@ -124,7 +118,6 @@ class CheckInUI(View):
 
         embed = DefaultEmbed(
             self.locale,
-            self.translator,
             title=LocaleStr(key="daily_check_in"),
             description=LocaleStr(
                 key="daily_checkin_embed_description", day=info.claimed_rewards, missed=info.missed_rewards
@@ -170,7 +163,7 @@ class CheckInButton(Button[CheckInUI]):
         file_ = discord.File(self.view._bytes_obj, filename="check-in.png")
 
         await i.edit_original_response(embed=embed, attachments=[file_])
-        embed = client.get_daily_reward_embed(daily_reward, self.view.locale, self.view.translator, blur=True)
+        embed = client.get_daily_reward_embed(daily_reward, self.view.locale, blur=True)
         await i.followup.send(embed=embed)
 
 

@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import Game
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
     import genshin
@@ -20,13 +20,11 @@ class SpiralAbyssCard:
         data: genshin.models.SpiralAbyss,
         *,
         locale: str,
-        translator: Translator,
         character_icons: dict[str, str],
         character_ranks: dict[int, int],
     ) -> None:
         self._data = data
         self._locale = locale
-        self._translator = translator
         self._character_icons = character_icons
         self._character_ranks = character_ranks
 
@@ -84,9 +82,7 @@ class SpiralAbyssCard:
         img = self.drawer.open_asset(f"block/{character.rarity}_img.png")
         img_mask = self.drawer.open_asset("block/img_mask.png")
 
-        bk_drawer = Drawer(
-            ImageDraw.Draw(bk), folder="abyss", dark_mode=True, locale=Locale(self._locale), translator=self._translator
-        )
+        bk_drawer = Drawer(ImageDraw.Draw(bk), folder="abyss", dark_mode=True, locale=Locale(self._locale))
 
         icon = self.drawer.open_static(self._character_icons[str(character.id)], size=(116, 116))
         icon = self.drawer.mask_image_with_image(icon, img_mask)
@@ -160,9 +156,7 @@ class SpiralAbyssCard:
     def draw(self) -> BytesIO:
         path = "abyss_bg.png" if len(self._data.floors) > 2 else "abyss_bg_2_floors.png"
         self.im = im = Drawer.open_image(f"hoyo-buddy-assets/assets/abyss/{path}")
-        self.drawer = Drawer(
-            ImageDraw.Draw(im), folder="abyss", dark_mode=True, locale=Locale(self._locale), translator=self._translator
-        )
+        self.drawer = Drawer(ImageDraw.Draw(im), folder="abyss", dark_mode=True, locale=Locale(self._locale))
 
         self.write_title()
         self.write_damage_info()

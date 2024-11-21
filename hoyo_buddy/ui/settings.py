@@ -8,7 +8,7 @@ import discord
 from ..constants import HOYO_BUDDY_LOCALES
 from ..db.models import Settings
 from ..embeds import DefaultEmbed
-from ..l10n import LocaleStr, Translator
+from ..l10n import LocaleStr
 from .components import Select, SelectOption, ToggleButton, View
 
 if TYPE_CHECKING:
@@ -16,15 +16,8 @@ if TYPE_CHECKING:
 
 
 class SettingsUI(View):
-    def __init__(
-        self,
-        *,
-        author: discord.User | discord.Member,
-        locale: discord.Locale,
-        translator: Translator,
-        settings: Settings,
-    ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, *, author: discord.User | discord.Member, locale: discord.Locale, settings: Settings) -> None:
+        super().__init__(author=author, locale=locale)
         self.settings = settings
 
         self.add_item(LanguageSelector(self.settings.locale))
@@ -39,7 +32,7 @@ class SettingsUI(View):
         return filename
 
     def get_embed(self) -> DefaultEmbed:
-        embed = DefaultEmbed(self.locale, self.translator)
+        embed = DefaultEmbed(self.locale)
         embed.set_image(url="attachment://brand.png")
         return embed
 

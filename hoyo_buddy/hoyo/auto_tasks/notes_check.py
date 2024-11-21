@@ -59,20 +59,17 @@ class NotesChecker:
 
     @classmethod
     def _get_notify_error_embed(cls, err: Exception, locale: Locale) -> ErrorEmbed:
-        embed, recognized = get_error_embed(err, locale, cls._bot.translator)
+        embed, recognized = get_error_embed(err, locale)
         if not recognized:
             cls._bot.capture_exception(err)
         return embed
 
     @classmethod
     def _get_notify_embed(cls, notify: NotesNotify, notes: Notes | None, locale: Locale) -> DefaultEmbed:
-        translator = cls._bot.translator
-
         match notify.type:
             case NotesNotifyType.RESIN:
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="resin_reminder_button.label"),
                     description=LocaleStr(key="threshold.embed.description", threshold=notify.threshold),
                 )
@@ -80,7 +77,6 @@ class NotesChecker:
             case NotesNotifyType.TB_POWER:
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="tbp_reminder_button.label"),
                     description=LocaleStr(key="threshold.embed.description", threshold=notify.threshold),
                 )
@@ -88,7 +84,6 @@ class NotesChecker:
             case NotesNotifyType.RESERVED_TB_POWER:
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="rtbp_reminder_button.label"),
                     description=LocaleStr(key="threshold.embed.description", threshold=notify.threshold),
                 )
@@ -96,22 +91,17 @@ class NotesChecker:
             case NotesNotifyType.GI_EXPED | NotesNotifyType.HSR_EXPED:
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="exped_button.label"),
                     description=LocaleStr(key="exped.embed.description"),
                 )
             case NotesNotifyType.PT:
                 embed = DefaultEmbed(
-                    locale,
-                    translator,
-                    title=LocaleStr(key="pt_button.label"),
-                    description=LocaleStr(key="pt.embed.description"),
+                    locale, title=LocaleStr(key="pt_button.label"), description=LocaleStr(key="pt.embed.description")
                 )
                 embed.set_thumbnail(url=PT_ICON)
             case NotesNotifyType.REALM_CURRENCY:
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="realm_curr_button.label"),
                     description=LocaleStr(key="threshold.embed.description", threshold=notify.threshold),
                 )
@@ -119,7 +109,6 @@ class NotesChecker:
             case NotesNotifyType.GI_DAILY:
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="daily_button.label"),
                     description=LocaleStr(key="gi_daily.embed.description"),
                 )
@@ -127,21 +116,18 @@ class NotesChecker:
             case NotesNotifyType.HSR_DAILY:
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="daily_training_button.label"),
                     description=LocaleStr(key="hsr_daily.embed.description"),
                 )
             case NotesNotifyType.RESIN_DISCOUNT | NotesNotifyType.ECHO_OF_WAR:
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="week_boss_button.label"),
                     description=LocaleStr(key="resin_discount.embed.description"),
                 )
             case NotesNotifyType.BATTERY:
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="battery_charge_button.label"),
                     description=LocaleStr(key="threshold.embed.description", threshold=notify.threshold),
                 )
@@ -149,7 +135,6 @@ class NotesChecker:
             case NotesNotifyType.SCRATCH_CARD:
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="scratch_card_button.label"),
                     description=LocaleStr(key="scratch_card.embed.description"),
                 )
@@ -157,14 +142,12 @@ class NotesChecker:
             case NotesNotifyType.ZZZ_DAILY:
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="zzz_engagement_button.label"),
                     description=LocaleStr(key="zzz_engagement.embed.description"),
                 )
             case NotesNotifyType.VIDEO_STORE:
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="video_store_button.label"),
                     description=LocaleStr(key="video_store.embed.description"),
                 )
@@ -172,7 +155,6 @@ class NotesChecker:
                 assert notify.hours_before is not None
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="planar_fissure_label"),
                     description=LocaleStr(key="planar_fissure_desc", hour=notify.hours_before),
                 )
@@ -180,7 +162,6 @@ class NotesChecker:
                 assert isinstance(notes, HonkaiNotes)
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="honkai_daily_embed_title"),
                     description=LocaleStr(key="honkai_daily_embed_description", cur=notes.current_train_score, max=600),
                 )
@@ -188,7 +169,6 @@ class NotesChecker:
                 assert isinstance(notes, HonkaiNotes)
                 embed = DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="notes.stamina_label"),
                     description=LocaleStr(key="threshold.embed.description", threshold=notify.threshold),
                 )
@@ -227,11 +207,11 @@ class NotesChecker:
         )
 
         if isinstance(notes, ZZZNotes):
-            buffer = await draw_zzz_notes_card(draw_input, notes, cls._bot.translator)
+            buffer = await draw_zzz_notes_card(draw_input, notes)
         elif isinstance(notes, StarRailNote):
-            buffer = await draw_hsr_notes_card(draw_input, notes, cls._bot.translator)
+            buffer = await draw_hsr_notes_card(draw_input, notes)
         elif isinstance(notes, GenshinNotes):
-            buffer = await draw_gi_notes_card(draw_input, notes, cls._bot.translator)
+            buffer = await draw_gi_notes_card(draw_input, notes)
         else:
             buffer = None
 
@@ -241,13 +221,7 @@ class NotesChecker:
             buffer.seek(0)
             file_ = discord.File(buffer, filename="notes.png")
 
-        view = NotesView(
-            notify.account,
-            notify.account.user.settings.dark_mode,
-            author=None,
-            locale=locale,
-            translator=cls._bot.translator,
-        )
+        view = NotesView(notify.account, notify.account.user.settings.dark_mode, author=None, locale=locale)
         view.bytes_obj = buffer
         message = await cls._bot.dm_user(notify.account.user.id, embed=embed, file=file_, view=view)
         view.message = message
@@ -462,9 +436,7 @@ class NotesChecker:
         embed = cls._get_notify_error_embed(e, locale)
         embed.add_acc_info(notify.account, blur=False)
 
-        await cls._bot.dm_user(
-            notify.account.user.id, embed=embed, content=content.translate(cls._bot.translator, locale)
-        )
+        await cls._bot.dm_user(notify.account.user.id, embed=embed, content=content.translate(locale))
 
         notify.enabled = False
         await notify.save(update_fields=("enabled",))

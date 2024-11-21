@@ -10,7 +10,7 @@ import genshin
 
 from ...constants import GPY_GAME_TO_HB_GAME
 from ...enums import Platform
-from ...l10n import LocaleStr, Translator
+from ...l10n import LocaleStr, translator
 from ...utils import get_discord_protocol_url, get_discord_url
 from ..utils import reset_storage, show_error_banner
 
@@ -30,7 +30,6 @@ class FinishPage(ft.View):
         self,
         *,
         params: Params,
-        translator: Translator,
         locale: Locale,
         accounts: Sequence[GenshinAccount],
         cookies: str,
@@ -38,7 +37,7 @@ class FinishPage(ft.View):
         device_fp: str | None,
     ) -> None:
         self._params = params
-        self._translator = translator
+
         self._locale = locale
         self._accounts = accounts
         self._selected_accounts: list[GenshinAccount] = []
@@ -76,7 +75,6 @@ class FinishPage(ft.View):
                     params=params,
                     accounts=self._selected_accounts,
                     cookies=cookies,
-                    translator=translator,
                     locale=locale,
                     device_id=device_id,
                     device_fp=device_fp,
@@ -115,7 +113,6 @@ class SubmitButton(ft.FilledButton):
         cookies: str,
         device_id: str | None,
         device_fp: str | None,
-        translator: Translator,
         locale: Locale,
     ) -> None:
         self._params = params
@@ -123,7 +120,7 @@ class SubmitButton(ft.FilledButton):
         self._cookies = cookies
         self._device_id = device_id
         self._device_fp = device_fp
-        self._translator = translator
+
         self._locale = locale
         super().__init__(
             translator.translate(LocaleStr(key="submit_button_label"), locale), on_click=self.add_accounts_to_db
@@ -187,7 +184,7 @@ class SubmitButton(ft.FilledButton):
                     [
                         ft.ProgressRing(width=16, height=16, stroke_width=2, color=ft.colors.ON_SECONDARY_CONTAINER),
                         ft.Text(
-                            self._translator.translate(LocaleStr(key="accounts_added_snackbar_message"), self._locale),
+                            translator.translate(LocaleStr(key="accounts_added_snackbar_message"), self._locale),
                             color=ft.colors.ON_PRIMARY_CONTAINER,
                         ),
                     ],

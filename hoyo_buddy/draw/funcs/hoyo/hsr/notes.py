@@ -7,7 +7,7 @@ from discord import Locale
 from PIL import ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import format_timedelta
 
 if TYPE_CHECKING:
@@ -16,12 +16,12 @@ if TYPE_CHECKING:
 __all__ = ("draw_hsr_notes_card",)
 
 
-def draw_hsr_notes_card(notes: StarRailNote, locale_: str, translator: Translator, dark_mode: bool) -> BytesIO:
+def draw_hsr_notes_card(notes: StarRailNote, locale_: str, dark_mode: bool) -> BytesIO:
     locale = Locale(locale_)
     filename = f"{'dark' if dark_mode else 'light'}-hsr"
     im = Drawer.open_image(f"hoyo-buddy-assets/assets/notes/{filename}.png")
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(draw, folder="hsr-notes", dark_mode=dark_mode, translator=translator)
+    drawer = Drawer(draw, folder="hsr-notes", dark_mode=dark_mode)
 
     drawer.write(LocaleStr(key="real_time_notes"), size=64, position=(76, 67), style="bold", locale=locale)
 

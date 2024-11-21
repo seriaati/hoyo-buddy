@@ -15,7 +15,7 @@ from hoyo_buddy.db.models import GachaHistory, GachaStats, HoyoAccount, get_dyk,
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import CURRENCY_EMOJIS
 from hoyo_buddy.exceptions import NoGachaLogFoundError
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.components import Button, Select, SelectOption, View
 from hoyo_buddy.utils import ephemeral
 from hoyo_buddy.web_app.schema import GachaParams
@@ -59,8 +59,8 @@ async def get_ranking(
 
 
 class ViewGachaLogView(View):
-    def __init__(self, account: HoyoAccount, *, author: User, locale: Locale, translator: Translator) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, account: HoyoAccount, *, author: User, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
         self.account = account
         self.banner_type = next(iter(BANNER_TYPE_NAMES[account.game]))
 
@@ -144,9 +144,7 @@ class ViewGachaLogView(View):
         if rank == 0 or total == 0:
             return "N/A"
 
-        top_percent = self.translator.translate(
-            LocaleStr(key="top_percent", percent=round(rank / total * 100, 2)), self.locale
-        )
+        top_percent = LocaleStr(key="top_percent", percent=round(rank / total * 100, 2)).translate(self.locale)
         return f"{top_percent} ({rank}/{total})"
 
     async def get_stats_embed(self, pool: asyncpg.Pool) -> DefaultEmbed:
@@ -185,7 +183,6 @@ class ViewGachaLogView(View):
 
         embed = DefaultEmbed(
             self.locale,
-            self.translator,
             title=LocaleStr(key="gacha_log_stats_title"),
             description=LocaleStr(key="star5_guaranteed" if await self.guaranteed() else "star5_no_guaranteed")
             if self.banner_type in BANNER_WIN_RATE_TITLES[self.account.game]
@@ -206,14 +203,14 @@ class ViewGachaLogView(View):
             total_star4=total_four_stars,
             avg_pulls_per_star5=round(five_star_avg_pulls, 1),
             avg_pulls_per_star4=round(four_star_avg_pulls, 1),
-        ).translate(self.translator, self.locale)
+        ).translate(self.locale)
 
         global_stats = LocaleStr(
             key="gacha_log_global_stats",
             lifetime=await self.get_ranking_str(pool, stat="lifetime_pulls"),
             star5_luck=await self.get_ranking_str(pool, stat="avg_5star_pulls"),
             star4_luck=await self.get_ranking_str(pool, stat="avg_4star_pulls"),
-        ).translate(self.translator, self.locale)
+        ).translate(self.locale)
 
         if (title := BANNER_WIN_RATE_TITLES[self.account.game].get(self.banner_type)) is not None:
             personal_win_rate_stats = LocaleStr(
@@ -222,12 +219,12 @@ class ViewGachaLogView(View):
                 win_rate=round(banner_wins / banner_5stars * 100, 2) if banner_5stars else 0,
                 wins=banner_wins,
                 total=banner_5stars,
-            ).translate(self.translator, self.locale)
+            ).translate(self.locale)
             personal_stats += f"\n{personal_win_rate_stats}"
 
             global_win_rate_stats = LocaleStr(
                 key="win_rate_global_stats", title=title, win_rate=await self.get_ranking_str(pool, stat="win_rate")
-            ).translate(self.translator, self.locale)
+            ).translate(self.locale)
             global_stats += f"\n{global_win_rate_stats}"
 
         embed.add_field(name=LocaleStr(key="gacha_log_personal_stats_title"), value=personal_stats, inline=False)

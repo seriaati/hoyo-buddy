@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 import flet as ft
 
 from ...enums import Platform
-from ...l10n import LocaleStr, Translator
+from ...l10n import LocaleStr, translator
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -16,9 +16,9 @@ __all__ = ("MethodsPage",)
 
 
 class MethodsPage(ft.View):
-    def __init__(self, *, params: Params, translator: Translator, locale: Locale) -> None:
+    def __init__(self, *, params: Params, locale: Locale) -> None:
         self._params = params
-        self._translator = translator
+
         self._locale = locale
         super().__init__(
             route="/methods",
@@ -42,14 +42,14 @@ class MethodsPage(ft.View):
     @property
     def description(self) -> ft.Text:
         if self._params.platform is Platform.HOYOLAB:
-            return ft.Text(self._translator.translate(LocaleStr(key="add_hoyolab_acc.embed.description"), self._locale))
+            return ft.Text(translator.translate(LocaleStr(key="add_hoyolab_acc.embed.description"), self._locale))
         return ft.Text(
             "1. 通过改装过的米游社应用程序: 只有安卓裝置可使用\n2. 通过扫描二维码\n3. 通过手机号: 只有中国大陆手机号可使用\n4. 通过邮箱密码\n5. 通过开发者工具"
         )
 
     @property
     def method_buttons(self) -> list[MethodButton]:
-        params, translator, locale = self._params, self._translator, self._locale
+        params, locale = self._params, self._locale
 
         if params.platform is Platform.HOYOLAB:
             return [

@@ -10,8 +10,6 @@ from ..emojis import DOUBLE_LEFT, DOUBLE_RIGHT, LEFT, RIGHT
 from .components import Button, View
 
 if TYPE_CHECKING:
-    from hoyo_buddy.l10n import Translator
-
     from ..types import Interaction
 
 
@@ -29,9 +27,8 @@ class PaginatorView(View):
         *,
         author: discord.User | discord.Member | None,
         locale: discord.Locale,
-        translator: Translator,
     ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+        super().__init__(author=author, locale=locale)
 
         self._pages = pages
         self._current_page = 0

@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import Game
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import seconds_to_time
 
 
@@ -19,13 +19,12 @@ class ImgTheaterCard:
         chara_consts: dict[int, int],
         character_icons: dict[str, str],
         locale: str,
-        translator: Translator,
     ) -> None:
         self._theater = theater
         self._chara_consts = chara_consts
         self._character_icons = character_icons
         self._dark_mode = True  # To write white colored texts
-        self._translator = translator
+
         self._locale = locale
         self._asset_dir = "hoyo-buddy-assets/assets/img-theater"
         self._drawer: Drawer
@@ -103,16 +102,11 @@ class ImgTheaterCard:
         if hasattr(self._theater, "battle_stats"):
             fastest_charas = self._theater.battle_stats.fastest_character_list
             is_fastest = [chara.id for chara in fastest_charas] == [chara.id for chara in act.characters]
-            if is_fastest:
-                fastest_text = LocaleStr(key="img_theater_fastest_team").translate(self._translator, self.locale)
-            else:
-                fastest_text = ""
+            fastest_text = LocaleStr(key="img_theater_fastest_team").translate(self.locale) if is_fastest else ""
         else:
             fastest_text = ""
 
-        title = LocaleStr(key="role_combat_round_count", mi18n_game=Game.GENSHIN, n=act.round_id).translate(
-            self._translator, self.locale
-        )
+        title = LocaleStr(key="role_combat_round_count", mi18n_game=Game.GENSHIN, n=act.round_id).translate(self.locale)
         self._drawer.write(title + fastest_text, size=32, style="bold", position=(pos[0] + 21, pos[1] + 10))
 
         medal = (
@@ -136,13 +130,7 @@ class ImgTheaterCard:
             level_flair = self._drawer.open_asset(f"{name}_level_flair.png")
 
             block_draw = ImageDraw.Draw(block)
-            block_drawer = Drawer(
-                block_draw,
-                folder="img-theater",
-                dark_mode=self._dark_mode,
-                locale=self.locale,
-                translator=self._translator,
-            )
+            block_drawer = Drawer(block_draw, folder="img-theater", dark_mode=self._dark_mode, locale=self.locale)
 
             icon = block_drawer.open_static(self._character_icons[str(character.id)])
             icon = self._drawer.resize_crop(icon, (120, 120))
@@ -168,11 +156,7 @@ class ImgTheaterCard:
     def draw(self) -> io.BytesIO:
         self._im = self._open_asset(f"bg_{self._theater.stats.difficulty.value}.png")
         self._drawer = Drawer(
-            ImageDraw.Draw(self._im),
-            folder="img-theater",
-            dark_mode=self._dark_mode,
-            locale=self.locale,
-            translator=self._translator,
+            ImageDraw.Draw(self._im), folder="img-theater", dark_mode=self._dark_mode, locale=self.locale
         )
 
         self._write_large_block_texts()

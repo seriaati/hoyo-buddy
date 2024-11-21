@@ -9,12 +9,13 @@ from discord import Locale
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
+from ..l10n import translator
 from ..models import DynamicBKInput, TopPadding
 from ..utils import get_static_img_path
 from .fonts import *  # noqa: F403
 
 if TYPE_CHECKING:
-    from ..l10n import LocaleStr, Translator
+    from ..l10n import LocaleStr
 
 __all__ = ("Drawer",)
 
@@ -223,14 +224,12 @@ class Drawer:
         folder: str,
         dark_mode: bool,
         locale: Locale = Locale.american_english,
-        translator: Translator | None = None,
         sans: bool | None = None,
     ) -> None:
         self.draw = draw
         self.folder = folder
         self.dark_mode = dark_mode
         self.locale = locale
-        self.translator = translator
         self.sans = sans
 
     @classmethod
@@ -513,11 +512,7 @@ class Drawer:
         if isinstance(text, str):
             translated_text = text
         else:
-            if self.translator is None:
-                msg = "Translator is not set"
-                raise RuntimeError(msg)
-
-            translated_text = self.translator.translate(text, locale or self.locale, title_case=title_case)
+            translated_text = translator.translate(text, locale or self.locale, title_case=title_case)
 
         if dynamic_fontsize:
             if max_width is None:

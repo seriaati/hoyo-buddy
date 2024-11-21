@@ -59,7 +59,6 @@ if TYPE_CHECKING:
     from discord import File, Member, User
 
     from hoyo_buddy.db.models import HoyoAccount
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 
@@ -122,9 +121,8 @@ class CharactersView(View):
         *,
         author: User | Member | None,
         locale: Locale,
-        translator: Translator,
     ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+        super().__init__(author=author, locale=locale)
 
         self._account = account
         self.game = account.game
@@ -169,7 +167,7 @@ class CharactersView(View):
 
         is_missing = any(str(c.id) not in pc_icons for c in self.gi_characters)
         if is_missing:
-            async with AmbrAPIClient(translator=self.translator) as client:
+            async with AmbrAPIClient() as client:
                 ambr_charas = await client.fetch_characters()
                 for chara in self.gi_characters:
                     if str(chara.id) in pc_icons:
@@ -375,7 +373,6 @@ class CharactersView(View):
                 characters,  # pyright: ignore [reportArgumentType]
                 pc_icons,
                 talent_orders,
-                self.translator,
             )
         elif self.game is Game.STARRAIL:
             pc_icons = {str(c.id): HSR_TEAM_ICON_URL.format(char_id=c.id) for c in characters}
@@ -390,7 +387,6 @@ class CharactersView(View):
                 ),
                 characters,  # pyright: ignore [reportArgumentType]
                 pc_icons,
-                self.translator,
             )
         elif self.game is Game.ZZZ:
             file_ = await draw_zzz_characters_card(
@@ -403,7 +399,6 @@ class CharactersView(View):
                     loop=loop,
                 ),
                 characters,  # pyright: ignore [reportArgumentType]
-                self.translator,
             )
         elif self.game is Game.HONKAI:
             file_ = await draw_honkai_suits_card(
@@ -416,7 +411,6 @@ class CharactersView(View):
                     loop=loop,
                 ),
                 characters,  # pyright: ignore [reportArgumentType]
-                self.translator,
             )
         else:
             raise FeatureNotImplementedError(platform=self._account.platform, game=self.game)
@@ -424,7 +418,7 @@ class CharactersView(View):
         return file_
 
     def _get_embed(self, char_num: int) -> DefaultEmbed:
-        embed = DefaultEmbed(self.locale, self.translator, title=LocaleStr(key="characters.embed.title"))
+        embed = DefaultEmbed(self.locale, title=LocaleStr(key="characters.embed.title"))
         embed.set_image(url="attachment://characters.png")
         embed.add_acc_info(self._account)
 
@@ -515,9 +509,9 @@ class CharactersView(View):
         if self.game in GAME_FOOTERS:
             footer = LocaleStr(
                 key="characters.level_order.footer", order=[LocaleStr(key=key) for key in GAME_FOOTERS[self.game]]
-            ).translate(self.translator, self.locale)
+            ).translate(self.locale)
             if self.game in {Game.STARRAIL, Game.ZZZ}:
-                footer += "\n" + LocaleStr(key="characters.extra_detail.footer").translate(self.translator, self.locale)
+                footer += "\n" + LocaleStr(key="characters.extra_detail.footer").translate(self.locale)
             embed.set_footer(text=footer)
 
         return embed
@@ -775,7 +769,7 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
         elif self.view.game is Game.GENSHIN:
             current_chara_ids = {str(c.id) for c in self.view.gi_characters if isinstance(c, GICharacter)}
 
-            async with AmbrAPIClient(translator=self.view.translator) as client:
+            async with AmbrAPIClient() as client:
                 ambr_charas = await client.fetch_characters()
 
             for chara in ambr_charas:
@@ -799,7 +793,7 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
         elif self.view.game is Game.STARRAIL:
             current_chara_ids = {c.id for c in self.view.hsr_characters if isinstance(c, HSRCharacter)}
 
-            async with YattaAPIClient(translator=self.view.translator) as client:
+            async with YattaAPIClient() as client:
                 yatta_charas = await client.fetch_characters()
 
             for chara in yatta_charas:

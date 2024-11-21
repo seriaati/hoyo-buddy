@@ -26,7 +26,7 @@ class PlanarFissureReminder(Button[NotesView]):
             title=LocaleStr(key="reminder_modal.title", notify=LocaleStr(key="planar_fissure_label")),
             min_notify_interval=30,
         )
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
 

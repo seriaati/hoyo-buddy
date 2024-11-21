@@ -16,15 +16,12 @@ if TYPE_CHECKING:
     import ambr
 
     from hoyo_buddy.embeds import DefaultEmbed
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 
 class CharacterUI(View):
-    def __init__(
-        self, character_id: str, *, hakushin: bool, author: User | Member, locale: Locale, translator: Translator
-    ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, character_id: str, *, hakushin: bool, author: User | Member, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
         self.character_id = character_id
         self.character_level = 90
         self.talent_index = 0
@@ -38,17 +35,17 @@ class CharacterUI(View):
         self.hakushin = hakushin
         self.skill_index = 0
         self.passive_index = 0
-        self._hakushin_translator = HakushinTranslator(self.locale, self.translator)
+        self._hakushin_translator = HakushinTranslator(self.locale)
 
     async def fetch_character_embed(self) -> DefaultEmbed:
-        async with AmbrAPIClient(self.locale, self.translator) as api:
+        async with AmbrAPIClient(self.locale) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             avatar_curve = await api.fetch_avatar_curve()
             manual_weapon = await api.fetch_manual_weapon()
             return api.get_character_embed(character_detail, self.character_level, avatar_curve, manual_weapon)
 
     async def fetch_talent_embed(self) -> tuple[DefaultEmbed, bool, list[ambr.Talent]]:
-        async with AmbrAPIClient(self.locale, self.translator) as api:
+        async with AmbrAPIClient(self.locale) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             talent = character_detail.talents[self.talent_index]
             talent_max_level = self.talent_level if talent.upgrades else 0
@@ -59,25 +56,25 @@ class CharacterUI(View):
             )
 
     async def fetch_const_embed(self) -> tuple[DefaultEmbed, list[ambr.Constellation]]:
-        async with AmbrAPIClient(self.locale, self.translator) as api:
+        async with AmbrAPIClient(self.locale) as api:
             character_detail = await api.fetch_character_detail(self.character_id)
             const = character_detail.constellations[self.const_index]
             return (api.get_character_constellation_embed(const), character_detail.constellations)
 
     async def fetch_story_embed(self) -> tuple[DefaultEmbed, list[ambr.Story]]:
-        async with AmbrAPIClient(self.locale, self.translator) as api:
+        async with AmbrAPIClient(self.locale) as api:
             character_fetter = await api.fetch_character_fetter(self.character_id)
             story = character_fetter.stories[self.story_index]
             return (api.get_character_story_embed(story), character_fetter.stories)
 
     async def fetch_quote_embed(self) -> tuple[DefaultEmbed, list[ambr.Quote]]:
-        async with AmbrAPIClient(self.locale, self.translator) as api:
+        async with AmbrAPIClient(self.locale) as api:
             character_fetter = await api.fetch_character_fetter(self.character_id)
             quote = character_fetter.quotes[self.quote_index]
             return (api.get_character_quote_embed(quote, self.character_id), character_fetter.quotes)
 
     async def fetch_hakushin_character_embed(self) -> DefaultEmbed:
-        async with AmbrAPIClient(self.locale, self.translator) as api:
+        async with AmbrAPIClient(self.locale) as api:
             manual_weapon = await api.fetch_manual_weapon()
 
         async with hakushin.HakushinAPI(hakushin.Game.GI, locale_to_hakushin_lang(self.locale)) as api:
@@ -125,7 +122,7 @@ class CharacterUI(View):
                     skill_type_key = GI_SKILL_TYPE_KEYS.get(index)
                     label_prefix = LocaleStr(key=skill_type_key) if skill_type_key is not None else None
                     label = (
-                        f"{label_prefix.translate(self.translator, self.locale)}: {talent.name}"
+                        f"{label_prefix.translate(self.locale)}: {talent.name}"
                         if label_prefix is not None
                         else talent.name
                     )
@@ -172,7 +169,7 @@ class CharacterUI(View):
                     skill_type_key = GI_SKILL_TYPE_KEYS.get(index)
                     label_prefix = LocaleStr(key=skill_type_key) if skill_type_key is not None else None
                     label = (
-                        f"{label_prefix.translate(self.translator, self.locale)}: {skill.name}"
+                        f"{label_prefix.translate(self.locale)}: {skill.name}"
                         if label_prefix is not None
                         else skill.name
                     )
@@ -224,7 +221,7 @@ class EnterTalentLevel(Button[CharacterUI]):
 
     async def callback(self, i: Interaction) -> Any:
         modal = TalentLevelModal(title=LocaleStr(key="talent_level.modal.title"))
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
         if modal.incomplete:
@@ -246,7 +243,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
 
     async def callback(self, i: Interaction) -> Any:
         modal = CharacterLevelModal(title=LocaleStr(key="chara_level.modal.title"))
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
         incomplete = modal.incomplete

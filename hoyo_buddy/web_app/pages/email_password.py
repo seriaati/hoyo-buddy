@@ -9,7 +9,7 @@ from hoyo_buddy.constants import locale_to_gpy_lang
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 
 from ...enums import Platform
-from ...l10n import LocaleStr, Translator
+from ...l10n import LocaleStr, translator
 from ..login_handler import handle_action_ticket, handle_session_mmt
 from ..utils import encrypt_string, show_error_banner, show_loading_snack_bar
 
@@ -22,9 +22,9 @@ __all__ = ("EmailPasswordPage",)
 
 
 class EmailPasswordPage(ft.View):
-    def __init__(self, *, params: Params, translator: Translator, locale: Locale) -> None:
+    def __init__(self, *, params: Params, locale: Locale) -> None:
         self._params = params
-        self._translator = translator
+
         self._locale = locale
 
         super().__init__(
@@ -42,8 +42,7 @@ class EmailPasswordPage(ft.View):
                                 auto_follow_links_target=ft.UrlTarget.BLANK.value,
                             ),
                             ft.Container(
-                                EmailPassWordForm(params=params, translator=translator, locale=locale),
-                                margin=ft.margin.only(top=16),
+                                EmailPassWordForm(params=params, locale=locale), margin=ft.margin.only(top=16)
                             ),
                         ]
                     )
@@ -53,9 +52,9 @@ class EmailPasswordPage(ft.View):
 
 
 class EmailPassWordForm(ft.Column):
-    def __init__(self, *, params: Params, translator: Translator, locale: Locale) -> None:
+    def __init__(self, *, params: Params, locale: Locale) -> None:
         self._params = params
-        self._translator = translator
+
         self._locale = locale
         self._email_ref = ft.Ref[ft.TextField]()
         self._password_ref = ft.Ref[ft.TextField]()
@@ -74,7 +73,7 @@ class EmailPassWordForm(ft.Column):
     async def on_blur(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
         control.error_text = (
-            self._translator.translate(LocaleStr(key="required_field_error_message"), self._locale)
+            translator.translate(LocaleStr(key="required_field_error_message"), self._locale)
             if not control.value
             else None
         )
@@ -89,13 +88,13 @@ class EmailPassWordForm(ft.Column):
         password = password_field.value
 
         if not email:
-            self._email_ref.current.error_text = self._translator.translate(
+            self._email_ref.current.error_text = translator.translate(
                 LocaleStr(key="required_field_error_message"), self._locale
             )
             await self._email_ref.current.update_async()
 
         if not password:
-            self._password_ref.current.error_text = self._translator.translate(
+            self._password_ref.current.error_text = translator.translate(
                 LocaleStr(key="required_field_error_message"), self._locale
             )
             await self._password_ref.current.update_async()
@@ -107,7 +106,7 @@ class EmailPassWordForm(ft.Column):
             await show_error_banner(page, message="Invalid platform")
             return
 
-        await show_loading_snack_bar(page, translator=self._translator, locale=self._locale)
+        await show_loading_snack_bar(page, locale=self._locale)
 
         client = ProxyGenshinClient(
             region=genshin.Region.CHINESE if self._params.platform is Platform.MIYOUSHE else genshin.Region.OVERSEAS,
@@ -129,7 +128,6 @@ class EmailPassWordForm(ft.Column):
                 password=password,
                 page=page,
                 params=self._params,
-                translator=self._translator,
                 locale=self._locale,
                 mmt_type="on_login",
             )
@@ -142,19 +140,12 @@ class EmailPassWordForm(ft.Column):
                     password=password,
                     page=page,
                     params=self._params,
-                    translator=self._translator,
                     locale=self._locale,
                     mmt_type="on_email_send",
                 )
             else:
                 await handle_action_ticket(
-                    result,
-                    email=email,
-                    password=password,
-                    page=page,
-                    params=self._params,
-                    translator=self._translator,
-                    locale=self._locale,
+                    result, email=email, password=password, page=page, params=self._params, locale=self._locale
                 )
         else:
             encrypted_cookies = encrypt_string(result.to_str())
@@ -165,7 +156,7 @@ class EmailPassWordForm(ft.Column):
     def email(self) -> ft.TextField:
         return ft.TextField(
             keyboard_type=ft.KeyboardType.EMAIL,
-            label=self._translator.translate(LocaleStr(key="email_password_modal_email_input_label"), self._locale),
+            label=translator.translate(LocaleStr(key="email_password_modal_email_input_label"), self._locale),
             hint_text="a@gmail.com",
             ref=self._email_ref,
             on_blur=self.on_blur,
@@ -177,7 +168,7 @@ class EmailPassWordForm(ft.Column):
     def password(self) -> ft.TextField:
         return ft.TextField(
             keyboard_type=ft.KeyboardType.TEXT,
-            label=self._translator.translate(LocaleStr(key="email_password_modal_password_input_label"), self._locale),
+            label=translator.translate(LocaleStr(key="email_password_modal_password_input_label"), self._locale),
             hint_text="a123456",
             password=True,
             can_reveal_password=True,
@@ -190,5 +181,5 @@ class EmailPassWordForm(ft.Column):
     @property
     def submit_button(self) -> ft.FilledButton:
         return ft.FilledButton(
-            text=self._translator.translate(LocaleStr(key="submit_button_label"), self._locale), on_click=self.on_submit
+            text=translator.translate(LocaleStr(key="submit_button_label"), self._locale), on_click=self.on_submit
         )

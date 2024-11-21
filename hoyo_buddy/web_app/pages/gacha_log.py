@@ -14,7 +14,7 @@ from hoyo_buddy.constants import (
     locale_to_zenless_data_lang,
 )
 from hoyo_buddy.enums import Game
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.l10n import LocaleStr, translator
 from hoyo_buddy.utils import item_id_to_name
 from hoyo_buddy.web_app.utils import fetch_json_file, show_error_banner
 
@@ -37,7 +37,6 @@ class GachaLogPage(ft.View):
         gacha_icons: dict[int, str],
         params: GachaParams,
         game: Game,
-        translator: Translator,
         locale: Locale,
         max_page: int,
     ) -> None:
@@ -45,7 +44,6 @@ class GachaLogPage(ft.View):
         self.gachas = gacha_histories
         self.gacha_icons = gacha_icons
         self.params = params
-        self.translator = translator
         self.locale = locale
         self.max_page = max_page
 
@@ -204,16 +202,13 @@ class GachaLogPage(ft.View):
             GachaLogDialog(
                 gacha=gacha,
                 gacha_name=await self._get_gacha_name(page, gacha, self.locale, self.game),
-                translator=self.translator,
                 locale=self.locale,
             )
         )
 
     async def filter_button_on_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        await page.show_dialog_async(
-            FilterDialog(params=self.params, game=self.game, translator=self.translator, locale=self.locale)
-        )
+        await page.show_dialog_async(FilterDialog(params=self.params, game=self.game, locale=self.locale))
 
     async def on_search_bar_submit(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
@@ -243,7 +238,7 @@ class GachaLogPage(ft.View):
 
 
 class GachaLogDialog(ft.AlertDialog):
-    def __init__(self, *, gacha: GachaHistory, gacha_name: str, translator: Translator, locale: Locale) -> None:
+    def __init__(self, *, gacha: GachaHistory, gacha_name: str, locale: Locale) -> None:
         gacha_time = gacha.time.astimezone(datetime.timezone(datetime.timedelta(hours=8)))
         time_string = gacha_time.strftime("%Y-%m-%d %H:%M:%S") + " UTC+8"
 
@@ -272,8 +267,7 @@ class GachaLogDialog(ft.AlertDialog):
 
 
 class FilterDialog(ft.AlertDialog):
-    def __init__(self, *, params: GachaParams, game: Game, translator: Translator, locale: Locale) -> None:
-        self.translator = translator
+    def __init__(self, *, params: GachaParams, game: Game, locale: Locale) -> None:
         self.locale = locale
         self.params = params
         self.game = game
@@ -326,7 +320,7 @@ class FilterDialog(ft.AlertDialog):
 
     async def on_banner_type_dropdown_change(self, e: ft.ControlEvent) -> None:
         banner_type_name_to_value = {
-            self.translator.translate(LocaleStr(key=v), self.locale): k for k, v in BANNER_TYPE_NAMES[self.game].items()
+            translator.translate(LocaleStr(key=v), self.locale): k for k, v in BANNER_TYPE_NAMES[self.game].items()
         }
         self.params.banner_type = banner_type_name_to_value[e.control.value]
 

@@ -42,7 +42,7 @@ class EditNicknameButton(Button[AccountManager]):
             raise ValueError(msg)
 
         modal = NicknameModal(account.nickname)
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
 

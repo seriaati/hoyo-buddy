@@ -27,7 +27,7 @@ class ScratchCardReminder(Button[NotesView]):
             title=LocaleStr(key="reminder_modal.title", notify=LocaleStr(key="scratch_card_button.label")),
             min_notify_interval=30,
         )
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
 

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Final
 import flet as ft
 
 from ...enums import Platform
-from ...l10n import EnumStr, LocaleStr, Translator
+from ...l10n import EnumStr, LocaleStr, translator
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -21,9 +21,9 @@ PLATFORM_IMAGES: Final[dict[Platform, str]] = {
 
 
 class PlatformsPage(ft.View):
-    def __init__(self, *, params: Params, translator: Translator, locale: Locale) -> None:
+    def __init__(self, *, params: Params, locale: Locale) -> None:
         self._params = params
-        self._translator = translator
+
         self._locale = locale
         super().__init__(
             route="/platforms",
@@ -46,16 +46,13 @@ class PlatformsPage(ft.View):
 
     @property
     def platform_groups(self) -> list[PlatformGroup]:
-        return [
-            PlatformGroup(params=self._params, platform=platform, translator=self._translator, locale=self._locale)
-            for platform in Platform
-        ]
+        return [PlatformGroup(params=self._params, platform=platform, locale=self._locale) for platform in Platform]
 
 
 class PlatformGroup(ft.Column):
     """A platform image and a button."""
 
-    def __init__(self, *, params: Params, platform: Platform, translator: Translator, locale: Locale) -> None:
+    def __init__(self, *, params: Params, platform: Platform, locale: Locale) -> None:
         self._params = params
         self._platform = platform
         self._platform_name = translator.translate(EnumStr(platform), locale)

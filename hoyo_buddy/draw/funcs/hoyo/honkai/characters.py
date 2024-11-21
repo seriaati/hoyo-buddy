@@ -7,7 +7,7 @@ from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
-from hoyo_buddy.l10n import LevelStr, LocaleStr, Translator
+from hoyo_buddy.l10n import LevelStr, LocaleStr
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -16,17 +16,11 @@ if TYPE_CHECKING:
 
 
 def draw_small_suit_card(
-    suit: genshin.models.FullBattlesuit,
-    *,
-    card: Image.Image,
-    mask: Image.Image,
-    suit_mask: Image.Image,
-    locale: str,
-    translator: Translator,
+    suit: genshin.models.FullBattlesuit, *, card: Image.Image, mask: Image.Image, suit_mask: Image.Image, locale: str
 ) -> Image.Image:
     im = card.copy()
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(draw, folder="honkai-characters", locale=Locale(locale), translator=translator, dark_mode=True)
+    drawer = Drawer(draw, folder="honkai-characters", locale=Locale(locale), dark_mode=True)
 
     try:
         suit_icon = drawer.open_static(suit.tall_icon.replace(" ", ""), size=(146, 256))
@@ -51,18 +45,14 @@ def draw_small_suit_card(
         start_pos = (start_pos[0] + x_diff, start_pos[1])
 
     rarities = {1: "B", 2: "A", 3: "S", 4: "SS", 5: "SSS"}
-    rarity_text = LocaleStr(key="honkai_suit_rarity", rarity=rarities[suit.rarity]).translate(
-        translator, Locale(locale)
-    )
-    level_text = LevelStr(suit.level).translate(translator, Locale(locale))
+    rarity_text = LocaleStr(key="honkai_suit_rarity", rarity=rarities[suit.rarity]).translate(Locale(locale))
+    level_text = LevelStr(suit.level).translate(Locale(locale))
     drawer.write(f"{rarity_text}\n{level_text}", size=30, style="bold", position=(290, 94), sans=True, anchor="lm")
 
     return im
 
 
-def draw_big_suit_card(
-    suits: Sequence[genshin.models.FullBattlesuit], locale: str, dark_mode: bool, translator: Translator
-) -> BytesIO:
+def draw_big_suit_card(suits: Sequence[genshin.models.FullBattlesuit], locale: str, dark_mode: bool) -> BytesIO:
     asset_path = "hoyo-buddy-assets/assets/honkai-characters"
     theme = "dark" if dark_mode else "light"
 
@@ -72,8 +62,7 @@ def draw_big_suit_card(
     card = Drawer.open_image(f"{asset_path}/card_{theme}.png")
 
     cards: Sequence[Image.Image] = [
-        draw_small_suit_card(suit, card=card, mask=mask, suit_mask=suit_mask, locale=locale, translator=translator)
-        for suit in suits
+        draw_small_suit_card(suit, card=card, mask=mask, suit_mask=suit_mask, locale=locale) for suit in suits
     ]
 
     # Card settings

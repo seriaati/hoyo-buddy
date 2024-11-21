@@ -15,7 +15,7 @@ from ..embeds import ErrorEmbed
 from ..emojis import get_game_emoji
 from ..enums import GeetestType
 from ..exceptions import HoyoBuddyError, InvalidQueryError, NoAccountFoundError
-from ..l10n import EnumStr, LocaleStr, Translator
+from ..l10n import EnumStr, LocaleStr
 from ..utils import get_now
 
 if TYPE_CHECKING:
@@ -105,7 +105,7 @@ ENKA_ERROR_CONVERTER: dict[
 }
 
 
-def get_error_embed(error: Exception, locale: discord.Locale, translator: Translator) -> tuple[ErrorEmbed, bool]:
+def get_error_embed(error: Exception, locale: discord.Locale) -> tuple[ErrorEmbed, bool]:
     recognized = True
     embed = None
 
@@ -116,11 +116,9 @@ def get_error_embed(error: Exception, locale: discord.Locale, translator: Transl
         error = InvalidQueryError()
 
     if isinstance(error, HoyoBuddyError):
-        embed = ErrorEmbed(locale, translator, title=error.title, description=error.message)
+        embed = ErrorEmbed(locale, title=error.title, description=error.message)
         if isinstance(error, NoAccountFoundError):
-            game_strs = [
-                f"- {get_game_emoji(game)} {EnumStr(game).translate(translator, locale)}" for game in error.games
-            ]
+            game_strs = [f"- {get_game_emoji(game)} {EnumStr(game).translate(locale)}" for game in error.games]
             joined_str = "\n".join(game_strs)
             embed.add_description(joined_str)
     elif isinstance(error, genshin_errors.GenshinException | enka_errors.EnkaAPIError):
@@ -143,14 +141,14 @@ def get_error_embed(error: Exception, locale: discord.Locale, translator: Transl
                 err_info.get("description", None),
                 err_info.get("image", None),
             )
-            embed = ErrorEmbed(locale, translator, title=title, description=description)
+            embed = ErrorEmbed(locale, title=title, description=description)
             if image is not None:
                 embed.set_image(url=image)
 
     if embed is None:
         recognized = False
         description = f"{type(error).__name__}: {error}" if error else type(error).__name__
-        embed = ErrorEmbed(locale, translator, title=LocaleStr(key="error_title"), description=description)
+        embed = ErrorEmbed(locale, title=LocaleStr(key="error_title"), description=description)
         embed.set_footer(text=LocaleStr(key="error_footer"))
 
     return embed, recognized

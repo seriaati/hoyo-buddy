@@ -139,14 +139,14 @@ class AutoRedeem:
 
     @classmethod
     async def _handle_error(cls, account: HoyoAccount, locale: discord.Locale, e: Exception) -> None:
-        embed, recognized = get_error_embed(e, locale, cls._bot.translator)
+        embed, recognized = get_error_embed(e, locale)
         if not recognized:
             raise e
 
         embed.add_acc_info(account, blur=False)
 
         content = LocaleStr(key="auto_redeem_error.content")
-        await cls._bot.dm_user(account.user.id, embed=embed, content=content.translate(cls._bot.translator, locale))
+        await cls._bot.dm_user(account.user.id, embed=embed, content=content.translate(locale))
 
         account.auto_redeem = False
         await account.save(update_fields=("auto_redeem",))
@@ -155,7 +155,6 @@ class AutoRedeem:
     async def _redeem_codes(
         cls, api_name: Literal["VERCEL", "RENDER", "FLY", "LOCAL"], account: HoyoAccount, codes: list[str]
     ) -> Embed | None:
-        translator = cls._bot.translator
         codes_: list[str] = []
         for code in codes:
             if code in account.redeemed_codes or code in cls._dead_codes:
@@ -172,9 +171,7 @@ class AutoRedeem:
 
         if api_name == "LOCAL":
             try:
-                embed = await account.client.redeem_codes(
-                    codes_, locale=locale, translator=cls._bot.translator, blur=False
-                )
+                embed = await account.client.redeem_codes(codes_, locale=locale, blur=False)
                 embed.set_footer(text=LocaleStr(key="auto_redeem_footer"))
             except Exception as e:
                 await cls._handle_error(account, locale, e)
@@ -207,7 +204,7 @@ class AutoRedeem:
 
             await asyncio.sleep(6)
 
-        return client.get_redeem_codes_embed(results, locale=locale, translator=translator, blur=False)
+        return client.get_redeem_codes_embed(results, locale=locale, blur=False)
 
     @classmethod
     async def _redeem_code(
@@ -233,7 +230,7 @@ class AutoRedeem:
 
                 if resp.status == 200:
                     await cls._add_to_redeemed_codes(account, code)
-                    return (code, LocaleStr(key="redeem_code.success").translate(cls._bot.translator, locale), True)
+                    return (code, LocaleStr(key="redeem_code.success").translate(locale), True)
 
                 if resp.status == 400:
                     if data["retcode"] == 1001:
@@ -250,7 +247,7 @@ class AutoRedeem:
                         # Code reached max redemption limit
                         cls._dead_codes.add(code)
 
-                    embed, recognized = get_error_embed(e, locale, cls._bot.translator)
+                    embed, recognized = get_error_embed(e, locale)
                     if not recognized:
                         raise e
 

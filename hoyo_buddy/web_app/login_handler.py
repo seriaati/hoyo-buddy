@@ -11,7 +11,7 @@ import orjson
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 
 from ..constants import GEETEST_SERVERS
-from ..l10n import LocaleStr, Translator
+from ..l10n import LocaleStr, translator
 from ..models import GeetestLoginPayload
 from .utils import decrypt_string, encrypt_string, show_error_banner, show_loading_snack_bar
 
@@ -27,7 +27,6 @@ async def handle_session_mmt(
     *,
     page: ft.Page,
     params: Params,
-    translator: Translator | None = None,
     locale: Locale | None = None,
     mmt_type: Literal["on_login", "on_email_send", "on_otp_send"],
     email: str | None = None,
@@ -65,7 +64,6 @@ async def handle_session_mmt(
     title = titles[mmt_type]
 
     if isinstance(title, LocaleStr):
-        assert translator is not None
         assert locale is not None
 
         title = translator.translate(title, locale)
@@ -93,9 +91,7 @@ async def handle_session_mmt(
 
 
 class EmailVerifyDialog(ft.AlertDialog):
-    def __init__(
-        self, ticket: ActionTicket, *, translator: Translator, locale: Locale, user_id: int, params: Params
-    ) -> None:
+    def __init__(self, ticket: ActionTicket, *, locale: Locale, user_id: int, params: Params) -> None:
         field_ref = ft.Ref[ft.TextField]()
         super().__init__(
             title=ft.Text(translator.translate(LocaleStr(key="email_verification_dialog_title"), locale)),
@@ -109,12 +105,7 @@ class EmailVerifyDialog(ft.AlertDialog):
                         ref=field_ref,
                     ),
                     EmailVerifyCodeButton(
-                        translator=translator,
-                        locale=locale,
-                        ticket=ticket,
-                        field_ref=field_ref,
-                        user_id=user_id,
-                        params=params,
+                        locale=locale, ticket=ticket, field_ref=field_ref, user_id=user_id, params=params
                     ),
                 ],
                 tight=True,
@@ -125,17 +116,10 @@ class EmailVerifyDialog(ft.AlertDialog):
 
 class EmailVerifyCodeButton(ft.FilledButton):
     def __init__(
-        self,
-        *,
-        translator: Translator,
-        locale: Locale,
-        ticket: ActionTicket,
-        field_ref: ft.Ref[ft.TextField],
-        user_id: int,
-        params: Params,
+        self, *, locale: Locale, ticket: ActionTicket, field_ref: ft.Ref[ft.TextField], user_id: int, params: Params
     ) -> None:
         super().__init__(translator.translate(LocaleStr(key="email_verification_dialog_action"), locale))
-        self._translator = translator
+
         self._locale = locale
         self._ticket = ticket
         self._field_ref = field_ref
@@ -147,12 +131,12 @@ class EmailVerifyCodeButton(ft.FilledButton):
 
         field = self._field_ref.current
         if not field.value:
-            field.error_text = self._translator.translate(LocaleStr(key="required_field_error_message"), self._locale)
+            field.error_text = translator.translate(LocaleStr(key="required_field_error_message"), self._locale)
             await field.update_async()
             return
 
         await page.close_dialog_async()
-        await show_loading_snack_bar(page, translator=self._translator, locale=self._locale)
+        await show_loading_snack_bar(page, locale=self._locale)
 
         client = ProxyGenshinClient()
         try:
@@ -183,20 +167,11 @@ class EmailVerifyCodeButton(ft.FilledButton):
 
 
 async def handle_action_ticket(
-    result: ActionTicket,
-    *,
-    email: str,
-    password: str,
-    page: ft.Page,
-    params: Params,
-    translator: Translator,
-    locale: Locale,
+    result: ActionTicket, *, email: str, password: str, page: ft.Page, params: Params, locale: Locale
 ) -> None:
     await page.client_storage.set_async(f"hb.{params.user_id}.email", encrypt_string(email))
     await page.client_storage.set_async(f"hb.{params.user_id}.password", encrypt_string(password))
-    await page.show_dialog_async(
-        EmailVerifyDialog(ticket=result, translator=translator, locale=locale, user_id=params.user_id, params=params)
-    )
+    await page.show_dialog_async(EmailVerifyDialog(ticket=result, locale=locale, user_id=params.user_id, params=params))
 
 
 class MobileVerifyDialog(ft.AlertDialog):

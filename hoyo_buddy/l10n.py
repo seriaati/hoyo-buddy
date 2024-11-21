@@ -73,7 +73,7 @@ class LocaleStr:
     def identifier(self) -> str:
         return self.custom_str or self.key or ""
 
-    def translate(self, translator: Translator, locale: Locale) -> str:
+    def translate(self, locale: Locale) -> str:
         return translator.translate(self, locale)
 
 
@@ -193,7 +193,7 @@ class Translator:
 
         extras = self._translate_extras(string.extras, locale)
         string_key = self._get_string_key(string)
-
+        
         if string.mi18n_game is not None:
             source_string = self._mi18n[SOURCE_LANG, MI18N_FILES[string.mi18n_game]][string_key]
         else:
@@ -280,12 +280,11 @@ class Translator:
 
 
 class AppCommandTranslator(app_commands.Translator):
-    def __init__(self, translator: Translator) -> None:
-        super().__init__()
-        self.translator = translator
-
     async def translate(self, string: app_commands.locale_str, locale: Locale, _: TranslationContextTypes) -> str:
         key = string.extras.pop("key", None)
         if key is None:
             return string.message
-        return self.translator.translate(LocaleStr(key=key, **string.extras), locale)
+        return translator.translate(LocaleStr(key=key, **string.extras), locale)
+
+
+translator = Translator()

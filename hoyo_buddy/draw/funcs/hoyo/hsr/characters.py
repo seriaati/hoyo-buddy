@@ -22,18 +22,14 @@ WEAPON_ICON_SIZES = (102, 102)
 
 
 def draw_character_card(
-    characters: Sequence[HSRCharacter | UnownedHSRCharacter],
-    pc_icons: dict[str, str],
-    dark_mode: bool,
-    translator: Translator,
-    locale_: str,
+    characters: Sequence[HSRCharacter | UnownedHSRCharacter], pc_icons: dict[str, str], dark_mode: bool, locale_: str
 ) -> io.BytesIO:
     locale = Locale(locale_)
     c_cards: dict[str, Image.Image] = {}
 
     for character in characters:
         talent = "/".join(str(s.level) for s in character.skills[:4]) if isinstance(character, HSRCharacter) else ""
-        card = draw_small_hsr_chara_card(talent, dark_mode, character, translator, locale)
+        card = draw_small_hsr_chara_card(talent, dark_mode, character, locale)
         c_cards[str(character.id)] = card
 
     first_card = next(iter(c_cards.values()))
@@ -95,18 +91,14 @@ def hsr_cache_key(
 
 @cached(TTLCache(maxsize=64, ttl=180), key=hsr_cache_key)
 def draw_small_hsr_chara_card(
-    talent_str: str,
-    dark_mode: bool,
-    character: HSRCharacter | UnownedHSRCharacter,
-    translator: Translator,
-    locale: Locale,
+    talent_str: str, dark_mode: bool, character: HSRCharacter | UnownedHSRCharacter, locale: Locale
 ) -> Image.Image:
     im = Drawer.open_image(
         f"hoyo-buddy-assets/assets/hsr-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png"
     )
 
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(draw, folder="hsr-characters", dark_mode=dark_mode, translator=translator)
+    drawer = Drawer(draw, folder="hsr-characters", dark_mode=dark_mode)
 
     if isinstance(character, UnownedHSRCharacter):
         return im

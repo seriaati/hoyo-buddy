@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 
 import flet as ft
 
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.l10n import LocaleStr, translator
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -16,7 +16,7 @@ __all__ = ("LoginPage",)
 
 
 class LoginPage(ft.View):
-    def __init__(self, user_data: dict[str, Any] | None, *, translator: Translator, locale: Locale) -> None:
+    def __init__(self, user_data: dict[str, Any] | None, *, locale: Locale) -> None:
         self.user_data = user_data
 
         if user_data is None:

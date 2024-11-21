@@ -28,7 +28,6 @@ if TYPE_CHECKING:
     from discord import Locale, Member, User
 
     from hoyo_buddy.db.models import CardSettings, Settings
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
     from .view import Character
@@ -75,9 +74,8 @@ class ImageSettingsView(View):
         *,
         author: User | Member,
         locale: Locale,
-        translator: Translator,
     ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+        super().__init__(author=author, locale=locale)
 
         self.characters = characters
         self.user_id = author.id
@@ -149,9 +147,7 @@ class ImageSettingsView(View):
     def get_settings_embed(self) -> DefaultEmbed:
         character = self._get_current_character()
         embed = DefaultEmbed(
-            locale=self.locale,
-            translator=self.translator,
-            title=LocaleStr(key="card_settings.modifying_for", name=character.name),
+            locale=self.locale, title=LocaleStr(key="card_settings.modifying_for", name=character.name)
         )
 
         image_url = self.get_current_image() or get_default_art(
@@ -266,7 +262,7 @@ class ImageSelect(PaginatorSelect[ImageSettingsView]):
         self.options = self.process_options()
         if current_image is not None:
             self.set_page_based_on_value(current_image)
-        self.translate(self.view.locale, self.view.translator)
+        self.translate(self.view.locale)
 
     def _get_select_option(self, image_url: str, num: int) -> SelectOption:
         label = (
@@ -344,7 +340,7 @@ class GenerateAIArtButton(Button[ImageSettingsView]):
 
     async def callback(self, i: Interaction) -> None:
         modal = GenerateAIArtModal(title=LocaleStr(key="profile.generate_ai_art.button.label"))
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
         if modal.incomplete:
@@ -408,7 +404,7 @@ class AddImageButton(Button[ImageSettingsView]):
     async def callback(self, i: Interaction) -> None:
         # Open the modal
         modal = AddImageModal()
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
         if modal.incomplete:

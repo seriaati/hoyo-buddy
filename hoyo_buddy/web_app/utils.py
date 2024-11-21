@@ -9,17 +9,15 @@ import flet as ft
 import orjson
 from cryptography.fernet import Fernet
 
-from ..l10n import LocaleStr, Translator
+from ..l10n import LocaleStr, translator
 
 if TYPE_CHECKING:
     from discord import Locale
 
 
 class LoadingSnackBar(ft.SnackBar):
-    def __init__(
-        self, *, message: str | None = None, translator: Translator | None = None, locale: Locale | None = None
-    ) -> None:
-        if translator is not None and locale is not None:
+    def __init__(self, *, message: str | None = None, locale: Locale | None = None) -> None:
+        if locale is not None:
             text = translator.translate(LocaleStr(key="loading_text"), locale)
         else:
             text = message or "Loading..."
@@ -51,10 +49,8 @@ class ErrorBanner(ft.Banner):
         await page.close_banner_async()
 
 
-async def show_loading_snack_bar(
-    page: ft.Page, *, message: str | None = None, translator: Translator | None = None, locale: Locale | None = None
-) -> None:
-    await page.show_snack_bar_async(LoadingSnackBar(message=message, translator=translator, locale=locale))
+async def show_loading_snack_bar(page: ft.Page, *, message: str | None = None, locale: Locale | None = None) -> None:
+    await page.show_snack_bar_async(LoadingSnackBar(message=message, locale=locale))
 
 
 async def show_error_banner(page: ft.Page, *, message: str) -> None:

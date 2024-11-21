@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 from ...db.models import HoyoAccount, User, get_dyk
 from ...embeds import DefaultEmbed
 from ...emojis import get_game_emoji
-from ...l10n import EnumStr, LocaleStr, Translator
+from ...l10n import EnumStr, LocaleStr
 from .. import SelectOption
 from ..components import View
 from .items.acc_select import AccountSelect
@@ -28,11 +28,10 @@ class AccountManager(View):
         *,
         author: discord.User | discord.Member | None,
         locale: discord.Locale,
-        translator: Translator,
         user: User,
         accounts: Sequence[HoyoAccount],
     ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+        super().__init__(author=author, locale=locale)
         self.user = user
         self.locale = locale
         self.accounts = accounts
@@ -45,12 +44,11 @@ class AccountManager(View):
         if account is None:
             return DefaultEmbed(
                 self.locale,
-                self.translator,
                 title=LocaleStr(key="account_manager_title"),
                 description=LocaleStr(key="account_manager_no_accounts_description"),
             )
 
-        embed = DefaultEmbed(self.locale, self.translator, title=str(account))
+        embed = DefaultEmbed(self.locale, title=str(account))
         embed.add_field(name=LocaleStr(key="search_command_game_param_name"), value=EnumStr(account.game))
         if account.nickname:
             embed.add_field(name=LocaleStr(key="account_username"), value=account.username)
@@ -96,9 +94,7 @@ class AccountManager(View):
         """
         if not soft:
             accounts = await HoyoAccount.filter(user=self.user).all()
-            view = AccountManager(
-                author=self.author, locale=self.locale, translator=self.translator, user=self.user, accounts=accounts
-            )
+            view = AccountManager(author=self.author, locale=self.locale, user=self.user, accounts=accounts)
             await view.start(i)
         else:
             assert self.selected_account is not None

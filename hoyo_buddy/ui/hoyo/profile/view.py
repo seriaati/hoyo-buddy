@@ -57,7 +57,6 @@ if TYPE_CHECKING:
     from genshin.models import GenshinUserStats, RecordCard, StarRailUserStats
 
     from hoyo_buddy.db.models import CardSettings, HoyoAccount
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Builds, Interaction
 
 
@@ -95,9 +94,8 @@ class ProfileView(View):
         owner: enka.Owner | None = None,
         author: User | Member,
         locale: Locale,
-        translator: Translator,
     ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+        super().__init__(author=author, locale=locale)
 
         self.hoyolab_hsr_characters = hoyolab_hsr_characters or []
         self.hoyolab_hsr_user = hoyolab_hsr_user
@@ -144,7 +142,7 @@ class ProfileView(View):
 
         character_calc = user_calc.calculations[0]
         top_percent = LocaleStr(key="top_percent", percent=format_float(character_calc.top_percent)).translate(
-            self.translator, self.locale
+            self.locale
         )
         ranking = f"{top_percent} ({character_calc.ranking}/{human_format_number(character_calc.out_of)})"
         if not with_detail:
@@ -209,7 +207,6 @@ class ProfileView(View):
             player = self.starrail_data.player
             embed = DefaultEmbed(
                 self.locale,
-                self.translator,
                 title=f"{player.nickname} ({uid_str})",
                 description=LocaleStr(
                     key="profile.player_info.embed.description",
@@ -228,7 +225,6 @@ class ProfileView(View):
             player = self.genshin_data.player
             embed = DefaultEmbed(
                 self.locale,
-                self.translator,
                 title=f"{player.nickname} ({uid_str})",
                 description=LocaleStr(
                     key="profile.player_info.gi.embed.description",
@@ -247,7 +243,6 @@ class ProfileView(View):
             stats = self.hoyolab_hsr_user.stats
             embed = DefaultEmbed(
                 self.locale,
-                self.translator,
                 title=f"{player.nickname} ({uid_str})",
                 description=LocaleStr(
                     key="profile.player_info.hoyolab.embed.description",
@@ -261,17 +256,13 @@ class ProfileView(View):
         elif self.zzz_user is not None:
             player = self.zzz_user
             data_str = "\n".join(f"{data.name}: {data.value}" for data in player.data)
-            level_str = LevelStr(player.level).translate(self.translator, self.locale)
+            level_str = LevelStr(player.level).translate(self.locale)
             embed = DefaultEmbed(
-                self.locale,
-                self.translator,
-                title=f"{player.nickname} ({uid_str})",
-                description=f"{level_str}\n{data_str}",
+                self.locale, title=f"{player.nickname} ({uid_str})", description=f"{level_str}\n{data_str}"
             )
         else:
             embed = DefaultEmbed(
                 self.locale,
-                self.translator,
                 title=LocaleStr(key="profile.no_data.title"),
                 description=LocaleStr(key="profile.no_data.description"),
             )
@@ -280,7 +271,7 @@ class ProfileView(View):
 
     @property
     def card_embed(self) -> DefaultEmbed:
-        embed = DefaultEmbed(self.locale, self.translator)
+        embed = DefaultEmbed(self.locale)
         embed.set_image(url="attachment://card.png")
         if self._account is not None:
             embed.add_acc_info(self._account)
@@ -455,7 +446,6 @@ class ProfileView(View):
         loop: asyncio.AbstractEventLoop,
         character: Character,
         card_settings: CardSettings,
-        translator: Translator,
     ) -> BytesIO:
         """Draw ZZZ build card in Hoyo Buddy template."""
         assert isinstance(character, ZZZPartialAgent)
@@ -499,7 +489,6 @@ class ProfileView(View):
             custom_image=card_settings.current_image,
             template=template_num,
             show_substat_rolls=card_settings.show_substat_rolls,
-            translator=translator,
         )
 
     async def draw_card(
@@ -530,7 +519,7 @@ class ProfileView(View):
             return await self._draw_enka_card(i.client.session, character, card_settings)
         if self.game is Game.ZZZ:
             return await self._draw_hb_zzz_character_card(
-                i.client.session, i.client.executor, i.client.loop, character, card_settings, i.client.translator
+                i.client.session, i.client.executor, i.client.loop, character, card_settings
             )
 
         msg = f"draw_card not implemented for game {self.game} template {template}"
@@ -664,7 +653,7 @@ class ProfileView(View):
         self._add_items()
 
         if self.game is Game.ZZZ:
-            new_msg = LocaleStr(key="new_zzz_temp").translate(i.client.translator, self.locale)
+            new_msg = LocaleStr(key="new_zzz_temp").translate(self.locale)
             dyk = f"-# {new_msg}"
         else:
             dyk = await get_dyk(i)

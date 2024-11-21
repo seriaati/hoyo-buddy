@@ -17,7 +17,7 @@ from loguru import logger
 
 from hoyo_buddy.bot import HoyoBuddy
 from hoyo_buddy.db.pgsql import Database
-from hoyo_buddy.l10n import Translator
+from hoyo_buddy.l10n import translator
 from hoyo_buddy.logging import InterceptHandler
 from hoyo_buddy.models import Config
 from hoyo_buddy.utils import init_sentry, wrap_task_factory
@@ -44,11 +44,11 @@ async def main() -> None:
         asyncpg.create_pool(os.environ["DB_URL"]) as pool,
         aiohttp.ClientSession(headers={"User-Agent": ua.random}) as session,
         Database(),
-        Translator() as translator,
-        HoyoBuddy(session=session, env=env, translator=translator, pool=pool, config=config) as bot,
+        translator,
+        HoyoBuddy(session=session, env=env, pool=pool, config=config) as bot,
     ):
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError):
-            geetest_server = GeetestWebServer(translator=translator)
+            geetest_server = GeetestWebServer()
 
             asyncio.create_task(geetest_server.run())
 

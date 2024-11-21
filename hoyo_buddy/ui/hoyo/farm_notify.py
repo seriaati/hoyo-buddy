@@ -25,7 +25,6 @@ if TYPE_CHECKING:
     from discord import Member, User
     from discord.file import File
 
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 
@@ -40,14 +39,12 @@ class FarmNotifyView(PaginatorView):
         *,
         author: User | Member | None,
         locale: Locale,
-        translator: Translator,
     ) -> None:
         self._split_item_ids = split_list_to_chunks(farm_notify.item_ids, 12)
         pages = [
             Page(
                 embed=DefaultEmbed(
                     locale,
-                    translator,
                     title=LocaleStr(key="farm_notify.title"),
                     description=LocaleStr(key="farm_notify.description"),
                 )
@@ -66,7 +63,7 @@ class FarmNotifyView(PaginatorView):
         self._item_names: dict[str, str] = {}  # Item id to name
         self._item_icons: dict[str, str] = {}  # Item id to icon
 
-        super().__init__(pages, author=author, locale=locale, translator=translator)
+        super().__init__(pages, author=author, locale=locale)
 
         self._executor = executor
         self._loop = loop
@@ -78,7 +75,7 @@ class FarmNotifyView(PaginatorView):
         self.add_item(RemoveItemButton())
 
     async def _fetch_item_icons(self) -> None:
-        async with AmbrAPIClient(self.locale, self.translator) as client:
+        async with AmbrAPIClient(self.locale) as client:
             characters = await client.fetch_characters()
             weapons = await client.fetch_weapons()
 
@@ -107,7 +104,6 @@ class FarmNotifyView(PaginatorView):
         if not self._notify.item_ids:
             embed = DefaultEmbed(
                 self.locale,
-                self.translator,
                 title=LocaleStr(key="farm_notify.empty"),
                 description=LocaleStr(key="farm_notify.empty_description"),
             )
@@ -136,9 +132,7 @@ class AddItemButton(Button[FarmNotifyView]):
         super().__init__(label=LocaleStr(key="farm_notify.add_item"), style=ButtonStyle.blurple, emoji=ADD, row=1)
 
     async def callback(self, i: Interaction) -> None:
-        embed = DefaultEmbed(
-            self.view.locale, self.view.translator, description=LocaleStr(key="farm_notify.add_item.embed.description")
-        )
+        embed = DefaultEmbed(self.view.locale, description=LocaleStr(key="farm_notify.add_item.embed.description"))
         await i.response.send_message(embed=embed, ephemeral=True)
 
 
@@ -147,11 +141,7 @@ class RemoveItemButton(Button[FarmNotifyView]):
         super().__init__(label=LocaleStr(key="farm_notify.remove_item"), style=ButtonStyle.red, emoji=DELETE, row=1)
 
     async def callback(self, i: Interaction) -> None:
-        embed = DefaultEmbed(
-            self.view.locale,
-            self.view.translator,
-            description=LocaleStr(key="farm_notify.remove_item.embed.description"),
-        )
+        embed = DefaultEmbed(self.view.locale, description=LocaleStr(key="farm_notify.remove_item.embed.description"))
         await i.response.send_message(embed=embed, ephemeral=True)
 
 

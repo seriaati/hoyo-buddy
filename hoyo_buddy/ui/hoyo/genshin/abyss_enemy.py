@@ -16,16 +16,13 @@ if TYPE_CHECKING:
     from ambr.models import Abyss, AbyssResponse
 
     from hoyo_buddy.embeds import DefaultEmbed
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.models import ItemWithDescription
     from hoyo_buddy.types import Interaction
 
 
 class AbyssEnemyView(View):
-    def __init__(
-        self, dark_mode: bool, index: int, *, author: User | Member, locale: Locale, translator: Translator
-    ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, dark_mode: bool, index: int, *, author: User | Member, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
 
         self._dark_mode = dark_mode
         self._floor_index = 11
@@ -86,7 +83,7 @@ class AbyssEnemyView(View):
         assert self._abyss_data is not None
         assert self._monster_curve is not None
 
-        async with AmbrAPIClient(self.locale, self.translator) as client:
+        async with AmbrAPIClient(self.locale) as client:
             abyss = self._abyss_data.abyss_items[self._season_index]
 
             floor = (
@@ -141,7 +138,7 @@ class AbyssEnemyView(View):
     async def start(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
-        async with AmbrAPIClient(self.locale, self.translator) as client:
+        async with AmbrAPIClient(self.locale) as client:
             self._abyss_data = await client.fetch_abyss_data()
             self._monster_curve = await client.fetch_monster_curve()
 

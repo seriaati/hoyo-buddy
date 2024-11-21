@@ -14,14 +14,13 @@ from yatta import Language
 from ...constants import LOCALE_TO_YATTA_LANG, TRAILBLAZER_IDS, YATTA_PATH_TO_HSR_PATH
 from ...embeds import DefaultEmbed
 from ...emojis import get_hsr_element_emoji, get_hsr_path_emoji
-from ...l10n import LevelStr, LocaleStr
+from ...l10n import LevelStr, LocaleStr, translator
 
 __all__ = ("ItemCategory", "YattaAPIClient")
 
 if TYPE_CHECKING:
     import aiohttp
 
-    from ...l10n import Translator
 
 KEY_DICT: dict[str, str] = {
     "hPBase": "maxHP",
@@ -42,15 +41,9 @@ class ItemCategory(StrEnum):
 
 
 class YattaAPIClient(yatta.YattaAPI):
-    def __init__(
-        self,
-        locale: Locale = Locale.american_english,
-        translator: Translator | None = None,
-        session: aiohttp.ClientSession | None = None,
-    ) -> None:
+    def __init__(self, locale: Locale = Locale.american_english, session: aiohttp.ClientSession | None = None) -> None:
         super().__init__(lang=LOCALE_TO_YATTA_LANG.get(locale, Language.EN), session=session)
         self.locale = locale
-        self.translator = translator
 
     def _process_description_params(
         self,
@@ -163,14 +156,9 @@ class YattaAPIClient(yatta.YattaAPI):
     def get_character_details_embed(
         self, character: yatta.CharacterDetail, level: int, manual_avatar: dict[str, Any]
     ) -> DefaultEmbed:
-        if self.translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
-
-        level_str = self.translator.translate(LevelStr(level), self.locale)
+        level_str = translator.translate(LevelStr(level), self.locale)
         embed = DefaultEmbed(
             self.locale,
-            self.translator,
             title=f"{character.name} ({level_str})",
             description=LocaleStr(
                 key="yatta_character_embed_description",
@@ -208,15 +196,10 @@ class YattaAPIClient(yatta.YattaAPI):
         return embed
 
     def get_character_main_skill_embed(self, skill: yatta.SkillListSkill, level: int) -> DefaultEmbed:
-        if self.translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
-
-        level_str = self.translator.translate(LevelStr(level), self.locale)
+        level_str = translator.translate(LevelStr(level), self.locale)
 
         embed = DefaultEmbed(
             self.locale,
-            self.translator,
             title=f"{skill.type}: {skill.name} ({level_str})",
             description=self._process_description_params(skill.description, skill.params, param_index=level - 1)
             if skill.description
@@ -229,7 +212,7 @@ class YattaAPIClient(yatta.YattaAPI):
         energy_value_strs: list[str] = []
         if energy_generation and energy_generation.value:
             energy_value_strs.append(
-                self.translator.translate(
+                translator.translate(
                     LocaleStr(
                         key="yatta_character_skill_energy_generation_field_value",
                         energy_generation=energy_generation.value,
@@ -239,7 +222,7 @@ class YattaAPIClient(yatta.YattaAPI):
             )
         if energy_need and energy_need.value:
             energy_value_strs.append(
-                self.translator.translate(
+                translator.translate(
                     LocaleStr(key="yatta_character_skill_energy_need_field_value", energy_need=energy_need.value),
                     self.locale,
                 )
@@ -256,7 +239,7 @@ class YattaAPIClient(yatta.YattaAPI):
         weakness_break_value_strs: list[str] = []
         if single_weakness_break and single_weakness_break.value:
             weakness_break_value_strs.append(
-                self.translator.translate(
+                translator.translate(
                     LocaleStr(
                         key="yatta_character_skill_single_weakness_break_field_value",
                         single_weakness_break=single_weakness_break.value,
@@ -266,7 +249,7 @@ class YattaAPIClient(yatta.YattaAPI):
             )
         if spread_weakness_break and spread_weakness_break.value:
             weakness_break_value_strs.append(
-                self.translator.translate(
+                translator.translate(
                     LocaleStr(
                         key="yatta_character_skill_spread_weakness_break_field_value",
                         spread_weakness_break=spread_weakness_break.value,
@@ -276,7 +259,7 @@ class YattaAPIClient(yatta.YattaAPI):
             )
         if aoe_weakness_break and aoe_weakness_break.value:
             weakness_break_value_strs.append(
-                self.translator.translate(
+                translator.translate(
                     LocaleStr(
                         key="yatta_character_skill_aoe_weakness_break_field_value",
                         aoe_weakness_break=aoe_weakness_break.value,
@@ -297,13 +280,8 @@ class YattaAPIClient(yatta.YattaAPI):
         return embed
 
     def get_character_sub_skill_embed(self, skill: yatta.BaseSkill) -> DefaultEmbed:
-        if self.translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
-
         embed = DefaultEmbed(
             self.locale,
-            self.translator,
             title=skill.name,
             description=self._process_description_params(skill.description, skill.params)
             if skill.description
@@ -314,13 +292,8 @@ class YattaAPIClient(yatta.YattaAPI):
         return embed
 
     def get_character_eidolon_embed(self, eidolon: yatta.CharacterEidolon) -> DefaultEmbed:
-        if self.translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
-
         embed = DefaultEmbed(
             self.locale,
-            self.translator,
             title=eidolon.name,
             description=self._process_description_params(eidolon.description, eidolon.params),
         )
@@ -329,17 +302,9 @@ class YattaAPIClient(yatta.YattaAPI):
         return embed
 
     def get_character_story_embed(self, story: yatta.CharacterStory) -> DefaultEmbed:
-        if self.translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
-
-        return DefaultEmbed(self.locale, self.translator, title=story.title, description=story.text)
+        return DefaultEmbed(self.locale, title=story.title, description=story.text)
 
     def get_character_voice_embed(self, voice: yatta.CharacterVoice, character_id: int) -> DefaultEmbed:
-        if self.translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
-
         description = f"{voice.text}"
         if voice.audio is not None:
             voice_str = " ".join(
@@ -348,16 +313,10 @@ class YattaAPIClient(yatta.YattaAPI):
             )
             description += f"\n\n{voice_str}"
 
-        return DefaultEmbed(self.locale, self.translator, title=voice.title, description=description)
+        return DefaultEmbed(self.locale, title=voice.title, description=description)
 
     def get_item_embed(self, item: yatta.ItemDetail) -> DefaultEmbed:
-        if self.translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
-
-        embed = DefaultEmbed(
-            self.locale, self.translator, title=f"{item.name}\n{'★' * item.rarity}", description=item.description
-        )
+        embed = DefaultEmbed(self.locale, title=f"{item.name}\n{'★' * item.rarity}", description=item.description)
         if item.sources:
             embed.add_field(
                 name=LocaleStr(key="yatta_item_sources_field_name"),
@@ -372,17 +331,12 @@ class YattaAPIClient(yatta.YattaAPI):
     def get_light_cone_embed(
         self, light_cone: yatta.LightConeDetail, level: int, superimpose: int, manual_avatar: dict[str, Any]
     ) -> DefaultEmbed:
-        if self.translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
-
-        level_str = self.translator.translate(LevelStr(level), self.locale)
+        level_str = translator.translate(LevelStr(level), self.locale)
 
         lc_path = yatta.PathType(light_cone.type.id)
         path_emoji = get_hsr_path_emoji(YATTA_PATH_TO_HSR_PATH[lc_path].value)
         embed = DefaultEmbed(
             self.locale,
-            self.translator,
             title=f"{light_cone.name} ({level_str})",
             description=f"{'★' * light_cone.rarity}\n{path_emoji} {light_cone.type.name}",
         )
@@ -412,23 +366,15 @@ class YattaAPIClient(yatta.YattaAPI):
         return embed
 
     def get_book_series_embed(self, book: yatta.BookDetail, series: yatta.BookSeries) -> DefaultEmbed:
-        if self.translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
-
-        embed = DefaultEmbed(self.locale, self.translator, title=series.name, description=series.story)
+        embed = DefaultEmbed(self.locale, title=series.name, description=series.story)
         embed.set_author(name=book.name, icon_url=book.icon)
         embed.set_footer(text=book.description)
 
         return embed
 
     def get_relic_embed(self, relic_set: yatta.RelicSetDetail, relic: yatta.Relic) -> DefaultEmbed:
-        if self.translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
-
         set_effects = relic_set.set_effects
-        description = self.translator.translate(
+        description = translator.translate(
             LocaleStr(
                 bonus_2=self._process_description_params(
                     set_effects.two_piece.description, set_effects.two_piece.params
@@ -444,9 +390,9 @@ class YattaAPIClient(yatta.YattaAPI):
                 ),
                 key="artifact_set_four_piece_embed_description",
             )
-            description += "\n" + self.translator.translate(four_piece, self.locale)
+            description += "\n" + translator.translate(four_piece, self.locale)
 
-        embed = DefaultEmbed(self.locale, self.translator, title=relic.name, description=description)
+        embed = DefaultEmbed(self.locale, title=relic.name, description=description)
         embed.set_author(name=relic_set.name, icon_url=relic_set.icon)
         embed.set_footer(text=relic.description)
         embed.set_thumbnail(url=relic.icon)
@@ -456,15 +402,11 @@ class YattaAPIClient(yatta.YattaAPI):
     async def fetch_characters(
         self, *, use_cache: bool = True, trailblazer_gender_symbol: bool = False
     ) -> list[yatta.models.Character]:
-        if self.translator is None:
-            msg = "Translator is not set"
-            raise RuntimeError(msg)
-
         characters = await super().fetch_characters(use_cache)
 
         for character in characters:
             if character.id in TRAILBLAZER_IDS:
-                character.name = self.translator.get_trailblazer_name(
+                character.name = translator.get_trailblazer_name(
                     character, self.locale, gender_symbol=trailblazer_gender_symbol
                 )
 

@@ -10,6 +10,6 @@ if TYPE_CHECKING:
 
 
 async def web_app_entry(page: ft.Page) -> None:
-    async with Translator() as translator:
-        app = WebApp(page, translator=translator)
+    async with Translator():
+        app = WebApp(page)
     await app.initialize()

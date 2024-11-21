@@ -35,13 +35,11 @@ from .utils import (
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from ..l10n import Translator
-
 
 class WebApp:
-    def __init__(self, page: ft.Page, *, translator: Translator) -> None:
+    def __init__(self, page: ft.Page) -> None:
         self._page = page
-        self._translator = translator
+
         self._page.on_route_change = self.on_route_change
 
     async def initialize(self) -> None:
@@ -85,10 +83,9 @@ class WebApp:
 
     async def _handle_geetest(self, params: Params, locale: Locale) -> ft.View | None:
         page = self._page
-        translator = self._translator
 
         await page.close_dialog_async()
-        await show_loading_snack_bar(page, translator=translator, locale=locale)
+        await show_loading_snack_bar(page, locale=locale)
 
         gt_type: Literal["on_login", "on_email_send", "on_otp_send"] = await page.client_storage.get_async(
             f"hb.{params.user_id}.gt_type"
@@ -131,19 +128,12 @@ class WebApp:
                         password=password,
                         page=page,
                         params=params,
-                        translator=self._translator,
                         locale=Locale(params.locale),
                         mmt_type="on_email_send",
                     )
                 else:
                     await handle_action_ticket(
-                        result,
-                        email=email,
-                        password=password,
-                        page=page,
-                        params=params,
-                        translator=self._translator,
-                        locale=Locale(params.locale),
+                        result, email=email, password=password, page=page, params=params, locale=Locale(params.locale)
                     )
             else:
                 encrypted_cookies = encrypt_string(result.to_str())
@@ -171,13 +161,7 @@ class WebApp:
                 return None
 
             await handle_action_ticket(
-                action_ticket,
-                email=email,
-                password=password,
-                page=page,
-                params=params,
-                translator=self._translator,
-                locale=Locale(params.locale),
+                action_ticket, email=email, password=password, page=page, params=params, locale=Locale(params.locale)
             )
         else:  # on_otp_send
             encrypted_mobile = await page.client_storage.get_async(f"hb.{params.user_id}.mobile")
@@ -212,7 +196,6 @@ class WebApp:
 
     async def _handle_finish(self, params: Params, locale: Locale) -> ft.View | None:
         page = self._page
-        translator = self._translator
 
         await page.close_dialog_async()
         await page.close_banner_async()
@@ -261,21 +244,14 @@ class WebApp:
             return None
 
         if not accounts:
-            message = translator.translate(
-                LocaleStr(key="no_game_accounts_error_message", platform=EnumStr(params.platform or Platform.HOYOLAB)),
-                locale,
-            )
+            message = LocaleStr(
+                key="no_game_accounts_error_message", platform=EnumStr(params.platform or Platform.HOYOLAB)
+            ).translate(locale)
             await show_error_banner(page, message=message)
             return None
 
         return pages.FinishPage(
-            params=params,
-            translator=self._translator,
-            locale=locale,
-            accounts=accounts,
-            cookies=cookies,
-            device_id=device_id,
-            device_fp=device_fp,
+            params=params, locale=locale, accounts=accounts, cookies=cookies, device_id=device_id, device_fp=device_fp
         )
 
     async def _handle_login_routes(self, route: str, parsed_params: dict[str, str]) -> ft.View | None:
@@ -288,7 +264,7 @@ class WebApp:
                 locale_ = Locale(locale)
             except ValueError:
                 return pages.ErrorPage(code=422, message="Invalid locale")
-            return pages.LoginPage(user_data, translator=self._translator, locale=locale_)
+            return pages.LoginPage(user_data, locale=locale_)
 
         if route == "/geetest":
             query: str | None = await page.client_storage.get_async(f"hb.{parsed_params['user_id']}.params")
@@ -312,15 +288,15 @@ class WebApp:
             match route:
                 case "/platforms":
                     reset_storage(page, user_id=params.user_id)
-                    view = pages.PlatformsPage(params=params, translator=self._translator, locale=locale)
+                    view = pages.PlatformsPage(params=params, locale=locale)
                 case "/methods":
-                    view = pages.MethodsPage(params=params, translator=self._translator, locale=locale)
+                    view = pages.MethodsPage(params=params, locale=locale)
                 case "/email_password":
-                    view = pages.EmailPasswordPage(params=params, translator=self._translator, locale=locale)
+                    view = pages.EmailPasswordPage(params=params, locale=locale)
                 case "/dev_tools":
-                    view = pages.DevToolsPage(params=params, translator=self._translator, locale=locale)
+                    view = pages.DevToolsPage(params=params, locale=locale)
                 case "/dev":
-                    view = pages.DevModePage(params=params, translator=self._translator, locale=locale)
+                    view = pages.DevModePage(params=params, locale=locale)
                 case "/mod_app":
                     view = pages.ModAppPage(params=params)
                 case "/mobile":
@@ -369,7 +345,6 @@ class WebApp:
                     ]
 
                 view = pages.GachaLogPage(
-                    translator=self._translator,
                     locale=locale,
                     gacha_histories=gacha_logs,
                     gacha_icons=gacha_icons,

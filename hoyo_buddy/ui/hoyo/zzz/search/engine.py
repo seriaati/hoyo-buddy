@@ -6,7 +6,7 @@ import hakushin
 
 from hoyo_buddy.constants import locale_to_hakushin_lang
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import View
 from hoyo_buddy.ui.components import Select, SelectOption
 from hoyo_buddy.utils import ephemeral
@@ -20,11 +20,11 @@ __all__ = ("EngineSearchView",)
 
 
 class EngineSearchView(View):
-    def __init__(self, engine_id: int, *, author: User, locale: Locale, translator: Translator) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, engine_id: int, *, author: User, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
         self._engine_id = engine_id
         self._engine: hakushin.zzz.WeaponDetail
-        self._hakushin_translator = HakushinTranslator(locale, translator)
+        self._hakushin_translator = HakushinTranslator(locale)
         self._refinement: str = "1"
 
     def _add_items(self) -> None:

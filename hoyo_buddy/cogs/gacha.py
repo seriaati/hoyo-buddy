@@ -118,7 +118,7 @@ class Gacha(
         locale = await get_locale(i)
         user: User = i.namespace.user
         return await self.bot.get_account_choices(
-            user, i.user.id, current, locale, self.bot.translator, games=(Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
+            user, i.user.id, current, locale, games=(Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
         )
 
 

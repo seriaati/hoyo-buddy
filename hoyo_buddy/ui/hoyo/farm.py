@@ -13,7 +13,7 @@ from ...embeds import DefaultEmbed
 from ...emojis import BELL_OUTLINE, GENSHIN_CITY_EMOJIS
 from ...enums import GenshinCity
 from ...hoyo.farm_data import FarmDataFetcher
-from ...l10n import EnumStr, LocaleStr, Translator, WeekdayStr
+from ...l10n import EnumStr, LocaleStr, WeekdayStr
 from ...models import DrawInput
 from ...utils import ephemeral, get_now
 from ..components import Button, Select, SelectOption, View
@@ -23,10 +23,8 @@ if TYPE_CHECKING:
 
 
 class FarmView(View):
-    def __init__(
-        self, uid: int | None, dark_mode: bool, *, author: User | Member | None, locale: Locale, translator: Translator
-    ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, uid: int | None, dark_mode: bool, *, author: User | Member | None, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
 
         self._uid = uid
         self._dark_mode = dark_mode
@@ -55,7 +53,6 @@ class FarmView(View):
         if self._weekday == 6:
             embed = DefaultEmbed(
                 self.locale,
-                self.translator,
                 title=LocaleStr(key="farm_view.sundays"),
                 description=LocaleStr(key="farm_view.happy_farming"),
             )
@@ -71,9 +68,7 @@ class FarmView(View):
             executor=i.client.executor,
             loop=i.client.loop,
         )
-        file_ = await draw_farm_card(
-            draw_input, await FarmDataFetcher.fetch(self._weekday, self.translator, city=self._city), self.translator
-        )
+        file_ = await draw_farm_card(draw_input, await FarmDataFetcher.fetch(self._weekday, city=self._city))
 
         await i.edit_original_response(attachments=[file_], view=self, embed=None, content=await get_dyk(i))
         self.message = await i.original_response()
@@ -103,11 +98,7 @@ class ReminderButton(Button[FarmView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        embed = DefaultEmbed(
-            self.view.locale,
-            self.view.translator,
-            description=LocaleStr(key="farm_view.set_reminder.embed.description"),
-        )
+        embed = DefaultEmbed(self.view.locale, description=LocaleStr(key="farm_view.set_reminder.embed.description"))
         await i.response.send_message(embed=embed, ephemeral=True)
 
 

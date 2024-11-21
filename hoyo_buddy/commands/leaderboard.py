@@ -156,14 +156,14 @@ class LeaderboardCommand:
 
         lb_size = await self.get_lb_size(lb_type, account.game)
         embed = (
-            DefaultEmbed(locale, i.client.translator, title=EnumStr(lb_type))
+            DefaultEmbed(locale, title=EnumStr(lb_type))
             .set_author(name=EnumStr(account.game), icon_url=get_game_icon(account.game))
             .set_footer(text=LocaleStr(key="akasha_total_entries", total=lb_size))
         )
 
         you = await Leaderboard.get_or_none(type=lb_type, game=account.game, uid=account.uid)
 
-        async with AmbrAPIClient(locale, i.client.translator) as api:
+        async with AmbrAPIClient(locale) as api:
             characters = await api.fetch_characters()
             character_names = {char.id: char.name for char in characters}
 
@@ -178,7 +178,6 @@ class LeaderboardCommand:
             lb_type=lb_type,
             author=i.user,
             locale=locale,
-            translator=i.client.translator,
         )
         await view.start(i)
 

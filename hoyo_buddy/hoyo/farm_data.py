@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     import ambr
 
     from ..enums import GenshinCity
-    from ..l10n import Translator
 
 
 class FarmDataFetcher:
@@ -41,14 +40,14 @@ class FarmDataFetcher:
 
     @classmethod
     async def fetch(
-        cls, weekday: int, translator: Translator, *, locale: Locale | None = None, city: GenshinCity | None = None
+        cls, weekday: int, *, locale: Locale | None = None, city: GenshinCity | None = None
     ) -> list[FarmData]:
         # Initialize class variables
         cls._weekday = weekday
 
-        async with AmbrAPIClient(Locale.american_english, translator) as client:
+        async with AmbrAPIClient(Locale.american_english) as client:
             domains = await client.fetch_domains()
-        async with AmbrAPIClient(locale or Locale.american_english, translator) as client:
+        async with AmbrAPIClient(locale or Locale.american_english) as client:
             upgrades = await client.fetch_upgrade_data()
             characters = await client.fetch_characters()
             weapons = await client.fetch_weapons()

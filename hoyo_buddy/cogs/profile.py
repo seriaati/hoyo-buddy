@@ -105,7 +105,6 @@ class Profile(
             character_ids=[character_id1, character_id2, character_id3, character_id4],
             locale=locale,
             user=i.user,
-            translator=self.bot.translator,
         )
         if game is Game.GENSHIN:
             view = await command.run_genshin()

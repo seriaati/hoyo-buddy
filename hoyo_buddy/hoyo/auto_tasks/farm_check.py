@@ -10,7 +10,7 @@ from loguru import logger
 from ...constants import UID_TZ_OFFSET
 from ...db.models import FarmNotify
 from ...embeds import DefaultEmbed
-from ...l10n import LocaleStr, Translator
+from ...l10n import LocaleStr
 from ...utils import get_now
 from ..clients.ambr import AmbrAPIClient
 from ..farm_data import FarmDataFetcher
@@ -24,7 +24,6 @@ CharacterOrWeapon = TypeVar("CharacterOrWeapon", ambr.Character, ambr.Weapon)
 
 class FarmChecker:
     _bot: ClassVar[HoyoBuddy]
-    _translator: ClassVar[Translator]
     _item_id_to_name: ClassVar[dict[str, dict[str, str]]]
     """[locale][item_id] = item_name"""
 
@@ -34,7 +33,6 @@ class FarmChecker:
 
         embed = DefaultEmbed(
             locale,
-            cls._translator,
             title=LocaleStr(key="farm_check.farmable_today", name=cls._item_id_to_name[locale.value][str(item.id)]),
         )
         embed.set_thumbnail(url=item.icon)
@@ -58,7 +56,6 @@ class FarmChecker:
         logger.info(f"Starting farm check task for uid_start {uid_start}")
 
         cls._bot = bot
-        cls._translator = bot.translator
         cls._item_id_to_name = {}
 
         farm_notifies = await FarmNotify.filter(enabled=True).all().prefetch_related("account")
@@ -66,7 +63,7 @@ class FarmChecker:
             return
 
         weekday = (get_now() + timedelta(hours=UID_TZ_OFFSET.get(uid_start, 0))).weekday()
-        farm_datas = await FarmDataFetcher.fetch(weekday, bot.translator)
+        farm_datas = await FarmDataFetcher.fetch(weekday)
 
         for farm_notify in farm_notifies:
             if not str(farm_notify.account.uid).startswith(uid_start):
@@ -75,7 +72,7 @@ class FarmChecker:
             await farm_notify.account.fetch_related("user", "user__settings")
             locale = farm_notify.account.user.settings.locale or Locale.american_english
             if locale.value not in cls._item_id_to_name:
-                async with AmbrAPIClient(locale, bot.translator) as client:
+                async with AmbrAPIClient(locale) as client:
                     characters = await client.fetch_characters()
                     weapons = await client.fetch_weapons()
                 cls._item_id_to_name[locale.value] = {str(item.id): item.name for item in characters + weapons}

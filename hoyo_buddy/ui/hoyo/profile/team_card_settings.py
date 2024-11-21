@@ -10,13 +10,12 @@ from hoyo_buddy.ui import ToggleButton, View
 if TYPE_CHECKING:
     from discord import Locale, Member, User
 
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction
 
 
 class TeamCardSettingsView(View):
-    def __init__(self, settings: Settings, *, author: User | Member, locale: Locale, translator: Translator) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, settings: Settings, *, author: User | Member, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
         self.settings = settings
         self._add_items()
 
@@ -27,7 +26,6 @@ class TeamCardSettingsView(View):
     async def start(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.locale,
-            self.translator,
             title=LocaleStr(key="team_card_settings_embed_title"),
             description=LocaleStr(key="team_card_settings_embed_description"),
         )

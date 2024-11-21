@@ -22,7 +22,6 @@ class CardInfoButton(Button[ProfileView]):
     async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
-            self.view.translator,
             title=LocaleStr(key="profile.card_info.embed.title"),
             description=LocaleStr(
                 key="profile.card_info.embed.description", provider="[Enka.Network](https://api.enka.network/)"

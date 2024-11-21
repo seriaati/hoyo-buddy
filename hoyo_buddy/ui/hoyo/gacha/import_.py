@@ -11,7 +11,7 @@ from hoyo_buddy.emojis import LINK, LOADING
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import AuthkeyExtractError, FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.components import Button, Modal, TextInput, View
 from hoyo_buddy.utils import get_item_ids
 
@@ -22,15 +22,14 @@ if TYPE_CHECKING:
 
 
 class GachaImportView(View):
-    def __init__(self, account: HoyoAccount, *, author: User, locale: Locale, translator: Translator) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, account: HoyoAccount, *, author: User, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
         self.account = account
 
     @property
     def embed(self) -> DefaultEmbed:
         return DefaultEmbed(
             self.locale,
-            self.translator,
             title=LocaleStr(key="gacha_import_embed_title"),
             description=LocaleStr(key="gacha_import_embed_description"),
         ).add_acc_info(self.account)
@@ -57,7 +56,7 @@ class URLImport(Button[GachaImportView]):
 
     async def callback(self, i: Interaction) -> Any:
         modal = EnterURLModal()
-        modal.translate(self.view.locale, self.view.translator)
+        modal.translate(self.view.locale)
 
         await i.response.send_modal(modal)
         await modal.wait()
@@ -76,7 +75,6 @@ class URLImport(Button[GachaImportView]):
 
         embed = DefaultEmbed(
             self.view.locale,
-            self.view.translator,
             title=LocaleStr(key="gacha_import_loading_embed_title"),
             description=LocaleStr(key="gacha_import_loading_embed_description", loading_emoji=LOADING),
         ).add_acc_info(self.account)
@@ -144,7 +142,6 @@ class URLImport(Button[GachaImportView]):
 
         embed = DefaultEmbed(
             self.view.locale,
-            self.view.translator,
             title=LocaleStr(key="gacha_import_success_title"),
             description=LocaleStr(key="gacha_import_success_message", count=count),
         ).add_acc_info(self.account)

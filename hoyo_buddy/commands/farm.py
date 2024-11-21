@@ -36,7 +36,6 @@ class FarmCommand:
         self._choices = interaction.client.autocomplete_choices
         self._query = query
         self._settings = settings
-        self._translator = interaction.client.translator
         self._action = action
 
         characters = self._choices[Game.GENSHIN][ambr.ItemCategory.CHARACTERS]
@@ -62,7 +61,6 @@ class FarmCommand:
         if self._query in farm_notify.item_ids:
             embed = ErrorEmbed(
                 self.locale,
-                self._translator,
                 title=LocaleStr(key="farm_add_command.item_already_in_list"),
                 description=LocaleStr(key="farm_add_command.item_already_in_list_description"),
             )
@@ -87,7 +85,6 @@ class FarmCommand:
             self._interaction.client.loop,
             author=self._interaction.user,
             locale=self.locale,
-            translator=self._translator,
         )
         await view.start(self._interaction)
 
@@ -109,7 +106,6 @@ class FarmCommand:
                 except ValueError:
                     embed = ErrorEmbed(
                         self.locale,
-                        self._translator,
                         title=LocaleStr(key="farm_remove_command.item_not_found"),
                         description=LocaleStr(key="farm_remove_command.item_not_found_description"),
                     )

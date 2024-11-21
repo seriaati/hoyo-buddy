@@ -29,7 +29,6 @@ def draw_character_card(
     pc_icons: dict[str, str],
     talent_orders: dict[int, list[int]],
     dark_mode: bool,
-    translator: Translator,
     locale_: str,
 ) -> io.BytesIO:
     locale = Locale(locale_)
@@ -48,7 +47,7 @@ def draw_character_card(
 
             talent_str = "/".join(str(t.level) if t is not None else "?" for t in talents)
 
-        card = draw_small_gi_chara_card(talent_str, dark_mode, character, translator, locale)
+        card = draw_small_gi_chara_card(talent_str, dark_mode, character, locale)
         c_cards[str(character.id)] = card
 
     first_card = next(iter(c_cards.values()))
@@ -113,18 +112,14 @@ def gi_cache_key(
 
 @cached(TTLCache(maxsize=64, ttl=180), key=gi_cache_key)
 def draw_small_gi_chara_card(
-    talent_str: str,
-    dark_mode: bool,
-    character: GICharacter | UnownedGICharacter,
-    translator: Translator,
-    locale: Locale,
+    talent_str: str, dark_mode: bool, character: GICharacter | UnownedGICharacter, locale: Locale
 ) -> Image.Image:
     im = Drawer.open_image(
         f"hoyo-buddy-assets/assets/gi-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png"
     )
 
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(draw, folder="gi-characters", dark_mode=dark_mode, translator=translator)
+    drawer = Drawer(draw, folder="gi-characters", dark_mode=dark_mode)
 
     if isinstance(character, UnownedGICharacter):
         return im

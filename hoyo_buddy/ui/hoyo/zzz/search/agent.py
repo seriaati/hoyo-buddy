@@ -16,7 +16,6 @@ if TYPE_CHECKING:
 
     from discord import Locale
 
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Interaction, User
 
 __all__ = ("AgentSearchView",)
@@ -31,14 +30,14 @@ SKILL_TYPE_LOCALE_STRS: Final[dict[hakushin.enums.ZZZSkillType, LocaleStr]] = {
 
 
 class AgentSearchView(View):
-    def __init__(self, agent_id: int, *, author: User, locale: Locale, translator: Translator) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, agent_id: int, *, author: User, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
         self._agent_id = agent_id
         self._agent: hakushin.zzz.CharacterDetail
         self._page: Literal["info", "skills", "cinemas", "core"] = "info"
         self._cinema_index: int = 0
         self._skill_type: hakushin.enums.ZZZSkillType = hakushin.enums.ZZZSkillType.BASIC
-        self._hakushin_translator = HakushinTranslator(locale, translator)
+        self._hakushin_translator = HakushinTranslator(locale)
 
     def _add_items(self) -> None:
         self.add_item(PageSelect(self._page))

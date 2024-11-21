@@ -13,7 +13,7 @@ from ..bot.error_handler import get_error_embed
 from ..db.models import Settings, get_locale
 from ..embeds import ErrorEmbed
 from ..exceptions import InvalidInputError
-from ..l10n import LocaleStr, Translator
+from ..l10n import LocaleStr, translator
 
 if TYPE_CHECKING:
     import io
@@ -40,11 +40,10 @@ V_co = TypeVar("V_co", bound="View", covariant=True)
 
 
 class View(discord.ui.View):
-    def __init__(self, *, author: User, locale: discord.Locale, translator: Translator) -> None:
+    def __init__(self, *, author: User, locale: discord.Locale) -> None:
         super().__init__(timeout=600)
         self.author = author
         self.locale = locale
-        self.translator = translator
         self.message: discord.Message | None = None
         self.item_states: dict[str, bool] = {}
 
@@ -61,7 +60,7 @@ class View(discord.ui.View):
 
     async def on_error(self, i: Interaction, error: Exception, _: discord.ui.Item[Any]) -> None:
         locale = await get_locale(i)
-        embed, recognized = get_error_embed(error, locale, i.client.translator)
+        embed, recognized = get_error_embed(error, locale)
         if not recognized:
             i.client.capture_exception(error)
         await self.absolute_send(i, embed=embed, ephemeral=True)
@@ -76,7 +75,6 @@ class View(discord.ui.View):
         if i.user.id != self.author.id:
             embed = ErrorEmbed(
                 locale or i.locale,
-                self.translator,
                 title=LocaleStr(key="interaction_failed_title"),
                 description=LocaleStr(key="interaction_failed_description"),
             )
@@ -109,7 +107,7 @@ class View(discord.ui.View):
 
     def add_item(self, item: Button | Select, *, translate: bool = True) -> Self:
         if translate:
-            item.translate(self.locale, self.translator)
+            item.translate(self.locale)
         return super().add_item(item)
 
     def get_item(self, custom_id: str) -> Any:
@@ -123,7 +121,7 @@ class View(discord.ui.View):
     def translate_items(self) -> None:
         for item in self.children:
             if isinstance(item, Button | Select):
-                item.translate(self.locale, self.translator)
+                item.translate(self.locale)
 
     @staticmethod
     async def absolute_send(i: Interaction, **kwargs: Any) -> None:
@@ -150,13 +148,7 @@ class View(discord.ui.View):
 
 class URLButtonView(discord.ui.View):
     def __init__(
-        self,
-        translator: Translator,
-        locale: discord.Locale,
-        *,
-        url: str,
-        label: str | LocaleStr | None = None,
-        emoji: str | None = None,
+        self, locale: discord.Locale, *, url: str, label: str | LocaleStr | None = None, emoji: str | None = None
     ) -> None:
         super().__init__()
         self.add_item(
@@ -185,7 +177,7 @@ class Button(discord.ui.Button, Generic[V_co]):
 
         self.view: V_co
 
-    def translate(self, locale: discord.Locale, translator: Translator) -> None:
+    def translate(self, locale: discord.Locale) -> None:
         if self.locale_str_label:
             self.label = translator.translate(self.locale_str_label, locale, capitalize_first_word=True)
 
@@ -198,7 +190,7 @@ class Button(discord.ui.Button, Generic[V_co]):
 
         self.disabled = True
         self.emoji = emojis.LOADING
-        self.label = self.view.translator.translate(LocaleStr(key="loading_text"), self.view.locale)
+        self.label = translator.translate(LocaleStr(key="loading_text"), self.view.locale)
 
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 
@@ -272,7 +264,7 @@ class ToggleButton(Button, Generic[V_co]):
 
     def update_style(self) -> None:
         self.style = self._get_style()
-        self.label = self.toggle_label.translate(self.view.translator, self.view.locale)
+        self.label = self.toggle_label.translate(self.view.locale)
         self.emoji = emojis.TOGGLE_EMOJIS[self.current_toggle]
 
     async def callback(self, i: Interaction, *, edit: bool = True, **kwargs: Any) -> Any:
@@ -337,7 +329,7 @@ class Select(discord.ui.Select, Generic[V_co]):
     def options(self, value: list[SelectOption]) -> None:
         self._underlying.options = value  # pyright: ignore [reportAttributeAccessIssue]
 
-    def translate(self, locale: discord.Locale, translator: Translator) -> None:
+    def translate(self, locale: discord.Locale) -> None:
         if self.locale_str_placeholder:
             self.placeholder = translator.translate(self.locale_str_placeholder, locale, capitalize_first_word=True)[
                 :100
@@ -366,7 +358,7 @@ class Select(discord.ui.Select, Generic[V_co]):
 
         self.options = [
             SelectOption(
-                label=self.view.translator.translate(LocaleStr(key="loading_text"), self.view.locale),
+                label=translator.translate(LocaleStr(key="loading_text"), self.view.locale),
                 value="loading",
                 default=True,
                 emoji=emojis.LOADING,
@@ -482,7 +474,7 @@ class PaginatorSelect(Select, Generic[V_co]):
 
             self.max_values = min(self._max_values, len(self.options))
 
-        self.translate(self.view.locale, self.view.translator)
+        self.translate(self.view.locale)
         return changed
 
 
@@ -534,7 +526,7 @@ class Modal(discord.ui.Modal):
 
     async def on_error(self, i: Interaction, error: Exception) -> None:
         locale = await get_locale(i)
-        embed, recognized = get_error_embed(error, locale, i.client.translator)
+        embed, recognized = get_error_embed(error, locale)
         if not recognized:
             i.client.capture_exception(error)
 
@@ -549,7 +541,7 @@ class Modal(discord.ui.Modal):
             await i.response.defer()
         self.stop()
 
-    def translate(self, locale: discord.Locale, translator: Translator) -> None:
+    def translate(self, locale: discord.Locale) -> None:
         self.title = translator.translate(self.locale_str_title, locale, title_case=True)
         for item in self.children:
             if isinstance(item, TextInput):

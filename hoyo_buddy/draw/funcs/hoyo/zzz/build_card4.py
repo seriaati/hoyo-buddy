@@ -14,7 +14,6 @@ from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.draw.funcs.hoyo.zzz.common import SKILL_ORDER, STAT_ICONS, get_props
 
 if TYPE_CHECKING:
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.models import AgentNameData
 
 
@@ -29,7 +28,6 @@ class ZZZAgentCard4:
         name_data: AgentNameData | None,
         color: str,
         show_substat_rolls: bool,
-        translator: Translator,
     ) -> None:
         self._agent = agent
         self._locale = Locale(locale)
@@ -38,7 +36,6 @@ class ZZZAgentCard4:
         self._name_data = name_data
         self._color = color
         self._show_substat_rolls = show_substat_rolls
-        self._translator = translator
 
         self.im: Image.Image = None  # pyright: ignore[reportAttributeAccessIssue]
         self.drawer: Drawer = None  # pyright: ignore[reportAttributeAccessIssue]
@@ -331,9 +328,7 @@ class ZZZAgentCard4:
 
     def draw(self) -> BytesIO:
         self.im = im = Drawer.open_image("hoyo-buddy-assets/assets/zzz-build-card4/card_base.png")
-        self.drawer = Drawer(
-            ImageDraw.Draw(im), folder="zzz-build-card4", dark_mode=False, sans=True, translator=self._translator
-        )
+        self.drawer = Drawer(ImageDraw.Draw(im), folder="zzz-build-card4", dark_mode=False, sans=True)
 
         self._draw_card_base()
         self._draw_img()

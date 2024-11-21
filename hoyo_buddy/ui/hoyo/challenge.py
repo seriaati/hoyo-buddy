@@ -48,7 +48,6 @@ if TYPE_CHECKING:
     from discord import File, Locale, Member, User
 
     from hoyo_buddy.db.models import HoyoAccount
-    from hoyo_buddy.l10n import Translator
     from hoyo_buddy.types import Challenge, ChallengeWithLang, Interaction
 
 
@@ -60,18 +59,15 @@ class BuffView(View):
         *,
         author: User | Member,
         locale: Locale,
-        translator: Translator,
     ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+        super().__init__(author=author, locale=locale)
         self._challenge = challenge
         self._season = season
         self.buffs, self._buff_usage = self.calc_buff_usage()
         self.add_item(BuffSelector(list(self.buffs.values())))
 
     def get_buff_embed(self, buff: Buff, floors: str) -> DefaultEmbed:
-        embed = DefaultEmbed(
-            self.locale, self.translator, title=buff.name, description=remove_html_tags(buff.description)
-        )
+        embed = DefaultEmbed(self.locale, title=buff.name, description=remove_html_tags(buff.description))
         embed.add_field(name=LocaleStr(key="challenge_view.buff_used_in"), value=floors)
 
         if isinstance(buff, ChallengeBuff | TheaterBuff):
@@ -89,7 +85,7 @@ class BuffView(View):
             for floor in reversed(self._challenge.floors):
                 n1_buff = floor.node_1.buff
                 if n1_buff is not None:
-                    team_str = LocaleStr(key="challenge_view.team", team=1).translate(self.translator, self.locale)
+                    team_str = LocaleStr(key="challenge_view.team", team=1).translate(self.locale)
 
                     floor_name = get_floor_difficulty(floor.name, self._season.name)
                     buff_usage[n1_buff.name].append(f"{floor_name} ({team_str})")
@@ -98,7 +94,7 @@ class BuffView(View):
 
                 n2_buff = floor.node_2.buff
                 if n2_buff is not None:
-                    team_str = LocaleStr(key="challenge_view.team", team=2).translate(self.translator, self.locale)
+                    team_str = LocaleStr(key="challenge_view.team", team=2).translate(self.locale)
 
                     floor_name = get_floor_difficulty(floor.name, self._season.name)
                     buff_usage[n2_buff.name].append(f"{floor_name} ({team_str})")
@@ -107,7 +103,7 @@ class BuffView(View):
         elif isinstance(self._challenge, ShiyuDefense):
             for floor in reversed(self._challenge.floors):
                 for buff in floor.buffs:
-                    floor_name = LocaleStr(key=f"shiyu_{floor.index}_frontier").translate(self.translator, self.locale)
+                    floor_name = LocaleStr(key=f"shiyu_{floor.index}_frontier").translate(self.locale)
                     buff_usage[buff.name].append(floor_name)
                     if buff.name not in buffs:
                         buffs[buff.name] = buff
@@ -117,7 +113,7 @@ class BuffView(View):
                 for buff in act_buffs:
                     act_name = LocaleStr(
                         key="role_combat_round_count", mi18n_game=Game.GENSHIN, n=act.round_id
-                    ).translate(self.translator, self.locale)
+                    ).translate(self.locale)
                     buff_usage[buff.name].append(act_name)
                     if buff.name not in buffs:
                         buffs[buff.name] = buff
@@ -147,10 +143,8 @@ class BuffSelector(Select[BuffView]):
 
 
 class ChallengeView(View):
-    def __init__(
-        self, account: HoyoAccount, dark_mode: bool, *, author: User | Member, locale: Locale, translator: Translator
-    ) -> None:
-        super().__init__(author=author, locale=locale, translator=translator)
+    def __init__(self, account: HoyoAccount, dark_mode: bool, *, author: User | Member, locale: Locale) -> None:
+        super().__init__(author=author, locale=locale)
 
         self._challenge_type: ChallengeType | None = None
         self.account = account
@@ -294,7 +288,6 @@ class ChallengeView(View):
                 ),
                 self.challenge,
                 self.characters,
-                self.translator,
             )
         if isinstance(self.challenge, StarRailChallenge):
             return await draw_moc_card(
@@ -308,7 +301,6 @@ class ChallengeView(View):
                 ),
                 self.challenge,
                 self._get_season(self.challenge),
-                self.translator,
             )
         if isinstance(self.challenge, StarRailPureFiction):
             return await draw_pure_fiction_card(
@@ -322,7 +314,6 @@ class ChallengeView(View):
                 ),
                 self.challenge,
                 self._get_season(self.challenge),
-                self.translator,
             )
         if isinstance(self.challenge, StarRailAPCShadow):
             return await draw_apc_shadow_card(
@@ -336,7 +327,6 @@ class ChallengeView(View):
                 ),
                 self.challenge,
                 self._get_season(self.challenge),
-                self.translator,
             )
         if isinstance(self.challenge, ImgTheaterData):
             return await draw_img_theater_card(
@@ -350,7 +340,6 @@ class ChallengeView(View):
                 ),
                 self.challenge,
                 {chara.id: chara.constellation for chara in self.characters},
-                self.translator,
             )
         # ShiyuDefense
         return await draw_shiyu_card(
@@ -365,7 +354,6 @@ class ChallengeView(View):
             self.challenge,
             self.agent_ranks,
             self.uid,
-            self.translator,
         )
 
     def _add_items(self) -> None:
@@ -380,14 +368,14 @@ class ChallengeView(View):
             file_ = await self._draw_card(i.client.session, i.client.executor, i.client.loop)
         except NoChallengeDataError as e:
             await item.unset_loading_state(i)
-            embed, _ = get_error_embed(e, self.locale, self.translator)
+            embed, _ = get_error_embed(e, self.locale)
             await i.edit_original_response(embed=embed, view=self, attachments=[])
             return
         except Exception:
             await item.unset_loading_state(i)
             raise
 
-        embed = DefaultEmbed(self.locale, self.translator).add_acc_info(self.account)
+        embed = DefaultEmbed(self.locale).add_acc_info(self.account)
         embed.set_image(url="attachment://challenge.png")
 
         await item.unset_loading_state(i, embed=embed, attachments=[file_])
@@ -456,7 +444,7 @@ class ChallengeTypeSelect(Select[ChallengeView]):
 
         phase_select: PhaseSelect = self.view.get_item("challenge_view.phase_select")
         phase_select.set_options(histories)
-        phase_select.translate(self.view.locale, self.view.translator)
+        phase_select.translate(self.view.locale)
         phase_select.update_options_defaults(values=[str(self.view.season_id)])
 
         self.view.item_states["challenge_view.view_buffs"] = not isinstance(self.view.challenge, ChallengeWithBuff)
@@ -483,9 +471,7 @@ class ViewBuffs(Button[ChallengeView]):
         except TypeError:
             season = None
 
-        view = BuffView(
-            self.view.challenge, season, author=i.user, locale=self.view.locale, translator=self.view.translator
-        )
+        view = BuffView(self.view.challenge, season, author=i.user, locale=self.view.locale)
         if not view.buffs:
             self.disabled = True
             return await i.response.edit_message(view=self.view)

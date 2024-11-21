@@ -8,7 +8,7 @@ from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
-from hoyo_buddy.l10n import LocaleStr, Translator
+from hoyo_buddy.l10n import LocaleStr, translator
 
 if TYPE_CHECKING:
     import ambr
@@ -18,13 +18,13 @@ if TYPE_CHECKING:
 __all__ = ("draw_farm_card",)
 
 
-def cache_key(farm_data: list[FarmData], locale: str, dark_mode: bool, _: Translator) -> str:
+def cache_key(farm_data: list[FarmData], locale: str, dark_mode: bool) -> str:
     return f"{locale}-{dark_mode}-{'-'.join(str(data.domain.id) for data in farm_data)}"
 
 
 @cached(LRUCache(maxsize=32), key=cache_key)
-def draw_farm_card(farm_data: list[FarmData], locale_: str, dark_mode: bool, translator: Translator) -> io.BytesIO:
-    def get_domain_title(domain: ambr.Domain, locale: Locale, translator: Translator) -> str:
+def draw_farm_card(farm_data: list[FarmData], locale_: str, dark_mode: bool) -> io.BytesIO:
+    def get_domain_title(domain: ambr.Domain, locale: Locale) -> str:
         """Get the title of a GI domain based on its name and city, assuming the language is English."""
         city_name = translator.translate(LocaleStr(custom_str=domain.city.name.title()), locale)
         domain_type = LocaleStr(key="characters") if "Mastery" in domain.name else LocaleStr(key="weapons")
@@ -38,7 +38,7 @@ def draw_farm_card(farm_data: list[FarmData], locale_: str, dark_mode: bool, tra
     for data in farm_data:
         basic_card: Image.Image = Drawer.open_image(f"hoyo-buddy-assets/assets/farm/{mode}_card.png")
         draw = ImageDraw.Draw(basic_card)
-        drawer = Drawer(draw, folder="farm", dark_mode=dark_mode, translator=translator)
+        drawer = Drawer(draw, folder="farm", dark_mode=dark_mode)
 
         item_per_row = 9
         height_per_row = 199
@@ -49,10 +49,10 @@ def draw_farm_card(farm_data: list[FarmData], locale_: str, dark_mode: bool, tra
         basic_card.paste(lid, (8, 3), lid)
 
         draw = ImageDraw.Draw(basic_card)
-        drawer = Drawer(draw, folder="farm", dark_mode=dark_mode, translator=translator, locale=locale)
+        drawer = Drawer(draw, folder="farm", dark_mode=dark_mode, locale=locale)
 
         drawer.write(
-            get_domain_title(data.domain, locale, translator),
+            get_domain_title(data.domain, locale),
             size=48,
             position=(32, lid.height // 2 + 3),
             style="bold",

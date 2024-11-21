@@ -696,6 +696,6 @@ OFFLOAD_APIS: dict[OffloadAPI, str] = {
     "VERCEL": "https://daily-checkin-api.vercel.app",
     "RENDER": "https://daily-checkin-api.onrender.com",
     "FLY": "https://daily-checkin-api.fly.dev",
-    "B4A": "https://dailycheckinapi-z7nqjbte.b4a.run/",
-    "RAILWAY": "https://dailycheckinapi-production.up.railway.app/"
+    "B4A": "https://dailycheckinapi-z7nqjbte.b4a.run",
+    "RAILWAY": "https://dailycheckinapi-production.up.railway.app"
 }

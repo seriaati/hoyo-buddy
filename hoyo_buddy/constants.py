@@ -697,4 +697,5 @@ OFFLOAD_APIS: dict[OffloadAPI, str] = {
     "RENDER": "https://daily-checkin-api.onrender.com",
     "FLY": "https://daily-checkin-api.fly.dev",
     "B4A": "https://dailycheckinapi-z7nqjbte.b4a.run/",
+    "RAILWAY": "https://dailycheckinapi-production.up.railway.app/"
 }

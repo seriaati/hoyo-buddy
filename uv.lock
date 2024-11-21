@@ -131,19 +131,6 @@ sqlite = [
 ]
 
 [[package]]
-name = "aiohttp-socks"
-version = "0.9.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "aiohttp" },
-    { name = "python-socks" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/41/72/e6bb21b989a433690a326d8f6524533cca54adf10b4627bb935b42972f76/aiohttp_socks-0.9.0.tar.gz", hash = "sha256:22159a1af026b229cfe5ea007e065bb3fe56385a951a82623a6f4588a6758003", size = 10201 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c0/68/26a6d4a67ce47125ebedf0316c4dc7ea71f692a2c3d506e25dbfd515db6c/aiohttp_socks-0.9.0-py3-none-any.whl", hash = "sha256:90a8211fd5b904ccbd010900105f1fd2dab20ae8a07df508df399036ad8d3d88", size = 9679 },
-]
-
-[[package]]
 name = "aiosignal"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -774,9 +761,6 @@ auth = [
     { name = "qrcode", extra = ["pil"] },
     { name = "rsa" },
 ]
-socks-proxy = [
-    { name = "aiohttp-socks" },
-]
 sqlite = [
     { name = "aiosqlite" },
 ]
@@ -849,7 +833,7 @@ dependencies = [
     { name = "fake-useragent" },
     { name = "flet" },
     { name = "fonttools" },
-    { name = "genshin", extra = ["auth", "socks-proxy", "sqlite"] },
+    { name = "genshin", extra = ["auth", "sqlite"] },
     { name = "gitpython" },
     { name = "hakushin-py" },
     { name = "jishaku" },
@@ -890,7 +874,7 @@ requires-dist = [
     { name = "fake-useragent", specifier = ">=1.5.1" },
     { name = "flet", specifier = ">=0.24.0" },
     { name = "fonttools", specifier = ">=4.53.1" },
-    { name = "genshin", extras = ["auth", "socks-proxy", "sqlite"], git = "https://github.com/thesadru/genshin.py?branch=master" },
+    { name = "genshin", extras = ["auth", "sqlite"], git = "https://github.com/thesadru/genshin.py?branch=master" },
     { name = "gitpython", specifier = ">=3.1.43" },
     { name = "hakushin-py", specifier = ">=0.4.4" },
     { name = "jishaku", specifier = ">=2.5.2" },
@@ -1597,15 +1581,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/87/c7/5e1547c44e31da50a460df93af11a535ace568ef89d7a811069ead340c4a/python-slugify-8.0.4.tar.gz", hash = "sha256:59202371d1d05b54a9e7720c5e038f928f45daaffe41dd10822f3907b937c856", size = 10921 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a4/62/02da182e544a51a5c3ccf4b03ab79df279f9c60c5e82d5e8bec7ca26ac11/python_slugify-8.0.4-py2.py3-none-any.whl", hash = "sha256:276540b79961052b66b7d116620b36518847f52d5fd9e3a70164fc8c50faa6b8", size = 10051 },
-]
-
-[[package]]
-name = "python-socks"
-version = "2.5.3"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/26/a2/dac502b749429cec85086ad8077e32a77eef100730dbc13b37ad658079fc/python_socks-2.5.3.tar.gz", hash = "sha256:4414b2a24777e439758a5f4644f81509ee634e6893115fe7fd1ec482b4b5c979", size = 201519 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/7e/54/6b907fd2bac4db271902a7a885d4521313b3b754973cfcedb2fb06bf9a00/python_socks-2.5.3-py3-none-any.whl", hash = "sha256:6bc428d0e19f8043e7b8fbc8af33417e690238bd8c9c1e9215871ac18c6136ad", size = 52874 },
 ]
 
 [[package]]

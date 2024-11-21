@@ -10,7 +10,6 @@ import enka
 import genshin
 import hakushin
 import orjson
-import python_socks
 from dotenv import load_dotenv
 
 from ... import models
@@ -49,7 +48,6 @@ class ProxyGenshinClient(genshin.Client):
     def __init__(self, *args: Any, region: genshin.Region = genshin.Region.OVERSEAS, **kwargs: Any) -> None:
         super().__init__(
             *args,
-            # proxy="socks5://127.0.0.1:9091" if env == "prod" and region is genshin.Region.OVERSEAS else None,
             debug=env == "dev",
             cache=genshin.SQLiteCache(static_ttl=3600 * 24 * 31),
             region=region,
@@ -134,9 +132,6 @@ class GenshinClient(ProxyGenshinClient):
 
     async def request(self, *args: Any, **kwargs: Any) -> Any:
         try:
-            return await super().request(*args, **kwargs)
-        except (python_socks.ProxyError, python_socks.ProxyTimeoutError):
-            self.proxy = None
             return await super().request(*args, **kwargs)
         except ConnectionResetError:
             await asyncio.sleep(1.0)

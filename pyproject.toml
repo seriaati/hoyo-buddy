@@ -32,7 +32,7 @@ dependencies = [
   "fonttools>=4.53.1",
   "tortoise-orm>=0.21.7",
   "akasha-py>=0.2.7",
-  "genshin[auth,socks-proxy,sqlite]",
+  "genshin[auth,sqlite]",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = { file = "LICENSE" }

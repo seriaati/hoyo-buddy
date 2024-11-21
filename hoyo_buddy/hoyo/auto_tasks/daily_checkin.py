@@ -174,7 +174,10 @@ class DailyCheckin:
         logger.debug(f"Check-in payload: {payload}")
 
         async with session.post(f"{api_url}/checkin/", json=payload) as resp:
-            if resp.status in {200, 400, 500, 502}:
+            if resp.status == 502:
+                await asyncio.sleep(20)
+                embed = await cls._daily_checkin(api_name, account)
+            elif resp.status in {200, 400, 500}:
                 data = await resp.json()
                 logger.debug(f"Check-in response: {data}")
 
@@ -195,9 +198,6 @@ class DailyCheckin:
                         cls._bot.capture_exception(e)
 
                     embed.add_acc_info(account, blur=False)
-                elif resp.status == 502:
-                    await asyncio.sleep(20)
-                    embed = await cls._daily_checkin(api_name, account)
                 else:  # 500
                     msg = f"API {api_name} errored: {data['message']}"
                     raise RuntimeError(msg)

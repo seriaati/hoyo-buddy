@@ -211,7 +211,11 @@ class AutoRedeem:
         logger.debug(f"Redeem payload: {payload}")
 
         async with cls._bot.session.post(f"{api_url}/redeem/", json=payload) as resp:
-            if resp.status in {200, 400, 500, 502}:
+            if resp.status == 502:
+                await asyncio.sleep(20)
+                return await cls._redeem_code(api_name, account, locale, code, payload)
+
+            if resp.status in {200, 400, 500}:
                 data = await resp.json()
                 logger.debug(f"Redeem response: {data}")
 
@@ -248,10 +252,6 @@ class AutoRedeem:
                     if embed.description is None:
                         return (code, embed.title, False)
                     return (code, f"{embed.title}\n{embed.description}", False)
-
-                if resp.status == 502:
-                    await asyncio.sleep(20)
-                    return await cls._redeem_code(api_name, account, locale, code, payload)
 
                 # 500
                 msg = f"API {api_name} errored: {data['message']}"

@@ -3,7 +3,6 @@ from __future__ import annotations
 import io
 from typing import TYPE_CHECKING
 
-from cachetools import LRUCache, cached
 from discord import Locale
 from PIL import Image, ImageDraw
 
@@ -18,11 +17,6 @@ if TYPE_CHECKING:
 __all__ = ("draw_farm_card",)
 
 
-def cache_key(farm_data: list[FarmData], locale: str, dark_mode: bool) -> str:
-    return f"{locale}-{dark_mode}-{'-'.join(str(data.domain.id) for data in farm_data)}"
-
-
-@cached(LRUCache(maxsize=32), key=cache_key)
 def draw_farm_card(farm_data: list[FarmData], locale_: str, dark_mode: bool) -> io.BytesIO:
     def get_domain_title(domain: ambr.Domain, locale: Locale) -> str:
         """Get the title of a GI domain based on its name and city, assuming the language is English."""

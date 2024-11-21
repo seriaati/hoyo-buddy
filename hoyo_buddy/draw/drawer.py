@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import pathlib
-import threading
 from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
 
-import cachetools
 from discord import Locale
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageDraw, ImageFont
@@ -211,9 +209,6 @@ GOTHIC_FONT_MAPPING: FontMapping = {
         "black": ZENMARUGOTHIC_BLACK,
     }
 }
-
-deco = cachetools.cached(cachetools.TTLCache(maxsize=128, ttl=300), lock=threading.Lock())
-image_read = deco(Image.open)
 
 
 class Drawer:
@@ -471,9 +466,9 @@ class Drawer:
 
     @staticmethod
     def open_image(file_path: pathlib.Path | str, size: tuple[int, int] | None = None) -> Image.Image:
-        image = image_read(file_path)
-        image = image.convert("RGBA")
-
+        image = Image.open(file_path)
+        if image.mode != "RGBA":
+            image = image.convert("RGBA")
         if size is not None:
             image = image.resize(size, Image.Resampling.LANCZOS)
         return image.copy()

@@ -3,7 +3,6 @@ from __future__ import annotations
 import io
 from typing import TYPE_CHECKING
 
-from cachetools import TTLCache, cached
 from discord import Locale
 from genshin.models import StarRailDetailCharacter as HSRCharacter
 from PIL import Image, ImageDraw
@@ -70,25 +69,6 @@ def draw_character_card(
     return fp
 
 
-def hsr_cache_key(
-    talent_str: str, dark_mode: bool, character: HSRCharacter | UnownedHSRCharacter, locale: Locale
-) -> str:
-    if isinstance(character, UnownedHSRCharacter):
-        return f"{dark_mode}_{character.id}_{character.element}"
-    return (
-        f"{talent_str}_"
-        f"{dark_mode}_"
-        f"{character.id}_"
-        f"{character.level}_"
-        f"{character.rank}_"
-        f"{character.equip.rank if character.equip else 0}_"
-        f"{character.equip.id if character.equip else 0}_"
-        f"{character.element}"
-        f"{locale.value}"
-    )
-
-
-@cached(TTLCache(maxsize=64, ttl=180), key=hsr_cache_key)
 def draw_small_hsr_chara_card(
     talent_str: str, dark_mode: bool, character: HSRCharacter | UnownedHSRCharacter, locale: Locale
 ) -> Image.Image:

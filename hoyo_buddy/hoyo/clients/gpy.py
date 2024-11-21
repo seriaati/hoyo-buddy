@@ -47,11 +47,7 @@ login_api_rotator = itertools.cycle(LOGIN_APIS)
 class ProxyGenshinClient(genshin.Client):
     def __init__(self, *args: Any, region: genshin.Region = genshin.Region.OVERSEAS, **kwargs: Any) -> None:
         super().__init__(
-            *args,
-            debug=env == "dev",
-            cache=genshin.SQLiteCache(static_ttl=3600 * 24 * 31),
-            region=region,
-            **kwargs,
+            *args, debug=env == "dev", cache=genshin.SQLiteCache(static_ttl=3600 * 24 * 31), region=region, **kwargs
         )
 
     @overload

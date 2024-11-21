@@ -3,7 +3,6 @@ from __future__ import annotations
 import io
 from typing import TYPE_CHECKING
 
-from cachetools import TTLCache, cached
 from discord import Locale
 from PIL import Image, ImageDraw
 
@@ -90,24 +89,6 @@ def draw_character_card(
     return fp
 
 
-def gi_cache_key(talent_str: str, dark_mode: bool, character: GICharacter | UnownedGICharacter, locale: Locale) -> str:
-    if isinstance(character, UnownedGICharacter):
-        return f"{dark_mode}_{character.id}_{character.element}"
-    return (
-        f"{talent_str}_"
-        f"{dark_mode}_"
-        f"{character.id}_"
-        f"{character.level}_"
-        f"{character.friendship}_"
-        f"{character.constellation}_"
-        f"{character.weapon.refinement}_"
-        f"{character.weapon.id}_"
-        f"{character.element}"
-        f"{locale.value}"
-    )
-
-
-@cached(TTLCache(maxsize=64, ttl=180), key=gi_cache_key)
 def draw_small_gi_chara_card(
     talent_str: str, dark_mode: bool, character: GICharacter | UnownedGICharacter, locale: Locale
 ) -> Image.Image:

@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from io import BytesIO
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import discord
-from cachetools import TTLCache, cached
 from discord import utils as dutils
 from genshin.models import ZZZSkillType
 from genshin.models.zzz.character import ZZZFullAgent
@@ -19,11 +18,6 @@ if TYPE_CHECKING:
     from hoyo_buddy.models import UnownedZZZCharacter
 
 
-def cache_key(agent: ZZZFullAgent, dark_mode: bool, locale: str, **kwargs: Any) -> str:  # noqa: ARG001
-    return f"{agent.id}-{dark_mode}-{locale}"
-
-
-@cached(cache=TTLCache(maxsize=64, ttl=180), key=cache_key)
 def draw_agent_small_card(
     agent: ZZZFullAgent | UnownedZZZCharacter,
     *,

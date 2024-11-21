@@ -23,7 +23,6 @@ class DailyReminder(Button[NotesView]):
             Game.GENSHIN: NotesNotifyType.GI_DAILY,
             Game.STARRAIL: NotesNotifyType.HSR_DAILY,
             Game.ZZZ: NotesNotifyType.ZZZ_DAILY,
-            Game.HONKAI: NotesNotifyType.HONKAI_DAILY,
         }
         notify_type = notify_types.get(self.view._account.game)
         if notify_type is None:

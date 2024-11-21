@@ -46,8 +46,6 @@ class NotesNotifyType(IntEnum):
     """Planar Fissur Double Drop Rate"""
     STAMINA = 17
     """Honkai Impact 3rd Stamina"""
-    HONKAI_DAILY = 18
-    """Honkai Impact 3rd Battle Pass"""
 
 
 class TalentBoost(IntEnum):

@@ -158,13 +158,6 @@ class NotesChecker:
                     title=LocaleStr(key="planar_fissure_label"),
                     description=LocaleStr(key="planar_fissure_desc", hour=notify.hours_before),
                 )
-            case NotesNotifyType.HONKAI_DAILY:
-                assert isinstance(notes, HonkaiNotes)
-                embed = DefaultEmbed(
-                    locale,
-                    title=LocaleStr(key="honkai_daily_embed_title"),
-                    description=LocaleStr(key="honkai_daily_embed_description", cur=notes.current_train_score, max=600),
-                )
             case NotesNotifyType.STAMINA:
                 assert isinstance(notes, HonkaiNotes)
                 embed = DefaultEmbed(
@@ -409,7 +402,6 @@ class NotesChecker:
                 NotesNotifyType.GI_DAILY
                 | NotesNotifyType.HSR_DAILY
                 | NotesNotifyType.ZZZ_DAILY
-                | NotesNotifyType.HONKAI_DAILY
             ):
                 assert notes is not None
                 await cls._process_daily_notify(notify, notes)

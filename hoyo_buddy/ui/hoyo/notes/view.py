@@ -236,11 +236,6 @@ class NotesView(View):
                 name=LocaleStr(key="notes.stamina_label"), value=self._get_type1_value(stamina_notify), inline=False
             )
 
-            daily_notify = await NotesNotify.get_or_none(account=self._account, type=NotesNotifyType.HONKAI_DAILY)
-            embed.add_field(
-                name=LocaleStr(key="daily_button.label"), value=self._get_type3_value(daily_notify), inline=False
-            )
-
         else:
             raise FeatureNotImplementedError(platform=self._account.platform, game=self._account.game)
 

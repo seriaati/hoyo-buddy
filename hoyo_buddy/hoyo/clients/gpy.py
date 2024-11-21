@@ -57,7 +57,7 @@ class ProxyGenshinClient(genshin.Client):
     def __init__(self, *args: Any, region: genshin.Region = genshin.Region.OVERSEAS, **kwargs: Any) -> None:
         super().__init__(
             *args,
-            proxy="socks5://127.0.0.1:9091" if env == "prod" and region is genshin.Region.OVERSEAS else None,
+            # proxy="socks5://127.0.0.1:9091" if env == "prod" and region is genshin.Region.OVERSEAS else None,
             debug=env == "dev",
             cache=genshin.SQLiteCache(static_ttl=3600 * 24 * 31),
             region=region,

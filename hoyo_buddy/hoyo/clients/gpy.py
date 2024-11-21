@@ -22,6 +22,7 @@ from ...constants import (
     GPY_LANG_TO_LOCALE,
     HB_GAME_TO_GPY_GAME,
     LOCALE_TO_GPY_LANG,
+    OFFLOAD_APIS,
     contains_traveler_id,
     convert_fight_prop,
 )
@@ -40,16 +41,7 @@ load_dotenv()
 env = os.environ["ENV"]
 api_index = 0
 
-if env == "dev":
-    LOGIN_APIS = ("http://localhost:8000",)
-else:
-    LOGIN_APIS = (
-        "https://daily-checkin-api.vercel.app",
-        "https://daily-checkin-api.onrender.com",
-        "https://daily-checkin-api.fly.dev",
-        "LOCAL",
-    )
-
+LOGIN_APIS = ("http://localhost:8000",) if env == "dev" else (*OFFLOAD_APIS.values(), "LOCAL")
 login_api_rotator = itertools.cycle(LOGIN_APIS)
 
 

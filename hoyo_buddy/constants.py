@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 import pathlib
-from typing import Final, Literal
+from typing import TYPE_CHECKING, Final, Literal
 
 import akasha
 import ambr
@@ -13,6 +13,9 @@ import hakushin
 import yatta
 
 from .enums import ChallengeType, Game, GenshinCity, GenshinElement, HSRElement, HSRPath
+
+if TYPE_CHECKING:
+    from .types import OffloadAPI
 
 STATIC_FOLDER = pathlib.Path("./.static")
 
@@ -687,3 +690,11 @@ def get_disc_substat_roll_num(disc_rarity: Literal["B", "A", "S"], prop: genshin
     value = DISC_SUBSTAT_VALUES[disc_rarity][prop.type]
     prop_value = float(prop.value.replace("%", ""))
     return round(prop_value / value)
+
+
+OFFLOAD_APIS: dict[OffloadAPI, str] = {
+    "VERCEL": "https://daily-checkin-api.vercel.app",
+    "RENDER": "https://daily-checkin-api.onrender.com",
+    "FLY": "https://daily-checkin-api.fly.dev",
+    "B4A": "https://dailycheckinapi-z7nqjbte.b4a.run/",
+}

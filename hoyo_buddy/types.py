@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from collections import defaultdict
-from typing import Any, TypeAlias
+from typing import Any, Literal, TypeAlias
 
 import discord
 import enka
@@ -49,3 +49,4 @@ BetaAutocompleteChoices: TypeAlias = defaultdict[
     Game, defaultdict[discord.Locale, list[discord.app_commands.Choice[str]]]
 ]
 Tasks: TypeAlias = defaultdict[Game, defaultdict[ItemCategory, dict[discord.Locale, asyncio.Task[list[Any]]]]]
+OffloadAPI: TypeAlias = Literal["VERCEL", "RENDER", "FLY", "B4A"]

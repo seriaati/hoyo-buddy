@@ -64,6 +64,7 @@ class ProxyGenshinClient(genshin.Client):
         *,
         mmt_result: genshin.models.SessionMMTResult,
         ticket: None = ...,
+        retry: int = ...,
     ) -> genshin.models.AppLoginResult | genshin.models.ActionTicket: ...
 
     @overload
@@ -74,11 +75,18 @@ class ProxyGenshinClient(genshin.Client):
         *,
         mmt_result: None = ...,
         ticket: genshin.models.ActionTicket,
+        retry: int = ...,
     ) -> genshin.models.AppLoginResult: ...
 
     @overload
     async def os_app_login(
-        self, email: str, password: str, *, mmt_result: None = ..., ticket: None = ...
+        self,
+        email: str,
+        password: str,
+        *,
+        mmt_result: None = ...,
+        ticket: None = ...,
+        retry: int = ...,
     ) -> (
         genshin.models.AppLoginResult | genshin.models.SessionMMT | genshin.models.ActionTicket
     ): ...
@@ -89,6 +97,7 @@ class ProxyGenshinClient(genshin.Client):
         *,
         mmt_result: genshin.models.SessionMMTResult | None = None,
         ticket: genshin.models.ActionTicket | None = None,
+        retry: int = 0,
     ) -> genshin.models.AppLoginResult | genshin.models.SessionMMT | genshin.models.ActionTicket:
         api_url = next(proxy_api_rotator)
 
@@ -108,28 +117,42 @@ class ProxyGenshinClient(genshin.Client):
         elif ticket is not None:
             payload["ticket"] = ticket.model_dump_json(by_alias=True)
 
-        async with (
-            aiohttp.ClientSession() as session,
-            session.post(f"{api_url}/login/", json=payload) as resp,
-        ):
-            data = await resp.json()
-            retcode = data.get("retcode")
+        try:
+            async with (
+                aiohttp.ClientSession() as session,
+                session.post(f"{api_url}/login/", json=payload) as resp,
+            ):
+                if resp.status in {200, 400, 500}:
+                    data = await resp.json()
+                    retcode = data.get("retcode")
 
-            if resp.status == 200:
-                if retcode == -9999:
-                    return genshin.models.SessionMMT(**orjson.loads(data["data"]))
-                if retcode == -9998:
-                    return genshin.models.ActionTicket(**orjson.loads(data["data"]))
-                return genshin.models.AppLoginResult(**orjson.loads(data["data"]))
+                    if resp.status == 200:
+                        if retcode == -9999:
+                            return genshin.models.SessionMMT(**orjson.loads(data["data"]))
+                        if retcode == -9998:
+                            return genshin.models.ActionTicket(**orjson.loads(data["data"]))
+                        return genshin.models.AppLoginResult(**orjson.loads(data["data"]))
 
-            if retcode == -3006:  # Rate limited
-                if mmt_result is not None:
-                    return await self.os_app_login(email, password, mmt_result=mmt_result)
-                if ticket is not None:
-                    return await self.os_app_login(email, password, ticket=ticket)
-                return await self.os_app_login(email, password)
+                    if retcode == -3006:  # Rate limited
+                        if mmt_result is not None:
+                            return await self.os_app_login(email, password, mmt_result=mmt_result)
+                        if ticket is not None:
+                            return await self.os_app_login(email, password, ticket=ticket)
+                        return await self.os_app_login(email, password)
 
-            raise Exception(data["message"])  # noqa: TRY002
+                    raise Exception(data["message"])  # noqa: TRY002
+
+                if retry > 3:
+                    msg = f"Failed to login after 3 retries, status: {resp.status}"
+                    raise RuntimeError(msg)
+
+                return await self.os_app_login(
+                    email, password, mmt_result=mmt_result, retry=retry + 1
+                )
+        except Exception:
+            if retry > 3:
+                raise
+            return await self.os_app_login(email, password, mmt_result=mmt_result, retry=retry + 1)
 
 
 class GenshinClient(ProxyGenshinClient):
@@ -590,7 +613,7 @@ class GenshinClient(ProxyGenshinClient):
         )
 
     async def get_notes_(
-        self, game: genshin.Game, *, session: aiohttp.ClientSession
+        self, game: genshin.Game, *, session: aiohttp.ClientSession, retry: int = 0
     ) -> (
         genshin.models.Notes
         | genshin.models.StarRailNote
@@ -618,31 +641,36 @@ class GenshinClient(ProxyGenshinClient):
             "game": game.value,
         }
 
-        async with session.post(f"{api_url}/notes/", json=payload) as resp:
-            if resp.status == 502:
-                return await self.get_notes_(game, session=session)
+        try:
+            async with session.post(f"{api_url}/notes/", json=payload) as resp:
+                if resp.status in {200, 400, 500}:
+                    data = await resp.json()
+                    logger.debug(f"Notes response: {data}")
 
-            if resp.status in {200, 400, 500}:
-                data = await resp.json()
-                logger.debug(f"Notes response: {data}")
+                    if resp.status == 200:
+                        if game is genshin.Game.GENSHIN:
+                            return genshin.models.Notes(**data["data"])
+                        if game is genshin.Game.STARRAIL:
+                            return genshin.models.StarRailNote(**data["data"])
+                        if game is genshin.Game.ZZZ:
+                            return genshin.models.ZZZNotes(**data["data"])
+                        if game is genshin.Game.HONKAI:
+                            return genshin.models.HonkaiNotes(**data["data"])
 
-                if resp.status == 200:
-                    if game is genshin.Game.GENSHIN:
-                        return genshin.models.Notes(**data["data"])
-                    if game is genshin.Game.STARRAIL:
-                        return genshin.models.StarRailNote(**data["data"])
-                    if game is genshin.Game.ZZZ:
-                        return genshin.models.ZZZNotes(**data["data"])
-                    if game is genshin.Game.HONKAI:
-                        return genshin.models.HonkaiNotes(**data["data"])
+                    if resp.status == 400:
+                        raise genshin.GenshinException(data)
+                    if resp.status == 500:
+                        raise RuntimeError(data["message"])
 
-                if resp.status == 400:
-                    raise genshin.GenshinException(data)
-                if resp.status == 500:
-                    raise RuntimeError(data["message"])
+                if retry > 3:
+                    msg = f"API errored after 3 retries, status: {resp.status}"
+                    raise RuntimeError(msg)
 
-            msg = f"API errored: {resp.status}"
-            raise RuntimeError(msg)
+                return await self.get_notes_(game, session=session, retry=retry + 1)
+        except Exception:
+            if retry > 3:
+                raise
+            return await self.get_notes_(game, session=session, retry=retry + 1)
 
     async def get_genshin_notes(self, session: aiohttp.ClientSession) -> genshin.models.Notes:
         return await self.get_notes_(genshin.Game.GENSHIN, session=session)  # pyright: ignore[reportReturnType]

@@ -375,7 +375,7 @@ read_story.button.label: Read Story
 real_time_notes: Real-time notes
 realm_curr_button.label: Realm currency reminder
 realm_curr_modal.title: Realm Currency Reminder Settings
-redeeem_code.cookie_token_expired_description: "The automatic code redemption feature is only available for users that logged in with their email and password, you can do so with </accounts>"
+redeeem_code.cookie_token_expired_description: "Code redemption features are only available for users that logged in with their email and password, you can do so with </accounts>"
 redeeem_code.cookie_token_expired_title: Cookie Token Expired
 redeeem_code.cookie_token_refresh_failed_description: "It is likely that you have changed your account's password since the last time you add your accounts.\nPlease add your accounts again using </accounts> with the email and password method."
 redeeem_code.cookie_token_refresh_failed_title: Failed to refresh cookie token

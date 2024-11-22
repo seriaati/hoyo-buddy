@@ -104,10 +104,16 @@ class RedeemCodesButton(Button[RedeemUI]):
 
         await self.set_loading_state(i, embed=self.view.cooldown_embed)
         codes = (modal.code_1.value, modal.code_2.value, modal.code_3.value, modal.code_4.value, modal.code_5.value)
-
         # Extract codes from urls
         codes = [code.split("code=")[1] if "code=" in code else code for code in codes]
-        embed = await self.view.account.client.redeem_codes(codes, locale=self.view.locale)
+
+        try:
+            embed = await self.view.account.client.redeem_codes(
+                codes, locale=self.view.locale, session=i.client.session
+            )
+        except Exception:
+            await self.unset_loading_state(i, embed=self.view.start_embed)
+            raise
         await self.unset_loading_state(i, embed=embed)
 
 
@@ -129,5 +135,11 @@ class RedeemAllAvailableCodesButton(Button[RedeemUI]):
 
     async def callback(self, i: Interaction) -> None:
         await self.set_loading_state(i, embed=self.view.cooldown_embed)
-        embed = await self.view.account.client.redeem_codes(self.view.available_codes, locale=self.view.locale)
+        try:
+            embed = await self.view.account.client.redeem_codes(
+                self.view.available_codes, locale=self.view.locale, session=i.client.session
+            )
+        except Exception:
+            await self.unset_loading_state(i, embed=self.view.start_embed)
+            raise
         await self.unset_loading_state(i, embed=embed)

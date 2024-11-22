@@ -800,17 +800,13 @@ wheels = [
 
 [[package]]
 name = "hakushin-py"
-version = "0.4.5"
-source = { registry = "https://pypi.org/simple" }
+version = "0.4.6"
+source = { git = "https://github.com/seriaati/hakushin-py#1de3efe6666240246d88c906084af6f53b6088d9" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
     { name = "loguru" },
     { name = "pydantic" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/4b/7a/c712762474a21fc1243fd4d25af4f7bbbaf1b1cfb0e9809624baa55fcb19/hakushin_py-0.4.5.tar.gz", hash = "sha256:ed862f3624faf6c35ba3933a94f903c6681cdcaabee6b360fc80e31c6b3dc29a", size = 71541 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/6e/bf/2c171a7885728d034c516a8910505c3ac64cb32032bade5eb82c1d7455e1/hakushin_py-0.4.5-py3-none-any.whl", hash = "sha256:994d955829b94efc3dd17ad3a4755799dfc4c6bc608239e880da8cf871ab55aa", size = 57805 },
 ]
 
 [[package]]
@@ -876,7 +872,7 @@ requires-dist = [
     { name = "fonttools", specifier = ">=4.53.1" },
     { name = "genshin", extras = ["auth", "sqlite"], git = "https://github.com/thesadru/genshin.py?branch=master" },
     { name = "gitpython", specifier = ">=3.1.43" },
-    { name = "hakushin-py", specifier = ">=0.4.4" },
+    { name = "hakushin-py", git = "https://github.com/seriaati/hakushin-py" },
     { name = "jishaku", specifier = ">=2.5.2" },
     { name = "loguru", specifier = ">=0.7.2" },
     { name = "novelai", git = "https://github.com/kokosensei/NovelAI-API" },

@@ -68,24 +68,6 @@ class Others(commands.Cog):
         if vc is not None:
             await vc.edit(name=f"{user_count} User Installs")
 
-        # Genshin accounts
-        gi_acc_count = await HoyoAccount.filter(game=Game.GENSHIN).count()
-        vc = guild.get_channel(next(vc_rotator))
-        if vc is not None:
-            await vc.edit(name=f"{gi_acc_count} GI Accounts")
-
-        # HSR accounts
-        hsr_acc_count = await HoyoAccount.filter(game=Game.STARRAIL).count()
-        vc = guild.get_channel(next(vc_rotator))
-        if vc is not None:
-            await vc.edit(name=f"{hsr_acc_count} HSR Accounts")
-
-        # ZZZ accounts
-        zzz_acc_count = await HoyoAccount.filter(game=Game.ZZZ).count()
-        vc = guild.get_channel(next(vc_rotator))
-        if vc is not None:
-            await vc.edit(name=f"{zzz_acc_count} ZZZ Accounts")
-
     @update_stat_vcs.before_loop
     async def before_update_stat_vcs(self) -> None:
         await self.bot.wait_until_ready()

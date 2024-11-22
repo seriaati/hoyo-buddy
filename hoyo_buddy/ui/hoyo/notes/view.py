@@ -382,16 +382,17 @@ class NotesView(View):
         return await self._get_reminder_embed()
 
     async def _get_notes(
-        self,
+        self, session: aiohttp.ClientSession
     ) -> genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes | genshin.models.HonkaiNotes:
         if self._account.game is Game.GENSHIN:
-            return await self._account.client.get_genshin_notes()
+            return await self._account.client.get_genshin_notes(session)
         if self._account.game is Game.ZZZ:
-            return await self._account.client.get_zzz_notes()
+            return await self._account.client.get_zzz_notes(session)
         if self._account.game is Game.STARRAIL:
-            return await self._account.client.get_starrail_notes()
+            return await self._account.client.get_starrail_notes(session)
         if self._account.game is Game.HONKAI:
-            return await self._account.client.get_honkai_notes(self._account.uid)
+            return await self._account.client.get_honkai_notes(session)
+
         raise FeatureNotImplementedError(platform=self._account.platform, game=self._account.game)
 
     async def _draw_notes_card(
@@ -528,7 +529,7 @@ class NotesView(View):
         return embed.set_image(url="attachment://notes.png").add_acc_info(self._account)
 
     async def start(self, i: Interaction) -> None:
-        notes = await self._get_notes()
+        notes = await self._get_notes(i.client.session)
         embed = self._get_notes_embed(notes)
 
         if isinstance(notes, NotesWithCard):

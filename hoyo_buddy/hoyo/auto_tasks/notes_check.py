@@ -398,11 +398,7 @@ class NotesChecker:
             case NotesNotifyType.REALM_CURRENCY:
                 assert isinstance(notes, GenshinNotes)
                 await cls._process_realm_currency_notify(notify, notes)
-            case (
-                NotesNotifyType.GI_DAILY
-                | NotesNotifyType.HSR_DAILY
-                | NotesNotifyType.ZZZ_DAILY
-            ):
+            case NotesNotifyType.GI_DAILY | NotesNotifyType.HSR_DAILY | NotesNotifyType.ZZZ_DAILY:
                 assert notes is not None
                 await cls._process_daily_notify(notify, notes)
             case NotesNotifyType.RESIN_DISCOUNT | NotesNotifyType.ECHO_OF_WAR:
@@ -463,13 +459,13 @@ class NotesChecker:
     @classmethod
     async def _get_notes(cls, notify: NotesNotify) -> Notes | StarRailNote | ZZZNotes:
         if notify.account.game is Game.GENSHIN:
-            notes = await notify.account.client.get_genshin_notes()
+            notes = await notify.account.client.get_genshin_notes(session=cls._bot.session)
         elif notify.account.game is Game.STARRAIL:
-            notes = await notify.account.client.get_starrail_notes()
+            notes = await notify.account.client.get_starrail_notes(session=cls._bot.session)
         elif notify.account.game is Game.ZZZ:
-            notes = await notify.account.client.get_zzz_notes()
+            notes = await notify.account.client.get_zzz_notes(session=cls._bot.session)
         elif notify.account.game is Game.HONKAI:
-            notes = await notify.account.client.get_honkai_notes(notify.account.uid)
+            notes = await notify.account.client.get_honkai_notes(session=cls._bot.session)
         else:
             raise NotImplementedError
         return notes

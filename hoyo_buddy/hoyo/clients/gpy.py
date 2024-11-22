@@ -38,10 +38,9 @@ if TYPE_CHECKING:
 
 load_dotenv()
 env = os.environ["ENV"]
-api_index = 0
 
-LOGIN_APIS = ("http://localhost:8000",) if env == "dev" else (*OFFLOAD_APIS.values(), "LOCAL")
-login_api_rotator = itertools.cycle(LOGIN_APIS)
+OFFLOAD_APIS_ = (*OFFLOAD_APIS.values(), "LOCAL")
+offload_api_rotator = itertools.cycle(OFFLOAD_APIS_)
 
 
 class ProxyGenshinClient(genshin.Client):
@@ -72,7 +71,7 @@ class ProxyGenshinClient(genshin.Client):
         mmt_result: genshin.models.SessionMMTResult | None = None,
         ticket: genshin.models.ActionTicket | None = None,
     ) -> genshin.models.AppLoginResult | genshin.models.SessionMMT | genshin.models.ActionTicket:
-        api_url = next(login_api_rotator)
+        api_url = next(offload_api_rotator)
 
         if api_url == "LOCAL":
             if mmt_result is not None:
@@ -515,3 +514,67 @@ class GenshinClient(ProxyGenshinClient):
         return await super().request_daily_reward(
             endpoint, game=game, method=method, lang=lang, params=params, headers=headers, challenge=challenge, **kwargs
         )
+
+    async def get_notes_(
+        self, game: genshin.Game, *, session: aiohttp.ClientSession
+    ) -> genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes | genshin.models.HonkaiNotes:
+        uid = self._account.uid
+        api_url = next(offload_api_rotator)
+
+        if api_url == "LOCAL":
+            if game is genshin.Game.GENSHIN:
+                return await super().get_genshin_notes(uid)
+            if game is genshin.Game.STARRAIL:
+                return await super().get_starrail_notes(uid)
+            if game is genshin.Game.ZZZ:
+                return await super().get_zzz_notes(uid)
+            if game is genshin.Game.HONKAI:
+                return await super().get_honkai_notes(uid)
+
+        payload = {
+            "token": os.environ["DAILY_CHECKIN_API_TOKEN"],
+            "cookies": self._account.cookies,
+            "uid": uid,
+            "lang": self.lang,
+            "game": game.value,
+        }
+
+        async with session.post(f"{api_url}/notes/", json=payload) as resp:
+            if resp.status == 502:
+                await asyncio.sleep(1)
+                return await self.get_notes_(game, session=session)
+
+            if resp.status in {200, 400, 500}:
+                data = await resp.json()
+
+                if resp.status == 200:
+                    data = orjson.loads(data["data"])
+
+                    if game is genshin.Game.GENSHIN:
+                        return genshin.models.Notes(**data)
+                    if game is genshin.Game.STARRAIL:
+                        return genshin.models.StarRailNote(**data)
+                    if game is genshin.Game.ZZZ:
+                        return genshin.models.ZZZNotes(**data)
+                    if game is genshin.Game.HONKAI:
+                        return genshin.models.HonkaiNotes(**data)
+
+                if resp.status == 400:
+                    raise genshin.GenshinException(data)
+                if resp.status == 500:
+                    raise RuntimeError(data["message"])
+
+            msg = f"API errored: {resp.status}"
+            raise RuntimeError(msg)
+
+    async def get_genshin_notes(self, session: aiohttp.ClientSession) -> genshin.models.Notes:
+        return await self.get_notes_(genshin.Game.GENSHIN, session=session)  # pyright: ignore[reportReturnType]
+
+    async def get_starrail_notes(self, session: aiohttp.ClientSession) -> genshin.models.StarRailNote:
+        return await self.get_notes_(genshin.Game.STARRAIL, session=session)  # pyright: ignore[reportReturnType]
+
+    async def get_zzz_notes(self, session: aiohttp.ClientSession) -> genshin.models.ZZZNotes:
+        return await self.get_notes_(genshin.Game.ZZZ, session=session)  # pyright: ignore[reportReturnType]
+
+    async def get_honkai_notes(self, session: aiohttp.ClientSession) -> genshin.models.HonkaiNotes:
+        return await self.get_notes_(genshin.Game.HONKAI, session=session)  # pyright: ignore[reportReturnType]

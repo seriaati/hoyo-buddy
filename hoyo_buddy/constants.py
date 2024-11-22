@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import os
 import pathlib
 from typing import TYPE_CHECKING, Final, Literal
 
@@ -11,6 +12,7 @@ import enka
 import genshin
 import hakushin
 import yatta
+from dotenv import load_dotenv
 
 from .enums import ChallengeType, Game, GenshinCity, GenshinElement, HSRElement, HSRPath
 
@@ -692,10 +694,12 @@ def get_disc_substat_roll_num(disc_rarity: Literal["B", "A", "S"], prop: genshin
     return round(prop_value / value)
 
 
+load_dotenv()
+
 OFFLOAD_APIS: dict[OffloadAPI, str] = {
-    "VERCEL": "https://daily-checkin-api.vercel.app",
-    "RENDER": "https://daily-checkin-api.onrender.com",
-    "FLY": "https://daily-checkin-api.fly.dev",
-    "B4A": "https://dailycheckinapi-z7nqjbte.b4a.run",
-    "RAILWAY": "https://dailycheckinapi-production.up.railway.app"
+    "VERCEL": os.environ["VERCEL_URL"],
+    "RENDER": os.environ["RENDER_URL"],
+    "FLY": os.environ["FLY_URL"],
+    "B4A": os.environ["B4A_URL"],
+    "RAILWAY": os.environ["RAILWAY_URL"],
 }

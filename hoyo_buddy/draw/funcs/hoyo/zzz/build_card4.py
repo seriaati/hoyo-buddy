@@ -58,18 +58,30 @@ class ZZZAgentCard4:
         z_blob_color = drawer.blend_color(blob_color, (0, 0, 0), 0.85)
 
         # Draw patterns
-        blob_1 = drawer.create_pattern_blob(color=blob_color, rotation=0, pattern=pattern, blob=blob_1)
+        blob_1 = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_1
+        )
         im.alpha_composite(blob_1, (-426, -385))
-        blob_2 = drawer.create_pattern_blob(color=blob_color, rotation=0, pattern=pattern, blob=blob_2)
+        blob_2 = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_2
+        )
         im.alpha_composite(blob_2, (649, -802))
-        blob_3 = drawer.create_pattern_blob(color=blob_color, rotation=0, pattern=pattern, blob=blob_3)
+        blob_3 = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_3
+        )
         im.alpha_composite(blob_3, (815, -223))
-        blob_4 = drawer.create_pattern_blob(color=blob_color, rotation=0, pattern=pattern, blob=blob_4)
+        blob_4 = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_4
+        )
         im.alpha_composite(blob_4, (3132, -713))
-        blob_5 = drawer.create_pattern_blob(color=blob_color, rotation=0, pattern=pattern, blob=blob_5)
+        blob_5 = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_5
+        )
         im.alpha_composite(blob_5, (2911, 1000))
 
-        strip = drawer.create_pattern_blob(color=z_blob_color, rotation=0, pattern=pattern, blob=strip)
+        strip = drawer.create_pattern_blob(
+            color=z_blob_color, rotation=0, pattern=pattern, blob=strip
+        )
         strip = drawer.resize_crop(strip, blob_1.size)
         strip = drawer.mask_image_with_image(strip, blob_1)
         im.alpha_composite(strip, (-426, -385))
@@ -92,11 +104,25 @@ class ZZZAgentCard4:
 
         m_flair = drawer.open_asset("m_flair.png")
         im.alpha_composite(m_flair, (885, 99))
-        drawer.write(f"M{self._agent.rank}", size=72, style="bold", color=WHITE, position=(957, 163), anchor="mm")
+        drawer.write(
+            f"M{self._agent.rank}",
+            size=72,
+            style="bold",
+            color=WHITE,
+            position=(957, 163),
+            anchor="mm",
+        )
 
         level_flair = drawer.open_asset("level_flair.png")
         im.alpha_composite(level_flair, (774, 1195))
-        drawer.write(f"Lv. {self._agent.level}", size=80, style="bold", color=WHITE, position=(902, 1256), anchor="mm")
+        drawer.write(
+            f"Lv. {self._agent.level}",
+            size=80,
+            style="bold",
+            color=WHITE,
+            position=(902, 1256),
+            anchor="mm",
+        )
 
         if self._name_data is not None:
             name = self._name_data.short_name
@@ -114,7 +140,9 @@ class ZZZAgentCard4:
                 max_width=1233,
             )
             name_im = Image.new("RGBA", (tbox.width, tbox.height), (255, 255, 255, 0))
-            name_drawer = Drawer(ImageDraw.Draw(name_im), folder="zzz-build-card4", dark_mode=False, sans=True)
+            name_drawer = Drawer(
+                ImageDraw.Draw(name_im), folder="zzz-build-card4", dark_mode=False, sans=True
+            )
             name_drawer.write(
                 name,
                 size=280,
@@ -159,7 +187,10 @@ class ZZZAgentCard4:
                 continue
 
             prop_icon = drawer.open_asset(
-                f"stat_icons/{STAT_ICONS[prop.type]}", size=(74, 74), mask_color=(20, 20, 20), folder="zzz-build-card"
+                f"stat_icons/{STAT_ICONS[prop.type]}",
+                size=(74, 74),
+                mask_color=(20, 20, 20),
+                folder="zzz-build-card",
             )
             im.alpha_composite(prop_icon, (1173, 161 + 122 * i))
 
@@ -192,7 +223,9 @@ class ZZZAgentCard4:
             return
 
         weapon_icon = drawer.open_static(engine.icon, size=(692, 692))
-        weapon_icon = drawer.mask_image_with_image(weapon_icon, drawer.open_asset("weapon_mask.png"))
+        weapon_icon = drawer.mask_image_with_image(
+            weapon_icon, drawer.open_asset("weapon_mask.png")
+        )
         im.alpha_composite(weapon_icon, (2602, 247))
 
         tbox = drawer.write(
@@ -222,7 +255,10 @@ class ZZZAgentCard4:
         drawer.write(
             f"U{engine.refinement}",
             size=60,
-            position=(2464 + upgrade_flair.width // 2, tbox.bottom + 80 + upgrade_flair.height // 2),
+            position=(
+                2464 + upgrade_flair.width // 2,
+                tbox.bottom + 80 + upgrade_flair.height // 2,
+            ),
             color=WHITE,
             style="bold",
             anchor="mm",
@@ -257,7 +293,14 @@ class ZZZAgentCard4:
         disc_mask = drawer.open_asset("disc_mask.png")
         disc_num_flair = drawer.open_asset("disc_num_flair.png")
 
-        poses = {0: (2184, 904), 1: (2184, 1304), 2: (3027, 104), 3: (3027, 504), 4: (3027, 904), 5: (3027, 1304)}
+        poses = {
+            0: (2184, 904),
+            1: (2184, 1304),
+            2: (3027, 104),
+            3: (3027, 504),
+            4: (3027, 904),
+            5: (3027, 1304),
+        }
 
         for i in range(6):
             pos = poses[i]
@@ -282,7 +325,12 @@ class ZZZAgentCard4:
             )
 
             drawer.write(
-                f"+{disc.level}", size=48, position=(pos[0] + 692, pos[1] + 61), color=WHITE, style="bold", anchor="mm"
+                f"+{disc.level}",
+                size=48,
+                position=(pos[0] + 692, pos[1] + 61),
+                color=WHITE,
+                style="bold",
+                anchor="mm",
             )
 
             main_stat = disc.main_properties[0]
@@ -297,7 +345,10 @@ class ZZZAgentCard4:
                 drawer.write(
                     main_stat.value,
                     size=60,
-                    position=(pos[0] + 214 + main_stat_icon.width + 21, pos[1] + 26 + main_stat_icon.height // 2),
+                    position=(
+                        pos[0] + 214 + main_stat_icon.width + 21,
+                        pos[1] + 26 + main_stat_icon.height // 2,
+                    ),
                     color=(20, 20, 20),
                     style="bold",
                     anchor="lm",
@@ -316,19 +367,26 @@ class ZZZAgentCard4:
                     drawer.write(
                         substat.value,
                         size=54,
-                        position=(substat_pos[0] + substat_icon.width + 21, substat_pos[1] + substat_icon.height // 2),
+                        position=(
+                            substat_pos[0] + substat_icon.width + 21,
+                            substat_pos[1] + substat_icon.height // 2,
+                        ),
                         color=(20, 20, 20),
                         anchor="lm",
                     )
 
                 if self._show_substat_rolls:
                     roll_num = get_disc_substat_roll_num(disc.rarity, substat)
-                    roll_num_img = drawer.open_asset(f"rolls/{roll_num}.png", size=(239, 5), folder="zzz-build-card")
+                    roll_num_img = drawer.open_asset(
+                        f"rolls/{roll_num}.png", size=(239, 5), folder="zzz-build-card"
+                    )
                     im.alpha_composite(roll_num_img, (substat_pos[0], substat_pos[1] + 75))
 
     def draw(self) -> BytesIO:
         self.im = im = Drawer.open_image("hoyo-buddy-assets/assets/zzz-build-card4/card_base.png")
-        self.drawer = Drawer(ImageDraw.Draw(im), folder="zzz-build-card4", dark_mode=False, sans=True)
+        self.drawer = Drawer(
+            ImageDraw.Draw(im), folder="zzz-build-card4", dark_mode=False, sans=True
+        )
 
         self._draw_card_base()
         self._draw_img()

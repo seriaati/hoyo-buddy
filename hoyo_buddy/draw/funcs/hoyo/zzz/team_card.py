@@ -53,11 +53,17 @@ class ZZZTeamCard:
         middle_blob = drawer.open_asset("middle_blob.png")
         left_blob = drawer.open_asset("left_blob.png")
 
-        right_blob = drawer.create_pattern_blob(color=blob_color, rotation=30, pattern=pattern, blob=right_blob)
+        right_blob = drawer.create_pattern_blob(
+            color=blob_color, rotation=30, pattern=pattern, blob=right_blob
+        )
         card.alpha_composite(right_blob, (880, -100))
-        middle_blob = drawer.create_pattern_blob(color=blob_color, rotation=90, pattern=pattern, blob=middle_blob)
+        middle_blob = drawer.create_pattern_blob(
+            color=blob_color, rotation=90, pattern=pattern, blob=middle_blob
+        )
         card.alpha_composite(middle_blob, (570, -100))
-        left_blob = drawer.create_pattern_blob(color=blob_color, rotation=0, pattern=pattern, blob=left_blob)
+        left_blob = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=left_blob
+        )
         card.alpha_composite(left_blob, (13, -30))
 
         chara_img_bg = drawer.open_asset("chara_img.png")
@@ -74,9 +80,12 @@ class ZZZTeamCard:
 
     def _draw_agent_card(self, agent: ZZZFullAgent) -> Image.Image:
         im = self._draw_card(
-            image_url=self._agent_images[agent.id], blob_color=Drawer.hex_to_rgb(self._agent_colors[agent.id])
+            image_url=self._agent_images[agent.id],
+            blob_color=Drawer.hex_to_rgb(self._agent_colors[agent.id]),
         )
-        drawer = Drawer(ImageDraw.Draw(im), folder="zzz-team-card", dark_mode=self._dark_mode, sans=True)
+        drawer = Drawer(
+            ImageDraw.Draw(im), folder="zzz-team-card", dark_mode=self._dark_mode, sans=True
+        )
 
         # Agent long name
         name_data = self._name_datas.get(agent.id)
@@ -89,7 +98,14 @@ class ZZZTeamCard:
 
         # Agent level and rank
         text = f"Lv.{agent.level} M{agent.rank}"
-        drawer.write(text, size=32, position=(12, 267), style="black_italic", stroke_color=WHITE, stroke_width=3)
+        drawer.write(
+            text,
+            size=32,
+            position=(12, 267),
+            style="black_italic",
+            stroke_color=WHITE,
+            stroke_width=3,
+        )
 
         # Stats
         self._draw_stats(agent, im, drawer)
@@ -136,10 +152,14 @@ class ZZZTeamCard:
                 main_stat = disc.main_properties[0]
                 if isinstance(main_stat.type, PropType):
                     icon = drawer.open_asset(
-                        f"stat_icons/{STAT_ICONS[main_stat.type]}", folder="zzz-build-card", size=(16, 16)
+                        f"stat_icons/{STAT_ICONS[main_stat.type]}",
+                        folder="zzz-build-card",
+                        size=(16, 16),
                     )
                 else:
-                    icon = drawer.open_asset("stat_icons/PLACEHOLDER.png", folder="zzz-build-card", size=(16, 16))
+                    icon = drawer.open_asset(
+                        "stat_icons/PLACEHOLDER.png", folder="zzz-build-card", size=(16, 16)
+                    )
 
                 im.alpha_composite(icon, (start_pos[0] + 65, start_pos[1] + 6))
                 text = main_stat.value
@@ -170,7 +190,9 @@ class ZZZTeamCard:
                     else:
                         if isinstance(stat.type, PropType):
                             stat_icon = drawer.open_asset(
-                                f"stat_icons/{STAT_ICONS[stat.type]}", folder="zzz-build-card", size=(16, 16)
+                                f"stat_icons/{STAT_ICONS[stat.type]}",
+                                folder="zzz-build-card",
+                                size=(16, 16),
                             )
                         else:
                             stat_icon = drawer.open_asset(
@@ -192,7 +214,9 @@ class ZZZTeamCard:
                             roll_num_img = drawer.open_asset(
                                 f"rolls/{roll_num}.png", size=(55, 1), folder="zzz-build-card"
                             )
-                            im.alpha_composite(roll_num_img, (stat_start_pos[0], stat_start_pos[1] + 18))
+                            im.alpha_composite(
+                                roll_num_img, (stat_start_pos[0], stat_start_pos[1] + 18)
+                            )
 
                     if j == 1:
                         stat_start_pos = (start_pos[0] + 65 + 60, start_pos[1] + 30)
@@ -236,10 +260,17 @@ class ZZZTeamCard:
         for stat in stats:
             if not isinstance(stat.type, PropType):
                 continue
-            icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[stat.type]}", folder="zzz-build-card", size=(23, 23))
+            icon = drawer.open_asset(
+                f"stat_icons/{STAT_ICONS[stat.type]}", folder="zzz-build-card", size=(23, 23)
+            )
             im.alpha_composite(icon, start_pos)
             text = stat.value
-            drawer.write(text, size=20, position=(start_pos[0] + 30, start_pos[1] + icon.height // 2), anchor="lm")
+            drawer.write(
+                text,
+                size=20,
+                position=(start_pos[0] + 30, start_pos[1] + icon.height // 2),
+                anchor="lm",
+            )
             start_pos = (start_pos[0], start_pos[1] + y_diff)
 
         engine_rank = drawer.open_asset("engine_rank.png")
@@ -248,9 +279,13 @@ class ZZZTeamCard:
         im.alpha_composite(engine_level, (822, 129))
 
         text = str(engine.refinement)
-        drawer.write(text, size=16, position=(796, 69), anchor="mm", style="bold_italic", color=WHITE)
+        drawer.write(
+            text, size=16, position=(796, 69), anchor="mm", style="bold_italic", color=WHITE
+        )
         text = f"Lv.{engine.level}"
-        drawer.write(text, size=16, position=(849, 140), anchor="mm", style="bold_italic", color=WHITE)
+        drawer.write(
+            text, size=16, position=(849, 140), anchor="mm", style="bold_italic", color=WHITE
+        )
 
     def _draw_stats(self, agent: ZZZFullAgent, im: Image.Image, drawer: Drawer) -> None:
         props = get_props(agent)
@@ -259,28 +294,45 @@ class ZZZTeamCard:
             if prop is None or not isinstance(prop.type, PropType):
                 continue
 
-            prop_icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[prop.type]}", folder="zzz-build-card", size=(25, 25))
+            prop_icon = drawer.open_asset(
+                f"stat_icons/{STAT_ICONS[prop.type]}", folder="zzz-build-card", size=(25, 25)
+            )
             im.alpha_composite(prop_icon, start_pos)
             text = prop.final or prop.value
             drawer.write(
                 text,
                 size=19,
-                position=(start_pos[0] + prop_icon.width + 10, start_pos[1] + prop_icon.height // 2),
+                position=(
+                    start_pos[0] + prop_icon.width + 10,
+                    start_pos[1] + prop_icon.height // 2,
+                ),
                 color=(20, 20, 20),
                 anchor="lm",
             )
 
-            start_pos = (299, start_pos[1] + 44) if i % 2 != 0 else (start_pos[0] + 134, start_pos[1])
+            start_pos = (
+                (299, start_pos[1] + 44) if i % 2 != 0 else (start_pos[0] + 134, start_pos[1])
+            )
 
     def _render_rotated_text(self, drawer: Drawer, name_data: AgentNameData) -> Image.Image:
         text = name_data.full_name.upper()
-        textbbox = drawer.write(text, size=42, position=(0, 0), style="black_italic", no_write=True, anchor="lt")
+        textbbox = drawer.write(
+            text, size=42, position=(0, 0), style="black_italic", no_write=True, anchor="lt"
+        )
         if textbbox.width > 280:
             text = name_data.short_name.upper()
-            textbbox = drawer.write(text, size=42, position=(0, 0), style="black_italic", no_write=True, anchor="lt")
-        text_im = Image.new("RGBA", (textbbox.right - textbbox.left, textbbox.bottom - textbbox.top))
-        text_drawer = Drawer(ImageDraw.Draw(text_im), folder="zzz-team-card", dark_mode=self._dark_mode, sans=True)
-        text_drawer.write(text, size=42, position=(0, 0), style="black_italic", color=BLACK, anchor="lt")
+            textbbox = drawer.write(
+                text, size=42, position=(0, 0), style="black_italic", no_write=True, anchor="lt"
+            )
+        text_im = Image.new(
+            "RGBA", (textbbox.right - textbbox.left, textbbox.bottom - textbbox.top)
+        )
+        text_drawer = Drawer(
+            ImageDraw.Draw(text_im), folder="zzz-team-card", dark_mode=self._dark_mode, sans=True
+        )
+        text_drawer.write(
+            text, size=42, position=(0, 0), style="black_italic", color=BLACK, anchor="lt"
+        )
         return text_im.rotate(-90, expand=True, resample=Image.Resampling.BICUBIC)
 
     def draw(self) -> BytesIO:

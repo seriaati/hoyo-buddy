@@ -19,11 +19,15 @@ class VideoStoreReminder(Button[NotesView]):
         super().__init__(label=LocaleStr(key="video_store_button.label"), row=row)
 
     async def callback(self, i: Interaction) -> None:
-        notify = await NotesNotify.get_or_none(account=self.view._account, type=NotesNotifyType.VIDEO_STORE)
+        notify = await NotesNotify.get_or_none(
+            account=self.view._account, type=NotesNotifyType.VIDEO_STORE
+        )
 
         modal = TypeTwoModal(
             notify,
-            title=LocaleStr(key="reminder_modal.title", notify=LocaleStr(key="video_store_button.label")),
+            title=LocaleStr(
+                key="reminder_modal.title", notify=LocaleStr(key="video_store_button.label")
+            ),
             min_notify_interval=30,
         )
         modal.translate(self.view.locale)

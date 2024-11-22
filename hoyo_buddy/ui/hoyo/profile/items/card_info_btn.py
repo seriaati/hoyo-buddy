@@ -24,7 +24,8 @@ class CardInfoButton(Button[ProfileView]):
             self.view.locale,
             title=LocaleStr(key="profile.card_info.embed.title"),
             description=LocaleStr(
-                key="profile.card_info.embed.description", provider="[Enka.Network](https://api.enka.network/)"
+                key="profile.card_info.embed.description",
+                provider="[Enka.Network](https://api.enka.network/)",
             ),
         )
         await i.response.send_message(embed=embed, ephemeral=True)

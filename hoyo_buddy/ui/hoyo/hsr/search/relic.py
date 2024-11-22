@@ -20,7 +20,9 @@ RELIC_POS: tuple[str, ...] = ("neck", "head", "hand", "object", "foot", "body")
 
 
 class RelicSetUI(View):
-    def __init__(self, relic_set_id: str, *, hakushin: bool, author: User | Member, locale: Locale) -> None:
+    def __init__(
+        self, relic_set_id: str, *, hakushin: bool, author: User | Member, locale: Locale
+    ) -> None:
         super().__init__(author=author, locale=locale)
         self._relic_set_id = relic_set_id
         self._relic_embeds: dict[str, DefaultEmbed] = {}
@@ -49,7 +51,8 @@ class RelicSetUI(View):
                 relic_set_detail = await api.fetch_relic_set_detail(relic_id)
 
                 self._relic_embeds = {
-                    relic.pos: api.get_relic_embed(relic_set_detail, relic) for relic in relic_set_detail.relics
+                    relic.pos: api.get_relic_embed(relic_set_detail, relic)
+                    for relic in relic_set_detail.relics
                 }
 
         for pos in self._relic_embeds:

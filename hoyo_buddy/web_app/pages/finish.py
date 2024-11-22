@@ -48,8 +48,17 @@ class FinishPage(ft.View):
                 ft.SafeArea(
                     ft.Column(
                         [
-                            ft.Text(translator.translate(LocaleStr(key="select_account.embed.title"), locale), size=24),
-                            ft.Text(translator.translate(LocaleStr(key="select_account.embed.description"), locale)),
+                            ft.Text(
+                                translator.translate(
+                                    LocaleStr(key="select_account.embed.title"), locale
+                                ),
+                                size=24,
+                            ),
+                            ft.Text(
+                                translator.translate(
+                                    LocaleStr(key="select_account.embed.description"), locale
+                                )
+                            ),
                         ]
                     )
                 )
@@ -62,10 +71,14 @@ class FinishPage(ft.View):
 
             self.controls.append(
                 ft.ListTile(
-                    leading=ft.CircleAvatar(foreground_image_src=f"/images/{account.game.value}.png"),
+                    leading=ft.CircleAvatar(
+                        foreground_image_src=f"/images/{account.game.value}.png"
+                    ),
                     title=ft.Text(f"[{account.uid}] {account.nickname}"),
                     subtitle=ft.Text(f"{account.server_name}, Lv.{account.level}"),
-                    trailing=ft.Checkbox(on_change=self.on_checkbox_click, data=f"{account.game.value}_{account.uid}"),
+                    trailing=ft.Checkbox(
+                        on_change=self.on_checkbox_click, data=f"{account.game.value}_{account.uid}"
+                    ),
                     toggle_inputs=True,
                 )
             )
@@ -123,7 +136,8 @@ class SubmitButton(ft.FilledButton):
 
         self._locale = locale
         super().__init__(
-            translator.translate(LocaleStr(key="submit_button_label"), locale), on_click=self.add_accounts_to_db
+            translator.translate(LocaleStr(key="submit_button_label"), locale),
+            on_click=self.add_accounts_to_db,
         )
 
     async def add_accounts_to_db(self, e: ft.ControlEvent) -> None:
@@ -134,14 +148,23 @@ class SubmitButton(ft.FilledButton):
             return
 
         user_id = self._params.user_id
-        region = genshin.Region.CHINESE if self._params.platform is Platform.MIYOUSHE else genshin.Region.OVERSEAS
+        region = (
+            genshin.Region.CHINESE
+            if self._params.platform is Platform.MIYOUSHE
+            else genshin.Region.OVERSEAS
+        )
 
         conn = await asyncpg.connect(os.environ["DB_URL"])
         try:
             await conn.execute(
-                'INSERT INTO "user" (id, temp_data) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING', user_id, "{}"
+                'INSERT INTO "user" (id, temp_data) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING',
+                user_id,
+                "{}",
             )
-            await conn.execute('INSERT INTO "settings" (user_id) VALUES ($1) ON CONFLICT (user_id) DO NOTHING', user_id)
+            await conn.execute(
+                'INSERT INTO "settings" (user_id) VALUES ($1) ON CONFLICT (user_id) DO NOTHING',
+                user_id,
+            )
 
             account_id = None
 
@@ -166,12 +189,17 @@ class SubmitButton(ft.FilledButton):
                     user_id,
                 )
                 await conn.execute(
-                    "INSERT INTO accountnotifsettings (account_id) VALUES ($1) ON CONFLICT DO NOTHING", account_id
+                    "INSERT INTO accountnotifsettings (account_id) VALUES ($1) ON CONFLICT DO NOTHING",
+                    account_id,
                 )
 
             if account_id is not None:
-                await conn.execute('UPDATE "hoyoaccount" SET current = false WHERE user_id = $1', user_id)
-                await conn.execute('UPDATE "hoyoaccount" SET current = true WHERE id = $1', account_id)
+                await conn.execute(
+                    'UPDATE "hoyoaccount" SET current = false WHERE user_id = $1', user_id
+                )
+                await conn.execute(
+                    'UPDATE "hoyoaccount" SET current = true WHERE id = $1', account_id
+                )
         finally:
             await conn.close()
 
@@ -182,9 +210,16 @@ class SubmitButton(ft.FilledButton):
             ft.SnackBar(
                 ft.Row(
                     [
-                        ft.ProgressRing(width=16, height=16, stroke_width=2, color=ft.colors.ON_SECONDARY_CONTAINER),
+                        ft.ProgressRing(
+                            width=16,
+                            height=16,
+                            stroke_width=2,
+                            color=ft.colors.ON_SECONDARY_CONTAINER,
+                        ),
                         ft.Text(
-                            translator.translate(LocaleStr(key="accounts_added_snackbar_message"), self._locale),
+                            translator.translate(
+                                LocaleStr(key="accounts_added_snackbar_message"), self._locale
+                            ),
                             color=ft.colors.ON_PRIMARY_CONTAINER,
                         ),
                     ],
@@ -196,7 +231,9 @@ class SubmitButton(ft.FilledButton):
         await asyncio.sleep(3)
 
         # Redirect to Discord
-        url = get_discord_protocol_url(channel_id=str(self._params.channel_id), guild_id=str(self._params.guild_id))
+        url = get_discord_protocol_url(
+            channel_id=str(self._params.channel_id), guild_id=str(self._params.guild_id)
+        )
         try:
             can_launch = await page.can_launch_url_async(url)
         except TimeoutError:
@@ -205,5 +242,7 @@ class SubmitButton(ft.FilledButton):
         if can_launch:
             await page.launch_url_async(url, web_window_name=ft.UrlTarget.SELF.value)
         else:
-            url = get_discord_url(channel_id=str(self._params.channel_id), guild_id=str(self._params.guild_id))
+            url = get_discord_url(
+                channel_id=str(self._params.channel_id), guild_id=str(self._params.guild_id)
+            )
             await page.launch_url_async(url, web_window_name=ft.UrlTarget.SELF.value)

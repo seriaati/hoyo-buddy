@@ -41,7 +41,10 @@ def draw_character_card(
                 # Get the first 3 talents
                 talents = character.skills[:3]
             else:
-                talents = [next((t for t in character.skills if t.id == talent_id), None) for talent_id in talent_order]
+                talents = [
+                    next((t for t in character.skills if t.id == talent_id), None)
+                    for talent_id in talent_order
+                ]
 
             talent_str = "/".join(str(t.level) if t is not None else "?" for t in talents)
 
@@ -67,10 +70,14 @@ def draw_character_card(
     drawer = Drawer(draw, folder="gi-characters", dark_mode=dark_mode)
 
     for index, card in enumerate(c_cards.values()):
-        x = (index // max_card_num) * (bk_input.card_width + bk_input.card_x_padding) + bk_input.left_padding
+        x = (index // max_card_num) * (
+            bk_input.card_width + bk_input.card_x_padding
+        ) + bk_input.left_padding
         y = 0
         if isinstance(bk_input.top_padding, int):
-            y = (index % max_card_num) * (bk_input.card_height + bk_input.card_y_padding) + bk_input.top_padding
+            y = (index % max_card_num) * (
+                bk_input.card_height + bk_input.card_y_padding
+            ) + bk_input.top_padding
         background.paste(card, (x, y), card)
         character_id = list(c_cards.keys())[index]
         pc_icon_url = pc_icons.get(character_id)
@@ -102,18 +109,26 @@ def draw_small_gi_chara_card(
     if isinstance(character, UnownedGICharacter):
         return im
 
-    text = LocaleStr(key="const_refine_str", const=character.constellation, refine=character.weapon.refinement)
+    text = LocaleStr(
+        key="const_refine_str", const=character.constellation, refine=character.weapon.refinement
+    )
     drawer.write(text, size=31, position=(236, 32), locale=locale, style="medium")
-    drawer.write(LevelStr(character.level), size=31, position=(236, 72), locale=locale, style="medium")
+    drawer.write(
+        LevelStr(character.level), size=31, position=(236, 72), locale=locale, style="medium"
+    )
 
-    friend_textbbox = drawer.write(str(character.friendship), size=18, position=(284, 151), anchor="mm")
+    friend_textbbox = drawer.write(
+        str(character.friendship), size=18, position=(284, 151), anchor="mm"
+    )
     talent_textbbox = drawer.write(talent_str, size=18, position=(405, 151), anchor="mm")
 
     size = 4
     space = talent_textbbox[0] - friend_textbbox[2]
     x_start = friend_textbbox[2] + space // 2 - size // 2
     y_start = friend_textbbox[1] + (friend_textbbox[3] - friend_textbbox[1]) // 2 - size // 2
-    draw.ellipse((x_start, y_start, x_start + size, y_start + size), fill=WHITE if dark_mode else BLACK)
+    draw.ellipse(
+        (x_start, y_start, x_start + size, y_start + size), fill=WHITE if dark_mode else BLACK
+    )
 
     weapon_icon = drawer.open_static(character.weapon.icon, size=WEAPON_ICON_SIZES)
     im.paste(weapon_icon, WEAPON_ICON_POS, weapon_icon)

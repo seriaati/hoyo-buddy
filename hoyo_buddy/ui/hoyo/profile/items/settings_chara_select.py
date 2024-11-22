@@ -23,7 +23,9 @@ class CharacterSelect(PaginatorSelect, Generic[V_co]):
         self.characters = characters
         self.character_id = character_id
         super().__init__(
-            options=self._get_options(), placeholder=LocaleStr(key="profile.character_select.placeholder"), row=row
+            options=self._get_options(),
+            placeholder=LocaleStr(key="profile.character_select.placeholder"),
+            row=row,
         )
 
         self.set_page_based_on_value(self.character_id)

@@ -3,7 +3,13 @@ from __future__ import annotations
 from typing import Final
 
 from discord import utils as dutils
-from genshin.models import ZZZAgentProperty, ZZZElementType, ZZZFullAgent, ZZZPropertyType, ZZZSkillType
+from genshin.models import (
+    ZZZAgentProperty,
+    ZZZElementType,
+    ZZZFullAgent,
+    ZZZPropertyType,
+    ZZZSkillType,
+)
 
 STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     # Disc and w-engine
@@ -76,14 +82,24 @@ def get_props(agent: ZZZFullAgent) -> list[ZZZAgentProperty | None]:
     dmg_index = 4
     match agent.element:
         case ZZZElementType.PHYSICAL:
-            props.insert(dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.PHYSICAL_DMG_BONUS))
+            props.insert(
+                dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.PHYSICAL_DMG_BONUS)
+            )
         case ZZZElementType.FIRE:
-            props.insert(dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.FIRE_DMG_BONUS))
+            props.insert(
+                dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.FIRE_DMG_BONUS)
+            )
         case ZZZElementType.ICE:
-            props.insert(dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.ICE_DMG_BONUS))
+            props.insert(
+                dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.ICE_DMG_BONUS)
+            )
         case ZZZElementType.ELECTRIC:
-            props.insert(dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.ELECTRIC_DMG_BONUS))
+            props.insert(
+                dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.ELECTRIC_DMG_BONUS)
+            )
         case ZZZElementType.ETHER:
-            props.insert(dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.ETHER_DMG_BONUS))
+            props.insert(
+                dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.ETHER_DMG_BONUS)
+            )
 
     return props

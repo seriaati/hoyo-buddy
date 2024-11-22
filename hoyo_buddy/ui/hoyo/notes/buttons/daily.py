@@ -31,7 +31,9 @@ class DailyReminder(Button[NotesView]):
 
         notify = await NotesNotify.get_or_none(account=self.view._account, type=notify_type)
 
-        modal = TypeThreeModal(notify, title=LocaleStr(key="daily_modal.title"), min_notify_interval=30)
+        modal = TypeThreeModal(
+            notify, title=LocaleStr(key="daily_modal.title"), min_notify_interval=30
+        )
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()

@@ -23,17 +23,34 @@ def draw_hsr_notes_card(notes: StarRailNote, locale_: str, dark_mode: bool) -> B
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="hsr-notes", dark_mode=dark_mode)
 
-    drawer.write(LocaleStr(key="real_time_notes"), size=64, position=(76, 67), style="bold", locale=locale)
+    drawer.write(
+        LocaleStr(key="real_time_notes"), size=64, position=(76, 67), style="bold", locale=locale
+    )
 
     drawer.write(
-        LocaleStr(key="notes-card.hsr.daily-training"), size=35, position=(110, 400), style="light", locale=locale
+        LocaleStr(key="notes-card.hsr.daily-training"),
+        size=35,
+        position=(110, 400),
+        style="light",
+        locale=locale,
     )
-    drawer.write(f"{notes.current_train_score}/{notes.max_train_score}", size=60, position=(110, 460), style="medium")
+    drawer.write(
+        f"{notes.current_train_score}/{notes.max_train_score}",
+        size=60,
+        position=(110, 460),
+        style="medium",
+    )
 
     drawer.write(
-        LocaleStr(key="notes-card.hsr.trailblaze-power"), size=35, position=(110, 800), style="light", locale=locale
+        LocaleStr(key="notes-card.hsr.trailblaze-power"),
+        size=35,
+        position=(110, 800),
+        style="light",
+        locale=locale,
     )
-    drawer.write(f"{notes.current_stamina}/{notes.max_stamina}", size=60, position=(110, 860), style="medium")
+    drawer.write(
+        f"{notes.current_stamina}/{notes.max_stamina}", size=60, position=(110, 860), style="medium"
+    )
 
     drawer.write(
         LocaleStr(key="notes-card.hsr.echo-of-war-discounts"),
@@ -43,7 +60,10 @@ def draw_hsr_notes_card(notes: StarRailNote, locale_: str, dark_mode: bool) -> B
         locale=locale,
     )
     textbbox = drawer.write(
-        f"{notes.remaining_weekly_discounts}/{notes.max_weekly_discounts}", size=60, position=(596, 460), style="medium"
+        f"{notes.remaining_weekly_discounts}/{notes.max_weekly_discounts}",
+        size=60,
+        position=(596, 460),
+        style="medium",
     )
     drawer.write(
         LocaleStr(key="notes-card.gi.remaining"),
@@ -54,9 +74,15 @@ def draw_hsr_notes_card(notes: StarRailNote, locale_: str, dark_mode: bool) -> B
     )
 
     drawer.write(
-        LocaleStr(key="notes-card.hsr.reserved-power"), size=35, position=(596, 800), style="light", locale=locale
+        LocaleStr(key="notes-card.hsr.reserved-power"),
+        size=35,
+        position=(596, 800),
+        style="light",
+        locale=locale,
     )
-    textbbox = drawer.write(f"{notes.current_reserve_stamina}/2400", size=60, position=(596, 860), style="medium")
+    textbbox = drawer.write(
+        f"{notes.current_reserve_stamina}/2400", size=60, position=(596, 860), style="medium"
+    )
 
     exped_padding = 201
     icon_pos = (1060, 231)
@@ -72,7 +98,10 @@ def draw_hsr_notes_card(notes: StarRailNote, locale_: str, dark_mode: bool) -> B
         text = (
             LocaleStr(key="notes-card.gi.expedition-finished")
             if exped.finished
-            else LocaleStr(key="notes-card.gi.expedition-remaining", time=format_timedelta(exped.remaining_time))
+            else LocaleStr(
+                key="notes-card.gi.expedition-remaining",
+                time=format_timedelta(exped.remaining_time),
+            )
         )
 
         drawer.write(

@@ -104,7 +104,9 @@ class Admin(commands.Cog):
             await message.edit(content="An error occurred while syncing commands.")
             raise
 
-        await write_json("hoyo_buddy/bot/data/synced_commands.json", {c.name: c.id for c in synced_commands})
+        await write_json(
+            "hoyo_buddy/bot/data/synced_commands.json", {c.name: c.id for c in synced_commands}
+        )
         await translator.load_synced_commands_json()
         await message.edit(content=f"Synced {len(synced_commands)} commands.")
 
@@ -186,8 +188,12 @@ class Admin(commands.Cog):
             acc_region_count[acc.client.region] += 1
             acc_game_count[acc.game] += 1
 
-        acc_region_msg = "\n".join([f"{region.name}: {count}" for region, count in acc_region_count.items()])
-        acc_game_msg = "\n".join([f"{game.name}: {count}" for game, count in acc_game_count.items()])
+        acc_region_msg = "\n".join(
+            [f"{region.name}: {count}" for region, count in acc_region_count.items()]
+        )
+        acc_game_msg = "\n".join(
+            [f"{game.name}: {count}" for game, count in acc_game_count.items()]
+        )
 
         guild_count = len(self.bot.guilds)
         await ctx.send(

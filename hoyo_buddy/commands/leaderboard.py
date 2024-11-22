@@ -134,7 +134,11 @@ class LeaderboardCommand:
 
     @staticmethod
     def get_games_by_lb_type(lb_type: LeaderboardType) -> Sequence[Game]:
-        if lb_type in {LeaderboardType.ABYSS_DMG, LeaderboardType.THEATER_DMG, LeaderboardType.MAX_FRIENDSHIP}:
+        if lb_type in {
+            LeaderboardType.ABYSS_DMG,
+            LeaderboardType.THEATER_DMG,
+            LeaderboardType.MAX_FRIENDSHIP,
+        }:
             return (Game.GENSHIN,)
         if lb_type is LeaderboardType.CHEST:
             return (Game.GENSHIN, Game.STARRAIL)
@@ -147,11 +151,15 @@ class LeaderboardCommand:
         value = int(value)
         return f"{value:,}"
 
-    async def run(self, i: Interaction, *, lb_type: LeaderboardType, account: HoyoAccount | None) -> None:
+    async def run(
+        self, i: Interaction, *, lb_type: LeaderboardType, account: HoyoAccount | None
+    ) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
         locale = await get_locale(i)
 
-        account = account or await i.client.get_account(i.user.id, self.get_games_by_lb_type(lb_type))
+        account = account or await i.client.get_account(
+            i.user.id, self.get_games_by_lb_type(lb_type)
+        )
         await self.update_lb_data(pool=i.client.pool, lb_type=lb_type, account=account)
 
         lb_size = await self.get_lb_size(lb_type, account.game)

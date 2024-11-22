@@ -12,11 +12,18 @@ from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.utils import get_floor_difficulty
 
 if TYPE_CHECKING:
-    from genshin.models.starrail import FloorCharacter, StarRailChallenge, StarRailChallengeSeason, StarRailFloor
+    from genshin.models.starrail import (
+        FloorCharacter,
+        StarRailChallenge,
+        StarRailChallengeSeason,
+        StarRailFloor,
+    )
 
 
 class MOCCard:
-    def __init__(self, data: StarRailChallenge, season: StarRailChallengeSeason, locale: str) -> None:
+    def __init__(
+        self, data: StarRailChallenge, season: StarRailChallengeSeason, locale: str
+    ) -> None:
         self._data = data
         self._season = season
 
@@ -27,20 +34,30 @@ class MOCCard:
         return Locale(self._locale)
 
     def _write_title(self) -> None:
-        self._drawer.write(EnumStr(ChallengeType.MOC), size=80, position=(76, 75), style="bold", color=WHITE)
+        self._drawer.write(
+            EnumStr(ChallengeType.MOC), size=80, position=(76, 75), style="bold", color=WHITE
+        )
 
     def _write_moc_name(self) -> None:
-        self._drawer.write(self._season.name, size=64, position=(76, 197), style="medium", color=WHITE)
+        self._drawer.write(
+            self._season.name, size=64, position=(76, 197), style="medium", color=WHITE
+        )
 
     def _write_max_stars(self) -> None:
         self._drawer.write(
-            str(self._data.total_stars), size=50, position=(193, 374), style="medium", anchor="mm", color=WHITE
+            str(self._data.total_stars),
+            size=50,
+            position=(193, 374),
+            style="medium",
+            anchor="mm",
+            color=WHITE,
         )
 
     def _write_farthest_stage(self) -> None:
         self._drawer.write(
             LocaleStr(
-                key="moc_card_farthest_stage", stage=get_floor_difficulty(self._data.max_floor, self._season.name)
+                key="moc_card_farthest_stage",
+                stage=get_floor_difficulty(self._data.max_floor, self._season.name),
             ),
             size=25,
             position=(303, 340),
@@ -72,11 +89,15 @@ class MOCCard:
 
         level_flair = drawer.open_asset("level_flair.png")
         block.paste(level_flair, (0, 96), level_flair)
-        drawer.write(str(chara.level), size=18, position=(31, 108), style="bold", anchor="mm", color=WHITE)
+        drawer.write(
+            str(chara.level), size=18, position=(31, 108), style="bold", anchor="mm", color=WHITE
+        )
 
         const_flair = drawer.open_asset("const_flair.png")
         block.paste(const_flair, (90, 0), const_flair)
-        drawer.write(str(chara.rank), size=18, position=(105, 16), style="bold", anchor="mm", color=WHITE)
+        drawer.write(
+            str(chara.rank), size=18, position=(105, 16), style="bold", anchor="mm", color=WHITE
+        )
 
         return block
 
@@ -88,7 +109,11 @@ class MOCCard:
         name_tbox = drawer.write(stage_name, size=44, position=(0, 0), style="bold", color=WHITE)
         if stage.is_quick_clear:
             cycle_tbox = drawer.write(
-                LocaleStr(key="moc_quick_clear"), size=25, position=(0, 60), color=WHITE, style="medium"
+                LocaleStr(key="moc_quick_clear"),
+                size=25,
+                position=(0, 60),
+                color=WHITE,
+                style="medium",
             )
         else:
             cycle_tbox = drawer.write(
@@ -129,7 +154,9 @@ class MOCCard:
 
     def draw(self) -> BytesIO:
         self._im = Drawer.open_image("hoyo-buddy-assets/assets/moc/moc.png")
-        self._drawer = Drawer(ImageDraw.Draw(self._im), locale=self.locale, folder="moc", dark_mode=True)
+        self._drawer = Drawer(
+            ImageDraw.Draw(self._im), locale=self.locale, folder="moc", dark_mode=True
+        )
 
         self._write_title()
         self._write_moc_name()

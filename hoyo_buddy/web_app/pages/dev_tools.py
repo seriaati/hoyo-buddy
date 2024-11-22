@@ -27,7 +27,9 @@ class DevToolsPage(ft.View):
                         [
                             ft.Text(LocaleStr(key="instructions_title").translate(locale), size=24),
                             ft.Markdown(
-                                LocaleStr(key="devtools_instructions_description").translate(locale),
+                                LocaleStr(key="devtools_instructions_description").translate(
+                                    locale
+                                ),
                                 auto_follow_links=True,
                                 auto_follow_links_target=ft.UrlTarget.BLANK.value,
                             ),
@@ -36,7 +38,8 @@ class DevToolsPage(ft.View):
                                 on_click=lambda e: e.page.open(ShowImageDialog(locale=locale)),
                             ),
                             ft.Container(
-                                DevToolsCookieForm(params=params, locale=locale), margin=ft.margin.only(top=16)
+                                DevToolsCookieForm(params=params, locale=locale),
+                                margin=ft.margin.only(top=16),
                             ),
                         ]
                     )
@@ -71,11 +74,30 @@ class DevToolsCookieForm(ft.Column):
 
         super().__init__(
             [
-                CookieField(label="ltuid_v2", hint_text="1234567", ref=self._ltuid_v2_ref, locale=locale),
-                CookieField(label="account_id_v2", hint_text="1234567", ref=self._account_id_v2_ref, locale=locale),
-                CookieField(label="ltoken_v2", hint_text="v2_ABCDe5678", ref=self._ltoken_v2_ref, locale=locale),
-                CookieField(label="ltmid_v2", hint_text="1k922_hy", ref=self._ltmid_v2_ref, locale=locale),
-                CookieField(label="account_mid_v2", hint_text="1k922_hy", ref=self._account_mid_v2_ref, locale=locale),
+                CookieField(
+                    label="ltuid_v2", hint_text="1234567", ref=self._ltuid_v2_ref, locale=locale
+                ),
+                CookieField(
+                    label="account_id_v2",
+                    hint_text="1234567",
+                    ref=self._account_id_v2_ref,
+                    locale=locale,
+                ),
+                CookieField(
+                    label="ltoken_v2",
+                    hint_text="v2_ABCDe5678",
+                    ref=self._ltoken_v2_ref,
+                    locale=locale,
+                ),
+                CookieField(
+                    label="ltmid_v2", hint_text="1k922_hy", ref=self._ltmid_v2_ref, locale=locale
+                ),
+                CookieField(
+                    label="account_mid_v2",
+                    hint_text="1k922_hy",
+                    ref=self._account_mid_v2_ref,
+                    locale=locale,
+                ),
                 ft.Container(self.submit_button, margin=ft.margin.only(top=16)),
             ],
             wrap=True,
@@ -94,20 +116,25 @@ class DevToolsCookieForm(ft.Column):
 
         for ref in refs:
             if not ref.value:
-                ref.error_text = translator.translate(LocaleStr(key="required_field_error_message"), self._locale)
+                ref.error_text = translator.translate(
+                    LocaleStr(key="required_field_error_message"), self._locale
+                )
                 await ref.update_async()
 
         if all(ref.value for ref in refs):
             await show_loading_snack_bar(page, locale=self._locale)
             cookies = f"ltuid_v2={ltuid_v2.value}; account_id_v2={account_id_v2.value}; ltoken_v2={ltoken_v2.value}; ltmid_v2={ltmid_v2.value}; account_mid_v2={account_mid_v2.value}"
             encrypted_cookies = encrypt_string(cookies)
-            await page.client_storage.set_async(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
+            await page.client_storage.set_async(
+                f"hb.{self._params.user_id}.cookies", encrypted_cookies
+            )
             await page.go_async(f"/finish?{self._params.to_query_string()}")
 
     @property
     def submit_button(self) -> ft.FilledButton:
         return ft.FilledButton(
-            text=translator.translate(LocaleStr(key="submit_button_label"), self._locale), on_click=self.on_submit
+            text=translator.translate(LocaleStr(key="submit_button_label"), self._locale),
+            on_click=self.on_submit,
         )
 
 

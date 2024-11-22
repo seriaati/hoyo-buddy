@@ -64,11 +64,15 @@ class Search(commands.Cog):
             logger.warning("Failed to set up search autocomplete choices")
             self.bot.capture_exception(e)
 
-        logger.info(f"Finished setting up search autocomplete choices, took {self.bot.loop.time() - start:.2f} seconds")
+        logger.info(
+            f"Finished setting up search autocomplete choices, took {self.bot.loop.time() - start:.2f} seconds"
+        )
 
     @app_commands.command(
         name=app_commands.locale_str("search"),
-        description=app_commands.locale_str("Search anything game related", key="search_command_description"),
+        description=app_commands.locale_str(
+            "Search anything game related", key="search_command_description"
+        ),
     )
     @app_commands.rename(
         game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
@@ -76,13 +80,19 @@ class Search(commands.Cog):
         query=app_commands.locale_str("query", key="search_command_query_param_name"),
     )
     @app_commands.describe(
-        game_value=app_commands.locale_str("Game to search in", key="search_command_game_param_description"),
+        game_value=app_commands.locale_str(
+            "Game to search in", key="search_command_game_param_description"
+        ),
         category_value=app_commands.locale_str(
             "Category to search in", key="search_command_category_param_description"
         ),
-        query=app_commands.locale_str("Query to search for", key="search_command_query_param_description"),
+        query=app_commands.locale_str(
+            "Query to search for", key="search_command_query_param_description"
+        ),
     )
-    async def search_command(self, i: Interaction, game_value: str, category_value: str, query: str) -> Any:
+    async def search_command(
+        self, i: Interaction, game_value: str, category_value: str, query: str
+    ) -> Any:
         if category_value == "none" or query == "none":
             raise InvalidQueryError
 
@@ -105,11 +115,15 @@ class Search(commands.Cog):
 
             match category:
                 case ambr.ItemCategory.CHARACTERS:
-                    character_ui = gi_search.CharacterUI(query, author=i.user, locale=locale, hakushin=is_beta)
+                    character_ui = gi_search.CharacterUI(
+                        query, author=i.user, locale=locale, hakushin=is_beta
+                    )
                     await character_ui.update(i)
 
                 case ambr.ItemCategory.WEAPONS:
-                    weapon_ui = gi_search.WeaponUI(query, hakushin=is_beta, author=i.user, locale=locale)
+                    weapon_ui = gi_search.WeaponUI(
+                        query, hakushin=is_beta, author=i.user, locale=locale
+                    )
                     await weapon_ui.start(i)
 
                 case ambr.ItemCategory.NAMECARDS:
@@ -120,7 +134,9 @@ class Search(commands.Cog):
                         await i.followup.send(embed=embed)
 
                 case ambr.ItemCategory.ARTIFACT_SETS:
-                    artifact_set_ui = gi_search.ArtifactSetUI(query, author=i.user, locale=locale, hakushin=is_beta)
+                    artifact_set_ui = gi_search.ArtifactSetUI(
+                        query, author=i.user, locale=locale, hakushin=is_beta
+                    )
                     await artifact_set_ui.start(i)
 
                 case ambr.ItemCategory.FOOD:
@@ -186,7 +202,9 @@ class Search(commands.Cog):
                     async with ambr.AmbrAPIClient(locale) as api:
                         await i.response.defer(ephemeral=ephemeral(i))
                         book = await api.fetch_book_detail(int(query))
-                        book_volume_ui = gi_search.BookVolumeUI(book, api.lang.value, author=i.user, locale=locale)
+                        book_volume_ui = gi_search.BookVolumeUI(
+                            book, api.lang.value, author=i.user, locale=locale
+                        )
                         await book_volume_ui.start(i)
 
                 case ambr.ItemCategory.TCG:
@@ -217,7 +235,9 @@ class Search(commands.Cog):
                         await i.followup.send(embed=embed)
 
                 case yatta.ItemCategory.LIGHT_CONES:
-                    light_cone_ui = LightConeUI(query, author=i.user, locale=locale, hakushin=is_beta)
+                    light_cone_ui = LightConeUI(
+                        query, author=i.user, locale=locale, hakushin=is_beta
+                    )
                     await light_cone_ui.start(i)
 
                 case yatta.ItemCategory.BOOKS:
@@ -225,7 +245,9 @@ class Search(commands.Cog):
                     await book_ui.start(i)
 
                 case yatta.ItemCategory.RELICS:
-                    relic_set_ui = hsr_search.RelicSetUI(query, author=i.user, locale=locale, hakushin=is_beta)
+                    relic_set_ui = hsr_search.RelicSetUI(
+                        query, author=i.user, locale=locale, hakushin=is_beta
+                    )
                     await relic_set_ui.start(i)
 
                 case yatta.ItemCategory.CHARACTERS:
@@ -234,7 +256,9 @@ class Search(commands.Cog):
                     except ValueError as e:
                         raise InvalidQueryError from e
 
-                    character_ui = hsr_search.CharacterUI(character_id, author=i.user, locale=locale, hakushin=is_beta)
+                    character_ui = hsr_search.CharacterUI(
+                        character_id, author=i.user, locale=locale, hakushin=is_beta
+                    )
                     await character_ui.start(i)
 
         elif game is Game.ZZZ:
@@ -260,7 +284,9 @@ class Search(commands.Cog):
 
                     await i.response.defer(ephemeral=ephemeral(i))
                     translator = hakushin.HakushinTranslator(locale)
-                    async with hakushin_api.HakushinAPI(hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)) as api:
+                    async with hakushin_api.HakushinAPI(
+                        hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)
+                    ) as api:
                         disc = await api.fetch_bangboo_detail(bangboo_id)
                     embed = translator.get_bangboo_embed(disc)
                     await i.followup.send(embed=embed)
@@ -280,18 +306,24 @@ class Search(commands.Cog):
 
                     await i.response.defer(ephemeral=ephemeral(i))
                     translator = hakushin.HakushinTranslator(locale)
-                    async with hakushin_api.HakushinAPI(hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)) as api:
+                    async with hakushin_api.HakushinAPI(
+                        hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)
+                    ) as api:
                         disc = await api.fetch_drive_disc_detail(disc_id)
                     embed = translator.get_disc_embed(disc)
                     await i.followup.send(embed=embed)
 
     @search_command.autocomplete("game_value")
-    async def search_command_game_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:
+    async def search_command_game_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
         return self.bot.get_enum_choices((Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current)
 
     @search_command.autocomplete("category_value")
-    async def search_command_category_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:
+    async def search_command_category_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
         try:
             game = Game(i.namespace.game)
@@ -299,10 +331,14 @@ class Search(commands.Cog):
             return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
 
         categories = self._search_categories[game]
-        return self.bot.get_enum_choices([BetaItemCategory.UNRELEASED_CONTENT, *categories], locale, current)
+        return self.bot.get_enum_choices(
+            [BetaItemCategory.UNRELEASED_CONTENT, *categories], locale, current
+        )
 
     @search_command.autocomplete("query")
-    async def search_command_query_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:
+    async def search_command_query_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
         try:
             game = Game(i.namespace.game)
@@ -317,7 +353,9 @@ class Search(commands.Cog):
                 locale, self.bot.beta_autocomplete_choices[game][Locale.american_english]
             )
             if not choices:
-                return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_no_results"), locale)
+                return self.bot.get_error_choice(
+                    LocaleStr(key="search_autocomplete_no_results"), locale
+                )
         else:
             try:
                 if game is Game.GENSHIN:
@@ -339,11 +377,15 @@ class Search(commands.Cog):
                 locale, self.bot.autocomplete_choices[game][category][Locale.american_english]
             )
             if not choices:
-                return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_no_results"), locale)
+                return self.bot.get_error_choice(
+                    LocaleStr(key="search_autocomplete_no_results"), locale
+                )
 
         choices = [c for c in choices if current.lower() in c.name.lower()]
         if not choices:
-            return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_no_results"), locale)
+            return self.bot.get_error_choice(
+                LocaleStr(key="search_autocomplete_no_results"), locale
+            )
 
         random.shuffle(choices)
         return choices[:25]

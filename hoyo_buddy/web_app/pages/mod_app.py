@@ -33,7 +33,10 @@ class ModAppPage(ft.View):
                                             [
                                                 DownloadAppButton(),
                                                 ft.ElevatedButton(
-                                                    "教程", on_click=lambda e: e.page.open(ShowImageDialog())
+                                                    "教程",
+                                                    on_click=lambda e: e.page.open(
+                                                        ShowImageDialog()
+                                                    ),
                                                 ),
                                             ],
                                             wrap=True,
@@ -54,7 +57,9 @@ class ModAppPage(ft.View):
 
 class DownloadAppButton(ft.ElevatedButton):
     def __init__(self) -> None:
-        super().__init__(text="下载应用程序", icon=ft.icons.DOWNLOAD, on_click=self.goto_download_page)
+        super().__init__(
+            text="下载应用程序", icon=ft.icons.DOWNLOAD, on_click=self.goto_download_page
+        )
 
     async def goto_download_page(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
@@ -89,7 +94,10 @@ class LoginDetailForm(ft.Column):
         self._params = params
         self._login_details_ref = ft.Ref[ft.TextField]()
 
-        super().__init__([LoginDetailField(ref=self._login_details_ref), ft.Container(self.submit_button)], spacing=16)
+        super().__init__(
+            [LoginDetailField(ref=self._login_details_ref), ft.Container(self.submit_button)],
+            spacing=16,
+        )
 
     async def on_submit(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page

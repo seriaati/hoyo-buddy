@@ -21,7 +21,9 @@ if TYPE_CHECKING:
 
 
 class WeaponUI(View):
-    def __init__(self, weapon_id: str, *, hakushin: bool, author: User | Member, locale: Locale) -> None:
+    def __init__(
+        self, weapon_id: str, *, hakushin: bool, author: User | Member, locale: Locale
+    ) -> None:
         super().__init__(author=author, locale=locale)
 
         self.weapon_id = weapon_id
@@ -40,7 +42,9 @@ class WeaponUI(View):
             weapon_detail = await api.fetch_weapon_detail(weapon_id)
             weapon_curve = await api.fetch_weapon_curve()
             manual_weapon = await api.fetch_manual_weapon()
-            embed = api.get_weapon_embed(weapon_detail, self.weapon_level, self.refinement, weapon_curve, manual_weapon)
+            embed = api.get_weapon_embed(
+                weapon_detail, self.weapon_level, self.refinement, weapon_curve, manual_weapon
+            )
             self.max_refinement = len(weapon_detail.upgrade.awaken_cost) + 1
 
             return embed
@@ -49,7 +53,9 @@ class WeaponUI(View):
         async with AmbrAPIClient(self.locale) as api:
             manual_weapon = await api.fetch_manual_weapon()
 
-        async with hakushin.HakushinAPI(hakushin.Game.GI, locale_to_hakushin_lang(self.locale)) as api:
+        async with hakushin.HakushinAPI(
+            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
+        ) as api:
             try:
                 weapon_id = int(self.weapon_id)
             except ValueError:
@@ -58,7 +64,9 @@ class WeaponUI(View):
             weapon_detail = await api.fetch_weapon_detail(weapon_id)
 
         translator = HakushinTranslator(self.locale)
-        embed = translator.get_weapon_embed(weapon_detail, self.weapon_level, self.refinement, manual_weapon)
+        embed = translator.get_weapon_embed(
+            weapon_detail, self.weapon_level, self.refinement, manual_weapon
+        )
         self.max_refinement = len(weapon_detail.refinments)
 
         return embed
@@ -72,7 +80,11 @@ class WeaponUI(View):
         self.clear_items()
         self.add_item(EnterWeaponLevel(label=LocaleStr(key="change_weapon_level_label")))
         self.add_item(
-            RefinementSelector(min_refinement=1, max_refinement=self.max_refinement, current_refinement=self.refinement)
+            RefinementSelector(
+                min_refinement=1,
+                max_refinement=self.max_refinement,
+                current_refinement=self.refinement,
+            )
         )
 
     async def start(self, i: Interaction) -> None:
@@ -85,7 +97,11 @@ class WeaponUI(View):
 
 class WeaponLevelModal(Modal):
     level = TextInput(
-        label=LocaleStr(key="characters.sorter.level"), placeholder="90", is_digit=True, min_value=1, max_value=90
+        label=LocaleStr(key="characters.sorter.level"),
+        placeholder="90",
+        is_digit=True,
+        min_value=1,
+        max_value=90,
     )
 
 
@@ -109,11 +125,15 @@ class EnterWeaponLevel(Button[WeaponUI]):
 
 
 class RefinementSelector(Select["WeaponUI"]):
-    def __init__(self, *, min_refinement: int, max_refinement: int, current_refinement: int) -> None:
+    def __init__(
+        self, *, min_refinement: int, max_refinement: int, current_refinement: int
+    ) -> None:
         super().__init__(
             options=[
                 SelectOption(
-                    label=LocaleStr(r=i, key="refinement_indicator"), value=str(i), default=current_refinement == i
+                    label=LocaleStr(r=i, key="refinement_indicator"),
+                    value=str(i),
+                    default=current_refinement == i,
                 )
                 for i in range(min_refinement, max_refinement + 1)
             ]

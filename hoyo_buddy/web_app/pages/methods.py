@@ -27,11 +27,15 @@ class MethodsPage(ft.View):
                     ft.Column(
                         [
                             ft.Text(
-                                translator.translate(LocaleStr(key="add_hoyolab_acc.embed.title"), locale), size=24
+                                translator.translate(
+                                    LocaleStr(key="add_hoyolab_acc.embed.title"), locale
+                                ),
+                                size=24,
                             ),
                             self.description,
                             ft.Container(
-                                ft.Row(self.method_buttons, spacing=20, wrap=True), margin=ft.margin.only(top=16)
+                                ft.Row(self.method_buttons, spacing=20, wrap=True),
+                                margin=ft.margin.only(top=16),
                             ),
                         ]
                     )
@@ -42,7 +46,11 @@ class MethodsPage(ft.View):
     @property
     def description(self) -> ft.Text:
         if self._params.platform is Platform.HOYOLAB:
-            return ft.Text(translator.translate(LocaleStr(key="add_hoyolab_acc.embed.description"), self._locale))
+            return ft.Text(
+                translator.translate(
+                    LocaleStr(key="add_hoyolab_acc.embed.description"), self._locale
+                )
+            )
         return ft.Text(
             "1. 通过改装过的米游社应用程序: 只有安卓裝置可使用\n2. 通过扫描二维码\n3. 通过手机号: 只有中国大陆手机号可使用\n4. 通过邮箱密码\n5. 通过开发者工具"
         )
@@ -55,7 +63,9 @@ class MethodsPage(ft.View):
             return [
                 MethodButton(
                     params=params,
-                    label=translator.translate(LocaleStr(key="email_password_button_label"), locale),
+                    label=translator.translate(
+                        LocaleStr(key="email_password_button_label"), locale
+                    ),
                     to_page="email_password",
                 ),
                 MethodButton(

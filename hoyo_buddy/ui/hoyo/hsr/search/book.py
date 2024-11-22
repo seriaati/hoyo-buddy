@@ -33,7 +33,8 @@ class BookUI(View):
 
             book_detail = await api.fetch_book_detail(book_id)
             self.series_embeds = {
-                str(series.id): api.get_book_series_embed(book_detail, series) for series in book_detail.series
+                str(series.id): api.get_book_series_embed(book_detail, series)
+                for series in book_detail.series
             }
         if book_detail.series:
             self.add_item(
@@ -48,7 +49,9 @@ class BookUI(View):
 
 
 class SeriesSelector(Select["BookUI"]):
-    def __init__(self, *, placeholder: LocaleStr | str | None = None, options: list[SelectOption]) -> None:
+    def __init__(
+        self, *, placeholder: LocaleStr | str | None = None, options: list[SelectOption]
+    ) -> None:
         super().__init__(placeholder=placeholder, options=options)
 
     async def callback(self, i: Interaction) -> Any:

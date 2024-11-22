@@ -60,7 +60,9 @@ __all__ = ("HoyoBuddy",)
 class HoyoBuddy(commands.AutoShardedBot):
     owner_id: int
 
-    def __init__(self, *, session: ClientSession, env: str, pool: asyncpg.Pool, config: Config) -> None:
+    def __init__(
+        self, *, session: ClientSession, env: str, pool: asyncpg.Pool, config: Config
+    ) -> None:
         self.repo = git.Repo()
         self.version = get_repo_version()
 
@@ -68,13 +70,17 @@ class HoyoBuddy(commands.AutoShardedBot):
             command_prefix=commands.when_mentioned,
             intents=discord.Intents(guilds=True, members=True, emojis=True, messages=True),
             case_insensitive=True,
-            allowed_mentions=discord.AllowedMentions(users=True, everyone=False, roles=False, replied_user=False),
+            allowed_mentions=discord.AllowedMentions(
+                users=True, everyone=False, roles=False, replied_user=False
+            ),
             help_command=None,
             chunk_guilds_at_startup=False,
             max_messages=None,
             member_cache_flags=discord.MemberCacheFlags.none(),
             tree_cls=CommandTree,
-            allowed_contexts=discord.app_commands.AppCommandContext(guild=True, dm_channel=True, private_channel=True),
+            allowed_contexts=discord.app_commands.AppCommandContext(
+                guild=True, dm_channel=True, private_channel=True
+            ),
             allowed_installs=discord.app_commands.AppInstallationType(guild=True, user=True),
             activity=discord.CustomActivity(f"{self.version} | hb.seria.moe"),
         )
@@ -82,7 +88,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.session = session
         self.uptime = get_now()
         self.env = env
-        self.nai_client = NAIClient(token=os.environ["NAI_TOKEN"], host_url=os.environ["NAI_HOST_URL"])
+        self.nai_client = NAIClient(
+            token=os.environ["NAI_TOKEN"], host_url=os.environ["NAI_HOST_URL"]
+        )
         self.owner_id = 410036441129943050
         self.pool = pool
         self.executor = concurrent.futures.ThreadPoolExecutor()
@@ -90,9 +98,13 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.cache = LFUCache()
         self.user_ids: set[int] = set()
 
-        self.autocomplete_choices: AutocompleteChoices = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+        self.autocomplete_choices: AutocompleteChoices = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(list))
+        )
         """[game][category][locale][item_name] -> item_id"""
-        self.beta_autocomplete_choices: BetaAutocompleteChoices = defaultdict(lambda: defaultdict(list))
+        self.beta_autocomplete_choices: BetaAutocompleteChoices = defaultdict(
+            lambda: defaultdict(list)
+        )
         """[game][locale][item_name] -> item_id"""
 
         self.geetest_command_task: asyncio.Task | None = None
@@ -121,7 +133,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         for user in users:
             self.user_ids.add(user.id)
 
-        listener = asyncpg_listen.NotificationListener(asyncpg_listen.connect_func(os.environ["DB_URL"]))
+        listener = asyncpg_listen.NotificationListener(
+            asyncpg_listen.connect_func(os.environ["DB_URL"])
+        )
         self.geetest_command_task = asyncio.create_task(
             listener.run({"geetest_command": self.handle_geetest_notify}, notification_timeout=2)
         )
@@ -225,7 +239,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         games = games or list(Game)
         is_author = user is None or user.id == author_id
         game_query = Q(*[Q(game=game) for game in games], join_type="OR")
-        accounts = await models.HoyoAccount.filter(game_query, user_id=author_id if user is None else user.id).all()
+        accounts = await models.HoyoAccount.filter(
+            game_query, user_id=author_id if user is None else user.id
+        ).all()
         if not is_author:
             accounts = [account for account in accounts if account.public]
 
@@ -234,12 +250,18 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         if not accounts:
             if is_author:
-                return self.get_error_choice(LocaleStr(key="no_accounts_autocomplete_choice"), locale)
-            return self.get_error_choice(LocaleStr(key="user_no_accounts_autocomplete_choice"), locale)
+                return self.get_error_choice(
+                    LocaleStr(key="no_accounts_autocomplete_choice"), locale
+                )
+            return self.get_error_choice(
+                LocaleStr(key="user_no_accounts_autocomplete_choice"), locale
+            )
 
         return [
             discord.app_commands.Choice(
-                name=self._get_account_choice_name(account, locale, is_author=is_author, show_id=show_id),
+                name=self._get_account_choice_name(
+                    account, locale, is_author=is_author, show_id=show_id
+                ),
                 value=str(account.id),
             )
             for account in accounts
@@ -339,7 +361,8 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         for lang, text_map in text_maps.items():
             result[lang] = {
-                str(item_id): text_map.get(text_map_key, "") for item_id, text_map_key in item_id_mapping.items()
+                str(item_id): text_map.get(text_map_key, "")
+                for item_id, text_map_key in item_id_mapping.items()
             }
 
         for lang, text_map in result.items():
@@ -350,7 +373,9 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         async with asyncio.TaskGroup() as tg:
             avatar_config_task = tg.create_task(fetch_json(self.session, HSR_AVATAR_CONFIG_URL))
-            equipment_config_task = tg.create_task(fetch_json(self.session, HSR_EQUIPMENT_CONFIG_URL))
+            equipment_config_task = tg.create_task(
+                fetch_json(self.session, HSR_EQUIPMENT_CONFIG_URL)
+            )
             text_map_tasks = {
                 lang: tg.create_task(fetch_json(self.session, HSR_TEXT_MAP_URL.format(lang=lang)))
                 for lang in STARRAIL_DATA_LANGS
@@ -370,13 +395,16 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         for lang, text_map in text_maps.items():
             result[lang] = {
-                str(item_id): text_map.get(str(text_map_key), "") for item_id, text_map_key in item_id_mapping.items()
+                str(item_id): text_map.get(str(text_map_key), "")
+                for item_id, text_map_key in item_id_mapping.items()
             }
 
         for lang, text_map in result.items():
             await models.JSONFile.write(f"hsr_item_names_{lang}.json", text_map)
 
-    async def on_command_error(self, context: commands.Context, exception: commands.CommandError) -> None:
+    async def on_command_error(
+        self, context: commands.Context, exception: commands.CommandError
+    ) -> None:
         if isinstance(exception, commands.CommandNotFound):
             return None
         return await super().on_command_error(context, exception)

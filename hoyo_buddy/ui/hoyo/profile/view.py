@@ -61,7 +61,11 @@ if TYPE_CHECKING:
 
 
 Character: TypeAlias = (
-    HoyolabHSRCharacter | enka.gi.Character | enka.hsr.Character | ZZZPartialAgent | HoyolabGICharacter
+    HoyolabHSRCharacter
+    | enka.gi.Character
+    | enka.hsr.Character
+    | ZZZPartialAgent
+    | HoyolabGICharacter
 )
 HoyolabCharacter: TypeAlias = HoyolabHSRCharacter | HoyolabGICharacter | ZZZPartialAgent
 GI_CARD_ENDPOINTS = {
@@ -129,11 +133,15 @@ class ProfileView(View):
         self.cache_extras = cache.extras
         return cache.extras
 
-    async def _get_character_rank(self, character: Character, *, with_detail: bool = False) -> str | None:
+    async def _get_character_rank(
+        self, character: Character, *, with_detail: bool = False
+    ) -> str | None:
         async with akasha.AkashaAPI() as api:
             await api.refresh_user(self.uid)
             user_calcs = await api.get_calculations_for_user(self.uid)
-            user_calc = next((calc for calc in user_calcs if calc.character_id == character.id), None)
+            user_calc = next(
+                (calc for calc in user_calcs if calc.character_id == character.id), None
+            )
             if user_calc is None:
                 return None
 
@@ -141,13 +149,17 @@ class ProfileView(View):
             return None
 
         character_calc = user_calc.calculations[0]
-        top_percent = LocaleStr(key="top_percent", percent=format_float(character_calc.top_percent)).translate(
-            self.locale
+        top_percent = LocaleStr(
+            key="top_percent", percent=format_float(character_calc.top_percent)
+        ).translate(self.locale)
+        ranking = (
+            f"{top_percent} ({character_calc.ranking}/{human_format_number(character_calc.out_of)})"
         )
-        ranking = f"{top_percent} ({character_calc.ranking}/{human_format_number(character_calc.out_of)})"
         if not with_detail:
             return ranking
-        variant_str = f" {character_calc.variant.display_name if character_calc.variant is not None else ''}"
+        variant_str = (
+            f" {character_calc.variant.display_name if character_calc.variant is not None else ''}"
+        )
         return f"{character_calc.short}{variant_str}\n{ranking}"
 
     def _check_card_data(self) -> None:
@@ -156,7 +168,9 @@ class ProfileView(View):
                 raise CardNotReadyError(self.characters[char_id].name)
 
     def _set_characters_with_enka(self, game: Literal[Game.STARRAIL, Game.GENSHIN]) -> None:
-        hoyolab_characters = self.hoyolab_hsr_characters if game is Game.STARRAIL else self.hoyolab_gi_characters
+        hoyolab_characters = (
+            self.hoyolab_hsr_characters if game is Game.STARRAIL else self.hoyolab_gi_characters
+        )
         data = self.starrail_data if game is Game.STARRAIL else self.genshin_data
 
         if self._hoyolab_over_enka and hoyolab_characters:
@@ -167,7 +181,10 @@ class ProfileView(View):
         if data is not None:
             for chara in data.characters:
                 chara_type = determine_chara_type(
-                    str(chara.id), cache_extras=self.cache_extras, builds=self._builds, is_hoyolab=False
+                    str(chara.id),
+                    cache_extras=self.cache_extras,
+                    builds=self._builds,
+                    is_hoyolab=False,
                 )
                 if chara_type is CharacterType.CACHE:
                     continue
@@ -195,7 +212,10 @@ class ProfileView(View):
                 self.characters[str(chara.id)] = chara
 
         for character_id in self._param_character_ids:
-            if len(self.character_ids) >= MAX_VALUES[self.game] or character_id not in self.characters:
+            if (
+                len(self.character_ids) >= MAX_VALUES[self.game]
+                or character_id not in self.characters
+            ):
                 break
             self.character_ids.append(character_id)
 
@@ -258,7 +278,9 @@ class ProfileView(View):
             data_str = "\n".join(f"{data.name}: {data.value}" for data in player.data)
             level_str = LevelStr(player.level).translate(self.locale)
             embed = DefaultEmbed(
-                self.locale, title=f"{player.nickname} ({uid_str})", description=f"{level_str}\n{data_str}"
+                self.locale,
+                title=f"{player.nickname} ({uid_str})",
+                description=f"{level_str}\n{data_str}",
             )
         else:
             embed = DefaultEmbed(
@@ -287,10 +309,21 @@ class ProfileView(View):
         self.add_item(RedrawCardButton(row=1))
 
         if self.characters:
-            characters = [i[1] for i in sorted(self.characters.items(), key=lambda x: (x[0] not in self.character_ids))]
+            characters = [
+                i[1]
+                for i in sorted(
+                    self.characters.items(), key=lambda x: (x[0] not in self.character_ids)
+                )
+            ]
             self.add_item(
                 CharacterSelect(
-                    self.game, characters, self.cache_extras, self._builds, self._account, self.character_ids, row=2
+                    self.game,
+                    characters,
+                    self.cache_extras,
+                    self._builds,
+                    self._account,
+                    self.character_ids,
+                    row=2,
                 )
             )
         self.add_item(BuildSelect(row=3))
@@ -306,14 +339,20 @@ class ProfileView(View):
         template = card_settings.template
         payload = {
             "uid": self.uid,
-            "lang": LOCALE_TO_HSR_CARD_API_LANG.get(await self.get_character_locale(character), "en"),
+            "lang": LOCALE_TO_HSR_CARD_API_LANG.get(
+                await self.get_character_locale(character), "en"
+            ),
             "template": int(template[-1]),
             "character_id": str(character.id),
             "character_art": card_settings.current_image,
             "color": card_settings.custom_primary_color,
         }
         if all(v is not None for v in (self._owner_hash, self._owner_username, self._build_id)):
-            payload["owner"] = {"username": self._owner_username, "hash": self._owner_hash, "build_id": self._build_id}
+            payload["owner"] = {
+                "username": self._owner_username,
+                "hash": self._owner_hash,
+                "build_id": self._build_id,
+            }
 
         if isinstance(character, HoyolabHSRCharacter):
             assert self._account is not None
@@ -335,14 +374,20 @@ class ProfileView(View):
 
         payload = {
             "uid": self.uid,
-            "lang": LOCALE_TO_GI_CARD_API_LANG.get(await self.get_character_locale(character), "en"),
+            "lang": LOCALE_TO_GI_CARD_API_LANG.get(
+                await self.get_character_locale(character), "en"
+            ),
             "character_id": str(character.id),
             "character_art": card_settings.current_image,
             "color": card_settings.custom_primary_color,
             "template": int(template[-1]),
         }
         if all(v is not None for v in (self._owner_hash, self._owner_username, self._build_id)):
-            payload["owner"] = {"username": self._owner_username, "hash": self._owner_hash, "build_id": self._build_id}
+            payload["owner"] = {
+                "username": self._owner_username,
+                "hash": self._owner_hash,
+                "build_id": self._build_id,
+            }
 
         endpoint = GI_CARD_ENDPOINTS.get(template[:-1])
         if endpoint is None:
@@ -460,7 +505,9 @@ class ProfileView(View):
 
         template_num: Literal[1, 2, 3, 4] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
         if template_num == 2:
-            temp2_card_data = await read_yaml("hoyo-buddy-assets/assets/zzz-build-card/agent_data_temp2.yaml")
+            temp2_card_data = await read_yaml(
+                "hoyo-buddy-assets/assets/zzz-build-card/agent_data_temp2.yaml"
+            )
             agent_temp1_data = self._card_data.get(str(character_id))
             agent_temp2_data = temp2_card_data.get(str(character_id))
             if agent_temp1_data is None or agent_temp2_data is None:
@@ -498,7 +545,9 @@ class ProfileView(View):
         character_id = self.character_ids[0]
         character = character or self.characters[character_id]
 
-        force_hb_temp = self.character_type is CharacterType.CACHE or isinstance(character, HoyolabGICharacter)
+        force_hb_temp = self.character_type is CharacterType.CACHE or isinstance(
+            character, HoyolabGICharacter
+        )
         if force_hb_temp and "hb" not in card_settings.template:
             card_settings.template = "hb1"
             await card_settings.save(update_fields=("template",))
@@ -542,7 +591,9 @@ class ProfileView(View):
         if self.game is not Game.GENSHIN:
             self._check_card_data()
 
-        locale = draw_locale(self.locale, self._account) if self._account is not None else self.locale
+        locale = (
+            draw_locale(self.locale, self._account) if self._account is not None else self.locale
+        )
         settings = await Settings.get(user_id=i.user.id)
 
         draw_input = DrawInput(
@@ -564,10 +615,14 @@ class ProfileView(View):
             assert self._account is not None
             client = self._account.client
             client.set_lang(self.locale)
-            agents = [await client.get_zzz_agent_info(int(char_id)) for char_id in self.character_ids]
+            agents = [
+                await client.get_zzz_agent_info(int(char_id)) for char_id in self.character_ids
+            ]
 
             agent_colors = {
-                int(char_id): (await get_card_settings(i.user.id, char_id, game=self.game)).custom_primary_color
+                int(char_id): (
+                    await get_card_settings(i.user.id, char_id, game=self.game)
+                ).custom_primary_color
                 or self._card_data[char_id]["color"]
                 for char_id in self.character_ids
             }
@@ -581,7 +636,9 @@ class ProfileView(View):
 
         if self.game is Game.STARRAIL:
             character_colors = {
-                char_id: (await get_card_settings(i.user.id, char_id, game=self.game)).custom_primary_color
+                char_id: (
+                    await get_card_settings(i.user.id, char_id, game=self.game)
+                ).custom_primary_color
                 or self._card_data[char_id]["primary"]
                 for char_id in self.character_ids
             }
@@ -615,7 +672,9 @@ class ProfileView(View):
 
         try:
             bytes_obj = (
-                await self.draw_team_card(i) if is_team else await self.draw_card(i, card_settings, character=character)
+                await self.draw_team_card(i)
+                if is_team
+                else await self.draw_card(i, card_settings, character=character)
             )
             bytes_obj.seek(0)
         except Exception as e:
@@ -642,7 +701,9 @@ class ProfileView(View):
             kwargs["content"] = content
 
         if unset_loading_state and item is not None:
-            await item.unset_loading_state(i, attachments=attachments, embed=self.card_embed, **kwargs)
+            await item.unset_loading_state(
+                i, attachments=attachments, embed=self.card_embed, **kwargs
+            )
         else:
             self.message = await i.edit_original_response(
                 attachments=attachments, embed=self.card_embed, view=self, **kwargs
@@ -659,7 +720,9 @@ class ProfileView(View):
             dyk = await get_dyk(i)
 
         if self.character_ids:
-            CharacterSelect.update_ui(self, character_id=self.character_ids[0], is_team=len(self.character_ids) > 1)
+            CharacterSelect.update_ui(
+                self, character_id=self.character_ids[0], is_team=len(self.character_ids) > 1
+            )
             return await self.update(i, unset_loading_state=False, content=dyk)
 
         await i.followup.send(embed=self.player_embed, view=self, content=dyk)

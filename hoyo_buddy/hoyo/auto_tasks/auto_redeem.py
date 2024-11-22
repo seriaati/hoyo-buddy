@@ -31,7 +31,9 @@ class AutoRedeem:
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
 
     @classmethod
-    async def execute(cls, bot: HoyoBuddy, game: genshin.Game | None = None, codes: list[str] | None = None) -> None:
+    async def execute(
+        cls, bot: HoyoBuddy, game: genshin.Game | None = None, codes: list[str] | None = None
+    ) -> None:
         """Redeem codes for accounts that have auto redeem enabled.
 
         Args:
@@ -41,13 +43,20 @@ class AutoRedeem:
         """
         async with cls._lock:
             try:
-                logger.info(f"Starting auto redeem task for game {game or 'all'} and codes {codes or 'from API'}")
+                logger.info(
+                    f"Starting auto redeem task for game {game or 'all'} and codes {codes or 'from API'}"
+                )
 
                 cls._total_redeem_count = 0
                 cls._bot = bot
                 cls._dead_codes = set()
 
-                games_to_redeem = (genshin.Game.GENSHIN, genshin.Game.STARRAIL, genshin.Game.ZZZ, genshin.Game.TOT)
+                games_to_redeem = (
+                    genshin.Game.GENSHIN,
+                    genshin.Game.STARRAIL,
+                    genshin.Game.ZZZ,
+                    genshin.Game.TOT,
+                )
                 game_codes = (
                     {game: codes}
                     if game is not None and codes is not None
@@ -58,19 +67,27 @@ class AutoRedeem:
                 if game is None:
                     accounts = await HoyoAccount.filter(auto_redeem=True).all()
                 else:
-                    accounts = await HoyoAccount.filter(auto_redeem=True, game=GPY_GAME_TO_HB_GAME[game]).all()
+                    accounts = await HoyoAccount.filter(
+                        auto_redeem=True, game=GPY_GAME_TO_HB_GAME[game]
+                    ).all()
 
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 for account in accounts:
                     if (
                         account.platform is Platform.MIYOUSHE
                         or HB_GAME_TO_GPY_GAME[account.game] not in game_codes
-                        or ("cookie_token" not in account.cookies and "stoken" not in account.cookies)
+                        or (
+                            "cookie_token" not in account.cookies
+                            and "stoken" not in account.cookies
+                        )
                     ):
                         continue
                     await queue.put(account)
 
-                tasks = [asyncio.create_task(cls._redeem_code_task(queue, api, game_codes)) for api in PROXY_APIS]
+                tasks = [
+                    asyncio.create_task(cls._redeem_code_task(queue, api, game_codes))
+                    for api in PROXY_APIS
+                ]
                 tasks.append(asyncio.create_task(cls._redeem_code_task(queue, "LOCAL", game_codes)))
 
                 await queue.join()
@@ -80,11 +97,15 @@ class AutoRedeem:
             except Exception as e:
                 bot.capture_exception(e)
             finally:
-                logger.info(f"Auto redeem task completed, total redeem count: {cls._total_redeem_count}")
+                logger.info(
+                    f"Auto redeem task completed, total redeem count: {cls._total_redeem_count}"
+                )
 
     @classmethod
     async def _get_codes(cls, game: genshin.Game) -> list[str]:
-        async with cls._bot.session.get(f"https://hoyo-codes.seria.moe/codes?game={game.value}") as resp:
+        async with cls._bot.session.get(
+            f"https://hoyo-codes.seria.moe/codes?game={game.value}"
+        ) as resp:
             data = await resp.json()
             return [code["code"] for code in data["codes"]]
 
@@ -134,7 +155,9 @@ class AutoRedeem:
                 queue.task_done()
 
     @classmethod
-    async def _handle_error(cls, account: HoyoAccount, locale: discord.Locale, e: Exception) -> None:
+    async def _handle_error(
+        cls, account: HoyoAccount, locale: discord.Locale, e: Exception
+    ) -> None:
         embed, recognized = get_error_embed(e, locale)
         if not recognized:
             raise e
@@ -204,7 +227,12 @@ class AutoRedeem:
 
     @classmethod
     async def _redeem_code(
-        cls, api_name: ProxyAPI, account: HoyoAccount, locale: discord.Locale, code: str, payload: dict[str, str]
+        cls,
+        api_name: ProxyAPI,
+        account: HoyoAccount,
+        locale: discord.Locale,
+        code: str,
+        payload: dict[str, str],
     ) -> tuple[str, str, bool]:
         api_url = PROXY_APIS[api_name]
 

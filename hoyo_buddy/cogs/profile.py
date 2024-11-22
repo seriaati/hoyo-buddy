@@ -26,7 +26,8 @@ RENAME_KWARGS: dict[str, app_commands.locale_str] = {
 }
 DESCRIBE_KWARGS: dict[str, app_commands.locale_str] = {
     "user": app_commands.locale_str(
-        "User to search the accounts with, defaults to you", key="user_autocomplete_param_description"
+        "User to search the accounts with, defaults to you",
+        key="user_autocomplete_param_description",
     ),
     "account": app_commands.locale_str(
         "Account to run this command with, defaults to the selected one in /accounts",
@@ -43,7 +44,9 @@ UID_DESCRIBE: dict[str, app_commands.locale_str] = {
 
 def gen_character_id_rename(max_: int) -> dict[str, app_commands.locale_str]:
     return {
-        f"character_id{num}": app_commands.locale_str(f"character-{num}", key="profile_character_param_name", num=num)
+        f"character_id{num}": app_commands.locale_str(
+            f"character-{num}", key="profile_character_param_name", num=num
+        )
         for num in range(1, max_ + 1)
     }
 
@@ -58,7 +61,9 @@ def gen_character_id_describe(max_: int) -> dict[str, app_commands.locale_str]:
 
 
 class Profile(
-    GroupCog, name=app_commands.locale_str("profile"), description=app_commands.locale_str("Profile commands")
+    GroupCog,
+    name=app_commands.locale_str("profile"),
+    description=app_commands.locale_str("Profile commands"),
 ):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
@@ -119,7 +124,8 @@ class Profile(
     @app_commands.command(
         name=app_commands.locale_str("genshin"),
         description=app_commands.locale_str(
-            "Generate Genshin Impact character build cards and team cards", key="profile_command_gi_description"
+            "Generate Genshin Impact character build cards and team cards",
+            key="profile_command_gi_description",
         ),
     )
     @app_commands.rename(**RENAME_KWARGS, **gen_character_id_rename(4))
@@ -150,7 +156,8 @@ class Profile(
     @app_commands.command(
         name=app_commands.locale_str("hsr"),
         description=app_commands.locale_str(
-            "Generate Honkai Star Rail character build cards and team cards", key="profile_command_hsr_description"
+            "Generate Honkai Star Rail character build cards and team cards",
+            key="profile_command_hsr_description",
         ),
     )
     @app_commands.rename(**RENAME_KWARGS, **gen_character_id_rename(4))
@@ -181,7 +188,8 @@ class Profile(
     @app_commands.command(
         name=app_commands.locale_str("zzz"),
         description=app_commands.locale_str(
-            "Generate Zenless Zone Zero character build cards and team cards", key="profile_command_zzz_description"
+            "Generate Zenless Zone Zero character build cards and team cards",
+            key="profile_command_zzz_description",
         ),
     )
     @app_commands.rename(**RENAME_KWARGS, **gen_character_id_rename(3))
@@ -210,11 +218,15 @@ class Profile(
         return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN,))
 
     @profile_hsr_command.autocomplete("account")
-    async def hsr_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+    async def hsr_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(i, current, (Game.STARRAIL,))
 
     @profile_zzz_command.autocomplete("account")
-    async def zzz_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+    async def zzz_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(i, current, (Game.ZZZ,))
 
     async def profile_character_autocomplete(
@@ -229,13 +241,17 @@ class Profile(
         elif game is Game.ZZZ:
             category = hakushin.ZZZItemCategory.AGENTS
         else:
-            return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_no_results"), locale)
+            return self.bot.get_error_choice(
+                LocaleStr(key="search_autocomplete_no_results"), locale
+            )
 
         choices = self.bot.autocomplete_choices[game][category].get(
             locale, self.bot.autocomplete_choices[game][category][Locale.american_english]
         )
         if not choices:
-            return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_no_results"), locale)
+            return self.bot.get_error_choice(
+                LocaleStr(key="search_autocomplete_no_results"), locale
+            )
 
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
 
@@ -243,20 +259,26 @@ class Profile(
     @profile_gi_command.autocomplete("character_id2")
     @profile_gi_command.autocomplete("character_id3")
     @profile_gi_command.autocomplete("character_id4")
-    async def profile_character1_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+    async def profile_character1_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
         return await self.profile_character_autocomplete(i, current, game=Game.GENSHIN)
 
     @profile_hsr_command.autocomplete("character_id1")
     @profile_hsr_command.autocomplete("character_id2")
     @profile_hsr_command.autocomplete("character_id3")
     @profile_hsr_command.autocomplete("character_id4")
-    async def profile_character2_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+    async def profile_character2_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
         return await self.profile_character_autocomplete(i, current, game=Game.STARRAIL)
 
     @profile_zzz_command.autocomplete("character_id1")
     @profile_zzz_command.autocomplete("character_id2")
     @profile_zzz_command.autocomplete("character_id3")
-    async def profile_character3_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
+    async def profile_character3_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
         return await self.profile_character_autocomplete(i, current, game=Game.ZZZ)
 
 

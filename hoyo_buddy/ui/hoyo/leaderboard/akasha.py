@@ -52,14 +52,18 @@ class AkashaLbPaginator(PaginatorView):
         embed = self.lb_embed.copy()
 
         if self.you is not None:
-            top_percent = LocaleStr(key="top_percent", percent=round(self.you.rank / self.lb_size * 100, 1)).translate(
-                self.locale
-            )
+            top_percent = LocaleStr(
+                key="top_percent", percent=round(self.you.rank / self.lb_size * 100, 1)
+            ).translate(self.locale)
             you_str = LocaleStr(key="akasha_you").translate(self.locale)
 
-            embed.add_field(name=f"{you_str} ({top_percent})", value=self.get_lb_line(self.you), inline=False)
+            embed.add_field(
+                name=f"{you_str} ({top_percent})", value=self.get_lb_line(self.you), inline=False
+            )
 
-        return embed.add_field(name="---", value="\n".join(self.get_lb_line(lb) for lb in lbs), inline=False)
+        return embed.add_field(
+            name="---", value="\n".join(self.get_lb_line(lb) for lb in lbs), inline=False
+        )
 
     async def fetch_page(self, type_: Literal["next", "prev", "first", "last", "start"]) -> Page:
         if type_ in {"first", "start"}:
@@ -72,7 +76,9 @@ class AkashaLbPaginator(PaginatorView):
             p = f"lt|{self.lbs[-1].calculation.result}"
 
         async with akasha.AkashaAPI() as api:
-            self.lbs = await api._fetch_leaderboards(int(self.calculation_id), self._current_page + 1, 10, p, True)
+            self.lbs = await api._fetch_leaderboards(
+                int(self.calculation_id), self._current_page + 1, 10, p, True
+            )
 
         return Page(embed=self.get_page_embed(self.lbs))
 

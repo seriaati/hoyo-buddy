@@ -13,7 +13,9 @@ class Params(BaseModel):
     guild_id: int | None = None
 
     def to_query_string(self) -> str:
-        return "&".join(f"{k}={v}" for k, v in self.model_dump().items() if v is not None and k != "user_id")
+        return "&".join(
+            f"{k}={v}" for k, v in self.model_dump().items() if v is not None and k != "user_id"
+        )
 
 
 class GachaParams(BaseModel):

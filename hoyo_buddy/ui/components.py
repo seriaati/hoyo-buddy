@@ -48,7 +48,9 @@ class View(discord.ui.View):
         self.item_states: dict[str, bool] = {}
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__module__.replace('hoyo_buddy.ui.', '')}.{self.__class__.__name__}"
+        return (
+            f"{self.__class__.__module__.replace('hoyo_buddy.ui.', '')}.{self.__class__.__name__}"
+        )
 
     async def on_timeout(self) -> None:
         if self.message:
@@ -148,11 +150,18 @@ class View(discord.ui.View):
 
 class URLButtonView(discord.ui.View):
     def __init__(
-        self, locale: discord.Locale, *, url: str, label: str | LocaleStr | None = None, emoji: str | None = None
+        self,
+        locale: discord.Locale,
+        *,
+        url: str,
+        label: str | LocaleStr | None = None,
+        emoji: str | None = None,
     ) -> None:
         super().__init__()
         self.add_item(
-            discord.ui.Button(label=translator.translate(label, locale) if label else None, url=url, emoji=emoji)
+            discord.ui.Button(
+                label=translator.translate(label, locale) if label else None, url=url, emoji=emoji
+            )
         )
 
 
@@ -168,7 +177,9 @@ class Button(discord.ui.Button, Generic[V_co]):
         emoji: str | None = None,
         row: int | None = None,
     ) -> None:
-        super().__init__(style=style, disabled=disabled, custom_id=custom_id, url=url, emoji=emoji, row=row)
+        super().__init__(
+            style=style, disabled=disabled, custom_id=custom_id, url=url, emoji=emoji, row=row
+        )
 
         self.locale_str_label = label
         self.original_label: str | None = None
@@ -179,7 +190,9 @@ class Button(discord.ui.Button, Generic[V_co]):
 
     def translate(self, locale: discord.Locale) -> None:
         if self.locale_str_label:
-            self.label = translator.translate(self.locale_str_label, locale, capitalize_first_word=True)
+            self.label = translator.translate(
+                self.locale_str_label, locale, capitalize_first_word=True
+            )
 
     async def set_loading_state(self, i: Interaction, **kwargs: Any) -> None:
         self.original_label = self.label[:] if self.label else None
@@ -238,7 +251,11 @@ class GoBackButton(Button, Generic[V_co]):
 
             original_image = None
             for embed in self.embeds or []:
-                original_image = clean_url(embed.image.url).split("/")[-1] if embed.image.url is not None else None
+                original_image = (
+                    clean_url(embed.image.url).split("/")[-1]
+                    if embed.image.url is not None
+                    else None
+                )
                 if original_image is not None:
                     embed.set_image(url=f"attachment://{original_image}")
 
@@ -254,7 +271,10 @@ class ToggleButton(Button, Generic[V_co]):
         self.toggle_label = toggle_label
         kwargs["row"] = kwargs.get("row", 1)
         super().__init__(
-            style=self._get_style(), label=toggle_label, emoji=emojis.TOGGLE_EMOJIS[current_toggle], **kwargs
+            style=self._get_style(),
+            label=toggle_label,
+            emoji=emojis.TOGGLE_EMOJIS[current_toggle],
+            **kwargs,
         )
 
         self.view: V_co
@@ -285,7 +305,10 @@ class SelectOption(discord.SelectOption):
         default: bool = False,
     ) -> None:
         super().__init__(
-            label=label if isinstance(label, str) else label.identifier, value=value, emoji=emoji, default=default
+            label=label if isinstance(label, str) else label.identifier,
+            value=value,
+            emoji=emoji,
+            default=default,
         )
         self.locale_str_label = label
         self.locale_str_description = description
@@ -331,15 +354,17 @@ class Select(discord.ui.Select, Generic[V_co]):
 
     def translate(self, locale: discord.Locale) -> None:
         if self.locale_str_placeholder:
-            self.placeholder = translator.translate(self.locale_str_placeholder, locale, capitalize_first_word=True)[
-                :100
-            ]
+            self.placeholder = translator.translate(
+                self.locale_str_placeholder, locale, capitalize_first_word=True
+            )[:100]
         for option in self.options:
             # NOTE: This is a workaround for a bug(?) in discord.py where options somehow get converted to discord.components.SelectOption internally
             if not isinstance(option, SelectOption):  # pyright: ignore[reportUnnecessaryIsInstance]
                 continue
 
-            option.label = translator.translate(option.locale_str_label, locale, capitalize_first_word=True)[:100]
+            option.label = translator.translate(
+                option.locale_str_label, locale, capitalize_first_word=True
+            )[:100]
             option.value = option.value[:100]
 
             if option.locale_str_description:
@@ -398,8 +423,12 @@ class Select(discord.ui.Select, Generic[V_co]):
             option.default = option.value in values
 
 
-NEXT_PAGE = SelectOption(label=LocaleStr(key="next_page_option_label"), value="next_page", emoji=emojis.FORWARD)
-PREV_PAGE = SelectOption(label=LocaleStr(key="prev_page_option_label"), value="prev_page", emoji=emojis.BACK)
+NEXT_PAGE = SelectOption(
+    label=LocaleStr(key="next_page_option_label"), value="next_page", emoji=emojis.FORWARD
+)
+PREV_PAGE = SelectOption(
+    label=LocaleStr(key="prev_page_option_label"), value="prev_page", emoji=emojis.BACK
+)
 
 
 class PaginatorSelect(Select, Generic[V_co]):
@@ -441,7 +470,9 @@ class PaginatorSelect(Select, Generic[V_co]):
             selected_options = self.remove_duplicate_options(selected_options, split_options[-1])
             return [PREV_PAGE] + selected_options + split_options[-1]
 
-        selected_options = self.remove_duplicate_options(selected_options, split_options[self.page_index])
+        selected_options = self.remove_duplicate_options(
+            selected_options, split_options[self.page_index]
+        )
         return [PREV_PAGE] + selected_options + split_options[self.page_index] + [NEXT_PAGE]
 
     def set_page_based_on_value(self, value: str) -> None:
@@ -570,20 +601,30 @@ class Modal(discord.ui.Modal):
                 if item.max_value is not None and value > item.max_value:
                     raise InvalidInputError(
                         LocaleStr(
-                            key="invalid_input.input_out_of_range.max_value", input=item.label, max_value=item.max_value
+                            key="invalid_input.input_out_of_range.max_value",
+                            input=item.label,
+                            max_value=item.max_value,
                         )
                     )
                 if item.min_value is not None and value < item.min_value:
                     raise InvalidInputError(
                         LocaleStr(
-                            key="invalid_input.input_out_of_range.min_value", min_value=item.min_value, input=item.label
+                            key="invalid_input.input_out_of_range.min_value",
+                            min_value=item.min_value,
+                            input=item.label,
                         )
                     )
             elif isinstance(item, TextInput) and item.is_bool:
                 if item.value not in {"0", "1"}:
-                    raise InvalidInputError(LocaleStr(key="invalid_input.input_needs_to_be_bool", input=item.label))
+                    raise InvalidInputError(
+                        LocaleStr(key="invalid_input.input_needs_to_be_bool", input=item.label)
+                    )
 
     @property
     def incomplete(self) -> bool:
         """Returns True if any required TextInput is empty. False otherwise."""
-        return any(item.required and not item.value for item in self.children if isinstance(item, TextInput))
+        return any(
+            item.required and not item.value
+            for item in self.children
+            if isinstance(item, TextInput)
+        )

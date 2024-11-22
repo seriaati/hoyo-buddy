@@ -100,7 +100,8 @@ class Others(commands.Cog):
         return "\n".join(self.format_commit(commit) for commit in commits)
 
     @app_commands.command(
-        name=locale_str("about"), description=locale_str("About the bot", key="about_command_description")
+        name=locale_str("about"),
+        description=locale_str("About the bot", key="about_command_description"),
     )
     async def about_command(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
@@ -118,33 +119,53 @@ class Others(commands.Cog):
         )
 
         # latest changes
-        embed.add_field(name=LocaleStr(key="about_command.latest_changes"), value=self.get_last_commits(), inline=False)
+        embed.add_field(
+            name=LocaleStr(key="about_command.latest_changes"),
+            value=self.get_last_commits(),
+            inline=False,
+        )
 
         # developer
         owner = await i.client.fetch_user(i.client.owner_id)
         if owner is not None:
             embed.add_field(
-                name=LocaleStr(key="about_command.developer"), value=get_discord_user_md_link(owner), inline=False
+                name=LocaleStr(key="about_command.developer"),
+                value=get_discord_user_md_link(owner),
+                inline=False,
             )
 
         # designer
         designer_role = guild.get_role(1266651937411960882)
         if designer_role is not None:
             designers = [get_discord_user_md_link(designer) for designer in designer_role.members]
-            embed.add_field(name=LocaleStr(key="about_command.designers"), value=" ".join(designers), inline=False)
+            embed.add_field(
+                name=LocaleStr(key="about_command.designers"),
+                value=" ".join(designers),
+                inline=False,
+            )
 
         # translators
         translator_role = guild.get_role(1010181916642787503)
         if translator_role is not None:
-            translators = [get_discord_user_md_link(translator) for translator in translator_role.members]
-            embed.add_field(name=LocaleStr(key="about_command.translators"), value=" ".join(translators), inline=False)
+            translators = [
+                get_discord_user_md_link(translator) for translator in translator_role.members
+            ]
+            embed.add_field(
+                name=LocaleStr(key="about_command.translators"),
+                value=" ".join(translators),
+                inline=False,
+            )
 
         # guild count
-        embed.add_field(name=LocaleStr(key="about_command.guild_count"), value=str(len(i.client.guilds)))
+        embed.add_field(
+            name=LocaleStr(key="about_command.guild_count"), value=str(len(i.client.guilds))
+        )
 
         # ram usage
         memory_usage = self.process.memory_info().rss / 1024**2
-        embed.add_field(name=LocaleStr(key="about_command.ram_usage"), value=f"{memory_usage:.2f} MB")
+        embed.add_field(
+            name=LocaleStr(key="about_command.ram_usage"), value=f"{memory_usage:.2f} MB"
+        )
 
         # uptime
         uptime = discord.utils.format_dt(i.client.uptime, "R")
@@ -162,9 +183,19 @@ class Others(commands.Cog):
             )
         )
         view.add_item(
-            Button(label=LocaleStr(key="about_command.website"), url="https://seria.is-a.dev/hoyo-buddy", row=1)
+            Button(
+                label=LocaleStr(key="about_command.website"),
+                url="https://seria.is-a.dev/hoyo-buddy",
+                row=1,
+            )
         )
-        view.add_item(Button(label=LocaleStr(key="about_command.support"), url="https://link.seria.moe/donate", row=1))
+        view.add_item(
+            Button(
+                label=LocaleStr(key="about_command.support"),
+                url="https://link.seria.moe/donate",
+                row=1,
+            )
+        )
         view.add_item(
             Button(
                 label=LocaleStr(key="about_command.contribute"),
@@ -175,7 +206,8 @@ class Others(commands.Cog):
 
         # brand image
         image_ = discord.File(
-            SettingsUI.get_brand_img_filename("DARK" if settings.dark_mode else "LIGHT", locale), filename="brand.png"
+            SettingsUI.get_brand_img_filename("DARK" if settings.dark_mode else "LIGHT", locale),
+            filename="brand.png",
         )
         embed.set_image(url="attachment://brand.png")
 

@@ -17,7 +17,10 @@ else:
 class AutoRedeemToggle(ToggleButton[AccountManager]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
-            current_toggle, LocaleStr(key="auto_redeem_toggle.label"), row=2, custom_id="auto_redeem_toggle"
+            current_toggle,
+            LocaleStr(key="auto_redeem_toggle.label"),
+            row=2,
+            custom_id="auto_redeem_toggle",
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -31,7 +34,10 @@ class AutoRedeemToggle(ToggleButton[AccountManager]):
 class AutoCheckinToggle(ToggleButton[AccountManager]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
-            current_toggle, LocaleStr(key="auto_checkin_button_label"), row=2, custom_id="auto_checkin_toggle"
+            current_toggle,
+            LocaleStr(key="auto_checkin_button_label"),
+            row=2,
+            custom_id="auto_checkin_toggle",
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -45,7 +51,10 @@ class AutoCheckinToggle(ToggleButton[AccountManager]):
 class AccountPublicToggle(ToggleButton[AccountManager]):
     def __init__(self, current_toggle: bool) -> None:
         super().__init__(
-            current_toggle, LocaleStr(key="public_account_toggle.label"), row=2, custom_id="public_account_toggle"
+            current_toggle,
+            LocaleStr(key="public_account_toggle.label"),
+            row=2,
+            custom_id="public_account_toggle",
         )
 
     async def callback(self, i: Interaction) -> None:

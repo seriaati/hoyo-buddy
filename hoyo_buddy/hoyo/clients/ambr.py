@@ -41,7 +41,9 @@ class ItemCategory(StrEnum):
 
 
 class AmbrAPIClient(ambr.AmbrAPI):
-    def __init__(self, locale: Locale = Locale.american_english, session: aiohttp.ClientSession | None = None) -> None:
+    def __init__(
+        self, locale: Locale = Locale.american_english, session: aiohttp.ClientSession | None = None
+    ) -> None:
         super().__init__(lang=LOCALE_TO_AMBR_LANG.get(locale, ambr.Language.EN), session=session)
         self.locale = locale
 
@@ -62,9 +64,13 @@ class AmbrAPIClient(ambr.AmbrAPI):
         avatar_curve: dict[str, dict[str, dict[str, float]]],
         manual_weapon: dict[str, str],
     ) -> DefaultEmbed:
-        stat_values = autils.calculate_upgrade_stat_values(character.upgrade, avatar_curve, level, True)
+        stat_values = autils.calculate_upgrade_stat_values(
+            character.upgrade, avatar_curve, level, True
+        )
         formatted_stat_values = autils.format_stat_values(stat_values)
-        named_stat_values = autils.replace_fight_prop_with_name(formatted_stat_values, manual_weapon)
+        named_stat_values = autils.replace_fight_prop_with_name(
+            formatted_stat_values, manual_weapon
+        )
 
         level_str = translator.translate(LevelStr(level), self.locale)
         embed = DefaultEmbed(
@@ -91,7 +97,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
 
     def get_character_talent_embed(self, talent: ambr.Talent, level: int) -> DefaultEmbed:
         embed = DefaultEmbed(
-            self.locale, title=talent.name, description=autils.format_layout(talent.description).replace("#", "")
+            self.locale,
+            title=talent.name,
+            description=autils.format_layout(talent.description).replace("#", ""),
         )
         if talent.upgrades:
             try:
@@ -108,7 +116,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
         return embed
 
     def get_character_constellation_embed(self, constellation: ambr.Constellation) -> DefaultEmbed:
-        embed = DefaultEmbed(self.locale, title=constellation.name, description=constellation.description)
+        embed = DefaultEmbed(
+            self.locale, title=constellation.name, description=constellation.description
+        )
         embed.set_thumbnail(url=constellation.icon)
         return embed
 
@@ -140,7 +150,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
         weapon_curve: dict[str, dict[str, dict[str, float]]],
         manual_weapon: dict[str, str],
     ) -> DefaultEmbed:
-        stat_values = autils.calculate_upgrade_stat_values(weapon.upgrade, weapon_curve, level, True)
+        stat_values = autils.calculate_upgrade_stat_values(
+            weapon.upgrade, weapon_curve, level, True
+        )
         stat_values = autils.format_stat_values(stat_values)
         main_stat = weapon.upgrade.base_stats[0]
         if main_stat.prop_type is None:
@@ -181,14 +193,20 @@ class AmbrAPIClient(ambr.AmbrAPI):
             embed.set_footer(text=namecard.source)
         return embed
 
-    def get_artifact_embed(self, artifact_set: ambr.ArtifactSetDetail, artifact: ambr.Artifact) -> DefaultEmbed:
+    def get_artifact_embed(
+        self, artifact_set: ambr.ArtifactSetDetail, artifact: ambr.Artifact
+    ) -> DefaultEmbed:
         description = translator.translate(
-            LocaleStr(bonus_2=artifact_set.affix_list[0].effect, key="artifact_set_two_piece_embed_description"),
+            LocaleStr(
+                bonus_2=artifact_set.affix_list[0].effect,
+                key="artifact_set_two_piece_embed_description",
+            ),
             self.locale,
         )
         if len(artifact_set.affix_list) == 2:
             four_piece = LocaleStr(
-                bonus_4=artifact_set.affix_list[1].effect, key="artifact_set_four_piece_embed_description"
+                bonus_4=artifact_set.affix_list[1].effect,
+                key="artifact_set_four_piece_embed_description",
             )
             description += "\n" + translator.translate(four_piece, self.locale)
 
@@ -214,7 +232,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
 
             for source in material.sources:
                 if source.days:
-                    days_str = ", ".join([translator.translate(WeekdayStr(day), self.locale) for day in source.days])
+                    days_str = ", ".join(
+                        [translator.translate(WeekdayStr(day), self.locale) for day in source.days]
+                    )
                     names.append(f"{source.name} ({days_str})")
                 else:
                     names.append(source.name)
@@ -223,7 +243,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
         else:
             description = material.description
 
-        embed = DefaultEmbed(self.locale, title=f"{material.name}\n{'★' * material.rarity}", description=description)
+        embed = DefaultEmbed(
+            self.locale, title=f"{material.name}\n{'★' * material.rarity}", description=description
+        )
         embed.set_thumbnail(url=material.icon)
         embed.set_author(name=material.type)
 
@@ -254,7 +276,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
         return embed
 
     def get_furniture_set_embed(self, furniture_set: ambr.FurnitureSetDetail) -> DefaultEmbed:
-        embed = DefaultEmbed(self.locale, title=furniture_set.name, description=furniture_set.description)
+        embed = DefaultEmbed(
+            self.locale, title=furniture_set.name, description=furniture_set.description
+        )
 
         # TODO: Add furniture set furnitures
         embed.set_author(name=f"{furniture_set.types[-1]}/{furniture_set.categories[-1]}")
@@ -270,7 +294,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
         embed.set_thumbnail(url=monster.icon)
         return embed
 
-    def get_volume_embed(self, book: ambr.BookDetail, volume: ambr.BookVolume, readable: str) -> DefaultEmbed:
+    def get_volume_embed(
+        self, book: ambr.BookDetail, volume: ambr.BookVolume, readable: str
+    ) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale, title=volume.name, description=shorten(readable, 4096))
         embed.set_author(name=book.name)
         embed.set_thumbnail(url=book.icon)
@@ -279,14 +305,18 @@ class AmbrAPIClient(ambr.AmbrAPI):
 
     def get_tcg_card_embed(self, card: ambr.TCGCardDetail) -> DefaultEmbed:
         energy = card.props.get("GCG_PROP_ENERGY", 0) if card.props else 0
-        embed = DefaultEmbed(self.locale, title=card.name, description=DICE_EMOJIS["GCG_COST_ENERGY"] * energy)
+        embed = DefaultEmbed(
+            self.locale, title=card.name, description=DICE_EMOJIS["GCG_COST_ENERGY"] * energy
+        )
         embed.add_field(name=card.story_title, value=card.story_detail, inline=False)
         embed.set_author(name="/".join([t.name for t in card.tags]))
         embed.set_footer(text=card.source)
         embed.set_image(url=card.small_icon)
         return embed
 
-    def get_tcg_card_dictionaries_embed(self, dictionaries: list[ambr.CardDictionary]) -> DefaultEmbed:
+    def get_tcg_card_dictionaries_embed(
+        self, dictionaries: list[ambr.CardDictionary]
+    ) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale)
         for d in dictionaries:
             # skip talent related dictionaries
@@ -305,7 +335,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
             for k in talent.sub_skills:
                 dictionary = dutils.get(dictionaries, id=k)
                 if dictionary:
-                    embed.add_field(name=dictionary.name, value=dictionary.description, inline=False)
+                    embed.add_field(
+                        name=dictionary.name, value=dictionary.description, inline=False
+                    )
 
         embed.add_field(name=LocaleStr(key="dice_cost_embed_field_name"), value=dice_str)
 
@@ -314,12 +346,19 @@ class AmbrAPIClient(ambr.AmbrAPI):
         return embed
 
     def get_abyss_chamber_embed_with_floor_info(
-        self, floor: ambr.Floor, floor_index: int, chamber: ambr.Chamber, chamber_index: int, blessing: ambr.Blessing
+        self,
+        floor: ambr.Floor,
+        floor_index: int,
+        chamber: ambr.Chamber,
+        chamber_index: int,
+        blessing: ambr.Blessing,
     ) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
             title=LocaleStr(
-                floor_index=floor_index + 1, chamber_index=chamber_index + 1, key="abyss_chamber.embed.title"
+                floor_index=floor_index + 1,
+                chamber_index=chamber_index + 1,
+                key="abyss_chamber.embed.title",
             ),
         )
 
@@ -329,7 +368,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
             inline=False,
         )
         embed.add_field(
-            name=LocaleStr(key="abyss_chamber.blessing.embed.field.name"), value=blessing.description, inline=False
+            name=LocaleStr(key="abyss_chamber.blessing.embed.field.name"),
+            value=blessing.description,
+            inline=False,
         )
         embed.add_field(
             name=LocaleStr(key="abyss_chamber.challenge_target.embed.field.name"),
@@ -338,17 +379,25 @@ class AmbrAPIClient(ambr.AmbrAPI):
         )
         embed.add_field(
             name=LocaleStr(key="abyss_chamber.ley_line_disorder.embed.field.name"),
-            value=create_bullet_list([lld.description for lld in floor.ley_line_disorders if lld.visible]),
+            value=create_bullet_list(
+                [lld.description for lld in floor.ley_line_disorders if lld.visible]
+            ),
             inline=False,
         )
 
         return embed
 
     def _get_abyss_enemy_item(
-        self, enemy: ambr.AbyssEnemy, *, level: int, floor: int, monster_curve: dict[str, dict[str, dict[str, float]]]
+        self,
+        enemy: ambr.AbyssEnemy,
+        *,
+        level: int,
+        floor: int,
+        monster_curve: dict[str, dict[str, dict[str, float]]],
     ) -> ItemWithDescription:
         prop_values: dict[str, float] = {
-            prop.type: prop.initial_value * monster_curve[str(level)]["curveInfos"][prop.growth_type]
+            prop.type: prop.initial_value
+            * monster_curve[str(level)]["curveInfos"][prop.growth_type]
             for prop in enemy.properties
         }
 
@@ -384,7 +433,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
             enemy = enemies.get(str(enemy_id))
             if enemy is not None:
                 items.append(
-                    self._get_abyss_enemy_item(enemy, level=floor_enemy_level, floor=floor, monster_curve=monster_curve)
+                    self._get_abyss_enemy_item(
+                        enemy, level=floor_enemy_level, floor=floor, monster_curve=monster_curve
+                    )
                 )
         return items
 

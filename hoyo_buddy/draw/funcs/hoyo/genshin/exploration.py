@@ -46,17 +46,23 @@ class ExplorationCard:
     def _get_shadow(self, name: str) -> Image.Image:
         return self._drawer.open_asset(f"{name}_shadow.png")
 
-    def _write_title(self, text: LocaleStr | str, *, position: tuple[int, int], drawer: Drawer) -> None:
+    def _write_title(
+        self, text: LocaleStr | str, *, position: tuple[int, int], drawer: Drawer
+    ) -> None:
         drawer.write(text, position=position, size=48, style="medium")
 
-    def _write_small_text(self, text: LocaleStr | str, *, position: tuple[int, int], drawer: Drawer) -> None:
+    def _write_small_text(
+        self, text: LocaleStr | str, *, position: tuple[int, int], drawer: Drawer
+    ) -> None:
         drawer.write(text, position=position, size=26, style="regular", anchor="lm")
 
     def _get_exploration(self, exploration_id: int) -> Exploration | None:
         return next((e for e in self._user.explorations if e.id == exploration_id), None)
 
     def _get_offering_text(self, exploration: Exploration | None) -> str:
-        level_str = LevelStr(0 if exploration is None else exploration.offerings[0].level).translate(self.locale)
+        level_str = LevelStr(
+            0 if exploration is None else exploration.offerings[0].level
+        ).translate(self.locale)
         if exploration is None:
             return f"{self._placeholder}: {level_str}"
         return f"{exploration.offerings[0].name}: {level_str}"
@@ -64,7 +70,10 @@ class ExplorationCard:
     def _draw_waypoint_card(self) -> Image.Image:
         im = self._get_card("waypoint")
         drawer = Drawer(
-            ImageDraw.Draw(im), folder="gi-exploration", dark_mode=self._dark_mode, locale=self._drawer.locale
+            ImageDraw.Draw(im),
+            folder="gi-exploration",
+            dark_mode=self._dark_mode,
+            locale=self._drawer.locale,
         )
         self._write_title(LocaleStr(key="exploration.waypoints"), position=(35, 20), drawer=drawer)
 
@@ -73,14 +82,24 @@ class ExplorationCard:
             str(self._user.stats.unlocked_domains): (200, 193),
         }
         for text, pos in texts.items():
-            drawer.write(text, position=pos, size=24, style="regular", anchor="mm", locale=Locale.american_english)
+            drawer.write(
+                text,
+                position=pos,
+                size=24,
+                style="regular",
+                anchor="mm",
+                locale=Locale.american_english,
+            )
 
         return im
 
     def _draw_chest_card(self) -> Image.Image:
         im = self._get_card("chest")
         drawer = Drawer(
-            ImageDraw.Draw(im), folder="gi-exploration", dark_mode=self._dark_mode, locale=self._drawer.locale
+            ImageDraw.Draw(im),
+            folder="gi-exploration",
+            dark_mode=self._dark_mode,
+            locale=self._drawer.locale,
         )
         self._write_title(LocaleStr(key="exploration.chests"), position=(21, 20), drawer=drawer)
 
@@ -99,21 +118,43 @@ class ExplorationCard:
             self._user.stats.remarkable_chests: (610, 196),
         }
         for text, pos in chest_types.items():
-            drawer.write(text, position=pos, size=18, style="light", anchor="mm", locale=Locale.american_english)
+            drawer.write(
+                text,
+                position=pos,
+                size=18,
+                style="light",
+                anchor="mm",
+                locale=Locale.american_english,
+            )
         for text, pos in chest_nums.items():
-            drawer.write(str(text), position=pos, size=24, style="regular", anchor="mm", locale=Locale.american_english)
+            drawer.write(
+                str(text),
+                position=pos,
+                size=24,
+                style="regular",
+                anchor="mm",
+                locale=Locale.american_english,
+            )
 
         return im
 
     def _draw_exploration_card(
-        self, name: str, exploration: Exploration | None, texts: dict[LocaleStr | str, tuple[int, int]]
+        self,
+        name: str,
+        exploration: Exploration | None,
+        texts: dict[LocaleStr | str, tuple[int, int]],
     ) -> Image.Image:
         im = self._get_card(name)
         drawer = Drawer(
-            ImageDraw.Draw(im), folder="gi-exploration", dark_mode=self._dark_mode, locale=self._drawer.locale
+            ImageDraw.Draw(im),
+            folder="gi-exploration",
+            dark_mode=self._dark_mode,
+            locale=self._drawer.locale,
         )
         self._write_title(
-            self._placeholder if exploration is None else exploration.name, position=(34, 23), drawer=drawer
+            self._placeholder if exploration is None else exploration.name,
+            position=(34, 23),
+            drawer=drawer,
         )
         for text, pos in texts.items():
             self._write_small_text(text, position=pos, drawer=drawer)
@@ -123,13 +164,17 @@ class ExplorationCard:
     def _draw_mondstadt_card(self) -> Image.Image:
         exploration = self._get_exploration(1)
         texts: dict[LocaleStr | str, tuple[int, int]] = {
-            LocaleStr(key="exploration.progress", progress=0 if exploration is None else exploration.explored): (
-                75,
-                161,
-            ),
-            LocaleStr(key="wind_god", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.anemoculi}"): (75, 207),
             LocaleStr(
-                key="reputation_level", mi18n_game=Game.GENSHIN, append=self._get_reputation_level(exploration)
+                key="exploration.progress",
+                progress=0 if exploration is None else exploration.explored,
+            ): (75, 161),
+            LocaleStr(
+                key="wind_god", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.anemoculi}"
+            ): (75, 207),
+            LocaleStr(
+                key="reputation_level",
+                mi18n_game=Game.GENSHIN,
+                append=self._get_reputation_level(exploration),
             ): (75, 253),
         }
         return self._draw_exploration_card("mondstadt", exploration, texts)
@@ -137,13 +182,17 @@ class ExplorationCard:
     def _draw_liyue_card(self) -> Image.Image:
         exploration = self._get_exploration(2)
         texts: dict[LocaleStr | str, tuple[int, int]] = {
-            LocaleStr(key="exploration.progress", progress=0 if exploration is None else exploration.explored): (
-                75,
-                161,
-            ),
-            LocaleStr(key="geoculus", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.geoculi}"): (75, 207),
             LocaleStr(
-                key="reputation_level", mi18n_game=Game.GENSHIN, append=self._get_reputation_level(exploration)
+                key="exploration.progress",
+                progress=0 if exploration is None else exploration.explored,
+            ): (75, 161),
+            LocaleStr(
+                key="geoculus", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.geoculi}"
+            ): (75, 207),
+            LocaleStr(
+                key="reputation_level",
+                mi18n_game=Game.GENSHIN,
+                append=self._get_reputation_level(exploration),
             ): (75, 253),
         }
         return self._draw_exploration_card("liyue", exploration, texts)
@@ -151,16 +200,19 @@ class ExplorationCard:
     def _draw_inazuma_card(self) -> Image.Image:
         exploration = self._get_exploration(4)
         texts = {
-            LocaleStr(key="exploration.progress", progress=0 if exploration is None else exploration.explored): (
-                75,
-                117,
-            ),
-            LocaleStr(key="electroculus", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.electroculi}"): (
-                75,
-                163,
-            ),
             LocaleStr(
-                key="reputation_level", mi18n_game=Game.GENSHIN, append=self._get_reputation_level(exploration)
+                key="exploration.progress",
+                progress=0 if exploration is None else exploration.explored,
+            ): (75, 117),
+            LocaleStr(
+                key="electroculus",
+                mi18n_game=Game.GENSHIN,
+                append=f": {self._user.stats.electroculi}",
+            ): (75, 163),
+            LocaleStr(
+                key="reputation_level",
+                mi18n_game=Game.GENSHIN,
+                append=self._get_reputation_level(exploration),
             ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
@@ -169,16 +221,19 @@ class ExplorationCard:
     def _draw_sumeru_card(self) -> Image.Image:
         exploration = self._get_exploration(8)
         texts = {
-            LocaleStr(key="exploration.progress", progress=0 if exploration is None else exploration.explored): (
-                75,
-                117,
-            ),
-            LocaleStr(key="dendro_culus", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.dendroculi}"): (
-                75,
-                163,
-            ),
             LocaleStr(
-                key="reputation_level", mi18n_game=Game.GENSHIN, append=self._get_reputation_level(exploration)
+                key="exploration.progress",
+                progress=0 if exploration is None else exploration.explored,
+            ): (75, 117),
+            LocaleStr(
+                key="dendro_culus",
+                mi18n_game=Game.GENSHIN,
+                append=f": {self._user.stats.dendroculi}",
+            ): (75, 163),
+            LocaleStr(
+                key="reputation_level",
+                mi18n_game=Game.GENSHIN,
+                append=self._get_reputation_level(exploration),
             ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
@@ -187,13 +242,17 @@ class ExplorationCard:
     def _draw_fontaine_card(self) -> Image.Image:
         exploration = self._get_exploration(9)
         texts = {
-            LocaleStr(key="exploration.progress", progress=0 if exploration is None else exploration.explored): (
-                75,
-                117,
-            ),
-            LocaleStr(key="hydro_god", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.hydroculi}"): (75, 163),
             LocaleStr(
-                key="reputation_level", mi18n_game=Game.GENSHIN, append=self._get_reputation_level(exploration)
+                key="exploration.progress",
+                progress=0 if exploration is None else exploration.explored,
+            ): (75, 117),
+            LocaleStr(
+                key="hydro_god", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.hydroculi}"
+            ): (75, 163),
+            LocaleStr(
+                key="reputation_level",
+                mi18n_game=Game.GENSHIN,
+                append=self._get_reputation_level(exploration),
             ): (75, 209),
             self._get_offering_text(exploration): (75, 252),
         }
@@ -202,19 +261,25 @@ class ExplorationCard:
     def _draw_placeholder_card(self) -> Image.Image:
         im = self._get_card("placeholder")
         draw = ImageDraw.Draw(im)
-        drawer = Drawer(draw, folder="gi-exploration", dark_mode=self._dark_mode, locale=self.locale)
+        drawer = Drawer(
+            draw, folder="gi-exploration", dark_mode=self._dark_mode, locale=self.locale
+        )
         self._write_title(self._placeholder, position=(34, 23), drawer=drawer)
-        self._write_small_text(LocaleStr(key="exploration.placeholder"), position=(35, 113), drawer=drawer)
-        self._write_small_text(LocaleStr(key="exploration.placeholder_quote"), position=(34, 181), drawer=drawer)
+        self._write_small_text(
+            LocaleStr(key="exploration.placeholder"), position=(35, 113), drawer=drawer
+        )
+        self._write_small_text(
+            LocaleStr(key="exploration.placeholder_quote"), position=(34, 181), drawer=drawer
+        )
         return im
 
     def _draw_sea_of_bygone_eras_card(self) -> Image.Image:
         exploration = self._get_exploration(14)
         texts: dict[LocaleStr | str, tuple[int, int]] = {
-            LocaleStr(key="exploration.progress", progress=0 if exploration is None else exploration.explored): (
-                75,
-                117,
-            )
+            LocaleStr(
+                key="exploration.progress",
+                progress=0 if exploration is None else exploration.explored,
+            ): (75, 117)
         }
         return self._draw_exploration_card("seaOfBygoneEras", exploration, texts)
 
@@ -246,10 +311,10 @@ class ExplorationCard:
         underground_progress = 0 if underground is None else underground.explored
 
         texts = {
-            LocaleStr(key="exploration.progress", progress=0 if exploration is None else exploration.explored): (
-                65,
-                152,
-            ),
+            LocaleStr(
+                key="exploration.progress",
+                progress=0 if exploration is None else exploration.explored,
+            ): (65, 152),
             f"{underground_name}: {underground_progress}%": (65, 212),
             self._get_offering_text(exploration): (65, 272),
         }
@@ -259,10 +324,10 @@ class ExplorationCard:
     def _draw_dragonspine_card(self) -> Image.Image:
         exploration = self._get_exploration(3)
         texts = {
-            LocaleStr(key="exploration.progress", progress=0 if exploration is None else exploration.explored): (
-                73,
-                120,
-            ),
+            LocaleStr(
+                key="exploration.progress",
+                progress=0 if exploration is None else exploration.explored,
+            ): (73, 120),
             self._get_offering_text(exploration): (73, 184),
         }
         return self._draw_exploration_card("dragonspine", exploration, texts)
@@ -270,24 +335,25 @@ class ExplorationCard:
     def _draw_enkanomiya_card(self) -> Image.Image:
         exploration = self._get_exploration(5)
         texts: dict[LocaleStr | str, tuple[int, int]] = {
-            LocaleStr(key="exploration.progress", progress=0 if exploration is None else exploration.explored): (
-                73,
-                123,
-            )
+            LocaleStr(
+                key="exploration.progress",
+                progress=0 if exploration is None else exploration.explored,
+            ): (73, 123)
         }
         return self._draw_exploration_card("enkanomiya", exploration, texts)
 
     def _draw_natlan_card(self) -> Image.Image:
         exploration = self._get_exploration(15)
         texts = {
-            LocaleStr(key="exploration.progress", progress=0 if exploration is None else exploration.explored): (
-                75,
-                117,
-            ),
-            LocaleStr(key="pyroculus_number", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.pyroculi}"): (
-                75,
-                163,
-            ),
+            LocaleStr(
+                key="exploration.progress",
+                progress=0 if exploration is None else exploration.explored,
+            ): (75, 117),
+            LocaleStr(
+                key="pyroculus_number",
+                mi18n_game=Game.GENSHIN,
+                append=f": {self._user.stats.pyroculi}",
+            ): (75, 163),
             LocaleStr(
                 key="natlan_reputation",
                 reputation=self._get_reputation_level(exploration),
@@ -299,11 +365,17 @@ class ExplorationCard:
 
     def draw(self) -> BytesIO:
         mode_str = "dark" if self._dark_mode else "light"
-        self._im = Drawer.open_image(f"hoyo-buddy-assets/assets/gi-exploration/background_{mode_str}.png")
+        self._im = Drawer.open_image(
+            f"hoyo-buddy-assets/assets/gi-exploration/background_{mode_str}.png"
+        )
         draw = ImageDraw.Draw(self._im)
-        self._drawer = Drawer(draw, folder="gi-exploration", dark_mode=self._dark_mode, locale=self.locale)
+        self._drawer = Drawer(
+            draw, folder="gi-exploration", dark_mode=self._dark_mode, locale=self.locale
+        )
 
-        self._drawer.write(LocaleStr(key="exploration.title"), position=(114, 81), size=72, style="bold")
+        self._drawer.write(
+            LocaleStr(key="exploration.title"), position=(114, 81), size=72, style="bold"
+        )
         shadow_offset = 5
 
         waypoint = self._draw_waypoint_card()

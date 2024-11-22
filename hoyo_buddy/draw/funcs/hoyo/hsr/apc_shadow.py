@@ -12,11 +12,18 @@ from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.utils import get_floor_difficulty
 
 if TYPE_CHECKING:
-    from genshin.models.starrail import APCShadowFloor, FloorCharacter, StarRailAPCShadow, StarRailChallengeSeason
+    from genshin.models.starrail import (
+        APCShadowFloor,
+        FloorCharacter,
+        StarRailAPCShadow,
+        StarRailChallengeSeason,
+    )
 
 
 class APCShadowCard:
-    def __init__(self, data: StarRailAPCShadow, season: StarRailChallengeSeason, locale: str) -> None:
+    def __init__(
+        self, data: StarRailAPCShadow, season: StarRailChallengeSeason, locale: str
+    ) -> None:
         self._data = data
         self._season = season
 
@@ -27,13 +34,17 @@ class APCShadowCard:
         return Locale(self._locale)
 
     def _write_title(self) -> None:
-        self._drawer.write(EnumStr(ChallengeType.APC_SHADOW), size=80, position=(76, 75), style="bold")
+        self._drawer.write(
+            EnumStr(ChallengeType.APC_SHADOW), size=80, position=(76, 75), style="bold"
+        )
 
     def _write_apc_shadow_name(self) -> None:
         self._drawer.write(self._season.name, size=64, position=(76, 197), style="medium")
 
     def _write_max_stars(self) -> None:
-        self._drawer.write(str(self._data.total_stars), size=50, position=(193, 374), style="medium", anchor="mm")
+        self._drawer.write(
+            str(self._data.total_stars), size=50, position=(193, 374), style="medium", anchor="mm"
+        )
 
     def _write_farthest_stage(self) -> None:
         self._drawer.write(
@@ -47,7 +58,9 @@ class APCShadowCard:
 
     def _write_times_challenged(self) -> None:
         self._drawer.write(
-            LocaleStr(key="apc_shadow.times_challenged", times=self._data.total_battles), size=25, position=(303, 374)
+            LocaleStr(key="apc_shadow.times_challenged", times=self._data.total_battles),
+            size=25,
+            position=(303, 374),
         )
 
     def _draw_block(self, chara: FloorCharacter | None = None) -> Image.Image:
@@ -57,7 +70,9 @@ class APCShadowCard:
             block.paste(empty, (27, 28), empty)
             return block
 
-        drawer = Drawer(ImageDraw.Draw(block), folder="apc-shadow", dark_mode=True, locale=self.locale)
+        drawer = Drawer(
+            ImageDraw.Draw(block), folder="apc-shadow", dark_mode=True, locale=self.locale
+        )
 
         icon = drawer.open_static(chara.icon)
         icon = drawer.resize_crop(icon, (120, 120))
@@ -67,11 +82,15 @@ class APCShadowCard:
 
         level_flair = drawer.open_asset("level_flair.png")
         block.paste(level_flair, (0, 96), level_flair)
-        drawer.write(str(chara.level), size=18, position=(31, 108), style="bold", anchor="mm", color=WHITE)
+        drawer.write(
+            str(chara.level), size=18, position=(31, 108), style="bold", anchor="mm", color=WHITE
+        )
 
         const_flair = drawer.open_asset("const_flair.png")
         block.paste(const_flair, (90, 0), const_flair)
-        drawer.write(str(chara.rank), size=18, position=(105, 16), style="bold", anchor="mm", color=WHITE)
+        drawer.write(
+            str(chara.rank), size=18, position=(105, 16), style="bold", anchor="mm", color=WHITE
+        )
 
         return block
 
@@ -84,7 +103,9 @@ class APCShadowCard:
         score_tbox = drawer.write(
             LocaleStr(
                 key="pf_card_total_score",
-                score=f"{stage.node_1.score}+{stage.node_2.score}={stage.score}" if not stage.is_quick_clear else 8000,
+                score=f"{stage.node_1.score}+{stage.node_2.score}={stage.score}"
+                if not stage.is_quick_clear
+                else 8000,
             ),
             size=25,
             position=(0, 60),
@@ -138,7 +159,9 @@ class APCShadowCard:
 
     def draw(self) -> BytesIO:
         self._im = Drawer.open_image("hoyo-buddy-assets/assets/apc-shadow/apc_shadow.png")
-        self._drawer = Drawer(ImageDraw.Draw(self._im), folder="apc-shadow", locale=self.locale, dark_mode=True)
+        self._drawer = Drawer(
+            ImageDraw.Draw(self._im), folder="apc-shadow", locale=self.locale, dark_mode=True
+        )
 
         self._write_title()
         self._write_apc_shadow_name()

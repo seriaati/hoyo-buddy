@@ -23,7 +23,9 @@ if TYPE_CHECKING:
 
 
 class FarmView(View):
-    def __init__(self, uid: int | None, dark_mode: bool, *, author: User | Member | None, locale: Locale) -> None:
+    def __init__(
+        self, uid: int | None, dark_mode: bool, *, author: User | Member | None, locale: Locale
+    ) -> None:
         super().__init__(author=author, locale=locale)
 
         self._uid = uid
@@ -56,7 +58,9 @@ class FarmView(View):
                 title=LocaleStr(key="farm_view.sundays"),
                 description=LocaleStr(key="farm_view.happy_farming"),
             )
-            await i.edit_original_response(embed=embed, view=self, attachments=[], content=await get_dyk(i))
+            await i.edit_original_response(
+                embed=embed, view=self, attachments=[], content=await get_dyk(i)
+            )
             self.message = await i.original_response()
             return
 
@@ -68,9 +72,13 @@ class FarmView(View):
             executor=i.client.executor,
             loop=i.client.loop,
         )
-        file_ = await draw_farm_card(draw_input, await FarmDataFetcher.fetch(self._weekday, city=self._city))
+        file_ = await draw_farm_card(
+            draw_input, await FarmDataFetcher.fetch(self._weekday, city=self._city)
+        )
 
-        await i.edit_original_response(attachments=[file_], view=self, embed=None, content=await get_dyk(i))
+        await i.edit_original_response(
+            attachments=[file_], view=self, embed=None, content=await get_dyk(i)
+        )
         self.message = await i.original_response()
 
 
@@ -79,7 +87,9 @@ class WeekdaySelect(Select[FarmView]):
         super().__init__(
             placeholder=LocaleStr(key="farm_view.weekday_select.placeholder"),
             options=[
-                SelectOption(label=WeekdayStr(weekday), value=str(weekday), default=weekday == current)
+                SelectOption(
+                    label=WeekdayStr(weekday), value=str(weekday), default=weekday == current
+                )
                 for weekday in WEEKDAYS
             ],
             row=0,
@@ -94,11 +104,16 @@ class WeekdaySelect(Select[FarmView]):
 class ReminderButton(Button[FarmView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr(key="farm_view.set_reminder"), style=ButtonStyle.green, emoji=BELL_OUTLINE, row=4
+            label=LocaleStr(key="farm_view.set_reminder"),
+            style=ButtonStyle.green,
+            emoji=BELL_OUTLINE,
+            row=4,
         )
 
     async def callback(self, i: Interaction) -> None:
-        embed = DefaultEmbed(self.view.locale, description=LocaleStr(key="farm_view.set_reminder.embed.description"))
+        embed = DefaultEmbed(
+            self.view.locale, description=LocaleStr(key="farm_view.set_reminder.embed.description")
+        )
         await i.response.send_message(embed=embed, ephemeral=True)
 
 

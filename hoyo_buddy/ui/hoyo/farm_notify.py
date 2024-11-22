@@ -49,7 +49,9 @@ class FarmNotifyView(PaginatorView):
                     description=LocaleStr(key="farm_notify.description"),
                 )
                 .set_footer(
-                    text=LocaleStr(key="page_footer", current_page=i + 1, total_pages=len(self._split_item_ids))
+                    text=LocaleStr(
+                        key="page_footer", current_page=i + 1, total_pages=len(self._split_item_ids)
+                    )
                 )
                 .add_acc_info(farm_notify.account)
                 .set_image(url="attachment://farm_notify.png")
@@ -84,7 +86,9 @@ class FarmNotifyView(PaginatorView):
     async def _create_file(self) -> File:
         items = [
             ItemWithTrailing(
-                icon=self._item_icons.get(item_id), title=self._item_names.get(str(item_id), item_id), trailing=""
+                icon=self._item_icons.get(item_id),
+                title=self._item_names.get(str(item_id), item_id),
+                trailing="",
             )
             for item_id in self._split_item_ids[self._current_page]
         ]
@@ -129,19 +133,30 @@ class FarmNotifyView(PaginatorView):
 
 class AddItemButton(Button[FarmNotifyView]):
     def __init__(self) -> None:
-        super().__init__(label=LocaleStr(key="farm_notify.add_item"), style=ButtonStyle.blurple, emoji=ADD, row=1)
+        super().__init__(
+            label=LocaleStr(key="farm_notify.add_item"), style=ButtonStyle.blurple, emoji=ADD, row=1
+        )
 
     async def callback(self, i: Interaction) -> None:
-        embed = DefaultEmbed(self.view.locale, description=LocaleStr(key="farm_notify.add_item.embed.description"))
+        embed = DefaultEmbed(
+            self.view.locale, description=LocaleStr(key="farm_notify.add_item.embed.description")
+        )
         await i.response.send_message(embed=embed, ephemeral=True)
 
 
 class RemoveItemButton(Button[FarmNotifyView]):
     def __init__(self) -> None:
-        super().__init__(label=LocaleStr(key="farm_notify.remove_item"), style=ButtonStyle.red, emoji=DELETE, row=1)
+        super().__init__(
+            label=LocaleStr(key="farm_notify.remove_item"),
+            style=ButtonStyle.red,
+            emoji=DELETE,
+            row=1,
+        )
 
     async def callback(self, i: Interaction) -> None:
-        embed = DefaultEmbed(self.view.locale, description=LocaleStr(key="farm_notify.remove_item.embed.description"))
+        embed = DefaultEmbed(
+            self.view.locale, description=LocaleStr(key="farm_notify.remove_item.embed.description")
+        )
         await i.response.send_message(embed=embed, ephemeral=True)
 
 
@@ -152,4 +167,6 @@ class NotifyToggle(ToggleButton[FarmNotifyView]):
     async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=True)
         await self.view._notify.fetch_related("account")
-        await FarmNotify.filter(account_id=self.view._notify.account.id).update(enabled=self.current_toggle)
+        await FarmNotify.filter(account_id=self.view._notify.account.id).update(
+            enabled=self.current_toggle
+        )

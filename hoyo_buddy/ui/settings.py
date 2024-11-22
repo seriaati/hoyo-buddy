@@ -16,7 +16,9 @@ if TYPE_CHECKING:
 
 
 class SettingsUI(View):
-    def __init__(self, *, author: discord.User | discord.Member, locale: discord.Locale, settings: Settings) -> None:
+    def __init__(
+        self, *, author: discord.User | discord.Member, locale: discord.Locale, settings: Settings
+    ) -> None:
         super().__init__(author=author, locale=locale)
         self.settings = settings
 
@@ -45,7 +47,10 @@ class SettingsUI(View):
     async def update_ui_and_save_settings(self, i: Interaction) -> None:
         self.translate_items()
         await self.absolute_edit(
-            i, embed=self.get_embed(), attachments=[self.get_brand_image_file(self.locale)], view=self
+            i,
+            embed=self.get_embed(),
+            attachments=[self.get_brand_image_file(self.locale)],
+            view=self,
         )
 
         # Update cache
@@ -54,7 +59,9 @@ class SettingsUI(View):
 
         # NOTE: This is a workaround for a bug in tortoise ORM
         await Settings.filter(user_id=i.user.id).update(
-            lang=self.settings.lang, dark_mode=self.settings.dark_mode, enable_dyk=self.settings.enable_dyk
+            lang=self.settings.lang,
+            dark_mode=self.settings.dark_mode,
+            enable_dyk=self.settings.enable_dyk,
         )
 
 
@@ -67,7 +74,10 @@ class LanguageSelector(Select["SettingsUI"]):
     def _get_options(current_locale: discord.Locale | None) -> list[SelectOption]:
         options: list[SelectOption] = [
             SelectOption(
-                label=LocaleStr(key="auto_locale_option_label"), value="auto", emoji="🏳️", default=not current_locale
+                label=LocaleStr(key="auto_locale_option_label"),
+                value="auto",
+                emoji="🏳️",
+                default=not current_locale,
             )
         ]
         options.extend(

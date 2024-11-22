@@ -44,7 +44,11 @@ __all__ = ("AppCommandTranslator", "LocaleStr", "Translator")
 COMMAND_REGEX = r"</[^>]+>"
 SOURCE_LANG = "en_US"
 L10N_PATH = pathlib.Path("./l10n")
-MI18N_FILES = {Game.GENSHIN: "m11241040191111", Game.STARRAIL: "m20230509hy150knmyo", Game.ZZZ: "m20240410hy38foxb7k"}
+MI18N_FILES = {
+    Game.GENSHIN: "m11241040191111",
+    Game.STARRAIL: "m20230509hy150knmyo",
+    Game.ZZZ: "m20240410hy38foxb7k",
+}
 
 
 def gen_string_key(string: str) -> str:
@@ -106,7 +110,10 @@ class Translator:
         return self
 
     async def __aexit__(
-        self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
     ) -> None:
         await self.unload()
 
@@ -126,7 +133,9 @@ class Translator:
             self._localizations[lang] = await read_yaml(file_path.as_posix())
             logger.info(f"Loaded {lang} lang file")
 
-    async def _fetch_mi18n_task(self, client: genshin.Client, *, lang: str, filename: str, game: genshin.Game) -> None:
+    async def _fetch_mi18n_task(
+        self, client: genshin.Client, *, lang: str, filename: str, game: genshin.Game
+    ) -> None:
         locale = GPY_LANG_TO_LOCALE.get(lang)
         if locale is None:
             logger.warning(f"Failed to convert gpy lang {lang!r} to locale")
@@ -142,7 +151,9 @@ class Translator:
             for game, filename in MI18N_FILES.items():
                 for lang in genshin.constants.LANGS:
                     tg.create_task(
-                        self._fetch_mi18n_task(client, lang=lang, filename=filename, game=HB_GAME_TO_GPY_GAME[game])
+                        self._fetch_mi18n_task(
+                            client, lang=lang, filename=filename, game=HB_GAME_TO_GPY_GAME[game]
+                        )
                     )
 
         logger.info("Fetched mi18n files")
@@ -159,7 +170,9 @@ class Translator:
             if key.startswith("dyk_"):
                 keys.add(key)
 
-        return [(self.translate(LocaleStr(key=key), locale), key.endswith("_no_title")) for key in keys]
+        return [
+            (self.translate(LocaleStr(key=key), locale), key.endswith("_no_title")) for key in keys
+        ]
 
     def get_dyk(self, locale: Locale) -> str:
         title = self.translate(LocaleStr(key="title_dyk"), locale)
@@ -185,7 +198,12 @@ class Translator:
         return message
 
     def translate(
-        self, string: LocaleStr | str, locale: Locale, *, title_case: bool = False, capitalize_first_word: bool = False
+        self,
+        string: LocaleStr | str,
+        locale: Locale,
+        *,
+        title_case: bool = False,
+        capitalize_first_word: bool = False,
     ) -> str:
         if isinstance(string, str):
             # It's intentional that we don't apply any modifiers when string is not LocaleStr
@@ -205,7 +223,9 @@ class Translator:
 
         lang = locale.value.replace("-", "_")
         if string.mi18n_game is not None:
-            translation = self._mi18n.get((lang, MI18N_FILES[string.mi18n_game]), {}).get(string_key)
+            translation = self._mi18n.get((lang, MI18N_FILES[string.mi18n_game]), {}).get(
+                string_key
+            )
         else:
             translation = self._localizations.get(lang, {}).get(string_key)
 
@@ -247,7 +267,11 @@ class Translator:
         return string.key
 
     def get_traveler_name(
-        self, character: ambr.Character | hakushin.gi.Character, locale: Locale, *, gender_symbol: bool = True
+        self,
+        character: ambr.Character | hakushin.gi.Character,
+        locale: Locale,
+        *,
+        gender_symbol: bool = True,
     ) -> str:
         if isinstance(character, ambr.Character):
             element = AMBR_ELEMENT_TO_ELEMENT[character.element]
@@ -258,29 +282,53 @@ class Translator:
 
         element_str = "" if element is None else self.translate(EnumStr(element), locale)
         gender_str = ("♂" if "5" in character.id else "♀") if gender_symbol else ""
-        return f"{character.name} ({element_str}) ({gender_str})" if gender_str else f"{character.name} ({element_str})"
+        return (
+            f"{character.name} ({element_str}) ({gender_str})"
+            if gender_str
+            else f"{character.name} ({element_str})"
+        )
 
     def get_trailblazer_name(
-        self, character: yatta.Character | hakushin.hsr.Character, locale: Locale, *, gender_symbol: bool = True
+        self,
+        character: yatta.Character | hakushin.hsr.Character,
+        locale: Locale,
+        *,
+        gender_symbol: bool = True,
     ) -> str:
         if isinstance(character, yatta.Character):
-            element_str = self.translate(EnumStr(YATTA_COMBAT_TYPE_TO_ELEMENT[character.types.combat_type]), locale)
+            element_str = self.translate(
+                EnumStr(YATTA_COMBAT_TYPE_TO_ELEMENT[character.types.combat_type]), locale
+            )
         else:
-            element_str = self.translate(EnumStr(HAKUSHIN_HSR_ELEMENT_TO_ELEMENT[character.element]), locale)
+            element_str = self.translate(
+                EnumStr(HAKUSHIN_HSR_ELEMENT_TO_ELEMENT[character.element]), locale
+            )
 
         # Only gender_str if is trailblazer
         # constants.TRAILBAZER_IDS may contain characters that are not trailblazers (like March 7th)
-        gender_str = ("♂" if character.id % 2 != 0 else "♀") if gender_symbol and str(character.id)[0] == "8" else ""
+        gender_str = (
+            ("♂" if character.id % 2 != 0 else "♀")
+            if gender_symbol and str(character.id)[0] == "8"
+            else ""
+        )
 
-        return f"{character.name} ({element_str}) ({gender_str})" if gender_str else f"{character.name} ({element_str})"
+        return (
+            f"{character.name} ({element_str}) ({gender_str})"
+            if gender_str
+            else f"{character.name} ({element_str})"
+        )
 
     def display_timedelta(self, timedelta: datetime.timedelta, locale: Locale) -> str:
         str_timedelta = str(timedelta)
-        return str_timedelta.replace("days", self.translate(LocaleStr(key="days"), locale), 1).replace(", 0:00:00", "")
+        return str_timedelta.replace(
+            "days", self.translate(LocaleStr(key="days"), locale), 1
+        ).replace(", 0:00:00", "")
 
 
 class AppCommandTranslator(app_commands.Translator):
-    async def translate(self, string: app_commands.locale_str, locale: Locale, _: TranslationContextTypes) -> str:
+    async def translate(
+        self, string: app_commands.locale_str, locale: Locale, _: TranslationContextTypes
+    ) -> str:
         key = string.extras.pop("key", None)
         if key is None:
             return string.message

@@ -228,7 +228,9 @@ class Drawer:
         self.sans = sans
 
     @classmethod
-    def calc_dynamic_fontsize(cls, text: str, max_width: int, max_size: int, font: ImageFont.FreeTypeFont) -> int:
+    def calc_dynamic_fontsize(
+        cls, text: str, max_width: int, max_size: int, font: ImageFont.FreeTypeFont
+    ) -> int:
         size = max_size
         while font.getlength(text) > max_width:
             size -= 1
@@ -265,7 +267,9 @@ class Drawer:
         return image.crop((left, top, right, bottom))
 
     @staticmethod
-    def ratio_resize(image: Image.Image, *, width: int | None = None, height: int | None = None) -> Image.Image:
+    def ratio_resize(
+        image: Image.Image, *, width: int | None = None, height: int | None = None
+    ) -> Image.Image:
         """Resize an image to a targeted width/height while maintaining the aspect ratio."""
         if width is not None and height is not None:
             msg = "Can't provide both width and height"
@@ -309,7 +313,9 @@ class Drawer:
         return tuple(int(hex_color_code[i : i + 2], 16) for i in (0, 2, 4))  # pyright: ignore [reportReturnType]
 
     @staticmethod
-    def apply_color_opacity(color: tuple[int, int, int], opacity: float) -> tuple[int, int, int, int]:
+    def apply_color_opacity(
+        color: tuple[int, int, int], opacity: float
+    ) -> tuple[int, int, int, int]:
         return (*color, round(255 * opacity))
 
     @staticmethod
@@ -327,18 +333,33 @@ class Drawer:
         max_card_num = input_.max_card_num or min(max_card_num, 8)
 
         # Calculate the number of columns
-        cols = card_num // max_card_num + 1 if card_num % max_card_num != 0 else card_num // max_card_num
+        cols = (
+            card_num // max_card_num + 1
+            if card_num % max_card_num != 0
+            else card_num // max_card_num
+        )
 
         # Calculate the width and height of the image
         width = (
-            input_.left_padding + input_.right_padding + input_.card_width * cols + input_.card_x_padding * (cols - 1)
+            input_.left_padding
+            + input_.right_padding
+            + input_.card_width * cols
+            + input_.card_x_padding * (cols - 1)
         )
         height = (
-            (input_.top_padding.with_title if input_.draw_title else input_.top_padding.without_title)
+            (
+                input_.top_padding.with_title
+                if input_.draw_title
+                else input_.top_padding.without_title
+            )
             if isinstance(input_.top_padding, TopPadding)
             else input_.top_padding
         )
-        height += input_.bottom_padding + input_.card_height * max_card_num + input_.card_y_padding * (max_card_num - 1)
+        height += (
+            input_.bottom_padding
+            + input_.card_height * max_card_num
+            + input_.card_y_padding * (max_card_num - 1)
+        )
 
         # Create a new image with the calculated dimensions and background color
         im = Image.new("RGBA", (width, height), input_.background_color)
@@ -357,7 +378,9 @@ class Drawer:
         return colored_image
 
     @staticmethod
-    def wrap_text(text: str, *, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont, locale: Locale) -> str:
+    def wrap_text(
+        text: str, *, max_width: int, max_lines: int, font: ImageFont.FreeTypeFont, locale: Locale
+    ) -> str:
         def truncate_line(line: str, width: int, ellipsis: str = "...") -> str:
             if font.getlength(line) <= width:
                 return line
@@ -418,10 +441,18 @@ class Drawer:
         if color is not None:
             return self.apply_color_opacity(color, EMPHASIS_OPACITY[emphasis])
 
-        return self.apply_color_opacity(WHITE if self.dark_mode else BLACK, EMPHASIS_OPACITY[emphasis])
+        return self.apply_color_opacity(
+            WHITE if self.dark_mode else BLACK, EMPHASIS_OPACITY[emphasis]
+        )
 
     def get_font(
-        self, size: int, style: FontStyle, *, locale: Locale | None = None, sans: bool = False, gothic: bool = False
+        self,
+        size: int,
+        style: FontStyle,
+        *,
+        locale: Locale | None = None,
+        sans: bool = False,
+        gothic: bool = False,
     ) -> ImageFont.FreeTypeFont:
         sans = self.sans or sans
         locale = locale or self.locale
@@ -456,7 +487,9 @@ class Drawer:
 
         return ImageFont.truetype(font_map[style], size)
 
-    def find_font_mapping(self, locale: Locale, mapping: FontMapping) -> dict[FontStyle, str] | None:
+    def find_font_mapping(
+        self, locale: Locale, mapping: FontMapping
+    ) -> dict[FontStyle, str] | None:
         font_map = None
         for locales, font_map_ in mapping.items():
             if (isinstance(locales, tuple) and locale in locales) or locale == locales:
@@ -465,7 +498,9 @@ class Drawer:
         return font_map
 
     @staticmethod
-    def open_image(file_path: pathlib.Path | str, size: tuple[int, int] | None = None) -> Image.Image:
+    def open_image(
+        file_path: pathlib.Path | str, size: tuple[int, int] | None = None
+    ) -> Image.Image:
         image = Image.open(file_path)
         if image.mode != "RGBA":
             image = image.convert("RGBA")
@@ -507,7 +542,9 @@ class Drawer:
         if isinstance(text, str):
             translated_text = text
         else:
-            translated_text = translator.translate(text, locale or self.locale, title_case=title_case)
+            translated_text = translator.translate(
+                text, locale or self.locale, title_case=title_case
+            )
 
         if dynamic_fontsize:
             if max_width is None:
@@ -529,7 +566,11 @@ class Drawer:
 
         if max_width is not None and not dynamic_fontsize:
             translated_text = self.wrap_text(
-                translated_text, max_width=max_width, max_lines=max_lines, font=font, locale=locale or self.locale
+                translated_text,
+                max_width=max_width,
+                max_lines=max_lines,
+                font=font,
+                locale=locale or self.locale,
             )
 
         if align_center:
@@ -537,8 +578,13 @@ class Drawer:
             lines = translated_text.split("\n")
 
             for line in lines:
-                line_textbbox = self.draw.textbbox((0, 0), line, font=font, anchor="lt", font_size=size)
-                line_width, line_height = (line_textbbox[2] - line_textbbox[0], line_textbbox[3] - line_textbbox[1])
+                line_textbbox = self.draw.textbbox(
+                    (0, 0), line, font=font, anchor="lt", font_size=size
+                )
+                line_width, line_height = (
+                    line_textbbox[2] - line_textbbox[0],
+                    line_textbbox[3] - line_textbbox[1],
+                )
                 self.draw.text(
                     (position[0] + (textbox_size[0] - line_width) / 2, y_text),
                     line,
@@ -557,7 +603,9 @@ class Drawer:
                 stroke_fill=stroke_color,
             )
 
-        textbbox = self.draw.textbbox(position, translated_text, font=font, anchor=anchor, font_size=size)
+        textbbox = self.draw.textbbox(
+            position, translated_text, font=font, anchor=anchor, font_size=size
+        )
         return TextBBox(*(int(i) for i in textbbox))
 
     def open_static(

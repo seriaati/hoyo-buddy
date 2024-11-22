@@ -17,7 +17,12 @@ if TYPE_CHECKING:
 
 class ShiyuDefenseCard:
     def __init__(
-        self, data: genshin.models.ShiyuDefense, agent_ranks: dict[int, int], uid: int | None, *, locale: str
+        self,
+        data: genshin.models.ShiyuDefense,
+        agent_ranks: dict[int, int],
+        uid: int | None,
+        *,
+        locale: str,
     ) -> None:
         self.data = data
         self.agent_ranks = agent_ranks
@@ -38,7 +43,11 @@ class ShiyuDefenseCard:
     def write_stats(self, drawer: Drawer) -> None:
         if self.uid is not None:
             drawer.write(
-                f"UID: {self.uid}", size=40, position=(1970, 3387), color=self.text_color, style="medium_italic"
+                f"UID: {self.uid}",
+                size=40,
+                position=(1970, 3387),
+                color=self.text_color,
+                style="medium_italic",
             )
 
         drawer.write(
@@ -58,14 +67,22 @@ class ShiyuDefenseCard:
         y = 803
 
         for x, rating_count in ratings.items():
-            tbox = drawer.write("x", size=50, position=(x, y), color=self.text_color, style="bold_italic", sans=True)
+            tbox = drawer.write(
+                "x", size=50, position=(x, y), color=self.text_color, style="bold_italic", sans=True
+            )
             drawer.write(
-                f" {rating_count}", size=58, position=(tbox.right, y - 5), color=self.text_color, style="black_italic"
+                f" {rating_count}",
+                size=58,
+                position=(tbox.right, y - 5),
+                color=self.text_color,
+                style="black_italic",
             )
 
         stats = {
             "shiyu_fastest_clear_time": format_time(self.data.fastest_clear_time),
-            "shiyu_highest_frontier": LocaleStr(key=f"shiyu_{self.data.max_floor}_frontier").translate(self.locale),
+            "shiyu_highest_frontier": LocaleStr(
+                key=f"shiyu_{self.data.max_floor}_frontier"
+            ).translate(self.locale),
             "shiyu_relevant_season": f"{self.data.begin_time:%Y-%m-%d} ~ {self.data.end_time:%Y-%m-%d}",
         }
         start_pos = (126, 907)
@@ -139,7 +156,12 @@ class ShiyuDefenseCard:
                     icon_start_pos = (icon_start_pos[0] + icon.width + 10, icon_start_pos[1])
 
             drawer.draw.line(
-                (icon_start_pos[0] + 24, icon_start_pos[1] - 55, icon_start_pos[0] + 24, icon_start_pos[1] + 45),
+                (
+                    icon_start_pos[0] + 24,
+                    icon_start_pos[1] - 55,
+                    icon_start_pos[0] + 24,
+                    icon_start_pos[1] + 45,
+                ),
                 fill=self.text_color,
                 width=5,
             )

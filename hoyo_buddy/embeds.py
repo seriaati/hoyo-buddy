@@ -27,30 +27,40 @@ class Embed(discord.Embed):
         translated_title = translator.translate(title, locale, title_case=True) if title else None
         translated_description = translator.translate(description, locale) if description else None
 
-        super().__init__(color=color, title=translated_title, url=url, description=translated_description)
+        super().__init__(
+            color=color, title=translated_title, url=url, description=translated_description
+        )
         self.locale = locale
 
     def __repr__(self) -> str:
         return f"<Embed title={self.title!r} description={self.description!r}>"
 
-    def add_field(self, *, name: LocaleStr | str, value: LocaleStr | str, inline: bool = True) -> Self:
+    def add_field(
+        self, *, name: LocaleStr | str, value: LocaleStr | str, inline: bool = True
+    ) -> Self:
         translated_name = translator.translate(name, self.locale, title_case=True)
         translated_value = translator.translate(value, self.locale)
         return super().add_field(
             name=shorten(translated_name, 256), value=shorten(translated_value, 1024), inline=inline
         )
 
-    def set_author(self, *, name: LocaleStr | str, url: str | None = None, icon_url: str | None = None) -> Self:
+    def set_author(
+        self, *, name: LocaleStr | str, url: str | None = None, icon_url: str | None = None
+    ) -> Self:
         translated_name = translator.translate(name, self.locale)
         return super().set_author(name=shorten(translated_name, 256), url=url, icon_url=icon_url)
 
-    def set_footer(self, *, text: LocaleStr | str | None = None, icon_url: str | None = None) -> Self:
+    def set_footer(
+        self, *, text: LocaleStr | str | None = None, icon_url: str | None = None
+    ) -> Self:
         translated_text = translator.translate(text, self.locale) if text else None
         return super().set_footer(text=translated_text, icon_url=icon_url)
 
     def add_acc_info(self, account: HoyoAccount, *, blur: bool = True) -> Self:
         """Add HoyoAccount information to the author field."""
-        return self.set_author(name=account.blurred_display if blur else str(account), icon_url=account.game_icon)
+        return self.set_author(
+            name=account.blurred_display if blur else str(account), icon_url=account.game_icon
+        )
 
     def copy(self) -> Self:
         copy = super().copy()

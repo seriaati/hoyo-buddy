@@ -20,16 +20,27 @@ def get_nearest_battery_level(current: int, max_battery: int) -> int:
 
 
 def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
-    battery_level = get_nearest_battery_level(notes.battery_charge.current, notes.battery_charge.max)
+    battery_level = get_nearest_battery_level(
+        notes.battery_charge.current, notes.battery_charge.max
+    )
 
     filename = f"{'dark' if dark_mode else 'light'}_notes_{battery_level}"
     im = Drawer.open_image(f"hoyo-buddy-assets/assets/zzz-notes/{filename}.png")
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(draw, folder="zzz-notes", dark_mode=dark_mode, locale=discord.Locale(locale_), sans=True)
+    drawer = Drawer(
+        draw, folder="zzz-notes", dark_mode=dark_mode, locale=discord.Locale(locale_), sans=True
+    )
 
     # Title
     title = LocaleStr(key="notes-card.zzz.title").translate(discord.Locale(locale_))
-    drawer.write(title, size=84, style="black_italic", position=(76, 44), dynamic_fontsize=True, max_width=899)
+    drawer.write(
+        title,
+        size=84,
+        style="black_italic",
+        position=(76, 44),
+        dynamic_fontsize=True,
+        max_width=899,
+    )
 
     # Battery charge
     drawer.write(
@@ -42,7 +53,10 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
         max_lines=2,
     )
     drawer.write(
-        f"{notes.battery_charge.current}/{notes.battery_charge.max}", size=32, style="medium", position=(112, 487)
+        f"{notes.battery_charge.current}/{notes.battery_charge.max}",
+        size=32,
+        style="medium",
+        position=(112, 487),
     )
 
     # Scratch card
@@ -55,7 +69,11 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
         max_width=354,
         max_lines=2,
     )
-    text = LocaleStr(key="scratch_card.incomplete" if not notes.scratch_card_completed else "notes-card.gi.completed")
+    text = LocaleStr(
+        key="scratch_card.incomplete"
+        if not notes.scratch_card_completed
+        else "notes-card.gi.completed"
+    )
 
     drawer.write(text, size=32, style="medium", position=(598, 487))
 
@@ -88,7 +106,12 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
         max_width=354,
         max_lines=2,
     )
-    drawer.write(f"{notes.engagement.current}/{notes.engagement.max}", size=32, style="medium", position=(598, 890))
+    drawer.write(
+        f"{notes.engagement.current}/{notes.engagement.max}",
+        size=32,
+        style="medium",
+        position=(598, 890),
+    )
 
     # Save image
     buffer = BytesIO()

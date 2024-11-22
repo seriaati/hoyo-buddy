@@ -41,17 +41,29 @@ class HSRTeamCard:
         img_mask = drawer.open_asset("img_mask.png")
         img = drawer.open_static(self._character_images[str(character.id)])
         img = drawer.modify_image_for_build_card(
-            img, target_width=img_mask.width, target_height=img_mask.height, mask=img_mask, background_color=primary
+            img,
+            target_width=img_mask.width,
+            target_height=img_mask.height,
+            mask=img_mask,
+            background_color=primary,
         )
         im.alpha_composite(img, (0, 39))
 
         level_block = drawer.open_asset("level_block.png", mask_color=primary)
         im.alpha_composite(level_block, (100, 16))
-        drawer.write(f"Lv.{character.level}", size=32, position=(161, 39), style="medium", anchor="mm")
+        drawer.write(
+            f"Lv.{character.level}", size=32, position=(161, 39), style="medium", anchor="mm"
+        )
 
         eidolon_block = drawer.open_asset("eidolon_block.png", mask_color=primary)
         im.alpha_composite(eidolon_block, (231, 16))
-        drawer.write(f"E{character.eidolons_unlocked}", size=32, position=(258, 39), style="medium", anchor="mm")
+        drawer.write(
+            f"E{character.eidolons_unlocked}",
+            size=32,
+            position=(258, 39),
+            style="medium",
+            anchor="mm",
+        )
 
         drawer.write(
             character.name,
@@ -131,7 +143,9 @@ class HSRTeamCard:
                     continue
 
                 line_x = start_pos[0] + main_bubble.width + diff * i
-                im.alpha_composite(line, (line_x, start_pos[1] + main_bubble.height // 2 - line.height // 2))
+                im.alpha_composite(
+                    line, (line_x, start_pos[1] + main_bubble.height // 2 - line.height // 2)
+                )
                 sub_bubble_x = line_x + line.width
                 sub_bubble_y = start_pos[1] + 5
                 im.alpha_composite(sub_bubble, (sub_bubble_x, sub_bubble_y))
@@ -175,7 +189,10 @@ class HSRTeamCard:
                 drawer.write(
                     text,
                     size=11,
-                    position=(level_pos[0] + relic_level.width // 2, level_pos[1] + relic_level.height // 2),
+                    position=(
+                        level_pos[0] + relic_level.width // 2,
+                        level_pos[1] + relic_level.height // 2,
+                    ),
                     style="medium",
                     anchor="mm",
                 )
@@ -204,7 +221,10 @@ class HSRTeamCard:
                     drawer.write(
                         sub_stat.formatted_value,
                         size=13,
-                        position=(sub_start_pos[0] + icon.width + 3, sub_start_pos[1] + icon.height // 2),
+                        position=(
+                            sub_start_pos[0] + icon.width + 3,
+                            sub_start_pos[1] + icon.height // 2,
+                        ),
                         style="regular",
                         anchor="lm",
                     )
@@ -230,7 +250,12 @@ class HSRTeamCard:
         lc_icon = drawer.open_static(lc.icon.image)
         border_width = 15
         lc_icon = lc_icon.crop(
-            (border_width, border_width, lc_icon.width - border_width, lc_icon.height - border_width)
+            (
+                border_width,
+                border_width,
+                lc_icon.width - border_width,
+                lc_icon.height - border_width,
+            )
         )
         lc_icon = drawer.resize_crop(lc_icon, (128, 178))
         lc_icon = drawer.mask_image_with_image(lc_icon, lc_mask)
@@ -238,7 +263,9 @@ class HSRTeamCard:
 
         lc_super = drawer.open_asset("lc_super.png", mask_color=primary)
         im.alpha_composite(lc_super, (121, 632))
-        drawer.write(f"S{lc.superimpose}", size=19, position=(138, 645), style="medium", anchor="mm")
+        drawer.write(
+            f"S{lc.superimpose}", size=19, position=(138, 645), style="medium", anchor="mm"
+        )
 
         lc_level = drawer.open_asset("lc_level.png", mask_color=primary)
         im.alpha_composite(lc_level, (89, 663))
@@ -246,7 +273,13 @@ class HSRTeamCard:
 
         # Light cone name
         drawer.write(
-            lc.name, size=26, position=(168, 500), style="bold", max_width=180, max_lines=3, locale=Locale(self._locale)
+            lc.name,
+            size=26,
+            position=(168, 500),
+            style="bold",
+            max_width=180,
+            max_lines=3,
+            locale=Locale(self._locale),
         )
 
         if isinstance(lc, enka.hsr.LightCone):
@@ -258,7 +291,10 @@ class HSRTeamCard:
                 tbox = drawer.write(
                     stat.formatted_value,
                     size=16,
-                    position=(start_pos[0] + stat_icon.width + 5, start_pos[1] + stat_icon.height // 2),
+                    position=(
+                        start_pos[0] + stat_icon.width + 5,
+                        start_pos[1] + stat_icon.height // 2,
+                    ),
                     style="regular",
                     anchor="lm",
                 )

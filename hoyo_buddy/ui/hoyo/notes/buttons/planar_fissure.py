@@ -19,11 +19,15 @@ class PlanarFissureReminder(Button[NotesView]):
         super().__init__(label=LocaleStr(key="planar_fissure_label"), row=row)
 
     async def callback(self, i: Interaction) -> None:
-        notify = await NotesNotify.get_or_none(account=self.view._account, type=NotesNotifyType.PLANAR_FISSURE)
+        notify = await NotesNotify.get_or_none(
+            account=self.view._account, type=NotesNotifyType.PLANAR_FISSURE
+        )
 
         modal = TypeFiveModal(
             notify,
-            title=LocaleStr(key="reminder_modal.title", notify=LocaleStr(key="planar_fissure_label")),
+            title=LocaleStr(
+                key="reminder_modal.title", notify=LocaleStr(key="planar_fissure_label")
+            ),
             min_notify_interval=30,
         )
         modal.translate(self.view.locale)
@@ -35,6 +39,9 @@ class PlanarFissureReminder(Button[NotesView]):
             return
 
         embed = await self.view.process_type_five_modal(
-            modal=modal, notify=notify, notify_type=NotesNotifyType.PLANAR_FISSURE, check_interval=30
+            modal=modal,
+            notify=notify,
+            notify_type=NotesNotifyType.PLANAR_FISSURE,
+            check_interval=30,
         )
         await i.edit_original_response(embed=embed)

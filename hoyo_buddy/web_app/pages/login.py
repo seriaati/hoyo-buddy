@@ -42,20 +42,31 @@ class LoginPage(ft.View):
                     ft.SafeArea(
                         ft.Column(
                             [
-                                ft.Text(translator.translate(LocaleStr(key="currently_logged_in_as"), locale), size=16),
+                                ft.Text(
+                                    translator.translate(
+                                        LocaleStr(key="currently_logged_in_as"), locale
+                                    ),
+                                    size=16,
+                                ),
                                 ft.ListTile(
-                                    leading=ft.CircleAvatar(foreground_image_src=self.get_user_avatar_url()),
+                                    leading=ft.CircleAvatar(
+                                        foreground_image_src=self.get_user_avatar_url()
+                                    ),
                                     title=ft.Text(user_data["username"]),
                                 ),
                                 ft.Container(
                                     ft.Column(
                                         [
                                             ft.FilledButton(
-                                                translator.translate(LocaleStr(key="continue_button_label"), locale),
+                                                translator.translate(
+                                                    LocaleStr(key="continue_button_label"), locale
+                                                ),
                                                 on_click=self.on_continue_button_click,
                                             ),
                                             ft.TextButton(
-                                                translator.translate(LocaleStr(key="not_you_label"), locale),
+                                                translator.translate(
+                                                    LocaleStr(key="not_you_label"), locale
+                                                ),
                                                 on_click=self.on_login_button_click,
                                             ),
                                         ],
@@ -77,7 +88,11 @@ class LoginPage(ft.View):
         avatar = user_data.get("avatar")
         if avatar is None:
             migrated = user_data["discriminator"] == "0"
-            index = (int(user_data["id"]) >> 22) % 6 if migrated else int(user_data["discriminator"]) % 5
+            index = (
+                (int(user_data["id"]) >> 22) % 6
+                if migrated
+                else int(user_data["discriminator"]) % 5
+            )
             return f"{base_url}/embed/avatars/{index}.png"
 
         if avatar.startswith("a_"):

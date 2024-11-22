@@ -45,7 +45,9 @@ class EventsView(View):
 
     def _get_ann_embed(self, ann: genshin.models.Announcement) -> DefaultEmbed:
         embed = DefaultEmbed(
-            self.locale, title=format_ann_content(ann.title), description=format_ann_content(ann.content)[:200] + "..."
+            self.locale,
+            title=format_ann_content(ann.title),
+            description=format_ann_content(ann.content)[:200] + "...",
         )
         embed.set_author(name=ann.subtitle)
         embed.set_image(url=ann.banner or ann.img)
@@ -97,7 +99,9 @@ class EventsView(View):
         await self._fetch_anns()
         self._add_items()
 
-        await i.followup.send(embed=self._get_ann_embed(self.first_ann), view=self, content=await get_dyk(i))
+        await i.followup.send(
+            embed=self._get_ann_embed(self.first_ann), view=self, content=await get_dyk(i)
+        )
         self.message = await i.original_response()
 
 
@@ -121,7 +125,9 @@ class EventSelector(PaginatorSelect[EventsView]):
         )
 
     def set_options(self, anns: Sequence[genshin.models.Announcement]) -> None:
-        self.options = [self._get_ann_option(ann, i == 0) for i, ann in enumerate(anns) if ann.title]
+        self.options = [
+            self._get_ann_option(ann, i == 0) for i, ann in enumerate(anns) if ann.title
+        ]
 
     async def callback(self, i: Interaction) -> None:
         changed = self.update_page()
@@ -147,7 +153,9 @@ class EventTypeSelector(Select[EventsView]):
             ]
             + [
                 SelectOption(
-                    label=LocaleStr(key="events_view_banner_type_label"), value="banners", default=current == "banners"
+                    label=LocaleStr(key="events_view_banner_type_label"),
+                    value="banners",
+                    default=current == "banners",
                 )
             ],
         )
@@ -178,7 +186,9 @@ class EventTypeSelector(Select[EventsView]):
 
 class ViewContentButton(Button[EventsView]):
     def __init__(self) -> None:
-        super().__init__(label=LocaleStr(key="events_view_content_label"), style=ButtonStyle.blurple)
+        super().__init__(
+            label=LocaleStr(key="events_view_content_label"), style=ButtonStyle.blurple
+        )
 
     async def callback(self, i: Interaction) -> None:
         ann = self.view._get_ann(self.view.ann_id)

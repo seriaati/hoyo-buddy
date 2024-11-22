@@ -169,7 +169,9 @@ class GachaLogPage(ft.View):
         return result
 
     @staticmethod
-    async def _get_gacha_name(page: ft.Page, gacha: GachaHistory, locale: Locale, game: Game) -> str:
+    async def _get_gacha_name(
+        page: ft.Page, gacha: GachaHistory, locale: Locale, game: Game
+    ) -> str:
         cached_gacha_names: dict[int, str] = (
             await page.client_storage.get_async(f"hb.{locale}.{game.name}.gacha_names") or {}
         )
@@ -177,19 +179,27 @@ class GachaLogPage(ft.View):
             return cached_gacha_names[gacha.item_id]
 
         if game is Game.ZZZ:
-            item_names = await fetch_json_file(f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json")
+            item_names = await fetch_json_file(
+                f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json"
+            )
             item_name = item_names.get(str(gacha.item_id))
         elif game is Game.STARRAIL:
-            item_names = await fetch_json_file(f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json")
+            item_names = await fetch_json_file(
+                f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json"
+            )
             item_name = item_names.get(str(gacha.item_id))
         else:
             async with aiohttp.ClientSession() as session:
-                item_name = await item_id_to_name(session, item_ids=gacha.item_id, lang=locale_to_gpy_lang(locale))
+                item_name = await item_id_to_name(
+                    session, item_ids=gacha.item_id, lang=locale_to_gpy_lang(locale)
+                )
 
         if item_name is not None:
             cached_gacha_names[gacha.item_id] = item_name
             asyncio.create_task(
-                page.client_storage.set_async(f"hb.{locale}.{game.name}.gacha_names", cached_gacha_names)
+                page.client_storage.set_async(
+                    f"hb.{locale}.{game.name}.gacha_names", cached_gacha_names
+                )
             )
 
         return item_name or "???"
@@ -208,7 +218,9 @@ class GachaLogPage(ft.View):
 
     async def filter_button_on_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        await page.show_dialog_async(FilterDialog(params=self.params, game=self.game, locale=self.locale))
+        await page.show_dialog_async(
+            FilterDialog(params=self.params, game=self.game, locale=self.locale)
+        )
 
     async def on_search_bar_submit(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
@@ -243,21 +255,30 @@ class GachaLogDialog(ft.AlertDialog):
         time_string = gacha_time.strftime("%Y-%m-%d %H:%M:%S") + " UTC+8"
 
         text = translator.translate(
-            LocaleStr(key="gacha_view_gacha_detail", time=time_string, name=gacha_name, id=gacha.wish_id), locale
+            LocaleStr(
+                key="gacha_view_gacha_detail", time=time_string, name=gacha_name, id=gacha.wish_id
+            ),
+            locale,
         )
 
         if gacha.num_since_last != 0:
             num_since_last = translator.translate(
-                LocaleStr(key="gacha_view_num_since_last", pull=gacha.num_since_last, rarity=gacha.rarity), locale
+                LocaleStr(
+                    key="gacha_view_num_since_last", pull=gacha.num_since_last, rarity=gacha.rarity
+                ),
+                locale,
             )
             text += f"\n{num_since_last}"
 
         super().__init__(
             content=ft.Text(text),
-            title=ft.Text(translator.translate(LocaleStr(key="gacha_view_gacha_detail_title"), locale)),
+            title=ft.Text(
+                translator.translate(LocaleStr(key="gacha_view_gacha_detail_title"), locale)
+            ),
             actions=[
                 ft.TextButton(
-                    text=translator.translate(LocaleStr(key="close_button_label"), locale), on_click=self.close_dialog
+                    text=translator.translate(LocaleStr(key="close_button_label"), locale),
+                    on_click=self.close_dialog,
                 )
             ],
         )
@@ -273,14 +294,18 @@ class FilterDialog(ft.AlertDialog):
         self.game = game
 
         super().__init__(
-            title=ft.Text(translator.translate(LocaleStr(key="gacha_view_filter_dialog_title"), locale)),
+            title=ft.Text(
+                translator.translate(LocaleStr(key="gacha_view_filter_dialog_title"), locale)
+            ),
             actions=[
                 ft.TextButton(
                     text=translator.translate(LocaleStr(key="cancel_button_label"), locale),
                     on_click=self.on_dialog_cancel,
                 ),
                 ft.TextButton(
-                    text=translator.translate(LocaleStr(key="set_cur_temp_as_default.done"), locale),
+                    text=translator.translate(
+                        LocaleStr(key="set_cur_temp_as_default.done"), locale
+                    ),
                     on_click=self.on_dialog_close,
                 ),
             ],
@@ -300,16 +325,22 @@ class FilterDialog(ft.AlertDialog):
                     ft.Dropdown(
                         options=[
                             ft.dropdown.Option(
-                                text=translator.translate(LocaleStr(key=BANNER_TYPE_NAMES[game][banner_type]), locale),
+                                text=translator.translate(
+                                    LocaleStr(key=BANNER_TYPE_NAMES[game][banner_type]), locale
+                                ),
                                 data=str(banner_type),
                             )
                             for banner_type in BANNER_TYPE_NAMES[game]
                         ],
-                        value=translator.translate(LocaleStr(key=BANNER_TYPE_NAMES[game][params.banner_type]), locale),
+                        value=translator.translate(
+                            LocaleStr(key=BANNER_TYPE_NAMES[game][params.banner_type]), locale
+                        ),
                         on_change=self.on_banner_type_dropdown_change,
                     ),
                     ft.TextField(
-                        label=translator.translate(LocaleStr(key="gacha_view_filter_size_field_label"), locale),
+                        label=translator.translate(
+                            LocaleStr(key="gacha_view_filter_size_field_label"), locale
+                        ),
                         value=str(params.size),
                         on_change=self.on_size_text_field_change,
                     ),
@@ -320,7 +351,8 @@ class FilterDialog(ft.AlertDialog):
 
     async def on_banner_type_dropdown_change(self, e: ft.ControlEvent) -> None:
         banner_type_name_to_value = {
-            translator.translate(LocaleStr(key=v), self.locale): k for k, v in BANNER_TYPE_NAMES[self.game].items()
+            translator.translate(LocaleStr(key=v), self.locale): k
+            for k, v in BANNER_TYPE_NAMES[self.game].items()
         }
         self.params.banner_type = banner_type_name_to_value[e.control.value]
 

@@ -42,7 +42,8 @@ class CardSettingsButton(Button[ProfileView]):
             self.view._card_data,
             card_settings,
             self.view.game,
-            self.view.character_type is CharacterType.CACHE or isinstance(character, HoyolabGICharacter),
+            self.view.character_type is CharacterType.CACHE
+            or isinstance(character, HoyolabGICharacter),
             len(self.view.character_ids) > 1,
             settings,
             author=i.user,

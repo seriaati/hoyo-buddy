@@ -38,7 +38,9 @@ async def handle_session_mmt(
     if email is not None:
         await page.client_storage.set_async(f"hb.{params.user_id}.email", encrypt_string(email))
     if password is not None:
-        await page.client_storage.set_async(f"hb.{params.user_id}.password", encrypt_string(password))
+        await page.client_storage.set_async(
+            f"hb.{params.user_id}.password", encrypt_string(password)
+        )
     if mobile is not None:
         await page.client_storage.set_async(f"hb.{params.user_id}.mobile", encrypt_string(mobile))
 
@@ -46,7 +48,9 @@ async def handle_session_mmt(
     conn = await asyncpg.connect(os.environ["DB_URL"])
     try:
         await conn.execute(
-            'UPDATE "user" SET temp_data = $1 WHERE id = $2', orjson.dumps(result.model_dump()).decode(), params.user_id
+            'UPDATE "user" SET temp_data = $1 WHERE id = $2',
+            orjson.dumps(result.model_dump()).decode(),
+            params.user_id,
         )
     finally:
         await conn.close()
@@ -54,7 +58,9 @@ async def handle_session_mmt(
     # Save current params
     await page.client_storage.set_async(f"hb.{params.user_id}.params", params.to_query_string())
 
-    payload = GeetestLoginPayload(user_id=params.user_id, gt_version=3 if mmt_type != "on_otp_send" else 4)
+    payload = GeetestLoginPayload(
+        user_id=params.user_id, gt_version=3 if mmt_type != "on_otp_send" else 4
+    )
 
     titles: dict[Literal["on_login", "on_email_send", "on_otp_send"], LocaleStr | str] = {
         "on_login": LocaleStr(key="geetest.embed.title"),
@@ -91,21 +97,35 @@ async def handle_session_mmt(
 
 
 class EmailVerifyDialog(ft.AlertDialog):
-    def __init__(self, ticket: ActionTicket, *, locale: Locale, user_id: int, params: Params) -> None:
+    def __init__(
+        self, ticket: ActionTicket, *, locale: Locale, user_id: int, params: Params
+    ) -> None:
         field_ref = ft.Ref[ft.TextField]()
         super().__init__(
-            title=ft.Text(translator.translate(LocaleStr(key="email_verification_dialog_title"), locale)),
+            title=ft.Text(
+                translator.translate(LocaleStr(key="email_verification_dialog_title"), locale)
+            ),
             content=ft.Column(
                 [
-                    ft.Text(translator.translate(LocaleStr(key="email_verification_dialog_content"), locale)),
+                    ft.Text(
+                        translator.translate(
+                            LocaleStr(key="email_verification_dialog_content"), locale
+                        )
+                    ),
                     ft.TextField(
-                        label=translator.translate(LocaleStr(key="email_verification_field_label"), locale),
+                        label=translator.translate(
+                            LocaleStr(key="email_verification_field_label"), locale
+                        ),
                         prefix_icon=ft.icons.NUMBERS,
                         max_length=6,
                         ref=field_ref,
                     ),
                     EmailVerifyCodeButton(
-                        locale=locale, ticket=ticket, field_ref=field_ref, user_id=user_id, params=params
+                        locale=locale,
+                        ticket=ticket,
+                        field_ref=field_ref,
+                        user_id=user_id,
+                        params=params,
                     ),
                 ],
                 tight=True,
@@ -116,9 +136,17 @@ class EmailVerifyDialog(ft.AlertDialog):
 
 class EmailVerifyCodeButton(ft.FilledButton):
     def __init__(
-        self, *, locale: Locale, ticket: ActionTicket, field_ref: ft.Ref[ft.TextField], user_id: int, params: Params
+        self,
+        *,
+        locale: Locale,
+        ticket: ActionTicket,
+        field_ref: ft.Ref[ft.TextField],
+        user_id: int,
+        params: Params,
     ) -> None:
-        super().__init__(translator.translate(LocaleStr(key="email_verification_dialog_action"), locale))
+        super().__init__(
+            translator.translate(LocaleStr(key="email_verification_dialog_action"), locale)
+        )
 
         self._locale = locale
         self._ticket = ticket
@@ -131,7 +159,9 @@ class EmailVerifyCodeButton(ft.FilledButton):
 
         field = self._field_ref.current
         if not field.value:
-            field.error_text = translator.translate(LocaleStr(key="required_field_error_message"), self._locale)
+            field.error_text = translator.translate(
+                LocaleStr(key="required_field_error_message"), self._locale
+            )
             await field.update_async()
             return
 
@@ -148,7 +178,9 @@ class EmailVerifyCodeButton(ft.FilledButton):
         encrypted_email = await page.client_storage.get_async(f"hb.{self._user_id}.email")
         encrypted_password = await page.client_storage.get_async(f"hb.{self._user_id}.password")
         if not isinstance(encrypted_email, str) or not isinstance(encrypted_password, str):
-            await show_error_banner(page, message="Cannot find email or password in client storage.")
+            await show_error_banner(
+                page, message="Cannot find email or password in client storage."
+            )
             return
 
         email = decrypt_string(encrypted_email)
@@ -167,11 +199,19 @@ class EmailVerifyCodeButton(ft.FilledButton):
 
 
 async def handle_action_ticket(
-    result: ActionTicket, *, email: str, password: str, page: ft.Page, params: Params, locale: Locale
+    result: ActionTicket,
+    *,
+    email: str,
+    password: str,
+    page: ft.Page,
+    params: Params,
+    locale: Locale,
 ) -> None:
     await page.client_storage.set_async(f"hb.{params.user_id}.email", encrypt_string(email))
     await page.client_storage.set_async(f"hb.{params.user_id}.password", encrypt_string(password))
-    await page.show_dialog_async(EmailVerifyDialog(ticket=result, locale=locale, user_id=params.user_id, params=params))
+    await page.show_dialog_async(
+        EmailVerifyDialog(ticket=result, locale=locale, user_id=params.user_id, params=params)
+    )
 
 
 class MobileVerifyDialog(ft.AlertDialog):
@@ -183,18 +223,28 @@ class MobileVerifyDialog(ft.AlertDialog):
                 [
                     ft.Text("我们已经发送了验证码到您的手机, 请输入验证码以继续"),
                     ft.TextField(
-                        label="验证码", prefix_icon=ft.icons.NUMBERS, max_length=6, ref=field_ref, hint_text="123456"
+                        label="验证码",
+                        prefix_icon=ft.icons.NUMBERS,
+                        max_length=6,
+                        ref=field_ref,
+                        hint_text="123456",
                     ),
                 ],
                 tight=True,
             ),
-            actions=[MobileVerifyCodeButton(mobile=mobile, field_ref=field_ref, user_id=user_id, params=params)],
+            actions=[
+                MobileVerifyCodeButton(
+                    mobile=mobile, field_ref=field_ref, user_id=user_id, params=params
+                )
+            ],
             modal=True,
         )
 
 
 class MobileVerifyCodeButton(ft.TextButton):
-    def __init__(self, *, mobile: str, field_ref: ft.Ref[ft.TextField], user_id: int, params: Params) -> None:
+    def __init__(
+        self, *, mobile: str, field_ref: ft.Ref[ft.TextField], user_id: int, params: Params
+    ) -> None:
         super().__init__("验证", on_click=self.verify_code)
         self._mobile = mobile
         self._field_ref = field_ref
@@ -229,4 +279,6 @@ class MobileVerifyCodeButton(ft.TextButton):
 
 
 async def handle_mobile_otp(*, mobile: str, page: ft.Page, params: Params) -> None:
-    await page.show_dialog_async(MobileVerifyDialog(mobile=mobile, user_id=params.user_id, params=params))
+    await page.show_dialog_async(
+        MobileVerifyDialog(mobile=mobile, user_id=params.user_id, params=params)
+    )

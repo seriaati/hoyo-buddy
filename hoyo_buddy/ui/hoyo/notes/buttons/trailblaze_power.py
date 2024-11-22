@@ -17,13 +17,20 @@ if TYPE_CHECKING:
 
 class TBPReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
-        super().__init__(emoji=TRAILBLAZE_POWER, label=LocaleStr(key="tbp_reminder_button.label"), row=row)
+        super().__init__(
+            emoji=TRAILBLAZE_POWER, label=LocaleStr(key="tbp_reminder_button.label"), row=row
+        )
 
     async def callback(self, i: Interaction) -> None:
-        notify = await NotesNotify.get_or_none(account=self.view._account, type=NotesNotifyType.TB_POWER)
+        notify = await NotesNotify.get_or_none(
+            account=self.view._account, type=NotesNotifyType.TB_POWER
+        )
 
         modal = TypeOneModal(
-            notify, title=LocaleStr(key="tbp_reminder_modal.title"), threshold_max_value=240, min_notify_interval=10
+            notify,
+            title=LocaleStr(key="tbp_reminder_modal.title"),
+            threshold_max_value=240,
+            min_notify_interval=10,
         )
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)

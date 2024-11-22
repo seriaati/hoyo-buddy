@@ -19,11 +19,15 @@ class StaminaReminder(Button[NotesView]):
         super().__init__(label=LocaleStr(key="notes.stamina_label"), row=row)
 
     async def callback(self, i: Interaction) -> None:
-        notify = await NotesNotify.get_or_none(account=self.view._account, type=NotesNotifyType.STAMINA)
+        notify = await NotesNotify.get_or_none(
+            account=self.view._account, type=NotesNotifyType.STAMINA
+        )
 
         modal = TypeOneModal(
             notify,
-            title=LocaleStr(key="reminder_modal.title", notify=LocaleStr(key="notes.stamina_label")),
+            title=LocaleStr(
+                key="reminder_modal.title", notify=LocaleStr(key="notes.stamina_label")
+            ),
             threshold_max_value=240,
             min_notify_interval=10,
         )

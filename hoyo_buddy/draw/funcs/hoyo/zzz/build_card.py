@@ -46,7 +46,9 @@ class ZZZAgentCard:
     def _draw_background(self) -> Image.Image:
         zzz_text = self._card_data.get("zzz_text", True)
         base_card_temp = 2 if not zzz_text else 1
-        card = Drawer.open_image(f"hoyo-buddy-assets/assets/zzz-build-card/card_base{base_card_temp}.png")
+        card = Drawer.open_image(
+            f"hoyo-buddy-assets/assets/zzz-build-card/card_base{base_card_temp}.png"
+        )
         draw = ImageDraw.Draw(card)
         drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False, sans=True)
 
@@ -62,15 +64,25 @@ class ZZZAgentCard:
         blob_color = drawer.hex_to_rgb(agent_color)
         z_blob_color = drawer.blend_color(blob_color, (0, 0, 0), 0.85)
 
-        blob_left = drawer.create_pattern_blob(color=blob_color, rotation=0, pattern=pattern, blob=blob_left)
+        blob_left = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_left
+        )
         card.alpha_composite(blob_left, (-345, -351))
-        blob_mid = drawer.create_pattern_blob(color=blob_color, rotation=0, pattern=pattern, blob=blob_mid)
+        blob_mid = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_mid
+        )
         card.alpha_composite(blob_mid, (947, 176))
-        blob_rb = drawer.create_pattern_blob(color=blob_color, rotation=0, pattern=pattern, blob=blob_rb)
+        blob_rb = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_rb
+        )
         card.alpha_composite(blob_rb, (2534, 709))
-        blob_rt = drawer.create_pattern_blob(color=blob_color, rotation=0, pattern=pattern, blob=blob_rt)
+        blob_rt = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_rt
+        )
         card.alpha_composite(blob_rt, (3004, -174))
-        z_blob = drawer.create_pattern_blob(color=z_blob_color, rotation=0, pattern=pattern, blob=z_blob)
+        z_blob = drawer.create_pattern_blob(
+            color=z_blob_color, rotation=0, pattern=pattern, blob=z_blob
+        )
         z_blob = drawer.resize_crop(z_blob, blob_left.size)
         z_blob = drawer.mask_image_with_image(z_blob, blob_left)
         card.alpha_composite(z_blob, (-345, -350))
@@ -79,9 +91,16 @@ class ZZZAgentCard:
         card.alpha_composite(logo, (24, 18))
 
         if self._name_data is not None:
-            name_position = (self._card_data.get("name_x", 2234), self._card_data.get("name_y", -64))
+            name_position = (
+                self._card_data.get("name_x", 2234),
+                self._card_data.get("name_y", -64),
+            )
             drawer.write(
-                self._name_data.short_name, size=460, style="black_italic", position=name_position, color=BLACK
+                self._name_data.short_name,
+                size=460,
+                style="black_italic",
+                position=name_position,
+                color=BLACK,
             )
 
         bangboo = drawer.open_asset("bangboo.png")
@@ -96,7 +115,9 @@ class ZZZAgentCard:
 
         # Agent image
         agent_image = drawer.open_static(self._image_url)
-        agent_image = drawer.resize_crop(agent_image, (self._card_data["image_w"], self._card_data["image_h"]))
+        agent_image = drawer.resize_crop(
+            agent_image, (self._card_data["image_w"], self._card_data["image_h"])
+        )
         if self._card_data.get("flip", False):
             # Flip image horizontally
             agent_image = agent_image.transpose(Transpose.FLIP_LEFT_RIGHT)
@@ -116,7 +137,10 @@ class ZZZAgentCard:
         rank_text = drawer.open_asset(f"rank/M{self._agent.rank}.png")
         level_flip = self._card_data.get("level_flip", False)
         rank_text_pos = (
-            (self._card_data["level_x"] + tbox.width - rank_text.width, self._card_data["level_y"] + 260)
+            (
+                self._card_data["level_x"] + tbox.width - rank_text.width,
+                self._card_data["level_y"] + 260,
+            )
             if level_flip
             else (self._card_data["level_x"], self._card_data["level_y"] + 260)
         )
@@ -128,7 +152,10 @@ class ZZZAgentCard:
             if len(text) > 1:
                 drawer.write(
                     "\n".join(text),
-                    position=(self._card_data["level_x"] + rank_text.width + 10, self._card_data["level_y"] + 290),
+                    position=(
+                        self._card_data["level_x"] + rank_text.width + 10,
+                        self._card_data["level_y"] + 290,
+                    ),
                     size=72,
                     color=(41, 41, 41),
                     style="black_italic",
@@ -149,14 +176,24 @@ class ZZZAgentCard:
             level_flair = drawer.open_asset("engine_level_flair.png")
             im.paste(level_flair, (617, 447), level_flair)
             drawer.write(
-                f"Lv.{engine.level}", size=43, position=(685, 478), color=(255, 255, 255), style="bold", anchor="mm"
+                f"Lv.{engine.level}",
+                size=43,
+                position=(685, 478),
+                color=(255, 255, 255),
+                style="bold",
+                anchor="mm",
             )
 
             # Engine star
             star_flair = drawer.open_asset("engine_star_flair.png")
             im.paste(star_flair, (478, 223), star_flair)
             drawer.write(
-                str(engine.refinement), size=46, position=(513, 258), color=(255, 255, 255), style="bold", anchor="mm"
+                str(engine.refinement),
+                size=46,
+                position=(513, 258),
+                color=(255, 255, 255),
+                style="bold",
+                anchor="mm",
             )
 
             # Engine name
@@ -184,7 +221,10 @@ class ZZZAgentCard:
                         size=28,
                         style="bold",
                         color=(20, 20, 20),
-                        position=(stat_positions[i][0] + 60, stat_positions[i][1] + icon.height // 2),
+                        position=(
+                            stat_positions[i][0] + 60,
+                            stat_positions[i][1] + icon.height // 2,
+                        ),
                         anchor="lm",
                         locale=discord.Locale(self._locale),
                     )
@@ -224,12 +264,19 @@ class ZZZAgentCard:
 
                 main_stat = disc.main_properties[0]
                 if isinstance(main_stat.type, PropType):
-                    main_stat_icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[main_stat.type]}", size=(37, 37))
-                    im.paste(main_stat_icon, (start_pos[0] + 168, start_pos[1] + 18), main_stat_icon)
+                    main_stat_icon = drawer.open_asset(
+                        f"stat_icons/{STAT_ICONS[main_stat.type]}", size=(37, 37)
+                    )
+                    im.paste(
+                        main_stat_icon, (start_pos[0] + 168, start_pos[1] + 18), main_stat_icon
+                    )
                     drawer.write(
                         main_stat.value,
                         size=34,
-                        position=(start_pos[0] + 210, start_pos[1] + 18 + main_stat_icon.height // 2),
+                        position=(
+                            start_pos[0] + 210,
+                            start_pos[1] + 18 + main_stat_icon.height // 2,
+                        ),
                         style="bold",
                         anchor="lm",
                     )
@@ -242,16 +289,23 @@ class ZZZAgentCard:
                         pass
                     else:
                         if isinstance(sub_stat.type, PropType):
-                            sub_stat_icon = drawer.open_asset(f"stat_icons/{STAT_ICONS[sub_stat.type]}", size=(28, 28))
+                            sub_stat_icon = drawer.open_asset(
+                                f"stat_icons/{STAT_ICONS[sub_stat.type]}", size=(28, 28)
+                            )
                         else:
-                            sub_stat_icon = drawer.open_asset("stat_icons/PLACEHOLDER.png", size=(28, 28))
+                            sub_stat_icon = drawer.open_asset(
+                                "stat_icons/PLACEHOLDER.png", size=(28, 28)
+                            )
                         text = sub_stat.value
 
                         im.paste(sub_stat_icon, sub_stat_pos, sub_stat_icon)
                         drawer.write(
                             text,
                             size=22,
-                            position=(sub_stat_pos[0] + 38, sub_stat_pos[1] + sub_stat_icon.height // 2),
+                            position=(
+                                sub_stat_pos[0] + 38,
+                                sub_stat_pos[1] + sub_stat_icon.height // 2,
+                            ),
                             style="medium",
                             anchor="lm",
                         )
@@ -259,7 +313,9 @@ class ZZZAgentCard:
                         if self._show_substat_rolls:
                             roll_num = get_disc_substat_roll_num(disc.rarity, sub_stat)
                             roll_num_img = drawer.open_asset(f"rolls/{roll_num}.png", size=(103, 2))
-                            im.alpha_composite(roll_num_img, (sub_stat_pos[0], sub_stat_pos[1] + 32))
+                            im.alpha_composite(
+                                roll_num_img, (sub_stat_pos[0], sub_stat_pos[1] + 32)
+                            )
 
                     if j == 1:
                         sub_stat_pos = (start_pos[0] + 170, start_pos[1] + 134)
@@ -278,7 +334,14 @@ class ZZZAgentCard:
             skill = dutils.get(self._agent.skills, type=skill_type)
             if skill is None:
                 continue
-            drawer.write(str(skill.level), size=55, position=start_pos, color=(20, 20, 20), style="bold", anchor="mm")
+            drawer.write(
+                str(skill.level),
+                size=55,
+                position=start_pos,
+                color=(20, 20, 20),
+                style="bold",
+                anchor="mm",
+            )
             start_pos = (2809, 397 + 98) if i == 2 else (start_pos[0] + 205, start_pos[1])
 
         # Stats
@@ -293,13 +356,18 @@ class ZZZAgentCard:
             drawer.write(
                 prop.final or prop.value,
                 size=40,
-                position=(start_pos[0] + prop_icon.width + 17, start_pos[1] + prop_icon.height // 2),
+                position=(
+                    start_pos[0] + prop_icon.width + 17,
+                    start_pos[1] + prop_icon.height // 2,
+                ),
                 color=(20, 20, 20),
                 style="medium",
                 anchor="lm",
             )
 
-            start_pos = (2720, start_pos[1] + 106) if i % 2 != 0 else (start_pos[0] + 283, start_pos[1])
+            start_pos = (
+                (2720, start_pos[1] + 106) if i % 2 != 0 else (start_pos[0] + 283, start_pos[1])
+            )
 
         buffer = BytesIO()
         im.save(buffer, "PNG")

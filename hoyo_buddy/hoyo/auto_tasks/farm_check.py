@@ -33,7 +33,10 @@ class FarmChecker:
 
         embed = DefaultEmbed(
             locale,
-            title=LocaleStr(key="farm_check.farmable_today", name=cls._item_id_to_name[locale.value][str(item.id)]),
+            title=LocaleStr(
+                key="farm_check.farmable_today",
+                name=cls._item_id_to_name[locale.value][str(item.id)],
+            ),
         )
         embed.set_thumbnail(url=item.icon)
         embed.set_footer(text=LocaleStr(key="farm_check.use_farm_notify"))
@@ -44,7 +47,9 @@ class FarmChecker:
             await FarmNotify.filter(account=farm_notify.account).update(enabled=False)
 
     @classmethod
-    async def _check_and_notify(cls, item_id: str, items: list[CharacterOrWeapon], farm_notify: FarmNotify) -> bool:
+    async def _check_and_notify(
+        cls, item_id: str, items: list[CharacterOrWeapon], farm_notify: FarmNotify
+    ) -> bool:
         for item in items:
             if str(item.id) == item_id:
                 await cls._notify_user(item, farm_notify)
@@ -75,7 +80,9 @@ class FarmChecker:
                 async with AmbrAPIClient(locale) as client:
                     characters = await client.fetch_characters()
                     weapons = await client.fetch_weapons()
-                cls._item_id_to_name[locale.value] = {str(item.id): item.name for item in characters + weapons}
+                cls._item_id_to_name[locale.value] = {
+                    str(item.id): item.name for item in characters + weapons
+                }
 
             notified: set[str] = set()
 
@@ -86,13 +93,17 @@ class FarmChecker:
                 for farm_data in farm_datas:
                     if len(item_id) == 5:
                         # weapon
-                        notified_ = await cls._check_and_notify(item_id, farm_data.weapons, farm_notify)
+                        notified_ = await cls._check_and_notify(
+                            item_id, farm_data.weapons, farm_notify
+                        )
                         if notified_:
                             notified.add(item_id)
                             break
 
                     else:
-                        notified_ = await cls._check_and_notify(item_id, farm_data.characters, farm_notify)
+                        notified_ = await cls._check_and_notify(
+                            item_id, farm_data.characters, farm_notify
+                        )
                         if notified_:
                             notified.add(item_id)
                             break

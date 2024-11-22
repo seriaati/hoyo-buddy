@@ -47,7 +47,9 @@ async def main() -> None:
         translator,
         HoyoBuddy(session=session, env=env, pool=pool, config=config) as bot,
     ):
-        with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError):
+        with contextlib.suppress(
+            KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError
+        ):
             geetest_server = GeetestWebServer()
 
             asyncio.create_task(geetest_server.run())

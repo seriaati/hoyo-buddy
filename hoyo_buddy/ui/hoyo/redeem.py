@@ -29,19 +29,30 @@ class GiftCodeModal(Modal):
         required=False,
     )
     code_3 = TextInput(
-        label=LocaleStr(key="gift_code_modal.code_input.label", num=3), placeholder="GENSHINGIFT", required=False
+        label=LocaleStr(key="gift_code_modal.code_input.label", num=3),
+        placeholder="GENSHINGIFT",
+        required=False,
     )
     code_4 = TextInput(
-        label=LocaleStr(key="gift_code_modal.code_input.label", num=4), placeholder="HSR2024", required=False
+        label=LocaleStr(key="gift_code_modal.code_input.label", num=4),
+        placeholder="HSR2024",
+        required=False,
     )
     code_5 = TextInput(
-        label=LocaleStr(key="gift_code_modal.code_input.label", num=5), placeholder="HOYOBUDDY", required=False
+        label=LocaleStr(key="gift_code_modal.code_input.label", num=5),
+        placeholder="HOYOBUDDY",
+        required=False,
     )
 
 
 class RedeemUI(View):
     def __init__(
-        self, account: HoyoAccount, available_codes: list[str], *, author: User | Member | None, locale: Locale
+        self,
+        account: HoyoAccount,
+        available_codes: list[str],
+        *,
+        author: User | Member | None,
+        locale: Locale,
     ) -> None:
         super().__init__(author=author, locale=locale)
         self.account = account
@@ -69,7 +80,8 @@ class RedeemUI(View):
 
         if self.available_codes:
             embed.add_field(
-                name=LocaleStr(key="redeem_cmd_available_codes"), value=create_bullet_list(self.available_codes)
+                name=LocaleStr(key="redeem_cmd_available_codes"),
+                value=create_bullet_list(self.available_codes),
             )
         return embed
 
@@ -90,7 +102,9 @@ class RedeemUI(View):
 class RedeemCodesButton(Button[RedeemUI]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr(key="redeem_codes_button.label"), emoji=GIFT_OUTLINE, style=ButtonStyle.blurple
+            label=LocaleStr(key="redeem_codes_button.label"),
+            emoji=GIFT_OUTLINE,
+            style=ButtonStyle.blurple,
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -103,7 +117,13 @@ class RedeemCodesButton(Button[RedeemUI]):
             return
 
         await self.set_loading_state(i, embed=self.view.cooldown_embed)
-        codes = (modal.code_1.value, modal.code_2.value, modal.code_3.value, modal.code_4.value, modal.code_5.value)
+        codes = (
+            modal.code_1.value,
+            modal.code_2.value,
+            modal.code_3.value,
+            modal.code_4.value,
+            modal.code_5.value,
+        )
         # Extract codes from urls
         codes = [code.split("code=")[1] if "code=" in code else code for code in codes]
 
@@ -128,13 +148,17 @@ class AutoRedeemToggle(ToggleButton[RedeemUI]):
 class RedeemAllAvailableCodesButton(Button[RedeemUI]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr(key="redeem_all_available_codes_button_label"), style=ButtonStyle.blurple, emoji=REDEEM_GIFT
+            label=LocaleStr(key="redeem_all_available_codes_button_label"),
+            style=ButtonStyle.blurple,
+            emoji=REDEEM_GIFT,
         )
 
     async def callback(self, i: Interaction) -> None:
         await self.set_loading_state(i, embed=self.view.cooldown_embed)
         try:
-            embed = await self.view.account.client.redeem_codes(self.view.available_codes, locale=self.view.locale)
+            embed = await self.view.account.client.redeem_codes(
+                self.view.available_codes, locale=self.view.locale
+            )
         except Exception:
             await self.unset_loading_state(i, embed=self.view.start_embed)
             raise

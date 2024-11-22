@@ -32,7 +32,9 @@ HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Final[dict[HakushinItemCategory, Game]] = {
 
 
 class AutocompleteSetup:
-    _result: ClassVar[AutocompleteChoices] = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+    _result: ClassVar[AutocompleteChoices] = defaultdict(
+        lambda: defaultdict(lambda: defaultdict(list))
+    )
     _beta_result: ClassVar[BetaAutocompleteChoices] = defaultdict(lambda: defaultdict(list))
     _beta_id_to_category: ClassVar[dict[str, str]] = {}
     """Item ID to ItemCategory.value."""
@@ -174,7 +176,9 @@ class AutocompleteSetup:
                 await asyncio.sleep(0.1)
 
     @classmethod
-    def _add_to_beta_results(cls, game: Game, category: ItemCategory, locale: Locale, items: list[Any]) -> None:
+    def _add_to_beta_results(
+        cls, game: Game, category: ItemCategory, locale: Locale, items: list[Any]
+    ) -> None:
         beta_ids = cls._category_beta_ids.get((game, category), [])
 
         for beta_id in beta_ids:

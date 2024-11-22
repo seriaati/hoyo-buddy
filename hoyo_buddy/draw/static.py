@@ -22,7 +22,11 @@ ZZZ_V2_GAME_RECORD = "https://act-webstatic.hoyoverse.com/game_record/zzzv2/"
 
 
 async def download_image_task(
-    image_url: str, file_path: pathlib.Path, session: aiohttp.ClientSession, *, ignore_error: bool = False
+    image_url: str,
+    file_path: pathlib.Path,
+    session: aiohttp.ClientSession,
+    *,
+    ignore_error: bool = False,
 ) -> None:
     async with session.get(image_url) as resp:
         if resp.status != 200:
@@ -48,11 +52,17 @@ async def download_image_task(
 
 
 async def download_images(
-    image_urls: Sequence[str], folder: str, session: aiohttp.ClientSession, *, ignore_error: bool = False
+    image_urls: Sequence[str],
+    folder: str,
+    session: aiohttp.ClientSession,
+    *,
+    ignore_error: bool = False,
 ) -> None:
     async with asyncio.TaskGroup() as tg:
         for image_url in list(set(image_urls)):
             file_path = get_static_img_path(image_url, folder)
             if file_path.exists():
                 continue
-            tg.create_task(download_image_task(image_url, file_path, session, ignore_error=ignore_error))
+            tg.create_task(
+                download_image_task(image_url, file_path, session, ignore_error=ignore_error)
+            )

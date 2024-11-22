@@ -225,14 +225,22 @@ def set_or_update_dict(d: dict[str, Any], key: str, value: Any) -> None:
 
 def convert_chara_id_to_ambr_format(character_id: int, element: str) -> str:
     """Convert character ID to the format used by AmbrAPI (traveler ID contains element)."""
-    return f"{character_id}-{element.lower()}" if character_id in TRAVELER_IDS else str(character_id)
+    return (
+        f"{character_id}-{element.lower()}" if character_id in TRAVELER_IDS else str(character_id)
+    )
 
 
 def human_format_number(number: int, decimal_places: int = 1) -> str:
     """Convert a number to a human-readable format."""
     millnames = ("", "k", "M", "B", "T")
     n = float(number)
-    millidx = max(0, min(len(millnames) - 1, int(0 if n == 0 else math.floor(0 if n < 0 else math.log10(abs(n)) / 3))))
+    millidx = max(
+        0,
+        min(
+            len(millnames) - 1,
+            int(0 if n == 0 else math.floor(0 if n < 0 else math.log10(abs(n)) / 3)),
+        ),
+    )
 
     return f"{n / 10 ** (3 * millidx):.{decimal_places}f}{millnames[millidx]}"
 
@@ -271,7 +279,9 @@ def format_float(num: float, *, decimals: int = 2) -> str:
     return f"{num:.{decimal_places}f}"
 
 
-def get_discord_protocol_url(*, channel_id: str, guild_id: str, message_id: str | None = None) -> str:
+def get_discord_protocol_url(
+    *, channel_id: str, guild_id: str, message_id: str | None = None
+) -> str:
     """
     Generate a Discord protocol URL.
     Args:
@@ -347,7 +357,9 @@ def init_sentry() -> None:
         dsn=os.getenv("SENTRY_DSN"),
         integrations=[
             AsyncioIntegration(),
-            LoguruIntegration(level=LoggingLevels.INFO.value, event_level=LoggingLevels.ERROR.value),
+            LoguruIntegration(
+                level=LoggingLevels.INFO.value, event_level=LoggingLevels.ERROR.value
+            ),
         ],
         disabled_integrations=[AsyncPGIntegration(), AioHttpIntegration(), LoggingIntegration()],
         traces_sample_rate=1.0,
@@ -372,7 +384,9 @@ def _process_query(item_ids_or_names: Sequence[str | int] | int | str) -> str:
 
 
 @overload
-async def item_name_to_id(session: aiohttp.ClientSession, *, item_names: str, lang: str | None = ...) -> int: ...
+async def item_name_to_id(
+    session: aiohttp.ClientSession, *, item_names: str, lang: str | None = ...
+) -> int: ...
 @overload
 async def item_name_to_id(
     session: aiohttp.ClientSession, *, item_names: list[str], lang: str | None = ...
@@ -418,7 +432,9 @@ async def get_item_ids(
             if item_name in item_name_tasks:
                 continue
 
-            item_name_tasks[item_name] = tg.create_task(item_name_to_id(session, item_names=item_name, lang=lang))
+            item_name_tasks[item_name] = tg.create_task(
+                item_name_to_id(session, item_names=item_name, lang=lang)
+            )
 
     return {item_name: task.result() for item_name, task in item_name_tasks.items()}
 
@@ -426,8 +442,12 @@ async def get_item_ids(
 @overload
 async def item_id_to_name(session: aiohttp.ClientSession, *, item_ids: int, lang: str) -> str: ...
 @overload
-async def item_id_to_name(session: aiohttp.ClientSession, *, item_ids: list[int], lang: str) -> list[str]: ...
-async def item_id_to_name(session: aiohttp.ClientSession, *, item_ids: list[int] | int, lang: str) -> list[str] | str:
+async def item_id_to_name(
+    session: aiohttp.ClientSession, *, item_ids: list[int], lang: str
+) -> list[str]: ...
+async def item_id_to_name(
+    session: aiohttp.ClientSession, *, item_ids: list[int] | int, lang: str
+) -> list[str] | str:
     item_ids_query = _process_query(item_ids)
 
     async with session.post(
@@ -455,7 +475,9 @@ async def get_gacha_icon(*, game: Game, item_id: int) -> str:
             # character
             characters = await api.fetch_characters()
             character_icon_map: dict[int, str] = {
-                int(character.id): character.icon for character in characters if character.id.isdigit()
+                int(character.id): character.icon
+                for character in characters
+                if character.id.isdigit()
             }
             return character_icon_map[item_id]
 
@@ -484,7 +506,12 @@ def get_ranking(number: float, number_list: list[float], *, reverse: bool) -> tu
         position = sorted_unique_list.index(number) + 1
     except ValueError:
         # If the number is not in the list, find where it would be inserted
-        position = next((i for i, x in enumerate(sorted_unique_list) if x < number), len(sorted_unique_list)) + 1
+        position = (
+            next(
+                (i for i, x in enumerate(sorted_unique_list) if x < number), len(sorted_unique_list)
+            )
+            + 1
+        )
 
     return position, len(sorted_unique_list)
 

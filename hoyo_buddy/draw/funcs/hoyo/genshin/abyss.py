@@ -32,10 +32,18 @@ class SpiralAbyssCard:
         self.im: Image.Image = None  # pyright: ignore[reportAttributeAccessIssue]
 
     def write_title(self) -> None:
-        self.drawer.write(LocaleStr(key="abyss.overview"), size=154, style="bold", position=(3026, 188), anchor="rm")
+        self.drawer.write(
+            LocaleStr(key="abyss.overview"),
+            size=154,
+            style="bold",
+            position=(3026, 188),
+            anchor="rm",
+        )
 
     def write_damage_info(self) -> None:
-        self.drawer.write(LocaleStr(key="abyss.damage"), size=82, style="bold", position=(193, 295), anchor="lm")
+        self.drawer.write(
+            LocaleStr(key="abyss.damage"), size=82, style="bold", position=(193, 295), anchor="lm"
+        )
 
         try:
             damage_info: tuple[tuple[str, genshin.models.AbyssRankCharacter], ...] = (
@@ -61,11 +69,17 @@ class SpiralAbyssCard:
             )
 
     def write_stats(self) -> None:
-        self.drawer.write(LocaleStr(key="abyss.stats"), size=82, style="bold", position=(2957, 460), anchor="rm")
+        self.drawer.write(
+            LocaleStr(key="abyss.stats"), size=82, style="bold", position=(2957, 460), anchor="rm"
+        )
 
         stats: tuple[LocaleStr | str, ...] = (
             f"{self._data.start_time.strftime("%Y/%m/%d")} ~ {self._data.end_time.strftime("%Y/%m/%d")}",
-            LocaleStr(key="abyss.battles_won_fought", val1=self._data.total_wins, val2=self._data.total_battles),
+            LocaleStr(
+                key="abyss.battles_won_fought",
+                val1=self._data.total_wins,
+                val2=self._data.total_battles,
+            ),
             LocaleStr(key="abyss.deepest_descent", val=self._data.max_floor),
             LocaleStr(key="abyss.total_stars", val=self._data.total_stars),
         )
@@ -82,7 +96,9 @@ class SpiralAbyssCard:
         img = self.drawer.open_asset(f"block/{character.rarity}_img.png")
         img_mask = self.drawer.open_asset("block/img_mask.png")
 
-        bk_drawer = Drawer(ImageDraw.Draw(bk), folder="abyss", dark_mode=True, locale=Locale(self._locale))
+        bk_drawer = Drawer(
+            ImageDraw.Draw(bk), folder="abyss", dark_mode=True, locale=Locale(self._locale)
+        )
 
         icon = self.drawer.open_static(self._character_icons[str(character.id)], size=(116, 116))
         icon = self.drawer.mask_image_with_image(icon, img_mask)
@@ -92,12 +108,19 @@ class SpiralAbyssCard:
         rank = self._character_ranks.get(character.id, "?")
         bk.alpha_composite(flair, (87, 0))
         bk_drawer.write(f"C{rank}", size=18, style="bold", position=(102, 16), anchor="mm")
-        bk_drawer.write(f"Lv.{character.level}", size=24, style="bold", position=(58, 132), anchor="mm")
+        bk_drawer.write(
+            f"Lv.{character.level}", size=24, style="bold", position=(58, 132), anchor="mm"
+        )
 
         return bk
 
     def draw_floors(self) -> None:
-        floor_pos: dict[int, tuple[int, int]] = {0: (193, 1143), 1: (1727, 1143), 2: (193, 2053), 3: (1727, 2053)}
+        floor_pos: dict[int, tuple[int, int]] = {
+            0: (193, 1143),
+            1: (1727, 1143),
+            2: (193, 2053),
+            3: (1727, 2053),
+        }
         first_floor = self._data.floors[0]
 
         for f in range(2 if len(self._data.floors) <= 2 else 4):
@@ -117,7 +140,11 @@ class SpiralAbyssCard:
 
             stars = (9 if cleared else 0) if floor is None else floor.stars
             self.drawer.write(
-                f"{stars}/9", size=64, style="medium", position=(position[0] + 1132, position[1] + 56), anchor="lm"
+                f"{stars}/9",
+                size=64,
+                style="medium",
+                position=(position[0] + 1132, position[1] + 56),
+                anchor="lm",
             )
 
             for c in range(3):
@@ -150,13 +177,16 @@ class SpiralAbyssCard:
 
                         block = self.draw_character_block(character)
                         self.im.alpha_composite(
-                            block, (position[0] + 8 + 696 * b + 132 * ch, position[1] + 147 + 191 * c)
+                            block,
+                            (position[0] + 8 + 696 * b + 132 * ch, position[1] + 147 + 191 * c),
                         )
 
     def draw(self) -> BytesIO:
         path = "abyss_bg.png" if len(self._data.floors) > 2 else "abyss_bg_2_floors.png"
         self.im = im = Drawer.open_image(f"hoyo-buddy-assets/assets/abyss/{path}")
-        self.drawer = Drawer(ImageDraw.Draw(im), folder="abyss", dark_mode=True, locale=Locale(self._locale))
+        self.drawer = Drawer(
+            ImageDraw.Draw(im), folder="abyss", dark_mode=True, locale=Locale(self._locale)
+        )
 
         self.write_title()
         self.write_damage_info()

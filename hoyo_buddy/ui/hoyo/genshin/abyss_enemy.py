@@ -21,7 +21,9 @@ if TYPE_CHECKING:
 
 
 class AbyssEnemyView(View):
-    def __init__(self, dark_mode: bool, index: int, *, author: User | Member, locale: Locale) -> None:
+    def __init__(
+        self, dark_mode: bool, index: int, *, author: User | Member, locale: Locale
+    ) -> None:
         super().__init__(author=author, locale=locale)
 
         self._dark_mode = dark_mode
@@ -62,7 +64,9 @@ class AbyssEnemyView(View):
         # Update chamber button color
         for index in range(3):
             chamber_btn: ChamberButton = self.get_item(f"chamber_{index}_btn")
-            chamber_btn.style = ButtonStyle.secondary if index != self._chamber_index else ButtonStyle.primary
+            chamber_btn.style = (
+                ButtonStyle.secondary if index != self._chamber_index else ButtonStyle.primary
+            )
 
         # Disable wave buttons if there is only one wave
         if item_num == 1:
@@ -75,7 +79,9 @@ class AbyssEnemyView(View):
         # Update wave button color
         for index in range(2):
             wave_btn: WaveButton = self.get_item(f"wave_{index}_btn")
-            wave_btn.style = ButtonStyle.secondary if index != self._wave_index else ButtonStyle.primary
+            wave_btn.style = (
+                ButtonStyle.secondary if index != self._wave_index else ButtonStyle.primary
+            )
 
     async def _get_embed_and_enemy_items(
         self,

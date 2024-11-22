@@ -17,14 +17,20 @@ if TYPE_CHECKING:
 
 class ScratchCardReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
-        super().__init__(emoji=SCRATCH_CARD_EMOJI, label=LocaleStr(key="scratch_card_button.label"), row=row)
+        super().__init__(
+            emoji=SCRATCH_CARD_EMOJI, label=LocaleStr(key="scratch_card_button.label"), row=row
+        )
 
     async def callback(self, i: Interaction) -> None:
-        notify = await NotesNotify.get_or_none(account=self.view._account, type=NotesNotifyType.SCRATCH_CARD)
+        notify = await NotesNotify.get_or_none(
+            account=self.view._account, type=NotesNotifyType.SCRATCH_CARD
+        )
 
         modal = TypeThreeModal(
             notify,
-            title=LocaleStr(key="reminder_modal.title", notify=LocaleStr(key="scratch_card_button.label")),
+            title=LocaleStr(
+                key="reminder_modal.title", notify=LocaleStr(key="scratch_card_button.label")
+            ),
             min_notify_interval=30,
         )
         modal.translate(self.view.locale)

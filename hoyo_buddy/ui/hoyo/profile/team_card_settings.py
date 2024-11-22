@@ -20,7 +20,9 @@ class TeamCardSettingsView(View):
         self._add_items()
 
     def _add_items(self) -> None:
-        self.add_item(TeamCardDarkModeButton(current_toggle=self.settings.team_card_dark_mode, row=0))
+        self.add_item(
+            TeamCardDarkModeButton(current_toggle=self.settings.team_card_dark_mode, row=0)
+        )
         self.add_item(TeamSubstatRolls(current_toggle=self.settings.team_card_substat_rolls, row=0))
 
     async def start(self, i: Interaction) -> None:

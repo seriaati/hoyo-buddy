@@ -22,7 +22,9 @@ class ChallengeCommand:
         i = self._interaction
 
         user = self._user or i.user
-        account = self._account or await self._bot.get_account(user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ))
+        account = self._account or await self._bot.get_account(
+            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
+        )
         settings = await Settings.get(user_id=self._user_id)
         locale = settings.locale or i.locale
 

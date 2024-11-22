@@ -25,7 +25,9 @@ class LoadingSnackBar(ft.SnackBar):
         super().__init__(
             content=ft.Row(
                 [
-                    ft.ProgressRing(width=16, height=16, stroke_width=2, color=ft.colors.ON_SECONDARY_CONTAINER),
+                    ft.ProgressRing(
+                        width=16, height=16, stroke_width=2, color=ft.colors.ON_SECONDARY_CONTAINER
+                    ),
                     ft.Text(text, color=ft.colors.ON_SECONDARY_CONTAINER),
                 ]
             ),
@@ -40,7 +42,11 @@ class ErrorBanner(ft.Banner):
             content=ft.Text(message, color=ft.colors.ON_ERROR_CONTAINER),
             bgcolor=ft.colors.ERROR_CONTAINER,
             actions=[
-                ft.IconButton(ft.icons.CLOSE, on_click=self.on_action_click, icon_color=ft.colors.ON_ERROR_CONTAINER)
+                ft.IconButton(
+                    ft.icons.CLOSE,
+                    on_click=self.on_action_click,
+                    icon_color=ft.colors.ON_ERROR_CONTAINER,
+                )
             ],
         )
 
@@ -49,7 +55,9 @@ class ErrorBanner(ft.Banner):
         await page.close_banner_async()
 
 
-async def show_loading_snack_bar(page: ft.Page, *, message: str | None = None, locale: Locale | None = None) -> None:
+async def show_loading_snack_bar(
+    page: ft.Page, *, message: str | None = None, locale: Locale | None = None
+) -> None:
     await page.show_snack_bar_async(LoadingSnackBar(message=message, locale=locale))
 
 

@@ -9,7 +9,7 @@ import genshin
 from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, HB_GAME_TO_GPY_GAME, OFFLOAD_APIS
+from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, HB_GAME_TO_GPY_GAME, PROXY_APIS
 from hoyo_buddy.db.models import HoyoAccount
 from hoyo_buddy.enums import Platform
 from hoyo_buddy.l10n import LocaleStr
@@ -17,7 +17,7 @@ from hoyo_buddy.l10n import LocaleStr
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.embeds import Embed
-    from hoyo_buddy.types import OffloadAPI
+    from hoyo_buddy.types import ProxyAPI
 
 
 API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
@@ -70,7 +70,7 @@ class AutoRedeem:
                         continue
                     await queue.put(account)
 
-                tasks = [asyncio.create_task(cls._redeem_code_task(queue, api, game_codes)) for api in OFFLOAD_APIS]
+                tasks = [asyncio.create_task(cls._redeem_code_task(queue, api, game_codes)) for api in PROXY_APIS]
                 tasks.append(asyncio.create_task(cls._redeem_code_task(queue, "LOCAL", game_codes)))
 
                 await queue.join()
@@ -92,7 +92,7 @@ class AutoRedeem:
     async def _redeem_code_task(
         cls,
         queue: asyncio.Queue[HoyoAccount],
-        api_name: OffloadAPI | Literal["LOCAL"],
+        api_name: ProxyAPI | Literal["LOCAL"],
         game_codes: dict[genshin.Game, list[str]],
     ) -> None:
         logger.info(f"Auto redeem task started for api: {api_name}")
@@ -100,7 +100,7 @@ class AutoRedeem:
         bot = cls._bot
         if api_name != "LOCAL":
             # test if the api is working
-            async with bot.session.get(OFFLOAD_APIS[api_name]) as resp:
+            async with bot.session.get(PROXY_APIS[api_name]) as resp:
                 if resp.status != 200:
                     msg = f"API {api_name} returned {resp.status}"
                     raise RuntimeError(msg)
@@ -149,7 +149,7 @@ class AutoRedeem:
 
     @classmethod
     async def _redeem_codes(
-        cls, api_name: OffloadAPI | Literal["LOCAL"], account: HoyoAccount, codes: list[str]
+        cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount, codes: list[str]
     ) -> Embed | None:
         codes_: list[str] = []
         for code in codes:
@@ -204,9 +204,9 @@ class AutoRedeem:
 
     @classmethod
     async def _redeem_code(
-        cls, api_name: OffloadAPI, account: HoyoAccount, locale: discord.Locale, code: str, payload: dict[str, str]
+        cls, api_name: ProxyAPI, account: HoyoAccount, locale: discord.Locale, code: str, payload: dict[str, str]
     ) -> tuple[str, str, bool]:
-        api_url = OFFLOAD_APIS[api_name]
+        api_url = PROXY_APIS[api_name]
 
         logger.debug(f"Redeem payload: {payload}")
 

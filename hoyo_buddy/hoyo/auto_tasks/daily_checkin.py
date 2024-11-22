@@ -9,13 +9,13 @@ import genshin
 from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, OFFLOAD_APIS
+from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, PROXY_APIS
 from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount, User
 from hoyo_buddy.embeds import DefaultEmbed, Embed, ErrorEmbed
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
-    from hoyo_buddy.types import OffloadAPI
+    from hoyo_buddy.types import ProxyAPI
 
 API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
 MAX_API_ERROR_COUNT = 10
@@ -49,7 +49,7 @@ class DailyCheckin:
                     # Region is None or CN
                     the_rest.append(account)
 
-            tasks = [asyncio.create_task(cls._daily_checkin_task(queue, api)) for api in OFFLOAD_APIS]
+            tasks = [asyncio.create_task(cls._daily_checkin_task(queue, api)) for api in PROXY_APIS]
             tasks.append(asyncio.create_task(cls._daily_checkin_task(queue, "LOCAL")))
 
             await queue.join()
@@ -77,14 +77,14 @@ class DailyCheckin:
 
     @classmethod
     async def _daily_checkin_task(
-        cls, queue: asyncio.Queue[HoyoAccount], api_name: OffloadAPI | Literal["LOCAL"]
+        cls, queue: asyncio.Queue[HoyoAccount], api_name: ProxyAPI | Literal["LOCAL"]
     ) -> None:
         logger.info(f"Daily check-in task started for api: {api_name}")
 
         bot = cls._bot
         if api_name != "LOCAL":
             # test if the api is working
-            async with bot.session.get(OFFLOAD_APIS[api_name]) as resp:
+            async with bot.session.get(PROXY_APIS[api_name]) as resp:
                 if resp.status != 200:
                     msg = f"API {api_name} returned {resp.status}"
                     raise RuntimeError(msg)
@@ -127,7 +127,7 @@ class DailyCheckin:
             cls._bot.capture_exception(e)
 
     @classmethod
-    async def _daily_checkin(cls, api_name: OffloadAPI | Literal["LOCAL"], account: HoyoAccount) -> Embed:
+    async def _daily_checkin(cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount) -> Embed:
         session = cls._bot.session
         await account.fetch_related("user", "user__settings")
         locale = account.user.settings.locale or discord.Locale.american_english
@@ -170,7 +170,7 @@ class DailyCheckin:
             "game": client.game.value,
             "region": client.region.value,
         }
-        api_url = OFFLOAD_APIS[api_name]
+        api_url = PROXY_APIS[api_name]
         logger.debug(f"Check-in payload: {payload}")
 
         async with session.post(f"{api_url}/checkin/", json=payload) as resp:

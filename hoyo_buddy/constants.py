@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 from .enums import ChallengeType, Game, GenshinCity, GenshinElement, HSRElement, HSRPath
 
 if TYPE_CHECKING:
-    from .types import OffloadAPI
+    from .types import ProxyAPI
 
 STATIC_FOLDER = pathlib.Path("./.static")
 
@@ -696,7 +696,7 @@ def get_disc_substat_roll_num(disc_rarity: Literal["B", "A", "S"], prop: genshin
 
 load_dotenv()
 
-OFFLOAD_APIS: dict[OffloadAPI, str] = {
+PROXY_APIS: dict[ProxyAPI, str] = {
     "VERCEL": os.environ["VERCEL_URL"],
     "RENDER": os.environ["RENDER_URL"],
     "FLY": os.environ["FLY_URL"],

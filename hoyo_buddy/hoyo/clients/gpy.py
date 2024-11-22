@@ -21,7 +21,7 @@ from ...constants import (
     GPY_LANG_TO_LOCALE,
     HB_GAME_TO_GPY_GAME,
     LOCALE_TO_GPY_LANG,
-    OFFLOAD_APIS,
+    PROXY_APIS,
     contains_traveler_id,
     convert_fight_prop,
 )
@@ -39,8 +39,8 @@ if TYPE_CHECKING:
 load_dotenv()
 env = os.environ["ENV"]
 
-OFFLOAD_APIS_ = (*OFFLOAD_APIS.values(), "LOCAL")
-offload_api_rotator = itertools.cycle(OFFLOAD_APIS_)
+PROXY_APIS_ = (*PROXY_APIS.values(), "LOCAL")
+proxy_api_rotator = itertools.cycle(PROXY_APIS_)
 
 
 class ProxyGenshinClient(genshin.Client):
@@ -71,7 +71,7 @@ class ProxyGenshinClient(genshin.Client):
         mmt_result: genshin.models.SessionMMTResult | None = None,
         ticket: genshin.models.ActionTicket | None = None,
     ) -> genshin.models.AppLoginResult | genshin.models.SessionMMT | genshin.models.ActionTicket:
-        api_url = next(offload_api_rotator)
+        api_url = next(proxy_api_rotator)
 
         if api_url == "LOCAL":
             if mmt_result is not None:
@@ -519,7 +519,7 @@ class GenshinClient(ProxyGenshinClient):
         self, game: genshin.Game, *, session: aiohttp.ClientSession
     ) -> genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes | genshin.models.HonkaiNotes:
         uid = self._account.uid
-        api_url = next(offload_api_rotator)
+        api_url = next(proxy_api_rotator)
 
         if api_url == "LOCAL":
             if game is genshin.Game.GENSHIN:

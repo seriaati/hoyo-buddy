@@ -491,6 +491,7 @@ ZZZ_TEXT_MAP_URL = f"{ZENLESS_DATA_URL}/TextMap/TextMap_{{lang}}TemplateTb.json"
 ZZZ_AVATAR_BATTLE_TEMP_URL = f"{ZENLESS_DATA_URL}/FileCfg/AvatarBattleTemplateTb.json"
 ZZZ_AVATAR_BATTLE_TEMP_JSON = "zzz_avatar_battle_temp.json"
 
+ZZZ_AGENT_CORE_SKILL_LVL_MAP = {1: "-", 2: "A", 3: "B", 4: "C", 5: "D", 6: "E", 7: "F"}
 
 LOCALE_TO_ZENLESS_DATA_LANG: dict[discord.Locale, str] = {
     discord.Locale.taiwan_chinese: "CHT",

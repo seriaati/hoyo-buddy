@@ -5,11 +5,11 @@ from typing import TYPE_CHECKING
 
 from discord import Locale
 from discord import utils as dutils
-from genshin.models import ZZZFullAgent
+from genshin.models import ZZZFullAgent, ZZZSkillType
 from genshin.models import ZZZPropertyType as PropType
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.constants import get_disc_substat_roll_num
+from hoyo_buddy.constants import ZZZ_AGENT_CORE_SKILL_LVL_MAP, get_disc_substat_roll_num
 from hoyo_buddy.draw.drawer import WHITE, ZZZ_PROP_COLOR, Drawer
 from hoyo_buddy.draw.funcs.hoyo.zzz.common import SKILL_ORDER, STAT_ICONS, get_props
 
@@ -169,8 +169,13 @@ class ZZZAgentCard4:
             if skill is None:
                 continue
 
+            text = (
+                ZZZ_AGENT_CORE_SKILL_LVL_MAP[skill.level]
+                if skill_type is ZZZSkillType.CORE_SKILL
+                else str(skill.level)
+            )
             drawer.write(
-                str(skill.level),
+                text,
                 size=70,
                 position=(339 + 310 * (i % 3), 1435 + 132 * (i // 3)),
                 color=(20, 20, 20),

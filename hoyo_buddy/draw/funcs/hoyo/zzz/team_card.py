@@ -6,9 +6,10 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from discord import utils as dutils
 from genshin.models import ZZZPropertyType as PropType
+from genshin.models import ZZZSkillType
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.constants import get_disc_substat_roll_num
+from hoyo_buddy.constants import ZZZ_AGENT_CORE_SKILL_LVL_MAP, get_disc_substat_roll_num
 from hoyo_buddy.draw.drawer import BLACK, WHITE, ZZZ_PROP_COLOR, Drawer
 
 from .common import SKILL_ORDER, STAT_ICONS, get_props
@@ -234,7 +235,11 @@ class ZZZTeamCard:
             if skill is None:
                 continue
 
-            text = str(skill.level)
+            text = (
+                ZZZ_AGENT_CORE_SKILL_LVL_MAP[skill.level]
+                if skill_type is ZZZSkillType.CORE_SKILL
+                else str(skill.level)
+            )
             drawer.write(text, size=26, position=start_pos, style="bold", anchor="mm")
             start_pos = (669, 214 + 53) if i == 2 else (start_pos[0] + 99, start_pos[1])
 

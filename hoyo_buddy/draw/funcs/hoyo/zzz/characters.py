@@ -9,6 +9,7 @@ from genshin.models import ZZZSkillType
 from genshin.models.zzz.character import ZZZFullAgent
 from PIL import Image, ImageDraw
 
+from hoyo_buddy.constants import ZZZ_AGENT_CORE_SKILL_LVL_MAP
 from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.l10n import LevelStr
 
@@ -85,12 +86,18 @@ def draw_agent_small_card(
             ZZZSkillType.CHAIN_ATTACK,
             ZZZSkillType.CORE_SKILL,
         )
-        skill_levels: list[int] = []
+        skill_levels: list[str] = []
         for skill_type in skill_order:
             skill = dutils.get(agent.skills, type=skill_type)
             if skill is None:
                 continue
-            skill_levels.append(skill.level)
+
+            text = (
+                ZZZ_AGENT_CORE_SKILL_LVL_MAP[skill.level]
+                if skill_type is ZZZSkillType.CORE_SKILL
+                else str(skill.level)
+            )
+            skill_levels.append(text)
         text = "/".join(str(level) for level in skill_levels)
         drawer.write(
             text,

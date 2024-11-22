@@ -19,6 +19,8 @@ from .enums import ChallengeType, Game, GenshinCity, GenshinElement, HSRElement,
 if TYPE_CHECKING:
     from .types import ProxyAPI
 
+load_dotenv()
+
 STATIC_FOLDER = pathlib.Path("./.static")
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
@@ -486,6 +488,9 @@ ZENLESS_DATA_LANGS = ("CHT", "DE", "EN", "ES", "FR", "ID", "JA", "KO", "PT", "RU
 ZZZ_ITEM_TEMPLATE_URL = f"{ZENLESS_DATA_URL}//FileCfg/ItemTemplateTb.json"
 ZZZ_AVATAR_TEMPLATE_URL = f"{ZENLESS_DATA_URL}/FileCfg/AvatarBaseTemplateTb.json"
 ZZZ_TEXT_MAP_URL = f"{ZENLESS_DATA_URL}/TextMap/TextMap_{{lang}}TemplateTb.json"
+ZZZ_AVATAR_BATTLE_TEMP_URL = f"{ZENLESS_DATA_URL}/FileCfg/AvatarBattleTemplateTb.json"
+ZZZ_AVATAR_BATTLE_TEMP_JSON = "zzz_avatar_battle_temp.json"
+
 
 LOCALE_TO_ZENLESS_DATA_LANG: dict[discord.Locale, str] = {
     discord.Locale.taiwan_chinese: "CHT",
@@ -730,8 +735,6 @@ def get_disc_substat_roll_num(
     prop_value = float(prop.value.replace("%", ""))
     return round(prop_value / value)
 
-
-load_dotenv()
 
 PROXY_APIS: dict[ProxyAPI, str] = {
     "VERCEL": os.environ["VERCEL_URL"],

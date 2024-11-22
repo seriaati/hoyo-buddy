@@ -438,6 +438,7 @@ async def draw_zzz_build_card(
     custom_image: str | None,
     template: Literal[1, 2, 3, 4],
     show_substat_rolls: bool,
+    agent_special_stat_map: dict[str, list[int]],
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data([agent], template=template)
 
@@ -448,6 +449,8 @@ async def draw_zzz_build_card(
     urls.extend(draw_data.disc_icons.values())
     if agent.w_engine is not None:
         urls.append(agent.w_engine.icon)
+
+    agent_special_stats = agent_special_stat_map.get(str(agent.id), [])
 
     if template == 3:
         folder = "zzz-team-card"
@@ -466,6 +469,7 @@ async def draw_zzz_build_card(
             name_datas=draw_data.name_data,
             disc_icons=draw_data.disc_icons,
             show_substat_rolls=show_substat_rolls,
+            agent_special_stat_map=agent_special_stat_map,
         )
     elif template == 4:
         card = funcs.zzz.ZZZAgentCard4(
@@ -476,6 +480,7 @@ async def draw_zzz_build_card(
             disc_icons=draw_data.disc_icons,
             color=custom_color or card_data["color"],
             show_substat_rolls=show_substat_rolls,
+            agent_special_stats=agent_special_stats,
         )
     else:
         card = funcs.zzz.ZZZAgentCard(
@@ -488,6 +493,7 @@ async def draw_zzz_build_card(
             color=custom_color,
             template=template,
             show_substat_rolls=show_substat_rolls,
+            agent_special_stats=agent_special_stats,
         )
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
@@ -539,6 +545,7 @@ async def draw_zzz_team_card(
     agent_colors: dict[int, str],
     agent_images: dict[int, str],
     show_substat_rolls: bool,
+    agent_special_stat_map: dict[str, list[int]],
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data(agents, template=1)
 
@@ -555,6 +562,7 @@ async def draw_zzz_team_card(
         name_datas=draw_data.name_data,
         disc_icons=draw_data.disc_icons,
         show_substat_rolls=show_substat_rolls,
+        agent_special_stat_map=agent_special_stat_map,
     )
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 

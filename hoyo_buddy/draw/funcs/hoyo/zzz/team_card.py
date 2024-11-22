@@ -9,7 +9,7 @@ from genshin.models import ZZZPropertyType as PropType
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.constants import get_disc_substat_roll_num
-from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
+from hoyo_buddy.draw.drawer import BLACK, WHITE, ZZZ_PROP_COLOR, Drawer
 
 from .common import SKILL_ORDER, STAT_ICONS, get_props
 
@@ -32,6 +32,7 @@ class ZZZTeamCard:
         name_datas: dict[int, AgentNameData],
         disc_icons: dict[int, str],
         show_substat_rolls: bool,
+        agent_special_stat_map: dict[str, list[int]],
     ) -> None:
         self._locale = locale
         self._dark_mode = False
@@ -41,6 +42,7 @@ class ZZZTeamCard:
         self._name_datas = name_datas
         self._disc_icons = disc_icons
         self._show_substat_rolls = show_substat_rolls
+        self._agent_special_stat_map = agent_special_stat_map
 
     def _draw_card(self, *, image_url: str, blob_color: tuple[int, int, int]) -> Image.Image:
         card = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/card.png")
@@ -294,8 +296,17 @@ class ZZZTeamCard:
             if prop is None or not isinstance(prop.type, PropType):
                 continue
 
+            color = (
+                ZZZ_PROP_COLOR
+                if prop.type.value in self._agent_special_stat_map[str(agent.id)]
+                else (20, 20, 20)
+            )
+
             prop_icon = drawer.open_asset(
-                f"stat_icons/{STAT_ICONS[prop.type]}", folder="zzz-build-card", size=(25, 25)
+                f"stat_icons/{STAT_ICONS[prop.type]}",
+                folder="zzz-build-card",
+                size=(25, 25),
+                mask_color=color,
             )
             im.alpha_composite(prop_icon, start_pos)
             text = prop.final or prop.value
@@ -306,7 +317,7 @@ class ZZZTeamCard:
                     start_pos[0] + prop_icon.width + 10,
                     start_pos[1] + prop_icon.height // 2,
                 ),
-                color=(20, 20, 20),
+                color=color,
                 anchor="lm",
             )
 

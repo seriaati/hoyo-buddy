@@ -10,8 +10,12 @@ from genshin.models import ZZZPartialAgent
 from loguru import logger
 from seria.utils import read_yaml
 
-from hoyo_buddy.constants import LOCALE_TO_GI_CARD_API_LANG, LOCALE_TO_HSR_CARD_API_LANG
-from hoyo_buddy.db.models import EnkaCache, Settings, draw_locale, get_dyk
+from hoyo_buddy.constants import (
+    LOCALE_TO_GI_CARD_API_LANG,
+    LOCALE_TO_HSR_CARD_API_LANG,
+    ZZZ_AVATAR_BATTLE_TEMP_JSON,
+)
+from hoyo_buddy.db.models import EnkaCache, JSONFile, Settings, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
     draw_gi_team_card,
@@ -521,6 +525,10 @@ class ProfileView(View):
         if agent_temp_data is None:
             raise CardNotReadyError(character.name)
 
+        agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
+            ZZZ_AVATAR_BATTLE_TEMP_JSON
+        )
+
         return await draw_zzz_build_card(
             DrawInput(
                 dark_mode=True,
@@ -536,6 +544,7 @@ class ProfileView(View):
             custom_image=card_settings.current_image,
             template=template_num,
             show_substat_rolls=card_settings.show_substat_rolls,
+            agent_special_stat_map=agent_special_stat_map,
         )
 
     async def draw_card(
@@ -632,6 +641,7 @@ class ProfileView(View):
                 agent_colors,
                 {int(k): v for k, v in images.items()},
                 show_substat_rolls=settings.team_card_substat_rolls,
+                agent_special_stat_map=await JSONFile.read(ZZZ_AVATAR_BATTLE_TEMP_JSON),
             )
 
         if self.game is Game.STARRAIL:

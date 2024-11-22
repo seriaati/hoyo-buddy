@@ -10,7 +10,7 @@ from genshin.models import ZZZPropertyType as PropType
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.constants import get_disc_substat_roll_num
-from hoyo_buddy.draw.drawer import WHITE, Drawer
+from hoyo_buddy.draw.drawer import WHITE, ZZZ_PROP_COLOR, Drawer
 from hoyo_buddy.draw.funcs.hoyo.zzz.common import SKILL_ORDER, STAT_ICONS, get_props
 
 if TYPE_CHECKING:
@@ -28,6 +28,7 @@ class ZZZAgentCard4:
         name_data: AgentNameData | None,
         color: str,
         show_substat_rolls: bool,
+        agent_special_stats: list[int],
     ) -> None:
         self._agent = agent
         self._locale = Locale(locale)
@@ -36,6 +37,7 @@ class ZZZAgentCard4:
         self._name_data = name_data
         self._color = color
         self._show_substat_rolls = show_substat_rolls
+        self._agent_special_stats = agent_special_stats
 
         self.im: Image.Image = None  # pyright: ignore[reportAttributeAccessIssue]
         self.drawer: Drawer = None  # pyright: ignore[reportAttributeAccessIssue]
@@ -186,10 +188,11 @@ class ZZZAgentCard4:
             if prop is None or not isinstance(prop.type, PropType):
                 continue
 
+            color = ZZZ_PROP_COLOR if prop.type.value in self._agent_special_stats else (20, 20, 20)
             prop_icon = drawer.open_asset(
                 f"stat_icons/{STAT_ICONS[prop.type]}",
                 size=(74, 74),
-                mask_color=(20, 20, 20),
+                mask_color=color,
                 folder="zzz-build-card",
             )
             im.alpha_composite(prop_icon, (1173, 161 + 122 * i))
@@ -199,7 +202,7 @@ class ZZZAgentCard4:
                 size=62,
                 position=(1286, 198 + 122 * i),
                 anchor="lm",
-                color=(20, 20, 20),
+                color=color,
                 locale=self._locale,
                 style="bold",
                 dynamic_fontsize=True,
@@ -210,7 +213,7 @@ class ZZZAgentCard4:
                 size=62,
                 position=(2046, 198 + 122 * i),
                 anchor="rm",
-                color=(20, 20, 20),
+                color=color,
                 style="bold",
             )
 

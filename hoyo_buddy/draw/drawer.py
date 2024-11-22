@@ -31,6 +31,8 @@ DARK_SURFACE = (19, 19, 22)
 DARK_ON_SURFACE = (200, 197, 202)
 DARK_ON_SURFACE_VARIANT = (199, 197, 208)
 
+ZZZ_PROP_COLOR = (191, 54, 0)  # Highlight agent stat color
+
 FontStyle: TypeAlias = Literal[
     "light",
     "regular",

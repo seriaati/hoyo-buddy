@@ -29,6 +29,8 @@ from hoyo_buddy.constants import (
     HSR_TEXT_MAP_URL,
     STARRAIL_DATA_LANGS,
     ZENLESS_DATA_LANGS,
+    ZZZ_AVATAR_BATTLE_TEMP_JSON,
+    ZZZ_AVATAR_BATTLE_TEMP_URL,
     ZZZ_AVATAR_TEMPLATE_URL,
     ZZZ_ITEM_TEMPLATE_URL,
     ZZZ_TEXT_MAP_URL,
@@ -325,13 +327,16 @@ class HoyoBuddy(commands.AutoShardedBot):
             await api.update_assets()
 
         # Update genshin.py assets
+        logger.info("Updating genshin.py assets...")
         await genshin.utility.update_characters_ambr()
 
-        # Update item ID -> name mappings
-        await self.update_zzz_item_id_name_map()
-        await self.update_hsr_item_id_name_map()
+        # Update item ID -> name mappings and some other stuff
+        logger.info("Updating ZZZ assets...")
+        await self.update_zzz_assets()
+        logger.info("Updating HSR assets...")
+        await self.update_hsr_assets()
 
-    async def update_zzz_item_id_name_map(self) -> None:
+    async def update_zzz_assets(self) -> None:
         result: dict[str, dict[str, str]] = {}
 
         async with asyncio.TaskGroup() as tg:
@@ -341,7 +346,11 @@ class HoyoBuddy(commands.AutoShardedBot):
                 lang: tg.create_task(fetch_json(self.session, ZZZ_TEXT_MAP_URL.format(lang=lang)))
                 for lang in ZENLESS_DATA_LANGS
             }
+            avatar_battle_temp_task = tg.create_task(
+                fetch_json(self.session, ZZZ_AVATAR_BATTLE_TEMP_URL)
+            )
 
+        # Item ID -> name mappings
         item_template = item_temp_task.result()
         avatar_template = avatar_temp_task.result()
         text_maps = {lang: task.result() for lang, task in text_map_tasks.items()}
@@ -349,8 +358,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         item_id_mapping: dict[int, str] = {}  # item ID -> text map key
 
         first_key = next(iter(item_template.keys()))
-        id_key = "GKNMDKNIMHP"
-        name_key = "FJECNNMMDGH"
+        id_key = "GKNMDKNIMHP"  # Found in ItemTemplateTb.json
+        name_key = "FJECNNMMDGH"  # Found in ItemTemplateTb.json
+        prop_key = "BJIEGFCNLIE"  # Found in AvatarTemplateTb.json
 
         for item in item_template[first_key]:
             if any(keyword in item[name_key] for keyword in ("Bangboo_Name", "Item_Weapon")):
@@ -368,7 +378,16 @@ class HoyoBuddy(commands.AutoShardedBot):
         for lang, text_map in result.items():
             await models.JSONFile.write(f"zzz_item_names_{lang}.json", text_map)
 
-    async def update_hsr_item_id_name_map(self) -> None:
+        # Agent specialized prop mapping
+        avatar_battle_temp = avatar_battle_temp_task.result()
+
+        prop_mapping: dict[str, list[int]] = {}  # avatar ID -> prop IDs
+        for avatar in avatar_battle_temp[first_key]:
+            prop_mapping[str(avatar[id_key])] = avatar[prop_key]
+
+        await models.JSONFile.write(ZZZ_AVATAR_BATTLE_TEMP_JSON, prop_mapping)
+
+    async def update_hsr_assets(self) -> None:
         result: dict[str, dict[str, str]] = {}
 
         async with asyncio.TaskGroup() as tg:

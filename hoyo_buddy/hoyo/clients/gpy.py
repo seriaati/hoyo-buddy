@@ -9,9 +9,9 @@ import aiohttp
 import enka
 import genshin
 import hakushin
-from loguru import logger
 import orjson
 from dotenv import load_dotenv
+from loguru import logger
 
 from ... import models
 from ...bot.error_handler import get_error_embed

@@ -56,6 +56,17 @@ class ProxyGenshinClient(genshin.Client):
             **kwargs,
         )
 
+    async def request(self, *args: Any, **kwargs: Any) -> Any:
+        for attempt in range(3):
+            try:
+                return await super().request(*args, **kwargs)
+            except (TimeoutError, aiohttp.ClientError, ConnectionResetError):
+                if attempt < 2:  # Don't wait after last attempt
+                    await asyncio.sleep(2**attempt)
+                else:
+                    raise
+        return None
+
     @overload
     async def os_app_login(
         self,
@@ -90,6 +101,7 @@ class ProxyGenshinClient(genshin.Client):
     ) -> (
         genshin.models.AppLoginResult | genshin.models.SessionMMT | genshin.models.ActionTicket
     ): ...
+
     async def os_app_login(
         self,
         email: str,
@@ -173,13 +185,6 @@ class GenshinClient(ProxyGenshinClient):
             device_fp=account.device_fp,
         )
         self._account = account
-
-    async def request(self, *args: Any, **kwargs: Any) -> Any:
-        try:
-            return await super().request(*args, **kwargs)
-        except ConnectionResetError:
-            await asyncio.sleep(1.0)
-            return await super().request(*args, **kwargs)
 
     def set_lang(self, locale: Locale) -> None:
         self.lang = (

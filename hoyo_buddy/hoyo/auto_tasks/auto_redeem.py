@@ -13,6 +13,7 @@ from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, HB_GAME_TO_GPY_GAME, PROXY
 from hoyo_buddy.db.models import HoyoAccount
 from hoyo_buddy.enums import Platform
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.web_app.utils import decrypt_string
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
@@ -243,7 +244,7 @@ class AutoRedeem:
                 logger.debug(f"Redeem response: {data}")
 
                 if (cookies := data.get("cookies")) and account.cookies != cookies:
-                    account.cookies = cookies
+                    account.cookies = decrypt_string(cookies)
                     await account.save(update_fields=("cookies",))
 
                 if resp.status == 200:

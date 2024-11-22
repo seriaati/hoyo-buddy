@@ -4,7 +4,7 @@ import asyncio
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
-import genshin  # noqa: TCH002
+import genshin  # noqa: TC002
 from discord import ButtonStyle, TextStyle, ui
 from discord.ext import commands
 from loguru import logger

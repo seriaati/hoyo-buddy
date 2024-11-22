@@ -11,9 +11,9 @@ from hoyo_buddy.db.models import HoyoAccount, get_locale
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
-from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
+from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.types import User  # noqa: TCH001
+from hoyo_buddy.types import User  # noqa: TC001
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:

@@ -20,9 +20,9 @@ from ..enums import Game, GeetestType, Platform
 from ..exceptions import FeatureNotImplementedError, InvalidQueryError
 from ..hoyo.clients.ambr import AmbrAPIClient
 from ..hoyo.clients.yatta import YattaAPIClient
-from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
+from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from ..models import DrawInput
-from ..types import User  # noqa: TCH001
+from ..types import User  # noqa: TC001
 from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.notes.view import NotesView

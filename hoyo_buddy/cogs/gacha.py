@@ -10,7 +10,7 @@ from hoyo_buddy.commands.gacha import GachaCommand
 
 from ..db.models import HoyoAccount, get_locale
 from ..enums import GachaImportSource, Game
-from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TCH001
+from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy

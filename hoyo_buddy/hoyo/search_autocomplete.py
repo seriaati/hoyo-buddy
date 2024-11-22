@@ -36,7 +36,7 @@ class AutocompleteSetup:
     _beta_result: ClassVar[BetaAutocompleteChoices] = defaultdict(lambda: defaultdict(list))
     _beta_id_to_category: ClassVar[dict[str, str]] = {}
     """Item ID to ItemCategory.value."""
-    _category_beta_ids: ClassVar[dict[tuple[Game, ItemCategory], list[int]]] = {}
+    _category_beta_ids: ClassVar[dict[tuple[Game, ItemCategory], list[str | int] | list[int]]] = {}
     _tasks: ClassVar[Tasks] = defaultdict(lambda: defaultdict(dict))
 
     @classmethod

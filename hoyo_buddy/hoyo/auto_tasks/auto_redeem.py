@@ -248,7 +248,7 @@ class AutoRedeem:
                     await account.save(update_fields=("cookies",))
 
                 if resp.status == 200:
-                    await cls._add_to_redeemed_codes(account, code)
+                    await account.client._add_to_redeemed_codes(code)
                     return (code, LocaleStr(key="redeem_code.success").translate(locale), True)
 
                 if resp.status == 400:
@@ -270,7 +270,7 @@ class AutoRedeem:
                     if not recognized:
                         raise e
 
-                    await cls._add_to_redeemed_codes(account, code)
+                    await account.client._add_to_redeemed_codes(code)
                     assert embed.title is not None
 
                     if embed.description is None:
@@ -283,9 +283,3 @@ class AutoRedeem:
 
             msg = f"API {api_name} returned {resp.status}"
             raise RuntimeError(msg)
-
-    @classmethod
-    async def _add_to_redeemed_codes(cls, account: HoyoAccount, code: str) -> None:
-        account.redeemed_codes.append(code)
-        account.redeemed_codes = list(set(account.redeemed_codes))
-        await account.save(update_fields=("redeemed_codes",))

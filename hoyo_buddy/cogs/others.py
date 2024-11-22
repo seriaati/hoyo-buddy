@@ -35,13 +35,13 @@ class Others(commands.Cog):
         self.guild_id = 1000727526194298910
 
     async def cog_load(self) -> None:
-        # if self.bot.env == "dev":
-        #     return
+        if self.bot.env == "dev":
+            return
         self.update_stat_vcs.start()
 
     def cog_unload(self) -> None:
-        # if self.bot.env == "dev":
-        #     return
+        if self.bot.env == "dev":
+            return
         self.update_stat_vcs.cancel()
 
     @tasks.loop(hours=2)

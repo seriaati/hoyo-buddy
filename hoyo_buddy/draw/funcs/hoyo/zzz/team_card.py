@@ -89,7 +89,7 @@ class ZZZTeamCard:
 
         # Agent level and rank
         text = f"Lv.{agent.level} M{agent.rank}"
-        drawer.write(text, size=32, position=(12, 267), style="black_italic", stroke_color=WHITE, stroke_width=1)
+        drawer.write(text, size=32, position=(12, 267), style="black_italic", stroke_color=WHITE, stroke_width=3)
 
         # Stats
         self._draw_stats(agent, im, drawer)

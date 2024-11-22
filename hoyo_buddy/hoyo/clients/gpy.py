@@ -468,7 +468,7 @@ class GenshinClient(ProxyGenshinClient):
         except genshin.RedemptionCooldown:
             # sleep then retry
             await asyncio.sleep(6)
-            return await self.redeem_code(code, locale=locale, session=session)
+            return await self.redeem_code(code, locale=locale)
         except Exception as e:
             embed, recognized = get_error_embed(e, locale)
             if not recognized:

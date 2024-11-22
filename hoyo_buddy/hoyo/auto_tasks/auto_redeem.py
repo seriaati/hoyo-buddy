@@ -196,11 +196,6 @@ class AutoRedeem:
                 await cls._handle_error(account, locale, e)
                 return None
             else:
-                account.redeemed_codes.extend(codes)
-                # remove duplicates
-                account.redeemed_codes = list(set(account.redeemed_codes))
-                await account.save(update_fields=("redeemed_codes",))
-
                 return embed
 
         # API redeem

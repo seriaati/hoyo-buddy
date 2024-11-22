@@ -534,6 +534,11 @@ class GenshinClient(ProxyGenshinClient):
 
         return embed
 
+    async def _add_to_redeemed_codes(self, code: str) -> None:
+        self._account.redeemed_codes.append(code)
+        self._account.redeemed_codes = list(set(self._account.redeemed_codes))
+        await self._account.save(update_fields=("redeemed_codes",))
+
     async def redeem_code(self, code: str, *, locale: Locale) -> tuple[str, bool]:
         """Redeem a code, return a message and a boolean indicating success."""
         success = False
@@ -562,11 +567,19 @@ class GenshinClient(ProxyGenshinClient):
             embed, recognized = get_error_embed(e, locale)
             if not recognized:
                 raise
+
+            if isinstance(e, genshin.RedemptionClaimed | genshin.RedemptionInvalid):
+                await self._add_to_redeemed_codes(code)
+            if isinstance(e, genshin.GenshinException) and e.retcode == -2006:
+                # Code reached max redemption limit
+                await self._add_to_redeemed_codes(code)
+
             assert embed.title is not None
             if embed.description is None:
                 return embed.title, success
             return f"{embed.title}\n{embed.description}", success
         else:
+            await self._add_to_redeemed_codes(code)
             success = True
             msg = LocaleStr(key="redeem_code.success").translate(locale)
 

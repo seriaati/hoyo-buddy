@@ -1,15 +1,18 @@
 from __future__ import annotations
 
+import itertools
 from typing import TYPE_CHECKING
 
 import discord
 import psutil
 from discord import app_commands
 from discord.app_commands import locale_str
-from discord.ext import commands
+from discord.ext import commands, tasks
 
+from hoyo_buddy.enums import Game
+
+from ..db.models import HoyoAccount, get_dyk
 from ..db.models import Settings as UserSettings
-from ..db.models import get_dyk
 from ..embeds import DefaultEmbed
 from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
 from ..l10n import LocaleStr
@@ -29,6 +32,63 @@ class Others(commands.Cog):
         self.bot = bot
         self.process = psutil.Process()
         self.repo_url = "https://github.com/seriaati/hoyo-buddy"
+        self.guild_id = 1000727526194298910
+
+    async def cog_load(self) -> None:
+        # if self.bot.env == "dev":
+        #     return
+        self.update_stat_vcs.start()
+
+    def cog_unload(self) -> None:
+        # if self.bot.env == "dev":
+        #     return
+        self.update_stat_vcs.cancel()
+
+    @tasks.loop(hours=2)
+    async def update_stat_vcs(self) -> None:
+        guild = self.bot.get_guild(self.guild_id) or await self.bot.fetch_guild(self.guild_id)
+        category_id = 1309451146556997683
+        category = discord.utils.get(guild.categories, id=category_id)
+        if category is None:
+            return
+
+        vc_ids = [vc.id for vc in category.voice_channels]
+        vc_rotator = itertools.cycle(vc_ids)
+
+        # Server installs
+        server_count = len(self.bot.guilds)
+        vc = guild.get_channel(next(vc_rotator))
+        if vc is not None:
+            await vc.edit(name=f"{server_count} Servers")
+
+        # User installs
+        app_info = await self.bot.application_info()
+        user_count = app_info.approximate_user_install_count
+        vc = guild.get_channel(next(vc_rotator))
+        if vc is not None:
+            await vc.edit(name=f"{user_count} User Installs")
+
+        # Genshin accounts
+        gi_acc_count = await HoyoAccount.filter(game=Game.GENSHIN).count()
+        vc = guild.get_channel(next(vc_rotator))
+        if vc is not None:
+            await vc.edit(name=f"{gi_acc_count} GI Accounts")
+
+        # HSR accounts
+        hsr_acc_count = await HoyoAccount.filter(game=Game.STARRAIL).count()
+        vc = guild.get_channel(next(vc_rotator))
+        if vc is not None:
+            await vc.edit(name=f"{hsr_acc_count} HSR Accounts")
+
+        # ZZZ accounts
+        zzz_acc_count = await HoyoAccount.filter(game=Game.ZZZ).count()
+        vc = guild.get_channel(next(vc_rotator))
+        if vc is not None:
+            await vc.edit(name=f"{zzz_acc_count} ZZZ Accounts")
+
+    @update_stat_vcs.before_loop
+    async def before_update_stat_vcs(self) -> None:
+        await self.bot.wait_until_ready()
 
     def format_commit(self, commit: git.Commit) -> str:
         commit_url = f"{self.repo_url}/commit/{commit.hexsha}"
@@ -45,7 +105,7 @@ class Others(commands.Cog):
     async def about_command(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
-        guild = self.bot.get_guild(1000727526194298910) or await i.client.fetch_guild(1000727526194298910)
+        guild = self.bot.get_guild(self.guild_id) or await i.client.fetch_guild(self.guild_id)
         if not guild.chunked:
             await guild.chunk()
 

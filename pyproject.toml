@@ -49,6 +49,7 @@ novelai = { git = "https://github.com/kokosensei/NovelAI-API" }
 genshin = { git = "https://github.com/thesadru/genshin.py", branch = "master" }
 akasha-py = { git = "https://github.com/seriaati/akasha-py" }
 hakushin-py = { git = "https://github.com/seriaati/hakushin-py" }
+discord-py = { git = "https://github.com/Rapptz/discord.py" }
 
 [tool.pyright]
 enableTypeIgnoreComments = false

@@ -9,6 +9,7 @@ import aiohttp
 import enka
 import genshin
 import hakushin
+from loguru import logger
 import orjson
 from dotenv import load_dotenv
 
@@ -541,23 +542,21 @@ class GenshinClient(ProxyGenshinClient):
 
         async with session.post(f"{api_url}/notes/", json=payload) as resp:
             if resp.status == 502:
-                await asyncio.sleep(1)
                 return await self.get_notes_(game, session=session)
 
             if resp.status in {200, 400, 500}:
                 data = await resp.json()
+                logger.debug(f"Notes response: {data}")
 
                 if resp.status == 200:
-                    data = orjson.loads(data["data"])
-
                     if game is genshin.Game.GENSHIN:
-                        return genshin.models.Notes(**data)
+                        return genshin.models.Notes(**data["data"])
                     if game is genshin.Game.STARRAIL:
-                        return genshin.models.StarRailNote(**data)
+                        return genshin.models.StarRailNote(**data["data"])
                     if game is genshin.Game.ZZZ:
-                        return genshin.models.ZZZNotes(**data)
+                        return genshin.models.ZZZNotes(**data["data"])
                     if game is genshin.Game.HONKAI:
-                        return genshin.models.HonkaiNotes(**data)
+                        return genshin.models.HonkaiNotes(**data["data"])
 
                 if resp.status == 400:
                     raise genshin.GenshinException(data)

@@ -23,7 +23,6 @@ class TeamCardSettingsView(View):
         self.add_item(
             TeamCardDarkModeButton(current_toggle=self.settings.team_card_dark_mode, row=0)
         )
-        self.add_item(TeamSubstatRolls(current_toggle=self.settings.team_card_substat_rolls, row=0))
 
     async def start(self, i: Interaction) -> None:
         embed = DefaultEmbed(
@@ -47,17 +46,3 @@ class TeamCardDarkModeButton(ToggleButton[TeamCardSettingsView]):
     async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=True)
         await Settings.filter(user_id=i.user.id).update(team_card_dark_mode=self.current_toggle)
-
-
-class TeamSubstatRolls(ToggleButton[TeamCardSettingsView]):
-    def __init__(self, current_toggle: bool, row: int) -> None:
-        super().__init__(
-            current_toggle,
-            LocaleStr(key="profile_team_show_substat_rolls"),
-            custom_id="profile_team_substat_rolls",
-            row=row,
-        )
-
-    async def callback(self, i: Interaction) -> None:
-        await super().callback(i, edit=True)
-        await Settings.filter(user_id=i.user.id).update(team_card_substat_rolls=self.current_toggle)

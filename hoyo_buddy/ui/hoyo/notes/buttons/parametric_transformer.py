@@ -20,7 +20,7 @@ class PTReminder(Button[NotesView]):
         super().__init__(label=LocaleStr(key="pt_button.label"), emoji=PT_EMOJI, row=row)
 
     async def callback(self, i: Interaction) -> None:
-        notify = await NotesNotify.get_or_none(account=self.view._account, type=NotesNotifyType.PT)
+        notify = await NotesNotify.get_or_none(account=self.view.account, type=NotesNotifyType.PT)
 
         modal = TypeTwoModal(notify, title=LocaleStr(key="pt_modal.title"), min_notify_interval=30)
         modal.translate(self.view.locale)

@@ -278,10 +278,10 @@ class HoyoBuddy(commands.AutoShardedBot):
         user: User = i.namespace.user
         return await self.get_account_choices(user, i.user.id, current, locale, games=games)
 
-    async def get_account(
+    async def get_accounts(
         self, user_id: int, games: Sequence[Game] | None = None, platform: Platform | None = None
-    ) -> models.HoyoAccount:
-        """Get an account by user ID and games.
+    ) -> list[models.HoyoAccount]:
+        """Get accounts by user ID and games.
 
         Args:
             user_id: The Discord user ID.
@@ -297,6 +297,19 @@ class HoyoBuddy(commands.AutoShardedBot):
         if not accounts:
             raise NoAccountFoundError(games, platform)
 
+        return accounts
+
+    async def get_account(
+        self, user_id: int, games: Sequence[Game] | None = None, platform: Platform | None = None
+    ) -> models.HoyoAccount:
+        """Get an account by user ID and games.
+
+        Args:
+            user_id: The Discord user ID.
+            games: The games to filter by.
+            platforms: The platforms to filter by.
+        """
+        accounts = await self.get_accounts(user_id, games, platform)
         current_accounts = [account for account in accounts if account.current]
         await self.sanitize_accounts(user_id)
         return current_accounts[0] if current_accounts else accounts[0]

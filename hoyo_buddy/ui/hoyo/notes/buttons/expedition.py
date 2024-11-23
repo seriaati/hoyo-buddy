@@ -21,10 +21,10 @@ class ExpeditionReminder(Button[NotesView]):
     async def callback(self, i: Interaction) -> None:
         notify_type = (
             NotesNotifyType.GI_EXPED
-            if self.view._account.game is Game.GENSHIN
+            if self.view.account.game is Game.GENSHIN
             else NotesNotifyType.HSR_EXPED
         )
-        notify = await NotesNotify.get_or_none(account=self.view._account, type=notify_type)
+        notify = await NotesNotify.get_or_none(account=self.view.account, type=notify_type)
 
         modal = TypeTwoModal(
             notify, title=LocaleStr(key="exped_modal.title"), min_notify_interval=30

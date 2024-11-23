@@ -663,7 +663,6 @@ class GenshinClient(ProxyGenshinClient):
             async with session.post(f"{api_url}/notes/", json=payload) as resp:
                 if resp.status in {200, 400, 500}:
                     data = await resp.json()
-                    logger.debug(f"Notes response: {data}")
 
                     if resp.status == 200:
                         if game is genshin.Game.GENSHIN:

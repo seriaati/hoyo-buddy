@@ -23,7 +23,7 @@ class ScratchCardReminder(Button[NotesView]):
 
     async def callback(self, i: Interaction) -> None:
         notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.SCRATCH_CARD
+            account=self.view.account, type=NotesNotifyType.SCRATCH_CARD
         )
 
         modal = TypeThreeModal(

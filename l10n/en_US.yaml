@@ -717,3 +717,4 @@ challenge_command_moc_desc: Generate Memory of Chaos card
 challenge_command_pf_desc: Generate Pure Fiction card
 challenge_command_apc_shadow_desc: Generate Apocalyptic Shadow card
 challenge_command_shiyu_desc: Generate Shiyu Defense card
+account_select_placeholder: Select an account...

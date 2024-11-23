@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 
 from discord.utils import get as dget
 
+from hoyo_buddy.l10n import LocaleStr
+
 from ...components import Select, SelectOption
 
 if TYPE_CHECKING:
@@ -16,7 +18,11 @@ else:
 
 class AccountSelect(Select[AccountManager]):
     def __init__(self, options: list[SelectOption]) -> None:
-        super().__init__(custom_id="account_selector", options=options)
+        super().__init__(
+            custom_id="account_selector",
+            options=options,
+            placeholder=LocaleStr(key="account_select_placeholder"),
+        )
 
     async def callback(self, i: Interaction) -> None:
         uid, game = self.values[0].split("_")

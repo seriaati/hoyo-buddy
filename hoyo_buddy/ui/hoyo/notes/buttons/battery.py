@@ -23,7 +23,7 @@ class BatteryReminder(Button[NotesView]):
 
     async def callback(self, i: Interaction) -> None:
         notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.BATTERY
+            account=self.view.account, type=NotesNotifyType.BATTERY
         )
 
         modal = TypeOneModal(

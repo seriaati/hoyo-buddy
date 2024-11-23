@@ -24,12 +24,12 @@ class DailyReminder(Button[NotesView]):
             Game.STARRAIL: NotesNotifyType.HSR_DAILY,
             Game.ZZZ: NotesNotifyType.ZZZ_DAILY,
         }
-        notify_type = notify_types.get(self.view._account.game)
+        notify_type = notify_types.get(self.view.account.game)
         if notify_type is None:
-            msg = f"Daily reminder not supported for game: {self.view._account.game}"
+            msg = f"Daily reminder not supported for game: {self.view.account.game}"
             raise ValueError(msg)
 
-        notify = await NotesNotify.get_or_none(account=self.view._account, type=notify_type)
+        notify = await NotesNotify.get_or_none(account=self.view.account, type=notify_type)
 
         modal = TypeThreeModal(
             notify, title=LocaleStr(key="daily_modal.title"), min_notify_interval=30

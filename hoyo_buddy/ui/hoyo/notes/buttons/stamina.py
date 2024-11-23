@@ -20,7 +20,7 @@ class StaminaReminder(Button[NotesView]):
 
     async def callback(self, i: Interaction) -> None:
         notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.STAMINA
+            account=self.view.account, type=NotesNotifyType.STAMINA
         )
 
         modal = TypeOneModal(

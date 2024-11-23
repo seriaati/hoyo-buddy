@@ -17,12 +17,14 @@ from hoyo_buddy.emojis import (
     RESIN,
     TOGGLE_EMOJIS,
     TRAILBLAZE_POWER,
+    get_game_emoji,
 )
 from hoyo_buddy.enums import Game, NotesNotifyType
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.l10n import LocaleStr, WeekdayStr
 from hoyo_buddy.models import DrawInput
 from hoyo_buddy.ui import Button, GoBackButton, View
+from hoyo_buddy.ui.components import Select, SelectOption
 
 if TYPE_CHECKING:
     import asyncio
@@ -47,13 +49,21 @@ NotesWithCard: TypeAlias = (
 
 class NotesView(View):
     def __init__(
-        self, account: HoyoAccount, dark_mode: bool, *, author: User | Member | None, locale: Locale
+        self,
+        account: HoyoAccount,
+        dark_mode: bool,
+        accounts: list[HoyoAccount],
+        *,
+        author: User | Member | None,
+        locale: Locale,
     ) -> None:
         super().__init__(author=author, locale=locale)
-        self._account = account
-        self._dark_mode = dark_mode
+        self.account = account
+        self.dark_mode = dark_mode
+        self.accounts = accounts
         self.bytes_obj: io.BytesIO | None = None
 
+        self.add_item(AccountSwitcher(accounts))
         self.add_item(ReminderButton())
 
     @staticmethod
@@ -122,12 +132,12 @@ class NotesView(View):
             hours_before=notify.hours_before,
         )
 
-    async def _get_reminder_embed(self) -> DefaultEmbed:
+    async def get_reminder_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale, title=LocaleStr(key="reminder_settings_title"))
 
-        if self._account.game is Game.GENSHIN:
+        if self.account.game is Game.GENSHIN:
             resin_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.RESIN
+                account=self.account, type=NotesNotifyType.RESIN
             )
             embed.add_field(
                 name=LocaleStr(key="resin_reminder_button.label"),
@@ -136,7 +146,7 @@ class NotesView(View):
             )
 
             realm_currency_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.REALM_CURRENCY
+                account=self.account, type=NotesNotifyType.REALM_CURRENCY
             )
             embed.add_field(
                 name=LocaleStr(key="realm_curr_button.label"),
@@ -144,9 +154,7 @@ class NotesView(View):
                 inline=False,
             )
 
-            pt_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.PT
-            )
+            pt_notify = await NotesNotify.get_or_none(account=self.account, type=NotesNotifyType.PT)
             embed.add_field(
                 name=LocaleStr(key="pt_button.label"),
                 value=self._get_type2_value(pt_notify),
@@ -154,7 +162,7 @@ class NotesView(View):
             )
 
             expedition_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.GI_EXPED
+                account=self.account, type=NotesNotifyType.GI_EXPED
             )
             embed.add_field(
                 name=LocaleStr(key="exped_button.label"),
@@ -163,7 +171,7 @@ class NotesView(View):
             )
 
             daily_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.GI_DAILY
+                account=self.account, type=NotesNotifyType.GI_DAILY
             )
             embed.add_field(
                 name=LocaleStr(key="daily_button.label"),
@@ -172,7 +180,7 @@ class NotesView(View):
             )
 
             resin_discount_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.RESIN_DISCOUNT
+                account=self.account, type=NotesNotifyType.RESIN_DISCOUNT
             )
             embed.add_field(
                 name=LocaleStr(key="week_boss_button.label"),
@@ -180,9 +188,9 @@ class NotesView(View):
                 inline=False,
             )
 
-        elif self._account.game is Game.STARRAIL:
+        elif self.account.game is Game.STARRAIL:
             tbp_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.TB_POWER
+                account=self.account, type=NotesNotifyType.TB_POWER
             )
             embed.add_field(
                 name=LocaleStr(key="tbp_reminder_button.label"),
@@ -191,7 +199,7 @@ class NotesView(View):
             )
 
             reserved_tbp_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.RESERVED_TB_POWER
+                account=self.account, type=NotesNotifyType.RESERVED_TB_POWER
             )
             embed.add_field(
                 name=LocaleStr(key="rtbp_reminder_button.label"),
@@ -200,7 +208,7 @@ class NotesView(View):
             )
 
             expedition_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.HSR_EXPED
+                account=self.account, type=NotesNotifyType.HSR_EXPED
             )
             embed.add_field(
                 name=LocaleStr(key="exped_button.label"),
@@ -209,7 +217,7 @@ class NotesView(View):
             )
 
             daily_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.HSR_DAILY
+                account=self.account, type=NotesNotifyType.HSR_DAILY
             )
             embed.add_field(
                 name=LocaleStr(key="daily_button.label"),
@@ -218,7 +226,7 @@ class NotesView(View):
             )
 
             echo_of_war_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.ECHO_OF_WAR
+                account=self.account, type=NotesNotifyType.ECHO_OF_WAR
             )
             embed.add_field(
                 name=LocaleStr(key="week_boss_button.label"),
@@ -227,7 +235,7 @@ class NotesView(View):
             )
 
             planar_fissure_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.PLANAR_FISSURE
+                account=self.account, type=NotesNotifyType.PLANAR_FISSURE
             )
             embed.add_field(
                 name=LocaleStr(key="planar_fissure_label"),
@@ -235,9 +243,9 @@ class NotesView(View):
                 inline=False,
             )
 
-        elif self._account.game is Game.ZZZ:
+        elif self.account.game is Game.ZZZ:
             battery_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.BATTERY
+                account=self.account, type=NotesNotifyType.BATTERY
             )
             embed.add_field(
                 name=LocaleStr(key="battery_charge_button.label"),
@@ -246,7 +254,7 @@ class NotesView(View):
             )
 
             daily_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.ZZZ_DAILY
+                account=self.account, type=NotesNotifyType.ZZZ_DAILY
             )
             embed.add_field(
                 name=LocaleStr(key="daily_button.label"),
@@ -255,7 +263,7 @@ class NotesView(View):
             )
 
             scratch_card_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.SCRATCH_CARD
+                account=self.account, type=NotesNotifyType.SCRATCH_CARD
             )
             embed.add_field(
                 name=LocaleStr(key="scratch_card_button.label"),
@@ -264,7 +272,7 @@ class NotesView(View):
             )
 
             video_store_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.VIDEO_STORE
+                account=self.account, type=NotesNotifyType.VIDEO_STORE
             )
             embed.add_field(
                 name=LocaleStr(key="video_store_button.label"),
@@ -272,9 +280,9 @@ class NotesView(View):
                 inline=False,
             )
 
-        elif self._account.game is Game.HONKAI:
+        elif self.account.game is Game.HONKAI:
             stamina_notify = await NotesNotify.get_or_none(
-                account=self._account, type=NotesNotifyType.STAMINA
+                account=self.account, type=NotesNotifyType.STAMINA
             )
             embed.add_field(
                 name=LocaleStr(key="notes.stamina_label"),
@@ -283,11 +291,9 @@ class NotesView(View):
             )
 
         else:
-            raise FeatureNotImplementedError(
-                platform=self._account.platform, game=self._account.game
-            )
+            raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
 
-        embed.add_acc_info(self._account)
+        embed.add_acc_info(self.account)
         embed.set_image(url="attachment://notes.png")
         return embed
 
@@ -307,7 +313,7 @@ class NotesView(View):
         if notify is None:
             await NotesNotify.create(
                 type=notify_type,
-                account=self._account,
+                account=self.account,
                 threshold=threshold,
                 check_interval=check_interval,
                 max_notif_count=max_notif_count,
@@ -330,7 +336,7 @@ class NotesView(View):
                 )
             )
 
-        return await self._get_reminder_embed()
+        return await self.get_reminder_embed()
 
     async def process_type_two_modal(
         self,
@@ -347,7 +353,7 @@ class NotesView(View):
         if notify is None:
             await NotesNotify.create(
                 type=notify_type,
-                account=self._account,
+                account=self.account,
                 check_interval=check_interval,
                 notify_interval=notify_interval,
                 max_notif_count=max_notif_count,
@@ -359,7 +365,7 @@ class NotesView(View):
             notify.max_notif_count = max_notif_count
             await notify.save(update_fields=("enabled", "notify_interval", "max_notif_count"))
 
-        return await self._get_reminder_embed()
+        return await self.get_reminder_embed()
 
     async def process_type_three_modal(
         self,
@@ -377,7 +383,7 @@ class NotesView(View):
         if notify is None:
             await NotesNotify.create(
                 type=notify_type,
-                account=self._account,
+                account=self.account,
                 check_interval=check_interval,
                 notify_interval=notify_interval,
                 max_notif_count=max_notif_count,
@@ -393,7 +399,7 @@ class NotesView(View):
                 update_fields=("enabled", "notify_interval", "max_notif_count", "notify_time")
             )
 
-        return await self._get_reminder_embed()
+        return await self.get_reminder_embed()
 
     async def process_type_four_modal(
         self,
@@ -412,7 +418,7 @@ class NotesView(View):
         if notify is None:
             await NotesNotify.create(
                 type=notify_type,
-                account=self._account,
+                account=self.account,
                 check_interval=check_interval,
                 notify_interval=notify_interval,
                 max_notif_count=max_notif_count,
@@ -436,7 +442,7 @@ class NotesView(View):
                 )
             )
 
-        return await self._get_reminder_embed()
+        return await self.get_reminder_embed()
 
     async def process_type_five_modal(
         self,
@@ -454,7 +460,7 @@ class NotesView(View):
         if notify is None:
             await NotesNotify.create(
                 type=notify_type,
-                account=self._account,
+                account=self.account,
                 check_interval=check_interval,
                 notify_interval=notify_interval,
                 max_notif_count=max_notif_count,
@@ -470,7 +476,7 @@ class NotesView(View):
                 update_fields=("enabled", "notify_interval", "max_notif_count", "hours_before")
             )
 
-        return await self._get_reminder_embed()
+        return await self.get_reminder_embed()
 
     async def _get_notes(
         self, session: aiohttp.ClientSession
@@ -480,16 +486,16 @@ class NotesView(View):
         | genshin.models.ZZZNotes
         | genshin.models.HonkaiNotes
     ):
-        if self._account.game is Game.GENSHIN:
-            return await self._account.client.get_genshin_notes(session)
-        if self._account.game is Game.ZZZ:
-            return await self._account.client.get_zzz_notes(session)
-        if self._account.game is Game.STARRAIL:
-            return await self._account.client.get_starrail_notes(session)
-        if self._account.game is Game.HONKAI:
-            return await self._account.client.get_honkai_notes(session)
+        if self.account.game is Game.GENSHIN:
+            return await self.account.client.get_genshin_notes(session)
+        if self.account.game is Game.ZZZ:
+            return await self.account.client.get_zzz_notes(session)
+        if self.account.game is Game.STARRAIL:
+            return await self.account.client.get_starrail_notes(session)
+        if self.account.game is Game.HONKAI:
+            return await self.account.client.get_honkai_notes(session)
 
-        raise FeatureNotImplementedError(platform=self._account.platform, game=self._account.game)
+        raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
 
     async def _draw_notes_card(
         self,
@@ -498,12 +504,12 @@ class NotesView(View):
         executor: concurrent.futures.ThreadPoolExecutor,
         loop: asyncio.AbstractEventLoop,
     ) -> io.BytesIO:
-        locale = draw_locale(self.locale, self._account)
+        locale = draw_locale(self.locale, self.account)
 
         if isinstance(notes, genshin.models.Notes):
             return await draw_gi_notes_card(
                 DrawInput(
-                    dark_mode=self._dark_mode,
+                    dark_mode=self.dark_mode,
                     locale=locale,
                     session=session,
                     filename="notes.png",
@@ -515,7 +521,7 @@ class NotesView(View):
         if isinstance(notes, genshin.models.ZZZNotes):
             return await draw_zzz_notes_card(
                 DrawInput(
-                    dark_mode=self._dark_mode,
+                    dark_mode=self.dark_mode,
                     locale=locale,
                     session=session,
                     filename="notes.png",
@@ -526,7 +532,7 @@ class NotesView(View):
             )
         return await draw_hsr_notes_card(
             DrawInput(
-                dark_mode=self._dark_mode,
+                dark_mode=self.dark_mode,
                 locale=locale,
                 session=session,
                 filename="notes.png",
@@ -641,9 +647,9 @@ class NotesView(View):
                     )
                 )
 
-        return embed.set_image(url="attachment://notes.png").add_acc_info(self._account)
+        return embed.set_image(url="attachment://notes.png").add_acc_info(self.account)
 
-    async def start(self, i: Interaction) -> None:
+    async def start(self, i: Interaction, *, acc_select: AccountSwitcher | None = None) -> None:
         notes = await self._get_notes(i.client.session)
         embed = self._get_notes_embed(notes)
 
@@ -653,9 +659,16 @@ class NotesView(View):
             )
             self.bytes_obj.seek(0)
             file_ = File(self.bytes_obj, filename="notes.png")
-            await i.followup.send(embed=embed, file=file_, view=self, content=await get_dyk(i))
         else:
-            await i.followup.send(embed=embed, view=self, content=await get_dyk(i))
+            file_ = None
+
+        if acc_select is not None:
+            await acc_select.unset_loading_state(i, embed=embed, attachments=[file_])
+        else:
+            kwargs = {"embed": embed, "view": self, "content": await get_dyk(i)}
+            if file_ is not None:
+                kwargs["file"] = file_
+            await i.followup.send(**kwargs)
 
         self.message = await i.original_response()
 
@@ -675,7 +688,7 @@ class ReminderButton(Button[NotesView]):
         self.view.clear_items()
         self.view.add_item(go_back_button)
 
-        if self.view._account.game is Game.GENSHIN:
+        if self.view.account.game is Game.GENSHIN:
             from .buttons import (  # noqa: PLC0415
                 DailyReminder,
                 ExpeditionReminder,
@@ -691,7 +704,7 @@ class ReminderButton(Button[NotesView]):
             self.view.add_item(ExpeditionReminder(row=1))
             self.view.add_item(DailyReminder(row=2))
             self.view.add_item(WeekBossReminder(row=2))
-        elif self.view._account.game is Game.STARRAIL:
+        elif self.view.account.game is Game.STARRAIL:
             from .buttons import (  # noqa: PLC0415
                 DailyReminder,
                 ExpeditionReminder,
@@ -707,7 +720,7 @@ class ReminderButton(Button[NotesView]):
             self.view.add_item(DailyReminder(row=1))
             self.view.add_item(WeekBossReminder(row=2))
             self.view.add_item(PlanarFissureReminder(row=2))
-        elif self.view._account.game is Game.ZZZ:
+        elif self.view.account.game is Game.ZZZ:
             from .buttons import (  # noqa: PLC0415
                 BatteryReminder,
                 DailyReminder,
@@ -719,15 +732,37 @@ class ReminderButton(Button[NotesView]):
             self.view.add_item(DailyReminder(row=0))
             self.view.add_item(ScratchCardReminder(row=1))
             self.view.add_item(VideoStoreReminder(row=1))
-        elif self.view._account.game is Game.HONKAI:
+        elif self.view.account.game is Game.HONKAI:
             from .buttons import DailyReminder, StaminaReminder  # noqa: PLC0415
 
             self.view.add_item(StaminaReminder(row=0))
             self.view.add_item(DailyReminder(row=0))
         else:
             raise FeatureNotImplementedError(
-                platform=self.view._account.platform, game=self.view._account.game
+                platform=self.view.account.platform, game=self.view.account.game
             )
 
-        embed = await self.view._get_reminder_embed()
+        embed = await self.view.get_reminder_embed()
         await i.response.edit_message(embed=embed, view=self.view, attachments=[])
+
+
+class AccountSwitcher(Select[NotesView]):
+    def __init__(self, accounts: list[HoyoAccount]) -> None:
+        super().__init__(
+            placeholder=LocaleStr(key="account_select_placeholder"),
+            options=[
+                SelectOption(
+                    label=str(acc), value=f"{acc.uid}_{acc.game}", emoji=get_game_emoji(acc.game)
+                )
+                for acc in accounts
+            ],
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await self.set_loading_state(i)
+        uid, game = self.values[0].split("_")
+        account = next(
+            acc for acc in self.view.accounts if acc.uid == int(uid) and acc.game == game
+        )
+        self.view.account = account
+        await self.view.start(i, acc_select=self)

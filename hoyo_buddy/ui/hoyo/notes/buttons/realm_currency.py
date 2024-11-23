@@ -23,7 +23,7 @@ class RealmCurrencyReminder(Button[NotesView]):
 
     async def callback(self, i: Interaction) -> None:
         notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.REALM_CURRENCY
+            account=self.view.account, type=NotesNotifyType.REALM_CURRENCY
         )
 
         modal = TypeOneModal(

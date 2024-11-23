@@ -25,7 +25,7 @@ class ReservedTBPReminder(Button[NotesView]):
 
     async def callback(self, i: Interaction) -> None:
         notify = await NotesNotify.get_or_none(
-            account=self.view._account, type=NotesNotifyType.RESERVED_TB_POWER
+            account=self.view.account, type=NotesNotifyType.RESERVED_TB_POWER
         )
 
         modal = TypeOneModal(

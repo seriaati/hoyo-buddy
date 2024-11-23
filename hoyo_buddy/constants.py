@@ -748,3 +748,9 @@ PROXY_APIS: dict[ProxyAPI, str] = {
     "RAILWAY": os.environ["RAILWAY_URL"],
     "LEAPCELL": os.environ["LEAPCELL_URL"],
 }
+
+CODE_CHANNEL_IDS = {
+    genshin.Game.GENSHIN: 1310017049896026135,
+    genshin.Game.STARRAIL: 1310017113695457300,
+    genshin.Game.ZZZ: 1310017277202006067,
+}

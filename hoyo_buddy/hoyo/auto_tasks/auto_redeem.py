@@ -7,10 +7,16 @@ from typing import TYPE_CHECKING, ClassVar, Literal
 import discord
 import genshin
 from loguru import logger
+from seria.utils import create_bullet_list
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, HB_GAME_TO_GPY_GAME, PROXY_APIS
-from hoyo_buddy.db.models import HoyoAccount
+from hoyo_buddy.constants import (
+    CODE_CHANNEL_IDS,
+    GPY_GAME_TO_HB_GAME,
+    HB_GAME_TO_GPY_GAME,
+    PROXY_APIS,
+)
+from hoyo_buddy.db.models import HoyoAccount, JSONFile
 from hoyo_buddy.enums import Platform
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.web_app.utils import decrypt_string
@@ -65,6 +71,8 @@ class AutoRedeem:
                 )
                 logger.debug(f"Game codes: {game_codes}")
 
+                asyncio.create_task(cls.send_codes_to_channels(bot, game_codes))
+
                 if game is None:
                     accounts = await HoyoAccount.filter(auto_redeem=True).all()
                 else:
@@ -101,6 +109,42 @@ class AutoRedeem:
                 logger.info(
                     f"Auto redeem task completed, total redeem count: {cls._total_redeem_count}"
                 )
+
+    @classmethod
+    async def send_codes_to_channels(
+        cls, bot: HoyoBuddy, game_codes: dict[genshin.Game, list[str]]
+    ) -> None:
+        guild = bot.get_guild(bot.guild_id) or await bot.fetch_guild(bot.guild_id)
+        sent_codes: dict[genshin.Game, list[str]] = await JSONFile.read("sent_codes.json")
+
+        for game_, codes_ in game_codes.items():
+            if game_ not in CODE_CHANNEL_IDS:
+                continue
+
+            channel = guild.get_channel(CODE_CHANNEL_IDS[game_])
+            if not isinstance(channel, discord.TextChannel):
+                continue
+
+            game_sent_codes = sent_codes.get(game_, [])
+            not_sent_codes: list[str] = []
+            for code in codes_:
+                if code in game_sent_codes:
+                    continue
+
+                not_sent_codes.append(code)
+                game_sent_codes.append(code)
+
+            if not_sent_codes:
+                try:
+                    message = await channel.send(create_bullet_list(not_sent_codes))
+                except Exception as e:
+                    bot.capture_exception(e)
+                    continue
+                await message.publish()
+
+            sent_codes[game_] = list(set(game_sent_codes))
+
+        await JSONFile.write("sent_codes.json", sent_codes)
 
     @classmethod
     async def _get_codes(cls, game: genshin.Game) -> list[str]:

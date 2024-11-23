@@ -7,8 +7,7 @@ from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
-from hoyo_buddy.enums import ChallengeType
-from hoyo_buddy.l10n import EnumStr, LocaleStr
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import get_floor_difficulty
 
 if TYPE_CHECKING:
@@ -34,14 +33,11 @@ class MOCCard:
         return Locale(self._locale)
 
     def _write_title(self) -> None:
-        self._drawer.write(
-            EnumStr(ChallengeType.MOC), size=80, position=(76, 75), style="bold", color=WHITE
-        )
+        self._drawer.write(self._season.name, size=80, position=(76, 75), style="bold", color=WHITE)
 
-    def _write_moc_name(self) -> None:
-        self._drawer.write(
-            self._season.name, size=64, position=(76, 197), style="medium", color=WHITE
-        )
+    def _write_season_time(self) -> None:
+        text = f"{self._season.begin_time.datetime.strftime('%Y/%m/%d')} ~ {self._season.end_time.datetime.strftime('%Y/%m/%d')}"
+        self._drawer.write(text, size=36, position=(76, 197), style="medium", color=WHITE)
 
     def _write_max_stars(self) -> None:
         self._drawer.write(
@@ -177,7 +173,7 @@ class MOCCard:
         )
 
         self._write_title()
-        self._write_moc_name()
+        self._write_season_time()
         self._write_max_stars()
         self._write_farthest_stage()
         self._write_battles_fought()

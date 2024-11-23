@@ -31,8 +31,6 @@ DARK_SURFACE = (19, 19, 22)
 DARK_ON_SURFACE = (200, 197, 202)
 DARK_ON_SURFACE_VARIANT = (199, 197, 208)
 
-ZZZ_PROP_COLOR = (191, 54, 0)  # Highlight agent stat color
-
 FontStyle: TypeAlias = Literal[
     "light",
     "regular",
@@ -706,3 +704,86 @@ class Drawer:
         result.alpha_composite(colored_blob)
         result.alpha_composite(colored_pattern)
         return result.rotate(rotation, resample=Image.Resampling.BICUBIC, expand=True)
+
+    @staticmethod
+    def hex_to_hsl(hex_color: str) -> tuple[int, int, int]:
+        # Remove '#' if present
+        hex_color = hex_color.lstrip("#")
+
+        # Convert hex to RGB
+        r = int(hex_color[0:2], 16) / 255.0
+        g = int(hex_color[2:4], 16) / 255.0
+        b = int(hex_color[4:6], 16) / 255.0
+
+        # Find min and max values
+        cmin = min(r, g, b)
+        cmax = max(r, g, b)
+        delta = cmax - cmin
+
+        # Calculate hue
+        if delta == 0:
+            h = 0
+        elif cmax == r:
+            h = ((g - b) / delta) % 6
+        elif cmax == g:
+            h = (b - r) / delta + 2
+        else:
+            h = (r - g) / delta + 4
+
+        h = round(h * 60)
+        if h < 0:
+            h += 360
+
+        # Calculate lightness
+        l = (cmax + cmin) / 2
+
+        # Calculate saturation
+        s = 0 if delta == 0 else delta / (1 - abs(2 * l - 1))
+
+        # Convert to percentages
+        s = round(s * 100)
+        l = round(l * 100)
+
+        return (h, s, l)
+
+    @staticmethod
+    def hsl_to_hex(hsl_color: tuple[int, int, int]) -> str:
+        h, s, l = hsl_color
+        h /= 360
+        s /= 100
+        l /= 100
+
+        if s == 0:
+            r = g = b = l
+        else:
+
+            def hue_to_rgb(p: float, q: float, t: float) -> float:
+                if t < 0:
+                    t += 1
+                if t > 1:
+                    t -= 1
+                if t < 1 / 6:
+                    return p + (q - p) * 6 * t
+                if t < 1 / 2:
+                    return q
+                if t < 2 / 3:
+                    return p + (q - p) * (2 / 3 - t) * 6
+                return p
+
+            q = l * (1 + s) if l < 0.5 else l + s - l * s
+            p = 2 * l - q
+            r = hue_to_rgb(p, q, h + 1 / 3)
+            g = hue_to_rgb(p, q, h)
+            b = hue_to_rgb(p, q, h - 1 / 3)
+
+        r = round(r * 255)
+        g = round(g * 255)
+        b = round(b * 255)
+
+        return f"#{r:02x}{g:02x}{b:02x}"
+
+    def get_agent_special_stat_color(self, agent_color: str) -> tuple[int, int, int]:
+        agent_color_hsl = self.hex_to_hsl(agent_color)
+        agent_special_color_hsl = (agent_color_hsl[0], 40, 50)
+        agent_special_color = self.hex_to_rgb(self.hsl_to_hex(agent_special_color_hsl))
+        return self.blend_color(agent_special_color, (20, 20, 20), 0.6)

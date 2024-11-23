@@ -163,6 +163,7 @@ class CardSettings(BaseModel):
     show_rank = fields.BooleanField(default=True)
     """Whether to show the akasha rank of the character, only applies to genshin."""
     show_substat_rolls = fields.BooleanField(default=True)
+    highlight_special_stats = fields.BooleanField(default=True)
 
     class Meta:
         unique_together = ("character_id", "user")

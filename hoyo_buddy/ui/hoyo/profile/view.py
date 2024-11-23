@@ -545,6 +545,7 @@ class ProfileView(View):
             template=template_num,
             show_substat_rolls=card_settings.show_substat_rolls,
             agent_special_stat_map=agent_special_stat_map,
+            hl_special_stats=card_settings.highlight_special_stats,
         )
 
     async def draw_card(
@@ -628,20 +629,32 @@ class ProfileView(View):
                 await client.get_zzz_agent_info(int(char_id)) for char_id in self.character_ids
             ]
 
+            agent_card_settings = {
+                int(char_id): await get_card_settings(i.user.id, char_id, game=self.game)
+                for char_id in self.character_ids
+            }
             agent_colors = {
-                int(char_id): (
-                    await get_card_settings(i.user.id, char_id, game=self.game)
-                ).custom_primary_color
+                int(char_id): agent_card_settings[int(char_id)].custom_primary_color
                 or self._card_data[char_id]["color"]
                 for char_id in self.character_ids
             }
+            show_substat_rolls = {
+                int(char_id): agent_card_settings[int(char_id)].show_substat_rolls
+                for char_id in self.character_ids
+            }
+            hl_special_stats = {
+                int(char_id): agent_card_settings[int(char_id)].highlight_special_stats
+                for char_id in self.character_ids
+            }
+
             return await draw_zzz_team_card(
                 draw_input,
                 agents,
                 agent_colors,
                 {int(k): v for k, v in images.items()},
-                show_substat_rolls=settings.team_card_substat_rolls,
+                show_substat_rolls=show_substat_rolls,
                 agent_special_stat_map=await JSONFile.read(ZZZ_AVATAR_BATTLE_TEMP_JSON),
+                hl_special_stats=hl_special_stats,
             )
 
         if self.game is Game.STARRAIL:

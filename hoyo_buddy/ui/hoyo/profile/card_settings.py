@@ -131,7 +131,7 @@ class CardSettingsView(View):
         return self.game is not Game.GENSHIN or "hb" not in self.card_settings.template
 
     @property
-    def disable_substat_roll_features(self) -> bool:
+    def disable_substat_roll_button(self) -> bool:
         return self.game is not Game.ZZZ
 
     def _add_items(self) -> None:
@@ -159,7 +159,7 @@ class CardSettingsView(View):
         self.add_item(
             SubstatRolls(
                 current_toggle=self.card_settings.show_substat_rolls,
-                disabled=self.disable_substat_roll_features,
+                disabled=self.disable_substat_roll_button,
                 row=3,
             )
         )
@@ -167,6 +167,13 @@ class CardSettingsView(View):
             ShowRankButton(
                 current_toggle=self.card_settings.show_rank,
                 disabled=self.disable_show_rank_button,
+                row=3,
+            )
+        )
+        self.add_item(
+            HighlightSpecialStats(
+                current_toggle=self.card_settings.highlight_special_stats,
+                disabled=self.disable_substat_roll_button,
                 row=3,
             )
         )
@@ -428,3 +435,19 @@ class SubstatRolls(ToggleButton[CardSettingsView]):
         await super().callback(i, edit=True)
         self.view.card_settings.show_substat_rolls = self.current_toggle
         await self.view.card_settings.save(update_fields=("show_substat_rolls",))
+
+
+class HighlightSpecialStats(ToggleButton[CardSettingsView]):
+    def __init__(self, *, current_toggle: bool, disabled: bool, row: int) -> None:
+        super().__init__(
+            current_toggle,
+            LocaleStr(key="card_settings_hl_special_stats_button_label"),
+            custom_id="card_settings_hl_special_stats_button_label",
+            disabled=disabled,
+            row=row,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i, edit=True)
+        self.view.card_settings.highlight_special_stats = self.current_toggle
+        await self.view.card_settings.save(update_fields=("highlight_special_stats",))

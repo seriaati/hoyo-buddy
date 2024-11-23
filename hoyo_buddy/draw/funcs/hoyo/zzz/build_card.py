@@ -11,7 +11,7 @@ from PIL import Image, ImageDraw
 from PIL.Image import Transpose
 
 from hoyo_buddy.constants import ZZZ_AGENT_CORE_SKILL_LVL_MAP, get_disc_substat_roll_num
-from hoyo_buddy.draw.drawer import BLACK, ZZZ_PROP_COLOR, Drawer
+from hoyo_buddy.draw.drawer import BLACK, Drawer
 
 from .common import SKILL_ORDER, STAT_ICONS, get_props
 
@@ -33,6 +33,7 @@ class ZZZAgentCard:
         template: Literal[1, 2],
         show_substat_rolls: bool,
         agent_special_stats: list[int],
+        hl_special_stats: bool,
     ) -> None:
         self._agent = agent
         self._locale = locale
@@ -44,6 +45,7 @@ class ZZZAgentCard:
         self._template = template
         self._show_substat_rolls = show_substat_rolls
         self._agent_special_stats = agent_special_stats
+        self._hl_special_stats = hl_special_stats
 
     def _draw_background(self) -> Image.Image:
         zzz_text = self._card_data.get("zzz_text", True)
@@ -350,11 +352,17 @@ class ZZZAgentCard:
         # Stats
         start_pos = (2720, 616)
         props = get_props(self._agent)
+        agent_color = self._color or self._card_data["color"]
+
         for i, prop in enumerate(props):
             if prop is None or not isinstance(prop.type, PropType):
                 continue
 
-            color = ZZZ_PROP_COLOR if prop.type.value in self._agent_special_stats else (20, 20, 20)
+            color = (
+                drawer.get_agent_special_stat_color(agent_color)
+                if self._hl_special_stats and prop.type.value in self._agent_special_stats
+                else (20, 20, 20)
+            )
 
             prop_icon = drawer.open_asset(
                 f"stat_icons/{STAT_ICONS[prop.type]}", size=(59, 59), mask_color=color

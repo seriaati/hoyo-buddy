@@ -10,7 +10,7 @@ from genshin.models import ZZZSkillType
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.constants import ZZZ_AGENT_CORE_SKILL_LVL_MAP, get_disc_substat_roll_num
-from hoyo_buddy.draw.drawer import BLACK, WHITE, ZZZ_PROP_COLOR, Drawer
+from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
 
 from .common import SKILL_ORDER, STAT_ICONS, get_props
 
@@ -34,6 +34,7 @@ class ZZZTeamCard:
         disc_icons: dict[int, str],
         show_substat_rolls: bool,
         agent_special_stat_map: dict[str, list[int]],
+        hl_special_stats: dict[int, bool],
     ) -> None:
         self._locale = locale
         self._dark_mode = False
@@ -44,6 +45,7 @@ class ZZZTeamCard:
         self._disc_icons = disc_icons
         self._show_substat_rolls = show_substat_rolls
         self._agent_special_stat_map = agent_special_stat_map
+        self._hl_special_stats = hl_special_stats
 
     def _draw_card(self, *, image_url: str, blob_color: tuple[int, int, int]) -> Image.Image:
         card = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/card.png")
@@ -297,13 +299,16 @@ class ZZZTeamCard:
     def _draw_stats(self, agent: ZZZFullAgent, im: Image.Image, drawer: Drawer) -> None:
         props = get_props(agent)
         start_pos = (299, 31)
+        agent_color = self._agent_colors[agent.id]
+
         for i, prop in enumerate(props):
             if prop is None or not isinstance(prop.type, PropType):
                 continue
 
             color = (
-                ZZZ_PROP_COLOR
-                if prop.type.value in self._agent_special_stat_map[str(agent.id)]
+                drawer.get_agent_special_stat_color(agent_color)
+                if self._hl_special_stats[agent.id]
+                and prop.type.value in self._agent_special_stat_map[str(agent.id)]
                 else (20, 20, 20)
             )
 

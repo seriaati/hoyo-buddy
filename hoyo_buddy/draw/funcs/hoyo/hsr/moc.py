@@ -76,7 +76,7 @@ class MOCCard:
         block = Drawer.open_image("hoyo-buddy-assets/assets/moc/block.png")
         if chara is None:
             empty = Drawer.open_image("hoyo-buddy-assets/assets/moc/empty.png")
-            block.paste(empty, (27, 28), empty)
+            block.paste(empty, (28, 28), empty)
             return block
 
         drawer = Drawer(ImageDraw.Draw(block), folder="moc", dark_mode=True, locale=self.locale)
@@ -85,18 +85,36 @@ class MOCCard:
         icon = drawer.resize_crop(icon, (120, 120))
         mask = drawer.open_asset("mask.png")
         icon = drawer.mask_image_with_image(icon, mask)
-        block.paste(icon, (0, 0), icon)
+        block.paste(icon, (1, 1), icon)
 
         level_flair = drawer.open_asset("level_flair.png")
-        block.paste(level_flair, (0, 96), level_flair)
+        level_flair_pos = (0, 97)
+        block.paste(level_flair, level_flair_pos, level_flair)
         drawer.write(
-            str(chara.level), size=18, position=(31, 108), style="bold", anchor="mm", color=WHITE
+            str(chara.level),
+            size=18,
+            position=(
+                level_flair_pos[0] + level_flair.width // 2,
+                level_flair_pos[1] + level_flair.height // 2,
+            ),
+            style="bold",
+            anchor="mm",
+            color=WHITE,
         )
 
         const_flair = drawer.open_asset("const_flair.png")
-        block.paste(const_flair, (90, 0), const_flair)
+        const_flair_pos = (91, 0)
+        block.paste(const_flair, const_flair_pos, const_flair)
         drawer.write(
-            str(chara.rank), size=18, position=(105, 16), style="bold", anchor="mm", color=WHITE
+            str(chara.rank),
+            size=18,
+            position=(
+                const_flair_pos[0] + const_flair.width // 2,
+                const_flair_pos[1] + const_flair.height // 2,
+            ),
+            style="bold",
+            anchor="mm",
+            color=WHITE,
         )
 
         return block

@@ -7,7 +7,6 @@ from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
-from hoyo_buddy.enums import ChallengeType
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.utils import get_floor_difficulty
 
@@ -67,7 +66,7 @@ class PureFictionCard:
         block = Drawer.open_image("hoyo-buddy-assets/assets/pf/block.png")
         if chara is None:
             empty = Drawer.open_image("hoyo-buddy-assets/assets/pf/empty.png")
-            block.paste(empty, (27, 28), empty)
+            block.paste(empty, (28, 28), empty)
             return block
 
         drawer = Drawer(ImageDraw.Draw(block), folder="pf", dark_mode=True, locale=self.locale)
@@ -76,18 +75,36 @@ class PureFictionCard:
         icon = drawer.resize_crop(icon, (120, 120))
         mask = drawer.open_asset("mask.png")
         icon = drawer.mask_image_with_image(icon, mask)
-        block.paste(icon, (0, 0), icon)
+        block.paste(icon, (2, 2), icon)
 
         level_flair = drawer.open_asset("level_flair.png")
-        block.paste(level_flair, (0, 96), level_flair)
+        level_flair_pos = (2, 98)
+        block.paste(level_flair, level_flair_pos, level_flair)
         drawer.write(
-            str(chara.level), size=18, position=(31, 108), style="bold", anchor="mm", color=WHITE
+            str(chara.level),
+            size=18,
+            position=(
+                level_flair_pos[0] + level_flair.width // 2,
+                level_flair_pos[1] + level_flair.height // 2,
+            ),
+            style="bold",
+            anchor="mm",
+            color=WHITE,
         )
 
         const_flair = drawer.open_asset("const_flair.png")
-        block.paste(const_flair, (90, 0), const_flair)
+        const_flair_pos = (92, 2)
+        block.paste(const_flair, const_flair_pos, const_flair)
         drawer.write(
-            str(chara.rank), size=18, position=(105, 16), style="bold", anchor="mm", color=WHITE
+            str(chara.rank),
+            size=18,
+            position=(
+                const_flair_pos[0] + const_flair.width // 2,
+                const_flair_pos[1] + const_flair.height // 2,
+            ),
+            style="bold",
+            anchor="mm",
+            color=WHITE,
         )
 
         return block
@@ -163,7 +180,7 @@ class PureFictionCard:
         )
 
         self._write_title()
-        self._write_pf_name()
+        self._write_season_time()
         self._write_max_stars()
         self._write_farthest_stage()
         self._write_battles_fought()

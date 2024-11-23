@@ -11,7 +11,6 @@ import genshin
 import hakushin
 import orjson
 from dotenv import load_dotenv
-from loguru import logger
 
 from ... import models
 from ...bot.error_handler import get_error_embed

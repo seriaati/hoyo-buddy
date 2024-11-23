@@ -200,8 +200,7 @@ class NotesChecker:
         cls, notify: NotesNotify, *, est_time: datetime.datetime | None = None
     ) -> None:
         notify.current_notif_count = 0
-        if est_time is not None:
-            notify.est_time = est_time
+        notify.est_time = est_time
         await notify.save(update_fields=("current_notif_count", "est_time"))
 
     @classmethod
@@ -252,8 +251,7 @@ class NotesChecker:
         assert threshold is not None
 
         if current < threshold:
-            est_time = get_now() + notes.remaining_realm_currency_recovery_time
-            return await cls._reset_notif_count(notify, est_time=est_time)
+            return await cls._reset_notif_count(notify)
 
         if notify.current_notif_count < notify.max_notif_count:
             await cls._notify_user(notify, notes)

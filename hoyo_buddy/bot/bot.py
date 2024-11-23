@@ -94,6 +94,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             token=os.environ["NAI_TOKEN"], host_url=os.environ["NAI_HOST_URL"]
         )
         self.owner_id = 410036441129943050
+        self.guild_id = 1000727526194298910
         self.pool = pool
         self.executor = concurrent.futures.ThreadPoolExecutor()
         self.config = config

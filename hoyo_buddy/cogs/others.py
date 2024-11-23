@@ -30,7 +30,6 @@ class Others(commands.Cog):
         self.bot = bot
         self.process = psutil.Process()
         self.repo_url = "https://github.com/seriaati/hoyo-buddy"
-        self.guild_id = 1000727526194298910
 
     async def cog_load(self) -> None:
         if self.bot.env == "dev":
@@ -44,7 +43,9 @@ class Others(commands.Cog):
 
     @tasks.loop(hours=2)
     async def update_stat_vcs(self) -> None:
-        guild = self.bot.get_guild(self.guild_id) or await self.bot.fetch_guild(self.guild_id)
+        guild = self.bot.get_guild(self.bot.guild_id) or await self.bot.fetch_guild(
+            self.bot.guild_id
+        )
         category_id = 1309451146556997683
         category = discord.utils.get(guild.categories, id=category_id)
         if category is None:
@@ -86,7 +87,9 @@ class Others(commands.Cog):
     async def about_command(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
-        guild = self.bot.get_guild(self.guild_id) or await i.client.fetch_guild(self.guild_id)
+        guild = self.bot.get_guild(self.bot.guild_id) or await i.client.fetch_guild(
+            self.bot.guild_id
+        )
         if not guild.chunked:
             await guild.chunk()
 

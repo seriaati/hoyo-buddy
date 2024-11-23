@@ -477,6 +477,9 @@ GAME_CHALLENGE_TYPES: Final[dict[Game, tuple[ChallengeType, ...]]] = {
     Game.STARRAIL: (ChallengeType.MOC, ChallengeType.PURE_FICTION, ChallengeType.APC_SHADOW),
     Game.ZZZ: (ChallengeType.SHIYU_DEFENSE,),
 }
+CHALLENGE_TYPE_GAMES = {
+    type_: game for game, types in GAME_CHALLENGE_TYPES.items() for type_ in types
+}
 
 ZENLESS_ASSET_SCRAPE_URL = (
     "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite"

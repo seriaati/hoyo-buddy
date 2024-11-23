@@ -148,11 +148,17 @@ class BuffSelector(Select[BuffView]):
 
 class ChallengeView(View):
     def __init__(
-        self, account: HoyoAccount, dark_mode: bool, *, author: User | Member, locale: Locale
+        self,
+        account: HoyoAccount,
+        dark_mode: bool,
+        challenge_type: ChallengeType,
+        *,
+        author: User | Member,
+        locale: Locale,
     ) -> None:
         super().__init__(author=author, locale=locale)
 
-        self._challenge_type: ChallengeType | None = None
+        self.challenge_type: ChallengeType = challenge_type
         self.account = account
         self.dark_mode = dark_mode
 
@@ -166,13 +172,6 @@ class ChallengeView(View):
         self.characters: Sequence[GICharacter] = []
         self.agent_ranks: dict[int, int] = {}
         self.uid: int | None = None
-
-    @property
-    def challenge_type(self) -> ChallengeType:
-        if self._challenge_type is None:
-            msg = "Challenge type is not set"
-            raise ValueError(msg)
-        return self._challenge_type
 
     @property
     def challenge(self) -> ChallengeWithLang | None:
@@ -200,7 +199,7 @@ class ChallengeView(View):
         index = 1 if previous else 0
         return challenge.seasons[index].id
 
-    async def fetch_data(self) -> None:
+    async def _fetch_data(self) -> None:
         if self.challenge is not None:
             return
 
@@ -243,7 +242,7 @@ class ChallengeView(View):
                 self.agent_ranks = {agent.id: agent.rank for agent in agents}
                 challenge = await client.get_shiyu_defense(self.account.uid, previous=previous)
             else:
-                msg = f"Invalid challenge type: {self._challenge_type}"
+                msg = f"Invalid challenge type: {self.challenge_type}"
                 raise ValueError(msg)
 
             try:
@@ -253,7 +252,7 @@ class ChallengeView(View):
                 continue
 
             try:
-                self._check_challenge_data(challenge)
+                self.check_challenge_data(challenge)
             except NoChallengeDataError:
                 continue
 
@@ -266,7 +265,7 @@ class ChallengeView(View):
                 lang=client.lang,
             )
 
-    def _check_challenge_data(self, challenge: Challenge | None) -> None:
+    def check_challenge_data(self, challenge: Challenge | None) -> None:
         if challenge is None:
             raise NoChallengeDataError(self.challenge_type)
         if isinstance(challenge, SpiralAbyss):
@@ -275,7 +274,7 @@ class ChallengeView(View):
         elif not challenge.has_data:
             raise NoChallengeDataError(self.challenge_type)
 
-    def _get_season(self, challenge: Challenge) -> StarRailChallengeSeason:
+    def get_season(self, challenge: Challenge) -> StarRailChallengeSeason:
         if isinstance(challenge, SpiralAbyss | ImgTheaterData | ShiyuDefense):
             msg = f"Can't get season for {self.challenge_type}"
             raise TypeError(msg)
@@ -286,7 +285,7 @@ class ChallengeView(View):
             raise ValueError(msg)
         return result
 
-    async def _draw_card(
+    async def draw_card(
         self,
         session: aiohttp.ClientSession,
         executor: concurrent.futures.ThreadPoolExecutor,
@@ -319,7 +318,7 @@ class ChallengeView(View):
                     loop=loop,
                 ),
                 self.challenge,
-                self._get_season(self.challenge),
+                self.get_season(self.challenge),
             )
         if isinstance(self.challenge, StarRailPureFiction):
             return await draw_pure_fiction_card(
@@ -332,7 +331,7 @@ class ChallengeView(View):
                     loop=loop,
                 ),
                 self.challenge,
-                self._get_season(self.challenge),
+                self.get_season(self.challenge),
             )
         if isinstance(self.challenge, StarRailAPCShadow):
             return await draw_apc_shadow_card(
@@ -345,7 +344,7 @@ class ChallengeView(View):
                     loop=loop,
                 ),
                 self.challenge,
-                self._get_season(self.challenge),
+                self.get_season(self.challenge),
             )
         if isinstance(self.challenge, ImgTheaterData):
             return await draw_img_theater_card(
@@ -376,7 +375,9 @@ class ChallengeView(View):
         )
 
     def _add_items(self) -> None:
-        self.add_item(ChallengeTypeSelect(GAME_CHALLENGE_TYPES[self.account.game]))
+        self.add_item(
+            ChallengeTypeSelect(GAME_CHALLENGE_TYPES[self.account.game], self.challenge_type)
+        )
         self.add_item(PhaseSelect())
         self.add_item(ViewBuffs())
         self.add_item(ShowUID(current_toggle=self.uid is not None))
@@ -385,8 +386,8 @@ class ChallengeView(View):
         self, item: Select[ChallengeView] | Button[ChallengeView], i: Interaction
     ) -> None:
         try:
-            self._check_challenge_data(self.challenge)
-            file_ = await self._draw_card(i.client.session, i.client.executor, i.client.loop)
+            self.check_challenge_data(self.challenge)
+            file_ = await self.draw_card(i.client.session, i.client.executor, i.client.loop)
         except NoChallengeDataError as e:
             await item.unset_loading_state(i)
             embed, _ = get_error_embed(e, self.locale)
@@ -401,9 +402,43 @@ class ChallengeView(View):
 
         await item.unset_loading_state(i, embed=embed, attachments=[file_])
 
+    async def fetch_data_and_update_ui(self) -> None:
+        await self._fetch_data()
+
+        histories = await ChallengeHistory.filter(
+            uid=self.account.uid, challenge_type=self.challenge_type
+        ).all()
+        if not histories:
+            raise NoChallengeDataError(self.challenge_type)
+
+        for history in histories:
+            self.challenge_cache[self.challenge_type][history.season_id] = history.parsed_data
+
+        if self.challenge_type not in self.season_ids:
+            self.season_id = histories[0].season_id
+
+        phase_select: PhaseSelect = self.get_item("challenge_view.phase_select")
+        phase_select.set_options(histories)
+        phase_select.translate(self.locale)
+        phase_select.update_options_defaults(values=[str(self.season_id)])
+
+        self.item_states["challenge_view.view_buffs"] = not isinstance(
+            self.challenge, ChallengeWithBuff
+        )
+        self.item_states["show_uid"] = not isinstance(self.challenge, ShiyuDefense)
+
     async def start(self, i: Interaction) -> None:
         self._add_items()
-        self.message = await i.edit_original_response(view=self, content=await get_dyk(i))
+
+        await self.fetch_data_and_update_ui()
+        self.check_challenge_data(self.challenge)
+        file_ = await self.draw_card(i.client.session, i.client.executor, i.client.loop)
+        embed = DefaultEmbed(self.locale).add_acc_info(self.account)
+        embed.set_image(url="attachment://challenge.png")
+
+        self.message = await i.edit_original_response(
+            embed=embed, attachments=[file_], view=self, content=await get_dyk(i)
+        )
 
 
 class PhaseSelect(Select[ChallengeView]):
@@ -411,7 +446,6 @@ class PhaseSelect(Select[ChallengeView]):
         super().__init__(
             placeholder=LocaleStr(key="abyss.phase_select.placeholder"),
             options=[SelectOption(label="initialized", value="0")],
-            disabled=True,
             custom_id="challenge_view.phase_select",
         )
 
@@ -439,47 +473,24 @@ class PhaseSelect(Select[ChallengeView]):
 
 
 class ChallengeTypeSelect(Select[ChallengeView]):
-    def __init__(self, types: Sequence[ChallengeType]) -> None:
+    def __init__(self, types: Sequence[ChallengeType], selected: ChallengeType) -> None:
         super().__init__(
             placeholder=LocaleStr(key="challenge_type_select.placeholder"),
-            options=[SelectOption(label=EnumStr(type_), value=type_.value) for type_ in types],
+            options=[
+                SelectOption(label=EnumStr(type_), value=type_.value, default=type_ == selected)
+                for type_ in types
+            ],
         )
 
     async def callback(self, i: Interaction) -> None:
-        self.view._challenge_type = ChallengeType(self.values[0])
+        self.view.challenge_type = ChallengeType(self.values[0])
         await self.set_loading_state(i)
 
         try:
-            await self.view.fetch_data()
+            await self.view.fetch_data_and_update_ui()
         except Exception:
             await self.unset_loading_state(i)
             raise
-
-        self.view.item_states["challenge_view.phase_select"] = False
-
-        histories = await ChallengeHistory.filter(
-            uid=self.view.account.uid, challenge_type=self.view.challenge_type
-        ).all()
-        if not histories:
-            raise NoChallengeDataError(self.view.challenge_type)
-
-        for history in histories:
-            self.view.challenge_cache[self.view.challenge_type][history.season_id] = (
-                history.parsed_data
-            )
-
-        if self.view.challenge_type not in self.view.season_ids:
-            self.view.season_id = histories[0].season_id
-
-        phase_select: PhaseSelect = self.view.get_item("challenge_view.phase_select")
-        phase_select.set_options(histories)
-        phase_select.translate(self.view.locale)
-        phase_select.update_options_defaults(values=[str(self.view.season_id)])
-
-        self.view.item_states["challenge_view.view_buffs"] = not isinstance(
-            self.view.challenge, ChallengeWithBuff
-        )
-        self.view.item_states["show_uid"] = not isinstance(self.view.challenge, ShiyuDefense)
 
         await self.view.update(self, i)
 
@@ -498,7 +509,7 @@ class ViewBuffs(Button[ChallengeView]):
         assert isinstance(self.view.challenge, ChallengeWithBuff)
 
         try:
-            season = self.view._get_season(self.view.challenge)
+            season = self.view.get_season(self.view.challenge)
         except TypeError:
             season = None
 

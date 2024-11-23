@@ -58,7 +58,6 @@ auto_redeem_footer: Turn off auto code redemption with /redeem
 auto_redeem_toggle.label: Auto code redemption
 books: Books
 captcha.embed.description: "Click on the button below to complete CAPTCHA.\n"
-challenge_command_description: "View game end-game content statistics, like spiral abyss, memory of chaos, etc."
 challenge_type_select.placeholder: Select a game mode
 challenge_view.buff_used_in: Used in
 challenge_view.team: "team {team}"
@@ -702,7 +701,6 @@ leaderboard_not_found: Leaderboard not found
 currently_logged_in_as: "You are currently logged in as:"
 not_you_label: "Not you? Click to login with a different account"
 profile_show_substat_rolls: Substat rolls
-profile_team_show_substat_rolls: Team card substat rolls
 team_card_settings_button_label: Team card settings
 team_card_settings_embed_title: Modifying Team Card Settings
 team_card_settings_embed_description: "Team card settings are shared accross different games and accounts, changes made to some settings may not be reflected on the card when they are not supported by the card template.\nWhen you're done, click the green button in the message above to redraw the card."
@@ -713,3 +711,9 @@ redeem_cmd_available_codes: Available codes
 redeem_all_available_codes_button_label: Redeem all available codes
 akasha_show_details: Show leaderboard details
 card_settings_hl_special_stats_button_label: Highlight special stats
+challenge_command_abyss_desc: Generate Spiral Abyss card
+challenge_command_theater_desc: Generate Imaginarium Theater card
+challenge_command_moc_desc: Generate Memory of Chaos card
+challenge_command_pf_desc: Generate Pure Fiction card
+challenge_command_apc_shadow_desc: Generate Apocalyptic Shadow card
+challenge_command_shiyu_desc: Generate Shiyu Defense card

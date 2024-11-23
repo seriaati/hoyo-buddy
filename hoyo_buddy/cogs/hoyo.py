@@ -9,7 +9,6 @@ from discord.ext import commands
 from hoyo_buddy.commands.events import EventsCommand
 from hoyo_buddy.utils import ephemeral
 
-from ..commands.challenge import ChallengeCommand
 from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand
 from ..constants import HB_GAME_TO_GPY_GAME, ZZZ_AGENT_DATA_URL
@@ -194,37 +193,6 @@ class Hoyo(commands.Cog):
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("challenge"),
-        description=app_commands.locale_str(
-            "View game end-game content statistics, like spiral abyss, memory of chaos, etc.",
-            key="challenge_command_description",
-        ),
-    )
-    @app_commands.rename(
-        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
-    )
-    @app_commands.describe(
-        user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
-        ),
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        ),
-    )
-    async def challenge_command(
-        self,
-        i: Interaction,
-        user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
-    ) -> None:
-        await i.response.defer(ephemeral=ephemeral(i))
-        command = ChallengeCommand(i, user, account)
-        await command.run()
-
-    @app_commands.command(
         name=app_commands.locale_str("exploration"),
         description=app_commands.locale_str(
             "View your exploration statistics in Genshin Impact",
@@ -401,7 +369,6 @@ class Hoyo(commands.Cog):
     ) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN,))
 
-    @challenge_command.autocomplete("account")
     @events_command.autocomplete("account")
     async def gi_hsr_zzz_acc_autocomplete(
         self, i: Interaction, current: str

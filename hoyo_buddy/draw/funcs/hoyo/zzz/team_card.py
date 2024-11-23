@@ -32,7 +32,7 @@ class ZZZTeamCard:
         agent_images: dict[int, str],
         name_datas: dict[int, AgentNameData],
         disc_icons: dict[int, str],
-        show_substat_rolls: bool,
+        show_substat_rolls: dict[int, bool],
         agent_special_stat_map: dict[str, list[int]],
         hl_special_stats: dict[int, bool],
     ) -> None:
@@ -214,7 +214,7 @@ class ZZZTeamCard:
                             anchor="lm",
                         )
 
-                        if self._show_substat_rolls:
+                        if self._show_substat_rolls[agent.id]:
                             roll_num = get_disc_substat_roll_num(disc.rarity, stat)
                             roll_num_img = drawer.open_asset(
                                 f"rolls/{roll_num}.png", size=(55, 1), folder="zzz-build-card"

@@ -141,7 +141,6 @@ class Settings(BaseModel):
     zzz_card_temp = fields.CharField(max_length=32, default="hb2")
     team_card_dark_mode = fields.BooleanField(default=False)
     enable_dyk = fields.BooleanField(default=True)
-    team_card_substat_rolls = fields.BooleanField(default=True)
 
     @property
     def locale(self) -> Locale | None:

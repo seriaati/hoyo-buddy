@@ -469,7 +469,7 @@ async def draw_zzz_build_card(
             agent_images={agent.id: image},
             name_datas=draw_data.name_data,
             disc_icons=draw_data.disc_icons,
-            show_substat_rolls=show_substat_rolls,
+            show_substat_rolls={agent.id: show_substat_rolls},
             agent_special_stat_map=agent_special_stat_map,
             hl_special_stats={agent.id: hl_special_stats},
         )
@@ -548,7 +548,7 @@ async def draw_zzz_team_card(
     agents: Sequence[ZZZFullAgent],
     agent_colors: dict[int, str],
     agent_images: dict[int, str],
-    show_substat_rolls: bool,
+    show_substat_rolls: dict[int, bool],
     agent_special_stat_map: dict[str, list[int]],
     hl_special_stats: dict[int, bool],
 ) -> BytesIO:

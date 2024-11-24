@@ -532,7 +532,6 @@ characters.sorter.faction: Faction
 characters.sorter.mindscape_cinema: Mindscape cinema
 characters.embed.filter_text: "{filter} Characters"
 stats_command_description: View game account statistics
-stats.select_card: Select a game account...
 tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Rank {rarity}"
 about_command.designers: Designers

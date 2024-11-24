@@ -360,7 +360,7 @@ class ZZZAgentCard:
 
             color = (
                 drawer.get_agent_special_stat_color(agent_color)
-                if self._hl_special_stats and prop.type.value in self._agent_special_stats
+                if (self._hl_special_stats and prop.type.value in self._agent_special_stats)
                 else (20, 20, 20)
             )
 
@@ -376,7 +376,7 @@ class ZZZAgentCard:
                     start_pos[1] + prop_icon.height // 2,
                 ),
                 color=color,
-                style="medium",
+                style="bold",
                 anchor="lm",
             )
 

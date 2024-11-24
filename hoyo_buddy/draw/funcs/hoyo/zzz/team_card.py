@@ -329,6 +329,7 @@ class ZZZTeamCard:
                 ),
                 color=color,
                 anchor="lm",
+                style="bold",
             )
 
             start_pos = (

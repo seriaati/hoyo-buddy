@@ -748,18 +748,23 @@ class ReminderButton(Button[NotesView]):
 
 
 class AccountSwitcher(Select[NotesView]):
-    def __init__(self, accounts: list[HoyoAccount]) -> None:
+    def __init__(self, accounts: list[HoyoAccount], account: HoyoAccount) -> None:
         super().__init__(
             placeholder=LocaleStr(key="account_select_placeholder"),
             options=[
                 SelectOption(
-                    label=str(acc), value=f"{acc.uid}_{acc.game}", emoji=get_game_emoji(acc.game)
+                    label=acc.blurred_display,
+                    value=f"{acc.uid}_{acc.game}",
+                    emoji=get_game_emoji(acc.game),
+                    default=acc == account,
                 )
                 for acc in accounts
             ],
         )
 
     async def callback(self, i: Interaction) -> None:
+        assert self.view.accounts is not None
+
         await self.set_loading_state(i)
         uid, game = self.values[0].split("_")
         account = next(

@@ -115,7 +115,7 @@ class AutoRedeem:
         cls, bot: HoyoBuddy, game_codes: dict[genshin.Game, list[str]]
     ) -> None:
         guild = bot.get_guild(bot.guild_id) or await bot.fetch_guild(bot.guild_id)
-        sent_codes: dict[genshin.Game, list[str]] = await JSONFile.read("sent_codes.json")
+        sent_codes: dict[str, list[str]] = await JSONFile.read("sent_codes.json")
 
         for game_, codes_ in game_codes.items():
             if game_ not in CODE_CHANNEL_IDS:
@@ -125,24 +125,24 @@ class AutoRedeem:
             if not isinstance(channel, discord.TextChannel):
                 continue
 
-            game_sent_codes = sent_codes.get(game_, [])
-            not_sent_codes: list[str] = []
+            game_sent_codes = sent_codes.get(game_.value, [])
+            codes_to_send: list[str] = []
             for code in codes_:
                 if code in game_sent_codes:
                     continue
 
-                not_sent_codes.append(code)
+                codes_to_send.append(code)
                 game_sent_codes.append(code)
 
-            if not_sent_codes:
+            if codes_to_send:
                 try:
-                    message = await channel.send(create_bullet_list(not_sent_codes))
+                    message = await channel.send(create_bullet_list(codes_to_send))
                 except Exception as e:
                     bot.capture_exception(e)
                     continue
                 await message.publish()
 
-            sent_codes[game_] = list(set(game_sent_codes))
+            sent_codes[game_.value] = list(set(game_sent_codes))
 
         await JSONFile.write("sent_codes.json", sent_codes)
 

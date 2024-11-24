@@ -48,6 +48,7 @@ MI18N_FILES = {
     Game.GENSHIN: "m11241040191111",
     Game.STARRAIL: "m20230509hy150knmyo",
     Game.ZZZ: "m20240410hy38foxb7k",
+    Game.HONKAI: "m20240627hy298aaccg"
 }
 
 

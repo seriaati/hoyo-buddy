@@ -340,7 +340,7 @@ class ZZZTeamCard:
         textbbox = drawer.write(
             text, size=42, position=(0, 0), style="black_italic", no_write=True, anchor="lt"
         )
-        if textbbox.width > 280:
+        if text == "..." or textbbox.width > 280:
             text = name_data.short_name.upper()
             textbbox = drawer.write(
                 text, size=42, position=(0, 0), style="black_italic", no_write=True, anchor="lt"

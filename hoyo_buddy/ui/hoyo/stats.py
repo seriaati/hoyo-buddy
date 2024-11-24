@@ -146,7 +146,8 @@ class StatsView(View):
 
         if acc_select is not None:
             await acc_select.unset_loading_state(i, embed=embed)
-        await i.followup.send(embed=embed, view=self, content=await get_dyk(i))
+        else:
+            await i.followup.send(embed=embed, view=self, content=await get_dyk(i))
 
         self.message = await i.original_response()
 

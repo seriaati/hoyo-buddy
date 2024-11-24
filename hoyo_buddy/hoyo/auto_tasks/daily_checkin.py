@@ -19,6 +19,8 @@ if TYPE_CHECKING:
 
 API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
 MAX_API_ERROR_COUNT = 10
+MAX_API_RETRIES = 3
+RETRY_SLEEP_TIME = 5
 
 
 class DailyCheckin:
@@ -113,9 +115,9 @@ class DailyCheckin:
                     raise RuntimeError(msg) from None
             else:
                 cls._total_checkin_count += 1
-                await cls._notify_checkin_result(account, embed)
+                asyncio.create_task(cls._notify_checkin_result(account, embed))
             finally:
-                await asyncio.sleep(2.3)
+                await asyncio.sleep(2.5)
                 queue.task_done()
 
     @classmethod
@@ -136,7 +138,7 @@ class DailyCheckin:
 
     @classmethod
     async def _daily_checkin(
-        cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount
+        cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount, *, retry: int = 0
     ) -> Embed:
         session = cls._bot.session
         await account.fetch_related("user", "user__settings")
@@ -183,40 +185,50 @@ class DailyCheckin:
             "region": client.region.value,
         }
         api_url = PROXY_APIS[api_name]
-        logger.debug(f"Check-in payload: {payload}")
 
-        async with session.post(f"{api_url}/checkin/", json=payload) as resp:
-            if resp.status == 502:
-                await asyncio.sleep(20)
-                embed = await cls._daily_checkin(api_name, account)
-            elif resp.status in {200, 400, 500}:
-                data = await resp.json()
-                logger.debug(f"Check-in response: {data}")
+        logger_payload = payload.copy()
+        logger_payload.pop("cookies")
+        logger_payload.pop("token")
+        logger.debug(f"Check-in payload: {logger_payload}")
 
-                if resp.status == 200:
-                    # Correct reward amount
-                    monthly_rewards = await client.get_monthly_rewards()
-                    reward = next(
-                        (r for r in monthly_rewards if r.icon == data["data"]["icon"]), None
-                    )
-                    if reward is None:
-                        reward = genshin.models.DailyReward(**data["data"])
-                    embed = client.get_daily_reward_embed(reward, locale, blur=False)
-                elif resp.status == 400:
-                    if data["retcode"] == -9999:
-                        await User.filter(id=account.user.id).update(temp_data=data["data"])
+        try:
+            async with session.post(f"{api_url}/checkin/", json=payload) as resp:
+                if resp.status == 502:
+                    await asyncio.sleep(20)
+                    embed = await cls._daily_checkin(api_name, account)
+                elif resp.status in {200, 400, 500}:
+                    data = await resp.json()
+                    logger.debug(f"Check-in response: {data}")
 
-                    e = genshin.GenshinException(data)
-                    embed, recognized = get_error_embed(e, locale)
-                    if not recognized:
-                        cls._bot.capture_exception(e)
+                    if resp.status == 200:
+                        # Correct reward amount
+                        monthly_rewards = await client.get_monthly_rewards()
+                        reward = next(
+                            (r for r in monthly_rewards if r.icon == data["data"]["icon"]), None
+                        )
+                        if reward is None:
+                            reward = genshin.models.DailyReward(**data["data"])
+                        embed = client.get_daily_reward_embed(reward, locale, blur=False)
+                    elif resp.status == 400:
+                        if data["retcode"] == -9999:
+                            await User.filter(id=account.user.id).update(temp_data=data["data"])
 
-                    embed.add_acc_info(account, blur=False)
-                else:  # 500
-                    msg = f"API {api_name} errored: {data['message']}"
+                        e = genshin.GenshinException(data)
+                        embed, recognized = get_error_embed(e, locale)
+                        if not recognized:
+                            cls._bot.capture_exception(e)
+
+                        embed.add_acc_info(account, blur=False)
+                    else:  # 500
+                        msg = f"API {api_name} errored: {data['message']}"
+                        raise RuntimeError(msg)
+                else:
+                    msg = f"API {api_name} returned {resp.status}"
                     raise RuntimeError(msg)
-            else:
-                msg = f"API {api_name} returned {resp.status}"
-                raise RuntimeError(msg)
+        except Exception:
+            if retry > MAX_API_RETRIES:
+                raise
+            await asyncio.sleep(RETRY_SLEEP_TIME)
+            return await cls._daily_checkin(api_name, account, retry=retry + 1)
 
         return embed

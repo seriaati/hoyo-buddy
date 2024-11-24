@@ -39,6 +39,7 @@ if TYPE_CHECKING:
 load_dotenv()
 env = os.environ["ENV"]
 
+MAX_API_RETRIES = 3
 PROXY_APIS_ = (*PROXY_APIS.values(), "LOCAL")
 proxy_api_rotator = itertools.cycle(PROXY_APIS_)
 
@@ -56,7 +57,7 @@ class ProxyGenshinClient(genshin.Client):
         )
 
     async def request(self, *args: Any, **kwargs: Any) -> Any:
-        for attempt in range(3):
+        for attempt in range(MAX_API_RETRIES):
             try:
                 return await super().request(*args, **kwargs)
             except (TimeoutError, aiohttp.ClientError, ConnectionResetError):
@@ -153,15 +154,15 @@ class ProxyGenshinClient(genshin.Client):
 
                     raise Exception(data["message"])  # noqa: TRY002
 
-                if retry > 3:
-                    msg = f"Failed to login after 3 retries, status: {resp.status}"
+                if retry > MAX_API_RETRIES:
+                    msg = f"Failed to login after {MAX_API_RETRIES} retries, status: {resp.status}"
                     raise RuntimeError(msg)
 
                 return await self.os_app_login(
                     email, password, mmt_result=mmt_result, retry=retry + 1
                 )
         except Exception:
-            if retry > 3:
+            if retry > MAX_API_RETRIES:
                 raise
             return await self.os_app_login(email, password, mmt_result=mmt_result, retry=retry + 1)
 
@@ -678,13 +679,13 @@ class GenshinClient(ProxyGenshinClient):
                     if resp.status == 500:
                         raise RuntimeError(data["message"])
 
-                if retry > 3:
-                    msg = f"API errored after 3 retries, status: {resp.status}"
+                if retry > MAX_API_RETRIES:
+                    msg = f"API errored after {MAX_API_RETRIES} retries, status: {resp.status}"
                     raise RuntimeError(msg)
 
                 return await self.get_notes_(game, session=session, retry=retry + 1)
         except Exception:
-            if retry > 3:
+            if retry > MAX_API_RETRIES:
                 raise
             return await self.get_notes_(game, session=session, retry=retry + 1)
 

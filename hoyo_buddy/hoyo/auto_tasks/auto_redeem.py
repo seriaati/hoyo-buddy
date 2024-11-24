@@ -29,6 +29,8 @@ if TYPE_CHECKING:
 
 API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
 MAX_API_ERROR_COUNT = 10
+MAX_API_RETRIES = 3
+RETRY_SLEEP_TIME = 5
 
 
 class AutoRedeem:
@@ -192,12 +194,16 @@ class AutoRedeem:
             else:
                 if embed is not None:
                     cls._total_redeem_count += 1
-                    try:
-                        await cls._bot.dm_user(account.user.id, embed=embed)
-                    except Exception as e:
-                        cls._bot.capture_exception(e)
+                    asyncio.create_task(cls._notify_user(account, embed))
             finally:
                 queue.task_done()
+
+    @classmethod
+    async def _notify_user(cls, account: HoyoAccount, embed: Embed) -> None:
+        try:
+            await cls._bot.dm_user(account.user.id, embed=embed)
+        except Exception as e:
+            cls._bot.capture_exception(e)
 
     @classmethod
     async def _handle_error(
@@ -273,57 +279,71 @@ class AutoRedeem:
         locale: discord.Locale,
         code: str,
         payload: dict[str, str],
+        *,
+        retry: int = 0,
     ) -> tuple[str, str, bool]:
         api_url = PROXY_APIS[api_name]
 
-        logger.debug(f"Redeem payload: {payload}")
+        logger_payload = payload.copy()
+        logger_payload.pop("cookies")
+        logger_payload.pop("token")
+        logger.debug(f"Redeem payload: {logger_payload}")
 
-        async with cls._bot.session.post(f"{api_url}/redeem/", json=payload) as resp:
-            if resp.status == 502:
-                await asyncio.sleep(20)
-                return await cls._redeem_code(api_name, account, locale, code, payload)
+        try:
+            async with cls._bot.session.post(f"{api_url}/redeem/", json=payload) as resp:
+                if resp.status == 502:
+                    await asyncio.sleep(20)
+                    return await cls._redeem_code(api_name, account, locale, code, payload)
 
-            if resp.status in {200, 400, 500}:
-                data = await resp.json()
-                logger.debug(f"Redeem response: {data}")
+                if resp.status in {200, 400, 500}:
+                    data = await resp.json()
 
-                if (cookies := data.get("cookies")) and account.cookies != cookies:
-                    account.cookies = decrypt_string(cookies)
-                    await account.save(update_fields=("cookies",))
+                    logger_data = data.copy()
+                    logger_data.pop("cookies", None)
+                    logger.debug(f"Redeem response: {logger_data}")
 
-                if resp.status == 200:
-                    await account.client._add_to_redeemed_codes(code)
-                    return (code, LocaleStr(key="redeem_code.success").translate(locale), True)
+                    if (cookies := data.get("cookies")) and account.cookies != cookies:
+                        account.cookies = decrypt_string(cookies)
+                        await account.save(update_fields=("cookies",))
 
-                if resp.status == 400:
-                    if data["retcode"] == 1001:
-                        # Redemption cooldown
-                        await asyncio.sleep(20)
-                        return await cls._redeem_code(api_name, account, locale, code, payload)
+                    if resp.status == 200:
+                        await account.client._add_to_redeemed_codes(code)
+                        return (code, LocaleStr(key="redeem_code.success").translate(locale), True)
 
-                    e = genshin.GenshinException(data)
-                    if e.retcode in {999, 1000}:
-                        # Cookie token expired or refresh failed
-                        raise e
+                    if resp.status == 400:
+                        if data["retcode"] == 1001:
+                            # Redemption cooldown
+                            await asyncio.sleep(20)
+                            return await cls._redeem_code(api_name, account, locale, code, payload)
 
-                    if e.retcode == -2006:
-                        # Code reached max redemption limit
-                        cls._dead_codes.add(code)
+                        e = genshin.GenshinException(data)
+                        if e.retcode in {999, 1000}:
+                            # Cookie token expired or refresh failed
+                            raise e
 
-                    embed, recognized = get_error_embed(e, locale)
-                    if not recognized:
-                        raise e
+                        if e.retcode == -2006:
+                            # Code reached max redemption limit
+                            cls._dead_codes.add(code)
 
-                    await account.client._add_to_redeemed_codes(code)
-                    assert embed.title is not None
+                        embed, recognized = get_error_embed(e, locale)
+                        if not recognized:
+                            raise e
 
-                    if embed.description is None:
-                        return (code, embed.title, False)
-                    return (code, f"{embed.title}\n{embed.description}", False)
+                        await account.client._add_to_redeemed_codes(code)
+                        assert embed.title is not None
 
-                # 500
-                msg = f"API {api_name} errored: {data['message']}"
+                        if embed.description is None:
+                            return (code, embed.title, False)
+                        return (code, f"{embed.title}\n{embed.description}", False)
+
+                    # 500
+                    msg = f"API {api_name} errored: {data['message']}"
+                    raise RuntimeError(msg)
+
+                msg = f"API {api_name} returned {resp.status}"
                 raise RuntimeError(msg)
-
-            msg = f"API {api_name} returned {resp.status}"
-            raise RuntimeError(msg)
+        except Exception:
+            if retry > MAX_API_RETRIES:
+                raise
+            await asyncio.sleep(RETRY_SLEEP_TIME)
+            return await cls._redeem_code(api_name, account, locale, code, payload, retry=retry + 1)

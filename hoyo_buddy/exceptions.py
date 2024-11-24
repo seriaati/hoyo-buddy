@@ -200,3 +200,11 @@ class NoGachaLogFoundError(HoyoBuddyError):
 class LeaderboardNotFoundError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(title=LocaleStr(key="leaderboard_not_found"))
+
+
+class CannotUseAkashaGuildModeError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr(key="akasha_guild_mode_not_supported"),
+            message=LocaleStr(key="akasha_guild_mode_not_supported_desc"),
+        )

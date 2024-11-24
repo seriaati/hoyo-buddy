@@ -718,3 +718,9 @@ challenge_command_pf_desc: Generate Pure Fiction card
 challenge_command_apc_shadow_desc: Generate Apocalyptic Shadow card
 challenge_command_shiyu_desc: Generate Shiyu Defense card
 account_select_placeholder: Select an account...
+guild_only_command_param_name: guild-only
+guild_only_command_param_desc: Only show guild members' rankings in the leaderboard
+yes_choice: "Yes"
+no_choice: "No"
+akasha_guild_mode_not_supported: Guild-Only Mode Cannot be Used
+akasha_guild_mode_not_supported_desc: "You must be in a guild, the guild member count is less than 100, and the total number of Genshin accounts of your guild members is less than 30."

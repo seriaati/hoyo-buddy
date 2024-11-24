@@ -12,17 +12,24 @@ from hoyo_buddy.constants import locale_to_akasha_lang
 from hoyo_buddy.db.models import HoyoAccount, get_locale
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, LeaderboardType
-from hoyo_buddy.exceptions import AccountNotFoundError, LeaderboardNotFoundError
+from hoyo_buddy.exceptions import (
+    AccountNotFoundError,
+    LeaderboardNotFoundError,
+    NoAccountFoundError,
+)
 from hoyo_buddy.hoyo.clients.ambr import ItemCategory
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.types import User  # noqa: TC001
-from hoyo_buddy.ui.hoyo.leaderboard.akasha import AkashaLbPaginator
+from hoyo_buddy.ui.hoyo.leaderboard.akasha import DynamicAkashaLbPaginator, StaticAkashaLbPaginator
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot.bot import HoyoBuddy
     from hoyo_buddy.types import Interaction
+
+GUILD_ONLY_MAX_MEMBER_COUNT = 100
+GUILD_ONLY_MAX_UID_COUNT = 30
 
 
 class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
@@ -41,6 +48,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         calculation_id=app_commands.locale_str("leaderboard", key="akasha_calculation_param"),
         user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
         account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
+        guild_only_=app_commands.locale_str("guild-only", key="guild_only_command_param_name"),
     )
     @app_commands.describe(
         character_id=app_commands.locale_str(
@@ -61,6 +69,16 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             "UID of the player, this overrides the account parameter if provided",
             key="profile_command_uid_param_description",
         ),
+        guild_only_=app_commands.locale_str(
+            "Only show guild members' rankings in the leaderboard",
+            key="guild_only_command_param_desc",
+        ),
+    )
+    @app_commands.choices(
+        guild_only_=[
+            app_commands.Choice(name=app_commands.locale_str("Yes", key="yes_choice"), value=1),
+            app_commands.Choice(name=app_commands.locale_str("No", key="no_choice"), value=0),
+        ]
     )
     async def akasha_command(
         self,
@@ -70,7 +88,9 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
         uid: app_commands.Range[str, 9, 10] | None = None,
+        guild_only_: int = 0,
     ) -> None:
+        guild_only = bool(guild_only_)
         if character_id == "none" or calculation_id == "none" or not calculation_id.isdigit():
             raise LeaderboardNotFoundError
 
@@ -89,11 +109,48 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         await i.response.defer(ephemeral=ephemeral(i))
         locale = await get_locale(i)
 
+        # Guild leaderboard
+        if guild_only and i.guild is None:
+            raise LeaderboardNotFoundError
+        assert i.guild is not None
+        if (
+            guild_only
+            and len([m for m in i.guild.members if not m.bot]) > GUILD_ONLY_MAX_MEMBER_COUNT
+        ):
+            raise LeaderboardNotFoundError
+
+        uids: list[int] = []
+        if guild_only:
+            if not i.guild.chunked:
+                await i.guild.chunk()
+
+            for member in i.guild.members:
+                if member.bot:
+                    continue
+
+                try:
+                    accounts = await self.bot.get_accounts(member.id, (Game.GENSHIN,))
+                except NoAccountFoundError:
+                    continue
+                uids.extend(account.uid for account in accounts)
+
+        uids = list(set(uids))
+        if len(uids) > GUILD_ONLY_MAX_UID_COUNT:
+            raise LeaderboardNotFoundError
+
+        lbs: list[akasha.Leaderboard] = []
+
         async with akasha.AkashaAPI(locale_to_akasha_lang(locale)) as api:
+            if guild_only:
+                lbs_ = await api.get_leaderboard_for_uids(int(calculation_id), uids=uids)
+                if lbs_ is None:
+                    raise LeaderboardNotFoundError
+                lbs.extend(lbs_)
+
             categories = await api.get_categories(character_id)
 
             if uid is not None:
-                you = await api.get_leaderboard_for_uid(int(calculation_id), uid=int(uid))
+                you = await api.get_leaderboard_for_uids(int(calculation_id), uids=int(uid))
             else:
                 you = None
 
@@ -120,15 +177,21 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             .set_thumbnail(url=category.character_icon)
             .set_footer(text=LocaleStr(key="akasha_total_entries", total=category.count))
         )
-        view = AkashaLbPaginator(
-            calculation_id,
-            lb_embed,
-            you,
-            category.count,
-            category.details,
-            author=i.user,
-            locale=locale,
-        )
+
+        if guild_only:
+            view = StaticAkashaLbPaginator(
+                lbs, lb_embed, you, len(lbs), category.count, author=i.user, locale=locale
+            )
+        else:
+            view = DynamicAkashaLbPaginator(
+                calculation_id,
+                lb_embed,
+                you,
+                category.count,
+                category.details,
+                author=i.user,
+                locale=locale,
+            )
         await view.start(i)
 
     @akasha_command.autocomplete("character_id")

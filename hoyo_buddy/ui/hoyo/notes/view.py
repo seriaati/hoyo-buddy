@@ -52,7 +52,7 @@ class NotesView(View):
         self,
         account: HoyoAccount,
         dark_mode: bool,
-        accounts: list[HoyoAccount],
+        accounts: list[HoyoAccount] | None = None,
         *,
         author: User | Member | None,
         locale: Locale,
@@ -63,7 +63,8 @@ class NotesView(View):
         self.accounts = accounts
         self.bytes_obj: io.BytesIO | None = None
 
-        self.add_item(AccountSwitcher(accounts))
+        if accounts is not None:
+            self.add_item(AccountSwitcher(accounts, account))
         self.add_item(ReminderButton())
 
     @staticmethod

@@ -58,7 +58,6 @@ auto_redeem_footer: 使用 /redeem 關閉自動兌換兌換碼功能
 auto_redeem_toggle.label: 自動兌換兌換碼
 books: 書籍
 captcha.embed.description: "點擊下方的按鈕來完成 CAPTCHA\n"
-challenge_command_description: "查看遊戲後期內容的資料，例如深境螺旋、混沌回憶等等"
 challenge_type_select.placeholder: 選擇一個遊戲模式
 challenge_view.buff_used_in: 使用於
 challenge_view.team: "隊伍 {team}"
@@ -375,7 +374,7 @@ read_story.button.label: 閱讀故事
 real_time_notes: 即時便籤
 realm_curr_button.label: 洞天寶錢通知
 realm_curr_modal.title: 洞天寶錢通知設定
-redeeem_code.cookie_token_expired_description: "自動兌換兌換碼功能只有使用電子郵件和密碼登入的使用者才可以使用，你可以透過</accounts> 進行"
+redeeem_code.cookie_token_expired_description: "兌換兌換碼功能只有使用電子郵件和密碼登入的使用者才可以使用，你可以透過</accounts> 進行"
 redeeem_code.cookie_token_expired_title: Cookie Token 已過期
 redeeem_code.cookie_token_refresh_failed_description: "自上次新增帳戶以來，你可能已變更帳戶密碼。\n請使用</accounts>透過電子郵件和密碼的方式重新新增您的帳戶。"
 redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失敗
@@ -533,7 +532,6 @@ characters.sorter.faction: 陣營
 characters.sorter.mindscape_cinema: 意象影畫
 characters.embed.filter_text: "{filter}角色"
 stats_command_description: 查看遊戲帳戶數據
-stats.select_card: 選擇一個遊戲帳戶…
 tears_of_themis: 未定事件簿
 honkai_suit_rarity: "稀有度 {rarity}"
 about_command.designers: 設計師
@@ -702,7 +700,6 @@ leaderboard_not_found: 未能找到該排行榜
 currently_logged_in_as: "你目前登入的身份為:"
 not_you_label: "不是你嗎? 點擊以使用其他帳戶登入"
 profile_show_substat_rolls: 副詞條檔次
-profile_team_show_substat_rolls: 隊伍卡片副詞條檔次
 team_card_settings_button_label: 隊伍卡片設定
 team_card_settings_embed_title: 正在修改隊伍卡片設定
 team_card_settings_embed_description: "隊伍卡片設定在不同遊戲和帳戶之間共享，當卡片樣式不支援時，對某些設定所做的更改可能不會反映在卡片上。\n完成後，點擊上方訊息中的綠色按鈕即可重新繪製卡片。"
@@ -712,3 +709,17 @@ weapon_type_filter_placeholder: 用武器類別篩選…
 redeem_cmd_available_codes: 可用的兌換碼
 redeem_all_available_codes_button_label: 兌換所有可用的兌換碼
 akasha_show_details: 顯示排行榜詳情
+card_settings_hl_special_stats_button_label: 強調特殊角色數值
+challenge_command_abyss_desc: 生成深境螺旋卡片
+challenge_command_theater_desc: 生成幻想真境劇詩卡片
+challenge_command_moc_desc: 生成混沌回憶卡片
+challenge_command_pf_desc: 生成虛構敘事卡片
+challenge_command_apc_shadow_desc: 生成末日幻影卡片
+challenge_command_shiyu_desc: 生程式與防衛戰卡片
+account_select_placeholder: 選擇一個帳戶…
+guild_only_command_param_name: 僅伺服器
+guild_only_command_param_desc: 排行榜僅顯示伺服器成員的排名
+yes_choice: "是"
+no_choice: "否"
+akasha_guild_mode_not_supported: 僅伺服器模式無法使用
+akasha_guild_mode_not_supported_desc: "你必須在一個伺服器內，伺服器的成員數須少於 100，成員的總原神帳戶數量須少於 30。"

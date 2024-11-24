@@ -23,7 +23,7 @@ class StatsCommand:
 
         user = self._user or i.user
         accounts = await i.client.get_accounts(
-            user.id, games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
+            user.id, games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
         )
         if not accounts:
             raise NoAccountFoundError

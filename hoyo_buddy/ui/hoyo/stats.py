@@ -36,7 +36,9 @@ class StatsView(View):
         self.account = accounts[0]
         self.add_item(AccountSwitcher(accounts, self.account))
 
-    def _get_user_embed(self, *, level: int, fields: dict[str, Any], avatar: str) -> DefaultEmbed:
+    def _get_user_embed(
+        self, *, level: int, fields: dict[str, Any], avatar: str | None
+    ) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
             title=self.account.blurred_display,
@@ -104,6 +106,24 @@ class StatsView(View):
         }
         return self._get_user_embed(level=card.level, fields=fields, avatar=user.in_game_avatar)
 
+    def get_honkai_user_embed(self, user: genshin.models.HonkaiUserStats) -> DefaultEmbed:
+        stats = user.stats
+        fields = {
+            "active_day_number": stats.active_days,
+            "suit_number": stats.outfits,
+            "armor_number": stats.battlesuits,
+            "sss_armor_number": stats.battlesuits_SSS,
+            "weapon_number": stats.weapons,
+            "weapon_number_5": stats.weapons_5star,
+            "stigmata_number": stats.stigmata,
+            "stigmata_number_5": stats.stigmata_5star,
+            "explain_text_2": stats.abyss.score,
+            "explain_text_4": stats.memorial_arena.score,
+        }
+        return self._get_user_embed(
+            level=user.info.level, fields=fields, avatar=user.info.in_game_avatar
+        )
+
     async def start(self, i: Interaction, *, acc_select: AccountSwitcher | None = None) -> None:
         client = self.account.client
         client.set_lang(self.locale)
@@ -118,6 +138,9 @@ class StatsView(View):
             card = next(card for card in record_cards if card.uid == self.account.uid)
             user = await client.get_zzz_user(self.account.uid)
             embed = self.get_zzz_user_embed(user, card)
+        elif self.account.game is Game.HONKAI:
+            user = await client.get_honkai_user(self.account.uid)
+            embed = self.get_honkai_user_embed(user)
         else:
             raise FeatureNotImplementedError(game=self.account.game)
 

@@ -787,7 +787,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.2"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#d1726ca7ee3b871f936edd3260a67624d94c804a" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#2ca07e1b29a9652356defa158860d60faad8b440" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },

@@ -54,7 +54,7 @@ class BaseAkashaLbPaginator(PaginatorView):
         crit_dmg = round(lb.stats[akasha.CharaStatType.CRIT_DMG].value * 100, 1)
         crit_value = round(lb.crit_value, 1)
         damage = int(round(lb.calculation.result, 0))
-        return f"{lb.rank}. [{lb.owner.nickname}]({profile_url}) - **{damage:,}** - {crit_value} CV ({crit_rate}/{crit_dmg})"
+        return f"`{lb.rank}.` [{lb.owner.nickname}]({profile_url}) - **{damage:,}** - {crit_value} CV ({crit_rate}/{crit_dmg})"
 
     def get_page_embed(self, lbs: Sequence[akasha.Leaderboard]) -> DefaultEmbed:
         embed = self.lb_embed.copy()

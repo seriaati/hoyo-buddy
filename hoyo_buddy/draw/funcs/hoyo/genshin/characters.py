@@ -118,9 +118,9 @@ def draw_small_gi_chara_card(
     )
 
     friend_textbbox = drawer.write(
-        str(character.friendship), size=18, position=(284, 151), anchor="mm"
+        str(character.friendship), size=18, position=(284, 153), anchor="mm"
     )
-    talent_textbbox = drawer.write(talent_str, size=18, position=(405, 151), anchor="mm")
+    talent_textbbox = drawer.write(talent_str, size=18, position=(405, 153), anchor="mm")
 
     size = 4
     space = talent_textbbox[0] - friend_textbbox[2]

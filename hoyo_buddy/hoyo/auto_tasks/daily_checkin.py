@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import os
+from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar, Literal
 
 import discord
@@ -21,12 +22,14 @@ API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
 MAX_API_ERROR_COUNT = 10
 MAX_API_RETRIES = 3
 RETRY_SLEEP_TIME = 5
+CHECKIN_SLEEP_TIME = 2.5
 
 
 class DailyCheckin:
     _total_checkin_count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
     _no_error_notify: ClassVar[bool]
+    _embeds: ClassVar[defaultdict[int, list[Embed]]]  # Account ID -> embeds
 
     @classmethod
     async def execute(
@@ -38,6 +41,7 @@ class DailyCheckin:
             cls._total_checkin_count = 0
             cls._bot = bot
             cls._no_error_notify = no_error_notify
+            cls._embeds = defaultdict(list)
 
             queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
             the_rest: list[HoyoAccount] = []
@@ -72,9 +76,19 @@ class DailyCheckin:
                     cls._bot.capture_exception(e)
                 else:
                     cls._total_checkin_count += 1
-                    await cls._notify_checkin_result(account, embed)
+                    cls._embeds[account.id].append(embed)
                 finally:
-                    await asyncio.sleep(2.3)
+                    await asyncio.sleep(CHECKIN_SLEEP_TIME)
+
+            # Send embeds
+            for account_id, embeds in cls._embeds.items():
+                account = next((a for a in accounts if a.id == account_id), None)
+                if account is None:
+                    continue
+
+                for embed in embeds:
+                    await cls._notify_checkin_result(account, embed)
+                    await asyncio.sleep(CHECKIN_SLEEP_TIME)
 
         except Exception as e:
             bot.capture_exception(e)
@@ -115,9 +129,9 @@ class DailyCheckin:
                     raise RuntimeError(msg) from None
             else:
                 cls._total_checkin_count += 1
-                asyncio.create_task(cls._notify_checkin_result(account, embed))
+                cls._embeds[account.id].append(embed)
             finally:
-                await asyncio.sleep(2.5)
+                await asyncio.sleep(CHECKIN_SLEEP_TIME)
                 queue.task_done()
 
     @classmethod

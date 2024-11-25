@@ -75,9 +75,4 @@ if __name__ == "__main__":
     else:
         install()
 
-    try:
-        import uvloop  # pyright: ignore [reportMissingImports]
-    except ModuleNotFoundError:
-        asyncio.run(main())
-    else:
-        uvloop.run(main())
+    asyncio.run(main())

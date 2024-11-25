@@ -17,27 +17,23 @@ class Metrics(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
+    def _get_command_name(self, command: app_commands.Command) -> str:
+        if command.parent is not None:
+            if command.parent.parent is not None:
+                return f"{command.parent.parent.name} {command.parent.name} {command.name}"
+            return f"{command.parent.name} {command.name}"
+        return command.name
+
     @commands.Cog.listener()
     async def on_interaction(self, i: Interaction) -> None:
-        match i.type:
-            case InteractionType.application_command:
-                if isinstance(i.command, app_commands.Command):
-                    parameters = i.namespace.__dict__
-                    guild_str = f"[{i.guild.id}]" if i.guild else ""
-                    if i.command.parent is None:
-                        logger.info(
-                            f"[Command]{guild_str}[{i.user.id}] {i.command.name}",
-                            parameters=parameters,
-                        )
-                        await CommandMetric.increment(i.command.name)
-                    else:
-                        logger.info(
-                            f"[Command]{guild_str}[{i.user.id}] {i.command.parent.name} {i.command.name}",
-                            parameters=parameters,
-                        )
-                        await CommandMetric.increment(f"{i.command.parent.name} {i.command.name}")
-                elif isinstance(i.command, app_commands.ContextMenu):
-                    await CommandMetric.increment(i.command.name)
+        if i.type is InteractionType.application_command:
+            if isinstance(i.command, app_commands.Command):
+                parameters = i.namespace.__dict__
+                command_name = self._get_command_name(i.command)
+                logger.info(f"[Command][{i.user.id}] {command_name}", parameters=parameters)
+                await CommandMetric.increment(command_name)
+            elif isinstance(i.command, app_commands.ContextMenu):
+                await CommandMetric.increment(i.command.name)
 
 
 async def setup(bot: HoyoBuddy) -> None:

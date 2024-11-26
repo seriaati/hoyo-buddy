@@ -178,9 +178,10 @@ class MOCCard:
         self._write_farthest_stage()
         self._write_battles_fought()
 
-        self._data.floors.reverse()
+        floors = list(self._data.floors)
+        floors.reverse()
         pos = (83, 492)
-        for i, stage in enumerate(self._data.floors[-6:]):
+        for i, stage in enumerate(floors[-6:]):
             stage_im = self._draw_stage(stage)
             self._im.paste(stage_im, pos, stage_im)
             pos = (pos[0] + 779, pos[1])

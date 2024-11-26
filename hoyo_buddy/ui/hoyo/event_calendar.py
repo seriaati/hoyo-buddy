@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, TypeAlias
 
 import genshin
+from seria.utils import create_bullet_list
 
 from hoyo_buddy import ui
 from hoyo_buddy.draw.main_funcs import draw_item_list_card
@@ -27,17 +28,43 @@ CalendarItem: TypeAlias = (
     | genshin.models.HSREvent
     | genshin.models.HSRChallenge
 )
+EventItem: TypeAlias = genshin.models.Event | genshin.models.HSREvent
+ChallengeItem: TypeAlias = genshin.models.Event | genshin.models.HSRChallenge
 GICalendarItem: TypeAlias = genshin.models.Banner | genshin.models.Event
 HSRCalendarItem: TypeAlias = (
     genshin.models.EventWarp | genshin.models.HSREvent | genshin.models.HSRChallenge
 )
 
 
-def get_seconds_remaining(item: CalendarItem, cur_game_version: str | None = None) -> LocaleStr:
-    if isinstance(item, GICalendarItem):
-        if isinstance(item, genshin.models.Event) and item.status == 1:
-            return LocaleStr(key="unopened", mi18n_game=Game.GENSHIN)
+def event_not_started(item: EventItem | ChallengeItem) -> bool:
+    if isinstance(item, genshin.models.HSREvent):
+        return item.time_info is not None and item.time_info.now < item.time_info.start
+    return item.status == 1
 
+
+def event_is_finished(item: EventItem | ChallengeItem) -> bool:
+    if isinstance(item, genshin.models.HSREvent):
+        return item.all_finished or (
+            item.type is genshin.models.HSREventType.DOUBLE_REWARDS and item.current_progress == 0
+        )
+    if isinstance(item, genshin.models.HSRChallenge):
+        return item.current_progress == item.total_progress
+    if item.abyss_detail is not None:
+        return item.abyss_detail.total_star == item.abyss_detail.max_star
+    if item.theater_detail is not None:
+        return item.theater_detail.max_round == 10
+    return item.is_finished
+
+
+def get_option_desc(item: CalendarItem, cur_game_version: str | None = None) -> LocaleStr:
+    if isinstance(item, EventItem) and event_not_started(item):
+        return LocaleStr(key="unopened", mi18n_game=Game.GENSHIN)
+
+    finished = False
+    if isinstance(item, EventItem | ChallengeItem) and event_is_finished(item):
+        finished = True
+
+    if isinstance(item, GICalendarItem):
         seconds = item.countdown_seconds
     elif item.time_info is None:
         return LocaleStr(key="going", mi18n_game=Game.GENSHIN)
@@ -47,10 +74,15 @@ def get_seconds_remaining(item: CalendarItem, cur_game_version: str | None = Non
         and item.version != cur_game_version
     ):
         return UnlocksInStr(item.time_info.start - item.time_info.now)
-    elif item.time_info.now < item.time_info.start:
-        return LocaleStr(key="unopened", mi18n_game=Game.GENSHIN)
     else:
         seconds = item.time_info.end - item.time_info.now
+
+    if finished:
+        return LocaleStr(
+            custom_str="{fin} | {time}",
+            fin=LocaleStr(key="notes-card.gi.expedition-finished"),
+            time=TimeRemainingStr(seconds),
+        )
     return TimeRemainingStr(seconds)
 
 
@@ -77,6 +109,7 @@ class EventCalendarView(ui.View):
     ) -> None:
         super().__init__(author=author, locale=locale)
         self.dark_mode = dark_mode
+        self.calendar = calendar
 
         if isinstance(calendar, genshin.models.GenshinEventCalendar):
             banners: list[genshin.models.Banner] = []
@@ -92,10 +125,31 @@ class EventCalendarView(ui.View):
         self.add_item(EventSelector(calendar.events))
         self.add_item(ChallengeSelector(calendar.challenges))
 
+    @property
+    def embed(self) -> DefaultEmbed:
+        in_progress: list[EventItem | ChallengeItem] = [
+            event
+            for event in list(self.calendar.events) + list(self.calendar.challenges)
+            if not event_is_finished(event) and not event_not_started(event)
+        ]
+        names: list[str] = []
+        for event in in_progress:
+            if isinstance(event, ChallengeItem):
+                name = ChallengeSelector.get_option_name(event)
+                if isinstance(name, LocaleStr):
+                    name = name.translate(self.locale)
+                names.append(name)
+            else:
+                names.append(event.name)
+
+        return DefaultEmbed(
+            self.locale,
+            title=LocaleStr(key="going", mi18n_game=Game.GENSHIN),
+            description=create_bullet_list(names),
+        )
+
     async def draw_rewards_card(
-        self,
-        bot: HoyoBuddy,
-        event: genshin.models.Event | genshin.models.HSREvent | genshin.models.HSRChallenge,
+        self, bot: HoyoBuddy, event: EventItem | genshin.models.HSRChallenge
     ) -> discord.File:
         items = [
             ItemWithTrailing(icon=i.icon, title=i.name, trailing=str(i.num) if i.num > 0 else "-")
@@ -114,7 +168,7 @@ class EventCalendarView(ui.View):
         )
 
     async def start(self, i: Interaction) -> None:
-        await i.followup.send(view=self)
+        await i.followup.send(embed=self.embed, view=self)
         self.message = await i.original_response()
 
 
@@ -138,7 +192,7 @@ class BannerSelector(ItemSelector):
             options=[
                 ui.SelectOption(
                     label=self.get_option_name(b),
-                    description=get_seconds_remaining(b, cur_game_version=cur_game_version),
+                    description=get_option_desc(b, cur_game_version=cur_game_version),
                     value=str(b.id),
                 )
                 for b in banners
@@ -208,19 +262,16 @@ class EventSelector(ItemSelector):
         super().__init__(
             placeholder=LocaleStr(key="events_view_ann_select_placeholder"),
             options=[
-                ui.SelectOption(label=e.name, description=get_seconds_remaining(e), value=str(e.id))
+                ui.SelectOption(label=e.name, description=get_option_desc(e), value=str(e.id))
                 for e in events
             ],
         )
         self.events = events
 
-    def get_embed(self, event: genshin.models.Event | genshin.models.HSREvent) -> DefaultEmbed:
-        finished = (
-            event.is_finished if isinstance(event, genshin.models.Event) else event.all_finished
-        )
+    def get_embed(self, event: EventItem) -> DefaultEmbed:
         finished_str = (
             LocaleStr(key="notes-card.gi.expedition-finished")
-            if finished
+            if event_is_finished(event)
             else LocaleStr(key="going", mi18n_game=Game.GENSHIN)
         )
         embed = (
@@ -304,8 +355,8 @@ class ChallengeSelector(ItemSelector):
             options=[
                 ui.SelectOption(
                     label=self.get_option_name(c),
-                    description=get_seconds_remaining(c),
-                    value=str(c.type),
+                    description=get_option_desc(c),
+                    value=self.get_challenge_type(c),
                 )
                 for c in challenges
             ],
@@ -313,9 +364,7 @@ class ChallengeSelector(ItemSelector):
         self.challenges = challenges
 
     @staticmethod
-    def get_option_name(
-        challenge: genshin.models.HSRChallenge | genshin.models.Event,
-    ) -> LocaleStr | str:
+    def get_option_name(challenge: ChallengeItem) -> LocaleStr | str:
         if isinstance(challenge, genshin.models.Event):
             return challenge.name
 
@@ -327,9 +376,13 @@ class ChallengeSelector(ItemSelector):
             key = "apocalyptic_shadow"
         return LocaleStr(key=key, append=f": {challenge.name}")
 
-    def get_embed(
-        self, challenge: genshin.models.HSRChallenge | genshin.models.Event
-    ) -> DefaultEmbed:
+    @staticmethod
+    def get_challenge_type(challenge: ChallengeItem) -> str:
+        if isinstance(challenge.type, str):
+            return challenge.type
+        return challenge.type.value
+
+    def get_embed(self, challenge: ChallengeItem) -> DefaultEmbed:
         star = None
         max_star = None
         act = None
@@ -381,7 +434,9 @@ class ChallengeSelector(ItemSelector):
         await self.set_loading_state(i)
 
         challenge_type = self.values[0]
-        challenge = next((c for c in self.challenges if c.type == challenge_type), None)
+        challenge = next(
+            (c for c in self.challenges if self.get_challenge_type(c) == challenge_type), None
+        )
         if challenge is None:
             msg = f"Challenge with type {challenge_type} not found."
             raise ValueError(msg)

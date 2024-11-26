@@ -26,7 +26,6 @@ from hoyo_buddy.hoyo.clients.hakushin import HakushinZZZClient
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import (
-    GWRecord,
     SRGFRecord,
     StarDBRecord,
     StarRailStationRecord,
@@ -95,40 +94,6 @@ class GachaCommand:
                 rarity=record.rarity,
                 item_id=record.item_id,
                 banner_type=record.banner_type,
-                account=account,
-                time=record.time,
-            )
-            if created:
-                count += 1
-
-        return count
-
-    async def _gw_import(
-        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
-    ) -> int:
-        """Genshin Wizard import."""
-        self._validate_file_ext(file, "csv")
-
-        bytes_ = await file.read()
-        records_df = await i.client.loop.run_in_executor(
-            i.client.executor, pd.read_csv, io.BytesIO(bytes_)
-        )
-        data: list[dict[str, Any]] = records_df.to_dict(orient="records")  # pyright: ignore[reportAssignmentType]
-        records = [GWRecord(**record) for record in data[:-1]]
-        records.sort(key=lambda x: x.id)
-
-        item_ids = await get_item_ids(
-            i.client.session, item_names=[record.name for record in records]
-        )
-
-        count = 0
-
-        for record in records:
-            created = await GachaHistory.create(
-                wish_id=record.id,
-                rarity=record.rarity,
-                item_id=item_ids[record.name],
-                banner_type=record.banner,
                 account=account,
                 time=record.time,
             )
@@ -496,8 +461,6 @@ class GachaCommand:
                 count = await self._stardb_import(i, account=account, file=file)
             elif source is GachaImportSource.UIGF:
                 count = await self._uigf_import(i, account=account, file=file)
-            elif source is GachaImportSource.GENSHIN_WIZARD:
-                count = await self._gw_import(i, account=account, file=file)
             else:  # SRGF
                 count = await self._srgf_import(i, account=account, file=file)
         except Exception as e:

@@ -142,7 +142,6 @@ class GachaImportSource(StrEnum):
     STAR_DB = "stardb.gg"
     UIGF = "UIGF"
     SRGF = "SRGF"
-    GENSHIN_WIZARD = "Genshin Wizard"
 
 
 class LeaderboardType(StrEnum):

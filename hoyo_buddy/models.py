@@ -399,29 +399,3 @@ class SRGFRecord(BaseModel):
         return value.replace(
             tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
         )
-
-
-class GWRecord(BaseModel):
-    rarity: int = Field(alias="Rarity")
-    id: int = Field(alias="ID")
-    name: str = Field(alias="Name")
-    time: datetime.datetime = Field(alias="Date")
-    banner: int = Field(alias="Banner")
-
-    @field_validator("time")
-    @classmethod
-    def __add_timezone(cls, value: datetime.datetime) -> datetime.datetime:
-        return value.replace(tzinfo=datetime.UTC)
-
-    @field_validator("banner", mode="before")
-    @classmethod
-    def __convert_banner(
-        cls, value: Literal["Weapon", "Character", "Permanent", "Chronicled", "Novice"]
-    ) -> int:
-        return {
-            "Weapon": 302,
-            "Character": 301,
-            "Permanent": 200,
-            "Chronicled": 500,
-            "Novice": 100,
-        }[value]

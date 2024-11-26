@@ -187,6 +187,10 @@ class GenshinClient(ProxyGenshinClient):
         self._account = account
 
     def set_lang(self, locale: Locale) -> None:
+        if self._account.game is Game.STARRAIL and locale is Locale.turkish:
+            self.lang = "en-us"
+            return
+
         self.lang = (
             "zh-cn"
             if self.region is genshin.Region.CHINESE

@@ -218,7 +218,7 @@ class Others(commands.Cog):
 
         await i.response.defer(ephemeral=ephemeral(i))
         url = await upload_image(i.client.session, image_url=image.url)
-        await i.followup.send(f"\{url}", ephemeral=True)  # pyright: ignore[reportInvalidStringEscapeSequence] # noqa: W605
+        await i.followup.send(f"<{url}>", ephemeral=True)
 
 
 async def setup(bot: HoyoBuddy) -> None:

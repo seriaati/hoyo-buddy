@@ -118,7 +118,6 @@ class Translator:
     def __init__(self) -> None:
         super().__init__()
 
-        self._not_translated: set[str] = set()
         self._synced_commands: dict[str, int] = {}
         self._localizations: dict[str, dict[str, str]] = {}
         self._mi18n: dict[tuple[str, str], dict[str, str]] = {}
@@ -235,8 +234,7 @@ class Translator:
         else:
             source_string = self._localizations[SOURCE_LANG].get(string_key)
 
-        if string.translate_ and source_string is None and string_key not in self._not_translated:
-            self._not_translated.add(string_key)
+        if string.translate_ and source_string is None and string.custom_str is None:
             logger.warning(f"String {string_key!r} is missing in source lang file")
 
         lang = locale.value.replace("-", "_")

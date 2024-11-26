@@ -14,7 +14,7 @@ from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.components import Button, PaginatorSelect, Select, SelectOption, View
 from hoyo_buddy.ui.paginator import Page, PaginatorView
-from hoyo_buddy.utils import ephemeral, format_ann_content
+from hoyo_buddy.utils import format_ann_content
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

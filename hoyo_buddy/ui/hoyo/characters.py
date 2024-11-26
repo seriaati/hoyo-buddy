@@ -33,7 +33,7 @@ from ...constants import (
     YATTA_PATH_TO_GPY_PATH,
     contains_traveler_id,
 )
-from ...db.models import JSONFile, draw_locale
+from ...db.models import JSONFile, draw_locale, get_dyk
 from ...embeds import DefaultEmbed
 from ...emojis import (
     FILTER,
@@ -642,7 +642,9 @@ class CharactersView(View):
         embed = self._get_embed(len([c for c in characters if not isinstance(c, UnownedCharacter)]))
 
         await self._add_items()
-        await i.edit_original_response(attachments=[file_], view=self, embed=embed)
+        await i.edit_original_response(
+            content=await get_dyk(i), attachments=[file_], view=self, embed=embed
+        )
         self.message = await i.original_response()
 
     async def item_callback(

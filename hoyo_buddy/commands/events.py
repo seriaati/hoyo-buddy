@@ -9,16 +9,22 @@ from hoyo_buddy.ui.hoyo.events import EventsView
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
-    from ..types import Interaction
+    from ..types import Interaction, User
 
 
 class EventsCommand:
     @staticmethod
-    async def run(i: Interaction, *, account: HoyoAccount) -> None:
+    async def run(i: Interaction, *, user: User, account: HoyoAccount | None) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
         settings = await Settings.get(user_id=i.user.id)
         locale = settings.locale or i.locale
+
+        user = user or i.user
+        account = account or await i.client.get_account(
+            user.id, games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
+        )
+
         client = account.client
         client.set_lang(locale)
 

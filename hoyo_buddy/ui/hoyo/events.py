@@ -75,15 +75,7 @@ class EventsView(View):
         client.set_lang(self.locale)
         zh_client = ProxyGenshinClient(lang="zh-tw")
 
-        if self.account.game is Game.GENSHIN:
-            self.anns = await client.get_genshin_announcements()
-            zh_anns = await zh_client.get_genshin_announcements()
-            keyword = "祈願："  # noqa: RUF001
-        elif self.account.game is Game.STARRAIL:
-            self.anns = await client.get_starrail_announcements()
-            zh_anns = await zh_client.get_starrail_announcements()
-            keyword = "活動躍遷"
-        elif self.account.game is Game.ZZZ:
+        if self.account.game is Game.ZZZ:
             self.anns = await client.get_zzz_announcements()
             zh_anns = await zh_client.get_zzz_announcements()
             keyword = "調頻"

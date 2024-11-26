@@ -349,17 +349,26 @@ class Hoyo(commands.Cog):
         ),
     )
     @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
     )
     @app_commands.describe(
+        user=app_commands.locale_str(
+            "User to search the accounts with, defaults to you",
+            key="user_autocomplete_param_description",
+        ),
         account=app_commands.locale_str(
-            "Account to run this command with", key="acc_no_default_param_desc"
-        )
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        ),
     )
     async def events_command(
-        self, i: Interaction, account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer]
+        self,
+        i: Interaction,
+        user: User = None,
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
-        await EventsCommand.run(i, account=account)
+        await EventsCommand.run(i, user=user, account=account)
 
     @geetest_command.autocomplete("type_")
     async def geetest_type_autocomplete(

@@ -723,3 +723,11 @@ yes_choice: "Yes"
 no_choice: "No"
 akasha_guild_mode_not_supported: Guild-Only Mode Cannot be Used
 akasha_guild_mode_not_supported_desc: "You must be in a guild, the guild member count is less than 100, and the total number of Genshin accounts of your guild members is less than 30."
+time_remaining_str: "Time Remaining: {time}"
+banner_selector_placeholder: Select a banner...
+event_selector_placeholder: Select an event...
+rarity_str: "{rarity} star"
+finished_status_field_name: Status
+event_finished: Finished
+unlocks_in_str: "Unlocks in {time}"
+challenge_selector_placeholder: Select a challenge...

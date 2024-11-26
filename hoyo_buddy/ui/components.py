@@ -422,6 +422,10 @@ class Select(discord.ui.Select, Generic[V_co]):
         for option in self.options:
             option.default = option.value in values
 
+    def reset_options_defaults(self) -> None:
+        for option in self.options:
+            option.default = False
+
 
 NEXT_PAGE = SelectOption(
     label=LocaleStr(key="next_page_option_label"), value="next_page", emoji=emojis.FORWARD

@@ -31,8 +31,6 @@ def draw_item_list(
     title_left_padding = 144
     description_top_padding = 76
     description_left_padding = 144
-    trailing_top_padding = 40
-    trailing_left_pading = 644
 
     rows = min(6, len(items))
     columns = 2 if len(items) > 6 else 1
@@ -55,21 +53,14 @@ def draw_item_list(
             icon = drawer.circular_crop(icon)
             im.paste(icon, (pos[0] + icon_top_left_padding, pos[1] + icon_top_left_padding), icon)
 
-        drawer.write(
-            item.title,
-            size=32,
-            position=(pos[0] + title_left_padding, pos[1] + title_top_padding),
-            color=DARK_ON_SURFACE if drawer.dark_mode else LIGHT_ON_SURFACE,
-            style="medium",
-            anchor="lm" if is_trailing else None,
-        )
-
+        tbox = None
         if isinstance(item, ItemWithTrailing):
-            drawer.write(
+            tbox = drawer.write(
                 item.trailing,
                 size=22,
-                position=(pos[0] + trailing_left_pading, pos[1] + trailing_top_padding),
+                position=(pos[0] + card_size[0] - 48, pos[1] + 56),
                 color=DARK_ON_SURFACE_VARIANT if drawer.dark_mode else LIGHT_ON_SURFACE,
+                anchor="rm",
             )
         else:
             drawer.write(
@@ -78,6 +69,16 @@ def draw_item_list(
                 position=(pos[0] + description_left_padding, pos[1] + description_top_padding),
                 color=DARK_ON_SURFACE_VARIANT if drawer.dark_mode else LIGHT_ON_SURFACE,
             )
+
+        drawer.write(
+            item.title,
+            size=32,
+            position=(pos[0] + title_left_padding, pos[1] + title_top_padding),
+            color=DARK_ON_SURFACE if drawer.dark_mode else LIGHT_ON_SURFACE,
+            style="medium",
+            anchor="lm" if is_trailing else None,
+            max_width=528 if tbox is None else tbox.left - 32 - title_left_padding,
+        )
 
     buffer = BytesIO()
     im.save(buffer, format="PNG")

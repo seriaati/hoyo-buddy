@@ -48,7 +48,7 @@ MI18N_FILES = {
     Game.GENSHIN: "m11241040191111",
     Game.STARRAIL: "m20230509hy150knmyo",
     Game.ZZZ: "m20240410hy38foxb7k",
-    Game.HONKAI: "m20240627hy298aaccg"
+    Game.HONKAI: "m20240627hy298aaccg",
 }
 
 
@@ -95,6 +95,23 @@ class LevelStr(LocaleStr):
 class WeekdayStr(LocaleStr):
     def __init__(self, weekday: int) -> None:
         super().__init__(key=WEEKDAYS[weekday].lower())
+
+
+class TimeRemainingStr(LocaleStr):
+    def __init__(self, timedelta: int | datetime.timedelta) -> None:
+        if isinstance(timedelta, int):
+            timedelta = datetime.timedelta(seconds=timedelta)
+        super().__init__(key="time_remaining_str", time=timedelta)
+
+
+class UnlocksInStr(LocaleStr):
+    def __init__(self, timedelta: datetime.timedelta) -> None:
+        super().__init__(key="unlocks_in_str", time=timedelta)
+
+
+class RarityStr(LocaleStr):
+    def __init__(self, rarity: int) -> None:
+        super().__init__(key="rarity_str", rarity=rarity)
 
 
 class Translator:

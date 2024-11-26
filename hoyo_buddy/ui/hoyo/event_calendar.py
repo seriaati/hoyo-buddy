@@ -206,7 +206,7 @@ class EventSelector(ItemSelector):
         self, events: Sequence[genshin.models.Event] | Sequence[genshin.models.HSREvent]
     ) -> None:
         super().__init__(
-            placeholder=LocaleStr(key="event_selector_placeholder"),
+            placeholder=LocaleStr(key="events_view_ann_select_placeholder"),
             options=[
                 ui.SelectOption(label=e.name, description=get_seconds_remaining(e), value=str(e.id))
                 for e in events

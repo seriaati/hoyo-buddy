@@ -366,7 +366,12 @@ class ChallengeSelector(ItemSelector):
     @staticmethod
     def get_option_name(challenge: ChallengeItem) -> LocaleStr | str:
         if isinstance(challenge, genshin.models.Event):
-            return challenge.name
+            name = challenge.name
+            if challenge.abyss_detail is not None:
+                name = f"{name} ({challenge.abyss_detail.total_star}/{challenge.abyss_detail.max_star})"
+            if challenge.theater_detail is not None:
+                name = f"{name} ({challenge.theater_detail.max_round or "-"}/10)"
+            return name
 
         if challenge.type is genshin.models.ChallengeType.MOC:
             key = "memory_of_chaos"
@@ -374,7 +379,14 @@ class ChallengeSelector(ItemSelector):
             key = "pure_fiction"
         else:
             key = "apocalyptic_shadow"
-        return LocaleStr(key=key, append=f": {challenge.name}")
+
+        name = LocaleStr(key=key, append=f": {challenge.name}")
+        return LocaleStr(
+            custom_str="{name} ({star}/{max_star})",
+            name=name,
+            star=challenge.current_progress,
+            max_star=challenge.total_progress,
+        )
 
     @staticmethod
     def get_challenge_type(challenge: ChallengeItem) -> str:

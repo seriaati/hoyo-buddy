@@ -35,6 +35,7 @@ def draw_character_card(
     for character in characters:
         if isinstance(character, UnownedGICharacter):
             talent_str = ""
+            two_digits = False
         else:
             talent_order = talent_orders.get(character.id)
             if talent_order is None:
@@ -46,9 +47,10 @@ def draw_character_card(
                     for talent_id in talent_order
                 ]
 
-            talent_str = "/".join(str(t.level) if t is not None else "?" for t in talents)
+            talent_str = " / ".join(str(t.level) if t is not None else "?" for t in talents)  # noqa: RUF001
+            two_digits = any(t.level >= 10 for t in talents if t is not None)
 
-        card = draw_small_gi_chara_card(talent_str, dark_mode, character, locale)
+        card = draw_small_gi_chara_card(talent_str, dark_mode, character, locale, two_digits)
         c_cards[str(character.id)] = card
 
     first_card = next(iter(c_cards.values()))
@@ -97,7 +99,11 @@ def draw_character_card(
 
 
 def draw_small_gi_chara_card(
-    talent_str: str, dark_mode: bool, character: GICharacter | UnownedGICharacter, locale: Locale
+    talent_str: str,
+    dark_mode: bool,
+    character: GICharacter | UnownedGICharacter,
+    locale: Locale,
+    two_digits: bool,
 ) -> Image.Image:
     im = Drawer.open_image(
         f"hoyo-buddy-assets/assets/gi-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png"
@@ -117,15 +123,19 @@ def draw_small_gi_chara_card(
         LevelStr(character.level), size=31, position=(236, 72), locale=locale, style="medium"
     )
 
-    friend_textbbox = drawer.write(
-        str(character.friendship), size=18, position=(284, 153), anchor="mm"
+    friend_tbox = drawer.write(
+        str(character.friendship),
+        size=24,
+        position=(275 if two_digits else 280, 153),
+        anchor="mm",
+        style="bold",
     )
-    talent_textbbox = drawer.write(talent_str, size=18, position=(405, 153), anchor="mm")
+    talent_tbox = drawer.write(talent_str, size=24, position=(380, 153), anchor="mm", style="bold")
 
     size = 4
-    space = talent_textbbox[0] - friend_textbbox[2]
-    x_start = friend_textbbox[2] + space // 2 - size // 2
-    y_start = friend_textbbox[1] + (friend_textbbox[3] - friend_textbbox[1]) // 2 - size // 2
+    space = talent_tbox.left - friend_tbox.right
+    x_start = friend_tbox.right + space // 2 - size // 2
+    y_start = friend_tbox[1] + (friend_tbox[3] - friend_tbox[1]) // 2 - size // 2
     draw.ellipse(
         (x_start, y_start, x_start + size, y_start + size), fill=WHITE if dark_mode else BLACK
     )

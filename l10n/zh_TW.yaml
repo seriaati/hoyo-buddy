@@ -597,7 +597,7 @@ account_add_start_message: "點擊下方按鈕並遵循指示來新增你的帳�
 hbls_button_label: 開始！
 gacha_import_url_modal_title: 輸入抽卡紀錄連結
 gacha_import_embed_title: 導入抽卡紀錄
-gacha_import_embed_description: "抽卡紀錄連結: 從遊戲內獲取一串很長的連結來導入你的抽卡紀錄, 不同遊戲的獲取方式如下:\n- 安卓: [YouTube 影片](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-tw/genshin/wish-import)\n- 崩壞: 星穹鐵道: [Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-tw/warp-import)\n- 絕區零: [zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-tw/zzz/signal-import)\n\n如果你有使用下列的服務之一, 將你的抽卡紀錄導出至指定的檔案格式後即可使用 </gacha upload> 指令將其上傳並導入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json\n6. Genshin Wizard: csv"
+gacha_import_embed_description: "抽卡紀錄連結: 從遊戲內獲取一串很長的連結來導入你的抽卡紀錄, 不同遊戲的獲取方式如下:\n- 安卓: [YouTube 影片](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-tw/genshin/wish-import)\n- 崩壞: 星穹鐵道: [Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-tw/warp-import)\n- 絕區零: [zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-tw/zzz/signal-import)\n\n如果你有使用下列的服務之一, 將你的抽卡紀錄導出至指定的檔案格式後即可使用 </gacha upload> 指令將其上傳並導入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "無法從連結內提取 authkey, 請嘗試其他連結。"
 extract_authkey_error_title: Authkey 提取失敗
 gacha_import_loading_embed_title: 正在導入抽卡紀錄
@@ -723,3 +723,14 @@ yes_choice: "是"
 no_choice: "否"
 akasha_guild_mode_not_supported: 僅伺服器模式無法使用
 akasha_guild_mode_not_supported_desc: "你必須在一個伺服器內，伺服器的成員數須少於 100，成員的總原神帳戶數量須少於 30。"
+time_remaining_str: "剩餘時間: {time}"
+banner_selector_placeholder: 選擇一個卡池…
+rarity_str: "{rarity} 星"
+finished_status_field_name: 狀態
+unlocks_in_str: "在 {time} 後解鎖"
+challenge_selector_placeholder: 選擇一個挑戰…
+upload_cmd_desc: 上傳一張圖片並取得其連結，可以用於 /profile 的自定義圖片功能
+not_an_image_error_title: 不是一張圖片
+not_an_image_error_message: "上傳的檔案並非一張圖片，請使用一個圖片檔案重試。"
+upload_cmd_image_param_name: 圖片
+upload_cmd_image_param_desc: 要上傳的圖片

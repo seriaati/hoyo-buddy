@@ -219,7 +219,7 @@ class EventSelector(ItemSelector):
             event.is_finished if isinstance(event, genshin.models.Event) else event.all_finished
         )
         finished_str = (
-            LocaleStr(key="event_finished")
+            LocaleStr(key="notes-card.gi.expedition-finished")
             if finished
             else LocaleStr(key="going", mi18n_game=Game.GENSHIN)
         )

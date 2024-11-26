@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import itertools
 import os
 from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar, Literal
@@ -23,13 +24,14 @@ MAX_API_ERROR_COUNT = 10
 MAX_API_RETRIES = 3
 RETRY_SLEEP_TIME = 5
 CHECKIN_SLEEP_TIME = 2.5
+DM_SLEEP_TIME = 1.5
 
 
 class DailyCheckin:
     _total_checkin_count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
     _no_error_notify: ClassVar[bool]
-    _embeds: ClassVar[defaultdict[int, list[Embed]]]  # Account ID -> embeds
+    _embeds: ClassVar[defaultdict[int, list[tuple[int, Embed]]]]  # User ID -> (Account ID, Embed)
 
     @classmethod
     async def execute(
@@ -76,19 +78,13 @@ class DailyCheckin:
                     cls._bot.capture_exception(e)
                 else:
                     cls._total_checkin_count += 1
-                    cls._embeds[account.id].append(embed)
+                    cls._embeds[account.user.id].append((account.id, embed))
                 finally:
                     await asyncio.sleep(CHECKIN_SLEEP_TIME)
 
             # Send embeds
-            for account_id, embeds in cls._embeds.items():
-                account = next((a for a in accounts if a.id == account_id), None)
-                if account is None:
-                    continue
-
-                for embed in embeds:
-                    await cls._notify_checkin_result(account, embed)
-                    await asyncio.sleep(CHECKIN_SLEEP_TIME)
+            for user_id, tuple_list in cls._embeds.items():
+                await cls._notify_checkin_result(user_id, tuple_list)
 
         except Exception as e:
             bot.capture_exception(e)
@@ -129,24 +125,63 @@ class DailyCheckin:
                     raise RuntimeError(msg) from None
             else:
                 cls._total_checkin_count += 1
-                cls._embeds[account.id].append(embed)
+                cls._embeds[account.user.id].append((account.id, embed))
             finally:
                 await asyncio.sleep(CHECKIN_SLEEP_TIME)
                 queue.task_done()
 
     @classmethod
-    async def _notify_checkin_result(cls, account: HoyoAccount, embed: Embed) -> None:
+    async def _notify_checkin_result(
+        cls, user_id: int, tuple_list: list[tuple[int, Embed]]
+    ) -> None:
         try:
-            notif_settings = await AccountNotifSettings.get_or_none(account=account)
-            if notif_settings is None:
-                notif_settings = await AccountNotifSettings.create(account=account)
+            notif_settings: dict[int, AccountNotifSettings] = {}
+            embeds: dict[int, Embed] = {}
 
-            if (
-                isinstance(embed, ErrorEmbed)
-                and notif_settings.notify_on_checkin_failure
-                and not cls._no_error_notify
-            ) or (isinstance(embed, DefaultEmbed) and notif_settings.notify_on_checkin_success):
-                await cls._bot.dm_user(account.user.id, embed=embed)
+            for tuple_ in tuple_list:
+                account_id, embed = tuple_
+                notif_setting = await AccountNotifSettings.get_or_none(account_id=account_id)
+                if notif_setting is None:
+                    notif_setting = await AccountNotifSettings.create(account_id=account_id)
+
+                notif_settings[account_id] = notif_setting
+                embeds[account_id] = embed
+
+            typed_embeds: defaultdict[Literal["error", "success"], list[tuple[int, Embed]]] = (
+                defaultdict(list)
+            )
+            for account_id, embed in embeds.items():
+                if isinstance(embed, ErrorEmbed):
+                    typed_embeds["error"].append((account_id, embed))
+                elif isinstance(embed, DefaultEmbed):
+                    typed_embeds["success"].append((account_id, embed))
+
+            notify_on_failure_ids = {
+                account_id
+                for account_id, notif_setting in notif_settings.items()
+                if notif_setting.notify_on_checkin_failure
+            }
+            notify_on_success_ids = {
+                account_id
+                for account_id, notif_setting in notif_settings.items()
+                if notif_setting.notify_on_checkin_success
+            }
+
+            for type_, embed_tuples in typed_embeds.items():
+                embeds_to_send: list[Embed] = []
+                for account_id, embed in embed_tuples:
+                    if (
+                        type_ == "error"
+                        and account_id in notify_on_failure_ids
+                        and not cls._no_error_notify
+                    ) or (type_ == "success" and account_id in notify_on_success_ids):
+                        embeds_to_send.append(embed)
+
+                chunked_embeds = itertools.batched(embeds_to_send, 10)
+                for chunk in chunked_embeds:
+                    await cls._bot.dm_user(user_id, embeds=chunk)
+                    await asyncio.sleep(DM_SLEEP_TIME)
+
         except Exception as e:
             cls._bot.capture_exception(e)
 

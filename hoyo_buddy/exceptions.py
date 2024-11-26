@@ -208,3 +208,11 @@ class CannotUseAkashaGuildModeError(HoyoBuddyError):
             title=LocaleStr(key="akasha_guild_mode_not_supported"),
             message=LocaleStr(key="akasha_guild_mode_not_supported_desc"),
         )
+
+
+class NotAnImageError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr(key="not_an_image_error_title"),
+            message=LocaleStr(key="not_an_image_error_message"),
+        )

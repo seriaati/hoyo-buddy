@@ -731,3 +731,8 @@ finished_status_field_name: Status
 event_finished: Finished
 unlocks_in_str: "Unlocks in {time}"
 challenge_selector_placeholder: Select a challenge...
+upload_cmd_desc: Upload an image and get a link to it, which can be used in custom image in /profile
+not_an_image_error_title: Not an Image
+not_an_image_error_message: "The uploaded file is not an image, please try again with a valid image file."
+upload_cmd_image_param_name: image
+upload_cmd_image_param_desc: Image to upload

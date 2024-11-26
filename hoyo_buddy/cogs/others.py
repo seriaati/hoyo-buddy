@@ -9,6 +9,9 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands, tasks
 
+from hoyo_buddy.constants import IMAGE_EXTENSIONS
+from hoyo_buddy.exceptions import NotAnImageError
+
 from ..db.models import Settings as UserSettings
 from ..db.models import get_dyk
 from ..embeds import DefaultEmbed
@@ -16,7 +19,7 @@ from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
 from ..l10n import LocaleStr
 from ..ui import Button, View
 from ..ui.settings import SettingsUI
-from ..utils import ephemeral, get_discord_user_md_link
+from ..utils import ephemeral, get_discord_user_md_link, upload_image
 
 if TYPE_CHECKING:
     import git
@@ -197,6 +200,25 @@ class Others(commands.Cog):
         view.message = await i.edit_original_response(
             embed=embed, attachments=[image_], view=view, content=await get_dyk(i)
         )
+
+    @app_commands.command(
+        name=app_commands.locale_str("upload"),
+        description=app_commands.locale_str(
+            "Upload an image and get a link to it, which can be used in custom image in /profile",
+            key="upload_cmd_desc",
+        ),
+    )
+    @app_commands.rename(image=app_commands.locale_str("image", key="upload_cmd_image_param_name"))
+    @app_commands.describe(
+        image=app_commands.locale_str("Image to upload", key="upload_cmd_image_param_desc")
+    )
+    async def upload_command(self, i: Interaction, image: discord.Attachment) -> None:
+        if not any(image.filename.endswith(ext) for ext in IMAGE_EXTENSIONS):
+            raise NotAnImageError
+
+        await i.response.defer(ephemeral=ephemeral(i))
+        url = await upload_image(i.client.session, image_url=image.url)
+        await i.followup.send(f"\{url}")  # pyright: ignore[reportInvalidStringEscapeSequence] # noqa: W605
 
 
 async def setup(bot: HoyoBuddy) -> None:

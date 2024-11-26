@@ -101,7 +101,7 @@ def draw_small_hsr_chara_card(
         superimpose=character.equip.rank if character.equip else 0,
     )
     drawer.write(text, size=31, position=(230, 77), locale=locale, style="medium")
-    drawer.write(talent_str, size=18, position=(345, 151), anchor="mm")
+    drawer.write(talent_str, size=18, position=(345, 151), anchor="mm", style="bold")
 
     if character.equip is not None:
         weapon_icon = drawer.open_static(character.equip.icon, size=WEAPON_ICON_SIZES)

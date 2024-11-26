@@ -103,7 +103,7 @@ def draw_agent_small_card(
             text,
             size=42,
             position=(661, 394),
-            style="medium",
+            style="bold",
             anchor="mm",
             color=WHITE if dark_mode else (95, 95, 95),
         )

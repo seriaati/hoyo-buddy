@@ -87,7 +87,6 @@ class EventsView(View):
         self.ann_id = self.anns[0].id
 
     async def start(self, i: Interaction) -> None:
-        await i.response.defer(ephemeral=ephemeral(i))
         await self._fetch_anns()
         self._add_items()
 

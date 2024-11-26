@@ -464,6 +464,11 @@ class PaginatorSelect(Select, Generic[V_co]):
             if option.value in values and option.value not in {NEXT_PAGE.value, PREV_PAGE.value}
         ]
 
+        try:
+            split_options[self.page_index]
+        except IndexError:
+            self.page_index = 0
+
         if self.page_index == 0:
             if len(split_options) == 1:
                 return split_options[0]

@@ -10,6 +10,7 @@ import enka
 import genshin
 import hakushin
 import orjson
+from discord import Locale
 from dotenv import load_dotenv
 
 from ... import models
@@ -34,7 +35,6 @@ from ...utils import set_or_update_dict
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
-    from discord import Locale
 
 load_dotenv()
 env = os.environ["ENV"]

@@ -727,7 +727,6 @@ time_remaining_str: "Time Remaining: {time}"
 banner_selector_placeholder: Select a banner...
 rarity_str: "{rarity} star"
 finished_status_field_name: Status
-event_finished: Finished
 unlocks_in_str: "Unlocks in {time}"
 challenge_selector_placeholder: Select a challenge...
 upload_cmd_desc: "Upload an image and get a link to it, which can be used in custom image in /profile"

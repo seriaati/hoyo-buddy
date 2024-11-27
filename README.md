@@ -40,6 +40,7 @@ Hoyo Buddy integrates features from all Hoyoverse games, supporting both HoYoLAB
 | /check-in | Automatic HoYoLAB/Miyoushe daily reward check-in. | ✅ | ✅ | ✅ | ✅ | ✅ |
 | /characters | View and filter all owned characters.  | ✅ | ✅ | ✅ | ✅ | ❌ |
 | /challenge | View statistics/overview of end-game content. | ✅ | ✅ | ✅ | ❌ | ❌ |
+| /stats | View account statistics.  | ✅ | ✅ | ✅ | ✅ | ❌ |
 | /search | Search anything game-related, including unreleased content. | ✅ | ✅ | ✅ | ❌ | ❌ |
 | /gacha-log | Import, view, and analyze your gacha records. | ✅ | ✅ | ✅ | ❌ | ❌ |
 | /farm reminder | Set reminders for farming materials for a character/weapon. | ✅ | ❌ | ❌ | ❌ | ❌ |

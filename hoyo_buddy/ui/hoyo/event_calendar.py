@@ -88,6 +88,8 @@ def get_option_desc(item: CalendarItem, cur_game_version: str | None = None) -> 
 
 def get_duration_str(banner_or_event: CalendarItem) -> str:
     if isinstance(banner_or_event, GICalendarItem):
+        if banner_or_event.start_time is None or banner_or_event.end_time is None:
+            return ""
         return f"{banner_or_event.start_time.dt.strftime('%Y-%m-%d')} ~ {banner_or_event.end_time.dt.strftime('%Y-%m-%d')}"
 
     if banner_or_event.time_info is None:
@@ -269,11 +271,13 @@ class EventSelector(ItemSelector):
         self.events = events
 
     def get_embed(self, event: EventItem) -> DefaultEmbed:
-        finished_str = (
-            LocaleStr(key="notes-card.gi.expedition-finished")
-            if event_is_finished(event)
-            else LocaleStr(key="going", mi18n_game=Game.GENSHIN)
-        )
+        if event_is_finished(event):
+            status_str = LocaleStr(key="notes-card.gi.expedition-finished")
+        elif event_not_started(event):
+            status_str = LocaleStr(key="unopened", mi18n_game=Game.GENSHIN)
+        else:
+            status_str = LocaleStr(key="going", mi18n_game=Game.GENSHIN)
+
         embed = (
             DefaultEmbed(
                 self.view.locale,
@@ -282,7 +286,7 @@ class EventSelector(ItemSelector):
             )
             .set_image(url="attachment://rewards.png")
             .add_field(
-                name=LocaleStr(key="finished_status_field_name"), value=finished_str, inline=False
+                name=LocaleStr(key="finished_status_field_name"), value=status_str, inline=False
             )
         )
 

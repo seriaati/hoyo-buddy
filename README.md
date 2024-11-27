@@ -43,16 +43,16 @@ Hoyo Buddy integrates features from all Hoyoverse games, supporting both HoYoLAB
 | /stats | View account statistics.  | ✅ | ✅ | ✅ | ✅ | ❌ |
 | /search | Search anything game-related, including unreleased content. | ✅ | ✅ | ✅ | ❌ | ❌ |
 | /gacha-log | Import, view, and analyze your gacha records. | ✅ | ✅ | ✅ | ❌ | ❌ |
-| /farm reminder | Set reminders for farming materials for a character/weapon. | ✅ | ❌ | ❌ | ❌ | ❌ |
-| /exploration | View area exploration statistics. | ✅ | ❌ | ❌ | ❌ | ❌ |
 | /events | View on-going in-game events and banners. | ✅ | ✅ | ✅ | ❌ | ❌ |
+| /exploration | View area exploration statistics. | ✅ | ❌ | ❌ | ❌ | ❌ |
 | /lb view | View leaderboards. | ✅ | ✅ | ✅ | ❌ | ❌ |
-| /farm view | View farmable domain materials in different weekdays. | ✅ | ❌ | ❌ | ❌ | ❌ |
 | /lb akasha | View character damage leaderboard. | ✅ | ❌ | ❌ | ❌ | ❌ |
+| /farm reminder | Set reminders for farming materials for a character/weapon. | ✅ | ❌ | ❌ | ❌ | ❌ |
+| /farm view | View farmable domain materials in different weekdays. | ✅ | ❌ | ❌ | ❌ | ❌ |
 
 ## Goal
 
-The community has been missing a Discord bot that provides support for all Hoyoverse games, and Hoyo Buddy is here to change that. We try to create **ONE** bot that can do **EVERYTHING** for all Hoyoverse games, with beautfiul designs and intuitive interfaces, all for free. Hoyo Buddy is currently the only Discord bot in the market that provides multi-game, multi-account, and multi-language support. For more details, read this [article](https://github.com/seriaati/hoyo-buddy/wiki/Why-Hoyo-Buddy%3F).
+The community has been missing a Discord bot that provides support for all Hoyoverse games, and Hoyo Buddy is here to change that. We try to create **ONE** bot that can do **EVERYTHING** for all Hoyoverse games, with beautfiul designs and intuitive interfaces, all for free. Hoyo Buddy is currently the only Discord bot that provides multi-game, multi-account, and multi-language support. For more details, read this [article](https://github.com/seriaati/hoyo-buddy/wiki/Why-Hoyo-Buddy%3F).
 
 ## Contributing
 

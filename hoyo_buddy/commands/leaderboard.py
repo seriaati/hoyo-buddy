@@ -171,9 +171,12 @@ class LeaderboardCommand:
 
         you = await Leaderboard.get_or_none(type=lb_type, game=account.game, uid=account.uid)
 
-        async with AmbrAPIClient(locale) as api:
-            characters = await api.fetch_characters()
-            character_names = {char.id: char.name for char in characters}
+        if lb_type in {LeaderboardType.ABYSS_DMG, LeaderboardType.THEATER_DMG}:
+            async with AmbrAPIClient(locale) as api:
+                characters = await api.fetch_characters()
+                character_names = {char.id: char.name for char in characters}
+        else:
+            character_names = {}
 
         view = LbPaginator(
             embed,

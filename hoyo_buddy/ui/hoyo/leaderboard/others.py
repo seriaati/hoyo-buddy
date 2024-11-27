@@ -51,9 +51,12 @@ class LbPaginator(PaginatorView):
     def get_lb_line(self, lb: Leaderboard) -> str:
         value = self.process_value(lb.value)
 
-        id_ = lb.extra_info.get("id", "")
-        name = self.character_names.get(str(id_), "???")
-        name = f" {name} "
+        if self.character_names:
+            id_ = lb.extra_info.get("id", "")
+            name = self.character_names.get(str(id_), "???")
+            name = f" {name} "
+        else:
+            name = ""
 
         return f"{lb.rank}. {lb.username} ({blur_uid(lb.uid, arterisk='x')}) - {name}**{value}**"
 

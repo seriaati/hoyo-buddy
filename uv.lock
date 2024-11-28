@@ -601,8 +601,8 @@ dependencies = [
 
 [[package]]
 name = "enka-api"
-version = "2.4.0"
-source = { registry = "https://pypi.org/simple" }
+version = "2.4.1"
+source = { git = "https://github.com/seriaati/enka-py#a81229d386853cf8ad76f46a112cbde71ee9f199" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -610,10 +610,6 @@ dependencies = [
     { name = "loguru" },
     { name = "orjson" },
     { name = "pydantic" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/1d/d6/b18ea214baaafe8f274da5326254509d6694187943082cf5ea36bb1c5b32/enka_api-2.4.0.tar.gz", hash = "sha256:7b863a735cb4cd356463c574f8160e0326a693885c0dd3c5940d20abae44e3d2", size = 95776 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f9/7f/3a3f15af67939a39bdad26e7adfb7e374b67a72bbfcf969e6706fc9a9ab8/enka_api-2.4.0-py3-none-any.whl", hash = "sha256:bccff942982faeca1967afa22e4b0436b833d4f3a6e696becf89ea30bc48326d", size = 59650 },
 ]
 
 [[package]]
@@ -906,7 +902,7 @@ requires-dist = [
     { name = "cachetools", specifier = ">=5.5.0" },
     { name = "cryptography", specifier = ">=43.0.0" },
     { name = "discord-py", git = "https://github.com/Rapptz/discord.py" },
-    { name = "enka-api", specifier = ">=2.2.5" },
+    { name = "enka-api", git = "https://github.com/seriaati/enka-py" },
     { name = "fake-useragent", specifier = ">=1.5.1" },
     { name = "flet", specifier = ">=0.24.0" },
     { name = "fonttools", specifier = ">=4.53.1" },

@@ -50,6 +50,7 @@ genshin = { git = "https://github.com/thesadru/genshin.py", branch = "master" }
 akasha-py = { git = "https://github.com/seriaati/akasha-py" }
 hakushin-py = { git = "https://github.com/seriaati/hakushin-py" }
 discord-py = { git = "https://github.com/Rapptz/discord.py" }
+enka-api = { git = "https://github.com/seriaati/enka-py" }
 
 [tool.pyright]
 enableTypeIgnoreComments = false

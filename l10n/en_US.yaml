@@ -683,7 +683,7 @@ akasha_calculation_param: leaderboard
 akasha_weapon_param: weapon
 akasha_weapon_param_desc: Weapon to view the leaderboard for
 akasha_variant_param: variant
-akasha_variant_param_desc: Variant of the leaderboard to view, defaults to the main one
+akasha_variant_param_desc: "Variant of the leaderboard to view, defaults to the main one"
 akasha_character_param_desc: Character to view the leaderboard for
 akasha_calculation_param_desc: Leaderboard to view
 akasha_total_entries: "Total entries: {total}"

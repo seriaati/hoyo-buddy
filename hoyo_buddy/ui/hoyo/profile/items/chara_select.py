@@ -140,7 +140,7 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
             # The button is not present in the view if view._account is None
             remove_from_cache_btn = view.get_item("profile_remove_from_cache")
             remove_from_cache_btn.disabled = (
-                view.character_type is not CharacterType.CACHE and not is_team
+                is_team or view.character_type is not CharacterType.CACHE
             )
 
         # Enable the player info button
@@ -188,7 +188,9 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
             character_id,
             cache_extras=cache_extras,
             builds=self.view._builds,
-            is_hoyolab=isinstance(character, HoyolabHSRCharacter),
+            is_hoyolab=isinstance(
+                character, HoyolabHSRCharacter | ZZZPartialAgent | HoyolabGICharacter
+            ),
         )
 
         self.update_ui(self.view, character_id=character_id, is_team=is_team)

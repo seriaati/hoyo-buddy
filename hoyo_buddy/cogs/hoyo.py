@@ -7,20 +7,18 @@ from discord import app_commands
 from discord.ext import commands
 
 from hoyo_buddy.commands.events import EventsCommand
+from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
 from hoyo_buddy.utils import ephemeral
 
 from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand
 from ..constants import HB_GAME_TO_GPY_GAME, ZZZ_AGENT_DATA_URL
-from ..db.models import HoyoAccount, JSONFile, Settings, draw_locale, get_dyk, get_locale
-from ..draw.main_funcs import draw_exploration_card
-from ..embeds import DefaultEmbed
+from ..db.models import HoyoAccount, JSONFile, Settings, get_dyk, get_locale
 from ..enums import Game, GeetestType, Platform
 from ..exceptions import FeatureNotImplementedError, InvalidQueryError
 from ..hoyo.clients.ambr import AmbrAPIClient
 from ..hoyo.clients.yatta import YattaAPIClient
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
-from ..models import DrawInput
 from ..types import User  # noqa: TC001
 from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
@@ -230,26 +228,11 @@ class Hoyo(commands.Cog):
 
         user = user or i.user
         account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN,))
-
         settings = await Settings.get(user_id=i.user.id)
         locale = settings.locale or i.locale
-        account_.client.set_lang(locale)
-        genshin_user = await account_.client.get_partial_genshin_user(account_.uid)
 
-        file_ = await draw_exploration_card(
-            DrawInput(
-                dark_mode=settings.dark_mode,
-                locale=draw_locale(locale, account_),
-                session=self.bot.session,
-                filename="exploration.png",
-                executor=i.client.executor,
-                loop=i.client.loop,
-            ),
-            genshin_user,
-        )
-        embed = DefaultEmbed(locale).add_acc_info(account_)
-        embed.set_image(url="attachment://exploration.png")
-        await i.followup.send(embed=embed, files=[file_], content=await get_dyk(i))
+        view = ExplorationView(account_, settings.dark_mode, author=i.user, locale=locale)
+        await view.start(i)
 
     @app_commands.command(
         name=app_commands.locale_str("redeem"),

@@ -45,7 +45,7 @@ class ImgTheaterCard:
         )
 
         stats = self._theater.stats
-        if hasattr(self._theater, "battle_stats"):
+        if hasattr(self._theater, "battle_stats") and self._theater.battle_stats is not None:
             total_cast_time = seconds_to_time(self._theater.battle_stats.total_cast_seconds)
         else:
             total_cast_time = "N/A"
@@ -79,6 +79,8 @@ class ImgTheaterCard:
             return
 
         stats = self._theater.battle_stats
+        if stats is None:
+            return
 
         characters = (
             (stats.max_defeat_character, "max_rout_count"),
@@ -118,7 +120,7 @@ class ImgTheaterCard:
         )
 
     def _draw_act_block(self, act: genshin.models.Act, pos: tuple[int, int]) -> None:
-        if hasattr(self._theater, "battle_stats"):
+        if hasattr(self._theater, "battle_stats") and self._theater.battle_stats is not None:
             fastest_charas = self._theater.battle_stats.fastest_character_list
             is_fastest = [chara.id for chara in fastest_charas] == [
                 chara.id for chara in act.characters

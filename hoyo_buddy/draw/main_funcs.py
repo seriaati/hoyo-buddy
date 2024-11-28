@@ -360,7 +360,7 @@ async def draw_img_theater_card(
 
     icons: list[str] = []
 
-    if hasattr(data, "battle_stats"):
+    if hasattr(data, "battle_stats") and data.battle_stats is not None:
         characters = (
             data.battle_stats.max_damage_character,
             data.battle_stats.max_defeat_character,
@@ -643,6 +643,7 @@ async def draw_shiyu_card(
         bangboo.icon
         for floor in shiyu.floors
         for bangboo in (floor.node_1.bangboo, floor.node_2.bangboo)
+        if bangboo is not None
     )
     await download_images(urls, "shiyu", draw_input.session)
 

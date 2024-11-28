@@ -191,20 +191,21 @@ class ShiyuDefenseCard:
                 bangboo_pos = (pos[0] + 795, pos[1] + (252 if node_index == 0 else 476))
                 im.alpha_composite(bangboo_block, bangboo_pos)
 
-                bangboo_icon = drawer.open_static(bangboo.icon)
-                bangboo_icon = drawer.resize_crop(bangboo_icon, (180, 120))
-                bangboo_icon = drawer.mask_image_with_image(bangboo_icon, bangboo_mask)
-                im.alpha_composite(bangboo_icon, bangboo_pos)
-                im.alpha_composite(bangboo_level_flair, (bangboo_pos[0], bangboo_pos[1] + 86))
+                if bangboo is not None:
+                    bangboo_icon = drawer.open_static(bangboo.icon)
+                    bangboo_icon = drawer.resize_crop(bangboo_icon, (180, 120))
+                    bangboo_icon = drawer.mask_image_with_image(bangboo_icon, bangboo_mask)
+                    im.alpha_composite(bangboo_icon, bangboo_pos)
+                    im.alpha_composite(bangboo_level_flair, (bangboo_pos[0], bangboo_pos[1] + 86))
 
-                drawer.write(
-                    f"Lv.{bangboo.level}",
-                    size=28,
-                    position=(bangboo_pos[0] + 51, bangboo_pos[1] + 103),
-                    color=self.white,
-                    style="bold",
-                    anchor="mm",
-                )
+                    drawer.write(
+                        f"Lv.{bangboo.level}",
+                        size=28,
+                        position=(bangboo_pos[0] + 51, bangboo_pos[1] + 103),
+                        color=self.white,
+                        style="bold",
+                        anchor="mm",
+                    )
 
                 for i in range(3):
                     try:

@@ -75,7 +75,7 @@ class LeaderboardCommand:
 
         for datas in (cur_theater.datas, prev_theater.datas):
             for data in datas:
-                if not data.has_data:
+                if not data.has_data or data.battle_stats is None:
                     continue
 
                 character = data.battle_stats.max_damage_character

@@ -40,6 +40,7 @@ class ZZZAgentCard4:
         self._show_substat_rolls = show_substat_rolls
         self._agent_special_stats = agent_special_stats
         self._hl_special_stats = hl_special_stats
+        self._special_stat_names: set[str] = set()
 
         self.im: Image.Image = None  # pyright: ignore[reportAttributeAccessIssue]
         self.drawer: Drawer = None  # pyright: ignore[reportAttributeAccessIssue]
@@ -195,11 +196,11 @@ class ZZZAgentCard4:
             if prop is None or not isinstance(prop.type, PropType):
                 continue
 
-            color = (
-                drawer.get_agent_special_stat_color(self._color)
-                if self._hl_special_stats and prop.type.value in self._agent_special_stats
-                else (20, 20, 20)
-            )
+            color = (20, 20, 20)
+            if prop.type.value in self._agent_special_stats:
+                self._special_stat_names.add(prop.name)
+                if self._hl_special_stats:
+                    color = drawer.get_agent_special_stat_color(self._color)
 
             prop_icon = drawer.open_asset(
                 f"stat_icons/{STAT_ICONS[prop.type]}",
@@ -371,11 +372,17 @@ class ZZZAgentCard4:
 
             for s, substat in enumerate(disc.properties):
                 substat_pos = (pos[0] + 214 + 280 * (s % 2), pos[1] + 131 + 92 * (s // 2))
+                color = (
+                    drawer.get_agent_special_stat_color(self._color)
+                    if self._hl_special_stats and substat.name in self._special_stat_names
+                    else (20, 20, 20)
+                )
+
                 if isinstance(substat.type, PropType):
                     substat_icon = drawer.open_asset(
                         f"stat_icons/{STAT_ICONS[substat.type]}",
                         size=(64, 64),
-                        mask_color=(20, 20, 20),
+                        mask_color=color,
                         folder="zzz-build-card",
                     )
                     im.alpha_composite(substat_icon, substat_pos)
@@ -383,17 +390,21 @@ class ZZZAgentCard4:
                         substat.value,
                         size=54,
                         position=(
-                            substat_pos[0] + substat_icon.width + 21,
+                            substat_pos[0] + substat_icon.width + 19,
                             substat_pos[1] + substat_icon.height // 2,
                         ),
-                        color=(20, 20, 20),
+                        color=color,
                         anchor="lm",
+                        style="medium",
                     )
 
                 if self._show_substat_rolls:
                     roll_num = get_disc_substat_roll_num(disc.rarity, substat)
                     roll_num_img = drawer.open_asset(
-                        f"rolls/{roll_num}.png", size=(239, 5), folder="zzz-build-card"
+                        f"rolls/{roll_num}.png",
+                        size=(239, 6),
+                        folder="zzz-build-card",
+                        mask_color=color,
                     )
                     im.alpha_composite(roll_num_img, (substat_pos[0], substat_pos[1] + 75))
 

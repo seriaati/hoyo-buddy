@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from io import BytesIO
 from typing import TYPE_CHECKING
 
@@ -46,6 +47,7 @@ class ZZZTeamCard:
         self._show_substat_rolls = show_substat_rolls
         self._agent_special_stat_map = agent_special_stat_map
         self._hl_special_stats = hl_special_stats
+        self._agent_special_stat_names: defaultdict[int, set[str]] = defaultdict(set)
 
     def _draw_card(self, *, image_url: str, blob_color: tuple[int, int, int]) -> Image.Image:
         card = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/card.png")
@@ -172,7 +174,7 @@ class ZZZTeamCard:
                     text,
                     size=14,
                     position=(start_pos[0] + 65 + 20, icon.height // 2 + start_pos[1] + 6),
-                    style="medium",
+                    style="bold",
                     anchor="lm",
                 )
 
@@ -193,31 +195,43 @@ class ZZZTeamCard:
                     except IndexError:
                         pass
                     else:
+                        color = (
+                            drawer.get_agent_special_stat_color(self._agent_colors[agent.id])
+                            if self._hl_special_stats[agent.id]
+                            and stat.name in self._agent_special_stat_names[agent.id]
+                            else (20, 20, 20)
+                        )
+
                         if isinstance(stat.type, PropType):
                             stat_icon = drawer.open_asset(
                                 f"stat_icons/{STAT_ICONS[stat.type]}",
                                 folder="zzz-build-card",
                                 size=(16, 16),
+                                mask_color=color,
                             )
                         else:
                             stat_icon = drawer.open_asset(
                                 "stat_icons/PLACEHOLDER.png", folder="zzz-build-card", size=(16, 16)
                             )
-                        text = stat.value
-
                         im.alpha_composite(stat_icon, stat_start_pos)
+
+                        text = stat.value
                         drawer.write(
                             text,
                             size=12,
                             position=(stat_start_pos[0] + 20, icon.height // 2 + stat_start_pos[1]),
-                            style="medium",
+                            style="bold",
                             anchor="lm",
+                            color=color,
                         )
 
                         if self._show_substat_rolls[agent.id]:
                             roll_num = get_disc_substat_roll_num(disc.rarity, stat)
                             roll_num_img = drawer.open_asset(
-                                f"rolls/{roll_num}.png", size=(55, 1), folder="zzz-build-card"
+                                f"rolls/{roll_num}.png",
+                                size=(55, 1),
+                                folder="zzz-build-card",
+                                mask_color=color,
                             )
                             im.alpha_composite(
                                 roll_num_img, (stat_start_pos[0], stat_start_pos[1] + 18)
@@ -305,12 +319,11 @@ class ZZZTeamCard:
             if prop is None or not isinstance(prop.type, PropType):
                 continue
 
-            color = (
-                drawer.get_agent_special_stat_color(agent_color)
-                if self._hl_special_stats[agent.id]
-                and prop.type.value in self._agent_special_stat_map[str(agent.id)]
-                else (20, 20, 20)
-            )
+            color = (20, 20, 20)
+            if prop.type.value in self._agent_special_stat_map[str(agent.id)]:
+                self._agent_special_stat_names[agent.id].add(prop.name)
+                if self._hl_special_stats[agent.id]:
+                    color = drawer.get_agent_special_stat_color(agent_color)
 
             prop_icon = drawer.open_asset(
                 f"stat_icons/{STAT_ICONS[prop.type]}",

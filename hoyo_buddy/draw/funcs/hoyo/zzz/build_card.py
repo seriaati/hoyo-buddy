@@ -165,6 +165,63 @@ class ZZZAgentCard:
                     style="black_italic",
                 )
 
+        # Stats section
+        stats_section = drawer.open_asset("stats_section.png")
+        im.paste(stats_section, (2685, 360), stats_section)
+
+        # Skill levels
+        start_pos = (2809, 397)
+        for i, skill_type in enumerate(SKILL_ORDER):
+            skill = dutils.get(self._agent.skills, type=skill_type)
+            if skill is None:
+                continue
+
+            text = (
+                ZZZ_AGENT_CORE_SKILL_LVL_MAP[skill.level]
+                if skill_type is ZZZSkillType.CORE_SKILL
+                else str(skill.level)
+            )
+            drawer.write(
+                text, size=55, position=start_pos, color=(20, 20, 20), style="bold", anchor="mm"
+            )
+            start_pos = (2809, 397 + 98) if i == 2 else (start_pos[0] + 205, start_pos[1])
+
+        # Stats
+        start_pos = (2720, 616)
+        props = get_props(self._agent)
+        agent_color = self._color or self._card_data["color"]
+        spsecial_stat_names: set[str] = set()
+
+        for i, prop in enumerate(props):
+            if prop is None or not isinstance(prop.type, PropType):
+                continue
+
+            color = (20, 20, 20)
+            if prop.type.value in self._agent_special_stats:
+                spsecial_stat_names.add(prop.name)
+                if self._hl_special_stats:
+                    color = drawer.get_agent_special_stat_color(agent_color)
+
+            prop_icon = drawer.open_asset(
+                f"stat_icons/{STAT_ICONS[prop.type]}", size=(59, 59), mask_color=color
+            )
+            im.alpha_composite(prop_icon, start_pos)
+            drawer.write(
+                prop.final or prop.value,
+                size=40,
+                position=(
+                    start_pos[0] + prop_icon.width + 17,
+                    start_pos[1] + prop_icon.height // 2,
+                ),
+                color=color,
+                style="bold",
+                anchor="lm",
+            )
+
+            start_pos = (
+                (2720, start_pos[1] + 106) if i % 2 != 0 else (start_pos[0] + 283, start_pos[1])
+            )
+
         # Equip section
         equip_section = drawer.open_asset("equip_section.png")
         im.paste(equip_section, (51, 183), equip_section)
@@ -252,7 +309,7 @@ class ZZZAgentCard:
                     str(i + 1),
                     size=36,
                     position=(start_pos[0] + 32, start_pos[1] + 151),
-                    style="bold",
+                    style="black",
                     anchor="mm",
                     color=(107, 107, 107),
                 )
@@ -292,31 +349,40 @@ class ZZZAgentCard:
                     except IndexError:
                         pass
                     else:
+                        color = (
+                            drawer.get_agent_special_stat_color(agent_color)
+                            if self._hl_special_stats and sub_stat.name in spsecial_stat_names
+                            else (20, 20, 20)
+                        )
+
                         if isinstance(sub_stat.type, PropType):
                             sub_stat_icon = drawer.open_asset(
-                                f"stat_icons/{STAT_ICONS[sub_stat.type]}", size=(28, 28)
+                                f"stat_icons/{STAT_ICONS[sub_stat.type]}",
+                                size=(28, 28),
+                                mask_color=color,
                             )
                         else:
                             sub_stat_icon = drawer.open_asset(
                                 "stat_icons/PLACEHOLDER.png", size=(28, 28)
                             )
-                        text = sub_stat.value
-
                         im.paste(sub_stat_icon, sub_stat_pos, sub_stat_icon)
+
+                        text = sub_stat.value
                         drawer.write(
                             text,
                             size=22,
                             position=(
-                                sub_stat_pos[0] + 38,
+                                sub_stat_pos[0] + 35,
                                 sub_stat_pos[1] + sub_stat_icon.height // 2,
                             ),
-                            style="medium",
+                            style="bold",
                             anchor="lm",
+                            color=color,
                         )
 
                         if self._show_substat_rolls:
                             roll_num = get_disc_substat_roll_num(disc.rarity, sub_stat)
-                            roll_num_img = drawer.open_asset(f"rolls/{roll_num}.png", size=(103, 2))
+                            roll_num_img = drawer.open_asset(f"rolls/{roll_num}.png", size=(103, 2), mask_color=color)
                             im.alpha_composite(
                                 roll_num_img, (sub_stat_pos[0], sub_stat_pos[1] + 32)
                             )
@@ -327,62 +393,6 @@ class ZZZAgentCard:
                         sub_stat_pos = (sub_stat_pos[0] + 117, sub_stat_pos[1])
 
             start_pos = (521, 597) if i == 2 else (start_pos[0], start_pos[1] + 233)
-
-        # Stats section
-        stats_section = drawer.open_asset("stats_section.png")
-        im.paste(stats_section, (2685, 360), stats_section)
-
-        # Skill levels
-        start_pos = (2809, 397)
-        for i, skill_type in enumerate(SKILL_ORDER):
-            skill = dutils.get(self._agent.skills, type=skill_type)
-            if skill is None:
-                continue
-
-            text = (
-                ZZZ_AGENT_CORE_SKILL_LVL_MAP[skill.level]
-                if skill_type is ZZZSkillType.CORE_SKILL
-                else str(skill.level)
-            )
-            drawer.write(
-                text, size=55, position=start_pos, color=(20, 20, 20), style="bold", anchor="mm"
-            )
-            start_pos = (2809, 397 + 98) if i == 2 else (start_pos[0] + 205, start_pos[1])
-
-        # Stats
-        start_pos = (2720, 616)
-        props = get_props(self._agent)
-        agent_color = self._color or self._card_data["color"]
-
-        for i, prop in enumerate(props):
-            if prop is None or not isinstance(prop.type, PropType):
-                continue
-
-            color = (
-                drawer.get_agent_special_stat_color(agent_color)
-                if (self._hl_special_stats and prop.type.value in self._agent_special_stats)
-                else (20, 20, 20)
-            )
-
-            prop_icon = drawer.open_asset(
-                f"stat_icons/{STAT_ICONS[prop.type]}", size=(59, 59), mask_color=color
-            )
-            im.alpha_composite(prop_icon, start_pos)
-            drawer.write(
-                prop.final or prop.value,
-                size=40,
-                position=(
-                    start_pos[0] + prop_icon.width + 17,
-                    start_pos[1] + prop_icon.height // 2,
-                ),
-                color=color,
-                style="bold",
-                anchor="lm",
-            )
-
-            start_pos = (
-                (2720, start_pos[1] + 106) if i % 2 != 0 else (start_pos[0] + 283, start_pos[1])
-            )
 
         buffer = BytesIO()
         im.save(buffer, "PNG")

@@ -21,7 +21,7 @@ from hoyo_buddy.hoyo.clients.ambr import ItemCategory
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.types import User  # noqa: TC001
-from hoyo_buddy.ui.hoyo.leaderboard.akasha import DynamicAkashaLbPaginator, StaticAkashaLbPaginator
+from hoyo_buddy.ui.hoyo.leaderboard.akasha import AkashaLbPaginator
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
@@ -45,7 +45,9 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
     )
     @app_commands.rename(
         character_id=app_commands.locale_str("character", key="akasha_character_param"),
-        calculation_id=app_commands.locale_str("leaderboard", key="akasha_calculation_param"),
+        category_=app_commands.locale_str("leaderboard", key="akasha_calculation_param"),
+        calculation_id=app_commands.locale_str("weapon", key="akasha_weapon_param"),
+        variant=app_commands.locale_str("variant", key="akasha_variant_param"),
         user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
         account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
         guild_only_=app_commands.locale_str("guild-only", key="guild_only_command_param_name"),
@@ -54,8 +56,15 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         character_id=app_commands.locale_str(
             "Character to view the leaderboard for", key="akasha_character_param_desc"
         ),
-        calculation_id=app_commands.locale_str(
+        category_=app_commands.locale_str(
             "Leaderboard to view", key="akasha_calculation_param_desc"
+        ),
+        calculation_id=app_commands.locale_str(
+            "Weapon to view the leaderboard for", key="akasha_weapon_param_desc"
+        ),
+        variant=app_commands.locale_str(
+            "Variant of the leaderboard to view, defaults to the main one",
+            key="akasha_variant_param_desc",
         ),
         user=app_commands.locale_str(
             "User to search the accounts with, defaults to you",
@@ -84,14 +93,16 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         self,
         i: Interaction,
         character_id: str,
+        category_: str,
         calculation_id: str,
+        variant: str | None = None,
         user: User = None,
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
         uid: app_commands.Range[str, 9, 10] | None = None,
         guild_only_: int = 0,
     ) -> None:
         guild_only = bool(guild_only_)
-        if character_id == "none" or calculation_id == "none" or not calculation_id.isdigit():
+        if character_id == "none" or not calculation_id.isdigit() or variant == "none":
             raise LeaderboardNotFoundError
 
         if uid is not None and not uid.isdigit():
@@ -110,17 +121,13 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         locale = await get_locale(i)
 
         # Guild leaderboard
-        if guild_only and i.guild is None:
-            raise LeaderboardNotFoundError
-        assert i.guild is not None
-        if (
-            guild_only
-            and len([m for m in i.guild.members if not m.bot]) > GUILD_ONLY_MAX_MEMBER_COUNT
-        ):
-            raise LeaderboardNotFoundError
-
         uids: list[int] = []
         if guild_only:
+            if i.guild is None:
+                raise LeaderboardNotFoundError
+            if len([m for m in i.guild.members if not m.bot]) > GUILD_ONLY_MAX_MEMBER_COUNT:
+                raise LeaderboardNotFoundError
+
             if not i.guild.chunked:
                 await i.guild.chunk()
 
@@ -134,64 +141,58 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
                     continue
                 uids.extend(account.uid for account in accounts)
 
-        uids = list(set(uids))
-        if len(uids) > GUILD_ONLY_MAX_UID_COUNT:
-            raise LeaderboardNotFoundError
-
-        lbs: list[akasha.Leaderboard] = []
+            uids = list(set(uids))
+            if len(uids) > GUILD_ONLY_MAX_UID_COUNT:
+                raise LeaderboardNotFoundError
 
         async with akasha.AkashaAPI(locale_to_akasha_lang(locale)) as api:
-            if guild_only:
-                lbs_ = await api.get_leaderboard_for_uids(int(calculation_id), uids=uids)
-                if lbs_ is None:
-                    raise LeaderboardNotFoundError
-                lbs.extend(lbs_)
-
             categories = await api.get_categories(character_id)
 
+            you = None
             if uid is not None:
-                you = await api.get_leaderboard_for_uids(int(calculation_id), uids=int(uid))
-            else:
-                you = None
+                async for board in api.get_leaderboards(
+                    int(calculation_id), max_page=1, uids=(int(uid),)
+                ):
+                    you = board
+                    break
 
-        category = None
-        weapon = None
-
-        for category in categories:
-            weapon = next(
-                (weapon for weapon in category.weapons if weapon.calculation_id == calculation_id),
-                None,
-            )
-            if weapon is not None:
-                break
-
-        if category is None or weapon is None:
+        category = next((category for category in categories if category.id == category_), None)
+        if category is None:
             raise LeaderboardNotFoundError
 
+        weapon = next(
+            (weapon for weapon in category.weapons if weapon.calculation_id == calculation_id), None
+        )
+        if weapon is None:
+            raise LeaderboardNotFoundError
+
+        filter_name = ""
+        if variant is not None:
+            filter_ = next((filter_ for filter_ in weapon.filters if filter_.id == variant), None)
+            if filter_ is None:
+                raise LeaderboardNotFoundError
+            filter_name = f" ({filter_.name})"
+
         lb_embed = (
-            DefaultEmbed(locale, title=category.name)
+            DefaultEmbed(locale, title=f"{category.name}{filter_name}")
             .set_author(
-                name=f"{category.character_name} | {weapon.name} R{weapon.refinement}",
+                name=f"{weapon.name} R{weapon.refinement}",
                 icon_url=weapon.icon,
             )
             .set_thumbnail(url=category.character_icon)
             .set_footer(text=LocaleStr(key="akasha_total_entries", total=category.count))
         )
-
-        if guild_only:
-            view = StaticAkashaLbPaginator(
-                lbs, lb_embed, you, len(lbs), category.count, author=i.user, locale=locale
-            )
-        else:
-            view = DynamicAkashaLbPaginator(
-                calculation_id,
-                lb_embed,
-                you,
-                category.count,
-                category.details,
-                author=i.user,
-                locale=locale,
-            )
+        view = AkashaLbPaginator(
+            calculation_id,
+            lb_embed,
+            you,
+            variant=variant,
+            uids=uids,
+            lb_size=category.count,
+            lb_details=category.details,
+            author=i.user,
+            locale=locale,
+        )
         await view.start(i)
 
     @akasha_command.autocomplete("character_id")
@@ -207,8 +208,8 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         choices = characters.get(locale, characters[Locale.american_english])
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
 
-    @akasha_command.autocomplete("calculation_id")
-    async def calculation_id_autocomplete(
+    @akasha_command.autocomplete("category_")
+    async def category_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
@@ -223,12 +224,79 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
 
         choices: list[app_commands.Choice[str]] = [
-            app_commands.Choice(
-                name=f"{category.name} - {weapon.name}", value=weapon.calculation_id
-            )
-            for category in categories
-            for weapon in category.weapons
+            app_commands.Choice(name=category.name, value=category.id) for category in categories
         ]
+        return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
+
+    @akasha_command.autocomplete("calculation_id")
+    async def calculation_id_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        locale = await get_locale(i)
+
+        if (
+            not (character_id := i.namespace.character)
+            or character_id == "none"
+            or not (category := i.namespace.leaderboard)
+            or category == "none"
+        ):
+            return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
+
+        async with akasha.AkashaAPI(locale_to_akasha_lang(locale)) as api:
+            categories = await api.get_categories(character_id)
+
+        if not categories:
+            return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
+
+        category_ = next((c for c in categories if c.id == category), None)
+        if category_ is None:
+            return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
+
+        choices: list[app_commands.Choice[str]] = [
+            app_commands.Choice(
+                name=f"{weapon.name} R{weapon.refinement}", value=weapon.calculation_id
+            )
+            for weapon in category_.weapons
+        ]
+        return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
+
+    @akasha_command.autocomplete("variant")
+    async def variant_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        locale = await get_locale(i)
+
+        if (
+            not (character_id := i.namespace.character)
+            or character_id == "none"
+            or not (category := i.namespace.leaderboard)
+            or category == "none"
+            or not (calculation_id := i.namespace.weapon)
+            or not calculation_id.isdigit()
+        ):
+            return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
+
+        async with akasha.AkashaAPI(locale_to_akasha_lang(locale)) as api:
+            categories = await api.get_categories(character_id)
+
+        if not categories:
+            return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
+
+        category_ = next((c for c in categories if c.id == category), None)
+        if category_ is None:
+            return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
+
+        weapon = next((w for w in category_.weapons if w.calculation_id == calculation_id), None)
+        if weapon is None:
+            return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
+
+        choices: list[app_commands.Choice[str]] = [
+            app_commands.Choice(name=filter_.name, value=filter_.id) for filter_ in weapon.filters
+        ]
+        if not choices:
+            return self.bot.get_error_choice(
+                LocaleStr(key="search_autocomplete_no_results"), locale
+            )
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
 
     @akasha_command.autocomplete("account")

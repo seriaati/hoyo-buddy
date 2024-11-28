@@ -74,40 +74,26 @@ class BaseAkashaLbPaginator(PaginatorView):
         )
 
 
-class StaticAkashaLbPaginator(BaseAkashaLbPaginator):
-    def __init__(
-        self,
-        lbs: list[akasha.Leaderboard],
-        lb_embed: DefaultEmbed,
-        you: akasha.Leaderboard | None,
-        lb_size: int,
-        real_lb_size: int,
-        *,
-        author: User,
-        locale: Locale,
-    ) -> None:
-        super().__init__(
-            lb_embed, you, lb_size, real_lb_size, lbs=lbs, author=author, locale=locale
-        )
-
-
-class DynamicAkashaLbPaginator(BaseAkashaLbPaginator):
+class AkashaLbPaginator(BaseAkashaLbPaginator):
     def __init__(
         self,
         calculation_id: str,
         lb_embed: DefaultEmbed,
         you: akasha.Leaderboard | None,
+        *,
+        variant: str | None,
+        uids: list[int],
         lb_size: int,
         lb_details: str,
-        *,
         author: User,
         locale: Locale,
     ) -> None:
         super().__init__(lb_embed, you, lb_size, lb_size, author=author, locale=locale)
-        self.add_item(ShowLbDetailsButton())
+        self.add_item(ShowLbDetailsButton(lb_details))
 
         self.calculation_id = calculation_id
-        self.lb_details = lb_details
+        self.variant = variant
+        self.uids = uids
         self.lbs: list[akasha.Leaderboard] = []
 
     async def fetch_page(self, type_: Literal["next", "prev", "first", "last", "start"]) -> Page:
@@ -122,7 +108,13 @@ class DynamicAkashaLbPaginator(BaseAkashaLbPaginator):
 
         async with akasha.AkashaAPI() as api:
             self.lbs = await api._fetch_leaderboards(
-                int(self.calculation_id), self._current_page + 1, 10, p, True
+                calculation_id=int(self.calculation_id),
+                page=self._current_page + 1,
+                page_size=10,
+                p=p,
+                variant=self.variant,
+                uids=self.uids,
+                use_cache=True,
             )
 
         return Page(embed=self.get_page_embed(self.lbs))
@@ -142,9 +134,10 @@ class DynamicAkashaLbPaginator(BaseAkashaLbPaginator):
         return await super()._update_page(i, type_=type_, followup=followup, ephemeral=ephemeral)
 
 
-class ShowLbDetailsButton(Button[DynamicAkashaLbPaginator]):
-    def __init__(self) -> None:
+class ShowLbDetailsButton(Button[AkashaLbPaginator]):
+    def __init__(self, details: str) -> None:
         super().__init__(label=LocaleStr(key="akasha_show_details"), row=1)
+        self.details = details
 
     async def callback(self, i: Interaction) -> None:
-        await i.response.send_message(self.view.lb_details, ephemeral=True)
+        await i.response.send_message(self.details, ephemeral=True)

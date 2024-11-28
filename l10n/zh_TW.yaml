@@ -680,6 +680,10 @@ show_uid: 顯示 UID
 no_leaderboard_found: 未能找到任何排行榜
 akasha_character_param: 角色
 akasha_calculation_param: 排行榜
+akasha_weapon_param: 武器
+akasha_weapon_param_desc: 要查看哪個武器的排行榜？
+akasha_variant_param: 類別
+akasha_variant_param_desc: 排行榜的類別，預設為主要分類
 akasha_character_param_desc: 要查看哪個角色的排行榜？
 akasha_calculation_param_desc: 要查看哪個排行榜？
 akasha_total_entries: "總條目數量: {total}"
@@ -729,7 +733,7 @@ rarity_str: "{rarity} 星"
 finished_status_field_name: 狀態
 unlocks_in_str: "在 {time} 後解鎖"
 challenge_selector_placeholder: 選擇一個挑戰…
-upload_cmd_desc: 上傳一張圖片並取得其連結，可以用於 /profile 的自定義圖片功能
+upload_cmd_desc: "上傳一張圖片並取得其連結，可以用於 /profile 的自定義圖片功能"
 not_an_image_error_title: 不是一張圖片
 not_an_image_error_message: "上傳的檔案並非一張圖片，請使用一個圖片檔案重試。"
 upload_cmd_image_param_name: 圖片

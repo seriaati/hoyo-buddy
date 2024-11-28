@@ -683,7 +683,7 @@ akasha_calculation_param: 排行榜
 akasha_weapon_param: 武器
 akasha_weapon_param_desc: 要查看哪個武器的排行榜？
 akasha_variant_param: 類別
-akasha_variant_param_desc: 排行榜的類別，預設為主要分類
+akasha_variant_param_desc: "排行榜的類別，預設為主要分類"
 akasha_character_param_desc: 要查看哪個角色的排行榜？
 akasha_calculation_param_desc: 要查看哪個排行榜？
 akasha_total_entries: "總條目數量: {total}"
@@ -738,3 +738,5 @@ not_an_image_error_title: 不是一張圖片
 not_an_image_error_message: "上傳的檔案並非一張圖片，請使用一個圖片檔案重試。"
 upload_cmd_image_param_name: 圖片
 upload_cmd_image_param_desc: 要上傳的圖片
+exploration_select_placeholder: 選擇一個區域…
+exploration_show_card_button_label: 顯示探索度卡片

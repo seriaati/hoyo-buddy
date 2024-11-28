@@ -37,7 +37,7 @@ class EventsCommand:
 
         if calendar is not None:
             view = EventCalendarView(
-                calendar, author=i.user, locale=locale, dark_mode=settings.dark_mode
+                calendar, account, author=i.user, locale=locale, dark_mode=settings.dark_mode
             )
         else:
             view = EventsView(account, author=i.user, locale=locale)

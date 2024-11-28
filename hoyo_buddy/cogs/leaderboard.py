@@ -175,10 +175,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
 
         lb_embed = (
             DefaultEmbed(locale, title=f"{category.name}{filter_name}")
-            .set_author(
-                name=f"{weapon.name} R{weapon.refinement}",
-                icon_url=weapon.icon,
-            )
+            .set_author(name=f"{weapon.name} R{weapon.refinement}", icon_url=weapon.icon)
             .set_thumbnail(url=category.character_icon)
             .set_footer(text=LocaleStr(key="akasha_total_entries", total=category.count))
         )

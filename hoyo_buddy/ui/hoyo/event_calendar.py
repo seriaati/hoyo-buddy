@@ -6,6 +6,7 @@ import genshin
 from seria.utils import create_bullet_list
 
 from hoyo_buddy import ui
+from hoyo_buddy.db.models import HoyoAccount, draw_locale
 from hoyo_buddy.draw.main_funcs import draw_item_list_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game
@@ -104,14 +105,16 @@ class EventCalendarView(ui.View):
     def __init__(
         self,
         calendar: genshin.models.GenshinEventCalendar | genshin.models.HSREventCalendar,
+        account: HoyoAccount,
         dark_mode: bool,
         *,
         author: User,
         locale: Locale,
     ) -> None:
         super().__init__(author=author, locale=locale)
-        self.dark_mode = dark_mode
         self.calendar = calendar
+        self.account = account
+        self.dark_mode = dark_mode
 
         if isinstance(calendar, genshin.models.GenshinEventCalendar):
             banners: list[genshin.models.Banner] = []
@@ -160,7 +163,7 @@ class EventCalendarView(ui.View):
         return await draw_item_list_card(
             DrawInput(
                 dark_mode=self.dark_mode,
-                locale=self.locale,
+                locale=draw_locale(self.locale, self.account),
                 session=bot.session,
                 executor=bot.executor,
                 loop=bot.loop,
@@ -233,7 +236,7 @@ class BannerSelector(ItemSelector):
         return await draw_item_list_card(
             DrawInput(
                 dark_mode=self.view.dark_mode,
-                locale=self.view.locale,
+                locale=draw_locale(self.view.locale, self.view.account),
                 session=bot.session,
                 executor=bot.executor,
                 loop=bot.loop,

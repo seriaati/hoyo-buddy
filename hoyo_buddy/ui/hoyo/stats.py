@@ -30,10 +30,12 @@ def get_label(card: RecordCard) -> str:
 
 
 class StatsView(View):
-    def __init__(self, accounts: list[HoyoAccount], *, author: User, locale: Locale) -> None:
+    def __init__(
+        self, accounts: list[HoyoAccount], current_account_id: int, *, author: User, locale: Locale
+    ) -> None:
         super().__init__(author=author, locale=locale)
         self.accounts = accounts
-        self.account = accounts[0]
+        self.account = next((acc for acc in accounts if acc.uid == current_account_id), accounts[0])
         self.add_item(AccountSwitcher(accounts, self.account))
 
     def _get_user_embed(
@@ -127,6 +129,7 @@ class StatsView(View):
     async def start(self, i: Interaction, *, acc_select: AccountSwitcher | None = None) -> None:
         client = self.account.client
         client.set_lang(self.locale)
+
         if self.account.game is Game.GENSHIN:
             user = await client.get_partial_genshin_user(self.account.uid)
             embed = self.get_genshin_user_embed(user)
@@ -158,7 +161,7 @@ class AccountSwitcher(Select[StatsView]):
             placeholder=LocaleStr(key="account_select_placeholder"),
             options=[
                 SelectOption(
-                    label=str(acc),
+                    label=acc.blurred_display,
                     value=f"{acc.uid}_{acc.game}",
                     emoji=get_game_emoji(acc.game),
                     default=acc == account,

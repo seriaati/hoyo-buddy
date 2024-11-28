@@ -22,11 +22,11 @@ class StatsCommand:
         locale = await get_locale(i)
 
         user = self._user or i.user
-        accounts = await i.client.get_accounts(
-            user.id, games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
-        )
+        games_available = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
+        accounts = await i.client.get_accounts(user.id, games=games_available)
+        account = await i.client.get_account(user.id, games=games_available)
         if not accounts:
             raise NoAccountFoundError
 
-        view = StatsView(accounts, author=i.user, locale=locale)
+        view = StatsView(accounts, account.id, author=i.user, locale=locale)
         await view.start(i)

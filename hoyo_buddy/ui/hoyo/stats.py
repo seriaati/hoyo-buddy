@@ -84,7 +84,7 @@ class StatsView(View):
         fields = {
             "hsr_active_day": stats.active_days,
             "hsr_get_account_count": stats.avatar_num,
-            "achieve_total_text": stats.achievement_num,
+            "hsr_achievement_complete_count": stats.achievement_num,
             "hsr_all_chest_count": stats.chest_num,
             "hsr_dream_paster_num": stats.dreamscape_pass_sticker,
         }

@@ -58,7 +58,8 @@ class RelicSetUI(View):
         for pos in self._relic_embeds:
             self.add_item(RelicPosButton(pos))
 
-        await i.edit_original_response(embed=next(iter(self._relic_embeds.values())), view=self)
+        embed = next(iter(self._relic_embeds.values()), None)
+        await i.edit_original_response(embed=embed, view=self)
         self.message = await i.original_response()
 
 

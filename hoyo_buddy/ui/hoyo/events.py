@@ -41,7 +41,7 @@ class EventsView(View):
         self.add_item(ViewContentButton())
 
     def _get_ann(self, ann_id: int) -> genshin.models.Announcement:
-        return next(ann for ann in self.anns if ann.id == ann_id)
+        return next((ann for ann in self.anns if ann.id == ann_id), self.anns[0])
 
     def _get_ann_embed(self, ann: genshin.models.Announcement) -> DefaultEmbed:
         embed = DefaultEmbed(

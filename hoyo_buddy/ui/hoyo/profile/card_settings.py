@@ -179,9 +179,13 @@ class CardSettingsView(View):
         )
 
     def _get_current_character(self) -> Character:
-        return next(
-            chara for chara in self._characters if str(chara.id) == self.selected_character_id
+        character = next(
+            (chara for chara in self._characters if str(chara.id) == self.selected_character_id), None
         )
+        if character is None:
+            msg = f"Character with id {self.selected_character_id!r} not found."
+            raise ValueError(msg)
+        return character
 
     def get_settings_embed(self) -> Embed:
         card_settings = self.card_settings

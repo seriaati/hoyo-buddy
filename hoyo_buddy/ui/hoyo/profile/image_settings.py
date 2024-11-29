@@ -135,9 +135,13 @@ class ImageSettingsView(View):
         )
 
     def _get_current_character(self) -> Character:
-        return next(
-            chara for chara in self.characters if str(chara.id) == self.selected_character_id
+        character = next(
+            (chara for chara in self.characters if str(chara.id) == self.selected_character_id), None
         )
+        if character is None:
+            msg = f"Character with ID {self.selected_character_id} not found"
+            raise ValueError(msg)
+        return character
 
     def get_current_image(self) -> str | None:
         if self.image_type == "build_card_image":

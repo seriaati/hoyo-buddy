@@ -498,24 +498,6 @@ async def fetch_json(session: aiohttp.ClientSession, url: str) -> Any:
         return orjson.loads(await resp.read())
 
 
-def get_ranking(number: float, number_list: list[float], *, reverse: bool) -> tuple[int, int]:
-    sorted_unique_list = sorted(set(number_list), reverse=reverse)
-
-    try:
-        # Find the position of the number (add 1 because index starts at 0)
-        position = sorted_unique_list.index(number) + 1
-    except ValueError:
-        # If the number is not in the list, find where it would be inserted
-        position = (
-            next(
-                (i for i, x in enumerate(sorted_unique_list) if x < number), len(sorted_unique_list)
-            )
-            + 1
-        )
-
-    return position, len(sorted_unique_list)
-
-
 def ephemeral(i: Interaction) -> bool:
     return not i.app_permissions.embed_links
 

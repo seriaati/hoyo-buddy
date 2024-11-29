@@ -59,9 +59,8 @@ class ArtifactSetUI(View):
         for pos in self._artifact_embeds:
             self.add_item(ArtifactPosButton(pos))
 
-        self.message = await i.edit_original_response(
-            embed=next(iter(self._artifact_embeds.values())), view=self
-        )
+        embed = next(iter(self._artifact_embeds.values()), None)
+        self.message = await i.edit_original_response(embed=embed, view=self)
 
 
 class ArtifactPosButton(Button["ArtifactSetUI"]):

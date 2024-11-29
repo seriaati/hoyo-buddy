@@ -206,7 +206,10 @@ class GachaLogPage(ft.View):
 
     async def container_on_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        gacha = next(g for g in self.gachas if g.id == e.control.data)
+        gacha = next((g for g in self.gachas if g.id == e.control.data), None)
+        if gacha is None:
+            await show_error_banner(page, message=f"Could not find gacha with id {e.control.data}")
+            return
 
         await page.show_dialog_async(
             GachaLogDialog(

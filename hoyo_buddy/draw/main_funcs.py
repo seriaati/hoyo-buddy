@@ -420,11 +420,13 @@ async def fetch_zzz_draw_data(
             agent_images = {char.id: char.image for char in characters}
 
         items = await api.fetch_items()
-        disc_icons = {
-            disc.id: next(item.icon for item in items if item.id == disc.id)
-            for agent in agents
-            for disc in agent.discs
-        }
+        disc_icons: dict[int, str] = {}
+        for agent in agents:
+            for disc in agent.discs:
+                disc_item = next((item for item in items if item.id == disc.id), None)
+                if disc_item is None:
+                    continue
+                disc_icons[disc.id] = disc_item.icon
 
     return ZZZDrawData(agent_full_names, agent_images, disc_icons)
 

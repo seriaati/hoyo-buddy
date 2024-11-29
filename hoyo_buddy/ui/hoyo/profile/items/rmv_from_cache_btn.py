@@ -57,7 +57,9 @@ class RemoveFromCacheButton(Button[ProfileView]):
                 break
 
         character_select.options = character_select.process_options()
-        self.view.character_ids = [next(iter(self.view.characters.keys()))]
+        first_character_id = next(iter(self.view.characters.keys()), None)
+        if first_character_id is not None:
+            self.view.character_ids = [first_character_id]
         character_select.update_options_defaults(values=[character_id])
         character_select.translate(self.view.locale)
 

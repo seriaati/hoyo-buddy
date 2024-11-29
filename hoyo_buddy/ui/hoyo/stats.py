@@ -138,7 +138,11 @@ class StatsView(View):
             embed = self.get_hsr_user_embed(user)
         elif self.account.game is Game.ZZZ:
             record_cards = await client.get_record_cards()
-            card = next(card for card in record_cards if card.uid == self.account.uid)
+            card = next((card for card in record_cards if card.uid == self.account.uid), None)
+            if card is None:
+                msg = f"Record card not found for {self.account.uid}"
+                raise ValueError(msg)
+
             user = await client.get_zzz_user(self.account.uid)
             embed = self.get_zzz_user_embed(user, card)
         elif self.account.game is Game.HONKAI:
@@ -174,7 +178,11 @@ class AccountSwitcher(Select[StatsView]):
         await self.set_loading_state(i)
         uid, game = self.values[0].split("_")
         account = next(
-            acc for acc in self.view.accounts if acc.uid == int(uid) and acc.game == game
+            (acc for acc in self.view.accounts if acc.uid == int(uid) and acc.game == game), None
         )
+        if account is None:
+            msg = f"Account not found for {uid} in {game}"
+            raise ValueError(msg)
+
         self.view.account = account
         await self.view.start(i, acc_select=self)

@@ -304,7 +304,10 @@ class ChallengeHistory(BaseModel):
             end_time = data.end_time
             name = None
         else:
-            season = next(season for season in data.seasons if season.id == season_id)
+            season = next((season for season in data.seasons if season.id == season_id), None)
+            if season is None:
+                logger.error(f"Cannot find season with id {season_id} in add_data")
+                return
             start_time = season.begin_time.datetime
             end_time = season.end_time.datetime
             name = season.name

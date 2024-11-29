@@ -768,7 +768,11 @@ class AccountSwitcher(Select[NotesView]):
         await self.set_loading_state(i)
         uid, game = self.values[0].split("_")
         account = next(
-            acc for acc in self.view.accounts if acc.uid == int(uid) and acc.game == game
+            (acc for acc in self.view.accounts if acc.uid == int(uid) and acc.game == game), None
         )
+        if account is None:
+            msg = f"Account not found for {uid} in {game}"
+            raise ValueError(msg)
+
         self.view.account = account
         await self.view.start(i, acc_select=self)

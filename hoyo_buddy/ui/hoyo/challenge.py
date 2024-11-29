@@ -518,7 +518,11 @@ class ViewBuffs(Button[ChallengeView]):
             self.disabled = True
             return await i.response.edit_message(view=self.view)
 
-        first_buff = next(iter(view.buffs.values()))
+        first_buff = next(iter(view.buffs.values()), None)
+        if first_buff is None:
+            self.disabled = True
+            return await i.response.edit_message(view=self.view)
+
         embed = view.get_buff_embed(first_buff, ", ".join(view._buff_usage[first_buff.name]))
         await i.response.send_message(embed=embed, view=view, ephemeral=True)
         view.message = await i.original_response()

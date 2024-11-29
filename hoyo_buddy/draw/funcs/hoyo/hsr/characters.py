@@ -37,7 +37,11 @@ def draw_character_card(
         card = draw_small_hsr_chara_card(talent, dark_mode, character, locale)
         c_cards[str(character.id)] = card
 
-    first_card = next(iter(c_cards.values()))
+    first_card = next(iter(c_cards.values()), None)
+    if first_card is None:
+        msg = "No first card"
+        raise ValueError(msg)
+
     bk_input = DynamicBKInput(
         top_padding=35,
         bottom_padding=5,

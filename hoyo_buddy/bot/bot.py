@@ -371,7 +371,11 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         item_id_mapping: dict[int, str] = {}  # item ID -> text map key
 
-        first_key = next(iter(item_template.keys()))
+        first_key = next(iter(item_template.keys()), None)
+        if first_key is None:
+            logger.error("Cannot find first key in ZZZ item template")
+            return
+
         id_key = "GKNMDKNIMHP"  # Found in ItemTemplateTb.json
         name_key = "FJECNNMMDGH"  # Found in ItemTemplateTb.json
         prop_key = "BJIEGFCNLIE"  # Found in AvatarTemplateTb.json

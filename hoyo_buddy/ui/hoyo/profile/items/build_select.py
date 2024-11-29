@@ -28,7 +28,11 @@ class BuildSelect(Select[ProfileView]):
 
     @property
     def build(self) -> enka.hsr.Build | enka.gi.Build:
-        return next(build for build in self._builds if build.id == int(self.values[0]))
+        build = next((build for build in self._builds if build.id == int(self.values[0])), None)
+        if build is None:
+            msg = f"Build with id {self.values[0]} not found"
+            raise ValueError(msg)
+        return build
 
     def set_options(self, builds: list[enka.gi.Build] | list[enka.hsr.Build]) -> None:
         self._builds = builds

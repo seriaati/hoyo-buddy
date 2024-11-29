@@ -70,7 +70,12 @@ class ViewGachaLogView(View):
     def __init__(self, account: HoyoAccount, *, author: User, locale: Locale) -> None:
         super().__init__(author=author, locale=locale)
         self.account = account
-        self.banner_type = next(iter(BANNER_TYPE_NAMES[account.game]))
+
+        banner_type = next(iter(BANNER_TYPE_NAMES[account.game]), None)
+        if banner_type is None:
+            msg = "No banner types found"
+            raise ValueError(msg)
+        self.banner_type = banner_type
 
         self.add_item(BannerTypeSelector(account.game, current=self.banner_type))
         self.web_app_url = self.get_web_app_url()

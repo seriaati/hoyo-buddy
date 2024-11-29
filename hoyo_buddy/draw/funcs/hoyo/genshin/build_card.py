@@ -4,12 +4,12 @@ import io
 from typing import TYPE_CHECKING
 
 from discord import Locale
-from enka.gi import FightPropType
+from enka.gi import FightPropType, Talent
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.draw.funcs.hoyo.genshin.common import ARTIFACT_POS, STATS_ORDER
-from hoyo_buddy.models import HoyolabGICharacter
+from hoyo_buddy.models import HoyolabGICharacter, HoyolabGITalent
 
 if TYPE_CHECKING:
     from enka.gi import Character
@@ -146,9 +146,13 @@ def draw_genshin_card(
     # 3x1 grid, x offset between each item is 137
     # text is 92 below the icon
     talent_order = character.talent_order
-    talents = [
-        next(t for t in character.talents if t.id == talent_id) for talent_id in talent_order
-    ]
+    talents: list[Talent | HoyolabGITalent] = []
+    for talent_id in talent_order:
+        talent = next((t for t in character.talents if t.id == talent_id), None)
+        if talent is None:
+            continue
+        talents.append(talent)
+
     for index, talent in enumerate(talents):
         x_pos = 1025 + 137 * index
         icon_color = (255, 255, 255) if dark_mode else (67, 67, 67)

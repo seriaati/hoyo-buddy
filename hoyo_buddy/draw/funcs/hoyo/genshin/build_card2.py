@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw
 from hoyo_buddy.constants import convert_gi_element_to_enka
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import GenshinElement
-from hoyo_buddy.models import HoyolabGICharacter
+from hoyo_buddy.models import HoyolabGICharacter, HoyolabGITalent
 
 from .common import ADD_HURT_ELEMENTS, ARTIFACT_POS, ELEMENT_BG_COLORS, STATS_ORDER
 
@@ -272,9 +272,12 @@ class GITempTwoBuildCard:
         start_pos = (316, 1679)
         x_diff = 150
         talent_order = character.talent_order
-        talents = [
-            next(t for t in character.talents if t.id == talent_id) for talent_id in talent_order
-        ]
+        talents: list[enka.gi.Talent | HoyolabGITalent] = []
+        for talent_id in talent_order:
+            talent = next((t for t in character.talents if t.id == talent_id), None)
+            if talent is None:
+                continue
+            talents.append(talent)
 
         for i, talent in enumerate(talents):
             icon = drawer.open_static(talent.icon, size=(98, 98), mask_color=color_1)

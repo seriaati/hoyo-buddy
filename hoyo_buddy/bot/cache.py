@@ -28,7 +28,9 @@ class LFUCache(aiocache.SimpleMemoryCache):
 
     async def _evict(self) -> None:
         if len(self._cache) >= self._maxsize:
-            min_freq = next(iter(self._freq_list))
+            min_freq = next(iter(self._freq_list), None)
+            if min_freq is None:
+                return
             key_to_evict = self._freq_list[min_freq].pop(0)
             if not self._freq_list[min_freq]:
                 del self._freq_list[min_freq]

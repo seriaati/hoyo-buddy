@@ -382,7 +382,9 @@ class ZZZAgentCard:
 
                         if self._show_substat_rolls:
                             roll_num = get_disc_substat_roll_num(disc.rarity, sub_stat)
-                            roll_num_img = drawer.open_asset(f"rolls/{roll_num}.png", size=(103, 2), mask_color=color)
+                            roll_num_img = drawer.open_asset(
+                                f"rolls/{roll_num}.png", size=(103, 2), mask_color=color
+                            )
                             im.alpha_composite(
                                 roll_num_img, (sub_stat_pos[0], sub_stat_pos[1] + 32)
                             )

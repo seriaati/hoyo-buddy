@@ -47,6 +47,8 @@ class EditNicknameButton(Button[AccountManager]):
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         await modal.wait()
+        if modal.incomplete:
+            return
 
         account.nickname = modal.nickname.value
         await account.save(update_fields=("nickname",))

@@ -468,6 +468,8 @@ class ProfileView(View):
                 rank = await self._get_character_rank(character, with_detail=template_num == 1)
             except akasha.AkashaAPIError:
                 rank = None
+            except Exception:
+                logger.exception("Failed to fetch character rank from Akasha API")
 
         return await draw_gi_build_card(
             DrawInput(

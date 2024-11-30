@@ -20,6 +20,8 @@ if TYPE_CHECKING:
     import concurrent.futures
     from collections.abc import Mapping
 
+    from hoyo_buddy.l10n import LocaleStr
+
 
 @dataclass(kw_only=True)
 class Reward:
@@ -78,16 +80,18 @@ class GeetestLoginPayload(BaseModel):
         return "&".join(f"{k}={v}" for k, v in self.model_dump().items())
 
 
-class ItemWithDescription(BaseModel):
+@dataclass(kw_only=True)
+class ItemWithDescription:
     icon: str | None
-    title: str
-    description: str
+    title: str | LocaleStr
+    description: str | LocaleStr
 
 
-class ItemWithTrailing(BaseModel):
-    icon: str | None
-    title: str
-    trailing: str
+@dataclass(kw_only=True)
+class ItemWithTrailing:
+    icon: str | None = None
+    title: str | LocaleStr
+    trailing: str | LocaleStr
 
 
 @dataclass(kw_only=True)

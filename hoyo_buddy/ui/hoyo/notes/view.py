@@ -664,7 +664,9 @@ class NotesView(View):
             file_ = None
 
         if acc_select is not None:
-            await acc_select.unset_loading_state(i, embed=embed, attachments=[file_])
+            await acc_select.unset_loading_state(
+                i, embed=embed, attachments=[file_] if file_ is not None else []
+            )
         else:
             kwargs = {"embed": embed, "view": self, "content": await get_dyk(i)}
             if file_ is not None:

@@ -75,4 +75,9 @@ if __name__ == "__main__":
     else:
         install()
 
-    asyncio.run(main())
+    try:
+        import uvloop  # pyright: ignore[reportMissingImports]
+    except ImportError:
+        asyncio.run(main())
+    else:
+        uvloop.run(main())

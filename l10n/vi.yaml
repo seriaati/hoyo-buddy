@@ -58,7 +58,6 @@ auto_redeem_footer: Tắt Tự động Đỏi Mã Quà bằng /redeem
 auto_redeem_toggle.label: Tự động đổi mã quà
 books: Sách
 captcha.embed.description: "Nhấn nút bên dưới đê hoàn thành CAPTCHA.\n"
-challenge_command_description: "Xem thống kê nội dung Cuối trò chơi. như La Hoàn Thâm Cảnh, Hồi Ức Hỗn Độn, v.v"
 challenge_type_select.placeholder: Vui lòng chọn chế độ trò chơi
 challenge_view.buff_used_in: Được sử đụng
 challenge_view.team: "Đội {team}"
@@ -375,7 +374,7 @@ read_story.button.label: Đọc Chuyện
 real_time_notes: Ghi Chép Thời Gian Thực
 realm_curr_button.label: Nhắc nhờ Tiền Đồng Tiên
 realm_curr_modal.title: Cài đặt nhắc nhở Tiền Đồng Tiên
-redeeem_code.cookie_token_expired_description: "Tính năng tự đông đổi mã quà chỉ có sẵn cho người dùng đăng nhập bằng email và mật khẩu, bạn có thể làm như vậy với lệnh </accounts>"
+redeeem_code.cookie_token_expired_description: "Tính năng đổi mã quà chỉ áp dụng cho người dùng đã đăng nhập bằng email và mật khẩu, bạn có thể làm vậy bằng</accounts>"
 redeeem_code.cookie_token_expired_title: Mã Cookie đã hết hạn
 redeeem_code.cookie_token_refresh_failed_description: "Có thể bạn đã thay đổi mật khẩu tài khoản của mình kể từ lần cuối cùng bạn thêm tài khoản.\nVui lòng bạn thêm lại tài khoản bằng lệnh </accounts> với phương pháp email và mật khẩu."
 redeeem_code.cookie_token_refresh_failed_title: Thất bại để làm mới mã Cookie
@@ -533,7 +532,6 @@ characters.sorter.faction: Phe
 characters.sorter.mindscape_cinema: Phim Ý Cảnh
 characters.embed.filter_text: "Nhân vật {filter}"
 stats_command_description: Xem thống kê tài khoản game
-stats.select_card: Chọn tài khoản game...
 tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Hạng {rarity}"
 about_command.designers: Nhà Thiết Kế
@@ -599,7 +597,7 @@ account_add_start_message: "Nhấn nút bên dưới và làm theo hướng dẫ
 hbls_button_label: Hãy bắt đầu!
 gacha_import_url_modal_title: Nhập đường link nhật ký gacha
 gacha_import_embed_title: Đang nhập Nhật ký Gacha
-gacha_import_embed_description: "Đường dẫn Nhật ký Gacha: Lấy một đường link rất dài từ trò chơi để nhập lịch sử gacha của bạn, hướng dẫn cho từng trò chơi bên dưới:\n- Android: [YouTube video](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nCho dịch vụ bên dưới, xuất lịch sử gacha của bạn theo định dạng tệp được chỉ định và tải lên bằng lệnh </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json\n6. Genshin Wizard: csv"
+gacha_import_embed_description: "URL Nhật ký Gacha: Lấy một URL rất dài từ trò chơi để nhập nhật ký gacha của bạn, bên dưới là hướng dẫn cho các trò chơi khác nhau::\n- Android: [Video YouTube](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nFor services below, export your gacha records as the specified file format and upload it via </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Không thể trích xuất khóa xác thực từ đường link, vui lòng thử lại bằng đường link hợp lệ."
 extract_authkey_error_title: Trích xuất Khóa xác thực Thất bại
 gacha_import_loading_embed_title: Đang nhập Nhật ký Gacha
@@ -682,6 +680,10 @@ show_uid: Xem UID
 no_leaderboard_found: Không tìm thấy bảng xếp hạng
 akasha_character_param: nhân-vật
 akasha_calculation_param: bảng-xếp-hạng
+akasha_weapon_param: vũ-khí
+akasha_weapon_param_desc: Vũ khí để xem bảng xếp hạng cho
+akasha_variant_param: loại
+akasha_variant_param_desc: "Biến thể của bảng xếp hạng để xem, mặc định là bảng chính"
 akasha_character_param_desc: Nhân vật để xem bảng xếp hạng cho
 akasha_calculation_param_desc: Bảng xếp hạng để xem
 akasha_total_entries: "Tổng số mục: {total}"
@@ -702,7 +704,6 @@ leaderboard_not_found: Bảng xếp hạng không tìm thấy
 currently_logged_in_as: "Bạn hiện đang đăng nhập với tư cách:"
 not_you_label: "Không phải bạn? Nhấn để đăng nhập bằng tài khoản khác"
 profile_show_substat_rolls: Thuộc tính phụ
-profile_team_show_substat_rolls: Thẻ nhóm Thuộc tính phụ
 team_card_settings_button_label: Thẻ Đội cài đặt
 team_card_settings_embed_title: Chỉnh sữa thẻ dội cài đặt
 team_card_settings_embed_description: "Cài đặt thẻ đội được chia sẻ trên các trò chơi và tài khoản khác nhau, những thay đổi được thực hiện đối với một số cài đặt có thể không được phản ánh trên thẻ khi chúng không được mẫu thẻ hỗ trợ.\nKhi hoàn tất, hãy nhấp vào nút màu xanh lá cây trong thông báo bên trên để làm mới thẻ."
@@ -712,3 +713,43 @@ weapon_type_filter_placeholder: Chọn lọc loại vũ khí...
 redeem_cmd_available_codes: Mã có sẵn
 redeem_all_available_codes_button_label: Đổi tất cả mã có sẵn
 akasha_show_details: Hiển thị bảng xếp hạng chi tiết
+card_settings_hl_special_stats_button_label: Thống kê nổi bật đặc biệt
+challenge_command_abyss_desc: Tạo thẻ La Hoàn Thâm Cảnh
+challenge_command_theater_desc: Tạo thẻ Nhà Hát Giả Tưởng
+challenge_command_moc_desc: Tạo thẻ Hồi Ước Hỗn Độn
+challenge_command_pf_desc: Tạo thẻ Kể Chuyện Hư Cấu
+challenge_command_apc_shadow_desc: Tạo thẻ Ảo Ảnh Tận Thế
+challenge_command_shiyu_desc: Tạo thẻ Bảo Vệ Trụ Shiyu
+account_select_placeholder: Chọn một tài khoản…
+guild_only_command_param_name: chế-độ-máy-chủ
+guild_only_command_param_desc: Chỉ hiển thị xếp hạng của thành viên máy chủ trong bản xếp hạng
+yes_choice: "Có"
+no_choice: "Không"
+akasha_guild_mode_not_supported: Không thể sử dụng chế độ Chỉ Máy Chủ
+akasha_guild_mode_not_supported_desc: "Bạn phải trong máy chủ, máy chủ của bạn phải có dưới 100 người dùng, và tổng số tài khoản Genshin của các người dùng máy chủ phải dưới 30"
+time_remaining_str: "Thời gian còn lại: {time}"
+banner_selector_placeholder: Vui lòng chọn banner...
+rarity_str: "{rarity} sao"
+finished_status_field_name: Trạng thái
+unlocks_in_str: "Mở khóa trong {time}"
+challenge_selector_placeholder: Hãy chọn thử thách...
+upload_cmd_desc: "Tải ảnh lên và lấy dường link của nó, để bạn có thể dùng hình ảnh tùy chỉnh trong /profile"
+not_an_image_error_title: Không phải là ảnh
+not_an_image_error_message: "Mục bạn vừa tải lên không phải là ảnh, vui lòng thử lại với tệp hình ảnh hợp lệ."
+upload_cmd_image_param_name: ảnh
+upload_cmd_image_param_desc: Ảnh để tải lên
+exploration_select_placeholder: Hãy chọn vùng...
+exploration_show_card_button_label: Hiển thị thẻ thám hiểm
+abyss_stats_const_use_rate: Tỷ lệ sử dụng Cung Mệnh
+abyss_stats_teammate_use_rate: Tỷ lệ sử dụng Đồng đội
+abyss_stats_weapon_use_rate: Tỷ lệ sử dụng Vũ khí
+abyss_stats_artifact_use_rate: Tỷ lệ sử dụng Di vật
+build_cmd_genshin_desc: Xem build và hướng dẫn nhân vật Genshin Impact
+build_cmd_hsr_desc: "Xem build và hướng dẫn nhân vật Honkai: Star Rail"
+build_cmd_zzz_desc: Xem build và hướng dẫn người đại diện Zenless Zone Zero
+build_cmd_character_param_desc: Nhân vật đẽ coi build cho
+guide_title: "{name} Build và hướng dẫn"
+no_guide_available: Chưa có hướng dẫn build cho nhân vật này
+show_playstyle_button_label: Loại chơi
+flexible_char: Linh hoạt
+show_synergy_button_label: Sự hiệp lực

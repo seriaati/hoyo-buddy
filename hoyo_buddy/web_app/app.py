@@ -9,9 +9,9 @@ import aiohttp
 import asyncpg
 import flet as ft
 import genshin
-from loguru import logger
 import orjson
 from discord import Locale
+from loguru import logger
 from pydantic import ValidationError
 
 from hoyo_buddy.constants import (

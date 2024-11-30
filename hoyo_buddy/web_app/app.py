@@ -9,6 +9,7 @@ import aiohttp
 import asyncpg
 import flet as ft
 import genshin
+from loguru import logger
 import orjson
 from discord import Locale
 from pydantic import ValidationError
@@ -296,6 +297,12 @@ class WebApp:
             ).translate(locale)
             await show_error_banner(page, message=message)
             return None
+
+        logger.debug(f"{params.user_id} cookies: {cookies}")
+        if device_id is not None:
+            logger.debug(f"{params.user_id} device id: {device_id}")
+        if device_fp is not None:
+            logger.debug(f"{params.user_id} device fp: {device_fp}")
 
         return pages.FinishPage(
             params=params,

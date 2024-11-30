@@ -12,6 +12,8 @@ from .components import Button, View
 if TYPE_CHECKING:
     from ..types import Interaction
 
+__all__ = ("Page", "PaginatorView")
+
 
 @dataclass(kw_only=True)
 class Page:

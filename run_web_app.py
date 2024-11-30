@@ -39,8 +39,10 @@ if __name__ == "__main__":
     if args.sentry:
         init_sentry()
 
+    logger.add(sys.stderr, level="DEBUG" if is_dev else "INFO")
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
-    logger.add(sys.stderr, level="INFO")
+    logger.add("logs/web_app.log", rotation="1 day", retention="2 weeks", level="DEBUG")
+
     ft.app(
         web_app_entry,
         port=8645,

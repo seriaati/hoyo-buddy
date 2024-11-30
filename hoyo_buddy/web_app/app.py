@@ -594,6 +594,8 @@ class WebApp:
         if code is None:
             return pages.ErrorPage(code=400, message="Missing code")
 
+        await show_loading_snack_bar(page)
+
         async with aiohttp.ClientSession() as session:
             async with session.post(
                 "https://discord.com/api/oauth2/token",

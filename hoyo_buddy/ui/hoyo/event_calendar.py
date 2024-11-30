@@ -228,9 +228,7 @@ class BannerSelector(ItemSelector):
             banner_items = list(banner.characters) + list(banner.light_cones)
 
         items = [
-            ItemWithTrailing(
-                icon=i.icon, title=i.name, trailing=RarityStr(i.rarity).translate(self.view.locale)
-            )
+            ItemWithTrailing(icon=i.icon, title=i.name, trailing=RarityStr(i.rarity))
             for i in banner_items
         ]
         return await draw_item_list_card(

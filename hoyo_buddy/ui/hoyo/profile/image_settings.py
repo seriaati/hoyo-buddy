@@ -136,7 +136,8 @@ class ImageSettingsView(View):
 
     def _get_current_character(self) -> Character:
         character = next(
-            (chara for chara in self.characters if str(chara.id) == self.selected_character_id), None
+            (chara for chara in self.characters if str(chara.id) == self.selected_character_id),
+            None,
         )
         if character is None:
             msg = f"Character with ID {self.selected_character_id} not found"

@@ -168,16 +168,13 @@ dependencies = [
 
 [[package]]
 name = "ambr-py"
-version = "1.7.16"
-source = { registry = "https://pypi.org/simple" }
+version = "1.8.0"
+source = { git = "https://github.com/seriaati/ambr#b644ef7cc95a4e2ecc856aad276af691ca82031d" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
+    { name = "loguru" },
     { name = "pydantic" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/81/b5/ffc7afea20736806e9f6390f7bb56b1c157156a7acbd3094722937511d8f/ambr_py-1.7.16.tar.gz", hash = "sha256:92fedfa7d89ecf2545c2e1ce5658daf23a278d7dc3286837d77cab732e99612d", size = 68100 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a7/5c/7f21b0decd175bf58897488db7c62154e23de5da4f747e77d2ce5a0e68c9/ambr_py-1.7.16-py3-none-any.whl", hash = "sha256:631049db71acc9720bd28ce8f8db33bbd8d1d84bb25803cb527b7581e2258c7f", size = 49451 },
 ]
 
 [[package]]
@@ -895,7 +892,7 @@ requires-dist = [
     { name = "aiocache", specifier = ">=0.12.2" },
     { name = "aiofiles", specifier = ">=24.1.0" },
     { name = "akasha-py", git = "https://github.com/seriaati/akasha-py" },
-    { name = "ambr-py", specifier = ">=1.7.11" },
+    { name = "ambr-py", git = "https://github.com/seriaati/ambr" },
     { name = "asyncache", specifier = ">=0.3.1" },
     { name = "asyncpg", specifier = ">=0.29.0" },
     { name = "asyncpg-listen", specifier = ">=0.0.6" },

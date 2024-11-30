@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ambr
 from genshin import Game
 
 from .enums import Game as GameEnum
@@ -21,6 +22,14 @@ TOT_ICON = "https://iili.io/dnhj7P1.png"
 
 LOADING_ICON = "https://i.imgur.com/5siJ799.gif"
 
+GI_FIRE_ICON = "https://gi.yatta.moe/assets/UI/UI_Buff_Element_Fire.png"
+GI_WATER_ICON = "https://gi.yatta.moe/assets/UI/UI_Buff_Element_Water.png"
+GI_WIND_ICON = "https://gi.yatta.moe/assets/UI/UI_Buff_Element_Wind.png"
+GI_ROCK_ICON = "https://gi.yatta.moe/assets/UI/UI_Buff_Element_Rock.png"
+GI_ELECTRO_ICON = "https://gi.yatta.moe/assets/UI/UI_Buff_Element_Electric.png"
+GI_ICE_ICON = "https://gi.yatta.moe/assets/UI/UI_Buff_Element_Ice.png"
+GI_GRASS_ICON = "https://gi.yatta.moe/assets/UI/UI_Buff_Element_Grass.png"
+
 
 def get_game_icon(game: Game | GameEnum) -> str:
     if game in {Game.GENSHIN, GameEnum.GENSHIN}:
@@ -36,3 +45,20 @@ def get_game_icon(game: Game | GameEnum) -> str:
 
     msg = f"This game doesn't have an icon: {game}"
     raise ValueError(msg)
+
+
+def get_element_icon(element: ambr.Element) -> str:  # noqa: RET503
+    if element is ambr.Element.ANEMO:
+        return GI_WIND_ICON
+    if element is ambr.Element.GEO:
+        return GI_ROCK_ICON
+    if element is ambr.Element.ELECTRO:
+        return GI_ELECTRO_ICON
+    if element is ambr.Element.PYRO:
+        return GI_FIRE_ICON
+    if element is ambr.Element.HYDRO:
+        return GI_WATER_ICON
+    if element is ambr.Element.CRYO:
+        return GI_ICE_ICON
+    if element is ambr.Element.DENDRO:
+        return GI_GRASS_ICON

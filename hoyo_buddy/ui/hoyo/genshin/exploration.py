@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     import genshin
     from discord import Locale
 
-    from hoyo_buddy.bot.bot import HoyoBuddy
+    from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.types import Interaction, User
 
 

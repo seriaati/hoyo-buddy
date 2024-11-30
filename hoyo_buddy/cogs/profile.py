@@ -17,7 +17,7 @@ from hoyo_buddy.types import User  # noqa: TC001
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import HoyoBuddy
+    from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.types import Interaction
 
 RENAME_KWARGS: dict[str, app_commands.locale_str] = {

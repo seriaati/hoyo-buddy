@@ -25,7 +25,7 @@ from hoyo_buddy.ui.hoyo.leaderboard.akasha import AkashaLbPaginator
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot.bot import HoyoBuddy
+    from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.types import Interaction
 
 GUILD_ONLY_MAX_MEMBER_COUNT = 100

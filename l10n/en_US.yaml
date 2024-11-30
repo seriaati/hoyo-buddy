@@ -740,3 +740,16 @@ upload_cmd_image_param_name: image
 upload_cmd_image_param_desc: Image to upload
 exploration_select_placeholder: Select a region...
 exploration_show_card_button_label: Show exploration card
+abyss_stats_const_use_rate: Constellation Usage Rate
+abyss_stats_teammate_use_rate: Teammate Usage Rate
+abyss_stats_weapon_use_rate: Weapon Usage Rate
+abyss_stats_artifact_use_rate: Artifact Usage Rate
+build_cmd_genshin_desc: View a Genshin Impact character's builds and guides
+build_cmd_hsr_desc: View a Honkai Star Rail character's builds and guides
+build_cmd_zzz_desc: View a Zenless Zone Zero agent's builds and guides
+build_cmd_character_param_desc: Character to view the builds for
+guide_title: "{name} Builds and Guides"
+no_guide_available: No guides available for this character yet
+show_playstyle_button_label: Playstyle
+flexible_char: Flexible
+show_synergy_button_label: Synergies

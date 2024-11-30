@@ -9,7 +9,7 @@ from ..enums import Game
 from ..exceptions import AutocompleteNotDoneYetError, InvalidQueryError
 from ..hoyo.clients import ambr
 from ..l10n import LocaleStr
-from ..ui.hoyo.farm_notify import FarmNotifyView
+from ..ui.hoyo.genshin.farm_notify import FarmNotifyView
 
 if TYPE_CHECKING:
     import discord

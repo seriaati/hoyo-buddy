@@ -12,7 +12,7 @@ from ..enums import Game
 from ..hoyo.clients.ambr import ItemCategory
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from ..l10n import LocaleStr
-from ..ui.hoyo.farm import FarmView
+from ..ui.hoyo.genshin.farm import FarmView
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy

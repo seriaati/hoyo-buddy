@@ -493,7 +493,7 @@ dependencies = [
 [[package]]
 name = "enka-api"
 version = "2.4.2"
-source = { git = "https://github.com/seriaati/enka-py#9f215d3ea332d43b40500fd654957a0973837715" }
+source = { git = "https://github.com/seriaati/enka-py#03473a236a04ab64c549ff65fd6264110c59d168" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -675,7 +675,7 @@ wheels = [
 [[package]]
 name = "hakushin-py"
 version = "0.4.6"
-source = { git = "https://github.com/seriaati/hakushin-py#3d4174a63801578931fa91d47a11eefcc35e69f3" }
+source = { git = "https://github.com/seriaati/hakushin-py#efd8e0cb8513c29e82a630d8d495ce22d037ba3c" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },

@@ -687,10 +687,13 @@ class GenshinClient(ProxyGenshinClient):
                     msg = f"API errored after {MAX_API_RETRIES} retries, status: {resp.status}"
                     raise RuntimeError(msg)
 
+                await asyncio.sleep(2**retry)
                 return await self.get_notes_(game, session=session, retry=retry + 1)
         except Exception:
             if retry > MAX_API_RETRIES:
                 raise
+
+            await asyncio.sleep(2**retry)
             return await self.get_notes_(game, session=session, retry=retry + 1)
 
     async def get_genshin_notes(self, session: aiohttp.ClientSession) -> genshin.models.Notes:

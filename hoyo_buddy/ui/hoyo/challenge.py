@@ -171,7 +171,8 @@ class ChallengeView(View):
 
         self.characters: Sequence[GICharacter] = []
         self.agent_ranks: dict[int, int] = {}
-        self.uid: int | None = None
+        self.uid = account.uid
+        self.show_uid = False
 
     @property
     def challenge(self) -> ChallengeWithLang | None:
@@ -371,7 +372,7 @@ class ChallengeView(View):
             ),
             self.challenge,
             self.agent_ranks,
-            self.uid,
+            self.uid if self.show_uid else None,
         )
 
     def _add_items(self) -> None:
@@ -380,7 +381,7 @@ class ChallengeView(View):
         )
         self.add_item(PhaseSelect())
         self.add_item(ViewBuffs())
-        self.add_item(ShowUID(current_toggle=self.uid is not None))
+        self.add_item(ShowUID(disabled=self.account.game is not Game.ZZZ))
 
     async def update(
         self, item: Select[ChallengeView] | Button[ChallengeView], i: Interaction
@@ -530,14 +531,13 @@ class ViewBuffs(Button[ChallengeView]):
 
 
 class ShowUID(ToggleButton[ChallengeView]):
-    def __init__(self, *, current_toggle: bool) -> None:
+    def __init__(self, *, disabled: bool) -> None:
         super().__init__(
-            current_toggle, LocaleStr(key="show_uid"), row=4, disabled=True, custom_id="show_uid"
+            False, LocaleStr(key="show_uid"), row=4, disabled=disabled, custom_id="show_uid"
         )
 
     async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=False)
-        self.view.uid = self.view.account.uid if self.current_toggle else None
-
+        self.view.show_uid = self.current_toggle
         await self.set_loading_state(i)
         await self.view.update(self, i)

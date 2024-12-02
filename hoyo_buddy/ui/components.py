@@ -127,7 +127,7 @@ class View(discord.ui.View):
 
     @staticmethod
     async def absolute_send(i: Interaction, **kwargs: Any) -> None:
-        with contextlib.suppress(discord.NotFound):
+        with contextlib.suppress(discord.HTTPException):
             if not i.response.is_done():
                 await i.response.send_message(**kwargs)
             else:
@@ -135,7 +135,7 @@ class View(discord.ui.View):
 
     @staticmethod
     async def absolute_edit(i: Interaction, **kwargs: Any) -> None:
-        with contextlib.suppress(discord.NotFound):
+        with contextlib.suppress(discord.HTTPException):
             if not i.response.is_done():
                 await i.response.edit_message(**kwargs)
             else:

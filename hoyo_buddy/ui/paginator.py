@@ -10,7 +10,7 @@ from ..emojis import DOUBLE_LEFT, DOUBLE_RIGHT, LEFT, RIGHT
 from .components import Button, View
 
 if TYPE_CHECKING:
-    from ..types import Interaction
+    from ..types import Interaction, User
 
 __all__ = ("Page", "PaginatorView")
 
@@ -27,7 +27,8 @@ class PaginatorView(View):
         self,
         pages: dict[int, Page] | list[Page],
         *,
-        author: discord.User | discord.Member | None,
+        set_loading_state: bool = False,
+        author: User,
         locale: discord.Locale,
     ) -> None:
         super().__init__(author=author, locale=locale)
@@ -35,8 +36,27 @@ class PaginatorView(View):
         self._pages = pages
         self._current_page = 0
         self._max_page = len(pages)
+        self._set_loading_state = set_loading_state
 
         self._add_buttons()
+
+    @property
+    def pages(self) -> dict[int, Page] | list[Page]:
+        return self._pages
+
+    @pages.setter
+    def pages(self, pages: dict[int, Page] | list[Page]) -> None:
+        self._pages = pages
+        self._max_page = len(pages)
+
+    @property
+    def current_page(self) -> int:
+        return self._current_page
+
+    @current_page.setter
+    def current_page(self, current_page: int) -> None:
+        self._current_page = current_page
+        self._update_button_states()
 
     def _add_buttons(self) -> None:
         self.add_item(FirstButton(emoji=DOUBLE_LEFT, custom_id="first_page"))
@@ -46,7 +66,7 @@ class PaginatorView(View):
         self.add_item(NextButton(emoji=RIGHT, style=ButtonStyle.blurple, custom_id="next_page"))
         self.add_item(LastButton(emoji=DOUBLE_RIGHT, custom_id="last_page"))
 
-    def _upadte_button_state(self) -> None:
+    def _update_button_states(self) -> None:
         """Method to update the disabled state of the buttons."""
         first_button: FirstButton = self.get_item("first_page")
         previous_button: PreviousButton = self.get_item("previous_page")
@@ -64,6 +84,7 @@ class PaginatorView(View):
     async def _update_page(
         self,
         i: Interaction,
+        button: Button[PaginatorView] | None,
         *,
         type_: Literal["next", "prev", "first", "last", "start"],  # noqa: ARG002
         followup: bool = False,
@@ -77,11 +98,13 @@ class PaginatorView(View):
         except IndexError:
             return
 
+        self._update_button_states()
+
+        if not followup and button is not None and self._set_loading_state:
+            await button.set_loading_state(i)
         file_ = await self._create_file()
         if isinstance(file_, discord.File):
             page.file = file_
-
-        self._upadte_button_state()
 
         if followup:
             kwargs: dict[str, Any] = {}
@@ -93,51 +116,59 @@ class PaginatorView(View):
                 files=[page.file] if page.file else [], view=self, ephemeral=ephemeral, **kwargs
             )
             self.message = await i.original_response()
-        else:
+        elif button is None or not self._set_loading_state:
             self.message = await i.edit_original_response(
                 content=page.content,
                 embed=page.embed,
                 attachments=[page.file] if page.file else [],
                 view=self,
             )
+        else:
+            await button.unset_loading_state(
+                i,
+                content=page.content,
+                embed=page.embed,
+                attachments=[page.file] if page.file else [],
+            )
+            self.message = await i.original_response()
 
-    async def _next_page(self, i: Interaction) -> None:
+    async def _next_page(self, i: Interaction, button: Button[PaginatorView]) -> None:
         self._current_page = min(self._current_page + 1, self._max_page)
-        await self._update_page(i, type_="next")
+        await self._update_page(i, button, type_="next")
 
-    async def _previous_page(self, i: Interaction) -> None:
+    async def _previous_page(self, i: Interaction, button: Button[PaginatorView]) -> None:
         self._current_page = max(self._current_page - 1, 0)
-        await self._update_page(i, type_="prev")
+        await self._update_page(i, button, type_="prev")
 
-    async def _first_page(self, i: Interaction) -> None:
+    async def _first_page(self, i: Interaction, button: Button[PaginatorView]) -> None:
         self._current_page = 0
-        await self._update_page(i, type_="first")
+        await self._update_page(i, button, type_="first")
 
-    async def _last_page(self, i: Interaction) -> None:
+    async def _last_page(self, i: Interaction, button: Button[PaginatorView]) -> None:
         self._current_page = self._max_page - 1
-        await self._update_page(i, type_="last")
+        await self._update_page(i, button, type_="last")
 
     async def start(
         self, i: Interaction, *, followup: bool = False, ephemeral: bool = False
     ) -> None:
-        await self._update_page(i, type_="start", followup=followup, ephemeral=ephemeral)
+        await self._update_page(i, None, type_="start", followup=followup, ephemeral=ephemeral)
 
 
 class NextButton(Button[PaginatorView]):
     async def callback(self, i: Interaction) -> None:
-        await self.view._next_page(i)
+        await self.view._next_page(i, self)
 
 
 class PreviousButton(Button[PaginatorView]):
     async def callback(self, i: Interaction) -> None:
-        await self.view._previous_page(i)
+        await self.view._previous_page(i, self)
 
 
 class FirstButton(Button[PaginatorView]):
     async def callback(self, i: Interaction) -> None:
-        await self.view._first_page(i)
+        await self.view._first_page(i, self)
 
 
 class LastButton(Button[PaginatorView]):
     async def callback(self, i: Interaction) -> None:
-        await self.view._last_page(i)
+        await self.view._last_page(i, self)

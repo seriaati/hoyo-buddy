@@ -22,6 +22,17 @@ from hoyo_buddy.draw.main_funcs import (
 )
 from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath, Platform, ZZZElement
 from hoyo_buddy.l10n import EnumStr, LocaleStr
+from hoyo_buddy.ui import (
+    Button,
+    GoBackButton,
+    Modal,
+    Page,
+    PaginatorView,
+    Select,
+    SelectOption,
+    TextInput,
+    ToggleButton,
+)
 
 from ...constants import (
     AMBR_WEAPON_TYPES,
@@ -37,6 +48,7 @@ from ...db.models import JSONFile, draw_locale, get_dyk
 from ...embeds import DefaultEmbed
 from ...emojis import (
     FILTER,
+    GROUP,
     ZZZ_SPECIALTY_EMOJIS,
     get_gi_element_emoji,
     get_hsr_element_emoji,
@@ -48,12 +60,11 @@ from ...hoyo.clients.ambr import AmbrAPIClient
 from ...hoyo.clients.yatta import YattaAPIClient
 from ...models import DrawInput, UnownedGICharacter, UnownedHSRCharacter, UnownedZZZCharacter
 from ...utils import get_now
-from ..components import Button, GoBackButton, Select, SelectOption, ToggleButton, View
 
 if TYPE_CHECKING:
-    import asyncio
-    import concurrent.futures
+    from asyncio import AbstractEventLoop
     from collections.abc import Iterable, Sequence
+    from concurrent.futures import ThreadPoolExecutor
 
     import aiohttp
     from discord import File, Member, User
@@ -112,7 +123,7 @@ Character: TypeAlias = (
 Sorter: TypeAlias = GISorter | HSRSorter | ZZZSorter | HonkaiSorter
 
 
-class CharactersView(View):
+class CharactersView(PaginatorView):
     def __init__(
         self,
         account: HoyoAccount,
@@ -121,14 +132,21 @@ class CharactersView(View):
         path_char_counts: dict[str, int],
         faction_char_counts: dict[str, int],
         *,
+        session: aiohttp.ClientSession,
+        executor: ThreadPoolExecutor,
+        loop: AbstractEventLoop,
         author: User | Member | None,
         locale: Locale,
     ) -> None:
-        super().__init__(author=author, locale=locale)
+        super().__init__([], set_loading_state=True, author=author, locale=locale)
+        self._session = session
+        self._executor = executor
+        self._loop = loop
 
-        self._account = account
+        self.account = account
         self.game = account.game
         self.dark_mode = dark_mode
+        self.dyk = ""
 
         self.element_char_counts = element_char_counts
         self.path_char_counts = path_char_counts
@@ -148,7 +166,7 @@ class CharactersView(View):
         self.faction_filters: list[str] = []
         self.faction_l10n: dict[str, str] = {}
 
-        self.sorter: Sorter
+        self.sorter: Sorter = None  # pyright: ignore[reportAttributeAccessIssue]
         if self.game is Game.GENSHIN:
             self.sorter = GISorter.ELEMENT
         elif self.game is Game.STARRAIL:
@@ -158,14 +176,22 @@ class CharactersView(View):
         elif self.game is Game.HONKAI:
             self.sorter = HonkaiSorter.LEVEL
 
-        self.rarities: set[str] = set()
+        self.available_rarities: set[str] = set()
+        self.rarities: list[str] = []
+
+        self.show_owned_only = True
         self.show_max_level_only = False
+        self.characters_per_page = 32
 
     async def _get_gi_pc_icons(self) -> dict[str, str]:
-        if self._account.platform is Platform.HOYOLAB:
-            await self._account.client.update_pc_icons()
-
         pc_icons = await JSONFile.read("pc_icons.json")
+
+        is_missing = any(
+            "yatta.moe" in pc_icons.get(str(c.id), "") or str(c.id) not in pc_icons
+            for c in self.gi_characters
+        )
+        if is_missing and self.account.platform is Platform.HOYOLAB:
+            await self.account.client.update_pc_icons()
 
         is_missing = any(str(c.id) not in pc_icons for c in self.gi_characters)
         if is_missing:
@@ -174,7 +200,7 @@ class CharactersView(View):
                 for chara in self.gi_characters:
                     if str(chara.id) in pc_icons:
                         continue
-                    ambr_chara = next((c for c in ambr_charas if c.id == chara.id), None)
+                    ambr_chara = next((c for c in ambr_charas if c.id == str(chara.id)), None)
                     if ambr_chara is None:
                         continue
                     pc_icons[str(chara.id)] = ambr_chara.icon
@@ -316,7 +342,7 @@ class CharactersView(View):
 
         return sorted(characters, key=lambda c: c.rarity, reverse=True)
 
-    def _get_filtered_sorted_characters(self) -> Sequence[Character]:
+    def get_filtered_sorted_characters(self) -> Sequence[Character]:
         if self.game is Game.GENSHIN:
             characters = self._apply_gi_sorter(
                 self._apply_element_filters(
@@ -336,7 +362,7 @@ class CharactersView(View):
         elif self.game is Game.HONKAI:
             characters = self._apply_honkai_sorter(self.honkai_characters)
         else:
-            raise FeatureNotImplementedError(platform=self._account.platform, game=self.game)
+            raise FeatureNotImplementedError(platform=self.account.platform, game=self.game)
 
         if self.show_max_level_only:
             max_level = CHARACTER_MAX_LEVEL.get(self.game)
@@ -353,14 +379,9 @@ class CharactersView(View):
 
         return characters
 
-    async def _draw_card(
-        self,
-        session: aiohttp.ClientSession,
-        characters: Sequence[Character],
-        executor: concurrent.futures.ThreadPoolExecutor,
-        loop: asyncio.AbstractEventLoop,
-    ) -> File:
-        locale = draw_locale(self.locale, self._account)
+    async def _draw_card(self, characters: Sequence[Character]) -> File:
+        session, loop, executor = self._session, self._loop, self._executor
+        locale = draw_locale(self.locale, self.account)
 
         if self.game is Game.GENSHIN:
             pc_icons = await self._get_gi_pc_icons()
@@ -423,14 +444,14 @@ class CharactersView(View):
                 characters,  # pyright: ignore [reportArgumentType]
             )
         else:
-            raise FeatureNotImplementedError(platform=self._account.platform, game=self.game)
+            raise FeatureNotImplementedError(platform=self.account.platform, game=self.game)
 
         return file_
 
     def _get_embed(self, char_num: int) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale, title=LocaleStr(key="characters.embed.title"))
         embed.set_image(url="attachment://characters.png")
-        embed.add_acc_info(self._account)
+        embed.add_acc_info(self.account)
 
         if self.game is Game.HONKAI:
             return embed
@@ -515,10 +536,6 @@ class CharactersView(View):
             and not self.faction_filters
         ):
             total_chars = sum(self.element_char_counts.values())
-            if self.game in {Game.GENSHIN, Game.STARRAIL}:
-                # Traveler/Trailblazer
-                total_chars += 1
-
             embed.add_field(
                 name=LocaleStr(
                     key="characters_embed_max_level_characters"
@@ -542,8 +559,8 @@ class CharactersView(View):
 
         return embed
 
-    async def _add_items(self) -> None:
-        items: list[Select | Button] = [RarityFilterSelector(self.rarities)]
+    def _add_items(self) -> None:
+        items: list[Select | Button] = [RarityFilterSelector(self.available_rarities)]
 
         if self.game is Game.GENSHIN:
             options = WeaponTypeFilter.generate_options(
@@ -577,21 +594,34 @@ class CharactersView(View):
         for num, chunk in enumerate(chunked_items, 1):
             self.add_item(FilterButton(num, chunk))
 
+        self.add_item(CharactersPerPageButton())
+
         if self.game in {Game.GENSHIN, Game.STARRAIL, Game.ZZZ}:
-            self.add_item(ShowOwnedOnly())
-            self.add_item(ShowMaxLevelOnly())
+            self.add_item(ShowOwnedOnly(current_toggle=self.show_owned_only))
+            self.add_item(ShowMaxLevelOnly(current_toggle=self.show_max_level_only))
         elif self.game is Game.HONKAI:
-            self.add_item(ShowMaxLevelOnly())
+            self.add_item(ShowMaxLevelOnly(current_toggle=self.show_max_level_only))
 
         self.add_item(SorterSelector(self.sorter, self.game))
 
+    def _set_pages(self, characters: Sequence[Character], *, embed: DefaultEmbed) -> None:
+        page_num = len(characters) // self.characters_per_page + 1
+        self.pages = [Page(content=self.dyk, embed=embed) for _ in range(page_num)]
+
+    async def _create_file(self) -> File:
+        characters = self.get_filtered_sorted_characters()
+        chunked_chars = list(itertools.batched(characters, self.characters_per_page))
+        chars = chunked_chars[self._current_page]
+        return await self._draw_card(chars)
+
     async def start(self, i: Interaction) -> None:
-        client = self._account.client
+        self.dyk = await get_dyk(i)
+        client = self.account.client
         client.set_lang(self.locale)
 
         if self.game is Game.GENSHIN:
             self.gi_characters = list(
-                (await client.get_genshin_detailed_characters(self._account.uid)).characters
+                (await client.get_genshin_detailed_characters(self.account.uid)).characters
             )
 
             # Find traveler element and add 1 to the element char count
@@ -602,7 +632,7 @@ class CharactersView(View):
 
         elif self.game is Game.STARRAIL:
             self.hsr_characters = list(
-                (await client.get_starrail_characters(self._account.uid)).avatar_list
+                (await client.get_starrail_characters(self.account.uid)).avatar_list
             )
 
             # Find traiblazer element and path and add 1 to the count
@@ -624,41 +654,28 @@ class CharactersView(View):
                 for agent, en_agent in zip(full_agents, en_full_agents, strict=False)
             }
         elif self.game is Game.HONKAI:
-            self.honkai_characters = list(await client.get_honkai_battlesuits(self._account.uid))
-        else:
-            raise FeatureNotImplementedError(platform=self._account.platform, game=self.game)
+            self.honkai_characters = list(await client.get_honkai_battlesuits(self.account.uid))
 
-        self.rarities = {
+        self.available_rarities = {
             str(c.rarity)
             for c in self.gi_characters
             + self.hsr_characters
             + self.zzz_characters
             + self.honkai_characters
         }
-        characters = self._get_filtered_sorted_characters()
-        file_ = await self._draw_card(
-            i.client.session, characters, i.client.executor, i.client.loop
-        )
+        self.rarities = list(self.available_rarities.copy())
+        await self.update(i)
+
+    async def update(self, i: Interaction) -> None:
+        characters = self.get_filtered_sorted_characters()
         embed = self._get_embed(len([c for c in characters if not isinstance(c, UnownedCharacter)]))
+        self._set_pages(characters, embed=embed)
 
-        await self._add_items()
-        await i.edit_original_response(
-            content=await get_dyk(i), attachments=[file_], view=self, embed=embed
-        )
-        self.message = await i.original_response()
-
-    async def item_callback(
-        self, i: Interaction, item: Button | Select, *, set_loading_state: bool = True
-    ) -> None:
-        characters = self._get_filtered_sorted_characters()
-        if set_loading_state:
-            await item.set_loading_state(i)
-
-        file_ = await self._draw_card(
-            i.client.session, characters, i.client.executor, i.client.loop
-        )
-        embed = self._get_embed(len([c for c in characters if not isinstance(c, UnownedCharacter)]))
-        await item.unset_loading_state(i, attachments=[file_], embed=embed)
+        self.clear_items()
+        self._add_buttons()
+        self._add_items()
+        self.current_page = 0
+        await super().start(i)
 
 
 class GIFilterSelector(Select[CharactersView]):
@@ -682,7 +699,7 @@ class GIFilterSelector(Select[CharactersView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view.filter = GIFilter(self.values[0])
-        await self.view.item_callback(i, self)
+        await i.response.defer()
 
 
 class ElementFilterSelector(Select[CharactersView]):
@@ -718,7 +735,7 @@ class ElementFilterSelector(Select[CharactersView]):
 
         element_type = element_types[self.view.game]
         self.view.element_filters = [element_type(value) for value in self.values]
-        await self.view.item_callback(i, self)
+        await i.response.defer()
 
 
 class PathFilterSelector(Select[CharactersView]):
@@ -735,7 +752,7 @@ class PathFilterSelector(Select[CharactersView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view.path_filters = [HSRPath(value) for value in self.values]
-        await self.view.item_callback(i, self)
+        await i.response.defer()
 
 
 class SpecialtyFilterSelector(Select[CharactersView]):
@@ -756,7 +773,7 @@ class SpecialtyFilterSelector(Select[CharactersView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view.speciality_filters = [ZZZSpecialty(int(value)) for value in self.values]
-        await self.view.item_callback(i, self)
+        await i.response.defer()
 
 
 class FactionFilterSelector(Select[CharactersView]):
@@ -775,7 +792,7 @@ class FactionFilterSelector(Select[CharactersView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view.faction_filters = self.values
-        await self.view.item_callback(i, self)
+        await i.response.defer()
 
 
 class SorterSelector(Select[CharactersView]):
@@ -806,21 +823,23 @@ class SorterSelector(Select[CharactersView]):
         )
 
     async def callback(self, i: Interaction) -> None:
+        await self.set_loading_state(i)
         self.view.sorter = self._sorter(self.values[0])
-        await self.view.item_callback(i, self)
+        await self.view.update(i)
 
 
 class ShowOwnedOnly(ToggleButton[CharactersView]):
-    def __init__(self) -> None:
+    def __init__(self, *, current_toggle: bool) -> None:
         super().__init__(
-            current_toggle=True, toggle_label=LocaleStr(key="characters.show_owned_only")
+            current_toggle=current_toggle,
+            toggle_label=LocaleStr(key="characters.show_owned_only"),
+            row=2,
         )
 
     async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=False)
         await self.set_loading_state(i)
-
-        toggle = self.current_toggle
+        self.view.show_owned_only = toggle = self.current_toggle
 
         if toggle:
             if self.view.game is Game.GENSHIN:
@@ -925,20 +944,22 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
                         )
                     )
 
-        await self.view.item_callback(i, self, set_loading_state=False)
+        await self.view.update(i)
 
 
 class ShowMaxLevelOnly(ToggleButton[CharactersView]):
-    def __init__(self) -> None:
+    def __init__(self, *, current_toggle: bool) -> None:
         super().__init__(
-            current_toggle=False, toggle_label=LocaleStr(key="characters_view_show_max_level_only")
+            current_toggle=current_toggle,
+            toggle_label=LocaleStr(key="characters_view_show_max_level_only"),
+            row=2,
         )
 
     async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=False)
-
+        await self.set_loading_state(i)
         self.view.show_max_level_only = self.current_toggle
-        await self.view.item_callback(i, self)
+        await self.view.update(i)
 
 
 class RarityFilterSelector(Select[CharactersView]):
@@ -954,8 +975,8 @@ class RarityFilterSelector(Select[CharactersView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        self.view.rarities = set(self.values)
-        await self.view.item_callback(i, self)
+        self.view.rarities = self.values
+        await i.response.defer()
 
 
 class WeaponTypeFilter(Select[CharactersView]):
@@ -975,7 +996,13 @@ class WeaponTypeFilter(Select[CharactersView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view.weapon_type_filters = [int(value) for value in self.values]
-        await self.view.item_callback(i, self)
+        await i.response.defer()
+
+
+class CustomGoBackButton(GoBackButton[CharactersView]):
+    async def callback(self, i: Interaction) -> None:
+        await self.set_loading_state(i)
+        await self.view.update(i)
 
 
 class FilterButton(Button[CharactersView]):
@@ -984,11 +1011,12 @@ class FilterButton(Button[CharactersView]):
             label=LocaleStr(key="gacha_view_filter_button_label"),
             style=ButtonStyle.blurple,
             emoji=FILTER,
+            row=1,
         )
         self._items = items
 
     async def callback(self, i: Interaction) -> None:
-        back_button = GoBackButton(self.view.children)
+        back_button = CustomGoBackButton(self.view.children)
         self.view.clear_items()
 
         for item in self._items:
@@ -996,3 +1024,39 @@ class FilterButton(Button[CharactersView]):
         self.view.add_item(back_button)
 
         await i.response.edit_message(view=self.view)
+
+
+class CharactersPerPageModal(Modal):
+    num = TextInput(
+        label=LocaleStr(key="characters_per_page_num_label"), is_digit=True, min_value=1
+    )
+
+    def __init__(self, current_num: int, total_num: int) -> None:
+        super().__init__(title=LocaleStr(key="characters_per_page_modal_title"))
+        self.num.default = str(current_num)
+        self.num.max_value = total_num
+
+
+class CharactersPerPageButton(Button[CharactersView]):
+    def __init__(self) -> None:
+        super().__init__(
+            label=LocaleStr(key="characters_per_page_modal_title"),
+            style=ButtonStyle.blurple,
+            row=1,
+            emoji=GROUP,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        modal = CharactersPerPageModal(
+            self.view.characters_per_page, len(self.view.get_filtered_sorted_characters())
+        )
+        modal.translate(self.view.locale)
+        await i.response.send_modal(modal)
+
+        await modal.wait()
+        if modal.incomplete:
+            return
+
+        await self.set_loading_state(i)
+        self.view.characters_per_page = int(modal.num.value)
+        await self.view.update(i)

@@ -122,6 +122,7 @@ class AkashaLbPaginator(BaseAkashaLbPaginator):
     async def _update_page(
         self,
         i: Interaction,
+        button: Button[PaginatorView] | None,
         *,
         type_: Literal["next", "prev", "first", "last", "start"],
         followup: bool = False,
@@ -131,7 +132,9 @@ class AkashaLbPaginator(BaseAkashaLbPaginator):
             await i.response.defer(ephemeral=ephemeral)
 
         self._pages[self._current_page] = await self.fetch_page(type_)
-        return await super()._update_page(i, type_=type_, followup=followup, ephemeral=ephemeral)
+        return await super()._update_page(
+            i, button, type_=type_, followup=followup, ephemeral=ephemeral
+        )
 
 
 class ShowLbDetailsButton(Button[AkashaLbPaginator]):

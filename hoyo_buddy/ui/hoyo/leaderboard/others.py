@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Literal
 
 from hoyo_buddy.db.models import Leaderboard
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui.paginator import Page, PaginatorView
+from hoyo_buddy.ui import Button, Page, PaginatorView
 from hoyo_buddy.utils import blur_uid
 
 if TYPE_CHECKING:
@@ -89,6 +89,7 @@ class LbPaginator(PaginatorView):
     async def _update_page(
         self,
         i: Interaction,
+        button: Button[PaginatorView] | None,
         *,
         type_: Literal["next", "prev", "first", "last", "start"],
         followup: bool = False,
@@ -98,4 +99,6 @@ class LbPaginator(PaginatorView):
             await i.response.defer(ephemeral=ephemeral)
 
         self._pages[self._current_page] = await self.fetch_page()
-        return await super()._update_page(i, type_=type_, followup=followup, ephemeral=ephemeral)
+        return await super()._update_page(
+            i, button, type_=type_, followup=followup, ephemeral=ephemeral
+        )

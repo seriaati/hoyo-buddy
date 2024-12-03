@@ -756,3 +756,5 @@ no_guide_available: No guides available for this character yet
 show_playstyle_button_label: Playstyle
 flexible_char: Flexible
 show_synergy_button_label: Synergies
+characters_per_page_modal_title: Characters per page
+characters_per_page_num_label: Number

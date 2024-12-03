@@ -106,7 +106,10 @@ characters.sorter.level: 等級
 characters.sorter.path: 命途
 characters.sorter.placeholder: 選擇一個排序...
 characters.sorter.rarity: 稀有度
-characters_command_description: 查看你擁有的所有角色
+characters_cmd_genshin_desc: 查看並篩選你的原神角色
+characters_cmd_hsr_desc: 查看並篩選你的星穹鐵道角色
+characters_cmd_zzz_desc: 查看並篩選你的絕區零代理人
+characters_cmd_honkai_desc: 查看並篩選你的崩壞三角色
 checkin_button_label: 簽到
 checkin_command_description: 遊戲每日簽到
 complete_captcha_button_label: 完成 CAPTCHA
@@ -740,3 +743,18 @@ upload_cmd_image_param_name: 圖片
 upload_cmd_image_param_desc: 要上傳的圖片
 exploration_select_placeholder: 選擇一個區域…
 exploration_show_card_button_label: 顯示探索度卡片
+abyss_stats_const_use_rate: 命座使用率
+abyss_stats_teammate_use_rate: 隊友使用率
+abyss_stats_weapon_use_rate: 武器使用率
+abyss_stats_artifact_use_rate: 聖遺物使用率
+build_cmd_genshin_desc: 查看一個原神角色的指南及養成建議
+build_cmd_hsr_desc: 查看一個星穹鐵道角色的指南及養成建議
+build_cmd_zzz_desc: 查看一個絕區零代理人的指南及養成建議
+build_cmd_character_param_desc: 要查看哪個角色的指南？
+guide_title: "{name}的指南及養成建議"
+no_guide_available: 這個角色還沒有任何指南
+show_playstyle_button_label: 核心玩法
+flexible_char: 任意
+show_synergy_button_label: 組隊方式
+characters_per_page_modal_title: 每頁角色數
+characters_per_page_num_label: 數量

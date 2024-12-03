@@ -104,8 +104,9 @@ class StatsView(View):
             "buddy_num": stats.bangboo_obtained,
             "cur_period_zone_layer_count": stats.shiyu_defense_frontiers,
             "achievement_count": stats.achievement_count,
-            "commemorative_coins_list": stats.hia_coin.num,
         }
+        if stats.hia_coin is not None:
+            fields["commemorative_coins_list"] = stats.hia_coin.num
         return self._get_user_embed(level=card.level, fields=fields, avatar=user.in_game_avatar)
 
     def get_honkai_user_embed(self, user: genshin.models.HonkaiUserStats) -> DefaultEmbed:

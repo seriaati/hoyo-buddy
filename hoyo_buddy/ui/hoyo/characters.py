@@ -605,7 +605,7 @@ class CharactersView(PaginatorView):
         self.add_item(SorterSelector(self.sorter, self.game))
 
     def _set_pages(self, characters: Sequence[Character], *, embed: DefaultEmbed) -> None:
-        page_num = len(characters) // self.characters_per_page + 1
+        page_num = len(list(itertools.batched(characters, self.characters_per_page)))
         self.pages = [Page(content=self.dyk, embed=embed) for _ in range(page_num)]
 
     async def _create_file(self) -> File:

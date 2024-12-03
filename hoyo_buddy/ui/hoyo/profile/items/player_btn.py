@@ -31,23 +31,18 @@ class PlayerInfoButton(Button[ProfileView]):
     async def callback(self, i: Interaction) -> None:
         self.disabled = True
 
-        card_settings_btn = self.view.get_item("profile_card_settings")
-        card_settings_btn.disabled = True
-
-        image_settings_btn = self.view.get_item("profile_image_settings")
-        image_settings_btn.disabled = True
-
-        # Enable the team card settings button
-        team_card_settings_btn = self.view.get_item("profile_team_card_settings")
-        team_card_settings_btn.disabled = False
+        disable_btns = (
+            "profile_card_settings",
+            "profile_image_settings",
+            "profile_team_card_settings",
+            "profile_build_select",
+            "profile_redraw_card",
+        )
+        for btn in disable_btns:
+            button = self.view.get_item(btn)
+            button.disabled = True
 
         chara_select: CharacterSelect = self.view.get_item("profile_character_select")
         chara_select.update_options_defaults(values=["none"])
-
-        build_select = self.view.get_item("profile_build_select")
-        build_select.disabled = True
-
-        redraw_card_btn = self.view.get_item("profile_redraw_card")
-        redraw_card_btn.disabled = True
 
         await i.response.edit_message(embed=self.view.player_embed, attachments=[], view=self.view)

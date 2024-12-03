@@ -26,7 +26,7 @@ AUDIO_LANGUAGES = ("EN", "CHS", "JP", "KR")
 
 
 class ItemCategory(StrEnum):
-    CHARACTERS = "Characters"
+    CHARACTERS = "characters"
     WEAPONS = "Weapons"
     ARTIFACT_SETS = "Artifact Sets"
     FOOD = "Food"

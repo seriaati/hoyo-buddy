@@ -20,7 +20,16 @@ if TYPE_CHECKING:
 
     from ..types import AutocompleteChoices, BetaAutocompleteChoices, ItemCategory, Tasks
 
-
+TO_HAKUSHIN_ITEM_CATEGORY: Final[
+    dict[ambr.ItemCategory | yatta.ItemCategory, HakushinItemCategory]
+] = {
+    ambr.ItemCategory.CHARACTERS: HakushinItemCategory.GI_CHARACTERS,
+    ambr.ItemCategory.WEAPONS: HakushinItemCategory.WEAPONS,
+    ambr.ItemCategory.ARTIFACT_SETS: HakushinItemCategory.ARTIFACT_SETS,
+    yatta.ItemCategory.CHARACTERS: HakushinItemCategory.HSR_CHARACTERS,
+    yatta.ItemCategory.LIGHT_CONES: HakushinItemCategory.LIGHT_CONES,
+    yatta.ItemCategory.RELICS: HakushinItemCategory.RELICS,
+}
 HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Final[dict[HakushinItemCategory, Game]] = {
     HakushinItemCategory.GI_CHARACTERS: Game.GENSHIN,
     HakushinItemCategory.HSR_CHARACTERS: Game.STARRAIL,
@@ -177,8 +186,22 @@ class AutocompleteSetup:
 
     @classmethod
     def _add_to_beta_results(
-        cls, game: Game, category: ItemCategory, locale: Locale, items: list[Any]
+        cls,
+        game: Game,
+        category: ambr.ItemCategory | yatta.ItemCategory | ZZZItemCategory,
+        locale: Locale,
     ) -> None:
+        if isinstance(category, ambr.ItemCategory | yatta.ItemCategory):
+            hakushin_category = TO_HAKUSHIN_ITEM_CATEGORY.get(category)
+            if hakushin_category is None:
+                return
+            task = cls._tasks[game][hakushin_category].get(locale)
+        else:
+            task = cls._tasks[game][category].get(locale)
+
+        if task is None:
+            return
+        items = task.result()
         beta_ids = cls._category_beta_ids.get((game, category), [])
 
         for beta_id in beta_ids:
@@ -218,15 +241,13 @@ class AutocompleteSetup:
             (Game.ZZZ, ZZZItemCategory.BANGBOOS): zzz_new.bangboo_ids,
         }
 
-        for game, game_items in cls._tasks.items():
-            for category, category_items in game_items.items():
+        for game, categories in cls._tasks.items():
+            for category, locales in categories.items():
                 if isinstance(category, HakushinItemCategory):
                     continue
 
-                for locale, task in category_items.items():
+                for locale, task in locales.items():
                     items = task.result()
-
-                    cls._add_to_beta_results(game, category, locale, items)
                     cls._result[game][category][locale] = [
                         Choice(name=item.name, value=str(item.id))
                         for item in items
@@ -234,5 +255,10 @@ class AutocompleteSetup:
                         and hasattr(item, "name")
                         and (hasattr(item, "rarity") and item.rarity is not None)
                     ]
+
+        for game in (Game.GENSHIN, Game.STARRAIL, Game.ZZZ):
+            for category in list(TO_HAKUSHIN_ITEM_CATEGORY.keys()) + list(ZZZItemCategory):
+                for locale in LOCALE_TO_HAKUSHIN_LANG:
+                    cls._add_to_beta_results(game, category, locale)
 
         return cls._result, cls._beta_id_to_category, cls._beta_result

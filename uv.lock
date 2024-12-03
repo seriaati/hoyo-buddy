@@ -169,7 +169,7 @@ dependencies = [
 [[package]]
 name = "ambr-py"
 version = "1.8.0"
-source = { git = "https://github.com/seriaati/ambr#563d51a3078e247265471c15118b1cede59df09e" }
+source = { git = "https://github.com/seriaati/ambr#5626fac2c709c129b9992cee27e60de7b49ad8f9" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },

@@ -53,8 +53,9 @@ class GIBuildView(ui.View):
             self.add_item(PageSelector())
         if guide.gw_data is not None:
             self.add_item(BuildSelector(guide.gw_data))
-            self.add_item(ShowPlaystyleButton())
             self.add_item(ShowSynergyButton(guide.gw_data.synergies.teams))
+            if guide.gw_data.playstyle is not None:
+                self.add_item(ShowPlaystyleButton())
 
     @property
     def character(self) -> ambr.Character:

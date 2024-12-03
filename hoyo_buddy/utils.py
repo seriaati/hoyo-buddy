@@ -511,3 +511,15 @@ def measure_time(name: str) -> Generator[Any, None, None]:
         end_time = time.perf_counter()
         execution_time = end_time - start_time
         print(f"Execution time of {name}: {execution_time:.8f} seconds")  # noqa: T201
+
+
+def convert_code_to_redeem_url(code: str, *, game: Game) -> str:
+    if game is Game.GENSHIN:
+        return f"https://genshin.hoyoverse.com/en/gift?code={code}"
+    if game is Game.STARRAIL:
+        return f"https://hsr.hoyoverse.com/gift?code={code}"
+    if game is Game.ZZZ:
+        return f"https://zenless.hoyoverse.com/redemption?code={code}"
+
+    msg = f"Unsupported game: {game}"
+    raise ValueError(msg)

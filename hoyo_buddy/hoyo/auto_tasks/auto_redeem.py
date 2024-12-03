@@ -19,6 +19,7 @@ from hoyo_buddy.constants import (
 from hoyo_buddy.db.models import HoyoAccount, JSONFile
 from hoyo_buddy.enums import Platform
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.utils import convert_code_to_redeem_url
 from hoyo_buddy.web_app.utils import decrypt_string
 
 if TYPE_CHECKING:
@@ -137,6 +138,10 @@ class AutoRedeem:
                 game_sent_codes.append(code)
 
             if codes_to_send:
+                codes_to_send = [
+                    convert_code_to_redeem_url(code, game=GPY_GAME_TO_HB_GAME[game_])
+                    for code in codes_to_send
+                ]
                 try:
                     message = await channel.send(create_bullet_list(codes_to_send))
                 except Exception as e:

@@ -8,8 +8,9 @@ from genshin.models import ZZZFullAgent, ZZZPartialAgent
 from seria.utils import read_json
 
 from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, ZZZ_DEFAULT_ART_URL
+from hoyo_buddy.db.models import CustomImage
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.emojis import ADD, DELETE, PHOTO_ADD
+from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO_ADD
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import InvalidImageURLError, NSFWPromptError
 from hoyo_buddy.l10n import LocaleStr
@@ -70,6 +71,7 @@ class ImageSettingsView(View):
         selected_character_id: str,
         card_data: dict[str, Any],
         card_settings: CardSettings,
+        custom_images: list[CustomImage],
         game: Game,
         is_team: bool,
         settings: Settings,
@@ -87,6 +89,7 @@ class ImageSettingsView(View):
         self.game = game
         self.selected_character_id = selected_character_id
         self.card_settings = card_settings
+        self.custom_images = custom_images
         self.settings = settings
         self.image_type: Literal["build_card_image", "team_card_image"] = (
             "team_card_image" if is_team else "build_card_image"
@@ -118,7 +121,7 @@ class ImageSettingsView(View):
             ImageSelect(
                 current_image_url=self.card_settings.current_image,
                 default_collection=default_collection,
-                custom_images=self.card_settings.custom_images,
+                custom_images=self.custom_images,
                 template=self.card_settings.template,
                 disabled=self.disable_image_features,
                 row=2,
@@ -126,6 +129,7 @@ class ImageSettingsView(View):
         )
         self.add_item(GenerateAIArtButton(disabled=self.disable_ai_features, row=3))
         self.add_item(AddImageButton(row=3, disabled=self.disable_image_features))
+        self.add_item(EditImageButton(disabled=self.disable_image_features, row=3))
         self.add_item(
             RemoveImageButton(
                 disabled=self.card_settings.current_image is None
@@ -149,17 +153,25 @@ class ImageSettingsView(View):
             return self.card_settings.current_image
         return self.card_settings.current_team_image
 
-    def set_current_image(self, image_url: str | None) -> None:
+    async def set_current_image(self, image_url: str | None) -> None:
         if self.image_type == "build_card_image":
             self.card_settings.current_image = image_url
+            await self.card_settings.save(update_fields=("current_image",))
         else:
             self.card_settings.current_team_image = image_url
+            await self.card_settings.save(update_fields=("current_team_image",))
+
+    async def refresh_custom_images(self) -> None:
+        self.custom_images = await CustomImage.filter(
+            user_id=self.user_id, character_id=self.selected_character_id
+        ).all()
 
     def get_settings_embed(self) -> DefaultEmbed:
         character = self._get_current_character()
         embed = DefaultEmbed(
             locale=self.locale,
             title=LocaleStr(key="card_settings.modifying_for", name=character.name),
+            description=LocaleStr(key="card_settings.description"),
         )
 
         image_url = self.get_current_image() or get_default_art(
@@ -194,17 +206,22 @@ class CharacterSelect(SettingsCharacterSelect[ImageSettingsView]):
         default_arts = get_default_collection(
             self.values[0], self.view.card_data, game=self.view.game
         )
-        custom_arts = self.view.card_settings.custom_images
         current_image = self.view.get_current_image()
 
         # Update other item styles
         image_select: ImageSelect = self.view.get_item("profile_image_select")
         image_select.update(
-            current_image=current_image, custom_images=custom_arts, default_collection=default_arts
+            current_image=current_image,
+            custom_images=self.view.custom_images,
+            default_collection=default_arts,
         )
 
+        # Disable the edit and remove image button if the image is not custom
+        is_not_custom = current_image is None or current_image in default_arts
+        edit_image_button: EditImageButton = self.view.get_item("profile_edit_image")
+        edit_image_button.disabled = is_not_custom
         remove_image_button: RemoveImageButton = self.view.get_item("profile_remove_image")
-        remove_image_button.disabled = current_image is None or current_image in default_arts
+        remove_image_button.disabled = is_not_custom
 
         embed = self.view.get_settings_embed()
         await i.response.edit_message(embed=embed, view=self.view)
@@ -231,23 +248,67 @@ class RemoveImageButton(Button[ImageSettingsView]):
         if current_image is None:
             return
 
-        if current_image in self.view.card_settings.custom_images:
-            # For whatever reason, the current image may not be in the custom images list
-            self.view.card_settings.custom_images.remove(current_image)
-
         # Update the current image URL
-        self.view.set_current_image(None)
-        self.view.card_settings.custom_images = list(set(self.view.card_settings.custom_images))
-        await self.view.card_settings.save(
-            update_fields=("custom_images", "current_image", "current_team_image")
-        )
+        await self.view.set_current_image(None)
+
+        # Remove the image from the db
+        await CustomImage.filter(
+            user_id=i.user.id, url=current_image, character_id=self.view.selected_character_id
+        ).delete()
+        self.view.custom_images = [
+            img for img in self.view.custom_images if img.url != current_image
+        ]
 
         # Update image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.update(current_image=None, custom_images=self.view.card_settings.custom_images)
+        image_select.update(current_image=None, custom_images=self.view.custom_images)
 
         embed = self.view.get_settings_embed()
         await i.response.edit_message(embed=embed, view=self.view)
+
+
+class EditImageModal(Modal):
+    name = TextInput(label=LocaleStr(key="nickname_modal_label"), required=False, max_length=100)
+
+    def __init__(self, current_name: str | None) -> None:
+        super().__init__(title=LocaleStr(key="edit_nickname_modal_title"))
+        self.name.default = current_name
+
+
+class EditImageButton(Button[ImageSettingsView]):
+    def __init__(self, disabled: bool, row: int) -> None:
+        super().__init__(
+            label=LocaleStr(key="edit_nickname_modal_title"),
+            custom_id="profile_edit_image",
+            emoji=EDIT,
+            row=row,
+            disabled=disabled,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        image_url = self.view.get_current_image()
+        current_name = next(
+            (img.name for img in self.view.custom_images if img.url == image_url), ""
+        )
+        modal = EditImageModal(current_name)
+        modal.translate(self.view.locale)
+        await i.response.send_modal(modal)
+        await modal.wait()
+        if modal.incomplete:
+            return
+
+        # Add the image URL to db
+        await CustomImage.filter(user_id=i.user.id, url=image_url).update(
+            name=modal.name.value or None
+        )
+        await self.view.refresh_custom_images()
+
+        # Update image select options
+        image_select: ImageSelect = self.view.get_item("profile_image_select")
+        image_select.update(current_image=image_url, custom_images=self.view.custom_images)
+
+        embed = self.view.get_settings_embed()
+        await i.edit_original_response(embed=embed, view=self.view)
 
 
 class ImageSelect(PaginatorSelect[ImageSettingsView]):
@@ -255,7 +316,7 @@ class ImageSelect(PaginatorSelect[ImageSettingsView]):
         self,
         current_image_url: str | None,
         default_collection: list[str],
-        custom_images: list[str],
+        custom_images: list[CustomImage],
         template: str,
         disabled: bool,
         row: int,
@@ -277,7 +338,7 @@ class ImageSelect(PaginatorSelect[ImageSettingsView]):
         self,
         *,
         current_image: str | None,
-        custom_images: list[str],
+        custom_images: list[CustomImage],
         default_collection: list[str] | None = None,
     ) -> None:
         self.current_image_url = current_image
@@ -290,12 +351,16 @@ class ImageSelect(PaginatorSelect[ImageSettingsView]):
             self.set_page_based_on_value(current_image)
         self.translate(self.view.locale)
 
-    def _get_select_option(self, image_url: str, num: int) -> SelectOption:
-        label = (
-            LocaleStr(key="profile.image_select.default_collection.label", num=num)
-            if image_url in self.default_collection
-            else LocaleStr(key="profile.image_select.custom_image.label", num=num)
-        )
+    def _get_select_option(self, image: str | CustomImage, num: int) -> SelectOption:
+        image_url = image.url if isinstance(image, CustomImage) else image
+
+        if image_url in self.default_collection:
+            label = LocaleStr(key="profile.image_select.default_collection.label", num=num)
+        elif isinstance(image, CustomImage) and image.name:
+            label = image.name
+        else:
+            label = LocaleStr(key="profile.image_select.custom_image.label", num=num)
+
         return SelectOption(
             label=label, value=image_url, default=image_url == self.current_image_url
         )
@@ -306,15 +371,19 @@ class ImageSelect(PaginatorSelect[ImageSettingsView]):
                 label=LocaleStr(key="profile.image_select.none.label"),
                 value="none",
                 default=self.current_image_url is None,
-            )
+            )  # Official art option
         ]
         added_values: set[str] = set()
 
-        for collection in [self.default_collection, self.custom_images]:
-            for index, url in enumerate(collection, start=1):
-                if url not in added_values:
-                    options.append(self._get_select_option(url, index))
-                    added_values.add(url)
+        for collection in (self.default_collection, self.custom_images):
+            num = 1
+            for image in collection:
+                if image not in added_values:
+                    options.append(self._get_select_option(image, num))
+                    added_values.add(image.url if isinstance(image, CustomImage) else image)
+
+                    if isinstance(image, str) or not image.name:
+                        num += 1
 
         return options
 
@@ -326,14 +395,14 @@ class ImageSelect(PaginatorSelect[ImageSettingsView]):
         self.update_options_defaults()
 
         # Update the current image URL in db
-        self.view.set_current_image(self.values[0] if self.values[0] != "none" else None)
-        await self.view.card_settings.save(update_fields=("current_image", "current_team_image"))
+        await self.view.set_current_image(self.values[0] if self.values[0] != "none" else None)
 
-        # Enable the remove image button if the image is custom
+        # Disable the edit and remove image button if the image is not custom
+        is_not_custom = self.values[0] in self.default_collection or self.values[0] == "none"
+        edit_image_button: EditImageButton = self.view.get_item("profile_edit_image")
+        edit_image_button.disabled = is_not_custom
         remove_image_button: RemoveImageButton = self.view.get_item("profile_remove_image")
-        remove_image_button.disabled = (
-            self.values[0] in self.default_collection or self.values[0] == "none"
-        )
+        remove_image_button.disabled = is_not_custom
 
         embed = self.view.get_settings_embed()
         await i.response.edit_message(embed=embed, view=self.view)
@@ -393,17 +462,19 @@ class GenerateAIArtButton(Button[ImageSettingsView]):
             raise
 
         # Add the image URL to db
-        self.view.card_settings.custom_images.append(url)
-        self.view.set_current_image(url)
-        await self.view.card_settings.save(
-            update_fields=("custom_images", "current_image", "current_team_image")
+        await CustomImage.create(
+            user_id=i.user.id, character_id=self.view.selected_character_id, url=url
         )
+        await self.view.refresh_custom_images()
+        await self.view.set_current_image(url)
 
         # Add the new image URL to the image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.update(current_image=url, custom_images=self.view.card_settings.custom_images)
+        image_select.update(current_image=url, custom_images=self.view.custom_images)
 
-        # Enable the remove image button
+        # Enable the edit and remove image button
+        edit_img_btn: EditImageButton = self.view.get_item("profile_edit_image")
+        edit_img_btn.disabled = False
         remove_img_btn: RemoveImageButton = self.view.get_item("profile_remove_image")
         remove_img_btn.disabled = False
 
@@ -412,10 +483,10 @@ class GenerateAIArtButton(Button[ImageSettingsView]):
 
 
 class AddImageModal(Modal):
+    name = TextInput(label=LocaleStr(key="nickname_modal_label"), required=False, max_length=100)
     image_url = TextInput(
         label=LocaleStr(key="profile.add_image_modal.image_url.label"),
         placeholder="https://example.com/image.png",
-        style=TextStyle.short,
     )
 
     def __init__(self) -> None:
@@ -470,20 +541,21 @@ class AddImageButton(Button[ImageSettingsView]):
                 raise InvalidImageURLError from e
 
         # Add the image URL to db
-        self.view.card_settings.custom_images.append(image_url)
-        self.view.card_settings.custom_images = list(set(self.view.card_settings.custom_images))
-        self.view.set_current_image(image_url)
-        await self.view.card_settings.save(
-            update_fields=("custom_images", "current_image", "current_team_image")
+        await CustomImage.create(
+            user_id=i.user.id,
+            character_id=self.view.selected_character_id,
+            url=image_url,
+            name=modal.name.value or None,
         )
+        await self.view.refresh_custom_images()
+        await self.view.set_current_image(image_url)
 
         # Add the new image URL to the image select options
         image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.update(
-            current_image=image_url, custom_images=self.view.card_settings.custom_images
-        )
+        image_select.update(current_image=image_url, custom_images=self.view.custom_images)
 
-        # Enable the remove image button
+        # Enable the edit image and remove image buttons
+        self.view.item_states["profile_edit_image"] = False
         self.view.item_states["profile_remove_image"] = False
 
         embed = self.view.get_settings_embed()
@@ -522,7 +594,7 @@ class ImageTypeSelect(Select[ImageSettingsView]):
         )
         image_select.update(
             current_image=current_image,
-            custom_images=self.view.card_settings.custom_images,
+            custom_images=self.view.custom_images,
             default_collection=default_collection,
         )
         image_select.disabled = self.view.disable_image_features
@@ -530,7 +602,11 @@ class ImageTypeSelect(Select[ImageSettingsView]):
         add_image_btn: AddImageButton = self.view.get_item("profile_add_image")
         add_image_btn.disabled = self.view.disable_image_features
 
+        # Disable the edit and remove image button if the image is not custom
+        is_not_custom = current_image is None or current_image in default_collection
+        edit_image_btn: EditImageButton = self.view.get_item("profile_edit_image")
+        edit_image_btn.disabled = is_not_custom
         remove_image_btn: RemoveImageButton = self.view.get_item("profile_remove_image")
-        remove_image_btn.disabled = current_image is None or current_image in default_collection
+        remove_image_btn.disabled = is_not_custom
 
         await i.response.edit_message(embed=embed, view=self.view)

@@ -473,7 +473,7 @@ class PaginatorSelect(Select, Generic[V_co]):
             if len(split_options) == 1:
                 return split_options[0]
             selected_options = self.remove_duplicate_options(selected_options, split_options[0])
-            return selected_options + split_options[0] + [NEXT_PAGE]
+            return [NEXT_PAGE] + selected_options + split_options[0]
 
         if self.page_index == len(split_options) - 1:
             selected_options = self.remove_duplicate_options(selected_options, split_options[-1])
@@ -482,7 +482,7 @@ class PaginatorSelect(Select, Generic[V_co]):
         selected_options = self.remove_duplicate_options(
             selected_options, split_options[self.page_index]
         )
-        return [PREV_PAGE] + selected_options + split_options[self.page_index] + [NEXT_PAGE]
+        return [PREV_PAGE] + [NEXT_PAGE] + selected_options + split_options[self.page_index]
 
     def set_page_based_on_value(self, value: str) -> None:
         split_options = split_list_to_chunks(self.options_before_split, 23)

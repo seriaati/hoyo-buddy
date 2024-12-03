@@ -547,6 +547,7 @@ card_settings.build_card_image: Build card image
 card_settings.team_card_image: Team card image
 profile.redraw_card_button_label: Redraw card
 card_settings.footer: "When you're done, click the green button in the message above to redraw the card"
+card_settings.description: "Use </upload> to get an image URL by uploading the image.\nPixiv is supported, simply copy the artwork's image URL."
 profile.team_dark_mode.button.label: Team card dark mode
 profile.character_select.multi.placeholder: Select character(s)...
 zzz_search.agent_info: "Rarity: {rarity}\nSpecialty: {specialty}\nAttack Type: {atk_type}\nFaction: {faction}\nElement: {element}"

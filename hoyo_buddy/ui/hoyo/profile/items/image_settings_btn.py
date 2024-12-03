@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
 
-from hoyo_buddy.db.models import Settings
+from hoyo_buddy.db.models import CustomImage, Settings
 from hoyo_buddy.emojis import PHOTO
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
@@ -33,12 +33,24 @@ class ImageSettingsButton(Button[ProfileView]):
     async def callback(self, i: Interaction) -> None:
         character_id = self.view.character_ids[0]
         card_settings = await get_card_settings(i.user.id, character_id, game=self.view.game)
+        if card_settings.custom_images:
+            # Migration
+            for image_url in card_settings.custom_images:
+                await CustomImage.create(
+                    user_id=i.user.id, character_id=character_id, url=image_url
+                )
+            card_settings.custom_images = []
+            await card_settings.save(update_fields=("custom_images",))
+
+        custom_images = await CustomImage.filter(user_id=i.user.id, character_id=character_id)
         settings = await Settings.get(user_id=i.user.id)
+
         view = ImageSettingsView(
             list(self.view.characters.values()),
             character_id,
             self.view._card_data,
             card_settings,
+            custom_images,
             self.view.game,
             len(self.view.character_ids) > 1,
             settings,

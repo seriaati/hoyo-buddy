@@ -12,6 +12,7 @@ import enka
 import genshin
 import hakushin
 import yatta
+from discord import app_commands
 from dotenv import load_dotenv
 
 from .enums import ChallengeType, Game, GenshinCity, GenshinElement, HSRElement, HSRPath
@@ -753,4 +754,19 @@ CODE_CHANNEL_IDS = {
     genshin.Game.GENSHIN: 1310017049896026135,
     genshin.Game.STARRAIL: 1310017113695457300,
     genshin.Game.ZZZ: 1310017277202006067,
+}
+
+USER_ACCOUNT_RENAME_KWARGS: dict[str, app_commands.locale_str] = {
+    "user": app_commands.locale_str("user", key="user_autocomplete_param_name"),
+    "account": app_commands.locale_str("account", key="account_autocomplete_param_name"),
+}
+USER_ACCOUNT_DESCRIBE_KWARGS: dict[str, app_commands.locale_str] = {
+    "user": app_commands.locale_str(
+        "User to search the accounts with, defaults to you",
+        key="user_autocomplete_param_description",
+    ),
+    "account": app_commands.locale_str(
+        "Account to run this command with, defaults to the selected one in /accounts",
+        key="account_autocomplete_param_description",
+    ),
 }

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from collections import defaultdict
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from discord import app_commands
 from discord.ext import commands
@@ -12,15 +11,12 @@ from hoyo_buddy.utils import ephemeral
 
 from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand
-from ..constants import HB_GAME_TO_GPY_GAME, ZZZ_AGENT_DATA_URL
-from ..db.models import HoyoAccount, JSONFile, Settings, get_dyk, get_locale
+from ..constants import HB_GAME_TO_GPY_GAME
+from ..db.models import HoyoAccount, Settings, get_dyk, get_locale
 from ..enums import Game, GeetestType, Platform
-from ..exceptions import FeatureNotImplementedError, InvalidQueryError
-from ..hoyo.clients.ambr import AmbrAPIClient
-from ..hoyo.clients.yatta import YattaAPIClient
+from ..exceptions import InvalidQueryError
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from ..types import User  # noqa: TC001
-from ..ui.hoyo.characters import CharactersView
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.redeem import RedeemUI
@@ -116,82 +112,6 @@ class Hoyo(commands.Cog):
             account_,
             settings.dark_mode,
             accounts,
-            author=i.user,
-            locale=settings.locale or i.locale,
-        )
-        await view.start(i)
-
-    @app_commands.command(
-        name=app_commands.locale_str("characters"),
-        description=app_commands.locale_str(
-            "View all of your characters", key="characters_command_description"
-        ),
-    )
-    @app_commands.rename(
-        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
-    )
-    @app_commands.describe(
-        user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
-        ),
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        ),
-    )
-    async def characters_command(
-        self,
-        i: Interaction,
-        user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
-    ) -> None:
-        await i.response.defer(ephemeral=ephemeral(i))
-
-        user = user or i.user
-        account_ = account or await self.bot.get_account(
-            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
-        )
-        settings = await Settings.get(user_id=i.user.id)
-
-        if account_.game is Game.GENSHIN:
-            async with AmbrAPIClient() as client:
-                element_char_counts = await client.fetch_element_char_counts()
-                path_char_counts = {}
-                faction_char_counts = {}
-        elif account_.game is Game.STARRAIL:
-            async with YattaAPIClient() as client:
-                element_char_counts = await client.fetch_element_char_counts()
-                path_char_counts = await client.fetch_path_char_counts()
-                faction_char_counts = {}
-        elif account_.game is Game.ZZZ:
-            agent_data: dict[str, Any] = await JSONFile.fetch_and_cache(
-                i.client.session, url=ZZZ_AGENT_DATA_URL, filename="zzz_agent_data.json"
-            )
-
-            element_char_counts: dict[str, int] = defaultdict(int)
-            path_char_counts = {}
-            faction_char_counts: dict[str, int] = defaultdict(int)
-
-            for agent in agent_data.values():
-                if agent["beta"]:
-                    continue
-                element_char_counts[agent["element"].lower()] += 1
-                faction_char_counts[agent["faction"].lower()] += 1
-        elif account_.game is Game.HONKAI:
-            element_char_counts = {}
-            path_char_counts = {}
-            faction_char_counts = {}
-        else:
-            raise FeatureNotImplementedError(platform=account_.platform, game=account_.game)
-
-        view = CharactersView(
-            account_,
-            settings.dark_mode,
-            element_char_counts,
-            path_char_counts,
-            faction_char_counts,
             author=i.user,
             locale=settings.locale or i.locale,
         )
@@ -377,7 +297,6 @@ class Hoyo(commands.Cog):
         )
 
     @notes_command.autocomplete("account")
-    @characters_command.autocomplete("account")
     async def gi_hsr_zzz_honkai_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:

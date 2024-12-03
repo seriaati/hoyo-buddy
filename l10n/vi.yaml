@@ -547,6 +547,7 @@ card_settings.build_card_image: Hình ảnh thẻ Build
 card_settings.team_card_image: Hình ảnh thẻ đội hình
 profile.redraw_card_button_label: Làm mới thẻ
 card_settings.footer: "Khi bạn xong, nhấn nút màu xanh ở tin nhắn trên để làm mới thẻ"
+card_settings.description: "Sử dụng</upload> để lấy link ảnh bằng cách tải ảnh lên.\nPixiv được hỗ trợ, chỉ cần sao chép Link hình ảnh của tác phẩm nghệ thuật."
 profile.team_dark_mode.button.label: Thẻ đội chế độ tới
 profile.character_select.multi.placeholder: Chon (các) nhân vật...
 zzz_search.agent_info: "Độ Hiếm: {rarity}\nĐặc Tính Tương Thích: {specialty}\nLoại Tấn Công: {atk_type}\nPhe: {faction}\nThuộc Tính: {element}"

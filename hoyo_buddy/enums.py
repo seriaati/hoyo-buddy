@@ -91,6 +91,7 @@ class HSRPath(StrEnum):
     NIHILITY = "Nihility"  # 虛無
     PRESERVATION = "Preservation"  # 存護
     ABUNDANCE = "Abundance"  # 豐饒
+    REMEMBRANCE = "Remembrance"  # 記憶
 
 
 class Platform(StrEnum):

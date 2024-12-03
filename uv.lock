@@ -749,7 +749,7 @@ requires-dist = [
     { name = "hakushin-py", git = "https://github.com/seriaati/hakushin-py" },
     { name = "jishaku", specifier = ">=2.5.2" },
     { name = "loguru", specifier = ">=0.7.2" },
-    { name = "novelai", git = "https://github.com/kokosensei/NovelAI-API" },
+    { name = "novelai", git = "https://github.com/seriaati/NovelAI-API" },
     { name = "orjson", specifier = ">=3.10.7" },
     { name = "pandas", specifier = ">=2.2.2" },
     { name = "pillow", specifier = ">=10.4.0" },
@@ -931,8 +931,8 @@ wheels = [
 
 [[package]]
 name = "novelai"
-version = "0.0.post31"
-source = { git = "https://github.com/kokosensei/NovelAI-API#095c025ce59e58ef8eb67ef7a3f17a99b8ab80a5" }
+version = "0.0.post32"
+source = { git = "https://github.com/seriaati/NovelAI-API#edd549be262687f26a1e3008988bb2489ed729fd" }
 dependencies = [
     { name = "argon2-cffi" },
     { name = "httpx" },

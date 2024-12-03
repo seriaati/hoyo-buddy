@@ -127,8 +127,10 @@ class EventCalendarView(ui.View):
             warps.extend(calendar.light_cone_warps)
             self.add_item(BannerSelector(warps, cur_game_version=calendar.cur_game_version))
 
-        self.add_item(EventSelector(calendar.events))
-        self.add_item(ChallengeSelector(calendar.challenges))
+        if calendar.events:
+            self.add_item(EventSelector(calendar.events))
+        if calendar.challenges:
+            self.add_item(ChallengeSelector(calendar.challenges))
 
     @property
     def embed(self) -> DefaultEmbed:

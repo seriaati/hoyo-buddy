@@ -106,7 +106,10 @@ characters.sorter.level: Mức độ
 characters.sorter.path: Vận Mệnh
 characters.sorter.placeholder: Chọn một bộ lọc...
 characters.sorter.rarity: Độ Hiếm
-characters_command_description: Xem tất cả nhân vật của bạn
+characters_cmd_genshin_desc: Chọn và lọc nhân vật Genshin Impact của bạn
+characters_cmd_hsr_desc: "Chọn và lọc nhân vật Honkai: Star Rail của bạn"
+characters_cmd_zzz_desc: Chọn và lọc Người Đại Diện Zenless Zone Zero của bạn
+characters_cmd_honkai_desc: Chọn và lọc nhân vật Honkai Impact 3 của bạn
 checkin_button_label: Điểm danh
 checkin_command_description: Điểm danh trò chơi hàng ngày
 complete_captcha_button_label: Hoàn thành CAPTCHA
@@ -753,3 +756,5 @@ no_guide_available: Chưa có hướng dẫn build cho nhân vật này
 show_playstyle_button_label: Loại chơi
 flexible_char: Linh hoạt
 show_synergy_button_label: Sự hiệp lực
+characters_per_page_modal_title: Các nhân vật mỗi trang
+characters_per_page_num_label: Số

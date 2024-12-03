@@ -547,6 +547,7 @@ card_settings.build_card_image: 面板卡片圖片
 card_settings.team_card_image: 隊伍卡片圖片
 profile.redraw_card_button_label: 重新繪製卡片
 card_settings.footer: "修改完畢後，點擊上方訊息中的綠色按鈕來重新繪製卡片"
+card_settings.description: "使用</upload>上傳圖片以取得圖片連結。\n支援 Pixiv，請直接複製繪圖的圖片連結。"
 profile.team_dark_mode.button.label: 隊伍卡片深色模式
 profile.character_select.multi.placeholder: 選擇角色…
 zzz_search.agent_info: "稀有度: {rarity}\n特性: {specialty}\n攻擊方式: {atk_type}\n陣營: {faction}\n元素: {element}"

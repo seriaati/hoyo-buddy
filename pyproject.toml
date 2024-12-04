@@ -8,7 +8,7 @@ dependencies = [
   "asyncpg>=0.29.0",
   "asyncpg-listen>=0.0.6",
   "cachetools>=5.5.0",
-  "discord-py>=2.4.0",
+  "discord-py[speed]>=2.4.0",
   "enka-api>=2.2.5",
   "fake-useragent>=1.5.1",
   "gitpython>=3.1.43",
@@ -53,6 +53,7 @@ discord-py = { git = "https://github.com/Rapptz/discord.py" }
 enka-api = { git = "https://github.com/seriaati/enka-py" }
 ambr-py = { git = "https://github.com/seriaati/ambr" }
 yatta-py = { git = "https://github.com/seriaati/yatta" }
+
 
 [tool.pyright]
 enableTypeIgnoreComments = false

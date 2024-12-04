@@ -515,11 +515,11 @@ def measure_time(name: str) -> Generator[Any, None, None]:
 
 def convert_code_to_redeem_url(code: str, *, game: Game) -> str:
     if game is Game.GENSHIN:
-        return f"https://genshin.hoyoverse.com/en/gift?code={code}"
+        return f"[{code}](<https://genshin.hoyoverse.com/en/gift?code={code}>)"
     if game is Game.STARRAIL:
-        return f"https://hsr.hoyoverse.com/gift?code={code}"
+        return f"[{code}](<https://hsr.hoyoverse.com/gift?code={code}>)"
     if game is Game.ZZZ:
-        return f"https://zenless.hoyoverse.com/redemption?code={code}"
+        return f"[{code}](<https://zenless.hoyoverse.com/redemption?code={code}>)"
 
     msg = f"Unsupported game: {game}"
     raise ValueError(msg)

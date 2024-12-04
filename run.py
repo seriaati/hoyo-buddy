@@ -75,6 +75,9 @@ if __name__ == "__main__":
     else:
         install()
 
+    if sys.platform == "win32":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
     try:
         import uvloop  # pyright: ignore[reportMissingImports]
     except ImportError:

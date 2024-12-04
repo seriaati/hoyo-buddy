@@ -272,7 +272,7 @@ no_account_found_for_games_error_message: "Bạn không có tài khoản từ m�
 no_account_found_for_games_platform_error_message: "Bạn không có tài khoản từ một trong những trò chơi này trên {platform}. Thêm một tài khoản bằng </accounts>"
 no_account_found_for_games_error_title: Không tìm thấy tài khoản nào
 no_accounts_autocomplete_choice: Bạn không có tài khoản nào. Thêm bằng lệnh /accounts
-profile_character_param_name: "nhân vật-{num}"
+profile_character_param_name: "nhân-vật-{num}"
 no_challenge_data_err_message: "Không tìm thấy dữ liệu {challenge} cho gian đoạn này. Có thể bạn chưa bắt đầu {challenge} hoặc dữ liệu chưa sản sàng. Vui lòng thử lại sau"
 no_challenge_data_err_title: "Không có dữ liệu cho {challenge}"
 no_characters_found_error_message: Vui lòng thử lại với bộ lọc khác

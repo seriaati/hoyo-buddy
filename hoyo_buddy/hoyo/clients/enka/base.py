@@ -144,7 +144,7 @@ class BaseClient:
 
         try:
             live_data = await client.fetch_showcase(uid, raw=True)
-        except enka.errors.GameMaintenanceError:
+        except (enka.errors.GameMaintenanceError, enka.errors.GatewayTimeoutError):
             if not showcase_cache:
                 raise
 

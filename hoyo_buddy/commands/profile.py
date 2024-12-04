@@ -51,7 +51,7 @@ class ProfileCommand:
 
         try:
             enka_data, errored = await client.fetch_showcase(self._uid)
-        except enka.errors.GameMaintenanceError:
+        except (enka.errors.GameMaintenanceError, enka.errors.GatewayTimeoutError):
             if self._account is None:
                 # enka fails and no hoyolab account provided, raise error
                 raise
@@ -100,7 +100,7 @@ class ProfileCommand:
 
         try:
             enka_data, errored = await client.fetch_showcase(self._uid)
-        except enka.errors.GameMaintenanceError:
+        except (enka.errors.GameMaintenanceError, enka.errors.GatewayTimeoutError):
             if self._account is None:
                 # enka fails and no hoyolab account provided, raise error
                 raise

@@ -560,9 +560,9 @@ def locale_to_starrail_data_lang(locale: discord.Locale) -> str:
     return LOCALE_TO_STARRAIL_DATA_LANG.get(locale, "EN")
 
 
-FORT_OF_FANS_URL = "https://raw.githubusercontent.com/FortOfFans/HSR/main"
-HSR_DEFAULT_ART_URL = f"{FORT_OF_FANS_URL}/spriteoutput/avatardrawcardresult/{{char_id}}.png"
-HSR_TEAM_ICON_URL = f"{FORT_OF_FANS_URL}/spriteoutput/avatariconteam/{{char_id}}.png"
+HSR_ASSETS_URL = "https://raw.githubusercontent.com/seriaati/HSRAssets/refs/heads/main"
+HSR_DEFAULT_ART_URL = f"{HSR_ASSETS_URL}/avatardrawcardresult/Texture2D/{{char_id}}.png"
+HSR_TEAM_ICON_URL = f"{HSR_ASSETS_URL}/avatariconteam/Texture2D/{{char_id}}.png"
 ZZZ_DEFAULT_ART_URL = "https://api.hakush.in/zzz/UI/Mindscape_{char_id}_3.webp"
 
 UIGF_GAME_KEYS: Final[dict[Game, str]] = {

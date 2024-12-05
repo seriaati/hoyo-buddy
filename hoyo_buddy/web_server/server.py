@@ -119,19 +119,22 @@ class GeetestWebServer:
 
     async def redirect(self, request: web.Request) -> web.Response:
         """Redirect the user back to Discord with protocol link."""
-        if "user_id" in request.query:
-            # login
-            user_id = request.query["user_id"]
-            url = WEB_APP_URLS[os.environ["ENV"]] + f"/geetest?user_id={user_id}"
-        else:
-            # command
-            channel_id = request.query["channel_id"]
-            guild_id = request.query["guild_id"]
-            message_id = request.query["message_id"]
+        try:
+            if "user_id" in request.query:
+                # login
+                user_id = request.query["user_id"]
+                url = WEB_APP_URLS[os.environ["ENV"]] + f"/geetest?user_id={user_id}"
+            else:
+                # command
+                channel_id = request.query["channel_id"]
+                guild_id = request.query["guild_id"]
+                message_id = request.query["message_id"]
 
-            url = get_discord_protocol_url(
-                channel_id=channel_id, guild_id=guild_id, message_id=message_id
-            )
+                url = get_discord_protocol_url(
+                    channel_id=channel_id, guild_id=guild_id, message_id=message_id
+                )
+        except KeyError as e:
+            raise web.HTTPBadRequest(reason=f"Missing query parameter: {e}") from e
         return web.Response(status=302, headers={"Location": url})
 
     async def run(self, port: int = 5000) -> None:

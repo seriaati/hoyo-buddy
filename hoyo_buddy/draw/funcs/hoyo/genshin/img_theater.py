@@ -6,6 +6,7 @@ import discord
 import genshin
 from PIL import Image, ImageDraw
 
+from hoyo_buddy.constants import contains_traveler_id
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
@@ -188,6 +189,22 @@ class ImgTheaterCard:
             block_drawer.write(
                 str(character.level), size=18, position=(27, 110), anchor="mm", style="bold"
             )
+
+            if contains_traveler_id(str(character.id)):
+                element_flair_pos = (92, 92)
+                element_flair = self._drawer.open_asset("normal_chara_element_flair.png")
+                block.paste(element_flair, element_flair_pos, element_flair)
+                element_icon = self._drawer.open_asset(
+                    f"Element_White_{character.element}.png", folder="gi-elements", size=(25, 25)
+                )
+                block.paste(
+                    element_icon,
+                    (
+                        element_flair_pos[0] + element_flair.width // 2 - element_icon.width // 2,
+                        element_flair_pos[1] + element_flair.height // 2 - element_icon.height // 2,
+                    ),
+                    element_icon,
+                )
 
             self._im.paste(block, start_pos, block)
             start_pos = (start_pos[0] + padding, start_pos[1])

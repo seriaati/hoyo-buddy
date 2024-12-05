@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw
 
+from hoyo_buddy.constants import contains_traveler_id
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
@@ -111,6 +112,20 @@ class SpiralAbyssCard:
         bk_drawer.write(
             f"Lv.{character.level}", size=24, style="bold", position=(58, 132), anchor="mm"
         )
+
+        if contains_traveler_id(str(character.id)):
+            element_flair = self.drawer.open_asset(f"block/{character.rarity}_element_flair.png")
+            bk.alpha_composite(element_flair, (0, 0))
+            element_icon = self.drawer.open_asset(
+                f"Element_White_{character.element}.png", size=(25, 25), folder="gi-elements"
+            )
+            bk.alpha_composite(
+                element_icon,
+                (
+                    element_flair.width // 2 - element_icon.width // 2,
+                    element_flair.height // 2 - element_icon.height // 2,
+                ),
+            )
 
         return bk
 

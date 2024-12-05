@@ -23,8 +23,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--sentry", action="store_true", default=not is_dev)
 args = parser.parse_args()
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(translator.load())
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 
 async def web_app_entry(page: ft.Page) -> None:
@@ -43,6 +43,9 @@ if __name__ == "__main__":
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
     logger.add("logs/web_app.log", rotation="1 day", retention="2 weeks", level="DEBUG")
 
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(translator.load())
+
     ft.app(
         web_app_entry,
         port=8645,
@@ -51,5 +54,4 @@ if __name__ == "__main__":
         use_color_emoji=True,
     )
 
-    loop.run_until_complete(translator.unload())
     loop.close()

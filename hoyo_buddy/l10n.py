@@ -132,7 +132,7 @@ class Translator:
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None:
-        await self.unload()
+        pass
 
     async def load(self) -> None:
         await self.load_l10n_files()
@@ -174,9 +174,6 @@ class Translator:
                     )
 
         logger.info("Fetched mi18n files")
-
-    async def unload(self) -> None:
-        logger.info("Translator unloaded")
 
     async def load_synced_commands_json(self) -> None:
         self._synced_commands = await read_json("hoyo_buddy/bot/data/synced_commands.json")

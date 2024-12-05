@@ -559,7 +559,7 @@ class Modal(discord.ui.Modal):
     def __init__(self, *, title: LocaleStr | str, custom_id: str = MISSING) -> None:
         super().__init__(
             title=title if isinstance(title, str) else "#NoTrans",
-            timeout=600,
+            timeout=60,
             custom_id=self.__class__.__name__ if custom_id is MISSING else custom_id,
         )
         self.locale_str_title = title
@@ -628,12 +628,3 @@ class Modal(discord.ui.Modal):
                     raise InvalidInputError(
                         LocaleStr(key="invalid_input.input_needs_to_be_bool", input=item.label)
                     )
-
-    @property
-    def incomplete(self) -> bool:
-        """Returns True if any required TextInput is empty. False otherwise."""
-        return any(
-            item.required and not item.value
-            for item in self.children
-            if isinstance(item, TextInput)
-        )

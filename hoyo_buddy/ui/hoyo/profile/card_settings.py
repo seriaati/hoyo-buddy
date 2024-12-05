@@ -290,8 +290,8 @@ class PrimaryColorButton(Button[CardSettingsView]):
         modal = PrimaryColorModal(self.current_color)
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
-        await modal.wait()
-        if modal.incomplete:
+        timed_out = await modal.wait()
+        if timed_out:
             return
 
         color = modal.color.value or None

@@ -25,10 +25,8 @@ class PTReminder(Button[NotesView]):
         modal = TypeTwoModal(notify, title=LocaleStr(key="pt_modal.title"), min_notify_interval=30)
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
-        await modal.wait()
-
-        incomplete = modal.incomplete
-        if incomplete:
+        timed_out = await modal.wait()
+        if timed_out:
             return
 
         embed = await self.view.process_type_two_modal(

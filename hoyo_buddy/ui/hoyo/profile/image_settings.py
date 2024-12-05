@@ -293,8 +293,8 @@ class EditImageButton(Button[ImageSettingsView]):
         modal = EditImageModal(current_name)
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
-        await modal.wait()
-        if modal.incomplete:
+        timed_out = await modal.wait()
+        if timed_out:
             return
 
         # Add the image URL to db
@@ -441,8 +441,8 @@ class GenerateAIArtButton(Button[ImageSettingsView]):
         modal = GenerateAIArtModal(title=LocaleStr(key="profile.generate_ai_art.button.label"))
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
-        await modal.wait()
-        if modal.incomplete:
+        timed_out = await modal.wait()
+        if timed_out:
             return
 
         prompt = modal.prompt.value
@@ -509,8 +509,8 @@ class AddImageButton(Button[ImageSettingsView]):
         modal = AddImageModal()
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
-        await modal.wait()
-        if modal.incomplete:
+        timed_out = await modal.wait()
+        if timed_out:
             return
 
         await self.set_loading_state(i)

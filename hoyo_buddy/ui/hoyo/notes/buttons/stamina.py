@@ -33,10 +33,8 @@ class StaminaReminder(Button[NotesView]):
         )
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
-        await modal.wait()
-
-        incomplete = modal.incomplete
-        if incomplete:
+        timed_out = await modal.wait()
+        if timed_out:
             return
 
         embed = await self.view.process_type_one_modal(

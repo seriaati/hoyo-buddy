@@ -287,8 +287,8 @@ class EnterTalentLevel(Button[CharacterUI]):
         modal = TalentLevelModal(title=LocaleStr(key="talent_level.modal.title"))
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
-        await modal.wait()
-        if modal.incomplete:
+        timed_out = await modal.wait()
+        if timed_out:
             return
 
         self.view.talent_level = int(modal.level.value)
@@ -313,9 +313,8 @@ class EnterCharacterLevel(Button[CharacterUI]):
         modal = CharacterLevelModal(title=LocaleStr(key="chara_level.modal.title"))
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
-        await modal.wait()
-        incomplete = modal.incomplete
-        if incomplete:
+        timed_out = await modal.wait()
+        if timed_out:
             return
 
         self.view.character_level = int(modal.level.value)

@@ -48,7 +48,9 @@ class DMModalView(ui.View):
     async def send(self, i: Interaction, _: ui.Button) -> None:
         modal = DMModal(title="Set message", custom_id="dm_modal")
         await i.response.send_modal(modal)
-        await modal.wait()
+        timed_out = await modal.wait()
+        if timed_out:
+            return
 
         user_ids = [int(user_id) for user_id in modal.user_ids.value.split(",")]
 

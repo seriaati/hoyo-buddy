@@ -117,9 +117,8 @@ class EnterLightConeLevel(Button[LightConeUI]):
         modal = LightConeLevelModal(title=LocaleStr(key="weapon_level.modal.title"))
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
-        await modal.wait()
-        incomplete = modal.incomplete
-        if incomplete:
+        timed_out = await modal.wait()
+        if timed_out:
             return
 
         self.view._light_cone_level = int(modal.level.value)

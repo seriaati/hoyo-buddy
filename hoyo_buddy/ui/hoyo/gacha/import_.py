@@ -61,8 +61,8 @@ class URLImport(Button[GachaImportView]):
         modal.translate(self.view.locale)
 
         await i.response.send_modal(modal)
-        await modal.wait()
-        if modal.incomplete:
+        timed_out = await modal.wait()
+        if timed_out:
             return
 
         url = modal.url.value

@@ -112,8 +112,8 @@ class RedeemCodesButton(Button[RedeemUI]):
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
 
-        await modal.wait()
-        if modal.incomplete:
+        timed_out = await modal.wait()
+        if timed_out:
             return
 
         await self.set_loading_state(i, embed=self.view.cooldown_embed)

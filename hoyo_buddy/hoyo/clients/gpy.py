@@ -154,18 +154,6 @@ class ProxyGenshinClient(genshin.Client):
                             return genshin.models.ActionTicket(**orjson.loads(data["data"]))
                         return genshin.models.AppLoginResult(**orjson.loads(data["data"]))
 
-                    if retcode == -3006:  # Rate limited
-                        await asyncio.sleep(2 * (retry + 1))
-                        if mmt_result is not None:
-                            return await self.os_app_login(
-                                email, password, mmt_result=mmt_result, retry=retry + 1
-                            )
-                        if ticket is not None:
-                            return await self.os_app_login(
-                                email, password, ticket=ticket, retry=retry + 1
-                            )
-                        return await self.os_app_login(email, password, retry=retry + 1)
-
                     if resp.status == 400:
                         raise genshin.GenshinException(data)
 
@@ -173,7 +161,7 @@ class ProxyGenshinClient(genshin.Client):
 
                 msg = f"API returned status code {resp.status}"
                 raise Exception(msg)
-        except Exception:
+        except aiohttp.ClientError:
             await asyncio.sleep(2 * (retry + 1))
             return await self.os_app_login(email, password, mmt_result=mmt_result, retry=retry + 1)
 
@@ -695,12 +683,12 @@ class GenshinClient(ProxyGenshinClient):
 
                     if resp.status == 400:
                         raise genshin.GenshinException(data)
-                    if resp.status == 500:
-                        raise RuntimeError(data["message"])
 
-                await asyncio.sleep(2 * (retry + 1))
-                return await self.get_notes_(game, session=session, retry=retry + 1)
-        except Exception:
+                    raise Exception(data["message"])
+
+                msg = f"API {api_url} returned status code {resp.status}"
+                raise RuntimeError(msg)
+        except aiohttp.ClientError:
             await asyncio.sleep(2 * (retry + 1))
             return await self.get_notes_(game, session=session, retry=retry + 1)
 

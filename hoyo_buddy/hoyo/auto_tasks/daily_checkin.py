@@ -6,6 +6,7 @@ import os
 from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar, Literal
 
+import aiohttp
 import discord
 import genshin
 from loguru import logger
@@ -189,6 +190,10 @@ class DailyCheckin:
     async def _daily_checkin(
         cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount, *, retry: int = 0
     ) -> Embed:
+        if retry > MAX_API_RETRIES:
+            msg = f"Daily check-in failed for {account} after {retry} retries"
+            raise RuntimeError(msg)
+
         session = cls._bot.session
         await account.fetch_related("user", "user__settings")
         locale = account.user.settings.locale or discord.Locale.american_english
@@ -242,9 +247,9 @@ class DailyCheckin:
 
         try:
             async with session.post(f"{api_url}/checkin/", json=payload) as resp:
-                if resp.status == 502:
+                if resp.status == 502:  # Bad Gateway
                     await asyncio.sleep(20)
-                    embed = await cls._daily_checkin(api_name, account)
+                    embed = await cls._daily_checkin(api_name, account, retry=retry + 1)
                 elif resp.status in {200, 400, 500}:
                     data = await resp.json()
                     logger.debug(f"Check-in response: {data}")
@@ -274,9 +279,7 @@ class DailyCheckin:
                 else:
                     msg = f"API {api_name} returned {resp.status}"
                     raise RuntimeError(msg)
-        except Exception:
-            if retry > MAX_API_RETRIES:
-                raise
+        except aiohttp.ClientError:
             await asyncio.sleep(RETRY_SLEEP_TIME)
             return await cls._daily_checkin(api_name, account, retry=retry + 1)
 

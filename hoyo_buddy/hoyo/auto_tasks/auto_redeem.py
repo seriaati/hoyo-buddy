@@ -4,6 +4,7 @@ import asyncio
 import os
 from typing import TYPE_CHECKING, ClassVar, Literal
 
+import aiohttp
 import discord
 import genshin
 from loguru import logger
@@ -287,6 +288,10 @@ class AutoRedeem:
         *,
         retry: int = 0,
     ) -> tuple[str, str, bool]:
+        if retry > MAX_API_RETRIES:
+            msg = f"API {api_name} retry limit reached for code {code}"
+            raise RuntimeError(msg)
+
         api_url = PROXY_APIS[api_name]
 
         logger_payload = payload.copy()
@@ -298,7 +303,9 @@ class AutoRedeem:
             async with cls._bot.session.post(f"{api_url}/redeem/", json=payload) as resp:
                 if resp.status == 502:
                     await asyncio.sleep(20)
-                    return await cls._redeem_code(api_name, account, locale, code, payload)
+                    return await cls._redeem_code(
+                        api_name, account, locale, code, payload, retry=retry + 1
+                    )
 
                 if resp.status in {200, 400, 500}:
                     data = await resp.json()
@@ -347,8 +354,6 @@ class AutoRedeem:
 
                 msg = f"API {api_name} returned {resp.status}"
                 raise RuntimeError(msg)
-        except Exception:
-            if retry > MAX_API_RETRIES:
-                raise
+        except aiohttp.ClientError:
             await asyncio.sleep(RETRY_SLEEP_TIME)
             return await cls._redeem_code(api_name, account, locale, code, payload, retry=retry + 1)

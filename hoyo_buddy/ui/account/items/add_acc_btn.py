@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from discord import ButtonStyle
 
 from hoyo_buddy.constants import WEB_APP_URLS
-from hoyo_buddy.embeds import DefaultEmbed
+from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import ADD
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.web_app.schema import Params
@@ -30,6 +30,13 @@ class AddAccountButton(Button[AccountManager]):
         )
 
     async def callback(self, i: Interaction) -> None:
+        embed = ErrorEmbed(
+            self.view.locale,
+            title="Feature Disabled",
+            description="Due to technical issues, adding account is currently disabled. The developer is working hard to fix it! Join our [Discord server](https://link.seria.moe/hb-dc) for updates.",
+        )
+        await i.response.edit_message(embed=embed)
+        return
         embed = DefaultEmbed(
             self.view.locale,
             title=LocaleStr(key="account_add_start_title"),

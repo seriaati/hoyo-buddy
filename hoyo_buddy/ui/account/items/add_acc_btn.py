@@ -35,7 +35,7 @@ class AddAccountButton(Button[AccountManager]):
             title="Feature Disabled",
             description="Due to technical issues, adding account is currently disabled. The developer is working hard to fix it! Join our [Discord server](https://link.seria.moe/hb-dc) for updates.",
         )
-        await i.response.edit_message(embed=embed)
+        await i.response.send_message(embed=embed, ephemeral=True)
         return
         embed = DefaultEmbed(
             self.view.locale,

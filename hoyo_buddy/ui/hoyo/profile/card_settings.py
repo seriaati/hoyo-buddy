@@ -404,13 +404,14 @@ class CardTemplateSelect(Select[CardSettingsView]):
 
         self.update_options_defaults()
 
-        hl_substat_select: HighlightSubstatSelector = self.view.get_item(
-            "card_settings_hl_substat_select"
-        )
-        hl_substat_select.options = hl_substat_select.get_options(
-            self.view.card_settings.highlight_substats
-        )
-        hl_substat_select.translate(self.view.locale)
+        with contextlib.suppress(ValueError):
+            hl_substat_select: HighlightSubstatSelector = self.view.get_item(
+                "card_settings_hl_substat_select"
+            )
+            hl_substat_select.options = hl_substat_select.get_options(
+                self.view.card_settings.highlight_substats
+            )
+            hl_substat_select.translate(self.view.locale)
 
         change_color_btn: PrimaryColorButton = self.view.get_item("profile_primary_color")
         change_color_btn.disabled = self.view.disable_color_features

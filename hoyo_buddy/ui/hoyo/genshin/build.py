@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+import contextlib
 from typing import TYPE_CHECKING, Literal, TypeAlias
 
 import ambr
@@ -300,10 +301,11 @@ class ShowPlaystyleButton(ui.Button[GIBuildView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        page_selector: PageSelector = self.view.get_item("page_selector")
-        page_selector.reset_options_defaults()
-        build_selector: BuildSelector = self.view.get_item("build_selector")
-        build_selector.reset_options_defaults()
+        with contextlib.suppress(ValueError):
+            page_selector: PageSelector = self.view.get_item("page_selector")
+            page_selector.reset_options_defaults()
+            build_selector: BuildSelector = self.view.get_item("build_selector")
+            build_selector.reset_options_defaults()
 
         guide = self.view.guide
         embed = self.view.get_playstyle_embed(guide)

@@ -112,6 +112,10 @@ class ProxyGenshinClient(genshin.Client):
         ticket: genshin.models.ActionTicket | None = None,
         retry: int = 0,
     ) -> genshin.models.AppLoginResult | genshin.models.SessionMMT | genshin.models.ActionTicket:
+        if retry > MAX_API_RETRIES:
+            msg = "Max API retries exceeded"
+            raise Exception(msg)
+
         api_url = next(proxy_api_rotator)
 
         if api_url == "LOCAL":
@@ -151,7 +155,7 @@ class ProxyGenshinClient(genshin.Client):
                         return genshin.models.AppLoginResult(**orjson.loads(data["data"]))
 
                     if retcode == -3006:  # Rate limited
-                        await asyncio.sleep(5**retry)
+                        await asyncio.sleep(2 * (retry + 1))
                         if mmt_result is not None:
                             return await self.os_app_login(
                                 email, password, mmt_result=mmt_result, retry=retry + 1
@@ -165,20 +169,12 @@ class ProxyGenshinClient(genshin.Client):
                     if resp.status == 400:
                         raise genshin.GenshinException(data)
 
-                    raise Exception(data["message"])  # noqa: TRY002
+                    raise Exception(data["message"])
 
-                if retry > MAX_API_RETRIES:
-                    msg = f"Failed to login after {MAX_API_RETRIES} retries, status: {resp.status}"
-                    raise RuntimeError(msg)
-
-                await asyncio.sleep(5**retry)
-                return await self.os_app_login(
-                    email, password, mmt_result=mmt_result, retry=retry + 1
-                )
+                msg = f"API returned status code {resp.status}"
+                raise Exception(msg)
         except Exception:
-            if retry > MAX_API_RETRIES:
-                raise
-            await asyncio.sleep(2**retry)
+            await asyncio.sleep(2 * (retry + 1))
             return await self.os_app_login(email, password, mmt_result=mmt_result, retry=retry + 1)
 
 
@@ -657,6 +653,10 @@ class GenshinClient(ProxyGenshinClient):
         | genshin.models.ZZZNotes
         | genshin.models.HonkaiNotes
     ):
+        if retry > MAX_API_RETRIES:
+            msg = "Max API retries exceeded"
+            raise RuntimeError
+
         uid = self._account.uid
         api_url = next(proxy_api_rotator)
 
@@ -698,17 +698,10 @@ class GenshinClient(ProxyGenshinClient):
                     if resp.status == 500:
                         raise RuntimeError(data["message"])
 
-                if retry > MAX_API_RETRIES:
-                    msg = f"API errored after {MAX_API_RETRIES} retries, status: {resp.status}"
-                    raise RuntimeError(msg)
-
-                await asyncio.sleep(2**retry)
+                await asyncio.sleep(2 * (retry + 1))
                 return await self.get_notes_(game, session=session, retry=retry + 1)
         except Exception:
-            if retry > MAX_API_RETRIES:
-                raise
-
-            await asyncio.sleep(2**retry)
+            await asyncio.sleep(2 * (retry + 1))
             return await self.get_notes_(game, session=session, retry=retry + 1)
 
     async def get_genshin_notes(self, session: aiohttp.ClientSession) -> genshin.models.Notes:

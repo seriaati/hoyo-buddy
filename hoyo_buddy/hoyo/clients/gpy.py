@@ -655,7 +655,7 @@ class GenshinClient(ProxyGenshinClient):
     ):
         if retry > MAX_API_RETRIES:
             msg = "Max API retries exceeded"
-            raise RuntimeError
+            raise RuntimeError(msg)
 
         uid = self._account.uid
         api_url = next(proxy_api_rotator)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
 import contextlib
+from collections.abc import Sequence
 from typing import TYPE_CHECKING, Literal, TypeAlias
 
 import ambr

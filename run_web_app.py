@@ -12,7 +12,7 @@ from loguru import logger
 
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.logging import InterceptHandler
-from hoyo_buddy.utils import init_sentry, wrap_task_factory
+from hoyo_buddy.utils import init_sentry
 from hoyo_buddy.web_app.app import WebApp
 
 load_dotenv()
@@ -28,7 +28,6 @@ if sys.platform == "win32":
 
 
 async def web_app_entry(page: ft.Page) -> None:
-    wrap_task_factory()
     app = WebApp(page)
     await app.initialize()
 

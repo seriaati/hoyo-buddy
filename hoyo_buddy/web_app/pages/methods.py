@@ -67,7 +67,6 @@ class MethodsPage(ft.View):
                         LocaleStr(key="email_password_button_label"), locale
                     ),
                     to_page="email_password",
-                    disabled=True,
                 ),
                 MethodButton(
                     params=params,

@@ -123,6 +123,7 @@ class ProxyGenshinClient(genshin.Client):
         payload = {
             "email": genshin.utility.encrypt_credentials(email, 1),
             "password": genshin.utility.encrypt_credentials(password, 1),
+            "token": os.environ["DAILY_CHECKIN_API_TOKEN"],
         }
         if mmt_result is not None:
             payload["mmt_result"] = mmt_result.model_dump_json(by_alias=True)

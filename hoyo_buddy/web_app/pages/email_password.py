@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any
 
 import flet as ft
 import genshin
+from loguru import logger
 
 from hoyo_buddy.constants import locale_to_gpy_lang
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
@@ -117,6 +118,7 @@ class EmailPassWordForm(ft.Column):
 
         await show_loading_snack_bar(page, locale=self._locale)
 
+        logger.debug(f"[{self._params.user_id}] Email and password login session started")
         client = ProxyGenshinClient(
             region=genshin.Region.CHINESE
             if self._params.platform is Platform.MIYOUSHE
@@ -129,10 +131,12 @@ class EmailPassWordForm(ft.Column):
             else:
                 result = await client._cn_web_login(email.strip(), password)
         except Exception as exc:
+            logger.debug(f"[{self._params.user_id}] Email and password login error: {exc}")
             await show_error_banner(page, message=str(exc))
             return
 
         if isinstance(result, genshin.models.SessionMMT):
+            logger.debug(f"[{self._params.user_id}] Got SessionMMT")
             await handle_session_mmt(
                 result,
                 email=email,
@@ -143,8 +147,10 @@ class EmailPassWordForm(ft.Column):
                 mmt_type="on_login",
             )
         elif isinstance(result, genshin.models.ActionTicket):
+            logger.debug(f"[{self._params.user_id}] Got ActionTicket")
             email_result = await client._send_verification_email(result)
             if isinstance(email_result, genshin.models.SessionMMT):
+                logger.debug(f"[{self._params.user_id}] Got SessionMMT from sending email")
                 await handle_session_mmt(
                     email_result,
                     email=email,
@@ -155,6 +161,7 @@ class EmailPassWordForm(ft.Column):
                     mmt_type="on_email_send",
                 )
             else:
+                logger.debug(f"[{self._params.user_id}] Handling ActionTicket")
                 await handle_action_ticket(
                     result,
                     email=email,
@@ -164,7 +171,10 @@ class EmailPassWordForm(ft.Column):
                     locale=self._locale,
                 )
         else:
-            encrypted_cookies = encrypt_string(result.to_str())
+            logger.debug(f"[{self._params.user_id}] Email and password login success")
+            cookies = result.to_str()
+            logger.debug(f"[{self._params.user_id}] Got cookies: {cookies}")
+            encrypted_cookies = encrypt_string(cookies)
             await page.client_storage.set_async(
                 f"hb.{self._params.user_id}.cookies", encrypted_cookies
             )

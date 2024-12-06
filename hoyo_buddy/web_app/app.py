@@ -236,6 +236,7 @@ class WebApp:
         return orjson.loads(mmt_result)
 
     async def _handle_finish(self, params: Params, locale: Locale) -> ft.View | None:
+        logger.debug(f"[{params.user_id}] Handle finish start")
         page = self._page
 
         await page.close_dialog_async()
@@ -252,7 +253,6 @@ class WebApp:
             return None
 
         encrypted_cookies = await page.client_storage.get_async(f"hb.{params.user_id}.cookies")
-
         if encrypted_cookies is None:
             return pages.ErrorPage(code=400, message="Cannot find cookies in client storage.")
 
@@ -264,15 +264,30 @@ class WebApp:
             and "ltoken" not in cookies
             and "cookie_token" not in cookies
         )
+        logger.debug(f"[{params.user_id}] Fetch cookie with stoken: {fetch_cookie}")
         if fetch_cookie:
             # Get ltoken_v2 and cookie_token_v2
-            new_dict_cookie = await genshin.fetch_cookie_with_stoken_v2(cookies, token_types=[2, 4])
+            try:
+                new_dict_cookie = await genshin.fetch_cookie_with_stoken_v2(
+                    cookies, token_types=[2, 4]
+                )
+            except Exception as exc:
+                logger.exception(f"[{params.user_id}] Fetch cookie with stoken error: {exc}")
+                await show_error_banner(page, message=str(exc))
+                return None
+
             dict_cookie = str_cookie_to_dict(cookies)
             dict_cookie.update(new_dict_cookie)
             cookies = dict_cookie_to_str(dict_cookie)
 
         device_id = await page.client_storage.get_async(f"hb.{params.user_id}.device_id")
         device_fp = await page.client_storage.get_async(f"hb.{params.user_id}.device_fp")
+
+        logger.debug(f"[{params.user_id}] Before get game accs, cookies: {cookies}")
+        if device_id is not None:
+            logger.debug(f"{params.user_id} Before get game accs, device id: {device_id}")
+        if device_fp is not None:
+            logger.debug(f"{params.user_id} Before get game accs, device fp: {device_fp}")
 
         try:
             platform = params.platform or Platform.HOYOLAB
@@ -297,12 +312,6 @@ class WebApp:
             ).translate(locale)
             await show_error_banner(page, message=message)
             return None
-
-        logger.debug(f"{params.user_id} cookies: {cookies}")
-        if device_id is not None:
-            logger.debug(f"{params.user_id} device id: {device_id}")
-        if device_fp is not None:
-            logger.debug(f"{params.user_id} device fp: {device_fp}")
 
         return pages.FinishPage(
             params=params,

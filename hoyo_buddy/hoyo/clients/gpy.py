@@ -12,6 +12,7 @@ import hakushin
 import orjson
 from discord import Locale
 from dotenv import load_dotenv
+from loguru import logger
 
 from ... import models
 from ...bot.error_handler import get_error_embed
@@ -135,8 +136,11 @@ class ProxyGenshinClient(genshin.Client):
                 aiohttp.ClientSession() as session,
                 session.post(f"{api_url}/login/", json=payload) as resp,
             ):
+                logger.debug(f"Login API status code: {resp.status}")
+
                 if resp.status in {200, 400, 500}:
                     data = await resp.json()
+                    logger.debug(f"Login API response: {data}")
                     retcode = data.get("retcode")
 
                     if resp.status == 200:
@@ -147,11 +151,19 @@ class ProxyGenshinClient(genshin.Client):
                         return genshin.models.AppLoginResult(**orjson.loads(data["data"]))
 
                     if retcode == -3006:  # Rate limited
+                        await asyncio.sleep(5**retry)
                         if mmt_result is not None:
-                            return await self.os_app_login(email, password, mmt_result=mmt_result)
+                            return await self.os_app_login(
+                                email, password, mmt_result=mmt_result, retry=retry + 1
+                            )
                         if ticket is not None:
-                            return await self.os_app_login(email, password, ticket=ticket)
-                        return await self.os_app_login(email, password)
+                            return await self.os_app_login(
+                                email, password, ticket=ticket, retry=retry + 1
+                            )
+                        return await self.os_app_login(email, password, retry=retry + 1)
+
+                    if resp.status == 400:
+                        raise genshin.GenshinException(data)
 
                     raise Exception(data["message"])  # noqa: TRY002
 
@@ -159,12 +171,14 @@ class ProxyGenshinClient(genshin.Client):
                     msg = f"Failed to login after {MAX_API_RETRIES} retries, status: {resp.status}"
                     raise RuntimeError(msg)
 
+                await asyncio.sleep(5**retry)
                 return await self.os_app_login(
                     email, password, mmt_result=mmt_result, retry=retry + 1
                 )
         except Exception:
             if retry > MAX_API_RETRIES:
                 raise
+            await asyncio.sleep(2**retry)
             return await self.os_app_login(email, password, mmt_result=mmt_result, retry=retry + 1)
 
 

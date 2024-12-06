@@ -67,6 +67,7 @@ class MethodsPage(ft.View):
                         LocaleStr(key="email_password_button_label"), locale
                     ),
                     to_page="email_password",
+                    disabled=True,
                 ),
                 MethodButton(
                     params=params,
@@ -84,10 +85,10 @@ class MethodsPage(ft.View):
 
 
 class MethodButton(ft.FilledTonalButton):
-    def __init__(self, *, params: Params, label: str, to_page: str) -> None:
+    def __init__(self, *, params: Params, label: str, to_page: str, disabled: bool = False) -> None:
         self._params = params
         self._to_page = to_page
-        super().__init__(text=label, on_click=self.on_btn_click)
+        super().__init__(text=label, on_click=self.on_btn_click, disabled=disabled)
 
     async def on_btn_click(self, e: ft.ControlEvent) -> Any:
         page: ft.Page = e.page

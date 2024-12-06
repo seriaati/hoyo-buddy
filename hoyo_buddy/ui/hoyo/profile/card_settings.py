@@ -7,7 +7,12 @@ import enka
 from discord import ButtonStyle, TextStyle
 from genshin.models import ZZZPartialAgent
 
-from hoyo_buddy.db.models import CardSettings, Settings
+from hoyo_buddy.constants import (
+    ZZZ_AGENT_STAT_TO_DISC_SUBSTAT,
+    ZZZ_AVATAR_BATTLE_TEMP_JSON,
+    ZZZ_DISC_SUBSTATS,
+)
+from hoyo_buddy.db.models import CardSettings, JSONFile, Settings
 from hoyo_buddy.embeds import DefaultEmbed, Embed
 from hoyo_buddy.emojis import PALETTE
 from hoyo_buddy.enums import Game
@@ -108,8 +113,6 @@ class CardSettingsView(View):
         self.card_settings = card_settings
         self.settings = settings
 
-        self._add_items()
-
     @staticmethod
     def _get_color_markdown(color: str) -> str:
         return f"[{color}](https://www.colorhexa.com/{color[1:]})"
@@ -136,45 +139,53 @@ class CardSettingsView(View):
 
     def _add_items(self) -> None:
         self.add_item(CharacterSelect(self._characters, self.selected_character_id, row=0))
+
+        row = 1
         self.add_item(
             CardTemplateSelect(
-                self.card_settings.template, hb_only=self._hb_template_only, game=self.game, row=1
+                self.card_settings.template, hb_only=self._hb_template_only, game=self.game, row=row
             )
         )
 
+        if self.game is Game.ZZZ:
+            row = 2
+            self.add_item(HighlightSubstatSelector(self.card_settings.highlight_substats, row=row))
+
         self.add_item(
             PrimaryColorButton(
-                self.card_settings.custom_primary_color, disabled=self.disable_color_features, row=2
+                self.card_settings.custom_primary_color,
+                disabled=self.disable_color_features,
+                row=row + 1,
             )
         )
-        self.add_item(SetCurTempAsDefaultButton(row=2))
+        self.add_item(SetCurTempAsDefaultButton(row=row + 1))
 
         self.add_item(
             DarkModeButton(
                 current_toggle=self.card_settings.dark_mode,
                 disabled=self.disable_dark_mode_features,
-                row=3,
+                row=row + 2,
             )
         )
         self.add_item(
             SubstatRolls(
                 current_toggle=self.card_settings.show_substat_rolls,
                 disabled=self.disable_substat_roll_button,
-                row=3,
+                row=row + 2,
             )
         )
         self.add_item(
             ShowRankButton(
                 current_toggle=self.card_settings.show_rank,
                 disabled=self.disable_show_rank_button,
-                row=3,
+                row=row + 2,
             )
         )
         self.add_item(
             HighlightSpecialStats(
                 current_toggle=self.card_settings.highlight_special_stats,
                 disabled=self.disable_substat_roll_button,
-                row=3,
+                row=row + 2,
             )
         )
 
@@ -211,9 +222,33 @@ class CardSettingsView(View):
         embed.set_footer(text=LocaleStr(key="card_settings.footer"))
         return embed
 
+    async def add_default_hl_substats(self) -> None:
+        if self.card_settings.highlight_substats:
+            return
+
+        agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
+            ZZZ_AVATAR_BATTLE_TEMP_JSON
+        )
+        special_stat_ids = agent_special_stat_map.get(self.selected_character_id, [])
+        special_substat_ids = [
+            ZZZ_AGENT_STAT_TO_DISC_SUBSTAT.get(stat_id) for stat_id in special_stat_ids
+        ]
+
+        hl_substats = [
+            substat_id
+            for _, substat_id, _ in ZZZ_DISC_SUBSTATS
+            if substat_id in special_substat_ids
+        ]
+        self.card_settings.highlight_substats = hl_substats
+        await self.card_settings.save(update_fields=("highlight_substats",))
+
     async def start(self, i: Interaction) -> None:
+        if self.game is Game.ZZZ:
+            await self.add_default_hl_substats()
+
+        self._add_items()
         embed = self.get_settings_embed()
-        await i.response.send_message(embed=embed, view=self, ephemeral=True)
+        await i.followup.send(embed=embed, view=self, ephemeral=True)
         self.message = await i.original_response()
 
 
@@ -223,22 +258,35 @@ class CharacterSelect(SettingsCharacterSelect[CardSettingsView]):
         if changed:
             return await i.response.edit_message(view=self.view)
 
+        await i.response.defer()
+        character_id = self.values[0]
+
         self.update_options_defaults()
-        self.view.selected_character_id = self.values[0]
+        self.view.selected_character_id = character_id
         self.view.card_settings = await get_card_settings(
-            self.view._user_id, self.values[0], game=self.view.game
+            self.view._user_id, character_id, game=self.view.game
         )
 
         # Update other item styles
         template_select: CardTemplateSelect = self.view.get_item("profile_card_template_select")
         template_select.update_options_defaults(values=[self.view.card_settings.template])
 
+        if self.view.game is Game.ZZZ:
+            await self.view.add_default_hl_substats()
+            hl_substat_select: HighlightSubstatSelector = self.view.get_item(
+                "card_settings_hl_substat_select"
+            )
+            hl_substat_select.options = hl_substat_select.get_options(
+                self.view.card_settings.highlight_substats
+            )
+            hl_substat_select.translate(self.view.locale)
+
         dark_mode_button: DarkModeButton = self.view.get_item("profile_dark_mode")
         dark_mode_button.current_toggle = self.view.card_settings.dark_mode
         dark_mode_button.update_style()
 
         embed = self.view.get_settings_embed()
-        await i.response.edit_message(embed=embed, view=self.view)
+        await i.edit_original_response(embed=embed, view=self.view)
         return None
 
 
@@ -356,6 +404,14 @@ class CardTemplateSelect(Select[CardSettingsView]):
 
         self.update_options_defaults()
 
+        hl_substat_select: HighlightSubstatSelector = self.view.get_item(
+            "card_settings_hl_substat_select"
+        )
+        hl_substat_select.options = hl_substat_select.get_options(
+            self.view.card_settings.highlight_substats
+        )
+        hl_substat_select.translate(self.view.locale)
+
         change_color_btn: PrimaryColorButton = self.view.get_item("profile_primary_color")
         change_color_btn.disabled = self.view.disable_color_features
 
@@ -456,3 +512,40 @@ class HighlightSpecialStats(ToggleButton[CardSettingsView]):
         await super().callback(i, edit=True)
         self.view.card_settings.highlight_special_stats = self.current_toggle
         await self.view.card_settings.save(update_fields=("highlight_special_stats",))
+
+
+class HighlightSubstatSelector(Select[CardSettingsView]):
+    def __init__(self, current: list[int], *, row: int) -> None:
+        options = self.get_options(current)
+        super().__init__(
+            placeholder=LocaleStr(key="card_settings_hl_substat_select_placeholder"),
+            row=row,
+            options=options,
+            max_values=len(options),
+            custom_id="card_settings_hl_substat_select",
+        )
+
+    @staticmethod
+    def get_options(current: list[int]) -> list[SelectOption]:
+        options: list[SelectOption] = []
+        added: set[int] = set()
+
+        for key, substat_id, append in ZZZ_DISC_SUBSTATS:
+            if substat_id in added:
+                continue
+
+            added.add(substat_id)
+            options.append(
+                SelectOption(
+                    label=LocaleStr(key=key, append=append),
+                    value=str(substat_id),
+                    default=substat_id in current,
+                )
+            )
+
+        return options
+
+    async def callback(self, i: Interaction) -> None:
+        await i.response.defer()
+        self.view.card_settings.highlight_substats = [int(value) for value in self.values]
+        await self.view.card_settings.save(update_fields=("highlight_substats",))

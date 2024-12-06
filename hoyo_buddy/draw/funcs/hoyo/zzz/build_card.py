@@ -33,6 +33,7 @@ class ZZZAgentCard:
         template: Literal[1, 2],
         show_substat_rolls: bool,
         agent_special_stats: list[int],
+        hl_substats: list[int],
         hl_special_stats: bool,
     ) -> None:
         self._agent = agent
@@ -45,6 +46,7 @@ class ZZZAgentCard:
         self._template = template
         self._show_substat_rolls = show_substat_rolls
         self._agent_special_stats = agent_special_stats
+        self.hl_substats = hl_substats
         self._hl_special_stats = hl_special_stats
 
     def _draw_background(self) -> Image.Image:
@@ -190,17 +192,16 @@ class ZZZAgentCard:
         start_pos = (2720, 616)
         props = get_props(self._agent)
         agent_color = self._color or self._card_data["color"]
-        spsecial_stat_names: set[str] = set()
 
         for i, prop in enumerate(props):
             if prop is None or not isinstance(prop.type, PropType):
                 continue
 
-            color = (20, 20, 20)
-            if prop.type.value in self._agent_special_stats:
-                spsecial_stat_names.add(prop.name)
-                if self._hl_special_stats:
-                    color = drawer.get_agent_special_stat_color(agent_color)
+            color = (
+                drawer.get_agent_special_stat_color(agent_color)
+                if prop.type.value in self._agent_special_stats and self._hl_special_stats
+                else (20, 20, 20)
+            )
 
             prop_icon = drawer.open_asset(
                 f"stat_icons/{STAT_ICONS[prop.type]}", size=(59, 59), mask_color=color
@@ -351,7 +352,7 @@ class ZZZAgentCard:
                     else:
                         color = (
                             drawer.get_agent_special_stat_color(agent_color)
-                            if self._hl_special_stats and sub_stat.name in spsecial_stat_names
+                            if self._hl_special_stats and int(sub_stat.type) in self.hl_substats
                             else (20, 20, 20)
                         )
 

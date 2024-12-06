@@ -32,6 +32,8 @@ class CardSettingsButton(Button[ProfileView]):
         )
 
     async def callback(self, i: Interaction) -> None:
+        await i.response.defer()
+
         character_id = self.view.character_ids[0]
         card_settings = await get_card_settings(i.user.id, character_id, game=self.view.game)
         settings = await Settings.get(user_id=i.user.id)

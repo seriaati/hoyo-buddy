@@ -114,12 +114,13 @@ class ImageSettingsView(View):
         default_collection = get_default_collection(
             str(character.id), self.card_data, game=self.game
         )
+        current_image = self.get_current_image()
 
         self.add_item(CharacterSelect(self.characters, self.selected_character_id, row=0))
         self.add_item(ImageTypeSelect(self.image_type, row=1))
         self.add_item(
             ImageSelect(
-                current_image_url=self.card_settings.current_image,
+                current_image_url=current_image,
                 default_collection=default_collection,
                 custom_images=self.custom_images,
                 template=self.card_settings.template,
@@ -129,12 +130,12 @@ class ImageSettingsView(View):
         )
         self.add_item(GenerateAIArtButton(disabled=self.disable_ai_features, row=3))
         self.add_item(AddImageButton(row=3, disabled=self.disable_image_features))
-        self.add_item(EditImageButton(disabled=self.disable_image_features, row=3))
+        self.add_item(
+            EditImageButton(disabled=self.disable_image_features or current_image is None, row=3)
+        )
         self.add_item(
             RemoveImageButton(
-                disabled=self.card_settings.current_image is None
-                or self.card_settings.current_image in default_collection,
-                row=3,
+                disabled=current_image is None or current_image in default_collection, row=3
             )
         )
 

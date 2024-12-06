@@ -771,3 +771,27 @@ USER_ACCOUNT_DESCRIBE_KWARGS: dict[str, app_commands.locale_str] = {
         key="account_autocomplete_param_description",
     ),
 }
+
+ZZZ_DISC_SUBSTATS = (
+    ("zzz_substat_crit_rate", 20103, ""),
+    ("zzz_substat_crit_dmg", 21103, ""),
+    ("zzz_substat_ap", 31203, ""),
+    ("zzz_substat_pen", 23203, ""),
+    ("zzz_substat_hp", 11103, ""),
+    ("zzz_substat_hp", 11102, "%"),
+    ("zzz_substat_atk", 12103, ""),
+    ("zzz_substat_atk", 12102, "%"),
+    ("zzz_substat_def", 13103, ""),
+    ("zzz_substat_def", 13102, "%"),
+)
+# LocaleStr key, substat id, LocaleStr append
+
+ZZZ_AGENT_STAT_TO_DISC_SUBSTAT = {
+    1: 11102,  # HP
+    2: 12102,  # ATK
+    3: 13102,  # DEF
+    5: 20103,  # CRIT RATE
+    6: 21103,  # CRIT DMG
+    8: 31203,  # AP
+    9: 23203,  # PEN
+}

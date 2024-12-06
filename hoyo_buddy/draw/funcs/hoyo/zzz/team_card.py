@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections import defaultdict
 from io import BytesIO
 from typing import TYPE_CHECKING
 
@@ -35,6 +34,7 @@ class ZZZTeamCard:
         disc_icons: dict[int, str],
         show_substat_rolls: dict[int, bool],
         agent_special_stat_map: dict[str, list[int]],
+        agent_hl_substat_map: dict[int, list[int]],
         hl_special_stats: dict[int, bool],
     ) -> None:
         self._locale = locale
@@ -46,8 +46,8 @@ class ZZZTeamCard:
         self._disc_icons = disc_icons
         self._show_substat_rolls = show_substat_rolls
         self._agent_special_stat_map = agent_special_stat_map
+        self._agent_hl_substat_map = agent_hl_substat_map
         self._hl_special_stats = hl_special_stats
-        self._agent_special_stat_names: defaultdict[int, set[str]] = defaultdict(set)
 
     def _draw_card(self, *, image_url: str, blob_color: tuple[int, int, int]) -> Image.Image:
         card = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/card.png")
@@ -198,7 +198,7 @@ class ZZZTeamCard:
                         color = (
                             drawer.get_agent_special_stat_color(self._agent_colors[agent.id])
                             if self._hl_special_stats[agent.id]
-                            and stat.name in self._agent_special_stat_names[agent.id]
+                            and int(stat.type) in self._agent_hl_substat_map[agent.id]
                             else (20, 20, 20)
                         )
 
@@ -319,11 +319,14 @@ class ZZZTeamCard:
             if prop is None or not isinstance(prop.type, PropType):
                 continue
 
-            color = (20, 20, 20)
-            if prop.type.value in self._agent_special_stat_map[str(agent.id)]:
-                self._agent_special_stat_names[agent.id].add(prop.name)
-                if self._hl_special_stats[agent.id]:
-                    color = drawer.get_agent_special_stat_color(agent_color)
+            color = (
+                drawer.get_agent_special_stat_color(agent_color)
+                if (
+                    prop.type.value in self._agent_special_stat_map[str(agent.id)]
+                    and self._hl_special_stats[agent.id]
+                )
+                else (20, 20, 20)
+            )
 
             prop_icon = drawer.open_asset(
                 f"stat_icons/{STAT_ICONS[prop.type]}",

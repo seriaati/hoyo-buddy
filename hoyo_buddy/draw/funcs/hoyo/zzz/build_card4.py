@@ -29,6 +29,7 @@ class ZZZAgentCard4:
         color: str,
         show_substat_rolls: bool,
         agent_special_stats: list[int],
+        hl_substats: list[int],
         hl_special_stats: bool,
     ) -> None:
         self._agent = agent
@@ -39,8 +40,8 @@ class ZZZAgentCard4:
         self._color = color
         self._show_substat_rolls = show_substat_rolls
         self._agent_special_stats = agent_special_stats
+        self._hl_substats = hl_substats
         self._hl_special_stats = hl_special_stats
-        self._special_stat_names: set[str] = set()
 
         self.im: Image.Image = None  # pyright: ignore[reportAttributeAccessIssue]
         self.drawer: Drawer = None  # pyright: ignore[reportAttributeAccessIssue]
@@ -196,11 +197,11 @@ class ZZZAgentCard4:
             if prop is None or not isinstance(prop.type, PropType):
                 continue
 
-            color = (20, 20, 20)
-            if prop.type.value in self._agent_special_stats:
-                self._special_stat_names.add(prop.name)
-                if self._hl_special_stats:
-                    color = drawer.get_agent_special_stat_color(self._color)
+            color = (
+                drawer.get_agent_special_stat_color(self._color)
+                if prop.type.value in self._agent_special_stats and self._hl_special_stats
+                else (20, 20, 20)
+            )
 
             prop_icon = drawer.open_asset(
                 f"stat_icons/{STAT_ICONS[prop.type]}",
@@ -374,7 +375,7 @@ class ZZZAgentCard4:
                 substat_pos = (pos[0] + 214 + 280 * (s % 2), pos[1] + 131 + 92 * (s // 2))
                 color = (
                     drawer.get_agent_special_stat_color(self._color)
-                    if self._hl_special_stats and substat.name in self._special_stat_names
+                    if self._hl_special_stats and int(substat.type) in self._hl_substats
                     else (20, 20, 20)
                 )
 

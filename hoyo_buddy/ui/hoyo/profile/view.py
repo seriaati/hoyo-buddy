@@ -548,6 +548,7 @@ class ProfileView(View):
             show_substat_rolls=card_settings.show_substat_rolls,
             agent_special_stat_map=agent_special_stat_map,
             hl_special_stats=card_settings.highlight_special_stats,
+            hl_substats=card_settings.highlight_substats,
         )
 
     async def draw_card(
@@ -648,6 +649,10 @@ class ProfileView(View):
                 int(char_id): agent_card_settings[int(char_id)].highlight_special_stats
                 for char_id in self.character_ids
             }
+            hl_substats = {
+                int(char_id): agent_card_settings[int(char_id)].highlight_substats
+                for char_id in self.character_ids
+            }
 
             return await draw_zzz_team_card(
                 draw_input,
@@ -657,6 +662,7 @@ class ProfileView(View):
                 show_substat_rolls=show_substat_rolls,
                 agent_special_stat_map=await JSONFile.read(ZZZ_AVATAR_BATTLE_TEMP_JSON),
                 hl_special_stats=hl_special_stats,
+                agent_hl_substat_map=hl_substats,
             )
 
         if self.game is Game.STARRAIL:

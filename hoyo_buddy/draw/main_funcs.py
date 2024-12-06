@@ -10,9 +10,7 @@ from discord import File
 from genshin.models import ZZZFullAgent
 
 from hoyo_buddy.draw import funcs
-from hoyo_buddy.ui.hoyo.profile.image_settings import get_default_art
-
-from ..models import (
+from hoyo_buddy.models import (
     AgentNameData,
     HoyolabGICharacter,
     HoyolabHSRCharacter,
@@ -21,6 +19,7 @@ from ..models import (
     UnownedZZZCharacter,
     ZZZDrawData,
 )
+
 from .static import download_images
 
 if TYPE_CHECKING:
@@ -41,7 +40,7 @@ if TYPE_CHECKING:
         ZZZNotes,
     )
 
-    from ..models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
+    from hoyo_buddy.models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
 
 
 async def draw_item_list_card(
@@ -413,11 +412,11 @@ async def fetch_zzz_draw_data(
 
         if template == 2:
             agent_images = {char.id: char.phase_3_cinema_art for char in characters}
-        elif template == 4:
-            agent_images = {agent.id: agent.banner_icon for agent in agents}
-        else:
-            # 1, 3, 4
+        elif template == 1:
             agent_images = {char.id: char.image for char in characters}
+        else:
+            # 3, 4
+            agent_images = {agent.id: agent.banner_icon for agent in agents}
 
         items = await api.fetch_items()
         disc_icons: dict[int, str] = {}
@@ -441,13 +440,16 @@ async def draw_zzz_build_card(
     template: Literal[1, 2, 3, 4],
     show_substat_rolls: bool,
     agent_special_stat_map: dict[str, list[int]],
+    hl_substats: list[int],
     hl_special_stats: bool,
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data([agent], template=template)
 
-    image = custom_image or (
-        get_default_art(agent, is_team=True) if template == 3 else draw_data.agent_images[agent.id]
-    )
+    if template in {1, 2}:
+        image = draw_data.agent_images[agent.id]
+    else:  # 3, 4
+        image = custom_image or draw_data.agent_images[agent.id]
+
     urls: list[str] = [image]
     urls.extend(draw_data.disc_icons.values())
     if agent.w_engine is not None:
@@ -459,7 +461,7 @@ async def draw_zzz_build_card(
         folder = "zzz-team-card"
     elif template == 4:
         folder = "zzz-build-card4"
-    else:
+    else:  # 1, 2
         folder = "zzz-build-card"
     await download_images(urls, folder, draw_input.session)
 
@@ -474,6 +476,7 @@ async def draw_zzz_build_card(
             show_substat_rolls={agent.id: show_substat_rolls},
             agent_special_stat_map=agent_special_stat_map,
             hl_special_stats={agent.id: hl_special_stats},
+            agent_hl_substat_map={agent.id: hl_substats},
         )
     elif template == 4:
         card = funcs.zzz.ZZZAgentCard4(
@@ -485,6 +488,7 @@ async def draw_zzz_build_card(
             color=custom_color or card_data["color"],
             show_substat_rolls=show_substat_rolls,
             agent_special_stats=agent_special_stats,
+            hl_substats=hl_substats,
             hl_special_stats=hl_special_stats,
         )
     else:
@@ -500,6 +504,7 @@ async def draw_zzz_build_card(
             show_substat_rolls=show_substat_rolls,
             agent_special_stats=agent_special_stats,
             hl_special_stats=hl_special_stats,
+            hl_substats=hl_substats,
         )
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
@@ -549,14 +554,15 @@ async def draw_zzz_team_card(
     draw_input: DrawInput,
     agents: Sequence[ZZZFullAgent],
     agent_colors: dict[int, str],
-    agent_images: dict[int, str],
+    agent_custom_images: dict[int, str],
     show_substat_rolls: dict[int, bool],
     agent_special_stat_map: dict[str, list[int]],
+    agent_hl_substat_map: dict[int, list[int]],
     hl_special_stats: dict[int, bool],
 ) -> BytesIO:
-    draw_data = await fetch_zzz_draw_data(agents, template=1)
+    draw_data = await fetch_zzz_draw_data(agents, template=3)
 
-    urls = list(agent_images.values())
+    urls = list(agent_custom_images.values())
     urls.extend(agent.w_engine.icon for agent in agents if agent.w_engine is not None)
     urls.extend(draw_data.disc_icons.values())
     await download_images(urls, "zzz-team-card", draw_input.session)
@@ -565,12 +571,13 @@ async def draw_zzz_team_card(
         locale=draw_input.locale.value,
         agents=agents,
         agent_colors=agent_colors,
-        agent_images=agent_images,
+        agent_images=agent_custom_images,
         name_datas=draw_data.name_data,
         disc_icons=draw_data.disc_icons,
         show_substat_rolls=show_substat_rolls,
         agent_special_stat_map=agent_special_stat_map,
         hl_special_stats=hl_special_stats,
+        agent_hl_substat_map=agent_hl_substat_map,
     )
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 

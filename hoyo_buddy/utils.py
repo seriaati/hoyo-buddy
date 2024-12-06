@@ -60,19 +60,22 @@ def is_valid_hex_color(color: str) -> bool:
 async def upload_image(
     session: aiohttp.ClientSession, *, image_url: str | None = None, image: bytes | None = None
 ) -> str:
-    api = "https://freeimage.host/api/1/upload"
-    data = {"key": "6d207e02198a847aa98d0a2a901485a5", "source": image_url, "format": "json"}
+    api = "https://img.seria.moe/upload"
+    data = {"key": os.environ["IMG_UPLOAD_API_KEY"]}
 
     if image is not None:
         # Encode image into base64 string
         image_base64 = base64.b64encode(image).decode("utf-8")
         data["source"] = image_base64
+    if image_url is not None:
+        data["source"] = image_url
 
-    async with session.post(api, data=data) as resp:
+    async with session.post(api, json=data) as resp:
         resp.raise_for_status()
 
         data = await resp.json()
-        return data["image"]["url"]
+        filename = data["filename"]
+        return f"https://img.seria.moe/{filename}"
 
 
 def format_timedelta(td: datetime.timedelta) -> str:

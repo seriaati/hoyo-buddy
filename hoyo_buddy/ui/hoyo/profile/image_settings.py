@@ -533,8 +533,7 @@ class AddImageButton(Button[ImageSettingsView]):
             await self.unset_loading_state(i)
             raise InvalidImageURLError
 
-        if not image_url.startswith("https://iili.io"):
-            # Upload the image to iili
+        if not image_url.startswith("https://img.seria.moe/"):
             try:
                 image_url = await upload_image(i.client.session, image_url=image_url)
             except Exception as e:

@@ -52,9 +52,12 @@ class GIBuildView(ui.View):
 
         if guide.aza_data is not None:
             self.add_item(PageSelector())
+
         if guide.gw_data is not None:
-            self.add_item(BuildSelector(guide.gw_data))
-            self.add_item(ShowSynergyButton(guide.gw_data.synergies.teams))
+            if guide.gw_data.builds:
+                self.add_item(BuildSelector(guide.gw_data))
+            if guide.gw_data.synergies.teams:
+                self.add_item(ShowSynergyButton(guide.gw_data.synergies.teams))
             if guide.gw_data.playstyle is not None:
                 self.add_item(ShowPlaystyleButton())
 

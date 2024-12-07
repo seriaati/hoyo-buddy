@@ -771,7 +771,7 @@ too_many_requests_error_banner_msg: "Too many requests, try again later. Click t
 add_field_modal_title_label: Title
 add_field_modal_desc_label: Description
 add_weapon_modal_name_label: Name
-add_team_modal_name_label: Character Name {num}
+add_team_modal_name_label: "Character Name {num}"
 add_field_modal_title: Add Field
 add_weapon_modal_title: Add Weapon
 add_team_modal_title: Add Team

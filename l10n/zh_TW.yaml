@@ -717,7 +717,7 @@ weapon_type_filter_placeholder: 用武器類別篩選…
 redeem_cmd_available_codes: 可用的兌換碼
 redeem_all_available_codes_button_label: 兌換所有可用的兌換碼
 akasha_show_details: 顯示排行榜詳情
-card_settings_hl_special_stats_button_label: 強調特殊角色數值
+card_settings_hl_special_stats_button_label: 標示特殊角色數值
 challenge_command_abyss_desc: 生成深境螺旋卡片
 challenge_command_theater_desc: 生成幻想真境劇詩卡片
 challenge_command_moc_desc: 生成混沌回憶卡片
@@ -759,3 +759,11 @@ flexible_char: 任意
 show_synergy_button_label: 組隊方式
 characters_per_page_modal_title: 每頁角色數
 characters_per_page_num_label: 數量
+card_settings_hl_substat_select_placeholder: 選擇要標示的副詞條…
+zzz_substat_crit_rate: 暴擊率
+zzz_substat_crit_dmg: 暴擊傷害
+zzz_substat_ap: 異常掌控
+zzz_substat_hp: 生命值
+zzz_substat_atk: 攻擊力
+zzz_substat_def: 防禦力
+zzz_substat_pen: 穿透率

@@ -759,3 +759,11 @@ flexible_char: Linh hoạt
 show_synergy_button_label: Sự hiệp lực
 characters_per_page_modal_title: Các nhân vật mỗi trang
 characters_per_page_num_label: Số
+card_settings_hl_substat_select_placeholder: Chọn thuộc tính phụ để tô đậm
+zzz_substat_crit_rate: Tỷ Lệ Bạo Kích
+zzz_substat_crit_dmg: DMG Bạo Kích
+zzz_substat_ap: Tinh Thông Dị Thường
+zzz_substat_hp: HP
+zzz_substat_atk: Tấn Công
+zzz_substat_def: Phòng Thủ
+zzz_substat_pen: Xuyên Giáp

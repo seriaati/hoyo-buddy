@@ -767,3 +767,4 @@ zzz_substat_hp: 生命值
 zzz_substat_atk: 攻擊力
 zzz_substat_def: 防禦力
 zzz_substat_pen: 穿透率
+too_many_requests_error_banner_msg: "請求次數過多，請稍後再試。點擊右方按鈕獲取更多資訊。"

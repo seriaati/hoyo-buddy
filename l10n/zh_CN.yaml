@@ -759,3 +759,11 @@ flexible_char: 任意
 show_synergy_button_label: 组队方式
 characters_per_page_modal_title: 每页角色数
 characters_per_page_num_label: 数量
+card_settings_hl_substat_select_placeholder: 选择要高亮的副词条…
+zzz_substat_crit_rate: 暴击率
+zzz_substat_crit_dmg: 暴击伤害
+zzz_substat_ap: 异常掌控
+zzz_substat_hp: 生命值
+zzz_substat_atk: 攻击力
+zzz_substat_def: 防御力
+zzz_substat_pen: 穿透率

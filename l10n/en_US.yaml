@@ -767,3 +767,4 @@ zzz_substat_hp: HP
 zzz_substat_atk: ATK
 zzz_substat_def: DEF
 zzz_substat_pen: PEN
+too_many_requests_error_banner_msg: "Too many requests, try again later. Click the button on the right for more details."

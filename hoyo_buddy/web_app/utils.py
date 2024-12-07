@@ -36,19 +36,37 @@ class LoadingSnackBar(ft.SnackBar):
 
 
 class ErrorBanner(ft.Banner):
-    def __init__(self, message: str) -> None:
+    def __init__(self, message: str, *, url: str | None = None) -> None:
+        self.url = url
+        actions: list[ft.Control] = [
+            ft.IconButton(
+                ft.icons.CLOSE,
+                on_click=self.on_action_click,
+                icon_color=ft.colors.ON_ERROR_CONTAINER,
+            )
+        ]
+        if url:
+            actions.insert(
+                0,
+                ft.IconButton(
+                    ft.icons.OPEN_IN_NEW,
+                    on_click=self.launch_url,
+                    icon_color=ft.colors.ON_ERROR_CONTAINER,
+                ),
+            )
+
         super().__init__(
             leading=ft.Icon(ft.icons.ERROR, color=ft.colors.ON_ERROR_CONTAINER),
             content=ft.Text(message, color=ft.colors.ON_ERROR_CONTAINER),
             bgcolor=ft.colors.ERROR_CONTAINER,
-            actions=[
-                ft.IconButton(
-                    ft.icons.CLOSE,
-                    on_click=self.on_action_click,
-                    icon_color=ft.colors.ON_ERROR_CONTAINER,
-                )
-            ],
+            actions=actions,
         )
+
+    async def launch_url(self, e: ft.ControlEvent) -> None:
+        page: ft.Page = e.page
+        if self.url is None:
+            return
+        await page.launch_url_async(self.url, web_window_name=ft.UrlTarget.BLANK.value)
 
     async def on_action_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
@@ -61,8 +79,8 @@ async def show_loading_snack_bar(
     await page.show_snack_bar_async(LoadingSnackBar(message=message, locale=locale))
 
 
-async def show_error_banner(page: ft.Page, *, message: str) -> None:
-    await page.show_banner_async(ErrorBanner(message))
+async def show_error_banner(page: ft.Page, *, message: str, url: str | None = None) -> None:
+    await page.show_banner_async(ErrorBanner(message, url=url))
 
 
 def decrypt_string(encrypted: str) -> str:

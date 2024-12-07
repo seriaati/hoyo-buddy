@@ -130,6 +130,18 @@ class EmailPassWordForm(ft.Column):
                 result = await client.os_app_login(email.strip(), password)
             else:
                 result = await client._cn_web_login(email.strip(), password)
+        except genshin.GenshinException as exc:
+            logger.debug(f"[{self._params.user_id}] Email and password login error: {exc}")
+            if exc.retcode == -3006:  # Rate limited
+                message = LocaleStr(key="too_many_requests_error_banner_msg").translate(
+                    self._locale
+                )
+                url = "https://link.seria.moe/9xbhqm"
+            else:
+                message = f"[{exc.retcode}] {exc.msg}"
+                url = None
+            await show_error_banner(page, message=message, url=url)
+            return
         except Exception as exc:
             logger.debug(f"[{self._params.user_id}] Email and password login error: {exc}")
             await show_error_banner(page, message=str(exc))

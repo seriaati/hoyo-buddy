@@ -47,7 +47,7 @@ def get_game_icon(game: Game | GameEnum) -> str:
     raise ValueError(msg)
 
 
-def get_element_icon(element: ambr.Element) -> str:  # noqa: RET503
+def get_element_icon(element: ambr.Element) -> str:
     if element is ambr.Element.ANEMO:
         return GI_WIND_ICON
     if element is ambr.Element.GEO:

@@ -2,6 +2,9 @@
 
 ## v1.15.3
 
+Bad code in the previous versions caused some users to see the "too many requests" error while logging in, please see
+[this article](https://link.seria.moe/kky283) for more information.
+
 ### New Features
 
 - (`/profile zzz`) Added a selector to select substats that you want to highlight.

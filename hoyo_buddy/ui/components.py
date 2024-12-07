@@ -559,7 +559,7 @@ class Modal(discord.ui.Modal):
     def __init__(self, *, title: LocaleStr | str, custom_id: str = MISSING) -> None:
         super().__init__(
             title=title if isinstance(title, str) else "#NoTrans",
-            timeout=60,
+            timeout=600,
             custom_id=self.__class__.__name__ if custom_id is MISSING else custom_id,
         )
         self.locale_str_title = title

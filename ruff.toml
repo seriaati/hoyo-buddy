@@ -42,6 +42,7 @@ ignore = [
   "S403",
   "UP040",
   "E741",
+  "RET503",
 ]
 preview = true
 select = ["ALL"]

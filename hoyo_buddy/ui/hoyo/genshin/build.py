@@ -221,6 +221,7 @@ class GIBuildView(ui.View):
 
     async def start(self, i: Interaction) -> None:
         await i.followup.send(embed=self.start_embed, view=self)
+        self.message = await i.original_response()
 
 
 class PageSelector(ui.Select[GIBuildView]):
@@ -267,6 +268,10 @@ class PageSelector(ui.Select[GIBuildView]):
             file_ = await self.view.draw_artifact_set_use_rate_image(artifact_sets, i.client)
 
         self.update_options_defaults()
+        with contextlib.suppress(ValueError):
+            build_selector: BuildSelector = self.view.get_item("build_selector")
+            build_selector.reset_options_defaults()
+
         await self.unset_loading_state(
             i, embed=embed, attachments=[file_] if file_ is not None else []
         )
@@ -290,8 +295,9 @@ class BuildSelector(ui.Select[GIBuildView]):
             return
 
         self.update_options_defaults()
-        page_selector: PageSelector = self.view.get_item("page_selector")
-        page_selector.reset_options_defaults()
+        with contextlib.suppress(ValueError):
+            page_selector: PageSelector = self.view.get_item("page_selector")
+            page_selector.reset_options_defaults()
 
         embed = self.view.get_gw_build_embed(build)
         await i.response.edit_message(embed=embed, attachments=[], view=self.view)

@@ -524,11 +524,6 @@ zzz.assist: Kỹ Năng Chi Viện
 zzz.special: Chiến Kỹ
 zzz.chain: Liên Kích
 zzz.core: Kỹ Năng Cốt Lỗi
-attack: Tien Phong
-stun: Khống Chế
-anomaly: Dị Thường
-support: Chị Viện
-defense: Thủ Hộ
 characters.filter.faction.placeholder: Chọn lọc Phe...
 characters.sorter.speciality: Đặc Tính
 characters.sorter.faction: Phe
@@ -760,13 +755,6 @@ show_synergy_button_label: Sự hiệp lực
 characters_per_page_modal_title: Các nhân vật mỗi trang
 characters_per_page_num_label: Số
 card_settings_hl_substat_select_placeholder: Chọn thuộc tính phụ để tô đậm
-zzz_substat_crit_rate: Tỷ Lệ Bạo Kích
-zzz_substat_crit_dmg: DMG Bạo Kích
-zzz_substat_ap: Tinh Thông Dị Thường
-zzz_substat_hp: HP
-zzz_substat_atk: Tấn Công
-zzz_substat_def: Phòng Thủ
-zzz_substat_pen: Xuyên Giáp
 too_many_requests_error_banner_msg: "Nhiều yêu cầu quá, vui lòng thử lại. Nhấp vào nút bền phải để biết thêm thông tin."
 add_field_modal_title_label: Tiêu đề
 add_field_modal_desc_label: Miêu tả

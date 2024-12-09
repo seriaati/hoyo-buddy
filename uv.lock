@@ -747,7 +747,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.3"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#80c9decf9f200a26cae4956b91ec2f513c3bc11a" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#5413c27818c5270442993c17cf3b827e10b29edc" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },
@@ -845,7 +845,7 @@ dependencies = [
     { name = "yatta-py" },
 ]
 
-[package.dev-dependencies]
+[package.dependency-groups]
 dev = [
     { name = "icecream" },
 ]
@@ -886,7 +886,7 @@ requires-dist = [
     { name = "yatta-py", git = "https://github.com/seriaati/yatta" },
 ]
 
-[package.metadata.requires-dev]
+[package.metadata.dependency-groups]
 dev = [{ name = "icecream", specifier = ">=2.1.3" }]
 
 [[package]]

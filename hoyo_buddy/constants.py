@@ -795,3 +795,8 @@ ZZZ_AGENT_STAT_TO_DISC_SUBSTAT = {
     8: 31203,  # AP
     9: 23203,  # PEN
 }
+
+BLOCK_COLORS: dict[bool, dict[int, str]] = {
+    True: {5: "#8a571e", 4: "#624a81", 3: "#3e5574", 2: "#44685d", 1: "#656570"},
+    False: {5: "#b47128", 4: "#8768ac", 3: "#52779b", 2: "#4d766a1", 1: "#77787d"},
+}

@@ -12,8 +12,10 @@ from genshin.models import ZZZFullAgent
 from hoyo_buddy.draw import funcs
 from hoyo_buddy.models import (
     AgentNameData,
+    DoubleBlock,
     HoyolabGICharacter,
     HoyolabHSRCharacter,
+    SingleBlock,
     UnownedGICharacter,
     UnownedHSRCharacter,
     UnownedZZZCharacter,
@@ -659,5 +661,24 @@ async def draw_shiyu_card(
     card = funcs.zzz.ShiyuDefenseCard(shiyu, agent_ranks, uid, locale=draw_input.locale.value)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_block_list_card(
+    draw_input: DrawInput, block_lists: Sequence[Sequence[SingleBlock | DoubleBlock]]
+) -> File:
+    urls: list[str] = []
+    for block_list in block_lists:
+        for block in block_list:
+            if isinstance(block, SingleBlock):
+                urls.append(block.icon)
+            else:
+                urls.extend((block.icon1, block.icon2))
+
+    await download_images(urls, "block-list", draw_input.session)
+
+    card = funcs.block_list.BlockListCard(block_lists, dark_mode=draw_input.dark_mode)
+    buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

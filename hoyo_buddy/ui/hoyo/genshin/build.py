@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import itertools
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Literal, TypeAlias
 
@@ -10,13 +11,13 @@ from discord.enums import Locale
 from seria.utils import create_bullet_list
 
 from hoyo_buddy import ui
-from hoyo_buddy.constants import AMBR_ELEMENT_TO_ELEMENT
-from hoyo_buddy.draw.main_funcs import draw_item_list_card
+from hoyo_buddy.constants import BLOCK_COLORS
+from hoyo_buddy.draw.main_funcs import draw_block_list_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ARTIFACT_POS_EMOJIS
 from hoyo_buddy.icons import get_element_icon
-from hoyo_buddy.l10n import EnumStr, LocaleStr
-from hoyo_buddy.models import DrawInput, ItemWithTrailing
+from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.models import DoubleBlock, DrawInput, SingleBlock
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -123,7 +124,7 @@ class GIBuildView(ui.View):
         *,
         type_: Literal["character", "weapon"],
     ) -> discord.File:
-        items_: list[ItemWithTrailing] = []
+        blocks: list[SingleBlock] = []
 
         for item in items:
             if type_ == "character":
@@ -134,13 +135,16 @@ class GIBuildView(ui.View):
             if ambr_item is None:
                 continue
 
-            items_.append(
-                ItemWithTrailing(
-                    icon=ambr_item.icon, title=ambr_item.name, trailing=f"{item.value * 100:.2f}%"
+            blocks.append(
+                SingleBlock(
+                    icon=ambr_item.icon,
+                    bg_color=BLOCK_COLORS[self.dark_mode][ambr_item.rarity],
+                    bottom_text=f"{item.value * 100:.2f}%",
                 )
             )
 
-        return await draw_item_list_card(
+        chunked_blocks = itertools.batched(blocks, 4)
+        return await draw_block_list_card(
             DrawInput(
                 dark_mode=self.dark_mode,
                 locale=self.locale,
@@ -149,30 +153,52 @@ class GIBuildView(ui.View):
                 loop=bot.loop,
                 filename="use_rate.png",
             ),
-            items_,
+            [list(chunk) for chunk in chunked_blocks],
         )
 
     async def draw_artifact_set_use_rate_image(
         self, best_sets: Sequence[ambr.AzaBestArtifactSets], bot: HoyoBuddy
     ) -> discord.File:
-        items: list[ItemWithTrailing] = []
+        blocks: list[SingleBlock | DoubleBlock] = []
 
         for sets in best_sets:
-            for best_set in sets.sets:
-                ambr_set = next((s for s in self.artifact_sets if s.id == best_set.id), None)
+            is_double = len(sets.sets) == 2
+            if is_double:
+                set1 = sets.sets[0]
+                ambr_set1 = next((s for s in self.artifact_sets if s.id == set1.id), None)
+                if ambr_set1 is None:
+                    continue
+
+                set2 = sets.sets[1]
+                ambr_set2 = next((s for s in self.artifact_sets if s.id == set2.id), None)
+                if ambr_set2 is None:
+                    continue
+
+                block = DoubleBlock(
+                    icon1=ambr_set1.icon,
+                    icon2=ambr_set2.icon,
+                    bg_color=BLOCK_COLORS[self.dark_mode][1],
+                    flair_text1=str(set1.num),
+                    flair_text2=str(set2.num),
+                    bottom_text=f"{sets.value * 100:.1f}%",
+                )
+            else:
+                set_ = sets.sets[0]
+                ambr_set = next((s for s in self.artifact_sets if s.id == set_.id), None)
                 if ambr_set is None:
                     continue
 
-                items.append(
-                    ItemWithTrailing(
-                        icon=ambr_set.icon,
-                        title=f"({best_set.num}) {ambr_set.name}",
-                        trailing=f"{sets.value * 100:.2f}%",
-                    )
+                block = SingleBlock(
+                    icon=ambr_set.icon,
+                    bg_color=BLOCK_COLORS[self.dark_mode][1],
+                    flair_text=str(set_.num),
+                    bottom_text=f"{sets.value * 100:.1f}%",
                 )
-            items.append(ItemWithTrailing(icon=None, title="", trailing=""))
 
-        return await draw_item_list_card(
+            blocks.append(block)
+
+        chunked_blocks = itertools.batched(blocks, 4)
+        return await draw_block_list_card(
             DrawInput(
                 dark_mode=self.dark_mode,
                 locale=self.locale,
@@ -181,7 +207,50 @@ class GIBuildView(ui.View):
                 loop=bot.loop,
                 filename="use_rate.png",
             ),
-            items,
+            [list(chunk) for chunk in chunked_blocks],
+        )
+
+    async def draw_synergy_teams_image(
+        self, teams: Sequence[SynergyTeam], bot: HoyoBuddy
+    ) -> discord.File:
+        block_lists: list[list[SingleBlock]] = []
+
+        for team in teams:
+            blocks: list[SingleBlock] = []
+            for char in team:
+                if isinstance(char, ambr.GWSynergyNormalCharacter):
+                    ambr_char = next((c for c in self.characters if c.id == str(char.id)), None)
+                    if ambr_char is None:
+                        continue
+                    blocks.append(
+                        SingleBlock(
+                            icon=ambr_char.icon,
+                            bg_color=BLOCK_COLORS[self.dark_mode][ambr_char.rarity],
+                        )
+                    )
+                elif isinstance(char, ambr.GWSynergyElementCharacter):
+                    icon = get_element_icon(char.element)
+                    blocks.append(SingleBlock(icon=icon, bg_color=BLOCK_COLORS[self.dark_mode][1]))
+                else:
+                    blocks.append(
+                        SingleBlock(
+                            icon="https://img.seria.moe/atJGEHUTsBlxYDBR.png",
+                            bg_color=BLOCK_COLORS[self.dark_mode][1],
+                        )
+                    )
+
+            block_lists.append(blocks)
+
+        return await draw_block_list_card(
+            DrawInput(
+                dark_mode=self.dark_mode,
+                locale=self.locale,
+                session=bot.session,
+                executor=bot.executor,
+                loop=bot.loop,
+                filename="synergy_team.png",
+            ),
+            block_lists,
         )
 
     def get_gw_build_embed(self, build: ambr.GWBuild) -> DefaultEmbed:
@@ -251,21 +320,23 @@ class PageSelector(ui.Select[GIBuildView]):
 
         elif page == "abyss_stats_teammate_use_rate":
             embed = self.view.get_teammate_use_rate_embed()
-            characters = list(aza_data.best_characters.values())[:12]
+            characters = list(aza_data.best_characters.values())
             characters.sort(key=lambda x: x.value, reverse=True)
-            file_ = await self.view.draw_use_rate_image(characters, i.client, type_="character")
+            file_ = await self.view.draw_use_rate_image(
+                characters[:16], i.client, type_="character"
+            )
 
         elif page == "abyss_stats_weapon_use_rate":
             embed = self.view.get_weapon_use_rate_embed()
-            weapons = list(aza_data.best_weapons.values())[:12]
+            weapons = list(aza_data.best_weapons.values())
             weapons.sort(key=lambda x: x.value, reverse=True)
-            file_ = await self.view.draw_use_rate_image(weapons, i.client, type_="weapon")
+            file_ = await self.view.draw_use_rate_image(weapons[:16], i.client, type_="weapon")
 
         else:
             embed = self.view.get_artifact_use_rate_embed()
-            artifact_sets = aza_data.best_artifact_sets[:6]
+            artifact_sets = aza_data.best_artifact_sets
             artifact_sets.sort(key=lambda x: x.value, reverse=True)
-            file_ = await self.view.draw_artifact_set_use_rate_image(artifact_sets, i.client)
+            file_ = await self.view.draw_artifact_set_use_rate_image(artifact_sets[:16], i.client)
 
         self.update_options_defaults()
         with contextlib.suppress(ValueError):
@@ -321,61 +392,6 @@ class ShowPlaystyleButton(ui.Button[GIBuildView]):
         await i.response.edit_message(embed=embed, attachments=[], view=self.view)
 
 
-class SynergyPaginator(ui.PaginatorView):
-    def __init__(
-        self,
-        *,
-        teams: Sequence[SynergyTeam],
-        pages: list[ui.Page],
-        characters: Sequence[ambr.Character],
-        bot: HoyoBuddy,
-        dark_mode: bool,
-        author: User,
-        locale: Locale,
-    ) -> None:
-        super().__init__(pages, author=author, locale=locale)
-        self.teams = teams
-        self.characters = characters
-        self.bot = bot
-        self.dark_mode = dark_mode
-
-    async def draw_synergy_team_image(self, synergy: SynergyTeam) -> discord.File:
-        bot = self.bot
-        items: list[ItemWithTrailing] = []
-
-        for char in synergy:
-            if isinstance(char, ambr.GWSynergyNormalCharacter):
-                ambr_char = next((c for c in self.characters if c.id == str(char.id)), None)
-                if ambr_char is None:
-                    continue
-                item = ItemWithTrailing(icon=ambr_char.icon, title=ambr_char.name, trailing=" ")
-            elif isinstance(char, ambr.GWSynergyElementCharacter):
-                icon = get_element_icon(char.element)
-                item = ItemWithTrailing(
-                    icon=icon, title=EnumStr(AMBR_ELEMENT_TO_ELEMENT[char.element]), trailing=" "
-                )
-            else:
-                item = ItemWithTrailing(title=LocaleStr(key="flexible_char"), trailing=" ")
-
-            items.append(item)
-
-        return await draw_item_list_card(
-            DrawInput(
-                dark_mode=self.dark_mode,
-                locale=self.locale,
-                session=bot.session,
-                executor=bot.executor,
-                loop=bot.loop,
-                filename="synergy_team.png",
-            ),
-            items,
-        )
-
-    async def _create_file(self) -> discord.File | None:
-        team = self.teams[self._current_page]
-        return await self.draw_synergy_team_image(team)
-
-
 class ShowSynergyButton(ui.Button[GIBuildView]):
     def __init__(self, teams: Sequence[SynergyTeam]) -> None:
         super().__init__(
@@ -384,13 +400,7 @@ class ShowSynergyButton(ui.Button[GIBuildView]):
         self.teams = teams
 
     async def callback(self, i: Interaction) -> None:
-        view = SynergyPaginator(
-            teams=self.teams,
-            pages=[ui.Page(embed=self.view.get_synergy_embed()) for _ in self.teams],
-            characters=self.view.characters,
-            bot=i.client,
-            dark_mode=self.view.dark_mode,
-            author=self.view.author,
-            locale=self.view.locale,
-        )
-        await view.start(i, followup=True, ephemeral=True)
+        await self.set_loading_state(i)
+        embed = self.view.get_synergy_embed()
+        file_ = await self.view.draw_synergy_teams_image(self.teams, i.client)
+        await self.unset_loading_state(i, embed=embed, attachments=[file_])

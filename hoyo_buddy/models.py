@@ -403,3 +403,23 @@ class SRGFRecord(BaseModel):
         return value.replace(
             tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
         )
+
+
+@dataclass(kw_only=True)
+class SingleBlock:
+    icon: str
+    bg_color: str
+
+    bottom_text: LocaleStr | str | None = None
+    flair_text: LocaleStr | str | None = None
+
+
+@dataclass(kw_only=True)
+class DoubleBlock:
+    icon1: str
+    icon2: str
+    bg_color: str
+
+    flair_text1: LocaleStr | str | None = None
+    flair_text2: LocaleStr | str | None = None
+    bottom_text: LocaleStr | str | None = None

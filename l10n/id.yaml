@@ -14,15 +14,10 @@ abundance: Abundance
 abyss.battles_won_fought: "Jumlah Pertarungan {val1}/{val2}"
 abyss.deepest_descent: "Pencapaian Tertinggi: {val}"
 abyss.floor: "Lantai {val}"
-abyss.most_defeats: "Mengalahkan Terbanyak: {val}"
-abyss.most_dmg_taken: "Menerima Damage Terbanyak: {val}"
-abyss.most_skills: "Menggunakan Skill Terbanyak: {val}"
-abyss.most_ults: "Menggunakan Burst Terbanyak: {val}"
 abyss.overview: Ringkasan Spiral Abyss
 abyss.damage: ""
 abyss.stats: ""
 abyss.phase_select.placeholder: Pilih fase
-abyss.strongest_strike: "Serangan Tunggal Terkuat: {val}"
 abyss.total_stars: "Total Bintang: {val}"
 abyss_chamber.challenge_target.embed.field.name: Target Tantangan
 abyss_chamber.embed.title: "Lantai {floor_index} - Ruang {chamber_index}"
@@ -63,7 +58,6 @@ auto_redeem_footer: Matikan penukaran kode otomatis dengan /redeem
 auto_redeem_toggle.label: Penukaran kode otomatis
 books: Buku
 captcha.embed.description: "Klik tombol di bawah untuk menyelesaikan CAPTCHA.\n"
-challenge_command_description: "Lihat statistik konten end-game, seperti spiral abyss, memory of chaos, dll."
 challenge_type_select.placeholder: Pilih mode game
 challenge_view.buff_used_in: Digunakan dalam
 challenge_view.team: "tim {team}"
@@ -112,7 +106,10 @@ characters.sorter.level: Level
 characters.sorter.path: Path
 characters.sorter.placeholder: Pilih penyortir...
 characters.sorter.rarity: Rarity
-characters_command_description: Lihat semua karakter milikmu
+characters_cmd_genshin_desc: ""
+characters_cmd_hsr_desc: ""
+characters_cmd_zzz_desc: ""
+characters_cmd_honkai_desc: ""
 checkin_button_label: Absen
 checkin_command_description: Absen harian game
 complete_captcha_button_label: Lengkapi CAPTCHA
@@ -157,15 +154,9 @@ exceptions.card_not_ready_error.title: "Data kartu untuk {character_name} belum 
 exped.embed.description: ""
 exped_button.label: Pengingat ekspedisi
 exped_modal.title: Pengaturan Pengingat Ekspedisi
-exploration.anemoculi: "Anemoculus: {anemoculi}"
 exploration.chests: Chest Terbuka
 exploration.common_chests: Common
-exploration.dendroculi: "Dendroculus: {dendroculi}"
-exploration.electroculi: "Electroculus: {electroculi}"
 exploration.exquisite_chests: Exquisite
-exploration.geoculi: "Geoculus: {geoculi}"
-exploration.hydroculi: "Hydroculus: {hydroculi}"
-exploration.pyroculi: ""
 exploration.luxurious_chests: Luxurious
 exploration.placeholder: Belum rilis
 exploration.placeholder_quote: '"Setiap perjalanan pasti ada akhirnya, tidak perlu terburu-buru."
@@ -174,7 +165,6 @@ exploration.placeholder_quote: '"Setiap perjalanan pasti ada akhirnya, tidak per
 exploration.precious_chests: Precious
 exploration.progress: "Progres Eksplorasi: {progress}%"
 exploration.remarkable_chests: Remarkable
-exploration.reputation: "Reputasi: Lv.{reputation}"
 exploration.title: Eksplorasi Dunia
 exploration.waypoints: Waypoint Terbuka
 exploration_command_description: Lihat statistik eksplorasimu di Genshin Impact
@@ -235,7 +225,6 @@ hydro: Hydro
 ice: Ice
 imaginary: Imaginary
 inazuma: Inazuma
-incomplete_param_error_title: Parameter-parameter perintah yang diberikan tidak lengkap
 instructions_title: Petunjuk
 interaction_failed_description: "Tampilan ini tidak dimulai olehmu, oleh karena itu kamu tidak dapat menggunakannya."
 interaction_failed_title: Interaksi gagal
@@ -283,6 +272,7 @@ no_account_found_for_games_error_message: ""
 no_account_found_for_games_platform_error_message: ""
 no_account_found_for_games_error_title: Tidak ditemukan akun
 no_accounts_autocomplete_choice: Kamu belum memiliki akun apapun. Tambahkan satu dengan /accounts
+profile_character_param_name: ""
 no_challenge_data_err_message: "Tidak dapat menemukan data {challenge} untuk fase ini. Kamu belum memulai {challenge} atau datanya belum ada. Silakan coba lagi nanti"
 no_challenge_data_err_title: "Tidak ada Data {challenge}"
 no_characters_found_error_message: Silakan coba lagi dengan filter yang berbeda
@@ -372,7 +362,9 @@ profile.primary_color_modal.color.label: Warna (hex code)
 profile.primary_color_modal.title: Ganti Warna Kartu
 profile.remove_from_cache.button.label: Hapus dari cache
 profile.remove_image.button.label: Hapus gambar kustom
-profile_command_description: Lihat profil dalam game kamu dan buat kartu pembentukan karakter
+profile_command_gi_description: ""
+profile_command_hsr_description: ""
+profile_command_zzz_description: ""
 profile_command_game_value_description: UID dari Game
 profile_command_uid_param_description: "UID pemain, ini akan menggantikan parameter akun jika disediakan"
 pt_button.label: Pengingat parametric transformer
@@ -490,14 +482,9 @@ invalid_uid_format_title: ""
 invalid_uid_format_description: ""
 zenless_zone_zero: ""
 img_theater_large_block_title: ""
-img_theater_stats_line_one: ""
-img_theater_stats_line_two: ""
-img_theater_stats_line_three: ""
-img_theater_stats_line_four: ""
 img_theater_stats_line_five: ""
 img_theater_legend_block_support_chara: ""
 img_theater_legend_block_trial_chara: ""
-img_theater_act_block_title: ""
 img_theater_max_damage: ""
 img_theater_fastest_team: ""
 challenge_view.view_buffs: ""
@@ -537,18 +524,12 @@ zzz.assist: ""
 zzz.special: ""
 zzz.chain: ""
 zzz.core: ""
-attack: ""
-stun: ""
-anomaly: ""
-support: ""
-defense: ""
 characters.filter.faction.placeholder: ""
 characters.sorter.speciality: ""
 characters.sorter.faction: ""
 characters.sorter.mindscape_cinema: ""
 characters.embed.filter_text: ""
 stats_command_description: ""
-stats.select_card: ""
 tears_of_themis: ""
 honkai_suit_rarity: ""
 about_command.designers: ""
@@ -561,6 +542,7 @@ card_settings.build_card_image: ""
 card_settings.team_card_image: ""
 profile.redraw_card_button_label: ""
 card_settings.footer: ""
+card_settings.description: ""
 profile.team_dark_mode.button.label: ""
 profile.character_select.multi.placeholder: ""
 zzz_search.agent_info: ""
@@ -697,6 +679,10 @@ show_uid: ""
 no_leaderboard_found: ""
 akasha_character_param: ""
 akasha_calculation_param: ""
+akasha_weapon_param: ""
+akasha_weapon_param_desc: ""
+akasha_variant_param: ""
+akasha_variant_param_desc: ""
 akasha_character_param_desc: ""
 akasha_calculation_param_desc: ""
 akasha_total_entries: ""
@@ -714,25 +700,66 @@ theater_dmg_lb_title: ""
 max_friendship_lb_title: ""
 lb_view_command_description: ""
 leaderboard_not_found: ""
-not_supported_by_enka_error_title: ""
-not_supported_by_enka_error_message: ""
 currently_logged_in_as: ""
 not_you_label: ""
 profile_show_substat_rolls: ""
-profile_team_show_substat_rolls: ""
 team_card_settings_button_label: ""
 team_card_settings_embed_title: ""
 team_card_settings_embed_description: ""
-zzz_agent_stats_hp: ""
-zzz_agent_stats_atk: ""
-zzz_agent_stats_def: ""
-zzz_agent_stats_pen: ""
-zzz_agent_stats_pen_ratio: ""
-zzz_agent_stats_crit_rate: ""
-zzz_agent_stats_crit_dmg: ""
-zzz_agent_stats_energy_gen: ""
-zzz_agent_stats_anomaly_pro: ""
-zzz_agent_stats_anomaly_master: ""
-zzz_agent_stats_impact: ""
-zzz_agent_stats_dmg_bonus: ""
 characters.filter.rarity.placeholder: ""
+profile_command_character_param_desc: ""
+weapon_type_filter_placeholder: ""
+redeem_cmd_available_codes: ""
+redeem_all_available_codes_button_label: ""
+akasha_show_details: ""
+card_settings_hl_special_stats_button_label: ""
+challenge_command_abyss_desc: ""
+challenge_command_theater_desc: ""
+challenge_command_moc_desc: ""
+challenge_command_pf_desc: ""
+challenge_command_apc_shadow_desc: ""
+challenge_command_shiyu_desc: ""
+account_select_placeholder: ""
+guild_only_command_param_name: ""
+guild_only_command_param_desc: ""
+yes_choice: ""
+no_choice: ""
+akasha_guild_mode_not_supported: ""
+akasha_guild_mode_not_supported_desc: ""
+time_remaining_str: ""
+banner_selector_placeholder: ""
+rarity_str: ""
+finished_status_field_name: ""
+unlocks_in_str: ""
+challenge_selector_placeholder: ""
+upload_cmd_desc: ""
+not_an_image_error_title: ""
+not_an_image_error_message: ""
+upload_cmd_image_param_name: ""
+upload_cmd_image_param_desc: ""
+exploration_select_placeholder: ""
+exploration_show_card_button_label: ""
+abyss_stats_const_use_rate: ""
+abyss_stats_teammate_use_rate: ""
+abyss_stats_weapon_use_rate: ""
+abyss_stats_artifact_use_rate: ""
+build_cmd_genshin_desc: ""
+build_cmd_hsr_desc: ""
+build_cmd_zzz_desc: ""
+build_cmd_character_param_desc: ""
+guide_title: ""
+no_guide_available: ""
+show_playstyle_button_label: ""
+flexible_char: ""
+show_synergy_button_label: ""
+characters_per_page_modal_title: ""
+characters_per_page_num_label: ""
+card_settings_hl_substat_select_placeholder: ""
+too_many_requests_error_banner_msg: ""
+add_field_modal_title_label: ""
+add_field_modal_desc_label: ""
+add_weapon_modal_name_label: ""
+add_team_modal_name_label: ""
+add_field_modal_title: ""
+add_weapon_modal_title: ""
+add_team_modal_title: ""

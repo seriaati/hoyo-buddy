@@ -6,7 +6,7 @@ import pathlib
 import random
 import re
 from asyncio import TaskGroup
-from typing import TYPE_CHECKING, Any, Self
+from typing import TYPE_CHECKING, Any, Literal, Self, TypeAlias
 
 import aiofiles
 import ambr
@@ -22,11 +22,9 @@ from hoyo_buddy.enums import Game
 
 from .constants import (
     AMBR_ELEMENT_TO_ELEMENT,
-    GPY_GAME_TO_HB_GAME,
     GPY_LANG_TO_LOCALE,
     HAKUSHIN_GI_ELEMENT_TO_ELEMENT,
     HAKUSHIN_HSR_ELEMENT_TO_ELEMENT,
-    HB_GAME_TO_GPY_GAME,
     WEEKDAYS,
     YATTA_COMBAT_TYPE_TO_ELEMENT,
     ZENLESS_DATA_LANG_TO_LOCALE,
@@ -46,16 +44,23 @@ if TYPE_CHECKING:
 
 __all__ = ("AppCommandTranslator", "LocaleStr", "Translator")
 
+Mi18nGame: TypeAlias = Literal["mimo"] | Game
+
 COMMAND_REGEX = r"</[^>]+>"
 SOURCE_LANG = "en_US"
 L10N_PATH = pathlib.Path("./l10n")
 BOT_DATA_PATH = pathlib.Path("./hoyo_buddy/bot/data")
-MI18N_FILES = {
-    Game.GENSHIN: "m11241040191111",
-    Game.STARRAIL: "m20230509hy150knmyo",
-    Game.ZZZ: "m20240410hy38foxb7k",
-    Game.HONKAI: "m20240627hy298aaccg",
+GAME_MI18N_FILES: dict[Mi18nGame, tuple[str, str]] = {
+    Game.GENSHIN: ("https://fastcdn.hoyoverse.com/mi18n/bbs_oversea", "m11241040191111"),
+    Game.STARRAIL: (
+        "https://webstatic.hoyoverse.com/admin/mi18n/bbs_oversea",
+        "m20230509hy150knmyo",
+    ),
+    Game.ZZZ: ("https://fastcdn.hoyoverse.com/mi18n/nap_global", "m20240410hy38foxb7k"),
+    Game.HONKAI: ("https://fastcdn.hoyoverse.com/mi18n/bbs_oversea", "m20240627hy298aaccg"),
+    "mimo": ("https://webstatic.hoyoverse.com/admin/mi18n/bbs_oversea", "m20230908hy169078qo"),
 }
+FILENAME_TO_GAME: dict[str, Mi18nGame] = {v[1]: k for k, v in GAME_MI18N_FILES.items()}
 
 
 def gen_string_key(string: str) -> str:
@@ -69,7 +74,7 @@ class LocaleStr:
         custom_str: str | None = None,
         key: str | None = None,
         translate: bool = True,
-        mi18n_game: Game | None = None,
+        mi18n_game: Mi18nGame | None = None,
         data_game: Game | None = None,
         append: str | None = None,
         **kwargs: Any,
@@ -128,7 +133,7 @@ class Translator:
 
         self._synced_commands: dict[str, int] = {}
         self._l10n: dict[str, dict[str, str]] = {}
-        self._mi18n: dict[tuple[str, Game], dict[str, str]] = {}
+        self._mi18n: dict[tuple[str, Mi18nGame], dict[str, str]] = {}
         self._game_textmaps: dict[tuple[str, Game], dict[str, str]] = {}
 
     async def __aenter__(self) -> Self:
@@ -161,16 +166,16 @@ class Translator:
             logger.info(f"Loaded {lang} lang file")
 
     async def _fetch_mi18n_task(
-        self, client: genshin.Client, *, lang: str, filename: str, game: genshin.Game
+        self, client: genshin.Client, *, lang: str, filename: str, url: str
     ) -> None:
         locale = GPY_LANG_TO_LOCALE.get(lang)
         if locale is None:
             logger.warning(f"Failed to convert gpy lang {lang!r} to locale")
             return
 
-        mi18n = await client.fetch_mi18n(filename, game, lang=lang)
+        mi18n = await client.fetch_mi18n(url, filename, lang=lang)
         async with aiofiles.open(
-            f"{BOT_DATA_PATH}/mi18n_{game.value}_{lang}.json", "w", encoding="utf-8"
+            f"{BOT_DATA_PATH}/mi18n_{filename}_{lang}.json", "w", encoding="utf-8"
         ) as f:
             await f.write(orjson.dumps(mi18n).decode())
 
@@ -178,12 +183,11 @@ class Translator:
         client = genshin.Client()
 
         async with TaskGroup() as tg:
-            for game, filename in MI18N_FILES.items():
+            for file_ in GAME_MI18N_FILES.values():
+                url, filename = file_
                 for lang in genshin.constants.LANGS:
                     tg.create_task(
-                        self._fetch_mi18n_task(
-                            client, lang=lang, filename=filename, game=HB_GAME_TO_GPY_GAME[game]
-                        )
+                        self._fetch_mi18n_task(client, lang=lang, url=url, filename=filename)
                     )
 
         logger.info("Fetched mi18n files")
@@ -193,11 +197,11 @@ class Translator:
             if not file_path.exists():
                 continue
 
-            game, lang = file_path.stem.split("_")[1:]
-            self._mi18n[
-                GPY_LANG_TO_LOCALE[lang].value.replace("-", "_"),
-                GPY_GAME_TO_HB_GAME[genshin.Game(game)],
-            ] = await read_json(file_path.as_posix())
+            filename, lang = file_path.stem.split("_")[1:]
+            game = FILENAME_TO_GAME[filename]
+            self._mi18n[GPY_LANG_TO_LOCALE[lang].value.replace("-", "_"), game] = await read_json(
+                file_path.as_posix()
+            )
             logger.info(f"Loaded {lang} mi18n file for {game}")
 
     async def load_game_textmaps(self) -> None:
@@ -260,7 +264,7 @@ class Translator:
         string_key = self._get_string_key(string)
 
         if string.mi18n_game is not None:
-            source_string = self._mi18n[SOURCE_LANG, string.mi18n_game][string_key]
+            source_string = self._mi18n[SOURCE_LANG, string.mi18n_game][string_key]  # pyright: ignore[reportArgumentType]
         elif string.game is not None:
             source_string = self._game_textmaps[SOURCE_LANG, string.game][string_key]
         else:
@@ -271,7 +275,7 @@ class Translator:
 
         lang = locale.value.replace("-", "_")
         if string.mi18n_game is not None:
-            translation = self._mi18n.get((lang, string.mi18n_game), {}).get(string_key)
+            translation = self._mi18n.get((lang, string.mi18n_game), {}).get(string_key)  # pyright: ignore[reportArgumentType, reportCallIssue]
         elif string.game is not None:
             translation = self._game_textmaps.get((lang, string.game), {}).get(string_key)
         else:

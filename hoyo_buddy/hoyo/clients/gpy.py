@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import itertools
 import os
-from typing import TYPE_CHECKING, Any, overload
+from typing import TYPE_CHECKING, Any, Literal, overload
 
 import aiohttp
 import enka
@@ -633,8 +633,46 @@ class GenshinClient(ProxyGenshinClient):
             **kwargs,
         )
 
+    @overload
     async def get_notes_(
-        self, game: genshin.Game, *, session: aiohttp.ClientSession, retry: int = 0
+        self,
+        game: Literal[genshin.Game.GENSHIN],
+        *,
+        session: aiohttp.ClientSession,
+        retry: int = ...,
+    ) -> genshin.models.Notes: ...
+
+    @overload
+    async def get_notes_(
+        self,
+        game: Literal[genshin.Game.STARRAIL],
+        *,
+        session: aiohttp.ClientSession,
+        retry: int = ...,
+    ) -> genshin.models.StarRailNote: ...
+
+    @overload
+    async def get_notes_(
+        self, game: Literal[genshin.Game.ZZZ], *, session: aiohttp.ClientSession, retry: int = ...
+    ) -> genshin.models.ZZZNotes: ...
+
+    @overload
+    async def get_notes_(
+        self,
+        game: Literal[genshin.Game.HONKAI],
+        *,
+        session: aiohttp.ClientSession,
+        retry: int = ...,
+    ) -> genshin.models.HonkaiNotes: ...
+
+    async def get_notes_(
+        self,
+        game: Literal[
+            genshin.Game.GENSHIN, genshin.Game.STARRAIL, genshin.Game.ZZZ, genshin.Game.HONKAI
+        ],
+        *,
+        session: aiohttp.ClientSession,
+        retry: int = 0,
     ) -> (
         genshin.models.Notes
         | genshin.models.StarRailNote
@@ -693,15 +731,15 @@ class GenshinClient(ProxyGenshinClient):
             return await self.get_notes_(game, session=session, retry=retry + 1)
 
     async def get_genshin_notes(self, session: aiohttp.ClientSession) -> genshin.models.Notes:
-        return await self.get_notes_(genshin.Game.GENSHIN, session=session)  # pyright: ignore[reportReturnType]
+        return await self.get_notes_(genshin.Game.GENSHIN, session=session)
 
     async def get_starrail_notes(
         self, session: aiohttp.ClientSession
     ) -> genshin.models.StarRailNote:
-        return await self.get_notes_(genshin.Game.STARRAIL, session=session)  # pyright: ignore[reportReturnType]
+        return await self.get_notes_(genshin.Game.STARRAIL, session=session)
 
     async def get_zzz_notes(self, session: aiohttp.ClientSession) -> genshin.models.ZZZNotes:
-        return await self.get_notes_(genshin.Game.ZZZ, session=session)  # pyright: ignore[reportReturnType]
+        return await self.get_notes_(genshin.Game.ZZZ, session=session)
 
     async def get_honkai_notes(self, session: aiohttp.ClientSession) -> genshin.models.HonkaiNotes:
-        return await self.get_notes_(genshin.Game.HONKAI, session=session)  # pyright: ignore[reportReturnType]
+        return await self.get_notes_(genshin.Game.HONKAI, session=session)

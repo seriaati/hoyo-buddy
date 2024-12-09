@@ -538,7 +538,7 @@ class HighlightSubstatSelector(Select[CardSettingsView]):
             added.add(substat_id)
             options.append(
                 SelectOption(
-                    label=LocaleStr(key=key, append=append),
+                    label=LocaleStr(key=key, append=append, data_game=Game.ZZZ),
                     value=str(substat_id),
                     default=substat_id in current,
                 )

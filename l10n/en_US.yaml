@@ -524,11 +524,6 @@ zzz.assist: Assist
 zzz.special: Special Attack
 zzz.chain: Chain Attack
 zzz.core: Core Skill
-attack: Attack
-stun: Stun
-anomaly: Anomaly
-support: Support
-defense: Defense
 characters.filter.faction.placeholder: Select faction filters...
 characters.sorter.speciality: Speciality
 characters.sorter.faction: Faction
@@ -760,13 +755,6 @@ show_synergy_button_label: Synergies
 characters_per_page_modal_title: Characters per page
 characters_per_page_num_label: Number
 card_settings_hl_substat_select_placeholder: Select substats to highlight...
-zzz_substat_crit_rate: Crit Rate
-zzz_substat_crit_dmg: Crit Damage
-zzz_substat_ap: Anomaly Proficiency
-zzz_substat_hp: HP
-zzz_substat_atk: ATK
-zzz_substat_def: DEF
-zzz_substat_pen: PEN
 too_many_requests_error_banner_msg: "Too many requests, try again later. Click the button on the right for more details."
 add_field_modal_title_label: Title
 add_field_modal_desc_label: Description

@@ -153,8 +153,8 @@ cython_debug/
 playground.*.py
 db.sqlite3-shm
 db.sqlite3-wal
-hoyo_buddy/bot/data/synced_commands.json
-hoyo_buddy/bot/data/mi18n_*.json
+hoyo_buddy/bot/data/*.json
+!hoyo_buddy/bot/data/nsfw_tags.json
 .static/*
 .enka_py/
 !.gitkeep

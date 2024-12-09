@@ -512,6 +512,7 @@ LOCALE_TO_ZENLESS_DATA_LANG: dict[discord.Locale, str] = {
     discord.Locale.thai: "TH",
     discord.Locale.vietnamese: "VI",
 }
+ZENLESS_DATA_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_ZENLESS_DATA_LANG.items()}
 
 
 def locale_to_zenless_data_lang(locale: discord.Locale) -> str:
@@ -773,16 +774,16 @@ USER_ACCOUNT_DESCRIBE_KWARGS: dict[str, app_commands.locale_str] = {
 }
 
 ZZZ_DISC_SUBSTATS = (
-    ("zzz_substat_crit_rate", 20103, ""),
-    ("zzz_substat_crit_dmg", 21103, ""),
-    ("zzz_substat_ap", 31203, ""),
-    ("zzz_substat_pen", 23203, ""),
-    ("zzz_substat_hp", 11103, ""),
-    ("zzz_substat_hp", 11102, "%"),
-    ("zzz_substat_atk", 12103, ""),
-    ("zzz_substat_atk", 12102, "%"),
-    ("zzz_substat_def", 13103, ""),
-    ("zzz_substat_def", 13102, "%"),
+    ("Crit", 20103, ""),
+    ("CritDmg", 21103, ""),
+    ("ElementMystery", 31203, ""),
+    ("PenDelta", 23203, ""),
+    ("HpMax", 11103, ""),
+    ("HpMax", 11102, "%"),
+    ("Atk", 12103, ""),
+    ("Atk", 12102, "%"),
+    ("Def", 13103, ""),
+    ("Def", 13102, "%"),
 )
 # LocaleStr key, substat id, LocaleStr append
 

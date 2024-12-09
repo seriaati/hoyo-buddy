@@ -757,9 +757,16 @@ class PathFilterSelector(Select[CharactersView]):
 
 class SpecialtyFilterSelector(Select[CharactersView]):
     def __init__(self, characters: Sequence[ZZZCharacter | UnownedZZZCharacter]) -> None:
+        specialty_names = {
+            ZZZSpecialty.ANOMALY: "ProfessionName_ElementAbnormal",
+            ZZZSpecialty.ATTACK: "ProfessionName_PowerfulAttack",
+            ZZZSpecialty.DEFENSE: "ProfessionName_Defence",
+            ZZZSpecialty.STUN: "ProfessionName_BreakStun",
+            ZZZSpecialty.SUPPORT: "ProfessionName_Support",
+        }
         options = [
             SelectOption(
-                label=LocaleStr(key=speciality.name.lower()),
+                label=LocaleStr(key=specialty_names[speciality], data_game=Game.ZZZ),
                 value=str(speciality),
                 emoji=ZZZ_SPECIALTY_EMOJIS[speciality],
             )

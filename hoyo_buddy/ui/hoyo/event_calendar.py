@@ -361,9 +361,7 @@ class ChallengeSelector(ItemSelector):
             placeholder=LocaleStr(key="challenge_selector_placeholder"),
             options=[
                 ui.SelectOption(
-                    label=self.get_option_name(c),
-                    description=get_option_desc(c),
-                    value=self.get_challenge_type(c),
+                    label=self.get_option_name(c), description=get_option_desc(c), value=str(c.id)
                 )
                 for c in challenges
             ],
@@ -394,12 +392,6 @@ class ChallengeSelector(ItemSelector):
             star=challenge.current_progress,
             max_star=challenge.total_progress,
         )
-
-    @staticmethod
-    def get_challenge_type(challenge: ChallengeItem) -> str:
-        if isinstance(challenge.type, str):
-            return challenge.type
-        return challenge.type.value
 
     def get_embed(self, challenge: ChallengeItem) -> DefaultEmbed:
         star = None
@@ -452,12 +444,10 @@ class ChallengeSelector(ItemSelector):
         await super().callback(i)
         await self.set_loading_state(i)
 
-        challenge_type = self.values[0]
-        challenge = next(
-            (c for c in self.challenges if self.get_challenge_type(c) == challenge_type), None
-        )
+        id_ = self.values[0]
+        challenge = next((c for c in self.challenges if str(c.id) == id_), None)
         if challenge is None:
-            msg = f"Challenge with type {challenge_type} not found."
+            msg = f"Challenge with id {id_} not found."
             raise ValueError(msg)
 
         embed = self.get_embed(challenge)

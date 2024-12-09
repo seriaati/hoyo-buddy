@@ -333,22 +333,24 @@ class HoyoBuddy(commands.AutoShardedBot):
             await models.HoyoAccount.filter(id=current_accounts[0].id).update(current=True)
 
     async def update_assets(self) -> None:
-        # Update enka.py assets
-        async with enka.GenshinClient() as api:
-            await api.update_assets()
+        async with (
+            enka.GenshinClient() as enka_gi,
+            enka.HSRClient() as enka_hsr,
+            asyncio.TaskGroup() as tg,
+        ):
+            # Fetch mi18n files
+            tg.create_task(translator.fetch_mi18n_files())
 
-        async with enka.HSRClient() as api:
-            await api.update_assets()
+            # Update enka.py assets
+            tg.create_task(enka_gi.update_assets())
+            tg.create_task(enka_hsr.update_assets())
 
-        # Update genshin.py assets
-        logger.info("Updating genshin.py assets...")
-        await genshin.utility.update_characters_ambr()
+            # Update genshin.py assets
+            tg.create_task(genshin.utility.update_characters_ambr())
 
-        # Update item ID -> name mappings and some other stuff
-        logger.info("Updating ZZZ assets...")
-        await self.update_zzz_assets()
-        logger.info("Updating HSR assets...")
-        await self.update_hsr_assets()
+            # Update item ID -> name mappings and some other stuff
+            tg.create_task(self.update_zzz_assets())
+            tg.create_task(self.update_hsr_assets())
 
     async def update_zzz_assets(self) -> None:
         result: dict[str, dict[str, str]] = {}

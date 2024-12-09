@@ -8,8 +8,10 @@ import re
 from asyncio import TaskGroup
 from typing import TYPE_CHECKING, Any, Self
 
+import aiofiles
 import ambr
 import genshin
+import orjson
 import yatta
 from discord import app_commands
 from loguru import logger
@@ -20,6 +22,7 @@ from hoyo_buddy.enums import Game
 
 from .constants import (
     AMBR_ELEMENT_TO_ELEMENT,
+    GPY_GAME_TO_HB_GAME,
     GPY_LANG_TO_LOCALE,
     HAKUSHIN_GI_ELEMENT_TO_ELEMENT,
     HAKUSHIN_HSR_ELEMENT_TO_ELEMENT,
@@ -44,6 +47,7 @@ __all__ = ("AppCommandTranslator", "LocaleStr", "Translator")
 COMMAND_REGEX = r"</[^>]+>"
 SOURCE_LANG = "en_US"
 L10N_PATH = pathlib.Path("./l10n")
+BOT_DATA_PATH = pathlib.Path("./hoyo_buddy/bot/data")
 MI18N_FILES = {
     Game.GENSHIN: "m11241040191111",
     Game.STARRAIL: "m20230509hy150knmyo",
@@ -137,7 +141,7 @@ class Translator:
     async def load(self) -> None:
         await self.load_l10n_files()
         await self.load_synced_commands_json()
-        await self.fetch_mi18n_files()
+        await self.load_mi18n_files()
 
         logger.info("Translator loaded")
 
@@ -157,9 +161,12 @@ class Translator:
         if locale is None:
             logger.warning(f"Failed to convert gpy lang {lang!r} to locale")
             return
-        self._mi18n[locale.value.replace("-", "_"), filename] = dict(
-            await client.fetch_mi18n(filename, game, lang=lang)
-        )
+
+        mi18n = await client.fetch_mi18n(filename, game, lang=lang)
+        async with aiofiles.open(
+            f"{BOT_DATA_PATH}/mi18n_{game.value}_{lang}.json", "w", encoding="utf-8"
+        ) as f:
+            await f.write(orjson.dumps(mi18n).decode())
 
     async def fetch_mi18n_files(self) -> None:
         client = genshin.Client()
@@ -175,8 +182,20 @@ class Translator:
 
         logger.info("Fetched mi18n files")
 
+    async def load_mi18n_files(self) -> None:
+        for file_path in BOT_DATA_PATH.glob("mi18n_*.json"):
+            if not file_path.exists():
+                continue
+
+            game, lang = file_path.stem.split("_")[1:]
+            self._mi18n[
+                GPY_LANG_TO_LOCALE[lang].value.replace("-", "_"),
+                MI18N_FILES[GPY_GAME_TO_HB_GAME[genshin.Game(game)]],
+            ] = await read_json(file_path.as_posix())
+            logger.info(f"Loaded {lang} mi18n file for {game}")
+
     async def load_synced_commands_json(self) -> None:
-        self._synced_commands = await read_json("hoyo_buddy/bot/data/synced_commands.json")
+        self._synced_commands = await read_json(f"{BOT_DATA_PATH}/synced_commands.json")
 
     def get_dyks(self, locale: Locale) -> list[tuple[str, bool]]:
         keys: set[str] = set()

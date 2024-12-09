@@ -112,10 +112,10 @@ class Admin(commands.Cog):
         await translator.load_synced_commands_json()
         await message.edit(content=f"Synced {len(synced_commands)} commands.")
 
-    @commands.command(name="fetch-source-strings", aliases=["fss"])
+    @commands.command(name="reload-translator", aliases=["rtrans"])
     async def fetch_source_strings_command(self, ctx: commands.Context) -> Any:
-        await translator.load_l10n_files()
-        await ctx.send(content="Fetched source strings.")
+        await translator.load()
+        await ctx.send(content="Reloaded translator.")
 
     @commands.command(name="run-tasks", aliases=["rt"])
     async def run_tasks_command(self, ctx: commands.Context) -> Any:

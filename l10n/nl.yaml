@@ -14,15 +14,10 @@ abundance: Abundance
 abyss.battles_won_fought: "Gewonnen/gevochten gevechten: {val1}/{val2}"
 abyss.deepest_descent: "Diepste Afdaling: {val}"
 abyss.floor: "Vloer {val}"
-abyss.most_defeats: "Meeste Nederlagen: {val}"
-abyss.most_dmg_taken: "Meeste Schade Geleden: {val}"
-abyss.most_skills: "Meeste Vaardigheden: {val}"
-abyss.most_ults: "Meeste Uitbarstingen: {val}"
 abyss.overview: Spiral Abyss Overzicht
 abyss.damage: ""
 abyss.stats: ""
 abyss.phase_select.placeholder: ""
-abyss.strongest_strike: "Sterkste Enkele Slag: {val}"
 abyss.total_stars: "Aantal Sterren: {val}"
 abyss_chamber.challenge_target.embed.field.name: Uitdaging Doel
 abyss_chamber.embed.title: "Vloer {floor_index} - Kamer {chamber_index}"
@@ -63,7 +58,6 @@ auto_redeem_footer: Schakel automatisch code inwisselen uit met /redeem
 auto_redeem_toggle.label: Automatisch code inwisselen
 books: Boeken
 captcha.embed.description: "Klik op de onderstaande knop om de CAPTCHA in te vullen.\n"
-challenge_command_description: ""
 challenge_type_select.placeholder: ""
 challenge_view.buff_used_in: ""
 challenge_view.team: ""
@@ -112,7 +106,10 @@ characters.sorter.level: Niveau
 characters.sorter.path: Path
 characters.sorter.placeholder: Selecteer een sorter...
 characters.sorter.rarity: Zeldzaamheid
-characters_command_description: Al je karakters bekijken
+characters_cmd_genshin_desc: ""
+characters_cmd_hsr_desc: ""
+characters_cmd_zzz_desc: ""
+characters_cmd_honkai_desc: ""
 checkin_button_label: Inchecken
 checkin_command_description: Spel dagelijks inchecken
 complete_captcha_button_label: CAPTCHA invoeren
@@ -157,15 +154,9 @@ exceptions.card_not_ready_error.title: "Kaart gegevens voor {character_name} zij
 exped.embed.description: ""
 exped_button.label: Expeditie herinnering
 exped_modal.title: Instellingen Herinnering Expeditie
-exploration.anemoculi: "Anemoculi: {anemoculi}"
 exploration.chests: Kisten Ontgrendeld
 exploration.common_chests: Algemeen
-exploration.dendroculi: "Dendroculi: {dendroculi}"
-exploration.electroculi: "Electroculi: {electroculi}"
 exploration.exquisite_chests: Uitstekend
-exploration.geoculi: "Geoculi: {geoculi}"
-exploration.hydroculi: "Hydroculi: {hydroculi}"
-exploration.pyroculi: ""
 exploration.luxurious_chests: Luxe
 exploration.placeholder: Wordt nog vrijgegeven
 exploration.placeholder_quote: '"Elke reis heeft zijn laatste dag. Haast je niet."
@@ -174,7 +165,6 @@ exploration.placeholder_quote: '"Elke reis heeft zijn laatste dag. Haast je niet
 exploration.precious_chests: Waardevol
 exploration.progress: "Verkenning Vooruitgang: {progress}%"
 exploration.remarkable_chests: Opmerkelijk
-exploration.reputation: "Reputatie: Nv.{reputation}"
 exploration.title: Wereld Verkenning
 exploration.waypoints: Waypoints Intgrendeld
 exploration_command_description: Bekijk je verkennings statistieken in Genshin Impact
@@ -235,7 +225,6 @@ hydro: Hydro
 ice: Ice
 imaginary: Imaginary
 inazuma: Inazuma
-incomplete_param_error_title: De Opgegeven Commando Parameters Zijn Onvolledig
 instructions_title: Instructies
 interaction_failed_description: "Deze weergave is niet door jou geïnitieerd, daarom kun je hem niet gebruiken."
 interaction_failed_title: Interactie Mislukt
@@ -283,6 +272,7 @@ no_account_found_for_games_error_message: ""
 no_account_found_for_games_platform_error_message: ""
 no_account_found_for_games_error_title: Geen Account Gevonden
 no_accounts_autocomplete_choice: Je hebt nog geen accounts. Voeg er een toe met /accounts
+profile_character_param_name: ""
 no_challenge_data_err_message: ""
 no_challenge_data_err_title: ""
 no_characters_found_error_message: Probeer het opnieuw met een ander filter
@@ -372,7 +362,9 @@ profile.primary_color_modal.color.label: Kleur (hex code)
 profile.primary_color_modal.title: Kleur Kaart Wijzigen
 profile.remove_from_cache.button.label: Verwijderen uit cache
 profile.remove_image.button.label: Afbeelding verwijderen
-profile_command_description: Bekijk je in-game profiel en genereer personage build kaarten
+profile_command_gi_description: ""
+profile_command_hsr_description: ""
+profile_command_zzz_description: ""
 profile_command_game_value_description: Spel van de UID
 profile_command_uid_param_description: "UID van de speler, dit overschrijft de account parameter indien opgegeven"
 pt_button.label: Parametric transformer herinnering
@@ -490,14 +482,9 @@ invalid_uid_format_title: ""
 invalid_uid_format_description: ""
 zenless_zone_zero: ""
 img_theater_large_block_title: ""
-img_theater_stats_line_one: ""
-img_theater_stats_line_two: ""
-img_theater_stats_line_three: ""
-img_theater_stats_line_four: ""
 img_theater_stats_line_five: ""
 img_theater_legend_block_support_chara: ""
 img_theater_legend_block_trial_chara: ""
-img_theater_act_block_title: ""
 img_theater_max_damage: ""
 img_theater_fastest_team: ""
 challenge_view.view_buffs: ""
@@ -537,18 +524,12 @@ zzz.assist: ""
 zzz.special: ""
 zzz.chain: ""
 zzz.core: ""
-attack: ""
-stun: ""
-anomaly: ""
-support: ""
-defense: ""
 characters.filter.faction.placeholder: ""
 characters.sorter.speciality: ""
 characters.sorter.faction: ""
 characters.sorter.mindscape_cinema: ""
 characters.embed.filter_text: ""
 stats_command_description: ""
-stats.select_card: ""
 tears_of_themis: ""
 honkai_suit_rarity: ""
 about_command.designers: ""
@@ -561,6 +542,7 @@ card_settings.build_card_image: ""
 card_settings.team_card_image: ""
 profile.redraw_card_button_label: ""
 card_settings.footer: ""
+card_settings.description: ""
 profile.team_dark_mode.button.label: ""
 profile.character_select.multi.placeholder: ""
 zzz_search.agent_info: ""
@@ -697,6 +679,10 @@ show_uid: ""
 no_leaderboard_found: ""
 akasha_character_param: ""
 akasha_calculation_param: ""
+akasha_weapon_param: ""
+akasha_weapon_param_desc: ""
+akasha_variant_param: ""
+akasha_variant_param_desc: ""
 akasha_character_param_desc: ""
 akasha_calculation_param_desc: ""
 akasha_total_entries: ""
@@ -714,25 +700,66 @@ theater_dmg_lb_title: ""
 max_friendship_lb_title: ""
 lb_view_command_description: ""
 leaderboard_not_found: ""
-not_supported_by_enka_error_title: ""
-not_supported_by_enka_error_message: ""
 currently_logged_in_as: ""
 not_you_label: ""
 profile_show_substat_rolls: ""
-profile_team_show_substat_rolls: ""
 team_card_settings_button_label: ""
 team_card_settings_embed_title: ""
 team_card_settings_embed_description: ""
-zzz_agent_stats_hp: ""
-zzz_agent_stats_atk: ""
-zzz_agent_stats_def: ""
-zzz_agent_stats_pen: ""
-zzz_agent_stats_pen_ratio: ""
-zzz_agent_stats_crit_rate: ""
-zzz_agent_stats_crit_dmg: ""
-zzz_agent_stats_energy_gen: ""
-zzz_agent_stats_anomaly_pro: ""
-zzz_agent_stats_anomaly_master: ""
-zzz_agent_stats_impact: ""
-zzz_agent_stats_dmg_bonus: ""
 characters.filter.rarity.placeholder: ""
+profile_command_character_param_desc: ""
+weapon_type_filter_placeholder: ""
+redeem_cmd_available_codes: ""
+redeem_all_available_codes_button_label: ""
+akasha_show_details: ""
+card_settings_hl_special_stats_button_label: ""
+challenge_command_abyss_desc: ""
+challenge_command_theater_desc: ""
+challenge_command_moc_desc: ""
+challenge_command_pf_desc: ""
+challenge_command_apc_shadow_desc: ""
+challenge_command_shiyu_desc: ""
+account_select_placeholder: ""
+guild_only_command_param_name: ""
+guild_only_command_param_desc: ""
+yes_choice: ""
+no_choice: ""
+akasha_guild_mode_not_supported: ""
+akasha_guild_mode_not_supported_desc: ""
+time_remaining_str: ""
+banner_selector_placeholder: ""
+rarity_str: ""
+finished_status_field_name: ""
+unlocks_in_str: ""
+challenge_selector_placeholder: ""
+upload_cmd_desc: ""
+not_an_image_error_title: ""
+not_an_image_error_message: ""
+upload_cmd_image_param_name: ""
+upload_cmd_image_param_desc: ""
+exploration_select_placeholder: ""
+exploration_show_card_button_label: ""
+abyss_stats_const_use_rate: ""
+abyss_stats_teammate_use_rate: ""
+abyss_stats_weapon_use_rate: ""
+abyss_stats_artifact_use_rate: ""
+build_cmd_genshin_desc: ""
+build_cmd_hsr_desc: ""
+build_cmd_zzz_desc: ""
+build_cmd_character_param_desc: ""
+guide_title: ""
+no_guide_available: ""
+show_playstyle_button_label: ""
+flexible_char: ""
+show_synergy_button_label: ""
+characters_per_page_modal_title: ""
+characters_per_page_num_label: ""
+card_settings_hl_substat_select_placeholder: ""
+too_many_requests_error_banner_msg: ""
+add_field_modal_title_label: ""
+add_field_modal_desc_label: ""
+add_weapon_modal_name_label: ""
+add_team_modal_name_label: ""
+add_field_modal_title: ""
+add_weapon_modal_title: ""
+add_team_modal_title: ""

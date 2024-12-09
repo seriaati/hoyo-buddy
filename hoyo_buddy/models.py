@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Literal, NamedTuple
+from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
 import aiohttp
 import ambr.models
@@ -9,7 +9,7 @@ import enka
 import genshin.models
 from attr import dataclass
 from discord import Locale
-from pydantic import BaseModel, Field, ValidationInfo, field_validator
+from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
 
 from .constants import STARRAIL_RES
 from .enums import GeetestType, GenshinElement
@@ -387,6 +387,14 @@ class UIGFRecord(BaseModel):
         return value.replace(
             tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
         )
+
+    @model_validator(mode="before")
+    @classmethod
+    def __find_gacha_type(cls, values: dict[str, Any]) -> dict[str, Any]:
+        banner_type = values.get("uigf_gacha_type")
+        if banner_type is None:
+            values["uigf_gacha_type"] = values["gacha_type"]
+        return values
 
 
 class SRGFRecord(BaseModel):

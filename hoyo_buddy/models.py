@@ -408,6 +408,7 @@ class SRGFRecord(BaseModel):
 @dataclass(kw_only=True)
 class SingleBlock:
     icon: str
+    icon_size: int = 204
     bg_color: str
 
     bottom_text: LocaleStr | str | None = None
@@ -419,6 +420,7 @@ class DoubleBlock:
     icon1: str
     icon2: str
     bg_color: str
+    icon_size: int = 204
 
     flair_text1: LocaleStr | str | None = None
     flair_text2: LocaleStr | str | None = None

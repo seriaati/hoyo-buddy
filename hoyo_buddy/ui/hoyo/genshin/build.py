@@ -230,7 +230,11 @@ class GIBuildView(ui.View):
                     )
                 elif isinstance(char, ambr.GWSynergyElementCharacter):
                     icon = get_element_icon(char.element)
-                    blocks.append(SingleBlock(icon=icon, bg_color=BLOCK_COLORS[self.dark_mode][1]))
+                    blocks.append(
+                        SingleBlock(
+                            icon=icon, bg_color=BLOCK_COLORS[self.dark_mode][1], icon_size=102
+                        )
+                    )
                 else:
                     blocks.append(
                         SingleBlock(

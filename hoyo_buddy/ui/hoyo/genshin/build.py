@@ -290,6 +290,9 @@ class GIBuildView(ui.View):
         embed.set_footer(text=f"{synergy.credits}\nGenshin Wizard")
         embed.set_image(url="attachment://synergy_team.png")
         embed.set_author(name=self.character.name, icon_url=self.character.icon)
+
+        if synergy.info:
+            embed.description = synergy.info[0].value
         return embed
 
     async def start(self, i: Interaction) -> None:

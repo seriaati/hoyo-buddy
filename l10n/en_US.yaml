@@ -779,4 +779,6 @@ mimo_buy_item_select_placeholder: Select an item to buy...
 mimo_tasks_button_label: Tasks
 mimo_buy_item_amount_label: Amount
 mimo_item_available_time: "Refills in {time}"
+mimo_auto_task_embed_footer: Use /mimo to configure auto tasks and buy rewards
+mimo_auto_task_embed_desc: "Hoyo Buddy completed {finish} tasks and claimed {claim_point} points for you."
 checkin_reward_embed_footer: Use /check-in to configure notifications

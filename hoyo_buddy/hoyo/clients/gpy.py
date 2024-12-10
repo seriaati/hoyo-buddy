@@ -941,7 +941,7 @@ class GenshinClient(ProxyGenshinClient):
         tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
 
         finish_count = 0
-        claim_count = 0
+        claim_point = 0
 
         for task in tasks:
             if (
@@ -967,6 +967,6 @@ class GenshinClient(ProxyGenshinClient):
                     session=session,
                     api_url=api_url,
                 )
-                claim_count += 1
+                claim_point += task.point
 
-        return finish_count, claim_count
+        return finish_count, claim_point

@@ -76,6 +76,8 @@ class HoyoAccount(BaseModel):
     farm_notifs: fields.BackwardOneToOneRelation[FarmNotify]
     redeemed_codes: fields.Field[list[str]] = fields.JSONField(default=[])
     auto_redeem = fields.BooleanField(default=True)
+    mimo_auto_task = fields.BooleanField(default=True)
+    mimo_auto_buy = fields.BooleanField(default=False)
     public = fields.BooleanField(default=True)
     """Whether this account can be seen by others."""
     device_id: fields.Field[str | None] = fields.CharField(max_length=36, null=True)

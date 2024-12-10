@@ -159,11 +159,30 @@ class ProxyGenshinClient(genshin.Client):
 
                     raise Exception(data["message"])
 
+                if resp.status in {502, 504}:
+                    await asyncio.sleep(2 * (retry + 1))
+                    if mmt_result is not None:
+                        return await self.os_app_login(
+                            email, password, mmt_result=mmt_result, retry=retry + 1
+                        )
+                    if ticket is not None:
+                        return await self.os_app_login(
+                            email, password, ticket=ticket, retry=retry + 1
+                        )
+                    return await self.os_app_login(email, password, retry=retry + 1)
+
                 msg = f"API returned status code {resp.status}"
                 raise Exception(msg)
         except aiohttp.ClientError:
             await asyncio.sleep(2 * (retry + 1))
-            return await self.os_app_login(email, password, mmt_result=mmt_result, retry=retry + 1)
+
+            if mmt_result is not None:
+                return await self.os_app_login(
+                    email, password, mmt_result=mmt_result, retry=retry + 1
+                )
+            if ticket is not None:
+                return await self.os_app_login(email, password, ticket=ticket, retry=retry + 1)
+            return await self.os_app_login(email, password, retry=retry + 1)
 
 
 class GenshinClient(ProxyGenshinClient):
@@ -207,6 +226,7 @@ class GenshinClient(ProxyGenshinClient):
             )
             .set_thumbnail(url=daily_reward.icon)
             .add_acc_info(self._account, blur=blur)
+            .set_footer(text=LocaleStr(key="checkin_reward_embed_footer"))
         )
 
     @staticmethod
@@ -724,6 +744,10 @@ class GenshinClient(ProxyGenshinClient):
 
                     raise Exception(data["message"])
 
+                if resp.status in {502, 504}:
+                    await asyncio.sleep(2 * (retry + 1))
+                    return await self.get_notes_(game, session=session, retry=retry + 1)
+
                 msg = f"API {api_url} returned status code {resp.status}"
                 raise RuntimeError(msg)
         except aiohttp.ClientError:
@@ -743,3 +767,206 @@ class GenshinClient(ProxyGenshinClient):
 
     async def get_honkai_notes(self, session: aiohttp.ClientSession) -> genshin.models.HonkaiNotes:
         return await self.get_notes_(genshin.Game.HONKAI, session=session)
+
+    async def finish_mimo_task(
+        self,
+        task_id: int,
+        *,
+        game_id: int,
+        version_id: int,
+        session: aiohttp.ClientSession,
+        retry: int = 0,
+        api_url: str | None = None,
+    ) -> None:
+        if retry > MAX_API_RETRIES:
+            msg = "Max API retries exceeded"
+            raise RuntimeError(msg)
+
+        api_url = api_url or next(proxy_api_rotator)
+        if api_url == "LOCAL":
+            return await super().finish_mimo_task(task_id, game_id=game_id, version_id=version_id)
+
+        payload = {
+            "token": os.environ["DAILY_CHECKIN_API_TOKEN"],
+            "cookies": self._account.cookies,
+            "game_id": game_id,
+            "version_id": version_id,
+            "task_id": task_id,
+        }
+
+        try:
+            async with session.post(f"{api_url}/mimo/finish_task/", json=payload) as resp:
+                if resp.status in {200, 400, 500}:
+                    data = await resp.json()
+                    if resp.status == 200:
+                        return None
+                    if resp.status == 400:
+                        raise genshin.GenshinException(data)
+                    raise Exception(data["message"])
+
+                if resp.status in {502, 504}:
+                    await asyncio.sleep(2 * (retry + 1))
+                    return await self.finish_mimo_task(
+                        task_id,
+                        game_id=game_id,
+                        version_id=version_id,
+                        session=session,
+                        retry=retry + 1,
+                    )
+
+                msg = f"API {api_url} returned status code {resp.status}"
+                raise RuntimeError(msg)
+        except aiohttp.ClientError:
+            await asyncio.sleep(2 * (retry + 1))
+            return await self.finish_mimo_task(
+                task_id, game_id=game_id, version_id=version_id, session=session, retry=retry + 1
+            )
+
+    async def claim_mimo_task_reward(
+        self,
+        task_id: int,
+        *,
+        game_id: int,
+        version_id: int,
+        session: aiohttp.ClientSession,
+        retry: int = 0,
+        api_url: str | None = None,
+    ) -> None:
+        if retry > MAX_API_RETRIES:
+            msg = "Max API retries exceeded"
+            raise RuntimeError(msg)
+
+        api_url = api_url or next(proxy_api_rotator)
+        if api_url == "LOCAL":
+            return await super().claim_mimo_task_reward(
+                task_id, game_id=game_id, version_id=version_id
+            )
+
+        payload = {
+            "token": os.environ["DAILY_CHECKIN_API_TOKEN"],
+            "cookies": self._account.cookies,
+            "game_id": game_id,
+            "version_id": version_id,
+            "task_id": task_id,
+        }
+
+        try:
+            async with session.post(f"{api_url}/mimo/claim_reward/", json=payload) as resp:
+                if resp.status in {200, 400, 500}:
+                    data = await resp.json()
+                    if resp.status == 200:
+                        return None
+                    if resp.status == 400:
+                        raise genshin.GenshinException(data)
+                    raise Exception(data["message"])
+
+                if resp.status in {502, 504}:
+                    await asyncio.sleep(2 * (retry + 1))
+                    return await self.claim_mimo_task_reward(
+                        task_id,
+                        game_id=game_id,
+                        version_id=version_id,
+                        session=session,
+                        retry=retry + 1,
+                    )
+
+                msg = f"API {api_url} returned status code {resp.status}"
+                raise RuntimeError(msg)
+        except aiohttp.ClientError:
+            await asyncio.sleep(2 * (retry + 1))
+            return await self.claim_mimo_task_reward(
+                task_id, game_id=game_id, version_id=version_id, session=session, retry=retry + 1
+            )
+
+    async def buy_mimo_shop_item(
+        self,
+        item_id: int,
+        *,
+        game_id: int,
+        version_id: int,
+        session: aiohttp.ClientSession,
+        retry: int = 0,
+        api_url: str | None = None,
+    ) -> str:
+        if retry > MAX_API_RETRIES:
+            msg = "Max API retries exceeded"
+            raise RuntimeError(msg)
+
+        api_url = api_url or next(proxy_api_rotator)
+        if api_url == "LOCAL":
+            return await super().buy_mimo_shop_item(item_id, game_id=game_id, version_id=version_id)
+
+        payload = {
+            "token": os.environ["DAILY_CHECKIN_API_TOKEN"],
+            "cookies": self._account.cookies,
+            "game_id": game_id,
+            "version_id": version_id,
+            "item_id": item_id,
+        }
+
+        try:
+            async with session.post(f"{api_url}/mimo/buy_item/", json=payload) as resp:
+                if resp.status in {200, 400, 500}:
+                    data = await resp.json()
+                    if resp.status == 200:
+                        return data["code"]
+                    if resp.status == 400:
+                        raise genshin.GenshinException(data)
+                    raise Exception(data["message"])
+
+                if resp.status in {502, 504}:
+                    await asyncio.sleep(2 * (retry + 1))
+                    return await self.buy_mimo_shop_item(
+                        item_id,
+                        game_id=game_id,
+                        version_id=version_id,
+                        session=session,
+                        retry=retry + 1,
+                    )
+
+                msg = f"API {api_url} returned status code {resp.status}"
+                raise RuntimeError(msg)
+        except aiohttp.ClientError:
+            await asyncio.sleep(2 * (retry + 1))
+            return await self.buy_mimo_shop_item(
+                item_id, game_id=game_id, version_id=version_id, session=session, retry=retry + 1
+            )
+
+    async def finish_and_claim_mimo_tasks(
+        self, session: aiohttp.ClientSession, *, api_url: str | None = None
+    ) -> tuple[int, int]:
+        game_id, version_id = await self._get_mimo_game_data(
+            HB_GAME_TO_GPY_GAME[self._account.game]
+        )
+        tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
+
+        finish_count = 0
+        claim_count = 0
+
+        for task in tasks:
+            if (
+                task.type is genshin.models.MimoTaskType.FINISHABLE
+                and task.status is genshin.models.MimoTaskStatus.ONGOING
+            ):
+                await self.finish_mimo_task(
+                    task.id,
+                    game_id=game_id,
+                    version_id=version_id,
+                    session=session,
+                    api_url=api_url,
+                )
+                finish_count += 1
+
+        tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
+        for task in tasks:
+            if task.status is genshin.models.MimoTaskStatus.FINISHED:
+                await self.claim_mimo_task_reward(
+                    task.id,
+                    game_id=game_id,
+                    version_id=version_id,
+                    session=session,
+                    api_url=api_url,
+                )
+                claim_count += 1
+
+        return finish_count, claim_count

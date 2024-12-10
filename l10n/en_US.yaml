@@ -763,3 +763,20 @@ add_team_modal_name_label: "Character Name {num}"
 add_field_modal_title: Add Field
 add_weapon_modal_title: Add Weapon
 add_team_modal_title: Add Team
+mimo_task_status_claimable: Claimable
+mimo_finish_and_claim_button_label: Finish tasks and claim points
+mimo_info_embed_title: About Traveling Mimo
+mimo_info_embed_desc: This is a permanent event by Hoyoverse, where you can complete tasks to earn points, and use points to buy in-game rewards.
+mimo_auto_finish_and_claim_button_label: Auto finish tasks and claim points
+mimo_auto_finish_and_claim_desc: Hoyo Buddy can finish certain tasks and claim points of all completed tasks automatically.
+mimo_auto_buy_button_label: Auto buy rewards
+mimo_auto_buy_desc: Hoyo Buddy will buy stellar jades/polychromes whenever possible, it will not try to save points!
+mimo_redeem_failed: "Bought {name} but failed to redeem the gift code, please redeem it yourself, code: {code}"
+mimo_redeem_success: "Successfully bought {name} for {points} points, please check your in-game mail"
+mimo_cmd_desc: Traveling Mimo event management
+mimo_view_shop_button_label: Shop
+mimo_buy_item_select_placeholder: Select an item to buy...
+mimo_tasks_button_label: Tasks
+mimo_buy_item_amount_label: Amount
+mimo_item_available_time: Refills in {time}
+checkin_reward_embed_footer: Use /check-in to configure notifications

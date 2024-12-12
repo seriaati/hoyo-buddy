@@ -351,8 +351,16 @@ class ShopItemSelector(ui.Select[MimoView]):
         )
         embed = DefaultEmbed(self.view.locale, title=message)
         embed.set_thumbnail(url=item.icon)
+        await i.followup.send(embed=embed, ephemeral=True)
 
-        await self.unset_loading_state(i, embed=embed)
+        points = await self.view.client.get_mimo_point_count()
+        shop_embed = self.view.get_shop_embed(points=points)
+        await self.unset_loading_state(i, embed=shop_embed)
+
+        shop_items = await self.view.client.get_mimo_shop_items()
+        self.set_options(shop_items, points)
+        self.translate(self.view.locale)
+        await i.edit_original_response(view=self.view)
 
 
 class InfoButton(ui.Button[MimoView]):

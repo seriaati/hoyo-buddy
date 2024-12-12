@@ -15,6 +15,18 @@ if TYPE_CHECKING:
     from .enums import ChallengeType, Platform
 
 
+class ProxyAPIError(Exception):
+    def __init__(self, api_url: str, status: int) -> None:
+        self.api_url = api_url
+        self.status = status
+
+    def __str__(self) -> str:
+        return f"API: {self.api_url} returned status code: {self.status}"
+
+    def __repr__(self) -> str:
+        return f"<ProxyAPIError api_url={self.api_url!r} status={self.status!r}>"
+
+
 class HoyoBuddyError(Exception):
     def __init__(self, title: LocaleStr, message: LocaleStr | None = None) -> None:
         self.title = title

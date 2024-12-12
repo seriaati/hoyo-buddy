@@ -337,7 +337,8 @@ class GachaCommand:
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
 
         # Determine UIGF v4.0
-        is_v4 = data["info"]["version"] == "v4.0"
+        version = data["info"].get("version", data["info"]["uigf_version"])
+        is_v4 = version == "v4.0"
 
         if is_v4:
             game_data = next(

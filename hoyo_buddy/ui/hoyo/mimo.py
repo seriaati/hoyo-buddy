@@ -135,7 +135,7 @@ class MimoView(ui.View):
         )
         return embed.add_acc_info(self.account)
 
-    def get_shop_embed(self) -> DefaultEmbed:
+    def get_shop_embed(self, points: int) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
             title=LocaleStr(
@@ -144,23 +144,28 @@ class MimoView(ui.View):
                 start=self.mimo_game.start_time.strftime("%m/%d"),
                 end=self.mimo_game.end_time.strftime("%m/%d"),
             ),
+            description=f"{points} {self.point_emoji}",
         )
         embed.set_image(url="attachment://mimo_shop_items.png")
         stock_str = LocaleStr(key="exchangePrizeLeft", mi18n_game="mimo").translate(self.locale)
 
         for shop_item in self.shop_items:
-            available_str = (
-                LocaleStr(
-                    key="mimo_item_available_time", time=shop_item.next_refresh_time
-                ).translate(self.locale)
-                if shop_item.next_refresh_time.total_seconds() > 0
-                else ""
-            )
-            embed.add_field(
-                name=shop_item.name,
-                value=f"{shop_item.cost} {self.point_emoji}\n{stock_str} {shop_item.stock}\n{available_str}",
-                inline=False,
-            )
+            value = f"{shop_item.cost} {self.point_emoji}\n{stock_str} {shop_item.stock}"
+
+            if shop_item.next_refresh_time.total_seconds() > 0:
+                value += f"\n{LocaleStr(key='mimo_item_available_time', time=shop_item.next_refresh_time).translate(self.locale)}"
+
+            if shop_item.status is genshin.models.MimoShopItemStatus.LIMIT_REACHED:
+                value += f"\n{LocaleStr(
+                    key="mimo_status", status=LocaleStr(key="exchangeLimit", mi18n_game="mimo")
+                ).translate(self.locale)}"
+            elif shop_item.status is genshin.models.MimoShopItemStatus.SOLD_OUT:
+                value += f"\n{LocaleStr(
+                    key="mimo_status", status=LocaleStr(key="exchangeSoldOut", mi18n_game="mimo")
+                ).translate(self.locale)}"
+
+            embed.add_field(name=shop_item.name, value=value, inline=False)
+
         return embed
 
     async def start(self, i: Interaction) -> None:
@@ -213,7 +218,7 @@ class FinishAndClaimButton(ui.Button[MimoView]):
 
     async def callback(self, i: Interaction) -> None:
         await self.set_loading_state(i)
-        await self.view.client.finish_and_claim_mimo_tasks(i.client.session)
+        await self.view.client.finish_and_claim_mimo_tasks()
 
         shop_item_select: ShopItemSelector = self.view.get_item("mimo_shop_item_selector")
         points = await self.view.client.get_mimo_point_count()
@@ -258,8 +263,9 @@ class ViewShopButton(ui.Button[MimoView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        embed = self.view.get_shop_embed()
-        await i.response.edit_message(embed=embed)
+        await i.response.defer()
+        embed = self.view.get_shop_embed(points=await self.view.client.get_mimo_point_count())
+        await i.edit_original_response(embed=embed)
 
 
 class BuyItemModal(ui.Modal):
@@ -334,7 +340,7 @@ class ShopItemSelector(ui.Select[MimoView]):
         await self.set_loading_state(i)
         game_id, version_id = await self.view.client._parse_mimo_args()
         code = await self.view.client.buy_mimo_shop_item(
-            item_id, game_id=game_id, version_id=version_id, session=i.client.session
+            item_id, game_id=game_id, version_id=version_id
         )
 
         _, success = await self.view.client.redeem_code(code, locale=self.view.locale)
@@ -345,7 +351,16 @@ class ShopItemSelector(ui.Select[MimoView]):
         )
         embed = DefaultEmbed(self.view.locale, title=message)
         embed.set_thumbnail(url=item.icon)
-        await self.unset_loading_state(i, embed=embed)
+        await i.followup.send(embed=embed, ephemeral=True)
+
+        points = await self.view.client.get_mimo_point_count()
+        shop_embed = self.view.get_shop_embed(points=points)
+        await self.unset_loading_state(i, embed=shop_embed)
+
+        shop_items = await self.view.client.get_mimo_shop_items()
+        self.set_options(shop_items, points)
+        self.translate(self.view.locale)
+        await i.edit_original_response(view=self.view)
 
 
 class InfoButton(ui.Button[MimoView]):

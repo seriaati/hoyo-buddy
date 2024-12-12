@@ -1,17 +1,19 @@
 from __future__ import annotations
 
+import itertools
 from typing import TYPE_CHECKING, TypeAlias
 
 import genshin
 from seria.utils import create_bullet_list
 
 from hoyo_buddy import ui
+from hoyo_buddy.constants import BLOCK_COLORS
 from hoyo_buddy.db.models import HoyoAccount, draw_locale
-from hoyo_buddy.draw.main_funcs import draw_item_list_card
+from hoyo_buddy.draw.main_funcs import draw_block_list_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game
-from hoyo_buddy.l10n import LocaleStr, RarityStr, TimeRemainingStr, UnlocksInStr
-from hoyo_buddy.models import DrawInput, ItemWithTrailing
+from hoyo_buddy.l10n import LocaleStr, TimeRemainingStr, UnlocksInStr
+from hoyo_buddy.models import DrawInput, SingleBlock
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -38,7 +40,7 @@ HSRCalendarItem: TypeAlias = (
 
 
 def event_not_started(item: EventItem | ChallengeItem) -> bool:
-    if isinstance(item, genshin.models.HSREvent):
+    if isinstance(item, genshin.models.HSREvent | genshin.models.HSRChallenge):
         return item.time_info is not None and item.time_info.now < item.time_info.start
     return item.status == 1
 
@@ -58,7 +60,7 @@ def event_is_finished(item: EventItem | ChallengeItem) -> bool:
 
 
 def get_option_desc(item: CalendarItem, cur_game_version: str | None = None) -> LocaleStr:
-    if isinstance(item, EventItem) and event_not_started(item):
+    if isinstance(item, EventItem | ChallengeItem) and event_not_started(item):
         return LocaleStr(key="unopened", mi18n_game=Game.GENSHIN)
 
     finished = False
@@ -158,11 +160,15 @@ class EventCalendarView(ui.View):
     async def draw_rewards_card(
         self, bot: HoyoBuddy, event: EventItem | genshin.models.HSRChallenge
     ) -> discord.File:
-        items = [
-            ItemWithTrailing(icon=i.icon, title=i.name, trailing=str(i.num) if i.num > 0 else "-")
+        blocks = [
+            SingleBlock(
+                icon=i.icon,
+                bottom_text=str(i.num) if i.num > 0 else "-",
+                bg_color=BLOCK_COLORS[self.dark_mode][i.rarity],
+            )
             for i in event.rewards
         ]
-        return await draw_item_list_card(
+        return await draw_block_list_card(
             DrawInput(
                 dark_mode=self.dark_mode,
                 locale=draw_locale(self.locale, self.account),
@@ -171,7 +177,7 @@ class EventCalendarView(ui.View):
                 loop=bot.loop,
                 filename="rewards.png",
             ),
-            items,
+            list(itertools.batched(blocks, 4)),
         )
 
     async def start(self, i: Interaction) -> None:
@@ -229,11 +235,11 @@ class BannerSelector(ItemSelector):
         else:
             banner_items = list(banner.characters) + list(banner.light_cones)
 
-        items = [
-            ItemWithTrailing(icon=i.icon, title=i.name, trailing=RarityStr(i.rarity))
+        blocks = [
+            SingleBlock(icon=i.icon, bg_color=BLOCK_COLORS[self.view.dark_mode][i.rarity])
             for i in banner_items
         ]
-        return await draw_item_list_card(
+        return await draw_block_list_card(
             DrawInput(
                 dark_mode=self.view.dark_mode,
                 locale=draw_locale(self.view.locale, self.view.account),
@@ -242,7 +248,7 @@ class BannerSelector(ItemSelector):
                 loop=bot.loop,
                 filename="banner_items.png",
             ),
-            items,
+            list(itertools.batched(blocks, 4)),
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -361,7 +367,9 @@ class ChallengeSelector(ItemSelector):
             placeholder=LocaleStr(key="challenge_selector_placeholder"),
             options=[
                 ui.SelectOption(
-                    label=self.get_option_name(c), description=get_option_desc(c), value=str(c.id)
+                    label=self.get_option_name(c),
+                    description=get_option_desc(c),
+                    value=self.get_option_value(c),
                 )
                 for c in challenges
             ],
@@ -392,6 +400,12 @@ class ChallengeSelector(ItemSelector):
             star=challenge.current_progress,
             max_star=challenge.total_progress,
         )
+
+    @staticmethod
+    def get_option_value(challenge: ChallengeItem) -> str:
+        if isinstance(challenge, genshin.models.Event):
+            return str(challenge.type)
+        return str(challenge.id)
 
     def get_embed(self, challenge: ChallengeItem) -> DefaultEmbed:
         star = None
@@ -445,7 +459,7 @@ class ChallengeSelector(ItemSelector):
         await self.set_loading_state(i)
 
         id_ = self.values[0]
-        challenge = next((c for c in self.challenges if str(c.id) == id_), None)
+        challenge = next((c for c in self.challenges if self.get_option_value(c) == id_), None)
         if challenge is None:
             msg = f"Challenge with id {id_} not found."
             raise ValueError(msg)

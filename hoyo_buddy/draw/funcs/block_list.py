@@ -93,24 +93,15 @@ class BlockListCard:
         if isinstance(block, SingleBlock):
             icon = drawer.open_static(block.icon)
             icon = drawer.resize_crop(icon, (block.icon_size, block.icon_size))
-            im.alpha_composite(
-                icon,
-                (im.size[0] // 2 - block.icon_size // 2, im.size[1] // 2 - block.icon_size // 2),
-            )
+            im.alpha_composite(icon, (102 - block.icon_size // 2, 102 - block.icon_size // 2))
         else:
             icon1 = drawer.open_static(block.icon1)
             icon1 = drawer.resize_crop(icon1, (204, 204))
-            im.alpha_composite(
-                icon1,
-                (im.size[0] // 2 - block.icon_size // 2, im.size[1] // 2 - block.icon_size // 2),
-            )
+            im.alpha_composite(icon1, (102 - block.icon_size // 2, 102 - block.icon_size // 2))
 
             icon2 = drawer.open_static(block.icon2)
             icon2 = drawer.resize_crop(icon2, (204, 204))
-            im.alpha_composite(
-                icon2,
-                (im.size[0] // 2 - block.icon_size // 2, im.size[1] // 2 - block.icon_size // 2),
-            )
+            im.alpha_composite(icon2, (306 - block.icon_size // 2, 102 - block.icon_size // 2))
 
         if block.bottom_text is not None:
             drawer.write(

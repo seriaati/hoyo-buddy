@@ -517,13 +517,13 @@ class NotesChecker:
     @classmethod
     async def _get_notes(cls, notify: NotesNotify) -> Notes | StarRailNote | ZZZNotes:
         if notify.account.game is Game.GENSHIN:
-            notes = await notify.account.client.get_genshin_notes(session=cls._bot.session)
+            notes = await notify.account.client.get_genshin_notes()
         elif notify.account.game is Game.STARRAIL:
-            notes = await notify.account.client.get_starrail_notes(session=cls._bot.session)
+            notes = await notify.account.client.get_starrail_notes()
         elif notify.account.game is Game.ZZZ:
-            notes = await notify.account.client.get_zzz_notes(session=cls._bot.session)
+            notes = await notify.account.client.get_zzz_notes()
         elif notify.account.game is Game.HONKAI:
-            notes = await notify.account.client.get_honkai_notes(session=cls._bot.session)
+            notes = await notify.account.client.get_honkai_notes()
         else:
             raise NotImplementedError
         return notes

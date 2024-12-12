@@ -763,22 +763,3 @@ add_team_modal_name_label: "Tên nhân vật {num}"
 add_field_modal_title: Thêm trường
 add_weapon_modal_title: Thêm vũ khí
 add_team_modal_title: Thêm đội
-mimo_task_status_claimable: Có thể đổi
-mimo_finish_and_claim_button_label: Hoàn thành nhiệm vụ và nhận điểm
-mimo_info_embed_title: Về Mimo Du Lịch
-mimo_info_embed_desc: "Đây là một sự kiện vĩnh viễn bởi Hoyoverse, nơi mà bạn có thể hoàn thành nhiệm vụ để tích điểm, dùng điểm để đổi quà tặng trong trò chơi."
-mimo_auto_finish_and_claim_button_label: Tự động hoàn thành nhiệm vụ và nhận điểm
-mimo_auto_finish_and_claim_desc: Hoyo Buddy có thể tự động hoàn thành một số nhiệm vụ và nhận điểm của những nhiêm vụ đã hoàn thành.
-mimo_auto_buy_button_label: Tự động đổi quà
-mimo_auto_buy_desc: "Hoyo Buddy sẽ cố gắng đổi Ngọc Ánh Sao/Film Màu khi có thể, và không cố gắng tiết kiệm điểm."
-mimo_redeem_failed: "Đã đổi {name} nhưng thất bại đổi mã quà, vui lòng tự đổi mã quà, mã: {code}"
-mimo_redeem_success: "Đã đổi thành công {name} cho {points} điểm. vui lòng kiểm tra hồm thư trò chơi."
-mimo_cmd_desc: Quản lý sự kiện Mimo Du Lịch
-mimo_view_shop_button_label: Cửa hàng
-mimo_buy_item_select_placeholder: Chọn một món để đổi
-mimo_tasks_button_label: Nhiệm vụ
-mimo_buy_item_amount_label: Số lượng
-mimo_item_available_time: "Sẽ dầy trong {time}"
-mimo_auto_task_embed_footer: Nhập /mino để điều chỉnh nhiệm vụ tự động và đổi quà
-mimo_auto_task_embed_desc: "Hoyo Buddy đã hoàn thành các nhiệm vụ {finish} và đã nhận {claim_point} điểm cho bạn."
-checkin_reward_embed_footer: Sử dụng /check-in để điều chỉnh thông báo

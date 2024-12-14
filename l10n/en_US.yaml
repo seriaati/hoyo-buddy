@@ -756,13 +756,6 @@ characters_per_page_modal_title: Characters per page
 characters_per_page_num_label: Number
 card_settings_hl_substat_select_placeholder: Select substats to highlight...
 too_many_requests_error_banner_msg: "Too many requests, try again later. Click the button on the right for more details."
-add_field_modal_title_label: Title
-add_field_modal_desc_label: Description
-add_weapon_modal_name_label: Name
-add_team_modal_name_label: "Character Name {num}"
-add_field_modal_title: Add Field
-add_weapon_modal_title: Add Weapon
-add_team_modal_title: Add Team
 mimo_task_status_claimable: Claimable
 mimo_finish_and_claim_button_label: Finish tasks and claim points
 mimo_info_embed_title: About Traveling Mimo

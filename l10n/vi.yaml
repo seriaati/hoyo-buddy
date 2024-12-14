@@ -756,13 +756,6 @@ characters_per_page_modal_title: Các nhân vật mỗi trang
 characters_per_page_num_label: Số
 card_settings_hl_substat_select_placeholder: Chọn thuộc tính phụ để tô đậm
 too_many_requests_error_banner_msg: "Nhiều yêu cầu quá, vui lòng thử lại. Nhấp vào nút bền phải để biết thêm thông tin."
-add_field_modal_title_label: Tiêu đề
-add_field_modal_desc_label: Miêu tả
-add_weapon_modal_name_label: Tên
-add_team_modal_name_label: "Tên nhân vật {num}"
-add_field_modal_title: Thêm trường
-add_weapon_modal_title: Thêm vũ khí
-add_team_modal_title: Thêm đội
 mimo_task_status_claimable: Có thể đổi
 mimo_finish_and_claim_button_label: Hoàn thành nhiệm vụ và nhận điểm
 mimo_info_embed_title: Về Mimo Du Lịch

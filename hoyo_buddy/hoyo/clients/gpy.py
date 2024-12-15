@@ -70,10 +70,14 @@ class ProxyGenshinClient(genshin.Client):
                     raise
         return None
 
-    async def api_request(
+    async def requst_proxy_api(
         self, api_url: str, endpoint: str, payload: dict[str, Any]
     ) -> dict[str, Any]:
         payload["token"] = os.environ["DAILY_CHECKIN_API_TOKEN"]
+        payload["lang"] = self.lang
+        payload["region"] = self.region.value
+        if self.game is not None:
+            payload["game"] = self.game.value
 
         for attempt in range(MAX_API_RETRIES):
             try:
@@ -157,7 +161,7 @@ class ProxyGenshinClient(genshin.Client):
         elif ticket is not None:
             payload["ticket"] = ticket.model_dump_json(by_alias=True)
 
-        data = await self.api_request(api_url, "login", payload)
+        data = await self.requst_proxy_api(api_url, "login", payload)
         retcode = data["retcode"]
         data_ = orjson.loads(data["data"])
 
@@ -186,6 +190,12 @@ class GenshinClient(ProxyGenshinClient):
             device_fp=account.device_fp,
         )
         self._account = account
+
+    async def requst_proxy_api(
+        self, api_url: str, endpoint: str, payload: dict[str, Any]
+    ) -> dict[str, Any]:
+        payload["cookies"] = self._account.cookies
+        return await super().requst_proxy_api(api_url, endpoint, payload)
 
     def set_lang(self, locale: Locale) -> None:
         if self._account.game is Game.STARRAIL and locale is Locale.turkish:
@@ -682,7 +692,7 @@ class GenshinClient(ProxyGenshinClient):
             "lang": self.lang,
             "game": game.value,
         }
-        data = await self.api_request(api_url, "notes", payload)
+        data = await self.requst_proxy_api(api_url, "notes", payload)
 
         if game is genshin.Game.GENSHIN:
             return genshin.models.Notes(**data["data"])
@@ -718,7 +728,7 @@ class GenshinClient(ProxyGenshinClient):
             "version_id": version_id,
             "task_id": task_id,
         }
-        await self.api_request(api_url, "mimo/finish_task", payload)
+        await self.requst_proxy_api(api_url, "mimo/finish_task", payload)
 
     async def claim_mimo_task_reward(
         self, task_id: int, *, game_id: int, version_id: int, api_url: str | None = None
@@ -735,7 +745,7 @@ class GenshinClient(ProxyGenshinClient):
             "version_id": version_id,
             "task_id": task_id,
         }
-        await self.api_request(api_url, "mimo/claim_reward", payload)
+        await self.requst_proxy_api(api_url, "mimo/claim_reward", payload)
 
     async def buy_mimo_shop_item(
         self, item_id: int, *, game_id: int, version_id: int, api_url: str | None = None
@@ -750,7 +760,7 @@ class GenshinClient(ProxyGenshinClient):
             "version_id": version_id,
             "item_id": item_id,
         }
-        data = await self.api_request(api_url, "mimo/buy_item", payload)
+        data = await self.requst_proxy_api(api_url, "mimo/buy_item", payload)
         return data["code"]
 
     async def finish_and_claim_mimo_tasks(self, *, api_url: str | None = None) -> tuple[int, int]:

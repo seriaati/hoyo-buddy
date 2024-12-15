@@ -4,7 +4,6 @@ import asyncio
 import os
 from typing import TYPE_CHECKING, ClassVar, Literal
 
-import aiohttp
 import discord
 import genshin
 from loguru import logger
@@ -21,7 +20,6 @@ from hoyo_buddy.db.models import HoyoAccount, JSONFile
 from hoyo_buddy.enums import Platform
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import convert_code_to_redeem_url
-from hoyo_buddy.web_app.utils import decrypt_string
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
@@ -245,115 +243,16 @@ class AutoRedeem:
         client = account.client
         client.set_lang(locale)
 
-        if api_name == "LOCAL":
-            try:
-                embed = await account.client.redeem_codes(codes_, locale=locale, blur=False)
-                embed.set_footer(text=LocaleStr(key="auto_redeem_footer"))
-            except Exception as e:
-                await cls._handle_error(account, locale, e)
-                return None
-            else:
-                return embed
-
-        # API redeem
-        assert client.game is not None
-        results: list[tuple[str, str, bool]] = []
-
-        for code in codes_:
-            payload = {
-                "token": API_TOKEN,
-                "cookies": account.cookies,
-                "game": client.game.value,
-                "code": code,
-                "uid": account.uid,
-            }
-            try:
-                results.append(await cls._redeem_code(api_name, account, locale, code, payload))
-            except Exception as e:
-                await cls._handle_error(account, locale, e)
-                return None
-
-            await asyncio.sleep(6)
-
-        return client.get_redeem_codes_embed(results, locale=locale, blur=False)
-
-    @classmethod
-    async def _redeem_code(
-        cls,
-        api_name: ProxyAPI,
-        account: HoyoAccount,
-        locale: discord.Locale,
-        code: str,
-        payload: dict[str, str],
-        *,
-        retry: int = 0,
-    ) -> tuple[str, str, bool]:
-        if retry > MAX_API_RETRIES:
-            msg = f"API {api_name} retry limit reached for code {code}"
-            raise RuntimeError(msg)
-
-        api_url = PROXY_APIS[api_name]
-
-        logger_payload = payload.copy()
-        logger_payload.pop("cookies")
-        logger_payload.pop("token")
-        logger.debug(f"Redeem payload: {logger_payload}")
-
         try:
-            async with cls._bot.session.post(f"{api_url}/redeem/", json=payload) as resp:
-                if resp.status == 502:
-                    await asyncio.sleep(20)
-                    return await cls._redeem_code(
-                        api_name, account, locale, code, payload, retry=retry + 1
-                    )
-
-                if resp.status in {200, 400, 500}:
-                    data = await resp.json()
-
-                    logger_data = data.copy()
-                    logger_data.pop("cookies", None)
-                    logger.debug(f"Redeem response: {logger_data}")
-
-                    if (cookies := data.get("cookies")) and account.cookies != cookies:
-                        account.cookies = decrypt_string(cookies)
-                        await account.save(update_fields=("cookies",))
-
-                    if resp.status == 200:
-                        await account.client._add_to_redeemed_codes(code)
-                        return (code, LocaleStr(key="redeem_code.success").translate(locale), True)
-
-                    if resp.status == 400:
-                        if data["retcode"] == 1001:
-                            # Redemption cooldown
-                            await asyncio.sleep(20)
-                            return await cls._redeem_code(api_name, account, locale, code, payload)
-
-                        e = genshin.GenshinException(data)
-                        if e.retcode in {999, 1000}:
-                            # Cookie token expired or refresh failed
-                            raise e
-
-                        if e.retcode == -2006:
-                            # Code reached max redemption limit
-                            cls._dead_codes.add(code)
-
-                        embed, recognized = get_error_embed(e, locale)
-                        if not recognized:
-                            raise e
-
-                        await account.client._add_to_redeemed_codes(code)
-                        assert embed.title is not None
-
-                        if embed.description is None:
-                            return (code, embed.title, False)
-                        return (code, f"{embed.title}\n{embed.description}", False)
-
-                    # 500
-                    msg = f"API {api_name} errored: {data['message']}"
-                    raise RuntimeError(msg)
-
-                msg = f"API {api_name} returned {resp.status}"
-                raise RuntimeError(msg)
-        except aiohttp.ClientError:
-            await asyncio.sleep(RETRY_SLEEP_TIME)
-            return await cls._redeem_code(api_name, account, locale, code, payload, retry=retry + 1)
+            embed = await account.client.redeem_codes(
+                codes_,
+                locale=locale,
+                blur=False,
+                api_url=PROXY_APIS[api_name] if api_name != "LOCAL" else "LOCAL",
+            )
+            embed.set_footer(text=LocaleStr(key="auto_redeem_footer"))
+        except Exception as e:
+            await cls._handle_error(account, locale, e)
+            return None
+        else:
+            return embed

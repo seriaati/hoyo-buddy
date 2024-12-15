@@ -27,43 +27,55 @@ MAX_API_ERROR_COUNT = 10
 SLEEP_TIME = 2.5
 
 
-class MimoAutoTask:
+class AutoMimo:
     _task_count: ClassVar[int]
     _buy_count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
     _mimo_game_data: ClassVar[dict[Game, tuple[int, int]]]
+    _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
 
     @classmethod
     async def execute(cls, bot: HoyoBuddy) -> None:
-        try:
-            logger.info("Auto mimo task started")
+        if cls._lock.locked():
+            return
 
-            cls._task_count = 0
-            cls._buy_count = 0
-            cls._bot = bot
-            cls._mimo_game_data = {}
+        start = asyncio.get_event_loop().time()
+        async with cls._lock:
+            try:
+                logger.info("Auto mimo task started")
 
-            queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
-            accounts = await HoyoAccount.filter(
-                Q(game=Game.STARRAIL) | Q(game=Game.ZZZ), mimo_auto_task=True
-            )
+                cls._task_count = 0
+                cls._buy_count = 0
+                cls._bot = bot
+                cls._mimo_game_data = {}
 
-            for account in accounts:
-                if account.platform is Platform.MIYOUSHE:
-                    continue
-                await queue.put(account)
+                queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
+                accounts = await HoyoAccount.filter(
+                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ),
+                    Q(mimo_auto_task=True) | Q(mimo_auto_buy=True),
+                )
 
-            tasks = [asyncio.create_task(cls._mimo_task(queue, api)) for api in PROXY_APIS]
-            tasks.append(asyncio.create_task(cls._mimo_task(queue, "LOCAL")))
+                for account in accounts:
+                    if account.platform is Platform.MIYOUSHE:
+                        continue
+                    await queue.put(account)
 
-            await queue.join()
-            for task in tasks:
-                task.cancel()
-            await asyncio.gather(*tasks, return_exceptions=True)
-        except Exception as e:
-            bot.capture_exception(e)
-        finally:
-            logger.info(f"Mimo auto task finished, total count: {cls._task_count}")
+                tasks = [asyncio.create_task(cls._mimo_task(queue, api)) for api in PROXY_APIS]
+                tasks.append(asyncio.create_task(cls._mimo_task(queue, "LOCAL")))
+
+                await queue.join()
+                for task in tasks:
+                    task.cancel()
+                await asyncio.gather(*tasks, return_exceptions=True)
+            except Exception as e:
+                bot.capture_exception(e)
+            finally:
+                logger.info(
+                    f"Mimo auto task finished, {cls._task_count} tasks and {cls._buy_count} buys"
+                )
+
+        end = asyncio.get_event_loop().time()
+        logger.info(f"Auto mimo task took {end - start:.2f} seconds")
 
     @classmethod
     async def _mimo_task(
@@ -83,11 +95,15 @@ class MimoAutoTask:
 
         while True:
             account = await queue.get()
+            task_embed = None
+            valuable_embed = None
 
             try:
-                task_embed = await cls._complete_mimo_tasks(api_name, account)
-                await asyncio.sleep(SLEEP_TIME)
-                valuable_embed = await cls._buy_mimo_valuables(api_name, account)
+                if account.mimo_auto_task:
+                    task_embed = await cls._complete_mimo_tasks(api_name, account)
+                if account.mimo_auto_buy:
+                    await asyncio.sleep(SLEEP_TIME)
+                    valuable_embed = await cls._buy_mimo_valuables(api_name, account)
             except Exception as e:
                 await queue.put(account)
                 api_error_count += 1

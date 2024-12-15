@@ -14,7 +14,7 @@ from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.db.models import CardSettings, CommandMetric, HoyoAccount, Settings, User
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.enums import Game, LeaderboardType
-from hoyo_buddy.hoyo.auto_tasks.mimo_auto_task import MimoAutoTask
+from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import upload_image
 
@@ -92,7 +92,7 @@ class TaskView(ui.View):
     @ui.button(label="Mimo auto task", style=ButtonStyle.blurple)
     async def auto_mimo_task(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Auto mimo task started.")
-        asyncio.create_task(MimoAutoTask.execute(i.client))
+        asyncio.create_task(AutoMimo.execute(i.client))
 
 
 class Admin(commands.Cog):

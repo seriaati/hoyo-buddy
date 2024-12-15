@@ -813,9 +813,6 @@ class GenshinClient(ProxyGenshinClient):
         finish_count = 0
         claim_point = 0
 
-        game_id, version_id = await self._get_mimo_game_data(
-            HB_GAME_TO_GPY_GAME[self._account.game]
-        )
         tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
 
         for task in tasks:

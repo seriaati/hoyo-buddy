@@ -7,12 +7,14 @@ from typing import TYPE_CHECKING, ClassVar, Literal
 import discord
 import genshin
 from loguru import logger
+from seria.utils import create_bullet_list
 from tortoise.expressions import Q
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import PROXY_APIS
+from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME, PROXY_APIS
 from hoyo_buddy.db.models import HoyoAccount
 from hoyo_buddy.embeds import DefaultEmbed, Embed, ErrorEmbed
+from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.l10n import LocaleStr
 
@@ -26,16 +28,20 @@ SLEEP_TIME = 2.5
 
 
 class MimoAutoTask:
-    _total_count: ClassVar[int]
+    _task_count: ClassVar[int]
+    _buy_count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
+    _mimo_game_data: ClassVar[dict[Game, tuple[int, int]]]
 
     @classmethod
     async def execute(cls, bot: HoyoBuddy) -> None:
         try:
             logger.info("Auto mimo task started")
 
-            cls._total_count = 0
+            cls._task_count = 0
+            cls._buy_count = 0
             cls._bot = bot
+            cls._mimo_game_data = {}
 
             queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
             accounts = await HoyoAccount.filter(
@@ -57,7 +63,7 @@ class MimoAutoTask:
         except Exception as e:
             bot.capture_exception(e)
         finally:
-            logger.info(f"Mimo auto task finished, total count: {cls._total_count}")
+            logger.info(f"Mimo auto task finished, total count: {cls._task_count}")
 
     @classmethod
     async def _mimo_task(
@@ -79,7 +85,9 @@ class MimoAutoTask:
             account = await queue.get()
 
             try:
-                embed = await cls._complete_mimo_tasks(api_name, account)
+                task_embed = await cls._complete_mimo_tasks(api_name, account)
+                await asyncio.sleep(SLEEP_TIME)
+                valuable_embed = await cls._buy_mimo_valuables(api_name, account)
             except Exception as e:
                 await queue.put(account)
                 api_error_count += 1
@@ -90,12 +98,13 @@ class MimoAutoTask:
                     msg = f"Proxy API {api_name} failed for {api_error_count} accounts"
                     raise RuntimeError(msg) from None
             else:
-                if embed is not None:
-                    cls._total_count += 1
-                    embed.set_footer(text=LocaleStr(key="mimo_auto_task_embed_footer"))
-                    embed.add_acc_info(account)
+                if task_embed is not None:
+                    cls._task_count += 1
 
-                    if isinstance(embed, ErrorEmbed):
+                    task_embed.set_footer(text=LocaleStr(key="mimo_auto_task_embed_footer"))
+                    task_embed.add_acc_info(account)
+
+                    if isinstance(task_embed, ErrorEmbed):
                         account.mimo_auto_task = False
                         await account.save(update_fields=("mimo_auto_task",))
                         content = LocaleStr(key="mimo_auto_task_error_dm_content").translate(
@@ -104,7 +113,24 @@ class MimoAutoTask:
                     else:
                         content = None
 
-                    await cls._bot.dm_user(account.user.id, embed=embed, content=content)
+                    await cls._bot.dm_user(account.user.id, embed=task_embed, content=content)
+
+                if valuable_embed is not None:
+                    cls._buy_count += 1
+
+                    valuable_embed.set_footer(text=LocaleStr(key="mimo_auto_task_embed_footer"))
+                    valuable_embed.add_acc_info(account)
+
+                    if isinstance(valuable_embed, ErrorEmbed):
+                        account.mimo_auto_task = False
+                        await account.save(update_fields=("mimo_auto_task",))
+                        content = LocaleStr(key="mimo_auto_buy_error_dm_content").translate(
+                            account.user.settings.locale or discord.Locale.american_english
+                        )
+                    else:
+                        content = None
+
+                    await cls._bot.dm_user(account.user.id, embed=valuable_embed, content=content)
 
             finally:
                 await asyncio.sleep(SLEEP_TIME)
@@ -120,8 +146,17 @@ class MimoAutoTask:
         client.set_lang(locale)
 
         try:
+            game_id, version_id = cls._mimo_game_data.get(account.game, (None, None))
+            if game_id is None or version_id is None:
+                game_id, version_id = await client._get_mimo_game_data(
+                    HB_GAME_TO_GPY_GAME[account.game]
+                )
+                cls._mimo_game_data[account.game] = (game_id, version_id)
+
             finish_count, claim_point = await client.finish_and_claim_mimo_tasks(
-                api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name]
+                game_id=game_id,
+                version_id=version_id,
+                api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name],
             )
         except genshin.GenshinException as e:
             embed, recognized = get_error_embed(e, locale)
@@ -143,3 +178,57 @@ class MimoAutoTask:
                 key="mimo_auto_task_embed_desc", finish=finish_count, claim_point=claim_point
             ),
         )
+
+    @classmethod
+    async def _buy_mimo_valuables(
+        cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount
+    ) -> Embed | None:
+        locale = account.user.settings.locale or discord.Locale.american_english
+        client = account.client
+        client.set_lang(locale)
+        api_url = api_name if api_name == "LOCAL" else PROXY_APIS[api_name]
+
+        try:
+            game_id, version_id = cls._mimo_game_data.get(account.game, (None, None))
+            if game_id is None or version_id is None:
+                game_id, version_id = await client._get_mimo_game_data(
+                    HB_GAME_TO_GPY_GAME[account.game]
+                )
+                cls._mimo_game_data[account.game] = (game_id, version_id)
+
+            bought = await client.buy_mimo_valuables(
+                game_id=game_id, version_id=version_id, api_url=api_url
+            )
+        except genshin.GenshinException as e:
+            embed, recognized = get_error_embed(e, locale)
+            if not recognized:
+                cls._bot.capture_exception(e)
+            return embed
+
+        if len(bought) == 0:
+            return None
+
+        mimo_point_emoji = MIMO_POINT_EMOJIS[account.game]
+        bought_strs: list[str] = []
+        for item, code in bought:
+            bought_str = f"{item.name} ({item.cost} {mimo_point_emoji})"
+            _, success = await client.redeem_code(code, locale=locale, api_url=api_url)
+            if not success:
+                bought_str += f": {code}"
+            bought_strs.append(bought_str)
+
+        embed = DefaultEmbed(
+            locale,
+            title=LocaleStr(
+                custom_str="{mimo_title} {label}",
+                mimo_title=LocaleStr(key="point_detail_tag_mimo", mi18n_game="mimo"),
+                label=LocaleStr(key="mimo_auto_buy_button_label"),
+            ),
+            description=LocaleStr(
+                key="mimo_auto_buy_embed_desc",
+                item=len(bought),
+                points=sum(item.cost for item in [b[0] for b in bought]),
+            ),
+        )
+        embed.add_description(f"\n{create_bullet_list(bought_strs)}")
+        return embed

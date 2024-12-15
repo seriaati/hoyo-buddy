@@ -36,8 +36,14 @@ class MimoView(ui.View):
         self.shop_items: Sequence[genshin.models.MimoShopItem] = []
 
         self.mimo_game: genshin.models.MimoGame = None  # pyright: ignore[reportAttributeAccessIssue]
-        self.game_id = self.mimo_game.id
-        self.version_id = self.mimo_game.version_id
+
+    @property
+    def game_id(self) -> int:
+        return self.mimo_game.id
+
+    @property
+    def version_id(self) -> int:
+        return self.mimo_game.version_id
 
     @staticmethod
     def get_task_url(task: genshin.models.MimoTask) -> str | None:

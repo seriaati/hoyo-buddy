@@ -820,9 +820,14 @@ class GenshinClient(ProxyGenshinClient):
                 task.type is genshin.models.MimoTaskType.FINISHABLE
                 and task.status is genshin.models.MimoTaskStatus.ONGOING
             ):
-                await self.finish_mimo_task(
-                    task.id, game_id=game_id, version_id=version_id, api_url=api_url
-                )
+                try:
+                    await self.finish_mimo_task(
+                        task.id, game_id=game_id, version_id=version_id, api_url=api_url
+                    )
+                except genshin.GenshinException as e:
+                    if e.retcode == -500001:  # Invalid fields in calculation
+                        continue
+                    raise
                 finish_count += 1
 
         if finish_count > 0:
@@ -830,9 +835,14 @@ class GenshinClient(ProxyGenshinClient):
 
         for task in tasks:
             if task.status is genshin.models.MimoTaskStatus.FINISHED:
-                await self.claim_mimo_task_reward(
-                    task.id, game_id=game_id, version_id=version_id, api_url=api_url
-                )
+                try:
+                    await self.claim_mimo_task_reward(
+                        task.id, game_id=game_id, version_id=version_id, api_url=api_url
+                    )
+                except genshin.GenshinException as e:
+                    if e.retcode == -500001:  # Invalid fields in calculation
+                        continue
+                    raise
                 claim_point += task.point
 
         return finish_count, claim_point

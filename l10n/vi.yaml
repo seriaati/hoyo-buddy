@@ -777,3 +777,5 @@ mimo_auto_task_embed_desc: "Hoyo Buddy đã hoàn thành các nhiệm vụ {fini
 checkin_reward_embed_footer: Sử dụng /check-in để điều chỉnh thông báo
 mimo_auto_task_error_dm_content: "Tính năng tự động hoàn thành nhiệm vụ Mimo đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách sữa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
 mimo_status: "Tình trạng: {status}"
+mimo_auto_buy_embed_desc: "Hoyo Buddy đã đổi (các) vật phẩm {item} này cho bạn với {points} điểm.\nNếu bạn thấy những mã quà bên dưới, vui long đổi thủ công bằng lệnh </redeem>."
+mimo_auto_buy_error_dm_content: "Tính năng tự động đổi quà Mimo đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách sữa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."

@@ -50,6 +50,9 @@ class AutoRedeem:
             game: The game to redeem codes for, all games if None.
             codes: The codes to redeem, None to fetch from API.
         """
+        if cls._lock.locked():
+            return
+
         async with cls._lock:
             try:
                 logger.info(

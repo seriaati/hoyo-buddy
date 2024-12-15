@@ -34,7 +34,10 @@ class MimoView(ui.View):
         self.dark_mode = dark_mode
         self.point_emoji = MIMO_POINT_EMOJIS.get(account.game, "")
         self.shop_items: Sequence[genshin.models.MimoShopItem] = []
+
         self.mimo_game: genshin.models.MimoGame = None  # pyright: ignore[reportAttributeAccessIssue]
+        self.game_id = self.mimo_game.id
+        self.version_id = self.mimo_game.version_id
 
     @staticmethod
     def get_task_url(task: genshin.models.MimoTask) -> str | None:
@@ -106,7 +109,7 @@ class MimoView(ui.View):
 
     async def get_tasks_embed(self, *, points: int | None = None) -> DefaultEmbed:
         points = points or await self.client.get_mimo_point_count()
-        tasks = await self.client.get_mimo_tasks()
+        tasks = await self.client.get_mimo_tasks(game_id=self.game_id, version_id=self.version_id)
 
         embed = DefaultEmbed(
             self.locale,
@@ -181,7 +184,9 @@ class MimoView(ui.View):
             raise ValueError(msg)
         self.mimo_game = mimo_game
 
-        self.shop_items = await self.client.get_mimo_shop_items()
+        self.shop_items = await self.client.get_mimo_shop_items(
+            game_id=mimo_game.id, version_id=mimo_game.version_id
+        )
         points = await self.client.get_mimo_point_count()
 
         self.add_item(FinishAndClaimButton())
@@ -218,7 +223,9 @@ class FinishAndClaimButton(ui.Button[MimoView]):
 
     async def callback(self, i: Interaction) -> None:
         await self.set_loading_state(i)
-        await self.view.client.finish_and_claim_mimo_tasks()
+        await self.view.client.finish_and_claim_mimo_tasks(
+            game_id=self.view.game_id, version_id=self.view.version_id
+        )
 
         shop_item_select: ShopItemSelector = self.view.get_item("mimo_shop_item_selector")
         points = await self.view.client.get_mimo_point_count()
@@ -338,9 +345,8 @@ class ShopItemSelector(ui.Select[MimoView]):
             return
 
         await self.set_loading_state(i)
-        game_id, version_id = await self.view.client._parse_mimo_args()
         code = await self.view.client.buy_mimo_shop_item(
-            item_id, game_id=game_id, version_id=version_id
+            item_id, game_id=self.view.game_id, version_id=self.view.version_id
         )
 
         _, success = await self.view.client.redeem_code(code, locale=self.view.locale)
@@ -357,7 +363,9 @@ class ShopItemSelector(ui.Select[MimoView]):
         shop_embed = self.view.get_shop_embed(points=points)
         await self.unset_loading_state(i, embed=shop_embed)
 
-        shop_items = await self.view.client.get_mimo_shop_items()
+        shop_items = await self.view.client.get_mimo_shop_items(
+            game_id=self.view.game_id, version_id=self.view.version_id
+        )
         self.set_options(shop_items, points)
         self.translate(self.view.locale)
         await i.edit_original_response(view=self.view)

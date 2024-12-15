@@ -9,10 +9,10 @@ import aiohttp
 import enka
 import genshin
 import hakushin
-from loguru import logger
 import orjson
 from discord import Locale
 from dotenv import load_dotenv
+from loguru import logger
 
 from hoyo_buddy.exceptions import ProxyAPIError
 from hoyo_buddy.web_app.utils import decrypt_string
@@ -785,7 +785,31 @@ class GenshinClient(ProxyGenshinClient):
         data = await self.request_proxy_api(api_url, "mimo/buy_item", payload)
         return data["code"]
 
-    async def finish_and_claim_mimo_tasks(self, *, api_url: str | None = None) -> tuple[int, int]:
+    async def get_mimo_tasks(
+        self, *, game_id: int, version_id: int, api_url: str | None = None
+    ) -> Sequence[genshin.models.MimoTask]:
+        api_url = api_url or next(proxy_api_rotator)
+        if api_url == "LOCAL":
+            return await super().get_mimo_tasks(game_id=game_id, version_id=version_id)
+
+        payload = {"cookies": self._account.cookies, "game_id": game_id, "version_id": version_id}
+        data = await self.request_proxy_api(api_url, "mimo/tasks", payload)
+        return [genshin.models.MimoTask(**orjson.loads(task)) for task in data["tasks"]]
+
+    async def get_mimo_shop_items(
+        self, *, game_id: int, version_id: int, api_url: str | None = None
+    ) -> Sequence[genshin.models.MimoShopItem]:
+        api_url = api_url or next(proxy_api_rotator)
+        if api_url == "LOCAL":
+            return await super().get_mimo_shop_items(game_id=game_id, version_id=version_id)
+
+        payload = {"cookies": self._account.cookies, "game_id": game_id, "version_id": version_id}
+        data = await self.request_proxy_api(api_url, "mimo/shop", payload)
+        return [genshin.models.MimoShopItem(**orjson.loads(item)) for item in data["items"]]
+
+    async def finish_and_claim_mimo_tasks(
+        self, *, game_id: int, version_id: int, api_url: str | None = None
+    ) -> tuple[int, int]:
         finish_count = 0
         claim_point = 0
 
@@ -815,3 +839,52 @@ class GenshinClient(ProxyGenshinClient):
                 claim_point += task.point
 
         return finish_count, claim_point
+
+    async def buy_mimo_valuables(
+        self, *, game_id: int, version_id: int, api_url: str | None = None
+    ) -> list[tuple[genshin.models.MimoShopItem, str]]:
+        bought: list[tuple[genshin.models.MimoShopItem, str]] = []
+
+        points = await self.get_mimo_point_count()
+        items = await self.get_mimo_shop_items(game_id=game_id, version_id=version_id)
+        item_mi18n = {item.id: item for item in items}
+
+        self.lang = "en-us"
+        en_items = await self.get_mimo_shop_items(game_id=game_id, version_id=version_id)
+
+        keywords = ("Stellar Jades", "Polychrome")
+        for item in en_items:
+            if (
+                any(keyword in item.name for keyword in keywords)
+                and item.status is genshin.models.MimoShopItemStatus.EXCHANGEABLE
+                and item.cost <= points
+            ):
+                try:
+                    code = await self.buy_mimo_shop_item(
+                        item.id, game_id=game_id, version_id=version_id, api_url=api_url
+                    )
+                except genshin.GenshinException as e:
+                    if e.retcode == -502005:  # Insufficient points
+                        continue
+                    raise
+
+                bought.append((item_mi18n[item.id], code))
+                points = await self.get_mimo_point_count()
+
+        return bought
+
+    async def claim_daily_reward(
+        self, *, api_url: str | None = None, challenge: dict[str, str] | None = None
+    ) -> genshin.models.DailyReward:
+        api_url = api_url or next(proxy_api_rotator)
+        if api_url == "LOCAL" or challenge is not None:
+            return await super().claim_daily_reward(challenge=challenge)
+
+        data = await self.request_proxy_api(api_url, "checkin", {})
+
+        # Correct reward amount
+        monthly_rewards = await self.get_monthly_rewards()
+        reward = next((r for r in monthly_rewards if r.icon == data["data"]["icon"]), None)
+        if reward is None:
+            reward = genshin.models.DailyReward(**data["data"])
+        return reward

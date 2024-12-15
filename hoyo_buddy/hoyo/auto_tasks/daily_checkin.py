@@ -35,6 +35,8 @@ class DailyCheckin:
     async def execute(
         cls, bot: HoyoBuddy, *, game: genshin.Game | None = None, no_error_notify: bool = False
     ) -> None:
+        start = asyncio.get_event_loop().time()
+
         try:
             logger.info("Daily check-in started")
 
@@ -90,6 +92,9 @@ class DailyCheckin:
             logger.info(
                 f"Daily check-in finished, total check-in count: {cls._total_checkin_count}"
             )
+
+        end = asyncio.get_event_loop().time()
+        logger.info(f"Daily check-in took {end - start:.2f} seconds")
 
     @classmethod
     async def _daily_checkin_task(

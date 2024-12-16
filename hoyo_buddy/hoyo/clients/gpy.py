@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import itertools
 import os
+import random
 from typing import TYPE_CHECKING, Any, Literal, overload
 
 import aiohttp
@@ -26,6 +27,7 @@ from ...constants import (
     GPY_LANG_TO_LOCALE,
     HB_GAME_TO_GPY_GAME,
     LOCALE_TO_GPY_LANG,
+    POST_REPLIES,
     PROXY_APIS,
     contains_traveler_id,
     convert_fight_prop,
@@ -816,10 +818,14 @@ class GenshinClient(ProxyGenshinClient):
         tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
 
         for task in tasks:
-            if (
-                task.type is genshin.models.MimoTaskType.FINISHABLE
-                and task.status is genshin.models.MimoTaskStatus.ONGOING
-            ):
+            if task.status is not genshin.models.MimoTaskStatus.ONGOING:
+                continue
+
+            if task.type in {
+                genshin.models.MimoTaskType.FINISHABLE,
+                genshin.models.MimoTaskType.TRAILER,
+                genshin.models.MimoTaskType.VISIT,
+            }:
                 try:
                     await self.finish_mimo_task(
                         task.id, game_id=game_id, version_id=version_id, api_url=api_url
@@ -828,6 +834,19 @@ class GenshinClient(ProxyGenshinClient):
                     if e.retcode == -500001:  # Invalid fields in calculation
                         continue
                     raise
+                finish_count += 1
+
+            elif task.type is genshin.models.MimoTaskType.COMMENT:
+                url_data = orjson.loads(task.jump_url)
+                post_id: str | None = url_data.get("post_id")
+                if post_id is None:
+                    continue
+
+                reply_id = await self.reply_to_post(
+                    random.choice(POST_REPLIES), post_id=int(post_id)
+                )
+                await asyncio.sleep(0.5)
+                await self.delete_reply(reply_id=reply_id, post_id=int(post_id))
                 finish_count += 1
 
         if finish_count > 0:

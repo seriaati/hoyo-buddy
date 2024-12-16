@@ -347,7 +347,9 @@ class Hoyo(commands.Cog):
     async def hsr_zzz_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.STARRAIL, Game.ZZZ))
+        return await self.bot.get_game_account_choices(
+            i, current, (Game.STARRAIL, Game.ZZZ), (Platform.HOYOLAB,)
+        )
 
     @checkin_command.autocomplete("account")
     @geetest_command.autocomplete("account")

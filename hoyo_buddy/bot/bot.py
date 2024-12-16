@@ -273,12 +273,18 @@ class HoyoBuddy(commands.AutoShardedBot):
         ]
 
     async def get_game_account_choices(
-        self, i: Interaction, current: str, games: Sequence[Game] | None = None
+        self,
+        i: Interaction,
+        current: str,
+        games: Sequence[Game] | None = None,
+        platforms: Sequence[Platform] | None = None,
     ) -> list[app_commands.Choice[str]]:
         games = games or list(Game)
         locale = await models.get_locale(i)
         user: User = i.namespace.user
-        return await self.get_account_choices(user, i.user.id, current, locale, games=games)
+        return await self.get_account_choices(
+            user, i.user.id, current, locale, games=games, platforms=platforms
+        )
 
     async def get_accounts(
         self, user_id: int, games: Sequence[Game] | None = None, platform: Platform | None = None

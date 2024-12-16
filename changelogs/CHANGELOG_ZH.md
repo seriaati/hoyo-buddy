@@ -48,6 +48,6 @@
 - (`/profile`) 修復生成 AI 圖像時的 `BadRequestError` 問題。  
 - (`/upload`) 修復上傳圖片時的 `BadRequestError` 問題。  
 
-## v1.15.2 and below
+## v1.15.2 及以下
 
 先前版本的更新日誌寫在 [Discord 伺服器](https://link.seria.moe/hb-dc) 內的 #更新 頻道中。  

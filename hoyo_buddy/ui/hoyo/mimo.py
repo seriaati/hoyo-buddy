@@ -85,10 +85,10 @@ class MimoView(ui.View):
         task_strs: list[str] = []
         for task in tasks:
             task_url = self.get_task_url(task)
-            if task_url:
-                task_strs.append(f"[{task.name}]({task_url}) ({task.point} {self.point_emoji})")
-            else:
-                task_strs.append(f"{task.name} ({task.point} {self.point_emoji})")
+            task_str = f"[{task.name}]({task_url})" if task_url else task.name
+            task_str += (
+                f" - {task.point} {self.point_emoji} ({task.progress}/{task.total_progress})"
+            )
         return create_bullet_list(task_strs)
 
     def add_task_fields(

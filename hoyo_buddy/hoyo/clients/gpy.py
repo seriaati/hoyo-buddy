@@ -848,7 +848,7 @@ class GenshinClient(ProxyGenshinClient):
                 reply_id = await self.reply_to_post(
                     random.choice(POST_REPLIES), post_id=int(post_id)
                 )
-                await asyncio.sleep(0.5)
+                await asyncio.sleep(2)
                 await self.delete_reply(reply_id=reply_id, post_id=int(post_id))
                 await asyncio.sleep(2)
                 finished.append(task)

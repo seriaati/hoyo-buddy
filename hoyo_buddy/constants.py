@@ -802,4 +802,14 @@ BLOCK_COLORS: dict[bool, dict[int, str]] = {
     False: {5: "#b47128", 4: "#8768ac", 3: "#52779b", 2: "#4d766a1", 1: "#77787d"},
 }
 
-POST_REPLIES = ("very useful", "wow", "cool", "nice", "good job", "amazing", "great", "awesome")
+POST_REPLIES = (
+    "very useful!",
+    "wow-",
+    "cool :D",
+    "nice!",
+    "nice post!",
+    "great post :o",
+    "awesome :D",
+    "interesting :o",
+    "pretty informative!",
+)

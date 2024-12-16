@@ -10,10 +10,18 @@ from seria.utils import create_bullet_list, shorten
 from hoyo_buddy import ui
 from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.emojis import INFO, MIMO_POINT_EMOJIS, REDEEM_GIFT, SHOPPING_CART, TASK_LIST
+from hoyo_buddy.emojis import (
+    INFO,
+    MIMO_POINT_EMOJIS,
+    PAYMENTS,
+    REDEEM_GIFT,
+    SHOPPING_CART,
+    TASK_LIST,
+)
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils import ephemeral
+from hoyo_buddy.ui.components import GoBackButton
+from hoyo_buddy.utils import convert_code_to_redeem_url, ephemeral
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -156,7 +164,6 @@ class MimoView(ui.View):
             ),
             description=f"{points} {self.point_emoji}",
         )
-        embed.set_image(url="attachment://mimo_shop_items.png")
         stock_str = LocaleStr(key="exchangePrizeLeft", mi18n_game="mimo").translate(self.locale)
 
         for shop_item in self.shop_items:
@@ -176,7 +183,27 @@ class MimoView(ui.View):
 
             embed.add_field(name=shop_item.name, value=value, inline=False)
 
-        return embed
+        return embed.add_acc_info(self.account)
+
+    def get_lottery_info_embed(self, lottery_info: genshin.models.MimoLotteryInfo) -> DefaultEmbed:
+        embed = DefaultEmbed(
+            self.locale,
+            title=LocaleStr(key="pc_modal_title_lottery", mi18n_game="mimo"),
+            description=f"{lottery_info.current_point} {self.point_emoji}",
+        )
+        embed.add_description(
+            LocaleStr(
+                key="lottery_remain",
+                mi18n_game="mimo",
+                point=lottery_info.cost,
+                append=f" {lottery_info.limit_count - lottery_info.current_count}/{lottery_info.limit_count}",
+            )
+        )
+        embed.add_field(
+            name=LocaleStr(key="lottery_modal_info_title", mi18n_game="mimo"),
+            value=create_bullet_list([r.name for r in lottery_info.rewards]),
+        )
+        return embed.add_acc_info(self.account)
 
     async def start(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
@@ -199,6 +226,7 @@ class MimoView(ui.View):
         self.add_item(FinishAndClaimButton())
         self.add_item(TaskButton())
         self.add_item(ViewShopButton())
+        self.add_item(LotteryInfoButton())
         self.add_item(InfoButton())
         self.add_item(AutoFinishAndClaimButton(current_toggle=self.account.mimo_auto_task))
         self.add_item(AutoBuyButton(current_toggle=self.account.mimo_auto_buy))
@@ -211,7 +239,7 @@ class MimoView(ui.View):
 
 class TaskButton(ui.Button[MimoView]):
     def __init__(self) -> None:
-        super().__init__(label=LocaleStr(key="mimo_tasks_button_label"), row=0, emoji=TASK_LIST)
+        super().__init__(label=LocaleStr(key="mimo_tasks_button_label"), row=1, emoji=TASK_LIST)
 
     async def callback(self, i: Interaction) -> None:
         await self.set_loading_state(i)
@@ -249,7 +277,7 @@ class AutoFinishAndClaimButton(ui.ToggleButton[MimoView]):
         super().__init__(
             current_toggle,
             toggle_label=LocaleStr(key="mimo_auto_finish_and_claim_button_label"),
-            row=1,
+            row=2,
         )
 
     async def callback(self, i: Interaction) -> Any:
@@ -261,7 +289,7 @@ class AutoFinishAndClaimButton(ui.ToggleButton[MimoView]):
 class AutoBuyButton(ui.ToggleButton[MimoView]):
     def __init__(self, *, current_toggle: bool) -> None:
         super().__init__(
-            current_toggle, toggle_label=LocaleStr(key="mimo_auto_buy_button_label"), row=1
+            current_toggle, toggle_label=LocaleStr(key="mimo_auto_buy_button_label"), row=2
         )
 
     async def callback(self, i: Interaction) -> Any:
@@ -273,7 +301,7 @@ class AutoBuyButton(ui.ToggleButton[MimoView]):
 class ViewShopButton(ui.Button[MimoView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr(key="mimo_view_shop_button_label"), row=0, emoji=SHOPPING_CART
+            label=LocaleStr(key="mimo_view_shop_button_label"), row=1, emoji=SHOPPING_CART
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -356,12 +384,20 @@ class ShopItemSelector(ui.Select[MimoView]):
             item_id, game_id=self.view.game_id, version_id=self.view.version_id
         )
 
-        _, success = await self.view.client.redeem_code(code, locale=self.view.locale)
+        if code:
+            _, success = await self.view.client.redeem_code(code, locale=self.view.locale)
+        else:
+            success = True
         message = (
             LocaleStr(key="mimo_redeem_success", name=item.name, points=item.cost)
             if success
-            else LocaleStr(key="mimo_redeem_failed", name=item.name, code=code)
+            else LocaleStr(
+                key="mimo_redeem_failed",
+                name=item.name,
+                code=convert_code_to_redeem_url(code, game=self.view.account.game),
+            )
         )
+
         embed = DefaultEmbed(self.view.locale, title=message)
         embed.set_thumbnail(url=item.icon)
         await i.followup.send(embed=embed, ephemeral=True)
@@ -399,3 +435,65 @@ class InfoButton(ui.Button[MimoView]):
             inline=False,
         )
         await i.response.send_message(embed=embed, ephemeral=True)
+
+
+class LotteryDrawButton(ui.Button[MimoView]):
+    def __init__(self, *, disabled: bool) -> None:
+        super().__init__(
+            label=LocaleStr(key="homeLotteryBtnText", mi18n_game="mimo"),
+            disabled=disabled,
+            style=ButtonStyle.blurple,
+            emoji=PAYMENTS,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await self.set_loading_state(i)
+        result = await self.view.client.draw_mimo_lottery(
+            game_id=self.view.game_id, version_id=self.view.version_id
+        )
+        if result.code:
+            _, success = await self.view.client.redeem_code(result.code, locale=self.view.locale)
+        else:
+            success = True
+        description = (
+            LocaleStr(
+                key="exchangeCodeTips",
+                mi18n_game="mimo",
+                append=f"\n{convert_code_to_redeem_url(result.code, game=self.view.account.game)}",
+            )
+            if not success
+            else None
+        )
+
+        result_embed = DefaultEmbed(
+            self.view.locale, title=result.reward.name, description=description
+        )
+        result_embed.set_thumbnail(url=result.reward.icon)
+        await i.followup.send(embed=result_embed, ephemeral=True)
+
+        lottery_info = await self.view.client.get_mimo_lottery_info(
+            game_id=self.view.game_id, version_id=self.view.version_id
+        )
+        embed = self.view.get_lottery_info_embed(lottery_info)
+        await self.unset_loading_state(i, embed=embed)
+
+
+class LotteryInfoButton(ui.Button[MimoView]):
+    def __init__(self) -> None:
+        super().__init__(
+            emoji=PAYMENTS, label=LocaleStr(key="pc_modal_title_lottery", mi18n_game="mimo"), row=1
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await i.response.defer()
+        lottery_info = await self.view.client.get_mimo_lottery_info(
+            game_id=self.view.game_id, version_id=self.view.version_id
+        )
+        embed = self.view.get_lottery_info_embed(lottery_info)
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        self.view.clear_items()
+        self.view.add_item(go_back_button)
+        self.view.add_item(
+            LotteryDrawButton(disabled=lottery_info.current_count >= lottery_info.limit_count)
+        )
+        await i.edit_original_response(embed=embed, view=self.view)

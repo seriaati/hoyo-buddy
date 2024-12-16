@@ -233,6 +233,8 @@ class AutoMimo:
                 bought_str += f": {code}"
             bought_strs.append(bought_str)
 
+            await asyncio.sleep(6)
+
         embed = DefaultEmbed(
             locale,
             title=LocaleStr(

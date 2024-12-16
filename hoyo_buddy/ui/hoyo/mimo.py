@@ -89,6 +89,7 @@ class MimoView(ui.View):
             task_str += (
                 f" - {task.point} {self.point_emoji} ({task.progress}/{task.total_progress})"
             )
+            task_strs.append(task_str)
         return create_bullet_list(task_strs)
 
     def add_task_fields(

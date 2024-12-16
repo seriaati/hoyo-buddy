@@ -838,7 +838,10 @@ class GenshinClient(ProxyGenshinClient):
 
             elif task.type is genshin.models.MimoTaskType.COMMENT:
                 url_data = orjson.loads(task.jump_url)
-                post_id: str | None = url_data.get("post_id")
+                args: dict[str, str] | None = url_data.get("args")
+                if args is None:
+                    continue
+                post_id: str | None = args.get("post_id")
                 if post_id is None:
                     continue
 
@@ -847,6 +850,7 @@ class GenshinClient(ProxyGenshinClient):
                 )
                 await asyncio.sleep(0.5)
                 await self.delete_reply(reply_id=reply_id, post_id=int(post_id))
+                await asyncio.sleep(2)
                 finished.append(task)
 
         if len(finished) > 0:

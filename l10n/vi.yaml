@@ -533,7 +533,7 @@ stats_command_description: Xem thống kê tài khoản game
 tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Hạng {rarity}"
 about_command.designers: Nhà Thiết Kế
-card_settings.modifying_for: "Chỉnh Sửa cài đặt thẻ cho {name}"
+card_settings.modifying_for: "Chỉnh sửa cài đặt thẻ cho {name}"
 card_settings.card_color: Màu thẻ
 card_settings.no_color: Mẫu thẻ này không hỗ trợ đổi màu
 card_settings.color_default: Mặc định
@@ -704,7 +704,7 @@ currently_logged_in_as: "Bạn hiện đang đăng nhập với tư cách:"
 not_you_label: "Không phải bạn? Nhấn để đăng nhập bằng tài khoản khác"
 profile_show_substat_rolls: Thuộc tính phụ
 team_card_settings_button_label: Thẻ Đội cài đặt
-team_card_settings_embed_title: Chỉnh Sửa thẻ dội cài đặt
+team_card_settings_embed_title: Chỉnh sửa thẻ dội cài đặt
 team_card_settings_embed_description: "Cài đặt thẻ đội được chia sẻ trên các trò chơi và tài khoản khác nhau, những thay đổi được thực hiện đối với một số cài đặt có thể không được phản ánh trên thẻ khi chúng không được mẫu thẻ hỗ trợ.\nKhi hoàn tất, hãy nhấp vào nút màu xanh lá cây trong thông báo bên trên để làm mới thẻ."
 characters.filter.rarity.placeholder: Lọc theo độ hiếm...
 profile_command_character_param_desc: Chọn nhân vật để tạo thẻ cho
@@ -775,7 +775,7 @@ mimo_item_available_time: "Sẽ dầy trong {time}"
 mimo_auto_task_embed_footer: Nhập /mino để điều chỉnh nhiệm vụ tự động và đổi quà
 mimo_auto_task_embed_desc: "Hoyo Buddy đã hoàn thành các nhiệm vụ {finish} và đã nhận {claim_point} điểm cho bạn."
 checkin_reward_embed_footer: Sử dụng /check-in để điều chỉnh thông báo
-mimo_auto_task_error_dm_content: "Tính năng tự động hoàn thành nhiệm vụ Mimo đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách Sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
+mimo_auto_task_error_dm_content: "Tính năng tự động hoàn thành nhiệm vụ Mimo đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
 mimo_status: "Tình trạng: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy đã đổi (các) vật phẩm {item} này cho bạn với {points} điểm.\nNếu bạn thấy những mã quà bên dưới, vui long đổi thủ công bằng lệnh </redeem>."
-mimo_auto_buy_error_dm_content: "Tính năng tự động đổi quà Mimo đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách Sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
+mimo_auto_buy_error_dm_content: "Tính năng tự động đổi quà Mimo đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."

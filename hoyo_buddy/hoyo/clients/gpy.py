@@ -811,8 +811,8 @@ class GenshinClient(ProxyGenshinClient):
 
     async def finish_and_claim_mimo_tasks(
         self, *, game_id: int, version_id: int, api_url: str | None = None
-    ) -> tuple[int, int]:
-        finish_count = 0
+    ) -> tuple[list[genshin.models.MimoTask], int]:
+        finished: list[genshin.models.MimoTask] = []
         claim_point = 0
 
         tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
@@ -834,7 +834,7 @@ class GenshinClient(ProxyGenshinClient):
                     if e.retcode == -500001:  # Invalid fields in calculation
                         continue
                     raise
-                finish_count += 1
+                finished.append(task)
 
             elif task.type is genshin.models.MimoTaskType.COMMENT:
                 url_data = orjson.loads(task.jump_url)
@@ -847,9 +847,9 @@ class GenshinClient(ProxyGenshinClient):
                 )
                 await asyncio.sleep(0.5)
                 await self.delete_reply(reply_id=reply_id, post_id=int(post_id))
-                finish_count += 1
+                finished.append(task)
 
-        if finish_count > 0:
+        if len(finished) > 0:
             tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
 
         for task in tasks:
@@ -864,7 +864,7 @@ class GenshinClient(ProxyGenshinClient):
                     raise
                 claim_point += task.point
 
-        return finish_count, claim_point
+        return finished, claim_point
 
     async def buy_mimo_valuables(
         self, *, game_id: int, version_id: int, api_url: str | None = None

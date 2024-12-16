@@ -169,7 +169,7 @@ class AutoMimo:
                 )
                 cls._mimo_game_data[account.game] = (game_id, version_id)
 
-            finish_count, claim_point = await client.finish_and_claim_mimo_tasks(
+            finished, claim_point = await client.finish_and_claim_mimo_tasks(
                 game_id=game_id,
                 version_id=version_id,
                 api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name],
@@ -180,10 +180,10 @@ class AutoMimo:
                 cls._bot.capture_exception(e)
             return embed
 
-        if finish_count == 0 and claim_point == 0:
+        if len(finished) and claim_point == 0:
             return None
 
-        return DefaultEmbed(
+        embed = DefaultEmbed(
             locale,
             title=LocaleStr(
                 custom_str="{mimo_title} {label}",
@@ -191,9 +191,11 @@ class AutoMimo:
                 label=LocaleStr(key="mimo_auto_finish_and_claim_button_label"),
             ),
             description=LocaleStr(
-                key="mimo_auto_task_embed_desc", finish=finish_count, claim_point=claim_point
+                key="mimo_auto_task_embed_desc", finish=len(finished), claim_point=claim_point
             ),
         )
+        embed.add_description(f"\n{create_bullet_list([task.name for task in finished])}")
+        return embed
 
     @classmethod
     async def _buy_mimo_valuables(

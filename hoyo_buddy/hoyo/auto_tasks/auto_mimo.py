@@ -194,7 +194,7 @@ class AutoMimo:
                 key="mimo_auto_task_embed_desc", finish=len(finished), claim_point=claim_point
             ),
         )
-        embed.add_description(f"\n{create_bullet_list([task.name for task in finished])}")
+        embed.add_description(f"{create_bullet_list([task.name for task in finished])}")
         return embed
 
     @classmethod
@@ -250,5 +250,5 @@ class AutoMimo:
                 points=sum(item.cost for item in [b[0] for b in bought]),
             ),
         )
-        embed.add_description(f"\n{create_bullet_list(bought_strs)}")
+        embed.add_description(f"{create_bullet_list(bought_strs)}")
         return embed

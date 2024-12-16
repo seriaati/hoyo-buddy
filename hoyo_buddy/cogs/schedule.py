@@ -33,6 +33,7 @@ class Schedule(commands.Cog):
         self.update_assets.start()
         self.run_notes_check.start()
         self.run_auto_redeem.start()
+        self.run_auto_mimo.start()
 
     async def cog_unload(self) -> None:
         if not self.bot.config.schedule:
@@ -44,6 +45,7 @@ class Schedule(commands.Cog):
         self.update_assets.cancel()
         self.run_notes_check.cancel()
         self.run_auto_redeem.cancel()
+        self.run_auto_mimo.cancel()
 
     @tasks.loop(time=datetime.time(0, 0, 0, tzinfo=UTC_8))
     async def run_daily_checkin(self) -> None:

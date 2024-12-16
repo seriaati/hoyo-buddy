@@ -524,11 +524,6 @@ zzz.assist: 支援技
 zzz.special: 特殊技
 zzz.chain: 連攜技
 zzz.core: 核心技
-attack: 強攻
-stun: 擊破
-anomaly: 異常
-support: 支援
-defense: 防護
 characters.filter.faction.placeholder: 篩選陣營…
 characters.sorter.speciality: 特性
 characters.sorter.faction: 陣營
@@ -760,11 +755,27 @@ show_synergy_button_label: 組隊方式
 characters_per_page_modal_title: 每頁角色數
 characters_per_page_num_label: 數量
 card_settings_hl_substat_select_placeholder: 選擇要標示的副詞條…
-zzz_substat_crit_rate: 暴擊率
-zzz_substat_crit_dmg: 暴擊傷害
-zzz_substat_ap: 異常掌控
-zzz_substat_hp: 生命值
-zzz_substat_atk: 攻擊力
-zzz_substat_def: 防禦力
-zzz_substat_pen: 穿透率
 too_many_requests_error_banner_msg: "請求次數過多，請稍後再試。點擊右方按鈕獲取更多資訊。"
+mimo_task_status_claimable: 可領取
+mimo_finish_and_claim_button_label: 完成任務並領取積分
+mimo_info_embed_title: 關於旅行 Mimo
+mimo_info_embed_desc: "這是一個由 Hoyoverse 推出的永久性活動，你可以完成任務並獲得積分，並使用積分購買遊戲內的獎勵。"
+mimo_auto_finish_and_claim_button_label: 自動完成任務並領取積分
+mimo_auto_finish_and_claim_desc: Hoyo Buddy 能自動完成部份任務並領取所有已完成任務的積分。
+mimo_auto_buy_button_label: 自動購買獎勵
+mimo_auto_buy_desc: "只要積分足夠，Hoyo Buddy 便會自動購買星穹/菲林，它不會把積分存起來！"
+mimo_redeem_failed: "購買了 {name} 但是無法兌換禮物碼，請自行兌換，禮物碼: {code}"
+mimo_redeem_success: "成功使用 {points} 積分購買了 {name}，請檢查你的遊戲內信箱"
+mimo_cmd_desc: 管理旅行 Mimo 活動
+mimo_view_shop_button_label: 商店
+mimo_buy_item_select_placeholder: 選擇一個要購買的商品…
+mimo_tasks_button_label: 任務
+mimo_buy_item_amount_label: 數量
+mimo_item_available_time: "在 {time} 後補貨"
+mimo_auto_task_embed_footer: 使用 /mimo 調整自動任務設定及購買獎勵
+mimo_auto_task_embed_desc: "Hoyo Buddy 為你完成了 {finish} 項任務並領取了 {claim_point} 積分"
+checkin_reward_embed_footer: 使用 /check-in 來調整通知
+mimo_auto_task_error_dm_content: "由於發生錯誤，自動 Mimo 任務完成功能已被停用，你可以使用</mimo>將其重新啟用。\n如果這個錯誤持續發生，或是你不知道如何解決它，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)內尋求協助。"
+mimo_status: "狀態: {status}"
+mimo_auto_buy_embed_desc: "Hoyo Buddy 使用 {points} 點積分幫你購買了 {item} 個物品。\n如果下方有顯示禮物碼，請自行使用</redeem>兌換。"
+mimo_auto_buy_error_dm_content: "由於發生錯誤，自動購買 Mimo 獎勵功能已被停用，你可以使用</mimo>將其重新啟用。\n如果這個錯誤持續發生，或是你不知道如何解決它，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)內尋求協助。"

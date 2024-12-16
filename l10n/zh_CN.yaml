@@ -524,11 +524,6 @@ zzz.assist: 支援技
 zzz.special: 特殊技
 zzz.chain: 连携技
 zzz.core: 核心技
-attack: 强攻
-stun: 击破
-anomaly: 异常
-support: 支援
-defense: 防护
 characters.filter.faction.placeholder: 筛选阵营…
 characters.sorter.speciality: 特性
 characters.sorter.faction: 阵营
@@ -760,11 +755,27 @@ show_synergy_button_label: 组队方式
 characters_per_page_modal_title: 每页角色数
 characters_per_page_num_label: 数量
 card_settings_hl_substat_select_placeholder: 选择要高亮的副词条…
-zzz_substat_crit_rate: 暴击率
-zzz_substat_crit_dmg: 暴击伤害
-zzz_substat_ap: 异常掌控
-zzz_substat_hp: 生命值
-zzz_substat_atk: 攻击力
-zzz_substat_def: 防御力
-zzz_substat_pen: 穿透率
 too_many_requests_error_banner_msg: "请求次数过多，请稍后再试。点击右方按钮获取更多资讯。"
+mimo_task_status_claimable: 可领取
+mimo_finish_and_claim_button_label: 完成任务并领取积分
+mimo_info_embed_title: 关于旅行 Mimo
+mimo_info_embed_desc: "这是一个由 Hoyoverse 推出的永久性活动，你可以完成任务并获得积分，并使用积分购买游戏内的奖励。"
+mimo_auto_finish_and_claim_button_label: 自动完成任务并领取积分
+mimo_auto_finish_and_claim_desc: Hoyo Buddy 能自动完成部份任务并领取所有已完成任务的积分。
+mimo_auto_buy_button_label: 自动购买奖励
+mimo_auto_buy_desc: "只要积分足够，Hoyo Buddy 便会自动购买星穹/菲林，它不会把积分存起来！"
+mimo_redeem_failed: "购买了 {name} 但是无法兑换礼物码，请自行兑换，礼物码: {code}"
+mimo_redeem_success: "成功使用 {points} 积分购买了 {name}，请检查你的游戏内信箱"
+mimo_cmd_desc: 管理旅行 Mimo 活动
+mimo_view_shop_button_label: 商店
+mimo_buy_item_select_placeholder: 选择一个要购买的商品…
+mimo_tasks_button_label: 任务
+mimo_buy_item_amount_label: 数量
+mimo_item_available_time: "在 {time} 后补货"
+mimo_auto_task_embed_footer: 使用 /mimo 挑整自动任务设定及购买奖励
+mimo_auto_task_embed_desc: "Hoyo Buddy 为你完成了 {finish} 项任务并领取了 {claim_point} 积分"
+checkin_reward_embed_footer: 使用 /check-in 来调整通知
+mimo_auto_task_error_dm_content: "由于发生错误，自动 Mimo 任务完成功能已被停用，你可以使用</mimo>将其重新启用。\n如果这个错误持续发生，或是你不知道如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
+mimo_status: "状态: {status}"
+mimo_auto_buy_embed_desc: "Hoyo Buddy 使用 {points} 点积分帮你购买了 {item} 个物品。\n如果下方有显示礼物码，请自行使用</redeem>兑换。"
+mimo_auto_buy_error_dm_content: "由于发生错误，自动购买 Mimo 奖励功能已被停用，你可以使用</mimo>将其重新启用。\n如果这个错误持续发生，或是你不知道如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"

@@ -59,7 +59,7 @@ async def download_images(
     ignore_error: bool = False,
 ) -> None:
     async with asyncio.TaskGroup() as tg:
-        for image_url in list(set(image_urls)):
+        for image_url in set(image_urls):
             file_path = get_static_img_path(image_url, folder)
             if file_path.exists():
                 continue

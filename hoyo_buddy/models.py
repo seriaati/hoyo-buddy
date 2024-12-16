@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Literal, NamedTuple
+from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
 import aiohttp
 import ambr.models
@@ -9,7 +9,7 @@ import enka
 import genshin.models
 from attr import dataclass
 from discord import Locale
-from pydantic import BaseModel, Field, ValidationInfo, field_validator
+from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
 
 from .constants import STARRAIL_RES
 from .enums import GeetestType, GenshinElement
@@ -388,6 +388,14 @@ class UIGFRecord(BaseModel):
             tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
         )
 
+    @model_validator(mode="before")
+    @classmethod
+    def __find_gacha_type(cls, values: dict[str, Any]) -> dict[str, Any]:
+        banner_type = values.get("uigf_gacha_type")
+        if banner_type is None:
+            values["uigf_gacha_type"] = values["gacha_type"]
+        return values
+
 
 class SRGFRecord(BaseModel):
     banner_type: int = Field(alias="gacha_type")
@@ -403,3 +411,25 @@ class SRGFRecord(BaseModel):
         return value.replace(
             tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
         )
+
+
+@dataclass(kw_only=True)
+class SingleBlock:
+    icon: str
+    icon_size: int = 204
+    bg_color: str
+
+    bottom_text: LocaleStr | str | None = None
+    flair_text: LocaleStr | str | None = None
+
+
+@dataclass(kw_only=True)
+class DoubleBlock:
+    icon1: str
+    icon2: str
+    bg_color: str
+    icon_size: int = 204
+
+    flair_text1: LocaleStr | str | None = None
+    flair_text2: LocaleStr | str | None = None
+    bottom_text: LocaleStr | str | None = None

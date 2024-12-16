@@ -20,6 +20,7 @@ from cachetools import TTLCache
 from discord import app_commands
 from discord.ext import commands
 from loguru import logger
+from seria.utils import write_json
 from tortoise.expressions import Q
 
 from hoyo_buddy.bot.error_handler import get_error_embed
@@ -41,7 +42,7 @@ from ..db import models
 from ..enums import Game, GeetestType, Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
-from ..l10n import AppCommandTranslator, EnumStr, LocaleStr, translator
+from ..l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
 from ..utils import fetch_json, get_now, get_repo_version
 from .cache import LFUCache
 from .command_tree import CommandTree
@@ -333,22 +334,24 @@ class HoyoBuddy(commands.AutoShardedBot):
             await models.HoyoAccount.filter(id=current_accounts[0].id).update(current=True)
 
     async def update_assets(self) -> None:
-        # Update enka.py assets
-        async with enka.GenshinClient() as api:
-            await api.update_assets()
+        async with (
+            enka.GenshinClient() as enka_gi,
+            enka.HSRClient() as enka_hsr,
+            asyncio.TaskGroup() as tg,
+        ):
+            # Fetch mi18n files
+            tg.create_task(translator.fetch_mi18n_files())
 
-        async with enka.HSRClient() as api:
-            await api.update_assets()
+            # Update enka.py assets
+            tg.create_task(enka_gi.update_assets())
+            tg.create_task(enka_hsr.update_assets())
 
-        # Update genshin.py assets
-        logger.info("Updating genshin.py assets...")
-        await genshin.utility.update_characters_ambr()
+            # Update genshin.py assets
+            tg.create_task(genshin.utility.update_characters_ambr())
 
-        # Update item ID -> name mappings and some other stuff
-        logger.info("Updating ZZZ assets...")
-        await self.update_zzz_assets()
-        logger.info("Updating HSR assets...")
-        await self.update_hsr_assets()
+            # Update item ID -> name mappings and some other stuff
+            tg.create_task(self.update_zzz_assets())
+            tg.create_task(self.update_hsr_assets())
 
     async def update_zzz_assets(self) -> None:
         result: dict[str, dict[str, str]] = {}
@@ -368,6 +371,10 @@ class HoyoBuddy(commands.AutoShardedBot):
         item_template = item_temp_task.result()
         avatar_template = avatar_temp_task.result()
         text_maps = {lang: task.result() for lang, task in text_map_tasks.items()}
+
+        # Save text maps
+        for lang, text_map in text_maps.items():
+            await write_json(f"{BOT_DATA_PATH}/zzz_text_map_{lang}.json", text_map)
 
         item_id_mapping: dict[int, str] = {}  # item ID -> text map key
 

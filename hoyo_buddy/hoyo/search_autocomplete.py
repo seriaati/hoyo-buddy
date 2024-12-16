@@ -41,14 +41,12 @@ HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Final[dict[HakushinItemCategory, Game]] = {
 
 
 class AutocompleteSetup:
-    _result: ClassVar[AutocompleteChoices] = defaultdict(
-        lambda: defaultdict(lambda: defaultdict(list))
-    )
-    _beta_result: ClassVar[BetaAutocompleteChoices] = defaultdict(lambda: defaultdict(list))
-    _beta_id_to_category: ClassVar[dict[str, str]] = {}
+    _result: ClassVar[AutocompleteChoices]
+    _beta_result: ClassVar[BetaAutocompleteChoices]
+    _beta_id_to_category: ClassVar[dict[str, str]]
     """Item ID to ItemCategory.value."""
-    _category_beta_ids: ClassVar[dict[tuple[Game, ItemCategory], list[str | int] | list[int]]] = {}
-    _tasks: ClassVar[Tasks] = defaultdict(lambda: defaultdict(dict))
+    _category_beta_ids: ClassVar[dict[tuple[Game, ItemCategory], list[str | int] | list[int]]]
+    _tasks: ClassVar[Tasks]
 
     @classmethod
     def _get_ambr_task(
@@ -216,6 +214,13 @@ class AutocompleteSetup:
     async def start(
         cls, session: aiohttp.ClientSession
     ) -> tuple[AutocompleteChoices, dict[str, str], BetaAutocompleteChoices]:
+        # Initialize variables
+        cls._result = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+        cls._beta_result = defaultdict(lambda: defaultdict(list))
+        cls._beta_id_to_category = {}
+        cls._category_beta_ids = {}
+        cls._tasks = defaultdict(lambda: defaultdict(dict))
+
         async with asyncio.TaskGroup() as tg:
             tg.create_task(cls._setup_ambr(tg, session))
             tg.create_task(cls._setup_yatta(tg, session))

@@ -140,7 +140,7 @@ def convert_to_title_case(s: str) -> str:
     # Capitalize first word
     s = capitalize_first_word(s)
     # Capitalize the first word after a colon
-    return re.sub(r"(?<=:)\s*\w+", lambda m: m.group().capitalize(), s)
+    return re.sub(r"(:\s*)([a-z])", lambda match: match.group(1) + match.group(2).upper(), s)
 
 
 def capitalize_first_word(s: str) -> str:

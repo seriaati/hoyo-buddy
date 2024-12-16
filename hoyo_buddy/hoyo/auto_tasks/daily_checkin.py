@@ -6,7 +6,6 @@ import os
 from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar, Literal
 
-import aiohttp
 import discord
 import genshin
 from loguru import logger
@@ -22,8 +21,6 @@ if TYPE_CHECKING:
 
 API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
 MAX_API_ERROR_COUNT = 10
-MAX_API_RETRIES = 3
-RETRY_SLEEP_TIME = 5
 CHECKIN_SLEEP_TIME = 2.5
 DM_SLEEP_TIME = 1.5
 
@@ -38,6 +35,8 @@ class DailyCheckin:
     async def execute(
         cls, bot: HoyoBuddy, *, game: genshin.Game | None = None, no_error_notify: bool = False
     ) -> None:
+        start = asyncio.get_event_loop().time()
+
         try:
             logger.info("Daily check-in started")
 
@@ -93,6 +92,9 @@ class DailyCheckin:
             logger.info(
                 f"Daily check-in finished, total check-in count: {cls._total_checkin_count}"
             )
+
+        end = asyncio.get_event_loop().time()
+        logger.info(f"Daily check-in took {end - start:.2f} seconds")
 
     @classmethod
     async def _daily_checkin_task(
@@ -188,20 +190,15 @@ class DailyCheckin:
 
     @classmethod
     async def _daily_checkin(
-        cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount, *, retry: int = 0
+        cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount
     ) -> Embed:
-        if retry > MAX_API_RETRIES:
-            msg = f"Daily check-in failed for {account} after {retry} retries"
-            raise RuntimeError(msg)
-
-        session = cls._bot.session
         await account.fetch_related("user", "user__settings")
         locale = account.user.settings.locale or discord.Locale.american_english
         client = account.client
         client.set_lang(locale)
 
         try:
-            updated_cookies = await client.update_cookies_for_checkin()
+            await client.update_cookies_for_checkin()
         except Exception as e:
             embed, recognized = get_error_embed(e, locale)
             if not recognized:
@@ -210,77 +207,20 @@ class DailyCheckin:
             embed.add_acc_info(account, blur=False)
             return embed
 
-        cookies = updated_cookies or account.cookies
-
-        if api_name == "LOCAL":
-            try:
-                reward = await client.claim_daily_reward()
-            except Exception as e:
-                if isinstance(e, genshin.DailyGeetestTriggered):
-                    await User.filter(id=account.user.id).update(
-                        temp_data={"geetest": e.gt, "challenge": e.challenge}
-                    )
-                embed, recognized = get_error_embed(e, locale)
-                if not recognized:
-                    cls._bot.capture_exception(e)
-
-                embed.add_acc_info(account, blur=False)
-            else:
-                embed = client.get_daily_reward_embed(reward, locale, blur=False)
-            return embed
-
-        # API check-in
-        assert client.game is not None
-        payload = {
-            "token": API_TOKEN,
-            "cookies": cookies,
-            "lang": client.lang,
-            "game": client.game.value,
-            "region": client.region.value,
-        }
-        api_url = PROXY_APIS[api_name]
-
-        logger_payload = payload.copy()
-        logger_payload.pop("cookies")
-        logger_payload.pop("token")
-        logger.debug(f"Check-in payload: {logger_payload}")
-
         try:
-            async with session.post(f"{api_url}/checkin/", json=payload) as resp:
-                if resp.status == 502:  # Bad Gateway
-                    await asyncio.sleep(20)
-                    embed = await cls._daily_checkin(api_name, account, retry=retry + 1)
-                elif resp.status in {200, 400, 500}:
-                    data = await resp.json()
-                    logger.debug(f"Check-in response: {data}")
+            reward = await client.claim_daily_reward(
+                api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name]
+            )
+        except Exception as e:
+            if isinstance(e, genshin.DailyGeetestTriggered):
+                await User.filter(id=account.user.id).update(
+                    temp_data={"geetest": e.gt, "challenge": e.challenge}
+                )
+            embed, recognized = get_error_embed(e, locale)
+            if not recognized:
+                cls._bot.capture_exception(e)
 
-                    if resp.status == 200:
-                        # Correct reward amount
-                        monthly_rewards = await client.get_monthly_rewards()
-                        reward = next(
-                            (r for r in monthly_rewards if r.icon == data["data"]["icon"]), None
-                        )
-                        if reward is None:
-                            reward = genshin.models.DailyReward(**data["data"])
-                        embed = client.get_daily_reward_embed(reward, locale, blur=False)
-                    elif resp.status == 400:
-                        if data["retcode"] == -9999:
-                            await User.filter(id=account.user.id).update(temp_data=data["data"])
-
-                        e = genshin.GenshinException(data)
-                        embed, recognized = get_error_embed(e, locale)
-                        if not recognized:
-                            cls._bot.capture_exception(e)
-
-                        embed.add_acc_info(account, blur=False)
-                    else:  # 500
-                        msg = f"API {api_name} errored: {data['message']}"
-                        raise RuntimeError(msg)
-                else:
-                    msg = f"API {api_name} returned {resp.status}"
-                    raise RuntimeError(msg)
-        except aiohttp.ClientError:
-            await asyncio.sleep(RETRY_SLEEP_TIME)
-            return await cls._daily_checkin(api_name, account, retry=retry + 1)
-
+            embed.add_acc_info(account, blur=False)
+        else:
+            embed = client.get_daily_reward_embed(reward, locale, blur=False)
         return embed

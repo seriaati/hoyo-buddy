@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING
 
 from discord.ext import commands, tasks
 
+from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
+
 from ..constants import GI_UID_PREFIXES, UTC_8
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
@@ -31,6 +33,7 @@ class Schedule(commands.Cog):
         self.update_assets.start()
         self.run_notes_check.start()
         self.run_auto_redeem.start()
+        self.run_auto_mimo.start()
 
     async def cog_unload(self) -> None:
         if not self.bot.config.schedule:
@@ -42,6 +45,7 @@ class Schedule(commands.Cog):
         self.update_assets.cancel()
         self.run_notes_check.cancel()
         self.run_auto_redeem.cancel()
+        self.run_auto_mimo.cancel()
 
     @tasks.loop(time=datetime.time(0, 0, 0, tzinfo=UTC_8))
     async def run_daily_checkin(self) -> None:
@@ -80,6 +84,15 @@ class Schedule(commands.Cog):
     @tasks.loop(hours=1)
     async def run_auto_redeem(self) -> None:
         await AutoRedeem.execute(self.bot)
+
+    @tasks.loop(
+        time=[
+            *[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 2)],
+            *[datetime.time(hour - 1, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)],
+        ]
+    )
+    async def run_auto_mimo(self) -> None:
+        await AutoMimo.execute(self.bot)
 
     @run_daily_checkin.before_loop
     @run_farm_checks.before_loop

@@ -7,10 +7,8 @@ from typing import TYPE_CHECKING, ClassVar, TypeAlias
 
 import discord
 from discord import Locale
-from genshin.models import Announcement, HonkaiNotes, StarRailNote, VideoStoreState, ZZZNotes
+from genshin.models import HonkaiNotes, HSREvent, StarRailNote, VideoStoreState, ZZZNotes
 from genshin.models import Notes as GenshinNotes
-
-from hoyo_buddy.constants import UID_TZ_OFFSET
 
 from ...bot.error_handler import get_error_embed
 from ...db.models import NotesNotify, draw_locale
@@ -370,27 +368,26 @@ class NotesChecker:
 
     @classmethod
     async def _process_planar_fissure_notify(
-        cls, notify: NotesNotify, anns: Sequence[Announcement]
+        cls, notify: NotesNotify, events: Sequence[HSREvent]
     ) -> None:
         assert notify.hours_before is not None
 
-        for ann in anns:
-            if "Planar Fissure Event" in ann.title:
-                planar_ann = ann
+        for event in events:
+            if "Planar Fissure" in event.name:
+                planar_ann = event
                 break
         else:
             return None
 
-        # Get now in the timezone of the accounts's server
-        now = get_now() + datetime.timedelta(hours=UID_TZ_OFFSET.get(str(notify.account.uid)[0], 0))
-        now = now.replace(tzinfo=None)
+        if (time_info := planar_ann.time_info) is None:
+            return None
 
-        if planar_ann.start_time <= now <= planar_ann.end_time:
+        if time_info.start <= time_info.now <= time_info.end:
             return await cls._reset_notif_count(notify)
 
         if (
             notify.current_notif_count < notify.max_notif_count
-            and planar_ann.start_time - now <= datetime.timedelta(hours=notify.hours_before)
+            and time_info.start - time_info.now <= datetime.timedelta(hours=notify.hours_before)
         ):
             await cls._notify_user(notify, notes=None)
 
@@ -428,7 +425,7 @@ class NotesChecker:
         cls,
         notify: NotesNotify,
         notes: Notes | StarRailNote | ZZZNotes | None,
-        anns: Sequence[Announcement] | None,
+        events: Sequence[HSREvent] | None,
     ) -> None:
         """Proces notification."""
         match notify.type:
@@ -465,8 +462,8 @@ class NotesChecker:
                 assert isinstance(notes, ZZZNotes)
                 await cls._process_video_store_notify(notify, notes)
             case NotesNotifyType.PLANAR_FISSURE:
-                assert anns is not None
-                await cls._process_planar_fissure_notify(notify, anns)
+                assert events is not None
+                await cls._process_planar_fissure_notify(notify, events)
 
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:
@@ -517,13 +514,13 @@ class NotesChecker:
     @classmethod
     async def _get_notes(cls, notify: NotesNotify) -> Notes | StarRailNote | ZZZNotes:
         if notify.account.game is Game.GENSHIN:
-            notes = await notify.account.client.get_genshin_notes(session=cls._bot.session)
+            notes = await notify.account.client.get_genshin_notes()
         elif notify.account.game is Game.STARRAIL:
-            notes = await notify.account.client.get_starrail_notes(session=cls._bot.session)
+            notes = await notify.account.client.get_starrail_notes()
         elif notify.account.game is Game.ZZZ:
-            notes = await notify.account.client.get_zzz_notes(session=cls._bot.session)
+            notes = await notify.account.client.get_zzz_notes()
         elif notify.account.game is Game.HONKAI:
-            notes = await notify.account.client.get_honkai_notes(session=cls._bot.session)
+            notes = await notify.account.client.get_honkai_notes()
         else:
             raise NotImplementedError
         return notes
@@ -558,17 +555,17 @@ class NotesChecker:
 
                 try:
                     if notify.type is NotesNotifyType.PLANAR_FISSURE:
-                        anns = await notify.account.client.get_starrail_announcements()
+                        events = (await notify.account.client.get_starrail_event_calendar()).events
                         notes = None
                     else:
-                        anns = None
+                        events = None
                         if notify.account.uid not in notes_cache[notify.account.game]:
                             notes = await cls._get_notes(notify)
                             notes_cache[notify.account.game][notify.account.uid] = notes
                         else:
                             notes = notes_cache[notify.account.game][notify.account.uid]
 
-                    await cls._process_notify(notify, notes, anns)
+                    await cls._process_notify(notify, notes, events)
                 except Exception as e:
                     await cls._handle_notify_error(notify, e)
                 finally:

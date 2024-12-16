@@ -14,6 +14,7 @@ from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.db.models import CardSettings, CommandMetric, HoyoAccount, Settings, User
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.enums import Game, LeaderboardType
+from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import upload_image
 
@@ -88,6 +89,11 @@ class TaskView(ui.View):
         await i.response.send_message("Auto redeem task started.")
         asyncio.create_task(AutoRedeem.execute(i.client))
 
+    @ui.button(label="Mimo auto task", style=ButtonStyle.blurple)
+    async def auto_mimo_task(self, i: Interaction, _: ui.Button) -> None:
+        await i.response.send_message("Auto mimo task started.")
+        asyncio.create_task(AutoMimo.execute(i.client))
+
 
 class Admin(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
@@ -112,10 +118,10 @@ class Admin(commands.Cog):
         await translator.load_synced_commands_json()
         await message.edit(content=f"Synced {len(synced_commands)} commands.")
 
-    @commands.command(name="fetch-source-strings", aliases=["fss"])
+    @commands.command(name="reload-translator", aliases=["rtrans"])
     async def fetch_source_strings_command(self, ctx: commands.Context) -> Any:
-        await translator.load_l10n_files()
-        await ctx.send(content="Fetched source strings.")
+        await translator.load()
+        await ctx.send(content="Reloaded translator.")
 
     @commands.command(name="run-tasks", aliases=["rt"])
     async def run_tasks_command(self, ctx: commands.Context) -> Any:

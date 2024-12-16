@@ -95,6 +95,8 @@ class AutoMimo:
 
         while True:
             account = await queue.get()
+            await account.fetch_related("user", "user__settings")
+
             task_embed = None
             valuable_embed = None
 
@@ -156,7 +158,6 @@ class AutoMimo:
     async def _complete_mimo_tasks(
         cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount
     ) -> Embed | None:
-        await account.fetch_related("user", "user__settings")
         locale = account.user.settings.locale or discord.Locale.american_english
         client = account.client
         client.set_lang(locale)

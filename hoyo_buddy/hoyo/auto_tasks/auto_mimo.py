@@ -180,7 +180,7 @@ class AutoMimo:
                 cls._bot.capture_exception(e)
             return embed
 
-        if len(finished) and claim_point == 0:
+        if len(finished) == 0 and claim_point == 0:
             return None
 
         embed = DefaultEmbed(

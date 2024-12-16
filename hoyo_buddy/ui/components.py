@@ -60,11 +60,15 @@ class View(discord.ui.View):
         else:
             logger.warning(f"View {self!r} timed out without a set message")
 
-    async def on_error(self, i: Interaction, error: Exception, _: discord.ui.Item[Any]) -> None:
+    async def on_error(self, i: Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
         locale = await get_locale(i)
         embed, recognized = get_error_embed(error, locale)
         if not recognized:
             i.client.capture_exception(error)
+
+        with contextlib.suppress(Exception):
+            await item.unset_loading_state(i)  # pyright: ignore[reportAttributeAccessIssue]
+            await self.absolute_edit(i)
         await self.absolute_send(i, embed=embed, ephemeral=True)
 
     async def interaction_check(self, i: Interaction) -> bool:

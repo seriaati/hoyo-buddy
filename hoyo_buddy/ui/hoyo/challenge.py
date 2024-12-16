@@ -390,13 +390,9 @@ class ChallengeView(View):
             self.check_challenge_data(self.challenge)
             file_ = await self.draw_card(i.client.session, i.client.executor, i.client.loop)
         except NoChallengeDataError as e:
-            await item.unset_loading_state(i)
             embed, _ = get_error_embed(e, self.locale)
-            await i.edit_original_response(embed=embed, view=self, attachments=[])
+            await item.unset_loading_state(i, embed=embed, attachments=[])
             return
-        except Exception:
-            await item.unset_loading_state(i)
-            raise
 
         embed = DefaultEmbed(self.locale).add_acc_info(self.account)
         embed.set_image(url="attachment://challenge.png")
@@ -486,13 +482,7 @@ class ChallengeTypeSelect(Select[ChallengeView]):
     async def callback(self, i: Interaction) -> None:
         self.view.challenge_type = ChallengeType(self.values[0])
         await self.set_loading_state(i)
-
-        try:
-            await self.view.fetch_data_and_update_ui()
-        except Exception:
-            await self.unset_loading_state(i)
-            raise
-
+        await self.view.fetch_data_and_update_ui()
         await self.view.update(self, i)
 
 

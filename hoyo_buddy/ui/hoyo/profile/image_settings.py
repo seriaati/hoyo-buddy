@@ -454,13 +454,9 @@ class GenerateAIArtButton(Button[ImageSettingsView]):
 
         await self.set_loading_state(i)
 
-        try:
-            client = i.client.nai_client
-            bytes_ = await client.generate_image(prompt, negative_prompt)
-            url = await upload_image(i.client.session, image=bytes_)
-        except Exception:
-            await self.unset_loading_state(i)
-            raise
+        client = i.client.nai_client
+        bytes_ = await client.generate_image(prompt, negative_prompt)
+        url = await upload_image(i.client.session, image=bytes_)
 
         # Add the image URL to db
         await CustomImage.create(
@@ -526,18 +522,15 @@ class AddImageButton(Button[ImageSettingsView]):
         # Check if the image URL is valid
         passed = is_image_url(image_url)
         if not passed:
-            await self.unset_loading_state(i)
             raise InvalidImageURLError
         passed = await test_url_validity(image_url, i.client.session)
         if not passed:
-            await self.unset_loading_state(i)
             raise InvalidImageURLError
 
         if not image_url.startswith("https://img.seria.moe/"):
             try:
                 image_url = await upload_image(i.client.session, image_url=image_url)
             except Exception as e:
-                await self.unset_loading_state(i)
                 raise InvalidImageURLError from e
 
         # Add the image URL to db

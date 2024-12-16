@@ -128,6 +128,10 @@ class HoyoAccount(BaseModel):
 class AccountNotifSettings(BaseModel):
     notify_on_checkin_failure = fields.BooleanField(default=True)
     notify_on_checkin_success = fields.BooleanField(default=True)
+    mimo_task_success = fields.BooleanField(default=True)
+    mimo_task_failure = fields.BooleanField(default=True)
+    mimo_buy_success = fields.BooleanField(default=True)
+    mimo_buy_failure = fields.BooleanField(default=True)
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
         "models.HoyoAccount", related_name="notif_settings", pk=True
     )

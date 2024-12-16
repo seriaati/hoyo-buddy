@@ -11,6 +11,7 @@ from hoyo_buddy import ui
 from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import (
+    BELL_OUTLINE,
     INFO,
     MIMO_POINT_EMOJIS,
     PAYMENTS,
@@ -224,13 +225,13 @@ class MimoView(ui.View):
         points = await self.client.get_mimo_point_count()
 
         self.add_item(FinishAndClaimButton())
+        self.add_item(NotificationSettings())
         self.add_item(TaskButton())
         self.add_item(ViewShopButton())
         self.add_item(LotteryInfoButton())
         self.add_item(InfoButton())
         self.add_item(AutoFinishAndClaimButton(current_toggle=self.account.mimo_auto_task))
         self.add_item(AutoBuyButton(current_toggle=self.account.mimo_auto_buy))
-        self.add_item(ShopItemSelector(self.shop_items, points))
 
         embed = await self.get_tasks_embed(points=points)
         await i.followup.send(embed=embed, view=self)
@@ -261,14 +262,7 @@ class FinishAndClaimButton(ui.Button[MimoView]):
         await self.view.client.finish_and_claim_mimo_tasks(
             game_id=self.view.game_id, version_id=self.view.version_id
         )
-
-        shop_item_select: ShopItemSelector = self.view.get_item("mimo_shop_item_selector")
-        points = await self.view.client.get_mimo_point_count()
-        disabled = shop_item_select.set_options(self.view.shop_items, points)
-        self.view.item_states["mimo_shop_item_selector"] = disabled
-        shop_item_select.translate(self.view.locale)
-
-        embed = await self.view.get_tasks_embed(points=points)
+        embed = await self.view.get_tasks_embed()
         await self.unset_loading_state(i, embed=embed)
 
 
@@ -306,8 +300,15 @@ class ViewShopButton(ui.Button[MimoView]):
 
     async def callback(self, i: Interaction) -> None:
         await i.response.defer()
-        embed = self.view.get_shop_embed(points=await self.view.client.get_mimo_point_count())
-        await i.edit_original_response(embed=embed)
+        points = await self.view.client.get_mimo_point_count()
+
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        self.view.clear_items()
+        self.view.add_item(go_back_button)
+        self.view.add_item(ShopItemSelector(self.view.shop_items, points))
+
+        embed = self.view.get_shop_embed(points=points)
+        await i.edit_original_response(embed=embed, view=self.view)
 
 
 class BuyItemModal(ui.Modal):
@@ -497,3 +498,89 @@ class LotteryInfoButton(ui.Button[MimoView]):
             LotteryDrawButton(disabled=lottery_info.current_count >= lottery_info.limit_count)
         )
         await i.edit_original_response(embed=embed, view=self.view)
+
+
+class NotificationSettings(ui.Button[MimoView]):
+    def __init__(self) -> None:
+        super().__init__(
+            label=LocaleStr(key="notification_settings_button_label"), row=0, emoji=BELL_OUTLINE
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await i.response.defer()
+        await self.view.account.fetch_related("notif_settings")
+
+        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        self.view.clear_items()
+        self.view.add_item(go_back_button)
+
+        self.view.add_item(
+            AutoTaskSuccessNotify(current_toggle=self.view.account.notif_settings.mimo_task_success)
+        )
+        self.view.add_item(
+            AutoTaskFailureNotify(current_toggle=self.view.account.notif_settings.mimo_task_failure)
+        )
+        self.view.add_item(
+            AutoBuySuccessNotify(current_toggle=self.view.account.notif_settings.mimo_buy_success)
+        )
+        self.view.add_item(
+            AutoBuyFailureNotify(current_toggle=self.view.account.notif_settings.mimo_buy_failure)
+        )
+        await i.edit_original_response(view=self.view)
+
+
+class AutoTaskSuccessNotify(ui.ToggleButton[MimoView]):
+    def __init__(self, *, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle,
+            toggle_label=LocaleStr(key="mimo_auto_task_success_notify_toggle_label"),
+            row=0,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i)
+        await self.view.account.fetch_related("notif_settings")
+        self.view.account.notif_settings.mimo_task_success = self.current_toggle
+        await self.view.account.notif_settings.save(update_fields=("mimo_task_success",))
+
+
+class AutoTaskFailureNotify(ui.ToggleButton[MimoView]):
+    def __init__(self, *, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle,
+            toggle_label=LocaleStr(key="mimo_auto_task_failure_notify_toggle_label"),
+            row=0,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i)
+        self.view.account.notif_settings.mimo_task_failure = self.current_toggle
+        await self.view.account.notif_settings.save(update_fields=("mimo_task_failure",))
+
+
+class AutoBuySuccessNotify(ui.ToggleButton[MimoView]):
+    def __init__(self, *, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle,
+            toggle_label=LocaleStr(key="mimo_auto_buy_success_notify_toggle_label"),
+            row=1,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i)
+        self.view.account.notif_settings.mimo_buy_success = self.current_toggle
+        await self.view.account.notif_settings.save(update_fields=("mimo_buy_success",))
+
+
+class AutoBuyFailureNotify(ui.ToggleButton[MimoView]):
+    def __init__(self, *, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle,
+            toggle_label=LocaleStr(key="mimo_auto_buy_failure_notify_toggle_label"),
+            row=1,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i)
+        self.view.account.notif_settings.mimo_buy_failure = self.current_toggle
+        await self.view.account.notif_settings.save(update_fields=("mimo_buy_failure",))

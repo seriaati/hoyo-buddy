@@ -95,7 +95,7 @@ class AutoMimo:
 
         while True:
             account = await queue.get()
-            await account.fetch_related("user", "user__settings")
+            await account.fetch_related("user", "user__settings", "notif_settings")
 
             task_embed = None
             valuable_embed = None
@@ -131,7 +131,14 @@ class AutoMimo:
                     else:
                         content = None
 
-                    await cls._bot.dm_user(account.user.id, embed=task_embed, content=content)
+                    if (
+                        isinstance(task_embed, DefaultEmbed)
+                        and account.notif_settings.mimo_task_success
+                    ) or (
+                        isinstance(task_embed, ErrorEmbed)
+                        and account.notif_settings.mimo_task_failure
+                    ):
+                        await cls._bot.dm_user(account.user.id, embed=task_embed, content=content)
 
                 if valuable_embed is not None:
                     cls._buy_count += 1
@@ -148,7 +155,16 @@ class AutoMimo:
                     else:
                         content = None
 
-                    await cls._bot.dm_user(account.user.id, embed=valuable_embed, content=content)
+                    if (
+                        isinstance(task_embed, DefaultEmbed)
+                        and account.notif_settings.mimo_buy_success
+                    ) or (
+                        isinstance(task_embed, ErrorEmbed)
+                        and account.notif_settings.mimo_buy_failure
+                    ):
+                        await cls._bot.dm_user(
+                            account.user.id, embed=valuable_embed, content=content
+                        )
 
             finally:
                 await asyncio.sleep(SLEEP_TIME)

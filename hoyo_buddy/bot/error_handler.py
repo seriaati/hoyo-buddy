@@ -162,6 +162,6 @@ def get_error_embed(error: Exception, locale: discord.Locale) -> tuple[ErrorEmbe
         recognized = False
         description = f"{type(error).__name__}: {error}" if error else type(error).__name__
         embed = ErrorEmbed(locale, title=LocaleStr(key="error_title"), description=description)
-        embed.set_footer(text=LocaleStr(key="error_footer"))
 
+    embed.set_footer(text=LocaleStr(key="error_footer"))
     return embed, recognized

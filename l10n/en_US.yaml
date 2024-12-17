@@ -283,7 +283,6 @@ notes-card.gi.daily-commissions: Daily Commissions
 notes-card.gi.expedition-finished: Finished
 notes-card.gi.expedition-remaining: "{time} Remaining"
 notes-card.gi.realm-currency: Realm Currency
-notes-card.gi.realtime-notes: Real-Time Notes
 notes-card.gi.remaining: Remaining
 notes-card.gi.resin: Resin
 notes-card.gi.resin-discounts: Resin Discounts
@@ -595,11 +594,9 @@ show_tutorial_button_label: Show tutorial
 close_button_label: Close
 required_field_error_message: This field is required
 accounts_added_snackbar_message: "Accounts added successfully, redirecting you back to Discord..."
-account_add_start_title: Add Accounts
 account_add_start_message: "Click the button below and follow the instructions to add your accounts. When you're done, use the </accounts> command to view the accounts you have added. If you face issues or need help, join our [Discord server](<https://link.seria.moe/hb-dc>)."
 hbls_button_label: Let's start!
 gacha_import_url_modal_title: Enter gacha log URL
-gacha_import_embed_title: Importing Gacha Logs
 gacha_import_embed_description: "Gacha log URL: Obtain a very long URL from the game to import your gacha records, guides for different games are below:\n- Android: [YouTube video](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nFor services below, export your gacha records as the specified file format and upload it via </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Unable to extract authkey from the URL, please try again with a valid URL."
 extract_authkey_error_title: Authkey Extraction Failed

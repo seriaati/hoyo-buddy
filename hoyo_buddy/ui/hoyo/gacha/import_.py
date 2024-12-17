@@ -30,7 +30,7 @@ class GachaImportView(View):
     def embed(self) -> DefaultEmbed:
         return DefaultEmbed(
             self.locale,
-            title=LocaleStr(key="gacha_import_embed_title"),
+            title=LocaleStr(key="gacha_import_loading_embed_title"),
             description=LocaleStr(key="gacha_import_embed_description"),
         ).add_acc_info(self.account)
 

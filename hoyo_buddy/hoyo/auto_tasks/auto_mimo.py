@@ -5,7 +5,6 @@ import os
 from typing import TYPE_CHECKING, ClassVar, Literal
 
 import discord
-import genshin
 from loguru import logger
 from seria.utils import create_bullet_list
 from tortoise.expressions import Q
@@ -20,6 +19,8 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import get_mimo_task_str
 
 if TYPE_CHECKING:
+    import genshin
+
     from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.types import ProxyAPI
 
@@ -33,6 +34,7 @@ class AutoMimo:
     _buy_count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
     _mimo_game_data: ClassVar[dict[Game, tuple[int, int]]]
+    _down_games: ClassVar[set[Game]]
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
 
     @classmethod
@@ -49,6 +51,7 @@ class AutoMimo:
                 cls._buy_count = 0
                 cls._bot = bot
                 cls._mimo_game_data = {}
+                cls._down_games = set()
 
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 accounts = await HoyoAccount.filter(
@@ -79,6 +82,18 @@ class AutoMimo:
         logger.info(f"Auto mimo task took {end - start:.2f} seconds")
 
     @classmethod
+    async def _get_mimo_game_data(cls, client: genshin.Client, game: Game) -> tuple[int, int]:
+        try:
+            game_id, version_id = await client._get_mimo_game_data(HB_GAME_TO_GPY_GAME[game])
+        except ValueError:
+            logger.warning(f"Failed to get mimo game data for {game}")
+            cls._down_games.add(game)
+            raise
+
+        cls._mimo_game_data[game] = (game_id, version_id)
+        return game_id, version_id
+
+    @classmethod
     async def _mimo_task(
         cls, queue: asyncio.Queue[HoyoAccount], api_name: ProxyAPI | Literal["LOCAL"]
     ) -> None:
@@ -96,6 +111,10 @@ class AutoMimo:
 
         while True:
             account = await queue.get()
+            if account.game in cls._down_games:
+                queue.task_done()
+                continue
+
             await account.fetch_related("user", "user__settings", "notif_settings")
 
             task_embed = None
@@ -182,17 +201,17 @@ class AutoMimo:
         try:
             game_id, version_id = cls._mimo_game_data.get(account.game, (None, None))
             if game_id is None or version_id is None:
-                game_id, version_id = await client._get_mimo_game_data(
-                    HB_GAME_TO_GPY_GAME[account.game]
-                )
-                cls._mimo_game_data[account.game] = (game_id, version_id)
+                try:
+                    game_id, version_id = await cls._get_mimo_game_data(client, account.game)
+                except ValueError:
+                    return None
 
             finished, claimed = await client.finish_and_claim_mimo_tasks(
                 game_id=game_id,
                 version_id=version_id,
                 api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name],
             )
-        except genshin.GenshinException as e:
+        except Exception as e:
             embed, recognized = get_error_embed(e, locale)
             if not recognized:
                 cls._bot.capture_exception(e)
@@ -234,15 +253,15 @@ class AutoMimo:
         try:
             game_id, version_id = cls._mimo_game_data.get(account.game, (None, None))
             if game_id is None or version_id is None:
-                game_id, version_id = await client._get_mimo_game_data(
-                    HB_GAME_TO_GPY_GAME[account.game]
-                )
-                cls._mimo_game_data[account.game] = (game_id, version_id)
+                try:
+                    game_id, version_id = await cls._get_mimo_game_data(client, account.game)
+                except ValueError:
+                    return None
 
             bought = await client.buy_mimo_valuables(
                 game_id=game_id, version_id=version_id, api_url=api_url
             )
-        except genshin.GenshinException as e:
+        except Exception as e:
             embed, recognized = get_error_embed(e, locale)
             if not recognized:
                 cls._bot.capture_exception(e)

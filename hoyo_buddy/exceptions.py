@@ -228,3 +228,11 @@ class NotAnImageError(HoyoBuddyError):
             title=LocaleStr(key="not_an_image_error_title"),
             message=LocaleStr(key="not_an_image_error_message"),
         )
+
+
+class MimoUnavailableError(HoyoBuddyError):
+    def __init__(self, game: Game) -> None:
+        super().__init__(
+            title=LocaleStr(key="generic_error_title"),
+            message=LocaleStr(key="mimo_game_unavailable", game=EnumStr(game)),
+        )

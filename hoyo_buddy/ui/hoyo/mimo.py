@@ -19,6 +19,7 @@ from hoyo_buddy.emojis import (
     TASK_LIST,
 )
 from hoyo_buddy.enums import Game
+from hoyo_buddy.exceptions import MimoUnavailableError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.components import GoBackButton
 from hoyo_buddy.utils import convert_code_to_redeem_url, ephemeral, get_mimo_task_str
@@ -170,10 +171,9 @@ class MimoView(ui.View):
             None,
         )
         if mimo_game is None:
-            msg = f"Game {self.account.game} not found in Mimo games."
-            raise ValueError(msg)
-        self.mimo_game = mimo_game
+            raise MimoUnavailableError(self.account.game)
 
+        self.mimo_game = mimo_game
         self.shop_items = await self.client.get_mimo_shop_items(
             game_id=mimo_game.id, version_id=mimo_game.version_id
         )

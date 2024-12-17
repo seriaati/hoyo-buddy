@@ -283,7 +283,6 @@ notes-card.gi.daily-commissions: 每日委托
 notes-card.gi.expedition-finished: 已完成
 notes-card.gi.expedition-remaining: "剩余 {time}"
 notes-card.gi.realm-currency: 洞天宝钱
-notes-card.gi.realtime-notes: 实时便笺
 notes-card.gi.remaining: 剩余
 notes-card.gi.resin: 树脂
 notes-card.gi.resin-discounts: 树脂折扣
@@ -313,6 +312,10 @@ notif_modal.threshold.label: 阈值
 notification_settings_button_label: 通知设定
 notify_on_failure_button_label: 签到失败通知
 notify_on_success_button_label: 签到成功通知
+mimo_auto_task_success_notify_toggle_label: 在自动完成任务成功时通知
+mimo_auto_task_failure_notify_toggle_label: 在自动完成任务失败时通知
+mimo_auto_buy_success_notify_toggle_label: 在自动购买奖励成功时通知
+mimo_auto_buy_failure_notify_toggle_label: 在自动购买奖励失败时通知
 nsfw_prompt_error_message: "此提示包含不宜內容，请使用其他提示后再试。"
 nsfw_prompt_error_title: 侦测到不合宜的提示
 page_footer: "{current_page}/{total_pages}页"
@@ -591,11 +594,9 @@ show_tutorial_button_label: 显示教程
 close_button_label: 关闭
 required_field_error_message: 此栏位为必填栏位
 accounts_added_snackbar_message: "帐户新增成功，正在将你重新导向至 Discord..."
-account_add_start_title: 新增帐户
 account_add_start_message: "点击下方按钮并遵循指示来新增你的帐户。当你完成的时候，使用 </accounts> 指令来查看你刚才新增的帐户。如果你遇到任何问题或需要帮助，加入我们的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)。"
 hbls_button_label: 开始！
 gacha_import_url_modal_title: 输入抽卡纪录连结
-gacha_import_embed_title: 导入抽卡纪录
 gacha_import_embed_description: "抽卡纪录连结: 从游戏内获取一串很长的连结来导入你的抽卡纪录, 不同游戏的获取方式如下:\n- 安卓: [YouTube 视频](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-cn/genshin/wish-import)\n- 崩坏: 星穹铁道: [Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-cn/warp-import)\n- 绝区零: [zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-cn/zzz/signal-import)\n\n如果你有使用下列的服务之一, 将你的抽卡纪录导出至指定的档案格式后即可使用 </gacha-log upload> 指令将其上传并导入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "无法从连结内提取 authkey, 请尝试其他连结。"
 extract_authkey_error_title: Authkey 提取失败

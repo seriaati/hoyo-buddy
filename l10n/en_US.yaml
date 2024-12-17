@@ -780,3 +780,5 @@ mimo_auto_task_error_dm_content: "Auto Mimo task completion has been disabled du
 mimo_status: "Status: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy bought {item} item(s) for you with {points} points.\nIf you see gift codes below, please redeem them manually with </redeem>."
 mimo_auto_buy_error_dm_content: "Auto Mimo reward buying has been disabled due to an error, you can enable it back using </mimo>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
+mimo_game_unavailable: "Traveling Mimo is currently unavailable for {game}"
+generic_error_title: Error

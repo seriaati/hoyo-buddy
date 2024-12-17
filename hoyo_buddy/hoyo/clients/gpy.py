@@ -45,7 +45,7 @@ if TYPE_CHECKING:
 load_dotenv()
 env = os.environ["ENV"]
 
-MAX_API_RETRIES = 3
+MAX_RETRIES = 3
 PROXY_APIS_ = (*PROXY_APIS.values(), "LOCAL")
 proxy_api_rotator = itertools.cycle(PROXY_APIS_)
 no_local_proxy_api_rotator = itertools.cycle(PROXY_APIS.values())
@@ -64,15 +64,22 @@ class ProxyGenshinClient(genshin.Client):
         )
 
     async def request(self, *args: Any, **kwargs: Any) -> Any:
-        for attempt in range(MAX_API_RETRIES):
+        attempt = 0
+        err: Exception | None = None
+
+        while attempt < MAX_RETRIES:
             try:
                 return await super().request(*args, **kwargs)
-            except (TimeoutError, aiohttp.ClientError, ConnectionResetError):
-                if attempt < MAX_API_RETRIES - 1:  # Don't wait after last attempt
-                    await asyncio.sleep(2**attempt)
-                else:
-                    raise
-        return None
+            except Exception as e:
+                err = e
+
+            attempt += 1
+            backoff_factor = 2
+            jitter = random.uniform(0, 1)
+            await asyncio.sleep((backoff_factor**attempt) + jitter)
+
+        msg = f"HoYo API request failed after {MAX_RETRIES} attempts"
+        raise RuntimeError(msg) from err
 
     async def request_proxy_api(
         self, api_url: str, endpoint: str, payload: dict[str, Any]
@@ -88,7 +95,10 @@ class ProxyGenshinClient(genshin.Client):
         }
         logger.debug(f"Requesting {api_url}/{endpoint}/ with payload: {no_sensitive_info_payload}")
 
-        for attempt in range(MAX_API_RETRIES):
+        attempt = 0
+        err: Exception | None = None
+
+        while attempt < MAX_RETRIES:
             try:
                 async with (
                     aiohttp.ClientSession() as session,
@@ -102,22 +112,18 @@ class ProxyGenshinClient(genshin.Client):
                             raise genshin.GenshinException(data)
                         raise Exception(data["message"])
 
-                    logger.debug(f"Got status code {resp.status} from {api_url}")
-                    if attempt < MAX_API_RETRIES - 1:
-                        await asyncio.sleep(2 * (attempt + 1))
-                        api_url = next(no_local_proxy_api_rotator)
-                    else:
-                        raise ProxyAPIError(api_url, resp.status)
-            except aiohttp.ClientError:
-                logger.exception(f"Failed to connect to {api_url}")
-                if attempt < MAX_API_RETRIES - 1:
-                    await asyncio.sleep(2 * (attempt + 1))
-                    api_url = next(no_local_proxy_api_rotator)
-                else:
-                    raise
+                    err = ProxyAPIError(api_url, resp.status)
+            except Exception as e:
+                err = e
 
-        msg = f"Max API retries exceeded for {api_url}"
-        raise RuntimeError(msg)
+            attempt += 1
+            backoff_factor = 2
+            jitter = random.uniform(0, 1)
+            api_url = next(no_local_proxy_api_rotator)
+            await asyncio.sleep((backoff_factor**attempt) + jitter)
+
+        msg = f"Proxy API request failed after {MAX_RETRIES} attempts"
+        raise RuntimeError(msg) from err
 
     @overload
     async def os_app_login(

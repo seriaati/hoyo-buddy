@@ -212,7 +212,9 @@ class AutoMimo:
                 label=LocaleStr(key="mimo_auto_finish_and_claim_button_label"),
             ),
             description=LocaleStr(
-                key="mimo_auto_task_embed_desc", finish=len(finished), claim_point=claimed
+                key="mimo_auto_task_embed_desc",
+                finish=len(finished),
+                claim_point=sum(task.point for task in claimed),
             ),
         )
         embed.add_description(

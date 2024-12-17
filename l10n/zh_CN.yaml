@@ -780,3 +780,5 @@ mimo_auto_task_error_dm_content: "由于发生错误，自动 Mimo 任务完成�
 mimo_status: "状态: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy 使用 {points} 点积分帮你购买了 {item} 个物品。\n如果下方有显示礼物码，请自行使用</redeem>兑换。"
 mimo_auto_buy_error_dm_content: "由于发生错误，自动购买 Mimo 奖励功能已被停用，你可以使用</mimo>将其重新启用。\n如果这个错误持续发生，或是你不知道如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
+mimo_game_unavailable: "{game}目前无法使用旅行 Mimo"
+generic_error_title: 错误

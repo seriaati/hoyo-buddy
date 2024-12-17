@@ -24,12 +24,14 @@ from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 from seria.utils import clean_url
 
 from hoyo_buddy.constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
+from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
 
 if TYPE_CHECKING:
     import pathlib
     from collections.abc import Generator, Sequence
 
+    import genshin
     from discord import Interaction, Member, User
 
 
@@ -526,3 +528,49 @@ def convert_code_to_redeem_url(code: str, *, game: Game) -> str:
 
     msg = f"Unsupported game: {game}"
     raise ValueError(msg)
+
+
+def get_mimo_task_url(task: genshin.models.MimoTask) -> str | None:
+    if not task.jump_url:
+        return None
+
+    url_data: dict[str, Any] = orjson.loads(task.jump_url)
+    host, type_, args = url_data.get("host"), url_data.get("type"), url_data.get("args")
+    if host != "hoyolab" or args is None:
+        return None
+
+    if type_ == "article":
+        post_id = args.get("post_id")
+        if post_id is None:
+            return None
+        return f"https://www.hoyolab.com/article/{post_id}"
+
+    if type_ == "topicDetail":
+        topic_id = args.get("topic_id")
+        if topic_id is None:
+            return None
+        return f"https://www.hoyolab.com/topicDetail/{topic_id}"
+
+    if type_ == "circles":
+        game_id = args.get("game_id")
+        if game_id is None:
+            return None
+        return f"https://www.hoyolab.com/circles/{game_id}"
+
+    if type_ == "h5":
+        url = args.get("url")
+        if url is None:
+            return None
+        return url
+
+    return None
+
+
+def get_mimo_task_str(task: genshin.models.MimoTask, game: Game) -> str:
+    point_emoji = MIMO_POINT_EMOJIS[game]
+    task_url = get_mimo_task_url(task)
+    task_str = f"[{task.name}]({task_url})" if task_url else task.name
+    task_str += f" - {task.point} {point_emoji}"
+    if task.total_progress > 1:
+        task_str += f" ({task.progress}/{task.total_progress})"
+    return task_str

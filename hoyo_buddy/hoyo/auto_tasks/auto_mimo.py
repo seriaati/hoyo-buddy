@@ -17,6 +17,7 @@ from hoyo_buddy.embeds import DefaultEmbed, Embed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.utils import get_mimo_task_str
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
@@ -186,7 +187,7 @@ class AutoMimo:
                 )
                 cls._mimo_game_data[account.game] = (game_id, version_id)
 
-            finished, claim_point = await client.finish_and_claim_mimo_tasks(
+            finished, claimed = await client.finish_and_claim_mimo_tasks(
                 game_id=game_id,
                 version_id=version_id,
                 api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name],
@@ -197,8 +198,11 @@ class AutoMimo:
                 cls._bot.capture_exception(e)
             return embed
 
-        if len(finished) == 0 and claim_point == 0:
+        if len(finished) == 0 and len(claimed) == 0:
             return None
+
+        finished_ids = {task.id for task in finished}
+        tasks = finished + [task for task in claimed if task.id not in finished_ids]
 
         embed = DefaultEmbed(
             locale,
@@ -208,10 +212,12 @@ class AutoMimo:
                 label=LocaleStr(key="mimo_auto_finish_and_claim_button_label"),
             ),
             description=LocaleStr(
-                key="mimo_auto_task_embed_desc", finish=len(finished), claim_point=claim_point
+                key="mimo_auto_task_embed_desc", finish=len(finished), claim_point=claimed
             ),
         )
-        embed.add_description(f"{create_bullet_list([task.name for task in finished])}")
+        embed.add_description(
+            f"{create_bullet_list([get_mimo_task_str(task, account.game) for task in tasks])}"
+        )
         return embed
 
     @classmethod

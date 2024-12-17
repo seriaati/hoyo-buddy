@@ -811,9 +811,9 @@ class GenshinClient(ProxyGenshinClient):
 
     async def finish_and_claim_mimo_tasks(
         self, *, game_id: int, version_id: int, api_url: str | None = None
-    ) -> tuple[list[genshin.models.MimoTask], int]:
+    ) -> tuple[list[genshin.models.MimoTask], list[genshin.models.MimoTask]]:
         finished: list[genshin.models.MimoTask] = []
-        claim_point = 0
+        claimed: list[genshin.models.MimoTask] = []
 
         tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
 
@@ -866,9 +866,10 @@ class GenshinClient(ProxyGenshinClient):
                     if e.retcode == -500001:  # Invalid fields in calculation
                         continue
                     raise
-                claim_point += task.point
 
-        return finished, claim_point
+                claimed.append(task)
+
+        return finished, claimed
 
     async def buy_mimo_valuables(
         self, *, game_id: int, version_id: int, api_url: str | None = None

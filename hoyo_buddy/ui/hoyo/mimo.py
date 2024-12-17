@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 import genshin
-import orjson
 from discord import ButtonStyle, Locale
 from seria.utils import create_bullet_list, shorten
 
@@ -22,7 +21,7 @@ from hoyo_buddy.emojis import (
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.components import GoBackButton
-from hoyo_buddy.utils import convert_code_to_redeem_url, ephemeral
+from hoyo_buddy.utils import convert_code_to_redeem_url, ephemeral, get_mimo_task_str
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -54,52 +53,8 @@ class MimoView(ui.View):
     def version_id(self) -> int:
         return self.mimo_game.version_id
 
-    @staticmethod
-    def get_task_url(task: genshin.models.MimoTask) -> str | None:
-        if not task.jump_url:
-            return None
-
-        url_data: dict[str, Any] = orjson.loads(task.jump_url)
-        host, type_, args = url_data.get("host"), url_data.get("type"), url_data.get("args")
-        if host != "hoyolab" or args is None:
-            return None
-
-        if type_ == "article":
-            post_id = args.get("post_id")
-            if post_id is None:
-                return None
-            return f"https://www.hoyolab.com/article/{post_id}"
-
-        if type_ == "topicDetail":
-            topic_id = args.get("topic_id")
-            if topic_id is None:
-                return None
-            return f"https://www.hoyolab.com/topicDetail/{topic_id}"
-
-        if type_ == "circles":
-            game_id = args.get("game_id")
-            if game_id is None:
-                return None
-            return f"https://www.hoyolab.com/circles/{game_id}"
-
-        if type_ == "h5":
-            url = args.get("url")
-            if url is None:
-                return None
-            return url
-
-        return None
-
     def create_task_bullet_list(self, tasks: Sequence[genshin.models.MimoTask]) -> str:
-        task_strs: list[str] = []
-        for task in tasks:
-            task_url = self.get_task_url(task)
-            task_str = f"[{task.name}]({task_url})" if task_url else task.name
-            task_str += (
-                f" - {task.point} {self.point_emoji} ({task.progress}/{task.total_progress})"
-            )
-            task_strs.append(task_str)
-        return create_bullet_list(task_strs)
+        return create_bullet_list([get_mimo_task_str(task, self.account.game) for task in tasks])
 
     def add_task_fields(
         self, embed: DefaultEmbed, tasks: Sequence[genshin.models.MimoTask], name: LocaleStr

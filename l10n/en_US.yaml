@@ -312,10 +312,10 @@ notif_modal.threshold.label: Threshold
 notification_settings_button_label: Notification settings
 notify_on_failure_button_label: Notify on check-in failure
 notify_on_success_button_label: Notify on check-in success
-mimo_auto_task_success_notify_toggle_label: Auto task success notification
-mimo_auto_task_failure_notify_toggle_label: Auto task failure notification
-mimo_auto_buy_success_notify_toggle_label: Auto buy success notification
-mimo_auto_buy_failure_notify_toggle_label: Auto buy failure notification
+mimo_auto_task_success_notify_toggle_label: Notify on auto finish task success
+mimo_auto_task_failure_notify_toggle_label: Notify on auto finish task failure
+mimo_auto_buy_success_notify_toggle_label: Notify on auto buy rewards success
+mimo_auto_buy_failure_notify_toggle_label: Notify on auto buy rewards failure
 nsfw_prompt_error_message: "The prompt contains NSFW content, please try again with a different prompt."
 nsfw_prompt_error_title: NSFW Prompt Detected
 page_footer: "Page {current_page}/{total_pages}"

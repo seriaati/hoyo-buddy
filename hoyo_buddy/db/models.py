@@ -124,6 +124,9 @@ class HoyoAccount(BaseModel):
             return Platform.HOYOLAB
         return Platform.HOYOLAB if region is genshin.Region.OVERSEAS else Platform.MIYOUSHE
 
+    @cached_property
+    def dict_cookies(self) -> dict[str, str]:
+        return genshin.parse_cookie(self.cookies)
 
 class AccountNotifSettings(BaseModel):
     notify_on_checkin_failure = fields.BooleanField(default=True)

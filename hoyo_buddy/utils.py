@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import base64
 import datetime
-import http.cookies
 import math
 import os
 import re
@@ -321,21 +320,6 @@ def get_discord_url(*, channel_id: str, guild_id: str) -> str:
     if guild_id == "None":
         return f"https://discord.com/channels/@me/{channel_id}"
     return f"https://discord.com/channels/{guild_id}/{channel_id}"
-
-
-def str_cookie_to_dict(cookie_string: str) -> dict[str, str]:
-    """Convert a string cookie to a dictionary.
-
-    Args:
-        cookie_string: The cookie string.
-
-    Returns:
-        The cookie dictionary.
-    """
-
-    cookies = http.cookies.SimpleCookie()
-    cookies.load(cookie_string)
-    return {cookie.key: cookie.value for cookie in cookies.values()}
 
 
 def dict_cookie_to_str(cookie_dict: dict[str, str]) -> str:

@@ -3,8 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import flet as ft
+import genshin
 
-from hoyo_buddy.utils import dict_cookie_to_str, str_cookie_to_dict
+from hoyo_buddy.utils import dict_cookie_to_str
 from hoyo_buddy.web_app.utils import encrypt_string
 
 if TYPE_CHECKING:
@@ -108,7 +109,7 @@ class LoginDetailForm(ft.Column):
             await login_details.update_async()
             return
 
-        dict_cookies = str_cookie_to_dict(login_details.value)
+        dict_cookies = genshin.parse_cookie(login_details.value)
         device_id = dict_cookies.pop("x-rpc-device_id", None)
         device_fp = dict_cookies.pop("x-rpc-device_fp", None)
         if device_id is not None:

@@ -257,7 +257,7 @@ class ViewShopButton(ui.Button[MimoView]):
         await i.response.defer()
         points = await self.view.client.get_mimo_point_count()
 
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(self.view.children)
         self.view.clear_items()
         self.view.add_item(go_back_button)
         self.view.add_item(ShopItemSelector(self.view.shop_items, points))
@@ -453,7 +453,7 @@ class LotteryInfoButton(ui.Button[MimoView]):
             game_id=self.view.game_id, version_id=self.view.version_id
         )
         embed = self.view.get_lottery_info_embed(lottery_info)
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(self.view.children)
         self.view.clear_items()
         self.view.add_item(go_back_button)
         self.view.add_item(
@@ -472,7 +472,7 @@ class NotificationSettings(ui.Button[MimoView]):
         await i.response.defer()
         await self.view.account.fetch_related("notif_settings")
 
-        go_back_button = GoBackButton(self.view.children, self.view.get_embeds(i.message))
+        go_back_button = GoBackButton(self.view.children)
         self.view.clear_items()
         self.view.add_item(go_back_button)
 

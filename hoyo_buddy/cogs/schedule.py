@@ -87,8 +87,8 @@ class Schedule(commands.Cog):
 
     @tasks.loop(
         time=[
-            *[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 2)],
-            *[datetime.time(hour - 1, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)],
+            datetime.time(22, 0, 0, tzinfo=UTC_8),
+            *[datetime.time(hour - 2, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)],
         ]
     )
     async def run_auto_mimo(self) -> None:
@@ -100,6 +100,7 @@ class Schedule(commands.Cog):
     @update_assets.before_loop
     @run_notes_check.before_loop
     @run_auto_redeem.before_loop
+    @run_auto_mimo.before_loop
     async def before_loops(self) -> None:
         await self.bot.wait_until_ready()
 

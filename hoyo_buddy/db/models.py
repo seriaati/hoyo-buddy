@@ -91,7 +91,7 @@ class HoyoAccount(BaseModel):
     def __str__(self) -> str:
         return f"{self.nickname or self.username} ({self.uid})"
 
-    @property
+    @cached_property
     def blurred_display(self) -> str:
         return f"{self.nickname or self.username} ({blur_uid(self.uid)})"
 
@@ -101,7 +101,7 @@ class HoyoAccount(BaseModel):
 
         return GenshinClient(self)
 
-    @property
+    @cached_property
     def server_reset_datetime(self) -> datetime.datetime:
         """Server reset time in UTC+8."""
         server = genshin.utility.recognize_server(self.uid, HB_GAME_TO_GPY_GAME[self.game])
@@ -111,11 +111,11 @@ class HoyoAccount(BaseModel):
             reset_time += datetime.timedelta(days=1)
         return reset_time
 
-    @property
+    @cached_property
     def game_icon(self) -> str:
         return get_game_icon(self.game)
 
-    @property
+    @cached_property
     def platform(self) -> Platform:
         region = self.region or genshin.utility.recognize_region(
             self.uid, HB_GAME_TO_GPY_GAME[self.game]
@@ -133,6 +133,8 @@ class HoyoAccount(BaseModel):
         return ("cookie_token_v2" in self.dict_cookies) or (
             "ltmid_v2" in self.dict_cookies and "stoken" in self.dict_cookies
         )
+
+
 class AccountNotifSettings(BaseModel):
     notify_on_checkin_failure = fields.BooleanField(default=True)
     notify_on_checkin_success = fields.BooleanField(default=True)

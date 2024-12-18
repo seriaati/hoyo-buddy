@@ -483,11 +483,6 @@ CHALLENGE_TYPE_GAMES = {
     type_: game for game, types in GAME_CHALLENGE_TYPES.items() for type_ in types
 }
 
-ZENLESS_ASSET_SCRAPE_URL = (
-    "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite"
-)
-ZZZ_AGENT_DATA_URL = f"{ZENLESS_ASSET_SCRAPE_URL}/agent_data.json"
-
 ZENLESS_DATA_URL = "https://git.mero.moe/dimbreath/ZenlessData/raw/branch/master"
 ZENLESS_DATA_LANGS = ("CHT", "DE", "EN", "ES", "FR", "ID", "JA", "KO", "PT", "RU", "TH", "VI")
 ZZZ_ITEM_TEMPLATE_URL = f"{ZENLESS_DATA_URL}//FileCfg/ItemTemplateTb.json"

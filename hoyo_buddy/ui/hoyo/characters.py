@@ -130,7 +130,6 @@ class CharactersView(PaginatorView):
         dark_mode: bool,
         element_char_counts: dict[str, int],
         path_char_counts: dict[str, int],
-        faction_char_counts: dict[str, int],
         *,
         session: aiohttp.ClientSession,
         executor: ThreadPoolExecutor,
@@ -150,7 +149,6 @@ class CharactersView(PaginatorView):
 
         self.element_char_counts = element_char_counts
         self.path_char_counts = path_char_counts
-        self.faction_char_counts = faction_char_counts
 
         self.gi_characters: list[GICharacter | UnownedGICharacter] = []
         self.hsr_characters: list[HSRCharacter | UnownedHSRCharacter] = []
@@ -164,7 +162,6 @@ class CharactersView(PaginatorView):
 
         self.speciality_filters: list[ZZZSpecialty] = []
         self.faction_filters: list[str] = []
-        self.faction_l10n: dict[str, str] = {}
 
         self.sorter: Sorter = None  # pyright: ignore[reportAttributeAccessIssue]
         if self.game is Game.GENSHIN:
@@ -515,19 +512,6 @@ class CharactersView(PaginatorView):
                 inline=False,
             )
 
-        if self.faction_filters and self.filter is GIFilter.NONE:
-            total_chars = sum(
-                self.faction_char_counts[self.faction_l10n[faction].lower()]
-                for faction in self.faction_filters
-            )
-            embed.add_field(
-                name=LocaleStr(
-                    key="characters.embed.filter_text", filter="/".join(self.faction_filters)
-                ),
-                value=f"{char_num}/{total_chars}",
-                inline=False,
-            )
-
         if (
             self.filter is GIFilter.NONE
             and not self.element_filters
@@ -560,7 +544,9 @@ class CharactersView(PaginatorView):
         return embed
 
     def _add_items(self) -> None:
-        items: list[Select | Button] = [RarityFilterSelector(self.available_rarities)]
+        items: list[Select | Button] = [
+            RarityFilterSelector(self.available_rarities, self.rarities)
+        ]
 
         if self.game is Game.GENSHIN:
             options = WeaponTypeFilter.generate_options(
@@ -574,19 +560,24 @@ class CharactersView(PaginatorView):
             )
             items.extend(
                 [
-                    GIFilterSelector(),
-                    ElementFilterSelector(GenshinElement),
+                    GIFilterSelector(self.filter),
+                    ElementFilterSelector(GenshinElement, self.element_filters),
                     WeaponTypeFilter(options),
                 ]
             )
         elif self.game is Game.STARRAIL:
-            items.extend([ElementFilterSelector(HSRElement), PathFilterSelector()])
+            items.extend(
+                [
+                    ElementFilterSelector(HSRElement, self.element_filters),
+                    PathFilterSelector(self.path_filters),
+                ]
+            )
         elif self.game is Game.ZZZ:
             items.extend(
                 [
-                    ElementFilterSelector(ZZZElement),
-                    SpecialtyFilterSelector(self.zzz_characters),
-                    FactionFilterSelector(self.zzz_characters),
+                    ElementFilterSelector(ZZZElement, self.element_filters),
+                    SpecialtyFilterSelector(self.zzz_characters, self.speciality_filters),
+                    FactionFilterSelector(self.zzz_characters, self.faction_filters),
                 ]
             )
 
@@ -647,12 +638,6 @@ class CharactersView(PaginatorView):
             full_agents = list(await client.get_zzz_agent_info([agent.id for agent in agents]))
             self.zzz_characters = full_agents  # pyright: ignore[reportAttributeAccessIssue]
 
-            client.set_lang(Locale.american_english)
-            en_full_agents = list(await client.get_zzz_agent_info([agent.id for agent in agents]))
-            self.faction_l10n = {
-                agent.faction_name: en_agent.faction_name
-                for agent, en_agent in zip(full_agents, en_full_agents, strict=False)
-            }
         elif self.game is Game.HONKAI:
             self.honkai_characters = list(await client.get_honkai_battlesuits(self.account.uid))
 
@@ -679,18 +664,22 @@ class CharactersView(PaginatorView):
 
 
 class GIFilterSelector(Select[CharactersView]):
-    def __init__(self) -> None:
+    def __init__(self, current: GIFilter) -> None:
         options = [
             SelectOption(
-                label=LocaleStr(key="characters.filter.none"), value=GIFilter.NONE, default=True
+                label=LocaleStr(key="characters.filter.none"),
+                value=GIFilter.NONE,
+                default=current == GIFilter.NONE,
             ),
             SelectOption(
                 label=LocaleStr(key="characters.filter.max_friendship"),
                 value=GIFilter.MAX_FRIENDSHIP,
+                default=current == GIFilter.MAX_FRIENDSHIP,
             ),
             SelectOption(
                 label=LocaleStr(key="characters.filter.not_max_friendship"),
                 value=GIFilter.NOT_MAX_FRIENDSHIP,
+                default=current == GIFilter.NOT_MAX_FRIENDSHIP,
             ),
         ]
         super().__init__(
@@ -703,7 +692,11 @@ class GIFilterSelector(Select[CharactersView]):
 
 
 class ElementFilterSelector(Select[CharactersView]):
-    def __init__(self, elements: Iterable[GenshinElement | HSRElement | ZZZElement]) -> None:
+    def __init__(
+        self,
+        elements: Iterable[GenshinElement | HSRElement | ZZZElement],
+        current: list[GenshinElement | HSRElement | ZZZElement],
+    ) -> None:
         def get_element_emoji(element: GenshinElement | HSRElement | ZZZElement) -> str:
             if isinstance(element, GenshinElement):
                 return get_gi_element_emoji(element)
@@ -713,7 +706,10 @@ class ElementFilterSelector(Select[CharactersView]):
 
         options = [
             SelectOption(
-                label=EnumStr(element), value=element.value, emoji=get_element_emoji(element)
+                label=EnumStr(element),
+                value=element.value,
+                emoji=get_element_emoji(element),
+                default=element in current,
             )
             for element in elements
         ]
@@ -739,9 +735,14 @@ class ElementFilterSelector(Select[CharactersView]):
 
 
 class PathFilterSelector(Select[CharactersView]):
-    def __init__(self) -> None:
+    def __init__(self, current: list[HSRPath]) -> None:
         options = [
-            SelectOption(label=EnumStr(path), value=path.value, emoji=get_hsr_path_emoji(path))
+            SelectOption(
+                label=EnumStr(path),
+                value=path.value,
+                emoji=get_hsr_path_emoji(path),
+                default=path in current,
+            )
             for path in HSRPath
         ]
         super().__init__(
@@ -756,7 +757,9 @@ class PathFilterSelector(Select[CharactersView]):
 
 
 class SpecialtyFilterSelector(Select[CharactersView]):
-    def __init__(self, characters: Sequence[ZZZCharacter | UnownedZZZCharacter]) -> None:
+    def __init__(
+        self, characters: Sequence[ZZZCharacter | UnownedZZZCharacter], current: list[ZZZSpecialty]
+    ) -> None:
         specialty_names = {
             ZZZSpecialty.ANOMALY: "ProfessionName_ElementAbnormal",
             ZZZSpecialty.ATTACK: "ProfessionName_PowerfulAttack",
@@ -769,6 +772,7 @@ class SpecialtyFilterSelector(Select[CharactersView]):
                 label=LocaleStr(key=specialty_names[speciality], data_game=Game.ZZZ),
                 value=str(speciality),
                 emoji=ZZZ_SPECIALTY_EMOJIS[speciality],
+                default=speciality in current,
             )
             for speciality in {character.specialty for character in characters}
         ]
@@ -784,9 +788,11 @@ class SpecialtyFilterSelector(Select[CharactersView]):
 
 
 class FactionFilterSelector(Select[CharactersView]):
-    def __init__(self, characters: Sequence[ZZZCharacter | UnownedZZZCharacter]) -> None:
+    def __init__(
+        self, characters: Sequence[ZZZCharacter | UnownedZZZCharacter], current: list[str]
+    ) -> None:
         options = [
-            SelectOption(label=faction, value=faction)
+            SelectOption(label=faction, value=faction, default=faction in current)
             for faction in {
                 character.faction_name for character in characters if character.faction_name
             }
@@ -970,9 +976,9 @@ class ShowMaxLevelOnly(ToggleButton[CharactersView]):
 
 
 class RarityFilterSelector(Select[CharactersView]):
-    def __init__(self, rarities: set[str]) -> None:
+    def __init__(self, rarities: set[str], current: list[str]) -> None:
         options = [
-            SelectOption(label=str(rarity), value=str(rarity), default=True)
+            SelectOption(label=str(rarity), value=str(rarity), default=rarity in current)
             for rarity in sorted(rarities, reverse=True)
         ]
         super().__init__(

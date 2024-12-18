@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import os
 from typing import TYPE_CHECKING, ClassVar, Literal
 
 import discord
@@ -17,6 +16,7 @@ from hoyo_buddy.constants import (
     PROXY_APIS,
 )
 from hoyo_buddy.db.models import HoyoAccount, JSONFile
+from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.enums import Platform
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import convert_code_to_redeem_url
@@ -27,10 +27,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import ProxyAPI
 
 
-API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
 MAX_API_ERROR_COUNT = 10
-MAX_API_RETRIES = 3
-RETRY_SLEEP_TIME = 5
 
 
 class AutoRedeem:
@@ -76,7 +73,8 @@ class AutoRedeem:
                 )
                 logger.debug(f"Game codes: {game_codes}")
 
-                asyncio.create_task(cls.send_codes_to_channels(bot, game_codes))
+                if cls._bot.env == "prod":
+                    asyncio.create_task(cls.send_codes_to_channels(bot, game_codes))
 
                 if game is None:
                     accounts = await HoyoAccount.filter(auto_redeem=True).all()
@@ -90,10 +88,7 @@ class AutoRedeem:
                     if (
                         account.platform is Platform.MIYOUSHE
                         or HB_GAME_TO_GPY_GAME[account.game] not in game_codes
-                        or (
-                            "cookie_token" not in account.cookies
-                            and "stoken" not in account.cookies
-                        )
+                        or not account.can_redeem_code
                     ):
                         continue
                     await queue.put(account)
@@ -190,48 +185,44 @@ class AutoRedeem:
                 await account.fetch_related("user")
                 embed = await cls._redeem_codes(api_name, account, codes)
             except Exception as e:
-                await queue.put(account)
                 api_error_count += 1
 
-                logger.warning(f"Auto redeem failed for {account}")
-                cls._bot.capture_exception(e)
+                embed, recognized = get_error_embed(
+                    e, account.user.settings.locale or discord.Locale.american_english
+                )
+                if not recognized:
+                    cls._bot.capture_exception(e)
+
                 if api_error_count >= MAX_API_ERROR_COUNT:
                     msg = f"Auto redeem API {api_name} failed for {api_error_count} accounts"
                     raise RuntimeError(msg) from None
-            else:
-                if embed is not None:
-                    cls._total_redeem_count += 1
-                    asyncio.create_task(cls._notify_user(account, embed))
-            finally:
-                queue.task_done()
+
+            if embed is not None:
+                cls._total_redeem_count += 1
+                await cls._notify_user(account, embed)
+
+            queue.task_done()
 
     @classmethod
     async def _notify_user(cls, account: HoyoAccount, embed: Embed) -> None:
+        if isinstance(embed, ErrorEmbed):
+            embed.add_acc_info(account, blur=False)
+            content = LocaleStr(key="auto_redeem_error.content")
+
+            account.auto_redeem = False
+            await account.save(update_fields=("auto_redeem",))
+        else:
+            content = None
+
         try:
-            await cls._bot.dm_user(account.user.id, embed=embed)
+            await cls._bot.dm_user(account.user.id, embed=embed, content=content)
         except Exception as e:
             cls._bot.capture_exception(e)
 
     @classmethod
-    async def _handle_error(
-        cls, account: HoyoAccount, locale: discord.Locale, e: Exception
-    ) -> None:
-        embed, recognized = get_error_embed(e, locale)
-        if not recognized:
-            raise e
-
-        embed.add_acc_info(account, blur=False)
-
-        content = LocaleStr(key="auto_redeem_error.content")
-        await cls._bot.dm_user(account.user.id, embed=embed, content=content.translate(locale))
-
-        account.auto_redeem = False
-        await account.save(update_fields=("auto_redeem",))
-
-    @classmethod
     async def _redeem_codes(
         cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount, codes: list[str]
-    ) -> Embed | None:
+    ) -> DefaultEmbed | None:
         codes_: list[str] = []
         for code in codes:
             if code in account.redeemed_codes or code in cls._dead_codes:
@@ -246,16 +237,11 @@ class AutoRedeem:
         client = account.client
         client.set_lang(locale)
 
-        try:
-            embed = await account.client.redeem_codes(
-                codes_,
-                locale=locale,
-                blur=False,
-                api_url=PROXY_APIS[api_name] if api_name != "LOCAL" else "LOCAL",
-            )
-            embed.set_footer(text=LocaleStr(key="auto_redeem_footer"))
-        except Exception as e:
-            await cls._handle_error(account, locale, e)
-            return None
-        else:
-            return embed
+        embed = await account.client.redeem_codes(
+            codes_,
+            locale=locale,
+            blur=False,
+            api_url=PROXY_APIS[api_name] if api_name != "LOCAL" else "LOCAL",
+        )
+        embed.set_footer(text=LocaleStr(key="auto_redeem_footer"))
+        return embed

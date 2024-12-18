@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import itertools
-import os
 from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar, Literal
 
@@ -14,12 +13,12 @@ from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, PROXY_APIS
 from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount, User
 from hoyo_buddy.embeds import DefaultEmbed, Embed, ErrorEmbed
+from hoyo_buddy.enums import Platform
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.types import ProxyAPI
 
-API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
 MAX_API_ERROR_COUNT = 10
 CHECKIN_SLEEP_TIME = 2.5
 DM_SLEEP_TIME = 1.5
@@ -55,7 +54,7 @@ class DailyCheckin:
                 )
 
             for account in accounts:
-                if account.region is genshin.Region.OVERSEAS:
+                if account.platform is Platform.HOYOLAB:
                     await queue.put(account)
                 else:
                     # Region is None or CN
@@ -74,13 +73,21 @@ class DailyCheckin:
                 try:
                     embed = await cls._daily_checkin("LOCAL", account)
                 except Exception as e:
-                    logger.warning(f"Daily check-in failed for {account}")
-                    cls._bot.capture_exception(e)
-                else:
-                    cls._total_checkin_count += 1
-                    cls._embeds[account.user.id].append((account.id, embed))
-                finally:
-                    await asyncio.sleep(CHECKIN_SLEEP_TIME)
+                    embed, recognized = get_error_embed(
+                        e, account.user.settings.locale or discord.Locale.american_english
+                    )
+                    embed.add_acc_info(account, blur=False)
+                    if not recognized:
+                        cls._bot.capture_exception(e)
+
+                    if isinstance(e, genshin.DailyGeetestTriggered):
+                        await User.filter(id=account.user.id).update(
+                            temp_data={"geetest": e.gt, "challenge": e.challenge}
+                        )
+
+                cls._total_checkin_count += 1
+                cls._embeds[account.user.id].append((account.id, embed))
+                await asyncio.sleep(CHECKIN_SLEEP_TIME)
 
             # Send embeds
             for user_id, tuple_list in cls._embeds.items():
@@ -118,20 +125,29 @@ class DailyCheckin:
             try:
                 embed = await cls._daily_checkin(api_name, account)
             except Exception as e:
-                await queue.put(account)
                 api_error_count += 1
 
-                logger.warning(f"Daily check-in failed for {account}")
-                cls._bot.capture_exception(e)
+                embed, recognized = get_error_embed(
+                    e, account.user.settings.locale or discord.Locale.american_english
+                )
+                embed.add_acc_info(account, blur=False)
+                if not recognized:
+                    cls._bot.capture_exception(e)
+
+                if isinstance(e, genshin.DailyGeetestTriggered):
+                    await User.filter(id=account.user.id).update(
+                        temp_data={"geetest": e.gt, "challenge": e.challenge}
+                    )
+
                 if api_error_count >= MAX_API_ERROR_COUNT:
                     msg = f"Daily check-in API {api_name} failed for {api_error_count} accounts"
                     raise RuntimeError(msg) from None
-            else:
-                cls._total_checkin_count += 1
-                cls._embeds[account.user.id].append((account.id, embed))
-            finally:
-                await asyncio.sleep(CHECKIN_SLEEP_TIME)
-                queue.task_done()
+
+            cls._total_checkin_count += 1
+            cls._embeds[account.user.id].append((account.id, embed))
+
+            await asyncio.sleep(CHECKIN_SLEEP_TIME)
+            queue.task_done()
 
     @classmethod
     async def _notify_checkin_result(
@@ -191,36 +207,14 @@ class DailyCheckin:
     @classmethod
     async def _daily_checkin(
         cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount
-    ) -> Embed:
+    ) -> DefaultEmbed:
         await account.fetch_related("user", "user__settings")
         locale = account.user.settings.locale or discord.Locale.american_english
         client = account.client
         client.set_lang(locale)
 
-        try:
-            await client.update_cookies_for_checkin()
-        except Exception as e:
-            embed, recognized = get_error_embed(e, locale)
-            if not recognized:
-                cls._bot.capture_exception(e)
-
-            embed.add_acc_info(account, blur=False)
-            return embed
-
-        try:
-            reward = await client.claim_daily_reward(
-                api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name]
-            )
-        except Exception as e:
-            if isinstance(e, genshin.DailyGeetestTriggered):
-                await User.filter(id=account.user.id).update(
-                    temp_data={"geetest": e.gt, "challenge": e.challenge}
-                )
-            embed, recognized = get_error_embed(e, locale)
-            if not recognized:
-                cls._bot.capture_exception(e)
-
-            embed.add_acc_info(account, blur=False)
-        else:
-            embed = client.get_daily_reward_embed(reward, locale, blur=False)
-        return embed
+        await client.update_cookies_for_checkin()
+        reward = await client.claim_daily_reward(
+            api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name]
+        )
+        return client.get_daily_reward_embed(reward, locale, blur=False)

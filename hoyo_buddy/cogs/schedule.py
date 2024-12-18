@@ -81,7 +81,7 @@ class Schedule(commands.Cog):
     async def run_notes_check(self) -> None:
         await NotesChecker.execute(self.bot)
 
-    @tasks.loop(hours=1)
+    @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 2)])
     async def run_auto_redeem(self) -> None:
         await AutoRedeem.execute(self.bot)
 

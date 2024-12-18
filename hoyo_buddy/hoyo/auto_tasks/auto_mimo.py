@@ -115,76 +115,98 @@ class AutoMimo:
 
             await account.fetch_related("user", "user__settings", "notif_settings")
 
-            task_embed = None
-            valuable_embed = None
-
-            try:
-                if account.mimo_auto_task:
-                    task_embed = await cls._complete_mimo_tasks(api_name, account)
-                if account.mimo_auto_buy:
-                    await asyncio.sleep(SLEEP_TIME)
-                    valuable_embed = await cls._buy_mimo_valuables(api_name, account)
-            except Exception as e:
-                api_error_count += 1
-
-                embed, recognized = get_error_embed(
-                    e, account.user.settings.locale or discord.Locale.american_english
-                )
-                task_embed = valuable_embed = embed
-                if not recognized:
-                    cls._bot.capture_exception(e)
-
-                if api_error_count >= MAX_API_ERROR_COUNT:
-                    msg = f"Proxy API {api_name} failed for {api_error_count} accounts"
-                    raise RuntimeError(msg) from None
-
-            if task_embed is not None:
-                cls._task_count += 1
-
-                task_embed.set_footer(text=LocaleStr(key="mimo_auto_task_embed_footer"))
-                task_embed.add_acc_info(account)
-
-                if isinstance(task_embed, ErrorEmbed):
-                    account.mimo_auto_task = False
-                    await account.save(update_fields=("mimo_auto_task",))
-                    content = LocaleStr(key="mimo_auto_task_error_dm_content").translate(
-                        account.user.settings.locale or discord.Locale.american_english
-                    )
-                else:
-                    content = None
-
-                if (
-                    isinstance(task_embed, DefaultEmbed)
-                    and account.notif_settings.mimo_task_success
-                ) or (
-                    isinstance(task_embed, ErrorEmbed) and account.notif_settings.mimo_task_failure
-                ):
-                    await cls._bot.dm_user(account.user.id, embed=task_embed, content=content)
-
-            if valuable_embed is not None:
-                cls._buy_count += 1
-
-                valuable_embed.set_footer(text=LocaleStr(key="mimo_auto_task_embed_footer"))
-                valuable_embed.add_acc_info(account)
-
-                if isinstance(valuable_embed, ErrorEmbed):
-                    account.mimo_auto_task = False
-                    await account.save(update_fields=("mimo_auto_task",))
-                    content = LocaleStr(key="mimo_auto_buy_error_dm_content").translate(
-                        account.user.settings.locale or discord.Locale.american_english
-                    )
-                else:
-                    content = None
-
-                if (
-                    isinstance(task_embed, DefaultEmbed) and account.notif_settings.mimo_buy_success
-                ) or (
-                    isinstance(task_embed, ErrorEmbed) and account.notif_settings.mimo_buy_failure
-                ):
-                    await cls._bot.dm_user(account.user.id, embed=valuable_embed, content=content)
+            if account.mimo_auto_task:
+                api_error_count = await cls._auto_finish_tasks(api_name, api_error_count, account)
+            if account.mimo_auto_buy:
+                await asyncio.sleep(SLEEP_TIME)
+                api_error_count = await cls._auto_buy_rewards(api_name, api_error_count, account)
 
             await asyncio.sleep(SLEEP_TIME)
             queue.task_done()
+
+    @classmethod
+    async def _auto_buy_rewards(
+        cls, api_name: ProxyAPI | Literal["LOCAL"], api_error_count: int, account: HoyoAccount
+    ) -> int:
+        try:
+            valuable_embed = await cls._buy_mimo_valuables(api_name, account)
+        except Exception as e:
+            api_error_count += 1
+
+            valuable_embed, recognized = get_error_embed(
+                e, account.user.settings.locale or discord.Locale.american_english
+            )
+            if not recognized:
+                cls._bot.capture_exception(e)
+
+            if api_error_count >= MAX_API_ERROR_COUNT:
+                msg = f"Proxy API {api_name} failed for {api_error_count} accounts"
+                raise RuntimeError(msg) from None
+
+        if valuable_embed is not None:
+            cls._buy_count += 1
+
+            valuable_embed.set_footer(text=LocaleStr(key="mimo_auto_task_embed_footer"))
+            valuable_embed.add_acc_info(account)
+
+            if isinstance(valuable_embed, ErrorEmbed):
+                account.mimo_auto_task = False
+                await account.save(update_fields=("mimo_auto_task",))
+                content = LocaleStr(key="mimo_auto_buy_error_dm_content").translate(
+                    account.user.settings.locale or discord.Locale.american_english
+                )
+            else:
+                content = None
+
+            if (
+                isinstance(valuable_embed, DefaultEmbed) and account.notif_settings.mimo_buy_success
+            ) or (
+                isinstance(valuable_embed, ErrorEmbed) and account.notif_settings.mimo_buy_failure
+            ):
+                await cls._bot.dm_user(account.user.id, embed=valuable_embed, content=content)
+
+        return api_error_count
+
+    @classmethod
+    async def _auto_finish_tasks(
+        cls, api_name: ProxyAPI | Literal["LOCAL"], api_error_count: int, account: HoyoAccount
+    ) -> int:
+        try:
+            task_embed = await cls._complete_mimo_tasks(api_name, account)
+        except Exception as e:
+            api_error_count += 1
+
+            task_embed, recognized = get_error_embed(
+                e, account.user.settings.locale or discord.Locale.american_english
+            )
+            if not recognized:
+                cls._bot.capture_exception(e)
+
+            if api_error_count >= MAX_API_ERROR_COUNT:
+                msg = f"Proxy API {api_name} failed for {api_error_count} accounts"
+                raise RuntimeError(msg) from None
+
+        if task_embed is not None:
+            cls._task_count += 1
+
+            task_embed.set_footer(text=LocaleStr(key="mimo_auto_task_embed_footer"))
+            task_embed.add_acc_info(account)
+
+            if isinstance(task_embed, ErrorEmbed):
+                account.mimo_auto_task = False
+                await account.save(update_fields=("mimo_auto_task",))
+                content = LocaleStr(key="mimo_auto_task_error_dm_content").translate(
+                    account.user.settings.locale or discord.Locale.american_english
+                )
+            else:
+                content = None
+
+            if (
+                isinstance(task_embed, DefaultEmbed) and account.notif_settings.mimo_task_success
+            ) or (isinstance(task_embed, ErrorEmbed) and account.notif_settings.mimo_task_failure):
+                await cls._bot.dm_user(account.user.id, embed=task_embed, content=content)
+
+        return api_error_count
 
     @classmethod
     async def _complete_mimo_tasks(

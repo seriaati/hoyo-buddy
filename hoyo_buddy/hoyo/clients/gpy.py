@@ -45,10 +45,9 @@ if TYPE_CHECKING:
 load_dotenv()
 env = os.environ["ENV"]
 
-MAX_RETRIES = 3
+MAX_RETRIES = len(PROXY_APIS)
 PROXY_APIS_ = (*PROXY_APIS.values(), "LOCAL")
 proxy_api_rotator = itertools.cycle(PROXY_APIS_)
-no_local_proxy_api_rotator = itertools.cycle(PROXY_APIS.values())
 
 
 class ProxyGenshinClient(genshin.Client):
@@ -78,8 +77,10 @@ class ProxyGenshinClient(genshin.Client):
             jitter = random.uniform(0, 1)
             await asyncio.sleep((backoff_factor**attempt) + jitter)
 
-        msg = f"HoYo API request failed after {MAX_RETRIES} attempts"
-        raise RuntimeError(msg) from err
+        if err is None:
+            msg = f"HoYo API request failed after {MAX_RETRIES} attempts"
+            raise RuntimeError(msg)
+        raise err
 
     async def request_proxy_api(
         self, api_url: str, endpoint: str, payload: dict[str, Any]
@@ -119,11 +120,16 @@ class ProxyGenshinClient(genshin.Client):
             attempt += 1
             backoff_factor = 2
             jitter = random.uniform(0, 1)
-            api_url = next(no_local_proxy_api_rotator)
+
+            for proxy_api in PROXY_APIS.values():
+                if proxy_api != api_url:
+                    api_url = proxy_api
             await asyncio.sleep((backoff_factor**attempt) + jitter)
 
-        msg = f"Proxy API request failed after {MAX_RETRIES} attempts"
-        raise RuntimeError(msg) from err
+        if err is None:
+            msg = f"Proxy API request failed after {MAX_RETRIES} attempts"
+            raise RuntimeError(msg)
+        raise err
 
     @overload
     async def os_app_login(

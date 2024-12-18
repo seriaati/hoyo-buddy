@@ -19,13 +19,17 @@ class HoyoAccountTransformer(app_commands.Transformer):
             raise AccountNotFoundError from e
 
         user: User = i.namespace.user
-        account = (
-            await HoyoAccount.get_or_none(
-                id=account_id, user_id=user.id if user is not None else i.user.id
+        try:
+            account = (
+                await HoyoAccount.get_or_none(
+                    id=account_id, user_id=user.id if user is not None else i.user.id
+                )
+                if user is None or i.user.id == user.id
+                else await HoyoAccount.get_or_none(id=account_id, user_id=user.id, public=True)
             )
-            if user is None or i.user.id == user.id
-            else await HoyoAccount.get_or_none(id=account_id, user_id=user.id, public=True)
-        )
+        except Exception as e:
+            raise AccountNotFoundError from e
+
         if account is None:
             raise AccountNotFoundError
 

@@ -701,7 +701,6 @@ class ProfileView(View):
         character_ids = [agent.id for agent in self.zzz_data]
 
         for character_id in character_ids:
-            logger.debug(f"Adding default highlight substats for {character_id}")
             card_settings = await get_card_settings(user_id, str(character_id), game=Game.ZZZ)
             if card_settings.highlight_substats:
                 continue

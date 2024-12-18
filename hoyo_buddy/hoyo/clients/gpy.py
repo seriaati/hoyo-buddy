@@ -70,7 +70,7 @@ class ProxyGenshinClient(genshin.Client):
         while attempt < MAX_RETRIES:
             try:
                 return await super().request(*args, **kwargs)
-            except Exception as e:
+            except (TimeoutError, aiohttp.ClientError) as e:
                 err = e
 
             attempt += 1
@@ -113,7 +113,7 @@ class ProxyGenshinClient(genshin.Client):
                         raise Exception(data["message"])
 
                     err = ProxyAPIError(api_url, resp.status)
-            except Exception as e:
+            except (TimeoutError, aiohttp.ClientError) as e:
                 err = e
 
             attempt += 1

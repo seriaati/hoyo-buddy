@@ -847,17 +847,24 @@ class GenshinClient(ProxyGenshinClient):
                 args: dict[str, str] | None = url_data.get("args")
                 if args is None:
                     continue
-                post_id: str | None = args.get("post_id")
-                if post_id is None:
-                    continue
 
-                reply_id = await self.reply_to_post(
-                    random.choice(POST_REPLIES), post_id=int(post_id)
-                )
-                await asyncio.sleep(2)
-                await self.delete_reply(reply_id=reply_id, post_id=int(post_id))
-                await asyncio.sleep(2)
-                finished.append(task)
+                post_id: str | None = args.get("post_id")
+                if post_id is not None:
+                    reply_id = await self.reply_to_post(
+                        random.choice(POST_REPLIES), post_id=int(post_id)
+                    )
+                    await asyncio.sleep(2)
+                    await self.delete_reply(reply_id=reply_id, post_id=int(post_id))
+                    await asyncio.sleep(2)
+                    finished.append(task)
+
+                topic_id: str | None = args.get("topic_id")
+                if topic_id is not None:
+                    await self.join_topic(int(topic_id))
+                    await asyncio.sleep(2)
+                    await self.leave_topic(int(topic_id))
+                    await asyncio.sleep(2)
+                    finished.append(task)
 
         if len(finished) > 0:
             tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)

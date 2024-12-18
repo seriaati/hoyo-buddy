@@ -222,9 +222,11 @@ class GenshinClient(ProxyGenshinClient):
         payload["uid"] = account.uid
 
         data = await super().request_proxy_api(api_url, endpoint, payload)
-        if (cookies := data.get("cookies")) and account.cookies != cookies:
-            account.cookies = decrypt_string(cookies)
-            await account.save(update_fields=("cookies",))
+        if cookies := data.get("cookies"):
+            decrypted_cookies = decrypt_string(cookies)
+            if account.cookies != decrypted_cookies:
+                account.cookies = decrypted_cookies
+                await account.save(update_fields=("cookies",))
         return data
 
     def set_lang(self, locale: Locale) -> None:
@@ -603,7 +605,7 @@ class GenshinClient(ProxyGenshinClient):
                 await self.request_proxy_api(api_url, "redeem", {"code": code})
         except genshin.InvalidCookies as e:
             # cookie token is invalid
-            if all(key in self._account.cookies for key in ("stoken", "ltmid")):
+            if "stoken" in self._account.dict_cookies and "ltmid_v2" in self._account.dict_cookies:
                 # cookie token can be refreshed
                 try:
                     await self.update_cookie_token()

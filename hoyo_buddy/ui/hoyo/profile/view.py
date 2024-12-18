@@ -13,7 +13,9 @@ from seria.utils import read_yaml
 from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
+    ZZZ_AGENT_STAT_TO_DISC_SUBSTAT,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
+    ZZZ_DISC_SUBSTATS,
 )
 from hoyo_buddy.db.models import EnkaCache, JSONFile, Settings, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import (
@@ -689,6 +691,34 @@ class ProfileView(View):
 
         raise FeatureNotImplementedError(game=self.game)
 
+    async def add_default_hl_substats(self, user_id: int) -> None:
+        if self.zzz_data is None:
+            return
+
+        agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
+            ZZZ_AVATAR_BATTLE_TEMP_JSON
+        )
+        character_ids = [agent.id for agent in self.zzz_data]
+
+        for character_id in character_ids:
+            logger.debug(f"Adding default highlight substats for {character_id}")
+            card_settings = await get_card_settings(user_id, str(character_id), game=Game.ZZZ)
+            if card_settings.highlight_substats:
+                continue
+
+            special_stat_ids = agent_special_stat_map.get(str(character_id), [])
+            special_substat_ids = [
+                ZZZ_AGENT_STAT_TO_DISC_SUBSTAT.get(stat_id) for stat_id in special_stat_ids
+            ]
+
+            hl_substats = [
+                substat_id
+                for _, substat_id, _ in ZZZ_DISC_SUBSTATS
+                if substat_id in special_substat_ids
+            ]
+            card_settings.highlight_substats = hl_substats
+            await card_settings.save(update_fields=("highlight_substats",))
+
     async def update(
         self,
         i: Interaction,
@@ -747,6 +777,7 @@ class ProfileView(View):
         if self.game is Game.ZZZ:
             new_msg = LocaleStr(key="new_zzz_temp").translate(self.locale)
             dyk = f"-# {new_msg}"
+            await self.add_default_hl_substats(i.user.id)
         else:
             dyk = await get_dyk(i)
 

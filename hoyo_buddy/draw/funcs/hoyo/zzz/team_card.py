@@ -322,7 +322,7 @@ class ZZZTeamCard:
             color = (
                 drawer.get_agent_special_stat_color(agent_color)
                 if (
-                    prop.type.value in self._agent_special_stat_map[str(agent.id)]
+                    prop.type.value in self._agent_special_stat_map.get(str(agent.id), [])
                     and self._hl_special_stats[agent.id]
                 )
                 else (20, 20, 20)

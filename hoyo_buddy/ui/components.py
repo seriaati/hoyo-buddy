@@ -276,7 +276,11 @@ class ToggleButton(Button, Generic[V_co]):
         kwargs["row"] = kwargs.get("row", 1)
         super().__init__(
             style=self._get_style(),
-            label=toggle_label,
+            label=LocaleStr(
+                custom_str="{toggle_label}: {status_str}",
+                toggle_label=toggle_label,
+                status_str=self._get_status_str(),
+            ),
             emoji=emojis.TOGGLE_EMOJIS[current_toggle],
             **kwargs,
         )
@@ -286,9 +290,17 @@ class ToggleButton(Button, Generic[V_co]):
     def _get_style(self) -> discord.ButtonStyle:
         return discord.ButtonStyle.green if self.current_toggle else discord.ButtonStyle.gray
 
+    def _get_status_str(self) -> LocaleStr:
+        return (
+            LocaleStr(key="on_button_label")
+            if self.current_toggle
+            else LocaleStr(key="off_button_label")
+        )
+
     def update_style(self) -> None:
         self.style = self._get_style()
         self.label = self.toggle_label.translate(self.view.locale)
+        self.label += ": " + self._get_status_str().translate(self.view.locale)
         self.emoji = emojis.TOGGLE_EMOJIS[self.current_toggle]
 
     async def callback(self, i: Interaction, *, edit: bool = True, **kwargs: Any) -> Any:

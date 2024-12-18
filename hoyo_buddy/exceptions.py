@@ -236,3 +236,11 @@ class MimoUnavailableError(HoyoBuddyError):
             title=LocaleStr(key="generic_error_title"),
             message=LocaleStr(key="mimo_game_unavailable", game=EnumStr(game)),
         )
+
+
+class CantRedeemCodeError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr(key="generic_error_title"),
+            message=LocaleStr(key="redeeem_code.cookie_token_expired_description"),
+        )

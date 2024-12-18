@@ -128,6 +128,11 @@ class HoyoAccount(BaseModel):
     def dict_cookies(self) -> dict[str, str]:
         return genshin.parse_cookie(self.cookies)
 
+    @cached_property
+    def can_redeem_code(self) -> bool:
+        return ("cookie_token_v2" in self.dict_cookies) or (
+            "ltmid_v2" in self.dict_cookies and "stoken" in self.dict_cookies
+        )
 class AccountNotifSettings(BaseModel):
     notify_on_checkin_failure = fields.BooleanField(default=True)
     notify_on_checkin_success = fields.BooleanField(default=True)

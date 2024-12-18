@@ -341,7 +341,9 @@ class ShopItemSelector(ui.Select[MimoView]):
         )
 
         if code:
-            _, success = await self.view.client.redeem_code(code, locale=self.view.locale)
+            success = False
+            if self.view.account.can_redeem_code:
+                _, success = await self.view.client.redeem_code(code, locale=self.view.locale)
         else:
             success = True
         message = (
@@ -408,9 +410,14 @@ class LotteryDrawButton(ui.Button[MimoView]):
             game_id=self.view.game_id, version_id=self.view.version_id
         )
         if result.code:
-            _, success = await self.view.client.redeem_code(result.code, locale=self.view.locale)
+            success = False
+            if self.view.account.can_redeem_code:
+                _, success = await self.view.client.redeem_code(
+                    result.code, locale=self.view.locale
+                )
         else:
             success = True
+
         description = (
             LocaleStr(
                 key="exchangeCodeTips",

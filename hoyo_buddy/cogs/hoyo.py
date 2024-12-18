@@ -15,7 +15,7 @@ from ..commands.stats import StatsCommand
 from ..constants import HB_GAME_TO_GPY_GAME
 from ..db.models import HoyoAccount, Settings, get_dyk, get_locale
 from ..enums import Game, GeetestType, Platform
-from ..exceptions import InvalidQueryError, NoAccountFoundError
+from ..exceptions import CantRedeemCodeError, InvalidQueryError, NoAccountFoundError
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from ..types import User  # noqa: TC001
 from ..ui.hoyo.checkin import CheckInUI
@@ -187,8 +187,10 @@ class Hoyo(commands.Cog):
         account_ = account or await self.bot.get_account(
             user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT), Platform.HOYOLAB
         )
-        locale = await get_locale(i)
+        if not account_.can_redeem_code:
+            raise CantRedeemCodeError
 
+        locale = await get_locale(i)
         available_codes = await RedeemUI.fetch_available_codes(
             i.client.session, game=HB_GAME_TO_GPY_GAME[account_.game]
         )

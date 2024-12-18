@@ -273,10 +273,13 @@ class AutoMimo:
         mimo_point_emoji = MIMO_POINT_EMOJIS[account.game]
         bought_strs: list[str] = []
         for item, code in bought:
-            bought_str = f"{item.name} ({item.cost} {mimo_point_emoji})"
-            _, success = await client.redeem_code(code, locale=locale, api_url=api_url)
+            bought_str = f"{item.name} - {item.cost} {mimo_point_emoji}"
+            success = False
+            if account.can_redeem_code:
+                _, success = await client.redeem_code(code, locale=locale, api_url=api_url)
+
             if not success:
-                bought_str += f": {code}"
+                bought_str += f" ({convert_code_to_redeem_url(code, game=account.game)})"
             bought_strs.append(bought_str)
 
             await asyncio.sleep(6)

@@ -114,7 +114,7 @@ class GachaCommand:
         if first_profile is None:
             raise NoGachaLogFoundError
 
-        uid = str(first_profile["bindUid"])
+        uid = str(first_profile["bindUid"] or account.uid)
         if uid != str(account.uid):
             raise UIDMismatchError(uid)
 

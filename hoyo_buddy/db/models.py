@@ -301,7 +301,6 @@ class ChallengeHistory(BaseModel):
         lang = getattr(challenge, "lang", None)
         if lang is None:
             # NOTE: Backward compatibility, old data has lang attr, new data doesn't
-            logger.debug("No lang found in challenge data")
             challenge.__dict__["lang"] = self.lang
         return challenge
 

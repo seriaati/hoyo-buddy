@@ -48,6 +48,7 @@ class AutoRedeem:
             codes: The codes to redeem, None to fetch from API.
         """
         if cls._lock.locked():
+            logger.warning("Auto redeem is already running")
             return
 
         async with cls._lock:
@@ -172,8 +173,8 @@ class AutoRedeem:
             # test if the api is working
             async with bot.session.get(PROXY_APIS[api_name]) as resp:
                 if resp.status != 200:
-                    msg = f"API {api_name} returned {resp.status}"
-                    raise RuntimeError(msg)
+                    logger.warning(f"API {api_name} returned {resp.status}")
+                    return
 
         api_error_count = 0
 
@@ -185,17 +186,17 @@ class AutoRedeem:
                 await account.fetch_related("user")
                 embed = await cls._redeem_codes(api_name, account, codes)
             except Exception as e:
-                api_error_count += 1
-
                 embed, recognized = get_error_embed(
                     e, account.user.settings.locale or discord.Locale.american_english
                 )
                 if not recognized:
+                    api_error_count += 1
+                    await queue.put(account)
                     cls._bot.capture_exception(e)
 
                 if api_error_count >= MAX_API_ERROR_COUNT:
-                    msg = f"Auto redeem API {api_name} failed for {api_error_count} accounts"
-                    raise RuntimeError(msg) from None
+                    logger.warning(f"API {api_name} failed for {api_error_count} accounts")
+                    return
 
             if embed is not None:
                 cls._total_redeem_count += 1

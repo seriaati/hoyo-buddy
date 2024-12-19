@@ -25,6 +25,7 @@ DM_SLEEP_TIME = 1.5
 
 
 class DailyCheckin:
+    _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
     _total_checkin_count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
     _no_error_notify: ClassVar[bool]
@@ -34,74 +35,81 @@ class DailyCheckin:
     async def execute(
         cls, bot: HoyoBuddy, *, game: genshin.Game | None = None, no_error_notify: bool = False
     ) -> None:
-        start = asyncio.get_event_loop().time()
+        if cls._lock.locked():
+            logger.warning("Daily check-in is already running")
+            return
 
-        try:
-            logger.info("Daily check-in started")
+        async with cls._lock:
+            start = asyncio.get_event_loop().time()
 
-            cls._total_checkin_count = 0
-            cls._bot = bot
-            cls._no_error_notify = no_error_notify
-            cls._embeds = defaultdict(list)
+            try:
+                logger.info("Daily check-in started")
 
-            queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
-            the_rest: list[HoyoAccount] = []
-            if game is None:
-                accounts = await HoyoAccount.filter(daily_checkin=True).all()
-            else:
-                accounts = await HoyoAccount.filter(
-                    daily_checkin=True, game=GPY_GAME_TO_HB_GAME[game]
+                cls._total_checkin_count = 0
+                cls._bot = bot
+                cls._no_error_notify = no_error_notify
+                cls._embeds = defaultdict(list)
+
+                queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
+                cn_accounts: list[HoyoAccount] = []
+                if game is None:
+                    accounts = await HoyoAccount.filter(daily_checkin=True).all()
+                else:
+                    accounts = await HoyoAccount.filter(
+                        daily_checkin=True, game=GPY_GAME_TO_HB_GAME[game]
+                    )
+
+                for account in accounts:
+                    if account.platform is Platform.HOYOLAB:
+                        await queue.put(account)
+                    else:
+                        # Region is None or CN
+                        cn_accounts.append(account)
+
+                tasks = [
+                    asyncio.create_task(cls._daily_checkin_task(queue, api)) for api in PROXY_APIS
+                ]
+                tasks.append(asyncio.create_task(cls._daily_checkin_task(queue, "LOCAL")))
+
+                await queue.join()
+                for task in tasks:
+                    task.cancel()
+                await asyncio.gather(*tasks, return_exceptions=True)
+
+                logger.info("Doing daily check-in for CN accounts")
+                for account in cn_accounts:
+                    try:
+                        embed = await cls._daily_checkin("LOCAL", account)
+                    except Exception as e:
+                        embed, recognized = get_error_embed(
+                            e, account.user.settings.locale or discord.Locale.american_english
+                        )
+                        embed.add_acc_info(account, blur=False)
+                        if not recognized:
+                            cls._bot.capture_exception(e)
+
+                        if isinstance(e, genshin.DailyGeetestTriggered):
+                            await User.filter(id=account.user.id).update(
+                                temp_data={"geetest": e.gt, "challenge": e.challenge}
+                            )
+
+                    cls._total_checkin_count += 1
+                    cls._embeds[account.user.id].append((account.id, embed))
+                    await asyncio.sleep(CHECKIN_SLEEP_TIME)
+
+                # Send embeds
+                for user_id, embeds in cls._embeds.items():
+                    await cls._notify_checkin_result(user_id, embeds)
+
+            except Exception as e:
+                bot.capture_exception(e)
+            finally:
+                logger.info(
+                    f"Daily check-in finished, total check-in count: {cls._total_checkin_count}"
                 )
 
-            for account in accounts:
-                if account.platform is Platform.HOYOLAB:
-                    await queue.put(account)
-                else:
-                    # Region is None or CN
-                    the_rest.append(account)
-
-            tasks = [asyncio.create_task(cls._daily_checkin_task(queue, api)) for api in PROXY_APIS]
-            tasks.append(asyncio.create_task(cls._daily_checkin_task(queue, "LOCAL")))
-
-            await queue.join()
-            for task in tasks:
-                task.cancel()
-            await asyncio.gather(*tasks, return_exceptions=True)
-
-            # Claim for the rest of the accounts
-            for account in the_rest:
-                try:
-                    embed = await cls._daily_checkin("LOCAL", account)
-                except Exception as e:
-                    embed, recognized = get_error_embed(
-                        e, account.user.settings.locale or discord.Locale.american_english
-                    )
-                    embed.add_acc_info(account, blur=False)
-                    if not recognized:
-                        cls._bot.capture_exception(e)
-
-                    if isinstance(e, genshin.DailyGeetestTriggered):
-                        await User.filter(id=account.user.id).update(
-                            temp_data={"geetest": e.gt, "challenge": e.challenge}
-                        )
-
-                cls._total_checkin_count += 1
-                cls._embeds[account.user.id].append((account.id, embed))
-                await asyncio.sleep(CHECKIN_SLEEP_TIME)
-
-            # Send embeds
-            for user_id, embeds in cls._embeds.items():
-                await cls._notify_checkin_result(user_id, embeds)
-
-        except Exception as e:
-            bot.capture_exception(e)
-        finally:
-            logger.info(
-                f"Daily check-in finished, total check-in count: {cls._total_checkin_count}"
-            )
-
-        end = asyncio.get_event_loop().time()
-        logger.info(f"Daily check-in took {end - start:.2f} seconds")
+            end = asyncio.get_event_loop().time()
+            logger.info(f"Daily check-in took {end - start:.2f} seconds")
 
     @classmethod
     async def _daily_checkin_task(
@@ -114,8 +122,8 @@ class DailyCheckin:
             # test if the api is working
             async with bot.session.get(PROXY_APIS[api_name]) as resp:
                 if resp.status != 200:
-                    msg = f"API {api_name} returned {resp.status}"
-                    raise RuntimeError(msg)
+                    logger.warning(f"API {api_name} returned {resp.status}")
+                    return
 
         api_error_count = 0
 
@@ -125,13 +133,13 @@ class DailyCheckin:
             try:
                 embed = await cls._daily_checkin(api_name, account)
             except Exception as e:
-                api_error_count += 1
-
                 embed, recognized = get_error_embed(
                     e, account.user.settings.locale or discord.Locale.american_english
                 )
                 embed.add_acc_info(account, blur=False)
                 if not recognized:
+                    api_error_count += 1
+                    await queue.put(account)
                     cls._bot.capture_exception(e)
 
                 if isinstance(e, genshin.DailyGeetestTriggered):
@@ -140,8 +148,8 @@ class DailyCheckin:
                     )
 
                 if api_error_count >= MAX_API_ERROR_COUNT:
-                    msg = f"Daily check-in API {api_name} failed for {api_error_count} accounts"
-                    raise RuntimeError(msg) from None
+                    logger.warning(f"API {api_name} failed for {api_error_count} accounts")
+                    return
 
             cls._total_checkin_count += 1
             cls._embeds[account.user.id].append((account.id, embed))

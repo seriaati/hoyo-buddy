@@ -35,7 +35,7 @@ Hoyo Buddy integrates features from all Hoyoverse games, supporting both HoYoLAB
 | Command | Description | Genshin Impact | Honkai: Star Rail | Zenless Zone Zero | Honkai Impact 3rd | Tears of Themis |
 |---|---|---|---|---|---|---|
 | /profile | Generate character build cards and team cards. | ✅ | ✅ | ✅ | ❌ | ❌ |
-| /notes | View real-time notes and set reminders. | ✅ | ✅ | ✅ | ❌ | ❌ |
+| /notes | View real-time notes and set reminders. | ✅ | ✅ | ✅ | ✅ | ❌ |
 | /redeem | Automatic and manual gift code redemption. | ✅ | ✅ | ✅ | ❌ | ✅ |
 | /check-in | Automatic HoYoLAB/Miyoushe daily reward check-in. | ✅ | ✅ | ✅ | ✅ | ✅ |
 | /characters | View and filter all owned characters.  | ✅ | ✅ | ✅ | ✅ | ❌ |

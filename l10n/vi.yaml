@@ -385,9 +385,6 @@ redeeem_code.cookie_token_expired_title: Mã Cookie đã hết hạn
 redeeem_code.cookie_token_refresh_failed_description: "Có thể bạn đã thay đổi mật khẩu tài khoản của mình kể từ lần cuối cùng bạn thêm tài khoản.\nVui lòng bạn thêm lại tài khoản bằng lệnh </accounts> với phương pháp email và mật khẩu."
 redeeem_code.cookie_token_refresh_failed_title: Thất bại để làm mới mã Cookie
 redeem_code.already_claimed: Mã quà đã được đổi
-redeem_code.cooldown: Đổi mã quà tặng trong thời gian hồi chiêu
-redeem_code.expired: Mã đổi quà đã hết hạn
-redeem_code.invalid: Mã đổi quà không hợp lệ
 redeem_code.success: Đã đổi thành công
 redeem_codes_button.label: Đổi mã quà
 redeem_command_description: Đổi mã quà để nhận phần thưởng trong trò chơi
@@ -492,22 +489,14 @@ img_theater_max_damage: "Gây Nhiều Sát Thương Nhất: {val}"
 img_theater_fastest_team: "(nhanh nhất)"
 challenge_view.view_buffs: Xem Buff
 challenge_view.buff_select.placeholder: Chọn Buff để xem
-battery_charge_button.label: Điện Lượng
-scratch_card_button.label: Thẻ Cào
 scratch_card.embed.description: Thẻ Chưa cào
 zzz_engagement_button.label: Năng Động
 zzz_engagement.embed.description: Chưa hoàn thành Nhiệm vụ Năng Động.
 honkai_daily_embed_title: Nhắc nhở Nhật ký HT
 honkai_daily_embed_description: "Nhật ký HT ngày hôm nay chưa hoàn thành, {cur}/{max}"
-video_store_button.label: Kinh Doanh Tiệm Băng Hình
 video_store.embed.description: Doanh thu Tiệm Băng Hình chưa nhận
 scratch_card.incomplete: Chưa hoàn thành
-video_store.currently_open: Đang mở
-video_store.revenue_available: Doanh thu có sẵn
-video_store.waiting_to_open: Đợi mở cửa
-notes-card.zzz.title: Ghi Chép Thời Gian Thực
 reminder_modal.title: "Cài đặt Lời nhắc {notify}"
-redeem_code.reached_max_limit: Mã đổi này đã vượt qua giới hạn sử dụng
 profile_view.set_cur_temp_as_default: Sử dụng mẫu này là mặc định
 set_cur_temp_as_default.done: Xong
 set_cur_temp_as_default.done_desc: "Mẫu thẻ mặc định của bạn cho {game} được đặt thành {template}"

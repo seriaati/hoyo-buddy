@@ -114,7 +114,7 @@ class RedeemCodesButton(Button[RedeemUI]):
 
         timed_out = await modal.wait()
         if timed_out:
-            return
+            return None
 
         await self.set_loading_state(i, embed=self.view.cooldown_embed)
         codes = (
@@ -128,6 +128,8 @@ class RedeemCodesButton(Button[RedeemUI]):
         codes = [code.split("code=")[1] if "code=" in code else code for code in codes]
 
         embed = await self.view.account.client.redeem_codes(codes, locale=self.view.locale)
+        if embed is None:
+            return await self.unset_loading_state(i)
         await self.unset_loading_state(i, embed=embed)
 
 
@@ -154,4 +156,6 @@ class RedeemAllAvailableCodesButton(Button[RedeemUI]):
         embed = await self.view.account.client.redeem_codes(
             self.view.available_codes, locale=self.view.locale
         )
+        if embed is None:
+            return await self.unset_loading_state(i)
         await self.unset_loading_state(i, embed=embed)

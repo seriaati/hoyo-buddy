@@ -110,7 +110,7 @@ class ProxyGenshinClient(genshin.Client):
                         if resp.status == 200:
                             return data
                         if resp.status == 400:
-                            raise genshin.GenshinException(data)
+                            genshin.raise_for_retcode(data)
                         raise Exception(data["message"])
 
                     err = ProxyAPIError(api_url, resp.status)
@@ -558,12 +558,14 @@ class GenshinClient(ProxyGenshinClient):
 
     async def redeem_codes(
         self, codes: Sequence[str], *, locale: Locale, blur: bool = True, api_url: str | None = None
-    ) -> DefaultEmbed:
+    ) -> DefaultEmbed | None:
         """Redeem multiple codes and return an embed with the results."""
-        results: list[tuple[str, str, bool]] = []
+        if not codes:
+            return None
 
+        results: list[tuple[str, str, bool]] = []
         for code in codes:
-            if not code:
+            if not code or code in self._account.redeemed_codes:
                 continue
 
             msg, success = await self.redeem_code(code.strip(), locale=locale, api_url=api_url)
@@ -614,6 +616,7 @@ class GenshinClient(ProxyGenshinClient):
                     raise genshin.GenshinException({"retcode": 1000}) from e
                 else:
                     # cookie token refresh succeeded, redeem code again
+                    await asyncio.sleep(6)
                     return await self.redeem_code(code, locale=locale)
             else:
                 # cookie token can't be refreshed

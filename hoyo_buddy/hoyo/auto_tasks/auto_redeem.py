@@ -233,5 +233,8 @@ class AutoRedeem:
             blur=False,
             api_url=PROXY_APIS[api_name] if api_name != "LOCAL" else "LOCAL",
         )
+        if embed is None:
+            return None
+
         embed.set_footer(text=LocaleStr(key="auto_redeem_footer"))
         return embed

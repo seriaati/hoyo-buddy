@@ -33,7 +33,6 @@ MAX_API_ERROR_COUNT = 10
 class AutoRedeem:
     _total_redeem_count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
-    _dead_codes: ClassVar[set[str]]
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
 
     @classmethod
@@ -59,7 +58,6 @@ class AutoRedeem:
 
                 cls._total_redeem_count = 0
                 cls._bot = bot
-                cls._dead_codes = set()
 
                 games_to_redeem = (
                     genshin.Game.GENSHIN,
@@ -224,22 +222,13 @@ class AutoRedeem:
     async def _redeem_codes(
         cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount, codes: list[str]
     ) -> DefaultEmbed | None:
-        codes_: list[str] = []
-        for code in codes:
-            if code in account.redeemed_codes or code in cls._dead_codes:
-                continue
-            codes_.append(code)
-
-        if not codes_:
-            return None
-
         await account.user.fetch_related("settings")
         locale = account.user.settings.locale or discord.Locale.american_english
         client = account.client
         client.set_lang(locale)
 
         embed = await account.client.redeem_codes(
-            codes_,
+            codes,
             locale=locale,
             blur=False,
             api_url=PROXY_APIS[api_name] if api_name != "LOCAL" else "LOCAL",

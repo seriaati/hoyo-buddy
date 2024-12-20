@@ -145,8 +145,12 @@ def convert_to_title_case(s: str) -> str:
 
 
 def capitalize_first_word(s: str) -> str:
-    """Capitalize the first word of a string and leave the rest unchanged."""
-    return s[:1].upper() + s[1:]
+    """Capitalizes the first word of the input string and decapitalizes the rest of the words."""
+    words = s.split()
+    if not words:
+        return s
+    formatted_words = [words[0].capitalize()] + [word.lower() for word in words[1:]]
+    return " ".join(formatted_words)
 
 
 async def get_pixiv_proxy_img(session: aiohttp.ClientSession, url: str) -> str:

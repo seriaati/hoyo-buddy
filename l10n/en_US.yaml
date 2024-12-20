@@ -385,9 +385,6 @@ redeeem_code.cookie_token_expired_title: Cookie Token Expired
 redeeem_code.cookie_token_refresh_failed_description: "It is likely that you have changed your account's password since the last time you add your accounts.\nPlease add your accounts again using </accounts> with the email and password method."
 redeeem_code.cookie_token_refresh_failed_title: Failed to refresh cookie token
 redeem_code.already_claimed: Redemption code already claimed
-redeem_code.cooldown: Gift code redemption in cooldown
-redeem_code.expired: Redemption code expired
-redeem_code.invalid: Invalid redemption code
 redeem_code.success: Successfully redeemed
 redeem_codes_button.label: Redeem codes
 redeem_command_description: Redeem codes for in-game rewards
@@ -492,22 +489,14 @@ img_theater_max_damage: "Most Damage Dealt: {val}"
 img_theater_fastest_team: " (fastest)"
 challenge_view.view_buffs: View buffs
 challenge_view.buff_select.placeholder: Select a buff to view...
-battery_charge_button.label: Battery charge
-scratch_card_button.label: Scratch card mania
 scratch_card.embed.description: Scratch card not scratched yet
 zzz_engagement_button.label: Engagement
 zzz_engagement.embed.description: Today's engagement is not completed yet
 honkai_daily_embed_title: Daily BP Reminder
 honkai_daily_embed_description: "Today's daily BP is not completed yet, {cur}/{max}"
-video_store_button.label: Video store management
 video_store.embed.description: Video store revenue not claimed yet
 scratch_card.incomplete: Incomplete
-video_store.currently_open: Currently open
-video_store.revenue_available: Revenue available
-video_store.waiting_to_open: Waiting to open
-notes-card.zzz.title: Sticky Notes
 reminder_modal.title: "{notify} Reminder Settings"
-redeem_code.reached_max_limit: This redemption code has reached its max usage limit
 profile_view.set_cur_temp_as_default: Set current template as default
 set_cur_temp_as_default.done: Done
 set_cur_temp_as_default.done_desc: "Your default template for {game} is set to {template}"

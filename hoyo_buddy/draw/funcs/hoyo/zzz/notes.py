@@ -8,6 +8,7 @@ from genshin.models import VideoStoreState, ZZZNotes
 from PIL import ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
 
 __all__ = ("draw_zzz_notes",)
@@ -32,9 +33,8 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
     )
 
     # Title
-    title = LocaleStr(key="notes-card.zzz.title").translate(discord.Locale(locale_))
     drawer.write(
-        title,
+        LocaleStr(key="daily_note", mi18n_game=Game.ZZZ),
         size=84,
         style="black_italic",
         position=(76, 44),
@@ -44,7 +44,7 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
 
     # Battery charge
     drawer.write(
-        LocaleStr(key="battery_charge_button.label"),
+        LocaleStr(key="battery_num", mi18n_game=Game.ZZZ),
         size=46,
         style="bold",
         position=(112, 230),
@@ -61,7 +61,7 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
 
     # Scratch card
     drawer.write(
-        LocaleStr(key="scratch_card_button.label"),
+        LocaleStr(key="card", mi18n_game=Game.ZZZ),
         size=46,
         style="bold",
         position=(598, 230),
@@ -79,7 +79,7 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
 
     # Video store management
     drawer.write(
-        LocaleStr(key="video_store_button.label"),
+        LocaleStr(key="vhs_sale", mi18n_game=Game.ZZZ),
         size=46,
         style="bold",
         position=(112, 633),
@@ -88,13 +88,15 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
         max_lines=2,
     )
     if notes.video_store_state is VideoStoreState.CURRENTLY_OPEN:
-        key = "video_store.currently_open"
+        key = "sales_doing"
     elif notes.video_store_state is VideoStoreState.REVENUE_AVAILABLE:
-        key = "video_store.revenue_available"
+        key = "sales_done"
     else:
-        key = "video_store.waiting_to_open"
+        key = "sales_no"
 
-    drawer.write(LocaleStr(key=key), size=32, style="medium", position=(112, 890))
+    drawer.write(
+        LocaleStr(key=key, mi18n_game=Game.ZZZ), size=32, style="medium", position=(112, 890)
+    )
 
     # Engagement
     drawer.write(

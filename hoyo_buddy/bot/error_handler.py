@@ -54,10 +54,6 @@ GENSHIN_ERROR_CONVERTER: dict[
         ),
     },
     (-2017, -2018): {"title": LocaleStr(key="redeem_code.already_claimed")},
-    (-2001,): {"title": LocaleStr(key="redeem_code.expired")},
-    (-2006,): {"title": LocaleStr(key="redeem_code.reached_max_limit")},
-    (-1065, -2003, -2004, -2014): {"title": LocaleStr(key="redeem_code.invalid")},
-    (-2016,): {"title": LocaleStr(key="redeem_code.cooldown")},
     (-3202,): {
         "title": LocaleStr(key="account_locked_title"),
         "description": LocaleStr(key="account_locked_description"),

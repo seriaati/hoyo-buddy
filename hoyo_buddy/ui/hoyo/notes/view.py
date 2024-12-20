@@ -249,7 +249,7 @@ class NotesView(View):
                 account=self.account, type=NotesNotifyType.BATTERY
             )
             embed.add_field(
-                name=LocaleStr(key="battery_charge_button.label"),
+                name=LocaleStr(key="battery_num", mi18n_game=Game.ZZZ),
                 value=self._get_type1_value(battery_notify),
                 inline=False,
             )
@@ -267,7 +267,7 @@ class NotesView(View):
                 account=self.account, type=NotesNotifyType.SCRATCH_CARD
             )
             embed.add_field(
-                name=LocaleStr(key="scratch_card_button.label"),
+                name=LocaleStr(key="card", mi18n_game=Game.ZZZ),
                 value=self._get_type3_value(scratch_card_notify),
                 inline=False,
             )
@@ -276,7 +276,7 @@ class NotesView(View):
                 account=self.account, type=NotesNotifyType.VIDEO_STORE
             )
             embed.add_field(
-                name=LocaleStr(key="video_store_button.label"),
+                name=LocaleStr(key="vhs_sale", mi18n_game=Game.ZZZ),
                 value=self._get_type2_value(video_store_notify),
                 inline=False,
             )

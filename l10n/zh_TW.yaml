@@ -782,3 +782,5 @@ mimo_auto_buy_embed_desc: "Hoyo Buddy 使用 {points} 點積分幫你購買了 {
 mimo_auto_buy_error_dm_content: "由於發生錯誤，自動購買 Mimo 獎勵功能已被停用，你可以使用</mimo>將其重新啟用。\n如果這個錯誤持續發生，或是你不知道如何解決它，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)內尋求協助。"
 mimo_game_unavailable: "{game}目前無法使用旅行 Mimo"
 generic_error_title: 錯誤
+on_button_label: "開"
+off_button_label: "關"

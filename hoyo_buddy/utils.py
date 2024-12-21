@@ -145,11 +145,27 @@ def convert_to_title_case(s: str) -> str:
 
 
 def capitalize_first_word(s: str) -> str:
-    """Capitalizes the first word of the input string and decapitalizes the rest of the words."""
+    """Capitalize the first word of the input string, decapitalize the rest of the words,
+    and leave the first word after a colon unchanged."""
     words = s.split()
     if not words:
         return s
-    formatted_words = [words[0].capitalize()] + [word.lower() for word in words[1:]]
+
+    formatted_words: list[str] = []
+    capitalize_next = True  # Capitalize the first word initially
+    ends_with_colon = words[0].endswith(":")
+
+    for word in words:
+        if capitalize_next:
+            formatted_words.append(word.capitalize())
+            capitalize_next = False
+        elif ends_with_colon:
+            formatted_words.append(word)
+        else:
+            formatted_words.append(word.lower())
+
+        ends_with_colon = word.endswith(":")
+
     return " ".join(formatted_words)
 
 

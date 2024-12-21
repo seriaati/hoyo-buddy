@@ -572,6 +572,8 @@ class GenshinClient(ProxyGenshinClient):
             results.append((code, msg, success))
             await asyncio.sleep(6)
 
+        if not results:
+            return None
         return self.get_redeem_codes_embed(results, locale=locale, blur=blur)
 
     def get_redeem_codes_embed(

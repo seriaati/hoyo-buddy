@@ -754,8 +754,6 @@ mimo_auto_finish_and_claim_button_label: 自動完成任務並領取積分
 mimo_auto_finish_and_claim_desc: Hoyo Buddy 能自動完成部份任務並領取所有已完成任務的積分。
 mimo_auto_buy_button_label: 自動購買獎勵
 mimo_auto_buy_desc: "只要積分足夠，Hoyo Buddy 便會自動購買星穹/菲林，它不會把積分存起來！"
-mimo_redeem_failed: "購買了 {name} 但是無法兌換禮物碼，請自行兌換，禮物碼: {code}"
-mimo_redeem_success: "成功使用 {points} 積分購買了 {name}，請檢查你的遊戲內信箱"
 mimo_cmd_desc: 管理旅行 Mimo 活動
 mimo_view_shop_button_label: 商店
 mimo_buy_item_select_placeholder: 選擇一個要購買的商品…
@@ -773,3 +771,4 @@ mimo_game_unavailable: "{game}目前無法使用旅行 Mimo"
 generic_error_title: 錯誤
 on_button_label: "開"
 off_button_label: "關"
+mimo_draw_redeem_success: "請至遊戲內信箱領取你的獎勵"

@@ -274,6 +274,14 @@ class Admin(commands.Cog):
 
         await ctx.send("Done.")
 
+    @commands.command(name="task-status")
+    async def task_status_command(self, ctx: commands.Context) -> Any:
+        tasks = (AutoRedeem, AutoMimo, DailyCheckin)
+        task_statuses = {task.__name__: task._lock.locked() for task in tasks}
+        await ctx.send(
+            "\n".join(f"{task} running: {status}" for task, status in task_statuses.items())
+        )
+
 
 async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Admin(bot))

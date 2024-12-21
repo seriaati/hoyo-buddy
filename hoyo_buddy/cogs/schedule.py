@@ -4,7 +4,9 @@ import datetime
 from typing import TYPE_CHECKING
 
 from discord.ext import commands, tasks
+from tortoise.expressions import Q
 
+from hoyo_buddy.db.models import HoyoAccount
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
 
 from ..constants import GI_UID_PREFIXES, UTC_8
@@ -85,13 +87,18 @@ class Schedule(commands.Cog):
     async def run_auto_redeem(self) -> None:
         await AutoRedeem.execute(self.bot)
 
-    @tasks.loop(
-        time=[
-            datetime.time(22, 0, 0, tzinfo=UTC_8),
-            *[datetime.time(hour - 2, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)],
-        ]
-    )
+    @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 3)])
     async def run_auto_mimo(self) -> None:
+        # Reset mimo_all_claimed_time if it's a new day
+        now = get_now()
+        accounts = await HoyoAccount.filter(Q(mimo_all_claimed_time__isnull=False))
+        for account in accounts:
+            assert account.mimo_all_claimed_time is not None
+            if account.mimo_all_claimed_time.astimezone(UTC_8).date() == now.date():
+                continue
+            account.mimo_all_claimed_time = None
+            await account.save(update_fields=("mimo_all_claimed_time",))
+
         await AutoMimo.execute(self.bot)
 
     @run_daily_checkin.before_loop

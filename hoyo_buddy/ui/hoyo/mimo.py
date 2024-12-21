@@ -42,8 +42,6 @@ class MimoView(ui.View):
 
         self.dark_mode = dark_mode
         self.point_emoji = MIMO_POINT_EMOJIS.get(account.game, "")
-        self.shop_items: Sequence[genshin.models.MimoShopItem] = []
-
         self.mimo_game: genshin.models.MimoGame = None  # pyright: ignore[reportAttributeAccessIssue]
 
     @property
@@ -110,7 +108,9 @@ class MimoView(ui.View):
         )
         return embed.add_acc_info(self.account)
 
-    def get_shop_embed(self, points: int) -> DefaultEmbed:
+    def get_shop_embed(
+        self, points: int, shop_items: Sequence[genshin.models.MimoShopItem]
+    ) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
             title=LocaleStr(
@@ -123,7 +123,7 @@ class MimoView(ui.View):
         )
         stock_str = LocaleStr(key="exchangePrizeLeft", mi18n_game="mimo").translate(self.locale)
 
-        for shop_item in self.shop_items:
+        for shop_item in shop_items:
             value = f"{shop_item.cost} {self.point_emoji}\n{stock_str} {shop_item.stock}"
 
             if shop_item.next_refresh_time.total_seconds() > 0:
@@ -174,10 +174,7 @@ class MimoView(ui.View):
             raise MimoUnavailableError(self.account.game)
 
         self.mimo_game = mimo_game
-        self.shop_items = await self.client.get_mimo_shop_items(
-            game_id=mimo_game.id, version_id=mimo_game.version_id
-        )
-        points = await self.client.get_mimo_point_count()
+        points = self.mimo_game.point
 
         self.add_item(FinishAndClaimButton())
         self.add_item(NotificationSettings())
@@ -255,14 +252,18 @@ class ViewShopButton(ui.Button[MimoView]):
 
     async def callback(self, i: Interaction) -> None:
         await i.response.defer()
+
+        shop_items = await self.view.client.get_mimo_shop_items(
+            game_id=self.view.mimo_game.id, version_id=self.view.mimo_game.version_id
+        )
         points = await self.view.client.get_mimo_point_count()
 
         go_back_button = GoBackButton(self.view.children)
         self.view.clear_items()
         self.view.add_item(go_back_button)
-        self.view.add_item(ShopItemSelector(self.view.shop_items, points))
+        self.view.add_item(ShopItemSelector(shop_items, points))
 
-        embed = self.view.get_shop_embed(points=points)
+        embed = self.view.get_shop_embed(points, shop_items)
         await i.edit_original_response(embed=embed, view=self.view)
 
 
@@ -360,8 +361,11 @@ class ShopItemSelector(ui.Select[MimoView]):
         embed.set_thumbnail(url=item.icon)
         await i.followup.send(embed=embed, ephemeral=True)
 
+        shop_items = await self.view.client.get_mimo_shop_items(
+            game_id=self.view.mimo_game.id, version_id=self.view.mimo_game.version_id
+        )
         points = await self.view.client.get_mimo_point_count()
-        shop_embed = self.view.get_shop_embed(points=points)
+        shop_embed = self.view.get_shop_embed(points, shop_items)
         await self.unset_loading_state(i, embed=shop_embed)
 
         shop_items = await self.view.client.get_mimo_shop_items(

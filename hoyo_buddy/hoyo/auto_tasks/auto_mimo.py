@@ -15,7 +15,7 @@ from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils import convert_code_to_redeem_url, get_mimo_task_str
+from hoyo_buddy.utils import convert_code_to_redeem_url, get_mimo_task_str, get_now
 
 if TYPE_CHECKING:
     import genshin
@@ -52,6 +52,12 @@ class AutoMimo:
                 cls._mimo_game_data = {}
                 cls._down_games = set()
 
+                # Accounts that have claimed all mimo tasks
+                skip_ids = {
+                    acc.id
+                    for acc in await HoyoAccount.filter(Q(mimo_all_claimed_time__isnull=False))
+                }
+
                 # Auto task
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 auto_task_accs = await HoyoAccount.filter(
@@ -59,7 +65,7 @@ class AutoMimo:
                 )
 
                 for account in auto_task_accs:
-                    if account.platform is Platform.MIYOUSHE:
+                    if account.platform is Platform.MIYOUSHE or account.id in skip_ids:
                         continue
                     await queue.put(account)
 
@@ -78,7 +84,11 @@ class AutoMimo:
                 )
 
                 for account in auto_buy_accs:
-                    if account.platform is Platform.MIYOUSHE:
+                    if (
+                        account.platform is Platform.MIYOUSHE
+                        or account.game in cls._down_games
+                        or account.id in skip_ids
+                    ):
                         continue
                     await queue.put(account)
 
@@ -254,13 +264,16 @@ class AutoMimo:
             except ValueError:
                 return None
 
-        finished, claimed = await client.finish_and_claim_mimo_tasks(
+        finished, claimed, all_claimed = await client.finish_and_claim_mimo_tasks(
             game_id=game_id,
             version_id=version_id,
             api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name],
         )
+        if all_claimed:
+            account.mimo_all_claimed_time = get_now()
+            await account.save(update_fields=("mimo_all_claimed_time",))
 
-        if len(finished) == 0 and len(claimed) == 0:
+        if not finished and not claimed:
             return None
 
         embed = DefaultEmbed(
@@ -301,7 +314,7 @@ class AutoMimo:
             game_id=game_id, version_id=version_id, api_url=api_url
         )
 
-        if len(bought) == 0:
+        if not bought:
             return None
 
         mimo_point_emoji = MIMO_POINT_EMOJIS[account.game]

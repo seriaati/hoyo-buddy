@@ -813,7 +813,7 @@ class GenshinClient(ProxyGenshinClient):
         if api_url == "LOCAL":
             return await super().get_mimo_tasks(game_id=game_id, version_id=version_id)
 
-        payload = {"cookies": self._account.cookies, "game_id": game_id, "version_id": version_id}
+        payload = {"game_id": game_id, "version_id": version_id}
         data = await self.request_proxy_api(api_url, "mimo/tasks", payload)
         return [genshin.models.MimoTask(**orjson.loads(task)) for task in data["tasks"]]
 
@@ -824,17 +824,17 @@ class GenshinClient(ProxyGenshinClient):
         if api_url == "LOCAL":
             return await super().get_mimo_shop_items(game_id=game_id, version_id=version_id)
 
-        payload = {"cookies": self._account.cookies, "game_id": game_id, "version_id": version_id}
+        payload = {"game_id": game_id, "version_id": version_id}
         data = await self.request_proxy_api(api_url, "mimo/shop", payload)
         return [genshin.models.MimoShopItem(**orjson.loads(item)) for item in data["items"]]
 
     async def finish_and_claim_mimo_tasks(
         self, *, game_id: int, version_id: int, api_url: str | None = None
-    ) -> tuple[list[genshin.models.MimoTask], list[genshin.models.MimoTask]]:
+    ) -> tuple[list[genshin.models.MimoTask], list[genshin.models.MimoTask], bool]:
         finished: list[genshin.models.MimoTask] = []
         claimed: list[genshin.models.MimoTask] = []
 
-        tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
+        tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id, api_url=api_url)
 
         for task in tasks:
             if task.status is not genshin.models.MimoTaskStatus.ONGOING:
@@ -879,7 +879,7 @@ class GenshinClient(ProxyGenshinClient):
                     await asyncio.sleep(2)
                     finished.append(task)
 
-        if len(finished) > 0:
+        if finished:
             tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
 
         for task in tasks:
@@ -895,19 +895,25 @@ class GenshinClient(ProxyGenshinClient):
 
                 claimed.append(task)
 
-        return finished, claimed
+        return (
+            finished,
+            claimed,
+            all(task.status is genshin.models.MimoTaskStatus.CLAIMED for task in tasks),
+        )
 
     async def buy_mimo_valuables(
         self, *, game_id: int, version_id: int, api_url: str | None = None
     ) -> list[tuple[genshin.models.MimoShopItem, str]]:
-        bought: list[tuple[genshin.models.MimoShopItem, str]] = []
+        result: list[tuple[genshin.models.MimoShopItem, str]] = []
+        bought: list[tuple[int, str]] = []
 
+        original_lang = self.lang[:]
         points = await self.get_mimo_point_count()
-        items = await self.get_mimo_shop_items(game_id=game_id, version_id=version_id)
-        item_mi18n = {item.id: item for item in items}
 
         self.lang = "en-us"
-        en_items = await self.get_mimo_shop_items(game_id=game_id, version_id=version_id)
+        en_items = await self.get_mimo_shop_items(
+            game_id=game_id, version_id=version_id, api_url=api_url
+        )
 
         keywords = ("Stellar Jades", "Polychrome")
         for item in en_items:
@@ -925,10 +931,18 @@ class GenshinClient(ProxyGenshinClient):
                         continue
                     raise
 
-                bought.append((item_mi18n[item.id], code))
+                bought.append((item.id, code))
                 points = await self.get_mimo_point_count()
 
-        return bought
+        if bought:
+            self.lang = original_lang
+            items = await self.get_mimo_shop_items(
+                game_id=game_id, version_id=version_id, api_url=api_url
+            )
+            item_mi18n = {item.id: item for item in items}
+            result = [(item_mi18n[item_id], code) for item_id, code in bought]
+
+        return result
 
     async def claim_daily_reward(
         self, *, api_url: str | None = None, challenge: dict[str, str] | None = None

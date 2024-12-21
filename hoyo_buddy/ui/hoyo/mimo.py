@@ -347,17 +347,18 @@ class ShopItemSelector(ui.Select[MimoView]):
                 _, success = await self.view.client.redeem_code(code, locale=self.view.locale)
         else:
             success = True
-        message = (
-            LocaleStr(key="mimo_redeem_success", name=item.name, points=item.cost)
-            if success
-            else LocaleStr(
-                key="mimo_redeem_failed",
-                name=item.name,
-                code=convert_code_to_redeem_url(code, game=self.view.account.game),
+
+        description = (
+            LocaleStr(
+                key="exchangeCodeTips",
+                mi18n_game="mimo",
+                append=f"\n{convert_code_to_redeem_url(code, game=self.view.account.game)}",
             )
+            if not success
+            else LocaleStr(key="mimo_draw_redeem_success")
         )
 
-        embed = DefaultEmbed(self.view.locale, title=message)
+        embed = DefaultEmbed(self.view.locale, title=item.name, description=description)
         embed.set_thumbnail(url=item.icon)
         await i.followup.send(embed=embed, ephemeral=True)
 
@@ -365,12 +366,10 @@ class ShopItemSelector(ui.Select[MimoView]):
             game_id=self.view.mimo_game.id, version_id=self.view.mimo_game.version_id
         )
         points = await self.view.client.get_mimo_point_count()
+
         shop_embed = self.view.get_shop_embed(points, shop_items)
         await self.unset_loading_state(i, embed=shop_embed)
 
-        shop_items = await self.view.client.get_mimo_shop_items(
-            game_id=self.view.game_id, version_id=self.view.version_id
-        )
         self.set_options(shop_items, points)
         self.translate(self.view.locale)
         await i.edit_original_response(view=self.view)
@@ -429,7 +428,7 @@ class LotteryDrawButton(ui.Button[MimoView]):
                 append=f"\n{convert_code_to_redeem_url(result.code, game=self.view.account.game)}",
             )
             if not success
-            else None
+            else LocaleStr(key="mimo_draw_redeem_success")
         )
 
         result_embed = DefaultEmbed(

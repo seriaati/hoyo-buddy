@@ -668,6 +668,10 @@ async def draw_shiyu_card(
 async def draw_block_list_card(
     draw_input: DrawInput, block_lists: Sequence[Sequence[SingleBlock | DoubleBlock]]
 ) -> File:
+    if not block_lists:
+        msg = "No block lists to draw."
+        raise ValueError(msg)
+
     urls: list[str] = []
     for block_list in block_lists:
         for block in block_list:

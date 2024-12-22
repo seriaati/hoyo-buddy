@@ -123,7 +123,7 @@ class GIBuildView(ui.View):
         bot: HoyoBuddy,
         *,
         type_: Literal["character", "weapon"],
-    ) -> discord.File:
+    ) -> discord.File | None:
         blocks: list[SingleBlock] = []
 
         for item in items:
@@ -142,6 +142,9 @@ class GIBuildView(ui.View):
                     bottom_text=f"{item.value * 100:.2f}%",
                 )
             )
+
+        if not blocks:
+            return None
 
         chunked_blocks = itertools.batched(blocks, 4)
         return await draw_block_list_card(

@@ -139,7 +139,7 @@ def convert_to_title_case(s: str) -> str:
     # Lowercase words that are three letters or fewer
     s = re.sub(r"\b\w{1,3}\b", lambda m: m.group().lower(), s)
     # Capitalize first word
-    s = capitalize_first_word(s)
+    s = s[0].upper() + s[1:]
     # Capitalize the first word after a colon
     return re.sub(r"(:\s*)([a-z])", lambda match: match.group(1) + match.group(2).upper(), s)
 

@@ -239,8 +239,9 @@ class ChallengeView(View):
 
                 challenge = max(challenges, key=lambda c: c.stats.difficulty.value)
             elif self.challenge_type is ChallengeType.SHIYU_DEFENSE:
-                agents = await client.get_zzz_agents(self.account.uid)
-                self.agent_ranks = {agent.id: agent.rank for agent in agents}
+                if not self.agent_ranks:
+                    agents = await client.get_zzz_agents(self.account.uid)
+                    self.agent_ranks = {agent.id: agent.rank for agent in agents}
                 challenge = await client.get_shiyu_defense(self.account.uid, previous=previous)
             else:
                 msg = f"Invalid challenge type: {self.challenge_type}"

@@ -55,16 +55,20 @@ class Schedule(commands.Cog):
 
     @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)])
     async def run_farm_checks(self) -> None:
+        self.bot.farm_check_running = True
         hour = get_now().hour
+
         if hour == 11:
-            await FarmChecker.execute(self.bot, "7")
+            await FarmChecker(self.bot).execute("7")
         elif hour == 17:
-            await FarmChecker.execute(self.bot, "6")
+            await FarmChecker(self.bot).execute("6")
         else:
             for uid_start in GI_UID_PREFIXES:
                 if uid_start in {"7", "6"}:
                     continue
-                await FarmChecker.execute(self.bot, uid_start)
+                await FarmChecker(self.bot).execute(uid_start)
+
+        self.bot.farm_check_running = False
 
     @tasks.loop(time=datetime.time(11, 0, 0, tzinfo=UTC_8))
     async def update_search_autofill(self) -> None:

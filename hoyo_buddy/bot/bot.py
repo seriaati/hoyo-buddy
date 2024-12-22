@@ -116,6 +116,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         """[game][locale][item_name] -> item_id"""
 
         self.geetest_command_task: asyncio.Task | None = None
+        self.farm_check_running: bool = False
 
     async def setup_hook(self) -> None:
         # Initialize genshin.py sqlite cache
@@ -503,7 +504,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     async def close(self) -> None:
         tasks = (AutoRedeem, AutoMimo, DailyCheckin)
-        if any(task._lock.locked() for task in tasks):
+        if any(task._lock.locked() for task in tasks) or self.farm_check_running:
             logger.warning("Task(s) are still running, still close the bot? (y/n)")
             response: str = await aioconsole.ainput()
             if response.lower() != "y":

@@ -82,7 +82,7 @@ class TaskView(ui.View):
     async def farm_check(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Farm check tasks started.")
         for uid_start in GI_UID_PREFIXES:
-            asyncio.create_task(FarmChecker.execute(i.client, uid_start))
+            asyncio.create_task(FarmChecker(i.client).execute(uid_start))
 
     @ui.button(label="Auto redeem", style=ButtonStyle.blurple)
     async def auto_redeem(self, i: Interaction, _: ui.Button) -> None:

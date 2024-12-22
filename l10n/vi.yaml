@@ -754,8 +754,6 @@ mimo_auto_finish_and_claim_button_label: Tự động hoàn thành nhiệm vụ 
 mimo_auto_finish_and_claim_desc: Hoyo Buddy có thể tự động hoàn thành một số nhiệm vụ và nhận điểm của những nhiêm vụ đã hoàn thành.
 mimo_auto_buy_button_label: Tự động đổi quà
 mimo_auto_buy_desc: "Hoyo Buddy sẽ cố gắng đổi Ngọc Ánh Sao/Film Màu khi có thể, và không cố gắng tiết kiệm điểm."
-mimo_redeem_failed: "Đã đổi {name} nhưng thất bại đổi mã quà, vui lòng tự đổi mã quà, mã: {code}"
-mimo_redeem_success: "Đã đổi thành công {name} cho {points} điểm. vui lòng kiểm tra hồm thư trò chơi."
 mimo_cmd_desc: Quản lý sự kiện Mimo Du Lịch
 mimo_view_shop_button_label: Cửa hàng
 mimo_buy_item_select_placeholder: Chọn một món để đổi
@@ -773,3 +771,4 @@ mimo_game_unavailable: "Mimo Du Lịch hiện không có sẵn cho {game}"
 generic_error_title: Lỗi
 on_button_label: "BẬT"
 off_button_label: "TẮT"
+mimo_draw_redeem_success: "Kiểm tra Hòm Thư trong Game để nhận quà"

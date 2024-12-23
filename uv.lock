@@ -179,7 +179,7 @@ wheels = [
 [[package]]
 name = "akasha-py"
 version = "0.2.8"
-source = { git = "https://github.com/seriaati/akasha-py#65b2062d0a568c7b8f16b421b066ea4dbca13784" }
+source = { git = "https://github.com/seriaati/akasha-py#7b9452e77400b35e2888c25acbbe672eef6d8e2a" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
@@ -190,7 +190,7 @@ dependencies = [
 [[package]]
 name = "ambr-py"
 version = "1.8.0"
-source = { git = "https://github.com/seriaati/ambr#e7ed2fab04daba4307c48726c1f7eafc7dac023e" }
+source = { git = "https://github.com/seriaati/ambr#73c23bfd876f50bd6e8acd8211e0a7c03af55518" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
@@ -588,7 +588,7 @@ speed = [
 [[package]]
 name = "enka-api"
 version = "2.4.2"
-source = { git = "https://github.com/seriaati/enka-py#ee1b1f7b31a9f646f262c74d42e62bfae10698d3" }
+source = { git = "https://github.com/seriaati/enka-py#be48fd14eb7ec15aa7f45902c491f84d17cd25ff" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -802,7 +802,7 @@ wheels = [
 [[package]]
 name = "hakushin-py"
 version = "0.4.7"
-source = { git = "https://github.com/seriaati/hakushin-py#cc40b2bc5ea14ddb5a980d537479df751be2cd08" }
+source = { git = "https://github.com/seriaati/hakushin-py#744b656fed683b6533d650dd445f4704234de5be" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
@@ -1973,7 +1973,7 @@ wheels = [
 [[package]]
 name = "yatta-py"
 version = "1.3.11"
-source = { git = "https://github.com/seriaati/yatta#5e94bbdf6f97625c9c89438a21484fa175a3b7c1" }
+source = { git = "https://github.com/seriaati/yatta#d79584ad21eb47aaaf3f231a3c684ff8a084ec7a" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },

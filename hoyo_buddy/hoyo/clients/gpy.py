@@ -651,6 +651,8 @@ class GenshinClient(ProxyGenshinClient):
             assert embed.title is not None
             if embed.description is None:
                 return embed.title, success
+            if "HoYo API Error" in embed.title:
+                return embed.description, success
             return f"{embed.title}\n{embed.description}", success
         else:
             await self._add_to_redeemed_codes(code)

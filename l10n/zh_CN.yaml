@@ -384,7 +384,6 @@ redeeem_code.cookie_token_expired_description: "兑换兑换码功能只有使�
 redeeem_code.cookie_token_expired_title: Cookie Token 已过期
 redeeem_code.cookie_token_refresh_failed_description: "自上次新增帐户以来，你可能已变更帐户密码。\n请使用</accounts>透过电子邮件和密码的方式重新新增您的帐户。"
 redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失败
-redeem_code.already_claimed: 你已经兑换过了
 redeem_code.success: 兑换成功
 redeem_codes_button.label: 兑换码
 redeem_command_description: 使用兑换码兑换游戏奖励
@@ -565,7 +564,6 @@ dyk_unreleased: 你可以使用 /search 查看尚未释出的游戏内容
 dyk_team_card: 你可以透过选择多个角色的方式在 /profile 生成队伍卡片
 dyk_set_default_acc: 你可以用 /accounts 设置一个预设帐户，用于运行所有指令
 title_dyk: "你知道吗？"
-new_zzz_temp: 绝区零卡片样式4来啦！
 button_label_dyk: 「你知道吗」讯息
 events_view_start_date_embed_field: 开始时间
 events_view_end_date_embed_field: 结束时间
@@ -772,3 +770,8 @@ generic_error_title: 错误
 on_button_label: "开"
 off_button_label: "关"
 mimo_draw_redeem_success: "请至游戏内邮箱领取你的奖励"
+image_settings_use_m3_art: 使用意象影画 3 图像
+remembrance: 记忆
+dismissible_default_title: 新功能！
+dismissible_default_footer: 此消息只会显示一次
+dismissible_m3_art_desc: 你现在可以在 ZZZ 代理人卡片中使用意象影画 3 的图像了，在卡片设置中选择「Hoyo Buddy 样式2」，接著在图像设置中打开「使用意象影画 3 图像」。

@@ -809,3 +809,6 @@ POST_REPLIES = (
     "interesting :o",
     "pretty informative!",
 )
+
+NO_BETA_CONTENT_GUILDS = {916725085019181056, 888984573403340860}
+"""Discord servers that don't allow unreleased game content."""

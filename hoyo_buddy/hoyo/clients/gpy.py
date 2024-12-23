@@ -513,6 +513,16 @@ class GenshinClient(ProxyGenshinClient):
             for chara in parsed.avatar_list
         ]
 
+    async def get_zzz_agents(
+        self, uid: int | None = None
+    ) -> Sequence[genshin.models.ZZZPartialAgent]:
+        cache, _ = await EnkaCache.get_or_create(uid=self.uid)
+        agents = await super().get_zzz_agents(uid)
+        for agent in agents:
+            set_or_update_dict(cache.extras, f"{agent.id}-hoyolab", {"live": True})
+        await cache.save(update_fields=("extras",))
+        return agents
+
     @overload
     async def get_zzz_agent_info(
         self, character_id: Sequence[int]

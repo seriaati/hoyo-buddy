@@ -281,7 +281,7 @@ version = "8.1.7.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "platform_system == 'Windows'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/5e/bf/59d836c3433d7aa07f76c2b95c4eb763195ea8a5d7f9ad3311ed30c2af61/asyncclick-8.1.7.2.tar.gz", hash = "sha256:219ea0f29ccdc1bb4ff43bcab7ce0769ac6d48a04f997b43ec6bee99a222daa0", size = 349073 }
 wheels = [
@@ -512,7 +512,7 @@ name = "click"
 version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "platform_system == 'Windows'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593 }
 wheels = [
@@ -751,7 +751,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.3"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#4091c88bab6ac835c6bfe4e870d633333831c94a" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#7173608543f1775d475cbc56d0c25612e8c38dc2" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },
@@ -846,7 +846,7 @@ dependencies = [
     { name = "sentry-sdk" },
     { name = "seria-library", extra = ["files"] },
     { name = "tortoise-orm" },
-    { name = "uvloop", marker = "sys_platform == 'linux'" },
+    { name = "uvloop", marker = "platform_system == 'Linux'" },
     { name = "yatta-py" },
 ]
 
@@ -888,7 +888,7 @@ requires-dist = [
     { name = "sentry-sdk", specifier = ">=2.13.0" },
     { name = "seria-library", extras = ["files"], specifier = ">=1.5.4" },
     { name = "tortoise-orm", specifier = ">=0.21.7" },
-    { name = "uvloop", marker = "sys_platform == 'linux'", specifier = ">=0.20.0" },
+    { name = "uvloop", marker = "platform_system == 'Linux'", specifier = ">=0.20.0" },
     { name = "yatta-py", git = "https://github.com/seriaati/yatta" },
 ]
 

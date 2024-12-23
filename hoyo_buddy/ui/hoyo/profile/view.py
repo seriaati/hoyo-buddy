@@ -422,7 +422,9 @@ class ProfileView(View):
         if character_data is None:
             raise CardNotReadyError(character.name)
 
-        image_url = card_settings.current_image or get_default_art(character, is_team=False)
+        image_url = card_settings.current_image or get_default_art(
+            character, is_team=False, use_m3_art=card_settings.use_m3_art
+        )
 
         if card_settings.custom_primary_color is None:
             primary: str = character_data["primary"]
@@ -456,7 +458,9 @@ class ProfileView(View):
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert isinstance(character, enka.gi.Character | HoyolabGICharacter)
 
-        image_url = card_settings.current_image or get_default_art(character, is_team=False)
+        image_url = card_settings.current_image or get_default_art(
+            character, is_team=False, use_m3_art=card_settings.use_m3_art
+        )
 
         template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
         if template_num == 2:
@@ -551,6 +555,7 @@ class ProfileView(View):
             agent_special_stat_map=agent_special_stat_map,
             hl_special_stats=card_settings.highlight_special_stats,
             hl_substats=card_settings.highlight_substats,
+            use_m3_art=card_settings.use_m3_art,
         )
 
     async def draw_card(
@@ -620,11 +625,6 @@ class ProfileView(View):
             loop=i.client.loop,
         )
         characters = [self.characters[char_id] for char_id in self.character_ids]
-        images = {
-            str(char.id): await get_team_image(i.user.id, str(char.id), game=self.game)
-            or get_default_art(char, is_team=True)
-            for char in characters
-        }
 
         if self.game is Game.ZZZ:
             assert self._account is not None
@@ -655,6 +655,13 @@ class ProfileView(View):
                 int(char_id): agent_card_settings[int(char_id)].highlight_substats
                 for char_id in self.character_ids
             }
+            images = {
+                str(char.id): await get_team_image(i.user.id, str(char.id), game=self.game)
+                or get_default_art(
+                    char, is_team=True, use_m3_art=agent_card_settings[int(char.id)].use_m3_art
+                )
+                for char in characters
+            }
 
             return await draw_zzz_team_card(
                 draw_input,
@@ -666,6 +673,13 @@ class ProfileView(View):
                 hl_special_stats=hl_special_stats,
                 agent_hl_substat_map=hl_substats,
             )
+
+        # GI and HSR
+        images = {
+            str(char.id): await get_team_image(i.user.id, str(char.id), game=self.game)
+            or get_default_art(char, is_team=True)
+            for char in characters
+        }
 
         if self.game is Game.STARRAIL:
             character_colors = {

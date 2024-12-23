@@ -559,7 +559,8 @@ def locale_to_starrail_data_lang(locale: discord.Locale) -> str:
 HSR_ASSETS_URL = "https://raw.githubusercontent.com/seriaati/HSRAssets/refs/heads/main"
 HSR_DEFAULT_ART_URL = f"{HSR_ASSETS_URL}/avatardrawcardresult/Texture2D/{{char_id}}.png"
 HSR_TEAM_ICON_URL = f"{HSR_ASSETS_URL}/avatariconteam/Texture2D/{{char_id}}.png"
-ZZZ_DEFAULT_ART_URL = "https://api.hakush.in/zzz/UI/Mindscape_{char_id}_3.webp"
+ZZZ_M3_ART_URL = "https://api.hakush.in/zzz/UI/Mindscape_{char_id}_2.webp"
+ZZZ_M6_ART_URL = "https://api.hakush.in/zzz/UI/Mindscape_{char_id}_3.webp"
 
 UIGF_GAME_KEYS: Final[dict[Game, str]] = {
     Game.GENSHIN: "hk4e",

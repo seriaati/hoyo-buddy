@@ -396,7 +396,7 @@ async def draw_zzz_notes_card(draw_input: DrawInput, notes: ZZZNotes) -> BytesIO
 
 
 async def fetch_zzz_draw_data(
-    agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2, 3, 4]
+    agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2, 3, 4], use_m3_art: bool = False
 ) -> ZZZDrawData:
     agent_full_names: dict[int, AgentNameData] = {}
 
@@ -413,7 +413,10 @@ async def fetch_zzz_draw_data(
             )
 
         if template == 2:
-            agent_images = {char.id: char.phase_3_cinema_art for char in characters}
+            agent_images = {
+                char.id: char.phase_2_cinema_art if use_m3_art else char.phase_3_cinema_art
+                for char in characters
+            }
         elif template == 1:
             agent_images = {char.id: char.image for char in characters}
         else:
@@ -444,8 +447,9 @@ async def draw_zzz_build_card(
     agent_special_stat_map: dict[str, list[int]],
     hl_substats: list[int],
     hl_special_stats: bool,
+    use_m3_art: bool,
 ) -> BytesIO:
-    draw_data = await fetch_zzz_draw_data([agent], template=template)
+    draw_data = await fetch_zzz_draw_data([agent], template=template, use_m3_art=use_m3_art)
 
     if template in {1, 2}:
         image = draw_data.agent_images[agent.id]

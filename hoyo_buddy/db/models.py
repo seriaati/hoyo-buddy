@@ -182,6 +182,8 @@ class CardSettings(BaseModel):
     show_substat_rolls = fields.BooleanField(default=True)
     highlight_special_stats = fields.BooleanField(default=True)
     highlight_substats: fields.Field[list[int]] = fields.JSONField(default=[])
+    use_m3_art = fields.BooleanField(default=False)
+    """Whether to use Mindscape 3 art for the ZZZ card."""
 
     class Meta:
         unique_together = ("character_id", "user")

@@ -278,9 +278,9 @@ class Admin(commands.Cog):
     async def task_status_command(self, ctx: commands.Context) -> Any:
         tasks = (AutoRedeem, AutoMimo, DailyCheckin)
         task_statuses = {task.__name__: task._lock.locked() for task in tasks}
-        await ctx.send(
-            "\n".join(f"{task} running: {status}" for task, status in task_statuses.items())
-        )
+        msg = "\n".join(f"{task} running: {status}" for task, status in task_statuses.items())
+        msg += f"\nFarmChecker running: {self.bot.farm_check_running}"
+        await ctx.send(msg)
 
     @commands.command(name="reset-dismissible", aliases=["rd"])
     async def reset_dismissible_command(

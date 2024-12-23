@@ -51,6 +51,8 @@ class AutoRedeem:
             return
 
         async with cls._lock:
+            start = asyncio.get_event_loop().time()
+
             try:
                 logger.info(
                     f"Starting auto redeem task for game {game or 'all'} and codes {codes or 'from API'}"
@@ -108,6 +110,7 @@ class AutoRedeem:
                 logger.info(
                     f"Auto redeem task completed, total redeem count: {cls._total_redeem_count}"
                 )
+                logger.info(f"Auto redeem task took {asyncio.get_event_loop().time() - start:.2f}s")
 
     @classmethod
     async def send_codes_to_channels(
@@ -168,11 +171,12 @@ class AutoRedeem:
 
         bot = cls._bot
         if api_name != "LOCAL":
-            # test if the api is working
-            async with bot.session.get(PROXY_APIS[api_name]) as resp:
-                if resp.status != 200:
-                    logger.warning(f"API {api_name} returned {resp.status}")
-                    return
+            try:
+                async with bot.session.get(PROXY_APIS[api_name]) as resp:
+                    resp.raise_for_status()
+            except Exception as e:
+                logger.warning(f"Failed to connect to {api_name}")
+                bot.capture_exception(e)
 
         api_error_count = 0
 
@@ -181,39 +185,35 @@ class AutoRedeem:
             codes = game_codes[HB_GAME_TO_GPY_GAME[account.game]]
 
             try:
-                await account.fetch_related("user")
+                await account.fetch_related("user", "user__settings")
                 embed = await cls._redeem_codes(api_name, account, codes)
             except Exception as e:
-                embed, recognized = get_error_embed(
-                    e, account.user.settings.locale or discord.Locale.american_english
-                )
-                if not recognized:
-                    api_error_count += 1
-                    await queue.put(account)
-                    cls._bot.capture_exception(e)
+                api_error_count += 1
+                await queue.put(account)
+                cls._bot.capture_exception(e)
 
                 if api_error_count >= MAX_API_ERROR_COUNT:
                     logger.warning(f"API {api_name} failed for {api_error_count} accounts")
                     return
-
-            if embed is not None:
-                cls._total_redeem_count += 1
-                await cls._notify_user(account, embed)
-
-            queue.task_done()
+            else:
+                if embed is not None:
+                    cls._total_redeem_count += 1
+                    await cls._notify_user(account, embed)
+            finally:
+                queue.task_done()
 
     @classmethod
     async def _notify_user(cls, account: HoyoAccount, embed: Embed) -> None:
-        if isinstance(embed, ErrorEmbed):
-            embed.add_acc_info(account, blur=False)
-            content = LocaleStr(key="auto_redeem_error.content")
-
-            account.auto_redeem = False
-            await account.save(update_fields=("auto_redeem",))
-        else:
-            content = None
-
         try:
+            if isinstance(embed, ErrorEmbed):
+                embed.add_acc_info(account, blur=False)
+                content = LocaleStr(key="auto_redeem_error.content")
+
+                account.auto_redeem = False
+                await account.save(update_fields=("auto_redeem",))
+            else:
+                content = None
+
             await cls._bot.dm_user(account.user.id, embed=embed, content=content)
         except Exception as e:
             cls._bot.capture_exception(e)
@@ -221,20 +221,28 @@ class AutoRedeem:
     @classmethod
     async def _redeem_codes(
         cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount, codes: list[str]
-    ) -> DefaultEmbed | None:
-        await account.user.fetch_related("settings")
+    ) -> DefaultEmbed | ErrorEmbed | None:
         locale = account.user.settings.locale or discord.Locale.american_english
-        client = account.client
-        client.set_lang(locale)
 
-        embed = await account.client.redeem_codes(
-            codes,
-            locale=locale,
-            blur=False,
-            api_url=PROXY_APIS[api_name] if api_name != "LOCAL" else "LOCAL",
-        )
-        if embed is None:
-            return None
+        try:
+            client = account.client
+            client.set_lang(locale)
 
-        embed.set_footer(text=LocaleStr(key="auto_redeem_footer"))
-        return embed
+            embed = await account.client.redeem_codes(
+                codes,
+                locale=locale,
+                blur=False,
+                api_url=PROXY_APIS[api_name] if api_name != "LOCAL" else "LOCAL",
+            )
+            if embed is None:
+                return None
+
+            embed.set_footer(text=LocaleStr(key="auto_redeem_footer"))
+        except Exception as e:
+            embed, recognized = get_error_embed(e, locale)
+            if not recognized:
+                raise
+            embed.add_acc_info(account, blur=False)
+            return embed
+        else:
+            return embed

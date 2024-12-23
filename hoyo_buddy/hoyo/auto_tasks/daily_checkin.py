@@ -79,6 +79,7 @@ class DailyCheckin:
                 logger.info("Doing daily check-in for CN accounts")
                 for account in cn_accounts:
                     try:
+                        await account.fetch_related("user", "user__settings")
                         embed = await cls._daily_checkin("LOCAL", account)
                     except Exception as e:
                         embed, recognized = get_error_embed(
@@ -107,9 +108,9 @@ class DailyCheckin:
                 logger.info(
                     f"Daily check-in finished, total check-in count: {cls._total_checkin_count}"
                 )
-
-            end = asyncio.get_event_loop().time()
-            logger.info(f"Daily check-in took {end - start:.2f} seconds")
+                logger.info(
+                    f"Daily check-in took {asyncio.get_event_loop().time() - start:.2f} seconds"
+                )
 
     @classmethod
     async def _daily_checkin_task(
@@ -119,11 +120,12 @@ class DailyCheckin:
 
         bot = cls._bot
         if api_name != "LOCAL":
-            # test if the api is working
-            async with bot.session.get(PROXY_APIS[api_name]) as resp:
-                if resp.status != 200:
-                    logger.warning(f"API {api_name} returned {resp.status}")
-                    return
+            try:
+                async with bot.session.get(PROXY_APIS[api_name]) as resp:
+                    resp.raise_for_status()
+            except Exception as e:
+                logger.warning(f"Failed to connect to {api_name}")
+                bot.capture_exception(e)
 
         api_error_count = 0
 
@@ -131,31 +133,22 @@ class DailyCheckin:
             account = await queue.get()
 
             try:
+                await account.fetch_related("user", "user__settings")
                 embed = await cls._daily_checkin(api_name, account)
             except Exception as e:
-                embed, recognized = get_error_embed(
-                    e, account.user.settings.locale or discord.Locale.american_english
-                )
-                embed.add_acc_info(account, blur=False)
-                if not recognized:
-                    api_error_count += 1
-                    await queue.put(account)
-                    cls._bot.capture_exception(e)
-
-                if isinstance(e, genshin.DailyGeetestTriggered):
-                    await User.filter(id=account.user.id).update(
-                        temp_data={"geetest": e.gt, "challenge": e.challenge}
-                    )
+                api_error_count += 1
+                await queue.put(account)
+                cls._bot.capture_exception(e)
 
                 if api_error_count >= MAX_API_ERROR_COUNT:
                     logger.warning(f"API {api_name} failed for {api_error_count} accounts")
                     return
-
-            cls._total_checkin_count += 1
-            cls._embeds[account.user.id].append((account.id, embed))
-
-            await asyncio.sleep(CHECKIN_SLEEP_TIME)
-            queue.task_done()
+            else:
+                cls._total_checkin_count += 1
+                cls._embeds[account.user.id].append((account.id, embed))
+            finally:
+                await asyncio.sleep(CHECKIN_SLEEP_TIME)
+                queue.task_done()
 
     @classmethod
     async def _notify_checkin_result(cls, user_id: int, embeds: list[tuple[int, Embed]]) -> None:
@@ -201,14 +194,28 @@ class DailyCheckin:
     @classmethod
     async def _daily_checkin(
         cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount
-    ) -> DefaultEmbed:
-        await account.fetch_related("user", "user__settings")
+    ) -> DefaultEmbed | ErrorEmbed:
         locale = account.user.settings.locale or discord.Locale.american_english
-        client = account.client
-        client.set_lang(locale)
 
-        await client.update_cookies_for_checkin()
-        reward = await client.claim_daily_reward(
-            api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name]
-        )
-        return client.get_daily_reward_embed(reward, locale, blur=False)
+        try:
+            client = account.client
+            client.set_lang(locale)
+
+            await client.update_cookies_for_checkin()
+            reward = await client.claim_daily_reward(
+                api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name]
+            )
+            embed = client.get_daily_reward_embed(reward, locale, blur=False)
+        except Exception as e:
+            if isinstance(e, genshin.DailyGeetestTriggered):
+                await User.filter(id=account.user.id).update(
+                    temp_data={"geetest": e.gt, "challenge": e.challenge}
+                )
+
+            embed, recognized = get_error_embed(e, locale)
+            if not recognized:
+                raise
+            embed.add_acc_info(account, blur=False)
+            return embed
+        else:
+            return embed

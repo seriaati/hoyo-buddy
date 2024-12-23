@@ -7,7 +7,6 @@ from collections import defaultdict
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-import aioconsole
 import aiohttp
 import aiosqlite
 import asyncpg_listen
@@ -38,9 +37,6 @@ from hoyo_buddy.constants import (
     ZZZ_TEXT_MAP_URL,
 )
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
-from hoyo_buddy.hoyo.auto_tasks.auto_redeem import AutoRedeem
-from hoyo_buddy.hoyo.auto_tasks.daily_checkin import DailyCheckin
 
 from ..db import get_locale, models
 from ..enums import Game, GeetestType, Platform
@@ -506,13 +502,6 @@ class HoyoBuddy(commands.AutoShardedBot):
             await message.edit(embed=embed, view=None)
 
     async def close(self) -> None:
-        tasks = (AutoRedeem, AutoMimo, DailyCheckin)
-        if any(task._lock.locked() for task in tasks) or self.farm_check_running:
-            logger.warning("Task(s) are still running, still close the bot? (y/n)")
-            response: str = await aioconsole.ainput()
-            if response.lower() != "y":
-                return
-
         logger.info("Bot shutting down...")
         if self.geetest_command_task is not None:
             self.geetest_command_task.cancel()

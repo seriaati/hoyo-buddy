@@ -32,15 +32,6 @@ wheels = [
 ]
 
 [[package]]
-name = "aioconsole"
-version = "0.8.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c7/c9/c57e979eea211b10a63783882a826f257713fa7c0d6c9a6eac851e674fb4/aioconsole-0.8.1.tar.gz", hash = "sha256:0535ce743ba468fb21a1ba43c9563032c779534d4ecd923a46dbd350ad91d234", size = 61085 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/fa/ea/23e756ec1fea0c685149304dda954b3b3932d6d06afbf42a66a2e6dc2184/aioconsole-0.8.1-py3-none-any.whl", hash = "sha256:e1023685cde35dde909fbf00631ffb2ed1c67fe0b7058ebb0892afbde5f213e5", size = 43324 },
-]
-
-[[package]]
 name = "aiodns"
 version = "3.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -281,7 +272,7 @@ version = "8.1.7.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
-    { name = "colorama", marker = "platform_system == 'Windows'" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/5e/bf/59d836c3433d7aa07f76c2b95c4eb763195ea8a5d7f9ad3311ed30c2af61/asyncclick-8.1.7.2.tar.gz", hash = "sha256:219ea0f29ccdc1bb4ff43bcab7ce0769ac6d48a04f997b43ec6bee99a222daa0", size = 349073 }
 wheels = [
@@ -512,7 +503,7 @@ name = "click"
 version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "platform_system == 'Windows'" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593 }
 wheels = [
@@ -817,7 +808,6 @@ source = { virtual = "." }
 dependencies = [
     { name = "aerich" },
     { name = "aiocache" },
-    { name = "aioconsole" },
     { name = "aiofiles" },
     { name = "akasha-py" },
     { name = "ambr-py" },
@@ -846,7 +836,7 @@ dependencies = [
     { name = "sentry-sdk" },
     { name = "seria-library", extra = ["files"] },
     { name = "tortoise-orm" },
-    { name = "uvloop", marker = "platform_system == 'Linux'" },
+    { name = "uvloop", marker = "sys_platform == 'linux'" },
     { name = "yatta-py" },
 ]
 
@@ -859,7 +849,6 @@ dev = [
 requires-dist = [
     { name = "aerich", specifier = ">=0.7.2" },
     { name = "aiocache", specifier = ">=0.12.2" },
-    { name = "aioconsole", specifier = ">=0.8.1" },
     { name = "aiofiles", specifier = ">=24.1.0" },
     { name = "akasha-py", git = "https://github.com/seriaati/akasha-py" },
     { name = "ambr-py", git = "https://github.com/seriaati/ambr" },
@@ -888,7 +877,7 @@ requires-dist = [
     { name = "sentry-sdk", specifier = ">=2.13.0" },
     { name = "seria-library", extras = ["files"], specifier = ">=1.5.4" },
     { name = "tortoise-orm", specifier = ">=0.21.7" },
-    { name = "uvloop", marker = "platform_system == 'Linux'", specifier = ">=0.20.0" },
+    { name = "uvloop", marker = "sys_platform == 'linux'", specifier = ">=0.20.0" },
     { name = "yatta-py", git = "https://github.com/seriaati/yatta" },
 ]
 

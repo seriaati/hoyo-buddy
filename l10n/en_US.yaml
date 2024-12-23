@@ -564,7 +564,6 @@ dyk_unreleased: You can view unreleased game content with /search
 dyk_team_card: You can generate a team card in /profile by selecting multiple characters
 dyk_set_default_acc: You can set a default account that is used to run all commands in /accounts
 title_dyk: "Did you know?"
-new_zzz_temp: ZZZ template 4 has arrived!
 button_label_dyk: Did you know messages
 events_view_start_date_embed_field: Start Time
 events_view_end_date_embed_field: End Time
@@ -773,3 +772,6 @@ off_button_label: "OFF"
 mimo_draw_redeem_success: "Check your in-game mail for the reward"
 image_settings_use_m3_art: Use M3 art
 remembrance: Remembrance
+dismissible_default_title: New Feature!
+dismissible_default_footer: This message will only show once
+dismissible_m3_art_desc: You can now use Mindscape 3 arts in your ZZZ agent cards, select "Hoyo Buddy template 2" in card settings, then toggle "Use M3 art" in image settings.

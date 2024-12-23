@@ -14,6 +14,7 @@ from .models import GachaHistory, HoyoAccount, Settings, User
 if TYPE_CHECKING:
     import asyncpg
 
+    from hoyo_buddy.models import Dismissible
     from hoyo_buddy.types import Interaction
 
 __all__ = (
@@ -162,3 +163,20 @@ def draw_locale(locale: Locale, account: HoyoAccount) -> Locale:
     if account.platform is Platform.MIYOUSHE:
         return Locale.chinese
     return locale
+
+
+async def show_dismissible(i: Interaction, dismissible: Dismissible) -> None:
+    user = await User.get(id=i.user.id)
+    if dismissible.id in user.dismissibles:
+        return
+
+    locale = await get_locale(i)
+    embed = dismissible.to_embed(locale)
+
+    if i.response.is_done():
+        await i.followup.send(embed=embed, ephemeral=True)
+    else:
+        await i.response.send_message(embed=embed, ephemeral=True)
+
+    user.dismissibles.append(dismissible.id)
+    await user.save(update_fields=("dismissibles",))

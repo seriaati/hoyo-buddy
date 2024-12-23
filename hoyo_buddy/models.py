@@ -11,6 +11,9 @@ from attr import dataclass
 from discord import Locale
 from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
 
+from hoyo_buddy.embeds import DefaultEmbed
+from hoyo_buddy.l10n import LocaleStr
+
 from .constants import STARRAIL_RES
 from .enums import GeetestType, GenshinElement
 
@@ -19,8 +22,6 @@ if TYPE_CHECKING:
     import asyncio
     import concurrent.futures
     from collections.abc import Mapping
-
-    from hoyo_buddy.l10n import LocaleStr
 
 
 @dataclass(kw_only=True)
@@ -433,3 +434,26 @@ class DoubleBlock:
     flair_text1: LocaleStr | str | None = None
     flair_text2: LocaleStr | str | None = None
     bottom_text: LocaleStr | str | None = None
+
+
+@dataclass(kw_only=True)
+class Dismissible:
+    id: str
+
+    title: LocaleStr | None = None
+    description: LocaleStr
+    image: str | None = None
+    thumbnail: str | None = None
+    footer: LocaleStr | None = None
+
+    def to_embed(self, locale: Locale) -> DefaultEmbed:
+        return (
+            DefaultEmbed(
+                locale,
+                title=self.title or LocaleStr(key="dismissible_default_title"),
+                description=self.description,
+            )
+            .set_image(url=self.image)
+            .set_thumbnail(url=self.thumbnail)
+            .set_footer(text=self.footer or LocaleStr(key="dismissible_default_footer"))
+        )

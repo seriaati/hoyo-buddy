@@ -53,7 +53,6 @@ GENSHIN_ERROR_CONVERTER: dict[
             available_time=format_dt(get_now() + timedelta(minutes=1), "T"),
         ),
     },
-    (-2017, -2018): {"title": LocaleStr(key="redeem_code.already_claimed")},
     (-3202,): {
         "title": LocaleStr(key="account_locked_title"),
         "description": LocaleStr(key="account_locked_description"),

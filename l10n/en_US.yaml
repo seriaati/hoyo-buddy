@@ -384,7 +384,6 @@ redeeem_code.cookie_token_expired_description: "Code redemption features are onl
 redeeem_code.cookie_token_expired_title: Cookie Token Expired
 redeeem_code.cookie_token_refresh_failed_description: "It is likely that you have changed your account's password since the last time you add your accounts.\nPlease add your accounts again using </accounts> with the email and password method."
 redeeem_code.cookie_token_refresh_failed_title: Failed to refresh cookie token
-redeem_code.already_claimed: Redemption code already claimed
 redeem_code.success: Successfully redeemed
 redeem_codes_button.label: Redeem codes
 redeem_command_description: Redeem codes for in-game rewards

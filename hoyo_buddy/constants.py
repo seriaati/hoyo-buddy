@@ -743,7 +743,7 @@ PROXY_APIS: dict[ProxyAPI, str] = {
     "VERCEL": os.environ["VERCEL_URL"],
     "RENDER": os.environ["RENDER_URL"],
     "FLY": os.environ["FLY_URL"],
-    "B4A": os.environ["B4A_URL"],
+    # "B4A": os.environ["B4A_URL"],
     "RAILWAY": os.environ["RAILWAY_URL"],
     # "LEAPCELL": os.environ["LEAPCELL_URL"],
 }

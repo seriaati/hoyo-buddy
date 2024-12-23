@@ -8,7 +8,7 @@ from genshin.models import ZZZFullAgent, ZZZPartialAgent
 from seria.utils import read_json
 
 from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, ZZZ_M3_ART_URL, ZZZ_M6_ART_URL
-from hoyo_buddy.db.models import CustomImage
+from hoyo_buddy.db import CustomImage
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO_ADD
 from hoyo_buddy.enums import Game
@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 
     from discord import Locale, Member, User
 
-    from hoyo_buddy.db.models import CardSettings, Settings
+    from hoyo_buddy.db import CardSettings, Settings
     from hoyo_buddy.types import Interaction
 
     from .view import Character

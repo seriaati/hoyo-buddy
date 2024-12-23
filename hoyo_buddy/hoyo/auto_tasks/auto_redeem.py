@@ -15,7 +15,7 @@ from hoyo_buddy.constants import (
     HB_GAME_TO_GPY_GAME,
     PROXY_APIS,
 )
-from hoyo_buddy.db.models import HoyoAccount, JSONFile
+from hoyo_buddy.db import HoyoAccount, JSONFile
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.enums import Platform
 from hoyo_buddy.l10n import LocaleStr

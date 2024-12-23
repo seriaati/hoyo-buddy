@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING
 
 from discord import app_commands
 
-from ..db.models import HoyoAccount
+from hoyo_buddy.db import HoyoAccount
+
 from ..exceptions import AccountNotFoundError
 
 if TYPE_CHECKING:

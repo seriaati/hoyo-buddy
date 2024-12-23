@@ -10,10 +10,10 @@ from discord.app_commands import locale_str
 from discord.ext import commands, tasks
 
 from hoyo_buddy.constants import IMAGE_EXTENSIONS
+from hoyo_buddy.db import Settings as UserSettings
+from hoyo_buddy.db import get_dyk
 from hoyo_buddy.exceptions import NotAnImageError
 
-from ..db.models import Settings as UserSettings
-from ..db.models import get_dyk
 from ..embeds import DefaultEmbed
 from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
 from ..l10n import LocaleStr

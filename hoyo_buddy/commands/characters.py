@@ -14,7 +14,7 @@ from hoyo_buddy.ui.hoyo.characters import CharactersView
 if TYPE_CHECKING:
     from discord import Locale
 
-    from hoyo_buddy.db.models import HoyoAccount, Settings
+    from hoyo_buddy.db import HoyoAccount, Settings
     from hoyo_buddy.types import Interaction
 
 

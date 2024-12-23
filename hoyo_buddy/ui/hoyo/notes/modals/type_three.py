@@ -7,7 +7,7 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Modal, TextInput
 
 if TYPE_CHECKING:
-    from hoyo_buddy.db.models import NotesNotify
+    from hoyo_buddy.db import NotesNotify
 
 
 class TypeThreeModal(Modal):

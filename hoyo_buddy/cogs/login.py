@@ -6,7 +6,8 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands
 
-from ..db.models import HoyoAccount, User, get_locale
+from hoyo_buddy.db import HoyoAccount, User, get_locale
+
 from ..ui.account.view import AccountManager
 
 if TYPE_CHECKING:

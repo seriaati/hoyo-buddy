@@ -8,9 +8,10 @@ from discord.utils import MISSING
 from loguru import logger
 from seria.utils import clean_url, split_list_to_chunks
 
+from hoyo_buddy.db import Settings, get_locale
+
 from .. import emojis
 from ..bot.error_handler import get_error_embed
-from ..db.models import Settings, get_locale
 from ..embeds import ErrorEmbed
 from ..exceptions import InvalidInputError
 from ..l10n import LocaleStr, translator

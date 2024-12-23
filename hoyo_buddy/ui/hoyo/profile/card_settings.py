@@ -8,7 +8,7 @@ from discord import ButtonStyle, TextStyle
 from genshin.models import ZZZPartialAgent
 
 from hoyo_buddy.constants import ZZZ_DISC_SUBSTATS
-from hoyo_buddy.db.models import CardSettings, Settings
+from hoyo_buddy.db import CardSettings, Settings
 from hoyo_buddy.embeds import DefaultEmbed, Embed
 from hoyo_buddy.emojis import PALETTE
 from hoyo_buddy.enums import Game

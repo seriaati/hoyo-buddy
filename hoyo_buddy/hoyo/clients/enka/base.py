@@ -5,7 +5,7 @@ from typing import Any, overload
 import discord
 import enka
 
-from hoyo_buddy.db.models import EnkaCache
+from hoyo_buddy.db import EnkaCache
 
 
 class BaseClient:

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from hoyo_buddy.db.models import HoyoAccount, get_dyk
+from hoyo_buddy.db import HoyoAccount, get_dyk
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.icons import get_game_icon

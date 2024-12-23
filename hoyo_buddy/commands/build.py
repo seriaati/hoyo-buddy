@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.db.models import Settings
+from hoyo_buddy.db import Settings
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients import ambr
 from hoyo_buddy.ui.hoyo.genshin.build import GIBuildView

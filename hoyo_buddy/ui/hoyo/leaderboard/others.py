@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, Any, Literal
 
-from hoyo_buddy.db.models import Leaderboard
+from hoyo_buddy.db import Leaderboard
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Page, PaginatorView
 from hoyo_buddy.utils import blur_uid

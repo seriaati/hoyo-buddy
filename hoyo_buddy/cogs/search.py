@@ -10,9 +10,9 @@ from discord.ext import commands
 from loguru import logger
 
 from hoyo_buddy.constants import locale_to_hakushin_lang
+from hoyo_buddy.db import Settings, get_locale
 from hoyo_buddy.utils import ephemeral
 
-from ..db.models import Settings, get_locale
 from ..emojis import PROJECT_AMBER
 from ..enums import BetaItemCategory, Game
 from ..exceptions import InvalidQueryError

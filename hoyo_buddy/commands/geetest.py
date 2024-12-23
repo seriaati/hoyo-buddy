@@ -3,8 +3,9 @@ from __future__ import annotations
 import urllib.parse
 from typing import TYPE_CHECKING
 
+from hoyo_buddy.db import HoyoAccount, User, get_locale
+
 from ..constants import GEETEST_SERVERS
-from ..db.models import HoyoAccount, User, get_locale
 from ..embeds import DefaultEmbed
 from ..l10n import LocaleStr
 from ..models import GeetestCommandPayload

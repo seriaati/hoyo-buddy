@@ -10,7 +10,7 @@ from tortoise.expressions import Q
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME, PROXY_APIS
-from hoyo_buddy.db.models import HoyoAccount
+from hoyo_buddy.db import HoyoAccount
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game, Platform

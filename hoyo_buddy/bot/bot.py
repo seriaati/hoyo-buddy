@@ -42,7 +42,7 @@ from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
 from hoyo_buddy.hoyo.auto_tasks.auto_redeem import AutoRedeem
 from hoyo_buddy.hoyo.auto_tasks.daily_checkin import DailyCheckin
 
-from ..db import models
+from ..db import get_locale, models
 from ..enums import Game, GeetestType, Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
@@ -288,7 +288,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         platforms: Sequence[Platform] | None = None,
     ) -> list[app_commands.Choice[str]]:
         games = games or list(Game)
-        locale = await models.get_locale(i)
+        locale = await get_locale(i)
         user: User = i.namespace.user
         return await self.get_account_choices(
             user, i.user.id, current, locale, games=games, platforms=platforms

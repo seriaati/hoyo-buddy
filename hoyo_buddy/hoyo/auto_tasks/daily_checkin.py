@@ -11,7 +11,7 @@ from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, PROXY_APIS
-from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount, User
+from hoyo_buddy.db import AccountNotifSettings, HoyoAccount, User
 from hoyo_buddy.embeds import DefaultEmbed, Embed, ErrorEmbed
 from hoyo_buddy.enums import Platform
 

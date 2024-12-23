@@ -10,8 +10,9 @@ from discord import Locale
 from genshin.models import HonkaiNotes, HSREvent, StarRailNote, VideoStoreState, ZZZNotes
 from genshin.models import Notes as GenshinNotes
 
+from hoyo_buddy.db import NotesNotify, draw_locale
+
 from ...bot.error_handler import get_error_embed
-from ...db.models import NotesNotify, draw_locale
 from ...draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
 from ...embeds import DefaultEmbed, ErrorEmbed
 from ...enums import Game, NotesNotifyType

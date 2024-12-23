@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from discord.ext import commands, tasks
 from tortoise.expressions import Q
 
-from hoyo_buddy.db.models import HoyoAccount
+from hoyo_buddy.db import HoyoAccount
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
 
 from ..constants import GI_UID_PREFIXES, UTC_8

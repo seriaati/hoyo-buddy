@@ -11,7 +11,7 @@ import yatta
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import UIGF_GAME_KEYS
-from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_dyk, get_locale, update_gacha_nums
+from hoyo_buddy.db import GachaHistory, HoyoAccount, get_dyk, get_locale, update_gacha_nums
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LOADING
 from hoyo_buddy.enums import GachaImportSource, Game

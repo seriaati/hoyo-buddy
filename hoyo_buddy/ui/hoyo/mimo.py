@@ -27,7 +27,7 @@ from hoyo_buddy.utils import convert_code_to_redeem_url, ephemeral, get_mimo_tas
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Interaction, User
 
 

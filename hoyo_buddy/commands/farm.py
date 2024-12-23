@@ -3,7 +3,8 @@ from __future__ import annotations
 from enum import IntEnum
 from typing import TYPE_CHECKING
 
-from ..db.models import FarmNotify, HoyoAccount, Settings
+from hoyo_buddy.db import FarmNotify, HoyoAccount, Settings
+
 from ..embeds import ErrorEmbed
 from ..enums import Game
 from ..exceptions import AutocompleteNotDoneYetError, InvalidQueryError

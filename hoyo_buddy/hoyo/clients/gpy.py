@@ -15,6 +15,7 @@ from discord import Locale
 from dotenv import load_dotenv
 from loguru import logger
 
+from hoyo_buddy.db import EnkaCache, HoyoAccount, JSONFile
 from hoyo_buddy.exceptions import ProxyAPIError
 from hoyo_buddy.web_app.utils import decrypt_string
 
@@ -32,7 +33,6 @@ from ...constants import (
     contains_traveler_id,
     convert_fight_prop,
 )
-from ...db.models import EnkaCache, HoyoAccount, JSONFile
 from ...embeds import DefaultEmbed
 from ...enums import Game, GenshinElement
 from ...l10n import LocaleStr

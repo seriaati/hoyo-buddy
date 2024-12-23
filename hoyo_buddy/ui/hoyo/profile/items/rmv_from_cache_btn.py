@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import enka
 from discord import ButtonStyle
 
-from hoyo_buddy.db.models import EnkaCache
+from hoyo_buddy.db import EnkaCache
 from hoyo_buddy.emojis import DELETE
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.enka.base import BaseClient

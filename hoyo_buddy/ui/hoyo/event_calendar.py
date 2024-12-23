@@ -8,7 +8,7 @@ from seria.utils import create_bullet_list
 
 from hoyo_buddy import ui
 from hoyo_buddy.constants import BLOCK_COLORS
-from hoyo_buddy.db.models import HoyoAccount, draw_locale
+from hoyo_buddy.db import HoyoAccount, draw_locale
 from hoyo_buddy.draw.main_funcs import draw_block_list_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game

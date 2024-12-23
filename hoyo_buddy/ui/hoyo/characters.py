@@ -14,6 +14,7 @@ from genshin.models import StarRailDetailCharacter as HSRCharacter
 from genshin.models import ZZZFullAgent as ZZZCharacter
 from genshin.models import ZZZSpecialty
 
+from hoyo_buddy.db import JSONFile, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_characters_card,
     draw_honkai_suits_card,
@@ -44,7 +45,6 @@ from ...constants import (
     YATTA_PATH_TO_GPY_PATH,
     contains_traveler_id,
 )
-from ...db.models import JSONFile, draw_locale, get_dyk
 from ...embeds import DefaultEmbed
 from ...emojis import (
     FILTER,
@@ -69,7 +69,7 @@ if TYPE_CHECKING:
     import aiohttp
     from discord import File, Member, User
 
-    from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Interaction
 
 

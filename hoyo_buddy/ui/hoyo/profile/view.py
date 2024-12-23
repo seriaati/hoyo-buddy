@@ -17,7 +17,7 @@ from hoyo_buddy.constants import (
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
     ZZZ_DISC_SUBSTATS,
 )
-from hoyo_buddy.db.models import EnkaCache, JSONFile, Settings, draw_locale, get_dyk
+from hoyo_buddy.db import EnkaCache, JSONFile, Settings, draw_locale, get_dyk, show_dismissible
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
     draw_gi_team_card,
@@ -36,7 +36,7 @@ from hoyo_buddy.exceptions import (
 )
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LevelStr, LocaleStr
-from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
+from hoyo_buddy.models import Dismissible, DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
 from hoyo_buddy.ui.hoyo.profile.items.team_card_settings_btn import TeamCardSettingsButton
@@ -62,7 +62,7 @@ if TYPE_CHECKING:
     from discord import Member, User
     from genshin.models import GenshinUserStats, RecordCard, StarRailUserStats
 
-    from hoyo_buddy.db.models import CardSettings, HoyoAccount
+    from hoyo_buddy.db import CardSettings, HoyoAccount
     from hoyo_buddy.types import Builds, Interaction
 
 
@@ -788,12 +788,9 @@ class ProfileView(View):
         self._add_items()
 
         if self.game is Game.ZZZ:
-            new_msg = LocaleStr(key="new_zzz_temp").translate(self.locale)
-            dyk = f"-# {new_msg}"
             await self.add_default_hl_substats(i.user.id)
-        else:
-            dyk = await get_dyk(i)
 
+        dyk = await get_dyk(i)
         if self.character_ids:
             CharacterSelect.update_ui(
                 self, character_id=self.character_ids[0], is_team=len(self.character_ids) > 1
@@ -802,4 +799,13 @@ class ProfileView(View):
 
         await i.followup.send(embed=self.player_embed, view=self, content=dyk)
         self.message = await i.original_response()
-        return None
+
+        if self.game is Game.ZZZ:
+            await show_dismissible(
+                i,
+                Dismissible(
+                    id="m3_art",
+                    description=LocaleStr(key="dismissible_m3_art_desc"),
+                    image="https://img.seria.moe/kVbCOBrqEMHlQsVd.png",
+                ),
+            )

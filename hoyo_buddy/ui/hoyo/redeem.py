@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     import aiohttp
     from genshin import Game
 
-    from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Interaction
 
 

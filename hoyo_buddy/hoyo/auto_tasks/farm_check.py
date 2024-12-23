@@ -7,8 +7,9 @@ import ambr
 from discord import Locale
 from loguru import logger
 
+from hoyo_buddy.db import FarmNotify
+
 from ...constants import UID_TZ_OFFSET
-from ...db.models import FarmNotify
 from ...embeds import DefaultEmbed
 from ...l10n import LocaleStr
 from ...utils import get_now

@@ -6,9 +6,9 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands
 
+from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.utils import ephemeral
 
-from ..db.models import Settings as UserSettings
 from ..ui.settings import SettingsUI
 
 if TYPE_CHECKING:

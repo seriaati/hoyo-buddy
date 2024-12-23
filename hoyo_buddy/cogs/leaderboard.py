@@ -9,7 +9,7 @@ from enka.errors import WrongUIDFormatError
 
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.constants import locale_to_akasha_lang
-from hoyo_buddy.db.models import HoyoAccount, get_locale
+from hoyo_buddy.db import HoyoAccount, get_locale
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.exceptions import (

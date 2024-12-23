@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, TypeAlias
 import genshin
 from discord import ButtonStyle, File, Locale, Member, User
 
-from hoyo_buddy.db.models import NotesNotify, draw_locale, get_dyk
+from hoyo_buddy.db import NotesNotify, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import (
@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
     import aiohttp
 
-    from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Interaction
     from hoyo_buddy.ui.hoyo.notes.modals.type_five import TypeFiveModal
 

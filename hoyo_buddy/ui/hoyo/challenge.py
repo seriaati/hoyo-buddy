@@ -19,6 +19,7 @@ from genshin.models import (
 from genshin.models import Character as GICharacter
 
 from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE
+from hoyo_buddy.db import ChallengeHistory, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_apc_shadow_card,
     draw_img_theater_card,
@@ -34,7 +35,6 @@ from hoyo_buddy.models import DrawInput
 from hoyo_buddy.types import Buff, Challenge, ChallengeWithBuff
 
 from ...bot.error_handler import get_error_embed
-from ...db.models import ChallengeHistory, draw_locale, get_dyk
 from ...enums import ChallengeType, Game
 from ...utils import get_floor_difficulty
 from ..components import Button, Select, SelectOption, ToggleButton, View
@@ -47,7 +47,7 @@ if TYPE_CHECKING:
     import aiohttp
     from discord import File, Locale, Member, User
 
-    from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Challenge, ChallengeWithLang, Interaction
 
 

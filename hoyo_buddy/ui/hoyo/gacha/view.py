@@ -11,7 +11,7 @@ from hoyo_buddy.constants import (
     STANDARD_ITEMS,
     WEB_APP_URLS,
 )
-from hoyo_buddy.db.models import GachaHistory, GachaStats, HoyoAccount, get_dyk, get_last_gacha_num
+from hoyo_buddy.db import GachaHistory, GachaStats, HoyoAccount, get_dyk, get_last_gacha_num
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import CURRENCY_EMOJIS
 from hoyo_buddy.exceptions import NoGachaLogFoundError

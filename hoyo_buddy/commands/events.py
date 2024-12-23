@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.db.models import HoyoAccount, Settings
+from hoyo_buddy.db import HoyoAccount, Settings
 from hoyo_buddy.enums import Game
 from hoyo_buddy.ui.hoyo.event_calendar import EventCalendarView
 from hoyo_buddy.ui.hoyo.events import EventsView

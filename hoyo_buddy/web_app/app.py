@@ -19,7 +19,7 @@ from hoyo_buddy.constants import (
     locale_to_starrail_data_lang,
     locale_to_zenless_data_lang,
 )
-from hoyo_buddy.db.models import GachaHistory
+from hoyo_buddy.db import GachaHistory
 from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import EnumStr, LocaleStr

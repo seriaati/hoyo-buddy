@@ -6,6 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from hoyo_buddy.commands.events import EventsCommand
+from hoyo_buddy.db import HoyoAccount, Settings, get_dyk, get_locale
 from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
 from hoyo_buddy.ui.hoyo.mimo import MimoView
 from hoyo_buddy.utils import ephemeral
@@ -13,7 +14,6 @@ from hoyo_buddy.utils import ephemeral
 from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand
 from ..constants import HB_GAME_TO_GPY_GAME
-from ..db.models import HoyoAccount, Settings, get_dyk, get_locale
 from ..enums import Game, GeetestType, Platform
 from ..exceptions import CantRedeemCodeError, InvalidQueryError, NoAccountFoundError
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001

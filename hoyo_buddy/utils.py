@@ -30,8 +30,10 @@ if TYPE_CHECKING:
     import pathlib
     from collections.abc import Generator, Sequence
 
+    import discord
     import genshin
-    from discord import Interaction, Member, User
+
+    from hoyo_buddy.types import Interaction
 
 
 def get_now() -> datetime.datetime:
@@ -124,7 +126,7 @@ def get_discord_user_link(user_id: int) -> str:
     return f"https://discord.com/users/{user_id}"
 
 
-def get_discord_user_md_link(user: User | Member) -> str:
+def get_discord_user_md_link(user: discord.User | discord.Member) -> str:
     """Get the Markdown-formatted link to a Discord user's profile."""
     return f"[@{user}]({get_discord_user_link(user.id)})"
 

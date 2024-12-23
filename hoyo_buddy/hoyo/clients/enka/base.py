@@ -116,7 +116,9 @@ class BaseClient:
                 cache["detailInfo"]["avatarDetailList"].append(chara)
 
             return cache
-        return None
+
+        msg = f"Game {game} is not supported."
+        raise NotImplementedError(msg)
 
     @overload
     async def fetch_showcase(

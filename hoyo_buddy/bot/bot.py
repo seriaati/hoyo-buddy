@@ -114,6 +114,10 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.geetest_command_task: asyncio.Task | None = None
         self.farm_check_running: bool = False
 
+    async def update_version_activity(self) -> None:
+        self.version = get_repo_version()
+        self.activity = discord.CustomActivity(f"{self.version} | hb.seria.moe")
+
     async def setup_hook(self) -> None:
         # Initialize genshin.py sqlite cache
         async with aiosqlite.connect("genshin_py.db") as conn:

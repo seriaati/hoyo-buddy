@@ -12,9 +12,9 @@ from typing import TYPE_CHECKING, Any, overload
 
 import aiohttp
 import ambr
-import git
 import orjson
 import sentry_sdk
+import toml
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
@@ -358,9 +358,8 @@ def dict_cookie_to_str(cookie_dict: dict[str, str]) -> str:
 
 
 def get_repo_version() -> str:
-    repo = git.Repo()
-    tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
-    return tags[-1].name
+    data = toml.load("pyproject.toml")
+    return f"v{data["project"]["version"]}"
 
 
 def init_sentry() -> None:

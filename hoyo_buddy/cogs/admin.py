@@ -300,6 +300,11 @@ class Admin(commands.Cog):
         msg = "\n".join([f"{dismissible}: {count}" for dismissible, count in dismissibles.items()])
         await ctx.send(f"Dismissibles:\n```{msg}```")
 
+    @commands.command(name="update-version", aliases=["uv"])
+    async def update_version_command(self, ctx: commands.Context) -> Any:
+        await self.bot.update_version_activity()
+        await ctx.send("Done.")
+
 
 async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Admin(bot))

@@ -272,7 +272,7 @@ version = "8.1.7.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "platform_system == 'Windows'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/5e/bf/59d836c3433d7aa07f76c2b95c4eb763195ea8a5d7f9ad3311ed30c2af61/asyncclick-8.1.7.2.tar.gz", hash = "sha256:219ea0f29ccdc1bb4ff43bcab7ce0769ac6d48a04f997b43ec6bee99a222daa0", size = 349073 }
 wheels = [
@@ -503,7 +503,7 @@ name = "click"
 version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "platform_system == 'Windows'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593 }
 wheels = [
@@ -837,7 +837,7 @@ dependencies = [
     { name = "seria-library", extra = ["files"] },
     { name = "toml" },
     { name = "tortoise-orm" },
-    { name = "uvloop", marker = "sys_platform == 'linux'" },
+    { name = "uvloop", marker = "platform_system == 'Linux'" },
     { name = "yatta-py" },
 ]
 
@@ -879,7 +879,7 @@ requires-dist = [
     { name = "seria-library", extras = ["files"], specifier = ">=1.5.4" },
     { name = "toml", specifier = ">=0.10.2" },
     { name = "tortoise-orm", specifier = ">=0.21.7" },
-    { name = "uvloop", marker = "sys_platform == 'linux'", specifier = ">=0.20.0" },
+    { name = "uvloop", marker = "platform_system == 'Linux'", specifier = ">=0.20.0" },
     { name = "yatta-py", git = "https://github.com/seriaati/yatta" },
 ]
 

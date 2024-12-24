@@ -4,7 +4,7 @@ import asyncio
 import itertools
 import os
 import random
-from typing import TYPE_CHECKING, Any, Literal, overload
+from typing import TYPE_CHECKING, Any, Literal, NamedTuple, overload
 
 import aiohttp
 import enka
@@ -48,6 +48,12 @@ env = os.environ["ENV"]
 MAX_RETRIES = len(PROXY_APIS)
 PROXY_APIS_ = (*PROXY_APIS.values(), "LOCAL")
 proxy_api_rotator = itertools.cycle(PROXY_APIS_)
+
+
+class MimoClaimTaksResult(NamedTuple):
+    finished: list[genshin.models.MimoTask]
+    claimed_points: int
+    all_claimed: bool
 
 
 class ProxyGenshinClient(genshin.Client):
@@ -842,9 +848,9 @@ class GenshinClient(ProxyGenshinClient):
 
     async def finish_and_claim_mimo_tasks(
         self, *, game_id: int, version_id: int, api_url: str | None = None
-    ) -> tuple[list[genshin.models.MimoTask], list[genshin.models.MimoTask], bool]:
+    ) -> MimoClaimTaksResult:
         finished: list[genshin.models.MimoTask] = []
-        claimed: list[genshin.models.MimoTask] = []
+        claimed_points = 0
 
         tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id, api_url=api_url)
 
@@ -905,11 +911,11 @@ class GenshinClient(ProxyGenshinClient):
                         continue
                     raise
 
-                claimed.append(task)
+                claimed_points += task.point
 
-        return (
+        return MimoClaimTaksResult(
             finished,
-            claimed,
+            claimed_points,
             all(task.status is genshin.models.MimoTaskStatus.CLAIMED for task in tasks),
         )
 

@@ -262,16 +262,16 @@ class AutoMimo:
                 except ValueError:
                     return None
 
-            finished, claimed, all_claimed = await client.finish_and_claim_mimo_tasks(
+            result = await client.finish_and_claim_mimo_tasks(
                 game_id=game_id,
                 version_id=version_id,
                 api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name],
             )
-            if all_claimed:
+            if result.all_claimed:
                 account.mimo_all_claimed_time = get_now()
                 await account.save(update_fields=("mimo_all_claimed_time",))
 
-            if not finished and not claimed:
+            if len(result.finished) == 0 and result.claimed_points == 0:
                 return None
 
             embed = DefaultEmbed(
@@ -283,12 +283,12 @@ class AutoMimo:
                 ),
                 description=LocaleStr(
                     key="mimo_auto_task_embed_desc",
-                    finish=len(finished),
-                    claim_point=sum(task.point for task in claimed),
+                    finish=len(result.finished),
+                    claim_point=result.claimed_points,
                 ),
             )
             embed.add_description(
-                f"{create_bullet_list([get_mimo_task_str(task, account.game) for task in finished])}"
+                f"{create_bullet_list([get_mimo_task_str(task, account.game) for task in result.finished])}"
             )
         except Exception as e:
             embed, recognized = get_error_embed(e, locale)

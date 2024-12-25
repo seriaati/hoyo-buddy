@@ -124,6 +124,10 @@ class MimoView(ui.View):
         stock_str = LocaleStr(key="exchangePrizeLeft", mi18n_game="mimo").translate(self.locale)
 
         for shop_item in shop_items:
+            if "×" not in shop_item.name:  # noqa: RUF001
+                # Skip hoyolab decorations
+                continue
+
             value = f"{shop_item.cost} {self.point_emoji}\n{stock_str} {shop_item.stock}"
 
             if shop_item.next_refresh_time.total_seconds() > 0:
@@ -156,9 +160,19 @@ class MimoView(ui.View):
                 append=f" {lottery_info.limit_count - lottery_info.current_count}/{lottery_info.limit_count}",
             )
         )
+
+        valuables: list[str] = [r.name for r in lottery_info.rewards if "×" in r.name]  # noqa: RUF001
         embed.add_field(
             name=LocaleStr(key="lottery_modal_info_title", mi18n_game="mimo"),
-            value=create_bullet_list([r.name for r in lottery_info.rewards]),
+            value=create_bullet_list(
+                [
+                    *valuables,
+                    LocaleStr(
+                        key="mimo_lottery_info_hoyolab_decos",
+                        num=len(lottery_info.rewards) - len(valuables),
+                    ).translate(self.locale),
+                ]
+            ),
         )
         return embed.add_acc_info(self.account)
 
@@ -277,20 +291,21 @@ class BuyItemModal(ui.Modal):
         self.amount.max_value = item.user_count
 
 
-class ShopItemSelector(ui.Select[MimoView]):
+class ShopItemSelector(ui.PaginatorSelect[MimoView]):
     def __init__(self, shop_items: Sequence[genshin.models.MimoShopItem], points: int) -> None:
         super().__init__(
-            options=[],
+            options=self.get_options(shop_items, points),
             placeholder=LocaleStr(key="mimo_buy_item_select_placeholder"),
             custom_id="mimo_shop_item_selector",
         )
-        self.set_options(shop_items, points)
         self.shop_items = shop_items
 
-    def set_options(self, shop_items: Sequence[genshin.models.MimoShopItem], points: int) -> bool:
+    def get_options(
+        self, shop_items: Sequence[genshin.models.MimoShopItem], points: int
+    ) -> list[ui.SelectOption]:
         options: list[ui.SelectOption] = []
 
-        for reward in shop_items:
+        for reward in sorted(shop_items, key=lambda x: "×" in x.name, reverse=True):  # noqa: RUF001
             if (
                 reward.status is not genshin.models.MimoShopItemStatus.EXCHANGEABLE
                 or reward.cost > points
@@ -313,16 +328,13 @@ class ShopItemSelector(ui.Select[MimoView]):
                 )
             )
 
-        if not options:
-            self.options = [ui.SelectOption(label="placeholder", value="0")]
-            self.disabled = True
-        else:
-            self.options = options
-            self.disabled = False
-
-        return self.disabled
+        return options
 
     async def callback(self, i: Interaction) -> None:
+        changed = self.update_page()
+        if changed:
+            return await i.response.edit_message(view=self.view)
+
         item_id = int(self.values[0])
         item = next((reward for reward in self.shop_items if reward.id == item_id), None)
         if item is None:
@@ -334,7 +346,7 @@ class ShopItemSelector(ui.Select[MimoView]):
         await i.response.send_modal(modal)
         timed_out = await modal.wait()
         if timed_out:
-            return
+            return None
 
         await self.set_loading_state(i)
         code = await self.view.client.buy_mimo_shop_item(
@@ -370,7 +382,7 @@ class ShopItemSelector(ui.Select[MimoView]):
         shop_embed = self.view.get_shop_embed(points, shop_items)
         await self.unset_loading_state(i, embed=shop_embed)
 
-        self.set_options(shop_items, points)
+        self.options = self.get_options(shop_items, points)
         self.translate(self.view.locale)
         await i.edit_original_response(view=self.view)
 

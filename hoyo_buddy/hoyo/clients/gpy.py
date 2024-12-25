@@ -862,6 +862,7 @@ class GenshinClient(ProxyGenshinClient):
                 genshin.models.MimoTaskType.FINISHABLE,
                 genshin.models.MimoTaskType.TRAILER,
                 genshin.models.MimoTaskType.VISIT,
+                genshin.models.MimoTaskType.VIEW_TOPIC,
             }:
                 try:
                     await self.finish_mimo_task(

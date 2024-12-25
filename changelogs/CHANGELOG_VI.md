@@ -1,5 +1,53 @@
 # Nhật ký thay đổi Hoyo Buddy
 
+## v1.15.5
+
+### Tính năng mới
+
+- (`/mimo`) Tự động hoàn thành tác vụ yêu cầu bình luận trên một bài viết.
+- (`/mimo`) Tự động hoàn thành tác vụ yêu cầu theo dõi một đề mục.
+- (`/mimo`) Thêm tính năng rút thưởng.
+- (`/mimo`) Thêm cài đặt thông báo.
+- (`/profile zzz`) Added an image setting to use Mindscape 3 arts for build cards.
+- (`/profile zzz`) Thêm cài đặt hình ảnh để sử dùng ảnh Phim Ý Cảnh cho thẻ nhân vật.
+- (`/profile zzz`) Thêm dử liệu nhân vật Harusama và Miyabi
+- (`/search`) Ẩn mục "nội dung chưa phát hành" trong một số máy chủ.
+
+### Cải Tiến
+
+- (`/mimo`) Hiển thị tiến độ tác vụ cho một số tác vụ nhất định.
+- (`/mimo`) Hiển thị tên các tác vụ đã hoàn thành trong thông báo.
+- (`/mimo`) Cải thiện hiệu suất của các tác vụ tự động.
+- (`/challenge zzz shiyu`) Cập nhật bố cục của thẻ.
+- (`/challenge zzz shiyu`) Avoid fetching agent data twice.
+- (`/challenge zzz shiyu`) Tranh lấy dữ liệu người đại diện hai lần.
+- Hiển thị liên kết mời máy chủ Discord trong phần chân trang bị lỗi.
+- Bỏ đặt trạng thái tải mục khi có lỗi.
+- Thêm nhãn bật/tắt cho các nút chuyển đổi.
+- Logic yêu cầu API proxy được cải thiện.
+- Cải thiện logic xử lý lỗi tác vụ tự động.
+
+### Sửa Lỗi
+
+- (`/mimo`) Đã thêm khoảng thời gian ngủ sau khi đổi mã quà tặng phần thưởng MMimo.
+- (`/mimo`) Sửa lỗi tác vụ bị thiếu trong danh sách tác vụ.
+- (`/mimo`) Sửa lỗi nhiệm vụ bình luận không được hoàn thành.
+- (`/mimo`) Sửa lỗi gửi thông báo khi không có nhiệm vụ nào được hoàn thành.
+- (`/mimo`) Chỉ hiển thị tài khoản HoYoLAB trong phần tự động điền.
+- (`/mimo`) Sửa lỗi `QuerySetError` trong các tác vụ tự động.
+- (`/mimo`) Đã sửa lỗi bình luận bài viết không bị xóaa.
+- (`/mimo`) Xử lý các trường hợp Mimo Du Lịch không có sẵn cho trò chơi.
+- (`/profile zzz`) Sửa lỗi điểm nổi bật của chỉ số phụ không được thêm vào thẻ.
+- (`/profile zzz`) Sửa lỗi người đại diện được xác định là được lưu trong bộ nhớ đệm trong khi thực tế không được lưu.
+- (`/characters zzz`) Sữa lỗi đếm sai số lượng người đại diệndiện.
+- (`/gacha-log upload`) Đã khắc phục sự cố khi nhập Nhật ký Gacha từ zzz.rng.moe.
+- (`/redeem`) Sửa lỗi tài khoản Miyoushe được hiển thị trong tự động điền.
+- (`/build genshin`) Xử lý tỷ lệ sử dụng bị thiếu đối với một số ký tự.
+- (`/events`) Đã sửa lỗi các banner Bước Nhảy HSR trong tương lai được hiển thị là "chưa có sẵn".
+- Thích ứng với các khóa ZenlessData mới.
+- Đã khắc phục sự cố với API Hakushin.
+- Nắm bắt các ngoại lệ chung trong phương thức `dm_user`.
+
 ## v1.15.4
 
 ### Tính năng mới

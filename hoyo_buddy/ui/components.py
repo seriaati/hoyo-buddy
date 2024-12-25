@@ -343,6 +343,9 @@ class Select(discord.ui.Select, Generic[V_co]):
         disabled: bool = False,
         row: int | None = None,
     ) -> None:
+        if not options:
+            options = [SelectOption(label="placeholder", value="0")]
+            disabled = True
         super().__init__(
             custom_id=custom_id,
             min_values=min_values,

@@ -127,7 +127,7 @@ class ProxyGenshinClient(genshin.Client):
             backoff_factor = 2
             jitter = random.uniform(0, 1)
 
-            for proxy_api in PROXY_APIS.values():
+            for proxy_api in random.choices(list(PROXY_APIS.values())):
                 if proxy_api != api_url:
                     api_url = proxy_api
             await asyncio.sleep((backoff_factor**attempt) + jitter)

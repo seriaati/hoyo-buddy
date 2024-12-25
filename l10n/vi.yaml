@@ -384,7 +384,6 @@ redeeem_code.cookie_token_expired_description: "Tính năng đổi mã quà ch�
 redeeem_code.cookie_token_expired_title: Mã Cookie đã hết hạn
 redeeem_code.cookie_token_refresh_failed_description: "Có thể bạn đã thay đổi mật khẩu tài khoản của mình kể từ lần cuối cùng bạn thêm tài khoản.\nVui lòng bạn thêm lại tài khoản bằng lệnh </accounts> với phương pháp email và mật khẩu."
 redeeem_code.cookie_token_refresh_failed_title: Thất bại để làm mới mã Cookie
-redeem_code.already_claimed: Mã quà đã được đổi
 redeem_code.success: Đã đổi thành công
 redeem_codes_button.label: Đổi mã quà
 redeem_command_description: Đổi mã quà để nhận phần thưởng trong trò chơi
@@ -565,7 +564,6 @@ dyk_unreleased: Bạn có thể xem nôi dung trò chơi chưa ra mắt bằng /
 dyk_team_card: Bạn có thể tạo một thẻ dội trong /profile bằng cách chọn nhiều nhân vật
 dyk_set_default_acc: Bạn có thể đặt một tài khoản mặc định dùng để chạy hết tất cả lệnh trong /accounts
 title_dyk: "Bạn có biết?"
-new_zzz_temp: Mẫu thẻ ZZZ 4 đã ra mắt!
 button_label_dyk: Tin Nhắn "Bạn có biết"
 events_view_start_date_embed_field: Thời gian bắt đầu
 events_view_end_date_embed_field: Thời gian kết thúc
@@ -772,3 +770,9 @@ generic_error_title: Lỗi
 on_button_label: "BẬT"
 off_button_label: "TẮT"
 mimo_draw_redeem_success: "Kiểm tra Hòm Thư trong Game để nhận quà"
+image_settings_use_m3_art: Sử dụng Ảnh M3
+remembrance: Ký Ức
+dismissible_default_title: Tính năng mới
+dismissible_default_footer: Tin nhắn này chỉ hiển thị một lần.
+dismissible_m3_art_desc: 'Bạn giờ có thể sử dụng ảnh Phim Ý Cảnh 3 trong thẻ người đại diện ZZZ, chọn "Mẫu thẻ Hoyo Buddy 3" trong phần cài đặt thẻ, và bật "Sử dụng ảnh M3" trong phần cài đặt ảnh'
+mimo_lottery_info_hoyolab_decos: "...và {num} đồ trang trí HoYoLAB"

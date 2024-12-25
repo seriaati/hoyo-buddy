@@ -85,7 +85,7 @@ class AutoMimo:
                 logger.info("Starting auto mimo buys")
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 auto_buy_accs = await HoyoAccount.filter(
-                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ | Q(game=Game.GENSHIN)),
+                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
                     mimo_auto_buy=True,
                 )
 

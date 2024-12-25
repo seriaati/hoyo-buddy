@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import base64
 import datetime
-import http.cookies
 import math
 import os
 import re
@@ -13,9 +12,9 @@ from typing import TYPE_CHECKING, Any, overload
 
 import aiohttp
 import ambr
-import git
 import orjson
 import sentry_sdk
+import toml
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
@@ -24,13 +23,17 @@ from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 from seria.utils import clean_url
 
 from hoyo_buddy.constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
+from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
 
 if TYPE_CHECKING:
     import pathlib
     from collections.abc import Generator, Sequence
 
-    from discord import Interaction, Member, User
+    import discord
+    import genshin
+
+    from hoyo_buddy.types import Interaction
 
 
 def get_now() -> datetime.datetime:
@@ -123,7 +126,7 @@ def get_discord_user_link(user_id: int) -> str:
     return f"https://discord.com/users/{user_id}"
 
 
-def get_discord_user_md_link(user: User | Member) -> str:
+def get_discord_user_md_link(user: discord.User | discord.Member) -> str:
     """Get the Markdown-formatted link to a Discord user's profile."""
     return f"[@{user}]({get_discord_user_link(user.id)})"
 
@@ -138,14 +141,34 @@ def convert_to_title_case(s: str) -> str:
     # Lowercase words that are three letters or fewer
     s = re.sub(r"\b\w{1,3}\b", lambda m: m.group().lower(), s)
     # Capitalize first word
-    s = capitalize_first_word(s)
+    s = s[0].upper() + s[1:]
     # Capitalize the first word after a colon
     return re.sub(r"(:\s*)([a-z])", lambda match: match.group(1) + match.group(2).upper(), s)
 
 
 def capitalize_first_word(s: str) -> str:
-    """Capitalize the first word of a string and leave the rest unchanged."""
-    return s[:1].upper() + s[1:]
+    """Capitalize the first word of the input string, decapitalize the rest of the words,
+    and leave the first word after a colon unchanged."""
+    words = s.split()
+    if not words:
+        return s
+
+    formatted_words: list[str] = []
+    capitalize_next = True  # Capitalize the first word initially
+    ends_with_colon = words[0].endswith(":")
+
+    for word in words:
+        if capitalize_next:
+            formatted_words.append(word.capitalize())
+            capitalize_next = False
+        elif ends_with_colon:
+            formatted_words.append(word)
+        else:
+            formatted_words.append(word.lower())
+
+        ends_with_colon = word.endswith(":")
+
+    return " ".join(formatted_words)
 
 
 async def get_pixiv_proxy_img(session: aiohttp.ClientSession, url: str) -> str:
@@ -174,8 +197,9 @@ def get_floor_difficulty(floor_name: str, season_name: str) -> str:
 
 
 def get_static_img_path(image_url: str, folder: str) -> pathlib.Path:
+    image_url = clean_url(image_url)
     extra_folder = image_url.split("/")[-2]
-    filename = clean_url(image_url).split("/")[-1]
+    filename = image_url.split("/")[-1]
     return STATIC_FOLDER / folder / extra_folder / filename
 
 
@@ -321,21 +345,6 @@ def get_discord_url(*, channel_id: str, guild_id: str) -> str:
     return f"https://discord.com/channels/{guild_id}/{channel_id}"
 
 
-def str_cookie_to_dict(cookie_string: str) -> dict[str, str]:
-    """Convert a string cookie to a dictionary.
-
-    Args:
-        cookie_string: The cookie string.
-
-    Returns:
-        The cookie dictionary.
-    """
-
-    cookies = http.cookies.SimpleCookie()
-    cookies.load(cookie_string)
-    return {cookie.key: cookie.value for cookie in cookies.values()}
-
-
 def dict_cookie_to_str(cookie_dict: dict[str, str]) -> str:
     """Convert a dictionary cookie to a string.
 
@@ -350,9 +359,8 @@ def dict_cookie_to_str(cookie_dict: dict[str, str]) -> str:
 
 
 def get_repo_version() -> str:
-    repo = git.Repo()
-    tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
-    return tags[-1].name
+    data = toml.load("pyproject.toml")
+    return f"v{data["project"]["version"]}"
 
 
 def init_sentry() -> None:
@@ -526,3 +534,49 @@ def convert_code_to_redeem_url(code: str, *, game: Game) -> str:
 
     msg = f"Unsupported game: {game}"
     raise ValueError(msg)
+
+
+def get_mimo_task_url(task: genshin.models.MimoTask) -> str | None:
+    if not task.jump_url:
+        return None
+
+    url_data: dict[str, Any] = orjson.loads(task.jump_url)
+    host, type_, args = url_data.get("host"), url_data.get("type"), url_data.get("args")
+    if host != "hoyolab" or args is None:
+        return None
+
+    if type_ == "article":
+        post_id = args.get("post_id")
+        if post_id is None:
+            return None
+        return f"https://www.hoyolab.com/article/{post_id}"
+
+    if type_ == "topicDetail":
+        topic_id = args.get("topic_id")
+        if topic_id is None:
+            return None
+        return f"https://www.hoyolab.com/topicDetail/{topic_id}"
+
+    if type_ == "circles":
+        game_id = args.get("game_id")
+        if game_id is None:
+            return None
+        return f"https://www.hoyolab.com/circles/{game_id}"
+
+    if type_ == "h5":
+        url = args.get("url")
+        if url is None:
+            return None
+        return url
+
+    return None
+
+
+def get_mimo_task_str(task: genshin.models.MimoTask, game: Game) -> str:
+    point_emoji = MIMO_POINT_EMOJIS[game]
+    task_url = get_mimo_task_url(task)
+    task_str = f"[{task.name}]({task_url})" if task_url else task.name
+    task_str += f" - {task.point} {point_emoji}"
+    if task.total_progress > 1:
+        task_str += f" ({task.progress}/{task.total_progress})"
+    return task_str

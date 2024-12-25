@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from typing import TYPE_CHECKING, ClassVar, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 import ambr
 from discord import Locale
 from loguru import logger
 
+from hoyo_buddy.db import FarmNotify
+
 from ...constants import UID_TZ_OFFSET
-from ...db.models import FarmNotify
 from ...embeds import DefaultEmbed
 from ...l10n import LocaleStr
 from ...utils import get_now
@@ -23,45 +24,40 @@ CharacterOrWeapon = TypeVar("CharacterOrWeapon", ambr.Character, ambr.Weapon)
 
 
 class FarmChecker:
-    _bot: ClassVar[HoyoBuddy]
-    _item_id_to_name: ClassVar[dict[str, dict[str, str]]]
-    """[locale][item_id] = item_name"""
+    def __init__(self, bot: HoyoBuddy) -> None:
+        self._bot = bot
+        self._item_id_to_name = {}
+        """[locale][item_id] = item_name"""
 
-    @classmethod
-    async def _notify_user(cls, item: CharacterOrWeapon, farm_notify: FarmNotify) -> None:
+    async def _notify_user(self, item: CharacterOrWeapon, farm_notify: FarmNotify) -> None:
         locale = farm_notify.account.user.settings.locale or Locale.american_english
 
         embed = DefaultEmbed(
             locale,
             title=LocaleStr(
                 key="farm_check.farmable_today",
-                name=cls._item_id_to_name[locale.value][str(item.id)],
+                name=self._item_id_to_name[locale.value][str(item.id)],
             ),
         )
         embed.set_thumbnail(url=item.icon)
         embed.set_footer(text=LocaleStr(key="farm_check.use_farm_notify"))
         embed.add_acc_info(farm_notify.account, blur=False)
 
-        message = await cls._bot.dm_user(farm_notify.account.user.id, embed=embed)
+        message = await self._bot.dm_user(farm_notify.account.user.id, embed=embed)
         if message is None:
             await FarmNotify.filter(account=farm_notify.account).update(enabled=False)
 
-    @classmethod
     async def _check_and_notify(
-        cls, item_id: str, items: list[CharacterOrWeapon], farm_notify: FarmNotify
+        self, item_id: str, items: list[CharacterOrWeapon], farm_notify: FarmNotify
     ) -> bool:
         for item in items:
             if str(item.id) == item_id:
-                await cls._notify_user(item, farm_notify)
+                await self._notify_user(item, farm_notify)
                 return True
         return False
 
-    @classmethod
-    async def execute(cls, bot: HoyoBuddy, uid_start: str) -> None:
+    async def execute(self, uid_start: str) -> None:
         logger.info(f"Starting farm check task for uid_start {uid_start}")
-
-        cls._bot = bot
-        cls._item_id_to_name = {}
 
         farm_notifies = await FarmNotify.filter(enabled=True).all().prefetch_related("account")
         if not farm_notifies:
@@ -76,11 +72,11 @@ class FarmChecker:
 
             await farm_notify.account.fetch_related("user", "user__settings")
             locale = farm_notify.account.user.settings.locale or Locale.american_english
-            if locale.value not in cls._item_id_to_name:
+            if locale.value not in self._item_id_to_name:
                 async with AmbrAPIClient(locale) as client:
                     characters = await client.fetch_characters()
                     weapons = await client.fetch_weapons()
-                cls._item_id_to_name[locale.value] = {
+                self._item_id_to_name[locale.value] = {
                     str(item.id): item.name for item in characters + weapons
                 }
 
@@ -93,7 +89,7 @@ class FarmChecker:
                 for farm_data in farm_datas:
                     if len(item_id) == 5:
                         # weapon
-                        notified_ = await cls._check_and_notify(
+                        notified_ = await self._check_and_notify(
                             item_id, farm_data.weapons, farm_notify
                         )
                         if notified_:
@@ -101,7 +97,7 @@ class FarmChecker:
                             break
 
                     else:
-                        notified_ = await cls._check_and_notify(
+                        notified_ = await self._check_and_notify(
                             item_id, farm_data.characters, farm_notify
                         )
                         if notified_:

@@ -6,7 +6,7 @@ import discord
 from seria.utils import create_bullet_list
 
 from hoyo_buddy import ui
-from hoyo_buddy.db.models import HoyoAccount, draw_locale, get_dyk
+from hoyo_buddy.db import HoyoAccount, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_exploration_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game

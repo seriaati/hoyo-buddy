@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.db.models import NotesNotify
-from hoyo_buddy.enums import NotesNotifyType
+from hoyo_buddy.db import NotesNotify
+from hoyo_buddy.enums import Game, NotesNotifyType
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
 
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 class VideoStoreReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
-        super().__init__(label=LocaleStr(key="video_store_button.label"), row=row)
+        super().__init__(label=LocaleStr(key="vhs_sale", mi18n_game=Game.ZZZ), row=row)
 
     async def callback(self, i: Interaction) -> None:
         notify = await NotesNotify.get_or_none(
@@ -26,7 +26,7 @@ class VideoStoreReminder(Button[NotesView]):
         modal = TypeTwoModal(
             notify,
             title=LocaleStr(
-                key="reminder_modal.title", notify=LocaleStr(key="video_store_button.label")
+                key="reminder_modal.title", notify=LocaleStr(key="vhs_sale", mi18n_game=Game.ZZZ)
             ),
             min_notify_interval=30,
         )

@@ -4,7 +4,9 @@ import datetime
 from typing import TYPE_CHECKING
 
 from discord.ext import commands, tasks
+from tortoise.expressions import Q
 
+from hoyo_buddy.db import HoyoAccount
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
 
 from ..constants import GI_UID_PREFIXES, UTC_8
@@ -53,16 +55,20 @@ class Schedule(commands.Cog):
 
     @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)])
     async def run_farm_checks(self) -> None:
+        self.bot.farm_check_running = True
         hour = get_now().hour
+
         if hour == 11:
-            await FarmChecker.execute(self.bot, "7")
+            await FarmChecker(self.bot).execute("7")
         elif hour == 17:
-            await FarmChecker.execute(self.bot, "6")
+            await FarmChecker(self.bot).execute("6")
         else:
             for uid_start in GI_UID_PREFIXES:
                 if uid_start in {"7", "6"}:
                     continue
-                await FarmChecker.execute(self.bot, uid_start)
+                await FarmChecker(self.bot).execute(uid_start)
+
+        self.bot.farm_check_running = False
 
     @tasks.loop(time=datetime.time(11, 0, 0, tzinfo=UTC_8))
     async def update_search_autofill(self) -> None:
@@ -81,17 +87,22 @@ class Schedule(commands.Cog):
     async def run_notes_check(self) -> None:
         await NotesChecker.execute(self.bot)
 
-    @tasks.loop(hours=1)
+    @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 2)])
     async def run_auto_redeem(self) -> None:
         await AutoRedeem.execute(self.bot)
 
-    @tasks.loop(
-        time=[
-            *[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 2)],
-            *[datetime.time(hour - 1, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)],
-        ]
-    )
+    @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 3)])
     async def run_auto_mimo(self) -> None:
+        # Reset mimo_all_claimed_time if it's a new day
+        now = get_now()
+        accounts = await HoyoAccount.filter(Q(mimo_all_claimed_time__isnull=False))
+        for account in accounts:
+            assert account.mimo_all_claimed_time is not None
+            if account.mimo_all_claimed_time.astimezone(UTC_8).date() == now.date():
+                continue
+            account.mimo_all_claimed_time = None
+            await account.save(update_fields=("mimo_all_claimed_time",))
+
         await AutoMimo.execute(self.bot)
 
     @run_daily_checkin.before_loop
@@ -100,6 +111,7 @@ class Schedule(commands.Cog):
     @update_assets.before_loop
     @run_notes_check.before_loop
     @run_auto_redeem.before_loop
+    @run_auto_mimo.before_loop
     async def before_loops(self) -> None:
         await self.bot.wait_until_ready()
 

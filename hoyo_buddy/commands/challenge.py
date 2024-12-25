@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.constants import CHALLENGE_TYPE_GAMES
+from hoyo_buddy.db import HoyoAccount, Settings
 
-from ..db.models import HoyoAccount, Settings
 from ..ui.hoyo.challenge import ChallengeView
 
 if TYPE_CHECKING:

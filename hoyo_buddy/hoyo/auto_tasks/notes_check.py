@@ -10,8 +10,9 @@ from discord import Locale
 from genshin.models import HonkaiNotes, HSREvent, StarRailNote, VideoStoreState, ZZZNotes
 from genshin.models import Notes as GenshinNotes
 
+from hoyo_buddy.db import NotesNotify, draw_locale
+
 from ...bot.error_handler import get_error_embed
-from ...db.models import NotesNotify, draw_locale
 from ...draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
 from ...embeds import DefaultEmbed, ErrorEmbed
 from ...enums import Game, NotesNotifyType
@@ -138,7 +139,7 @@ class NotesChecker:
             case NotesNotifyType.BATTERY:
                 embed = DefaultEmbed(
                     locale,
-                    title=LocaleStr(key="battery_charge_button.label"),
+                    title=LocaleStr(key="battery_num", mi18n_game=Game.ZZZ),
                     description=LocaleStr(
                         key="threshold.embed.description", threshold=notify.threshold
                     ),
@@ -147,7 +148,7 @@ class NotesChecker:
             case NotesNotifyType.SCRATCH_CARD:
                 embed = DefaultEmbed(
                     locale,
-                    title=LocaleStr(key="scratch_card_button.label"),
+                    title=LocaleStr(key="card", mi18n_game=Game.ZZZ),
                     description=LocaleStr(key="scratch_card.embed.description"),
                 )
                 embed.set_thumbnail(url=SCRATCH_CARD_ICON)
@@ -160,7 +161,7 @@ class NotesChecker:
             case NotesNotifyType.VIDEO_STORE:
                 embed = DefaultEmbed(
                     locale,
-                    title=LocaleStr(key="video_store_button.label"),
+                    title=LocaleStr(key="vhs_sale", mi18n_game=Game.ZZZ),
                     description=LocaleStr(key="video_store.embed.description"),
                 )
             case NotesNotifyType.PLANAR_FISSURE:

@@ -6,6 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from hoyo_buddy.commands.events import EventsCommand
+from hoyo_buddy.db import HoyoAccount, Settings, get_dyk, get_locale
 from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
 from hoyo_buddy.ui.hoyo.mimo import MimoView
 from hoyo_buddy.utils import ephemeral
@@ -13,9 +14,8 @@ from hoyo_buddy.utils import ephemeral
 from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand
 from ..constants import HB_GAME_TO_GPY_GAME
-from ..db.models import HoyoAccount, Settings, get_dyk, get_locale
 from ..enums import Game, GeetestType, Platform
-from ..exceptions import InvalidQueryError, NoAccountFoundError
+from ..exceptions import CantRedeemCodeError, InvalidQueryError, NoAccountFoundError
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from ..types import User  # noqa: TC001
 from ..ui.hoyo.checkin import CheckInUI
@@ -187,8 +187,10 @@ class Hoyo(commands.Cog):
         account_ = account or await self.bot.get_account(
             user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT), Platform.HOYOLAB
         )
-        locale = await get_locale(i)
+        if not account_.can_redeem_code:
+            raise CantRedeemCodeError
 
+        locale = await get_locale(i)
         available_codes = await RedeemUI.fetch_available_codes(
             i.client.session, game=HB_GAME_TO_GPY_GAME[account_.game]
         )
@@ -293,10 +295,10 @@ class Hoyo(commands.Cog):
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         account = account or await self.bot.get_account(
-            i.user.id, (Game.ZZZ, Game.STARRAIL), Platform.HOYOLAB
+            i.user.id, (Game.ZZZ, Game.STARRAIL, Game.GENSHIN), Platform.HOYOLAB
         )
         if account.platform is not Platform.HOYOLAB:
-            raise NoAccountFoundError((Game.ZZZ, Game.STARRAIL), Platform.HOYOLAB)
+            raise NoAccountFoundError((Game.ZZZ, Game.STARRAIL, Game.GENSHIN), Platform.HOYOLAB)
 
         settings = await Settings.get(user_id=i.user.id)
         view = MimoView(
@@ -340,14 +342,16 @@ class Hoyo(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(
-            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT)
+            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT), (Platform.HOYOLAB,)
         )
 
     @mimo_command.autocomplete("account")
-    async def hsr_zzz_acc_autocomplete(
+    async def mimo_acc_autofill(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.STARRAIL, Game.ZZZ))
+        return await self.bot.get_game_account_choices(
+            i, current, (Game.STARRAIL, Game.ZZZ, Game.GENSHIN), (Platform.HOYOLAB,)
+        )
 
     @checkin_command.autocomplete("account")
     @geetest_command.autocomplete("account")

@@ -5,7 +5,7 @@ from typing import Any, overload
 import discord
 import enka
 
-from hoyo_buddy.db.models import EnkaCache
+from hoyo_buddy.db import EnkaCache
 
 
 class BaseClient:
@@ -116,7 +116,9 @@ class BaseClient:
                 cache["detailInfo"]["avatarDetailList"].append(chara)
 
             return cache
-        return None
+
+        msg = f"Game {game} is not supported."
+        raise NotImplementedError(msg)
 
     @overload
     async def fetch_showcase(

@@ -8,7 +8,7 @@ from seria.utils import create_bullet_list
 
 from hoyo_buddy import ui
 from hoyo_buddy.constants import BLOCK_COLORS
-from hoyo_buddy.db.models import HoyoAccount, draw_locale
+from hoyo_buddy.db import HoyoAccount, draw_locale
 from hoyo_buddy.draw.main_funcs import draw_block_list_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game
@@ -39,9 +39,11 @@ HSRCalendarItem: TypeAlias = (
 )
 
 
-def event_not_started(item: EventItem | ChallengeItem) -> bool:
-    if isinstance(item, genshin.models.HSREvent | genshin.models.HSRChallenge):
+def event_not_started(item: CalendarItem) -> bool:
+    if isinstance(item, HSRCalendarItem):
         return item.time_info is not None and item.time_info.now < item.time_info.start
+    if isinstance(item, genshin.models.Banner):
+        return False
     return item.status == 1
 
 
@@ -60,7 +62,7 @@ def event_is_finished(item: EventItem | ChallengeItem) -> bool:
 
 
 def get_option_desc(item: CalendarItem, cur_game_version: str | None = None) -> LocaleStr:
-    if isinstance(item, EventItem | ChallengeItem) and event_not_started(item):
+    if event_not_started(item):
         return LocaleStr(key="unopened", mi18n_game=Game.GENSHIN)
 
     finished = False
@@ -93,7 +95,7 @@ def get_duration_str(banner_or_event: CalendarItem) -> str:
     if isinstance(banner_or_event, GICalendarItem):
         if banner_or_event.start_time is None or banner_or_event.end_time is None:
             return ""
-        return f"{banner_or_event.start_time.dt.strftime('%Y-%m-%d')} ~ {banner_or_event.end_time.dt.strftime('%Y-%m-%d')}"
+        return f"{banner_or_event.start_time.strftime('%Y-%m-%d')} ~ {banner_or_event.end_time.strftime('%Y-%m-%d')}"
 
     if banner_or_event.time_info is None:
         return ""

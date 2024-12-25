@@ -38,7 +38,7 @@ from hoyo_buddy.constants import (
 )
 from hoyo_buddy.embeds import DefaultEmbed
 
-from ..db import models
+from ..db import get_locale, models
 from ..enums import Game, GeetestType, Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
@@ -112,6 +112,11 @@ class HoyoBuddy(commands.AutoShardedBot):
         """[game][locale][item_name] -> item_id"""
 
         self.geetest_command_task: asyncio.Task | None = None
+        self.farm_check_running: bool = False
+
+    async def update_version_activity(self) -> None:
+        self.version = get_repo_version()
+        self.activity = discord.CustomActivity(f"{self.version} | hb.seria.moe")
 
     async def setup_hook(self) -> None:
         # Initialize genshin.py sqlite cache
@@ -174,6 +179,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         try:
             message = await user.send(**kwargs)
         except (discord.Forbidden, discord.HTTPException):
+            return None
+        except Exception as e:
+            self.capture_exception(e)
             return None
 
         return message
@@ -273,12 +281,18 @@ class HoyoBuddy(commands.AutoShardedBot):
         ]
 
     async def get_game_account_choices(
-        self, i: Interaction, current: str, games: Sequence[Game] | None = None
+        self,
+        i: Interaction,
+        current: str,
+        games: Sequence[Game] | None = None,
+        platforms: Sequence[Platform] | None = None,
     ) -> list[app_commands.Choice[str]]:
         games = games or list(Game)
-        locale = await models.get_locale(i)
+        locale = await get_locale(i)
         user: User = i.namespace.user
-        return await self.get_account_choices(user, i.user.id, current, locale, games=games)
+        return await self.get_account_choices(
+            user, i.user.id, current, locale, games=games, platforms=platforms
+        )
 
     async def get_accounts(
         self, user_id: int, games: Sequence[Game] | None = None, platform: Platform | None = None
@@ -383,9 +397,9 @@ class HoyoBuddy(commands.AutoShardedBot):
             logger.error("Cannot find first key in ZZZ item template")
             return
 
-        id_key = "GKNMDKNIMHP"  # Found in ItemTemplateTb.json
-        name_key = "FJECNNMMDGH"  # Found in ItemTemplateTb.json
-        prop_key = "BJIEGFCNLIE"  # Found in AvatarTemplateTb.json
+        id_key = "FJKECLFEHOA"  # Found in ItemTemplateTb.json
+        name_key = "JOMJELIIAGO"  # Found in ItemTemplateTb.json
+        prop_key = "OGIDKDJDHCL"  # Found in AvatarBaseTemplateTb.json
 
         for item in item_template[first_key]:
             if any(keyword in item[name_key] for keyword in ("Bangboo_Name", "Item_Weapon")):

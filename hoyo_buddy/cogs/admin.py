@@ -11,7 +11,7 @@ from loguru import logger
 from seria.utils import write_json
 
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
-from hoyo_buddy.db.models import CardSettings, CommandMetric, HoyoAccount, Settings, User
+from hoyo_buddy.db import CardSettings, CommandMetric, HoyoAccount, Settings, User
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
@@ -82,7 +82,7 @@ class TaskView(ui.View):
     async def farm_check(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Farm check tasks started.")
         for uid_start in GI_UID_PREFIXES:
-            asyncio.create_task(FarmChecker.execute(i.client, uid_start))
+            asyncio.create_task(FarmChecker(i.client).execute(uid_start))
 
     @ui.button(label="Auto redeem", style=ButtonStyle.blurple)
     async def auto_redeem(self, i: Interaction, _: ui.Button) -> None:
@@ -272,6 +272,37 @@ class Admin(commands.Cog):
 
                 await asyncio.sleep(0.5)
 
+        await ctx.send("Done.")
+
+    @commands.command(name="task-status", aliases=["ts"])
+    async def task_status_command(self, ctx: commands.Context) -> Any:
+        tasks = (AutoRedeem, AutoMimo, DailyCheckin)
+        task_statuses = {task.__name__: task._lock.locked() for task in tasks}
+        msg = "\n".join(f"{task} running: {status}" for task, status in task_statuses.items())
+        msg += f"\nFarmChecker running: {self.bot.farm_check_running}"
+        await ctx.send(msg)
+
+    @commands.command(name="reset-dismissible", aliases=["rd"])
+    async def reset_dismissible_command(
+        self, ctx: commands.Context, user_id: int | None = None
+    ) -> Any:
+        await User.filter(id=user_id or ctx.author.id).update(dismissibles=[])
+        await ctx.send("Done.")
+
+    @commands.command(name="dismissible-progress", aliases=["dp"])
+    async def dismissible_progress_command(self, ctx: commands.Context) -> Any:
+        users = await User.all()
+        dismissibles: defaultdict[str, int] = defaultdict(int)
+        for user in users:
+            for dismissible in user.dismissibles:
+                dismissibles[dismissible] += 1
+
+        msg = "\n".join([f"{dismissible}: {count}" for dismissible, count in dismissibles.items()])
+        await ctx.send(f"Dismissibles:\n```{msg}```")
+
+    @commands.command(name="update-version", aliases=["uv"])
+    async def update_version_command(self, ctx: commands.Context) -> Any:
+        await self.bot.update_version_activity()
         await ctx.send("Done.")
 
 

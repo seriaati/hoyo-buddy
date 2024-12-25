@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from hoyo_buddy.db import get_locale
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.utils import ephemeral
 
-from ..db.models import get_locale
 from ..ui.hoyo.stats import StatsView
 
 if TYPE_CHECKING:

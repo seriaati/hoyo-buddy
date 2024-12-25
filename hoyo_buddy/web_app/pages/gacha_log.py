@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 
     from discord import Locale
 
-    from hoyo_buddy.db.models import GachaHistory
+    from hoyo_buddy.db import GachaHistory
     from hoyo_buddy.web_app.schema import GachaParams
 
 __all__ = ("GachaLogPage",)

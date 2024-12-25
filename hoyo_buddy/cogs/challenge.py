@@ -7,7 +7,7 @@ from discord.ext.commands import GroupCog
 
 from hoyo_buddy.commands.challenge import ChallengeCommand
 from hoyo_buddy.constants import USER_ACCOUNT_DESCRIBE_KWARGS, USER_ACCOUNT_RENAME_KWARGS
-from hoyo_buddy.db.models import HoyoAccount  # noqa: TC001
+from hoyo_buddy.db import HoyoAccount  # noqa: TC001
 from hoyo_buddy.enums import ChallengeType, Game
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from hoyo_buddy.types import User  # noqa: TC001

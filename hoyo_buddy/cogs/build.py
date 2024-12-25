@@ -6,7 +6,7 @@ from discord import Locale, app_commands
 from discord.ext import commands
 
 from hoyo_buddy.commands.build import BuildCommand
-from hoyo_buddy.db.models import get_locale
+from hoyo_buddy.db import get_locale
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
 from hoyo_buddy.l10n import LocaleStr

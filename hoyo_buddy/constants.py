@@ -483,11 +483,6 @@ CHALLENGE_TYPE_GAMES = {
     type_: game for game, types in GAME_CHALLENGE_TYPES.items() for type_ in types
 }
 
-ZENLESS_ASSET_SCRAPE_URL = (
-    "https://raw.githubusercontent.com/seriaati/ZenlessAssetScrape/main/data/lite"
-)
-ZZZ_AGENT_DATA_URL = f"{ZENLESS_ASSET_SCRAPE_URL}/agent_data.json"
-
 ZENLESS_DATA_URL = "https://git.mero.moe/dimbreath/ZenlessData/raw/branch/master"
 ZENLESS_DATA_LANGS = ("CHT", "DE", "EN", "ES", "FR", "ID", "JA", "KO", "PT", "RU", "TH", "VI")
 ZZZ_ITEM_TEMPLATE_URL = f"{ZENLESS_DATA_URL}//FileCfg/ItemTemplateTb.json"
@@ -564,7 +559,8 @@ def locale_to_starrail_data_lang(locale: discord.Locale) -> str:
 HSR_ASSETS_URL = "https://raw.githubusercontent.com/seriaati/HSRAssets/refs/heads/main"
 HSR_DEFAULT_ART_URL = f"{HSR_ASSETS_URL}/avatardrawcardresult/Texture2D/{{char_id}}.png"
 HSR_TEAM_ICON_URL = f"{HSR_ASSETS_URL}/avatariconteam/Texture2D/{{char_id}}.png"
-ZZZ_DEFAULT_ART_URL = "https://api.hakush.in/zzz/UI/Mindscape_{char_id}_3.webp"
+ZZZ_M3_ART_URL = "https://api.hakush.in/zzz/UI/Mindscape_{char_id}_2.webp"
+ZZZ_M6_ART_URL = "https://api.hakush.in/zzz/UI/Mindscape_{char_id}_3.webp"
 
 UIGF_GAME_KEYS: Final[dict[Game, str]] = {
     Game.GENSHIN: "hk4e",
@@ -744,10 +740,13 @@ def get_disc_substat_roll_num(
 
 
 PROXY_APIS: dict[ProxyAPI, str] = {
+    "VERCEL3": os.environ["VERCEL3_URL"],
+    "VERCEL2": os.environ["VERCEL2_URL"],
     "VERCEL": os.environ["VERCEL_URL"],
     "RENDER": os.environ["RENDER_URL"],
+    "RENDER2": os.environ["RENDER2_URL"],
     "FLY": os.environ["FLY_URL"],
-    "B4A": os.environ["B4A_URL"],
+    # "B4A": os.environ["B4A_URL"],
     "RAILWAY": os.environ["RAILWAY_URL"],
     # "LEAPCELL": os.environ["LEAPCELL_URL"],
 }
@@ -802,4 +801,17 @@ BLOCK_COLORS: dict[bool, dict[int, str]] = {
     False: {5: "#b47128", 4: "#8768ac", 3: "#52779b", 2: "#4d766a1", 1: "#77787d"},
 }
 
-POST_REPLIES = ("very useful", "wow", "cool", "nice", "good job", "amazing", "great", "awesome")
+POST_REPLIES = (
+    "very useful!",
+    "wow-",
+    "cool :D",
+    "nice!",
+    "nice post!",
+    "great post :o",
+    "awesome :D",
+    "interesting :o",
+    "pretty informative!",
+)
+
+NO_BETA_CONTENT_GUILDS = {916725085019181056, 888984573403340860}
+"""Discord servers that don't allow unreleased game content."""

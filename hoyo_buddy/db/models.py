@@ -6,7 +6,7 @@ import contextlib
 import datetime
 import pickle
 from functools import cached_property
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any
 
 import genshin
 import orjson
@@ -19,15 +19,31 @@ from tortoise.expressions import F
 from ..constants import GI_SERVER_RESET_HOURS, HB_GAME_TO_GPY_GAME, UTC_8
 from ..enums import ChallengeType, Game, LeaderboardType, NotesNotifyType, Platform
 from ..icons import get_game_icon
-from ..l10n import translator
 from ..utils import blur_uid, get_now
 
 if TYPE_CHECKING:
     import aiohttp
-    import asyncpg
 
     from ..hoyo.clients.gpy import GenshinClient
-    from ..types import Challenge, ChallengeWithLang, Interaction
+    from ..types import Challenge, ChallengeWithLang
+
+__all__ = (
+    "AccountNotifSettings",
+    "CardSettings",
+    "ChallengeHistory",
+    "CommandMetric",
+    "CustomImage",
+    "EnkaCache",
+    "FarmNotify",
+    "GachaHistory",
+    "GachaStats",
+    "HoyoAccount",
+    "JSONFile",
+    "Leaderboard",
+    "NotesNotify",
+    "Settings",
+    "User",
+)
 
 
 class BaseModel(Model):
@@ -46,6 +62,7 @@ class User(BaseModel):
     settings: fields.BackwardOneToOneRelation[Settings]
     temp_data: fields.Field[dict[str, Any]] = fields.JSONField(default=dict)
     last_interaction: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
+    dismissibles: fields.Field[list[str]] = fields.JSONField(default=[])
     accounts: fields.ReverseRelation[HoyoAccount]
 
     async def set_acc_as_current(self, acc: HoyoAccount) -> None:
@@ -78,6 +95,7 @@ class HoyoAccount(BaseModel):
     auto_redeem = fields.BooleanField(default=True)
     mimo_auto_task = fields.BooleanField(default=True)
     mimo_auto_buy = fields.BooleanField(default=False)
+    mimo_all_claimed_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
     public = fields.BooleanField(default=True)
     """Whether this account can be seen by others."""
     device_id: fields.Field[str | None] = fields.CharField(max_length=36, null=True)
@@ -91,7 +109,7 @@ class HoyoAccount(BaseModel):
     def __str__(self) -> str:
         return f"{self.nickname or self.username} ({self.uid})"
 
-    @property
+    @cached_property
     def blurred_display(self) -> str:
         return f"{self.nickname or self.username} ({blur_uid(self.uid)})"
 
@@ -101,7 +119,7 @@ class HoyoAccount(BaseModel):
 
         return GenshinClient(self)
 
-    @property
+    @cached_property
     def server_reset_datetime(self) -> datetime.datetime:
         """Server reset time in UTC+8."""
         server = genshin.utility.recognize_server(self.uid, HB_GAME_TO_GPY_GAME[self.game])
@@ -111,11 +129,11 @@ class HoyoAccount(BaseModel):
             reset_time += datetime.timedelta(days=1)
         return reset_time
 
-    @property
+    @cached_property
     def game_icon(self) -> str:
         return get_game_icon(self.game)
 
-    @property
+    @cached_property
     def platform(self) -> Platform:
         region = self.region or genshin.utility.recognize_region(
             self.uid, HB_GAME_TO_GPY_GAME[self.game]
@@ -124,10 +142,24 @@ class HoyoAccount(BaseModel):
             return Platform.HOYOLAB
         return Platform.HOYOLAB if region is genshin.Region.OVERSEAS else Platform.MIYOUSHE
 
+    @cached_property
+    def dict_cookies(self) -> dict[str, str]:
+        return genshin.parse_cookie(self.cookies)
+
+    @cached_property
+    def can_redeem_code(self) -> bool:
+        return ("cookie_token_v2" in self.dict_cookies) or (
+            "ltmid_v2" in self.dict_cookies and "stoken" in self.dict_cookies
+        )
+
 
 class AccountNotifSettings(BaseModel):
     notify_on_checkin_failure = fields.BooleanField(default=True)
     notify_on_checkin_success = fields.BooleanField(default=True)
+    mimo_task_success = fields.BooleanField(default=True)
+    mimo_task_failure = fields.BooleanField(default=True)
+    mimo_buy_success = fields.BooleanField(default=True)
+    mimo_buy_failure = fields.BooleanField(default=True)
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
         "models.HoyoAccount", related_name="notif_settings", pk=True
     )
@@ -167,6 +199,8 @@ class CardSettings(BaseModel):
     show_substat_rolls = fields.BooleanField(default=True)
     highlight_special_stats = fields.BooleanField(default=True)
     highlight_substats: fields.Field[list[int]] = fields.JSONField(default=[])
+    use_m3_art = fields.BooleanField(default=False)
+    """Whether to use Mindscape 3 art for the ZZZ card."""
 
     class Meta:
         unique_together = ("character_id", "user")
@@ -287,7 +321,6 @@ class ChallengeHistory(BaseModel):
         lang = getattr(challenge, "lang", None)
         if lang is None:
             # NOTE: Backward compatibility, old data has lang attr, new data doesn't
-            logger.debug("No lang found in challenge data")
             challenge.__dict__["lang"] = self.lang
         return challenge
 
@@ -504,138 +537,3 @@ class CustomImage(BaseModel):
     ) -> None:
         with contextlib.suppress(exceptions.IntegrityError):
             await super().create(url=url, character_id=character_id, user_id=user_id, name=name)
-
-
-async def get_locale(i: Interaction) -> Locale:
-    cache = i.client.cache
-    key = f"{i.user.id}:lang"
-    if await cache.exists(key):
-        locale = await cache.get(key)
-        return Locale(locale) if locale is not None else i.locale
-    settings = await Settings.get(user_id=i.user.id).only("lang")
-    locale = settings.locale or i.locale
-    await cache.set(key, locale.value)
-    return locale
-
-
-async def get_enable_dyk(i: Interaction) -> bool:
-    cache = i.client.cache
-    key = f"{i.user.id}:dyk"
-    if await cache.exists(key):
-        return await cache.get(key)
-    settings = await Settings.get(user_id=i.user.id).only("enable_dyk")
-    await cache.set(key, settings.enable_dyk)
-    return settings.enable_dyk
-
-
-async def get_dyk(i: Interaction) -> str:
-    enable_dyk = await get_enable_dyk(i)
-    locale = await get_locale(i)
-    if not enable_dyk:
-        return ""
-    return translator.get_dyk(locale)
-
-
-async def get_last_gacha_num(
-    account: HoyoAccount, *, banner: int, rarity: int | None = None, num_lt: int | None = None
-) -> int:
-    filter_kwrargs = {"account": account, "banner_type": banner}
-    if rarity is not None:
-        filter_kwrargs["rarity"] = rarity
-    if num_lt is not None:
-        filter_kwrargs["num__lt"] = num_lt
-
-    last_gacha = await GachaHistory.filter(**filter_kwrargs).first().only("num")
-    return last_gacha.num if last_gacha else 0
-
-
-async def get_num_since_last(account: HoyoAccount, *, banner: int, num: int, rarity: int) -> int:
-    """Return the number of pulls since the last 5 or 4 star pull."""
-    if rarity == 3:
-        return 0
-    last_num = await get_last_gacha_num(account, banner=banner, rarity=rarity, num_lt=num)
-    return num - last_num
-
-
-UPDATE_NUM_SQL = """
-WITH ranked_wishes AS (
-  SELECT
-    wish_id,
-    banner_type,
-    ROW_NUMBER() OVER (PARTITION BY banner_type ORDER BY wish_id) AS new_num
-  FROM gachahistory
-  WHERE account_id = $1
-)
-UPDATE gachahistory w
-SET num = r.new_num
-FROM ranked_wishes r
-WHERE w.wish_id = r.wish_id
-  AND w.account_id = $1;
-"""
-
-UPDATE_NUM_SINCE_LAST_SQL = """
-WITH sorted_wishes AS (
-  SELECT *,
-         ROW_NUMBER() OVER (PARTITION BY banner_type ORDER BY wish_id) AS row_num
-  FROM gachahistory
-  WHERE account_id = $1
-),
-previous_wishes AS (
-  SELECT *,
-         LAG(num) OVER (PARTITION BY banner_type, rarity ORDER BY row_num) AS prev_num
-  FROM sorted_wishes
-)
-UPDATE gachahistory
-SET num_since_last =
-  CASE
-    WHEN pw.prev_num IS NULL THEN pw.num - 1
-    ELSE pw.num - pw.prev_num
-  END
-FROM previous_wishes pw
-WHERE gachahistory.wish_id = pw.wish_id
-  AND gachahistory.account_id = $1;
-"""
-
-
-async def update_gacha_nums(pool: asyncpg.Pool, *, account: HoyoAccount) -> None:
-    """Update the num and num_since_last fields of the gacha histories."""
-    async with pool.acquire() as conn:
-        await conn.execute(UPDATE_NUM_SQL, account.id)
-        await conn.execute(UPDATE_NUM_SINCE_LAST_SQL, account.id)
-
-
-UPDATE_LB_RANK_SQL = """
-WITH ranked_leaderboard AS (
-  SELECT
-    uid,
-    type,
-    game,
-    value,
-    ROW_NUMBER() OVER (
-      PARTITION BY type, game
-      ORDER BY value {order}
-    ) AS new_rank
-  FROM Leaderboard
-  WHERE game = $1 AND type = $2
-)
-UPDATE Leaderboard l
-SET rank = r.new_rank
-FROM ranked_leaderboard r
-WHERE l.uid = r.uid
-  AND l.type = r.type
-  AND l.game = r.game;
-"""
-
-
-async def update_lb_ranks(
-    pool: asyncpg.Pool, *, game: Game, type_: LeaderboardType, order: Literal["ASC", "DESC"]
-) -> None:
-    """Update the ranks of the leaderboards."""
-    async with pool.acquire() as conn:
-        await conn.execute(UPDATE_LB_RANK_SQL.format(order=order), game, type_)
-
-
-def draw_locale(locale: Locale, account: HoyoAccount) -> Locale:
-    if account.platform is Platform.MIYOUSHE:
-        return Locale.chinese
-    return locale

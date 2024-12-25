@@ -283,7 +283,6 @@ notes-card.gi.daily-commissions: 每日委託
 notes-card.gi.expedition-finished: 已完成
 notes-card.gi.expedition-remaining: "剩餘 {time}"
 notes-card.gi.realm-currency: 洞天寶錢
-notes-card.gi.realtime-notes: 即時便籤
 notes-card.gi.remaining: 剩餘
 notes-card.gi.resin: 樹脂
 notes-card.gi.resin-discounts: 樹脂折扣
@@ -313,6 +312,10 @@ notif_modal.threshold.label: 閥值
 notification_settings_button_label: 通知設定
 notify_on_failure_button_label: 簽到失敗通知
 notify_on_success_button_label: 簽到成功通知
+mimo_auto_task_success_notify_toggle_label: 在自動完成任務成功時通知
+mimo_auto_task_failure_notify_toggle_label: 在自動完成任務失敗時通知
+mimo_auto_buy_success_notify_toggle_label: 在自動購買獎勵成功時通知
+mimo_auto_buy_failure_notify_toggle_label: 在自動購買獎勵失敗時通知
 nsfw_prompt_error_message: "此提示包含不合宜的內容，請嘗試使用不同的提示後再試一次。"
 nsfw_prompt_error_title: 不合宜的提示
 page_footer: "{current_page}/{total_pages}頁"
@@ -381,10 +384,6 @@ redeeem_code.cookie_token_expired_description: "兌換兌換碼功能只有使�
 redeeem_code.cookie_token_expired_title: Cookie Token 已過期
 redeeem_code.cookie_token_refresh_failed_description: "自上次新增帳戶以來，你可能已變更帳戶密碼。\n請使用</accounts>透過電子郵件和密碼的方式重新新增您的帳戶。"
 redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失敗
-redeem_code.already_claimed: 兌換碼已經被兌換過了
-redeem_code.cooldown: 兌換碼兌換操作正在冷卻
-redeem_code.expired: 兌換碼已過期
-redeem_code.invalid: 無效的兌換碼
 redeem_code.success: 兌換成功
 redeem_codes_button.label: 兌換兌換碼
 redeem_command_description: 兌換兌換碼以獲取遊戲內的獎勵
@@ -489,22 +488,14 @@ img_theater_max_damage: "最高傷害輸出: {val}"
 img_theater_fastest_team: " (最快)"
 challenge_view.view_buffs: 查看增益
 challenge_view.buff_select.placeholder: 選擇一項增益來查看…
-battery_charge_button.label: 電量
-scratch_card_button.label: 刮刮樂
 scratch_card.embed.description: 還沒刮刮刮樂
 zzz_engagement_button.label: 活躍度
 zzz_engagement.embed.description: 今日的活躍度尚未完成
 honkai_daily_embed_title: 每日歷練值提醒
 honkai_daily_embed_description: "今日的每日歷練值尚未完成, {cur}/{max}"
-video_store_button.label: 錄影帶店經營
 video_store.embed.description: 錄影帶的收益尚未領取
 scratch_card.incomplete: 尚未完成
-video_store.currently_open: 正在營業
-video_store.revenue_available: 收益可領取
-video_store.waiting_to_open: 正在等待營業
-notes-card.zzz.title: 即時便籤
 reminder_modal.title: "{notify}通知設定"
-redeem_code.reached_max_limit: 此兌換碼已達使用上限
 profile_view.set_cur_temp_as_default: 設置當前樣式為預設
 set_cur_temp_as_default.done: 完成
 set_cur_temp_as_default.done_desc: "你的 {game} 預設卡片樣式已被設置為 {template}"
@@ -573,7 +564,6 @@ dyk_unreleased: 你可以使用 /search 查看尚未釋出的遊戲內容
 dyk_team_card: 你可以透過選擇多個角色的方式在 /profile 產生隊伍卡片
 dyk_set_default_acc: 你可以用 /accounts 設置一個預設帳戶，用於運行所有指令
 title_dyk: "你知道嗎？"
-new_zzz_temp: 絕區零卡片樣式4來啦！
 button_label_dyk: 「你知道嗎」訊息
 events_view_start_date_embed_field: 開始時間
 events_view_end_date_embed_field: 結束時間
@@ -591,11 +581,9 @@ show_tutorial_button_label: 顯示教學
 close_button_label: 關閉
 required_field_error_message: 此欄位為必填欄位
 accounts_added_snackbar_message: "帳戶新增成功，正在將你重新導向至 Discord..."
-account_add_start_title: 新增帳戶
 account_add_start_message: "點擊下方按鈕並遵循指示來新增你的帳戶。當你完成的時候，使用 </accounts> 指令來查看你剛才新增的帳戶。如果你遇到任何問題或需要幫助，加入我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)。"
 hbls_button_label: 開始！
 gacha_import_url_modal_title: 輸入抽卡紀錄連結
-gacha_import_embed_title: 導入抽卡紀錄
 gacha_import_embed_description: "抽卡紀錄連結: 從遊戲內獲取一串很長的連結來導入你的抽卡紀錄, 不同遊戲的獲取方式如下:\n- 安卓: [YouTube 影片](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-tw/genshin/wish-import)\n- 崩壞: 星穹鐵道: [Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-tw/warp-import)\n- 絕區零: [zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-tw/zzz/signal-import)\n\n如果你有使用下列的服務之一, 將你的抽卡紀錄導出至指定的檔案格式後即可使用</gacha-log upload>指令將其上傳並導入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "無法從連結內提取 authkey, 請嘗試其他連結。"
 extract_authkey_error_title: Authkey 提取失敗
@@ -764,8 +752,6 @@ mimo_auto_finish_and_claim_button_label: 自動完成任務並領取積分
 mimo_auto_finish_and_claim_desc: Hoyo Buddy 能自動完成部份任務並領取所有已完成任務的積分。
 mimo_auto_buy_button_label: 自動購買獎勵
 mimo_auto_buy_desc: "只要積分足夠，Hoyo Buddy 便會自動購買星穹/菲林，它不會把積分存起來！"
-mimo_redeem_failed: "購買了 {name} 但是無法兌換禮物碼，請自行兌換，禮物碼: {code}"
-mimo_redeem_success: "成功使用 {points} 積分購買了 {name}，請檢查你的遊戲內信箱"
 mimo_cmd_desc: 管理旅行 Mimo 活動
 mimo_view_shop_button_label: 商店
 mimo_buy_item_select_placeholder: 選擇一個要購買的商品…
@@ -779,3 +765,13 @@ mimo_auto_task_error_dm_content: "由於發生錯誤，自動 Mimo 任務完成�
 mimo_status: "狀態: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy 使用 {points} 點積分幫你購買了 {item} 個物品。\n如果下方有顯示禮物碼，請自行使用</redeem>兌換。"
 mimo_auto_buy_error_dm_content: "由於發生錯誤，自動購買 Mimo 獎勵功能已被停用，你可以使用</mimo>將其重新啟用。\n如果這個錯誤持續發生，或是你不知道如何解決它，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)內尋求協助。"
+mimo_game_unavailable: "{game}目前無法使用旅行 Mimo"
+generic_error_title: 錯誤
+on_button_label: "開"
+off_button_label: "關"
+mimo_draw_redeem_success: "請至遊戲內信箱領取你的獎勵"
+image_settings_use_m3_art: 使用意象影畫 3 繪圖
+remembrance: 記憶
+dismissible_default_title: 新功能！
+dismissible_default_footer: 此訊息只會顯示一次
+dismissible_m3_art_desc: 你現在可以在 ZZZ 代理人卡片中使用意象影畫 3 的繪圖了，在卡片設置中選擇「Hoyo Buddy 卡片樣式 2」，接著在圖片設定中打開「使用意象影畫 3 繪圖」。

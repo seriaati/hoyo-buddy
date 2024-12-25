@@ -6,8 +6,9 @@ import discord
 import genshin
 from genshin import Game
 
+from hoyo_buddy.db import AccountNotifSettings, User, draw_locale, get_dyk
+
 from ... import emojis
-from ...db.models import AccountNotifSettings, User, draw_locale, get_dyk
 from ...draw.main_funcs import draw_checkin_card
 from ...embeds import DefaultEmbed
 from ...enums import Platform
@@ -24,7 +25,8 @@ if TYPE_CHECKING:
     import aiohttp
     from genshin.models import DailyRewardInfo
 
-    from ...db.models import HoyoAccount
+    from hoyo_buddy.db import HoyoAccount
+
     from ...types import Interaction
 
 CHECK_IN_URLS = {

@@ -45,7 +45,7 @@ class ShiyuDefenseCard:
             drawer.write(
                 f"UID: {self.uid}",
                 size=40,
-                position=(1970, 3387),
+                position=(3223, 1457),
                 color=self.text_color,
                 style="medium_italic",
             )
@@ -53,18 +53,18 @@ class ShiyuDefenseCard:
         drawer.write(
             LocaleStr(key="shiyu_overview"),
             size=70,
-            position=(126, 665),
+            position=(120, 690),
             color=self.text_color,
             style="bold",
             locale=self.locale,
         )
 
         ratings = {
-            202: self.data.ratings.get("S", 0),
-            425: self.data.ratings.get("A", 0),
-            643: self.data.ratings.get("B", 0),
+            196: self.data.ratings.get("S", 0),
+            426: self.data.ratings.get("A", 0),
+            651: self.data.ratings.get("B", 0),
         }
-        y = 803
+        y = 836
 
         for x, rating_count in ratings.items():
             tbox = drawer.write(
@@ -85,7 +85,7 @@ class ShiyuDefenseCard:
             ).translate(self.locale),
             "shiyu_relevant_season": f"{self.data.begin_time:%Y-%m-%d} ~ {self.data.end_time:%Y-%m-%d}",
         }
-        start_pos = (126, 907)
+        start_pos = (120, 948)
 
         for title_key, value in stats.items():
             tbox = drawer.write(
@@ -105,21 +105,13 @@ class ShiyuDefenseCard:
                 locale=self.locale,
             )
 
-            start_pos = (126, start_pos[1] + 160)
+            start_pos = (120, start_pos[1] + 168)
 
     def draw_frontiers(self, im: Image.Image, drawer: Drawer) -> None:
-        positions = {
-            1: (1229, 774),
-            2: (126, 1425),
-            3: (1229, 1425),
-            4: (126, 2076),
-            5: (1229, 2076),
-            6: (126, 2727),
-            7: (1229, 2727),
-        }
+        positions = ((1313, 87), (2501, 87), (1313, 838), (2501, 838))
 
-        for frontier in self.data.floors:
-            pos = positions[frontier.index]
+        for floor_index, frontier in enumerate(reversed(self.data.floors)):
+            pos = positions[floor_index]
 
             tbox = drawer.write(
                 LocaleStr(key=f"shiyu_{frontier.index}_frontier"),

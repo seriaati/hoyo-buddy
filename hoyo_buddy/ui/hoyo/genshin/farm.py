@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from discord import ButtonStyle, Locale, Member, User
 
 from hoyo_buddy.constants import UID_TZ_OFFSET, WEEKDAYS
-from hoyo_buddy.db.models import get_dyk
+from hoyo_buddy.db import get_dyk
 from hoyo_buddy.draw.main_funcs import draw_farm_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import BELL_OUTLINE, GENSHIN_CITY_EMOJIS

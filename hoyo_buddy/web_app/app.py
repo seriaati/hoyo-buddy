@@ -19,11 +19,11 @@ from hoyo_buddy.constants import (
     locale_to_starrail_data_lang,
     locale_to_zenless_data_lang,
 )
-from hoyo_buddy.db.models import GachaHistory
+from hoyo_buddy.db import GachaHistory
 from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import EnumStr, LocaleStr
-from hoyo_buddy.utils import dict_cookie_to_str, get_gacha_icon, item_id_to_name, str_cookie_to_dict
+from hoyo_buddy.utils import dict_cookie_to_str, get_gacha_icon, item_id_to_name
 
 from . import pages
 from .login_handler import handle_action_ticket, handle_mobile_otp, handle_session_mmt
@@ -276,7 +276,7 @@ class WebApp:
                 await show_error_banner(page, message=str(exc))
                 return None
 
-            dict_cookie = str_cookie_to_dict(cookies)
+            dict_cookie = genshin.parse_cookie(cookies)
             dict_cookie.update(new_dict_cookie)
             cookies = dict_cookie_to_str(dict_cookie)
 

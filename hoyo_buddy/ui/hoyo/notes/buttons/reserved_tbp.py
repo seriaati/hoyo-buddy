@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.db.models import NotesNotify
+from hoyo_buddy.db import NotesNotify
 from hoyo_buddy.emojis import RESERVED_TRAILBLAZE_POWER
 from hoyo_buddy.enums import NotesNotifyType
 from hoyo_buddy.l10n import LocaleStr

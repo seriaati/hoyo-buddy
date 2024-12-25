@@ -15,7 +15,7 @@ from hoyo_buddy.ui import PaginatorSelect, SelectOption
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Builds, Interaction
 
     from ..view import Character, ProfileView

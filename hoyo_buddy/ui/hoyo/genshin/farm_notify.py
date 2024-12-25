@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from discord import ButtonStyle, Locale
 from seria.utils import split_list_to_chunks
 
-from hoyo_buddy.db.models import FarmNotify, draw_locale
+from hoyo_buddy.db import FarmNotify, draw_locale
 from hoyo_buddy.draw.main_funcs import draw_item_list_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, DELETE

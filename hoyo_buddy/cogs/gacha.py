@@ -7,8 +7,8 @@ from discord import app_commands
 from discord.ext import commands
 
 from hoyo_buddy.commands.gacha import GachaCommand
+from hoyo_buddy.db import HoyoAccount, get_locale
 
-from ..db.models import HoyoAccount, get_locale
 from ..enums import GachaImportSource, Game
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 

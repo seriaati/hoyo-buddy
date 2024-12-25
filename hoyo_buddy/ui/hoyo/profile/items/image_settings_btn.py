@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
 
-from hoyo_buddy.db.models import CustomImage, Settings
+from hoyo_buddy.db import CustomImage, Settings
 from hoyo_buddy.emojis import PHOTO
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button

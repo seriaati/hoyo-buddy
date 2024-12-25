@@ -283,7 +283,6 @@ notes-card.gi.daily-commissions: Daily Commissions
 notes-card.gi.expedition-finished: Finished
 notes-card.gi.expedition-remaining: "{time} Remaining"
 notes-card.gi.realm-currency: Realm Currency
-notes-card.gi.realtime-notes: Real-Time Notes
 notes-card.gi.remaining: Remaining
 notes-card.gi.resin: Resin
 notes-card.gi.resin-discounts: Resin Discounts
@@ -313,6 +312,10 @@ notif_modal.threshold.label: Threshold
 notification_settings_button_label: Notification settings
 notify_on_failure_button_label: Notify on check-in failure
 notify_on_success_button_label: Notify on check-in success
+mimo_auto_task_success_notify_toggle_label: Notify on auto finish task success
+mimo_auto_task_failure_notify_toggle_label: Notify on auto finish task failure
+mimo_auto_buy_success_notify_toggle_label: Notify on auto buy rewards success
+mimo_auto_buy_failure_notify_toggle_label: Notify on auto buy rewards failure
 nsfw_prompt_error_message: "The prompt contains NSFW content, please try again with a different prompt."
 nsfw_prompt_error_title: NSFW Prompt Detected
 page_footer: "Page {current_page}/{total_pages}"
@@ -381,10 +384,6 @@ redeeem_code.cookie_token_expired_description: "Code redemption features are onl
 redeeem_code.cookie_token_expired_title: Cookie Token Expired
 redeeem_code.cookie_token_refresh_failed_description: "It is likely that you have changed your account's password since the last time you add your accounts.\nPlease add your accounts again using </accounts> with the email and password method."
 redeeem_code.cookie_token_refresh_failed_title: Failed to refresh cookie token
-redeem_code.already_claimed: Redemption code already claimed
-redeem_code.cooldown: Gift code redemption in cooldown
-redeem_code.expired: Redemption code expired
-redeem_code.invalid: Invalid redemption code
 redeem_code.success: Successfully redeemed
 redeem_codes_button.label: Redeem codes
 redeem_command_description: Redeem codes for in-game rewards
@@ -489,22 +488,14 @@ img_theater_max_damage: "Most Damage Dealt: {val}"
 img_theater_fastest_team: " (fastest)"
 challenge_view.view_buffs: View buffs
 challenge_view.buff_select.placeholder: Select a buff to view...
-battery_charge_button.label: Battery charge
-scratch_card_button.label: Scratch card mania
 scratch_card.embed.description: Scratch card not scratched yet
 zzz_engagement_button.label: Engagement
 zzz_engagement.embed.description: Today's engagement is not completed yet
 honkai_daily_embed_title: Daily BP Reminder
 honkai_daily_embed_description: "Today's daily BP is not completed yet, {cur}/{max}"
-video_store_button.label: Video store management
 video_store.embed.description: Video store revenue not claimed yet
 scratch_card.incomplete: Incomplete
-video_store.currently_open: Currently open
-video_store.revenue_available: Revenue available
-video_store.waiting_to_open: Waiting to open
-notes-card.zzz.title: Sticky Notes
 reminder_modal.title: "{notify} Reminder Settings"
-redeem_code.reached_max_limit: This redemption code has reached its max usage limit
 profile_view.set_cur_temp_as_default: Set current template as default
 set_cur_temp_as_default.done: Done
 set_cur_temp_as_default.done_desc: "Your default template for {game} is set to {template}"
@@ -573,7 +564,6 @@ dyk_unreleased: You can view unreleased game content with /search
 dyk_team_card: You can generate a team card in /profile by selecting multiple characters
 dyk_set_default_acc: You can set a default account that is used to run all commands in /accounts
 title_dyk: "Did you know?"
-new_zzz_temp: ZZZ template 4 has arrived!
 button_label_dyk: Did you know messages
 events_view_start_date_embed_field: Start Time
 events_view_end_date_embed_field: End Time
@@ -591,11 +581,9 @@ show_tutorial_button_label: Show tutorial
 close_button_label: Close
 required_field_error_message: This field is required
 accounts_added_snackbar_message: "Accounts added successfully, redirecting you back to Discord..."
-account_add_start_title: Add Accounts
 account_add_start_message: "Click the button below and follow the instructions to add your accounts. When you're done, use the </accounts> command to view the accounts you have added. If you face issues or need help, join our [Discord server](<https://link.seria.moe/hb-dc>)."
 hbls_button_label: Let's start!
 gacha_import_url_modal_title: Enter gacha log URL
-gacha_import_embed_title: Importing Gacha Logs
 gacha_import_embed_description: "Gacha log URL: Obtain a very long URL from the game to import your gacha records, guides for different games are below:\n- Android: [YouTube video](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nFor services below, export your gacha records as the specified file format and upload it via </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Unable to extract authkey from the URL, please try again with a valid URL."
 extract_authkey_error_title: Authkey Extraction Failed
@@ -764,8 +752,6 @@ mimo_auto_finish_and_claim_button_label: Auto finish tasks and claim points
 mimo_auto_finish_and_claim_desc: Hoyo Buddy can finish certain tasks and claim points of all completed tasks automatically.
 mimo_auto_buy_button_label: Auto buy rewards
 mimo_auto_buy_desc: "Hoyo Buddy will buy stellar jades/polychromes whenever possible, it will not try to save points!"
-mimo_redeem_failed: "Bought {name} but failed to redeem the gift code, please redeem it yourself, code: {code}"
-mimo_redeem_success: "Successfully bought {name} for {points} points, please check your in-game mail"
 mimo_cmd_desc: Traveling Mimo event management
 mimo_view_shop_button_label: Shop
 mimo_buy_item_select_placeholder: Select an item to buy...
@@ -779,3 +765,14 @@ mimo_auto_task_error_dm_content: "Auto Mimo task completion has been disabled du
 mimo_status: "Status: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy bought {item} item(s) for you with {points} points.\nIf you see gift codes below, please redeem them manually with </redeem>."
 mimo_auto_buy_error_dm_content: "Auto Mimo reward buying has been disabled due to an error, you can enable it back using </mimo>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
+mimo_game_unavailable: "Traveling Mimo is currently unavailable for {game}"
+generic_error_title: Error
+on_button_label: "ON"
+off_button_label: "OFF"
+mimo_draw_redeem_success: "Check your in-game mail for the reward"
+image_settings_use_m3_art: Use M3 art
+remembrance: Remembrance
+dismissible_default_title: New Feature!
+dismissible_default_footer: This message will only show once
+dismissible_m3_art_desc: 'You can now use Mindscape 3 arts in your ZZZ agent cards, select "Hoyo Buddy template 2" in card settings, then toggle "Use M3 art" in image settings.'
+mimo_lottery_info_hoyolab_decos: "...and {num} HoYoLAB decorations"

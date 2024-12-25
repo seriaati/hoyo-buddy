@@ -11,7 +11,7 @@ from loguru import logger
 from tortoise import Tortoise
 
 from hoyo_buddy.constants import WEB_APP_URLS
-from hoyo_buddy.db.models import User
+from hoyo_buddy.db import User
 from hoyo_buddy.models import GeetestCommandPayload, GeetestLoginPayload
 from hoyo_buddy.utils import get_discord_protocol_url
 

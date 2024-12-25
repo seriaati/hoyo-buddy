@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, TypeAlias
 import genshin
 from discord import ButtonStyle, File, Locale, Member, User
 
-from hoyo_buddy.db.models import NotesNotify, draw_locale, get_dyk
+from hoyo_buddy.db import NotesNotify, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import (
@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
     import aiohttp
 
-    from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Interaction
     from hoyo_buddy.ui.hoyo.notes.modals.type_five import TypeFiveModal
 
@@ -249,7 +249,7 @@ class NotesView(View):
                 account=self.account, type=NotesNotifyType.BATTERY
             )
             embed.add_field(
-                name=LocaleStr(key="battery_charge_button.label"),
+                name=LocaleStr(key="battery_num", mi18n_game=Game.ZZZ),
                 value=self._get_type1_value(battery_notify),
                 inline=False,
             )
@@ -267,7 +267,7 @@ class NotesView(View):
                 account=self.account, type=NotesNotifyType.SCRATCH_CARD
             )
             embed.add_field(
-                name=LocaleStr(key="scratch_card_button.label"),
+                name=LocaleStr(key="card", mi18n_game=Game.ZZZ),
                 value=self._get_type3_value(scratch_card_notify),
                 inline=False,
             )
@@ -276,7 +276,7 @@ class NotesView(View):
                 account=self.account, type=NotesNotifyType.VIDEO_STORE
             )
             embed.add_field(
-                name=LocaleStr(key="video_store_button.label"),
+                name=LocaleStr(key="vhs_sale", mi18n_game=Game.ZZZ),
                 value=self._get_type2_value(video_store_notify),
                 inline=False,
             )

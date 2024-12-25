@@ -8,9 +8,10 @@ from discord.utils import MISSING
 from loguru import logger
 from seria.utils import clean_url, split_list_to_chunks
 
+from hoyo_buddy.db import Settings, get_locale
+
 from .. import emojis
 from ..bot.error_handler import get_error_embed
-from ..db.models import Settings, get_locale
 from ..embeds import ErrorEmbed
 from ..exceptions import InvalidInputError
 from ..l10n import LocaleStr, translator
@@ -60,11 +61,15 @@ class View(discord.ui.View):
         else:
             logger.warning(f"View {self!r} timed out without a set message")
 
-    async def on_error(self, i: Interaction, error: Exception, _: discord.ui.Item[Any]) -> None:
+    async def on_error(self, i: Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
         locale = await get_locale(i)
         embed, recognized = get_error_embed(error, locale)
         if not recognized:
             i.client.capture_exception(error)
+
+        with contextlib.suppress(Exception):
+            await item.unset_loading_state(i)  # pyright: ignore[reportAttributeAccessIssue]
+            await self.absolute_edit(i)
         await self.absolute_send(i, embed=embed, ephemeral=True)
 
     async def interaction_check(self, i: Interaction) -> bool:
@@ -272,7 +277,11 @@ class ToggleButton(Button, Generic[V_co]):
         kwargs["row"] = kwargs.get("row", 1)
         super().__init__(
             style=self._get_style(),
-            label=toggle_label,
+            label=LocaleStr(
+                custom_str="{toggle_label}: {status_str}",
+                toggle_label=toggle_label,
+                status_str=self._get_status_str(),
+            ),
             emoji=emojis.TOGGLE_EMOJIS[current_toggle],
             **kwargs,
         )
@@ -282,9 +291,17 @@ class ToggleButton(Button, Generic[V_co]):
     def _get_style(self) -> discord.ButtonStyle:
         return discord.ButtonStyle.green if self.current_toggle else discord.ButtonStyle.gray
 
+    def _get_status_str(self) -> LocaleStr:
+        return (
+            LocaleStr(key="on_button_label")
+            if self.current_toggle
+            else LocaleStr(key="off_button_label")
+        )
+
     def update_style(self) -> None:
         self.style = self._get_style()
         self.label = self.toggle_label.translate(self.view.locale)
+        self.label += ": " + self._get_status_str().translate(self.view.locale)
         self.emoji = emojis.TOGGLE_EMOJIS[self.current_toggle]
 
     async def callback(self, i: Interaction, *, edit: bool = True, **kwargs: Any) -> Any:
@@ -326,6 +343,9 @@ class Select(discord.ui.Select, Generic[V_co]):
         disabled: bool = False,
         row: int | None = None,
     ) -> None:
+        if not options:
+            options = [SelectOption(label="placeholder", value="0")]
+            disabled = True
         super().__init__(
             custom_id=custom_id,
             min_values=min_values,

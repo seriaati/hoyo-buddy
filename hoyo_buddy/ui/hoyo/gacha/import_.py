@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 import discord
 import genshin
 
-from hoyo_buddy.db.models import GachaHistory, HoyoAccount, get_dyk, update_gacha_nums
+from hoyo_buddy.db import GachaHistory, HoyoAccount, get_dyk, update_gacha_nums
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LINK, LOADING
 from hoyo_buddy.enums import Game
@@ -30,7 +30,7 @@ class GachaImportView(View):
     def embed(self) -> DefaultEmbed:
         return DefaultEmbed(
             self.locale,
-            title=LocaleStr(key="gacha_import_embed_title"),
+            title=LocaleStr(key="gacha_import_loading_embed_title"),
             description=LocaleStr(key="gacha_import_embed_description"),
         ).add_acc_info(self.account)
 

@@ -4,7 +4,7 @@ import asyncio
 import itertools
 import os
 import random
-from typing import TYPE_CHECKING, Any, Literal, overload
+from typing import TYPE_CHECKING, Any, Literal, NamedTuple, overload
 
 import aiohttp
 import enka
@@ -15,6 +15,7 @@ from discord import Locale
 from dotenv import load_dotenv
 from loguru import logger
 
+from hoyo_buddy.db import EnkaCache, HoyoAccount, JSONFile
 from hoyo_buddy.exceptions import ProxyAPIError
 from hoyo_buddy.web_app.utils import decrypt_string
 
@@ -32,7 +33,6 @@ from ...constants import (
     contains_traveler_id,
     convert_fight_prop,
 )
-from ...db.models import EnkaCache, HoyoAccount, JSONFile
 from ...embeds import DefaultEmbed
 from ...enums import Game, GenshinElement
 from ...l10n import LocaleStr
@@ -45,10 +45,15 @@ if TYPE_CHECKING:
 load_dotenv()
 env = os.environ["ENV"]
 
-MAX_API_RETRIES = 3
+MAX_RETRIES = len(PROXY_APIS)
 PROXY_APIS_ = (*PROXY_APIS.values(), "LOCAL")
 proxy_api_rotator = itertools.cycle(PROXY_APIS_)
-no_local_proxy_api_rotator = itertools.cycle(PROXY_APIS.values())
+
+
+class MimoClaimTaksResult(NamedTuple):
+    finished: list[genshin.models.MimoTask]
+    claimed_points: int
+    all_claimed: bool
 
 
 class ProxyGenshinClient(genshin.Client):
@@ -64,15 +69,24 @@ class ProxyGenshinClient(genshin.Client):
         )
 
     async def request(self, *args: Any, **kwargs: Any) -> Any:
-        for attempt in range(MAX_API_RETRIES):
+        attempt = 0
+        err: Exception | None = None
+
+        while attempt < MAX_RETRIES:
             try:
                 return await super().request(*args, **kwargs)
-            except (TimeoutError, aiohttp.ClientError, ConnectionResetError):
-                if attempt < MAX_API_RETRIES - 1:  # Don't wait after last attempt
-                    await asyncio.sleep(2**attempt)
-                else:
-                    raise
-        return None
+            except (TimeoutError, aiohttp.ClientError) as e:
+                err = e
+
+            attempt += 1
+            backoff_factor = 2
+            jitter = random.uniform(0, 1)
+            await asyncio.sleep((backoff_factor**attempt) + jitter)
+
+        if err is None:
+            msg = f"HoYo API request failed after {MAX_RETRIES} attempts"
+            raise RuntimeError(msg)
+        raise err
 
     async def request_proxy_api(
         self, api_url: str, endpoint: str, payload: dict[str, Any]
@@ -88,7 +102,10 @@ class ProxyGenshinClient(genshin.Client):
         }
         logger.debug(f"Requesting {api_url}/{endpoint}/ with payload: {no_sensitive_info_payload}")
 
-        for attempt in range(MAX_API_RETRIES):
+        attempt = 0
+        err: Exception | None = None
+
+        while attempt < MAX_RETRIES:
             try:
                 async with (
                     aiohttp.ClientSession() as session,
@@ -99,25 +116,26 @@ class ProxyGenshinClient(genshin.Client):
                         if resp.status == 200:
                             return data
                         if resp.status == 400:
-                            raise genshin.GenshinException(data)
+                            genshin.raise_for_retcode(data)
                         raise Exception(data["message"])
 
-                    logger.debug(f"Got status code {resp.status} from {api_url}")
-                    if attempt < MAX_API_RETRIES - 1:
-                        await asyncio.sleep(2 * (attempt + 1))
-                        api_url = next(no_local_proxy_api_rotator)
-                    else:
-                        raise ProxyAPIError(api_url, resp.status)
-            except aiohttp.ClientError:
-                logger.exception(f"Failed to connect to {api_url}")
-                if attempt < MAX_API_RETRIES - 1:
-                    await asyncio.sleep(2 * (attempt + 1))
-                    api_url = next(no_local_proxy_api_rotator)
-                else:
-                    raise
+                    err = ProxyAPIError(api_url, resp.status)
+            except (TimeoutError, aiohttp.ClientError) as e:
+                err = e
 
-        msg = f"Max API retries exceeded for {api_url}"
-        raise RuntimeError(msg)
+            attempt += 1
+            backoff_factor = 2
+            jitter = random.uniform(0, 1)
+
+            for proxy_api in random.choices(list(PROXY_APIS.values())):
+                if proxy_api != api_url:
+                    api_url = proxy_api
+            await asyncio.sleep((backoff_factor**attempt) + jitter)
+
+        if err is None:
+            msg = f"Proxy API request failed after {MAX_RETRIES} attempts"
+            raise RuntimeError(msg)
+        raise err
 
     @overload
     async def os_app_login(
@@ -210,9 +228,11 @@ class GenshinClient(ProxyGenshinClient):
         payload["uid"] = account.uid
 
         data = await super().request_proxy_api(api_url, endpoint, payload)
-        if (cookies := data.get("cookies")) and account.cookies != cookies:
-            account.cookies = decrypt_string(cookies)
-            await account.save(update_fields=("cookies",))
+        if cookies := data.get("cookies"):
+            decrypted_cookies = decrypt_string(cookies)
+            if account.cookies != decrypted_cookies:
+                account.cookies = decrypted_cookies
+                await account.save(update_fields=("cookies",))
         return data
 
     def set_lang(self, locale: Locale) -> None:
@@ -499,6 +519,16 @@ class GenshinClient(ProxyGenshinClient):
             for chara in parsed.avatar_list
         ]
 
+    async def get_zzz_agents(
+        self, uid: int | None = None
+    ) -> Sequence[genshin.models.ZZZPartialAgent]:
+        cache, _ = await EnkaCache.get_or_create(uid=self.uid)
+        agents = await super().get_zzz_agents(uid)
+        for agent in agents:
+            set_or_update_dict(cache.extras, f"{agent.id}-hoyolab", {"live": True})
+        await cache.save(update_fields=("extras",))
+        return agents
+
     @overload
     async def get_zzz_agent_info(
         self, character_id: Sequence[int]
@@ -544,18 +574,22 @@ class GenshinClient(ProxyGenshinClient):
 
     async def redeem_codes(
         self, codes: Sequence[str], *, locale: Locale, blur: bool = True, api_url: str | None = None
-    ) -> DefaultEmbed:
+    ) -> DefaultEmbed | None:
         """Redeem multiple codes and return an embed with the results."""
-        results: list[tuple[str, str, bool]] = []
+        if not codes:
+            return None
 
+        results: list[tuple[str, str, bool]] = []
         for code in codes:
-            if not code:
+            if not code or code in self._account.redeemed_codes:
                 continue
 
             msg, success = await self.redeem_code(code.strip(), locale=locale, api_url=api_url)
             results.append((code, msg, success))
             await asyncio.sleep(6)
 
+        if not results:
+            return None
         return self.get_redeem_codes_embed(results, locale=locale, blur=blur)
 
     def get_redeem_codes_embed(
@@ -591,7 +625,7 @@ class GenshinClient(ProxyGenshinClient):
                 await self.request_proxy_api(api_url, "redeem", {"code": code})
         except genshin.InvalidCookies as e:
             # cookie token is invalid
-            if all(key in self._account.cookies for key in ("stoken", "ltmid")):
+            if "stoken" in self._account.dict_cookies and "ltmid_v2" in self._account.dict_cookies:
                 # cookie token can be refreshed
                 try:
                     await self.update_cookie_token()
@@ -600,6 +634,7 @@ class GenshinClient(ProxyGenshinClient):
                     raise genshin.GenshinException({"retcode": 1000}) from e
                 else:
                     # cookie token refresh succeeded, redeem code again
+                    await asyncio.sleep(6)
                     return await self.redeem_code(code, locale=locale)
             else:
                 # cookie token can't be refreshed
@@ -622,6 +657,8 @@ class GenshinClient(ProxyGenshinClient):
             assert embed.title is not None
             if embed.description is None:
                 return embed.title, success
+            if "HoYo API Error" in embed.title:
+                return embed.description, success
             return f"{embed.title}\n{embed.description}", success
         else:
             await self._add_to_redeemed_codes(code)
@@ -794,7 +831,7 @@ class GenshinClient(ProxyGenshinClient):
         if api_url == "LOCAL":
             return await super().get_mimo_tasks(game_id=game_id, version_id=version_id)
 
-        payload = {"cookies": self._account.cookies, "game_id": game_id, "version_id": version_id}
+        payload = {"game_id": game_id, "version_id": version_id}
         data = await self.request_proxy_api(api_url, "mimo/tasks", payload)
         return [genshin.models.MimoTask(**orjson.loads(task)) for task in data["tasks"]]
 
@@ -805,17 +842,17 @@ class GenshinClient(ProxyGenshinClient):
         if api_url == "LOCAL":
             return await super().get_mimo_shop_items(game_id=game_id, version_id=version_id)
 
-        payload = {"cookies": self._account.cookies, "game_id": game_id, "version_id": version_id}
+        payload = {"game_id": game_id, "version_id": version_id}
         data = await self.request_proxy_api(api_url, "mimo/shop", payload)
         return [genshin.models.MimoShopItem(**orjson.loads(item)) for item in data["items"]]
 
     async def finish_and_claim_mimo_tasks(
         self, *, game_id: int, version_id: int, api_url: str | None = None
-    ) -> tuple[list[genshin.models.MimoTask], int]:
+    ) -> MimoClaimTaksResult:
         finished: list[genshin.models.MimoTask] = []
-        claim_point = 0
+        claimed_points = 0
 
-        tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
+        tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id, api_url=api_url)
 
         for task in tasks:
             if task.status is not genshin.models.MimoTaskStatus.ONGOING:
@@ -825,6 +862,7 @@ class GenshinClient(ProxyGenshinClient):
                 genshin.models.MimoTaskType.FINISHABLE,
                 genshin.models.MimoTaskType.TRAILER,
                 genshin.models.MimoTaskType.VISIT,
+                genshin.models.MimoTaskType.VIEW_TOPIC,
             }:
                 try:
                     await self.finish_mimo_task(
@@ -838,18 +876,29 @@ class GenshinClient(ProxyGenshinClient):
 
             elif task.type is genshin.models.MimoTaskType.COMMENT:
                 url_data = orjson.loads(task.jump_url)
-                post_id: str | None = url_data.get("post_id")
-                if post_id is None:
+                args: dict[str, str] | None = url_data.get("args")
+                if args is None:
                     continue
 
-                reply_id = await self.reply_to_post(
-                    random.choice(POST_REPLIES), post_id=int(post_id)
-                )
-                await asyncio.sleep(0.5)
-                await self.delete_reply(reply_id=reply_id, post_id=int(post_id))
-                finished.append(task)
+                post_id: str | None = args.get("post_id")
+                if post_id is not None:
+                    reply_id = await self.reply_to_post(
+                        random.choice(POST_REPLIES), post_id=int(post_id)
+                    )
+                    await asyncio.sleep(2)
+                    await self.delete_reply(reply_id=reply_id, post_id=int(post_id))
+                    await asyncio.sleep(2)
+                    finished.append(task)
 
-        if len(finished) > 0:
+                topic_id: str | None = args.get("topic_id")
+                if topic_id is not None:
+                    await self.join_topic(int(topic_id))
+                    await asyncio.sleep(2)
+                    await self.leave_topic(int(topic_id))
+                    await asyncio.sleep(2)
+                    finished.append(task)
+
+        if finished:
             tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
 
         for task in tasks:
@@ -862,21 +911,28 @@ class GenshinClient(ProxyGenshinClient):
                     if e.retcode == -500001:  # Invalid fields in calculation
                         continue
                     raise
-                claim_point += task.point
 
-        return finished, claim_point
+                claimed_points += task.point
+
+        return MimoClaimTaksResult(
+            finished,
+            claimed_points,
+            all(task.status is genshin.models.MimoTaskStatus.CLAIMED for task in tasks),
+        )
 
     async def buy_mimo_valuables(
         self, *, game_id: int, version_id: int, api_url: str | None = None
     ) -> list[tuple[genshin.models.MimoShopItem, str]]:
-        bought: list[tuple[genshin.models.MimoShopItem, str]] = []
+        result: list[tuple[genshin.models.MimoShopItem, str]] = []
+        bought: list[tuple[int, str]] = []
 
+        original_lang = self.lang[:]
         points = await self.get_mimo_point_count()
-        items = await self.get_mimo_shop_items(game_id=game_id, version_id=version_id)
-        item_mi18n = {item.id: item for item in items}
 
         self.lang = "en-us"
-        en_items = await self.get_mimo_shop_items(game_id=game_id, version_id=version_id)
+        en_items = await self.get_mimo_shop_items(
+            game_id=game_id, version_id=version_id, api_url=api_url
+        )
 
         keywords = ("Stellar Jades", "Polychrome")
         for item in en_items:
@@ -894,10 +950,18 @@ class GenshinClient(ProxyGenshinClient):
                         continue
                     raise
 
-                bought.append((item_mi18n[item.id], code))
+                bought.append((item.id, code))
                 points = await self.get_mimo_point_count()
 
-        return bought
+        if bought:
+            self.lang = original_lang
+            items = await self.get_mimo_shop_items(
+                game_id=game_id, version_id=version_id, api_url=api_url
+            )
+            item_mi18n = {item.id: item for item in items}
+            result = [(item_mi18n[item_id], code) for item_id, code in bought]
+
+        return result
 
     async def claim_daily_reward(
         self, *, api_url: str | None = None, challenge: dict[str, str] | None = None

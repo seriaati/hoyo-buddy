@@ -6,7 +6,7 @@ from discord import InteractionType, app_commands
 from discord.ext import commands
 from loguru import logger
 
-from hoyo_buddy.db.models import CommandMetric
+from hoyo_buddy.db import CommandMetric
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy

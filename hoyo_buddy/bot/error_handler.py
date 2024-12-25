@@ -53,11 +53,6 @@ GENSHIN_ERROR_CONVERTER: dict[
             available_time=format_dt(get_now() + timedelta(minutes=1), "T"),
         ),
     },
-    (-2017, -2018): {"title": LocaleStr(key="redeem_code.already_claimed")},
-    (-2001,): {"title": LocaleStr(key="redeem_code.expired")},
-    (-2006,): {"title": LocaleStr(key="redeem_code.reached_max_limit")},
-    (-1065, -2003, -2004, -2014): {"title": LocaleStr(key="redeem_code.invalid")},
-    (-2016,): {"title": LocaleStr(key="redeem_code.cooldown")},
     (-3202,): {
         "title": LocaleStr(key="account_locked_title"),
         "description": LocaleStr(key="account_locked_description"),
@@ -162,6 +157,6 @@ def get_error_embed(error: Exception, locale: discord.Locale) -> tuple[ErrorEmbe
         recognized = False
         description = f"{type(error).__name__}: {error}" if error else type(error).__name__
         embed = ErrorEmbed(locale, title=LocaleStr(key="error_title"), description=description)
-        embed.set_footer(text=LocaleStr(key="error_footer"))
 
+    embed.set_footer(text=LocaleStr(key="error_footer"))
     return embed, recognized

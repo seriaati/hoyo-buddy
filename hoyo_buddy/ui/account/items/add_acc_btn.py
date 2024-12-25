@@ -32,7 +32,7 @@ class AddAccountButton(Button[AccountManager]):
     async def callback(self, i: Interaction) -> None:
         embed = DefaultEmbed(
             self.view.locale,
-            title=LocaleStr(key="account_add_start_title"),
+            title=LocaleStr(key="add_account_button_label"),
             description=LocaleStr(key="account_add_start_message"),
         )
         self.view.clear_items()

@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ...db.models import HoyoAccount, User, get_dyk
+from hoyo_buddy.db import HoyoAccount, User, get_dyk
+
 from ...embeds import DefaultEmbed
 from ...emojis import get_game_emoji
 from ...l10n import EnumStr, LocaleStr

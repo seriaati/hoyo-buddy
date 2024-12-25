@@ -33,13 +33,14 @@ dependencies = [
   "tortoise-orm>=0.21.7",
   "akasha-py>=0.2.7",
   "genshin[auth,sqlite]",
+  "toml>=0.10.2",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = { file = "LICENSE" }
 name = "hoyo-buddy"
 readme = "README.md"
 requires-python = ">=3.11"
-version = "1.15.4"
+version = "1.15.5"
 
 [tool.uv]
 dev-dependencies = ["icecream>=2.1.3"]

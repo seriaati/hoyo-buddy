@@ -7,12 +7,8 @@ import enka
 from discord import ButtonStyle, TextStyle
 from genshin.models import ZZZPartialAgent
 
-from hoyo_buddy.constants import (
-    ZZZ_AGENT_STAT_TO_DISC_SUBSTAT,
-    ZZZ_AVATAR_BATTLE_TEMP_JSON,
-    ZZZ_DISC_SUBSTATS,
-)
-from hoyo_buddy.db.models import CardSettings, JSONFile, Settings
+from hoyo_buddy.constants import ZZZ_DISC_SUBSTATS
+from hoyo_buddy.db import CardSettings, Settings
 from hoyo_buddy.embeds import DefaultEmbed, Embed
 from hoyo_buddy.emojis import PALETTE
 from hoyo_buddy.enums import Game
@@ -222,30 +218,7 @@ class CardSettingsView(View):
         embed.set_footer(text=LocaleStr(key="card_settings.footer"))
         return embed
 
-    async def add_default_hl_substats(self) -> None:
-        if self.card_settings.highlight_substats:
-            return
-
-        agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
-            ZZZ_AVATAR_BATTLE_TEMP_JSON
-        )
-        special_stat_ids = agent_special_stat_map.get(self.selected_character_id, [])
-        special_substat_ids = [
-            ZZZ_AGENT_STAT_TO_DISC_SUBSTAT.get(stat_id) for stat_id in special_stat_ids
-        ]
-
-        hl_substats = [
-            substat_id
-            for _, substat_id, _ in ZZZ_DISC_SUBSTATS
-            if substat_id in special_substat_ids
-        ]
-        self.card_settings.highlight_substats = hl_substats
-        await self.card_settings.save(update_fields=("highlight_substats",))
-
     async def start(self, i: Interaction) -> None:
-        if self.game is Game.ZZZ:
-            await self.add_default_hl_substats()
-
         self._add_items()
         embed = self.get_settings_embed()
         await i.followup.send(embed=embed, view=self, ephemeral=True)
@@ -272,7 +245,6 @@ class CharacterSelect(SettingsCharacterSelect[CardSettingsView]):
         template_select.update_options_defaults(values=[self.view.card_settings.template])
 
         if self.view.game is Game.ZZZ:
-            await self.view.add_default_hl_substats()
             hl_substat_select: HighlightSubstatSelector = self.view.get_item(
                 "card_settings_hl_substat_select"
             )

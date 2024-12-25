@@ -1,5 +1,51 @@
 # Hoyo Buddy Changelog
 
+## v1.15.5
+
+### New Features
+
+- (`/mimo`) Automatically finish tasks that require commenting on a post.
+- (`/mimo`) Automatically finish tasks that require following a topic.
+- (`/mimo`) Added lottery feature.
+- (`/mimo`) Added notification settings.
+- (`/profile zzz`) Added an image setting to use Mindscape 3 arts for build cards.
+- (`/profile zzz`) Added Harumasa and Miyabi card data.
+- (`/search`) Hide "unreleased content" category in certain guilds.
+
+### Improvements
+
+- (`/mimo`) Show task progress for certain tasks.
+- (`/mimo`) Show names of completed tasks in the notification.
+- (`/mimo`) Improved performance of auto tasks.
+- (`/challenge zzz shiyu`) Updated card layout.
+- (`/challenge zzz shiyu`) Avoid fetching agent data twice.
+- Show Discord server invite link in error embed footers.
+- Unset item loading state upon error.
+- Added on/off labels to toggle buttons.
+- Improved proxy API request logic.
+- Improved auto tasks error handling logic.
+
+### Bug Fixes
+
+- (`/mimo`) Added a sleep interval after redeeming a mimo reward gift code.
+- (`/mimo`) Fixed tasks missing in task list.
+- (`/mimo`) Fixed comment tasks not being completed.
+- (`/mimo`) Fixed notifications being sent when no tasks are completed.
+- (`/mimo`) Only show HoYoLAB accounts in the account autocomplete.
+- (`/mimo`) Fixed `QuerySetError` in auto tasks.
+- (`/mimo`) Fixed post comments not being deleted.
+- (`/mimo`) Handle cases where Traveling Mimo is not available for a game.
+- (`/profile zzz`) Fixed substat highlights not being added to the card.
+- (`/profile zzz`) Fixed agents being identified as cached when they are not.
+- (`/characters zzz`) Fixed wrong total agent count.
+- (`/gacha-log upload`) Fixed issues with zzz.rng.moe imports.
+- (`/redeem`) Fixed Miyoushe accounts being shown in account autocomplete.
+- (`/build genshin`) Handle missing usage rates for some characters.
+- (`/events`) Fixed future HSR warps not being shown as "not available yet".
+- Adapt to new ZenlessData keys.
+- Fixed issues with Hakushin API.
+- Capture general exceptions in `dm_user` method.
+
 ## v1.15.4
 
 ### New Features

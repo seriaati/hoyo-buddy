@@ -5,8 +5,9 @@ from typing import TYPE_CHECKING, Any
 
 import discord
 
+from hoyo_buddy.db import Settings
+
 from ..constants import HOYO_BUDDY_LOCALES
-from ..db.models import Settings
 from ..embeds import DefaultEmbed
 from ..l10n import LocaleStr
 from .components import Select, SelectOption, ToggleButton, View

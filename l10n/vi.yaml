@@ -283,7 +283,6 @@ notes-card.gi.daily-commissions: Nhiệm vụ Ủy Thác
 notes-card.gi.expedition-finished: Hoàn thành
 notes-card.gi.expedition-remaining: "còn {time}"
 notes-card.gi.realm-currency: Tiền Đồng Tiên
-notes-card.gi.realtime-notes: Ghi Chép Thời Gian Thực
 notes-card.gi.remaining: Còn lại
 notes-card.gi.resin: Nhựa
 notes-card.gi.resin-discounts: Giảm giá Nhựa
@@ -313,6 +312,10 @@ notif_modal.threshold.label: Ngưỡng
 notification_settings_button_label: Cài đặt thông báo
 notify_on_failure_button_label: Thông báo khi Điểm danh Thất Bại
 notify_on_success_button_label: Thông báo khi Điểm danh Thành công
+mimo_auto_task_success_notify_toggle_label: Thông báo khi việc tự động hoàn thành nhiệm vụ thành công
+mimo_auto_task_failure_notify_toggle_label: Thông báo khi việc tự động hoàn thành nhiệm vụ thất bại
+mimo_auto_buy_success_notify_toggle_label: Thông báo khi việc tự động mua thành công
+mimo_auto_buy_failure_notify_toggle_label: Thông báo khi việc tự động mua thất bại
 nsfw_prompt_error_message: "Nôi dung tạo ảnh gồm có nội dung NSFW, vui lòng thử lại bằng nội dung khác"
 nsfw_prompt_error_title: Đã phát hiện Nội dung NSFW
 page_footer: "Trang {current_page}/{total_pages}"
@@ -382,9 +385,6 @@ redeeem_code.cookie_token_expired_title: Mã Cookie đã hết hạn
 redeeem_code.cookie_token_refresh_failed_description: "Có thể bạn đã thay đổi mật khẩu tài khoản của mình kể từ lần cuối cùng bạn thêm tài khoản.\nVui lòng bạn thêm lại tài khoản bằng lệnh </accounts> với phương pháp email và mật khẩu."
 redeeem_code.cookie_token_refresh_failed_title: Thất bại để làm mới mã Cookie
 redeem_code.already_claimed: Mã quà đã được đổi
-redeem_code.cooldown: Đổi mã quà tặng trong thời gian hồi chiêu
-redeem_code.expired: Mã đổi quà đã hết hạn
-redeem_code.invalid: Mã đổi quà không hợp lệ
 redeem_code.success: Đã đổi thành công
 redeem_codes_button.label: Đổi mã quà
 redeem_command_description: Đổi mã quà để nhận phần thưởng trong trò chơi
@@ -489,22 +489,14 @@ img_theater_max_damage: "Gây Nhiều Sát Thương Nhất: {val}"
 img_theater_fastest_team: "(nhanh nhất)"
 challenge_view.view_buffs: Xem Buff
 challenge_view.buff_select.placeholder: Chọn Buff để xem
-battery_charge_button.label: Điện Lượng
-scratch_card_button.label: Thẻ Cào
 scratch_card.embed.description: Thẻ Chưa cào
 zzz_engagement_button.label: Năng Động
 zzz_engagement.embed.description: Chưa hoàn thành Nhiệm vụ Năng Động.
 honkai_daily_embed_title: Nhắc nhở Nhật ký HT
 honkai_daily_embed_description: "Nhật ký HT ngày hôm nay chưa hoàn thành, {cur}/{max}"
-video_store_button.label: Kinh Doanh Tiệm Băng Hình
 video_store.embed.description: Doanh thu Tiệm Băng Hình chưa nhận
 scratch_card.incomplete: Chưa hoàn thành
-video_store.currently_open: Đang mở
-video_store.revenue_available: Doanh thu có sẵn
-video_store.waiting_to_open: Đợi mở cửa
-notes-card.zzz.title: Ghi Chép Thời Gian Thực
 reminder_modal.title: "Cài đặt Lời nhắc {notify}"
-redeem_code.reached_max_limit: Mã đổi này đã vượt qua giới hạn sử dụng
 profile_view.set_cur_temp_as_default: Sử dụng mẫu này là mặc định
 set_cur_temp_as_default.done: Xong
 set_cur_temp_as_default.done_desc: "Mẫu thẻ mặc định của bạn cho {game} được đặt thành {template}"
@@ -591,11 +583,9 @@ show_tutorial_button_label: Xem hướng dẫn
 close_button_label: Đóng
 required_field_error_message: Trường này là bắt buộc
 accounts_added_snackbar_message: "Tài khoản đã thêm thành công, đang hướng bạn về lại Discord,,,"
-account_add_start_title: Thêm các tài khoản
 account_add_start_message: "Nhấn nút bên dưới và làm theo hướng dẫn để thêm tài khoản. Khi bạn xong, sử dụng lênh</accounts> để thêm tài khoản bạn đã thêm. Nếu bạn gập vấn đề nào hoặc cấn trợ giúp, tham [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi."
 hbls_button_label: Hãy bắt đầu!
 gacha_import_url_modal_title: Nhập đường link nhật ký gacha
-gacha_import_embed_title: Đang nhập Nhật ký Gacha
 gacha_import_embed_description: "URL Nhật ký Gacha: Lấy một URL rất dài từ trò chơi để nhập nhật ký gacha của bạn, bên dưới là hướng dẫn cho các trò chơi khác nhau::\n- Android: [Video YouTube](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nFor services below, export your gacha records as the specified file format and upload it via </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Không thể trích xuất khóa xác thực từ đường link, vui lòng thử lại bằng đường link hợp lệ."
 extract_authkey_error_title: Trích xuất Khóa xác thực Thất bại
@@ -764,8 +754,6 @@ mimo_auto_finish_and_claim_button_label: Tự động hoàn thành nhiệm vụ 
 mimo_auto_finish_and_claim_desc: Hoyo Buddy có thể tự động hoàn thành một số nhiệm vụ và nhận điểm của những nhiêm vụ đã hoàn thành.
 mimo_auto_buy_button_label: Tự động đổi quà
 mimo_auto_buy_desc: "Hoyo Buddy sẽ cố gắng đổi Ngọc Ánh Sao/Film Màu khi có thể, và không cố gắng tiết kiệm điểm."
-mimo_redeem_failed: "Đã đổi {name} nhưng thất bại đổi mã quà, vui lòng tự đổi mã quà, mã: {code}"
-mimo_redeem_success: "Đã đổi thành công {name} cho {points} điểm. vui lòng kiểm tra hồm thư trò chơi."
 mimo_cmd_desc: Quản lý sự kiện Mimo Du Lịch
 mimo_view_shop_button_label: Cửa hàng
 mimo_buy_item_select_placeholder: Chọn một món để đổi
@@ -779,3 +767,9 @@ mimo_auto_task_error_dm_content: "Tính năng tự động hoàn thành nhiệm 
 mimo_status: "Tình trạng: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy đã đổi (các) vật phẩm {item} này cho bạn với {points} điểm.\nNếu bạn thấy những mã quà bên dưới, vui long đổi thủ công bằng lệnh </redeem>."
 mimo_auto_buy_error_dm_content: "Tính năng tự động đổi quà Mimo đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
+mimo_game_unavailable: "Mimo Du Lịch hiện không có sẵn cho {game}"
+generic_error_title: Lỗi
+on_button_label: "BẬT"
+off_button_label: "TẮT"
+mimo_draw_redeem_success: "Kiểm tra Hòm Thư trong Game để nhận quà"
+

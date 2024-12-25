@@ -13,9 +13,11 @@ from seria.utils import read_yaml
 from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
+    ZZZ_AGENT_STAT_TO_DISC_SUBSTAT,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
+    ZZZ_DISC_SUBSTATS,
 )
-from hoyo_buddy.db.models import EnkaCache, JSONFile, Settings, draw_locale, get_dyk
+from hoyo_buddy.db import EnkaCache, JSONFile, Settings, draw_locale, get_dyk, show_dismissible
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
     draw_gi_team_card,
@@ -34,7 +36,7 @@ from hoyo_buddy.exceptions import (
 )
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LevelStr, LocaleStr
-from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
+from hoyo_buddy.models import Dismissible, DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Select, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
 from hoyo_buddy.ui.hoyo.profile.items.team_card_settings_btn import TeamCardSettingsButton
@@ -60,7 +62,7 @@ if TYPE_CHECKING:
     from discord import Member, User
     from genshin.models import GenshinUserStats, RecordCard, StarRailUserStats
 
-    from hoyo_buddy.db.models import CardSettings, HoyoAccount
+    from hoyo_buddy.db import CardSettings, HoyoAccount
     from hoyo_buddy.types import Builds, Interaction
 
 
@@ -420,7 +422,9 @@ class ProfileView(View):
         if character_data is None:
             raise CardNotReadyError(character.name)
 
-        image_url = card_settings.current_image or get_default_art(character, is_team=False)
+        image_url = card_settings.current_image or get_default_art(
+            character, is_team=False, use_m3_art=card_settings.use_m3_art
+        )
 
         if card_settings.custom_primary_color is None:
             primary: str = character_data["primary"]
@@ -454,7 +458,9 @@ class ProfileView(View):
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert isinstance(character, enka.gi.Character | HoyolabGICharacter)
 
-        image_url = card_settings.current_image or get_default_art(character, is_team=False)
+        image_url = card_settings.current_image or get_default_art(
+            character, is_team=False, use_m3_art=card_settings.use_m3_art
+        )
 
         template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
         if template_num == 2:
@@ -549,6 +555,7 @@ class ProfileView(View):
             agent_special_stat_map=agent_special_stat_map,
             hl_special_stats=card_settings.highlight_special_stats,
             hl_substats=card_settings.highlight_substats,
+            use_m3_art=card_settings.use_m3_art,
         )
 
     async def draw_card(
@@ -618,11 +625,6 @@ class ProfileView(View):
             loop=i.client.loop,
         )
         characters = [self.characters[char_id] for char_id in self.character_ids]
-        images = {
-            str(char.id): await get_team_image(i.user.id, str(char.id), game=self.game)
-            or get_default_art(char, is_team=True)
-            for char in characters
-        }
 
         if self.game is Game.ZZZ:
             assert self._account is not None
@@ -653,6 +655,13 @@ class ProfileView(View):
                 int(char_id): agent_card_settings[int(char_id)].highlight_substats
                 for char_id in self.character_ids
             }
+            images = {
+                str(char.id): await get_team_image(i.user.id, str(char.id), game=self.game)
+                or get_default_art(
+                    char, is_team=True, use_m3_art=agent_card_settings[int(char.id)].use_m3_art
+                )
+                for char in characters
+            }
 
             return await draw_zzz_team_card(
                 draw_input,
@@ -664,6 +673,13 @@ class ProfileView(View):
                 hl_special_stats=hl_special_stats,
                 agent_hl_substat_map=hl_substats,
             )
+
+        # GI and HSR
+        images = {
+            str(char.id): await get_team_image(i.user.id, str(char.id), game=self.game)
+            or get_default_art(char, is_team=True)
+            for char in characters
+        }
 
         if self.game is Game.STARRAIL:
             character_colors = {
@@ -688,6 +704,33 @@ class ProfileView(View):
             )
 
         raise FeatureNotImplementedError(game=self.game)
+
+    async def add_default_hl_substats(self, user_id: int) -> None:
+        if self.zzz_data is None:
+            return
+
+        agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
+            ZZZ_AVATAR_BATTLE_TEMP_JSON
+        )
+        character_ids = [agent.id for agent in self.zzz_data]
+
+        for character_id in character_ids:
+            card_settings = await get_card_settings(user_id, str(character_id), game=Game.ZZZ)
+            if card_settings.highlight_substats:
+                continue
+
+            special_stat_ids = agent_special_stat_map.get(str(character_id), [])
+            special_substat_ids = [
+                ZZZ_AGENT_STAT_TO_DISC_SUBSTAT.get(stat_id) for stat_id in special_stat_ids
+            ]
+
+            hl_substats = [
+                substat_id
+                for _, substat_id, _ in ZZZ_DISC_SUBSTATS
+                if substat_id in special_substat_ids
+            ]
+            card_settings.highlight_substats = hl_substats
+            await card_settings.save(update_fields=("highlight_substats",))
 
     async def update(
         self,
@@ -745,11 +788,9 @@ class ProfileView(View):
         self._add_items()
 
         if self.game is Game.ZZZ:
-            new_msg = LocaleStr(key="new_zzz_temp").translate(self.locale)
-            dyk = f"-# {new_msg}"
-        else:
-            dyk = await get_dyk(i)
+            await self.add_default_hl_substats(i.user.id)
 
+        dyk = await get_dyk(i)
         if self.character_ids:
             CharacterSelect.update_ui(
                 self, character_id=self.character_ids[0], is_team=len(self.character_ids) > 1
@@ -758,4 +799,13 @@ class ProfileView(View):
 
         await i.followup.send(embed=self.player_embed, view=self, content=dyk)
         self.message = await i.original_response()
-        return None
+
+        if self.game is Game.ZZZ:
+            await show_dismissible(
+                i,
+                Dismissible(
+                    id="m3_art",
+                    description=LocaleStr(key="dismissible_m3_art_desc"),
+                    image="https://img.seria.moe/kVbCOBrqEMHlQsVd.png",
+                ),
+            )

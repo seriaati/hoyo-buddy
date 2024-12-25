@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.db.models import NotesNotify
+from hoyo_buddy.db import NotesNotify
 from hoyo_buddy.emojis import SCRATCH_CARD_EMOJI
-from hoyo_buddy.enums import NotesNotifyType
+from hoyo_buddy.enums import Game, NotesNotifyType
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
 
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class ScratchCardReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
-            emoji=SCRATCH_CARD_EMOJI, label=LocaleStr(key="scratch_card_button.label"), row=row
+            emoji=SCRATCH_CARD_EMOJI, label=LocaleStr(key="card", mi18n_game=Game.ZZZ), row=row
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -29,7 +29,7 @@ class ScratchCardReminder(Button[NotesView]):
         modal = TypeThreeModal(
             notify,
             title=LocaleStr(
-                key="reminder_modal.title", notify=LocaleStr(key="scratch_card_button.label")
+                key="reminder_modal.title", notify=LocaleStr(key="card", mi18n_game=Game.ZZZ)
             ),
             min_notify_interval=30,
         )

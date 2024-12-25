@@ -7,8 +7,8 @@ from discord import ButtonStyle, TextStyle
 from genshin.models import ZZZFullAgent, ZZZPartialAgent
 from seria.utils import read_json
 
-from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, ZZZ_DEFAULT_ART_URL
-from hoyo_buddy.db.models import CustomImage
+from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, ZZZ_M3_ART_URL, ZZZ_M6_ART_URL
+from hoyo_buddy.db import CustomImage
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO_ADD
 from hoyo_buddy.enums import Game
@@ -16,7 +16,7 @@ from hoyo_buddy.exceptions import InvalidImageURLError, NSFWPromptError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import HoyolabGICharacter
 from hoyo_buddy.ui import Button, Modal, PaginatorSelect, SelectOption, TextInput, View
-from hoyo_buddy.ui.components import Select
+from hoyo_buddy.ui.components import Select, ToggleButton
 from hoyo_buddy.utils import get_pixiv_proxy_img, is_image_url, test_url_validity, upload_image
 
 from .btn_states import DISABLE_IMAGE, ZZZ_DISABLE_IMAGE
@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 
     from discord import Locale, Member, User
 
-    from hoyo_buddy.db.models import CardSettings, Settings
+    from hoyo_buddy.db import CardSettings, Settings
     from hoyo_buddy.types import Interaction
 
     from .view import Character
@@ -39,11 +39,15 @@ async def get_team_image(user_id: int, character_id: str, *, game: Game) -> str 
     return card_settings.current_team_image
 
 
-def get_default_art(character: Character | ZZZFullAgent, *, is_team: bool) -> str:
+def get_default_art(
+    character: Character | ZZZFullAgent, *, is_team: bool, use_m3_art: bool = False
+) -> str:
     if isinstance(character, ZZZPartialAgent | ZZZFullAgent):
         if is_team:
             return character.banner_icon
-        return ZZZ_DEFAULT_ART_URL.format(char_id=character.id)
+        if use_m3_art:
+            return ZZZ_M3_ART_URL.format(char_id=character.id)
+        return ZZZ_M6_ART_URL.format(char_id=character.id)
     if isinstance(character, enka.gi.Character):
         if character.costume is not None:
             return character.costume.icon.gacha
@@ -106,6 +110,12 @@ class ImageSettingsView(View):
         )
 
     @property
+    def disable_m3_art(self) -> bool:
+        return not (
+            self.game is Game.ZZZ and self.card_settings.template == "hb2" and not self.is_team
+        )
+
+    @property
     def disable_ai_features(self) -> bool:
         return self.game is Game.ZZZ or self.card_settings.template in DISABLE_IMAGE
 
@@ -136,6 +146,11 @@ class ImageSettingsView(View):
         self.add_item(
             RemoveImageButton(
                 disabled=current_image is None or current_image in default_collection, row=3
+            )
+        )
+        self.add_item(
+            UseM3ArtButton(
+                current=self.card_settings.use_m3_art, disabled=self.disable_m3_art, row=4
             )
         )
 
@@ -179,6 +194,7 @@ class ImageSettingsView(View):
             character,
             is_team=self.image_type == "team_card_image"
             or (self.card_settings.template == "hb4" and self.game is Game.ZZZ),
+            use_m3_art=self.card_settings.use_m3_art,
         )
         embed.add_field(
             name=LocaleStr(key="card_settings.current_image"), value=image_url, inline=False
@@ -454,13 +470,9 @@ class GenerateAIArtButton(Button[ImageSettingsView]):
 
         await self.set_loading_state(i)
 
-        try:
-            client = i.client.nai_client
-            bytes_ = await client.generate_image(prompt, negative_prompt)
-            url = await upload_image(i.client.session, image=bytes_)
-        except Exception:
-            await self.unset_loading_state(i)
-            raise
+        client = i.client.nai_client
+        bytes_ = await client.generate_image(prompt, negative_prompt)
+        url = await upload_image(i.client.session, image=bytes_)
 
         # Add the image URL to db
         await CustomImage.create(
@@ -526,18 +538,15 @@ class AddImageButton(Button[ImageSettingsView]):
         # Check if the image URL is valid
         passed = is_image_url(image_url)
         if not passed:
-            await self.unset_loading_state(i)
             raise InvalidImageURLError
         passed = await test_url_validity(image_url, i.client.session)
         if not passed:
-            await self.unset_loading_state(i)
             raise InvalidImageURLError
 
         if not image_url.startswith("https://img.seria.moe/"):
             try:
                 image_url = await upload_image(i.client.session, image_url=image_url)
             except Exception as e:
-                await self.unset_loading_state(i)
                 raise InvalidImageURLError from e
 
         # Add the image URL to db
@@ -609,4 +618,22 @@ class ImageTypeSelect(Select[ImageSettingsView]):
         remove_image_btn: RemoveImageButton = self.view.get_item("profile_remove_image")
         remove_image_btn.disabled = is_not_custom
 
+        await i.response.edit_message(embed=embed, view=self.view)
+
+
+class UseM3ArtButton(ToggleButton[ImageSettingsView]):
+    def __init__(self, row: int, *, current: bool, disabled: bool) -> None:
+        super().__init__(
+            toggle_label=LocaleStr(key="image_settings_use_m3_art"),
+            current_toggle=current,
+            row=row,
+            disabled=disabled,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i, edit=False)
+        self.view.card_settings.use_m3_art = not self.view.card_settings.use_m3_art
+        await self.view.card_settings.save(update_fields=("use_m3_art",))
+
+        embed = self.view.get_settings_embed()
         await i.response.edit_message(embed=embed, view=self.view)

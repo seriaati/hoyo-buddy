@@ -19,6 +19,7 @@ from genshin.models import (
 from genshin.models import Character as GICharacter
 
 from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE
+from hoyo_buddy.db import ChallengeHistory, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_apc_shadow_card,
     draw_img_theater_card,
@@ -34,7 +35,6 @@ from hoyo_buddy.models import DrawInput
 from hoyo_buddy.types import Buff, Challenge, ChallengeWithBuff
 
 from ...bot.error_handler import get_error_embed
-from ...db.models import ChallengeHistory, draw_locale, get_dyk
 from ...enums import ChallengeType, Game
 from ...utils import get_floor_difficulty
 from ..components import Button, Select, SelectOption, ToggleButton, View
@@ -47,7 +47,7 @@ if TYPE_CHECKING:
     import aiohttp
     from discord import File, Locale, Member, User
 
-    from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Challenge, ChallengeWithLang, Interaction
 
 
@@ -239,8 +239,9 @@ class ChallengeView(View):
 
                 challenge = max(challenges, key=lambda c: c.stats.difficulty.value)
             elif self.challenge_type is ChallengeType.SHIYU_DEFENSE:
-                agents = await client.get_zzz_agents(self.account.uid)
-                self.agent_ranks = {agent.id: agent.rank for agent in agents}
+                if not self.agent_ranks:
+                    agents = await client.get_zzz_agents(self.account.uid)
+                    self.agent_ranks = {agent.id: agent.rank for agent in agents}
                 challenge = await client.get_shiyu_defense(self.account.uid, previous=previous)
             else:
                 msg = f"Invalid challenge type: {self.challenge_type}"
@@ -390,13 +391,9 @@ class ChallengeView(View):
             self.check_challenge_data(self.challenge)
             file_ = await self.draw_card(i.client.session, i.client.executor, i.client.loop)
         except NoChallengeDataError as e:
-            await item.unset_loading_state(i)
             embed, _ = get_error_embed(e, self.locale)
-            await i.edit_original_response(embed=embed, view=self, attachments=[])
+            await item.unset_loading_state(i, embed=embed, attachments=[])
             return
-        except Exception:
-            await item.unset_loading_state(i)
-            raise
 
         embed = DefaultEmbed(self.locale).add_acc_info(self.account)
         embed.set_image(url="attachment://challenge.png")
@@ -486,13 +483,7 @@ class ChallengeTypeSelect(Select[ChallengeView]):
     async def callback(self, i: Interaction) -> None:
         self.view.challenge_type = ChallengeType(self.values[0])
         await self.set_loading_state(i)
-
-        try:
-            await self.view.fetch_data_and_update_ui()
-        except Exception:
-            await self.unset_loading_state(i)
-            raise
-
+        await self.view.fetch_data_and_update_ui()
         await self.view.update(self, i)
 
 

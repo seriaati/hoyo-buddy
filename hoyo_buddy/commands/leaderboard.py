@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
-from hoyo_buddy.db.models import HoyoAccount, Leaderboard, get_locale, update_lb_ranks
+from hoyo_buddy.db import HoyoAccount, Leaderboard, get_locale, update_lb_ranks
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.exceptions import FeatureNotImplementedError, LeaderboardNotFoundError

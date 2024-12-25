@@ -6,7 +6,8 @@ import enka
 from genshin import GenshinException
 from seria.utils import read_yaml
 
-from ..db.models import EnkaCache, HoyoAccount
+from hoyo_buddy.db import EnkaCache, HoyoAccount
+
 from ..exceptions import InvalidQueryError
 from ..hoyo.clients.enka.gi import EnkaGIClient
 from ..hoyo.clients.enka.hsr import EnkaHSRClient

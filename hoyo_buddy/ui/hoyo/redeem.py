@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     import aiohttp
     from genshin import Game
 
-    from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Interaction
 
 
@@ -114,7 +114,7 @@ class RedeemCodesButton(Button[RedeemUI]):
 
         timed_out = await modal.wait()
         if timed_out:
-            return
+            return None
 
         await self.set_loading_state(i, embed=self.view.cooldown_embed)
         codes = (
@@ -127,11 +127,9 @@ class RedeemCodesButton(Button[RedeemUI]):
         # Extract codes from urls
         codes = [code.split("code=")[1] if "code=" in code else code for code in codes]
 
-        try:
-            embed = await self.view.account.client.redeem_codes(codes, locale=self.view.locale)
-        except Exception:
-            await self.unset_loading_state(i, embed=self.view.start_embed)
-            raise
+        embed = await self.view.account.client.redeem_codes(codes, locale=self.view.locale)
+        if embed is None:
+            return await self.unset_loading_state(i)
         await self.unset_loading_state(i, embed=embed)
 
 
@@ -155,11 +153,9 @@ class RedeemAllAvailableCodesButton(Button[RedeemUI]):
 
     async def callback(self, i: Interaction) -> None:
         await self.set_loading_state(i, embed=self.view.cooldown_embed)
-        try:
-            embed = await self.view.account.client.redeem_codes(
-                self.view.available_codes, locale=self.view.locale
-            )
-        except Exception:
-            await self.unset_loading_state(i, embed=self.view.start_embed)
-            raise
+        embed = await self.view.account.client.redeem_codes(
+            self.view.available_codes, locale=self.view.locale
+        )
+        if embed is None:
+            return await self.unset_loading_state(i)
         await self.unset_loading_state(i, embed=embed)

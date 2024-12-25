@@ -197,8 +197,9 @@ def get_floor_difficulty(floor_name: str, season_name: str) -> str:
 
 
 def get_static_img_path(image_url: str, folder: str) -> pathlib.Path:
+    image_url = clean_url(image_url)
     extra_folder = image_url.split("/")[-2]
-    filename = clean_url(image_url).split("/")[-1]
+    filename = image_url.split("/")[-1]
     return STATIC_FOLDER / folder / extra_folder / filename
 
 

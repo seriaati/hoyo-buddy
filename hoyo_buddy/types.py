@@ -20,6 +20,7 @@ Challenge: TypeAlias = (
     | genshin.models.StarRailAPCShadow
     | genshin.models.ImgTheaterData
     | genshin.models.ShiyuDefense
+    | genshin.models.DeadlyAssault
 )
 ChallengeWithLang: TypeAlias = (
     models.StarRailChallenge
@@ -28,15 +29,20 @@ ChallengeWithLang: TypeAlias = (
     | models.StarRailAPCShadow
     | models.ImgTheaterData
     | models.ShiyuDefense
+    | models.DeadlyAssault
 )
 ChallengeWithBuff: TypeAlias = (
     genshin.models.StarRailAPCShadow
     | genshin.models.ImgTheaterData
     | genshin.models.StarRailPureFiction
     | genshin.models.ShiyuDefense
+    | genshin.models.DeadlyAssault
 )
 Buff: TypeAlias = (
-    genshin.models.TheaterBuff | genshin.models.ChallengeBuff | genshin.models.ShiyuDefenseBuff
+    genshin.models.TheaterBuff
+    | genshin.models.ChallengeBuff
+    | genshin.models.ShiyuDefenseBuff
+    | genshin.models.DeadlyAssaultBuff
 )
 
 Interaction: TypeAlias = discord.Interaction[HoyoBuddy]
@@ -56,6 +62,4 @@ BetaAutocompleteChoices: TypeAlias = defaultdict[
 Tasks: TypeAlias = defaultdict[
     Game, defaultdict[ItemCategory, dict[discord.Locale, asyncio.Task[list[Any]]]]
 ]
-ProxyAPI: TypeAlias = Literal[
-    "VERCEL", "VERCEL2", "VERCEL3", "RENDER", "RENDER2", "FLY", "B4A", "RAILWAY", "LEAPCELL"
-]
+ProxyAPI: TypeAlias = Literal["VERCEL", "RENDER", "RENDER2", "FLY", "B4A", "RAILWAY", "LEAPCELL"]

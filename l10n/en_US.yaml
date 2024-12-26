@@ -776,3 +776,5 @@ dismissible_default_title: New Feature!
 dismissible_default_footer: This message will only show once
 dismissible_m3_art_desc: 'You can now use Mindscape 3 arts in your ZZZ agent cards, select "Hoyo Buddy template 2" in card settings, then toggle "Use M3 art" in image settings.'
 mimo_lottery_info_hoyolab_decos: "...and {num} HoYoLAB decorations"
+zzz_deadly_assault: Deadly Assault
+challenge_command_assault_desc: Generate Deadly Assault card

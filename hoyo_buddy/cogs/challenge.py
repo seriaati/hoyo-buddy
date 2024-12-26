@@ -143,6 +143,22 @@ class Challenge(
     ) -> None:
         await self.challenge_command(i, ChallengeType.SHIYU_DEFENSE, user, account)
 
+    @zzz.command(
+        name=app_commands.locale_str("assault"),
+        description=app_commands.locale_str(
+            "Generate Deadly Assault card", key="challenge_command_assault_desc"
+        ),
+    )
+    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS)
+    @app_commands.describe(**USER_ACCOUNT_DESCRIBE_KWARGS)
+    async def assault_command(
+        self,
+        i: Interaction,
+        user: User = None,
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+    ) -> None:
+        await self.challenge_command(i, ChallengeType.ASSAULT, user, account)
+
     @abyss_command.autocomplete("account")
     @img_theater_command.autocomplete("account")
     async def gi_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
@@ -157,6 +173,7 @@ class Challenge(
         return await self.bot.get_game_account_choices(i, current, (Game.STARRAIL,))
 
     @shiyu_command.autocomplete("account")
+    @assault_command.autocomplete("account")
     async def zzz_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:

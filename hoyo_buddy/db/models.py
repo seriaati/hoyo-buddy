@@ -328,7 +328,7 @@ class ChallengeHistory(BaseModel):
     async def add_data(
         cls, *, uid: int, challenge_type: ChallengeType, season_id: int, data: Challenge, lang: str
     ) -> None:
-        if isinstance(data, genshin.models.SpiralAbyss):
+        if isinstance(data, genshin.models.SpiralAbyss | genshin.models.DeadlyAssault):
             start_time = data.start_time
             end_time = data.end_time
             name = None

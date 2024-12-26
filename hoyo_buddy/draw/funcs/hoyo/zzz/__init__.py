@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from .assault import AssaultCard
 from .build_card import ZZZAgentCard
 from .build_card4 import ZZZAgentCard4
 from .characters import draw_big_agent_card

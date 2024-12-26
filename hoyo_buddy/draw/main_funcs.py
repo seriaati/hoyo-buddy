@@ -690,3 +690,21 @@ async def draw_block_list_card(
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
+
+
+async def draw_assault_card(
+    draw_input: DrawInput, data: genshin.models.DeadlyAssault, uid: int | None = None
+) -> File:
+    urls: list[str] = []
+    for challenge in data.challenges:
+        urls.extend((challenge.boss.icon, challenge.boss.badge_icon))
+        urls.extend(buff.icon for buff in challenge.buffs)
+        urls.extend(agent.icon for agent in challenge.agents)
+        if challenge.bangboo is not None:
+            urls.append(challenge.bangboo.icon)
+    await download_images(urls, "assault", draw_input.session)
+
+    card = funcs.zzz.AssaultCard(data, draw_input.locale.value, uid)
+    buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)

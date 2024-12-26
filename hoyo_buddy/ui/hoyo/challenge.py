@@ -7,6 +7,7 @@ import discord
 from ambr.utils import remove_html_tags
 from genshin.models import (
     ChallengeBuff,
+    DeadlyAssault,
     ImgTheaterData,
     ShiyuDefense,
     SpiralAbyss,
@@ -22,6 +23,7 @@ from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE
 from hoyo_buddy.db import ChallengeHistory, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_apc_shadow_card,
+    draw_assault_card,
     draw_img_theater_card,
     draw_moc_card,
     draw_pure_fiction_card,
@@ -111,6 +113,12 @@ class BuffView(View):
                     buff_usage[buff.name].append(floor_name)
                     if buff.name not in buffs:
                         buffs[buff.name] = buff
+        elif isinstance(self._challenge, DeadlyAssault):
+            for challenge in self._challenge.challenges:
+                for buff in challenge.buffs:
+                    buff_usage[buff.name].append(challenge.boss.name)
+                    if buff.name not in buffs:
+                        buffs[buff.name] = buff
         else:
             for act in reversed(self._challenge.acts):
                 act_buffs = list(act.wondroud_booms) + list(act.mystery_caches)
@@ -132,7 +140,7 @@ class BuffSelector(Select[BuffView]):
             options=[
                 SelectOption(
                     label=buff.name,
-                    description=remove_html_tags(buff.description[:100]),
+                    description=remove_html_tags(buff.description)[:100],
                     value=buff.name,
                     default=buff.name == buffs[0].name,
                 )
@@ -143,7 +151,8 @@ class BuffSelector(Select[BuffView]):
     async def callback(self, i: Interaction) -> None:
         buff = self.view.buffs[self.values[0]]
         embed = self.view.get_buff_embed(buff, ", ".join(self.view._buff_usage[buff.name]))
-        await i.response.edit_message(embed=embed)
+        self.update_options_defaults()
+        await i.response.edit_message(embed=embed, view=self.view)
 
 
 class ChallengeView(View):
@@ -196,6 +205,8 @@ class ChallengeView(View):
             return challenge.schedule.id
         if isinstance(challenge, ShiyuDefense):
             return challenge.schedule_id
+        if isinstance(challenge, DeadlyAssault):
+            return challenge.id
 
         index = 1 if previous else 0
         return challenge.seasons[index].id
@@ -243,6 +254,8 @@ class ChallengeView(View):
                     agents = await client.get_zzz_agents(self.account.uid)
                     self.agent_ranks = {agent.id: agent.rank for agent in agents}
                 challenge = await client.get_shiyu_defense(self.account.uid, previous=previous)
+            elif self.challenge_type is ChallengeType.ASSAULT:
+                challenge = await client.get_deadly_assault(self.account.uid, previous=previous)
             else:
                 msg = f"Invalid challenge type: {self.challenge_type}"
                 raise ValueError(msg)
@@ -277,7 +290,7 @@ class ChallengeView(View):
             raise NoChallengeDataError(self.challenge_type)
 
     def get_season(self, challenge: Challenge) -> StarRailChallengeSeason:
-        if isinstance(challenge, SpiralAbyss | ImgTheaterData | ShiyuDefense):
+        if isinstance(challenge, SpiralAbyss | ImgTheaterData | ShiyuDefense | DeadlyAssault):
             msg = f"Can't get season for {self.challenge_type}"
             raise TypeError(msg)
 
@@ -295,85 +308,40 @@ class ChallengeView(View):
     ) -> File:
         assert self.challenge is not None
         locale = draw_locale(GPY_LANG_TO_LOCALE[self.challenge.lang], self.account)
+        draw_input = DrawInput(
+            dark_mode=self.dark_mode,
+            locale=locale,
+            session=session,
+            filename="challenge.png",
+            executor=executor,
+            loop=loop,
+        )
 
         if isinstance(self.challenge, SpiralAbyss):
-            return await draw_spiral_abyss_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=locale,
-                    session=session,
-                    filename="challenge.png",
-                    executor=executor,
-                    loop=loop,
-                ),
-                self.challenge,
-                self.characters,
-            )
+            return await draw_spiral_abyss_card(draw_input, self.challenge, self.characters)
         if isinstance(self.challenge, StarRailChallenge):
-            return await draw_moc_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=locale,
-                    session=session,
-                    filename="challenge.png",
-                    executor=executor,
-                    loop=loop,
-                ),
-                self.challenge,
-                self.get_season(self.challenge),
-            )
+            return await draw_moc_card(draw_input, self.challenge, self.get_season(self.challenge))
         if isinstance(self.challenge, StarRailPureFiction):
             return await draw_pure_fiction_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=locale,
-                    session=session,
-                    filename="challenge.png",
-                    executor=executor,
-                    loop=loop,
-                ),
-                self.challenge,
-                self.get_season(self.challenge),
+                draw_input, self.challenge, self.get_season(self.challenge)
             )
         if isinstance(self.challenge, StarRailAPCShadow):
             return await draw_apc_shadow_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=locale,
-                    session=session,
-                    filename="challenge.png",
-                    executor=executor,
-                    loop=loop,
-                ),
-                self.challenge,
-                self.get_season(self.challenge),
+                draw_input, self.challenge, self.get_season(self.challenge)
             )
         if isinstance(self.challenge, ImgTheaterData):
             return await draw_img_theater_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=locale,
-                    session=session,
-                    filename="challenge.png",
-                    executor=executor,
-                    loop=loop,
-                ),
+                draw_input,
                 self.challenge,
                 {chara.id: chara.constellation for chara in self.characters},
             )
+        if isinstance(self.challenge, DeadlyAssault):
+            return await draw_assault_card(
+                draw_input, self.challenge, self.uid if self.show_uid else None
+            )
         # ShiyuDefense
         return await draw_shiyu_card(
-            DrawInput(
-                dark_mode=self.dark_mode,
-                locale=locale,
-                session=session,
-                filename="challenge.png",
-                executor=executor,
-                loop=loop,
-            ),
-            self.challenge,
-            self.agent_ranks,
-            self.uid if self.show_uid else None,
+            draw_input, self.challenge, self.agent_ranks, self.uid if self.show_uid else None
         )
 
     def _add_items(self) -> None:
@@ -420,10 +388,14 @@ class ChallengeView(View):
         phase_select.translate(self.locale)
         phase_select.update_options_defaults(values=[str(self.season_id)])
 
-        self.item_states["challenge_view.view_buffs"] = not isinstance(
+        buff_button: ViewBuffs = self.get_item("challenge_view.view_buffs")
+        self.item_states["challenge_view.view_buffs"] = buff_button.disabled = not isinstance(
             self.challenge, ChallengeWithBuff
         )
-        self.item_states["show_uid"] = not isinstance(self.challenge, ShiyuDefense)
+        show_uid_button: ShowUID = self.get_item("show_uid")
+        self.item_states["show_uid"] = show_uid_button.disabled = not isinstance(
+            self.challenge, ShiyuDefense
+        )
 
     async def start(self, i: Interaction) -> None:
         self._add_items()

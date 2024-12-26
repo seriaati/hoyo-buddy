@@ -477,7 +477,7 @@ GI_SKILL_TYPE_KEYS = {
 GAME_CHALLENGE_TYPES: Final[dict[Game, tuple[ChallengeType, ...]]] = {
     Game.GENSHIN: (ChallengeType.SPIRAL_ABYSS, ChallengeType.IMG_THEATER),
     Game.STARRAIL: (ChallengeType.MOC, ChallengeType.PURE_FICTION, ChallengeType.APC_SHADOW),
-    Game.ZZZ: (ChallengeType.SHIYU_DEFENSE,),
+    Game.ZZZ: (ChallengeType.SHIYU_DEFENSE, ChallengeType.ASSAULT),
 }
 CHALLENGE_TYPE_GAMES = {
     type_: game for game, types in GAME_CHALLENGE_TYPES.items() for type_ in types

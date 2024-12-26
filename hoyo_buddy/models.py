@@ -333,6 +333,10 @@ class ShiyuDefense(genshin.models.ShiyuDefense):
     lang: str
 
 
+class DeadlyAssault(genshin.models.DeadlyAssault):
+    lang: str
+
+
 class StarRailStationRecord(BaseModel):
     id: int = Field(alias="uid")
     item_id: int = Field(alias="id")

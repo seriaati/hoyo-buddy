@@ -123,6 +123,7 @@ class ChallengeType(StrEnum):
     APC_SHADOW = "Apocalyptic shadow"
     IMG_THEATER = "img_theater_large_block_title"
     SHIYU_DEFENSE = "Shiyu defense"
+    ASSAULT = "zzz_deadly_assault"
 
 
 class ZZZElement(StrEnum):

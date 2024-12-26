@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
 
 def is_valuable(reward: genshin.models.MimoLotteryReward | genshin.models.MimoShopItem) -> bool:
-    match = re.search(r"[\D\s](\d[\d,]*)$", reward.name)
+    match = re.search(r"^(\d[\d,]*)|[\D\s](\d[\d,]*)$", reward.name)
     return bool(match)
 
 

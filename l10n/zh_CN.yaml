@@ -778,4 +778,4 @@ dismissible_m3_art_desc: '你现在可以在 ZZZ 代理人卡片中使用意象�
 mimo_lottery_info_hoyolab_decos: "…以及 {num} 个 HoYoLAB 装饰"
 zzz_deadly_assault: 危局强袭战
 challenge_command_assault_desc: 生成危局强袭战卡片
-gi_mimo_start_desc: "请先于 [HoYoLAB]({url}) 设定好旅行 Mimo 活动"
+gi_mimo_start_desc: "请先于 [HoYoLAB]({url}) 将旅行 Mimo 活动设置完成"

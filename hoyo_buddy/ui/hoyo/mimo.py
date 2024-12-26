@@ -202,8 +202,10 @@ class MimoView(ui.View):
         self.add_item(ViewShopButton())
         self.add_item(LotteryInfoButton())
         self.add_item(InfoButton())
+
         self.add_item(AutoFinishAndClaimButton(current_toggle=self.account.mimo_auto_task))
         self.add_item(AutoBuyButton(current_toggle=self.account.mimo_auto_buy))
+        self.add_item(AutoDrawButton(current_toggle=self.account.mimo_auto_draw))
 
         embed = await self.get_tasks_embed(points=points)
         await i.followup.send(embed=embed, view=self)
@@ -262,6 +264,18 @@ class AutoBuyButton(ui.ToggleButton[MimoView]):
         await super().callback(i)
         self.view.account.mimo_auto_buy = self.current_toggle
         await self.view.account.save(update_fields=("mimo_auto_buy",))
+
+
+class AutoDrawButton(ui.ToggleButton[MimoView]):
+    def __init__(self, *, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle, toggle_label=LocaleStr(key="mimo_auto_draw_button_label"), row=2
+        )
+
+    async def callback(self, i: Interaction) -> Any:
+        await super().callback(i)
+        self.view.account.mimo_auto_draw = self.current_toggle
+        await self.view.account.save(update_fields=("mimo_auto_draw",))
 
 
 class ViewShopButton(ui.Button[MimoView]):
@@ -413,6 +427,11 @@ class InfoButton(ui.Button[MimoView]):
             value=LocaleStr(key="mimo_auto_buy_desc"),
             inline=False,
         )
+        embed.add_field(
+            name=LocaleStr(key="mimo_auto_draw_button_label"),
+            value=LocaleStr(key="mimo_auto_draw_desc"),
+            inline=False,
+        )
         await i.response.send_message(embed=embed, ephemeral=True)
 
 
@@ -509,6 +528,13 @@ class NotificationSettings(ui.Button[MimoView]):
         self.view.add_item(
             AutoBuyFailureNotify(current_toggle=self.view.account.notif_settings.mimo_buy_failure)
         )
+        self.view.add_item(
+            AutoDrawSuccessNotify(current_toggle=self.view.account.notif_settings.mimo_draw_success)
+        )
+        self.view.add_item(
+            AutoDrawFailureNotify(current_toggle=self.view.account.notif_settings.mimo_draw_failure)
+        )
+
         await i.edit_original_response(view=self.view)
 
 
@@ -567,3 +593,31 @@ class AutoBuyFailureNotify(ui.ToggleButton[MimoView]):
         await super().callback(i)
         self.view.account.notif_settings.mimo_buy_failure = self.current_toggle
         await self.view.account.notif_settings.save(update_fields=("mimo_buy_failure",))
+
+
+class AutoDrawSuccessNotify(ui.ToggleButton[MimoView]):
+    def __init__(self, *, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle,
+            toggle_label=LocaleStr(key="mimo_auto_draw_success_notify_toggle_label"),
+            row=2,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i)
+        self.view.account.notif_settings.mimo_draw_success = self.current_toggle
+        await self.view.account.notif_settings.save(update_fields=("mimo_draw_success",))
+
+
+class AutoDrawFailureNotify(ui.ToggleButton[MimoView]):
+    def __init__(self, *, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle,
+            toggle_label=LocaleStr(key="mimo_auto_draw_failure_notify_toggle_label"),
+            row=2,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i)
+        self.view.account.notif_settings.mimo_draw_failure = self.current_toggle
+        await self.view.account.notif_settings.save(update_fields=("mimo_draw_failure",))

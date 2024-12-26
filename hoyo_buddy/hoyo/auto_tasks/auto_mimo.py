@@ -4,6 +4,7 @@ import asyncio
 from typing import TYPE_CHECKING, ClassVar, Literal
 
 import discord
+import genshin
 from loguru import logger
 from seria.utils import create_bullet_list
 from tortoise.expressions import Q
@@ -18,8 +19,6 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import convert_code_to_redeem_url, get_mimo_task_str, get_now
 
 if TYPE_CHECKING:
-    import genshin
-
     from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.types import ProxyAPI
 
@@ -30,6 +29,8 @@ SLEEP_TIME = 2.5
 class AutoMimo:
     _task_count: ClassVar[int]
     _buy_count: ClassVar[int]
+    _draw_count: ClassVar[int]
+
     _bot: ClassVar[HoyoBuddy]
     _mimo_game_data: ClassVar[dict[Game, tuple[int, int]]]
     _down_games: ClassVar[set[Game]]
@@ -49,6 +50,7 @@ class AutoMimo:
 
                 cls._task_count = 0
                 cls._buy_count = 0
+                cls._draw_count = 0
                 cls._bot = bot
                 cls._mimo_game_data = {}
                 cls._down_games = set()
@@ -72,8 +74,13 @@ class AutoMimo:
                         continue
                     await queue.put(account)
 
-                tasks = [asyncio.create_task(cls._auto_task_task(queue, api)) for api in PROXY_APIS]
-                tasks.append(asyncio.create_task(cls._auto_task_task(queue, "LOCAL")))
+                tasks = [
+                    asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="task"))
+                    for api in PROXY_APIS
+                ]
+                tasks.append(
+                    asyncio.create_task(cls._auto_mimo_task(queue, "LOCAL", task_type="task"))
+                )
 
                 await queue.join()
                 for task in tasks:
@@ -98,19 +105,55 @@ class AutoMimo:
                         continue
                     await queue.put(account)
 
-                tasks = [asyncio.create_task(cls._auto_buy_task(queue, api)) for api in PROXY_APIS]
-                tasks.append(asyncio.create_task(cls._auto_buy_task(queue, "LOCAL")))
+                tasks = [
+                    asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="buy"))
+                    for api in PROXY_APIS
+                ]
+                tasks.append(
+                    asyncio.create_task(cls._auto_mimo_task(queue, "LOCAL", task_type="buy"))
+                )
 
                 await queue.join()
                 for task in tasks:
                     task.cancel()
                 await asyncio.gather(*tasks, return_exceptions=True)
                 logger.info(f"Auto mimo buys finished, {cls._buy_count}")
+
+                # Auto draw
+                logger.info("Starting auto mimo draws")
+                queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
+                auto_draw_accs = await HoyoAccount.filter(
+                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
+                    mimo_auto_draw=True,
+                )
+
+                for account in auto_draw_accs:
+                    if (
+                        account.platform is Platform.MIYOUSHE
+                        or account.game in cls._down_games
+                        or account.id in skip_ids
+                    ):
+                        continue
+                    await queue.put(account)
+
+                tasks = [
+                    asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="draw"))
+                    for api in PROXY_APIS
+                ]
+                tasks.append(
+                    asyncio.create_task(cls._auto_mimo_task(queue, "LOCAL", task_type="draw"))
+                )
+
+                await queue.join()
+                for task in tasks:
+                    task.cancel()
+                await asyncio.gather(*tasks, return_exceptions=True)
+                logger.info(f"Auto mimo draws finished, {cls._draw_count}")
             except Exception as e:
                 bot.capture_exception(e)
             finally:
                 logger.info(
-                    f"Auto mimo finished, {cls._task_count} tasks and {cls._buy_count} buys"
+                    f"Auto mimo finished, {cls._task_count} tasks, {cls._buy_count} buys, {cls._draw_count} draws"
                 )
                 logger.info(f"Auto mimo took {asyncio.get_event_loop().time() - start:.2f} seconds")
 
@@ -127,10 +170,14 @@ class AutoMimo:
         return game_id, version_id
 
     @classmethod
-    async def _auto_task_task(
-        cls, queue: asyncio.Queue[HoyoAccount], api_name: ProxyAPI | Literal["LOCAL"]
+    async def _auto_mimo_task(
+        cls,
+        queue: asyncio.Queue[HoyoAccount],
+        api_name: ProxyAPI | Literal["LOCAL"],
+        *,
+        task_type: Literal["task", "buy", "draw"],
     ) -> None:
-        logger.info(f"Mimo auto task task started for api: {api_name}")
+        logger.info(f"Auto mimo {task_type} task started for api: {api_name}")
 
         bot = cls._bot
         if api_name != "LOCAL":
@@ -152,7 +199,12 @@ class AutoMimo:
             await account.fetch_related("user", "user__settings", "notif_settings")
 
             try:
-                embed = await cls._complete_mimo_tasks(api_name, account)
+                if task_type == "task":
+                    embed = await cls._complete_mimo_tasks(api_name, account)
+                elif task_type == "buy":
+                    embed = await cls._buy_mimo_valuables(api_name, account)
+                elif task_type == "draw":
+                    embed = await cls._draw_lottery(api_name, account)
             except Exception as e:
                 api_error_count += 1
                 await queue.put(account)
@@ -163,84 +215,44 @@ class AutoMimo:
                     return
             else:
                 if embed is not None:
-                    cls._task_count += 1
+                    if task_type == "task":
+                        cls._task_count += 1
+                        feature_key = "mimo_auto_finish_and_claim_button_label"
+                        success_notif = account.notif_settings.mimo_task_success
+                        failure_notif = account.notif_settings.mimo_task_failure
+                    elif task_type == "buy":
+                        cls._buy_count += 1
+                        feature_key = "mimo_auto_buy_button_label"
+                        success_notif = account.notif_settings.mimo_buy_success
+                        failure_notif = account.notif_settings.mimo_buy_failure
+                    elif task_type == "draw":
+                        cls._draw_count += 1
+                        feature_key = "mimo_auto_draw_button_label"
+                        success_notif = account.notif_settings.mimo_draw_success
+                        failure_notif = account.notif_settings.mimo_draw_failure
 
                     embed.set_footer(text=LocaleStr(key="mimo_auto_task_embed_footer"))
                     embed.add_acc_info(account)
 
                     if isinstance(embed, ErrorEmbed):
-                        account.mimo_auto_task = False
-                        await account.save(update_fields=("mimo_auto_task",))
-                        content = LocaleStr(key="mimo_auto_buy_error_dm_content").translate(
-                            account.user.settings.locale or discord.Locale.american_english
-                        )
+                        if task_type == "task":
+                            account.mimo_auto_task = False
+                            await account.save(update_fields=("mimo_auto_task",))
+                        elif task_type == "buy":
+                            account.mimo_auto_buy = False
+                            await account.save(update_fields=("mimo_auto_buy",))
+                        elif task_type == "draw":
+                            account.mimo_auto_draw = False
+                            await account.save(update_fields=("mimo_auto_draw",))
+
+                        content = LocaleStr(
+                            key="mimo_auto_buy_error_dm_content", feature=LocaleStr(key=feature_key)
+                        ).translate(account.user.settings.locale or discord.Locale.american_english)
                     else:
                         content = None
 
-                    if (
-                        isinstance(embed, DefaultEmbed) and account.notif_settings.mimo_task_success
-                    ) or (
-                        isinstance(embed, ErrorEmbed) and account.notif_settings.mimo_task_failure
-                    ):
-                        await cls._bot.dm_user(account.user.id, embed=embed, content=content)
-            finally:
-                await asyncio.sleep(SLEEP_TIME)
-                queue.task_done()
-
-    @classmethod
-    async def _auto_buy_task(
-        cls, queue: asyncio.Queue[HoyoAccount], api_name: ProxyAPI | Literal["LOCAL"]
-    ) -> None:
-        logger.info(f"Mimo auto buy task started for api: {api_name}")
-        bot = cls._bot
-
-        if api_name != "LOCAL":
-            try:
-                async with bot.session.get(PROXY_APIS[api_name]) as resp:
-                    resp.raise_for_status()
-            except Exception as e:
-                logger.warning(f"Failed to connect to {api_name}")
-                bot.capture_exception(e)
-
-        api_error_count = 0
-
-        while True:
-            account = await queue.get()
-            if account.game in cls._down_games:
-                queue.task_done()
-                continue
-
-            try:
-                await account.fetch_related("user", "user__settings", "notif_settings")
-                embed = await cls._buy_mimo_valuables(api_name, account)
-            except Exception as e:
-                api_error_count += 1
-                await queue.put(account)
-                bot.capture_exception(e)
-
-                if api_error_count >= MAX_API_ERROR_COUNT:
-                    logger.warning(f"API {api_name} failed for {api_error_count} accounts")
-                    return
-            else:
-                if embed is not None:
-                    cls._buy_count += 1
-
-                    embed.set_footer(text=LocaleStr(key="mimo_auto_task_embed_footer"))
-                    embed.add_acc_info(account)
-
-                    if isinstance(embed, ErrorEmbed):
-                        account.mimo_auto_buy = False
-                        await account.save(update_fields=("mimo_auto_buy",))
-                        content = LocaleStr(key="mimo_auto_buy_error_dm_content").translate(
-                            account.user.settings.locale or discord.Locale.american_english
-                        )
-                    else:
-                        content = None
-
-                    if (
-                        isinstance(embed, DefaultEmbed) and account.notif_settings.mimo_buy_success
-                    ) or (
-                        isinstance(embed, ErrorEmbed) and account.notif_settings.mimo_buy_failure
+                    if (isinstance(embed, DefaultEmbed) and success_notif) or (
+                        isinstance(embed, ErrorEmbed) and failure_notif
                     ):
                         await cls._bot.dm_user(account.user.id, embed=embed, content=content)
             finally:
@@ -362,3 +374,78 @@ class AutoMimo:
             return embed
         else:
             return embed
+
+    @classmethod
+    async def _draw_lottery(
+        cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount
+    ) -> DefaultEmbed | ErrorEmbed | None:
+        locale = account.user.settings.locale or discord.Locale.american_english
+
+        client = account.client
+        client.set_lang(locale)
+
+        game_id, version_id = cls._mimo_game_data.get(account.game, (None, None))
+        if game_id is None or version_id is None:
+            try:
+                game_id, version_id = await cls._get_mimo_game_data(client, account.game)
+            except ValueError:
+                return None
+
+        info = await client.get_mimo_lottery_info(game_id=game_id, version_id=version_id)
+        count = info.limit_count - info.current_count
+        point = info.current_point
+        if count == 0 or point < info.cost:
+            return None
+
+        results: list[genshin.models.MimoLotteryResult] = []
+
+        for _ in range(count):
+            if point < info.cost:
+                break
+
+            try:
+                result = await client.draw_mimo_lottery(game_id=game_id, version_id=version_id)
+            except genshin.GenshinException as e:
+                if e.retcode == -510001:  # Invalid fields in calculation
+                    break
+                raise
+
+            results.append(result)
+            point -= info.cost
+            await asyncio.sleep(0.5)
+
+        item_strs: list[str] = []
+
+        for result in results:
+            item_str = result.reward.name
+
+            if result.code:
+                success = False
+                if account.can_redeem_code:
+                    _, success = await client.redeem_code(
+                        result.code, locale=locale, api_url=api_name
+                    )
+                    await asyncio.sleep(6)
+
+                if not success:
+                    item_strs += f" ({convert_code_to_redeem_url(result.code, game=account.game)})"
+
+            item_strs.append(item_str)
+
+        if not item_strs:
+            return None
+
+        embed = DefaultEmbed(
+            locale,
+            title=LocaleStr(
+                custom_str="{mimo_title} {label}",
+                mimo_title=LocaleStr(key="point_detail_tag_mimo", mi18n_game="mimo"),
+                label=LocaleStr(key="mimo_auto_draw_button_label"),
+            ),
+            description=LocaleStr(
+                key="mimo_auto_draw_embed_desc",
+                points=sum(info.cost for _ in range(len(item_strs))),
+            ),
+        )
+        embed.add_description(f"{create_bullet_list(item_strs)}")
+        return embed

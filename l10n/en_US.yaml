@@ -761,10 +761,8 @@ mimo_item_available_time: "Refills in {time}"
 mimo_auto_task_embed_footer: Use /mimo to configure auto tasks and buy rewards
 mimo_auto_task_embed_desc: "Hoyo Buddy completed {finish} tasks and claimed {claim_point} points for you"
 checkin_reward_embed_footer: Use /check-in to configure notifications
-mimo_auto_task_error_dm_content: "Auto Mimo task completion has been disabled due to an error, you can enable it back using </mimo>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 mimo_status: "Status: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy bought {item} item(s) for you with {points} points.\nIf you see gift codes below, please redeem them manually with </redeem>."
-mimo_auto_buy_error_dm_content: "Auto Mimo reward buying has been disabled due to an error, you can enable it back using </mimo>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 mimo_game_unavailable: "Traveling Mimo is currently unavailable for {game}"
 generic_error_title: Error
 on_button_label: "ON"
@@ -779,3 +777,9 @@ mimo_lottery_info_hoyolab_decos: "...and {num} HoYoLAB decorations"
 zzz_deadly_assault: Deadly Assault
 challenge_command_assault_desc: Generate Deadly Assault card
 gi_mimo_start_desc: "Please set up the Traveling Mimo event on [HoYoLAB]({url}) first"
+mimo_auto_draw_button_label: Auto prize draw
+mimo_auto_draw_desc: "Hoyo Buddy will draw prizes for you whenever possible; if auto buy and auto prize draw are both enabled, it will try to buy first and draw if there are not enough points to buy."
+mimo_auto_draw_success_notify_toggle_label: Notify on auto prize draw success
+mimo_auto_draw_failure_notify_toggle_label: Notify on auto prize draw failure
+mimo_auto_draw_embed_desc: "Hoyo Buddy drew the following items with {points} points.\nIf you see gift codes below, please redeem them manually with </redeem>."
+mimo_auto_task_error_dm_content: "Traveling Mimo: {feature} has been disabled due to an error, you can enable it back using </mimo>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."

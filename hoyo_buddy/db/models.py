@@ -95,6 +95,7 @@ class HoyoAccount(BaseModel):
     auto_redeem = fields.BooleanField(default=True)
     mimo_auto_task = fields.BooleanField(default=True)
     mimo_auto_buy = fields.BooleanField(default=False)
+    mimo_auto_draw = fields.BooleanField(default=False)
     mimo_all_claimed_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
     public = fields.BooleanField(default=True)
     """Whether this account can be seen by others."""
@@ -160,6 +161,9 @@ class AccountNotifSettings(BaseModel):
     mimo_task_failure = fields.BooleanField(default=True)
     mimo_buy_success = fields.BooleanField(default=True)
     mimo_buy_failure = fields.BooleanField(default=True)
+    mimo_draw_success = fields.BooleanField(default=True)
+    mimo_draw_failure = fields.BooleanField(default=True)
+
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
         "models.HoyoAccount", related_name="notif_settings", pk=True
     )

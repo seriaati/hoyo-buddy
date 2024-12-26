@@ -394,7 +394,7 @@ class ChallengeView(View):
         )
         show_uid_button: ShowUID = self.get_item("show_uid")
         self.item_states["show_uid"] = show_uid_button.disabled = not isinstance(
-            self.challenge, ShiyuDefense
+            self.challenge, ShiyuDefense | DeadlyAssault
         )
 
     async def start(self, i: Interaction) -> None:

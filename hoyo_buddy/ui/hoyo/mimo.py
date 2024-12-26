@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING, Any
 
 import genshin
@@ -29,6 +30,11 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Interaction, User
+
+
+def is_valuable(reward: genshin.models.MimoLotteryReward | genshin.models.MimoShopItem) -> bool:
+    match = re.search(r"[\D\s](\d[\d,]*)$", reward.name)
+    return bool(match)
 
 
 class MimoView(ui.View):
@@ -124,7 +130,7 @@ class MimoView(ui.View):
         stock_str = LocaleStr(key="exchangePrizeLeft", mi18n_game="mimo").translate(self.locale)
 
         for shop_item in shop_items:
-            if "×" not in shop_item.name:  # noqa: RUF001
+            if not is_valuable(shop_item):
                 # Skip hoyolab decorations
                 continue
 
@@ -161,7 +167,7 @@ class MimoView(ui.View):
             )
         )
 
-        valuables: list[str] = [r.name for r in lottery_info.rewards if "×" in r.name]  # noqa: RUF001
+        valuables: list[str] = [r.name for r in lottery_info.rewards if is_valuable(r)]
         embed.add_field(
             name=LocaleStr(key="lottery_modal_info_title", mi18n_game="mimo"),
             value=create_bullet_list(
@@ -305,7 +311,7 @@ class ShopItemSelector(ui.PaginatorSelect[MimoView]):
     ) -> list[ui.SelectOption]:
         options: list[ui.SelectOption] = []
 
-        for reward in sorted(shop_items, key=lambda x: "×" in x.name, reverse=True):  # noqa: RUF001
+        for reward in sorted(shop_items, key=is_valuable, reverse=True):
             if (
                 reward.status is not genshin.models.MimoShopItemStatus.EXCHANGEABLE
                 or reward.cost > points

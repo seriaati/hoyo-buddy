@@ -25,9 +25,7 @@ class AssaultCard:
 
     def draw(self) -> BytesIO:
         im = Drawer.open_image("hoyo-buddy-assets/assets/assault/background.png")
-        drawer = Drawer(
-            ImageDraw.Draw(im), folder="assault", dark_mode=False, locale=self.locale, sans=True
-        )
+        drawer = Drawer(ImageDraw.Draw(im), folder="assault", dark_mode=False, sans=True)
         data = self.data
 
         # UID
@@ -49,6 +47,7 @@ class AssaultCard:
                 color=self.text_color,
                 style="medium_italic",
                 size=54,
+                locale=self.locale,
             )
             drawer.write(
                 f"{data.start_time.strftime('%m/%d/%y')} ~ {data.end_time.strftime('%m/%d/%y')}",
@@ -112,6 +111,7 @@ class AssaultCard:
                 style="bold",
                 size=70,
                 max_width=744,
+                locale=self.locale,
             )
 
             tbox = drawer.write(

@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 from loguru import logger
 
 from hoyo_buddy.db import EnkaCache, HoyoAccount, JSONFile
-from hoyo_buddy.exceptions import ProxyAPIError
+from hoyo_buddy.exceptions import HoyoBuddyError, ProxyAPIError
 from hoyo_buddy.web_app.utils import decrypt_string
 
 from ... import models
@@ -828,12 +828,23 @@ class GenshinClient(ProxyGenshinClient):
         self, *, game_id: int, version_id: int, api_url: str | None = None
     ) -> Sequence[genshin.models.MimoTask]:
         api_url = api_url or next(proxy_api_rotator)
-        if api_url == "LOCAL":
-            return await super().get_mimo_tasks(game_id=game_id, version_id=version_id)
 
-        payload = {"game_id": game_id, "version_id": version_id}
-        data = await self.request_proxy_api(api_url, "mimo/tasks", payload)
-        return [genshin.models.MimoTask(**orjson.loads(task)) for task in data["tasks"]]
+        try:
+            if api_url == "LOCAL":
+                return await super().get_mimo_tasks(game_id=game_id, version_id=version_id)
+
+            payload = {"game_id": game_id, "version_id": version_id}
+            data = await self.request_proxy_api(api_url, "mimo/tasks", payload)
+            return [genshin.models.MimoTask(**orjson.loads(task)) for task in data["tasks"]]
+        except genshin.GenshinException as e:
+            if e.retcode == -510001:  # Invalid fields in calculation
+                raise HoyoBuddyError(
+                    message=LocaleStr(
+                        key="gi_mimo_start_desc",
+                        url="https://act.hoyolab.com/ys/event/bbs-event-20240828mimo/index.html",
+                    )
+                ) from e
+            raise
 
     async def get_mimo_shop_items(
         self, *, game_id: int, version_id: int, api_url: str | None = None

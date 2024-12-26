@@ -370,6 +370,9 @@ class Select(discord.ui.Select, Generic[V_co]):
 
     @options.setter
     def options(self, value: list[SelectOption]) -> None:
+        if not value:
+            value = [SelectOption(label="placeholder", value="0")]
+            self.disabled = True
         self._underlying.options = value  # pyright: ignore [reportAttributeAccessIssue]
 
     def translate(self, locale: discord.Locale) -> None:

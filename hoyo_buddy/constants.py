@@ -740,15 +740,12 @@ def get_disc_substat_roll_num(
 
 
 PROXY_APIS: dict[ProxyAPI, str] = {
-    "VERCEL3": os.environ["VERCEL3_URL"],
-    "VERCEL2": os.environ["VERCEL2_URL"],
-    "VERCEL": os.environ["VERCEL_URL"],
     "RENDER": os.environ["RENDER_URL"],
     "RENDER2": os.environ["RENDER2_URL"],
+    "RENDER3": os.environ["RENDER3_URL"],
+    "VERCEL": os.environ["VERCEL_URL"],
     "FLY": os.environ["FLY_URL"],
-    # "B4A": os.environ["B4A_URL"],
     "RAILWAY": os.environ["RAILWAY_URL"],
-    # "LEAPCELL": os.environ["LEAPCELL_URL"],
 }
 
 CODE_CHANNEL_IDS = {

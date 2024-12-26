@@ -778,4 +778,4 @@ dismissible_m3_art_desc: 'You can now use Mindscape 3 arts in your ZZZ agent car
 mimo_lottery_info_hoyolab_decos: "...and {num} HoYoLAB decorations"
 zzz_deadly_assault: Deadly Assault
 challenge_command_assault_desc: Generate Deadly Assault card
-gi_mimo_start_desc: Please set up the Traveling Mimo event on [HoYoLAB]({url}) first
+gi_mimo_start_desc: "Please set up the Traveling Mimo event on [HoYoLAB]({url}) first"

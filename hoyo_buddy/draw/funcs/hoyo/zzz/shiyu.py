@@ -185,7 +185,7 @@ class ShiyuDefenseCard:
 
                 if bangboo is not None:
                     bangboo_icon = drawer.open_static(bangboo.icon)
-                    bangboo_icon = drawer.resize_crop(bangboo_icon, (180, 120))
+                    bangboo_icon = drawer.middle_crop(bangboo_icon.resize((250, 250)), (180, 120))
                     bangboo_icon = drawer.mask_image_with_image(bangboo_icon, bangboo_mask)
                     im.alpha_composite(bangboo_icon, bangboo_pos)
                     im.alpha_composite(bangboo_level_flair, (bangboo_pos[0], bangboo_pos[1] + 86))

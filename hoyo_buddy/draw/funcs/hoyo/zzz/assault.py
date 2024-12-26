@@ -159,7 +159,7 @@ class AssaultCard:
                 bangboo_level_flair = drawer.open_asset("bangboo_level_flair.png")
 
                 bangboo_icon = drawer.open_static(challenge.bangboo.icon)
-                bangboo_icon = drawer.resize_crop(bangboo_icon, (160, 115))
+                bangboo_icon = drawer.middle_crop(bangboo_icon.resize((250, 250)), (160, 115))
                 bangboo_icon = drawer.mask_image_with_image(bangboo_icon, bangboo_mask)
                 im.alpha_composite(bangboo_icon, (start_pos[0] + 972, start_pos[1] + 316))
 

@@ -776,3 +776,6 @@ dismissible_default_title: Tính năng mới
 dismissible_default_footer: Tin nhắn này chỉ hiển thị một lần.
 dismissible_m3_art_desc: 'Bạn giờ có thể sử dụng ảnh Phim Ý Cảnh 3 trong thẻ người đại diện ZZZ, chọn "Mẫu thẻ Hoyo Buddy 3" trong phần cài đặt thẻ, và bật "Sử dụng ảnh M3" trong phần cài đặt ảnh'
 mimo_lottery_info_hoyolab_decos: "...và {num} đồ trang trí HoYoLAB"
+zzz_deadly_assault: Tập Kích Nguy Cấp
+challenge_command_assault_desc: Tạo thẻ Tập Kích Nguy Cấp
+gi_mimo_start_desc: "Vui lòng thiết lập sự kiện Mimo Du Lịch trên [HoYoLAB]({url}) trước"

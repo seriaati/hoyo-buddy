@@ -442,6 +442,7 @@ class LotteryDrawButton(ui.Button[MimoView]):
             disabled=disabled,
             style=ButtonStyle.blurple,
             emoji=PAYMENTS,
+            custom_id="mimo_lottery_draw",
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -478,6 +479,9 @@ class LotteryDrawButton(ui.Button[MimoView]):
             game_id=self.view.game_id, version_id=self.view.version_id
         )
         embed = self.view.get_lottery_info_embed(lottery_info)
+        self.view.item_states["mimo_lottery_draw"] = (
+            lottery_info.current_count >= lottery_info.limit_count
+        )
         await self.unset_loading_state(i, embed=embed)
 
 

@@ -761,10 +761,8 @@ mimo_item_available_time: "在 {time} 后补货"
 mimo_auto_task_embed_footer: 使用 /mimo 挑整自动任务设定及购买奖励
 mimo_auto_task_embed_desc: "Hoyo Buddy 为你完成了 {finish} 项任务并领取了 {claim_point} 积分"
 checkin_reward_embed_footer: 使用 /check-in 来调整通知
-mimo_auto_task_error_dm_content: "由于发生错误，自动 Mimo 任务完成功能已被停用，你可以使用</mimo>将其重新启用。\n如果这个错误持续发生，或是你不知道如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 mimo_status: "状态: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy 使用 {points} 点积分帮你购买了 {item} 个物品。\n如果下方有显示礼物码，请自行使用</redeem>兑换。"
-mimo_auto_buy_error_dm_content: "由于发生错误，自动购买 Mimo 奖励功能已被停用，你可以使用</mimo>将其重新启用。\n如果这个错误持续发生，或是你不知道如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 mimo_game_unavailable: "{game}目前无法使用旅行 Mimo"
 generic_error_title: 错误
 on_button_label: "开"
@@ -779,3 +777,10 @@ mimo_lottery_info_hoyolab_decos: "…以及 {num} 个 HoYoLAB 装饰"
 zzz_deadly_assault: 危局强袭战
 challenge_command_assault_desc: 生成危局强袭战卡片
 gi_mimo_start_desc: "请先于 [HoYoLAB]({url}) 将旅行 Mimo 活动设置完成"
+mimo_auto_draw_button_label: 自动抽奖
+mimo_auto_draw_desc: "Hoyo Buddy 會在积分足够时自动抽奖；如果自动购买奖励和自动抽奖同时启用，会先尝试购买，积分不足购买时则自动抽奖。"
+mimo_auto_draw_success_notify_toggle_label: 在自动抽奖成功时通知
+mimo_auto_draw_failure_notify_toggle_label: 在自动抽奖失败时通知
+mimo_auto_draw_embed_desc: "Hoyo Buddy 使用 {points} 点积分帮你抽奖并获得了以下物品。\n如果下方有显示礼物码，请自行使用</redeem>兑换。"
+mimo_auto_task_error_dm_content: "由于发生错误，旅行 Mimo: {feature}功能已被停用，你可以使用</mimo>将其重新启用。\n如果这个错误持续发生，或是你不知道如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
+dismissible_hsr_temp2_desc: "你现在可以使用 Hoyo Buddy 样式 2 来生成星穹铁道角色卡片，在「卡片设置」中设置。推荐使用横向图片。"

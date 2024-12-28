@@ -747,24 +747,22 @@ too_many_requests_error_banner_msg: "Nhiều yêu cầu quá, vui lòng thử l�
 mimo_task_status_claimable: Có thể đổi
 mimo_finish_and_claim_button_label: Hoàn thành nhiệm vụ và nhận điểm
 mimo_info_embed_title: Về Mimo Du Lịch
-mimo_info_embed_desc: "Đây là một sự kiện vĩnh viễn bởi Hoyoverse, nơi mà bạn có thể hoàn thành nhiệm vụ để tích điểm, dùng điểm để đổi quà tặng trong trò chơi."
+mimo_info_embed_desc: "Đây là một sự kiện vĩnh viễn bởi Hoyoverse, nơi mà bạn có thể hoàn thành nhiệm vụ để tích điểm, dùng điểm để mua quà tặng trong trò chơi."
 mimo_auto_finish_and_claim_button_label: Tự động hoàn thành nhiệm vụ và nhận điểm
 mimo_auto_finish_and_claim_desc: Hoyo Buddy có thể tự động hoàn thành một số nhiệm vụ và nhận điểm của những nhiêm vụ đã hoàn thành.
-mimo_auto_buy_button_label: Tự động đổi quà
-mimo_auto_buy_desc: "Hoyo Buddy sẽ cố gắng đổi Ngọc Ánh Sao/Film Màu khi có thể, và không cố gắng tiết kiệm điểm."
+mimo_auto_buy_button_label: Tự động mua quà
+mimo_auto_buy_desc: "Hoyo Buddy sẽ cố gắng mua Ngọc Ánh Sao/Film Màu khi có thể, và không cố gắng tiết kiệm điểm."
 mimo_cmd_desc: Quản lý sự kiện Mimo Du Lịch
 mimo_view_shop_button_label: Cửa hàng
-mimo_buy_item_select_placeholder: Chọn một món để đổi
+mimo_buy_item_select_placeholder: Chọn một món để mua
 mimo_tasks_button_label: Nhiệm vụ
 mimo_buy_item_amount_label: Số lượng
 mimo_item_available_time: "Sẽ dầy trong {time}"
-mimo_auto_task_embed_footer: Nhập /mino để điều chỉnh nhiệm vụ tự động và đổi quà
+mimo_auto_task_embed_footer: Nhập /mino để điều chỉnh nhiệm vụ tự động và mua quà
 mimo_auto_task_embed_desc: "Hoyo Buddy đã hoàn thành các nhiệm vụ {finish} và đã nhận {claim_point} điểm cho bạn."
 checkin_reward_embed_footer: Sử dụng /check-in để điều chỉnh thông báo
-mimo_auto_task_error_dm_content: "Tính năng tự động hoàn thành nhiệm vụ Mimo đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
 mimo_status: "Tình trạng: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy đã đổi (các) vật phẩm {item} này cho bạn với {points} điểm.\nNếu bạn thấy những mã quà bên dưới, vui long đổi thủ công bằng lệnh </redeem>."
-mimo_auto_buy_error_dm_content: "Tính năng tự động đổi quà Mimo đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
 mimo_game_unavailable: "Mimo Du Lịch hiện không có sẵn cho {game}"
 generic_error_title: Lỗi
 on_button_label: "BẬT"
@@ -779,3 +777,10 @@ mimo_lottery_info_hoyolab_decos: "...và {num} đồ trang trí HoYoLAB"
 zzz_deadly_assault: Tập Kích Nguy Cấp
 challenge_command_assault_desc: Tạo thẻ Tập Kích Nguy Cấp
 gi_mimo_start_desc: "Vui lòng thiết lập sự kiện Mimo Du Lịch trên [HoYoLAB]({url}) trước"
+mimo_auto_draw_button_label: Tự động đổi thưởng
+mimo_auto_draw_desc: "Hoyo Buddy sẽ tự động đổi thường cho bạn khi nào có thể; nếu tự động mua và tự động đổi đều bật, nó sẽ cố gắng mua trước và đổi nếu không có đủ điểm"
+mimo_auto_draw_success_notify_toggle_label: Thông báo khi việc tự động đổi thành công
+mimo_auto_draw_failure_notify_toggle_label: Thông báo khi việc tự động đổi thất bại
+mimo_auto_draw_embed_desc: "Hoyo Buddy đã rút những món sau với {points} điểm.\nNếu bạn thấy mã quà bên dười, vui lòng đổi bằng tay với lệnh </redeem>."
+mimo_auto_task_error_dm_content: "Du Lịch Mimo: Tính năng {feature} đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
+dismissible_hsr_temp2_desc: "Giờ bạn có thể dùng mẫu thẻ Hoyo Buddy 2 cho thẻ nhân vật HSR, chọn trong cài đặt thẻ. Đề nghị bạn dùng ảnh dọc ngang cho mẫu thẻ này."

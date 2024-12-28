@@ -460,6 +460,10 @@ PREV_PAGE = SelectOption(
 
 class PaginatorSelect(Select, Generic[V_co]):
     def __init__(self, options: list[SelectOption], **kwargs: Any) -> None:
+        if not options:
+            options = [SelectOption(label="placeholder", value="0")]
+            kwargs["disabled"] = True
+
         self.options_before_split = options
         self.page_index = 0
         self._max_values = kwargs.get("max_values", 1)

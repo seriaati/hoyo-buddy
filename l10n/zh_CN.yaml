@@ -778,7 +778,7 @@ zzz_deadly_assault: 危局强袭战
 challenge_command_assault_desc: 生成危局强袭战卡片
 gi_mimo_start_desc: "请先于 [HoYoLAB]({url}) 将旅行 Mimo 活动设置完成"
 mimo_auto_draw_button_label: 自动抽奖
-mimo_auto_draw_desc: "Hoyo Buddy 會在积分足够时自动抽奖；如果自动购买奖励和自动抽奖同时启用，会先尝试购买，点数不足购买时则自动抽奖。"
+mimo_auto_draw_desc: "Hoyo Buddy 會在积分足够时自动抽奖；如果自动购买奖励和自动抽奖同时启用，会先尝试购买，积分不足购买时则自动抽奖。"
 mimo_auto_draw_success_notify_toggle_label: 在自动抽奖成功时通知
 mimo_auto_draw_failure_notify_toggle_label: 在自动抽奖失败时通知
 mimo_auto_draw_embed_desc: "Hoyo Buddy 使用 {points} 点积分帮你抽奖并获得了以下物品。\n如果下方有显示礼物码，请自行使用</redeem>兑换。"

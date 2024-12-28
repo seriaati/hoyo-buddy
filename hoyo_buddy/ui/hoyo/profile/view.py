@@ -433,6 +433,8 @@ class ProfileView(View):
         else:
             primary = card_settings.custom_primary_color
 
+        template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
+
         return await draw_hsr_build_card(
             DrawInput(
                 dark_mode=card_settings.dark_mode,
@@ -445,6 +447,7 @@ class ProfileView(View):
             character,
             image_url,
             primary,
+            template=template_num,
         )
 
     async def _draw_hb_gi_character_card(
@@ -756,8 +759,6 @@ class ProfileView(View):
                 attr = "current_team_image" if is_team else "current_image"
                 setattr(card_settings, attr, None)
                 await card_settings.save(update_fields=(attr,))
-            if unset_loading_state and item is not None:
-                await item.unset_loading_state(i)
 
             if "hb" not in card_settings.template:
                 logger.warning("Failed to draw card")
@@ -807,5 +808,15 @@ class ProfileView(View):
                     id="m3_art",
                     description=LocaleStr(key="dismissible_m3_art_desc"),
                     image="https://img.seria.moe/kVbCOBrqEMHlQsVd.png",
+                ),
+            )
+
+        if self.game is Game.STARRAIL:
+            await show_dismissible(
+                i,
+                Dismissible(
+                    id="hsr_temp2",
+                    description=LocaleStr(key="dismissible_hsr_temp2_desc"),
+                    image="https://img.seria.moe/HLHoTSwcXvAPHzJB.png",
                 ),
             )

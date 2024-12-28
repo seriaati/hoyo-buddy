@@ -402,6 +402,7 @@ class GenshinClient(ProxyGenshinClient):
                     ),
                     hakushin.Game.HSR,
                 ),
+                rarity=character.equip.rarity,
             )
             if character.equip is not None
             else None
@@ -435,6 +436,7 @@ class GenshinClient(ProxyGenshinClient):
             name=character.name,
             level=character.level,
             eidolons_unlocked=character.rank,
+            rarity=character.rarity,
             light_cone=light_cone,
             relics=relics,
             stats=[
@@ -448,6 +450,10 @@ class GenshinClient(ProxyGenshinClient):
             traces=[
                 models.Trace(anchor=skill.anchor, icon=skill.item_url, level=skill.level)
                 for skill in character.skills
+            ],
+            eidolons=[
+                models.Eidolon(icon=eidolon.icon, unlocked=eidolon.is_unlocked)
+                for eidolon in character.ranks
             ],
             max_level=hakushin.utils.get_max_level_from_ascension(
                 hakushin.utils.get_ascension_from_level(character.level, True, hakushin.Game.HSR),

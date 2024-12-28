@@ -142,6 +142,10 @@ class LightConeIcon:
     def image(self) -> str:
         return f"{STARRAIL_RES}/image/light_cone_portrait/{self._id}.png"
 
+    @property
+    def item(self) -> str:
+        return f"https://api.yatta.top/hsr/assets/UI/equipment/medium/{self._id}.png"
+
 
 @dataclass(kw_only=True)
 class LightCone:
@@ -150,6 +154,7 @@ class LightCone:
     superimpose: int
     name: str
     max_level: int
+    rarity: int
 
     @property
     def icon(self) -> LightConeIcon:
@@ -182,6 +187,12 @@ class Trace:
 
 
 @dataclass(kw_only=True)
+class Eidolon:
+    icon: str
+    unlocked: bool
+
+
+@dataclass(kw_only=True)
 class HoyolabHSRCharacter:
     id: str
     name: str
@@ -191,8 +202,10 @@ class HoyolabHSRCharacter:
     relics: list[Relic]
     stats: list[Stat]
     traces: list[Trace]
+    eidolons: list[Eidolon]
     element: str
     max_level: int
+    rarity: int
 
 
 class Config:

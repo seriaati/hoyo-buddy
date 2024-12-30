@@ -1,5 +1,31 @@
 # Hoyo Buddy Changelog
 
+## v1.15.6
+
+### New Features
+
+- (`/mimo`) Added support for Genshin's Traveling Mimo (event has already ended by the time of writing).
+- (`/mimo`) Added auto prize draw feature.
+- (`/challenge zzz`) Added support for the Deadly Assault game mode.
+- (`/profile hsr`) Added template 2.
+- (`/notes`) Added bounty commission and Ridu weekly points information for ZZZ.
+
+## Improvements
+
+- (`/check-in`) Reduce duplicate check-in API requests.
+
+## Bug Fixes
+
+- (`/mimo`) Fixed notifications being sent when no tasks are completed and no points are claimed.
+- (`/mimo`) Fixed how valuable items are being determined.
+- (`/mimo`) Handle -510001 error.
+- (`/mimo`) Fixed an issue where valuable items are being counted as decorations for HSR.
+- (`/mimo`) Disable lottery draw button when the limit is reached.
+- (`/challenge zzz`) Fixed wrong bangboo icons in cards.
+- (`/events`) Fixed wrong Spiral Abyss progress.
+- (`/gacha-log view`) Fixed wrong number of pulls from last rarity.
+- Fixed static image folder creation logic.
+
 ## v1.15.5
 
 ### New Features

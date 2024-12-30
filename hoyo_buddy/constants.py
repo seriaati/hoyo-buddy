@@ -48,7 +48,7 @@ def contains_traveler_id(character_id: str) -> bool:
     return any(str(traveler_id) in character_id for traveler_id in TRAVELER_IDS)
 
 
-GI_SERVER_RESET_HOURS: dict[str, int] = {
+SERVER_RESET_HOURS: dict[str, int] = {
     "os_usa": 17,
     "os_euro": 11,
     "prod_official_usa": 17,

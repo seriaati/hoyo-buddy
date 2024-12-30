@@ -281,6 +281,24 @@ class NotesView(View):
                 inline=False,
             )
 
+            ridu_points_notify = await NotesNotify.get_or_none(
+                account=self.account, type=NotesNotifyType.RIDU_POINTS
+            )
+            embed.add_field(
+                name=LocaleStr(key="weekly_task_point", mi18n_game=Game.ZZZ),
+                value=self._get_type4_value(ridu_points_notify),
+                inline=False,
+            )
+
+            bounty_comm_notify = await NotesNotify.get_or_none(
+                account=self.account, type=NotesNotifyType.ZZZ_BOUNTY
+            )
+            embed.add_field(
+                name=LocaleStr(key="bounty_commission", mi18n_game=Game.ZZZ),
+                value=self._get_type4_value(bounty_comm_notify),
+                inline=False,
+            )
+
         elif self.account.game is Game.HONKAI:
             stamina_notify = await NotesNotify.get_or_none(
                 account=self.account, type=NotesNotifyType.STAMINA
@@ -726,7 +744,9 @@ class ReminderButton(Button[NotesView]):
         elif self.view.account.game is Game.ZZZ:
             from .buttons import (  # noqa: PLC0415
                 BatteryReminder,
+                BountyCommissionReminder,
                 DailyReminder,
+                RiduPointsReminder,
                 ScratchCardReminder,
                 VideoStoreReminder,
             )
@@ -735,6 +755,8 @@ class ReminderButton(Button[NotesView]):
             self.view.add_item(DailyReminder(row=0))
             self.view.add_item(ScratchCardReminder(row=1))
             self.view.add_item(VideoStoreReminder(row=1))
+            self.view.add_item(RiduPointsReminder(row=2))
+            self.view.add_item(BountyCommissionReminder(row=2))
         elif self.view.account.game is Game.HONKAI:
             from .buttons import DailyReminder, StaminaReminder  # noqa: PLC0415
 

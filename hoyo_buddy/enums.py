@@ -46,6 +46,10 @@ class NotesNotifyType(IntEnum):
     """Planar Fissur Double Drop Rate"""
     STAMINA = 17
     """Honkai Impact 3rd Stamina"""
+    ZZZ_BOUNTY = 18
+    """ZZZ bounty commissions"""
+    RIDU_POINTS = 19
+    """ZZZ Ridu weekly points"""
 
 
 class TalentBoost(IntEnum):

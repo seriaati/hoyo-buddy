@@ -188,6 +188,20 @@ class NotesChecker:
                         max=notes.max_stamina,
                     )
                 )
+            case NotesNotifyType.ZZZ_BOUNTY:
+                assert isinstance(notes, ZZZNotes)
+                embed = DefaultEmbed(
+                    locale,
+                    title=LocaleStr(key="bounty_commission_progress", mi18n_game=Game.ZZZ),
+                    description=LocaleStr(key="bounty_commission.embed.description"),
+                )
+            case NotesNotifyType.RIDU_POINTS:
+                assert isinstance(notes, ZZZNotes)
+                embed = DefaultEmbed(
+                    locale,
+                    title=LocaleStr(key="weekly_task_point", mi18n_game=Game.ZZZ),
+                    description=LocaleStr(key="ridu_points.embed.description"),
+                )
 
         embed.add_acc_info(notify.account, blur=False)
         embed.set_footer(text=LocaleStr(key="notif.embed.footer"))

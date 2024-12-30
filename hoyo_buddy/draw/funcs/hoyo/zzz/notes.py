@@ -50,7 +50,7 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
         position=(112, 230),
         title_case=True,
         max_width=354,
-        max_lines=2,
+        max_lines=3,
     )
     drawer.write(
         f"{notes.battery_charge.current}/{notes.battery_charge.max}",
@@ -67,7 +67,7 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
         position=(598, 230),
         title_case=True,
         max_width=354,
-        max_lines=2,
+        max_lines=3,
     )
     text = LocaleStr(
         key="scratch_card.incomplete"
@@ -85,7 +85,7 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
         position=(112, 633),
         title_case=True,
         max_width=354,
-        max_lines=2,
+        max_lines=3,
     )
     if notes.video_store_state is VideoStoreState.CURRENTLY_OPEN:
         key = "sales_doing"
@@ -106,13 +106,49 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
         position=(598, 633),
         title_case=True,
         max_width=354,
-        max_lines=2,
+        max_lines=3,
     )
     drawer.write(
         f"{notes.engagement.current}/{notes.engagement.max}",
         size=32,
         style="medium",
         position=(598, 890),
+    )
+
+    # Bounty commission progress
+    comm = notes.hollow_zero.bounty_commission
+    drawer.write(
+        LocaleStr(key="bounty_commission_progress", mi18n_game=Game.ZZZ),
+        size=46,
+        style="bold",
+        position=(113, 1043),
+        title_case=True,
+        max_width=354,
+        max_lines=3,
+    )
+    drawer.write(
+        f"{comm.cur_completed}/{comm.total}" if comm is not None else "-",
+        size=32,
+        style="medium",
+        position=(113, 1300),
+    )
+
+    # Ridy weekly points
+    ridu = notes.weekly_task
+    drawer.write(
+        LocaleStr(key="weekly_task_point", mi18n_game=Game.ZZZ),
+        size=46,
+        style="bold",
+        position=(598, 1043),
+        title_case=True,
+        max_width=354,
+        max_lines=3,
+    )
+    drawer.write(
+        f"{ridu.cur_point}/{ridu.max_point}" if ridu is not None else "-",
+        size=32,
+        style="medium",
+        position=(598, 1300),
     )
 
     # Save image

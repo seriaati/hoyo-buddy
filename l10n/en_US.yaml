@@ -784,3 +784,5 @@ mimo_auto_draw_failure_notify_toggle_label: Notify on auto prize draw failure
 mimo_auto_draw_embed_desc: "Hoyo Buddy drew the following items with {points} points.\nIf you see gift codes below, please redeem them manually with </redeem>."
 mimo_auto_task_error_dm_content: "Traveling Mimo: {feature} has been disabled due to an error, you can enable it back using </mimo>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 dismissible_hsr_temp2_desc: "You can now use the new Hoyo Buddy template 2 for HSR character cards, select it in card settings. It is recommended to use hotizontal images for this template."
+bounty_commission.embed.description: Bounty commissions not completed yet
+ridu_points.embed.description: Ridu weekly tasks not completed yet

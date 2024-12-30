@@ -436,6 +436,36 @@ class NotesChecker:
         return None
 
     @classmethod
+    async def _process_zzz_bounty(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
+        """Process bounty commission notification."""
+        comm = notes.hollow_zero.bounty_commission
+        if comm is None:
+            return None
+
+        if comm.cur_completed >= comm.total:
+            est_time = get_now() + comm.refresh_time
+            return await cls._reset_notif_count(notify, est_time=est_time)
+
+        if notify.current_notif_count < notify.max_notif_count:
+            await cls._notify_user(notify, notes)
+        return None
+
+    @classmethod
+    async def _process_ridu_points(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
+        """Process ridu points notification."""
+        weekly = notes.weekly_task
+        if weekly is None:
+            return None
+
+        if weekly.cur_point >= weekly.max_point:
+            est_time = get_now() + weekly.refresh_time
+            return await cls._reset_notif_count(notify, est_time=est_time)
+
+        if notify.current_notif_count < notify.max_notif_count:
+            await cls._notify_user(notify, notes)
+        return None
+
+    @classmethod
     async def _process_notify(
         cls,
         notify: NotesNotify,
@@ -479,6 +509,12 @@ class NotesChecker:
             case NotesNotifyType.PLANAR_FISSURE:
                 assert events is not None
                 await cls._process_planar_fissure_notify(notify, events)
+            case NotesNotifyType.ZZZ_BOUNTY:
+                assert isinstance(notes, ZZZNotes)
+                await cls._process_zzz_bounty(notify, notes)
+            case NotesNotifyType.RIDU_POINTS:
+                assert isinstance(notes, ZZZNotes)
+                await cls._process_ridu_points(notify, notes)
 
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:

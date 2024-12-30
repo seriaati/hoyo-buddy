@@ -22,8 +22,6 @@ from ..ui.settings import SettingsUI
 from ..utils import ephemeral, get_discord_user_md_link, upload_image
 
 if TYPE_CHECKING:
-    import git
-
     from ..bot import HoyoBuddy
     from ..types import Interaction
 
@@ -74,15 +72,6 @@ class Others(commands.Cog):
     async def before_update_stat_vcs(self) -> None:
         await self.bot.wait_until_ready()
 
-    def format_commit(self, commit: git.Commit) -> str:
-        commit_url = f"{self.repo_url}/commit/{commit.hexsha}"
-        dt_str = discord.utils.format_dt(commit.authored_datetime, "R")
-        return f"[`{commit.hexsha[:7]}`]({commit_url}) {commit.summary} ({dt_str})"
-
-    def get_last_commits(self, count: int = 5) -> str:
-        commits = list(self.bot.repo.iter_commits("main", max_count=count))
-        return "\n".join(self.format_commit(commit) for commit in commits)
-
     @app_commands.command(
         name=locale_str("about"),
         description=locale_str("About the bot", key="about_command_description"),
@@ -102,13 +91,6 @@ class Others(commands.Cog):
             locale=locale,
             title=f"{self.bot.user.name if self.bot.user is not None else 'Hoyo Buddy'} {self.bot.version}",
             description=LocaleStr(key="about_embed.description"),
-        )
-
-        # latest changes
-        embed.add_field(
-            name=LocaleStr(key="about_command.latest_changes"),
-            value=self.get_last_commits(),
-            inline=False,
         )
 
         # developer

@@ -358,7 +358,7 @@ def dict_cookie_to_str(cookie_dict: dict[str, str]) -> str:
     return "; ".join([f"{key}={value}" for key, value in cookie_dict.items()])
 
 
-def get_repo_version() -> str:
+def get_project_version() -> str:
     data = toml.load("pyproject.toml")
     return f"v{data["project"]["version"]}"
 
@@ -376,7 +376,7 @@ def init_sentry() -> None:
         traces_sample_rate=1.0,
         environment=os.environ["ENV"],
         enable_tracing=True,
-        release=get_repo_version(),
+        release=get_project_version(),
     )
 
 

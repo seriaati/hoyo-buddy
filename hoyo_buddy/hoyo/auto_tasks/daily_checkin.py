@@ -32,8 +32,6 @@ class DailyCheckin:
 
     _embeds: ClassVar[defaultdict[int, list[tuple[int, Embed]]]]
     """User ID -> (Account ID, Embed)"""
-    _checked_in_cookies: ClassVar[set[tuple[str, Game]]]
-    """Track pairs of cookies and game that have done check-in"""
 
     @classmethod
     async def execute(
@@ -53,7 +51,6 @@ class DailyCheckin:
                 cls._bot = bot
                 cls._no_error_notify = no_error_notify
                 cls._embeds = defaultdict(list)
-                cls._checked_in_cookies = set()
 
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 cn_accounts: list[HoyoAccount] = []
@@ -64,7 +61,12 @@ class DailyCheckin:
                         daily_checkin=True, game=GPY_GAME_TO_HB_GAME[game]
                     )
 
+                cookie_game_pairs = set()  # Track cookie-game pairs to avoid duplicate check-ins
+
                 for account in accounts:
+                    if (account.cookies, account.game) in cookie_game_pairs:
+                        continue
+                    cookie_game_pairs.add((account.cookies, account.game))
                     if account.platform is Platform.HOYOLAB:
                         await queue.put(account)
                     else:
@@ -136,9 +138,6 @@ class DailyCheckin:
 
         while True:
             account = await queue.get()
-            if (account.cookies, account.game) in cls._checked_in_cookies:
-                queue.task_done()
-                continue
 
             try:
                 await account.fetch_related("user", "user__settings")
@@ -154,7 +153,6 @@ class DailyCheckin:
             else:
                 cls._total_checkin_count += 1
                 cls._embeds[account.user.id].append((account.id, embed))
-                cls._checked_in_cookies.add((account.cookies, account.game))
             finally:
                 await asyncio.sleep(CHECKIN_SLEEP_TIME)
                 queue.task_done()

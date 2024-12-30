@@ -122,7 +122,6 @@ daily_button.label: Daily reminder
 daily_check_in: Daily check-in
 daily_checkin_embed_description: "Checked in {day} day(s) this month\nMissed check-in for {missed} day(s)\n"
 daily_modal.title: Daily Reminder Settings
-daily_training_button.label: Daily Training Reminder
 delete_account_button_label: Delete selected account
 dendro: Dendro
 destruction: Destruction
@@ -286,10 +285,8 @@ notes-card.gi.realm-currency: Realm Currency
 notes-card.gi.remaining: Remaining
 notes-card.gi.resin: Resin
 notes-card.gi.resin-discounts: Resin Discounts
-notes-card.hsr.daily-training: Daily Training
 notes-card.hsr.echo-of-war-discounts: Echo of War Limits
 notes-card.hsr.reserved-power: Reserved Power
-notes-card.hsr.trailblaze-power: Trailblaze Power
 notes.item_full_in_time: "{emoji} Full in {in_time}"
 notes.stamina_label: Stamina reminder
 notes.stamina: "Stamina: {cur}/{max}, full in {time}"
@@ -405,8 +402,6 @@ resin_discount.embed.description: Weekly boss discounts are not used up yet
 resin_reminder_button.label: Resin reminder
 resin_reminder_modal.title: Resin Reminder Settings
 reward_claimed_title: Daily Check-In Reward Claimed
-rtbp_reminder_button.label: Reserved trailblaze power reminder
-rtbp_reminder_modal.title: Reserved Trailblaze Power Reminder Settings
 saturday: Saturday
 search_autocomplete_no_results: No results found
 search_autocomplete_not_setup: "Search autocomplete choices not set up yet, please try again later."
@@ -428,8 +423,6 @@ sumeru: Sumeru
 sunday: Sunday
 superimpose_indicator: "Superimpose {s}"
 talent_level.modal.title: Enter Talent Level
-tbp_reminder_button.label: Trailblaze power reminder
-tbp_reminder_modal.title: Trailblaze Power Reminder Settings
 tcg: TCG
 the_hunt: The Hunt
 threshold.embed.description: "Threshold ({threshold}) is reached"
@@ -678,7 +671,7 @@ leaderboard_akasha_command_description: View Genshin Impact character damage lea
 akasha_you: You
 achievement_lb_title: Achievement Count Leaderboard
 planar_fissure_label: Planar Fissure
-planar_fissure_desc: "The Planar Fissure event is happening in {hour} hours, remember to save your trailblazer power!"
+planar_fissure_desc: "The Planar Fissure event is happening in {hour} hours, remember to save your trailblaze power!"
 notif_modal.hours_before.label: Notify X hours before the event starts
 reminder_settings.reminde.set.type5: "Status: {status}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}\nNotify Time: {hours_before} hours before the event starts"
 invalid_lb_selected_error_msg: Invalid leaderboard selected

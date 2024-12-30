@@ -80,7 +80,7 @@ class NotesChecker:
             case NotesNotifyType.TB_POWER:
                 embed = DefaultEmbed(
                     locale,
-                    title=LocaleStr(key="tbp_reminder_button.label"),
+                    title=LocaleStr(key="hsr_note_stamina", mi18n_game=Game.STARRAIL),
                     description=LocaleStr(
                         key="threshold.embed.description", threshold=notify.threshold
                     ),
@@ -89,7 +89,7 @@ class NotesChecker:
             case NotesNotifyType.RESERVED_TB_POWER:
                 embed = DefaultEmbed(
                     locale,
-                    title=LocaleStr(key="rtbp_reminder_button.label"),
+                    title=LocaleStr(key="hsr_note_reserve_stamina", mi18n_game=Game.STARRAIL),
                     description=LocaleStr(
                         key="threshold.embed.description", threshold=notify.threshold
                     ),
@@ -127,7 +127,7 @@ class NotesChecker:
             case NotesNotifyType.HSR_DAILY:
                 embed = DefaultEmbed(
                     locale,
-                    title=LocaleStr(key="daily_training_button.label"),
+                    title=LocaleStr(key="hsr_note_daily_training", mi18n_game=Game.STARRAIL),
                     description=LocaleStr(key="hsr_daily.embed.description"),
                 )
             case NotesNotifyType.RESIN_DISCOUNT | NotesNotifyType.ECHO_OF_WAR:
@@ -500,7 +500,10 @@ class NotesChecker:
         if notify.est_time is not None and get_now() < notify.est_time:
             return True
 
-        if notify.notify_weekday is not None and notify.notify_weekday != get_now().weekday() + 1:
+        if (
+            notify.notify_weekday is not None
+            and notify.notify_weekday != notify.account.server_reset_datetime.weekday() + 1
+        ):
             return True
 
         if (

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from hoyo_buddy.db import NotesNotify
 from hoyo_buddy.emojis import RESERVED_TRAILBLAZE_POWER
-from hoyo_buddy.enums import NotesNotifyType
+from hoyo_buddy.enums import Game, NotesNotifyType
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
 
@@ -19,7 +19,7 @@ class ReservedTBPReminder(Button[NotesView]):
     def __init__(self, *, row: int) -> None:
         super().__init__(
             emoji=RESERVED_TRAILBLAZE_POWER,
-            label=LocaleStr(key="rtbp_reminder_button.label"),
+            label=LocaleStr(key="hsr_note_reserve_stamina", mi18n_game=Game.STARRAIL),
             row=row,
         )
 
@@ -30,7 +30,7 @@ class ReservedTBPReminder(Button[NotesView]):
 
         modal = TypeOneModal(
             notify,
-            title=LocaleStr(key="rtbp_reminder_modal.title"),
+            title=LocaleStr(key="reminder_modal.title", notify=self.label),
             threshold_max_value=2400,
             min_notify_interval=30,
         )

@@ -194,7 +194,7 @@ class NotesView(View):
                 account=self.account, type=NotesNotifyType.TB_POWER
             )
             embed.add_field(
-                name=LocaleStr(key="tbp_reminder_button.label"),
+                name=LocaleStr(key="hsr_note_stamina", mi18n_game=Game.STARRAIL),
                 value=self._get_type1_value(tbp_notify),
                 inline=False,
             )
@@ -203,7 +203,7 @@ class NotesView(View):
                 account=self.account, type=NotesNotifyType.RESERVED_TB_POWER
             )
             embed.add_field(
-                name=LocaleStr(key="rtbp_reminder_button.label"),
+                name=LocaleStr(key="hsr_note_reserve_stamina", mi18n_game=Game.STARRAIL),
                 value=self._get_type1_value(reserved_tbp_notify),
                 inline=False,
             )

@@ -13,7 +13,7 @@ from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, PROXY_APIS
 from hoyo_buddy.db import AccountNotifSettings, HoyoAccount, User
 from hoyo_buddy.embeds import DefaultEmbed, Embed, ErrorEmbed
-from hoyo_buddy.enums import Platform
+from hoyo_buddy.enums import Game, Platform
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
@@ -29,7 +29,11 @@ class DailyCheckin:
     _total_checkin_count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
     _no_error_notify: ClassVar[bool]
-    _embeds: ClassVar[defaultdict[int, list[tuple[int, Embed]]]]  # User ID -> (Account ID, Embed)
+
+    _embeds: ClassVar[defaultdict[int, list[tuple[int, Embed]]]]
+    """User ID -> (Account ID, Embed)"""
+    _checked_in_cookies: ClassVar[set[tuple[str, Game]]]
+    """Track pairs of cookies and game that have done check-in"""
 
     @classmethod
     async def execute(
@@ -49,6 +53,7 @@ class DailyCheckin:
                 cls._bot = bot
                 cls._no_error_notify = no_error_notify
                 cls._embeds = defaultdict(list)
+                cls._checked_in_cookies = set()
 
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 cn_accounts: list[HoyoAccount] = []
@@ -131,6 +136,9 @@ class DailyCheckin:
 
         while True:
             account = await queue.get()
+            if (account.cookies, account.game) in cls._checked_in_cookies:
+                queue.task_done()
+                continue
 
             try:
                 await account.fetch_related("user", "user__settings")
@@ -146,6 +154,7 @@ class DailyCheckin:
             else:
                 cls._total_checkin_count += 1
                 cls._embeds[account.user.id].append((account.id, embed))
+                cls._checked_in_cookies.add((account.cookies, account.game))
             finally:
                 await asyncio.sleep(CHECKIN_SLEEP_TIME)
                 queue.task_done()

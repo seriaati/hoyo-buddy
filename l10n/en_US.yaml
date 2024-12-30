@@ -779,3 +779,4 @@ mimo_auto_task_error_dm_content: "Traveling Mimo: {feature} has been disabled du
 dismissible_hsr_temp2_desc: "You can now use the new Hoyo Buddy template 2 for HSR character cards, select it in card settings. It is recommended to use hotizontal images for this template."
 bounty_commission.embed.description: Bounty commissions not completed yet
 ridu_points.embed.description: Ridu weekly tasks not completed yet
+changelog_embed_title: Changelog

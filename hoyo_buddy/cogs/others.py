@@ -9,7 +9,7 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands, tasks
 
-from hoyo_buddy.constants import IMAGE_EXTENSIONS
+from hoyo_buddy.constants import IMAGE_EXTENSIONS, get_changelog_url
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db import get_dyk
 from hoyo_buddy.exceptions import NotAnImageError
@@ -169,6 +169,11 @@ class Others(commands.Cog):
                 label=LocaleStr(key="about_command.contribute"),
                 url="https://github.com/seriaati/hoyo-buddy/blob/main/CONTRIBUTING.md",
                 row=1,
+            )
+        )
+        view.add_item(
+            Button(
+                label=LocaleStr(key="changelog_embed_title"), url=get_changelog_url(locale), row=1
             )
         )
 

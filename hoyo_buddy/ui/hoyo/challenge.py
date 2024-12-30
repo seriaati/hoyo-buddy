@@ -8,6 +8,7 @@ from ambr.utils import remove_html_tags
 from genshin.models import (
     ChallengeBuff,
     DeadlyAssault,
+    DeadlyAssaultBuff,
     ImgTheaterData,
     ShiyuDefense,
     SpiralAbyss,
@@ -74,7 +75,7 @@ class BuffView(View):
         )
         embed.add_field(name=LocaleStr(key="challenge_view.buff_used_in"), value=floors)
 
-        if isinstance(buff, ChallengeBuff | TheaterBuff):
+        if isinstance(buff, ChallengeBuff | TheaterBuff | DeadlyAssaultBuff):
             embed.set_thumbnail(url=buff.icon)
 
         return embed

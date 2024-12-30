@@ -531,7 +531,11 @@ class GenshinClient(ProxyGenshinClient):
         cache, _ = await EnkaCache.get_or_create(uid=self.uid)
         agents = await super().get_zzz_agents(uid)
         for agent in agents:
-            set_or_update_dict(cache.extras, f"{agent.id}-hoyolab", {"live": True})
+            set_or_update_dict(
+                cache.extras,
+                f"{agent.id}-hoyolab",
+                {"live": True, "locale": GPY_LANG_TO_LOCALE[self.lang].value},
+            )
         await cache.save(update_fields=("extras",))
         return agents
 

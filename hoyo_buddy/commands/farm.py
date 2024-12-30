@@ -4,6 +4,8 @@ from enum import IntEnum
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.db import FarmNotify, HoyoAccount, Settings
+from hoyo_buddy.db.utils import draw_locale
+from hoyo_buddy.models import DrawInput
 
 from ..embeds import ErrorEmbed
 from ..enums import Game
@@ -78,12 +80,17 @@ class FarmCommand:
         await farm_notify.filter(account=self._account).update(item_ids=farm_notify.item_ids)
 
     async def _start_view(self, farm_notify: FarmNotify) -> None:
+        i = self._interaction
         view = FarmNotifyView(
             farm_notify,
-            self._settings.dark_mode,
-            self._interaction.client.session,
-            self._interaction.client.executor,
-            self._interaction.client.loop,
+            DrawInput(
+                dark_mode=self._settings.dark_mode,
+                locale=draw_locale(self.locale, farm_notify.account),
+                session=i.client.session,
+                filename="farm_notify.png",
+                executor=i.client.executor,
+                loop=i.client.loop,
+            ),
             author=self._interaction.user,
             locale=self.locale,
         )

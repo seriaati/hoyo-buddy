@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from discord import ButtonStyle, Locale
 from seria.utils import split_list_to_chunks
 
-from hoyo_buddy.db import FarmNotify, draw_locale
+from hoyo_buddy.db import FarmNotify
 from hoyo_buddy.draw.main_funcs import draw_item_list_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, DELETE
@@ -16,10 +16,6 @@ from hoyo_buddy.models import DrawInput, ItemWithTrailing
 from hoyo_buddy.ui import Button, Page, PaginatorView, ToggleButton
 
 if TYPE_CHECKING:
-    import asyncio
-    import concurrent.futures
-
-    import aiohttp
     from discord import Member, User
     from discord.file import File
 
@@ -30,10 +26,7 @@ class FarmNotifyView(PaginatorView):
     def __init__(
         self,
         farm_notify: FarmNotify,
-        dark_mode: bool,
-        session: aiohttp.ClientSession,
-        executor: concurrent.futures.ThreadPoolExecutor,
-        loop: asyncio.AbstractEventLoop,
+        draw_input: DrawInput,
         *,
         author: User | Member | None,
         locale: Locale,
@@ -58,15 +51,12 @@ class FarmNotifyView(PaginatorView):
         ]
 
         self._notify = farm_notify
-        self._dark_mode = dark_mode
-        self._session = session
+        self._draw_input = draw_input
+
         self._item_names: dict[str, str] = {}  # Item id to name
         self._item_icons: dict[str, str] = {}  # Item id to icon
 
         super().__init__(pages, author=author, locale=locale)
-
-        self._executor = executor
-        self._loop = loop
 
     def _add_buttons(self) -> None:
         super()._add_buttons()
@@ -90,17 +80,7 @@ class FarmNotifyView(PaginatorView):
             )
             for item_id in self._split_item_ids[self._current_page]
         ]
-        return await draw_item_list_card(
-            DrawInput(
-                dark_mode=self._dark_mode,
-                locale=draw_locale(self.locale, self._notify.account),
-                session=self._session,
-                filename="farm_notify.png",
-                executor=self._executor,
-                loop=self._loop,
-            ),
-            items,
-        )
+        return await draw_item_list_card(self._draw_input, items)
 
     async def start(self, i: Interaction) -> None:
         if not self._notify.item_ids:

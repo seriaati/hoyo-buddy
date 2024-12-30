@@ -53,8 +53,6 @@ from .items.redraw_card_btn import RedrawCardButton
 from .items.rmv_from_cache_btn import RemoveFromCacheButton
 
 if TYPE_CHECKING:
-    import asyncio
-    import concurrent.futures
     import io
     from collections.abc import Sequence
 
@@ -407,12 +405,7 @@ class ProfileView(View):
             return BytesIO(await resp.read())
 
     async def _draw_hb_hsr_character_card(
-        self,
-        session: aiohttp.ClientSession,
-        executor: concurrent.futures.ThreadPoolExecutor,
-        loop: asyncio.AbstractEventLoop,
-        character: Character,
-        card_settings: CardSettings,
+        self, character: Character, card_settings: CardSettings, draw_input: DrawInput
     ) -> BytesIO:
         """Draw Star Rail character card in Hoyo Buddy template."""
         assert isinstance(character, enka.hsr.Character | HoyolabHSRCharacter)
@@ -436,27 +429,11 @@ class ProfileView(View):
         template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
 
         return await draw_hsr_build_card(
-            DrawInput(
-                dark_mode=card_settings.dark_mode,
-                locale=await self.get_character_locale(character),
-                session=session,
-                filename="card.png",
-                executor=executor,
-                loop=loop,
-            ),
-            character,
-            image_url,
-            primary,
-            template=template_num,
+            draw_input, character, image_url, primary, template=template_num
         )
 
     async def _draw_hb_gi_character_card(
-        self,
-        session: aiohttp.ClientSession,
-        executor: concurrent.futures.ThreadPoolExecutor,
-        loop: asyncio.AbstractEventLoop,
-        character: Character,
-        card_settings: CardSettings,
+        self, character: Character, card_settings: CardSettings, draw_input: DrawInput
     ) -> BytesIO:
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert isinstance(character, enka.gi.Character | HoyolabGICharacter)
@@ -481,14 +458,7 @@ class ProfileView(View):
                 logger.exception("Failed to fetch character rank from Akasha API")
 
         return await draw_gi_build_card(
-            DrawInput(
-                dark_mode=card_settings.dark_mode,
-                locale=await self.get_character_locale(character),
-                session=session,
-                filename="card.png",
-                executor=executor,
-                loop=loop,
-            ),
+            draw_input,
             character,
             image_url=image_url,
             zoom=zoom,
@@ -500,12 +470,7 @@ class ProfileView(View):
         )
 
     async def _draw_hb_zzz_character_card(
-        self,
-        session: aiohttp.ClientSession,
-        executor: concurrent.futures.ThreadPoolExecutor,
-        loop: asyncio.AbstractEventLoop,
-        character: Character,
-        card_settings: CardSettings,
+        self, character: Character, card_settings: CardSettings, draw_input: DrawInput
     ) -> BytesIO:
         """Draw ZZZ build card in Hoyo Buddy template."""
         assert isinstance(character, ZZZPartialAgent)
@@ -541,14 +506,7 @@ class ProfileView(View):
         )
 
         return await draw_zzz_build_card(
-            DrawInput(
-                dark_mode=True,
-                locale=await self.get_character_locale(character),
-                session=session,
-                filename="card.png",
-                executor=executor,
-                loop=loop,
-            ),
+            draw_input,
             agent,
             card_data=agent_temp_data,
             custom_color=card_settings.custom_primary_color,
@@ -576,23 +534,25 @@ class ProfileView(View):
             await card_settings.save(update_fields=("template",))
 
         template = card_settings.template
+        draw_input = DrawInput(
+            dark_mode=card_settings.dark_mode,
+            locale=await self.get_character_locale(character),
+            session=i.client.session,
+            filename="card.png",
+            executor=i.client.executor,
+            loop=i.client.loop,
+        )
 
         if self.game is Game.STARRAIL:
             if "hb" in template:
-                return await self._draw_hb_hsr_character_card(
-                    i.client.session, i.client.executor, i.client.loop, character, card_settings
-                )
+                return await self._draw_hb_hsr_character_card(character, card_settings, draw_input)
             return await self._draw_src_character_card(i.client.session, character, card_settings)
         if self.game is Game.GENSHIN:
             if "hb" in template:
-                return await self._draw_hb_gi_character_card(
-                    i.client.session, i.client.executor, i.client.loop, character, card_settings
-                )
+                return await self._draw_hb_gi_character_card(character, card_settings, draw_input)
             return await self._draw_enka_card(i.client.session, character, card_settings)
         if self.game is Game.ZZZ:
-            return await self._draw_hb_zzz_character_card(
-                i.client.session, i.client.executor, i.client.loop, character, card_settings
-            )
+            return await self._draw_hb_zzz_character_card(character, card_settings, draw_input)
 
         msg = f"draw_card not implemented for game {self.game} template {template}"
         raise ValueError(msg)

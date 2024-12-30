@@ -27,11 +27,7 @@ from hoyo_buddy.ui import Button, GoBackButton, View
 from hoyo_buddy.ui.components import Select, SelectOption
 
 if TYPE_CHECKING:
-    import asyncio
-    import concurrent.futures
     import io
-
-    import aiohttp
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Interaction
@@ -516,50 +512,12 @@ class NotesView(View):
 
         raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
 
-    async def _draw_notes_card(
-        self,
-        session: aiohttp.ClientSession,
-        notes: NotesWithCard,
-        executor: concurrent.futures.ThreadPoolExecutor,
-        loop: asyncio.AbstractEventLoop,
-    ) -> io.BytesIO:
-        locale = draw_locale(self.locale, self.account)
-
+    async def _draw_notes_card(self, notes: NotesWithCard, draw_input: DrawInput) -> io.BytesIO:
         if isinstance(notes, genshin.models.Notes):
-            return await draw_gi_notes_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=locale,
-                    session=session,
-                    filename="notes.png",
-                    executor=executor,
-                    loop=loop,
-                ),
-                notes,
-            )
+            return await draw_gi_notes_card(draw_input, notes)
         if isinstance(notes, genshin.models.ZZZNotes):
-            return await draw_zzz_notes_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=locale,
-                    session=session,
-                    filename="notes.png",
-                    executor=executor,
-                    loop=loop,
-                ),
-                notes,
-            )
-        return await draw_hsr_notes_card(
-            DrawInput(
-                dark_mode=self.dark_mode,
-                locale=locale,
-                session=session,
-                filename="notes.png",
-                executor=executor,
-                loop=loop,
-            ),
-            notes,
-        )
+            return await draw_zzz_notes_card(draw_input, notes)
+        return await draw_hsr_notes_card(draw_input, notes)
 
     def _get_notes_embed(
         self,
@@ -673,9 +631,15 @@ class NotesView(View):
         embed = self._get_notes_embed(notes)
 
         if isinstance(notes, NotesWithCard):
-            self.bytes_obj = await self._draw_notes_card(
-                i.client.session, notes, i.client.executor, i.client.loop
+            draw_input = DrawInput(
+                dark_mode=self.dark_mode,
+                locale=draw_locale(self.locale, self.account),
+                session=i.client.session,
+                filename="notes.png",
+                executor=i.client.executor,
+                loop=i.client.loop,
             )
+            self.bytes_obj = await self._draw_notes_card(notes, draw_input)
             self.bytes_obj.seek(0)
             file_ = File(self.bytes_obj, filename="notes.png")
         else:

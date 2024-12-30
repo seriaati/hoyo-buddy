@@ -303,7 +303,7 @@ class ChallengeView(View):
     async def draw_card(
         self,
         session: aiohttp.ClientSession,
-        executor: concurrent.futures.ThreadPoolExecutor,
+        executor: concurrent.futures.ProcessPoolExecutor,
         loop: asyncio.AbstractEventLoop,
     ) -> File:
         assert self.challenge is not None

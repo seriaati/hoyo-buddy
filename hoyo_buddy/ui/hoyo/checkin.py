@@ -111,7 +111,7 @@ class CheckInUI(View):
     async def get_embed_and_image(
         self,
         session: aiohttp.ClientSession,
-        executor: concurrent.futures.ThreadPoolExecutor,
+        executor: concurrent.futures.ProcessPoolExecutor,
         loop: asyncio.AbstractEventLoop,
     ) -> tuple[DefaultEmbed, io.BytesIO]:
         rewards, info = await self._get_rewards()

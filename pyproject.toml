@@ -9,7 +9,6 @@ dependencies = [
   "asyncpg-listen>=0.0.6",
   "cachetools>=5.5.0",
   "discord-py[speed]>=2.4.0",
-  "enka-api>=2.2.5",
   "fake-useragent>=1.5.1",
   "gitpython>=3.1.43",
   "hakushin-py>=0.4.4",
@@ -34,6 +33,7 @@ dependencies = [
   "akasha-py>=0.2.7",
   "genshin[auth,sqlite]",
   "toml>=0.10.2",
+  "enka>=2.4.3",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = { file = "LICENSE" }
@@ -51,7 +51,6 @@ genshin = { git = "https://github.com/thesadru/genshin.py", branch = "master" }
 akasha-py = { git = "https://github.com/seriaati/akasha-py" }
 hakushin-py = { git = "https://github.com/seriaati/hakushin-py" }
 discord-py = { git = "https://github.com/Rapptz/discord.py" }
-enka-api = { git = "https://github.com/seriaati/enka-py" }
 ambr-py = { git = "https://github.com/seriaati/ambr" }
 yatta-py = { git = "https://github.com/seriaati/yatta" }
 

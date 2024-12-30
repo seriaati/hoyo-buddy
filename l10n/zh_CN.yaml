@@ -122,7 +122,6 @@ daily_button.label: 每日任务提醒
 daily_check_in: 每日签到
 daily_checkin_embed_description: "本月已签到{day}天\n漏签{missed}天\n"
 daily_modal.title: 每日任务提醒设置
-daily_training_button.label: 每日实训提醒
 delete_account_button_label: 删除所选账号
 dendro: 草
 destruction: 毁灭
@@ -286,10 +285,8 @@ notes-card.gi.realm-currency: 洞天宝钱
 notes-card.gi.remaining: 剩余
 notes-card.gi.resin: 树脂
 notes-card.gi.resin-discounts: 树脂折扣
-notes-card.hsr.daily-training: 每日实训
 notes-card.hsr.echo-of-war-discounts: 历战余响次数
 notes-card.hsr.reserved-power: 后备开拓力
-notes-card.hsr.trailblaze-power: 开拓力
 notes.item_full_in_time: "{emoji} 在 {in_time} 后溢出"
 notes.stamina_label: 体力提醒
 notes.stamina: "体力: {cur}/{max}, 在 {time} 后溢出"
@@ -405,8 +402,6 @@ resin_discount.embed.description: 周本消耗折扣尚未使用完毕
 resin_reminder_button.label: 树脂提醒
 resin_reminder_modal.title: 树脂提醒设置
 reward_claimed_title: 已领取每日奖励
-rtbp_reminder_button.label: 后备开拓力提醒
-rtbp_reminder_modal.title: 后备开拓力提醒设置
 saturday: 星期六
 search_autocomplete_no_results: 未能找到任何结果
 search_autocomplete_not_setup: "搜索自动完成选项还未设置，请稍后再试。"
@@ -428,8 +423,6 @@ sumeru: 须弥
 sunday: 星期日
 superimpose_indicator: "叠影 {s}"
 talent_level.modal.title: 输入天赋等级
-tbp_reminder_button.label: 开拓力提醒
-tbp_reminder_modal.title: 开拓力提醒设置
 tcg: 七圣召唤
 the_hunt: 巡猎
 threshold.embed.description: "已达阈值（{threshold}）"
@@ -678,7 +671,7 @@ leaderboard_akasha_command_description: 查看原神角色伤害排行榜（由 
 akasha_you: 你
 achievement_lb_title: 成就数量排行榜
 planar_fissure_label: 位面分裂
-planar_fissure_desc: "位面分裂活动将在 {hours} 小时候开始，记得保存好你的开拓力！"
+planar_fissure_desc: "位面分裂活动将在 {hours} 小时后开始，记得保存好你的开拓力！"
 notif_modal.hours_before.label: 在活动开始的 X 小时前通知
 reminder_settings.reminde.set.type5: "状态: {status}\n通知间隔: {notify_inverval} 分钟\n最大通知数: {max_notif_count}\n通知时间: 活动开始的 {hours_before} 前"
 invalid_lb_selected_error_msg: 选择了无效的排行榜
@@ -784,3 +777,6 @@ mimo_auto_draw_failure_notify_toggle_label: 在自动抽奖失败时通知
 mimo_auto_draw_embed_desc: "Hoyo Buddy 使用 {points} 点积分帮你抽奖并获得了以下物品。\n如果下方有显示礼物码，请自行使用</redeem>兑换。"
 mimo_auto_task_error_dm_content: "由于发生错误，旅行 Mimo: {feature}功能已被停用，你可以使用</mimo>将其重新启用。\n如果这个错误持续发生，或是你不知道如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 dismissible_hsr_temp2_desc: "你现在可以使用 Hoyo Buddy 样式 2 来生成星穹铁道角色卡片，在「卡片设置」中设置。推荐使用横向图片。"
+bounty_commission.embed.description: 悬赏委托尚未全部完成
+ridu_points.embed.description: 丽都周记任务尚未全部完成
+changelog_embed_title: 更新日志

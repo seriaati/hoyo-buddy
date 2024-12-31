@@ -28,8 +28,8 @@ class ProxyAPIError(Exception):
 
 
 class HoyoBuddyError(Exception):
-    def __init__(self, title: LocaleStr, message: LocaleStr | None = None) -> None:
-        self.title = title
+    def __init__(self, *, title: LocaleStr | None = None, message: LocaleStr | None = None) -> None:
+        self.title = title or LocaleStr(key="generic_error_title")
         self.message = message
 
 
@@ -232,15 +232,9 @@ class NotAnImageError(HoyoBuddyError):
 
 class MimoUnavailableError(HoyoBuddyError):
     def __init__(self, game: Game) -> None:
-        super().__init__(
-            title=LocaleStr(key="generic_error_title"),
-            message=LocaleStr(key="mimo_game_unavailable", game=EnumStr(game)),
-        )
+        super().__init__(message=LocaleStr(key="mimo_game_unavailable", game=EnumStr(game)))
 
 
 class CantRedeemCodeError(HoyoBuddyError):
     def __init__(self) -> None:
-        super().__init__(
-            title=LocaleStr(key="generic_error_title"),
-            message=LocaleStr(key="redeeem_code.cookie_token_expired_description"),
-        )
+        super().__init__(message=LocaleStr(key="redeeem_code.cookie_token_expired_description"))

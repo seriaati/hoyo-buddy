@@ -31,7 +31,7 @@ if TYPE_CHECKING:
 
 CARD_TEMPLATES: Final[dict[Game, tuple[str, ...]]] = {
     Game.GENSHIN: ("hb1", "hb2", "hattvr1", "encard1", "enkacard1", "enkacard2"),
-    Game.STARRAIL: ("hb1", "src1", "src2", "src3"),
+    Game.STARRAIL: ("hb1", "hb2", "src1", "src2", "src3"),
     Game.ZZZ: ("hb1", "hb2", "hb3", "hb4"),
 }
 CARD_TEMPLATE_AUTHORS: Final[dict[str, tuple[str, str]]] = {

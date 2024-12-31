@@ -112,7 +112,7 @@ previous_wishes AS (
 UPDATE gachahistory
 SET num_since_last =
   CASE
-    WHEN pw.prev_num IS NULL THEN pw.num - 1
+    WHEN pw.prev_num IS NULL THEN pw.num
     ELSE pw.num - pw.prev_num
   END
 FROM previous_wishes pw

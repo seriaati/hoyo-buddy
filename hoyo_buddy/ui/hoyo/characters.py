@@ -14,7 +14,7 @@ from genshin.models import StarRailDetailCharacter as HSRCharacter
 from genshin.models import ZZZFullAgent as ZZZCharacter
 from genshin.models import ZZZSpecialty
 
-from hoyo_buddy.db import JSONFile, draw_locale, get_dyk
+from hoyo_buddy.db import JSONFile, get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_characters_card,
     draw_honkai_suits_card,
@@ -62,11 +62,8 @@ from ...models import DrawInput, UnownedGICharacter, UnownedHSRCharacter, Unowne
 from ...utils import get_now
 
 if TYPE_CHECKING:
-    from asyncio import AbstractEventLoop
     from collections.abc import Iterable, Sequence
-    from concurrent.futures import ThreadPoolExecutor
 
-    import aiohttp
     from discord import File, Member, User
 
     from hoyo_buddy.db import HoyoAccount
@@ -127,24 +124,18 @@ class CharactersView(PaginatorView):
     def __init__(
         self,
         account: HoyoAccount,
-        dark_mode: bool,
         element_char_counts: dict[str, int],
         path_char_counts: dict[str, int],
         *,
-        session: aiohttp.ClientSession,
-        executor: ThreadPoolExecutor,
-        loop: AbstractEventLoop,
+        draw_input: DrawInput,
         author: User | Member | None,
         locale: Locale,
     ) -> None:
         super().__init__([], set_loading_state=True, author=author, locale=locale)
-        self._session = session
-        self._executor = executor
-        self._loop = loop
+        self.draw_input = draw_input
 
         self.account = account
         self.game = account.game
-        self.dark_mode = dark_mode
         self.dyk = ""
 
         self.element_char_counts = element_char_counts
@@ -377,9 +368,6 @@ class CharactersView(PaginatorView):
         return characters
 
     async def _draw_card(self, characters: Sequence[Character]) -> File:
-        session, loop, executor = self._session, self._loop, self._executor
-        locale = draw_locale(self.locale, self.account)
-
         if self.game is Game.GENSHIN:
             pc_icons = await self._get_gi_pc_icons()
 
@@ -390,14 +378,7 @@ class CharactersView(PaginatorView):
                 }
 
             file_ = await draw_gi_characters_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=locale,
-                    session=session,
-                    filename="characters.png",
-                    executor=executor,
-                    loop=loop,
-                ),
+                self.draw_input,
                 characters,  # pyright: ignore [reportArgumentType]
                 pc_icons,
                 talent_orders,
@@ -405,39 +386,18 @@ class CharactersView(PaginatorView):
         elif self.game is Game.STARRAIL:
             pc_icons = {str(c.id): HSR_TEAM_ICON_URL.format(char_id=c.id) for c in characters}
             file_ = await draw_hsr_characters_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=locale,
-                    session=session,
-                    filename="characters.png",
-                    executor=executor,
-                    loop=loop,
-                ),
+                self.draw_input,
                 characters,  # pyright: ignore [reportArgumentType]
                 pc_icons,
             )
         elif self.game is Game.ZZZ:
             file_ = await draw_zzz_characters_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=locale,
-                    session=session,
-                    filename="characters.png",
-                    executor=executor,
-                    loop=loop,
-                ),
+                self.draw_input,
                 characters,  # pyright: ignore [reportArgumentType]
             )
         elif self.game is Game.HONKAI:
             file_ = await draw_honkai_suits_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=locale,
-                    session=session,
-                    filename="characters.png",
-                    executor=executor,
-                    loop=loop,
-                ),
+                self.draw_input,
                 characters,  # pyright: ignore [reportArgumentType]
             )
         else:

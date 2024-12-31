@@ -122,7 +122,6 @@ daily_button.label: 每日任務通知
 daily_check_in: 每日簽到
 daily_checkin_embed_description: "本月已簽到 {day} 天\n錯過簽到 {missed} 天\n"
 daily_modal.title: 每日任務通知設定
-daily_training_button.label: 每日實訓通知
 delete_account_button_label: 刪除所選帳戶
 dendro: 草
 destruction: 毀滅
@@ -286,10 +285,8 @@ notes-card.gi.realm-currency: 洞天寶錢
 notes-card.gi.remaining: 剩餘
 notes-card.gi.resin: 樹脂
 notes-card.gi.resin-discounts: 樹脂折扣
-notes-card.hsr.daily-training: 每日實訓
 notes-card.hsr.echo-of-war-discounts: 歷戰餘響次數
 notes-card.hsr.reserved-power: 後備開拓力
-notes-card.hsr.trailblaze-power: 開拓力
 notes.item_full_in_time: "{emoji} 在 {in_time} 後溢出"
 notes.stamina_label: 體力提醒
 notes.stamina: "體力: {cur}/{max}, 在 {time} 後溢出"
@@ -405,8 +402,6 @@ resin_discount.embed.description: 每週首領折扣尚未全部使用完畢
 resin_reminder_button.label: 樹脂通知
 resin_reminder_modal.title: 樹脂通知設定
 reward_claimed_title: 已領取每日簽到獎勵
-rtbp_reminder_button.label: 後備開拓力通知
-rtbp_reminder_modal.title: 後備開拓力通知設定
 saturday: 星期六
 search_autocomplete_no_results: 未能找到任何結果
 search_autocomplete_not_setup: "搜尋自動完成選項尚未設置完成，請稍後再試。"
@@ -428,8 +423,6 @@ sumeru: 須彌
 sunday: 星期日
 superimpose_indicator: "疊影 {s}"
 talent_level.modal.title: 輸入天賦等級
-tbp_reminder_button.label: 開拓力通知
-tbp_reminder_modal.title: 開拓力通知設定
 tcg: 交換式卡牌
 the_hunt: 巡獵
 threshold.embed.description: "已達閥值 ({threshold})"
@@ -678,7 +671,7 @@ leaderboard_akasha_command_description: 查看原神角色傷害排行榜（由 
 akasha_you: 你
 achievement_lb_title: 成就數量排行榜
 planar_fissure_label: 次元分裂
-planar_fissure_desc: "次元分裂活動將在 {hours} 小時候開始，記得保存好你的開拓力！"
+planar_fissure_desc: "次元分裂活動將在 {hours} 小時後開始，記得保存好你的開拓力！"
 notif_modal.hours_before.label: 在活動開始的 X 小時前通知
 reminder_settings.reminde.set.type5: "狀態: {status}\n通知間隔: {notify_inverval} 分鐘\n最大通知數: {max_notif_count}\n通知時間: 活動開始的 {hours_before} 前"
 invalid_lb_selected_error_msg: 選擇了無效的排行榜
@@ -761,10 +754,8 @@ mimo_item_available_time: "在 {time} 後補貨"
 mimo_auto_task_embed_footer: 使用 /mimo 調整自動任務設定及購買獎勵
 mimo_auto_task_embed_desc: "Hoyo Buddy 為你完成了 {finish} 項任務並領取了 {claim_point} 積分"
 checkin_reward_embed_footer: 使用 /check-in 來調整通知
-mimo_auto_task_error_dm_content: "由於發生錯誤，自動 Mimo 任務完成功能已被停用，你可以使用</mimo>將其重新啟用。\n如果這個錯誤持續發生，或是你不知道如何解決它，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)內尋求協助。"
 mimo_status: "狀態: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy 使用 {points} 點積分幫你購買了 {item} 個物品。\n如果下方有顯示禮物碼，請自行使用</redeem>兌換。"
-mimo_auto_buy_error_dm_content: "由於發生錯誤，自動購買 Mimo 獎勵功能已被停用，你可以使用</mimo>將其重新啟用。\n如果這個錯誤持續發生，或是你不知道如何解決它，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)內尋求協助。"
 mimo_game_unavailable: "{game}目前無法使用旅行 Mimo"
 generic_error_title: 錯誤
 on_button_label: "開"
@@ -774,4 +765,18 @@ image_settings_use_m3_art: 使用意象影畫 3 繪圖
 remembrance: 記憶
 dismissible_default_title: 新功能！
 dismissible_default_footer: 此訊息只會顯示一次
-dismissible_m3_art_desc: 你現在可以在 ZZZ 代理人卡片中使用意象影畫 3 的繪圖了，在卡片設置中選擇「Hoyo Buddy 卡片樣式 2」，接著在圖片設定中打開「使用意象影畫 3 繪圖」。
+dismissible_m3_art_desc: '你現在可以在 ZZZ 代理人卡片中使用意象影畫 3 的繪圖了，在卡片設置中選擇「Hoyo Buddy 卡片樣式 2」，接著在圖片設定中打開「使用意象影畫 3 繪圖」。'
+mimo_lottery_info_hoyolab_decos: "…以及 {num} 個 HoYoLAB 裝飾"
+zzz_deadly_assault: 危局強襲戰
+challenge_command_assault_desc: 生成危局強襲戰卡片
+gi_mimo_start_desc: "請先於 [HoYoLAB]({url}) 將旅行 Mimo 活動設定完成"
+mimo_auto_draw_button_label: 自動抽獎
+mimo_auto_draw_desc: "Hoyo Buddy 會在積分足夠時自動抽獎；如果自動購買獎勵和自動抽獎同時啟用，會先嘗試購買，積分不足購買時則自動抽獎。"
+mimo_auto_draw_success_notify_toggle_label: 在自動抽獎成功時通知
+mimo_auto_draw_failure_notify_toggle_label: 在自動抽獎失敗時通知
+mimo_auto_draw_embed_desc: "Hoyo Buddy 使用 {points} 點積分幫你抽獎並獲得了以下物品。\n如果下方有顯示禮物碼，請自行使用</redeem>兌換。"
+mimo_auto_task_error_dm_content: "由於發生錯誤，旅行 Mimo: {feature}功能已被停用，你可以使用</mimo>將其重新啟用。\n如果這個錯誤持續發生，或是你不知道如何解決它，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)內尋求協助。"
+dismissible_hsr_temp2_desc: "你現在可以使用 Hoyo Buddy 樣式 2 來生成星穹鐵道角色卡片，在「卡片設定」中設置。推薦使用橫向圖片。"
+bounty_commission.embed.description: 懸賞委託尚未全部完成
+ridu_points.embed.description: 麗都週記任務尚未全部完成
+changelog_embed_title: 更新日誌

@@ -122,7 +122,6 @@ daily_button.label: Daily reminder
 daily_check_in: Daily check-in
 daily_checkin_embed_description: "Checked in {day} day(s) this month\nMissed check-in for {missed} day(s)\n"
 daily_modal.title: Daily Reminder Settings
-daily_training_button.label: Daily Training Reminder
 delete_account_button_label: Delete selected account
 dendro: Dendro
 destruction: Destruction
@@ -286,10 +285,8 @@ notes-card.gi.realm-currency: Realm Currency
 notes-card.gi.remaining: Remaining
 notes-card.gi.resin: Resin
 notes-card.gi.resin-discounts: Resin Discounts
-notes-card.hsr.daily-training: Daily Training
 notes-card.hsr.echo-of-war-discounts: Echo of War Limits
 notes-card.hsr.reserved-power: Reserved Power
-notes-card.hsr.trailblaze-power: Trailblaze Power
 notes.item_full_in_time: "{emoji} Full in {in_time}"
 notes.stamina_label: Stamina reminder
 notes.stamina: "Stamina: {cur}/{max}, full in {time}"
@@ -405,8 +402,6 @@ resin_discount.embed.description: Weekly boss discounts are not used up yet
 resin_reminder_button.label: Resin reminder
 resin_reminder_modal.title: Resin Reminder Settings
 reward_claimed_title: Daily Check-In Reward Claimed
-rtbp_reminder_button.label: Reserved trailblaze power reminder
-rtbp_reminder_modal.title: Reserved Trailblaze Power Reminder Settings
 saturday: Saturday
 search_autocomplete_no_results: No results found
 search_autocomplete_not_setup: "Search autocomplete choices not set up yet, please try again later."
@@ -428,8 +423,6 @@ sumeru: Sumeru
 sunday: Sunday
 superimpose_indicator: "Superimpose {s}"
 talent_level.modal.title: Enter Talent Level
-tbp_reminder_button.label: Trailblaze power reminder
-tbp_reminder_modal.title: Trailblaze Power Reminder Settings
 tcg: TCG
 the_hunt: The Hunt
 threshold.embed.description: "Threshold ({threshold}) is reached"
@@ -678,7 +671,7 @@ leaderboard_akasha_command_description: View Genshin Impact character damage lea
 akasha_you: You
 achievement_lb_title: Achievement Count Leaderboard
 planar_fissure_label: Planar Fissure
-planar_fissure_desc: "The Planar Fissure event is happening in {hour} hours, remember to save your trailblazer power!"
+planar_fissure_desc: "The Planar Fissure event is happening in {hour} hours, remember to save your trailblaze power!"
 notif_modal.hours_before.label: Notify X hours before the event starts
 reminder_settings.reminde.set.type5: "Status: {status}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}\nNotify Time: {hours_before} hours before the event starts"
 invalid_lb_selected_error_msg: Invalid leaderboard selected
@@ -761,10 +754,8 @@ mimo_item_available_time: "Refills in {time}"
 mimo_auto_task_embed_footer: Use /mimo to configure auto tasks and buy rewards
 mimo_auto_task_embed_desc: "Hoyo Buddy completed {finish} tasks and claimed {claim_point} points for you"
 checkin_reward_embed_footer: Use /check-in to configure notifications
-mimo_auto_task_error_dm_content: "Auto Mimo task completion has been disabled due to an error, you can enable it back using </mimo>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 mimo_status: "Status: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy bought {item} item(s) for you with {points} points.\nIf you see gift codes below, please redeem them manually with </redeem>."
-mimo_auto_buy_error_dm_content: "Auto Mimo reward buying has been disabled due to an error, you can enable it back using </mimo>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 mimo_game_unavailable: "Traveling Mimo is currently unavailable for {game}"
 generic_error_title: Error
 on_button_label: "ON"
@@ -776,3 +767,16 @@ dismissible_default_title: New Feature!
 dismissible_default_footer: This message will only show once
 dismissible_m3_art_desc: 'You can now use Mindscape 3 arts in your ZZZ agent cards, select "Hoyo Buddy template 2" in card settings, then toggle "Use M3 art" in image settings.'
 mimo_lottery_info_hoyolab_decos: "...and {num} HoYoLAB decorations"
+zzz_deadly_assault: Deadly Assault
+challenge_command_assault_desc: Generate Deadly Assault card
+gi_mimo_start_desc: "Please set up the Traveling Mimo event on [HoYoLAB]({url}) first"
+mimo_auto_draw_button_label: Auto prize draw
+mimo_auto_draw_desc: "Hoyo Buddy will draw prizes for you whenever possible; if auto buy and auto prize draw are both enabled, it will try to buy first and draw if there are not enough points to buy."
+mimo_auto_draw_success_notify_toggle_label: Notify on auto prize draw success
+mimo_auto_draw_failure_notify_toggle_label: Notify on auto prize draw failure
+mimo_auto_draw_embed_desc: "Hoyo Buddy drew the following items with {points} points.\nIf you see gift codes below, please redeem them manually with </redeem>."
+mimo_auto_task_error_dm_content: "Traveling Mimo: {feature} has been disabled due to an error, you can enable it back using </mimo>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
+dismissible_hsr_temp2_desc: "You can now use the new Hoyo Buddy template 2 for HSR character cards, select it in card settings. It is recommended to use hotizontal images for this template."
+bounty_commission.embed.description: Bounty commissions not completed yet
+ridu_points.embed.description: Ridu weekly tasks not completed yet
+changelog_embed_title: Changelog

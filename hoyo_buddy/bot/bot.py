@@ -13,7 +13,6 @@ import asyncpg_listen
 import discord
 import enka
 import genshin
-import git
 import sentry_sdk
 from asyncache import cached
 from cachetools import TTLCache
@@ -43,7 +42,7 @@ from ..enums import Game, GeetestType, Platform
 from ..exceptions import NoAccountFoundError
 from ..hoyo.clients.novel_ai import NAIClient
 from ..l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
-from ..utils import fetch_json, get_now, get_repo_version
+from ..utils import fetch_json, get_now, get_project_version
 from .cache import LFUCache
 from .command_tree import CommandTree
 
@@ -66,8 +65,7 @@ class HoyoBuddy(commands.AutoShardedBot):
     def __init__(
         self, *, session: ClientSession, env: str, pool: asyncpg.Pool, config: Config
     ) -> None:
-        self.repo = git.Repo()
-        self.version = get_repo_version()
+        self.version = get_project_version()
 
         super().__init__(
             command_prefix=commands.when_mentioned,
@@ -115,7 +113,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.farm_check_running: bool = False
 
     async def update_version_activity(self) -> None:
-        self.version = get_repo_version()
+        self.version = get_project_version()
         self.activity = discord.CustomActivity(f"{self.version} | hb.seria.moe")
 
     async def setup_hook(self) -> None:

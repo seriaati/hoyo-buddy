@@ -59,6 +59,10 @@ class TextBBox(NamedTuple):
     def height(self) -> int:
         return self.bottom - self.top
 
+    @property
+    def size(self) -> tuple[int, int]:
+        return self.width, self.height
+
 
 SUPPORTED_BY_NUNITO: tuple[Locale, ...] = (
     Locale.american_english,

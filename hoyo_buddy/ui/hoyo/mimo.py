@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING, Any
 
 import genshin
@@ -29,6 +30,11 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Interaction, User
+
+
+def is_valuable(reward: genshin.models.MimoLotteryReward | genshin.models.MimoShopItem) -> bool:
+    match = re.search(r"^(\d[\d,]*)|[\D\s](\d[\d,]*)$", reward.name)
+    return bool(match)
 
 
 class MimoView(ui.View):
@@ -124,7 +130,7 @@ class MimoView(ui.View):
         stock_str = LocaleStr(key="exchangePrizeLeft", mi18n_game="mimo").translate(self.locale)
 
         for shop_item in shop_items:
-            if "×" not in shop_item.name:  # noqa: RUF001
+            if not is_valuable(shop_item):
                 # Skip hoyolab decorations
                 continue
 
@@ -161,7 +167,7 @@ class MimoView(ui.View):
             )
         )
 
-        valuables: list[str] = [r.name for r in lottery_info.rewards if "×" in r.name]  # noqa: RUF001
+        valuables: list[str] = [r.name for r in lottery_info.rewards if is_valuable(r)]
         embed.add_field(
             name=LocaleStr(key="lottery_modal_info_title", mi18n_game="mimo"),
             value=create_bullet_list(
@@ -196,8 +202,10 @@ class MimoView(ui.View):
         self.add_item(ViewShopButton())
         self.add_item(LotteryInfoButton())
         self.add_item(InfoButton())
+
         self.add_item(AutoFinishAndClaimButton(current_toggle=self.account.mimo_auto_task))
         self.add_item(AutoBuyButton(current_toggle=self.account.mimo_auto_buy))
+        self.add_item(AutoDrawButton(current_toggle=self.account.mimo_auto_draw))
 
         embed = await self.get_tasks_embed(points=points)
         await i.followup.send(embed=embed, view=self)
@@ -258,6 +266,18 @@ class AutoBuyButton(ui.ToggleButton[MimoView]):
         await self.view.account.save(update_fields=("mimo_auto_buy",))
 
 
+class AutoDrawButton(ui.ToggleButton[MimoView]):
+    def __init__(self, *, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle, toggle_label=LocaleStr(key="mimo_auto_draw_button_label"), row=2
+        )
+
+    async def callback(self, i: Interaction) -> Any:
+        await super().callback(i)
+        self.view.account.mimo_auto_draw = self.current_toggle
+        await self.view.account.save(update_fields=("mimo_auto_draw",))
+
+
 class ViewShopButton(ui.Button[MimoView]):
     def __init__(self) -> None:
         super().__init__(
@@ -305,7 +325,7 @@ class ShopItemSelector(ui.PaginatorSelect[MimoView]):
     ) -> list[ui.SelectOption]:
         options: list[ui.SelectOption] = []
 
-        for reward in sorted(shop_items, key=lambda x: "×" in x.name, reverse=True):  # noqa: RUF001
+        for reward in sorted(shop_items, key=is_valuable, reverse=True):
             if (
                 reward.status is not genshin.models.MimoShopItemStatus.EXCHANGEABLE
                 or reward.cost > points
@@ -407,6 +427,11 @@ class InfoButton(ui.Button[MimoView]):
             value=LocaleStr(key="mimo_auto_buy_desc"),
             inline=False,
         )
+        embed.add_field(
+            name=LocaleStr(key="mimo_auto_draw_button_label"),
+            value=LocaleStr(key="mimo_auto_draw_desc"),
+            inline=False,
+        )
         await i.response.send_message(embed=embed, ephemeral=True)
 
 
@@ -417,6 +442,7 @@ class LotteryDrawButton(ui.Button[MimoView]):
             disabled=disabled,
             style=ButtonStyle.blurple,
             emoji=PAYMENTS,
+            custom_id="mimo_lottery_draw",
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -453,6 +479,9 @@ class LotteryDrawButton(ui.Button[MimoView]):
             game_id=self.view.game_id, version_id=self.view.version_id
         )
         embed = self.view.get_lottery_info_embed(lottery_info)
+        self.view.item_states["mimo_lottery_draw"] = (
+            lottery_info.current_count >= lottery_info.limit_count
+        )
         await self.unset_loading_state(i, embed=embed)
 
 
@@ -503,6 +532,13 @@ class NotificationSettings(ui.Button[MimoView]):
         self.view.add_item(
             AutoBuyFailureNotify(current_toggle=self.view.account.notif_settings.mimo_buy_failure)
         )
+        self.view.add_item(
+            AutoDrawSuccessNotify(current_toggle=self.view.account.notif_settings.mimo_draw_success)
+        )
+        self.view.add_item(
+            AutoDrawFailureNotify(current_toggle=self.view.account.notif_settings.mimo_draw_failure)
+        )
+
         await i.edit_original_response(view=self.view)
 
 
@@ -561,3 +597,31 @@ class AutoBuyFailureNotify(ui.ToggleButton[MimoView]):
         await super().callback(i)
         self.view.account.notif_settings.mimo_buy_failure = self.current_toggle
         await self.view.account.notif_settings.save(update_fields=("mimo_buy_failure",))
+
+
+class AutoDrawSuccessNotify(ui.ToggleButton[MimoView]):
+    def __init__(self, *, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle,
+            toggle_label=LocaleStr(key="mimo_auto_draw_success_notify_toggle_label"),
+            row=2,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i)
+        self.view.account.notif_settings.mimo_draw_success = self.current_toggle
+        await self.view.account.notif_settings.save(update_fields=("mimo_draw_success",))
+
+
+class AutoDrawFailureNotify(ui.ToggleButton[MimoView]):
+    def __init__(self, *, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle,
+            toggle_label=LocaleStr(key="mimo_auto_draw_failure_notify_toggle_label"),
+            row=2,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i)
+        self.view.account.notif_settings.mimo_draw_failure = self.current_toggle
+        await self.view.account.notif_settings.save(update_fields=("mimo_draw_failure",))

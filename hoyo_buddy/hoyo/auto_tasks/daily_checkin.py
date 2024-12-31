@@ -29,7 +29,9 @@ class DailyCheckin:
     _total_checkin_count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
     _no_error_notify: ClassVar[bool]
-    _embeds: ClassVar[defaultdict[int, list[tuple[int, Embed]]]]  # User ID -> (Account ID, Embed)
+
+    _embeds: ClassVar[defaultdict[int, list[tuple[int, Embed]]]]
+    """User ID -> (Account ID, Embed)"""
 
     @classmethod
     async def execute(
@@ -59,7 +61,12 @@ class DailyCheckin:
                         daily_checkin=True, game=GPY_GAME_TO_HB_GAME[game]
                     )
 
+                cookie_game_pairs = set()  # Track cookie-game pairs to avoid duplicate check-ins
+
                 for account in accounts:
+                    if (account.cookies, account.game) in cookie_game_pairs:
+                        continue
+                    cookie_game_pairs.add((account.cookies, account.game))
                     if account.platform is Platform.HOYOLAB:
                         await queue.put(account)
                     else:

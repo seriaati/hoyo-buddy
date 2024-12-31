@@ -46,6 +46,10 @@ class NotesNotifyType(IntEnum):
     """Planar Fissur Double Drop Rate"""
     STAMINA = 17
     """Honkai Impact 3rd Stamina"""
+    ZZZ_BOUNTY = 18
+    """ZZZ bounty commissions"""
+    RIDU_POINTS = 19
+    """ZZZ Ridu weekly points"""
 
 
 class TalentBoost(IntEnum):
@@ -123,6 +127,7 @@ class ChallengeType(StrEnum):
     APC_SHADOW = "Apocalyptic shadow"
     IMG_THEATER = "img_theater_large_block_title"
     SHIYU_DEFENSE = "Shiyu defense"
+    ASSAULT = "zzz_deadly_assault"
 
 
 class ZZZElement(StrEnum):

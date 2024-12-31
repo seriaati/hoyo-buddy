@@ -48,7 +48,7 @@ def contains_traveler_id(character_id: str) -> bool:
     return any(str(traveler_id) in character_id for traveler_id in TRAVELER_IDS)
 
 
-GI_SERVER_RESET_HOURS: dict[str, int] = {
+SERVER_RESET_HOURS: dict[str, int] = {
     "os_usa": 17,
     "os_euro": 11,
     "prod_official_usa": 17,
@@ -477,7 +477,7 @@ GI_SKILL_TYPE_KEYS = {
 GAME_CHALLENGE_TYPES: Final[dict[Game, tuple[ChallengeType, ...]]] = {
     Game.GENSHIN: (ChallengeType.SPIRAL_ABYSS, ChallengeType.IMG_THEATER),
     Game.STARRAIL: (ChallengeType.MOC, ChallengeType.PURE_FICTION, ChallengeType.APC_SHADOW),
-    Game.ZZZ: (ChallengeType.SHIYU_DEFENSE,),
+    Game.ZZZ: (ChallengeType.SHIYU_DEFENSE, ChallengeType.ASSAULT),
 }
 CHALLENGE_TYPE_GAMES = {
     type_: game for game, types in GAME_CHALLENGE_TYPES.items() for type_ in types
@@ -740,15 +740,12 @@ def get_disc_substat_roll_num(
 
 
 PROXY_APIS: dict[ProxyAPI, str] = {
-    "VERCEL3": os.environ["VERCEL3_URL"],
-    "VERCEL2": os.environ["VERCEL2_URL"],
-    "VERCEL": os.environ["VERCEL_URL"],
     "RENDER": os.environ["RENDER_URL"],
     "RENDER2": os.environ["RENDER2_URL"],
+    "RENDER3": os.environ["RENDER3_URL"],
+    "VERCEL": os.environ["VERCEL_URL"],
     "FLY": os.environ["FLY_URL"],
-    # "B4A": os.environ["B4A_URL"],
     "RAILWAY": os.environ["RAILWAY_URL"],
-    # "LEAPCELL": os.environ["LEAPCELL_URL"],
 }
 
 CODE_CHANNEL_IDS = {
@@ -815,3 +812,15 @@ POST_REPLIES = (
 
 NO_BETA_CONTENT_GUILDS = {916725085019181056, 888984573403340860, 1084856284198752388}
 """Discord servers that don't allow unreleased game content."""
+
+CHANGELOG_LANGS = ("EN", "ZH", "VI")
+CHANGELOG_URL = "https://github.com/seriaati/hoyo-buddy/blob/main/changelogs/CHANGELOG_{lang}.md"
+LOCALE_TO_CHANGELOG_LANG = {
+    discord.Locale.chinese: "ZH",
+    discord.Locale.taiwan_chinese: "ZH",
+    discord.Locale.vietnamese: "VI",
+}
+
+
+def get_changelog_url(locale: discord.Locale) -> str:
+    return CHANGELOG_URL.format(lang=LOCALE_TO_CHANGELOG_LANG.get(locale, "EN"))

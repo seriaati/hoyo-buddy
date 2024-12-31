@@ -16,7 +16,7 @@ from seria.tortoise.model import Model
 from tortoise import exceptions, fields
 from tortoise.expressions import F
 
-from ..constants import GI_SERVER_RESET_HOURS, HB_GAME_TO_GPY_GAME, UTC_8
+from ..constants import HB_GAME_TO_GPY_GAME, SERVER_RESET_HOURS, UTC_8
 from ..enums import ChallengeType, Game, LeaderboardType, NotesNotifyType, Platform
 from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
@@ -95,6 +95,7 @@ class HoyoAccount(BaseModel):
     auto_redeem = fields.BooleanField(default=True)
     mimo_auto_task = fields.BooleanField(default=True)
     mimo_auto_buy = fields.BooleanField(default=False)
+    mimo_auto_draw = fields.BooleanField(default=False)
     mimo_all_claimed_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
     public = fields.BooleanField(default=True)
     """Whether this account can be seen by others."""
@@ -123,7 +124,7 @@ class HoyoAccount(BaseModel):
     def server_reset_datetime(self) -> datetime.datetime:
         """Server reset time in UTC+8."""
         server = genshin.utility.recognize_server(self.uid, HB_GAME_TO_GPY_GAME[self.game])
-        reset_hour = GI_SERVER_RESET_HOURS.get(server, 4)
+        reset_hour = SERVER_RESET_HOURS.get(server, 4)
         reset_time = get_now().replace(hour=reset_hour, minute=0, second=0, microsecond=0)
         if reset_time < get_now():
             reset_time += datetime.timedelta(days=1)
@@ -160,6 +161,9 @@ class AccountNotifSettings(BaseModel):
     mimo_task_failure = fields.BooleanField(default=True)
     mimo_buy_success = fields.BooleanField(default=True)
     mimo_buy_failure = fields.BooleanField(default=True)
+    mimo_draw_success = fields.BooleanField(default=True)
+    mimo_draw_failure = fields.BooleanField(default=True)
+
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
         "models.HoyoAccount", related_name="notif_settings", pk=True
     )
@@ -328,7 +332,7 @@ class ChallengeHistory(BaseModel):
     async def add_data(
         cls, *, uid: int, challenge_type: ChallengeType, season_id: int, data: Challenge, lang: str
     ) -> None:
-        if isinstance(data, genshin.models.SpiralAbyss):
+        if isinstance(data, genshin.models.SpiralAbyss | genshin.models.DeadlyAssault):
             start_time = data.start_time
             end_time = data.end_time
             name = None

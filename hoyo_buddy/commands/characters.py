@@ -6,9 +6,11 @@ from typing import TYPE_CHECKING
 import hakushin
 
 from hoyo_buddy.constants import locale_to_hakushin_lang
+from hoyo_buddy.db.utils import draw_locale
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
+from hoyo_buddy.models import DrawInput
 from hoyo_buddy.ui.hoyo.characters import CharactersView
 
 if TYPE_CHECKING:
@@ -53,23 +55,29 @@ class CharactersCommand:
     async def run(self, i: Interaction) -> None:
         account, settings = self.account, self.settings
         game = account.game
+        locale = settings.locale or i.locale
 
         if game is Game.GENSHIN:
             await self.run_gi()
         elif game is Game.STARRAIL:
             await self.run_hsr()
         elif game is Game.ZZZ:
-            await self.run_zzz(settings.locale or i.locale)
+            await self.run_zzz(locale)
 
-        view = CharactersView(
-            account,
-            settings.dark_mode,
-            self.element_char_counts,
-            self.path_char_counts,
+        draw_input = DrawInput(
+            dark_mode=settings.dark_mode,
+            locale=draw_locale(locale, account),
             session=i.client.session,
+            filename="characters.png",
             executor=i.client.executor,
             loop=i.client.loop,
+        )
+        view = CharactersView(
+            account,
+            self.element_char_counts,
+            self.path_char_counts,
             author=i.user,
-            locale=settings.locale or i.locale,
+            locale=locale,
+            draw_input=draw_input,
         )
         await view.start(i)

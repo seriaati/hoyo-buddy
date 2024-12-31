@@ -27,11 +27,7 @@ from hoyo_buddy.ui import Button, GoBackButton, View
 from hoyo_buddy.ui.components import Select, SelectOption
 
 if TYPE_CHECKING:
-    import asyncio
-    import concurrent.futures
     import io
-
-    import aiohttp
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Interaction
@@ -194,7 +190,7 @@ class NotesView(View):
                 account=self.account, type=NotesNotifyType.TB_POWER
             )
             embed.add_field(
-                name=LocaleStr(key="tbp_reminder_button.label"),
+                name=LocaleStr(key="hsr_note_stamina", mi18n_game=Game.STARRAIL),
                 value=self._get_type1_value(tbp_notify),
                 inline=False,
             )
@@ -203,7 +199,7 @@ class NotesView(View):
                 account=self.account, type=NotesNotifyType.RESERVED_TB_POWER
             )
             embed.add_field(
-                name=LocaleStr(key="rtbp_reminder_button.label"),
+                name=LocaleStr(key="hsr_note_reserve_stamina", mi18n_game=Game.STARRAIL),
                 value=self._get_type1_value(reserved_tbp_notify),
                 inline=False,
             )
@@ -278,6 +274,24 @@ class NotesView(View):
             embed.add_field(
                 name=LocaleStr(key="vhs_sale", mi18n_game=Game.ZZZ),
                 value=self._get_type2_value(video_store_notify),
+                inline=False,
+            )
+
+            ridu_points_notify = await NotesNotify.get_or_none(
+                account=self.account, type=NotesNotifyType.RIDU_POINTS
+            )
+            embed.add_field(
+                name=LocaleStr(key="weekly_task_point", mi18n_game=Game.ZZZ),
+                value=self._get_type4_value(ridu_points_notify),
+                inline=False,
+            )
+
+            bounty_comm_notify = await NotesNotify.get_or_none(
+                account=self.account, type=NotesNotifyType.ZZZ_BOUNTY
+            )
+            embed.add_field(
+                name=LocaleStr(key="bounty_commission", mi18n_game=Game.ZZZ),
+                value=self._get_type4_value(bounty_comm_notify),
                 inline=False,
             )
 
@@ -498,50 +512,12 @@ class NotesView(View):
 
         raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
 
-    async def _draw_notes_card(
-        self,
-        session: aiohttp.ClientSession,
-        notes: NotesWithCard,
-        executor: concurrent.futures.ThreadPoolExecutor,
-        loop: asyncio.AbstractEventLoop,
-    ) -> io.BytesIO:
-        locale = draw_locale(self.locale, self.account)
-
+    async def _draw_notes_card(self, notes: NotesWithCard, draw_input: DrawInput) -> io.BytesIO:
         if isinstance(notes, genshin.models.Notes):
-            return await draw_gi_notes_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=locale,
-                    session=session,
-                    filename="notes.png",
-                    executor=executor,
-                    loop=loop,
-                ),
-                notes,
-            )
+            return await draw_gi_notes_card(draw_input, notes)
         if isinstance(notes, genshin.models.ZZZNotes):
-            return await draw_zzz_notes_card(
-                DrawInput(
-                    dark_mode=self.dark_mode,
-                    locale=locale,
-                    session=session,
-                    filename="notes.png",
-                    executor=executor,
-                    loop=loop,
-                ),
-                notes,
-            )
-        return await draw_hsr_notes_card(
-            DrawInput(
-                dark_mode=self.dark_mode,
-                locale=locale,
-                session=session,
-                filename="notes.png",
-                executor=executor,
-                loop=loop,
-            ),
-            notes,
-        )
+            return await draw_zzz_notes_card(draw_input, notes)
+        return await draw_hsr_notes_card(draw_input, notes)
 
     def _get_notes_embed(
         self,
@@ -655,9 +631,15 @@ class NotesView(View):
         embed = self._get_notes_embed(notes)
 
         if isinstance(notes, NotesWithCard):
-            self.bytes_obj = await self._draw_notes_card(
-                i.client.session, notes, i.client.executor, i.client.loop
+            draw_input = DrawInput(
+                dark_mode=self.dark_mode,
+                locale=draw_locale(self.locale, self.account),
+                session=i.client.session,
+                filename="notes.png",
+                executor=i.client.executor,
+                loop=i.client.loop,
             )
+            self.bytes_obj = await self._draw_notes_card(notes, draw_input)
             self.bytes_obj.seek(0)
             file_ = File(self.bytes_obj, filename="notes.png")
         else:
@@ -726,7 +708,9 @@ class ReminderButton(Button[NotesView]):
         elif self.view.account.game is Game.ZZZ:
             from .buttons import (  # noqa: PLC0415
                 BatteryReminder,
+                BountyCommissionReminder,
                 DailyReminder,
+                RiduPointsReminder,
                 ScratchCardReminder,
                 VideoStoreReminder,
             )
@@ -735,6 +719,8 @@ class ReminderButton(Button[NotesView]):
             self.view.add_item(DailyReminder(row=0))
             self.view.add_item(ScratchCardReminder(row=1))
             self.view.add_item(VideoStoreReminder(row=1))
+            self.view.add_item(RiduPointsReminder(row=2))
+            self.view.add_item(BountyCommissionReminder(row=2))
         elif self.view.account.game is Game.HONKAI:
             from .buttons import DailyReminder, StaminaReminder  # noqa: PLC0415
 

@@ -80,7 +80,7 @@ class NotesChecker:
             case NotesNotifyType.TB_POWER:
                 embed = DefaultEmbed(
                     locale,
-                    title=LocaleStr(key="tbp_reminder_button.label"),
+                    title=LocaleStr(key="hsr_note_stamina", mi18n_game=Game.STARRAIL),
                     description=LocaleStr(
                         key="threshold.embed.description", threshold=notify.threshold
                     ),
@@ -89,7 +89,7 @@ class NotesChecker:
             case NotesNotifyType.RESERVED_TB_POWER:
                 embed = DefaultEmbed(
                     locale,
-                    title=LocaleStr(key="rtbp_reminder_button.label"),
+                    title=LocaleStr(key="hsr_note_reserve_stamina", mi18n_game=Game.STARRAIL),
                     description=LocaleStr(
                         key="threshold.embed.description", threshold=notify.threshold
                     ),
@@ -127,7 +127,7 @@ class NotesChecker:
             case NotesNotifyType.HSR_DAILY:
                 embed = DefaultEmbed(
                     locale,
-                    title=LocaleStr(key="daily_training_button.label"),
+                    title=LocaleStr(key="hsr_note_daily_training", mi18n_game=Game.STARRAIL),
                     description=LocaleStr(key="hsr_daily.embed.description"),
                 )
             case NotesNotifyType.RESIN_DISCOUNT | NotesNotifyType.ECHO_OF_WAR:
@@ -187,6 +187,20 @@ class NotesChecker:
                         cur=notes.current_stamina,
                         max=notes.max_stamina,
                     )
+                )
+            case NotesNotifyType.ZZZ_BOUNTY:
+                assert isinstance(notes, ZZZNotes)
+                embed = DefaultEmbed(
+                    locale,
+                    title=LocaleStr(key="bounty_commission_progress", mi18n_game=Game.ZZZ),
+                    description=LocaleStr(key="bounty_commission.embed.description"),
+                )
+            case NotesNotifyType.RIDU_POINTS:
+                assert isinstance(notes, ZZZNotes)
+                embed = DefaultEmbed(
+                    locale,
+                    title=LocaleStr(key="weekly_task_point", mi18n_game=Game.ZZZ),
+                    description=LocaleStr(key="ridu_points.embed.description"),
                 )
 
         embed.add_acc_info(notify.account, blur=False)
@@ -422,6 +436,36 @@ class NotesChecker:
         return None
 
     @classmethod
+    async def _process_zzz_bounty(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
+        """Process bounty commission notification."""
+        comm = notes.hollow_zero.bounty_commission
+        if comm is None:
+            return None
+
+        if comm.cur_completed >= comm.total:
+            est_time = get_now() + comm.refresh_time
+            return await cls._reset_notif_count(notify, est_time=est_time)
+
+        if notify.current_notif_count < notify.max_notif_count:
+            await cls._notify_user(notify, notes)
+        return None
+
+    @classmethod
+    async def _process_ridu_points(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
+        """Process ridu points notification."""
+        weekly = notes.weekly_task
+        if weekly is None:
+            return None
+
+        if weekly.cur_point >= weekly.max_point:
+            est_time = get_now() + weekly.refresh_time
+            return await cls._reset_notif_count(notify, est_time=est_time)
+
+        if notify.current_notif_count < notify.max_notif_count:
+            await cls._notify_user(notify, notes)
+        return None
+
+    @classmethod
     async def _process_notify(
         cls,
         notify: NotesNotify,
@@ -465,6 +509,12 @@ class NotesChecker:
             case NotesNotifyType.PLANAR_FISSURE:
                 assert events is not None
                 await cls._process_planar_fissure_notify(notify, events)
+            case NotesNotifyType.ZZZ_BOUNTY:
+                assert isinstance(notes, ZZZNotes)
+                await cls._process_zzz_bounty(notify, notes)
+            case NotesNotifyType.RIDU_POINTS:
+                assert isinstance(notes, ZZZNotes)
+                await cls._process_ridu_points(notify, notes)
 
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:
@@ -486,7 +536,10 @@ class NotesChecker:
         if notify.est_time is not None and get_now() < notify.est_time:
             return True
 
-        if notify.notify_weekday is not None and notify.notify_weekday != get_now().weekday() + 1:
+        if (
+            notify.notify_weekday is not None
+            and notify.notify_weekday != notify.account.server_reset_datetime.weekday() + 1
+        ):
             return True
 
         if (

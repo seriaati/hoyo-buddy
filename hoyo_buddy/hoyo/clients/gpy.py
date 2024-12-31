@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 from loguru import logger
 
 from hoyo_buddy.db import EnkaCache, HoyoAccount, JSONFile
-from hoyo_buddy.exceptions import ProxyAPIError
+from hoyo_buddy.exceptions import HoyoBuddyError, ProxyAPIError
 from hoyo_buddy.web_app.utils import decrypt_string
 
 from ... import models
@@ -402,6 +402,7 @@ class GenshinClient(ProxyGenshinClient):
                     ),
                     hakushin.Game.HSR,
                 ),
+                rarity=character.equip.rarity,
             )
             if character.equip is not None
             else None
@@ -435,6 +436,7 @@ class GenshinClient(ProxyGenshinClient):
             name=character.name,
             level=character.level,
             eidolons_unlocked=character.rank,
+            rarity=character.rarity,
             light_cone=light_cone,
             relics=relics,
             stats=[
@@ -448,6 +450,10 @@ class GenshinClient(ProxyGenshinClient):
             traces=[
                 models.Trace(anchor=skill.anchor, icon=skill.item_url, level=skill.level)
                 for skill in character.skills
+            ],
+            eidolons=[
+                models.Eidolon(icon=eidolon.icon, unlocked=eidolon.is_unlocked)
+                for eidolon in character.ranks
             ],
             max_level=hakushin.utils.get_max_level_from_ascension(
                 hakushin.utils.get_ascension_from_level(character.level, True, hakushin.Game.HSR),
@@ -525,7 +531,11 @@ class GenshinClient(ProxyGenshinClient):
         cache, _ = await EnkaCache.get_or_create(uid=self.uid)
         agents = await super().get_zzz_agents(uid)
         for agent in agents:
-            set_or_update_dict(cache.extras, f"{agent.id}-hoyolab", {"live": True})
+            set_or_update_dict(
+                cache.extras,
+                f"{agent.id}-hoyolab",
+                {"live": True, "locale": GPY_LANG_TO_LOCALE[self.lang].value},
+            )
         await cache.save(update_fields=("extras",))
         return agents
 
@@ -828,12 +838,23 @@ class GenshinClient(ProxyGenshinClient):
         self, *, game_id: int, version_id: int, api_url: str | None = None
     ) -> Sequence[genshin.models.MimoTask]:
         api_url = api_url or next(proxy_api_rotator)
-        if api_url == "LOCAL":
-            return await super().get_mimo_tasks(game_id=game_id, version_id=version_id)
 
-        payload = {"game_id": game_id, "version_id": version_id}
-        data = await self.request_proxy_api(api_url, "mimo/tasks", payload)
-        return [genshin.models.MimoTask(**orjson.loads(task)) for task in data["tasks"]]
+        try:
+            if api_url == "LOCAL":
+                return await super().get_mimo_tasks(game_id=game_id, version_id=version_id)
+
+            payload = {"game_id": game_id, "version_id": version_id}
+            data = await self.request_proxy_api(api_url, "mimo/tasks", payload)
+            return [genshin.models.MimoTask(**orjson.loads(task)) for task in data["tasks"]]
+        except genshin.GenshinException as e:
+            if e.retcode == -510001:  # Invalid fields in calculation
+                raise HoyoBuddyError(
+                    message=LocaleStr(
+                        key="gi_mimo_start_desc",
+                        url="https://act.hoyolab.com/ys/event/bbs-event-20240828mimo/index.html",
+                    )
+                ) from e
+            raise
 
     async def get_mimo_shop_items(
         self, *, game_id: int, version_id: int, api_url: str | None = None

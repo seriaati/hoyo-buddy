@@ -7,6 +7,7 @@ from discord import Locale
 from PIL import ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import format_timedelta
 
@@ -28,7 +29,7 @@ def draw_hsr_notes_card(notes: StarRailNote, locale_: str, dark_mode: bool) -> B
     )
 
     drawer.write(
-        LocaleStr(key="notes-card.hsr.daily-training"),
+        LocaleStr(key="hsr_note_daily_training", mi18n_game=Game.STARRAIL),
         size=35,
         position=(110, 400),
         style="light",
@@ -42,7 +43,7 @@ def draw_hsr_notes_card(notes: StarRailNote, locale_: str, dark_mode: bool) -> B
     )
 
     drawer.write(
-        LocaleStr(key="notes-card.hsr.trailblaze-power"),
+        LocaleStr(key="hsr_note_stamina", mi18n_game=Game.STARRAIL),
         size=35,
         position=(110, 800),
         style="light",

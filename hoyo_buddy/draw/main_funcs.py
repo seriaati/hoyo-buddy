@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, Literal
 import ambr
 import enka
 import hakushin
+import yatta
 from discord import File
 from genshin.models import ZZZFullAgent
 
@@ -74,6 +75,8 @@ async def draw_hsr_build_card(
     character: enka.hsr.Character | HoyolabHSRCharacter,
     image_url: str,
     primary_hex: str,
+    *,
+    template: Literal[1, 2],
 ) -> BytesIO:
     urls: list[str] = []
     urls.append(image_url)
@@ -89,21 +92,41 @@ async def draw_hsr_build_card(
         urls.extend(sub_stat.icon for sub_stat in relic.sub_stats)
 
     if character.light_cone is not None:
-        urls.append(character.light_cone.icon.image)
+        if template == 2:
+            urls.append(character.light_cone.icon.item)
+        else:
+            urls.append(character.light_cone.icon.image)
         if isinstance(character, enka.hsr.Character):
             urls.extend(stat.icon for stat in character.light_cone.stats)
 
-    await download_images(urls, "hsr-build-card", draw_input.session)
+    if template == 2:
+        urls.extend(e.icon for e in character.eidolons)
 
-    return await draw_input.loop.run_in_executor(
-        draw_input.executor,
-        funcs.hsr.draw_hsr_build_card,
+    await download_images(urls, f"hsr-build-card{'2' if template == 2 else ''}", draw_input.session)
+
+    if template == 1:
+        return await draw_input.loop.run_in_executor(
+            draw_input.executor,
+            funcs.hsr.draw_hsr_build_card,
+            character,
+            draw_input.locale.value,
+            draw_input.dark_mode,
+            image_url,
+            primary_hex,
+        )
+
+    async with yatta.YattaAPI() as api:
+        yatta_character = await api.fetch_character_detail(int(character.id))
+        en_name = yatta_character.name
+
+    card = funcs.hsr.HSRBuildCard2(
         character,
-        draw_input.locale.value,
-        draw_input.dark_mode,
-        image_url,
-        primary_hex,
+        locale=draw_input.locale.value,
+        dark_mode=draw_input.dark_mode,
+        image_url=image_url,
+        en_name=en_name,
     )
+    return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
 
 async def draw_hsr_notes_card(draw_input: DrawInput, notes: StarRailNote) -> BytesIO:
@@ -687,6 +710,24 @@ async def draw_block_list_card(
     await download_images(urls, "block-list", draw_input.session)
 
     card = funcs.block_list.BlockListCard(block_lists, dark_mode=draw_input.dark_mode)
+    buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_assault_card(
+    draw_input: DrawInput, data: genshin.models.DeadlyAssault, uid: int | None = None
+) -> File:
+    urls: list[str] = []
+    for challenge in data.challenges:
+        urls.extend((challenge.boss.icon, challenge.boss.badge_icon))
+        urls.extend(buff.icon for buff in challenge.buffs)
+        urls.extend(agent.icon for agent in challenge.agents)
+        if challenge.bangboo is not None:
+            urls.append(challenge.bangboo.icon)
+    await download_images(urls, "assault", draw_input.session)
+
+    card = funcs.zzz.AssaultCard(data, draw_input.locale.value, uid)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

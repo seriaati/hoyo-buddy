@@ -7,7 +7,7 @@
 - (`/mimo`) Thêm hỗ trợ cho Genshin Du Lịch Mimo (sự kiện đã kết thúc từ thời điểm viếtviết).
 - (`/mimo`) Đã thêm tính năng rút thưởng tự động.
 - (`/challenge zzz`) Thêm hỗ trợ cho Tập Kích Nguy Cấp.
-- (`/profile hsr`) Thêm Mẫu thẻ 2z.
+- (`/profile hsr`) Thêm Mẫu thẻ 2.
 - (`/notes`) Thêm thông tin Tiến Độ Ủy Thác Treo Thưởng và Điểm Số Ridu Hàng Tuần cho ZZZZZZ
 
 ## Improvements

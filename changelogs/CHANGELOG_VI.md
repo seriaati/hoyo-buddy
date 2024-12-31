@@ -1,5 +1,31 @@
 # Nhật ký thay đổi Hoyo Buddy
 
+## v1.15.6
+
+### New Features
+
+- (`/mimo`) Thêm hỗ trợ cho Genshin Du Lịch Mimo (sự kiện đã kết thúc từ thời điểm viếtviết).
+- (`/mimo`) Đã thêm tính năng rút thưởng tự động.
+- (`/challenge zzz`) Thêm hỗ trợ cho Tập Kích Nguy Cấp.
+- (`/profile hsr`) Thêm Mẫu thẻ 2z.
+- (`/notes`) Thêm thông tin Tiến Độ Ủy Thác Treo Thưởng và Điểm Số Ridu Hàng Tuần cho ZZZZZZ
+
+## Improvements
+
+- (`/check-in`) Giảm các yêu cầu API điểm danh trùng lặp.
+
+## Bug Fixes
+
+- (`/mimo`) Sửa lỗi gửi thông báo khi không có nhiệm vụ nào được hoàn thành và không có điểm nào được nhận.
+- (`/mimo`) Sửa lỗi cách xác định các vật phẩm có giá trị.
+- (`/mimo`) Xử lý lỗi -510001.
+- (`/mimo`) Đã khắc phục sự cố trong đó các vật phẩm có giá trị được tính làm đồ trang trí cho HSR.
+- (`/mimo`) Vô hiệu hóa nút rút thăm xổ số khi đạt đến giới hạn.
+- (`/challenge zzz`) Sửa lỗi icon Bangboo sai trong thẻ.
+- (`/events`) Sửa lỗi tiến trình của La Hoàn Thâm Cảnh.
+- (`/gacha-log view`) Đã sửa lỗi số lần quay gacha từ độ hiếm cuối cùng.
+- Đã sửa lỗi logic tạo thư mục hình ảnh tĩnh.
+
 ## v1.15.5
 
 ### Tính năng mới

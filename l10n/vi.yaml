@@ -122,7 +122,6 @@ daily_button.label: Nhắc nhở hàng ngày
 daily_check_in: Điểm danh hàng ngày
 daily_checkin_embed_description: "Tháng này đã điểm danh {day} ngày\nĐiểm danh thiếu {missed} ngày\n"
 daily_modal.title: Cài đặt Lời nhắc hàng ngày
-daily_training_button.label: Lời nhắc Huấn Luyện Hàng ngày
 delete_account_button_label: Xóa tài khoản đã chọn
 dendro: Thảo
 destruction: Hủy Diệt
@@ -286,10 +285,8 @@ notes-card.gi.realm-currency: Tiền Đồng Tiên
 notes-card.gi.remaining: Còn lại
 notes-card.gi.resin: Nhựa
 notes-card.gi.resin-discounts: Giảm giá Nhựa
-notes-card.hsr.daily-training: Huấn Luyện Hàng ngày
 notes-card.hsr.echo-of-war-discounts: Dư Âm Chiến Đấu
 notes-card.hsr.reserved-power: Sức mạnh Dự bị
-notes-card.hsr.trailblaze-power: Sức mạnh Khai Phá
 notes.item_full_in_time: "{emoji} Đầy trong {in_time}"
 notes.stamina_label: Nhắc nhở thể lực
 notes.stamina: "Thể lực: {cur}/{max}, đầy trong {time}"
@@ -405,8 +402,6 @@ resin_discount.embed.description: Lượt giảm nhựa tiêu hao chưa dùng t�
 resin_reminder_button.label: Nhắc nhở Nhựa
 resin_reminder_modal.title: Cài đặt Nhắc nhở Nhưa
 reward_claimed_title: Đã nhận phần thưởng điểm danh
-rtbp_reminder_button.label: Nhắc nhở Sức Mạnh Khai Phá Dự Bị
-rtbp_reminder_modal.title: Cài đặt Nhắc nhở Sức Mạnh Khai Phá Dự Bị
 saturday: Thứ bảy
 search_autocomplete_no_results: Không tìm thấy kết quả nào
 search_autocomplete_not_setup: "Tìm kiếm các lựa chọn tự động hoàn thành chưa được thiết lập, vui lòng thử lại sau."
@@ -428,8 +423,6 @@ sumeru: Sumeru
 sunday: Chủ nhật
 superimpose_indicator: "Tích Tầng"
 talent_level.modal.title: Nhập Mức độ Tài Năng
-tbp_reminder_button.label: Nhắc nhở Sức Mạnh Khai Phá
-tbp_reminder_modal.title: Cài đặt Nhắc nhở Sức Mạnh Khai Phá
 tcg: TCG
 the_hunt: Săn Bắn
 threshold.embed.description: "Ngưỡng ({threshold}) đã vượt"
@@ -784,3 +777,6 @@ mimo_auto_draw_failure_notify_toggle_label: Thông báo khi việc tự động 
 mimo_auto_draw_embed_desc: "Hoyo Buddy đã rút những món sau với {points} điểm.\nNếu bạn thấy mã quà bên dười, vui lòng đổi bằng tay với lệnh </redeem>."
 mimo_auto_task_error_dm_content: "Du Lịch Mimo: Tính năng {feature} đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
 dismissible_hsr_temp2_desc: "Giờ bạn có thể dùng mẫu thẻ Hoyo Buddy 2 cho thẻ nhân vật HSR, chọn trong cài đặt thẻ. Đề nghị bạn dùng ảnh dọc ngang cho mẫu thẻ này."
+bounty_commission.embed.description: " Tiến Độ Ủy Thác Treo Thưởng chưa hoàn thành"
+ridu_points.embed.description: " Điểm Số Ridu Hàng Tuần chưa hoàn thành"
+changelog_embed_title: Nhật Ký Thây Đổi

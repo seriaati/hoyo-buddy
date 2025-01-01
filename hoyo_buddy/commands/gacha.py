@@ -337,7 +337,11 @@ class GachaCommand:
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
 
         # Determine UIGF v4.0
-        version = data["info"].get("version", data["info"]["uigf_version"])
+        version: str | None = data["info"].get("version", data["info"].get("uigf_version"))
+        if version is None:
+            msg = "Cannot determine UIGF version"
+            raise ValueError(msg)
+
         is_v4 = version == "v4.0"
 
         if is_v4:

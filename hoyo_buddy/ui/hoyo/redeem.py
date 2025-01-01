@@ -127,9 +127,11 @@ class RedeemCodesButton(Button[RedeemUI]):
         # Extract codes from urls
         codes = [code.split("code=")[1] if "code=" in code else code for code in codes]
 
-        embed = await self.view.account.client.redeem_codes(codes, locale=self.view.locale)
+        embed = await self.view.account.client.redeem_codes(
+            codes, locale=self.view.locale, skip_redeemed=False
+        )
         if embed is None:
-            return await self.unset_loading_state(i)
+            return await self.unset_loading_state(i, embed=self.view.start_embed)
         await self.unset_loading_state(i, embed=embed)
 
 

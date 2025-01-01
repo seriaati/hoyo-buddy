@@ -583,7 +583,13 @@ class GenshinClient(ProxyGenshinClient):
         await self._account.save(update_fields=("cookies",))
 
     async def redeem_codes(
-        self, codes: Sequence[str], *, locale: Locale, blur: bool = True, api_url: str | None = None
+        self,
+        codes: Sequence[str],
+        *,
+        locale: Locale,
+        blur: bool = True,
+        api_url: str | None = None,
+        skip_redeemed: bool = True,
     ) -> DefaultEmbed | None:
         """Redeem multiple codes and return an embed with the results."""
         if not codes:
@@ -591,7 +597,7 @@ class GenshinClient(ProxyGenshinClient):
 
         results: list[tuple[str, str, bool]] = []
         for code in codes:
-            if not code or code in self._account.redeemed_codes:
+            if not code or (code in self._account.redeemed_codes and skip_redeemed):
                 continue
 
             msg, success = await self.redeem_code(code.strip(), locale=locale, api_url=api_url)

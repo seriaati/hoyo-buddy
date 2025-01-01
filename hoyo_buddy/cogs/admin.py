@@ -15,6 +15,7 @@ from hoyo_buddy.db import CardSettings, CommandMetric, HoyoAccount, Settings, Us
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
+from hoyo_buddy.hoyo.auto_tasks.web_events_notify import WebEventsNotify
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import upload_image
 
@@ -93,6 +94,11 @@ class TaskView(ui.View):
     async def auto_mimo_task(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Auto mimo task started.")
         asyncio.create_task(AutoMimo.execute(i.client))
+
+    @ui.button(label="Web events notify", style=ButtonStyle.blurple)
+    async def web_events_notify(self, i: Interaction, _: ui.Button) -> None:
+        await i.response.send_message("Web events notify task started.")
+        asyncio.create_task(WebEventsNotify.execute(i.client))
 
 
 class Admin(commands.Cog):

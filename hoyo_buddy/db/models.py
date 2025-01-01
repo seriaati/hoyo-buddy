@@ -164,6 +164,8 @@ class AccountNotifSettings(BaseModel):
     mimo_draw_success = fields.BooleanField(default=True)
     mimo_draw_failure = fields.BooleanField(default=True)
 
+    web_events = fields.BooleanField(default=False)
+
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
         "models.HoyoAccount", related_name="notif_settings", pk=True
     )
@@ -271,10 +273,12 @@ class JSONFile(BaseModel):
     data: fields.Field[Any] = fields.JSONField()
 
     @staticmethod
-    async def read(filename: str) -> Any:
+    async def read(filename: str, *, default: Any = None) -> Any:
         """Read a JSON file."""
         json_file = await JSONFile.get_or_none(name=filename)
         if json_file is None:
+            if default is not None:
+                return default
             return {}
 
         return json_file.data

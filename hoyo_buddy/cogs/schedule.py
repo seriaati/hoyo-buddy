@@ -8,6 +8,7 @@ from tortoise.expressions import Q
 
 from hoyo_buddy.db import HoyoAccount
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
+from hoyo_buddy.hoyo.auto_tasks.web_events_notify import WebEventsNotify
 
 from ..constants import GI_UID_PREFIXES, UTC_8
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
@@ -36,6 +37,7 @@ class Schedule(commands.Cog):
         self.run_notes_check.start()
         self.run_auto_redeem.start()
         self.run_auto_mimo.start()
+        self.run_web_events_notify.start()
 
     async def cog_unload(self) -> None:
         if not self.bot.config.schedule:
@@ -48,6 +50,7 @@ class Schedule(commands.Cog):
         self.run_notes_check.cancel()
         self.run_auto_redeem.cancel()
         self.run_auto_mimo.cancel()
+        self.run_web_events_notify.cancel()
 
     @tasks.loop(time=datetime.time(0, 0, 0, tzinfo=UTC_8))
     async def run_daily_checkin(self) -> None:
@@ -105,6 +108,10 @@ class Schedule(commands.Cog):
 
         await AutoMimo.execute(self.bot)
 
+    @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 1)])
+    async def run_web_events_notify(self) -> None:
+        await WebEventsNotify.execute(self.bot)
+
     @run_daily_checkin.before_loop
     @run_farm_checks.before_loop
     @update_search_autofill.before_loop
@@ -112,6 +119,7 @@ class Schedule(commands.Cog):
     @run_notes_check.before_loop
     @run_auto_redeem.before_loop
     @run_auto_mimo.before_loop
+    @run_web_events_notify.before_loop
     async def before_loops(self) -> None:
         await self.bot.wait_until_ready()
 

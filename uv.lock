@@ -168,7 +168,7 @@ wheels = [
 
 [[package]]
 name = "akasha-py"
-version = "0.2.9"
+version = "0.2.10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -176,9 +176,9 @@ dependencies = [
     { name = "loguru" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e8/28/01eafd9e8c8d95b9a12550fd642ba191e9b812bd68ade087375d3472042e/akasha_py-0.2.9.tar.gz", hash = "sha256:fee0f6cbf39fa945f17168e46f474e289afbfa0c321ecb07df7549b4a1d19208", size = 69551 }
+sdist = { url = "https://files.pythonhosted.org/packages/3d/86/f58d836ca53396858adddaf4efd2665d7c20b15cb742a181d1c831555545/akasha_py-0.2.10.tar.gz", hash = "sha256:3a0a6a4a8c47fa06011c6a6dae61f647677b5114c433075db7410943856b26c9", size = 68777 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/53/c1/af98c92fbe2d0aca5378a0c997425f6f14f008717a50ddb0d5771b535125/akasha_py-0.2.9-py3-none-any.whl", hash = "sha256:7961fe5224470aed03ede6135c63b42fc3edf9ad13f8104dd278d575eb824c1f", size = 36392 },
+    { url = "https://files.pythonhosted.org/packages/9f/15/8e14177b9d6f1407ad7ee29e18c3974e7f2c4cdd3faf88f98dd53221ecbc/akasha_py-0.2.10-py3-none-any.whl", hash = "sha256:9c8d1647524aee01a813d3a24c245c125ca287a83b5541e1c39b3417333e2e3a", size = 36405 },
 ]
 
 [[package]]
@@ -753,7 +753,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.3"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#1f1e98336ed6fe72cf65f344bd38a2d257f2f6f6" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#b505de768ad037d189478919b3ac9a454ec662a2" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },

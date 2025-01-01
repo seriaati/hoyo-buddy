@@ -325,7 +325,9 @@ class Hoyo(commands.Cog):
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         account = account or await self.bot.get_account(
-            i.user.id, (Game.ZZZ, Game.STARRAIL, Game.GENSHIN), Platform.HOYOLAB
+            i.user.id,
+            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT),
+            platform=Platform.HOYOLAB,
         )
         view = WebEventsView(account, author=i.user, locale=i.locale)
         await view.start(i)
@@ -366,7 +368,7 @@ class Hoyo(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(
-            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT), (Platform.HOYOLAB,)
+            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT), Platform.HOYOLAB
         )
 
     @mimo_command.autocomplete("account")
@@ -374,7 +376,7 @@ class Hoyo(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(
-            i, current, (Game.STARRAIL, Game.ZZZ, Game.GENSHIN), (Platform.HOYOLAB,)
+            i, current, (Game.STARRAIL, Game.ZZZ, Game.GENSHIN), Platform.HOYOLAB
         )
 
     @checkin_command.autocomplete("account")
@@ -382,13 +384,20 @@ class Hoyo(commands.Cog):
     async def all_game_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current)
+        return await self.bot.get_game_account_choices(
+            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT)
+        )
 
     @web_events_command.autocomplete("account")
     async def hoyolab_all_game_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, platforms=(Platform.HOYOLAB,))
+        return await self.bot.get_game_account_choices(
+            i,
+            current,
+            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT),
+            platform=Platform.HOYOLAB,
+        )
 
 
 async def setup(bot: HoyoBuddy) -> None:

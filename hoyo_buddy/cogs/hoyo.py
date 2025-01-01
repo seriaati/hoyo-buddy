@@ -295,10 +295,10 @@ class Hoyo(commands.Cog):
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         account = account or await self.bot.get_account(
-            i.user.id, (Game.ZZZ, Game.STARRAIL), Platform.HOYOLAB
+            i.user.id, (Game.ZZZ, Game.STARRAIL, Game.GENSHIN), Platform.HOYOLAB
         )
         if account.platform is not Platform.HOYOLAB:
-            raise NoAccountFoundError((Game.ZZZ, Game.STARRAIL), Platform.HOYOLAB)
+            raise NoAccountFoundError((Game.ZZZ, Game.STARRAIL, Game.GENSHIN), Platform.HOYOLAB)
 
         settings = await Settings.get(user_id=i.user.id)
         view = MimoView(
@@ -350,7 +350,7 @@ class Hoyo(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(
-            i, current, (Game.STARRAIL, Game.ZZZ), (Platform.HOYOLAB,)
+            i, current, (Game.STARRAIL, Game.ZZZ, Game.GENSHIN), (Platform.HOYOLAB,)
         )
 
     @checkin_command.autocomplete("account")

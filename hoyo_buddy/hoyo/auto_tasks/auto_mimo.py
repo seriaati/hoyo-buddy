@@ -65,7 +65,8 @@ class AutoMimo:
                 logger.info("Starting auto mimo tasks")
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 auto_task_accs = await HoyoAccount.filter(
-                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ), mimo_auto_task=True
+                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
+                    mimo_auto_task=True,
                 )
 
                 for account in auto_task_accs:
@@ -91,7 +92,8 @@ class AutoMimo:
                 logger.info("Starting auto mimo buys")
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 auto_buy_accs = await HoyoAccount.filter(
-                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ), mimo_auto_buy=True
+                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
+                    mimo_auto_buy=True,
                 )
 
                 for account in auto_buy_accs:
@@ -121,7 +123,8 @@ class AutoMimo:
                 logger.info("Starting auto mimo draws")
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 auto_draw_accs = await HoyoAccount.filter(
-                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ), mimo_auto_draw=True
+                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
+                    mimo_auto_draw=True,
                 )
 
                 for account in auto_draw_accs:

@@ -50,6 +50,7 @@ genshin = { git = "https://github.com/thesadru/genshin.py", branch = "master" }
 hakushin-py = { git = "https://github.com/seriaati/hakushin-py" }
 discord-py = { git = "https://github.com/Rapptz/discord.py" }
 ambr-py = { git = "https://github.com/seriaati/ambr" }
+enka = { git = "https://github.com/seriaati/enka-py" }
 
 
 [tool.pyright]

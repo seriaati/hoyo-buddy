@@ -246,7 +246,15 @@ class AutoMimo:
                             await account.save(update_fields=("mimo_auto_draw",))
 
                         content = LocaleStr(
-                            key="mimo_auto_buy_error_dm_content", feature=LocaleStr(key=feature_key)
+                            key="auto_task_error_dm_content",
+                            feature=LocaleStr(
+                                custom_str="{mimo_title} {label}",
+                                mimo_title=LocaleStr(
+                                    key="point_detail_tag_mimo", mi18n_game="mimo"
+                                ),
+                                label=LocaleStr(key=feature_key),
+                            ),
+                            command="</mimo>",
                         ).translate(account.user.settings.locale or discord.Locale.american_english)
                     else:
                         content = None

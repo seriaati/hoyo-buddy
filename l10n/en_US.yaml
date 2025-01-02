@@ -53,7 +53,6 @@ artifact_set_two_piece_embed_description: "2-Pieces: {bonus_2}"
 artifact_sets: Artifact Sets
 auto_checkin_button_label: Auto daily check-in
 auto_locale_option_label: Follow client language
-auto_redeem_error.content: "Automatic code redemption has been disabled due to an error, you can enable it back using </redeem>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 auto_redeem_footer: Turn off auto code redemption with /redeem
 auto_redeem_toggle.label: Auto code redemption
 books: Books
@@ -322,7 +321,7 @@ player_not_found_description: Please check the provided UID
 player_not_found_title: Player Does Not Exist
 preservation: Preservation
 prev_page_option_label: Previous page
-process_notify_error.content: "The reminder has been disabled due to an error, you can enable it back using </notes>\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
+notify_feature: This notes reminder
 profile.add_image.button.label: Add custom image
 profile.add_image_modal.image_url.label: Image URL
 profile.build.select.placeholder: Select a build...
@@ -784,3 +783,4 @@ changelog_embed_title: Changelog
 web_events_notify_toggle_label: Notify on new web events
 web_events_cmd_desc: View ongoing web events and set notifier
 web_events_embed_footer: Use /web-events to configure notifications
+auto_task_error_dm_content: "{feature} has been disabled due to an error, you can enable it back using {command}\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."

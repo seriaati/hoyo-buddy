@@ -481,7 +481,7 @@ async def get_gacha_icon(*, game: Game, item_id: int) -> str:
             if len(str(item_id)) == 5:  # weapon
                 weapons = await api.fetch_weapons()
                 weapon_icon_map: dict[int, str] = {weapon.id: weapon.icon for weapon in weapons}
-                return weapon_icon_map[item_id]
+                return weapon_icon_map.get(item_id, "")
 
             # character
             characters = await api.fetch_characters()
@@ -490,7 +490,7 @@ async def get_gacha_icon(*, game: Game, item_id: int) -> str:
                 for character in characters
                 if character.id.isdigit()
             }
-            return character_icon_map[item_id]
+            return character_icon_map.get(item_id, "")
 
     if game is Game.STARRAIL:
         if len(str(item_id)) == 5:  # light cone

@@ -203,7 +203,7 @@ def get_static_img_path(image_url: str, folder: str) -> pathlib.Path:
     return STATIC_FOLDER / folder / extra_folder / filename
 
 
-def format_ann_content(content: str) -> str:
+def remove_html_tags(content: str) -> str:
     content = content.replace("\\n", "\n")
     # replace tags with style attributes
     content = content.replace("</p>", "\n")
@@ -575,7 +575,8 @@ def get_mimo_task_url(task: genshin.models.MimoTask) -> str | None:
 def get_mimo_task_str(task: genshin.models.MimoTask, game: Game) -> str:
     point_emoji = MIMO_POINT_EMOJIS[game]
     task_url = get_mimo_task_url(task)
-    task_str = f"[{task.name}]({task_url})" if task_url else task.name
+    task_name = remove_html_tags(task.name)
+    task_str = f"[{task_name}]({task_url})" if task_url else task_name
     task_str += f" - {task.point} {point_emoji}"
     if task.total_progress > 1:
         task_str += f" ({task.progress}/{task.total_progress})"

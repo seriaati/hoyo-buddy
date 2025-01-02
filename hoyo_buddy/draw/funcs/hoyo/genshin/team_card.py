@@ -125,7 +125,7 @@ class GITeamCard:
         elif character.id == 10000041:  # Mona
             talents.pop(2)
 
-        for talent in character.talents:
+        for talent in character.talents[:3]:
             icon = drawer.open_static(talent.icon, size=(40, 40), mask_color=color_3)
             im.alpha_composite(icon, start_pos)
             tbox = drawer.write(

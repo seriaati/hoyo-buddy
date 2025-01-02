@@ -54,10 +54,11 @@ def draw_genshin_card(
     fight_props_to_draw = list(STATS_ORDER).copy()
 
     add_hurt_fight_prop = character.highest_dmg_bonus_stat.type
-    add_hurt_icon = drawer.open_asset(f"fight-props/{mode}_{add_hurt_fight_prop.name}.png")
-    im.paste(add_hurt_icon, (590, 812), add_hurt_icon)
+    if isinstance(add_hurt_fight_prop, FightPropType):
+        add_hurt_icon = drawer.open_asset(f"fight-props/{mode}_{add_hurt_fight_prop.name}.png")
+        im.paste(add_hurt_icon, (590, 812), add_hurt_icon)
 
-    fight_props_to_draw.append(add_hurt_fight_prop)
+        fight_props_to_draw.append(add_hurt_fight_prop)
 
     draw = ImageDraw.Draw(im)
     for index, fight_prop_type in enumerate(fight_props_to_draw):

@@ -492,6 +492,7 @@ reminder_modal.title: "{notify} Reminder Settings"
 profile_view.set_cur_temp_as_default: Set current template as default
 set_cur_temp_as_default.done: Done
 set_cur_temp_as_default.done_desc: "Your default template for {game} is set to {template}"
+remove_from_cache_finish_embed_desc: Rerun the /profile command to see the changes
 third_party_card_temp_error_title: This 3rd Party Card Template Errored
 third_party_card_temp_error_message: "The card template for this character has been reset to Hoyo Buddy's template. If this error persists, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Account has been locked for 20 minutes

@@ -169,13 +169,15 @@ class HoyoBuddy(commands.AutoShardedBot):
         else:
             return user
 
-    async def dm_user(self, user_id: int, **kwargs: Any) -> discord.Message | None:
+    async def dm_user(
+        self, user_id: int, *, content: str | None = None, **kwargs: Any
+    ) -> discord.Message | None:
         user = await self.fetch_user(user_id)
         if user is None:
             return None
 
         try:
-            message = await user.send(**kwargs)
+            message = await user.send(content, **kwargs)
         except (discord.Forbidden, discord.HTTPException):
             return None
         except Exception as e:

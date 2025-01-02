@@ -76,7 +76,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         items = await self._fetch_all_lang_items()
 
         for item in items:
-            if "-" in item.name:
+            if "-" in str(item.id):
                 continue
             result[item.name] = int(item.id)
         return result
@@ -87,7 +87,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
         items = await self._fetch_all_lang_items()
 
         for item in items:
-            if "-" in item.name:
+            if "-" in str(item.id):
                 continue
             result[int(item.id)] = item.name
         return result

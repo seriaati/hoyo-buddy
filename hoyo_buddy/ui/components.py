@@ -467,6 +467,11 @@ class PaginatorSelect(Select, Generic[V_co]):
 
         self.view: V_co
 
+    def __repr__(self) -> str:
+        return (
+            f"<{self.__class__.__name__} custom_id={self.custom_id!r} page_index={self.page_index}>"
+        )
+
     @staticmethod
     def remove_duplicate_options(
         options: list[SelectOption], existing_options: list[SelectOption]
@@ -476,6 +481,9 @@ class PaginatorSelect(Select, Generic[V_co]):
 
     def process_options(self) -> list[SelectOption]:
         split_options = split_list_to_chunks(self.options_before_split, 23 - self._max_values)
+        if not split_options:
+            return []
+
         try:
             values = self.values
         except AttributeError:

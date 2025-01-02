@@ -5,7 +5,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
 import genshin  # noqa: TC002
-from discord import ButtonStyle, TextStyle, ui
+from discord import ButtonStyle, ui
 from discord.ext import commands
 from loguru import logger
 from seria.utils import write_json
@@ -31,35 +31,6 @@ if TYPE_CHECKING:
 
     from ..bot import HoyoBuddy
     from ..types import Interaction
-
-
-class DMModal(ui.Modal):
-    user_ids = ui.TextInput(label="User IDs")
-    message = ui.TextInput(label="Message", style=TextStyle.paragraph)
-
-    async def on_submit(self, i: Interaction) -> None:
-        await i.response.defer()
-        self.stop()
-
-
-class DMModalView(ui.View):
-    def __init__(self) -> None:
-        super().__init__()
-
-    @ui.button(label="Open modal", style=ButtonStyle.blurple)
-    async def send(self, i: Interaction, _: ui.Button) -> None:
-        modal = DMModal(title="Set message", custom_id="dm_modal")
-        await i.response.send_modal(modal)
-        timed_out = await modal.wait()
-        if timed_out:
-            return
-
-        user_ids = [int(user_id) for user_id in modal.user_ids.value.split(",")]
-
-        await i.edit_original_response(content=f"Sending message to {len(user_ids)} users...")
-        for user_id in user_ids:
-            await i.client.dm_user(int(user_id), content=modal.message.value)
-        await i.edit_original_response(content="Done.")
 
 
 class TaskView(ui.View):
@@ -157,11 +128,6 @@ class Admin(commands.Cog):
             codes_ = list(set(codes.split(",")))
             await ctx.send(f"Auto redeem task started for {game.name}.")
             await AutoRedeem.execute(self.bot, game, codes_)
-
-    @commands.command(name="dm")
-    async def dm_command(self, ctx: commands.Context) -> Any:
-        view = DMModalView()
-        await ctx.send(view=view)
 
     @commands.command(name="get-accounts", aliases=["ga"])
     async def get_accounts_command(self, ctx: commands.Context, user_id: int) -> Any:

@@ -21,9 +21,10 @@ from hoyo_buddy.constants import (
 )
 from hoyo_buddy.db import GachaHistory
 from hoyo_buddy.enums import Game, Platform
+from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import EnumStr, LocaleStr
-from hoyo_buddy.utils import dict_cookie_to_str, get_gacha_icon, item_id_to_name
+from hoyo_buddy.utils import dict_cookie_to_str, get_gacha_icon
 
 from . import pages
 from .login_handler import handle_action_ticket, handle_mobile_otp, handle_session_mmt
@@ -536,19 +537,16 @@ class WebApp:
                 item_names = await fetch_json_file(
                     f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json"
                 )
-
-            for item_id in item_ids:
-                result[item_id] = item_names.get(str(item_id), str(item_id))
-                cached_gacha_names[item_id] = result[item_id]
+        elif game is Game.GENSHIN:
+            async with AmbrAPIClient() as client:
+                item_names = await client.fetch_item_id_to_name_map()
         else:
-            async with aiohttp.ClientSession() as session:
-                item_names = await item_id_to_name(
-                    session, item_ids=non_cached_item_ids, lang=locale_to_gpy_lang(locale)
-                )
-            for item_id in item_ids:
-                index = item_ids.index(item_id)
-                result[item_id] = item_names[index]
-                cached_gacha_names[item_id] = item_names[index]
+            msg = f"Unsupported game: {game} for fetching gacha names"
+            raise ValueError(msg)
+
+        for item_id in item_ids:
+            result[item_id] = item_names.get(item_id, str(item_id))
+            cached_gacha_names[item_id] = result[item_id]
 
         asyncio.create_task(
             self._page.client_storage.set_async(

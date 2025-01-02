@@ -4,18 +4,16 @@ import asyncio
 import datetime
 from typing import TYPE_CHECKING
 
-import aiohttp
 import flet as ft
 
 from hoyo_buddy.constants import (
     BANNER_TYPE_NAMES,
-    locale_to_gpy_lang,
     locale_to_starrail_data_lang,
     locale_to_zenless_data_lang,
 )
 from hoyo_buddy.enums import Game
+from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.l10n import LocaleStr, translator
-from hoyo_buddy.utils import item_id_to_name
 from hoyo_buddy.web_app.utils import fetch_json_file, show_error_banner
 
 if TYPE_CHECKING:
@@ -179,20 +177,22 @@ class GachaLogPage(ft.View):
             return cached_gacha_names[gacha.item_id]
 
         if game is Game.ZZZ:
-            item_names = await fetch_json_file(
+            item_names: dict[str, str] = await fetch_json_file(
                 f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json"
             )
             item_name = item_names.get(str(gacha.item_id))
         elif game is Game.STARRAIL:
-            item_names = await fetch_json_file(
+            item_names: dict[str, str] = await fetch_json_file(
                 f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json"
             )
             item_name = item_names.get(str(gacha.item_id))
+        elif game is Game.GENSHIN:
+            async with AmbrAPIClient() as client:
+                map_ = await client.fetch_item_id_to_name_map()
+            item_name = map_.get(gacha.item_id)
         else:
-            async with aiohttp.ClientSession() as session:
-                item_name = await item_id_to_name(
-                    session, item_ids=gacha.item_id, lang=locale_to_gpy_lang(locale)
-                )
+            msg = f"Unsupported game {game} for fetching gacha item names"
+            raise ValueError(msg)
 
         if item_name is not None:
             cached_gacha_names[gacha.item_id] = item_name

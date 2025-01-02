@@ -35,7 +35,7 @@ from hoyo_buddy.models import (
 from hoyo_buddy.ui.hoyo.gacha.import_ import GachaImportView
 from hoyo_buddy.ui.hoyo.gacha.manage import GachaLogManageView
 from hoyo_buddy.ui.hoyo.gacha.view import ViewGachaLogView
-from hoyo_buddy.utils import ephemeral, get_item_ids
+from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     import discord
@@ -372,11 +372,8 @@ class GachaCommand:
 
             if not all(record["item_id"] for record in data["list"]):
                 # Fetch item IDs
-                item_ids = await get_item_ids(
-                    i.client.session,
-                    item_names=[record["name"] for record in data["list"]],
-                    lang=data["info"]["lang"],
-                )
+                client = AmbrAPIClient(session=i.client.session)
+                item_ids = await client.fetch_item_name_to_id_map()
 
                 for record in data["list"]:
                     record["item_id"] = item_ids[record["name"]]

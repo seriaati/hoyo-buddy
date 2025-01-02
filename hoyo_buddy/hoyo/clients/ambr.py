@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from collections import defaultdict
 from enum import StrEnum
 from typing import TYPE_CHECKING
@@ -50,6 +51,46 @@ class AmbrAPIClient(ambr.AmbrAPI):
             add_random_letters=True,
         )
         self.locale = locale
+
+    async def _fetch_all_lang_items(self) -> list[ambr.Weapon | ambr.Character]:
+        """Fetches all character/weapon objects for all languages"""
+        result: list[ambr.Weapon | ambr.Character] = []
+        tasks: list[asyncio.Task[list[ambr.Weapon] | list[ambr.Character]]] = []
+
+        async with asyncio.TaskGroup() as tg:
+            for lang in ambr.Language:
+                self.lang = lang
+                tasks.append(tg.create_task(super().fetch_characters()))
+                await asyncio.sleep(0.1)
+                tasks.append(tg.create_task(super().fetch_weapons()))
+                await asyncio.sleep(0.1)
+
+        for task in tasks:
+            items = task.result()
+            result.extend(items)
+        return result
+
+    async def fetch_item_name_to_id_map(self) -> dict[str, int]:
+        """Get a map of character/weapon name to ID for all languages."""
+        result: dict[str, int] = {}
+        items = await self._fetch_all_lang_items()
+
+        for item in items:
+            if "-" in item.name:
+                continue
+            result[item.name] = int(item.id)
+        return result
+
+    async def fetch_item_id_to_name_map(self) -> dict[int, str]:
+        """Get a map of character/weapon ID to name for all languages."""
+        result: dict[int, str] = {}
+        items = await self._fetch_all_lang_items()
+
+        for item in items:
+            if "-" in item.name:
+                continue
+            result[int(item.id)] = item.name
+        return result
 
     async def fetch_element_char_counts(self) -> dict[str, int]:
         """Fetches the number of characters for each element, does not include beta characters and Traveler."""

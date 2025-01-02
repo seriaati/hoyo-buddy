@@ -44,7 +44,11 @@ class AmbrAPIClient(ambr.AmbrAPI):
     def __init__(
         self, locale: Locale = Locale.american_english, session: aiohttp.ClientSession | None = None
     ) -> None:
-        super().__init__(lang=LOCALE_TO_AMBR_LANG.get(locale, ambr.Language.EN), session=session)
+        super().__init__(
+            lang=LOCALE_TO_AMBR_LANG.get(locale, ambr.Language.EN),
+            session=session,
+            add_random_letters=True,
+        )
         self.locale = locale
 
     async def fetch_element_char_counts(self) -> dict[str, int]:

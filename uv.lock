@@ -184,16 +184,12 @@ wheels = [
 [[package]]
 name = "ambr-py"
 version = "1.8.1"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/seriaati/ambr#881fa0455f5f8f060f405dd73ef73b076febc003" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
     { name = "loguru" },
     { name = "pydantic" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d7/54/c86fc10f0b5ee4e97e8e196b80a9378fe45889659454e1ad6ed706695708/ambr_py-1.8.1.tar.gz", hash = "sha256:f72e24c29dacc1fdcef31ae75b89c7e3fd866142dcc10b698bb52145eab7d61d", size = 76660 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e6/39/ecb140ee084dff35063e65c70a1829b08308a1aaf23ca84cfa336555a3fd/ambr_py-1.8.1-py3-none-any.whl", hash = "sha256:009795c5b82c5d6be0f1258cd43c10217f64634fb192cf60354589530d3a9f7f", size = 51795 },
 ]
 
 [[package]]
@@ -753,7 +749,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.3"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#b505de768ad037d189478919b3ac9a454ec662a2" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#765fafa5d459748ad9afd83831affc62457285fc" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },
@@ -838,7 +834,7 @@ requires-dist = [
     { name = "aiocache", specifier = ">=0.12.2" },
     { name = "aiofiles", specifier = ">=24.1.0" },
     { name = "akasha-py", specifier = ">=0.2.9" },
-    { name = "ambr-py", specifier = ">=1.8.1" },
+    { name = "ambr-py", git = "https://github.com/seriaati/ambr" },
     { name = "asyncache", specifier = ">=0.3.1" },
     { name = "asyncpg", specifier = ">=0.29.0" },
     { name = "asyncpg-listen", specifier = ">=0.0.6" },

@@ -49,6 +49,7 @@ novelai = { git = "https://github.com/seriaati/NovelAI-API" }
 genshin = { git = "https://github.com/thesadru/genshin.py", branch = "master" }
 hakushin-py = { git = "https://github.com/seriaati/hakushin-py" }
 discord-py = { git = "https://github.com/Rapptz/discord.py" }
+ambr-py = { git = "https://github.com/seriaati/ambr" }
 
 
 [tool.pyright]

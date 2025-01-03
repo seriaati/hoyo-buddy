@@ -53,7 +53,6 @@ artifact_set_two_piece_embed_description: "Bộ 2 món: {bonus_2}"
 artifact_sets: Thánh Di Vật
 auto_checkin_button_label: Tự động Điểm danh Hàng ngày
 auto_locale_option_label: Theo Ngôn Ngữ Ứng Dụng
-auto_redeem_error.content: "Tính năng tự động đổi mã quà đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</redeem>Nếu lỗi này cứ xuất hiện và bạn không biết cách sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
 auto_redeem_footer: Tắt Tự động Đỏi Mã Quà bằng /redeem
 auto_redeem_toggle.label: Tự động đổi mã quà
 books: Sách
@@ -322,7 +321,7 @@ player_not_found_description: Vui lòng kiểm tra UID đã được cung cấp
 player_not_found_title: Người chơi không tồn tại
 preservation: Bảo Hộ
 prev_page_option_label: Trang trước
-process_notify_error.content: "Tính năng lời nhác đã bị vô hiệu hoá do lỗi đã xảy ra, bạn có thể kích hoạt lại bằng lệnh</notes>\nNếu lỗi này tiếp tục xảy ra hoặc bạn không biết cách xử lý, vui lòng tìm trợ giúp trên [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
+notify_feature: Ghi chú này nhắc nhở
 profile.add_image.button.label: Thêm ảnh riêng của bạn
 profile.add_image_modal.image_url.label: Link Ảnh
 profile.build.select.placeholder: Hãy chọn Build…
@@ -492,6 +491,7 @@ reminder_modal.title: "Cài đặt Lời nhắc {notify}"
 profile_view.set_cur_temp_as_default: Sử dụng mẫu này là mặc định
 set_cur_temp_as_default.done: Xong
 set_cur_temp_as_default.done_desc: "Mẫu thẻ mặc định của bạn cho {game} được đặt thành {template}"
+remove_from_cache_finish_embed_desc: Chạy lại lệnh /profile để xem các thay đổi
 third_party_card_temp_error_title: Mẫu Thẻ Bên Thứ 3 Bị Lỗi
 third_party_card_temp_error_message: "Mẫu thẻ cho nhân vật này đã bị đặt lại sang Mẫu thẻ Hoyo Buddy. Nếu lỗi này tiếp tục điễn ra, vui lòng tìm trợ giúp trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Tài khoản của bạn đã bị khóa trong vòng 20 phút
@@ -780,3 +780,7 @@ dismissible_hsr_temp2_desc: "Giờ bạn có thể dùng mẫu thẻ Hoyo Buddy 
 bounty_commission.embed.description: " Tiến Độ Ủy Thác Treo Thưởng chưa hoàn thành"
 ridu_points.embed.description: " Điểm Số Ridu Hàng Tuần chưa hoàn thành"
 changelog_embed_title: Nhật Ký Thây Đổi
+web_events_notify_toggle_label: Nhắc nhờ về sự kiện Web
+web_events_cmd_desc: Xem các sự kiện web đang diễn ra và đặt thông báo
+web_events_embed_footer: Sử dụng lệnh /web-events để định cấu hình thông báo
+auto_task_error_dm_content: "Tính năng {feature} đã bị vô hiệu hoá do lỗi đã xảy ra, bạn có thể kích hoạt lại bằng lệnh {command}\nNếu lỗi này tiếp tục xảy ra hoặc bạn không biết cách xử lý, vui lòng tìm trợ giúp trên [máy chủ Discord](<https://link.seria.moe/hb-dc>)."

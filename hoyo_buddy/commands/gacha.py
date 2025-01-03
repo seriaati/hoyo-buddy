@@ -244,7 +244,7 @@ class GachaCommand:
 
             if records:
                 # Fetch rarity map with Ambr API
-                async with ambr.AmbrAPI(add_random_letters=True) as api:
+                async with ambr.AmbrAPI() as api:
                     characters = await api.fetch_characters()
                     weapons = await api.fetch_weapons()
 

@@ -160,7 +160,7 @@ async def draw_gi_build_card(
     urls.extend(const.icon for const in character.constellations)
 
     if template == 2:
-        async with ambr.AmbrAPI(add_random_letters=True) as api:
+        async with ambr.AmbrAPI() as api:
             characters = await api.fetch_characters()
             ambr_char = next((char for char in characters if str(character.id) in char.id), None)
             if ambr_char is None:
@@ -284,7 +284,7 @@ async def draw_hsr_characters_card(
 async def draw_spiral_abyss_card(
     draw_input: DrawInput, abyss: SpiralAbyss, characters: Sequence[genshin.models.Character]
 ) -> File:
-    async with ambr.AmbrAPI(add_random_letters=True) as api:
+    async with ambr.AmbrAPI() as api:
         character_icons = {
             character.id.split("-")[0]: character.icon for character in await api.fetch_characters()
         }
@@ -377,7 +377,7 @@ async def draw_apc_shadow_card(
 async def draw_img_theater_card(
     draw_input: DrawInput, data: ImgTheaterData, chara_consts: dict[int, int]
 ) -> File:
-    async with ambr.AmbrAPI(add_random_letters=True) as api:
+    async with ambr.AmbrAPI() as api:
         character_icons = {
             character.id.split("-")[0]: character.icon for character in await api.fetch_characters()
         }

@@ -45,11 +45,7 @@ class AmbrAPIClient(ambr.AmbrAPI):
     def __init__(
         self, locale: Locale = Locale.american_english, session: aiohttp.ClientSession | None = None
     ) -> None:
-        super().__init__(
-            lang=LOCALE_TO_AMBR_LANG.get(locale, ambr.Language.EN),
-            session=session,
-            add_random_letters=True,
-        )
+        super().__init__(lang=LOCALE_TO_AMBR_LANG.get(locale, ambr.Language.EN), session=session)
         self.locale = locale
 
     async def _fetch_all_lang_items(self) -> list[ambr.Weapon | ambr.Character]:

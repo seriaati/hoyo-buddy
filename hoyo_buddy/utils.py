@@ -386,7 +386,7 @@ async def get_gacha_icon(*, game: Game, item_id: int) -> str:
         return f"https://stardb.gg/api/static/zzz/{item_id}.png"
 
     if game is Game.GENSHIN:
-        async with ambr.AmbrAPI(add_random_letters=True) as api:
+        async with ambr.AmbrAPI() as api:
             if len(str(item_id)) == 5:  # weapon
                 weapons = await api.fetch_weapons()
                 weapon_icon_map: dict[int, str] = {weapon.id: weapon.icon for weapon in weapons}

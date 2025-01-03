@@ -183,9 +183,10 @@ wheels = [
 
 [[package]]
 name = "ambr-py"
-version = "1.8.1"
-source = { git = "https://github.com/seriaati/ambr#881fa0455f5f8f060f405dd73ef73b076febc003" }
+version = "1.8.2"
+source = { git = "https://github.com/seriaati/ambr#5b8ce941a87cd0b447ca1b6a7f9a44fd9615bcec" }
 dependencies = [
+    { name = "aiofiles" },
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
     { name = "loguru" },
@@ -745,7 +746,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.3"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#9f2fef5f9370f5d9233b8a4c34218fb2dc0d1062" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#703db613e8b721dbe1c5a633f7a738d89ab89d88" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },

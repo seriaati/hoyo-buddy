@@ -502,6 +502,4 @@ class HoyoBuddy(commands.AutoShardedBot):
         logger.info("Bot shutting down...")
         if self.geetest_command_task is not None:
             self.geetest_command_task.cancel()
-
-        self.executor.shutdown()
         await super().close()

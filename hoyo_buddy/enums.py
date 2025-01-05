@@ -156,3 +156,13 @@ class LeaderboardType(StrEnum):
     MAX_FRIENDSHIP = "max_friendship_lb_title"
     ABYSS_DMG = "abyss_dmg_lb_title"
     THEATER_DMG = "theater_dmg_lb_title"
+
+
+class AutoTaskType(IntEnum):
+    AUTO_MIMO_BUY = 1
+    AUTO_REDEEM = 2
+    DAILY_CHECKIN = 3
+    FARM_CHECK = 4
+    WEB_EVENTS_NOTIFY = 5
+    AUTO_MIMO_DRAW = 6
+    AUTO_MIMO_TASK = 7

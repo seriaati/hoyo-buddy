@@ -12,10 +12,9 @@ from tortoise.expressions import Q
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME, PROXY_APIS
 from hoyo_buddy.db import HoyoAccount
-from hoyo_buddy.db.models import TaskLeftover
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
-from hoyo_buddy.enums import AutoTaskType, Game, Platform
+from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import convert_code_to_redeem_url, get_mimo_task_str, get_now
 
@@ -37,11 +36,6 @@ class AutoMimo:
     _down_games: ClassVar[set[Game]]
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
 
-    _running_task_type: ClassVar[AutoTaskType | None]
-    _total_accs: ClassVar[int]
-    _finished_accs: ClassVar[int]
-    _last_acc_id: ClassVar[int | None] = None
-
     @classmethod
     async def execute(cls, bot: HoyoBuddy) -> None:
         if cls._lock.locked():
@@ -62,11 +56,6 @@ class AutoMimo:
                 cls._buy_count = 0
                 cls._draw_count = 0
 
-                cls._running_task_type = None
-                cls._total_accs = 0
-                cls._finished_accs = 0
-                cls._last_acc_id = None
-
                 # Accounts that have claimed all mimo tasks
                 skip_ids = {
                     acc.id
@@ -75,11 +64,6 @@ class AutoMimo:
 
                 # Auto task
                 logger.info("Starting auto mimo tasks")
-                leftover = await TaskLeftover.filter(task_type=AutoTaskType.AUTO_MIMO_TASK).first()
-                if leftover is not None:
-                    logger.info(
-                        f"Resuming auto mimo tasks, last account id: {leftover.last_account_id}"
-                    )
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 auto_task_accs = await HoyoAccount.filter(
                     Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
@@ -87,18 +71,9 @@ class AutoMimo:
                 ).order_by("id")
 
                 for account in auto_task_accs:
-                    if (
-                        account.platform is Platform.MIYOUSHE
-                        or account.id in skip_ids
-                        or (leftover is not None and account.id < leftover.last_account_id)
-                    ):
+                    if account.platform is Platform.MIYOUSHE or account.id in skip_ids:
                         continue
                     await queue.put(account)
-
-                cls._running_task_type = AutoTaskType.AUTO_MIMO_TASK
-                cls._total_accs = queue.qsize()
-                cls._finished_accs = 0
-                cls._last_acc_id = None
 
                 tasks = [
                     asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="task"))
@@ -116,11 +91,6 @@ class AutoMimo:
 
                 # Auto buy
                 logger.info("Starting auto mimo buys")
-                leftover = await TaskLeftover.filter(task_type=AutoTaskType.AUTO_MIMO_BUY).first()
-                if leftover is not None:
-                    logger.info(
-                        f"Resuming auto mimo buys, last account id: {leftover.last_account_id}"
-                    )
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 auto_buy_accs = await HoyoAccount.filter(
                     Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
@@ -132,15 +102,9 @@ class AutoMimo:
                         account.platform is Platform.MIYOUSHE
                         or account.game in cls._down_games
                         or account.id in skip_ids
-                        or (leftover is not None and account.id < leftover.last_account_id)
                     ):
                         continue
                     await queue.put(account)
-
-                cls._running_task_type = AutoTaskType.AUTO_MIMO_BUY
-                cls._total_accs = queue.qsize()
-                cls._finished_accs = 0
-                cls._last_acc_id = None
 
                 tasks = [
                     asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="buy"))
@@ -158,11 +122,6 @@ class AutoMimo:
 
                 # Auto draw
                 logger.info("Starting auto mimo draws")
-                leftover = await TaskLeftover.filter(task_type=AutoTaskType.AUTO_MIMO_DRAW).first()
-                if leftover is not None:
-                    logger.info(
-                        f"Resuming auto mimo draws, last account id: {leftover.last_account_id}"
-                    )
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 auto_draw_accs = await HoyoAccount.filter(
                     Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
@@ -174,15 +133,9 @@ class AutoMimo:
                         account.platform is Platform.MIYOUSHE
                         or account.game in cls._down_games
                         or account.id in skip_ids
-                        or (leftover is not None and account.id < leftover.last_account_id)
                     ):
                         continue
                     await queue.put(account)
-
-                cls._running_task_type = AutoTaskType.AUTO_MIMO_DRAW
-                cls._total_accs = queue.qsize()
-                cls._finished_accs = 0
-                cls._last_acc_id = None
 
                 tasks = [
                     asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="draw"))
@@ -200,24 +153,10 @@ class AutoMimo:
             except Exception as e:
                 bot.capture_exception(e)
             finally:
-                if (
-                    (cls._finished_accs == 0 or cls._finished_accs < cls._total_accs)
-                    and cls._running_task_type is not None
-                    and cls._last_acc_id is not None
-                ):
-                    logger.info(
-                        f"Auto mimo partially finished, will resume next time. Task type: {cls._running_task_type!r}, total: {cls._total_accs}, finished: {cls._finished_accs}"
-                    )
-                    await TaskLeftover.create(
-                        task_type=cls._running_task_type, last_account_id=cls._last_acc_id
-                    )
-                else:
-                    logger.info(
-                        f"Auto mimo finished, {cls._task_count} tasks, {cls._buy_count} buys, {cls._draw_count} draws"
-                    )
-                    logger.info(
-                        f"Auto mimo took {asyncio.get_event_loop().time() - start:.2f} seconds"
-                    )
+                logger.info(
+                    f"Auto mimo finished, {cls._task_count} tasks, {cls._buy_count} buys, {cls._draw_count} draws"
+                )
+                logger.info(f"Auto mimo took {asyncio.get_event_loop().time() - start:.2f} seconds")
 
     @classmethod
     async def _get_mimo_game_data(cls, client: genshin.Client, game: Game) -> tuple[int, int]:
@@ -256,8 +195,6 @@ class AutoMimo:
             account = await queue.get()
             if account.game in cls._down_games:
                 queue.task_done()
-                cls._last_acc_id = account.id
-                cls._finished_accs += 1
                 continue
 
             await account.fetch_related("user", "user__settings", "notif_settings")
@@ -330,8 +267,6 @@ class AutoMimo:
             finally:
                 await asyncio.sleep(SLEEP_TIME)
                 queue.task_done()
-                cls._last_acc_id = account.id
-                cls._finished_accs += 1
 
     @classmethod
     async def _complete_mimo_tasks(

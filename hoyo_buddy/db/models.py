@@ -17,7 +17,7 @@ from tortoise import exceptions, fields
 from tortoise.expressions import F
 
 from ..constants import HB_GAME_TO_GPY_GAME, SERVER_RESET_HOURS, UTC_8
-from ..enums import AutoTaskType, ChallengeType, Game, LeaderboardType, NotesNotifyType, Platform
+from ..enums import ChallengeType, Game, LeaderboardType, NotesNotifyType, Platform
 from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
 
@@ -48,10 +48,10 @@ __all__ = (
 
 class BaseModel(Model):
     def __str__(self) -> str:
-        return f"{self.__class__.__name__}({', '.join(f'{field}={getattr(self, field)!r}' for field in self._meta.db_fields if hasattr(self, field))})"
+        return repr(self)
 
     def __repr__(self) -> str:
-        return str(self)
+        return f"{self.__class__.__name__}({', '.join(f'{field}={getattr(self, field)!r}' for field in self._meta.db_fields if hasattr(self, field))})"
 
     class Meta:
         abstract = True
@@ -545,16 +545,3 @@ class CustomImage(BaseModel):
     ) -> None:
         with contextlib.suppress(exceptions.IntegrityError):
             await super().create(url=url, character_id=character_id, user_id=user_id, name=name)
-
-
-class TaskLeftover(BaseModel):
-    """Model to restore tasks that were left over after a bot restart."""
-
-    task_type = fields.IntEnumField(AutoTaskType)
-    last_account_id = fields.IntField()
-
-    @classmethod
-    async def create(cls, *, task_type: AutoTaskType, last_account_id: int) -> TaskLeftover:
-        # Delete existing leftovers with same task type
-        await TaskLeftover.filter(task_type=task_type).delete()
-        return await super().create(task_type=task_type, last_account_id=last_account_id)

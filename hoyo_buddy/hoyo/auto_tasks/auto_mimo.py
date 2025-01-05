@@ -286,9 +286,7 @@ class AutoMimo:
                     return None
 
             result = await client.finish_and_claim_mimo_tasks(
-                game_id=game_id,
-                version_id=version_id,
-                api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name],
+                game_id=game_id, version_id=version_id, api_name=api_name
             )
             if result.all_claimed:
                 account.mimo_all_claimed_time = get_now()
@@ -331,7 +329,6 @@ class AutoMimo:
         try:
             client = account.client
             client.set_lang(locale)
-            api_url = api_name if api_name == "LOCAL" else PROXY_APIS[api_name]
 
             game_id, version_id = cls._mimo_game_data.get(account.game, (None, None))
             if game_id is None or version_id is None:
@@ -341,7 +338,7 @@ class AutoMimo:
                     return None
 
             bought = await client.buy_mimo_valuables(
-                game_id=game_id, version_id=version_id, api_url=api_url
+                game_id=game_id, version_id=version_id, api_name=api_name
             )
 
             if not bought:
@@ -353,7 +350,7 @@ class AutoMimo:
                 bought_str = f"{item.name} - {item.cost} {mimo_point_emoji}"
                 success = False
                 if account.can_redeem_code:
-                    _, success = await client.redeem_code(code, locale=locale, api_url=api_url)
+                    _, success = await client.redeem_code(code, locale=locale, api_name=api_name)
 
                 if not success:
                     bought_str += f" ({convert_code_to_redeem_url(code, game=account.game)})"
@@ -432,7 +429,7 @@ class AutoMimo:
                 success = False
                 if account.can_redeem_code:
                     _, success = await client.redeem_code(
-                        result.code, locale=locale, api_url=api_name
+                        result.code, locale=locale, api_name=api_name
                     )
                     await asyncio.sleep(6)
 

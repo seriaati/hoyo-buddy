@@ -233,10 +233,7 @@ class AutoRedeem:
             client.set_lang(locale)
 
             embed = await account.client.redeem_codes(
-                codes,
-                locale=locale,
-                blur=False,
-                api_url=PROXY_APIS[api_name] if api_name != "LOCAL" else "LOCAL",
+                codes, locale=locale, blur=False, api_name=api_name
             )
             if embed is None:
                 return None

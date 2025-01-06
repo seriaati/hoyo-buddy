@@ -282,7 +282,7 @@ class Admin(commands.Cog):
             stderr=asyncio.subprocess.PIPE,
         )
         stdout, stderr = await process.communicate()
-        await ctx.send(f"STDOUT: ```{stdout}```\nSTDERR: ```{stderr}```")
+        await ctx.send(f"STDOUT: ```{stdout.decode()}```\nSTDERR: ```{stderr.decode()}```")
 
         await self.bot.are_all_tasks_done.wait()
         await self.bot.close()

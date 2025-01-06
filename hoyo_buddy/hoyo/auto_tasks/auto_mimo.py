@@ -412,6 +412,7 @@ class AutoMimo:
 
                 try:
                     result = await client.draw_mimo_lottery(game_id=game_id, version_id=version_id)
+                    await asyncio.sleep(0.5)
                 except genshin.GenshinException as e:
                     if e.retcode == -510001:  # Invalid fields in calculation
                         break
@@ -419,7 +420,6 @@ class AutoMimo:
 
                 results.append(result)
                 point -= info.cost
-                await asyncio.sleep(0.5)
 
             item_strs: list[str] = []
 

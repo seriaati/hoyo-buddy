@@ -912,6 +912,7 @@ class GenshinClient(ProxyGenshinClient):
                     await self.finish_mimo_task(
                         task.id, game_id=game_id, version_id=version_id, api_name=api_name
                     )
+                    await asyncio.sleep(0.5)
                 except genshin.GenshinException as e:
                     if e.retcode == -500001:  # Invalid fields in calculation
                         continue
@@ -951,6 +952,7 @@ class GenshinClient(ProxyGenshinClient):
                     await self.claim_mimo_task_reward(
                         task.id, game_id=game_id, version_id=version_id, api_name=api_name
                     )
+                    await asyncio.sleep(0.5)
                 except genshin.GenshinException as e:
                     if e.retcode == -500001:  # Invalid fields in calculation
                         continue
@@ -989,6 +991,7 @@ class GenshinClient(ProxyGenshinClient):
                     code = await self.buy_mimo_shop_item(
                         item.id, game_id=game_id, version_id=version_id, api_name=api_name
                     )
+                    await asyncio.sleep(0.5)
                 except genshin.GenshinException as e:
                     if e.retcode == -502005:  # Insufficient points
                         continue
@@ -999,9 +1002,13 @@ class GenshinClient(ProxyGenshinClient):
 
         if bought:
             self.lang = original_lang
-            items = await self.get_mimo_shop_items(
-                game_id=game_id, version_id=version_id, api_name=api_name
-            )
+            if original_lang != "en-us":
+                items = await self.get_mimo_shop_items(
+                    game_id=game_id, version_id=version_id, api_name=api_name
+                )
+            else:
+                items = en_items
+
             item_mi18n = {item.id: item for item in items}
             result = [(item_mi18n[item_id], code) for item_id, code in bought]
 

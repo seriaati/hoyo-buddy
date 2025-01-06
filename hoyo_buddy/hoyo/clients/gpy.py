@@ -47,6 +47,8 @@ load_dotenv()
 env = os.environ["ENV"]
 
 MAX_RETRIES = len(PROXY_APIS)
+BACKOFF_FACTOR = 2
+MAX_BACKOFF = 32
 PROXY_APIS_ = (*PROXY_APIS.keys(), "LOCAL")
 proxy_api_rotator = itertools.cycle(PROXY_APIS_)
 
@@ -77,17 +79,18 @@ class ProxyGenshinClient(genshin.Client):
             try:
                 return await super().request(*args, **kwargs)
             except (TimeoutError, aiohttp.ClientError) as e:
+                # Attempt to retry request
                 err = e
+                attempt += 1
 
-            attempt += 1
-            backoff_factor = 2
-            jitter = random.uniform(0, 1)
-            await asyncio.sleep((backoff_factor**attempt) + jitter)
+                backoff_time = min(BACKOFF_FACTOR**attempt + random.uniform(0, 1), MAX_BACKOFF)
+                await asyncio.sleep(backoff_time)
+            except Exception:
+                # Raise immediately for unexpected exceptions
+                raise
 
-        if err is None:
-            msg = f"HoYo API request failed after {MAX_RETRIES} attempts"
-            raise RuntimeError(msg)
-        raise err
+        msg = f"genshin.py client request failed after {MAX_RETRIES} attempts"
+        raise RuntimeError(msg) from err
 
     async def request_proxy_api(
         self, api_name: ProxyAPI, endpoint: str, payload: dict[str, Any]
@@ -104,6 +107,7 @@ class ProxyGenshinClient(genshin.Client):
 
         attempt = 0
         err: Exception | None = None
+        proxies = list(PROXY_APIS.values())
 
         while attempt < MAX_RETRIES:
             try:
@@ -124,18 +128,16 @@ class ProxyGenshinClient(genshin.Client):
                 err = e
 
             attempt += 1
-            backoff_factor = 2
-            jitter = random.uniform(0, 1)
+            remaining_proxies = [proxy for proxy in proxies if proxy != api_url]
+            if remaining_proxies:
+                api_url = random.choice(remaining_proxies)
+                logger.debug(f"Switching to proxy: {api_url}")
 
-            for proxy_api in random.choices(list(PROXY_APIS.values())):
-                if proxy_api != api_url:
-                    api_url = proxy_api
-            await asyncio.sleep((backoff_factor**attempt) + jitter)
+            backoff_time = min(BACKOFF_FACTOR**attempt + random.uniform(0, 1), MAX_BACKOFF)
+            await asyncio.sleep(backoff_time)
 
-        if err is None:
-            msg = f"Proxy API request failed after {MAX_RETRIES} attempts"
-            raise RuntimeError(msg)
-        raise err
+        msg = f"Proxy API request failed after {MAX_RETRIES} attempts"
+        raise RuntimeError(msg) from err
 
     @overload
     async def os_app_login(

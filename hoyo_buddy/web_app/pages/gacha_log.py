@@ -367,7 +367,10 @@ class FilterDialog(ft.AlertDialog):
             self.params.rarities.append(rarity)
 
     async def on_size_text_field_change(self, e: ft.ControlEvent) -> None:
-        size = int(e.control.value)
+        try:
+            size = int(e.control.value)
+        except ValueError:
+            return
         self.params.size = min(max(size, 1), 500)
 
     async def on_dialog_close(self, e: ft.ControlEvent) -> None:

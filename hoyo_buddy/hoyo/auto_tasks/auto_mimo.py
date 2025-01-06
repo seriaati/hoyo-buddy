@@ -49,7 +49,6 @@ class AutoMimo:
                 logger.info("Auto mimo started")
 
                 cls._bot = bot
-                cls._bot.are_all_tasks_done.clear()
                 cls._mimo_game_data = {}
                 cls._down_games = set()
 
@@ -154,7 +153,6 @@ class AutoMimo:
             except Exception as e:
                 bot.capture_exception(e)
             finally:
-                cls._bot.are_all_tasks_done.set()
                 logger.info(
                     f"Auto mimo finished, {cls._task_count} tasks, {cls._buy_count} buys, {cls._draw_count} draws"
                 )

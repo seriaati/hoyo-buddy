@@ -274,19 +274,6 @@ class Admin(commands.Cog):
         await self.bot.update_version_activity()
         await ctx.send("Done.")
 
-    @commands.command(name="schedule-restart", aliases=["sr"])
-    async def schedule_restart_command(self, ctx: commands.Context) -> Any:
-        process = await asyncio.create_subprocess_shell(
-            "git pull --recurse-submodules && uv sync --no-dev --locked",
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
-        stdout, stderr = await process.communicate()
-        await ctx.send(f"STDOUT: ```{stdout.decode()}```\nSTDERR: ```{stderr.decode()}```")
-
-        await self.bot.are_all_tasks_done.wait()
-        await self.bot.close()
-
 
 async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Admin(bot))

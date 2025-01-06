@@ -60,6 +60,7 @@ class AutoRedeem:
 
                 cls._total_redeem_count = 0
                 cls._bot = bot
+                cls._bot.are_all_tasks_done.clear()
 
                 games_to_redeem = (
                     genshin.Game.GENSHIN,
@@ -107,6 +108,7 @@ class AutoRedeem:
             except Exception as e:
                 bot.capture_exception(e)
             finally:
+                cls._bot.are_all_tasks_done.set()
                 logger.info(
                     f"Auto redeem task completed, total redeem count: {cls._total_redeem_count}"
                 )

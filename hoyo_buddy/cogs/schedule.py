@@ -59,6 +59,8 @@ class Schedule(commands.Cog):
     @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)])
     async def run_farm_checks(self) -> None:
         self.bot.farm_check_running = True
+        self.bot.are_all_tasks_done.clear()
+
         hour = get_now().hour
 
         if hour == 11:
@@ -72,6 +74,7 @@ class Schedule(commands.Cog):
                 await FarmChecker(self.bot).execute(uid_start)
 
         self.bot.farm_check_running = False
+        self.bot.are_all_tasks_done.set()
 
     @tasks.loop(time=datetime.time(11, 0, 0, tzinfo=UTC_8))
     async def update_search_autofill(self) -> None:

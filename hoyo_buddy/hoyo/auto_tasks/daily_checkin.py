@@ -49,6 +49,8 @@ class DailyCheckin:
 
                 cls._total_checkin_count = 0
                 cls._bot = bot
+                cls._bot.are_all_tasks_done.clear()
+
                 cls._no_error_notify = no_error_notify
                 cls._embeds = defaultdict(list)
 
@@ -112,6 +114,7 @@ class DailyCheckin:
             except Exception as e:
                 bot.capture_exception(e)
             finally:
+                cls._bot.are_all_tasks_done.set()
                 logger.info(
                     f"Daily check-in finished, total check-in count: {cls._total_checkin_count}"
                 )

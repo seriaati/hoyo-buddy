@@ -112,6 +112,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.geetest_command_task: asyncio.Task | None = None
         self.farm_check_running: bool = False
 
+        self.are_all_tasks_done = asyncio.Event()
+        self.are_all_tasks_done.set()
+
     async def update_version_activity(self) -> None:
         self.version = get_project_version()
         self.activity = discord.CustomActivity(f"{self.version} | hb.seria.moe")

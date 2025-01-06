@@ -30,11 +30,13 @@ class WebEventsNotify:
 
         async with cls._lock:
             start = asyncio.get_event_loop().time()
-            cls._bot = bot
-            cls._notify_count = 0
 
             try:
                 logger.info("Web events notify started")
+
+                cls._bot = bot
+                cls._bot.are_all_tasks_done.clear()
+                cls._notify_count = 0
 
                 accounts = await HoyoAccount.filter(notif_settings__web_events=True)
                 games = {account.game for account in accounts}
@@ -69,6 +71,7 @@ class WebEventsNotify:
             except Exception as e:
                 cls._bot.capture_exception(e)
             finally:
+                cls._bot.are_all_tasks_done.set()
                 logger.info(f"Web events notify finished, notified {cls._notify_count} accounts")
                 logger.info(
                     f"Web events notify took {asyncio.get_event_loop().time() - start:.2f}s"

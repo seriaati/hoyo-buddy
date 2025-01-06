@@ -207,9 +207,10 @@ class CardSettings(BaseModel):
     highlight_substats: fields.Field[list[int]] = fields.JSONField(default=[])
     use_m3_art = fields.BooleanField(default=False)
     """Whether to use Mindscape 3 art for the ZZZ card."""
+    game = fields.CharEnumField(Game, max_length=32, null=True)
 
     class Meta:
-        unique_together = ("character_id", "user")
+        unique_together = ("character_id", "user", "game")
         ordering = ["character_id"]
 
 

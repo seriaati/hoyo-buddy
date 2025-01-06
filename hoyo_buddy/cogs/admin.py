@@ -17,7 +17,6 @@ from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
 from hoyo_buddy.hoyo.auto_tasks.web_events_notify import WebEventsNotify
 from hoyo_buddy.l10n import translator
-from hoyo_buddy.utils import upload_image
 
 from ..constants import GI_UID_PREFIXES
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
@@ -198,19 +197,17 @@ class Admin(commands.Cog):
         metrics_msg = "\n".join([f"/{metric.name}: {metric.count}" for metric in metrics])
         await ctx.send(f"Command metrics:\n```{metrics_msg}```")
 
-    @commands.command(name="kill-imgur")
-    async def kill_imgur_command(self, ctx: commands.Context) -> Any:
+    @commands.command(name="set-card-settings-game")
+    async def set_card_settings_game(self, ctx: commands.Context) -> Any:
         await ctx.send("Starting...")
 
         settings = await CardSettings.all()
         logger.info(f"Checking {len(settings)} settings...")
 
         for setting in settings:
-            if setting.current_image and "i.imgur" in setting.current_image:
-                logger.info(f"Uploading {setting.current_image}...")
-                new_url = await upload_image(self.bot.session, image_url=setting.current_image)
-                setting.current_image = new_url
-                await setting.save(update_fields=("current_image",))
+            if setting.game is None and len(setting.character_id) == len("10000050"):
+                setting.game = Game.GENSHIN
+                await setting.save(update_fields=("game",))
 
         await ctx.send("Done.")
 

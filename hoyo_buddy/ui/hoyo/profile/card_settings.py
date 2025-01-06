@@ -51,7 +51,12 @@ CARD_TEMPLATE_NAMES: Final[dict[str, str]] = {
 
 
 async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> CardSettings:
-    card_settings = await CardSettings.get_or_none(user_id=user_id, character_id=character_id)
+    card_settings = await CardSettings.get_or_none(
+        user_id=user_id, character_id=character_id, game=game
+    )
+    if card_settings is None:
+        card_settings = await CardSettings.get_or_none(user_id=user_id, character_id=character_id)
+
     if card_settings is None:
         user_settings = await Settings.get(user_id=user_id)
         templates = {
@@ -65,8 +70,15 @@ async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> C
             raise ValueError(msg)
 
         card_settings = await CardSettings.create(
-            user_id=user_id, character_id=character_id, dark_mode=False, template=template
+            user_id=user_id,
+            character_id=character_id,
+            dark_mode=False,
+            template=template,
+            game=game,
         )
+    else:
+        card_settings.game = game
+        await card_settings.save(update_fields=("game",))
 
     return card_settings
 

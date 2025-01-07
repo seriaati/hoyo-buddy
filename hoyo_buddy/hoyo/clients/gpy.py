@@ -893,7 +893,8 @@ class GenshinClient(ProxyGenshinClient):
     async def finish_and_claim_mimo_tasks(
         self, *, game_id: int, version_id: int, api_name: ProxyAPI | Literal["LOCAL"] | None = None
     ) -> MimoClaimTaksResult:
-        finished: list[genshin.models.MimoTask] = []
+        finished_tasks: list[genshin.models.MimoTask] = []
+        finished = False  # True if at least one task was finished
         claimed_points = 0
 
         tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id, api_name=api_name)
@@ -917,7 +918,7 @@ class GenshinClient(ProxyGenshinClient):
                     if e.retcode == -500001:  # Invalid fields in calculation
                         continue
                     raise
-                finished.append(task)
+                finished = True
 
             elif task.type is genshin.models.MimoTaskType.COMMENT:
                 url_data = orjson.loads(task.jump_url)
@@ -933,7 +934,7 @@ class GenshinClient(ProxyGenshinClient):
                     await asyncio.sleep(2)
                     await self.delete_reply(reply_id=reply_id, post_id=int(post_id))
                     await asyncio.sleep(2)
-                    finished.append(task)
+                    finished = True
 
                 topic_id: str | None = args.get("topic_id")
                 if topic_id is not None:
@@ -941,7 +942,7 @@ class GenshinClient(ProxyGenshinClient):
                     await asyncio.sleep(2)
                     await self.leave_topic(int(topic_id))
                     await asyncio.sleep(2)
-                    finished.append(task)
+                    finished = True
 
         if finished:
             tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
@@ -958,10 +959,11 @@ class GenshinClient(ProxyGenshinClient):
                         continue
                     raise
 
+                finished_tasks.append(task)
                 claimed_points += task.point
 
         return MimoClaimTaksResult(
-            finished,
+            finished_tasks,
             claimed_points,
             all(task.status is genshin.models.MimoTaskStatus.CLAIMED for task in tasks),
         )

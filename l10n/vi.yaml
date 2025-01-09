@@ -772,8 +772,8 @@ challenge_command_assault_desc: Tạo thẻ Tập Kích Nguy Cấp
 gi_mimo_start_desc: "Vui lòng thiết lập sự kiện Mimo Du Lịch trên [HoYoLAB]({url}) trước"
 mimo_auto_draw_button_label: Tự động rút thưởng
 mimo_auto_draw_desc: "Hoyo Buddy sẽ tự động đổi thường cho bạn khi nào có thể; nếu tự động mua và tự động rút thưởng đều bật, bot sẽ cố gắng mua trước và rút thưởng nếu không có đủ điểm"
-mimo_auto_draw_success_notify_toggle_label: Thông báo khi việc tự động đổi thành công
-mimo_auto_draw_failure_notify_toggle_label: Thông báo khi việc tự động đổi thất bại
+mimo_auto_draw_success_notify_toggle_label: Thông báo khi việc tự động rút thưởng thành công
+mimo_auto_draw_failure_notify_toggle_label: Thông báo khi việc tự động rút thưởng thất bại
 mimo_auto_draw_embed_desc: "Hoyo Buddy đã rút những món sau với {points} điểm.\nNếu bạn thấy mã quà bên dười, vui lòng đổi bằng tay với lệnh </redeem>."
 mimo_auto_task_error_dm_content: "Du Lịch Mimo: Tính năng {feature} đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
 dismissible_hsr_temp2_desc: "Giờ bạn có thể dùng mẫu thẻ Hoyo Buddy 2 cho thẻ nhân vật HSR, chọn trong cài đặt thẻ. Đề nghị bạn dùng ảnh dọc ngang cho mẫu thẻ này."

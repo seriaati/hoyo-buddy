@@ -97,13 +97,17 @@ class URLImport(Button[GachaImportView]):
 
             for wish in wishes:
                 banner_type = 301 if wish.banner_type == 400 else wish.banner_type
+                item_id = item_ids.get(wish.name)
+                if item_id is None:
+                    msg = f"Cannot find item ID for {wish.name}, is this an invalid item?"
+                    raise ValueError(msg)
 
                 created = await GachaHistory.create(
                     wish_id=wish.id,
                     rarity=wish.rarity,
                     time=wish.time,
                     banner_type=banner_type,
-                    item_id=item_ids[wish.name],
+                    item_id=item_id,
                     account=self.account,
                 )
                 if created:

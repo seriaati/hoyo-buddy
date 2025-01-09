@@ -376,7 +376,11 @@ class GachaCommand:
                 item_ids = await client.fetch_item_name_to_id_map()
 
                 for record in data["list"]:
-                    record["item_id"] = item_ids[record["name"]]
+                    item_id = item_ids.get(record["name"])
+                    if item_id is None:
+                        msg = f"Cannot find item ID for {record['name']}, is this an invalid item?"
+                        raise ValueError(msg)
+                    record["item_id"] = item_id
 
             records = await self._uigf_fill_item_rarities(data["list"], account.game)
             records = [UIGFRecord(timezone=tz_hour, **record) for record in records]

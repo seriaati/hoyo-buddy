@@ -372,7 +372,7 @@ class CharactersView(PaginatorView):
             pc_icons = await self._get_gi_pc_icons()
 
             async with enka.GenshinClient() as client:
-                talent_orders = {
+                talent_orders: dict[str, list[int]] = {
                     character_id: character_info["SkillOrder"]
                     for character_id, character_info in client._assets.character_data.items()
                 }

@@ -771,7 +771,7 @@ zzz_deadly_assault: Tập Kích Nguy Cấp
 challenge_command_assault_desc: Tạo thẻ Tập Kích Nguy Cấp
 gi_mimo_start_desc: "Vui lòng thiết lập sự kiện Mimo Du Lịch trên [HoYoLAB]({url}) trước"
 mimo_auto_draw_button_label: Tự động rút thưởng
-mimo_auto_draw_desc: "Hoyo Buddy sẽ tự động đổi thường cho bạn khi nào có thể; nếu tự động mua và tự động đổi đều bật, nó sẽ cố gắng mua trước và đổi nếu không có đủ điểm"
+mimo_auto_draw_desc: "Hoyo Buddy sẽ tự động đổi thường cho bạn khi nào có thể; nếu tự động mua và tự động rút thưởng đều bật, bot sẽ cố gắng mua trước và rút thưởng nếu không có đủ điểm"
 mimo_auto_draw_success_notify_toggle_label: Thông báo khi việc tự động đổi thành công
 mimo_auto_draw_failure_notify_toggle_label: Thông báo khi việc tự động đổi thất bại
 mimo_auto_draw_embed_desc: "Hoyo Buddy đã rút những món sau với {points} điểm.\nNếu bạn thấy mã quà bên dười, vui lòng đổi bằng tay với lệnh </redeem>."

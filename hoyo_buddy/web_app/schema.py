@@ -40,11 +40,12 @@ class GachaParams(BaseModel):
 
     @field_validator("banner_type", mode="after")
     @classmethod
-    def __validate_banner_type(cls, banner_type: int) -> None:
+    def __validate_banner_type(cls, banner_type: int) -> int:
         banner_types = {key for game_dict in BANNER_TYPE_NAMES.values() for key in game_dict}
         if banner_type not in banner_types:
             msg = f"Invalid banner type {banner_type}"
             raise ValueError(msg)
+        return banner_type
 
     def to_query_string(self) -> str:
         dict_model = self.model_dump()

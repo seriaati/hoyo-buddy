@@ -11,7 +11,6 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any
 
 import aiohttp
-import ambr
 import orjson
 import sentry_sdk
 import toml
@@ -378,38 +377,6 @@ def init_sentry() -> None:
         enable_tracing=True,
         release=get_project_version(),
     )
-
-
-async def get_gacha_icon(*, game: Game, item_id: int) -> str:
-    """Get the icon URL for a gacha item."""
-    if game is Game.ZZZ:
-        return f"https://stardb.gg/api/static/zzz/{item_id}.png"
-
-    if game is Game.GENSHIN:
-        async with ambr.AmbrAPI() as api:
-            if len(str(item_id)) == 5:  # weapon
-                weapons = await api.fetch_weapons()
-                weapon_icon_map: dict[int, str] = {weapon.id: weapon.icon for weapon in weapons}
-                return weapon_icon_map.get(item_id, "")
-
-            # character
-            characters = await api.fetch_characters()
-            character_icon_map: dict[int, str] = {
-                int(character.id): character.icon
-                for character in characters
-                if character.id.isdigit()
-            }
-            return character_icon_map.get(item_id, "")
-
-    if game is Game.STARRAIL:
-        if len(str(item_id)) == 5:  # light cone
-            return f"https://stardb.gg/api/static/StarRailResWebp/icon/light_cone/{item_id}.webp"
-
-        # character
-        return f"https://stardb.gg/api/static/StarRailResWebp/icon/character/{item_id}.webp"
-
-    msg = f"Unsupported game: {game}"
-    raise ValueError(msg)
 
 
 async def fetch_json(session: aiohttp.ClientSession, url: str) -> Any:

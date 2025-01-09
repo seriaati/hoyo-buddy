@@ -210,6 +210,11 @@ LOCALE_TO_AMBR_LANG: dict[discord.Locale, ambr.Language] = {
     discord.Locale.turkish: ambr.Language.TR,
 }
 
+
+def locale_to_ambr_lang(locale: discord.Locale) -> ambr.Language:
+    return LOCALE_TO_AMBR_LANG.get(locale, ambr.Language.EN)
+
+
 LOCALE_TO_YATTA_LANG: dict[discord.Locale, yatta.Language] = {
     discord.Locale.taiwan_chinese: yatta.Language.CHT,
     discord.Locale.chinese: yatta.Language.CN,

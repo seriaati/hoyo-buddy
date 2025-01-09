@@ -4,15 +4,24 @@ import asyncio
 import os
 from typing import TYPE_CHECKING, Any
 
+import ambr
 import asyncpg
 import flet as ft
 import orjson
 from cryptography.fernet import Fernet
 
+from hoyo_buddy.constants import locale_to_starrail_data_lang, locale_to_zenless_data_lang
+from hoyo_buddy.enums import Game
+from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
+
 from ..l10n import LocaleStr, translator
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from discord import Locale
+
+    from hoyo_buddy.db.models import GachaHistory
 
 
 class LoadingSnackBar(ft.SnackBar):
@@ -106,3 +115,77 @@ async def fetch_json_file(filename: str) -> Any:
         return orjson.loads(json_string)
     finally:
         await conn.close()
+
+
+async def get_gacha_names(
+    page: ft.Page, *, gachas: Sequence[GachaHistory], locale: Locale, game: Game
+) -> dict[int, str]:
+    cached_gacha_names: dict[str, str] = (
+        await page.client_storage.get_async(f"hb.{locale}.{game.name}.gacha_names") or {}
+    )
+
+    result: dict[int, str] = {}
+    item_ids = list({g.item_id for g in gachas})
+    non_cached_item_ids: list[int] = []
+
+    for item_id in item_ids:
+        if str(item_id) in cached_gacha_names:
+            result[item_id] = cached_gacha_names[str(item_id)]
+        else:
+            non_cached_item_ids.append(item_id)
+
+    if non_cached_item_ids:
+        # Update the cache with the new item names
+        if game is Game.ZZZ:
+            map_: dict[str, str] = await fetch_json_file(
+                f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json"
+            )
+            item_names = {int(k): v for k, v in map_.items()}
+        elif game is Game.STARRAIL:
+            map_: dict[str, str] = await fetch_json_file(
+                f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json"
+            )
+            item_names = {int(k): v for k, v in map_.items()}
+        elif game is Game.GENSHIN:
+            async with AmbrAPIClient(locale) as client:
+                item_names = await client.fetch_item_id_to_name_map()
+        else:
+            msg = f"Unsupported game: {game} for fetching gacha names"
+            raise ValueError(msg)
+
+        for item_id in non_cached_item_ids:
+            result[item_id] = item_names.get(item_id, "???")
+
+        cached_gacha_names.update({str(k): v for k, v in item_names.items()})
+        asyncio.create_task(
+            page.client_storage.set_async(
+                f"hb.{locale}.{game.name}.gacha_names", cached_gacha_names
+            )
+        )
+
+    return result
+
+
+async def get_gacha_icon(*, game: Game, item_id: int) -> str:
+    """Get the icon URL for a gacha item."""
+    if game is Game.ZZZ:
+        return f"https://stardb.gg/api/static/zzz/{item_id}.png"
+
+    if game is Game.GENSHIN:
+        async with ambr.AmbrAPI() as api:
+            if len(str(item_id)) == 5:  # weapon
+                weapon = await api.fetch_weapon_detail(item_id)
+                return weapon.icon
+
+            character = await api.fetch_character_detail(str(item_id))
+            return character.icon
+
+    if game is Game.STARRAIL:
+        if len(str(item_id)) == 5:  # light cone
+            return f"https://stardb.gg/api/static/StarRailResWebp/icon/light_cone/{item_id}.webp"
+
+        # character
+        return f"https://stardb.gg/api/static/StarRailResWebp/icon/character/{item_id}.webp"
+
+    msg = f"Unsupported game: {game}"
+    raise ValueError(msg)

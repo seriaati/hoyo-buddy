@@ -981,6 +981,8 @@ class GenshinClient(ProxyGenshinClient):
         en_items = await self.get_mimo_shop_items(
             game_id=game_id, version_id=version_id, api_name=api_name
         )
+        # Sort items from most expensive to least expensive
+        en_items = sorted(en_items, key=lambda item: item.cost, reverse=True)
 
         keywords = ("Stellar Jades", "Polychrome")
         for item in en_items:

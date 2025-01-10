@@ -41,7 +41,7 @@ action_in_cooldown_error_title: 操作冷却中
 add_account_button_label: 添加账号
 add_hoyolab_acc.embed.description: "1.通过邮箱和密码：最为推荐、最简单的方式。\n2.通过开发者工具：仅在电脑生效，如果你对第一种方式存有安全顾虑，该方式更安全些。"
 add_hoyolab_acc.embed.title: 选择一个添加账号的方式
-adding_accounts_description: "欢迎来到Hoyo Buddy！只需要花费1分钟添加账号的时间，即可享受各种功能。\n关于账号安全，请阅读[Wiki页面](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security)，关于我们如何使用和收集你的数据，请阅读[隐私政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: ""
 adding_accounts_title: 选择账号所属平台
 ai_gen_image_error_message: 请检查输入的提示并重试。
 ai_gen_image_error_title: 在使用AI生成绘图中发生错误
@@ -53,7 +53,6 @@ artifact_set_two_piece_embed_description: "二件套：{bonus_2}"
 artifact_sets: 圣遗物套装
 auto_checkin_button_label: 自动每日签到
 auto_locale_option_label: 遵循Discord客户端语言
-auto_redeem_error.content: "由于发生错误，自动兑换兑换码功能已被关闭，你可以使用</redeem> 将其重新启动\n如果这个错误持续发生，或是你不知道如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 auto_redeem_footer: 使用 /redeem 关闭自动兑换功能。
 auto_redeem_toggle.label: 自动兑换
 books: 书籍
@@ -322,7 +321,7 @@ player_not_found_description: 请检查所提供UID
 player_not_found_title: 玩家不存在
 preservation: 存护
 prev_page_option_label: 上一页
-process_notify_error.content: "由于发生错误，便签提醒功能已被关闭，你可以使用</notes> 将其重新启动\n如果这个错误持续发生，或是你不知道该如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
+notify_feature: ""
 profile.add_image.button.label: 添加自定义图片
 profile.add_image_modal.image_url.label: 图像URL
 profile.build.select.placeholder: 选择一个角色配置…
@@ -492,6 +491,7 @@ reminder_modal.title: "{notify}提醒设置"
 profile_view.set_cur_temp_as_default: 设置当前样式为预设
 set_cur_temp_as_default.done: 完成
 set_cur_temp_as_default.done_desc: "你的 {game} 预设卡片样式已被设置为 {template}"
+remove_from_cache_finish_embed_desc: ""
 third_party_card_temp_error_title: 这个第三方卡片样式出错了
 third_party_card_temp_error_message: "此角色的卡片样式已被重置为 的样式。如果此错误持续发生，请在我们的[Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 account_locked_title: 账户已被锁定20分钟
@@ -550,7 +550,7 @@ dyk_team: "Hoyo Buddy 的小团队由一位程式设计师和一位设计师组�
 dyk_disable: 你可以使用 /settings 将这则讯息关闭
 dyk_settings_lang: 你可以使用 /settings 变更机器人使用的语言
 dyk_settings_theme: 你可以使用 /settings 切换为亮色或深色模式
-dyk_security: "我们有一则讲解关于帐户安全的[文章](<https://github.com/seriaati/hoyo-buddy/wiki/Account-Security>)"
+dyk_security: ""
 dyk_github: "Hoyo Buddy 于 [GitHub](<https://github.com/seriaati/hoyo-buddy>) 上开源"
 dyk_python: Hoyo Buddy 使用纯 Python 撰写而成
 dyk_unreleased: 你可以使用 /search 查看尚未释出的游戏内容
@@ -780,3 +780,7 @@ dismissible_hsr_temp2_desc: "你现在可以使用 Hoyo Buddy 样式 2 来生成
 bounty_commission.embed.description: 悬赏委托尚未全部完成
 ridu_points.embed.description: 丽都周记任务尚未全部完成
 changelog_embed_title: 更新日志
+web_events_notify_toggle_label: ""
+web_events_cmd_desc: ""
+web_events_embed_footer: ""
+auto_task_error_dm_content: ""

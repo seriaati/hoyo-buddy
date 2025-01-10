@@ -41,7 +41,7 @@ action_in_cooldown_error_title: Hành động trong thời gian chờ
 add_account_button_label: Thêm tài khoản
 add_hoyolab_acc.embed.description: "1. Với email và mật khẩu: Được khuyên dùng, là cách đễ nhất.\n2. Với DevTools: Chỉ làm được trên PC, là cách an toàn nếu bạn lo ngại về bảo mật với cách một"
 add_hoyolab_acc.embed.title: Vui lòng chọn phương thức để thêm tài khoản
-adding_accounts_description: "Chào mừng đến Hoyo Buddy! Hãy tận hưởng những tính năng bằng cách dành dưới 1 phút để thêm tài khoản của bạn.\n\nVề bảo mật tài khoản, vui lòng đọc [Trang Wiki](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), về cách chúng tôi sử dụng và thu thập thông tin của bạn, vui lòng đọc [Chính sách Bảo Mật](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: ""
 adding_accounts_title: Vui lòng chọn Nền tảng Tài Khoản
 ai_gen_image_error_message: Kiểm tra thông tin đã nhập và thử lại
 ai_gen_image_error_title: Đã xảy ra lỗi khi đang sáng tạo bằng AI
@@ -550,7 +550,7 @@ dyk_team: "Hoyo Buddy được xây dựng bởi 1 team nhỏ gồm 1 lập trì
 dyk_disable: Bạn có thể vô hiệu hóa tin nhắn này trong /settings
 dyk_settings_lang: Bạn có thể đổi ngôn ngữ của bot trong /settings
 dyk_settings_theme: Bạn có thể đổi chế độ sáng tối sử dụng /settings
-dyk_security: "Chúng tôi có một [bài viết](<https://github.com/seriaati/hoyo-buddy/wiki/Account-Security>) về bảo mật tài khoản"
+dyk_security: ""
 dyk_github: "Hoyo Buddy là một dự án mã nguồn mở trên [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
 dyk_python: Hoyo Buddy được viết hết bằng Python
 dyk_unreleased: Bạn có thể xem nôi dung trò chơi chưa ra mắt bằng /search

@@ -115,6 +115,7 @@ class HoyoBuddy(commands.AutoShardedBot):
     async def update_version_activity(self) -> None:
         self.version = get_project_version()
         self.activity = discord.CustomActivity(f"{self.version} | hb.seria.moe")
+        await self.change_presence(activity=self.activity)
 
     async def setup_hook(self) -> None:
         # Initialize genshin.py sqlite cache

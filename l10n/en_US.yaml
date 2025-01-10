@@ -41,7 +41,7 @@ action_in_cooldown_error_title: Action in Cooldown
 add_account_button_label: Add accounts
 add_hoyolab_acc.embed.description: "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one"
 add_hoyolab_acc.embed.title: Select a Method to add Your Accounts
-adding_accounts_description: "Welcome to Hoyo Buddy! Enjoy various features by spending less than 1 minute to add your accounts.\n\nRegarding account security, please read the [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "Welcome to Hoyo Buddy! Enjoy various features by spending less than 1 minute to add your accounts.\n\nRegarding account security, please read the [Wiki page](https://hb-docs.seria.moe/docs/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Select Your Account's Platform
 ai_gen_image_error_message: Check your prompt and try again.
 ai_gen_image_error_title: An Error Occured While Generating Art With AI
@@ -550,7 +550,7 @@ dyk_team: "Hoyo Buddy is made by a small team of 1 programmer and 1 designer"
 dyk_disable: You can disable this message with /settings
 dyk_settings_lang: You can change the language of the bot with /settings
 dyk_settings_theme: You can switch between light and dark theme using /settings
-dyk_security: "We have an [article](<https://github.com/seriaati/hoyo-buddy/wiki/Account-Security>) about account security"
+dyk_security: "We have an [article](<https://hb-docs.seria.moe/docs/Account-Security>) about account security"
 dyk_github: "Hoyo Buddy is open-sourced on [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
 dyk_python: Hoyo Buddy is written in pure Python
 dyk_unreleased: You can view unreleased game content with /search

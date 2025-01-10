@@ -16,10 +16,10 @@ Hoyo Buddy is a feature rich, easy to use, and beautifully designed Discord bot 
   
 - [Try it Out](https://link.seria.moe/hb-start)
 - [Official Website](https://hb.seria.moe/)
-- [Is Hoyo Buddy Safe?](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security)
-- [Why Hoyo Buddy?](https://github.com/seriaati/hoyo-buddy/wiki/Why-Hoyo-Buddy%3F)
-- [Frequently Asked Questions](<https://github.com/seriaati/hoyo-buddy/wiki/Frequently-Asked-Questions>)
+- [Is Hoyo Buddy Safe?](https://hb-docs.seria.moe/docs/Account-Security)
+- [Why Hoyo Buddy?](https://hb-docs.seria.moe/docs/Why-Hoyo-Buddy)
 - [Discord Server](https://link.seria.moe/hb-dc)
+- [Documentation](https://hb-docs.seria.moe/)
 
 ## Quick Introduction
 
@@ -54,7 +54,7 @@ Hoyo Buddy integrates features from all Hoyoverse games, supporting both HoYoLAB
 
 ## Goal
 
-The community has been missing a Discord bot that provides support for all Hoyoverse games, and Hoyo Buddy is here to change that. We try to create **ONE** bot that can do **EVERYTHING** for all Hoyoverse games, with beautfiul designs and intuitive interfaces, all for free. Hoyo Buddy is currently the only Discord bot that provides multi-game, multi-account, and multi-language support. For more details, read this [article](https://github.com/seriaati/hoyo-buddy/wiki/Why-Hoyo-Buddy%3F).
+The community has been missing a Discord bot that provides support for all Hoyoverse games, and Hoyo Buddy is here to change that. We try to create **ONE** bot that can do **EVERYTHING** for all Hoyoverse games, with beautfiul designs and intuitive interfaces, all for free. Hoyo Buddy is currently the only Discord bot that provides multi-game, multi-account, and multi-language support. For more details, read this [article](https://hb-docs.seria.moe/docs/Why-Hoyo-Buddy).
 
 ## Contributing
 
@@ -76,7 +76,6 @@ Other projects made by me that are used in Hoyo Buddy
 - [hoyo-codes](https://github.com/seriaati/hoyo-codes): API to get gift codes for all Hoyoverse games, used in the automatic code redemption feature.
 - [daily-checkin-api](https://github.com/seriaati/daily_checkin_api) (private): API to perform daily check-in, used in the automatic daily check-in feature.
 - [hoyo-buddy-assets](https://github.com/seriaati/hoyo-buddy-assets) (private): Hoyo Buddy assets, used in image generation features.
-- [ZenlessAssetScrape](https://github.com/seriaati/ZenlessAssetScrape): Zenless Zone Zero assets/data scraped from various database websites, used in ZZZ build card feature.
 
 ## Acknowledgements
 

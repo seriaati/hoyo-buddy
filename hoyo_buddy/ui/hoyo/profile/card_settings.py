@@ -76,7 +76,7 @@ async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> C
             template=template,
             game=game,
         )
-    else:
+    elif card_settings.game is None:
         card_settings.game = game
         await card_settings.save(update_fields=("game",))
 

@@ -780,7 +780,7 @@ dismissible_hsr_temp2_desc: "你现在可以使用 Hoyo Buddy 样式 2 来生成
 bounty_commission.embed.description: 悬赏委托尚未全部完成
 ridu_points.embed.description: 丽都周记任务尚未全部完成
 changelog_embed_title: 更新日志
-web_events_notify_toggle_label: 有新的网页活动时通知
+web_events_notify_toggle_label: 在有新的网页活动时通知
 web_events_cmd_desc: 查看当前正在进行的网页活动及设置通知
 web_events_embed_footer: 使用 /web-events 来调整通知
 auto_task_error_dm_content: "由于发生错误，{feature}功能已被关闭，你可以使用{command}将其重新启用\n如果这个错误持续发生，或是你不知道该如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"

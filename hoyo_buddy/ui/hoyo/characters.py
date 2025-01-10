@@ -577,7 +577,11 @@ class CharactersView(PaginatorView):
 
             # Find traveler element and add 1 to the element char count
             for character in self.gi_characters:
-                if character.id in TRAVELER_IDS:
+                if (
+                    character.id in TRAVELER_IDS
+                    and character.element.lower()
+                    in self.element_char_counts  # Prevent KeyError caused by 'None' element traveler
+                ):
                     self.element_char_counts[character.element.lower()] += 1
                     break
 

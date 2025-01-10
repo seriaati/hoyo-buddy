@@ -18,8 +18,9 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     import enka
+    from enka.gi import Talent
 
-    from hoyo_buddy.models import HoyolabGICharacter
+    from hoyo_buddy.models import HoyolabGICharacter, HoyolabGITalent
 
 __all__ = ("GITeamCard",)
 
@@ -119,13 +120,15 @@ class GITeamCard:
         skill_bg = drawer.open_asset("skill_bg.png", mask_color=color_4)
         im.alpha_composite(skill_bg, (96, 719))
         start_pos = (133, 726)
-        talents = character.talents
-        if character.id == 10000002:  # Ayaka
-            talents.pop(0)
-        elif character.id == 10000041:  # Mona
-            talents.pop(2)
+        talent_order = character.talent_order
+        talents: list[Talent | HoyolabGITalent] = []
+        for talent_id in talent_order:
+            talent = next((t for t in character.talents if t.id == talent_id), None)
+            if talent is None:
+                continue
+            talents.append(talent)
 
-        for talent in character.talents[:3]:
+        for talent in talents:
             icon = drawer.open_static(talent.icon, size=(40, 40), mask_color=color_3)
             im.alpha_composite(icon, start_pos)
             tbox = drawer.write(

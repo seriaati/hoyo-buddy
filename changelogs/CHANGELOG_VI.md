@@ -94,7 +94,6 @@
 - (`/gacha-log upload`) Sửa lỗi `KeyError` với UIGF phiên bản cũ hơnhơn 3.0.
 - (`/search`) Sửa các lựa chọn tự động hoàn thành trùng lặp.
 
-
 ## v1.15.3
 
 Lỗi code trong phiên bản trước đã xẩy ra lỗi "nhiều yêu cầu quá, vui lòng thử lại" khi người dùng đăng nhập, vui lòng xem [bài đăng này](https://link.seria.moe/kky283) để biết thêm thông tin.

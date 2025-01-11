@@ -5,14 +5,13 @@ from typing import TYPE_CHECKING
 from discord.app_commands.errors import AppCommandError
 from discord.utils import format_dt
 
-from .enums import Game
 from .l10n import EnumStr, LocaleStr
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from datetime import datetime
 
-    from .enums import ChallengeType, Platform
+    from .enums import ChallengeType, Game, Platform
 
 
 class ProxyAPIError(Exception):
@@ -55,9 +54,7 @@ class AccountNotFoundError(HoyoBuddyError, AppCommandError):
 
 
 class NoAccountFoundError(HoyoBuddyError):
-    def __init__(
-        self, games: Sequence[Game] | None = None, platform: Platform | None = None
-    ) -> None:
+    def __init__(self, games: Sequence[Game], platform: Platform | None = None) -> None:
         if platform is not None:
             message = LocaleStr(
                 key="no_account_found_for_games_platform_error_message", platform=EnumStr(platform)
@@ -68,7 +65,7 @@ class NoAccountFoundError(HoyoBuddyError):
         super().__init__(
             title=LocaleStr(key="no_account_found_for_games_error_title"), message=message
         )
-        self.games = games or list(Game)
+        self.games = games
 
 
 class CardNotReadyError(HoyoBuddyError):

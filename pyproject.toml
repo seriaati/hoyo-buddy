@@ -39,7 +39,7 @@ license = { file = "LICENSE" }
 name = "hoyo-buddy"
 readme = "README.md"
 requires-python = ">=3.11"
-version = "1.15.6"
+version = "1.15.7"
 
 [tool.uv]
 dev-dependencies = ["icecream>=2.1.3"]
@@ -49,6 +49,8 @@ novelai = { git = "https://github.com/seriaati/NovelAI-API" }
 genshin = { git = "https://github.com/thesadru/genshin.py", branch = "master" }
 hakushin-py = { git = "https://github.com/seriaati/hakushin-py" }
 discord-py = { git = "https://github.com/Rapptz/discord.py" }
+ambr-py = { git = "https://github.com/seriaati/ambr" }
+enka = { git = "https://github.com/seriaati/enka-py" }
 
 
 [tool.pyright]

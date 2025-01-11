@@ -48,12 +48,13 @@ class AutoMimo:
             try:
                 logger.info("Auto mimo started")
 
-                cls._task_count = 0
-                cls._buy_count = 0
-                cls._draw_count = 0
                 cls._bot = bot
                 cls._mimo_game_data = {}
                 cls._down_games = set()
+
+                cls._task_count = 0
+                cls._buy_count = 0
+                cls._draw_count = 0
 
                 # Accounts that have claimed all mimo tasks
                 skip_ids = {
@@ -65,8 +66,9 @@ class AutoMimo:
                 logger.info("Starting auto mimo tasks")
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 auto_task_accs = await HoyoAccount.filter(
-                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ), mimo_auto_task=True
-                )
+                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
+                    mimo_auto_task=True,
+                ).order_by("id")
 
                 for account in auto_task_accs:
                     if account.platform is Platform.MIYOUSHE or account.id in skip_ids:
@@ -91,8 +93,9 @@ class AutoMimo:
                 logger.info("Starting auto mimo buys")
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 auto_buy_accs = await HoyoAccount.filter(
-                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ), mimo_auto_buy=True
-                )
+                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
+                    mimo_auto_buy=True,
+                ).order_by("id")
 
                 for account in auto_buy_accs:
                     if (
@@ -121,8 +124,9 @@ class AutoMimo:
                 logger.info("Starting auto mimo draws")
                 queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
                 auto_draw_accs = await HoyoAccount.filter(
-                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ), mimo_auto_draw=True
-                )
+                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
+                    mimo_auto_draw=True,
+                ).order_by("id")
 
                 for account in auto_draw_accs:
                     if (
@@ -243,7 +247,15 @@ class AutoMimo:
                             await account.save(update_fields=("mimo_auto_draw",))
 
                         content = LocaleStr(
-                            key="mimo_auto_buy_error_dm_content", feature=LocaleStr(key=feature_key)
+                            key="auto_task_error_dm_content",
+                            feature=LocaleStr(
+                                custom_str="{mimo_title} {label}",
+                                mimo_title=LocaleStr(
+                                    key="point_detail_tag_mimo", mi18n_game="mimo"
+                                ),
+                                label=LocaleStr(key=feature_key),
+                            ),
+                            command="</mimo>",
                         ).translate(account.user.settings.locale or discord.Locale.american_english)
                     else:
                         content = None
@@ -274,9 +286,7 @@ class AutoMimo:
                     return None
 
             result = await client.finish_and_claim_mimo_tasks(
-                game_id=game_id,
-                version_id=version_id,
-                api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name],
+                game_id=game_id, version_id=version_id, api_name=api_name
             )
             if result.all_claimed:
                 account.mimo_all_claimed_time = get_now()
@@ -319,7 +329,6 @@ class AutoMimo:
         try:
             client = account.client
             client.set_lang(locale)
-            api_url = api_name if api_name == "LOCAL" else PROXY_APIS[api_name]
 
             game_id, version_id = cls._mimo_game_data.get(account.game, (None, None))
             if game_id is None or version_id is None:
@@ -329,7 +338,7 @@ class AutoMimo:
                     return None
 
             bought = await client.buy_mimo_valuables(
-                game_id=game_id, version_id=version_id, api_url=api_url
+                game_id=game_id, version_id=version_id, api_name=api_name
             )
 
             if not bought:
@@ -341,7 +350,7 @@ class AutoMimo:
                 bought_str = f"{item.name} - {item.cost} {mimo_point_emoji}"
                 success = False
                 if account.can_redeem_code:
-                    _, success = await client.redeem_code(code, locale=locale, api_url=api_url)
+                    _, success = await client.redeem_code(code, locale=locale, api_name=api_name)
 
                 if not success:
                     bought_str += f" ({convert_code_to_redeem_url(code, game=account.game)})"
@@ -378,71 +387,81 @@ class AutoMimo:
     ) -> DefaultEmbed | ErrorEmbed | None:
         locale = account.user.settings.locale or discord.Locale.american_english
 
-        client = account.client
-        client.set_lang(locale)
+        try:
+            client = account.client
+            client.set_lang(locale)
 
-        game_id, version_id = cls._mimo_game_data.get(account.game, (None, None))
-        if game_id is None or version_id is None:
-            try:
-                game_id, version_id = await cls._get_mimo_game_data(client, account.game)
-            except ValueError:
+            game_id, version_id = cls._mimo_game_data.get(account.game, (None, None))
+            if game_id is None or version_id is None:
+                try:
+                    game_id, version_id = await cls._get_mimo_game_data(client, account.game)
+                except ValueError:
+                    return None
+
+            info = await client.get_mimo_lottery_info(game_id=game_id, version_id=version_id)
+            count = info.limit_count - info.current_count
+            point = info.current_point
+            if count == 0 or point < info.cost:
                 return None
 
-        info = await client.get_mimo_lottery_info(game_id=game_id, version_id=version_id)
-        count = info.limit_count - info.current_count
-        point = info.current_point
-        if count == 0 or point < info.cost:
-            return None
+            results: list[genshin.models.MimoLotteryResult] = []
 
-        results: list[genshin.models.MimoLotteryResult] = []
-
-        for _ in range(count):
-            if point < info.cost:
-                break
-
-            try:
-                result = await client.draw_mimo_lottery(game_id=game_id, version_id=version_id)
-            except genshin.GenshinException as e:
-                if e.retcode == -510001:  # Invalid fields in calculation
+            for _ in range(count):
+                if point < info.cost:
                     break
+
+                try:
+                    result = await client.draw_mimo_lottery(game_id=game_id, version_id=version_id)
+                    await asyncio.sleep(0.5)
+                except genshin.GenshinException as e:
+                    if e.retcode == -510001:  # Invalid fields in calculation
+                        break
+                    raise
+
+                results.append(result)
+                point -= info.cost
+
+            item_strs: list[str] = []
+
+            for result in results:
+                item_str = result.reward.name
+
+                if result.code:
+                    success = False
+                    if account.can_redeem_code:
+                        _, success = await client.redeem_code(
+                            result.code, locale=locale, api_name=api_name
+                        )
+                        await asyncio.sleep(6)
+
+                    if not success:
+                        item_strs += (
+                            f" ({convert_code_to_redeem_url(result.code, game=account.game)})"
+                        )
+
+                item_strs.append(item_str)
+
+            if not item_strs:
+                return None
+
+            embed = DefaultEmbed(
+                locale,
+                title=LocaleStr(
+                    custom_str="{mimo_title} {label}",
+                    mimo_title=LocaleStr(key="point_detail_tag_mimo", mi18n_game="mimo"),
+                    label=LocaleStr(key="mimo_auto_draw_button_label"),
+                ),
+                description=LocaleStr(
+                    key="mimo_auto_draw_embed_desc",
+                    points=sum(info.cost for _ in range(len(item_strs))),
+                ),
+            )
+            embed.add_description(f"{create_bullet_list(item_strs)}")
+        except Exception as e:
+            embed, recognized = get_error_embed(e, locale)
+            if not recognized:
                 raise
-
-            results.append(result)
-            point -= info.cost
-            await asyncio.sleep(0.5)
-
-        item_strs: list[str] = []
-
-        for result in results:
-            item_str = result.reward.name
-
-            if result.code:
-                success = False
-                if account.can_redeem_code:
-                    _, success = await client.redeem_code(
-                        result.code, locale=locale, api_url=api_name
-                    )
-                    await asyncio.sleep(6)
-
-                if not success:
-                    item_strs += f" ({convert_code_to_redeem_url(result.code, game=account.game)})"
-
-            item_strs.append(item_str)
-
-        if not item_strs:
-            return None
-
-        embed = DefaultEmbed(
-            locale,
-            title=LocaleStr(
-                custom_str="{mimo_title} {label}",
-                mimo_title=LocaleStr(key="point_detail_tag_mimo", mi18n_game="mimo"),
-                label=LocaleStr(key="mimo_auto_draw_button_label"),
-            ),
-            description=LocaleStr(
-                key="mimo_auto_draw_embed_desc",
-                points=sum(info.cost for _ in range(len(item_strs))),
-            ),
-        )
-        embed.add_description(f"{create_bullet_list(item_strs)}")
-        return embed
+            embed.add_acc_info(account, blur=False)
+            return embed
+        else:
+            return embed

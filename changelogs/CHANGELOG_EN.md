@@ -1,5 +1,41 @@
 # Hoyo Buddy Changelog
 
+## v1.15.7
+
+### New Features
+
+- (`/web-events`) Added a new command to view on-going web events and set notifier to remind you when there is a new event.
+- (`/notes`) Added bounty commission and Ridu weekly points notifiers for ZZZ.
+- (`/about`) Added changelog button.
+
+### Improvements
+
+- (`/gacha-log view`) Improved gacha log page performance by fixing cache issues.
+- (`/about`) Removed latest git changes.
+- (`/mimo`) Sort Traveling Mimo shop items from most expensive to least expensive when auto buying.
+  
+### Bug Fixes
+
+- (`/characters genshin`) Fixed KeyError caused by no-element travelers.
+- (`/characters genshin`) Fixed incorrect talent level for Kamisato Ayaka.
+- (`/stats`) Fixed "Record card not found for ..." error for ZZZ.
+- (`/build genshin`) Fixed "No block lists to draw" error.
+- (`/gacha-log view`) Fixed incorrect 50/50 win rate.
+- (`/gacha-log view`) Fixed 422 validation error on web app.
+- (`/gacha-log view`) Handle invalid size input.
+- (`/gacha-log import`) Handle invalid banner types when importing gacha logs.
+- (`/gacha-log import`) Fixed UIGF import.
+- (`/mimo`) Confirm task finish status before sending notifications.
+- (`/mimo`) Added sleep intervals between task completions to avoid being rate limited.
+- (`/mimo`) Remove HTML tags from task names.
+- (`/mimo`) Fixed error after buying an item.
+- (`/profile`) Fixed card settings from different games being mixed up.
+- (`/profile genshin`) Fixed extra talents being shown in team cards.
+- (`/profile genshin`) Fixed validation error with Mavuika.
+- (`/search`) Fixed W-engine refinement selector not updating selected value.
+- (`/notes`) Fixed validation error for Honkai Impact 3rd.
+- (`/challenge zzz assault`) Fixed buff icons not being shown.
+
 ## v1.15.6
 
 ### New Features

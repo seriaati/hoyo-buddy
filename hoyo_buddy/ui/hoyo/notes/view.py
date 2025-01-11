@@ -586,17 +586,18 @@ class NotesView(View):
                 ),
                 inline=False,
             )
-            embed.add_field(
-                name=LocaleStr(key="notes.memorial_arena"),
-                value=LocaleStr(
-                    key="notes.memorial_arena_value",
-                    rewards_cur=notes.battle_field.current_reward,
-                    rewards_max=notes.battle_field.max_reward,
-                    sss_cur=notes.battle_field.current_sss_reward,
-                    sss_max=notes.battle_field.max_sss_reward,
-                ),
-                inline=False,
-            )
+            if notes.battle_field is not None:
+                embed.add_field(
+                    name=LocaleStr(key="notes.memorial_arena"),
+                    value=LocaleStr(
+                        key="notes.memorial_arena_value",
+                        rewards_cur=notes.battle_field.current_reward,
+                        rewards_max=notes.battle_field.max_reward,
+                        sss_cur=notes.battle_field.current_sss_reward,
+                        sss_max=notes.battle_field.max_sss_reward,
+                    ),
+                    inline=False,
+                )
             embed.add_field(
                 name=LocaleStr(key="notes.elysian_realm"),
                 value=LocaleStr(

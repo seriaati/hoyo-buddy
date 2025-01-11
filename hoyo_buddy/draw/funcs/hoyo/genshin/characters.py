@@ -25,7 +25,7 @@ WEAPON_ICON_SIZES = (84, 84)
 def draw_character_card(
     characters: Sequence[GICharacter | UnownedGICharacter],
     pc_icons: dict[str, str],
-    talent_orders: dict[int, list[int]],
+    talent_orders: dict[str, list[int]],
     dark_mode: bool,
     locale_: str,
 ) -> io.BytesIO:
@@ -37,7 +37,7 @@ def draw_character_card(
             talent_str = ""
             two_digits = False
         else:
-            talent_order = talent_orders.get(character.id)
+            talent_order = talent_orders.get(str(character.id))
             if talent_order is None:
                 # Get the first 3 talents
                 talents = character.skills[:3]

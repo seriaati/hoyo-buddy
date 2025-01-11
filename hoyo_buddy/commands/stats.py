@@ -26,7 +26,7 @@ class StatsCommand:
         accounts = await i.client.get_accounts(user.id, games=games_available)
         account = await i.client.get_account(user.id, games=games_available)
         if not accounts:
-            raise NoAccountFoundError
+            raise NoAccountFoundError(games_available)
 
         view = StatsView(accounts, account.id, author=i.user, locale=locale)
         await view.start(i)

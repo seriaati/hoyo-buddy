@@ -402,7 +402,8 @@ class ShopItemSelector(ui.PaginatorSelect[MimoView]):
         shop_embed = self.view.get_shop_embed(points, shop_items)
         await self.unset_loading_state(i, embed=shop_embed)
 
-        self.options = self.get_options(shop_items, points)
+        self.options_before_split = self.get_options(shop_items, points)
+        self.options = self.process_options()
         self.translate(self.view.locale)
         await i.edit_original_response(view=self.view)
 

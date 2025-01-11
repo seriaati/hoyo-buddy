@@ -41,7 +41,7 @@ action_in_cooldown_error_title: Actie in Cooldown
 add_account_button_label: Accounts toegoeven
 add_hoyolab_acc.embed.description: ""
 add_hoyolab_acc.embed.title: Selecteer een Methode om je Accounts toe te Voegen
-adding_accounts_description: "Welkom bij Hoyo Buddy! Geniet van verschillende functies door minder dan 1 minuut te besteden aan het toevoegen van je accounts.\n\nWat betreft accountbeveiliging, lees de [Wiki page](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: ""
 adding_accounts_title: Selecteer het Platform van je Account
 ai_gen_image_error_message: Controleer je prompt en probeer het opnieuw.
 ai_gen_image_error_title: Er is een Fout Opgetreden Tijdens het Genereren van Kunst met AI
@@ -53,7 +53,6 @@ artifact_set_two_piece_embed_description: "2-Delen: {bonus_2}"
 artifact_sets: Artefact Sets
 auto_checkin_button_label: Automatisch dagelijks inchecken
 auto_locale_option_label: Volg client taal
-auto_redeem_error.content: ""
 auto_redeem_footer: Schakel automatisch code inwisselen uit met /redeem
 auto_redeem_toggle.label: Automatisch code inwisselen
 books: Boeken
@@ -122,7 +121,6 @@ daily_button.label: Dagelijkse herinnering
 daily_check_in: ""
 daily_checkin_embed_description: "Ingecheckt op {day} dag(en) deze maand\nInchecken gemist voor {missed} dag(en)\n"
 daily_modal.title: Instellingen Dagelijkse Herinnering
-daily_training_button.label: Dagelijkse Trainings Herinnering
 delete_account_button_label: Verwijder geselecteerde account
 dendro: Dendro
 destruction: Destruction
@@ -283,14 +281,11 @@ notes-card.gi.daily-commissions: Dagelijkse Commissies
 notes-card.gi.expedition-finished: Klaar
 notes-card.gi.expedition-remaining: "{time}Overgebleven"
 notes-card.gi.realm-currency: Realm Currency
-notes-card.gi.realtime-notes: Real-Time Notities
 notes-card.gi.remaining: Overig
 notes-card.gi.resin: Resin
 notes-card.gi.resin-discounts: Resin Kortingen
-notes-card.hsr.daily-training: Dagelijkse Training
 notes-card.hsr.echo-of-war-discounts: ""
 notes-card.hsr.reserved-power: Gereserveerd Kracht
-notes-card.hsr.trailblaze-power: Trailblaze Kracht
 notes.item_full_in_time: ""
 notes.stamina_label: ""
 notes.stamina: ""
@@ -313,6 +308,10 @@ notif_modal.threshold.label: Drempel
 notification_settings_button_label: Instellingen meldingen
 notify_on_failure_button_label: Melden bij mislukte inchecken
 notify_on_success_button_label: Melding bij succesvol inchecken
+mimo_auto_task_success_notify_toggle_label: ""
+mimo_auto_task_failure_notify_toggle_label: ""
+mimo_auto_buy_success_notify_toggle_label: ""
+mimo_auto_buy_failure_notify_toggle_label: ""
 nsfw_prompt_error_message: "De prompt bevat NSFW-inhoud, probeer het opnieuw met een andere prompt."
 nsfw_prompt_error_title: ""
 page_footer: "Pagina {current_page}/{total_pages}"
@@ -322,7 +321,7 @@ player_not_found_description: Controleer de meegeleverde UID
 player_not_found_title: Speler Bestaat Niet
 preservation: Preservation
 prev_page_option_label: Vorige pagina
-process_notify_error.content: ""
+notify_feature: ""
 profile.add_image.button.label: Afbeelding toevoegen
 profile.add_image_modal.image_url.label: Afbeelding URL
 profile.build.select.placeholder: ""
@@ -381,10 +380,6 @@ redeeem_code.cookie_token_expired_description: ""
 redeeem_code.cookie_token_expired_title: Cookie Token Verlopen
 redeeem_code.cookie_token_refresh_failed_description: ""
 redeeem_code.cookie_token_refresh_failed_title: Vernieuwen cookietoken mislukt
-redeem_code.already_claimed: Inwisselcode al geclaimd
-redeem_code.cooldown: Cadeaucode inwisselen in cooldown
-redeem_code.expired: Inwisselcode verlopen
-redeem_code.invalid: ""
 redeem_code.success: Succesvol ingewisseld
 redeem_codes_button.label: Codes inwisselen
 redeem_command_description: Codes inwisselen voor beloningen in de game
@@ -406,8 +401,6 @@ resin_discount.embed.description: Wekelijkse kortingen voor bazen zijn nog niet 
 resin_reminder_button.label: Resin herinnering
 resin_reminder_modal.title: Instellingen Resin Herinnering
 reward_claimed_title: Dagelijkse Inchecken Beloning Geclaimd
-rtbp_reminder_button.label: Gereserveerde trailblaze kracht herinnering
-rtbp_reminder_modal.title: Gereserveerde Instellingen Voor Trailblaze Kracht Herinnering
 saturday: Zaterdag
 search_autocomplete_no_results: ""
 search_autocomplete_not_setup: "Autocomplete zoekkeuzes nog niet ingesteld, probeer het later nog eens."
@@ -429,8 +422,6 @@ sumeru: Sumeru
 sunday: Zondag
 superimpose_indicator: ""
 talent_level.modal.title: Voer Talent Niveau in
-tbp_reminder_button.label: Trailblaze kracht herinnering
-tbp_reminder_modal.title: Instellingen Voor Trailblaze Kracht Herinnering
 tcg: TCG
 the_hunt: The Hunt
 threshold.embed.description: "Drempel ({threshold}) is bereikt"
@@ -489,25 +480,18 @@ img_theater_max_damage: ""
 img_theater_fastest_team: ""
 challenge_view.view_buffs: ""
 challenge_view.buff_select.placeholder: ""
-battery_charge_button.label: ""
-scratch_card_button.label: ""
 scratch_card.embed.description: ""
 zzz_engagement_button.label: ""
 zzz_engagement.embed.description: ""
 honkai_daily_embed_title: ""
 honkai_daily_embed_description: ""
-video_store_button.label: ""
 video_store.embed.description: ""
 scratch_card.incomplete: ""
-video_store.currently_open: ""
-video_store.revenue_available: ""
-video_store.waiting_to_open: ""
-notes-card.zzz.title: ""
 reminder_modal.title: ""
-redeem_code.reached_max_limit: ""
 profile_view.set_cur_temp_as_default: ""
 set_cur_temp_as_default.done: ""
 set_cur_temp_as_default.done_desc: ""
+remove_from_cache_finish_embed_desc: ""
 third_party_card_temp_error_title: ""
 third_party_card_temp_error_message: ""
 account_locked_title: ""
@@ -573,7 +557,6 @@ dyk_unreleased: ""
 dyk_team_card: ""
 dyk_set_default_acc: ""
 title_dyk: ""
-new_zzz_temp: ""
 button_label_dyk: ""
 events_view_start_date_embed_field: ""
 events_view_end_date_embed_field: ""
@@ -591,11 +574,9 @@ show_tutorial_button_label: ""
 close_button_label: ""
 required_field_error_message: ""
 accounts_added_snackbar_message: ""
-account_add_start_title: ""
 account_add_start_message: ""
 hbls_button_label: ""
 gacha_import_url_modal_title: ""
-gacha_import_embed_title: ""
 gacha_import_embed_description: ""
 extract_authkey_error_message: ""
 extract_authkey_error_title: ""
@@ -756,10 +737,50 @@ characters_per_page_modal_title: ""
 characters_per_page_num_label: ""
 card_settings_hl_substat_select_placeholder: ""
 too_many_requests_error_banner_msg: ""
-add_field_modal_title_label: ""
-add_field_modal_desc_label: ""
-add_weapon_modal_name_label: ""
-add_team_modal_name_label: ""
-add_field_modal_title: ""
-add_weapon_modal_title: ""
-add_team_modal_title: ""
+mimo_task_status_claimable: ""
+mimo_finish_and_claim_button_label: ""
+mimo_info_embed_title: ""
+mimo_info_embed_desc: ""
+mimo_auto_finish_and_claim_button_label: ""
+mimo_auto_finish_and_claim_desc: ""
+mimo_auto_buy_button_label: ""
+mimo_auto_buy_desc: ""
+mimo_cmd_desc: ""
+mimo_view_shop_button_label: ""
+mimo_buy_item_select_placeholder: ""
+mimo_tasks_button_label: ""
+mimo_buy_item_amount_label: ""
+mimo_item_available_time: ""
+mimo_auto_task_embed_footer: ""
+mimo_auto_task_embed_desc: ""
+checkin_reward_embed_footer: ""
+mimo_status: ""
+mimo_auto_buy_embed_desc: ""
+mimo_game_unavailable: ""
+generic_error_title: ""
+on_button_label: ""
+off_button_label: ""
+mimo_draw_redeem_success: ""
+image_settings_use_m3_art: ""
+remembrance: ""
+dismissible_default_title: ""
+dismissible_default_footer: ""
+dismissible_m3_art_desc: ''
+mimo_lottery_info_hoyolab_decos: ""
+zzz_deadly_assault: ""
+challenge_command_assault_desc: ""
+gi_mimo_start_desc: ""
+mimo_auto_draw_button_label: ""
+mimo_auto_draw_desc: ""
+mimo_auto_draw_success_notify_toggle_label: ""
+mimo_auto_draw_failure_notify_toggle_label: ""
+mimo_auto_draw_embed_desc: ""
+mimo_auto_task_error_dm_content: ""
+dismissible_hsr_temp2_desc: ""
+bounty_commission.embed.description: ""
+ridu_points.embed.description: ""
+changelog_embed_title: ""
+web_events_notify_toggle_label: ""
+web_events_cmd_desc: ""
+web_events_embed_footer: ""
+auto_task_error_dm_content: ""

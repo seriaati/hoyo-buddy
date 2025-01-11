@@ -1,22 +1,14 @@
 from __future__ import annotations
 
-import asyncio
 import datetime
 from typing import TYPE_CHECKING
 
-import aiohttp
 import flet as ft
 
-from hoyo_buddy.constants import (
-    BANNER_TYPE_NAMES,
-    locale_to_gpy_lang,
-    locale_to_starrail_data_lang,
-    locale_to_zenless_data_lang,
-)
+from hoyo_buddy.constants import BANNER_TYPE_NAMES
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr, translator
-from hoyo_buddy.utils import item_id_to_name
-from hoyo_buddy.web_app.utils import fetch_json_file, show_error_banner
+from hoyo_buddy.web_app.utils import get_gacha_names, show_error_banner
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -168,42 +160,6 @@ class GachaLogPage(ft.View):
 
         return result
 
-    @staticmethod
-    async def _get_gacha_name(
-        page: ft.Page, gacha: GachaHistory, locale: Locale, game: Game
-    ) -> str:
-        cached_gacha_names: dict[int, str] = (
-            await page.client_storage.get_async(f"hb.{locale}.{game.name}.gacha_names") or {}
-        )
-        if gacha.item_id in cached_gacha_names:
-            return cached_gacha_names[gacha.item_id]
-
-        if game is Game.ZZZ:
-            item_names = await fetch_json_file(
-                f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json"
-            )
-            item_name = item_names.get(str(gacha.item_id))
-        elif game is Game.STARRAIL:
-            item_names = await fetch_json_file(
-                f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json"
-            )
-            item_name = item_names.get(str(gacha.item_id))
-        else:
-            async with aiohttp.ClientSession() as session:
-                item_name = await item_id_to_name(
-                    session, item_ids=gacha.item_id, lang=locale_to_gpy_lang(locale)
-                )
-
-        if item_name is not None:
-            cached_gacha_names[gacha.item_id] = item_name
-            asyncio.create_task(
-                page.client_storage.set_async(
-                    f"hb.{locale}.{game.name}.gacha_names", cached_gacha_names
-                )
-            )
-
-        return item_name or "???"
-
     async def container_on_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
         gacha = next((g for g in self.gachas if g.id == e.control.data), None)
@@ -211,12 +167,12 @@ class GachaLogPage(ft.View):
             await show_error_banner(page, message=f"Could not find gacha with id {e.control.data}")
             return
 
+        gacha_names = await get_gacha_names(
+            page, gachas=[gacha], locale=self.locale, game=self.game
+        )
+
         await page.show_dialog_async(
-            GachaLogDialog(
-                gacha=gacha,
-                gacha_name=await self._get_gacha_name(page, gacha, self.locale, self.game),
-                locale=self.locale,
-            )
+            GachaLogDialog(gacha=gacha, gacha_name=gacha_names[gacha.item_id], locale=self.locale)
         )
 
     async def filter_button_on_click(self, e: ft.ControlEvent) -> None:
@@ -367,7 +323,10 @@ class FilterDialog(ft.AlertDialog):
             self.params.rarities.append(rarity)
 
     async def on_size_text_field_change(self, e: ft.ControlEvent) -> None:
-        size = int(e.control.value)
+        try:
+            size = int(e.control.value)
+        except ValueError:
+            return
         self.params.size = min(max(size, 1), 500)
 
     async def on_dialog_close(self, e: ft.ControlEvent) -> None:

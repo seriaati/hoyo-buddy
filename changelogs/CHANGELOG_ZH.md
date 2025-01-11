@@ -1,5 +1,41 @@
 # Hoyo Buddy 更新日誌
 
+## v1.15.7  
+
+### 新增功能  
+
+- (`/web-events`) 新增命令來查看正在進行中的網頁活動，並設置通知器以提醒您有新活動。  
+- (`/notes`) 為《絕區零》（ZZZ）新增懸賞委託和 Ridu 每週點數通知器。  
+- (`/about`) 新增更新日誌按鈕。  
+
+### 優化  
+
+- (`/gacha-log view`) 修復緩存問題，提升祈願記錄頁面的性能。  
+- (`/about`) 移除最新 Git 變更的顯示。  
+- (`/mimo`) 在自動購買時，將旅行夥伴 Mimo 商店物品按照價格從高到低排序。  
+
+### 問題修復  
+
+- (`/characters genshin`) 修復因無屬性旅行者導致的 `KeyError` 問題。  
+- (`/characters genshin`) 修復神里綾華天賦等級顯示錯誤的問題。  
+- (`/stats`) 修復 ZZZ 中「未找到記錄卡片」的錯誤。  
+- (`/build genshin`) 修復「沒有可繪製的阻止列表」的錯誤。  
+- (`/gacha-log view`) 修復錯誤的 50/50 勝率計算。  
+- (`/gacha-log view`) 修復 Web 應用中的 422 驗證錯誤。  
+- (`/gacha-log view`) 處理無效的大小輸入。  
+- (`/gacha-log import`) 處理匯入祈願記錄時的無效卡池類型問題。  
+- (`/gacha-log import`) 修復 UIGF 匯入功能。  
+- (`/mimo`) 在發送通知前確認任務完成狀態。  
+- (`/mimo`) 在完成任務之間新增休眠間隔以避免觸發限速。  
+- (`/mimo`) 移除任務名稱中的 HTML 標籤。  
+- (`/mimo`) 修復購買物品後的錯誤。  
+- (`/profile`) 修復不同遊戲的卡片設置混合的問題。  
+- (`/profile genshin`) 修復隊伍卡片中顯示多餘天賦的問題。  
+- (`/profile genshin`) 修復與 Mavuika 相關的驗證錯誤。  
+- (`/search`) 修復 W-engine 精煉選擇器未更新所選值的問題。  
+- (`/notes`) 修復《崩壞3》中的驗證錯誤。  
+- (`/challenge zzz assault`) 修復增益圖標未顯示的問題。  
+
 ## v1.15.6
 
 ### 新增功能

@@ -68,4 +68,5 @@ class RefinementSelect(Select[EngineSearchView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view._refinement = self.values[0]
+        self.update_options_defaults()
         await self.view.update(i)

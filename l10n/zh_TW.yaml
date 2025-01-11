@@ -41,7 +41,7 @@ action_in_cooldown_error_title: 操作正在冷卻
 add_account_button_label: 新增帳戶
 add_hoyolab_acc.embed.description: "1. 透過電子郵件和密碼：最推薦的方式，它最簡單\n2. 透過開發者工具：只能在電腦上運作，如果你對第一個方式有安全疑慮的話，這是一個比較安全的選擇"
 add_hoyolab_acc.embed.title: 選擇一個新增帳戶的方式
-adding_accounts_description: "歡迎使用 Hoyo Buddy! 僅需花費 1 分鐘的時間即可快速新增帳戶並開始享受各式功能。\n\n關於帳戶安全問題，請詳閱 [維基頁面](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security) ，關於我們如何使用及蒐集你的資料，請參閱 [隱私權政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "歡迎使用 Hoyo Buddy! 僅需花費 1 分鐘的時間即可快速新增帳戶並開始享受各式功能。\n\n關於帳戶安全問題，請詳閱 [維基頁面](https://hb-docs.seria.moe/docs/Account-Security) ，關於我們如何使用及蒐集你的資料，請參閱 [隱私權政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: 選擇帳戶的所屬平台
 ai_gen_image_error_message: 請檢查你輸入的提示並再試一次。
 ai_gen_image_error_title: 在使用 AI 生成圖片時發生了錯誤
@@ -53,7 +53,6 @@ artifact_set_two_piece_embed_description: "二件套: {bonus_2}"
 artifact_sets: 聖遺物套裝
 auto_checkin_button_label: 自動每日簽到
 auto_locale_option_label: 遵循客戶端語言
-auto_redeem_error.content: "由於發生錯誤，自動兌換兌換碼功能已被停用，你可以使用</redeem> 將其重新啟動。\n如果這個錯誤持續發生，或是你不知道如何解決它，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)內尋求協助。"
 auto_redeem_footer: 使用 /redeem 關閉自動兌換兌換碼功能
 auto_redeem_toggle.label: 自動兌換兌換碼
 books: 書籍
@@ -322,7 +321,7 @@ player_not_found_description: 請檢查提供的 UID
 player_not_found_title: 玩家不存在
 preservation: 存護
 prev_page_option_label: 上一頁
-process_notify_error.content: "由於發生錯誤，便籤提醒功能已被關閉，你可以使用 </notes> 將其重新啟動\n如果這個錯誤持續發生，或是你不知道該如何解決，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)中尋求協助"
+notify_feature: 這個即時便籤通知
 profile.add_image.button.label: 新增自定義圖片
 profile.add_image_modal.image_url.label: 圖片網址
 profile.build.select.placeholder: 選擇一個角色配置…
@@ -492,6 +491,7 @@ reminder_modal.title: "{notify}通知設定"
 profile_view.set_cur_temp_as_default: 設置當前樣式為預設
 set_cur_temp_as_default.done: 完成
 set_cur_temp_as_default.done_desc: "你的 {game} 預設卡片樣式已被設置為 {template}"
+remove_from_cache_finish_embed_desc: 重新執行 /profile 指令來查看變更
 third_party_card_temp_error_title: 這個第三方卡片樣式出錯了
 third_party_card_temp_error_message: "此角色的卡片樣式已被重置為 Hoyo Buddy 的卡片樣式。如果此錯誤持續發生，請在我們的[Discord 伺服器](<https://link.seria.moe/hb-dc>)中尋求協助。"
 account_locked_title: 帳戶已被鎖定 20 分鐘
@@ -550,7 +550,7 @@ dyk_team: "Hoyo Buddy 的小團隊由一位程式設計師和一位設計師組�
 dyk_disable: 你可以使用 /settings 將這則訊息關閉
 dyk_settings_lang: 你可以使用 /settings 變更機器人使用的語言
 dyk_settings_theme: 你可以使用 /settings 切換為亮色或深色模式
-dyk_security: "我們有一則講解關於帳號安全的[文章](<https://github.com/seriaati/hoyo-buddy/wiki/Account-Security>)"
+dyk_security: "我們有一則講解關於帳號安全的[文章](<https://hb-docs.seria.moe/docs/Account-Security>)"
 dyk_github: "Hoyo Buddy 於 [GitHub](<https://github.com/seriaati/hoyo-buddy>) 上開源"
 dyk_python: Hoyo Buddy 使用純 Python 撰寫而成
 dyk_unreleased: 你可以使用 /search 查看尚未釋出的遊戲內容
@@ -780,3 +780,7 @@ dismissible_hsr_temp2_desc: "你現在可以使用 Hoyo Buddy 樣式 2 來生成
 bounty_commission.embed.description: 懸賞委託尚未全部完成
 ridu_points.embed.description: 麗都週記任務尚未全部完成
 changelog_embed_title: 更新日誌
+web_events_notify_toggle_label: 在有新的網頁活動時通知
+web_events_cmd_desc: 查看當前正在進行的網頁活動及設置通知
+web_events_embed_footer: 使用 /web-events 來調整通知
+auto_task_error_dm_content: "由於發生錯誤，{feature}功能已被關閉，你可以使用{command}將其重新啟動\n如果這個錯誤持續發生，或是你不知道該如何解決，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)中尋求協助"

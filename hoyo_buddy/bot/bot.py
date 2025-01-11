@@ -115,6 +115,7 @@ class HoyoBuddy(commands.AutoShardedBot):
     async def update_version_activity(self) -> None:
         self.version = get_project_version()
         self.activity = discord.CustomActivity(f"{self.version} | hb.seria.moe")
+        await self.change_presence(activity=self.activity)
 
     async def setup_hook(self) -> None:
         # Initialize genshin.py sqlite cache
@@ -169,13 +170,15 @@ class HoyoBuddy(commands.AutoShardedBot):
         else:
             return user
 
-    async def dm_user(self, user_id: int, **kwargs: Any) -> discord.Message | None:
+    async def dm_user(
+        self, user_id: int, *, content: str | None = None, **kwargs: Any
+    ) -> discord.Message | None:
         user = await self.fetch_user(user_id)
         if user is None:
             return None
 
         try:
-            message = await user.send(**kwargs)
+            message = await user.send(content, **kwargs)
         except (discord.Forbidden, discord.HTTPException):
             return None
         except Exception as e:
@@ -231,8 +234,8 @@ class HoyoBuddy(commands.AutoShardedBot):
         current: str,
         locale: discord.Locale,
         *,
-        games: Sequence[Game] | None = None,
-        platforms: Sequence[Platform] | None = None,
+        games: Sequence[Game],
+        platform: Platform | None = None,
         show_id: bool = False,
     ) -> list[discord.app_commands.Choice[str]]:
         """Get autocomplete choices for a user's accounts.
@@ -243,10 +246,9 @@ class HoyoBuddy(commands.AutoShardedBot):
             current: The current input.
             locale: Discord locale.
             games: The games to filter by
-            platforms: The platforms to filter by.
+            platform: The platform to filter by.
             show_id: Whether to show the account ID.
         """
-        games = games or list(Game)
         is_author = user is None or user.id == author_id
         game_query = Q(*[Q(game=game) for game in games], join_type="OR")
         accounts = await models.HoyoAccount.filter(
@@ -255,7 +257,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         if not is_author:
             accounts = [account for account in accounts if account.public]
 
-        platforms = platforms or list(Platform)
+        platforms = [platform] if platform else list(Platform)
         accounts = [account for account in accounts if account.platform in platforms]
 
         if not accounts:
@@ -279,32 +281,26 @@ class HoyoBuddy(commands.AutoShardedBot):
         ]
 
     async def get_game_account_choices(
-        self,
-        i: Interaction,
-        current: str,
-        games: Sequence[Game] | None = None,
-        platforms: Sequence[Platform] | None = None,
+        self, i: Interaction, current: str, games: Sequence[Game], platform: Platform | None = None
     ) -> list[app_commands.Choice[str]]:
         games = games or list(Game)
         locale = await get_locale(i)
         user: User = i.namespace.user
         return await self.get_account_choices(
-            user, i.user.id, current, locale, games=games, platforms=platforms
+            user, i.user.id, current, locale, games=games, platform=platform
         )
 
     async def get_accounts(
-        self, user_id: int, games: Sequence[Game] | None = None, platform: Platform | None = None
+        self, user_id: int, games: Sequence[Game], platform: Platform | None = None
     ) -> list[models.HoyoAccount]:
         """Get accounts by user ID and games.
 
         Args:
             user_id: The Discord user ID.
             games: The games to filter by.
-            platforms: The platforms to filter by.
+            platform: The platform to filter by.
         """
-        games = games or list(Game)
         platforms = [platform] if platform else list(Platform)
-
         game_query = Q(*[Q(game=game) for game in games], join_type="OR")
         accounts = await models.HoyoAccount.filter(game_query, user_id=user_id).all()
         accounts = [account for account in accounts if account.platform in platforms]
@@ -314,7 +310,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         return accounts
 
     async def get_account(
-        self, user_id: int, games: Sequence[Game] | None = None, platform: Platform | None = None
+        self, user_id: int, games: Sequence[Game], platform: Platform | None = None
     ) -> models.HoyoAccount:
         """Get an account by user ID and games.
 
@@ -507,6 +503,4 @@ class HoyoBuddy(commands.AutoShardedBot):
         logger.info("Bot shutting down...")
         if self.geetest_command_task is not None:
             self.geetest_command_task.cancel()
-
-        self.executor.shutdown()
         await super().close()

@@ -14,16 +14,12 @@ from discord import Locale
 from loguru import logger
 from pydantic import ValidationError
 
-from hoyo_buddy.constants import (
-    locale_to_gpy_lang,
-    locale_to_starrail_data_lang,
-    locale_to_zenless_data_lang,
-)
+from hoyo_buddy.constants import locale_to_gpy_lang
 from hoyo_buddy.db import GachaHistory
 from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import EnumStr, LocaleStr
-from hoyo_buddy.utils import dict_cookie_to_str, get_gacha_icon, item_id_to_name
+from hoyo_buddy.utils import dict_cookie_to_str
 
 from . import pages
 from .login_handler import handle_action_ticket, handle_mobile_otp, handle_session_mmt
@@ -31,7 +27,8 @@ from .schema import GachaParams, Params
 from .utils import (
     decrypt_string,
     encrypt_string,
-    fetch_json_file,
+    get_gacha_icon,
+    get_gacha_names,
     reset_storage,
     show_error_banner,
     show_loading_snack_bar,
@@ -412,13 +409,8 @@ class WebApp:
                 game = await self._get_account_game(params.account_id)
 
                 if params.name_contains:
-                    gacha_names = await self._get_gacha_names(
-                        gachas=gacha_logs, locale=locale, game=game
-                    )
-                    asyncio.create_task(
-                        page.client_storage.set_async(
-                            f"hb.{params.locale}.gacha_names", gacha_names
-                        )
+                    gacha_names = await get_gacha_names(
+                        self._page, gachas=gacha_logs, locale=locale, game=game
                     )
                     gacha_logs = [
                         g
@@ -496,66 +488,18 @@ class WebApp:
             await conn.close()
 
     async def _get_gacha_icons(self, gachas: Sequence[GachaHistory]) -> dict[int, str]:
-        cached_gacha_icons: dict[int, str] = (
+        cached_gacha_icons: dict[str, str] = (
             await self._page.client_storage.get_async("hb.gacha_icons") or {}
         )
         result: dict[int, str] = {}
         for gacha in gachas:
-            if gacha.item_id in cached_gacha_icons:
-                result[gacha.item_id] = cached_gacha_icons[gacha.item_id]
+            if str(gacha.item_id) in cached_gacha_icons:
+                result[gacha.item_id] = cached_gacha_icons[str(gacha.item_id)]
             else:
                 result[gacha.item_id] = await get_gacha_icon(game=gacha.game, item_id=gacha.item_id)
-                cached_gacha_icons[gacha.item_id] = result[gacha.item_id]
+                cached_gacha_icons[str(gacha.item_id)] = result[gacha.item_id]
 
         asyncio.create_task(self._page.client_storage.set_async("gacha_icons", cached_gacha_icons))
-        return result
-
-    async def _get_gacha_names(
-        self, *, gachas: Sequence[GachaHistory], locale: Locale, game: Game
-    ) -> dict[int, str]:
-        cached_gacha_names: dict[int, str] = (
-            await self._page.client_storage.get_async(f"hb.{locale}.{game.name}.gacha_names") or {}
-        )
-
-        result: dict[int, str] = {}
-        item_ids = list({g.item_id for g in gachas})
-        non_cached_item_ids: list[int] = []
-
-        for item_id in item_ids:
-            if item_id in cached_gacha_names:
-                result[item_id] = cached_gacha_names[item_id]
-            else:
-                non_cached_item_ids.append(item_id)
-
-        if game in {Game.ZZZ, Game.STARRAIL}:
-            if game is Game.ZZZ:
-                item_names = await fetch_json_file(
-                    f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json"
-                )
-            else:
-                item_names = await fetch_json_file(
-                    f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json"
-                )
-
-            for item_id in item_ids:
-                result[item_id] = item_names.get(str(item_id), str(item_id))
-                cached_gacha_names[item_id] = result[item_id]
-        else:
-            async with aiohttp.ClientSession() as session:
-                item_names = await item_id_to_name(
-                    session, item_ids=non_cached_item_ids, lang=locale_to_gpy_lang(locale)
-                )
-            for item_id in item_ids:
-                index = item_ids.index(item_id)
-                result[item_id] = item_names[index]
-                cached_gacha_names[item_id] = item_names[index]
-
-        asyncio.create_task(
-            self._page.client_storage.set_async(
-                f"hb.{locale}.{game.name}.gacha_names", cached_gacha_names
-            )
-        )
-
         return result
 
     async def fetch_user_data(self) -> dict[str, Any] | None:

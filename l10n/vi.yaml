@@ -41,7 +41,7 @@ action_in_cooldown_error_title: Hành động trong thời gian chờ
 add_account_button_label: Thêm tài khoản
 add_hoyolab_acc.embed.description: "1. Với email và mật khẩu: Được khuyên dùng, là cách đễ nhất.\n2. Với DevTools: Chỉ làm được trên PC, là cách an toàn nếu bạn lo ngại về bảo mật với cách một"
 add_hoyolab_acc.embed.title: Vui lòng chọn phương thức để thêm tài khoản
-adding_accounts_description: "Chào mừng đến Hoyo Buddy! Hãy tận hưởng những tính năng bằng cách dành dưới 1 phút để thêm tài khoản của bạn.\n\nVề bảo mật tài khoản, vui lòng đọc [Trang Wiki](https://github.com/seriaati/hoyo-buddy/wiki/Account-Security), về cách chúng tôi sử dụng và thu thập thông tin của bạn, vui lòng đọc [Chính sách Bảo Mật](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "Chào mừng đến Hoyo Buddy! Hãy tận hưởng những tính năng bằng cách dành dưới 1 phút để thêm tài khoản của bạn.\n\nVề bảo mật tài khoản, vui lòng đọc [Trang Wiki](https://hb-docs.seria.moe/vi/docs/Account-Security), về cách chúng tôi sử dụng và thu thập thông tin của bạn, vui lòng đọc [Chính sách Bảo Mật](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Vui lòng chọn Nền tảng Tài Khoản
 ai_gen_image_error_message: Kiểm tra thông tin đã nhập và thử lại
 ai_gen_image_error_title: Đã xảy ra lỗi khi đang sáng tạo bằng AI
@@ -53,7 +53,6 @@ artifact_set_two_piece_embed_description: "Bộ 2 món: {bonus_2}"
 artifact_sets: Thánh Di Vật
 auto_checkin_button_label: Tự động Điểm danh Hàng ngày
 auto_locale_option_label: Theo Ngôn Ngữ Ứng Dụng
-auto_redeem_error.content: "Tính năng tự động đổi mã quà đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</redeem>Nếu lỗi này cứ xuất hiện và bạn không biết cách sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
 auto_redeem_footer: Tắt Tự động Đỏi Mã Quà bằng /redeem
 auto_redeem_toggle.label: Tự động đổi mã quà
 books: Sách
@@ -122,7 +121,6 @@ daily_button.label: Nhắc nhở hàng ngày
 daily_check_in: Điểm danh hàng ngày
 daily_checkin_embed_description: "Tháng này đã điểm danh {day} ngày\nĐiểm danh thiếu {missed} ngày\n"
 daily_modal.title: Cài đặt Lời nhắc hàng ngày
-daily_training_button.label: Lời nhắc Huấn Luyện Hàng ngày
 delete_account_button_label: Xóa tài khoản đã chọn
 dendro: Thảo
 destruction: Hủy Diệt
@@ -286,10 +284,8 @@ notes-card.gi.realm-currency: Tiền Đồng Tiên
 notes-card.gi.remaining: Còn lại
 notes-card.gi.resin: Nhựa
 notes-card.gi.resin-discounts: Giảm giá Nhựa
-notes-card.hsr.daily-training: Huấn Luyện Hàng ngày
 notes-card.hsr.echo-of-war-discounts: Dư Âm Chiến Đấu
 notes-card.hsr.reserved-power: Sức mạnh Dự bị
-notes-card.hsr.trailblaze-power: Sức mạnh Khai Phá
 notes.item_full_in_time: "{emoji} Đầy trong {in_time}"
 notes.stamina_label: Nhắc nhở thể lực
 notes.stamina: "Thể lực: {cur}/{max}, đầy trong {time}"
@@ -325,7 +321,7 @@ player_not_found_description: Vui lòng kiểm tra UID đã được cung cấp
 player_not_found_title: Người chơi không tồn tại
 preservation: Bảo Hộ
 prev_page_option_label: Trang trước
-process_notify_error.content: "Tính năng lời nhác đã bị vô hiệu hoá do lỗi đã xảy ra, bạn có thể kích hoạt lại bằng lệnh</notes>\nNếu lỗi này tiếp tục xảy ra hoặc bạn không biết cách xử lý, vui lòng tìm trợ giúp trên [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
+notify_feature: Ghi chú này nhắc nhở
 profile.add_image.button.label: Thêm ảnh riêng của bạn
 profile.add_image_modal.image_url.label: Link Ảnh
 profile.build.select.placeholder: Hãy chọn Build…
@@ -405,8 +401,6 @@ resin_discount.embed.description: Lượt giảm nhựa tiêu hao chưa dùng t�
 resin_reminder_button.label: Nhắc nhở Nhựa
 resin_reminder_modal.title: Cài đặt Nhắc nhở Nhưa
 reward_claimed_title: Đã nhận phần thưởng điểm danh
-rtbp_reminder_button.label: Nhắc nhở Sức Mạnh Khai Phá Dự Bị
-rtbp_reminder_modal.title: Cài đặt Nhắc nhở Sức Mạnh Khai Phá Dự Bị
 saturday: Thứ bảy
 search_autocomplete_no_results: Không tìm thấy kết quả nào
 search_autocomplete_not_setup: "Tìm kiếm các lựa chọn tự động hoàn thành chưa được thiết lập, vui lòng thử lại sau."
@@ -428,8 +422,6 @@ sumeru: Sumeru
 sunday: Chủ nhật
 superimpose_indicator: "Tích Tầng"
 talent_level.modal.title: Nhập Mức độ Tài Năng
-tbp_reminder_button.label: Nhắc nhở Sức Mạnh Khai Phá
-tbp_reminder_modal.title: Cài đặt Nhắc nhở Sức Mạnh Khai Phá
 tcg: TCG
 the_hunt: Săn Bắn
 threshold.embed.description: "Ngưỡng ({threshold}) đã vượt"
@@ -499,6 +491,7 @@ reminder_modal.title: "Cài đặt Lời nhắc {notify}"
 profile_view.set_cur_temp_as_default: Sử dụng mẫu này là mặc định
 set_cur_temp_as_default.done: Xong
 set_cur_temp_as_default.done_desc: "Mẫu thẻ mặc định của bạn cho {game} được đặt thành {template}"
+remove_from_cache_finish_embed_desc: Chạy lại lệnh /profile để xem các thay đổi
 third_party_card_temp_error_title: Mẫu Thẻ Bên Thứ 3 Bị Lỗi
 third_party_card_temp_error_message: "Mẫu thẻ cho nhân vật này đã bị đặt lại sang Mẫu thẻ Hoyo Buddy. Nếu lỗi này tiếp tục điễn ra, vui lòng tìm trợ giúp trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Tài khoản của bạn đã bị khóa trong vòng 20 phút
@@ -557,7 +550,7 @@ dyk_team: "Hoyo Buddy được xây dựng bởi 1 team nhỏ gồm 1 lập trì
 dyk_disable: Bạn có thể vô hiệu hóa tin nhắn này trong /settings
 dyk_settings_lang: Bạn có thể đổi ngôn ngữ của bot trong /settings
 dyk_settings_theme: Bạn có thể đổi chế độ sáng tối sử dụng /settings
-dyk_security: "Chúng tôi có một [bài viết](<https://github.com/seriaati/hoyo-buddy/wiki/Account-Security>) về bảo mật tài khoản"
+dyk_security: "Chúng tôi có một [bài viết](<https://hb-docs.seria.moe/vi/docs/Account-Security>) về bảo mật tài khoản"
 dyk_github: "Hoyo Buddy là một dự án mã nguồn mở trên [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
 dyk_python: Hoyo Buddy được viết hết bằng Python
 dyk_unreleased: Bạn có thể xem nôi dung trò chơi chưa ra mắt bằng /search
@@ -777,10 +770,17 @@ mimo_lottery_info_hoyolab_decos: "...và {num} đồ trang trí HoYoLAB"
 zzz_deadly_assault: Tập Kích Nguy Cấp
 challenge_command_assault_desc: Tạo thẻ Tập Kích Nguy Cấp
 gi_mimo_start_desc: "Vui lòng thiết lập sự kiện Mimo Du Lịch trên [HoYoLAB]({url}) trước"
-mimo_auto_draw_button_label: Tự động đổi thưởng
-mimo_auto_draw_desc: "Hoyo Buddy sẽ tự động đổi thường cho bạn khi nào có thể; nếu tự động mua và tự động đổi đều bật, nó sẽ cố gắng mua trước và đổi nếu không có đủ điểm"
-mimo_auto_draw_success_notify_toggle_label: Thông báo khi việc tự động đổi thành công
-mimo_auto_draw_failure_notify_toggle_label: Thông báo khi việc tự động đổi thất bại
+mimo_auto_draw_button_label: Tự động rút thưởng
+mimo_auto_draw_desc: "Hoyo Buddy sẽ tự động đổi thường cho bạn khi nào có thể; nếu tự động mua và tự động rút thưởng đều bật, bot sẽ cố gắng mua trước và rút thưởng nếu không có đủ điểm"
+mimo_auto_draw_success_notify_toggle_label: Thông báo khi việc tự động rút thưởng thành công
+mimo_auto_draw_failure_notify_toggle_label: Thông báo khi việc tự động rút thưởng thất bại
 mimo_auto_draw_embed_desc: "Hoyo Buddy đã rút những món sau với {points} điểm.\nNếu bạn thấy mã quà bên dười, vui lòng đổi bằng tay với lệnh </redeem>."
 mimo_auto_task_error_dm_content: "Du Lịch Mimo: Tính năng {feature} đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
 dismissible_hsr_temp2_desc: "Giờ bạn có thể dùng mẫu thẻ Hoyo Buddy 2 cho thẻ nhân vật HSR, chọn trong cài đặt thẻ. Đề nghị bạn dùng ảnh dọc ngang cho mẫu thẻ này."
+bounty_commission.embed.description: " Tiến Độ Ủy Thác Treo Thưởng chưa hoàn thành"
+ridu_points.embed.description: " Điểm Số Ridu Hàng Tuần chưa hoàn thành"
+changelog_embed_title: Nhật Ký Thây Đổi
+web_events_notify_toggle_label: Nhắc nhờ về sự kiện Web
+web_events_cmd_desc: Xem các sự kiện web đang diễn ra và đặt thông báo
+web_events_embed_footer: Sử dụng lệnh /web-events để định cấu hình thông báo
+auto_task_error_dm_content: "Tính năng {feature} đã bị vô hiệu hoá do lỗi đã xảy ra, bạn có thể kích hoạt lại bằng lệnh {command}\nNếu lỗi này tiếp tục xảy ra hoặc bạn không biết cách xử lý, vui lòng tìm trợ giúp trên [máy chủ Discord](<https://link.seria.moe/hb-dc>)."

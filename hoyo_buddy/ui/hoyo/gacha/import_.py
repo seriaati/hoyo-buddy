@@ -10,10 +10,10 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LINK, LOADING
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import AuthkeyExtractError, FeatureNotImplementedError
+from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.components import Button, Modal, TextInput, View
-from hoyo_buddy.utils import get_item_ids
 
 if TYPE_CHECKING:
     from discord import Locale
@@ -92,19 +92,22 @@ class URLImport(Button[GachaImportView]):
             ]
             wishes.sort(key=lambda x: x.id)
 
-            item_ids = await get_item_ids(
-                i.client.session, item_names=[wish.name for wish in wishes], lang=client.lang
-            )
+            client = AmbrAPIClient(session=i.client.session)
+            item_ids = await client.fetch_item_name_to_id_map()
 
             for wish in wishes:
                 banner_type = 301 if wish.banner_type == 400 else wish.banner_type
+                item_id = item_ids.get(wish.name)
+                if item_id is None:
+                    msg = f"Cannot find item ID for {wish.name}, is this an invalid item?"
+                    raise ValueError(msg)
 
                 created = await GachaHistory.create(
                     wish_id=wish.id,
                     rarity=wish.rarity,
                     time=wish.time,
                     banner_type=banner_type,
-                    item_id=item_ids[wish.name],
+                    item_id=item_id,
                     account=self.account,
                 )
                 if created:

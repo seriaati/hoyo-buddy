@@ -102,8 +102,8 @@ class ViewGachaLogView(View):
         return await GachaHistory.filter(**filter_kwargs).count()
 
     async def calc_50_50_stats(self) -> tuple[int, int]:
-        """Calculate the 50/50 stats for the current banner or all banners.
-        If the player pulls two 5-star non-standard items in a row, it is considered a win.
+        """Calculate the 50/50 stats for the current banner.
+        See this image for more information: https://img.seria.moe/JPRHdRVOMVzYGYvR.png
 
         Returns:
             The number of 50/50 wins and the total number of 50/50 tries.
@@ -116,12 +116,6 @@ class ViewGachaLogView(View):
         if not five_stars:
             return 0, 0
 
-        if len(five_stars) == 1:
-            if five_stars[0].item_id in STANDARD_ITEMS[self.account.game]:
-                return 0, 0
-            # If the only 5-star is not a standard item, it is considered a win
-            return 1, 1
-
         is_standards: list[bool] = []
         for item in five_stars:
             is_standard = item.item_id in STANDARD_ITEMS[self.account.game]
@@ -131,13 +125,17 @@ class ViewGachaLogView(View):
                     is_standard = False
             is_standards.append(is_standard)
 
-        win = 0
-        for i, is_standard in enumerate(is_standards[1:], start=1):
-            # Current one and previous one are both not standard items: win 50/50
-            if not is_standard and not is_standards[i - 1]:
-                win += 1
+        status: list[Literal[50, 100]] = [50]  # First pull is always 50% guaranteed
+        wins = 0
 
-        return win, is_standards.count(False)
+        for i, is_standard in enumerate(is_standards):
+            status.append(100 if is_standard else 50)  # Add guarantee status of next pull
+            if status[i] == 50 and not is_standard:
+                # If this pull's guarantee status is 50% and it's not a standard item, it's a win
+                wins += 1
+        del status[-1]  # Remove the last status as there isn't a next pull
+
+        return wins, status.count(50)
 
     async def guaranteed(self) -> bool:
         gacha = (

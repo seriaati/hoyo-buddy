@@ -1,135 +1,135 @@
-about_command.contribute: Contribuer
-about_command.developer: Développeur
-about_command.discord_server: Serveur discord
-about_command.guild_count: Nombre de guildes
-about_command.latest_changes: Derniers changements
-about_command.ram_usage: Utiliisation de la RAM
-about_command.support: ""
-about_command.translators: Traducteurs
-about_command.uptime: Temps de fonctionnement
-about_command.website: Site officiel
-about_command_description: A propos du bot
-about_embed.description: "Un bot Discord riche en fonctionnalités, facile à utiliser et magnifiquement conçu pour les joueurs de Hoyoverse."
-abundance: ""
-abyss.battles_won_fought: ""
-abyss.deepest_descent: ""
-abyss.floor: ""
-abyss.overview: ""
-abyss.damage: ""
-abyss.stats: ""
-abyss.phase_select.placeholder: ""
-abyss.total_stars: ""
-abyss_chamber.challenge_target.embed.field.name: Cible du challenge
-abyss_chamber.embed.title: "Étage {floor_index} - Chambre {chamber_index}"
-abyss_chamber.enemy_level.embed.field.name: Niveau des ennemis
+about_command.contribute: Внести вклад
+about_command.developer: Разработчик
+about_command.discord_server: Discord сервер
+about_command.guild_count: Количество гильдий
+about_command.latest_changes: Последние изменения
+about_command.ram_usage: Использование ОЗУ
+about_command.support: Пожертвовать
+about_command.translators: Переводчики
+about_command.uptime: Время бесперебойной работы
+about_command.website: Официальный сайт
+about_command_description: О боте
+about_embed.description: "Многофункциональный, простой в использовании и красиво оформленный Discord-бот, созданный специально для геймеров Hoyoverse."
+abundance: Изобильность
+abyss.battles_won_fought: "Битвы выиграно/проведено: {val1}/{val2}"
+abyss.deepest_descent: "Максимальная глубина: {val}"
+abyss.floor: "Этаж {val}"
+abyss.overview: Обзор Витой Бездны
+abyss.damage: ИНФО. О УРОНЕ
+abyss.stats: СТАТИСТИКА
+abyss.phase_select.placeholder: Выберите фазу
+abyss.total_stars: "Общее количество звезд: {val}"
+abyss_chamber.challenge_target.embed.field.name: Цель Испытания
+abyss_chamber.embed.title: "Этаж {floor_index} - Зал {chamber_index}"
+abyss_chamber.enemy_level.embed.field.name: Уровень врага
 abyss_chamber.ley_line_disorder.embed.field.name: ""
-abyss_enemy.item_description: "PV: {HP}"
-acc_no_default_param_desc: ""
-account_autocomplete_param_description: "Compte avec lequel exécuter cette commande, par défaut le compte sélectionné dans /accounts"
-account_autocomplete_param_name: compte
-account_deleted_description: "{account}a été supprimé"
-account_deleted_title: Compte supprimé
-account_manager_footer: ""
-account_manager_no_accounts_description: Vous n'avez pas encore de compte
-account_manager_title: Gestionnaire de compte
-account_not_found_error_message: "Impossible de trouver un compte avec la requête fournie, veuillez sélectionner des choix à partir de l'autocomplétion au lieu de taper votre propre requête."
-account_not_found_error_title: Compte introuvable
-account_username: Nom d'utilisateur
-accounts_command_description: Gérez vos comptes
-action_in_cooldown_error_message: ""
-action_in_cooldown_error_title: ""
-add_account_button_label: Ajouter des comptes
-add_hoyolab_acc.embed.description: ""
-add_hoyolab_acc.embed.title: ""
+abyss_enemy.item_description: "HP: {HP}"
+acc_no_default_param_desc: Учетная запись для выполнения этой команды
+account_autocomplete_param_description: "Аккаунт для выполнения этой команды, по умолчанию используется выбранная в разделе /accounts"
+account_autocomplete_param_name: аккаунт
+account_deleted_description: "Учетная запись {account} была удалена."
+account_deleted_title: Аккаунт Удален
+account_manager_footer: Выбранный аккаунт будет использоваться по умолчанию для всех команд
+account_manager_no_accounts_description: У вас пока нет ни одного аккаунта
+account_manager_title: Менеджер Аккаунтов
+account_not_found_error_message: "Не удалось найти аккаунт по указанному запросу. Выберите варианты из автозаполнения вместо того, чтобы вводить собственный запрос."
+account_not_found_error_title: Аккаунт не найден
+account_username: Имя пользователя
+accounts_command_description: Управляйте своими аккаунтами
+action_in_cooldown_error_message: "Пожалуйста, попробуйте снова в {available_time}."
+action_in_cooldown_error_title: Действие на перезарядке.
+add_account_button_label: Добавить аккаунты
+add_hoyolab_acc.embed.description: "1. С помощью электронной почты и пароля: Самый рекомендуемый способ, так как он самый простой.\n2. С помощью DevTools: Работает только на настольных устройствах, более безопасный вариант, если у вас есть опасения по поводу первого способа.\n "
+add_hoyolab_acc.embed.title: Выберите метод добавления ваших Аккаунтов
 adding_accounts_description: ""
-adding_accounts_title: Sélectionnez la plateforme de votre compte
-ai_gen_image_error_message: Vérifiez votre invite et réessayez.
-ai_gen_image_error_title: ""
-already_claimed_description: Revenez demain !
-already_claimed_title: Les récompenses de connexion quotidienne ont déjà été prises
-anemo: ""
-artifact_set_four_piece_embed_description: "4-Pièces : {bonus_4}"
-artifact_set_two_piece_embed_description: "2-Pièces : {bonus_2}"
-artifact_sets: Ensemble d'artefacts
-auto_checkin_button_label: ""
-auto_locale_option_label: Suivre la langue du client
-auto_redeem_footer: ""
-auto_redeem_toggle.label: ""
-books: Livres
-captcha.embed.description: ""
-challenge_type_select.placeholder: ""
-challenge_view.buff_used_in: ""
-challenge_view.team: ""
-chamber_button_label: "Chambre {value}"
-change_character_level_label: Changer le niveau du personnage
-change_skill_level_label: ""
-change_talent_level_label: ""
-change_weapon_level_label: ""
-chara_level.modal.title: ""
-character_const_page_label: Constellation
-character_embed_description: "{rarity} ★ {element}\nAnniversaire: {birthday}\nConstellation: {constellation}\nAffiliation: {affiliation}\n"
-character_passives_page_label: ""
-character_profile_page_label: Profile
-character_quotes_page_label: Citation
-character_stories_page_label: Histoires
-character_talents_page_label: Aptitudes
-character_voices_page_label: ""
-characters: ""
-characters.embed.element_max_friendship: ""
-characters.embed.element_not_max_friendship: ""
-characters.embed.max_friendship: ""
-characters.embed.not_max_friendship: ""
-characters.embed.owned_characters: ""
-characters.embed.title: ""
+adding_accounts_title: Выберите Платформу Вашего Аккаунта
+ai_gen_image_error_message: Проверьте свой запрос и попробуйте снова.
+ai_gen_image_error_title: Произошла Ошибка При Создании Рисунка С Помощью ИИ.
+already_claimed_description: Возвращайтесь завтра!
+already_claimed_title: Вознаграждение за ежедневную отметку уже получена
+anemo: Анемо
+artifact_set_four_piece_embed_description: "4-Части: {bonus_4}."
+artifact_set_two_piece_embed_description: "2-Части: {bonus_2}."
+artifact_sets: Наборы Артефактов
+auto_checkin_button_label: Автоматическая ежедневная отметка
+auto_locale_option_label: Следите за языком клиента
+auto_redeem_footer: Отключить автоматическое использование кодов с помощью команды /redeem.
+auto_redeem_toggle.label: Автоматическое использование кодов
+books: Книги
+captcha.embed.description: "Нажмите на кнопку ниже, чтобы пройти CAPTCHA.\n"
+challenge_type_select.placeholder: Выберите режим игры
+challenge_view.buff_used_in: Используется в
+challenge_view.team: "команда {team}"
+chamber_button_label: "Камера {value}"
+change_character_level_label: Изменить уровень персонажа
+change_skill_level_label: Изменить уровень навыка
+change_talent_level_label: Изменить уровень таланта
+change_weapon_level_label: Изменить уровень оружия
+chara_level.modal.title: Введите Уровень Персонажа
+character_const_page_label: Созвездия
+character_embed_description: "{rarity}★ {element}\nДень рождения: {birthday}\nСозвездие: {constellation}\nПринадлежность: {affiliation}\n"
+character_passives_page_label: Пассивные навыки
+character_profile_page_label: Профиль
+character_quotes_page_label: Цитаты
+character_stories_page_label: Истории
+character_talents_page_label: Таланты
+character_voices_page_label: Голоса
+characters: Персонажи
+characters.embed.element_max_friendship: "Персонажи с максимальным уровнем дружбы {element}"
+characters.embed.element_not_max_friendship: "Персонажи с не максимальным уровнем дружбы {element}"
+characters.embed.max_friendship: Персонажи с максимальным уровнем дружбы
+characters.embed.not_max_friendship: Персонажи с не максимальным уровнем дружбы
+characters.embed.owned_characters: Имеющиеся персонажи
+characters.embed.title: Обзор персонажа
 characters.filter.element.placeholder: ""
 characters.filter.max_friendship: ""
-characters.filter.none: ""
+characters.filter.none: Нет
 characters.filter.not_max_friendship: ""
 characters.filter.path.placeholder: ""
 characters.filter.placeholder: ""
 characters.level_order.footer: ""
-characters.extra_detail.footer: ""
-hsr.ultimate: ""
-hsr.normal_attack: ""
-hsr.skill: ""
-hsr.talent: ""
-hsr.technique: ""
-gi.skill: ""
-gi.burst: ""
-gi.passive: ""
-characters.sorter.constellation: ""
-characters.sorter.eidolon: ""
-characters.sorter.element: ""
-characters.sorter.friendship: ""
-characters.sorter.level: ""
-characters.sorter.path: ""
+characters.extra_detail.footer: "Используйте /profile для просмотра информации о персонаже"
+hsr.ultimate: Сверхспособность
+hsr.normal_attack: Обычная атака
+hsr.skill: Навык
+hsr.talent: Талант
+hsr.technique: Техника
+gi.skill: Элементальный навык
+gi.burst: Взрыв стихии
+gi.passive: Пассивные
+characters.sorter.constellation: Созвездия
+characters.sorter.eidolon: Эйдолоны
+characters.sorter.element: Элемент
+characters.sorter.friendship: Friendship
+characters.sorter.level: Уровень
+characters.sorter.path: Путь
 characters.sorter.placeholder: ""
 characters.sorter.rarity: ""
-characters_cmd_genshin_desc: ""
-characters_cmd_hsr_desc: ""
-characters_cmd_zzz_desc: ""
-characters_cmd_honkai_desc: ""
-checkin_button_label: Enregistrement
-checkin_command_description: Enregistrement quotidien dans le jeux
-complete_captcha_button_label: Complete CAPTCHA
+characters_cmd_genshin_desc: Просмотр и фильтрация персонажей Genshin Impact
+characters_cmd_hsr_desc: Просмотр и фильтрация персонажей Honkai Star Rail
+characters_cmd_zzz_desc: Просмотр и фильтрация персонажей Zenless Zone Zero
+characters_cmd_honkai_desc: Просмотр и фильтрация персонажей Honkai Impact 3rd
+checkin_button_label: Отметка
+checkin_command_description: Ежедневная отметка игры
+complete_captcha_button_label: Пройдите CAPTCHA
 complete_geetest_button_description: ""
 complete_geetest_button_label: ""
 const_refine_str: ""
-continue_button_label: Continuer
+continue_button_label: ""
 cryo: ""
-daily_button.label: Rappel quotidien
-daily_check_in: ""
-daily_checkin_embed_description: "Vérifié {day} jour(s) ce mois-ci\nL'enregistrement pour {missed} jour(s) a / ont été manqué\n"
-daily_modal.title: Paramètres du rappel quotidien
-delete_account_button_label: Supprimer le compte sélectionné
+daily_button.label: ""
+daily_check_in: Ежедневная отметка
+daily_checkin_embed_description: "Сделано отметок {day} день(дней) в этом месяце\nПропущено отметок {missed} день(дней)\n"
+daily_modal.title: ""
+delete_account_button_label: ""
 dendro: ""
 destruction: ""
-devtools_button_label: Avec DevTools (ordinateur uniquement)
+devtools_button_label: ""
 devtools_instructions_description: ""
-dice_cost_embed_field_name: Coût des dés
+dice_cost_embed_field_name: ""
 download_image_failed_error_message: ""
 download_image_failed_error_title: ""
-edit_nickname_modal_title: Modifier le pseudonyme
+edit_nickname_modal_title: ""
 eidolon_superimpose_str: ""
 electro: ""
 email_verification_dialog_title: ""
@@ -139,19 +139,19 @@ email_verification_field_label: ""
 email-geetest.embed.title: ""
 email_password_button_label: ""
 email_password_modal_email_input_label: ""
-email_password_modal_password_input_label: mot de passe
+email_password_modal_password_input_label: ""
 enter_email_password_instructions_description: ""
 enter_light_cone_level.button.label: ""
 dark_mode_button_label: ""
 error_footer: ""
-error_title: Une erreur s'est produite
+error_title: ""
 erudition: ""
 days: ""
 exceptions.card_not_ready_error.message: ""
 exceptions.card_not_ready_error.title: ""
 exped.embed.description: ""
-exped_button.label: Rappel d'expédition
-exped_modal.title: Paramètres de rappel de l'expédition
+exped_button.label: ""
+exped_modal.title: ""
 exploration.chests: ""
 exploration.common_chests: ""
 exploration.exquisite_chests: ""
@@ -181,23 +181,23 @@ farm_reminder_command_description: ""
 farm_remove_command.item_not_found: ""
 farm_remove_command.item_not_found_description: ""
 farm_remove_command_description: ""
-farm_view.happy_farming: ""
+farm_view.happy_farming: 🌾 Удачного фарма!
 farm_view.set_reminder: ""
 farm_view.set_reminder.embed.description: ""
 farm_view.sundays: ""
 farm_view.weekday_select.placeholder: ""
 farm_view_command_description: ""
 fire: ""
-floor_select_label: "Étage {value}"
+floor_select_label: ""
 fontaine: ""
-food: Nouritture
-friday: Vendredi
-furnishing_sets: Ensemble de décorations
-furnishings: Décorations
-furniture_embed_description: "Confort : {comfort_icon} {comfort}\nCharge : {load_icon} {load}\nConfiance : {trust}\nHeure de création : {hour}h"
+food: ""
+friday: ""
+furnishing_sets: ""
+furnishings: ""
+furniture_embed_description: ""
 game_maintenance_description: ""
 game_maintenance_title: ""
-game_value_incomplete_param_error_message: Tu dois spécifier le jeux qui correspond a l'UID
+game_value_incomplete_param_error_message: ""
 geeetest_verification_complete: ""
 geetest.embed.title: ""
 geetest.no_need: ""
@@ -207,50 +207,50 @@ geetest.required.description: ""
 geetest_command_description: ""
 geetest_cmd_type_param_desc: ""
 geetest_command_type_param_name: ""
-genshin_impact: Genshin Impact
+genshin_impact: ""
 geo: ""
 gi_daily.embed.description: ""
 gift_code_modal.code_input.label: ""
 gift_code_modal.title: ""
 harmony: ""
-honkai:_star_rail: "Honkai: Star Rail"
-honkai_impact_3rd: Honkai Impact 3rd
+honkai:_star_rail: ""
+honkai_impact_3rd: ""
 hoyolab: ""
 hsr_daily.embed.description: ""
 hydro: ""
 ice: ""
 imaginary: ""
 inazuma: ""
-instructions_title: Instructions
-interaction_failed_description: "Cette vue n'a pas été initiée par vous, vous ne pouvez donc pas l'utiliser."
-interaction_failed_title: Échec de l'interaction
+instructions_title: ""
+interaction_failed_description: ""
+interaction_failed_title: ""
 invalid_category_selected: ""
 invalid_color_error_message: ""
 invalid_color_error_title: ""
 invalid_cookies_description: ""
-invalid_cookies_title: Cookies invalides
+invalid_cookies_title: ""
 invalid_email_password_description: ""
 invalid_email_password_title: ""
-invalid_game_selected: Jeu invalide sélectionné
+invalid_game_selected: ""
 invalid_image_url_error_message: ""
 invalid_image_url_error_title: ""
 invalid_input.input_needs_to_be_bool: ""
 invalid_input.input_needs_to_be_int: ""
 invalid_input.input_out_of_range.max_value: ""
 invalid_input.input_out_of_range.min_value: ""
-invalid_input_error_title: Entrée invalide
-invalid_query_error_message: "Impossible de trouver quoi que ce soit avec la requête fournie, veuillez sélectionner des choix à partir de l'autocomplétion au lieu de taper votre propre requête."
-invalid_query_error_title: Requête invalide
-invalid_verification_code_description: Veuillez vérifier le code de vérification et réessayer.
-invalid_verification_code_title: Code de vérification invalide
-items: Objects
-level_str: "Nv.{level}"
-light_cones: Cônes de lumières
-living_beings: Êtres vivants
+invalid_input_error_title: ""
+invalid_query_error_message: ""
+invalid_query_error_title: ""
+invalid_verification_code_description: ""
+invalid_verification_code_title: ""
+items: ""
+level_str: ""
+light_cones: ""
+living_beings: ""
 liyue: ""
-loading_text: Chargement...
-make_up_for_checkin_button_label: Enregistrement manqué
-materials: Matériaux
+loading_text: ""
+make_up_for_checkin_button_label: Восполнить отметки
+materials: ""
 memory_of_chaos: ""
 miyoushe: ""
 moc_card_battles_fought: ""
@@ -259,29 +259,29 @@ moc_card_farthest_stage: ""
 moc_quick_clear: ""
 monday: ""
 mondstadt: ""
-namecards: Carte de
-next_page_option_label: Page suivante
-nickname_modal_label: Surnom
-nickname_modal_placeholder: "Compte principal, Compte Asie..."
+namecards: ""
+next_page_option_label: ""
+nickname_modal_label: ""
+nickname_modal_placeholder: ""
 nihility: ""
 no_account_found_for_games_error_message: ""
 no_account_found_for_games_platform_error_message: ""
 no_account_found_for_games_error_title: ""
-no_accounts_autocomplete_choice: Vous n'avez encore aucun compte. Ajoutez-en un avec /accounts
+no_accounts_autocomplete_choice: ""
 profile_character_param_name: ""
 no_challenge_data_err_message: ""
 no_challenge_data_err_title: ""
 no_characters_found_error_message: ""
 no_characters_found_error_title: ""
 no_game_accounts_error_message: ""
-notes-card.gi.completed: Terminé
-notes-card.gi.daily-commissions: Commissions journalières
-notes-card.gi.expedition-finished: Fini
-notes-card.gi.expedition-remaining: "{time}Restant"
+notes-card.gi.completed: ""
+notes-card.gi.daily-commissions: ""
+notes-card.gi.expedition-finished: ""
+notes-card.gi.expedition-remaining: ""
 notes-card.gi.realm-currency: ""
 notes-card.gi.remaining: ""
-notes-card.gi.resin: Résines
-notes-card.gi.resin-discounts: Remises sur la résine
+notes-card.gi.resin: ""
+notes-card.gi.resin-discounts: ""
 notes-card.hsr.echo-of-war-discounts: ""
 notes-card.hsr.reserved-power: ""
 notes.item_full_in_time: ""
@@ -295,22 +295,22 @@ notes.memorial_arena_value: ""
 notes.elysian_realm: ""
 notes.elysian_realm_value: ""
 notes_available: ""
-notes_command_description: Voir les notes en temps réel
+notes_command_description: ""
 notif.embed.footer: ""
-notif_modal.enabled.label: Activé
-notif_modal.max_notif_count.label: Nombre max de notifs
-notif_modal.notify_interval.label: Intervalle de notification (en minutes)
-notif_modal.notify_time.label: "Notifier X heures avant la réinitialisation du serveur (4:00 AM)"
-notif_modal.notify_weekday.label: Le jour de la semaine à notifier
-notif_modal.threshold.label: Seuil
-notification_settings_button_label: Paramètre de notifications
-notify_on_failure_button_label: Notifier en cas d'échec de l'enregistrement
-notify_on_success_button_label: Notifier en cas de succès de l'enregistrement
+notif_modal.enabled.label: ""
+notif_modal.max_notif_count.label: ""
+notif_modal.notify_interval.label: ""
+notif_modal.notify_time.label: ""
+notif_modal.notify_weekday.label: ""
+notif_modal.threshold.label: ""
+notification_settings_button_label: ""
+notify_on_failure_button_label: Уведомить об ошибке отметки
+notify_on_success_button_label: Уведомить об успешной отметки
 mimo_auto_task_success_notify_toggle_label: ""
 mimo_auto_task_failure_notify_toggle_label: ""
 mimo_auto_buy_success_notify_toggle_label: ""
 mimo_auto_buy_failure_notify_toggle_label: ""
-nsfw_prompt_error_message: "L'invite contient du contenu NSFW, veuillez réessayer avec une autre invite."
+nsfw_prompt_error_message: ""
 nsfw_prompt_error_title: ""
 page_footer: ""
 pf_card_total_score: ""
@@ -320,53 +320,53 @@ player_not_found_title: ""
 preservation: ""
 prev_page_option_label: ""
 notify_feature: ""
-profile.add_image.button.label: Ajouter une image customisée
-profile.add_image_modal.image_url.label: URL de l'image
+profile.add_image.button.label: ""
+profile.add_image_modal.image_url.label: ""
 profile.build.select.placeholder: ""
-profile.card_info.embed.description: "- Tous les éléments utilisés dans les cartes appartiennent à Hoyoverse, je n'en suis pas propriétaire.\n- Tous les fanarts utilisés dans les cartes sont crédités à leurs artistes respectifs.\n- Les modèles de Hoyo Buddy sont originaux, vous n'êtes pas autorisé à les modifier ou à prétendre que vous les avez créés sans ma permission.\n- Les données du jeu sont fournies par {provider}\n"
-profile.card_info.embed.title: À propos des cartes pour personnage
-profile.card_settings.button.label: Paramètres de la carte
+profile.card_info.embed.description: ""
+profile.card_info.embed.title: ""
+profile.card_settings.button.label: ""
 profile.image_settings.button.label: ""
-profile.card_template_select.diff_author.description: "Conçu par {author1} et programmé par {author2}"
-profile.card_template_select.encard.label: "Modèle de carte EN {num} "
-profile.card_template_select.enka_classic.label: Modèle classique Enka
-profile.card_template_select.enkacard.label: "Modèle de carte Enka {num}"
-profile.card_template_select.hb.label: "Modèle Hoyo Buddy {num}"
-profile.card_template_select.placeholder: Sélectionner un modèle
+profile.card_template_select.diff_author.description: ""
+profile.card_template_select.encard.label: ""
+profile.card_template_select.enka_classic.label: ""
+profile.card_template_select.enkacard.label: ""
+profile.card_template_select.hb.label: ""
+profile.card_template_select.placeholder: ""
 profile.card_template_select.same_author.description: ""
-profile.card_template_select.src.label: "Modèle de carte StarRail {num}"
-profile.character_select.cached_data.description: Données mises en cache
+profile.card_template_select.src.label: ""
+profile.character_select.cached_data.description: ""
 profile.character_select.description: ""
 profile.character_select.enka_network.description: ""
 profile.character_select.hoyolab.description: ""
-profile.character_select.live_data.description: Données en temps réel
-profile.character_select.placeholder: Sélectionner un personnage
-profile.generate_ai_art.button.label: Generer des art par IA
+profile.character_select.live_data.description: ""
+profile.character_select.placeholder: ""
+profile.generate_ai_art.button.label: ""
 profile.generate_ai_art_modal.negative_prompt.label: ""
-profile.generate_ai_art_modal.prompt.label: Invite
+profile.generate_ai_art_modal.prompt.label: ""
 profile.genshin.character_select.description: ""
 profile.genshin.character_select.hoyolab.description: ""
-profile.image_select.custom_image.label: "Image personalisée  ({num})"
-profile.image_select.default_collection.label: "Collection Hoyo Buddy ({num})"
-profile.image_select.none.label: Art officiel
-profile.image_select.placeholder: Sélectionner une image
-profile.player_info.button.label: Informations sur le joueur
-profile.player_info.embed.description: "Niveau Trailblaze : {level}\nNiveau Equilibrium : {world_level}\nNombre d'amis : {friend_count}\nCones de lumière : {light_cones}\nPersonnages : {characters}\nSuccès: {achievements}\n"
+profile.image_select.custom_image.label: ""
+profile.image_select.default_collection.label: ""
+profile.image_select.none.label: ""
+profile.image_select.placeholder: ""
+profile.player_info.button.label: ""
+profile.player_info.embed.description: ""
 profile.player_info.gi.embed.description: ""
 profile.player_info.hoyolab.embed.description: ""
-profile.primary_color.button.label: Changer la couleur
-profile.primary_color_modal.color.label: Couleur (code hexa)
-profile.primary_color_modal.title: Changer la couleur de la carte
-profile.remove_from_cache.button.label: Supprimer du cache
-profile.remove_image.button.label: Suprrimer une image customisée
+profile.primary_color.button.label: ""
+profile.primary_color_modal.color.label: ""
+profile.primary_color_modal.title: ""
+profile.remove_from_cache.button.label: ""
+profile.remove_image.button.label: ""
 profile_command_gi_description: ""
 profile_command_hsr_description: ""
 profile_command_zzz_description: ""
-profile_command_game_value_description: Jeu de l'UID
+profile_command_game_value_description: ""
 profile_command_uid_param_description: ""
-pt_button.label: Rappel sur les transformateurs paramétriques
+pt_button.label: ""
 pt_modal.title: ""
-public_account_toggle.label: Définir le compte à publique
+public_account_toggle.label: ""
 pure_fiction: ""
 pyro: ""
 quantum: ""
@@ -375,83 +375,83 @@ real_time_notes: ""
 realm_curr_button.label: ""
 realm_curr_modal.title: ""
 redeeem_code.cookie_token_expired_description: ""
-redeeem_code.cookie_token_expired_title: Le jeton de cookie a expiré
+redeeem_code.cookie_token_expired_title: ""
 redeeem_code.cookie_token_refresh_failed_description: ""
-redeeem_code.cookie_token_refresh_failed_title: Échec de l'actualisation du jeton de cookie
+redeeem_code.cookie_token_refresh_failed_title: ""
 redeem_code.success: ""
 redeem_codes_button.label: ""
 redeem_command_description: ""
 redeem_command_embed.description: ""
 redeem_command_embed.title: ""
-redeem_cooldown_embed.description: "En raison des temps de recharge, cela peut prendre un certain temps."
-redeem_cooldown_embed.title: Codes d'échange
+redeem_cooldown_embed.description: ""
+redeem_cooldown_embed.title: ""
 refinement_indicator: ""
-relics: Reliques
-reminder_button.label: Paramètres de rappel
-reminder_settings.not_set: Non défini
+relics: ""
+reminder_button.label: ""
+reminder_settings.not_set: ""
 reminder_settings.reminde.set.type1: ""
 reminder_settings.reminde.set.type2: ""
 reminder_settings.reminde.set.type3: ""
 reminder_settings.reminde.set.type4: ""
-reminder_settings_title: Rappels de notes en temps réel
+reminder_settings_title: ""
 reminder_toggle: ""
 resin_discount.embed.description: ""
-resin_reminder_button.label: Rappel de résine
-resin_reminder_modal.title: Paramètres de rappel de la résine
-reward_claimed_title: Les récompenses de connexion quotidienne été prises
-saturday: Samedi
+resin_reminder_button.label: ""
+resin_reminder_modal.title: ""
+reward_claimed_title: "Получено вознаграждение за ежедневную отметку "
+saturday: ""
 search_autocomplete_no_results: ""
 search_autocomplete_not_setup: ""
-search_command_category_param_description: Dans quelle catégorie rechercher
+search_command_category_param_description: ""
 search_cmd_category_param_name: ""
-search_command_description: Recherchez tout ce qui concerne les jeux
-search_command_game_param_description: Dans quelle jeux rechercher
-search_command_game_param_name: jeux
-search_command_query_param_description: Requête à rechercher
-search_command_query_param_name: requête
+search_command_description: ""
+search_command_game_param_description: ""
+search_command_game_param_name: ""
+search_command_query_param_description: ""
+search_command_query_param_name: ""
 select_account.embed.description: ""
-select_account.embed.title: 🎉 Bienvenue chez Hoyo Buddy!
-settings_command_description: Configurez vos paramètres d'utilisateur
+select_account.embed.title: ""
+settings_command_description: ""
 skill_attributes_embed_field_name: ""
 skill_level.modal.title: ""
-spiral_abyss: Abysses Spiralés
+spiral_abyss: ""
 stats_embed_field_name: ""
 sumeru: ""
 sunday: ""
 superimpose_indicator: ""
 talent_level.modal.title: ""
-tcg: JDC
+tcg: ""
 the_hunt: ""
 threshold.embed.description: ""
 thunder: ""
-thursday: Jeudi
-tuesday: Mardi
+thursday: ""
+tuesday: ""
 unreleased_content: ""
-user_autocomplete_param_description: "Utilisateur avec lequel effectuer la recherche dans les comptes, par défaut : vous"
-user_autocomplete_param_name: utilisateur
+user_autocomplete_param_description: ""
+user_autocomplete_param_name: ""
 user_no_accounts_autocomplete_choice: ""
-view_card_button_label: Carte
-view_dictionary_button_label: Dictionnaire
-volume_selector_placeholder: Sélectionnez un volume à lire
-wave_button_label: "Vague {value}"
+view_card_button_label: ""
+view_dictionary_button_label: ""
+volume_selector_placeholder: ""
+wave_button_label: ""
 weapon_level.modal.title: ""
-weapons: Armes
-wednesday: Mercredi
-week_boss_button.label: Rappel hebdomadaire des remises accordées aux boss
-week_boss_modal.title: Paramètres du rappel hebdomadaire des remises sur les boss
+weapons: ""
+wednesday: ""
+week_boss_button.label: ""
+week_boss_modal.title: ""
 wind: ""
-yatta_character_detail_page_label: Détails
-yatta_character_eidolon_page_label: Eidolons
-yatta_character_embed_description: "{rarity}\nÉlément : {element}\nVoie : {path}\nMonde : {world}\n"
-yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}"
-yatta_character_skill_energy_field_name: Énergie
-yatta_character_skill_energy_generation_field_value: "Génération : {energy_generation}"
-yatta_character_skill_energy_need_field_value: "Coût : {energy_need}"
-yatta_character_skill_single_weakness_break_field_value: "Unique: {single_weakness_break}"
-yatta_character_skill_spread_weakness_break_field_value: "Propagation: {spread_weakness_break}"
-yatta_character_skill_weakness_break_field_name: Effect de rupture
-yatta_character_trace_page_label: Trace
-yatta_item_sources_field_name: Sources
+yatta_character_detail_page_label: ""
+yatta_character_eidolon_page_label: ""
+yatta_character_embed_description: ""
+yatta_character_skill_aoe_weakness_break_field_value: ""
+yatta_character_skill_energy_field_name: ""
+yatta_character_skill_energy_generation_field_value: ""
+yatta_character_skill_energy_need_field_value: ""
+yatta_character_skill_single_weakness_break_field_value: ""
+yatta_character_skill_spread_weakness_break_field_value: ""
+yatta_character_skill_weakness_break_field_name: ""
+yatta_character_trace_page_label: ""
+yatta_item_sources_field_name: ""
 characters.show_owned_only: ""
 redeem_code.ar_too_low: ""
 data_not_public.title: ""
@@ -751,13 +751,13 @@ mimo_buy_item_amount_label: ""
 mimo_item_available_time: ""
 mimo_auto_task_embed_footer: ""
 mimo_auto_task_embed_desc: ""
-checkin_reward_embed_footer: ""
+checkin_reward_embed_footer: Используйте /check-in для настройки уведомлений
 mimo_status: ""
 mimo_auto_buy_embed_desc: ""
 mimo_game_unavailable: ""
 generic_error_title: ""
-on_button_label: ""
-off_button_label: ""
+on_button_label: "ВКЛ"
+off_button_label: "ВЫКЛ"
 mimo_draw_redeem_success: ""
 image_settings_use_m3_art: ""
 remembrance: ""

@@ -207,7 +207,11 @@ class AutoRedeem:
         try:
             if isinstance(embed, ErrorEmbed):
                 embed.add_acc_info(account, blur=False)
-                content = LocaleStr(key="auto_redeem_error.content")
+                content = LocaleStr(
+                    key="auto_task_error_dm_content",
+                    feature=LocaleStr(key="auto_redeem_toggle.label"),
+                    command="</redeem>",
+                ).translate(account.user.settings.locale or discord.Locale.american_english)
 
                 account.auto_redeem = False
                 await account.save(update_fields=("auto_redeem",))
@@ -229,10 +233,7 @@ class AutoRedeem:
             client.set_lang(locale)
 
             embed = await account.client.redeem_codes(
-                codes,
-                locale=locale,
-                blur=False,
-                api_url=PROXY_APIS[api_name] if api_name != "LOCAL" else "LOCAL",
+                codes, locale=locale, blur=False, api_name=api_name
             )
             if embed is None:
                 return None

@@ -48,10 +48,10 @@ __all__ = (
 
 class BaseModel(Model):
     def __str__(self) -> str:
-        return f"{self.__class__.__name__}({', '.join(f'{field}={getattr(self, field)!r}' for field in self._meta.db_fields if hasattr(self, field))})"
+        return repr(self)
 
     def __repr__(self) -> str:
-        return str(self)
+        return f"{self.__class__.__name__}({', '.join(f'{field}={getattr(self, field)!r}' for field in self._meta.db_fields if hasattr(self, field))})"
 
     class Meta:
         abstract = True
@@ -164,6 +164,8 @@ class AccountNotifSettings(BaseModel):
     mimo_draw_success = fields.BooleanField(default=True)
     mimo_draw_failure = fields.BooleanField(default=True)
 
+    web_events = fields.BooleanField(default=False)
+
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
         "models.HoyoAccount", related_name="notif_settings", pk=True
     )
@@ -205,9 +207,10 @@ class CardSettings(BaseModel):
     highlight_substats: fields.Field[list[int]] = fields.JSONField(default=[])
     use_m3_art = fields.BooleanField(default=False)
     """Whether to use Mindscape 3 art for the ZZZ card."""
+    game: fields.Field[Game | None] = fields.CharEnumField(Game, max_length=32, null=True)
 
     class Meta:
-        unique_together = ("character_id", "user")
+        unique_together = ("character_id", "user", "game")
         ordering = ["character_id"]
 
 
@@ -271,10 +274,12 @@ class JSONFile(BaseModel):
     data: fields.Field[Any] = fields.JSONField()
 
     @staticmethod
-    async def read(filename: str) -> Any:
+    async def read(filename: str, *, default: Any = None) -> Any:
         """Read a JSON file."""
         json_file = await JSONFile.get_or_none(name=filename)
         if json_file is None:
+            if default is not None:
+                return default
             return {}
 
         return json_file.data

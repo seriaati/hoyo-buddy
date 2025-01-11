@@ -49,6 +49,7 @@ class DailyCheckin:
 
                 cls._total_checkin_count = 0
                 cls._bot = bot
+
                 cls._no_error_notify = no_error_notify
                 cls._embeds = defaultdict(list)
 
@@ -209,9 +210,7 @@ class DailyCheckin:
             client.set_lang(locale)
 
             await client.update_cookies_for_checkin()
-            reward = await client.claim_daily_reward(
-                api_url=api_name if api_name == "LOCAL" else PROXY_APIS[api_name]
-            )
+            reward = await client.claim_daily_reward(api_name=api_name)
             embed = client.get_daily_reward_embed(reward, locale, blur=False)
         except Exception as e:
             if isinstance(e, genshin.DailyGeetestTriggered):

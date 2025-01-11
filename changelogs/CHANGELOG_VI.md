@@ -1,20 +1,58 @@
 # Nhật ký thay đổi Hoyo Buddy
 
+## v1.15.7
+
+### Tính năng mới
+
+- (`/web-events`) Đã thêm lệnh mới để xem các sự kiện web đang diễn ra và đặt thông báo để nhắc bạn khi có sự kiện mới.
+- (`/notes`) Thêm nhắc nhở Tiến Độ Ủy Thác Trao Thưởng and Điểm Số Ridu Hàng Tuần cho ZZZ.
+- (`/about`) Thêm nút Nhật Ký Cập Nhật.
+
+### Cải Tiến
+
+- (`/gacha-log view`) Cải thiện hiệu suất trang nhật ký gacha bằng cách khắc phục sự cố bộ đệm.
+- (`/about`) Đã loại bỏ các thay đổi git mới nhất.
+- (`/mimo`) Sắp xếp các mặt hàng của Du Lịch Mimo shop từ đắt nhất đến rẻ nhất khi tự động mua.
+- Cải thiện các phiên dịch của các ngôn ngữ khác.
+  
+### Sửa Lỗi
+
+- (`/characters genshin`) Sửa lỗi KeyError gây ra bởi Nhà Lữ Hành Không Nguyên Tố.
+- (`/characters genshin`) Sửa cấp độ Thiên Phú không chính sác cho Kamisato Ayaka.
+- (`/stats`) Sửa lỗi "Không tìm thấy bản ghi thẻ cho ..." cho ZZZ.
+- (`/build genshin`) Sửa lỗi "Không có danh sách khối để vẽ".
+- (`/gacha-log view`) Sửa lỗi tỉ lệ thắng 50/50 không chính sác. 
+- (`/gacha-log view`) Sửa lỗi xác thực 422 trên ứng dụng web.
+- (`/gacha-log view`) Xử lý kích thước đầu vào không hợp lệ.
+- (`/gacha-log import`) Xử lý các loại Banner không hợp lệ khi nhập nhật ký gacha.
+- (`/gacha-log import`) Sữa lỗi nhập UIGF.
+- (`/mimo`) Xác nhận trạng thái nhiệm vụ hoàn thành trước khi gửi thông báo.
+- (`/mimo`) Đã thêm khoảng thời gian ngủ giữa các lần hoàn thành nhiệm vụ để tránh bị giới hạn tốc độ.
+- (`/mimo`) Loại bỏ thẻ HTML trên tên nhiệm vụ.
+- (`/mimo`) Sửa lỗi sau khi mua một vật phẩm.
+- (`/profile`) Sửa lỗi cài đặt thẻ từ các trò chơi khác bị trùng lập.
+- (`/profile genshin`) Fixed extra talents being shown in team cards.
+- (`/profile genshin`) Sửa lỗi Thiên Phú bổ sung được hiển thị trong thẻ đội.
+- (`/profile genshin`) Sửa lỗi xác nhận cho nhân vật Mavuika.
+- (`/search`) Đã sửa lỗi bộ chọn tinh chỉnh W-Engine không cập nhật giá trị đã chọn.
+- (`/notes`) Sửa lỗi xác nhận cho Honkai Impact 3.
+- (`/challenge zzz assault`) Đã sửa lỗi biểu tượng buff không được hiển thị.
+
 ## v1.15.6
 
-### New Features
+### Tính năng mới
 
 - (`/mimo`) Thêm hỗ trợ cho Genshin Du Lịch Mimo (sự kiện đã kết thúc từ thời điểm viếtviết).
 - (`/mimo`) Đã thêm tính năng rút thưởng tự động.
 - (`/challenge zzz`) Thêm hỗ trợ cho Tập Kích Nguy Cấp.
-- (`/profile hsr`) Thêm Mẫu thẻ 2z.
+- (`/profile hsr`) Thêm Mẫu thẻ 2.
 - (`/notes`) Thêm thông tin Tiến Độ Ủy Thác Treo Thưởng và Điểm Số Ridu Hàng Tuần cho ZZZZZZ
 
-## Improvements
+## Cải Tiến
 
 - (`/check-in`) Giảm các yêu cầu API điểm danh trùng lặp.
 
-## Bug Fixes
+## Sửa Lỗi
 
 - (`/mimo`) Sửa lỗi gửi thông báo khi không có nhiệm vụ nào được hoàn thành và không có điểm nào được nhận.
 - (`/mimo`) Sửa lỗi cách xác định các vật phẩm có giá trị.

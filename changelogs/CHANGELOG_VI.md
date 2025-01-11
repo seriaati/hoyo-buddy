@@ -17,25 +17,26 @@
   
 ### Sửa Lỗi
 
-- (`/characters genshin`) Fixed KeyError caused by no-element travelers.
-- (`/characters genshin`) Fixed incorrect talent level for Kamisato Ayaka.
-- (`/stats`) Fixed "Record card not found for ..." error for ZZZ.
-- (`/build genshin`) Fixed "No block lists to draw" error.
-- (`/gacha-log view`) Fixed incorrect 50/50 win rate.
-- (`/gacha-log view`) Fixed 422 validation error on web app.
-- (`/gacha-log view`) Handle invalid size input.
-- (`/gacha-log import`) Handle invalid banner types when importing gacha logs.
+- (`/characters genshin`) Sửa lỗi KeyError gây ra bởi Nhà Lữ Hành Không Nguyên Tố.
+- (`/characters genshin`) Sửa cấp độ Thiên Phú không chính sác cho Kamisato Ayaka.
+- (`/stats`) Sửa lỗi "Không tìm thấy bản ghi thẻ cho ..." cho ZZZ.
+- (`/build genshin`) Sửa lỗi "Không có danh sách khối để vẽ".
+- (`/gacha-log view`) Sửa lỗi tỉ lệ thắng 50/50 không chính sác. 
+- (`/gacha-log view`) Sửa lỗi xác thực 422 trên ứng dụng web.
+- (`/gacha-log view`) Xử lý kích thước đầu vào không hợp lệ.
+- (`/gacha-log import`) Xử lý các loại Banner không hợp lệ khi nhập nhật ký gacha.
 - (`/gacha-log import`) Sữa lỗi nhập UIGF.
-- (`/mimo`) Confirm task finish status before sending notifications.
-- (`/mimo`) Added sleep intervals between task completions to avoid being rate limited.
-- (`/mimo`) Remove HTML tags from task names.
-- (`/mimo`) Fixed error after buying an item.
-- (`/profile`) Fixed card settings from different games being mixed up.
+- (`/mimo`) Xác nhận trạng thái nhiệm vụ hoàn thành trước khi gửi thông báo.
+- (`/mimo`) Đã thêm khoảng thời gian ngủ giữa các lần hoàn thành nhiệm vụ để tránh bị giới hạn tốc độ.
+- (`/mimo`) Loại bỏ thẻ HTML trên tên nhiệm vụ.
+- (`/mimo`) Sửa lỗi sau khi mua một vật phẩm.
+- (`/profile`) Sửa lỗi cài đặt thẻ từ các trò chơi khác bị trùng lập.
 - (`/profile genshin`) Fixed extra talents being shown in team cards.
-- (`/profile genshin`) Fixed validation error with Mavuika.
-- (`/search`) Fixed W-engine refinement selector not updating selected value.
-- (`/notes`) Fixed validation error for Honkai Impact 3rd.
-- (`/challenge zzz assault`) Fixed buff icons not being shown.
+- (`/profile genshin`) Sửa lỗi Thiên Phú bổ sung được hiển thị trong thẻ đội.
+- (`/profile genshin`) Sửa lỗi xác nhận cho nhân vật Mavuika.
+- (`/search`) Đã sửa lỗi bộ chọn tinh chỉnh W-Engine không cập nhật giá trị đã chọn.
+- (`/notes`) Sửa lỗi xác nhận cho Honkai Impact 3.
+- (`/challenge zzz assault`) Đã sửa lỗi biểu tượng buff không được hiển thị.
 
 ## v1.15.6
 

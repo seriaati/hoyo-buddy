@@ -10,9 +10,10 @@
 
 ### Cải Tiến
 
-- (`/gacha-log view`) Improved gacha log page performance by fixing cache issues.
-- (`/about`) Removed latest git changes.
-- (`/mimo`) Sort Traveling Mimo shop items from most expensive to least expensive when auto buying.
+- (`/gacha-log view`) Cải thiện hiệu suất trang nhật ký gacha bằng cách khắc phục sự cố bộ đệm.
+- (`/about`) Đã loại bỏ các thay đổi git mới nhất.
+- (`/mimo`) Sắp xếp các mặt hàng của Du Lịch Mimo shop từ đắt nhất đến rẻ nhất khi tự động mua.
+- Cải thiện Ngôn ngữ Tiếng Việt
   
 ### Sửa Lỗi
 
@@ -24,7 +25,7 @@
 - (`/gacha-log view`) Fixed 422 validation error on web app.
 - (`/gacha-log view`) Handle invalid size input.
 - (`/gacha-log import`) Handle invalid banner types when importing gacha logs.
-- (`/gacha-log import`) Fixed UIGF import.
+- (`/gacha-log import`) Sữa lỗi nhập UIGF.
 - (`/mimo`) Confirm task finish status before sending notifications.
 - (`/mimo`) Added sleep intervals between task completions to avoid being rate limited.
 - (`/mimo`) Remove HTML tags from task names.

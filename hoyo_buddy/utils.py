@@ -8,10 +8,9 @@ import os
 import re
 import time
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any, overload
+from typing import TYPE_CHECKING, Any
 
 import aiohttp
-import ambr
 import orjson
 import sentry_sdk
 import toml
@@ -28,7 +27,7 @@ from hoyo_buddy.enums import Game
 
 if TYPE_CHECKING:
     import pathlib
-    from collections.abc import Generator, Sequence
+    from collections.abc import Generator
 
     import discord
     import genshin
@@ -203,7 +202,7 @@ def get_static_img_path(image_url: str, folder: str) -> pathlib.Path:
     return STATIC_FOLDER / folder / extra_folder / filename
 
 
-def format_ann_content(content: str) -> str:
+def remove_html_tags(content: str) -> str:
     content = content.replace("\\n", "\n")
     # replace tags with style attributes
     content = content.replace("</p>", "\n")
@@ -380,129 +379,6 @@ def init_sentry() -> None:
     )
 
 
-def _process_query(item_ids_or_names: Sequence[str | int] | int | str) -> str:
-    if not isinstance(item_ids_or_names, str | int):
-        if len(item_ids_or_names) == 1:
-            item_ids_or_names_query = item_ids_or_names[0]
-        else:
-            item_ids_or_names = [str(item) for item in item_ids_or_names]
-            item_ids_or_names_query = ",".join(item_ids_or_names)
-            item_ids_or_names_query = f"[{item_ids_or_names_query}]"
-    else:
-        item_ids_or_names_query = item_ids_or_names
-
-    return str(item_ids_or_names_query)
-
-
-@overload
-async def item_name_to_id(
-    session: aiohttp.ClientSession, *, item_names: str, lang: str | None = ...
-) -> int: ...
-@overload
-async def item_name_to_id(
-    session: aiohttp.ClientSession, *, item_names: list[str], lang: str | None = ...
-) -> list[int]: ...
-async def item_name_to_id(
-    session: aiohttp.ClientSession, *, item_names: list[str] | str, lang: str | None = None
-) -> list[int] | int:
-    if lang is None:
-        if isinstance(item_names, str):
-            async with session.get(f"https://api.uigf.org/identify/genshin/{item_names}") as resp:
-                resp.raise_for_status()
-                data = await resp.json()
-                return data["item_id"]
-
-        result: list[int] = []
-        for item_name in item_names:
-            async with session.get(f"https://api.uigf.org/identify/genshin/{item_name}") as resp:
-                resp.raise_for_status()
-                data = await resp.json()
-                result.append(data["item_id"])
-
-        return result
-
-    item_names_query = _process_query(item_names)
-
-    async with session.post(
-        "https://api.uigf.org/translate/",
-        json={"type": "normal", "item_name": item_names_query, "game": "genshin", "lang": lang},
-    ) as resp:
-        resp.raise_for_status()
-        data = await resp.json()
-
-    return data["item_id"]
-
-
-async def get_item_ids(
-    session: aiohttp.ClientSession, *, item_names: list[str], lang: str | None = None
-) -> dict[str, int]:
-    item_name_tasks: dict[str, asyncio.Task] = {}
-
-    async with asyncio.TaskGroup() as tg:
-        for item_name in item_names:
-            if item_name in item_name_tasks:
-                continue
-
-            item_name_tasks[item_name] = tg.create_task(
-                item_name_to_id(session, item_names=item_name, lang=lang)
-            )
-
-    return {item_name: task.result() for item_name, task in item_name_tasks.items()}
-
-
-@overload
-async def item_id_to_name(session: aiohttp.ClientSession, *, item_ids: int, lang: str) -> str: ...
-@overload
-async def item_id_to_name(
-    session: aiohttp.ClientSession, *, item_ids: list[int], lang: str
-) -> list[str]: ...
-async def item_id_to_name(
-    session: aiohttp.ClientSession, *, item_ids: list[int] | int, lang: str
-) -> list[str] | str:
-    item_ids_query = _process_query(item_ids)
-
-    async with session.post(
-        "https://api.uigf.org/translate/",
-        json={"type": "reverse", "item_id": item_ids_query, "game": "genshin", "lang": lang},
-    ) as resp:
-        resp.raise_for_status()
-        data = await resp.json()
-
-    return data["item_name"]
-
-
-async def get_gacha_icon(*, game: Game, item_id: int) -> str:
-    """Get the icon URL for a gacha item."""
-    if game is Game.ZZZ:
-        return f"https://stardb.gg/api/static/zzz/{item_id}.png"
-
-    if game is Game.GENSHIN:
-        async with ambr.AmbrAPI() as api:
-            if len(str(item_id)) == 5:  # weapon
-                weapons = await api.fetch_weapons()
-                weapon_icon_map: dict[int, str] = {weapon.id: weapon.icon for weapon in weapons}
-                return weapon_icon_map[item_id]
-
-            # character
-            characters = await api.fetch_characters()
-            character_icon_map: dict[int, str] = {
-                int(character.id): character.icon
-                for character in characters
-                if character.id.isdigit()
-            }
-            return character_icon_map[item_id]
-
-    if game is Game.STARRAIL:
-        if len(str(item_id)) == 5:  # light cone
-            return f"https://stardb.gg/api/static/StarRailResWebp/icon/light_cone/{item_id}.webp"
-
-        # character
-        return f"https://stardb.gg/api/static/StarRailResWebp/icon/character/{item_id}.webp"
-
-    msg = f"Unsupported game: {game}"
-    raise ValueError(msg)
-
-
 async def fetch_json(session: aiohttp.ClientSession, url: str) -> Any:
     async with session.get(url) as resp:
         resp.raise_for_status()
@@ -575,7 +451,8 @@ def get_mimo_task_url(task: genshin.models.MimoTask) -> str | None:
 def get_mimo_task_str(task: genshin.models.MimoTask, game: Game) -> str:
     point_emoji = MIMO_POINT_EMOJIS[game]
     task_url = get_mimo_task_url(task)
-    task_str = f"[{task.name}]({task_url})" if task_url else task.name
+    task_name = remove_html_tags(task.name)
+    task_str = f"[{task_name}]({task_url})" if task_url else task_name
     task_str += f" - {task.point} {point_emoji}"
     if task.total_progress > 1:
         task_str += f" ({task.progress}/{task.total_progress})"

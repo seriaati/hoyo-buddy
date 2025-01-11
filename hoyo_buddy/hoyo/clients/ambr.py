@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from collections import defaultdict
 from enum import StrEnum
 from typing import TYPE_CHECKING
@@ -12,7 +13,7 @@ from seria.utils import create_bullet_list, shorten
 
 from hoyo_buddy.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_gi_element_emoji
 
-from ...constants import LOCALE_TO_AMBR_LANG, contains_traveler_id
+from ...constants import contains_traveler_id, locale_to_ambr_lang
 from ...embeds import DefaultEmbed
 from ...l10n import LevelStr, LocaleStr, WeekdayStr, translator
 from ...models import ItemWithDescription
@@ -44,8 +45,50 @@ class AmbrAPIClient(ambr.AmbrAPI):
     def __init__(
         self, locale: Locale = Locale.american_english, session: aiohttp.ClientSession | None = None
     ) -> None:
-        super().__init__(lang=LOCALE_TO_AMBR_LANG.get(locale, ambr.Language.EN), session=session)
+        super().__init__(lang=locale_to_ambr_lang(locale), session=session)
         self.locale = locale
+
+    async def _fetch_charas_and_weapons(
+        self, *, lang: ambr.Language | None = None
+    ) -> list[ambr.Weapon | ambr.Character]:
+        """Fetches all character/weapon objects for all languages"""
+        result: list[ambr.Weapon | ambr.Character] = []
+        tasks: list[asyncio.Task[list[ambr.Weapon] | list[ambr.Character]]] = []
+        langs = [lang] if lang else list(ambr.Language)
+        async with asyncio.TaskGroup() as tg:
+            for lang_ in langs:
+                self.lang = lang_
+                tasks.append(tg.create_task(super().fetch_characters()))
+                await asyncio.sleep(0.1)
+                tasks.append(tg.create_task(super().fetch_weapons()))
+                await asyncio.sleep(0.1)
+
+        for task in tasks:
+            items = task.result()
+            result.extend(items)
+        return result
+
+    async def fetch_item_name_to_id_map(self) -> dict[str, int]:
+        """Get a map of character/weapon name to ID for all languages."""
+        result: dict[str, int] = {}
+        items = await self._fetch_charas_and_weapons()
+
+        for item in items:
+            if "-" in str(item.id):
+                continue
+            result[item.name] = int(item.id)
+        return result
+
+    async def fetch_item_id_to_name_map(self) -> dict[int, str]:
+        """Get a map of character/weapon ID to name for a language."""
+        result: dict[int, str] = {}
+        items = await self._fetch_charas_and_weapons(lang=self.lang)
+
+        for item in items:
+            if "-" in str(item.id):
+                continue
+            result[int(item.id)] = item.name
+        return result
 
     async def fetch_element_char_counts(self) -> dict[str, int]:
         """Fetches the number of characters for each element, does not include beta characters and Traveler."""

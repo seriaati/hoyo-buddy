@@ -44,7 +44,7 @@ class StatsView(View):
         embed = DefaultEmbed(
             self.locale,
             title=self.account.blurred_display,
-            description=LocaleStr(key="N_level", mi18n_game=Game.GENSHIN, N=level),
+            description=LocaleStr(key="N_level", mi18n_game=Game.GENSHIN, N=level or "?"),
         )
         for key, value in fields.items():
             embed.add_field(name=LocaleStr(key=key, mi18n_game=self.account.game), value=str(value))
@@ -95,7 +95,7 @@ class StatsView(View):
         )
 
     def get_zzz_user_embed(
-        self, user: genshin.models.ZZZUserStats, card: genshin.models.RecordCard
+        self, user: genshin.models.ZZZUserStats, card: genshin.models.RecordCard | None
     ) -> DefaultEmbed:
         stats = user.stats
         fields = {
@@ -107,7 +107,9 @@ class StatsView(View):
         }
         if stats.hia_coin is not None:
             fields["commemorative_coins_list"] = stats.hia_coin.num
-        return self._get_user_embed(level=card.level, fields=fields, avatar=user.in_game_avatar)
+        return self._get_user_embed(
+            level=card.level if card is not None else 0, fields=fields, avatar=user.in_game_avatar
+        )
 
     def get_honkai_user_embed(self, user: genshin.models.HonkaiUserStats) -> DefaultEmbed:
         stats = user.stats
@@ -138,12 +140,10 @@ class StatsView(View):
             user = await client.get_starrail_user(self.account.uid)
             embed = self.get_hsr_user_embed(user)
         elif self.account.game is Game.ZZZ:
+            # getGameRecordCard doesn't return cards from other server regions of the same game
+            # don't know how to handle this yet, so allow card to be None for now
             record_cards = await client.get_record_cards()
             card = next((card for card in record_cards if card.uid == self.account.uid), None)
-            if card is None:
-                msg = f"Record card not found for {self.account.uid}"
-                raise ValueError(msg)
-
             user = await client.get_zzz_user(self.account.uid)
             embed = self.get_zzz_user_embed(user, card)
         elif self.account.game is Game.HONKAI:

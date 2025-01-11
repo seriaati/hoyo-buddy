@@ -231,7 +231,7 @@ async def draw_gi_characters_card(
     draw_input: DrawInput,
     characters: Sequence[genshin.models.GenshinDetailCharacter | UnownedGICharacter],
     pc_icons: dict[str, str],
-    talent_orders: dict[int, list[int]],
+    talent_orders: dict[str, list[int]],
 ) -> File:
     urls: list[str] = []
     for c in characters:

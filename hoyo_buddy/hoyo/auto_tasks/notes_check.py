@@ -518,7 +518,11 @@ class NotesChecker:
 
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:
-        content = LocaleStr(key="process_notify_error.content")
+        content = LocaleStr(
+            key="auto_task_error_dm_content",
+            feature=LocaleStr(key="notify_feature"),
+            command="</notes>",
+        )
         locale = await cls._get_locale(notify)
         embed = cls._get_notify_error_embed(e, locale)
         embed.add_acc_info(notify.account, blur=False)

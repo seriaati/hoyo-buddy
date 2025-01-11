@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field, field_validator
 
+from hoyo_buddy.constants import BANNER_TYPE_NAMES
+
 from ..enums import Platform
 
 
@@ -35,6 +37,15 @@ class GachaParams(BaseModel):
         if not value:
             return []
         return [int(rarity) for rarity in value.split(",")]
+
+    @field_validator("banner_type", mode="after")
+    @classmethod
+    def __validate_banner_type(cls, banner_type: int) -> int:
+        banner_types = {key for game_dict in BANNER_TYPE_NAMES.values() for key in game_dict}
+        if banner_type not in banner_types:
+            msg = f"Invalid banner type {banner_type}"
+            raise ValueError(msg)
+        return banner_type
 
     def to_query_string(self) -> str:
         dict_model = self.model_dump()

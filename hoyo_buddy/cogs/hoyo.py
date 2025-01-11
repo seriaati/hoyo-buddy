@@ -9,13 +9,14 @@ from hoyo_buddy.commands.events import EventsCommand
 from hoyo_buddy.db import HoyoAccount, Settings, get_dyk, get_locale
 from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
 from hoyo_buddy.ui.hoyo.mimo import MimoView
+from hoyo_buddy.ui.hoyo.web_events import WebEventsView
 from hoyo_buddy.utils import ephemeral
 
 from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand
 from ..constants import HB_GAME_TO_GPY_GAME
 from ..enums import Game, GeetestType, Platform
-from ..exceptions import CantRedeemCodeError, InvalidQueryError, NoAccountFoundError
+from ..exceptions import CantRedeemCodeError, InvalidQueryError
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from ..types import User  # noqa: TC001
 from ..ui.hoyo.checkin import CheckInUI
@@ -295,15 +296,40 @@ class Hoyo(commands.Cog):
         account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         account = account or await self.bot.get_account(
-            i.user.id, (Game.ZZZ, Game.STARRAIL), Platform.HOYOLAB
+            i.user.id, (Game.ZZZ, Game.STARRAIL, Game.GENSHIN), Platform.HOYOLAB
         )
-        if account.platform is not Platform.HOYOLAB:
-            raise NoAccountFoundError((Game.ZZZ, Game.STARRAIL), Platform.HOYOLAB)
-
         settings = await Settings.get(user_id=i.user.id)
         view = MimoView(
             account, dark_mode=settings.dark_mode, author=i.user, locale=settings.locale or i.locale
         )
+        await view.start(i)
+
+    @app_commands.command(
+        name=app_commands.locale_str("web-events"),
+        description=app_commands.locale_str(
+            "View ongoing web events and set notifier", key="web_events_cmd_desc"
+        ),
+    )
+    @app_commands.rename(
+        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
+    )
+    @app_commands.describe(
+        account=app_commands.locale_str(
+            "Account to run this command with, defaults to the selected one in /accounts",
+            key="account_autocomplete_param_description",
+        )
+    )
+    async def web_events_command(
+        self,
+        i: Interaction,
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+    ) -> None:
+        account = account or await self.bot.get_account(
+            i.user.id,
+            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT),
+            platform=Platform.HOYOLAB,
+        )
+        view = WebEventsView(account, author=i.user, locale=i.locale)
         await view.start(i)
 
     @geetest_command.autocomplete("type_")
@@ -342,7 +368,7 @@ class Hoyo(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(
-            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT), (Platform.HOYOLAB,)
+            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT), Platform.HOYOLAB
         )
 
     @mimo_command.autocomplete("account")
@@ -350,7 +376,7 @@ class Hoyo(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(
-            i, current, (Game.STARRAIL, Game.ZZZ), (Platform.HOYOLAB,)
+            i, current, (Game.STARRAIL, Game.ZZZ, Game.GENSHIN), Platform.HOYOLAB
         )
 
     @checkin_command.autocomplete("account")
@@ -358,7 +384,20 @@ class Hoyo(commands.Cog):
     async def all_game_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current)
+        return await self.bot.get_game_account_choices(
+            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT)
+        )
+
+    @web_events_command.autocomplete("account")
+    async def hoyolab_all_game_acc_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        return await self.bot.get_game_account_choices(
+            i,
+            current,
+            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT),
+            platform=Platform.HOYOLAB,
+        )
 
 
 async def setup(bot: HoyoBuddy) -> None:

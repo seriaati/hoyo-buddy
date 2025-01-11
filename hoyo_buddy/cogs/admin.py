@@ -5,7 +5,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
 import genshin  # noqa: TC002
-from discord import ButtonStyle, TextStyle, ui
+from discord import ButtonStyle, ui
 from discord.ext import commands
 from loguru import logger
 from seria.utils import write_json
@@ -15,8 +15,8 @@ from hoyo_buddy.db import CardSettings, CommandMetric, HoyoAccount, Settings, Us
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
+from hoyo_buddy.hoyo.auto_tasks.web_events_notify import WebEventsNotify
 from hoyo_buddy.l10n import translator
-from hoyo_buddy.utils import upload_image
 
 from ..constants import GI_UID_PREFIXES
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
@@ -30,35 +30,6 @@ if TYPE_CHECKING:
 
     from ..bot import HoyoBuddy
     from ..types import Interaction
-
-
-class DMModal(ui.Modal):
-    user_ids = ui.TextInput(label="User IDs")
-    message = ui.TextInput(label="Message", style=TextStyle.paragraph)
-
-    async def on_submit(self, i: Interaction) -> None:
-        await i.response.defer()
-        self.stop()
-
-
-class DMModalView(ui.View):
-    def __init__(self) -> None:
-        super().__init__()
-
-    @ui.button(label="Open modal", style=ButtonStyle.blurple)
-    async def send(self, i: Interaction, _: ui.Button) -> None:
-        modal = DMModal(title="Set message", custom_id="dm_modal")
-        await i.response.send_modal(modal)
-        timed_out = await modal.wait()
-        if timed_out:
-            return
-
-        user_ids = [int(user_id) for user_id in modal.user_ids.value.split(",")]
-
-        await i.edit_original_response(content=f"Sending message to {len(user_ids)} users...")
-        for user_id in user_ids:
-            await i.client.dm_user(int(user_id), content=modal.message.value)
-        await i.edit_original_response(content="Done.")
 
 
 class TaskView(ui.View):
@@ -93,6 +64,11 @@ class TaskView(ui.View):
     async def auto_mimo_task(self, i: Interaction, _: ui.Button) -> None:
         await i.response.send_message("Auto mimo task started.")
         asyncio.create_task(AutoMimo.execute(i.client))
+
+    @ui.button(label="Web events notify", style=ButtonStyle.blurple)
+    async def web_events_notify(self, i: Interaction, _: ui.Button) -> None:
+        await i.response.send_message("Web events notify task started.")
+        asyncio.create_task(WebEventsNotify.execute(i.client))
 
 
 class Admin(commands.Cog):
@@ -151,11 +127,6 @@ class Admin(commands.Cog):
             codes_ = list(set(codes.split(",")))
             await ctx.send(f"Auto redeem task started for {game.name}.")
             await AutoRedeem.execute(self.bot, game, codes_)
-
-    @commands.command(name="dm")
-    async def dm_command(self, ctx: commands.Context) -> Any:
-        view = DMModalView()
-        await ctx.send(view=view)
 
     @commands.command(name="get-accounts", aliases=["ga"])
     async def get_accounts_command(self, ctx: commands.Context, user_id: int) -> Any:
@@ -226,19 +197,17 @@ class Admin(commands.Cog):
         metrics_msg = "\n".join([f"/{metric.name}: {metric.count}" for metric in metrics])
         await ctx.send(f"Command metrics:\n```{metrics_msg}```")
 
-    @commands.command(name="kill-imgur")
-    async def kill_imgur_command(self, ctx: commands.Context) -> Any:
+    @commands.command(name="set-card-settings-game")
+    async def set_card_settings_game(self, ctx: commands.Context) -> Any:
         await ctx.send("Starting...")
 
         settings = await CardSettings.all()
         logger.info(f"Checking {len(settings)} settings...")
 
         for setting in settings:
-            if setting.current_image and "i.imgur" in setting.current_image:
-                logger.info(f"Uploading {setting.current_image}...")
-                new_url = await upload_image(self.bot.session, image_url=setting.current_image)
-                setting.current_image = new_url
-                await setting.save(update_fields=("current_image",))
+            if setting.game is None and len(setting.character_id) == len("10000050"):
+                setting.game = Game.GENSHIN
+                await setting.save(update_fields=("game",))
 
         await ctx.send("Done.")
 

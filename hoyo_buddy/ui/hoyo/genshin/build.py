@@ -161,7 +161,7 @@ class GIBuildView(ui.View):
 
     async def draw_artifact_set_use_rate_image(
         self, best_sets: Sequence[ambr.AzaBestArtifactSets], bot: HoyoBuddy
-    ) -> discord.File:
+    ) -> discord.File | None:
         blocks: list[SingleBlock | DoubleBlock] = []
 
         for sets in best_sets:
@@ -200,6 +200,9 @@ class GIBuildView(ui.View):
 
             blocks.append(block)
 
+        if not blocks:
+            return None
+
         chunked_blocks = itertools.batched(blocks, 4)
         return await draw_block_list_card(
             DrawInput(
@@ -215,7 +218,7 @@ class GIBuildView(ui.View):
 
     async def draw_synergy_teams_image(
         self, teams: Sequence[SynergyTeam], bot: HoyoBuddy
-    ) -> discord.File:
+    ) -> discord.File | None:
         block_lists: list[list[SingleBlock]] = []
 
         for team in teams:
@@ -247,6 +250,9 @@ class GIBuildView(ui.View):
                     )
 
             block_lists.append(blocks)
+
+        if not block_lists:
+            return None
 
         return await draw_block_list_card(
             DrawInput(

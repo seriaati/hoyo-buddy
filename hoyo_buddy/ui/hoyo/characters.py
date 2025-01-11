@@ -372,7 +372,7 @@ class CharactersView(PaginatorView):
             pc_icons = await self._get_gi_pc_icons()
 
             async with enka.GenshinClient() as client:
-                talent_orders = {
+                talent_orders: dict[str, list[int]] = {
                     character_id: character_info["SkillOrder"]
                     for character_id, character_info in client._assets.character_data.items()
                 }
@@ -577,7 +577,11 @@ class CharactersView(PaginatorView):
 
             # Find traveler element and add 1 to the element char count
             for character in self.gi_characters:
-                if character.id in TRAVELER_IDS:
+                if (
+                    character.id in TRAVELER_IDS
+                    and character.element.lower()
+                    in self.element_char_counts  # Prevent KeyError caused by 'None' element traveler
+                ):
                     self.element_char_counts[character.element.lower()] += 1
                     break
 

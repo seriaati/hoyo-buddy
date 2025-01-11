@@ -14,7 +14,7 @@ from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.components import Button, PaginatorSelect, Select, SelectOption, View
 from hoyo_buddy.ui.paginator import Page, PaginatorView
-from hoyo_buddy.utils import format_ann_content
+from hoyo_buddy.utils import remove_html_tags
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -46,8 +46,8 @@ class EventsView(View):
     def _get_ann_embed(self, ann: genshin.models.Announcement) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
-            title=format_ann_content(ann.title),
-            description=format_ann_content(ann.content)[:200] + "...",
+            title=remove_html_tags(ann.title),
+            description=remove_html_tags(ann.content)[:200] + "...",
         )
         embed.set_author(name=ann.subtitle)
         embed.set_image(url=ann.banner or ann.img)
@@ -109,7 +109,7 @@ class EventSelector(PaginatorSelect[EventsView]):
         start_time = ann.start_time.replace(tzinfo=UTC_8)
         end_time = ann.end_time.replace(tzinfo=UTC_8)
         return SelectOption(
-            label=format_ann_content(ann.title)[:100],
+            label=remove_html_tags(ann.title)[:100],
             value=str(ann.id),
             default=default,
             description=f"{start_time.strftime('%Y-%m-%d %H:%M')} ~ {end_time.strftime('%Y-%m-%d %H:%M')}",
@@ -183,7 +183,7 @@ class ViewContentButton(Button[EventsView]):
 
     async def callback(self, i: Interaction) -> None:
         ann = self.view._get_ann(self.view.ann_id)
-        content = format_ann_content(ann.content)
+        content = remove_html_tags(ann.content)
         if not content:
             self.disabled = True
             return await i.response.edit_message(view=self.view)

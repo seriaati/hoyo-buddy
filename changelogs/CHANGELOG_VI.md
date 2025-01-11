@@ -13,7 +13,7 @@
 - (`/gacha-log view`) Cải thiện hiệu suất trang nhật ký gacha bằng cách khắc phục sự cố bộ đệm.
 - (`/about`) Đã loại bỏ các thay đổi git mới nhất.
 - (`/mimo`) Sắp xếp các mặt hàng của Du Lịch Mimo shop từ đắt nhất đến rẻ nhất khi tự động mua.
-- Cải thiện Ngôn ngữ Tiếng Việt
+- Cải thiện các phiên dịch của các ngôn ngữ khác.
   
 ### Sửa Lỗi
 

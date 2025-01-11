@@ -13,7 +13,7 @@
 - (`/gacha-log view`) Improved gacha log page performance by fixing cache issues.
 - (`/about`) Removed latest git changes.
 - (`/mimo`) Sort Traveling Mimo shop items from most expensive to least expensive when auto buying.
-- Improve localization for Vietnamese. 
+- Improves localization for other languages. 
   
 ### Bug Fixes
 

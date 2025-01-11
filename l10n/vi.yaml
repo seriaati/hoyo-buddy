@@ -777,7 +777,7 @@ mimo_auto_draw_failure_notify_toggle_label: Thông báo khi việc tự động 
 mimo_auto_draw_embed_desc: "Hoyo Buddy đã rút những món sau với {points} điểm.\nNếu bạn thấy mã quà bên dười, vui lòng đổi bằng tay với lệnh </redeem>."
 mimo_auto_task_error_dm_content: "Du Lịch Mimo: Tính năng {feature} đã được vô hiệu hóa do đã xảy ra lỗi, bạn có thể kích hoạt tính nằng này lại bằng</mimo>\nNếu lỗi này cứ xuất hiện và bạn không biết cách sửa, vui lòng tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) để chúng tôi giải quyết."
 dismissible_hsr_temp2_desc: "Giờ bạn có thể dùng mẫu thẻ Hoyo Buddy 2 cho thẻ nhân vật HSR, chọn trong cài đặt thẻ. Đề nghị bạn dùng ảnh dọc ngang cho mẫu thẻ này."
-bounty_commission.embed.description: " Tiến Độ Ủy Thác Treo Thưởng chưa hoàn thành"
+bounty_commission.embed.description: " Tiến Độ Ủy Thác Trao Thưởng chưa hoàn thành"
 ridu_points.embed.description: " Điểm Số Ridu Hàng Tuần chưa hoàn thành"
 changelog_embed_title: Nhật Ký Thây Đổi
 web_events_notify_toggle_label: Nhắc nhờ về sự kiện Web

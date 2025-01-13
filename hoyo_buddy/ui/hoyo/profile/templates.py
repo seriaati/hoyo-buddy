@@ -75,3 +75,21 @@ DISABLE_IMAGE = {
     (Game.ZZZ, "hb3"): False,
     (Game.ZZZ, "hb4"): False,
 }
+
+TEMPLATE_PREVIEWS = {
+    (Game.GENSHIN, "hb1"): "https://iili.io/24hQO3G.png",
+    (Game.GENSHIN, "hb2"): "https://iili.io/24hQZyQ.png",
+    (Game.GENSHIN, "hattvr1"): "https://iili.io/24hZ5Al.png",
+    (Game.GENSHIN, "encard1"): "https://iili.io/24hZGcb.png",
+    (Game.GENSHIN, "enkacard1"): "https://iili.io/24ht5ga.png",
+    (Game.GENSHIN, "enkacard2"): "https://iili.io/24hDSuR.png",
+    (Game.STARRAIL, "hb1"): "https://img.seria.moe/lkOMrQRXnQnZqrvX.png",
+    (Game.STARRAIL, "hb2"): "https://img.seria.moe/JyxFhSgpXAdNBMkJ.png",
+    (Game.STARRAIL, "src1"): "https://iili.io/24hL2ig.png",
+    (Game.STARRAIL, "src2"): "https://iili.io/24hLR0G.png",
+    (Game.STARRAIL, "src3"): "https://iili.io/24hLw5Q.png",
+    (Game.ZZZ, "hb1"): "https://img.seria.moe/xagKUlBObeSlQFuR.png",
+    (Game.ZZZ, "hb2"): "https://img.seria.moe/aLcDReesAnNiAUzU.png",
+    (Game.ZZZ, "hb3"): "https://img.seria.moe/chpFFHnUVEQTwqPC.png",
+    (Game.ZZZ, "hb4"): "https://img.seria.moe/ODajRXtZUlCmTCks.png",
+}

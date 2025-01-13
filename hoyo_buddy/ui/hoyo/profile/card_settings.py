@@ -19,7 +19,15 @@ from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, Toggle
 from hoyo_buddy.utils import is_valid_hex_color
 
 from .items.settings_chara_select import CharacterSelect as SettingsCharacterSelect
-from .templates import DISABLE_COLOR, DISABLE_DARK_MODE, TEMPLATE_AUTHORS, TEMPLATE_NAMES, TEMPLATES
+from .templates import (
+    DISABLE_COLOR,
+    DISABLE_DARK_MODE,
+    DISABLE_IMAGE,
+    TEMPLATE_AUTHORS,
+    TEMPLATE_NAMES,
+    TEMPLATE_PREVIEWS,
+    TEMPLATES,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -200,12 +208,26 @@ class CardSettingsView(View):
         card_settings = self.card_settings
         character = self._get_current_character()
 
+        author1, author2 = TEMPLATE_AUTHORS[card_settings.template.rstrip("1234567890")]
+        if author1 == author2:
+            description = LocaleStr(
+                key="profile.card_template_select.same_author.description", author=author1
+            )
+        else:
+            description = LocaleStr(
+                key="profile.card_template_select.diff_author.description",
+                author1=author1,
+                author2=author2,
+            )
         color = card_settings.custom_primary_color or get_default_color(character, self._card_data)
+
         embed = Embed(
             locale=self.locale,
             title=LocaleStr(key="card_settings.modifying_for", name=character.name),
+            description=description,
             color=int(color.lstrip("#"), 16) if color is not None else 6649080,
         )
+
         default_str = LocaleStr(key="card_settings.color_default").translate(self.locale)
         if color is not None:
             value = self._get_color_markdown(color)
@@ -216,6 +238,8 @@ class CardSettingsView(View):
             value = LocaleStr(key="card_settings.no_color")
 
         embed.add_field(name=LocaleStr(key="card_settings.card_color"), value=value, inline=False)
+        embed.add_field(name=LocaleStr(key="template_preview_header"))
+        embed.set_image(url=TEMPLATE_PREVIEWS.get(self.template, ""))
         embed.set_footer(text=LocaleStr(key="card_settings.footer"))
         return embed
 
@@ -340,20 +364,13 @@ class CardTemplateSelect(Select[CardSettingsView]):
             if hb_only and template_id != "hb":
                 continue
 
-            author1, author2 = TEMPLATE_AUTHORS[template_id]
-            if author1 == author2:
-                description = LocaleStr(
-                    key="profile.card_template_select.same_author.description", author=author1
-                )
-            else:
-                description = LocaleStr(
-                    key="profile.card_template_select.diff_author.description",
-                    author1=author1,
-                    author2=author2,
-                )
-
             template_name = TEMPLATE_NAMES[template_id]
             label = LocaleStr(key=template_name, num=int(template[-1]))
+            description = LocaleStr(
+                key="is_not_support_custom_image_desc"
+                if DISABLE_IMAGE.get((game, template), True)
+                else "is_support_custom_image_desc"
+            )
 
             select_option = SelectOption(
                 label=label,

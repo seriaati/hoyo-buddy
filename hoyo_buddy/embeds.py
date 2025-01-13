@@ -36,10 +36,10 @@ class Embed(discord.Embed):
         return f"<Embed title={self.title!r} description={self.description!r}>"
 
     def add_field(
-        self, *, name: LocaleStr | str, value: LocaleStr | str, inline: bool = True
+        self, *, name: LocaleStr | str, value: LocaleStr | str | None = None, inline: bool = True
     ) -> Self:
         translated_name = translator.translate(name, self.locale, title_case=True)
-        translated_value = translator.translate(value, self.locale)
+        translated_value = translator.translate(value, self.locale) if value else ""
         return super().add_field(
             name=shorten(translated_name, 256), value=shorten(translated_value, 1024), inline=inline
         )

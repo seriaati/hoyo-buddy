@@ -274,7 +274,7 @@ class JSONFile(BaseModel):
     data: fields.Field[Any] = fields.JSONField()
 
     @staticmethod
-    async def read(filename: str, *, default: Any = None) -> Any:
+    async def read(filename: str, *, default: Any = None, int_key: bool = False) -> Any:
         """Read a JSON file."""
         json_file = await JSONFile.get_or_none(name=filename)
         if json_file is None:
@@ -282,11 +282,16 @@ class JSONFile(BaseModel):
                 return default
             return {}
 
+        if int_key:
+            return {int(key): value for key, value in json_file.data.items()}
         return json_file.data
 
     @staticmethod
-    async def write(filename: str, data: Any) -> None:
+    async def write(filename: str, data: Any, *, auto_str_key: bool = True) -> None:
         """Write a JSON file."""
+        if auto_str_key:
+            data = {str(key): value for key, value in data.items()}
+
         json_file = await JSONFile.get_or_none(name=filename)
         if json_file is None:
             await JSONFile.create(name=filename, data=data)

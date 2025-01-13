@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Any, Literal, NamedTuple
+from typing import TYPE_CHECKING, Any, Literal
 
 import aiohttp
 import ambr.models
@@ -252,12 +252,12 @@ class UnownedZZZCharacter(BaseModel):
     banner_icon: str
 
 
-class AgentNameData(NamedTuple):
+class AgentNameData(BaseModel):
     full_name: str
     short_name: str
 
 
-class ZZZDrawData(NamedTuple):
+class ZZZDrawData(BaseModel):
     name_data: dict[int, AgentNameData]
     agent_images: dict[int, str]
     disc_icons: dict[int, str]

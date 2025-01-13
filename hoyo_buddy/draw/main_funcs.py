@@ -10,6 +10,7 @@ import yatta
 from discord import File
 from genshin.models import ZZZFullAgent
 
+from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.draw import funcs
 from hoyo_buddy.models import (
     AgentNameData,
@@ -421,41 +422,89 @@ async def draw_zzz_notes_card(draw_input: DrawInput, notes: ZZZNotes) -> BytesIO
 async def fetch_zzz_draw_data(
     agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2, 3, 4], use_m3_art: bool = False
 ) -> ZZZDrawData:
-    agent_full_names: dict[int, AgentNameData] = {}
+    name_datas_path = "zzz_name_data.json"
+    name_datas: dict[int, dict[str, str]] = await JSONFile.read(name_datas_path, int_key=True)
+
+    disc_icons_path = "zzz_disc_icons.json"
+    disc_icons: dict[int, str] = await JSONFile.read(disc_icons_path, int_key=True)
+
+    agent_images: dict[int, str] = {}
+    if template == 2:
+        agent_images_path = "zzz_m3_cinema_art.json" if use_m3_art else "zzz_m2_cinema_art.json"
+    elif template == 1:
+        agent_images_path = "zzz_images.json"
+    else:  # 3, 4
+        agent_images_path = "zzz_banner_icons.json"
+    agent_images = await JSONFile.read(agent_images_path, int_key=True)
+
+    fetch_name_data = False
+    fetch_disc_icons = False
+    fetch_agent_images = False
+
+    for agent in agents:
+        if agent.id not in name_datas:
+            fetch_name_data = True
+        if agent.id not in agent_images:
+            fetch_agent_images = True
+        for disc in agent.discs:
+            if disc.id not in disc_icons:
+                fetch_disc_icons = True
+
+    if not fetch_name_data and not fetch_disc_icons and not fetch_agent_images:
+        return ZZZDrawData(
+            name_data={k: AgentNameData(**v) for k, v in name_datas.items()},
+            disc_icons=disc_icons,
+            agent_images=agent_images,
+        )
 
     async with hakushin.HakushinAPI(hakushin.Game.ZZZ) as api:
-        characters = await api.fetch_characters()
-
-        for agent in agents:
-            chara_detail = await api.fetch_character_detail(agent.id)
-            agent_full_names[agent.id] = AgentNameData(
-                short_name=chara_detail.name,
-                full_name=chara_detail.info.full_name
-                if chara_detail.info is not None
-                else chara_detail.name,
-            )
-
-        if template == 2:
-            agent_images = {
-                char.id: char.phase_2_cinema_art if use_m3_art else char.phase_3_cinema_art
-                for char in characters
-            }
-        elif template == 1:
-            agent_images = {char.id: char.image for char in characters}
-        else:
-            # 3, 4
-            agent_images = {agent.id: agent.banner_icon for agent in agents}
-
-        items = await api.fetch_items()
-        disc_icons: dict[int, str] = {}
-        for agent in agents:
-            for disc in agent.discs:
-                disc_item = next((item for item in items if item.id == disc.id), None)
-                if disc_item is None:
+        # Fetch name data
+        if fetch_name_data:
+            for agent in agents:
+                if agent.id in name_datas:
                     continue
-                disc_icons[disc.id] = disc_item.icon
 
-    return ZZZDrawData(agent_full_names, agent_images, disc_icons)
+                detail = await api.fetch_character_detail(agent.id)
+                full_name = detail.info.full_name if detail.info is not None else detail.name
+                name_datas[agent.id] = AgentNameData(
+                    short_name=detail.name, full_name=full_name
+                ).model_dump()
+
+            await JSONFile.write(name_datas_path, name_datas)
+
+        # Fetch agent images
+        if fetch_agent_images:
+            characters = await api.fetch_characters()
+            if template == 2:
+                agent_images = {
+                    char.id: char.phase_2_cinema_art if use_m3_art else char.phase_3_cinema_art
+                    for char in characters
+                }
+            elif template == 1:
+                agent_images = {char.id: char.image for char in characters}
+            else:
+                # 3, 4
+                agent_images = {agent.id: agent.banner_icon for agent in agents}
+
+            await JSONFile.write(agent_images_path, agent_images)
+
+        # Fetch disc icons
+        if fetch_disc_icons:
+            items = await api.fetch_items()
+            for agent in agents:
+                for disc in agent.discs:
+                    disc_item = next((item for item in items if item.id == disc.id), None)
+                    if disc_item is None:
+                        continue
+                    disc_icons[disc.id] = disc_item.icon
+
+            await JSONFile.write(disc_icons_path, disc_icons)
+
+    return ZZZDrawData(
+        name_data={k: AgentNameData(**v) for k, v in name_datas.items()},
+        disc_icons=disc_icons,
+        agent_images=agent_images,
+    )
 
 
 async def draw_zzz_build_card(

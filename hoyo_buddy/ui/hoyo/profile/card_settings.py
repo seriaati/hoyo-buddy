@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 import enka
 from discord import ButtonStyle, TextStyle
 from genshin.models import ZZZPartialAgent
+from loguru import logger
 
 from hoyo_buddy.constants import ZZZ_DISC_SUBSTATS
 from hoyo_buddy.db import CardSettings, Settings
@@ -17,8 +18,8 @@ from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, ToggleButton, View
 from hoyo_buddy.utils import is_valid_hex_color
 
-from .btn_states import DISABLE_COLOR, DISABLE_DARK_MODE
 from .items.settings_chara_select import CharacterSelect as SettingsCharacterSelect
+from .templates import DISABLE_COLOR, DISABLE_DARK_MODE, TEMPLATE_AUTHORS, TEMPLATE_NAMES, TEMPLATES
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -28,26 +29,6 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
     from .view import Character
-
-CARD_TEMPLATES: Final[dict[Game, tuple[str, ...]]] = {
-    Game.GENSHIN: ("hb1", "hb2", "hattvr1", "encard1", "enkacard1", "enkacard2"),
-    Game.STARRAIL: ("hb1", "hb2", "src1", "src2", "src3"),
-    Game.ZZZ: ("hb1", "hb2", "hb3", "hb4"),
-}
-CARD_TEMPLATE_AUTHORS: Final[dict[str, tuple[str, str]]] = {
-    "hb": ("@ayasaku_", "@seriaati"),
-    "src": ("@korzzex", "@korzzex"),
-    "hattvr": ("@algoinde", "@hattvr"),
-    "encard": ("@korzzex", "@korzzex"),
-    "enkacard": ("@korzzex", "@korzzex"),
-}
-CARD_TEMPLATE_NAMES: Final[dict[str, str]] = {
-    "hb": "profile.card_template_select.hb.label",
-    "src": "profile.card_template_select.src.label",
-    "hattvr": "profile.card_template_select.enka_classic.label",
-    "encard": "profile.card_template_select.encard.label",
-    "enkacard": "profile.card_template_select.enkacard.label",
-}
 
 
 async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> CardSettings:
@@ -130,12 +111,22 @@ class CardSettingsView(View):
         return f"https://singlecolorimage.com/get/{color[1:]}/100x100"
 
     @property
-    def disable_color_features(self) -> bool:
-        return self.game is Game.GENSHIN or self.card_settings.template in DISABLE_COLOR
+    def template(self) -> tuple[Game, str]:
+        return self.game, self.card_settings.template
 
     @property
-    def disable_dark_mode_features(self) -> bool:
-        return self.game is Game.ZZZ or self.card_settings.template in DISABLE_DARK_MODE
+    def disable_color(self) -> bool:
+        if self.template not in DISABLE_COLOR:
+            logger.error(f"Template {self.template} not found in DISABLE_COLOR")
+            return True
+        return DISABLE_COLOR[self.template]
+
+    @property
+    def disable_dark_mode(self) -> bool:
+        if self.template not in DISABLE_DARK_MODE:
+            logger.error(f"Template {self.template} not found in DISABLE_DARK_MODE")
+            return True
+        return DISABLE_DARK_MODE[self.template]
 
     @property
     def disable_show_rank_button(self) -> bool:
@@ -161,9 +152,7 @@ class CardSettingsView(View):
 
         self.add_item(
             PrimaryColorButton(
-                self.card_settings.custom_primary_color,
-                disabled=self.disable_color_features,
-                row=row + 1,
+                self.card_settings.custom_primary_color, disabled=self.disable_color, row=row + 1
             )
         )
         self.add_item(SetCurTempAsDefaultButton(row=row + 1))
@@ -171,7 +160,7 @@ class CardSettingsView(View):
         self.add_item(
             DarkModeButton(
                 current_toggle=self.card_settings.dark_mode,
-                disabled=self.disable_dark_mode_features,
+                disabled=self.disable_dark_mode,
                 row=row + 2,
             )
         )
@@ -345,13 +334,13 @@ class CardTemplateSelect(Select[CardSettingsView]):
     def __init__(self, current_template: str, *, hb_only: bool, game: Game, row: int) -> None:
         options: list[SelectOption] = []
 
-        templates = CARD_TEMPLATES[game]
+        templates = TEMPLATES[game]
         for template in templates:
             template_id = template.rstrip("1234567890")
             if hb_only and template_id != "hb":
                 continue
 
-            author1, author2 = CARD_TEMPLATE_AUTHORS[template_id]
+            author1, author2 = TEMPLATE_AUTHORS[template_id]
             if author1 == author2:
                 description = LocaleStr(
                     key="profile.card_template_select.same_author.description", author=author1
@@ -363,7 +352,7 @@ class CardTemplateSelect(Select[CardSettingsView]):
                     author2=author2,
                 )
 
-            template_name = CARD_TEMPLATE_NAMES[template_id]
+            template_name = TEMPLATE_NAMES[template_id]
             label = LocaleStr(key=template_name, num=int(template[-1]))
 
             select_option = SelectOption(
@@ -398,10 +387,10 @@ class CardTemplateSelect(Select[CardSettingsView]):
             hl_substat_select.translate(self.view.locale)
 
         change_color_btn: PrimaryColorButton = self.view.get_item("profile_primary_color")
-        change_color_btn.disabled = self.view.disable_color_features
+        change_color_btn.disabled = self.view.disable_color
 
         dark_mode_btn: DarkModeButton = self.view.get_item("profile_dark_mode")
-        dark_mode_btn.disabled = self.view.disable_dark_mode_features
+        dark_mode_btn.disabled = self.view.disable_dark_mode
 
         show_rank_btn: ShowRankButton = self.view.get_item("profile_show_rank")
         show_rank_btn.disabled = self.view.disable_show_rank_button
@@ -445,7 +434,7 @@ class SetCurTempAsDefaultButton(Button[CardSettingsView]):
             description=LocaleStr(
                 key="set_cur_temp_as_default.done_desc",
                 game=EnumStr(self.view.game),
-                template=LocaleStr(key=CARD_TEMPLATE_NAMES[template], num=template_num),
+                template=LocaleStr(key=TEMPLATE_NAMES[template], num=template_num),
             ),
         )
         await i.response.send_message(embed=embed, ephemeral=True)

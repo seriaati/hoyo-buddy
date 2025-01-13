@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Literal
 import enka
 from discord import ButtonStyle, TextStyle
 from genshin.models import ZZZFullAgent, ZZZPartialAgent
+from loguru import logger
 from seria.utils import read_json
 
 from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, ZZZ_M3_ART_URL, ZZZ_M6_ART_URL
@@ -19,9 +20,9 @@ from hoyo_buddy.ui import Button, Modal, PaginatorSelect, SelectOption, TextInpu
 from hoyo_buddy.ui.components import Select, ToggleButton
 from hoyo_buddy.utils import get_pixiv_proxy_img, is_image_url, test_url_validity, upload_image
 
-from .btn_states import DISABLE_IMAGE, ZZZ_DISABLE_IMAGE
 from .card_settings import get_card_settings
 from .items.settings_chara_select import CharacterSelect as SettingsCharacterSelect
+from .templates import DISABLE_IMAGE
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -84,11 +85,9 @@ class ImageSettingsView(View):
         locale: Locale,
     ) -> None:
         super().__init__(author=author, locale=locale)
-
         self.characters = characters
         self.user_id = author.id
         self.card_data = card_data
-        self.is_team = is_team
 
         self.game = game
         self.selected_character_id = selected_character_id
@@ -102,22 +101,29 @@ class ImageSettingsView(View):
         self._add_items()
 
     @property
-    def disable_image_features(self) -> bool:
-        return self.card_settings.template in DISABLE_IMAGE or (
-            self.image_type == "build_card_image"
-            and self.game is Game.ZZZ
-            and self.card_settings.template in ZZZ_DISABLE_IMAGE
-        )
+    def template(self) -> tuple[Game, str]:
+        return self.game, self.card_settings.template
+
+    @property
+    def disable_image(self) -> bool:
+        if self.image_type == "team_card_image":
+            return False
+        if self.template not in DISABLE_IMAGE:
+            logger.error(f"Template {self.template} not found in DISABLE_IMAGE")
+            return True
+        return DISABLE_IMAGE[self.template]
 
     @property
     def disable_m3_art(self) -> bool:
-        return not (
-            self.game is Game.ZZZ and self.card_settings.template == "hb2" and not self.is_team
-        )
+        if self.game is not Game.ZZZ:
+            return True
+        if self.image_type == "team_card_image":
+            return True
+        return self.card_settings.template != "hb2"
 
     @property
-    def disable_ai_features(self) -> bool:
-        return self.game is Game.ZZZ or self.card_settings.template in DISABLE_IMAGE
+    def disable_ai(self) -> bool:
+        return self.game is Game.ZZZ or self.disable_image
 
     def _add_items(self) -> None:
         character = self._get_current_character()
@@ -134,15 +140,13 @@ class ImageSettingsView(View):
                 default_collection=default_collection,
                 custom_images=self.custom_images,
                 template=self.card_settings.template,
-                disabled=self.disable_image_features,
+                disabled=self.disable_image,
                 row=2,
             )
         )
-        self.add_item(GenerateAIArtButton(disabled=self.disable_ai_features, row=3))
-        self.add_item(AddImageButton(row=3, disabled=self.disable_image_features))
-        self.add_item(
-            EditImageButton(disabled=self.disable_image_features or current_image is None, row=3)
-        )
+        self.add_item(GenerateAIArtButton(disabled=self.disable_ai, row=3))
+        self.add_item(AddImageButton(row=3, disabled=self.disable_image))
+        self.add_item(EditImageButton(disabled=self.disable_image or current_image is None, row=3))
         self.add_item(
             RemoveImageButton(
                 disabled=current_image is None or current_image in default_collection, row=3
@@ -606,10 +610,13 @@ class ImageTypeSelect(Select[ImageSettingsView]):
             custom_images=self.view.custom_images,
             default_collection=default_collection,
         )
-        image_select.disabled = self.view.disable_image_features
+        image_select.disabled = self.view.disable_image
 
         add_image_btn: AddImageButton = self.view.get_item("profile_add_image")
-        add_image_btn.disabled = self.view.disable_image_features
+        add_image_btn.disabled = self.view.disable_image
+
+        use_m3_art_btn: UseM3ArtButton = self.view.get_item("profile_use_m3_art")
+        use_m3_art_btn.disabled = self.view.disable_m3_art
 
         # Disable the edit and remove image button if the image is not custom
         is_not_custom = current_image is None or current_image in default_collection

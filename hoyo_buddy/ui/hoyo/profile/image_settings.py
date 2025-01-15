@@ -635,6 +635,7 @@ class UseM3ArtButton(ToggleButton[ImageSettingsView]):
             current_toggle=current,
             row=row,
             disabled=disabled,
+            custom_id="profile_use_m3_art",
         )
 
     async def callback(self, i: Interaction) -> None:

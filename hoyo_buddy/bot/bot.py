@@ -457,7 +457,9 @@ class HoyoBuddy(commands.AutoShardedBot):
     async def on_command_error(
         self, context: commands.Context, exception: commands.CommandError
     ) -> None:
-        if isinstance(exception, commands.CommandNotFound | commands.TooManyArguments):
+        if isinstance(
+            exception, commands.CommandNotFound | commands.TooManyArguments | commands.CheckFailure
+        ):
             return None
         return await super().on_command_error(context, exception)
 

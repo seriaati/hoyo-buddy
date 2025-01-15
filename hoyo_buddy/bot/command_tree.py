@@ -23,7 +23,7 @@ class CommandTree(app_commands.CommandTree):
         # Set user's language if not set
         async with i.client.pool.acquire() as conn:
             await conn.execute(
-                'UPDATE "settings" SET lang = $2 WHERE id = $1 AND lang IS NULL;',
+                'UPDATE "settings" SET lang = $2 WHERE user_id = $1 AND lang IS NULL;',
                 i.user.id,
                 i.locale.value,
             )

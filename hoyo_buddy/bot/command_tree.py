@@ -17,10 +17,18 @@ __all__ = ("CommandTree",)
 
 class CommandTree(app_commands.CommandTree):
     async def interaction_check(self, i: Interaction) -> Literal[True]:
-        if (
-            i.type not in {InteractionType.application_command, InteractionType.autocomplete}
-            or i.user.id in i.client.user_ids
-        ):
+        if i.type not in {InteractionType.application_command, InteractionType.autocomplete}:
+            return True
+
+        # Set user's language if not set
+        async with i.client.pool.acquire() as conn:
+            await conn.execute(
+                'UPDATE "user" SET lang = $2 WHERE id = $1 AND lang IS NULL;',
+                i.user.id,
+                i.locale.value,
+            )
+
+        if i.user.id in i.client.user_ids:
             return True
 
         async with i.client.pool.acquire() as conn:
@@ -30,8 +38,9 @@ class CommandTree(app_commands.CommandTree):
                 "{}",
             )
             await conn.execute(
-                'INSERT INTO "settings" (user_id) VALUES ($1) ON CONFLICT (user_id) DO NOTHING;',
+                'INSERT INTO "settings" (user_id, lang) VALUES ($1, $2) ON CONFLICT (user_id) DO NOTHING;',
                 i.user.id,
+                i.locale.value,
             )
             i.client.user_ids.add(i.user.id)
 

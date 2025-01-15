@@ -731,17 +731,13 @@ class ProfileView(View):
 
         attachments = [File(bytes_obj, filename="card.png")]
 
-        kwargs: dict[str, Any] = {}
-        if content is not None:
-            kwargs["content"] = content
-
         if unset_loading_state and item is not None:
             await item.unset_loading_state(
-                i, attachments=attachments, embed=self.card_embed, **kwargs
+                i, attachments=attachments, embed=self.card_embed, content=content
             )
         else:
             self.message = await i.edit_original_response(
-                attachments=attachments, embed=self.card_embed, view=self, **kwargs
+                attachments=attachments, embed=self.card_embed, view=self, content=content
             )
 
     async def start(self, i: Interaction) -> None:

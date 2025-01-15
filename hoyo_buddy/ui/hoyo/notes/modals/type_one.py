@@ -16,12 +16,10 @@ class TypeOneModal(Modal):
         label=LocaleStr(key="notif_modal.threshold.label"),
         is_digit=True,
         min_value=0,
-        max_value=240,
     )
     notify_interval = TextInput(
         label=LocaleStr(key="notif_modal.notify_interval.label"),
         is_digit=True,
-        min_value=10,
         max_value=DB_SMALLINT_MAX,
     )
     max_notif_count = TextInput(

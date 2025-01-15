@@ -86,7 +86,7 @@ class ProxyGenshinClient(genshin.Client):
                 backoff_time = min(BACKOFF_FACTOR**attempt + random.uniform(0, 1), MAX_BACKOFF)
                 await asyncio.sleep(backoff_time)
             except Exception:
-                # Raise immediately for unexpected exceptions
+                # Raise immediately for other exceptions
                 raise
 
         msg = f"genshin.py client request failed after {MAX_RETRIES} attempts"
@@ -121,7 +121,7 @@ class ProxyGenshinClient(genshin.Client):
                             return data
                         if resp.status == 400:
                             genshin.raise_for_retcode(data)
-                        raise Exception(data["message"])
+                        raise Exception(data.get("message", "Unknown proxy API error"))
 
                     err = ProxyAPIError(api_url, resp.status)
             except (TimeoutError, aiohttp.ClientError) as e:

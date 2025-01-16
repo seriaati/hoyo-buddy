@@ -641,8 +641,8 @@ gacha_manage_command_description: Quản lý nhật ký gacha đã nhập
 login_button_label: Đăng nhập bằng Discord
 star5_guaranteed: "Trạng thái bảo đảm hiện tại: Mục Banner Bảo Đảm"
 star5_no_guaranteed: "Trạng thái bảo đảm hiện tại: Mục Banner **KHÔNG** Bảo Đảm"
-characters_view_show_max_level_only: Chỉ hiển thị nhân vật ở mức độ cao
-characters_embed_max_level_characters: Nhân vật Mức độ Cao
+characters_view_show_max_level_only: Chỉ hiển thị nhân vật ở cấp độ tối đa
+characters_embed_max_level_characters: Nhân vật Cấp độ Tối đa
 natlan_reputation: "Danh Vọng: Lv.{reputation}, Bộ Tộc: {tribes}"
 shiyu_overview: Tổng quan
 shiyu_fastest_clear_time: "Thời gian Nhanh nhất Hoàn thành Mùa này:"
@@ -784,3 +784,6 @@ web_events_notify_toggle_label: Nhắc nhờ về sự kiện Web
 web_events_cmd_desc: Xem các sự kiện web đang diễn ra và đặt thông báo
 web_events_embed_footer: Sử dụng lệnh /web-events để định cấu hình thông báo
 auto_task_error_dm_content: "Tính năng {feature} đã bị vô hiệu hoá do lỗi đã xảy ra, bạn có thể kích hoạt lại bằng lệnh {command}\nNếu lỗi này tiếp tục xảy ra hoặc bạn không biết cách xử lý, vui lòng tìm trợ giúp trên [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
+is_support_custom_image_desc: Hỗ trợ hình ảnh tùy chỉnh
+is_not_support_custom_image_desc: Không hỗ trợ hình ảnh tùy chỉnh
+template_preview_header: Ví Dụ Minh Hoạ

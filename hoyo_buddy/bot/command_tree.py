@@ -20,29 +20,35 @@ class CommandTree(app_commands.CommandTree):
         if i.type not in {InteractionType.application_command, InteractionType.autocomplete}:
             return True
 
-        # Set user's language if not set
-        async with i.client.pool.acquire() as conn:
-            await conn.execute(
-                'UPDATE "settings" SET lang = $2 WHERE user_id = $1 AND lang IS NULL;',
-                i.user.id,
-                i.locale.value,
-            )
+        try:
+            # Set user's language if not set
+            async with i.client.pool.acquire() as conn:
+                await conn.execute(
+                    'UPDATE "settings" SET lang = $2 WHERE user_id = $1 AND lang IS NULL;',
+                    i.user.id,
+                    i.locale.value,
+                )
+        except Exception as e:
+            i.client.capture_exception(e)
 
         if i.user.id in i.client.user_ids:
             return True
 
-        async with i.client.pool.acquire() as conn:
-            await conn.execute(
-                'INSERT INTO "user" (id, temp_data) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING;',
-                i.user.id,
-                "{}",
-            )
-            await conn.execute(
-                'INSERT INTO "settings" (user_id, lang) VALUES ($1, $2) ON CONFLICT (user_id) DO NOTHING;',
-                i.user.id,
-                i.locale.value,
-            )
-            i.client.user_ids.add(i.user.id)
+        try:
+            async with i.client.pool.acquire() as conn:
+                await conn.execute(
+                    'INSERT INTO "user" (id, temp_data) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING;',
+                    i.user.id,
+                    "{}",
+                )
+                await conn.execute(
+                    'INSERT INTO "settings" (user_id, lang) VALUES ($1, $2) ON CONFLICT (user_id) DO NOTHING;',
+                    i.user.id,
+                    i.locale.value,
+                )
+                i.client.user_ids.add(i.user.id)
+        except Exception as e:
+            i.client.capture_exception(e)
 
         return True
 

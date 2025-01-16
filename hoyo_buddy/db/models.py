@@ -172,7 +172,7 @@ class AccountNotifSettings(BaseModel):
 
 
 class Settings(BaseModel):
-    lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)
+    lang: fields.Field[str | None] = fields.CharField(max_length=10, null=True)
     dark_mode = fields.BooleanField(default=True)
     user: fields.OneToOneRelation[User] = fields.OneToOneField(
         "models.User", related_name="settings", pk=True

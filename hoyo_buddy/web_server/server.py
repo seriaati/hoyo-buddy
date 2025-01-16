@@ -13,7 +13,7 @@ from tortoise import Tortoise
 from hoyo_buddy.constants import WEB_APP_URLS
 from hoyo_buddy.db import User
 from hoyo_buddy.models import GeetestCommandPayload, GeetestLoginPayload
-from hoyo_buddy.utils import get_discord_protocol_url
+from hoyo_buddy.utils import get_discord_url
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -126,11 +126,19 @@ class GeetestWebServer:
                 url = WEB_APP_URLS[os.environ["ENV"]] + f"/geetest?user_id={user_id}"
             else:
                 # command
-                channel_id = request.query["channel_id"]
-                guild_id = request.query["guild_id"]
-                message_id = request.query["message_id"]
+                channel_id = int(request.query["channel_id"])
 
-                url = get_discord_protocol_url(
+                try:
+                    guild_id = int(request.query["guild_id"])
+                except ValueError:
+                    guild_id = None
+
+                try:
+                    message_id = int(request.query["message_id"])
+                except ValueError:
+                    message_id = None
+
+                url = get_discord_url(
                     channel_id=channel_id, guild_id=guild_id, message_id=message_id
                 )
         except KeyError as e:

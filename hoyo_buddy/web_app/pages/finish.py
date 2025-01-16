@@ -230,10 +230,15 @@ class SubmitButton(ft.FilledButton):
         )
         await asyncio.sleep(3)
 
+        channel_id, guild_id = self._params.channel_id, self._params.guild_id
+        if channel_id is None:
+            await show_error_banner(
+                page, message="Unable to redirect to Discord, cannot find channel ID"
+            )
+            return
+
         # Redirect to Discord
-        url = get_discord_protocol_url(
-            channel_id=str(self._params.channel_id), guild_id=str(self._params.guild_id)
-        )
+        url = get_discord_protocol_url(channel_id=channel_id, guild_id=guild_id)
         try:
             can_launch = await page.can_launch_url_async(url)
         except TimeoutError:
@@ -242,7 +247,5 @@ class SubmitButton(ft.FilledButton):
         if can_launch:
             await page.launch_url_async(url, web_window_name=ft.UrlTarget.SELF.value)
         else:
-            url = get_discord_url(
-                channel_id=str(self._params.channel_id), guild_id=str(self._params.guild_id)
-            )
+            url = get_discord_url(channel_id=channel_id, guild_id=guild_id)
             await page.launch_url_async(url, web_window_name=ft.UrlTarget.SELF.value)

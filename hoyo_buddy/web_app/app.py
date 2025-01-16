@@ -41,7 +41,6 @@ if TYPE_CHECKING:
 class WebApp:
     def __init__(self, page: ft.Page) -> None:
         self._page = page
-
         self._page.on_route_change = self.on_route_change
 
     async def initialize(self) -> None:
@@ -556,8 +555,9 @@ class WebApp:
 
         await show_loading_snack_bar(page)
 
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
+        async with (
+            aiohttp.ClientSession() as session,
+            session.post(
                 "https://discord.com/api/oauth2/token",
                 data={
                     "client_id": os.environ["DISCORD_CLIENT_ID"],
@@ -571,38 +571,41 @@ class WebApp:
                     ),
                     "scope": "identify",
                 },
-            ) as resp:
-                data = await resp.json()
-                if resp.status != 200:
-                    return pages.ErrorPage(
-                        code=resp.status, message=data.get("error") or "Unknown error"
-                    )
+            ) as resp,
+        ):
+            data = await resp.json()
+            if resp.status != 200:
+                return pages.ErrorPage(
+                    code=resp.status, message=data.get("error") or "Unknown error"
+                )
 
-                access_token = data.get("access_token")
-                if access_token is None:
-                    return pages.ErrorPage(code=400, message="Missing access token")
+        access_token = data.get("access_token")
+        if access_token is None:
+            return pages.ErrorPage(code=400, message="Missing access token")
 
-                refresh_token = data.get("refresh_token")
-                if refresh_token is None:
-                    return pages.ErrorPage(code=400, message="Missing refresh token")
+        refresh_token = data.get("refresh_token")
+        if refresh_token is None:
+            return pages.ErrorPage(code=400, message="Missing refresh token")
 
-                await page.client_storage.set_async("hb.oauth_access_token", access_token)
-                await page.client_storage.set_async("hb.oauth_refresh_token", refresh_token)
+        await page.client_storage.set_async("hb.oauth_access_token", access_token)
+        await page.client_storage.set_async("hb.oauth_refresh_token", refresh_token)
 
-            user_data = await self.fetch_user_data()
-            if user_data is None:
-                return pages.ErrorPage(code=400, message="Failed to fetch user data")
+        user_data = await self.fetch_user_data()
+        if user_data is None:
+            return pages.ErrorPage(code=400, message="Failed to fetch user data")
 
-            user_id = user_data.get("id")
-            if user_id is None:
-                return pages.ErrorPage(code=400, message="Missing user ID")
+        user_id = user_data.get("id")
+        if user_id is None:
+            return pages.ErrorPage(code=400, message="Missing user ID")
 
-            page.session.set("hb.user_id", int(user_id))
+        page.session.set("hb.user_id", int(user_id))
 
         original_route = await page.client_storage.get_async("hb.original_route")
         if original_route:
             asyncio.create_task(page.client_storage.remove_async("hb.original_route"))
             await page.go_async(original_route)
+        else:
+            await page.go_async("/platforms")
 
         return None
 

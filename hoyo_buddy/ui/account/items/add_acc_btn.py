@@ -39,7 +39,7 @@ class AddAccountButton(Button[AccountManager]):
         params = Params(
             locale=self.view.locale.value,
             user_id=i.user.id,
-            channel_id=i.channel.id if i.channel is not None else 0,
+            channel_id=i.channel.id if i.channel is not None else None,
             guild_id=i.guild.id if i.guild is not None else None,
         )
         self.view.add_item(

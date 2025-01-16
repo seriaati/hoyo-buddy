@@ -8,10 +8,10 @@ from ..enums import Platform
 
 
 class Params(BaseModel):
-    locale: str
+    locale: str = "en-US"
     user_id: int
     platform: Platform | None = None
-    channel_id: int
+    channel_id: int | None = None
     guild_id: int | None = None
 
     def to_query_string(self) -> str:

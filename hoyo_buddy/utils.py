@@ -306,42 +306,31 @@ def format_float(num: float, *, decimals: int = 2) -> str:
 
 
 def get_discord_protocol_url(
-    *, channel_id: str, guild_id: str, message_id: str | None = None
+    *, channel_id: int, guild_id: int | None, message_id: int | None = None
 ) -> str:
-    """
-    Generate a Discord protocol URL.
-    Args:
-        channel_id (str): The ID of the Discord channel.
-        guild_id (str): The ID of the Discord guild (server). Use "None" for direct messages.
-        message_id (str | None, optional): The ID of the specific message. Defaults to None.
-    Returns:
-        str: The generated Discord protocol URL.
-    """
+    """Generate a Discord app protocol URL."""
     protocol = (
         f"discord://-/channels/@me/{channel_id}"
-        if guild_id == "None"
+        if guild_id is None
         else f"discord://-/channels/{guild_id}/{channel_id}"
     )
-    if str(message_id) != "None":
+    if message_id is not None:
         protocol += f"/{message_id}"
 
     return protocol
 
 
-def get_discord_url(*, channel_id: str, guild_id: str) -> str:
-    """
-    Generates a Discord URL for a given channel and guild.
+def get_discord_url(*, channel_id: int, guild_id: int | None, message_id: int | None = None) -> str:
+    """Generate a Discord URL for a given channel and guild."""
+    url = (
+        f"https://discord.com/channels/@me/{channel_id}"
+        if guild_id is None
+        else f"https://discord.com/channels/{guild_id}/{channel_id}"
+    )
+    if message_id is not None:
+        url += f"/{message_id}"
 
-    Args:
-        channel_id (str): The ID of the Discord channel.
-        guild_id (str): The ID of the Discord guild. If "None", the URL will point to a direct message channel.
-
-    Returns:
-        str: The generated Discord URL.
-    """
-    if guild_id == "None":
-        return f"https://discord.com/channels/@me/{channel_id}"
-    return f"https://discord.com/channels/{guild_id}/{channel_id}"
+    return url
 
 
 def dict_cookie_to_str(cookie_dict: dict[str, str]) -> str:

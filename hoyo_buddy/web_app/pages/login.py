@@ -109,6 +109,8 @@ class LoginPage(ft.View):
         if original_route:
             asyncio.create_task(page.client_storage.remove_async("hb.original_route"))
             await page.go_async(original_route)
+        else:
+            await page.go_async("/platforms")
 
     async def on_login_button_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page

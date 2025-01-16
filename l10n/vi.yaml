@@ -641,7 +641,7 @@ gacha_manage_command_description: Quản lý nhật ký gacha đã nhập
 login_button_label: Đăng nhập bằng Discord
 star5_guaranteed: "Trạng thái bảo đảm hiện tại: Mục Banner Bảo Đảm"
 star5_no_guaranteed: "Trạng thái bảo đảm hiện tại: Mục Banner **KHÔNG** Bảo Đảm"
-characters_view_show_max_level_only: Chỉ hiển thị nhân vật ở mức độ cao
+characters_view_show_max_level_only: Chỉ hiển thị nhân vật ở cấp độ tối đa
 characters_embed_max_level_characters: Nhân vật Mức độ Cao
 natlan_reputation: "Danh Vọng: Lv.{reputation}, Bộ Tộc: {tribes}"
 shiyu_overview: Tổng quan

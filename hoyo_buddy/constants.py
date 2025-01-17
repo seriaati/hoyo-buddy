@@ -307,6 +307,7 @@ YATTA_PATH_TO_GPY_PATH = {
     yatta.PathType.SHAMAN: genshin.models.StarRailPath.HARMONY,
     yatta.PathType.WARLOCK: genshin.models.StarRailPath.NIHILITY,
     yatta.PathType.WARRIOR: genshin.models.StarRailPath.DESTRUCTION,
+    yatta.PathType.MEMORY: genshin.models.StarRailPath.REMEMBRANCE,
 }
 
 YATTA_COMBAT_TYPE_TO_ELEMENT = {

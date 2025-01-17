@@ -15,7 +15,7 @@ abyss.battles_won_fought: "获胜次数/战斗次数：{val1}/{val2}"
 abyss.deepest_descent: "最深抵达：{val}"
 abyss.floor: "第 {val} 层"
 abyss.overview: 深境螺旋战绩
-abyss.damage: 伤害资讯
+abyss.damage: 伤害信息
 abyss.stats: 数据
 abyss.phase_select.placeholder: 选择一个阶段
 abyss.total_stars: "获取星数：{val}"

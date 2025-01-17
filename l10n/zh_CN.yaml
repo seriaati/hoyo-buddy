@@ -526,7 +526,7 @@ card_settings.build_card_image: 面板卡片图片
 card_settings.team_card_image: 队伍卡片图片
 profile.redraw_card_button_label: 重新绘制卡片
 card_settings.footer: "修改完毕后, 点击上方信息中的绿色按钮来重新绘制卡片"
-card_settings.description: "使用</upload>上传图像以取得其连结。\n支援 Pixiv，请直接复制绘图的图像连结。"
+card_settings.description: "使用</upload>上传图像以获取链接。\n支持pixiv，只需复制图片链接即可。"
 profile.team_dark_mode.button.label: 队伍卡片深色模式
 profile.character_select.multi.placeholder: 选择角色…
 zzz_search.agent_info: "稀有度: {rarity}\n特性: {specialty}\n攻击方式: {atk_type}\n阵营: {faction}\n元素: {element}"

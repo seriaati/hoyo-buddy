@@ -321,7 +321,7 @@ player_not_found_description: 请检查所提供UID
 player_not_found_title: 玩家不存在
 preservation: 存护
 prev_page_option_label: 上一页
-notify_feature: 这个即时便签通知
+notify_feature: 实时便笺通知
 profile.add_image.button.label: 添加自定义图片
 profile.add_image_modal.image_url.label: 图像URL
 profile.build.select.placeholder: 选择一个角色配置…

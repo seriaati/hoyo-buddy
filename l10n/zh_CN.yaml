@@ -751,7 +751,7 @@ mimo_buy_item_select_placeholder: 选择一个要购买的商品…
 mimo_tasks_button_label: 任务
 mimo_buy_item_amount_label: 数量
 mimo_item_available_time: "在 {time} 后补货"
-mimo_auto_task_embed_footer: 使用 /mimo 挑整自动任务设定及购买奖励
+mimo_auto_task_embed_footer: 使用 /mimo 调整自动任务设置及购买奖励
 mimo_auto_task_embed_desc: "Hoyo Buddy 为你完成了 {finish} 项任务并领取了 {claim_point} 积分"
 checkin_reward_embed_footer: 使用 /check-in 来调整通知
 mimo_status: "状态: {status}"

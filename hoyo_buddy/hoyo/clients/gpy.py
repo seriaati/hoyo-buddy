@@ -341,7 +341,11 @@ class GenshinClient(ProxyGenshinClient):
                 )
             break
         if highest_dmg_bonus_stat is None:
-            prop_id = ELEMENT_TO_BONUS_PROP_ID[GenshinElement(character.element)]
+            prop_id = ELEMENT_TO_BONUS_PROP_ID[
+                GenshinElement.ANEMO
+                if character.element == "None"
+                else GenshinElement(character.element)
+            ]
             prop = next(
                 (prop for prop in character.element_properties if prop.info.type == prop_id), None
             )

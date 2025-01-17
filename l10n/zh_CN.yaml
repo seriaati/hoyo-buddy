@@ -706,7 +706,7 @@ guild_only_command_param_desc: 排行榜仅展示服务器成员的排名
 yes_choice: "是"
 no_choice: "否"
 akasha_guild_mode_not_supported: 仅服务器模式无法使用
-akasha_guild_mode_not_supported_desc: "你必须在一个伺服器内，伺服器的成员数须少于 100，成员的总原神帐户数量须少于 30。"
+akasha_guild_mode_not_supported_desc: "你必须在一个服务器内，服务器的成员数须少于 100，成员的总原神账户数量须少于 30。"
 time_remaining_str: "剩余时间: {time}"
 banner_selector_placeholder: 选择一个卡池…
 rarity_str: "{rarity} 星"

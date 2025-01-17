@@ -491,7 +491,7 @@ reminder_modal.title: "{notify}提醒设置"
 profile_view.set_cur_temp_as_default: 设置当前样式为预设
 set_cur_temp_as_default.done: 完成
 set_cur_temp_as_default.done_desc: "你的 {game} 预设卡片样式已被设置为 {template}"
-remove_from_cache_finish_embed_desc: 重新执行 /profile 指令来查看变更
+remove_from_cache_finish_embed_desc: 重新执行 /profile 命令来查看变更
 third_party_card_temp_error_title: 这个第三方卡片样式出错了
 third_party_card_temp_error_message: "此角色的卡片样式已被重置为 的样式。如果此错误持续发生，请在我们的[Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 account_locked_title: 账户已被锁定20分钟

@@ -753,7 +753,7 @@ mimo_buy_item_amount_label: 数量
 mimo_item_available_time: "在 {time} 后补货"
 mimo_auto_task_embed_footer: 使用 /mimo 调整自动任务设置及购买奖励
 mimo_auto_task_embed_desc: "Hoyo Buddy 为你完成了 {finish} 项任务并领取了 {claim_point} 积分"
-checkin_reward_embed_footer: 使用 /check-in 来调整通知
+checkin_reward_embed_footer: 使用 /check-in 来管理通知
 mimo_status: "状态: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy 使用 {points} 点积分帮你购买了 {item} 个物品。\n如果下方有显示礼物码，请自行使用</redeem>兑换。"
 mimo_game_unavailable: "{game}目前无法使用旅行 Mimo"

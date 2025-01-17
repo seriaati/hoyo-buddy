@@ -736,7 +736,7 @@ show_synergy_button_label: 组队方式
 characters_per_page_modal_title: 每页角色数
 characters_per_page_num_label: 数量
 card_settings_hl_substat_select_placeholder: 选择要高亮的副词条…
-too_many_requests_error_banner_msg: "请求次数过多，请稍后再试。点击右方按钮获取更多资讯。"
+too_many_requests_error_banner_msg: "请求次数过多，请稍后再试。点击右方按钮获取更多信息。"
 mimo_task_status_claimable: 可领取
 mimo_finish_and_claim_button_label: 完成任务并领取积分
 mimo_info_embed_title: 关于旅行 Mimo

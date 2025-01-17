@@ -755,7 +755,7 @@ mimo_auto_task_embed_footer: 使用 /mimo 调整自动任务设置及购买奖�
 mimo_auto_task_embed_desc: "Hoyo Buddy 为你完成了 {finish} 项任务并领取了 {claim_point} 积分"
 checkin_reward_embed_footer: 使用 /check-in 来管理通知
 mimo_status: "状态: {status}"
-mimo_auto_buy_embed_desc: "Hoyo Buddy 使用 {points} 点积分帮你购买了 {item} 个物品。\n如果下方有显示礼物码，请自行使用</redeem>兑换。"
+mimo_auto_buy_embed_desc: "Hoyo Buddy 使用 {points} 点积分帮你购买了 {item} 个物品。\n如果下方有显示礼品码，请自行使用</redeem>兑换。"
 mimo_game_unavailable: "{game}目前无法使用旅行 Mimo"
 generic_error_title: 错误
 on_button_label: "开"

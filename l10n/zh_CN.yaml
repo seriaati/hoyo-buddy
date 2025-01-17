@@ -775,7 +775,7 @@ mimo_auto_draw_desc: "Hoyo Buddy 会在积分足够时自动抽奖；如果自�
 mimo_auto_draw_success_notify_toggle_label: 在自动抽奖成功时通知
 mimo_auto_draw_failure_notify_toggle_label: 在自动抽奖失败时通知
 mimo_auto_draw_embed_desc: "Hoyo Buddy 使用 {points} 点积分帮你抽奖并获得了以下物品。\n如果下方有显示礼物码，请自行使用</redeem>兑换。"
-mimo_auto_task_error_dm_content: "由于发生错误，旅行 Mimo: {feature}功能已被停用，你可以使用</mimo>将其重新启用。\n如果这个错误持续发生，或是你不知道如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
+mimo_auto_task_error_dm_content: "由于发生错误，旅行 Mimo: {feature}功能已被停用，你可以使用</mimo>将其重新启动。\n如果这个错误持续发生，或是你不知道如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 dismissible_hsr_temp2_desc: "你现在可以使用 Hoyo Buddy 样式 2 来生成星穹铁道角色卡片，在「卡片设置」中设置。推荐使用横向图片。"
 bounty_commission.embed.description: 悬赏委托尚未全部完成
 ridu_points.embed.description: 丽都周记任务尚未全部完成

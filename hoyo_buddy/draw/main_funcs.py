@@ -721,17 +721,27 @@ async def draw_shiyu_card(
     agent_ranks: dict[int, int],
     uid: int | None,
 ) -> File:
+    # Backward compatibility, old ShiyuDefenseBangboo models don't have icon attribute
+    bangboos = [
+        bangboo
+        for floor in shiyu.floors
+        for bangboo in (floor.node_1.bangboo, floor.node_2.bangboo)
+        if bangboo is not None
+    ]
+    if any(not hasattr(bangboo, "icon") for bangboo in bangboos):
+        async with hakushin.HakushinAPI(hakushin.Game.ZZZ) as api:
+            bangboo_icons = {bangboo.id: bangboo.icon for bangboo in await api.fetch_bangboos()}
+
+        for bangboo in bangboos:
+            if not hasattr(bangboo, "icon") and bangboo.id in bangboo_icons:
+                setattr(bangboo, "icon", bangboo_icons[bangboo.id])  # noqa: B010
+
     urls = [
         character.icon
         for floor in shiyu.floors
         for character in floor.node_1.characters + floor.node_2.characters
     ]
-    urls.extend(
-        bangboo.icon
-        for floor in shiyu.floors
-        for bangboo in (floor.node_1.bangboo, floor.node_2.bangboo)
-        if bangboo is not None
-    )
+    urls.extend(bangboo.icon for bangboo in bangboos)
     await download_images(urls, "shiyu", draw_input.session)
 
     card = funcs.zzz.ShiyuDefenseCard(shiyu, agent_ranks, uid, locale=draw_input.locale.value)

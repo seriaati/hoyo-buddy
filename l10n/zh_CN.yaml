@@ -784,6 +784,6 @@ web_events_notify_toggle_label: 在有新的网页活动时通知
 web_events_cmd_desc: 查看当前正在进行的网页活动及设置通知
 web_events_embed_footer: 使用 /web-events 来调整通知
 auto_task_error_dm_content: "由于发生错误，{feature}功能已被关闭，你可以使用{command}将其重新启动\n如果这个错误持续发生，或是你不知道该如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
-is_support_custom_image_desc: 支援自定义图片
-is_not_support_custom_image_desc: 不支援自定义图片
+is_support_custom_image_desc: 支持自定义图片
+is_not_support_custom_image_desc: 不支持自定义图片
 template_preview_header: 范例样式

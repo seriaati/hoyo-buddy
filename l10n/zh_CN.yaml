@@ -702,7 +702,7 @@ challenge_command_apc_shadow_desc: 生成末日幻影卡片
 challenge_command_shiyu_desc: 生成式舆防卫战卡片
 account_select_placeholder: 选择一个账号...
 guild_only_command_param_name: 仅服务器
-guild_only_command_param_desc: 排行榜仅显示伺服器成员的排名
+guild_only_command_param_desc: 排行榜仅展示服务器成员的排名
 yes_choice: "是"
 no_choice: "否"
 akasha_guild_mode_not_supported: 仅伺服器模式无法使用

@@ -108,7 +108,7 @@ characters.sorter.rarity: 稀有度
 characters_cmd_genshin_desc: 查看并筛选你的原神角色
 characters_cmd_hsr_desc: 查看并筛选你的星穹铁道角色
 characters_cmd_zzz_desc: 查看并筛选你的绝区零代理人
-characters_cmd_honkai_desc: 查看并筛选你的崩坏三角色
+characters_cmd_honkai_desc: 查看并筛选你的崩坏3角色
 checkin_button_label: 签到
 checkin_command_description: 游戏每日签到
 complete_captcha_button_label: 完成 CAPTCHA

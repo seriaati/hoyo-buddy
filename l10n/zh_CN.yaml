@@ -700,7 +700,7 @@ challenge_command_moc_desc: 生成混沌回忆卡片
 challenge_command_pf_desc: 生成虚构叙事卡片
 challenge_command_apc_shadow_desc: 生成末日幻影卡片
 challenge_command_shiyu_desc: 生成式舆防卫战卡片
-account_select_placeholder: 选择一个帐号...
+account_select_placeholder: 选择一个账号...
 guild_only_command_param_name: 仅伺服器
 guild_only_command_param_desc: 排行榜仅显示伺服器成员的排名
 yes_choice: "是"

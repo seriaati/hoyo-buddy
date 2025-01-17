@@ -760,7 +760,7 @@ mimo_game_unavailable: "{game}目前无法使用旅行 Mimo"
 generic_error_title: 错误
 on_button_label: "开"
 off_button_label: "关"
-mimo_draw_redeem_success: "请至游戏内邮箱领取你的奖励"
+mimo_draw_redeem_success: "请到游戏内邮箱领取你的奖励"
 image_settings_use_m3_art: 使用意象影画 3 图像
 remembrance: 记忆
 dismissible_default_title: 新功能！

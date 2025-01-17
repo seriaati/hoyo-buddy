@@ -19,11 +19,14 @@ from hoyo_buddy import models
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import (
     AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID,
+    AMBR_UI_URL,
     DMG_BONUS_IDS,
     ELEMENT_TO_BONUS_PROP_ID,
     GPY_LANG_TO_LOCALE,
     HB_GAME_TO_GPY_GAME,
     LOCALE_TO_GPY_LANG,
+    PLAYER_BOY_GACHA_ART,
+    PLAYER_GIRL_GACHA_ART,
     POST_REPLIES,
     PROXY_APIS,
     contains_traveler_id,
@@ -350,8 +353,31 @@ class GenshinClient(ProxyGenshinClient):
                 type=convert_fight_prop(prop_id), formatted_value=prop.final
             )
 
+        costume: models.HoyolabGICostume | None = None
         async with enka.GenshinClient() as client:
+            if character.costumes:
+                costumes: dict[str, dict[str, Any]] | None = client._assets.character_data[
+                    str(character.id)
+                ].get("Costumes")
+                if costumes:
+                    chara_costume = character.costumes[0]
+                    costume_data = costumes.get(str(chara_costume.id))
+                    if costume_data:
+                        costume = models.HoyolabGICostume(
+                            icon=models.HoyolabGICharacterIcon(
+                                gacha=AMBR_UI_URL.format(filename=costume_data["art"])
+                            )
+                        )
             talent_order = client._assets.character_data[str(character.id)]["SkillOrder"]
+
+        if "10000005" in str(character.id):  # PlayerBoy
+            gacha_art = PLAYER_BOY_GACHA_ART
+        elif "10000007" in str(character.id):  # PlayerGirl
+            gacha_art = PLAYER_GIRL_GACHA_ART
+        else:
+            gacha_art = character.gacha_art
+
+        icon = models.HoyolabGICharacterIcon(gacha=gacha_art)
 
         return models.HoyolabGICharacter(
             id=character.id,
@@ -379,7 +405,8 @@ class GenshinClient(ProxyGenshinClient):
                 hakushin.utils.get_ascension_from_level(character.level, True, hakushin.Game.GI),
                 hakushin.Game.GI,
             ),
-            icon=models.HoyolabGICharacterIcon(gacha=character.gacha_art),
+            icon=icon,
+            costume=costume,
         )
 
     @staticmethod

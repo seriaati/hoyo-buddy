@@ -8,7 +8,13 @@ from genshin.models import ZZZFullAgent, ZZZPartialAgent
 from loguru import logger
 from seria.utils import read_json
 
-from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, ZZZ_M3_ART_URL, ZZZ_M6_ART_URL
+from hoyo_buddy.constants import (
+    HSR_DEFAULT_ART_URL,
+    PLAYER_BOY_GACHA_ART,
+    PLAYER_GIRL_GACHA_ART,
+    ZZZ_M3_ART_URL,
+    ZZZ_M6_ART_URL,
+)
 from hoyo_buddy.db import CustomImage
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO_ADD
@@ -49,11 +55,13 @@ def get_default_art(
         if use_m3_art:
             return ZZZ_M3_ART_URL.format(char_id=character.id)
         return ZZZ_M6_ART_URL.format(char_id=character.id)
-    if isinstance(character, enka.gi.Character):
+    if isinstance(character, enka.gi.Character | HoyolabGICharacter):
         if character.costume is not None:
             return character.costume.icon.gacha
-        return character.icon.gacha
-    if isinstance(character, HoyolabGICharacter):
+        if "10000005" in str(character.id):  # PlayerBoy
+            return PLAYER_BOY_GACHA_ART
+        if "10000007" in str(character.id):  # PlayerGirl
+            return PLAYER_GIRL_GACHA_ART
         return character.icon.gacha
     return HSR_DEFAULT_ART_URL.format(char_id=character.id)
 

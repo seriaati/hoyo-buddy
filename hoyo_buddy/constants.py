@@ -830,3 +830,8 @@ LOCALE_TO_CHANGELOG_LANG = {
 
 def get_changelog_url(locale: discord.Locale) -> str:
     return CHANGELOG_URL.format(lang=LOCALE_TO_CHANGELOG_LANG.get(locale, "EN"))
+
+
+AMBR_UI_URL = "https://gi.yatta.moe/assets/UI/{filename}.png"
+PLAYER_GIRL_GACHA_ART = "https://img.seria.moe/EiTcXToCGWUYtfDe.png"
+PLAYER_BOY_GACHA_ART = "https://img.seria.moe/BPFICCXWkbOJrsqe.png"

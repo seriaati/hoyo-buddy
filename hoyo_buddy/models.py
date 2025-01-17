@@ -302,6 +302,10 @@ class HoyolabGICharacterIcon(BaseModel):
     gacha: str
 
 
+class HoyolabGICostume(BaseModel):
+    icon: HoyolabGICharacterIcon
+
+
 class HoyolabGICharacter(BaseModel):
     id: int
     name: str
@@ -320,6 +324,7 @@ class HoyolabGICharacter(BaseModel):
     level: int
     max_level: int
     icon: HoyolabGICharacterIcon
+    costume: HoyolabGICostume | None
 
 
 class ImgTheaterData(genshin.models.ImgTheaterData):

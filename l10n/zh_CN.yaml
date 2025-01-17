@@ -713,7 +713,7 @@ rarity_str: "{rarity} 星"
 finished_status_field_name: 状态
 unlocks_in_str: "在 {time} 后解锁"
 challenge_selector_placeholder: 选择一个挑战…
-upload_cmd_desc: "上传一张图像并取得其连结，可以用于 /profile 的自定义图像功能"
+upload_cmd_desc: "上传一张图像并获取其链接，可以用于 /profile 的自定义图像功能"
 not_an_image_error_title: 不是一张图像
 not_an_image_error_message: "上传的文件并非一张图像，请使用一个图像文件重新试试。"
 upload_cmd_image_param_name: 图像

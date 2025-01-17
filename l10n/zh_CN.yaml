@@ -376,7 +376,7 @@ read_story.button.label: 阅读故事
 real_time_notes: 实时便笺
 realm_curr_button.label: 洞天宝钱提醒
 realm_curr_modal.title: 洞天宝钱提醒设置
-redeeem_code.cookie_token_expired_description: "兑换兑换码功能只有使用电子邮件和密码登入的使用者才可以使用，你可以透过 </accounts> 进行"
+redeeem_code.cookie_token_expired_description: "兑换码功能仅适用于用电子邮箱和密码登录的用户，你可以通过</accounts>进行兑换操作。"
 redeeem_code.cookie_token_expired_title: Cookie Token 已过期
 redeeem_code.cookie_token_refresh_failed_description: "自上次新增帐户以来，你可能已变更帐户密码。\n请使用</accounts>透过电子邮件和密码的方式重新新增您的帐户。"
 redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失败

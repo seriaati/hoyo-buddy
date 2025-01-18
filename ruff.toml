@@ -52,7 +52,7 @@ select = ["ALL"]
 "./migrations/*.py" = ["ALL"]
 "hoyo_buddy/draw/**/*.py" = ["PLR", "C"]
 "hoyo_buddy/draw/drawer.py" = ["F405"]
-"hoyo_buddy/models.py" = ["TCH002"]
+"hoyo_buddy/models.py" = ["TC002"]
 "playground.*.py" = ["ALL"]
 
 [lint.flake8-type-checking]

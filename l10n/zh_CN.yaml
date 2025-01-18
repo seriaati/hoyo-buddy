@@ -15,7 +15,7 @@ abyss.battles_won_fought: "获胜次数/战斗次数：{val1}/{val2}"
 abyss.deepest_descent: "最深抵达：{val}"
 abyss.floor: "第 {val} 层"
 abyss.overview: 深境螺旋战绩
-abyss.damage: 伤害资讯
+abyss.damage: 伤害信息
 abyss.stats: 数据
 abyss.phase_select.placeholder: 选择一个阶段
 abyss.total_stars: "获取星数：{val}"
@@ -108,7 +108,7 @@ characters.sorter.rarity: 稀有度
 characters_cmd_genshin_desc: 查看并筛选你的原神角色
 characters_cmd_hsr_desc: 查看并筛选你的星穹铁道角色
 characters_cmd_zzz_desc: 查看并筛选你的绝区零代理人
-characters_cmd_honkai_desc: 查看并筛选你的崩坏三角色
+characters_cmd_honkai_desc: 查看并筛选你的崩坏3角色
 checkin_button_label: 签到
 checkin_command_description: 游戏每日签到
 complete_captcha_button_label: 完成 CAPTCHA
@@ -321,7 +321,7 @@ player_not_found_description: 请检查所提供UID
 player_not_found_title: 玩家不存在
 preservation: 存护
 prev_page_option_label: 上一页
-notify_feature: 这个即时便签通知
+notify_feature: 实时便笺通知
 profile.add_image.button.label: 添加自定义图片
 profile.add_image_modal.image_url.label: 图像URL
 profile.build.select.placeholder: 选择一个角色配置…
@@ -376,7 +376,7 @@ read_story.button.label: 阅读故事
 real_time_notes: 实时便笺
 realm_curr_button.label: 洞天宝钱提醒
 realm_curr_modal.title: 洞天宝钱提醒设置
-redeeem_code.cookie_token_expired_description: "兑换兑换码功能只有使用电子邮件和密码登入的使用者才可以使用，你可以透过 </accounts> 进行"
+redeeem_code.cookie_token_expired_description: "兑换码功能仅适用于用电子邮箱和密码登录的用户，你可以通过</accounts>进行兑换操作。"
 redeeem_code.cookie_token_expired_title: Cookie Token 已过期
 redeeem_code.cookie_token_refresh_failed_description: "自上次新增帐户以来，你可能已变更帐户密码。\n请使用</accounts>透过电子邮件和密码的方式重新新增您的帐户。"
 redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失败
@@ -491,7 +491,7 @@ reminder_modal.title: "{notify}提醒设置"
 profile_view.set_cur_temp_as_default: 设置当前样式为预设
 set_cur_temp_as_default.done: 完成
 set_cur_temp_as_default.done_desc: "你的 {game} 预设卡片样式已被设置为 {template}"
-remove_from_cache_finish_embed_desc: 重新执行 /profile 指令来查看变更
+remove_from_cache_finish_embed_desc: 重新执行 /profile 命令来查看变更
 third_party_card_temp_error_title: 这个第三方卡片样式出错了
 third_party_card_temp_error_message: "此角色的卡片样式已被重置为 的样式。如果此错误持续发生，请在我们的[Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 account_locked_title: 账户已被锁定20分钟
@@ -526,7 +526,7 @@ card_settings.build_card_image: 面板卡片图片
 card_settings.team_card_image: 队伍卡片图片
 profile.redraw_card_button_label: 重新绘制卡片
 card_settings.footer: "修改完毕后, 点击上方信息中的绿色按钮来重新绘制卡片"
-card_settings.description: "使用</upload>上传图像以取得其连结。\n支援 Pixiv，请直接复制绘图的图像连结。"
+card_settings.description: "使用</upload>上传图像以获取链接。\n支持pixiv，只需复制图片链接即可。"
 profile.team_dark_mode.button.label: 队伍卡片深色模式
 profile.character_select.multi.placeholder: 选择角色…
 zzz_search.agent_info: "稀有度: {rarity}\n特性: {specialty}\n攻击方式: {atk_type}\n阵营: {faction}\n元素: {element}"
@@ -550,7 +550,7 @@ dyk_team: "Hoyo Buddy 的小团队由一位程式设计师和一位设计师组�
 dyk_disable: 你可以使用 /settings 将这则讯息关闭
 dyk_settings_lang: 你可以使用 /settings 变更机器人使用的语言
 dyk_settings_theme: 你可以使用 /settings 切换为亮色或深色模式
-dyk_security: "我们有一则讲解关于帐户安全的[文章](<https://hb-docs.seria.moe/docs/Account-Security>)"
+dyk_security: "我们有一篇关于账号安全的[文章](<https://hb-docs.seria.moe/docs/Account-Security>)"
 dyk_github: "Hoyo Buddy 于 [GitHub](<https://github.com/seriaati/hoyo-buddy>) 上开源"
 dyk_python: Hoyo Buddy 使用纯 Python 撰写而成
 dyk_unreleased: 你可以使用 /search 查看尚未释出的游戏内容
@@ -577,7 +577,7 @@ accounts_added_snackbar_message: "帐户新增成功，正在将你重新导向�
 account_add_start_message: "点击下方按钮并遵循指示来新增你的帐户。当你完成的时候，使用 </accounts> 指令来查看你刚才新增的帐户。如果你遇到任何问题或需要帮助，加入我们的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)。"
 hbls_button_label: 开始！
 gacha_import_url_modal_title: 输入抽卡纪录连结
-gacha_import_embed_description: "抽卡纪录连结: 从游戏内获取一串很长的连结来导入你的抽卡纪录, 不同游戏的获取方式如下:\n- 安卓: [YouTube 视频](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-cn/genshin/wish-import)\n- 崩坏: 星穹铁道: [Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-cn/warp-import)\n- 绝区零: [zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-cn/zzz/signal-import)\n\n如果你有使用下列的服务之一, 将你的抽卡纪录导出至指定的档案格式后即可使用 </gacha-log upload> 指令将其上传并导入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
+gacha_import_embed_description: "抽卡记录链接：从游戏内获取一串很长的链接来导入你的抽卡记录，不同游戏的获取方式如下：\n- 安卓：[YouTube 视频](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神：[paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-cn/genshin/wish-import)\n- 崩坏：星穹铁道：[Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-cn/warp-import)\n- 绝区零：[zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-cn/zzz/signal-import)\n\n如果你有使用下列的服务之一，将你的抽卡记录导出至指定的文件格式后即可使用 </gacha-log upload> 将其上传并导入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "无法从连结内提取 authkey, 请尝试其他连结。"
 extract_authkey_error_title: Authkey 提取失败
 gacha_import_loading_embed_title: 正在导入抽卡纪录
@@ -686,10 +686,10 @@ not_you_label: "不是你吗? 点击以使用其他帐户登入"
 profile_show_substat_rolls: 副词条档次
 team_card_settings_button_label: 队伍卡片设置
 team_card_settings_embed_title: 正在修改队伍卡片设置
-team_card_settings_embed_description: "队伍卡片设置在不同游戏和帐户之间共享，当卡片样式不支援时，对某些设定所做的更改可能不会反映在卡片上。\n完成后，点击上方消息中的绿色按钮即可重新绘制卡片。"
+team_card_settings_embed_description: "队伍卡片设置在不同游戏和帐户之间共享，当卡片样式不支持时，对某些设置所做的更改可能不会反映在卡片上。\n完成后，点击上方消息中的绿色按钮即可重新绘制卡片。"
 characters.filter.rarity.placeholder: 筛选稀有度…
 profile_command_character_param_desc: 要生成哪个角色的卡片？
-weapon_type_filter_placeholder: 用武器类别筛选…
+weapon_type_filter_placeholder: 用武器类型筛选…
 redeem_cmd_available_codes: 可用的兑换码
 redeem_all_available_codes_button_label: 兑换所有可用的兑换码
 akasha_show_details: 显示排行榜详情
@@ -700,20 +700,20 @@ challenge_command_moc_desc: 生成混沌回忆卡片
 challenge_command_pf_desc: 生成虚构叙事卡片
 challenge_command_apc_shadow_desc: 生成末日幻影卡片
 challenge_command_shiyu_desc: 生成式舆防卫战卡片
-account_select_placeholder: 选择一个帐号...
-guild_only_command_param_name: 仅伺服器
-guild_only_command_param_desc: 排行榜仅显示伺服器成员的排名
+account_select_placeholder: 选择一个账号...
+guild_only_command_param_name: 仅服务器
+guild_only_command_param_desc: 排行榜仅展示服务器成员的排名
 yes_choice: "是"
 no_choice: "否"
-akasha_guild_mode_not_supported: 仅伺服器模式无法使用
-akasha_guild_mode_not_supported_desc: "你必须在一个伺服器内，伺服器的成员数须少于 100，成员的总原神帐户数量须少于 30。"
+akasha_guild_mode_not_supported: 仅服务器模式无法使用
+akasha_guild_mode_not_supported_desc: "你必须在一个服务器内，服务器的成员数须少于 100，成员的总原神账户数量须少于 30。"
 time_remaining_str: "剩余时间: {time}"
 banner_selector_placeholder: 选择一个卡池…
 rarity_str: "{rarity} 星"
 finished_status_field_name: 状态
 unlocks_in_str: "在 {time} 后解锁"
 challenge_selector_placeholder: 选择一个挑战…
-upload_cmd_desc: "上传一张图像并取得其连结，可以用于 /profile 的自定义图像功能"
+upload_cmd_desc: "上传一张图像并获取其链接，可以用于 /profile 的自定义图像功能"
 not_an_image_error_title: 不是一张图像
 not_an_image_error_message: "上传的文件并非一张图像，请使用一个图像文件重新试试。"
 upload_cmd_image_param_name: 图像
@@ -736,7 +736,7 @@ show_synergy_button_label: 组队方式
 characters_per_page_modal_title: 每页角色数
 characters_per_page_num_label: 数量
 card_settings_hl_substat_select_placeholder: 选择要高亮的副词条…
-too_many_requests_error_banner_msg: "请求次数过多，请稍后再试。点击右方按钮获取更多资讯。"
+too_many_requests_error_banner_msg: "请求次数过多，请稍后再试。点击右方按钮获取更多信息。"
 mimo_task_status_claimable: 可领取
 mimo_finish_and_claim_button_label: 完成任务并领取积分
 mimo_info_embed_title: 关于旅行 Mimo
@@ -751,31 +751,31 @@ mimo_buy_item_select_placeholder: 选择一个要购买的商品…
 mimo_tasks_button_label: 任务
 mimo_buy_item_amount_label: 数量
 mimo_item_available_time: "在 {time} 后补货"
-mimo_auto_task_embed_footer: 使用 /mimo 挑整自动任务设定及购买奖励
+mimo_auto_task_embed_footer: 使用 /mimo 调整自动任务设置及购买奖励
 mimo_auto_task_embed_desc: "Hoyo Buddy 为你完成了 {finish} 项任务并领取了 {claim_point} 积分"
-checkin_reward_embed_footer: 使用 /check-in 来调整通知
+checkin_reward_embed_footer: 使用 /check-in 来管理通知
 mimo_status: "状态: {status}"
-mimo_auto_buy_embed_desc: "Hoyo Buddy 使用 {points} 点积分帮你购买了 {item} 个物品。\n如果下方有显示礼物码，请自行使用</redeem>兑换。"
+mimo_auto_buy_embed_desc: "Hoyo Buddy 使用 {points} 点积分帮你购买了 {item} 个物品。\n如果下方有显示礼品码，请自行使用</redeem>兑换。"
 mimo_game_unavailable: "{game}目前无法使用旅行 Mimo"
 generic_error_title: 错误
 on_button_label: "开"
 off_button_label: "关"
-mimo_draw_redeem_success: "请至游戏内邮箱领取你的奖励"
+mimo_draw_redeem_success: "请到游戏内邮箱领取你的奖励"
 image_settings_use_m3_art: 使用意象影画 3 图像
 remembrance: 记忆
 dismissible_default_title: 新功能！
 dismissible_default_footer: 此消息只会显示一次
-dismissible_m3_art_desc: '你现在可以在 ZZZ 代理人卡片中使用意象影画 3 的图像了，在卡片设置中选择「Hoyo Buddy 卡片样式2」，接著在图像设置中打开「使用意象影画 3 图像」。'
+dismissible_m3_art_desc: '你现在可以在 ZZZ 代理人卡片中使用意象影画 3 的图像了，在卡片设置中选择「Hoyo Buddy 卡片样式2」，接着在图像设置中打开「使用意象影画 3 图像」。'
 mimo_lottery_info_hoyolab_decos: "…以及 {num} 个 HoYoLAB 装饰"
 zzz_deadly_assault: 危局强袭战
 challenge_command_assault_desc: 生成危局强袭战卡片
 gi_mimo_start_desc: "请先于 [HoYoLAB]({url}) 将旅行 Mimo 活动设置完成"
 mimo_auto_draw_button_label: 自动抽奖
-mimo_auto_draw_desc: "Hoyo Buddy 會在积分足够时自动抽奖；如果自动购买奖励和自动抽奖同时启用，会先尝试购买，积分不足购买时则自动抽奖。"
+mimo_auto_draw_desc: "Hoyo Buddy 会在积分足够时自动抽奖；如果自动购买奖励和自动抽奖同时启用，会先尝试购买，积分不足购买时则自动抽奖。"
 mimo_auto_draw_success_notify_toggle_label: 在自动抽奖成功时通知
 mimo_auto_draw_failure_notify_toggle_label: 在自动抽奖失败时通知
 mimo_auto_draw_embed_desc: "Hoyo Buddy 使用 {points} 点积分帮你抽奖并获得了以下物品。\n如果下方有显示礼物码，请自行使用</redeem>兑换。"
-mimo_auto_task_error_dm_content: "由于发生错误，旅行 Mimo: {feature}功能已被停用，你可以使用</mimo>将其重新启用。\n如果这个错误持续发生，或是你不知道如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
+mimo_auto_task_error_dm_content: "由于发生错误，旅行 Mimo: {feature}功能已被停用，你可以使用</mimo>将其重新启动。\n如果这个错误持续发生，或是你不知道如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 dismissible_hsr_temp2_desc: "你现在可以使用 Hoyo Buddy 样式 2 来生成星穹铁道角色卡片，在「卡片设置」中设置。推荐使用横向图片。"
 bounty_commission.embed.description: 悬赏委托尚未全部完成
 ridu_points.embed.description: 丽都周记任务尚未全部完成
@@ -783,7 +783,7 @@ changelog_embed_title: 更新日志
 web_events_notify_toggle_label: 在有新的网页活动时通知
 web_events_cmd_desc: 查看当前正在进行的网页活动及设置通知
 web_events_embed_footer: 使用 /web-events 来调整通知
-auto_task_error_dm_content: "由于发生错误，{feature}功能已被关闭，你可以使用{command}将其重新启用\n如果这个错误持续发生，或是你不知道该如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
-is_support_custom_image_desc: 支援自定义图片
-is_not_support_custom_image_desc: 不支援自定义图片
+auto_task_error_dm_content: "由于发生错误，{feature}功能已被关闭，你可以使用{command}将其重新启动\n如果这个错误持续发生，或是你不知道该如何解决，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
+is_support_custom_image_desc: 支持自定义图片
+is_not_support_custom_image_desc: 不支持自定义图片
 template_preview_header: 范例样式

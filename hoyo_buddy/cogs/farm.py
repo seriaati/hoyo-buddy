@@ -193,12 +193,17 @@ class Farm(
     ) -> list[app_commands.Choice]:
         account_namespace: str | None = i.namespace.account
 
-        if account_namespace is None:
+        if account_namespace is None or account_namespace == "none":
             return self.bot.get_error_choice(
                 LocaleStr(key="search_autocomplete_no_results"), await get_locale(i)
             )
         # Find [account_id] from account_namespace
-        account_id = int(account_namespace.split("]")[0].strip("["))
+        try:
+            account_id = int(account_namespace.split("]")[0].strip("["))
+        except ValueError:
+            return self.bot.get_error_choice(
+                LocaleStr(key="search_autocomplete_no_results"), await get_locale(i)
+            )
         locale = await get_locale(i)
 
         farm_notify = await FarmNotify.get_or_none(account_id=account_id)

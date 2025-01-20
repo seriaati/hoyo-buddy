@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import concurrent.futures
+import contextlib
 import os
 from collections import defaultdict
 from pathlib import Path
@@ -493,13 +494,15 @@ class HoyoBuddy(commands.AutoShardedBot):
 
             await message.edit(embed=embed, view=None)
         except Exception as e:
-            if isinstance(e, discord.Forbidden):
+            if isinstance(e, discord.HTTPException):
                 return
 
             embed, recognized = get_error_embed(e, locale)
             if not recognized:
                 self.capture_exception(e)
-            await message.edit(embed=embed, view=None)
+
+            with contextlib.suppress(discord.HTTPException):
+                await message.edit(embed=embed, view=None)
 
     async def close(self) -> None:
         logger.info("Bot shutting down...")

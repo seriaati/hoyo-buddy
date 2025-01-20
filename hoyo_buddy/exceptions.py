@@ -243,3 +243,11 @@ class MissingPermissionsError(HoyoBuddyError):
             title=LocaleStr(key="missing_permissions_error_title"),
             message=LocaleStr(key="missing_permissions_error_message"),
         )
+
+
+class BlockedByAutoModError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr(key="blocked_by_auto_mod_error_title"),
+            message=LocaleStr(key="blocked_by_auto_mod_error_message"),
+        )

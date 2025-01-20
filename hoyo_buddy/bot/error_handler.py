@@ -15,6 +15,7 @@ from ..embeds import ErrorEmbed
 from ..emojis import get_game_emoji
 from ..enums import GeetestType
 from ..exceptions import (
+    BlockedByAutoModError,
     HoyoBuddyError,
     InvalidQueryError,
     MissingPermissionsError,
@@ -128,6 +129,8 @@ def get_error_embed(error: Exception, locale: discord.Locale) -> tuple[ErrorEmbe
     if isinstance(error, discord.Forbidden):
         if error.code == 50013:
             error = MissingPermissionsError()
+        elif error.code == 200000:
+            error = BlockedByAutoModError()
 
     if isinstance(error, HoyoBuddyError):
         embed = ErrorEmbed(locale, title=error.title, description=error.message)

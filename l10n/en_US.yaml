@@ -789,3 +789,5 @@ is_not_support_custom_image_desc: Doesn't support custom image
 template_preview_header: Example look
 missing_permissions_error_title: Hoyo Buddy is Missing Permissions
 missing_permissions_error_message: "Hoyo Buddy requires the following permissions to function properly:\n- Send Messages\n- Embed Links\n- Attach Files\n- Use External Emojis"
+blocked_by_auto_mod_error_title: This Message was Blocked by AutoMod
+blocked_by_auto_mod_error_message: "Try running the command again, or contact the server admins to disable AutoMod for Hoyo Buddy."

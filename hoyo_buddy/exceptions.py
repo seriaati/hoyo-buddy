@@ -235,3 +235,11 @@ class MimoUnavailableError(HoyoBuddyError):
 class CantRedeemCodeError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(message=LocaleStr(key="redeeem_code.cookie_token_expired_description"))
+
+
+class MissingPermissionsError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr(key="missing_permissions_error_title"),
+            message=LocaleStr(key="missing_permissions_error_message"),
+        )

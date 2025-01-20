@@ -14,7 +14,12 @@ from yatta.exceptions import DataNotFoundError as YattaDataNotFoundError
 from ..embeds import ErrorEmbed
 from ..emojis import get_game_emoji
 from ..enums import GeetestType
-from ..exceptions import HoyoBuddyError, InvalidQueryError, NoAccountFoundError
+from ..exceptions import (
+    HoyoBuddyError,
+    InvalidQueryError,
+    MissingPermissionsError,
+    NoAccountFoundError,
+)
 from ..l10n import EnumStr, LocaleStr
 from ..utils import get_now
 
@@ -119,6 +124,10 @@ def get_error_embed(error: Exception, locale: discord.Locale) -> tuple[ErrorEmbe
 
     if isinstance(error, AmbrDataNotFoundError | YattaDataNotFoundError | HakushinNotFoundError):
         error = InvalidQueryError()
+
+    if isinstance(error, discord.Forbidden):
+        if error.code == 50013:
+            error = MissingPermissionsError()
 
     if isinstance(error, HoyoBuddyError):
         embed = ErrorEmbed(locale, title=error.title, description=error.message)

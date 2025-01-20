@@ -787,3 +787,5 @@ auto_task_error_dm_content: "{feature} has been disabled due to an error, you ca
 is_support_custom_image_desc: Supports custom image
 is_not_support_custom_image_desc: Doesn't support custom image
 template_preview_header: Example look
+missing_permissions_error_title: Hoyo Buddy is Missing Permissions
+missing_permissions_error_message: "Hoyo Buddy requires the following permissions to function properly:\n- Send Messages\n- Embed Links\n- Attach Files\n- Use External Emojis"

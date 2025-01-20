@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -16,6 +15,7 @@ from .common import SKILL_ORDER, STAT_ICONS, get_props
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from io import BytesIO
 
     from genshin.models import ZZZFullAgent
 
@@ -389,6 +389,4 @@ class ZZZTeamCard:
             # Template 3
             im = im.crop((54, 48, 1395, 357))
 
-        buffer = BytesIO()
-        im.save(buffer, format="PNG")
-        return buffer
+        return Drawer.save_image(im)

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -11,6 +10,8 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import get_floor_difficulty
 
 if TYPE_CHECKING:
+    from io import BytesIO
+
     from genshin.models.starrail import (
         FictionFloor,
         FloorCharacter,
@@ -194,6 +195,4 @@ class PureFictionCard:
             if i == 1:
                 pos = (83, 980)
 
-        buffer = BytesIO()
-        self._im.save(buffer, format="PNG")
-        return buffer
+        return Drawer.save_image(self._im)

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import io
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -10,6 +9,8 @@ from hoyo_buddy.draw.drawer import DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
 from hoyo_buddy.l10n import LocaleStr, translator
 
 if TYPE_CHECKING:
+    import io
+
     import ambr
 
     from hoyo_buddy.models import FarmData
@@ -123,6 +124,4 @@ def draw_farm_card(farm_data: list[FarmData], locale_: str, dark_mode: bool) -> 
         background.paste(card, (x, y), card)
         y += card.height + card_height_offset + y_padding_between_cards
 
-    buffer = io.BytesIO()
-    background.save(buffer, format="PNG")
-    return buffer
+    return Drawer.save_image(background)

@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import io
 import pathlib
 from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
 
 from discord import Locale
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageDraw, ImageFont
+
+from hoyo_buddy.constants import DC_MAX_FILESIZE
 
 from ..l10n import translator
 from ..models import DynamicBKInput, TopPadding
@@ -791,3 +794,19 @@ class Drawer:
         agent_special_color_hsl = (agent_color_hsl[0], 40, 50)
         agent_special_color = self.hex_to_rgb(self.hsl_to_hex(agent_special_color_hsl))
         return self.blend_color(agent_special_color, (20, 20, 20), 0.6)
+
+    @staticmethod
+    def save_image(img: Image.Image, *, step: float = 0.95) -> io.BytesIO:
+        """Save an image to a BytesIO object, resizing it if it exceeds the Discord file size limit."""
+        while True:
+            bytes_obj = io.BytesIO()
+            img.save(bytes_obj, format="PNG")
+            size_in_bytes = bytes_obj.tell()
+
+            if size_in_bytes < DC_MAX_FILESIZE:
+                break
+
+            width, height = img.size
+            img = img.resize((int(width * step), int(height * step)), Image.Resampling.LANCZOS)
+
+        return bytes_obj

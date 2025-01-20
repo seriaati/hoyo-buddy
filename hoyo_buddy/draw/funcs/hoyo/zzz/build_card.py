@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING, Any, Literal
 
 import discord
@@ -16,6 +15,8 @@ from hoyo_buddy.draw.drawer import BLACK, Drawer
 from .common import SKILL_ORDER, STAT_ICONS, get_props
 
 if TYPE_CHECKING:
+    from io import BytesIO
+
     from hoyo_buddy.models import AgentNameData
 
 
@@ -397,6 +398,4 @@ class ZZZAgentCard:
 
             start_pos = (521, 597) if i == 2 else (start_pos[0], start_pos[1] + 233)
 
-        buffer = BytesIO()
-        im.save(buffer, "PNG")
-        return buffer
+        return Drawer.save_image(im)

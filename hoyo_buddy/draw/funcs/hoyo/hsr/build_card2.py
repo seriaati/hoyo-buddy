@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 import enka
@@ -11,6 +10,8 @@ from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.draw.funcs.hoyo.hsr.common import get_character_skills, get_character_stats
 
 if TYPE_CHECKING:
+    from io import BytesIO
+
     from hoyo_buddy.models import HoyolabHSRCharacter
 
 
@@ -347,6 +348,4 @@ class HSRBuildCard2:
             else:
                 start_pos = (start_pos[0], start_pos[1] + 425)
 
-        buffer = BytesIO()
-        im.save(buffer, format="PNG")
-        return buffer
+        return Drawer.save_image(im)

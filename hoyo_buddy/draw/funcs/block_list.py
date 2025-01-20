@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 from PIL import Image, ImageDraw
@@ -10,6 +9,7 @@ from hoyo_buddy.models import DoubleBlock, SingleBlock
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from io import BytesIO
 
 __all__ = ("BlockListCard",)
 
@@ -187,6 +187,4 @@ class BlockListCard:
 
         bg = bg.crop((block_padding[0] // 2, 0, bg.width - block_padding[0] // 2, bg.height))
 
-        output = BytesIO()
-        bg.save(output, format="PNG")
-        return output
+        return Drawer.save_image(bg)

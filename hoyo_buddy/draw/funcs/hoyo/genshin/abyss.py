@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -12,6 +11,8 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
+    from io import BytesIO
+
     import genshin
 
 
@@ -208,6 +209,4 @@ class SpiralAbyssCard:
         self.write_stats()
         self.draw_floors()
 
-        buf = BytesIO()
-        im.save(buf, format="PNG")
-        return buf
+        return Drawer.save_image(im)

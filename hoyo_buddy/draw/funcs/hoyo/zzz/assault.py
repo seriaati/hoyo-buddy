@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -10,6 +9,8 @@ from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
+    from io import BytesIO
+
     import genshin
 
 
@@ -175,6 +176,4 @@ class AssaultCard:
 
             start_pos = (start_pos[0], start_pos[1] + 487)
 
-        buffer = BytesIO()
-        im.save(buffer, format="PNG")
-        return buffer
+        return Drawer.save_image(im)

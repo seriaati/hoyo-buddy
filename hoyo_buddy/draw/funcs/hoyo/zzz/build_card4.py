@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -14,6 +13,8 @@ from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.draw.funcs.hoyo.zzz.common import SKILL_ORDER, STAT_ICONS, get_props
 
 if TYPE_CHECKING:
+    from io import BytesIO
+
     from hoyo_buddy.models import AgentNameData
 
 
@@ -422,6 +423,4 @@ class ZZZAgentCard4:
         self._draw_weapon()
         self._draw_discs()
 
-        buffer = BytesIO()
-        im.save(buffer, format="PNG")
-        return buffer
+        return Drawer.save_image(im)

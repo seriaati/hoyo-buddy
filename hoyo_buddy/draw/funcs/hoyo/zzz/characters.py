@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 import discord
@@ -15,6 +14,7 @@ from hoyo_buddy.l10n import LevelStr
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from io import BytesIO
 
     from hoyo_buddy.models import UnownedZZZCharacter
 
@@ -172,6 +172,4 @@ def draw_big_agent_card(
         y = card_start_pos[1] + row * (card_height + card_y_padding)
         im.paste(card, (x, y), card)
 
-    buffer = BytesIO()
-    im.save(buffer, format="PNG", quality=80)
-    return buffer
+    return Drawer.save_image(im)

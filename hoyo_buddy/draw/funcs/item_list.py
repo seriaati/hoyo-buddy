@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from io import BytesIO
+from typing import TYPE_CHECKING
 
 from discord import Locale
 from PIL import Image, ImageDraw
@@ -14,6 +14,9 @@ from ..drawer import (
     LIGHT_SURFACE,
     Drawer,
 )
+
+if TYPE_CHECKING:
+    from io import BytesIO
 
 
 def draw_item_list(
@@ -80,6 +83,4 @@ def draw_item_list(
             max_width=528 if tbox is None else tbox.left - 32 - title_left_padding,
         )
 
-    buffer = BytesIO()
-    im.save(buffer, format="PNG")
-    return buffer
+    return Drawer.save_image(im)

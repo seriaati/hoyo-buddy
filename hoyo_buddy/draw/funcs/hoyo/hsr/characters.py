@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import io
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -12,6 +11,7 @@ from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DynamicBKInput, UnownedHSRCharacter
 
 if TYPE_CHECKING:
+    import io
     from collections.abc import Sequence
 
 
@@ -79,9 +79,7 @@ def draw_character_card(
             icon = drawer.mask_image_with_image(icon, drawer.open_asset("pc_icon_mask.png"))
             background.paste(icon, pos, icon)
 
-    fp = io.BytesIO()
-    background.save(fp, format="PNG")
-    return fp
+    return Drawer.save_image(background)
 
 
 def draw_small_hsr_chara_card(

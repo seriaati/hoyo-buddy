@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import io
 from typing import TYPE_CHECKING
 
 from PIL import Image, ImageDraw
@@ -8,6 +7,8 @@ from PIL import Image, ImageDraw
 from hoyo_buddy.draw.drawer import Drawer
 
 if TYPE_CHECKING:
+    import io
+
     from hoyo_buddy.models import Reward
 
 __all__ = ("draw_checkin_card",)
@@ -64,8 +65,4 @@ def draw_checkin_card(daily_rewards: list[Reward], dark_mode: bool) -> io.BytesI
             x += 64 + icon.width
 
     combined = Image.alpha_composite(im, text)
-
-    bytes_io = io.BytesIO()
-    combined.save(bytes_io, format="PNG")
-
-    return bytes_io
+    return Drawer.save_image(combined)

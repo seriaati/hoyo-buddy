@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -11,6 +10,7 @@ from hoyo_buddy.l10n import LevelStr, LocaleStr
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from io import BytesIO
 
     import genshin
 
@@ -116,6 +116,4 @@ def draw_big_suit_card(
         y = card_start_pos[1] + row * (card_height + card_y_padding)
         im.paste(card, (x, y), card)
 
-    buffer = BytesIO()
-    im.save(buffer, format="PNG", quality=80)
-    return buffer
+    return Drawer.save_image(im)

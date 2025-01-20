@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import bisect
-from io import BytesIO
+from typing import TYPE_CHECKING
 
 import discord
 from genshin.models import VideoStoreState, ZZZNotes
@@ -10,6 +10,9 @@ from PIL import ImageDraw
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
+
+if TYPE_CHECKING:
+    from io import BytesIO
 
 __all__ = ("draw_zzz_notes",)
 
@@ -151,7 +154,4 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
         position=(598, 1300),
     )
 
-    # Save image
-    buffer = BytesIO()
-    im.save(buffer, format="PNG")
-    return buffer
+    return Drawer.save_image(im)

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 import genshin
@@ -13,6 +12,7 @@ from hoyo_buddy.utils import format_time
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from io import BytesIO
 
 
 class ShiyuDefenseCard:
@@ -243,6 +243,4 @@ class ShiyuDefenseCard:
         self.write_stats(drawer)
         self.draw_frontiers(im, drawer)
 
-        buffer = BytesIO()
-        im.save(buffer, format="PNG")
-        return buffer
+        return Drawer.save_image(im)

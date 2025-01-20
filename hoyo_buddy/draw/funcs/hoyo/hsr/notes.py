@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -12,6 +11,8 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import format_timedelta
 
 if TYPE_CHECKING:
+    from io import BytesIO
+
     from genshin.models import StarRailNote
 
 __all__ = ("draw_hsr_notes_card",)
@@ -113,7 +114,4 @@ def draw_hsr_notes_card(notes: StarRailNote, locale_: str, dark_mode: bool) -> B
             locale=locale,
         )
 
-    buffer = BytesIO()
-    im.save(buffer, format="PNG")
-
-    return buffer
+    return Drawer.save_image(im)

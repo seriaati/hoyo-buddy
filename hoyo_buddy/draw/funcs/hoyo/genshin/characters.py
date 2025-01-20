@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import io
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -11,6 +10,7 @@ from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DynamicBKInput, UnownedGICharacter
 
 if TYPE_CHECKING:
+    import io
     from collections.abc import Sequence
 
     from genshin.models import GenshinDetailCharacter as GICharacter
@@ -97,9 +97,7 @@ def draw_character_card(
                 icon = drawer.open_static(pc_icon_url, size=PC_ICON_SIZES)
             background.paste(icon, pos, icon)
 
-    fp = io.BytesIO()
-    background.save(fp, format="PNG")
-    return fp
+    return Drawer.save_image(background)
 
 
 def draw_small_gi_chara_card(

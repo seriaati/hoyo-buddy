@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -14,6 +13,8 @@ from hoyo_buddy.models import HoyolabGICharacter, HoyolabGITalent
 from .common import ADD_HURT_ELEMENTS, ARTIFACT_POS, ELEMENT_BG_COLORS, STATS_ORDER
 
 if TYPE_CHECKING:
+    from io import BytesIO
+
     import enka
 
 
@@ -383,6 +384,4 @@ class GITempTwoBuildCard:
 
             start_pos = (1500, 1470) if i == 1 else (start_pos[0] + x_diff, start_pos[1])
 
-        buffer = BytesIO()
-        im.save(buffer, format="PNG")
-        return buffer
+        return Drawer.save_image(im)

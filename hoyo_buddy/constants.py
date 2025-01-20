@@ -977,3 +977,6 @@ def get_relic_substat_roll_num(
     search(0, dict.fromkeys(increment_options, 0), 0)
 
     return max(sum(closest_counts.values()), 1)
+
+
+DC_MAX_FILESIZE = 10 * 1024 * 1024  # 10 MB

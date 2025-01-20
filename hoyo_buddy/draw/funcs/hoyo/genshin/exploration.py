@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -11,6 +10,8 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LevelStr, LocaleStr
 
 if TYPE_CHECKING:
+    from io import BytesIO
+
     from genshin.models import Exploration, PartialGenshinUserStats
 
 
@@ -448,6 +449,4 @@ class ExplorationCard:
         self._im.paste(shadow, (868 - shadow_offset, 2170 - shadow_offset), shadow)
         self._im.paste(enka, (868, 2170), enka)
 
-        buffer = BytesIO()
-        self._im.save(buffer, format="PNG")
-        return buffer
+        return Drawer.save_image(self._im)

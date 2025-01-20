@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import contextlib
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -16,6 +15,7 @@ from .common import ADD_HURT_ELEMENTS, ELEMENT_BG_COLORS, ELEMENT_COLORS, STATS_
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from io import BytesIO
 
     import enka
     from enka.gi import Talent
@@ -350,6 +350,4 @@ class GITeamCard:
             im.alpha_composite(card, start_pos)
             start_pos = (50, 60 + y_diff) if i == 1 else (start_pos[0] + x_diff, start_pos[1])
 
-        buffer = BytesIO()
-        im.save(buffer, format="PNG")
-        return buffer
+        return Drawer.save_image(im)

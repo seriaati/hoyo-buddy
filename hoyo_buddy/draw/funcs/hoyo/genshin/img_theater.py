@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import io
+from typing import TYPE_CHECKING
 
 import discord
 import genshin
@@ -11,6 +11,9 @@ from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import seconds_to_time
+
+if TYPE_CHECKING:
+    import io
 
 
 class ImgTheaterCard:
@@ -231,6 +234,4 @@ class ImgTheaterCard:
                 act, (start_pos[0] + i % 2 * x_padding, start_pos[1] + i // 2 * y_padding)
             )
 
-        buffer = io.BytesIO()
-        self._im.save(buffer, format="PNG")
-        return buffer
+        return Drawer.save_image(self._im)

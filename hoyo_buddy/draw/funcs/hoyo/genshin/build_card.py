@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import io
 from typing import TYPE_CHECKING
 
 from discord import Locale
@@ -12,6 +11,8 @@ from hoyo_buddy.draw.funcs.hoyo.genshin.common import ARTIFACT_POS, STATS_ORDER
 from hoyo_buddy.models import HoyolabGICharacter, HoyolabGITalent
 
 if TYPE_CHECKING:
+    import io
+
     from enka.gi import Character
 
 
@@ -273,6 +274,4 @@ def draw_genshin_card(
                 color=text_color,
             )
 
-    fp = io.BytesIO()
-    im.save(fp, format="PNG", loesless=True)
-    return fp
+    return Drawer.save_image(im)

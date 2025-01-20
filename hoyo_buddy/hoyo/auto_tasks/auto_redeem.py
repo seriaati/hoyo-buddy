@@ -61,12 +61,7 @@ class AutoRedeem:
                 cls._total_redeem_count = 0
                 cls._bot = bot
 
-                games_to_redeem = (
-                    genshin.Game.GENSHIN,
-                    genshin.Game.STARRAIL,
-                    genshin.Game.ZZZ,
-                    genshin.Game.TOT,
-                )
+                games_to_redeem = (genshin.Game.GENSHIN, genshin.Game.STARRAIL, genshin.Game.ZZZ)
                 game_codes = (
                     {game: codes}
                     if game is not None and codes is not None

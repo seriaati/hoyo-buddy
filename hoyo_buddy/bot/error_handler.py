@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from typing import TYPE_CHECKING, Literal
+from typing import Literal
 
+import discord
 import genshin
 from ambr.exceptions import DataNotFoundError as AmbrDataNotFoundError
 from discord.utils import format_dt
@@ -23,9 +24,6 @@ from ..exceptions import (
 )
 from ..l10n import EnumStr, LocaleStr
 from ..utils import get_now
-
-if TYPE_CHECKING:
-    import discord
 
 __all__ = ("get_error_embed",)
 

@@ -14,6 +14,7 @@ import hakushin
 import yatta
 from discord import app_commands
 from dotenv import load_dotenv
+from loguru import logger
 
 from .enums import ChallengeType, Game, GenshinCity, GenshinElement, HSRElement, HSRPath
 
@@ -835,3 +836,144 @@ def get_changelog_url(locale: discord.Locale) -> str:
 AMBR_UI_URL = "https://gi.yatta.moe/assets/UI/{filename}.png"
 PLAYER_GIRL_GACHA_ART = "https://img.seria.moe/EiTcXToCGWUYtfDe.png"
 PLAYER_BOY_GACHA_ART = "https://img.seria.moe/BPFICCXWkbOJrsqe.png"
+
+RELIC_PROP_ID_TO_ENKA_TYPE: dict[int, enka.hsr.StatType] = {
+    27: enka.hsr.StatType.HP_DELTA,
+    29: enka.hsr.StatType.ATK_DELTA,
+    31: enka.hsr.StatType.DEF_DELTA,
+    32: enka.hsr.StatType.HP_BOOST,
+    33: enka.hsr.StatType.ATK_BOOST,
+    34: enka.hsr.StatType.DEF_BOOST,
+    51: enka.hsr.StatType.SPEED_DELTA,
+    52: enka.hsr.StatType.CRIT_RATE,
+    53: enka.hsr.StatType.CRIT_DMG,
+    56: enka.hsr.StatType.EFFECT_HIT_RATE,
+    57: enka.hsr.StatType.EFFECT_RES,
+    59: enka.hsr.StatType.BREAK_EFFECT,
+}
+
+
+def relic_prop_id_to_enka_type(prop_id: int) -> enka.hsr.StatType | None:
+    """Connvert relic property id in genshin.py to enka substat type enum."""
+    enum = RELIC_PROP_ID_TO_ENKA_TYPE.get(prop_id)
+    if enum is None:
+        logger.error(f"Cannot convert this prop ID to enka.hsr.StatType: {prop_id!r}")
+    return enum
+
+
+# From https://honkai-star-rail.fandom.com/wiki/Relic/Stats
+RELIC_SUBSTAT_VALUES = {
+    enka.hsr.StatType.SPEED_DELTA: {
+        5: {"high": 2.6, "mid": 2.3, "low": 2.0},
+        4: {"high": 2.0, "mid": 1.8, "low": 1.6},
+        3: {"high": 1.4, "mid": 1.3, "low": 1.2},
+        2: {"high": 1.2, "mid": 1.1, "low": 1.0},
+    },
+    enka.hsr.StatType.HP_DELTA: {
+        5: {"high": 42.33751, "mid": 38.103755, "low": 33.87},
+        4: {"high": 33.87, "mid": 30.483, "low": 27.096},
+        3: {"high": 25.402506, "mid": 22.862253, "low": 20.322},
+        2: {"high": 16.935, "mid": 15.2415, "low": 13.548},
+    },
+    enka.hsr.StatType.ATK_DELTA: {
+        5: {"high": 21.168754, "mid": 19.051877, "low": 16.935},
+        4: {"high": 16.935, "mid": 15.2415, "low": 13.548},
+        3: {"high": 10.161, "mid": 11.431126, "low": 12.701252},
+        2: {"high": 8.4675, "mid": 7.62075, "low": 6.774},
+    },
+    enka.hsr.StatType.DEF_DELTA: {
+        5: {"high": 21.168754, "mid": 19.051877, "low": 16.935},
+        4: {"high": 16.935, "mid": 15.2415, "low": 13.548},
+        3: {"high": 10.161, "mid": 11.431126, "low": 12.701252},
+        2: {"high": 8.4675, "mid": 7.62075, "low": 6.774},
+    },
+    enka.hsr.StatType.HP_BOOST: {
+        5: {"high": 4.32, "mid": 3.888, "low": 3.456},
+        4: {"high": 3.456, "mid": 3.1104, "low": 2.7648},
+        3: {"high": 2.592, "mid": 2.3328, "low": 2.0736},
+        2: {"high": 1.728, "mid": 1.5552, "low": 1.3824},
+    },
+    enka.hsr.StatType.ATK_BOOST: {
+        5: {"high": 4.32, "mid": 3.888, "low": 3.456},
+        4: {"high": 3.456, "mid": 3.1104, "low": 2.7648},
+        3: {"high": 2.592, "mid": 2.3328, "low": 2.0736},
+        2: {"high": 1.728, "mid": 1.5552, "low": 1.3824},
+    },
+    enka.hsr.StatType.DEF_BOOST: {
+        5: {"high": 5.4, "mid": 4.86, "low": 4.32},
+        4: {"high": 4.32, "mid": 3.888, "low": 3.456},
+        3: {"high": 2.592, "mid": 2.916, "low": 3.24},
+        2: {"high": 2.16, "mid": 1.944, "low": 1.728},
+    },
+    enka.hsr.StatType.BREAK_EFFECT: {
+        5: {"high": 6.48, "mid": 5.832, "low": 5.184},
+        4: {"high": 5.184, "mid": 4.6656, "low": 4.1472},
+        3: {"high": 3.888, "mid": 3.4992, "low": 3.1104},
+        2: {"high": 2.592, "mid": 2.3328, "low": 2.0736},
+    },
+    enka.hsr.StatType.EFFECT_HIT_RATE: {
+        5: {"high": 4.32, "mid": 3.888, "low": 3.456},
+        4: {"high": 3.456, "mid": 3.1104, "low": 2.7648},
+        3: {"high": 2.592, "mid": 2.3328, "low": 2.0736},
+        2: {"high": 1.728, "mid": 1.5552, "low": 1.3824},
+    },
+    enka.hsr.StatType.EFFECT_RES: {
+        5: {"high": 4.32, "mid": 3.888, "low": 3.456},
+        4: {"high": 3.456, "mid": 3.1104, "low": 2.7648},
+        3: {"high": 2.592, "mid": 2.3328, "low": 2.0736},
+        2: {"high": 1.728, "mid": 1.5552, "low": 1.3824},
+    },
+    enka.hsr.StatType.CRIT_RATE: {
+        5: {"high": 3.24, "mid": 2.916, "low": 2.592},
+        4: {"high": 2.592, "mid": 2.3328, "low": 2.0736},
+        3: {"high": 1.5552, "mid": 1.7496, "low": 1.944},
+        2: {"high": 1.296, "mid": 1.1664, "low": 1.0368},
+    },
+    enka.hsr.StatType.CRIT_DMG: {
+        5: {"high": 6.48, "mid": 5.832, "low": 5.184},
+        4: {"high": 5.184, "mid": 4.6656, "low": 4.1472},
+        3: {"high": 3.888, "mid": 3.4992, "low": 3.1104},
+        2: {"high": 2.592, "mid": 2.3328, "low": 2.0736},
+    },
+}
+
+
+def get_relic_substat_roll_num(
+    *, stat_type: int | enka.hsr.StatType, stat_value: float, rarity: int
+) -> int:
+    if isinstance(stat_type, int):
+        stat_type_ = relic_prop_id_to_enka_type(stat_type)
+        if stat_type_ is None:
+            return 1
+        stat_type = stat_type_
+
+    increment_options = RELIC_SUBSTAT_VALUES[stat_type][rarity]
+    closest_sum = float("inf")
+    closest_counts: dict[str, int] = {}
+
+    # Recursive search function
+    def search(sum_: float, counts: dict[str, int], index: int) -> None:
+        nonlocal closest_sum, closest_counts
+
+        # If we've iterated through all options
+        if index == len(increment_options):
+            if abs(sum_ - stat_value) < abs(closest_sum - stat_value):
+                closest_sum = sum_
+                closest_counts = counts.copy()
+            return
+
+        # Get the current increment key
+        increment_keys = list(increment_options.keys())
+        increment = increment_keys[index]
+
+        # Try all possible counts for the current increment
+        i = 0
+        while sum_ + i * increment_options[increment] <= stat_value + 0.01:
+            counts[increment] = i
+            search(sum_ + i * increment_options[increment], counts, index + 1)
+            i += 1
+
+    # Initialize search
+    search(0, dict.fromkeys(increment_options, 0), 0)
+
+    return max(sum(closest_counts.values()), 1)

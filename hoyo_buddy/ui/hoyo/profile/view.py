@@ -720,6 +720,9 @@ class ProfileView(View):
                 setattr(card_settings, attr, None)
                 await card_settings.save(update_fields=(attr,))
 
+            if isinstance(e, CardNotReadyError):
+                logger.error(f"Card not ready for {e.character_name}")
+
             if "hb" not in card_settings.template:
                 logger.warning("Failed to draw card")
                 i.client.capture_exception(e)

@@ -76,6 +76,7 @@ class CardNotReadyError(HoyoBuddyError):
             ),
             message=LocaleStr(key="exceptions.card_not_ready_error.message"),
         )
+        self.character_name = character_name
 
 
 class InvalidImageURLError(HoyoBuddyError):

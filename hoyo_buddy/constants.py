@@ -820,7 +820,6 @@ POST_REPLIES = (
 NO_BETA_CONTENT_GUILDS = {916725085019181056, 888984573403340860, 1084856284198752388}
 """Discord servers that don't allow unreleased game content."""
 
-CHANGELOG_LANGS = ("EN", "ZH", "VI")
 CHANGELOG_URL = "https://github.com/seriaati/hoyo-buddy/blob/main/changelogs/CHANGELOG_{lang}.md"
 LOCALE_TO_CHANGELOG_LANG = {
     discord.Locale.chinese: "ZH",
@@ -831,6 +830,35 @@ LOCALE_TO_CHANGELOG_LANG = {
 
 def get_changelog_url(locale: discord.Locale) -> str:
     return CHANGELOG_URL.format(lang=LOCALE_TO_CHANGELOG_LANG.get(locale, "EN"))
+
+
+DOCS_URL = "https://hb-docs.seria.moe{lang}/docs/{page}"
+LOCALE_TO_DOCS_LANG = {
+    discord.Locale.taiwan_chinese: "/zh-Hant",
+    discord.Locale.chinese: "/zh-Hant",  # NOTE: zh-Hans in the future
+    discord.Locale.vietnamese: "/vi",
+}
+HEADINGS = {
+    "how-does-the-email-and-password-login-method-work": {
+        discord.Locale.taiwan_chinese: "電子郵件和密碼登錄方式如何運作",
+        discord.Locale.chinese: "電子郵件和密碼登錄方式如何運作",
+    },
+    "i-am-a-console-player": {
+        discord.Locale.taiwan_chinese: "我是主機玩家",
+        discord.Locale.chinese: "我是主機玩家",
+    },
+    "which-login-method-should-i-use": {
+        discord.Locale.taiwan_chinese: "我應該選擇哪種登入方式",
+        discord.Locale.chinese: "我應該選擇哪種登入方式",
+    },
+}
+
+
+def get_docs_url(page: str, *, locale: discord.Locale) -> str:
+    heading = page.split("#", 1)[1] if "#" in page else ""
+    if heading in HEADINGS:
+        page = page.replace(heading, HEADINGS[heading].get(locale, heading))
+    return DOCS_URL.format(lang=LOCALE_TO_DOCS_LANG.get(locale, ""), page=page)
 
 
 AMBR_UI_URL = "https://gi.yatta.moe/assets/UI/{filename}.png"

@@ -39,9 +39,9 @@ accounts_command_description: Manage your accounts
 action_in_cooldown_error_message: "Please try again at {available_time}."
 action_in_cooldown_error_title: Action in Cooldown
 add_account_button_label: Add accounts
-add_hoyolab_acc.embed.description: "1. With email and password: Most recommended, it's the easiest\n2. With DevTools: Only work on desktop, a safer option if you have security concerns with the first one"
+add_hoyolab_acc.embed.description: "- [Which method should I use?](:docs/FAQ#which-login-method-should-i-use:)"
 add_hoyolab_acc.embed.title: Select a Method to add Your Accounts
-adding_accounts_description: "Welcome to Hoyo Buddy! Enjoy various features by spending less than 1 minute to add your accounts.\n\nRegarding account security, please read the [Wiki page](https://hb-docs.seria.moe/docs/Account-Security), for how we use and collect your data, please read the [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "- [Is Hoyo Buddy safe?](:docs/Account-Security:)\n- [Privacy Policy](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Select Your Account's Platform
 ai_gen_image_error_message: Check your prompt and try again.
 ai_gen_image_error_title: An Error Occured While Generating Art With AI
@@ -140,7 +140,7 @@ email-geetest.embed.title: CAPTCHA verification required for sending email verif
 email_password_button_label: With email and password
 email_password_modal_email_input_label: email or username
 email_password_modal_password_input_label: password
-enter_email_password_instructions_description: "This method requires you to enter your private information.\n\n- In exchange, your `cookie_token` can be refreshed automatically, which is used in features related to code redemption (for HoYoLAB users only).\n- Your email and password are **NOT** saved in the database **AT ALL**, so it's practically impossible for them to be leaked.\n- Additionally, this bot is open-sourced on [GitHub](https://github.com/seriaati/hoyo-buddy), so you can verify that yourself.\n- It is ultimately your choice to decide whether to trust this bot or not."
+enter_email_password_instructions_description: "Email & password refer to **Hoyoverse account's** email and password, not Google, Apple, etc. accounts.\n- [How does this work?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [I don't have a Hoyoverse account (I login with Google, Facebook, etc.)](:docs/Before-Start:)\n- [I am a console player](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: Change light cone level
 dark_mode_button_label: Dark mode
 error_footer: "You can find help in our Discord server, link in /about"
@@ -550,7 +550,7 @@ dyk_team: "Hoyo Buddy is made by a small team of 1 programmer and 1 designer"
 dyk_disable: You can disable this message with /settings
 dyk_settings_lang: You can change the language of the bot with /settings
 dyk_settings_theme: You can switch between light and dark theme using /settings
-dyk_security: "We have an [article](<https://hb-docs.seria.moe/docs/Account-Security>) about account security"
+dyk_security: "We have an [article](<:docs/Account-Security:>) about account security"
 dyk_github: "Hoyo Buddy is open-sourced on [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
 dyk_python: Hoyo Buddy is written in pure Python
 dyk_unreleased: You can view unreleased game content with /search
@@ -574,7 +574,7 @@ show_tutorial_button_label: Show tutorial
 close_button_label: Close
 required_field_error_message: This field is required
 accounts_added_snackbar_message: "Accounts added successfully, redirecting you back to Discord..."
-account_add_start_message: "Click the button below and follow the instructions to add your accounts. When you're done, use the </accounts> command to view the accounts you have added. If you face issues or need help, join our [Discord server](<https://link.seria.moe/hb-dc>)."
+account_add_start_message: "Click the button below and follow the instructions to add your accounts. When you're done, use the </accounts> command to view the accounts you have added.\nJoin our [Discord server](<https://link.seria.moe/hb-dc>) if you need help."
 hbls_button_label: Let's start!
 gacha_import_url_modal_title: Enter gacha log URL
 gacha_import_embed_description: "Gacha log URL: Obtain a very long URL from the game to import your gacha records, guides for different games are below:\n- Android: [YouTube video](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nFor services below, export your gacha records as the specified file format and upload it via </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"

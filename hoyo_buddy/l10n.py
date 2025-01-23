@@ -29,6 +29,7 @@ from .constants import (
     YATTA_COMBAT_TYPE_TO_ELEMENT,
     ZENLESS_DATA_LANG_TO_LOCALE,
     ZENLESS_DATA_LANGS,
+    get_docs_url,
 )
 from .utils import capitalize_first_word as capitalize_first_word_
 from .utils import convert_to_title_case
@@ -47,6 +48,7 @@ __all__ = ("AppCommandTranslator", "LocaleStr", "Translator")
 Mi18nGame: TypeAlias = Literal["mimo"] | Game
 
 COMMAND_REGEX = r"</[^>]+>"
+DOCS_REGEX = r":docs/[^:\s]+:"
 SOURCE_LANG = "en_US"
 L10N_PATH = pathlib.Path("./l10n")
 BOT_DATA_PATH = pathlib.Path("./hoyo_buddy/bot/data")
@@ -248,6 +250,13 @@ class Translator:
                 message = message.replace(command_occurence, f"</{command_name}:{command_id}>")
         return message
 
+    def _replace_docs_urls(self, message: str, *, locale: Locale) -> str:
+        docs_occurences: list[str] = re.findall(DOCS_REGEX, message)
+        for docs_occurence in docs_occurences:
+            page = docs_occurence.split("docs/")[-1].split(":")[0]
+            message = message.replace(docs_occurence, get_docs_url(page, locale=locale))
+        return message
+
     def translate(
         self,
         string: LocaleStr | str,
@@ -292,6 +301,7 @@ class Translator:
             translation = capitalize_first_word_(translation)
 
         translation = self._replace_command_with_mentions(translation)
+        translation = self._replace_docs_urls(translation, locale=locale)
         if string.append:
             translation += string.append
         return translation

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Final, Literal
 
 import hakushin
 
-from hoyo_buddy.constants import locale_to_hakushin_lang
+from hoyo_buddy.constants import ZZZ_AGENT_CORE_LEVEL_MAP, locale_to_hakushin_lang
 from hoyo_buddy.emojis import ZZZ_SKILL_TYPE_CORE, ZZZ_SKILL_TYPE_EMOJIS
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.l10n import LocaleStr
@@ -38,6 +38,7 @@ class AgentSearchView(View):
         self._cinema_index: int = 0
         self._skill_type: hakushin.enums.ZZZSkillType = hakushin.enums.ZZZSkillType.BASIC
         self._hakushin_translator = HakushinTranslator(locale)
+        self._core_level: int = 7
 
     def _add_items(self) -> None:
         self.add_item(PageSelect(self._page))
@@ -48,6 +49,8 @@ class AgentSearchView(View):
             self.add_item(
                 SkillSelect(list(self._agent.skills.keys()), self._skill_type, self._page)
             )
+            if self._page == "core":
+                self.add_item(CoreLevelSelector(self._core_level))
         elif self._page == "cinemas":
             self.add_item(CinemaSelect(self._agent.mindscape_cinemas, self._cinema_index))
         self.add_item(PageSelect(self._page))
@@ -68,7 +71,9 @@ class AgentSearchView(View):
             embed = self._hakushin_translator.get_agent_skill_embed(skill, self._agent)
         elif self._page == "core":
             skill = self._agent.passive
-            embed = self._hakushin_translator.get_agent_core_embed(skill, self._agent)
+            embed = self._hakushin_translator.get_agent_core_embed(
+                skill, self._agent, self._core_level
+            )
         else:
             cinema = self._agent.mindscape_cinemas[self._cinema_index]
             embed = self._hakushin_translator.get_agent_cinema_embed(
@@ -153,4 +158,17 @@ class CinemaSelect(Select[AgentSearchView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view._cinema_index = int(self.values[0])
+        await self.view.update(i)
+
+
+class CoreLevelSelector(Select[AgentSearchView]):
+    def __init__(self, current: int) -> None:
+        options = [
+            SelectOption(label=letter, value=str(int_level), default=int_level == current)
+            for int_level, letter in ZZZ_AGENT_CORE_LEVEL_MAP.items()
+        ]
+        super().__init__(options=options, placeholder=LocaleStr(key="zzz.core_level.placeholder"))
+
+    async def callback(self, i: Interaction) -> None:
+        self.view._core_level = int(self.values[0])
         await self.view.update(i)

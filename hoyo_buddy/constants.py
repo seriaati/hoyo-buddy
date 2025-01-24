@@ -842,14 +842,17 @@ HEADINGS = {
     "how-does-the-email-and-password-login-method-work": {
         discord.Locale.taiwan_chinese: "電子郵件和密碼登錄方式如何運作",
         discord.Locale.chinese: "電子郵件和密碼登錄方式如何運作",
+        discord.Locale.vietnamese: "phương pháp đăng nhập bằng email và mật khẩu hoạt động như thế nào",
     },
     "i-am-a-console-player": {
         discord.Locale.taiwan_chinese: "我是主機玩家",
         discord.Locale.chinese: "我是主機玩家",
+        discord.Locale.vietnamese: "tôi-chới-trên-máy-chơi-game-playstation-và-xbox",
     },
     "which-login-method-should-i-use": {
         discord.Locale.taiwan_chinese: "我應該選擇哪種登入方式",
         discord.Locale.chinese: "我應該選擇哪種登入方式",
+        discord.Locale.vietnamese: "tôi-nên-sử-dụng-phương-thức-đăng-nhập-nào",
     },
 }
 

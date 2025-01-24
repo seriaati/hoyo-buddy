@@ -9,7 +9,7 @@ from genshin.models import ZZZPropertyType as PropType
 from PIL import Image, ImageDraw
 from PIL.Image import Transpose
 
-from hoyo_buddy.constants import ZZZ_AGENT_CORE_SKILL_LVL_MAP, get_disc_substat_roll_num
+from hoyo_buddy.constants import ZZZ_AGENT_CORE_LEVEL_MAP, get_disc_substat_roll_num
 from hoyo_buddy.draw.drawer import BLACK, Drawer
 
 from .common import SKILL_ORDER, STAT_ICONS, get_props
@@ -180,7 +180,7 @@ class ZZZAgentCard:
                 continue
 
             text = (
-                ZZZ_AGENT_CORE_SKILL_LVL_MAP[skill.level]
+                ZZZ_AGENT_CORE_LEVEL_MAP[skill.level]
                 if skill_type is ZZZSkillType.CORE_SKILL
                 else str(skill.level)
             )

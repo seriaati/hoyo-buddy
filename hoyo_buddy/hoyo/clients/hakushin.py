@@ -316,10 +316,13 @@ class HakushinTranslator:
         return embed
 
     def get_agent_core_embed(
-        self, cores: hakushin.zzz.CharacterCoreSkill, agent: hakushin.zzz.CharacterDetail
+        self,
+        cores: hakushin.zzz.CharacterCoreSkill,
+        agent: hakushin.zzz.CharacterDetail,
+        level: int,
     ) -> DefaultEmbed:
         embed = DefaultEmbed(self._locale)
-        core = cores.levels[1]
+        core = cores.levels[level]
         embed.add_field(name=core.names[0], value=core.descriptions[0], inline=False)
         embed.add_field(name=core.names[1], value=core.descriptions[1], inline=False)
         embed.set_thumbnail(url="https://api.hakush.in/zzz/UI/Icon_CoreSkill.webp")

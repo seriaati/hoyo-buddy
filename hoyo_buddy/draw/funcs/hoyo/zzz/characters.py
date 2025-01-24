@@ -8,7 +8,7 @@ from genshin.models import ZZZSkillType
 from genshin.models.zzz.character import ZZZFullAgent
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.constants import ZZZ_AGENT_CORE_SKILL_LVL_MAP
+from hoyo_buddy.constants import ZZZ_AGENT_CORE_LEVEL_MAP
 from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.l10n import LevelStr
 
@@ -93,7 +93,7 @@ def draw_agent_small_card(
                 continue
 
             text = (
-                ZZZ_AGENT_CORE_SKILL_LVL_MAP[skill.level]
+                ZZZ_AGENT_CORE_LEVEL_MAP[skill.level]
                 if skill_type is ZZZSkillType.CORE_SKILL
                 else str(skill.level)
             )

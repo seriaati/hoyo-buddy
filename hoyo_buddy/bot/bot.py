@@ -392,9 +392,9 @@ class HoyoBuddy(commands.AutoShardedBot):
             logger.error("Cannot find first key in ZZZ item template")
             return
 
-        id_key = "FJKECLFEHOA"  # Found in ItemTemplateTb.json
-        name_key = "JOMJELIIAGO"  # Found in ItemTemplateTb.json
-        prop_key = "OGIDKDJDHCL"  # Found in AvatarBaseTemplateTb.json
+        id_key = "PDJOCPDOOAA"  # Found in ItemTemplateTb.json
+        name_key = "KMFMLNCJBEG"  # Found in ItemTemplateTb.json
+        prop_key = "IPJPFKKIELF"  # Found in AvatarBattleTemplateTb.json
 
         for item in item_template[first_key]:
             if any(keyword in item[name_key] for keyword in ("Bangboo_Name", "Item_Weapon")):

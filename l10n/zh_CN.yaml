@@ -39,9 +39,9 @@ accounts_command_description: 管理账户
 action_in_cooldown_error_message: "请在 {available_time} 时再试一次。"
 action_in_cooldown_error_title: 操作冷却中
 add_account_button_label: 添加账号
-add_hoyolab_acc.embed.description: "1.通过邮箱和密码：最为推荐、最简单的方式。\n2.通过开发者工具：仅在电脑生效，如果你对第一种方式存有安全顾虑，该方式更安全些。"
+add_hoyolab_acc.embed.description: "- [我应该用哪种登录方式？](:docs/FAQ#which-login-method-should-i-use:)"
 add_hoyolab_acc.embed.title: 选择一个添加账号的方式
-adding_accounts_description: "欢迎来到Hoyo Buddy！只需要花费1分钟添加账号的时间，即可享受各种功能。\n关于账号安全，请阅读[Wiki页面](https://hb-docs.seria.moe/docs/Account-Security)，关于我们如何使用和收集你的数据，请阅读[隐私政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "- [Hoyo Buddy 是否安全？](:docs/Account-Security:)\n- [隐私政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: 选择账号所属平台
 ai_gen_image_error_message: 请检查输入的提示并重试。
 ai_gen_image_error_title: 在使用AI生成绘图中发生错误
@@ -140,7 +140,7 @@ email-geetest.embed.title: 在寄送验证码前需要进行 CAPTCHA 验证
 email_password_button_label: 通过邮箱和密码
 email_password_modal_email_input_label: 电子邮箱或用户名
 email_password_modal_password_input_label: 密码
-enter_email_password_instructions_description: "这个方法需要输入你的个人信息。\n\n- 作为交换，你的 `cookie_token` 可以自动刷新，这在兑换码相关功能中会有用处（只有 HoYoLAB 使用者受益）。\n- 你的邮箱和密码**完全不会**被保存在数据库中，因此几乎不可能被泄露。\n- 此外，这个机器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上有开源，所以你可以自行验证这点。\n- 你可以自行决定是否信任该机器人。\n"
+enter_email_password_instructions_description: "电子邮箱和密码是指用**Hoyoverse的账户**的邮箱与密码，而不是谷歌，苹果等账户的。\n- [账密登录如何运作？](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [没有 Hoyoverse 账号（用谷歌，Facebook等登录的）](:docs/Before-Start:)\n- [我是主机玩家](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: 更改光锥等级
 dark_mode_button_label: 深色模式
 error_footer: "你可以在我们的 Discord 服务器中寻求帮助, /about 內有連結"
@@ -550,7 +550,7 @@ dyk_team: "Hoyo Buddy 的小团队由一位程式设计师和一位设计师组�
 dyk_disable: 你可以使用 /settings 将这则讯息关闭
 dyk_settings_lang: 你可以使用 /settings 变更机器人使用的语言
 dyk_settings_theme: 你可以使用 /settings 切换为亮色或深色模式
-dyk_security: "我们有一篇关于账号安全的[文章](<https://hb-docs.seria.moe/docs/Account-Security>)"
+dyk_security: "我们有一篇关于账户安全的[文章](<:docs/Account-Security:>)"
 dyk_github: "Hoyo Buddy 于 [GitHub](<https://github.com/seriaati/hoyo-buddy>) 上开源"
 dyk_python: Hoyo Buddy 使用纯 Python 撰写而成
 dyk_unreleased: 你可以使用 /search 查看尚未释出的游戏内容
@@ -574,7 +574,7 @@ show_tutorial_button_label: 显示教程
 close_button_label: 关闭
 required_field_error_message: 此栏位为必填栏位
 accounts_added_snackbar_message: "帐户新增成功，正在将你重新导向至 Discord..."
-account_add_start_message: "点击下方按钮并遵循指示来新增你的帐户。当你完成的时候，使用 </accounts> 指令来查看你刚才新增的帐户。如果你遇到任何问题或需要帮助，加入我们的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)。"
+account_add_start_message: "点击下方按钮，跟着操作指示添加账户。添加完成后，你可以使用</accounts>命令查看已添加账户。\n如果你需要帮助的话，请加入我们的[Discord 服务器](<https://link.seria.moe/hb-dc>)"
 hbls_button_label: 开始！
 gacha_import_url_modal_title: 输入抽卡纪录连结
 gacha_import_embed_description: "抽卡记录链接：从游戏内获取一串很长的链接来导入你的抽卡记录，不同游戏的获取方式如下：\n- 安卓：[YouTube 视频](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神：[paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-cn/genshin/wish-import)\n- 崩坏：星穹铁道：[Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-cn/warp-import)\n- 绝区零：[zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-cn/zzz/signal-import)\n\n如果你有使用下列的服务之一，将你的抽卡记录导出至指定的文件格式后即可使用 </gacha-log upload> 将其上传并导入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
@@ -787,3 +787,8 @@ auto_task_error_dm_content: "由于发生错误，{feature}功能已被关闭，
 is_support_custom_image_desc: 支持自定义图片
 is_not_support_custom_image_desc: 不支持自定义图片
 template_preview_header: 范例样式
+missing_permissions_error_title: Hoyo Buddy 未获得权限
+missing_permissions_error_message: "Hoyo Buddy 需要以下权限才能正常运行：\n- 发送消息\n- 嵌入链接\n- 附加文件\n- 使用外部表情符号"
+blocked_by_auto_mod_error_title: 此消息已被 AutoMod 拦截
+blocked_by_auto_mod_error_message: "请尝试再次运行该命令，或与服务器管理员联系以禁用Hoyo Buddy的AutoMod。"
+zzz.core_level.placeholder: 选择核心技等级...

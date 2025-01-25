@@ -348,7 +348,7 @@ def dict_cookie_to_str(cookie_dict: dict[str, str]) -> str:
 
 def get_project_version() -> str:
     data = toml.load("pyproject.toml")
-    return f"v{data["project"]["version"]}"
+    return f"v{data['project']['version']}"
 
 
 def init_sentry() -> None:

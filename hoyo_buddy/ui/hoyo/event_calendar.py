@@ -385,7 +385,7 @@ class ChallengeSelector(ItemSelector):
             if challenge.abyss_detail is not None:
                 name = f"{name} ({challenge.abyss_detail.max_star}/{challenge.abyss_detail.total_star})"
             if challenge.theater_detail is not None:
-                name = f"{name} ({challenge.theater_detail.max_round or "-"}/10)"
+                name = f"{name} ({challenge.theater_detail.max_round or '-'}/10)"
             return name
 
         if challenge.type is genshin.models.ChallengeType.MOC:

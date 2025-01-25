@@ -35,7 +35,9 @@ class EmailPasswordPage(ft.View):
                     ft.Column(
                         [
                             ft.Text(
-                                translator.translate(LocaleStr(key="email_password_button_label"), locale),
+                                translator.translate(
+                                    LocaleStr(key="email_password_button_label"), locale
+                                ),
                                 size=24,
                             ),
                             ft.Markdown(

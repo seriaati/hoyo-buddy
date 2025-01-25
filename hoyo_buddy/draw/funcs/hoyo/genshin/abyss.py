@@ -76,7 +76,7 @@ class SpiralAbyssCard:
         )
 
         stats: tuple[LocaleStr | str, ...] = (
-            f"{self._data.start_time.strftime("%Y/%m/%d")} ~ {self._data.end_time.strftime("%Y/%m/%d")}",
+            f"{self._data.start_time.strftime('%Y/%m/%d')} ~ {self._data.end_time.strftime('%Y/%m/%d')}",
             LocaleStr(
                 key="abyss.battles_won_fought",
                 val1=self._data.total_wins,

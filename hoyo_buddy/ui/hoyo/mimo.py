@@ -140,13 +140,18 @@ class MimoView(ui.View):
                 value += f"\n{LocaleStr(key='mimo_item_available_time', time=shop_item.next_refresh_time).translate(self.locale)}"
 
             if shop_item.status is genshin.models.MimoShopItemStatus.LIMIT_REACHED:
-                value += f"\n{LocaleStr(
-                    key="mimo_status", status=LocaleStr(key="exchangeLimit", mi18n_game="mimo")
-                ).translate(self.locale)}"
+                value += f"\n{
+                    LocaleStr(
+                        key='mimo_status', status=LocaleStr(key='exchangeLimit', mi18n_game='mimo')
+                    ).translate(self.locale)
+                }"
             elif shop_item.status is genshin.models.MimoShopItemStatus.SOLD_OUT:
-                value += f"\n{LocaleStr(
-                    key="mimo_status", status=LocaleStr(key="exchangeSoldOut", mi18n_game="mimo")
-                ).translate(self.locale)}"
+                value += f"\n{
+                    LocaleStr(
+                        key='mimo_status',
+                        status=LocaleStr(key='exchangeSoldOut', mi18n_game='mimo'),
+                    ).translate(self.locale)
+                }"
 
             embed.add_field(name=shop_item.name, value=value, inline=False)
 

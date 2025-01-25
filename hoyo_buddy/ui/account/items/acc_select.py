@@ -5,8 +5,7 @@ from typing import TYPE_CHECKING
 from discord.utils import get as dget
 
 from hoyo_buddy.l10n import LocaleStr
-
-from ...components import Select, SelectOption
+from hoyo_buddy.ui import PaginatorSelect, SelectOption
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
@@ -16,7 +15,7 @@ else:
     AccountManager = None
 
 
-class AccountSelect(Select[AccountManager]):
+class AccountSelect(PaginatorSelect[AccountManager]):
     def __init__(self, options: list[SelectOption]) -> None:
         super().__init__(
             custom_id="account_selector",

@@ -385,7 +385,7 @@ redeem_codes_button.label: 兑换码
 redeem_command_description: 使用兑换码兑换游戏奖励
 redeem_command_embed.description: "输入兑换码，最多可同时兑换5个。\n或者，你可以启用自动兑换功能。"
 redeem_command_embed.title: 兑换结果
-redeem_cooldown_embed.description: "由于兑换有冷却机制，这可能虚要一段时间。"
+redeem_cooldown_embed.description: "由于有兑换冷却机制，这可能会需要一点时间。"
 redeem_cooldown_embed.title: 兑换中
 refinement_indicator: "精炼 {r}"
 relics: 遗器
@@ -402,9 +402,9 @@ resin_reminder_button.label: 树脂提醒
 resin_reminder_modal.title: 树脂提醒设置
 reward_claimed_title: 已领取每日奖励
 saturday: 星期六
-search_autocomplete_no_results: 未能找到任何结果
+search_autocomplete_no_results: 未找到结果
 search_autocomplete_not_setup: "搜索自动完成选项还未设置，请稍后再试。"
-search_command_category_param_description: 要搜索的类别
+search_command_category_param_description: 要搜索的类型
 search_cmd_category_param_name: 类别
 search_command_description: 搜寻任何与游戏相关的内容
 search_command_game_param_description: 要搜索的游戏

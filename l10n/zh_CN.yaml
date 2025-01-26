@@ -167,12 +167,12 @@ exploration.title: 世界探索
 exploration.waypoints: 已解锁锚点
 exploration_command_description: 查看原神大世界探索度
 farm_add_command.item_already_in_list: 该物品已存在于列表中
-farm_add_command.item_already_in_list_description: 此物品已经在你的刷本提醒列表里了。
-farm_add_command_description: 新增角色/武器，以在其素材可以刷取时收到通知
+farm_add_command.item_already_in_list_description: 此物品已经在刷本提醒列表里了。
+farm_add_command_description: 添加角色/武器，以便于在可以刷取材料时通知。
 farm_check.farmable_today: "今天可以刷取 {name} 的素材了"
 farm_check.use_farm_notify: "使用 /farm reminder 进行提醒设置\n使用 /farm view 查看今日能刷取的所有材料"
 farm_notify.add_item: 添加物品
-farm_notify.add_item.embed.description: "使用</farm add>指令将物品添加到清单内"
+farm_notify.add_item.embed.description: "使用</farm add>命令将物品添加到列表内"
 farm_notify.description: 你会在此列表内的角色/武器的素材可以刷取时收到提醒。
 farm_notify.empty: 你的刷本提醒列表中没有任何物品
 farm_notify.empty_description: 使用</farm add>指令将物品新增至你的刷本通知清单里

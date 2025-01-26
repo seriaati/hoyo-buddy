@@ -9,7 +9,7 @@ about_command.translators: 翻译员
 about_command.uptime: 运行时间
 about_command.website: 官方网站
 about_command_description: 关于机器人
-about_embed.description: "一个为 Hoyoverse 游戏玩家量身订做的 Discord 机器人，功能丰富、易于使用且设计精美。"
+about_embed.description: "一个为 Hoyoverse 游戏玩家量身定做的 Discord 机器人，功能丰富、易于使用且设计精美。"
 abundance: 丰饶
 abyss.battles_won_fought: "获胜次数/战斗次数：{val1}/{val2}"
 abyss.deepest_descent: "最深抵达：{val}"

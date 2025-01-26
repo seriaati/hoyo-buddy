@@ -147,7 +147,7 @@ error_footer: "你可以在我们的 Discord 服务器中寻求帮助，在/abou
 error_title: 出现错误
 erudition: 智识
 days: 天
-exceptions.card_not_ready_error.message: "当新角色释出时，我需要为他们指定面板卡片使用的颜色。\n如果你在游戏更新后的几天仍然看到这则讯息的话，请在[Discord 服务器](https://link.seria.moe/hb-dc) 内通知我，因为我可能忘记做了。"
+exceptions.card_not_ready_error.message: "当新角色发布时，我需要指定新角色面板卡片使用的颜色。\n如果你在游戏更新后的几天还能看到该消息，请在[Discord 服务器](https://link.seria.moe/hb-dc) 通知我，因为我可能忘记做了。"
 exceptions.card_not_ready_error.title: "{character_name} 的卡片数据还没有准备好呢。"
 exped.embed.description: 一个或者多个派遣已经完成了
 exped_button.label: 探索派遣提醒

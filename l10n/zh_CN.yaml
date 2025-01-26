@@ -266,8 +266,8 @@ next_page_option_label: 下一页
 nickname_modal_label: 昵称
 nickname_modal_placeholder: "主账号、亚服账号..."
 nihility: 虚无
-no_account_found_for_games_error_message: "你没有以下任一游戏的帐户。请透过 </accounts> 新增"
-no_account_found_for_games_platform_error_message: "在 {platform} 平台上，你没有以下任一游戏的帐户。请透过 1 新增"
+no_account_found_for_games_error_message: "该账号中未有以下任何游戏，请通过 </accounts> 添加"
+no_account_found_for_games_platform_error_message: "在 {platform} 平台上，你并未有以下游戏的账号。请通过</accounts>添加"
 no_account_found_for_games_error_title: 账号未发现
 no_accounts_autocomplete_choice: 您还未持有账号。通过/accounts来添加吧。
 profile_character_param_name: "角色-{num}"

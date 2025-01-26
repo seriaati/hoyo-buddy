@@ -114,7 +114,7 @@ checkin_command_description: 游戏每日签到
 complete_captcha_button_label: 完成 CAPTCHA
 complete_geetest_button_description: 点击下方按钮来完成 geetest 验证
 complete_geetest_button_label: 完成 geetest 验证
-const_refine_str: "{const}命{refine}精"
+const_refine_str: "{const}命 精{refine}"
 continue_button_label: 继续
 cryo: 冰
 daily_button.label: 每日任务提醒

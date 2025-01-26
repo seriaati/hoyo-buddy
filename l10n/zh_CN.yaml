@@ -275,7 +275,7 @@ no_challenge_data_err_message: "无法找到任何此阶段的 {challenge} 数�
 no_challenge_data_err_title: "没有 {challenge} 数据"
 no_characters_found_error_message: 请选择其他筛选条件后重试。
 no_characters_found_error_title: 未找到与筛选条件符合的角色
-no_game_accounts_error_message: "此{platform}帐户没有任何游戏帐户。"
+no_game_accounts_error_message: "此{platform}账号并持有任何游戏"
 notes-card.gi.completed: 已完成
 notes-card.gi.daily-commissions: 每日委托
 notes-card.gi.expedition-finished: 已完成

@@ -9,7 +9,7 @@ about_command.translators: 翻译员
 about_command.uptime: 运行时间
 about_command.website: 官方网站
 about_command_description: 关于机器人
-about_embed.description: "一个为 Hoyoverse 游戏玩家量身订做的 Discord 机器人，功能丰富、易于使用且设计精美。"
+about_embed.description: "一个为 Hoyoverse 游戏玩家量身定做的 Discord 机器人，功能丰富、易于使用且设计精美。"
 abundance: 丰饶
 abyss.battles_won_fought: "获胜次数/战斗次数：{val1}/{val2}"
 abyss.deepest_descent: "最深抵达：{val}"
@@ -24,12 +24,12 @@ abyss_chamber.embed.title: "第{floor_index}层 - 第{chamber_index}间"
 abyss_chamber.enemy_level.embed.field.name: 敌人等级
 abyss_chamber.ley_line_disorder.embed.field.name: 地脉异常
 abyss_enemy.item_description: "生命值：{HP}"
-acc_no_default_param_desc: 用于运行此指令的帐户
+acc_no_default_param_desc: 用于运行此命令的帐户
 account_autocomplete_param_description: "选择用该命令运行的账户，默认为/accounts中选择的"
 account_autocomplete_param_name: 账号
 account_deleted_description: "{account} 已被删除"
 account_deleted_title: 账号已删除
-account_manager_footer: 被选择账号会作为所有指令运行的预设账号
+account_manager_footer: 被选择账号会作为所有命令运行的预设账号
 account_manager_no_accounts_description: 你尚未持有任何账号
 account_manager_title: 账号管理
 account_not_found_error_message: "无法通过所提供的查询找到账户，请从已提供的选项中选择，而不是自己输入的选项。"
@@ -39,9 +39,9 @@ accounts_command_description: 管理账户
 action_in_cooldown_error_message: "请在 {available_time} 时再试一次。"
 action_in_cooldown_error_title: 操作冷却中
 add_account_button_label: 添加账号
-add_hoyolab_acc.embed.description: "1.通过邮箱和密码：最为推荐、最简单的方式。\n2.通过开发者工具：仅在电脑生效，如果你对第一种方式存有安全顾虑，该方式更安全些。"
+add_hoyolab_acc.embed.description: "- [我应该用哪种登录方式？](:docs/FAQ#which-login-method-should-i-use:)"
 add_hoyolab_acc.embed.title: 选择一个添加账号的方式
-adding_accounts_description: "欢迎来到Hoyo Buddy！只需要花费1分钟添加账号的时间，即可享受各种功能。\n关于账号安全，请阅读[Wiki页面](https://hb-docs.seria.moe/docs/Account-Security)，关于我们如何使用和收集你的数据，请阅读[隐私政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "- [Hoyo Buddy 是否安全？](:docs/Account-Security:)\n- [隐私政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: 选择账号所属平台
 ai_gen_image_error_message: 请检查输入的提示并重试。
 ai_gen_image_error_title: 在使用AI生成绘图中发生错误
@@ -114,7 +114,7 @@ checkin_command_description: 游戏每日签到
 complete_captcha_button_label: 完成 CAPTCHA
 complete_geetest_button_description: 点击下方按钮来完成 geetest 验证
 complete_geetest_button_label: 完成 geetest 验证
-const_refine_str: "{const}命{refine}精"
+const_refine_str: "{const}命 精{refine}"
 continue_button_label: 继续
 cryo: 冰
 daily_button.label: 每日任务提醒
@@ -130,24 +130,24 @@ dice_cost_embed_field_name: 骰子花费
 download_image_failed_error_message: "无法下载图片{url}, 状态码{status}。\n请稍后再试，或者尝试用不同图片，或者检查该图片URL是否无效。"
 download_image_failed_error_title: 图像下载失败
 edit_nickname_modal_title: 编辑昵称
-eidolon_superimpose_str: "{eidolon}魂{superimpose}叠"
+eidolon_superimpose_str: "{eidolon}魂 叠{superimpose}"
 electro: 雷
 email_verification_dialog_title: 需要验证
 email_verification_dialog_content: 请输入收到的验证码
 email_verification_dialog_action: 验证
 email_verification_field_label: 验证码
-email-geetest.embed.title: 在寄送验证码前需要进行 CAPTCHA 验证
+email-geetest.embed.title: 在发送验证码前须进行 CAPTCHA 验证
 email_password_button_label: 通过邮箱和密码
 email_password_modal_email_input_label: 电子邮箱或用户名
 email_password_modal_password_input_label: 密码
-enter_email_password_instructions_description: "这个方法需要输入你的个人信息。\n\n- 作为交换，你的 `cookie_token` 可以自动刷新，这在兑换码相关功能中会有用处（只有 HoYoLAB 使用者受益）。\n- 你的邮箱和密码**完全不会**被保存在数据库中，因此几乎不可能被泄露。\n- 此外，这个机器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上有开源，所以你可以自行验证这点。\n- 你可以自行决定是否信任该机器人。\n"
+enter_email_password_instructions_description: "电子邮箱和密码是指用**Hoyoverse的账户**的邮箱与密码，而不是谷歌，苹果等账户的。\n- [账密登录如何运作？](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [没有 Hoyoverse 账号（用谷歌，Facebook等登录的）](:docs/Before-Start:)\n- [我是主机玩家](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: 更改光锥等级
 dark_mode_button_label: 深色模式
-error_footer: "你可以在我们的 Discord 服务器中寻求帮助, /about 內有連結"
+error_footer: "你可以在我们的 Discord 服务器中寻求帮助，在/about中附有邀请链接。"
 error_title: 出现错误
 erudition: 智识
 days: 天
-exceptions.card_not_ready_error.message: "当新角色释出时，我需要为他们指定面板卡片使用的颜色。\n如果你在游戏更新后的几天仍然看到这则讯息的话，请在[Discord 服务器](https://link.seria.moe/hb-dc) 内通知我，因为我可能忘记做了。"
+exceptions.card_not_ready_error.message: "当新角色发布时，我需要指定新角色面板卡片使用的颜色。\n如果你在游戏更新后的几天还能看到该消息，请在[Discord 服务器](https://link.seria.moe/hb-dc) 通知我，因为我可能忘记做了。"
 exceptions.card_not_ready_error.title: "{character_name} 的卡片数据还没有准备好呢。"
 exped.embed.description: 一个或者多个派遣已经完成了
 exped_button.label: 探索派遣提醒
@@ -167,26 +167,26 @@ exploration.title: 世界探索
 exploration.waypoints: 已解锁锚点
 exploration_command_description: 查看原神大世界探索度
 farm_add_command.item_already_in_list: 该物品已存在于列表中
-farm_add_command.item_already_in_list_description: 此物品已经在你的刷本提醒列表里了。
-farm_add_command_description: 新增角色/武器，以在其素材可以刷取时收到通知
+farm_add_command.item_already_in_list_description: 此物品已经在刷本提醒列表里了。
+farm_add_command_description: 添加角色/武器，以便于在可以刷取材料时通知。
 farm_check.farmable_today: "今天可以刷取 {name} 的素材了"
 farm_check.use_farm_notify: "使用 /farm reminder 进行提醒设置\n使用 /farm view 查看今日能刷取的所有材料"
 farm_notify.add_item: 添加物品
-farm_notify.add_item.embed.description: "使用</farm add>指令将物品添加到清单内"
+farm_notify.add_item.embed.description: "使用</farm add>命令将物品添加到列表内"
 farm_notify.description: 你会在此列表内的角色/武器的素材可以刷取时收到提醒。
 farm_notify.empty: 你的刷本提醒列表中没有任何物品
-farm_notify.empty_description: 使用</farm add>指令将物品新增至你的刷本通知清单里
+farm_notify.empty_description: 使用</farm add>命令，将物品添加至刷本通知列表中
 farm_notify.remove_item: 移除物品
-farm_notify.remove_item.embed.description: "使用</farm remove>指令将物品从清单内移除"
+farm_notify.remove_item.embed.description: "使用</farm remove>命令将物品从列表中移除"
 farm_notify.title: 刷本提醒列表
 farm_reminder_command_description: 在角色/武器的素材可以刷取时通知你
 farm_remove_command.item_not_found: 找不到该物品
 farm_remove_command.item_not_found_description: 此物品没有在你的刷本提醒列表中。
 farm_remove_command_description: 从刷本提醒列表中移除角色/武器
-farm_view.happy_farming: 🌾 享受刷本吧！
+farm_view.happy_farming: 🌾 尽情刷本吧！
 farm_view.set_reminder: 设置提醒
-farm_view.set_reminder.embed.description: "使用</farm reminder>指令设定刷本通知"
-farm_view.sundays: 在星期日，所有副本皆可刷取
+farm_view.set_reminder.embed.description: "使用</farm reminder>命令，设置刷本提醒"
+farm_view.sundays: 在星期日，所有副本开放
 farm_view.weekday_select.placeholder: 选择一个星期
 farm_view_command_description: 查看原神中可以刷取的副本
 fire: 火
@@ -201,14 +201,14 @@ game_maintenance_description: 请稍后再试
 game_maintenance_title: 游戏处于维护中。
 game_value_incomplete_param_error_message: 你必须指定所属游戏UID
 geeetest_verification_complete: 验证完成
-geetest.embed.title: 在登入前需要进行 CAPTCHA 验证
+geetest.embed.title: 在登录前须进行 CAPTCHA 验证
 geetest.no_need: 无需进行 Geetest 验证
-geetest.no_need.description: "从来不需要进行 geetest 验证！你怎么在这？！"
+geetest.no_need.description: "本来就不需要进行 geetest 验证啊！你怎么还在这里？！"
 geetest.required: 需要Geetest验证
-geetest.required.description: "使用</geetest>指令，选择触发此验证的帐户，并选择 `{geetest_type}` 来完成验证"
+geetest.required.description: "使用</geetest>命令，选择触发此验证的账户，并选择 `{geetest_type}` 来完成验证"
 geetest_command_description: 完成 Geetest 验证
-geetest_cmd_type_param_desc: Geetest 验证的类别
-geetest_command_type_param_name: 类别
+geetest_cmd_type_param_desc: Geetest 验证类型
+geetest_command_type_param_name: 类型
 genshin_impact: 原神
 geo: 岩
 gi_daily.embed.description: 每日委托或冒险历练尚未全部完成
@@ -226,10 +226,10 @@ inazuma: 稻妻
 instructions_title: 指引
 interaction_failed_description: "该视图不是由你发起，因此无法使用。"
 interaction_failed_title: 交互失败
-invalid_category_selected: 选择了无效的类别
-invalid_color_error_message: "一个有效的色码需为一个十六进制码，例如 #FF0000"
-invalid_color_error_title: 无效的色码
-invalid_cookies_description: 使用</accounts>来刷新帐户的 cookies
+invalid_category_selected: 选择了无效分类
+invalid_color_error_message: "有效颜色码须为16进制，例如 #FF0000"
+invalid_color_error_title: 无效颜色码
+invalid_cookies_description: 使用</accounts>来刷新账户 cookies
 invalid_cookies_title: 无效的 Cookies
 invalid_email_password_description: "输入的邮箱或密码不正确，请检查后重试。"
 invalid_email_password_title: 无效邮箱或密码
@@ -266,8 +266,8 @@ next_page_option_label: 下一页
 nickname_modal_label: 昵称
 nickname_modal_placeholder: "主账号、亚服账号..."
 nihility: 虚无
-no_account_found_for_games_error_message: "你没有以下任一游戏的帐户。请透过 </accounts> 新增"
-no_account_found_for_games_platform_error_message: "在 {platform} 平台上，你没有以下任一游戏的帐户。请透过 1 新增"
+no_account_found_for_games_error_message: "该账号中未有以下任何游戏，请通过 </accounts> 添加"
+no_account_found_for_games_platform_error_message: "在 {platform} 平台上，你并未有以下游戏的账号。请通过</accounts>添加"
 no_account_found_for_games_error_title: 账号未发现
 no_accounts_autocomplete_choice: 您还未持有账号。通过/accounts来添加吧。
 profile_character_param_name: "角色-{num}"
@@ -275,7 +275,7 @@ no_challenge_data_err_message: "无法找到任何此阶段的 {challenge} 数�
 no_challenge_data_err_title: "没有 {challenge} 数据"
 no_characters_found_error_message: 请选择其他筛选条件后重试。
 no_characters_found_error_title: 未找到与筛选条件符合的角色
-no_game_accounts_error_message: "此{platform}帐户没有任何游戏帐户。"
+no_game_accounts_error_message: "此{platform}账号并持有任何游戏"
 notes-card.gi.completed: 已完成
 notes-card.gi.daily-commissions: 每日委托
 notes-card.gi.expedition-finished: 已完成
@@ -298,7 +298,7 @@ notes.elysian_realm: 往世乐土
 notes.elysian_realm_value: "当前积分: {cur}/{max}"
 notes_available: "{emoji} 在 {in_time} 后可用"
 notes_command_description: 查看实时便笺
-notif.embed.footer: "点击下方按钮更改通知设置。\n如果已经过期，请使用 /notes 指令。"
+notif.embed.footer: "点击下方按钮更改通知设置。\n如果已经过期，请使用 /notes 命令。"
 notif_modal.enabled.label: 开
 notif_modal.max_notif_count.label: 最大通知数
 notif_modal.notify_interval.label: 通知间隔（分钟）
@@ -313,7 +313,7 @@ mimo_auto_task_failure_notify_toggle_label: 在自动完成任务失败时通知
 mimo_auto_buy_success_notify_toggle_label: 在自动购买奖励成功时通知
 mimo_auto_buy_failure_notify_toggle_label: 在自动购买奖励失败时通知
 nsfw_prompt_error_message: "此提示包含不宜內容，请使用其他提示后再试。"
-nsfw_prompt_error_title: 侦测到不合宜的提示
+nsfw_prompt_error_title: 检测到不宜内容
 page_footer: "{current_page}/{total_pages}页"
 pf_card_total_score: "总分: {score}"
 physical: 物理
@@ -378,14 +378,14 @@ realm_curr_button.label: 洞天宝钱提醒
 realm_curr_modal.title: 洞天宝钱提醒设置
 redeeem_code.cookie_token_expired_description: "兑换码功能仅适用于用电子邮箱和密码登录的用户，你可以通过</accounts>进行兑换操作。"
 redeeem_code.cookie_token_expired_title: Cookie Token 已过期
-redeeem_code.cookie_token_refresh_failed_description: "自上次新增帐户以来，你可能已变更帐户密码。\n请使用</accounts>透过电子邮件和密码的方式重新新增您的帐户。"
+redeeem_code.cookie_token_refresh_failed_description: "自上次添加账户以来，你可能更改了账号密码。\n请使用</accounts>通过电子邮箱和密码的方式重新添加。"
 redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失败
 redeem_code.success: 兑换成功
 redeem_codes_button.label: 兑换码
 redeem_command_description: 使用兑换码兑换游戏奖励
 redeem_command_embed.description: "输入兑换码，最多可同时兑换5个。\n或者，你可以启用自动兑换功能。"
 redeem_command_embed.title: 兑换结果
-redeem_cooldown_embed.description: "由于兑换有冷却机制，这可能虚要一段时间。"
+redeem_cooldown_embed.description: "由于有兑换冷却机制，这可能会需要一点时间。"
 redeem_cooldown_embed.title: 兑换中
 refinement_indicator: "精炼 {r}"
 relics: 遗器
@@ -402,18 +402,18 @@ resin_reminder_button.label: 树脂提醒
 resin_reminder_modal.title: 树脂提醒设置
 reward_claimed_title: 已领取每日奖励
 saturday: 星期六
-search_autocomplete_no_results: 未能找到任何结果
+search_autocomplete_no_results: 未找到结果
 search_autocomplete_not_setup: "搜索自动完成选项还未设置，请稍后再试。"
-search_command_category_param_description: 要搜索的类别
-search_cmd_category_param_name: 类别
+search_command_category_param_description: 要搜索的类型
+search_cmd_category_param_name: 类型
 search_command_description: 搜寻任何与游戏相关的内容
 search_command_game_param_description: 要搜索的游戏
 search_command_game_param_name: 游戏
 search_command_query_param_description: 要搜索的关键字
 search_command_query_param_name: 关键字
-select_account.embed.description: 选择欲添加至 Hoyo Buddy 的帐户
+select_account.embed.description: 选择想要添加至 Hoyo Buddy 的账户
 select_account.embed.title: 🎉 欢迎来到 Hoyo Buddy！
-settings_command_description: 调整用户设置
+settings_command_description: 用户配置管理
 skill_attributes_embed_field_name: "技能属性（等级{level}）"
 skill_level.modal.title: 输入技能等级
 spiral_abyss: 深境螺旋
@@ -428,7 +428,7 @@ threshold.embed.description: "已达阈值（{threshold}）"
 thunder: 雷
 thursday: 星期四
 tuesday: 星期二
-unreleased_content: 尚未释出的内容
+unreleased_content: 尚未发布的内容
 user_autocomplete_param_description: "输入要搜索的用户，默认为自己"
 user_autocomplete_param_name: 用户
 user_no_accounts_autocomplete_choice: 此用户尚未绑定账号。
@@ -455,9 +455,9 @@ yatta_character_skill_weakness_break_field_name: 弱点击破
 yatta_character_trace_page_label: 行迹
 yatta_item_sources_field_name: 来源
 characters.show_owned_only: 仅显示已拥有的角色
-redeem_code.ar_too_low: 冒险等级过低
+redeem_code.ar_too_low: 冒险等阶过低
 data_not_public.title: 资料不公开
-data_not_public.description: "在战绩设定中启用资料分享"
+data_not_public.description: "在战绩设置中开启战绩展示"
 not_implemented_error_title: 功能尚未实装
 not_implemented_error_only_game_message: "此功能尚未在 `{game}` 账户上实装。"
 not_implemented_error_message: "此功能尚未在 `{platform}` 上的 `{game}` 帐户上实装。"
@@ -493,13 +493,13 @@ set_cur_temp_as_default.done: 完成
 set_cur_temp_as_default.done_desc: "你的 {game} 预设卡片样式已被设置为 {template}"
 remove_from_cache_finish_embed_desc: 重新执行 /profile 命令来查看变更
 third_party_card_temp_error_title: 这个第三方卡片样式出错了
-third_party_card_temp_error_message: "此角色的卡片样式已被重置为 的样式。如果此错误持续发生，请在我们的[Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
+third_party_card_temp_error_message: "此角色的卡片样式已被重置为Hoyo Buddy样式。如果此错误持续发生，请在我们的[Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 account_locked_title: 账户已被锁定20分钟
-account_locked_description: "输入错误密码的次数过多。请等待 20 分钟，然后重试。如果你无法设定好你的帐户，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)中寻求帮助。"
+account_locked_description: "输入错误密码的次数过多。请在20分钟后重试。如果你无法设置好你的账户，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)中寻求帮助。"
 ether: 以太
 electric: 电属性
 profile.no_data.title: 没有可用的玩家数据
-profile.no_data.description: "你相信吗，这里居然没有任何东西可以显示。"
+profile.no_data.description: "信不信由你，这里没有什么可以展示的了。"
 profile.zzz_hoyolab.character_select.description: "意象影画 {m} | {platform}数据"
 characters.filter.specialty.placeholder: 筛选特性…
 zzz.basic: 普通攻击
@@ -513,7 +513,7 @@ characters.sorter.speciality: 特性
 characters.sorter.faction: 阵营
 characters.sorter.mindscape_cinema: 意象影画
 characters.embed.filter_text: "{filter}角色"
-stats_command_description: 查看游戏帐号数据
+stats_command_description: 查看游戏账号数据
 tears_of_themis: 未定事件簿
 honkai_suit_rarity: "稀有度 {rarity}"
 about_command.designers: 设计师
@@ -544,20 +544,20 @@ zzz.engine.refinement_select.placeholder: 选择一个精炼等级…
 dyk_discord_server_updates: "我们会在 [Discord 服务器](<https://link.seria.moe/hb-dc>)中发布更新日志"
 dyk_discord_server_feedback: "你可以加入我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)来给予反馈"
 dyk_contact_me: "你可以在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)中与我们取得联系"
-dyk_need_help_no_title: "需要帮助吗？加入我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)"
-dyk_donate_no_title: "喜欢 Hoyo Buddy 吗？考虑透过[捐款](<https://link.seria.moe/donate-zh>)来支持我们"
-dyk_team: "Hoyo Buddy 的小团队由一位程式设计师和一位设计师组成"
-dyk_disable: 你可以使用 /settings 将这则讯息关闭
-dyk_settings_lang: 你可以使用 /settings 变更机器人使用的语言
+dyk_need_help_no_title: "需要帮助吗？加入我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)吧。"
+dyk_donate_no_title: "喜欢 Hoyo Buddy 吗？考虑一下通过[捐款](<https://link.seria.moe/donate-zh>)来支持我们"
+dyk_team: "Hoyo Buddy 是由一位程序员和一位设计师组成的小团队"
+dyk_disable: 你可以使用 /settings 关闭此消息
+dyk_settings_lang: 你可以使用 /settings 更改机器人使用的语言
 dyk_settings_theme: 你可以使用 /settings 切换为亮色或深色模式
-dyk_security: "我们有一篇关于账号安全的[文章](<https://hb-docs.seria.moe/docs/Account-Security>)"
+dyk_security: "我们有一篇关于账户安全的[文章](<:docs/Account-Security:>)"
 dyk_github: "Hoyo Buddy 于 [GitHub](<https://github.com/seriaati/hoyo-buddy>) 上开源"
-dyk_python: Hoyo Buddy 使用纯 Python 撰写而成
-dyk_unreleased: 你可以使用 /search 查看尚未释出的游戏内容
-dyk_team_card: 你可以透过选择多个角色的方式在 /profile 生成队伍卡片
-dyk_set_default_acc: 你可以用 /accounts 设置一个预设帐户，用于运行所有指令
+dyk_python: Hoyo Buddy 是用纯 Python 编写而成的。
+dyk_unreleased: 你可以使用 /search 查看尚公开的游戏内容
+dyk_team_card: 你可以通过选择多个角色的方式在 /profile 生成队伍卡片
+dyk_set_default_acc: 你可以用 /accounts 设置一个预设账户，用于运行所有命令
 title_dyk: "你知道吗？"
-button_label_dyk: 「你知道吗」讯息
+button_label_dyk: 「你知道吗」消息
 events_view_start_date_embed_field: 开始时间
 events_view_end_date_embed_field: 结束时间
 events_view_ann_select_placeholder: 选择一个活动…
@@ -566,40 +566,40 @@ events_command_description: 查看正在进行中的游戏活动
 events_view_ann_type_select_placeholder: 选择一个活动分类…
 events_view_content_label: 查看完整内容
 events_command_game_param_description: 用于查看活动的游戏
-natlan: 納塔
+natlan: 纳塔
 top_percent: "前 {percent}%"
 profile_view_show_rank_button_label: 显示排名
 submit_button_label: 提交
 show_tutorial_button_label: 显示教程
 close_button_label: 关闭
-required_field_error_message: 此栏位为必填栏位
-accounts_added_snackbar_message: "帐户新增成功，正在将你重新导向至 Discord..."
-account_add_start_message: "点击下方按钮并遵循指示来新增你的帐户。当你完成的时候，使用 </accounts> 指令来查看你刚才新增的帐户。如果你遇到任何问题或需要帮助，加入我们的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)。"
+required_field_error_message: 此为必填栏位
+accounts_added_snackbar_message: "账户添加成功，正在将你重定向回 Discord..."
+account_add_start_message: "点击下方按钮，并按照指示添加你的游戏账户。完成后使用</accounts>来查看你已添加的账户。如果你遇到问题或需要帮助，请加入我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)。"
 hbls_button_label: 开始！
-gacha_import_url_modal_title: 输入抽卡纪录连结
+gacha_import_url_modal_title: 输入抽卡记录链接
 gacha_import_embed_description: "抽卡记录链接：从游戏内获取一串很长的链接来导入你的抽卡记录，不同游戏的获取方式如下：\n- 安卓：[YouTube 视频](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神：[paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-cn/genshin/wish-import)\n- 崩坏：星穹铁道：[Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-cn/warp-import)\n- 绝区零：[zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-cn/zzz/signal-import)\n\n如果你有使用下列的服务之一，将你的抽卡记录导出至指定的文件格式后即可使用 </gacha-log upload> 将其上传并导入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
-extract_authkey_error_message: "无法从连结内提取 authkey, 请尝试其他连结。"
+extract_authkey_error_message: "无法从链接中提取 authkey，请使用有效链接后重试。"
 extract_authkey_error_title: Authkey 提取失败
-gacha_import_loading_embed_title: 正在导入抽卡纪录
-gacha_import_loading_embed_description: "{loading_emoji} 这需要花费一些时间, 请耐心等候..."
-gacha_upload_invalid_file_error_title: 无效的档案格式
-gacha_upload_invalid_file_error_message: "只接受 **{file_format}** 档案, 请使用正确的档案重试。"
+gacha_import_loading_embed_title: 正在导入抽卡记录
+gacha_import_loading_embed_description: "{loading_emoji} 这需要花费一段时间，请耐心等待..."
+gacha_upload_invalid_file_error_title: 无效文件格式
+gacha_upload_invalid_file_error_message: "只接受 **{file_format}** 文件，请使用正确的文件重试。"
 uid_mismatch_error_title: UID 不符合
-uid_mismatch_error_message: "选择的帐户的 UID 与资料中的 UID ({uid}) 不符"
-gacha_import_command_description: 从游戏内导入抽卡纪录
+uid_mismatch_error_message: "选择的账号 UID 与资料中的 UID ({uid}) 不符"
+gacha_import_command_description: 从游戏内导入抽卡记录
 source_param_name: 来源
-source_param_description: 抽卡纪录档案的来源
-gacha_upload_command_description: 将其他来源的抽卡纪录上传并导入至 Hoyo Buddy
-file_param_name: 档案
-file_param_description: 要上传的抽卡纪录档案
+source_param_description: 抽卡记录文件的来源
+gacha_upload_command_description: 将其他来源的抽卡记录上传并导入至 Hoyo Buddy
+file_param_name: 文件
+file_param_description: 要上传的抽卡记录文件
 gacha_import_success_title: 抽卡纪录导入完成
-gacha_import_success_message: "{count} 笔抽卡纪录已经被导入成功。使用 </gacha-log view> 指令来查看它们。"
+gacha_import_success_message: "{count} 条抽卡记录已导入成功。使用 </gacha-log view> 命令来查看。"
 gacha_view_filter_button_label: 筛选条件
 gacha_view_search_field_label: 搜索
 gacha_view_gacha_detail_title: 抽卡物品详情
 gacha_view_gacha_detail: "ID: {id}\n名称: {name}\n抽取时间: {time}"
 gacha_view_num_since_last: "自上个 {rarity} ★ 物品 {pull} 抽"
-gacha_view_filter_dialog_title: 抽卡纪录筛选条件
+gacha_view_filter_dialog_title: 抽卡记录筛选条件
 banner_type_beginners_wish: 初行者推荐祈愿
 banner_type_standard_banner: 常驻祈愿
 banner_type_character_event: 角色活动祈愿
@@ -616,29 +616,29 @@ banner_type_bangboo_channel: 邦布调频
 cancel_button_label: 取消
 gacha_view_filter_size_field_label: 每页物品数
 gacha_view_page_field_label: 页数
-gacha_log_stats_title: 抽卡纪录数据
+gacha_log_stats_title: 抽卡记录数据
 gacha_log_personal_stats_title: 个人数据
 gacha_log_personal_stats: "生涯抽数: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\n当前卡池总抽数: {total_pulls} ({total_currency} {currency_emoji})\n5★ 保底: {star5_pity_cur}/{star5_pity_max}\n4★ 保底: {star4_pity_cur}/10\n总 5★ 数: {total_star5}\n总 4★ 数: {total_star4}\n5★ 平均抽数: {avg_pulls_per_star5}\n4★ 平均抽数: {avg_pulls_per_star4}"
 win_rate_stats: "{title} 胜率: {win_rate}% ({wins}/{total})"
 gacha_log_global_stats_title: 全服数据
 gacha_log_global_stats: "生涯抽数: {lifetime}\n5★ 幸运程度: {star5_luck}\n4★ 幸运程度: {star4_luck}"
 win_rate_global_stats: "{title} 胜率: {win_rate}"
-gacha_log_view_full: 查看抽卡纪录
-gacha_view_command_description: 查看导入的抽卡纪录
+gacha_log_view_full: 查看抽卡记录
+gacha_view_command_description: 查看导入的抽卡记录
 gacha_log_view_banner_type_selector_placeholder: 选择一个卡池...
-no_gacha_log_found_error_title: 没有找到任何抽卡纪录
-no_gacha_log_found_error_message: "使用 </gacha-log import> 或 </gacha-log upload> 来导入你的抽卡纪录。"
-gacha_log_manage_embed_title: 管理抽卡纪录
-gacha_log_manage_embed_description: "{count} 笔抽卡纪录属于此帐户。\n你可以将它们导出至 [UIGF](https://uigf.org) 格式。"
-gacha_log_export_button_label: 导出至 UIGF 格式
-gacha_log_delete_button_label: 删除所有纪录
+no_gacha_log_found_error_title: 没有找到任何抽卡记录
+no_gacha_log_found_error_message: "使用 </gacha-log import> 或 </gacha-log upload> 来导入你的抽卡记录。"
+gacha_log_manage_embed_title: 管理抽卡记录
+gacha_log_manage_embed_description: "{count} 条抽卡记录属于此账户。\n你可以将它们以 [UIGF](https://uigf.org) 格式导出。"
+gacha_log_export_button_label: 以 UIGF 格式导出
+gacha_log_delete_button_label: 删除所有记录
 gacha_log_delete_confirm_embed_title: 确认删除
-gacha_log_delete_confirm_embed_description: "你确定要**删除所有**属于此帐户的抽卡纪录吗？此操作无法撤销。"
+gacha_log_delete_confirm_embed_description: "你确定要**删除所有**属于该账户的抽卡记录吗？此操作无法撤销。"
 gacha_log_delete_confirm_button_label: 确认
 gacha_log_delete_done_embed_title: 删除完成
-gacha_log_delete_done_embed_description: 所有属于此帐户的抽卡纪录都已经被删除完毕。
-gacha_manage_command_description: 管理导入的抽卡纪录
-login_button_label: 使用 Discord 登入
+gacha_log_delete_done_embed_description: 属于此账户的所有抽卡记录已成功删除。
+gacha_manage_command_description: 管理导入的抽卡记录
+login_button_label: 使用 Discord 登录
 star5_guaranteed: "当前保底情况: 必定得到 UP 池物品"
 star5_no_guaranteed: "当前保底情况: **不一定**得到 UP 池物品"
 characters_view_show_max_level_only: 仅显示满级角色
@@ -655,7 +655,7 @@ shiyu_4_frontier: 第四防线
 shiyu_5_frontier: 第五防线
 shiyu_6_frontier: 第六防线
 shiyu_7_frontier: 第七防线
-shiyu_defense: 式与防卫战
+shiyu_defense: 式舆防卫战
 show_uid: 显示 UID
 no_leaderboard_found: 未能找到任何排行榜
 akasha_character_param: 角色
@@ -681,8 +681,8 @@ theater_dmg_lb_title: 幻想真境剧诗最强一击排行榜
 max_friendship_lb_title: 满好感度角色数量排行榜
 lb_view_command_description: 查看排行榜
 leaderboard_not_found: 未能找到该排行榜
-currently_logged_in_as: "你目前登入的身份为:"
-not_you_label: "不是你吗? 点击以使用其他帐户登入"
+currently_logged_in_as: "你目前登录的身份为:"
+not_you_label: "不是你吗? 点击以使用其他账户登录"
 profile_show_substat_rolls: 副词条档次
 team_card_settings_button_label: 队伍卡片设置
 team_card_settings_embed_title: 正在修改队伍卡片设置
@@ -787,3 +787,8 @@ auto_task_error_dm_content: "由于发生错误，{feature}功能已被关闭，
 is_support_custom_image_desc: 支持自定义图片
 is_not_support_custom_image_desc: 不支持自定义图片
 template_preview_header: 范例样式
+missing_permissions_error_title: Hoyo Buddy 未获得权限
+missing_permissions_error_message: "Hoyo Buddy 需要以下权限才能正常运行：\n- 发送消息\n- 嵌入链接\n- 附加文件\n- 使用外部表情符号"
+blocked_by_auto_mod_error_title: 此消息已被 AutoMod 拦截
+blocked_by_auto_mod_error_message: "请尝试再次运行该命令，或与服务器管理员联系以禁用Hoyo Buddy的AutoMod。"
+zzz.core_level.placeholder: 选择核心技等级...

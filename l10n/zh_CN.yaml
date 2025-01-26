@@ -185,8 +185,8 @@ farm_remove_command.item_not_found_description: 此物品没有在你的刷本�
 farm_remove_command_description: 从刷本提醒列表中移除角色/武器
 farm_view.happy_farming: 🌾 尽情刷本吧！
 farm_view.set_reminder: 设置提醒
-farm_view.set_reminder.embed.description: "使用</farm reminder>指令设定刷本通知"
-farm_view.sundays: 在星期日，所有副本皆可刷取
+farm_view.set_reminder.embed.description: "使用</farm reminder>命令，设置刷本提醒"
+farm_view.sundays: 在星期日，所有副本开放
 farm_view.weekday_select.placeholder: 选择一个星期
 farm_view_command_description: 查看原神中可以刷取的副本
 fire: 火

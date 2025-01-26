@@ -201,11 +201,11 @@ game_maintenance_description: 请稍后再试
 game_maintenance_title: 游戏处于维护中。
 game_value_incomplete_param_error_message: 你必须指定所属游戏UID
 geeetest_verification_complete: 验证完成
-geetest.embed.title: 在登入前需要进行 CAPTCHA 验证
+geetest.embed.title: 在登录前须进行 CAPTCHA 验证
 geetest.no_need: 无需进行 Geetest 验证
-geetest.no_need.description: "从来不需要进行 geetest 验证！你怎么在这？！"
+geetest.no_need.description: "本来就不需要进行 geetest 验证啊！你怎么还在这里？！"
 geetest.required: 需要Geetest验证
-geetest.required.description: "使用</geetest>指令，选择触发此验证的帐户，并选择 `{geetest_type}` 来完成验证"
+geetest.required.description: "使用</geetest>命令，选择触发此验证的账户，并选择 `{geetest_type}` 来完成验证"
 geetest_command_description: 完成 Geetest 验证
 geetest_cmd_type_param_desc: Geetest 验证的类别
 geetest_command_type_param_name: 类别

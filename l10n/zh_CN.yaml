@@ -313,7 +313,7 @@ mimo_auto_task_failure_notify_toggle_label: 在自动完成任务失败时通知
 mimo_auto_buy_success_notify_toggle_label: 在自动购买奖励成功时通知
 mimo_auto_buy_failure_notify_toggle_label: 在自动购买奖励失败时通知
 nsfw_prompt_error_message: "此提示包含不宜內容，请使用其他提示后再试。"
-nsfw_prompt_error_title: 侦测到不合宜的提示
+nsfw_prompt_error_title: 检测到不宜内容
 page_footer: "{current_page}/{total_pages}页"
 pf_card_total_score: "总分: {score}"
 physical: 物理
@@ -378,7 +378,7 @@ realm_curr_button.label: 洞天宝钱提醒
 realm_curr_modal.title: 洞天宝钱提醒设置
 redeeem_code.cookie_token_expired_description: "兑换码功能仅适用于用电子邮箱和密码登录的用户，你可以通过</accounts>进行兑换操作。"
 redeeem_code.cookie_token_expired_title: Cookie Token 已过期
-redeeem_code.cookie_token_refresh_failed_description: "自上次新增帐户以来，你可能已变更帐户密码。\n请使用</accounts>透过电子邮件和密码的方式重新新增您的帐户。"
+redeeem_code.cookie_token_refresh_failed_description: "自上次添加账户以来，你可能更改了账号密码。\n请使用</accounts>通过电子邮箱和密码的方式重新添加。"
 redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失败
 redeem_code.success: 兑换成功
 redeem_codes_button.label: 兑换码

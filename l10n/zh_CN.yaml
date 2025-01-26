@@ -175,7 +175,7 @@ farm_notify.add_item: 添加物品
 farm_notify.add_item.embed.description: "使用</farm add>命令将物品添加到列表内"
 farm_notify.description: 你会在此列表内的角色/武器的素材可以刷取时收到提醒。
 farm_notify.empty: 你的刷本提醒列表中没有任何物品
-farm_notify.empty_description: 使用</farm add>指令将物品新增至你的刷本通知清单里
+farm_notify.empty_description: 使用</farm add>命令，将物品添加至刷本通知列表中
 farm_notify.remove_item: 移除物品
 farm_notify.remove_item.embed.description: "使用</farm remove>指令将物品从清单内移除"
 farm_notify.title: 刷本提醒列表

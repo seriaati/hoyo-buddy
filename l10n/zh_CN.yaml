@@ -229,7 +229,7 @@ interaction_failed_title: 交互失败
 invalid_category_selected: 选择了无效分类
 invalid_color_error_message: "有效颜色码须为16进制，例如 #FF0000"
 invalid_color_error_title: 无效颜色码
-invalid_cookies_description: 使用</accounts>来刷新帐户的 cookies
+invalid_cookies_description: 使用</accounts>来刷新账户 cookies
 invalid_cookies_title: 无效的 Cookies
 invalid_email_password_description: "输入的邮箱或密码不正确，请检查后重试。"
 invalid_email_password_title: 无效邮箱或密码

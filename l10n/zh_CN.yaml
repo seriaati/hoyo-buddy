@@ -428,7 +428,7 @@ threshold.embed.description: "已达阈值（{threshold}）"
 thunder: 雷
 thursday: 星期四
 tuesday: 星期二
-unreleased_content: 尚未释出的内容
+unreleased_content: 尚未发布的内容
 user_autocomplete_param_description: "输入要搜索的用户，默认为自己"
 user_autocomplete_param_name: 用户
 user_no_accounts_autocomplete_choice: 此用户尚未绑定账号。
@@ -455,9 +455,9 @@ yatta_character_skill_weakness_break_field_name: 弱点击破
 yatta_character_trace_page_label: 行迹
 yatta_item_sources_field_name: 来源
 characters.show_owned_only: 仅显示已拥有的角色
-redeem_code.ar_too_low: 冒险等级过低
+redeem_code.ar_too_low: 冒险等阶过低
 data_not_public.title: 资料不公开
-data_not_public.description: "在战绩设定中启用资料分享"
+data_not_public.description: "在战绩设置中开启战绩展示"
 not_implemented_error_title: 功能尚未实装
 not_implemented_error_only_game_message: "此功能尚未在 `{game}` 账户上实装。"
 not_implemented_error_message: "此功能尚未在 `{platform}` 上的 `{game}` 帐户上实装。"
@@ -493,13 +493,13 @@ set_cur_temp_as_default.done: 完成
 set_cur_temp_as_default.done_desc: "你的 {game} 预设卡片样式已被设置为 {template}"
 remove_from_cache_finish_embed_desc: 重新执行 /profile 命令来查看变更
 third_party_card_temp_error_title: 这个第三方卡片样式出错了
-third_party_card_temp_error_message: "此角色的卡片样式已被重置为 的样式。如果此错误持续发生，请在我们的[Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
+third_party_card_temp_error_message: "此角色的卡片样式已被重置为Hoyo Buddy样式。如果此错误持续发生，请在我们的[Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 account_locked_title: 账户已被锁定20分钟
-account_locked_description: "输入错误密码的次数过多。请等待 20 分钟，然后重试。如果你无法设定好你的帐户，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)中寻求帮助。"
+account_locked_description: "输入错误密码的次数过多。请在20分钟后重试。如果你无法设置好你的账户，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)中寻求帮助。"
 ether: 以太
 electric: 电属性
 profile.no_data.title: 没有可用的玩家数据
-profile.no_data.description: "你相信吗，这里居然没有任何东西可以显示。"
+profile.no_data.description: "信不信由你，这里没有什么可以展示的了。"
 profile.zzz_hoyolab.character_select.description: "意象影画 {m} | {platform}数据"
 characters.filter.specialty.placeholder: 筛选特性…
 zzz.basic: 普通攻击
@@ -513,7 +513,7 @@ characters.sorter.speciality: 特性
 characters.sorter.faction: 阵营
 characters.sorter.mindscape_cinema: 意象影画
 characters.embed.filter_text: "{filter}角色"
-stats_command_description: 查看游戏帐号数据
+stats_command_description: 查看游戏账号数据
 tears_of_themis: 未定事件簿
 honkai_suit_rarity: "稀有度 {rarity}"
 about_command.designers: 设计师
@@ -544,20 +544,20 @@ zzz.engine.refinement_select.placeholder: 选择一个精炼等级…
 dyk_discord_server_updates: "我们会在 [Discord 服务器](<https://link.seria.moe/hb-dc>)中发布更新日志"
 dyk_discord_server_feedback: "你可以加入我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)来给予反馈"
 dyk_contact_me: "你可以在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)中与我们取得联系"
-dyk_need_help_no_title: "需要帮助吗？加入我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)"
-dyk_donate_no_title: "喜欢 Hoyo Buddy 吗？考虑透过[捐款](<https://link.seria.moe/donate-zh>)来支持我们"
-dyk_team: "Hoyo Buddy 的小团队由一位程式设计师和一位设计师组成"
-dyk_disable: 你可以使用 /settings 将这则讯息关闭
-dyk_settings_lang: 你可以使用 /settings 变更机器人使用的语言
+dyk_need_help_no_title: "需要帮助吗？加入我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)吧。"
+dyk_donate_no_title: "喜欢 Hoyo Buddy 吗？考虑一下通过[捐款](<https://link.seria.moe/donate-zh>)来支持我们"
+dyk_team: "Hoyo Buddy 是由一位程序员和一位设计师组成的小团队"
+dyk_disable: 你可以使用 /settings 关闭此消息
+dyk_settings_lang: 你可以使用 /settings 更改机器人使用的语言
 dyk_settings_theme: 你可以使用 /settings 切换为亮色或深色模式
 dyk_security: "我们有一篇关于账户安全的[文章](<:docs/Account-Security:>)"
 dyk_github: "Hoyo Buddy 于 [GitHub](<https://github.com/seriaati/hoyo-buddy>) 上开源"
-dyk_python: Hoyo Buddy 使用纯 Python 撰写而成
-dyk_unreleased: 你可以使用 /search 查看尚未释出的游戏内容
-dyk_team_card: 你可以透过选择多个角色的方式在 /profile 生成队伍卡片
-dyk_set_default_acc: 你可以用 /accounts 设置一个预设帐户，用于运行所有指令
+dyk_python: Hoyo Buddy 是用纯 Python 编写而成的。
+dyk_unreleased: 你可以使用 /search 查看尚公开的游戏内容
+dyk_team_card: 你可以通过选择多个角色的方式在 /profile 生成队伍卡片
+dyk_set_default_acc: 你可以用 /accounts 设置一个预设账户，用于运行所有命令
 title_dyk: "你知道吗？"
-button_label_dyk: 「你知道吗」讯息
+button_label_dyk: 「你知道吗」消息
 events_view_start_date_embed_field: 开始时间
 events_view_end_date_embed_field: 结束时间
 events_view_ann_select_placeholder: 选择一个活动…
@@ -566,40 +566,40 @@ events_command_description: 查看正在进行中的游戏活动
 events_view_ann_type_select_placeholder: 选择一个活动分类…
 events_view_content_label: 查看完整内容
 events_command_game_param_description: 用于查看活动的游戏
-natlan: 納塔
+natlan: 纳塔
 top_percent: "前 {percent}%"
 profile_view_show_rank_button_label: 显示排名
 submit_button_label: 提交
 show_tutorial_button_label: 显示教程
 close_button_label: 关闭
-required_field_error_message: 此栏位为必填栏位
-accounts_added_snackbar_message: "帐户新增成功，正在将你重新导向至 Discord..."
-account_add_start_message: "点击下方按钮，跟着操作指示添加账户。添加完成后，你可以使用</accounts>命令查看已添加账户。\n如果你需要帮助的话，请加入我们的[Discord 服务器](<https://link.seria.moe/hb-dc>)"
+required_field_error_message: 此为必填栏位
+accounts_added_snackbar_message: "账户添加成功，正在将你重定向回 Discord..."
+account_add_start_message: "点击下方按钮，并按照指示添加你的游戏账户。完成后使用</accounts>来查看你已添加的账户。如果你遇到问题或需要帮助，请加入我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)。"
 hbls_button_label: 开始！
-gacha_import_url_modal_title: 输入抽卡纪录连结
+gacha_import_url_modal_title: 输入抽卡记录链接
 gacha_import_embed_description: "抽卡记录链接：从游戏内获取一串很长的链接来导入你的抽卡记录，不同游戏的获取方式如下：\n- 安卓：[YouTube 视频](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神：[paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-cn/genshin/wish-import)\n- 崩坏：星穹铁道：[Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-cn/warp-import)\n- 绝区零：[zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-cn/zzz/signal-import)\n\n如果你有使用下列的服务之一，将你的抽卡记录导出至指定的文件格式后即可使用 </gacha-log upload> 将其上传并导入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
-extract_authkey_error_message: "无法从连结内提取 authkey, 请尝试其他连结。"
+extract_authkey_error_message: "无法从链接中提取 authkey，请使用有效链接后重试。"
 extract_authkey_error_title: Authkey 提取失败
-gacha_import_loading_embed_title: 正在导入抽卡纪录
-gacha_import_loading_embed_description: "{loading_emoji} 这需要花费一些时间, 请耐心等候..."
-gacha_upload_invalid_file_error_title: 无效的档案格式
-gacha_upload_invalid_file_error_message: "只接受 **{file_format}** 档案, 请使用正确的档案重试。"
+gacha_import_loading_embed_title: 正在导入抽卡记录
+gacha_import_loading_embed_description: "{loading_emoji} 这需要花费一段时间，请耐心等待..."
+gacha_upload_invalid_file_error_title: 无效文件格式
+gacha_upload_invalid_file_error_message: "只接受 **{file_format}** 文件，请使用正确的文件重试。"
 uid_mismatch_error_title: UID 不符合
-uid_mismatch_error_message: "选择的帐户的 UID 与资料中的 UID ({uid}) 不符"
-gacha_import_command_description: 从游戏内导入抽卡纪录
+uid_mismatch_error_message: "选择的账号 UID 与资料中的 UID ({uid}) 不符"
+gacha_import_command_description: 从游戏内导入抽卡记录
 source_param_name: 来源
-source_param_description: 抽卡纪录档案的来源
-gacha_upload_command_description: 将其他来源的抽卡纪录上传并导入至 Hoyo Buddy
-file_param_name: 档案
-file_param_description: 要上传的抽卡纪录档案
+source_param_description: 抽卡记录文件的来源
+gacha_upload_command_description: 将其他来源的抽卡记录上传并导入至 Hoyo Buddy
+file_param_name: 文件
+file_param_description: 要上传的抽卡记录文件
 gacha_import_success_title: 抽卡纪录导入完成
-gacha_import_success_message: "{count} 笔抽卡纪录已经被导入成功。使用 </gacha-log view> 指令来查看它们。"
+gacha_import_success_message: "{count} 条抽卡记录已导入成功。使用 </gacha-log view> 命令来查看。"
 gacha_view_filter_button_label: 筛选条件
 gacha_view_search_field_label: 搜索
 gacha_view_gacha_detail_title: 抽卡物品详情
 gacha_view_gacha_detail: "ID: {id}\n名称: {name}\n抽取时间: {time}"
 gacha_view_num_since_last: "自上个 {rarity} ★ 物品 {pull} 抽"
-gacha_view_filter_dialog_title: 抽卡纪录筛选条件
+gacha_view_filter_dialog_title: 抽卡记录筛选条件
 banner_type_beginners_wish: 初行者推荐祈愿
 banner_type_standard_banner: 常驻祈愿
 banner_type_character_event: 角色活动祈愿
@@ -616,29 +616,29 @@ banner_type_bangboo_channel: 邦布调频
 cancel_button_label: 取消
 gacha_view_filter_size_field_label: 每页物品数
 gacha_view_page_field_label: 页数
-gacha_log_stats_title: 抽卡纪录数据
+gacha_log_stats_title: 抽卡记录数据
 gacha_log_personal_stats_title: 个人数据
 gacha_log_personal_stats: "生涯抽数: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\n当前卡池总抽数: {total_pulls} ({total_currency} {currency_emoji})\n5★ 保底: {star5_pity_cur}/{star5_pity_max}\n4★ 保底: {star4_pity_cur}/10\n总 5★ 数: {total_star5}\n总 4★ 数: {total_star4}\n5★ 平均抽数: {avg_pulls_per_star5}\n4★ 平均抽数: {avg_pulls_per_star4}"
 win_rate_stats: "{title} 胜率: {win_rate}% ({wins}/{total})"
 gacha_log_global_stats_title: 全服数据
 gacha_log_global_stats: "生涯抽数: {lifetime}\n5★ 幸运程度: {star5_luck}\n4★ 幸运程度: {star4_luck}"
 win_rate_global_stats: "{title} 胜率: {win_rate}"
-gacha_log_view_full: 查看抽卡纪录
-gacha_view_command_description: 查看导入的抽卡纪录
+gacha_log_view_full: 查看抽卡记录
+gacha_view_command_description: 查看导入的抽卡记录
 gacha_log_view_banner_type_selector_placeholder: 选择一个卡池...
-no_gacha_log_found_error_title: 没有找到任何抽卡纪录
-no_gacha_log_found_error_message: "使用 </gacha-log import> 或 </gacha-log upload> 来导入你的抽卡纪录。"
-gacha_log_manage_embed_title: 管理抽卡纪录
-gacha_log_manage_embed_description: "{count} 笔抽卡纪录属于此帐户。\n你可以将它们导出至 [UIGF](https://uigf.org) 格式。"
-gacha_log_export_button_label: 导出至 UIGF 格式
-gacha_log_delete_button_label: 删除所有纪录
+no_gacha_log_found_error_title: 没有找到任何抽卡记录
+no_gacha_log_found_error_message: "使用 </gacha-log import> 或 </gacha-log upload> 来导入你的抽卡记录。"
+gacha_log_manage_embed_title: 管理抽卡记录
+gacha_log_manage_embed_description: "{count} 条抽卡记录属于此账户。\n你可以将它们以 [UIGF](https://uigf.org) 格式导出。"
+gacha_log_export_button_label: 以 UIGF 格式导出
+gacha_log_delete_button_label: 删除所有记录
 gacha_log_delete_confirm_embed_title: 确认删除
-gacha_log_delete_confirm_embed_description: "你确定要**删除所有**属于此帐户的抽卡纪录吗？此操作无法撤销。"
+gacha_log_delete_confirm_embed_description: "你确定要**删除所有**属于该账户的抽卡记录吗？此操作无法撤销。"
 gacha_log_delete_confirm_button_label: 确认
 gacha_log_delete_done_embed_title: 删除完成
-gacha_log_delete_done_embed_description: 所有属于此帐户的抽卡纪录都已经被删除完毕。
-gacha_manage_command_description: 管理导入的抽卡纪录
-login_button_label: 使用 Discord 登入
+gacha_log_delete_done_embed_description: 属于此账户的所有抽卡记录已成功删除。
+gacha_manage_command_description: 管理导入的抽卡记录
+login_button_label: 使用 Discord 登录
 star5_guaranteed: "当前保底情况: 必定得到 UP 池物品"
 star5_no_guaranteed: "当前保底情况: **不一定**得到 UP 池物品"
 characters_view_show_max_level_only: 仅显示满级角色
@@ -655,7 +655,7 @@ shiyu_4_frontier: 第四防线
 shiyu_5_frontier: 第五防线
 shiyu_6_frontier: 第六防线
 shiyu_7_frontier: 第七防线
-shiyu_defense: 式与防卫战
+shiyu_defense: 式舆防卫战
 show_uid: 显示 UID
 no_leaderboard_found: 未能找到任何排行榜
 akasha_character_param: 角色
@@ -681,8 +681,8 @@ theater_dmg_lb_title: 幻想真境剧诗最强一击排行榜
 max_friendship_lb_title: 满好感度角色数量排行榜
 lb_view_command_description: 查看排行榜
 leaderboard_not_found: 未能找到该排行榜
-currently_logged_in_as: "你目前登入的身份为:"
-not_you_label: "不是你吗? 点击以使用其他帐户登入"
+currently_logged_in_as: "你目前登录的身份为:"
+not_you_label: "不是你吗? 点击以使用其他账户登录"
 profile_show_substat_rolls: 副词条档次
 team_card_settings_button_label: 队伍卡片设置
 team_card_settings_embed_title: 正在修改队伍卡片设置

@@ -405,15 +405,15 @@ saturday: 星期六
 search_autocomplete_no_results: 未找到结果
 search_autocomplete_not_setup: "搜索自动完成选项还未设置，请稍后再试。"
 search_command_category_param_description: 要搜索的类型
-search_cmd_category_param_name: 类别
+search_cmd_category_param_name: 类型
 search_command_description: 搜寻任何与游戏相关的内容
 search_command_game_param_description: 要搜索的游戏
 search_command_game_param_name: 游戏
 search_command_query_param_description: 要搜索的关键字
 search_command_query_param_name: 关键字
-select_account.embed.description: 选择欲添加至 Hoyo Buddy 的帐户
+select_account.embed.description: 选择想要添加至 Hoyo Buddy 的账户
 select_account.embed.title: 🎉 欢迎来到 Hoyo Buddy！
-settings_command_description: 调整用户设置
+settings_command_description: 用户配置管理
 skill_attributes_embed_field_name: "技能属性（等级{level}）"
 skill_level.modal.title: 输入技能等级
 spiral_abyss: 深境螺旋

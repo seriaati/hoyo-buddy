@@ -130,13 +130,13 @@ dice_cost_embed_field_name: 骰子花费
 download_image_failed_error_message: "无法下载图片{url}, 状态码{status}。\n请稍后再试，或者尝试用不同图片，或者检查该图片URL是否无效。"
 download_image_failed_error_title: 图像下载失败
 edit_nickname_modal_title: 编辑昵称
-eidolon_superimpose_str: "{eidolon}魂{superimpose}叠"
+eidolon_superimpose_str: "{eidolon}魂 叠{superimpose}"
 electro: 雷
 email_verification_dialog_title: 需要验证
 email_verification_dialog_content: 请输入收到的验证码
 email_verification_dialog_action: 验证
 email_verification_field_label: 验证码
-email-geetest.embed.title: 在寄送验证码前需要进行 CAPTCHA 验证
+email-geetest.embed.title: 在发送验证码前须进行 CAPTCHA 验证
 email_password_button_label: 通过邮箱和密码
 email_password_modal_email_input_label: 电子邮箱或用户名
 email_password_modal_password_input_label: 密码

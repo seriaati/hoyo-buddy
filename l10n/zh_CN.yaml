@@ -143,7 +143,7 @@ email_password_modal_password_input_label: 密码
 enter_email_password_instructions_description: "电子邮箱和密码是指用**Hoyoverse的账户**的邮箱与密码，而不是谷歌，苹果等账户的。\n- [账密登录如何运作？](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [没有 Hoyoverse 账号（用谷歌，Facebook等登录的）](:docs/Before-Start:)\n- [我是主机玩家](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: 更改光锥等级
 dark_mode_button_label: 深色模式
-error_footer: "你可以在我们的 Discord 服务器中寻求帮助, /about 內有連結"
+error_footer: "你可以在我们的 Discord 服务器中寻求帮助，在/about中附有邀请链接。"
 error_title: 出现错误
 erudition: 智识
 days: 天

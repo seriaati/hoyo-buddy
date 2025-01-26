@@ -24,12 +24,12 @@ abyss_chamber.embed.title: "第{floor_index}层 - 第{chamber_index}间"
 abyss_chamber.enemy_level.embed.field.name: 敌人等级
 abyss_chamber.ley_line_disorder.embed.field.name: 地脉异常
 abyss_enemy.item_description: "生命值：{HP}"
-acc_no_default_param_desc: 用于运行此指令的帐户
+acc_no_default_param_desc: 用于运行此命令的帐户
 account_autocomplete_param_description: "选择用该命令运行的账户，默认为/accounts中选择的"
 account_autocomplete_param_name: 账号
 account_deleted_description: "{account} 已被删除"
 account_deleted_title: 账号已删除
-account_manager_footer: 被选择账号会作为所有指令运行的预设账号
+account_manager_footer: 被选择账号会作为所有命令运行的预设账号
 account_manager_no_accounts_description: 你尚未持有任何账号
 account_manager_title: 账号管理
 account_not_found_error_message: "无法通过所提供的查询找到账户，请从已提供的选项中选择，而不是自己输入的选项。"

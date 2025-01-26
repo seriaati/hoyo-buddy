@@ -177,13 +177,13 @@ farm_notify.description: 你会在此列表内的角色/武器的素材可以刷
 farm_notify.empty: 你的刷本提醒列表中没有任何物品
 farm_notify.empty_description: 使用</farm add>命令，将物品添加至刷本通知列表中
 farm_notify.remove_item: 移除物品
-farm_notify.remove_item.embed.description: "使用</farm remove>指令将物品从清单内移除"
+farm_notify.remove_item.embed.description: "使用</farm remove>命令将物品从列表中移除"
 farm_notify.title: 刷本提醒列表
 farm_reminder_command_description: 在角色/武器的素材可以刷取时通知你
 farm_remove_command.item_not_found: 找不到该物品
 farm_remove_command.item_not_found_description: 此物品没有在你的刷本提醒列表中。
 farm_remove_command_description: 从刷本提醒列表中移除角色/武器
-farm_view.happy_farming: 🌾 享受刷本吧！
+farm_view.happy_farming: 🌾 尽情刷本吧！
 farm_view.set_reminder: 设置提醒
 farm_view.set_reminder.embed.description: "使用</farm reminder>指令设定刷本通知"
 farm_view.sundays: 在星期日，所有副本皆可刷取

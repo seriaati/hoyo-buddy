@@ -207,8 +207,8 @@ geetest.no_need.description: "本来就不需要进行 geetest 验证啊！你�
 geetest.required: 需要Geetest验证
 geetest.required.description: "使用</geetest>命令，选择触发此验证的账户，并选择 `{geetest_type}` 来完成验证"
 geetest_command_description: 完成 Geetest 验证
-geetest_cmd_type_param_desc: Geetest 验证的类别
-geetest_command_type_param_name: 类别
+geetest_cmd_type_param_desc: Geetest 验证类型
+geetest_command_type_param_name: 类型
 genshin_impact: 原神
 geo: 岩
 gi_daily.embed.description: 每日委托或冒险历练尚未全部完成
@@ -226,7 +226,7 @@ inazuma: 稻妻
 instructions_title: 指引
 interaction_failed_description: "该视图不是由你发起，因此无法使用。"
 interaction_failed_title: 交互失败
-invalid_category_selected: 选择了无效的类别
+invalid_category_selected: 选择了无效分类
 invalid_color_error_message: "一个有效的色码需为一个十六进制码，例如 #FF0000"
 invalid_color_error_title: 无效的色码
 invalid_cookies_description: 使用</accounts>来刷新帐户的 cookies

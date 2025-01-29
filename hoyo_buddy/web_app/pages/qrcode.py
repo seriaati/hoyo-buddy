@@ -50,7 +50,7 @@ class GenQRCodeButton(ft.FilledButton):
 
     async def generate_qrcode(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        await show_loading_snack_bar(page, message="正在生成二维码...")
+        show_loading_snack_bar(page, message="正在生成二维码...")
 
         client = ProxyGenshinClient(region=genshin.Region.CHINESE)
         result = await client._create_qrcode()
@@ -63,25 +63,26 @@ class GenQRCodeButton(ft.FilledButton):
         async with aiofiles.open(path, "wb") as f:
             await f.write(buffer.getvalue())
 
-        await page.show_dialog_async(QRCodeDialog(filename))
+        dialog = QRCodeDialog(filename)
+        page.open(dialog)
 
         scanned = False
         while True:
             try:
                 status, cookies = await client._check_qrcode(result.ticket)
             except genshin.GenshinException as exc:
-                await page.close_dialog_async()
+                page.close(dialog)
                 message = "二维码已过期, 请重新生成" if exc.retcode == -106 else exc.msg
-                await show_error_banner(page, message=message)
+                show_error_banner(page, message=message)
                 break
             except Exception as exc:
-                await page.close_dialog_async()
-                await show_error_banner(page, message=str(exc))
+                page.close(dialog)
+                show_error_banner(page, message=str(exc))
                 break
 
             if status is genshin.models.QRCodeStatus.SCANNED and not scanned:
-                await page.close_dialog_async()
-                await page.show_snack_bar_async(
+                page.close(dialog)
+                page.open(
                     ft.SnackBar(
                         ft.Text(
                             "扫描成功, 请点击「确认登录」", color=ft.colors.ON_PRIMARY_CONTAINER
@@ -96,7 +97,7 @@ class GenQRCodeButton(ft.FilledButton):
                 await page.client_storage.set_async(
                     f"hb.{self._params.user_id}.cookies", encrypted_cookies
                 )
-                await page.go_async(f"/finish?{self._params.to_query_string()}")
+                page.go(f"/finish?{self._params.to_query_string()}")
                 break
 
         # Clear the QR code image after 2 minutes

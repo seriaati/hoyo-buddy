@@ -45,7 +45,7 @@ class WebApp:
 
     async def initialize(self) -> None:
         self._page.theme_mode = ft.ThemeMode.DARK
-        await self._page.go_async(self._page.route)
+        self._page.go(self._page.route)
 
     async def on_route_change(self, e: ft.RouteChangeEvent) -> Any:
         page: ft.Page = e.page
@@ -65,7 +65,7 @@ class WebApp:
             if not page.session.contains_key("hb.user_id") and route != "/login":
                 asyncio.create_task(page.client_storage.set_async("hb.original_route", e.route))
                 locale = parsed_params.get("locale", "en-US")
-                await page.go_async(f"/login?locale={locale}")
+                page.go(f"/login?locale={locale}")
                 return
 
             view = await self._handle_login_routes(route, parsed_params)
@@ -80,13 +80,25 @@ class WebApp:
 
         page.views.clear()
         page.views.append(view)
-        await page.update_async()
+        page.update()
+
+    def close_dialogs(self) -> None:
+        controls = self._page._Page__offstage.controls  # pyright: ignore[reportAttributeAccessIssue]
+        for control in controls:
+            if isinstance(control, ft.AlertDialog):
+                self._page.close(control)
+
+    def close_banners(self) -> None:
+        controls = self._page._Page__offstage.controls  # pyright: ignore[reportAttributeAccessIssue]
+        for control in controls:
+            if isinstance(control, ft.Banner):
+                self._page.close(control)
 
     async def _handle_geetest(self, params: Params, locale: Locale) -> ft.View | None:
         page = self._page
 
-        await page.close_dialog_async()
-        await show_loading_snack_bar(page, locale=locale)
+        self.close_dialogs()
+        show_loading_snack_bar(page, locale=locale)
 
         gt_type: Literal[
             "on_login", "on_email_send", "on_otp_send"
@@ -110,7 +122,7 @@ class WebApp:
                     email, password, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
                 )
             except Exception as exc:
-                await show_error_banner(page, message=str(exc))
+                show_error_banner(page, message=str(exc))
                 return None
 
             if isinstance(result, genshin.models.ActionTicket):
@@ -118,7 +130,7 @@ class WebApp:
                 try:
                     email_result = await client._send_verification_email(result)
                 except Exception as exc:
-                    await show_error_banner(page, message=str(exc))
+                    show_error_banner(page, message=str(exc))
                     return None
 
                 if isinstance(email_result, genshin.models.SessionMMT):
@@ -152,7 +164,7 @@ class WebApp:
                 await page.client_storage.set_async(
                     f"hb.{params.user_id}.cookies", encrypted_cookies
                 )
-                await page.go_async(f"/finish?{params.to_query_string()}")
+                page.go(f"/finish?{params.to_query_string()}")
         elif gt_type == "on_email_send":
             encrypted_email, encrypted_password = await self._get_encrypted_email_password(
                 page, params.user_id
@@ -179,7 +191,7 @@ class WebApp:
                     action_ticket, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
                 )
             except Exception as exc:
-                await show_error_banner(page, message=str(exc))
+                show_error_banner(page, message=str(exc))
                 return None
 
             await handle_action_ticket(
@@ -205,10 +217,10 @@ class WebApp:
                     mobile, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
                 )
             except Exception as exc:
-                await show_error_banner(page, message=str(exc))
+                show_error_banner(page, message=str(exc))
                 return None
 
-            await handle_mobile_otp(mobile=mobile, page=page, params=params)
+            handle_mobile_otp(mobile=mobile, page=page, params=params)
 
         return None
 
@@ -235,8 +247,8 @@ class WebApp:
         logger.debug(f"[{params.user_id}] Handle finish start")
         page = self._page
 
-        await page.close_dialog_async()
-        await page.close_banner_async()
+        self.close_dialogs()
+        self.close_banners()
 
         device_id_exists = await page.client_storage.contains_key_async(
             f"hb.{params.user_id}.device_id"
@@ -245,7 +257,7 @@ class WebApp:
             f"hb.{params.user_id}.device_fp"
         )
         if params.platform is Platform.MIYOUSHE and (not device_id_exists or not device_fp_exists):
-            await page.go_async(f"/device_info?{params.to_query_string()}")
+            page.go(f"/device_info?{params.to_query_string()}")
             return None
 
         encrypted_cookies = await page.client_storage.get_async(f"hb.{params.user_id}.cookies")
@@ -269,7 +281,7 @@ class WebApp:
                 )
             except Exception as exc:
                 logger.exception(f"[{params.user_id}] Fetch cookie with stoken error: {exc}")
-                await show_error_banner(page, message=str(exc))
+                show_error_banner(page, message=str(exc))
                 return None
 
             dict_cookie = genshin.parse_cookie(cookies)
@@ -298,7 +310,7 @@ class WebApp:
             )
             accounts = await client.get_game_accounts()
         except Exception as exc:
-            await show_error_banner(page, message=str(exc))
+            show_error_banner(page, message=str(exc))
             return None
 
         if not accounts:
@@ -306,7 +318,7 @@ class WebApp:
                 key="no_game_accounts_error_message",
                 platform=EnumStr(params.platform or Platform.HOYOLAB),
             ).translate(locale)
-            await show_error_banner(page, message=message)
+            show_error_banner(page, message=message)
             return None
 
         return pages.FinishPage(
@@ -553,7 +565,7 @@ class WebApp:
         if code is None:
             return pages.ErrorPage(code=400, message="Missing code")
 
-        await show_loading_snack_bar(page)
+        show_loading_snack_bar(page)
 
         async with (
             aiohttp.ClientSession() as session,
@@ -603,9 +615,9 @@ class WebApp:
         original_route = await page.client_storage.get_async("hb.original_route")
         if original_route:
             asyncio.create_task(page.client_storage.remove_async("hb.original_route"))
-            await page.go_async(original_route)
+            page.go(original_route)
         else:
-            await page.go_async("/platforms")
+            page.go("/platforms")
 
         return None
 

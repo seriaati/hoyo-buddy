@@ -80,7 +80,7 @@ async def handle_session_mmt(
         content = "点击下方的按钮前往完成 CAPTCHA"
         button_label = "前往"
 
-    await page.show_dialog_async(
+    page.open(
         ft.AlertDialog(
             title=ft.Text(title),
             content=ft.Text(content),
@@ -126,6 +126,7 @@ class EmailVerifyDialog(ft.AlertDialog):
                         field_ref=field_ref,
                         user_id=user_id,
                         params=params,
+                        dialog=self,
                     ),
                 ],
                 tight=True,
@@ -143,6 +144,7 @@ class EmailVerifyCodeButton(ft.FilledButton):
         field_ref: ft.Ref[ft.TextField],
         user_id: int,
         params: Params,
+        dialog: EmailVerifyDialog,
     ) -> None:
         super().__init__(
             translator.translate(LocaleStr(key="email_verification_dialog_action"), locale)
@@ -153,6 +155,7 @@ class EmailVerifyCodeButton(ft.FilledButton):
         self._field_ref = field_ref
         self._user_id = user_id
         self._params = params
+        self._dialog = dialog
 
     async def verify_code(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
@@ -162,25 +165,23 @@ class EmailVerifyCodeButton(ft.FilledButton):
             field.error_text = translator.translate(
                 LocaleStr(key="required_field_error_message"), self._locale
             )
-            await field.update_async()
+            field.update()
             return
 
-        await page.close_dialog_async()
-        await show_loading_snack_bar(page, locale=self._locale)
+        page.close(self._dialog)
+        show_loading_snack_bar(page, locale=self._locale)
 
         client = ProxyGenshinClient()
         try:
             await client._verify_email(field.value, self._ticket)
         except Exception as exc:
-            await show_error_banner(page, message=str(exc))
+            show_error_banner(page, message=str(exc))
             return
 
         encrypted_email = await page.client_storage.get_async(f"hb.{self._user_id}.email")
         encrypted_password = await page.client_storage.get_async(f"hb.{self._user_id}.password")
         if not isinstance(encrypted_email, str) or not isinstance(encrypted_password, str):
-            await show_error_banner(
-                page, message="Cannot find email or password in client storage."
-            )
+            show_error_banner(page, message="Cannot find email or password in client storage.")
             return
 
         email = decrypt_string(encrypted_email)
@@ -189,13 +190,13 @@ class EmailVerifyCodeButton(ft.FilledButton):
         try:
             result = await client.os_app_login(email, password, ticket=self._ticket)
         except Exception as exc:
-            await show_error_banner(page, message=str(exc))
+            show_error_banner(page, message=str(exc))
             return
 
         cookies = result.to_str()
         encrypted_cookies = encrypt_string(cookies)
         await page.client_storage.set_async(f"hb.{self._user_id}.cookies", encrypted_cookies)
-        await page.go_async(f"/finish?{self._params.to_query_string()}")
+        page.go(f"/finish?{self._params.to_query_string()}")
 
 
 async def handle_action_ticket(
@@ -209,7 +210,7 @@ async def handle_action_ticket(
 ) -> None:
     await page.client_storage.set_async(f"hb.{params.user_id}.email", encrypt_string(email))
     await page.client_storage.set_async(f"hb.{params.user_id}.password", encrypt_string(password))
-    await page.show_dialog_async(
+    page.open(
         EmailVerifyDialog(ticket=result, locale=locale, user_id=params.user_id, params=params)
     )
 
@@ -234,7 +235,7 @@ class MobileVerifyDialog(ft.AlertDialog):
             ),
             actions=[
                 MobileVerifyCodeButton(
-                    mobile=mobile, field_ref=field_ref, user_id=user_id, params=params
+                    mobile=mobile, field_ref=field_ref, user_id=user_id, params=params, dialog=self
                 )
             ],
             modal=True,
@@ -243,13 +244,20 @@ class MobileVerifyDialog(ft.AlertDialog):
 
 class MobileVerifyCodeButton(ft.TextButton):
     def __init__(
-        self, *, mobile: str, field_ref: ft.Ref[ft.TextField], user_id: int, params: Params
+        self,
+        *,
+        mobile: str,
+        field_ref: ft.Ref[ft.TextField],
+        user_id: int,
+        params: Params,
+        dialog: MobileVerifyDialog,
     ) -> None:
         super().__init__("验证", on_click=self.verify_code)
         self._mobile = mobile
         self._field_ref = field_ref
         self._user_id = user_id
         self._params = params
+        self._dialog = dialog
 
     async def verify_code(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
@@ -257,28 +265,26 @@ class MobileVerifyCodeButton(ft.TextButton):
         field = self._field_ref.current
         if not field.value:
             field.error_text = "此栏位为必填栏位"
-            await field.update_async()
+            field.update()
             return
         if len(field.value) != 6:
             field.error_text = "验证码长度必须为 6 位"
-            await field.update_async()
+            field.update()
             return
 
-        await page.close_dialog_async()
+        page.close(self._dialog)
 
         client = ProxyGenshinClient(region=genshin.Region.CHINESE)
         try:
             result = await client._login_with_mobile_otp(self._mobile, field.value)
         except Exception as exc:
-            await show_error_banner(page, message=str(exc))
+            show_error_banner(page, message=str(exc))
         else:
             cookies = result.to_str()
             encrypted_cookies = encrypt_string(cookies)
             await page.client_storage.set_async(f"hb.{self._user_id}.cookies", encrypted_cookies)
-            await page.go_async(f"/finish?{self._params.to_query_string()}")
+            page.go(f"/finish?{self._params.to_query_string()}")
 
 
-async def handle_mobile_otp(*, mobile: str, page: ft.Page, params: Params) -> None:
-    await page.show_dialog_async(
-        MobileVerifyDialog(mobile=mobile, user_id=params.user_id, params=params)
-    )
+def handle_mobile_otp(*, mobile: str, page: ft.Page, params: Params) -> None:
+    page.open(MobileVerifyDialog(mobile=mobile, user_id=params.user_id, params=params))

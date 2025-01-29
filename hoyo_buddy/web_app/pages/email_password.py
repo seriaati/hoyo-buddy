@@ -80,7 +80,7 @@ class EmailPassWordForm(ft.Column):
     async def on_focus(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
         control.error_text = None
-        await control.update_async()
+        control.update()
 
     async def on_blur(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
@@ -89,7 +89,7 @@ class EmailPassWordForm(ft.Column):
             if not control.value
             else None
         )
-        await control.update_async()
+        control.update()
 
     async def on_submit(self, e: ft.ControlEvent) -> Any:
         page: ft.Page = e.page
@@ -103,22 +103,22 @@ class EmailPassWordForm(ft.Column):
             self._email_ref.current.error_text = translator.translate(
                 LocaleStr(key="required_field_error_message"), self._locale
             )
-            await self._email_ref.current.update_async()
+            self._email_ref.current.update()
 
         if not password:
             self._password_ref.current.error_text = translator.translate(
                 LocaleStr(key="required_field_error_message"), self._locale
             )
-            await self._password_ref.current.update_async()
+            self._password_ref.current.update()
 
         if not email or not password:
             return
 
         if self._params.platform is None:
-            await show_error_banner(page, message="Invalid platform")
+            show_error_banner(page, message="Invalid platform")
             return
 
-        await show_loading_snack_bar(page, locale=self._locale)
+        show_loading_snack_bar(page, locale=self._locale)
 
         logger.debug(f"[{self._params.user_id}] Email and password login session started")
         client = ProxyGenshinClient(
@@ -140,13 +140,13 @@ class EmailPassWordForm(ft.Column):
                 )
                 url = "https://link.seria.moe/9xbhqm"
             else:
-                message = f"[{exc.retcode}] {exc.msg}"
+                message = str(exc)
                 url = None
-            await show_error_banner(page, message=message, url=url)
+            show_error_banner(page, message=message, url=url)
             return
         except Exception as exc:
             logger.debug(f"[{self._params.user_id}] Email and password login error: {exc}")
-            await show_error_banner(page, message=str(exc))
+            show_error_banner(page, message=str(exc))
             return
 
         if isinstance(result, genshin.models.SessionMMT):
@@ -192,7 +192,7 @@ class EmailPassWordForm(ft.Column):
             await page.client_storage.set_async(
                 f"hb.{self._params.user_id}.cookies", encrypted_cookies
             )
-            await page.go_async(f"/finish?{self._params.to_query_string()}")
+            page.go(f"/finish?{self._params.to_query_string()}")
 
     @property
     def email(self) -> ft.TextField:

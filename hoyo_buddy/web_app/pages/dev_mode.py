@@ -66,13 +66,13 @@ class CookiesForm(ft.Column):
             self._cookies_ref.current.error_text = LocaleStr(
                 key="required_field_error_message"
             ).translate(self._locale)
-            await self._cookies_ref.current.update_async()
+            self._cookies_ref.current.update()
             return
 
-        await show_loading_snack_bar(page, locale=self._locale)
+        show_loading_snack_bar(page, locale=self._locale)
         encrypted_cookies = encrypt_string(cookies.value)
         await page.client_storage.set_async(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
-        await page.go_async(f"/finish?{self._params.to_query_string()}")
+        page.go(f"/finish?{self._params.to_query_string()}")
 
 
 class CookiesTextField(ft.TextField):
@@ -96,9 +96,9 @@ class CookiesTextField(ft.TextField):
             if not control.value
             else None
         )
-        await control.update_async()
+        control.update()
 
     async def on_field_focus(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
         control.error_text = None
-        await control.update_async()
+        control.update()

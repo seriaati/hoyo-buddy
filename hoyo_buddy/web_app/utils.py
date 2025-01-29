@@ -75,21 +75,21 @@ class ErrorBanner(ft.Banner):
         page: ft.Page = e.page
         if self.url is None:
             return
-        await page.launch_url_async(self.url, web_window_name=ft.UrlTarget.BLANK.value)
+        page.launch_url(self.url, web_window_name=ft.UrlTarget.BLANK.value)
 
     async def on_action_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        await page.close_banner_async()
+        page.close(self)
 
 
-async def show_loading_snack_bar(
+def show_loading_snack_bar(
     page: ft.Page, *, message: str | None = None, locale: Locale | None = None
 ) -> None:
-    await page.show_snack_bar_async(LoadingSnackBar(message=message, locale=locale))
+    page.open(LoadingSnackBar(message=message, locale=locale))
 
 
-async def show_error_banner(page: ft.Page, *, message: str, url: str | None = None) -> None:
-    await page.show_banner_async(ErrorBanner(message, url=url))
+def show_error_banner(page: ft.Page, *, message: str, url: str | None = None) -> None:
+    page.open(ErrorBanner(message, url=url))
 
 
 def decrypt_string(encrypted: str) -> str:

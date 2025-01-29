@@ -119,16 +119,16 @@ class DevToolsCookieForm(ft.Column):
                 ref.error_text = translator.translate(
                     LocaleStr(key="required_field_error_message"), self._locale
                 )
-                await ref.update_async()
+                ref.update()
 
         if all(ref.value for ref in refs):
-            await show_loading_snack_bar(page, locale=self._locale)
+            show_loading_snack_bar(page, locale=self._locale)
             cookies = f"ltuid_v2={ltuid_v2.value}; account_id_v2={account_id_v2.value}; ltoken_v2={ltoken_v2.value}; ltmid_v2={ltmid_v2.value}; account_mid_v2={account_mid_v2.value}"
             encrypted_cookies = encrypt_string(cookies)
             await page.client_storage.set_async(
                 f"hb.{self._params.user_id}.cookies", encrypted_cookies
             )
-            await page.go_async(f"/finish?{self._params.to_query_string()}")
+            page.go(f"/finish?{self._params.to_query_string()}")
 
     @property
     def submit_button(self) -> ft.FilledButton:
@@ -153,7 +153,7 @@ class CookieField(ft.TextField):
     async def on_field_focus(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
         control.error_text = None
-        await control.update_async()
+        control.update()
 
     async def on_field_blur(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
@@ -162,4 +162,4 @@ class CookieField(ft.TextField):
             if not control.value
             else None
         )
-        await control.update_async()
+        control.update()

@@ -22,7 +22,7 @@ dependencies = [
   "seria-library[files]>=1.5.4",
   "aerich>=0.7.2",
   "uvloop>=0.20.0; platform_system == 'Linux'",
-  "flet[web]==0.25.2",
+  "flet[web]>=0.26.0",
   "cryptography>=43.0.0",
   "pandas>=2.2.2",
   "fonttools>=4.53.1",

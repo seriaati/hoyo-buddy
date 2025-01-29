@@ -164,48 +164,46 @@ class GachaLogPage(ft.View):
         page: ft.Page = e.page
         gacha = next((g for g in self.gachas if g.id == e.control.data), None)
         if gacha is None:
-            await show_error_banner(page, message=f"Could not find gacha with id {e.control.data}")
+            show_error_banner(page, message=f"Could not find gacha with id {e.control.data}")
             return
 
         gacha_names = await get_gacha_names(
             page, gachas=[gacha], locale=self.locale, game=self.game
         )
 
-        await page.show_dialog_async(
+        page.open(
             GachaLogDialog(gacha=gacha, gacha_name=gacha_names[gacha.item_id], locale=self.locale)
         )
 
     async def filter_button_on_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        await page.show_dialog_async(
-            FilterDialog(params=self.params, game=self.game, locale=self.locale)
-        )
+        page.open(FilterDialog(params=self.params, game=self.game, locale=self.locale))
 
     async def on_search_bar_submit(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
         self.params.name_contains = e.control.value.lower()
         self.params.page = 1
-        await page.go_async(f"/gacha_log?{self.params.to_query_string()}")
+        page.go(f"/gacha_log?{self.params.to_query_string()}")
 
     async def next_page_on_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
         self.params.page += 1
-        await page.go_async(f"/gacha_log?{self.params.to_query_string()}")
+        page.go(f"/gacha_log?{self.params.to_query_string()}")
 
     async def previous_page_on_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
         self.params.page -= 1
-        await page.go_async(f"/gacha_log?{self.params.to_query_string()}")
+        page.go(f"/gacha_log?{self.params.to_query_string()}")
 
     async def page_field_on_submit(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
         page_num = int(e.control.value)
         if page_num < 1 or page_num > self.max_page:
-            await show_error_banner(page, message="Invalid page number")
+            show_error_banner(page, message="Invalid page number")
             return
 
         self.params.page = page_num
-        await page.go_async(f"/gacha_log?{self.params.to_query_string()}")
+        page.go(f"/gacha_log?{self.params.to_query_string()}")
 
 
 class GachaLogDialog(ft.AlertDialog):
@@ -243,7 +241,7 @@ class GachaLogDialog(ft.AlertDialog):
         )
 
     async def close_dialog(self, e: ft.ControlEvent) -> None:
-        await e.page.close_dialog_async()
+        await e.page.close(self)
 
 
 class FilterDialog(ft.AlertDialog):
@@ -331,10 +329,10 @@ class FilterDialog(ft.AlertDialog):
 
     async def on_dialog_close(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        await page.close_dialog_async()
+        page.close(self)
         self.params.page = 1
-        await page.go_async(f"/gacha_log?{self.params.to_query_string()}")
+        page.go(f"/gacha_log?{self.params.to_query_string()}")
 
     async def on_dialog_cancel(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        await page.close_dialog_async()
+        page.close(self)

@@ -97,4 +97,4 @@ class PlatformButton(ft.FilledTonalButton):
     async def on_btn_click(self, e: ft.ControlEvent) -> Any:
         page: ft.Page = e.page
         params = self._params.model_copy(update={"platform": self._platform})
-        await page.go_async(f"/methods?{params.to_query_string()}")
+        page.go(f"/methods?{params.to_query_string()}")

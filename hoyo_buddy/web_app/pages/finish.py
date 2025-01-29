@@ -108,7 +108,7 @@ class FinishPage(ft.View):
             None,
         )
         if account is None:
-            await show_error_banner(e.page, message="Could not find account")
+            show_error_banner(e.page, message="Could not find account")
             return
 
         if control.value is True:
@@ -144,7 +144,7 @@ class SubmitButton(ft.FilledButton):
         page: ft.Page = e.page
 
         if not self._accounts:
-            await show_error_banner(page, message="Please select at least one account")
+            show_error_banner(page, message="Please select at least one account")
             return
 
         user_id = self._params.user_id
@@ -206,7 +206,7 @@ class SubmitButton(ft.FilledButton):
         # Delete cookies and device info from client storage
         reset_storage(page, user_id=user_id)
 
-        await page.show_snack_bar_async(
+        page.open(
             ft.SnackBar(
                 ft.Row(
                     [
@@ -232,20 +232,13 @@ class SubmitButton(ft.FilledButton):
 
         channel_id, guild_id = self._params.channel_id, self._params.guild_id
         if channel_id is None:
-            await show_error_banner(
-                page, message="Unable to redirect to Discord, cannot find channel ID"
-            )
+            show_error_banner(page, message="Unable to redirect to Discord, cannot find channel ID")
             return
 
         # Redirect to Discord
         url = get_discord_protocol_url(channel_id=channel_id, guild_id=guild_id)
-        try:
-            can_launch = await page.can_launch_url_async(url)
-        except TimeoutError:
-            can_launch = False
-
-        if can_launch:
-            await page.launch_url_async(url, web_window_name=ft.UrlTarget.SELF.value)
+        if page.can_launch_url(url):
+            page.launch_url(url, web_window_name=ft.UrlTarget.SELF.value)
         else:
             url = get_discord_url(channel_id=channel_id, guild_id=guild_id)
-            await page.launch_url_async(url, web_window_name=ft.UrlTarget.SELF.value)
+            page.launch_url(url, web_window_name=ft.UrlTarget.SELF.value)

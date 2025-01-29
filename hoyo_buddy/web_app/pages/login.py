@@ -108,9 +108,9 @@ class LoginPage(ft.View):
         original_route = await page.client_storage.get_async("hb.original_route")
         if original_route:
             asyncio.create_task(page.client_storage.remove_async("hb.original_route"))
-            await page.go_async(original_route)
+            page.go(original_route)
         else:
-            await page.go_async("/platforms")
+            page.go("/platforms")
 
     async def on_login_button_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
@@ -122,4 +122,4 @@ class LoginPage(ft.View):
             else "https://hb-app.seria.moe/custom_oauth_callback"
         )
         oauth_url = f"https://discord.com/oauth2/authorize?response_type=code&client_id={os.environ['DISCORD_CLIENT_ID']}&redirect_uri={redirect_url}&scope=identify&state={state}"
-        await page.launch_url_async(oauth_url, web_window_name=ft.UrlTarget.SELF.value)
+        page.launch_url(oauth_url, web_window_name=ft.UrlTarget.SELF.value)

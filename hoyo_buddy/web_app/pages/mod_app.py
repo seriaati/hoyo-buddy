@@ -64,7 +64,7 @@ class DownloadAppButton(ft.ElevatedButton):
 
     async def goto_download_page(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        await page.launch_url_async(
+        page.launch_url(
             "https://github.com/PaiGramTeam/GetToken/releases/latest/download/miyoushe-361-lspatched.apk",
             web_window_name=ft.UrlTarget.BLANK.value,
         )
@@ -106,7 +106,7 @@ class LoginDetailForm(ft.Column):
         login_details = self._login_details_ref.current
         if not login_details.value:
             login_details.error_text = "此栏位为必填栏位"
-            await login_details.update_async()
+            login_details.update()
             return
 
         dict_cookies = genshin.parse_cookie(login_details.value)
@@ -120,7 +120,7 @@ class LoginDetailForm(ft.Column):
         cookies = dict_cookie_to_str(dict_cookies)
         encrypted_cookies = encrypt_string(cookies)
         await page.client_storage.set_async(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
-        await page.go_async(f"/finish?{self._params.to_query_string()}")
+        page.go(f"/finish?{self._params.to_query_string()}")
 
     @property
     def submit_button(self) -> ft.FilledButton:
@@ -142,9 +142,9 @@ class LoginDetailField(ft.TextField):
     async def on_field_focus(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
         control.error_text = None
-        await control.update_async()
+        control.update()
 
     async def on_field_blur(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
         control.error_text = "此栏位为必填栏位" if not control.value else None
-        await control.update_async()
+        control.update()

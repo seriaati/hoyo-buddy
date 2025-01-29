@@ -90,4 +90,4 @@ class MethodButton(ft.FilledTonalButton):
 
     async def on_btn_click(self, e: ft.ControlEvent) -> Any:
         page: ft.Page = e.page
-        await page.go_async(f"/{self._to_page}?{self._params.to_query_string()}")
+        page.go(f"/{self._to_page}?{self._params.to_query_string()}")

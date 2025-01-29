@@ -48,7 +48,7 @@ class DownloadAppButton(ft.ElevatedButton):
 
     async def goto_download_page(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        await page.launch_url_async(
+        page.launch_url(
             "https://mirror.ghproxy.com/https://raw.githubusercontent.com/forchannot/get_device_info/main/app/build/outputs/apk/debug/app-debug.apk",
             web_window_name=ft.UrlTarget.BLANK.value,
         )
@@ -74,16 +74,16 @@ class DeviceInfoForm(ft.Column):
         device_info = self._login_details_ref.current
         if not device_info.value:
             device_info.error_text = "此栏位为必填栏位"
-            await device_info.update_async()
+            device_info.update()
             return
 
         try:
             device_info = orjson.loads(device_info.value.strip())
         except orjson.JSONDecodeError:
-            await show_error_banner(page, message="无效的 JSON 格式")
+            show_error_banner(page, message="无效的 JSON 格式")
             return
 
-        await show_loading_snack_bar(page, message="正在提交设备信息...")
+        show_loading_snack_bar(page, message="正在提交设备信息...")
         client = ProxyGenshinClient(region=genshin.Region.CHINESE)
         device_id = str(uuid.uuid4()).lower()
         try:
@@ -93,13 +93,13 @@ class DeviceInfoForm(ft.Column):
                 oaid=device_info["oaid"],
             )
         except Exception as exc:
-            await show_error_banner(page, message=str(exc))
+            show_error_banner(page, message=str(exc))
             return
 
         await page.client_storage.set_async(f"hb.{self._params.user_id}.device_id", device_id)
         await page.client_storage.set_async(f"hb.{self._params.user_id}.device_fp", device_fp)
 
-        await page.go_async(f"/finish?{self._params.to_query_string()}")
+        page.go(f"/finish?{self._params.to_query_string()}")
 
     @property
     def submit_button(self) -> ft.FilledButton:
@@ -121,9 +121,9 @@ class DeviceInfoField(ft.TextField):
     async def on_field_focus(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
         control.error_text = None
-        await control.update_async()
+        control.update()
 
     async def on_field_blur(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
         control.error_text = "此栏位为必填栏位" if not control.value else None
-        await control.update_async()
+        control.update()

@@ -55,16 +55,16 @@ class MobileNumberForm(ft.Column):
 
         if not login_details.value:
             login_details.error_text = "此栏位为必填栏位"
-            await login_details.update_async()
+            login_details.update()
         else:
-            await show_loading_snack_bar(page, message="正在发送验证码...")
+            show_loading_snack_bar(page, message="正在发送验证码...")
             mobile = login_details.value
             client = ProxyGenshinClient(region=genshin.Region.CHINESE)
 
             try:
                 result = await client._send_mobile_otp(mobile)
             except Exception as exc:
-                await show_error_banner(page=page, message=str(exc))
+                show_error_banner(page=page, message=str(exc))
                 return
 
             if isinstance(result, genshin.models.SessionMMT):
@@ -72,7 +72,7 @@ class MobileNumberForm(ft.Column):
                     result, page=page, params=self._params, mmt_type="on_otp_send", mobile=mobile
                 )
             else:
-                await handle_mobile_otp(mobile=mobile, page=page, params=self._params)
+                handle_mobile_otp(mobile=mobile, page=page, params=self._params)
 
     @property
     def submit_button(self) -> ft.FilledButton:
@@ -96,9 +96,9 @@ class MobileNumberField(ft.TextField):
     async def on_field_focus(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
         control.error_text = None
-        await control.update_async()
+        control.update()
 
     async def on_field_blur(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
         control.error_text = "此栏位为必填栏位" if not control.value else None
-        await control.update_async()
+        control.update()

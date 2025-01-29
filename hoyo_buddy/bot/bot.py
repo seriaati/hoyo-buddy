@@ -327,10 +327,16 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     @staticmethod
     async def sanitize_accounts(user_id: int) -> None:
-        """Sanitize accounts for a user.
+        """Sanitize the Hoyo accounts for a given user by ensuring only one account is marked as current.
+
+        This method performs the following actions:
+        1. Retrieves all Hoyo accounts associated with the given user ID.
+        2. Checks if there are any accounts marked as current.
+        3. If no accounts are marked as current and there are accounts available, marks the first account as current.
+        4. If more than one account is marked as current, resets all accounts to not current and marks only the first account as current.
 
         Args:
-            user_id: The user ID to sanitize the accounts for.
+            user_id: The ID of the user whose accounts need to be sanitized.
         """
         accounts = await models.HoyoAccount.filter(user_id=user_id).all()
         current_accounts = [account for account in accounts if account.current]

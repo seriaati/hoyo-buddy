@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import ProxyAPI
 
 MAX_API_ERROR_COUNT = 10
-SLEEP_TIME = 2.5
+SLEEP_TIME = 3.5
 
 
 class AutoMimo:

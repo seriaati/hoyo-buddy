@@ -237,7 +237,12 @@ class SubmitButton(ft.FilledButton):
 
         # Redirect to Discord
         url = get_discord_protocol_url(channel_id=channel_id, guild_id=guild_id)
-        if page.can_launch_url(url):
+        try:
+            can_launch = page.can_launch_url(url)
+        except TimeoutError:
+            can_launch = False
+
+        if can_launch:
             page.launch_url(url, web_window_name=ft.UrlTarget.SELF.value)
         else:
             url = get_discord_url(channel_id=channel_id, guild_id=guild_id)

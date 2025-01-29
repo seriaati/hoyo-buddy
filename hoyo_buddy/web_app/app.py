@@ -266,11 +266,7 @@ class WebApp:
 
         cookies = decrypt_string(encrypted_cookies)
         fetch_cookie = (
-            params.platform is Platform.HOYOLAB
-            and "stoken" in cookies
-            and "ltmid" in cookies
-            and "ltoken" not in cookies
-            and "cookie_token" not in cookies
+            params.platform is Platform.HOYOLAB and "stoken" in cookies and "ltmid_v2" in cookies
         )
         logger.debug(f"[{params.user_id}] Fetch cookie with stoken: {fetch_cookie}")
         if fetch_cookie:

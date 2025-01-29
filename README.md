@@ -74,7 +74,7 @@ Other projects made by me that are used in Hoyo Buddy
 - [enka-card-api](https://github.com/seriaati/enka-card-api): API to generate 3rd party template cards.
 - [genshin.py](https://github.com/thesadru/genshin.py) (contributor): API wrapper for HoYoLAB and Miyoushe.
 - [hoyo-codes](https://github.com/seriaati/hoyo-codes): API to get gift codes for all Hoyoverse games, used in the automatic code redemption feature.
-- [daily-checkin-api](https://github.com/seriaati/daily_checkin_api) (private): API to perform daily check-in, used in the automatic daily check-in feature.
+- [gpy-proxy](https://github.com/seriaati/gpy-proxy): FastAPI app, used as proxy for some API requests to avoid being rate limited.
 - [hoyo-buddy-assets](https://github.com/seriaati/hoyo-buddy-assets) (private): Hoyo Buddy assets, used in image generation features.
 
 ## Acknowledgements

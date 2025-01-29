@@ -98,7 +98,6 @@ class ProxyGenshinClient(genshin.Client):
     async def request_proxy_api(
         self, api_name: ProxyAPI, endpoint: str, payload: dict[str, Any]
     ) -> dict[str, Any]:
-        payload["token"] = os.environ["DAILY_CHECKIN_API_TOKEN"]
         payload["lang"] = self.lang
         payload["region"] = self.region.value
         if self.game is not None:
@@ -116,7 +115,13 @@ class ProxyGenshinClient(genshin.Client):
             try:
                 async with (
                     aiohttp.ClientSession() as session,
-                    session.post(f"{api_url}/{endpoint}/", json=payload) as resp,
+                    session.post(
+                        f"{api_url}/{endpoint}/",
+                        json=payload,
+                        headers={
+                            "Authorization": f"Bearer {os.environ['DAILY_CHECKIN_API_TOKEN']}"
+                        },
+                    ) as resp,
                 ):
                     if resp.status in {200, 400, 500}:
                         data = await resp.json()

@@ -62,4 +62,6 @@ BetaAutocompleteChoices: TypeAlias = defaultdict[
 Tasks: TypeAlias = defaultdict[
     Game, defaultdict[ItemCategory, dict[discord.Locale, asyncio.Task[list[Any]]]]
 ]
-ProxyAPI: TypeAlias = Literal["RENDER", "RENDER2", "RENDER3", "VERCEL", "FLY", "RAILWAY"]
+ProxyAPI: TypeAlias = Literal[
+    "RENDER", "RENDER2", "RENDER3", "RENDER4", "VERCEL", "FLY", "FLY2", "RAILWAY", "LEAPCELL"
+]

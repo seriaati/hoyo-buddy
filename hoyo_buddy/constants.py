@@ -750,9 +750,12 @@ PROXY_APIS: dict[ProxyAPI, str] = {
     "RENDER": os.environ["RENDER_URL"],
     "RENDER2": os.environ["RENDER2_URL"],
     "RENDER3": os.environ["RENDER3_URL"],
+    "RENDER4": os.environ["RENDER4_URL"],
     "VERCEL": os.environ["VERCEL_URL"],
     "FLY": os.environ["FLY_URL"],
+    "FLY2": os.environ["FLY2_URL"],
     "RAILWAY": os.environ["RAILWAY_URL"],
+    "LEAPCELL": os.environ["LEAPCELL_URL"],
 }
 
 CODE_CHANNEL_IDS = {

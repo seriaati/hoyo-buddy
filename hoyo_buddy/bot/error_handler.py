@@ -124,7 +124,7 @@ def get_error_embed(error: Exception, locale: discord.Locale) -> tuple[ErrorEmbe
     if isinstance(error, AmbrDataNotFoundError | YattaDataNotFoundError | HakushinNotFoundError):
         error = InvalidQueryError()
 
-    if isinstance(error, discord.Forbidden):
+    if isinstance(error, discord.HTTPException):
         if error.code == 50013:
             error = MissingPermissionsError()
         elif error.code == 200000:

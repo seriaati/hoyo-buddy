@@ -628,7 +628,7 @@ wheels = [
 
 [[package]]
 name = "flet"
-version = "0.26.0"
+version = "0.25.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx", marker = "platform_system != 'Pyodide'" },
@@ -636,7 +636,7 @@ dependencies = [
     { name = "repath" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/dd/25/a770b6fe37945298334c7e3a6a5e79604030294d9d312c2cfd321d29aa25/flet-0.26.0-py3-none-any.whl", hash = "sha256:779e58dcfb4fbf0760715471121a183bf7ecf48e522fee068556cb26df3490fb", size = 535416 },
+    { url = "https://files.pythonhosted.org/packages/6b/14/5d6108394be979dfac4ba9f050a9f66e898ae35313cc9dddcf2aa3c66480/flet-0.25.2-py3-none-any.whl", hash = "sha256:3558545c079c8daf18f169f30e8e10ccb27146d2be2eb9dfe23e6fc7e09b9f1a", size = 535611 },
 ]
 
 [package.optional-dependencies]
@@ -646,7 +646,7 @@ web = [
 
 [[package]]
 name = "flet-web"
-version = "0.26.0"
+version = "0.25.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fastapi" },
@@ -654,7 +654,7 @@ dependencies = [
     { name = "uvicorn", extra = ["standard"] },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a4/17/b870629da8384b91d0531e7cbc4be4adf6062c0e0b6b826f21b2693f0352/flet_web-0.26.0-py3-none-any.whl", hash = "sha256:d29865ab0136c71d164b08628e86222a1c3c38fd9158e44065344a7d569ba8ae", size = 3027713 },
+    { url = "https://files.pythonhosted.org/packages/6b/6f/8a20b62becbe82762f6ab12138943403bc2de69a7ca7a10eb6420a655195/flet_web-0.25.2-py3-none-any.whl", hash = "sha256:35dae94d72a7dbe4b6f9df2788a28a551a94cf423e1f17b0144808d74e1a8d21", size = 3010070 },
 ]
 
 [[package]]
@@ -841,7 +841,7 @@ requires-dist = [
     { name = "discord-py", extras = ["speed"], git = "https://github.com/Rapptz/discord.py" },
     { name = "enka", git = "https://github.com/seriaati/enka-py" },
     { name = "fake-useragent", specifier = ">=1.5.1" },
-    { name = "flet", extras = ["web"], specifier = ">=0.24.0" },
+    { name = "flet", extras = ["web"], specifier = "==0.25.2" },
     { name = "fonttools", specifier = ">=4.53.1" },
     { name = "genshin", extras = ["auth", "sqlite"], git = "https://github.com/thesadru/genshin.py?branch=master" },
     { name = "hakushin-py", git = "https://github.com/seriaati/hakushin-py" },

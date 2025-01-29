@@ -120,6 +120,9 @@ class ProxyGenshinClient(genshin.Client):
                 ):
                     if resp.status in {200, 400, 500}:
                         data = await resp.json()
+                        sanitized_data = {k: v for k, v in data.items() if k != "cookies"}
+                        logger.debug(f"Received data: {sanitized_data}")
+
                         if resp.status == 200:
                             return data
                         if resp.status == 400:

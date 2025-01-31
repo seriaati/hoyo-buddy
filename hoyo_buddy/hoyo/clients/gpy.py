@@ -49,6 +49,9 @@ if TYPE_CHECKING:
 load_dotenv()
 env = os.environ["ENV"]
 
+MIMO_TASK_DELAY = 1.0
+MIMO_COMMUNITY_TASK_DELAY = 2.0
+
 MAX_RETRIES = len(PROXY_APIS)
 BACKOFF_FACTOR = 2
 MAX_BACKOFF = 32
@@ -958,7 +961,7 @@ class GenshinClient(ProxyGenshinClient):
                     await self.finish_mimo_task(
                         task.id, game_id=game_id, version_id=version_id, api_name=api_name
                     )
-                    await asyncio.sleep(0.5)
+                    await asyncio.sleep(MIMO_TASK_DELAY)
                 except genshin.GenshinException as e:
                     if e.retcode == -500001:  # Invalid fields in calculation
                         continue
@@ -976,17 +979,17 @@ class GenshinClient(ProxyGenshinClient):
                     reply_id = await self.reply_to_post(
                         random.choice(POST_REPLIES), post_id=int(post_id)
                     )
-                    await asyncio.sleep(2)
+                    await asyncio.sleep(MIMO_COMMUNITY_TASK_DELAY)
                     await self.delete_reply(reply_id=reply_id, post_id=int(post_id))
-                    await asyncio.sleep(2)
+                    await asyncio.sleep(MIMO_COMMUNITY_TASK_DELAY)
                     finished = True
 
                 topic_id: str | None = args.get("topic_id")
                 if topic_id is not None:
                     await self.join_topic(int(topic_id))
-                    await asyncio.sleep(2)
+                    await asyncio.sleep(MIMO_COMMUNITY_TASK_DELAY)
                     await self.leave_topic(int(topic_id))
-                    await asyncio.sleep(2)
+                    await asyncio.sleep(MIMO_COMMUNITY_TASK_DELAY)
                     finished = True
 
         if finished:
@@ -1000,7 +1003,7 @@ class GenshinClient(ProxyGenshinClient):
                     await self.claim_mimo_task_reward(
                         task.id, game_id=game_id, version_id=version_id, api_name=api_name
                     )
-                    await asyncio.sleep(0.5)
+                    await asyncio.sleep(MIMO_TASK_DELAY)
                 except genshin.GenshinException as e:
                     if e.retcode == -500001:  # Invalid fields in calculation
                         continue

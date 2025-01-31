@@ -7,6 +7,7 @@ import enka
 from discord import ButtonStyle, TextStyle
 from genshin.models import ZZZPartialAgent
 from loguru import logger
+from tortoise.exceptions import IntegrityError
 
 from hoyo_buddy.constants import ZZZ_DISC_SUBSTATS
 from hoyo_buddy.db import CardSettings, Settings
@@ -58,13 +59,18 @@ async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> C
             msg = f"Game {game!r} does not have its table column for default card template."
             raise ValueError(msg)
 
-        card_settings = await CardSettings.create(
-            user_id=user_id,
-            character_id=character_id,
-            dark_mode=False,
-            template=template,
-            game=game,
-        )
+        try:
+            card_settings = await CardSettings.create(
+                user_id=user_id,
+                character_id=character_id,
+                dark_mode=False,
+                template=template,
+                game=game,
+            )
+        except IntegrityError:
+            card_settings = await CardSettings.get(
+                user_id=user_id, character_id=character_id, game=game
+            )
     elif card_settings.game is None:
         card_settings.game = game
         await card_settings.save(update_fields=("game",))

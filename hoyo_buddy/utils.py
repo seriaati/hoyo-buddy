@@ -446,3 +446,8 @@ def get_mimo_task_str(task: genshin.models.MimoTask, game: Game) -> str:
     if task.total_progress > 1:
         task_str += f" ({task.progress}/{task.total_progress})"
     return task_str
+
+
+def contains_masked_link(text: str) -> bool:
+    pattern = re.compile(r"\[.*?\]\(<?https?://.*?>?\)")
+    return bool(pattern.search(text))

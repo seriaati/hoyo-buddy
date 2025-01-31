@@ -6,8 +6,10 @@ from typing import TYPE_CHECKING, Literal
 
 from discord import Locale
 
+from hoyo_buddy.constants import NO_MASKED_LINK_GUILDS
 from hoyo_buddy.enums import Game, LeaderboardType, Platform
 from hoyo_buddy.l10n import translator
+from hoyo_buddy.utils import contains_masked_link
 
 from .models import GachaHistory, HoyoAccount, Settings, User
 
@@ -57,7 +59,11 @@ async def get_dyk(i: Interaction) -> str:
     locale = await get_locale(i)
     if not enable_dyk:
         return ""
-    return translator.get_dyk(locale)
+
+    dyk = translator.get_dyk(locale)
+    if i.guild is not None and contains_masked_link(dyk) and i.guild.id in NO_MASKED_LINK_GUILDS:
+        return ""
+    return dyk
 
 
 async def get_last_gacha_num(

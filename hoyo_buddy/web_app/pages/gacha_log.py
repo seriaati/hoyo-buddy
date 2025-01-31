@@ -241,7 +241,7 @@ class GachaLogDialog(ft.AlertDialog):
         )
 
     async def close_dialog(self, e: ft.ControlEvent) -> None:
-        await e.page.close(self)
+        e.page.close(self)
 
 
 class FilterDialog(ft.AlertDialog):

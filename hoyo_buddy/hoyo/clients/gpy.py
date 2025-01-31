@@ -132,7 +132,13 @@ class ProxyGenshinClient(genshin.Client):
                             return data
                         if resp.status == 400:
                             genshin.raise_for_retcode(data)
-                        raise Exception(data.get("message", "Unknown proxy API error"))
+
+                        message = data.get("message", "Unknown proxy API error")
+                        if "genshin.py client request failed" in message:
+                            # Don't raise for genshin.py client request failures
+                            err = Exception(message)
+                        else:
+                            raise Exception(message)
 
                     err = ProxyAPIError(api_url, resp.status)
             except (TimeoutError, aiohttp.ClientError) as e:
@@ -984,7 +990,9 @@ class GenshinClient(ProxyGenshinClient):
                     finished = True
 
         if finished:
-            tasks = await self.get_mimo_tasks(game_id=game_id, version_id=version_id)
+            tasks = await self.get_mimo_tasks(
+                game_id=game_id, version_id=version_id, api_name=api_name
+            )
 
         for task in tasks:
             if task.status is genshin.models.MimoTaskStatus.FINISHED:

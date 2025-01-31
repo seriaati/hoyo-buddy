@@ -150,6 +150,10 @@ def get_error_embed(error: Exception, locale: discord.Locale) -> tuple[ErrorEmbe
                     break
             if err_info is None:
                 err_info = {"title": f"[{error.retcode}] HoYo API Error", "description": error.msg}
+
+            if retcode == -110:  # Got rate limited 5 times in a row
+                # Set as not recognized to get traceback in Sentry
+                recognized = False
         else:
             err_info = ENKA_ERROR_CONVERTER.get(type(error))
 

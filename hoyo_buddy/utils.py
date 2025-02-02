@@ -14,6 +14,7 @@ import aiohttp
 import orjson
 import sentry_sdk
 import toml
+from loguru import logger
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
@@ -451,3 +452,21 @@ def get_mimo_task_str(task: genshin.models.MimoTask, game: Game) -> str:
 def contains_masked_link(text: str) -> bool:
     pattern = re.compile(r"\[.*?\]\(<?https?://.*?>?\)")
     return bool(pattern.search(text))
+
+
+async def add_to_hoyo_codes(
+    session: aiohttp.ClientSession, *, code: str, game: genshin.Game
+) -> None:
+    api_key = os.getenv("HOYO_CODES_API_KEY")
+    if api_key is None:
+        logger.error("HOYO_CODES_API_KEY is not set")
+        return
+
+    url = "https://hoyo-codes.seria.moe/codes"
+    headers = {"Authorization": f"Bearer {api_key}"}
+    data = {"code": code, "game": game.value}
+    async with session.post(url, json=data, headers=headers) as resp:
+        if resp.status == 400:
+            # Code already exists
+            return
+        resp.raise_for_status()

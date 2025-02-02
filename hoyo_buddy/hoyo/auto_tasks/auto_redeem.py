@@ -19,7 +19,7 @@ from hoyo_buddy.db import HoyoAccount, JSONFile
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.enums import Platform
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils import convert_code_to_redeem_url
+from hoyo_buddy.utils import add_to_hoyo_codes, convert_code_to_redeem_url
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
@@ -71,6 +71,11 @@ class AutoRedeem:
 
                 if cls._bot.env == "prod":
                     asyncio.create_task(cls.send_codes_to_channels(bot, game_codes))
+
+                    if game is not None and codes is not None:
+                        # Add codes to hoyo-codes API
+                        for code in codes:
+                            await add_to_hoyo_codes(cls._bot.session, code=code, game=game)
 
                 if game is None:
                     accounts = await HoyoAccount.filter(auto_redeem=True).all()

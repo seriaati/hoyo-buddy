@@ -40,6 +40,7 @@ from hoyo_buddy.models import Dismissible, DrawInput, HoyolabGICharacter, Hoyola
 from hoyo_buddy.ui import Button, Select, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
 from hoyo_buddy.ui.hoyo.profile.items.team_card_settings_btn import TeamCardSettingsButton
+from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
 from hoyo_buddy.utils import blur_uid, format_float, human_format_number
 
 from .card_settings import get_card_settings
@@ -136,6 +137,11 @@ class ProfileView(View):
         cache = await EnkaCache.get(uid=self.uid)
         self.cache_extras = cache.extras
         return cache.extras
+
+    async def _fix_invalid_template(self, card_settings: CardSettings) -> None:
+        if self.game not in TEMPLATES or card_settings.template not in TEMPLATES[self.game]:
+            card_settings.template = "hb1"
+            await card_settings.save(update_fields=("template",))
 
     async def _get_character_rank(
         self, character: Character, *, with_detail: bool = False
@@ -532,6 +538,8 @@ class ProfileView(View):
         if force_hb_temp and "hb" not in card_settings.template:
             card_settings.template = "hb1"
             await card_settings.save(update_fields=("template",))
+
+        await self._fix_invalid_template(card_settings)
 
         template = card_settings.template
         draw_input = DrawInput(

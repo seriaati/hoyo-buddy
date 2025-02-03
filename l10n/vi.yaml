@@ -39,9 +39,9 @@ accounts_command_description: Quản lý tài khoản của bạn
 action_in_cooldown_error_message: "Vui lòng thử lại trong {available_time}."
 action_in_cooldown_error_title: Hành động trong thời gian chờ
 add_account_button_label: Thêm tài khoản
-add_hoyolab_acc.embed.description: "1. Với email và mật khẩu: Được khuyên dùng, là cách đễ nhất.\n2. Với DevTools: Chỉ làm được trên PC, là cách an toàn nếu bạn lo ngại về bảo mật với cách một"
+add_hoyolab_acc.embed.description: "- [Tôi nên sử dụng phương thức nào?](:docs/FAQ#which-login-method-should-i-use:)"
 add_hoyolab_acc.embed.title: Vui lòng chọn phương thức để thêm tài khoản
-adding_accounts_description: "Chào mừng đến Hoyo Buddy! Hãy tận hưởng những tính năng bằng cách dành dưới 1 phút để thêm tài khoản của bạn.\n\nVề bảo mật tài khoản, vui lòng đọc [Trang Wiki](https://hb-docs.seria.moe/vi/docs/Account-Security), về cách chúng tôi sử dụng và thu thập thông tin của bạn, vui lòng đọc [Chính sách Bảo Mật](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "- [Hoyo Buddy có an toàn không?](:docs/Account-Security:)\n- [Chính sách bảo mật [EN]](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Vui lòng chọn Nền tảng Tài Khoản
 ai_gen_image_error_message: Kiểm tra thông tin đã nhập và thử lại
 ai_gen_image_error_title: Đã xảy ra lỗi khi đang sáng tạo bằng AI
@@ -140,7 +140,7 @@ email-geetest.embed.title: Yêu cầu xác minh CAPTCHA để gửi Email Mã x�
 email_password_button_label: Với Email và Mật khẩu
 email_password_modal_email_input_label: Email hoặc tên người dùng
 email_password_modal_password_input_label: mật khẩu
-enter_email_password_instructions_description: "Phương pháp này yêu cầu bạn nhập thông tin cá nhân của bạn.\n\n- Đổi lại, `cookie_token` của bạn có thể được làm mới tự động, được sử dụng trong các tính năng liên quan đến đổi mã (chỉ dành cho người dùng HoYoLAB).\n- Email và mật khẩu của bạn **KHÔNG BAO GIỜ** được lưu trong cơ sở dữ liệu, nên thực tế là chúng không thể bị rò rỉ.\n- Ngoài ra, bot này có nguồn mở trên [GitHub](https://github.com/seriaati/hoyo-buddy), nên bạn có thể tự xác minh điều đó.\n- Lựa chọn cuối cùng của bạn là quyết định có nên tin tưởng bot này hay không."
+enter_email_password_instructions_description: "Email và mật khẩu đề cập đến email và mật khẩu của **tài khoản Hoyoverse**, không phải tài khoản Google, Apple, v.v..\n- [Cách này hoạt động nhu thế nào?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [Tôi không có tài khoản Hoyoverse (Tôi đăng nhập bằng Google, Facebook, v.v.)](:docs/Before-Start:)\n- [Tôi là người chơi trên Xbox/PlayStation](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: Thay đổi mức độ nón ánh sáng
 dark_mode_button_label: Chế độ Tối
 error_footer: "Bạn có thể tìm trợ giúp trên máy chủ Discord. Dùng lệnh /about để nhận link vào"
@@ -550,7 +550,7 @@ dyk_team: "Hoyo Buddy được xây dựng bởi 1 team nhỏ gồm 1 lập trì
 dyk_disable: Bạn có thể vô hiệu hóa tin nhắn này trong /settings
 dyk_settings_lang: Bạn có thể đổi ngôn ngữ của bot trong /settings
 dyk_settings_theme: Bạn có thể đổi chế độ sáng tối sử dụng /settings
-dyk_security: "Chúng tôi có một [bài viết](<https://hb-docs.seria.moe/vi/docs/Account-Security>) về bảo mật tài khoản"
+dyk_security: "Chúng tôi có một [bài viết](<:docs/Account-Security:>) về bảo mật tài khoản"
 dyk_github: "Hoyo Buddy là một dự án mã nguồn mở trên [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
 dyk_python: Hoyo Buddy được viết hết bằng Python
 dyk_unreleased: Bạn có thể xem nôi dung trò chơi chưa ra mắt bằng /search
@@ -574,10 +574,10 @@ show_tutorial_button_label: Xem hướng dẫn
 close_button_label: Đóng
 required_field_error_message: Trường này là bắt buộc
 accounts_added_snackbar_message: "Tài khoản đã thêm thành công, đang hướng bạn về lại Discord,,,"
-account_add_start_message: "Nhấn nút bên dưới và làm theo hướng dẫn để thêm tài khoản. Khi bạn xong, sử dụng lênh</accounts> để thêm tài khoản bạn đã thêm. Nếu bạn gập vấn đề nào hoặc cấn trợ giúp, tham [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi."
+account_add_start_message: "Nhấp vào nút bên dưới và làm theo hướng dẫn để thêm tài khoản của bạn. Khi bạn hoàn tất, hãy sử dụng lệnh </accounts> để xem các tài khoản bạn đã thêm.\nHãy tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi nếu bạn cần trợ giúp."
 hbls_button_label: Hãy bắt đầu!
 gacha_import_url_modal_title: Nhập đường link nhật ký gacha
-gacha_import_embed_description: "URL Nhật ký Gacha: Lấy một URL rất dài từ trò chơi để nhập nhật ký gacha của bạn, bên dưới là hướng dẫn cho các trò chơi khác nhau::\n- Android: [Video YouTube](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nFor services below, export your gacha records as the specified file format and upload it via </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
+gacha_import_embed_description: "URL Nhật ký Gacha: Lấy một URL rất dài từ trò chơi để nhập nhật ký gacha của bạn, bên dưới là hướng dẫn cho các trò chơi khác nhau::\n- Android: [Video YouTube](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nĐối với các dịch vụ bên dưới, hãy xuất nhật ký gacha của bạn dưới dạng định dạng tệp được chỉ định và tải nó lên thông qua lệnh </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Không thể trích xuất khóa xác thực từ đường link, vui lòng thử lại bằng đường link hợp lệ."
 extract_authkey_error_title: Trích xuất Khóa xác thực Thất bại
 gacha_import_loading_embed_title: Đang nhập Nhật ký Gacha
@@ -787,3 +787,8 @@ auto_task_error_dm_content: "Tính năng {feature} đã bị vô hiệu hoá do 
 is_support_custom_image_desc: Hỗ trợ hình ảnh tùy chỉnh
 is_not_support_custom_image_desc: Không hỗ trợ hình ảnh tùy chỉnh
 template_preview_header: Ví Dụ Minh Hoạ
+missing_permissions_error_title: Hoyo Buddy đang thiếu quyền hạn
+missing_permissions_error_message: "Hoyo Buddy yêu cầu các quyền sau để hoạt động bình thường:\n- Gửi tin nhắn\n- Nhúng liên kết\n- Đính kèm tập tin\n- Dùng Emoji Mở Rộng"
+blocked_by_auto_mod_error_title: Tin nhắn này đã bị chặn bởi AutoMod
+blocked_by_auto_mod_error_message: "Hãy thử chạy lại lệnh hoặc liên hệ với quản trị viên máy chủ để tắt AutoMod cho Hoyo Buddy."
+zzz.core_level.placeholder: Chọn cấp độ Kỹ Năng Cốt Lỗi

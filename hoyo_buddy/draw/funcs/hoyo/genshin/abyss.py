@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.constants import contains_traveler_id
+from hoyo_buddy.constants import TRAVELER_IDS
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
@@ -24,11 +24,13 @@ class SpiralAbyssCard:
         locale: str,
         character_icons: dict[str, str],
         character_ranks: dict[int, int],
+        traveler_element: str | None,
     ) -> None:
         self._data = data
         self._locale = locale
         self._character_icons = character_icons
         self._character_ranks = character_ranks
+        self._traveler_element = traveler_element
 
         self.drawer: Drawer = None  # pyright: ignore[reportAttributeAccessIssue]
         self.im: Image.Image = None  # pyright: ignore[reportAttributeAccessIssue]
@@ -114,11 +116,13 @@ class SpiralAbyssCard:
             f"Lv.{character.level}", size=24, style="bold", position=(58, 132), anchor="mm"
         )
 
-        if contains_traveler_id(str(character.id)):
+        if character.id in TRAVELER_IDS:
             element_flair = self.drawer.open_asset(f"block/{character.rarity}_element_flair.png")
             bk.alpha_composite(element_flair, (0, 0))
             element_icon = self.drawer.open_asset(
-                f"Element_White_{character.element}.png", size=(25, 25), folder="gi-elements"
+                f"Element_White_{self._traveler_element or character.element}.png",
+                size=(25, 25),
+                folder="gi-elements",
             )
             bk.alpha_composite(
                 element_icon,

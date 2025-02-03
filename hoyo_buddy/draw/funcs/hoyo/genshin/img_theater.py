@@ -6,7 +6,7 @@ import discord
 import genshin
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.constants import contains_traveler_id
+from hoyo_buddy.constants import TRAVELER_IDS
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
@@ -23,11 +23,13 @@ class ImgTheaterCard:
         chara_consts: dict[int, int],
         character_icons: dict[str, str],
         locale: str,
+        traveler_element: str | None,
     ) -> None:
         self._theater = theater
         self._chara_consts = chara_consts
         self._character_icons = character_icons
         self._dark_mode = True  # To write white colored texts
+        self._traveler_element = traveler_element
 
         self._locale = locale
         self._asset_dir = "hoyo-buddy-assets/assets/img-theater"
@@ -193,12 +195,14 @@ class ImgTheaterCard:
                 str(character.level), size=18, position=(27, 110), anchor="mm", style="bold"
             )
 
-            if contains_traveler_id(str(character.id)):
+            if character.id in TRAVELER_IDS:
                 element_flair_pos = (92, 92)
                 element_flair = self._drawer.open_asset("normal_chara_element_flair.png")
                 block.paste(element_flair, element_flair_pos, element_flair)
                 element_icon = self._drawer.open_asset(
-                    f"Element_White_{character.element}.png", folder="gi-elements", size=(25, 25)
+                    f"Element_White_{self._traveler_element or character.element}.png",
+                    folder="gi-elements",
+                    size=(25, 25),
                 )
                 block.paste(
                     element_icon,

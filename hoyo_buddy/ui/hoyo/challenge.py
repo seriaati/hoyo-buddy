@@ -20,7 +20,7 @@ from genshin.models import (
 )
 from genshin.models import Character as GICharacter
 
-from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE
+from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE, TRAVELER_IDS
 from hoyo_buddy.db import ChallengeHistory, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_apc_shadow_card,
@@ -331,10 +331,12 @@ class ChallengeView(View):
                 draw_input, self.challenge, self.get_season(self.challenge)
             )
         if isinstance(self.challenge, ImgTheaterData):
+            traveler = next((c for c in self.characters if c.id in TRAVELER_IDS), None)
             return await draw_img_theater_card(
                 draw_input,
                 self.challenge,
                 {chara.id: chara.constellation for chara in self.characters},
+                traveler.element if traveler is not None else None,
             )
         if isinstance(self.challenge, DeadlyAssault):
             return await draw_assault_card(

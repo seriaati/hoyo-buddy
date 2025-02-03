@@ -10,6 +10,7 @@ import yatta
 from discord import File
 from genshin.models import ZZZFullAgent
 
+from hoyo_buddy.constants import TRAVELER_IDS
 from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.draw import funcs
 from hoyo_buddy.models import (
@@ -311,11 +312,13 @@ async def draw_spiral_abyss_card(
         )
     await download_images(urls, "abyss", draw_input.session)
 
+    traveler = next((c for c in characters if c.id in TRAVELER_IDS), None)
     card = funcs.genshin.SpiralAbyssCard(
         abyss,
         locale=draw_input.locale.value,
         character_icons=character_icons,
         character_ranks=character_ranks,
+        traveler_element=traveler.element if traveler is not None else None,
     )
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
@@ -376,7 +379,10 @@ async def draw_apc_shadow_card(
 
 
 async def draw_img_theater_card(
-    draw_input: DrawInput, data: ImgTheaterData, chara_consts: dict[int, int]
+    draw_input: DrawInput,
+    data: ImgTheaterData,
+    chara_consts: dict[int, int],
+    traveler_element: str | None,
 ) -> File:
     async with ambr.AmbrAPI() as api:
         character_icons = {
@@ -401,7 +407,7 @@ async def draw_img_theater_card(
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
         funcs.genshin.ImgTheaterCard(
-            data, chara_consts, character_icons, draw_input.locale.value
+            data, chara_consts, character_icons, draw_input.locale.value, traveler_element
         ).draw,
     )
 

@@ -151,7 +151,7 @@ def get_error_embed(error: Exception, locale: discord.Locale) -> tuple[ErrorEmbe
             if err_info is None:
                 err_info = {"title": f"[{error.retcode}] HoYo API Error", "description": error.msg}
 
-            if retcode == -110:  # Got rate limited 5 times in a row
+            if isinstance(error, genshin_errors.VisitsTooFrequently):
                 # Set as not recognized to get traceback in Sentry
                 recognized = False
         else:

@@ -14,6 +14,7 @@ from hoyo_buddy.constants import (
 from hoyo_buddy.db import GachaHistory, GachaStats, HoyoAccount, get_dyk, get_last_gacha_num
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import CURRENCY_EMOJIS
+from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import NoGachaLogFoundError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.components import Button, Select, SelectOption, View
@@ -24,7 +25,6 @@ if TYPE_CHECKING:
     import asyncpg
     from discord import Locale
 
-    from hoyo_buddy.enums import Game
     from hoyo_buddy.types import Interaction, User
 
 

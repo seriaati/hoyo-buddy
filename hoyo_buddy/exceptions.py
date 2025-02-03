@@ -15,15 +15,18 @@ if TYPE_CHECKING:
 
 
 class ProxyAPIError(Exception):
-    def __init__(self, api_url: str, status: int) -> None:
+    def __init__(self, api_url: str, status: int, *, message: str | None = None) -> None:
         self.api_url = api_url
         self.status = status
+        self.message = message
 
     def __str__(self) -> str:
-        return f"API: {self.api_url} returned status code: {self.status}"
+        return (
+            f"API {self.api_url} returned status code {self.status} with message {self.message!r}"
+        )
 
     def __repr__(self) -> str:
-        return f"<ProxyAPIError api_url={self.api_url!r} status={self.status!r}>"
+        return f"<ProxyAPIError api_url={self.api_url!r} status={self.status!r}> message={self.message!r}"
 
 
 class HoyoBuddyError(Exception):

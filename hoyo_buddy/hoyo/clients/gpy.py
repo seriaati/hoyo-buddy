@@ -14,6 +14,7 @@ import orjson
 from discord import Locale
 from dotenv import load_dotenv
 from loguru import logger
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_random_exponential
 
 from hoyo_buddy import models
 from hoyo_buddy.bot.error_handler import get_error_embed
@@ -51,10 +52,8 @@ env = os.environ["ENV"]
 
 MIMO_TASK_DELAY = 1.0
 MIMO_COMMUNITY_TASK_DELAY = 2.0
+API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
 
-MAX_RETRIES = len(PROXY_APIS)
-BACKOFF_FACTOR = 2
-MAX_BACKOFF = 32
 PROXY_APIS_ = (*PROXY_APIS.keys(), "LOCAL")
 proxy_api_rotator = itertools.cycle(PROXY_APIS_)
 
@@ -77,27 +76,12 @@ class ProxyGenshinClient(genshin.Client):
             **kwargs,
         )
 
-    async def request(self, *args: Any, **kwargs: Any) -> Any:
-        attempt = 0
-        err: Exception | None = None
-
-        while attempt < MAX_RETRIES:
-            try:
-                return await super().request(*args, **kwargs)
-            except (TimeoutError, aiohttp.ClientError) as e:
-                # Attempt to retry request
-                err = e
-                attempt += 1
-
-                backoff_time = min(BACKOFF_FACTOR**attempt + random.uniform(0, 1), MAX_BACKOFF)
-                await asyncio.sleep(backoff_time)
-            except Exception:
-                # Raise immediately for other exceptions
-                raise
-
-        msg = f"genshin.py client request failed after {MAX_RETRIES} attempts"
-        raise RuntimeError(msg) from err
-
+    @retry(
+        stop=stop_after_attempt(5),
+        wait=wait_random_exponential(multiplier=0.3, min=0.3),
+        retry=retry_if_exception_type((TimeoutError, aiohttp.ClientError, ProxyAPIError)),
+        reraise=True,
+    )
     async def request_proxy_api(
         self, api_name: ProxyAPI, endpoint: str, payload: dict[str, Any]
     ) -> dict[str, Any]:
@@ -110,54 +94,26 @@ class ProxyGenshinClient(genshin.Client):
         api_url = PROXY_APIS[api_name]
         logger.debug(f"Requesting {api_url}/{endpoint}/ with payload: {sanitized_payload}")
 
-        attempt = 0
-        err: Exception | None = None
-        proxies = list(PROXY_APIS.values())
+        async with (
+            aiohttp.ClientSession() as session,
+            session.post(
+                f"{api_url}/{endpoint}/",
+                json=payload,
+                headers={"Authorization": f"Bearer {API_TOKEN}"},
+            ) as resp,
+        ):
+            if resp.status in {200, 400, 500}:
+                data = await resp.json()
 
-        while attempt < MAX_RETRIES:
-            try:
-                async with (
-                    aiohttp.ClientSession() as session,
-                    session.post(
-                        f"{api_url}/{endpoint}/",
-                        json=payload,
-                        headers={
-                            "Authorization": f"Bearer {os.environ['DAILY_CHECKIN_API_TOKEN']}"
-                        },
-                    ) as resp,
-                ):
-                    if resp.status in {200, 400, 500}:
-                        data = await resp.json()
-                        sanitized_data = {k: v for k, v in data.items() if k != "cookies"}
-                        logger.debug(f"Received data: {sanitized_data}")
+                if resp.status == 200:
+                    return data
+                if resp.status == 400:
+                    genshin.raise_for_retcode(data)
 
-                        if resp.status == 200:
-                            return data
-                        if resp.status == 400:
-                            genshin.raise_for_retcode(data)
+                message = data.get("message", "Unknown proxy API error")
+                raise ProxyAPIError(api_url, resp.status, message=message)
 
-                        message = data.get("message", "Unknown proxy API error")
-                        if "genshin.py client request failed" in message:
-                            # Don't raise for genshin.py client request failures
-                            err = Exception(message)
-                        else:
-                            raise Exception(message)
-
-                    err = ProxyAPIError(api_url, resp.status)
-            except (TimeoutError, aiohttp.ClientError) as e:
-                err = e
-
-            attempt += 1
-            remaining_proxies = [proxy for proxy in proxies if proxy != api_url]
-            if remaining_proxies:
-                api_url = random.choice(remaining_proxies)
-                logger.debug(f"Switching to proxy: {api_url}")
-
-            backoff_time = min(BACKOFF_FACTOR**attempt + random.uniform(0, 1), MAX_BACKOFF)
-            await asyncio.sleep(backoff_time)
-
-        msg = f"Proxy API request failed after {MAX_RETRIES} attempts"
-        raise RuntimeError(msg) from err
+            raise ProxyAPIError(api_url, resp.status)
 
     @overload
     async def os_app_login(

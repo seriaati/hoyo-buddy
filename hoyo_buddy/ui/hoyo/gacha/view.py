@@ -170,6 +170,9 @@ class ViewGachaLogView(View):
         if lifetime_pulls == 0:
             raise NoGachaLogFoundError
 
+        bangboo_channel_pulls = await self.get_pulls_count(banner_type=5)
+        lifetime_currency = (lifetime_pulls - bangboo_channel_pulls) * 160
+
         # Five star pity
         last_five_star_num = await get_last_gacha_num(
             self.account, banner=self.banner_type, rarity=5
@@ -191,6 +194,11 @@ class ViewGachaLogView(View):
         total_five_stars = await self.get_pulls_count(rarity=5, banner_type=self.banner_type)
         total_four_stars = await self.get_pulls_count(rarity=4, banner_type=self.banner_type)
         banner_total_pulls = await self.get_pulls_count(banner_type=self.banner_type)
+
+        # Bangboo channel pulls are free
+        is_bangboo_channel = self.banner_type == 5 and self.account.game == Game.ZZZ
+        banner_total_currency = 0 if is_bangboo_channel else banner_total_pulls * 160
+
         five_star_avg_pulls = banner_total_pulls / total_five_stars if total_five_stars else 0
         four_star_avg_pulls = banner_total_pulls / total_four_stars if total_four_stars else 0
 
@@ -216,10 +224,10 @@ class ViewGachaLogView(View):
         personal_stats = LocaleStr(
             key="gacha_log_personal_stats",
             lifetime_pulls=lifetime_pulls,
-            lifetime_currency=f"{lifetime_pulls * 160:,}",
+            lifetime_currency=f"{lifetime_currency:,}",
             currency_emoji=CURRENCY_EMOJIS[self.account.game],
             total_pulls=banner_total_pulls,
-            total_currency=f"{banner_total_pulls * 160:,}",
+            total_currency=f"{banner_total_currency:,}",
             star5_pity_cur=current_five_star_pity,
             star5_pity_max=max_five_star_pity,
             star4_pity_cur=current_four_star_pity,

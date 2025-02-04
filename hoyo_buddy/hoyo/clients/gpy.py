@@ -218,9 +218,11 @@ class GenshinClient(ProxyGenshinClient):
         self._account = account
 
     async def request_proxy_api(
-        self, api_name: ProxyAPI, endpoint: str, payload: dict[str, Any]
+        self, api_name: ProxyAPI, endpoint: str, payload: dict[str, Any] | None = None
     ) -> dict[str, Any]:
         account = self._account
+
+        payload = payload or {}
         payload["cookies"] = account.cookies
         payload["uid"] = account.uid
 
@@ -788,13 +790,7 @@ class GenshinClient(ProxyGenshinClient):
             if game is genshin.Game.HONKAI:
                 return await super().get_honkai_notes(uid)
 
-        payload = {
-            "cookies": self._account.cookies,
-            "uid": uid,
-            "lang": self.lang,
-            "game": game.value,
-        }
-        data = await self.request_proxy_api(api_url, "notes", payload)
+        data = await self.request_proxy_api(api_url, "notes")
 
         if game is genshin.Game.GENSHIN:
             return genshin.models.Notes(**data["data"])

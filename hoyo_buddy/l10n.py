@@ -165,7 +165,6 @@ class Translator:
 
             lang = file_path.stem
             self._l10n[lang] = await read_yaml(file_path.as_posix())
-            logger.info(f"Loaded {lang} lang file")
 
     async def _fetch_mi18n_task(
         self, client: genshin.Client, *, lang: str, filename: str, url: str
@@ -204,7 +203,6 @@ class Translator:
             self._mi18n[GPY_LANG_TO_LOCALE[lang].value.replace("-", "_"), game] = await read_json(
                 file_path.as_posix()
             )
-            logger.info(f"Loaded {lang} mi18n file for {game}")
 
     async def load_game_textmaps(self) -> None:
         # ZZZ

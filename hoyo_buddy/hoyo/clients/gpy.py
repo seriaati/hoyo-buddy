@@ -14,7 +14,13 @@ import orjson
 from discord import Locale
 from dotenv import load_dotenv
 from loguru import logger
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_random_exponential
+from tenacity import (
+    RetryCallState,
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_random_exponential,
+)
 
 from hoyo_buddy import models
 from hoyo_buddy.bot.error_handler import get_error_embed
@@ -76,22 +82,35 @@ class ProxyGenshinClient(genshin.Client):
             **kwargs,
         )
 
+    @staticmethod
+    def _before_retry(retry_state: RetryCallState) -> None:
+        if retry_state.attempt_number > 1:
+            retry_state.kwargs["retrying"] = True
+
     @retry(
         stop=stop_after_attempt(5),
-        wait=wait_random_exponential(multiplier=0.3, min=0.3),
+        wait=wait_random_exponential(multiplier=0.5, min=0.5),
         retry=retry_if_exception_type((TimeoutError, aiohttp.ClientError, ProxyAPIError)),
         reraise=True,
+        before=_before_retry,
     )
     async def request_proxy_api(
-        self, api_name: ProxyAPI, endpoint: str, payload: dict[str, Any]
+        self, api_name: ProxyAPI, endpoint: str, payload: dict[str, Any], *, retrying: bool = False
     ) -> dict[str, Any]:
+        if not retrying:
+            first_api_url = PROXY_APIS[api_name]
+            fallback_urls = [url for name, url in PROXY_APIS.items() if name != api_name]
+            self.api_cycle = itertools.cycle(fallback_urls)
+            api_url = first_api_url
+        else:
+            api_url = next(self.api_cycle)
+
         payload["lang"] = self.lang
         payload["region"] = self.region.value
         if self.game is not None:
             payload["game"] = self.game.value
 
         sanitized_payload = {k: v for k, v in payload.items() if k not in {"cookies", "token"}}
-        api_url = PROXY_APIS[api_name]
         logger.debug(f"Requesting {api_url}/{endpoint}/ with payload: {sanitized_payload}")
 
         async with (

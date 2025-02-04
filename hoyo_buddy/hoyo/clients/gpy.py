@@ -615,7 +615,7 @@ class GenshinClient(ProxyGenshinClient):
         *,
         locale: Locale,
         blur: bool = True,
-        api_name: ProxyAPI | Literal["LOCAL"] | None = None,
+        api_name: ProxyAPI | Literal["LOCAL"] = "LOCAL",
         skip_redeemed: bool = True,
     ) -> DefaultEmbed | None:
         """Redeem multiple codes and return an embed with the results."""
@@ -655,11 +655,9 @@ class GenshinClient(ProxyGenshinClient):
         await self._account.save(update_fields=("redeemed_codes",))
 
     async def redeem_code(
-        self, code: str, *, locale: Locale, api_name: ProxyAPI | Literal["LOCAL"] | None = None
+        self, code: str, *, locale: Locale, api_name: ProxyAPI | Literal["LOCAL"] = "LOCAL"
     ) -> tuple[str, bool]:
         """Redeem a code, return a message and a boolean indicating success."""
-        api_name = api_name or next(proxy_api_rotator)
-
         success = False
         try:
             if api_name == "LOCAL":
@@ -819,18 +817,12 @@ class GenshinClient(ProxyGenshinClient):
         *,
         game_id: int,
         version_id: int,
-        api_name: ProxyAPI | Literal["LOCAL"] | None = None,
+        api_name: ProxyAPI | Literal["LOCAL"] = "LOCAL",
     ) -> None:
-        api_name = api_name or next(proxy_api_rotator)
         if api_name == "LOCAL":
             return await super().finish_mimo_task(task_id, game_id=game_id, version_id=version_id)
 
-        payload = {
-            "cookies": self._account.cookies,
-            "game_id": game_id,
-            "version_id": version_id,
-            "task_id": task_id,
-        }
+        payload = {"game_id": game_id, "version_id": version_id, "task_id": task_id}
         await self.request_proxy_api(api_name, "mimo/finish_task", payload)
 
     async def claim_mimo_task_reward(
@@ -839,20 +831,14 @@ class GenshinClient(ProxyGenshinClient):
         *,
         game_id: int,
         version_id: int,
-        api_name: ProxyAPI | Literal["LOCAL"] | None = None,
+        api_name: ProxyAPI | Literal["LOCAL"] = "LOCAL",
     ) -> None:
-        api_name = api_name or next(proxy_api_rotator)
         if api_name == "LOCAL":
             return await super().claim_mimo_task_reward(
                 task_id, game_id=game_id, version_id=version_id
             )
 
-        payload = {
-            "cookies": self._account.cookies,
-            "game_id": game_id,
-            "version_id": version_id,
-            "task_id": task_id,
-        }
+        payload = {"game_id": game_id, "version_id": version_id, "task_id": task_id}
         await self.request_proxy_api(api_name, "mimo/claim_reward", payload)
 
     async def buy_mimo_shop_item(
@@ -861,26 +847,18 @@ class GenshinClient(ProxyGenshinClient):
         *,
         game_id: int,
         version_id: int,
-        api_name: ProxyAPI | Literal["LOCAL"] | None = None,
+        api_name: ProxyAPI | Literal["LOCAL"] = "LOCAL",
     ) -> str:
-        api_name = api_name or next(proxy_api_rotator)
         if api_name == "LOCAL":
             return await super().buy_mimo_shop_item(item_id, game_id=game_id, version_id=version_id)
 
-        payload = {
-            "cookies": self._account.cookies,
-            "game_id": game_id,
-            "version_id": version_id,
-            "item_id": item_id,
-        }
+        payload = {"game_id": game_id, "version_id": version_id, "item_id": item_id}
         data = await self.request_proxy_api(api_name, "mimo/buy_item", payload)
         return data["code"]
 
     async def get_mimo_tasks(
-        self, *, game_id: int, version_id: int, api_name: ProxyAPI | Literal["LOCAL"] | None = None
+        self, *, game_id: int, version_id: int, api_name: ProxyAPI | Literal["LOCAL"] = "RENDER4"
     ) -> Sequence[genshin.models.MimoTask]:
-        api_name = api_name or next(proxy_api_rotator)
-
         try:
             if api_name == "LOCAL":
                 return await super().get_mimo_tasks(game_id=game_id, version_id=version_id)
@@ -899,9 +877,8 @@ class GenshinClient(ProxyGenshinClient):
             raise
 
     async def get_mimo_shop_items(
-        self, *, game_id: int, version_id: int, api_name: ProxyAPI | Literal["LOCAL"] | None = None
+        self, *, game_id: int, version_id: int, api_name: ProxyAPI | Literal["LOCAL"] = "LOCAL"
     ) -> Sequence[genshin.models.MimoShopItem]:
-        api_name = api_name or next(proxy_api_rotator)
         if api_name == "LOCAL":
             return await super().get_mimo_shop_items(game_id=game_id, version_id=version_id)
 
@@ -910,7 +887,7 @@ class GenshinClient(ProxyGenshinClient):
         return [genshin.models.MimoShopItem(**orjson.loads(item)) for item in data["items"]]
 
     async def finish_and_claim_mimo_tasks(
-        self, *, game_id: int, version_id: int, api_name: ProxyAPI | Literal["LOCAL"] | None = None
+        self, *, game_id: int, version_id: int, api_name: ProxyAPI | Literal["LOCAL"] = "LOCAL"
     ) -> MimoClaimTaksResult:
         finished_tasks: list[genshin.models.MimoTask] = []
         finished = False  # True if at least one task was finished
@@ -990,7 +967,7 @@ class GenshinClient(ProxyGenshinClient):
         )
 
     async def buy_mimo_valuables(
-        self, *, game_id: int, version_id: int, api_name: ProxyAPI | Literal["LOCAL"] | None = None
+        self, *, game_id: int, version_id: int, api_name: ProxyAPI | Literal["LOCAL"] = "LOCAL"
     ) -> list[tuple[genshin.models.MimoShopItem, str]]:
         result: list[tuple[genshin.models.MimoShopItem, str]] = []
         bought: list[tuple[int, str]] = []
@@ -1042,10 +1019,9 @@ class GenshinClient(ProxyGenshinClient):
     async def claim_daily_reward(
         self,
         *,
-        api_name: ProxyAPI | Literal["LOCAL"] | None = None,
+        api_name: ProxyAPI | Literal["LOCAL"] = "LOCAL",
         challenge: dict[str, str] | None = None,
     ) -> genshin.models.DailyReward:
-        api_name = api_name or next(proxy_api_rotator)
         if api_name == "LOCAL" or challenge is not None:
             return await super().claim_daily_reward(challenge=challenge)
 

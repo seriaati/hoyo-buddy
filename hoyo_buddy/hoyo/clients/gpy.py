@@ -17,6 +17,8 @@ from loguru import logger
 from tenacity import (
     RetryCallState,
     retry,
+    retry_any,
+    retry_if_exception,
     retry_if_exception_type,
     stop_after_attempt,
     wait_random_exponential,
@@ -87,10 +89,17 @@ class ProxyGenshinClient(genshin.Client):
         if retry_state.attempt_number > 1:
             retry_state.kwargs["retrying"] = True
 
+    @staticmethod
+    def _retry_if_login_ratelimit(exc: BaseException) -> bool:
+        return isinstance(exc, genshin.GenshinException) and exc.retcode == -3006
+
     @retry(
-        stop=stop_after_attempt(5),
+        stop=stop_after_attempt(len(PROXY_APIS)),
         wait=wait_random_exponential(multiplier=0.5, min=0.5),
-        retry=retry_if_exception_type((TimeoutError, aiohttp.ClientError, ProxyAPIError)),
+        retry=retry_any(
+            retry_if_exception_type((TimeoutError, aiohttp.ClientError, ProxyAPIError)),
+            retry_if_exception(_retry_if_login_ratelimit),
+        ),
         reraise=True,
         before=_before_retry,
     )
@@ -169,9 +178,9 @@ class ProxyGenshinClient(genshin.Client):
         mmt_result: genshin.models.SessionMMTResult | None = None,
         ticket: genshin.models.ActionTicket | None = None,
     ) -> genshin.models.AppLoginResult | genshin.models.SessionMMT | genshin.models.ActionTicket:
-        api_url = next(proxy_api_rotator)
+        api_name = next(proxy_api_rotator)
 
-        if api_url == "LOCAL":
+        if api_name == "LOCAL":
             if mmt_result is not None:
                 return await self._app_login(email, password, mmt_result=mmt_result)
             if ticket is not None:
@@ -187,7 +196,7 @@ class ProxyGenshinClient(genshin.Client):
         elif ticket is not None:
             payload["ticket"] = ticket.model_dump_json(by_alias=True)
 
-        data = await self.request_proxy_api(api_url, "login", payload)
+        data = await self.request_proxy_api(api_name, "login", payload)
         retcode = data["retcode"]
         data_ = orjson.loads(data["data"])
 

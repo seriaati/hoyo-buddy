@@ -846,6 +846,11 @@ HEADINGS = {
         discord.Locale.chinese: "我應該選擇哪種登入方式",
         discord.Locale.vietnamese: "tôi-nên-sử-dụng-phương-thức-đăng-nhập-nào",
     },
+    "too-many-requests-error-when-trying-to-add-accounts-using-email--password-method": {
+        discord.Locale.taiwan_chinese: "嘗試使用電子郵件和密碼方法新增帳戶時出現請求過多錯誤",
+        discord.Locale.chinese: "嘗試使用電子郵件和密碼方法新增帳戶時出現請求過多錯誤",
+        discord.Locale.vietnamese: "lỗi-quá-nhiều-yêu-cầu-khi-cố-gắng-thêm-tài-khoản-bằng-phương-pháp-email-và-mật-khẩu",
+    },
 }
 
 

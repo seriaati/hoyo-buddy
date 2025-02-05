@@ -6,7 +6,7 @@ import flet as ft
 import genshin
 from loguru import logger
 
-from hoyo_buddy.constants import locale_to_gpy_lang
+from hoyo_buddy.constants import get_docs_url, locale_to_gpy_lang
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 
 from ...enums import Platform
@@ -138,7 +138,10 @@ class EmailPassWordForm(ft.Column):
                 message = LocaleStr(key="too_many_requests_error_banner_msg").translate(
                     self._locale
                 )
-                url = "https://link.seria.moe/9xbhqm"
+                url = get_docs_url(
+                    "FAQ#too-many-requests-error-when-trying-to-add-accounts-using-email--password-method",
+                    locale=self._locale,
+                )
             else:
                 message = str(exc)
                 url = None

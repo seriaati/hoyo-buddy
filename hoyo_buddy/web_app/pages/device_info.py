@@ -49,7 +49,7 @@ class DownloadAppButton(ft.ElevatedButton):
     async def goto_download_page(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
         page.launch_url(
-            "https://mirror.ghproxy.com/https://raw.githubusercontent.com/forchannot/get_device_info/main/app/build/outputs/apk/debug/app-debug.apk",
+            "https://raw.githubusercontent.com/forchannot/get_device_info/main/app/build/outputs/apk/debug/app-debug.apk",
             web_window_name=ft.UrlTarget.BLANK.value,
         )
 

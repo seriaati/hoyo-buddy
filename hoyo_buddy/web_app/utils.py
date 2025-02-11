@@ -84,8 +84,10 @@ class ErrorBanner(ft.Banner):
 
 def show_loading_snack_bar(
     page: ft.Page, *, message: str | None = None, locale: Locale | None = None
-) -> None:
-    page.open(LoadingSnackBar(message=message, locale=locale))
+) -> ft.SnackBar:
+    snack_bar = LoadingSnackBar(message=message, locale=locale)
+    page.open(snack_bar)
+    return snack_bar
 
 
 def show_error_banner(page: ft.Page, *, message: str, url: str | None = None) -> None:

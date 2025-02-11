@@ -19,6 +19,7 @@ from asyncache import cached
 from cachetools import TTLCache
 from discord import app_commands
 from discord.ext import commands
+from discord.ext.prometheus import PrometheusCog
 from loguru import logger
 from seria.utils import write_json
 from tortoise.expressions import Q
@@ -135,6 +136,7 @@ class HoyoBuddy(commands.AutoShardedBot):
                 logger.exception(f"Failed to load cog {cog_name!r}")
 
         await self.load_extension("jishaku")
+        await self.add_cog(PrometheusCog(self, port=9763))  # pyright: ignore[reportArgumentType]
 
         await self.nai_client.init(timeout=120)
 

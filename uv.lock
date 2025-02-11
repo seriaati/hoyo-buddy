@@ -568,6 +568,19 @@ wheels = [
 ]
 
 [[package]]
+name = "discord-ext-prometheus"
+version = "0.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "discord-py" },
+    { name = "prometheus-client" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/89/ea/e2e04399a96e37b6ca936d1347529195f7e429bd42eabcecf465fd462a2f/discord_ext_prometheus-0.2.0.tar.gz", hash = "sha256:016962b7d1350e99769cf67ed037f0d067f5043ddf9d15cfc92fa26875fd1a32", size = 10059 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/39/76/66df49e157afcb582d969285ff5729b9464f167bffe12a7daef185650e91/discord_ext_prometheus-0.2.0-py3-none-any.whl", hash = "sha256:fbf15acc4323e29b76862ee5394e105b37041cc3c99a13eaa07fa9a6dc17f994", size = 5854 },
+]
+
+[[package]]
 name = "discord-py"
 version = "2.5.0a5159+g76eb1266"
 source = { git = "https://github.com/Rapptz/discord.py#76eb12666472ddd4a01459555680e630804994ea" }
@@ -801,6 +814,7 @@ dependencies = [
     { name = "asyncpg-listen" },
     { name = "cachetools" },
     { name = "cryptography" },
+    { name = "discord-ext-prometheus" },
     { name = "discord-py", extra = ["speed"] },
     { name = "enka" },
     { name = "fake-useragent" },
@@ -842,6 +856,7 @@ requires-dist = [
     { name = "asyncpg-listen", specifier = ">=0.0.6" },
     { name = "cachetools", specifier = ">=5.5.0" },
     { name = "cryptography", specifier = ">=43.0.0" },
+    { name = "discord-ext-prometheus", specifier = ">=0.2.0" },
     { name = "discord-py", extras = ["speed"], git = "https://github.com/Rapptz/discord.py" },
     { name = "enka", git = "https://github.com/seriaati/enka-py" },
     { name = "fake-useragent", specifier = ">=1.5.1" },
@@ -1264,6 +1279,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/e5/fb/a7960e838bc5df57a2ce23183bfd2290d97c33028b96bde332a9057834d3/pillow-11.1.0-cp313-cp313t-win32.whl", hash = "sha256:dda60aa465b861324e65a78c9f5cf0f4bc713e4309f83bc387be158b077963d9", size = 2295494 },
     { url = "https://files.pythonhosted.org/packages/d7/6c/6ec83ee2f6f0fda8d4cf89045c6be4b0373ebfc363ba8538f8c999f63fcd/pillow-11.1.0-cp313-cp313t-win_amd64.whl", hash = "sha256:ad5db5781c774ab9a9b2c4302bbf0c1014960a0a7be63278d13ae6fdf88126fe", size = 2631595 },
     { url = "https://files.pythonhosted.org/packages/cf/6c/41c21c6c8af92b9fea313aa47c75de49e2f9a467964ee33eb0135d47eb64/pillow-11.1.0-cp313-cp313t-win_arm64.whl", hash = "sha256:67cd427c68926108778a9005f2a04adbd5e67c442ed21d95389fe1d595458756", size = 2377651 },
+]
+
+[[package]]
+name = "prometheus-client"
+version = "0.21.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/62/14/7d0f567991f3a9af8d1cd4f619040c93b68f09a02b6d0b6ab1b2d1ded5fe/prometheus_client-0.21.1.tar.gz", hash = "sha256:252505a722ac04b0456be05c05f75f45d760c2911ffc45f2a06bcaed9f3ae3fb", size = 78551 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ff/c2/ab7d37426c179ceb9aeb109a85cda8948bb269b7561a0be870cc656eefe4/prometheus_client-0.21.1-py3-none-any.whl", hash = "sha256:594b45c410d6f4f8888940fe80b5cc2521b305a1fafe1c58609ef715a001f301", size = 54682 },
 ]
 
 [[package]]

@@ -43,8 +43,7 @@ if __name__ == "__main__":
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
     logger.add("logs/web_app.log", rotation="1 day", retention="2 weeks", level="DEBUG")
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(translator.load())
+    asyncio.run(translator.load())
 
     ft.app(
         web_app_entry,
@@ -53,5 +52,3 @@ if __name__ == "__main__":
         assets_dir="hoyo_buddy/web_app/assets",
         use_color_emoji=True,
     )
-
-    loop.close()

@@ -67,11 +67,13 @@ proxy_api_rotator = itertools.cycle(PROXY_APIS_)
 
 API_ERROR_COUNTS = dict.fromkeys(PROXY_APIS_, 0)
 """Track number of login ratelimit errors for each API."""
-API_DISABLE_THRESHOLD = 5
-"""Disable an API after this many login ratelimit errors."""
 API_DISABLE_DATETIMES: dict[ProxyAPI | Literal["LOCAL"], datetime.datetime] = {}
 """Track when an API was disabled."""
+
+API_DISABLE_THRESHOLD = 5
+"""Disable an API after this many login ratelimit errors."""
 API_DISABLE_DURATION = 3600  # 1 hour
+"""How long the API should be disabled."""
 
 
 class MimoClaimTaksResult(NamedTuple):
@@ -105,6 +107,13 @@ class ProxyGenshinClient(genshin.Client):
         API_DISABLE_DATETIMES[api_name] = get_now()
 
     @staticmethod
+    def _enable_api(api_name: ProxyAPI | Literal["LOCAL"]) -> None:
+        if api_name not in API_DISABLE_DATETIMES:
+            return
+        logger.debug(f"Enabling {api_name} API")
+        API_DISABLE_DATETIMES.pop(api_name)
+
+    @staticmethod
     def _is_disabled_api(api_name: ProxyAPI | Literal["LOCAL"]) -> bool:
         if api_name not in API_DISABLE_DATETIMES:
             return False
@@ -112,6 +121,9 @@ class ProxyGenshinClient(genshin.Client):
 
     @staticmethod
     def _get_available_apis() -> list[ProxyAPI | Literal["LOCAL"]]:
+        for api, dt in API_DISABLE_DATETIMES.items():
+            if (get_now() - dt).total_seconds() >= API_DISABLE_DURATION:
+                ProxyGenshinClient._enable_api(api)
         return [api for api in PROXY_APIS_ if not ProxyGenshinClient._is_disabled_api(api)]
 
     @staticmethod

@@ -139,7 +139,7 @@ class ProxyGenshinClient(genshin.Client):
             self.api_url_iterator = itertools.cycle(fallback_urls)
         else:
             if self.api_url_iterator is None:
-                msg = "api_cycle is None when retrying"
+                msg = "API URL iterator is None when retrying"
                 raise ValueError(msg)
             api_url = next(self.api_url_iterator)
 
@@ -230,7 +230,7 @@ class ProxyGenshinClient(genshin.Client):
             self.api_name_iterator = itertools.cycle(fallback_apis)  # pyright: ignore[reportAttributeAccessIssue]
         else:
             if self.api_name_iterator is None:
-                msg = "api_name_iterator is None when retrying"
+                msg = "API name iterator is None when retrying"
                 raise ValueError(msg)
             api_name = next(self.api_name_iterator)
 

@@ -755,7 +755,7 @@ PROXY_APIS: dict[ProxyAPI, str] = {
     "FLY": os.environ["FLY_URL"],
     "FLY2": os.environ["FLY2_URL"],
     "RAILWAY": os.environ["RAILWAY_URL"],
-    "LEAPCELL": os.environ["LEAPCELL_URL"],
+    # "LEAPCELL": os.environ["LEAPCELL_URL"],
 }
 
 CODE_CHANNEL_IDS = {

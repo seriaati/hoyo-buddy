@@ -17,7 +17,6 @@ from loguru import logger
 from tenacity import (
     RetryCallState,
     retry,
-    retry_any,
     retry_if_exception,
     retry_if_exception_type,
     stop_after_attempt,
@@ -46,10 +45,11 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, GenshinElement
 from hoyo_buddy.exceptions import HoyoBuddyError, ProxyAPIError
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils import set_or_update_dict
+from hoyo_buddy.utils import get_now, set_or_update_dict
 from hoyo_buddy.web_app.utils import decrypt_string
 
 if TYPE_CHECKING:
+    import datetime
     from collections.abc import Mapping, Sequence
 
     from hoyo_buddy.types import ProxyAPI
@@ -64,6 +64,14 @@ API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
 
 PROXY_APIS_ = (*PROXY_APIS.keys(), "LOCAL")
 proxy_api_rotator = itertools.cycle(PROXY_APIS_)
+
+API_ERROR_COUNTS = dict.fromkeys(PROXY_APIS_, 0)
+"""Track number of login ratelimit errors for each API."""
+API_DISABLE_THRESHOLD = 5
+"""Disable an API after this many login ratelimit errors."""
+API_DISABLE_DATETIMES: dict[ProxyAPI | Literal["LOCAL"], datetime.datetime] = {}
+"""Track when an API was disabled."""
+API_DISABLE_DURATION = 3600  # 1 hour
 
 
 class MimoClaimTaksResult(NamedTuple):
@@ -84,35 +92,56 @@ class ProxyGenshinClient(genshin.Client):
             **kwargs,
         )
 
+        self.api_url_iterator: itertools.cycle[str] | None = None
+        """For request_proxy_api."""
+        self.api_name_iterator: itertools.cycle[ProxyAPI | Literal["LOCAL"]] | None = None
+        """For os_app_login."""
+
     @staticmethod
-    def _before_retry(retry_state: RetryCallState) -> None:
+    def _disable_api(api_name: ProxyAPI | Literal["LOCAL"]) -> None:
+        if api_name in API_DISABLE_DATETIMES:
+            return
+        logger.debug(f"Disabling {api_name} API")
+        API_DISABLE_DATETIMES[api_name] = get_now()
+
+    @staticmethod
+    def _is_disabled_api(api_name: ProxyAPI | Literal["LOCAL"]) -> bool:
+        if api_name not in API_DISABLE_DATETIMES:
+            return False
+        return (get_now() - API_DISABLE_DATETIMES[api_name]).total_seconds() < API_DISABLE_DURATION
+
+    @staticmethod
+    def _get_available_apis() -> list[ProxyAPI | Literal["LOCAL"]]:
+        return [api for api in PROXY_APIS_ if not ProxyGenshinClient._is_disabled_api(api)]
+
+    @staticmethod
+    def _before_api_retry(retry_state: RetryCallState) -> None:
         if retry_state.attempt_number > 1:
             retry_state.kwargs["retrying"] = True
 
     @staticmethod
-    def _retry_if_login_ratelimit(exc: BaseException) -> bool:
+    def _login_ratelimit_exception(exc: BaseException) -> bool:
         return isinstance(exc, genshin.GenshinException) and exc.retcode == -3006
 
     @retry(
         stop=stop_after_attempt(len(PROXY_APIS)),
         wait=wait_random_exponential(multiplier=0.5, min=0.5),
-        retry=retry_any(
-            retry_if_exception_type((TimeoutError, aiohttp.ClientError, ProxyAPIError)),
-            retry_if_exception(_retry_if_login_ratelimit),
-        ),
+        retry=retry_if_exception_type((TimeoutError, aiohttp.ClientError, ProxyAPIError)),
         reraise=True,
-        before=_before_retry,
+        before=_before_api_retry,
     )
     async def request_proxy_api(
         self, api_name: ProxyAPI, endpoint: str, payload: dict[str, Any], *, retrying: bool = False
     ) -> dict[str, Any]:
         if not retrying:
-            first_api_url = PROXY_APIS[api_name]
+            api_url = PROXY_APIS[api_name]
             fallback_urls = [url for name, url in PROXY_APIS.items() if name != api_name]
-            self.api_cycle = itertools.cycle(fallback_urls)
-            api_url = first_api_url
+            self.api_url_iterator = itertools.cycle(fallback_urls)
         else:
-            api_url = next(self.api_cycle)
+            if self.api_url_iterator is None:
+                msg = "api_cycle is None when retrying"
+                raise ValueError(msg)
+            api_url = next(self.api_url_iterator)
 
         payload["lang"] = self.lang
         payload["region"] = self.region.value
@@ -151,6 +180,7 @@ class ProxyGenshinClient(genshin.Client):
         *,
         mmt_result: genshin.models.SessionMMTResult,
         ticket: None = ...,
+        retrying: bool = ...,
     ) -> genshin.models.AppLoginResult | genshin.models.ActionTicket: ...
 
     @overload
@@ -161,15 +191,29 @@ class ProxyGenshinClient(genshin.Client):
         *,
         mmt_result: None = ...,
         ticket: genshin.models.ActionTicket,
+        retrying: bool = ...,
     ) -> genshin.models.AppLoginResult: ...
 
     @overload
     async def os_app_login(
-        self, email: str, password: str, *, mmt_result: None = ..., ticket: None = ...
+        self,
+        email: str,
+        password: str,
+        *,
+        mmt_result: None = ...,
+        ticket: None = ...,
+        retrying: bool = ...,
     ) -> (
         genshin.models.AppLoginResult | genshin.models.SessionMMT | genshin.models.ActionTicket
     ): ...
 
+    @retry(
+        stop=stop_after_attempt(len(PROXY_APIS_)),
+        wait=wait_random_exponential(multiplier=0.5, min=0.5),
+        retry=retry_if_exception(_login_ratelimit_exception),
+        reraise=True,
+        before=_before_api_retry,
+    )
     async def os_app_login(
         self,
         email: str,
@@ -177,34 +221,66 @@ class ProxyGenshinClient(genshin.Client):
         *,
         mmt_result: genshin.models.SessionMMTResult | None = None,
         ticket: genshin.models.ActionTicket | None = None,
+        retrying: bool = False,
     ) -> genshin.models.AppLoginResult | genshin.models.SessionMMT | genshin.models.ActionTicket:
-        api_name = next(proxy_api_rotator)
+        if not retrying:
+            # First attempt
+            api_name = next(proxy_api_rotator)
+            fallback_apis = [api for api in PROXY_APIS_ if api != api_name]
+            self.api_name_iterator = itertools.cycle(fallback_apis)  # pyright: ignore[reportAttributeAccessIssue]
+        else:
+            if self.api_name_iterator is None:
+                msg = "api_name_iterator is None when retrying"
+                raise ValueError(msg)
+            api_name = next(self.api_name_iterator)
 
-        if api_name == "LOCAL":
-            if mmt_result is not None:
-                return await self._app_login(email, password, mmt_result=mmt_result)
-            if ticket is not None:
-                return await self._app_login(email, password, ticket=ticket)
-            return await self._app_login(email, password)
+        while API_ERROR_COUNTS[api_name] >= API_DISABLE_THRESHOLD:
+            self._disable_api(api_name)
 
-        payload = {
-            "email": genshin.utility.encrypt_credentials(email, 1),
-            "password": genshin.utility.encrypt_credentials(password, 1),
-        }
-        if mmt_result is not None:
-            payload["mmt_result"] = mmt_result.model_dump_json(by_alias=True)
-        elif ticket is not None:
-            payload["ticket"] = ticket.model_dump_json(by_alias=True)
+            available_apis = self._get_available_apis()
+            logger.debug(f"Available APIs: {available_apis}")
+            if not available_apis:
+                msg = "System capacity reached, try again later"
+                raise ValueError(msg)
 
-        data = await self.request_proxy_api(api_name, "login", payload)
-        retcode = data["retcode"]
-        data_ = orjson.loads(data["data"])
+            api_name = random.choice(available_apis)
 
-        if retcode == -9999:
-            return genshin.models.SessionMMT(**data_)
-        if retcode == -9998:
-            return genshin.models.ActionTicket(**data_)
-        return genshin.models.AppLoginResult(**data_)
+        try:
+            if api_name == "LOCAL":
+                if mmt_result is not None:
+                    result = await self._app_login(email, password, mmt_result=mmt_result)
+                elif ticket is not None:
+                    result = await self._app_login(email, password, ticket=ticket)
+                else:
+                    result = await self._app_login(email, password)
+            else:
+                payload = {
+                    "email": genshin.utility.encrypt_credentials(email, 1),
+                    "password": genshin.utility.encrypt_credentials(password, 1),
+                }
+                if mmt_result is not None:
+                    payload["mmt_result"] = mmt_result.model_dump_json(by_alias=True)
+                elif ticket is not None:
+                    payload["ticket"] = ticket.model_dump_json(by_alias=True)
+
+                data = await self.request_proxy_api(api_name, "login", payload)
+                retcode = data["retcode"]
+                data_ = orjson.loads(data["data"])
+
+                if retcode == -9999:
+                    result = genshin.models.SessionMMT(**data_)
+                elif retcode == -9998:
+                    result = genshin.models.ActionTicket(**data_)
+                else:
+                    result = genshin.models.AppLoginResult(**data_)
+        except Exception as e:
+            if self._login_ratelimit_exception(e):
+                API_ERROR_COUNTS[api_name] += 1
+            raise
+        else:
+            API_ERROR_COUNTS[api_name] = 0
+            API_DISABLE_DATETIMES.pop(api_name, None)
+            return result
 
 
 class GenshinClient(ProxyGenshinClient):

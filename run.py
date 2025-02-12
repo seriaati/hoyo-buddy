@@ -1,39 +1,29 @@
 from __future__ import annotations
 
-import argparse
 import asyncio
 import contextlib
 import logging
-import os
 import sys
 
 import aiohttp
 import aiohttp.http_websocket
 import asyncpg
 import discord
-from dotenv import load_dotenv
 from fake_useragent import UserAgent
 from loguru import logger
 
 from hoyo_buddy.bot import HoyoBuddy
+from hoyo_buddy.bot.config import CONFIG
 from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.logging import InterceptHandler
-from hoyo_buddy.models import Config
 from hoyo_buddy.utils import init_sentry, wrap_task_factory
 from hoyo_buddy.web_server.server import GeetestWebServer
 
-load_dotenv()
-env = os.environ["ENV"]  # dev, prod, test
+env = CONFIG.env
 is_dev = env == "dev"
 ua = UserAgent()
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--sentry", action="store_true", default=not is_dev)
-parser.add_argument("--search", action="store_true", default=not is_dev)
-parser.add_argument("--schedule", action="store_true", default=not is_dev)
-
-config = Config(parser.parse_args())
 discord.VoiceClient.warn_nacl = False
 
 
@@ -41,11 +31,11 @@ async def main() -> None:
     wrap_task_factory()
 
     async with (
-        asyncpg.create_pool(os.environ["DB_URL"]) as pool,
+        asyncpg.create_pool(CONFIG.db_url) as pool,
         aiohttp.ClientSession(headers={"User-Agent": ua.random}) as session,
         Database(),
         translator,
-        HoyoBuddy(session=session, env=env, pool=pool, config=config) as bot,
+        HoyoBuddy(session=session, env=env, pool=pool, config=CONFIG) as bot,
     ):
         with contextlib.suppress(
             KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError
@@ -55,13 +45,13 @@ async def main() -> None:
             asyncio.create_task(geetest_server.run())
 
             with bot.executor:
-                await bot.start(os.environ["DISCORD_TOKEN"])
+                await bot.start(CONFIG.discord_token)
 
 
 if __name__ == "__main__":
     logger.remove()
 
-    if config.sentry:
+    if CONFIG.sentry:
         init_sentry()
 
     logger.add(sys.stderr, level="DEBUG" if is_dev else "INFO")

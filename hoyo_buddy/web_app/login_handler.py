@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 from typing import TYPE_CHECKING, Literal
 
 import asyncpg
@@ -8,6 +7,7 @@ import flet as ft
 import genshin
 import orjson
 
+from hoyo_buddy.bot.config import CONFIG
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 
 from ..constants import GEETEST_SERVERS
@@ -45,7 +45,7 @@ async def handle_session_mmt(
         await page.client_storage.set_async(f"hb.{params.user_id}.mobile", encrypt_string(mobile))
 
     # Save mmt data to db
-    conn = await asyncpg.connect(os.environ["DB_URL"])
+    conn = await asyncpg.connect(CONFIG.db_url)
     try:
         await conn.execute(
             'UPDATE "user" SET temp_data = $1 WHERE id = $2',
@@ -87,7 +87,7 @@ async def handle_session_mmt(
             actions=[
                 ft.TextButton(
                     button_label,
-                    url=f"{GEETEST_SERVERS[os.environ['ENV']]}/captcha?{payload.to_query_string()}",
+                    url=f"{GEETEST_SERVERS[CONFIG.env]}/captcha?{payload.to_query_string()}",
                     url_target=ft.UrlTarget.SELF,
                 )
             ],

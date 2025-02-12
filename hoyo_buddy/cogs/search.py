@@ -45,7 +45,7 @@ class Search(commands.Cog):
         self._beta_id_to_category: dict[str, str] = {}
 
     async def cog_load(self) -> None:
-        if not self.bot.config.search_autocomplete:
+        if not self.bot.config.search:
             return
 
         asyncio.create_task(self._setup_search_autofill())

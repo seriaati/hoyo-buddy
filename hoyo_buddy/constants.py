@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-import os
 import pathlib
 from typing import TYPE_CHECKING, Final, Literal
 
@@ -13,15 +12,15 @@ import genshin
 import hakushin
 import yatta
 from discord import app_commands
-from dotenv import load_dotenv
 from loguru import logger
+
+from hoyo_buddy.bot.config import CONFIG
 
 from .enums import ChallengeType, Game, GenshinCity, GenshinElement, HSRElement, HSRPath
 
 if TYPE_CHECKING:
     from .types import ProxyAPI
 
-load_dotenv()
 
 STATIC_FOLDER = pathlib.Path("./.static")
 
@@ -747,15 +746,14 @@ def get_disc_substat_roll_num(
 
 
 PROXY_APIS: dict[ProxyAPI, str] = {
-    "RENDER": os.environ["RENDER_URL"],
-    "RENDER2": os.environ["RENDER2_URL"],
-    "RENDER3": os.environ["RENDER3_URL"],
-    "RENDER4": os.environ["RENDER4_URL"],
-    "VERCEL": os.environ["VERCEL_URL"],
-    "FLY": os.environ["FLY_URL"],
-    "FLY2": os.environ["FLY2_URL"],
-    "RAILWAY": os.environ["RAILWAY_URL"],
-    # "LEAPCELL": os.environ["LEAPCELL_URL"],
+    "RENDER": CONFIG.render_url,
+    "RENDER2": CONFIG.render2_url,
+    "RENDER3": CONFIG.render3_url,
+    "RENDER4": CONFIG.render4_url,
+    "VERCEL": CONFIG.vercel_url,
+    "FLY": CONFIG.fly_url,
+    "FLY2": CONFIG.fly2_url,
+    "RAILWAY": CONFIG.railway_url,
 }
 
 CODE_CHANNEL_IDS = {

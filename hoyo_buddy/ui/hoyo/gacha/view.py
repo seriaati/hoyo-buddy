@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import os
 from typing import TYPE_CHECKING, Any, Final, Literal, TypeAlias
 
+from hoyo_buddy.bot.config import CONFIG
 from hoyo_buddy.constants import (
     BANNER_GUARANTEE_NUMS,
     BANNER_TYPE_NAMES,
@@ -88,7 +88,7 @@ class ViewGachaLogView(View):
             banner_type=self.banner_type,
             rarities=[3, 4, 5],
         )
-        return f"{WEB_APP_URLS[os.environ['ENV']]}/gacha_log?{params.to_query_string()}"
+        return f"{WEB_APP_URLS[CONFIG.env]}/gacha_log?{params.to_query_string()}"
 
     async def get_pulls_count(
         self, *, banner_type: int | None = None, rarity: int | None = None

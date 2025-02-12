@@ -1,13 +1,9 @@
 from __future__ import annotations
 
-import os
-
-from dotenv import load_dotenv
-
-load_dotenv()
+from hoyo_buddy.bot.config import CONFIG
 
 DB_CONFIG = {
-    "connections": {"default": os.environ["DB_URL"]},
+    "connections": {"default": CONFIG.db_url},
     "apps": {
         "models": {
             "models": ["hoyo_buddy.db.models", "aerich.models"],

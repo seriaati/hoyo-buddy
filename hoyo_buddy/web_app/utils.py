@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import os
 from typing import TYPE_CHECKING, Any
 
 import ambr
@@ -10,6 +9,7 @@ import flet as ft
 import orjson
 from cryptography.fernet import Fernet
 
+from hoyo_buddy.bot.config import CONFIG
 from hoyo_buddy.constants import locale_to_starrail_data_lang, locale_to_zenless_data_lang
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
@@ -95,12 +95,12 @@ def show_error_banner(page: ft.Page, *, message: str, url: str | None = None) ->
 
 
 def decrypt_string(encrypted: str) -> str:
-    key = Fernet(os.environ["FERNET_KEY"])
+    key = Fernet(CONFIG.fernet_key)
     return key.decrypt(encrypted.encode()).decode()
 
 
 def encrypt_string(string: str) -> str:
-    key = Fernet(os.environ["FERNET_KEY"])
+    key = Fernet(CONFIG.fernet_key)
     return key.encrypt(string.encode()).decode()
 
 
@@ -111,7 +111,7 @@ def reset_storage(page: ft.Page, *, user_id: int) -> None:
 
 
 async def fetch_json_file(filename: str) -> Any:
-    conn = await asyncpg.connect(os.environ["DB_URL"])
+    conn = await asyncpg.connect(CONFIG.db_url)
     try:
         json_string = await conn.fetchval('SELECT data FROM "jsonfile" WHERE name = $1', filename)
         return orjson.loads(json_string)

@@ -75,7 +75,7 @@ class Schedule(commands.Cog):
 
     @tasks.loop(time=datetime.time(11, 0, 0, tzinfo=UTC_8))
     async def update_search_autofill(self) -> None:
-        if not self.bot.config.search_autocomplete:
+        if not self.bot.config.search:
             return
 
         search_cog = self.bot.get_cog("Search")

@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import asyncio
-import os
 from typing import TYPE_CHECKING
 
 import asyncpg
 import flet as ft
 import genshin
+
+from hoyo_buddy.bot.config import CONFIG
 
 from ...constants import GPY_GAME_TO_HB_GAME
 from ...enums import Platform
@@ -154,7 +155,7 @@ class SubmitButton(ft.FilledButton):
             else genshin.Region.OVERSEAS
         )
 
-        conn = await asyncpg.connect(os.environ["DB_URL"])
+        conn = await asyncpg.connect(CONFIG.db_url)
         try:
             await conn.execute(
                 'INSERT INTO "user" (id, temp_data) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING',

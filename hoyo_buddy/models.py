@@ -18,7 +18,6 @@ from .constants import STARRAIL_RES
 from .enums import GeetestType, GenshinElement
 
 if TYPE_CHECKING:
-    import argparse
     import asyncio
     import concurrent.futures
     from collections.abc import Mapping
@@ -206,13 +205,6 @@ class HoyolabHSRCharacter:
     element: str
     max_level: int
     rarity: int
-
-
-class Config:
-    def __init__(self, args: argparse.Namespace) -> None:
-        self.sentry = args.sentry
-        self.search_autocomplete = args.search
-        self.schedule = args.schedule
 
 
 class UnownedGICharacter(BaseModel):

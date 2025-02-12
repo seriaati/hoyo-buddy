@@ -55,8 +55,8 @@ if TYPE_CHECKING:
     import asyncpg
     from aiohttp import ClientSession
 
-    from ..models import Config
-    from ..types import AutocompleteChoices, BetaAutocompleteChoices, Interaction, User
+    from hoyo_buddy.bot.config import Config
+    from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, Interaction, User
 
 __all__ = ("HoyoBuddy",)
 
@@ -91,9 +91,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.session = session
         self.uptime = get_now()
         self.env = env
-        self.nai_client = NAIClient(
-            token=os.environ["NAI_TOKEN"], host_url=os.environ["NAI_HOST_URL"]
-        )
+        self.nai_client = NAIClient(token=config.nai_token, host_url=config.nai_host_url)
         self.owner_id = 410036441129943050
         self.guild_id = 1000727526194298910
         self.pool = pool
@@ -145,7 +143,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             self.user_ids.add(user.id)
 
         listener = asyncpg_listen.NotificationListener(
-            asyncpg_listen.connect_func(os.environ["DB_URL"])
+            asyncpg_listen.connect_func(self.config.db_url)
         )
         self.geetest_command_task = asyncio.create_task(
             listener.run({"geetest_command": self.handle_geetest_notify}, notification_timeout=2)

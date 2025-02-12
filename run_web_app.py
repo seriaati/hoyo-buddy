@@ -3,20 +3,18 @@ from __future__ import annotations
 import argparse
 import asyncio
 import logging
-import os
 import sys
 
 import flet as ft
-from dotenv import load_dotenv
 from loguru import logger
 
+from hoyo_buddy.bot.config import CONFIG
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.logging import InterceptHandler
 from hoyo_buddy.utils import init_sentry
 from hoyo_buddy.web_app.app import WebApp
 
-load_dotenv()
-env = os.environ["ENV"]  # dev, prod, test
+env = CONFIG.env
 is_dev = env == "dev"
 
 parser = argparse.ArgumentParser()
@@ -33,8 +31,6 @@ async def web_app_entry(page: ft.Page) -> None:
 
 
 if __name__ == "__main__":
-    load_dotenv()
-
     logger.remove()
     if args.sentry:
         init_sentry()

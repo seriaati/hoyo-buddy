@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import itertools
-import os
 import random
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple, overload
 
@@ -12,7 +11,6 @@ import genshin
 import hakushin
 import orjson
 from discord import Locale
-from dotenv import load_dotenv
 from loguru import logger
 from tenacity import (
     RetryCallState,
@@ -24,6 +22,7 @@ from tenacity import (
 )
 
 from hoyo_buddy import models
+from hoyo_buddy.bot.config import CONFIG
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import (
     AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID,
@@ -55,12 +54,11 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import ProxyAPI
 
 
-load_dotenv()
-env = os.environ["ENV"]
+env = CONFIG.env
 
 MIMO_TASK_DELAY = 1.0
 MIMO_COMMUNITY_TASK_DELAY = 2.0
-API_TOKEN = os.environ["DAILY_CHECKIN_API_TOKEN"]
+API_TOKEN = CONFIG.daily_checkin_api_token
 
 PROXY_APIS_ = (*PROXY_APIS.keys(), "LOCAL")
 proxy_api_rotator = itertools.cycle(PROXY_APIS_)

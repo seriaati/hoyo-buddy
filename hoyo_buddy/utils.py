@@ -4,7 +4,6 @@ import asyncio
 import base64
 import datetime
 import math
-import os
 import re
 import time
 from contextlib import contextmanager
@@ -14,7 +13,6 @@ import aiohttp
 import orjson
 import sentry_sdk
 import toml
-from loguru import logger
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
@@ -22,6 +20,7 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 from seria.utils import clean_url
 
+from hoyo_buddy.bot.config import CONFIG
 from hoyo_buddy.constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
@@ -64,7 +63,7 @@ async def upload_image(
     session: aiohttp.ClientSession, *, image_url: str | None = None, image: bytes | None = None
 ) -> str:
     api = "https://img.seria.moe/upload"
-    data = {"key": os.environ["IMG_UPLOAD_API_KEY"]}
+    data = {"key": CONFIG.img_upload_api_key}
 
     if image is not None:
         # Encode image into base64 string
@@ -354,7 +353,7 @@ def get_project_version() -> str:
 
 def init_sentry() -> None:
     sentry_sdk.init(
-        dsn=os.getenv("SENTRY_DSN"),
+        dsn=CONFIG.sentry_dsn,
         integrations=[
             AsyncioIntegration(),
             LoguruIntegration(
@@ -363,7 +362,7 @@ def init_sentry() -> None:
         ],
         disabled_integrations=[AsyncPGIntegration(), AioHttpIntegration(), LoggingIntegration()],
         traces_sample_rate=1.0,
-        environment=os.environ["ENV"],
+        environment=CONFIG.env,
         enable_tracing=True,
         release=get_project_version(),
     )
@@ -457,11 +456,7 @@ def contains_masked_link(text: str) -> bool:
 async def add_to_hoyo_codes(
     session: aiohttp.ClientSession, *, code: str, game: genshin.Game
 ) -> None:
-    api_key = os.getenv("HOYO_CODES_API_KEY")
-    if api_key is None:
-        logger.error("HOYO_CODES_API_KEY is not set")
-        return
-
+    api_key = CONFIG.hoyo_codes_api_key
     url = "https://hoyo-codes.seria.moe/codes"
     headers = {"Authorization": f"Bearer {api_key}"}
     data = {"code": code, "game": game.value}

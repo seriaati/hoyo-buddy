@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import os
 from typing import TYPE_CHECKING, Any, Literal
 
 import aiofiles
@@ -10,6 +9,7 @@ from aiohttp import web
 from loguru import logger
 from tortoise import Tortoise
 
+from hoyo_buddy.bot.config import CONFIG
 from hoyo_buddy.constants import WEB_APP_URLS
 from hoyo_buddy.db import User
 from hoyo_buddy.models import GeetestCommandPayload, GeetestLoginPayload
@@ -123,7 +123,7 @@ class GeetestWebServer:
             if "user_id" in request.query:
                 # login
                 user_id = request.query["user_id"]
-                url = WEB_APP_URLS[os.environ["ENV"]] + f"/geetest?user_id={user_id}"
+                url = WEB_APP_URLS[CONFIG.env] + f"/geetest?user_id={user_id}"
             else:
                 # command
                 channel_id = int(request.query["channel_id"])

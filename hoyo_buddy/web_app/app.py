@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import os
 import urllib.parse
 from typing import TYPE_CHECKING, Any, Literal
 
@@ -14,6 +13,7 @@ from discord import Locale
 from loguru import logger
 from pydantic import ValidationError
 
+from hoyo_buddy.bot.config import CONFIG
 from hoyo_buddy.constants import locale_to_gpy_lang
 from hoyo_buddy.db import GachaHistory
 from hoyo_buddy.enums import Game, Platform
@@ -234,7 +234,7 @@ class WebApp:
         return encrypted_email, encrypted_password
 
     async def _get_user_temp_data(self, user_id: int) -> dict[str, Any]:
-        conn = await asyncpg.connect(os.environ["DB_URL"])
+        conn = await asyncpg.connect(CONFIG.db_url)
         try:
             mmt_result: str = await conn.fetchval(
                 'SELECT temp_data FROM "user" WHERE id = $1', user_id
@@ -440,7 +440,7 @@ class WebApp:
 
     @staticmethod
     async def _get_account_game(account_id: int) -> Game:
-        conn = await asyncpg.connect(os.environ["DB_URL"])
+        conn = await asyncpg.connect(CONFIG.db_url)
         try:
             game = await conn.fetchval('SELECT game FROM "hoyoaccount" WHERE id = $1', account_id)
             return Game(game)
@@ -449,7 +449,7 @@ class WebApp:
 
     @staticmethod
     async def _get_gacha_log_row_num(params: GachaParams) -> int:
-        conn = await asyncpg.connect(os.environ["DB_URL"])
+        conn = await asyncpg.connect(CONFIG.db_url)
         try:
             return await conn.fetchval(
                 'SELECT COUNT(*) FROM "gachahistory" WHERE account_id = $1 AND banner_type = $2 AND rarity = ANY($3)',
@@ -462,7 +462,7 @@ class WebApp:
 
     @staticmethod
     async def _check_account_exists(account_id: int) -> bool:
-        conn = await asyncpg.connect(os.environ["DB_URL"])
+        conn = await asyncpg.connect(CONFIG.db_url)
         try:
             return await conn.fetchval(
                 'SELECT EXISTS(SELECT 1 FROM "hoyoaccount" WHERE id = $1)', account_id
@@ -472,7 +472,7 @@ class WebApp:
 
     @staticmethod
     async def _get_gacha_logs(params: GachaParams) -> list[GachaHistory]:
-        conn = await asyncpg.connect(os.environ["DB_URL"])
+        conn = await asyncpg.connect(CONFIG.db_url)
         try:
             if params.name_contains:
                 rows = await conn.fetch(
@@ -532,8 +532,8 @@ class WebApp:
                     data={
                         "grant_type": "refresh_token",
                         "refresh_token": refresh_token,
-                        "client_id": os.environ["DISCORD_CLIENT_ID"],
-                        "client_secret": os.environ["DISCORD_CLIENT_SECRET"],
+                        "client_id": CONFIG.discord_client_id,
+                        "client_secret": CONFIG.discord_client_secret,
                     },
                 ) as refresh_resp:
                     data = await refresh_resp.json()
@@ -568,13 +568,13 @@ class WebApp:
             session.post(
                 "https://discord.com/api/oauth2/token",
                 data={
-                    "client_id": os.environ["DISCORD_CLIENT_ID"],
-                    "client_secret": os.environ["DISCORD_CLIENT_SECRET"],
+                    "client_id": CONFIG.discord_client_id,
+                    "client_secret": CONFIG.discord_client_secret,
                     "grant_type": "authorization_code",
                     "code": code,
                     "redirect_uri": (
                         "http://localhost:8645/custom_oauth_callback"
-                        if os.environ["ENV"] == "dev"
+                        if CONFIG.env == "dev"
                         else "https://hb-app.seria.moe/custom_oauth_callback"
                     ),
                     "scope": "identify",

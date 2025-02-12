@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-import os
 import secrets
 from typing import TYPE_CHECKING, Any
 
 import flet as ft
 
+from hoyo_buddy.bot.config import CONFIG
 from hoyo_buddy.l10n import LocaleStr, translator
 
 if TYPE_CHECKING:
@@ -118,8 +118,9 @@ class LoginPage(ft.View):
         await page.client_storage.set_async("hb.oauth_state", state)
         redirect_url = (
             "http://localhost:8645/custom_oauth_callback"
-            if os.environ["ENV"] == "dev"
+            if CONFIG.env == "dev"
             else "https://hb-app.seria.moe/custom_oauth_callback"
         )
-        oauth_url = f"https://discord.com/oauth2/authorize?response_type=code&client_id={os.environ['DISCORD_CLIENT_ID']}&redirect_uri={redirect_url}&scope=identify&state={state}"
+        client_id = CONFIG.discord_client_id
+        oauth_url = f"https://discord.com/oauth2/authorize?response_type=code&client_id={client_id}&redirect_uri={redirect_url}&scope=identify&state={state}"
         page.launch_url(oauth_url, web_window_name=ft.UrlTarget.SELF.value)

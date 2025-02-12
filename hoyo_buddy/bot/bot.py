@@ -154,7 +154,12 @@ class HoyoBuddy(commands.AutoShardedBot):
         await self.start_prometheus_server()
 
     def capture_exception(self, e: Exception) -> None:
-        if isinstance(e, aiohttp.ClientConnectorError | aiohttp.ServerDisconnectedError):
+        errors_to_ignore = (
+            aiohttp.ClientConnectorError,
+            aiohttp.ServerDisconnectedError,
+            discord.DiscordServerError,
+        )
+        if isinstance(e, errors_to_ignore):
             return
 
         # 10062: Unknown interaction

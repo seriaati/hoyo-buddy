@@ -77,7 +77,7 @@ GENSHIN_ERROR_CONVERTER: dict[
             geetest_type=EnumStr(GeetestType.REALTIME_NOTES), key="geetest.required.description"
         ),
     },
-    (-1,): {"title": LocaleStr(key="game_maintenance_title")},
+    (-1, 10307): {"title": LocaleStr(key="game_maintenance_title")},
     # Below are custom retcodes for Hoyo Buddy, they don't exist in Hoyo's API
     (999,): {
         "title": LocaleStr(key="redeeem_code.cookie_token_expired_title"),

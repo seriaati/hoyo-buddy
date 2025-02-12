@@ -154,11 +154,12 @@ class HoyoBuddy(commands.AutoShardedBot):
         await self.start_prometheus_server()
 
     def capture_exception(self, e: Exception) -> None:
-        # Errors to suppress
         if isinstance(e, aiohttp.ClientConnectorError | aiohttp.ServerDisconnectedError):
             return
-        if isinstance(e, discord.NotFound) and e.code == 10062:
-            # Unknown interaction
+
+        # 10062: Unknown interaction
+        # 10008: Unknown message
+        if isinstance(e, discord.NotFound) and e.code in {10062, 10008}:
             return
 
         if not self.config.sentry:

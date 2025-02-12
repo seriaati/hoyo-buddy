@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from json import JSONDecodeError
 from typing import Any
 
 import novelai
@@ -25,7 +26,7 @@ class NAIClient(novelai.NAIClient):
             images = await super().generate_image(
                 metadata, host=novelai.Host.CUSTOM, verbose=False, is_opus=False
             )
-        except novelai.exceptions.NovelAIError as e:
+        except (novelai.exceptions.NovelAIError, JSONDecodeError) as e:
             raise AIGenImageError from e
 
         im = images[0]

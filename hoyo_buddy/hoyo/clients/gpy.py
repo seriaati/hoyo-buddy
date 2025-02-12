@@ -1069,11 +1069,14 @@ class GenshinClient(ProxyGenshinClient):
 
         original_lang = self.lang[:]
         points = await self.get_mimo_point_count()
+        await asyncio.sleep(0.5)
 
         self.lang = "en-us"
         en_items = await self.get_mimo_shop_items(
             game_id=game_id, version_id=version_id, api_name=api_name
         )
+        await asyncio.sleep(0.5)
+
         # Sort items from most expensive to least expensive
         en_items = sorted(en_items, key=lambda item: item.cost, reverse=True)
 
@@ -1095,7 +1098,7 @@ class GenshinClient(ProxyGenshinClient):
                     raise
 
                 bought.append((item.id, code))
-                points = await self.get_mimo_point_count()
+                points -= item.cost
 
         if bought:
             self.lang = original_lang

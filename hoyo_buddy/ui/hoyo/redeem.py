@@ -6,7 +6,7 @@ from discord import ButtonStyle, Locale, Member, User
 from seria.utils import create_bullet_list
 
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.emojis import GIFT_OUTLINE, REDEEM_GIFT
+from hoyo_buddy.emojis import GIFT_OUTLINE, LOADING, REDEEM_GIFT
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Modal, TextInput, ToggleButton, View
 
@@ -90,13 +90,27 @@ class RedeemUI(View):
         return DefaultEmbed(
             self.locale,
             title=LocaleStr(key="redeem_cooldown_embed.title"),
-            description=LocaleStr(key="redeem_cooldown_embed.description"),
-        )
+            description=LocaleStr(
+                custom_str="{emoji} {desc}",
+                emoji=LOADING,
+                desc=LocaleStr(key="redeem_cooldown_embed.description"),
+            ),
+        ).add_acc_info(self.account)
 
     def _add_items(self) -> None:
         self.add_item(RedeemCodesButton())
         self.add_item(RedeemAllAvailableCodesButton())
         self.add_item(AutoRedeemToggle(self.account.auto_redeem))
+
+    async def redeem_codes(self, i: Interaction, *, codes: list[str], button: Button) -> None:
+        await button.set_loading_state(i, embed=self.cooldown_embed)
+
+        embed = await self.account.client.redeem_codes(
+            codes, locale=self.locale, skip_redeemed=False
+        )
+        if embed is None:
+            return await button.unset_loading_state(i, embed=self.start_embed)
+        await button.unset_loading_state(i, embed=embed)
 
 
 class RedeemCodesButton(Button[RedeemUI]):
@@ -114,9 +128,8 @@ class RedeemCodesButton(Button[RedeemUI]):
 
         timed_out = await modal.wait()
         if timed_out:
-            return None
+            return
 
-        await self.set_loading_state(i, embed=self.view.cooldown_embed)
         codes = (
             modal.code_1.value,
             modal.code_2.value,
@@ -126,13 +139,7 @@ class RedeemCodesButton(Button[RedeemUI]):
         )
         # Extract codes from urls
         codes = [code.split("code=")[1] if "code=" in code else code for code in codes]
-
-        embed = await self.view.account.client.redeem_codes(
-            codes, locale=self.view.locale, skip_redeemed=False
-        )
-        if embed is None:
-            return await self.unset_loading_state(i, embed=self.view.start_embed)
-        await self.unset_loading_state(i, embed=embed)
+        await self.view.redeem_codes(i, codes=codes, button=self)
 
 
 class AutoRedeemToggle(ToggleButton[RedeemUI]):
@@ -154,10 +161,4 @@ class RedeemAllAvailableCodesButton(Button[RedeemUI]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        await self.set_loading_state(i, embed=self.view.cooldown_embed)
-        embed = await self.view.account.client.redeem_codes(
-            self.view.available_codes, locale=self.view.locale
-        )
-        if embed is None:
-            return await self.unset_loading_state(i)
-        await self.unset_loading_state(i, embed=embed)
+        await self.view.redeem_codes(i, codes=self.view.available_codes, button=self)

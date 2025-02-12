@@ -33,7 +33,7 @@ dependencies = [
   "ambr-py>=1.8.1",
   "yatta-py>=1.3.11",
   "akasha-py>=0.2.9",
-  "discord-ext-prometheus>=0.2.0",
+  "prometheus-client>=0.21.1",
   "pydantic-settings>=2.7.1",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."

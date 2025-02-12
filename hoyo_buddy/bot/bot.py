@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import concurrent.futures
 import contextlib
-import os
 from collections import defaultdict
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -14,12 +13,12 @@ import asyncpg_listen
 import discord
 import enka
 import genshin
+import prometheus_client
 import sentry_sdk
 from asyncache import cached
 from cachetools import TTLCache
 from discord import app_commands
 from discord.ext import commands
-from discord.ext.prometheus import PrometheusCog
 from loguru import logger
 from seria.utils import write_json
 from tortoise.expressions import Q
@@ -117,6 +116,10 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.activity = discord.CustomActivity(f"{self.version} | hb.seria.moe")
         await self.change_presence(activity=self.activity)
 
+    async def start_prometheus_server(self) -> None:
+        prometheus_client.start_http_server(9637)
+        logger.info("Prometheus server started on port 9637")
+
     async def setup_hook(self) -> None:
         # Initialize genshin.py sqlite cache
         async with aiosqlite.connect("genshin_py.db") as conn:
@@ -134,7 +137,6 @@ class HoyoBuddy(commands.AutoShardedBot):
                 logger.exception(f"Failed to load cog {cog_name!r}")
 
         await self.load_extension("jishaku")
-        await self.add_cog(PrometheusCog(self, port=9763))  # pyright: ignore[reportArgumentType]
 
         await self.nai_client.init(timeout=120)
 
@@ -148,6 +150,8 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.geetest_command_task = asyncio.create_task(
             listener.run({"geetest_command": self.handle_geetest_notify}, notification_timeout=2)
         )
+
+        await self.start_prometheus_server()
 
     def capture_exception(self, e: Exception) -> None:
         # Errors to suppress

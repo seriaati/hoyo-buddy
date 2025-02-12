@@ -568,19 +568,6 @@ wheels = [
 ]
 
 [[package]]
-name = "discord-ext-prometheus"
-version = "0.2.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "discord-py" },
-    { name = "prometheus-client" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/89/ea/e2e04399a96e37b6ca936d1347529195f7e429bd42eabcecf465fd462a2f/discord_ext_prometheus-0.2.0.tar.gz", hash = "sha256:016962b7d1350e99769cf67ed037f0d067f5043ddf9d15cfc92fa26875fd1a32", size = 10059 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/39/76/66df49e157afcb582d969285ff5729b9464f167bffe12a7daef185650e91/discord_ext_prometheus-0.2.0-py3-none-any.whl", hash = "sha256:fbf15acc4323e29b76862ee5394e105b37041cc3c99a13eaa07fa9a6dc17f994", size = 5854 },
-]
-
-[[package]]
 name = "discord-py"
 version = "2.5.0a5159+g76eb1266"
 source = { git = "https://github.com/Rapptz/discord.py#76eb12666472ddd4a01459555680e630804994ea" }
@@ -814,7 +801,6 @@ dependencies = [
     { name = "asyncpg-listen" },
     { name = "cachetools" },
     { name = "cryptography" },
-    { name = "discord-ext-prometheus" },
     { name = "discord-py", extra = ["speed"] },
     { name = "enka" },
     { name = "fake-useragent" },
@@ -828,6 +814,7 @@ dependencies = [
     { name = "orjson" },
     { name = "pandas" },
     { name = "pillow" },
+    { name = "prometheus-client" },
     { name = "psutil" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -857,7 +844,6 @@ requires-dist = [
     { name = "asyncpg-listen", specifier = ">=0.0.6" },
     { name = "cachetools", specifier = ">=5.5.0" },
     { name = "cryptography", specifier = ">=43.0.0" },
-    { name = "discord-ext-prometheus", specifier = ">=0.2.0" },
     { name = "discord-py", extras = ["speed"], git = "https://github.com/Rapptz/discord.py" },
     { name = "enka", git = "https://github.com/seriaati/enka-py" },
     { name = "fake-useragent", specifier = ">=1.5.1" },
@@ -871,6 +857,7 @@ requires-dist = [
     { name = "orjson", specifier = ">=3.10.7" },
     { name = "pandas", specifier = ">=2.2.2" },
     { name = "pillow", specifier = ">=10.4.0" },
+    { name = "prometheus-client", specifier = ">=0.21.1" },
     { name = "psutil", specifier = ">=6.0.0" },
     { name = "pydantic", specifier = ">=2.8.2" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },

@@ -16,7 +16,7 @@ import genshin
 import prometheus_client
 import sentry_sdk
 from asyncache import cached
-from cachetools import TTLCache
+from cachetools import LRUCache
 from discord import app_commands
 from discord.ext import commands
 from loguru import logger
@@ -36,14 +36,14 @@ from hoyo_buddy.constants import (
     ZZZ_ITEM_TEMPLATE_URL,
     ZZZ_TEXT_MAP_URL,
 )
+from hoyo_buddy.db import get_locale, models
 from hoyo_buddy.embeds import DefaultEmbed
+from hoyo_buddy.enums import Game, GeetestType, Platform
+from hoyo_buddy.exceptions import NoAccountFoundError
+from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
+from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
+from hoyo_buddy.utils import fetch_json, get_now, get_project_version
 
-from ..db import get_locale, models
-from ..enums import Game, GeetestType, Platform
-from ..exceptions import NoAccountFoundError
-from ..hoyo.clients.novel_ai import NAIClient
-from ..l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
-from ..utils import fetch_json, get_now, get_project_version
 from .cache import LFUCache
 from .command_tree import CommandTree
 
@@ -172,7 +172,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         else:
             sentry_sdk.capture_exception(e)
 
-    @cached(cache=TTLCache(maxsize=1024, ttl=360))
+    @cached(cache=LRUCache(maxsize=1024))
     async def fetch_user(self, user_id: int) -> discord.User | None:
         try:
             user = await super().fetch_user(user_id)

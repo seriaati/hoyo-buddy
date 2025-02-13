@@ -4,6 +4,7 @@ import datetime
 from typing import TYPE_CHECKING
 
 from discord.ext import commands, tasks
+from loguru import logger
 from tortoise.expressions import Q
 
 from hoyo_buddy.db import HoyoAccount
@@ -90,12 +91,14 @@ class Schedule(commands.Cog):
     async def run_notes_check(self) -> None:
         await NotesChecker.execute(self.bot)
 
-    @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 2)])
+    @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 3)])
     async def run_auto_redeem(self) -> None:
+        logger.info("Running AutoRedeem in schedule.py")
         await AutoRedeem.execute(self.bot)
 
-    @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 3)])
+    @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 4)])
     async def run_auto_mimo(self) -> None:
+        logger.info("Running AutoMimo in schedule.py")
         # Reset mimo_all_claimed_time if it's a new day
         now = get_now()
         accounts = await HoyoAccount.filter(Q(mimo_all_claimed_time__isnull=False))

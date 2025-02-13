@@ -175,7 +175,7 @@ class HoyoBuddy(commands.AutoShardedBot):
     @cached(cache=LRUCache(maxsize=1024))
     async def fetch_user(self, user_id: int) -> discord.User | None:
         try:
-            user = await super().fetch_user(user_id)
+            user = super().get_user(user_id) or await super().fetch_user(user_id)
         except (discord.NotFound, discord.HTTPException):
             return None
         else:

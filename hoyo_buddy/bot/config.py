@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 from typing import Literal
 
 from dotenv import load_dotenv
@@ -46,5 +47,15 @@ class Config(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--search", action="store_true", help="Enable search")
+    parser.add_argument("--sentry", action="store_true", help="Enable sentry")
+    parser.add_argument("--schedule", action="store_true", help="Enable schedule")
+    return parser.parse_args()
+
+
 load_dotenv()
-CONFIG = Config()  # pyright: ignore[reportCallIssue]
+args = parse_args()
+
+CONFIG = Config(search=args.search, sentry=args.sentry, schedule=args.schedule)  # pyright: ignore[reportCallIssue]

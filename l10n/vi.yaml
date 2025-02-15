@@ -3,8 +3,8 @@ about_command.developer: Lập trình viên
 about_command.discord_server: Máy chủ Discord
 about_command.guild_count: Số lượng người dùng
 about_command.latest_changes: Thay đổi mới nhất
-about_command.ram_usage: Lượng RAM
-about_command.support: Quyên góp
+about_command.ram_usage: RAM sử dụng
+about_command.support: Ủng hộ
 about_command.translators: Phiên dịch
 about_command.uptime: Thời gian hoạt động
 about_command.website: Trang web chính thức
@@ -15,13 +15,13 @@ abyss.battles_won_fought: "Khiêu Chiến Thành Công/Đã Đánh: {val1}/{val2
 abyss.deepest_descent: "Đến nơi sâu nhất: {val}"
 abyss.floor: "Tầng: {val}"
 abyss.overview: Chiến tích La Hoàn Thâm Cảnh
-abyss.damage: Thông Tin DMG
-abyss.stats: Thuộc Tính
+abyss.damage: SỐ LIỆU ST
+abyss.stats: THÔNG TIN
 abyss.phase_select.placeholder: Lựa chọn Kỳ
 abyss.total_stars: "Tổng Sao: {val}"
-abyss_chamber.challenge_target.embed.field.name: Mục Tiêu Thử Thách
+abyss_chamber.challenge_target.embed.field.name: Mục Tiêu Khiêu Chiến
 abyss_chamber.embed.title: "Tầng {floor_index} - Phòng {chamber_index}"
-abyss_chamber.enemy_level.embed.field.name: Cấp độ kẻ thù
+abyss_chamber.enemy_level.embed.field.name: Cấp kẻ địch
 abyss_chamber.ley_line_disorder.embed.field.name: Địa Mạch Bất Thường
 abyss_enemy.item_description: "HP: {HP}"
 acc_no_default_param_desc: " Tài khoản để chạy lệnh này"
@@ -34,59 +34,59 @@ account_manager_no_accounts_description: Bạn chưa có bất kỳ tài khoản
 account_manager_title: Quản lý tài khoản
 account_not_found_error_message: "Không thể tìm được tài khoản với truy vấn được cung cấp, vui lòng chọn từ những lựa chọn được cung cấp thay vì tự nhập truy vấn riêng."
 account_not_found_error_title: Không tìm thấy tài khoản
-account_username: Tên Người Dùng
+account_username: Tên người dùng
 accounts_command_description: Quản lý tài khoản của bạn
 action_in_cooldown_error_message: "Vui lòng thử lại trong {available_time}."
 action_in_cooldown_error_title: Hành động trong thời gian chờ
 add_account_button_label: Thêm tài khoản
 add_hoyolab_acc.embed.description: "- [Tôi nên sử dụng phương thức nào?](:docs/FAQ#which-login-method-should-i-use:)"
 add_hoyolab_acc.embed.title: Vui lòng chọn phương thức để thêm tài khoản
-adding_accounts_description: "- [Hoyo Buddy có an toàn không?](:docs/Account-Security:)\n- [Chính sách bảo mật [EN]](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "- [Hoyo Buddy có an toàn không?](:docs/Account-Security:)\n- [Chính sách bảo mật (tiếng Anh)](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Vui lòng chọn Nền tảng Tài Khoản
 ai_gen_image_error_message: Kiểm tra thông tin đã nhập và thử lại
-ai_gen_image_error_title: Đã xảy ra lỗi khi đang sáng tạo bằng AI
+ai_gen_image_error_title: Có lỗi xảy ra khi tạo ảnh bằng AI
 already_claimed_description: Hãy quay lại ngày mai!
-already_claimed_title: Đã nhận Phần thưởng Điểm danh Hàng ngày
+already_claimed_title: Hôm nay đã nhận thưởng điểm danh hằng ngày rồi
 anemo: Phong
 artifact_set_four_piece_embed_description: "Bộ 4 món: {bonus_4}"
 artifact_set_two_piece_embed_description: "Bộ 2 món: {bonus_2}"
-artifact_sets: Thánh Di Vật
-auto_checkin_button_label: Tự động Điểm danh Hàng ngày
-auto_locale_option_label: Theo Ngôn Ngữ Ứng Dụng
-auto_redeem_footer: Tắt Tự động Đỏi Mã Quà bằng /redeem
+artifact_sets: Bộ Thánh Di Vật
+auto_checkin_button_label: Tự động điểm danh hằng ngày
+auto_locale_option_label: Theo ngôn ngữ ứng dụng
+auto_redeem_footer: Tắt tự động đỏi mã quà bằng /redeem
 auto_redeem_toggle.label: Tự động đổi mã quà
 books: Sách
 captcha.embed.description: "Nhấn nút bên dưới đê hoàn thành CAPTCHA.\n"
-challenge_type_select.placeholder: Vui lòng chọn chế độ trò chơi
-challenge_view.buff_used_in: Được sử đụng
+challenge_type_select.placeholder: Vui lòng chọn chế độ chơi
+challenge_view.buff_used_in: Sử dụng trong
 challenge_view.team: "Đội {team}"
 chamber_button_label: "Phòng {value}"
-change_character_level_label: Đổi mức độ nhân vật
-change_skill_level_label: Thay đổi mức độ kỹ năng
-change_talent_level_label: Thay đổi mức độ tài năng
-change_weapon_level_label: Thay đổi mức độ vũ khí
-chara_level.modal.title: Nhập Mức độ nhân vật
-character_const_page_label: Các Cung Mệnh
-character_embed_description: "{rarity}★ {element}\nSinh Nhật: {birthday}\nCung Mệnh: {constellation}\nLiên kết: {affiliation}\n"
-character_passives_page_label: Những Kỹ Năng Cố Định
+change_character_level_label: Thay đổi cấp nhân vật
+change_skill_level_label: Thay đổi cấp kỹ năng
+change_talent_level_label: Thay đổi cấp thiên phú
+change_weapon_level_label: Thay đổi cấp vũ khí
+chara_level.modal.title: Nhập cấp nhân vật
+character_const_page_label: Cung Mệnh
+character_embed_description: "{element} {rarity}★\nSinh nhật: {birthday}\nCung Mệnh: {constellation}\nPhe phái: {affiliation}\n"
+character_passives_page_label: Nội Tại
 character_profile_page_label: Hồ sơ
 character_quotes_page_label: Những Trích Dẫn
-character_stories_page_label: Những Câu Truyện
-character_talents_page_label: Những Thiên Phú
+character_stories_page_label: Câu Chuyện
+character_talents_page_label: Thiên Phú
 character_voices_page_label: Lồng Tiếng
-characters: Các Nhân Vật
+characters: Nhân Vật
 characters.embed.element_max_friendship: "Độ Yêu Thích Tối Đa của Các Nhân vật {element}"
 characters.embed.element_not_max_friendship: "Độ Yêu Thích chưa Tối Đa của Các Nhân vật {element}"
 characters.embed.max_friendship: Các nhân vật với mức độ Yêu Thích Tối Đa
 characters.embed.not_max_friendship: Các nhân vật với mức độ Yêu Thích chưa Tối Đa
-characters.embed.owned_characters: Nhân Vật hiện có
+characters.embed.owned_characters: Nhân vật đã sở hữu
 characters.embed.title: Tổng quan Nhân Vật
-characters.filter.element.placeholder: Chọn lọc Nguyên Tố...
-characters.filter.max_friendship: Mức độ Yêu Thích Tối đa
+characters.filter.element.placeholder: Lọc Nguyên Tố...
+characters.filter.max_friendship: Mức độ Yêu Thích tối đa
 characters.filter.none: Không có
 characters.filter.not_max_friendship: Mức độ Yêu Thích chưa Tối đa
-characters.filter.path.placeholder: Chọn lọc Vận Mệnh...
-characters.filter.placeholder: Chọn lọc...
+characters.filter.path.placeholder: Lọc Vận Mệnh...
+characters.filter.placeholder: Chọn một bộ lọc...
 characters.level_order.footer: "Thứ tự Cấp độ: {order}"
 characters.extra_detail.footer: "Dùng /profile để xem những chi tiết của nhân vật"
 hsr.ultimate: Tuyệt Kỹ
@@ -103,7 +103,7 @@ characters.sorter.element: Nguyên Tố
 characters.sorter.friendship: Độ Yêu Thích
 characters.sorter.level: Cấp
 characters.sorter.path: Vận Mệnh
-characters.sorter.placeholder: Chọn một bộ lọc...
+characters.sorter.placeholder: Chọn cách sắp xếp...
 characters.sorter.rarity: Độ Hiếm
 characters_cmd_genshin_desc: Chọn và lọc nhân vật Genshin Impact của bạn
 characters_cmd_hsr_desc: "Chọn và lọc nhân vật Honkai: Star Rail của bạn"
@@ -501,14 +501,14 @@ electric: Lôi
 profile.no_data.title: Không có dữ liệu người chơi
 profile.no_data.description: "Dù bạn có tin hay không thì cũng chẳng có gì để coi ở đây."
 profile.zzz_hoyolab.character_select.description: "Phim Ý Cảnh {m} | Dữ liệu {platform}"
-characters.filter.specialty.placeholder: Chọn lọc Đặc tính...
+characters.filter.specialty.placeholder: Lọc Đặc Tính...
 zzz.basic: Tấn Công Thường
 zzz.dodge: Né
 zzz.assist: Kỹ Năng Chi Viện
 zzz.special: Chiến Kỹ
 zzz.chain: Liên Kích
 zzz.core: Kỹ Năng Cốt Lõi
-characters.filter.faction.placeholder: Chọn lọc Phe...
+characters.filter.faction.placeholder: Lọc Phe...
 characters.sorter.speciality: Đặc Tính
 characters.sorter.faction: Phe
 characters.sorter.mindscape_cinema: Phim Ý Cảnh
@@ -689,7 +689,7 @@ team_card_settings_embed_title: Chỉnh sửa thiết lập thẻ đội
 team_card_settings_embed_description: "Cài đặt thẻ đội được chia sẻ trên các trò chơi và tài khoản khác nhau, những thay đổi được thực hiện đối với một số cài đặt có thể không được phản ánh trên thẻ khi chúng không được mẫu thẻ hỗ trợ.\nKhi hoàn tất, hãy nhấp vào nút màu xanh lá cây trong thông báo bên trên để làm mới thẻ."
 characters.filter.rarity.placeholder: Lọc theo độ hiếm...
 profile_command_character_param_desc: Chọn nhân vật để tạo thẻ cho
-weapon_type_filter_placeholder: Chọn lọc loại vũ khí...
+weapon_type_filter_placeholder: Lọc loại vũ khí...
 redeem_cmd_available_codes: Mã có sẵn
 redeem_all_available_codes_button_label: Đổi tất cả mã có sẵn
 akasha_show_details: Hiển thị bảng xếp hạng chi tiết

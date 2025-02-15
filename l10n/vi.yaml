@@ -531,28 +531,28 @@ profile.team_dark_mode.button.label: Thẻ đội chế độ tới
 profile.character_select.multi.placeholder: Chon (các) nhân vật...
 zzz_search.agent_info: "Độ Hiếm: {rarity}\nĐặc Tính Tương Thích: {specialty}\nLoại Tấn Công: {atk_type}\nPhe: {faction}\nThuộc Tính: {element}"
 cat_zzz_agents: Người Đại Diện
-cat_zzz_bangboos: Bangboos
-cat_zzz_w_engines: W-engines
+cat_zzz_bangboos: Bangboo
+cat_zzz_w_engines: W-engine
 cat_zzz_drive_discs: Đĩa
 search.agent_page.info: Người Đại Diện
 search.agent_page.skills: Kỹ Năng
 search.agent_page.cinemas: Phim Ý Cảnh
-search.agent_page.placeholder: Chọn trang
+search.agent_page.placeholder: Chọn trang...
 zzz.skill_type.placeholder: Vui lòng chọn kỹ năng người đại diện...
 zzz.cinema.placeholder: Vui lòng chon Phim Ý Cảnh...
-zzz.engine.refinement_select.placeholder: Vui lòng chọn mức độ tinh luyện...
+zzz.engine.refinement_select.placeholder: Vui lòng chọn cấp tinh luyện...
 dyk_discord_server_updates: "Chúng tôi đăng cập nhật trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
 dyk_discord_server_feedback: "Bạn có thể tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi để gửi phản hồi."
 dyk_contact_me: "Bạn có thể liên hệ trong [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi."
 dyk_need_help_no_title: "Cần trợ giúp? Tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi."
-dyk_donate_no_title: "Thích sử dụng Hoyo Buddy? Hãy cân nhắc việc [quyên góp](<https://link.seria.moe/donate>) để hỗ trợ chúng tôi"
+dyk_donate_no_title: "Thích sử dụng Hoyo Buddy? Hãy cân nhắc việc [ủng hộ](<https://link.seria.moe/donate>) để hỗ trợ chúng tôi"
 dyk_team: "Hoyo Buddy được xây dựng bởi 1 team nhỏ gồm 1 lập trình viên và 1 người thiết kế"
 dyk_disable: Bạn có thể vô hiệu hóa tin nhắn này trong /settings
 dyk_settings_lang: Bạn có thể đổi ngôn ngữ của bot trong /settings
-dyk_settings_theme: Bạn có thể đổi chế độ sáng tối sử dụng /settings
+dyk_settings_theme: Bạn có thể đổi chế độ sáng/tối trong /settings
 dyk_security: "Chúng tôi có một [bài viết](<:docs/Account-Security:>) về bảo mật tài khoản"
 dyk_github: "Hoyo Buddy là một dự án mã nguồn mở trên [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
-dyk_python: Hoyo Buddy được viết hết bằng Python
+dyk_python: Hoyo Buddy được viết hoàn toàn bằng Python
 dyk_unreleased: Bạn có thể xem nôi dung trò chơi chưa ra mắt bằng /search
 dyk_team_card: Bạn có thể tạo một thẻ dội trong /profile bằng cách chọn nhiều nhân vật
 dyk_set_default_acc: Bạn có thể đặt một tài khoản mặc định dùng để chạy hết tất cả lệnh trong /accounts
@@ -561,11 +561,11 @@ button_label_dyk: Tin Nhắn "Bạn có biết"
 events_view_start_date_embed_field: Thời gian bắt đầu
 events_view_end_date_embed_field: Thời gian kết thúc
 events_view_ann_select_placeholder: Hãy chọn một sự kiện...
-events_view_banner_type_label: Banners
+events_view_banner_type_label: Banner
 events_command_description: Xem sự kiện diễn ra trong trò chơi
 events_view_ann_type_select_placeholder: Hãy chọn loại sự kiện...
 events_view_content_label: Coi đầy đủ nội dung
-events_command_game_param_description: Trò chơi để xem các sự kiện cho
+events_command_game_param_description: Trò chơi muốn xem sự kiện
 natlan: Natlan
 top_percent: "Top {percent}%"
 profile_view_show_rank_button_label: Xem Hạng
@@ -573,9 +573,9 @@ submit_button_label: Gửi
 show_tutorial_button_label: Xem hướng dẫn
 close_button_label: Đóng
 required_field_error_message: Trường này là bắt buộc
-accounts_added_snackbar_message: "Tài khoản đã thêm thành công, đang hướng bạn về lại Discord,,,"
+accounts_added_snackbar_message: "Thêm tài khoản thành công, đang chuyển hướng bạn về Discord..."
 account_add_start_message: "Nhấp vào nút bên dưới và làm theo hướng dẫn để thêm tài khoản của bạn. Khi bạn hoàn tất, hãy sử dụng lệnh </accounts> để xem các tài khoản bạn đã thêm.\nHãy tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi nếu bạn cần trợ giúp."
-hbls_button_label: Hãy bắt đầu!
+hbls_button_label: Bắt đầu nào!
 gacha_import_url_modal_title: Nhập đường link nhật ký gacha
 gacha_import_embed_description: "URL Nhật ký Gacha: Lấy một URL rất dài từ trò chơi để nhập nhật ký gacha của bạn, bên dưới là hướng dẫn cho các trò chơi khác nhau::\n- Android: [Video YouTube](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nĐối với các dịch vụ bên dưới, hãy xuất nhật ký gacha của bạn dưới dạng định dạng tệp được chỉ định và tải nó lên thông qua lệnh </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Không thể trích xuất khóa xác thực từ đường link, vui lòng thử lại bằng đường link hợp lệ."
@@ -583,22 +583,22 @@ extract_authkey_error_title: Trích xuất Khóa xác thực Thất bại
 gacha_import_loading_embed_title: Đang nhập Nhật ký Gacha
 gacha_import_loading_embed_description: "{loading_emoji} Việc này có thể mất nhiều thời gian, vui lòng đợi"
 gacha_upload_invalid_file_error_title: Định dang File không hợp lệ
-gacha_upload_invalid_file_error_message: "Chỉ cho phép file **{file_format}, vui lòng thử lại bằng File hợp lệ"
+gacha_upload_invalid_file_error_message: "Chỉ cho phép file **{file_format}**, vui lòng thử lại bằng định dạng hợp lệ"
 uid_mismatch_error_title: UID không khớp
 uid_mismatch_error_message: "UID của tài khoản được chọn không khớp với UID trong dữ liệu ({uid})"
 gacha_import_command_description: Nhập nhật ký gacha từ trong game.
 source_param_name: nguồn
-source_param_description: Nguòn từ những nhật ký gacha.
+source_param_description: Nguồn của tập tin nhật ký gacha
 gacha_upload_command_description: Tải file nhật ký gacha từ nguồn khác để nhập vào Hoyo Buddy
 file_param_name: tập-tin
 file_param_description: Nhập file nhật ký Gacha
 gacha_import_success_title: Nhật Ký Gacha dã được nhập
-gacha_import_success_message: "{count} nhật ký gacha đã được nhập thành công. Sử dụng lệnh </gacha-log view> để xem."
+gacha_import_success_message: "Nhập thành công {count} mục nhật ký gacha. Sử dụng lệnh </gacha-log view> để xem."
 gacha_view_filter_button_label: Lọc
 gacha_view_search_field_label: Tìm Kiếm
-gacha_view_gacha_detail_title: Chi tiết vật Gacha
+gacha_view_gacha_detail_title: Chi tiết vật phẩm gacha
 gacha_view_gacha_detail: "ID: {id}\nTên: {name}\nThời gian quay: {time}"
-gacha_view_num_since_last: "{pull} lần quay từ khi {rarity} ★ cuối."
+gacha_view_num_since_last: "Nhận được sau {pull} lần quay tính từ {rarity} ★ trước đó."
 gacha_view_filter_dialog_title: Lọc Nhật Ký Gacha
 banner_type_beginners_wish: Cầu Nguyện Người Mới
 banner_type_standard_banner: Cầu Nguyện Vĩnh Viễn
@@ -614,28 +614,28 @@ banner_type_exclusive_channel: Kênh Độc Quyền
 banner_type_w_engine_channel: Kênh W-Engine
 banner_type_bangboo_channel: Kênh Bangboo
 cancel_button_label: Hủy bỏ
-gacha_view_filter_size_field_label: Các mục trên mỗi trang
+gacha_view_filter_size_field_label: Số vật phẩm mỗi trang
 gacha_view_page_field_label: Trang
 gacha_log_stats_title: Thống kê nhật ký Gacha
 gacha_log_personal_stats_title: Thống kê cá nhân
-gacha_log_personal_stats: "Pull cả đời: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\nTổng pull cho banner này: {total_pulls} ({total_currency} {currency_emoji})\n5★ pity: {star5_pity_cur}/{star5_pity_max}\n4★ pity: {star4_pity_cur}/10\nTổng 5★: {total_star5}\nTổng 4★: {total_star4}\nTrung bình pulls/5★: {avg_pulls_per_star5}\nTrung bình pulls/4★: {avg_pulls_per_star4}"
-win_rate_stats: "{title} Tỷ lệ thắng: {win_rate}% ({wins}/{total})"
+gacha_log_personal_stats: "Tổng số lần quay: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\nTổng số lần quay trên banner này {total_pulls} ({total_currency} {currency_emoji})\nPity 5★: {star5_pity_cur}/{star5_pity_max}\nPity 4★: {star4_pity_cur}/10\nTổng số 5★: {total_star5}\nTổng số 4★: {total_star4}\nSố lượt quay trung bình/5★: {avg_pulls_per_star5}\nSố lượt quay trung bình/4★: {avg_pulls_per_star4}"
+win_rate_stats: "Tỷ lệ thắng {title}: {win_rate}% ({wins}/{total})"
 gacha_log_global_stats_title: Thống kê toàn cầu
-gacha_log_global_stats: "Pull cả đời: {lifetime}\n5★ may mắn: {star5_luck}\n4★ may mắn: {star4_luck}"
-win_rate_global_stats: "{title} Tỷ lệ thắng: {win_rate}"
+gacha_log_global_stats: "Tổng số lần quay: {lifetime}\nĐộ may mắn 5★: {star5_luck}\nĐộ may mắn 4★: {star4_luck}"
+win_rate_global_stats: "Tỷ lệ thắng {title}: {win_rate}"
 gacha_log_view_full: Xem nhật ký gacha
 gacha_view_command_description: Xem nhật ký gacha đã nhập
-gacha_log_view_banner_type_selector_placeholder: Hãy chọn loại Banner
+gacha_log_view_banner_type_selector_placeholder: Hãy chọn loại banner...
 no_gacha_log_found_error_title: Không tìm thấy nhật ký Gacha.
 no_gacha_log_found_error_message: "Sử dụng </gacha-log import> hoặc </gacha-log upload>để nhập nhật ký gacha của bạn."
 gacha_log_manage_embed_title: Quản lý nhật ký gacha
 gacha_log_manage_embed_description: "{count} nhật ký Gacha thuộc về tài khoản này.\nBạn có thể xuất chúng ở định dạng [UIGF](https://uigf.org)."
 gacha_log_export_button_label: Xuất tệp bằng định dạng UIGF
 gacha_log_delete_button_label: Xóa tất cả nhật ký Gacha
-gacha_log_delete_confirm_embed_title: Xác nhận Xóa
-gacha_log_delete_confirm_embed_description: "Bạn có chắc chắn muốn XÓA TẤT CẢ nhật ký Gacha cho tài khoản này? Không thể hoàn tác hành động này."
+gacha_log_delete_confirm_embed_title: Xác nhận xóa
+gacha_log_delete_confirm_embed_description: "Bạn có chắc chắn muốn **XÓA TẤT CẢ** nhật ký Gacha cho tài khoản này? Hành động này sẽ không thể hoàn tác."
 gacha_log_delete_confirm_button_label: Xác nhận
-gacha_log_delete_done_embed_title: Xóa Hoàn tất.
+gacha_log_delete_done_embed_title: Xóa hoàn tất
 gacha_log_delete_done_embed_description: Tất cả nhật ký Gacha của tài khoản này đã được xóa thành công.
 gacha_manage_command_description: Quản lý nhật ký gacha đã nhập
 login_button_label: Đăng nhập bằng Discord
@@ -647,7 +647,7 @@ natlan_reputation: "Danh Vọng: Lv.{reputation}, Bộ Tộc: {tribes}"
 shiyu_overview: Tổng quan
 shiyu_fastest_clear_time: "Thời gian hoàn thành nhanh nhất kỳ này:"
 shiyu_highest_frontier: "Phòng Tuyến Cao Nhất Đã Hoàn Thành:"
-shiyu_relevant_season: "Mùa Liên Quan:"
+shiyu_relevant_season: "Chu Kỳ Liên Quan:"
 shiyu_1_frontier: Phòng Tuyến 1
 shiyu_2_frontier: Phòng Tuyến 2
 shiyu_3_frontier: Phòng Tuyến 3

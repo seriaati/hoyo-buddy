@@ -20,8 +20,7 @@ from hoyo_buddy.logging import InterceptHandler
 from hoyo_buddy.utils import init_sentry, wrap_task_factory
 from hoyo_buddy.web_server.server import GeetestWebServer
 
-env = CONFIG.env
-is_dev = env == "dev"
+is_dev = CONFIG.env == "dev"
 ua = UserAgent()
 
 discord.VoiceClient.warn_nacl = False
@@ -35,7 +34,7 @@ async def main() -> None:
         aiohttp.ClientSession(headers={"User-Agent": ua.random}) as session,
         Database(),
         translator,
-        HoyoBuddy(session=session, env=env, pool=pool, config=CONFIG) as bot,
+        HoyoBuddy(session=session, pool=pool, config=CONFIG) as bot,
     ):
         with contextlib.suppress(
             KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError

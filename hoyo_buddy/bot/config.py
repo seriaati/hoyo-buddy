@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import argparse
-from typing import Literal
 
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from hoyo_buddy.types import EnvType
 
 
 class Config(BaseSettings):
@@ -34,7 +35,7 @@ class Config(BaseSettings):
     img_upload_api_key: str
 
     # Misc
-    env: Literal["dev", "test", "prod"] = "dev"
+    env: EnvType = "dev"
     sentry_dsn: str
     db_url: str
     fernet_key: str

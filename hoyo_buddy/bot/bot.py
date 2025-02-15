@@ -55,7 +55,13 @@ if TYPE_CHECKING:
     from aiohttp import ClientSession
 
     from hoyo_buddy.bot.config import Config
-    from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, Interaction, User
+    from hoyo_buddy.types import (
+        AutocompleteChoices,
+        BetaAutocompleteChoices,
+        EnvType,
+        Interaction,
+        User,
+    )
 
 __all__ = ("HoyoBuddy",)
 
@@ -63,9 +69,7 @@ __all__ = ("HoyoBuddy",)
 class HoyoBuddy(commands.AutoShardedBot):
     owner_id: int
 
-    def __init__(
-        self, *, session: ClientSession, env: str, pool: asyncpg.Pool, config: Config
-    ) -> None:
+    def __init__(self, *, session: ClientSession, pool: asyncpg.Pool, config: Config) -> None:
         self.version = get_project_version()
 
         super().__init__(
@@ -89,7 +93,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         self.session = session
         self.uptime = get_now()
-        self.env = env
+        self.env: EnvType = config.env
         self.nai_client = NAIClient(token=config.nai_token, host_url=config.nai_host_url)
         self.owner_id = 410036441129943050
         self.guild_id = 1000727526194298910

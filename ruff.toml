@@ -58,7 +58,10 @@ select = ["ALL"]
 
 [lint.flake8-type-checking]
 quote-annotations = true
-runtime-evaluated-base-classes = ["pydantic.BaseModel"]
+runtime-evaluated-base-classes = [
+  "pydantic.BaseModel",
+  "pydantic_settings.BaseSettings",
+]
 
 [lint.mccabe]
 max-complexity = 15

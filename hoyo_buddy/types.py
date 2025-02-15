@@ -65,3 +65,4 @@ Tasks: TypeAlias = defaultdict[
 ProxyAPI: TypeAlias = Literal[
     "RENDER", "RENDER2", "RENDER3", "RENDER4", "VERCEL", "FLY", "FLY2", "RAILWAY", "LEAPCELL"
 ]
+type EnvType = Literal["dev", "test", "prod"]

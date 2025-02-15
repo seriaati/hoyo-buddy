@@ -40,9 +40,9 @@ class Config(BaseSettings):
     fernet_key: str
 
     # Command-line arguments
-    search: bool = False
-    sentry: bool = False
-    schedule: bool = False
+    search: bool
+    sentry: bool
+    schedule: bool
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

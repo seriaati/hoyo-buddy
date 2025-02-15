@@ -22,7 +22,7 @@ abyss.total_stars: "Tổng Sao: {val}"
 abyss_chamber.challenge_target.embed.field.name: Mục Tiêu Thử Thách
 abyss_chamber.embed.title: "Tầng {floor_index} - Phòng {chamber_index}"
 abyss_chamber.enemy_level.embed.field.name: Cấp độ kẻ thù
-abyss_chamber.ley_line_disorder.embed.field.name: Địa Mạch Tắc Nghẽn
+abyss_chamber.ley_line_disorder.embed.field.name: Địa Mạch Bất Thường
 abyss_enemy.item_description: "HP: {HP}"
 acc_no_default_param_desc: " Tài khoản để chạy lệnh này"
 account_autocomplete_param_description: "Tài khoản để chạy lệnh này, mặc định là tài khoản được chọn trong /accounts"
@@ -89,14 +89,14 @@ characters.filter.path.placeholder: Chọn lọc Vận Mệnh...
 characters.filter.placeholder: Chọn lọc...
 characters.level_order.footer: "Thứ tự Cấp độ: {order}"
 characters.extra_detail.footer: "Dùng /profile để xem những chi tiết của nhân vật"
-hsr.ultimate: Kỹ Năng Nổ
+hsr.ultimate: Tuyệt Kỹ
 hsr.normal_attack: Tấn Công Thường
 hsr.skill: Kỹ Năng
-hsr.talent: Tài Năng
-hsr.technique: Kỹ Thuật
-gi.skill: Kỹ năng Nguyên Tố
-gi.burst: Kỹ năng Nổ
-gi.passive: Kỹ Năng Cố Định
+hsr.talent: Thiên Phú
+hsr.technique: Bí Kỹ
+gi.skill: Kỹ Năng Nguyên Tố
+gi.burst: Kỹ Năng Nộ
+gi.passive: Thiên Phú Cố Định
 characters.sorter.constellation: Cung Mệnh
 characters.sorter.eidolon: Tinh Hồn
 characters.sorter.element: Nguyên Tố
@@ -730,17 +730,17 @@ build_cmd_zzz_desc: Xem build và hướng dẫn người đại diện Zenless 
 build_cmd_character_param_desc: Nhân vật đẽ coi build cho
 guide_title: "{name} Build và hướng dẫn"
 no_guide_available: Chưa có hướng dẫn build cho nhân vật này
-show_playstyle_button_label: Loại chơi
+show_playstyle_button_label: Lối Chơi
 flexible_char: Linh hoạt
-show_synergy_button_label: Sự hiệp lực
-characters_per_page_modal_title: Các nhân vật mỗi trang
+show_synergy_button_label: Đội Hình
+characters_per_page_modal_title: Số nhân vật mỗi trang
 characters_per_page_num_label: Số
 card_settings_hl_substat_select_placeholder: Chọn thuộc tính phụ để tô đậm
 too_many_requests_error_banner_msg: "Nhiều yêu cầu quá, vui lòng thử lại. Nhấp vào nút bền phải để biết thêm thông tin."
 mimo_task_status_claimable: Có thể đổi
 mimo_finish_and_claim_button_label: Hoàn thành nhiệm vụ và nhận điểm
 mimo_info_embed_title: Về Mimo Du Lịch
-mimo_info_embed_desc: "Đây là một sự kiện vĩnh viễn bởi Hoyoverse, nơi mà bạn có thể hoàn thành nhiệm vụ để tích điểm, dùng điểm để mua quà tặng trong trò chơi."
+mimo_info_embed_desc: "Đây là một sự kiện vĩnh viễn bởi Hoyoverse, nơi mà bạn có thể hoàn thành nhiệm vụ để tích điểm, dùng điểm để đổi lấy vật phẩm trong trò chơi."
 mimo_auto_finish_and_claim_button_label: Tự động hoàn thành nhiệm vụ và nhận điểm
 mimo_auto_finish_and_claim_desc: Hoyo Buddy có thể tự động hoàn thành một số nhiệm vụ và nhận điểm của những nhiêm vụ đã hoàn thành.
 mimo_auto_buy_button_label: Tự động mua quà
@@ -763,7 +763,7 @@ off_button_label: "TẮT"
 mimo_draw_redeem_success: "Kiểm tra Hòm Thư trong Game để nhận quà"
 image_settings_use_m3_art: Sử dụng Ảnh M3
 remembrance: Ký Ức
-dismissible_default_title: Tính năng mới
+dismissible_default_title: Tính năng mới!
 dismissible_default_footer: Tin nhắn này chỉ hiển thị một lần.
 dismissible_m3_art_desc: 'Bạn giờ có thể sử dụng ảnh Phim Ý Cảnh 3 trong thẻ người đại diện ZZZ, chọn "Mẫu thẻ Hoyo Buddy 3" trong phần cài đặt thẻ, và bật "Sử dụng ảnh M3" trong phần cài đặt ảnh'
 mimo_lottery_info_hoyolab_decos: "...và {num} đồ trang trí HoYoLAB"
@@ -779,7 +779,7 @@ mimo_auto_task_error_dm_content: "Du Lịch Mimo: Tính năng {feature} đã đ�
 dismissible_hsr_temp2_desc: "Giờ bạn có thể dùng mẫu thẻ Hoyo Buddy 2 cho thẻ nhân vật HSR, chọn trong cài đặt thẻ. Đề nghị bạn dùng ảnh dọc ngang cho mẫu thẻ này."
 bounty_commission.embed.description: " Tiến Độ Ủy Thác Trao Thưởng chưa hoàn thành"
 ridu_points.embed.description: " Điểm Số Ridu Hàng Tuần chưa hoàn thành"
-changelog_embed_title: Nhật Ký Thây Đổi
+changelog_embed_title: Nhật Ký Thay Đổi
 web_events_notify_toggle_label: Nhắc nhờ về sự kiện Web
 web_events_cmd_desc: Xem các sự kiện web đang diễn ra và đặt thông báo
 web_events_embed_footer: Sử dụng lệnh /web-events để định cấu hình thông báo

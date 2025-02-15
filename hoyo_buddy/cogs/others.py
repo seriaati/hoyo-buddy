@@ -4,7 +4,6 @@ import itertools
 from typing import TYPE_CHECKING
 
 import discord
-import psutil
 from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands, tasks
@@ -29,7 +28,6 @@ if TYPE_CHECKING:
 class Others(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
-        self.process = psutil.Process()
         self.repo_url = "https://github.com/seriaati/hoyo-buddy"
 
     async def cog_load(self) -> None:
@@ -130,9 +128,8 @@ class Others(commands.Cog):
         )
 
         # ram usage
-        memory_usage = self.process.memory_info().rss / 1024**2
         embed.add_field(
-            name=LocaleStr(key="about_command.ram_usage"), value=f"{memory_usage:.2f} MB"
+            name=LocaleStr(key="about_command.ram_usage"), value=f"{self.bot.ram_usage:.2f} MB"
         )
 
         # uptime

@@ -14,6 +14,7 @@ import discord
 import enka
 import genshin
 import prometheus_client
+import psutil
 import sentry_sdk
 from asyncache import cached
 from cachetools import LRUCache
@@ -102,6 +103,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.config = config
         self.cache = LFUCache()
         self.user_ids: set[int] = set()
+        self.process = psutil.Process()
 
         self.autocomplete_choices: AutocompleteChoices = defaultdict(
             lambda: defaultdict(lambda: defaultdict(list))
@@ -529,3 +531,8 @@ class HoyoBuddy(commands.AutoShardedBot):
         if self.geetest_command_task is not None:
             self.geetest_command_task.cancel()
         await super().close()
+
+    @property
+    def ram_usage(self) -> int:
+        """The bot's current RAM usage in MB"""
+        return self.process.memory_info().rss / 1024**2

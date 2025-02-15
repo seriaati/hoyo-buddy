@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import argparse
 import asyncio
 import logging
 import sys
@@ -17,10 +16,6 @@ from hoyo_buddy.web_app.app import WebApp
 env = CONFIG.env
 is_dev = env == "dev"
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--sentry", action="store_true", default=not is_dev)
-args = parser.parse_args()
-
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
@@ -32,7 +27,7 @@ async def web_app_entry(page: ft.Page) -> None:
 
 if __name__ == "__main__":
     logger.remove()
-    if args.sentry:
+    if CONFIG.sentry:
         init_sentry()
 
     logger.add(sys.stderr, level="DEBUG" if is_dev else "INFO")

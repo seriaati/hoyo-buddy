@@ -404,10 +404,10 @@ reward_claimed_title: Đã nhận phần thưởng điểm danh
 saturday: Thứ bảy
 search_autocomplete_no_results: Không tìm thấy kết quả nào
 search_autocomplete_not_setup: "Tìm kiếm các lựa chọn tự động hoàn thành chưa được thiết lập, vui lòng thử lại sau."
-search_command_category_param_description: Mục để Tìm Kiếm
+search_command_category_param_description: Mục muốn tìm kiếm
 search_cmd_category_param_name: mục
-search_command_description: Tìm kiếm gì liên quan đến trò chơi
-search_command_game_param_description: Trò chơi để tìm kiếm
+search_command_description: Tìm kiếm mọi thứ liên quan tới trò chơi
+search_command_game_param_description: Trò chơi muốn tìm kiếm
 search_command_game_param_name: trò-chơi
 search_command_query_param_description: Truy vấn để tìm kiếm
 search_command_query_param_name: truy-vấn
@@ -415,28 +415,28 @@ select_account.embed.description: Chọn tài khoản bạn muốn thêm vào Ho
 select_account.embed.title: 🎉 Chào mừng đến Hoyo Buddy!
 settings_command_description: Chỉnh cài đặt người dùng
 skill_attributes_embed_field_name: "Thuộc Tính Kỹ Năng (Lv.{level})"
-skill_level.modal.title: Nhập Mức Độ Kỹ Năng
+skill_level.modal.title: Nhập cấp kỹ năng
 spiral_abyss: La Hoàn Thâm Cảnh
 stats_embed_field_name: Thuộc Tính
 sumeru: Sumeru
 sunday: Chủ nhật
-superimpose_indicator: "Tích Tầng"
-talent_level.modal.title: Nhập Mức độ Tài Năng
+superimpose_indicator: "Tích Tầng {s}"
+talent_level.modal.title: Nhập cấp thiên phú
 tcg: TCG
 the_hunt: Săn Bắn
-threshold.embed.description: "Ngưỡng ({threshold}) đã vượt"
-thunder: Sấm sét
+threshold.embed.description: "Đã đạt ngưỡng ({threshold})"
+thunder: Lôi
 thursday: Thứ năm
 tuesday: Thứ ba
 unreleased_content: Nội dung chưa được phát hành
-user_autocomplete_param_description: "Người dùng tìm kiếm các tài khoản, mặc định là bạn"
+user_autocomplete_param_description: "Người dùng có tài khoản muốn tìm, mặc định là bạn"
 user_autocomplete_param_name: người-dùng
-user_no_accounts_autocomplete_choice: Người dùng này không có tài khoản nào hết
+user_no_accounts_autocomplete_choice: Người dùng này không có tài khoản nào
 view_card_button_label: Thẻ
 view_dictionary_button_label: Từ điển
 volume_selector_placeholder: Vui lòng chọn một chương để đọc
 wave_button_label: "Màn {value}"
-weapon_level.modal.title: Nhập mức độ Vũ khí
+weapon_level.modal.title: Nhập cấp Vũ khí
 weapons: Vũ Khí
 wednesday: Thứ tư
 week_boss_button.label: Nhắc nhở lượt giảm nhựa tiêu hao
@@ -445,17 +445,17 @@ wind: Phong
 yatta_character_detail_page_label: Chi tiết
 yatta_character_eidolon_page_label: TInh Hồn
 yatta_character_embed_description: "{rarity}\nNguyên Tố: {element}\nVận Mệnh: {path}\nPhe Phái: {world}\n"
-yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}"
+yatta_character_skill_aoe_weakness_break_field_value: "Phạm Vi: {aoe_weakness_break}"
 yatta_character_skill_energy_field_name: Năng Lượng
-yatta_character_skill_energy_generation_field_value: "Năng Lượng: {energy_generation}"
+yatta_character_skill_energy_generation_field_value: "Sinh ra: {energy_generation}"
 yatta_character_skill_energy_need_field_value: "Tiêu hao: {energy_need}"
 yatta_character_skill_single_weakness_break_field_value: "Đơn: {single_weakness_break}"
 yatta_character_skill_spread_weakness_break_field_value: "Trải Ra: {spread_weakness_break}"
-yatta_character_skill_weakness_break_field_name: Phá vỡ Điểm Yếu
+yatta_character_skill_weakness_break_field_name: Phá Vỡ Điểm Yếu
 yatta_character_trace_page_label: Vết Tích
 yatta_item_sources_field_name: Nguồn
-characters.show_owned_only: Chỉ hiển thị Nhân vật đang có
-redeem_code.ar_too_low: Hạng Mạo Hiểm Thấp Quá
+characters.show_owned_only: Chỉ hiện nhân vật đã sở hữu
+redeem_code.ar_too_low: Hạng Mạo Hiểm quá thấp
 data_not_public.title: Dữ liệu không công khai
 data_not_public.description: "Bật tính năng chia sẽ dữ liệu trong Cài đặt Chiến tích"
 not_implemented_error_title: Tính năng hiện chưa có
@@ -465,22 +465,22 @@ profile.build.current.label: Hiện tại
 abyss_chamber.blessing.embed.field.name: Uyên Nguyệt Chúc Phúc
 apocalyptic_shadow: Ảo Ảnh Tận Thế
 apc_shadow.highest_diff_cleared: "Mức độ cao nhất hoàn thành: {diff}"
-apc_shadow.times_challenged: "Lần thử thách: {times}"
+apc_shadow.times_challenged: "Số lần khiêu chiến: {times}"
 apc_shadow.boss_defeated: Kẻ Địch Mạnh Đã Đánh
 apc_shadow.boss_defeated_no: Kẻ Địch Mạnh Chưa Đánh
 notes.bonus_sync_points: "Cấp Đồng Bộ Thêm: {cur}/{max}"
 invalid_uid_format_title: Định dạng UID không hợp lệ
-invalid_uid_format_description: "UID phải là từ 9 đến 10 số"
+invalid_uid_format_description: "UID phải là dãy số dài từ 9 đến 10 ký tự"
 zenless_zone_zero: Zenless Zone Zero
 img_theater_large_block_title: Nhà Hát Giả Tưởng
 img_theater_stats_line_five: "Tổng Thời Gian Biểu Diễn: {time}"
 img_theater_legend_block_support_chara: Nhân Vật Hỗ Trợ
 img_theater_legend_block_trial_chara: Nhân Vật Dùng Thử
 img_theater_max_damage: "Gây Nhiều Sát Thương Nhất: {val}"
-img_theater_fastest_team: "(nhanh nhất)"
+img_theater_fastest_team: " (nhanh nhất)"
 challenge_view.view_buffs: Xem Buff
 challenge_view.buff_select.placeholder: Chọn Buff để xem
-scratch_card.embed.description: Thẻ Chưa cào
+scratch_card.embed.description: Chưa cào thẻ
 zzz_engagement_button.label: Năng Động
 zzz_engagement.embed.description: Chưa hoàn thành Nhiệm vụ Năng Động.
 honkai_daily_embed_title: Nhắc nhở Nhật ký HT
@@ -495,19 +495,19 @@ remove_from_cache_finish_embed_desc: Chạy lại lệnh /profile để xem các
 third_party_card_temp_error_title: Mẫu Thẻ Bên Thứ 3 Bị Lỗi
 third_party_card_temp_error_message: "Mẫu thẻ cho nhân vật này đã bị đặt lại sang Mẫu thẻ Hoyo Buddy. Nếu lỗi này tiếp tục điễn ra, vui lòng tìm trợ giúp trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Tài khoản của bạn đã bị khóa trong vòng 20 phút
-account_locked_description: "Bạn đã nhập mật khẩu sai quá nhiều lần. Vui lòng đợi 20 phút rồi hãy thử lại. Nếu bạn không thể thiết lập tài khoản, vui lòng tìm trợ giúp trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
+account_locked_description: "Bạn đã nhập mật khẩu sai quá nhiều lần. Vui lòng thử lại sau 20 phút. Nếu bạn không thể thiết lập tài khoản, vui lòng tìm trợ giúp trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
 ether: Ether
 electric: Lôi
 profile.no_data.title: Không có dữ liệu người chơi
 profile.no_data.description: "Dù bạn có tin hay không thì cũng chẳng có gì để coi ở đây."
 profile.zzz_hoyolab.character_select.description: "Phim Ý Cảnh {m} | Dữ liệu {platform}"
 characters.filter.specialty.placeholder: Chọn lọc Đặc tính...
-zzz.basic: Tấn công thường
+zzz.basic: Tấn Công Thường
 zzz.dodge: Né
 zzz.assist: Kỹ Năng Chi Viện
 zzz.special: Chiến Kỹ
 zzz.chain: Liên Kích
-zzz.core: Kỹ Năng Cốt Lỗi
+zzz.core: Kỹ Năng Cốt Lõi
 characters.filter.faction.placeholder: Chọn lọc Phe...
 characters.sorter.speciality: Đặc Tính
 characters.sorter.faction: Phe
@@ -516,7 +516,7 @@ characters.embed.filter_text: "Nhân vật {filter}"
 stats_command_description: Xem thống kê tài khoản game
 tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Hạng {rarity}"
-about_command.designers: Nhà Thiết Kế
+about_command.designers: Người thiết kế
 card_settings.modifying_for: "Chỉnh sửa cài đặt thẻ cho {name}"
 card_settings.card_color: Màu thẻ
 card_settings.no_color: Mẫu thẻ này không hỗ trợ đổi màu
@@ -525,9 +525,9 @@ card_settings.current_image: Hình hiện tại
 card_settings.build_card_image: Hình ảnh thẻ Build
 card_settings.team_card_image: Hình ảnh thẻ đội hình
 profile.redraw_card_button_label: Làm mới thẻ
-card_settings.footer: "Khi bạn xong, nhấn nút màu xanh ở tin nhắn trên để làm mới thẻ"
-card_settings.description: "Sử dụng</upload> để lấy link ảnh bằng cách tải ảnh lên.\nPixiv được hỗ trợ, chỉ cần sao chép Link hình ảnh của tác phẩm nghệ thuật."
-profile.team_dark_mode.button.label: Thẻ đội chế độ tới
+card_settings.footer: "Khi đã xong, nhấn nút màu xanh lá ở tin nhắn phía trên để làm mới thẻ"
+card_settings.description: "Sử dụng </upload> để lấy link ảnh bằng cách tải ảnh lên.\nHỗ trợ ảnh trên Pixiv, chỉ cần sao chép link ảnh của tác phẩm đó."
+profile.team_dark_mode.button.label: Chế độ tối cho thẻ đội
 profile.character_select.multi.placeholder: Chon (các) nhân vật...
 zzz_search.agent_info: "Độ Hiếm: {rarity}\nĐặc Tính Tương Thích: {specialty}\nLoại Tấn Công: {atk_type}\nPhe: {faction}\nThuộc Tính: {element}"
 cat_zzz_agents: Người Đại Diện

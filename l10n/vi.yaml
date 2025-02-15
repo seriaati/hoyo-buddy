@@ -645,7 +645,7 @@ characters_view_show_max_level_only: Chỉ hiển thị nhân vật ở cấp đ
 characters_embed_max_level_characters: Nhân vật Cấp độ Tối đa
 natlan_reputation: "Danh Vọng: Lv.{reputation}, Bộ Tộc: {tribes}"
 shiyu_overview: Tổng quan
-shiyu_fastest_clear_time: "Thời gian Nhanh nhất Hoàn thành Mùa này:"
+shiyu_fastest_clear_time: "Thời gian hoàn thành nhanh nhất kỳ này:"
 shiyu_highest_frontier: "Phòng Tuyến Cao Nhất Đã Hoàn Thành:"
 shiyu_relevant_season: "Mùa Liên Quan:"
 shiyu_1_frontier: Phòng Tuyến 1
@@ -661,31 +661,31 @@ no_leaderboard_found: Không tìm thấy bảng xếp hạng
 akasha_character_param: nhân-vật
 akasha_calculation_param: bảng-xếp-hạng
 akasha_weapon_param: vũ-khí
-akasha_weapon_param_desc: Vũ khí để xem bảng xếp hạng cho
+akasha_weapon_param_desc: Vũ khí muốn xem bảng xếp hạng
 akasha_variant_param: loại
 akasha_variant_param_desc: "Biến thể của bảng xếp hạng để xem, mặc định là bảng chính"
-akasha_character_param_desc: Nhân vật để xem bảng xếp hạng cho
-akasha_calculation_param_desc: Bảng xếp hạng để xem
+akasha_character_param_desc: Nhân vật muốn xem bảng xếp hạng
+akasha_calculation_param_desc: Bảng xếp hạng muốn xem
 akasha_total_entries: "Tổng số mục: {total}"
 leaderboard_akasha_command_description: Xem bảng xếp hạng sát thương nhân vật Genshin Impact (hỗ trợ bới Hệ Thống Akasha)
 akasha_you: Bạn
-achievement_lb_title: Bảng xếp hạng số thành tựu
+achievement_lb_title: Bảng Xếp Hạng Số Thành Tựu Đạt Được
 planar_fissure_label: Vị Diện Nứt Vỡ
 planar_fissure_desc: "Sự kiện Vị Diện Nứt Vỡ sẽ xảy ra trong vòng {hour} tiếng, nhớ lưu trự Sức Mạnh Khai Phá của bạn nhé!"
 notif_modal.hours_before.label: Thông báo X giờ trước khi sự kiện bắt đầu
 reminder_settings.reminde.set.type5: "Trạng thái: {status}\nNhắc khoảng: {notify_interval} phút\nSố lần nhắc nhở: {max_notif_count}\nThời gian Nhắc Nhở: {hours_before} tiếng trước khi sự kiện bắt đầu"
 invalid_lb_selected_error_msg: Bảng xếp hạng được chọn không hợp lệ
-chest_lb_title: Bản Xếp hạng Rương Đã mở
-abyss_dmg_lb_title: Bảng Xếp Hạng La Hoàn Thâm Cảnh Một Kích Mạnh Nhất
-theater_dmg_lb_title: Bảng Xếp Hạng Nhà Hát Giả Tưởng Một Kích Mạnh Nhất
-max_friendship_lb_title: Bảng Xếp Hạng Số Nhân Vật ở Mức Độ Yêu Thích Cao Nhất
+chest_lb_title: Bản Xếp Hạng Số Rương Đã Mở
+abyss_dmg_lb_title: Bảng Xếp Hạng Một Kích Mạnh Nhất - La Hoàn Thâm Cảnh
+theater_dmg_lb_title: Bảng Xếp Hạng Một Kích Mạnh Nhất - Nhà Hát Giả Tưởng
+max_friendship_lb_title: Bảng Xếp Hạng Số Nhân Vật Có Độ Yêu Thích Đạt Tối Đa
 lb_view_command_description: Xem bảng xếp hạng
-leaderboard_not_found: Bảng xếp hạng không tìm thấy
+leaderboard_not_found: Không tìm thấy bảng xếp hạng này
 currently_logged_in_as: "Bạn hiện đang đăng nhập với tư cách:"
 not_you_label: "Không phải bạn? Nhấn để đăng nhập bằng tài khoản khác"
 profile_show_substat_rolls: Thuộc tính phụ
-team_card_settings_button_label: Thẻ Đội cài đặt
-team_card_settings_embed_title: Chỉnh sửa thẻ dội cài đặt
+team_card_settings_button_label: Thiết lập thẻ đội
+team_card_settings_embed_title: Chỉnh sửa thiết lập thẻ đội
 team_card_settings_embed_description: "Cài đặt thẻ đội được chia sẻ trên các trò chơi và tài khoản khác nhau, những thay đổi được thực hiện đối với một số cài đặt có thể không được phản ánh trên thẻ khi chúng không được mẫu thẻ hỗ trợ.\nKhi hoàn tất, hãy nhấp vào nút màu xanh lá cây trong thông báo bên trên để làm mới thẻ."
 characters.filter.rarity.placeholder: Lọc theo độ hiếm...
 profile_command_character_param_desc: Chọn nhân vật để tạo thẻ cho
@@ -727,8 +727,8 @@ abyss_stats_artifact_use_rate: Tỷ lệ sử dụng Di vật
 build_cmd_genshin_desc: Xem build và hướng dẫn nhân vật Genshin Impact
 build_cmd_hsr_desc: "Xem build và hướng dẫn nhân vật Honkai: Star Rail"
 build_cmd_zzz_desc: Xem build và hướng dẫn người đại diện Zenless Zone Zero
-build_cmd_character_param_desc: Nhân vật đẽ coi build cho
-guide_title: "{name} Build và hướng dẫn"
+build_cmd_character_param_desc: Nhân vật bạn muốn xem build
+guide_title: "Build và hướng dẫn cho {name}"
 no_guide_available: Chưa có hướng dẫn build cho nhân vật này
 show_playstyle_button_label: Lối Chơi
 flexible_char: Linh hoạt

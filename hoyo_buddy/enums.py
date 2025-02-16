@@ -156,3 +156,9 @@ class LeaderboardType(StrEnum):
     MAX_FRIENDSHIP = "max_friendship_lb_title"
     ABYSS_DMG = "abyss_dmg_lb_title"
     THEATER_DMG = "theater_dmg_lb_title"
+
+
+class OpenGameLabel(StrEnum):
+    DEFAULT = "open_game_label"
+    CLOUD = "open_game_cloud_label"
+    VIETNAM = "open_game_vietnam_label"

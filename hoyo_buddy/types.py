@@ -65,3 +65,6 @@ Tasks: TypeAlias = defaultdict[
 ProxyAPI: TypeAlias = Literal[
     "RENDER", "RENDER2", "RENDER3", "RENDER4", "VERCEL", "FLY", "FLY2", "RAILWAY", "LEAPCELL"
 ]
+
+type OpenGameRegion = Literal["global", "cn", "vietnam"]
+type OpenGameGame = Literal["gi", "gi_cloud", "hsr", "hsr_cloud", "zzz", "zzz_cloud"]

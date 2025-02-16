@@ -10,7 +10,9 @@ from discord import Locale
 from genshin.models import HonkaiNotes, HSREvent, StarRailNote, VideoStoreState, ZZZNotes
 from genshin.models import Notes as GenshinNotes
 
+from hoyo_buddy.constants import AVAILABLE_OPEN_GAMES, get_open_game_url
 from hoyo_buddy.db import NotesNotify, draw_locale
+from hoyo_buddy.ui.components import Button, View
 
 from ...bot.error_handler import get_error_embed
 from ...draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
@@ -28,7 +30,6 @@ from ...icons import (
 )
 from ...l10n import LocaleStr
 from ...models import DrawInput
-from ...ui.hoyo.notes.view import NotesView
 from ...utils import get_now
 
 if TYPE_CHECKING:
@@ -219,10 +220,12 @@ class NotesChecker:
     @classmethod
     async def _notify_user(cls, notify: NotesNotify, notes: Notes | None) -> None:
         locale = await cls._get_locale(notify)
+        account = notify.account
+
         embed = cls._get_notify_embed(notify, notes, locale)
         draw_input = DrawInput(
-            dark_mode=notify.account.user.settings.dark_mode,
-            locale=draw_locale(locale, notify.account),
+            dark_mode=account.user.settings.dark_mode,
+            locale=draw_locale(locale, account),
             session=cls._bot.session,
             filename="notes.png",
             executor=cls._bot.executor,
@@ -244,12 +247,18 @@ class NotesChecker:
             buffer.seek(0)
             file_ = discord.File(buffer, filename="notes.png")
 
-        view = NotesView(
-            notify.account, notify.account.user.settings.dark_mode, author=None, locale=locale
-        )
-        view.bytes_obj = buffer
-        message = await cls._bot.dm_user(notify.account.user.id, embed=embed, file=file_, view=view)
-        view.message = message
+        view = View(author=None, locale=locale)
+        platform, game = account.platform, account.game
+        available_games = AVAILABLE_OPEN_GAMES.get(platform)
+
+        if available_games is not None:
+            buttons = available_games.get(game)
+            if buttons is not None:
+                for label_enum, region, game in buttons:
+                    url = get_open_game_url(region=region, game=game)
+                    view.add_item(Button(label=LocaleStr(key=label_enum.value), url=str(url)))
+
+        message = await cls._bot.dm_user(account.user.id, embed=embed, file=file_, view=view)
 
         notify.enabled = message is not None
         notify.last_notif_time = get_now()

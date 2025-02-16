@@ -13,12 +13,24 @@ import hakushin
 import yatta
 from discord import app_commands
 from loguru import logger
+from yarl import URL
 
-from hoyo_buddy.bot.config import CONFIG
+from hoyo_buddy.config import CONFIG
 
-from .enums import ChallengeType, Game, GenshinCity, GenshinElement, HSRElement, HSRPath
+from .enums import (
+    ChallengeType,
+    Game,
+    GenshinCity,
+    GenshinElement,
+    HSRElement,
+    HSRPath,
+    OpenGameLabel,
+    Platform,
+)
 
 if TYPE_CHECKING:
+    from hoyo_buddy.types import OpenGameGame, OpenGameRegion
+
     from .types import ProxyAPI
 
 
@@ -1009,3 +1021,71 @@ DC_MAX_FILESIZE = 10 * 1024 * 1024  # 10 MB
 
 NO_MASKED_LINK_GUILDS = {998109815521947678}
 """Discord servers that have masked links AutoMod rules."""
+
+OPEN_GAME_BASE_URL = URL("https://st-direct.pages.dev/event")
+OPEN_GAME_URLS: dict[OpenGameRegion, dict[OpenGameGame, URL]] = {
+    "global": {
+        "gi": OPEN_GAME_BASE_URL / "genshin",
+        "gi_cloud": OPEN_GAME_BASE_URL / "genshin_cloud",
+        "hsr": OPEN_GAME_BASE_URL / "hsr",
+        "zzz": OPEN_GAME_BASE_URL / "zzz",
+    },
+    "cn": {
+        "gi": OPEN_GAME_BASE_URL / "yuanshen",
+        "gi_cloud": OPEN_GAME_BASE_URL / "ys_cg",
+        "hsr": OPEN_GAME_BASE_URL / "sr",
+        "hsr_cloud": OPEN_GAME_BASE_URL / "sr_cg",
+        "zzz": OPEN_GAME_BASE_URL / "nap",
+        "zzz_cloud": OPEN_GAME_BASE_URL / "nap_cg",
+    },
+    "vietnam": {
+        "gi": OPEN_GAME_BASE_URL / "ysvn",
+        "hsr": OPEN_GAME_BASE_URL / "hsrvn",
+        "zzz": OPEN_GAME_BASE_URL / "zzzvn",
+    },
+}
+
+AVAILABLE_OPEN_GAMES: dict[
+    Platform, dict[Game, tuple[tuple[OpenGameLabel, OpenGameRegion, OpenGameGame], ...]]
+] = {
+    Platform.HOYOLAB: {
+        Game.GENSHIN: (
+            (OpenGameLabel.DEFAULT, "global", "gi"),
+            (OpenGameLabel.CLOUD, "global", "gi_cloud"),
+            (OpenGameLabel.VIETNAM, "vietnam", "gi"),
+        ),
+        Game.STARRAIL: (
+            (OpenGameLabel.DEFAULT, "global", "hsr"),
+            (OpenGameLabel.VIETNAM, "vietnam", "hsr"),
+        ),
+        Game.ZZZ: (
+            (OpenGameLabel.DEFAULT, "global", "zzz"),
+            (OpenGameLabel.VIETNAM, "vietnam", "zzz"),
+        ),
+    },
+    Platform.MIYOUSHE: {
+        Game.GENSHIN: (
+            (OpenGameLabel.DEFAULT, "cn", "gi"),
+            (OpenGameLabel.CLOUD, "cn", "gi_cloud"),
+        ),
+        Game.STARRAIL: (
+            (OpenGameLabel.DEFAULT, "cn", "hsr"),
+            (OpenGameLabel.CLOUD, "cn", "hsr_cloud"),
+        ),
+        Game.ZZZ: ((OpenGameLabel.DEFAULT, "cn", "zzz"), (OpenGameLabel.CLOUD, "cn", "zzz_cloud")),
+    },
+}
+
+
+def get_open_game_url(*, region: OpenGameRegion, game: OpenGameGame) -> URL:
+    region_urls = OPEN_GAME_URLS.get(region)
+    if region_urls is None:
+        msg = f"Invalid region: {region!r}"
+        raise ValueError(msg)
+
+    url = region_urls.get(game)
+    if url is None:
+        msg = f"Invalid game {game!r} for region {region!r}"
+        raise ValueError(msg)
+
+    return url

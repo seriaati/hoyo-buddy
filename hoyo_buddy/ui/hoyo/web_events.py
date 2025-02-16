@@ -44,6 +44,8 @@ class WebEventsView(ui.View):
         self.add_item(NotifyToggle(current_toggle=self.account.notif_settings.web_events))
         await i.response.send_message(embed=self.get_event_embed(events[0], self.locale), view=self)
 
+        self.message = await i.original_response()
+
 
 class EventSelector(ui.Select[WebEventsView]):
     def __init__(self, events: list[genshin.models.WebEvent]) -> None:

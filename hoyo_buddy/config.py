@@ -63,4 +63,4 @@ if __name__ == "__main__":
 else:
     args = argparse.Namespace(search=False, sentry=False, schedule=False)
 
-CONFIG = Config(**args)  # pyright: ignore[reportCallIssue]
+CONFIG = Config(search=args.search, sentry=args.sentry, schedule=args.schedule)  # pyright: ignore[reportCallIssue]

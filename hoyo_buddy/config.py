@@ -57,7 +57,10 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-load_dotenv()
-args = parse_args()
+if __name__ == "__main__":
+    load_dotenv()
+    args = parse_args()
+else:
+    args = argparse.Namespace(search=False, sentry=False, schedule=False)
 
-CONFIG = Config(search=args.search, sentry=args.sentry, schedule=args.schedule)  # pyright: ignore[reportCallIssue]
+CONFIG = Config(**args)  # pyright: ignore[reportCallIssue]

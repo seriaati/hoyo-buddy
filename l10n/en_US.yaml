@@ -298,7 +298,7 @@ notes.elysian_realm: Elysian Realm
 notes.elysian_realm_value: "Current score: {cur}/{max}"
 notes_available: "{emoji} Available in {in_time}"
 notes_command_description: View real-time notes
-notif.embed.footer: "Click the button below to change notification settings.\nIf it is expired, use the /notes command."
+notif.embed.footer: Use /notes to configure reminders
 notif_modal.enabled.label: Enabled
 notif_modal.max_notif_count.label: Max Notify Count
 notif_modal.notify_interval.label: Notify Interval (in minutes)

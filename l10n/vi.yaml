@@ -82,7 +82,7 @@ characters.embed.not_max_friendship: Các nhân vật với mức độ Yêu Th�
 characters.embed.owned_characters: Nhân vật đã sở hữu
 characters.embed.title: Tổng quan Nhân Vật
 characters.filter.element.placeholder: Lọc Nguyên Tố...
-characters.filter.max_friendship: Mức độ Yêu Thích tối đa
+characters.filter.max_friendship: Cấp độ Yêu Thích tối đa
 characters.filter.none: Không có
 characters.filter.not_max_friendship: Mức độ Yêu Thích chưa Tối đa
 characters.filter.path.placeholder: Lọc Vận Mệnh...
@@ -298,7 +298,7 @@ notes.elysian_realm: Vùng Đất Xưa Cũ
 notes.elysian_realm_value: "Điểm số hiện tại: {cur}/{max}"
 notes_available: "{emoji} Có sẵn trong {in_time}"
 notes_command_description: Xem Ghi Chép Thời Gian Thực
-notif.embed.footer: Sử dụng /notes đê điều chỉnh nhắc nhở
+notif.embed.footer: Sử dụng lệnh /notes đê điều chỉnh nhắc nhở
 notif_modal.enabled.label: Đã bật
 notif_modal.max_notif_count.label: Số lượng thông báo tối đa
 notif_modal.notify_interval.label: Khoảng cách giữa các thông báo (tính bằng phút)
@@ -667,7 +667,7 @@ akasha_variant_param_desc: "Biến thể của bảng xếp hạng để xem, m�
 akasha_character_param_desc: Nhân vật muốn xem bảng xếp hạng
 akasha_calculation_param_desc: Bảng xếp hạng muốn xem
 akasha_total_entries: "Tổng số mục: {total}"
-leaderboard_akasha_command_description: Xem bảng xếp hạng sát thương nhân vật Genshin Impact (hỗ trợ bới Hệ Thống Akasha)
+leaderboard_akasha_command_description: Xem bảng xếp hạng sát thương nhân vật Genshin Impact (hỗ trợ bới Akasha System)
 akasha_you: Bạn
 achievement_lb_title: Bảng Xếp Hạng Số Thành Tựu Đạt Được
 planar_fissure_label: Vị Diện Nứt Vỡ

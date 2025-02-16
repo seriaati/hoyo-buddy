@@ -7,7 +7,7 @@ import flet as ft
 import genshin
 import orjson
 
-from hoyo_buddy.bot.config import CONFIG
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 
 from ..constants import GEETEST_SERVERS

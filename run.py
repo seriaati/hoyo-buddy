@@ -13,7 +13,7 @@ from fake_useragent import UserAgent
 from loguru import logger
 
 from hoyo_buddy.bot import HoyoBuddy
-from hoyo_buddy.bot.config import CONFIG
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.logging import InterceptHandler

@@ -9,7 +9,7 @@ import flet as ft
 import orjson
 from cryptography.fernet import Fernet
 
-from hoyo_buddy.bot.config import CONFIG
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import locale_to_starrail_data_lang, locale_to_zenless_data_lang
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient

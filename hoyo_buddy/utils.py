@@ -20,7 +20,7 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 from seria.utils import clean_url
 
-from hoyo_buddy.bot.config import CONFIG
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game

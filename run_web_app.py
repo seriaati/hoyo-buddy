@@ -7,7 +7,7 @@ import sys
 import flet as ft
 from loguru import logger
 
-from hoyo_buddy.bot.config import CONFIG
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.logging import InterceptHandler
 from hoyo_buddy.utils import init_sentry

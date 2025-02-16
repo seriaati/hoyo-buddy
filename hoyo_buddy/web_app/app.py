@@ -13,7 +13,7 @@ from discord import Locale
 from loguru import logger
 from pydantic import ValidationError
 
-from hoyo_buddy.bot.config import CONFIG
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import locale_to_gpy_lang
 from hoyo_buddy.db import GachaHistory
 from hoyo_buddy.enums import Game, Platform

@@ -55,14 +55,8 @@ if TYPE_CHECKING:
     import asyncpg
     from aiohttp import ClientSession
 
-    from hoyo_buddy.bot.config import Config
-    from hoyo_buddy.types import (
-        AutocompleteChoices,
-        BetaAutocompleteChoices,
-        EnvType,
-        Interaction,
-        User,
-    )
+    from hoyo_buddy.config import Config, EnvType
+    from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, Interaction, User
 
 __all__ = ("HoyoBuddy",)
 

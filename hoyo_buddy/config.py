@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import argparse
+from typing import Literal
 
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from hoyo_buddy.types import EnvType
+type EnvType = Literal["dev", "test", "prod"]
 
 
 class Config(BaseSettings):

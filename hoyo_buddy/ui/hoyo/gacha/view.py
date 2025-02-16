@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Final, Literal, TypeAlias
 
-from hoyo_buddy.bot.config import CONFIG
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
     BANNER_GUARANTEE_NUMS,
     BANNER_TYPE_NAMES,

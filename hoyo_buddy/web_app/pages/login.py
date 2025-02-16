@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 
 import flet as ft
 
-from hoyo_buddy.bot.config import CONFIG
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.l10n import LocaleStr, translator
 
 if TYPE_CHECKING:

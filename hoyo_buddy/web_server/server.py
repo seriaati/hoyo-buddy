@@ -9,7 +9,7 @@ from aiohttp import web
 from loguru import logger
 from tortoise import Tortoise
 
-from hoyo_buddy.bot.config import CONFIG
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import WEB_APP_URLS
 from hoyo_buddy.db import User
 from hoyo_buddy.models import GeetestCommandPayload, GeetestLoginPayload

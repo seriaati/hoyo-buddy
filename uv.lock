@@ -1,4 +1,5 @@
 version = 1
+revision = 1
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.13'",
@@ -777,8 +778,8 @@ wheels = [
 
 [[package]]
 name = "hakushin-py"
-version = "0.4.7"
-source = { git = "https://github.com/seriaati/hakushin-py#4181cd15bb32a5a990766cb32fd6969e0cfe0dfc" }
+version = "0.4.8"
+source = { git = "https://github.com/seriaati/hakushin-py#fb9be288b26775cace5a9ddb7031ae46852bd08e" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },

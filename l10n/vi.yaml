@@ -3,8 +3,8 @@ about_command.developer: Lập trình viên
 about_command.discord_server: Máy chủ Discord
 about_command.guild_count: Số lượng người dùng
 about_command.latest_changes: Thay đổi mới nhất
-about_command.ram_usage: RAM sử dụng
-about_command.support: Ủng hộ
+about_command.ram_usage: Lượng RAM
+about_command.support: Quyên góp
 about_command.translators: Phiên dịch
 about_command.uptime: Thời gian hoạt động
 about_command.website: Trang web chính thức
@@ -15,14 +15,14 @@ abyss.battles_won_fought: "Khiêu Chiến Thành Công/Đã Đánh: {val1}/{val2
 abyss.deepest_descent: "Đến nơi sâu nhất: {val}"
 abyss.floor: "Tầng: {val}"
 abyss.overview: Chiến tích La Hoàn Thâm Cảnh
-abyss.damage: SỐ LIỆU ST
-abyss.stats: THÔNG TIN
+abyss.damage: Thông Tin DMG
+abyss.stats: Thuộc Tính
 abyss.phase_select.placeholder: Lựa chọn Kỳ
 abyss.total_stars: "Tổng Sao: {val}"
-abyss_chamber.challenge_target.embed.field.name: Mục Tiêu Khiêu Chiến
+abyss_chamber.challenge_target.embed.field.name: Mục Tiêu Thử Thách
 abyss_chamber.embed.title: "Tầng {floor_index} - Phòng {chamber_index}"
-abyss_chamber.enemy_level.embed.field.name: Cấp kẻ địch
-abyss_chamber.ley_line_disorder.embed.field.name: Địa Mạch Bất Thường
+abyss_chamber.enemy_level.embed.field.name: Cấp độ kẻ thù
+abyss_chamber.ley_line_disorder.embed.field.name: Địa Mạch Tắc Nghẽn
 abyss_enemy.item_description: "HP: {HP}"
 acc_no_default_param_desc: " Tài khoản để chạy lệnh này"
 account_autocomplete_param_description: "Tài khoản để chạy lệnh này, mặc định là tài khoản được chọn trong /accounts"
@@ -34,76 +34,76 @@ account_manager_no_accounts_description: Bạn chưa có bất kỳ tài khoản
 account_manager_title: Quản lý tài khoản
 account_not_found_error_message: "Không thể tìm được tài khoản với truy vấn được cung cấp, vui lòng chọn từ những lựa chọn được cung cấp thay vì tự nhập truy vấn riêng."
 account_not_found_error_title: Không tìm thấy tài khoản
-account_username: Tên người dùng
+account_username: Tên Người Dùng
 accounts_command_description: Quản lý tài khoản của bạn
 action_in_cooldown_error_message: "Vui lòng thử lại trong {available_time}."
 action_in_cooldown_error_title: Hành động trong thời gian chờ
 add_account_button_label: Thêm tài khoản
 add_hoyolab_acc.embed.description: "- [Tôi nên sử dụng phương thức nào?](:docs/FAQ#which-login-method-should-i-use:)"
 add_hoyolab_acc.embed.title: Vui lòng chọn phương thức để thêm tài khoản
-adding_accounts_description: "- [Hoyo Buddy có an toàn không?](:docs/Account-Security:)\n- [Chính sách bảo mật (tiếng Anh)](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "- [Hoyo Buddy có an toàn không?](:docs/Account-Security:)\n- [Chính sách bảo mật [EN]](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Vui lòng chọn Nền tảng Tài Khoản
 ai_gen_image_error_message: Kiểm tra thông tin đã nhập và thử lại
-ai_gen_image_error_title: Có lỗi xảy ra khi tạo ảnh bằng AI
+ai_gen_image_error_title: Đã xảy ra lỗi khi đang sáng tạo bằng AI
 already_claimed_description: Hãy quay lại ngày mai!
-already_claimed_title: Hôm nay đã nhận thưởng điểm danh hằng ngày rồi
+already_claimed_title: Đã nhận Phần thưởng Điểm danh Hàng ngày
 anemo: Phong
 artifact_set_four_piece_embed_description: "Bộ 4 món: {bonus_4}"
 artifact_set_two_piece_embed_description: "Bộ 2 món: {bonus_2}"
-artifact_sets: Bộ Thánh Di Vật
-auto_checkin_button_label: Tự động điểm danh hằng ngày
-auto_locale_option_label: Theo ngôn ngữ ứng dụng
-auto_redeem_footer: Tắt tự động đỏi mã quà bằng /redeem
+artifact_sets: Thánh Di Vật
+auto_checkin_button_label: Tự động Điểm danh Hàng ngày
+auto_locale_option_label: Theo Ngôn Ngữ Ứng Dụng
+auto_redeem_footer: Tắt Tự động Đỏi Mã Quà bằng /redeem
 auto_redeem_toggle.label: Tự động đổi mã quà
 books: Sách
 captcha.embed.description: "Nhấn nút bên dưới đê hoàn thành CAPTCHA.\n"
-challenge_type_select.placeholder: Vui lòng chọn chế độ chơi
-challenge_view.buff_used_in: Sử dụng trong
+challenge_type_select.placeholder: Vui lòng chọn chế độ trò chơi
+challenge_view.buff_used_in: Được sử đụng
 challenge_view.team: "Đội {team}"
 chamber_button_label: "Phòng {value}"
-change_character_level_label: Thay đổi cấp nhân vật
-change_skill_level_label: Thay đổi cấp kỹ năng
-change_talent_level_label: Thay đổi cấp thiên phú
-change_weapon_level_label: Thay đổi cấp vũ khí
-chara_level.modal.title: Nhập cấp nhân vật
-character_const_page_label: Cung Mệnh
-character_embed_description: "{element} {rarity}★\nSinh nhật: {birthday}\nCung Mệnh: {constellation}\nPhe phái: {affiliation}\n"
-character_passives_page_label: Nội Tại
+change_character_level_label: Đổi mức độ nhân vật
+change_skill_level_label: Thay đổi mức độ kỹ năng
+change_talent_level_label: Thay đổi mức độ tài năng
+change_weapon_level_label: Thay đổi mức độ vũ khí
+chara_level.modal.title: Nhập Mức độ nhân vật
+character_const_page_label: Các Cung Mệnh
+character_embed_description: "{rarity}★ {element}\nSinh Nhật: {birthday}\nCung Mệnh: {constellation}\nLiên kết: {affiliation}\n"
+character_passives_page_label: Những Kỹ Năng Cố Định
 character_profile_page_label: Hồ sơ
 character_quotes_page_label: Những Trích Dẫn
-character_stories_page_label: Câu Chuyện
-character_talents_page_label: Thiên Phú
+character_stories_page_label: Những Câu Truyện
+character_talents_page_label: Những Thiên Phú
 character_voices_page_label: Lồng Tiếng
-characters: Nhân Vật
+characters: Các Nhân Vật
 characters.embed.element_max_friendship: "Độ Yêu Thích Tối Đa của Các Nhân vật {element}"
 characters.embed.element_not_max_friendship: "Độ Yêu Thích chưa Tối Đa của Các Nhân vật {element}"
 characters.embed.max_friendship: Các nhân vật với mức độ Yêu Thích Tối Đa
 characters.embed.not_max_friendship: Các nhân vật với mức độ Yêu Thích chưa Tối Đa
-characters.embed.owned_characters: Nhân vật đã sở hữu
+characters.embed.owned_characters: Nhân Vật hiện có
 characters.embed.title: Tổng quan Nhân Vật
-characters.filter.element.placeholder: Lọc Nguyên Tố...
-characters.filter.max_friendship: Mức độ Yêu Thích tối đa
+characters.filter.element.placeholder: Chọn lọc Nguyên Tố...
+characters.filter.max_friendship: Mức độ Yêu Thích Tối đa
 characters.filter.none: Không có
 characters.filter.not_max_friendship: Mức độ Yêu Thích chưa Tối đa
-characters.filter.path.placeholder: Lọc Vận Mệnh...
-characters.filter.placeholder: Chọn một bộ lọc...
+characters.filter.path.placeholder: Chọn lọc Vận Mệnh...
+characters.filter.placeholder: Chọn lọc...
 characters.level_order.footer: "Thứ tự Cấp độ: {order}"
 characters.extra_detail.footer: "Dùng /profile để xem những chi tiết của nhân vật"
-hsr.ultimate: Tuyệt Kỹ
+hsr.ultimate: Kỹ Năng Nổ
 hsr.normal_attack: Tấn Công Thường
-hsr.skill: Chiến Kỹ
-hsr.talent: Thiên Phú
-hsr.technique: Bí Kỹ
-gi.skill: Kỹ Năng Nguyên Tố
-gi.burst: Kỹ Năng Nộ
-gi.passive: Thiên Phú Cố Định
+hsr.skill: Kỹ Năng
+hsr.talent: Tài Năng
+hsr.technique: Kỹ Thuật
+gi.skill: Kỹ năng Nguyên Tố
+gi.burst: Kỹ năng Nổ
+gi.passive: Kỹ Năng Cố Định
 characters.sorter.constellation: Cung Mệnh
 characters.sorter.eidolon: Tinh Hồn
 characters.sorter.element: Nguyên Tố
 characters.sorter.friendship: Độ Yêu Thích
-characters.sorter.level: Cấp
+characters.sorter.level: Mức độ
 characters.sorter.path: Vận Mệnh
-characters.sorter.placeholder: Chọn cách sắp xếp...
+characters.sorter.placeholder: Chọn một bộ lọc...
 characters.sorter.rarity: Độ Hiếm
 characters_cmd_genshin_desc: Chọn và lọc nhân vật Genshin Impact của bạn
 characters_cmd_hsr_desc: "Chọn và lọc nhân vật Honkai: Star Rail của bạn"
@@ -124,9 +124,9 @@ daily_modal.title: Cài đặt Lời nhắc hàng ngày
 delete_account_button_label: Xóa tài khoản đã chọn
 dendro: Thảo
 destruction: Hủy Diệt
-devtools_button_label: Bằng DevTools (dành cho PC)
+devtools_button_label: Với DevTools (dành cho PC)
 devtools_instructions_description: "1. Đăng nhập vào [HoYoLAB](https://www.hoyolab.com/home) hoặc [Miyoushe](https://www.miyoushe.com/ys/) (Dành cho người Trung Quốc Đại lục)\n2. Mở DevTools bằng cách nhấn phím F12 hoặc tổ hợp Ctrl+Shift+I\n3. Nhấn vào icon >> ở trên thanh công cụ\n4. Nhấn vào tab `Application/Ứng Dụng`\n5. Nhấn vào `Cookies` ở thanh công cụ dọc\n6. Bấm vào trang web bạn đang truy cập (VD: https://www.hoyolab.com)\n7. Nhập `v2` vào thanh `Filter/Lọc`\n8. Bấm vào nút bên dưới\n9. Sao chép `Value/Giá trị` của từng cookie và dán chúng vào các hộp"
-dice_cost_embed_field_name: Xúc xắc tiêu hao
+dice_cost_embed_field_name: Chi phí xúc xắc
 download_image_failed_error_message: "Không thể tải xuống hình ảnh {url} có mã trạng thái {status}.\nHãy thử lại sau, thử với một hình ảnh khác hoặc kiểm tra xem URL hình ảnh có hợp lệ hay không."
 download_image_failed_error_title: Tải hình ảnh không thành công
 edit_nickname_modal_title: Chỉnh sửa biệt danh
@@ -141,18 +141,18 @@ email_password_button_label: Với Email và Mật khẩu
 email_password_modal_email_input_label: Email hoặc tên người dùng
 email_password_modal_password_input_label: mật khẩu
 enter_email_password_instructions_description: "Email và mật khẩu đề cập đến email và mật khẩu của **tài khoản Hoyoverse**, không phải tài khoản Google, Apple, v.v..\n- [Cách này hoạt động nhu thế nào?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [Tôi không có tài khoản Hoyoverse (Tôi đăng nhập bằng Google, Facebook, v.v.)](:docs/Before-Start:)\n- [Tôi là người chơi trên Xbox/PlayStation](:docs/Before-Start#i-am-a-console-player:)"
-enter_light_cone_level.button.label: Thay đổi cấp nón ánh sáng
+enter_light_cone_level.button.label: Thay đổi mức độ nón ánh sáng
 dark_mode_button_label: Chế độ Tối
 error_footer: "Bạn có thể tìm trợ giúp trên máy chủ Discord. Dùng lệnh /about để nhận link vào"
 error_title: Đã xẩy ra lỗi
 erudition: Tri Thức
-days: ngày
+days: Ngày
 exceptions.card_not_ready_error.message: "Khi nhân vật mới được phát hành. Tôi cần phải chỉ rõ màu cho thẻ nhân vật của họ.\nNếu bạn thấy tin nhắn này trong một vài ngày sau khi trò chơi được cập nhật, vui long liên hệ tôi trên [máy chủ Discord](<https://link.seria.moe/hb-dc>) vì có thể tôi quên làm."
 exceptions.card_not_ready_error.title: "Dữ liệu thẻ cho nhân vật {character_name} chưa sản sàng."
 exped.embed.description: Một (hoặc nhiều) thám hiểm đã hoàn thành
-exped_button.label: Nhắc nhở Phái Đi Thám Hiểm
-exped_modal.title: Cài đặt nhắc nhở Phái Đi Thám Hiểm
-exploration.chests: Rương đã mở
+exped_button.label: Nhắc nhở Đi Thám Hiểm
+exped_modal.title: Cài đặt Lời nhắc Thám Hiểm
+exploration.chests: Rương đã mở khóa
 exploration.common_chests: Thường
 exploration.exquisite_chests: Cao Cấp
 exploration.luxurious_chests: Hiếm
@@ -164,29 +164,29 @@ exploration.precious_chests: Siêu Cấp
 exploration.progress: "Độ Thám Hiểm: {progress}%"
 exploration.remarkable_chests: Kỳ Dị
 exploration.title: Thám hiểm Thế Giới
-exploration.waypoints: Điểm dịch chuyển đã mở khóa
+exploration.waypoints: Mở khóa điểm dịch chuyển
 exploration_command_description: Xem thông kê độ thám hiểm của bạn trong Genshin Impact
-farm_add_command.item_already_in_list: Vật phẩm đã có trong danh sách
-farm_add_command.item_already_in_list_description: Vật phẩm này có trong danh sách nhắc nhở cày của bạn rồi.
+farm_add_command.item_already_in_list: Mục này có trong danh sách
+farm_add_command.item_already_in_list_description: Mục này có trong danh sách nhắc nhở cày của bạn.
 farm_add_command_description: Thêm nhân vật/vũ khí để được nhắc khi những nguyên liệu này có thể cày được.
 farm_check.farmable_today: "Nguyên liệu cho {name} có thể cày hôm nay."
-farm_check.use_farm_notify: "Sử dụng /farm reminder để thiết lập cài đặt lời nhắc\nSử dụng /farm view để xem những vật có thể cày hôm nay"
-farm_notify.add_item: Thêm vật phẩm
-farm_notify.add_item.embed.description: "Để thêm vật phẩm, sử dụng lệnh </farm add> "
+farm_check.use_farm_notify: "Sử dụng /farm reminder để chỉnh cài đặt lời nhắc\nSử dụng /farm view để coi những vật có thể cày hôm nay"
+farm_notify.add_item: Thêm mục
+farm_notify.add_item.embed.description: "Để thêm mục, sử dụng lệnh </farm add> "
 farm_notify.description: Bạn sẽ được nhắc khi nguyên liệu của Nhân vật/Vũ khí trong danh sách có thể cày được.
-farm_notify.empty: Bạn không có vật phẩm nào trong danh sách nhắc nhở cày
-farm_notify.empty_description: Thêm vật phẩm vào danh sách nhắc nhở cày bằng cách sử dụng lệnh </farm add>
-farm_notify.remove_item: Xóa vật phẩm
-farm_notify.remove_item.embed.description: "Để xóa vật phẩm, sử dụng lệnh </farm remove>"
+farm_notify.empty: Bạn không có mục nào trong danh sách nhắc nhở cày
+farm_notify.empty_description: Thêm mục vào danh sách nhắc nhở cày bằng cách sử dụng lệnh </farm add>
+farm_notify.remove_item: Xóa mục
+farm_notify.remove_item.embed.description: "Để xóa mục, sử dụng lệnh </farm remove>"
 farm_notify.title: Danh sách Nhắc nhở Cày
 farm_reminder_command_description: Nhắc bạn khi nguyên liệu của nhân vật/vũ khí có thể cày được
-farm_remove_command.item_not_found: Không tìm thấy vật phẩm này
+farm_remove_command.item_not_found: Mục không tìm thấy
 farm_remove_command.item_not_found_description: Mục này không có trong danh sách nhắc nhở cày.
 farm_remove_command_description: Xóa nhân vật/vũ khí trong danh sách nhắc nhở cày.
 farm_view.happy_farming: 🌾 Đi cày vui vẻ!
 farm_view.set_reminder: Đặt lời nhắc
 farm_view.set_reminder.embed.description: "Để đặt lời nhắc, sử dụng lệnh </farm reminder>"
-farm_view.sundays: Tất cả Bí Cảnh đều được mở vào ngày chủ nhật
+farm_view.sundays: Tất cả Bí Cảnh đều có vào ngày Chủ Nhật
 farm_view.weekday_select.placeholder: Hãy chọn ngày trong tuần
 farm_view_command_description: Xem những Bí Cảnh có thể cày được trong Genshin Impact
 fire: Hỏa
@@ -196,14 +196,14 @@ food: Thực phẩm
 friday: Thứ sáu
 furnishing_sets: Bộ Trang Trí
 furnishings: Đồ Trang Trí
-furniture_embed_description: "{comfort_icon} Tiên Lực: {comfort}\n{load_icon} Khối Lượng: {load}\nĐộ Tín Nhiệm: {trust}\nThời gian chế tạo: {hour}h"
+furniture_embed_description: "{comfort_icon} Tiên Lực: {comfort}\n{load_icon} Khối Lượng: {load}\nĐộ Tín Nhiệm: {trust}\nThời gian Chế tạo: {hour}h"
 game_maintenance_description: Vui lòng thử lại sau
 game_maintenance_title: Trò chơi hiện đang bảo trì
 game_value_incomplete_param_error_message: Bạn phải chỉ định trò chơi của UID
 geeetest_verification_complete: Xác minh thành công
 geetest.embed.title: Yêu cầu Xác minh CAPTCHA trước khi đăng nhập
-geetest.no_need: Không cần thực hiện geetest
-geetest.no_need.description: "Bạn có phải làm geetest đâu! Sao lại ở đây làm gì?!"
+geetest.no_need: Không cần phải làm geetest
+geetest.no_need.description: "Bạn không cần phải làm geetest! Bạn ở đây làm gì?!"
 geetest.required: Yêu câu Xác minh Geetest
 geetest.required.description: "Dùng lệnh </geetest>, chọn tài khoản yêu cầu geetest, và chọn loại `{geetest_type}` để hoàn thành bước xác minh"
 geetest_command_description: Hoàn thành xác minh geetest
@@ -234,9 +234,9 @@ invalid_cookies_title: Cookie không hợp lệ
 invalid_email_password_description: "Email hoặc mật khẩu bạn cung cấp không chính xác, vui long kiểm tra và thử lại"
 invalid_email_password_title: Email hoặc mật khẩu không hợp lệ
 invalid_game_selected: Game được lựa chọn không hợp lệ
-invalid_image_url_error_message: "Đường dẫn ảnh hợp lệ phải là một đường dẫn mở trực tiếp ra một tập tin hình ảnh có chứa phần mở rộng ảnh hợp lệ và phải được phép truy cập công khai."
-invalid_image_url_error_title: Dường dẫn ảnh không hợp lệ
-invalid_input.input_needs_to_be_bool: "Đầu vào `{input}` cần phải là `0` (cho Sai) hoặc `1` (cho Đúng)"
+invalid_image_url_error_message: "Đường đãn URL ảnh phải là dường dẫn URL trực tiếp một tệp ảnh chứa phần mở rộng ảnh và có thể truy cập công khai."
+invalid_image_url_error_title: Dường dẫn URL ảnh không hợp lệ
+invalid_input.input_needs_to_be_bool: "Đầu vào `{input}` cần phải là `0` (cho Sai) or `1` (cho Đúng)"
 invalid_input.input_needs_to_be_int: "Đầu vào `{input}` cần phải là Số nguyên"
 invalid_input.input_out_of_range.max_value: "Đầu vào `{input}` cần phải nhỏ hơn hoặc bằng {max_value}"
 invalid_input.input_out_of_range.min_value: "Đầu vào `{input}` cần phải lớn hơn hoặc bằng {max_value}"
@@ -245,26 +245,26 @@ invalid_query_error_message: "Không thể tìm được tài khoản với truy
 invalid_query_error_title: Truy vấn không hợp lệ
 invalid_verification_code_description: Vui lòng kiểm tra mã xác minh và thử lại
 invalid_verification_code_title: Mã xác minh không hợp lệ
-items: Vật Phẩm
+items: Các mục
 level_str: "Cấp {level}"
 light_cones: Nón Ánh Sáng
-living_beings: Sinh Vật Hoang Dã
+living_beings: Sinh vật Sống
 liyue: Liyue
 loading_text: Đang tải...
 make_up_for_checkin_button_label: Điểm Danh bù
 materials: Nguyên Liệu
 memory_of_chaos: Hồi Ức Hỗn Độn
 miyoushe: Miyoushe
-moc_card_battles_fought: "Số lần khiêu chiến: {battles}"
+moc_card_battles_fought: "Khiêu Chiến Đã Đánh: {battles}"
 moc_card_cycles_used: "Vòng sử dụng: {cycles}"
 moc_card_farthest_stage: "Ải cao nhất: {stage}"
 moc_quick_clear: Vượt ải nhanh
 monday: Thứ hai
 mondstadt: Mondstadt
-namecards: Danh Thiếp
+namecards: Thẻ tên
 next_page_option_label: Trang tiếp theo
 nickname_modal_label: Biệt danh
-nickname_modal_placeholder: "Tài khoản chính, Tài khoản Asia..."
+nickname_modal_placeholder: "Tài khoản chính, Tài khoản Asia"
 nihility: Hư Vô
 no_account_found_for_games_error_message: "Bạn không có tài khoản từ một trong những trò chơi này. Thêm một tài khoản bằng </accounts>"
 no_account_found_for_games_platform_error_message: "Bạn không có tài khoản từ một trong những trò chơi này trên {platform}. Thêm một tài khoản bằng </accounts>"
@@ -280,12 +280,12 @@ notes-card.gi.completed: Hoàn thành
 notes-card.gi.daily-commissions: Nhiệm vụ Ủy Thác
 notes-card.gi.expedition-finished: Hoàn thành
 notes-card.gi.expedition-remaining: "còn {time}"
-notes-card.gi.realm-currency: Tiền Động Tiên
+notes-card.gi.realm-currency: Tiền Đồng Tiên
 notes-card.gi.remaining: Còn lại
 notes-card.gi.resin: Nhựa
 notes-card.gi.resin-discounts: Giảm giá Nhựa
 notes-card.hsr.echo-of-war-discounts: Dư Âm Chiến Đấu
-notes-card.hsr.reserved-power: SMKP Dự Bị
+notes-card.hsr.reserved-power: Sức mạnh Dự bị
 notes.item_full_in_time: "{emoji} Đầy trong {in_time}"
 notes.stamina_label: Nhắc nhở thể lực
 notes.stamina: "Thể lực: {cur}/{max}, đầy trong {time}"
@@ -301,8 +301,8 @@ notes_command_description: Xem Ghi Chép Thời Gian Thực
 notif.embed.footer: "Nhấn nút bên dưới để thay đổi cài đặt thông báo\nNếu nút bị vô hiệu hóa, hãy sử dụng lệnh /notes."
 notif_modal.enabled.label: Đã bật
 notif_modal.max_notif_count.label: Số lượng thông báo tối đa
-notif_modal.notify_interval.label: Khoảng cách giữa các thông báo (tính bằng phút)
-notif_modal.notify_time.label: "Gửi thông báo X giờ trước khi máy chủ đặt lại"
+notif_modal.notify_interval.label: Khoảng thời gian thông báo (bằng phút)
+notif_modal.notify_time.label: "Thông báo X giờ trước khi máy chủ đặt lại"
 notif_modal.notify_weekday.label: Ngày trong tuần để thông báo
 notif_modal.threshold.label: Ngưỡng
 notification_settings_button_label: Cài đặt thông báo
@@ -323,9 +323,9 @@ preservation: Bảo Hộ
 prev_page_option_label: Trang trước
 notify_feature: Ghi chú này nhắc nhở
 profile.add_image.button.label: Thêm ảnh riêng của bạn
-profile.add_image_modal.image_url.label: Link ảnh
+profile.add_image_modal.image_url.label: Link Ảnh
 profile.build.select.placeholder: Hãy chọn Build…
-profile.card_info.embed.description: "- Tất cả nội dung và hình ảnh được sử dụng trong thẻ đều thuộc quyền sở hữu của Hoyoverse, tôi không sở hữu chúng.\n- Tất cả các fanart được sử dụng trong thẻ đều được ghi công.\n- Các thiết kế của mẫu Hoyo Buddy là bản gốc, bạn không được phép sửa đổi chúng hoặc tuyên bố rằng bạn đã tạo ra chúng mà không có sự cho phép của tôi.\n- Dữ liệu trò chơi được cung cấp bởi {provider}.\n"
+profile.card_info.embed.description: "- Tất cả nội dung và hình ảnh được sử dụng trong thẻ đều thuộc về Hoyoverse, tôi không sở hữu chúng.\n- Tất cả các fanart được sử dụng trong thẻ đều được ghi có tên các nghệ sĩ đã làm.\n- Các thiết kế của mẫu Hoyo Buddy là bản gốc, bạn không được phép sửa đổi chúng hoặc tuyên bố rằng bạn đã tạo ra chúng mà không có sự cho phép của tôi.\n- Dữ liệu trò chơi được cung cấp bởi {provider}.\n"
 profile.card_info.embed.title: Về thẻ xây dựng nhân vật
 profile.card_settings.button.label: Cài đặt thẻ
 profile.image_settings.button.label: Cài đặt hình ảnh
@@ -335,15 +335,15 @@ profile.card_template_select.enka_classic.label: Mẫu Enka cổ điển
 profile.card_template_select.enkacard.label: "Mẫu thẻ EnkaCard {num}"
 profile.card_template_select.hb.label: "Mẫu thẻ Hoyo Buddy {num}"
 profile.card_template_select.placeholder: Hãy chọn mẫu thẻ
-profile.card_template_select.same_author.description: "Được thiết kế và lập trình bởi {author}"
+profile.card_template_select.same_author.description: " Được Thiết kế và lập trình bởi {author}"
 profile.card_template_select.src.label: "Mẫu thẻ StarRailCard {num}"
 profile.character_select.cached_data.description: Dữ liệu được lưu trong bộ nhớ đệm
-profile.character_select.description: "E{e}S{s} | {d} | Hồ sơ trong trò chơi"
-profile.character_select.enka_network.description: Build trên Enka Network
+profile.character_select.description: "E{e}S{s} | {d} | Trưng bày trong trò chơi"
+profile.character_select.enka_network.description: Enka Network build
 profile.character_select.hoyolab.description: "E{e}S{s} | {d} | {platform}"
 profile.character_select.live_data.description: Dữ liệu thời gian thực
 profile.character_select.placeholder: Hãy chọn nhân vật
-profile.generate_ai_art.button.label: Tạo ảnh AI
+profile.generate_ai_art.button.label: Tạo nghệ thuật AI
 profile.generate_ai_art_modal.negative_prompt.label: Nội dung tiêu cực
 profile.generate_ai_art_modal.prompt.label: Nội dung
 profile.genshin.character_select.description: "C{c}R{r} | {d}"
@@ -366,26 +366,26 @@ profile_command_hsr_description: "Tạo thẻ Build nhân vật Honkai: Star Rai
 profile_command_zzz_description: Tạo thẻ Build Người Đại Diện Zenless Zone Zero và thẻ đội
 profile_command_game_value_description: Trò chơi của UID
 profile_command_uid_param_description: "UID của người chơi, sẽ ghi đè tham số tài khoản nếu được cung cấp"
-pt_button.label: Nhắc nhở Máy Biến Đổi Tham Số
-pt_modal.title: Cài đặt nhắc nhở Máy Biến Đổi Tham Số
+pt_button.label: Nhắc nhở Máy biến đổi Tham số
+pt_modal.title: Cài Đặt Nhắc nhở Máy biến đổi Tham số
 public_account_toggle.label: Đặt tài khoản công khai
 pure_fiction: Kể Chuyện Hư Cấu
 pyro: Hỏa
 quantum: Lượng Tử
-read_story.button.label: Xem Câu Chuyện
+read_story.button.label: Đọc Chuyện
 real_time_notes: Ghi Chép Thời Gian Thực
-realm_curr_button.label: Nhắc nhở Tiền Đồng Tiên
+realm_curr_button.label: Nhắc nhờ Tiền Đồng Tiên
 realm_curr_modal.title: Cài đặt nhắc nhở Tiền Đồng Tiên
 redeeem_code.cookie_token_expired_description: "Tính năng đổi mã quà chỉ áp dụng cho người dùng đã đăng nhập bằng email và mật khẩu, bạn có thể làm vậy bằng</accounts>"
-redeeem_code.cookie_token_expired_title: Token cookie đã hết hạn
+redeeem_code.cookie_token_expired_title: Mã Cookie đã hết hạn
 redeeem_code.cookie_token_refresh_failed_description: "Có thể bạn đã thay đổi mật khẩu tài khoản của mình kể từ lần cuối cùng bạn thêm tài khoản.\nVui lòng bạn thêm lại tài khoản bằng lệnh </accounts> với phương pháp email và mật khẩu."
-redeeem_code.cookie_token_refresh_failed_title: Làm mới token cookie thất bại
+redeeem_code.cookie_token_refresh_failed_title: Thất bại để làm mới mã Cookie
 redeem_code.success: Đã đổi thành công
 redeem_codes_button.label: Đổi mã quà
 redeem_command_description: Đổi mã quà để nhận phần thưởng trong trò chơi
-redeem_command_embed.description: "Nhập tối đa 5 mã quà để đổi.\nNgoài ra, bạn có thể bật tính năng tự động đổi mã quà."
+redeem_command_embed.description: "Nhập tối đa 5 mã để đổi mã quà.\nNgoài đó, bạn có thể bật tính năng tự động đổi mã quà."
 redeem_command_embed.title: Kết quả đổi mã quà
-redeem_cooldown_embed.description: "Do có thời gian chờ giữa các lần đổi mã, việc này có thể mất một chút thời gian."
+redeem_cooldown_embed.description: "Do thời gian hồi chiêu để đổi, việc này có thể mất một lúc."
 redeem_cooldown_embed.title: Đang đổi mã
 refinement_indicator: "Tinh Luyện: {r}"
 relics: Di Vật
@@ -403,11 +403,11 @@ resin_reminder_modal.title: Cài đặt Nhắc nhở Nhưa
 reward_claimed_title: Đã nhận phần thưởng điểm danh
 saturday: Thứ bảy
 search_autocomplete_no_results: Không tìm thấy kết quả nào
-search_autocomplete_not_setup: "Chưa thiết lập tự động điền lựa chọn tìm kiếm, vui lòng thử lại sau"
-search_command_category_param_description: Mục muốn tìm kiếm
+search_autocomplete_not_setup: "Tìm kiếm các lựa chọn tự động hoàn thành chưa được thiết lập, vui lòng thử lại sau."
+search_command_category_param_description: Mục để Tìm Kiếm
 search_cmd_category_param_name: mục
-search_command_description: Tìm kiếm mọi thứ liên quan tới trò chơi
-search_command_game_param_description: Trò chơi muốn tìm kiếm
+search_command_description: Tìm kiếm gì liên quan đến trò chơi
+search_command_game_param_description: Trò chơi để tìm kiếm
 search_command_game_param_name: trò-chơi
 search_command_query_param_description: Truy vấn để tìm kiếm
 search_command_query_param_name: truy-vấn
@@ -415,28 +415,28 @@ select_account.embed.description: Chọn tài khoản bạn muốn thêm vào Ho
 select_account.embed.title: 🎉 Chào mừng đến Hoyo Buddy!
 settings_command_description: Chỉnh cài đặt người dùng
 skill_attributes_embed_field_name: "Thuộc Tính Kỹ Năng (Lv.{level})"
-skill_level.modal.title: Nhập cấp kỹ năng
+skill_level.modal.title: Nhập Mức Độ Kỹ Năng
 spiral_abyss: La Hoàn Thâm Cảnh
 stats_embed_field_name: Thuộc Tính
 sumeru: Sumeru
 sunday: Chủ nhật
-superimpose_indicator: "Tích Tầng {s}"
-talent_level.modal.title: Nhập cấp thiên phú
+superimpose_indicator: "Tích Tầng"
+talent_level.modal.title: Nhập Mức độ Tài Năng
 tcg: TCG
 the_hunt: Săn Bắn
-threshold.embed.description: "Đã đạt ngưỡng ({threshold})"
-thunder: Lôi
+threshold.embed.description: "Ngưỡng ({threshold}) đã vượt"
+thunder: Sấm sét
 thursday: Thứ năm
 tuesday: Thứ ba
 unreleased_content: Nội dung chưa được phát hành
-user_autocomplete_param_description: "Người dùng có tài khoản muốn tìm, mặc định là bạn"
+user_autocomplete_param_description: "Người dùng tìm kiếm các tài khoản, mặc định là bạn"
 user_autocomplete_param_name: người-dùng
-user_no_accounts_autocomplete_choice: Người dùng này không có tài khoản nào
+user_no_accounts_autocomplete_choice: Người dùng này không có tài khoản nào hết
 view_card_button_label: Thẻ
 view_dictionary_button_label: Từ điển
 volume_selector_placeholder: Vui lòng chọn một chương để đọc
 wave_button_label: "Màn {value}"
-weapon_level.modal.title: Nhập cấp Vũ khí
+weapon_level.modal.title: Nhập mức độ Vũ khí
 weapons: Vũ Khí
 wednesday: Thứ tư
 week_boss_button.label: Nhắc nhở lượt giảm nhựa tiêu hao
@@ -445,17 +445,17 @@ wind: Phong
 yatta_character_detail_page_label: Chi tiết
 yatta_character_eidolon_page_label: TInh Hồn
 yatta_character_embed_description: "{rarity}\nNguyên Tố: {element}\nVận Mệnh: {path}\nPhe Phái: {world}\n"
-yatta_character_skill_aoe_weakness_break_field_value: "Phạm Vi: {aoe_weakness_break}"
+yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}"
 yatta_character_skill_energy_field_name: Năng Lượng
-yatta_character_skill_energy_generation_field_value: "Sinh ra: {energy_generation}"
+yatta_character_skill_energy_generation_field_value: "Năng Lượng: {energy_generation}"
 yatta_character_skill_energy_need_field_value: "Tiêu hao: {energy_need}"
 yatta_character_skill_single_weakness_break_field_value: "Đơn: {single_weakness_break}"
 yatta_character_skill_spread_weakness_break_field_value: "Trải Ra: {spread_weakness_break}"
-yatta_character_skill_weakness_break_field_name: Phá Vỡ Điểm Yếu
+yatta_character_skill_weakness_break_field_name: Phá vỡ Điểm Yếu
 yatta_character_trace_page_label: Vết Tích
 yatta_item_sources_field_name: Nguồn
-characters.show_owned_only: Chỉ hiện nhân vật đã sở hữu
-redeem_code.ar_too_low: Hạng Mạo Hiểm quá thấp
+characters.show_owned_only: Chỉ hiển thị Nhân vật đang có
+redeem_code.ar_too_low: Hạng Mạo Hiểm Thấp Quá
 data_not_public.title: Dữ liệu không công khai
 data_not_public.description: "Bật tính năng chia sẽ dữ liệu trong Cài đặt Chiến tích"
 not_implemented_error_title: Tính năng hiện chưa có
@@ -465,22 +465,22 @@ profile.build.current.label: Hiện tại
 abyss_chamber.blessing.embed.field.name: Uyên Nguyệt Chúc Phúc
 apocalyptic_shadow: Ảo Ảnh Tận Thế
 apc_shadow.highest_diff_cleared: "Mức độ cao nhất hoàn thành: {diff}"
-apc_shadow.times_challenged: "Số lần khiêu chiến: {times}"
+apc_shadow.times_challenged: "Lần thử thách: {times}"
 apc_shadow.boss_defeated: Kẻ Địch Mạnh Đã Đánh
 apc_shadow.boss_defeated_no: Kẻ Địch Mạnh Chưa Đánh
 notes.bonus_sync_points: "Cấp Đồng Bộ Thêm: {cur}/{max}"
 invalid_uid_format_title: Định dạng UID không hợp lệ
-invalid_uid_format_description: "UID phải là dãy số dài từ 9 đến 10 ký tự"
+invalid_uid_format_description: "UID phải là từ 9 đến 10 số"
 zenless_zone_zero: Zenless Zone Zero
 img_theater_large_block_title: Nhà Hát Giả Tưởng
 img_theater_stats_line_five: "Tổng Thời Gian Biểu Diễn: {time}"
 img_theater_legend_block_support_chara: Nhân Vật Hỗ Trợ
 img_theater_legend_block_trial_chara: Nhân Vật Dùng Thử
 img_theater_max_damage: "Gây Nhiều Sát Thương Nhất: {val}"
-img_theater_fastest_team: " (nhanh nhất)"
+img_theater_fastest_team: "(nhanh nhất)"
 challenge_view.view_buffs: Xem Buff
 challenge_view.buff_select.placeholder: Chọn Buff để xem
-scratch_card.embed.description: Chưa cào thẻ
+scratch_card.embed.description: Thẻ Chưa cào
 zzz_engagement_button.label: Năng Động
 zzz_engagement.embed.description: Chưa hoàn thành Nhiệm vụ Năng Động.
 honkai_daily_embed_title: Nhắc nhở Nhật ký HT
@@ -495,20 +495,20 @@ remove_from_cache_finish_embed_desc: Chạy lại lệnh /profile để xem các
 third_party_card_temp_error_title: Mẫu Thẻ Bên Thứ 3 Bị Lỗi
 third_party_card_temp_error_message: "Mẫu thẻ cho nhân vật này đã bị đặt lại sang Mẫu thẻ Hoyo Buddy. Nếu lỗi này tiếp tục điễn ra, vui lòng tìm trợ giúp trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Tài khoản của bạn đã bị khóa trong vòng 20 phút
-account_locked_description: "Bạn đã nhập mật khẩu sai quá nhiều lần. Vui lòng thử lại sau 20 phút. Nếu bạn không thể thiết lập tài khoản, vui lòng tìm trợ giúp trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
+account_locked_description: "Bạn đã nhập mật khẩu sai quá nhiều lần. Vui lòng đợi 20 phút rồi hãy thử lại. Nếu bạn không thể thiết lập tài khoản, vui lòng tìm trợ giúp trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
 ether: Ether
 electric: Lôi
 profile.no_data.title: Không có dữ liệu người chơi
 profile.no_data.description: "Dù bạn có tin hay không thì cũng chẳng có gì để coi ở đây."
 profile.zzz_hoyolab.character_select.description: "Phim Ý Cảnh {m} | Dữ liệu {platform}"
-characters.filter.specialty.placeholder: Lọc Đặc Tính...
-zzz.basic: Tấn Công Thường
+characters.filter.specialty.placeholder: Chọn lọc Đặc tính...
+zzz.basic: Tấn công thường
 zzz.dodge: Né
 zzz.assist: Kỹ Năng Chi Viện
 zzz.special: Chiến Kỹ
 zzz.chain: Liên Kích
-zzz.core: Kỹ Năng Cốt Lõi
-characters.filter.faction.placeholder: Lọc Phe...
+zzz.core: Kỹ Năng Cốt Lỗi
+characters.filter.faction.placeholder: Chọn lọc Phe...
 characters.sorter.speciality: Đặc Tính
 characters.sorter.faction: Phe
 characters.sorter.mindscape_cinema: Phim Ý Cảnh
@@ -516,7 +516,7 @@ characters.embed.filter_text: "Nhân vật {filter}"
 stats_command_description: Xem thống kê tài khoản game
 tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Hạng {rarity}"
-about_command.designers: Người thiết kế
+about_command.designers: Nhà Thiết Kế
 card_settings.modifying_for: "Chỉnh sửa cài đặt thẻ cho {name}"
 card_settings.card_color: Màu thẻ
 card_settings.no_color: Mẫu thẻ này không hỗ trợ đổi màu
@@ -525,34 +525,34 @@ card_settings.current_image: Hình hiện tại
 card_settings.build_card_image: Hình ảnh thẻ Build
 card_settings.team_card_image: Hình ảnh thẻ đội hình
 profile.redraw_card_button_label: Làm mới thẻ
-card_settings.footer: "Khi đã xong, nhấn nút màu xanh lá ở tin nhắn phía trên để làm mới thẻ"
-card_settings.description: "Sử dụng </upload> để lấy link ảnh bằng cách tải ảnh lên.\nHỗ trợ ảnh trên Pixiv, chỉ cần sao chép link ảnh của tác phẩm đó."
-profile.team_dark_mode.button.label: Chế độ tối cho thẻ đội
+card_settings.footer: "Khi bạn xong, nhấn nút màu xanh ở tin nhắn trên để làm mới thẻ"
+card_settings.description: "Sử dụng</upload> để lấy link ảnh bằng cách tải ảnh lên.\nPixiv được hỗ trợ, chỉ cần sao chép Link hình ảnh của tác phẩm nghệ thuật."
+profile.team_dark_mode.button.label: Thẻ đội chế độ tới
 profile.character_select.multi.placeholder: Chon (các) nhân vật...
 zzz_search.agent_info: "Độ Hiếm: {rarity}\nĐặc Tính Tương Thích: {specialty}\nLoại Tấn Công: {atk_type}\nPhe: {faction}\nThuộc Tính: {element}"
 cat_zzz_agents: Người Đại Diện
-cat_zzz_bangboos: Bangboo
-cat_zzz_w_engines: W-engine
+cat_zzz_bangboos: Bangboos
+cat_zzz_w_engines: W-engines
 cat_zzz_drive_discs: Đĩa
 search.agent_page.info: Người Đại Diện
 search.agent_page.skills: Kỹ Năng
 search.agent_page.cinemas: Phim Ý Cảnh
-search.agent_page.placeholder: Chọn trang...
+search.agent_page.placeholder: Chọn trang
 zzz.skill_type.placeholder: Vui lòng chọn kỹ năng người đại diện...
 zzz.cinema.placeholder: Vui lòng chon Phim Ý Cảnh...
-zzz.engine.refinement_select.placeholder: Vui lòng chọn cấp tinh luyện...
+zzz.engine.refinement_select.placeholder: Vui lòng chọn mức độ tinh luyện...
 dyk_discord_server_updates: "Chúng tôi đăng cập nhật trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
 dyk_discord_server_feedback: "Bạn có thể tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi để gửi phản hồi."
 dyk_contact_me: "Bạn có thể liên hệ trong [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi."
 dyk_need_help_no_title: "Cần trợ giúp? Tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi."
-dyk_donate_no_title: "Thích sử dụng Hoyo Buddy? Hãy cân nhắc việc [ủng hộ](<https://link.seria.moe/donate>) để hỗ trợ chúng tôi"
+dyk_donate_no_title: "Thích sử dụng Hoyo Buddy? Hãy cân nhắc việc [quyên góp](<https://link.seria.moe/donate>) để hỗ trợ chúng tôi"
 dyk_team: "Hoyo Buddy được xây dựng bởi 1 team nhỏ gồm 1 lập trình viên và 1 người thiết kế"
 dyk_disable: Bạn có thể vô hiệu hóa tin nhắn này trong /settings
 dyk_settings_lang: Bạn có thể đổi ngôn ngữ của bot trong /settings
-dyk_settings_theme: Bạn có thể đổi chế độ sáng/tối trong /settings
+dyk_settings_theme: Bạn có thể đổi chế độ sáng tối sử dụng /settings
 dyk_security: "Chúng tôi có một [bài viết](<:docs/Account-Security:>) về bảo mật tài khoản"
 dyk_github: "Hoyo Buddy là một dự án mã nguồn mở trên [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
-dyk_python: Hoyo Buddy được viết hoàn toàn bằng Python
+dyk_python: Hoyo Buddy được viết hết bằng Python
 dyk_unreleased: Bạn có thể xem nôi dung trò chơi chưa ra mắt bằng /search
 dyk_team_card: Bạn có thể tạo một thẻ dội trong /profile bằng cách chọn nhiều nhân vật
 dyk_set_default_acc: Bạn có thể đặt một tài khoản mặc định dùng để chạy hết tất cả lệnh trong /accounts
@@ -561,11 +561,11 @@ button_label_dyk: Tin Nhắn "Bạn có biết"
 events_view_start_date_embed_field: Thời gian bắt đầu
 events_view_end_date_embed_field: Thời gian kết thúc
 events_view_ann_select_placeholder: Hãy chọn một sự kiện...
-events_view_banner_type_label: Banner
+events_view_banner_type_label: Banners
 events_command_description: Xem sự kiện diễn ra trong trò chơi
 events_view_ann_type_select_placeholder: Hãy chọn loại sự kiện...
 events_view_content_label: Coi đầy đủ nội dung
-events_command_game_param_description: Trò chơi muốn xem sự kiện
+events_command_game_param_description: Trò chơi để xem các sự kiện cho
 natlan: Natlan
 top_percent: "Top {percent}%"
 profile_view_show_rank_button_label: Xem Hạng
@@ -573,9 +573,9 @@ submit_button_label: Gửi
 show_tutorial_button_label: Xem hướng dẫn
 close_button_label: Đóng
 required_field_error_message: Trường này là bắt buộc
-accounts_added_snackbar_message: "Thêm tài khoản thành công, đang chuyển hướng bạn về Discord..."
+accounts_added_snackbar_message: "Tài khoản đã thêm thành công, đang hướng bạn về lại Discord,,,"
 account_add_start_message: "Nhấp vào nút bên dưới và làm theo hướng dẫn để thêm tài khoản của bạn. Khi bạn hoàn tất, hãy sử dụng lệnh </accounts> để xem các tài khoản bạn đã thêm.\nHãy tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi nếu bạn cần trợ giúp."
-hbls_button_label: Bắt đầu nào!
+hbls_button_label: Hãy bắt đầu!
 gacha_import_url_modal_title: Nhập đường link nhật ký gacha
 gacha_import_embed_description: "URL Nhật ký Gacha: Lấy một URL rất dài từ trò chơi để nhập nhật ký gacha của bạn, bên dưới là hướng dẫn cho các trò chơi khác nhau::\n- Android: [Video YouTube](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nĐối với các dịch vụ bên dưới, hãy xuất nhật ký gacha của bạn dưới dạng định dạng tệp được chỉ định và tải nó lên thông qua lệnh </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Không thể trích xuất khóa xác thực từ đường link, vui lòng thử lại bằng đường link hợp lệ."
@@ -583,22 +583,22 @@ extract_authkey_error_title: Trích xuất Khóa xác thực Thất bại
 gacha_import_loading_embed_title: Đang nhập Nhật ký Gacha
 gacha_import_loading_embed_description: "{loading_emoji} Việc này có thể mất nhiều thời gian, vui lòng đợi"
 gacha_upload_invalid_file_error_title: Định dang File không hợp lệ
-gacha_upload_invalid_file_error_message: "Chỉ cho phép file **{file_format}**, vui lòng thử lại bằng định dạng hợp lệ"
+gacha_upload_invalid_file_error_message: "Chỉ cho phép file **{file_format}, vui lòng thử lại bằng File hợp lệ"
 uid_mismatch_error_title: UID không khớp
 uid_mismatch_error_message: "UID của tài khoản được chọn không khớp với UID trong dữ liệu ({uid})"
 gacha_import_command_description: Nhập nhật ký gacha từ trong game.
 source_param_name: nguồn
-source_param_description: Nguồn của tập tin nhật ký gacha
+source_param_description: Nguòn từ những nhật ký gacha.
 gacha_upload_command_description: Tải file nhật ký gacha từ nguồn khác để nhập vào Hoyo Buddy
 file_param_name: tập-tin
 file_param_description: Nhập file nhật ký Gacha
 gacha_import_success_title: Nhật Ký Gacha dã được nhập
-gacha_import_success_message: "Nhập thành công {count} mục nhật ký gacha. Sử dụng lệnh </gacha-log view> để xem."
+gacha_import_success_message: "{count} nhật ký gacha đã được nhập thành công. Sử dụng lệnh </gacha-log view> để xem."
 gacha_view_filter_button_label: Lọc
 gacha_view_search_field_label: Tìm Kiếm
-gacha_view_gacha_detail_title: Chi tiết vật phẩm gacha
+gacha_view_gacha_detail_title: Chi tiết vật Gacha
 gacha_view_gacha_detail: "ID: {id}\nTên: {name}\nThời gian quay: {time}"
-gacha_view_num_since_last: "Nhận được sau {pull} lần quay tính từ {rarity} ★ trước đó."
+gacha_view_num_since_last: "{pull} lần quay từ khi {rarity} ★ cuối."
 gacha_view_filter_dialog_title: Lọc Nhật Ký Gacha
 banner_type_beginners_wish: Cầu Nguyện Người Mới
 banner_type_standard_banner: Cầu Nguyện Vĩnh Viễn
@@ -614,28 +614,28 @@ banner_type_exclusive_channel: Kênh Độc Quyền
 banner_type_w_engine_channel: Kênh W-Engine
 banner_type_bangboo_channel: Kênh Bangboo
 cancel_button_label: Hủy bỏ
-gacha_view_filter_size_field_label: Số vật phẩm mỗi trang
+gacha_view_filter_size_field_label: Các mục trên mỗi trang
 gacha_view_page_field_label: Trang
 gacha_log_stats_title: Thống kê nhật ký Gacha
 gacha_log_personal_stats_title: Thống kê cá nhân
-gacha_log_personal_stats: "Tổng số lần quay: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\nTổng số lần quay trên banner này {total_pulls} ({total_currency} {currency_emoji})\nPity 5★: {star5_pity_cur}/{star5_pity_max}\nPity 4★: {star4_pity_cur}/10\nTổng số 5★: {total_star5}\nTổng số 4★: {total_star4}\nSố lượt quay trung bình/5★: {avg_pulls_per_star5}\nSố lượt quay trung bình/4★: {avg_pulls_per_star4}"
-win_rate_stats: "Tỷ lệ thắng {title}: {win_rate}% ({wins}/{total})"
+gacha_log_personal_stats: "Pull cả đời: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\nTổng pull cho banner này: {total_pulls} ({total_currency} {currency_emoji})\n5★ pity: {star5_pity_cur}/{star5_pity_max}\n4★ pity: {star4_pity_cur}/10\nTổng 5★: {total_star5}\nTổng 4★: {total_star4}\nTrung bình pulls/5★: {avg_pulls_per_star5}\nTrung bình pulls/4★: {avg_pulls_per_star4}"
+win_rate_stats: "{title} Tỷ lệ thắng: {win_rate}% ({wins}/{total})"
 gacha_log_global_stats_title: Thống kê toàn cầu
-gacha_log_global_stats: "Tổng số lần quay: {lifetime}\nĐộ may mắn 5★: {star5_luck}\nĐộ may mắn 4★: {star4_luck}"
-win_rate_global_stats: "Tỷ lệ thắng {title}: {win_rate}"
+gacha_log_global_stats: "Pull cả đời: {lifetime}\n5★ may mắn: {star5_luck}\n4★ may mắn: {star4_luck}"
+win_rate_global_stats: "{title} Tỷ lệ thắng: {win_rate}"
 gacha_log_view_full: Xem nhật ký gacha
 gacha_view_command_description: Xem nhật ký gacha đã nhập
-gacha_log_view_banner_type_selector_placeholder: Hãy chọn loại banner...
+gacha_log_view_banner_type_selector_placeholder: Hãy chọn loại Banner
 no_gacha_log_found_error_title: Không tìm thấy nhật ký Gacha.
 no_gacha_log_found_error_message: "Sử dụng </gacha-log import> hoặc </gacha-log upload>để nhập nhật ký gacha của bạn."
 gacha_log_manage_embed_title: Quản lý nhật ký gacha
 gacha_log_manage_embed_description: "{count} nhật ký Gacha thuộc về tài khoản này.\nBạn có thể xuất chúng ở định dạng [UIGF](https://uigf.org)."
 gacha_log_export_button_label: Xuất tệp bằng định dạng UIGF
 gacha_log_delete_button_label: Xóa tất cả nhật ký Gacha
-gacha_log_delete_confirm_embed_title: Xác nhận xóa
-gacha_log_delete_confirm_embed_description: "Bạn có chắc chắn muốn **XÓA TẤT CẢ** nhật ký Gacha cho tài khoản này? Hành động này sẽ không thể hoàn tác."
+gacha_log_delete_confirm_embed_title: Xác nhận Xóa
+gacha_log_delete_confirm_embed_description: "Bạn có chắc chắn muốn XÓA TẤT CẢ nhật ký Gacha cho tài khoản này? Không thể hoàn tác hành động này."
 gacha_log_delete_confirm_button_label: Xác nhận
-gacha_log_delete_done_embed_title: Xóa hoàn tất
+gacha_log_delete_done_embed_title: Xóa Hoàn tất.
 gacha_log_delete_done_embed_description: Tất cả nhật ký Gacha của tài khoản này đã được xóa thành công.
 gacha_manage_command_description: Quản lý nhật ký gacha đã nhập
 login_button_label: Đăng nhập bằng Discord
@@ -645,9 +645,9 @@ characters_view_show_max_level_only: Chỉ hiển thị nhân vật ở cấp đ
 characters_embed_max_level_characters: Nhân vật Cấp độ Tối đa
 natlan_reputation: "Danh Vọng: Lv.{reputation}, Bộ Tộc: {tribes}"
 shiyu_overview: Tổng quan
-shiyu_fastest_clear_time: "Thời gian hoàn thành nhanh nhất kỳ này:"
+shiyu_fastest_clear_time: "Thời gian Nhanh nhất Hoàn thành Mùa này:"
 shiyu_highest_frontier: "Phòng Tuyến Cao Nhất Đã Hoàn Thành:"
-shiyu_relevant_season: "Chu Kỳ Liên Quan:"
+shiyu_relevant_season: "Mùa Liên Quan:"
 shiyu_1_frontier: Phòng Tuyến 1
 shiyu_2_frontier: Phòng Tuyến 2
 shiyu_3_frontier: Phòng Tuyến 3
@@ -661,35 +661,35 @@ no_leaderboard_found: Không tìm thấy bảng xếp hạng
 akasha_character_param: nhân-vật
 akasha_calculation_param: bảng-xếp-hạng
 akasha_weapon_param: vũ-khí
-akasha_weapon_param_desc: Vũ khí muốn xem bảng xếp hạng
+akasha_weapon_param_desc: Vũ khí để xem bảng xếp hạng cho
 akasha_variant_param: loại
 akasha_variant_param_desc: "Biến thể của bảng xếp hạng để xem, mặc định là bảng chính"
-akasha_character_param_desc: Nhân vật muốn xem bảng xếp hạng
-akasha_calculation_param_desc: Bảng xếp hạng muốn xem
+akasha_character_param_desc: Nhân vật để xem bảng xếp hạng cho
+akasha_calculation_param_desc: Bảng xếp hạng để xem
 akasha_total_entries: "Tổng số mục: {total}"
 leaderboard_akasha_command_description: Xem bảng xếp hạng sát thương nhân vật Genshin Impact (hỗ trợ bới Hệ Thống Akasha)
 akasha_you: Bạn
-achievement_lb_title: Bảng Xếp Hạng Số Thành Tựu Đạt Được
+achievement_lb_title: Bảng xếp hạng số thành tựu
 planar_fissure_label: Vị Diện Nứt Vỡ
 planar_fissure_desc: "Sự kiện Vị Diện Nứt Vỡ sẽ xảy ra trong vòng {hour} tiếng, nhớ lưu trự Sức Mạnh Khai Phá của bạn nhé!"
 notif_modal.hours_before.label: Thông báo X giờ trước khi sự kiện bắt đầu
 reminder_settings.reminde.set.type5: "Trạng thái: {status}\nNhắc khoảng: {notify_interval} phút\nSố lần nhắc nhở: {max_notif_count}\nThời gian Nhắc Nhở: {hours_before} tiếng trước khi sự kiện bắt đầu"
 invalid_lb_selected_error_msg: Bảng xếp hạng được chọn không hợp lệ
-chest_lb_title: Bản Xếp Hạng Số Rương Đã Mở
-abyss_dmg_lb_title: Bảng Xếp Hạng Một Kích Mạnh Nhất - La Hoàn Thâm Cảnh
-theater_dmg_lb_title: Bảng Xếp Hạng Một Kích Mạnh Nhất - Nhà Hát Giả Tưởng
-max_friendship_lb_title: Bảng Xếp Hạng Số Nhân Vật Có Độ Yêu Thích Đạt Tối Đa
+chest_lb_title: Bản Xếp hạng Rương Đã mở
+abyss_dmg_lb_title: Bảng Xếp Hạng La Hoàn Thâm Cảnh Một Kích Mạnh Nhất
+theater_dmg_lb_title: Bảng Xếp Hạng Nhà Hát Giả Tưởng Một Kích Mạnh Nhất
+max_friendship_lb_title: Bảng Xếp Hạng Số Nhân Vật ở Mức Độ Yêu Thích Cao Nhất
 lb_view_command_description: Xem bảng xếp hạng
-leaderboard_not_found: Không tìm thấy bảng xếp hạng này
+leaderboard_not_found: Bảng xếp hạng không tìm thấy
 currently_logged_in_as: "Bạn hiện đang đăng nhập với tư cách:"
 not_you_label: "Không phải bạn? Nhấn để đăng nhập bằng tài khoản khác"
 profile_show_substat_rolls: Thuộc tính phụ
-team_card_settings_button_label: Thiết lập thẻ đội
-team_card_settings_embed_title: Chỉnh sửa thiết lập thẻ đội
+team_card_settings_button_label: Thẻ Đội cài đặt
+team_card_settings_embed_title: Chỉnh sửa thẻ dội cài đặt
 team_card_settings_embed_description: "Cài đặt thẻ đội được chia sẻ trên các trò chơi và tài khoản khác nhau, những thay đổi được thực hiện đối với một số cài đặt có thể không được phản ánh trên thẻ khi chúng không được mẫu thẻ hỗ trợ.\nKhi hoàn tất, hãy nhấp vào nút màu xanh lá cây trong thông báo bên trên để làm mới thẻ."
 characters.filter.rarity.placeholder: Lọc theo độ hiếm...
 profile_command_character_param_desc: Chọn nhân vật để tạo thẻ cho
-weapon_type_filter_placeholder: Lọc loại vũ khí...
+weapon_type_filter_placeholder: Chọn lọc loại vũ khí...
 redeem_cmd_available_codes: Mã có sẵn
 redeem_all_available_codes_button_label: Đổi tất cả mã có sẵn
 akasha_show_details: Hiển thị bảng xếp hạng chi tiết
@@ -727,20 +727,20 @@ abyss_stats_artifact_use_rate: Tỷ lệ sử dụng Di vật
 build_cmd_genshin_desc: Xem build và hướng dẫn nhân vật Genshin Impact
 build_cmd_hsr_desc: "Xem build và hướng dẫn nhân vật Honkai: Star Rail"
 build_cmd_zzz_desc: Xem build và hướng dẫn người đại diện Zenless Zone Zero
-build_cmd_character_param_desc: Nhân vật bạn muốn xem build
-guide_title: "Build và hướng dẫn cho {name}"
+build_cmd_character_param_desc: Nhân vật đẽ coi build cho
+guide_title: "{name} Build và hướng dẫn"
 no_guide_available: Chưa có hướng dẫn build cho nhân vật này
-show_playstyle_button_label: Lối Chơi
+show_playstyle_button_label: Loại chơi
 flexible_char: Linh hoạt
-show_synergy_button_label: Đội Hình
-characters_per_page_modal_title: Số nhân vật mỗi trang
+show_synergy_button_label: Sự hiệp lực
+characters_per_page_modal_title: Các nhân vật mỗi trang
 characters_per_page_num_label: Số
 card_settings_hl_substat_select_placeholder: Chọn thuộc tính phụ để tô đậm
 too_many_requests_error_banner_msg: "Nhiều yêu cầu quá, vui lòng thử lại. Nhấp vào nút bền phải để biết thêm thông tin."
 mimo_task_status_claimable: Có thể đổi
 mimo_finish_and_claim_button_label: Hoàn thành nhiệm vụ và nhận điểm
 mimo_info_embed_title: Về Mimo Du Lịch
-mimo_info_embed_desc: "Đây là một sự kiện vĩnh viễn bởi Hoyoverse, nơi mà bạn có thể hoàn thành nhiệm vụ để tích điểm, dùng điểm để đổi lấy vật phẩm trong trò chơi."
+mimo_info_embed_desc: "Đây là một sự kiện vĩnh viễn bởi Hoyoverse, nơi mà bạn có thể hoàn thành nhiệm vụ để tích điểm, dùng điểm để mua quà tặng trong trò chơi."
 mimo_auto_finish_and_claim_button_label: Tự động hoàn thành nhiệm vụ và nhận điểm
 mimo_auto_finish_and_claim_desc: Hoyo Buddy có thể tự động hoàn thành một số nhiệm vụ và nhận điểm của những nhiêm vụ đã hoàn thành.
 mimo_auto_buy_button_label: Tự động mua quà
@@ -763,7 +763,7 @@ off_button_label: "TẮT"
 mimo_draw_redeem_success: "Kiểm tra Hòm Thư trong Game để nhận quà"
 image_settings_use_m3_art: Sử dụng Ảnh M3
 remembrance: Ký Ức
-dismissible_default_title: Tính năng mới!
+dismissible_default_title: Tính năng mới
 dismissible_default_footer: Tin nhắn này chỉ hiển thị một lần.
 dismissible_m3_art_desc: 'Bạn giờ có thể sử dụng ảnh Phim Ý Cảnh 3 trong thẻ người đại diện ZZZ, chọn "Mẫu thẻ Hoyo Buddy 3" trong phần cài đặt thẻ, và bật "Sử dụng ảnh M3" trong phần cài đặt ảnh'
 mimo_lottery_info_hoyolab_decos: "...và {num} đồ trang trí HoYoLAB"
@@ -779,7 +779,7 @@ mimo_auto_task_error_dm_content: "Du Lịch Mimo: Tính năng {feature} đã đ�
 dismissible_hsr_temp2_desc: "Giờ bạn có thể dùng mẫu thẻ Hoyo Buddy 2 cho thẻ nhân vật HSR, chọn trong cài đặt thẻ. Đề nghị bạn dùng ảnh dọc ngang cho mẫu thẻ này."
 bounty_commission.embed.description: " Tiến Độ Ủy Thác Trao Thưởng chưa hoàn thành"
 ridu_points.embed.description: " Điểm Số Ridu Hàng Tuần chưa hoàn thành"
-changelog_embed_title: Nhật Ký Thay Đổi
+changelog_embed_title: Nhật Ký Thây Đổi
 web_events_notify_toggle_label: Nhắc nhờ về sự kiện Web
 web_events_cmd_desc: Xem các sự kiện web đang diễn ra và đặt thông báo
 web_events_embed_footer: Sử dụng lệnh /web-events để định cấu hình thông báo

@@ -372,9 +372,9 @@ public_account_toggle.label: Đặt tài khoản công khai
 pure_fiction: Kể Chuyện Hư Cấu
 pyro: Hỏa
 quantum: Lượng Tử
-read_story.button.label: Đọc Chuyện
+read_story.button.label: Xem Câu Chuyện
 real_time_notes: Ghi Chép Thời Gian Thực
-realm_curr_button.label: Nhắc nhờ Tiền Đồng Tiên
+realm_curr_button.label: Nhắc nhở Tiền Đồng Tiên
 realm_curr_modal.title: Cài đặt nhắc nhở Tiền Đồng Tiên
 redeeem_code.cookie_token_expired_description: "Tính năng đổi mã quà chỉ áp dụng cho người dùng đã đăng nhập bằng email và mật khẩu, bạn có thể làm vậy bằng</accounts>"
 redeeem_code.cookie_token_expired_title: Token cookie đã hết hạn

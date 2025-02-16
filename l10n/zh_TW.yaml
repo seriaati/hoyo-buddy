@@ -39,9 +39,9 @@ accounts_command_description: 管理您的帳戶
 action_in_cooldown_error_message: "請在 {available_time}  時再試一次。 "
 action_in_cooldown_error_title: 操作正在冷卻
 add_account_button_label: 新增帳戶
-add_hoyolab_acc.embed.description: "- [我應該使用哪種登入方式?](:docs/FAQ#which-login-method-should-i-use:)"
+add_hoyolab_acc.embed.description: "1. 透過電子郵件和密碼：最推薦的方式，它最簡單\n2. 透過開發者工具：只能在電腦上運作，如果你對第一個方式有安全疑慮的話，這是一個比較安全的選擇"
 add_hoyolab_acc.embed.title: 選擇一個新增帳戶的方式
-adding_accounts_description: "- [Hoyo Buddy 是否安全？](:docs/Account-Security:)\n- [隱私政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_description: "歡迎使用 Hoyo Buddy! 僅需花費 1 分鐘的時間即可快速新增帳戶並開始享受各式功能。\n\n關於帳戶安全問題，請詳閱 [維基頁面](https://hb-docs.seria.moe/docs/Account-Security) ，關於我們如何使用及蒐集你的資料，請參閱 [隱私權政策](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: 選擇帳戶的所屬平台
 ai_gen_image_error_message: 請檢查你輸入的提示並再試一次。
 ai_gen_image_error_title: 在使用 AI 生成圖片時發生了錯誤
@@ -140,7 +140,7 @@ email-geetest.embed.title: 在寄送驗證碼前需要進行 CAPTCHA 驗證
 email_password_button_label: 透過電子郵件和密碼
 email_password_modal_email_input_label: 電子郵件或使用者名稱
 email_password_modal_password_input_label: 密碼
-enter_email_password_instructions_description: "電子信箱和密碼指的是 **Hoyoverse 帳戶** 的電子信箱和密碼，並不是 Google 或蘋果等等帳戶的。\n- [這是如何運作的?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [我沒有 Hoyoverse 帳戶 (使用 Google、Facebook 等登入)](:docs/Before-Start:)\n- [我是主機玩家](:docs/Before-Start#i-am-a-console-player:)"
+enter_email_password_instructions_description: "此方式需輸入私人資訊。\n\n- 作為交換，你的 `cookie_token` 將能被自動刷新，這在兌換碼相關的功能中會有用處（只有 HoYoLAB 使用者受益）。\n- 你的電子郵件和密碼 **完全不會** 被保存在資料庫中，所以它們幾乎不可能被洩漏。\n- 此外，這個機器人在 [GitHub](https://github.com/seriaati/hoyo-buddy) 上是開源的，所以你可以自行驗證這點。\n- 你保有是否信任此機器人的最終決定權"
 enter_light_cone_level.button.label: 變更光錐等級
 dark_mode_button_label: 深色模式
 error_footer: "你可以在我們的 Discord 伺服器內尋求幫助，連結在 /about"
@@ -550,7 +550,7 @@ dyk_team: "Hoyo Buddy 的小團隊由一位程式設計師和一位設計師組�
 dyk_disable: 你可以使用 /settings 將這則訊息關閉
 dyk_settings_lang: 你可以使用 /settings 變更機器人使用的語言
 dyk_settings_theme: 你可以使用 /settings 切換為亮色或深色模式
-dyk_security: "我们有一篇關於帳戶安全的[文章](<:docs/Account-Security:>)"
+dyk_security: "我們有一則講解關於帳號安全的[文章](<https://hb-docs.seria.moe/docs/Account-Security>)"
 dyk_github: "Hoyo Buddy 於 [GitHub](<https://github.com/seriaati/hoyo-buddy>) 上開源"
 dyk_python: Hoyo Buddy 使用純 Python 撰寫而成
 dyk_unreleased: 你可以使用 /search 查看尚未釋出的遊戲內容
@@ -574,7 +574,7 @@ show_tutorial_button_label: 顯示教學
 close_button_label: 關閉
 required_field_error_message: 此欄位為必填欄位
 accounts_added_snackbar_message: "帳戶新增成功，正在將你重新導向至 Discord..."
-account_add_start_message: "點擊下方按鈕，並按照指示新增你的帳戶。完成後，使用</accounts>指令查看已新增的帳戶。\n如果你需要幫助，請加入我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)。"
+account_add_start_message: "點擊下方按鈕並遵循指示來新增你的帳戶。當你完成的時候，使用 </accounts> 指令來查看你剛才新增的帳戶。如果你遇到任何問題或需要幫助，加入我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)。"
 hbls_button_label: 開始！
 gacha_import_url_modal_title: 輸入抽卡紀錄連結
 gacha_import_embed_description: "抽卡紀錄連結: 從遊戲內獲取一串很長的連結來導入你的抽卡紀錄, 不同遊戲的獲取方式如下:\n- 安卓: [YouTube 影片](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-tw/genshin/wish-import)\n- 崩壞: 星穹鐵道: [Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-tw/warp-import)\n- 絕區零: [zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-tw/zzz/signal-import)\n\n如果你有使用下列的服務之一, 將你的抽卡紀錄導出至指定的檔案格式後即可使用</gacha-log upload>指令將其上傳並導入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
@@ -787,8 +787,3 @@ auto_task_error_dm_content: "由於發生錯誤，{feature}功能已被關閉，
 is_support_custom_image_desc: 支援自定義圖片
 is_not_support_custom_image_desc: 不支援自定義圖片
 template_preview_header: 範例樣式
-missing_permissions_error_title: Hoyo Buddy 缺失權限
-missing_permissions_error_message: " Hoyo Buddy 需要以下權限才能正常運行：\n- 發送訊息\n- 嵌入連結\n- 附加檔案\n- 使用外部表情符號"
-blocked_by_auto_mod_error_title: 此訊息已被 AudoMod 阻擋
-blocked_by_auto_mod_error_message: "嘗試再次執行該指令，或與伺服器管理員取得聯繫以為 Hoyo Buddy 禁用 AutoMod。"
-zzz.core_level.placeholder: 選擇核心技能等級…

@@ -13,7 +13,7 @@ from fake_useragent import UserAgent
 from loguru import logger
 
 from hoyo_buddy.bot import HoyoBuddy
-from hoyo_buddy.config import CONFIG
+from hoyo_buddy.config import CONFIG, parse_args
 from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.logging import InterceptHandler
@@ -49,6 +49,9 @@ async def main() -> None:
 
 if __name__ == "__main__":
     logger.remove()
+
+    args = parse_args()
+    CONFIG.update_from_args(args)
 
     if CONFIG.sentry:
         init_sentry()

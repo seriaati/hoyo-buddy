@@ -42,13 +42,20 @@ class Config(BaseSettings):
     fernet_key: str
 
     # Command-line arguments
-    search: bool
-    sentry: bool
-    schedule: bool
-    prometheus: bool
-    novelai: bool
+    search: bool = False
+    sentry: bool = False
+    schedule: bool = False
+    prometheus: bool = False
+    novelai: bool = False
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+
+    def update_from_args(self, args: argparse.Namespace) -> None:
+        self.search = args.search
+        self.sentry = args.sentry
+        self.schedule = args.schedule
+        self.prometheus = args.prometheus
+        self.novelai = args.novelai
 
 
 def parse_args() -> argparse.Namespace:
@@ -61,16 +68,5 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-if __name__ == "__main__":
-    load_dotenv()
-    args = parse_args()
-else:
-    args = argparse.Namespace(search=False, sentry=False, schedule=False)
-
-CONFIG = Config(
-    search=args.search,
-    sentry=args.sentry,
-    schedule=args.schedule,
-    prometheus=args.prometheus,
-    novelai=args.novelai,
-)  # pyright: ignore[reportCallIssue]
+load_dotenv()
+CONFIG = Config()  # pyright: ignore[reportCallIssue]

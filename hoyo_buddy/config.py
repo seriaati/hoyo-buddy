@@ -45,6 +45,8 @@ class Config(BaseSettings):
     search: bool
     sentry: bool
     schedule: bool
+    prometheus: bool
+    novelai: bool
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
@@ -54,6 +56,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--search", action="store_true", help="Enable search")
     parser.add_argument("--sentry", action="store_true", help="Enable sentry")
     parser.add_argument("--schedule", action="store_true", help="Enable schedule")
+    parser.add_argument("--prometheus", action="store_true", help="Enable Prometheus")
+    parser.add_argument("--novelai", action="store_true", help="Enable NovelAI")
     return parser.parse_args()
 
 
@@ -63,4 +67,10 @@ if __name__ == "__main__":
 else:
     args = argparse.Namespace(search=False, sentry=False, schedule=False)
 
-CONFIG = Config(search=args.search, sentry=args.sentry, schedule=args.schedule)  # pyright: ignore[reportCallIssue]
+CONFIG = Config(
+    search=args.search,
+    sentry=args.sentry,
+    schedule=args.schedule,
+    prometheus=args.prometheus,
+    novelai=args.novelai,
+)  # pyright: ignore[reportCallIssue]

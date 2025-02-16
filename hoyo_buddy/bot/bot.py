@@ -138,7 +138,8 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         await self.load_extension("jishaku")
 
-        await self.nai_client.init(timeout=120)
+        if self.config.novelai:
+            await self.nai_client.init(timeout=120)
 
         users = await models.User.all().only("id")
         for user in users:
@@ -151,7 +152,8 @@ class HoyoBuddy(commands.AutoShardedBot):
             listener.run({"geetest_command": self.handle_geetest_notify}, notification_timeout=2)
         )
 
-        await self.start_prometheus_server()
+        if self.config.prometheus:
+            await self.start_prometheus_server()
 
     def capture_exception(self, e: Exception) -> None:
         errors_to_ignore = (

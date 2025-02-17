@@ -134,7 +134,7 @@ LOCALE_TO_HSR_ENKA_LANG: dict[discord.Locale, enka.hsr.Language] = {
     discord.Locale.german: enka.hsr.Language.GERMAN,
     discord.Locale.american_english: enka.hsr.Language.ENGLISH,
     discord.Locale.spain_spanish: enka.hsr.Language.ESPANOL,
-    discord.Locale.french: enka.hsr.Language.FRECH,
+    discord.Locale.french: enka.hsr.Language.FRENCH,
     discord.Locale.indonesian: enka.hsr.Language.INDOENSIAN,
     discord.Locale.japanese: enka.hsr.Language.JAPANESE,
     discord.Locale.korean: enka.hsr.Language.KOREAN,

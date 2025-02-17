@@ -13,6 +13,8 @@ from discord.ext import commands, tasks
 from loguru import logger
 from prometheus_client import Counter, Gauge
 
+from hoyo_buddy.db.models import HoyoAccount
+
 if TYPE_CHECKING:
     from hoyo_buddy.bot.bot import HoyoBuddy
 
@@ -38,6 +40,9 @@ class Metrics:
 
     USER_INSTALLS: Final[Gauge] = Gauge(PREFIX + "user_installs_total", "Number of user installs")
     """Number of user installs"""
+
+    ACCOUNTS: Final[Gauge] = Gauge(PREFIX + "accounts_total", "Number of accounts linked")
+    """Number of accounts linked"""
 
     SLASH_COMMANDS: Final[Counter] = Counter(
         PREFIX + "on_slash_command",
@@ -70,16 +75,20 @@ class PrometheusCog(commands.Cog):
         return command.name
 
     async def cog_load(self) -> None:
-        if self.bot.env == "dev":
+        if not self.bot.config.prometheus:
             return
+
         self.set_metrics_loop.start()
         self.set_metrics_loop_user_installs.start()
+        self.set_metrics_loop_accounts.start()
 
     async def cog_unload(self) -> None:
-        if self.bot.env == "dev":
+        if not self.bot.config.prometheus:
             return
+
         self.set_metrics_loop.cancel()
         self.set_metrics_loop_user_installs.cancel()
+        self.set_metrics_loop_accounts.cancel()
 
     @tasks.loop(seconds=5)
     async def set_metrics_loop(self) -> None:
@@ -100,8 +109,15 @@ class PrometheusCog(commands.Cog):
         if user_count is not None:
             Metrics.USER_INSTALLS.set(user_count)
 
+    @tasks.loop(seconds=300)
+    async def set_metrics_loop_accounts(self) -> None:
+        """Periodically update the number of accounts linked"""
+        account_count = await HoyoAccount.all().count()
+        Metrics.ACCOUNTS.set(account_count)
+
     @set_metrics_loop.before_loop
     @set_metrics_loop_user_installs.before_loop
+    @set_metrics_loop_accounts.before_loop
     async def before_set_metrics_loop_users(self) -> None:
         await self.bot.wait_until_ready()
 

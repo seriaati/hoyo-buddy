@@ -22,8 +22,8 @@ from tenacity import (
 )
 
 from hoyo_buddy import models
-from hoyo_buddy.config import CONFIG
 from hoyo_buddy.bot.error_handler import get_error_embed
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
     AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID,
     AMBR_UI_URL,

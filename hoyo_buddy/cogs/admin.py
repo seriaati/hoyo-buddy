@@ -11,7 +11,7 @@ from loguru import logger
 from seria.utils import write_json
 
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
-from hoyo_buddy.db import CardSettings, CommandMetric, HoyoAccount, Settings, User
+from hoyo_buddy.db import CardSettings, HoyoAccount, Settings, User
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
@@ -191,11 +191,6 @@ class Admin(commands.Cog):
         user_count = len(users)
         locale_msg = "\n".join([f"{locale}: {count}" for locale, count in locale_count.items()])
         await ctx.send(f"Users: {user_count}\nLocales:\n```{locale_msg}```")
-
-        # Command metrics
-        metrics = await CommandMetric.all().order_by("-count")
-        metrics_msg = "\n".join([f"/{metric.name}: {metric.count}" for metric in metrics])
-        await ctx.send(f"Command metrics:\n```{metrics_msg}```")
 
     @commands.command(name="set-card-settings-game")
     async def set_card_settings_game(self, ctx: commands.Context) -> Any:

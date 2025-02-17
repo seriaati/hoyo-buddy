@@ -155,6 +155,7 @@ db.sqlite3-shm
 db.sqlite3-wal
 hoyo_buddy/bot/data/*.json
 !hoyo_buddy/bot/data/nsfw_tags.json
+!hoyo_buddy/bot/data/grafana_dashboard.json
 .static/*
 .enka_py/
 !.gitkeep

@@ -751,8 +751,8 @@ mimo_buy_item_select_placeholder: Chọn một món để mua
 mimo_tasks_button_label: Nhiệm vụ
 mimo_buy_item_amount_label: Số lượng
 mimo_item_available_time: "Sẽ dầy trong {time}"
-mimo_auto_task_embed_footer: Nhập /mino để điều chỉnh nhiệm vụ tự động và mua quà
-mimo_auto_task_embed_desc: "Hoyo Buddy đã hoàn thành các nhiệm vụ {finish} và đã nhận {claim_point} điểm cho bạn."
+mimo_auto_task_embed_footer: Dùng lệnh /mimo để điều chỉnh tự động làm nhiệm vụ và đổi thưởng
+mimo_auto_task_embed_desc: "Hoyo Buddy đã hoàn thành {finish} nhiệm vụ và nhận {claim_point} điểm cho bạn."
 checkin_reward_embed_footer: Sử dụng /check-in để điều chỉnh thông báo
 mimo_status: "Tình trạng: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy đã đổi (các) vật phẩm {item} này cho bạn với {points} điểm.\nNếu bạn thấy những mã quà bên dưới, vui long đổi thủ công bằng lệnh </redeem>."
@@ -786,9 +786,12 @@ web_events_embed_footer: Sử dụng lệnh /web-events để điều chỉnh th
 auto_task_error_dm_content: "Tính năng {feature} đã bị vô hiệu hoá do lỗi đã xảy ra, bạn có thể kích hoạt lại bằng lệnh {command}\nNếu lỗi này tiếp tục xảy ra hoặc bạn không biết cách xử lý, vui lòng tìm trợ giúp trên [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
 is_support_custom_image_desc: Hỗ trợ hình ảnh tùy chỉnh
 is_not_support_custom_image_desc: Không hỗ trợ hình ảnh tùy chỉnh
-template_preview_header: Ví Dụ Minh Hoạ
+template_preview_header: Ảnh minh họa
 missing_permissions_error_title: Hoyo Buddy đang thiếu quyền hạn
 missing_permissions_error_message: "Hoyo Buddy yêu cầu các quyền sau để hoạt động bình thường:\n- Gửi tin nhắn\n- Nhúng liên kết\n- Đính kèm tập tin\n- Dùng Emoji Mở Rộng"
 blocked_by_auto_mod_error_title: Tin nhắn này đã bị chặn bởi AutoMod
 blocked_by_auto_mod_error_message: "Hãy thử chạy lại lệnh hoặc liên hệ với quản trị viên máy chủ để tắt AutoMod cho Hoyo Buddy."
-zzz.core_level.placeholder: Chọn cấp độ Kỹ Năng Cốt Lỗi
+zzz.core_level.placeholder: Chọn cấp độ Kỹ Năng Cốt Lõi...
+open_game_label: Mở game
+open_game_cloud_label: Mở Game (Bản Cloud)
+open_game_vietnam_label: Mở Game (Bản Việt Nam)

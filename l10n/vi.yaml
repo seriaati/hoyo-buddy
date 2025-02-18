@@ -793,5 +793,5 @@ blocked_by_auto_mod_error_title: Tin nhắn này đã bị chặn bởi AutoMod
 blocked_by_auto_mod_error_message: "Hãy thử chạy lại lệnh hoặc liên hệ với quản trị viên máy chủ để tắt AutoMod cho Hoyo Buddy."
 zzz.core_level.placeholder: Chọn cấp độ Kỹ Năng Cốt Lõi...
 open_game_label: Mở game
-open_game_cloud_label: Mở Game (Bản Cloud)
-open_game_vietnam_label: Mở Game (Bản Việt Nam)
+open_game_cloud_label: Mở game (Bản Cloud)
+open_game_vietnam_label: Mở game (Bản Việt Nam)

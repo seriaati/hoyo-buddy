@@ -298,7 +298,7 @@ notes.elysian_realm: 往世乐土
 notes.elysian_realm_value: "当前积分: {cur}/{max}"
 notes_available: "{emoji} 在 {in_time} 后可用"
 notes_command_description: 查看实时便笺
-notif.embed.footer: "点击下方按钮更改通知设置。\n如果已经过期，请使用 /notes 命令。"
+notif.embed.footer: 使用 /note 调配提醒
 notif_modal.enabled.label: 开
 notif_modal.max_notif_count.label: 最大通知数
 notif_modal.notify_interval.label: 通知间隔（分钟）
@@ -792,3 +792,6 @@ missing_permissions_error_message: "Hoyo Buddy 需要以下权限才能正常运
 blocked_by_auto_mod_error_title: 此消息已被 AutoMod 拦截
 blocked_by_auto_mod_error_message: "请尝试再次运行该命令，或与服务器管理员联系以禁用Hoyo Buddy的AutoMod。"
 zzz.core_level.placeholder: 选择核心技等级...
+open_game_label: 打开游戏
+open_game_cloud_label: 打开游戏（云游戏）
+open_game_vietnam_label: 打开游戏（越南服务器）

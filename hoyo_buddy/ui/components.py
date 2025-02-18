@@ -18,7 +18,7 @@ from ..l10n import LocaleStr, translator
 
 if TYPE_CHECKING:
     import io
-    from collections.abc import Sequence
+    from collections.abc import Iterable, Sequence
 
     from ..types import Interaction, User
 
@@ -52,6 +52,11 @@ class View(discord.ui.View):
         return (
             f"{self.__class__.__module__.replace('hoyo_buddy.ui.', '')}.{self.__class__.__name__}"
         )
+
+    def add_items(self, items: Iterable[Button | Select]) -> Self:
+        for item in items:
+            self.add_item(item)
+        return self
 
     async def on_timeout(self) -> None:
         if self.message:

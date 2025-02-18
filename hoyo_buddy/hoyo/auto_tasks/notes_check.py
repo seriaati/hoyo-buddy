@@ -10,9 +10,9 @@ from discord import Locale
 from genshin.models import HonkaiNotes, HSREvent, StarRailNote, VideoStoreState, ZZZNotes
 from genshin.models import Notes as GenshinNotes
 
-from hoyo_buddy.constants import AVAILABLE_OPEN_GAMES, get_open_game_url
 from hoyo_buddy.db import NotesNotify, draw_locale
-from hoyo_buddy.ui.components import Button, View
+from hoyo_buddy.ui.components import View
+from hoyo_buddy.ui.hoyo.notes.view import NotesView
 
 from ...bot.error_handler import get_error_embed
 from ...draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
@@ -248,15 +248,8 @@ class NotesChecker:
             file_ = discord.File(buffer, filename="notes.png")
 
         view = View(author=None, locale=locale)
-        platform, game = account.platform, account.game
-        available_games = AVAILABLE_OPEN_GAMES.get(platform)
-
-        if available_games is not None:
-            buttons = available_games.get(game)
-            if buttons is not None:
-                for label_enum, region, game in buttons:
-                    url = get_open_game_url(region=region, game=game)
-                    view.add_item(Button(label=LocaleStr(key=label_enum.value), url=str(url)))
+        buttons = NotesView.get_open_game_buttons(account)
+        view.add_items(buttons)
 
         message = await cls._bot.dm_user(account.user.id, embed=embed, file=file_, view=view)
 

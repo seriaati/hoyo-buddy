@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, TypeAlias
 import genshin
 from discord import ButtonStyle, File, Locale, Member, User
 
+from hoyo_buddy.constants import AVAILABLE_OPEN_GAMES, get_open_game_url
 from hoyo_buddy.db import NotesNotify, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
 from hoyo_buddy.embeds import DefaultEmbed
@@ -61,6 +62,7 @@ class NotesView(View):
 
         if accounts is not None:
             self.add_item(AccountSwitcher(accounts, account))
+        self.add_items(self.get_open_game_buttons(account))
         self.add_item(ReminderButton())
 
     @staticmethod
@@ -657,6 +659,22 @@ class NotesView(View):
             await i.followup.send(**kwargs)
 
         self.message = await i.original_response()
+
+    @staticmethod
+    def get_open_game_buttons(account: HoyoAccount) -> list[Button]:
+        result: list[Button] = []
+
+        platform, game = account.platform, account.game
+        available_games = AVAILABLE_OPEN_GAMES.get(platform)
+
+        if available_games is not None:
+            buttons = available_games.get(game)
+            if buttons is not None:
+                for label_enum, region, game in buttons:
+                    url = get_open_game_url(region=region, game=game)
+                    result.append(Button(label=LocaleStr(key=label_enum.value), url=str(url)))
+
+        return result
 
 
 class ReminderButton(Button[NotesView]):

@@ -13,6 +13,7 @@ import aiohttp
 import orjson
 import sentry_sdk
 import toml
+from loguru import logger
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
@@ -27,7 +28,7 @@ from hoyo_buddy.enums import Game
 
 if TYPE_CHECKING:
     import pathlib
-    from collections.abc import Generator
+    from collections.abc import Awaitable, Generator
 
     import discord
     import genshin
@@ -465,3 +466,10 @@ async def add_to_hoyo_codes(
             # Code already exists
             return
         resp.raise_for_status()
+
+
+async def safe(coro: Awaitable[Any]) -> Any:
+    try:
+        return await coro
+    except Exception:
+        logger.exception("Error occured while executing a coroutine")

@@ -43,7 +43,7 @@ from hoyo_buddy.enums import Game, GeetestType, Platform
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
 from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
-from hoyo_buddy.utils import fetch_json, get_now, get_project_version
+from hoyo_buddy.utils import fetch_json, get_now, get_project_version, safe
 
 from .cache import LFUCache
 from .command_tree import CommandTree
@@ -367,18 +367,18 @@ class HoyoBuddy(commands.AutoShardedBot):
             asyncio.TaskGroup() as tg,
         ):
             # Fetch mi18n files
-            tg.create_task(translator.fetch_mi18n_files())
+            tg.create_task(safe(translator.fetch_mi18n_files()))
 
             # Update enka.py assets
-            tg.create_task(enka_gi.update_assets())
-            tg.create_task(enka_hsr.update_assets())
+            tg.create_task(safe(enka_gi.update_assets()))
+            tg.create_task(safe(enka_hsr.update_assets()))
 
             # Update genshin.py assets
-            tg.create_task(genshin.utility.update_characters_ambr())
+            tg.create_task(safe(genshin.utility.update_characters_ambr()))
 
             # Update item ID -> name mappings and some other stuff
-            tg.create_task(self.update_zzz_assets())
-            tg.create_task(self.update_hsr_assets())
+            tg.create_task(safe(self.update_zzz_assets()))
+            tg.create_task(safe(self.update_hsr_assets()))
 
     async def update_zzz_assets(self) -> None:
         result: dict[str, dict[str, str]] = {}

@@ -32,7 +32,7 @@ from .constants import (
     get_docs_url,
 )
 from .utils import capitalize_first_word as capitalize_first_word_
-from .utils import convert_to_title_case
+from .utils import convert_to_title_case, safe
 
 if TYPE_CHECKING:
     from enum import StrEnum
@@ -188,7 +188,7 @@ class Translator:
                 url, filename = file_
                 for lang in genshin.constants.LANGS:
                     tg.create_task(
-                        self._fetch_mi18n_task(client, lang=lang, url=url, filename=filename)
+                        safe(self._fetch_mi18n_task(client, lang=lang, url=url, filename=filename))
                     )
 
         logger.info("Fetched mi18n files")

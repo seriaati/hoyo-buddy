@@ -472,4 +472,4 @@ async def safe(coro: Awaitable[Any]) -> Any:
     try:
         return await coro
     except Exception:
-        logger.exception("Error occured while executing a coroutine")
+        logger.exception("Error occurred while executing a coroutine")

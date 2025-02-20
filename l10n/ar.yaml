@@ -39,7 +39,7 @@ accounts_command_description: أدارة حساباتك
 action_in_cooldown_error_message: "يرجى المحاولة مرة أخرى في {available_time}."
 action_in_cooldown_error_title: الأمر في وقت التهدئة
 add_account_button_label: اضافة حسابات
-add_hoyolab_acc.embed.description: "1. باستخدام البريد الإلكتروني وكلمة المرور: يوصى به كثيرًا، فهو الأسهل\n2. باستخدام DevTools: تعمل فقط على سطح المكتب، وهو خيار أكثر أمانًا إذا كانت لديك مخاوف أمنية مع الخيار الأول"
+add_hoyolab_acc.embed.description: ""
 add_hoyolab_acc.embed.title: اختر طريقة لاضافة حساباتك
 adding_accounts_description: ""
 adding_accounts_title: اختر منصة حسابك
@@ -782,3 +782,14 @@ web_events_notify_toggle_label: ""
 web_events_cmd_desc: ""
 web_events_embed_footer: ""
 auto_task_error_dm_content: ""
+is_support_custom_image_desc: ""
+is_not_support_custom_image_desc: ""
+template_preview_header: ""
+missing_permissions_error_title: ""
+missing_permissions_error_message: ""
+blocked_by_auto_mod_error_title: ""
+blocked_by_auto_mod_error_message: ""
+zzz.core_level.placeholder: ""
+open_game_label: ""
+open_game_cloud_label: ""
+open_game_vietnam_label: ""

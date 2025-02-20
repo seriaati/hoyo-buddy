@@ -299,12 +299,12 @@ notes.elysian_realm_value: "Điểm số hiện tại: {cur}/{max}"
 notes_available: "{emoji} Có sẵn trong {in_time}"
 notes_command_description: Xem Ghi Chép Thời Gian Thực
 notif.embed.footer: Sử dụng lệnh /notes đê điều chỉnh nhắc nhở
-notif_modal.enabled.label: Đã bật
-notif_modal.max_notif_count.label: Số lượng thông báo tối đa
-notif_modal.notify_interval.label: Khoảng cách giữa các thông báo (tính bằng phút)
+notif_modal.enabled.label: Bật
+notif_modal.max_notif_count.label: Số lần nhắc nhở tối đa
+notif_modal.notify_interval.label: Giãn cách nhắc nhở (phút)
 notif_modal.notify_time.label: "Gửi thông báo X giờ trước khi máy chủ đặt lại"
-notif_modal.notify_weekday.label: Ngày trong tuần để thông báo
-notif_modal.threshold.label: Ngưỡng
+notif_modal.notify_weekday.label: Ngày trong tuần muốn nhắc
+notif_modal.threshold.label: Nhắc khi đạt ngưỡng
 notification_settings_button_label: Cài đặt thông báo
 notify_on_failure_button_label: Thông báo khi Điểm danh Thất Bại
 notify_on_success_button_label: Thông báo khi Điểm danh Thành công

@@ -61,8 +61,8 @@ class NotesView(View):
 
         if accounts is not None:
             self.add_item(AccountSwitcher(accounts, account))
-        self.add_items(self.get_open_game_buttons(account))
-        self.add_item(ReminderButton())
+        self.add_items(self.get_open_game_buttons(account, row=1))
+        self.add_item(ReminderButton(row=4))
 
     @staticmethod
     def _get_type1_value(notify: NotesNotify | None) -> LocaleStr:
@@ -660,7 +660,7 @@ class NotesView(View):
         self.message = await i.original_response()
 
     @staticmethod
-    def get_open_game_buttons(account: HoyoAccount) -> list[Button]:
+    def get_open_game_buttons(account: HoyoAccount, *, row: int = 0) -> list[Button]:
         result: list[Button] = []
 
         platform, game = account.platform, account.game
@@ -671,17 +671,20 @@ class NotesView(View):
             if buttons is not None:
                 for label_enum, region, game in buttons:
                     url = get_open_game_url(region=region, game=game)
-                    result.append(Button(label=LocaleStr(key=label_enum.value), url=str(url)))
+                    result.append(
+                        Button(label=LocaleStr(key=label_enum.value), url=str(url), row=row)
+                    )
 
         return result
 
 
 class ReminderButton(Button[NotesView]):
-    def __init__(self) -> None:
+    def __init__(self, *, row: int) -> None:
         super().__init__(
             style=ButtonStyle.blurple,
             emoji=BELL_OUTLINE,
             label=LocaleStr(key="reminder_button.label"),
+            row=row,
         )
 
     async def callback(self, i: Interaction) -> None:

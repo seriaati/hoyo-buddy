@@ -45,8 +45,10 @@ class SettingsUI(View):
         filename = self.get_brand_img_filename(theme, locale)
         return discord.File(filename, filename="brand.png")
 
-    async def update_ui_and_save_settings(self, i: Interaction) -> None:
-        self.translate_items()
+    async def update_ui_and_save_settings(self, i: Interaction, *, translate: bool = False) -> None:
+        if translate:
+            self.translate_items()
+
         await self.absolute_edit(
             i,
             embed=self.get_embed(),
@@ -100,7 +102,7 @@ class LanguageSelector(Select["SettingsUI"]):
         self.view.settings.lang = self.values[0] if selected != "auto" else None
         self.options = self._get_options(self.view.settings.locale)
         self.update_options_defaults()
-        await self.view.update_ui_and_save_settings(i)
+        await self.view.update_ui_and_save_settings(i, translate=True)
 
 
 class DarkModeToggle(ToggleButton["SettingsUI"]):

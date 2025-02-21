@@ -14,7 +14,7 @@ from hoyo_buddy.utils import ephemeral
 
 from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand
-from ..constants import HB_GAME_TO_GPY_GAME
+from ..constants import HB_GAME_TO_GPY_GAME, get_describe_kwargs, get_rename_kwargs
 from ..enums import Game, GeetestType, Platform
 from ..exceptions import CantRedeemCodeError, InvalidQueryError
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
@@ -38,20 +38,8 @@ class Hoyo(commands.Cog):
             "Game daily check-in", key="checkin_command_description"
         ),
     )
-    @app_commands.rename(
-        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
-    )
-    @app_commands.describe(
-        user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
-        ),
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        ),
-    )
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def checkin_command(
         self,
         i: Interaction,
@@ -79,20 +67,8 @@ class Hoyo(commands.Cog):
             "View real-time notes", key="notes_command_description"
         ),
     )
-    @app_commands.rename(
-        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
-    )
-    @app_commands.describe(
-        user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
-        ),
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        ),
-    )
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def notes_command(
         self,
         i: Interaction,
@@ -126,20 +102,8 @@ class Hoyo(commands.Cog):
             key="exploration_command_description",
         ),
     )
-    @app_commands.rename(
-        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
-    )
-    @app_commands.describe(
-        user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
-        ),
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        ),
-    )
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def exploration_command(
         self,
         i: Interaction,
@@ -162,20 +126,8 @@ class Hoyo(commands.Cog):
             "Redeem codes for in-game rewards", key="redeem_command_description"
         ),
     )
-    @app_commands.rename(
-        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
-    )
-    @app_commands.describe(
-        user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
-        ),
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        ),
-    )
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def redeem_command(
         self,
         i: Interaction,
@@ -206,16 +158,14 @@ class Hoyo(commands.Cog):
         ),
     )
     @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
         type_=app_commands.locale_str("type", key="geetest_command_type_param_name"),
+        **get_rename_kwargs(account=True),
     )
     @app_commands.describe(
-        account=app_commands.locale_str(
-            "Account to run this command with", key="acc_no_default_param_desc"
-        ),
         type_=app_commands.locale_str(
             "Type of geetest verification", key="geetest_cmd_type_param_desc"
         ),
+        **get_describe_kwargs(account_no_default=True),
     )
     async def geetest_command(
         self,
@@ -238,13 +188,8 @@ class Hoyo(commands.Cog):
             "View game account statistics", key="stats_command_description"
         ),
     )
-    @app_commands.rename(user=app_commands.locale_str("user", key="user_autocomplete_param_name"))
-    @app_commands.describe(
-        user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
-        )
-    )
+    @app_commands.rename(**get_rename_kwargs(user=True))
+    @app_commands.describe(**get_describe_kwargs(user=True))
     async def stats_command(self, i: Interaction, user: User = None) -> None:
         command = StatsCommand(user)
         await command.run(i)
@@ -255,20 +200,8 @@ class Hoyo(commands.Cog):
             "View ongoing game events", key="events_command_description"
         ),
     )
-    @app_commands.rename(
-        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
-    )
-    @app_commands.describe(
-        user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
-        ),
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        ),
-    )
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def events_command(
         self,
         i: Interaction,
@@ -281,15 +214,8 @@ class Hoyo(commands.Cog):
         name=app_commands.locale_str("mimo"),
         description=app_commands.locale_str("Traveling Mimo event management", key="mimo_cmd_desc"),
     )
-    @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
-    )
-    @app_commands.describe(
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        )
-    )
+    @app_commands.rename(**get_rename_kwargs(account=True))
+    @app_commands.describe(**get_describe_kwargs(account=True))
     async def mimo_command(
         self,
         i: Interaction,
@@ -310,15 +236,8 @@ class Hoyo(commands.Cog):
             "View ongoing web events and set notifier", key="web_events_cmd_desc"
         ),
     )
-    @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
-    )
-    @app_commands.describe(
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        )
-    )
+    @app_commands.rename(**get_rename_kwargs(account=True))
+    @app_commands.describe(**get_describe_kwargs(account=True))
     async def web_events_command(
         self,
         i: Interaction,

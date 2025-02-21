@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from hoyo_buddy.commands.characters import CharactersCommand
-from hoyo_buddy.constants import USER_ACCOUNT_DESCRIBE_KWARGS, USER_ACCOUNT_RENAME_KWARGS
+from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, Settings
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
@@ -44,8 +44,8 @@ class Characters(
             "View and filter your Genshin Impact characters", key="characters_cmd_genshin_desc"
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS)
-    @app_commands.describe(**USER_ACCOUNT_DESCRIBE_KWARGS)
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def genshin_command(
         self,
         i: Interaction,
@@ -60,8 +60,8 @@ class Characters(
             "View and filter your Honkai Star Rail characters", key="characters_cmd_hsr_desc"
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS)
-    @app_commands.describe(**USER_ACCOUNT_DESCRIBE_KWARGS)
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def hsr_command(
         self,
         i: Interaction,
@@ -76,8 +76,8 @@ class Characters(
             "View and filter your Zenless Zone Zero agents", key="characters_cmd_zzz_desc"
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS)
-    @app_commands.describe(**USER_ACCOUNT_DESCRIBE_KWARGS)
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def zzz_command(
         self,
         i: Interaction,
@@ -92,8 +92,8 @@ class Characters(
             "View and filter your Honkai Impact 3rd characters", key="characters_cmd_honkai_desc"
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS)
-    @app_commands.describe(**USER_ACCOUNT_DESCRIBE_KWARGS)
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def honkai_command(
         self,
         i: Interaction,

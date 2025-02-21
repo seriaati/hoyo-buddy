@@ -8,7 +8,7 @@ from discord.ext import commands
 from enka.errors import WrongUIDFormatError
 
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
-from hoyo_buddy.constants import locale_to_akasha_lang
+from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs, locale_to_akasha_lang
 from hoyo_buddy.db import HoyoAccount, get_locale
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, LeaderboardType
@@ -48,9 +48,8 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         category_=app_commands.locale_str("leaderboard", key="akasha_calculation_param"),
         calculation_id=app_commands.locale_str("weapon", key="akasha_weapon_param"),
         variant=app_commands.locale_str("variant", key="akasha_variant_param"),
-        user=app_commands.locale_str("user", key="user_autocomplete_param_name"),
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
         guild_only_=app_commands.locale_str("guild-only", key="guild_only_command_param_name"),
+        **get_rename_kwargs(user=True, account=True),
     )
     @app_commands.describe(
         character_id=app_commands.locale_str(
@@ -66,22 +65,11 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             "Variant of the leaderboard to view, defaults to the main one",
             key="akasha_variant_param_desc",
         ),
-        user=app_commands.locale_str(
-            "User to search the accounts with, defaults to you",
-            key="user_autocomplete_param_description",
-        ),
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        ),
-        uid=app_commands.locale_str(
-            "UID of the player, this overrides the account parameter if provided",
-            key="profile_command_uid_param_description",
-        ),
         guild_only_=app_commands.locale_str(
             "Only show guild members' rankings in the leaderboard",
             key="guild_only_command_param_desc",
         ),
+        **get_describe_kwargs(user=True, account=True, uid=True),
     )
     @app_commands.choices(
         guild_only_=[
@@ -308,13 +296,11 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
     )
     @app_commands.rename(
         lb=app_commands.locale_str("leaderboard", key="akasha_calculation_param"),
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
+        **get_rename_kwargs(account=True),
     )
     @app_commands.describe(
         lb=app_commands.locale_str("Leaderboard to view", key="akasha_calculation_param_desc"),
-        account=app_commands.locale_str(
-            "Account to run this command with", key="acc_no_default_param_desc"
-        ),
+        **get_describe_kwargs(account_no_default=True),
     )
     async def lb_view_command(
         self,

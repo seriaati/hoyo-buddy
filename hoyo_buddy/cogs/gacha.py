@@ -7,6 +7,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from hoyo_buddy.commands.gacha import GachaCommand
+from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, get_locale
 
 from ..enums import GachaImportSource, Game
@@ -31,15 +32,8 @@ class Gacha(
             "Import gacha history from the game", key="gacha_import_command_description"
         ),
     )
-    @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
-    )
-    @app_commands.describe(
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        )
-    )
+    @app_commands.rename(**get_rename_kwargs(account=True))
+    @app_commands.describe(**get_describe_kwargs(account=True))
     async def import_(
         self,
         i: Interaction,
@@ -56,15 +50,8 @@ class Gacha(
             "View imported gacha logs", key="gacha_view_command_description"
         ),
     )
-    @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
-    )
-    @app_commands.describe(
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        )
-    )
+    @app_commands.rename(**get_rename_kwargs(account=True))
+    @app_commands.describe(**get_describe_kwargs(account=True))
     async def view_logs(
         self,
         i: Interaction,
@@ -81,15 +68,8 @@ class Gacha(
             "Manage imported gacha logs", key="gacha_manage_command_description"
         ),
     )
-    @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
-    )
-    @app_commands.describe(
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        )
-    )
+    @app_commands.rename(**get_rename_kwargs(account=True))
+    @app_commands.describe(**get_describe_kwargs(account=True))
     async def manage_logs(
         self,
         i: Interaction,
@@ -110,17 +90,14 @@ class Gacha(
     @app_commands.rename(
         source=app_commands.locale_str("source", key="source_param_name"),
         file=app_commands.locale_str("file", key="file_param_name"),
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
+        **get_rename_kwargs(account=True),
     )
     @app_commands.describe(
         source=app_commands.locale_str(
             "Source of the gacha history", key="source_param_description"
         ),
         file=app_commands.locale_str("Gacha history file to upload", key="file_param_description"),
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        ),
+        **get_describe_kwargs(account=True),
     )
     @app_commands.choices(
         source=[

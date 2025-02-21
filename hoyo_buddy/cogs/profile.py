@@ -7,7 +7,7 @@ from discord import Locale, app_commands
 from discord.ext.commands import GroupCog
 
 from hoyo_buddy.commands.profile import ProfileCommand
-from hoyo_buddy.constants import USER_ACCOUNT_DESCRIBE_KWARGS, USER_ACCOUNT_RENAME_KWARGS
+from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, get_locale
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
@@ -20,14 +20,6 @@ from hoyo_buddy.utils import ephemeral
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.types import Interaction
-
-
-UID_DESCRIBE: dict[str, app_commands.locale_str] = {
-    "uid": app_commands.locale_str(
-        "UID of the player, this overrides the account parameter if provided",
-        key="profile_command_uid_param_description",
-    )
-}
 
 
 def gen_character_id_rename(max_: int) -> dict[str, app_commands.locale_str]:
@@ -116,9 +108,9 @@ class Profile(
             key="profile_command_gi_description",
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS, **gen_character_id_rename(4))
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True), **gen_character_id_rename(4))
     @app_commands.describe(
-        **UID_DESCRIBE, **USER_ACCOUNT_DESCRIBE_KWARGS, **gen_character_id_describe(4)
+        **get_describe_kwargs(user=True, account=True, uid=True), **gen_character_id_describe(4)
     )
     async def profile_gi_command(
         self,
@@ -150,9 +142,9 @@ class Profile(
             key="profile_command_hsr_description",
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS, **gen_character_id_rename(4))
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True), **gen_character_id_rename(4))
     @app_commands.describe(
-        **UID_DESCRIBE, **USER_ACCOUNT_DESCRIBE_KWARGS, **gen_character_id_describe(4)
+        **get_describe_kwargs(user=True, account=True, uid=True), **gen_character_id_describe(4)
     )
     async def profile_hsr_command(
         self,
@@ -184,8 +176,8 @@ class Profile(
             key="profile_command_zzz_description",
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS, **gen_character_id_rename(3))
-    @app_commands.describe(**USER_ACCOUNT_DESCRIBE_KWARGS, **gen_character_id_describe(3))
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True), **gen_character_id_rename(3))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True), **gen_character_id_describe(3))
     async def profile_zzz_command(
         self,
         i: Interaction,

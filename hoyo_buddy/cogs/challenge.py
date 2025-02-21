@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.ext.commands import GroupCog
 
 from hoyo_buddy.commands.challenge import ChallengeCommand
-from hoyo_buddy.constants import USER_ACCOUNT_DESCRIBE_KWARGS, USER_ACCOUNT_RENAME_KWARGS
+from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount  # noqa: TC001
 from hoyo_buddy.enums import ChallengeType, Game
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
@@ -53,8 +53,8 @@ class Challenge(
             "Generate Spiral Abyss card", key="challenge_command_abyss_desc"
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS)
-    @app_commands.describe(**USER_ACCOUNT_DESCRIBE_KWARGS)
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def abyss_command(
         self,
         i: Interaction,
@@ -69,8 +69,8 @@ class Challenge(
             "Generate Imaginarium Theater card", key="challenge_command_theater_desc"
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS)
-    @app_commands.describe(**USER_ACCOUNT_DESCRIBE_KWARGS)
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def img_theater_command(
         self,
         i: Interaction,
@@ -85,8 +85,8 @@ class Challenge(
             "Generate Memory of Chaos card", key="challenge_command_moc_desc"
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS)
-    @app_commands.describe(**USER_ACCOUNT_DESCRIBE_KWARGS)
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def moc_command(
         self,
         i: Interaction,
@@ -101,8 +101,8 @@ class Challenge(
             "Generate Pure Fiction card", key="challenge_command_pf_desc"
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS)
-    @app_commands.describe(**USER_ACCOUNT_DESCRIBE_KWARGS)
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def pf_command(
         self,
         i: Interaction,
@@ -117,8 +117,8 @@ class Challenge(
             "Generate Apocalyptic Shadow card", key="challenge_command_apc_shadow_desc"
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS)
-    @app_commands.describe(**USER_ACCOUNT_DESCRIBE_KWARGS)
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def apc_shadow_command(
         self,
         i: Interaction,
@@ -133,8 +133,8 @@ class Challenge(
             "Generate Shiyu Defense card", key="challenge_command_shiyu_desc"
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS)
-    @app_commands.describe(**USER_ACCOUNT_DESCRIBE_KWARGS)
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def shiyu_command(
         self,
         i: Interaction,
@@ -149,8 +149,8 @@ class Challenge(
             "Generate Deadly Assault card", key="challenge_command_assault_desc"
         ),
     )
-    @app_commands.rename(**USER_ACCOUNT_RENAME_KWARGS)
-    @app_commands.describe(**USER_ACCOUNT_DESCRIBE_KWARGS)
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def assault_command(
         self,
         i: Interaction,

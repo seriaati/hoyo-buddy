@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from discord import Locale, app_commands
 from discord.ext import commands
 
+from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import FarmNotify, HoyoAccount, Settings, get_locale
 
 from ..commands.farm import Action, FarmCommand
@@ -46,15 +47,8 @@ class Farm(
             "View farmable domains in Genshin Impact", key="farm_view_command_description"
         ),
     )
-    @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
-    )
-    @app_commands.describe(
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        )
-    )
+    @app_commands.rename(**get_rename_kwargs(account=True))
+    @app_commands.describe(**get_describe_kwargs(account=True))
     async def farm_view_command(
         self,
         i: Interaction,
@@ -80,16 +74,13 @@ class Farm(
     )
     @app_commands.rename(
         query=app_commands.locale_str("query", key="search_command_query_param_name"),
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
+        **get_rename_kwargs(account=True),
     )
     @app_commands.describe(
         query=app_commands.locale_str(
             "Query to search for", key="search_command_query_param_description"
         ),
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        ),
+        **get_describe_kwargs(account=True),
     )
     async def farm_add_command(
         self,
@@ -110,16 +101,13 @@ class Farm(
     )
     @app_commands.rename(
         query=app_commands.locale_str("query", key="search_command_query_param_name"),
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name"),
+        **get_rename_kwargs(account=True),
     )
     @app_commands.describe(
         query=app_commands.locale_str(
             "Query to search for", key="search_command_query_param_description"
         ),
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        ),
+        **get_describe_kwargs(account=True),
     )
     async def farm_remove_command(
         self,
@@ -139,15 +127,8 @@ class Farm(
             key="farm_reminder_command_description",
         ),
     )
-    @app_commands.rename(
-        account=app_commands.locale_str("account", key="account_autocomplete_param_name")
-    )
-    @app_commands.describe(
-        account=app_commands.locale_str(
-            "Account to run this command with, defaults to the selected one in /accounts",
-            key="account_autocomplete_param_description",
-        )
-    )
+    @app_commands.rename(**get_rename_kwargs(account=True))
+    @app_commands.describe(**get_describe_kwargs(account=True))
     async def farm_reminder_command(
         self,
         i: Interaction,

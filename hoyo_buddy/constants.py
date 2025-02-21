@@ -774,20 +774,67 @@ CODE_CHANNEL_IDS = {
     genshin.Game.ZZZ: 1310017277202006067,
 }
 
-USER_ACCOUNT_RENAME_KWARGS: dict[str, app_commands.locale_str] = {
-    "user": app_commands.locale_str("user", key="user_autocomplete_param_name"),
-    "account": app_commands.locale_str("account", key="account_autocomplete_param_name"),
-}
-USER_ACCOUNT_DESCRIBE_KWARGS: dict[str, app_commands.locale_str] = {
+USER_RENAME = {"user": app_commands.locale_str("user", key="user_autocomplete_param_name")}
+USER_DESCRIBE = {
     "user": app_commands.locale_str(
-        "User to search the accounts with, defaults to you",
-        key="user_autocomplete_param_description",
-    ),
+        "User to run this command with, defaults to you", key="user_autocomplete_param_description"
+    )
+}
+ACCOUNT_RENAME = {
+    "account": app_commands.locale_str("account", key="account_autocomplete_param_name")
+}
+ACCOUNT_DESCRIBE = {
     "account": app_commands.locale_str(
         "Account to run this command with, defaults to the selected one in /accounts",
         key="account_autocomplete_param_description",
-    ),
+    )
 }
+ACCOUNT_NO_DEFAULT_DESCRIBE = {
+    "account": app_commands.locale_str(
+        "Account to run this command with", key="acc_no_default_param_desc"
+    )
+}
+UID_DESCRIBE = {
+    "uid": app_commands.locale_str(
+        "UID of the player, this overrides the account parameter if provided",
+        key="profile_command_uid_param_description",
+    )
+}
+
+
+def get_rename_kwargs(
+    *, user: bool = False, account: bool = False
+) -> dict[str, app_commands.locale_str]:
+    result: dict[str, app_commands.locale_str] = {}
+    if user:
+        result.update(USER_RENAME)
+    if account:
+        result.update(ACCOUNT_RENAME)
+    return result
+
+
+def get_describe_kwargs(
+    *,
+    user: bool = False,
+    account: bool = False,
+    account_no_default: bool = False,
+    uid: bool = False,
+) -> dict[str, app_commands.locale_str]:
+    if account and account_no_default:
+        msg = "account and account_no_default cannot be True at the same time."
+        raise ValueError(msg)
+
+    result: dict[str, app_commands.locale_str] = {}
+    if user:
+        result.update(USER_DESCRIBE)
+    if account:
+        result.update(ACCOUNT_DESCRIBE)
+    if account_no_default:
+        result.update(ACCOUNT_NO_DEFAULT_DESCRIBE)
+    if uid:
+        result.update(UID_DESCRIBE)
+    return result
+
 
 ZZZ_DISC_SUBSTATS = (
     ("Crit", 20103, ""),

@@ -6,9 +6,9 @@ from hoyo_buddy.db import HoyoAccount, User, get_dyk
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.l10n import EnumStr, LocaleStr
+from hoyo_buddy.ui import View
 
 from .. import SelectOption
-from ..components import View
 from .items.acc_select import AccountSelect
 from .items.acc_settings import AccountPublicToggle, AutoCheckinToggle, AutoRedeemToggle
 from .items.add_acc_btn import AddAccountButton

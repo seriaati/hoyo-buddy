@@ -27,7 +27,7 @@ from hoyo_buddy.icons import (
 )
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput
-from hoyo_buddy.ui.components import View
+from hoyo_buddy.ui import View
 from hoyo_buddy.ui.hoyo.notes.view import NotesView
 from hoyo_buddy.utils import get_now
 

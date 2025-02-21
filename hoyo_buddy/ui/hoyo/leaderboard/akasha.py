@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Literal
 import akasha
 
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui.components import Button
+from hoyo_buddy.ui import Button
 from hoyo_buddy.ui.paginator import Page, PaginatorView
 
 if TYPE_CHECKING:

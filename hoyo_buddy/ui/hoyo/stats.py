@@ -9,9 +9,8 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import EnumStr, LocaleStr
+from hoyo_buddy.ui import Select, SelectOption, View
 from hoyo_buddy.utils import blur_uid
-
-from ..components import Select, SelectOption, View
 
 if TYPE_CHECKING:
     import genshin

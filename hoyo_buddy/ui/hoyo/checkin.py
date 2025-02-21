@@ -13,9 +13,8 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Platform
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, Reward
+from hoyo_buddy.ui import Button, GoBackButton, ToggleButton, View
 from hoyo_buddy.utils import ephemeral, get_now
-
-from ..components import Button, GoBackButton, ToggleButton, View
 
 if TYPE_CHECKING:
     import asyncio

@@ -7,8 +7,7 @@ import hakushin
 from hoyo_buddy.constants import locale_to_hakushin_lang
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui import View
-from hoyo_buddy.ui.components import Select, SelectOption
+from hoyo_buddy.ui import Select, SelectOption, View
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:

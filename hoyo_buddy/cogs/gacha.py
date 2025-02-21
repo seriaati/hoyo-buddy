@@ -97,7 +97,7 @@ class Gacha(
             "Source of the gacha history", key="source_param_description"
         ),
         file=app_commands.locale_str("Gacha history file to upload", key="file_param_description"),
-        **get_describe_kwargs(account=True),
+        **get_describe_kwargs(account_no_default=True),
     )
     @app_commands.choices(
         source=[

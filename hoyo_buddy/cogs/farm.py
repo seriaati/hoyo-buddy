@@ -80,7 +80,7 @@ class Farm(
         query=app_commands.locale_str(
             "Query to search for", key="search_command_query_param_description"
         ),
-        **get_describe_kwargs(account=True),
+        **get_describe_kwargs(account_no_default=True),
     )
     async def farm_add_command(
         self,
@@ -107,7 +107,7 @@ class Farm(
         query=app_commands.locale_str(
             "Query to search for", key="search_command_query_param_description"
         ),
-        **get_describe_kwargs(account=True),
+        **get_describe_kwargs(account_no_default=True),
     )
     async def farm_remove_command(
         self,

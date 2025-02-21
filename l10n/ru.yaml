@@ -39,7 +39,7 @@ accounts_command_description: Управляйте своими аккаунта
 action_in_cooldown_error_message: "Пожалуйста, попробуйте снова в {available_time}."
 action_in_cooldown_error_title: Действие на перезарядке.
 add_account_button_label: Добавить аккаунты
-add_hoyolab_acc.embed.description: "1. С помощью электронной почты и пароля: Самый рекомендуемый способ, так как он самый простой.\n2. С помощью DevTools: Работает только на настольных устройствах, более безопасный вариант, если у вас есть опасения по поводу первого способа.\n "
+add_hoyolab_acc.embed.description: ""
 add_hoyolab_acc.embed.title: Выберите метод добавления ваших Аккаунтов
 adding_accounts_description: ""
 adding_accounts_title: Выберите Платформу Вашего Аккаунта
@@ -116,7 +116,7 @@ complete_geetest_button_description: ""
 complete_geetest_button_label: ""
 const_refine_str: ""
 continue_button_label: ""
-cryo: ""
+cryo: Крио
 daily_button.label: ""
 daily_check_in: Ежедневная отметка
 daily_checkin_embed_description: "Сделано отметок {day} день(дней) в этом месяце\nПропущено отметок {missed} день(дней)\n"
@@ -782,3 +782,14 @@ web_events_notify_toggle_label: ""
 web_events_cmd_desc: ""
 web_events_embed_footer: ""
 auto_task_error_dm_content: ""
+is_support_custom_image_desc: ""
+is_not_support_custom_image_desc: ""
+template_preview_header: ""
+missing_permissions_error_title: ""
+missing_permissions_error_message: ""
+blocked_by_auto_mod_error_title: ""
+blocked_by_auto_mod_error_message: ""
+zzz.core_level.placeholder: ""
+open_game_label: ""
+open_game_cloud_label: ""
+open_game_vietnam_label: ""

@@ -140,7 +140,7 @@ email-geetest.embed.title: CAPTCHA-verificatie vereist voor het verzenden van de
 email_password_button_label: Met email en wachtwoord
 email_password_modal_email_input_label: ""
 email_password_modal_password_input_label: wachtwoord
-enter_email_password_instructions_description: "Deze methode vereist dat je je privégegevens invoert.\n\n- In ruil daarvoor kan je `cookie_token` automatisch worden vernieuwd, die wordt gebruikt in functies met betrekking tot het inwisselen van codes (alleen voor HoYoLAB-gebruikers).\n- Je e-mailadres en wachtwoord worden **NIET** opgeslagen in de database, dus het is praktisch onmogelijk dat ze uitlekken.\n- Bovendien is deze bot open-sourced op [GitHub](https://github.com/seriaati/hoyo-buddy), dus je kunt dat zelf controleren.\n- Het is uiteindelijk aan jou om te beslissen of je deze bot vertrouwt of niet."
+enter_email_password_instructions_description: ""
 enter_light_cone_level.button.label: Light cone niveau wijzigen
 dark_mode_button_label: ""
 error_footer: ""
@@ -298,7 +298,7 @@ notes.elysian_realm: ""
 notes.elysian_realm_value: ""
 notes_available: ""
 notes_command_description: Bekijk real-time notities
-notif.embed.footer: "Klik op de onderstaande knop om de notificatie instellingen te wijzigen.\nGebruik de commando /notes als deze is verlopen."
+notif.embed.footer: ""
 notif_modal.enabled.label: Ingeschakeld
 notif_modal.max_notif_count.label: Max Aantal Meldingen
 notif_modal.notify_interval.label: Interval Melding (in minuten)
@@ -784,3 +784,14 @@ web_events_notify_toggle_label: ""
 web_events_cmd_desc: ""
 web_events_embed_footer: ""
 auto_task_error_dm_content: ""
+is_support_custom_image_desc: ""
+is_not_support_custom_image_desc: ""
+template_preview_header: ""
+missing_permissions_error_title: ""
+missing_permissions_error_message: ""
+blocked_by_auto_mod_error_title: ""
+blocked_by_auto_mod_error_message: ""
+zzz.core_level.placeholder: ""
+open_game_label: ""
+open_game_cloud_label: ""
+open_game_vietnam_label: ""

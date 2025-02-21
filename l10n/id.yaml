@@ -4,7 +4,7 @@ about_command.discord_server: Server discord
 about_command.guild_count: Jumlah guild
 about_command.latest_changes: Perubahan terbaru
 about_command.ram_usage: Penggunaan RAM
-about_command.support: ""
+about_command.support: Donasi
 about_command.translators: Penerjemah
 about_command.uptime: Uptime
 about_command.website: Website resmi
@@ -15,8 +15,8 @@ abyss.battles_won_fought: "Jumlah Pertarungan {val1}/{val2}"
 abyss.deepest_descent: "Pencapaian Tertinggi: {val}"
 abyss.floor: "Lantai {val}"
 abyss.overview: Ringkasan Spiral Abyss
-abyss.damage: ""
-abyss.stats: ""
+abyss.damage: INFO DAMAGE
+abyss.stats: STATS
 abyss.phase_select.placeholder: Pilih fase
 abyss.total_stars: "Total Bintang: {val}"
 abyss_chamber.challenge_target.embed.field.name: Target Tantangan
@@ -87,7 +87,7 @@ characters.filter.none: Tidak ada
 characters.filter.not_max_friendship: Bukan Persahabatan maks
 characters.filter.path.placeholder: Pilih filter path...
 characters.filter.placeholder: Pilih filter...
-characters.level_order.footer: ""
+characters.level_order.footer: "Urutan level: {order}"
 characters.extra_detail.footer: "Gunakan /profile untuk melihat detail karakter"
 hsr.ultimate: Ultimate
 hsr.normal_attack: Normal attack
@@ -105,10 +105,10 @@ characters.sorter.level: Level
 characters.sorter.path: Path
 characters.sorter.placeholder: Pilih penyortir...
 characters.sorter.rarity: Rarity
-characters_cmd_genshin_desc: ""
-characters_cmd_hsr_desc: ""
-characters_cmd_zzz_desc: ""
-characters_cmd_honkai_desc: ""
+characters_cmd_genshin_desc: Lihat dan filter karakter Genshin Impact kamu
+characters_cmd_hsr_desc: Lihat dan filter karakter Honkai Star Rail kamu
+characters_cmd_zzz_desc: Lihat dan filter agen Zenless Zone Zero kamu
+characters_cmd_honkai_desc: Lihat dan filter karakter Honkai Impact 3rd kamu
 checkin_button_label: Absen
 checkin_command_description: Absen harian game
 complete_captcha_button_label: Lengkapi CAPTCHA
@@ -132,24 +132,24 @@ download_image_failed_error_title: Gambar gagal diunduh
 edit_nickname_modal_title: Edit nickname
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
-email_verification_dialog_title: ""
-email_verification_dialog_content: ""
-email_verification_dialog_action: ""
-email_verification_field_label: ""
-email-geetest.embed.title: ""
+email_verification_dialog_title: Diperlukan Verifikasi
+email_verification_dialog_content: Silakan masukkan kode verifikasi yang diterima
+email_verification_dialog_action: memverifikasi
+email_verification_field_label: Kode verifikasi
+email-geetest.embed.title: Verifikasi CAPTCHA diperlukan untuk mengirim kode verifikasi email
 email_password_button_label: Dengan email dan password
 email_password_modal_email_input_label: email atau username
 email_password_modal_password_input_label: password
-enter_email_password_instructions_description: "Metode ini mengharuskan kamu memasukkan informasi pribadi kamu.\n\n• Sebagai gantinya, `cookie_token` kamu dapat diperbarui secara otomatis, yang digunakan dalam fitur yang terkait dengan penukaran kode (hanya untuk pengguna HoYoLAB).\n• Email dan kata sandi kamu **TIDAK** disimpan dalam database **SAMA SEKALI**, sehingga hampir tidak mungkin untuk terjadi kebocoran data.\n• Selain itu, bot ini open source di [GitHub](https://github.com/seriaati/hoyo-buddy), sehingga kamu dapat memverifikasi sendiri.\n• Pada akhirnya, itu adalah pilihan kamu sendiri untuk memutuskan apakah kamu ingin percaya bot ini atau tidak."
+enter_email_password_instructions_description: ""
 enter_light_cone_level.button.label: Ubah level light cone
-dark_mode_button_label: ""
-error_footer: ""
+dark_mode_button_label: Mode gelap
+error_footer: "Kamu dapat menemukan bantuan di server Discord kami, link di /about"
 error_title: Terjadi kesalahan
 erudition: Erudition
-days: ""
-exceptions.card_not_ready_error.message: ""
+days: hari
+exceptions.card_not_ready_error.message: "Saat karakter baru dirilis, saya perlu menentukan warna untuk kartu build mereka.\nJika kamu melihat pesan ini beberapa hari setelah pembaruan game, harap beri tahu saya di [Server Discord](https://link.seria.moe/hb-dc) karena saya mungkin lupa melakukannya."
 exceptions.card_not_ready_error.title: "Data kartu untuk {character_name} belum siap."
-exped.embed.description: ""
+exped.embed.description: Satu (atau lebih) ekspedisi telah selesai
 exped_button.label: Pengingat ekspedisi
 exped_modal.title: Pengaturan Pengingat Ekspedisi
 exploration.chests: Chest Terbuka
@@ -201,13 +201,13 @@ game_maintenance_description: Silakan coba lagi nanti
 game_maintenance_title: Game sedang dalam pemeliharaan
 game_value_incomplete_param_error_message: Kamu harus menentukan UID dari game
 geeetest_verification_complete: Verifikasi selesai
-geetest.embed.title: ""
+geetest.embed.title: Verifikasi CAPTCHA diperlukan sebelum masuk
 geetest.no_need: Tidak perlu geetest
 geetest.no_need.description: "Kamu tidak perlu melalukan geetest! Kenapa kamu di sini?!"
 geetest.required: Diperlukan Verifikasi Geetest
 geetest.required.description: "Gunakan perintah </geetest> , pilih akun untuk pemicu geetest, dan pilih `{geetest_type}` untuk menyelesaikan verifikasi"
 geetest_command_description: Lengkapi verifikasi geetest
-geetest_cmd_type_param_desc: ""
+geetest_cmd_type_param_desc: Ketik verifikasi geetest
 geetest_command_type_param_name: jenis
 genshin_impact: Genshin Impact
 geo: Geo
@@ -266,11 +266,11 @@ next_page_option_label: Halaman selanjutnya
 nickname_modal_label: Nickname
 nickname_modal_placeholder: "Akun utama, akun Asia..."
 nihility: Nihility
-no_account_found_for_games_error_message: ""
-no_account_found_for_games_platform_error_message: ""
+no_account_found_for_games_error_message: "Kamu tidak memiliki akun dari salah satu game berikut. Tambahkan satu dengan </accounts>"
+no_account_found_for_games_platform_error_message: "Kamu tidak memiliki akun dari salah satu game berikut di {platform}. Tambahkan satu dengan </accounts>"
 no_account_found_for_games_error_title: Tidak ditemukan akun
 no_accounts_autocomplete_choice: Kamu belum memiliki akun apapun. Tambahkan satu dengan /accounts
-profile_character_param_name: ""
+profile_character_param_name: "karakter-{num}"
 no_challenge_data_err_message: "Tidak dapat menemukan data {challenge} untuk fase ini. Kamu belum memulai {challenge} atau datanya belum ada. Silakan coba lagi nanti"
 no_challenge_data_err_title: "Tidak ada Data {challenge}"
 no_characters_found_error_message: Silakan coba lagi dengan filter yang berbeda
@@ -284,21 +284,21 @@ notes-card.gi.realm-currency: Realm Currency
 notes-card.gi.remaining: Tersisa
 notes-card.gi.resin: Resin
 notes-card.gi.resin-discounts: Diskon Resin
-notes-card.hsr.echo-of-war-discounts: ""
+notes-card.hsr.echo-of-war-discounts: Batas Echo of War
 notes-card.hsr.reserved-power: Cadangan Power
-notes.item_full_in_time: ""
-notes.stamina_label: ""
-notes.stamina: ""
-notes.train_score: ""
+notes.item_full_in_time: "{emoji} Penuh dalam {in_time}"
+notes.stamina_label: Pengingat stamina
+notes.stamina: "Stamina: {cur}/{max}, penuh dalam {time}"
+notes.train_score: "Harian BP: {cur}/{max}"
 notes.superstring_dimension: ""
-notes.superstring_dimension_value: ""
+notes.superstring_dimension_value: "Score saat ini: {score}"
 notes.memorial_arena: ""
-notes.memorial_arena_value: ""
+notes.memorial_arena_value: "Hadiah tantangan: {rewards_cur}/{rewards_max}\nHadiah SSS-rank: {sss_cur}/{sss_max}"
 notes.elysian_realm: ""
-notes.elysian_realm_value: ""
-notes_available: ""
+notes.elysian_realm_value: "Score saat ini: {cur}/{max}"
+notes_available: "{emoji} Tersedia dalam {in_time}"
 notes_command_description: Lihat catatan real-time
-notif.embed.footer: "Klik tombol di bawah untuk mengubah pengaturan notifikasi.\nJika sudah habis masa berlakunya, gunakan perintah /notes."
+notif.embed.footer: ""
 notif_modal.enabled.label: Diaktifkan
 notif_modal.max_notif_count.label: Jumlah Pemberitahuan Maks
 notif_modal.notify_interval.label: Pemberitahuan Interval (dalam menit)
@@ -308,10 +308,10 @@ notif_modal.threshold.label: Batas
 notification_settings_button_label: Pengaturan notifikasi
 notify_on_failure_button_label: Beritahu jika absen gagal
 notify_on_success_button_label: Beritahu jika absen berhasil
-mimo_auto_task_success_notify_toggle_label: ""
-mimo_auto_task_failure_notify_toggle_label: ""
-mimo_auto_buy_success_notify_toggle_label: ""
-mimo_auto_buy_failure_notify_toggle_label: ""
+mimo_auto_task_success_notify_toggle_label: Pemberitahuan penyelesaian tugas otomatis berhasil
+mimo_auto_task_failure_notify_toggle_label: Pemberitahuan penyelesaian tugas otomatis gagal
+mimo_auto_buy_success_notify_toggle_label: Pemberitahuan pembelian hadiah otomatis berhasil
+mimo_auto_buy_failure_notify_toggle_label: Pemberitahuan pembelian hadiah otomatis gagal
 nsfw_prompt_error_message: "Perintah tersebut berisi konten NSFW, silakan coba lagi dengan perintah lain."
 nsfw_prompt_error_title: NSFW Terdeteksi
 page_footer: "Halaman {current_page}/{total_pages}"
@@ -321,14 +321,14 @@ player_not_found_description: Silakan periksa kembali UID yang diberikan
 player_not_found_title: Pemain tidak ditemukan
 preservation: Preservation
 prev_page_option_label: Halaman Sebelumnya
-notify_feature: ""
+notify_feature: Catatan pengingat ini
 profile.add_image.button.label: Tambah gambar kustom
 profile.add_image_modal.image_url.label: URL Gambar
 profile.build.select.placeholder: Pilih build...
 profile.card_info.embed.description: "- Semua aset yang digunakan dalam kartu adalah milik Hoyoverse, saya bukan pemiliknya.\n- Semua fanart yang digunakan dalam kartu dikreditkan ke artisnya masing-masing.\n- Desain template Hoyo Buddy adalah asli, kamu tidak diperbolehkan memodifikasinya atau mengklaim bahwa kamu membuatnya tanpa izin saya.\n- Data permainan disediakan oleh {provider}\n"
 profile.card_info.embed.title: Tentang Kartu Build Karakter
 profile.card_settings.button.label: Pengaturan kartu
-profile.image_settings.button.label: ""
+profile.image_settings.button.label: Pengaturan gambar
 profile.card_template_select.diff_author.description: "Dirancang oleh {author1} dan diprogram oleh {author2}"
 profile.card_template_select.encard.label: "Template ENCard {num}"
 profile.card_template_select.enka_classic.label: Template Enka klasik
@@ -338,16 +338,16 @@ profile.card_template_select.placeholder: Pilih template
 profile.card_template_select.same_author.description: "Dirancang dan diprogram oleh {author}"
 profile.card_template_select.src.label: "Template StarRailCard {num}"
 profile.character_select.cached_data.description: Data cache
-profile.character_select.description: ""
+profile.character_select.description: "E{e}S{s} | {d} | In-game showcase"
 profile.character_select.enka_network.description: Enka Network build
-profile.character_select.hoyolab.description: ""
+profile.character_select.hoyolab.description: "E{e}S{s} | {d} | {platform}"
 profile.character_select.live_data.description: Data real-time
 profile.character_select.placeholder: Pilih karakter
 profile.generate_ai_art.button.label: Buat gambar AI
 profile.generate_ai_art_modal.negative_prompt.label: Perintah Negatif
 profile.generate_ai_art_modal.prompt.label: Perintah
-profile.genshin.character_select.description: ""
-profile.genshin.character_select.hoyolab.description: ""
+profile.genshin.character_select.description: "C{c}R{r} | {d}"
+profile.genshin.character_select.hoyolab.description: "C{c}R{r} | {d} | {platform}"
 profile.image_select.custom_image.label: "Gambar Kustom ({num})"
 profile.image_select.default_collection.label: "Koleksi Hoyo Buddy ({num})"
 profile.image_select.none.label: Gambar resmi
@@ -361,9 +361,9 @@ profile.primary_color_modal.color.label: Warna (hex code)
 profile.primary_color_modal.title: Ganti Warna Kartu
 profile.remove_from_cache.button.label: Hapus dari cache
 profile.remove_image.button.label: Hapus gambar kustom
-profile_command_gi_description: ""
-profile_command_hsr_description: ""
-profile_command_zzz_description: ""
+profile_command_gi_description: Hasilkan kartu build karakter dan kartu tim Genshin Impact
+profile_command_hsr_description: Hasilkan kartu build karakter dan kartu tim Honkai Star Rail
+profile_command_zzz_description: Hasilkan kartu build agen dan kartu tim Zenless Zone Zero
 profile_command_game_value_description: UID dari Game
 profile_command_uid_param_description: "UID pemain, ini akan menggantikan parameter akun jika disediakan"
 pt_button.label: Pengingat parametric transformer
@@ -376,7 +376,7 @@ read_story.button.label: Baca Kisah
 real_time_notes: Catatan real-time
 realm_curr_button.label: Pengingat realm currency
 realm_curr_modal.title: Pengaturan Pengingat Realm Currency
-redeeem_code.cookie_token_expired_description: ""
+redeeem_code.cookie_token_expired_description: "Fitur penukaran kode hanya tersedia untuk pengguna yang masuk dengan email dan kata sandi, kamu dapat melakukannya dengan </accounts>"
 redeeem_code.cookie_token_expired_title: Batas waktu token cookie berakhir
 redeeem_code.cookie_token_refresh_failed_description: "Mungkin kamu telah mengubah kata sandi akun sejak terakhir kali kmau menambahkan akun.\nSilakan tambahkan akun kamu lagi menggunakan </accounts> dengan metode email dan kata sandi."
 redeeem_code.cookie_token_refresh_failed_title: Gagal memperbarui token cookie
@@ -411,7 +411,7 @@ search_command_game_param_description: Pencarian game
 search_command_game_param_name: game
 search_command_query_param_description: Pencarian pertanyaan
 search_command_query_param_name: pertanyaan
-select_account.embed.description: ""
+select_account.embed.description: Pilih akun yang ingin kamu tambahkan ke Hoyo Buddy
 select_account.embed.title: 🎉 Selamat datang di Hoyo Buddy!
 settings_command_description: Konfigurasikan pengaturan pengguna kamu
 skill_attributes_embed_field_name: "Skill Attributes (Lv.{level})"
@@ -457,24 +457,24 @@ yatta_item_sources_field_name: Sumber
 characters.show_owned_only: Hanya tunjukan karakter yang dimiliki
 redeem_code.ar_too_low: Adventure rank terlalu rendah
 data_not_public.title: Data tidak Publik
-data_not_public.description: ""
+data_not_public.description: "Aktifkan opsi berbagi data di pengaturan battle chronicle kamu"
 not_implemented_error_title: Fitur belum diterapkan
-not_implemented_error_only_game_message: ""
-not_implemented_error_message: ""
-profile.build.current.label: ""
-abyss_chamber.blessing.embed.field.name: ""
+not_implemented_error_only_game_message: "Fitur ini belum diterapkan untuk akun `{game}`."
+not_implemented_error_message: "Fitur ini belum diterapkan untuk akun `{game}` di `{platform}`."
+profile.build.current.label: Saat ini
+abyss_chamber.blessing.embed.field.name: Blessing of the Abyssal Moon
 apocalyptic_shadow: ""
-apc_shadow.highest_diff_cleared: ""
-apc_shadow.times_challenged: ""
-apc_shadow.boss_defeated: ""
-apc_shadow.boss_defeated_no: ""
+apc_shadow.highest_diff_cleared: "Tingkat kesulitan tertinggi yang diselesaikan: {diff}"
+apc_shadow.times_challenged: "Waktu tantangan: {times}"
+apc_shadow.boss_defeated: Boss Dikalahkan
+apc_shadow.boss_defeated_no: Boss Belum Dikalahkan
 notes.bonus_sync_points: ""
-invalid_uid_format_title: ""
-invalid_uid_format_description: ""
-zenless_zone_zero: ""
-img_theater_large_block_title: ""
+invalid_uid_format_title: Format UID tidak valid
+invalid_uid_format_description: "UID harus berupa angka 9 hingga 10 digit"
+zenless_zone_zero: Zenless Zone Zero
+img_theater_large_block_title: Imaginarium Theater
 img_theater_stats_line_five: ""
-img_theater_legend_block_support_chara: ""
+img_theater_legend_block_support_chara: Karakter Pendukung
 img_theater_legend_block_trial_chara: ""
 img_theater_max_damage: ""
 img_theater_fastest_team: ""
@@ -784,3 +784,14 @@ web_events_notify_toggle_label: ""
 web_events_cmd_desc: ""
 web_events_embed_footer: ""
 auto_task_error_dm_content: ""
+is_support_custom_image_desc: ""
+is_not_support_custom_image_desc: ""
+template_preview_header: ""
+missing_permissions_error_title: ""
+missing_permissions_error_message: ""
+blocked_by_auto_mod_error_title: ""
+blocked_by_auto_mod_error_message: ""
+zzz.core_level.placeholder: ""
+open_game_label: ""
+open_game_cloud_label: ""
+open_game_vietnam_label: ""

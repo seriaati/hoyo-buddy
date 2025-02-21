@@ -8,9 +8,8 @@ from hoyo_buddy.constants import WEB_APP_URLS
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.ui import Button
 from hoyo_buddy.web_app.schema import Params
-
-from ...components import Button
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction

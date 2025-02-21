@@ -3,24 +3,21 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from hoyo_buddy.db import HoyoAccount, get_dyk
+from hoyo_buddy.embeds import DefaultEmbed
+from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.icons import get_game_icon
-
-from ...embeds import DefaultEmbed
-from ...emojis import get_game_emoji
-from ...l10n import EnumStr, LocaleStr
-from ...utils import blur_uid
-from ..components import Select, SelectOption, View
+from hoyo_buddy.l10n import EnumStr, LocaleStr
+from hoyo_buddy.ui import Select, SelectOption, View
+from hoyo_buddy.utils import blur_uid
 
 if TYPE_CHECKING:
     import genshin
     from discord import Locale
     from genshin.models import RecordCard
 
-    from hoyo_buddy.types import User
-
-    from ...types import Interaction
+    from hoyo_buddy.types import Interaction, User
 
 
 def get_label(card: RecordCard) -> str:

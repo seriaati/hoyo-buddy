@@ -8,8 +8,10 @@ import hakushin
 import hakushin.clients
 from discord.app_commands import Choice
 
-from ..constants import LOCALE_TO_AMBR_LANG, LOCALE_TO_HAKUSHIN_LANG, LOCALE_TO_YATTA_LANG
-from ..enums import Game
+from hoyo_buddy.constants import LOCALE_TO_AMBR_LANG, LOCALE_TO_HAKUSHIN_LANG, LOCALE_TO_YATTA_LANG
+from hoyo_buddy.enums import Game
+from hoyo_buddy.utils import TaskGroup
+
 from .clients import ambr, yatta
 from .clients.hakushin import ItemCategory as HakushinItemCategory
 from .clients.hakushin import ZZZItemCategory
@@ -18,7 +20,7 @@ if TYPE_CHECKING:
     import aiohttp
     from discord import Locale
 
-    from ..types import AutocompleteChoices, BetaAutocompleteChoices, ItemCategory, Tasks
+    from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, ItemCategory, Tasks
 
 TO_HAKUSHIN_ITEM_CATEGORY: Final[
     dict[ambr.ItemCategory | yatta.ItemCategory, HakushinItemCategory]
@@ -50,7 +52,7 @@ class AutocompleteSetup:
 
     @classmethod
     def _get_ambr_task(
-        cls, api: ambr.AmbrAPIClient, category: ambr.ItemCategory, tg: asyncio.TaskGroup
+        cls, api: ambr.AmbrAPIClient, category: ambr.ItemCategory, tg: TaskGroup
     ) -> asyncio.Task[list[Any]] | None:
         match category:
             case ambr.ItemCategory.CHARACTERS:
@@ -80,7 +82,7 @@ class AutocompleteSetup:
 
     @classmethod
     def _get_yatta_task(
-        cls, api: yatta.YattaAPIClient, category: yatta.ItemCategory, tg: asyncio.TaskGroup
+        cls, api: yatta.YattaAPIClient, category: yatta.ItemCategory, tg: TaskGroup
     ) -> asyncio.Task[list[Any]]:
         match category:
             case yatta.ItemCategory.CHARACTERS:
@@ -96,7 +98,7 @@ class AutocompleteSetup:
 
     @classmethod
     def _get_hakushin_gi_task(
-        cls, api: hakushin.clients.GIClient, category: HakushinItemCategory, tg: asyncio.TaskGroup
+        cls, api: hakushin.clients.GIClient, category: HakushinItemCategory, tg: TaskGroup
     ) -> asyncio.Task[list[Any]] | None:
         match category:
             case HakushinItemCategory.GI_CHARACTERS:
@@ -110,7 +112,7 @@ class AutocompleteSetup:
 
     @classmethod
     def _get_hakushin_hsr_task(
-        cls, api: hakushin.clients.HSRClient, category: HakushinItemCategory, tg: asyncio.TaskGroup
+        cls, api: hakushin.clients.HSRClient, category: HakushinItemCategory, tg: TaskGroup
     ) -> asyncio.Task[list[Any]] | None:
         match category:
             case HakushinItemCategory.HSR_CHARACTERS:
@@ -124,7 +126,7 @@ class AutocompleteSetup:
 
     @classmethod
     def _get_hakushin_zzz_task(
-        cls, api: hakushin.clients.ZZZClient, category: ZZZItemCategory, tg: asyncio.TaskGroup
+        cls, api: hakushin.clients.ZZZClient, category: ZZZItemCategory, tg: TaskGroup
     ) -> asyncio.Task[list[Any]]:
         match category:
             case ZZZItemCategory.AGENTS:
@@ -137,7 +139,7 @@ class AutocompleteSetup:
                 return tg.create_task(api.fetch_bangboos())
 
     @classmethod
-    async def _setup_ambr(cls, tg: asyncio.TaskGroup, session: aiohttp.ClientSession) -> None:
+    async def _setup_ambr(cls, tg: TaskGroup, session: aiohttp.ClientSession) -> None:
         game = Game.GENSHIN
 
         for locale in LOCALE_TO_AMBR_LANG:
@@ -149,7 +151,7 @@ class AutocompleteSetup:
                     await asyncio.sleep(0.1)
 
     @classmethod
-    async def _setup_yatta(cls, tg: asyncio.TaskGroup, session: aiohttp.ClientSession) -> None:
+    async def _setup_yatta(cls, tg: TaskGroup, session: aiohttp.ClientSession) -> None:
         game = Game.STARRAIL
 
         for locale in LOCALE_TO_YATTA_LANG:
@@ -160,7 +162,7 @@ class AutocompleteSetup:
                 await asyncio.sleep(0.1)
 
     @classmethod
-    async def _setup_hakushin(cls, tg: asyncio.TaskGroup, session: aiohttp.ClientSession) -> None:
+    async def _setup_hakushin(cls, tg: TaskGroup, session: aiohttp.ClientSession) -> None:
         for locale, lang in LOCALE_TO_HAKUSHIN_LANG.items():
             gi_api = hakushin.HakushinAPI(hakushin.Game.GI, lang, session=session)
             hsr_api = hakushin.HakushinAPI(hakushin.Game.HSR, lang, session=session)
@@ -172,6 +174,7 @@ class AutocompleteSetup:
                     task = cls._get_hakushin_gi_task(gi_api, category, tg)
                 else:
                     task = cls._get_hakushin_hsr_task(hsr_api, category, tg)
+
                 if task is not None:
                     cls._tasks[game][category][locale] = task
                     await asyncio.sleep(0.1)
@@ -221,7 +224,7 @@ class AutocompleteSetup:
         cls._category_beta_ids = {}
         cls._tasks = defaultdict(lambda: defaultdict(dict))
 
-        async with asyncio.TaskGroup() as tg:
+        async with TaskGroup() as tg:
             tg.create_task(cls._setup_ambr(tg, session))
             tg.create_task(cls._setup_yatta(tg, session))
             tg.create_task(cls._setup_hakushin(tg, session))

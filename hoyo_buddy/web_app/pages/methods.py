@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, Any
 
 import flet as ft
 
-from ...enums import Platform
-from ...l10n import LocaleStr, translator
+from hoyo_buddy.enums import Platform
+from hoyo_buddy.l10n import LocaleStr, translator
 
 if TYPE_CHECKING:
     from discord import Locale

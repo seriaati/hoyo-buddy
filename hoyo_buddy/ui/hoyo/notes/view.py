@@ -24,8 +24,7 @@ from hoyo_buddy.enums import Game, NotesNotifyType
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.l10n import LocaleStr, WeekdayStr
 from hoyo_buddy.models import DrawInput
-from hoyo_buddy.ui import Button, GoBackButton, View
-from hoyo_buddy.ui.components import Select, SelectOption
+from hoyo_buddy.ui import Button, GoBackButton, Select, SelectOption, View
 
 if TYPE_CHECKING:
     import io

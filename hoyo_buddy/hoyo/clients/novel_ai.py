@@ -6,7 +6,7 @@ from typing import Any
 import novelai
 import novelai.exceptions
 
-from ...exceptions import AIGenImageError
+from hoyo_buddy.exceptions import AIGenImageError
 
 
 class NAIClient(novelai.NAIClient):

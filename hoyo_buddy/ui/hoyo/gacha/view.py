@@ -17,7 +17,7 @@ from hoyo_buddy.emojis import CURRENCY_EMOJIS
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import NoGachaLogFoundError
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui.components import Button, Select, SelectOption, View
+from hoyo_buddy.ui import Button, Select, SelectOption, View
 from hoyo_buddy.utils import ephemeral
 from hoyo_buddy.web_app.schema import GachaParams
 

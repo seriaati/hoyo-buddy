@@ -12,7 +12,7 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui.components import Button, PaginatorSelect, Select, SelectOption, View
+from hoyo_buddy.ui import Button, PaginatorSelect, Select, SelectOption, View
 from hoyo_buddy.ui.paginator import Page, PaginatorView
 from hoyo_buddy.utils import remove_html_tags
 

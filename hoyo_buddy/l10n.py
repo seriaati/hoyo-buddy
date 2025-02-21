@@ -5,7 +5,6 @@ import datetime
 import pathlib
 import random
 import re
-from asyncio import TaskGroup
 from typing import TYPE_CHECKING, Any, Literal, Self, TypeAlias
 
 import aiofiles
@@ -19,6 +18,7 @@ from seria.utils import read_json, read_yaml
 
 from hoyo_buddy.emojis import INFO
 from hoyo_buddy.enums import Game
+from hoyo_buddy.utils import TaskGroup
 
 from .constants import (
     AMBR_ELEMENT_TO_ELEMENT,

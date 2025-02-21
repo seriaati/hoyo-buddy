@@ -7,10 +7,10 @@ import genshin
 from loguru import logger
 
 from hoyo_buddy.constants import get_docs_url, locale_to_gpy_lang
+from hoyo_buddy.enums import Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
+from hoyo_buddy.l10n import LocaleStr, translator
 
-from ...enums import Platform
-from ...l10n import LocaleStr, translator
 from ..login_handler import handle_action_ticket, handle_session_mmt
 from ..utils import encrypt_string, show_error_banner, show_loading_snack_bar
 

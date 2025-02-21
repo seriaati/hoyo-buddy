@@ -22,7 +22,7 @@ from hoyo_buddy.emojis import (
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import MimoUnavailableError
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui.components import GoBackButton
+from hoyo_buddy.ui import GoBackButton
 from hoyo_buddy.utils import convert_code_to_redeem_url, ephemeral, get_mimo_task_str
 
 if TYPE_CHECKING:

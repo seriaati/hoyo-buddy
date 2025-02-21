@@ -7,10 +7,10 @@ import hakushin
 import hakushin.clients
 import yatta
 
-from ...constants import TRAILBLAZER_IDS, YATTA_PATH_TO_HSR_PATH, contains_traveler_id
-from ...embeds import DefaultEmbed
-from ...emojis import get_hsr_path_emoji, get_zzz_element_emoji
-from ...l10n import LevelStr, LocaleStr, translator
+from hoyo_buddy.constants import TRAILBLAZER_IDS, YATTA_PATH_TO_HSR_PATH, contains_traveler_id
+from hoyo_buddy.embeds import DefaultEmbed
+from hoyo_buddy.emojis import get_hsr_path_emoji, get_zzz_element_emoji
+from hoyo_buddy.l10n import LevelStr, LocaleStr, translator
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

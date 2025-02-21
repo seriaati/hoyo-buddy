@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING
 
 import flet as ft
 
-from ...l10n import LocaleStr
+from hoyo_buddy.l10n import LocaleStr
+
 from ..utils import encrypt_string, show_loading_snack_bar
 
 if TYPE_CHECKING:

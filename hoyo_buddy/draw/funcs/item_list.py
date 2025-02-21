@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING
 from discord import Locale
 from PIL import Image, ImageDraw
 
-from ...models import ItemWithDescription, ItemWithTrailing
+from hoyo_buddy.models import ItemWithDescription, ItemWithTrailing
+
 from ..drawer import (
     DARK_ON_SURFACE,
     DARK_ON_SURFACE_VARIANT,

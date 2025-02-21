@@ -14,7 +14,7 @@ from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import DELETE, EXPORT
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui.components import Button, View
+from hoyo_buddy.ui import Button, View
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:

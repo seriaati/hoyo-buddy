@@ -22,8 +22,16 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import InvalidImageURLError, NSFWPromptError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import HoyolabGICharacter
-from hoyo_buddy.ui import Button, Modal, PaginatorSelect, SelectOption, TextInput, View
-from hoyo_buddy.ui.components import Select, ToggleButton
+from hoyo_buddy.ui import (
+    Button,
+    Modal,
+    PaginatorSelect,
+    Select,
+    SelectOption,
+    TextInput,
+    ToggleButton,
+    View,
+)
 from hoyo_buddy.utils import get_pixiv_proxy_img, is_image_url, test_url_validity, upload_image
 
 from .card_settings import get_card_settings

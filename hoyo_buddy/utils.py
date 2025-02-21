@@ -465,3 +465,9 @@ async def add_to_hoyo_codes(
             # Code already exists
             return
         resp.raise_for_status()
+
+
+class TaskGroup(asyncio.TaskGroup):
+    """An asyncio.TaskGroup subclass that won't cancel all tasks when any of them errors out."""
+
+    _abort = lambda _: None  # noqa: E731

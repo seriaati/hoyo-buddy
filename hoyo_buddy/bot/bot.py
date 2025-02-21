@@ -43,7 +43,7 @@ from hoyo_buddy.enums import Game, GeetestType, Platform
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
 from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
-from hoyo_buddy.utils import fetch_json, get_now, get_project_version, safe
+from hoyo_buddy.utils import TaskGroup, fetch_json, get_now, get_project_version
 
 from .cache import LFUCache
 from .command_tree import CommandTree
@@ -361,29 +361,25 @@ class HoyoBuddy(commands.AutoShardedBot):
             await models.HoyoAccount.filter(id=current_accounts[0].id).update(current=True)
 
     async def update_assets(self) -> None:
-        async with (
-            enka.GenshinClient() as enka_gi,
-            enka.HSRClient() as enka_hsr,
-            asyncio.TaskGroup() as tg,
-        ):
+        async with enka.GenshinClient() as enka_gi, enka.HSRClient() as enka_hsr, TaskGroup() as tg:
             # Fetch mi18n files
-            tg.create_task(safe(translator.fetch_mi18n_files()))
+            tg.create_task(translator.fetch_mi18n_files())
 
             # Update enka.py assets
-            tg.create_task(safe(enka_gi.update_assets()))
-            tg.create_task(safe(enka_hsr.update_assets()))
+            tg.create_task(enka_gi.update_assets())
+            tg.create_task(enka_hsr.update_assets())
 
             # Update genshin.py assets
-            tg.create_task(safe(genshin.utility.update_characters_ambr()))
+            tg.create_task(genshin.utility.update_characters_ambr())
 
             # Update item ID -> name mappings and some other stuff
-            tg.create_task(safe(self.update_zzz_assets()))
-            tg.create_task(safe(self.update_hsr_assets()))
+            tg.create_task(self.update_zzz_assets())
+            tg.create_task(self.update_hsr_assets())
 
     async def update_zzz_assets(self) -> None:
         result: dict[str, dict[str, str]] = {}
 
-        async with asyncio.TaskGroup() as tg:
+        async with TaskGroup() as tg:
             item_temp_task = tg.create_task(fetch_json(self.session, ZZZ_ITEM_TEMPLATE_URL))
             avatar_temp_task = tg.create_task(fetch_json(self.session, ZZZ_AVATAR_TEMPLATE_URL))
             text_map_tasks = {
@@ -442,7 +438,7 @@ class HoyoBuddy(commands.AutoShardedBot):
     async def update_hsr_assets(self) -> None:
         result: dict[str, dict[str, str]] = {}
 
-        async with asyncio.TaskGroup() as tg:
+        async with TaskGroup() as tg:
             avatar_config_task = tg.create_task(fetch_json(self.session, HSR_AVATAR_CONFIG_URL))
             equipment_config_task = tg.create_task(
                 fetch_json(self.session, HSR_EQUIPMENT_CONFIG_URL)

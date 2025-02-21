@@ -13,7 +13,6 @@ import aiohttp
 import orjson
 import sentry_sdk
 import toml
-from loguru import logger
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
@@ -28,7 +27,7 @@ from hoyo_buddy.enums import Game
 
 if TYPE_CHECKING:
     import pathlib
-    from collections.abc import Awaitable, Generator
+    from collections.abc import Generator
 
     import discord
     import genshin
@@ -468,8 +467,7 @@ async def add_to_hoyo_codes(
         resp.raise_for_status()
 
 
-async def safe(coro: Awaitable[Any]) -> Any:
-    try:
-        return await coro
-    except Exception:
-        logger.exception("Error occurred while executing a coroutine")
+class TaskGroup(asyncio.TaskGroup):
+    """An asyncio.TaskGroup subclass that won't cancel all tasks when any of them errors out."""
+
+    _abort = lambda _: None  # noqa: E731

@@ -5,7 +5,6 @@ import datetime
 import pathlib
 import random
 import re
-from asyncio import TaskGroup
 from typing import TYPE_CHECKING, Any, Literal, Self, TypeAlias
 
 import aiofiles
@@ -19,6 +18,7 @@ from seria.utils import read_json, read_yaml
 
 from hoyo_buddy.emojis import INFO
 from hoyo_buddy.enums import Game
+from hoyo_buddy.utils import TaskGroup
 
 from .constants import (
     AMBR_ELEMENT_TO_ELEMENT,
@@ -32,7 +32,7 @@ from .constants import (
     get_docs_url,
 )
 from .utils import capitalize_first_word as capitalize_first_word_
-from .utils import convert_to_title_case, safe
+from .utils import convert_to_title_case
 
 if TYPE_CHECKING:
     from enum import StrEnum
@@ -188,7 +188,7 @@ class Translator:
                 url, filename = file_
                 for lang in genshin.constants.LANGS:
                     tg.create_task(
-                        safe(self._fetch_mi18n_task(client, lang=lang, url=url, filename=filename))
+                        self._fetch_mi18n_task(client, lang=lang, url=url, filename=filename)
                     )
 
         logger.info("Fetched mi18n files")

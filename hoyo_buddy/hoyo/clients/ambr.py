@@ -12,6 +12,7 @@ from discord import Locale
 from seria.utils import create_bullet_list, shorten
 
 from hoyo_buddy.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_gi_element_emoji
+from hoyo_buddy.utils import TaskGroup
 
 from ...constants import contains_traveler_id, locale_to_ambr_lang
 from ...embeds import DefaultEmbed
@@ -55,7 +56,8 @@ class AmbrAPIClient(ambr.AmbrAPI):
         result: list[ambr.Weapon | ambr.Character] = []
         tasks: list[asyncio.Task[list[ambr.Weapon] | list[ambr.Character]]] = []
         langs = [lang] if lang else list(ambr.Language)
-        async with asyncio.TaskGroup() as tg:
+
+        async with TaskGroup() as tg:
             for lang_ in langs:
                 self.lang = lang_
                 tasks.append(tg.create_task(super().fetch_characters()))

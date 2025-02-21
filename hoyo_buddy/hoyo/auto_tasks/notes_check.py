@@ -10,15 +10,12 @@ from discord import Locale
 from genshin.models import HonkaiNotes, HSREvent, StarRailNote, VideoStoreState, ZZZNotes
 from genshin.models import Notes as GenshinNotes
 
+from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.db import NotesNotify, draw_locale
-from hoyo_buddy.ui.components import View
-from hoyo_buddy.ui.hoyo.notes.view import NotesView
-
-from ...bot.error_handler import get_error_embed
-from ...draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
-from ...embeds import DefaultEmbed, ErrorEmbed
-from ...enums import Game, NotesNotifyType
-from ...icons import (
+from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
+from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
+from hoyo_buddy.enums import Game, NotesNotifyType
+from hoyo_buddy.icons import (
     BATTERY_CHARGE_ICON,
     COMMISSION_ICON,
     PT_ICON,
@@ -28,14 +25,16 @@ from ...icons import (
     SCRATCH_CARD_ICON,
     TBP_ICON,
 )
-from ...l10n import LocaleStr
-from ...models import DrawInput
-from ...utils import get_now
+from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.models import DrawInput
+from hoyo_buddy.ui.components import View
+from hoyo_buddy.ui.hoyo.notes.view import NotesView
+from hoyo_buddy.utils import get_now
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from ...bot import HoyoBuddy
+    from hoyo_buddy.bot import HoyoBuddy
 
 Notes: TypeAlias = GenshinNotes | HonkaiNotes | StarRailNote | ZZZNotes
 

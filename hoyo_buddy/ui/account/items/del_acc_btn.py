@@ -8,8 +8,7 @@ from hoyo_buddy.db import HoyoAccount
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import DELETE, FORWARD
 from hoyo_buddy.l10n import LocaleStr
-
-from ...components import Button
+from hoyo_buddy.ui import Button
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction

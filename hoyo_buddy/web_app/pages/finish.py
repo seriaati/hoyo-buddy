@@ -8,11 +8,11 @@ import flet as ft
 import genshin
 
 from hoyo_buddy.config import CONFIG
+from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME
+from hoyo_buddy.enums import Platform
+from hoyo_buddy.l10n import LocaleStr, translator
+from hoyo_buddy.utils import get_discord_protocol_url, get_discord_url
 
-from ...constants import GPY_GAME_TO_HB_GAME
-from ...enums import Platform
-from ...l10n import LocaleStr, translator
-from ...utils import get_discord_protocol_url, get_discord_url
 from ..utils import reset_storage, show_error_banner
 
 if TYPE_CHECKING:

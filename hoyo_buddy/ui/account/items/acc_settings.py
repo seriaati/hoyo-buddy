@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.l10n import LocaleStr
-
-from ...components import ToggleButton
+from hoyo_buddy.ui import ToggleButton
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction

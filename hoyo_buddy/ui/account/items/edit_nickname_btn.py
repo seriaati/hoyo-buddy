@@ -6,8 +6,7 @@ from discord import TextStyle
 
 from hoyo_buddy.emojis import EDIT
 from hoyo_buddy.l10n import LocaleStr
-
-from ...components import Button, Modal, TextInput
+from hoyo_buddy.ui import Button, Modal, TextInput
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction

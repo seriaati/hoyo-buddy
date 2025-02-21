@@ -33,11 +33,9 @@ class Gacha(
         ),
     )
     @app_commands.rename(**get_rename_kwargs(account=True))
-    @app_commands.describe(**get_describe_kwargs(account=True))
+    @app_commands.describe(**get_describe_kwargs(account_no_default=True))
     async def import_(
-        self,
-        i: Interaction,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        self, i: Interaction, account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer]
     ) -> Any:
         account_ = account or await self.bot.get_account(
             i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
@@ -51,11 +49,9 @@ class Gacha(
         ),
     )
     @app_commands.rename(**get_rename_kwargs(account=True))
-    @app_commands.describe(**get_describe_kwargs(account=True))
+    @app_commands.describe(**get_describe_kwargs(account_no_default=True))
     async def view_logs(
-        self,
-        i: Interaction,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        self, i: Interaction, account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer]
     ) -> Any:
         account_ = account or await self.bot.get_account(
             i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
@@ -69,11 +65,9 @@ class Gacha(
         ),
     )
     @app_commands.rename(**get_rename_kwargs(account=True))
-    @app_commands.describe(**get_describe_kwargs(account=True))
+    @app_commands.describe(**get_describe_kwargs(account_no_default=True))
     async def manage_logs(
-        self,
-        i: Interaction,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        self, i: Interaction, account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer]
     ) -> Any:
         account_ = account or await self.bot.get_account(
             i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)

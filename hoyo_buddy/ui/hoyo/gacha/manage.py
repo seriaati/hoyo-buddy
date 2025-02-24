@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 import io
 import time
 from typing import TYPE_CHECKING, Any
@@ -110,14 +111,14 @@ class ExportButton(Button[GachaLogManageView]):
         }
         game_info = {
             "uid": self.view.account.uid,
-            "timezone": 8,
+            "timezone": 0,
             "list": [
                 {
                     "id": str(x.wish_id),
                     "uigf_gacha_type": str(x.banner_type),
                     "gacha_type": str(x.banner_type),
                     "item_id": str(x.item_id),
-                    "time": x.time.astimezone().isoformat(),
+                    "time": x.time.astimezone(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S"),
                     "rank_type": str(x.rarity),
                 }
                 for x in await GachaHistory.filter(account=self.view.account).all()

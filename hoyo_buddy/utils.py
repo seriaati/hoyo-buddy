@@ -3,8 +3,10 @@ from __future__ import annotations
 import asyncio
 import base64
 import datetime
+import logging
 import math
 import re
+import sys
 import time
 from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any
@@ -13,6 +15,7 @@ import aiohttp
 import orjson
 import sentry_sdk
 import toml
+from loguru import logger
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
@@ -20,10 +23,11 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 from seria.utils import clean_url
 
-from hoyo_buddy.config import CONFIG
+from hoyo_buddy.config import CONFIG, parse_args
 from hoyo_buddy.constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
+from hoyo_buddy.logging import InterceptHandler
 
 if TYPE_CHECKING:
     import pathlib
@@ -471,3 +475,28 @@ class TaskGroup(asyncio.TaskGroup):
     """An asyncio.TaskGroup subclass that won't cancel all tasks when any of them errors out."""
 
     _abort = lambda _: None  # noqa: E731
+
+
+def entry_point(log_dir: str) -> None:
+    try:
+        from icecream import install  # noqa: PLC0415
+    except ImportError:
+        pass
+    else:
+        install()
+
+    logger.remove()
+
+    args = parse_args(default=not CONFIG.is_dev)
+    CONFIG.update_from_args(args)
+    logger.info(CONFIG.cli_args)
+
+    if CONFIG.sentry:
+        init_sentry()
+
+    logger.add(sys.stderr, level="DEBUG" if CONFIG.is_dev else "INFO")
+    logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
+    logger.add(log_dir, rotation="1 day", retention="2 weeks", level="DEBUG")
+
+    if sys.platform == "win32":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())

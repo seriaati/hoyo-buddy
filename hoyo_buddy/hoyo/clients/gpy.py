@@ -960,7 +960,7 @@ class GenshinClient(ProxyGenshinClient):
         return data["code"]
 
     async def get_mimo_tasks(
-        self, *, game_id: int, version_id: int, api_name: ProxyAPI | Literal["LOCAL"] = "RENDER4"
+        self, *, game_id: int, version_id: int, api_name: ProxyAPI | Literal["LOCAL"] = "LOCAL"
     ) -> Sequence[genshin.models.MimoTask]:
         try:
             if api_name == "LOCAL":

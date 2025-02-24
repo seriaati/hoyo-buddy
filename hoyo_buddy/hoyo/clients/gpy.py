@@ -119,7 +119,7 @@ class ProxyGenshinClient(genshin.Client):
 
     @staticmethod
     def _get_available_apis() -> list[ProxyAPI | Literal["LOCAL"]]:
-        for api, dt in API_DISABLE_DATETIMES.items():
+        for api, dt in list(API_DISABLE_DATETIMES.items()):
             if (get_now() - dt).total_seconds() >= API_DISABLE_DURATION:
                 ProxyGenshinClient._enable_api(api)
         return [api for api in PROXY_APIS_ if not ProxyGenshinClient._is_disabled_api(api)]

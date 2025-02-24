@@ -58,10 +58,6 @@ class Config(BaseSettings):
         self.novelai = args.novelai
 
     @property
-    def cli_args(self) -> str:
-        return f"search={self.search} sentry={self.sentry} schedule={self.schedule} prometheus={self.prometheus} novelai={self.novelai}"
-
-    @property
     def is_dev(self) -> bool:
         return self.env == "dev"
 

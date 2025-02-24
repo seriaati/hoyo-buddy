@@ -486,17 +486,16 @@ def entry_point(log_dir: str) -> None:
         install()
 
     logger.remove()
-
-    args = parse_args(default=not CONFIG.is_dev)
-    CONFIG.update_from_args(args)
-    logger.info(CONFIG.cli_args)
-
-    if CONFIG.sentry:
-        init_sentry()
-
     logger.add(sys.stderr, level="DEBUG" if CONFIG.is_dev else "INFO")
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
     logger.add(log_dir, rotation="1 day", retention="2 weeks", level="DEBUG")
+
+    args = parse_args(default=not CONFIG.is_dev)
+    CONFIG.update_from_args(args)
+    logger.info(f"CLI args: {args}")
+
+    if CONFIG.sentry:
+        init_sentry()
 
     if sys.platform == "win32":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())

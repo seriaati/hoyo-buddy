@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from discord import ButtonStyle
 from discord.utils import format_dt
@@ -102,10 +102,12 @@ class EventSelector(PaginatorSelect[EventsView]):
         super().__init__(
             custom_id="events_view_ann_select",
             placeholder=LocaleStr(key="events_view_ann_select_placeholder"),
-            options=[self._get_ann_option(ann, i == 0) for i, ann in enumerate(anns) if ann.title],
+            options=[
+                self._get_ann_option(ann, default=i == 0) for i, ann in enumerate(anns) if ann.title
+            ],
         )
 
-    def _get_ann_option(self, ann: genshin.models.Announcement, default: bool) -> SelectOption:
+    def _get_ann_option(self, ann: genshin.models.Announcement, *, default: bool) -> SelectOption:
         start_time = ann.start_time.replace(tzinfo=UTC_8)
         end_time = ann.end_time.replace(tzinfo=UTC_8)
         return SelectOption(
@@ -117,10 +119,10 @@ class EventSelector(PaginatorSelect[EventsView]):
 
     def set_options(self, anns: Sequence[genshin.models.Announcement]) -> None:
         self.options = [
-            self._get_ann_option(ann, i == 0) for i, ann in enumerate(anns) if ann.title
+            self._get_ann_option(ann, default=i == 0) for i, ann in enumerate(anns) if ann.title
         ]
 
-    async def callback(self, i: Interaction) -> None:
+    async def callback(self, i: Interaction) -> Any:
         changed = self.update_page()
         if changed:
             return await i.response.edit_message(view=self.view)
@@ -181,7 +183,7 @@ class ViewContentButton(Button[EventsView]):
             label=LocaleStr(key="events_view_content_label"), style=ButtonStyle.blurple
         )
 
-    async def callback(self, i: Interaction) -> None:
+    async def callback(self, i: Interaction) -> Any:
         ann = self.view._get_ann(self.view.ann_id)
         content = remove_html_tags(ann.content)
         if not content:

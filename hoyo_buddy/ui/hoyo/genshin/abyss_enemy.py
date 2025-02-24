@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 class AbyssEnemyView(View):
     def __init__(
-        self, dark_mode: bool, index: int, *, author: User | Member, locale: Locale
+        self, index: int, *, dark_mode: bool, author: User | Member, locale: Locale
     ) -> None:
         super().__init__(author=author, locale=locale)
 

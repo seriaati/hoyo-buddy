@@ -35,7 +35,7 @@ class TeamCardSettingsView(View):
 
 
 class TeamCardDarkModeButton(ToggleButton[TeamCardSettingsView]):
-    def __init__(self, current_toggle: bool, row: int) -> None:
+    def __init__(self, *, current_toggle: bool, row: int) -> None:
         super().__init__(
             current_toggle,
             LocaleStr(key="profile.team_dark_mode.button.label"),

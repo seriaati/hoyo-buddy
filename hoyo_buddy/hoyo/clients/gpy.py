@@ -495,7 +495,9 @@ class GenshinClient(ProxyGenshinClient):
             friendship_level=character.friendship,
             level=character.level,
             max_level=hakushin.utils.get_max_level_from_ascension(
-                hakushin.utils.get_ascension_from_level(character.level, True, hakushin.Game.GI),
+                hakushin.utils.get_ascension_from_level(
+                    character.level, ascended=True, game=hakushin.Game.GI
+                ),
                 hakushin.Game.GI,
             ),
             icon=icon,
@@ -520,7 +522,7 @@ class GenshinClient(ProxyGenshinClient):
                 name=character.equip.name,
                 max_level=hakushin.utils.get_max_level_from_ascension(
                     hakushin.utils.get_ascension_from_level(
-                        character.equip.level, True, hakushin.Game.HSR
+                        character.equip.level, ascended=True, game=hakushin.Game.HSR
                     ),
                     hakushin.Game.HSR,
                 ),
@@ -578,7 +580,9 @@ class GenshinClient(ProxyGenshinClient):
                 for eidolon in character.ranks
             ],
             max_level=hakushin.utils.get_max_level_from_ascension(
-                hakushin.utils.get_ascension_from_level(character.level, True, hakushin.Game.HSR),
+                hakushin.utils.get_ascension_from_level(
+                    character.level, ascended=True, game=hakushin.Game.HSR
+                ),
                 hakushin.Game.HSR,
             ),
         )

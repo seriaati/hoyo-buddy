@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 
 class FarmView(View):
     def __init__(
-        self, uid: int | None, dark_mode: bool, *, author: User | Member | None, locale: Locale
+        self, uid: int | None, *, dark_mode: bool, author: User | Member | None, locale: Locale
     ) -> None:
         super().__init__(author=author, locale=locale)
 

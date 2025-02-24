@@ -62,7 +62,7 @@ class Farm(
         )
         uid = None if account is None else account.uid
 
-        view = FarmView(uid, settings.dark_mode, author=i.user, locale=settings.locale or i.locale)
+        view = FarmView(uid, dark_mode=settings.dark_mode, author=i.user, locale=settings.locale or i.locale)
         await view.start(i)
 
     @app_commands.command(

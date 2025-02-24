@@ -60,7 +60,7 @@ class FarmNotifyView(PaginatorView):
 
     def _add_buttons(self) -> None:
         super()._add_buttons()
-        self.add_item(NotifyToggle(self._notify.enabled))
+        self.add_item(NotifyToggle(current_toggle=self._notify.enabled))
         self.add_item(AddItemButton())
         self.add_item(RemoveItemButton())
 
@@ -139,7 +139,7 @@ class RemoveItemButton(Button[FarmNotifyView]):
 
 
 class NotifyToggle(ToggleButton[FarmNotifyView]):
-    def __init__(self, current_toggle: bool) -> None:
+    def __init__(self, *, current_toggle: bool) -> None:
         super().__init__(current_toggle, LocaleStr(key="reminder_toggle"), row=1)
 
     async def callback(self, i: Interaction) -> None:

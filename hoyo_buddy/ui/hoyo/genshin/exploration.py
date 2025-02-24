@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 
 class ExplorationView(ui.View):
     def __init__(
-        self, account: HoyoAccount, dark_mode: bool, *, author: User, locale: Locale
+        self, account: HoyoAccount, *, dark_mode: bool, author: User, locale: Locale
     ) -> None:
         super().__init__(author=author, locale=locale)
         self.account = account

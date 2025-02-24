@@ -127,163 +127,168 @@ class CharacterUI(View):
         await self.update(i)
         self.message = await i.original_response()
 
+    def _build_yatta_ui_embed(self) -> DefaultEmbed | None:
+        assert isinstance(self._character_detail, yatta.CharacterDetail)
+
+        match self.selected_page:
+            case 0:
+                embed = self._character_embed
+                self.add_item(EnterCharacterLevel(LocaleStr(key="change_character_level_label")))
+            case 1:
+                embed = self._main_skill_embeds[self._main_skill_index]
+                self.add_item(
+                    EnterSkilLevel(
+                        label=LocaleStr(key="change_skill_level_label"),
+                        skill_max_level=self._main_skill_max_levels[self._main_skill_index],
+                    )
+                )
+                options: list[SelectOption] = []
+                index = 0
+                for skill in self._character_detail.traces.main_skills:
+                    for sk in skill.skill_list:
+                        options.append(
+                            SelectOption(
+                                label=f"{sk.type}: {sk.name}",
+                                value=str(index),
+                                default=index == self._main_skill_index,
+                            )
+                        )
+                        index += 1
+                self.add_item(ItemSelector(options, "_main_skill_index"))
+            case 2:
+                embed = self._eidolon_embeds[self._eidolon_index]
+                self.add_item(
+                    ItemSelector(
+                        [
+                            SelectOption(
+                                label=f"{index + 1}. {e.name}",
+                                value=str(index),
+                                default=index == self._eidolon_index,
+                            )
+                            for index, e in enumerate(self._character_detail.eidolons)
+                        ],
+                        "_eidolon_index",
+                    )
+                )
+            case 3:
+                embed = self._sub_skill_embeds[self._sub_skill_index]
+                self.add_item(
+                    ItemSelector(
+                        [
+                            SelectOption(
+                                label=f"{s.name}",
+                                value=str(index),
+                                default=index == self._sub_skill_index,
+                            )
+                            for index, s in enumerate(self._character_detail.traces.sub_skills)
+                            if s.point_type == "Special" and s.name is not None
+                        ],
+                        "_sub_skill_index",
+                    )
+                )
+            case 4:
+                embed = self._story_embeds[self._story_index]
+                self.add_item(
+                    ItemSelector(
+                        [
+                            SelectOption(
+                                label=s.title, value=str(index), default=index == self._story_index
+                            )
+                            for index, s in enumerate(self._character_detail.script.stories)
+                        ],
+                        "_story_index",
+                    )
+                )
+            case 5:
+                embed = self._voice_embeds[self._voice_index]
+                self.add_item(
+                    VoiceSelector(
+                        options=[
+                            SelectOption(
+                                label=v.title, value=str(index), default=index == self._voice_index
+                            )
+                            for index, v in enumerate(self._character_detail.script.voices)
+                        ]
+                    )
+                )
+            case _:
+                msg = "Invalid page index"
+                raise ValueError(msg)
+
+        return embed
+
+    def _build_hakushin_ui_embed(self) -> DefaultEmbed | None:
+        assert isinstance(self._character_detail, hakushin.hsr.CharacterDetail)
+
+        match self.selected_page:
+            case 0:
+                embed = self._character_embed
+                self.add_item(EnterCharacterLevel(LocaleStr(key="change_character_level_label")))
+            case 1:
+                embed = self._main_skill_embeds[self._main_skill_index]
+                self.add_item(
+                    EnterSkilLevel(
+                        label=LocaleStr(key="change_skill_level_label"),
+                        skill_max_level=self._main_skill_max_levels[self._main_skill_index],
+                    )
+                )
+
+                options: list[SelectOption] = []
+                skills = list(self._character_detail.skills.values())
+                for index, skill in enumerate(skills):
+                    type_str_key = HAKUSHIN_HSR_SKILL_TYPE_NAMES.get(skill.type or "Talent")
+                    type_str = LocaleStr(key=type_str_key).translate(self.locale)
+                    options.append(
+                        SelectOption(
+                            label=f"{type_str}: {skill.name}",
+                            value=str(index),
+                            default=index == self._main_skill_index,
+                        )
+                    )
+                self.add_item(ItemSelector(options, "_main_skill_index"))
+            case 2:
+                embed = self._eidolon_embeds[self._eidolon_index]
+                self.add_item(
+                    ItemSelector(
+                        [
+                            SelectOption(
+                                label=f"{index + 1}. {e.name}",
+                                value=str(index),
+                                default=index == self._eidolon_index,
+                            )
+                            for index, e in enumerate(self._character_detail.eidolons.values())
+                        ],
+                        "_eidolon_index",
+                    )
+                )
+            case _:
+                msg = "Invalid page index"
+                raise ValueError(msg)
+
+        return embed
+
     async def update(self, i: Interaction) -> None:
         if self._character_detail is None:
             msg = "Character detail not fetched"
             raise RuntimeError(msg)
 
         self.clear_items()
-        self.add_item(PageSelector(self.selected_page, self._hakushin))
+        self.add_item(PageSelector(self.selected_page, hakushin=self._hakushin))
 
         if isinstance(self._character_detail, yatta.CharacterDetail):
-            match self.selected_page:
-                case 0:
-                    embed = self._character_embed
-                    self.add_item(
-                        EnterCharacterLevel(LocaleStr(key="change_character_level_label"))
-                    )
-                case 1:
-                    embed = self._main_skill_embeds[self._main_skill_index]
-                    self.add_item(
-                        EnterSkilLevel(
-                            label=LocaleStr(key="change_skill_level_label"),
-                            skill_max_level=self._main_skill_max_levels[self._main_skill_index],
-                        )
-                    )
-                    options: list[SelectOption] = []
-                    index = 0
-                    for skill in self._character_detail.traces.main_skills:
-                        for sk in skill.skill_list:
-                            options.append(
-                                SelectOption(
-                                    label=f"{sk.type}: {sk.name}",
-                                    value=str(index),
-                                    default=index == self._main_skill_index,
-                                )
-                            )
-                            index += 1
-                    self.add_item(ItemSelector(options, "_main_skill_index"))
-                case 2:
-                    embed = self._eidolon_embeds[self._eidolon_index]
-                    self.add_item(
-                        ItemSelector(
-                            [
-                                SelectOption(
-                                    label=f"{index + 1}. {e.name}",
-                                    value=str(index),
-                                    default=index == self._eidolon_index,
-                                )
-                                for index, e in enumerate(self._character_detail.eidolons)
-                            ],
-                            "_eidolon_index",
-                        )
-                    )
-                case 3:
-                    embed = self._sub_skill_embeds[self._sub_skill_index]
-                    self.add_item(
-                        ItemSelector(
-                            [
-                                SelectOption(
-                                    label=f"{s.name}",
-                                    value=str(index),
-                                    default=index == self._sub_skill_index,
-                                )
-                                for index, s in enumerate(self._character_detail.traces.sub_skills)
-                                if s.point_type == "Special" and s.name is not None
-                            ],
-                            "_sub_skill_index",
-                        )
-                    )
-                case 4:
-                    embed = self._story_embeds[self._story_index]
-                    self.add_item(
-                        ItemSelector(
-                            [
-                                SelectOption(
-                                    label=s.title,
-                                    value=str(index),
-                                    default=index == self._story_index,
-                                )
-                                for index, s in enumerate(self._character_detail.script.stories)
-                            ],
-                            "_story_index",
-                        )
-                    )
-                case 5:
-                    embed = self._voice_embeds[self._voice_index]
-                    self.add_item(
-                        VoiceSelector(
-                            options=[
-                                SelectOption(
-                                    label=v.title,
-                                    value=str(index),
-                                    default=index == self._voice_index,
-                                )
-                                for index, v in enumerate(self._character_detail.script.voices)
-                            ]
-                        )
-                    )
-                case _:
-                    msg = "Invalid page index"
-                    raise ValueError(msg)
+            embed = self._build_yatta_ui_embed()
         else:
-            match self.selected_page:
-                case 0:
-                    embed = self._character_embed
-                    self.add_item(
-                        EnterCharacterLevel(LocaleStr(key="change_character_level_label"))
-                    )
-                case 1:
-                    embed = self._main_skill_embeds[self._main_skill_index]
-                    self.add_item(
-                        EnterSkilLevel(
-                            label=LocaleStr(key="change_skill_level_label"),
-                            skill_max_level=self._main_skill_max_levels[self._main_skill_index],
-                        )
-                    )
-
-                    options: list[SelectOption] = []
-                    skills = list(self._character_detail.skills.values())
-                    for index, skill in enumerate(skills):
-                        type_str_key = HAKUSHIN_HSR_SKILL_TYPE_NAMES.get(skill.type or "Talent")
-                        type_str = LocaleStr(key=type_str_key).translate(self.locale)
-                        options.append(
-                            SelectOption(
-                                label=f"{type_str}: {skill.name}",
-                                value=str(index),
-                                default=index == self._main_skill_index,
-                            )
-                        )
-                    self.add_item(ItemSelector(options, "_main_skill_index"))
-                case 2:
-                    embed = self._eidolon_embeds[self._eidolon_index]
-                    self.add_item(
-                        ItemSelector(
-                            [
-                                SelectOption(
-                                    label=f"{index + 1}. {e.name}",
-                                    value=str(index),
-                                    default=index == self._eidolon_index,
-                                )
-                                for index, e in enumerate(self._character_detail.eidolons.values())
-                            ],
-                            "_eidolon_index",
-                        )
-                    )
-                case _:
-                    msg = "Invalid page index"
-                    raise ValueError(msg)
+            embed = self._build_hakushin_ui_embed()
 
         if i.response.is_done():
-            await i.edit_original_response(embed=embed, view=self)
+            self.message = await i.edit_original_response(embed=embed, view=self)
         else:
             await i.response.edit_message(embed=embed, view=self)
-
-        self.message = await i.original_response()
+            self.message = await i.original_response()
 
 
 class PageSelector(Select["CharacterUI"]):
-    def __init__(self, current: int, hakushin: bool) -> None:
+    def __init__(self, current: int, *, hakushin: bool) -> None:
         if hakushin:
             options = [
                 SelectOption(

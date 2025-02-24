@@ -355,7 +355,7 @@ class ShopItemSelector(ui.PaginatorSelect[MimoView]):
 
         return options
 
-    async def callback(self, i: Interaction) -> None:
+    async def callback(self, i: Interaction) -> Any:
         changed = self.update_page()
         if changed:
             return await i.response.edit_message(view=self.view)

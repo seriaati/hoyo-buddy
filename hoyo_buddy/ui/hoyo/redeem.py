@@ -100,7 +100,7 @@ class RedeemUI(View):
     def _add_items(self) -> None:
         self.add_item(RedeemCodesButton())
         self.add_item(RedeemAllAvailableCodesButton())
-        self.add_item(AutoRedeemToggle(self.account.auto_redeem))
+        self.add_item(AutoRedeemToggle(current_toggle=self.account.auto_redeem))
 
     async def redeem_codes(self, i: Interaction, *, codes: list[str], button: Button) -> None:
         await button.set_loading_state(i, embed=self.cooldown_embed)
@@ -143,7 +143,7 @@ class RedeemCodesButton(Button[RedeemUI]):
 
 
 class AutoRedeemToggle(ToggleButton[RedeemUI]):
-    def __init__(self, current_toggle: bool) -> None:
+    def __init__(self, *, current_toggle: bool) -> None:
         super().__init__(current_toggle, LocaleStr(key="auto_redeem_toggle.label"), row=0)
 
     async def callback(self, i: Interaction) -> None:

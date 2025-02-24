@@ -110,8 +110,8 @@ class EventCalendarView(ui.View):
         self,
         calendar: genshin.models.GenshinEventCalendar | genshin.models.HSREventCalendar,
         account: HoyoAccount,
-        dark_mode: bool,
         *,
+        dark_mode: bool,
         author: User,
         locale: Locale,
     ) -> None:

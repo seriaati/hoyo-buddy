@@ -47,9 +47,9 @@ class NotesView(View):
     def __init__(
         self,
         account: HoyoAccount,
-        dark_mode: bool,
         accounts: list[HoyoAccount] | None = None,
         *,
+        dark_mode: bool,
         author: User | Member | None,
         locale: Locale,
     ) -> None:
@@ -130,188 +130,202 @@ class NotesView(View):
             hours_before=notify.hours_before,
         )
 
+    async def _get_gi_embed(self, embed: DefaultEmbed) -> DefaultEmbed:
+        resin_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.RESIN
+        )
+        embed.add_field(
+            name=LocaleStr(key="resin_reminder_button.label"),
+            value=self._get_type1_value(resin_notify),
+            inline=False,
+        )
+
+        realm_currency_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.REALM_CURRENCY
+        )
+        embed.add_field(
+            name=LocaleStr(key="realm_curr_button.label"),
+            value=self._get_type1_value(realm_currency_notify),
+            inline=False,
+        )
+
+        pt_notify = await NotesNotify.get_or_none(account=self.account, type=NotesNotifyType.PT)
+        embed.add_field(
+            name=LocaleStr(key="pt_button.label"),
+            value=self._get_type2_value(pt_notify),
+            inline=False,
+        )
+
+        expedition_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.GI_EXPED
+        )
+        embed.add_field(
+            name=LocaleStr(key="exped_button.label"),
+            value=self._get_type2_value(expedition_notify),
+            inline=False,
+        )
+
+        daily_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.GI_DAILY
+        )
+        embed.add_field(
+            name=LocaleStr(key="daily_button.label"),
+            value=self._get_type3_value(daily_notify),
+            inline=False,
+        )
+
+        resin_discount_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.RESIN_DISCOUNT
+        )
+        embed.add_field(
+            name=LocaleStr(key="week_boss_button.label"),
+            value=self._get_type4_value(resin_discount_notify),
+            inline=False,
+        )
+
+        return embed
+
+    async def _get_hsr_embed(self, embed: DefaultEmbed) -> DefaultEmbed:
+        tbp_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.TB_POWER
+        )
+        embed.add_field(
+            name=LocaleStr(key="hsr_note_stamina", mi18n_game=Game.STARRAIL),
+            value=self._get_type1_value(tbp_notify),
+            inline=False,
+        )
+
+        reserved_tbp_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.RESERVED_TB_POWER
+        )
+        embed.add_field(
+            name=LocaleStr(key="hsr_note_reserve_stamina", mi18n_game=Game.STARRAIL),
+            value=self._get_type1_value(reserved_tbp_notify),
+            inline=False,
+        )
+
+        expedition_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.HSR_EXPED
+        )
+        embed.add_field(
+            name=LocaleStr(key="exped_button.label"),
+            value=self._get_type2_value(expedition_notify),
+            inline=False,
+        )
+
+        daily_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.HSR_DAILY
+        )
+        embed.add_field(
+            name=LocaleStr(key="daily_button.label"),
+            value=self._get_type3_value(daily_notify),
+            inline=False,
+        )
+
+        echo_of_war_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.ECHO_OF_WAR
+        )
+        embed.add_field(
+            name=LocaleStr(key="week_boss_button.label"),
+            value=self._get_type4_value(echo_of_war_notify),
+            inline=False,
+        )
+
+        planar_fissure_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.PLANAR_FISSURE
+        )
+        embed.add_field(
+            name=LocaleStr(key="planar_fissure_label"),
+            value=self._get_type5_value(planar_fissure_notify),
+            inline=False,
+        )
+
+        return embed
+
+    async def _get_zzz_embed(self, embed: DefaultEmbed) -> DefaultEmbed:
+        battery_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.BATTERY
+        )
+        embed.add_field(
+            name=LocaleStr(key="battery_num", mi18n_game=Game.ZZZ),
+            value=self._get_type1_value(battery_notify),
+            inline=False,
+        )
+
+        daily_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.ZZZ_DAILY
+        )
+        embed.add_field(
+            name=LocaleStr(key="daily_button.label"),
+            value=self._get_type3_value(daily_notify),
+            inline=False,
+        )
+
+        scratch_card_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.SCRATCH_CARD
+        )
+        embed.add_field(
+            name=LocaleStr(key="card", mi18n_game=Game.ZZZ),
+            value=self._get_type3_value(scratch_card_notify),
+            inline=False,
+        )
+
+        video_store_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.VIDEO_STORE
+        )
+        embed.add_field(
+            name=LocaleStr(key="vhs_sale", mi18n_game=Game.ZZZ),
+            value=self._get_type2_value(video_store_notify),
+            inline=False,
+        )
+
+        ridu_points_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.RIDU_POINTS
+        )
+        embed.add_field(
+            name=LocaleStr(key="weekly_task_point", mi18n_game=Game.ZZZ),
+            value=self._get_type4_value(ridu_points_notify),
+            inline=False,
+        )
+
+        bounty_comm_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.ZZZ_BOUNTY
+        )
+        embed.add_field(
+            name=LocaleStr(key="bounty_commission", mi18n_game=Game.ZZZ),
+            value=self._get_type4_value(bounty_comm_notify),
+            inline=False,
+        )
+
+        return embed
+
+    async def _get_honkai_embed(self, embed: DefaultEmbed) -> DefaultEmbed:
+        stamina_notify = await NotesNotify.get_or_none(
+            account=self.account, type=NotesNotifyType.STAMINA
+        )
+        embed.add_field(
+            name=LocaleStr(key="notes.stamina_label"),
+            value=self._get_type1_value(stamina_notify),
+            inline=False,
+        )
+
+        return embed
+
     async def get_reminder_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale, title=LocaleStr(key="reminder_settings_title"))
-
-        if self.account.game is Game.GENSHIN:
-            resin_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.RESIN
-            )
-            embed.add_field(
-                name=LocaleStr(key="resin_reminder_button.label"),
-                value=self._get_type1_value(resin_notify),
-                inline=False,
-            )
-
-            realm_currency_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.REALM_CURRENCY
-            )
-            embed.add_field(
-                name=LocaleStr(key="realm_curr_button.label"),
-                value=self._get_type1_value(realm_currency_notify),
-                inline=False,
-            )
-
-            pt_notify = await NotesNotify.get_or_none(account=self.account, type=NotesNotifyType.PT)
-            embed.add_field(
-                name=LocaleStr(key="pt_button.label"),
-                value=self._get_type2_value(pt_notify),
-                inline=False,
-            )
-
-            expedition_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.GI_EXPED
-            )
-            embed.add_field(
-                name=LocaleStr(key="exped_button.label"),
-                value=self._get_type2_value(expedition_notify),
-                inline=False,
-            )
-
-            daily_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.GI_DAILY
-            )
-            embed.add_field(
-                name=LocaleStr(key="daily_button.label"),
-                value=self._get_type3_value(daily_notify),
-                inline=False,
-            )
-
-            resin_discount_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.RESIN_DISCOUNT
-            )
-            embed.add_field(
-                name=LocaleStr(key="week_boss_button.label"),
-                value=self._get_type4_value(resin_discount_notify),
-                inline=False,
-            )
-
-        elif self.account.game is Game.STARRAIL:
-            tbp_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.TB_POWER
-            )
-            embed.add_field(
-                name=LocaleStr(key="hsr_note_stamina", mi18n_game=Game.STARRAIL),
-                value=self._get_type1_value(tbp_notify),
-                inline=False,
-            )
-
-            reserved_tbp_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.RESERVED_TB_POWER
-            )
-            embed.add_field(
-                name=LocaleStr(key="hsr_note_reserve_stamina", mi18n_game=Game.STARRAIL),
-                value=self._get_type1_value(reserved_tbp_notify),
-                inline=False,
-            )
-
-            expedition_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.HSR_EXPED
-            )
-            embed.add_field(
-                name=LocaleStr(key="exped_button.label"),
-                value=self._get_type2_value(expedition_notify),
-                inline=False,
-            )
-
-            daily_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.HSR_DAILY
-            )
-            embed.add_field(
-                name=LocaleStr(key="daily_button.label"),
-                value=self._get_type3_value(daily_notify),
-                inline=False,
-            )
-
-            echo_of_war_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.ECHO_OF_WAR
-            )
-            embed.add_field(
-                name=LocaleStr(key="week_boss_button.label"),
-                value=self._get_type4_value(echo_of_war_notify),
-                inline=False,
-            )
-
-            planar_fissure_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.PLANAR_FISSURE
-            )
-            embed.add_field(
-                name=LocaleStr(key="planar_fissure_label"),
-                value=self._get_type5_value(planar_fissure_notify),
-                inline=False,
-            )
-
-        elif self.account.game is Game.ZZZ:
-            battery_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.BATTERY
-            )
-            embed.add_field(
-                name=LocaleStr(key="battery_num", mi18n_game=Game.ZZZ),
-                value=self._get_type1_value(battery_notify),
-                inline=False,
-            )
-
-            daily_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.ZZZ_DAILY
-            )
-            embed.add_field(
-                name=LocaleStr(key="daily_button.label"),
-                value=self._get_type3_value(daily_notify),
-                inline=False,
-            )
-
-            scratch_card_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.SCRATCH_CARD
-            )
-            embed.add_field(
-                name=LocaleStr(key="card", mi18n_game=Game.ZZZ),
-                value=self._get_type3_value(scratch_card_notify),
-                inline=False,
-            )
-
-            video_store_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.VIDEO_STORE
-            )
-            embed.add_field(
-                name=LocaleStr(key="vhs_sale", mi18n_game=Game.ZZZ),
-                value=self._get_type2_value(video_store_notify),
-                inline=False,
-            )
-
-            ridu_points_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.RIDU_POINTS
-            )
-            embed.add_field(
-                name=LocaleStr(key="weekly_task_point", mi18n_game=Game.ZZZ),
-                value=self._get_type4_value(ridu_points_notify),
-                inline=False,
-            )
-
-            bounty_comm_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.ZZZ_BOUNTY
-            )
-            embed.add_field(
-                name=LocaleStr(key="bounty_commission", mi18n_game=Game.ZZZ),
-                value=self._get_type4_value(bounty_comm_notify),
-                inline=False,
-            )
-
-        elif self.account.game is Game.HONKAI:
-            stamina_notify = await NotesNotify.get_or_none(
-                account=self.account, type=NotesNotifyType.STAMINA
-            )
-            embed.add_field(
-                name=LocaleStr(key="notes.stamina_label"),
-                value=self._get_type1_value(stamina_notify),
-                inline=False,
-            )
-
-        else:
-            raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
-
         embed.add_acc_info(self.account)
         embed.set_image(url="attachment://notes.png")
-        return embed
+
+        if self.account.game is Game.GENSHIN:
+            return await self._get_gi_embed(embed)
+        if self.account.game is Game.STARRAIL:
+            return await self._get_hsr_embed(embed)
+        if self.account.game is Game.ZZZ:
+            return await self._get_zzz_embed(embed)
+        if self.account.game is Game.HONKAI:
+            return await self._get_honkai_embed(embed)
+
+        raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
 
     async def process_type_one_modal(
         self,

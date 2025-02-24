@@ -52,8 +52,8 @@ class ImageSettingsButton(Button[ProfileView]):
             card_settings,
             custom_images,
             self.view.game,
-            len(self.view.character_ids) > 1,
             settings,
+            is_team=len(self.view.character_ids) > 1,
             author=i.user,
             locale=self.view.locale,
         )

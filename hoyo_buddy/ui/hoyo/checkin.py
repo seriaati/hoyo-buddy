@@ -207,16 +207,20 @@ class NotificationSettingsButton(Button[CheckInUI]):
         self.view.clear_items()
         self.view.add_item(go_back_button)
         self.view.add_item(
-            NotifyOnFailureToggle(self.view.account.notif_settings.notify_on_checkin_failure)
+            NotifyOnFailureToggle(
+                current_toggle=self.view.account.notif_settings.notify_on_checkin_failure
+            )
         )
         self.view.add_item(
-            NotifyOnSuccessToggle(self.view.account.notif_settings.notify_on_checkin_success)
+            NotifyOnSuccessToggle(
+                current_toggle=self.view.account.notif_settings.notify_on_checkin_success
+            )
         )
         await i.response.edit_message(view=self.view)
 
 
 class NotifyOnFailureToggle(ToggleButton[CheckInUI]):
-    def __init__(self, current_toggle: bool) -> None:
+    def __init__(self, *, current_toggle: bool) -> None:
         super().__init__(current_toggle, LocaleStr(key="notify_on_failure_button_label"))
 
     async def callback(self, i: Interaction) -> Any:
@@ -227,7 +231,7 @@ class NotifyOnFailureToggle(ToggleButton[CheckInUI]):
 
 
 class NotifyOnSuccessToggle(ToggleButton[CheckInUI]):
-    def __init__(self, current_toggle: bool) -> None:
+    def __init__(self, *, current_toggle: bool) -> None:
         super().__init__(current_toggle, LocaleStr(key="notify_on_success_button_label"))
 
     async def callback(self, i: Interaction) -> Any:

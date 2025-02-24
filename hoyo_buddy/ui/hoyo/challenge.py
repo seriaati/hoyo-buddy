@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import discord
 from ambr.utils import remove_html_tags
@@ -471,7 +471,7 @@ class ViewBuffs(Button[ChallengeView]):
             row=4,
         )
 
-    async def callback(self, i: Interaction) -> None:
+    async def callback(self, i: Interaction) -> Any:
         assert isinstance(self.view.challenge, ChallengeWithBuff)
 
         try:

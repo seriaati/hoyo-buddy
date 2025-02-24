@@ -138,7 +138,7 @@ class CharacterUI(View):
             await i.response.defer(ephemeral=ephemeral(i))
 
         self.clear_items()
-        self.add_item(PageSelector(self.selected_page, self.hakushin))
+        self.add_item(PageSelector(self.selected_page, hakushin=self.hakushin))
 
         match self.selected_page:
             case 0:
@@ -322,7 +322,7 @@ class EnterCharacterLevel(Button[CharacterUI]):
 
 
 class PageSelector(Select[CharacterUI]):
-    def __init__(self, current: int, hakushin: bool) -> None:
+    def __init__(self, current: int, *, hakushin: bool) -> None:
         if hakushin:
             options = [
                 SelectOption(

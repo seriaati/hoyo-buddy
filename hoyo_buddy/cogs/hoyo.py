@@ -88,8 +88,8 @@ class Hoyo(commands.Cog):
 
         view = NotesView(
             account_,
-            settings.dark_mode,
             accounts,
+            dark_mode=settings.dark_mode,
             author=i.user,
             locale=settings.locale or i.locale,
         )
@@ -117,7 +117,7 @@ class Hoyo(commands.Cog):
         settings = await Settings.get(user_id=i.user.id)
         locale = settings.locale or i.locale
 
-        view = ExplorationView(account_, settings.dark_mode, author=i.user, locale=locale)
+        view = ExplorationView(account_, dark_mode=settings.dark_mode, author=i.user, locale=locale)
         await view.start(i)
 
     @app_commands.command(

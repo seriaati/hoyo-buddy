@@ -94,6 +94,124 @@ class WebApp:
             if isinstance(control, ft.Banner):
                 self._page.close(control)
 
+    async def _handle_on_login(self, params: Params) -> ft.View | None:
+        page = self._page
+
+        encrypted_email, encrypted_password = await self._get_encrypted_email_password(
+            page, params.user_id
+        )
+        if not encrypted_email or not encrypted_password:
+            return pages.ErrorPage(
+                code=400, message="Cannot find email or password in client storage."
+            )
+
+        mmt_result = await self._get_user_temp_data(params.user_id)
+        email, password = decrypt_string(encrypted_email), decrypt_string(encrypted_password)
+
+        client = ProxyGenshinClient()
+        try:
+            result = await client.os_app_login(
+                email, password, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
+            )
+        except Exception as exc:
+            show_error_banner(page, message=str(exc))
+            return None
+
+        if isinstance(result, genshin.models.ActionTicket):
+            # Email verification required
+            try:
+                email_result = await client._send_verification_email(result)
+            except Exception as exc:
+                show_error_banner(page, message=str(exc))
+                return None
+
+            if isinstance(email_result, genshin.models.SessionMMT):
+                # Geetest triggered for sending email verification code
+                await page.client_storage.set_async(f"hb.{params.user_id}.gt_type", "on_email_send")
+                await page.client_storage.set_async(
+                    f"hb.{params.user_id}.action_ticket", orjson.dumps(result.dict()).decode()
+                )
+                await handle_session_mmt(
+                    email_result,
+                    email=email,
+                    password=password,
+                    page=page,
+                    params=params,
+                    locale=Locale(params.locale),
+                    mmt_type="on_email_send",
+                )
+            else:
+                await handle_action_ticket(
+                    result,
+                    email=email,
+                    password=password,
+                    page=page,
+                    params=params,
+                    locale=Locale(params.locale),
+                )
+        else:
+            encrypted_cookies = encrypt_string(result.to_str())
+            await page.client_storage.set_async(f"hb.{params.user_id}.cookies", encrypted_cookies)
+            page.go(f"/finish?{params.to_query_string()}")
+
+    async def _handle_on_email_send(self, params: Params) -> ft.View | None:
+        page = self._page
+
+        encrypted_email, encrypted_password = await self._get_encrypted_email_password(
+            page, params.user_id
+        )
+        if not encrypted_email or not encrypted_password:
+            return pages.ErrorPage(
+                code=400, message="Cannot find email or password in client storage."
+            )
+
+        str_action_ticket: str | None = await page.client_storage.get_async(
+            f"hb.{params.user_id}.action_ticket"
+        )
+        if str_action_ticket is None:
+            return pages.ErrorPage(code=400, message="Cannot find action ticket in client storage.")
+        action_ticket = genshin.models.ActionTicket(**orjson.loads(str_action_ticket.encode()))
+        mmt_result = await self._get_user_temp_data(params.user_id)
+        email, password = decrypt_string(encrypted_email), decrypt_string(encrypted_password)
+
+        client = ProxyGenshinClient()
+        try:
+            await client._send_verification_email(
+                action_ticket, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
+            )
+        except Exception as exc:
+            show_error_banner(page, message=str(exc))
+            return None
+
+        await handle_action_ticket(
+            action_ticket,
+            email=email,
+            password=password,
+            page=page,
+            params=params,
+            locale=Locale(params.locale),
+        )
+
+    async def _handle_on_otp_send(self, params: Params) -> ft.View | None:
+        page = self._page
+
+        encrypted_mobile = await page.client_storage.get_async(f"hb.{params.user_id}.mobile")
+        if encrypted_mobile is None:
+            return pages.ErrorPage(code=400, message="Cannot find mobile number in client storage.")
+
+        mobile = decrypt_string(encrypted_mobile)
+        client = ProxyGenshinClient(region=genshin.Region.CHINESE)
+        mmt_result = await self._get_user_temp_data(params.user_id)
+        try:
+            await client._send_mobile_otp(
+                mobile, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
+            )
+        except Exception as exc:
+            show_error_banner(page, message=str(exc))
+            return None
+
+        handle_mobile_otp(mobile=mobile, page=page, params=params)
+
     async def _handle_geetest(self, params: Params, locale: Locale) -> ft.View | None:
         page = self._page
 
@@ -105,124 +223,11 @@ class WebApp:
         ] = await page.client_storage.get_async(f"hb.{params.user_id}.gt_type")  # pyright: ignore[reportAssignmentType]
 
         if gt_type == "on_login":
-            encrypted_email, encrypted_password = await self._get_encrypted_email_password(
-                page, params.user_id
-            )
-            if not encrypted_email or not encrypted_password:
-                return pages.ErrorPage(
-                    code=400, message="Cannot find email or password in client storage."
-                )
-
-            mmt_result = await self._get_user_temp_data(params.user_id)
-            email, password = decrypt_string(encrypted_email), decrypt_string(encrypted_password)
-
-            client = ProxyGenshinClient()
-            try:
-                result = await client.os_app_login(
-                    email, password, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
-                )
-            except Exception as exc:
-                show_error_banner(page, message=str(exc))
-                return None
-
-            if isinstance(result, genshin.models.ActionTicket):
-                # Email verification required
-                try:
-                    email_result = await client._send_verification_email(result)
-                except Exception as exc:
-                    show_error_banner(page, message=str(exc))
-                    return None
-
-                if isinstance(email_result, genshin.models.SessionMMT):
-                    # Geetest triggered for sending email verification code
-                    await page.client_storage.set_async(
-                        f"hb.{params.user_id}.gt_type", "on_email_send"
-                    )
-                    await page.client_storage.set_async(
-                        f"hb.{params.user_id}.action_ticket", orjson.dumps(result.dict()).decode()
-                    )
-                    await handle_session_mmt(
-                        email_result,
-                        email=email,
-                        password=password,
-                        page=page,
-                        params=params,
-                        locale=Locale(params.locale),
-                        mmt_type="on_email_send",
-                    )
-                else:
-                    await handle_action_ticket(
-                        result,
-                        email=email,
-                        password=password,
-                        page=page,
-                        params=params,
-                        locale=Locale(params.locale),
-                    )
-            else:
-                encrypted_cookies = encrypt_string(result.to_str())
-                await page.client_storage.set_async(
-                    f"hb.{params.user_id}.cookies", encrypted_cookies
-                )
-                page.go(f"/finish?{params.to_query_string()}")
-        elif gt_type == "on_email_send":
-            encrypted_email, encrypted_password = await self._get_encrypted_email_password(
-                page, params.user_id
-            )
-            if not encrypted_email or not encrypted_password:
-                return pages.ErrorPage(
-                    code=400, message="Cannot find email or password in client storage."
-                )
-
-            str_action_ticket: str | None = await page.client_storage.get_async(
-                f"hb.{params.user_id}.action_ticket"
-            )
-            if str_action_ticket is None:
-                return pages.ErrorPage(
-                    code=400, message="Cannot find action ticket in client storage."
-                )
-            action_ticket = genshin.models.ActionTicket(**orjson.loads(str_action_ticket.encode()))
-            mmt_result = await self._get_user_temp_data(params.user_id)
-            email, password = decrypt_string(encrypted_email), decrypt_string(encrypted_password)
-
-            client = ProxyGenshinClient()
-            try:
-                await client._send_verification_email(
-                    action_ticket, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
-                )
-            except Exception as exc:
-                show_error_banner(page, message=str(exc))
-                return None
-
-            await handle_action_ticket(
-                action_ticket,
-                email=email,
-                password=password,
-                page=page,
-                params=params,
-                locale=Locale(params.locale),
-            )
-        else:  # on_otp_send
-            encrypted_mobile = await page.client_storage.get_async(f"hb.{params.user_id}.mobile")
-            if encrypted_mobile is None:
-                return pages.ErrorPage(
-                    code=400, message="Cannot find mobile number in client storage."
-                )
-
-            mobile = decrypt_string(encrypted_mobile)
-            client = ProxyGenshinClient(region=genshin.Region.CHINESE)
-            mmt_result = await self._get_user_temp_data(params.user_id)
-            try:
-                await client._send_mobile_otp(
-                    mobile, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
-                )
-            except Exception as exc:
-                show_error_banner(page, message=str(exc))
-                return None
-
-            handle_mobile_otp(mobile=mobile, page=page, params=params)
-
-        return None
+            return await self._handle_on_login(params)
+        if gt_type == "on_email_send":
+            return await self._handle_on_email_send(params)
+        # on_otp_send
+        return await self._handle_on_otp_send(params)
 
     async def _get_encrypted_email_password(
         self, page: ft.Page, user_id: int

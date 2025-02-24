@@ -96,10 +96,10 @@ class CardSettingsView(View):
         card_data: dict[str, Any],
         card_settings: CardSettings,
         game: Game,
-        hb_template_only: bool,
-        is_team: bool,
         settings: Settings,
         *,
+        hb_template_only: bool,
+        is_team: bool,
         author: User | Member,
         locale: Locale,
     ) -> None:
@@ -257,7 +257,7 @@ class CardSettingsView(View):
 
 
 class CharacterSelect(SettingsCharacterSelect[CardSettingsView]):
-    async def callback(self, i: Interaction) -> None:
+    async def callback(self, i: Interaction) -> Any:
         changed = self.update_page()
         if changed:
             return await i.response.edit_message(view=self.view)
@@ -294,7 +294,7 @@ class CharacterSelect(SettingsCharacterSelect[CardSettingsView]):
 
 
 class DarkModeButton(ToggleButton[CardSettingsView]):
-    def __init__(self, current_toggle: bool, disabled: bool, row: int) -> None:
+    def __init__(self, *, current_toggle: bool, disabled: bool, row: int) -> None:
         super().__init__(
             current_toggle,
             LocaleStr(key="dark_mode_button_label"),
@@ -325,7 +325,7 @@ class PrimaryColorModal(Modal):
 
 
 class PrimaryColorButton(Button[CardSettingsView]):
-    def __init__(self, current_color: str | None, disabled: bool, row: int) -> None:
+    def __init__(self, current_color: str | None, *, disabled: bool, row: int) -> None:
         super().__init__(
             label=LocaleStr(key="profile.primary_color.button.label"),
             style=ButtonStyle.blurple,
@@ -464,7 +464,7 @@ class SetCurTempAsDefaultButton(Button[CardSettingsView]):
 
 
 class ShowRankButton(ToggleButton[CardSettingsView]):
-    def __init__(self, current_toggle: bool, disabled: bool, row: int) -> None:
+    def __init__(self, *, current_toggle: bool, disabled: bool, row: int) -> None:
         super().__init__(
             current_toggle,
             LocaleStr(key="profile_view_show_rank_button_label"),

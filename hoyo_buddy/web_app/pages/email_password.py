@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 import flet as ft
 import genshin
@@ -66,6 +66,7 @@ class EmailPassWordForm(ft.Column):
         self._locale = locale
         self._email_ref = ft.Ref[ft.TextField]()
         self._password_ref = ft.Ref[ft.TextField]()
+        self._page: ft.Page | None = None
 
         super().__init__(
             [
@@ -76,6 +77,13 @@ class EmailPassWordForm(ft.Column):
             wrap=True,
             spacing=16,
         )
+
+    @property
+    def page(self) -> ft.Page:
+        if self._page is None:
+            msg = "Page not set"
+            raise ValueError(msg)
+        return self._page
 
     async def on_focus(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
@@ -91,111 +99,143 @@ class EmailPassWordForm(ft.Column):
         )
         control.update()
 
-    async def on_submit(self, e: ft.ControlEvent) -> Any:
-        page: ft.Page = e.page
-
-        email_field = self._email_ref.current
-        password_field = self._password_ref.current
-        email = email_field.value
-        password = password_field.value
+    async def validate_form_fields(self) -> tuple[str, str]:
+        """Validate email and password fields, showing errors if empty."""
+        email = self._email_ref.current.value
+        password = self._password_ref.current.value
 
         if not email:
-            self._email_ref.current.error_text = translator.translate(
-                LocaleStr(key="required_field_error_message"), self._locale
-            )
-            self._email_ref.current.update()
-
+            self._show_field_error(self._email_ref.current)
         if not password:
-            self._password_ref.current.error_text = translator.translate(
-                LocaleStr(key="required_field_error_message"), self._locale
-            )
-            self._password_ref.current.update()
+            self._show_field_error(self._password_ref.current)
 
-        if not email or not password:
-            return
+        return email.strip() if email else "", password or ""
 
-        if self._params.platform is None:
-            show_error_banner(page, message="Invalid platform")
-            return
-
-        show_loading_snack_bar(page, locale=self._locale)
-
-        logger.debug(f"[{self._params.user_id}] Email and password login session started")
-        client = ProxyGenshinClient(
-            region=genshin.Region.CHINESE
-            if self._params.platform is Platform.MIYOUSHE
-            else genshin.Region.OVERSEAS,
-            lang=locale_to_gpy_lang(self._locale),
+    def _show_field_error(self, field: ft.TextField) -> None:
+        """Show required field error on the given field."""
+        field.error_text = translator.translate(
+            LocaleStr(key="required_field_error_message"), self._locale
         )
+        field.update()
+
+    async def perform_login(self, email: str, password: str) -> Any:
+        """Attempt to login with the given credentials."""
+        client = self._create_genshin_client()
+
         try:
             if self._params.platform is Platform.HOYOLAB:
-                result = await client.os_app_login(email.strip(), password)
-            else:
-                result = await client._cn_web_login(email.strip(), password)
+                return await client.os_app_login(email, password)
+            return await client._cn_web_login(email, password)
         except genshin.GenshinException as exc:
-            logger.debug(f"[{self._params.user_id}] Email and password login error: {exc}")
-            if exc.retcode == -3006:  # Rate limited
-                message = LocaleStr(key="too_many_requests_error_banner_msg").translate(
-                    self._locale
-                )
-                url = get_docs_url(
-                    "FAQ#too-many-requests-error-when-trying-to-add-accounts-using-email--password-method",
-                    locale=self._locale,
-                )
-            else:
-                message = str(exc)
-                url = None
-            show_error_banner(page, message=message, url=url)
-            return
+            self._handle_genshin_exception(exc)
         except Exception as exc:
             logger.debug(f"[{self._params.user_id}] Email and password login error: {exc}")
-            show_error_banner(page, message=str(exc))
-            return
+            show_error_banner(self.page, message=str(exc))
 
+        return None
+
+    def _create_genshin_client(self) -> ProxyGenshinClient:
+        """Create and configure a new Genshin client."""
+        region = (
+            genshin.Region.CHINESE
+            if self._params.platform is Platform.MIYOUSHE
+            else genshin.Region.OVERSEAS
+        )
+        return ProxyGenshinClient(region=region, lang=locale_to_gpy_lang(self._locale))
+
+    def _handle_genshin_exception(self, exc: genshin.GenshinException) -> None:
+        """Handle GenshinException with appropriate error messages."""
+        logger.debug(f"[{self._params.user_id}] Email and password login error: {exc}")
+
+        if exc.retcode == -3006:  # Rate limited
+            message = LocaleStr(key="too_many_requests_error_banner_msg").translate(self._locale)
+            url = get_docs_url(
+                "FAQ#too-many-requests-error-when-trying-to-add-accounts-using-email--password-method",
+                locale=self._locale,
+            )
+        else:
+            message = str(exc)
+            url = None
+
+        show_error_banner(self.page, message=message, url=url)
+
+    async def handle_login_result(self, result: Any, email: str, password: str) -> None:
+        """Process the login result and handle different response types."""
         if isinstance(result, genshin.models.SessionMMT):
-            logger.debug(f"[{self._params.user_id}] Got SessionMMT")
-            await handle_session_mmt(
+            await self._handle_session_mmt(result, email, password, "on_login")
+        elif isinstance(result, genshin.models.ActionTicket):
+            await self._handle_action_ticket(result, email, password)
+        elif result:  # Successful login with cookies
+            await self._handle_successful_login(result)
+
+    async def _handle_session_mmt(
+        self,
+        result: genshin.models.SessionMMT,
+        email: str,
+        password: str,
+        mmt_type: Literal["on_login", "on_email_send"],
+    ) -> None:
+        """Handle SessionMMT response type."""
+        logger.debug(f"[{self._params.user_id}] Got SessionMMT")
+        await handle_session_mmt(
+            result,
+            email=email,
+            password=password,
+            page=self.page,
+            params=self._params,
+            locale=self._locale,
+            mmt_type=mmt_type,
+        )
+
+    async def _handle_action_ticket(
+        self, result: genshin.models.ActionTicket, email: str, password: str
+    ) -> None:
+        """Handle ActionTicket response type."""
+        logger.debug(f"[{self._params.user_id}] Got ActionTicket")
+        client = self._create_genshin_client()
+        email_result = await client._send_verification_email(result)
+
+        if isinstance(email_result, genshin.models.SessionMMT):
+            await self._handle_session_mmt(email_result, email, password, "on_email_send")
+        else:
+            await handle_action_ticket(
                 result,
                 email=email,
                 password=password,
-                page=page,
+                page=self.page,
                 params=self._params,
                 locale=self._locale,
-                mmt_type="on_login",
             )
-        elif isinstance(result, genshin.models.ActionTicket):
-            logger.debug(f"[{self._params.user_id}] Got ActionTicket")
-            email_result = await client._send_verification_email(result)
-            if isinstance(email_result, genshin.models.SessionMMT):
-                logger.debug(f"[{self._params.user_id}] Got SessionMMT from sending email")
-                await handle_session_mmt(
-                    email_result,
-                    email=email,
-                    password=password,
-                    page=page,
-                    params=self._params,
-                    locale=self._locale,
-                    mmt_type="on_email_send",
-                )
-            else:
-                logger.debug(f"[{self._params.user_id}] Handling ActionTicket")
-                await handle_action_ticket(
-                    result,
-                    email=email,
-                    password=password,
-                    page=page,
-                    params=self._params,
-                    locale=self._locale,
-                )
-        else:
-            logger.debug(f"[{self._params.user_id}] Email and password login success")
-            cookies = result.to_str()
-            logger.debug(f"[{self._params.user_id}] Got cookies: {cookies}")
-            encrypted_cookies = encrypt_string(cookies)
-            await page.client_storage.set_async(
-                f"hb.{self._params.user_id}.cookies", encrypted_cookies
-            )
-            page.go(f"/finish?{self._params.to_query_string()}")
+
+    async def _handle_successful_login(self, result: Any) -> None:
+        """Handle successful login with cookies."""
+        logger.debug(f"[{self._params.user_id}] Email and password login success")
+        cookies = result.to_str()
+        logger.debug(f"[{self._params.user_id}] Got cookies: {cookies}")
+        encrypted_cookies = encrypt_string(cookies)
+        await self.page.client_storage.set_async(
+            f"hb.{self._params.user_id}.cookies", encrypted_cookies
+        )
+        self.page.go(f"/finish?{self._params.to_query_string()}")
+
+    async def on_submit(self, e: ft.ControlEvent) -> None:
+        """Handle form submission with validation and login flow."""
+        self._page = e.page
+
+        if self._params.platform is None:
+            show_error_banner(self.page, message="Invalid platform")
+            return
+
+        email, password = await self.validate_form_fields()
+        if not email or not password:
+            return
+
+        show_loading_snack_bar(self.page, locale=self._locale)
+        logger.debug(f"[{self._params.user_id}] Email and password login session started")
+
+        result = await self.perform_login(email, password)
+        if result:
+            await self.handle_login_result(result, email, password)
 
     @property
     def email(self) -> ft.TextField:

@@ -44,10 +44,10 @@ class CardSettingsButton(Button[ProfileView]):
             self.view._card_data,
             card_settings,
             self.view.game,
-            self.view.character_type is CharacterType.CACHE
-            or isinstance(character, HoyolabGICharacter),
-            len(self.view.character_ids) > 1,
             settings,
+            hb_template_only=self.view.character_type is CharacterType.CACHE
+            or isinstance(character, HoyolabGICharacter),
+            is_team=len(self.view.character_ids) > 1,
             author=i.user,
             locale=self.view.locale,
         )

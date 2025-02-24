@@ -217,7 +217,7 @@ class Search(commands.Cog):
                     except ValueError as e:
                         raise InvalidQueryError from e
 
-                    view = AbyssEnemyView(settings.dark_mode, index, author=i.user, locale=locale)
+                    view = AbyssEnemyView(index, dark_mode=settings.dark_mode, author=i.user, locale=locale)
                     await view.start(i)
 
         elif game is Game.STARRAIL:

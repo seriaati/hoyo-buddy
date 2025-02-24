@@ -103,7 +103,7 @@ class HoyoAccount(BaseModel):
 
     class Meta:
         unique_together = ("uid", "game", "user")
-        ordering = ["uid"]
+        ordering = ("uid",)
 
     def __str__(self) -> str:
         return f"{self.nickname or self.username} ({self.uid})"
@@ -209,7 +209,7 @@ class CardSettings(BaseModel):
 
     class Meta:
         unique_together = ("character_id", "user", "game")
-        ordering = ["character_id"]
+        ordering = ("character_id",)
 
 
 class EnkaCache(BaseModel):
@@ -221,7 +221,7 @@ class EnkaCache(BaseModel):
     extras: fields.Field[dict[str, dict[str, Any]]] = fields.JSONField(default={})
 
     class Meta:
-        ordering = ["uid"]
+        ordering = ("uid",)
 
 
 class NotesNotify(BaseModel):
@@ -256,7 +256,7 @@ class NotesNotify(BaseModel):
 
     class Meta:
         unique_together = ("type", "account")
-        ordering = ["type"]
+        ordering = ("type",)
 
 
 class FarmNotify(BaseModel):
@@ -318,7 +318,7 @@ class ChallengeHistory(BaseModel):
 
     class Meta:
         unique_together = ("uid", "season_id", "challenge_type")
-        ordering = ["-end_time"]
+        ordering = ("-end_time",)
 
     @property
     def duration_str(self) -> str:
@@ -398,7 +398,7 @@ class GachaHistory(BaseModel):
 
     class Meta:
         unique_together = ("wish_id", "game", "account")
-        ordering = ["-wish_id"]
+        ordering = ("-wish_id",)
 
     @classmethod
     async def create(

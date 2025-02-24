@@ -173,7 +173,7 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         else:
             build_select.disabled = True
 
-    async def callback(self, i: Interaction) -> None:
+    async def callback(self, i: Interaction) -> Any:
         changed = self.update_page()
         if changed:
             return await i.response.edit_message(view=self.view)

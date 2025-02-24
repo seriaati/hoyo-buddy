@@ -24,8 +24,8 @@ class SettingsUI(View):
         self.settings = settings
 
         self.add_item(LanguageSelector(self.settings.locale))
-        self.add_item(DarkModeToggle(self.settings.dark_mode))
-        self.add_item(DYKTolggle(self.settings.enable_dyk))
+        self.add_item(DarkModeToggle(current_toggle=self.settings.dark_mode))
+        self.add_item(DYKTolggle(current_toggle=self.settings.enable_dyk))
 
     @staticmethod
     def get_brand_img_filename(theme: str, locale: discord.Locale) -> str:
@@ -106,7 +106,7 @@ class LanguageSelector(Select["SettingsUI"]):
 
 
 class DarkModeToggle(ToggleButton["SettingsUI"]):
-    def __init__(self, current_toggle: bool) -> None:
+    def __init__(self, *, current_toggle: bool) -> None:
         super().__init__(current_toggle, LocaleStr(key="dark_mode_button_label"))
 
     async def callback(self, i: Interaction) -> Any:
@@ -116,7 +116,7 @@ class DarkModeToggle(ToggleButton["SettingsUI"]):
 
 
 class DYKTolggle(ToggleButton[SettingsUI]):
-    def __init__(self, current_toggle: bool) -> None:
+    def __init__(self, *, current_toggle: bool) -> None:
         super().__init__(current_toggle, LocaleStr(key="button_label_dyk"))
 
     async def callback(self, i: Interaction) -> Any:

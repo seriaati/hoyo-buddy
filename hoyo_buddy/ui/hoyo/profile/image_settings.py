@@ -94,9 +94,9 @@ class ImageSettingsView(View):
         card_settings: CardSettings,
         custom_images: list[CustomImage],
         game: Game,
-        is_team: bool,
         settings: Settings,
         *,
+        is_team: bool,
         author: User | Member,
         locale: Locale,
     ) -> None:
@@ -230,7 +230,7 @@ class ImageSettingsView(View):
 
 
 class CharacterSelect(SettingsCharacterSelect[ImageSettingsView]):
-    async def callback(self, i: Interaction) -> None:
+    async def callback(self, i: Interaction) -> Any:
         changed = self.update_page()
         if changed:
             return await i.response.edit_message(view=self.view)
@@ -266,7 +266,7 @@ class CharacterSelect(SettingsCharacterSelect[ImageSettingsView]):
 
 
 class RemoveImageButton(Button[ImageSettingsView]):
-    def __init__(self, disabled: bool, row: int) -> None:
+    def __init__(self, *, disabled: bool, row: int) -> None:
         super().__init__(
             label=LocaleStr(key="profile.remove_image.button.label"),
             style=ButtonStyle.red,
@@ -313,7 +313,7 @@ class EditImageModal(Modal):
 
 
 class EditImageButton(Button[ImageSettingsView]):
-    def __init__(self, disabled: bool, row: int) -> None:
+    def __init__(self, *, disabled: bool, row: int) -> None:
         super().__init__(
             label=LocaleStr(key="edit_nickname_modal_title"),
             custom_id="profile_edit_image",
@@ -355,6 +355,7 @@ class ImageSelect(PaginatorSelect[ImageSettingsView]):
         default_collection: list[str],
         custom_images: list[CustomImage],
         template: str,
+        *,
         disabled: bool,
         row: int,
     ) -> None:
@@ -424,7 +425,7 @@ class ImageSelect(PaginatorSelect[ImageSettingsView]):
 
         return options
 
-    async def callback(self, i: Interaction) -> None:
+    async def callback(self, i: Interaction) -> Any:
         changed = self.update_page()
         if changed:
             return await i.response.edit_message(view=self.view)
@@ -464,7 +465,7 @@ class GenerateAIArtModal(Modal):
 
 
 class GenerateAIArtButton(Button[ImageSettingsView]):
-    def __init__(self, disabled: bool, row: int) -> None:
+    def __init__(self, *, disabled: bool, row: int) -> None:
         super().__init__(
             label=LocaleStr(key="profile.generate_ai_art.button.label"),
             style=ButtonStyle.blurple,
@@ -527,7 +528,7 @@ class AddImageModal(Modal):
 
 
 class AddImageButton(Button[ImageSettingsView]):
-    def __init__(self, row: int, disabled: bool) -> None:
+    def __init__(self, row: int, *, disabled: bool) -> None:
         super().__init__(
             label=LocaleStr(key="profile.add_image.button.label"),
             style=ButtonStyle.green,

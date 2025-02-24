@@ -50,7 +50,7 @@ async def main() -> None:
 if __name__ == "__main__":
     logger.remove()
 
-    args = parse_args()
+    args = parse_args(default=CONFIG.env == "prod")
     CONFIG.update_from_args(args)
 
     if CONFIG.sentry:

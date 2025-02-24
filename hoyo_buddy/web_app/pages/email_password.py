@@ -25,7 +25,6 @@ __all__ = ("EmailPasswordPage",)
 class EmailPasswordPage(ft.View):
     def __init__(self, *, params: Params, locale: Locale) -> None:
         self._params = params
-
         self._locale = locale
 
         super().__init__(
@@ -85,6 +84,10 @@ class EmailPassWordForm(ft.Column):
             raise ValueError(msg)
         return self._page
 
+    @page.setter
+    def page(self, value: ft.Page) -> None:
+        self._page = value
+
     async def on_focus(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
         control.error_text = None
@@ -129,7 +132,7 @@ class EmailPassWordForm(ft.Column):
         except genshin.GenshinException as exc:
             self._handle_genshin_exception(exc)
         except Exception as exc:
-            logger.debug(f"[{self._params.user_id}] Email and password login error: {exc}")
+            logger.exception(f"[{self._params.user_id}] Email and password login error: {exc}")
             show_error_banner(self.page, message=str(exc))
 
         return None

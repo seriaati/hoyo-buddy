@@ -7,7 +7,7 @@ dependencies = [
   "asyncpg>=0.29.0",
   "asyncpg-listen>=0.0.6",
   "cachetools>=5.5.0",
-  "discord-py[speed]>=2.4.0",
+  "discord-py[speed]>=2.5.0",
   "fake-useragent>=1.5.1",
   "hakushin-py>=0.4.4",
   "jishaku>=2.5.2",
@@ -50,7 +50,6 @@ dev-dependencies = ["icecream>=2.1.3"]
 novelai = { git = "https://github.com/seriaati/NovelAI-API" }
 genshin = { git = "https://github.com/thesadru/genshin.py", branch = "master" }
 hakushin-py = { git = "https://github.com/seriaati/hakushin-py" }
-discord-py = { git = "https://github.com/Rapptz/discord.py" }
 ambr-py = { git = "https://github.com/seriaati/ambr" }
 enka = { git = "https://github.com/seriaati/enka-py" }
 yatta-py = { git = "https://github.com/seriaati/yatta" }

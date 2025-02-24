@@ -574,11 +574,15 @@ wheels = [
 
 [[package]]
 name = "discord-py"
-version = "2.6.0a5176+g0e4f0610"
-source = { git = "https://github.com/Rapptz/discord.py#0e4f06103ee20d06fb6c0d64f75b1fc475905b95" }
+version = "2.5.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "audioop-lts", marker = "python_full_version >= '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/59/7e/a778257411e86d834c94ea6d67abacca8f0efac62996882898d55e475748/discord_py-2.5.0.tar.gz", hash = "sha256:f6827909b87ea89bdb2cc49d475cb1fada2e73235a3e4568fc8b113660340c73", size = 1054589 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8a/d5/2f54c110f6707bf563957349f8ca9cdf883f420699cd61ec8b48018754bb/discord.py-2.5.0-py3-none-any.whl", hash = "sha256:8e1e3b3ff5a112a4ab3a615059a285238eea34edff6de8737db6e1f72ea05195", size = 1154805 },
 ]
 
 [package.optional-dependencies]
@@ -849,7 +853,7 @@ requires-dist = [
     { name = "asyncpg-listen", specifier = ">=0.0.6" },
     { name = "cachetools", specifier = ">=5.5.0" },
     { name = "cryptography", specifier = ">=43.0.0" },
-    { name = "discord-py", extras = ["speed"], git = "https://github.com/Rapptz/discord.py" },
+    { name = "discord-py", extras = ["speed"], specifier = ">=2.5.0" },
     { name = "enka", git = "https://github.com/seriaati/enka-py" },
     { name = "fake-useragent", specifier = ">=1.5.1" },
     { name = "flet", extras = ["web"], specifier = ">=0.26.0" },

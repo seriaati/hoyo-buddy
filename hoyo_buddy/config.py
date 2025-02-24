@@ -57,13 +57,23 @@ class Config(BaseSettings):
         self.prometheus = args.prometheus
         self.novelai = args.novelai
 
+    @property
+    def cli_args(self) -> str:
+        return f"search={self.search} sentry={self.sentry} schedule={self.schedule} prometheus={self.prometheus} novelai={self.novelai}"
+
+    @property
+    def is_dev(self) -> bool:
+        return self.env == "dev"
+
 
 def parse_args(*, default: bool) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--search", action="store_true", help="Enable search", default=default)
     parser.add_argument("--sentry", action="store_true", help="Enable sentry", default=default)
     parser.add_argument("--schedule", action="store_true", help="Enable schedule", default=default)
-    parser.add_argument("--prometheus", action="store_true", help="Enable Prometheus", default=default)
+    parser.add_argument(
+        "--prometheus", action="store_true", help="Enable Prometheus", default=default
+    )
     parser.add_argument("--novelai", action="store_true", help="Enable NovelAI", default=default)
     return parser.parse_args()
 

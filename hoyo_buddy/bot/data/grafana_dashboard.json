@@ -89,7 +89,7 @@
           },
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "sum by(command) (increase(discordbot_on_interaction_events_total{job=\"$job\", command!=\"None\"}[24h]))",
+          "expr": "sum by(command) (increase(discordbot_on_slash_command_total{job=\"$job\", command!=\"None\"}[24h]))",
           "format": "time_series",
           "instant": false,
           "legendFormat": "{{command}}",
@@ -1009,7 +1009,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "MB"
         },
         "overrides": []
       },
@@ -1139,7 +1140,7 @@
             "uid": "prometheus"
           },
           "editorMode": "builder",
-          "expr": "sum by(job, command) (changes(discordbot_on_interaction_events_total{job=~\"$job\", command!=\"None\"}[$__interval])) > 0",
+          "expr": "sum by(job, command) (changes(discordbot_on_slash_command_total{job=~\"$job\", command!=\"None\"}[$__interval])) > 0",
           "hide": false,
           "legendFormat": "{{command}}",
           "range": true,

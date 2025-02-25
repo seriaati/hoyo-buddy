@@ -435,7 +435,7 @@ class AutoMimo:
                         await asyncio.sleep(6)
 
                     if not success:
-                        item_strs += (
+                        item_str += (
                             f" ({convert_code_to_redeem_url(result.code, game=account.game)})"
                         )
 

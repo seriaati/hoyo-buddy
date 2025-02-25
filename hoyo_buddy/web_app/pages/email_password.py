@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Literal
 
 import flet as ft
 import genshin
@@ -20,6 +20,13 @@ if TYPE_CHECKING:
     from ..schema import Params
 
 __all__ = ("EmailPasswordPage",)
+
+type LoginResult = (
+    genshin.models.AppLoginResult
+    | genshin.models.CNWebLoginResult
+    | genshin.models.ActionTicket
+    | genshin.models.SessionMMT
+)
 
 
 class EmailPasswordPage(ft.View):
@@ -65,7 +72,6 @@ class EmailPassWordForm(ft.Column):
         self._locale = locale
         self._email_ref = ft.Ref[ft.TextField]()
         self._password_ref = ft.Ref[ft.TextField]()
-        self._page: ft.Page | None = None
 
         super().__init__(
             [
@@ -76,17 +82,6 @@ class EmailPassWordForm(ft.Column):
             wrap=True,
             spacing=16,
         )
-
-    @property
-    def page(self) -> ft.Page:
-        if self._page is None:
-            msg = "Page not set"
-            raise ValueError(msg)
-        return self._page
-
-    @page.setter
-    def page(self, value: ft.Page) -> None:
-        self._page = value
 
     async def on_focus(self, e: ft.ControlEvent) -> None:
         control: ft.TextField = e.control
@@ -121,7 +116,7 @@ class EmailPassWordForm(ft.Column):
         )
         field.update()
 
-    async def perform_login(self, email: str, password: str) -> Any:
+    async def perform_login(self, email: str, password: str, page: ft.Page) -> LoginResult | None:
         """Attempt to login with the given credentials."""
         client = self._create_genshin_client()
 
@@ -130,10 +125,10 @@ class EmailPassWordForm(ft.Column):
                 return await client.os_app_login(email, password)
             return await client._cn_web_login(email, password)
         except genshin.GenshinException as exc:
-            self._handle_genshin_exception(exc)
+            self._handle_genshin_exception(exc, page)
         except Exception as exc:
             logger.exception(f"[{self._params.user_id}] Email and password login error: {exc}")
-            show_error_banner(self.page, message=str(exc))
+            show_error_banner(page, message=str(exc))
 
         return None
 
@@ -146,7 +141,7 @@ class EmailPassWordForm(ft.Column):
         )
         return ProxyGenshinClient(region=region, lang=locale_to_gpy_lang(self._locale))
 
-    def _handle_genshin_exception(self, exc: genshin.GenshinException) -> None:
+    def _handle_genshin_exception(self, exc: genshin.GenshinException, page: ft.Page) -> None:
         """Handle GenshinException with appropriate error messages."""
         logger.debug(f"[{self._params.user_id}] Email and password login error: {exc}")
 
@@ -160,16 +155,18 @@ class EmailPassWordForm(ft.Column):
             message = str(exc)
             url = None
 
-        show_error_banner(self.page, message=message, url=url)
+        show_error_banner(page, message=message, url=url)
 
-    async def handle_login_result(self, result: Any, email: str, password: str) -> None:
+    async def handle_login_result(
+        self, result: LoginResult, email: str, password: str, page: ft.Page
+    ) -> None:
         """Process the login result and handle different response types."""
         if isinstance(result, genshin.models.SessionMMT):
-            await self._handle_session_mmt(result, email, password, "on_login")
+            await self._handle_session_mmt(result, email, password, "on_login", page)
         elif isinstance(result, genshin.models.ActionTicket):
-            await self._handle_action_ticket(result, email, password)
-        elif result:  # Successful login with cookies
-            await self._handle_successful_login(result)
+            await self._handle_action_ticket(result, email, password, page)
+        else:  # Successful login with cookies
+            await self._handle_successful_login(result, page)
 
     async def _handle_session_mmt(
         self,
@@ -177,6 +174,7 @@ class EmailPassWordForm(ft.Column):
         email: str,
         password: str,
         mmt_type: Literal["on_login", "on_email_send"],
+        page: ft.Page,
     ) -> None:
         """Handle SessionMMT response type."""
         logger.debug(f"[{self._params.user_id}] Got SessionMMT")
@@ -184,14 +182,14 @@ class EmailPassWordForm(ft.Column):
             result,
             email=email,
             password=password,
-            page=self.page,
+            page=page,
             params=self._params,
             locale=self._locale,
             mmt_type=mmt_type,
         )
 
     async def _handle_action_ticket(
-        self, result: genshin.models.ActionTicket, email: str, password: str
+        self, result: genshin.models.ActionTicket, email: str, password: str, page: ft.Page
     ) -> None:
         """Handle ActionTicket response type."""
         logger.debug(f"[{self._params.user_id}] Got ActionTicket")
@@ -199,46 +197,46 @@ class EmailPassWordForm(ft.Column):
         email_result = await client._send_verification_email(result)
 
         if isinstance(email_result, genshin.models.SessionMMT):
-            await self._handle_session_mmt(email_result, email, password, "on_email_send")
+            await self._handle_session_mmt(email_result, email, password, "on_email_send", page)
         else:
             await handle_action_ticket(
                 result,
                 email=email,
                 password=password,
-                page=self.page,
+                page=page,
                 params=self._params,
                 locale=self._locale,
             )
 
-    async def _handle_successful_login(self, result: Any) -> None:
+    async def _handle_successful_login(
+        self, result: genshin.models.AppLoginResult | genshin.models.CNWebLoginResult, page: ft.Page
+    ) -> None:
         """Handle successful login with cookies."""
         logger.debug(f"[{self._params.user_id}] Email and password login success")
         cookies = result.to_str()
         logger.debug(f"[{self._params.user_id}] Got cookies: {cookies}")
         encrypted_cookies = encrypt_string(cookies)
-        await self.page.client_storage.set_async(
-            f"hb.{self._params.user_id}.cookies", encrypted_cookies
-        )
-        self.page.go(f"/finish?{self._params.to_query_string()}")
+        await page.client_storage.set_async(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
+        page.go(f"/finish?{self._params.to_query_string()}")
 
     async def on_submit(self, e: ft.ControlEvent) -> None:
         """Handle form submission with validation and login flow."""
-        self._page = e.page
+        page = e.page
 
         if self._params.platform is None:
-            show_error_banner(self.page, message="Invalid platform")
+            show_error_banner(page, message="Invalid platform")
             return
 
         email, password = await self.validate_form_fields()
         if not email or not password:
             return
 
-        show_loading_snack_bar(self.page, locale=self._locale)
+        show_loading_snack_bar(page, locale=self._locale)
         logger.debug(f"[{self._params.user_id}] Email and password login session started")
 
-        result = await self.perform_login(email, password)
-        if result:
-            await self.handle_login_result(result, email, password)
+        result = await self.perform_login(email, password, page)
+        if result is not None:
+            await self.handle_login_result(result, email, password, page)
 
     @property
     def email(self) -> ft.TextField:

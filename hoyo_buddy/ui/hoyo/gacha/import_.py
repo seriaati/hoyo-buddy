@@ -9,7 +9,7 @@ from hoyo_buddy.db import GachaHistory, HoyoAccount, get_dyk, update_gacha_nums
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LINK, LOADING
 from hoyo_buddy.enums import Game
-from hoyo_buddy.exceptions import AuthkeyExtractError, FeatureNotImplementedError
+from hoyo_buddy.exceptions import AuthkeyExtractError, FeatureNotImplementedError, UIDMismatchError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.l10n import LocaleStr
@@ -56,6 +56,12 @@ class URLImport(Button[GachaImportView]):
         )
         self.account = account
 
+    def _check_uid(
+        self, record: genshin.models.Wish | genshin.models.Warp | genshin.models.SignalSearch
+    ) -> None:
+        if record.uid != self.account.uid:
+            raise UIDMismatchError(record.uid)
+
     async def callback(self, i: Interaction) -> Any:
         modal = EnterURLModal()
         modal.translate(self.view.locale)
@@ -96,6 +102,8 @@ class URLImport(Button[GachaImportView]):
             item_ids = await client.fetch_item_name_to_id_map()
 
             for wish in wishes:
+                self._check_uid(wish)
+
                 banner_type = 301 if wish.banner_type == 400 else wish.banner_type
                 item_id = item_ids.get(wish.name)
                 if item_id is None:
@@ -120,6 +128,8 @@ class URLImport(Button[GachaImportView]):
             warps.sort(key=lambda x: x.id)
 
             for warp in warps:
+                self._check_uid(warp)
+
                 created = await GachaHistory.create(
                     wish_id=warp.id,
                     rarity=warp.rarity,
@@ -138,6 +148,8 @@ class URLImport(Button[GachaImportView]):
             signals.sort(key=lambda x: x.id)
 
             for signal in signals:
+                self._check_uid(signal)
+
                 created = await GachaHistory.create(
                     wish_id=signal.id,
                     rarity=signal.rarity + 1,

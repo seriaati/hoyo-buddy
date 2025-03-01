@@ -750,7 +750,7 @@ mimo_view_shop_button_label: Cửa hàng
 mimo_buy_item_select_placeholder: Chọn một món để mua
 mimo_tasks_button_label: Nhiệm vụ
 mimo_buy_item_amount_label: Số lượng
-mimo_item_available_time: "Mở bán lại sau {time}"
+mimo_item_available_time: "Sẽ dầy trong {time}"
 mimo_auto_task_embed_footer: Dùng lệnh /mimo để điều chỉnh tự động làm nhiệm vụ và đổi thưởng
 mimo_auto_task_embed_desc: "Hoyo Buddy đã hoàn thành {finish} nhiệm vụ và nhận {claim_point} điểm cho bạn."
 checkin_reward_embed_footer: Sử dụng /check-in để điều chỉnh thông báo

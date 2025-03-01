@@ -203,7 +203,12 @@ class HoyoBuddy(commands.AutoShardedBot):
             )
             query &= Q(id__in=[account.id for account in accounts])  # pyright: ignore[reportAttributeAccessIssue]
             # Don't check-in the same account twice in a day
-            query &= Q(last_checkin_time__isnull=True) | ~Q(last_checkin_time__day=get_now().day)
+            now = get_now()
+            query &= Q(last_checkin_time__isnull=True) | ~Q(
+                last_checkin_time__year=now.year,
+                last_checkin_time__month=now.month,
+                last_checkin_time__day=now.day,
+            )
         else:
             # Interval based auto tasks
             interval = AUTO_TASK_INTERVALS.get(task_type)

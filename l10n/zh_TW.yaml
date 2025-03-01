@@ -213,7 +213,7 @@ genshin_impact: 原神
 geo: 岩
 gi_daily.embed.description: 每日委託或冒險歷練尚未全部完成
 gift_code_modal.code_input.label: "兌換碼 {num}"
-gift_code_modal.title: 輸入兌換碼
+gift_code_modal.title: 輸入禮物碼
 harmony: 同諧
 honkai:_star_rail: "崩壞: 星穹鐵道"
 honkai_impact_3rd: 崩壞3
@@ -378,7 +378,7 @@ realm_curr_button.label: 洞天寶錢通知
 realm_curr_modal.title: 洞天寶錢通知設定
 redeeem_code.cookie_token_expired_description: "兌換兌換碼功能只有使用電子郵件和密碼登入的使用者才可以使用，你可以透過</accounts> 進行"
 redeeem_code.cookie_token_expired_title: Cookie Token 已過期
-redeeem_code.cookie_token_refresh_failed_description: "自上次新增帳戶以來，你可能已變更帳戶密碼。\n請使用</accounts>透過電子郵件和密碼的方式重新新增您的帳戶。"
+redeeem_code.cookie_token_refresh_failed_description: "請使用</accounts>中的電子郵件和密碼方式重新新增你的帳戶"
 redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失敗
 redeem_code.success: 兌換成功
 redeem_codes_button.label: 兌換兌換碼
@@ -795,3 +795,4 @@ zzz.core_level.placeholder: 選擇核心技能等級…
 open_game_label: 啟動遊戲
 open_game_cloud_label: 啟動遊戲（雲端遊戲）
 open_game_vietnam_label: 啟動遊戲（越南版本）
+gift_code_redeemed: 禮物碼已被兌換過

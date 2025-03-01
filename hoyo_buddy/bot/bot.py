@@ -177,6 +177,9 @@ class HoyoBuddy(commands.AutoShardedBot):
             logger.error(f"Failed to fetch guild with ID {self.guild_id}")
             return set()
 
+        if not guild.chunked:
+            await guild.chunk()
+
         role_id = 1117992633827082251
         supporter_role = discord.utils.get(guild.roles, id=role_id)
         if supporter_role is None:

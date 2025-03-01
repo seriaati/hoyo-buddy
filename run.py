@@ -33,8 +33,9 @@ async def main() -> None:
         with contextlib.suppress(
             KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError
         ):
-            geetest_server = GeetestWebServer()
-            asyncio.create_task(geetest_server.run())
+            if CONFIG.web_server:
+                geetest_server = GeetestWebServer()
+                asyncio.create_task(geetest_server.run())
 
             with bot.executor:
                 await bot.start(CONFIG.discord_token)

@@ -47,6 +47,7 @@ class Config(BaseSettings):
     schedule: bool = False
     prometheus: bool = False
     novelai: bool = False
+    web_server: bool = False
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
@@ -56,6 +57,7 @@ class Config(BaseSettings):
         self.schedule = args.schedule
         self.prometheus = args.prometheus
         self.novelai = args.novelai
+        self.web_server = args.web_server
 
     @property
     def is_dev(self) -> bool:
@@ -71,6 +73,9 @@ def parse_args(*, default: bool) -> argparse.Namespace:
         "--prometheus", action="store_true", help="Enable Prometheus", default=default
     )
     parser.add_argument("--novelai", action="store_true", help="Enable NovelAI", default=default)
+    parser.add_argument(
+        "--web-server", action="store_true", help="Enable web server", default=default
+    )
     return parser.parse_args()
 
 

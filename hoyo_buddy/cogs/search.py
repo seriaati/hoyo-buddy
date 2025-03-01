@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import asyncio
+import datetime
 import random
 from typing import TYPE_CHECKING, Any
 
 import hakushin as hakushin_api
 from discord import Locale, app_commands
-from discord.ext import commands
+from discord.ext import commands, tasks
 from loguru import logger
 
-from hoyo_buddy.constants import NO_BETA_CONTENT_GUILDS, locale_to_hakushin_lang
+from hoyo_buddy.constants import NO_BETA_CONTENT_GUILDS, UTC_8, locale_to_hakushin_lang
 from hoyo_buddy.db import Settings, get_locale
 from hoyo_buddy.utils import ephemeral
 
@@ -49,6 +50,23 @@ class Search(commands.Cog):
             return
 
         asyncio.create_task(self._setup_search_autofill())
+        self.update_search_autofill.start()
+
+    async def cog_unload(self) -> None:
+        if not self.bot.config.search:
+            return
+        self.update_search_autofill.cancel()
+
+    @tasks.loop(time=datetime.time(11, 0, 0, tzinfo=UTC_8))
+    async def update_search_autofill(self) -> None:
+        if not self.bot.config.search:
+            return
+
+        await self._setup_search_autofill()
+
+    @update_search_autofill.before_loop
+    async def before_update_search_autofill(self) -> None:
+        await self.bot.wait_until_ready()
 
     async def _setup_search_autofill(self) -> None:
         logger.info("Setting up search autocomplete choices")

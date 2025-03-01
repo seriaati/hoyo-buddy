@@ -17,7 +17,6 @@ from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
 from ..hoyo.auto_tasks.notes_check import NotesChecker
 from ..utils import get_now
-from .search import Search
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
@@ -70,7 +69,6 @@ class Schedule(commands.Cog):
 
         self.run_auto_tasks.start()
         self.run_farm_checks.start()
-        self.update_search_autofill.start()
         self.update_assets.start()
         self.run_notes_check.start()
         self.run_web_events_notify.start()
@@ -81,7 +79,6 @@ class Schedule(commands.Cog):
 
         self.run_auto_tasks.cancel()
         self.run_farm_checks.cancel()
-        self.update_search_autofill.cancel()
         self.update_assets.cancel()
         self.run_notes_check.cancel()
         self.run_web_events_notify.cancel()
@@ -140,15 +137,6 @@ class Schedule(commands.Cog):
         self.bot.farm_check_running = False
 
     @tasks.loop(time=datetime.time(11, 0, 0, tzinfo=UTC_8))
-    async def update_search_autofill(self) -> None:
-        if not self.bot.config.search:
-            return
-
-        search_cog = self.bot.get_cog("Search")
-        if isinstance(search_cog, Search):
-            await search_cog._setup_search_autofill()
-
-    @tasks.loop(time=datetime.time(11, 0, 0, tzinfo=UTC_8))
     async def update_assets(self) -> None:
         await self.bot.update_assets()
 
@@ -162,7 +150,6 @@ class Schedule(commands.Cog):
 
     @run_auto_tasks.before_loop
     @run_farm_checks.before_loop
-    @update_search_autofill.before_loop
     @update_assets.before_loop
     @run_notes_check.before_loop
     @run_web_events_notify.before_loop

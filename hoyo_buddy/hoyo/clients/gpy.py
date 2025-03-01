@@ -695,7 +695,7 @@ class GenshinClient(ProxyGenshinClient):
 
     async def update_cookie_token(self) -> None:
         """Update the cookie token."""
-        parsed_cookies = genshin.parse_cookie(self._account.cookies)
+        parsed_cookies = self._account.dict_cookies
         cookies = await genshin.fetch_cookie_with_stoken_v2(parsed_cookies, token_types=[2, 4])
         parsed_cookies.update(cookies)
         self.set_cookies(parsed_cookies)
@@ -813,7 +813,7 @@ class GenshinClient(ProxyGenshinClient):
         if self.region is genshin.Region.OVERSEAS:
             return None
 
-        cookies = genshin.parse_cookie(self._account.cookies)
+        cookies = self._account.dict_cookies
         if "stoken" not in cookies or "mid" not in cookies:
             return None
 

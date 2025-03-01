@@ -328,6 +328,15 @@ class NotesView(View):
 
         raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
 
+    async def _reset_notify(self, notify: NotesNotify) -> None:
+        notify.est_time = None
+        notify.last_notif_time = None
+        notify.last_check_time = None
+        notify.current_notif_count = 0
+        await notify.save(
+            update_fields=("est_time", "last_notif_time", "last_check_time", "current_notif_count")
+        )
+
     async def process_type_one_modal(
         self,
         *,
@@ -352,19 +361,14 @@ class NotesView(View):
                 enabled=enabled,
             )
         else:
+            await self._reset_notify(notify)
+
             notify.threshold = threshold
             notify.notify_interval = notify_interval
             notify.max_notif_count = max_notif_count
             notify.enabled = enabled
-            notify.est_time = None
             await notify.save(
-                update_fields=(
-                    "threshold",
-                    "notify_interval",
-                    "max_notif_count",
-                    "enabled",
-                    "est_time",
-                )
+                update_fields=("threshold", "notify_interval", "max_notif_count", "enabled")
             )
 
         return await self.get_reminder_embed()
@@ -391,6 +395,8 @@ class NotesView(View):
                 enabled=enabled,
             )
         else:
+            await self._reset_notify(notify)
+
             notify.enabled = enabled
             notify.notify_interval = notify_interval
             notify.max_notif_count = max_notif_count
@@ -422,6 +428,8 @@ class NotesView(View):
                 notify_time=notify_time,
             )
         else:
+            await self._reset_notify(notify)
+
             notify.enabled = enabled
             notify.notify_interval = notify_interval
             notify.max_notif_count = max_notif_count
@@ -458,6 +466,8 @@ class NotesView(View):
                 notify_weekday=notify_weekday,
             )
         else:
+            await self._reset_notify(notify)
+
             notify.enabled = enabled
             notify.notify_interval = notify_interval
             notify.max_notif_count = max_notif_count
@@ -499,6 +509,8 @@ class NotesView(View):
                 hours_before=hours_before,
             )
         else:
+            await self._reset_notify(notify)
+
             notify.enabled = enabled
             notify.notify_interval = notify_interval
             notify.max_notif_count = max_notif_count

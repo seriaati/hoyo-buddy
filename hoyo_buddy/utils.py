@@ -494,7 +494,7 @@ def entry_point(log_dir: str, *, tortoise_log: bool = False) -> None:
     if tortoise_log:
         logging.getLogger("tortoise").setLevel(logging.DEBUG)
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
-    logger.add(log_dir, rotation="1 day", retention="2 weeks", level="DEBUG")
+    logger.add(log_dir, rotation="2 hours", retention="1 week", level="DEBUG")
 
     args = parse_args(default=not CONFIG.is_dev)
     CONFIG.update_from_args(args)

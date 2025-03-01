@@ -59,9 +59,10 @@ class NotesView(View):
         self.accounts = accounts
         self.bytes_obj: io.BytesIO | None = None
 
-        if accounts is not None:
-            self.add_item(AccountSwitcher(accounts, account))
-        self.add_items(self.get_open_game_buttons(account, row=1))
+    def _add_items(self) -> None:
+        if self.accounts is not None:
+            self.add_item(AccountSwitcher(self.accounts, self.account))
+        self.add_items(self.get_open_game_buttons(self.account, row=1))
         self.add_item(ReminderButton(row=4))
 
     @staticmethod
@@ -643,6 +644,8 @@ class NotesView(View):
         return embed.set_image(url="attachment://notes.png").add_acc_info(self.account)
 
     async def start(self, i: Interaction, *, acc_select: AccountSwitcher | None = None) -> None:
+        self._add_items()
+
         notes = await self._get_notes()
         embed = self._get_notes_embed(notes)
 
@@ -798,4 +801,5 @@ class AccountSwitcher(Select[NotesView]):
             raise ValueError(msg)
 
         self.view.account = account
+        self.view.clear_items()
         await self.view.start(i, acc_select=self)

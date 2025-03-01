@@ -218,44 +218,47 @@ class NotesChecker:
 
     @classmethod
     async def _notify_user(cls, notify: NotesNotify, notes: Notes | None) -> None:
-        locale = await cls._get_locale(notify)
-        account = notify.account
+        try:
+            locale = await cls._get_locale(notify)
+            account = notify.account
 
-        embed = cls._get_notify_embed(notify, notes, locale)
-        draw_input = DrawInput(
-            dark_mode=account.user.settings.dark_mode,
-            locale=draw_locale(locale, account),
-            session=cls._bot.session,
-            filename="notes.png",
-            executor=cls._bot.executor,
-            loop=cls._bot.loop,
-        )
+            embed = cls._get_notify_embed(notify, notes, locale)
+            draw_input = DrawInput(
+                dark_mode=account.user.settings.dark_mode,
+                locale=draw_locale(locale, account),
+                session=cls._bot.session,
+                filename="notes.png",
+                executor=cls._bot.executor,
+                loop=cls._bot.loop,
+            )
 
-        if isinstance(notes, ZZZNotes):
-            buffer = await draw_zzz_notes_card(draw_input, notes)
-        elif isinstance(notes, StarRailNote):
-            buffer = await draw_hsr_notes_card(draw_input, notes)
-        elif isinstance(notes, GenshinNotes):
-            buffer = await draw_gi_notes_card(draw_input, notes)
-        else:
-            buffer = None
+            if isinstance(notes, ZZZNotes):
+                buffer = await draw_zzz_notes_card(draw_input, notes)
+            elif isinstance(notes, StarRailNote):
+                buffer = await draw_hsr_notes_card(draw_input, notes)
+            elif isinstance(notes, GenshinNotes):
+                buffer = await draw_gi_notes_card(draw_input, notes)
+            else:
+                buffer = None
 
-        if buffer is None:
-            file_ = None
-        else:
-            buffer.seek(0)
-            file_ = discord.File(buffer, filename="notes.png")
+            if buffer is None:
+                file_ = None
+            else:
+                buffer.seek(0)
+                file_ = discord.File(buffer, filename="notes.png")
 
-        view = View(author=None, locale=locale)
-        buttons = NotesView.get_open_game_buttons(account)
-        view.add_items(buttons)
+            view = View(author=None, locale=locale)
+            buttons = NotesView.get_open_game_buttons(account)
+            view.add_items(buttons)
 
-        message = await cls._bot.dm_user(account.user.id, embed=embed, file=file_, view=view)
+            message = await cls._bot.dm_user(account.user.id, embed=embed, file=file_, view=view)
 
-        notify.enabled = message is not None
-        notify.last_notif_time = get_now()
-        notify.current_notif_count += 1 if message is not None else 0
-        await notify.save(update_fields=("enabled", "last_notif_time", "current_notif_count"))
+            notify.enabled = message is not None
+            notify.last_notif_time = get_now()
+            notify.current_notif_count += 1 if message is not None else 0
+            await notify.save(update_fields=("enabled", "last_notif_time", "current_notif_count"))
+        except Exception as e:
+            await cls._handle_notify_error(notify, e)
 
     @classmethod
     async def _process_realm_currency_notify(cls, notify: NotesNotify, notes: GenshinNotes) -> None:

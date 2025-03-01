@@ -42,7 +42,7 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    entry_point("logs/hoyo_buddy.log")
+    entry_point("logs/hoyo_buddy.log", tortoise_log=CONFIG.is_dev)
     try:
         import uvloop  # pyright: ignore[reportMissingImports]
     except ImportError:

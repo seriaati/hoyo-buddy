@@ -213,7 +213,7 @@ genshin_impact: Genshin Impact
 geo: Geo
 gi_daily.embed.description: Daily commisions or adventure encounters are not completed yet
 gift_code_modal.code_input.label: "Code {num}"
-gift_code_modal.title: Enter redemption codes
+gift_code_modal.title: Enter gift codes
 harmony: Harmony
 honkai:_star_rail: "Honkai: Star Rail"
 honkai_impact_3rd: Honkai Impact 3rd
@@ -795,3 +795,4 @@ zzz.core_level.placeholder: Select the core skill's level...
 open_game_label: Open game
 open_game_cloud_label: Open game (cloud gaming)
 open_game_vietnam_label: Open game (Vietnam version)
+gift_code_redeemed: Gift code has been claimed already

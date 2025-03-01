@@ -30,6 +30,7 @@ __all__ = ("get_error_embed",)
 GENSHIN_ERROR_CONVERTER: dict[
     tuple[int, ...], dict[Literal["title", "description", "image"], LocaleStr | str]
 ] = {
+    (-2017, -2018): {"title": LocaleStr(key="gift_code_redeemed")},
     (-5003,): {
         "title": LocaleStr(key="already_claimed_title"),
         "description": LocaleStr(key="already_claimed_description"),

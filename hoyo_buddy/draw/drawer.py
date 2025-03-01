@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
 from discord import Locale
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageDraw, ImageFont
+from loguru import logger
 
 from hoyo_buddy.constants import DC_MAX_FILESIZE
 
@@ -508,7 +509,12 @@ class Drawer:
     def open_image(
         file_path: pathlib.Path | str, size: tuple[int, int] | None = None
     ) -> Image.Image:
-        image = Image.open(file_path)
+        try:
+            image = Image.open(file_path)
+        except FileNotFoundError:
+            logger.error(f"File not found: {file_path}")
+            image = Image.new("RGBA", (1, 1), (0, 0, 0, 0))
+
         if image.mode != "RGBA":
             image = image.convert("RGBA")
         if size is not None:

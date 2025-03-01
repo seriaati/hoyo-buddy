@@ -481,7 +481,7 @@ class TaskGroup(asyncio.TaskGroup):
     _abort = lambda _: None  # noqa: E731
 
 
-def entry_point(log_dir: str, *, tortoise_log: bool = False) -> None:
+def entry_point(log_dir: str) -> None:
     try:
         from icecream import install  # noqa: PLC0415
     except ImportError:
@@ -491,7 +491,7 @@ def entry_point(log_dir: str, *, tortoise_log: bool = False) -> None:
 
     logger.remove()
     logger.add(sys.stderr, level="DEBUG" if CONFIG.is_dev else "INFO")
-    if tortoise_log:
+    if CONFIG.is_dev:
         logging.getLogger("tortoise").setLevel(logging.DEBUG)
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
     logger.add(log_dir, rotation="2 hours", retention="1 week", level="DEBUG")

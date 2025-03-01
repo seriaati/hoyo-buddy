@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
 
 from discord import Locale
 from fontTools.ttLib import TTFont
-from PIL import Image, ImageChops, ImageDraw, ImageFont
 from loguru import logger
+from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from hoyo_buddy.constants import DC_MAX_FILESIZE
 

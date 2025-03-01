@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 import enka
 from genshin import GenshinException
-from seria.utils import read_yaml
 
 from hoyo_buddy.db import EnkaCache, HoyoAccount
+from hoyo_buddy.draw.card_data import CARD_DATA
 
 from ..exceptions import InvalidQueryError
 from ..hoyo.clients.enka.gi import EnkaGIClient
@@ -77,7 +77,7 @@ class ProfileCommand:
             self._uid,
             self._game,
             cache.extras,
-            await read_yaml("hoyo-buddy-assets/assets/gi-build-card/data.yaml"),
+            CARD_DATA.gi,
             character_ids=self._character_ids,
             hoyolab_gi_characters=hoyolab_characters,
             hoyolab_gi_user=hoyolab_user,
@@ -126,7 +126,7 @@ class ProfileCommand:
             self._uid,
             self._game,
             cache.extras,
-            await read_yaml("hoyo-buddy-assets/assets/hsr-build-card/data.yaml"),
+            CARD_DATA.hsr,
             character_ids=self._character_ids,
             hoyolab_hsr_characters=hoyolab_characters,
             hoyolab_hsr_user=hoyolab_user,
@@ -153,7 +153,7 @@ class ProfileCommand:
             self._uid,
             self._game,
             cache.extras,
-            await read_yaml("hoyo-buddy-assets/assets/zzz-build-card/agent_data.yaml"),
+            CARD_DATA.zzz,
             character_ids=self._character_ids,
             account=self._account,
             zzz_data=zzz_data,

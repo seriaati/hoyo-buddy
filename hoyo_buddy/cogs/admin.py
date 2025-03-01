@@ -12,6 +12,7 @@ from seria.utils import write_json
 
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.db import CardSettings, HoyoAccount, Settings, User
+from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
@@ -268,6 +269,11 @@ class Admin(commands.Cog):
     async def update_version_command(self, ctx: commands.Context) -> Any:
         await self.bot.update_version_activity()
         await ctx.send("Done.")
+
+    @commands.command(name="rcard")
+    async def reload_card_data_command(self, ctx: commands.Context) -> Any:
+        await CARD_DATA.load()
+        await ctx.send("Card data reloaded.")
 
 
 async def setup(bot: HoyoBuddy) -> None:

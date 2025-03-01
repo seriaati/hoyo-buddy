@@ -8,7 +8,6 @@ import enka
 from discord import File, Locale
 from genshin.models import ZZZPartialAgent
 from loguru import logger
-from seria.utils import read_yaml
 
 from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
@@ -18,6 +17,7 @@ from hoyo_buddy.constants import (
     ZZZ_DISC_SUBSTATS,
 )
 from hoyo_buddy.db import EnkaCache, JSONFile, Settings, draw_locale, get_dyk, show_dismissible
+from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
     draw_gi_team_card,
@@ -491,11 +491,8 @@ class ProfileView(View):
 
         template_num: Literal[1, 2, 3, 4] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
         if template_num == 2:
-            temp2_card_data = await read_yaml(
-                "hoyo-buddy-assets/assets/zzz-build-card/agent_data_temp2.yaml"
-            )
             agent_temp1_data = self._card_data.get(str(character_id))
-            agent_temp2_data = temp2_card_data.get(str(character_id))
+            agent_temp2_data = CARD_DATA.zzz2.get(str(character_id))
             if agent_temp1_data is None or agent_temp2_data is None:
                 raise CardNotReadyError(character.name)
             agent_temp2_data["color"] = agent_temp1_data["color"]

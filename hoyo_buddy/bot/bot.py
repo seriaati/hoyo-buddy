@@ -38,6 +38,7 @@ from hoyo_buddy.constants import (
     ZZZ_TEXT_MAP_URL,
 )
 from hoyo_buddy.db import get_locale, models
+from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, GeetestType, Platform
 from hoyo_buddy.exceptions import NoAccountFoundError
@@ -155,6 +156,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         if self.config.prometheus:
             await self.start_prometheus_server()
 
+        await CARD_DATA.load()
     def capture_exception(self, e: Exception) -> None:
         errors_to_ignore = (
             aiohttp.ClientConnectorError,

@@ -40,9 +40,9 @@ action_in_cooldown_error_message: "Vui lòng thử lại trong {available_time}.
 action_in_cooldown_error_title: Hành động trong thời gian chờ
 add_account_button_label: Thêm tài khoản
 add_hoyolab_acc.embed.description: "- [Tôi nên sử dụng phương thức nào?](:docs/FAQ#which-login-method-should-i-use:)"
-add_hoyolab_acc.embed.title: Vui lòng chọn phương thức để thêm tài khoản
+add_hoyolab_acc.embed.title: Chọn phương thức thêm tài khoản
 adding_accounts_description: "- [Hoyo Buddy có an toàn không?](:docs/Account-Security:)\n- [Chính sách bảo mật (tiếng Anh)](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
-adding_accounts_title: Vui lòng chọn Nền tảng Tài Khoản
+adding_accounts_title: Chọn nền tảng bạn sử dụng
 ai_gen_image_error_message: Kiểm tra thông tin đã nhập và thử lại
 ai_gen_image_error_title: Có lỗi xảy ra khi tạo ảnh bằng AI
 already_claimed_description: Hãy quay lại ngày mai!
@@ -137,7 +137,7 @@ email_verification_dialog_content: Xin vui lòng nhập mã xác minh được n
 email_verification_dialog_action: Xác minh
 email_verification_field_label: Mã xác minh
 email-geetest.embed.title: Yêu cầu xác minh CAPTCHA để gửi Email Mã xác minh
-email_password_button_label: Với Email và Mật khẩu
+email_password_button_label: Bằng email và mật khẩu
 email_password_modal_email_input_label: Email hoặc tên người dùng
 email_password_modal_password_input_label: mật khẩu
 enter_email_password_instructions_description: "Email và mật khẩu đề cập đến email và mật khẩu của **tài khoản Hoyoverse**, không phải tài khoản Google, Apple, v.v..\n- [Cách này hoạt động nhu thế nào?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [Tôi không có tài khoản Hoyoverse (Tôi đăng nhập bằng Google, Facebook, v.v.)](:docs/Before-Start:)\n- [Tôi là người chơi trên Xbox/PlayStation](:docs/Before-Start#i-am-a-console-player:)"
@@ -213,7 +213,7 @@ genshin_impact: Genshin Impact
 geo: Nham
 gi_daily.embed.description: Nhiệm vụ Ủy Thác hoặc Điểm Rèn Luyện chưa hoàn thành
 gift_code_modal.code_input.label: "Mã {num}"
-gift_code_modal.title: Nhập Mã Đổi
+gift_code_modal.title: Nhập mã quà
 harmony: Hòa Hợp
 honkai:_star_rail: "Honkai: Star Rail"
 honkai_impact_3rd: Honkai Impact 3rd
@@ -378,7 +378,7 @@ realm_curr_button.label: Nhắc nhở Tiền Đồng Tiên
 realm_curr_modal.title: Cài đặt nhắc nhở Tiền Đồng Tiên
 redeeem_code.cookie_token_expired_description: "Tính năng đổi mã quà chỉ áp dụng cho người dùng đã đăng nhập bằng email và mật khẩu, bạn có thể làm vậy bằng</accounts>"
 redeeem_code.cookie_token_expired_title: Token cookie đã hết hạn
-redeeem_code.cookie_token_refresh_failed_description: "Có thể bạn đã thay đổi mật khẩu tài khoản của mình kể từ lần cuối cùng bạn thêm tài khoản.\nVui lòng bạn thêm lại tài khoản bằng lệnh </accounts> với phương pháp email và mật khẩu."
+redeeem_code.cookie_token_refresh_failed_description: "Xin hãy thêm lại tài khoản bằng lệnh </accounts> và chọn phương thức email và mật khẩu."
 redeeem_code.cookie_token_refresh_failed_title: Làm mới token cookie thất bại
 redeem_code.success: Đã đổi thành công
 redeem_codes_button.label: Đổi mã quà
@@ -750,7 +750,7 @@ mimo_view_shop_button_label: Cửa hàng
 mimo_buy_item_select_placeholder: Chọn một món để mua
 mimo_tasks_button_label: Nhiệm vụ
 mimo_buy_item_amount_label: Số lượng
-mimo_item_available_time: "Sẽ dầy trong {time}"
+mimo_item_available_time: "Mở bán lại sau {time}"
 mimo_auto_task_embed_footer: Dùng lệnh /mimo để điều chỉnh tự động làm nhiệm vụ và đổi thưởng
 mimo_auto_task_embed_desc: "Hoyo Buddy đã hoàn thành {finish} nhiệm vụ và nhận {claim_point} điểm cho bạn."
 checkin_reward_embed_footer: Sử dụng /check-in để điều chỉnh thông báo
@@ -795,3 +795,4 @@ zzz.core_level.placeholder: Chọn cấp độ Kỹ Năng Cốt Lõi...
 open_game_label: Mở game
 open_game_cloud_label: Mở game (Bản Cloud)
 open_game_vietnam_label: Mở game (Bản Việt Nam)
+gift_code_redeemed: Mã quà này đã được sử dụng rồi

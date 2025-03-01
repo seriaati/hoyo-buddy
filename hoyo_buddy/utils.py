@@ -24,7 +24,13 @@ from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 from seria.utils import clean_url
 
 from hoyo_buddy.config import CONFIG, parse_args
-from hoyo_buddy.constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
+from hoyo_buddy.constants import (
+    HB_GAME_TO_GPY_GAME,
+    IMAGE_EXTENSIONS,
+    STATIC_FOLDER,
+    TRAVELER_IDS,
+    UTC_8,
+)
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
 from hoyo_buddy.logging import InterceptHandler
@@ -39,9 +45,9 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
 
-def get_now() -> datetime.datetime:
-    """Get the current time in UTC+8."""
-    return datetime.datetime.now(UTC_8)
+def get_now(tz: datetime.timezone | None = None) -> datetime.datetime:
+    """Get the current time in UTC+8 or the specified timezone."""
+    return datetime.datetime.now(tz or UTC_8)
 
 
 async def test_url_validity(url: str, session: aiohttp.ClientSession) -> bool:
@@ -457,13 +463,11 @@ def contains_masked_link(text: str) -> bool:
     return bool(pattern.search(text))
 
 
-async def add_to_hoyo_codes(
-    session: aiohttp.ClientSession, *, code: str, game: genshin.Game
-) -> None:
+async def add_to_hoyo_codes(session: aiohttp.ClientSession, *, code: str, game: Game) -> None:
     api_key = CONFIG.hoyo_codes_api_key
     url = "https://hoyo-codes.seria.moe/codes"
     headers = {"Authorization": f"Bearer {api_key}"}
-    data = {"code": code, "game": game.value}
+    data = {"code": code, "game": HB_GAME_TO_GPY_GAME[game].value}
     async with session.post(url, json=data, headers=headers) as resp:
         if resp.status == 400:
             # Code already exists
@@ -487,6 +491,7 @@ def entry_point(log_dir: str) -> None:
 
     logger.remove()
     logger.add(sys.stderr, level="DEBUG" if CONFIG.is_dev else "INFO")
+    logging.getLogger("tortoise").setLevel(logging.DEBUG)
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
     logger.add(log_dir, rotation="1 day", retention="2 weeks", level="DEBUG")
 

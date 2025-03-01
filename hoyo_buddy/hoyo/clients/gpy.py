@@ -20,6 +20,7 @@ from tenacity import (
     stop_after_attempt,
     wait_random_exponential,
 )
+from tortoise import Tortoise
 
 from hoyo_buddy import models
 from hoyo_buddy.bot.error_handler import get_error_embed
@@ -296,17 +297,12 @@ class ProxyGenshinClient(genshin.Client):
 class GenshinClient(ProxyGenshinClient):
     def __init__(self, account: HoyoAccount) -> None:
         game = HB_GAME_TO_GPY_GAME[account.game]
-        region = (
-            account.region
-            or genshin.utility.recognize_region(account.uid, game=game)
-            or genshin.Region.OVERSEAS
-        )
 
         super().__init__(
             account.cookies,
             game=game,
             uid=account.uid,
-            region=region,
+            region=account.region,
             device_id=account.device_id,
             device_fp=account.device_fp,
         )
@@ -749,9 +745,10 @@ class GenshinClient(ProxyGenshinClient):
         return embed
 
     async def _add_to_redeemed_codes(self, code: str) -> None:
-        self._account.redeemed_codes.append(code)
-        self._account.redeemed_codes = list(set(self._account.redeemed_codes))
-        await self._account.save(update_fields=("redeemed_codes",))
+        await Tortoise.get_connection("default").execute_query(
+            "UPDATE hoyoaccount SET redeemed_codes = CASE WHEN NOT redeemed_codes @> $2::jsonb THEN redeemed_codes || $2::jsonb ELSE redeemed_codes END WHERE id = $1;",
+            [self._account.id, orjson.dumps(code).decode()],
+        )
 
     async def redeem_code(
         self, code: str, *, locale: Locale, api_name: ProxyAPI | Literal["LOCAL"] = "LOCAL"

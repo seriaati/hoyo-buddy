@@ -29,7 +29,7 @@ from .enums import (
 )
 
 if TYPE_CHECKING:
-    from hoyo_buddy.types import OpenGameGame, OpenGameRegion
+    from hoyo_buddy.types import AutoTaskType, OpenGameGame, OpenGameRegion
 
     from .types import ProxyAPI
 
@@ -769,9 +769,9 @@ PROXY_APIS: dict[ProxyAPI, str] = {
 }
 
 CODE_CHANNEL_IDS = {
-    genshin.Game.GENSHIN: 1310017049896026135,
-    genshin.Game.STARRAIL: 1310017113695457300,
-    genshin.Game.ZZZ: 1310017277202006067,
+    Game.GENSHIN: 1310017049896026135,
+    Game.STARRAIL: 1310017113695457300,
+    Game.ZZZ: 1310017277202006067,
 }
 
 USER_RENAME = {"user": app_commands.locale_str("user", key="user_autocomplete_param_name")}
@@ -1136,3 +1136,31 @@ def get_open_game_url(*, region: OpenGameRegion, game: OpenGameGame) -> URL:
         raise ValueError(msg)
 
     return url
+
+
+AUTO_TASK_INTERVALS: dict[AutoTaskType, int] = {
+    "redeem": 3600 * 2,  # 2 hours
+    "mimo_task": 3600 * 4,  # 4 hours
+    "mimo_buy": 3600 * 5,  # 5 hours
+    "mimo_draw": 3600 * 10,  # 10 hours
+}
+AUTO_TASK_LAST_TIME_FIELDS: dict[AutoTaskType, str] = {
+    "redeem": "last_redeem_time",
+    "mimo_task": "last_mimo_task_time",
+    "mimo_buy": "last_mimo_buy_time",
+    "mimo_draw": "last_mimo_draw_time",
+    "checkin": "last_checkin_time",
+}
+AUTO_TASK_TOGGLE_FIELDS: dict[AutoTaskType, str] = {
+    "redeem": "auto_redeem",
+    "mimo_task": "mimo_auto_task",
+    "mimo_buy": "mimo_auto_buy",
+    "mimo_draw": "mimo_auto_draw",
+    "checkin": "daily_checkin",
+}
+
+PLATFORM_TO_REGION: dict[Platform, genshin.Region] = {
+    Platform.HOYOLAB: genshin.Region.OVERSEAS,
+    Platform.MIYOUSHE: genshin.Region.CHINESE,
+}
+REGION_TO_PLATFORM = {v: k for k, v in PLATFORM_TO_REGION.items()}

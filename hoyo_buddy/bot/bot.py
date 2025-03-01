@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import concurrent.futures
 import contextlib
+import datetime
 from collections import defaultdict
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -17,15 +18,18 @@ import prometheus_client
 import psutil
 import sentry_sdk
 from asyncache import cached
-from cachetools import LRUCache
+from cachetools import LRUCache, TTLCache
 from discord import app_commands
 from discord.ext import commands
 from loguru import logger
 from seria.utils import write_json
-from tortoise.expressions import Q
+from tortoise.expressions import Case, Q, When
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import (
+    AUTO_TASK_INTERVALS,
+    AUTO_TASK_LAST_TIME_FIELDS,
+    AUTO_TASK_TOGGLE_FIELDS,
     HSR_AVATAR_CONFIG_URL,
     HSR_EQUIPMENT_CONFIG_URL,
     HSR_TEXT_MAP_URL,
@@ -38,6 +42,7 @@ from hoyo_buddy.constants import (
     ZZZ_TEXT_MAP_URL,
 )
 from hoyo_buddy.db import get_locale, models
+from hoyo_buddy.db.utils import build_account_query
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, GeetestType, Platform
@@ -57,7 +62,13 @@ if TYPE_CHECKING:
     from aiohttp import ClientSession
 
     from hoyo_buddy.config import Config, EnvType
-    from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, Interaction, User
+    from hoyo_buddy.types import (
+        AutocompleteChoices,
+        AutoTaskType,
+        BetaAutocompleteChoices,
+        Interaction,
+        User,
+    )
 
 __all__ = ("HoyoBuddy",)
 
@@ -157,6 +168,91 @@ class HoyoBuddy(commands.AutoShardedBot):
             await self.start_prometheus_server()
 
         await CARD_DATA.load()
+
+    @cached(TTLCache(maxsize=1, ttl=3600))
+    async def get_supporter_ids(self) -> set[int]:
+        try:
+            guild = self.get_guild(self.guild_id) or await self.fetch_guild(self.guild_id)
+        except discord.HTTPException:
+            logger.error(f"Failed to fetch guild with ID {self.guild_id}")
+            return set()
+
+        role_id = 1117992633827082251
+        supporter_role = discord.utils.get(guild.roles, id=role_id)
+        if supporter_role is None:
+            logger.error(f"Failed to find supporter role with ID {role_id}")
+            return set()
+
+        return {member.id for member in supporter_role.members}
+
+    async def build_auto_task_queue(
+        self,
+        task_type: AutoTaskType,
+        *,
+        games: Sequence[Game] | None = None,
+        region: genshin.Region | None = None,
+    ) -> asyncio.Queue[models.HoyoAccount]:
+        games = games or list(Game)
+        query = build_account_query(games=games, region=region)
+
+        # Auto task exclusions
+        if task_type == "checkin":
+            # Prevent duplicate check-ins
+            accounts = await models.HoyoAccount.raw(
+                "SELECT DISTINCT ON (cookies, game) id FROM hoyoaccount ORDER BY cookies, game, id"
+            )
+            query &= Q(id__in=[account.id for account in accounts])  # pyright: ignore[reportAttributeAccessIssue]
+            # Don't check-in the same account twice in a day
+            query &= Q(last_checkin_time__isnull=True) | ~Q(last_checkin_time__day=get_now().day)
+        else:
+            # Interval based auto tasks
+            interval = AUTO_TASK_INTERVALS.get(task_type)
+            if interval is None:
+                logger.error(f"{task_type!r} missing in AUTO_TASK_INTERVALS")
+            else:
+                field_name = AUTO_TASK_LAST_TIME_FIELDS.get(task_type)
+                if field_name is None:
+                    logger.error(f"{task_type!r} missing in AUTO_TASK_LAST_TIME_FIELDS")
+                else:
+                    # Filter accounts that haven't been processed in the last interval or have never been processed
+                    threshold_time = get_now() - datetime.timedelta(seconds=interval)
+                    query &= Q(
+                        **{f"{field_name}__lt": threshold_time, f"{field_name}__isnull": True},
+                        join_type="OR",
+                    )
+
+        # Filter accounts that have the auto task toggle enabled
+        toggle_field = AUTO_TASK_TOGGLE_FIELDS.get(task_type)
+        if toggle_field is None:
+            logger.error(f"{task_type!r} missing in AUTO_TASK_TOGGLE_FIELDS")
+        else:
+            query &= Q(**{toggle_field: True}, join_type="AND")
+
+        # Mimo-task: Only process accounts that haven't claimed all rewards (mimo_all_claimed_time is null)
+        if task_type == "mimo_task":
+            query &= Q(mimo_all_claimed_time__isnull=True)
+
+        # Redeem-specific: Only process accounts that can redeem codes
+        if task_type == "redeem":
+            query &= Q(cookies__contains="cookie_token_v2") | (
+                Q(cookies__contains="ltmid_v2") & Q(cookies__contains="stoken")
+            )
+
+        # Supporters have priority
+        supporter_ids = await self.get_supporter_ids()
+        logger.debug(f"Supporter IDs: {supporter_ids}")
+        query_set = (
+            models.HoyoAccount.filter(query)
+            .annotate(is_supporter=Case(When(user_id__in=supporter_ids, then="1"), default="0"))
+            .order_by("-is_supporter", "id")
+        )
+
+        queue: asyncio.Queue[models.HoyoAccount] = asyncio.Queue()
+        async for account in query_set:
+            await queue.put(account)
+
+        return queue
+
     def capture_exception(self, e: Exception) -> None:
         errors_to_ignore = (
             aiohttp.ClientConnectorError,
@@ -174,6 +270,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         if not self.config.sentry:
             logger.exception(e)
         else:
+            logger.warning(f"Error: {e}, capturing exception")
             sentry_sdk.capture_exception(e)
 
     @cached(cache=LRUCache(maxsize=1024))
@@ -188,13 +285,16 @@ class HoyoBuddy(commands.AutoShardedBot):
     async def dm_user(
         self, user_id: int, *, content: str | None = None, **kwargs: Any
     ) -> discord.Message | None:
+        logger.debug(f"DMing user {user_id}")
         user = await self.fetch_user(user_id)
         if user is None:
+            logger.debug(f"Failed to fetch user {user_id}")
             return None
 
         try:
             message = await user.send(content, **kwargs)
         except (discord.Forbidden, discord.HTTPException):
+            logger.debug(f"Failed to DM user {user_id}")
             return None
         except Exception as e:
             self.capture_exception(e)
@@ -265,15 +365,13 @@ class HoyoBuddy(commands.AutoShardedBot):
             show_id: Whether to show the account ID.
         """
         is_author = user is None or user.id == author_id
-        game_query = Q(*[Q(game=game) for game in games], join_type="OR")
-        accounts = await models.HoyoAccount.filter(
-            game_query, user_id=author_id if user is None else user.id
-        ).all()
+
+        query = build_account_query(
+            games=games, platform=platform, user_id=author_id if user is None else user.id
+        )
+        accounts = await models.HoyoAccount.filter(query)
         if not is_author:
             accounts = [account for account in accounts if account.public]
-
-        platforms = [platform] if platform else list(Platform)
-        accounts = [account for account in accounts if account.platform in platforms]
 
         if not accounts:
             if is_author:
@@ -315,10 +413,8 @@ class HoyoBuddy(commands.AutoShardedBot):
             games: The games to filter by.
             platform: The platform to filter by.
         """
-        platforms = [platform] if platform else list(Platform)
-        game_query = Q(*[Q(game=game) for game in games], join_type="OR")
-        accounts = await models.HoyoAccount.filter(game_query, user_id=user_id).all()
-        accounts = [account for account in accounts if account.platform in platforms]
+        query = build_account_query(games=games, platform=platform)
+        accounts = await models.HoyoAccount.filter(query, user_id=user_id).all()
         if not accounts:
             raise NoAccountFoundError(games, platform)
 
@@ -332,7 +428,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         Args:
             user_id: The Discord user ID.
             games: The games to filter by.
-            platforms: The platforms to filter by.
+            platform: The platform to filter by.
         """
         accounts = await self.get_accounts(user_id, games, platform)
         current_accounts = [account for account in accounts if account.current]

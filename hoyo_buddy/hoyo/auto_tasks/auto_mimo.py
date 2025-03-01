@@ -7,156 +7,29 @@ import discord
 import genshin
 from loguru import logger
 from seria.utils import create_bullet_list
-from tortoise.expressions import Q
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME, PROXY_APIS
-from hoyo_buddy.db import HoyoAccount
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
-from hoyo_buddy.enums import Game, Platform
+from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import convert_code_to_redeem_url, get_mimo_task_str, get_now
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import ProxyAPI
 
 MAX_API_ERROR_COUNT = 10
 SLEEP_TIME = 5.0
+SUPPORT_GAMES = (Game.STARRAIL, Game.ZZZ, Game.GENSHIN)
 
 
 class AutoMimo:
-    _task_count: ClassVar[int]
-    _buy_count: ClassVar[int]
-    _draw_count: ClassVar[int]
-
     _bot: ClassVar[HoyoBuddy]
     _mimo_game_data: ClassVar[dict[Game, tuple[int, int]]]
     _down_games: ClassVar[set[Game]]
-    _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
-
-    @classmethod
-    async def execute(cls, bot: HoyoBuddy) -> None:
-        if cls._lock.locked():
-            logger.warning("Auto mimo is already running")
-            return
-
-        start = asyncio.get_event_loop().time()
-
-        async with cls._lock:
-            try:
-                logger.info("Auto mimo started")
-
-                cls._bot = bot
-                cls._mimo_game_data = {}
-                cls._down_games = set()
-
-                cls._task_count = 0
-                cls._buy_count = 0
-                cls._draw_count = 0
-
-                # Accounts that have claimed all mimo tasks
-                skip_ids = {
-                    acc.id
-                    for acc in await HoyoAccount.filter(Q(mimo_all_claimed_time__isnull=False))
-                }
-
-                # Auto task
-                logger.info("Starting auto mimo tasks")
-                queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
-                auto_task_accs = await HoyoAccount.filter(
-                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
-                    mimo_auto_task=True,
-                ).order_by("id")
-
-                for account in auto_task_accs:
-                    if account.platform is Platform.MIYOUSHE or account.id in skip_ids:
-                        continue
-                    await queue.put(account)
-
-                tasks = [
-                    asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="task"))
-                    for api in PROXY_APIS
-                ]
-                tasks.append(
-                    asyncio.create_task(cls._auto_mimo_task(queue, "LOCAL", task_type="task"))
-                )
-
-                await queue.join()
-                for task in tasks:
-                    task.cancel()
-                await asyncio.gather(*tasks, return_exceptions=True)
-                logger.info(f"Auto mimo tasks finished, {cls._task_count} tasks")
-
-                # Auto buy
-                logger.info("Starting auto mimo buys")
-                queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
-                auto_buy_accs = await HoyoAccount.filter(
-                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
-                    mimo_auto_buy=True,
-                ).order_by("id")
-
-                for account in auto_buy_accs:
-                    if (
-                        account.platform is Platform.MIYOUSHE
-                        or account.game in cls._down_games
-                        or account.id in skip_ids
-                    ):
-                        continue
-                    await queue.put(account)
-
-                tasks = [
-                    asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="buy"))
-                    for api in PROXY_APIS
-                ]
-                tasks.append(
-                    asyncio.create_task(cls._auto_mimo_task(queue, "LOCAL", task_type="buy"))
-                )
-
-                await queue.join()
-                for task in tasks:
-                    task.cancel()
-                await asyncio.gather(*tasks, return_exceptions=True)
-                logger.info(f"Auto mimo buys finished, {cls._buy_count}")
-
-                # Auto draw
-                logger.info("Starting auto mimo draws")
-                queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
-                auto_draw_accs = await HoyoAccount.filter(
-                    Q(game=Game.STARRAIL) | Q(game=Game.ZZZ) | Q(game=Game.GENSHIN),
-                    mimo_auto_draw=True,
-                ).order_by("id")
-
-                for account in auto_draw_accs:
-                    if (
-                        account.platform is Platform.MIYOUSHE
-                        or account.game in cls._down_games
-                        or account.id in skip_ids
-                    ):
-                        continue
-                    await queue.put(account)
-
-                tasks = [
-                    asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="draw"))
-                    for api in PROXY_APIS
-                ]
-                tasks.append(
-                    asyncio.create_task(cls._auto_mimo_task(queue, "LOCAL", task_type="draw"))
-                )
-
-                await queue.join()
-                for task in tasks:
-                    task.cancel()
-                await asyncio.gather(*tasks, return_exceptions=True)
-                logger.info(f"Auto mimo draws finished, {cls._draw_count}")
-            except Exception as e:
-                bot.capture_exception(e)
-            finally:
-                logger.info(
-                    f"Auto mimo finished, {cls._task_count} tasks, {cls._buy_count} buys, {cls._draw_count} draws"
-                )
-                logger.info(f"Auto mimo took {asyncio.get_event_loop().time() - start:.2f} seconds")
 
     @classmethod
     async def _get_mimo_game_data(cls, client: genshin.Client, game: Game) -> tuple[int, int]:
@@ -193,7 +66,10 @@ class AutoMimo:
 
         while True:
             account = await queue.get()
+            logger.debug(f"{cls.__name__} is processing account {account}")
+
             if account.game in cls._down_games:
+                logger.debug(f"Skipping account {account} because {account.game} is down")
                 queue.task_done()
                 continue
 
@@ -208,6 +84,9 @@ class AutoMimo:
                     embed = await cls._draw_lottery(api_name, account)
             except Exception as e:
                 api_error_count += 1
+                logger.debug(
+                    f"API {api_name} failed for {account}, adding back to queue, api_error_count={api_error_count}"
+                )
                 await queue.put(account)
                 bot.capture_exception(e)
 
@@ -215,23 +94,30 @@ class AutoMimo:
                     logger.warning(f"API {api_name} failed for {api_error_count} accounts")
                     return
             else:
-                if embed is not None:
-                    if task_type == "task":
-                        cls._task_count += 1
-                        feature_key = "mimo_auto_finish_and_claim_button_label"
-                        success_notif = account.notif_settings.mimo_task_success
-                        failure_notif = account.notif_settings.mimo_task_failure
-                    elif task_type == "buy":
-                        cls._buy_count += 1
-                        feature_key = "mimo_auto_buy_button_label"
-                        success_notif = account.notif_settings.mimo_buy_success
-                        failure_notif = account.notif_settings.mimo_buy_failure
-                    elif task_type == "draw":
-                        cls._draw_count += 1
-                        feature_key = "mimo_auto_draw_button_label"
-                        success_notif = account.notif_settings.mimo_draw_success
-                        failure_notif = account.notif_settings.mimo_draw_failure
+                if task_type == "task":
+                    feature_key = "mimo_auto_finish_and_claim_button_label"
+                    success_notif = account.notif_settings.mimo_task_success
+                    failure_notif = account.notif_settings.mimo_task_failure
+                    last_time_attr = "last_mimo_task_time"
+                elif task_type == "buy":
+                    feature_key = "mimo_auto_buy_button_label"
+                    success_notif = account.notif_settings.mimo_buy_success
+                    failure_notif = account.notif_settings.mimo_buy_failure
+                    last_time_attr = "last_mimo_buy_time"
+                elif task_type == "draw":
+                    feature_key = "mimo_auto_draw_button_label"
+                    success_notif = account.notif_settings.mimo_draw_success
+                    failure_notif = account.notif_settings.mimo_draw_failure
+                    last_time_attr = "last_mimo_draw_time"
 
+                # Set last completion time
+                logger.debug(
+                    f"Setting last time for {account}, last_time_attr={last_time_attr}, now={get_now()}"
+                )
+                setattr(account, last_time_attr, get_now())
+                await account.save(update_fields=(last_time_attr,))
+
+                if embed is not None:
                     embed.set_footer(text=LocaleStr(key="mimo_auto_task_embed_footer"))
                     embed.add_acc_info(account)
 
@@ -465,3 +351,141 @@ class AutoMimo:
             return embed
         else:
             return embed
+
+
+class AutoMimoTask(AutoMimo):
+    _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
+
+    @classmethod
+    async def execute(cls, bot: HoyoBuddy) -> None:
+        if cls._lock.locked():
+            logger.debug(f"{cls.__name__} is already running")
+            return
+
+        start = asyncio.get_event_loop().time()
+
+        async with cls._lock:
+            try:
+                cls._bot = bot
+                cls._mimo_game_data = {}
+                cls._down_games = set()
+
+                # Auto task
+                queue = await cls._bot.build_auto_task_queue(
+                    "mimo_task", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
+                )
+                if queue.empty():
+                    logger.debug(f"Queue is empty for {cls.__name__}")
+                    return
+
+                logger.info(f"Starting {cls.__name__}")
+                tasks = [
+                    asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="task"))
+                    for api in PROXY_APIS
+                ]
+                tasks.append(
+                    asyncio.create_task(cls._auto_mimo_task(queue, "LOCAL", task_type="task"))
+                )
+
+                await queue.join()
+                for task in tasks:
+                    task.cancel()
+                await asyncio.gather(*tasks, return_exceptions=True)
+            except Exception as e:
+                bot.capture_exception(e)
+            else:
+                logger.info(
+                    f"{cls.__name__} took {asyncio.get_event_loop().time() - start:.2f} seconds"
+                )
+
+
+class AutoMimoBuy(AutoMimo):
+    _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
+
+    @classmethod
+    async def execute(cls, bot: HoyoBuddy) -> None:
+        if cls._lock.locked():
+            logger.debug(f"{cls.__name__} is already running")
+            return
+
+        start = asyncio.get_event_loop().time()
+
+        async with cls._lock:
+            try:
+                cls._bot = bot
+                cls._mimo_game_data = {}
+                cls._down_games = set()
+
+                # Auto buy
+                queue = await cls._bot.build_auto_task_queue(
+                    "mimo_buy", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
+                )
+                if queue.empty():
+                    logger.debug(f"Queue is empty for {cls.__name__}")
+                    return
+
+                logger.info(f"Starting {cls.__name__}")
+                tasks = [
+                    asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="buy"))
+                    for api in PROXY_APIS
+                ]
+                tasks.append(
+                    asyncio.create_task(cls._auto_mimo_task(queue, "LOCAL", task_type="buy"))
+                )
+
+                await queue.join()
+                for task in tasks:
+                    task.cancel()
+                await asyncio.gather(*tasks, return_exceptions=True)
+            except Exception as e:
+                bot.capture_exception(e)
+            else:
+                logger.info(
+                    f"{cls.__name__} took {asyncio.get_event_loop().time() - start:.2f} seconds"
+                )
+
+
+class AutoMimoDraw(AutoMimo):
+    _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
+
+    @classmethod
+    async def execute(cls, bot: HoyoBuddy) -> None:
+        if cls._lock.locked():
+            logger.debug(f"{cls.__name__} is already running")
+            return
+
+        start = asyncio.get_event_loop().time()
+
+        async with cls._lock:
+            try:
+                cls._bot = bot
+                cls._mimo_game_data = {}
+                cls._down_games = set()
+
+                # Auto draw
+                queue = await cls._bot.build_auto_task_queue(
+                    "mimo_draw", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
+                )
+                if queue.empty():
+                    logger.debug(f"Queue is empty for {cls.__name__}")
+                    return
+
+                logger.info(f"Starting {cls.__name__}")
+                tasks = [
+                    asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="draw"))
+                    for api in PROXY_APIS
+                ]
+                tasks.append(
+                    asyncio.create_task(cls._auto_mimo_task(queue, "LOCAL", task_type="draw"))
+                )
+
+                await queue.join()
+                for task in tasks:
+                    task.cancel()
+                await asyncio.gather(*tasks, return_exceptions=True)
+            except Exception as e:
+                bot.capture_exception(e)
+            else:
+                logger.info(
+                    f"{cls.__name__} took {asyncio.get_event_loop().time() - start:.2f} seconds"
+                )

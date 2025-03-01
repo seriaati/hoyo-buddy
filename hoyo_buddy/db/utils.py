@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 from discord import Locale
+from tortoise.expressions import Q
 
-from hoyo_buddy.constants import NO_MASKED_LINK_GUILDS
+from hoyo_buddy.constants import NO_MASKED_LINK_GUILDS, PLATFORM_TO_REGION
 from hoyo_buddy.enums import Game, LeaderboardType, Platform
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import contains_masked_link
@@ -14,7 +15,10 @@ from hoyo_buddy.utils import contains_masked_link
 from .models import GachaHistory, HoyoAccount, Settings, User
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     import asyncpg
+    import genshin
 
     from hoyo_buddy.models import Dismissible
     from hoyo_buddy.types import Interaction
@@ -186,3 +190,25 @@ async def show_dismissible(i: Interaction, dismissible: Dismissible) -> None:
 
     user.dismissibles.append(dismissible.id)
     await user.save(update_fields=("dismissibles",))
+
+
+def build_account_query(
+    *,
+    games: Sequence[Game] | None = None,
+    region: genshin.Region | None = None,
+    platform: Platform | None = None,
+    user_id: int | None = None,
+    **kwargs: Any,
+) -> Q:
+    query = Q()
+    if games is not None:
+        query &= Q(game__in=games)
+    if region is not None:
+        query &= Q(region=region)
+    if platform is not None:
+        query &= Q(region=PLATFORM_TO_REGION[platform])
+    if user_id is not None:
+        query &= Q(user_id=user_id)
+    if kwargs:
+        query &= Q(**kwargs)
+    return query

@@ -15,7 +15,7 @@ from loguru import logger
 from seria.tortoise.model import Model
 from tortoise import exceptions, fields
 
-from ..constants import HB_GAME_TO_GPY_GAME, SERVER_RESET_HOURS, UTC_8
+from ..constants import HB_GAME_TO_GPY_GAME, REGION_TO_PLATFORM, SERVER_RESET_HOURS, UTC_8
 from ..enums import ChallengeType, Game, LeaderboardType, NotesNotifyType, Platform
 from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
@@ -74,32 +74,48 @@ class User(BaseModel):
 
 
 class HoyoAccount(BaseModel):
+    # Account info
     id = fields.IntField(pk=True, generated=True)
     uid = fields.BigIntField(index=True)
     username = fields.CharField(max_length=32)
-    nickname: fields.Field[str | None] = fields.CharField(max_length=32, null=True)
     game = fields.CharEnumField(Game, max_length=32)
     cookies = fields.TextField()
     server = fields.CharField(max_length=32)
+    device_id: fields.Field[str | None] = fields.CharField(max_length=36, null=True)
+    device_fp: fields.Field[str | None] = fields.CharField(max_length=13, null=True)
+    region = fields.CharEnumField(genshin.Region, max_length=2)
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
         "models.User", related_name="accounts"
     )
-    daily_checkin = fields.BooleanField(default=True)
-    current = fields.BooleanField(default=False)
+
+    # Configurable
+    nickname: fields.Field[str | None] = fields.CharField(max_length=32, null=True)
+    public = fields.BooleanField(default=True)
+    """Whether this account can be seen by others."""
     notif_settings: fields.BackwardOneToOneRelation[AccountNotifSettings]
-    notifs: fields.ReverseRelation[NotesNotify]
-    farm_notifs: fields.BackwardOneToOneRelation[FarmNotify]
-    redeemed_codes: fields.Field[list[str]] = fields.JSONField(default=[])
+
+    # Auto tasks
+    # Future me: Make sure to change AUTO_TASK_TOGGLE_FIELDS in constants.py if you modify this section
+    daily_checkin = fields.BooleanField(default=True)
     auto_redeem = fields.BooleanField(default=True)
     mimo_auto_task = fields.BooleanField(default=True)
     mimo_auto_buy = fields.BooleanField(default=False)
     mimo_auto_draw = fields.BooleanField(default=False)
+    notifs: fields.ReverseRelation[NotesNotify]
+    farm_notifs: fields.BackwardOneToOneRelation[FarmNotify]
+
+    # Last completed time for each auto task
+    # Future me: Make sure to change AUTO_TASK_LAST_TIME_FIELDS in constants.py if you modify this section
+    last_checkin_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
+    last_mimo_task_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
+    last_mimo_buy_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
+    last_mimo_draw_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
+    last_redeem_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
+
+    # Misc
+    current = fields.BooleanField(default=False)
+    redeemed_codes: fields.Field[list[str]] = fields.JSONField(default=[])
     mimo_all_claimed_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
-    public = fields.BooleanField(default=True)
-    """Whether this account can be seen by others."""
-    device_id: fields.Field[str | None] = fields.CharField(max_length=36, null=True)
-    device_fp: fields.Field[str | None] = fields.CharField(max_length=13, null=True)
-    region: genshin.Region | None = fields.CharEnumField(genshin.Region, max_length=2, null=True)
 
     class Meta:
         unique_together = ("uid", "game", "user")
@@ -118,7 +134,7 @@ class HoyoAccount(BaseModel):
 
         return GenshinClient(self)
 
-    @cached_property
+    @property
     def server_reset_datetime(self) -> datetime.datetime:
         """Server reset time in UTC+8."""
         server = genshin.utility.recognize_server(self.uid, HB_GAME_TO_GPY_GAME[self.game])
@@ -132,14 +148,10 @@ class HoyoAccount(BaseModel):
     def game_icon(self) -> str:
         return get_game_icon(self.game)
 
-    @cached_property
+    @property
     def platform(self) -> Platform:
-        region = self.region or genshin.utility.recognize_region(
-            self.uid, HB_GAME_TO_GPY_GAME[self.game]
-        )
-        if region is None:
-            return Platform.HOYOLAB
-        return Platform.HOYOLAB if region is genshin.Region.OVERSEAS else Platform.MIYOUSHE
+        # 歷史遺留, region 原本可能是 None
+        return REGION_TO_PLATFORM[self.region]
 
     @cached_property
     def dict_cookies(self) -> dict[str, str]:

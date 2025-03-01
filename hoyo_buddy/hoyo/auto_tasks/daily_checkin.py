@@ -10,13 +10,14 @@ import genshin
 from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, PROXY_APIS
+from hoyo_buddy.constants import PROXY_APIS
 from hoyo_buddy.db import AccountNotifSettings, HoyoAccount, User
 from hoyo_buddy.embeds import DefaultEmbed, Embed, ErrorEmbed
-from hoyo_buddy.enums import Platform
+from hoyo_buddy.utils import get_now
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
+    from hoyo_buddy.enums import Game
     from hoyo_buddy.types import ProxyAPI
 
 MAX_API_ERROR_COUNT = 10
@@ -26,7 +27,7 @@ DM_SLEEP_TIME = 1.5
 
 class DailyCheckin:
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
-    _total_checkin_count: ClassVar[int]
+    _count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
     _no_error_notify: ClassVar[bool]
 
@@ -35,10 +36,10 @@ class DailyCheckin:
 
     @classmethod
     async def execute(
-        cls, bot: HoyoBuddy, *, game: genshin.Game | None = None, no_error_notify: bool = False
+        cls, bot: HoyoBuddy, *, game: Game | None = None, no_error_notify: bool = False
     ) -> None:
         if cls._lock.locked():
-            logger.warning("Daily check-in is already running")
+            logger.debug(f"{cls.__name__} is already running")
             return
 
         async with cls._lock:
@@ -47,32 +48,18 @@ class DailyCheckin:
             try:
                 logger.info("Daily check-in started")
 
-                cls._total_checkin_count = 0
+                cls._count = 0
                 cls._bot = bot
 
                 cls._no_error_notify = no_error_notify
                 cls._embeds = defaultdict(list)
 
-                queue: asyncio.Queue[HoyoAccount] = asyncio.Queue()
-                cn_accounts: list[HoyoAccount] = []
-                if game is None:
-                    accounts = await HoyoAccount.filter(daily_checkin=True).all()
-                else:
-                    accounts = await HoyoAccount.filter(
-                        daily_checkin=True, game=GPY_GAME_TO_HB_GAME[game]
-                    )
-
-                cookie_game_pairs = set()  # Track cookie-game pairs to avoid duplicate check-ins
-
-                for account in accounts:
-                    if (account.cookies, account.game) in cookie_game_pairs:
-                        continue
-                    cookie_game_pairs.add((account.cookies, account.game))
-                    if account.platform is Platform.HOYOLAB:
-                        await queue.put(account)
-                    else:
-                        # Region is None or CN
-                        cn_accounts.append(account)
+                queue = await cls._bot.build_auto_task_queue(
+                    "checkin", games=[game] if game else None
+                )
+                if queue.empty():
+                    logger.debug(f"Queue is empty for {cls.__name__}, game={game}")
+                    return
 
                 tasks = [
                     asyncio.create_task(cls._daily_checkin_task(queue, api)) for api in PROXY_APIS
@@ -84,38 +71,13 @@ class DailyCheckin:
                     task.cancel()
                 await asyncio.gather(*tasks, return_exceptions=True)
 
-                logger.info("Doing daily check-in for CN accounts")
-                for account in cn_accounts:
-                    try:
-                        await account.fetch_related("user", "user__settings")
-                        embed = await cls._daily_checkin("LOCAL", account)
-                    except Exception as e:
-                        embed, recognized = get_error_embed(
-                            e, account.user.settings.locale or discord.Locale.american_english
-                        )
-                        embed.add_acc_info(account, blur=False)
-                        if not recognized:
-                            cls._bot.capture_exception(e)
-
-                        if isinstance(e, genshin.DailyGeetestTriggered):
-                            await User.filter(id=account.user.id).update(
-                                temp_data={"geetest": e.gt, "challenge": e.challenge}
-                            )
-
-                    cls._total_checkin_count += 1
-                    cls._embeds[account.user.id].append((account.id, embed))
-                    await asyncio.sleep(CHECKIN_SLEEP_TIME)
-
                 # Send embeds
                 for user_id, embeds in cls._embeds.items():
                     await cls._notify_checkin_result(user_id, embeds)
-
             except Exception as e:
                 bot.capture_exception(e)
-            finally:
-                logger.info(
-                    f"Daily check-in finished, total check-in count: {cls._total_checkin_count}"
-                )
+            else:
+                logger.info(f"Daily check-in finished, total check-in count: {cls._count}")
                 logger.info(
                     f"Daily check-in took {asyncio.get_event_loop().time() - start:.2f} seconds"
                 )
@@ -139,12 +101,16 @@ class DailyCheckin:
 
         while True:
             account = await queue.get()
+            logger.debug(f"{cls.__name__} is processing account {account}")
 
             try:
                 await account.fetch_related("user", "user__settings")
                 embed = await cls._daily_checkin(api_name, account)
             except Exception as e:
                 api_error_count += 1
+                logger.debug(
+                    f"API {api_name} failed for {account}, adding back to queue, api_error_count={api_error_count}"
+                )
                 await queue.put(account)
                 cls._bot.capture_exception(e)
 
@@ -152,8 +118,12 @@ class DailyCheckin:
                     logger.warning(f"API {api_name} failed for {api_error_count} accounts")
                     return
             else:
-                cls._total_checkin_count += 1
+                cls._count += 1
                 cls._embeds[account.user.id].append((account.id, embed))
+
+                logger.debug(f"Setting last time for {account}, now={get_now()}")
+                account.last_checkin_time = get_now()
+                await account.save(update_fields=("last_checkin_time",))
             finally:
                 await asyncio.sleep(CHECKIN_SLEEP_TIME)
                 queue.task_done()

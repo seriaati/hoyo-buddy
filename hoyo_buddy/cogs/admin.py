@@ -5,7 +5,6 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
 import genshin  # noqa: TC002
-from discord import ButtonStyle, ui
 from discord.ext import commands
 from loguru import logger
 from seria.utils import write_json
@@ -15,61 +14,16 @@ from hoyo_buddy.db import CardSettings, HoyoAccount, Settings, User
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.enums import Game, LeaderboardType
-from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
-from hoyo_buddy.hoyo.auto_tasks.web_events_notify import WebEventsNotify
 from hoyo_buddy.l10n import translator
 
-from ..constants import GI_UID_PREFIXES
+from ..constants import GPY_GAME_TO_HB_GAME
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
-from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
-from ..hoyo.auto_tasks.farm_check import FarmChecker
-from ..hoyo.auto_tasks.notes_check import NotesChecker
 from .search import Search
 
 if TYPE_CHECKING:
     from discord.ext.commands.context import Context
 
     from ..bot import HoyoBuddy
-    from ..types import Interaction
-
-
-class TaskView(ui.View):
-    def __init__(self) -> None:
-        super().__init__()
-
-    async def interaction_check(self, i: Interaction) -> bool:
-        return await i.client.is_owner(i.user)
-
-    @ui.button(label="Daily check-in", style=ButtonStyle.blurple)
-    async def daily_checkin(self, i: Interaction, _: ui.Button) -> None:
-        await i.response.send_message("Daily check-in task started.")
-        asyncio.create_task(DailyCheckin.execute(i.client))
-
-    @ui.button(label="Notes check", style=ButtonStyle.blurple)
-    async def notes_check(self, i: Interaction, _: ui.Button) -> None:
-        await i.response.send_message("Notes check task started.")
-        asyncio.create_task(NotesChecker.execute(i.client))
-
-    @ui.button(label="Farm check", style=ButtonStyle.blurple)
-    async def farm_check(self, i: Interaction, _: ui.Button) -> None:
-        await i.response.send_message("Farm check tasks started.")
-        for uid_start in GI_UID_PREFIXES:
-            asyncio.create_task(FarmChecker(i.client).execute(uid_start))
-
-    @ui.button(label="Auto redeem", style=ButtonStyle.blurple)
-    async def auto_redeem(self, i: Interaction, _: ui.Button) -> None:
-        await i.response.send_message("Auto redeem task started.")
-        asyncio.create_task(AutoRedeem.execute(i.client))
-
-    @ui.button(label="Mimo auto task", style=ButtonStyle.blurple)
-    async def auto_mimo_task(self, i: Interaction, _: ui.Button) -> None:
-        await i.response.send_message("Auto mimo task started.")
-        asyncio.create_task(AutoMimo.execute(i.client))
-
-    @ui.button(label="Web events notify", style=ButtonStyle.blurple)
-    async def web_events_notify(self, i: Interaction, _: ui.Button) -> None:
-        await i.response.send_message("Web events notify task started.")
-        asyncio.create_task(WebEventsNotify.execute(i.client))
 
 
 class Admin(commands.Cog):
@@ -100,11 +54,6 @@ class Admin(commands.Cog):
         await translator.load()
         await ctx.send(content="Reloaded translator.")
 
-    @commands.command(name="run-tasks", aliases=["rt"])
-    async def run_tasks_command(self, ctx: commands.Context) -> Any:
-        view = TaskView()
-        await ctx.send("Select a task to run.", view=view)
-
     @commands.command(name="update-assets", aliases=["ua"])
     async def update_assets_command(self, ctx: commands.Context) -> Any:
         message = await ctx.send("Updating assets...")
@@ -127,7 +76,7 @@ class Admin(commands.Cog):
         else:
             codes_ = list(set(codes.split(",")))
             await ctx.send(f"Auto redeem task started for {game.name}.")
-            await AutoRedeem.execute(self.bot, game, codes_)
+            await AutoRedeem.execute(self.bot, GPY_GAME_TO_HB_GAME[game], codes_)
 
     @commands.command(name="get-accounts", aliases=["ga"])
     async def get_accounts_command(self, ctx: commands.Context, user_id: int) -> Any:
@@ -238,14 +187,6 @@ class Admin(commands.Cog):
                 await asyncio.sleep(0.5)
 
         await ctx.send("Done.")
-
-    @commands.command(name="task-status", aliases=["ts"])
-    async def task_status_command(self, ctx: commands.Context) -> Any:
-        tasks = (AutoRedeem, AutoMimo, DailyCheckin)
-        task_statuses = {task.__name__: task._lock.locked() for task in tasks}
-        msg = "\n".join(f"{task} running: {status}" for task, status in task_statuses.items())
-        msg += f"\nFarmChecker running: {self.bot.farm_check_running}"
-        await ctx.send(msg)
 
     @commands.command(name="reset-dismissible", aliases=["rd"])
     async def reset_dismissible_command(

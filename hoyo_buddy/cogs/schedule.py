@@ -1,14 +1,14 @@
 from __future__ import annotations
 
+import asyncio
 import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
+from discord import ui
 from discord.ext import commands, tasks
-from loguru import logger
-from tortoise.expressions import Q
 
 from hoyo_buddy.db import HoyoAccount
-from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimo
+from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, AutoMimoTask
 from hoyo_buddy.hoyo.auto_tasks.web_events_notify import WebEventsNotify
 
 from ..constants import GI_UID_PREFIXES, UTC_8
@@ -20,7 +20,44 @@ from ..utils import get_now
 from .search import Search
 
 if TYPE_CHECKING:
+    from hoyo_buddy.types import Interaction
+
     from ..bot import HoyoBuddy
+
+
+class RunTaskButton(ui.Button):
+    def __init__(self, task_cls: Any) -> None:
+        super().__init__(label=task_cls.__name__)
+        self.task_cls = task_cls
+
+    async def callback(self, i: Interaction) -> None:
+        await i.response.send_message(f"{self.task_cls.__name__} task started")
+        asyncio.create_task(self.task_cls.execute(i.client))
+
+
+class RunTaskView(ui.View):
+    def __init__(self) -> None:
+        super().__init__()
+        tasks = (
+            DailyCheckin,
+            NotesChecker,
+            AutoRedeem,
+            AutoMimoTask,
+            AutoMimoBuy,
+            AutoMimoDraw,
+            WebEventsNotify,
+        )
+        for task in tasks:
+            self.add_item(RunTaskButton(task))
+
+    async def interaction_check(self, i: Interaction) -> bool:
+        return await i.client.is_owner(i.user)
+
+    @ui.button(label="FarmChecker")
+    async def farm_check(self, i: Interaction, _: ui.Button) -> None:
+        await i.response.send_message("FarmChecker task started")
+        for uid_start in GI_UID_PREFIXES:
+            asyncio.create_task(FarmChecker(i.client).execute(uid_start))
 
 
 class Schedule(commands.Cog):
@@ -31,31 +68,59 @@ class Schedule(commands.Cog):
         if not self.bot.config.schedule:
             return
 
-        self.run_daily_checkin.start()
+        self.run_auto_tasks.start()
         self.run_farm_checks.start()
         self.update_search_autofill.start()
         self.update_assets.start()
         self.run_notes_check.start()
-        self.run_auto_redeem.start()
-        self.run_auto_mimo.start()
         self.run_web_events_notify.start()
 
     async def cog_unload(self) -> None:
         if not self.bot.config.schedule:
             return
 
-        self.run_daily_checkin.cancel()
+        self.run_auto_tasks.cancel()
         self.run_farm_checks.cancel()
         self.update_search_autofill.cancel()
         self.update_assets.cancel()
         self.run_notes_check.cancel()
-        self.run_auto_redeem.cancel()
-        self.run_auto_mimo.cancel()
         self.run_web_events_notify.cancel()
 
-    @tasks.loop(time=datetime.time(0, 0, 0, tzinfo=UTC_8))
-    async def run_daily_checkin(self) -> None:
-        await DailyCheckin.execute(self.bot)
+    async def _reset_mimo_all_claimed_time(self) -> None:
+        utc_now = get_now(datetime.UTC)
+        await (
+            HoyoAccount.filter(mimo_all_claimed_time__isnull=False)
+            .exclude(mimo_all_claimed_time__day=utc_now.day)
+            .update(mimo_all_claimed_time=None)
+        )
+
+    @commands.is_owner()
+    @commands.command(name="task-status", aliases=["ts"])
+    async def task_status(self, ctx: commands.Context) -> None:
+        tasks = (AutoRedeem, AutoMimoTask, AutoMimoBuy, AutoMimoDraw, DailyCheckin)
+        task_statuses = {task.__name__: task._lock.locked() for task in tasks}
+        msg = "\n".join(f"{task} running: {status}" for task, status in task_statuses.items())
+        msg += f"\nFarmChecker running: {self.bot.farm_check_running}"
+        await ctx.send(msg)
+
+    @commands.is_owner()
+    @commands.command(name="run-task", aliases=["rt"])
+    async def run_task(self, ctx: commands.Context) -> None:
+        await ctx.send("Select a task to run", view=RunTaskView())
+
+    @tasks.loop(minutes=10)
+    async def run_auto_tasks(self) -> None:
+        # Mimo
+        await self._reset_mimo_all_claimed_time()
+        asyncio.create_task(AutoMimoTask.execute(self.bot))
+        asyncio.create_task(AutoMimoBuy.execute(self.bot))
+        asyncio.create_task(AutoMimoDraw.execute(self.bot))
+
+        # Redeem
+        asyncio.create_task(AutoRedeem.execute(self.bot))
+
+        # Check-in
+        asyncio.create_task(DailyCheckin.execute(self.bot))
 
     @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)])
     async def run_farm_checks(self) -> None:
@@ -91,37 +156,15 @@ class Schedule(commands.Cog):
     async def run_notes_check(self) -> None:
         await NotesChecker.execute(self.bot)
 
-    @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 3)])
-    async def run_auto_redeem(self) -> None:
-        logger.info("Running AutoRedeem in schedule.py")
-        await AutoRedeem.execute(self.bot)
-
-    @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 4)])
-    async def run_auto_mimo(self) -> None:
-        logger.info("Running AutoMimo in schedule.py")
-        # Reset mimo_all_claimed_time if it's a new day
-        now = get_now()
-        accounts = await HoyoAccount.filter(Q(mimo_all_claimed_time__isnull=False))
-        for account in accounts:
-            assert account.mimo_all_claimed_time is not None
-            if account.mimo_all_claimed_time.astimezone(UTC_8).date() == now.date():
-                continue
-            account.mimo_all_claimed_time = None
-            await account.save(update_fields=("mimo_all_claimed_time",))
-
-        await AutoMimo.execute(self.bot)
-
     @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 1)])
     async def run_web_events_notify(self) -> None:
         await WebEventsNotify.execute(self.bot)
 
-    @run_daily_checkin.before_loop
+    @run_auto_tasks.before_loop
     @run_farm_checks.before_loop
     @update_search_autofill.before_loop
     @update_assets.before_loop
     @run_notes_check.before_loop
-    @run_auto_redeem.before_loop
-    @run_auto_mimo.before_loop
     @run_web_events_notify.before_loop
     async def before_loops(self) -> None:
         await self.bot.wait_until_ready()

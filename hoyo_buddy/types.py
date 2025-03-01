@@ -68,3 +68,4 @@ ProxyAPI: TypeAlias = Literal[
 
 type OpenGameRegion = Literal["global", "cn", "vietnam"]
 type OpenGameGame = Literal["gi", "gi_cloud", "hsr", "hsr_cloud", "zzz", "zzz_cloud"]
+type AutoTaskType = Literal["mimo_task", "mimo_buy", "mimo_draw", "redeem", "checkin"]

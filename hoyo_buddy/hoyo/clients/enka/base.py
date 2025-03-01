@@ -7,6 +7,8 @@ import enka
 
 from hoyo_buddy.db import EnkaCache
 
+type ShowcaseResponse = enka.gi.ShowcaseResponse | enka.hsr.ShowcaseResponse
+
 
 class BaseClient:
     def __init__(self, locale: discord.Locale = discord.Locale.american_english) -> None:
@@ -17,6 +19,8 @@ class BaseClient:
         client: enka.HSRClient | enka.GenshinClient,
         data: dict[str, Any],
         extras: dict[str, dict[str, Any]],
+        *,
+        showcase: ShowcaseResponse | None = None,
         live: bool,
     ) -> dict[str, dict[str, Any]]:
         """Update the live status of the characters in the showcase data.
@@ -30,7 +34,8 @@ class BaseClient:
         Returns:
             The updated extras data.
         """
-        showcase = client.parse_showcase(data)
+        showcase = showcase or client.parse_showcase(data)
+
         cache_data = {"live": live, "locale": self._locale.value}
         for character in showcase.characters:
             if str(character.id) not in extras:
@@ -151,18 +156,25 @@ class BaseClient:
                 raise
 
             errored = True
-            self._update_live_status(client, showcase_cache, cache.extras, False)
+            self._update_live_status(client, showcase_cache, cache.extras, live=False)
             await cache.save(update_fields=("extras",))
         else:
             showcase_cache = self._update_cache(client.game, cache=showcase_cache, data=live_data)
 
+            cache_showcase: ShowcaseResponse | None = None
+            live_showcase: ShowcaseResponse | None = None
             try:
-                client.parse_showcase(live_data)
+                cache_showcase = client.parse_showcase(showcase_cache)
+                live_showcase = client.parse_showcase(live_data)
             except KeyError:
                 await client.update_assets()
 
-            self._update_live_status(client, showcase_cache, cache.extras, False)
-            self._update_live_status(client, live_data, cache.extras, True)
+            self._update_live_status(
+                client, showcase_cache, cache.extras, showcase=cache_showcase, live=False
+            )
+            self._update_live_status(
+                client, live_data, cache.extras, showcase=live_showcase, live=True
+            )
 
             if client.game is enka.Game.HSR:
                 cache.hsr = showcase_cache

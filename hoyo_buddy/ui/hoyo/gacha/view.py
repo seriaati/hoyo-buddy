@@ -186,6 +186,8 @@ class ViewGachaLogView(View):
             self.account, banner=self.banner_type, rarity=4
         )
         current_four_star_pity = last_gacha_num - last_four_star_num
+        if current_four_star_pity > 10:
+            current_four_star_pity = last_gacha_num - last_five_star_num
 
         # 50/50 win rate
         banner_wins, banner_5stars = await self.calc_50_50_stats()

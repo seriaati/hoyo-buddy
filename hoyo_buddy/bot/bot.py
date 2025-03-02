@@ -206,7 +206,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             )
             query &= Q(id__in=[account.id for account in accounts])  # pyright: ignore[reportAttributeAccessIssue]
             # Don't check-in the same account twice in a day
-            now = get_now()
+            now = get_now(datetime.UTC)
             query &= Q(last_checkin_time__isnull=True) | ~Q(
                 last_checkin_time__year=now.year,
                 last_checkin_time__month=now.month,

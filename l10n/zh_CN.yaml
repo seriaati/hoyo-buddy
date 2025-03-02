@@ -378,7 +378,7 @@ realm_curr_button.label: 洞天宝钱提醒
 realm_curr_modal.title: 洞天宝钱提醒设置
 redeeem_code.cookie_token_expired_description: "兑换码功能仅适用于用电子邮箱和密码登录的用户，你可以通过</accounts>进行兑换操作。"
 redeeem_code.cookie_token_expired_title: Cookie Token 已过期
-redeeem_code.cookie_token_refresh_failed_description: "自上次添加账户以来，你可能更改了账号密码。\n请使用</accounts>通过电子邮箱和密码的方式重新添加。"
+redeeem_code.cookie_token_refresh_failed_description: "请再次通过使用</accounts>中的邮箱与密码方式添加账号。"
 redeeem_code.cookie_token_refresh_failed_title: 刷新 cookie token 失败
 redeem_code.success: 兑换成功
 redeem_codes_button.label: 兑换码
@@ -795,3 +795,4 @@ zzz.core_level.placeholder: 选择核心技等级...
 open_game_label: 打开游戏
 open_game_cloud_label: 打开游戏（云游戏）
 open_game_vietnam_label: 打开游戏（越南版）
+gift_code_redeemed: 兑换码已被使用

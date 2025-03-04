@@ -1,0 +1,798 @@
+about_command.contribute: Contribuir
+about_command.developer: Desarrollador
+about_command.discord_server: Server de Discord
+about_command.guild_count: Cantidad de servidores
+about_command.latest_changes: Últimos cambios
+about_command.ram_usage: Uso de RAM
+about_command.support: Donar
+about_command.translators: Traductores
+about_command.uptime: Tiempo de actividad
+about_command.website: Sitio web oficial
+about_command_description: Sobre el bot
+about_embed.description: "Un bot de Discord con muchas funciones, fácil de usar y bellamente diseñado, creado específicamente para jugadores de Hoyoverse."
+abundance: Abundancia
+abyss.battles_won_fought: "Batallas Ganadas/Libradas: {val1}/{val2}"
+abyss.deepest_descent: "Descenso más profundo: {val}"
+abyss.floor: "Piso {val}"
+abyss.overview: Resumen del Espiral del Abismo
+abyss.damage: INFO. DE DAÑO
+abyss.stats: STATS
+abyss.phase_select.placeholder: Selecciona una fase
+abyss.total_stars: "Estrellas totales: {val}"
+abyss_chamber.challenge_target.embed.field.name: Objetivo del desafío
+abyss_chamber.embed.title: "Piso {floor_index} - Cámara {chamber_index}"
+abyss_chamber.enemy_level.embed.field.name: Nivel de enemigo
+abyss_chamber.ley_line_disorder.embed.field.name: Crecida de Línea Ley
+abyss_enemy.item_description: "Vida: {HP}"
+acc_no_default_param_desc: Cuenta con la que ejecutar este comando
+account_autocomplete_param_description: "Cuenta con la que ejecutar este comando, por defecto se usa la seleccionada en /accounts"
+account_autocomplete_param_name: Cuenta
+account_deleted_description: "{account} ha sido eliminada."
+account_deleted_title: Cuenta eliminada
+account_manager_footer: La cuenta seleccionada será la predeterminada para todos los comandos.
+account_manager_no_accounts_description: Aún no tienes ninguna cuenta.
+account_manager_title: Administrador de cuentas
+account_not_found_error_message: "No se pudo encontrar una cuenta con la consulta proporcionada. Por favor, selecciona una opción del autocompletado en lugar de escribir tu propia consulta."
+account_not_found_error_title: Cuenta no encontrada
+account_username: Nombre de usuario
+accounts_command_description: Administra tus cuentas
+action_in_cooldown_error_message: "Por favor, inténtalo de nuevo a las {available_time}."
+action_in_cooldown_error_title: Acción en recarga
+add_account_button_label: Agregar cuentas
+add_hoyolab_acc.embed.description: "- [¿Qué método debo usar?](:docs/FAQ#which-login-method-should-i-use:)"
+add_hoyolab_acc.embed.title: Seleccione un método para agregar sus Cuentas
+adding_accounts_description: "- [¿Hoyo Buddy es seguro?](:docs/Account-Security:)\n- [Políticas de Privacidad](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_title: Selecciona la plataforma de tu cuenta
+ai_gen_image_error_message: Revisa tu solicitud e inténtalo de nuevo.
+ai_gen_image_error_title: Ocurrió un error al generar el arte con IA
+already_claimed_description: ¡Vuelve mañana!
+already_claimed_title: El Daily Check-In ya ha sido reclamado
+anemo: Anemo
+artifact_set_four_piece_embed_description: "4 Piezas: {bonus_4}"
+artifact_set_two_piece_embed_description: "2 Piezas: {bonus_2}"
+artifact_sets: Set de Artefactos
+auto_checkin_button_label: Auto daily check-in
+auto_locale_option_label: Seguir el idioma del cliente
+auto_redeem_footer: Desactiva el canje automático de códigos con /redeem
+auto_redeem_toggle.label: Canje automático de códigos
+books: Libros
+captcha.embed.description: "Haz clic en el botón de abajo para completar el CAPTCHA.\n"
+challenge_type_select.placeholder: Selecciona un modo de juego
+challenge_view.buff_used_in: Utilizado en
+challenge_view.team: "team {team}"
+chamber_button_label: ""
+change_character_level_label: Cambiar nivel de personaje
+change_skill_level_label: Cambiar nivel de habilidad
+change_talent_level_label: Cambiar nivel de talento
+change_weapon_level_label: Cambiar nivel de arma
+chara_level.modal.title: Ingrese el nivel de personaje
+character_const_page_label: Constelaciones
+character_embed_description: "{rarity}★ {element}\nCumpleaño: {birthday}\nConstelación: {constellation}\nAfiliación: {affiliation}\n"
+character_passives_page_label: Pasivas
+character_profile_page_label: Perfil
+character_quotes_page_label: Frases
+character_stories_page_label: Historias
+character_talents_page_label: Talentos
+character_voices_page_label: Voces
+characters: Personajes
+characters.embed.element_max_friendship: "Personajes {element} con máxima amistad"
+characters.embed.element_not_max_friendship: "Personajes {element} sin máxima amistad"
+characters.embed.max_friendship: Personajes con máxima amistad
+characters.embed.not_max_friendship: Personajes sin máxima amistad
+characters.embed.owned_characters: Personajes obtenidos
+characters.embed.title: Descripción de personaje
+characters.filter.element.placeholder: Seleccionar filtro de elementos...
+characters.filter.max_friendship: Máxima amistad
+characters.filter.none: Ninguno
+characters.filter.not_max_friendship: Sin máxima amistad
+characters.filter.path.placeholder: Selecciona los filtros de ruta...
+characters.filter.placeholder: Selecciona un filtro...
+characters.level_order.footer: "Orden de nivel: {order}"
+characters.extra_detail.footer: "Usa /profile para ver los detalles de un personaje"
+hsr.ultimate: Ultimate
+hsr.normal_attack: Ataque Normal
+hsr.skill: Habilidad
+hsr.talent: Talento
+hsr.technique: Técnica
+gi.skill: Habilidad Elemental
+gi.burst: Habilidad Definitiva
+gi.passive: Pasiva
+characters.sorter.constellation: Constelación
+characters.sorter.eidolon: Eidolon
+characters.sorter.element: Elemento
+characters.sorter.friendship: Amistad
+characters.sorter.level: Nivel
+characters.sorter.path: ""
+characters.sorter.placeholder: Selecciona una clasificación...
+characters.sorter.rarity: Rareza
+characters_cmd_genshin_desc: Ver y filtrar tus personajes de Genshin Impact
+characters_cmd_hsr_desc: Ver y filtrar tus personajes de Honkai Star Rail
+characters_cmd_zzz_desc: Ver y filtrar tus agentes de Zenless Zone Zero
+characters_cmd_honkai_desc: Ver y filtrar tus personajes de Honkai Impact 3rd
+checkin_button_label: Check-in
+checkin_command_description: Daily check-in del juego
+complete_captcha_button_label: Completa el CAPTCHA
+complete_geetest_button_description: Haga clic en el botón a continuación para completar la verificación Geetest
+complete_geetest_button_label: Geetest completo
+const_refine_str: "C{const}R{refine}"
+continue_button_label: Continuar
+cryo: Cryo
+daily_button.label: Recordatorio diario
+daily_check_in: Daily check-in
+daily_checkin_embed_description: "Registrado {day} día(s) este mes\nRegistro perdido durante {missed} día(s)\n"
+daily_modal.title: Configurar Registro diario
+delete_account_button_label: Eliminar cuenta selecionada
+dendro: Dendro
+destruction: Destrucción
+devtools_button_label: Con DevTools (solo escritorio)
+devtools_instructions_description: "1. Inicia sesión en [HoYoLAB](https://www.hoyolab.com/home) o [Miyoushe](https://www.miyoushe.com/ys/) (para jugadores de CN)\n2. Abre las Herramientas de Desarrollo presionando F12 o Ctrl+Shift+I\n3. Haz clic en el ícono >> en la barra de navegación superior\n4. Haz clic en la pestaña `Aplicación`\n5. Haz clic en `Cookies` en la barra lateral izquierda\n6. Haz clic en el sitio web en el que estás (por ejemplo, https://www.hoyolab.com)\n7. Escribe `v2` en el cuadro de `Filtro`\n8. Haz clic en el botón de abajo\n9. Copia el `Valor` de cada cookie y pégalos en los cuadros"
+dice_cost_embed_field_name: Costo de Dados
+download_image_failed_error_message: "No se pudo descargar la imagen {url} con el código de estado {status}.\nIntenta nuevamente más tarde, prueba con otra imagen o verifica si la URL de la imagen es válida."
+download_image_failed_error_title: Error al descargar la imagen
+edit_nickname_modal_title: Editar nombre de usuario
+eidolon_superimpose_str: "E{eidolon}S{superimpose}"
+electro: Electro
+email_verification_dialog_title: Verificación requerida
+email_verification_dialog_content: Por favor ingrese el código de verificación recibido
+email_verification_dialog_action: Verificar
+email_verification_field_label: Código de verificación
+email-geetest.embed.title: Se requiere verificación CAPTCHA para enviar el código de verificación por correo
+email_password_button_label: Con correo y contraseña
+email_password_modal_email_input_label: Correo o Nombre de usuario
+email_password_modal_password_input_label: Constraseña
+enter_email_password_instructions_description: "El correo y contraseña se refieren al **correo y contraseña de la cuenta de Hoyoverse**, no a cuentas de Google, Apple, etc.\n- [¿Cómo funciona este método de inicio de sesión?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [No tengo una cuenta de Hoyoverse (inicio sesión con Google, Facebook, etc.)](:docs/Before-Start:)\n- [Soy un jugador de consola](:docs/Before-Start#i-am-a-console-player:)"
+enter_light_cone_level.button.label: Cambiar el nivel del cono de luz
+dark_mode_button_label: Modo oscuro
+error_footer: "Puedes encontrar ayuda en nuestro servidor de Discord, link en /about"
+error_title: A ocurrido un error
+erudition: Erudición
+days: días
+exceptions.card_not_ready_error.message: "Cuando se lanzan nuevos personajes, necesito especificar los colores para sus tarjetas de equipamiento.\nSi ves este mensaje varios días después de una actualización del juego, por favor notifícalo en el [servidor de Discord](https://link.seria.moe/hb-dc) ya que podría haber olvidado hacerlo."
+exceptions.card_not_ready_error.title: "Los datos de la tarjeta de {character_name} aún no están listos."
+exped.embed.description: Una (o más) expediciones han terminado
+exped_button.label: Recordatorio de expedición
+exped_modal.title: Configurar recordatorio de expedición
+exploration.chests: Cofres desbloqueados
+exploration.common_chests: Común
+exploration.exquisite_chests: Sofisticado
+exploration.luxurious_chests: Lujoso
+exploration.placeholder: Aún no lanzado
+exploration.placeholder_quote: '"Cada viaje tiene su día final. No te apresures."
+
+  -Zhongli'
+exploration.precious_chests: Valioso
+exploration.progress: "Progreso de Exploración: {progress}%"
+exploration.remarkable_chests: ""
+exploration.title: Exploración de mundo
+exploration.waypoints: Puntos de teletransporte desbloqueados
+exploration_command_description: Ver estadísticas de exploración en Genshin Impact
+farm_add_command.item_already_in_list: El objeto ya está en la lista
+farm_add_command.item_already_in_list_description: Este objeto ya está en tu lista de recordatorios de farmeo.
+farm_add_command_description: Agrega un personaje/arma para notificarte cuando los materiales sean farmeables
+farm_check.farmable_today: "Los materiales para {name} se pueden farmear hoy"
+farm_check.use_farm_notify: "Usa /farm reminder para configurar recordatorios de farmeo\nUsa /farm view para ver todos los objetos farmeables de hoy"
+farm_notify.add_item: Agregar objeto
+farm_notify.add_item.embed.description: "Para agregar objetos, usa el comando </farm add> "
+farm_notify.description: Recibirás un recordatorio cuando los materiales de los personajes/armas en esta lista se puedan farmear.
+farm_notify.empty: No tienes objetos en tu lista de recordatorios de farmeo
+farm_notify.empty_description: Agrega objetos a tu lista de recordatorios de farmeo usando el comando </farm add>
+farm_notify.remove_item: Eliminar objeto
+farm_notify.remove_item.embed.description: "Para eliminar objetos, usa el comando </farm remove>"
+farm_notify.title: Lista de recordatorios de farmeo
+farm_reminder_command_description: Te notificará cuando los materiales de los personajes/armas sean farmeables
+farm_remove_command.item_not_found: Objeto no encontrado
+farm_remove_command.item_not_found_description: Este objeto no está en tu lista de recordatorios de farmeo.
+farm_remove_command_description: Eliminar personaje/arma de la lista de recordatorios de farmeo.
+farm_view.happy_farming: 🌾 ¡Feliz farmeo!
+farm_view.set_reminder: Configurar recordatorios
+farm_view.set_reminder.embed.description: "Para configurar recordatorios, usa el comando </farm reminder>"
+farm_view.sundays: Todos los dominios están disponibles el Domingo
+farm_view.weekday_select.placeholder: Selecciona un día de la semana
+farm_view_command_description: Ver dominios farmeables en Genshin Impact
+fire: Fuego
+floor_select_label: "Piso {value}"
+fontaine: Fontaine
+food: Piso
+friday: Viernes
+furnishing_sets: Conjuntos de muebles
+furnishings: Muebles
+furniture_embed_description: ""
+game_maintenance_description: Por favor inténtalo de nuevo más tarde
+game_maintenance_title: El juego está en mantenimiento
+game_value_incomplete_param_error_message: Debes especificar el juego del UID
+geeetest_verification_complete: Verificación completa
+geetest.embed.title: Se requiere verificación CAPTCHA antes de iniciar sesión
+geetest.no_need: No es necesario el Geetest
+geetest.no_need.description: "¡Nunca necesitaste hacer un geetest!. ¡¿Por qué estás aquí?!"
+geetest.required: Se requiere verificación de Geetest
+geetest.required.description: "Usa el comando </geetest>, elige la cuenta que activó el geetest y selecciona `{geetest_type}` para completar la verificación"
+geetest_command_description: Verificación Geetest completa
+geetest_cmd_type_param_desc: Tipo de verificación Geetest
+geetest_command_type_param_name: tipo
+genshin_impact: Genshin Impact
+geo: Geo
+gi_daily.embed.description: Las recompensas de encargo o encuentros de aventura aún no se han completado
+gift_code_modal.code_input.label: "Código {num}"
+gift_code_modal.title: Introduce el código de regalo
+harmony: Armonía
+honkai:_star_rail: "Honkai: Star Rail"
+honkai_impact_3rd: Honkai Impact 3rd
+hoyolab: HoYoLAB
+hsr_daily.embed.description: Los entrenamientos diarios aún no se han completado
+hydro: Hydro
+ice: Hielo
+imaginary: Imaginario
+inazuma: Inazuma
+instructions_title: Instrucciones
+interaction_failed_description: "Esta vista no ha sido iniciada por ti, por lo tanto no puedes usarla."
+interaction_failed_title: Interacción fallida
+invalid_category_selected: Categoría seleccionada no válida
+invalid_color_error_message: "Un color válido debe ser un código de color hexadecimal, por ejemplo: #FF0000."
+invalid_color_error_title: Color no válido
+invalid_cookies_description: Actualice sus cookies agregando nuevamente sus cuentas usando </accounts>
+invalid_cookies_title: Cookies no válidas
+invalid_email_password_description: "El correo o la contraseña que proporcionó es incorrecto, por favor verifique e intente nuevamente."
+invalid_email_password_title: Correo o contraseña no válidos
+invalid_game_selected: Juego seleccionado no válido
+invalid_image_url_error_message: "Una URL de imagen válida debe ser una URL directa a un archivo de imagen que contenga una extensión de imagen y sea accesible públicamente"
+invalid_image_url_error_title: URL de imagen no válida
+invalid_input.input_needs_to_be_bool: "La entrada {input} debe ser `0` (para falso) o `1` (para verdadero)."
+invalid_input.input_needs_to_be_int: "La entrada `{input}` debe ser un número entero"
+invalid_input.input_out_of_range.max_value: "La entrada `{input}` debe ser menor o igual a {max_value}"
+invalid_input.input_out_of_range.min_value: "La entrada `{input}` debe ser mayor o igual a {min_value}"
+invalid_input_error_title: Entrada no válida
+invalid_query_error_message: "No se puede encontrar nada con la consulta proporcionada, seleccione opciones de autocompletar en lugar de escribir su propia consulta."
+invalid_query_error_title: Consulta no válida
+invalid_verification_code_description: Verifique el código de verificación y vuelva a intentarlo.
+invalid_verification_code_title: Código de verificación no válido
+items: Objeto
+level_str: "Niv.{level}"
+light_cones: Cono de luz
+living_beings: Seres Vivos
+liyue: Liyue
+loading_text: Cargando...
+make_up_for_checkin_button_label: ""
+materials: Materiales
+memory_of_chaos: Memorias del caos
+miyoushe: Miyoushe - HoYoLAB chino
+moc_card_battles_fought: "Batallas libradas: {battles}"
+moc_card_cycles_used: ""
+moc_card_farthest_stage: "Etapa alcanzada: {stage}"
+moc_quick_clear: Borrado rápido
+monday: Lunes
+mondstadt: Mondstadt
+namecards: Tarjetas de presentación
+next_page_option_label: Siguiente página
+nickname_modal_label: Nombre de usuario
+nickname_modal_placeholder: "Cuenta principal, cuenta de Asia..."
+nihility: Nahilidad
+no_account_found_for_games_error_message: "No tienes una cuenta de uno de los siguientes juegos. Agrega una con </accounts>"
+no_account_found_for_games_platform_error_message: "No tienes una cuenta de uno de los siguientes juegos en {platform}. Agrega una con </accounts>"
+no_account_found_for_games_error_title: No se encontró ninguna cuenta
+no_accounts_autocomplete_choice: Aún no tienes ninguna cuenta. Agrega una con /accounts
+profile_character_param_name: "personaje-{num}"
+no_challenge_data_err_message: "No se han podido encontrar datos de {challenge} para esta fase. Es posible que aún no hayas comenzado {challenge} o que los datos no estén listos. Por favor, inténtalo de nuevo más tarde."
+no_challenge_data_err_title: "No hay datos de {challenge}"
+no_characters_found_error_message: Por favor inténtalo de nuevo con un filtro diferente
+no_characters_found_error_title: No se encontraron personajes con el filtro seleccionado
+no_game_accounts_error_message: "Esta cuenta de {platform} no tiene cuentas agregadas."
+notes-card.gi.completed: Completado
+notes-card.gi.daily-commissions: Misiones diarias
+notes-card.gi.expedition-finished: Completado
+notes-card.gi.expedition-remaining: "{time} Restante"
+notes-card.gi.realm-currency: Intramora
+notes-card.gi.remaining: Restante
+notes-card.gi.resin: Resina
+notes-card.gi.resin-discounts: Descuento de Resina
+notes-card.hsr.echo-of-war-discounts: Limite de Ecos de la guerra
+notes-card.hsr.reserved-power: Poder trazacaminos de reserva
+notes.item_full_in_time: "{emoji} completo en {in_time}"
+notes.stamina_label: Recordatorio de Stamina
+notes.stamina: "Stamina: {cur}/{max}, completa en {time}"
+notes.train_score: "Daily BP: {cur}/{max}"
+notes.superstring_dimension: Superstring Dimension
+notes.superstring_dimension_value: "Score actual: {score}"
+notes.memorial_arena: Memorial Arena
+notes.memorial_arena_value: "Recomenzas del desafio: {rewards_cur}/{rewards_max}\nRecompensas de SSS-rank: {sss_cur}/{sss_max}"
+notes.elysian_realm: Elysian Realm
+notes.elysian_realm_value: "Score actual: {cur}/{max}"
+notes_available: "{emoji} Disponible en {in_time}"
+notes_command_description: Ver notas en tiempo real
+notif.embed.footer: Utilice /notes para configurar recordatorios
+notif_modal.enabled.label: Activado
+notif_modal.max_notif_count.label: Número máximo de notificaciones
+notif_modal.notify_interval.label: Intervalo de notificación (en minutos)
+notif_modal.notify_time.label: "Notificar X h antes del reinicio (4:00 a. m.)"
+notif_modal.notify_weekday.label: Día de la semana para notificar
+notif_modal.threshold.label: ""
+notification_settings_button_label: Configuración de notificaciones
+notify_on_failure_button_label: Notificar reclamo de Recompensa Diaria fallido
+notify_on_success_button_label: Notificar reclamo de Recompensa Diaria exitosa
+mimo_auto_task_success_notify_toggle_label: Notificar si la tarea automática se completa con éxito
+mimo_auto_task_failure_notify_toggle_label: Notificar si la tarea automática falla
+mimo_auto_buy_success_notify_toggle_label: Notificar si la compra automática de recompensas tiene éxito
+mimo_auto_buy_failure_notify_toggle_label: Notificar si la compra automática de recompensas falla
+nsfw_prompt_error_message: "El mensaje contiene contenido NSFW, por favor intenta de nuevo con un mensaje diferente."
+nsfw_prompt_error_title: Mensaje NSFW detectado
+page_footer: "Página {current_page}/{total_pages}"
+pf_card_total_score: "Score total: {score}"
+physical: ""
+player_not_found_description: ""
+player_not_found_title: ""
+preservation: ""
+prev_page_option_label: ""
+notify_feature: ""
+profile.add_image.button.label: ""
+profile.add_image_modal.image_url.label: ""
+profile.build.select.placeholder: ""
+profile.card_info.embed.description: ""
+profile.card_info.embed.title: ""
+profile.card_settings.button.label: ""
+profile.image_settings.button.label: ""
+profile.card_template_select.diff_author.description: ""
+profile.card_template_select.encard.label: ""
+profile.card_template_select.enka_classic.label: ""
+profile.card_template_select.enkacard.label: ""
+profile.card_template_select.hb.label: ""
+profile.card_template_select.placeholder: ""
+profile.card_template_select.same_author.description: ""
+profile.card_template_select.src.label: ""
+profile.character_select.cached_data.description: ""
+profile.character_select.description: ""
+profile.character_select.enka_network.description: ""
+profile.character_select.hoyolab.description: ""
+profile.character_select.live_data.description: ""
+profile.character_select.placeholder: ""
+profile.generate_ai_art.button.label: ""
+profile.generate_ai_art_modal.negative_prompt.label: ""
+profile.generate_ai_art_modal.prompt.label: ""
+profile.genshin.character_select.description: ""
+profile.genshin.character_select.hoyolab.description: ""
+profile.image_select.custom_image.label: ""
+profile.image_select.default_collection.label: ""
+profile.image_select.none.label: ""
+profile.image_select.placeholder: ""
+profile.player_info.button.label: ""
+profile.player_info.embed.description: ""
+profile.player_info.gi.embed.description: ""
+profile.player_info.hoyolab.embed.description: ""
+profile.primary_color.button.label: ""
+profile.primary_color_modal.color.label: ""
+profile.primary_color_modal.title: ""
+profile.remove_from_cache.button.label: ""
+profile.remove_image.button.label: ""
+profile_command_gi_description: ""
+profile_command_hsr_description: ""
+profile_command_zzz_description: ""
+profile_command_game_value_description: ""
+profile_command_uid_param_description: ""
+pt_button.label: ""
+pt_modal.title: ""
+public_account_toggle.label: ""
+pure_fiction: ""
+pyro: ""
+quantum: ""
+read_story.button.label: ""
+real_time_notes: ""
+realm_curr_button.label: ""
+realm_curr_modal.title: ""
+redeeem_code.cookie_token_expired_description: ""
+redeeem_code.cookie_token_expired_title: ""
+redeeem_code.cookie_token_refresh_failed_description: ""
+redeeem_code.cookie_token_refresh_failed_title: ""
+redeem_code.success: ""
+redeem_codes_button.label: ""
+redeem_command_description: ""
+redeem_command_embed.description: ""
+redeem_command_embed.title: ""
+redeem_cooldown_embed.description: ""
+redeem_cooldown_embed.title: ""
+refinement_indicator: ""
+relics: ""
+reminder_button.label: ""
+reminder_settings.not_set: ""
+reminder_settings.reminde.set.type1: ""
+reminder_settings.reminde.set.type2: ""
+reminder_settings.reminde.set.type3: ""
+reminder_settings.reminde.set.type4: ""
+reminder_settings_title: ""
+reminder_toggle: ""
+resin_discount.embed.description: ""
+resin_reminder_button.label: ""
+resin_reminder_modal.title: ""
+reward_claimed_title: ""
+saturday: ""
+search_autocomplete_no_results: ""
+search_autocomplete_not_setup: ""
+search_command_category_param_description: ""
+search_cmd_category_param_name: ""
+search_command_description: ""
+search_command_game_param_description: ""
+search_command_game_param_name: ""
+search_command_query_param_description: ""
+search_command_query_param_name: ""
+select_account.embed.description: ""
+select_account.embed.title: ""
+settings_command_description: ""
+skill_attributes_embed_field_name: ""
+skill_level.modal.title: ""
+spiral_abyss: ""
+stats_embed_field_name: ""
+sumeru: ""
+sunday: ""
+superimpose_indicator: ""
+talent_level.modal.title: ""
+tcg: ""
+the_hunt: ""
+threshold.embed.description: ""
+thunder: ""
+thursday: ""
+tuesday: ""
+unreleased_content: ""
+user_autocomplete_param_description: ""
+user_autocomplete_param_name: ""
+user_no_accounts_autocomplete_choice: ""
+view_card_button_label: ""
+view_dictionary_button_label: ""
+volume_selector_placeholder: ""
+wave_button_label: ""
+weapon_level.modal.title: ""
+weapons: ""
+wednesday: ""
+week_boss_button.label: ""
+week_boss_modal.title: ""
+wind: ""
+yatta_character_detail_page_label: ""
+yatta_character_eidolon_page_label: ""
+yatta_character_embed_description: ""
+yatta_character_skill_aoe_weakness_break_field_value: ""
+yatta_character_skill_energy_field_name: ""
+yatta_character_skill_energy_generation_field_value: ""
+yatta_character_skill_energy_need_field_value: ""
+yatta_character_skill_single_weakness_break_field_value: ""
+yatta_character_skill_spread_weakness_break_field_value: ""
+yatta_character_skill_weakness_break_field_name: ""
+yatta_character_trace_page_label: ""
+yatta_item_sources_field_name: ""
+characters.show_owned_only: ""
+redeem_code.ar_too_low: ""
+data_not_public.title: ""
+data_not_public.description: ""
+not_implemented_error_title: ""
+not_implemented_error_only_game_message: ""
+not_implemented_error_message: ""
+profile.build.current.label: ""
+abyss_chamber.blessing.embed.field.name: ""
+apocalyptic_shadow: ""
+apc_shadow.highest_diff_cleared: ""
+apc_shadow.times_challenged: ""
+apc_shadow.boss_defeated: ""
+apc_shadow.boss_defeated_no: ""
+notes.bonus_sync_points: ""
+invalid_uid_format_title: ""
+invalid_uid_format_description: ""
+zenless_zone_zero: ""
+img_theater_large_block_title: ""
+img_theater_stats_line_five: ""
+img_theater_legend_block_support_chara: ""
+img_theater_legend_block_trial_chara: ""
+img_theater_max_damage: ""
+img_theater_fastest_team: ""
+challenge_view.view_buffs: ""
+challenge_view.buff_select.placeholder: ""
+scratch_card.embed.description: ""
+zzz_engagement_button.label: ""
+zzz_engagement.embed.description: ""
+honkai_daily_embed_title: ""
+honkai_daily_embed_description: ""
+video_store.embed.description: ""
+scratch_card.incomplete: ""
+reminder_modal.title: ""
+profile_view.set_cur_temp_as_default: ""
+set_cur_temp_as_default.done: ""
+set_cur_temp_as_default.done_desc: ""
+remove_from_cache_finish_embed_desc: ""
+third_party_card_temp_error_title: ""
+third_party_card_temp_error_message: ""
+account_locked_title: ""
+account_locked_description: ""
+ether: ""
+electric: ""
+profile.no_data.title: ""
+profile.no_data.description: ""
+profile.zzz_hoyolab.character_select.description: ""
+characters.filter.specialty.placeholder: ""
+zzz.basic: ""
+zzz.dodge: ""
+zzz.assist: ""
+zzz.special: ""
+zzz.chain: ""
+zzz.core: ""
+characters.filter.faction.placeholder: ""
+characters.sorter.speciality: ""
+characters.sorter.faction: ""
+characters.sorter.mindscape_cinema: ""
+characters.embed.filter_text: ""
+stats_command_description: ""
+tears_of_themis: ""
+honkai_suit_rarity: ""
+about_command.designers: ""
+card_settings.modifying_for: ""
+card_settings.card_color: ""
+card_settings.no_color: ""
+card_settings.color_default: ""
+card_settings.current_image: ""
+card_settings.build_card_image: ""
+card_settings.team_card_image: ""
+profile.redraw_card_button_label: ""
+card_settings.footer: ""
+card_settings.description: ""
+profile.team_dark_mode.button.label: ""
+profile.character_select.multi.placeholder: ""
+zzz_search.agent_info: ""
+cat_zzz_agents: ""
+cat_zzz_bangboos: ""
+cat_zzz_w_engines: ""
+cat_zzz_drive_discs: ""
+search.agent_page.info: ""
+search.agent_page.skills: ""
+search.agent_page.cinemas: ""
+search.agent_page.placeholder: ""
+zzz.skill_type.placeholder: ""
+zzz.cinema.placeholder: ""
+zzz.engine.refinement_select.placeholder: ""
+dyk_discord_server_updates: ""
+dyk_discord_server_feedback: ""
+dyk_contact_me: ""
+dyk_need_help_no_title: ""
+dyk_donate_no_title: ""
+dyk_team: ""
+dyk_disable: ""
+dyk_settings_lang: ""
+dyk_settings_theme: ""
+dyk_security: ""
+dyk_github: ""
+dyk_python: ""
+dyk_unreleased: ""
+dyk_team_card: ""
+dyk_set_default_acc: ""
+title_dyk: ""
+button_label_dyk: ""
+events_view_start_date_embed_field: ""
+events_view_end_date_embed_field: ""
+events_view_ann_select_placeholder: ""
+events_view_banner_type_label: ""
+events_command_description: ""
+events_view_ann_type_select_placeholder: ""
+events_view_content_label: ""
+events_command_game_param_description: ""
+natlan: ""
+top_percent: ""
+profile_view_show_rank_button_label: ""
+submit_button_label: ""
+show_tutorial_button_label: ""
+close_button_label: ""
+required_field_error_message: ""
+accounts_added_snackbar_message: ""
+account_add_start_message: ""
+hbls_button_label: ""
+gacha_import_url_modal_title: ""
+gacha_import_embed_description: ""
+extract_authkey_error_message: ""
+extract_authkey_error_title: ""
+gacha_import_loading_embed_title: ""
+gacha_import_loading_embed_description: ""
+gacha_upload_invalid_file_error_title: ""
+gacha_upload_invalid_file_error_message: ""
+uid_mismatch_error_title: ""
+uid_mismatch_error_message: ""
+gacha_import_command_description: ""
+source_param_name: ""
+source_param_description: ""
+gacha_upload_command_description: ""
+file_param_name: ""
+file_param_description: ""
+gacha_import_success_title: ""
+gacha_import_success_message: ""
+gacha_view_filter_button_label: ""
+gacha_view_search_field_label: ""
+gacha_view_gacha_detail_title: ""
+gacha_view_gacha_detail: ""
+gacha_view_num_since_last: ""
+gacha_view_filter_dialog_title: ""
+banner_type_beginners_wish: ""
+banner_type_standard_banner: ""
+banner_type_character_event: ""
+banner_type_weapon_event: ""
+banner_type_chronicled_wish: ""
+banner_type_stellar_warp: ""
+banner_type_departure_warp: ""
+banner_type_character_warp: ""
+banner_type_light_cone_warp: ""
+banner_type_standard_channel: ""
+banner_type_exclusive_channel: ""
+banner_type_w_engine_channel: ""
+banner_type_bangboo_channel: ""
+cancel_button_label: ""
+gacha_view_filter_size_field_label: ""
+gacha_view_page_field_label: ""
+gacha_log_stats_title: ""
+gacha_log_personal_stats_title: ""
+gacha_log_personal_stats: ""
+win_rate_stats: ""
+gacha_log_global_stats_title: ""
+gacha_log_global_stats: ""
+win_rate_global_stats: ""
+gacha_log_view_full: ""
+gacha_view_command_description: ""
+gacha_log_view_banner_type_selector_placeholder: ""
+no_gacha_log_found_error_title: ""
+no_gacha_log_found_error_message: ""
+gacha_log_manage_embed_title: ""
+gacha_log_manage_embed_description: ""
+gacha_log_export_button_label: ""
+gacha_log_delete_button_label: ""
+gacha_log_delete_confirm_embed_title: ""
+gacha_log_delete_confirm_embed_description: ""
+gacha_log_delete_confirm_button_label: ""
+gacha_log_delete_done_embed_title: ""
+gacha_log_delete_done_embed_description: ""
+gacha_manage_command_description: ""
+login_button_label: ""
+star5_guaranteed: ""
+star5_no_guaranteed: ""
+characters_view_show_max_level_only: ""
+characters_embed_max_level_characters: ""
+natlan_reputation: ""
+shiyu_overview: ""
+shiyu_fastest_clear_time: ""
+shiyu_highest_frontier: ""
+shiyu_relevant_season: ""
+shiyu_1_frontier: ""
+shiyu_2_frontier: ""
+shiyu_3_frontier: ""
+shiyu_4_frontier: ""
+shiyu_5_frontier: ""
+shiyu_6_frontier: ""
+shiyu_7_frontier: ""
+shiyu_defense: ""
+show_uid: ""
+no_leaderboard_found: ""
+akasha_character_param: ""
+akasha_calculation_param: ""
+akasha_weapon_param: ""
+akasha_weapon_param_desc: ""
+akasha_variant_param: ""
+akasha_variant_param_desc: ""
+akasha_character_param_desc: ""
+akasha_calculation_param_desc: ""
+akasha_total_entries: ""
+leaderboard_akasha_command_description: ""
+akasha_you: ""
+achievement_lb_title: ""
+planar_fissure_label: ""
+planar_fissure_desc: ""
+notif_modal.hours_before.label: ""
+reminder_settings.reminde.set.type5: ""
+invalid_lb_selected_error_msg: ""
+chest_lb_title: ""
+abyss_dmg_lb_title: ""
+theater_dmg_lb_title: ""
+max_friendship_lb_title: ""
+lb_view_command_description: ""
+leaderboard_not_found: ""
+currently_logged_in_as: ""
+not_you_label: ""
+profile_show_substat_rolls: ""
+team_card_settings_button_label: ""
+team_card_settings_embed_title: ""
+team_card_settings_embed_description: ""
+characters.filter.rarity.placeholder: ""
+profile_command_character_param_desc: ""
+weapon_type_filter_placeholder: ""
+redeem_cmd_available_codes: ""
+redeem_all_available_codes_button_label: ""
+akasha_show_details: ""
+card_settings_hl_special_stats_button_label: ""
+challenge_command_abyss_desc: ""
+challenge_command_theater_desc: ""
+challenge_command_moc_desc: ""
+challenge_command_pf_desc: ""
+challenge_command_apc_shadow_desc: ""
+challenge_command_shiyu_desc: ""
+account_select_placeholder: ""
+guild_only_command_param_name: ""
+guild_only_command_param_desc: ""
+yes_choice: ""
+no_choice: ""
+akasha_guild_mode_not_supported: ""
+akasha_guild_mode_not_supported_desc: ""
+time_remaining_str: ""
+banner_selector_placeholder: ""
+rarity_str: ""
+finished_status_field_name: ""
+unlocks_in_str: ""
+challenge_selector_placeholder: ""
+upload_cmd_desc: ""
+not_an_image_error_title: ""
+not_an_image_error_message: ""
+upload_cmd_image_param_name: ""
+upload_cmd_image_param_desc: ""
+exploration_select_placeholder: ""
+exploration_show_card_button_label: ""
+abyss_stats_const_use_rate: ""
+abyss_stats_teammate_use_rate: ""
+abyss_stats_weapon_use_rate: ""
+abyss_stats_artifact_use_rate: ""
+build_cmd_genshin_desc: ""
+build_cmd_hsr_desc: ""
+build_cmd_zzz_desc: ""
+build_cmd_character_param_desc: ""
+guide_title: ""
+no_guide_available: ""
+show_playstyle_button_label: ""
+flexible_char: ""
+show_synergy_button_label: ""
+characters_per_page_modal_title: ""
+characters_per_page_num_label: ""
+card_settings_hl_substat_select_placeholder: ""
+too_many_requests_error_banner_msg: ""
+mimo_task_status_claimable: ""
+mimo_finish_and_claim_button_label: ""
+mimo_info_embed_title: ""
+mimo_info_embed_desc: ""
+mimo_auto_finish_and_claim_button_label: ""
+mimo_auto_finish_and_claim_desc: ""
+mimo_auto_buy_button_label: ""
+mimo_auto_buy_desc: ""
+mimo_cmd_desc: ""
+mimo_view_shop_button_label: ""
+mimo_buy_item_select_placeholder: ""
+mimo_tasks_button_label: ""
+mimo_buy_item_amount_label: ""
+mimo_item_available_time: ""
+mimo_auto_task_embed_footer: ""
+mimo_auto_task_embed_desc: ""
+checkin_reward_embed_footer: ""
+mimo_status: ""
+mimo_auto_buy_embed_desc: ""
+mimo_game_unavailable: ""
+generic_error_title: ""
+on_button_label: ""
+off_button_label: ""
+mimo_draw_redeem_success: ""
+image_settings_use_m3_art: ""
+remembrance: ""
+dismissible_default_title: ""
+dismissible_default_footer: ""
+dismissible_m3_art_desc: ''
+mimo_lottery_info_hoyolab_decos: ""
+zzz_deadly_assault: ""
+challenge_command_assault_desc: ""
+gi_mimo_start_desc: ""
+mimo_auto_draw_button_label: ""
+mimo_auto_draw_desc: ""
+mimo_auto_draw_success_notify_toggle_label: ""
+mimo_auto_draw_failure_notify_toggle_label: ""
+mimo_auto_draw_embed_desc: ""
+mimo_auto_task_error_dm_content: ""
+dismissible_hsr_temp2_desc: ""
+bounty_commission.embed.description: ""
+ridu_points.embed.description: ""
+changelog_embed_title: ""
+web_events_notify_toggle_label: ""
+web_events_cmd_desc: ""
+web_events_embed_footer: ""
+auto_task_error_dm_content: ""
+is_support_custom_image_desc: ""
+is_not_support_custom_image_desc: ""
+template_preview_header: ""
+missing_permissions_error_title: ""
+missing_permissions_error_message: ""
+blocked_by_auto_mod_error_title: ""
+blocked_by_auto_mod_error_message: ""
+zzz.core_level.placeholder: ""
+open_game_label: ""
+open_game_cloud_label: ""
+open_game_vietnam_label: ""
+gift_code_redeemed: ""

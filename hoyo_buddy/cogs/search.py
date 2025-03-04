@@ -10,7 +10,7 @@ from discord import Locale, app_commands
 from discord.ext import commands, tasks
 from loguru import logger
 
-from hoyo_buddy.constants import NO_BETA_CONTENT_GUILDS, UTC_8, locale_to_hakushin_lang
+from hoyo_buddy.constants import UTC_8, locale_to_hakushin_lang
 from hoyo_buddy.db import Settings, get_locale
 from hoyo_buddy.utils import ephemeral
 
@@ -351,8 +351,8 @@ class Search(commands.Cog):
             return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
 
         categories = self._search_categories[game]
-        if i.guild is None or i.guild.id not in NO_BETA_CONTENT_GUILDS:
-            categories = [BetaItemCategory.UNRELEASED_CONTENT, *categories]
+        # if i.guild is None or i.guild.id not in NO_BETA_CONTENT_GUILDS:
+        #     categories = [BetaItemCategory.UNRELEASED_CONTENT, *categories]
         return self.bot.get_enum_choices(categories, locale, current)
 
     @search_command.autocomplete("query")

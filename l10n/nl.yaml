@@ -213,7 +213,7 @@ genshin_impact: Genshin Impact
 geo: Geo
 gi_daily.embed.description: Dagelijkse commissies of avontuurlijke ontmoetingen zijn nog niet voltooid
 gift_code_modal.code_input.label: "Code {num}"
-gift_code_modal.title: Voer Inwisselcodes in
+gift_code_modal.title: ""
 harmony: Harmony
 honkai:_star_rail: "Honkai: Star Rail"
 honkai_impact_3rd: Honkai Impact 3rd
@@ -795,3 +795,4 @@ zzz.core_level.placeholder: ""
 open_game_label: ""
 open_game_cloud_label: ""
 open_game_vietnam_label: ""
+gift_code_redeemed: ""

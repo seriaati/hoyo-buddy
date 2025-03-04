@@ -96,6 +96,10 @@ class LocaleStr:
     def translate(self, locale: Locale) -> str:
         return translator.translate(self, locale)
 
+    def __str__(self) -> str:
+        logger.error("LocaleStr should not be converted to string")
+        return self.identifier
+
 
 class EnumStr(LocaleStr):
     def __init__(self, enum: StrEnum) -> None:

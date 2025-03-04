@@ -30,10 +30,8 @@ class ExplorationCard:
     @staticmethod
     def _get_reputation_level(exploration: Exploration | None) -> str:
         if exploration is None:
-            return "0"
-
-        offering = next((of.level for of in exploration.offerings if of.level > 0), 0)
-        return f": {offering}"
+            return ": 0"
+        return f": {exploration.level}"
 
     @staticmethod
     def _get_tribe_levels(exploration: Exploration | None) -> str:
@@ -61,12 +59,16 @@ class ExplorationCard:
         return next((e for e in self._user.explorations if e.id == exploration_id), None)
 
     def _get_offering_text(self, exploration: Exploration | None) -> str:
-        level_str = LevelStr(
-            0 if exploration is None else exploration.offerings[0].level
-        ).translate(self.locale)
-        if exploration is None:
-            return f"{self._placeholder}: {level_str}"
-        return f"{exploration.offerings[0].name}: {level_str}"
+        if exploration is None or not exploration.offerings:
+            offering_name = self._placeholder
+            level = 0
+        else:
+            offering = exploration.offerings[0]
+            offering_name = offering.name
+            level = offering.level
+
+        level_str = LevelStr(level).translate(self.locale)
+        return f"{offering_name}: {level_str}"
 
     def _draw_waypoint_card(self) -> Image.Image:
         im = self._get_card("waypoint")

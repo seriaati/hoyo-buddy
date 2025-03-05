@@ -3,6 +3,7 @@ from __future__ import annotations
 from io import BytesIO
 from typing import TYPE_CHECKING, Any, Literal, TypeAlias
 
+import aiohttp
 import akasha
 import enka
 from discord import File, Locale
@@ -57,7 +58,6 @@ if TYPE_CHECKING:
     import io
     from collections.abc import Sequence
 
-    import aiohttp
     from discord import Member, User
     from genshin.models import GenshinUserStats, RecordCard, StarRailUserStats
 

@@ -17,12 +17,14 @@ import genshin
 import prometheus_client
 import psutil
 import sentry_sdk
+import tortoise.timezone
 from asyncache import cached
 from cachetools import LRUCache, TTLCache
 from discord import app_commands
 from discord.ext import commands
 from loguru import logger
 from seria.utils import write_json
+from tortoise import connections
 from tortoise.expressions import Case, Q, When
 
 from hoyo_buddy.bot.error_handler import get_error_embed
@@ -206,12 +208,13 @@ class HoyoBuddy(commands.AutoShardedBot):
             )
             query &= Q(id__in=[account.id for account in accounts])  # pyright: ignore[reportAttributeAccessIssue]
             # Don't check-in the same account twice in a day
-            now = get_now(datetime.UTC)
-            query &= Q(last_checkin_time__isnull=True) | ~Q(
-                last_checkin_time__year=now.year,
-                last_checkin_time__month=now.month,
-                last_checkin_time__day=now.day,
+            now = get_now()
+            conn = connections.get("default")
+            _, accounts = await conn.execute_query(
+                "SELECT id FROM hoyoaccount WHERE NOT(EXTRACT(DAY FROM (last_checkin_time AT TIME ZONE 'Asia/Taipei')) = $1 AND EXTRACT(MONTH FROM (last_checkin_time AT TIME ZONE 'Asia/Taipei')) = $2) AND EXTRACT(YEAR FROM (last_checkin_time AT TIME ZONE 'Asia/Taipei')) = $3;",
+                [now.day, now.month, now.year],
             )
+            query &= Q(id__in=[account["id"] for account in accounts])
         else:
             # Interval based auto tasks
             interval = AUTO_TASK_INTERVALS.get(task_type)
@@ -223,7 +226,7 @@ class HoyoBuddy(commands.AutoShardedBot):
                     logger.error(f"{task_type!r} missing in AUTO_TASK_LAST_TIME_FIELDS")
                 else:
                     # Filter accounts that haven't been processed in the last interval or have never been processed
-                    threshold_time = get_now() - datetime.timedelta(seconds=interval)
+                    threshold_time = tortoise.timezone.now() - datetime.timedelta(seconds=interval)
                     query &= Q(
                         **{f"{field_name}__lt": threshold_time, f"{field_name}__isnull": True},
                         join_type="OR",

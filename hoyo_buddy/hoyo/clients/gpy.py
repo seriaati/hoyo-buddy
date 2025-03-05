@@ -55,8 +55,6 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import ProxyAPI
 
 
-env = CONFIG.env
-
 MIMO_TASK_DELAY = 1.0
 MIMO_COMMUNITY_TASK_DELAY = 2.0
 API_TOKEN = CONFIG.daily_checkin_api_token
@@ -87,7 +85,7 @@ class ProxyGenshinClient(genshin.Client):
     ) -> None:
         super().__init__(
             *args,
-            debug=env == "dev",
+            debug=True,
             cache=genshin.SQLiteCache(static_ttl=3600 * 24 * 31),
             region=region,
             **kwargs,

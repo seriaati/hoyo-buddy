@@ -748,6 +748,17 @@ class GenshinClient(ProxyGenshinClient):
             [self._account.id, orjson.dumps(code).decode()],
         )
 
+    @staticmethod
+    def _handle_redeem_error(e: Exception, locale: Locale) -> str:
+        embed, _ = get_error_embed(e, locale)
+
+        assert embed.title is not None
+        if embed.description is None:
+            return embed.title
+        if "HoYo API Error" in embed.title:
+            return embed.description
+        return f"{embed.title}\n{embed.description}"
+
     async def redeem_code(
         self, code: str, *, locale: Locale, api_name: ProxyAPI | Literal["LOCAL"] = "LOCAL"
     ) -> tuple[str, bool]:
@@ -762,22 +773,24 @@ class GenshinClient(ProxyGenshinClient):
                 await super().redeem_code(code)
             else:
                 await self.request_proxy_api(api_name, "redeem", {"code": code})
-        except genshin.InvalidCookies as e:
+        except genshin.InvalidCookies:
             # cookie token is invalid
             if "stoken" in self._account.dict_cookies and "ltmid_v2" in self._account.dict_cookies:
                 # cookie token can be refreshed
                 try:
                     await self.update_cookie_token()
-                except genshin.InvalidCookies as e:
+                except genshin.InvalidCookies:
                     # cookie token refresh failed
-                    raise genshin.GenshinException({"retcode": 1000}) from e
+                    msg = self._handle_redeem_error(
+                        genshin.GenshinException({"retcode": 1000}), locale
+                    )
                 else:
                     # cookie token refresh succeeded, redeem code again
                     await asyncio.sleep(6)
                     return await self.redeem_code(code, locale=locale)
             else:
                 # cookie token can't be refreshed
-                raise genshin.GenshinException({"retcode": 999}) from e
+                msg = self._handle_redeem_error(genshin.GenshinException({"retcode": 999}), locale)
         except genshin.RedemptionCooldown:
             # sleep then retry
             await asyncio.sleep(6)
@@ -789,16 +802,7 @@ class GenshinClient(ProxyGenshinClient):
                 # Code reached max redemption limit
                 await self._add_to_redeemed_codes(code)
 
-            embed, recognized = get_error_embed(e, locale)
-            if not recognized:
-                raise
-
-            assert embed.title is not None
-            if embed.description is None:
-                return embed.title, success
-            if "HoYo API Error" in embed.title:
-                return embed.description, success
-            return f"{embed.title}\n{embed.description}", success
+            msg = self._handle_redeem_error(e, locale)
         else:
             await self._add_to_redeemed_codes(code)
             success = True

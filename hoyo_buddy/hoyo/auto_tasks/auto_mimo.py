@@ -47,20 +47,19 @@ class AutoMimo:
     async def _auto_mimo_task(
         cls,
         queue: asyncio.Queue[HoyoAccount],
-        api_name: ProxyAPI | Literal["LOCAL"],
+        api_name: ProxyAPI,
         *,
         task_type: Literal["task", "buy", "draw"],
     ) -> None:
         logger.info(f"Auto mimo {task_type} task started for api: {api_name}")
 
         bot = cls._bot
-        if api_name != "LOCAL":
-            try:
-                async with bot.session.get(PROXY_APIS[api_name]) as resp:
-                    resp.raise_for_status()
-            except Exception as e:
-                logger.warning(f"Failed to connect to {api_name}")
-                bot.capture_exception(e)
+        try:
+            async with bot.session.get(PROXY_APIS[api_name]) as resp:
+                resp.raise_for_status()
+        except Exception as e:
+            logger.warning(f"Failed to connect to {api_name}")
+            bot.capture_exception(e)
 
         api_error_count = 0
 
@@ -156,7 +155,7 @@ class AutoMimo:
 
     @classmethod
     async def _complete_mimo_tasks(
-        cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount
+        cls, api_name: ProxyAPI, account: HoyoAccount
     ) -> DefaultEmbed | ErrorEmbed | None:
         locale = account.user.settings.locale or discord.Locale.american_english
 
@@ -208,7 +207,7 @@ class AutoMimo:
 
     @classmethod
     async def _buy_mimo_valuables(
-        cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount
+        cls, api_name: ProxyAPI, account: HoyoAccount
     ) -> DefaultEmbed | ErrorEmbed | None:
         locale = account.user.settings.locale or discord.Locale.american_english
 
@@ -269,7 +268,7 @@ class AutoMimo:
 
     @classmethod
     async def _draw_lottery(
-        cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount
+        cls, api_name: ProxyAPI, account: HoyoAccount
     ) -> DefaultEmbed | ErrorEmbed | None:
         locale = account.user.settings.locale or discord.Locale.american_english
 
@@ -383,9 +382,6 @@ class AutoMimoTask(AutoMimo):
                     asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="task"))
                     for api in PROXY_APIS
                 ]
-                tasks.append(
-                    asyncio.create_task(cls._auto_mimo_task(queue, "LOCAL", task_type="task"))
-                )
 
                 await queue.join()
                 for task in tasks:
@@ -429,9 +425,6 @@ class AutoMimoBuy(AutoMimo):
                     asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="buy"))
                     for api in PROXY_APIS
                 ]
-                tasks.append(
-                    asyncio.create_task(cls._auto_mimo_task(queue, "LOCAL", task_type="buy"))
-                )
 
                 await queue.join()
                 for task in tasks:
@@ -475,9 +468,6 @@ class AutoMimoDraw(AutoMimo):
                     asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="draw"))
                     for api in PROXY_APIS
                 ]
-                tasks.append(
-                    asyncio.create_task(cls._auto_mimo_task(queue, "LOCAL", task_type="draw"))
-                )
 
                 await queue.join()
                 for task in tasks:

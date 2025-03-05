@@ -458,7 +458,7 @@ class ProfileView(View):
         if card_settings.show_rank:
             try:
                 rank = await self._get_character_rank(character, with_detail=template_num == 1)
-            except (akasha.AkashaAPIError, TimeoutError):
+            except (akasha.AkashaAPIError, TimeoutError, aiohttp.ClientError):
                 rank = None
             except Exception:
                 logger.exception("Failed to fetch character rank from Akasha API")

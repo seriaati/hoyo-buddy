@@ -211,7 +211,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             now = get_now()
             conn = connections.get("default")
             _, accounts = await conn.execute_query(
-                "SELECT id FROM hoyoaccount WHERE NOT(EXTRACT(DAY FROM (last_checkin_time AT TIME ZONE 'Asia/Taipei')) = $1 AND EXTRACT(MONTH FROM (last_checkin_time AT TIME ZONE 'Asia/Taipei')) = $2) AND EXTRACT(YEAR FROM (last_checkin_time AT TIME ZONE 'Asia/Taipei')) = $3;",
+                "SELECT id FROM hoyoaccount WHERE last_checkin_time IS NULL OR NOT(EXTRACT(DAY FROM (last_checkin_time AT TIME ZONE 'Asia/Taipei')) = $1 AND EXTRACT(MONTH FROM (last_checkin_time AT TIME ZONE 'Asia/Taipei')) = $2) AND EXTRACT(YEAR FROM (last_checkin_time AT TIME ZONE 'Asia/Taipei')) = $3;",
                 [now.day, now.month, now.year],
             )
             query &= Q(id__in=[account["id"] for account in accounts])

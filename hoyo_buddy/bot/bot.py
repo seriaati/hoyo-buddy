@@ -24,7 +24,6 @@ from discord import app_commands
 from discord.ext import commands
 from loguru import logger
 from seria.utils import write_json
-from tortoise import connections
 from tortoise.expressions import Case, Q, When
 
 from hoyo_buddy.bot.error_handler import get_error_embed
@@ -36,6 +35,7 @@ from hoyo_buddy.constants import (
     HSR_EQUIPMENT_CONFIG_URL,
     HSR_TEXT_MAP_URL,
     STARRAIL_DATA_LANGS,
+    UTC_8,
     ZENLESS_DATA_LANGS,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
     ZZZ_AVATAR_BATTLE_TEMP_URL,
@@ -201,21 +201,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         query = build_account_query(games=games, region=region)
 
         # Auto task exclusions
-        if task_type == "checkin":
-            # Prevent duplicate check-ins
-            accounts = await models.HoyoAccount.raw(
-                "SELECT DISTINCT ON (cookies, game) id FROM hoyoaccount ORDER BY cookies, game, id"
-            )
-            query &= Q(id__in=[account.id for account in accounts])  # pyright: ignore[reportAttributeAccessIssue]
-            # Don't check-in the same account twice in a day
-            now = get_now()
-            conn = connections.get("default")
-            _, accounts = await conn.execute_query(
-                "SELECT id FROM hoyoaccount WHERE last_checkin_time IS NULL OR NOT(EXTRACT(DAY FROM (last_checkin_time AT TIME ZONE 'Asia/Taipei')) = $1 AND EXTRACT(MONTH FROM (last_checkin_time AT TIME ZONE 'Asia/Taipei')) = $2) AND EXTRACT(YEAR FROM (last_checkin_time AT TIME ZONE 'Asia/Taipei')) = $3;",
-                [now.day, now.month, now.year],
-            )
-            query &= Q(id__in=[account["id"] for account in accounts])
-        else:
+        if task_type != "checkin":
             # Interval based auto tasks
             interval = AUTO_TASK_INTERVALS.get(task_type)
             if interval is None:
@@ -259,7 +245,20 @@ class HoyoBuddy(commands.AutoShardedBot):
         )
 
         queue: asyncio.Queue[models.HoyoAccount] = asyncio.Queue()
+        cookie_game_pairs: set[tuple[str, Game]] = set()
         async for account in query_set:
+            # Don't check-in for accounts with same cookies and game
+            # Don't check-in on the same day
+            if task_type == "checkin" and (
+                (account.cookies, account.game) in cookie_game_pairs
+                or (
+                    account.last_checkin_time is not None
+                    and account.last_checkin_time.astimezone(UTC_8).date() == get_now().date()
+                )
+            ):
+                continue
+
+            cookie_game_pairs.add((account.cookies, account.game))
             await queue.put(account)
 
         return queue

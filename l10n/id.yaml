@@ -213,7 +213,7 @@ genshin_impact: Genshin Impact
 geo: Geo
 gi_daily.embed.description: Komisi harian atau keahlian petualangan belum selesai
 gift_code_modal.code_input.label: "Kode {num}"
-gift_code_modal.title: Masukkan kode penukaran
+gift_code_modal.title: ""
 harmony: Harmony
 honkai:_star_rail: "Honkai: Star Rail"
 honkai_impact_3rd: Honkai Impact 3rd
@@ -378,7 +378,7 @@ realm_curr_button.label: Pengingat realm currency
 realm_curr_modal.title: Pengaturan Pengingat Realm Currency
 redeeem_code.cookie_token_expired_description: "Fitur penukaran kode hanya tersedia untuk pengguna yang masuk dengan email dan kata sandi, kamu dapat melakukannya dengan </accounts>"
 redeeem_code.cookie_token_expired_title: Batas waktu token cookie berakhir
-redeeem_code.cookie_token_refresh_failed_description: "Mungkin kamu telah mengubah kata sandi akun sejak terakhir kali kmau menambahkan akun.\nSilakan tambahkan akun kamu lagi menggunakan </accounts> dengan metode email dan kata sandi."
+redeeem_code.cookie_token_refresh_failed_description: ""
 redeeem_code.cookie_token_refresh_failed_title: Gagal memperbarui token cookie
 redeem_code.success: Penukaran berhasil
 redeem_codes_button.label: Penukaran kode
@@ -795,3 +795,4 @@ zzz.core_level.placeholder: ""
 open_game_label: ""
 open_game_cloud_label: ""
 open_game_vietnam_label: ""
+gift_code_redeemed: ""

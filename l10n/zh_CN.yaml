@@ -643,7 +643,7 @@ star5_guaranteed: "当前保底情况: 必定得到 UP 池物品"
 star5_no_guaranteed: "当前保底情况: **不一定**得到 UP 池物品"
 characters_view_show_max_level_only: 仅显示满级角色
 characters_embed_max_level_characters: 满级角色
-natlan_reputation: "声望: Lv.{reputation}, 部落: {tribes}"
+natlan_reputation: ""
 shiyu_overview: 总览
 shiyu_fastest_clear_time: "当期最快通关时间:"
 shiyu_highest_frontier: "最高通关防线:"

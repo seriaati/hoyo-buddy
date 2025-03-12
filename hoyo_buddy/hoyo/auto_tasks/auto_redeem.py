@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, ClassVar, Literal
+from typing import TYPE_CHECKING, ClassVar
 
 import discord
 import genshin
@@ -9,7 +9,7 @@ from loguru import logger
 from seria.utils import create_bullet_list
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import CODE_CHANNEL_IDS, HB_GAME_TO_GPY_GAME, PROXY_APIS
+from hoyo_buddy.constants import CODE_CHANNEL_IDS, HB_GAME_TO_GPY_GAME
 from hoyo_buddy.db import HoyoAccount, JSONFile
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.enums import Game
@@ -19,7 +19,6 @@ from hoyo_buddy.utils import convert_code_to_redeem_url, get_now
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.embeds import Embed
-    from hoyo_buddy.types import ProxyAPI
 
 
 SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
@@ -60,10 +59,9 @@ class AutoRedeem:
 
                 logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
                 tasks = [
-                    asyncio.create_task(cls._redeem_code_task(queue, api, game_codes))
-                    for api in PROXY_APIS
+                    asyncio.create_task(cls._redeem_code_task(queue, game_codes))
+                    for _ in range(100)
                 ]
-                tasks.append(asyncio.create_task(cls._redeem_code_task(queue, "LOCAL", game_codes)))
 
                 await queue.join()
                 for task in tasks:
@@ -124,24 +122,8 @@ class AutoRedeem:
 
     @classmethod
     async def _redeem_code_task(
-        cls,
-        queue: asyncio.Queue[HoyoAccount],
-        api_name: ProxyAPI | Literal["LOCAL"],
-        game_codes: dict[Game, list[str]],
+        cls, queue: asyncio.Queue[HoyoAccount], game_codes: dict[Game, list[str]]
     ) -> None:
-        logger.info(f"Auto redeem task started for api: {api_name}")
-
-        bot = cls._bot
-        if api_name != "LOCAL":
-            try:
-                async with bot.session.get(PROXY_APIS[api_name]) as resp:
-                    resp.raise_for_status()
-            except Exception as e:
-                logger.warning(f"Failed to connect to {api_name}")
-                bot.capture_exception(e)
-
-        api_error_count = 0
-
         while True:
             account = await queue.get()
             logger.debug(f"{cls.__name__} is processing account {account}")
@@ -153,15 +135,10 @@ class AutoRedeem:
 
             try:
                 await account.fetch_related("user", "user__settings")
-                embed = await cls._redeem_codes(api_name, account, codes)
+                embed = await cls._redeem_codes(account, codes)
             except Exception as e:
-                api_error_count += 1
                 await queue.put(account)
                 cls._bot.capture_exception(e)
-
-                if api_error_count >= MAX_API_ERROR_COUNT:
-                    logger.warning(f"API {api_name} failed for {api_error_count} accounts")
-                    return
             else:
                 logger.debug(f"Setting last time for {account}, now={get_now()}")
                 account.last_redeem_time = get_now()
@@ -195,7 +172,7 @@ class AutoRedeem:
 
     @classmethod
     async def _redeem_codes(
-        cls, api_name: ProxyAPI | Literal["LOCAL"], account: HoyoAccount, codes: list[str]
+        cls, account: HoyoAccount, codes: list[str]
     ) -> DefaultEmbed | ErrorEmbed | None:
         locale = account.user.settings.locale or discord.Locale.american_english
 
@@ -203,9 +180,7 @@ class AutoRedeem:
             client = account.client
             client.set_lang(locale)
 
-            embed = await account.client.redeem_codes(
-                codes, locale=locale, blur=False, api_name=api_name
-            )
+            embed = await account.client.redeem_codes(codes, locale=locale, blur=False)
             if embed is None:
                 return None
 

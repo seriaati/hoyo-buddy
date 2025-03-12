@@ -19,19 +19,7 @@ class Config(BaseSettings):
     nai_token: str
     nai_host_url: str
 
-    # Proxy API URLs
-    render_url: str
-    render2_url: str
-    render3_url: str
-    render4_url: str
-    fly_url: str
-    fly2_url: str
-    railway_url: str
-    vercel_url: str
-    leapcell_url: str
-
     # API keys
-    daily_checkin_api_token: str
     hoyo_codes_api_key: str
     img_upload_api_key: str
 
@@ -40,6 +28,7 @@ class Config(BaseSettings):
     sentry_dsn: str
     db_url: str
     fernet_key: str
+    proxy: str
 
     # Command-line arguments
     search: bool = False

@@ -188,7 +188,7 @@ class EmailVerifyCodeButton(ft.FilledButton):
         password = decrypt_string(encrypted_password)
 
         try:
-            result = await client.os_app_login(email, password, ticket=self._ticket)
+            result = await client._app_login(email, password, ticket=self._ticket)
         except Exception as exc:
             show_error_banner(page, message=str(exc))
             return

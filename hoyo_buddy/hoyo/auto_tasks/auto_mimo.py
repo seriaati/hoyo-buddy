@@ -9,7 +9,7 @@ from loguru import logger
 from seria.utils import create_bullet_list
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME, PROXY_APIS
+from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
@@ -19,9 +19,7 @@ from hoyo_buddy.utils import convert_code_to_redeem_url, get_mimo_task_str, get_
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.db import HoyoAccount
-    from hoyo_buddy.types import ProxyAPI
 
-MAX_API_ERROR_COUNT = 10
 SLEEP_TIME = 5.0
 SUPPORT_GAMES = (Game.STARRAIL, Game.ZZZ, Game.GENSHIN)
 
@@ -45,23 +43,9 @@ class AutoMimo:
 
     @classmethod
     async def _auto_mimo_task(
-        cls,
-        queue: asyncio.Queue[HoyoAccount],
-        api_name: ProxyAPI,
-        *,
-        task_type: Literal["task", "buy", "draw"],
+        cls, queue: asyncio.Queue[HoyoAccount], *, task_type: Literal["task", "buy", "draw"]
     ) -> None:
-        logger.info(f"Auto mimo {task_type} task started for api: {api_name}")
-
         bot = cls._bot
-        try:
-            async with bot.session.get(PROXY_APIS[api_name]) as resp:
-                resp.raise_for_status()
-        except Exception as e:
-            logger.warning(f"Failed to connect to {api_name}")
-            bot.capture_exception(e)
-
-        api_error_count = 0
 
         while True:
             account = await queue.get()
@@ -76,22 +60,14 @@ class AutoMimo:
 
             try:
                 if task_type == "task":
-                    embed = await cls._complete_mimo_tasks(api_name, account)
+                    embed = await cls._complete_mimo_tasks(account)
                 elif task_type == "buy":
-                    embed = await cls._buy_mimo_valuables(api_name, account)
+                    embed = await cls._buy_mimo_valuables(account)
                 elif task_type == "draw":
-                    embed = await cls._draw_lottery(api_name, account)
+                    embed = await cls._draw_lottery(account)
             except Exception as e:
-                api_error_count += 1
-                logger.debug(
-                    f"API {api_name} failed for {account}, adding back to queue, api_error_count={api_error_count}"
-                )
                 await queue.put(account)
                 bot.capture_exception(e)
-
-                if api_error_count >= MAX_API_ERROR_COUNT:
-                    logger.warning(f"API {api_name} failed for {api_error_count} accounts")
-                    return
             else:
                 if task_type == "task":
                     feature_key = "mimo_auto_finish_and_claim_button_label"
@@ -148,15 +124,13 @@ class AutoMimo:
                     if (isinstance(embed, DefaultEmbed) and success_notif) or (
                         isinstance(embed, ErrorEmbed) and failure_notif
                     ):
-                        await cls._bot.dm_user(account.user.id, embed=embed, content=content)
+                        await bot.dm_user(account.user.id, embed=embed, content=content)
             finally:
                 await asyncio.sleep(SLEEP_TIME)
                 queue.task_done()
 
     @classmethod
-    async def _complete_mimo_tasks(
-        cls, api_name: ProxyAPI, account: HoyoAccount
-    ) -> DefaultEmbed | ErrorEmbed | None:
+    async def _complete_mimo_tasks(cls, account: HoyoAccount) -> DefaultEmbed | ErrorEmbed | None:
         locale = account.user.settings.locale or discord.Locale.american_english
 
         try:
@@ -171,7 +145,7 @@ class AutoMimo:
                     return None
 
             result = await client.finish_and_claim_mimo_tasks(
-                game_id=game_id, version_id=version_id, api_name=api_name
+                game_id=game_id, version_id=version_id
             )
             if result.all_claimed:
                 account.mimo_all_claimed_time = get_now()
@@ -206,9 +180,7 @@ class AutoMimo:
             return embed
 
     @classmethod
-    async def _buy_mimo_valuables(
-        cls, api_name: ProxyAPI, account: HoyoAccount
-    ) -> DefaultEmbed | ErrorEmbed | None:
+    async def _buy_mimo_valuables(cls, account: HoyoAccount) -> DefaultEmbed | ErrorEmbed | None:
         locale = account.user.settings.locale or discord.Locale.american_english
 
         try:
@@ -222,9 +194,7 @@ class AutoMimo:
                 except ValueError:
                     return None
 
-            bought = await client.buy_mimo_valuables(
-                game_id=game_id, version_id=version_id, api_name=api_name
-            )
+            bought = await client.buy_mimo_valuables(game_id=game_id, version_id=version_id)
 
             if not bought:
                 return None
@@ -235,7 +205,7 @@ class AutoMimo:
                 bought_str = f"{item.name} - {item.cost} {mimo_point_emoji}"
                 success = False
                 if account.can_redeem_code:
-                    _, success = await client.redeem_code(code, locale=locale, api_name=api_name)
+                    _, success = await client.redeem_code(code, locale=locale)
 
                 if not success:
                     bought_str += f" ({convert_code_to_redeem_url(code, game=account.game)})"
@@ -267,9 +237,7 @@ class AutoMimo:
             return embed
 
     @classmethod
-    async def _draw_lottery(
-        cls, api_name: ProxyAPI, account: HoyoAccount
-    ) -> DefaultEmbed | ErrorEmbed | None:
+    async def _draw_lottery(cls, account: HoyoAccount) -> DefaultEmbed | ErrorEmbed | None:
         locale = account.user.settings.locale or discord.Locale.american_english
 
         try:
@@ -314,9 +282,7 @@ class AutoMimo:
                 if result.code:
                     success = False
                     if account.can_redeem_code:
-                        _, success = await client.redeem_code(
-                            result.code, locale=locale, api_name=api_name
-                        )
+                        _, success = await client.redeem_code(result.code, locale=locale)
                         await asyncio.sleep(6)
 
                     if not success:
@@ -379,8 +345,8 @@ class AutoMimoTask(AutoMimo):
 
                 logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
                 tasks = [
-                    asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="task"))
-                    for api in PROXY_APIS
+                    asyncio.create_task(cls._auto_mimo_task(queue, task_type="task"))
+                    for _ in range(100)
                 ]
 
                 await queue.join()
@@ -422,8 +388,8 @@ class AutoMimoBuy(AutoMimo):
 
                 logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
                 tasks = [
-                    asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="buy"))
-                    for api in PROXY_APIS
+                    asyncio.create_task(cls._auto_mimo_task(queue, task_type="buy"))
+                    for _ in range(100)
                 ]
 
                 await queue.join()
@@ -465,8 +431,8 @@ class AutoMimoDraw(AutoMimo):
 
                 logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
                 tasks = [
-                    asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="draw"))
-                    for api in PROXY_APIS
+                    asyncio.create_task(cls._auto_mimo_task(queue, task_type="draw"))
+                    for _ in range(100)
                 ]
 
                 await queue.join()

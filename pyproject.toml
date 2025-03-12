@@ -27,7 +27,7 @@ dependencies = [
   "pandas>=2.2.2",
   "fonttools>=4.53.1",
   "tortoise-orm>=0.21.7",
-  "genshin[auth,sqlite]",
+  "genshin[auth,sqlite,socks-proxy]",
   "toml>=0.10.2",
   "enka>=2.4.3",
   "ambr-py>=1.8.1",

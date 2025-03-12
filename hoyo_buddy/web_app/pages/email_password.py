@@ -122,7 +122,7 @@ class EmailPassWordForm(ft.Column):
 
         try:
             if self._params.platform is Platform.HOYOLAB:
-                return await client.os_app_login(email, password)
+                return await client._app_login(email, password)
             return await client._cn_web_login(email, password)
         except genshin.GenshinException as exc:
             self._handle_genshin_exception(exc, page)

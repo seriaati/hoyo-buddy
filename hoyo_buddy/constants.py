@@ -15,8 +15,6 @@ from discord import app_commands
 from loguru import logger
 from yarl import URL
 
-from hoyo_buddy.config import CONFIG
-
 from .enums import (
     ChallengeType,
     Game,
@@ -30,8 +28,6 @@ from .enums import (
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import AutoTaskType, OpenGameGame, OpenGameRegion
-
-    from .types import ProxyAPI
 
 
 STATIC_FOLDER = pathlib.Path("./.static")
@@ -756,17 +752,6 @@ def get_disc_substat_roll_num(
     prop_value = float(prop.value.replace("%", ""))
     return round(prop_value / value)
 
-
-PROXY_APIS: dict[ProxyAPI, str] = {
-    "RENDER": CONFIG.render_url,
-    "RENDER2": CONFIG.render2_url,
-    "RENDER3": CONFIG.render3_url,
-    "RENDER4": CONFIG.render4_url,
-    "VERCEL": CONFIG.vercel_url,
-    "FLY": CONFIG.fly_url,
-    "FLY2": CONFIG.fly2_url,
-    "RAILWAY": CONFIG.railway_url,
-}
 
 CODE_CHANNEL_IDS = {
     Game.GENSHIN: 1310017049896026135,

@@ -9,7 +9,7 @@ from loguru import logger
 from seria.utils import create_bullet_list
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME, sleep
+from hoyo_buddy.constants import CONCURRENT_TASK_NUM, HB_GAME_TO_GPY_GAME, sleep
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
@@ -346,7 +346,7 @@ class AutoMimoTask(AutoMimo):
                 logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
                 tasks = [
                     asyncio.create_task(cls._auto_mimo_task(queue, task_type="task"))
-                    for _ in range(100)
+                    for _ in range(CONCURRENT_TASK_NUM)
                 ]
 
                 await queue.join()
@@ -389,7 +389,7 @@ class AutoMimoBuy(AutoMimo):
                 logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
                 tasks = [
                     asyncio.create_task(cls._auto_mimo_task(queue, task_type="buy"))
-                    for _ in range(100)
+                    for _ in range(CONCURRENT_TASK_NUM)
                 ]
 
                 await queue.join()
@@ -432,7 +432,7 @@ class AutoMimoDraw(AutoMimo):
                 logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
                 tasks = [
                     asyncio.create_task(cls._auto_mimo_task(queue, task_type="draw"))
-                    for _ in range(100)
+                    for _ in range(CONCURRENT_TASK_NUM)
                 ]
 
                 await queue.join()

@@ -10,7 +10,7 @@ import genshin
 from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import sleep
+from hoyo_buddy.constants import CONCURRENT_TASK_NUM, sleep
 from hoyo_buddy.db import AccountNotifSettings, HoyoAccount, User
 from hoyo_buddy.embeds import DefaultEmbed, Embed, ErrorEmbed
 from hoyo_buddy.utils import get_now
@@ -57,7 +57,10 @@ class DailyCheckin:
                     return
 
                 logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
-                tasks = [asyncio.create_task(cls._daily_checkin_task(queue)) for _ in range(100)]
+                tasks = [
+                    asyncio.create_task(cls._daily_checkin_task(queue))
+                    for _ in range(CONCURRENT_TASK_NUM)
+                ]
 
                 await queue.join()
                 for task in tasks:

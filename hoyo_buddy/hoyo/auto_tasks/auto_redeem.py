@@ -9,7 +9,7 @@ from loguru import logger
 from seria.utils import create_bullet_list
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import CODE_CHANNEL_IDS, HB_GAME_TO_GPY_GAME
+from hoyo_buddy.constants import CODE_CHANNEL_IDS, CONCURRENT_TASK_NUM, HB_GAME_TO_GPY_GAME
 from hoyo_buddy.db import HoyoAccount, JSONFile
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.enums import Game
@@ -60,7 +60,7 @@ class AutoRedeem:
                 logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
                 tasks = [
                     asyncio.create_task(cls._redeem_code_task(queue, game_codes))
-                    for _ in range(100)
+                    for _ in range(CONCURRENT_TASK_NUM)
                 ]
 
                 await queue.join()

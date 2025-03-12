@@ -1162,6 +1162,8 @@ SLEEP_TIMES: dict[SleepTime, float] = {
     "notes_check": 1.2,
 }
 
+CONCURRENT_TASK_NUM = 75
+
 
 async def sleep(name: SleepTime) -> None:
     try:

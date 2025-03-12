@@ -282,7 +282,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             logger.warning(f"Error: {e}, capturing exception")
             sentry_sdk.capture_exception(e)
 
-    @cached(cache=LRUCache(maxsize=1024))
+    @cached(cache=LRUCache(maxsize=10000))
     async def fetch_user(self, user_id: int) -> discord.User | None:
         try:
             user = super().get_user(user_id) or await super().fetch_user(user_id)
@@ -295,7 +295,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self, user_id: int, *, content: str | None = None, **kwargs: Any
     ) -> discord.Message | None:
         logger.debug(f"DMing user {user_id}")
-        user = await self.fetch_user(user_id)
+        user = self.get_user(user_id) or await self.fetch_user(user_id)
         if user is None:
             logger.debug(f"Failed to fetch user {user_id}")
             return None

@@ -14,7 +14,7 @@ from hoyo_buddy.db import HoyoAccount, JSONFile
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils import add_to_hoyo_codes, convert_code_to_redeem_url, get_now
+from hoyo_buddy.utils import convert_code_to_redeem_url, get_now
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
@@ -32,16 +32,8 @@ class AutoRedeem:
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
 
     @classmethod
-    async def execute(
-        cls, bot: HoyoBuddy, game: Game | None = None, codes: list[str] | None = None
-    ) -> None:
-        """Redeem codes for accounts that have auto redeem enabled.
-
-        Args:
-            bot: The bot instance.
-            game: The game to redeem codes for, all games if None.
-            codes: The codes to redeem, None to fetch from API.
-        """
+    async def execute(cls, bot: HoyoBuddy) -> None:
+        """Redeem codes for accounts that have auto redeem enabled."""
         if cls._lock.locked():
             logger.debug(f"{cls.__name__} is already running")
             return
@@ -53,32 +45,20 @@ class AutoRedeem:
                 cls._count = 0
                 cls._bot = bot
 
-                if game is not None and codes is not None:
-                    game_codes = {game: codes}
-                else:
-                    game_codes = {game_: await cls._get_codes(game_) for game_ in SUPPORT_GAMES}
+                game_codes = {game_: await cls._get_codes(game_) for game_ in SUPPORT_GAMES}
                 logger.debug(f"Game codes: {game_codes}")
 
-                if cls._bot.env == "prod":
+                if not cls._bot.config.is_dev:
                     asyncio.create_task(cls.send_codes_to_channels(bot, game_codes))
 
-                    if game is not None and codes is not None:
-                        # Add codes to hoyo-codes API
-                        for code in codes:
-                            await add_to_hoyo_codes(cls._bot.session, code=code, game=game)
-
                 queue = await cls._bot.build_auto_task_queue(
-                    "redeem",
-                    games=(game,) if game else SUPPORT_GAMES,
-                    region=genshin.Region.OVERSEAS,
+                    "redeem", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
                 )
                 if queue.empty():
-                    logger.debug(f"Queue is empty for {cls.__name__}, game={game!r}")
+                    logger.debug(f"Queue is empty for {cls.__name__}")
                     return
 
-                logger.info(
-                    f"Starting auto redeem task for game {game or 'all'} and codes {codes or 'from API'}"
-                )
+                logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
                 tasks = [
                     asyncio.create_task(cls._redeem_code_task(queue, api, game_codes))
                     for api in PROXY_APIS
@@ -92,8 +72,8 @@ class AutoRedeem:
             except Exception as e:
                 bot.capture_exception(e)
             else:
-                logger.info(f"Auto redeem task completed, total redeem count: {cls._count}")
-                logger.info(f"Auto redeem task took {asyncio.get_event_loop().time() - start:.2f}s")
+                logger.info(f"{cls.__name__} completed, total count: {cls._count}")
+                logger.info(f"{cls.__name__} took {asyncio.get_event_loop().time() - start:.2f}s")
 
     @classmethod
     async def send_codes_to_channels(

@@ -148,11 +148,7 @@ class Others(commands.Cog):
             )
         )
         view.add_item(
-            Button(
-                label=LocaleStr(key="about_command.website"),
-                url="https://hb.seria.moe",
-                row=1,
-            )
+            Button(label=LocaleStr(key="about_command.website"), url="https://hb.seria.moe", row=1)
         )
         view.add_item(
             Button(

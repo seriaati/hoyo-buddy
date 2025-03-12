@@ -15,9 +15,8 @@ from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.l10n import translator
+from hoyo_buddy.utils import add_to_hoyo_codes
 
-from ..constants import GPY_GAME_TO_HB_GAME
-from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
 from .search import Search
 
 if TYPE_CHECKING:
@@ -71,12 +70,11 @@ class Admin(commands.Cog):
 
     @commands.command(name="add-codes", aliases=["ac"])
     async def add_codes_command(self, ctx: commands.Context, game: genshin.Game, codes: str) -> Any:
-        if AutoRedeem._lock.locked():
-            await ctx.send("Auto redeem task is already running.")
-        else:
-            codes_ = list(set(codes.split(",")))
-            await ctx.send(f"Auto redeem task started for {game.name}.")
-            await AutoRedeem.execute(self.bot, GPY_GAME_TO_HB_GAME[game], codes_)
+        await ctx.send("Adding codes...")
+        async with asyncio.TaskGroup() as tg:
+            for code in codes.split(","):
+                tg.create_task(add_to_hoyo_codes(self.bot.session, code=code, game=game))
+        await ctx.send("Done.")
 
     @commands.command(name="get-accounts", aliases=["ga"])
     async def get_accounts_command(self, ctx: commands.Context, user_id: int) -> Any:

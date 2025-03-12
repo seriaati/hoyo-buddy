@@ -150,7 +150,7 @@ class Others(commands.Cog):
         view.add_item(
             Button(
                 label=LocaleStr(key="about_command.website"),
-                url="https://seria.is-a.dev/hoyo-buddy",
+                url="https://hb.seria.moe",
                 row=1,
             )
         )

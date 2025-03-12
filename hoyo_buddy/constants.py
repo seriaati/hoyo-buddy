@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import datetime
 import pathlib
 from typing import TYPE_CHECKING, Final, Literal
@@ -27,7 +28,7 @@ from .enums import (
 )
 
 if TYPE_CHECKING:
-    from hoyo_buddy.types import AutoTaskType, OpenGameGame, OpenGameRegion
+    from hoyo_buddy.types import AutoTaskType, OpenGameGame, OpenGameRegion, SleepTime
 
 
 STATIC_FOLDER = pathlib.Path("./.static")
@@ -1149,3 +1150,23 @@ PLATFORM_TO_REGION: dict[Platform, genshin.Region] = {
     Platform.MIYOUSHE: genshin.Region.CHINESE,
 }
 REGION_TO_PLATFORM = {v: k for k, v in PLATFORM_TO_REGION.items()}
+
+SLEEP_TIMES: dict[SleepTime, float] = {
+    "redeem": 6.0,
+    "mimo_task": 5.0,
+    "mimo_shop": 0.5,
+    "mimo_comment": 2.0,
+    "mimo_lottery": 0.5,
+    "search_autofill": 0.1,
+    "checkin": 2.5,
+    "notes_check": 1.2,
+}
+
+
+async def sleep(name: SleepTime) -> None:
+    try:
+        time = SLEEP_TIMES[name]
+    except KeyError:
+        logger.error(f"Invalid sleep time name: {name!r}")
+        time = 0.0
+    await asyncio.sleep(time)

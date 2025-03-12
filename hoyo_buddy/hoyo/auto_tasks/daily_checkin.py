@@ -10,6 +10,7 @@ import genshin
 from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
+from hoyo_buddy.constants import sleep
 from hoyo_buddy.db import AccountNotifSettings, HoyoAccount, User
 from hoyo_buddy.embeds import DefaultEmbed, Embed, ErrorEmbed
 from hoyo_buddy.utils import get_now
@@ -17,9 +18,6 @@ from hoyo_buddy.utils import get_now
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.enums import Game
-
-CHECKIN_SLEEP_TIME = 2.5
-DM_SLEEP_TIME = 1.5
 
 
 class DailyCheckin:
@@ -97,7 +95,7 @@ class DailyCheckin:
                 account.last_checkin_time = get_now()
                 await account.save(update_fields=("last_checkin_time",))
             finally:
-                await asyncio.sleep(CHECKIN_SLEEP_TIME)
+                await sleep("checkin")
                 queue.task_done()
 
     @classmethod
@@ -136,7 +134,7 @@ class DailyCheckin:
             chunked_embeds = itertools.batched(embeds_to_send, 10)
             for chunk in chunked_embeds:
                 await cls._bot.dm_user(user_id, embeds=chunk)
-                await asyncio.sleep(DM_SLEEP_TIME)
+                await sleep("dm")
 
         except Exception as e:
             cls._bot.capture_exception(e)

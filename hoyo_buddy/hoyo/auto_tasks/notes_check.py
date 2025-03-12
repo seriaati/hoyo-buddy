@@ -11,6 +11,7 @@ from genshin.models import HonkaiNotes, HSREvent, StarRailNote, VideoStoreState,
 from genshin.models import Notes as GenshinNotes
 
 from hoyo_buddy.bot.error_handler import get_error_embed
+from hoyo_buddy.constants import sleep
 from hoyo_buddy.db import NotesNotify, draw_locale
 from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
@@ -634,4 +635,4 @@ class NotesChecker:
                 finally:
                     notify.last_check_time = get_now()
                     await notify.save(update_fields=("last_check_time",))
-                    await asyncio.sleep(1.2)
+                    await sleep("notes_check")

@@ -9,7 +9,7 @@ from loguru import logger
 from seria.utils import create_bullet_list
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME
+from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME, sleep
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
@@ -20,7 +20,6 @@ if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.db import HoyoAccount
 
-SLEEP_TIME = 5.0
 SUPPORT_GAMES = (Game.STARRAIL, Game.ZZZ, Game.GENSHIN)
 
 
@@ -126,7 +125,7 @@ class AutoMimo:
                     ):
                         await bot.dm_user(account.user.id, embed=embed, content=content)
             finally:
-                await asyncio.sleep(SLEEP_TIME)
+                await sleep("mimo_task")
                 queue.task_done()
 
     @classmethod
@@ -211,7 +210,7 @@ class AutoMimo:
                     bought_str += f" ({convert_code_to_redeem_url(code, game=account.game)})"
                 bought_strs.append(bought_str)
 
-                await asyncio.sleep(6)
+                await sleep("redeem")
 
             embed = DefaultEmbed(
                 locale,
@@ -265,7 +264,7 @@ class AutoMimo:
 
                 try:
                     result = await client.draw_mimo_lottery(game_id=game_id, version_id=version_id)
-                    await asyncio.sleep(0.5)
+                    await sleep("mimo_lottery")
                 except genshin.GenshinException as e:
                     if e.retcode == -510001:  # Invalid fields in calculation
                         break
@@ -283,7 +282,7 @@ class AutoMimo:
                     success = False
                     if account.can_redeem_code:
                         _, success = await client.redeem_code(result.code, locale=locale)
-                        await asyncio.sleep(6)
+                        await sleep("redeem")
 
                     if not success:
                         item_str += (

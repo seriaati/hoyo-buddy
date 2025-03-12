@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 from collections import defaultdict
 from enum import StrEnum
 from typing import TYPE_CHECKING
@@ -11,7 +10,7 @@ import discord.utils as dutils
 from discord import Locale
 from seria.utils import create_bullet_list, shorten
 
-from hoyo_buddy.constants import contains_traveler_id, locale_to_ambr_lang
+from hoyo_buddy.constants import contains_traveler_id, locale_to_ambr_lang, sleep
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_gi_element_emoji
 from hoyo_buddy.l10n import LevelStr, LocaleStr, WeekdayStr, translator
@@ -21,6 +20,8 @@ from hoyo_buddy.utils import TaskGroup
 __all__ = ("AUDIO_LANGUAGES", "AmbrAPIClient", "ItemCategory")
 
 if TYPE_CHECKING:
+    import asyncio
+
     import aiohttp
 
 AUDIO_LANGUAGES = ("EN", "CHS", "JP", "KR")
@@ -60,9 +61,9 @@ class AmbrAPIClient(ambr.AmbrAPI):
             for lang_ in langs:
                 self.lang = lang_
                 tasks.append(tg.create_task(super().fetch_characters()))
-                await asyncio.sleep(0.1)
+                await sleep("search_autofill")
                 tasks.append(tg.create_task(super().fetch_weapons()))
-                await asyncio.sleep(0.1)
+                await sleep("search_autofill")
 
         for task in tasks:
             items = task.result()

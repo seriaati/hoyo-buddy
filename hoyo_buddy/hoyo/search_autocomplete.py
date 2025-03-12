@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, ClassVar, Final
 
@@ -8,7 +7,12 @@ import hakushin
 import hakushin.clients
 from discord.app_commands import Choice
 
-from hoyo_buddy.constants import LOCALE_TO_AMBR_LANG, LOCALE_TO_HAKUSHIN_LANG, LOCALE_TO_YATTA_LANG
+from hoyo_buddy.constants import (
+    LOCALE_TO_AMBR_LANG,
+    LOCALE_TO_HAKUSHIN_LANG,
+    LOCALE_TO_YATTA_LANG,
+    sleep,
+)
 from hoyo_buddy.enums import Game
 from hoyo_buddy.utils import TaskGroup
 
@@ -17,6 +21,8 @@ from .clients.hakushin import ItemCategory as HakushinItemCategory
 from .clients.hakushin import ZZZItemCategory
 
 if TYPE_CHECKING:
+    import asyncio
+
     import aiohttp
     from discord import Locale
 
@@ -148,7 +154,7 @@ class AutocompleteSetup:
                 task = cls._get_ambr_task(api, category, tg)
                 if task is not None:
                     cls._tasks[game][category][locale] = task
-                    await asyncio.sleep(0.1)
+                    await sleep("search_autofill")
 
     @classmethod
     async def _setup_yatta(cls, tg: TaskGroup, session: aiohttp.ClientSession) -> None:
@@ -159,7 +165,7 @@ class AutocompleteSetup:
             for category in yatta.ItemCategory:
                 task = cls._get_yatta_task(api, category, tg)
                 cls._tasks[game][category][locale] = task
-                await asyncio.sleep(0.1)
+                await sleep("search_autofill")
 
     @classmethod
     async def _setup_hakushin(cls, tg: TaskGroup, session: aiohttp.ClientSession) -> None:
@@ -177,13 +183,13 @@ class AutocompleteSetup:
 
                 if task is not None:
                     cls._tasks[game][category][locale] = task
-                    await asyncio.sleep(0.1)
+                    await sleep("search_autofill")
 
             for category in ZZZItemCategory:
                 game = Game.ZZZ
                 task = cls._get_hakushin_zzz_task(zzz_api, category, tg)
                 cls._tasks[game][category][locale] = task
-                await asyncio.sleep(0.1)
+                await sleep("search_autofill")
 
     @classmethod
     def _add_to_beta_results(

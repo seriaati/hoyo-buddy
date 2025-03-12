@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import random
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple, overload
 
@@ -27,6 +26,7 @@ from hoyo_buddy.constants import (
     POST_REPLIES,
     contains_traveler_id,
     convert_fight_prop,
+    sleep,
 )
 from hoyo_buddy.db import EnkaCache, HoyoAccount, JSONFile
 from hoyo_buddy.embeds import DefaultEmbed
@@ -37,10 +37,6 @@ from hoyo_buddy.utils import set_or_update_dict
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
-
-
-MIMO_TASK_DELAY = 1.0
-MIMO_COMMUNITY_TASK_DELAY = 2.0
 
 
 class MimoClaimTaksResult(NamedTuple):
@@ -470,7 +466,7 @@ class GenshinClient(ProxyGenshinClient):
 
             msg, success = await self.redeem_code(code.strip(), locale=locale)
             results.append((code, msg, success))
-            await asyncio.sleep(6)
+            await sleep("redeem")
 
         if not results:
             return None
@@ -529,14 +525,14 @@ class GenshinClient(ProxyGenshinClient):
                     )
                 else:
                     # cookie token refresh succeeded, redeem code again
-                    await asyncio.sleep(6)
+                    await sleep("redeem")
                     return await self.redeem_code(code, locale=locale)
             else:
                 # cookie token can't be refreshed
                 msg = self._handle_redeem_error(genshin.GenshinException({"retcode": 999}), locale)
         except genshin.RedemptionCooldown:
             # sleep then retry
-            await asyncio.sleep(6)
+            await sleep("redeem")
             return await self.redeem_code(code, locale=locale)
         except Exception as e:
             if isinstance(e, genshin.RedemptionClaimed | genshin.RedemptionInvalid):
@@ -679,7 +675,7 @@ class GenshinClient(ProxyGenshinClient):
             }:
                 try:
                     await self.finish_mimo_task(task.id, game_id=game_id, version_id=version_id)
-                    await asyncio.sleep(MIMO_TASK_DELAY)
+                    await sleep("mimo_task")
                 except genshin.GenshinException as e:
                     if e.retcode == -500001:  # Invalid fields in calculation
                         continue
@@ -697,17 +693,17 @@ class GenshinClient(ProxyGenshinClient):
                     reply_id = await self.reply_to_post(
                         random.choice(POST_REPLIES), post_id=int(post_id)
                     )
-                    await asyncio.sleep(MIMO_COMMUNITY_TASK_DELAY)
+                    await sleep("mimo_comment")
                     await self.delete_reply(reply_id=reply_id, post_id=int(post_id))
-                    await asyncio.sleep(MIMO_COMMUNITY_TASK_DELAY)
+                    await sleep("mimo_comment")
                     finished = True
 
                 topic_id: str | None = args.get("topic_id")
                 if topic_id is not None:
                     await self.join_topic(int(topic_id))
-                    await asyncio.sleep(MIMO_COMMUNITY_TASK_DELAY)
+                    await sleep("mimo_comment")
                     await self.leave_topic(int(topic_id))
-                    await asyncio.sleep(MIMO_COMMUNITY_TASK_DELAY)
+                    await sleep("mimo_comment")
                     finished = True
 
         if finished:
@@ -719,7 +715,7 @@ class GenshinClient(ProxyGenshinClient):
                     await self.claim_mimo_task_reward(
                         task.id, game_id=game_id, version_id=version_id
                     )
-                    await asyncio.sleep(MIMO_TASK_DELAY)
+                    await sleep("mimo_task")
                 except genshin.GenshinException as e:
                     if e.retcode == -500001:  # Invalid fields in calculation
                         continue
@@ -742,11 +738,11 @@ class GenshinClient(ProxyGenshinClient):
 
         original_lang = self.lang[:]
         points = await self.get_mimo_point_count()
-        await asyncio.sleep(0.5)
+        await sleep("mimo_shop")
 
         self.lang = "en-us"
         en_items = await self.get_mimo_shop_items(game_id=game_id, version_id=version_id)
-        await asyncio.sleep(0.5)
+        await sleep("mimo_shop")
 
         # Sort items from most expensive to least expensive
         en_items = sorted(en_items, key=lambda item: item.cost, reverse=True)
@@ -762,7 +758,7 @@ class GenshinClient(ProxyGenshinClient):
                     code = await self.buy_mimo_shop_item(
                         item.id, game_id=game_id, version_id=version_id
                     )
-                    await asyncio.sleep(0.5)
+                    await sleep("mimo_shop")
                 except genshin.GenshinException as e:
                     if e.retcode == -502005:  # Insufficient points
                         continue

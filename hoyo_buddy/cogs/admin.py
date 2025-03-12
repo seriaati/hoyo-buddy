@@ -77,7 +77,8 @@ class Admin(commands.Cog):
         await ctx.send("Done.")
 
     @commands.command(name="get-accounts", aliases=["ga"])
-    async def get_accounts_command(self, ctx: commands.Context, user_id: int) -> Any:
+    async def get_accounts_command(self, ctx: commands.Context, user_id: int | None = None) -> Any:
+        user_id = user_id or ctx.author.id
         accounts = await HoyoAccount.filter(user_id=user_id).all()
         if not accounts:
             await ctx.send("No accounts found for this user.")

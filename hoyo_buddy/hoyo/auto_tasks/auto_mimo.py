@@ -377,7 +377,7 @@ class AutoMimoTask(AutoMimo):
                     logger.debug(f"Queue is empty for {cls.__name__}")
                     return
 
-                logger.info(f"Starting {cls.__name__}")
+                logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
                 tasks = [
                     asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="task"))
                     for api in PROXY_APIS
@@ -420,7 +420,7 @@ class AutoMimoBuy(AutoMimo):
                     logger.debug(f"Queue is empty for {cls.__name__}")
                     return
 
-                logger.info(f"Starting {cls.__name__}")
+                logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
                 tasks = [
                     asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="buy"))
                     for api in PROXY_APIS
@@ -463,7 +463,7 @@ class AutoMimoDraw(AutoMimo):
                     logger.debug(f"Queue is empty for {cls.__name__}")
                     return
 
-                logger.info(f"Starting {cls.__name__}")
+                logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
                 tasks = [
                     asyncio.create_task(cls._auto_mimo_task(queue, api, task_type="draw"))
                     for api in PROXY_APIS

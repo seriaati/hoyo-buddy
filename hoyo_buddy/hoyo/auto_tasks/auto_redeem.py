@@ -72,7 +72,7 @@ class AutoRedeem:
             except Exception as e:
                 bot.capture_exception(e)
             else:
-                logger.info(f"{cls.__name__} completed, total count: {cls._count}")
+                logger.info(f"{cls.__name__} completed, count={cls._count}")
                 logger.info(f"{cls.__name__} took {asyncio.get_event_loop().time() - start:.2f}s")
 
     @classmethod

@@ -58,9 +58,10 @@ class DailyCheckin:
                     "checkin", games=[game] if game else None
                 )
                 if queue.empty():
-                    logger.debug(f"Queue is empty for {cls.__name__}, game={game}")
+                    logger.debug(f"Queue is empty for {cls.__name__}, {game=}")
                     return
 
+                logger.info(f"Starting {cls.__name__} for {queue.qsize()} accounts")
                 tasks = [
                     asyncio.create_task(cls._daily_checkin_task(queue, api)) for api in PROXY_APIS
                 ]
@@ -77,9 +78,9 @@ class DailyCheckin:
             except Exception as e:
                 bot.capture_exception(e)
             else:
-                logger.info(f"Daily check-in finished, total check-in count: {cls._count}")
+                logger.info(f"{cls.__name__} finished, count={cls._count}")
                 logger.info(
-                    f"Daily check-in took {asyncio.get_event_loop().time() - start:.2f} seconds"
+                    f"{cls.__name__} took {asyncio.get_event_loop().time() - start:.2f} seconds"
                 )
 
     @classmethod

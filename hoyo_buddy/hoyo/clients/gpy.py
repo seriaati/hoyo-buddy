@@ -47,16 +47,33 @@ class MimoClaimTaksResult(NamedTuple):
 
 class ProxyGenshinClient(genshin.Client):
     def __init__(
-        self, *args: Any, region: genshin.Region = genshin.Region.OVERSEAS, **kwargs: Any
+        self,
+        *args: Any,
+        region: genshin.Region = genshin.Region.OVERSEAS,
+        use_proxy: bool = True,
+        **kwargs: Any,
     ) -> None:
         super().__init__(
             *args,
             debug=True,
             cache=genshin.SQLiteCache(static_ttl=3600 * 24 * 31),
             region=region,
-            proxy=CONFIG.proxy if region is genshin.Region.OVERSEAS else None,
+            proxy=CONFIG.proxy if region is genshin.Region.OVERSEAS and use_proxy else None,
             **kwargs,
         )
+        self._use_proxy = use_proxy
+
+    @property
+    def use_proxy(self) -> bool:
+        return self._use_proxy
+
+    @use_proxy.setter
+    def use_proxy(self, value: bool) -> None:
+        if value and self.region is genshin.Region.OVERSEAS:
+            self.proxy = CONFIG.proxy
+        else:
+            self.proxy = None
+        self._use_proxy = value
 
 
 class GenshinClient(ProxyGenshinClient):
@@ -70,6 +87,7 @@ class GenshinClient(ProxyGenshinClient):
             region=account.region,
             device_id=account.device_id,
             device_fp=account.device_fp,
+            use_proxy=False,
         )
         self._account = account
 

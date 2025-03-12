@@ -178,6 +178,7 @@ class AutoRedeem:
 
         try:
             client = account.client
+            client.use_proxy = True
             client.set_lang(locale)
 
             embed = await account.client.redeem_codes(codes, locale=locale, blur=False)

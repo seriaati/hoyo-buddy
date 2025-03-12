@@ -58,6 +58,7 @@ class AutoMimo:
             await account.fetch_related("user", "user__settings", "notif_settings")
 
             try:
+                account.client.use_proxy = True
                 if task_type == "task":
                     embed = await cls._complete_mimo_tasks(account)
                 elif task_type == "buy":

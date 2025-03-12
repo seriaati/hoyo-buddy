@@ -145,6 +145,7 @@ class DailyCheckin:
 
         try:
             client = account.client
+            client.use_proxy = True
             client.set_lang(locale)
 
             await client.update_cookies_for_checkin()

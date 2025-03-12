@@ -252,6 +252,7 @@ class NotesChecker:
             view.add_items(buttons)
 
             message = await cls._bot.dm_user(account.user.id, embed=embed, file=file_, view=view)
+            view.message = message
 
             notify.enabled = message is not None
             notify.last_notif_time = get_now()

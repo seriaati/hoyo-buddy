@@ -160,10 +160,7 @@ class GITeamCard:
             start_pos = (808, 572) if i == 3 else (start_pos[0], start_pos[1] + 48)
 
         dmg_stat = character.highest_dmg_bonus_stat
-        if dmg_stat.type not in ADD_HURT_ELEMENTS:
-            icon_path = character.element.name.title()
-        else:
-            icon_path = ADD_HURT_ELEMENTS[dmg_stat.type]
+        icon_path = ADD_HURT_ELEMENTS.get(int(dmg_stat.type), character.element.name.title())
         dmg_icon = drawer.open_asset(f"elements/{icon_path}.png", size=(30, 30), mask_color=color_1)
         im.alpha_composite(dmg_icon, (768, 718))
         drawer.write(

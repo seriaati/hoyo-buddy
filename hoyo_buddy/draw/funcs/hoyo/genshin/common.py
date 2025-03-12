@@ -42,14 +42,14 @@ STATS_ORDER: Final[tuple[enka.gi.FightPropType, ...]] = (
     enka.gi.FightPropType.FIGHT_PROP_CRITICAL_HURT,
     enka.gi.FightPropType.FIGHT_PROP_CHARGE_EFFICIENCY,
 )
-ADD_HURT_ELEMENTS: Final[dict[enka.gi.FightPropType, str]] = {
-    enka.gi.FightPropType.FIGHT_PROP_ICE_ADD_HURT: "Cryo",
-    enka.gi.FightPropType.FIGHT_PROP_FIRE_ADD_HURT: "Pyro",
-    enka.gi.FightPropType.FIGHT_PROP_WATER_ADD_HURT: "Hydro",
-    enka.gi.FightPropType.FIGHT_PROP_WIND_ADD_HURT: "Anemo",
-    enka.gi.FightPropType.FIGHT_PROP_ROCK_ADD_HURT: "Geo",
-    enka.gi.FightPropType.FIGHT_PROP_ELEC_ADD_HURT: "Electro",
-    enka.gi.FightPropType.FIGHT_PROP_GRASS_ADD_HURT: "Dendro",
+ADD_HURT_ELEMENTS: Final[dict[int, str]] = {
+    int(enka.gi.FightPropType.FIGHT_PROP_ICE_ADD_HURT): "Cryo",
+    int(enka.gi.FightPropType.FIGHT_PROP_FIRE_ADD_HURT): "Pyro",
+    int(enka.gi.FightPropType.FIGHT_PROP_WATER_ADD_HURT): "Hydro",
+    int(enka.gi.FightPropType.FIGHT_PROP_WIND_ADD_HURT): "Anemo",
+    int(enka.gi.FightPropType.FIGHT_PROP_ROCK_ADD_HURT): "Geo",
+    int(enka.gi.FightPropType.FIGHT_PROP_ELEC_ADD_HURT): "Electro",
+    int(enka.gi.FightPropType.FIGHT_PROP_GRASS_ADD_HURT): "Dendro",
 }
 ARTIFACT_POS: Final[dict[enka.gi.EquipmentType, int]] = {
     enka.gi.EquipmentType.FLOWER: 1,

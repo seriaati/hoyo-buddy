@@ -41,8 +41,6 @@ class DailyCheckin:
             start = asyncio.get_event_loop().time()
 
             try:
-                logger.info("Daily check-in started")
-
                 cls._count = 0
                 cls._bot = bot
 

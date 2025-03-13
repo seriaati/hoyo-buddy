@@ -554,9 +554,6 @@ class GenshinClient(ProxyGenshinClient):
         except Exception as e:
             if isinstance(e, genshin.RedemptionClaimed | genshin.RedemptionInvalid):
                 await self._add_to_redeemed_codes(code)
-            if isinstance(e, genshin.GenshinException) and e.retcode == -2006:
-                # Code reached max redemption limit
-                await self._add_to_redeemed_codes(code)
 
             msg = self._handle_redeem_error(e, locale)
         else:

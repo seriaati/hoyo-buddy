@@ -26,14 +26,13 @@ from hoyo_buddy.constants import (
     POST_REPLIES,
     contains_traveler_id,
     convert_fight_prop,
-    sleep,
 )
 from hoyo_buddy.db import EnkaCache, HoyoAccount, JSONFile
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, GenshinElement
 from hoyo_buddy.exceptions import HoyoBuddyError
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils import set_or_update_dict
+from hoyo_buddy.utils import set_or_update_dict, sleep
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import datetime
 import pathlib
 from typing import TYPE_CHECKING, Final, Literal
@@ -1164,12 +1163,19 @@ SLEEP_TIMES: dict[SleepTime, float] = {
 }
 
 CONCURRENT_TASK_NUM = 75
+MAX_PROXY_ERROR_NUM = 8
 
-
-async def sleep(name: SleepTime) -> None:
-    try:
-        time = SLEEP_TIMES[name]
-    except KeyError:
-        logger.error(f"Invalid sleep time name: {name!r}")
-        time = 0.0
-    await asyncio.sleep(time)
+AUTO_TASK_FEATURE_KEYS: dict[AutoTaskType, str] = {
+    "redeem": "auto_redeem_toggle.label",
+    "mimo_task": "mimo_auto_finish_and_claim_button_label",
+    "mimo_buy": "mimo_auto_buy_button_label",
+    "mimo_draw": "mimo_auto_draw_button_label",
+    "checkin": "auto_checkin_button_label",
+}
+AUTO_TASK_COMMANDS: dict[AutoTaskType, str] = {
+    "redeem": "</redeem>",
+    "mimo_task": "</mimo>",
+    "mimo_buy": "</mimo>",
+    "mimo_draw": "</mimo>",
+    "checkin": "</check-in>",
+}

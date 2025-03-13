@@ -24,7 +24,7 @@ from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 from seria.utils import clean_url
 
 from hoyo_buddy.config import CONFIG, parse_args
-from hoyo_buddy.constants import IMAGE_EXTENSIONS, STATIC_FOLDER, TRAVELER_IDS, UTC_8
+from hoyo_buddy.constants import IMAGE_EXTENSIONS, SLEEP_TIMES, STATIC_FOLDER, TRAVELER_IDS, UTC_8
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
 from hoyo_buddy.logging import InterceptHandler
@@ -36,7 +36,7 @@ if TYPE_CHECKING:
     import discord
     import genshin
 
-    from hoyo_buddy.types import Interaction
+    from hoyo_buddy.types import Interaction, SleepTime
 
 
 def get_now(tz: datetime.timezone | None = None) -> datetime.datetime:
@@ -501,3 +501,12 @@ def entry_point(log_dir: str) -> None:
 
     if sys.platform == "win32":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+
+async def sleep(name: SleepTime) -> None:
+    try:
+        time = SLEEP_TIMES[name]
+    except KeyError:
+        logger.error(f"Invalid sleep time name: {name!r}")
+        time = 0.0
+    await asyncio.sleep(time)

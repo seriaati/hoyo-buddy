@@ -55,8 +55,8 @@ class EmbedSender:
 
     @classmethod
     async def _get_locale(cls, user_id: int) -> discord.Locale | None:
-        lang = await Settings.get(user_id=user_id).only("lang")
-        return discord.Locale(lang) if lang else None
+        settings = await Settings.get(user_id=user_id).only("lang")
+        return discord.Locale(settings.lang) if settings.lang else None
 
     @classmethod
     async def _get_account_str(cls, account_id: int) -> str:

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar, Literal
 
 import discord
@@ -9,16 +10,18 @@ from loguru import logger
 from seria.utils import create_bullet_list
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import CONCURRENT_TASK_NUM, HB_GAME_TO_GPY_GAME, sleep
+from hoyo_buddy.constants import CONCURRENT_TASK_NUM, HB_GAME_TO_GPY_GAME, MAX_PROXY_ERROR_NUM
+from hoyo_buddy.db.models import DiscordEmbed
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils import convert_code_to_redeem_url, get_mimo_task_str, get_now
+from hoyo_buddy.utils import convert_code_to_redeem_url, get_mimo_task_str, get_now, sleep
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.db import HoyoAccount
+    from hoyo_buddy.types import AutoTaskType
 
 SUPPORT_GAMES = (Game.STARRAIL, Game.ZZZ, Game.GENSHIN)
 
@@ -27,6 +30,7 @@ class AutoMimo:
     _bot: ClassVar[HoyoBuddy]
     _mimo_game_data: ClassVar[dict[Game, tuple[int, int]]]
     _down_games: ClassVar[set[Game]]
+    _error_counts: ClassVar[defaultdict[int, int]]
 
     @classmethod
     async def _get_mimo_game_data(cls, client: genshin.Client, game: Game) -> tuple[int, int]:
@@ -44,8 +48,6 @@ class AutoMimo:
     async def _auto_mimo_task(
         cls, queue: asyncio.Queue[HoyoAccount], *, task_type: Literal["task", "buy", "draw"]
     ) -> None:
-        bot = cls._bot
-
         while True:
             account = await queue.get()
             logger.debug(f"{cls.__name__} is processing account {account}")
@@ -55,36 +57,41 @@ class AutoMimo:
                 queue.task_done()
                 continue
 
-            await account.fetch_related("user", "user__settings", "notif_settings")
+            await account.fetch_related("user", "user__settings")
 
+            notif_task_type: AutoTaskType | None = None
             try:
                 account.client.use_proxy = True
                 if task_type == "task":
+                    notif_task_type = "mimo_task"
                     embed = await cls._complete_mimo_tasks(account)
+                    last_time_attr = "last_mimo_task_time"
+                    toggle_field = "mimo_auto_task"
                 elif task_type == "buy":
+                    notif_task_type = "mimo_buy"
+                    last_time_attr = "last_mimo_buy_time"
+                    toggle_field = "mimo_auto_buy"
                     embed = await cls._buy_mimo_valuables(account)
                 elif task_type == "draw":
+                    notif_task_type = "mimo_draw"
+                    last_time_attr = "last_mimo_draw_time"
+                    toggle_field = "mimo_auto_draw"
                     embed = await cls._draw_lottery(account)
             except Exception as e:
-                await queue.put(account)
-                bot.capture_exception(e)
+                if cls._error_counts[account.id] >= MAX_PROXY_ERROR_NUM:
+                    locale = account.user.settings.locale or discord.Locale.american_english
+                    embed, _ = get_error_embed(e, locale)
+                    embed.add_acc_info(account, blur=False)
+                    await DiscordEmbed.create(
+                        embed,
+                        user_id=account.user.id,
+                        account_id=account.id,
+                        task_type=notif_task_type,
+                    )
+                else:
+                    await queue.put(account)
+                    cls._error_counts[account.id] += 1
             else:
-                if task_type == "task":
-                    feature_key = "mimo_auto_finish_and_claim_button_label"
-                    success_notif = account.notif_settings.mimo_task_success
-                    failure_notif = account.notif_settings.mimo_task_failure
-                    last_time_attr = "last_mimo_task_time"
-                elif task_type == "buy":
-                    feature_key = "mimo_auto_buy_button_label"
-                    success_notif = account.notif_settings.mimo_buy_success
-                    failure_notif = account.notif_settings.mimo_buy_failure
-                    last_time_attr = "last_mimo_buy_time"
-                elif task_type == "draw":
-                    feature_key = "mimo_auto_draw_button_label"
-                    success_notif = account.notif_settings.mimo_draw_success
-                    failure_notif = account.notif_settings.mimo_draw_failure
-                    last_time_attr = "last_mimo_draw_time"
-
                 # Set last completion time
                 logger.debug(
                     f"Setting last time for {account}, last_time_attr={last_time_attr}, now={get_now()}"
@@ -96,35 +103,16 @@ class AutoMimo:
                     embed.set_footer(text=LocaleStr(key="mimo_auto_task_embed_footer"))
                     embed.add_acc_info(account)
 
+                    await DiscordEmbed.create(
+                        embed,
+                        user_id=account.user.id,
+                        account_id=account.id,
+                        task_type=notif_task_type,
+                    )
+
                     if isinstance(embed, ErrorEmbed):
-                        if task_type == "task":
-                            account.mimo_auto_task = False
-                            await account.save(update_fields=("mimo_auto_task",))
-                        elif task_type == "buy":
-                            account.mimo_auto_buy = False
-                            await account.save(update_fields=("mimo_auto_buy",))
-                        elif task_type == "draw":
-                            account.mimo_auto_draw = False
-                            await account.save(update_fields=("mimo_auto_draw",))
-
-                        content = LocaleStr(
-                            key="auto_task_error_dm_content",
-                            feature=LocaleStr(
-                                custom_str="{mimo_title} {label}",
-                                mimo_title=LocaleStr(
-                                    key="point_detail_tag_mimo", mi18n_game="mimo"
-                                ),
-                                label=LocaleStr(key=feature_key),
-                            ),
-                            command="</mimo>",
-                        ).translate(account.user.settings.locale or discord.Locale.american_english)
-                    else:
-                        content = None
-
-                    if (isinstance(embed, DefaultEmbed) and success_notif) or (
-                        isinstance(embed, ErrorEmbed) and failure_notif
-                    ):
-                        await bot.dm_user(account.user.id, embed=embed, content=content)
+                        setattr(account, toggle_field, False)
+                        await account.save(update_fields=(toggle_field,))
             finally:
                 await sleep("mimo_task")
                 queue.task_done()
@@ -334,6 +322,7 @@ class AutoMimoTask(AutoMimo):
                 cls._bot = bot
                 cls._mimo_game_data = {}
                 cls._down_games = set()
+                cls._error_counts = defaultdict(int)
 
                 # Auto task
                 queue = await cls._bot.build_auto_task_queue(
@@ -377,6 +366,7 @@ class AutoMimoBuy(AutoMimo):
                 cls._bot = bot
                 cls._mimo_game_data = {}
                 cls._down_games = set()
+                cls._error_counts = defaultdict(int)
 
                 # Auto buy
                 queue = await cls._bot.build_auto_task_queue(
@@ -420,6 +410,7 @@ class AutoMimoDraw(AutoMimo):
                 cls._bot = bot
                 cls._mimo_game_data = {}
                 cls._down_games = set()
+                cls._error_counts = defaultdict(int)
 
                 # Auto draw
                 queue = await cls._bot.build_auto_task_queue(

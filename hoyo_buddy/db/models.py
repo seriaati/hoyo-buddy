@@ -6,7 +6,7 @@ import contextlib
 import datetime
 import pickle
 from functools import cached_property
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 import genshin
 import orjson
@@ -14,6 +14,8 @@ from discord import Locale
 from loguru import logger
 from seria.tortoise.model import Model
 from tortoise import exceptions, fields
+
+from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 
 from ..constants import HB_GAME_TO_GPY_GAME, REGION_TO_PLATFORM, SERVER_RESET_HOURS, UTC_8
 from ..enums import ChallengeType, Game, LeaderboardType, NotesNotifyType, Platform
@@ -24,7 +26,7 @@ if TYPE_CHECKING:
     import aiohttp
 
     from ..hoyo.clients.gpy import GenshinClient
-    from ..types import Challenge, ChallengeWithLang
+    from ..types import AutoTaskType, Challenge, ChallengeWithLang
 
 __all__ = (
     "AccountNotifSettings",
@@ -173,12 +175,23 @@ class AccountNotifSettings(BaseModel):
     mimo_buy_failure = fields.BooleanField(default=True)
     mimo_draw_success = fields.BooleanField(default=True)
     mimo_draw_failure = fields.BooleanField(default=True)
+    redeem_success = fields.BooleanField(default=True)
+    redeem_failure = fields.BooleanField(default=True)
 
     web_events = fields.BooleanField(default=False)
 
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
         "models.HoyoAccount", related_name="notif_settings", pk=True
     )
+
+
+NOTIF_SETTING_FIELDS: dict[AutoTaskType, tuple[str, str]] = {
+    "checkin": ("notify_on_checkin_success", "notify_on_checkin_failure"),
+    "mimo_task": ("mimo_task_success", "mimo_task_failure"),
+    "mimo_buy": ("mimo_buy_success", "mimo_buy_failure"),
+    "mimo_draw": ("mimo_draw_success", "mimo_draw_failure"),
+    "redeem": ("redeem_success", "redeem_failure"),
+}
 
 
 class Settings(BaseModel):
@@ -547,3 +560,53 @@ class CustomImage(BaseModel):
     ) -> None:
         with contextlib.suppress(exceptions.IntegrityError):
             await super().create(url=url, character_id=character_id, user_id=user_id, name=name)
+
+
+class DiscordEmbed(BaseModel):
+    id = fields.IntField(pk=True, generated=True)
+    data: fields.Field[dict[str, Any]] = fields.JSONField()
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
+        "models.User", related_name="embeds"
+    )
+    account: fields.ForeignKeyRelation[HoyoAccount] = fields.ForeignKeyField(
+        "models.HoyoAccount", related_name="embeds"
+    )
+    task_type: AutoTaskType = fields.CharField(max_length=20)
+    type: Literal["default", "error"] = fields.CharField(max_length=7)
+
+    user_id: int
+    account_id: int
+
+    @classmethod
+    async def create(
+        cls,
+        embed: DefaultEmbed | ErrorEmbed,
+        *,
+        user_id: int,
+        account_id: int,
+        task_type: AutoTaskType | None = None,
+    ) -> None:
+        fields = NOTIF_SETTING_FIELDS.get(task_type, ()) if task_type is not None else ()
+
+        if isinstance(embed, DefaultEmbed) and fields:
+            success_field = fields[0]
+            notif_settings = await AccountNotifSettings.get_or_none(account_id=account_id).only(
+                success_field
+            )
+            if not getattr(notif_settings, success_field):
+                return
+        elif isinstance(embed, ErrorEmbed) and fields:
+            failure_field = fields[1]
+            notif_settings = await AccountNotifSettings.get_or_none(account_id=account_id).only(
+                failure_field
+            )
+            if not getattr(notif_settings, failure_field):
+                return
+
+        await super().create(
+            data=embed.to_dict(),
+            user_id=user_id,
+            account_id=account_id,
+            task_type=task_type,
+            type="default" if isinstance(embed, DefaultEmbed) else "error",
+        )

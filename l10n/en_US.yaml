@@ -782,7 +782,7 @@ changelog_embed_title: Changelog
 web_events_notify_toggle_label: Notify on new web events
 web_events_cmd_desc: View ongoing web events and set notifier
 web_events_embed_footer: Use /web-events to configure notifications
-auto_task_error_dm_content: "{feature} has been disabled due to an error, you can enable it back using {command}\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
+auto_task_error_dm_content: "{feature} has been disabled for {account} due to an error, you can enable it back using {command}\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 is_support_custom_image_desc: Supports custom image
 is_not_support_custom_image_desc: Doesn't support custom image
 template_preview_header: Example look

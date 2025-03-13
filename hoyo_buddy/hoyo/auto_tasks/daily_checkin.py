@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import itertools
 from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar
 
@@ -10,13 +9,14 @@ import genshin
 from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import CONCURRENT_TASK_NUM, sleep
-from hoyo_buddy.db import AccountNotifSettings, HoyoAccount, User
-from hoyo_buddy.embeds import DefaultEmbed, Embed, ErrorEmbed
-from hoyo_buddy.utils import get_now
+from hoyo_buddy.constants import CONCURRENT_TASK_NUM, MAX_PROXY_ERROR_NUM
+from hoyo_buddy.db import HoyoAccount, User
+from hoyo_buddy.db.models import DiscordEmbed
+from hoyo_buddy.utils import get_now, sleep
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
+    from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
     from hoyo_buddy.enums import Game
 
 
@@ -24,15 +24,10 @@ class DailyCheckin:
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
     _count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
-    _no_error_notify: ClassVar[bool]
-
-    _embeds: ClassVar[defaultdict[int, list[tuple[int, Embed]]]]
-    """User ID -> (Account ID, Embed)"""
+    _error_counts: ClassVar[defaultdict[int, int]]
 
     @classmethod
-    async def execute(
-        cls, bot: HoyoBuddy, *, game: Game | None = None, no_error_notify: bool = False
-    ) -> None:
+    async def execute(cls, bot: HoyoBuddy, *, game: Game | None = None) -> None:
         if cls._lock.locked():
             logger.debug(f"{cls.__name__} is already running")
             return
@@ -43,9 +38,7 @@ class DailyCheckin:
             try:
                 cls._count = 0
                 cls._bot = bot
-
-                cls._no_error_notify = no_error_notify
-                cls._embeds = defaultdict(list)
+                cls._error_counts = defaultdict(int)
 
                 queue = await cls._bot.build_auto_task_queue(
                     "checkin", games=[game] if game else None
@@ -64,10 +57,6 @@ class DailyCheckin:
                 for task in tasks:
                     task.cancel()
                 await asyncio.gather(*tasks, return_exceptions=True)
-
-                # Send embeds
-                for user_id, embeds in cls._embeds.items():
-                    await cls._notify_checkin_result(user_id, embeds)
             except Exception as e:
                 bot.capture_exception(e)
             else:
@@ -86,11 +75,21 @@ class DailyCheckin:
                 await account.fetch_related("user", "user__settings")
                 embed = await cls._daily_checkin(account)
             except Exception as e:
-                await queue.put(account)
-                cls._bot.capture_exception(e)
+                if cls._error_counts[account.id] >= MAX_PROXY_ERROR_NUM:
+                    locale = account.user.settings.locale or discord.Locale.american_english
+                    embed, _ = get_error_embed(e, locale)
+                    embed.add_acc_info(account, blur=False)
+                    await DiscordEmbed.create(
+                        embed, user_id=account.user.id, account_id=account.id, task_type="checkin"
+                    )
+                else:
+                    await queue.put(account)
+                    cls._error_counts[account.id] += 1
             else:
                 cls._count += 1
-                cls._embeds[account.user.id].append((account.id, embed))
+                await DiscordEmbed.create(
+                    embed, user_id=account.user.id, account_id=account.id, task_type="checkin"
+                )
 
                 logger.debug(f"Setting last time for {account}, now={get_now()}")
                 account.last_checkin_time = get_now()
@@ -98,47 +97,6 @@ class DailyCheckin:
             finally:
                 await sleep("checkin")
                 queue.task_done()
-
-    @classmethod
-    async def _notify_checkin_result(cls, user_id: int, embeds: list[tuple[int, Embed]]) -> None:
-        try:
-            notif_settings: dict[int, AccountNotifSettings] = {}
-
-            for account_id, _ in embeds:
-                notif_setting = await AccountNotifSettings.get_or_none(account_id=account_id)
-                if notif_setting is None:
-                    notif_setting = await AccountNotifSettings.create(account_id=account_id)
-
-                notif_settings[account_id] = notif_setting
-
-            notify_on_failure_ids = {
-                account_id
-                for account_id, notif_setting in notif_settings.items()
-                if notif_setting.notify_on_checkin_failure
-            }
-            notify_on_success_ids = {
-                account_id
-                for account_id, notif_setting in notif_settings.items()
-                if notif_setting.notify_on_checkin_success
-            }
-
-            embeds_to_send: list[Embed] = []
-
-            for account_id, embed in embeds:
-                if (
-                    isinstance(embed, ErrorEmbed)
-                    and account_id in notify_on_failure_ids
-                    and not cls._no_error_notify
-                ) or (isinstance(embed, DefaultEmbed) and account_id in notify_on_success_ids):
-                    embeds_to_send.append(embed)
-
-            chunked_embeds = itertools.batched(embeds_to_send, 10)
-            for chunk in chunked_embeds:
-                await cls._bot.dm_user(user_id, embeds=chunk)
-                await sleep("dm")
-
-        except Exception as e:
-            cls._bot.capture_exception(e)
 
     @classmethod
     async def _daily_checkin(cls, account: HoyoAccount) -> DefaultEmbed | ErrorEmbed:

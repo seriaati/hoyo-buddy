@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar
 
 import discord
@@ -9,26 +10,31 @@ from loguru import logger
 from seria.utils import create_bullet_list
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import CODE_CHANNEL_IDS, CONCURRENT_TASK_NUM, HB_GAME_TO_GPY_GAME
+from hoyo_buddy.constants import (
+    CODE_CHANNEL_IDS,
+    CONCURRENT_TASK_NUM,
+    HB_GAME_TO_GPY_GAME,
+    MAX_PROXY_ERROR_NUM,
+)
 from hoyo_buddy.db import HoyoAccount, JSONFile
-from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
+from hoyo_buddy.db.models import DiscordEmbed
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import convert_code_to_redeem_url, get_now
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
-    from hoyo_buddy.embeds import Embed
+    from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 
 
 SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
-MAX_API_ERROR_COUNT = 10
 
 
 class AutoRedeem:
     _count: ClassVar[int]
     _bot: ClassVar[HoyoBuddy]
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
+    _error_counts: ClassVar[defaultdict[int, int]]
 
     @classmethod
     async def execute(cls, bot: HoyoBuddy) -> None:
@@ -43,12 +49,13 @@ class AutoRedeem:
             try:
                 cls._count = 0
                 cls._bot = bot
+                cls._error_counts = defaultdict(int)
 
                 game_codes = {game_: await cls._get_codes(game_) for game_ in SUPPORT_GAMES}
                 logger.debug(f"Game codes: {game_codes}")
 
                 if not cls._bot.config.is_dev:
-                    asyncio.create_task(cls.send_codes_to_channels(bot, game_codes))
+                    asyncio.create_task(cls._send_codes_to_channels(bot, game_codes))
 
                 queue = await cls._bot.build_auto_task_queue(
                     "redeem", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
@@ -74,7 +81,7 @@ class AutoRedeem:
                 logger.info(f"{cls.__name__} took {asyncio.get_event_loop().time() - start:.2f}s")
 
     @classmethod
-    async def send_codes_to_channels(
+    async def _send_codes_to_channels(
         cls, bot: HoyoBuddy, game_codes: dict[Game, list[str]]
     ) -> None:
         guild = bot.get_guild(bot.guild_id) or await bot.fetch_guild(bot.guild_id)
@@ -137,8 +144,14 @@ class AutoRedeem:
                 await account.fetch_related("user", "user__settings")
                 embed = await cls._redeem_codes(account, codes)
             except Exception as e:
-                await queue.put(account)
-                cls._bot.capture_exception(e)
+                if cls._error_counts[account.id] >= MAX_PROXY_ERROR_NUM:
+                    locale = account.user.settings.locale or discord.Locale.american_english
+                    embed, _ = get_error_embed(e, locale)
+                    embed.add_acc_info(account, blur=False)
+                    await DiscordEmbed.create(embed, user_id=account.user.id, account_id=account.id)
+                else:
+                    await queue.put(account)
+                    cls._error_counts[account.id] += 1
             else:
                 logger.debug(f"Setting last time for {account}, now={get_now()}")
                 account.last_redeem_time = get_now()
@@ -146,29 +159,9 @@ class AutoRedeem:
 
                 if embed is not None:
                     cls._count += 1
-                    await cls._notify_user(account, embed)
+                    await DiscordEmbed.create(embed, user_id=account.user.id, account_id=account.id)
             finally:
                 queue.task_done()
-
-    @classmethod
-    async def _notify_user(cls, account: HoyoAccount, embed: Embed) -> None:
-        try:
-            if isinstance(embed, ErrorEmbed):
-                embed.add_acc_info(account, blur=False)
-                content = LocaleStr(
-                    key="auto_task_error_dm_content",
-                    feature=LocaleStr(key="auto_redeem_toggle.label"),
-                    command="</redeem>",
-                ).translate(account.user.settings.locale or discord.Locale.american_english)
-
-                account.auto_redeem = False
-                await account.save(update_fields=("auto_redeem",))
-            else:
-                content = None
-
-            await cls._bot.dm_user(account.user.id, embed=embed, content=content)
-        except Exception as e:
-            cls._bot.capture_exception(e)
 
     @classmethod
     async def _redeem_codes(

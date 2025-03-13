@@ -9,6 +9,7 @@ from discord.ext import commands, tasks
 
 from hoyo_buddy.db import HoyoAccount
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, AutoMimoTask
+from hoyo_buddy.hoyo.auto_tasks.embed_sender import EmbedSender
 from hoyo_buddy.hoyo.auto_tasks.web_events_notify import WebEventsNotify
 
 from ..constants import GI_UID_PREFIXES, UTC_8
@@ -45,6 +46,7 @@ class RunTaskView(ui.View):
             AutoMimoBuy,
             AutoMimoDraw,
             WebEventsNotify,
+            EmbedSender,
         )
         for task in tasks:
             self.add_item(RunTaskButton(task))
@@ -68,6 +70,7 @@ class Schedule(commands.Cog):
             return
 
         self.run_auto_tasks.start()
+        self.run_send_embeds.start()
         self.run_farm_checks.start()
         self.update_assets.start()
         self.run_notes_check.start()
@@ -78,6 +81,7 @@ class Schedule(commands.Cog):
             return
 
         self.run_auto_tasks.cancel()
+        self.run_send_embeds.cancel()
         self.run_farm_checks.cancel()
         self.update_assets.cancel()
         self.run_notes_check.cancel()
@@ -144,6 +148,10 @@ class Schedule(commands.Cog):
     async def run_notes_check(self) -> None:
         await NotesChecker.execute(self.bot)
 
+    @tasks.loop(minutes=1)
+    async def run_send_embeds(self) -> None:
+        await EmbedSender.execute(self.bot)
+
     @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in range(0, 24, 1)])
     async def run_web_events_notify(self) -> None:
         await WebEventsNotify.execute(self.bot)
@@ -152,6 +160,7 @@ class Schedule(commands.Cog):
     @run_farm_checks.before_loop
     @update_assets.before_loop
     @run_notes_check.before_loop
+    @run_send_embeds.before_loop
     @run_web_events_notify.before_loop
     async def before_loops(self) -> None:
         await self.bot.wait_until_ready()

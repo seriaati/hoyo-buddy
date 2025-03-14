@@ -19,7 +19,7 @@ import psutil
 import sentry_sdk
 import tortoise.timezone
 from asyncache import cached
-from cachetools import LRUCache, TTLCache
+from cachetools import TTLCache
 from discord import app_commands
 from discord.ext import commands
 from loguru import logger
@@ -282,34 +282,20 @@ class HoyoBuddy(commands.AutoShardedBot):
             logger.warning(f"Error: {e}, capturing exception")
             sentry_sdk.capture_exception(e)
 
-    @cached(cache=LRUCache(maxsize=10000))
-    async def fetch_user(self, user_id: int) -> discord.User | None:
-        try:
-            user = super().get_user(user_id) or await super().fetch_user(user_id)
-        except (discord.NotFound, discord.HTTPException):
-            return None
-        else:
-            return user
-
     async def dm_user(
         self, user_id: int, *, content: str | None = None, **kwargs: Any
     ) -> discord.Message | None:
         logger.debug(f"DMing user {user_id}")
-        user = self.get_user(user_id) or await self.fetch_user(user_id)
-        if user is None:
-            logger.debug(f"Failed to fetch user {user_id}")
-            return None
+        user = self.get_user(user_id) or self.get_partial_messageable(user_id)
 
         try:
             message = await user.send(content, **kwargs)
         except (discord.Forbidden, discord.HTTPException):
             logger.debug(f"Failed to DM user {user_id}")
-            return None
         except Exception as e:
             self.capture_exception(e)
-            return None
-
-        return message
+        else:
+            return message
 
     def get_error_choice(
         self, error_message: LocaleStr | str | Exception, locale: discord.Locale

@@ -92,7 +92,7 @@ class Others(commands.Cog):
         )
 
         # developer
-        owner = await i.client.fetch_user(i.client.owner_id)
+        owner = i.client.get_user(i.client.owner_id) or await i.client.fetch_user(i.client.owner_id)
         if owner is not None:
             embed.add_field(
                 name=LocaleStr(key="about_command.developer"),

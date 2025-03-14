@@ -286,7 +286,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         self, user_id: int, *, content: str | None = None, **kwargs: Any
     ) -> tuple[discord.Message | None, bool]:
         logger.debug(f"DMing user {user_id}")
-        errored = False
 
         try:
             channel = await models.DMChannel.get_or_none(user_id=user_id)
@@ -301,7 +300,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             self.capture_exception(e)
             return None, True
         else:
-            return message, errored
+            return message, False
 
     def get_error_choice(
         self, error_message: LocaleStr | str | Exception, locale: discord.Locale

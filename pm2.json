@@ -8,13 +8,6 @@
             "args": "--sentry --schedule --search --prometheus --novelai"
         },
         {
-            "name": "hoyo-buddy2",
-            "script": "./run.py",
-            "interpreter": "./.venv/bin/python",
-            "interpreter_args": "-OO",
-            "args": "--sentry --schedule --search --prometheus --novelai"
-        },
-        {
             "name": "hb-app",
             "script": "./run_web_app.py",
             "interpreter": "./.venv/bin/python",

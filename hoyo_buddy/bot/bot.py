@@ -288,9 +288,13 @@ class HoyoBuddy(commands.AutoShardedBot):
         logger.debug(f"DMing user {user_id}")
 
         try:
-            user = self.get_user(user_id) or await self.fetch_user(user_id)
-            message = await user.send(content, **kwargs)
-        except (discord.Forbidden) as e:
+            channel = await models.DMChannel.get_or_none(user_id=user_id)
+            if channel is None:
+                user = self.get_user(user_id) or await self.fetch_user(user_id)
+                dm_channel = user.dm_channel or await user.create_dm()
+                channel = await models.DMChannel.create(user_id=user_id, id=dm_channel.id)
+            message = await self.get_partial_messageable(channel.id).send(content, **kwargs)
+        except discord.HTTPException as e:
             logger.debug(f"Failed to DM user {user_id}: {e}")
         except Exception as e:
             self.capture_exception(e)

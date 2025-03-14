@@ -610,3 +610,8 @@ class DiscordEmbed(BaseModel):
             task_type=task_type,
             type="default" if isinstance(embed, DefaultEmbed) else "error",
         )
+
+
+class DMChannel(BaseModel):
+    id = fields.BigIntField(pk=True, generated=False)
+    user_id = fields.BigIntField()

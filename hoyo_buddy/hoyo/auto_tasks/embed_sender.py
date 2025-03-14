@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import itertools
 from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar
 
@@ -66,25 +65,20 @@ class EmbedSender:
 
     @classmethod
     async def _send_embeds(cls, user_id: int, embeds: list[DiscordEmbed]) -> None:
-        contents: list[str] = []
         for embed in embeds:
             if embed.type == "error":
                 locale = await cls._get_locale(user_id)
                 account_str = await cls._get_account_str(embed.account_id)
-                error_content = cls._get_error_content(embed.task_type, locale, account_str)
-                if error_content:
-                    contents.append(error_content)
+                content = cls._get_error_content(embed.task_type, locale, account_str)
+            else:
+                content = None
 
-        chunked_embeds = itertools.batched(embeds, 10)
-        for chunk in chunked_embeds:
             _, errored = await cls._bot.dm_user(
-                user_id,
-                embeds=[discord.Embed.from_dict(embed.data) for embed in chunk],
-                content="\n".join(contents) if contents else None,
+                user_id, embeds=discord.Embed.from_dict(embed.data), content=content
             )
             await sleep("dm")
             if not errored:
-                await DiscordEmbed.filter(id__in=[embed.id for embed in chunk]).delete()
+                await DiscordEmbed.filter(id=embed.id).delete()
 
     @classmethod
     async def execute(cls, bot: HoyoBuddy) -> None:

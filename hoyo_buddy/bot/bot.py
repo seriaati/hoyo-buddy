@@ -286,12 +286,12 @@ class HoyoBuddy(commands.AutoShardedBot):
         self, user_id: int, *, content: str | None = None, **kwargs: Any
     ) -> discord.Message | None:
         logger.debug(f"DMing user {user_id}")
-        user = self.get_user(user_id) or self.get_partial_messageable(user_id)
 
         try:
+            user = self.get_user(user_id) or await self.fetch_user(user_id)
             message = await user.send(content, **kwargs)
-        except (discord.Forbidden, discord.NotFound):
-            logger.debug(f"Failed to DM user {user_id}")
+        except (discord.Forbidden, discord.NotFound) as e:
+            logger.debug(f"Failed to DM user {user_id}: {e}")
         except Exception as e:
             self.capture_exception(e)
         else:

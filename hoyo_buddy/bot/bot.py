@@ -290,7 +290,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         try:
             message = await user.send(content, **kwargs)
-        except (discord.Forbidden, discord.HTTPException):
+        except discord.Forbidden:
             logger.debug(f"Failed to DM user {user_id}")
         except Exception as e:
             self.capture_exception(e)

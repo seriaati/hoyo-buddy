@@ -643,7 +643,7 @@ star5_guaranteed: "Trạng thái bảo đảm hiện tại: Mục Banner Bảo �
 star5_no_guaranteed: "Trạng thái bảo đảm hiện tại: Mục Banner **KHÔNG** Bảo Đảm"
 characters_view_show_max_level_only: Chỉ hiển thị nhân vật ở cấp độ tối đa
 characters_embed_max_level_characters: Nhân vật Cấp độ Tối đa
-natlan_reputation: "Danh Vọng: Lv.{reputation}, Bộ Tộc: {tribes}"
+natlan_reputation: ""
 shiyu_overview: Tổng quan
 shiyu_fastest_clear_time: "Thời gian hoàn thành nhanh nhất kỳ này:"
 shiyu_highest_frontier: "Phòng Tuyến Cao Nhất Đã Hoàn Thành:"

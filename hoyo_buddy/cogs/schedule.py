@@ -98,7 +98,7 @@ class Schedule(commands.Cog):
     @commands.is_owner()
     @commands.command(name="task-status", aliases=["ts"])
     async def task_status(self, ctx: commands.Context) -> None:
-        tasks = (AutoRedeem, AutoMimoTask, AutoMimoBuy, AutoMimoDraw, DailyCheckin)
+        tasks = (AutoRedeem, AutoMimoTask, AutoMimoBuy, AutoMimoDraw, DailyCheckin, EmbedSender)
         task_statuses = {task.__name__: task._lock.locked() for task in tasks}
         msg = "\n".join(f"{task} running: {status}" for task, status in task_statuses.items())
         msg += f"\nFarmChecker running: {self.bot.farm_check_running}"

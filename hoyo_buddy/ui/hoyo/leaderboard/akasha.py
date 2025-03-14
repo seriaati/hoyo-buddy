@@ -25,7 +25,6 @@ class BaseAkashaLbPaginator(PaginatorView):
         lb_embed: DefaultEmbed,
         you: akasha.Leaderboard | None,
         lb_size: int,
-        real_lb_size: int,
         *,
         lbs: list[akasha.Leaderboard] | None = None,
         author: User,
@@ -34,7 +33,6 @@ class BaseAkashaLbPaginator(PaginatorView):
         self.lb_embed = lb_embed
         self.you = you
         self.lb_size = lb_size
-        self.real_lb_size = real_lb_size
         self.locale = locale
 
         super().__init__(
@@ -61,7 +59,8 @@ class BaseAkashaLbPaginator(PaginatorView):
 
         if self.you is not None:
             top_percent = LocaleStr(
-                key="top_percent", percent=round(self.you.rank / self.real_lb_size * 100, 1)
+                key="top_percent",
+                percent=round(self.you.rank / self.lb_size * 100, 1) if self.lb_size > 0 else "?",
             ).translate(self.locale)
             you_str = LocaleStr(key="akasha_you").translate(self.locale)
 
@@ -88,7 +87,7 @@ class AkashaLbPaginator(BaseAkashaLbPaginator):
         author: User,
         locale: Locale,
     ) -> None:
-        super().__init__(lb_embed, you, lb_size, lb_size, author=author, locale=locale)
+        super().__init__(lb_embed, you, lb_size, author=author, locale=locale)
         self.add_item(ShowLbDetailsButton(lb_details))
 
         self.calculation_id = calculation_id

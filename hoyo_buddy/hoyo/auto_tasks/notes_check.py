@@ -251,12 +251,14 @@ class NotesChecker:
             buttons = NotesView.get_open_game_buttons(account)
             view.add_items(buttons)
 
-            message = await cls._bot.dm_user(account.user.id, embed=embed, file=file_, view=view)
+            message, errored = await cls._bot.dm_user(
+                account.user.id, embed=embed, file=file_, view=view
+            )
             view.message = message
 
-            notify.enabled = message is not None
+            notify.enabled = not errored
             notify.last_notif_time = get_now()
-            notify.current_notif_count += 1 if message is not None else 0
+            notify.current_notif_count += 1 if not errored else 0
             await notify.save(update_fields=("enabled", "last_notif_time", "current_notif_count"))
         except Exception as e:
             await cls._handle_notify_error(notify, e)

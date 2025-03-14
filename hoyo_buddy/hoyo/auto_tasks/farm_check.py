@@ -42,8 +42,8 @@ class FarmChecker:
         embed.set_footer(text=LocaleStr(key="farm_check.use_farm_notify"))
         embed.add_acc_info(farm_notify.account, blur=False)
 
-        message = await self._bot.dm_user(farm_notify.account.user.id, embed=embed)
-        if message is None:
+        _, errored = await self._bot.dm_user(farm_notify.account.user.id, embed=embed)
+        if errored:
             await FarmNotify.filter(account=farm_notify.account).update(enabled=False)
 
     async def _check_and_notify(

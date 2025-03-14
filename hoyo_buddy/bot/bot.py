@@ -284,8 +284,9 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     async def dm_user(
         self, user_id: int, *, content: str | None = None, **kwargs: Any
-    ) -> discord.Message | None:
+    ) -> tuple[discord.Message | None, bool]:
         logger.debug(f"DMing user {user_id}")
+        errored = False
 
         try:
             channel = await models.DMChannel.get_or_none(user_id=user_id)
@@ -294,12 +295,13 @@ class HoyoBuddy(commands.AutoShardedBot):
                 dm_channel = user.dm_channel or await user.create_dm()
                 channel = await models.DMChannel.create(user_id=user_id, id=dm_channel.id)
             message = await self.get_partial_messageable(channel.id).send(content, **kwargs)
-        except discord.HTTPException as e:
-            logger.debug(f"Failed to DM user {user_id}: {e}")
+        except discord.Forbidden:
+            return None, False
         except Exception as e:
             self.capture_exception(e)
+            return None, True
         else:
-            return message
+            return message, errored
 
     def get_error_choice(
         self, error_message: LocaleStr | str | Exception, locale: discord.Locale

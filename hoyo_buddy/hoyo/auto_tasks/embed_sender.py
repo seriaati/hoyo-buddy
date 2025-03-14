@@ -77,13 +77,13 @@ class EmbedSender:
 
         chunked_embeds = itertools.batched(embeds, 10)
         for chunk in chunked_embeds:
-            message = await cls._bot.dm_user(
+            _, errored = await cls._bot.dm_user(
                 user_id,
                 embeds=[discord.Embed.from_dict(embed.data) for embed in chunk],
                 content="\n".join(contents) if contents else None,
             )
             await sleep("dm")
-            if message is not None:
+            if not errored:
                 await DiscordEmbed.filter(id__in=[embed.id for embed in chunk]).delete()
 
     @classmethod

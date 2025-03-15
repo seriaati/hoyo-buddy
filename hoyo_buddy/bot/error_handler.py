@@ -12,7 +12,7 @@ from genshin import errors as genshin_errors
 from hakushin.errors import NotFoundError as HakushinNotFoundError
 from yatta.exceptions import DataNotFoundError as YattaDataNotFoundError
 
-from ..embeds import ErrorEmbed
+from ..embeds import DefaultEmbed, ErrorEmbed
 from ..emojis import get_game_emoji
 from ..enums import GeetestType
 from ..exceptions import (
@@ -115,9 +115,12 @@ ENKA_ERROR_CONVERTER: dict[
 }
 
 
-def get_error_embed(error: Exception, locale: discord.Locale) -> tuple[ErrorEmbed, bool]:
+def get_error_embed(
+    error: Exception, locale: discord.Locale
+) -> tuple[ErrorEmbed | DefaultEmbed, bool]:
     recognized = True
     embed = None
+    embed_type: Literal["error", "default"] = "error"
 
     if isinstance(error, ExceptionGroup):
         error = error.exceptions[0]
@@ -155,6 +158,9 @@ def get_error_embed(error: Exception, locale: discord.Locale) -> tuple[ErrorEmbe
             if isinstance(error, genshin_errors.VisitsTooFrequently):
                 # Set as not recognized to get traceback in Sentry
                 recognized = False
+
+            if isinstance(error, genshin_errors.AlreadyClaimed):
+                embed_type = "default"
         else:
             err_info = ENKA_ERROR_CONVERTER.get(type(error))
 
@@ -164,14 +170,23 @@ def get_error_embed(error: Exception, locale: discord.Locale) -> tuple[ErrorEmbe
                 err_info.get("description", None),
                 err_info.get("image", None),
             )
-            embed = ErrorEmbed(locale, title=title, description=description)
+            if embed_type == "default":
+                embed = DefaultEmbed(locale, title=title, description=description)
+            else:
+                embed = ErrorEmbed(locale, title=title, description=description)
+
             if image is not None:
                 embed.set_image(url=image)
 
     if embed is None:
         recognized = False
         description = f"{type(error).__name__}: {error}" if error else type(error).__name__
-        embed = ErrorEmbed(locale, title=LocaleStr(key="error_title"), description=description)
+        if embed_type == "default":
+            embed = DefaultEmbed(
+                locale, title=LocaleStr(key="error_title"), description=description
+            )
+        else:
+            embed = ErrorEmbed(locale, title=LocaleStr(key="error_title"), description=description)
 
     embed.set_footer(text=LocaleStr(key="error_footer"))
     return embed, recognized

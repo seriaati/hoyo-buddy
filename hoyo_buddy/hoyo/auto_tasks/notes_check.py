@@ -57,7 +57,7 @@ class NotesChecker:
         return notify.account.user.settings.locale or Locale.american_english
 
     @classmethod
-    def _get_notify_error_embed(cls, err: Exception, locale: Locale) -> ErrorEmbed:
+    def _get_notify_error_embed(cls, err: Exception, locale: Locale) -> DefaultEmbed | ErrorEmbed:
         embed, recognized = get_error_embed(err, locale)
         if not recognized:
             cls._bot.capture_exception(err)

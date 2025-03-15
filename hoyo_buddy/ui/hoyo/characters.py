@@ -651,7 +651,9 @@ class GIFilterSelector(Select[CharactersView]):
             ),
         ]
         super().__init__(
-            placeholder=LocaleStr(key="characters.filter.placeholder"), options=options
+            placeholder=LocaleStr(key="characters.filter.placeholder"),
+            options=options,
+            min_values=0,
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -685,6 +687,7 @@ class ElementFilterSelector(Select[CharactersView]):
             placeholder=LocaleStr(key="characters.filter.element.placeholder"),
             options=options,
             max_values=len(options),
+            min_values=0,
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -717,6 +720,7 @@ class PathFilterSelector(Select[CharactersView]):
             placeholder=LocaleStr(key="characters.filter.path.placeholder"),
             options=options,
             max_values=len(options),
+            min_values=0,
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -748,6 +752,7 @@ class SpecialtyFilterSelector(Select[CharactersView]):
             placeholder=LocaleStr(key="characters.filter.specialty.placeholder"),
             options=options,
             max_values=len(options),
+            min_values=0,
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -769,6 +774,7 @@ class FactionFilterSelector(Select[CharactersView]):
             placeholder=LocaleStr(key="characters.filter.faction.placeholder"),
             options=options,
             max_values=len(options),
+            min_values=0,
         )
 
     async def callback(self, i: Interaction) -> None:

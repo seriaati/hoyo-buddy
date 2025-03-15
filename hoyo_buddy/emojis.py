@@ -138,8 +138,8 @@ RELIC_POS_EMOJIS: dict[str, str] = {
     "body": "<:IconRelicBody:1196077184394219600>",
 }
 TOGGLE_EMOJIS: dict[bool, str] = {
-    False: "<:TOGGLE_OFF:1215446301202980914>",
-    True: "<:TOGGLE_ON:1215289748415844382>",
+    False: "<:TOGGLE_OFF:1350269103872675931>",
+    True: "<:TOGGLE_ON:1350269111334338560>",
 }
 
 ZZZ_SKILL_TYPE_EMOJIS: dict[hakushin.enums.ZZZSkillType, str] = {

@@ -185,15 +185,6 @@ class AccountNotifSettings(BaseModel):
     )
 
 
-NOTIF_SETTING_FIELDS: dict[AutoTaskType, tuple[str, str]] = {
-    "checkin": ("notify_on_checkin_success", "notify_on_checkin_failure"),
-    "mimo_task": ("mimo_task_success", "mimo_task_failure"),
-    "mimo_buy": ("mimo_buy_success", "mimo_buy_failure"),
-    "mimo_draw": ("mimo_draw_success", "mimo_draw_failure"),
-    "redeem": ("redeem_success", "redeem_failure"),
-}
-
-
 class Settings(BaseModel):
     lang: fields.Field[str | None] = fields.CharField(max_length=10, null=True)
     dark_mode = fields.BooleanField(default=True)

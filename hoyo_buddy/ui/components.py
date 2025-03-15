@@ -60,8 +60,8 @@ class View(discord.ui.View):
 
     async def on_timeout(self) -> None:
         if self.message:
-            self.disable_items()
-            with contextlib.suppress(discord.NotFound, discord.HTTPException):
+            self.clear_items()
+            with contextlib.suppress(discord.HTTPException):
                 await self.message.edit(view=self)
         else:
             logger.warning(f"View {self!r} timed out without a set message")

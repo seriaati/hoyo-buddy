@@ -72,16 +72,13 @@ class AutoMimo:
                     notif_task_type = "mimo_task"
                     embed = await cls._complete_mimo_tasks(account)
                     last_time_attr = "last_mimo_task_time"
-                    toggle_field = "mimo_auto_task"
                 elif task_type == "buy":
                     notif_task_type = "mimo_buy"
                     last_time_attr = "last_mimo_buy_time"
-                    toggle_field = "mimo_auto_buy"
                     embed = await cls._buy_mimo_valuables(account)
                 elif task_type == "draw":
                     notif_task_type = "mimo_draw"
                     last_time_attr = "last_mimo_draw_time"
-                    toggle_field = "mimo_auto_draw"
                     embed = await cls._draw_lottery(account)
             except Exception as e:
                 with error_handler():
@@ -120,10 +117,6 @@ class AutoMimo:
                         account_id=account.id,
                         task_type=notif_task_type,
                     )
-
-                    if isinstance(embed, ErrorEmbed):
-                        setattr(account, toggle_field, False)
-                        await account.save(update_fields=(toggle_field,))
             finally:
                 await sleep("mimo_task")
                 queue.task_done()

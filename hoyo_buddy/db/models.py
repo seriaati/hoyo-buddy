@@ -17,7 +17,14 @@ from tortoise import exceptions, fields
 
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 
-from ..constants import HB_GAME_TO_GPY_GAME, REGION_TO_PLATFORM, SERVER_RESET_HOURS, UTC_8
+from ..constants import (
+    AUTO_TASK_TOGGLE_FIELDS,
+    HB_GAME_TO_GPY_GAME,
+    NOTIF_SETTING_FIELDS,
+    REGION_TO_PLATFORM,
+    SERVER_RESET_HOURS,
+    UTC_8,
+)
 from ..enums import ChallengeType, Game, LeaderboardType, NotesNotifyType, Platform
 from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
@@ -167,6 +174,7 @@ class HoyoAccount(BaseModel):
 
 
 class AccountNotifSettings(BaseModel):
+    # Future me: Make sure to change NOTIF_SETTING_FIELDS in constants.py if you modify this section
     notify_on_checkin_failure = fields.BooleanField(default=True)
     notify_on_checkin_success = fields.BooleanField(default=True)
     mimo_task_success = fields.BooleanField(default=True)
@@ -577,17 +585,21 @@ class DiscordEmbed(BaseModel):
         account_id: int,
         task_type: AutoTaskType,
     ) -> None:
-        fields = NOTIF_SETTING_FIELDS.get(task_type, ())
+        notif_fields = NOTIF_SETTING_FIELDS.get(task_type, ())
+        toggle_field = AUTO_TASK_TOGGLE_FIELDS.get(task_type)
 
-        if isinstance(embed, DefaultEmbed) and fields:
-            success_field = fields[0]
+        if isinstance(embed, ErrorEmbed) and toggle_field is not None:
+            await HoyoAccount.filter(id=account_id).update(**{toggle_field: False})
+
+        if isinstance(embed, DefaultEmbed) and notif_fields:
+            success_field = notif_fields[0]
             notif_settings = await AccountNotifSettings.get_or_none(account_id=account_id).only(
                 success_field
             )
             if not getattr(notif_settings, success_field):
                 return
-        elif isinstance(embed, ErrorEmbed) and fields:
-            failure_field = fields[1]
+        elif isinstance(embed, ErrorEmbed) and notif_fields:
+            failure_field = notif_fields[1]
             notif_settings = await AccountNotifSettings.get_or_none(account_id=account_id).only(
                 failure_field
             )

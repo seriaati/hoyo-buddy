@@ -489,11 +489,12 @@ class HoyoBuddy(commands.AutoShardedBot):
                 fetch_json(self.session, ZZZ_AVATAR_BATTLE_TEMP_URL)
             )
 
-        # Item ID -> name mappings
         item_template = item_temp_task.result()
         avatar_template = avatar_temp_task.result()
+        avatar_battle_temp = avatar_battle_temp_task.result()
         text_maps = {lang: task.result() for lang, task in text_map_tasks.items()}
 
+        # Item ID -> name mappings
         # Save text maps
         for lang, text_map in text_maps.items():
             await write_json(f"{BOT_DATA_PATH}/zzz_text_map_{lang}.json", text_map)
@@ -505,9 +506,20 @@ class HoyoBuddy(commands.AutoShardedBot):
             logger.error("Cannot find first key in ZZZ item template")
             return
 
-        id_key = "PDJOCPDOOAA"  # Found in ItemTemplateTb.json
-        name_key = "KMFMLNCJBEG"  # Found in ItemTemplateTb.json
-        prop_key = "IPJPFKKIELF"  # Found in AvatarBattleTemplateTb.json
+        # Find item keys
+        id_key = next((k for k, v in avatar_template[first_key][0].items() if v == 1011), None)
+        prop_key = next(
+            (k for k, v in avatar_battle_temp[first_key][0].items() if v == [4]), None
+        )
+        name_key = next(
+            (k for k, v in item_template[first_key][0].items() if v == "Item_Coin"), None
+        )
+
+        if not all((id_key, prop_key, name_key)):
+            logger.error(
+                f"Cannot find required keys in ZZZ game data. {id_key=}, {prop_key=}, {name_key=}"
+            )
+            return
 
         for item in item_template[first_key]:
             if any(keyword in item[name_key] for keyword in ("Bangboo_Name", "Item_Weapon")):
@@ -526,8 +538,6 @@ class HoyoBuddy(commands.AutoShardedBot):
             await models.JSONFile.write(f"zzz_item_names_{lang}.json", text_map)
 
         # Agent specialized prop mapping
-        avatar_battle_temp = avatar_battle_temp_task.result()
-
         prop_mapping: dict[str, list[int]] = {}  # avatar ID -> prop IDs
         for avatar in avatar_battle_temp[first_key]:
             prop_mapping[str(avatar[id_key])] = avatar[prop_key]

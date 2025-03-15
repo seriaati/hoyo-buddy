@@ -12,7 +12,7 @@ from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import CONCURRENT_TASK_NUM, MAX_PROXY_ERROR_NUM
 from hoyo_buddy.db import HoyoAccount, User
 from hoyo_buddy.db.models import DiscordEmbed
-from hoyo_buddy.utils import get_now, sleep
+from hoyo_buddy.utils import error_handler, get_now, sleep
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
@@ -75,16 +75,21 @@ class DailyCheckin:
                 await account.fetch_related("user", "user__settings")
                 embed = await cls._daily_checkin(account)
             except Exception as e:
-                if cls._error_counts[account.id] >= MAX_PROXY_ERROR_NUM:
-                    locale = account.user.settings.locale or discord.Locale.american_english
-                    embed, _ = get_error_embed(e, locale)
-                    embed.add_acc_info(account, blur=False)
-                    await DiscordEmbed.create(
-                        embed, user_id=account.user.id, account_id=account.id, task_type="checkin"
-                    )
-                else:
-                    await queue.put(account)
-                    cls._error_counts[account.id] += 1
+                with error_handler():
+                    if cls._error_counts[account.id] >= MAX_PROXY_ERROR_NUM:
+                        locale = account.user.settings.locale or discord.Locale.american_english
+                        embed, _ = get_error_embed(e, locale)
+                        embed.add_acc_info(account, blur=False)
+                        await DiscordEmbed.create(
+                            embed,
+                            user_id=account.user.id,
+                            account_id=account.id,
+                            task_type="checkin",
+                        )
+                    else:
+                        cls._error_counts[account.id] += 1
+                        cls._bot.capture_exception(e)
+                        await queue.put(account)
             else:
                 cls._count += 1
                 await DiscordEmbed.create(

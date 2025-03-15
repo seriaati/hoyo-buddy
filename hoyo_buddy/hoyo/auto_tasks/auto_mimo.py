@@ -16,7 +16,13 @@ from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils import convert_code_to_redeem_url, get_mimo_task_str, get_now, sleep
+from hoyo_buddy.utils import (
+    convert_code_to_redeem_url,
+    error_handler,
+    get_mimo_task_str,
+    get_now,
+    sleep,
+)
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
@@ -78,19 +84,24 @@ class AutoMimo:
                     toggle_field = "mimo_auto_draw"
                     embed = await cls._draw_lottery(account)
             except Exception as e:
-                if cls._error_counts[account.id] >= MAX_PROXY_ERROR_NUM:
-                    locale = account.user.settings.locale or discord.Locale.american_english
-                    embed, _ = get_error_embed(e, locale)
-                    embed.add_acc_info(account, blur=False)
-                    await DiscordEmbed.create(
-                        embed,
-                        user_id=account.user.id,
-                        account_id=account.id,
-                        task_type=notif_task_type,
-                    )
-                else:
-                    await queue.put(account)
-                    cls._error_counts[account.id] += 1
+                with error_handler():
+                    if (
+                        cls._error_counts[account.id] >= MAX_PROXY_ERROR_NUM
+                        and notif_task_type is not None
+                    ):
+                        locale = account.user.settings.locale or discord.Locale.american_english
+                        embed, _ = get_error_embed(e, locale)
+                        embed.add_acc_info(account, blur=False)
+                        await DiscordEmbed.create(
+                            embed,
+                            user_id=account.user.id,
+                            account_id=account.id,
+                            task_type=notif_task_type,
+                        )
+                    else:
+                        cls._error_counts[account.id] += 1
+                        cls._bot.capture_exception(e)
+                        await queue.put(account)
             else:
                 # Set last completion time
                 logger.debug(

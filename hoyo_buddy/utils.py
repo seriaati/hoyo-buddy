@@ -393,6 +393,14 @@ def measure_time(name: str) -> Generator[Any, None, None]:
         print(f"Execution time of {name}: {execution_time:.8f} seconds")  # noqa: T201
 
 
+@contextmanager
+def error_handler() -> Generator[Any, None, None]:
+    try:
+        yield
+    except Exception:
+        logger.exception("Error occurred")
+
+
 def convert_code_to_redeem_url(code: str, *, game: Game) -> str:
     if game is Game.GENSHIN:
         return f"[{code}](<https://genshin.hoyoverse.com/en/gift?code={code}>)"

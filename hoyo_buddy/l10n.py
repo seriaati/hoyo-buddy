@@ -31,7 +31,6 @@ from .constants import (
     ZENLESS_DATA_LANGS,
     get_docs_url,
 )
-from .utils import capitalize_first_word as capitalize_first_word_
 from .utils import convert_to_title_case
 
 if TYPE_CHECKING:
@@ -260,12 +259,7 @@ class Translator:
         return message
 
     def translate(
-        self,
-        string: LocaleStr | str,
-        locale: Locale,
-        *,
-        title_case: bool = False,
-        capitalize_first_word: bool = False,
+        self, string: LocaleStr | str, locale: Locale, *, title_case: bool = False
     ) -> str:
         if isinstance(string, str):
             # It's intentional that we don't apply any modifiers when string is not LocaleStr
@@ -299,8 +293,6 @@ class Translator:
 
         if title_case:
             translation = convert_to_title_case(translation)
-        elif capitalize_first_word:
-            translation = capitalize_first_word_(translation)
 
         translation = self._replace_command_with_mentions(translation)
         translation = self._replace_docs_urls(translation, locale=locale)

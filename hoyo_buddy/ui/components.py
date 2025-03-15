@@ -200,9 +200,7 @@ class Button(discord.ui.Button, Generic[V_co]):
 
     def translate(self, locale: discord.Locale) -> None:
         if self.locale_str_label:
-            self.label = translator.translate(
-                self.locale_str_label, locale, capitalize_first_word=True
-            )
+            self.label = translator.translate(self.locale_str_label, locale)
 
     async def set_loading_state(self, i: Interaction, **kwargs: Any) -> None:
         self.original_label = self.label[:] if self.label else None
@@ -622,7 +620,7 @@ class Modal(discord.ui.Modal):
         self.stop()
 
     def translate(self, locale: discord.Locale) -> None:
-        self.title = translator.translate(self.locale_str_title, locale, title_case=True)
+        self.title = translator.translate(self.locale_str_title, locale)
         for item in self.children:
             if isinstance(item, TextInput):
                 item.label = translator.translate(item.locale_str_label, locale)

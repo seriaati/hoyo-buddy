@@ -169,6 +169,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             await self.start_prometheus_server()
 
         await CARD_DATA.load()
+        self.loop.set_exception_handler(self.asyncio_erorr_handler)
 
     @cached(TTLCache(maxsize=1, ttl=3600))
     async def get_supporter_ids(self) -> set[int]:
@@ -615,6 +616,16 @@ class HoyoBuddy(commands.AutoShardedBot):
 
             with contextlib.suppress(discord.HTTPException):
                 await message.edit(embed=embed, view=None)
+
+    def asyncio_erorr_handler(self, _: asyncio.AbstractEventLoop, context: dict[str, Any]) -> None:
+        exception = context.get("exception")
+        message = context.get("message")
+        task = context.get("task")
+
+        if exception is not None:
+            self.capture_exception(exception)
+        else:
+            logger.error(f"Unhandled exception in task {task!r} with message {message!r}")
 
     async def close(self) -> None:
         logger.info("Bot shutting down...")

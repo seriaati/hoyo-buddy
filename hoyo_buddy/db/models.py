@@ -584,9 +584,9 @@ class DiscordEmbed(BaseModel):
         *,
         user_id: int,
         account_id: int,
-        task_type: AutoTaskType | None = None,
+        task_type: AutoTaskType,
     ) -> None:
-        fields = NOTIF_SETTING_FIELDS.get(task_type, ()) if task_type is not None else ()
+        fields = NOTIF_SETTING_FIELDS.get(task_type, ())
 
         if isinstance(embed, DefaultEmbed) and fields:
             success_field = fields[0]

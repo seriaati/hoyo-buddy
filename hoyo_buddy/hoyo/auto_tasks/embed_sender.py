@@ -74,7 +74,7 @@ class EmbedSender:
                 content = None
 
             _, errored = await cls._bot.dm_user(
-                user_id, embeds=discord.Embed.from_dict(embed.data), content=content
+                user_id, embed=discord.Embed.from_dict(embed.data), content=content
             )
             await sleep("dm")
             if not errored:

@@ -95,6 +95,8 @@ class EmbedSender:
                     logger.debug("No embeds to send for")
                     return
 
+                logger.info(f"Starting {cls.__name__} for {len(embeds)} embeds")
+
                 # Organize embeds into a dictionary with user_id as key
                 embeds_dict: defaultdict[int, list[DiscordEmbed]] = defaultdict(list)
                 for embed in embeds:

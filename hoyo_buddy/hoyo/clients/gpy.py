@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import random
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple, overload
 
@@ -704,12 +705,16 @@ class GenshinClient(ProxyGenshinClient):
 
                 post_id: str | None = args.get("post_id")
                 if post_id is not None:
-                    reply_id = await self.reply_to_post(
-                        random.choice(POST_REPLIES), post_id=int(post_id)
-                    )
-                    await sleep("mimo_comment")
-                    await self.delete_reply(reply_id=reply_id, post_id=int(post_id))
-                    await sleep("mimo_comment")
+                    try:
+                        reply_id = await self.reply_to_post(
+                            random.choice(POST_REPLIES), post_id=int(post_id)
+                        )
+                    except genshin.AccountMuted:
+                        await sleep("mimo_comment")
+                    else:
+                        await sleep("mimo_comment")
+                        await self.delete_reply(reply_id=reply_id, post_id=int(post_id))
+                        await sleep("mimo_comment")
                     finished = True
 
                 topic_id: str | None = args.get("topic_id")

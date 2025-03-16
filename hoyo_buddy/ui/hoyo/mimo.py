@@ -558,7 +558,6 @@ class AutoTaskSuccessNotify(ui.ToggleButton[MimoView]):
 
     async def callback(self, i: Interaction) -> None:
         await super().callback(i)
-        await self.view.account.fetch_related("notif_settings")
         self.view.account.notif_settings.mimo_task_success = self.current_toggle
         await self.view.account.notif_settings.save(update_fields=("mimo_task_success",))
 

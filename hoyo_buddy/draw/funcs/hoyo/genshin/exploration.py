@@ -29,9 +29,7 @@ class ExplorationCard:
 
     @staticmethod
     def _get_reputation_level(exploration: Exploration | None) -> str:
-        if exploration is None:
-            return ": 0"
-        return f": {exploration.level}"
+        return str(0 if exploration is None else exploration.level)
 
     @staticmethod
     def _get_tribe_levels(exploration: Exploration | None) -> str:

@@ -143,6 +143,7 @@ class Hoyo(commands.Cog):
         if not account_.can_redeem_code:
             raise CantRedeemCodeError
 
+        await account_.fetch_related("notif_settings")
         locale = await get_locale(i)
         available_codes = await RedeemUI.fetch_available_codes(
             i.client.session, game=HB_GAME_TO_GPY_GAME[account_.game]

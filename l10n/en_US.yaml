@@ -797,3 +797,5 @@ open_game_vietnam_label: Open game (Vietnam version)
 gift_code_redeemed: Gift code has been claimed already
 show_ui_button_label: Show UI
 hide_ui_button_label: Hide UI
+redeem_failure_notify_toggle_label: Notify on auto redeem failure
+redeem_success_notify_toggle_label: Notify on auto redeem success

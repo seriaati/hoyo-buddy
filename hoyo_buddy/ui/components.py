@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Any, Generic, Self, TypeVar
+from typing import TYPE_CHECKING, Any, Generic, Literal, Self, TypeVar
 
 import discord
 from discord.utils import MISSING
@@ -32,6 +32,7 @@ __all__ = (
     "SelectOption",
     "TextInput",
     "ToggleButton",
+    "ToggleUIButton",
     "URLButtonView",
     "V_co",
     "View",
@@ -666,3 +667,49 @@ class Modal(discord.ui.Modal):
                     raise InvalidInputError(
                         LocaleStr(key="invalid_input.input_needs_to_be_bool", input=item.label)
                     )
+
+
+class ToggleUIButton(Button, Generic[V_co]):
+    def __init__(self, *, row: int = 4) -> None:
+        super().__init__(
+            style=discord.ButtonStyle.gray,
+            label=LocaleStr(key="hide_ui_button_label"),
+            emoji=emojis.HIDE_UI,
+            row=row,
+        )
+        self._items: Sequence[Button | Select] = []
+        self._mode: Literal["show", "hide"] = "hide"
+        self.view: V_co
+
+    def _set_style(self) -> None:
+        self.emoji = emojis.HIDE_UI if self._mode == "hide" else emojis.SHOW_UI
+        self.style = (
+            discord.ButtonStyle.gray if self._mode == "hide" else discord.ButtonStyle.blurple
+        )
+        self.locale_str_label = LocaleStr(
+            key="hide_ui_button_label" if self._mode == "hide" else "show_ui_button_label"
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        message = i.message
+        if message is None:
+            return
+
+        if self._mode == "hide":
+            children = self.view.children.copy()
+            children.remove(self)
+            self._items = children  # pyright: ignore[reportAttributeAccessIssue]
+            self.view.clear_items()
+
+            self._mode = "show"
+            self._set_style()
+            self.view.add_item(self)
+        else:
+            self.view.clear_items()
+            self.view.add_items(self._items)
+
+            self._mode = "hide"
+            self._set_style()
+            self.view.add_item(self)
+
+        await i.response.edit_message(view=self.view)

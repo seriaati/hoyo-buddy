@@ -62,6 +62,7 @@ from hoyo_buddy.ui import (
     SelectOption,
     TextInput,
     ToggleButton,
+    ToggleUIButton,
 )
 from hoyo_buddy.utils import get_now
 
@@ -558,6 +559,7 @@ class CharactersView(PaginatorView):
             self.add_item(ShowMaxLevelOnly(current_toggle=self.show_max_level_only))
 
         self.add_item(SorterSelector(self.sorter, self.game))
+        self.add_item(ToggleUIButton())
 
     def _set_pages(self, characters: Sequence[Character], *, embed: DefaultEmbed) -> None:
         page_num = len(list(itertools.batched(characters, self.characters_per_page)))

@@ -795,3 +795,5 @@ open_game_label: Open game
 open_game_cloud_label: Open game (cloud gaming)
 open_game_vietnam_label: Open game (Vietnam version)
 gift_code_redeemed: Gift code has been claimed already
+show_ui_button_label: Show UI
+hide_ui_button_label: Hide UI

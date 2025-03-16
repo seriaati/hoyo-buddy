@@ -171,6 +171,9 @@ MIMO_POINT_EMOJIS: dict[Game, str] = {
     Game.GENSHIN: "<:GI_MIMO_POINT:1321270374998212640>",
 }
 
+HIDE_UI = "<:HIDE_UI:1350698524181921904>"
+SHOW_UI = "<:SHOW_UI:1350698517479555073>"
+
 
 def get_game_emoji(game: genshin.Game | Game) -> str:
     if game is genshin.Game.GENSHIN or game is Game.GENSHIN:

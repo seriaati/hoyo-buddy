@@ -38,7 +38,7 @@ from hoyo_buddy.exceptions import (
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import Dismissible, DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
-from hoyo_buddy.ui import Button, Select, View
+from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
 from hoyo_buddy.ui.hoyo.profile.items.team_card_settings_btn import TeamCardSettingsButton
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
@@ -341,6 +341,7 @@ class ProfileView(View):
         if self._account is not None:
             self.add_item(RemoveFromCacheButton(row=4))
         self.add_item(CardInfoButton(row=4))
+        self.add_item(ToggleUIButton())
 
     async def _draw_src_character_card(
         self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings

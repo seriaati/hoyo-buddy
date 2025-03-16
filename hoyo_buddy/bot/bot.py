@@ -508,9 +508,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         # Find item keys
         id_key = next((k for k, v in avatar_template[first_key][0].items() if v == 1011), None)
-        prop_key = next(
-            (k for k, v in avatar_battle_temp[first_key][0].items() if v == [4]), None
-        )
+        prop_key = next((k for k, v in avatar_battle_temp[first_key][0].items() if v == [4]), None)
         name_key = next(
             (k for k, v in item_template[first_key][0].items() if v == "Item_Coin"), None
         )

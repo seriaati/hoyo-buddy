@@ -15,6 +15,9 @@ if TYPE_CHECKING:
 
 __all__ = ("DeviceInfoPage",)
 
+DEVICE_INFO_APK = "https://raw.githubusercontent.com/forchannot/get_device_info/main/app/build/outputs/apk/debug/app-debug.apk"
+AAID_OBTAIN_APP = "https://apkpure.com/easy-advertising-id/advertising.id.ccpa.gdpr/downloading"
+
 
 class DeviceInfoPage(ft.View):
     def __init__(self, *, params: Params) -> None:
@@ -29,7 +32,15 @@ class DeviceInfoPage(ft.View):
                             ft.Text(
                                 "1. 点击下方按钮下载用于获取设备信息的应用程序\n2. 安装并启动该应用\n3. 点击「点击查看信息」\n4. 点击「点击复制」\n5. 点击下方的「提交设备信息」按钮并将复制的信息贴上"
                             ),
-                            DownloadAppButton(),
+                            ft.Text(
+                                "如果复制下来的 oaid 部份显示 error_123456, 则需使用 aaid。\n1. 点击下方按钮下载获取 aaid 应用程序的 apk\n2. 安装后启动并点击右下角按钮复制 aaid, 并用新复制的 aaid 取代原本的 error_123456\n结果应该长的像这样: 'oaid':'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'"
+                            ),
+                            ft.Row(
+                                [
+                                    DownloadAppButton("复制设备信息应用程序", DEVICE_INFO_APK),
+                                    DownloadAppButton("获取 aaid 应用程序", AAID_OBTAIN_APP),
+                                ]
+                            ),
                             ft.Container(
                                 DeviceInfoForm(params=params), margin=ft.margin.only(top=16)
                             ),
@@ -41,17 +52,13 @@ class DeviceInfoPage(ft.View):
 
 
 class DownloadAppButton(ft.ElevatedButton):
-    def __init__(self) -> None:
-        super().__init__(
-            text="下载应用程序", icon=ft.icons.DOWNLOAD, on_click=self.goto_download_page
-        )
+    def __init__(self, text: str, url: str) -> None:
+        super().__init__(text=text, icon=ft.icons.DOWNLOAD, on_click=self.goto_download_page)
+        self._url = url
 
     async def goto_download_page(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        page.launch_url(
-            "https://raw.githubusercontent.com/forchannot/get_device_info/main/app/build/outputs/apk/debug/app-debug.apk",
-            web_window_name=ft.UrlTarget.BLANK.value,
-        )
+        page.launch_url(self._url, web_window_name=ft.UrlTarget.BLANK.value)
 
 
 class DeviceInfoForm(ft.Column):

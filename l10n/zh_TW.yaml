@@ -643,7 +643,7 @@ star5_guaranteed: "當前保底情況: 必定得到 UP 池物品"
 star5_no_guaranteed: "當前保底情況: **不一定**得到 UP 池物品"
 characters_view_show_max_level_only: 僅顯示滿級角色
 characters_embed_max_level_characters: 滿級角色
-natlan_reputation: ""
+natlan_reputation: "聲望等級: {reputation}, 部落: {tribes}"
 shiyu_overview: 總覽
 shiyu_fastest_clear_time: "當期最快通關時間:"
 shiyu_highest_frontier: "最高通關防線:"
@@ -775,7 +775,6 @@ mimo_auto_draw_desc: "Hoyo Buddy 會在積分足夠時自動抽獎；如果自�
 mimo_auto_draw_success_notify_toggle_label: 在自動抽獎成功時通知
 mimo_auto_draw_failure_notify_toggle_label: 在自動抽獎失敗時通知
 mimo_auto_draw_embed_desc: "Hoyo Buddy 使用 {points} 點積分幫你抽獎並獲得了以下物品。\n如果下方有顯示禮物碼，請自行使用</redeem>兌換。"
-mimo_auto_task_error_dm_content: "由於發生錯誤，旅行 Mimo: {feature}功能已被停用，你可以使用</mimo>將其重新啟用。\n如果這個錯誤持續發生，或是你不知道如何解決它，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)內尋求協助。"
 dismissible_hsr_temp2_desc: "你現在可以使用 Hoyo Buddy 樣式 2 來生成星穹鐵道角色卡片，在「卡片設定」中設置。推薦使用橫向圖片。"
 bounty_commission.embed.description: 懸賞委託尚未全部完成
 ridu_points.embed.description: 麗都週記任務尚未全部完成
@@ -783,7 +782,7 @@ changelog_embed_title: 更新日誌
 web_events_notify_toggle_label: 在有新的網頁活動時通知
 web_events_cmd_desc: 查看當前正在進行的網頁活動及設置通知
 web_events_embed_footer: 使用 /web-events 來調整通知
-auto_task_error_dm_content: "由於發生錯誤，{feature}功能已被關閉，你可以使用{command}將其重新啟動\n如果這個錯誤持續發生，或是你不知道該如何解決，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)中尋求協助"
+auto_task_error_dm_content: "由於發生錯誤，{account} 的 {feature} 功能已被關閉，你可以使用{command}將其重新啟動\n如果這個錯誤持續發生，或是你不知道該如何解決，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)中尋求協助"
 is_support_custom_image_desc: 支援自定義圖片
 is_not_support_custom_image_desc: 不支援自定義圖片
 template_preview_header: 範例樣式
@@ -796,3 +795,7 @@ open_game_label: 啟動遊戲
 open_game_cloud_label: 啟動遊戲（雲端遊戲）
 open_game_vietnam_label: 啟動遊戲（越南版本）
 gift_code_redeemed: 禮物碼已被兌換過
+show_ui_button_label: 顯示界面
+hide_ui_button_label: 隱藏界面
+redeem_failure_notify_toggle_label: 在自動兌換失敗時通知
+redeem_success_notify_toggle_label: 在自動兌換成功時通知

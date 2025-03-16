@@ -42,6 +42,8 @@ class SpiralAbyssCard:
             style="bold",
             position=(3026, 188),
             anchor="rm",
+            max_width=1622,
+            dynamic_fontsize=True,
         )
 
     def write_damage_info(self) -> None:

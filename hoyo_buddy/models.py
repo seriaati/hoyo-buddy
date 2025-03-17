@@ -428,6 +428,22 @@ class SRGFRecord(BaseModel):
         )
 
 
+class StarwardZZZRecord(BaseModel):
+    id: int
+    banner_type: int = Field(alias="gacha_type")
+    rarity: int = Field(alias="rank_type")
+    tz_hour: int
+    time: datetime.datetime
+    item_id: int
+
+    @field_validator("time")
+    @classmethod
+    def __add_timezone(cls, value: datetime.datetime, info: ValidationInfo) -> datetime.datetime:
+        return value.replace(
+            tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
+        )
+
+
 @dataclass(kw_only=True)
 class SingleBlock:
     icon: str

@@ -29,6 +29,7 @@ from hoyo_buddy.models import (
     SRGFRecord,
     StarDBRecord,
     StarRailStationRecord,
+    StarwardZZZRecord,
     UIGFRecord,
     ZZZRngMoeRecord,
 )
@@ -436,6 +437,39 @@ class GachaCommand:
 
         return count
 
+    async def _starward_zzz_import(
+        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
+    ) -> int:
+        """Starward Launcher ZZZ import."""
+        self._validate_file_ext(file, "json")
+
+        bytes_ = await file.read()
+        data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
+
+        uid = str(data["info"]["uid"])
+        if uid != str(account.uid):
+            raise UIDMismatchError(uid)
+
+        tz_hour = data["info"]["region_time_zone"]
+        records = [StarwardZZZRecord(tz_hour=tz_hour, **record) for record in data["list"]]
+        records.sort(key=lambda x: x.id)
+
+        count = 0
+
+        for record in records:
+            created = await GachaHistory.create(
+                wish_id=record.id,
+                rarity=record.rarity,
+                item_id=record.item_id,
+                banner_type=record.banner_type,
+                account=account,
+                time=record.time,
+            )
+            if created:
+                count += 1
+
+        return count
+
     async def run_import(self, i: Interaction, account: HoyoAccount) -> None:
         locale = await get_locale(i)
         view = GachaImportView(account, author=i.user, locale=locale)
@@ -467,6 +501,8 @@ class GachaCommand:
                 count = await self._stardb_import(i, account=account, file=file)
             elif source is GachaImportSource.UIGF:
                 count = await self._uigf_import(i, account=account, file=file)
+            elif source is GachaImportSource.STARWARD_ZZZ:
+                count = await self._starward_zzz_import(i, account=account, file=file)
             else:  # SRGF
                 count = await self._srgf_import(i, account=account, file=file)
         except Exception as e:

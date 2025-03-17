@@ -148,6 +148,7 @@ class GachaImportSource(StrEnum):
     STAR_DB = "stardb.gg"
     UIGF = "UIGF"
     SRGF = "SRGF"
+    STARWARD_ZZZ = "Starward ZZZ"
 
 
 class LeaderboardType(StrEnum):

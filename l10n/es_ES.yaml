@@ -26,7 +26,7 @@ abyss_chamber.ley_line_disorder.embed.field.name: Crecida de Línea Ley
 abyss_enemy.item_description: "Vida: {HP}"
 acc_no_default_param_desc: Cuenta con la que ejecutar este comando
 account_autocomplete_param_description: "Cuenta con la que ejecutar este comando, por defecto se usa la seleccionada en /accounts"
-account_autocomplete_param_name: Cuenta
+account_autocomplete_param_name: cuenta
 account_deleted_description: "{account} ha sido eliminada."
 account_deleted_title: Cuenta eliminada
 account_manager_footer: La cuenta seleccionada será la predeterminada para todos los comandos.
@@ -701,7 +701,7 @@ challenge_command_pf_desc: Generar tarjeta de Pura Ficción
 challenge_command_apc_shadow_desc: Generar tarjeta de Espejismo Apocalíptico
 challenge_command_shiyu_desc: Generar tarjeta de Defensa Shiyu
 account_select_placeholder: Selecciona una cuenta...
-guild_only_command_param_name: Solo para servidores
+guild_only_command_param_name: solo-para-servidores
 guild_only_command_param_desc: Mostrar solo la clasificación de los miembros del gremio
 yes_choice: "Si"
 no_choice: "No"

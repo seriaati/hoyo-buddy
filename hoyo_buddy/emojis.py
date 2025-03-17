@@ -7,7 +7,7 @@ import hakushin
 
 from .enums import Game, GenshinCity, GenshinElement, HSRElement, HSRPath, ZZZElement
 
-LOADING = "<a:loading_emoji:1106388708862738463>"
+LOADING = "<a:LOADING:1351086307987685407>"
 DELETE = "<:DELETE:1166012141833310248>"
 EDIT = "<:EDIT:1166020688927260702>"
 ADD = "<:ADD:1166153842816200804>"

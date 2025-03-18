@@ -164,7 +164,7 @@ exploration.precious_chests: Valiosos
 exploration.progress: "Progreso de Exploración: {progress}%"
 exploration.remarkable_chests: Extraños
 exploration.title: Exploración de mundo
-exploration.waypoints: Puntos de teletransporte desbloqueados
+exploration.waypoints: Teletransportes desbloqueados
 exploration_command_description: Ver estadísticas de exploración en Genshin Impact
 farm_add_command.item_already_in_list: El ítem ya se encuentra en la lista
 farm_add_command.item_already_in_list_description: Este ítem ya está en tu lista de recordatorios para farmeo.

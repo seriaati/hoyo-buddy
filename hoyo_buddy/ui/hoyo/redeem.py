@@ -169,7 +169,7 @@ class RedeemAllAvailableCodesButton(Button[RedeemUI]):
 class RedeemSuccess(ToggleButton[RedeemUI]):
     def __init__(self, *, current_toggle: bool) -> None:
         super().__init__(
-            current_toggle, toggle_label=LocaleStr(key="redeem_succes_notify_toggle_label"), row=4
+            current_toggle, toggle_label=LocaleStr(key="redeem_success_notify_toggle_label"), row=4
         )
 
     async def callback(self, i: Interaction) -> None:

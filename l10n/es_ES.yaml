@@ -1,6 +1,6 @@
 about_command.contribute: Contribuir
 about_command.developer: Desarrollador
-about_command.discord_server: Server de Discord
+about_command.discord_server: Servidor de Discord
 about_command.guild_count: Cantidad de servidores
 about_command.latest_changes: Últimos cambios
 about_command.ram_usage: Uso de RAM
@@ -109,7 +109,7 @@ characters_cmd_genshin_desc: Ver y filtrar tus personajes de Genshin Impact
 characters_cmd_hsr_desc: Ver y filtrar tus personajes de Honkai Star Rail
 characters_cmd_zzz_desc: Ver y filtrar tus agentes de Zenless Zone Zero
 characters_cmd_honkai_desc: Ver y filtrar tus personajes de Honkai Impact 3rd
-checkin_button_label: Check-in
+checkin_button_label: Registro
 checkin_command_description: Login diario del juego
 complete_captcha_button_label: Completa el CAPTCHA
 complete_geetest_button_description: Haga clic en el botón a continuación para completar la verificación Geetest
@@ -119,7 +119,7 @@ continue_button_label: Continuar
 cryo: Cryo
 daily_button.label: Recordatorio diario
 daily_check_in: Login diario
-daily_checkin_embed_description: "Registrado {day} día(s) este mes\nRegistro perdido durante {missed} día(s)\n"
+daily_checkin_embed_description: "{day} día(s) de login diario reclamados este mes\nSe perdieron {missed} día(s) de login diario\n"
 daily_modal.title: Configurar el login diario
 delete_account_button_label: Eliminar cuenta selecionada
 dendro: Dendro
@@ -154,15 +154,15 @@ exped_button.label: Recordatorio de expedición
 exped_modal.title: Configurar Recordatorio de expedición
 exploration.chests: Cofres desbloqueados
 exploration.common_chests: Común
-exploration.exquisite_chests: Sofisticado
-exploration.luxurious_chests: Lujoso
+exploration.exquisite_chests: Sofisticados
+exploration.luxurious_chests: Lujosos
 exploration.placeholder: Aún no lanzado
-exploration.placeholder_quote: '"Cada viaje tiene su día final. No te apresures."
+exploration.placeholder_quote: '"Cada viaje tiene su final. No te apresures."
 
   -Zhongli'
-exploration.precious_chests: Valioso
+exploration.precious_chests: Valiosos
 exploration.progress: "Progreso de Exploración: {progress}%"
-exploration.remarkable_chests: Resaltable
+exploration.remarkable_chests: Extraños
 exploration.title: Exploración de mundo
 exploration.waypoints: Puntos de teletransporte desbloqueados
 exploration_command_description: Ver estadísticas de exploración en Genshin Impact
@@ -306,8 +306,8 @@ notif_modal.notify_time.label: "Notificar X h antes del reinicio (4:00 a. m.)"
 notif_modal.notify_weekday.label: Día de la semana para notificar
 notif_modal.threshold.label: Límite
 notification_settings_button_label: Configurar notificaciones
-notify_on_failure_button_label: Notificar reclamo de Recompensa Diaria fallido
-notify_on_success_button_label: Notificar reclamo de Recompensa Diaria exitosa
+notify_on_failure_button_label: Notificar reclamo de Login Diario fallido
+notify_on_success_button_label: Notificar reclamo de Login Diario exitoso
 mimo_auto_task_success_notify_toggle_label: Notificar si la tarea automática se completa con éxito
 mimo_auto_task_failure_notify_toggle_label: Notificar si la tarea automática falla
 mimo_auto_buy_success_notify_toggle_label: Notificar si la compra automática de recompensas tiene éxito
@@ -493,9 +493,9 @@ set_cur_temp_as_default.done: Hecho
 set_cur_temp_as_default.done_desc: "Tu plantilla predeterminada para {game} está configurada en {template}"
 remove_from_cache_finish_embed_desc: Vuelva a ejecutar el comando /profile para ver los cambios
 third_party_card_temp_error_title: Esta plantilla externa ha tenido un error
-third_party_card_temp_error_message: "La plantilla de la tarjeta para este personaje ha sido restablecida a la plantilla de Hoyo Buddy. Si este error persiste, por favor busca ayuda en nuestro [Servidor de Discord](<https://link.seria.moe/hb-dc>)."
+third_party_card_temp_error_message: "La plantilla de la tarjeta para este personaje ha sido restablecida a la plantilla de Hoyo Buddy. Si este error persiste, por favor busca ayuda en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)."
 account_locked_title: La cuenta ha estado bloqueada durante 20 minutos
-account_locked_description: "Ha ingresado la contraseña incorrecta demasiadas veces. Espere 20 minutos y vuelva a intentarlo. Si no puede configurar su cuenta, busque ayuda en nuestro [servidor de Discord] (<https://link.seria.moe/hb-dc>)."
+account_locked_description: "Ha ingresado la contraseña incorrecta demasiadas veces. Espera 20 minutos y vuelve a intentarlo. Si no puedes configurar tu cuenta, busca ayuda en nuestro [servidor de Discord] (<https://link.seria.moe/hb-dc>)."
 ether: Etéreo
 electric: Eléctrico
 profile.no_data.title: Datos de jugador no disponibles
@@ -541,10 +541,10 @@ search.agent_page.placeholder: Seleccione una página...
 zzz.skill_type.placeholder: Selecciona una habilidad de agente...
 zzz.cinema.placeholder: Selecciona un Cine Mental...
 zzz.engine.refinement_select.placeholder: Selecciona un nivel de refinamiento...
-dyk_discord_server_updates: "Publicamos notas de actualización en nuestro [Servidor de Discord](<https://link.seria.moe/hb-dc>)"
-dyk_discord_server_feedback: "Puedes unirte a nuestro [Servidor de Discord](<https://link.seria.moe/hb-dc>)"
-dyk_contact_me: "Puedes contactarnos en nuestro [Servidor de Discord](<https://link.seria.moe/hb-dc>)"
-dyk_need_help_no_title: "¿Necesitas ayuda? Unete a nuestro [Servidor de Discord](<https://link.seria.moe/hb-dc>)"
+dyk_discord_server_updates: "Publicamos notas de actualización en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)"
+dyk_discord_server_feedback: "Puedes unirte a nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)"
+dyk_contact_me: "Puedes contactarnos en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)"
+dyk_need_help_no_title: "¿Necesitas ayuda? Unete a nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)"
 dyk_donate_no_title: " ¿Te gusta usar Hoyo Buddy? Considera [hacer una donación](<https://link.seria.moe/donate>) para apoyarnos"
 dyk_team: "Hoyo Buddy está hecho por un pequeño equipo de 1 programador y 1 diseñador"
 dyk_disable: Puedes desactivar este mensaje con /settings
@@ -556,8 +556,8 @@ dyk_python: Hoyo Buddy esta escrito puramente en Python
 dyk_unreleased: Puedes ver contenido no lanzado del juego con /search
 dyk_team_card: Puedes generar una tarjeta de equipo en /profile seleccionando varios personajes
 dyk_set_default_acc: Puede configurar una cuenta predeterminada que se utiliza para ejecutar todos los comandos en /accounts
-title_dyk: "¿Sabías?"
-button_label_dyk: Mensajes de curiosidades
+title_dyk: "¿Sabías que...?"
+button_label_dyk: Mensajes de información
 events_view_start_date_embed_field: Hora de inicio
 events_view_end_date_embed_field: Hora de finalización
 events_view_ann_select_placeholder: Selecciona un evento...

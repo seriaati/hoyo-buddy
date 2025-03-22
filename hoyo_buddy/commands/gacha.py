@@ -83,8 +83,10 @@ class GachaCommand:
         records_df = await i.client.loop.run_in_executor(
             i.client.executor, pd.read_csv, io.BytesIO(bytes_)
         )
-        data: list[dict[str, Any]] = records_df.to_dict(orient="records")  # pyright: ignore[reportAssignmentType]
-        records = [StarRailStationRecord(**record) for record in data]
+        data = records_df.to_dict(orient="records")
+        records = [
+            StarRailStationRecord(**{str(k): v for k, v in record.items()}) for record in data
+        ]
         records.sort(key=lambda x: x.id)
 
         count = 0

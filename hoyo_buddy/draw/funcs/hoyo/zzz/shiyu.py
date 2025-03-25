@@ -224,8 +224,14 @@ class ShiyuDefenseCard:
                             style="bold",
                             anchor="mm",
                         )
+
+                        # Backward compatibility, ShiyuDefenseCharacter.mindscape is added in
+                        # https://github.com/thesadru/genshin.py/commit/4e17d37f84048d2b0a478b45e374f980a7bbe3a3
+                        rank: int = getattr(agent, "mindscape", None) or self.agent_ranks.get(
+                            agent.id, 0
+                        )
                         drawer.write(
-                            str(self.agent_ranks.get(agent.id, 0)),
+                            str(rank),
                             size=36,
                             position=(start_pos[0] + 158, start_pos[1] + 22),
                             color=self.white,

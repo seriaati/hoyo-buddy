@@ -6,7 +6,7 @@ import contextlib
 import datetime
 import pickle
 from functools import cached_property
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import genshin
 import orjson
@@ -30,6 +30,8 @@ from ..icons import get_game_icon
 from ..utils import blur_uid, get_now
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     import aiohttp
 
     from ..hoyo.clients.gpy import GenshinClient
@@ -335,10 +337,11 @@ class ChallengeHistory(BaseModel):
     season_id = fields.IntField()
     name: fields.Field[str | None] = fields.CharField(max_length=64, null=True)
     challenge_type = fields.CharEnumField(ChallengeType, max_length=32)
-    data = fields.BinaryField()
+    data: fields.Field[bytes | None] = fields.BinaryField(null=True)
     start_time = fields.DatetimeField()
     end_time = fields.DatetimeField()
     lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)
+    json_data: fields.Field[dict[str, Any] | None] = fields.JSONField(null=True)
 
     class Meta:
         unique_together = ("uid", "season_id", "challenge_type")
@@ -353,17 +356,50 @@ class ChallengeHistory(BaseModel):
     @property
     def parsed_data(self) -> ChallengeWithLang:
         """Parsed challenge data from binary pickled data."""
-        challenge = pickle.loads(self.data)
+        if self.json_data is None:
+            if self.data is None:
+                # This shouldn't happen, data could be None because of migration to use json_data
+                msg = "Both json_data and data are None in ChallengeHistory"
+                raise ValueError(msg)
+            challenge = pickle.loads(self.data)
+        else:
+            challenge = self.load_data(self.json_data, challenge_type=self.challenge_type)
+
         lang = getattr(challenge, "lang", None)
         if lang is None:
             # NOTE: Backward compatibility, old data has lang attr, new data doesn't
             challenge.__dict__["lang"] = self.lang
-        return challenge
+        return cast("ChallengeWithLang", challenge)
+
+    @classmethod
+    def load_data(cls, raw: Mapping[str, Any], *, challenge_type: ChallengeType) -> Challenge:
+        if challenge_type is ChallengeType.SPIRAL_ABYSS:
+            return genshin.models.SpiralAbyss(**raw)
+        if challenge_type is ChallengeType.IMG_THEATER:
+            return genshin.models.ImgTheaterData(**raw)
+        if challenge_type is ChallengeType.SHIYU_DEFENSE:
+            return genshin.models.ShiyuDefense(**raw)
+        if challenge_type is ChallengeType.ASSAULT:
+            return genshin.models.DeadlyAssault(**raw)
+        if challenge_type is ChallengeType.APC_SHADOW:
+            return genshin.models.StarRailAPCShadow(**raw)
+        if challenge_type is ChallengeType.MOC:
+            return genshin.models.StarRailChallenge(**raw)
+        if challenge_type is ChallengeType.PURE_FICTION:
+            return genshin.models.StarRailPureFiction(**raw)
 
     @classmethod
     async def add_data(
-        cls, *, uid: int, challenge_type: ChallengeType, season_id: int, data: Challenge, lang: str
+        cls,
+        *,
+        uid: int,
+        challenge_type: ChallengeType,
+        season_id: int,
+        raw: Mapping[str, Any],
+        lang: str,
     ) -> None:
+        data = cls.load_data(raw, challenge_type=challenge_type)
+
         if isinstance(data, genshin.models.SpiralAbyss | genshin.models.DeadlyAssault):
             start_time = data.start_time
             end_time = data.end_time
@@ -390,15 +426,15 @@ class ChallengeHistory(BaseModel):
                 uid=uid,
                 season_id=season_id,
                 challenge_type=challenge_type,
-                data=pickle.dumps(data),
                 start_time=start_time,
                 end_time=end_time,
                 name=name,
                 lang=lang,
+                json_data=raw,
             )
         except exceptions.IntegrityError:
             await cls.filter(uid=uid, season_id=season_id, challenge_type=challenge_type).update(
-                data=pickle.dumps(data), name=name, lang=lang
+                name=name, lang=lang, json_data=raw
             )
 
 

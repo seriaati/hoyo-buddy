@@ -782,7 +782,7 @@ changelog_embed_title: 更新日志
 web_events_notify_toggle_label: 在有新的网页活动时通知
 web_events_cmd_desc: 查看当前正在进行的网页活动及设置通知
 web_events_embed_footer: 使用 /web-events 来调整通知
-auto_task_error_dm_content: "由于发生错误，{account的}{feature}功能已关闭，你可以使用{command}命令重新启用。\n如果该错误依然存在或者不知道如何去解决，请加入我们的[Discord服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
+auto_task_error_dm_content: "由于发生错误，`{account}` 的**{feature}**功能已被**__关闭__**，你可以使用{command} 命令重新启用。\n如果该错误依然存在或者不知道如何去解决，请加入我们的[Discord服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 is_support_custom_image_desc: 支持自定义图片
 is_not_support_custom_image_desc: 不支持自定义图片
 template_preview_header: 范例样式

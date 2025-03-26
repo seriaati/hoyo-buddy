@@ -302,7 +302,7 @@ notif.embed.footer: ""
 notif_modal.enabled.label: Diaktifkan
 notif_modal.max_notif_count.label: Jumlah Pemberitahuan Maks
 notif_modal.notify_interval.label: Pemberitahuan Interval (dalam menit)
-notif_modal.notify_time.label: "Beritahu X jam sebelum server direset (4:00 AM)"
+notif_modal.notify_time.label: "Beritahu X jam sebelum reset server (4:00 AM)"
 notif_modal.notify_weekday.label: Hari kerja untuk pemberitahuan
 notif_modal.threshold.label: Batas
 notification_settings_button_label: Pengaturan notifikasi

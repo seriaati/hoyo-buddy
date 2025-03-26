@@ -529,6 +529,7 @@ class NotesChecker:
             key="auto_task_error_dm_content",
             feature=LocaleStr(key="notify_feature"),
             command="</notes>",
+            account=notify.account,
         )
         locale = await cls._get_locale(notify)
         embed = cls._get_notify_error_embed(e, locale)

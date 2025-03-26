@@ -188,5 +188,6 @@ def get_error_embed(
         else:
             embed = ErrorEmbed(locale, title=LocaleStr(key="error_title"), description=description)
 
-    embed.set_footer(text=LocaleStr(key="error_footer"))
+    if embed_type == "error":
+        embed.set_footer(text=LocaleStr(key="error_footer"))
     return embed, recognized

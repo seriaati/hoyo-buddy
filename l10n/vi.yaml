@@ -782,7 +782,7 @@ changelog_embed_title: Nhật Ký Thay Đổi
 web_events_notify_toggle_label: Nhắc nhờ về sự kiện Web
 web_events_cmd_desc: Xem các sự kiện web đang diễn ra và đặt thông báo
 web_events_embed_footer: Sử dụng lệnh /web-events để điều chỉnh thông báo
-auto_task_error_dm_content: "Tính năng {feature} đã bị vô hiệu trên tài khoản {account} do có lỗi xảy ra, bạn có thể kích hoạt lại tính năng này bằng lệnh {command}\nNếu lỗi này vẫn tiếp diễn hoặc bạn không biết cách xử lý, hãy nhờ trợ giúp trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
+auto_task_error_dm_content: "Tính năng **{feature}** đã bị **__vô hiệu__** trên tài khoản `{account}` do có lỗi xảy ra, bạn có thể kích hoạt lại tính năng này bằng lệnh {command}\nNếu lỗi này vẫn tiếp diễn hoặc bạn không biết cách xử lý, hãy nhờ trợ giúp trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
 is_support_custom_image_desc: Hỗ trợ hình ảnh tùy chỉnh
 is_not_support_custom_image_desc: Không hỗ trợ hình ảnh tùy chỉnh
 template_preview_header: Ảnh minh họa

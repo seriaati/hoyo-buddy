@@ -782,7 +782,7 @@ changelog_embed_title: Registro de cambios
 web_events_notify_toggle_label: Notificar sobre nuevos eventos web
 web_events_cmd_desc: Ver eventos web actuales y configurar notificaciones
 web_events_embed_footer: Usa /web-events para configurar notificaciones
-auto_task_error_dm_content: "{feature} ha sido deshabilitado para {account} debido a un error. Puedes habilitarlo nuevamente usando {command}.\nSi este error persiste o no sabes cómo solucionarlo, por favor busca ayuda en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)."
+auto_task_error_dm_content: "**{feature}** ha sido **__deshabilitado__** para `{account}` debido a un error. Puedes habilitarlo nuevamente usando {command}.\nSi este error persiste o no sabes cómo solucionarlo, por favor busca ayuda en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)."
 is_support_custom_image_desc: Admite imagen personalizada
 is_not_support_custom_image_desc: No admite imagen personalizada
 template_preview_header: Mirar ejemplo

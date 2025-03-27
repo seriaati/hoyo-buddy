@@ -6,10 +6,11 @@ import flet as ft
 
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import entry_point
-from hoyo_buddy.web_app.app import WebApp
+from hoyo_buddy.web_app.app import ClientStorage, WebApp
 
 
 async def web_app_entry(page: ft.Page) -> None:
+    setattr(page, f"_{page.__class__.__name__}__client_storage", ClientStorage(page))
     app = WebApp(page)
     await app.initialize()
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import urllib.parse
 from typing import TYPE_CHECKING, Any, Literal
 
@@ -10,6 +11,7 @@ import flet as ft
 import genshin
 import orjson
 from discord import Locale
+from flet.core.client_storage import ClientStorage as ftClientStorage
 from loguru import logger
 from pydantic import ValidationError
 
@@ -36,6 +38,29 @@ from .utils import (
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+
+
+class ClientStorage(ftClientStorage):
+    def __init__(self, page: ft.Page) -> None:
+        super().__init__(page)
+
+    async def remove_async(self, key: str) -> Any:
+        with contextlib.suppress(TimeoutError):
+            return await super().remove_async(key)
+
+    async def get_async(self, key: str) -> Any:
+        with contextlib.suppress(TimeoutError):
+            return await super().get_async(key)
+
+    async def set_async(self, key: str, value: Any) -> bool:
+        with contextlib.suppress(TimeoutError):
+            return await super().set_async(key, value)
+        return False
+
+    async def contains_key_async(self, key: str) -> bool:
+        with contextlib.suppress(TimeoutError):
+            return await super().contains_key_async(key)
+        return False
 
 
 class WebApp:

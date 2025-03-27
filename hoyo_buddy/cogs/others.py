@@ -93,12 +93,11 @@ class Others(commands.Cog):
 
         # developer
         owner = i.client.get_user(i.client.owner_id) or await i.client.fetch_user(i.client.owner_id)
-        if owner is not None:
-            embed.add_field(
-                name=LocaleStr(key="about_command.developer"),
-                value=get_discord_user_md_link(owner),
-                inline=False,
-            )
+        embed.add_field(
+            name=LocaleStr(key="about_command.developer"),
+            value=get_discord_user_md_link(owner),
+            inline=False,
+        )
 
         # designer
         designer_role = guild.get_role(1266651937411960882)

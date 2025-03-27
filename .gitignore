@@ -162,3 +162,5 @@ hoyo_buddy/bot/data/*.json
 *.log.*
 *.db
 .vscode/
+test.py
+test_*.py

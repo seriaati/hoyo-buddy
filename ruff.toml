@@ -80,6 +80,7 @@ ignore = [
 "hoyo_buddy/draw/drawer.py" = ["F405"]
 "hoyo_buddy/models.py" = ["TC002"]
 "test_*.py" = ["ALL"]
+"test.py" = ["ALL"]
 
 [lint.flake8-type-checking]
 quote-annotations = true

@@ -742,6 +742,13 @@ async def draw_shiyu_card(
             if not hasattr(bangboo, "icon") and bangboo.id in bangboo_icons:
                 setattr(bangboo, "icon", bangboo_icons[bangboo.id])  # noqa: B010
 
+    # Backward compatibility, some old ShiyuDefenseCharacter models don't have icon attribute
+    for floor in shiyu.floors:
+        for character in floor.node_1.characters + floor.node_2.characters:
+            if not hasattr(character, "icon"):
+                icon = f"https://act-webstatic.hoyoverse.com/game_record/zzzv2/role_square_avatar/role_square_avatar_{character.id}.png"
+                setattr(character, "icon", icon)  # noqa: B010
+
     urls = [
         character.icon
         for floor in shiyu.floors

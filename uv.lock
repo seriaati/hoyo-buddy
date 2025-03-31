@@ -201,7 +201,7 @@ wheels = [
 [[package]]
 name = "ambr-py"
 version = "1.8.2"
-source = { git = "https://github.com/seriaati/ambr#f602717e1e1a27da459f53c1546354c966dfd695" }
+source = { git = "https://github.com/seriaati/ambr#54024fc3b88ea1d6218e46b88878859b448e5969" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -613,7 +613,7 @@ speed = [
 [[package]]
 name = "enka"
 version = "2.4.8"
-source = { git = "https://github.com/seriaati/enka-py#f1c63cdf28161b90c5a9a6cb894daf454bc1cb7a" }
+source = { git = "https://github.com/seriaati/enka-py#4aad548f774e76e64bb64a0852cb7565476a074d" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -807,7 +807,7 @@ wheels = [
 [[package]]
 name = "hakushin-py"
 version = "0.4.10"
-source = { git = "https://github.com/seriaati/hakushin-py#36c6974054467ad3ffe30187cf778df62e28180b" }
+source = { git = "https://github.com/seriaati/hakushin-py#7c73d292f76ef46201b739310ba110495cc560a0" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
@@ -1480,7 +1480,7 @@ wheels = [
 
 [[package]]
 name = "pydantic"
-version = "2.11.0"
+version = "2.11.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
@@ -1488,9 +1488,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "typing-inspection" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/82/2a/4ba34614269b1e12a28b9fe54710983f5c3679f945797e86250c6269263f/pydantic-2.11.0.tar.gz", hash = "sha256:d6a287cd6037dee72f0597229256dfa246c4d61567a250e99f86b7b4626e2f41", size = 782184 }
+sdist = { url = "https://files.pythonhosted.org/packages/93/a3/698b87a4d4d303d7c5f62ea5fbf7a79cab236ccfbd0a17847b7f77f8163e/pydantic-2.11.1.tar.gz", hash = "sha256:442557d2910e75c991c39f4b4ab18963d57b9b55122c8b2a9cd176d8c29ce968", size = 782817 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/09/2c/3a0a1b022bb028e4cd455c69a17ceaad809bf6763c110d093efc0d8f67aa/pydantic-2.11.0-py3-none-any.whl", hash = "sha256:d52535bb7aba33c2af820eaefd866f3322daf39319d03374921cd17fbbdf28f9", size = 442591 },
+    { url = "https://files.pythonhosted.org/packages/cc/12/f9221a949f2419e2e23847303c002476c26fbcfd62dc7f3d25d0bec5ca99/pydantic-2.11.1-py3-none-any.whl", hash = "sha256:5b6c415eee9f8123a14d859be0c84363fec6b1feb6b688d6435801230b56e0b8", size = 442648 },
 ]
 
 [[package]]
@@ -2072,7 +2072,7 @@ wheels = [
 [[package]]
 name = "yatta-py"
 version = "1.3.12"
-source = { git = "https://github.com/seriaati/yatta#a7a0d45161101df1814b52a217e139d71aa101f0" }
+source = { git = "https://github.com/seriaati/yatta#083a8e38ac459086a6081ee37fe4415ef1568b82" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

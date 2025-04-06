@@ -111,11 +111,11 @@ ZZZ_SPECIALTY_EMOJIS: dict[genshin.models.ZZZSpecialty, str] = {
 }
 
 ARTIFACT_POS_EMOJIS: dict[str, str] = {
-    "flower": "<:Flower_of_Life:982167959717945374>",
-    "plume": "<:Plume_of_Death:982167959915077643>",
-    "sands": "<:Sands_of_Eon:982167959881547877>",
-    "goblet": "<:Goblet_of_Eonothem:982167959835402240>",
-    "circlet": "<:Circlet_of_Logos:982167959692787802>",
+    "flower": "<:Flower_of_Life:1358311916761645225>",
+    "plume": "<:Plume_of_Death:1358311924936478802>",
+    "sands": "<:Sands_of_Eon:1358311941755371566>",
+    "goblet": "<:Goblet_of_Eonothem:1358311936411963526>",
+    "circlet": "<:Circlet_of_Logos:1358311931311816734>",
 }
 DICE_EMOJIS: dict[str, str] = {
     "GCG_COST_ENERGY": "<:UI_Gcg_DiceL_Energy:1300366242200293406>",

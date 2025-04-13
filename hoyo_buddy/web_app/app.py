@@ -16,7 +16,7 @@ from loguru import logger
 from pydantic import ValidationError
 
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.constants import locale_to_gpy_lang
+from hoyo_buddy.constants import WEB_APP_URLS, locale_to_gpy_lang
 from hoyo_buddy.db import GachaHistory
 from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
@@ -85,15 +85,15 @@ class WebApp:
             if view is not None:
                 view.appbar = self.gacha_app_bar
         elif route == "/custom_oauth_callback":
-            view = await self.oauth_callback(parsed_params)
+            view = await self._handle_oauth(parsed_params)
         else:
-            if not page.session.contains_key("hb.user_id") and route != "/login":
+            if route != "/login" and not page.session.contains_key("hb.user_id"):
                 asyncio.create_task(page.client_storage.set_async("hb.original_route", e.route))
                 locale = parsed_params.get("locale", "en-US")
                 page.go(f"/login?locale={locale}")
                 return
 
-            view = await self._handle_login_routes(route, parsed_params)
+            view = await self._handle_routes(route, parsed_params)
             page.title = "Login System"
             if view is not None:
                 view.appbar = self.login_app_bar
@@ -356,9 +356,7 @@ class WebApp:
             device_fp=device_fp,
         )
 
-    async def _handle_login_routes(
-        self, route: str, parsed_params: dict[str, str]
-    ) -> ft.View | None:
+    async def _handle_routes(self, route: str, parsed_params: dict[str, str]) -> ft.View | None:
         page = self._page
         locale = parsed_params.get("locale", "en-US")
 
@@ -368,6 +366,7 @@ class WebApp:
                 locale_ = Locale(locale)
             except ValueError:
                 return pages.ErrorPage(code=422, message="Invalid locale")
+
             return pages.LoginPage(user_data, locale=locale_)
 
         if route == "/geetest":
@@ -580,7 +579,7 @@ class WebApp:
 
             return await resp.json()
 
-    async def oauth_callback(self, params: dict[str, str]) -> ft.View | None:
+    async def _handle_oauth(self, params: dict[str, str]) -> ft.View | None:
         page = self._page
 
         state = await page.client_storage.get_async("hb.oauth_state")
@@ -602,16 +601,12 @@ class WebApp:
                     "client_secret": CONFIG.discord_client_secret,
                     "grant_type": "authorization_code",
                     "code": code,
-                    "redirect_uri": (
-                        "http://localhost:8645/custom_oauth_callback"
-                        if CONFIG.env == "dev"
-                        else "https://hb-app.seria.moe/custom_oauth_callback"
-                    ),
+                    "redirect_uri": f"{WEB_APP_URLS[CONFIG.env]}/custom_oauth_callback",
                     "scope": "identify",
                 },
             ) as resp,
         ):
-            data = await resp.json()
+            data: dict[str, Any] = await resp.json()
             if resp.status != 200:
                 return pages.ErrorPage(
                     code=resp.status, message=data.get("error") or "Unknown error"
@@ -639,13 +634,11 @@ class WebApp:
         page.session.set("hb.user_id", int(user_id))
 
         original_route = await page.client_storage.get_async("hb.original_route")
-        if original_route:
-            asyncio.create_task(page.client_storage.remove_async("hb.original_route"))
-            page.go(original_route)
-        else:
-            page.go("/platforms")
+        if original_route is None:
+            return page.go("/platforms")
 
-        return None
+        asyncio.create_task(page.client_storage.remove_async("hb.original_route"))
+        return page.go(original_route)
 
     @property
     def login_app_bar(self) -> ft.AppBar:

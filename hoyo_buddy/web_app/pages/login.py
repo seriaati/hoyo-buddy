@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any
 import flet as ft
 
 from hoyo_buddy.config import CONFIG
+from hoyo_buddy.constants import WEB_APP_URLS
 from hoyo_buddy.l10n import LocaleStr, translator
 
 if TYPE_CHECKING:
@@ -116,11 +117,7 @@ class LoginPage(ft.View):
         page: ft.Page = e.page
         state = secrets.token_urlsafe(32)
         await page.client_storage.set_async("hb.oauth_state", state)
-        redirect_url = (
-            "http://localhost:8645/custom_oauth_callback"
-            if CONFIG.env == "dev"
-            else "https://hb-app.seria.moe/custom_oauth_callback"
-        )
+        redirect_url = f"{WEB_APP_URLS[CONFIG.env]}/custom_oauth_callback"
         client_id = CONFIG.discord_client_id
         oauth_url = f"https://discord.com/oauth2/authorize?response_type=code&client_id={client_id}&redirect_uri={redirect_url}&scope=identify&state={state}"
         page.launch_url(oauth_url, web_window_name=ft.UrlTarget.SELF.value)

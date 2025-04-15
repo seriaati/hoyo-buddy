@@ -26,7 +26,7 @@ abyss_chamber.ley_line_disorder.embed.field.name: 地脈異常
 abyss_enemy.item_description: "HP：{HP}"
 acc_no_default_param_desc: このコマンドを実行するアカウント
 account_autocomplete_param_description: "このコマンドを実行するアカウント。デフォルトは/accountsで選択されたものになります"
-account_autocomplete_param_name: account
+account_autocomplete_param_name: アカウント # Translated
 account_deleted_description: "{account} は削除されました。"
 account_deleted_title: アカウント削除完了
 account_manager_footer: 選択されたアカウントが、すべてのコマンドで使用されるデフォルトのアカウントになります
@@ -206,7 +206,7 @@ geetest.required: GeeTest認証が必要です
 geetest.required.description: "</geetest> コマンドを使用し、GeeTestを引き起こしたアカウントを選択し、`{geetest_type}` を選択して認証を完了してください"
 geetest_command_description: GeeTest認証を完了します
 geetest_cmd_type_param_desc: GeeTest認証のタイプ
-geetest_command_type_param_name: type
+geetest_command_type_param_name: タイプ # Translated
 genshin_impact: 原神
 geo: 岩
 gi_daily.embed.description: デイリー依頼または冒険遭遇がまだ完了していません
@@ -268,7 +268,7 @@ no_account_found_for_games_error_message: "以下のいずれかのゲームの�
 no_account_found_for_games_platform_error_message: "{platform} に以下のいずれかのゲームのアカウントがありません。 </accounts> で追加してください。"
 no_account_found_for_games_error_title: アカウントが見つかりません
 no_accounts_autocomplete_choice: まだアカウントがありません。/accounts で追加してください
-profile_character_param_name: "character-{num}"
+profile_character_param_name: "キャラクター-{num}" # Translated (kept placeholder)
 no_challenge_data_err_message: "この期の {challenge} データが見つかりません。{challenge} をまだ開始していないか、データが準備できていない可能性があります。後でもう一度お試しください。"
 no_challenge_data_err_title: "{challenge} データなし"
 no_characters_found_error_message: 別のフィルターで再試行してください
@@ -403,12 +403,12 @@ saturday: 土曜日
 search_autocomplete_no_results: 結果が見つかりませんでした
 search_autocomplete_not_setup: "検索オートコンプリートの選択肢はまだ設定されていません。後でもう一度お試しください。"
 search_command_category_param_description: 検索するカテゴリ
-search_cmd_category_param_name: category
+search_cmd_category_param_name: カテゴリ # Translated
 search_command_description: ゲーム関連のあらゆるものを検索します
 search_command_game_param_description: 検索するゲーム
-search_command_game_param_name: game
+search_command_game_param_name: ゲーム # Translated
 search_command_query_param_description: 検索するクエリ
-search_command_query_param_name: query
+search_command_query_param_name: クエリ # Translated
 select_account.embed.description: Hoyo Buddyに追加したいアカウントを選択します
 select_account.embed.title: 🎉 Hoyo Buddyへようこそ！
 settings_command_description: ユーザー設定を構成します
@@ -428,7 +428,7 @@ thursday: 木曜日
 tuesday: 火曜日
 unreleased_content: 未実装コンテンツ
 user_autocomplete_param_description: "アカウントを検索するユーザー。デフォルトはあなたです"
-user_autocomplete_param_name: user
+user_autocomplete_param_name: ユーザー # Translated
 user_no_accounts_autocomplete_choice: このユーザーはまだアカウントを持っていません
 view_card_button_label: カード表示
 view_dictionary_button_label: 図鑑表示
@@ -466,12 +466,12 @@ apc_shadow.highest_diff_cleared: "クリアした最高難易度：{diff}"
 apc_shadow.times_challenged: "挑戦回数：{times}"
 apc_shadow.boss_defeated: ボス撃破
 apc_shadow.boss_defeated_no: ボス未撃破
-notes.bonus_sync_points: "追加適合値：{cur}/{max}" # ZZZ Corrected
+notes.bonus_sync_points: "追加適合値：{cur}/{max}"
 invalid_uid_format_title: 無効なUID形式
 invalid_uid_format_description: "UIDは9桁または10桁の数字である必要があります"
 zenless_zone_zero: ゼンレスゾーンゼロ
 img_theater_large_block_title: 幻想シアター
-img_theater_stats_line_five: "合計クリアタイム：{time}" # ZZZ Corrected
+img_theater_stats_line_five: "合計クリアタイム：{time}"
 img_theater_legend_block_support_chara: サポートキャラクター
 img_theater_legend_block_trial_chara: お試しキャラクター
 img_theater_max_damage: "与ダメージ最高値：{val}"
@@ -585,10 +585,10 @@ gacha_upload_invalid_file_error_message: "**{file_format}** ファイルのみ�
 uid_mismatch_error_title: UID不一致
 uid_mismatch_error_message: "選択したアカウントのUIDがデータ内のUID ({uid}) と一致しません"
 gacha_import_command_description: ゲームからガチャ履歴をインポートします
-source_param_name: source
+source_param_name: ソース # Translated
 source_param_description: ガチャ履歴のソース
 gacha_upload_command_description: 他のソースからガチャ履歴ファイルをアップロードしてHoyo Buddyにインポートします
-file_param_name: file
+file_param_name: ファイル # Translated
 file_param_description: アップロードするガチャ履歴ファイル
 gacha_import_success_title: ガチャ履歴インポート完了
 gacha_import_success_message: "{count} 件のガチャ記録が正常にインポートされました。</gacha-log view> コマンドを使用して表示してください。"
@@ -617,10 +617,10 @@ gacha_view_page_field_label: ページ
 gacha_log_stats_title: ガチャ履歴統計
 gacha_log_personal_stats_title: 個人統計
 gacha_log_personal_stats: "累計ガチャ回数：{lifetime_pulls} ({lifetime_currency} {currency_emoji})\nこのガチャの合計回数：{total_pulls} ({total_currency} {currency_emoji})\n5★天井カウント：{star5_pity_cur}/{star5_pity_max}\n4★天井カウント：{star4_pity_cur}/10\n合計5★：{total_star5}\n合計4★：{total_star4}\n5★ごとの平均ガチャ回数：{avg_pulls_per_star5}\n4★ごとの平均ガチャ回数：{avg_pulls_per_star4}"
-win_rate_stats: "{title} の50/50勝率：{win_rate}% ({wins}/{total})" # Corrected
+win_rate_stats: "{title} の50/50勝率：{win_rate}% ({wins}/{total})"
 gacha_log_global_stats_title: 全体統計
 gacha_log_global_stats: "累計ガチャ回数：{lifetime}\n5★運：{star5_luck}\n4★運：{star4_luck}"
-win_rate_global_stats: "{title} の50/50勝率：{win_rate}" # Corrected
+win_rate_global_stats: "{title} の50/50勝率：{win_rate}"
 gacha_log_view_full: ガチャ履歴全体を表示
 gacha_view_command_description: インポートされたガチャ履歴を表示します
 gacha_log_view_banner_type_selector_placeholder: ガチャの種類を選択...
@@ -641,7 +641,7 @@ star5_guaranteed: "現在の確定状態：ピックアップ確定"
 star5_no_guaranteed: "現在の確定状態：ピックアップ**未確定**"
 characters_view_show_max_level_only: 最大レベルのキャラクターのみ表示
 characters.embed.max_level_characters: 最大レベルキャラクター
-natlan_reputation: "評判レベル：{reputation}、部族：{tribes}" # Genshin Natlan Confirmed
+natlan_reputation: "評判レベル：{reputation}、部族：{tribes}"
 shiyu_overview: 概要
 shiyu_fastest_clear_time: "今シーズンの最速クリアタイム："
 shiyu_highest_frontier: "クリアした最高フロンティア："
@@ -653,14 +653,14 @@ shiyu_4_frontier: 第四フロンティア
 shiyu_5_frontier: 第五フロンティア
 shiyu_6_frontier: 第六フロンティア
 shiyu_7_frontier: 第七フロンティア
-shiyu_defense: 式輿防衛戦 # Corrected
+shiyu_defense: 式輿防衛戦
 show_uid: UIDを表示
 no_leaderboard_found: ランキングが見つかりません
-akasha_character_param: character
-akasha_calculation_param: leaderboard
-akasha_weapon_param: weapon
+akasha_character_param: キャラクター # Translated
+akasha_calculation_param: ランキング # Translated
+akasha_weapon_param: 武器 # Translated
 akasha_weapon_param_desc: ランキングを表示する武器
-akasha_variant_param: variant
+akasha_variant_param: バリアント # Translated
 akasha_variant_param_desc: "表示するランキングのバリアント。デフォルトはメインのものです"
 akasha_character_param_desc: ランキングを表示するキャラクター
 akasha_calculation_param_desc: 表示するランキング
@@ -681,7 +681,7 @@ lb_view_command_description: ランキングを表示します
 leaderboard_not_found: ランキングが見つかりません
 currently_logged_in_as: "現在ログイン中のアカウント："
 not_you_label: "あなたではありませんか？クリックして別のアカウントでログイン"
-profile_show_substat_rolls: サブステータスの伸び回数 # Confirmed to keep
+profile_show_substat_rolls: サブステータスの伸び回数
 team_card_settings_button_label: チームカード設定
 team_card_settings_embed_title: チームカード設定を変更中
 team_card_settings_embed_description: "チームカード設定は異なるゲームやアカウント間で共有されます。一部の設定に対する変更は、カードテンプレートでサポートされていない場合、カードに反映されないことがあります。\n完了したら、上のメッセージにある緑色のボタンをクリックしてカードを再描画してください。"
@@ -697,9 +697,9 @@ challenge_command_theater_desc: 幻想シアターカードを生成します
 challenge_command_moc_desc: 混沌の記憶カードを生成します
 challenge_command_pf_desc: 虚構叙事カードを生成します
 challenge_command_apc_shadow_desc: 末日の幻影カードを生成します
-challenge_command_shiyu_desc: 式輿防衛戦カードを生成します # Corrected
+challenge_command_shiyu_desc: 式輿防衛戦カードを生成します
 account_select_placeholder: アカウントを選択...
-guild_only_command_param_name: guild-only
+guild_only_command_param_name: ギルドのみ # Translated
 guild_only_command_param_desc: ランキングにギルドメンバーのみを表示
 yes_choice: "はい"
 no_choice: "いいえ"
@@ -714,7 +714,7 @@ challenge_selector_placeholder: 挑戦を選択...
 upload_cmd_desc: "画像をアップロードしてリンクを取得します。これは /profile のカスタム画像で使用できます"
 not_an_image_error_title: 画像ではありません
 not_an_image_error_message: "アップロードされたファイルは画像ではありません。有効な画像ファイルで再試行してください。"
-upload_cmd_image_param_name: image
+upload_cmd_image_param_name: 画像 # Translated
 upload_cmd_image_param_desc: アップロードする画像
 exploration_select_placeholder: 地域を選択...
 exploration_show_card_button_label: 探索カードを表示
@@ -759,11 +759,11 @@ generic_error_title: エラー
 on_button_label: "オン"
 off_button_label: "オフ"
 mimo_draw_redeem_success: "報酬はゲーム内メールを確認してください"
-image_settings_use_m3_art: M3アートを使用 # ZZZ Mindscape 3 art
-remembrance: 記憶 # HSR Path Corrected
+image_settings_use_m3_art: M3アートを使用
+remembrance: 記憶
 dismissible_default_title: 新機能！
 dismissible_default_footer: このメッセージは一度だけ表示されます
-dismissible_m3_art_desc: "ZZZエージェントカードで意識映写3のアートを使用できるようになりました。カード設定で「Hoyo Buddy テンプレート 2」を選択し、画像設定で「M3アートを使用」を切り替えてください。"
+dismissible_m3_art_desc: 'ZZZエージェントカードで意識映写3のアートを使用できるようになりました。カード設定で「Hoyo Buddy テンプレート 2」を選択し、画像設定で「M3アートを使用」を切り替えてください。'
 mimo_lottery_info_hoyolab_decos: "...と {num} 個のHoYoLABデコレーション"
 zzz_deadly_assault: デッドリーアサルト
 challenge_command_assault_desc: デッドリーアサルトカードを生成します
@@ -775,7 +775,7 @@ mimo_auto_draw_failure_notify_toggle_label: 自動抽選失敗時に通知
 mimo_auto_draw_embed_desc: "Hoyo Buddyは {points} ポイントで以下のアイテムを抽選しました。\n以下にギフトコードが表示されている場合は、</redeem> で手動で交換してください。"
 dismissible_hsr_temp2_desc: "HSRキャラクターカード用に新しいHoyo Buddyテンプレート2を使用できるようになりました。カード設定で選択してください。このテンプレートには横長の画像を使用することをお勧めします。"
 bounty_commission.embed.description: 依頼任務が完了していません
-ridu_points.embed.description: エリー都週間依頼ポイントが未達成です # ZZZ Corrected
+ridu_points.embed.description: エリー都週間依頼ポイントが未達成です
 changelog_embed_title: 変更履歴
 web_events_notify_toggle_label: 新しいウェブイベント時に通知
 web_events_cmd_desc: 開催中のウェブイベントを表示し、通知を設定します

@@ -25,7 +25,7 @@ abyss_chamber.enemy_level.embed.field.name: Nível do Inimigo
 abyss_chamber.ley_line_disorder.embed.field.name: Anomalia da Linha Ley
 abyss_enemy.item_description: "Vida: {HP}"
 acc_no_default_param_desc: Conta para executar este comando
-account_autocomplete_param_description: "Conta para executar este comando, padrão para a selecionada em /contas"
+account_autocomplete_param_description: "Conta para executar este comando, padrão para a selecionada em /accounts"
 account_autocomplete_param_name: conta
 account_deleted_description: "{account} foi excluída."
 account_deleted_title: Conta Excluída
@@ -53,7 +53,7 @@ artifact_set_two_piece_embed_description: "2 Peças: {bonus_2}"
 artifact_sets: Conjuntos de Artefatos
 auto_checkin_button_label: Check-in diário automático
 auto_locale_option_label: Seguir idioma do cliente
-auto_redeem_footer: Desative o resgate automático de códigos com /resgatar
+auto_redeem_footer: Desative o resgate automático de códigos com /redeem
 auto_redeem_toggle.label: Resgate automático de códigos
 books: Livros
 captcha.embed.description: "Clique no botão abaixo para completar o CAPTCHA.\n"
@@ -88,7 +88,7 @@ characters.filter.not_max_friendship: Sem amizade máxima
 characters.filter.path.placeholder: Selecione filtros de caminho...
 characters.filter.placeholder: Selecione um filtro...
 characters.level_order.footer: "Ordem de nível: {order}"
-characters.extra_detail.footer: "Use /perfil para ver detalhes de um personagem"
+characters.extra_detail.footer: "Use /profile para ver detalhes de um personagem"
 hsr.ultimate: Suprema
 hsr.normal_attack: Ataque Normal
 hsr.skill: Perícia
@@ -143,7 +143,7 @@ email_password_modal_password_input_label: senha
 enter_email_password_instructions_description: "Email e senha referem-se ao email e senha da **conta Hoyoverse**, não contas do Google, Apple, etc.\n- [Como isso funciona?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [Eu não tenho uma conta Hoyoverse (faço login com Google, Facebook, etc.)](:docs/Before-Start:)\n- [Eu sou um jogador de console](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: Mudar nível do cone de luz
 dark_mode_button_label: Modo escuro
-error_footer: "Você pode encontrar ajuda em nosso servidor do Discord, link em /sobre"
+error_footer: "Você pode encontrar ajuda em nosso servidor do Discord, link em /about"
 error_title: Ocorreu um Erro
 erudition: Erudição
 days: dias
@@ -168,14 +168,14 @@ farm_add_command.item_already_in_list: Item já está na lista
 farm_add_command.item_already_in_list_description: Este item já está na sua lista de lembretes de farm.
 farm_add_command_description: Adicione personagem/arma para ser notificado quando seus materiais estiverem farmáveis
 farm_check.farmable_today: "Materiais para {name} Estão Farmáveis Hoje"
-farm_check.use_farm_notify: "Use /farm lembrete para configurar as configurações de lembrete\nUse /farm ver para ver todos os itens farmáveis hoje"
+farm_check.use_farm_notify: "Use /farm reminder para configurar as configurações de lembrete\nUse /farm view para ver todos os itens farmáveis hoje"
 farm_notify.add_item: Adicionar item
-farm_notify.add_item.embed.description: "Para adicionar itens, use o comando </farm add:0>"
+farm_notify.add_item.embed.description: "Para adicionar itens, use o comando </farm add>"
 farm_notify.description: Você será lembrado quando os materiais dos personagens/armas nesta lista estiverem farmáveis.
 farm_notify.empty: Você não tem itens na sua lista de lembretes de farm
-farm_notify.empty_description: Adicione itens à sua lista de lembretes de farm usando o comando </farm add:0>
+farm_notify.empty_description: Adicione itens à sua lista de lembretes de farm usando o comando </farm add>
 farm_notify.remove_item: Remover item
-farm_notify.remove_item.embed.description: "Para remover itens, use o comando </farm remove:0>"
+farm_notify.remove_item.embed.description: "Para remover itens, use o comando </farm remove>"
 farm_notify.title: Lista de Lembretes de Farm
 farm_reminder_command_description: Notifica você quando os materiais de personagens/armas estão farmáveis
 farm_remove_command.item_not_found: Item não encontrado
@@ -183,7 +183,7 @@ farm_remove_command.item_not_found_description: Este item não está na sua list
 farm_remove_command_description: Remova personagem/arma da lista de lembretes de farm
 farm_view.happy_farming: 🌾 Bom farm!
 farm_view.set_reminder: Definir Lembretes
-farm_view.set_reminder.embed.description: "Para definir lembretes, use o comando </farm lembrete:0>"
+farm_view.set_reminder.embed.description: "Para definir lembretes, use o comando </farm reminder>"
 farm_view.sundays: Todos os Domínios Estão Disponíveis no Domingo
 farm_view.weekday_select.placeholder: Selecione um dia da semana
 farm_view_command_description: Veja domínios farmáveis em Genshin Impact
@@ -203,7 +203,7 @@ geetest.embed.title: Verificação CAPTCHA necessária antes de fazer login
 geetest.no_need: Não há necessidade de geetest
 geetest.no_need.description: "Você nunca precisou fazer um geetest! O que você está fazendo aqui?!"
 geetest.required: Verificação Geetest Necessária
-geetest.required.description: "Use o comando </geetest:0>, escolha a conta que acionou o geetest e escolha `{geetest_type}` para completar a verificação"
+geetest.required.description: "Use o comando </geetest>, escolha a conta que acionou o geetest e escolha `{geetest_type}` para completar a verificação"
 geetest_command_description: Complete a verificação geetest
 geetest_cmd_type_param_desc: Tipo de verificação geetest
 geetest_command_type_param_name: tipo
@@ -227,7 +227,7 @@ interaction_failed_title: Interação Falhou
 invalid_category_selected: Categoria inválida selecionada
 invalid_color_error_message: "Uma cor válida precisa ser um código de cor hexadecimal, ex: #FF0000"
 invalid_color_error_title: Cor Inválida
-invalid_cookies_description: Atualize seus cookies adicionando suas contas novamente usando </contas:0>
+invalid_cookies_description: Atualize seus cookies adicionando suas contas novamente usando </accounts>
 invalid_cookies_title: Cookies Inválidos
 invalid_email_password_description: "O email ou senha que você forneceu está incorreto, por favor, verifique e tente novamente."
 invalid_email_password_title: Email ou Senha Inválidos
@@ -264,10 +264,10 @@ next_page_option_label: Próxima página
 nickname_modal_label: Apelido
 nickname_modal_placeholder: "Conta principal, conta da Ásia..."
 nihility: Niilidade
-no_account_found_for_games_error_message: "Você não tem uma conta de um dos seguintes jogos. Adicione uma com </contas:0>"
-no_account_found_for_games_platform_error_message: "Você não tem uma conta de um dos seguintes jogos na {platform}. Adicione uma com </contas:0>"
+no_account_found_for_games_error_message: "Você não tem uma conta de um dos seguintes jogos. Adicione uma com </accounts>"
+no_account_found_for_games_platform_error_message: "Você não tem uma conta de um dos seguintes jogos na {platform}. Adicione uma com </accounts>"
 no_account_found_for_games_error_title: Nenhuma Conta Encontrada
-no_accounts_autocomplete_choice: Você ainda não tem nenhuma conta. Adicione uma com /contas
+no_accounts_autocomplete_choice: Você ainda não tem nenhuma conta. Adicione uma com /accounts
 profile_character_param_name: "personagem-{num}"
 no_challenge_data_err_message: "Não foi possível encontrar nenhum dado de {challenge} para esta fase. Ou você ainda não começou {challenge} ou os dados ainda não estão prontos. Por favor, tente novamente mais tarde"
 no_challenge_data_err_title: "Sem Dados de {challenge}"
@@ -296,11 +296,11 @@ notes.elysian_realm: Reino Elysiano
 notes.elysian_realm_value: "Pontuação atual: {cur}/{max}"
 notes_available: "{emoji} Disponível em {in_time}"
 notes_command_description: Ver notas em tempo real
-notif.embed.footer: Use /notas para configurar lembretes
+notif.embed.footer: Use /notes para configurar lembretes
 notif_modal.enabled.label: Ativado
 notif_modal.max_notif_count.label: Contagem Máx. de Notificações
 notif_modal.notify_interval.label: Intervalo de Notificação (em minutos)
-notif_modal.notify_time.label: "Notificar X horas antes do reset do servidor (4:00 AM)"
+notif_modal.notify_time.label: "Notificar X horas antes do reset do servidor (40 AM)"
 notif_modal.notify_weekday.label: O dia da semana para notificar
 notif_modal.threshold.label: Limite
 notification_settings_button_label: Configurações de notificação
@@ -374,9 +374,9 @@ read_story.button.label: Ler História
 real_time_notes: Notas em tempo real
 realm_curr_button.label: Lembrete de moeda do reino
 realm_curr_modal.title: Configurações do Lembrete de Moeda do Reino
-redeeem_code.cookie_token_expired_description: "Recursos de resgate de código estão disponíveis apenas para usuários que fizeram login com seu email e senha, você pode fazer isso com </contas:0>"
+redeeem_code.cookie_token_expired_description: "Recursos de resgate de código estão disponíveis apenas para usuários que fizeram login com seu email e senha, você pode fazer isso com </accounts>"
 redeeem_code.cookie_token_expired_title: Token de Cookie Expirado
-redeeem_code.cookie_token_refresh_failed_description: "Por favor, adicione suas contas novamente usando </contas:0> com o método de email e senha."
+redeeem_code.cookie_token_refresh_failed_description: "Por favor, adicione suas contas novamente usando </accounts> com o método de email e senha."
 redeeem_code.cookie_token_refresh_failed_title: Falha ao atualizar token de cookie
 redeem_code.success: Resgatado com sucesso
 redeem_codes_button.label: Resgatar códigos
@@ -466,7 +466,7 @@ apc_shadow.highest_diff_cleared: "Maior dificuldade concluída: {diff}"
 apc_shadow.times_challenged: "Vezes desafiado: {times}"
 apc_shadow.boss_defeated: Chefe Derrotado
 apc_shadow.boss_defeated_no: Chefe Não Derrotado
-notes.bonus_sync_points: "Pontos de Sincronicidade Bônus: {cur}/{max}"
+notes.bonus_sync_points: "Bônus de Pontos de Sincronicidade: {cur}/{max}"
 invalid_uid_format_title: Formato de UID Inválido
 invalid_uid_format_description: "O UID deve ser um número de 9 a 10 dígitos"
 zenless_zone_zero: Zenless Zone Zero
@@ -489,7 +489,7 @@ reminder_modal.title: "Configurações de Lembrete de {notify}"
 profile_view.set_cur_temp_as_default: Definir template atual como padrão
 set_cur_temp_as_default.done: Feito
 set_cur_temp_as_default.done_desc: "Seu template padrão para {game} foi definido como {template}"
-remove_from_cache_finish_embed_desc: Execute novamente o comando /perfil para ver as alterações
+remove_from_cache_finish_embed_desc: Execute novamente o comando /profile para ver as alterações
 third_party_card_temp_error_title: Este Template de Card de Terceiros Deu Erro
 third_party_card_temp_error_message: "O template de card para este personagem foi redefinido para o template do Hoyo Buddy. Se este erro persistir, por favor, procure ajuda em nosso [servidor do Discord](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Conta bloqueada por 20 minutos
@@ -524,7 +524,7 @@ card_settings.build_card_image: Imagem do card de build
 card_settings.team_card_image: Imagem do card de time
 profile.redraw_card_button_label: Redesenhar card
 card_settings.footer: "Quando terminar, clique no botão verde na mensagem acima para redesenhar o card"
-card_settings.description: "Use </upload:0> para obter um URL de imagem enviando a imagem.\nPixiv é suportado, simplesmente copie o URL da imagem da arte."
+card_settings.description: "Use </upload> para obter um URL de imagem enviando a imagem.\nPixiv é suportado, simplesmente copie o URL da imagem da arte."
 profile.team_dark_mode.button.label: Modo escuro do card de time
 profile.character_select.multi.placeholder: Selecione personagem(ns)...
 zzz_search.agent_info: "Raridade: {rarity}\nEspecialidade: {specialty}\nTipo de Ataque: {atk_type}\nFacção: {faction}\nElemento: {element}"
@@ -545,15 +545,15 @@ dyk_contact_me: "Você pode nos contatar em nosso [servidor do Discord](<https:/
 dyk_need_help_no_title: "Precisa de ajuda? Junte-se ao nosso [servidor do Discord](<https://link.seria.moe/hb-dc>)"
 dyk_donate_no_title: "Gosta de usar o Hoyo Buddy? Considere [fazer uma doação](<https://link.seria.moe/donate>) para nos apoiar"
 dyk_team: "O Hoyo Buddy é feito por uma pequena equipe de 1 programador e 1 designer"
-dyk_disable: Você pode desativar esta mensagem com /configuracoes
-dyk_settings_lang: Você pode mudar o idioma do bot com /configuracoes
-dyk_settings_theme: Você pode alternar entre tema claro e escuro usando /configuracoes
+dyk_disable: Você pode desativar esta mensagem com /settings
+dyk_settings_lang: Você pode mudar o idioma do bot com /settings
+dyk_settings_theme: Você pode alternar entre tema claro e escuro usando /settings
 dyk_security: "Temos um [artigo](<:docs/Account-Security:>) sobre segurança da conta"
 dyk_github: "O Hoyo Buddy é de código aberto no [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
 dyk_python: O Hoyo Buddy é escrito em Python puro
-dyk_unreleased: Você pode ver conteúdo de jogo não lançado com /pesquisar
-dyk_team_card: Você pode gerar um card de time em /perfil selecionando múltiplos personagens
-dyk_set_default_acc: Você pode definir uma conta padrão que é usada para executar todos os comandos em /contas
+dyk_unreleased: Você pode ver conteúdo de jogo não lançado com /search
+dyk_team_card: Você pode gerar um card de time em /profile selecionando múltiplos personagens
+dyk_set_default_acc: Você pode definir uma conta padrão que é usada para executar todos os comandos em /accounts
 title_dyk: "Você sabia?"
 button_label_dyk: Mensagens "Você sabia?"
 events_view_start_date_embed_field: Hora de Início
@@ -572,10 +572,10 @@ show_tutorial_button_label: Mostrar tutorial
 close_button_label: Fechar
 required_field_error_message: Este campo é obrigatório
 accounts_added_snackbar_message: "Contas adicionadas com sucesso, redirecionando você de volta para o Discord..."
-account_add_start_message: "Clique no botão abaixo e siga as instruções para adicionar suas contas. Quando terminar, use o comando </contas:0> para ver as contas que você adicionou.\nJunte-se ao nosso [servidor do Discord](<https://link.seria.moe/hb-dc>) se precisar de ajuda."
+account_add_start_message: "Clique no botão abaixo e siga as instruções para adicionar suas contas. Quando terminar, use o comando </accounts> para ver as contas que você adicionou.\nJunte-se ao nosso [servidor do Discord](<https://link.seria.moe/hb-dc>) se precisar de ajuda."
 hbls_button_label: Vamos começar!
 gacha_import_url_modal_title: Insira o URL do log de gacha
-gacha_import_embed_description: "URL do log de gacha: Obtenha um URL muito longo do jogo para importar seus registros de gacha, guias para diferentes jogos estão abaixo:\n- Android: [Vídeo do YouTube](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nPara os serviços abaixo, exporte seus registros de gacha no formato de arquivo especificado e faça o upload via </gacha-log upload:0>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
+gacha_import_embed_description: "URL do log de gacha: Obtenha um URL muito longo do jogo para importar seus registros de gacha, guias para diferentes jogos estão abaixo:\n- Android: [Vídeo do YouTube](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nPara os serviços abaixo, exporte seus registros de gacha no formato de arquivo especificado e faça o upload via </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Não foi possível extrair o authkey do URL, por favor, tente novamente com um URL válido."
 extract_authkey_error_title: Falha na Extração do Authkey
 gacha_import_loading_embed_title: Importando Logs de Gacha
@@ -591,7 +591,7 @@ gacha_upload_command_description: Faça upload do arquivo de log de gacha de out
 file_param_name: arquivo
 file_param_description: Arquivo de log de gacha para upload
 gacha_import_success_title: Logs de Gacha Importados
-gacha_import_success_message: "{count} registros de gacha foram importados com sucesso. Use o comando </gacha-log ver:0> para visualizá-los."
+gacha_import_success_message: "{count} registros de gacha foram importados com sucesso. Use o comando </gacha-log view> para visualizá-los."
 gacha_view_filter_button_label: Filtros
 gacha_view_search_field_label: Pesquisar
 gacha_view_gacha_detail_title: Detalhes do Item de Gacha
@@ -602,7 +602,7 @@ banner_type_beginners_wish: Oração de Iniciante
 banner_type_standard_banner: Banner Padrão
 banner_type_character_event: Banner de Evento de Personagem
 banner_type_weapon_event: Banner de Evento de Arma
-banner_type_chronicled_wish: Oração Crônica
+banner_type_chronicled_wish: Oração Encarnada
 banner_type_stellar_warp: Salto Estelar
 banner_type_departure_warp: Salto de Partida
 banner_type_character_warp: Salto de Personagem
@@ -625,7 +625,7 @@ gacha_log_view_full: Ver logs de gacha
 gacha_view_command_description: Ver logs de gacha importados
 gacha_log_view_banner_type_selector_placeholder: Selecione um tipo de banner...
 no_gacha_log_found_error_title: Nenhum Log de Gacha Encontrado
-no_gacha_log_found_error_message: "Use </gacha-log importar:0> ou </gacha-log upload:0> para importar seus logs de gacha."
+no_gacha_log_found_error_message: "Use </gacha-log import> ou </gacha-log upload> para importar seus logs de gacha."
 gacha_log_manage_embed_title: Gerenciar Logs de Gacha
 gacha_log_manage_embed_description: "{count} logs de gacha pertencem a esta conta.\nVocê pode exportá-los no formato [UIGF](https://uigf.org)."
 gacha_log_export_button_label: Exportar em formato UIGF
@@ -711,7 +711,7 @@ rarity_str: "{rarity} estrelas"
 finished_status_field_name: Status
 unlocks_in_str: "Desbloqueia em {time}"
 challenge_selector_placeholder: Selecione um desafio...
-upload_cmd_desc: "Faça upload de uma imagem e obtenha um link para ela, que pode ser usado na imagem personalizada em /perfil"
+upload_cmd_desc: "Faça upload de uma imagem e obtenha um link para usar em imagens personalizadas de /profile"
 not_an_image_error_title: Não é uma Imagem
 not_an_image_error_message: "O arquivo enviado não é uma imagem, por favor, tente novamente com um arquivo de imagem válido."
 upload_cmd_image_param_name: imagem
@@ -753,7 +753,7 @@ mimo_auto_task_embed_footer: Use /mimo para configurar tarefas automáticas e co
 mimo_auto_task_embed_desc: "O Hoyo Buddy concluiu {finish} tarefas e resgatou {claim_point} pontos para você"
 checkin_reward_embed_footer: Use /check-in para configurar notificações
 mimo_status: "Status: {status}"
-mimo_auto_buy_embed_desc: "O Hoyo Buddy comprou {item} item(ns) para você com {points} pontos.\nSe você vir códigos de presente abaixo, por favor, resgate-os manually com </resgatar:0>."
+mimo_auto_buy_embed_desc: "O Hoyo Buddy comprou {item} item(ns) para você com {points} pontos.\nSe você vir códigos de presente abaixo, por favor, resgate-os manualmente com </redeem>."
 mimo_game_unavailable: "O Mimo Viajante está atualmente indisponível para {game}"
 generic_error_title: Erro
 on_button_label: "LIGADO"
@@ -772,7 +772,7 @@ mimo_auto_draw_button_label: Sorteio automático de prêmios
 mimo_auto_draw_desc: "O Hoyo Buddy sorteará prêmios para você sempre que possível; se a compra automática e o sorteio automático de prêmios estiverem ambos ativados, ele tentará comprar primeiro e sorteará se não houver pontos suficientes para comprar."
 mimo_auto_draw_success_notify_toggle_label: Notificar no sucesso do sorteio automático de prêmios
 mimo_auto_draw_failure_notify_toggle_label: Notificar na falha do sorteio automático de prêmios
-mimo_auto_draw_embed_desc: "O Hoyo Buddy sorteou os seguintes itens com {points} pontos.\nSe você vir códigos de presente abaixo, por favor, resgate-os manualmente com </resgatar:0>."
+mimo_auto_draw_embed_desc: "O Hoyo Buddy sorteou os seguintes itens com {points} pontos.\nSe você vir códigos de presente abaixo, por favor, resgate-os manualmente com </redeem>."
 dismissible_hsr_temp2_desc: "Agora você pode usar o novo template Hoyo Buddy 2 para cards de personagem HSR, selecione-o nas configurações do card. É recomendado usar imagens horizontais para este template."
 bounty_commission.embed.description: Comissões de Recompensa ainda não concluídas
 ridu_points.embed.description: Pontos do Semanário ainda não concluídos

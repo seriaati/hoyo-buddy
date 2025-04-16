@@ -26,7 +26,7 @@ abyss_chamber.ley_line_disorder.embed.field.name: 地脈異常
 abyss_enemy.item_description: "HP：{HP}"
 acc_no_default_param_desc: このコマンドを実行するアカウント
 account_autocomplete_param_description: "このコマンドを実行するアカウント。デフォルトは/accountsで選択されたものになります"
-account_autocomplete_param_name: アカウント # Translated
+account_autocomplete_param_name: アカウント
 account_deleted_description: "{account} は削除されました。"
 account_deleted_title: アカウント削除完了
 account_manager_footer: 選択されたアカウントが、すべてのコマンドで使用されるデフォルトのアカウントになります
@@ -114,7 +114,7 @@ checkin_command_description: ゲームのデイリーチェックイン
 complete_captcha_button_label: CAPTCHA認証を完了
 complete_geetest_button_description: 下のボタンをクリックしてGeeTest認証を完了してください
 complete_geetest_button_label: GeeTest認証を完了
-const_refine_str: "{const}凸{refine}重" # Genshin: Constellation/Refinement
+const_refine_str: "{const}凸{refine}重"
 continue_button_label: 続ける
 cryo: 氷
 daily_button.label: デイリーリマインダー
@@ -130,7 +130,7 @@ dice_cost_embed_field_name: サイコロコスト
 download_image_failed_error_message: "ステータスコード {status} で画像 {url} のダウンロードに失敗しました。\n後でもう一度試すか、別の画像で試すか、画像URLが有効か確認してください。"
 download_image_failed_error_title: 画像ダウンロード失敗
 edit_nickname_modal_title: ニックネームを編集
-eidolon_superimpose_str: "{eidolon}凸{superimpose}重" # HSR: Eidolon/Superimposition
+eidolon_superimpose_str: "{eidolon}凸{superimpose}重"
 electro: 雷
 email_verification_dialog_title: 認証が必要です
 email_verification_dialog_content: 受信した認証コードを入力してください
@@ -206,7 +206,7 @@ geetest.required: GeeTest認証が必要です
 geetest.required.description: "</geetest> コマンドを使用し、GeeTestを引き起こしたアカウントを選択し、`{geetest_type}` を選択して認証を完了してください"
 geetest_command_description: GeeTest認証を完了します
 geetest_cmd_type_param_desc: GeeTest認証のタイプ
-geetest_command_type_param_name: タイプ # Translated
+geetest_command_type_param_name: タイプ
 genshin_impact: 原神
 geo: 岩
 gi_daily.embed.description: デイリー依頼または冒険遭遇がまだ完了していません
@@ -268,7 +268,7 @@ no_account_found_for_games_error_message: "以下のいずれかのゲームの�
 no_account_found_for_games_platform_error_message: "{platform} に以下のいずれかのゲームのアカウントがありません。 </accounts> で追加してください。"
 no_account_found_for_games_error_title: アカウントが見つかりません
 no_accounts_autocomplete_choice: まだアカウントがありません。/accounts で追加してください
-profile_character_param_name: "キャラクター-{num}" # Translated (kept placeholder)
+profile_character_param_name: "キャラクター-{num}"
 no_challenge_data_err_message: "この期の {challenge} データが見つかりません。{challenge} をまだ開始していないか、データが準備できていない可能性があります。後でもう一度お試しください。"
 no_challenge_data_err_title: "{challenge} データなし"
 no_characters_found_error_message: 別のフィルターで再試行してください
@@ -300,7 +300,7 @@ notif.embed.footer: /notes を使用してリマインダーを設定します
 notif_modal.enabled.label: 有効
 notif_modal.max_notif_count.label: 最大通知回数
 notif_modal.notify_interval.label: 通知間隔 (分単位)
-notif_modal.notify_time.label: "サーバーリセット (午前5時) の {notify_time} 時間前に通知" # JST reset time is 5:00 AM
+notif_modal.notify_time.label: "サーバーリセット (午前5時) の {notify_time} 時間前に通知"
 notif_modal.notify_weekday.label: 通知する曜日
 notif_modal.threshold.label: しきい値
 notification_settings_button_label: 通知設定
@@ -336,24 +336,24 @@ profile.card_template_select.placeholder: テンプレートを選択
 profile.card_template_select.same_author.description: "{author} がデザインおよびプログラムしました"
 profile.card_template_select.src.label: "StarRailCard テンプレート {num}"
 profile.character_select.cached_data.description: キャッシュされたデータ
-profile.character_select.description: "E{e}S{s} | {d} | ゲーム内展示" # HSR
+profile.character_select.description: "E{e}S{s} | {d} | ゲーム内展示"
 profile.character_select.enka_network.description: Enka Network ビルド
-profile.character_select.hoyolab.description: "E{e}S{s} | {d} | {platform}" # HSR
+profile.character_select.hoyolab.description: "E{e}S{s} | {d} | {platform}"
 profile.character_select.live_data.description: リアルタイムデータ
 profile.character_select.placeholder: キャラクターを選択
 profile.generate_ai_art.button.label: AIアートを生成
 profile.generate_ai_art_modal.negative_prompt.label: ネガティブプロンプト
 profile.generate_ai_art_modal.prompt.label: プロンプト
-profile.genshin.character_select.description: "C{c}R{r} | {d}" # Genshin
-profile.genshin.character_select.hoyolab.description: "C{c}R{r} | {d} | {platform}" # Genshin
+profile.genshin.character_select.description: "C{c}R{r} | {d}"
+profile.genshin.character_select.hoyolab.description: "C{c}R{r} | {d} | {platform}"
 profile.image_select.custom_image.label: "カスタム画像 ({num})"
 profile.image_select.default_collection.label: "Hoyo Buddy コレクション ({num})"
 profile.image_select.none.label: 公式アート
 profile.image_select.placeholder: 画像を選択
 profile.player_info.button.label: プレイヤー情報
-profile.player_info.embed.description: "開拓レベル：{level}\n均衡レベル：{world_level}\nフレンド数：{friend_count}\n光円錐：{light_cones}\nキャラクター：{characters}\nアチーブメント：{achievements}\n" # HSR
-profile.player_info.gi.embed.description: "冒険ランク：{adventure_rank}\n深境螺旋：{spiral_abyss}\nアチーブメント：{achievements}\n" # Genshin
-profile.player_info.hoyolab.embed.description: "開拓レベル：{level}\nキャラクター：{characters}\n宝箱：{chest}\n混沌の記憶：{moc}\nアチーブメント：{achievements}\n" # HSR Hoyolab
+profile.player_info.embed.description: "開拓レベル：{level}\n均衡レベル：{world_level}\nフレンド数：{friend_count}\n光円錐：{light_cones}\nキャラクター：{characters}\nアチーブメント：{achievements}\n"
+profile.player_info.gi.embed.description: "冒険ランク：{adventure_rank}\n深境螺旋：{spiral_abyss}\nアチーブメント：{achievements}\n"
+profile.player_info.hoyolab.embed.description: "開拓レベル：{level}\nキャラクター：{characters}\n宝箱：{chest}\n混沌の記憶：{moc}\nアチーブメント：{achievements}\n"
 profile.primary_color.button.label: 色を変更
 profile.primary_color_modal.color.label: 色 (16進コード)
 profile.primary_color_modal.title: カードの色を変更
@@ -385,7 +385,7 @@ redeem_command_embed.description: "最大5つの交換コードを入力して�
 redeem_command_embed.title: コード交換結果
 redeem_cooldown_embed.description: "交換のクールダウンのため、時間がかかる場合があります。"
 redeem_cooldown_embed.title: コードを交換中
-refinement_indicator: "精錬ランク {r}" # Genshin
+refinement_indicator: "精錬ランク {r}"
 relics: 遺物
 reminder_button.label: リマインダー設定
 reminder_settings.not_set: 未設定
@@ -403,12 +403,12 @@ saturday: 土曜日
 search_autocomplete_no_results: 結果が見つかりませんでした
 search_autocomplete_not_setup: "検索オートコンプリートの選択肢はまだ設定されていません。後でもう一度お試しください。"
 search_command_category_param_description: 検索するカテゴリ
-search_cmd_category_param_name: カテゴリ # Translated
+search_cmd_category_param_name: カテゴリ
 search_command_description: ゲーム関連のあらゆるものを検索します
 search_command_game_param_description: 検索するゲーム
-search_command_game_param_name: ゲーム # Translated
+search_command_game_param_name: ゲーム
 search_command_query_param_description: 検索するクエリ
-search_command_query_param_name: クエリ # Translated
+search_command_query_param_name: クエリ
 select_account.embed.description: Hoyo Buddyに追加したいアカウントを選択します
 select_account.embed.title: 🎉 Hoyo Buddyへようこそ！
 settings_command_description: ユーザー設定を構成します
@@ -418,7 +418,7 @@ spiral_abyss: 深境螺旋
 stats_embed_field_name: ステータス
 sumeru: スメール
 sunday: 日曜日
-superimpose_indicator: "重畳ランク {s}" # HSR
+superimpose_indicator: "重畳ランク {s}"
 talent_level.modal.title: 天賦レベルを入力
 tcg: 七聖召喚
 the_hunt: 巡狩
@@ -428,7 +428,7 @@ thursday: 木曜日
 tuesday: 火曜日
 unreleased_content: 未実装コンテンツ
 user_autocomplete_param_description: "アカウントを検索するユーザー。デフォルトはあなたです"
-user_autocomplete_param_name: ユーザー # Translated
+user_autocomplete_param_name: ユーザー
 user_no_accounts_autocomplete_choice: このユーザーはまだアカウントを持っていません
 view_card_button_label: カード表示
 view_dictionary_button_label: 図鑑表示
@@ -498,15 +498,15 @@ ether: エーテル
 electric: 電撃
 profile.no_data.title: プレイヤーデータがありません
 profile.no_data.description: "信じられないかもしれませんが、ここに表示するものはありません。"
-profile.zzz_hoyolab.character_select.description: "意識映写 {m} | {platform} データ" # ZZZ
-characters.filter.specialty.placeholder: 専門分野フィルターを選択... # ZZZ Specialty
+profile.zzz_hoyolab.character_select.description: "意識映写 {m} | {platform} データ"
+characters.filter.specialty.placeholder: 専門分野フィルターを選択...
 zzz.basic: 通常攻撃
 zzz.dodge: 回避
 zzz.assist: 支援攻撃
 zzz.special: 特殊スキル
 zzz.chain: チェインアタック
 zzz.core: コアスキル
-characters.filter.faction.placeholder: 陣営フィルターを選択... # ZZZ Faction
+characters.filter.faction.placeholder: 陣営フィルターを選択...
 characters.sorter.speciality: 専門分野
 characters.sorter.faction: 陣営
 characters.sorter.mindscape_cinema: 意識映写
@@ -585,10 +585,10 @@ gacha_upload_invalid_file_error_message: "**{file_format}** ファイルのみ�
 uid_mismatch_error_title: UID不一致
 uid_mismatch_error_message: "選択したアカウントのUIDがデータ内のUID ({uid}) と一致しません"
 gacha_import_command_description: ゲームからガチャ履歴をインポートします
-source_param_name: ソース # Translated
+source_param_name: ソース
 source_param_description: ガチャ履歴のソース
 gacha_upload_command_description: 他のソースからガチャ履歴ファイルをアップロードしてHoyo Buddyにインポートします
-file_param_name: ファイル # Translated
+file_param_name: ファイル
 file_param_description: アップロードするガチャ履歴ファイル
 gacha_import_success_title: ガチャ履歴インポート完了
 gacha_import_success_message: "{count} 件のガチャ記録が正常にインポートされました。</gacha-log view> コマンドを使用して表示してください。"
@@ -656,11 +656,11 @@ shiyu_7_frontier: 第七フロンティア
 shiyu_defense: 式輿防衛戦
 show_uid: UIDを表示
 no_leaderboard_found: ランキングが見つかりません
-akasha_character_param: キャラクター # Translated
-akasha_calculation_param: ランキング # Translated
-akasha_weapon_param: 武器 # Translated
+akasha_character_param: キャラクター
+akasha_calculation_param: ランキング
+akasha_weapon_param: 武器
 akasha_weapon_param_desc: ランキングを表示する武器
-akasha_variant_param: バリアント # Translated
+akasha_variant_param: バリアント
 akasha_variant_param_desc: "表示するランキングのバリアント。デフォルトはメインのものです"
 akasha_character_param_desc: ランキングを表示するキャラクター
 akasha_calculation_param_desc: 表示するランキング
@@ -699,7 +699,7 @@ challenge_command_pf_desc: 虚構叙事カードを生成します
 challenge_command_apc_shadow_desc: 末日の幻影カードを生成します
 challenge_command_shiyu_desc: 式輿防衛戦カードを生成します
 account_select_placeholder: アカウントを選択...
-guild_only_command_param_name: ギルドのみ # Translated
+guild_only_command_param_name: ギルドのみ
 guild_only_command_param_desc: ランキングにギルドメンバーのみを表示
 yes_choice: "はい"
 no_choice: "いいえ"
@@ -714,7 +714,7 @@ challenge_selector_placeholder: 挑戦を選択...
 upload_cmd_desc: "画像をアップロードしてリンクを取得します。これは /profile のカスタム画像で使用できます"
 not_an_image_error_title: 画像ではありません
 not_an_image_error_message: "アップロードされたファイルは画像ではありません。有効な画像ファイルで再試行してください。"
-upload_cmd_image_param_name: 画像 # Translated
+upload_cmd_image_param_name: 画像
 upload_cmd_image_param_desc: アップロードする画像
 exploration_select_placeholder: 地域を選択...
 exploration_show_card_button_label: 探索カードを表示

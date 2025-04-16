@@ -106,7 +106,7 @@ characters.sorter.path: Caminho
 characters.sorter.placeholder: Selecione um classificador...
 characters.sorter.rarity: Raridade
 characters_cmd_genshin_desc: Veja e filtre seus personagens de Genshin Impact
-characters_cmd_hsr_desc: Veja e filtre seus personagens de Honkai: Star Rail
+characters_cmd_hsr_desc: "Veja e filtre seus personagens de Honkai: Star Rail"
 characters_cmd_zzz_desc: Veja e filtre seus agentes de Zenless Zone Zero
 characters_cmd_honkai_desc: Veja e filtre seus personagens de Honkai Impact 3rd
 checkin_button_label: Fazer check-in
@@ -360,7 +360,7 @@ profile.primary_color_modal.title: Mudar Cor do Card
 profile.remove_from_cache.button.label: Remover do cache
 profile.remove_image.button.label: Remover imagem personalizada
 profile_command_gi_description: Gere cards de build de personagem e time de Genshin Impact
-profile_command_hsr_description: Gere cards de build de personagem e time de Honkai: Star Rail
+profile_command_hsr_description: "Gere cards de build de personagem e time de Honkai: Star Rail"
 profile_command_zzz_description: Gere cards de build de agente e time de Zenless Zone Zero
 profile_command_game_value_description: Jogo do UID
 profile_command_uid_param_description: "UID do jogador, isso substitui o parâmetro da conta se fornecido"
@@ -723,7 +723,7 @@ abyss_stats_teammate_use_rate: Taxa de Uso de Colega de Equipe
 abyss_stats_weapon_use_rate: Taxa de Uso de Arma
 abyss_stats_artifact_use_rate: Taxa de Uso de Artefato
 build_cmd_genshin_desc: Veja builds e guias de um personagem de Genshin Impact
-build_cmd_hsr_desc: Veja builds e guias de um personagem de Honkai: Star Rail
+build_cmd_hsr_desc: "Veja builds e guias de um personagem de Honkai: Star Rail"
 build_cmd_zzz_desc: Veja builds e guias de um agente de Zenless Zone Zero
 build_cmd_character_param_desc: Personagem para ver as builds
 guide_title: "Builds e Guias de {name}"

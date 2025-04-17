@@ -70,11 +70,11 @@ class Admin(commands.Cog):
 
     @commands.command(name="add-codes", aliases=["ac"])
     async def add_codes_command(self, ctx: commands.Context, game: genshin.Game, codes: str) -> Any:
-        await ctx.send("Adding codes...")
+        message = await ctx.send("Adding codes...")
         async with asyncio.TaskGroup() as tg:
             for code in codes.split(","):
                 tg.create_task(add_to_hoyo_codes(self.bot.session, code=code, game=game))
-        await ctx.send("Done.")
+        await message.edit(content="Added codes.")
 
     @commands.command(name="get-accounts", aliases=["ga"])
     async def get_accounts_command(self, ctx: commands.Context, user_id: int | None = None) -> Any:

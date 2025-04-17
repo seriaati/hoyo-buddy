@@ -300,7 +300,7 @@ notif.embed.footer: Use /notes para configurar lembretes
 notif_modal.enabled.label: Ativado
 notif_modal.max_notif_count.label: Contagem Máx. de Notificações
 notif_modal.notify_interval.label: Intervalo de Notificação (em minutos)
-notif_modal.notify_time.label: "Notificar X horas antes do reset do servidor (40 AM)"
+notif_modal.notify_time.label: "Avisar X h antes do reset (4 AM)"
 notif_modal.notify_weekday.label: O dia da semana para notificar
 notif_modal.threshold.label: Limite
 notification_settings_button_label: Configurações de notificação

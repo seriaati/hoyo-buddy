@@ -5,6 +5,7 @@ import datetime
 import pathlib
 import random
 import re
+from textwrap import shorten
 from typing import TYPE_CHECKING, Any, Literal, Self, TypeAlias
 
 import aiofiles
@@ -259,11 +260,16 @@ class Translator:
         return message
 
     def translate(
-        self, string: LocaleStr | str, locale: Locale, *, title_case: bool = False
+        self,
+        string: LocaleStr | str,
+        locale: Locale,
+        *,
+        title_case: bool = False,
+        max_length: int | None = None,
     ) -> str:
         if isinstance(string, str):
             # It's intentional that we don't apply any modifiers when string is not LocaleStr
-            return string
+            return shorten(string, width=max_length, placeholder="...") if max_length else string
 
         extras = self._translate_extras(string.extras, locale)
         string_key = self._get_string_key(string)
@@ -298,7 +304,10 @@ class Translator:
         translation = self._replace_docs_urls(translation, locale=locale)
         if string.append:
             translation += string.append
-        return translation
+
+        return (
+            shorten(translation, width=max_length, placeholder="...") if max_length else translation
+        )
 
     def _translate_extras(self, extras: dict[str, Any], locale: Locale) -> dict[str, Any]:
         extras_: dict[str, Any] = {}

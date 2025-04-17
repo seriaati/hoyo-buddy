@@ -621,7 +621,8 @@ class Modal(discord.ui.Modal):
         self.stop()
 
     def translate(self, locale: discord.Locale) -> None:
-        self.title = translator.translate(self.locale_str_title, locale)
+        self.title = translator.translate(self.locale_str_title, locale, max_length=45)
+
         for item in self.children:
             if isinstance(item, TextInput):
                 item.label = translator.translate(item.locale_str_label, locale)

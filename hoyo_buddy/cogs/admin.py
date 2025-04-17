@@ -215,6 +215,16 @@ class Admin(commands.Cog):
         await CARD_DATA.load()
         await ctx.send("Card data reloaded.")
 
+    @commands.command(name="get-settings", aliases=["gs"])
+    async def get_settings_command(self, ctx: commands.Context, user_id: int | None = None) -> Any:
+        user_id = user_id or ctx.author.id
+        settings = await Settings.get_or_none(user_id=user_id)
+        if settings is None:
+            return await ctx.send("Settings not found.")
+
+        msg = f"Settings for {user_id}:\n```{settings}```"
+        await ctx.send(msg)
+
 
 async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Admin(bot))

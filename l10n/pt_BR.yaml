@@ -105,7 +105,7 @@ characters.sorter.level: Nível
 characters.sorter.path: Caminho
 characters.sorter.placeholder: Selecione um classificador...
 characters.sorter.rarity: Raridade
-characters.sorter.hsr_type: ""
+characters.sorter.hsr_type: Tipo
 characters_cmd_genshin_desc: Veja e filtre seus personagens de Genshin Impact
 characters_cmd_hsr_desc: "Veja e filtre seus personagens de Honkai: Star Rail"
 characters_cmd_zzz_desc: Veja e filtre seus agentes de Zenless Zone Zero

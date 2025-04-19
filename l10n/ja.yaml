@@ -105,6 +105,7 @@ characters.sorter.level: レベル
 characters.sorter.path: 運命
 characters.sorter.placeholder: ソート基準を選択...
 characters.sorter.rarity: レアリティ
+characters.sorter.hsr_type: 屬性
 characters_cmd_genshin_desc: 原神のキャラクターを表示・フィルタリングします
 characters_cmd_hsr_desc: 崩壊：スターレイルのキャラクターを表示・フィルタリングします
 characters_cmd_zzz_desc: ゼンレスゾーンゼロのエージェントを表示・フィルタリングします
@@ -640,7 +641,7 @@ login_button_label: Discordでログイン
 star5_guaranteed: "現在の確定状態：ピックアップ確定"
 star5_no_guaranteed: "現在の確定状態：ピックアップ**未確定**"
 characters_view_show_max_level_only: 最大レベルのキャラクターのみ表示
-characters.embed.max_level_characters: 最大レベルキャラクター
+characters_embed_max_level_characters: 最大レベルキャラクター
 natlan_reputation: "評判レベル：{reputation}、部族：{tribes}"
 shiyu_overview: 概要
 shiyu_fastest_clear_time: "今シーズンの最速クリアタイム："
@@ -670,7 +671,7 @@ akasha_you: あなた
 achievement_lb_title: アチーブメント数ランキング
 planar_fissure_label: 次元界分裂
 planar_fissure_desc: "{hour} 時間後に次元界分裂イベントが開催されます。開拓力を貯めておくことを忘れないでください！"
-notif_modal.hours_before.label: イベント開始の {hours_before} 時間前に通知
+notif_modal.hours_before.label: "イベント開始の {hours_before} 時間前に通知"
 reminder_settings.reminde.set.type5: "ステータス：{status}\n通知間隔：{notify_interval} 分\n最大通知回数：{max_notif_count}\n通知時刻：イベント開始の {hours_before} 時間前"
 invalid_lb_selected_error_msg: 無効なランキングが選択されました
 chest_lb_title: 開放した宝箱数ランキング

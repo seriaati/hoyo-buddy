@@ -105,6 +105,7 @@ characters.sorter.level: Nível
 characters.sorter.path: Caminho
 characters.sorter.placeholder: Selecione um classificador...
 characters.sorter.rarity: Raridade
+characters.sorter.hsr_type: Tipo
 characters_cmd_genshin_desc: Veja e filtre seus personagens de Genshin Impact
 characters_cmd_hsr_desc: "Veja e filtre seus personagens de Honkai: Star Rail"
 characters_cmd_zzz_desc: Veja e filtre seus agentes de Zenless Zone Zero
@@ -133,7 +134,7 @@ edit_nickname_modal_title: Editar apelido
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
 email_verification_dialog_title: Verificação Necessária
-email_verification_dialog_content: Por favor, insira o código de verificação recebido
+email_verification_dialog_content: "Por favor, insira o código de verificação recebido"
 email_verification_dialog_action: Verificar
 email_verification_field_label: Código de verificação
 email-geetest.embed.title: Verificação CAPTCHA necessária para enviar o código de verificação por email
@@ -195,7 +196,7 @@ friday: Sexta-feira
 furnishing_sets: Conjuntos de Decoração
 furnishings: Decorações
 furniture_embed_description: "{comfort_icon} Energia Adeptal: {comfort}\n{load_icon} Carga: {load}\nConfiança: {trust}\nTempo de Criação: {hour}h"
-game_maintenance_description: Por favor, tente novamente mais tarde
+game_maintenance_description: "Por favor, tente novamente mais tarde"
 game_maintenance_title: Jogo em Manutenção
 game_value_incomplete_param_error_message: Você deve especificar o jogo do UID
 geeetest_verification_complete: Verificação completa
@@ -241,7 +242,7 @@ invalid_input.input_out_of_range.min_value: "A entrada `{input}` precisa ser mai
 invalid_input_error_title: Entrada Inválida
 invalid_query_error_message: "Não foi possível encontrar nada com a consulta fornecida, por favor, selecione as opções do preenchimento automático em vez de digitar sua própria consulta."
 invalid_query_error_title: Consulta inválida
-invalid_verification_code_description: Por favor, verifique o código de verificação e tente novamente.
+invalid_verification_code_description: "Por favor, verifique o código de verificação e tente novamente."
 invalid_verification_code_title: Código de Verificação Inválido
 items: Itens
 level_str: "Nv.{level}"
@@ -271,7 +272,7 @@ no_accounts_autocomplete_choice: Você ainda não tem nenhuma conta. Adicione um
 profile_character_param_name: "personagem-{num}"
 no_challenge_data_err_message: "Não foi possível encontrar nenhum dado de {challenge} para esta fase. Ou você ainda não começou {challenge} ou os dados ainda não estão prontos. Por favor, tente novamente mais tarde"
 no_challenge_data_err_title: "Sem Dados de {challenge}"
-no_characters_found_error_message: Por favor, tente novamente com um filtro diferente
+no_characters_found_error_message: "Por favor, tente novamente com um filtro diferente"
 no_characters_found_error_title: Nenhum personagem encontrado com o filtro selecionado
 no_game_accounts_error_message: "Esta conta {platform} não possui contas de jogo."
 notes-card.gi.completed: Concluído
@@ -315,7 +316,7 @@ nsfw_prompt_error_title: Prompt NSFW Detectado
 page_footer: "Página {current_page}/{total_pages}"
 pf_card_total_score: "Pontuação Total: {score}"
 physical: Físico
-player_not_found_description: Por favor, verifique o UID fornecido
+player_not_found_description: "Por favor, verifique o UID fornecido"
 player_not_found_title: Jogador Não Existe
 preservation: Preservação
 prev_page_option_label: Página anterior
@@ -555,7 +556,7 @@ dyk_unreleased: Você pode ver conteúdo de jogo não lançado com /search
 dyk_team_card: Você pode gerar um card de time em /profile selecionando múltiplos personagens
 dyk_set_default_acc: Você pode definir uma conta padrão que é usada para executar todos os comandos em /accounts
 title_dyk: "Você sabia?"
-button_label_dyk: Mensagens "Você sabia?"
+button_label_dyk: "Mensagens \"Você sabia?\""
 events_view_start_date_embed_field: Hora de Início
 events_view_end_date_embed_field: Hora de Fim
 events_view_ann_select_placeholder: Selecione um evento...

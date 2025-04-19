@@ -105,6 +105,7 @@ characters.sorter.level: 等級
 characters.sorter.path: 命途
 characters.sorter.placeholder: 選擇一個排序...
 characters.sorter.rarity: 稀有度
+characters.sorter.hsr_type: 屬性
 characters_cmd_genshin_desc: 查看並篩選你的原神角色
 characters_cmd_hsr_desc: 查看並篩選你的星穹鐵道角色
 characters_cmd_zzz_desc: 查看並篩選你的絕區零代理人
@@ -552,7 +553,7 @@ dyk_settings_lang: 你可以使用 /settings 變更機器人使用的語言
 dyk_settings_theme: 你可以使用 /settings 切換為亮色或深色模式
 dyk_security: "我们有一篇關於帳戶安全的[文章](<:docs/Account-Security:>)"
 dyk_github: "Hoyo Buddy 於 [GitHub](<https://github.com/seriaati/hoyo-buddy>) 上開源"
-dyk_python: Hoyo Buddy 使用純 Python 撰寫而成
+dyk_python: Hoyo Buddy 使用純 Python 編寫而成
 dyk_unreleased: 你可以使用 /search 查看尚未釋出的遊戲內容
 dyk_team_card: 你可以透過選擇多個角色的方式在 /profile 產生隊伍卡片
 dyk_set_default_acc: 你可以用 /accounts 設置一個預設帳戶，用於運行所有指令

@@ -105,7 +105,7 @@ characters.sorter.level: レベル
 characters.sorter.path: 運命
 characters.sorter.placeholder: ソート基準を選択...
 characters.sorter.rarity: レアリティ
-characters.sorter.hsr_type: ""
+characters.sorter.hsr_type: 屬性
 characters_cmd_genshin_desc: 原神のキャラクターを表示・フィルタリングします
 characters_cmd_hsr_desc: 崩壊：スターレイルのキャラクターを表示・フィルタリングします
 characters_cmd_zzz_desc: ゼンレスゾーンゼロのエージェントを表示・フィルタリングします
@@ -641,7 +641,7 @@ login_button_label: Discordでログイン
 star5_guaranteed: "現在の確定状態：ピックアップ確定"
 star5_no_guaranteed: "現在の確定状態：ピックアップ**未確定**"
 characters_view_show_max_level_only: 最大レベルのキャラクターのみ表示
-characters_embed_max_level_characters: ""
+characters_embed_max_level_characters: 最大レベルキャラクター
 natlan_reputation: "評判レベル：{reputation}、部族：{tribes}"
 shiyu_overview: 概要
 shiyu_fastest_clear_time: "今シーズンの最速クリアタイム："

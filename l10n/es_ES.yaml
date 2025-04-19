@@ -105,6 +105,7 @@ characters.sorter.level: Nivel
 characters.sorter.path: Vías
 characters.sorter.placeholder: Selecciona una clasificación...
 characters.sorter.rarity: Rareza
+characters.sorter.hsr_type: ""
 characters_cmd_genshin_desc: Ver y filtrar tus personajes de Genshin Impact
 characters_cmd_hsr_desc: Ver y filtrar tus personajes de Honkai Star Rail
 characters_cmd_zzz_desc: Ver y filtrar tus agentes de Zenless Zone Zero
@@ -552,7 +553,7 @@ dyk_settings_lang: Puedes cambiar el idioma del bot con /settings
 dyk_settings_theme: Puedes cambiar entre el tema claro y oscuro usando /settings
 dyk_security: "Tenemos un [artículo](<:docs/Account-Security:>) sobre la seguridad de la cuenta"
 dyk_github: "Hoyo Buddy es de código abierto en [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
-dyk_python: Hoyo Buddy esta escrito puramente en Python
+dyk_python: ""
 dyk_unreleased: Puedes ver contenido no lanzado del juego con /search
 dyk_team_card: Puedes generar una tarjeta de equipo en /profile seleccionando varios personajes
 dyk_set_default_acc: Puede configurar una cuenta predeterminada que se utiliza para ejecutar todos los comandos en /accounts

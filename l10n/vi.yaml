@@ -105,6 +105,7 @@ characters.sorter.level: Cấp
 characters.sorter.path: Vận Mệnh
 characters.sorter.placeholder: Chọn cách sắp xếp...
 characters.sorter.rarity: Độ Hiếm
+characters.sorter.hsr_type: ""
 characters_cmd_genshin_desc: Chọn và lọc nhân vật Genshin Impact của bạn
 characters_cmd_hsr_desc: "Chọn và lọc nhân vật Honkai: Star Rail của bạn"
 characters_cmd_zzz_desc: Chọn và lọc Người Đại Diện Zenless Zone Zero của bạn
@@ -552,7 +553,7 @@ dyk_settings_lang: Bạn có thể đổi ngôn ngữ của bot trong /settings
 dyk_settings_theme: Bạn có thể đổi chế độ sáng/tối trong /settings
 dyk_security: "Chúng tôi có một [bài viết](<:docs/Account-Security:>) về bảo mật tài khoản"
 dyk_github: "Hoyo Buddy là một dự án mã nguồn mở trên [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
-dyk_python: Hoyo Buddy được viết hoàn toàn bằng Python
+dyk_python: ""
 dyk_unreleased: Bạn có thể xem nôi dung trò chơi chưa ra mắt bằng /search
 dyk_team_card: Bạn có thể tạo một thẻ dội trong /profile bằng cách chọn nhiều nhân vật
 dyk_set_default_acc: Bạn có thể đặt một tài khoản mặc định dùng để chạy hết tất cả lệnh trong /accounts

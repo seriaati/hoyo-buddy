@@ -97,7 +97,7 @@ class GISorter(StrEnum):
 
 
 class HSRSorter(StrEnum):
-    ELEMENT = "element"
+    ELEMENT = "hsr_type"
     PATH = "path"
     RARITY = "rarity"
     LEVEL = "level"
@@ -165,7 +165,7 @@ class CharactersView(PaginatorView):
         elif self.game is Game.STARRAIL:
             self.sorter = HSRSorter.ELEMENT
         elif self.game is Game.ZZZ:
-            self.sorter = ZZZSorter.ELEMENT
+            self.sorter = ZZZSorter.RARITY
         elif self.game is Game.HONKAI:
             self.sorter = HonkaiSorter.LEVEL
 

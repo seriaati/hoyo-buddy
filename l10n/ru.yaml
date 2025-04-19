@@ -105,6 +105,7 @@ characters.sorter.level: Уровень
 characters.sorter.path: Путь
 characters.sorter.placeholder: ""
 characters.sorter.rarity: ""
+characters.sorter.hsr_type: ""
 characters_cmd_genshin_desc: Просмотр и фильтрация персонажей Genshin Impact
 characters_cmd_hsr_desc: Просмотр и фильтрация персонажей Honkai Star Rail
 characters_cmd_zzz_desc: Просмотр и фильтрация персонажей Zenless Zone Zero

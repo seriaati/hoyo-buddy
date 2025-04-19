@@ -105,6 +105,7 @@ characters.sorter.level: Level
 characters.sorter.path: Path
 characters.sorter.placeholder: Pilih penyortir...
 characters.sorter.rarity: Rarity
+characters.sorter.hsr_type: ""
 characters_cmd_genshin_desc: Lihat dan filter karakter Genshin Impact kamu
 characters_cmd_hsr_desc: Lihat dan filter karakter Honkai Star Rail kamu
 characters_cmd_zzz_desc: Lihat dan filter agen Zenless Zone Zero kamu
@@ -552,7 +553,7 @@ dyk_settings_lang: ""
 dyk_settings_theme: ""
 dyk_security: ""
 dyk_github: "Hoyo Buddy adalah open-sourced di [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
-dyk_python: Hoyo Buddy ditulis murni dengan Python
+dyk_python: ""
 dyk_unreleased: ""
 dyk_team_card: Kamu bisa membuat kartu tim di /profile dengan memilih beberapa karakter
 dyk_set_default_acc: ""

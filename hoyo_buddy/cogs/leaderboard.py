@@ -322,7 +322,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         return self.bot.get_enum_choices(list(LeaderboardType), locale, current)
 
     @lb_view_command.autocomplete("account")
-    async def gi_hsr_zzz_honkai_acc_autocomplete(
+    async def lb_view_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)

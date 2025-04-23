@@ -388,7 +388,7 @@ class HoyoBuddy(commands.AutoShardedBot):
                 name=self._get_account_choice_name(
                     account, locale, is_author=is_author, show_id=show_id
                 ),
-                value=f"{account.id}_{','.join(game.value for game in games)}",
+                value=str(account.id),
             )
             for account in accounts
             if current.lower() in str(account).lower()

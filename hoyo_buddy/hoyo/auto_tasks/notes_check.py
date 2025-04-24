@@ -319,7 +319,7 @@ class NotesChecker:
         if remaining_time is None:
             return None
 
-        if remaining_time.total_seconds() >= 0:
+        if remaining_time.total_seconds() > 0:
             est_time = get_now() + remaining_time
             return await cls._reset_notif_count(notify, est_time=est_time)
 

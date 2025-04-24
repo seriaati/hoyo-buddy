@@ -369,6 +369,7 @@ profile_command_game_value_description: Game of the UID
 profile_command_uid_param_description: "UID of the player, this overrides the account parameter if provided"
 pt_button.label: Parametric transformer reminder
 pt_modal.title: Parametric Transformer Reminder Settings
+pt_notify_embed_desc: "Parametric Transformer is ready to be used!"
 public_account_toggle.label: Set account as public
 pure_fiction: Pure fiction
 pyro: Pyro

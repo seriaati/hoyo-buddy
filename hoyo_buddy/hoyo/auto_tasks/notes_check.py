@@ -105,7 +105,7 @@ class NotesChecker:
                 embed = DefaultEmbed(
                     locale,
                     title=LocaleStr(key="pt_button.label"),
-                    description=LocaleStr(key="pt.embed.description"),
+                    description=LocaleStr(key="pt_notify_embed_desc"),
                 )
                 embed.set_thumbnail(url=PT_ICON)
             case NotesNotifyType.REALM_CURRENCY:

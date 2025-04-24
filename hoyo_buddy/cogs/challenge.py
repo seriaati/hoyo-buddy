@@ -59,7 +59,7 @@ class Challenge(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer((Game.GENSHIN,))] = None,
+        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
     ) -> None:
         await self.challenge_command(i, ChallengeType.SPIRAL_ABYSS, user, account)
 

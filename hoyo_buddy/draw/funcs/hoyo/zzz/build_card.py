@@ -153,7 +153,12 @@ class ZZZAgentCard:
         )
         im.paste(rank_text, rank_text_pos, rank_text)
 
-        if not level_flip and self._name_data is not None and self._template == 1:
+        if (
+            not level_flip
+            and self._name_data is not None
+            and self._template == 1
+            and self._card_data.get("full_name", True)
+        ):
             # Agent full name
             text = self._name_data.full_name.split(" ", maxsplit=1)
             if len(text) > 1:

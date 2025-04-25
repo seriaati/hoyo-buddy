@@ -68,6 +68,10 @@ class EventsView(View):
             if self.ann_type != "banners"
             else [ann for ann in self.anns if ann.id in self.banner_ann_ids]
         )
+        if not anns:
+            msg = f"No announcements found for type {self.ann_type!r}"
+            raise ValueError(msg)
+
         return anns[0]
 
     async def _fetch_anns(self) -> None:

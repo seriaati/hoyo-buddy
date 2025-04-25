@@ -50,8 +50,10 @@ class ZZZAgentCard:
         self.hl_substats = hl_substats
         self._hl_special_stats = hl_special_stats
 
-    def _draw_background(self) -> Image.Image:
+    def _draw_base(self) -> Image.Image:
         zzz_text = self._card_data.get("zzz_text", True)
+
+        # Base
         base_card_temp = 2 if not zzz_text else 1
         card = Drawer.open_image(
             f"hoyo-buddy-assets/assets/zzz-build-card/card_base{base_card_temp}.png"
@@ -59,7 +61,12 @@ class ZZZAgentCard:
         draw = ImageDraw.Draw(card)
         drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False, sans=True)
 
-        # Open images
+        # Colors
+        agent_color = self._color or self._card_data["color"]
+        blob_color = drawer.hex_to_rgb(agent_color)
+        z_blob_color = drawer.blend_color(blob_color, (0, 0, 0), 0.85)
+
+        # Blob images
         pattern = drawer.open_asset("pattern.png")
         blob_left = drawer.open_asset("blob_left.png")
         blob_mid = drawer.open_asset("blob_mid.png")
@@ -67,14 +74,7 @@ class ZZZAgentCard:
         blob_rt = drawer.open_asset("blob_rt.png")
         z_blob = drawer.open_asset("z_blob.png")
 
-        agent_color = self._color or self._card_data["color"]
-        blob_color = drawer.hex_to_rgb(agent_color)
-        z_blob_color = drawer.blend_color(blob_color, (0, 0, 0), 0.85)
-
-        blob_left = drawer.create_pattern_blob(
-            color=blob_color, rotation=0, pattern=pattern, blob=blob_left
-        )
-        card.alpha_composite(blob_left, (-345, -351))
+        # Mid and right side blobs
         blob_mid = drawer.create_pattern_blob(
             color=blob_color, rotation=0, pattern=pattern, blob=blob_mid
         )
@@ -87,16 +87,8 @@ class ZZZAgentCard:
             color=blob_color, rotation=0, pattern=pattern, blob=blob_rt
         )
         card.alpha_composite(blob_rt, (3004, -174))
-        z_blob = drawer.create_pattern_blob(
-            color=z_blob_color, rotation=0, pattern=pattern, blob=z_blob
-        )
-        z_blob = drawer.resize_crop(z_blob, blob_left.size)
-        z_blob = drawer.mask_image_with_image(z_blob, blob_left)
-        card.alpha_composite(z_blob, (-345, -350))
 
-        logo = drawer.open_asset("logo.png")
-        card.alpha_composite(logo, (24, 18))
-
+        # Background big name
         if self._name_data is not None:
             name_position = (
                 self._card_data.get("name_x", 2234),
@@ -110,16 +102,6 @@ class ZZZAgentCard:
                 color=BLACK,
             )
 
-        bangboo = drawer.open_asset("bangboo.png")
-        card.alpha_composite(bangboo, (3113, 1168))
-
-        return card
-
-    def draw(self) -> BytesIO:
-        im = self._draw_background()
-        draw = ImageDraw.Draw(im)
-        drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False, sans=True)
-
         # Agent image
         agent_image = drawer.open_static(self._image_url)
         agent_image = drawer.resize_crop(
@@ -128,7 +110,40 @@ class ZZZAgentCard:
         if self._card_data.get("flip", False):
             # Flip image horizontally
             agent_image = agent_image.transpose(Transpose.FLIP_LEFT_RIGHT)
-        im.paste(agent_image, (self._card_data["image_x"], self._card_data["image_y"]), agent_image)
+        card.alpha_composite(agent_image, (self._card_data["image_x"], self._card_data["image_y"]))
+
+        # Movie
+        movie = drawer.open_asset("movie.png")
+        card.alpha_composite(movie, (0, 0))
+
+        # Left blob
+        blob_left = drawer.create_pattern_blob(
+            color=blob_color, rotation=0, pattern=pattern, blob=blob_left
+        )
+        card.alpha_composite(blob_left, (-345, -351))
+
+        # Z blob
+        z_blob = drawer.create_pattern_blob(
+            color=z_blob_color, rotation=0, pattern=pattern, blob=z_blob
+        )
+        z_blob = drawer.resize_crop(z_blob, blob_left.size)
+        z_blob = drawer.mask_image_with_image(z_blob, blob_left)
+        card.alpha_composite(z_blob, (-345, -350))
+
+        # Logo
+        logo = drawer.open_asset("logo.png")
+        card.alpha_composite(logo, (24, 18))
+
+        # Bangboo
+        bangboo = drawer.open_asset("bangboo.png")
+        card.alpha_composite(bangboo, (3113, 1168))
+
+        return card
+
+    def draw(self) -> BytesIO:
+        im = self._draw_base()
+        draw = ImageDraw.Draw(im)
+        drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False, sans=True)
 
         # Level
         level_text = f"Lv.{self._agent.level}"

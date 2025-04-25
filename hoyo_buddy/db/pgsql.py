@@ -18,7 +18,6 @@ class Database:
     async def __aenter__(self) -> None:
         await Tortoise.init(config=DB_CONFIG)
         logger.info("Connected to database")
-        await Tortoise.generate_schemas()
 
     async def __aexit__(
         self,

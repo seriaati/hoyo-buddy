@@ -431,12 +431,18 @@ class HoyoBuddy(commands.AutoShardedBot):
             logger.error(f"Failed to get command config with name {command_name!r}")
             return []
 
-        games = command.games or list(Game)
+        games = command.games or []
 
         lb_type_games = self.get_lb_type_games(i)
         if lb_type_games:
             games = list(games)
             games.extend(lb_type_games)
+
+        if not games:
+            logger.error(
+                "Cannot use `get_game_account_choices` on commands without `games` explicitly set"
+            )
+            return []
 
         locale = await get_locale(i)
         user: User = i.namespace.user

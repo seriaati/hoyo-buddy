@@ -171,6 +171,7 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         ),
     ),
     "check-in": CommandConfig(
+        games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT),
         description=locale_str("Game daily check-in", key="checkin_command_description")
     ),
     "notes": CommandConfig(
@@ -192,10 +193,13 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         ),
     ),
     "geetest": CommandConfig(
-        description=locale_str("Complete geetest verification", key="geetest_command_description")
+        games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI),
+        platform=Platform.HOYOLAB,
+        description=locale_str("Complete geetest verification", key="geetest_command_description"),
     ),
     "stats": CommandConfig(
-        description=locale_str("View game account statistics", key="stats_command_description")
+        games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI),
+        description=locale_str("View game account statistics", key="stats_command_description"),
     ),
     "events": CommandConfig(
         games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ),
@@ -206,9 +210,10 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         description=locale_str("Traveling Mimo event management", key="mimo_cmd_desc"),
     ),
     "web-events": CommandConfig(
+        games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT),
         description=locale_str(
             "View ongoing web events and set notifier", key="web_events_cmd_desc"
-        )
+        ),
     ),
     "lb akasha": CommandConfig(
         games=(Game.GENSHIN,),

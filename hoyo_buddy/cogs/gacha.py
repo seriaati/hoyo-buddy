@@ -6,16 +6,17 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.gacha import GachaCommand
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
-from hoyo_buddy.db import HoyoAccount, get_locale
+from hoyo_buddy.db import HoyoAccount  # noqa: TC001
 
 from ..enums import GachaImportSource, Game
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
-    from ..types import Interaction, User
+    from ..types import Interaction
 
 
 class Gacha(
@@ -27,15 +28,16 @@ class Gacha(
         self.bot = bot
 
     @app_commands.command(
-        name=app_commands.locale_str("import"),
-        description=app_commands.locale_str(
-            "Import gacha history from the game", key="gacha_import_command_description"
-        ),
+        name=app_commands.locale_str("import"), description=COMMANDS["gacha-log import"].description
     )
     @app_commands.rename(**get_rename_kwargs(account=True))
     @app_commands.describe(**get_describe_kwargs(account_no_default=True))
     async def import_(
-        self, i: Interaction, account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer]
+        self,
+        i: Interaction,
+        account: app_commands.Transform[
+            HoyoAccount, HoyoAccountTransformer(COMMANDS["gacha-log import"].games)
+        ],
     ) -> Any:
         account_ = account or await self.bot.get_account(
             i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
@@ -43,10 +45,7 @@ class Gacha(
         await GachaCommand().run_import(i, account_)
 
     @app_commands.command(
-        name=app_commands.locale_str("view"),
-        description=app_commands.locale_str(
-            "View imported gacha logs", key="gacha_view_command_description"
-        ),
+        name=app_commands.locale_str("view"), description=COMMANDS["gacha-log view"].description
     )
     @app_commands.rename(**get_rename_kwargs(account=True))
     @app_commands.describe(**get_describe_kwargs(account_no_default=True))
@@ -59,10 +58,7 @@ class Gacha(
         await GachaCommand().run_view(i, account_)
 
     @app_commands.command(
-        name=app_commands.locale_str("manage"),
-        description=app_commands.locale_str(
-            "Manage imported gacha logs", key="gacha_manage_command_description"
-        ),
+        name=app_commands.locale_str("manage"), description=COMMANDS["gacha-log manage"].description
     )
     @app_commands.rename(**get_rename_kwargs(account=True))
     @app_commands.describe(**get_describe_kwargs(account_no_default=True))
@@ -75,11 +71,7 @@ class Gacha(
         await GachaCommand().run_manage(i, account_)
 
     @app_commands.command(
-        name=app_commands.locale_str("upload"),
-        description=app_commands.locale_str(
-            "Upload gacha history file from other sources to import to Hoyo Buddy",
-            key="gacha_upload_command_description",
-        ),
+        name=app_commands.locale_str("upload"), description=COMMANDS["gacha-log upload"].description
     )
     @app_commands.rename(
         source=app_commands.locale_str("source", key="source_param_name"),
@@ -115,11 +107,7 @@ class Gacha(
     async def account_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        locale = await get_locale(i)
-        user: User = i.namespace.user
-        return await self.bot.get_account_choices(
-            user, i.user.id, current, locale, games=(Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
-        )
+        return await self.bot.get_game_account_choices(i, current)
 
 
 async def setup(bot: HoyoBuddy) -> None:

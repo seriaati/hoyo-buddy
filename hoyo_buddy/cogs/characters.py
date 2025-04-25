@@ -6,6 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from hoyo_buddy.commands.characters import CharactersCommand
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, Settings
 from hoyo_buddy.enums import Game
@@ -38,93 +39,66 @@ class Characters(
         command = CharactersCommand(account_, settings)
         await command.run(i)
 
-    @app_commands.command(
-        name="genshin",
-        description=app_commands.locale_str(
-            "View and filter your Genshin Impact characters", key="characters_cmd_genshin_desc"
-        ),
-    )
+    @app_commands.command(name="genshin", description=COMMANDS["characters genshin"].description)
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def genshin_command(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["characters genshin"].games)
+        ] = None,
     ) -> None:
         await self.characters_command(i, user, account, Game.GENSHIN)
 
-    @app_commands.command(
-        name="hsr",
-        description=app_commands.locale_str(
-            "View and filter your Honkai Star Rail characters", key="characters_cmd_hsr_desc"
-        ),
-    )
+    @app_commands.command(name="hsr", description=COMMANDS["characters hsr"].description)
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def hsr_command(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["characters hsr"].games)
+        ] = None,
     ) -> None:
         await self.characters_command(i, user, account, Game.STARRAIL)
 
-    @app_commands.command(
-        name="zzz",
-        description=app_commands.locale_str(
-            "View and filter your Zenless Zone Zero agents", key="characters_cmd_zzz_desc"
-        ),
-    )
+    @app_commands.command(name="zzz", description=COMMANDS["characters zzz"].description)
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def zzz_command(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["characters zzz"].games)
+        ] = None,
     ) -> None:
         await self.characters_command(i, user, account, Game.ZZZ)
 
-    @app_commands.command(
-        name="honkai",
-        description=app_commands.locale_str(
-            "View and filter your Honkai Impact 3rd characters", key="characters_cmd_honkai_desc"
-        ),
-    )
+    @app_commands.command(name="honkai", description=COMMANDS["characters honkai"].description)
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
     async def honkai_command(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["characters honkai"].games)
+        ] = None,
     ) -> None:
         await self.characters_command(i, user, account, Game.HONKAI)
 
     @genshin_command.autocomplete("account")
+    @hsr_command.autocomplete("account")
+    @zzz_command.autocomplete("account")
+    @honkai_command.autocomplete("account")
     async def genshin_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN,))
-
-    @hsr_command.autocomplete("account")
-    async def hsr_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.STARRAIL,))
-
-    @zzz_command.autocomplete("account")
-    async def zzz_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.ZZZ,))
-
-    @honkai_command.autocomplete("account")
-    async def honkai_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.HONKAI,))
+        return await self.bot.get_game_account_choices(i, current)
 
 
 async def setup(bot: HoyoBuddy) -> None:

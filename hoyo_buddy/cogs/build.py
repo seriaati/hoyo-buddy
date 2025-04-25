@@ -6,6 +6,7 @@ from discord import Locale, app_commands
 from discord.ext import commands
 
 from hoyo_buddy.commands.build import BuildCommand
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import get_locale
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
@@ -36,10 +37,7 @@ class Build(commands.GroupCog):
         return characters.get(locale, characters[Locale.american_english])
 
     @app_commands.command(
-        name=app_commands.locale_str("genshin"),
-        description=app_commands.locale_str(
-            "View a Genshin Impact character's builds and guides", key="build_cmd_genshin_desc"
-        ),
+        name=app_commands.locale_str("genshin"), description=COMMANDS["build genshin"].description
     )
     @app_commands.rename(
         character_id=app_commands.locale_str("character", key="akasha_character_param")

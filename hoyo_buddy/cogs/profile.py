@@ -6,6 +6,7 @@ import enka
 from discord import Locale, app_commands
 from discord.ext.commands import GroupCog
 
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.profile import ProfileCommand
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, get_locale
@@ -70,7 +71,7 @@ class Profile(
         game: Game,
         *,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: HoyoAccount | None = None,
         uid: app_commands.Range[str, 9, 10] | None = None,
         character_id1: str | None = None,
         character_id2: str | None = None,
@@ -102,11 +103,7 @@ class Profile(
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("genshin"),
-        description=app_commands.locale_str(
-            "Generate Genshin Impact character build cards and team cards",
-            key="profile_command_gi_description",
-        ),
+        name=app_commands.locale_str("genshin"), description=COMMANDS["profile genshin"].description
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True), **gen_character_id_rename(4))
     @app_commands.describe(
@@ -116,7 +113,9 @@ class Profile(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["profile genshin"].games)
+        ] = None,
         uid: app_commands.Range[str, 9, 10] | None = None,
         character_id1: str | None = None,
         character_id2: str | None = None,
@@ -136,11 +135,7 @@ class Profile(
         )
 
     @app_commands.command(
-        name=app_commands.locale_str("hsr"),
-        description=app_commands.locale_str(
-            "Generate Honkai Star Rail character build cards and team cards",
-            key="profile_command_hsr_description",
-        ),
+        name=app_commands.locale_str("hsr"), description=COMMANDS["profile hsr"].description
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True), **gen_character_id_rename(4))
     @app_commands.describe(
@@ -150,7 +145,9 @@ class Profile(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["profile hsr"].games)
+        ] = None,
         uid: app_commands.Range[str, 9, 10] | None = None,
         character_id1: str | None = None,
         character_id2: str | None = None,
@@ -170,11 +167,7 @@ class Profile(
         )
 
     @app_commands.command(
-        name=app_commands.locale_str("zzz"),
-        description=app_commands.locale_str(
-            "Generate Zenless Zone Zero character build cards and team cards",
-            key="profile_command_zzz_description",
-        ),
+        name=app_commands.locale_str("zzz"), description=COMMANDS["profile zzz"].description
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True), **gen_character_id_rename(3))
     @app_commands.describe(
@@ -184,7 +177,9 @@ class Profile(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["profile zzz"].games)
+        ] = None,
         character_id1: str | None = None,
         character_id2: str | None = None,
         character_id3: str | None = None,
@@ -200,20 +195,12 @@ class Profile(
         )
 
     @profile_gi_command.autocomplete("account")
-    async def gi_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN,))
-
     @profile_hsr_command.autocomplete("account")
-    async def hsr_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.STARRAIL,))
-
     @profile_zzz_command.autocomplete("account")
-    async def zzz_autocomplete(
+    async def acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.ZZZ,))
+        return await self.bot.get_game_account_choices(i, current)
 
     async def profile_character_autocomplete(
         self, i: Interaction, current: str, *, game: Game

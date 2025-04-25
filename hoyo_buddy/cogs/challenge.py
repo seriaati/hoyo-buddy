@@ -6,9 +6,10 @@ from discord import app_commands
 from discord.ext.commands import GroupCog
 
 from hoyo_buddy.commands.challenge import ChallengeCommand
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount  # noqa: TC001
-from hoyo_buddy.enums import ChallengeType, Game
+from hoyo_buddy.enums import ChallengeType
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from hoyo_buddy.types import User  # noqa: TC001
 from hoyo_buddy.utils import ephemeral
@@ -36,7 +37,7 @@ class Challenge(
     )
     zzz = app_commands.Group(
         name=app_commands.locale_str("zzz"),
-        description=app_commands.locale_str("Zombiegal challenges"),
+        description=app_commands.locale_str("Zenless Zone Zero challenges"),
     )
 
     async def challenge_command(
@@ -49,9 +50,7 @@ class Challenge(
 
     @genshin.command(
         name=app_commands.locale_str("abyss"),
-        description=app_commands.locale_str(
-            "Generate Spiral Abyss card", key="challenge_command_abyss_desc"
-        ),
+        description=COMMANDS["challenge genshin abyss"].description,
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
@@ -59,15 +58,15 @@ class Challenge(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["challenge genshin abyss"].games)
+        ] = None,
     ) -> None:
         await self.challenge_command(i, ChallengeType.SPIRAL_ABYSS, user, account)
 
     @genshin.command(
         name=app_commands.locale_str("theater"),
-        description=app_commands.locale_str(
-            "Generate Imaginarium Theater card", key="challenge_command_theater_desc"
-        ),
+        description=COMMANDS["challenge genshin theater"].description,
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
@@ -75,15 +74,14 @@ class Challenge(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["challenge genshin theater"].games)
+        ] = None,
     ) -> None:
         await self.challenge_command(i, ChallengeType.IMG_THEATER, user, account)
 
     @hsr.command(
-        name=app_commands.locale_str("moc"),
-        description=app_commands.locale_str(
-            "Generate Memory of Chaos card", key="challenge_command_moc_desc"
-        ),
+        name=app_commands.locale_str("moc"), description=COMMANDS["challenge hsr moc"].description
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
@@ -91,15 +89,15 @@ class Challenge(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["challenge hsr moc"].games)
+        ] = None,
     ) -> None:
         await self.challenge_command(i, ChallengeType.MOC, user, account)
 
     @hsr.command(
         name=app_commands.locale_str("pure-fiction"),
-        description=app_commands.locale_str(
-            "Generate Pure Fiction card", key="challenge_command_pf_desc"
-        ),
+        description=COMMANDS["challenge hsr pure-fiction"].description,
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
@@ -107,15 +105,15 @@ class Challenge(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["challenge hsr pure-fiction"].games)
+        ] = None,
     ) -> None:
         await self.challenge_command(i, ChallengeType.PURE_FICTION, user, account)
 
     @hsr.command(
         name=app_commands.locale_str("apc-shadow"),
-        description=app_commands.locale_str(
-            "Generate Apocalyptic Shadow card", key="challenge_command_apc_shadow_desc"
-        ),
+        description=COMMANDS["challenge hsr apc-shadow"].description,
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
@@ -123,15 +121,15 @@ class Challenge(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["challenge hsr apc-shadow"].games)
+        ] = None,
     ) -> None:
         await self.challenge_command(i, ChallengeType.APC_SHADOW, user, account)
 
     @zzz.command(
         name=app_commands.locale_str("shiyu"),
-        description=app_commands.locale_str(
-            "Generate Shiyu Defense card", key="challenge_command_shiyu_desc"
-        ),
+        description=COMMANDS["challenge zzz shiyu"].description,
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
@@ -139,15 +137,15 @@ class Challenge(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["challenge zzz shiyu"].games)
+        ] = None,
     ) -> None:
         await self.challenge_command(i, ChallengeType.SHIYU_DEFENSE, user, account)
 
     @zzz.command(
         name=app_commands.locale_str("assault"),
-        description=app_commands.locale_str(
-            "Generate Deadly Assault card", key="challenge_command_assault_desc"
-        ),
+        description=COMMANDS["challenge zzz assault"].description,
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
@@ -155,29 +153,23 @@ class Challenge(
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["challenge zzz assault"].games)
+        ] = None,
     ) -> None:
         await self.challenge_command(i, ChallengeType.ASSAULT, user, account)
 
     @abyss_command.autocomplete("account")
     @img_theater_command.autocomplete("account")
-    async def gi_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN,))
-
     @moc_command.autocomplete("account")
     @pf_command.autocomplete("account")
     @apc_shadow_command.autocomplete("account")
-    async def hsr_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.STARRAIL,))
-
     @shiyu_command.autocomplete("account")
     @assault_command.autocomplete("account")
-    async def zzz_autocomplete(
+    async def acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.ZZZ,))
+        return await self.bot.get_game_account_choices(i, current)
 
 
 async def setup(bot: HoyoBuddy) -> None:

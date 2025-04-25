@@ -7,6 +7,7 @@ from discord import Locale, app_commands
 from discord.ext import commands
 from enka.errors import WrongUIDFormatError
 
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs, locale_to_akasha_lang
 from hoyo_buddy.db import HoyoAccount, get_locale
@@ -37,11 +38,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         self.bot = bot
 
     @app_commands.command(
-        name=app_commands.locale_str("akasha"),
-        description=app_commands.locale_str(
-            "View Genshin Impact character damage leaderboard (powered by Akasha System)",
-            key="leaderboard_akasha_command_description",
-        ),
+        name=app_commands.locale_str("akasha"), description=COMMANDS["lb akasha"].description
     )
     @app_commands.rename(
         character_id=app_commands.locale_str("character", key="akasha_character_param"),
@@ -85,7 +82,9 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         calculation_id: str,
         variant: str | None = None,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["lb akasha"].games)
+        ] = None,
         uid: app_commands.Range[str, 9, 10] | None = None,
         guild_only_: int = 0,
     ) -> None:
@@ -179,6 +178,33 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             locale=locale,
         )
         await view.start(i)
+
+    @app_commands.command(
+        name=app_commands.locale_str("view"), description=COMMANDS["lb view"].description
+    )
+    @app_commands.rename(
+        lb=app_commands.locale_str("leaderboard", key="akasha_calculation_param"),
+        **get_rename_kwargs(account=True),
+    )
+    @app_commands.describe(
+        lb=app_commands.locale_str("Leaderboard to view", key="akasha_calculation_param_desc"),
+        **get_describe_kwargs(account_no_default=True),
+    )
+    async def lb_view_command(
+        self,
+        i: Interaction,
+        lb: str,
+        account: app_commands.Transform[
+            HoyoAccount, HoyoAccountTransformer(COMMANDS["lb view"].games)
+        ],
+    ) -> None:
+        try:
+            lb_type = LeaderboardType(lb)
+        except ValueError as e:
+            raise LeaderboardNotFoundError from e
+
+        command = LeaderboardCommand()
+        await command.run(i, lb_type=lb_type, account=account)
 
     @akasha_command.autocomplete("character_id")
     async def character_id_autocomplete(
@@ -284,59 +310,17 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             )
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
 
-    @akasha_command.autocomplete("account")
-    async def gi_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN,))
-
-    @app_commands.command(
-        name=app_commands.locale_str("view"),
-        description=app_commands.locale_str("View leaderboards", key="lb_view_command_description"),
-    )
-    @app_commands.rename(
-        lb=app_commands.locale_str("leaderboard", key="akasha_calculation_param"),
-        **get_rename_kwargs(account=True),
-    )
-    @app_commands.describe(
-        lb=app_commands.locale_str("Leaderboard to view", key="akasha_calculation_param_desc"),
-        **get_describe_kwargs(account_no_default=True),
-    )
-    async def lb_view_command(
-        self,
-        i: Interaction,
-        lb: str,
-        account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer],
-    ) -> None:
-        try:
-            lb_type = LeaderboardType(lb)
-        except ValueError as e:
-            raise LeaderboardNotFoundError from e
-
-        command = LeaderboardCommand()
-        await command.run(i, lb_type=lb_type, account=account)
-
     @lb_view_command.autocomplete("lb")
     async def lb_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         return self.bot.get_enum_choices(list(LeaderboardType), locale, current)
 
+    @akasha_command.autocomplete("account")
     @lb_view_command.autocomplete("account")
-    async def gi_hsr_zzz_honkai_acc_autocomplete(
+    async def gi_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        locale = await get_locale(i)
-
-        try:
-            lb = LeaderboardType(i.namespace.leaderboard)
-        except ValueError:
-            return self.bot.get_error_choice(LocaleStr(key="invalid_lb_selected_error_msg"), locale)
-
-        games = LeaderboardCommand.get_games_by_lb_type(lb)
-        if not games:
-            return self.bot.get_error_choice(LocaleStr(key="no_game_found"), locale)
-
-        return await self.bot.get_game_account_choices(i, current, games)
+        return await self.bot.get_game_account_choices(i, current)
 
 
 async def setup(bot: HoyoBuddy) -> None:

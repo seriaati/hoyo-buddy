@@ -109,8 +109,9 @@ class ShiyuDefenseCard:
 
     def draw_frontiers(self, im: Image.Image, drawer: Drawer) -> None:
         positions = ((1313, 87), (2501, 87), (1313, 838), (2501, 838))
+        floors = sorted(self.data.floors, key=lambda x: x.index)[-4:]
 
-        for floor_index, frontier in enumerate(reversed(self.data.floors)):
+        for floor_index, frontier in enumerate(floors):
             pos = positions[floor_index]
 
             tbox = drawer.write(

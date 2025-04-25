@@ -67,13 +67,6 @@ class PrometheusCog(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
-    def _get_command_name(self, command: app_commands.Command) -> str:
-        if command.parent is not None:
-            if command.parent.parent is not None:
-                return f"{command.parent.parent.name} {command.parent.name} {command.name}"
-            return f"{command.parent.name} {command.name}"
-        return command.name
-
     async def cog_load(self) -> None:
         if not self.bot.config.prometheus:
             return
@@ -142,7 +135,7 @@ class PrometheusCog(commands.Cog):
         if i.type is InteractionType.application_command:
             if isinstance(i.command, app_commands.Command):
                 parameters = i.namespace.__dict__
-                command_name = self._get_command_name(i.command)
+                command_name = self.bot.get_command_name(i.command)
                 logger.info(f"[Command][{i.user.id}] {command_name}", parameters=parameters)
             elif isinstance(i.command, app_commands.ContextMenu):
                 command_name = i.command.name

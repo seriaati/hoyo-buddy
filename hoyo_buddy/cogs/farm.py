@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from discord import Locale, app_commands
 from discord.ext import commands
 
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import FarmNotify, HoyoAccount, Settings, get_locale
 
@@ -18,7 +19,7 @@ from ..ui.hoyo.genshin.farm import FarmView
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
-    from ..types import Interaction, User
+    from ..types import Interaction
 
 
 class Farm(
@@ -42,17 +43,16 @@ class Farm(
         )
 
     @app_commands.command(
-        name=app_commands.locale_str("view"),
-        description=app_commands.locale_str(
-            "View farmable domains in Genshin Impact", key="farm_view_command_description"
-        ),
+        name=app_commands.locale_str("view"), description=COMMANDS["farm view"].description
     )
     @app_commands.rename(**get_rename_kwargs(account=True))
     @app_commands.describe(**get_describe_kwargs(account=True))
     async def farm_view_command(
         self,
         i: Interaction,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["farm view"].games)
+        ] = None,
     ) -> None:
         settings = await Settings.get(user_id=i.user.id)
         account = (
@@ -68,11 +68,7 @@ class Farm(
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("add"),
-        description=app_commands.locale_str(
-            "Add character/weapon to be notified when its materials are farmable",
-            key="farm_add_command_description",
-        ),
+        name=app_commands.locale_str("add"), description=COMMANDS["farm add"].description
     )
     @app_commands.rename(
         query=app_commands.locale_str("query", key="search_command_query_param_name"),
@@ -87,7 +83,9 @@ class Farm(
     async def farm_add_command(
         self,
         i: Interaction,
-        account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer],
+        account: app_commands.Transform[
+            HoyoAccount, HoyoAccountTransformer(COMMANDS["farm add"].games)
+        ],
         query: str,
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
@@ -96,10 +94,7 @@ class Farm(
         await command.run()
 
     @app_commands.command(
-        name=app_commands.locale_str("remove"),
-        description=app_commands.locale_str(
-            "Remove character/weapon from farm reminder list", key="farm_remove_command_description"
-        ),
+        name=app_commands.locale_str("remove"), description=COMMANDS["farm remove"].description
     )
     @app_commands.rename(
         query=app_commands.locale_str("query", key="search_command_query_param_name"),
@@ -114,7 +109,9 @@ class Farm(
     async def farm_remove_command(
         self,
         i: Interaction,
-        account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer],
+        account: app_commands.Transform[
+            HoyoAccount, HoyoAccountTransformer(COMMANDS["farm remove"].games)
+        ],
         query: str,
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
@@ -123,18 +120,16 @@ class Farm(
         await command.run()
 
     @app_commands.command(
-        name=app_commands.locale_str("reminder"),
-        description=app_commands.locale_str(
-            "Notify you when materials of characters/weapons are farmable",
-            key="farm_reminder_command_description",
-        ),
+        name=app_commands.locale_str("reminder"), description=COMMANDS["farm reminder"].description
     )
     @app_commands.rename(**get_rename_kwargs(account=True))
     @app_commands.describe(**get_describe_kwargs(account=True))
     async def farm_reminder_command(
         self,
         i: Interaction,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["farm reminder"].games)
+        ] = None,
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
@@ -147,21 +142,13 @@ class Farm(
     async def account_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        locale = await get_locale(i)
-        user: User = i.namespace.user
-        return await self.bot.get_account_choices(
-            user, i.user.id, current, locale, games=(Game.GENSHIN,)
-        )
+        return await self.bot.get_game_account_choices(i, current)
 
     @farm_remove_command.autocomplete("account")
     async def account_with_id_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        locale = await get_locale(i)
-        user: User = i.namespace.user
-        return await self.bot.get_account_choices(
-            user, i.user.id, current, locale, games=(Game.GENSHIN,), show_id=True
-        )
+        return await self.bot.get_game_account_choices(i, current, show_id=True)
 
     @farm_add_command.autocomplete("query")
     async def query_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:

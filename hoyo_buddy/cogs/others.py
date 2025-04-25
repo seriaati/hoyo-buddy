@@ -8,6 +8,7 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands, tasks
 
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import IMAGE_EXTENSIONS, get_docs_url
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db import get_dyk
@@ -70,10 +71,7 @@ class Others(commands.Cog):
     async def before_update_stat_vcs(self) -> None:
         await self.bot.wait_until_ready()
 
-    @app_commands.command(
-        name=locale_str("about"),
-        description=locale_str("About the bot", key="about_command_description"),
-    )
+    @app_commands.command(name=locale_str("about"), description=COMMANDS["about"].description)
     async def about_command(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
@@ -183,11 +181,7 @@ class Others(commands.Cog):
         )
 
     @app_commands.command(
-        name=app_commands.locale_str("upload"),
-        description=app_commands.locale_str(
-            "Upload an image and get a link to it, which can be used in custom image in /profile",
-            key="upload_cmd_desc",
-        ),
+        name=app_commands.locale_str("upload"), description=COMMANDS["upload"].description
     )
     @app_commands.rename(image=app_commands.locale_str("image", key="upload_cmd_image_param_name"))
     @app_commands.describe(

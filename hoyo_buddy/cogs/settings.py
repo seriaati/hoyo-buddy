@@ -6,6 +6,7 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands
 
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.utils import ephemeral
 
@@ -20,10 +21,7 @@ class Settings(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
-    @app_commands.command(
-        name=locale_str("settings"),
-        description=locale_str("Configure your user settings", key="settings_command_description"),
-    )
+    @app_commands.command(name=locale_str("settings"), description=COMMANDS["settings"].description)
     async def settings_command(self, i: Interaction) -> Any:
         await i.response.defer(ephemeral=ephemeral(i))
 

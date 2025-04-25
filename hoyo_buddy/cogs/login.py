@@ -6,6 +6,7 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands
 
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import HoyoAccount, User, get_locale
 
 from ..ui.account.view import AccountManager
@@ -19,10 +20,7 @@ class Login(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
-    @app_commands.command(
-        name=locale_str("accounts"),
-        description=locale_str("Manage your accounts", key="accounts_command_description"),
-    )
+    @app_commands.command(name=locale_str("accounts"), description=COMMANDS["accounts"].description)
     async def accounts(self, i: Interaction) -> Any:
         locale = await get_locale(i)
         user = await User.get(id=i.user.id)

@@ -27,6 +27,8 @@ from seria.utils import write_json
 from tortoise.expressions import Case, Q, When
 
 from hoyo_buddy.bot.error_handler import get_error_embed
+from hoyo_buddy.commands.configs import COMMANDS
+from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.constants import (
     AUTO_TASK_INTERVALS,
     AUTO_TASK_LAST_TIME_FIELDS,
@@ -47,7 +49,7 @@ from hoyo_buddy.db import get_locale, models
 from hoyo_buddy.db.utils import build_account_query
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Game, GeetestType, Platform
+from hoyo_buddy.enums import Game, GeetestType, LeaderboardType, Platform
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
 from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
@@ -123,6 +125,26 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         self.geetest_command_task: asyncio.Task | None = None
         self.farm_check_running: bool = False
+
+    @staticmethod
+    def get_command_name(command: app_commands.Command) -> str:
+        if command.parent is not None:
+            if command.parent.parent is not None:
+                return f"{command.parent.parent.name} {command.parent.name} {command.name}"
+            return f"{command.parent.name} {command.name}"
+        return command.name
+
+    @staticmethod
+    def get_lb_type_games(i: Interaction) -> Sequence[Game]:
+        if i.namespace.leaderboard is None:
+            return []
+
+        try:
+            lb = LeaderboardType(i.namespace.leaderboard)
+        except ValueError:
+            return []
+
+        return LeaderboardCommand.get_games_by_lb_type(lb)
 
     async def update_version_activity(self) -> None:
         self.version = get_project_version()
@@ -395,13 +417,43 @@ class HoyoBuddy(commands.AutoShardedBot):
         ]
 
     async def get_game_account_choices(
-        self, i: Interaction, current: str, games: Sequence[Game], platform: Platform | None = None
+        self, i: Interaction, current: str, *, show_id: bool = False
     ) -> list[app_commands.Choice[str]]:
-        games = games or list(Game)
+        if not isinstance(i.command, app_commands.Command):
+            logger.error(
+                f"Cannot use `get_game_account_choices` on a non-slash command, using: {type(i.command)}"
+            )
+            return []
+
+        command_name = self.get_command_name(i.command)
+        command = COMMANDS.get(command_name)  # pyright: ignore[reportArgumentType]
+        if command is None:
+            logger.error(f"Failed to get command config with name {command_name!r}")
+            return []
+
+        games = command.games or []
+
+        lb_type_games = self.get_lb_type_games(i)
+        if lb_type_games:
+            games = list(games)
+            games.extend(lb_type_games)
+
+        if not games:
+            logger.error(
+                "Cannot use `get_game_account_choices` on commands without `games` explicitly set"
+            )
+            return []
+
         locale = await get_locale(i)
         user: User = i.namespace.user
         return await self.get_account_choices(
-            user, i.user.id, current, locale, games=games, platform=platform
+            user,
+            i.user.id,
+            current,
+            locale,
+            games=games,
+            platform=command.platform,
+            show_id=show_id,
         )
 
     async def get_accounts(

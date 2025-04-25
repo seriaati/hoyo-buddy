@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from discord import app_commands
 from discord.ext import commands
 
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.events import EventsCommand
 from hoyo_buddy.db import HoyoAccount, Settings, get_dyk, get_locale
 from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
@@ -33,10 +34,7 @@ class Hoyo(commands.Cog):
         self.bot = bot
 
     @app_commands.command(
-        name=app_commands.locale_str("check-in"),
-        description=app_commands.locale_str(
-            "Game daily check-in", key="checkin_command_description"
-        ),
+        name=app_commands.locale_str("check-in"), description=COMMANDS["check-in"].description
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
@@ -44,7 +42,9 @@ class Hoyo(commands.Cog):
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["check-in"].games)
+        ] = None,
     ) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
@@ -62,10 +62,7 @@ class Hoyo(commands.Cog):
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("notes"),
-        description=app_commands.locale_str(
-            "View real-time notes", key="notes_command_description"
-        ),
+        name=app_commands.locale_str("notes"), description=COMMANDS["notes"].description
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
@@ -73,7 +70,9 @@ class Hoyo(commands.Cog):
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["notes"].games)
+        ] = None,
     ) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
@@ -96,11 +95,7 @@ class Hoyo(commands.Cog):
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("exploration"),
-        description=app_commands.locale_str(
-            "View your exploration statistics in Genshin Impact",
-            key="exploration_command_description",
-        ),
+        name=app_commands.locale_str("exploration"), description=COMMANDS["exploration"].description
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
@@ -108,7 +103,9 @@ class Hoyo(commands.Cog):
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["exploration"].games)
+        ] = None,
     ) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
@@ -121,10 +118,7 @@ class Hoyo(commands.Cog):
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("redeem"),
-        description=app_commands.locale_str(
-            "Redeem codes for in-game rewards", key="redeem_command_description"
-        ),
+        name=app_commands.locale_str("redeem"), description=COMMANDS["redeem"].description
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
@@ -132,7 +126,9 @@ class Hoyo(commands.Cog):
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["redeem"].games)
+        ] = None,
     ) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
@@ -153,10 +149,7 @@ class Hoyo(commands.Cog):
         view.message = await i.original_response()
 
     @app_commands.command(
-        name=app_commands.locale_str("geetest"),
-        description=app_commands.locale_str(
-            "Complete geetest verification", key="geetest_command_description"
-        ),
+        name=app_commands.locale_str("geetest"), description=COMMANDS["geetest"].description
     )
     @app_commands.rename(
         type_=app_commands.locale_str("type", key="geetest_command_type_param_name"),
@@ -171,7 +164,9 @@ class Hoyo(commands.Cog):
     async def geetest_command(
         self,
         i: Interaction,
-        account: app_commands.Transform[HoyoAccount, HoyoAccountTransformer],
+        account: app_commands.Transform[
+            HoyoAccount, HoyoAccountTransformer(COMMANDS["geetest"].games)
+        ],
         type_: str,
     ) -> None:
         try:
@@ -184,10 +179,7 @@ class Hoyo(commands.Cog):
         await command.run(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("stats"),
-        description=app_commands.locale_str(
-            "View game account statistics", key="stats_command_description"
-        ),
+        name=app_commands.locale_str("stats"), description=COMMANDS["stats"].description
     )
     @app_commands.rename(**get_rename_kwargs(user=True))
     @app_commands.describe(**get_describe_kwargs(user=True))
@@ -196,10 +188,7 @@ class Hoyo(commands.Cog):
         await command.run(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("events"),
-        description=app_commands.locale_str(
-            "View ongoing game events", key="events_command_description"
-        ),
+        name=app_commands.locale_str("events"), description=COMMANDS["events"].description
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
     @app_commands.describe(**get_describe_kwargs(user=True, account=True))
@@ -207,20 +196,23 @@ class Hoyo(commands.Cog):
         self,
         i: Interaction,
         user: User = None,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["events"].games)
+        ] = None,
     ) -> None:
         await EventsCommand.run(i, user=user, account=account)
 
     @app_commands.command(
-        name=app_commands.locale_str("mimo"),
-        description=app_commands.locale_str("Traveling Mimo event management", key="mimo_cmd_desc"),
+        name=app_commands.locale_str("mimo"), description=COMMANDS["mimo"].description
     )
     @app_commands.rename(**get_rename_kwargs(account=True))
     @app_commands.describe(**get_describe_kwargs(account=True))
     async def mimo_command(
         self,
         i: Interaction,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["mimo"].games)
+        ] = None,
     ) -> None:
         account = account or await self.bot.get_account(
             i.user.id, (Game.ZZZ, Game.STARRAIL, Game.GENSHIN), Platform.HOYOLAB
@@ -232,17 +224,16 @@ class Hoyo(commands.Cog):
         await view.start(i)
 
     @app_commands.command(
-        name=app_commands.locale_str("web-events"),
-        description=app_commands.locale_str(
-            "View ongoing web events and set notifier", key="web_events_cmd_desc"
-        ),
+        name=app_commands.locale_str("web-events"), description=COMMANDS["web-events"].description
     )
     @app_commands.rename(**get_rename_kwargs(account=True))
     @app_commands.describe(**get_describe_kwargs(account=True))
     async def web_events_command(
         self,
         i: Interaction,
-        account: app_commands.Transform[HoyoAccount | None, HoyoAccountTransformer] = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["web-events"].games)
+        ] = None,
     ) -> None:
         account = account or await self.bot.get_account(
             i.user.id,
@@ -262,62 +253,17 @@ class Hoyo(commands.Cog):
         )
 
     @exploration_command.autocomplete("account")
-    async def gi_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(i, current, (Game.GENSHIN,))
-
     @events_command.autocomplete("account")
-    async def gi_hsr_zzz_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(
-            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
-        )
-
     @notes_command.autocomplete("account")
-    async def gi_hsr_zzz_honkai_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(
-            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
-        )
-
     @redeem_command.autocomplete("account")
-    async def gi_hsr_zzz_tot_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(
-            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT), Platform.HOYOLAB
-        )
-
     @mimo_command.autocomplete("account")
-    async def mimo_acc_autofill(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(
-            i, current, (Game.STARRAIL, Game.ZZZ, Game.GENSHIN), Platform.HOYOLAB
-        )
-
     @checkin_command.autocomplete("account")
     @geetest_command.autocomplete("account")
-    async def all_game_acc_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(
-            i, current, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT)
-        )
-
     @web_events_command.autocomplete("account")
-    async def hoyolab_all_game_acc_autocomplete(
+    async def acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        return await self.bot.get_game_account_choices(
-            i,
-            current,
-            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT),
-            platform=Platform.HOYOLAB,
-        )
+        return await self.bot.get_game_account_choices(i, current)
 
 
 async def setup(bot: HoyoBuddy) -> None:

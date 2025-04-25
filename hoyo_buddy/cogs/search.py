@@ -10,6 +10,7 @@ from discord import Locale, app_commands
 from discord.ext import commands, tasks
 from loguru import logger
 
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import UTC_8, locale_to_hakushin_lang
 from hoyo_buddy.db import Settings, get_locale
 from hoyo_buddy.utils import ephemeral
@@ -87,10 +88,7 @@ class Search(commands.Cog):
         )
 
     @app_commands.command(
-        name=app_commands.locale_str("search"),
-        description=app_commands.locale_str(
-            "Search anything game related", key="search_command_description"
-        ),
+        name=app_commands.locale_str("search"), description=COMMANDS["search"].description
     )
     @app_commands.rename(
         game_value=app_commands.locale_str("game", key="search_command_game_param_name"),

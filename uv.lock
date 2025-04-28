@@ -201,7 +201,7 @@ wheels = [
 [[package]]
 name = "ambr-py"
 version = "1.8.4"
-source = { git = "https://github.com/seriaati/ambr#7afdd24f4afe022142aad3b5e83505639dde50ca" }
+source = { git = "https://github.com/seriaati/ambr#0572b882e0764d263f908f7665ab79560b34c153" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -625,7 +625,7 @@ speed = [
 [[package]]
 name = "enka"
 version = "2.5.1"
-source = { git = "https://github.com/seriaati/enka-py#09138717186400571dd80b9b597eada509953e1d" }
+source = { git = "https://github.com/seriaati/enka-py#4934869494157da388d2220bc190dfb26968abb3" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -812,7 +812,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.9"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#8ba373537ef90b78e6462d5fcc618f9fd8ae57cb" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#f4fdd17180c8a5e4426a9ee525923287e1647964" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },
@@ -843,7 +843,7 @@ wheels = [
 [[package]]
 name = "hakushin-py"
 version = "0.4.10"
-source = { git = "https://github.com/seriaati/hakushin-py#676c9e7a7c86170a827c91749d077f712380f93d" }
+source = { git = "https://github.com/seriaati/hakushin-py#0d737060020bba434b91ae358d2ffbb9a62a8cfc" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
@@ -1893,14 +1893,14 @@ wheels = [
 
 [[package]]
 name = "url-normalize"
-version = "2.2.0"
+version = "2.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "idna" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1c/94/d79b960d66b933492f7dfbec8db799fa7033e7fbc98090f46fa581ca3a94/url_normalize-2.2.0.tar.gz", hash = "sha256:0f0b7cc95a95d2d9b0c9a51d47a326559bc05bd1558accdada21bb0c9504de85", size = 18201, upload_time = "2025-03-31T04:00:00.561Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/31/febb777441e5fcdaacb4522316bf2a527c44551430a4873b052d545e3279/url_normalize-2.2.1.tar.gz", hash = "sha256:74a540a3b6eba1d95bdc610c24f2c0141639f3ba903501e61a52a8730247ff37", size = 18846, upload_time = "2025-04-26T20:37:58.553Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f9/ce/73b35517cf49836ed8c7ca74c7da7808feca367788986f38e5e63f93e6cf/url_normalize-2.2.0-py3-none-any.whl", hash = "sha256:3fe387b62f5b66db94304bc703bf6d34de52aaa9590d4d1f1bbdf305a1430064", size = 14234, upload_time = "2025-03-31T03:59:59.155Z" },
+    { url = "https://files.pythonhosted.org/packages/bc/d9/5ec15501b675f7bc07c5d16aa70d8d778b12375686b6efd47656efdc67cd/url_normalize-2.2.1-py3-none-any.whl", hash = "sha256:3deb687587dc91f7b25c9ae5162ffc0f057ae85d22b1e15cf5698311247f567b", size = 14728, upload_time = "2025-04-26T20:37:57.217Z" },
 ]
 
 [[package]]
@@ -2200,7 +2200,7 @@ wheels = [
 [[package]]
 name = "yatta-py"
 version = "1.3.12"
-source = { git = "https://github.com/seriaati/yatta#41f80720b7d8b5eff2fbda6166e06f167222a577" }
+source = { git = "https://github.com/seriaati/yatta#cba82e6b57928137cde9d1cb6f3829b786899b3b" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

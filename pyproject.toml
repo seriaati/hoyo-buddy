@@ -30,11 +30,11 @@ dependencies = [
   "genshin[auth,sqlite,socks-proxy]",
   "toml>=0.10.2",
   "enka>=2.4.3",
-  "ambr-py>=1.8.1",
   "yatta-py>=1.3.11",
   "akasha-py>=0.2.9",
   "prometheus-client>=0.21.1",
   "pydantic-settings>=2.7.1",
+  "ambr-py",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = { file = "LICENSE" }
@@ -50,9 +50,9 @@ dev-dependencies = ["icecream>=2.1.3"]
 novelai = { git = "https://github.com/seriaati/NovelAI-API" }
 genshin = { git = "https://github.com/thesadru/genshin.py", branch = "master" }
 hakushin-py = { git = "https://github.com/seriaati/hakushin-py" }
-ambr-py = { git = "https://github.com/seriaati/ambr" }
 enka = { git = "https://github.com/seriaati/enka-py" }
 yatta-py = { git = "https://github.com/seriaati/yatta" }
+ambr-py = { git = "https://github.com/seriaati/ambr" }
 
 
 [tool.pyright]

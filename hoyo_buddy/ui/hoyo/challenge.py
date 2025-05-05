@@ -19,7 +19,6 @@ from genshin.models import (
     TheaterBuff,
 )
 from genshin.models import Character as GICharacter
-from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE, TRAVELER_IDS
@@ -45,9 +44,10 @@ from hoyo_buddy.utils import get_floor_difficulty
 if TYPE_CHECKING:
     import asyncio
     import concurrent.futures
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
 
     import aiohttp
+    import genshin
     from discord import File, Locale, Member, User
 
     from hoyo_buddy.db import HoyoAccount
@@ -221,92 +221,116 @@ class ChallengeView(View):
 
         await client.get_record_cards()
 
+        if self.challenge_type is ChallengeType.IMG_THEATER:
+            raw_ = await client.get_imaginarium_theater(self.account.uid, raw=True)
+            datas: list[dict[str, Any]] = raw_.get("data", [])
+            if not datas:
+                raise NoChallengeDataError(ChallengeType.IMG_THEATER)
+
+            # Organize data by start time
+            data_by_date: defaultdict[int, list[dict[str, Any]]] = defaultdict(list)
+            for data in datas:
+                start: int = data["schedule"]["start_time"]
+                data_by_date[start].append(data)
+
+            for datas in data_by_date.values():
+                most_difficult = max(datas, key=lambda d: d["stat"]["difficulty_id"])
+                await self._validate_and_save_challenge_data(
+                    most_difficult, previous=False, lang=client.lang
+                )
+
+            return
+
         for previous in (False, True):
-            if self.challenge_type is ChallengeType.SPIRAL_ABYSS:
-                raw = await client.get_genshin_spiral_abyss(
-                    self.account.uid, previous=previous, raw=True
-                )
-            elif self.challenge_type is ChallengeType.MOC:
-                raw = await client.get_starrail_challenge(
-                    self.account.uid, previous=previous, raw=True
-                )
-            elif self.challenge_type is ChallengeType.PURE_FICTION:
-                raw = await client.get_starrail_pure_fiction(
-                    self.account.uid, previous=previous, raw=True
-                )
-            elif self.challenge_type is ChallengeType.APC_SHADOW:
-                raw = await client.get_starrail_apc_shadow(
-                    self.account.uid, previous=previous, raw=True
-                )
-            elif self.challenge_type is ChallengeType.IMG_THEATER:
-                raw_ = await client.get_imaginarium_theater(
-                    self.account.uid, previous=previous, raw=True
-                )
-                datas: list[dict[str, Any]] = raw_.get("data", [])
-                if not datas:
-                    raise NoChallengeDataError(ChallengeType.IMG_THEATER)
+            raw = await self._fetch_challenge_raw_data(client, previous=previous)
+            await self._validate_and_save_challenge_data(raw, previous=previous, lang=client.lang)
 
-                try:
-                    raw = max(datas, key=lambda d: d["stat"]["difficulty_id"])
-                except KeyError:
-                    logger.error("Failed to get max difficulty ID from data", datas=datas)
-                    raw = datas[-1]
-            elif self.challenge_type is ChallengeType.SHIYU_DEFENSE:
-                raw = await client.get_shiyu_defense(self.account.uid, previous=previous, raw=True)
-                challenge = ChallengeHistory.load_data(raw, challenge_type=self.challenge_type)
-                challenge = cast("ShiyuDefense", challenge)
+    async def _validate_and_save_challenge_data(
+        self, raw: Mapping[str, Any], *, previous: bool, lang: str
+    ) -> None:
+        challenge = ChallengeHistory.load_data(raw, challenge_type=self.challenge_type)
 
-                # Backward compatibility, ShiyuDefenseCharacter.mindscape is added in
-                # https://github.com/thesadru/genshin.py/commit/4e17d37f84048d2b0a478b45e374f980a7bbe3a3
-                is_new_ver = (
-                    challenge.floors
-                    and challenge.floors[0].node_1.characters
-                    and hasattr(challenge.floors[0].node_1.characters[0], "mindscape")
-                )
-
-                # No need to fetch agent ranks if the data is using new version
-                if challenge.has_data and not self.agent_ranks and not is_new_ver:
-                    agents = await client.get_zzz_agents(self.account.uid)
-                    self.agent_ranks = {agent.id: agent.rank for agent in agents}
-            elif self.challenge_type is ChallengeType.ASSAULT:
-                raw = await client.get_deadly_assault(self.account.uid, previous=previous, raw=True)
-            else:
-                msg = f"Fetching data for {self.challenge_type!r}"
-                raise NotImplementedError(msg)
-
-            challenge = ChallengeHistory.load_data(raw, challenge_type=self.challenge_type)
-
-            if (
-                self.challenge_type in {ChallengeType.SPIRAL_ABYSS, ChallengeType.IMG_THEATER}
-                and not self.characters
-            ):
-                # Only fetch characters when challenge has data
-                try:
-                    self.check_challenge_data(challenge)
-                except NoChallengeDataError:
-                    pass
-                else:
-                    self.characters = await client.get_genshin_characters(self.account.uid)
-
-            try:
-                season_id = self._get_season_id(challenge, previous)
-            except IndexError:
-                # No previous season
-                continue
-
+        if (
+            self.challenge_type in {ChallengeType.SPIRAL_ABYSS, ChallengeType.IMG_THEATER}
+            and not self.characters
+        ):
+            # Only fetch characters when challenge has data
             try:
                 self.check_challenge_data(challenge)
             except NoChallengeDataError:
-                continue
+                pass
+            else:
+                client = self.account.client
+                self.characters = await client.get_genshin_characters(self.account.uid)
 
-            # Save data to db
-            await ChallengeHistory.add_data(
-                uid=self.account.uid,
-                challenge_type=self.challenge_type,
-                season_id=season_id,
-                raw=raw,
-                lang=client.lang,
+        try:
+            season_id = self._get_season_id(challenge, previous)
+        except IndexError:
+            # No previous season
+            return
+
+        try:
+            self.check_challenge_data(challenge)
+        except NoChallengeDataError:
+            return
+
+        # Save data to db
+        await ChallengeHistory.add_data(
+            uid=self.account.uid,
+            challenge_type=self.challenge_type,
+            season_id=season_id,
+            raw=raw,
+            lang=lang,
+        )
+
+    async def _fetch_challenge_raw_data(
+        self, client: genshin.Client, *, previous: bool
+    ) -> Mapping[str, Any]:
+        if self.challenge_type is ChallengeType.SPIRAL_ABYSS:
+            return await client.get_genshin_spiral_abyss(
+                self.account.uid, previous=previous, raw=True
             )
+
+        if self.challenge_type is ChallengeType.MOC:
+            return await client.get_starrail_challenge(
+                self.account.uid, previous=previous, raw=True
+            )
+
+        if self.challenge_type is ChallengeType.PURE_FICTION:
+            return await client.get_starrail_pure_fiction(
+                self.account.uid, previous=previous, raw=True
+            )
+
+        if self.challenge_type is ChallengeType.APC_SHADOW:
+            return await client.get_starrail_apc_shadow(
+                self.account.uid, previous=previous, raw=True
+            )
+
+        if self.challenge_type is ChallengeType.SHIYU_DEFENSE:
+            raw = await client.get_shiyu_defense(self.account.uid, previous=previous, raw=True)
+            challenge = ChallengeHistory.load_data(raw, challenge_type=self.challenge_type)
+            challenge = cast("ShiyuDefense", challenge)
+
+            # Backward compatibility, ShiyuDefenseCharacter.mindscape is added in
+            # https://github.com/thesadru/genshin.py/commit/4e17d37f84048d2b0a478b45e374f980a7bbe3a3
+            is_new_ver = (
+                challenge.floors
+                and challenge.floors[0].node_1.characters
+                and hasattr(challenge.floors[0].node_1.characters[0], "mindscape")
+            )
+
+            # No need to fetch agent ranks if the data is using new version
+            if challenge.has_data and not self.agent_ranks and not is_new_ver:
+                agents = await client.get_zzz_agents(self.account.uid)
+                self.agent_ranks = {agent.id: agent.rank for agent in agents}
+
+            return raw
+
+        if self.challenge_type is ChallengeType.ASSAULT:
+            return await client.get_deadly_assault(self.account.uid, previous=previous, raw=True)
+
+        msg = f"Fetching data for {self.challenge_type!r}"
+        raise NotImplementedError(msg)
 
     def check_challenge_data(self, challenge: Challenge | None) -> None:
         """Check if the challenge has data and raise an error if it doesn't"""

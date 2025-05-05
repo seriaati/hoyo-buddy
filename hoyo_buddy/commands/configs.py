@@ -172,7 +172,7 @@ COMMANDS: dict[CommandName, CommandConfig] = {
     ),
     "check-in": CommandConfig(
         games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT),
-        description=locale_str("Game daily check-in", key="checkin_command_description")
+        description=locale_str("Game daily check-in", key="checkin_command_description"),
     ),
     "notes": CommandConfig(
         games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI),

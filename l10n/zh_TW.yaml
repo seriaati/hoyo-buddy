@@ -338,17 +338,15 @@ profile.card_template_select.hb.label: "Hoyo Buddy 樣式 {num}"
 profile.card_template_select.placeholder: 選擇一個樣式
 profile.card_template_select.same_author.description: "由 {author} 設計和製作"
 profile.card_template_select.src.label: "StarRailCard 樣式 {num}"
-profile.character_select.cached_data.description: 快取數據
-profile.character_select.description: "{e}魂{s}疊 | {d} | 遊戲展示櫃"
+profile.character_select.genshin: "{const}命{refine}精"
+profile.character_select.hsr: "{const}魂{refine}疊"
+profile.character_select.zzz: "意象影畫 {const}"
+profile.character_select.in_game: "遊戲展示櫃"
 profile.character_select.enka_network.description: Enka Network 角色配置
-profile.character_select.hoyolab.description: "{e}魂{s}疊 | {d} | {platform}"
-profile.character_select.live_data.description: 即時數據
 profile.character_select.placeholder: 選擇一個角色
 profile.generate_ai_art.button.label: 生成 AI 繪圖
 profile.generate_ai_art_modal.negative_prompt.label: 負面提示
 profile.generate_ai_art_modal.prompt.label: 提示
-profile.genshin.character_select.description: "{c}命{r}精 | {d}"
-profile.genshin.character_select.hoyolab.description: "{c}命{r}精 | {d} | {platform}"
 profile.image_select.custom_image.label: "自訂圖片 ({num})"
 profile.image_select.default_collection.label: "Hoyo Buddy 收藏 ({num})"
 profile.image_select.none.label: 官方繪圖
@@ -369,6 +367,7 @@ profile_command_game_value_description: UID 所屬的遊戲
 profile_command_uid_param_description: "玩家的UID，如果提供了帳戶參數，则覆蓋該參數。"
 pt_button.label: 質變儀通知
 pt_modal.title: 質變儀通知設定
+pt_notify_embed_desc: "質變儀可以使用了!"
 public_account_toggle.label: 設置帳戶為公開
 pure_fiction: 虛構敘事
 pyro: 火
@@ -501,7 +500,6 @@ ether: 以太
 electric: 電屬性
 profile.no_data.title: 沒有可用的玩家資料
 profile.no_data.description: "你相信嗎，這裡居然沒有任何東西能顯示。"
-profile.zzz_hoyolab.character_select.description: "意象影畫 {m} | {platform}數據"
 characters.filter.specialty.placeholder: 篩選特性…
 zzz.basic: 普通攻擊
 zzz.dodge: 閃避

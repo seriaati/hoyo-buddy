@@ -338,17 +338,15 @@ profile.card_template_select.hb.label: "Mẫu thẻ Hoyo Buddy {num}"
 profile.card_template_select.placeholder: Hãy chọn mẫu thẻ
 profile.card_template_select.same_author.description: "Được thiết kế và lập trình bởi {author}"
 profile.card_template_select.src.label: "Mẫu thẻ StarRailCard {num}"
-profile.character_select.cached_data.description: Dữ liệu được lưu trong bộ nhớ đệm
-profile.character_select.description: "E{e}S{s} | {d} | Hồ sơ trong trò chơi"
+profile.character_select.genshin: "C{const}R{refine}"
+profile.character_select.hsr: "E{const}R{refine}"
+profile.character_select.zzz: "Ý Cảnh {const}"
+profile.character_select.in_game: "Trưng bày trong trò chơi"
 profile.character_select.enka_network.description: Build trên Enka Network
-profile.character_select.hoyolab.description: "E{e}S{s} | {d} | {platform}"
-profile.character_select.live_data.description: Dữ liệu thời gian thực
 profile.character_select.placeholder: Hãy chọn nhân vật
 profile.generate_ai_art.button.label: Tạo ảnh AI
 profile.generate_ai_art_modal.negative_prompt.label: Nội dung tiêu cực
 profile.generate_ai_art_modal.prompt.label: Nội dung
-profile.genshin.character_select.description: "C{c}R{r} | {d}"
-profile.genshin.character_select.hoyolab.description: "C{c}R{r} | {d} | {platform}"
 profile.image_select.custom_image.label: "Ảnh tự chọn ({num})"
 profile.image_select.default_collection.label: "Bộ sưu tập Hoyo Buddy ({num})"
 profile.image_select.none.label: Ảnh hoạ Chính Thức
@@ -369,6 +367,7 @@ profile_command_game_value_description: Trò chơi của UID
 profile_command_uid_param_description: "UID của người chơi, sẽ ghi đè tham số tài khoản nếu được cung cấp"
 pt_button.label: Nhắc nhở Máy Biến Đổi Tham Số
 pt_modal.title: Cài đặt nhắc nhở Máy Biến Đổi Tham Số
+pt_notify_embed_desc: "Máy Biến Đổi Tham Số đã sẵn sàng!"
 public_account_toggle.label: Đặt tài khoản công khai
 pure_fiction: Kể Chuyện Hư Cấu
 pyro: Hỏa
@@ -377,7 +376,7 @@ read_story.button.label: Xem Câu Chuyện
 real_time_notes: Ghi Chép Thời Gian Thực
 realm_curr_button.label: Nhắc nhở Tiền Đồng Tiên
 realm_curr_modal.title: Cài đặt nhắc nhở Tiền Đồng Tiên
-redeeem_code.cookie_token_expired_description: "Tính năng đổi mã quà chỉ áp dụng cho người dùng đã đăng nhập bằng email và mật khẩu, bạn có thể làm vậy bằng</accounts>"
+redeeem_code.cookie_token_expired_description: "Tính năng đổi mã quà chỉ áp dụng cho người dùng đã đăng nhập bằng email và mật khẩu, bạn có thể làm vậy bằng </accounts>"
 redeeem_code.cookie_token_expired_title: Token cookie đã hết hạn
 redeeem_code.cookie_token_refresh_failed_description: "Xin hãy thêm lại tài khoản bằng lệnh </accounts> và chọn phương thức email và mật khẩu."
 redeeem_code.cookie_token_refresh_failed_title: Làm mới token cookie thất bại
@@ -501,7 +500,6 @@ ether: Ether
 electric: Lôi
 profile.no_data.title: Không có dữ liệu người chơi
 profile.no_data.description: "Dù bạn có tin hay không thì cũng chẳng có gì để coi ở đây."
-profile.zzz_hoyolab.character_select.description: "Phim Ý Cảnh {m} | Dữ liệu {platform}"
 characters.filter.specialty.placeholder: Lọc Đặc Tính...
 zzz.basic: Tấn Công Thường
 zzz.dodge: Né

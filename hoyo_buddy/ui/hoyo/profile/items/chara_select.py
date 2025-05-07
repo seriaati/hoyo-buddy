@@ -51,20 +51,7 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         row: int,
     ) -> None:
         options: list[SelectOption] = []
-
-        if game is Game.GENSHIN:
-            showcase_data = genshin_data
-        elif game is Game.STARRAIL:
-            showcase_data = starrail_data
-        else:
-            showcase_data = None
-
-        if showcase_data is None:
-            showcase_character_ids = set()
-        else:
-            showcase_character_ids = {str(character.id) for character in showcase_data.characters}
-
-        self.showcase_character_ids: set[str] = showcase_character_ids
+        showcase_character_ids = self._get_showcase_character_ids(genshin_data, starrail_data, game)
 
         for character in characters:
             if isinstance(character, HoyolabCharacter):
@@ -134,7 +121,28 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
             row=row,
         )
 
-    def update_ui(self, view: ProfileView, *, character_id: str, is_team: bool) -> None:
+    @staticmethod
+    def _get_showcase_character_ids(
+        genshin_data: enka.gi.ShowcaseResponse | None,
+        starrail_data: enka.hsr.ShowcaseResponse | None,
+        game: Game,
+    ) -> set[str]:
+        if game is Game.GENSHIN:
+            showcase_data = genshin_data
+        elif game is Game.STARRAIL:
+            showcase_data = starrail_data
+        else:
+            showcase_data = None
+
+        if showcase_data is None:
+            showcase_character_ids = set()
+        else:
+            showcase_character_ids = {str(character.id) for character in showcase_data.characters}
+
+        return showcase_character_ids
+
+    @staticmethod
+    def update_ui(view: ProfileView, *, character_id: str, is_team: bool) -> None:
         # Enable the player info button
         player_btn = view.get_item("profile_player_info")
         player_btn.disabled = False
@@ -156,6 +164,9 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         redraw_card_btn.disabled = False
 
         # Set builds
+        showcase_character_ids = CharacterSelect._get_showcase_character_ids(
+            view.genshin_data, view.starrail_data, view.game
+        )
         hoyolab_character_ids = {
             str(character.id)
             for character in view.hoyolab_gi_characters + view.hoyolab_hsr_characters
@@ -165,7 +176,7 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
             view._build_id = builds[0].id
             current = (
                 None
-                if character_id not in {*self.showcase_character_ids, *hoyolab_character_ids}
+                if character_id not in {*showcase_character_ids, *hoyolab_character_ids}
                 else view.characters[character_id]
             )
             build_select.set_options(builds, current)

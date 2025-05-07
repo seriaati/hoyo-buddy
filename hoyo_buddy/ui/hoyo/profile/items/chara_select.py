@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import contextlib
 from typing import TYPE_CHECKING, Any, Final
 
 import enka
@@ -9,7 +8,7 @@ from genshin.models import ZZZPartialAgent
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji, get_zzz_element_emoji
 from hoyo_buddy.enums import CharacterType, Game, Platform
 from hoyo_buddy.l10n import EnumStr, LevelStr, LocaleStr
-from hoyo_buddy.models import HoyolabGICharacter, HoyolabHSRCharacter
+from hoyo_buddy.models import HoyolabHSRCharacter
 from hoyo_buddy.ui import PaginatorSelect, SelectOption
 
 if TYPE_CHECKING:
@@ -26,21 +25,15 @@ else:
 DATA_TYPES: Final[dict[CharacterType, LocaleStr]] = {
     CharacterType.BUILD: LocaleStr(key="profile.character_select.enka_network.description"),
     CharacterType.LIVE: LocaleStr(key="profile.character_select.live_data.description"),
-    CharacterType.CACHE: LocaleStr(key="profile.character_select.cached_data.description"),
 }
 MAX_VALUES: Final[dict[Game, int]] = {Game.GENSHIN: 4, Game.STARRAIL: 4, Game.ZZZ: 3}
 
 
-def determine_chara_type(
-    character_id: str, *, cache_extras: dict[str, dict[str, Any]], builds: Builds, is_hoyolab: bool
-) -> CharacterType:
-    key = f"{character_id}-hoyolab" if is_hoyolab else character_id
+def determine_chara_type(character_id: str, *, builds: Builds) -> CharacterType:
     chara_builds = builds.get(character_id, [])
-    if key not in cache_extras or (chara_builds and not any(build.live for build in chara_builds)):
+    if chara_builds and not any(build.live for build in chara_builds):
         return CharacterType.BUILD
-    if cache_extras[key]["live"]:
-        return CharacterType.LIVE
-    return CharacterType.CACHE
+    return CharacterType.LIVE
 
 
 class CharacterSelect(PaginatorSelect[ProfileView]):
@@ -48,7 +41,6 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         self,
         game: Game,
         characters: Sequence[Character],
-        cache_extras: dict[str, dict[str, Any]],
         builds: Builds,
         account: HoyoAccount | None,
         character_ids: list[str],
@@ -58,14 +50,7 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         options: list[SelectOption] = []
 
         for character in characters:
-            character_type = determine_chara_type(
-                str(character.id),
-                cache_extras=cache_extras,
-                builds=builds,
-                is_hoyolab=isinstance(
-                    character, HoyolabHSRCharacter | ZZZPartialAgent | HoyolabGICharacter
-                ),
-            )
+            character_type = determine_chara_type(str(character.id), builds=builds)
             data_type = DATA_TYPES[character_type]
 
             if isinstance(character, enka.hsr.Character):
@@ -135,14 +120,6 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
 
     @staticmethod
     def update_ui(view: ProfileView, *, character_id: str, is_team: bool) -> None:
-        # Enable the remove from cache button if the character is in the cache
-        with contextlib.suppress(ValueError):
-            # The button is not present in the view if view._account is None
-            remove_from_cache_btn = view.get_item("profile_remove_from_cache")
-            remove_from_cache_btn.disabled = (
-                is_team or view.character_type is not CharacterType.CACHE
-            )
-
         # Enable the player info button
         player_btn = view.get_item("profile_player_info")
         player_btn.disabled = False
@@ -182,16 +159,7 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         is_team = len(self.values) > 1
 
         character_id = self.view.character_ids[0]
-        character = self.view.characters[character_id]
-        cache_extras = await self.view.fetch_cache_extras()
-        self.view.character_type = determine_chara_type(
-            character_id,
-            cache_extras=cache_extras,
-            builds=self.view._builds,
-            is_hoyolab=isinstance(
-                character, HoyolabHSRCharacter | ZZZPartialAgent | HoyolabGICharacter
-            ),
-        )
+        self.view.character_type = determine_chara_type(character_id, builds=self.view._builds)
 
         self.update_ui(self.view, character_id=character_id, is_team=is_team)
         self.update_options_defaults()

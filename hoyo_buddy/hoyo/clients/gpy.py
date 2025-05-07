@@ -18,7 +18,6 @@ from hoyo_buddy.constants import (
     AMBR_UI_URL,
     DMG_BONUS_IDS,
     ELEMENT_TO_BONUS_PROP_ID,
-    GPY_LANG_TO_LOCALE,
     HB_GAME_TO_GPY_GAME,
     LOCALE_TO_GPY_LANG,
     PLAYER_BOY_GACHA_ART,
@@ -27,12 +26,12 @@ from hoyo_buddy.constants import (
     contains_traveler_id,
     convert_fight_prop,
 )
-from hoyo_buddy.db import EnkaCache, HoyoAccount, JSONFile
+from hoyo_buddy.db import HoyoAccount, JSONFile
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, GenshinElement
 from hoyo_buddy.exceptions import HoyoBuddyError
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils import set_or_update_dict, sleep
+from hoyo_buddy.utils import sleep
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -348,115 +347,23 @@ class GenshinClient(ProxyGenshinClient):
             ),
         )
 
-    def _update_live_status(
-        self, data: dict[str, Any], extras: dict[str, dict[str, Any]], *, live: bool, game: Game
-    ) -> None:
-        cache_data: dict[str, Any] = {"live": live, "locale": GPY_LANG_TO_LOCALE[self.lang].value}
-        if game is Game.ZZZ:
-            parsed = genshin.models.ZZZFullAgent(**data)
-            key = f"{parsed.id}-hoyolab"
-            set_or_update_dict(extras, key, cache_data)
-        elif game is Game.STARRAIL:
-            parsed = genshin.models.StarRailDetailCharacters(**data)
-            for character in parsed.avatar_list:
-                key = f"{character.id}-hoyolab"
-                set_or_update_dict(extras, key, cache_data)
-        elif game is Game.GENSHIN:
-            parsed = genshin.models.GenshinDetailCharacters(**data)
-            for character in parsed.characters:
-                key = f"{character.id}-hoyolab"
-                set_or_update_dict(extras, key, cache_data)
-
     async def get_hoyolab_gi_characters(self) -> list[models.HoyolabGICharacter]:
         """Get Genshin Impact detailed characters in HoyolabGI format."""
-        cache, _ = await EnkaCache.get_or_create(uid=self.uid)
-
-        try:
-            live_data = dict(
-                await self.get_genshin_detailed_characters(self._account.uid, return_raw_data=True)
-            )
-        except genshin.GenshinException as e:
-            if not cache.hoyolab or e.retcode != 1005:
-                raise
-
-            self._update_live_status(cache.hoyolab, cache.extras, live=False, game=Game.GENSHIN)
-            await cache.save(update_fields=("extras"))
-        else:
-            cache.hoyolab = live_data
-            self._update_live_status(live_data, cache.extras, live=True, game=Game.GENSHIN)
-            await cache.save(update_fields=("hoyolab", "extras"))
-
-        parsed = genshin.models.GenshinDetailCharacters(**cache.hoyolab)
-        return [await self.convert_gi_character(chara) for chara in parsed.characters]
+        data = await self.get_genshin_detailed_characters(self._account.uid)
+        return [await self.convert_gi_character(chara) for chara in data.characters]
 
     async def get_hoyolab_hsr_characters(self) -> list[models.HoyolabHSRCharacter]:
         """Get characters in HoyolabHSR format."""
-        cache, _ = await EnkaCache.get_or_create(uid=self.uid)
-
-        try:
-            live_data = (await self.get_starrail_characters(self.uid)).model_dump(by_alias=True)
-        except genshin.GenshinException as e:
-            if not cache.hoyolab or e.retcode != 1005:
-                raise
-
-            self._update_live_status(cache.hoyolab, cache.extras, live=False, game=Game.STARRAIL)
-            await cache.save(update_fields=("extras"))
-        else:
-            cache.hoyolab = live_data
-            self._update_live_status(live_data, cache.extras, live=True, game=Game.STARRAIL)
-            await cache.save(update_fields=("hoyolab", "extras"))
-
-        parsed = genshin.models.StarRailDetailCharacters(**cache.hoyolab)
+        data = await self.get_starrail_characters(self.uid)
         return [
-            self.convert_hsr_character(chara, dict(parsed.property_info))
-            for chara in parsed.avatar_list
+            self.convert_hsr_character(chara, dict(data.property_info))
+            for chara in data.avatar_list
         ]
 
     async def get_zzz_agents(
         self, uid: int | None = None
     ) -> Sequence[genshin.models.ZZZPartialAgent]:
-        cache, _ = await EnkaCache.get_or_create(uid=self.uid)
-        agents = await super().get_zzz_agents(uid)
-        for agent in agents:
-            set_or_update_dict(
-                cache.extras,
-                f"{agent.id}-hoyolab",
-                {"live": True, "locale": GPY_LANG_TO_LOCALE[self.lang].value},
-            )
-        await cache.save(update_fields=("extras",))
-        return agents
-
-    @overload
-    async def get_zzz_agent_info(
-        self, character_id: Sequence[int]
-    ) -> Sequence[genshin.models.ZZZFullAgent]: ...
-    @overload
-    async def get_zzz_agent_info(self, character_id: int) -> genshin.models.ZZZFullAgent: ...
-    async def get_zzz_agent_info(
-        self, character_id: Sequence[int] | int
-    ) -> Sequence[genshin.models.ZZZFullAgent] | genshin.models.ZZZFullAgent:
-        if isinstance(character_id, int):
-            # Only do cache stuff when there is a single character
-            cache, _ = await EnkaCache.get_or_create(uid=self.uid)
-
-            try:
-                live_data = (await super().get_zzz_agent_info(character_id)).model_dump(
-                    by_alias=True
-                )
-            except genshin.GenshinException as e:
-                if not cache.hoyolab_zzz or e.retcode != 1005:
-                    raise
-
-                self._update_live_status(cache.hoyolab_zzz, cache.extras, live=False, game=Game.ZZZ)
-                await cache.save(update_fields=("extras"))
-            else:
-                cache.hoyolab_zzz = cache.hoyolab_zzz or {}
-                cache.hoyolab_zzz.update({str(character_id): live_data})
-                self._update_live_status(live_data, cache.extras, live=False, game=Game.ZZZ)
-                await cache.save(update_fields=("hoyolab_zzz", "extras"))
-
-            return genshin.models.ZZZFullAgent(**cache.hoyolab_zzz[str(character_id)])
-        return await super().get_zzz_agent_info(character_id)
+        return await super().get_zzz_agents(uid)
 
     async def update_cookie_token(self) -> None:
         """Update the cookie token."""

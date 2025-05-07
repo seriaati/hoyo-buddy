@@ -6,7 +6,6 @@ from discord import ButtonStyle
 
 from hoyo_buddy.db import Settings
 from hoyo_buddy.emojis import SETTINGS
-from hoyo_buddy.enums import CharacterType
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import HoyolabGICharacter
 from hoyo_buddy.ui import Button
@@ -45,8 +44,7 @@ class CardSettingsButton(Button[ProfileView]):
             card_settings,
             self.view.game,
             settings,
-            hb_template_only=self.view.character_type is CharacterType.CACHE
-            or isinstance(character, HoyolabGICharacter),
+            hb_template_only=isinstance(character, HoyolabGICharacter),
             is_team=len(self.view.character_ids) > 1,
             author=i.user,
             locale=self.view.locale,

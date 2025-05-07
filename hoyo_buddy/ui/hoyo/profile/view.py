@@ -17,7 +17,7 @@ from hoyo_buddy.constants import (
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
     ZZZ_DISC_SUBSTATS,
 )
-from hoyo_buddy.db import EnkaCache, JSONFile, Settings, draw_locale, get_dyk, show_dismissible
+from hoyo_buddy.db import JSONFile, Settings, draw_locale, get_dyk, show_dismissible
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
@@ -49,17 +49,16 @@ from .image_settings import get_default_art, get_default_collection, get_team_im
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
 from .items.card_settings_btn import CardSettingsButton
-from .items.chara_select import MAX_VALUES, CharacterSelect, determine_chara_type
+from .items.chara_select import MAX_VALUES, CharacterSelect
 from .items.player_btn import PlayerInfoButton
 from .items.redraw_card_btn import RedrawCardButton
-from .items.rmv_from_cache_btn import RemoveFromCacheButton
 
 if TYPE_CHECKING:
     import io
     from collections.abc import Sequence
 
     from discord import Member, User
-    from genshin.models import GenshinUserStats, RecordCard, StarRailUserStats
+    from genshin.models import PartialGenshinUserStats, RecordCard, StarRailUserStats
 
     from hoyo_buddy.db import CardSettings, HoyoAccount
     from hoyo_buddy.types import Builds, Interaction
@@ -85,20 +84,18 @@ class ProfileView(View):
         self,
         uid: int,
         game: Game,
-        cache_extras: dict[str, dict[str, Any]],
         card_data: dict[str, Any],
         *,
         character_ids: list[str],
         hoyolab_hsr_characters: list[HoyolabHSRCharacter] | None = None,
         hoyolab_hsr_user: StarRailUserStats | None = None,
         hoyolab_gi_characters: list[HoyolabGICharacter] | None = None,
-        hoyolab_gi_user: GenshinUserStats | None = None,
+        hoyolab_gi_user: PartialGenshinUserStats | None = None,
         starrail_data: enka.hsr.ShowcaseResponse | None = None,
         genshin_data: enka.gi.ShowcaseResponse | None = None,
         zzz_data: Sequence[ZZZPartialAgent] | None = None,
         zzz_user: RecordCard | None = None,
         account: HoyoAccount | None,
-        hoyolab_over_enka: bool = False,
         builds: Builds | None = None,
         owner: enka.Owner | None = None,
         author: User | Member,
@@ -118,7 +115,6 @@ class ProfileView(View):
 
         self.uid = uid
         self.game = game
-        self.cache_extras = cache_extras
         self.character_ids: list[str] = []
         self.character_type: CharacterType | None = None
         self.characters: dict[str, Character] = {}
@@ -126,17 +122,11 @@ class ProfileView(View):
 
         self._card_data = card_data
         self._account = account
-        self._hoyolab_over_enka = hoyolab_over_enka
         self._builds = builds or {}
 
         self._owner_username: str | None = owner.username if owner is not None else None
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | None = None
-
-    async def fetch_cache_extras(self) -> dict[str, Any]:
-        cache = await EnkaCache.get(uid=self.uid)
-        self.cache_extras = cache.extras
-        return cache.extras
 
     async def _fix_invalid_template(self, card_settings: CardSettings) -> None:
         if self.game not in TEMPLATES or card_settings.template not in TEMPLATES[self.game]:
@@ -183,21 +173,9 @@ class ProfileView(View):
         )
         data = self.starrail_data if game is Game.STARRAIL else self.genshin_data
 
-        if self._hoyolab_over_enka and hoyolab_characters:
-            self.characters = {str(chara.id): chara for chara in hoyolab_characters}
-            return
-
         enka_chara_ids: list[str] = []
         if data is not None:
             for chara in data.characters:
-                chara_type = determine_chara_type(
-                    str(chara.id),
-                    cache_extras=self.cache_extras,
-                    builds=self._builds,
-                    is_hoyolab=False,
-                )
-                if chara_type is CharacterType.CACHE:
-                    continue
                 enka_chara_ids.append(str(chara.id))
                 self.characters[str(chara.id)] = chara
 
@@ -267,8 +245,21 @@ class ProfileView(View):
             embed.set_image(url=player.namecard.full)
             if player.signature:
                 embed.set_footer(text=player.signature)
+        elif self.hoyolab_gi_user is not None:
+            player = self.hoyolab_gi_user.info
+            stats = self.hoyolab_gi_user.stats
+            embed = DefaultEmbed(
+                self.locale,
+                title=f"{player.nickname} ({uid_str})",
+                description=LocaleStr(
+                    key="profile.player_info.gi.embed.description",
+                    adventure_rank=player.level,
+                    spiral_abyss=stats.spiral_abyss,
+                    achievements=stats.achievements,
+                ),
+            )
+            embed.set_thumbnail(url=player.in_game_avatar)
         elif self.hoyolab_hsr_user is not None:
-            # There is no hsr cache, enka isnt working, but hoyolab is working
             player = self.hoyolab_hsr_user.info
             stats = self.hoyolab_hsr_user.stats
             embed = DefaultEmbed(
@@ -327,19 +318,11 @@ class ProfileView(View):
             ]
             self.add_item(
                 CharacterSelect(
-                    self.game,
-                    characters,
-                    self.cache_extras,
-                    self._builds,
-                    self._account,
-                    self.character_ids,
-                    row=2,
+                    self.game, characters, self._builds, self._account, self.character_ids, row=2
                 )
             )
-        self.add_item(BuildSelect(row=3))
 
-        if self._account is not None:
-            self.add_item(RemoveFromCacheButton(row=4))
+        self.add_item(BuildSelect(row=3))
         self.add_item(CardInfoButton(row=4))
         self.add_item(ToggleUIButton())
 
@@ -530,9 +513,7 @@ class ProfileView(View):
         character_id = self.character_ids[0]
         character = character or self.characters[character_id]
 
-        force_hb_temp = self.character_type is CharacterType.CACHE or isinstance(
-            character, HoyolabGICharacter
-        )
+        force_hb_temp = isinstance(character, HoyolabGICharacter)
         if force_hb_temp and "hb" not in card_settings.template:
             card_settings.template = "hb1"
             await card_settings.save(update_fields=("template",))
@@ -571,9 +552,7 @@ class ProfileView(View):
         if isinstance(character, HoyolabCharacter):
             key += "-hoyolab"
 
-        cache_extras = await self.fetch_cache_extras()
-        cache_extra = cache_extras.get(key)
-        return self.locale if cache_extra is None else Locale(cache_extra["locale"])
+        return self.locale
 
     async def draw_team_card(self, i: Interaction) -> io.BytesIO:
         """Draw team card for multiple characters."""

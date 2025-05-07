@@ -341,7 +341,7 @@ profile.card_template_select.src.label: "StarRailCard 樣式 {num}"
 profile.character_select.genshin: "{const}命{refine}精"
 profile.character_select.hsr: "{const}魂{refine}疊"
 profile.character_select.zzz: "意象影畫 {const}"
-profile.character_select.in_game: "遊戲展示櫃"
+profile.character_select.in_game: "遊戲內展示櫃"
 profile.character_select.enka_network.description: Enka Network 角色配置
 profile.character_select.placeholder: 選擇一個角色
 profile.generate_ai_art.button.label: 生成 AI 繪圖
@@ -367,7 +367,7 @@ profile_command_game_value_description: UID 所屬的遊戲
 profile_command_uid_param_description: "玩家的UID，如果提供了帳戶參數，则覆蓋該參數。"
 pt_button.label: 質變儀通知
 pt_modal.title: 質變儀通知設定
-pt_notify_embed_desc: "質變儀可以使用了!"
+pt_notify_embed_desc: "參量質變儀可以使用了!"
 public_account_toggle.label: 設置帳戶為公開
 pure_fiction: 虛構敘事
 pyro: 火

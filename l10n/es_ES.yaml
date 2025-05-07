@@ -338,17 +338,15 @@ profile.card_template_select.hb.label: "Hoyo Buddy plantilla {num}"
 profile.card_template_select.placeholder: Selecciona una plantilla
 profile.card_template_select.same_author.description: "Diseñado y programado por {author}"
 profile.card_template_select.src.label: "Plantilla de tarjeta Star Rail {num}"
-profile.character_select.cached_data.description: Datos de cache
-profile.character_select.description: "E{e}S{s} | {d} | Demostración en el juego"
+profile.character_select.genshin: "C{const}R{refine}"
+profile.character_select.hsr: "E{const}R{refine}"
+profile.character_select.zzz: "Cine Mental {const}"
+profile.character_select.in_game: "Presentación en juego"
 profile.character_select.enka_network.description: Build de Enka Network
-profile.character_select.hoyolab.description: "E{e}S{s} | {d} | {platform}"
-profile.character_select.live_data.description: Datos en tiempo real
 profile.character_select.placeholder: Selecciona un personaje
 profile.generate_ai_art.button.label: Generar imagen con IA
 profile.generate_ai_art_modal.negative_prompt.label: Prompt negativo
 profile.generate_ai_art_modal.prompt.label: Prompt
-profile.genshin.character_select.description: "C{c}R{r} | {d}"
-profile.genshin.character_select.hoyolab.description: "C{c}R{r} | {d} | {platform}"
 profile.image_select.custom_image.label: "Imagen personalizada ({num})"
 profile.image_select.default_collection.label: "Colección Hoyo Buddy ({num})"
 profile.image_select.none.label: Arte oficial
@@ -369,6 +367,7 @@ profile_command_game_value_description: Juego del UID
 profile_command_uid_param_description: "UID del jugador, esto anula el parámetro de la cuenta si se proporciona"
 pt_button.label: Recordatorio de Transmutador Paramétrico
 pt_modal.title: Configurar recordatorio de Transmutador Paramétrico
+pt_notify_embed_desc: "Transmutador paramétrico está listo para ser utilizado!"
 public_account_toggle.label: Configurar cuenta como pública
 pure_fiction: Pura ficción
 pyro: Pyro
@@ -501,7 +500,6 @@ ether: Etéreo
 electric: Eléctrico
 profile.no_data.title: Datos de jugador no disponibles
 profile.no_data.description: "Lo creas o no, no hay nada que mostrar aquí."
-profile.zzz_hoyolab.character_select.description: "Cine Mental {m} | Dato de {platform}"
 characters.filter.specialty.placeholder: Selecciona filtro de especialidades...
 zzz.basic: Ataque normal
 zzz.dodge: Evasión

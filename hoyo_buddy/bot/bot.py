@@ -440,7 +440,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         if not games:
             logger.error(
-                "Cannot use `get_game_account_choices` on commands without `games` explicitly set"
+                f"Cannot use `get_game_account_choices` on commands without games explicitly set, command: {command_name}"
             )
             return []
 

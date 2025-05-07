@@ -25,8 +25,8 @@ class GachaParams(BaseModel):
     account_id: int
     banner_type: int
     rarities: list[int] = Field(default_factory=list)
-    size: int = Field(100, ge=1, le=500)
-    page: int = Field(1, ge=1)
+    size: int = Field(default=100, ge=1, le=500)
+    page: int = Field(default=1, ge=1)
     name_contains: str | None = None
 
     @field_validator("rarities", mode="before")

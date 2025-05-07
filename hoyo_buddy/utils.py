@@ -245,14 +245,6 @@ def wrap_task_factory() -> None:
     loop.set_task_factory(new_factory)
 
 
-def set_or_update_dict(d: dict[str, Any], key: str, value: Any) -> None:
-    """Set or update a value in a dictionary."""
-    if key in d:
-        d[key] = value
-    else:
-        d.update({key: value})
-
-
 def convert_chara_id_to_ambr_format(character_id: int, element: str) -> str:
     """Convert character ID to the format used by AmbrAPI (traveler ID contains element)."""
     return (

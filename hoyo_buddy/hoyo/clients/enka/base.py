@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-from typing import Any, overload
+from typing import Any
 
 import discord
 import enka
-
-from hoyo_buddy.db import EnkaCache
 
 type ShowcaseResponse = enka.gi.ShowcaseResponse | enka.hsr.ShowcaseResponse
 
@@ -62,121 +60,3 @@ class BaseClient:
                 if str(character["avatarId"]) == character_id:
                     cache["detailInfo"]["avatarDetailList"].remove(character)
                     break
-
-    def _update_cache(
-        self, game: enka.Game, *, cache: dict[str, Any], data: dict[str, Any]
-    ) -> dict[str, Any]:
-        if not cache:
-            return data
-
-        if game is enka.Game.GI:
-            # Update player
-            cache["playerInfo"] = data["playerInfo"]
-
-            # Update characters
-            if "avatarInfoList" not in data:
-                # Showcase is disabled
-                return cache
-
-            if "avatarInfoList" not in cache:
-                cache["avatarInfoList"] = []
-            for chara in data["avatarInfoList"]:
-                self.remove_character_from_cache(cache, str(chara["avatarId"]), game)
-                cache["avatarInfoList"].append(chara)
-
-            return cache
-        if game is enka.Game.HSR:
-            # Update player
-            keys_to_update = (
-                "nickname",
-                "signature",
-                "headIcon",
-                "level",
-                "worldLevel",
-                "friendCount",
-                "recordInfo",
-            )
-            for key in keys_to_update:
-                if key not in data["detailInfo"]:
-                    continue
-                cache["detailInfo"][key] = data["detailInfo"][key]
-
-            # Update characters
-            if "avatarDetailList" not in data["detailInfo"]:
-                # Showcase is disabled
-                return cache
-
-            if "avatarDetailList" not in cache["detailInfo"]:
-                cache["detailInfo"]["avatarDetailList"] = []
-            for chara in data["detailInfo"]["avatarDetailList"]:
-                self.remove_character_from_cache(cache, str(chara["avatarId"]), game)
-                cache["detailInfo"]["avatarDetailList"].append(chara)
-
-            return cache
-
-        msg = f"Game {game} is not supported."
-        raise NotImplementedError(msg)
-
-    @overload
-    async def fetch_showcase(
-        self, client: enka.HSRClient, uid: int
-    ) -> tuple[enka.hsr.ShowcaseResponse, bool]: ...
-    @overload
-    async def fetch_showcase(
-        self, client: enka.GenshinClient, uid: int
-    ) -> tuple[enka.gi.ShowcaseResponse, bool]: ...
-    async def fetch_showcase(
-        self, client: enka.HSRClient | enka.GenshinClient, uid: int
-    ) -> tuple[enka.hsr.ShowcaseResponse | enka.gi.ShowcaseResponse, bool]:
-        """Fetch the showcase data for the given UID.
-
-        Args:
-            client: The client to use.
-            uid: The UID to fetch the showcase data for.
-
-        Returns:
-            The showcase data.
-        """
-        cache, _ = await EnkaCache.get_or_create(uid=uid)
-        showcase_cache = cache.hsr if client.game is enka.Game.HSR else cache.genshin
-        errored = False
-
-        try:
-            live_data = await client.fetch_showcase(uid, raw=True)
-        except enka.errors.EnkaAPIError:
-            errored = True
-            raise
-
-            # self._update_live_status(client, showcase_cache, cache.extras, live=False)
-            # await cache.save(update_fields=("extras",))
-        else:
-            showcase_cache = self._update_cache(client.game, cache=showcase_cache, data=live_data)
-
-            # cache_showcase: ShowcaseResponse | None = None
-            live_showcase: ShowcaseResponse | None = None
-            try:
-                # cache_showcase = client.parse_showcase(showcase_cache)
-                live_showcase = client.parse_showcase(live_data)
-            except enka.errors.AssetKeyError:
-                await client.update_assets()
-                live_showcase = client.parse_showcase(live_data)
-
-            # self._update_live_status(
-            #     client, showcase_cache, cache.extras, showcase=cache_showcase, live=False
-            # )
-            self._update_live_status(live_showcase, cache.extras, live=True)
-
-            if client.game is enka.Game.HSR:
-                cache.hsr = showcase_cache
-            elif client.game is enka.Game.GI:
-                cache.genshin = showcase_cache
-            else:
-                msg = f"Game {client.game} is not supported."
-                raise NotImplementedError(msg)
-
-            update_fields = (
-                ("hsr", "extras") if client.game is enka.Game.HSR else ("genshin", "extras")
-            )
-            await cache.save(update_fields=update_fields)
-
-        return client.parse_showcase(showcase_cache), errored

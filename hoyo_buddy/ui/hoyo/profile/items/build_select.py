@@ -81,7 +81,6 @@ class BuildSelect(Select[ProfileView]):
             self.view._build_id = int(self.values[0])
 
         build = self.build
-        print(type(build))
 
         if isinstance(build, Character):
             await self.view.update(i, self, character=build)

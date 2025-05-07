@@ -336,17 +336,15 @@ profile.card_template_select.hb.label: "Template Hoyo Buddy {num}"
 profile.card_template_select.placeholder: Selecione um template
 profile.card_template_select.same_author.description: "Desenhado e programado por {author}"
 profile.card_template_select.src.label: "Template StarRailCard {num}"
-profile.character_select.cached_data.description: Dados em cache
-profile.character_select.description: "E{e}S{s} | {d} | Exibição no jogo"
+profile.character_select.genshin: "C{const}R{refine}"
+profile.character_select.hsr: "E{const}R{refine}"
+profile.character_select.zzz: "Mindscape Cinema {const}"
+profile.character_select.in_game: "Apresentação no jogo"
 profile.character_select.enka_network.description: Build da Enka Network
-profile.character_select.hoyolab.description: "E{e}S{s} | {d} | {platform}"
-profile.character_select.live_data.description: Dados em tempo real
 profile.character_select.placeholder: Selecione um personagem
 profile.generate_ai_art.button.label: Gerar arte IA
 profile.generate_ai_art_modal.negative_prompt.label: Prompt Negativo
 profile.generate_ai_art_modal.prompt.label: Prompt
-profile.genshin.character_select.description: "C{c}R{r} | {d}"
-profile.genshin.character_select.hoyolab.description: "C{c}R{r} | {d} | {platform}"
 profile.image_select.custom_image.label: "Imagem Personalizada ({num})"
 profile.image_select.default_collection.label: "Coleção Hoyo Buddy ({num})"
 profile.image_select.none.label: Arte oficial
@@ -367,6 +365,7 @@ profile_command_game_value_description: Jogo do UID
 profile_command_uid_param_description: "UID do jogador, isso substitui o parâmetro da conta se fornecido"
 pt_button.label: Lembrete do transformador paramétrico
 pt_modal.title: Configurações do Lembrete do Transformador Paramétrico
+pt_notify_embed_desc: "Transformador Paramétrico está pronto para uso!"
 public_account_toggle.label: Definir conta como pública
 pure_fiction: Pura Ficção
 pyro: Pyro
@@ -499,7 +498,6 @@ ether: Ether
 electric: Elétrico
 profile.no_data.title: Nenhum dado de jogador disponível
 profile.no_data.description: "Acredite ou não, não há nada para exibir aqui."
-profile.zzz_hoyolab.character_select.description: "Cinema Mindscape {m} | Dados {platform}"
 characters.filter.specialty.placeholder: Selecione filtros de especialidade...
 zzz.basic: Ataque Básico
 zzz.dodge: Esquiva

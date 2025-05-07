@@ -42,7 +42,6 @@ __all__ = (
     "CardSettings",
     "ChallengeHistory",
     "CustomImage",
-    "EnkaCache",
     "FarmNotify",
     "GachaHistory",
     "GachaStats",
@@ -236,18 +235,6 @@ class CardSettings(BaseModel):
     class Meta:
         unique_together = ("character_id", "user", "game")
         ordering = ("character_id",)
-
-
-class EnkaCache(BaseModel):
-    uid = fields.BigIntField(pk=True, index=True)
-    hsr: fields.Field[dict[str, Any]] = fields.JSONField(default={})
-    genshin: fields.Field[dict[str, Any]] = fields.JSONField(default={})
-    hoyolab: fields.Field[dict[str, Any]] = fields.JSONField(default={})
-    hoyolab_zzz: fields.Field[dict[str, Any] | None] = fields.JSONField(default={}, null=True)
-    extras: fields.Field[dict[str, dict[str, Any]]] = fields.JSONField(default={})
-
-    class Meta:
-        ordering = ("uid",)
 
 
 class NotesNotify(BaseModel):

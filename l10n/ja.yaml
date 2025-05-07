@@ -336,17 +336,15 @@ profile.card_template_select.hb.label: "Hoyo Buddy テンプレート {num}"
 profile.card_template_select.placeholder: テンプレートを選択
 profile.card_template_select.same_author.description: "{author} がデザインおよびプログラムしました"
 profile.card_template_select.src.label: "StarRailCard テンプレート {num}"
-profile.character_select.cached_data.description: キャッシュされたデータ
-profile.character_select.description: "E{e}S{s} | {d} | ゲーム内展示"
+profile.character_select.genshin: "C{const}R{refine}"
+profile.character_select.hsr: "E{const}R{refine}"
+profile.character_select.zzz: "心象映画 {const}"
+profile.character_select.in_game: "ゲーム内ショーケース"
 profile.character_select.enka_network.description: Enka Network ビルド
-profile.character_select.hoyolab.description: "E{e}S{s} | {d} | {platform}"
-profile.character_select.live_data.description: リアルタイムデータ
 profile.character_select.placeholder: キャラクターを選択
 profile.generate_ai_art.button.label: AIアートを生成
 profile.generate_ai_art_modal.negative_prompt.label: ネガティブプロンプト
 profile.generate_ai_art_modal.prompt.label: プロンプト
-profile.genshin.character_select.description: "C{c}R{r} | {d}"
-profile.genshin.character_select.hoyolab.description: "C{c}R{r} | {d} | {platform}"
 profile.image_select.custom_image.label: "カスタム画像 ({num})"
 profile.image_select.default_collection.label: "Hoyo Buddy コレクション ({num})"
 profile.image_select.none.label: 公式アート
@@ -367,6 +365,7 @@ profile_command_game_value_description: UIDのゲーム
 profile_command_uid_param_description: "プレイヤーのUID。指定された場合、アカウントパラメータを上書きします"
 pt_button.label: 変転の塵リマインダー
 pt_modal.title: 変転の塵リマインダー設定
+pt_notify_embed_desc: "参量物質変化器は使えるようになりました！"
 public_account_toggle.label: アカウントを公開に設定
 pure_fiction: 虚構叙事
 pyro: 炎
@@ -499,7 +498,6 @@ ether: エーテル
 electric: 電撃
 profile.no_data.title: プレイヤーデータがありません
 profile.no_data.description: "信じられないかもしれませんが、ここに表示するものはありません。"
-profile.zzz_hoyolab.character_select.description: "意識映写 {m} | {platform} データ"
 characters.filter.specialty.placeholder: 専門分野フィルターを選択...
 zzz.basic: 通常攻撃
 zzz.dodge: 回避

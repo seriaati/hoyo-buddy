@@ -25,8 +25,8 @@ class GachaParams(BaseModel):
     account_id: int
     banner_type: int
     rarities: list[int] = Field(default_factory=list)
-    size: int = 100
-    page: int = 1
+    size: int = Field(100, ge=1, le=500)
+    page: int = Field(1, ge=1)
     name_contains: str | None = None
 
     @field_validator("rarities", mode="before")
@@ -37,6 +37,19 @@ class GachaParams(BaseModel):
         if not value:
             return []
         return [int(rarity) for rarity in value.split(",")]
+
+    @field_validator("rarities", mode="after")
+    @classmethod
+    def __validate_rarities(cls, rarities: list[int]) -> list[int]:
+        if not rarities:
+            msg = "At least one rarity must be selected"
+            raise ValueError(msg)
+
+        if any(rarity not in {3, 4, 5} for rarity in rarities):
+            msg = "Invalid rarity"
+            raise ValueError(msg)
+
+        return rarities
 
     @field_validator("banner_type", mode="after")
     @classmethod

@@ -439,9 +439,11 @@ class HoyoBuddy(commands.AutoShardedBot):
             games.extend(lb_type_games)
 
         if not games:
-            logger.error(
-                f"Cannot use `get_game_account_choices` on commands without games explicitly set, command: {command_name}"
-            )
+            # lb view command may not have games because user selects invalid lb type
+            if command_name != "lb view":
+                logger.error(
+                    f"Cannot use `get_game_account_choices` on commands without games explicitly set, command: {command_name}"
+                )
             return []
 
         locale = await get_locale(i)

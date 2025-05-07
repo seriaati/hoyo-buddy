@@ -45,6 +45,17 @@ Buff: TypeAlias = (
     | genshin.models.DeadlyAssaultBuff
 )
 
+Character: TypeAlias = (
+    models.HoyolabHSRCharacter
+    | enka.gi.Character
+    | enka.hsr.Character
+    | genshin.models.ZZZPartialAgent
+    | models.HoyolabGICharacter
+)
+HoyolabCharacter: TypeAlias = (
+    models.HoyolabHSRCharacter | models.HoyolabGICharacter | genshin.models.ZZZPartialAgent
+)
+
 Interaction: TypeAlias = discord.Interaction[HoyoBuddy]
 User: TypeAlias = discord.User | discord.Member | None
 Builds: TypeAlias = dict[str, list[enka.gi.Build]] | dict[str, list[enka.hsr.Build]]

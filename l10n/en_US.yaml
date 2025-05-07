@@ -338,16 +338,15 @@ profile.card_template_select.hb.label: "Hoyo Buddy template {num}"
 profile.card_template_select.placeholder: Select a template
 profile.card_template_select.same_author.description: "Designed and programmed by {author}"
 profile.card_template_select.src.label: "StarRailCard template {num}"
-profile.character_select.description: "E{e}S{s} | {d} | In-game showcase"
+profile.character_select.genshin: "C{const}R{refine}"
+profile.character_select.hsr: "E{const}R{refine}"
+profile.character_select.zzz: "Mindscape cinema {const}"
+profile.character_select.in_game: "In-game showcase"
 profile.character_select.enka_network.description: Enka Network build
-profile.character_select.hoyolab.description: "E{e}S{s} | {d} | {platform}"
-profile.character_select.live_data.description: Real-time data
 profile.character_select.placeholder: Select a character
 profile.generate_ai_art.button.label: Generate AI art
 profile.generate_ai_art_modal.negative_prompt.label: Negative Prompt
 profile.generate_ai_art_modal.prompt.label: Prompt
-profile.genshin.character_select.description: "C{c}R{r} | {d}"
-profile.genshin.character_select.hoyolab.description: "C{c}R{r} | {d} | {platform}"
 profile.image_select.custom_image.label: "Custom Image ({num})"
 profile.image_select.default_collection.label: "Hoyo Buddy Collection ({num})"
 profile.image_select.none.label: Official art
@@ -501,7 +500,6 @@ ether: Ether
 electric: Electric
 profile.no_data.title: No player data available
 profile.no_data.description: "Believe it or not, there is nothing to display here."
-profile.zzz_hoyolab.character_select.description: "Mindscape cinema {m} | {platform} data"
 characters.filter.specialty.placeholder: Select specialty filters...
 zzz.basic: Basic Attack
 zzz.dodge: Dodge

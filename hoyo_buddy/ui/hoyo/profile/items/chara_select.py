@@ -3,35 +3,37 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Final
 
 import enka
-from genshin.models import ZZZPartialAgent
 
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji, get_zzz_element_emoji
 from hoyo_buddy.enums import CharacterType, Game, Platform
 from hoyo_buddy.l10n import EnumStr, LevelStr, LocaleStr
-from hoyo_buddy.models import HoyolabHSRCharacter
+from hoyo_buddy.models import HoyolabGICharacter, HoyolabHSRCharacter
+from hoyo_buddy.types import HoyolabCharacter
 from hoyo_buddy.ui import PaginatorSelect, SelectOption
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from hoyo_buddy.db import HoyoAccount
-    from hoyo_buddy.types import Builds, Interaction
+    from hoyo_buddy.types import Builds, Character, Interaction
 
-    from ..view import Character, ProfileView
+    from ..view import ProfileView
     from .build_select import BuildSelect
 else:
     ProfileView = None
 
 DATA_TYPES: Final[dict[CharacterType, LocaleStr]] = {
     CharacterType.BUILD: LocaleStr(key="profile.character_select.enka_network.description"),
-    CharacterType.LIVE: LocaleStr(key="profile.character_select.live_data.description"),
+    CharacterType.LIVE: LocaleStr(key="profile.character_select.in_game"),
 }
 MAX_VALUES: Final[dict[Game, int]] = {Game.GENSHIN: 4, Game.STARRAIL: 4, Game.ZZZ: 3}
 
 
-def determine_chara_type(character_id: str, *, builds: Builds) -> CharacterType:
+def determine_chara_type(character_id: str, *, builds: Builds, in_showcase: bool) -> CharacterType:
+    if in_showcase:
+        return CharacterType.LIVE
     chara_builds = builds.get(character_id, [])
-    if chara_builds and not any(build.live for build in chara_builds):
+    if not any(build.live for build in chara_builds):
         return CharacterType.BUILD
     return CharacterType.LIVE
 
@@ -41,59 +43,60 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         self,
         game: Game,
         characters: Sequence[Character],
-        builds: Builds,
+        genshin_data: enka.gi.ShowcaseResponse | None,
+        starrail_data: enka.hsr.ShowcaseResponse | None,
         account: HoyoAccount | None,
         character_ids: list[str],
         *,
         row: int,
     ) -> None:
         options: list[SelectOption] = []
+        showcase_character_ids = self._get_showcase_character_ids(genshin_data, starrail_data, game)
 
         for character in characters:
-            character_type = determine_chara_type(str(character.id), builds=builds)
-            data_type = DATA_TYPES[character_type]
+            if isinstance(character, HoyolabCharacter):
+                if account is not None:
+                    data_type = EnumStr(account.platform)
+                else:
+                    # Is hoyolab character but no account? Shouldn't happen,
+                    # but just in case.
+                    data_type = EnumStr(Platform.HOYOLAB)
+            else:
+                in_showcase = str(character.id) in showcase_character_ids
+                character_type = CharacterType.LIVE if in_showcase else CharacterType.BUILD
+                data_type = DATA_TYPES[character_type]
 
-            if isinstance(character, enka.hsr.Character):
+            if isinstance(character, enka.hsr.Character | HoyolabHSRCharacter):
                 description = LocaleStr(
-                    key="profile.character_select.description",
-                    s=character.light_cone.superimpose if character.light_cone is not None else 0,
-                    e=character.eidolons_unlocked,
-                    d=data_type,
-                )
-                emoji = get_hsr_element_emoji(character.element.value)
-            elif isinstance(character, HoyolabHSRCharacter):
-                description = LocaleStr(
-                    key="profile.character_select.hoyolab.description",
-                    s=character.light_cone.superimpose if character.light_cone is not None else 0,
-                    e=character.eidolons_unlocked,
-                    d=data_type,
-                    platform=EnumStr(account.platform if account is not None else Platform.HOYOLAB),
+                    custom_str="{info} | {data_type}",
+                    info=LocaleStr(
+                        key="profile.character_select.hsr",
+                        const=character.eidolons_unlocked,
+                        refine=character.light_cone.superimpose
+                        if character.light_cone is not None
+                        else 0,
+                    ),
+                    data_type=data_type,
                 )
                 emoji = get_hsr_element_emoji(character.element)
-            elif isinstance(character, enka.gi.Character):
+            elif isinstance(character, enka.gi.Character | HoyolabGICharacter):
                 description = LocaleStr(
-                    key="profile.genshin.character_select.description",
-                    c=character.constellations_unlocked,
-                    r=character.weapon.refinement,
-                    d=data_type,
+                    custom_str="{info} | {data_type}",
+                    info=LocaleStr(
+                        key="profile.character_select.genshin",
+                        const=len([c for c in character.constellations if c.unlocked]),
+                        refine=character.weapon.refinement,
+                    ),
+                    data_type=data_type,
                 )
                 emoji = get_gi_element_emoji(character.element.name)
-            elif isinstance(character, ZZZPartialAgent):
-                description = LocaleStr(
-                    key="profile.zzz_hoyolab.character_select.description",
-                    m=character.rank,
-                    platform=EnumStr(account.platform if account is not None else Platform.HOYOLAB),
-                )
-                emoji = get_zzz_element_emoji(character.element)
             else:
                 description = LocaleStr(
-                    key="profile.genshin.character_select.hoyolab.description",
-                    c=len([c for c in character.constellations if c.unlocked]),
-                    r=character.weapon.refinement,
-                    d=data_type,
-                    platform=EnumStr(account.platform if account is not None else Platform.HOYOLAB),
+                    custom_str="{info} | {data_type}",
+                    info=LocaleStr(key="profile.character_select.zzz", const=character.rank),
+                    data_type=data_type,
                 )
-                emoji = get_gi_element_emoji(character.element)
+                emoji = get_zzz_element_emoji(character.element)
 
             options.append(
                 SelectOption(
@@ -119,6 +122,26 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         )
 
     @staticmethod
+    def _get_showcase_character_ids(
+        genshin_data: enka.gi.ShowcaseResponse | None,
+        starrail_data: enka.hsr.ShowcaseResponse | None,
+        game: Game,
+    ) -> set[str]:
+        if game is Game.GENSHIN:
+            showcase_data = genshin_data
+        elif game is Game.STARRAIL:
+            showcase_data = starrail_data
+        else:
+            showcase_data = None
+
+        if showcase_data is None:
+            showcase_character_ids = set()
+        else:
+            showcase_character_ids = {str(character.id) for character in showcase_data.characters}
+
+        return showcase_character_ids
+
+    @staticmethod
     def update_ui(view: ProfileView, *, character_id: str, is_team: bool) -> None:
         # Enable the player info button
         player_btn = view.get_item("profile_player_info")
@@ -141,10 +164,22 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         redraw_card_btn.disabled = False
 
         # Set builds
+        showcase_character_ids = CharacterSelect._get_showcase_character_ids(
+            view.genshin_data, view.starrail_data, view.game
+        )
+        hoyolab_character_ids = {
+            str(character.id)
+            for character in view.hoyolab_gi_characters + view.hoyolab_hsr_characters
+        }
         build_select: BuildSelect = view.get_item("profile_build_select")
         if not is_team and (builds := view._builds.get(character_id)):
             view._build_id = builds[0].id
-            build_select.set_options(builds)
+            current = (
+                None
+                if character_id not in {*showcase_character_ids, *hoyolab_character_ids}
+                else view.characters[character_id]
+            )
+            build_select.set_options(builds, current)
             build_select.translate(view.locale)
             build_select.disabled = False
         else:
@@ -159,7 +194,6 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         is_team = len(self.values) > 1
 
         character_id = self.view.character_ids[0]
-        self.view.character_type = determine_chara_type(character_id, builds=self.view._builds)
 
         self.update_ui(self.view, character_id=character_id, is_team=is_team)
         self.update_options_defaults()

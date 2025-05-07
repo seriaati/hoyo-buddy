@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from io import BytesIO
-from typing import TYPE_CHECKING, Any, Literal, TypeAlias
+from typing import TYPE_CHECKING, Any, Literal
 
 import aiohttp
 import akasha
@@ -28,7 +28,7 @@ from hoyo_buddy.draw.main_funcs import (
     draw_zzz_team_card,
 )
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import CharacterType, Game, Platform
+from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.exceptions import (
     CardNotReadyError,
     DownloadImageFailedError,
@@ -38,6 +38,7 @@ from hoyo_buddy.exceptions import (
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import Dismissible, DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
+from hoyo_buddy.types import Builds, Character, HoyolabCharacter
 from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
 from hoyo_buddy.ui.hoyo.profile.items.team_card_settings_btn import TeamCardSettingsButton
@@ -64,14 +65,6 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Builds, Interaction
 
 
-Character: TypeAlias = (
-    HoyolabHSRCharacter
-    | enka.gi.Character
-    | enka.hsr.Character
-    | ZZZPartialAgent
-    | HoyolabGICharacter
-)
-HoyolabCharacter: TypeAlias = HoyolabHSRCharacter | HoyolabGICharacter | ZZZPartialAgent
 GI_CARD_ENDPOINTS = {
     "hattvr": "http://localhost:7652/hattvr-enka-card",
     "encard": "http://localhost:7652/en-card",
@@ -116,7 +109,6 @@ class ProfileView(View):
         self.uid = uid
         self.game = game
         self.character_ids: list[str] = []
-        self.character_type: CharacterType | None = None
         self.characters: dict[str, Character] = {}
         self._param_character_ids = character_ids
 
@@ -126,7 +118,7 @@ class ProfileView(View):
 
         self._owner_username: str | None = owner.username if owner is not None else None
         self._owner_hash: str | None = owner.hash if owner is not None else None
-        self._build_id: int | None = None
+        self._build_id: int | Literal["current"] | None = None
 
     async def _fix_invalid_template(self, card_settings: CardSettings) -> None:
         if self.game not in TEMPLATES or card_settings.template not in TEMPLATES[self.game]:
@@ -179,15 +171,15 @@ class ProfileView(View):
                 enka_chara_ids.append(str(chara.id))
                 self.characters[str(chara.id)] = chara
 
-        for chara in hoyolab_characters:
-            if str(chara.id) not in enka_chara_ids:
-                enka_chara_ids.append(str(chara.id))
-                self.characters[str(chara.id)] = chara
-
         for builds in self._builds.values():
             character = builds[0].character
             if str(character.id) not in enka_chara_ids:
                 self.characters[str(character.id)] = character
+
+        for chara in hoyolab_characters:
+            if str(chara.id) not in enka_chara_ids:
+                enka_chara_ids.append(str(chara.id))
+                self.characters[str(chara.id)] = chara
 
     def _set_characters(self) -> None:
         if self.game is Game.STARRAIL:
@@ -318,7 +310,13 @@ class ProfileView(View):
             ]
             self.add_item(
                 CharacterSelect(
-                    self.game, characters, self._builds, self._account, self.character_ids, row=2
+                    self.game,
+                    characters,
+                    self.genshin_data,
+                    self.starrail_data,
+                    self._account,
+                    self.character_ids,
+                    row=2,
                 )
             )
 
@@ -341,7 +339,10 @@ class ProfileView(View):
             "character_art": card_settings.current_image,
             "color": card_settings.custom_primary_color,
         }
-        if all(v is not None for v in (self._owner_hash, self._owner_username, self._build_id)):
+        if (
+            all((self._owner_hash, self._owner_username, self._build_id))
+            and self._build_id != "current"
+        ):
             payload["owner"] = {
                 "username": self._owner_username,
                 "hash": self._owner_hash,
@@ -376,7 +377,10 @@ class ProfileView(View):
             "color": card_settings.custom_primary_color,
             "template": int(template[-1]),
         }
-        if all(v is not None for v in (self._owner_hash, self._owner_username, self._build_id)):
+        if (
+            all((self._owner_hash, self._owner_username, self._build_id))
+            and self._build_id != "current"
+        ):
             payload["owner"] = {
                 "username": self._owner_username,
                 "hash": self._owner_hash,

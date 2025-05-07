@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.types import Character
 from hoyo_buddy.ui import Select, SelectOption
 
 if TYPE_CHECKING:
@@ -24,18 +25,24 @@ class BuildSelect(Select[ProfileView]):
             custom_id="profile_build_select",
             row=row,
         )
-        self._builds: list[enka.gi.Build] | list[enka.hsr.Build] = []
+        self._builds: dict[str, enka.gi.Build | enka.hsr.Build | Character] = {}
 
     @property
-    def build(self) -> enka.hsr.Build | enka.gi.Build:
-        build = next((build for build in self._builds if build.id == int(self.values[0])), None)
+    def build(self) -> enka.hsr.Build | enka.gi.Build | Character:
+        selected = self.values[0]
+        build = self._builds.get(selected)
+
         if build is None:
-            msg = f"Build with id {self.values[0]} not found"
+            msg = f"Build with id {selected!r} not found"
             raise ValueError(msg)
         return build
 
-    def set_options(self, builds: list[enka.gi.Build] | list[enka.hsr.Build]) -> None:
-        self._builds = builds
+    def set_options(
+        self, builds: list[enka.gi.Build] | list[enka.hsr.Build], current: Character | None
+    ) -> None:
+        for build in builds:
+            self._builds[str(build.id)] = build
+
         self.options = [
             SelectOption(
                 label=build.name or LocaleStr(key="profile.build.current.label"),
@@ -44,9 +51,39 @@ class BuildSelect(Select[ProfileView]):
             )
             for build in builds
         ] or [SelectOption(label="Placeholder", value="0")]
-        self.disabled = not builds
+
+        if current is not None:
+            # Set other options' default to False
+            for option in self.options:
+                option.default = False
+
+            # Add current build to the top of the list and set as default
+            self.options.insert(
+                0,
+                SelectOption(
+                    label=LocaleStr(key="profile.build.current.label"),
+                    value="current",
+                    default=True,
+                ),
+            )
+            self._builds["current"] = current
+            self.view._build_id = "current"
+
+        self.disabled = not self._builds
 
     async def callback(self, i: Interaction) -> None:
-        self.view._build_id = int(self.values[0])
         await self.set_loading_state(i)
-        await self.view.update(i, self, character=self.build.character)
+
+        selected = self.values[0]
+        if selected == "current":
+            self.view._build_id = "current"
+        else:
+            self.view._build_id = int(self.values[0])
+
+        build = self.build
+
+        if isinstance(build, Character):
+            await self.view.update(i, self, character=build)
+            return
+
+        await self.view.update(i, self, character=build.character)

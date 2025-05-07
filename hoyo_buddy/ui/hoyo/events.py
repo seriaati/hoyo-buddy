@@ -82,7 +82,7 @@ class EventsView(View):
         if self.account.game is Game.ZZZ:
             self.anns = await client.get_zzz_announcements()
             zh_anns = await zh_client.get_zzz_announcements()
-            keyword = "調頻"
+            keyword = "限時頻道"
         else:
             raise FeatureNotImplementedError(game=self.account.game)
 
@@ -176,6 +176,7 @@ class EventTypeSelector(Select[EventsView]):
         event_selector.set_options(anns)
         event_selector.translate(self.view.locale)
 
+        self.view.ann_id = self.view.first_ann.id
         self.update_options_defaults()
         embed = self.view._get_ann_embed(self.view.first_ann)
         await i.response.edit_message(embed=embed, view=self.view)

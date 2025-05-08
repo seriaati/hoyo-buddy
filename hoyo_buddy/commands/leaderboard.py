@@ -143,7 +143,7 @@ class LeaderboardCommand:
         if lb_type is LeaderboardType.CHEST:
             return (Game.GENSHIN, Game.STARRAIL)
         if lb_type is LeaderboardType.ACHIEVEMENT:
-            return (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
+            return (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
         return ()
 
     @staticmethod

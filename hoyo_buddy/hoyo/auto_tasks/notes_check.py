@@ -6,6 +6,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar, TypeAlias
 
 import discord
+import genshin
 from discord import Locale
 from genshin.models import HonkaiNotes, HSREvent, StarRailNote, VideoStoreState, ZZZNotes
 from genshin.models import Notes as GenshinNotes
@@ -603,7 +604,7 @@ class NotesChecker:
         if cls._lock.locked():
             return
 
-        async with cls._lock:
+        async with cls._lock:  # noqa: PLR1702
             cls._bot = bot
             notes_cache: defaultdict[Game, dict[int, Notes | StarRailNote | ZZZNotes]] = (
                 defaultdict(dict)
@@ -626,7 +627,10 @@ class NotesChecker:
                     else:
                         events = None
                         if notify.account.uid not in notes_cache[notify.account.game]:
-                            notes = await cls._get_notes(notify)
+                            try:
+                                notes = await cls._get_notes(notify)
+                            except genshin.errors.InternalDatabaseError:
+                                continue
                             notes_cache[notify.account.game][notify.account.uid] = notes
                         else:
                             notes = notes_cache[notify.account.game][notify.account.uid]

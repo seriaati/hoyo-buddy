@@ -207,6 +207,7 @@ COMMANDS: dict[CommandName, CommandConfig] = {
     ),
     "mimo": CommandConfig(
         games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ),
+        platform=Platform.HOYOLAB,
         description=locale_str("Traveling Mimo event management", key="mimo_cmd_desc"),
     ),
     "web-events": CommandConfig(

@@ -66,6 +66,7 @@ GENSHIN_ELEMENT_EMOJIS: dict[GenshinElement, str] = {
     GenshinElement.DENDRO: "<:dendro:1189150946878562354>",
     GenshinElement.GEO: "<:geo:1189150979657044012>",
     GenshinElement.ELECTRO: "<:electro:1189150927190495232>",
+    GenshinElement.NONE: "<:OMNI:1370182510792933426>",
 }
 GENSHIN_CITY_EMOJIS: dict[GenshinCity, str] = {
     GenshinCity.MONDSTADT: "<:Emblem_Mondstadt:982449412938809354>",
@@ -186,7 +187,6 @@ def get_game_emoji(game: genshin.Game | Game) -> str:
         return ZZZ_EMOJI
     if game is genshin.Game.TOT or game is Game.TOT:
         return TOT_EMOJI
-    return None
 
 
 def get_gi_element_emoji(element: str) -> str:

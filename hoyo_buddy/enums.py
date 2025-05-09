@@ -65,6 +65,7 @@ class GenshinElement(StrEnum):
     PYRO = "Pyro"
     CRYO = "Cryo"
     HYDRO = "Hydro"
+    NONE = "None"
 
 
 class GenshinCity(StrEnum):

@@ -356,6 +356,7 @@ ENKA_GI_ELEMENT_TO_ELEMENT = {
     enka.gi.Element.PYRO: GenshinElement.PYRO,
     enka.gi.Element.CRYO: GenshinElement.CRYO,
     enka.gi.Element.HYDRO: GenshinElement.HYDRO,
+    enka.gi.Element.NONE: GenshinElement.NONE,
 }
 ELEMENT_TO_ENKA_GI_ELEMENT = {v: k for k, v in ENKA_GI_ELEMENT_TO_ELEMENT.items()}
 

@@ -75,11 +75,12 @@ class GITeamCard:
         im.alpha_composite(img, (37, 44))
 
         # Character element
-        element_icon = drawer.open_asset(f"elements/{character.element.name.title()}.png")
-        element_icon = drawer.mask_image_with_color(
-            element_icon, drawer.hex_to_rgb(ELEMENT_COLORS[element])
-        )
-        im.alpha_composite(element_icon, (34, 36))
+        if character.element.name != "NONE":
+            element_icon = drawer.open_asset(f"elements/{character.element.name.title()}.png")
+            element_icon = drawer.mask_image_with_color(
+                element_icon, drawer.hex_to_rgb(ELEMENT_COLORS[element])
+            )
+            im.alpha_composite(element_icon, (34, 36))
 
         # Character level
         tbox = drawer.write(

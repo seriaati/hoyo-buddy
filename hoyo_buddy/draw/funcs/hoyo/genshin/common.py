@@ -13,6 +13,7 @@ ELEMENT_BG_COLORS: Final[dict[bool, dict[enka.gi.Element, str]]] = {
         enka.gi.Element.PYRO: "#FFDCDC",
         enka.gi.Element.HYDRO: "#D9E8FF",
         enka.gi.Element.ELECTRO: "#EDDCFF",
+        enka.gi.Element.NONE: "#EDEDED",
     },
     True: {
         enka.gi.Element.ANEMO: "#486C62",
@@ -22,6 +23,7 @@ ELEMENT_BG_COLORS: Final[dict[bool, dict[enka.gi.Element, str]]] = {
         enka.gi.Element.PYRO: "#795252",
         enka.gi.Element.HYDRO: "#495668",
         enka.gi.Element.ELECTRO: "#534A65",
+        enka.gi.Element.NONE: "#6E6E6E",
     },
 }
 ELEMENT_COLORS: Final[dict[enka.gi.Element, str]] = {
@@ -50,6 +52,7 @@ ADD_HURT_ELEMENTS: Final[dict[int, str]] = {
     int(enka.gi.FightPropType.FIGHT_PROP_ROCK_ADD_HURT): "Geo",
     int(enka.gi.FightPropType.FIGHT_PROP_ELEC_ADD_HURT): "Electro",
     int(enka.gi.FightPropType.FIGHT_PROP_GRASS_ADD_HURT): "Dendro",
+    int(enka.gi.FightPropType.FIGHT_PROP_PHYSICAL_ADD_HURT): "Physical",
 }
 ARTIFACT_POS: Final[dict[enka.gi.EquipmentType, int]] = {
     enka.gi.EquipmentType.FLOWER: 1,

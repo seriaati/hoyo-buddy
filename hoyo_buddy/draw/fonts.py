@@ -70,3 +70,9 @@ NOTOSANSTHAI_REGULAR = "hoyo-buddy-assets/fonts/NotoSansThai/NotoSansThai-Regula
 NOTOSANSTHAI_MEDIUM = "hoyo-buddy-assets/fonts/NotoSansThai/NotoSansThai-Medium.ttf"
 NOTOSANSTHAI_BOLD = "hoyo-buddy-assets/fonts/NotoSansThai/NotoSansThai-Bold.ttf"
 NOTOSANSTHAI_BLACK = "hoyo-buddy-assets/fonts/NotoSansThai/NotoSansThai-Black.ttf"
+
+NOTOSANS_LIGHT = "hoyo-buddy-assets/fonts/NotoSans/NotoSans-Light.ttf"
+NOTOSANS_REGULAR = "hoyo-buddy-assets/fonts/NotoSans/NotoSans-Regular.ttf"
+NOTOSANS_MEDIUM = "hoyo-buddy-assets/fonts/NotoSans/NotoSans-Medium.ttf"
+NOTOSANS_BOLD = "hoyo-buddy-assets/fonts/NotoSans/NotoSans-Bold.ttf"
+NOTOSANS_BLACK = "hoyo-buddy-assets/fonts/NotoSans/NotoSans-Black.ttf"

@@ -144,6 +144,13 @@ DEFAULT_FONT_MAPPING: FontMapping = {
         "bold": NOTOSANSTHAI_BOLD,
         "black": NOTOSANSTHAI_BLACK,
     },
+    Locale.hindi: {
+        "light": NOTOSANS_LIGHT,
+        "regular": NOTOSANS_BLACK,
+        "medium": NOTOSANS_MEDIUM,
+        "bold": NOTOSANS_BOLD,
+        "black": NOTOSANS_BLACK,
+    },
     SUPPORTED_BY_NUNITO: {
         "light": NUNITO_LIGHT,
         "regular": NUNITO_REGULAR,
@@ -476,7 +483,6 @@ class Drawer:
         else:
             mapping = DEFAULT_FONT_MAPPING
 
-        font_map = None
         font_map = self.find_font_mapping(locale, mapping)
 
         if font_map is None:

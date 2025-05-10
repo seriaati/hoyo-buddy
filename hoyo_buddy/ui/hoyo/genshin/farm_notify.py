@@ -76,7 +76,7 @@ class FarmNotifyView(PaginatorView):
             ItemWithTrailing(
                 icon=self._item_icons.get(item_id),
                 title=self._item_names.get(str(item_id), item_id),
-                trailing="",
+                trailing="-",
             )
             for item_id in self._split_item_ids[self._current_page]
         ]

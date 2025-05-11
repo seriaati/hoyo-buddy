@@ -7,7 +7,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/seriaati/hoyo-buddy?style=flat)
 ![GitHub forks](https://img.shields.io/github/forks/seriaati/hoyo-buddy?style=flat)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/seriaati/hoyo-buddy)
-![Lines of code](https://tokei.rs/b1/github/seriaati/hoyo-buddy?style=flat)
+![Lines of code](https://tokei.rs/b1/github/seriaati/hoyo-buddy?style=flat&category=code&type=Python)
 ![Commit activity](https://img.shields.io/github/commit-activity/w/seriaati/hoyo-buddy/main)
 ![GitHub](https://img.shields.io/github/license/seriaati/hoyo-buddy)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)

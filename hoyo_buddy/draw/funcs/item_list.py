@@ -9,7 +9,7 @@ from hoyo_buddy.models import ItemWithDescription, ItemWithTrailing
 
 from ..drawer import (
     DARK_ON_SURFACE,
-    DARK_ON_SURFACE_VARIANT,
+    DARK_ON_SURFACE_CONTAINER_HIGHEST,
     DARK_SURFACE,
     LIGHT_ON_SURFACE,
     LIGHT_SURFACE,
@@ -63,7 +63,7 @@ def draw_item_list(
                 item.trailing,
                 size=22,
                 position=(pos[0] + card_size[0] - 48, pos[1] + 56),
-                color=DARK_ON_SURFACE_VARIANT if drawer.dark_mode else LIGHT_ON_SURFACE,
+                color=DARK_ON_SURFACE_CONTAINER_HIGHEST if drawer.dark_mode else LIGHT_ON_SURFACE,
                 anchor="rm",
             )
         else:
@@ -71,7 +71,7 @@ def draw_item_list(
                 item.description,
                 size=28,
                 position=(pos[0] + description_left_padding, pos[1] + description_top_padding),
-                color=DARK_ON_SURFACE_VARIANT if drawer.dark_mode else LIGHT_ON_SURFACE,
+                color=DARK_ON_SURFACE_CONTAINER_HIGHEST if drawer.dark_mode else LIGHT_ON_SURFACE,
             )
 
         drawer.write(

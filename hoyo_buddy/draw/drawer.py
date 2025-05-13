@@ -29,11 +29,11 @@ EMPHASIS_OPACITY: dict[str, float] = {"high": 1.0, "medium": 0.6, "low": 0.37}
 # Material design colors
 LIGHT_SURFACE = (252, 248, 253)
 LIGHT_ON_SURFACE = (27, 27, 31)
-LIGHT_ON_SURFACE_VARIANT = (70, 70, 79)
+LIGHT_ON_SURFACE_CONTAINER_HIGHEST = (70, 70, 79)
 
 DARK_SURFACE = (19, 19, 22)
 DARK_ON_SURFACE = (200, 197, 202)
-DARK_ON_SURFACE_VARIANT = (199, 197, 208)
+DARK_ON_SURFACE_CONTAINER_HIGHEST = (199, 197, 208)
 
 FontStyle: TypeAlias = Literal[
     "light",

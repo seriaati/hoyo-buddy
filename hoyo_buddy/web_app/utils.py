@@ -35,12 +35,12 @@ class LoadingSnackBar(ft.SnackBar):
             content=ft.Row(
                 [
                     ft.ProgressRing(
-                        width=16, height=16, stroke_width=2, color=ft.colors.ON_SECONDARY_CONTAINER
+                        width=16, height=16, stroke_width=2, color=ft.Colors.ON_SECONDARY_CONTAINER
                     ),
-                    ft.Text(text, color=ft.colors.ON_SECONDARY_CONTAINER),
+                    ft.Text(text, color=ft.Colors.ON_SECONDARY_CONTAINER),
                 ]
             ),
-            bgcolor=ft.colors.SECONDARY_CONTAINER,
+            bgcolor=ft.Colors.SECONDARY_CONTAINER,
         )
 
 
@@ -49,25 +49,25 @@ class ErrorBanner(ft.Banner):
         self.url = url
         actions: list[ft.Control] = [
             ft.IconButton(
-                ft.icons.CLOSE,
+                ft.Icons.CLOSE,
                 on_click=self.on_action_click,
-                icon_color=ft.colors.ON_ERROR_CONTAINER,
+                icon_color=ft.Colors.ON_ERROR_CONTAINER,
             )
         ]
         if url:
             actions.insert(
                 0,
                 ft.IconButton(
-                    ft.icons.OPEN_IN_NEW,
+                    ft.Icons.OPEN_IN_NEW,
                     on_click=self.launch_url,
-                    icon_color=ft.colors.ON_ERROR_CONTAINER,
+                    icon_color=ft.Colors.ON_ERROR_CONTAINER,
                 ),
             )
 
         super().__init__(
-            leading=ft.Icon(ft.icons.ERROR, color=ft.colors.ON_ERROR_CONTAINER),
-            content=ft.Text(message, color=ft.colors.ON_ERROR_CONTAINER),
-            bgcolor=ft.colors.ERROR_CONTAINER,
+            leading=ft.Icon(ft.Icons.ERROR, color=ft.Colors.ON_ERROR_CONTAINER),
+            content=ft.Text(message, color=ft.Colors.ON_ERROR_CONTAINER),
+            bgcolor=ft.Colors.ERROR_CONTAINER,
             actions=actions,
         )
 

@@ -649,9 +649,9 @@ class WebApp:
                     ft.Container(ft.Text("Login System"), margin=ft.margin.only(left=4)),
                 ]
             ),
-            bgcolor=ft.colors.SURFACE_VARIANT,
+            bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST,
             actions=[
-                ft.IconButton(ft.icons.QUESTION_MARK, url="https://discord.com/invite/ryfamUykRw")
+                ft.IconButton(ft.Icons.QUESTION_MARK, url="https://discord.com/invite/ryfamUykRw")
             ],
         )
 
@@ -664,8 +664,8 @@ class WebApp:
                     ft.Container(ft.Text("GachaLog System"), margin=ft.margin.only(left=4)),
                 ]
             ),
-            bgcolor=ft.colors.SURFACE_VARIANT,
+            bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST,
             actions=[
-                ft.IconButton(ft.icons.QUESTION_MARK, url="https://discord.com/invite/ryfamUykRw")
+                ft.IconButton(ft.Icons.QUESTION_MARK, url="https://discord.com/invite/ryfamUykRw")
             ],
         )

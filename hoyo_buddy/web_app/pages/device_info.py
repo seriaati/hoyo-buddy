@@ -53,7 +53,7 @@ class DeviceInfoPage(ft.View):
 
 class DownloadAppButton(ft.ElevatedButton):
     def __init__(self, text: str, url: str) -> None:
-        super().__init__(text=text, icon=ft.icons.DOWNLOAD, on_click=self.goto_download_page)
+        super().__init__(text=text, icon=ft.Icons.DOWNLOAD, on_click=self.goto_download_page)
         self._url = url
 
     async def goto_download_page(self, e: ft.ControlEvent) -> None:

@@ -85,7 +85,7 @@ class CookiesTextField(ft.TextField):
             multiline=True,
             on_blur=self.on_field_blur,
             on_focus=self.on_field_focus,
-            prefix_icon=ft.icons.COOKIE,
+            prefix_icon=ft.Icons.COOKIE,
             ref=ref,
             hint_text="Paste your cookies here",
         )

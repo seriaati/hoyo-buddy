@@ -29,7 +29,7 @@ class LoginPage(ft.View):
                             ft.FilledButton(
                                 translator.translate(LocaleStr(key="login_button_label"), locale),
                                 on_click=self.on_login_button_click,
-                                icon=ft.icons.DISCORD,
+                                icon=ft.Icons.DISCORD,
                             ),
                             margin=ft.margin.all(10),
                         )

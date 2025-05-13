@@ -88,7 +88,7 @@ class MobileNumberField(ft.TextField):
             ref=ref,
             on_blur=self.on_field_blur,
             on_focus=self.on_field_focus,
-            prefix_icon=ft.icons.PHONE,
+            prefix_icon=ft.Icons.PHONE,
             prefix_text="+86-",
             max_length=11,
         )

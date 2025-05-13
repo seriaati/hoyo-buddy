@@ -249,7 +249,7 @@ class EmailPassWordForm(ft.Column):
             ref=self._email_ref,
             on_blur=self.on_blur,
             on_focus=self.on_focus,
-            prefix_icon=ft.icons.EMAIL,
+            prefix_icon=ft.Icons.EMAIL,
         )
 
     @property
@@ -265,7 +265,7 @@ class EmailPassWordForm(ft.Column):
             ref=self._password_ref,
             on_blur=self.on_blur,
             on_focus=self.on_focus,
-            prefix_icon=ft.icons.PASSWORD,
+            prefix_icon=ft.Icons.PASSWORD,
         )
 
     @property

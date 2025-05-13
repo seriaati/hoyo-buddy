@@ -85,9 +85,9 @@ class GenQRCodeButton(ft.FilledButton):
                 page.open(
                     ft.SnackBar(
                         ft.Text(
-                            "扫描成功, 请点击「确认登录」", color=ft.colors.ON_PRIMARY_CONTAINER
+                            "扫描成功, 请点击「确认登录」", color=ft.Colors.ON_PRIMARY_CONTAINER
                         ),
-                        bgcolor=ft.colors.PRIMARY_CONTAINER,
+                        bgcolor=ft.Colors.PRIMARY_CONTAINER,
                     )
                 )
                 scanned = True

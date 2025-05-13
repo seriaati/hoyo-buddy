@@ -59,7 +59,7 @@ class ModAppPage(ft.View):
 class DownloadAppButton(ft.ElevatedButton):
     def __init__(self) -> None:
         super().__init__(
-            text="下载应用程序", icon=ft.icons.DOWNLOAD, on_click=self.goto_download_page
+            text="下载应用程序", icon=ft.Icons.DOWNLOAD, on_click=self.goto_download_page
         )
 
     async def goto_download_page(self, e: ft.ControlEvent) -> None:

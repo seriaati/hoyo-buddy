@@ -50,7 +50,7 @@ class GachaLogPage(ft.View):
                                         label=translator.translate(
                                             LocaleStr(key="gacha_view_search_field_label"), locale
                                         ),
-                                        prefix_icon=ft.icons.SEARCH,
+                                        prefix_icon=ft.Icons.SEARCH,
                                         on_submit=self.on_search_bar_submit,
                                         value=params.name_contains,
                                     ),
@@ -58,11 +58,11 @@ class GachaLogPage(ft.View):
                                         text=translator.translate(
                                             LocaleStr(key="gacha_view_filter_button_label"), locale
                                         ),
-                                        icon=ft.icons.FILTER_ALT,
+                                        icon=ft.Icons.FILTER_ALT,
                                         on_click=self.filter_button_on_click,
                                     ),
                                     ft.IconButton(
-                                        icon=ft.icons.ARROW_BACK_IOS,
+                                        icon=ft.Icons.ARROW_BACK_IOS,
                                         on_click=self.previous_page_on_click,
                                         disabled=params.page == 1,
                                     ),
@@ -76,7 +76,7 @@ class GachaLogPage(ft.View):
                                         width=80,
                                     ),
                                     ft.IconButton(
-                                        icon=ft.icons.ARROW_FORWARD_IOS,
+                                        icon=ft.Icons.ARROW_FORWARD_IOS,
                                         on_click=self.next_page_on_click,
                                         disabled=params.page == max_page,
                                     ),
@@ -118,7 +118,7 @@ class GachaLogPage(ft.View):
                                 ft.Container(
                                     ft.Text(f"#{gacha.num}"),
                                     border_radius=5,
-                                    bgcolor=ft.colors.SURFACE_VARIANT,
+                                    bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST,
                                     padding=ft.padding.symmetric(vertical=2, horizontal=4),
                                 )
                             ],
@@ -137,7 +137,7 @@ class GachaLogPage(ft.View):
                                     ft.Container(
                                         ft.Text(str(gacha.num_since_last)),
                                         border_radius=5,
-                                        bgcolor=ft.colors.SURFACE_VARIANT,
+                                        bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST,
                                         padding=ft.padding.symmetric(vertical=2, horizontal=4),
                                     )
                                 ],

@@ -215,18 +215,18 @@ class SubmitButton(ft.FilledButton):
                             width=16,
                             height=16,
                             stroke_width=2,
-                            color=ft.colors.ON_SECONDARY_CONTAINER,
+                            color=ft.Colors.ON_SECONDARY_CONTAINER,
                         ),
                         ft.Text(
                             translator.translate(
                                 LocaleStr(key="accounts_added_snackbar_message"), self._locale
                             ),
-                            color=ft.colors.ON_PRIMARY_CONTAINER,
+                            color=ft.Colors.ON_PRIMARY_CONTAINER,
                         ),
                     ],
                     wrap=True,
                 ),
-                bgcolor=ft.colors.PRIMARY_CONTAINER,
+                bgcolor=ft.Colors.PRIMARY_CONTAINER,
             )
         )
         await asyncio.sleep(3)

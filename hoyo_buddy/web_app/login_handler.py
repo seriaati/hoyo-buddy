@@ -116,7 +116,7 @@ class EmailVerifyDialog(ft.AlertDialog):
                         label=translator.translate(
                             LocaleStr(key="email_verification_field_label"), locale
                         ),
-                        prefix_icon=ft.icons.NUMBERS,
+                        prefix_icon=ft.Icons.NUMBERS,
                         max_length=6,
                         ref=field_ref,
                     ),
@@ -225,7 +225,7 @@ class MobileVerifyDialog(ft.AlertDialog):
                     ft.Text("我们已经发送了验证码到您的手机, 请输入验证码以继续"),
                     ft.TextField(
                         label="验证码",
-                        prefix_icon=ft.icons.NUMBERS,
+                        prefix_icon=ft.Icons.NUMBERS,
                         max_length=6,
                         ref=field_ref,
                         hint_text="123456",

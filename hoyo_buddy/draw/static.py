@@ -59,6 +59,9 @@ async def download_images(
 ) -> None:
     async with TaskGroup() as tg:
         for image_url in set(image_urls):
+            if not image_url:
+                continue
+
             file_path = get_static_img_path(image_url, folder)
             if file_path.exists():
                 continue

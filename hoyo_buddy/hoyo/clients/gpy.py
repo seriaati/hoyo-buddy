@@ -123,10 +123,11 @@ class GenshinClient(ProxyGenshinClient):
             else character_id
         )
 
-    async def update_pc_icons(self) -> None:
+    async def update_pc_icons(self) -> dict[str, str]:
         fields = await self.get_lineup_fields(use_cache=False)
         pc_icons = {str(character.id): character.pc_icon for character in fields.characters}
         await JSONFile.write("pc_icons.json", pc_icons)
+        return pc_icons
 
     @staticmethod
     async def convert_gi_character(

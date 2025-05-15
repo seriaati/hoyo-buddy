@@ -232,14 +232,20 @@ async def draw_farm_card(draw_input: DrawInput, farm_data: list[FarmData]) -> Fi
 async def draw_gi_characters_card(
     draw_input: DrawInput,
     characters: Sequence[genshin.models.GenshinDetailCharacter | UnownedGICharacter],
+    *,
     pc_icons: dict[str, str],
+    weapon_icons: dict[str, str],
     talent_orders: dict[str, list[int]],
 ) -> File:
     urls: list[str] = []
     for c in characters:
         if isinstance(c, UnownedGICharacter):
             continue
-        urls.append(c.weapon.icon)
+
+        weapon_icon = weapon_icons.get(str(c.weapon.id), c.weapon.icon)
+        c.weapon.icon = weapon_icon
+        urls.append(weapon_icon)
+
     urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
 
     await download_images(urls, "gi-characters", draw_input.session)

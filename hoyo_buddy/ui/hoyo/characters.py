@@ -180,11 +180,11 @@ class CharactersView(PaginatorView):
         pc_icons = await JSONFile.read("pc_icons.json")
 
         is_missing = any(
-            "yatta.moe" in pc_icons.get(str(c.id), "") or str(c.id) not in pc_icons
+            "https://gi.yatta.moe" in pc_icons.get(str(c.id), "") or str(c.id) not in pc_icons
             for c in self.gi_characters
         )
         if is_missing and self.account.platform is Platform.HOYOLAB:
-            await self.account.client.update_pc_icons()
+            pc_icons = await self.account.client.update_pc_icons()
 
         is_missing = any(str(c.id) not in pc_icons for c in self.gi_characters)
         if is_missing:
@@ -193,15 +193,21 @@ class CharactersView(PaginatorView):
                 for chara in self.gi_characters:
                     if str(chara.id) in pc_icons:
                         continue
-                    ambr_chara = next((c for c in ambr_charas if c.id == str(chara.id)), None)
-                    if ambr_chara is None:
+
+                    ambr_c = next((c for c in ambr_charas if c.id == str(c.id)), None)
+                    if ambr_c is None:
                         continue
-                    pc_icons[str(chara.id)] = ambr_chara.icon
+                    pc_icons[str(chara.id)] = ambr_c.icon
+
                 await JSONFile.write("pc_icons.json", pc_icons)
 
-            pc_icons = await JSONFile.read("pc_icons.json")
-
         return pc_icons
+
+    async def _get_gi_weapon_icons(self) -> dict[str, str]:
+        async with AmbrAPIClient() as client:
+            weapons = await client.fetch_weapons()
+
+        return {str(w.id): w.icon for w in weapons}
 
     def _apply_gi_filter(
         self, characters: Sequence[GICharacter | UnownedGICharacter]
@@ -375,6 +381,7 @@ class CharactersView(PaginatorView):
     async def _draw_card(self, characters: Sequence[Character]) -> File:
         if self.game is Game.GENSHIN:
             pc_icons = await self._get_gi_pc_icons()
+            weapon_icons = await self._get_gi_weapon_icons()
 
             async with enka.GenshinClient() as client:
                 talent_orders: dict[str, list[int]] = {
@@ -385,8 +392,9 @@ class CharactersView(PaginatorView):
             file_ = await draw_gi_characters_card(
                 self.draw_input,
                 characters,  # pyright: ignore [reportArgumentType]
-                pc_icons,
-                talent_orders,
+                pc_icons=pc_icons,
+                weapon_icons=weapon_icons,
+                talent_orders=talent_orders,
             )
         elif self.game is Game.STARRAIL:
             pc_icons = {str(c.id): HSR_TEAM_ICON_URL.format(char_id=c.id) for c in characters}

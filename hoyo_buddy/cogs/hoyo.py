@@ -120,21 +120,19 @@ class Hoyo(commands.Cog):
     @app_commands.command(
         name=app_commands.locale_str("redeem"), description=COMMANDS["redeem"].description
     )
-    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
-    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
+    @app_commands.rename(**get_rename_kwargs(account=True))
+    @app_commands.describe(**get_describe_kwargs(account=True))
     async def redeem_command(
         self,
         i: Interaction,
-        user: User = None,
         account: app_commands.Transform[
             HoyoAccount | None, HoyoAccountTransformer(COMMANDS["redeem"].games)
         ] = None,
     ) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
-        user = user or i.user
         account_ = account or await self.bot.get_account(
-            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT), Platform.HOYOLAB
+            i.user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT), Platform.HOYOLAB
         )
         if not account_.can_redeem_code:
             raise CantRedeemCodeError

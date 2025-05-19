@@ -109,7 +109,7 @@ class AutoMimo:
 
                 if embed is not None:
                     embed.set_footer(text=LocaleStr(key="mimo_auto_task_embed_footer"))
-                    embed.add_acc_info(account)
+                    embed.add_acc_info(account, blur=False)
 
                     await DiscordEmbed.create(
                         embed,

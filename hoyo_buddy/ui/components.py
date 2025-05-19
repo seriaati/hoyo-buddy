@@ -128,7 +128,7 @@ class View(discord.ui.View):
             if isinstance(item, Button | Select) and item.custom_id == custom_id:
                 return item
 
-        msg = f"No item found with custom_id {custom_id}"
+        msg = f"No item found with custom_id {custom_id!r}"
         raise ValueError(msg)
 
     def translate_items(self) -> None:

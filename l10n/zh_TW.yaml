@@ -549,7 +549,7 @@ dyk_team: "Hoyo Buddy 的小團隊由一位程式設計師和一位設計師組�
 dyk_disable: 你可以使用 /settings 將這則訊息關閉
 dyk_settings_lang: 你可以使用 /settings 變更機器人使用的語言
 dyk_settings_theme: 你可以使用 /settings 切換為亮色或深色模式
-dyk_security: "我们有一篇關於帳戶安全的[文章](<:docs/Account-Security:>)"
+dyk_security: "我們有一篇關於帳戶安全的[文章](<:docs/Account-Security:>)"
 dyk_github: "Hoyo Buddy 於 [GitHub](<https://github.com/seriaati/hoyo-buddy>) 上開源"
 dyk_python: Hoyo Buddy 使用純 Python 編寫而成
 dyk_unreleased: 你可以使用 /search 查看尚未釋出的遊戲內容

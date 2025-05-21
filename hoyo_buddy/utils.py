@@ -27,6 +27,7 @@ from hoyo_buddy.config import CONFIG, parse_args
 from hoyo_buddy.constants import IMAGE_EXTENSIONS, SLEEP_TIMES, STATIC_FOLDER, TRAVELER_IDS, UTC_8
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
+from hoyo_buddy.exceptions import ImageFileTooLargeError
 from hoyo_buddy.logging import InterceptHandler
 
 if TYPE_CHECKING:
@@ -77,6 +78,9 @@ async def upload_image(
         data["source"] = image_url
 
     async with session.post(api, json=data) as resp:
+        if resp.status == 413:  # Payload too large
+            raise ImageFileTooLargeError
+
         resp.raise_for_status()
 
         data = await resp.json()

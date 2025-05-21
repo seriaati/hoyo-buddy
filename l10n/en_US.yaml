@@ -798,3 +798,5 @@ show_ui_button_label: Show UI
 hide_ui_button_label: Hide UI
 redeem_failure_notify_toggle_label: Notify on auto redeem failure
 redeem_success_notify_toggle_label: Notify on auto redeem success
+image_file_too_large_error_title: Image File Too Large
+image_file_too_large_error_message: "The uploaded image file is too large, max filesize is {size}MB."

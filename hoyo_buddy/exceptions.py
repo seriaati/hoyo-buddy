@@ -240,3 +240,11 @@ class BlockedByAutoModError(HoyoBuddyError):
             title=LocaleStr(key="blocked_by_auto_mod_error_title"),
             message=LocaleStr(key="blocked_by_auto_mod_error_message"),
         )
+
+
+class ImageFileTooLargeError(HoyoBuddyError):
+    def __init__(self) -> None:
+        super().__init__(
+            title=LocaleStr(key="image_file_too_large_error_title"),
+            message=LocaleStr(key="image_file_too_large_error_message", size=20),
+        )

@@ -798,3 +798,5 @@ show_ui_button_label: 显示界面
 hide_ui_button_label: 隐藏界面
 redeem_failure_notify_toggle_label: 自动兑换失败时通知
 redeem_success_notify_toggle_label: 自动兑换成功时通知
+image_file_too_large_error_title: 图片文件过大
+image_file_too_large_error_message: "上传的图片文件过大，文件大小最大为{size}MB。"

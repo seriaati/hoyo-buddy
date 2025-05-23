@@ -796,3 +796,5 @@ show_ui_button_label: Mostrar UI
 hide_ui_button_label: Ocultar UI
 redeem_failure_notify_toggle_label: Notificar na falha do resgate automático
 redeem_success_notify_toggle_label: Notificar no sucesso do resgate automático
+image_file_too_large_error_title: Arquivo de Imagem Muito Grande
+image_file_too_large_error_message: "O arquivo de imagem enviado é muito grande, o tamanho máximo é {size}MB."

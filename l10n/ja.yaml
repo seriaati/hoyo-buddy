@@ -796,3 +796,5 @@ show_ui_button_label: UIを表示
 hide_ui_button_label: UIを非表示
 redeem_failure_notify_toggle_label: 自動交換失敗時に通知
 redeem_success_notify_toggle_label: 自動交換成功時に通知
+image_file_too_large_error_title: 画像ファイルが大きすぎます
+image_file_too_large_error_message: "アップロードされた画像ファイルが大きすぎます。最大ファイルサイズは {size} MB です。"

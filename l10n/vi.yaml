@@ -798,3 +798,5 @@ show_ui_button_label: Hiện giao diện
 hide_ui_button_label: Ẩn giao diện
 redeem_failure_notify_toggle_label: Gửi thông báo khi tự đổi mã quà thất bại
 redeem_success_notify_toggle_label: Gửi thông báo khi tự đổi mã quà thành công
+image_file_too_large_error_title: Ảnh Quá Lớn
+image_file_too_large_error_message: "Ảnh vừa tải lên có kích thước quá lớn, giới hạn là {size}MB."

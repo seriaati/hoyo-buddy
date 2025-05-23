@@ -798,3 +798,5 @@ show_ui_button_label: Mostrar UI
 hide_ui_button_label: Ocultar UI
 redeem_failure_notify_toggle_label: Notificar si el canjeo automático falla
 redeem_success_notify_toggle_label: Notificar si el canjeo automático es exitoso
+image_file_too_large_error_title: La imagen es muy pesada
+image_file_too_large_error_message: "La imagen subida es muy pesada, el peso máximo es {size}MB."

@@ -27,7 +27,6 @@ from hoyo_buddy.config import CONFIG, parse_args
 from hoyo_buddy.constants import IMAGE_EXTENSIONS, SLEEP_TIMES, STATIC_FOLDER, TRAVELER_IDS, UTC_8
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
-from hoyo_buddy.exceptions import ImageFileTooLargeError
 from hoyo_buddy.logging import InterceptHandler
 
 if TYPE_CHECKING:
@@ -67,6 +66,8 @@ def is_valid_hex_color(color: str) -> bool:
 async def upload_image(
     session: aiohttp.ClientSession, *, image_url: str | None = None, image: bytes | None = None
 ) -> str:
+    from hoyo_buddy.exceptions import ImageFileTooLargeError  # noqa: PLC0415
+
     api = "https://img.seria.moe/upload"
     data = {"key": CONFIG.img_upload_api_key}
 

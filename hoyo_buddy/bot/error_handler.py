@@ -112,6 +112,10 @@ ENKA_ERROR_CONVERTER: dict[
         "title": LocaleStr(key="invalid_uid_format_title"),
         "description": LocaleStr(key="invalid_uid_format_description"),
     },
+    enka_errors.APIRequestTimeoutError: {
+        "title": LocaleStr(key="api_request_timeout_title"),
+        "description": LocaleStr(key="api_request_timeout_description"),
+    }
 }
 
 

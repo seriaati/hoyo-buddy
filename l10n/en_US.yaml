@@ -800,3 +800,5 @@ redeem_failure_notify_toggle_label: Notify on auto redeem failure
 redeem_success_notify_toggle_label: Notify on auto redeem success
 image_file_too_large_error_title: Image File Too Large
 image_file_too_large_error_message: "The uploaded image file is too large, max filesize is {size}MB."
+api_request_timeout_title: API Request Timed Out
+api_request_timeout_message: Please try again later

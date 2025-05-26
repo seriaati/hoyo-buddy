@@ -67,7 +67,7 @@ if TYPE_CHECKING:
     import asyncpg
     from aiohttp import ClientSession
 
-    from hoyo_buddy.config import Config, EnvType
+    from hoyo_buddy.config import Config
     from hoyo_buddy.types import (
         AutocompleteChoices,
         AutoTaskType,
@@ -105,10 +105,9 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         self.session = session
         self.uptime = get_now()
-        self.env: EnvType = config.env
+        self.env = config.env
         self.nai_client = NAIClient(token=config.nai_token, host_url=config.nai_host_url)
         self.owner_id = 410036441129943050
-        self.guild_id = GUILD_ID
         self.pool = pool
         self.executor = concurrent.futures.ThreadPoolExecutor()
         self.config = config
@@ -195,12 +194,21 @@ class HoyoBuddy(commands.AutoShardedBot):
         await CARD_DATA.load()
         self.loop.set_exception_handler(self.asyncio_erorr_handler)
 
+    async def get_or_fetch_guild(self) -> discord.Guild | None:
+        guild_id = GUILD_ID
+        guild = self.get_guild(guild_id)
+        if guild is None:
+            try:
+                guild = await self.fetch_guild(guild_id)
+            except discord.HTTPException:
+                logger.error(f"Failed to fetch guild with ID {guild_id}")
+                return None
+        return guild
+
     @cached(TTLCache(maxsize=1, ttl=3600))
     async def get_supporter_ids(self) -> set[int]:
-        try:
-            guild = self.get_guild(self.guild_id) or await self.fetch_guild(self.guild_id)
-        except discord.HTTPException:
-            logger.error(f"Failed to fetch guild with ID {self.guild_id}")
+        guild = await self.get_or_fetch_guild()
+        if guild is None:
             return set()
 
         if not guild.chunked:

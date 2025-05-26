@@ -86,7 +86,11 @@ class AutoRedeem:
     async def _send_codes_to_channels(
         cls, bot: HoyoBuddy, game_codes: dict[Game, list[str]]
     ) -> None:
-        guild = bot.get_guild(bot.guild_id) or await bot.fetch_guild(bot.guild_id)
+        guild = await bot.get_or_fetch_guild()
+        if guild is None:
+            logger.warning(f"{cls.__name__} cannot get guild, skipping code sending")
+            return
+
         sent_codes: dict[str, list[str]] = await JSONFile.read("sent_codes.json")
 
         for game, codes in game_codes.items():

@@ -7,8 +7,10 @@ import discord
 from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands, tasks
+from loguru import logger
 
 from hoyo_buddy.commands.configs import COMMANDS
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import IMAGE_EXTENSIONS, get_docs_url
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db import get_dyk
@@ -32,20 +34,22 @@ class Others(commands.Cog):
         self.repo_url = "https://github.com/seriaati/hoyo-buddy"
 
     async def cog_load(self) -> None:
-        if self.bot.env == "dev":
+        if CONFIG.is_dev:
             return
         self.update_stat_vcs.start()
 
     def cog_unload(self) -> None:
-        if self.bot.env == "dev":
+        if CONFIG.is_dev:
             return
         self.update_stat_vcs.cancel()
 
     @tasks.loop(hours=2)
     async def update_stat_vcs(self) -> None:
-        guild = self.bot.get_guild(self.bot.guild_id) or await self.bot.fetch_guild(
-            self.bot.guild_id
-        )
+        guild = await self.bot.get_or_fetch_guild()
+        if guild is None:
+            logger.warning("Skipping update_stat_vcs: guild not found")
+            return
+
         category_id = 1309451146556997683
         category = discord.utils.get(guild.categories, id=category_id)
         if category is None:
@@ -75,9 +79,11 @@ class Others(commands.Cog):
     async def about_command(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
-        guild = self.bot.get_guild(self.bot.guild_id) or await i.client.fetch_guild(
-            self.bot.guild_id
-        )
+        guild = await self.bot.get_or_fetch_guild()
+        if guild is None:
+            msg = "This command can only be used in a server."
+            raise ValueError(msg)
+
         if not guild.chunked:
             await guild.chunk()
 

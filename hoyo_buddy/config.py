@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import argparse
 from typing import Literal
 
 from dotenv import load_dotenv
@@ -38,34 +37,24 @@ class Config(BaseSettings):
     novelai: bool = False
     web_server: bool = False
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
-
-    def update_from_args(self, args: argparse.Namespace) -> None:
-        self.search = args.search
-        self.sentry = args.sentry
-        self.schedule = args.schedule
-        self.prometheus = args.prometheus
-        self.novelai = args.novelai
-        self.web_server = args.web_server
+    model_config = SettingsConfigDict(
+        env_file=".env", env_file_encoding="utf-8", cli_parse_args=True, cli_implicit_flags=True
+    )
 
     @property
     def is_dev(self) -> bool:
         return self.env == "dev"
 
-
-def parse_args(*, default: bool) -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--search", action="store_true", help="Enable search", default=default)
-    parser.add_argument("--sentry", action="store_true", help="Enable sentry", default=default)
-    parser.add_argument("--schedule", action="store_true", help="Enable schedule", default=default)
-    parser.add_argument(
-        "--prometheus", action="store_true", help="Enable Prometheus", default=default
-    )
-    parser.add_argument("--novelai", action="store_true", help="Enable NovelAI", default=default)
-    parser.add_argument(
-        "--web-server", action="store_true", help="Enable web server", default=default
-    )
-    return parser.parse_args()
+    @property
+    def cli_args(self) -> dict[str, bool]:
+        return {
+            "search": self.search,
+            "sentry": self.sentry,
+            "schedule": self.schedule,
+            "prometheus": self.prometheus,
+            "novelai": self.novelai,
+            "web_server": self.web_server,
+        }
 
 
 load_dotenv()

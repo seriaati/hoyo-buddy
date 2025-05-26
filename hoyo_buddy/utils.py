@@ -243,9 +243,14 @@ def wrap_task_factory() -> None:
     async def coro_wrapper(coro: asyncio._CoroutineLike[Any], coro_name: str | None = None) -> Any:
         try:
             return await coro
-        except Exception:
+        except Exception as e:
             name = coro_name or getattr(coro, "__name__", str(coro))
-            logger.exception(f"Task {name!r} errored")
+            if CONFIG.sentry:
+                logger.warning(f"Error in task {name!r}: {e}, capturing exception")
+                sentry_sdk.capture_exception(e)
+            else:
+                logger.exception(f"Error in task {name!r}: {e}")
+
             raise
 
     def new_factory(

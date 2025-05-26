@@ -33,10 +33,12 @@ from hoyo_buddy.constants import (
     AUTO_TASK_INTERVALS,
     AUTO_TASK_LAST_TIME_FIELDS,
     AUTO_TASK_TOGGLE_FIELDS,
+    GUILD_ID,
     HSR_AVATAR_CONFIG_URL,
     HSR_EQUIPMENT_CONFIG_URL,
     HSR_TEXT_MAP_URL,
     STARRAIL_DATA_LANGS,
+    SUPPORTER_ROLE_ID,
     UTC_8,
     ZENLESS_DATA_LANGS,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
@@ -106,7 +108,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.env: EnvType = config.env
         self.nai_client = NAIClient(token=config.nai_token, host_url=config.nai_host_url)
         self.owner_id = 410036441129943050
-        self.guild_id = 1000727526194298910
+        self.guild_id = GUILD_ID
         self.pool = pool
         self.executor = concurrent.futures.ThreadPoolExecutor()
         self.config = config
@@ -204,7 +206,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         if not guild.chunked:
             await guild.chunk()
 
-        role_id = 1117992633827082251
+        role_id = SUPPORTER_ROLE_ID
         supporter_role = discord.utils.get(guild.roles, id=role_id)
         if supporter_role is None:
             logger.error(f"Failed to find supporter role with ID {role_id}")

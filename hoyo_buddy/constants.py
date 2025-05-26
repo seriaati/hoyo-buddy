@@ -15,6 +15,8 @@ from discord import app_commands
 from loguru import logger
 from yarl import URL
 
+from hoyo_buddy.config import CONFIG
+
 from .enums import (
     ChallengeType,
     Game,
@@ -1187,3 +1189,6 @@ AUTO_TASK_COMMANDS: dict[AutoTaskType, str] = {
     "mimo_draw": "</mimo>",
     "checkin": "</check-in>",
 }
+
+GUILD_ID = 1131592943791263745 if CONFIG.is_dev else 1000727526194298910
+SUPPORTER_ROLE_ID = 1376358430947676184 if CONFIG.is_dev else 1117992633827082251

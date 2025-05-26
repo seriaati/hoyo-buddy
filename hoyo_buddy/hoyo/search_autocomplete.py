@@ -231,9 +231,12 @@ class AutocompleteSetup:
         cls._category_beta_ids = {}
         cls._tasks = defaultdict(lambda: defaultdict(dict))
 
-        asyncio.create_task(cls._setup_ambr(session))
-        asyncio.create_task(cls._setup_yatta(session))
-        asyncio.create_task(cls._setup_hakushin(session))
+        creat_task_tasks = [
+            asyncio.create_task(cls._setup_ambr(session)),
+            asyncio.create_task(cls._setup_yatta(session)),
+            asyncio.create_task(cls._setup_hakushin(session)),
+        ]
+        await asyncio.gather(*creat_task_tasks, return_exceptions=True)
 
         tasks = [
             task

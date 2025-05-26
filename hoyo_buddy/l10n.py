@@ -190,8 +190,8 @@ class Translator:
 
         tasks: list[asyncio.Task[None]] = []
 
-        for file in GAME_MI18N_FILES.values():
-            url, filename = file
+        for mi18n_file in GAME_MI18N_FILES.values():
+            url, filename = mi18n_file
             tasks.extend(
                 asyncio.create_task(
                     self._fetch_mi18n_task(client, lang=lang, url=url, filename=filename),

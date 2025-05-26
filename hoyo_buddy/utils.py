@@ -240,13 +240,24 @@ def wrap_task_factory() -> None:
     loop = asyncio.get_running_loop()
     original_factory = loop.get_task_factory()
 
+    async def coro_wrapper(coro: asyncio._CoroutineLike[Any], coro_name: str | None = None) -> Any:
+        try:
+            return await coro
+        except Exception:
+            name = coro_name or getattr(coro, "__name__", str(coro))
+            logger.exception(f"Task {name!r} errored")
+            raise
+
     def new_factory(
         loop: asyncio.AbstractEventLoop, coro: asyncio._CoroutineLike[Any], **kwargs: Any
     ) -> asyncio.Task[Any] | asyncio.Future[Any]:
+        wrapped_coro = coro_wrapper(coro, coro_name=kwargs.get("name"))
+
         if original_factory is not None:
-            t = original_factory(loop, coro, **kwargs)
+            t = original_factory(loop, wrapped_coro, **kwargs)
         else:
-            t = asyncio.Task(coro, loop=loop, **kwargs)
+            t = asyncio.Task(wrapped_coro, loop=loop, **kwargs)
+
         _tasks_set.add(t)
         t.add_done_callback(_tasks_set.discard)
         return t
@@ -478,12 +489,6 @@ async def add_to_hoyo_codes(
             # Code already exists
             return
         resp.raise_for_status()
-
-
-class TaskGroup(asyncio.TaskGroup):
-    """An asyncio.TaskGroup subclass that won't cancel all tasks when any of them errors out."""
-
-    _abort = lambda _: None  # noqa: E731
 
 
 def entry_point(log_dir: str) -> None:

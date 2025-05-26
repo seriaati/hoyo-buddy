@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from collections import defaultdict
 from enum import StrEnum
 from typing import TYPE_CHECKING
@@ -15,13 +16,11 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import COMFORT_ICON, DICE_EMOJIS, LOAD_ICON, get_gi_element_emoji
 from hoyo_buddy.l10n import LevelStr, LocaleStr, WeekdayStr, translator
 from hoyo_buddy.models import ItemWithDescription
-from hoyo_buddy.utils import TaskGroup, sleep
+from hoyo_buddy.utils import sleep
 
 __all__ = ("AUDIO_LANGUAGES", "AmbrAPIClient", "ItemCategory")
 
 if TYPE_CHECKING:
-    import asyncio
-
     import aiohttp
 
 AUDIO_LANGUAGES = ("EN", "CHS", "JP", "KR")
@@ -57,17 +56,17 @@ class AmbrAPIClient(ambr.AmbrAPI):
         tasks: list[asyncio.Task[list[ambr.Weapon] | list[ambr.Character]]] = []
         langs = [lang] if lang else list(ambr.Language)
 
-        async with TaskGroup() as tg:
-            for lang_ in langs:
-                self.lang = lang_
-                tasks.append(tg.create_task(super().fetch_characters()))
-                await sleep("search_autofill")
-                tasks.append(tg.create_task(super().fetch_weapons()))
-                await sleep("search_autofill")
+        for lang_ in langs:
+            self.lang = lang_
+            tasks.append(asyncio.create_task(super().fetch_characters()))
+            await sleep("search_autofill")
+            tasks.append(asyncio.create_task(super().fetch_weapons()))
+            await sleep("search_autofill")
+
+        await asyncio.gather(*tasks, return_exceptions=True)
 
         for task in tasks:
-            items = task.result()
-            result.extend(items)
+            result.extend(task.result())
         return result
 
     async def fetch_item_name_to_id_map(self) -> dict[str, int]:

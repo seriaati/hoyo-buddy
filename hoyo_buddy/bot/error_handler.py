@@ -115,7 +115,7 @@ ENKA_ERROR_CONVERTER: dict[
     enka_errors.APIRequestTimeoutError: {
         "title": LocaleStr(key="api_request_timeout_title"),
         "description": LocaleStr(key="api_request_timeout_description"),
-    }
+    },
 }
 
 

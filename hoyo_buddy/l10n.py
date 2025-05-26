@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import contextlib
 import datetime
 import pathlib
@@ -19,7 +20,6 @@ from seria.utils import read_json, read_yaml
 
 from hoyo_buddy.emojis import INFO
 from hoyo_buddy.enums import Game
-from hoyo_buddy.utils import TaskGroup
 
 from .constants import (
     AMBR_ELEMENT_TO_ELEMENT,
@@ -179,6 +179,7 @@ class Translator:
             return
 
         mi18n = await client.fetch_mi18n(url, filename, lang=lang)
+
         async with aiofiles.open(
             f"{BOT_DATA_PATH}/mi18n_{filename}_{lang}.json", "w", encoding="utf-8"
         ) as f:
@@ -187,14 +188,19 @@ class Translator:
     async def fetch_mi18n_files(self) -> None:
         client = genshin.Client()
 
-        async with TaskGroup() as tg:
-            for file_ in GAME_MI18N_FILES.values():
-                url, filename = file_
-                for lang in genshin.constants.LANGS:
-                    tg.create_task(
-                        self._fetch_mi18n_task(client, lang=lang, url=url, filename=filename)
-                    )
+        tasks: list[asyncio.Task[None]] = []
 
+        for file in GAME_MI18N_FILES.values():
+            url, filename = file
+            tasks.extend(
+                asyncio.create_task(
+                    self._fetch_mi18n_task(client, lang=lang, url=url, filename=filename),
+                    name=f"fetch_mi18n_{filename}_{lang}",
+                )
+                for lang in genshin.constants.LANGS
+            )
+
+        await asyncio.gather(*tasks, return_exceptions=True)
         logger.info("Fetched mi18n files")
 
     async def load_mi18n_files(self) -> None:

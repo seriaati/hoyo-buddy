@@ -5,7 +5,7 @@
             "script": "./run.py",
             "interpreter": "./.venv/bin/python",
             "interpreter_args": "-OO",
-            "args": "--sentry --schedule --search --prometheus --novelai"
+            "args": "--sentry --schedule --search --prometheus --novelai --web-server"
         },
         {
             "name": "hb-app",

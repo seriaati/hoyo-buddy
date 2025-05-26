@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, ClassVar, Final
 
@@ -9,14 +10,14 @@ from discord.app_commands import Choice
 
 from hoyo_buddy.constants import LOCALE_TO_AMBR_LANG, LOCALE_TO_HAKUSHIN_LANG, LOCALE_TO_YATTA_LANG
 from hoyo_buddy.enums import Game
-from hoyo_buddy.utils import TaskGroup, sleep
+from hoyo_buddy.utils import sleep
 
 from .clients import ambr, yatta
 from .clients.hakushin import ItemCategory as HakushinItemCategory
 from .clients.hakushin import ZZZItemCategory
 
 if TYPE_CHECKING:
-    import asyncio
+    from types import CoroutineType
 
     import aiohttp
     from discord import Locale
@@ -53,117 +54,119 @@ class AutocompleteSetup:
 
     @classmethod
     def _get_ambr_task(
-        cls, api: ambr.AmbrAPIClient, category: ambr.ItemCategory, tg: TaskGroup
-    ) -> asyncio.Task[list[Any]] | None:
+        cls, api: ambr.AmbrAPIClient, category: ambr.ItemCategory
+    ) -> CoroutineType[Any, Any, list[Any]] | None:
         match category:
             case ambr.ItemCategory.CHARACTERS:
-                return tg.create_task(api.fetch_characters(traveler_gender_symbol=True))
+                return api.fetch_characters(traveler_gender_symbol=True)
             case ambr.ItemCategory.WEAPONS:
-                return tg.create_task(api.fetch_weapons())
+                return api.fetch_weapons()
             case ambr.ItemCategory.ARTIFACT_SETS:
-                return tg.create_task(api.fetch_artifact_sets())
+                return api.fetch_artifact_sets()
             case ambr.ItemCategory.FOOD:
-                return tg.create_task(api.fetch_foods())
+                return api.fetch_foods()
             case ambr.ItemCategory.MATERIALS:
-                return tg.create_task(api.fetch_materials())
+                return api.fetch_materials()
             case ambr.ItemCategory.FURNISHINGS:
-                return tg.create_task(api.fetch_furnitures())
+                return api.fetch_furnitures()
             case ambr.ItemCategory.FURNISHING_SETS:
-                return tg.create_task(api.fetch_furniture_sets())
+                return api.fetch_furniture_sets()
             case ambr.ItemCategory.NAMECARDS:
-                return tg.create_task(api.fetch_namecards())
+                return api.fetch_namecards()
             case ambr.ItemCategory.LIVING_BEINGS:
-                return tg.create_task(api.fetch_monsters())
+                return api.fetch_monsters()
             case ambr.ItemCategory.BOOKS:
-                return tg.create_task(api.fetch_books())
+                return api.fetch_books()
             case ambr.ItemCategory.TCG:
-                return tg.create_task(api.fetch_tcg_cards())
+                return api.fetch_tcg_cards()
             case _:
                 return None
 
     @classmethod
     def _get_yatta_task(
-        cls, api: yatta.YattaAPIClient, category: yatta.ItemCategory, tg: TaskGroup
-    ) -> asyncio.Task[list[Any]]:
+        cls, api: yatta.YattaAPIClient, category: yatta.ItemCategory
+    ) -> CoroutineType[Any, Any, list[Any]]:
         match category:
             case yatta.ItemCategory.CHARACTERS:
-                return tg.create_task(api.fetch_characters(trailblazer_gender_symbol=True))
+                return api.fetch_characters(trailblazer_gender_symbol=True)
             case yatta.ItemCategory.LIGHT_CONES:
-                return tg.create_task(api.fetch_light_cones())
+                return api.fetch_light_cones()
             case yatta.ItemCategory.ITEMS:
-                return tg.create_task(api.fetch_items())
+                return api.fetch_items()
             case yatta.ItemCategory.RELICS:
-                return tg.create_task(api.fetch_relic_sets())
+                return api.fetch_relic_sets()
             case yatta.ItemCategory.BOOKS:
-                return tg.create_task(api.fetch_books())
+                return api.fetch_books()
 
     @classmethod
     def _get_hakushin_gi_task(
-        cls, api: hakushin.clients.GIClient, category: HakushinItemCategory, tg: TaskGroup
-    ) -> asyncio.Task[list[Any]] | None:
+        cls, api: hakushin.clients.GIClient, category: HakushinItemCategory
+    ) -> CoroutineType[Any, Any, list[Any]] | None:
         match category:
             case HakushinItemCategory.GI_CHARACTERS:
-                return tg.create_task(api.fetch_characters())
+                return api.fetch_characters()
             case HakushinItemCategory.WEAPONS:
-                return tg.create_task(api.fetch_weapons())
+                return api.fetch_weapons()
             case HakushinItemCategory.ARTIFACT_SETS:
-                return tg.create_task(api.fetch_artifact_sets())
+                return api.fetch_artifact_sets()
             case _:
                 return None
 
     @classmethod
     def _get_hakushin_hsr_task(
-        cls, api: hakushin.clients.HSRClient, category: HakushinItemCategory, tg: TaskGroup
-    ) -> asyncio.Task[list[Any]] | None:
+        cls, api: hakushin.clients.HSRClient, category: HakushinItemCategory
+    ) -> CoroutineType[Any, Any, list[Any]] | None:
         match category:
             case HakushinItemCategory.HSR_CHARACTERS:
-                return tg.create_task(api.fetch_characters())
+                return api.fetch_characters()
             case HakushinItemCategory.LIGHT_CONES:
-                return tg.create_task(api.fetch_light_cones())
+                return api.fetch_light_cones()
             case HakushinItemCategory.RELICS:
-                return tg.create_task(api.fetch_relic_sets())
+                return api.fetch_relic_sets()
             case _:
                 return None
 
     @classmethod
     def _get_hakushin_zzz_task(
-        cls, api: hakushin.clients.ZZZClient, category: ZZZItemCategory, tg: TaskGroup
-    ) -> asyncio.Task[list[Any]]:
+        cls, api: hakushin.clients.ZZZClient, category: ZZZItemCategory
+    ) -> CoroutineType[Any, Any, list[Any]] | None:
         match category:
             case ZZZItemCategory.AGENTS:
-                return tg.create_task(api.fetch_characters())
+                return api.fetch_characters()
             case ZZZItemCategory.W_ENGINES:
-                return tg.create_task(api.fetch_weapons())
+                return api.fetch_weapons()
             case ZZZItemCategory.DRIVE_DISCS:
-                return tg.create_task(api.fetch_drive_discs())
+                return api.fetch_drive_discs()
             case ZZZItemCategory.BANGBOOS:
-                return tg.create_task(api.fetch_bangboos())
+                return api.fetch_bangboos()
 
     @classmethod
-    async def _setup_ambr(cls, tg: TaskGroup, session: aiohttp.ClientSession) -> None:
+    async def _setup_ambr(cls, session: aiohttp.ClientSession) -> None:
         game = Game.GENSHIN
 
         for locale in LOCALE_TO_AMBR_LANG:
             api = ambr.AmbrAPIClient(locale, session=session)
             for category in ambr.ItemCategory:
-                task = cls._get_ambr_task(api, category, tg)
-                if task is not None:
+                coro = cls._get_ambr_task(api, category)
+                if coro is not None:
+                    task = asyncio.create_task(coro)
                     cls._tasks[game][category][locale] = task
                     await sleep("search_autofill")
 
     @classmethod
-    async def _setup_yatta(cls, tg: TaskGroup, session: aiohttp.ClientSession) -> None:
+    async def _setup_yatta(cls, session: aiohttp.ClientSession) -> None:
         game = Game.STARRAIL
 
         for locale in LOCALE_TO_YATTA_LANG:
             api = yatta.YattaAPIClient(locale, session=session)
             for category in yatta.ItemCategory:
-                task = cls._get_yatta_task(api, category, tg)
+                coro = cls._get_yatta_task(api, category)
+                task = asyncio.create_task(coro)
                 cls._tasks[game][category][locale] = task
                 await sleep("search_autofill")
 
     @classmethod
-    async def _setup_hakushin(cls, tg: TaskGroup, session: aiohttp.ClientSession) -> None:
+    async def _setup_hakushin(cls, session: aiohttp.ClientSession) -> None:
         for locale, lang in LOCALE_TO_HAKUSHIN_LANG.items():
             gi_api = hakushin.HakushinAPI(hakushin.Game.GI, lang, session=session)
             hsr_api = hakushin.HakushinAPI(hakushin.Game.HSR, lang, session=session)
@@ -172,19 +175,22 @@ class AutocompleteSetup:
             for category in HakushinItemCategory:
                 game = HAKUSHIN_ITEM_CATEGORY_GAME_MAP[category]
                 if game is Game.GENSHIN:
-                    task = cls._get_hakushin_gi_task(gi_api, category, tg)
+                    coro = cls._get_hakushin_gi_task(gi_api, category)
                 else:
-                    task = cls._get_hakushin_hsr_task(hsr_api, category, tg)
+                    coro = cls._get_hakushin_hsr_task(hsr_api, category)
 
-                if task is not None:
+                if coro is not None:
+                    task = asyncio.create_task(coro)
                     cls._tasks[game][category][locale] = task
                     await sleep("search_autofill")
 
             for category in ZZZItemCategory:
                 game = Game.ZZZ
-                task = cls._get_hakushin_zzz_task(zzz_api, category, tg)
-                cls._tasks[game][category][locale] = task
-                await sleep("search_autofill")
+                coro = cls._get_hakushin_zzz_task(zzz_api, category)
+                if coro is not None:
+                    task = asyncio.create_task(coro)
+                    cls._tasks[game][category][locale] = task
+                    await sleep("search_autofill")
 
     @classmethod
     def _add_to_beta_results(
@@ -225,10 +231,20 @@ class AutocompleteSetup:
         cls._category_beta_ids = {}
         cls._tasks = defaultdict(lambda: defaultdict(dict))
 
-        async with TaskGroup() as tg:
-            tg.create_task(cls._setup_ambr(tg, session))
-            tg.create_task(cls._setup_yatta(tg, session))
-            tg.create_task(cls._setup_hakushin(tg, session))
+        creat_task_tasks = [
+            asyncio.create_task(cls._setup_ambr(session)),
+            asyncio.create_task(cls._setup_yatta(session)),
+            asyncio.create_task(cls._setup_hakushin(session)),
+        ]
+        await asyncio.gather(*creat_task_tasks, return_exceptions=True)
+
+        tasks = [
+            task
+            for categories in cls._tasks.values()
+            for locales in categories.values()
+            for task in locales.values()
+        ]
+        await asyncio.gather(*tasks, return_exceptions=True)
 
         async with hakushin.HakushinAPI(hakushin.Game.GI) as api:
             gi_new = await api.fetch_new()

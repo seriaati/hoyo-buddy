@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import asyncio
 from typing import TYPE_CHECKING
 
 import aiofiles
 
 from ..exceptions import DownloadImageFailedError
-from ..utils import TaskGroup, get_static_img_path
+from ..utils import get_static_img_path
 
 if TYPE_CHECKING:
     import pathlib
@@ -57,14 +58,18 @@ async def download_images(
     *,
     ignore_error: bool = False,
 ) -> None:
-    async with TaskGroup() as tg:
-        for image_url in set(image_urls):
-            if not image_url:
-                continue
+    tasks: list[asyncio.Task] = []
 
-            file_path = get_static_img_path(image_url, folder)
-            if file_path.exists():
-                continue
-            tg.create_task(
-                download_image_task(image_url, file_path, session, ignore_error=ignore_error)
-            )
+    for image_url in set(image_urls):
+        if not image_url:
+            continue
+
+        file_path = get_static_img_path(image_url, folder)
+        if file_path.exists():
+            continue
+        task = asyncio.create_task(
+            download_image_task(image_url, file_path, session, ignore_error=ignore_error)
+        )
+        tasks.append(task)
+
+    await asyncio.gather(*tasks, return_exceptions=True)

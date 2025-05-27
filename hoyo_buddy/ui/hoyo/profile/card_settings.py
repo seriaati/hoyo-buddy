@@ -9,14 +9,13 @@ from genshin.models import ZZZPartialAgent
 from loguru import logger
 from tortoise.exceptions import IntegrityError
 
-from hoyo_buddy.constants import REMEMBRANCE_CHAR_DISABLE_TEMPLATES, ZZZ_DISC_SUBSTATS
+from hoyo_buddy.constants import ZZZ_DISC_SUBSTATS
 from hoyo_buddy.db import CardSettings, Settings
 from hoyo_buddy.embeds import DefaultEmbed, Embed
 from hoyo_buddy.emojis import PALETTE
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import InvalidColorError
 from hoyo_buddy.l10n import EnumStr, LocaleStr
-from hoyo_buddy.models import HoyolabHSRCharacter
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, ToggleButton, View
 from hoyo_buddy.utils import is_valid_hex_color
 
@@ -155,15 +154,9 @@ class CardSettingsView(View):
         self.add_item(CharacterSelect(self._characters, self.selected_character_id, row=0))
 
         row = 1
-        char = self._get_current_character()
         self.add_item(
             CardTemplateSelect(
-                self.card_settings.template,
-                hb_only=self._hb_template_only,
-                is_remembrance_char=isinstance(char, HoyolabHSRCharacter | enka.hsr.Character)
-                and char.path is enka.hsr.Path.REMEMBRANCE,
-                game=self.game,
-                row=row,
+                self.card_settings.template, hb_only=self._hb_template_only, game=self.game, row=row
             )
         )
 
@@ -368,23 +361,13 @@ class PrimaryColorButton(Button[CardSettingsView]):
 
 
 class CardTemplateSelect(Select[CardSettingsView]):
-    def __init__(
-        self,
-        current_template: str,
-        *,
-        hb_only: bool,
-        is_remembrance_char: bool,
-        game: Game,
-        row: int,
-    ) -> None:
+    def __init__(self, current_template: str, *, hb_only: bool, game: Game, row: int) -> None:
         options: list[SelectOption] = []
 
         templates = TEMPLATES[game]
         for template in templates:
             template_id = template.rstrip("1234567890")
-            if (hb_only and template_id != "hb") or (
-                is_remembrance_char and template in REMEMBRANCE_CHAR_DISABLE_TEMPLATES
-            ):
+            if hb_only and template_id != "hb":
                 continue
 
             template_name = TEMPLATE_NAMES[template_id]

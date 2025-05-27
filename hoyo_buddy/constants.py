@@ -320,6 +320,17 @@ YATTA_PATH_TO_GPY_PATH = {
     yatta.PathType.MEMORY: genshin.models.StarRailPath.REMEMBRANCE,
 }
 
+GPY_PATH_TO_EKNA_PATH = {
+    genshin.models.StarRailPath.PRESERVATION: enka.hsr.Path.PRESERVATION,
+    genshin.models.StarRailPath.ERUDITION: enka.hsr.Path.ERUDITION,
+    genshin.models.StarRailPath.ABUNDANCE: enka.hsr.Path.ABUNDANCE,
+    genshin.models.StarRailPath.THE_HUNT: enka.hsr.Path.THE_HUNT,
+    genshin.models.StarRailPath.HARMONY: enka.hsr.Path.HARMONY,
+    genshin.models.StarRailPath.NIHILITY: enka.hsr.Path.NIHILITY,
+    genshin.models.StarRailPath.DESTRUCTION: enka.hsr.Path.DESTRUCTION,
+    genshin.models.StarRailPath.REMEMBRANCE: enka.hsr.Path.REMEMBRANCE,
+}
+
 YATTA_COMBAT_TYPE_TO_ELEMENT = {
     yatta.CombatType.ICE: HSRElement.ICE,
     yatta.CombatType.FIRE: HSRElement.FIRE,
@@ -1192,3 +1203,5 @@ AUTO_TASK_COMMANDS: dict[AutoTaskType, str] = {
 
 GUILD_ID = 1131592943791263745 if CONFIG.is_dev else 1000727526194298910
 SUPPORTER_ROLE_ID = 1376358430947676184 if CONFIG.is_dev else 1117992633827082251
+
+REMEMBRANCE_CHAR_DISABLE_TEMPLATES = {"src1", "src3"}

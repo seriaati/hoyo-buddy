@@ -18,6 +18,7 @@ from hoyo_buddy.constants import (
     AMBR_UI_URL,
     DMG_BONUS_IDS,
     ELEMENT_TO_BONUS_PROP_ID,
+    GPY_PATH_TO_EKNA_PATH,
     HB_GAME_TO_GPY_GAME,
     LOCALE_TO_GPY_LANG,
     PLAYER_BOY_GACHA_ART,
@@ -267,7 +268,7 @@ class GenshinClient(ProxyGenshinClient):
 
     @staticmethod
     def convert_hsr_character(
-        character: genshin.models.StarRailDetailCharacter,
+        c: genshin.models.StarRailDetailCharacter,
         property_info: dict[str, genshin.models.PropertyInfo],
     ) -> models.HoyolabHSRCharacter:
         """Convert StarRailDetailCharacter from gpy to HoyolabHSRCharacter that's used for drawing cards."""
@@ -277,19 +278,19 @@ class GenshinClient(ProxyGenshinClient):
 
         light_cone = (
             models.LightCone(
-                id=character.equip.id,
-                level=character.equip.level,
-                superimpose=character.equip.rank,
-                name=character.equip.name,
+                id=c.equip.id,
+                level=c.equip.level,
+                superimpose=c.equip.rank,
+                name=c.equip.name,
                 max_level=hakushin.utils.get_max_level_from_ascension(
                     hakushin.utils.get_ascension_from_level(
-                        character.equip.level, ascended=True, game=hakushin.Game.HSR
+                        c.equip.level, ascended=True, game=hakushin.Game.HSR
                     ),
                     hakushin.Game.HSR,
                 ),
-                rarity=character.equip.rarity,
+                rarity=c.equip.rarity,
             )
-            if character.equip is not None
+            if c.equip is not None
             else None
         )
         relics = [
@@ -313,15 +314,15 @@ class GenshinClient(ProxyGenshinClient):
                 ],
                 type=enka.hsr.RelicType(relic.pos),
             )
-            for relic in list(character.relics) + list(character.ornaments)
+            for relic in list(c.relics) + list(c.ornaments)
         ]
         return models.HoyolabHSRCharacter(
-            id=str(character.id),
-            element=character.element,
-            name=character.name,
-            level=character.level,
-            eidolons_unlocked=character.rank,
-            rarity=character.rarity,
+            id=str(c.id),
+            element=c.element,
+            name=c.name,
+            level=c.level,
+            eidolons_unlocked=c.rank,
+            rarity=c.rarity,
             light_cone=light_cone,
             relics=relics,
             stats=[
@@ -330,22 +331,23 @@ class GenshinClient(ProxyGenshinClient):
                     formatted_value=prop.final,
                     type=prop.property_type,
                 )
-                for prop in character.properties
+                for prop in c.properties
             ],
             traces=[
                 models.Trace(anchor=skill.anchor, icon=skill.item_url, level=skill.level)
-                for skill in character.skills
+                for skill in c.skills
             ],
             eidolons=[
                 models.Eidolon(icon=eidolon.icon, unlocked=eidolon.is_unlocked)
-                for eidolon in character.ranks
+                for eidolon in c.ranks
             ],
             max_level=hakushin.utils.get_max_level_from_ascension(
                 hakushin.utils.get_ascension_from_level(
-                    character.level, ascended=True, game=hakushin.Game.HSR
+                    c.level, ascended=True, game=hakushin.Game.HSR
                 ),
                 hakushin.Game.HSR,
             ),
+            path=GPY_PATH_TO_EKNA_PATH[c.path],
         )
 
     async def get_hoyolab_gi_characters(self) -> list[models.HoyolabGICharacter]:

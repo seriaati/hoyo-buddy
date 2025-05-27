@@ -13,6 +13,7 @@ from loguru import logger
 from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
+    REMEMBRANCE_CHAR_DISABLE_TEMPLATES,
     ZZZ_AGENT_STAT_TO_DISC_SUBSTAT,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
     ZZZ_DISC_SUBSTATS,
@@ -520,6 +521,14 @@ class ProfileView(View):
         force_hb_temp = isinstance(character, HoyolabGICharacter)
         if force_hb_temp and "hb" not in card_settings.template:
             card_settings.template = "hb1"
+            await card_settings.save(update_fields=("template",))
+
+        is_remembrance_char = (
+            isinstance(character, HoyolabHSRCharacter | enka.hsr.Character)
+            and character.path is enka.hsr.Path.ABUNDANCE
+        )
+        if is_remembrance_char and card_settings.template in REMEMBRANCE_CHAR_DISABLE_TEMPLATES:
+            card_settings.template = "src2"
             await card_settings.save(update_fields=("template",))
 
         await self._fix_invalid_template(card_settings)

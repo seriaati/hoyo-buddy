@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from hoyo_buddy.enums import Game
 
-TEMPLATES = {
+TEMPLATES: dict[Game, tuple[str, ...]] = {
     Game.GENSHIN: ("hb1", "hb2", "hattvr1", "encard1", "enkacard1", "enkacard2"),
     Game.STARRAIL: ("hb1", "hb2", "src1", "src2", "src3"),
     Game.ZZZ: ("hb1", "hb2", "hb3", "hb4"),
 }
-TEMPLATE_AUTHORS = {
+TEMPLATE_AUTHORS: dict[str, tuple[str, str]] = {
     "hb": ("@ayasaku_", "@seriaati"),
     "src": ("@korzzex", "@korzzex"),
     "hattvr": ("@algoinde", "@hattvr"),

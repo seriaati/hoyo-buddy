@@ -205,6 +205,7 @@ class HoyolabHSRCharacter:
     element: str
     max_level: int
     rarity: int
+    path: enka.hsr.Path
 
 
 class UnownedGICharacter(BaseModel):

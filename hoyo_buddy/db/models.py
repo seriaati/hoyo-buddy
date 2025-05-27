@@ -616,16 +616,12 @@ class DiscordEmbed(BaseModel):
 
         if isinstance(embed, DefaultEmbed) and notif_fields:
             success_field = notif_fields[0]
-            notif_settings = await AccountNotifSettings.get_or_none(account_id=account_id).only(
-                success_field
-            )
+            notif_settings, _ = await AccountNotifSettings.get_or_create(account_id=account_id)
             if not getattr(notif_settings, success_field):
                 return
         elif isinstance(embed, ErrorEmbed) and notif_fields:
             failure_field = notif_fields[1]
-            notif_settings = await AccountNotifSettings.get_or_none(account_id=account_id).only(
-                failure_field
-            )
+            notif_settings, _ = await AccountNotifSettings.get_or_create(account_id=account_id)
             if not getattr(notif_settings, failure_field):
                 return
 

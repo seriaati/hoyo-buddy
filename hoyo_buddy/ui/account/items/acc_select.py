@@ -24,6 +24,11 @@ class AccountSelect(PaginatorSelect[AccountManager]):
         )
 
     async def callback(self, i: Interaction) -> None:
+        changed = self.update_page()
+        if changed:
+            await i.response.edit_message(view=self.view)
+            return
+
         uid, game = self.values[0].split("_")
         selected_account = dget(self.view.accounts, uid=int(uid), game__value=game)
         assert selected_account is not None

@@ -85,57 +85,6 @@ class YattaAPIClient(yatta.YattaAPI):
 
         return description
 
-    def _calc_upgrade_stats(
-        self, upgrades: list[yatta.models.LightConeUpgrade] | list[yatta.models.CharacterUpgrade]
-    ) -> dict[str, Any]:
-        result: list[dict[str, list[float]]] = []
-        cost_count: dict[int, dict[str, int]] = {}
-        full_upgrade: dict[str, int] = {}
-
-        range_add = []
-        for upgrade in upgrades:
-            current_level = upgrade.level
-            previous_max_level = 1 if current_level == 0 else upgrades[current_level - 1].max_level
-            level_stats = {key: [upgrade.skill_base[key]] for key in upgrade.skill_base}
-            range_add.append(upgrade.max_level)
-            for key in upgrade.skill_add:
-                key_replace = key.replace("Add", "Base")
-                for _ in range(upgrade.max_level):
-                    latest_stat = level_stats[key_replace][-1]
-                    level_stats[key_replace].append(latest_stat + upgrade.skill_add[key])
-                level_stats[key_replace] = level_stats[key_replace][
-                    previous_max_level - 1 : upgrade.max_level
-                ]
-
-            for skill in upgrade.skill_base:
-                if skill.replace("Base", "Add") not in upgrade.skill_add:
-                    level_stats[skill].extend([0] * (upgrade.max_level - 1))
-
-            if upgrade.cost_items:
-                for cost_item in upgrade.cost_items:
-                    key, value = str(cost_item.id), cost_item.amount
-                    if key not in full_upgrade:
-                        full_upgrade[key] = 0
-                    full_upgrade[key] += value
-                cost_count[1 if current_level == 0 else upgrade.max_level + 1] = full_upgrade.copy()
-            result.append(level_stats)
-
-        all_levels = {}
-        for obj in result:
-            for key, value in obj.items():
-                all_levels[key] = all_levels.get(key, []) + value
-
-        upgrade_max_level = upgrades[-1].max_level
-        levels_map = [str(step) for step in range(1, upgrade_max_level + 1)]
-        levels_map.extend([f"{step}+" for step in range(1, upgrade_max_level) if step in range_add])
-
-        return {
-            "levels": levels_map,
-            "stats": all_levels,
-            "cost": cost_count,
-            "fullCost": full_upgrade,
-        }
-
     def _convert_upgrade_stat_key(self, key: str) -> str:
         return KEY_DICT.get(key, key)
 
@@ -163,44 +112,52 @@ class YattaAPIClient(yatta.YattaAPI):
         return dict(result)
 
     def get_character_details_embed(
-        self, character: yatta.CharacterDetail, level: int, manual_avatar: dict[str, Any]
+        self, c: yatta.CharacterDetail, level: int, manual_avatar: dict[str, Any]
     ) -> DefaultEmbed:
         level_str = translator.translate(LevelStr(level), self.locale)
         embed = DefaultEmbed(
             self.locale,
-            title=f"{character.name} ({level_str})",
+            title=f"{c.name} ({level_str})",
             description=LocaleStr(
                 key="yatta_character_embed_description",
-                rarity="★" * character.rarity,
-                element=f"{get_hsr_element_emoji(character.types.combat_type.id)} {character.types.combat_type.name}",
-                path=character.types.path_type.name,
-                world=character.info.faction,
+                rarity="★" * c.rarity,
+                element=f"{get_hsr_element_emoji(c.types.combat_type.id)} {c.types.combat_type.name}",
+                path=c.types.path_type.name,
+                world=c.info.faction,
             ),
         )
 
-        result = self._calc_upgrade_stats(character.upgrades)
-        named_stat_values: dict[str, Any] = {}
+        upgrade: yatta.CharacterUpgrade | None = None
 
-        for key, value in result["stats"].items():
+        for upgrade in c.upgrades:
+            if level < upgrade.max_level:
+                break
+
+        if upgrade is None:
+            upgrade = c.upgrades[-1]
+
+        stat_values: dict[str, str] = {}
+
+        for key, value in upgrade.skill_base.items():
+            add = upgrade.skill_add.get(key.replace("Base", "Add"), 0)
+            final_value = value + add * (level - 1)
             key_ = self._convert_upgrade_stat_key(key)
-            named_stat = manual_avatar[key_]["name"]
-            if named_stat is None:
+            stat_name = manual_avatar[key_]["name"]
+            if stat_name is None:
                 continue
 
-            value_ = int(value[level - 1])
-            value_ = int(value[0]) if value_ == 0 else value_
-            if value_ == 0:
-                continue
-
-            named_stat_values[named_stat] = value_
+            if key in {"criticalChance", "criticalDamage"}:
+                stat_values[stat_name] = f"{final_value:.1%}"
+            else:
+                stat_values[stat_name] = str(int(final_value))
 
         embed.add_field(
             name=LocaleStr(key="stats_embed_field_name"),
-            value="\n".join(f"{k}: {v}" for k, v in named_stat_values.items()),
+            value="\n".join(f"{k}: {v}" for k, v in stat_values.items()),
         )
-        embed.set_footer(text=character.info.description)
-        embed.set_thumbnail(url=character.round_icon)
-        embed.set_image(url=character.large_icon)
+        embed.set_footer(text=c.info.description)
+        embed.set_thumbnail(url=c.round_icon)
+        embed.set_image(url=c.large_icon)
 
         return embed
 
@@ -350,43 +307,49 @@ class YattaAPIClient(yatta.YattaAPI):
         return embed
 
     def get_light_cone_embed(
-        self,
-        light_cone: yatta.LightConeDetail,
-        level: int,
-        superimpose: int,
-        manual_avatar: dict[str, Any],
+        self, lc: yatta.LightConeDetail, level: int, superimpose: int, manual_avatar: dict[str, Any]
     ) -> DefaultEmbed:
         level_str = translator.translate(LevelStr(level), self.locale)
 
-        lc_path = yatta.PathType(light_cone.type.id)
+        lc_path = yatta.PathType(lc.type.id)
         path_emoji = get_hsr_path_emoji(YATTA_PATH_TO_HSR_PATH[lc_path].value)
         embed = DefaultEmbed(
             self.locale,
-            title=f"{light_cone.name} ({level_str})",
-            description=f"{'★' * light_cone.rarity}\n{path_emoji} {light_cone.type.name}",
+            title=f"{lc.name} ({level_str})",
+            description=f"{'★' * lc.rarity}\n{path_emoji} {lc.type.name}",
         )
 
-        result = self._calc_upgrade_stats(light_cone.upgrades)
+        upgrade: yatta.LightConeUpgrade | None = None
 
-        named_stat_values: dict[str, Any] = {}
-        for key, value in result["stats"].items():
+        for upgrade in lc.upgrades:
+            if level < upgrade.max_level:
+                break
+
+        if upgrade is None:
+            upgrade = lc.upgrades[-1]
+
+        stat_values: dict[str, float] = {}
+
+        for key, value in upgrade.skill_base.items():
+            add = upgrade.skill_add.get(key.replace("Base", "Add"), 0)
+            final_value = value + add * (level - 1)
             key_ = self._convert_upgrade_stat_key(key)
-            named_stat = manual_avatar[key_]["name"]
-            named_stat_values[named_stat] = int(value[level - 1])
+            stat_name = manual_avatar[key_]["name"]
+            stat_values[stat_name] = int(final_value)
 
         embed.add_field(
             name=LocaleStr(key="stats_embed_field_name"),
-            value="\n".join(f"{k}: {v}" for k, v in named_stat_values.items()),
+            value="\n".join(f"{k}: {v}" for k, v in stat_values.items()),
             inline=False,
         )
         embed.add_field(
-            name=f"{light_cone.skill.name} ({superimpose})",
+            name=f"{lc.skill.name} ({superimpose})",
             value=self._process_description_params(
-                light_cone.skill.description, light_cone.skill.params, param_index=superimpose - 1
+                lc.skill.description, lc.skill.params, param_index=superimpose - 1
             ),
             inline=False,
         )
-        embed.set_thumbnail(url=light_cone.large_icon)
+        embed.set_thumbnail(url=lc.large_icon)
 
         return embed
 

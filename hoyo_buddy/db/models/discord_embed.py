@@ -3,7 +3,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from loguru import logger
 from tortoise import fields
+from tortoise.exceptions import IntegrityError
 
 from hoyo_buddy.constants import AUTO_TASK_TOGGLE_FIELDS, NOTIF_SETTING_FIELDS
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
@@ -43,19 +45,30 @@ class DiscordEmbed(BaseModel):
         task_type: AutoTaskType,
     ) -> None:
         notif_fields = NOTIF_SETTING_FIELDS.get(task_type, ())
-        toggle_field = AUTO_TASK_TOGGLE_FIELDS.get(task_type)
+        if len(notif_fields) < 2:
+            logger.error(f"No notification fields found for task type: {task_type!r}")
+            return
 
-        if isinstance(embed, ErrorEmbed) and toggle_field is not None:
+        toggle_field = AUTO_TASK_TOGGLE_FIELDS.get(task_type)
+        if toggle_field is None:
+            logger.error(f"No toggle field found for task type: {task_type!r}")
+            return
+
+        if isinstance(embed, ErrorEmbed):
             await HoyoAccount.filter(id=account_id).update(**{toggle_field: False})
 
-        if isinstance(embed, DefaultEmbed) and notif_fields:
-            success_field = notif_fields[0]
+        try:
             notif_settings, _ = await AccountNotifSettings.get_or_create(account_id=account_id)
+        except IntegrityError:
+            # The account got deleted at the time this embed was created
+            return
+
+        if isinstance(embed, DefaultEmbed):
+            success_field = notif_fields[0]
             if not getattr(notif_settings, success_field):
                 return
-        elif isinstance(embed, ErrorEmbed) and notif_fields:
+        else:
             failure_field = notif_fields[1]
-            notif_settings, _ = await AccountNotifSettings.get_or_create(account_id=account_id)
             if not getattr(notif_settings, failure_field):
                 return
 

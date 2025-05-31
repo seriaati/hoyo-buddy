@@ -3,7 +3,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tortoise import exceptions, fields
+from tortoise import fields
+from tortoise.exceptions import IntegrityError
 
 from hoyo_buddy.enums import Game
 
@@ -61,6 +62,6 @@ class GachaHistory(BaseModel):
                 account=account,
                 account_id=account.id,
             )
-        except exceptions.IntegrityError:
+        except IntegrityError:
             return False
         return True

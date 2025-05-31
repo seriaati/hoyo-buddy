@@ -3,7 +3,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tortoise import exceptions, fields
+from tortoise import fields
+from tortoise.exceptions import IntegrityError
 
 from hoyo_buddy.enums import Game
 
@@ -47,7 +48,7 @@ class GachaStats(BaseModel):
                 game=account.game,
                 banner_type=banner_type,
             )
-        except exceptions.IntegrityError:
+        except IntegrityError:
             await cls.filter(account_id=account.id, banner_type=banner_type).update(
                 lifetime_pulls=lifetime_pulls,
                 avg_5star_pulls=avg_5star_pulls,

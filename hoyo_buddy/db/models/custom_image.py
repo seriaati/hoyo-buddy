@@ -4,7 +4,8 @@ from __future__ import annotations
 import contextlib
 from typing import TYPE_CHECKING
 
-from tortoise import exceptions, fields
+from tortoise import fields
+from tortoise.exceptions import IntegrityError
 
 from .base import BaseModel
 
@@ -30,5 +31,5 @@ class CustomImage(BaseModel):
     async def create(
         cls, *, url: str, character_id: str, user_id: int, name: str | None = None
     ) -> None:
-        with contextlib.suppress(exceptions.IntegrityError):
+        with contextlib.suppress(IntegrityError):
             await super().create(url=url, character_id=character_id, user_id=user_id, name=name)

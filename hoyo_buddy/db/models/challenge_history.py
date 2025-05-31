@@ -6,7 +6,8 @@ from typing import TYPE_CHECKING, Any, cast
 
 import genshin
 from loguru import logger
-from tortoise import exceptions, fields
+from tortoise import fields
+from tortoise.exceptions import IntegrityError
 
 from hoyo_buddy.constants import UTC_8
 from hoyo_buddy.enums import ChallengeType
@@ -119,7 +120,7 @@ class ChallengeHistory(BaseModel):
                 lang=lang,
                 json_data=raw,
             )
-        except exceptions.IntegrityError:
+        except IntegrityError:
             await cls.filter(uid=uid, season_id=season_id, challenge_type=challenge_type).update(
                 name=name, lang=lang, json_data=raw
             )

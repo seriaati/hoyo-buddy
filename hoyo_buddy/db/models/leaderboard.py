@@ -3,7 +3,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from tortoise import exceptions, fields
+from tortoise import fields
+from tortoise.exceptions import IntegrityError
 
 from hoyo_buddy.enums import Game, LeaderboardType
 
@@ -45,7 +46,7 @@ class Leaderboard(BaseModel):
                 rank=0,
                 extra_info=extra_info,
             )
-        except exceptions.IntegrityError:
+        except IntegrityError:
             lb = await cls.get(type=type_, game=game, uid=uid)
             if lb.value < value:
                 await cls.filter(type=type_, game=game, uid=uid).update(

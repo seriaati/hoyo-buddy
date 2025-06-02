@@ -802,3 +802,6 @@ image_file_too_large_error_title: Image File Too Large
 image_file_too_large_error_message: "The uploaded image file is too large, max filesize is {size}MB."
 api_request_timeout_title: API Request Timed Out
 api_request_timeout_message: Please try again later
+dismissible_one_year_anniversary_title: Hoyo Buddy is 1 Year Old!
+dismissible_one_year_anniversary_desc: "Visit the [special web page](https://one.hb.seria.moe) to participate in the anniversary giveaway!"
+dyk_anniversary_no_title: "Hoyo Buddy is 1 year old! Visit the [special web page](https://one.hb.seria.moe) to participate in the anniversary giveaway!"

@@ -32,7 +32,7 @@ from .constants import (
     ZENLESS_DATA_LANGS,
     get_docs_url,
 )
-from .utils import convert_to_title_case
+from .utils import convert_to_title_case, is_hb_birthday
 
 if TYPE_CHECKING:
     from enum import StrEnum
@@ -236,6 +236,10 @@ class Translator:
         ]
 
     def get_dyk(self, locale: Locale) -> str:
+        if is_hb_birthday():
+            dyk = self.translate(LocaleStr(key="dyk_anniversary_no_title"), locale)
+            return f"-# 🎉 {dyk}"
+
         title = self.translate(LocaleStr(key="title_dyk"), locale)
         dyks = self.get_dyks(locale)
         dyk, no_title = random.choice(dyks)

@@ -9,8 +9,9 @@ from tortoise.expressions import Q
 
 from hoyo_buddy.constants import NO_MASKED_LINK_GUILDS, PLATFORM_TO_REGION
 from hoyo_buddy.enums import Game, LeaderboardType, Platform
-from hoyo_buddy.l10n import translator
-from hoyo_buddy.utils import contains_masked_link
+from hoyo_buddy.l10n import LocaleStr, translator
+from hoyo_buddy.models import Dismissible
+from hoyo_buddy.utils import contains_masked_link, is_hb_birthday
 
 from .models import GachaHistory, HoyoAccount, Settings, User
 
@@ -20,16 +21,17 @@ if TYPE_CHECKING:
     import asyncpg
     import genshin
 
-    from hoyo_buddy.models import Dismissible
     from hoyo_buddy.types import Interaction
 
 __all__ = (
+    "build_account_query",
     "draw_locale",
     "get_dyk",
     "get_enable_dyk",
     "get_last_gacha_num",
     "get_locale",
     "get_num_since_last",
+    "show_anniversary_dismissible",
     "show_dismissible",
     "update_gacha_nums",
     "update_lb_ranks",
@@ -190,6 +192,19 @@ async def show_dismissible(i: Interaction, dismissible: Dismissible) -> None:
 
     user.dismissibles.append(dismissible.id)
     await user.save(update_fields=("dismissibles",))
+
+
+async def show_anniversary_dismissible(i: Interaction) -> bool:
+    if is_hb_birthday():
+        dismissible = Dismissible(
+            id="one_year_anniversary",
+            title=LocaleStr(key="dismissible_one_year_anniversary_title"),
+            description=LocaleStr(key="dismissible_one_year_anniversary_desc"),
+            image="https://one.hb.seria.moe/preview.png",
+        )
+        await show_dismissible(i, dismissible)
+        return True
+    return False
 
 
 def build_account_query(

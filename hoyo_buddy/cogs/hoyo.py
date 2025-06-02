@@ -8,6 +8,7 @@ from discord.ext import commands
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.events import EventsCommand
 from hoyo_buddy.db import HoyoAccount, Settings, get_dyk, get_locale
+from hoyo_buddy.db.utils import show_anniversary_dismissible
 from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
 from hoyo_buddy.ui.hoyo.mimo import MimoView
 from hoyo_buddy.ui.hoyo.web_events import WebEventsView
@@ -61,6 +62,8 @@ class Hoyo(commands.Cog):
         )
         await view.start(i)
 
+        await show_anniversary_dismissible(i)
+
     @app_commands.command(
         name=app_commands.locale_str("notes"), description=COMMANDS["notes"].description
     )
@@ -94,6 +97,8 @@ class Hoyo(commands.Cog):
         )
         await view.start(i)
 
+        await show_anniversary_dismissible(i)
+
     @app_commands.command(
         name=app_commands.locale_str("exploration"), description=COMMANDS["exploration"].description
     )
@@ -116,6 +121,8 @@ class Hoyo(commands.Cog):
 
         view = ExplorationView(account_, dark_mode=settings.dark_mode, author=i.user, locale=locale)
         await view.start(i)
+
+        await show_anniversary_dismissible(i)
 
     @app_commands.command(
         name=app_commands.locale_str("redeem"), description=COMMANDS["redeem"].description
@@ -145,6 +152,8 @@ class Hoyo(commands.Cog):
         view = RedeemUI(account_, available_codes, author=i.user, locale=locale)
         await i.followup.send(embed=view.start_embed, view=view, content=await get_dyk(i))
         view.message = await i.original_response()
+
+        await show_anniversary_dismissible(i)
 
     @app_commands.command(
         name=app_commands.locale_str("geetest"), description=COMMANDS["geetest"].description
@@ -185,6 +194,8 @@ class Hoyo(commands.Cog):
         command = StatsCommand(user)
         await command.run(i)
 
+        await show_anniversary_dismissible(i)
+
     @app_commands.command(
         name=app_commands.locale_str("events"), description=COMMANDS["events"].description
     )
@@ -199,6 +210,8 @@ class Hoyo(commands.Cog):
         ] = None,
     ) -> None:
         await EventsCommand.run(i, user=user, account=account)
+
+        await show_anniversary_dismissible(i)
 
     @app_commands.command(
         name=app_commands.locale_str("mimo"), description=COMMANDS["mimo"].description
@@ -221,6 +234,8 @@ class Hoyo(commands.Cog):
         )
         await view.start(i)
 
+        await show_anniversary_dismissible(i)
+
     @app_commands.command(
         name=app_commands.locale_str("web-events"), description=COMMANDS["web-events"].description
     )
@@ -240,6 +255,8 @@ class Hoyo(commands.Cog):
         )
         view = WebEventsView(account, author=i.user, locale=i.locale)
         await view.start(i)
+
+        await show_anniversary_dismissible(i)
 
     @geetest_command.autocomplete("type_")
     async def geetest_type_autocomplete(

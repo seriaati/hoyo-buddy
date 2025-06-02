@@ -9,6 +9,7 @@ from seria.utils import create_bullet_list, shorten
 
 from hoyo_buddy import ui
 from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME
+from hoyo_buddy.db.utils import get_dyk
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import (
     BELL_OUTLINE,
@@ -213,7 +214,7 @@ class MimoView(ui.View):
         self.add_item(AutoDrawButton(current_toggle=self.account.mimo_auto_draw))
 
         embed = await self.get_tasks_embed(points=points)
-        await i.followup.send(embed=embed, view=self)
+        await i.followup.send(content=await get_dyk(i), embed=embed, view=self)
         self.message = await i.original_response()
 
 

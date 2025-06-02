@@ -10,11 +10,13 @@ from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.profile import ProfileCommand
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, get_locale
+from hoyo_buddy.db.utils import show_anniversary_dismissible, show_dismissible
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.models import Dismissible
 from hoyo_buddy.types import User  # noqa: TC001
 from hoyo_buddy.utils import ephemeral
 
@@ -100,7 +102,32 @@ class Profile(
             view = await command.run_zzz()
         else:
             raise FeatureNotImplementedError(game=game)
+
         await view.start(i)
+
+        shown = await show_anniversary_dismissible(i)
+        if shown:
+            return
+
+        if game is Game.ZZZ:
+            await show_dismissible(
+                i,
+                Dismissible(
+                    id="m3_art",
+                    description=LocaleStr(key="dismissible_m3_art_desc"),
+                    image="https://img.seria.moe/kVbCOBrqEMHlQsVd.png",
+                ),
+            )
+
+        if game is Game.STARRAIL:
+            await show_dismissible(
+                i,
+                Dismissible(
+                    id="hsr_temp2",
+                    description=LocaleStr(key="dismissible_hsr_temp2_desc"),
+                    image="https://img.seria.moe/HLHoTSwcXvAPHzJB.png",
+                ),
+            )
 
     @app_commands.command(
         name=app_commands.locale_str("genshin"), description=COMMANDS["profile genshin"].description

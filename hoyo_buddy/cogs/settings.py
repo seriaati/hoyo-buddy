@@ -8,6 +8,7 @@ from discord.ext import commands
 
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import Settings as UserSettings
+from hoyo_buddy.db.utils import show_anniversary_dismissible
 from hoyo_buddy.utils import ephemeral
 
 from ..ui.settings import SettingsUI
@@ -31,6 +32,8 @@ class Settings(commands.Cog):
             embed=view.get_embed(), file=view.get_brand_image_file(i.locale), view=view
         )
         view.message = await i.original_response()
+
+        await show_anniversary_dismissible(i)
 
 
 async def setup(bot: HoyoBuddy) -> None:

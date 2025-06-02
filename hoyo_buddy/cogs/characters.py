@@ -9,6 +9,7 @@ from hoyo_buddy.commands.characters import CharactersCommand
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, Settings
+from hoyo_buddy.db.utils import show_anniversary_dismissible
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from hoyo_buddy.types import User  # noqa: TC001
@@ -38,6 +39,8 @@ class Characters(
 
         command = CharactersCommand(account_, settings)
         await command.run(i)
+
+        await show_anniversary_dismissible(i)
 
     @app_commands.command(name="genshin", description=COMMANDS["characters genshin"].description)
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))

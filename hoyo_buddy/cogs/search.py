@@ -13,6 +13,7 @@ from loguru import logger
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import NO_BETA_CONTENT_GUILDS, UTC_8, locale_to_hakushin_lang
 from hoyo_buddy.db import Settings, get_locale
+from hoyo_buddy.db.utils import show_anniversary_dismissible
 from hoyo_buddy.utils import ephemeral
 
 from ..emojis import PROJECT_AMBER
@@ -330,6 +331,8 @@ class Search(commands.Cog):
                         disc = await api.fetch_drive_disc_detail(disc_id)
                     embed = translator.get_disc_embed(disc)
                     await i.followup.send(embed=embed)
+
+        await show_anniversary_dismissible(i)
 
     @search_command.autocomplete("game_value")
     async def search_command_game_autocomplete(

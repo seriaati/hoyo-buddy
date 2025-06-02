@@ -17,7 +17,7 @@ from hoyo_buddy.constants import (
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
     ZZZ_DISC_SUBSTATS,
 )
-from hoyo_buddy.db import JSONFile, Settings, draw_locale, get_dyk, show_dismissible
+from hoyo_buddy.db import JSONFile, Settings, draw_locale, get_dyk
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
@@ -37,7 +37,7 @@ from hoyo_buddy.exceptions import (
 )
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LevelStr, LocaleStr
-from hoyo_buddy.models import Dismissible, DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
+from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
 from hoyo_buddy.types import Builds, Character, HoyolabCharacter
 from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
@@ -748,23 +748,3 @@ class ProfileView(View):
 
         await i.followup.send(embed=self.player_embed, view=self, content=dyk)
         self.message = await i.original_response()
-
-        if self.game is Game.ZZZ:
-            await show_dismissible(
-                i,
-                Dismissible(
-                    id="m3_art",
-                    description=LocaleStr(key="dismissible_m3_art_desc"),
-                    image="https://img.seria.moe/kVbCOBrqEMHlQsVd.png",
-                ),
-            )
-
-        if self.game is Game.STARRAIL:
-            await show_dismissible(
-                i,
-                Dismissible(
-                    id="hsr_temp2",
-                    description=LocaleStr(key="dismissible_hsr_temp2_desc"),
-                    image="https://img.seria.moe/HLHoTSwcXvAPHzJB.png",
-                ),
-            )

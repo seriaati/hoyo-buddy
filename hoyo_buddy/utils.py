@@ -24,7 +24,14 @@ from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 from seria.utils import clean_url
 
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.constants import IMAGE_EXTENSIONS, SLEEP_TIMES, STATIC_FOLDER, TRAVELER_IDS, UTC_8
+from hoyo_buddy.constants import (
+    HB_BIRTHDAY,
+    IMAGE_EXTENSIONS,
+    SLEEP_TIMES,
+    STATIC_FOLDER,
+    TRAVELER_IDS,
+    UTC_8,
+)
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
 from hoyo_buddy.logging import InterceptHandler
@@ -527,3 +534,12 @@ async def sleep(name: SleepTime) -> None:
         logger.error(f"Invalid sleep time name: {name!r}")
         time = 0.0
     await asyncio.sleep(time)
+
+
+def is_hb_birthday() -> bool:
+    now = get_now()
+    return (
+        HB_BIRTHDAY.replace(year=now.year)
+        <= now.date()
+        <= HB_BIRTHDAY.replace(year=now.year) + datetime.timedelta(days=7)
+    )

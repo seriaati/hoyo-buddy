@@ -8,6 +8,7 @@ from discord.ext import commands
 
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import HoyoAccount, User, get_locale
+from hoyo_buddy.db.utils import show_anniversary_dismissible
 
 from ..ui.account.view import AccountManager
 
@@ -28,6 +29,8 @@ class Login(commands.Cog):
 
         view = AccountManager(author=i.user, locale=locale, user=user, accounts=accounts)
         await view.start(i)
+
+        await show_anniversary_dismissible(i)
 
 
 async def setup(bot: HoyoBuddy) -> None:

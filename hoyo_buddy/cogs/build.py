@@ -8,6 +8,7 @@ from discord.ext import commands
 from hoyo_buddy.commands.build import BuildCommand
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import get_locale
+from hoyo_buddy.db.utils import show_anniversary_dismissible
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
 from hoyo_buddy.l10n import LocaleStr
@@ -50,6 +51,8 @@ class Build(commands.GroupCog):
     async def genshin_build_command(self, i: Interaction, character_id: str) -> None:
         command = BuildCommand(Game.GENSHIN, character_id)
         await command.run(i)
+
+        await show_anniversary_dismissible(i)
 
     @genshin_build_command.autocomplete("character_id")
     async def genshin_character_autocomplete(

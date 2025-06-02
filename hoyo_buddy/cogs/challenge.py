@@ -9,6 +9,7 @@ from hoyo_buddy.commands.challenge import ChallengeCommand
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount  # noqa: TC001
+from hoyo_buddy.db.utils import show_anniversary_dismissible
 from hoyo_buddy.enums import ChallengeType
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from hoyo_buddy.types import User  # noqa: TC001
@@ -47,6 +48,8 @@ class Challenge(
         user = user or i.user
         command = ChallengeCommand(i, user, account)
         await command.run(challenge_type)
+
+        await show_anniversary_dismissible(i)
 
     @genshin.command(
         name=app_commands.locale_str("abyss"),

@@ -9,7 +9,7 @@ from discord.ext import commands
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.gacha import GachaCommand
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
-from hoyo_buddy.db import HoyoAccount  # noqa: TC001
+from hoyo_buddy.db import HoyoAccount, show_anniversary_dismissible
 
 from ..enums import GachaImportSource, Game
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
@@ -43,6 +43,7 @@ class Gacha(
             i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
         )
         await GachaCommand().run_import(i, account_)
+        await show_anniversary_dismissible(i)
 
     @app_commands.command(
         name=app_commands.locale_str("view"), description=COMMANDS["gacha-log view"].description
@@ -60,6 +61,7 @@ class Gacha(
             i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
         )
         await GachaCommand().run_view(i, account_)
+        await show_anniversary_dismissible(i)
 
     @app_commands.command(
         name=app_commands.locale_str("manage"), description=COMMANDS["gacha-log manage"].description
@@ -77,6 +79,7 @@ class Gacha(
             i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
         )
         await GachaCommand().run_manage(i, account_)
+        await show_anniversary_dismissible(i)
 
     @app_commands.command(
         name=app_commands.locale_str("upload"), description=COMMANDS["gacha-log upload"].description
@@ -109,6 +112,7 @@ class Gacha(
         file: discord.Attachment,
     ) -> Any:
         await GachaCommand().run_upload(i, account, GachaImportSource(source), file)
+        await show_anniversary_dismissible(i)
 
     @import_.autocomplete("account")
     @upload.autocomplete("account")

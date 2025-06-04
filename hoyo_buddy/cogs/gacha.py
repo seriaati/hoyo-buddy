@@ -42,7 +42,7 @@ class Gacha(
         account_ = account or await self.bot.get_account(
             i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
         )
-        await GachaCommand().run_import(i, account_)
+        await GachaCommand.run_import(i, account_)
         await show_anniversary_dismissible(i)
 
     @app_commands.command(
@@ -60,7 +60,7 @@ class Gacha(
         account_ = account or await self.bot.get_account(
             i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
         )
-        await GachaCommand().run_view(i, account_)
+        await GachaCommand.run_view(i, account_)
         await show_anniversary_dismissible(i)
 
     @app_commands.command(
@@ -78,7 +78,7 @@ class Gacha(
         account_ = account or await self.bot.get_account(
             i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
         )
-        await GachaCommand().run_manage(i, account_)
+        await GachaCommand.run_manage(i, account_)
         await show_anniversary_dismissible(i)
 
     @app_commands.command(
@@ -111,7 +111,7 @@ class Gacha(
         ],
         file: discord.Attachment,
     ) -> Any:
-        await GachaCommand().run_upload(i, account, GachaImportSource(source), file)
+        await GachaCommand.run_upload(i, account, GachaImportSource(source), file)
         await show_anniversary_dismissible(i)
 
     @import_.autocomplete("account")

@@ -73,11 +73,12 @@ class GachaCommand:
 
         return records
 
+    @classmethod
     async def _srs_import(
-        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
+        cls, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
     ) -> int:
         """Star Rail Station import."""
-        self._validate_file_ext(file, "csv")
+        cls._validate_file_ext(file, "csv")
 
         bytes_ = await file.read()
         records_df = await i.client.loop.run_in_executor(
@@ -105,11 +106,12 @@ class GachaCommand:
 
         return count
 
+    @classmethod
     async def _zzz_rng_moe_import(
-        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
+        cls, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
     ) -> int:
         """zzz.rng.moe import."""
-        self._validate_file_ext(file, "json")
+        cls._validate_file_ext(file, "json")
 
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
@@ -155,25 +157,27 @@ class GachaCommand:
 
         return count
 
+    @classmethod
     async def _stardb_import(
-        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
+        cls, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
     ) -> int:
         """stardb import."""
-        self._validate_file_ext(file, "json")
+        cls._validate_file_ext(file, "json")
 
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
 
         if account.game is Game.STARRAIL:
-            return await self._stardb_hsr_import(account, data)
+            return await cls._stardb_hsr_import(account, data)
         if account.game is Game.GENSHIN:
-            return await self._stardb_gi_import(account, data)
+            return await cls._stardb_gi_import(account, data)
         if account.game is Game.ZZZ:
-            return await self._stardb_zzz_import(account, data)
+            return await cls._stardb_zzz_import(account, data)
 
         raise FeatureNotImplementedError(game=account.game)
 
-    async def _stardb_hsr_import(self, account: HoyoAccount, data: dict[str, Any]) -> int:
+    @staticmethod
+    async def _stardb_hsr_import(account: HoyoAccount, data: dict[str, Any]) -> int:
         hsr_data = next(
             (d["warps"] for d in data["user"]["hsr"]["uids"] if d["uid"] == account.uid), None
         )
@@ -222,7 +226,8 @@ class GachaCommand:
 
         return 0
 
-    async def _stardb_gi_import(self, account: HoyoAccount, data: dict[str, Any]) -> int:
+    @staticmethod
+    async def _stardb_gi_import(account: HoyoAccount, data: dict[str, Any]) -> int:
         gi_data = next(
             (d["wishes"] for d in data["user"]["gi"]["uids"] if d["uid"] == account.uid), None
         )
@@ -276,7 +281,8 @@ class GachaCommand:
 
         return 0
 
-    async def _stardb_zzz_import(self, account: HoyoAccount, data: dict[str, Any]) -> int:
+    @staticmethod
+    async def _stardb_zzz_import(account: HoyoAccount, data: dict[str, Any]) -> int:
         zzz_data = next(
             (d["signals"] for d in data["user"]["zzz"]["uids"] if d["uid"] == account.uid), None
         )
@@ -330,11 +336,12 @@ class GachaCommand:
 
         return 0
 
+    @classmethod
     async def _uigf_import(
-        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
+        cls, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
     ) -> int:
         """UIGF import."""
-        self._validate_file_ext(file, "json")
+        cls._validate_file_ext(file, "json")
 
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
@@ -356,7 +363,7 @@ class GachaCommand:
                 raise UIDMismatchError(account.uid)
 
             tz_hour = game_data["timezone"]
-            records = await self._uigf_fill_item_rarities(game_data["list"], account.game)
+            records = await cls._uigf_fill_item_rarities(game_data["list"], account.game)
             records = [UIGFRecord(timezone=tz_hour, **record) for record in records]
         else:
             uid = str(data["info"]["uid"])
@@ -385,7 +392,7 @@ class GachaCommand:
                         raise ValueError(msg)
                     record["item_id"] = item_id
 
-            records = await self._uigf_fill_item_rarities(data["list"], account.game)
+            records = await cls._uigf_fill_item_rarities(data["list"], account.game)
             records = [UIGFRecord(timezone=tz_hour, **record) for record in records]
 
         records.sort(key=lambda x: x.id)
@@ -406,11 +413,12 @@ class GachaCommand:
 
         return count
 
+    @classmethod
     async def _srgf_import(
-        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
+        cls, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
     ) -> int:
         """SRGF import."""
-        self._validate_file_ext(file, "json")
+        cls._validate_file_ext(file, "json")
 
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
@@ -439,11 +447,12 @@ class GachaCommand:
 
         return count
 
+    @classmethod
     async def _starward_zzz_import(
-        self, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
+        cls, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
     ) -> int:
         """Starward Launcher ZZZ import."""
-        self._validate_file_ext(file, "json")
+        cls._validate_file_ext(file, "json")
 
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
@@ -472,13 +481,15 @@ class GachaCommand:
 
         return count
 
-    async def run_import(self, i: Interaction, account: HoyoAccount) -> None:
+    @staticmethod
+    async def run_import(i: Interaction, account: HoyoAccount) -> None:
         locale = await get_locale(i)
         view = GachaImportView(account, author=i.user, locale=locale)
         await view.start(i)
 
+    @classmethod
     async def run_upload(
-        self,
+        cls,
         i: Interaction,
         account: HoyoAccount,
         source: GachaImportSource,
@@ -496,17 +507,17 @@ class GachaCommand:
 
         try:
             if source is GachaImportSource.STAR_RAIL_STATION:
-                count = await self._srs_import(i, account=account, file=file)
+                count = await cls._srs_import(i, account=account, file=file)
             elif source is GachaImportSource.ZZZ_RNG_MOE:
-                count = await self._zzz_rng_moe_import(i, account=account, file=file)
+                count = await cls._zzz_rng_moe_import(i, account=account, file=file)
             elif source is GachaImportSource.STAR_DB:
-                count = await self._stardb_import(i, account=account, file=file)
+                count = await cls._stardb_import(i, account=account, file=file)
             elif source is GachaImportSource.UIGF:
-                count = await self._uigf_import(i, account=account, file=file)
+                count = await cls._uigf_import(i, account=account, file=file)
             elif source is GachaImportSource.STARWARD_ZZZ:
-                count = await self._starward_zzz_import(i, account=account, file=file)
+                count = await cls._starward_zzz_import(i, account=account, file=file)
             else:  # SRGF
-                count = await self._srgf_import(i, account=account, file=file)
+                count = await cls._srgf_import(i, account=account, file=file)
         except Exception as e:
             error_embed, _ = get_error_embed(e, locale)
             await i.edit_original_response(embed=error_embed)
@@ -520,12 +531,14 @@ class GachaCommand:
             ).add_acc_info(account)
             await i.edit_original_response(embed=embed)
 
-    async def run_view(self, i: Interaction, account: HoyoAccount) -> None:
+    @staticmethod
+    async def run_view(i: Interaction, account: HoyoAccount) -> None:
         locale = await get_locale(i)
         view = ViewGachaLogView(account, author=i.user, locale=locale)
         await view.start(i)
 
-    async def run_manage(self, i: Interaction, account: HoyoAccount) -> None:
+    @staticmethod
+    async def run_manage(i: Interaction, account: HoyoAccount) -> None:
         locale = await get_locale(i)
         view = GachaLogManageView(account, author=i.user, locale=locale)
         await view.start(i)

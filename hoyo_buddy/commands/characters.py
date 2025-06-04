@@ -31,6 +31,7 @@ class CharactersCommand:
     async def run_gi(self) -> None:
         async with AmbrAPIClient() as client:
             self.element_char_counts = await client.fetch_element_char_counts()
+            self.element_char_counts["none"] = 1
 
     async def run_hsr(self) -> None:
         async with YattaAPIClient() as client:

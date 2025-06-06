@@ -95,7 +95,7 @@ class ZZZAgentCard:
                 self._card_data.get("name_y", -64),
             )
             drawer.write(
-                self._name_data.short_name,
+                self._name_data.short_name.replace(" ", ""),
                 size=460,
                 style="black_italic",
                 position=name_position,
@@ -215,8 +215,7 @@ class ZZZAgentCard:
         agent_color = self._color or self._card_data["color"]
 
         for i, prop in enumerate(props):
-            if prop is None or not isinstance(prop.type, PropType):
-                continue
+            assert isinstance(prop.type, PropType)
 
             color = (
                 drawer.get_agent_special_stat_color(agent_color)

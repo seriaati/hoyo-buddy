@@ -800,7 +800,7 @@ redeem_failure_notify_toggle_label: Gửi thông báo khi tự đổi mã quà t
 redeem_success_notify_toggle_label: Gửi thông báo khi tự đổi mã quà thành công
 image_file_too_large_error_title: Ảnh Quá Lớn
 image_file_too_large_error_message: "Ảnh vừa tải lên có kích thước quá lớn, giới hạn là {size}MB."
-api_request_timeout_title: Yêu cầu API đã hết thời gian
+api_request_timeout_title: Yêu cầu API đã quá hạn
 api_request_timeout_message: Vui lòng thử lại sau
 dismissible_one_year_anniversary_title: Hoyo Buddy đã 1 tuổi rồi!
 dismissible_one_year_anniversary_desc: "Truy cập [trang web đặc biệt](https://one.hb.seria.moe) để tham gia giveaway kỉ niệm 1 năm!"

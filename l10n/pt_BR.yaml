@@ -798,3 +798,8 @@ redeem_failure_notify_toggle_label: Notificar na falha do resgate automático
 redeem_success_notify_toggle_label: Notificar no sucesso do resgate automático
 image_file_too_large_error_title: Arquivo de Imagem Muito Grande
 image_file_too_large_error_message: "O arquivo de imagem enviado é muito grande, o tamanho máximo é {size}MB."
+api_request_timeout_title: Solicitação da API Expirou
+api_request_timeout_message: Tente novamente mais tarde
+dismissible_one_year_anniversary_title: Hoyo Buddy faz 1 Ano!
+dismissible_one_year_anniversary_desc: "Visite a [página web especial](https://one.hb.seria.moe) para participar do sorteio de aniversário!"
+anniversary_dyk: "Hoyo Buddy faz 1 ano! Visite a [página web especial](<https://one.hb.seria.moe>) para participar do sorteio de aniversário!"

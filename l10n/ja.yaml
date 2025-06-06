@@ -798,3 +798,8 @@ redeem_failure_notify_toggle_label: 自動交換失敗時に通知
 redeem_success_notify_toggle_label: 自動交換成功時に通知
 image_file_too_large_error_title: 画像ファイルが大きすぎます
 image_file_too_large_error_message: "アップロードされた画像ファイルが大きすぎます。最大ファイルサイズは {size} MB です。"
+api_request_timeout_title: APIリクエストがタイムアウトしました
+api_request_timeout_message: しばらくしてからもう一度お試しください
+dismissible_one_year_anniversary_title: Hoyo Buddyは1周年です！
+dismissible_one_year_anniversary_desc: "[特別なウェブページ](https://one.hb.seria.moe)にアクセスして、記念プレゼント企画に参加しましょう！"
+anniversary_dyk: "Hoyo Buddyは1周年です！[特別なウェブページ](<https://one.hb.seria.moe>)にアクセスして、記念プレゼント企画に参加しましょう！"

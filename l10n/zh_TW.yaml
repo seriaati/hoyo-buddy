@@ -800,3 +800,8 @@ redeem_failure_notify_toggle_label: 在自動兌換失敗時通知
 redeem_success_notify_toggle_label: 在自動兌換成功時通知
 image_file_too_large_error_title: 圖片檔案過大
 image_file_too_large_error_message: "上傳的圖片檔案太大了，最大檔案大小為 {size}MB。"
+api_request_timeout_title: API 請求已超時
+api_request_timeout_message: 請稍後再試
+dismissible_one_year_anniversary_title: Hoyo Buddy 一週年啦！
+dismissible_one_year_anniversary_desc: "訪問[週年慶網頁](https://one.hb.seria.moe)來參加週年抽獎活動！"
+anniversary_dyk: "Hoyo Buddy 一週年啦！訪問[週年慶網頁](https://one.hb.seria.moe)來參加週年抽獎活動！"

@@ -800,3 +800,8 @@ redeem_failure_notify_toggle_label: Notificar si el canjeo automático falla
 redeem_success_notify_toggle_label: Notificar si el canjeo automático es exitoso
 image_file_too_large_error_title: La imagen es muy pesada
 image_file_too_large_error_message: "La imagen subida es muy pesada, el peso máximo es {size}MB."
+api_request_timeout_title: Tiempo para solicitud de API agotado
+api_request_timeout_message: "Por favor, prueba otra vez más tarde"
+dismissible_one_year_anniversary_title: ¡Hoyo Buddy ya tiene 1 Año!
+dismissible_one_year_anniversary_desc: "¡Visita la [página de evento especial] (https://one.hb.seria.moe) para unirte al regalo de aniversario!"
+anniversary_dyk: "¡Hoyo Buddy tiene 1 año!. ¡Visita la [página de evento especial] (<https://one.hb.seria.moe>) para unirte al regalo del aniversario!"

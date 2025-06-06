@@ -800,3 +800,8 @@ redeem_failure_notify_toggle_label: 自动兑换失败时通知
 redeem_success_notify_toggle_label: 自动兑换成功时通知
 image_file_too_large_error_title: 图片文件过大
 image_file_too_large_error_message: "上传的图片文件过大，文件大小最大为{size}MB。"
+api_request_timeout_title: API请求已超时
+api_request_timeout_message: 请稍后再试
+dismissible_one_year_anniversary_title: Hoyo Buddy 一周年啦！
+dismissible_one_year_anniversary_desc: "访问[特殊页](https://one.hb.seria.moe)参加周年庆抽奖活动吧！"
+anniversary_dyk: "Hoyo Buddy 一周年啦！访问[特殊页](https://one.hb.seria.moe)参加周年庆抽奖活动吧！"

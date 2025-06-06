@@ -479,11 +479,15 @@ class ProfileView(View):
 
         template_num: Literal[1, 2, 3, 4] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
         if template_num == 2:
-            agent_temp1_data = self._card_data.get(str(character_id))
-            agent_temp2_data = CARD_DATA.zzz2.get(str(character_id))
-            if agent_temp1_data is None or agent_temp2_data is None:
+            agent_temp2_data = CARD_DATA.zzz2.copy().get(str(character_id))
+            if agent_temp2_data is None:
                 raise CardNotReadyError(character.name)
-            agent_temp2_data["color"] = agent_temp1_data["color"]
+
+            if not agent_temp2_data.get("color"):
+                agent_temp1_data = self._card_data.get(str(character_id))
+                if agent_temp1_data is None:
+                    raise CardNotReadyError(character.name)
+                agent_temp2_data["color"] = agent_temp1_data["color"]
             agent_temp_data = agent_temp2_data
         else:
             # 1, 3, 4

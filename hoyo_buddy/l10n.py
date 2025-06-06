@@ -237,7 +237,7 @@ class Translator:
 
     def get_dyk(self, locale: Locale) -> str:
         if is_hb_birthday():
-            dyk = self.translate(LocaleStr(key="dyk_anniversary_no_title"), locale)
+            dyk = self.translate(LocaleStr(key="anniversary_dyk"), locale)
             return f"-# 🎉 {dyk}"
 
         title = self.translate(LocaleStr(key="title_dyk"), locale)

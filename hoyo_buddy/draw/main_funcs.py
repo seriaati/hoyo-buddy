@@ -403,10 +403,10 @@ async def draw_img_theater_card(
             data.battle_stats.max_defeat_character,
             data.battle_stats.max_take_damage_character,
         )
-        icons.extend(character_icons[str(chara.id)] for chara in characters if chara is not None)
+        icons.extend(character_icons.get(str(chara.id), "") for chara in characters if chara is not None)
 
     for act in data.acts:
-        icons.extend(character_icons[str(chara.id)] for chara in act.characters)
+        icons.extend(character_icons.get(str(chara.id), "") for chara in act.characters)
 
     await download_images(icons, "img-theater", draw_input.session)
 

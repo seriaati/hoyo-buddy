@@ -8,7 +8,6 @@ from collections import defaultdict
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-import aiohttp
 import aiosqlite
 import asyncpg_listen
 import discord
@@ -55,7 +54,7 @@ from hoyo_buddy.enums import Game, GeetestType, LeaderboardType, Platform
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
 from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
-from hoyo_buddy.utils import fetch_json, get_now, get_project_version
+from hoyo_buddy.utils import fetch_json, get_now, get_project_version, should_ignore_error
 
 from .cache import LFUCache
 from .command_tree import CommandTree
@@ -296,17 +295,8 @@ class HoyoBuddy(commands.AutoShardedBot):
         return queue
 
     def capture_exception(self, e: Exception) -> None:
-        errors_to_ignore = (
-            aiohttp.ClientConnectorError,
-            aiohttp.ServerDisconnectedError,
-            discord.DiscordServerError,
-        )
-        if isinstance(e, errors_to_ignore):
-            return
-
-        # 10062: Unknown interaction
-        # 10008: Unknown message
-        if isinstance(e, discord.NotFound) and e.code in {10062, 10008}:
+        ignore = should_ignore_error(e)
+        if ignore:
             return
 
         if not self.config.sentry:

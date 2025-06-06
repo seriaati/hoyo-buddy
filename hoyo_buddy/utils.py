@@ -12,6 +12,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any
 
 import aiohttp
+import discord
 import orjson
 import sentry_sdk
 import toml
@@ -40,7 +41,6 @@ if TYPE_CHECKING:
     import pathlib
     from collections.abc import Generator
 
-    import discord
     import genshin
 
     from hoyo_buddy.types import Interaction, SleepTime
@@ -94,6 +94,24 @@ async def upload_image(
         data = await resp.json()
         filename = data["filename"]
         return f"https://img.seria.moe/{filename}"
+
+
+def should_ignore_error(e: Exception) -> bool:
+    errors_to_ignore = (
+        aiohttp.ClientConnectorError,
+        aiohttp.ServerDisconnectedError,
+        discord.DiscordServerError,
+        StopAsyncIteration,
+    )
+    if isinstance(e, errors_to_ignore):
+        return True
+
+    # 10062: Unknown interaction
+    # 10008: Unknown message
+    if isinstance(e, discord.NotFound) and e.code in {10062, 10008}:  # noqa: SIM103
+        return True
+
+    return False
 
 
 def format_timedelta(td: datetime.timedelta) -> str:
@@ -251,13 +269,15 @@ def wrap_task_factory() -> None:
         try:
             return await coro
         except Exception as e:
-            name = coro_name or getattr(coro, "__name__", str(coro))
-            if CONFIG.sentry:
-                logger.warning(f"Error in task {name!r}: {e}, capturing exception")
-                sentry_sdk.capture_exception(e)
-            else:
-                logger.exception(f"Error in task {name!r}: {e}")
+            if not should_ignore_error(e):
+                name = coro_name or getattr(coro, "__name__", str(coro))
+                if CONFIG.sentry:
+                    logger.warning(f"Error in task {name!r}: {e}, capturing exception")
+                    sentry_sdk.capture_exception(e)
+                else:
+                    logger.exception(f"Error in task {name!r}: {e}")
 
+            # Still raise the exception, so errors like `StopAsyncIteration` can work properly
             raise
 
     def new_factory(

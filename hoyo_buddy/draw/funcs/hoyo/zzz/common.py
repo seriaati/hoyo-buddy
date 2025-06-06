@@ -45,6 +45,8 @@ STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     ZZZPropertyType.AGENT_ANOMALY_PROFICIENCY: "ANOMALY_PRO.png",
     ZZZPropertyType.AGENT_ANOMALY_MASTERY: "ANOMALY_MASTER.png",
     ZZZPropertyType.AGENT_IMPACT: "IMPACT.png",
+    ZZZPropertyType.AGENT_ADRENALINE: "ADRENALINE.png",
+    ZZZPropertyType.AGENT_SHEER_FORCE: "SHEER_FORCE.png",
     # Agent DMG Bonus
     ZZZPropertyType.PHYSICAL_DMG_BONUS: "PHYSICAL.png",
     ZZZPropertyType.FIRE_DMG_BONUS: "FIRE.png",
@@ -64,19 +66,38 @@ SKILL_ORDER: Final[tuple[ZZZSkillType, ...]] = (
 )
 
 
-def get_props(agent: ZZZFullAgent) -> list[ZZZAgentProperty | None]:
+def get_props(agent: ZZZFullAgent) -> list[ZZZAgentProperty]:
+    pen = dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN)
+    if pen is None:
+        # Calculate flat pen from discs
+        val = sum(
+            next((int(p.value) for p in d.properties if p.type is ZZZPropertyType.FLAT_PEN), 0)
+            for d in agent.discs
+        )
+        pen = ZZZAgentProperty(
+            **{  # noqa: PIE804
+                "property_name": "PEN",
+                "property_id": 232,
+                "base": str(val),
+                "add": "",
+                "final": "",
+            }
+        )
+
     props = [
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_HP),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_DEF),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ATK),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_IMPACT),
+        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ADRENALINE),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ENERGY_GEN),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ANOMALY_MASTERY),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ANOMALY_PROFICIENCY),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_CRIT_RATE),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_CRIT_DMG),
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN),
+        pen,
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN_RATIO),
+        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_SHEER_FORCE),
     ]
 
     dmg_index = 4
@@ -102,4 +123,4 @@ def get_props(agent: ZZZFullAgent) -> list[ZZZAgentProperty | None]:
                 dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.ETHER_DMG_BONUS)
             )
 
-    return props
+    return [p for p in props if p is not None and isinstance(p.type, ZZZPropertyType)]

@@ -195,8 +195,7 @@ class ZZZAgentCard4:
 
         props = get_props(self._agent)
         for i, prop in enumerate(props):
-            if prop is None or not isinstance(prop.type, PropType):
-                continue
+            assert isinstance(prop.type, PropType)
 
             color = (
                 drawer.get_agent_special_stat_color(self._color)

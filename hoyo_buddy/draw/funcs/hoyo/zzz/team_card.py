@@ -316,8 +316,7 @@ class ZZZTeamCard:
         agent_color = self._agent_colors[agent.id]
 
         for i, prop in enumerate(props):
-            if prop is None or not isinstance(prop.type, PropType):
-                continue
+            assert isinstance(prop.type, PropType)
 
             color = (
                 drawer.get_agent_special_stat_color(agent_color)

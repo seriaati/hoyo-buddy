@@ -748,6 +748,7 @@ class SpecialtyFilterSelector(Select[CharactersView]):
             ZZZSpecialty.DEFENSE: "ProfessionName_Defence",
             ZZZSpecialty.STUN: "ProfessionName_BreakStun",
             ZZZSpecialty.SUPPORT: "ProfessionName_Support",
+            ZZZSpecialty.RUPTURE: "ProfessionName_Rupture",
         }
         options = [
             SelectOption(

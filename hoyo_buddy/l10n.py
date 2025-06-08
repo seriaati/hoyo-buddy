@@ -100,6 +100,9 @@ class LocaleStr:
         logger.error("LocaleStr should not be converted to string")
         return self.identifier
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(key={self.key!r}, custom_str={self.custom_str!r}, translate_={self.translate_!r}, mi18n_game={self.mi18n_game!r}, game={self.game!r}, extras={self.extras!r})"
+
 
 class EnumStr(LocaleStr):
     def __init__(self, enum: StrEnum) -> None:

@@ -805,3 +805,6 @@ api_request_timeout_message: Please try again later
 dismissible_one_year_anniversary_title: Hoyo Buddy is 1 Year Old!
 dismissible_one_year_anniversary_desc: "Visit the [special web page](https://one.hb.seria.moe) to join the anniversary giveaway!"
 anniversary_dyk: "Hoyo Buddy is 1 year old! Visit the [special web page](<https://one.hb.seria.moe>) to join the anniversary giveaway!"
+authkey_timeout_title: Authkey Timeout
+authkey_timeout_message: "Obtain a new gacha log URL and try again"
+invalid_authkey_title: Invalid Authkey

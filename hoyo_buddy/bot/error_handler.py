@@ -87,6 +87,14 @@ GPY_ERRORS: dict[
             geetest_type=EnumStr(GeetestType.DAILY_CHECKIN), key="geetest.required.description"
         ),
     },
+    ge.AuthkeyTimeout: {
+        "title": LocaleStr(key="authkey_timeout_title"),
+        "description": LocaleStr(key="authkey_timeout_message"),
+    },
+    ge.InvalidAuthkey: {
+        "title": LocaleStr(key="invalid_authkey_title"),
+        "description": LocaleStr(key="authkey_timeout_message"),
+    },
     # Below are custom retcodes for Hoyo Buddy, they don't exist in Hoyo's API
     999: {
         "title": LocaleStr(key="redeeem_code.cookie_token_expired_title"),

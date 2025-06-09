@@ -5,23 +5,8 @@ In case you have any questions, you can [DM me on Discord](https://discord.com/u
 
 ## Translation Contributions
 
-Translations of Hoyo Buddy are hosted on [Transifex](https://app.transifex.com/seria/hoyo-buddy/dashboard/), to contribute, DM me your e-mail and the language you want to translate so I can add you to the translation team.  
-If the language you want to translate is not listed below, DM me and I'll add it.
-
-### Languages Available
-
-- Chinese (China)
-- Chinese (Taiwan)
-- French
-- German
-- Indonesian
-- Japanese
-- Korean
-- Portuguese
-- Russian
-- Spanish
-- Thai
-- Vietamese
+Translations of Hoyo Buddy are hosted on [Transifex](https://app.transifex.com/seria/hoyo-buddy/dashboard/), to contribute, DM me your e-mail and the language you want to translate so I can add you to the translation team.
+For languages available, see [Discord's documentation](https://discord.com/developers/docs/reference#locales).
 
 ## Code Contributions
 

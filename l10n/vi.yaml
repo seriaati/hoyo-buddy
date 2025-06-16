@@ -805,3 +805,6 @@ api_request_timeout_message: Vui lòng thử lại sau
 dismissible_one_year_anniversary_title: Hoyo Buddy đã 1 tuổi rồi!
 dismissible_one_year_anniversary_desc: "Truy cập [trang web đặc biệt](https://one.hb.seria.moe) để tham gia giveaway kỉ niệm 1 năm!"
 anniversary_dyk: "Hoyo Buddy đã 1 tuổi rồi! Truy cập [trang web đặc biệt](https://one.hb.seria.moe) để tham gia giveaway kỉ niệm 1 năm!"
+authkey_timeout_title: Quá hạn chờ authkey
+authkey_timeout_message: "Hãy lấy URL lịch sử gacha mới và thử lại"
+invalid_authkey_title: Authkey không hợp lệ

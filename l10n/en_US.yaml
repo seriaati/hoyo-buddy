@@ -774,7 +774,7 @@ mimo_auto_draw_desc: "Hoyo Buddy will draw prizes for you whenever possible; if 
 mimo_auto_draw_success_notify_toggle_label: Notify on auto prize draw success
 mimo_auto_draw_failure_notify_toggle_label: Notify on auto prize draw failure
 mimo_auto_draw_embed_desc: "Hoyo Buddy drew the following items with {points} points.\nIf you see gift codes below, please redeem them manually with </redeem>."
-dismissible_hsr_temp2_desc: "You can now use the new Hoyo Buddy template 2 for HSR character cards, select it in card settings. It is recommended to use hotizontal images for this template."
+dismissible_hsr_temp2_desc: "You can now use the new Hoyo Buddy template 2 for HSR character cards, select it in card settings. It is recommended to use horizontal images for this template."
 bounty_commission.embed.description: Bounty commissions not completed yet
 ridu_points.embed.description: Ridu weekly tasks not completed yet
 changelog_embed_title: Changelog

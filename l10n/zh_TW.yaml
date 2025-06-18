@@ -805,3 +805,6 @@ api_request_timeout_message: 請稍後再試
 dismissible_one_year_anniversary_title: Hoyo Buddy 一週年啦！
 dismissible_one_year_anniversary_desc: "訪問[週年慶網頁](https://one.hb.seria.moe)來參加週年抽獎活動！"
 anniversary_dyk: "Hoyo Buddy 一週年啦！訪問[週年慶網頁](https://one.hb.seria.moe)來參加週年抽獎活動！"
+authkey_timeout_title: Authkey 已過期
+authkey_timeout_message: "獲取一個新的抽卡紀錄網址並再試一次"
+invalid_authkey_title: 無效的 Authkey

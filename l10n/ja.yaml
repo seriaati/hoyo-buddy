@@ -803,3 +803,6 @@ api_request_timeout_message: しばらくしてからもう一度お試しくだ
 dismissible_one_year_anniversary_title: Hoyo Buddyは1周年です！
 dismissible_one_year_anniversary_desc: "[特別なウェブページ](https://one.hb.seria.moe)にアクセスして、記念プレゼント企画に参加しましょう！"
 anniversary_dyk: "Hoyo Buddyは1周年です！[特別なウェブページ](<https://one.hb.seria.moe>)にアクセスして、記念プレゼント企画に参加しましょう！"
+authkey_timeout_title: Authkey タイムアウト
+authkey_timeout_message: "新しいガチャログURLを取得して再試行してください"
+invalid_authkey_title: 無効なAuthkey

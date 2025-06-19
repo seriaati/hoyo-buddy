@@ -774,7 +774,7 @@ mimo_auto_draw_desc: "Hoyo Buddy sacará premios para ti siempre que sea posible
 mimo_auto_draw_success_notify_toggle_label: Notificar en caso de éxito del sorteo automático
 mimo_auto_draw_failure_notify_toggle_label: Notificar en caso de falla del sorteo automático
 mimo_auto_draw_embed_desc: "Hoyo Buddy obtuvo los siguientes ítems con {points} puntos.\nSi ves códigos de regalo abajo, por favor canjéalos manualmente con </redeem>."
-dismissible_hsr_temp2_desc: "Ahora puedes usar la nueva Hoyo Buddy plantilla 2 para las tarjetas de personajes de HSR, selecciónala en los ajustes de la tarjeta. Se recomienda usar imágenes horizontales para esta plantilla."
+dismissible_hsr_temp2_desc: "Ahora podés usar la nueva plantilla Hoyo Buddy 2 para las tarjetas de personajes de HSR. Seleccionala en la configuración de tarjetas. Se recomienda usar imágenes horizontales para esta plantilla."
 bounty_commission.embed.description: Encargos de cacería aún no completados
 ridu_points.embed.description: Semanario de Ridu aún no completado
 changelog_embed_title: Registro de cambios
@@ -805,3 +805,6 @@ api_request_timeout_message: "Por favor, prueba otra vez más tarde"
 dismissible_one_year_anniversary_title: ¡Hoyo Buddy ya tiene 1 Año!
 dismissible_one_year_anniversary_desc: "¡Visita la [página de evento especial] (https://one.hb.seria.moe) para unirte al regalo de aniversario!"
 anniversary_dyk: "¡Hoyo Buddy tiene 1 año!. ¡Visita la [página de evento especial] (<https://one.hb.seria.moe>) para unirte al regalo del aniversario!"
+authkey_timeout_title: La clave de autenticación caducada
+authkey_timeout_message: "Obtén una nueva URL del registro del gacha e intentarlo de nuevo"
+invalid_authkey_title: Clave de autentificación invalida

@@ -72,7 +72,11 @@ class Admin(commands.Cog):
     async def add_codes_command(self, ctx: commands.Context, game: genshin.Game, codes: str) -> Any:
         message = await ctx.send("Adding codes...")
         for code in codes.split(","):
-            await add_to_hoyo_codes(self.bot.session, code=code, game=game)
+            try:
+                await add_to_hoyo_codes(self.bot.session, code=code, game=game)
+            except Exception as e:
+                await ctx.send(f"Error adding code {code}: {e}")
+                return
             await asyncio.sleep(0.1)
         await message.edit(content="Added codes.")
 

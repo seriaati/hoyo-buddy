@@ -38,7 +38,7 @@ class ItemCategory(StrEnum):
     LIVING_BEINGS = "Living Beings"
     BOOKS = "Books"
     TCG = "TCG"
-    SPIRAL_ABYSS = "Spiral Abyss"
+    # SPIRAL_ABYSS = "Spiral Abyss"
 
 
 class AmbrAPIClient(ambr.AmbrAPI):

@@ -24,7 +24,6 @@ from ..hoyo.search_autocomplete import AutocompleteSetup
 from ..l10n import LocaleStr
 from ..ui import URLButtonView
 from ..ui.hoyo.genshin import search as gi_search
-from ..ui.hoyo.genshin.abyss_enemy import AbyssEnemyView
 from ..ui.hoyo.hsr import search as hsr_search
 from ..ui.hoyo.hsr.search.light_cone import LightConeUI
 from ..ui.hoyo.zzz import search as zzz_search
@@ -228,16 +227,16 @@ class Search(commands.Cog):
                     tcg_card_ui = gi_search.TCGCardUI(int(query), author=i.user, locale=locale)
                     await tcg_card_ui.start(i)
 
-                case ambr.ItemCategory.SPIRAL_ABYSS:
-                    try:
-                        index = int(query)
-                    except ValueError as e:
-                        raise InvalidQueryError from e
+                # case ambr.ItemCategory.SPIRAL_ABYSS:
+                #     try:
+                #         index = int(query)
+                #     except ValueError as e:
+                #         raise InvalidQueryError from e
 
-                    view = AbyssEnemyView(
-                        index, dark_mode=settings.dark_mode, author=i.user, locale=locale
-                    )
-                    await view.start(i)
+                #     view = AbyssEnemyView(
+                #         index, dark_mode=settings.dark_mode, author=i.user, locale=locale
+                #     )
+                #     await view.start(i)
 
         elif game is Game.STARRAIL:
             try:
@@ -391,8 +390,8 @@ class Search(commands.Cog):
                 return self.bot.get_error_choice(LocaleStr(key="invalid_category_selected"), locale)
 
             # Special handling for spiral abyss
-            if category is ambr.ItemCategory.SPIRAL_ABYSS:
-                return await AbyssEnemyView.get_autocomplete_choices()
+            # if category is ambr.ItemCategory.SPIRAL_ABYSS:
+            #     return await AbyssEnemyView.get_autocomplete_choices()
 
             choices = self.bot.autocomplete_choices[game][category].get(
                 locale, self.bot.autocomplete_choices[game][category][Locale.american_english]

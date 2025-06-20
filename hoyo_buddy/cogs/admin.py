@@ -73,6 +73,7 @@ class Admin(commands.Cog):
         message = await ctx.send("Adding codes...")
         for code in codes.split(","):
             await add_to_hoyo_codes(self.bot.session, code=code, game=game)
+            await asyncio.sleep(0.1)
         await message.edit(content="Added codes.")
 
     @commands.command(name="get-accounts", aliases=["ga"])

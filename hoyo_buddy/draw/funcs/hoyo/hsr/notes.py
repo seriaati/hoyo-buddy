@@ -17,8 +17,7 @@ if TYPE_CHECKING:
 __all__ = ("draw_hsr_notes_card",)
 
 
-def draw_hsr_notes_card(notes: StarRailNote, locale_: str, dark_mode: bool) -> BytesIO:
-    locale = Locale(locale_)
+def draw_hsr_notes_card(notes: StarRailNote, locale: Locale, dark_mode: bool) -> BytesIO:
     filename = f"{'dark' if dark_mode else 'light'}-hsr"
     im = Drawer.open_image(f"hoyo-buddy-assets/assets/notes/{filename}.png")
     draw = ImageDraw.Draw(im)

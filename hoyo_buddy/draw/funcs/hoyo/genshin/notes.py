@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from PIL import ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
-from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import format_timedelta
 
@@ -14,12 +13,13 @@ if TYPE_CHECKING:
 
     from genshin.models import Notes
 
+    from hoyo_buddy.enums import Locale
+
 __all__ = ("draw_genshin_notes_card",)
 
 
-def draw_genshin_notes_card(notes: Notes, locale_: str, dark_mode: bool) -> BytesIO:
+def draw_genshin_notes_card(notes: Notes, locale: Locale, dark_mode: bool) -> BytesIO:
     filename = f"{'dark' if dark_mode else 'light'}-gi"
-    locale = Locale(locale_)
     im = Drawer.open_image(f"hoyo-buddy-assets/assets/notes/{filename}.png")
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="gi-notes", dark_mode=dark_mode)

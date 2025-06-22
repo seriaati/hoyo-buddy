@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.enums import Locale
 from hoyo_buddy.models import ItemWithDescription, ItemWithTrailing
 
 from ..drawer import (
@@ -19,11 +18,12 @@ from ..drawer import (
 if TYPE_CHECKING:
     from io import BytesIO
 
+    from hoyo_buddy.enums import Locale
+
 
 def draw_item_list(
-    items: list[ItemWithDescription] | list[ItemWithTrailing], dark_mode: bool, locale_: str
+    items: list[ItemWithDescription] | list[ItemWithTrailing], dark_mode: bool, locale: Locale
 ) -> BytesIO:
-    locale = Locale(locale_)
     is_trailing = any(isinstance(item, ItemWithTrailing) for item in items)
 
     # Variables

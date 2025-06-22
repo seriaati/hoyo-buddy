@@ -6,13 +6,14 @@ from genshin.models import StarRailDetailCharacter as HSRCharacter
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import DARK_SURFACE, LIGHT_SURFACE, Drawer
-from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DynamicBKInput, UnownedHSRCharacter
 
 if TYPE_CHECKING:
     import io
     from collections.abc import Sequence
+
+    from hoyo_buddy.enums import Locale
 
 
 WEAPON_ICON_POS = (356, 17)
@@ -23,9 +24,8 @@ def draw_character_card(
     characters: Sequence[HSRCharacter | UnownedHSRCharacter],
     pc_icons: dict[str, str],
     dark_mode: bool,
-    locale_: str,
+    locale: Locale,
 ) -> io.BytesIO:
-    locale = Locale(locale_)
     c_cards: dict[str, Image.Image] = {}
 
     for character in characters:

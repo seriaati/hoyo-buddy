@@ -20,14 +20,13 @@ __all__ = ("draw_genshin_card",)
 
 
 def draw_genshin_card(
-    locale_: str,
+    locale: Locale,
     dark_mode: bool,
     character: Character | HoyolabGICharacter,
     image_url: str,
     zoom: float,
     rank: str | None,
 ) -> io.BytesIO:
-    locale = Locale(locale_)
     mode = "dark" if dark_mode else "light"
     text_color = (241, 241, 241) if dark_mode else (33, 33, 33)
 

@@ -7,23 +7,21 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
 from hoyo_buddy.draw.funcs.hoyo.hsr.common import get_character_skills, get_character_stats
-from hoyo_buddy.enums import Locale
 
 if TYPE_CHECKING:
     import io
 
     import hoyo_buddy.models as hb_models
+    from hoyo_buddy.enums import Locale
 
 
 def draw_hsr_build_card(
     character: enka.hsr.Character | hb_models.HoyolabHSRCharacter,
-    locale_: str,
+    locale: Locale,
     dark_mode: bool,
     image_url: str,
     primary_hex: str,
 ) -> io.BytesIO:
-    locale = Locale(locale_)
-
     primary = Drawer.hex_to_rgb(primary_hex)
     if dark_mode:
         # blend with dark gray

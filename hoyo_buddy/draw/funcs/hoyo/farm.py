@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
-from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr, translator
 
 if TYPE_CHECKING:
@@ -13,12 +12,13 @@ if TYPE_CHECKING:
 
     import ambr
 
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.models import FarmData
 
 __all__ = ("draw_farm_card",)
 
 
-def draw_farm_card(farm_data: list[FarmData], locale_: str, dark_mode: bool) -> io.BytesIO:
+def draw_farm_card(farm_data: list[FarmData], locale: Locale, dark_mode: bool) -> io.BytesIO:
     def get_domain_title(domain: ambr.Domain, locale: Locale) -> str:
         """Get the title of a GI domain based on its name and city, assuming the language is English."""
         city_name = translator.translate(LocaleStr(custom_str=domain.city.name.title()), locale)
@@ -28,7 +28,6 @@ def draw_farm_card(farm_data: list[FarmData], locale_: str, dark_mode: bool) -> 
         domain_type_name = translator.translate(domain_type, locale)
         return f"{domain_type_name} ({city_name})"
 
-    locale = Locale(locale_)
     mode = "dark" if dark_mode else "light"
     basic_cards: list[Image.Image] = []
 

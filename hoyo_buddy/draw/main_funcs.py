@@ -55,11 +55,7 @@ async def draw_item_list_card(
         [item.icon for item in items if item.icon is not None], "item-list", draw_input.session
     )
     buffer = await draw_input.loop.run_in_executor(
-        draw_input.executor,
-        funcs.draw_item_list,
-        items,
-        draw_input.dark_mode,
-        draw_input.locale.value,
+        draw_input.executor, funcs.draw_item_list, items, draw_input.dark_mode, draw_input.locale
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
@@ -111,7 +107,7 @@ async def draw_hsr_build_card(
             draw_input.executor,
             funcs.hsr.draw_hsr_build_card,
             character,
-            draw_input.locale.value,
+            draw_input.locale,
             draw_input.dark_mode,
             image_url,
             primary_hex,
@@ -123,7 +119,7 @@ async def draw_hsr_build_card(
 
     card = funcs.hsr.HSRBuildCard2(
         character,
-        locale=draw_input.locale.value,
+        locale=draw_input.locale,
         dark_mode=draw_input.dark_mode,
         image_url=image_url,
         en_name=en_name,
@@ -141,7 +137,7 @@ async def draw_hsr_notes_card(draw_input: DrawInput, notes: StarRailNote) -> Byt
         draw_input.executor,
         funcs.hsr.draw_hsr_notes_card,
         notes,
-        draw_input.locale.value,
+        draw_input.locale,
         draw_input.dark_mode,
     )
 
@@ -171,7 +167,7 @@ async def draw_gi_build_card(
 
         await download_images(urls, "gi-build-card2", draw_input.session)
         card = funcs.genshin.GITempTwoBuildCard(
-            locale=draw_input.locale.value,
+            locale=draw_input.locale,
             character=character,
             zoom=zoom,
             dark_mode=draw_input.dark_mode,
@@ -186,7 +182,7 @@ async def draw_gi_build_card(
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.genshin.draw_genshin_card,
-            draw_input.locale.value,
+            draw_input.locale,
             draw_input.dark_mode,
             character,
             image_url,
@@ -206,7 +202,7 @@ async def draw_gi_notes_card(draw_input: DrawInput, notes: genshin.models.Notes)
         draw_input.executor,
         funcs.genshin.draw_genshin_notes_card,
         notes,
-        draw_input.locale.value,
+        draw_input.locale,
         draw_input.dark_mode,
     )
 
@@ -222,7 +218,7 @@ async def draw_farm_card(draw_input: DrawInput, farm_data: list[FarmData]) -> Fi
         draw_input.executor,
         funcs.draw_farm_card,
         farm_data,
-        draw_input.locale.value,
+        draw_input.locale,
         draw_input.dark_mode,
     )
     buffer.seek(0)
@@ -256,7 +252,7 @@ async def draw_gi_characters_card(
         pc_icons,
         talent_orders,
         draw_input.dark_mode,
-        draw_input.locale.value,
+        draw_input.locale,
     )
     buffer.seek(0)
 
@@ -282,7 +278,7 @@ async def draw_hsr_characters_card(
         characters,
         pc_icons,
         draw_input.dark_mode,
-        draw_input.locale.value,
+        draw_input.locale,
     )
     buffer.seek(0)
 
@@ -321,7 +317,7 @@ async def draw_spiral_abyss_card(
     traveler = next((c for c in characters if c.id in TRAVELER_IDS), None)
     card = funcs.genshin.SpiralAbyssCard(
         abyss,
-        locale=draw_input.locale.value,
+        locale=draw_input.locale,
         character_icons=character_icons,
         character_ranks=character_ranks,
         traveler_element=traveler.element if traveler is not None else None,
@@ -334,7 +330,7 @@ async def draw_spiral_abyss_card(
 async def draw_exploration_card(draw_input: DrawInput, user: PartialGenshinUserStats) -> File:
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
-        funcs.genshin.ExplorationCard(user, draw_input.dark_mode, draw_input.locale.value).draw,
+        funcs.genshin.ExplorationCard(user, draw_input.dark_mode, draw_input.locale).draw,
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
@@ -348,7 +344,7 @@ async def draw_moc_card(
         await download_images(icons, "moc", draw_input.session)
 
     buffer = await draw_input.loop.run_in_executor(
-        draw_input.executor, funcs.hsr.moc.MOCCard(data, season, draw_input.locale.value).draw
+        draw_input.executor, funcs.hsr.moc.MOCCard(data, season, draw_input.locale).draw
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
@@ -363,7 +359,7 @@ async def draw_pure_fiction_card(
 
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
-        funcs.hsr.pure_fiction.PureFictionCard(data, season, draw_input.locale.value).draw,
+        funcs.hsr.pure_fiction.PureFictionCard(data, season, draw_input.locale).draw,
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
@@ -378,7 +374,7 @@ async def draw_apc_shadow_card(
 
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
-        funcs.hsr.apc_shadow.APCShadowCard(data, season, draw_input.locale.value).draw,
+        funcs.hsr.apc_shadow.APCShadowCard(data, season, draw_input.locale).draw,
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
@@ -415,7 +411,7 @@ async def draw_img_theater_card(
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
         funcs.genshin.ImgTheaterCard(
-            data, chara_consts, character_icons, draw_input.locale.value, traveler_element
+            data, chara_consts, character_icons, draw_input.locale, traveler_element
         ).draw,
     )
 
@@ -428,7 +424,7 @@ async def draw_zzz_notes_card(draw_input: DrawInput, notes: ZZZNotes) -> BytesIO
         draw_input.executor,
         funcs.zzz.draw_zzz_notes,
         notes,
-        draw_input.locale.value,
+        draw_input.locale,
         draw_input.dark_mode,
     )
 
@@ -559,7 +555,7 @@ async def draw_zzz_build_card(
 
     if template == 3:
         card = funcs.zzz.ZZZTeamCard(
-            locale=draw_input.locale.value,
+            locale=draw_input.locale,
             agents=[agent],
             agent_colors={agent.id: custom_color or card_data["color"]},
             agent_images={agent.id: image},
@@ -573,7 +569,7 @@ async def draw_zzz_build_card(
     elif template == 4:
         card = funcs.zzz.ZZZAgentCard4(
             agent,
-            locale=draw_input.locale.value,
+            locale=draw_input.locale,
             name_data=draw_data.name_data.get(agent.id),
             image_url=image,
             disc_icons=draw_data.disc_icons,
@@ -586,7 +582,7 @@ async def draw_zzz_build_card(
     else:
         card = funcs.zzz.ZZZAgentCard(
             agent,
-            locale=draw_input.locale.value,
+            locale=draw_input.locale,
             name_data=draw_data.name_data.get(agent.id),
             image_url=image,
             card_data=card_data,
@@ -616,7 +612,7 @@ async def draw_zzz_characters_card(
         funcs.zzz.draw_big_agent_card,
         agents,
         draw_input.dark_mode,
-        draw_input.locale.value,
+        draw_input.locale,
     )
     buffer.seek(0)
 
@@ -635,7 +631,7 @@ async def draw_honkai_suits_card(draw_input: DrawInput, suits: Sequence[FullBatt
         draw_input.executor,
         funcs.hoyo.honkai.draw_big_suit_card,
         suits,
-        draw_input.locale.value,
+        draw_input.locale,
         draw_input.dark_mode,
     )
     buffer.seek(0)
@@ -660,7 +656,7 @@ async def draw_zzz_team_card(
     await download_images(urls, "zzz-team-card", draw_input.session)
 
     card = funcs.zzz.ZZZTeamCard(
-        locale=draw_input.locale.value,
+        locale=draw_input.locale,
         agents=agents,
         agent_colors=agent_colors,
         agent_images=agent_custom_images,
@@ -698,7 +694,7 @@ async def draw_hsr_team_card(
     await download_images(urls, "hsr-team-card", draw_input.session)
 
     card = funcs.hsr.HSRTeamCard(
-        locale=draw_input.locale.value,
+        locale=draw_input.locale,
         characters=characters,
         character_images=character_images,
         character_colors=character_colors,
@@ -721,7 +717,7 @@ async def draw_gi_team_card(
     await download_images(urls, "gi-team-card", draw_input.session)
 
     card = funcs.genshin.GITeamCard(
-        locale=draw_input.locale.value,
+        locale=draw_input.locale,
         dark_mode=draw_input.dark_mode,
         characters=characters,
         character_images=character_images,
@@ -765,7 +761,7 @@ async def draw_shiyu_card(
     urls.extend(bangboo.icon for bangboo in bangboos)
     await download_images(urls, "shiyu", draw_input.session)
 
-    card = funcs.zzz.ShiyuDefenseCard(shiyu, agent_ranks, uid, locale=draw_input.locale.value)
+    card = funcs.zzz.ShiyuDefenseCard(shiyu, agent_ranks, uid, locale=draw_input.locale)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
     buffer.seek(0)
@@ -807,7 +803,7 @@ async def draw_assault_card(
             urls.append(challenge.bangboo.icon)
     await download_images(urls, "assault", draw_input.session)
 
-    card = funcs.zzz.AssaultCard(data, draw_input.locale.value, uid)
+    card = funcs.zzz.AssaultCard(data, draw_input.locale, uid)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

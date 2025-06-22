@@ -22,7 +22,7 @@ def get_nearest_battery_level(current: int, max_battery: int) -> int:
     return battery_levels[bisect.bisect_left(battery_levels, percentage)]
 
 
-def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
+def draw_zzz_notes(notes: ZZZNotes, locale: Locale, dark_mode: bool) -> BytesIO:
     battery_level = get_nearest_battery_level(
         notes.battery_charge.current, notes.battery_charge.max
     )
@@ -30,9 +30,7 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
     filename = f"{'dark' if dark_mode else 'light'}_notes_{battery_level}"
     im = Drawer.open_image(f"hoyo-buddy-assets/assets/zzz-notes/{filename}.png")
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(
-        draw, folder="zzz-notes", dark_mode=dark_mode, locale=Locale(locale_), sans=True
-    )
+    drawer = Drawer(draw, folder="zzz-notes", dark_mode=dark_mode, locale=locale, sans=True)
 
     # Title
     drawer.write(

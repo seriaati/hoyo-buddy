@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import BLACK, DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
-from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DynamicBKInput, UnownedGICharacter
 
@@ -14,6 +13,8 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from genshin.models import GenshinDetailCharacter as GICharacter
+
+    from hoyo_buddy.enums import Locale
 
 
 PC_ICON_OFFSETS = (0, -29)
@@ -27,9 +28,8 @@ def draw_character_card(
     pc_icons: dict[str, str],
     talent_orders: dict[str, list[int]],
     dark_mode: bool,
-    locale_: str,
+    locale: Locale,
 ) -> io.BytesIO:
-    locale = Locale(locale_)
     c_cards: dict[str, Image.Image] = {}
 
     for character in characters:

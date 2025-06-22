@@ -37,8 +37,7 @@ async def main() -> None:
                 geetest_server = GeetestWebServer()
                 asyncio.create_task(geetest_server.run())
 
-            with bot.executor:
-                await bot.start(CONFIG.discord_token)
+            await bot.start(CONFIG.discord_token)
 
 
 if __name__ == "__main__":

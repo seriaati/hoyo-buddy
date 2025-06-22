@@ -108,7 +108,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.nai_client = NAIClient(token=config.nai_token, host_url=config.nai_host_url)
         self.owner_id = 410036441129943050
         self.pool = pool
-        self.executor = concurrent.futures.ThreadPoolExecutor()
+        self.executor = concurrent.futures.ProcessPoolExecutor()
         self.config = config
         self.cache = LFUCache()
         self.user_ids: set[int] = set()
@@ -703,6 +703,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         logger.info("Bot shutting down...")
         if self.geetest_command_task is not None:
             self.geetest_command_task.cancel()
+        self.executor.shutdown(wait=True)
         await super().close()
 
     @property
